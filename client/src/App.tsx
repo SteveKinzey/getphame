@@ -1,38 +1,67 @@
+// ReviewRocket App
+// Design: Bold Consumer App / Sports-Energy meets Local Business Tool
+// Colors: Deep Navy (#0F1F4B) + Bright Gold (#FFB800)
+// Fonts: Syne (headings) + Nunito (body)
+
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
+import { AppProvider, useApp } from "./contexts/AppContext";
+import BottomNav from "./components/BottomNav";
+import { useReminders } from "./hooks/useReminders";
 
+// Pages
+import OnboardingPage from "./pages/Onboarding";
+import HomePage from "./pages/Home";
+import SendRequestPage from "./pages/SendRequest";
+import DashboardPage from "./pages/Dashboard";
+import SettingsPage from "./pages/Settings";
+import UpgradePage from "./pages/Upgrade";
 
-function Router() {
-  return (
-    <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/404"} component={NotFound} />
-      {/* Final fallback route */}
-      <Route component={NotFound} />
-    </Switch>
-  );
+function ReminderProcessor() {
+  useReminders();
+  return null;
 }
 
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
+function AppShell() {
+  const { profile } = useApp();
+
+  // Show onboarding if no profile set up
+  if (!profile?.onboardingComplete) {
+    return (
+      <div className="mobile-screen">
+        <OnboardingPage />
+      </div>
+    );
+  }
+
+  return (
+    <div className="mobile-screen">
+      <ReminderProcessor />
+      <Switch>
+        <Route path="/" component={HomePage} />
+        <Route path="/send" component={SendRequestPage} />
+        <Route path="/dashboard" component={DashboardPage} />
+        <Route path="/settings" component={SettingsPage} />
+        <Route path="/upgrade" component={UpgradePage} />
+        <Route component={HomePage} />
+      </Switch>
+      <BottomNav />
+    </div>
+  );
+}
 
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider
-        defaultTheme="light"
-        // switchable
-      >
+      <ThemeProvider defaultTheme="light">
         <TooltipProvider>
-          <Toaster />
-          <Router />
+          <AppProvider>
+            <Toaster position="top-center" richColors />
+            <AppShell />
+          </AppProvider>
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
