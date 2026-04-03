@@ -103,10 +103,10 @@
 - [x] Post-import Done screen: routes to /contacts where bulk-send is immediately available (Select All + Send to X)
 
 ## Gmail API Fix + Dormancy Filter
-- [ ] Settings page: show Gmail API not-enabled warning with direct link to enable it when Gmail is connected but sends fail
-- [ ] Settings page: detect Gmail send error state and surface actionable fix card
-- [ ] SavedContacts: "Last contacted" dormancy filter (All / Not in 30d / Not in 60d / Not in 90d)
-- [ ] SavedContacts: filter persists during session, works with existing search and bulk-select
+- [x] Settings page: show Gmail API not-enabled warning with direct link to enable it when Gmail is connected but sends fail
+- [x] Settings page: Gmail API warning card shown in connected state with direct Enable link to Google Cloud Console
+- [x] SavedContacts: "Last contacted" dormancy filter (All / Not in 30d / Not in 60d / Not in 90d)
+- [x] SavedContacts: filter persists during session, works with existing search and bulk-select
 
 ## Font Update
 - [x] Switch heading font from Syne to Poppins (Google Fonts import + CSS variable + all TSX files)

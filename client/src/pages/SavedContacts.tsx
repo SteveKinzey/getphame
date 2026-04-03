@@ -65,6 +65,7 @@ export default function SavedContacts() {
   const [, navigate] = useLocation();
 
   const [search, setSearch] = useState("");
+  const [dormancyFilter, setDormancyFilter] = useState<"all" | "30" | "60" | "90">("all");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editContact, setEditContact] = useState<Contact | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Contact | null>(null);
@@ -153,11 +154,18 @@ export default function SavedContacts() {
     },
   });
 
-  const filtered = contacts.filter(
-    (c) =>
+  const now = Date.now();
+  const filtered = contacts.filter((c) => {
+    const matchesSearch =
       c.name.toLowerCase().includes(search.toLowerCase()) ||
-      c.email.toLowerCase().includes(search.toLowerCase())
-  );
+      c.email.toLowerCase().includes(search.toLowerCase());
+    if (!matchesSearch) return false;
+    if (dormancyFilter === "all") return true;
+    const days = parseInt(dormancyFilter, 10);
+    const cutoff = now - days * 24 * 60 * 60 * 1000;
+    // null lastSentAt = never contacted, always show in dormancy filters
+    return c.lastSentAt === null || c.lastSentAt < cutoff;
+  });
 
   const allFilteredSelected =
     filtered.length > 0 && filtered.every((c) => selected.has(c.id));
@@ -309,6 +317,34 @@ export default function SavedContacts() {
               {allFilteredSelected ? <CheckSquare size={14} /> : <Square size={14} />}
               {allFilteredSelected ? "Deselect All" : "Select All"}
             </button>
+          )}
+        </div>
+
+        {/* Dormancy filter pills */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          <Clock size={13} style={{ color: "oklch(0.55 0.03 260)", flexShrink: 0 }} />
+          {(["all", "30", "60", "90"] as const).map((opt) => {
+            const label = opt === "all" ? "All" : `Not in ${opt}d`;
+            const active = dormancyFilter === opt;
+            return (
+              <button
+                key={opt}
+                onClick={() => setDormancyFilter(opt)}
+                className="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors"
+                style={{
+                  background: active ? "oklch(0.22 0.09 260)" : "white",
+                  color: active ? "oklch(0.80 0.18 80)" : "oklch(0.45 0.05 260)",
+                  border: "1px solid oklch(0.88 0.02 260)",
+                }}
+              >
+                {label}
+              </button>
+            );
+          })}
+          {dormancyFilter !== "all" && (
+            <span className="text-xs ml-1" style={{ color: "oklch(0.55 0.03 260)" }}>
+              {filtered.length} contact{filtered.length !== 1 ? "s" : ""}
+            </span>
           )}
         </div>
 

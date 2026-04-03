@@ -284,6 +284,35 @@ export default function SettingsPage() {
                 </div>
               </div>
 
+              {/* Gmail API not-enabled warning — shown whenever Gmail is connected */}
+              <div
+                className="rounded-xl p-4"
+                style={{ background: "oklch(0.97 0.03 30)", border: "1px solid oklch(0.88 0.08 30)" }}
+              >
+                <div className="flex items-start gap-2 mb-2">
+                  <AlertCircle size={15} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 30)" }} />
+                  <p className="text-xs font-bold" style={{ color: "oklch(0.40 0.12 30)" }}>
+                    Gmail API must be enabled
+                  </p>
+                </div>
+                <p className="text-xs mb-3" style={{ color: "oklch(0.50 0.08 30)" }}>
+                  If sends fail with "Gmail API has not been used", click below to enable it in Google Cloud. One-time setup — takes 2 minutes.
+                </p>
+                <a
+                  href="https://console.developers.google.com/apis/api/gmail.googleapis.com/overview"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-black transition-transform active:scale-95 w-full"
+                  style={{ background: "oklch(0.55 0.18 30)", color: "white" }}
+                >
+                  <ExternalLink size={13} />
+                  Enable Gmail API in Google Cloud
+                </a>
+                <p className="text-xs text-center mt-2" style={{ color: "oklch(0.60 0.05 30)" }}>
+                  Click Enable, wait 2–3 min, then try sending again.
+                </p>
+              </div>
+
               <button
                 onClick={() => disconnectGmail.mutate()}
                 disabled={disconnectGmail.isPending}
