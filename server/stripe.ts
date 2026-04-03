@@ -53,7 +53,7 @@ export async function createCheckoutSession({
         quantity: 1,
       },
     ],
-    success_url: `${origin}/?upgraded=1`,
+    success_url: `${origin}/payment-success`,
     cancel_url: `${origin}/upgrade`,
     ...(stripeCustomerId
       ? { customer: stripeCustomerId }
