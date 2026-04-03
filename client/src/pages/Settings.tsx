@@ -17,6 +17,8 @@ import {
   AlertCircle,
   ExternalLink,
   CreditCard,
+  ShoppingBag,
+  ChevronRight,
 } from "lucide-react";
 import ProBadge from "@/components/ProBadge";
 import { toast } from "sonner";
@@ -58,6 +60,31 @@ export default function SettingsPage() {
     },
     onError: (err) => toast.error(err.message),
   });
+
+  // ── WooCommerce credentials ───────────────────────────────────────────────
+  const { data: wooCreds } = trpc.woo.getCredentials.useQuery();
+  const [wooUrl, setWooUrl] = useState("");
+  const [wooKey, setWooKey] = useState("");
+  const [wooSecret, setWooSecret] = useState("");
+  const [wooFormOpen, setWooFormOpen] = useState(false);
+
+  const saveWooCreds = trpc.woo.saveCredentials.useMutation({
+    onSuccess: () => {
+      utils.woo.getCredentials.invalidate();
+      toast.success("WooCommerce store connected!");
+      setWooFormOpen(false);
+      setWooKey("");
+      setWooSecret("");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  function handleSaveWoo() {
+    if (!wooUrl.trim()) { toast.error("Store URL is required"); return; }
+    if (!wooKey.trim()) { toast.error("Consumer Key is required"); return; }
+    if (!wooSecret.trim()) { toast.error("Consumer Secret is required"); return; }
+    saveWooCreds.mutate({ storeUrl: wooUrl.trim(), consumerKey: wooKey.trim(), consumerSecret: wooSecret.trim() });
+  }
 
   // ── Gmail status ───────────────────────────────────────────────────────────
   const { data: gmailStatus, isLoading: gmailLoading } = trpc.gmail.status.useQuery();
@@ -348,6 +375,125 @@ export default function SettingsPage() {
             >
               Upgrade to Pro — Unlimited Requests
             </button>
+          )}
+        </div>
+
+        {/* ── WooCommerce ──────────────────────────────────────────────────── */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center gap-2 mb-1">
+            <ShoppingBag size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+            <h2
+              className="text-base font-black"
+              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+            >
+              WooCommerce
+            </h2>
+          </div>
+          <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.03 260)" }}>
+            Connect your store to import customers from completed orders.
+          </p>
+
+          {wooCreds ? (
+            <div className="flex flex-col gap-3">
+              <div
+                className="flex items-center gap-3 px-4 py-3 rounded-xl"
+                style={{ background: "oklch(0.96 0.04 145)" }}
+              >
+                <CheckCircle2 size={18} style={{ color: "oklch(0.55 0.18 145)" }} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold" style={{ color: "oklch(0.30 0.12 145)" }}>Store Connected</p>
+                  <p className="text-xs truncate" style={{ color: "oklch(0.45 0.10 145)" }}>{wooCreds.storeUrl}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => navigate("/woo-customers")}
+                className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
+                style={{ background: "oklch(0.22 0.09 260)", color: "white", fontFamily: "'Syne', sans-serif" }}
+              >
+                <ShoppingBag size={16} />
+                View Customers
+                <ChevronRight size={14} />
+              </button>
+              <button
+                onClick={() => { setWooUrl(wooCreds.storeUrl); setWooFormOpen(true); }}
+                className="text-xs text-center py-2"
+                style={{ color: "oklch(0.55 0.03 260)" }}
+              >
+                Update credentials
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              {!wooFormOpen ? (
+                <button
+                  onClick={() => setWooFormOpen(true)}
+                  className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
+                  style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+                >
+                  <ShoppingBag size={16} />
+                  Connect WooCommerce Store
+                </button>
+              ) : null}
+            </div>
+          )}
+
+          {wooFormOpen && (
+            <div className="flex flex-col gap-3 mt-3">
+              <div>
+                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Store URL *</label>
+                <input
+                  type="url"
+                  value={wooUrl}
+                  onChange={(e) => setWooUrl(e.target.value)}
+                  placeholder="https://yourstore.com"
+                  className="w-full px-3 py-3 rounded-xl text-sm outline-none"
+                  style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Consumer Key *</label>
+                <input
+                  type="text"
+                  value={wooKey}
+                  onChange={(e) => setWooKey(e.target.value)}
+                  placeholder="ck_xxxxxxxxxxxxxxxx"
+                  className="w-full px-3 py-3 rounded-xl text-sm outline-none"
+                  style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Consumer Secret *</label>
+                <input
+                  type="password"
+                  value={wooSecret}
+                  onChange={(e) => setWooSecret(e.target.value)}
+                  placeholder="cs_xxxxxxxxxxxxxxxx"
+                  className="w-full px-3 py-3 rounded-xl text-sm outline-none"
+                  style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                />
+                <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>
+                  WooCommerce → Settings → Advanced → REST API → Add key (Read permission)
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={handleSaveWoo}
+                  disabled={saveWooCreds.isPending}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm"
+                  style={{ background: "oklch(0.22 0.09 260)", color: "white", fontFamily: "'Syne', sans-serif" }}
+                >
+                  {saveWooCreds.isPending ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                  Save
+                </button>
+                <button
+                  onClick={() => setWooFormOpen(false)}
+                  className="px-4 py-3 rounded-xl text-sm font-bold"
+                  style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.45 0.04 260)" }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
           )}
         </div>
 

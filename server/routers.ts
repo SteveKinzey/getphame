@@ -17,6 +17,13 @@ import {
   sendViaGmail,
 } from "./gmail";
 import { createCheckoutSession, createPortalSession } from "./stripe";
+import {
+  getWooCredentials,
+  upsertWooCredentials,
+  syncWooOrders,
+  getPendingWooCustomers,
+  markWooCustomersSent,
+} from "./woocommerce";
 import { getDb } from "./db";
 import { stripeSubscriptions } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
@@ -131,6 +138,137 @@ export const appRouter = router({
         subscriptionId: sub.stripeSubscriptionId,
       };
     }),
+  }),
+
+  woo: router({
+    /** Get saved WooCommerce credentials (secrets redacted) */
+    getCredentials: protectedProcedure.query(async ({ ctx }) => {
+      const creds = await getWooCredentials(ctx.user.id);
+      if (!creds) return null;
+      return {
+        storeUrl: creds.storeUrl,
+        consumerKey: creds.consumerKey.slice(0, 8) + "...",
+        lastSyncedAt: creds.lastSyncedAt,
+      };
+    }),
+
+    /** Save WooCommerce credentials */
+    saveCredentials: protectedProcedure
+      .input(
+        z.object({
+          storeUrl: z.string().url(),
+          consumerKey: z.string().min(1),
+          consumerSecret: z.string().min(1),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        await upsertWooCredentials({
+          userId: ctx.user.id,
+          storeUrl: input.storeUrl.replace(/\/$/, ""),
+          consumerKey: input.consumerKey,
+          consumerSecret: input.consumerSecret,
+        });
+        return { success: true };
+      }),
+
+    /** Sync orders from WooCommerce and return counts */
+    sync: protectedProcedure
+      .input(z.object({ days: z.number().int().min(1).max(90).default(30) }))
+      .mutation(async ({ ctx, input }) => {
+        return syncWooOrders(ctx.user.id, input.days);
+      }),
+
+    /** List pending customers (not yet sent a review request) */
+    listPending: protectedProcedure.query(async ({ ctx }) => {
+      return getPendingWooCustomers(ctx.user.id);
+    }),
+
+    /** Bulk send review requests to selected WooCommerce customers */
+    bulkSend: protectedProcedure
+      .input(z.object({ customerIds: z.array(z.number().int()).min(1) }))
+      .mutation(async ({ ctx, input }) => {
+        const profile = await getBusinessProfile(ctx.user.id);
+        if (!profile) throw new Error("Please complete your business profile first.");
+
+        const now = new Date();
+        const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
+        if (profile.monthlyResetDate !== yearMonth) {
+          await upsertBusinessProfile({ ...profile, monthlyCount: 0, monthlyResetDate: yearMonth });
+          profile.monthlyCount = 0;
+          profile.monthlyResetDate = yearMonth;
+        }
+
+        // Fetch the selected customers
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const { wooCustomers } = await import("../drizzle/schema");
+        const { inArray, and, eq: eqOp, isNull } = await import("drizzle-orm");
+        const customers = await db
+          .select()
+          .from(wooCustomers)
+          .where(
+            and(
+              eqOp(wooCustomers.userId, ctx.user.id),
+              inArray(wooCustomers.id, input.customerIds),
+              isNull(wooCustomers.reviewRequestSentAt)
+            )
+          );
+
+        if (customers.length === 0) throw new Error("No eligible customers found.");
+
+        const remaining = profile.tier === "free" ? FREE_LIMIT - profile.monthlyCount : Infinity;
+        if (profile.tier === "free" && remaining <= 0) {
+          throw new Error(`Free plan limit reached (${FREE_LIMIT}/month). Upgrade to Pro for unlimited requests.`);
+        }
+        const toSend = profile.tier === "free" ? customers.slice(0, remaining) : customers;
+
+        const subject = `${profile.businessName} would love your feedback!`;
+        const sentIds: number[] = [];
+        const errors: string[] = [];
+
+        for (const customer of toSend) {
+          const htmlBody = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2 style="color: #0F1F4B;">Hi ${customer.customerName}!</h2>
+              <p>Thank you for your recent purchase${customer.productName ? ` of <strong>${customer.productName}</strong>` : ""}. We hope you love it!</p>
+              <p>Could you take 30 seconds to leave us a quick review? It means the world to us and helps other customers find us.</p>
+              <div style="text-align: center; margin: 32px 0;">
+                <a href="${profile.reviewLink}"
+                   style="background: #FFB800; color: #0F1F4B; padding: 14px 32px; border-radius: 8px;
+                          text-decoration: none; font-weight: bold; font-size: 16px; display: inline-block;">
+                  Leave a Review
+                </a>
+              </div>
+              <p style="color: #666; font-size: 14px;">Thank you so much!</p>
+              <p style="color: #666; font-size: 14px;">The ${profile.businessName} team</p>
+            </div>
+          `;
+          try {
+            await sendViaGmail(ctx.user.id, customer.customerEmail, subject, htmlBody);
+            sentIds.push(customer.id);
+            await createCustomerRequest({
+              userId: ctx.user.id,
+              customerName: customer.customerName,
+              customerEmail: customer.customerEmail,
+              method: "email",
+              status: "sent",
+            });
+          } catch (err) {
+            errors.push(`${customer.customerEmail}: ${(err as Error).message}`);
+          }
+        }
+
+        if (sentIds.length > 0) {
+          await markWooCustomersSent(ctx.user.id, sentIds);
+          await upsertBusinessProfile({
+            ...profile,
+            monthlyCount: profile.monthlyCount + sentIds.length,
+          });
+        }
+
+        return { sent: sentIds.length, errors };
+      }),
   }),
 
   requests: router({

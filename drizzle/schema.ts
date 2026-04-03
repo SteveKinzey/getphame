@@ -81,3 +81,34 @@ export const stripeSubscriptions = mysqlTable("stripe_subscriptions", {
 
 export type StripeSubscription = typeof stripeSubscriptions.$inferSelect;
 export type InsertStripeSubscription = typeof stripeSubscriptions.$inferInsert;
+
+/** WooCommerce store credentials per user */
+export const wooCredentials = mysqlTable("woo_credentials", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  storeUrl: varchar("storeUrl", { length: 512 }).notNull(),
+  consumerKey: text("consumerKey").notNull(),
+  consumerSecret: text("consumerSecret").notNull(),
+  lastSyncedAt: bigint("lastSyncedAt", { mode: "number" }), // Unix ms
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type WooCredentials = typeof wooCredentials.$inferSelect;
+export type InsertWooCredentials = typeof wooCredentials.$inferInsert;
+
+/** Customers imported from WooCommerce orders */
+export const wooCustomers = mysqlTable("woo_customers", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(), // ReviewLink user (business owner)
+  wooOrderId: varchar("wooOrderId", { length: 64 }).notNull(),
+  customerName: varchar("customerName", { length: 255 }).notNull(),
+  customerEmail: varchar("customerEmail", { length: 320 }).notNull(),
+  productName: varchar("productName", { length: 512 }),
+  orderDate: bigint("orderDate", { mode: "number" }).notNull(), // Unix ms
+  reviewRequestSentAt: bigint("reviewRequestSentAt", { mode: "number" }), // null = not yet sent
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type WooCustomer = typeof wooCustomers.$inferSelect;
+export type InsertWooCustomer = typeof wooCustomers.$inferInsert;

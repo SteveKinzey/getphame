@@ -19,6 +19,7 @@ import UpgradePage from "./pages/Upgrade";
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import PaymentSuccessPage from "./pages/PaymentSuccess";
 import TermsOfServicePage from "./pages/TermsOfService";
+import WooCustomersPage from "./pages/WooCustomers";
 import { trpc } from "./lib/trpc";
 
 function AppShell() {
@@ -66,6 +67,7 @@ function AppShell() {
         <Route path="/payment-success" component={PaymentSuccessPage} />
         <Route path="/privacy-policy" component={PrivacyPolicyPage} />
         <Route path="/terms-of-service" component={TermsOfServicePage} />
+        <Route path="/woo-customers" component={WooCustomersPage} />
         <Route component={HomePage} />
       </Switch>
       <BottomNav />
