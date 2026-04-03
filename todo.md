@@ -75,3 +75,4 @@
 - [x] "View new customers" action link inside sync success toast in Settings
 - [x] Auto-refresh customer list in background after successful sync (Settings + WooCustomers page)
 - [x] Search bar on WooCustomers page for real-time filtering by name or email
+- [x] Pending/All toggle + Sent/Pending status badge on WooCustomers page

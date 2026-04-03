@@ -22,6 +22,7 @@ import {
   upsertWooCredentials,
   syncWooOrders,
   getPendingWooCustomers,
+  getAllWooCustomers,
   markWooCustomersSent,
 } from "./woocommerce";
 import { getDb } from "./db";
@@ -181,6 +182,11 @@ export const appRouter = router({
     /** List pending customers (not yet sent a review request) */
     listPending: protectedProcedure.query(async ({ ctx }) => {
       return getPendingWooCustomers(ctx.user.id);
+    }),
+
+    /** List ALL customers (pending + already sent) */
+    listAll: protectedProcedure.query(async ({ ctx }) => {
+      return getAllWooCustomers(ctx.user.id);
     }),
 
     /** Bulk send review requests to selected WooCommerce customers */

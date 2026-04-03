@@ -27,6 +27,7 @@ import {
   ArrowLeft,
   Search,
   X,
+  MailCheck,
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -43,11 +44,16 @@ export default function WooCustomers() {
   const [days, setDays] = useState<number>(30);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [search, setSearch] = useState("");
+  const [viewMode, setViewMode] = useState<"pending" | "all">("pending");
 
   const utils = trpc.useUtils();
 
   const { data: creds } = trpc.woo.getCredentials.useQuery();
-  const { data: customers = [], isLoading } = trpc.woo.listPending.useQuery();
+  const { data: pendingCustomers = [], isLoading: loadingPending } = trpc.woo.listPending.useQuery();
+  const { data: allCustomers = [], isLoading: loadingAll } = trpc.woo.listAll.useQuery();
+
+  const customers = viewMode === "pending" ? pendingCustomers : allCustomers;
+  const isLoading = viewMode === "pending" ? loadingPending : loadingAll;
 
   const sync = trpc.woo.sync.useMutation({
     onSuccess: (result) => {
@@ -55,6 +61,7 @@ export default function WooCustomers() {
         `Sync complete — ${result.added} new customer${result.added !== 1 ? "s" : ""} added from ${result.total} orders.`
       );
       utils.woo.listPending.invalidate();
+      utils.woo.listAll.invalidate();
       utils.woo.getCredentials.invalidate();
       setSelectedIds(new Set());
     },
@@ -75,12 +82,18 @@ export default function WooCustomers() {
         );
       }
       utils.woo.listPending.invalidate();
+      utils.woo.listAll.invalidate();
       setSelectedIds(new Set());
     },
     onError: (err) => {
       toast.error(`Send failed: ${err.message}`);
     },
   });
+
+  // In "pending" mode, only pending customers are selectable
+  const selectableCustomers = viewMode === "pending"
+    ? customers
+    : customers.filter((c) => !c.reviewRequestSentAt);
 
   const filteredCustomers = search.trim()
     ? customers.filter(
@@ -90,19 +103,20 @@ export default function WooCustomers() {
       )
     : customers;
 
-  const allSelected = filteredCustomers.length > 0 && filteredCustomers.length === selectedIds.size && filteredCustomers.every((c) => selectedIds.has(c.id));
+  const filteredSelectable = filteredCustomers.filter((c) => !c.reviewRequestSentAt);
+  const allSelected = filteredSelectable.length > 0 && filteredSelectable.every((c) => selectedIds.has(c.id));
 
   function toggleAll() {
     if (allSelected) {
       setSelectedIds((prev) => {
         const next = new Set(prev);
-        filteredCustomers.forEach((c) => next.delete(c.id));
+        filteredSelectable.forEach((c) => next.delete(c.id));
         return next;
       });
     } else {
       setSelectedIds((prev) => {
         const next = new Set(prev);
-        filteredCustomers.forEach((c) => next.add(c.id));
+        filteredSelectable.forEach((c) => next.add(c.id));
         return next;
       });
     }
@@ -185,6 +199,30 @@ export default function WooCustomers() {
         )}
       </div>
 
+      {/* Pending / All toggle */}
+      <div className="px-5 pt-4 pb-0 flex gap-2">
+        <button
+          onClick={() => { setViewMode("pending"); setSelectedIds(new Set()); }}
+          className="flex-1 py-2 rounded-xl text-sm font-bold transition-colors"
+          style={viewMode === "pending"
+            ? { background: "oklch(0.22 0.09 260)", color: "white" }
+            : { background: "oklch(0.93 0.01 260)", color: "oklch(0.40 0.05 260)" }
+          }
+        >
+          Pending
+        </button>
+        <button
+          onClick={() => { setViewMode("all"); setSelectedIds(new Set()); }}
+          className="flex-1 py-2 rounded-xl text-sm font-bold transition-colors"
+          style={viewMode === "all"
+            ? { background: "oklch(0.22 0.09 260)", color: "white" }
+            : { background: "oklch(0.93 0.01 260)", color: "oklch(0.40 0.05 260)" }
+          }
+        >
+          All Customers
+        </button>
+      </div>
+
       {/* Search bar */}
       <div className="px-5 pt-4 pb-0">
         <div className="relative">
@@ -264,8 +302,12 @@ export default function WooCustomers() {
             {/* Select all + bulk send bar */}
             <div className="flex items-center justify-between mb-3">
               <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
-                <Checkbox checked={allSelected} onCheckedChange={toggleAll} />
-                Select all ({filteredCustomers.length}{search ? ` of ${customers.length}` : ""})
+                <Checkbox
+                  checked={allSelected}
+                  onCheckedChange={toggleAll}
+                  disabled={filteredSelectable.length === 0}
+                />
+                Select all ({filteredSelectable.length}{search ? ` of ${selectableCustomers.length}` : ""})
               </label>
 
               {selectedIds.size > 0 && (
@@ -316,10 +358,25 @@ export default function WooCustomers() {
                       </p>
                     )}
                   </div>
-                  <div className="text-right shrink-0">
+                  <div className="text-right shrink-0 flex flex-col items-end gap-1">
                     <p className="text-xs text-gray-400">
                       {formatDate(customer.orderDate)}
                     </p>
+                    {customer.reviewRequestSentAt ? (
+                      <span
+                        className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
+                        style={{ background: "oklch(0.92 0.06 145)", color: "oklch(0.35 0.12 145)" }}
+                      >
+                        <MailCheck size={10} /> Sent
+                      </span>
+                    ) : (
+                      <span
+                        className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
+                        style={{ background: "oklch(0.93 0.06 80)", color: "oklch(0.45 0.12 80)" }}
+                      >
+                        Pending
+                      </span>
+                    )}
                   </div>
                 </div>
               ))}

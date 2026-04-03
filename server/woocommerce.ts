@@ -178,6 +178,19 @@ export async function getPendingWooCustomers(userId: number) {
 }
 
 /**
+ * Get ALL customers (pending + already sent), ordered by most recent order.
+ */
+export async function getAllWooCustomers(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(wooCustomers)
+    .where(eq(wooCustomers.userId, userId))
+    .orderBy(desc(wooCustomers.orderDate));
+}
+
+/**
  * Mark a list of wooCustomer IDs as having received a review request.
  */
 export async function markWooCustomersSent(
