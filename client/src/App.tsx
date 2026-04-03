@@ -20,6 +20,9 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import PaymentSuccessPage from "./pages/PaymentSuccess";
 import TermsOfServicePage from "./pages/TermsOfService";
 import WooCustomersPage from "./pages/WooCustomers";
+import SavedContactsPage from "./pages/SavedContacts";
+import EmailTemplatesPage from "./pages/EmailTemplates";
+import RemindersPage from "./pages/Reminders";
 import { trpc } from "./lib/trpc";
 
 function AppShell() {
@@ -68,6 +71,9 @@ function AppShell() {
         <Route path="/privacy-policy" component={PrivacyPolicyPage} />
         <Route path="/terms-of-service" component={TermsOfServicePage} />
         <Route path="/woo-customers" component={WooCustomersPage} />
+        <Route path="/contacts" component={SavedContactsPage} />
+        <Route path="/templates" component={EmailTemplatesPage} />
+        <Route path="/reminders" component={RemindersPage} />
         <Route component={HomePage} />
       </Switch>
       <BottomNav />

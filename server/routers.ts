@@ -30,6 +30,25 @@ import {
 import { getDb } from "./db";
 import { stripeSubscriptions } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
+import {
+  listSavedContacts,
+  createSavedContact,
+  updateSavedContact,
+  deleteSavedContact,
+  markContactSent,
+} from "./contacts";
+import {
+  listTemplates,
+  getDefaultTemplate,
+  createTemplate,
+  updateTemplate,
+  deleteTemplate,
+} from "./templates";
+import {
+  listReminders,
+  cancelReminder,
+  scheduleFollowUp,
+} from "./reminders";
 
 const FREE_LIMIT = 10;
 
@@ -292,6 +311,91 @@ export const appRouter = router({
         }
 
         return { sent: sentIds.length, errors };
+      }),
+  }),
+
+  contacts: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return listSavedContacts(ctx.user.id);
+    }),
+
+    create: protectedProcedure
+      .input(z.object({ name: z.string().min(1), email: z.string().email(), phone: z.string().optional(), notes: z.string().optional() }))
+      .mutation(async ({ ctx, input }) => {
+        await createSavedContact(ctx.user.id, input);
+        return { ok: true };
+      }),
+
+    update: protectedProcedure
+      .input(z.object({ id: z.number().int(), name: z.string().min(1), email: z.string().email(), phone: z.string().optional(), notes: z.string().optional() }))
+      .mutation(async ({ ctx, input }) => {
+        await updateSavedContact(ctx.user.id, input.id, input);
+        return { ok: true };
+      }),
+
+    delete: protectedProcedure
+      .input(z.object({ id: z.number().int() }))
+      .mutation(async ({ ctx, input }) => {
+        await deleteSavedContact(ctx.user.id, input.id);
+        return { ok: true };
+      }),
+
+    markSent: protectedProcedure
+      .input(z.object({ id: z.number().int() }))
+      .mutation(async ({ ctx, input }) => {
+        await markContactSent(ctx.user.id, input.id);
+        return { ok: true };
+      }),
+  }),
+
+  templates: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return listTemplates(ctx.user.id);
+    }),
+
+    getDefault: protectedProcedure.query(async ({ ctx }) => {
+      return getDefaultTemplate(ctx.user.id);
+    }),
+
+    create: protectedProcedure
+      .input(z.object({ name: z.string().min(1), subject: z.string().min(1), body: z.string().min(1), isDefault: z.boolean().optional() }))
+      .mutation(async ({ ctx, input }) => {
+        await createTemplate(ctx.user.id, input);
+        return { ok: true };
+      }),
+
+    update: protectedProcedure
+      .input(z.object({ id: z.number().int(), name: z.string().min(1), subject: z.string().min(1), body: z.string().min(1), isDefault: z.boolean().optional() }))
+      .mutation(async ({ ctx, input }) => {
+        await updateTemplate(ctx.user.id, input.id, input);
+        return { ok: true };
+      }),
+
+    delete: protectedProcedure
+      .input(z.object({ id: z.number().int() }))
+      .mutation(async ({ ctx, input }) => {
+        await deleteTemplate(ctx.user.id, input.id);
+        return { ok: true };
+      }),
+  }),
+
+  reminders: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return listReminders(ctx.user.id);
+    }),
+
+    cancel: protectedProcedure
+      .input(z.object({ id: z.number().int() }))
+      .mutation(async ({ ctx, input }) => {
+        await cancelReminder(ctx.user.id, input.id);
+        return { ok: true };
+      }),
+
+    scheduleFollowUp: protectedProcedure
+      .input(z.object({ customerRequestId: z.number().int(), customerName: z.string(), customerEmail: z.string().email() }))
+      .mutation(async ({ ctx, input }) => {
+        await scheduleFollowUp(ctx.user.id, input.customerRequestId, input.customerName, input.customerEmail);
+        return { ok: true };
       }),
   }),
 

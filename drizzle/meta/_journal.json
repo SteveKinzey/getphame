@@ -36,6 +36,13 @@
       "when": 1775215512780,
       "tag": "0004_lame_tyger_tiger",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1775215776801,
+      "tag": "0005_classy_mauler",
+      "breakpoints": true
     }
   ]
 }

@@ -544,6 +544,21 @@ export default function SettingsPage() {
           )}
         </div>
 
+        {/* ── Tools ───────────────────────────────────────────────────────── */}
+        <div className="rounded-2xl p-4 shadow-sm" style={{ background: 'white', border: '1px solid oklch(0.92 0.02 260)' }}>
+          <h2 className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: 'oklch(0.55 0.03 260)', fontFamily: "'Syne', sans-serif" }}>Tools</h2>
+          <div className="flex flex-col gap-1">
+            {[{ label: 'Saved Contacts', icon: <Mail size={15} />, path: '/contacts' }, { label: 'Email Templates', icon: <Settings size={15} />, path: '/templates' }, { label: 'Follow-up Reminders', icon: <Clock size={15} />, path: '/reminders' }].map(({ label, icon, path }) => (
+              <button key={path} onClick={() => navigate(path)}
+                className="flex items-center justify-between py-2.5 px-1 rounded-lg hover:bg-gray-50 transition-colors text-sm font-semibold"
+                style={{ color: 'oklch(0.30 0.04 260)' }}>
+                <span className="flex items-center gap-2">{icon}{label}</span>
+                <ChevronRight size={14} className="text-gray-400" />
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* ── Sign Out ─────────────────────────────────────────────────────── */}
         <button
           onClick={() => logout()}

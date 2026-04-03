@@ -13,6 +13,7 @@ import { getDb } from "../db";
 import { businessProfiles, stripeSubscriptions } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
+import { startReminderScheduler } from "../reminders";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -189,6 +190,7 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
+    startReminderScheduler();
   });
 }
 

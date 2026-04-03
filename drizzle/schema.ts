@@ -113,3 +113,51 @@ export const wooCustomers = mysqlTable("woo_customers", {
 
 export type WooCustomer = typeof wooCustomers.$inferSelect;
 export type InsertWooCustomer = typeof wooCustomers.$inferInsert;
+
+/** Saved contacts for repeat review request sending */
+export const savedContacts = mysqlTable("saved_contacts", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
+  email: varchar("email", { length: 320 }).notNull(),
+  phone: varchar("phone", { length: 30 }),
+  notes: text("notes"),
+  lastSentAt: bigint("lastSentAt", { mode: "number" }), // Unix ms of last review request
+  totalSent: int("totalSent").default(0).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type SavedContact = typeof savedContacts.$inferSelect;
+export type InsertSavedContact = typeof savedContacts.$inferInsert;
+
+/** Custom email templates per user */
+export const emailTemplates = mysqlTable("email_templates", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  name: varchar("name", { length: 255 }).notNull(),
+  subject: varchar("subject", { length: 512 }).notNull(),
+  body: text("body").notNull(), // Supports {{customer_name}}, {{business_name}}, {{review_link}}
+  isDefault: int("isDefault").default(0).notNull(), // 1 = default template for this user
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type EmailTemplate = typeof emailTemplates.$inferSelect;
+export type InsertEmailTemplate = typeof emailTemplates.$inferInsert;
+
+/** Follow-up reminders — scheduled 3-day follow-ups for sent review requests */
+export const followUpReminders = mysqlTable("follow_up_reminders", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  customerRequestId: int("customerRequestId").notNull(), // FK to customer_requests
+  customerName: varchar("customerName", { length: 255 }).notNull(),
+  customerEmail: varchar("customerEmail", { length: 320 }).notNull(),
+  scheduledAt: bigint("scheduledAt", { mode: "number" }).notNull(), // Unix ms when to send
+  sentAt: bigint("sentAt", { mode: "number" }), // null = not yet sent
+  status: mysqlEnum("status", ["pending", "sent", "cancelled"]).default("pending").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type FollowUpReminder = typeof followUpReminders.$inferSelect;
+export type InsertFollowUpReminder = typeof followUpReminders.$inferInsert;

@@ -32,9 +32,9 @@
 
 ## Pending / Future
 - [x] Stripe integration for Pro subscriptions ($29/mo)
-- [ ] Saved contacts list (re-send to repeat customers)
-- [ ] Custom email template editor
-- [ ] Follow-up reminder system (server-side, 3-day reminders)
+- [x] Saved contacts list (re-send to repeat customers)
+- [x] Custom email template editor
+- [x] Follow-up reminder system (server-side, 3-day reminders)
 
 ## Stripe Integration
 - [x] Stripe feature scaffold (webdev_add_feature)
