@@ -1,16 +1,14 @@
 // ReviewLink — Send Request Page
 // Sends a review request email via the user's connected Gmail account
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import { Send, Rocket, Mail, User, Star, Crown, AlertCircle, Settings2, CheckCircle2, Loader2 } from "lucide-react";
+import { Send, Rocket, Mail, User, Star, Crown, AlertCircle, Settings2, Loader2, FileText, ChevronDown } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 
 const SUCCESS_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-send-success-8kZtg3dvEuiCrR8DrxxgKA.webp";
-
-type SendMethod = "email";
 
 export default function SendRequestPage() {
   const [, navigate] = useLocation();
@@ -18,9 +16,12 @@ export default function SendRequestPage() {
   const { data: profile } = trpc.profile.get.useQuery();
   const { data: gmailStatus } = trpc.gmail.status.useQuery();
   const { data: stats } = trpc.requests.stats.useQuery();
+  const { data: templates } = trpc.templates.list.useQuery();
+  const { data: defaultTemplate } = trpc.templates.getDefault.useQuery();
 
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
+  const [selectedTemplateId, setSelectedTemplateId] = useState<number | null>(null);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
@@ -37,10 +38,44 @@ export default function SendRequestPage() {
     },
   });
 
-  const atFreeLimit =
-    profile?.tier === "free" && (stats?.thisMonth ?? 0) >= 10;
+  const atFreeLimit = profile?.tier === "free" && (stats?.thisMonth ?? 0) >= 10;
   const gmailConnected = gmailStatus?.connected ?? false;
   const profileComplete = !!profile?.businessName && !!profile?.reviewLink;
+
+  // Resolve active template: explicit selection > default > null (uses server fallback)
+  const activeTemplate = useMemo(() => {
+    if (selectedTemplateId !== null) {
+      return templates?.find((t) => t.id === selectedTemplateId) ?? null;
+    }
+    return defaultTemplate ?? null;
+  }, [selectedTemplateId, templates, defaultTemplate]);
+
+  // Build live preview subject/body with placeholders replaced
+  const previewSubject = useMemo(() => {
+    if (!activeTemplate) return profile?.businessName ? `${profile.businessName} would love your feedback!` : "";
+    return activeTemplate.subject
+      .replace(/\{\{customer_name\}\}/g, customerName || "Customer")
+      .replace(/\{\{customerName\}\}/g, customerName || "Customer")
+      .replace(/\{\{business_name\}\}/g, profile?.businessName ?? "")
+      .replace(/\{\{businessName\}\}/g, profile?.businessName ?? "")
+      .replace(/\{\{review_link\}\}/g, profile?.reviewLink ?? "")
+      .replace(/\{\{reviewLink\}\}/g, profile?.reviewLink ?? "");
+  }, [activeTemplate, customerName, profile]);
+
+  const previewBody = useMemo(() => {
+    if (!activeTemplate) {
+      const name = customerName || "Customer";
+      const biz = profile?.businessName ?? "";
+      return `Hi ${name}! Thank you for choosing ${biz}. We hope you had a great experience! Could you take 30 seconds to leave us a quick review?`;
+    }
+    return activeTemplate.body
+      .replace(/\{\{customer_name\}\}/g, customerName || "Customer")
+      .replace(/\{\{customerName\}\}/g, customerName || "Customer")
+      .replace(/\{\{business_name\}\}/g, profile?.businessName ?? "")
+      .replace(/\{\{businessName\}\}/g, profile?.businessName ?? "")
+      .replace(/\{\{review_link\}\}/g, profile?.reviewLink ?? "")
+      .replace(/\{\{reviewLink\}\}/g, profile?.reviewLink ?? "");
+  }, [activeTemplate, customerName, profile]);
 
   function validate() {
     const errs: Record<string, string> = {};
@@ -59,6 +94,7 @@ export default function SendRequestPage() {
       customerName: customerName.trim(),
       customerEmail: customerEmail.trim(),
       method: "email",
+      templateId: selectedTemplateId ?? undefined,
     });
   }
 
@@ -273,21 +309,68 @@ export default function SendRequestPage() {
               )}
             </div>
 
-            {/* Preview */}
-            {profile?.businessName && customerName && (
+            {/* Template selector */}
+            <div>
+              <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+                <FileText size={12} className="inline mr-1" />
+                Email Template
+              </label>
+              <div className="relative">
+                <select
+                  value={selectedTemplateId ?? "default"}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setSelectedTemplateId(val === "default" ? null : Number(val));
+                  }}
+                  className="w-full px-3 py-3 pr-8 rounded-xl text-sm outline-none appearance-none"
+                  style={{
+                    border: "2px solid oklch(0.90 0.02 260)",
+                    fontFamily: "'Nunito', sans-serif",
+                    fontSize: "15px",
+                    background: "white",
+                    color: "oklch(0.22 0.09 260)",
+                  }}
+                >
+                  <option value="default">
+                    {defaultTemplate ? `${defaultTemplate.name} (default)` : "Default template"}
+                  </option>
+                  {templates?.filter((t) => !t.isDefault).map((t) => (
+                    <option key={t.id} value={t.id}>{t.name}</option>
+                  ))}
+                </select>
+                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "oklch(0.50 0.04 260)" }} />
+              </div>
+              {templates && templates.length === 0 && (
+                <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>
+                  No templates yet.{" "}
+                  <button
+                    onClick={() => navigate("/templates")}
+                    className="underline font-semibold"
+                    style={{ color: "oklch(0.40 0.10 260)" }}
+                  >
+                    Create one →
+                  </button>
+                </p>
+              )}
+            </div>
+
+            {/* Live Email Preview */}
+            {profile?.businessName && (
               <div
                 className="px-4 py-3 rounded-xl"
                 style={{ background: "oklch(0.97 0.01 260)" }}
               >
-                <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+                <p className="text-xs font-bold mb-2" style={{ color: "oklch(0.40 0.04 260)" }}>
                   Email Preview
                 </p>
-                <p className="text-xs" style={{ color: "oklch(0.50 0.03 260)" }}>
+                <p className="text-xs mb-1" style={{ color: "oklch(0.50 0.03 260)" }}>
                   <strong>From:</strong> {gmailStatus?.gmailEmail ?? "your-gmail@gmail.com"}
-                  <br />
-                  <strong>Subject:</strong> {profile.businessName} would love your feedback!
-                  <br />
-                  <strong>Body:</strong> Hi {customerName}! Thank you for choosing {profile.businessName}...
+                </p>
+                <p className="text-xs mb-1" style={{ color: "oklch(0.50 0.03 260)" }}>
+                  <strong>Subject:</strong> {previewSubject}
+                </p>
+                <p className="text-xs" style={{ color: "oklch(0.50 0.03 260)" }}>
+                  <strong>Body:</strong> {previewBody.slice(0, 120)}{previewBody.length > 120 ? "…" : ""}
                 </p>
               </div>
             )}

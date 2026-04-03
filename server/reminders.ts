@@ -94,6 +94,32 @@ export async function processDueReminders() {
 }
 
 /**
+ * Send a specific pending reminder immediately (user-triggered override).
+ */
+export async function sendReminderNow(userId: number, reminderId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [reminder] = await db
+    .select()
+    .from(followUpReminders)
+    .where(and(eq(followUpReminders.userId, userId), eq(followUpReminders.id, reminderId)));
+  if (!reminder) throw new Error("Reminder not found.");
+  if (reminder.status !== "pending") throw new Error("Only pending reminders can be sent now.");
+  const [profile] = await db
+    .select()
+    .from(businessProfiles)
+    .where(eq(businessProfiles.userId, userId));
+  if (!profile) throw new Error("Business profile not found.");
+  const subject = `Just checking in — have you had a chance to leave us a review?`;
+  const body = `Hi ${reminder.customerName},<br><br>We wanted to follow up on our earlier message. If you've had a chance to try our service, we'd love to hear what you think!<br><br>Leaving a review only takes a minute and helps us a lot:<br><a href="${profile.reviewLink}">${profile.reviewLink}</a><br><br>Thank you so much for your support!<br><br>${profile.businessName}`;
+  await sendViaGmail(userId, reminder.customerEmail, subject, body);
+  await db
+    .update(followUpReminders)
+    .set({ status: "sent", sentAt: Date.now() })
+    .where(eq(followUpReminders.id, reminderId));
+}
+
+/**
  * Start the background scheduler — runs every hour.
  */
 export function startReminderScheduler() {

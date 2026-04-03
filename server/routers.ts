@@ -48,6 +48,7 @@ import {
   listReminders,
   cancelReminder,
   scheduleFollowUp,
+  sendReminderNow,
 } from "./reminders";
 
 const FREE_LIMIT = 10;
@@ -397,6 +398,13 @@ export const appRouter = router({
         await scheduleFollowUp(ctx.user.id, input.customerRequestId, input.customerName, input.customerEmail);
         return { ok: true };
       }),
+
+    sendNow: protectedProcedure
+      .input(z.object({ id: z.number().int() }))
+      .mutation(async ({ ctx, input }) => {
+        await sendReminderNow(ctx.user.id, input.id);
+        return { ok: true };
+      }),
   }),
 
   requests: router({
@@ -410,6 +418,7 @@ export const appRouter = router({
           customerName: z.string().min(1),
           customerEmail: z.string().email(),
           method: z.enum(["email", "sms", "both"]),
+          templateId: z.number().int().optional(),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -429,8 +438,29 @@ export const appRouter = router({
           throw new Error(`Free plan limit reached (${FREE_LIMIT}/month). Upgrade to Pro for unlimited requests.`);
         }
 
-        const subject = `${profile.businessName} would love your feedback!`;
-        const htmlBody = `
+        // Resolve template: use specified templateId, else fall back to user's default template
+        let subject: string;
+        let htmlBody: string;
+
+        const allTemplates = await listTemplates(ctx.user.id);
+        const resolvedTemplate = input.templateId
+          ? allTemplates.find((t) => t.id === input.templateId) ?? null
+          : await getDefaultTemplate(ctx.user.id);
+
+        if (resolvedTemplate) {
+          const replacePlaceholders = (text: string) =>
+            text
+              .replace(/\{\{customer_name\}\}/g, input.customerName)
+              .replace(/\{\{customerName\}\}/g, input.customerName)
+              .replace(/\{\{business_name\}\}/g, profile.businessName)
+              .replace(/\{\{businessName\}\}/g, profile.businessName)
+              .replace(/\{\{review_link\}\}/g, profile.reviewLink ?? "")
+              .replace(/\{\{reviewLink\}\}/g, profile.reviewLink ?? "");
+          subject = replacePlaceholders(resolvedTemplate.subject);
+          htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">${replacePlaceholders(resolvedTemplate.body).replace(/\n/g, "<br>")}</div>`;
+        } else {
+          subject = `${profile.businessName} would love your feedback!`;
+          htmlBody = `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <h2 style="color: #0F1F4B;">Hi ${input.customerName}!</h2>
             <p>Thank you for choosing <strong>${profile.businessName}</strong>. We hope you had a great experience!</p>
@@ -446,6 +476,7 @@ export const appRouter = router({
             <p style="color: #666; font-size: 14px;">The ${profile.businessName} team</p>
           </div>
         `;
+        }
 
         await sendViaGmail(ctx.user.id, input.customerEmail, subject, htmlBody);
 

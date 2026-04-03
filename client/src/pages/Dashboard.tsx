@@ -1,10 +1,11 @@
 // ReviewLink — Dashboard / Analytics Screen
-// Shows: total requests, monthly count, full activity log
+// Shows: total requests, monthly count, weekly breakdown chart, full activity log
 
 import { trpc } from "@/lib/trpc";
-import { BarChart2, Send, TrendingUp, Star, Crown, Loader2 } from "lucide-react";
-import { format } from "date-fns";
+import { BarChart2, Send, TrendingUp, Star, Crown, Loader2, Calendar, Zap } from "lucide-react";
+import { format, subDays, startOfDay } from "date-fns";
 import { useLocation } from "wouter";
+import { useMemo } from "react";
 
 function formatDate(date: Date): string {
   try {
@@ -21,6 +22,37 @@ export default function DashboardPage() {
   const { data: profile } = trpc.profile.get.useQuery();
 
   const isPro = profile?.tier === "pro";
+
+  // Build last-7-days bar chart data
+  const weeklyData = useMemo(() => {
+    if (!allRequests) return [];
+    const days: { label: string; count: number; date: Date }[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const day = startOfDay(subDays(new Date(), i));
+      const nextDay = startOfDay(subDays(new Date(), i - 1));
+      const count = allRequests.filter((r) => {
+        const sent = new Date(r.sentAt).getTime();
+        return sent >= day.getTime() && sent < nextDay.getTime();
+      }).length;
+      days.push({ label: format(day, "EEE"), count, date: day });
+    }
+    return days;
+  }, [allRequests]);
+
+  const maxCount = useMemo(() => Math.max(...weeklyData.map((d) => d.count), 1), [weeklyData]);
+
+  // Velocity: requests in last 7 days vs prior 7 days
+  const velocity = useMemo(() => {
+    if (!allRequests) return null;
+    const now = Date.now();
+    const last7 = allRequests.filter((r) => new Date(r.sentAt).getTime() > now - 7 * 86400000).length;
+    const prior7 = allRequests.filter((r) => {
+      const t = new Date(r.sentAt).getTime();
+      return t > now - 14 * 86400000 && t <= now - 7 * 86400000;
+    }).length;
+    const delta = last7 - prior7;
+    return { last7, prior7, delta };
+  }, [allRequests]);
 
   return (
     <div className="min-h-screen pb-28" style={{ background: "oklch(0.975 0.003 100)" }}>
@@ -47,7 +79,7 @@ export default function DashboardPage() {
           {[
             { label: "This Month", value: stats?.thisMonth ?? 0, icon: <Send size={14} /> },
             { label: "All Time", value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
-            { label: "Avg / Month", value: stats && stats.total > 0 ? Math.round(stats.total / Math.max(1, 1)) : 0, icon: <Star size={14} /> },
+            { label: "Last 7 Days", value: velocity?.last7 ?? 0, icon: <Star size={14} /> },
           ].map((s) => (
             <div
               key={s.label}
@@ -75,6 +107,95 @@ export default function DashboardPage() {
       </div>
 
       <div className="px-4 py-4 flex flex-col gap-4">
+        {/* ── Analytics Card: Weekly Breakdown ─────────────────────────────── */}
+        <div className="bg-white rounded-2xl p-4 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h3
+              className="text-sm font-black"
+              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+            >
+              <Calendar size={14} className="inline mr-1.5 mb-0.5" />
+              Last 7 Days
+            </h3>
+            {velocity && (
+              <div className="flex items-center gap-1">
+                <Zap size={12} style={{ color: velocity.delta >= 0 ? "oklch(0.55 0.18 145)" : "oklch(0.55 0.18 27)" }} />
+                <span
+                  className="text-xs font-bold"
+                  style={{ color: velocity.delta >= 0 ? "oklch(0.45 0.12 145)" : "oklch(0.55 0.18 27)" }}
+                >
+                  {velocity.delta >= 0 ? "+" : ""}{velocity.delta} vs prior week
+                </span>
+              </div>
+            )}
+          </div>
+
+          {(isLoading || listLoading) ? (
+            <div className="flex justify-center py-6">
+              <Loader2 className="animate-spin" style={{ color: "oklch(0.22 0.09 260)" }} />
+            </div>
+          ) : weeklyData.every((d) => d.count === 0) ? (
+            <div className="text-center py-6">
+              <p className="text-sm" style={{ color: "oklch(0.60 0.03 260)" }}>
+                No requests in the last 7 days
+              </p>
+            </div>
+          ) : (
+            <div className="flex items-end gap-1.5 h-24">
+              {weeklyData.map((day) => (
+                <div key={day.label} className="flex-1 flex flex-col items-center gap-1">
+                  <div className="w-full flex flex-col justify-end" style={{ height: "72px" }}>
+                    <div
+                      className="w-full rounded-t-md transition-all"
+                      style={{
+                        height: `${Math.max(4, (day.count / maxCount) * 72)}px`,
+                        background: day.count > 0 ? "oklch(0.22 0.09 260)" : "oklch(0.93 0.01 260)",
+                      }}
+                    />
+                  </div>
+                  <span className="text-xs font-bold" style={{ color: "oklch(0.55 0.03 260)" }}>
+                    {day.label}
+                  </span>
+                  {day.count > 0 && (
+                    <span className="text-xs font-black" style={{ color: "oklch(0.22 0.09 260)" }}>
+                      {day.count}
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Velocity summary */}
+          {velocity && (stats?.total ?? 0) > 0 && (
+            <div
+              className="mt-3 pt-3 flex items-center justify-between"
+              style={{ borderTop: "1px solid oklch(0.94 0.01 260)" }}
+            >
+              <div className="text-center flex-1">
+                <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>This week</p>
+                <p className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+                  {velocity.last7}
+                </p>
+              </div>
+              <div className="w-px h-8" style={{ background: "oklch(0.90 0.01 260)" }} />
+              <div className="text-center flex-1">
+                <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Prior week</p>
+                <p className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+                  {velocity.prior7}
+                </p>
+              </div>
+              <div className="w-px h-8" style={{ background: "oklch(0.90 0.01 260)" }} />
+              <div className="text-center flex-1">
+                <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>All time</p>
+                <p className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+                  {stats?.total ?? 0}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Free tier progress */}
         {!isPro && (
           <div className="bg-white rounded-2xl p-4 shadow-sm">

@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Bell, ChevronLeft, Clock, CheckCircle2, XCircle, Ban } from "lucide-react";
+import { Bell, ChevronLeft, Clock, CheckCircle2, XCircle, Ban, SendHorizonal } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import { useState } from "react";
@@ -57,6 +57,7 @@ export default function Reminders() {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
   const [cancelTarget, setCancelTarget] = useState<Reminder | null>(null);
+  const [sendNowTarget, setSendNowTarget] = useState<Reminder | null>(null);
 
   const utils = trpc.useUtils();
 
@@ -71,6 +72,18 @@ export default function Reminders() {
       toast.success("Reminder cancelled.");
     },
     onError: (e) => toast.error(e.message),
+  });
+
+  const sendNowMutation = trpc.reminders.sendNow.useMutation({
+    onSuccess: () => {
+      utils.reminders.list.invalidate();
+      setSendNowTarget(null);
+      toast.success("Follow-up reminder sent!");
+    },
+    onError: (e) => {
+      setSendNowTarget(null);
+      toast.error(e.message);
+    },
   });
 
   if (authLoading) return null;
@@ -106,7 +119,7 @@ export default function Reminders() {
       <div className="px-4 pt-4 space-y-5">
         {/* Info banner */}
         <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-700">
-          <strong>How it works:</strong> When you send a review request, a follow-up reminder is automatically scheduled for 3 days later. The reminder is sent from your connected Gmail and uses your business profile.
+          <strong>How it works:</strong> When you send a review request, a follow-up reminder is automatically scheduled for 3 days later. The reminder is sent from your connected Gmail and uses your business profile. Use <strong>Send Now</strong> to skip the wait.
         </div>
 
         {isLoading ? (
@@ -127,7 +140,12 @@ export default function Reminders() {
                 </h2>
                 <div className="space-y-2">
                   {pending.map((r) => (
-                    <ReminderRow key={r.id} reminder={r} onCancel={() => setCancelTarget(r)} />
+                    <ReminderRow
+                      key={r.id}
+                      reminder={r}
+                      onCancel={() => setCancelTarget(r)}
+                      onSendNow={() => setSendNowTarget(r)}
+                    />
                   ))}
                 </div>
               </div>
@@ -149,6 +167,28 @@ export default function Reminders() {
           </>
         )}
       </div>
+
+      {/* Send Now Confirm */}
+      <AlertDialog open={!!sendNowTarget} onOpenChange={(o) => { if (!o) setSendNowTarget(null); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Send reminder now?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will immediately send the follow-up email to{" "}
+              <strong>{sendNowTarget?.customerName}</strong> without waiting for the scheduled date.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Not yet</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => sendNowTarget && sendNowMutation.mutate({ id: sendNowTarget.id })}
+              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+            >
+              Send Now
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {/* Cancel Confirm */}
       <AlertDialog open={!!cancelTarget} onOpenChange={(o) => { if (!o) setCancelTarget(null); }}>
@@ -174,7 +214,15 @@ export default function Reminders() {
   );
 }
 
-function ReminderRow({ reminder, onCancel }: { reminder: Reminder; onCancel?: () => void }) {
+function ReminderRow({
+  reminder,
+  onCancel,
+  onSendNow,
+}: {
+  reminder: Reminder;
+  onCancel?: () => void;
+  onSendNow?: () => void;
+}) {
   const cfg = STATUS_CONFIG[reminder.status] ?? STATUS_CONFIG.pending;
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
@@ -193,15 +241,30 @@ function ReminderRow({ reminder, onCancel }: { reminder: Reminder; onCancel?: ()
             </span>
           </div>
         </div>
-        {reminder.status === "pending" && onCancel && (
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={onCancel}
-            className="text-xs text-red-500 border-red-200 hover:bg-red-50 shrink-0"
-          >
-            Cancel
-          </Button>
+        {reminder.status === "pending" && (
+          <div className="flex flex-col gap-1.5 shrink-0">
+            {onSendNow && (
+              <Button
+                size="sm"
+                onClick={onSendNow}
+                className="text-xs h-7 px-2.5 gap-1"
+                style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+              >
+                <SendHorizonal size={11} />
+                Send Now
+              </Button>
+            )}
+            {onCancel && (
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={onCancel}
+                className="text-xs h-7 px-2.5 text-red-500 border-red-200 hover:bg-red-50"
+              >
+                Cancel
+              </Button>
+            )}
+          </div>
         )}
       </div>
     </div>

@@ -80,3 +80,9 @@
 - [x] Confirmation dialog before manual status toggle on WooCommerce customer row
 - [x] Bulk Sent/Pending edit for selected customers in WooCustomers page
 - [x] Last manual status change timestamp stored and displayed per customer
+
+## New Features (Session 2)
+- [x] Wire Send Request form to use user's default email template (subject + body pre-filled)
+- [x] Add "Send reminder now" override button on pending reminders
+- [x] Add analytics card to Dashboard showing request volume stats
+- [x] Debug reviewlink.app custom domain not loading (Cloudflare Error 1000 — DNS A records point to Cloudflare IPs)
