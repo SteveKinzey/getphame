@@ -32,6 +32,9 @@ function getRedirectUri(origin: string): string {
 
 /** Build the Google OAuth consent URL */
 export function buildGmailAuthUrl(origin: string, userId: number): string {
+  // Encode both userId and origin in state so the callback can reconstruct
+  // the exact redirect URI that was used — required for token exchange to succeed.
+  const state = Buffer.from(JSON.stringify({ userId, origin })).toString("base64url");
   const params = new URLSearchParams({
     client_id: ENV.googleClientId,
     redirect_uri: getRedirectUri(origin),
@@ -39,7 +42,7 @@ export function buildGmailAuthUrl(origin: string, userId: number): string {
     scope: GMAIL_SCOPES,
     access_type: "offline",
     prompt: "consent",
-    state: String(userId),
+    state,
   });
   return `https://accounts.google.com/o/oauth2/v2/auth?${params}`;
 }
