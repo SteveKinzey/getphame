@@ -16,6 +16,8 @@ import SendRequestPage from "./pages/SendRequest";
 import DashboardPage from "./pages/Dashboard";
 import SettingsPage from "./pages/Settings";
 import UpgradePage from "./pages/Upgrade";
+import PrivacyPolicyPage from "./pages/PrivacyPolicy";
+import TermsOfServicePage from "./pages/TermsOfService";
 import { trpc } from "./lib/trpc";
 
 function AppShell() {
@@ -42,6 +44,11 @@ function AppShell() {
     );
   }
 
+  // Legal pages are accessible without login
+  const path = window.location.pathname;
+  if (path === "/privacy-policy") return <PrivacyPolicyPage />;
+  if (path === "/terms-of-service") return <TermsOfServicePage />;
+
   if (!user) {
     return <OnboardingPage />;
   }
@@ -54,6 +61,8 @@ function AppShell() {
         <Route path="/dashboard" component={DashboardPage} />
         <Route path="/settings" component={SettingsPage} />
         <Route path="/upgrade" component={UpgradePage} />
+        <Route path="/privacy-policy" component={PrivacyPolicyPage} />
+        <Route path="/terms-of-service" component={TermsOfServicePage} />
         <Route component={HomePage} />
       </Switch>
       <BottomNav />

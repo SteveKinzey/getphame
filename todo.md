@@ -44,3 +44,7 @@
 - [x] Settings page: show active subscription status and manage billing link
 - [x] Auto-upgrade user to Pro tier on successful Stripe payment
 - [x] Auto-downgrade user to Free tier on subscription cancellation
+
+## Legal Pages
+- [x] Privacy Policy page at /privacy-policy
+- [x] Terms of Service page at /terms-of-service
