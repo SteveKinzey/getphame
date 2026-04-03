@@ -84,6 +84,7 @@ export default function SettingsPage() {
   const quickSync = trpc.woo.sync.useMutation({
     onSuccess: (result) => {
       utils.woo.getCredentials.invalidate();
+      utils.woo.listPending.invalidate();
       if (result.added > 0) {
         toast.success(
           `Synced — ${result.added} new customer${result.added !== 1 ? "s" : ""} added.`,
