@@ -134,3 +134,9 @@
 ## Delete Contacts
 - [x] Verify delete button exists and works on SavedContacts page (Trash2 icon + confirm dialog)
 - [x] Ensure delete confirmation dialog is present before deletion (AlertDialog with contact name)
+
+## Gmail API Daily Health Check
+- [x] Server: gmailHealthCheck() function — tests Gmail API access using stored OAuth tokens
+- [x] Server: wire health check into daily cron scheduler (runs every 24h, initial check 30s after startup)
+- [x] Server: send owner notification via notifyOwner() if API is disabled or tokens are invalid
+- [x] Server: avoid duplicate alerts — only notify once per 23h window while broken, resets on recovery
