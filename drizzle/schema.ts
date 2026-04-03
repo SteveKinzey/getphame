@@ -163,3 +163,32 @@ export const followUpReminders = mysqlTable("follow_up_reminders", {
 
 export type FollowUpReminder = typeof followUpReminders.$inferSelect;
 export type InsertFollowUpReminder = typeof followUpReminders.$inferInsert;
+
+/**
+ * Beta / promo access codes — created by the owner, redeemed by users for free Pro access.
+ * Supports single-use, multi-use, and unlimited-use codes with optional expiry.
+ */
+export const accessCodes = mysqlTable("access_codes", {
+  id: int("id").autoincrement().primaryKey(),
+  code: varchar("code", { length: 64 }).notNull().unique(), // the code users enter
+  note: varchar("note", { length: 255 }), // internal label e.g. "Beta cohort Jan 2026"
+  maxUses: int("maxUses"), // null = unlimited
+  usedCount: int("usedCount").default(0).notNull(),
+  active: int("active").default(1).notNull(), // 1 = active, 0 = revoked
+  expiresAt: bigint("expiresAt", { mode: "number" }), // Unix ms, null = never expires
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type AccessCode = typeof accessCodes.$inferSelect;
+export type InsertAccessCode = typeof accessCodes.$inferInsert;
+
+/** Records each time a user redeems an access code */
+export const accessCodeRedemptions = mysqlTable("access_code_redemptions", {
+  id: int("id").autoincrement().primaryKey(),
+  codeId: int("codeId").notNull(),
+  userId: int("userId").notNull().unique(), // one redemption per user
+  redeemedAt: timestamp("redeemedAt").defaultNow().notNull(),
+});
+
+export type AccessCodeRedemption = typeof accessCodeRedemptions.$inferSelect;
+export type InsertAccessCodeRedemption = typeof accessCodeRedemptions.$inferInsert;

@@ -140,3 +140,15 @@
 - [x] Server: wire health check into daily cron scheduler (runs every 24h, initial check 30s after startup)
 - [x] Server: send owner notification via notifyOwner() if API is disabled or tokens are invalid
 - [x] Server: avoid duplicate alerts — only notify once per 23h window while broken, resets on recovery
+
+## Beta Access Code System
+- [x] Schema: access_codes table (code, maxUses, usedCount, expiresAt, createdBy, note)
+- [x] Schema: access_code_redemptions table (codeId, userId, redeemedAt)
+- [x] DB: run db:push to migrate new tables
+- [x] Server: accessCodes.create procedure (admin only — generate code with options)
+- [x] Server: accessCodes.redeem procedure (validate code, upgrade user to Pro, record redemption)
+- [x] Server: accessCodes.list procedure (admin only — list all codes with usage stats)
+- [x] Server: accessCodes.revoke procedure (admin only — deactivate a code)
+- [x] UI: redeem code input on Upgrade page (below Stripe button)
+- [x] UI: admin /admin/codes page to create, list, and revoke codes
+- [x] UI: route /admin/codes registered in App.tsx (owner-only)

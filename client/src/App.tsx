@@ -24,6 +24,7 @@ import SavedContactsPage from "./pages/SavedContacts";
 import EmailTemplatesPage from "./pages/EmailTemplates";
 import RemindersPage from "./pages/Reminders";
 import ImportContactsPage from "./pages/ImportContacts";
+import AdminCodesPage from "./pages/AdminCodes";
 import { trpc } from "./lib/trpc";
 
 function AppShell() {
@@ -76,6 +77,7 @@ function AppShell() {
         <Route path="/templates" component={EmailTemplatesPage} />
         <Route path="/reminders" component={RemindersPage} />
         <Route path="/import" component={ImportContactsPage} />
+        <Route path="/admin/codes" component={AdminCodesPage} />
         <Route component={HomePage} />
       </Switch>
       <BottomNav />

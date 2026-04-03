@@ -3,8 +3,9 @@
 
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
-import { Crown, Check, Star, Zap, BarChart2, ChevronLeft, Infinity, Loader2, CreditCard, Settings } from "lucide-react";
+import { Crown, Check, Star, Zap, BarChart2, ChevronLeft, Infinity, Loader2, CreditCard, Settings, Ticket, Unlock } from "lucide-react";
 import { toast } from "sonner";
+import { useState } from "react";
 
 const UPGRADE_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-upgrade-hero-jBNmQektQK78tAwwYJ9c87.webp";
@@ -49,6 +50,28 @@ export default function UpgradePage() {
   });
 
   const isPro = profile?.tier === "pro";
+  const utils = trpc.useUtils();
+
+  const [accessCode, setAccessCode] = useState("");
+  const redeemCode = trpc.accessCodes.redeem.useMutation({
+    onSuccess: (data) => {
+      toast.success(
+        data.note
+          ? `🎉 Code accepted! ${data.note} — You're now on Pro!`
+          : "🎉 Code accepted! You're now on Pro!"
+      );
+      setAccessCode("");
+      utils.profile.get.invalidate();
+    },
+    onError: (err) => {
+      toast.error(err.message || "Invalid code. Please try again.");
+    },
+  });
+
+  function handleRedeemCode() {
+    if (!accessCode.trim()) return;
+    redeemCode.mutate({ code: accessCode.trim() });
+  }
 
   function handleUpgrade() {
     createCheckout.mutate({ origin: window.location.origin });
@@ -211,6 +234,56 @@ export default function UpgradePage() {
           <p className="text-center text-xs mt-3" style={{ color: "rgba(255,255,255,0.35)" }}>
             Secure payment powered by Stripe
           </p>
+        </div>
+
+        {/* Access Code Redeem */}
+        <div
+          className="rounded-2xl p-5"
+          style={{ background: "oklch(0.30 0.08 260)", border: "1px solid rgba(255,255,255,0.12)" }}
+        >
+          <div className="flex items-center gap-2 mb-3">
+            <Ticket size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+            <h3
+              className="text-sm font-black"
+              style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+            >
+              Have an access code?
+            </h3>
+          </div>
+          <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>
+            Enter your beta or promo code below to unlock Pro access for free.
+          </p>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={accessCode}
+              onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
+              onKeyDown={(e) => e.key === "Enter" && handleRedeemCode()}
+              placeholder="e.g. BETA-X7K2-P9QM"
+              className="flex-1 px-4 py-3 rounded-xl text-sm font-mono tracking-wider outline-none"
+              style={{
+                background: "oklch(0.22 0.09 260)",
+                color: "white",
+                border: "1px solid rgba(255,255,255,0.15)",
+              }}
+            />
+            <button
+              onClick={handleRedeemCode}
+              disabled={!accessCode.trim() || redeemCode.isPending}
+              className="px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-transform active:scale-95 disabled:opacity-50"
+              style={{
+                background: "oklch(0.80 0.18 80)",
+                color: "oklch(0.22 0.09 260)",
+              }}
+            >
+              {redeemCode.isPending ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <Unlock size={16} />
+              )}
+              {redeemCode.isPending ? "" : "Redeem"}
+            </button>
+          </div>
         </div>
 
         {/* Free vs Pro comparison */}

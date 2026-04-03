@@ -3,6 +3,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
+import { TRPCError } from "@trpc/server";
 import {
   getBusinessProfile,
   upsertBusinessProfile,
@@ -52,6 +53,14 @@ import {
   scheduleFollowUp,
   sendReminderNow,
 } from "./reminders";
+import {
+  createAccessCode,
+  listAccessCodes,
+  revokeAccessCode,
+  activateAccessCode,
+  redeemAccessCode,
+  generateCode,
+} from "./accessCodes";
 
 const FREE_LIMIT = 10;
 
@@ -644,6 +653,68 @@ export const appRouter = router({
         recent: all.slice(0, 5),
       };
     }),
+  }),
+
+  accessCodes: router({
+    /** Admin only: create a new access code */
+    create: protectedProcedure
+      .input(
+        z.object({
+          code: z.string().optional(),
+          note: z.string().optional(),
+          maxUses: z.number().int().positive().nullable().optional(),
+          expiresAt: z.number().nullable().optional(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        const code = await createAccessCode({
+          code: input.code,
+          note: input.note,
+          maxUses: input.maxUses ?? null,
+          expiresAt: input.expiresAt ?? null,
+        });
+        return { code };
+      }),
+
+    /** Admin only: generate a random code preview without saving */
+    generatePreview: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      return { code: generateCode() };
+    }),
+
+    /** Admin only: list all codes */
+    list: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      return listAccessCodes();
+    }),
+
+    /** Admin only: revoke a code */
+    revoke: protectedProcedure
+      .input(z.object({ id: z.number().int() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        await revokeAccessCode(input.id);
+        return { ok: true };
+      }),
+
+    /** Admin only: re-activate a revoked code */
+    activate: protectedProcedure
+      .input(z.object({ id: z.number().int() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        await activateAccessCode(input.id);
+        return { ok: true };
+      }),
+
+    /** Any logged-in user: redeem a code for Pro access */
+    redeem: protectedProcedure
+      .input(z.object({ code: z.string().min(1) }))
+      .mutation(async ({ ctx, input }) => {
+        const result = await redeemAccessCode(ctx.user.id, input.code);
+        if (!result.success) throw new TRPCError({ code: "BAD_REQUEST", message: result.error });
+        return { note: result.note };
+      }),
   }),
 });
 
