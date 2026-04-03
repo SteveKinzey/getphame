@@ -72,3 +72,4 @@
 ## UX Improvements
 - [x] Last Synced timestamp shown in WooCommerce Settings section
 - [x] Sync Orders button next to Last Synced timestamp in WooCommerce Settings section
+- [x] "View new customers" action link inside sync success toast in Settings

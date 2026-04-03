@@ -84,7 +84,20 @@ export default function SettingsPage() {
   const quickSync = trpc.woo.sync.useMutation({
     onSuccess: (result) => {
       utils.woo.getCredentials.invalidate();
-      toast.success(`Synced — ${result.added} new customer${result.added !== 1 ? "s" : ""} added.`);
+      if (result.added > 0) {
+        toast.success(
+          `Synced — ${result.added} new customer${result.added !== 1 ? "s" : ""} added.`,
+          {
+            action: {
+              label: "View new customers",
+              onClick: () => navigate("/woo-customers"),
+            },
+            duration: 6000,
+          }
+        );
+      } else {
+        toast.success("Sync complete — no new customers found.");
+      }
     },
     onError: (err) => toast.error(`Sync failed: ${err.message}`),
   });
