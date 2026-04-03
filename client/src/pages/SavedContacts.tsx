@@ -1,5 +1,6 @@
 /**
  * SavedContacts — manage repeat customers for re-sending review requests.
+ * Supports individual send, bulk-select, and "Send to Selected" action.
  */
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
@@ -27,7 +28,22 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { UserPlus, Send, Pencil, Trash2, ChevronLeft, Mail, Phone, Clock, Upload } from "lucide-react";
+import {
+  UserPlus,
+  Send,
+  Pencil,
+  Trash2,
+  ChevronLeft,
+  Mail,
+  Phone,
+  Clock,
+  Upload,
+  CheckSquare,
+  Square,
+  Loader2,
+  X,
+  Rocket,
+} from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 
@@ -54,6 +70,10 @@ export default function SavedContacts() {
   const [deleteTarget, setDeleteTarget] = useState<Contact | null>(null);
   const [sendTarget, setSendTarget] = useState<Contact | null>(null);
   const [form, setForm] = useState<FormData>(emptyForm);
+
+  // Bulk selection state
+  const [selected, setSelected] = useState<Set<number>>(new Set());
+  const [bulkConfirmOpen, setBulkConfirmOpen] = useState(false);
 
   const utils = trpc.useUtils();
 
@@ -109,11 +129,68 @@ export default function SavedContacts() {
 
   const markSentMutation = trpc.contacts.markSent.useMutation();
 
+  const bulkSendMutation = trpc.contacts.bulkSend.useMutation({
+    onSuccess: (result) => {
+      utils.contacts.list.invalidate();
+      utils.requests.stats.invalidate();
+      setSelected(new Set());
+      setBulkConfirmOpen(false);
+
+      if (result.sent > 0 && result.failed === 0) {
+        toast.success(
+          `${result.sent} review request${result.sent !== 1 ? "s" : ""} sent!` +
+          (result.skippedDueToLimit > 0 ? ` (${result.skippedDueToLimit} skipped — free limit reached)` : "")
+        );
+      } else if (result.sent > 0 && result.failed > 0) {
+        toast.warning(`${result.sent} sent, ${result.failed} failed. Check your Gmail connection.`);
+      } else {
+        toast.error(`All ${result.failed} sends failed. Check your Gmail connection in Settings.`);
+      }
+    },
+    onError: (e) => {
+      setBulkConfirmOpen(false);
+      toast.error(e.message);
+    },
+  });
+
   const filtered = contacts.filter(
     (c) =>
       c.name.toLowerCase().includes(search.toLowerCase()) ||
       c.email.toLowerCase().includes(search.toLowerCase())
   );
+
+  const allFilteredSelected =
+    filtered.length > 0 && filtered.every((c) => selected.has(c.id));
+
+  const toggleSelect = (id: number) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (allFilteredSelected) {
+      setSelected((prev) => {
+        const next = new Set(prev);
+        filtered.forEach((c) => next.delete(c.id));
+        return next;
+      });
+    } else {
+      setSelected((prev) => {
+        const next = new Set(prev);
+        filtered.forEach((c) => next.add(c.id));
+        return next;
+      });
+    }
+  };
+
+  const clearSelection = () => setSelected(new Set());
+
+  const selectedCount = selected.size;
+  const selectedIds = Array.from(selected);
 
   if (authLoading) return null;
   if (!isAuthenticated) {
@@ -154,7 +231,7 @@ export default function SavedContacts() {
   const isSaving = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-36" style={{ background: "oklch(0.975 0.003 100)" }}>
       {/* Header */}
       <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
         <button
@@ -169,7 +246,14 @@ export default function SavedContacts() {
             <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Syne', sans-serif" }}>
               Saved Contacts
             </h1>
-            <p className="text-sm mt-1 opacity-70 text-white">Re-send review requests to repeat customers</p>
+            <p className="text-sm mt-1 opacity-70 text-white">
+              {contacts.length} contact{contacts.length !== 1 ? "s" : ""}
+              {selectedCount > 0 && (
+                <span style={{ color: "oklch(0.80 0.18 80)" }}>
+                  {" "}· {selectedCount} selected
+                </span>
+              )}
+            </p>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -194,20 +278,36 @@ export default function SavedContacts() {
       </div>
 
       <div className="px-4 pt-4 space-y-3">
-        {/* Search */}
-        <div className="relative">
-          <Input
-            placeholder="Search by name or email…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-4 pr-10 bg-white border-gray-200"
-          />
-          {search && (
+        {/* Search + Select All row */}
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1">
+            <Input
+              placeholder="Search by name or email…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-4 pr-10 bg-white border-gray-200"
+            />
+            {search && (
+              <button
+                onClick={() => setSearch("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg leading-none"
+              >
+                ×
+              </button>
+            )}
+          </div>
+          {filtered.length > 0 && (
             <button
-              onClick={() => setSearch("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg leading-none"
+              onClick={toggleSelectAll}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-colors"
+              style={{
+                background: allFilteredSelected ? "oklch(0.22 0.09 260)" : "white",
+                color: allFilteredSelected ? "oklch(0.80 0.18 80)" : "oklch(0.45 0.05 260)",
+                border: "1px solid oklch(0.88 0.02 260)",
+              }}
             >
-              ×
+              {allFilteredSelected ? <CheckSquare size={14} /> : <Square size={14} />}
+              {allFilteredSelected ? "Deselect All" : "Select All"}
             </button>
           )}
         </div>
@@ -222,67 +322,142 @@ export default function SavedContacts() {
               {search ? "No matches found" : "No saved contacts yet"}
             </p>
             {!search && (
-              <p className="text-gray-400 text-sm mt-1">Add customers you want to re-contact regularly</p>
+              <div className="mt-4 flex flex-col items-center gap-2">
+                <p className="text-gray-400 text-sm">Import a CSV or add contacts manually</p>
+                <Button
+                  onClick={() => navigate("/import")}
+                  size="sm"
+                  className="font-bold mt-1"
+                  style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+                >
+                  <Upload size={14} className="mr-1" /> Import CSV
+                </Button>
+              </div>
             )}
           </div>
         ) : (
-          filtered.map((c) => (
-            <div key={c.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex-1 min-w-0">
-                  <p className="font-bold text-gray-900 truncate">{c.name}</p>
-                  <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5">
-                    <Mail size={12} />
-                    <span className="truncate">{c.email}</span>
-                  </div>
-                  {c.phone && (
-                    <div className="flex items-center gap-1 text-sm text-gray-400 mt-0.5">
-                      <Phone size={12} />
-                      <span>{c.phone}</span>
+          filtered.map((c) => {
+            const isChecked = selected.has(c.id);
+            return (
+              <div
+                key={c.id}
+                className="bg-white rounded-2xl p-4 shadow-sm border transition-all"
+                style={{
+                  borderColor: isChecked ? "oklch(0.50 0.10 260)" : "oklch(0.92 0.01 260)",
+                  background: isChecked ? "oklch(0.97 0.02 260)" : "white",
+                }}
+              >
+                <div className="flex items-start gap-3">
+                  {/* Checkbox */}
+                  <button
+                    onClick={() => toggleSelect(c.id)}
+                    className="mt-0.5 shrink-0 transition-colors"
+                    style={{ color: isChecked ? "oklch(0.22 0.09 260)" : "oklch(0.75 0.02 260)" }}
+                    aria-label={isChecked ? "Deselect" : "Select"}
+                  >
+                    {isChecked ? <CheckSquare size={20} /> : <Square size={20} />}
+                  </button>
+
+                  {/* Contact info */}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-bold text-gray-900 truncate">{c.name}</p>
+                    <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5">
+                      <Mail size={12} />
+                      <span className="truncate">{c.email}</span>
                     </div>
-                  )}
-                  {c.notes && (
-                    <p className="text-xs text-gray-400 mt-1 italic truncate">{c.notes}</p>
-                  )}
-                  <div className="flex items-center gap-3 mt-2">
-                    <span className="text-xs text-gray-400">
-                      Sent {c.totalSent} time{c.totalSent !== 1 ? "s" : ""}
-                    </span>
-                    {c.lastSentAt && (
-                      <span className="flex items-center gap-1 text-xs text-gray-400">
-                        <Clock size={10} />
-                        Last: {format(new Date(c.lastSentAt), "MMM d, yyyy")}
-                      </span>
+                    {c.phone && (
+                      <div className="flex items-center gap-1 text-sm text-gray-400 mt-0.5">
+                        <Phone size={12} />
+                        <span>{c.phone}</span>
+                      </div>
                     )}
+                    {c.notes && (
+                      <p className="text-xs text-gray-400 mt-1 italic truncate">{c.notes}</p>
+                    )}
+                    <div className="flex items-center gap-3 mt-2">
+                      <span className="text-xs text-gray-400">
+                        Sent {c.totalSent} time{c.totalSent !== 1 ? "s" : ""}
+                      </span>
+                      {c.lastSentAt && (
+                        <span className="flex items-center gap-1 text-xs text-gray-400">
+                          <Clock size={10} />
+                          Last: {format(new Date(c.lastSentAt), "MMM d, yyyy")}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <button
-                    onClick={() => openEdit(c)}
-                    className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
-                  >
-                    <Pencil size={15} />
-                  </button>
-                  <button
-                    onClick={() => setDeleteTarget(c)}
-                    className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
-                  >
-                    <Trash2 size={15} />
-                  </button>
-                  <Button
-                    size="sm"
-                    onClick={() => setSendTarget(c)}
-                    className="font-bold text-xs px-3"
-                    style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
-                  >
-                    <Send size={13} className="mr-1" /> Send
-                  </Button>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => openEdit(c)}
+                      className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                      <Pencil size={15} />
+                    </button>
+                    <button
+                      onClick={() => setDeleteTarget(c)}
+                      className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                    <Button
+                      size="sm"
+                      onClick={() => setSendTarget(c)}
+                      className="font-bold text-xs px-3"
+                      style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                    >
+                      <Send size={13} className="mr-1" /> Send
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
+
+      {/* ── Sticky Bulk Send Bar ─────────────────────────────────────────────── */}
+      {selectedCount > 0 && (
+        <div
+          className="fixed bottom-20 left-0 right-0 px-4 z-50"
+          style={{ maxWidth: "430px", margin: "0 auto" }}
+        >
+          <div
+            className="rounded-2xl px-4 py-3 flex items-center justify-between gap-3 shadow-xl"
+            style={{ background: "oklch(0.22 0.09 260)", border: "1px solid oklch(0.35 0.07 260)" }}
+          >
+            <div className="flex items-center gap-2">
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0"
+                style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+              >
+                {selectedCount}
+              </div>
+              <span className="text-sm font-bold text-white">
+                contact{selectedCount !== 1 ? "s" : ""} selected
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={clearSelection}
+                className="p-1.5 rounded-lg transition-colors"
+                style={{ color: "rgba(255,255,255,0.5)" }}
+              >
+                <X size={16} />
+              </button>
+              <button
+                onClick={() => setBulkConfirmOpen(true)}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-black transition-all"
+                style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+              >
+                <Rocket size={14} />
+                Send to {selectedCount}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Create / Edit Dialog */}
       <Dialog open={dialogOpen} onOpenChange={(o) => { if (!o) { setDialogOpen(false); setEditContact(null); setForm(emptyForm); } }}>
@@ -319,18 +494,18 @@ export default function SavedContacts() {
 
       {/* Delete Confirm */}
       <AlertDialog open={!!deleteTarget} onOpenChange={(o) => { if (!o) setDeleteTarget(null); }}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-sm mx-4">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete contact?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently remove <strong>{deleteTarget?.name}</strong> from your saved contacts. This cannot be undone.
+              This will permanently remove <strong>{deleteTarget?.name}</strong> from your saved contacts.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deleteTarget && deleteMutation.mutate({ id: deleteTarget.id })}
-              className="bg-red-600 hover:bg-red-700 text-white"
+              className="bg-red-500 hover:bg-red-600 text-white"
             >
               Delete
             </AlertDialogAction>
@@ -338,23 +513,19 @@ export default function SavedContacts() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Send Confirm */}
+      {/* Single Send Confirm */}
       <AlertDialog open={!!sendTarget} onOpenChange={(o) => { if (!o) setSendTarget(null); }}>
-        <AlertDialogContent>
+        <AlertDialogContent className="max-w-sm mx-4">
           <AlertDialogHeader>
             <AlertDialogTitle>Send review request?</AlertDialogTitle>
             <AlertDialogDescription>
               Send a review request email to <strong>{sendTarget?.name}</strong> ({sendTarget?.email})?
-              {sendTarget && sendTarget.totalSent > 0 && (
-                <span className="block mt-1 text-amber-600 text-sm">
-                  This customer has already received {sendTarget.totalSent} request{sendTarget.totalSent !== 1 ? "s" : ""}.
-                </span>
-              )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
+              disabled={sendMutation.isPending}
               onClick={() =>
                 sendTarget &&
                 sendMutation.mutate({
@@ -363,10 +534,37 @@ export default function SavedContacts() {
                   method: "email",
                 })
               }
-              disabled={sendMutation.isPending}
               style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
             >
-              {sendMutation.isPending ? "Sending…" : "Send Request"}
+              {sendMutation.isPending ? (
+                <><Loader2 size={14} className="animate-spin mr-1" /> Sending…</>
+              ) : "Send Request"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Bulk Send Confirm */}
+      <AlertDialog open={bulkConfirmOpen} onOpenChange={(o) => { if (!o) setBulkConfirmOpen(false); }}>
+        <AlertDialogContent className="max-w-sm mx-4">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Send to {selectedCount} contacts?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will send a review request email to all {selectedCount} selected contact{selectedCount !== 1 ? "s" : ""} using your default email template.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={bulkSendMutation.isPending}
+              onClick={() => bulkSendMutation.mutate({ contactIds: selectedIds })}
+              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+            >
+              {bulkSendMutation.isPending ? (
+                <><Loader2 size={14} className="animate-spin mr-1" /> Sending…</>
+              ) : (
+                <><Rocket size={14} className="mr-1" /> Send {selectedCount} Requests</>
+              )}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -94,3 +94,10 @@
 - [x] Navigation: Import button/link on Contacts page
 - [x] Route registered: /import in App.tsx
 - [x] Bulk-send from imported contacts works via existing Contacts flow
+
+## Bulk Send from Contacts
+- [x] Server: contacts.bulkSend procedure (send to array of contact IDs, per-contact error handling, return success/fail counts)
+- [x] SavedContacts: checkbox per contact row + select-all toggle
+- [x] SavedContacts: sticky "Send to X selected" bar appears when any contacts are checked
+- [x] Bulk send result toast shows "X sent, Y failed" summary
+- [ ] Post-import Done screen: "Send to all X new contacts now?" CTA (deferred — import routes back to /contacts where bulk-send is available)

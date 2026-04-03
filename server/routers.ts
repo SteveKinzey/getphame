@@ -365,6 +365,103 @@ export const appRouter = router({
         const result = await importContacts(ctx.user.id, input.rows);
         return result;
       }),
+
+    bulkSend: protectedProcedure
+      .input(
+        z.object({
+          contactIds: z.array(z.number().int()).min(1).max(200),
+          templateId: z.number().int().optional(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const profile = await getBusinessProfile(ctx.user.id);
+        if (!profile) throw new Error("Please complete your business profile first.");
+
+        // Reset monthly count if needed
+        const now = new Date();
+        const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+        if (profile.monthlyResetDate !== yearMonth) {
+          await upsertBusinessProfile({ ...profile, monthlyCount: 0, monthlyResetDate: yearMonth });
+          profile.monthlyCount = 0;
+          profile.monthlyResetDate = yearMonth;
+        }
+
+        const remaining = profile.tier === "free" ? Math.max(0, FREE_LIMIT - profile.monthlyCount) : Infinity;
+        if (remaining === 0) {
+          throw new Error(`Free plan limit reached (${FREE_LIMIT}/month). Upgrade to Pro for unlimited requests.`);
+        }
+
+        // Fetch all contacts for this user and filter to requested IDs
+        const allContacts = await listSavedContacts(ctx.user.id);
+        const contactMap = new Map(allContacts.map((c) => [c.id, c]));
+        const targets = input.contactIds
+          .map((id) => contactMap.get(id))
+          .filter(Boolean) as typeof allContacts;
+
+        // Cap to remaining quota for free tier
+        const toSend = profile.tier === "free" ? targets.slice(0, remaining) : targets;
+        const skippedDueToLimit = targets.length - toSend.length;
+
+        // Resolve template
+        const allTemplates = await listTemplates(ctx.user.id);
+        const resolvedTemplate = input.templateId
+          ? allTemplates.find((t) => t.id === input.templateId) ?? null
+          : await getDefaultTemplate(ctx.user.id);
+
+        const replacePlaceholders = (text: string, customerName: string) =>
+          text
+            .replace(/\{\{customer_name\}\}/g, customerName)
+            .replace(/\{\{customerName\}\}/g, customerName)
+            .replace(/\{\{business_name\}\}/g, profile.businessName)
+            .replace(/\{\{businessName\}\}/g, profile.businessName)
+            .replace(/\{\{review_link\}\}/g, profile.reviewLink ?? "")
+            .replace(/\{\{reviewLink\}\}/g, profile.reviewLink ?? "");
+
+        let sent = 0;
+        let failed = 0;
+        const errors: string[] = [];
+
+        for (const contact of toSend) {
+          try {
+            let subject: string;
+            let htmlBody: string;
+            if (resolvedTemplate) {
+              subject = replacePlaceholders(resolvedTemplate.subject, contact.name);
+              htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">${replacePlaceholders(resolvedTemplate.body, contact.name).replace(/\n/g, "<br>")}</div>`;
+            } else {
+              subject = `${profile.businessName} would love your feedback!`;
+              htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2>Hi ${contact.name}!</h2><p>Thank you for choosing <strong>${profile.businessName}</strong>. We hope you had a great experience!</p><p>Could you take 30 seconds to leave us a quick review?</p><div style="text-align: center; margin: 32px 0;"><a href="${profile.reviewLink}" style="background: #FFB800; color: #0F1F4B; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold;">Leave a Review</a></div></div>`;
+            }
+            await sendViaGmail(ctx.user.id, contact.email, subject, htmlBody);
+            await createCustomerRequest({
+              userId: ctx.user.id,
+              customerName: contact.name,
+              customerEmail: contact.email,
+              method: "email",
+              status: "sent",
+            });
+            // Mark contact as sent
+            const db = await import("./db").then((m) => m.getDb());
+            if (db) {
+              const { savedContacts } = await import("../drizzle/schema");
+              const { and, eq } = await import("drizzle-orm");
+              const [existing] = await db.select({ totalSent: savedContacts.totalSent }).from(savedContacts).where(and(eq(savedContacts.userId, ctx.user.id), eq(savedContacts.id, contact.id)));
+              if (existing) {
+                await db.update(savedContacts).set({ lastSentAt: Date.now(), totalSent: (existing.totalSent ?? 0) + 1 }).where(and(eq(savedContacts.userId, ctx.user.id), eq(savedContacts.id, contact.id)));
+              }
+            }
+            sent++;
+          } catch (err) {
+            failed++;
+            errors.push(`${contact.email}: ${err instanceof Error ? err.message : String(err)}`);
+          }
+        }
+
+        // Update monthly count
+        await upsertBusinessProfile({ ...profile, monthlyCount: profile.monthlyCount + sent });
+
+        return { sent, failed, skippedDueToLimit, errors };
+      }),
   }),
 
   templates: router({
