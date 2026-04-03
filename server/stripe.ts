@@ -49,15 +49,7 @@ export async function createCheckoutSession({
     },
     line_items: [
       {
-        price_data: {
-          currency: PRO_PRICE.currency,
-          unit_amount: PRO_PRICE.amount,
-          recurring: { interval: PRO_PRICE.interval },
-          product_data: {
-            name: PRO_PRICE.name,
-            description: PRO_PRICE.description,
-          },
-        },
+        price: "price_1TI4UjLsFTLV3eoVDtB7m34H",
         quantity: 1,
       },
     ],
