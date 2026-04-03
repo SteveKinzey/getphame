@@ -180,6 +180,16 @@ export default defineConfig({
       "localhost",
       "127.0.0.1",
     ],
+    hmr: {
+      // The Manus sandbox is accessed via a TLS-terminating reverse proxy.
+      // The browser must connect to the WebSocket on port 443 (WSS) so the
+      // proxy can forward it to the Vite dev server on port 3000.
+      clientPort: 443,
+      protocol: "wss",
+    },
+    // Suppress the error overlay so WebSocket connection failures don't
+    // surface as a blocking red screen in the preview iframe.
+    overlay: false,
     fs: {
       strict: true,
       deny: ["**/.*"],
