@@ -43,6 +43,20 @@
       "when": 1775215776801,
       "tag": "0005_classy_mauler",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1775234208880,
+      "tag": "0006_solid_shinko_yamashiro",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "5",
+      "when": 1775234307104,
+      "tag": "0007_acoustic_trauma",
+      "breakpoints": true
     }
   ]
 }

@@ -37,6 +37,7 @@ import {
   deleteSavedContact,
   markContactSent,
   importContacts,
+  setContactTags,
 } from "./contacts";
 import {
   listTemplates,
@@ -348,6 +349,12 @@ export const appRouter = router({
         await markContactSent(ctx.user.id, input.id);
         return { ok: true };
       }),
+    setTags: protectedProcedure
+      .input(z.object({ id: z.number().int(), tags: z.array(z.string().max(50)).max(20) }))
+      .mutation(async ({ ctx, input }) => {
+        await setContactTags(ctx.user.id, input.id, input.tags);
+        return { ok: true };
+      }),
     importCSV: protectedProcedure
       .input(
         z.object({
@@ -611,6 +618,19 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    markResponded: protectedProcedure
+      .input(z.object({ id: z.number().int(), responded: z.boolean() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const { customerRequests } = await import("../drizzle/schema");
+        const { and, eq: eqOp } = await import("drizzle-orm");
+        await db
+          .update(customerRequests)
+          .set({ respondedAt: input.responded ? Date.now() : null })
+          .where(and(eqOp(customerRequests.userId, ctx.user.id), eqOp(customerRequests.id, input.id)));
+        return { ok: true };
+      }),
     stats: protectedProcedure.query(async ({ ctx }) => {
       const now = new Date();
       const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;

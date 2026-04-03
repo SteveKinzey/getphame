@@ -2,7 +2,7 @@
 // Shows: total requests, monthly count, weekly breakdown chart, full activity log
 
 import { trpc } from "@/lib/trpc";
-import { BarChart2, Send, TrendingUp, Star, Crown, Loader2, Calendar, Zap } from "lucide-react";
+import { BarChart2, Send, TrendingUp, Star, Crown, Loader2, Calendar, Zap, CheckCircle2, Circle } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import { useLocation } from "wouter";
 import { useMemo } from "react";
@@ -20,6 +20,11 @@ export default function DashboardPage() {
   const { data: stats, isLoading } = trpc.requests.stats.useQuery();
   const { data: allRequests, isLoading: listLoading } = trpc.requests.list.useQuery();
   const { data: profile } = trpc.profile.get.useQuery();
+  const utils = trpc.useUtils();
+
+  const markRespondedMutation = trpc.requests.markResponded.useMutation({
+    onSuccess: () => utils.requests.list.invalidate(),
+  });
 
   const isPro = profile?.tier === "pro";
 
@@ -281,17 +286,25 @@ export default function DashboardPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="text-right shrink-0 ml-2">
-                    <div
-                      className="text-xs px-2 py-0.5 rounded-full font-bold"
-                      style={{
+                  <div className="text-right shrink-0 ml-2 flex flex-col items-end gap-1">
+                    <button
+                      onClick={() => markRespondedMutation.mutate({ id: req.id, responded: !req.respondedAt })}
+                      className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-bold transition-colors"
+                      title={req.respondedAt ? "Mark as not responded" : "Mark as left a review"}
+                      style={req.respondedAt ? {
+                        background: "oklch(0.88 0.10 80)",
+                        color: "oklch(0.35 0.12 80)",
+                      } : {
                         background: "oklch(0.96 0.04 145)",
                         color: "oklch(0.45 0.12 145)",
                       }}
                     >
-                      Sent
-                    </div>
-                    <p className="text-xs mt-0.5" style={{ color: "oklch(0.65 0.03 260)" }}>
+                      {req.respondedAt
+                        ? <><CheckCircle2 size={11} className="mr-0.5" /> Reviewed</>
+                        : <><Circle size={11} className="mr-0.5" /> Sent</>
+                      }
+                    </button>
+                    <p className="text-xs" style={{ color: "oklch(0.65 0.03 260)" }}>
                       {formatDate(new Date(req.sentAt))}
                     </p>
                   </div>

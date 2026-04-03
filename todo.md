@@ -116,3 +116,21 @@
 - [x] Add H2 heading with keywords to the home page content
 - [x] Add keyword-rich visible text to home page (review requests, Google reviews, etc.)
 - [x] Set meta description in index.html (already present, verified)
+
+## Contact Tags / Groups
+- [x] Schema: add `tags` JSON column to saved_contacts table, run db:push
+- [x] Server: contacts.setTags procedure (update tags array for a contact)
+- [x] Server: contacts.list returns tags field
+- [x] UI: tag chips on each contact card (add/remove inline)
+- [x] UI: tag filter pill row (filter contacts list by tag)
+- [x] UI: bulk-send respects tag filter (select all filtered by tag)
+
+## Review Request Status Tracking
+- [x] Schema: add `respondedAt` bigint nullable to customer_requests table, run db:push
+- [x] Server: requests.markResponded mutation (set respondedAt = now)
+- [x] UI: "Left a review" toggle button on each request in the Dashboard activity log
+- [x] UI: show "Reviewed" (gold) vs "Sent" (green) badge on each request row
+
+## Delete Contacts
+- [x] Verify delete button exists and works on SavedContacts page (Trash2 icon + confirm dialog)
+- [x] Ensure delete confirmation dialog is present before deletion (AlertDialog with contact name)

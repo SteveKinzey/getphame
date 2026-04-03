@@ -107,3 +107,13 @@ export async function importContacts(
 
   return { imported: toInsert.length, skipped };
 }
+
+/** Update the tags array for a single contact */
+export async function setContactTags(userId: number, contactId: number, tags: string[]) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db
+    .update(savedContacts)
+    .set({ tags: JSON.stringify(tags) })
+    .where(and(eq(savedContacts.userId, userId), eq(savedContacts.id, contactId)));
+}

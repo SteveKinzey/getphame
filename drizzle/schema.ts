@@ -57,6 +57,7 @@ export const customerRequests = mysqlTable("customer_requests", {
   customerPhone: varchar("customerPhone", { length: 30 }),
   method: mysqlEnum("method", ["email", "sms", "both"]).notNull(),
   status: mysqlEnum("status", ["sent", "pending", "followed_up"]).default("sent").notNull(),
+  respondedAt: bigint("respondedAt", { mode: "number" }), // Unix ms when customer left a review (null = not yet)
   sentAt: timestamp("sentAt").defaultNow().notNull(),
   followUpAt: timestamp("followUpAt"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
@@ -124,6 +125,7 @@ export const savedContacts = mysqlTable("saved_contacts", {
   notes: text("notes"),
   lastSentAt: bigint("lastSentAt", { mode: "number" }), // Unix ms of last review request
   totalSent: int("totalSent").default(0).notNull(),
+  tags: text("tags"), // JSON array of tag strings e.g. ["plumbing","new"] — nullable in TiDB (no TEXT default allowed)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

@@ -43,6 +43,8 @@ import {
   Loader2,
   X,
   Rocket,
+  Tag,
+  Plus,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
@@ -55,7 +57,13 @@ type Contact = {
   notes: string | null;
   lastSentAt: number | null;
   totalSent: number;
+  tags: string | null;
 };
+
+function parseTags(raw: string | null): string[] {
+  if (!raw) return [];
+  try { return JSON.parse(raw); } catch { return []; }
+}
 
 type FormData = { name: string; email: string; phone: string; notes: string };
 const emptyForm: FormData = { name: "", email: "", phone: "", notes: "" };
@@ -66,6 +74,9 @@ export default function SavedContacts() {
 
   const [search, setSearch] = useState("");
   const [dormancyFilter, setDormancyFilter] = useState<"all" | "30" | "60" | "90">("all");
+  const [tagFilter, setTagFilter] = useState<string | null>(null);
+  const [tagInputId, setTagInputId] = useState<number | null>(null);
+  const [tagInputValue, setTagInputValue] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editContact, setEditContact] = useState<Contact | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Contact | null>(null);
@@ -130,6 +141,20 @@ export default function SavedContacts() {
 
   const markSentMutation = trpc.contacts.markSent.useMutation();
 
+  const setTagsMutation = trpc.contacts.setTags.useMutation({
+    onSuccess: () => {
+      utils.contacts.list.invalidate();
+      setTagInputId(null);
+      setTagInputValue("");
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
+  // Collect all unique tags across all contacts for the filter row
+  const allTags = Array.from(
+    new Set(contacts.flatMap((c) => parseTags(c.tags)))
+  ).sort();
+
   const bulkSendMutation = trpc.contacts.bulkSend.useMutation({
     onSuccess: (result) => {
       utils.contacts.list.invalidate();
@@ -160,10 +185,10 @@ export default function SavedContacts() {
       c.name.toLowerCase().includes(search.toLowerCase()) ||
       c.email.toLowerCase().includes(search.toLowerCase());
     if (!matchesSearch) return false;
+    if (tagFilter && !parseTags(c.tags).includes(tagFilter)) return false;
     if (dormancyFilter === "all") return true;
     const days = parseInt(dormancyFilter, 10);
     const cutoff = now - days * 24 * 60 * 60 * 1000;
-    // null lastSentAt = never contacted, always show in dormancy filters
     return c.lastSentAt === null || c.lastSentAt < cutoff;
   });
 
@@ -348,6 +373,38 @@ export default function SavedContacts() {
           )}
         </div>
 
+        {/* Tag filter pills */}
+        {allTags.length > 0 && (
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            <Tag size={13} style={{ color: "oklch(0.55 0.03 260)", flexShrink: 0 }} />
+            <button
+              onClick={() => setTagFilter(null)}
+              className="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors"
+              style={{
+                background: tagFilter === null ? "oklch(0.55 0.12 160)" : "white",
+                color: tagFilter === null ? "white" : "oklch(0.45 0.05 260)",
+                border: "1px solid oklch(0.88 0.02 260)",
+              }}
+            >
+              All tags
+            </button>
+            {allTags.map((tag) => (
+              <button
+                key={tag}
+                onClick={() => setTagFilter(tagFilter === tag ? null : tag)}
+                className="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors"
+                style={{
+                  background: tagFilter === tag ? "oklch(0.55 0.12 160)" : "white",
+                  color: tagFilter === tag ? "white" : "oklch(0.45 0.05 260)",
+                  border: "1px solid oklch(0.88 0.02 260)",
+                }}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* List */}
         {isLoading ? (
           <div className="text-center py-12 text-gray-400">Loading…</div>
@@ -410,6 +467,63 @@ export default function SavedContacts() {
                     {c.notes && (
                       <p className="text-xs text-gray-400 mt-1 italic truncate">{c.notes}</p>
                     )}
+                    {/* Tags */}
+                    <div className="flex flex-wrap items-center gap-1 mt-2">
+                      {parseTags(c.tags).map((tag) => (
+                        <span
+                          key={tag}
+                          className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold"
+                          style={{ background: "oklch(0.92 0.05 160)", color: "oklch(0.35 0.10 160)" }}
+                        >
+                          {tag}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newTags = parseTags(c.tags).filter((t) => t !== tag);
+                              setTagsMutation.mutate({ id: c.id, tags: newTags });
+                            }}
+                            className="ml-0.5 hover:opacity-70"
+                          >
+                            <X size={10} />
+                          </button>
+                        </span>
+                      ))}
+                      {tagInputId === c.id ? (
+                        <form
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            const val = tagInputValue.trim();
+                            if (!val) { setTagInputId(null); return; }
+                            const existing = parseTags(c.tags);
+                            if (!existing.includes(val)) {
+                              setTagsMutation.mutate({ id: c.id, tags: [...existing, val] });
+                            } else {
+                              setTagInputId(null);
+                              setTagInputValue("");
+                            }
+                          }}
+                          className="flex items-center gap-1"
+                        >
+                          <input
+                            autoFocus
+                            value={tagInputValue}
+                            onChange={(e) => setTagInputValue(e.target.value)}
+                            onBlur={() => { setTagInputId(null); setTagInputValue(""); }}
+                            placeholder="tag name"
+                            className="text-xs px-2 py-0.5 rounded-full border outline-none w-24"
+                            style={{ borderColor: "oklch(0.75 0.08 160)" }}
+                          />
+                        </form>
+                      ) : (
+                        <button
+                          onClick={() => { setTagInputId(c.id); setTagInputValue(""); }}
+                          className="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full text-xs font-semibold border border-dashed transition-colors hover:opacity-70"
+                          style={{ borderColor: "oklch(0.75 0.08 160)", color: "oklch(0.55 0.08 160)" }}
+                        >
+                          <Plus size={10} /> tag
+                        </button>
+                      )}
+                    </div>
                     <div className="flex items-center gap-3 mt-2">
                       <span className="text-xs text-gray-400">
                         Sent {c.totalSent} time{c.totalSent !== 1 ? "s" : ""}
