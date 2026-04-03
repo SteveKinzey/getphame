@@ -48,3 +48,26 @@
 ## Legal Pages
 - [x] Privacy Policy page at /privacy-policy
 - [x] Terms of Service page at /terms-of-service
+
+## WooCommerce Integration
+- [x] DB schema: woo_credentials and woo_customers tables
+- [x] Server: WooCommerce REST API sync (completed orders, configurable day range)
+- [x] Server: bulkSend procedure (sends review requests to selected customers)
+- [x] Server: duplicate prevention (already-contacted customers excluded from list)
+- [x] WooCustomers page: sync button, 30/60/90 day selector, customer list, bulk send
+- [x] Settings: WooCommerce credentials form (store URL, consumer key, consumer secret)
+- [x] Settings: "View Customers" shortcut button when store is connected
+- [x] Route registered: /woo-customers
+
+## Branding
+- [x] Renamed ReviewRocket → ReviewLink throughout codebase
+- [x] localStorage key updated (review-rocket-data → review-link-data)
+- [x] package.json name updated
+
+## UI Enhancements
+- [x] Pro badge component (ProBadge.tsx) — sm/md/lg sizes
+- [x] Pro badge shown in Home header, Settings header, BottomNav Settings tab
+- [x] Payment success page (/payment-success) with Pro perks list and CTAs
+
+## UX Improvements
+- [x] Last Synced timestamp shown in WooCommerce Settings section

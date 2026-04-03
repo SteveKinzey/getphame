@@ -19,6 +19,7 @@ import {
   CreditCard,
   ShoppingBag,
   ChevronRight,
+  Clock,
 } from "lucide-react";
 import ProBadge from "@/components/ProBadge";
 import { toast } from "sonner";
@@ -403,6 +404,14 @@ export default function SettingsPage() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold" style={{ color: "oklch(0.30 0.12 145)" }}>Store Connected</p>
                   <p className="text-xs truncate" style={{ color: "oklch(0.45 0.10 145)" }}>{wooCreds.storeUrl}</p>
+                  {wooCreds.lastSyncedAt ? (
+                    <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: "oklch(0.50 0.10 145)" }}>
+                      <Clock size={10} />
+                      Last synced {new Date(wooCreds.lastSyncedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                    </p>
+                  ) : (
+                    <p className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.08 80)" }}>Not yet synced — visit Customers to sync</p>
+                  )}
                 </div>
               </div>
               <button
