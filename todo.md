@@ -31,7 +31,16 @@
 - [x] Vitest test for auth.logout
 
 ## Pending / Future
-- [ ] Stripe integration for Pro subscriptions ($29/mo)
+- [x] Stripe integration for Pro subscriptions ($29/mo)
 - [ ] Saved contacts list (re-send to repeat customers)
 - [ ] Custom email template editor
 - [ ] Follow-up reminder system (server-side, 3-day reminders)
+
+## Stripe Integration
+- [x] Stripe feature scaffold (webdev_add_feature)
+- [x] Stripe backend: checkout session creation, webhook handler, subscription status
+- [x] Database: stripe_subscriptions table with customerId, subscriptionId, status
+- [x] Upgrade page: real Stripe checkout button replacing "coming soon" toast
+- [x] Settings page: show active subscription status and manage billing link
+- [x] Auto-upgrade user to Pro tier on successful Stripe payment
+- [x] Auto-downgrade user to Free tier on subscription cancellation

@@ -8,6 +8,10 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { exchangeCodeForTokens, saveGmailTokens } from "../gmail";
+import { stripe } from "../stripe";
+import { getDb } from "../db";
+import { businessProfiles, stripeSubscriptions } from "../../drizzle/schema";
+import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
 
 function isPortAvailable(port: number): Promise<boolean> {
@@ -32,6 +36,92 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 async function startServer() {
   const app = express();
   const server = createServer(app);
+
+  // ⚠️ Stripe webhook MUST use raw body — register BEFORE express.json()
+  app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), async (req, res) => {
+    const sig = req.headers["stripe-signature"] as string;
+    const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
+
+    let event;
+    try {
+      event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+    } catch (err: any) {
+      console.error("[Stripe Webhook] Signature verification failed:", err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
+
+    // Test event passthrough — required for Stripe webhook verification
+    if (event.id.startsWith("evt_test_")) {
+      console.log("[Stripe Webhook] Test event detected, returning verification response");
+      return res.json({ verified: true });
+    }
+
+    console.log(`[Stripe Webhook] Event: ${event.type} (${event.id})`);
+
+    try {
+      const db = await getDb();
+      if (!db) throw new Error("Database not available");
+
+      if (event.type === "checkout.session.completed") {
+        const session = event.data.object as any;
+        const userId = parseInt(session.metadata?.user_id ?? session.client_reference_id ?? "0", 10);
+        const customerId = session.customer as string;
+        const subscriptionId = session.subscription as string;
+
+        if (userId && customerId) {
+          // Save Stripe customer ID on the business profile
+          await db
+            .update(businessProfiles)
+            .set({ stripeCustomerId: customerId, tier: "pro" })
+            .where(eq(businessProfiles.userId, userId));
+
+          // Upsert subscription record
+          if (subscriptionId) {
+            await db
+              .insert(stripeSubscriptions)
+              .values({ userId, stripeSubscriptionId: subscriptionId, status: "active" })
+              .onDuplicateKeyUpdate({ set: { stripeSubscriptionId: subscriptionId, status: "active" } });
+          }
+          console.log(`[Stripe Webhook] User ${userId} upgraded to Pro`);
+        }
+      }
+
+      if (event.type === "customer.subscription.deleted" || event.type === "customer.subscription.updated") {
+        const sub = event.data.object as any;
+        const subscriptionId = sub.id as string;
+        const status = sub.status as string;
+
+        // Find the user by subscription ID
+        const rows = await db
+          .select()
+          .from(stripeSubscriptions)
+          .where(eq(stripeSubscriptions.stripeSubscriptionId, subscriptionId))
+          .limit(1);
+
+        if (rows.length > 0) {
+          const userId = rows[0].userId;
+          await db
+            .update(stripeSubscriptions)
+            .set({ status })
+            .where(eq(stripeSubscriptions.stripeSubscriptionId, subscriptionId));
+
+          // Downgrade to free if subscription is canceled or unpaid
+          if (["canceled", "unpaid", "incomplete_expired"].includes(status)) {
+            await db
+              .update(businessProfiles)
+              .set({ tier: "free" })
+              .where(eq(businessProfiles.userId, userId));
+            console.log(`[Stripe Webhook] User ${userId} downgraded to Free (status: ${status})`);
+          }
+        }
+      }
+    } catch (err) {
+      console.error("[Stripe Webhook] Processing error:", err);
+    }
+
+    res.json({ received: true });
+  });
+
   // Configure body parser with larger size limit for file uploads
   app.use(express.json({ limit: "50mb" }));
   app.use(express.urlencoded({ limit: "50mb", extended: true }));

@@ -23,6 +23,10 @@ const TOKEN_URL = "https://oauth2.googleapis.com/token";
 const USERINFO_URL = "https://www.googleapis.com/oauth2/v2/userinfo";
 
 function getRedirectUri(origin: string): string {
+  // Use the pinned redirect URI if set — ensures the URI always matches
+  // what's registered in Google Cloud Console regardless of which domain
+  // the request comes from (dev preview vs. published app).
+  if (ENV.gmailRedirectUri) return ENV.gmailRedirectUri;
   return `${origin}/api/gmail/callback`;
 }
 

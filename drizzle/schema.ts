@@ -39,6 +39,8 @@ export const businessProfiles = mysqlTable("business_profiles", {
   tier: mysqlEnum("tier", ["free", "pro"]).default("free").notNull(),
   monthlyCount: int("monthlyCount").default(0).notNull(),
   monthlyResetDate: varchar("monthlyResetDate", { length: 7 }).notNull(), // "YYYY-MM"
+  // Stripe customer ID — stored for creating checkout sessions and portal links
+  stripeCustomerId: varchar("stripeCustomerId", { length: 64 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -62,3 +64,20 @@ export const customerRequests = mysqlTable("customer_requests", {
 
 export type CustomerRequest = typeof customerRequests.$inferSelect;
 export type InsertCustomerRequest = typeof customerRequests.$inferInsert;
+
+/**
+ * Tracks active Stripe subscriptions.
+ * We store only the Stripe IDs — all other data (amount, status, period)
+ * is fetched from Stripe API on demand or updated via webhooks.
+ */
+export const stripeSubscriptions = mysqlTable("stripe_subscriptions", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(), // one active sub per user
+  stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 64 }).notNull(),
+  status: varchar("status", { length: 32 }).notNull(), // active, canceled, past_due, etc.
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type StripeSubscription = typeof stripeSubscriptions.$inferSelect;
+export type InsertStripeSubscription = typeof stripeSubscriptions.$inferInsert;

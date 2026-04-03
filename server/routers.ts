@@ -16,6 +16,10 @@ import {
   getValidAccessToken,
   sendViaGmail,
 } from "./gmail";
+import { createCheckoutSession, createPortalSession } from "./stripe";
+import { getDb } from "./db";
+import { stripeSubscriptions } from "../drizzle/schema";
+import { eq } from "drizzle-orm";
 
 const FREE_LIMIT = 10;
 
@@ -80,6 +84,53 @@ export const appRouter = router({
         });
         return getBusinessProfile(ctx.user.id);
       }),
+  }),
+
+  stripe: router({
+    /** Create a Stripe Checkout Session for Pro subscription */
+    createCheckout: protectedProcedure
+      .input(z.object({ origin: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        const profile = await getBusinessProfile(ctx.user.id);
+        const url = await createCheckoutSession({
+          userId: ctx.user.id,
+          userEmail: ctx.user.email ?? null,
+          userName: ctx.user.name ?? null,
+          stripeCustomerId: profile?.stripeCustomerId ?? null,
+          origin: input.origin,
+        });
+        return { url };
+      }),
+
+    /** Create a Stripe Billing Portal session to manage subscription */
+    createPortal: protectedProcedure
+      .input(z.object({ origin: z.string() }))
+      .mutation(async ({ ctx, input }) => {
+        const profile = await getBusinessProfile(ctx.user.id);
+        if (!profile?.stripeCustomerId) {
+          throw new Error("No active subscription found.");
+        }
+        const url = await createPortalSession(profile.stripeCustomerId, input.origin);
+        return { url };
+      }),
+
+    /** Get current subscription status for the user */
+    subscriptionStatus: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) return { active: false, status: null };
+      const rows = await db
+        .select()
+        .from(stripeSubscriptions)
+        .where(eq(stripeSubscriptions.userId, ctx.user.id))
+        .limit(1);
+      if (rows.length === 0) return { active: false, status: null };
+      const sub = rows[0];
+      return {
+        active: sub.status === "active",
+        status: sub.status,
+        subscriptionId: sub.stripeSubscriptionId,
+      };
+    }),
   }),
 
   requests: router({
@@ -165,3 +216,4 @@ export const appRouter = router({
 });
 
 export type AppRouter = typeof appRouter;
+

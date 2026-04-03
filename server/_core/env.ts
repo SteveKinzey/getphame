@@ -9,4 +9,7 @@ export const ENV = {
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
   googleClientId: process.env.GOOGLE_CLIENT_ID ?? "",
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+  // Pin the exact redirect URI registered in Google Cloud Console.
+  // This ensures the same URI is used in both dev and production.
+  gmailRedirectUri: process.env.GMAIL_REDIRECT_URI ?? "",
 };

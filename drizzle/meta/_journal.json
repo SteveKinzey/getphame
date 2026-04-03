@@ -15,6 +15,13 @@
       "when": 1775182024668,
       "tag": "0001_exotic_fixer",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1775191334480,
+      "tag": "0002_freezing_sauron",
+      "breakpoints": true
     }
   ]
 }

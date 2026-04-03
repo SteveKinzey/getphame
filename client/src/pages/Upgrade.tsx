@@ -3,7 +3,7 @@
 
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
-import { Crown, Check, Rocket, Star, Zap, BarChart2, ChevronLeft, Infinity } from "lucide-react";
+import { Crown, Check, Star, Zap, BarChart2, ChevronLeft, Infinity, Loader2, CreditCard, Settings } from "lucide-react";
 import { toast } from "sonner";
 
 const UPGRADE_IMG =
@@ -20,17 +20,42 @@ const PRO_FEATURES = [
   { icon: <Zap size={14} />, text: "Priority sending" },
   { icon: <BarChart2 size={14} />, text: "Advanced analytics" },
   { icon: <Star size={14} />, text: "Custom email templates" },
-  { icon: <Crown size={14} />, text: "Pro badge & support" },
+  { icon: <Crown size={14} />, text: "Pro badge & priority support" },
 ];
 
 export default function UpgradePage() {
   const [, navigate] = useLocation();
   const { data: profile } = trpc.profile.get.useQuery();
+  const { data: subStatus } = trpc.stripe.subscriptionStatus.useQuery();
+
+  const createCheckout = trpc.stripe.createCheckout.useMutation({
+    onSuccess: ({ url }) => {
+      toast.info("Redirecting to secure checkout...");
+      window.open(url, "_blank");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to start checkout. Please try again.");
+    },
+  });
+
+  const createPortal = trpc.stripe.createPortal.useMutation({
+    onSuccess: ({ url }) => {
+      toast.info("Opening billing portal...");
+      window.open(url, "_blank");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to open billing portal.");
+    },
+  });
 
   const isPro = profile?.tier === "pro";
 
   function handleUpgrade() {
-    toast.info("Stripe integration coming soon! Contact us to upgrade manually.");
+    createCheckout.mutate({ origin: window.location.origin });
+  }
+
+  function handleManageBilling() {
+    createPortal.mutate({ origin: window.location.origin });
   }
 
   if (isPro) {
@@ -46,20 +71,43 @@ export default function UpgradePage() {
         >
           You're on Pro!
         </h2>
-        <p className="text-center mb-8" style={{ color: "rgba(255,255,255,0.7)" }}>
+        <p className="text-center mb-2" style={{ color: "rgba(255,255,255,0.7)" }}>
           Enjoy unlimited review requests and all Pro features.
         </p>
-        <button
-          onClick={() => navigate("/")}
-          className="py-4 px-8 rounded-2xl font-black text-lg"
-          style={{
-            background: "oklch(0.80 0.18 80)",
-            color: "oklch(0.22 0.09 260)",
-            fontFamily: "'Syne', sans-serif",
-          }}
-        >
-          Back to Dashboard
-        </button>
+        {subStatus?.status && (
+          <p className="text-center text-xs mb-6 px-4 py-2 rounded-full"
+            style={{ background: "oklch(0.30 0.08 260)", color: "oklch(0.80 0.18 80)" }}>
+            Subscription status: <strong>{subStatus.status}</strong>
+          </p>
+        )}
+
+        <div className="flex flex-col gap-3 w-full max-w-xs">
+          <button
+            onClick={handleManageBilling}
+            disabled={createPortal.isPending}
+            className="py-4 px-8 rounded-2xl font-black text-lg flex items-center justify-center gap-2 transition-transform active:scale-95"
+            style={{
+              background: "oklch(0.80 0.18 80)",
+              color: "oklch(0.22 0.09 260)",
+              fontFamily: "'Syne', sans-serif",
+            }}
+          >
+            {createPortal.isPending ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <CreditCard size={18} />
+            )}
+            Manage Billing
+          </button>
+
+          <button
+            onClick={() => navigate("/")}
+            className="py-3 px-8 rounded-2xl font-bold text-base flex items-center justify-center gap-2"
+            style={{ color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.2)" }}
+          >
+            Back to Dashboard
+          </button>
+        </div>
       </div>
     );
   }
@@ -141,18 +189,28 @@ export default function UpgradePage() {
             ))}
           </div>
 
+          {/* Stripe Checkout Button */}
           <button
             onClick={handleUpgrade}
-            className="w-full py-4 rounded-2xl font-black text-lg transition-transform active:scale-95"
+            disabled={createCheckout.isPending}
+            className="w-full py-4 rounded-2xl font-black text-lg transition-transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-70"
             style={{
               background: "oklch(0.80 0.18 80)",
               color: "oklch(0.22 0.09 260)",
               fontFamily: "'Syne', sans-serif",
             }}
           >
-            <Crown size={18} className="inline mr-2" />
-            Upgrade to Pro
+            {createCheckout.isPending ? (
+              <Loader2 size={18} className="animate-spin" />
+            ) : (
+              <Crown size={18} />
+            )}
+            {createCheckout.isPending ? "Loading checkout..." : "Upgrade to Pro — $29/mo"}
           </button>
+
+          <p className="text-center text-xs mt-3" style={{ color: "rgba(255,255,255,0.35)" }}>
+            Secure payment powered by Stripe
+          </p>
         </div>
 
         {/* Free vs Pro comparison */}
@@ -172,6 +230,22 @@ export default function UpgradePage() {
                 </span>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Test card notice */}
+        <div
+          className="rounded-2xl p-4 flex items-start gap-3"
+          style={{ background: "oklch(0.28 0.06 260)", border: "1px solid rgba(255,255,255,0.1)" }}
+        >
+          <CreditCard size={16} style={{ color: "oklch(0.80 0.18 80)" }} className="mt-0.5 shrink-0" />
+          <div>
+            <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.80 0.18 80)" }}>
+              Testing? Use card 4242 4242 4242 4242
+            </p>
+            <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+              Any future date and any 3-digit CVC. This is a test environment.
+            </p>
           </div>
         </div>
 

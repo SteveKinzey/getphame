@@ -16,6 +16,7 @@ import {
   Loader2,
   AlertCircle,
   ExternalLink,
+  CreditCard,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -42,6 +43,17 @@ export default function SettingsPage() {
     onSuccess: () => {
       utils.profile.get.invalidate();
       toast.success("Business profile saved!");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  // ── Stripe subscription status ────────────────────────────────────────────
+  const { data: subStatus } = trpc.stripe.subscriptionStatus.useQuery();
+
+  const createPortal = trpc.stripe.createPortal.useMutation({
+    onSuccess: ({ url }) => {
+      toast.info("Opening billing portal...");
+      window.open(url, "_blank");
     },
     onError: (err) => toast.error(err.message),
   });
@@ -292,7 +304,35 @@ export default function SettingsPage() {
             </span>
           </div>
 
-          {profile?.tier !== "pro" && (
+          {profile?.tier === "pro" ? (
+            <div className="flex flex-col gap-2">
+              <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+                Unlimited requests · Active subscription
+                {subStatus?.status && (
+                  <span className="ml-1" style={{ color: "oklch(0.55 0.18 145)" }}>
+                    ({subStatus.status})
+                  </span>
+                )}
+              </p>
+              <button
+                onClick={() => createPortal.mutate({ origin: window.location.origin })}
+                disabled={createPortal.isPending}
+                className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 disabled:opacity-70"
+                style={{
+                  background: "oklch(0.22 0.09 260)",
+                  color: "oklch(0.80 0.18 80)",
+                  fontFamily: "'Syne', sans-serif",
+                }}
+              >
+                {createPortal.isPending ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <CreditCard size={14} />
+                )}
+                Manage Billing
+              </button>
+            </div>
+          ) : (
             <button
               onClick={() => navigate("/upgrade")}
               className="w-full py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
