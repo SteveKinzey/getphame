@@ -1,15 +1,27 @@
 // ReviewRocket — EmailJS Integration
-// Sends review request emails via EmailJS (no backend needed)
-// Users configure their own EmailJS credentials in Settings
+// Uses the official @emailjs/browser SDK (v4) for real email delivery.
+// Users configure their own EmailJS credentials in Settings → Email Integration.
+//
+// Required EmailJS template variables:
+//   {{to_name}}       — customer's name
+//   {{to_email}}      — customer's email  (set as "To Email" in EmailJS template)
+//   {{business_name}} — your business name
+//   {{review_link}}   — your Google review URL
+//   {{message}}       — the full pre-built message body
 
-export interface SendEmailParams {
+import emailjs from '@emailjs/browser';
+
+export interface EmailCredentials {
+  serviceId: string;
+  templateId: string;
+  publicKey: string;
+}
+
+export interface SendEmailParams extends EmailCredentials {
   customerName: string;
   customerEmail: string;
   businessName: string;
   reviewLink: string;
-  serviceId: string;
-  templateId: string;
-  publicKey: string;
 }
 
 export interface SendResult {
@@ -17,67 +29,139 @@ export interface SendResult {
   error?: string;
 }
 
+// ─── Core send function ────────────────────────────────────────────────────────
+
 /**
- * Send a review request email via EmailJS
- * Requires the user to have set up an EmailJS account and configured:
- * - Service ID (from EmailJS dashboard)
- * - Template ID (with variables: to_name, to_email, business_name, review_link)
- * - Public Key (from EmailJS account settings)
+ * Send a review request email via EmailJS.
+ * Initialises the SDK with the user's public key before every call so
+ * credentials picked up from Settings are always fresh.
  */
 export async function sendReviewEmail(params: SendEmailParams): Promise<SendResult> {
   const { customerName, customerEmail, businessName, reviewLink, serviceId, templateId, publicKey } = params;
 
-  if (!serviceId || !templateId || !publicKey) {
+  // Guard: all three credentials must be present
+  if (!serviceId?.trim() || !templateId?.trim() || !publicKey?.trim()) {
     return {
       success: false,
-      error: 'EmailJS not configured. Add your EmailJS credentials in Settings.',
+      error: 'EmailJS is not configured. Open Settings → Email Integration and add your credentials.',
     };
+  }
+
+  if (!customerEmail?.trim()) {
+    return { success: false, error: 'Customer email address is required.' };
   }
 
   try {
-    // Dynamically load EmailJS SDK
-    const emailjs = await loadEmailJS();
-    emailjs.init(publicKey);
+    // Re-init on every call so credential changes in Settings take effect immediately
+    emailjs.init({ publicKey: publicKey.trim() });
 
     const templateParams = {
-      to_name: customerName,
-      to_email: customerEmail,
-      business_name: businessName,
-      review_link: reviewLink,
-      message: buildReviewMessage(customerName, businessName, reviewLink),
+      to_name: customerName.trim(),
+      to_email: customerEmail.trim(),
+      business_name: businessName.trim(),
+      review_link: reviewLink.trim(),
+      message: buildReviewMessage(customerName.trim(), businessName.trim(), reviewLink.trim()),
     };
 
-    const result = await emailjs.send(serviceId, templateId, templateParams);
+    const response = await emailjs.send(serviceId.trim(), templateId.trim(), templateParams);
 
-    if (result.status === 200) {
+    if (response.status === 200) {
       return { success: true };
-    } else {
-      return { success: false, error: `EmailJS error: ${result.text}` };
     }
+    return { success: false, error: `EmailJS returned status ${response.status}: ${response.text}` };
   } catch (err: any) {
-    return { success: false, error: err?.message || 'Failed to send email' };
+    // EmailJS SDK throws an object with { status, text } on API errors
+    const message =
+      err?.text ||
+      err?.message ||
+      (typeof err === 'string' ? err : 'Unknown error while sending email.');
+    return { success: false, error: message };
   }
 }
 
-async function loadEmailJS(): Promise<any> {
-  if ((window as any).emailjs) return (window as any).emailjs;
-
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js';
-    script.onload = () => resolve((window as any).emailjs);
-    script.onerror = () => reject(new Error('Failed to load EmailJS'));
-    document.head.appendChild(script);
-  });
-}
-
-export function buildReviewMessage(customerName: string, businessName: string, reviewLink: string): string {
-  return `Hi ${customerName}! Thank you for choosing ${businessName}. We'd love to hear about your experience! Could you take 30 seconds to leave us a quick review? It means the world to us. 👉 ${reviewLink} Thank you so much!`;
-}
+// ─── Test-send function ────────────────────────────────────────────────────────
 
 /**
- * Simulate SMS sending (in production, integrate Twilio or similar)
- * For demo purposes, this logs the message and returns success
+ * Send a test email to the business owner to verify credentials are correct.
+ * Uses a simple self-addressed message so the owner can confirm delivery.
+ */
+export async function sendTestEmail(params: {
+  ownerEmail: string;
+  businessName: string;
+  credentials: EmailCredentials;
+}): Promise<SendResult> {
+  const { ownerEmail, businessName, credentials } = params;
+
+  if (!credentials.serviceId?.trim() || !credentials.templateId?.trim() || !credentials.publicKey?.trim()) {
+    return {
+      success: false,
+      error: 'Please fill in all three EmailJS fields before sending a test.',
+    };
+  }
+
+  if (!ownerEmail?.trim()) {
+    return { success: false, error: 'Enter your email address to receive the test.' };
+  }
+
+  try {
+    emailjs.init({ publicKey: credentials.publicKey.trim() });
+
+    const templateParams = {
+      to_name: 'Business Owner',
+      to_email: ownerEmail.trim(),
+      business_name: businessName.trim(),
+      review_link: 'https://example.com/review-link-test',
+      message: `This is a test email from ReviewRocket. Your EmailJS integration is working correctly! 🚀 When you send a real review request, your customers will receive a message like this with your actual Google Review link.`,
+    };
+
+    const response = await emailjs.send(
+      credentials.serviceId.trim(),
+      credentials.templateId.trim(),
+      templateParams,
+    );
+
+    if (response.status === 200) {
+      return { success: true };
+    }
+    return { success: false, error: `EmailJS returned status ${response.status}: ${response.text}` };
+  } catch (err: any) {
+    const message = err?.text || err?.message || (typeof err === 'string' ? err : 'Unknown error.');
+    return { success: false, error: message };
+  }
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+export function buildReviewMessage(
+  customerName: string,
+  businessName: string,
+  reviewLink: string,
+): string {
+  return (
+    `Hi ${customerName}! Thank you for choosing ${businessName}. ` +
+    `We'd love to hear about your experience! Could you take 30 seconds to leave us a quick review? ` +
+    `It means the world to us. 👉 ${reviewLink} Thank you so much!`
+  );
+}
+
+export function isEmailjsConfigured(profile: {
+  emailjsServiceId?: string;
+  emailjsTemplateId?: string;
+  emailjsPublicKey?: string;
+} | null): boolean {
+  if (!profile) return false;
+  return !!(
+    profile.emailjsServiceId?.trim() &&
+    profile.emailjsTemplateId?.trim() &&
+    profile.emailjsPublicKey?.trim()
+  );
+}
+
+// ─── SMS (demo) ───────────────────────────────────────────────────────────────
+
+/**
+ * SMS sending is not yet wired to a real provider.
+ * In production, replace this with a Twilio/MessageBird backend call.
  */
 export async function sendReviewSMS(params: {
   customerName: string;
@@ -86,14 +170,8 @@ export async function sendReviewSMS(params: {
   reviewLink: string;
 }): Promise<SendResult> {
   const { customerName, customerPhone, businessName, reviewLink } = params;
-  
-  // In a real app, you'd call a backend API that uses Twilio/MessageBird
-  // For demo: log the message that would be sent
   const message = buildReviewMessage(customerName, businessName, reviewLink);
   console.log(`[ReviewRocket SMS Demo] To: ${customerPhone}\nMessage: ${message}`);
-  
-  // Simulate network delay
   await new Promise((r) => setTimeout(r, 800));
-  
   return { success: true };
 }
