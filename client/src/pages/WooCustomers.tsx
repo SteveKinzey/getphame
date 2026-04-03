@@ -25,6 +25,8 @@ import {
   CheckCircle2,
   AlertCircle,
   ArrowLeft,
+  Search,
+  X,
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -40,6 +42,7 @@ export default function WooCustomers() {
   const [, navigate] = useLocation();
   const [days, setDays] = useState<number>(30);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
+  const [search, setSearch] = useState("");
 
   const utils = trpc.useUtils();
 
@@ -79,13 +82,29 @@ export default function WooCustomers() {
     },
   });
 
-  const allSelected = customers.length > 0 && selectedIds.size === customers.length;
+  const filteredCustomers = search.trim()
+    ? customers.filter(
+        (c) =>
+          c.customerName.toLowerCase().includes(search.toLowerCase()) ||
+          c.customerEmail.toLowerCase().includes(search.toLowerCase())
+      )
+    : customers;
+
+  const allSelected = filteredCustomers.length > 0 && filteredCustomers.length === selectedIds.size && filteredCustomers.every((c) => selectedIds.has(c.id));
 
   function toggleAll() {
     if (allSelected) {
-      setSelectedIds(new Set());
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        filteredCustomers.forEach((c) => next.delete(c.id));
+        return next;
+      });
     } else {
-      setSelectedIds(new Set(customers.map((c) => c.id)));
+      setSelectedIds((prev) => {
+        const next = new Set(prev);
+        filteredCustomers.forEach((c) => next.add(c.id));
+        return next;
+      });
     }
   }
 
@@ -166,6 +185,29 @@ export default function WooCustomers() {
         )}
       </div>
 
+      {/* Search bar */}
+      <div className="px-5 pt-4 pb-0">
+        <div className="relative">
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+          <input
+            type="text"
+            placeholder="Search by name or email…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-9 pr-9 py-2.5 rounded-xl text-sm bg-white border border-gray-200 focus:outline-none focus:ring-2 focus:border-transparent"
+            style={{ fontFamily: "'Nunito', sans-serif" }}
+          />
+          {search && (
+            <button
+              onClick={() => setSearch("")}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
+      </div>
+
       {/* Sync controls */}
       <div className="px-5 py-4 flex items-center gap-3">
         <Select
@@ -201,16 +243,20 @@ export default function WooCustomers() {
               <div key={i} className="h-20 rounded-xl bg-gray-200 animate-pulse" />
             ))}
           </div>
-        ) : customers.length === 0 ? (
+        ) : filteredCustomers.length === 0 ? (
           <div className="text-center py-16">
             <CheckCircle2
               size={48}
               className="mx-auto mb-4"
               style={{ color: "oklch(0.65 0.15 145)" }}
             />
-            <p className="font-semibold text-gray-700">All caught up!</p>
+            <p className="font-semibold text-gray-700">
+              {search ? "No matches found" : "All caught up!"}
+            </p>
             <p className="text-sm text-gray-500 mt-1">
-              No pending customers. Sync orders to find new ones.
+              {search
+                ? `No customers match "${search}". Try a different name or email.`
+                : "No pending customers. Sync orders to find new ones."}
             </p>
           </div>
         ) : (
@@ -219,7 +265,7 @@ export default function WooCustomers() {
             <div className="flex items-center justify-between mb-3">
               <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
                 <Checkbox checked={allSelected} onCheckedChange={toggleAll} />
-                Select all ({customers.length})
+                Select all ({filteredCustomers.length}{search ? ` of ${customers.length}` : ""})
               </label>
 
               {selectedIds.size > 0 && (
@@ -242,7 +288,7 @@ export default function WooCustomers() {
             </div>
 
             <div className="space-y-3">
-              {customers.map((customer) => (
+              {filteredCustomers.map((customer) => (
                 <div
                   key={customer.id}
                   className="bg-white rounded-xl p-4 flex items-start gap-3 shadow-sm"

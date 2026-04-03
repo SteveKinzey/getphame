@@ -74,3 +74,4 @@
 - [x] Sync Orders button next to Last Synced timestamp in WooCommerce Settings section
 - [x] "View new customers" action link inside sync success toast in Settings
 - [x] Auto-refresh customer list in background after successful sync (Settings + WooCustomers page)
+- [x] Search bar on WooCustomers page for real-time filtering by name or email
