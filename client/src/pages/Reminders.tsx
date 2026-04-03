@@ -107,7 +107,7 @@ export default function Reminders() {
           <ChevronLeft size={16} /> Back
         </button>
         <div>
-          <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Syne', sans-serif" }}>
+          <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
             Follow-up Reminders
           </h1>
           <p className="text-sm mt-1 opacity-70 text-white">

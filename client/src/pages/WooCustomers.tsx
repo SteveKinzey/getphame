@@ -215,7 +215,7 @@ export default function WooCustomers() {
           </button>
           <h1
             className="text-2xl font-black"
-            style={{ color: "white", fontFamily: "'Syne', sans-serif" }}
+            style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
           >
             WooCommerce Customers
           </h1>
@@ -284,7 +284,7 @@ export default function WooCustomers() {
           <div>
             <h1
               className="text-2xl font-black"
-              style={{ color: "white", fontFamily: "'Syne', sans-serif" }}
+              style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
             >
               WooCommerce
             </h1>

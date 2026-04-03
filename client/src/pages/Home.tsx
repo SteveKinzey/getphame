@@ -1,6 +1,7 @@
 // ReviewLink — Home Dashboard
 // Shows stats, Gmail connection status, and quick-send CTA
 
+import { useEffect } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Rocket, Star, Send, TrendingUp, Clock, Crown, AlertCircle, CheckCircle2 } from "lucide-react";
@@ -31,6 +32,11 @@ export default function HomePage() {
   const { data: gmailStatus } = trpc.gmail.status.useQuery();
   const { data: stats } = trpc.requests.stats.useQuery();
 
+  // SEO: dynamic page title with keywords
+  useEffect(() => {
+    document.title = "ReviewLink — Send Google Review Requests Fast";
+  }, []);
+
   const isPro = profile?.tier === "pro";
   const gmailConnected = gmailStatus?.connected ?? false;
   const profileComplete = !!profile?.businessName && !!profile?.reviewLink;
@@ -59,14 +65,14 @@ export default function HomePage() {
               <Rocket size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
               <span
                 className="text-xs font-bold tracking-widest uppercase"
-                style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
+                style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
               >
                 ReviewLink
               </span>
             </div>
             <h1
               className="text-2xl leading-tight"
-              style={{ color: "white", fontFamily: "'Syne', sans-serif", fontWeight: 900 }}
+              style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
             >
               {profile?.businessName ? `Hey, ${profile.businessName.split(" ")[0]}!` : `Welcome back!`}
             </h1>
@@ -105,7 +111,7 @@ export default function HomePage() {
               </div>
               <div
                 className="text-2xl font-black"
-                style={{ color: "white", fontFamily: "'Syne', sans-serif" }}
+                style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
               >
                 {s.value}
               </div>
@@ -123,7 +129,7 @@ export default function HomePage() {
           <div className="bg-white rounded-2xl p-4 shadow-sm">
             <p
               className="text-sm font-black mb-3"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
             >
               Complete your setup
             </p>
@@ -156,7 +162,7 @@ export default function HomePage() {
                 style={{
                   background: "oklch(0.22 0.09 260)",
                   color: "oklch(0.80 0.18 80)",
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "'Poppins', sans-serif",
                 }}
               >
                 Go to Settings →
@@ -179,7 +185,7 @@ export default function HomePage() {
               atFreeLimit || !gmailConnected || !profileComplete
                 ? "oklch(0.55 0.03 260)"
                 : "oklch(0.22 0.09 260)",
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "'Poppins', sans-serif",
           }}
         >
           <Rocket size={24} />
@@ -193,7 +199,7 @@ export default function HomePage() {
             style={{
               background: "oklch(0.22 0.09 260)",
               color: "oklch(0.80 0.18 80)",
-              fontFamily: "'Syne', sans-serif",
+              fontFamily: "'Poppins', sans-serif",
             }}
           >
             <Crown size={16} />
@@ -201,13 +207,27 @@ export default function HomePage() {
           </button>
         )}
 
+        {/* ── SEO keyword section — visible to crawlers, useful to users ─── */}
+        <div className="bg-white rounded-2xl p-4 shadow-sm">
+          <h2
+            className="text-sm font-black mb-2"
+            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+          >
+            Get More Google Reviews for Your Business
+          </h2>
+          <p className="text-xs leading-relaxed" style={{ color: "oklch(0.55 0.03 260)" }}>
+            ReviewLink makes it easy to send personalized Google review requests to your customers via email.
+            Build your online reputation, increase star ratings, and attract new customers — all from one simple dashboard.
+          </p>
+        </div>
+
         {/* ── Recent Activity ──────────────────────────────────────────────── */}
         {stats?.recent && stats.recent.length > 0 && (
           <div className="bg-white rounded-2xl p-4 shadow-sm">
             <div className="flex items-center justify-between mb-3">
               <h3
                 className="text-sm font-black"
-                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
               >
                 Recent Requests
               </h3>

@@ -145,14 +145,14 @@ export default function SettingsPage() {
           <Settings size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
           <span
             className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
+            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
           >
             Settings
           </span>
         </div>
         <h1
           className="text-2xl"
-          style={{ color: "white", fontFamily: "'Syne', sans-serif", fontWeight: 900 }}
+          style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
         >
           Account & Profile
         </h1>
@@ -173,7 +173,7 @@ export default function SettingsPage() {
             <Building2 size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
             <h2
               className="text-base font-black"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
             >
               Business Profile
             </h2>
@@ -232,7 +232,7 @@ export default function SettingsPage() {
                 style={{
                   background: "oklch(0.22 0.09 260)",
                   color: "white",
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "'Poppins', sans-serif",
                   opacity: upsertProfile.isPending ? 0.7 : 1,
                 }}
               >
@@ -253,7 +253,7 @@ export default function SettingsPage() {
             <Mail size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
             <h2
               className="text-base font-black"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
             >
               Gmail Connection
             </h2>
@@ -321,7 +321,7 @@ export default function SettingsPage() {
                 style={{
                   background: "oklch(0.80 0.18 80)",
                   color: "oklch(0.22 0.09 260)",
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "'Poppins', sans-serif",
                 }}
               >
                 <Mail size={16} />
@@ -343,7 +343,7 @@ export default function SettingsPage() {
               <Crown size={18} style={{ color: "oklch(0.80 0.18 80)" }} />
               <h2
                 className="text-base font-black"
-                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
               >
                 Your Plan
               </h2>
@@ -376,7 +376,7 @@ export default function SettingsPage() {
                 style={{
                   background: "oklch(0.22 0.09 260)",
                   color: "oklch(0.80 0.18 80)",
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "'Poppins', sans-serif",
                 }}
               >
                 {createPortal.isPending ? (
@@ -394,7 +394,7 @@ export default function SettingsPage() {
               style={{
                 background: "oklch(0.22 0.09 260)",
                 color: "oklch(0.80 0.18 80)",
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Poppins', sans-serif",
               }}
             >
               Upgrade to Pro — Unlimited Requests
@@ -408,7 +408,7 @@ export default function SettingsPage() {
             <ShoppingBag size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
             <h2
               className="text-base font-black"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
             >
               WooCommerce
             </h2>
@@ -455,7 +455,7 @@ export default function SettingsPage() {
               <button
                 onClick={() => navigate("/woo-customers")}
                 className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
-                style={{ background: "oklch(0.22 0.09 260)", color: "white", fontFamily: "'Syne', sans-serif" }}
+                style={{ background: "oklch(0.22 0.09 260)", color: "white", fontFamily: "'Poppins', sans-serif" }}
               >
                 <ShoppingBag size={16} />
                 View Customers
@@ -475,7 +475,7 @@ export default function SettingsPage() {
                 <button
                   onClick={() => setWooFormOpen(true)}
                   className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
-                  style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+                  style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
                 >
                   <ShoppingBag size={16} />
                   Connect WooCommerce Store
@@ -527,7 +527,7 @@ export default function SettingsPage() {
                   onClick={handleSaveWoo}
                   disabled={saveWooCreds.isPending}
                   className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm"
-                  style={{ background: "oklch(0.22 0.09 260)", color: "white", fontFamily: "'Syne', sans-serif" }}
+                  style={{ background: "oklch(0.22 0.09 260)", color: "white", fontFamily: "'Poppins', sans-serif" }}
                 >
                   {saveWooCreds.isPending ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
                   Save
@@ -546,7 +546,7 @@ export default function SettingsPage() {
 
         {/* ── Tools ───────────────────────────────────────────────────────── */}
         <div className="rounded-2xl p-4 shadow-sm" style={{ background: 'white', border: '1px solid oklch(0.92 0.02 260)' }}>
-          <h2 className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: 'oklch(0.55 0.03 260)', fontFamily: "'Syne', sans-serif" }}>Tools</h2>
+          <h2 className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: 'oklch(0.55 0.03 260)', fontFamily: "'Poppins', sans-serif" }}>Tools</h2>
           <div className="flex flex-col gap-1">
             {[{ label: 'Saved Contacts', icon: <Mail size={15} />, path: '/contacts' }, { label: 'Email Templates', icon: <Settings size={15} />, path: '/templates' }, { label: 'Follow-up Reminders', icon: <Clock size={15} />, path: '/reminders' }].map(({ label, icon, path }) => (
               <button key={path} onClick={() => navigate(path)}

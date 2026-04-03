@@ -117,7 +117,7 @@ export default function SendRequestPage() {
         </div>
         <h2
           className="text-3xl font-black text-center mb-2"
-          style={{ color: "white", fontFamily: "'Syne', sans-serif" }}
+          style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
         >
           Request Sent! 🚀
         </h2>
@@ -140,7 +140,7 @@ export default function SendRequestPage() {
           style={{
             background: "oklch(0.80 0.18 80)",
             color: "oklch(0.22 0.09 260)",
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "'Poppins', sans-serif",
           }}
         >
           Send Another Request
@@ -157,14 +157,14 @@ export default function SendRequestPage() {
           <Send size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
           <span
             className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
+            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
           >
             Send Request
           </span>
         </div>
         <h1
           className="text-2xl"
-          style={{ color: "white", fontFamily: "'Syne', sans-serif", fontWeight: 900 }}
+          style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
         >
           Request a Review
         </h1>
@@ -257,7 +257,7 @@ export default function SendRequestPage() {
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <h2
             className="text-base font-black mb-4"
-            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
           >
             Customer Details
           </h2>
@@ -389,7 +389,7 @@ export default function SendRequestPage() {
                   sending || atFreeLimit || !gmailConnected || !profileComplete
                     ? "oklch(0.55 0.03 260)"
                     : "oklch(0.22 0.09 260)",
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "'Poppins', sans-serif",
               }}
             >
               {sending ? (

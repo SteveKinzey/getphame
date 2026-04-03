@@ -18,7 +18,7 @@ export default function PrivacyPolicy() {
         </button>
         <h1
           className="text-2xl"
-          style={{ color: "white", fontFamily: "'Syne', sans-serif", fontWeight: 900 }}
+          style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
         >
           Privacy Policy
         </h1>
@@ -31,7 +31,7 @@ export default function PrivacyPolicy() {
       <div className="px-5 py-6 max-w-2xl mx-auto space-y-6 text-sm leading-relaxed" style={{ color: "oklch(0.30 0.05 260)" }}>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             1. Introduction
           </h2>
           <p>
@@ -40,7 +40,7 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             2. Information We Collect
           </h2>
           <p className="mb-2">We collect the following types of information:</p>
@@ -54,7 +54,7 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             3. How We Use Gmail Access
           </h2>
           <p className="mb-2">
@@ -81,7 +81,7 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             4. Data Storage and Security
           </h2>
           <p>
@@ -90,7 +90,7 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             5. Data Sharing
           </h2>
           <p>
@@ -104,7 +104,7 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             6. Your Rights and Data Deletion
           </h2>
           <p>
@@ -113,7 +113,7 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             7. Children's Privacy
           </h2>
           <p>
@@ -122,7 +122,7 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             8. Changes to This Policy
           </h2>
           <p>
@@ -131,7 +131,7 @@ export default function PrivacyPolicy() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             9. Contact Us
           </h2>
           <p>

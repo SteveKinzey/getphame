@@ -243,7 +243,7 @@ export default function SavedContacts() {
         </button>
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Syne', sans-serif" }}>
+            <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
               Saved Contacts
             </h1>
             <p className="text-sm mt-1 opacity-70 text-white">

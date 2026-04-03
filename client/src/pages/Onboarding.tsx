@@ -23,7 +23,7 @@ export default function OnboardingPage() {
         <Rocket size={20} style={{ color: "oklch(0.80 0.18 80)" }} />
         <span
           className="text-sm font-bold tracking-widest uppercase"
-          style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
+          style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
         >
           ReviewLink
         </span>
@@ -38,7 +38,7 @@ export default function OnboardingPage() {
         <div>
           <h1
             className="text-4xl font-black leading-tight mb-3"
-            style={{ color: "white", fontFamily: "'Syne', sans-serif" }}
+            style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
           >
             Get More 5-Star
             <br />
@@ -79,7 +79,7 @@ export default function OnboardingPage() {
           style={{
             background: "oklch(0.80 0.18 80)",
             color: "oklch(0.22 0.09 260)",
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "'Poppins', sans-serif",
           }}
         >
           Get Started Free →

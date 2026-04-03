@@ -62,14 +62,14 @@ export default function DashboardPage() {
           <BarChart2 size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
           <span
             className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
+            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
           >
             Dashboard
           </span>
         </div>
         <h1
           className="text-2xl mb-6"
-          style={{ color: "white", fontFamily: "'Syne', sans-serif", fontWeight: 900 }}
+          style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
         >
           Your Results
         </h1>
@@ -94,7 +94,7 @@ export default function DashboardPage() {
               </div>
               <div
                 className="text-2xl font-black"
-                style={{ color: "white", fontFamily: "'Syne', sans-serif" }}
+                style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
               >
                 {isLoading ? "—" : s.value}
               </div>
@@ -112,7 +112,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between mb-4">
             <h3
               className="text-sm font-black"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
             >
               <Calendar size={14} className="inline mr-1.5 mb-0.5" />
               Last 7 Days
@@ -174,21 +174,21 @@ export default function DashboardPage() {
             >
               <div className="text-center flex-1">
                 <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>This week</p>
-                <p className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+                <p className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
                   {velocity.last7}
                 </p>
               </div>
               <div className="w-px h-8" style={{ background: "oklch(0.90 0.01 260)" }} />
               <div className="text-center flex-1">
                 <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Prior week</p>
-                <p className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+                <p className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
                   {velocity.prior7}
                 </p>
               </div>
               <div className="w-px h-8" style={{ background: "oklch(0.90 0.01 260)" }} />
               <div className="text-center flex-1">
                 <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>All time</p>
-                <p className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+                <p className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
                   {stats?.total ?? 0}
                 </p>
               </div>
@@ -200,7 +200,7 @@ export default function DashboardPage() {
         {!isPro && (
           <div className="bg-white rounded-2xl p-4 shadow-sm">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+              <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
                 Free Plan Usage
               </p>
               <span className="text-xs font-bold" style={{ color: "oklch(0.50 0.04 260)" }}>
@@ -223,7 +223,7 @@ export default function DashboardPage() {
                 style={{
                   background: "oklch(0.22 0.09 260)",
                   color: "oklch(0.80 0.18 80)",
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "'Poppins', sans-serif",
                 }}
               >
                 <Crown size={14} />
@@ -237,7 +237,7 @@ export default function DashboardPage() {
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <h3
             className="text-sm font-black mb-4"
-            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
           >
             All Activity
           </h3>

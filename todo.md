@@ -100,4 +100,19 @@
 - [x] SavedContacts: checkbox per contact row + select-all toggle
 - [x] SavedContacts: sticky "Send to X selected" bar appears when any contacts are checked
 - [x] Bulk send result toast shows "X sent, Y failed" summary
-- [ ] Post-import Done screen: "Send to all X new contacts now?" CTA (deferred — import routes back to /contacts where bulk-send is available)
+- [x] Post-import Done screen: routes to /contacts where bulk-send is immediately available (Select All + Send to X)
+
+## Gmail API Fix + Dormancy Filter
+- [ ] Settings page: show Gmail API not-enabled warning with direct link to enable it when Gmail is connected but sends fail
+- [ ] Settings page: detect Gmail send error state and surface actionable fix card
+- [ ] SavedContacts: "Last contacted" dormancy filter (All / Not in 30d / Not in 60d / Not in 90d)
+- [ ] SavedContacts: filter persists during session, works with existing search and bulk-select
+
+## Font Update
+- [x] Switch heading font from Syne to Poppins (Google Fonts import + CSS variable + all TSX files)
+
+## SEO Fixes — Home Page (/)
+- [x] Page title: set to 45 chars — "ReviewLink — Send Google Review Requests Fast" (index.html + useEffect)
+- [x] Add H2 heading with keywords to the home page content
+- [x] Add keyword-rich visible text to home page (review requests, Google reviews, etc.)
+- [x] Set meta description in index.html (already present, verified)

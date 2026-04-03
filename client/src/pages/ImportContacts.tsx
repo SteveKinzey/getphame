@@ -216,11 +216,11 @@ export default function ImportContactsPage() {
         </button>
         <div className="flex items-center gap-2 mb-1">
           <Upload size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
-          <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}>
+          <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}>
             Import
           </span>
         </div>
-        <h1 className="text-2xl" style={{ color: "white", fontFamily: "'Syne', sans-serif", fontWeight: 900 }}>
+        <h1 className="text-2xl" style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}>
           Import Clients
         </h1>
 
@@ -258,7 +258,7 @@ export default function ImportContactsPage() {
             {/* Template download */}
             <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
               <div>
-                <p className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+                <p className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
                   Need a template?
                 </p>
                 <p className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.03 260)" }}>
@@ -294,7 +294,7 @@ export default function ImportContactsPage() {
                 <FileText size={28} style={{ color: "oklch(0.22 0.09 260)" }} />
               </div>
               <div className="text-center px-4">
-                <p className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+                <p className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
                   Drop your CSV here
                 </p>
                 <p className="text-xs mt-1" style={{ color: "oklch(0.55 0.03 260)" }}>
@@ -320,7 +320,7 @@ export default function ImportContactsPage() {
           <div className="flex flex-col gap-4">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
               <div className="flex items-center justify-between mb-1">
-                <p className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+                <p className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
                   Map Your Columns
                 </p>
                 <span className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
@@ -390,7 +390,7 @@ export default function ImportContactsPage() {
           <div className="flex flex-col gap-4">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+                <p className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
                   Review Before Import
                 </p>
                 <span
@@ -477,7 +477,7 @@ export default function ImportContactsPage() {
               <CheckCircle2 size={40} style={{ color: "oklch(0.45 0.12 145)" }} />
             </div>
             <div className="text-center">
-              <h2 className="text-2xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+              <h2 className="text-2xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
                 Import Complete!
               </h2>
               <p className="text-sm mt-2" style={{ color: "oklch(0.55 0.03 260)" }}>

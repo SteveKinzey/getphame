@@ -1,7 +1,7 @@
 /* ReviewLink Design System
  * Movement: Bold Consumer App / Sports-Energy meets Local Business Tool
  * Colors: Deep Navy (#0F1F4B) base + Bright Gold (#FFB800) accent
- * Typography: Syne (800/900) headings + Nunito (400/600) body
+ * Typography: Poppins (700/800/900) headings + Nunito (400/600) body
  * Layout: Full-bleed navy panels, white content cards, gold bottom nav active state
  */
 
@@ -113,7 +113,7 @@
     -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-weight: 800;
   }
   button:not(:disabled),
@@ -167,7 +167,7 @@
   .rr-gold-btn {
     background: oklch(0.80 0.18 80);
     color: oklch(0.22 0.09 260);
-    font-family: 'Syne', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-weight: 800;
     border-radius: 9999px;
     min-height: 56px;
@@ -186,7 +186,7 @@
   }
 
   .rr-stat-number {
-    font-family: 'Syne', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-weight: 900;
     color: oklch(0.80 0.18 80);
   }

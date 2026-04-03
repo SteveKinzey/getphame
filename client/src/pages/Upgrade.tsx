@@ -67,7 +67,7 @@ export default function UpgradePage() {
         <Crown size={64} style={{ color: "oklch(0.80 0.18 80)" }} className="mb-4" />
         <h2
           className="text-3xl font-black text-center mb-2"
-          style={{ color: "white", fontFamily: "'Syne', sans-serif" }}
+          style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
         >
           You're on Pro!
         </h2>
@@ -89,7 +89,7 @@ export default function UpgradePage() {
             style={{
               background: "oklch(0.80 0.18 80)",
               color: "oklch(0.22 0.09 260)",
-              fontFamily: "'Syne', sans-serif",
+              fontFamily: "'Poppins', sans-serif",
             }}
           >
             {createPortal.isPending ? (
@@ -129,14 +129,14 @@ export default function UpgradePage() {
           <Crown size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
           <span
             className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
+            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
           >
             Upgrade
           </span>
         </div>
         <h1
           className="text-3xl leading-tight"
-          style={{ color: "white", fontFamily: "'Syne', sans-serif", fontWeight: 900 }}
+          style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
         >
           Go Pro.
           <br />
@@ -160,7 +160,7 @@ export default function UpgradePage() {
           <div className="flex items-end gap-2 mb-1">
             <span
               className="text-5xl font-black"
-              style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
+              style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
             >
               $29
             </span>
@@ -197,7 +197,7 @@ export default function UpgradePage() {
             style={{
               background: "oklch(0.80 0.18 80)",
               color: "oklch(0.22 0.09 260)",
-              fontFamily: "'Syne', sans-serif",
+              fontFamily: "'Poppins', sans-serif",
             }}
           >
             {createCheckout.isPending ? (
@@ -217,7 +217,7 @@ export default function UpgradePage() {
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <h3
             className="text-sm font-black mb-3"
-            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
           >
             Free Plan Includes
           </h3>

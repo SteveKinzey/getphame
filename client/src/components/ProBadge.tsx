@@ -21,7 +21,7 @@ export default function ProBadge({ size = "md", className = "" }: ProBadgeProps)
       style={{
         background: "oklch(0.80 0.18 80)",
         color: "oklch(0.22 0.09 260)",
-        fontFamily: "'Syne', sans-serif",
+        fontFamily: "'Poppins', sans-serif",
         letterSpacing: "0.08em",
       }}
     >

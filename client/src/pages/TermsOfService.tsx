@@ -18,7 +18,7 @@ export default function TermsOfService() {
         </button>
         <h1
           className="text-2xl"
-          style={{ color: "white", fontFamily: "'Syne', sans-serif", fontWeight: 900 }}
+          style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
         >
           Terms of Service
         </h1>
@@ -31,7 +31,7 @@ export default function TermsOfService() {
       <div className="px-5 py-6 max-w-2xl mx-auto space-y-6 text-sm leading-relaxed" style={{ color: "oklch(0.30 0.05 260)" }}>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             1. Acceptance of Terms
           </h2>
           <p>
@@ -40,7 +40,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             2. Description of Service
           </h2>
           <p>
@@ -49,7 +49,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             3. User Accounts
           </h2>
           <p>
@@ -58,7 +58,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             4. Acceptable Use
           </h2>
           <p className="mb-2">You agree to use the Service only for lawful purposes. You must not:</p>
@@ -75,7 +75,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             5. Gmail Integration
           </h2>
           <p>
@@ -84,7 +84,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             6. Subscription and Billing
           </h2>
           <p>
@@ -93,7 +93,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             7. Intellectual Property
           </h2>
           <p>
@@ -102,7 +102,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             8. Disclaimer of Warranties
           </h2>
           <p>
@@ -111,7 +111,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             9. Limitation of Liability
           </h2>
           <p>
@@ -120,7 +120,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             10. Termination
           </h2>
           <p>
@@ -129,7 +129,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             11. Changes to Terms
           </h2>
           <p>
@@ -138,7 +138,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             12. Governing Law
           </h2>
           <p>
@@ -147,7 +147,7 @@ export default function TermsOfService() {
         </section>
 
         <section>
-          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Syne', sans-serif", color: "oklch(0.22 0.09 260)" }}>
+          <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             13. Contact Us
           </h2>
           <p>

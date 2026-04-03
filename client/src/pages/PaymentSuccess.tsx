@@ -76,7 +76,7 @@ export default function PaymentSuccessPage() {
       {/* Heading */}
       <h1
         className="text-4xl font-black text-center mb-2 leading-tight"
-        style={{ color: "white", fontFamily: "'Syne', sans-serif" }}
+        style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
       >
         You're{" "}
         <span style={{ color: "oklch(0.80 0.18 80)" }}>Pro!</span>
@@ -95,7 +95,7 @@ export default function PaymentSuccessPage() {
       >
         <p
           className="text-xs font-black tracking-widest uppercase mb-4"
-          style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
+          style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
         >
           Your Pro Perks
         </p>
@@ -124,7 +124,7 @@ export default function PaymentSuccessPage() {
           style={{
             background: "oklch(0.80 0.18 80)",
             color: "oklch(0.22 0.09 260)",
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "'Poppins', sans-serif",
           }}
         >
           <Rocket size={18} />
