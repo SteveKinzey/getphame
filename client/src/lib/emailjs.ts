@@ -1,4 +1,4 @@
-// ReviewRocket — EmailJS Integration
+// ReviewLink — EmailJS Integration
 // Uses the official @emailjs/browser SDK (v4) for real email delivery.
 // Users configure their own EmailJS credentials in Settings → Email Integration.
 //
@@ -111,7 +111,7 @@ export async function sendTestEmail(params: {
       to_email: ownerEmail.trim(),
       business_name: businessName.trim(),
       review_link: 'https://example.com/review-link-test',
-      message: `This is a test email from ReviewRocket. Your EmailJS integration is working correctly! 🚀 When you send a real review request, your customers will receive a message like this with your actual Google Review link.`,
+      message: `This is a test email from ReviewLink. Your EmailJS integration is working correctly! 🚀 When you send a real review request, your customers will receive a message like this with your actual Google Review link.`,
     };
 
     const response = await emailjs.send(
@@ -171,7 +171,7 @@ export async function sendReviewSMS(params: {
 }): Promise<SendResult> {
   const { customerName, customerPhone, businessName, reviewLink } = params;
   const message = buildReviewMessage(customerName, businessName, reviewLink);
-  console.log(`[ReviewRocket SMS Demo] To: ${customerPhone}\nMessage: ${message}`);
+  console.log(`[ReviewLink SMS Demo] To: ${customerPhone}\nMessage: ${message}`);
   await new Promise((r) => setTimeout(r, 800));
   return { success: true };
 }

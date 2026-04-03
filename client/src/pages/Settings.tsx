@@ -1,4 +1,4 @@
-// ReviewRocket — Settings Page
+// ReviewLink — Settings Page
 // Sections: Business Profile, Gmail Connection, Plan
 
 import { useState } from "react";

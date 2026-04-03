@@ -1,4 +1,4 @@
-// ReviewRocket — Bottom Navigation Bar
+// ReviewLink — Bottom Navigation Bar
 // Design: Navy background, gold active state, large tap targets (48px+)
 
 import { useLocation } from 'wouter';

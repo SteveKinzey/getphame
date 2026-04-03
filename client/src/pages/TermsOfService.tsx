@@ -35,7 +35,7 @@ export default function TermsOfService() {
             1. Acceptance of Terms
           </h2>
           <p>
-            By accessing or using ReviewRocket (the "Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the Service. These Terms apply to all users of the Service.
+            By accessing or using ReviewLink (the "Service"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the Service. These Terms apply to all users of the Service.
           </p>
         </section>
 
@@ -44,7 +44,7 @@ export default function TermsOfService() {
             2. Description of Service
           </h2>
           <p>
-            ReviewRocket is a mobile web application that helps small business owners send review request emails to their customers via their connected Gmail account. The Service includes a free tier (up to 10 requests per month) and a paid Pro tier ($29/month) with unlimited requests and additional features.
+            ReviewLink is a mobile web application that helps small business owners send review request emails to their customers via their connected Gmail account. The Service includes a free tier (up to 10 requests per month) and a paid Pro tier ($29/month) with unlimited requests and additional features.
           </p>
         </section>
 
@@ -79,7 +79,7 @@ export default function TermsOfService() {
             5. Gmail Integration
           </h2>
           <p>
-            By connecting your Gmail account, you authorize ReviewRocket to send emails on your behalf using the Gmail API. You may revoke this authorization at any time from the Settings screen. You remain solely responsible for the content of emails sent through the Service and for compliance with all applicable laws governing email communications.
+            By connecting your Gmail account, you authorize ReviewLink to send emails on your behalf using the Gmail API. You may revoke this authorization at any time from the Settings screen. You remain solely responsible for the content of emails sent through the Service and for compliance with all applicable laws governing email communications.
           </p>
         </section>
 
@@ -97,7 +97,7 @@ export default function TermsOfService() {
             7. Intellectual Property
           </h2>
           <p>
-            The Service and its original content, features, and functionality are owned by ReviewRocket and are protected by applicable intellectual property laws. You may not copy, modify, distribute, sell, or lease any part of the Service without our prior written consent.
+            The Service and its original content, features, and functionality are owned by ReviewLink and are protected by applicable intellectual property laws. You may not copy, modify, distribute, sell, or lease any part of the Service without our prior written consent.
           </p>
         </section>
 
@@ -115,7 +115,7 @@ export default function TermsOfService() {
             9. Limitation of Liability
           </h2>
           <p>
-            To the fullest extent permitted by law, ReviewRocket shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Service. Our total liability to you for any claims arising from these Terms or the Service shall not exceed the amount you paid us in the 12 months preceding the claim.
+            To the fullest extent permitted by law, ReviewLink shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Service. Our total liability to you for any claims arising from these Terms or the Service shall not exceed the amount you paid us in the 12 months preceding the claim.
           </p>
         </section>
 

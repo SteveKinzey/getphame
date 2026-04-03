@@ -1,4 +1,4 @@
-# ReviewRocket TODO
+# ReviewLink TODO
 
 ## Core App
 - [x] Mobile PWA scaffold (Vite + React + TailwindCSS)

@@ -1,4 +1,4 @@
-// ReviewRocket — Payment Success Page
+// ReviewLink — Payment Success Page
 // Shown after a successful Stripe checkout. Confirms Pro activation and guides next steps.
 
 import { useEffect, useState } from "react";
@@ -148,7 +148,7 @@ export default function PaymentSuccessPage() {
         ))}
       </div>
       <p className="text-center text-xs mt-2" style={{ color: "rgba(255,255,255,0.3)" }}>
-        Thank you for supporting ReviewRocket
+        Thank you for supporting ReviewLink
       </p>
     </div>
   );

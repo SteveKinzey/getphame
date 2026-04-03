@@ -1,4 +1,4 @@
-// ReviewRocket — Auto-Reminder Hook
+// ReviewLink — Auto-Reminder Hook
 // Checks for pending 3-day follow-up reminders and processes them
 // Only active for Pro tier users
 
@@ -24,7 +24,7 @@ export function useReminders() {
 
         // In production: call email/SMS API here
         // For demo: log and mark as sent
-        console.log(`[ReviewRocket] Sending reminder to ${reminder.customerName}`);
+        console.log(`[ReviewLink] Sending reminder to ${reminder.customerName}`);
         console.log('Message:', message);
 
         // Simulate sending

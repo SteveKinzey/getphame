@@ -1,5 +1,5 @@
 /**
- * Gmail OAuth integration for ReviewRocket.
+ * Gmail OAuth integration for ReviewLink.
  *
  * Flow:
  * 1. User clicks "Connect Gmail" → frontend calls /api/gmail/auth-url

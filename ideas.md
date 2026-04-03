@@ -1,4 +1,4 @@
-# ReviewRocket — Design Brainstorm
+# ReviewLink — Design Brainstorm
 
 ## Approach 1: Bold Utility Brutalism
 <response>

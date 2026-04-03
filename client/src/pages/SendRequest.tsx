@@ -1,4 +1,4 @@
-// ReviewRocket — Send Request Page
+// ReviewLink — Send Request Page
 // Sends a review request email via the user's connected Gmail account
 
 import { useState } from "react";

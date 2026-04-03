@@ -1,5 +1,5 @@
 /**
- * Stripe integration for ReviewRocket Pro subscriptions.
+ * Stripe integration for ReviewLink Pro subscriptions.
  *
  * Flow:
  * 1. User clicks "Upgrade to Pro" → frontend calls stripe.createCheckout
@@ -20,7 +20,7 @@ export const PRO_PRICE = {
   amount: 2900, // cents
   currency: "usd",
   interval: "month" as const,
-  name: "ReviewRocket Pro",
+  name: "ReviewLink Pro",
   description: "Unlimited review requests, priority sending, advanced analytics",
 };
 

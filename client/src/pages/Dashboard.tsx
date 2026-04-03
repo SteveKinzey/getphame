@@ -1,4 +1,4 @@
-// ReviewRocket — Dashboard / Analytics Screen
+// ReviewLink — Dashboard / Analytics Screen
 // Shows: total requests, monthly count, full activity log
 
 import { trpc } from "@/lib/trpc";

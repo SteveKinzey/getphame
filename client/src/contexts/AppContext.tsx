@@ -1,4 +1,4 @@
-// ReviewRocket — Global App Context
+// ReviewLink — Global App Context
 // Manages business profile, requests, and tier state across all screens
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';

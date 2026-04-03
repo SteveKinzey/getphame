@@ -35,7 +35,7 @@ export default function PrivacyPolicy() {
             1. Introduction
           </h2>
           <p>
-            ReviewRocket ("we," "our," or "us") operates the ReviewRocket mobile web application (the "Service"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our Service. By using ReviewRocket, you agree to the collection and use of information in accordance with this policy.
+            ReviewLink ("we," "our," or "us") operates the ReviewLink mobile web application (the "Service"). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our Service. By using ReviewLink, you agree to the collection and use of information in accordance with this policy.
           </p>
         </section>
 
@@ -58,7 +58,7 @@ export default function PrivacyPolicy() {
             3. How We Use Gmail Access
           </h2>
           <p className="mb-2">
-            ReviewRocket requests access to your Gmail account solely to send review request emails to your customers on your behalf. Specifically, we use the <strong>Gmail API send scope</strong> (<code>https://www.googleapis.com/auth/gmail.send</code>) which allows us to:
+            ReviewLink requests access to your Gmail account solely to send review request emails to your customers on your behalf. Specifically, we use the <strong>Gmail API send scope</strong> (<code>https://www.googleapis.com/auth/gmail.send</code>) which allows us to:
           </p>
           <ul className="list-disc pl-5 space-y-1">
             <li>Send emails from your Gmail address to customers you specify</li>
@@ -67,7 +67,7 @@ export default function PrivacyPolicy() {
             We do <strong>not</strong> read, store, or process any of your existing Gmail messages, contacts, or other Gmail data. Our use of Gmail API data is limited to sending outbound emails you explicitly initiate through the app.
           </p>
           <p className="mt-2">
-            ReviewRocket's use and transfer of information received from Google APIs adheres to the{" "}
+            ReviewLink's use and transfer of information received from Google APIs adheres to the{" "}
             <a
               href="https://developers.google.com/terms/api-services-user-data-policy"
               target="_blank"
@@ -117,7 +117,7 @@ export default function PrivacyPolicy() {
             7. Children's Privacy
           </h2>
           <p>
-            ReviewRocket is not intended for use by individuals under the age of 18. We do not knowingly collect personal information from children under 18.
+            ReviewLink is not intended for use by individuals under the age of 18. We do not knowingly collect personal information from children under 18.
           </p>
         </section>
 

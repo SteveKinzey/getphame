@@ -1,4 +1,4 @@
-// ReviewRocket — Upgrade to Pro Screen
+// ReviewLink — Upgrade to Pro Screen
 // Design: Navy background, gold crown hero, premium pricing card
 
 import { trpc } from "@/lib/trpc";

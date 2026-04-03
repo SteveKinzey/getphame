@@ -1,4 +1,4 @@
-// ReviewRocket — Onboarding / Login screen
+// ReviewLink — Onboarding / Login screen
 // Shown when user is not authenticated. Prompts them to sign in with Manus OAuth.
 // After login, they set up their business profile in Settings.
 
@@ -25,14 +25,14 @@ export default function OnboardingPage() {
           className="text-sm font-bold tracking-widest uppercase"
           style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
         >
-          ReviewRocket
+          ReviewLink
         </span>
       </div>
 
       {/* Hero content */}
       <div className="flex flex-col items-center text-center gap-6 flex-1 justify-center">
         <div className="w-48 h-48 rounded-3xl overflow-hidden shadow-2xl">
-          <img src={HERO_IMG} alt="ReviewRocket" className="w-full h-full object-cover" />
+          <img src={HERO_IMG} alt="ReviewLink" className="w-full h-full object-cover" />
         </div>
 
         <div>

@@ -1,6 +1,6 @@
 {
-  "name": "ReviewRocket",
-  "short_name": "ReviewRocket",
+  "name": "ReviewLink",
+  "short_name": "ReviewLink",
   "description": "Get more 5-star Google reviews for your business",
   "start_url": "/",
   "display": "standalone",

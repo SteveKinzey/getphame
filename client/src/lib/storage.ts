@@ -1,4 +1,4 @@
-// ReviewRocket — Local Storage Utilities
+// ReviewLink — Local Storage Utilities
 // All app data persisted to localStorage for offline-first PWA behavior
 
 export interface BusinessProfile {
@@ -30,7 +30,7 @@ export interface AppData {
   lastUpdated: string;
 }
 
-const STORAGE_KEY = 'review-rocket-data';
+const STORAGE_KEY = 'review-link-data';
 
 const DEFAULT_DATA: AppData = {
   profile: null,

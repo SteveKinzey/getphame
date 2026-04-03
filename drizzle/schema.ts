@@ -30,7 +30,7 @@ export const gmailTokens = mysqlTable("gmail_tokens", {
 export type GmailToken = typeof gmailTokens.$inferSelect;
 export type InsertGmailToken = typeof gmailTokens.$inferInsert;
 
-/** Business profile for each ReviewRocket user */
+/** Business profile for each ReviewLink user */
 export const businessProfiles = mysqlTable("business_profiles", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull().unique(),

@@ -1,4 +1,4 @@
-// ReviewRocket — Home Dashboard
+// ReviewLink — Home Dashboard
 // Shows stats, Gmail connection status, and quick-send CTA
 
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -61,7 +61,7 @@ export default function HomePage() {
                 className="text-xs font-bold tracking-widest uppercase"
                 style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
               >
-                ReviewRocket
+                ReviewLink
               </span>
             </div>
             <h1
