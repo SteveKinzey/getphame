@@ -36,6 +36,7 @@ import {
   updateSavedContact,
   deleteSavedContact,
   markContactSent,
+  importContacts,
 } from "./contacts";
 import {
   listTemplates,
@@ -346,6 +347,23 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         await markContactSent(ctx.user.id, input.id);
         return { ok: true };
+      }),
+    importCSV: protectedProcedure
+      .input(
+        z.object({
+          rows: z.array(
+            z.object({
+              name: z.string().min(1),
+              email: z.string().email(),
+              phone: z.string().optional(),
+              notes: z.string().optional(),
+            })
+          ).min(1).max(5000),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        const result = await importContacts(ctx.user.id, input.rows);
+        return result;
       }),
   }),
 

@@ -86,3 +86,11 @@
 - [x] Add "Send reminder now" override button on pending reminders
 - [x] Add analytics card to Dashboard showing request volume stats
 - [x] Debug reviewlink.app custom domain not loading (Cloudflare Error 1000 — DNS A records point to Cloudflare IPs)
+
+## CSV Client Import
+- [x] Server: contacts.importCSV procedure (parse rows, deduplicate by email, bulk-save to saved_contacts)
+- [x] CSV Import page at /import (drag-drop zone, column mapper, preview table, confirm button)
+- [x] Template CSV download (first_name, last_name, email, phone, notes)
+- [x] Navigation: Import button/link on Contacts page
+- [x] Route registered: /import in App.tsx
+- [x] Bulk-send from imported contacts works via existing Contacts flow

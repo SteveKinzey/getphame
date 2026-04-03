@@ -27,7 +27,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { UserPlus, Send, Pencil, Trash2, ChevronLeft, Mail, Phone, Clock } from "lucide-react";
+import { UserPlus, Send, Pencil, Trash2, ChevronLeft, Mail, Phone, Clock, Upload } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 
@@ -171,14 +171,25 @@ export default function SavedContacts() {
             </h1>
             <p className="text-sm mt-1 opacity-70 text-white">Re-send review requests to repeat customers</p>
           </div>
-          <Button
-            onClick={openCreate}
-            size="sm"
-            className="font-bold"
-            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
-          >
-            <UserPlus size={16} className="mr-1" /> Add
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => navigate("/import")}
+              size="sm"
+              variant="outline"
+              className="font-bold border-0"
+              style={{ background: "oklch(0.32 0.07 260)", color: "oklch(0.80 0.18 80)" }}
+            >
+              <Upload size={14} className="mr-1" /> Import CSV
+            </Button>
+            <Button
+              onClick={openCreate}
+              size="sm"
+              className="font-bold"
+              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+            >
+              <UserPlus size={16} className="mr-1" /> Add
+            </Button>
+          </div>
         </div>
       </div>
 
