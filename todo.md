@@ -76,3 +76,4 @@
 - [x] Auto-refresh customer list in background after successful sync (Settings + WooCustomers page)
 - [x] Search bar on WooCustomers page for real-time filtering by name or email
 - [x] Pending/All toggle + Sent/Pending status badge on WooCustomers page
+- [x] Manual Sent/Pending toggle on each WooCommerce customer row

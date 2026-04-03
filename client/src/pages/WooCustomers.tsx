@@ -28,6 +28,7 @@ import {
   Search,
   X,
   MailCheck,
+  RotateCcw,
 } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -68,6 +69,17 @@ export default function WooCustomers() {
     onError: (err) => {
       toast.error(`Sync failed: ${err.message}`);
     },
+  });
+
+  const setStatus = trpc.woo.setStatus.useMutation({
+    onSuccess: (_data, variables) => {
+      utils.woo.listPending.invalidate();
+      utils.woo.listAll.invalidate();
+      toast.success(
+        variables.sent ? "Marked as Sent" : "Marked as Pending"
+      );
+    },
+    onError: (err) => toast.error(`Failed: ${err.message}`),
   });
 
   const bulkSend = trpc.woo.bulkSend.useMutation({
@@ -362,21 +374,37 @@ export default function WooCustomers() {
                     <p className="text-xs text-gray-400">
                       {formatDate(customer.orderDate)}
                     </p>
-                    {customer.reviewRequestSentAt ? (
-                      <span
-                        className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
-                        style={{ background: "oklch(0.92 0.06 145)", color: "oklch(0.35 0.12 145)" }}
+                    <div className="flex items-center gap-1">
+                      {customer.reviewRequestSentAt ? (
+                        <span
+                          className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
+                          style={{ background: "oklch(0.92 0.06 145)", color: "oklch(0.35 0.12 145)" }}
+                        >
+                          <MailCheck size={10} /> Sent
+                        </span>
+                      ) : (
+                        <span
+                          className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
+                          style={{ background: "oklch(0.93 0.06 80)", color: "oklch(0.45 0.12 80)" }}
+                        >
+                          Pending
+                        </span>
+                      )}
+                      <button
+                        title={customer.reviewRequestSentAt ? "Mark as Pending" : "Mark as Sent"}
+                        disabled={setStatus.isPending}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setStatus.mutate({
+                            customerId: customer.id,
+                            sent: !customer.reviewRequestSentAt,
+                          });
+                        }}
+                        className="p-1 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-40"
                       >
-                        <MailCheck size={10} /> Sent
-                      </span>
-                    ) : (
-                      <span
-                        className="inline-flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full"
-                        style={{ background: "oklch(0.93 0.06 80)", color: "oklch(0.45 0.12 80)" }}
-                      >
-                        Pending
-                      </span>
-                    )}
+                        <RotateCcw size={11} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}

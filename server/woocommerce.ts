@@ -191,6 +191,28 @@ export async function getAllWooCustomers(userId: number) {
 }
 
 /**
+ * Manually set a single customer's review request status.
+ * Pass null to mark as Pending, or Date.now() to mark as Sent.
+ */
+export async function setWooCustomerStatus(
+  userId: number,
+  customerId: number,
+  sent: boolean
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db
+    .update(wooCustomers)
+    .set({ reviewRequestSentAt: sent ? Date.now() : null })
+    .where(
+      and(
+        eq(wooCustomers.userId, userId),
+        eq(wooCustomers.id, customerId)
+      )
+    );
+}
+
+/**
  * Mark a list of wooCustomer IDs as having received a review request.
  */
 export async function markWooCustomersSent(
