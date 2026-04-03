@@ -5,7 +5,7 @@
  * request. Users can select individuals or all, then bulk-send in one click.
  */
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { trpc } from "@/lib/trpc";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -16,6 +16,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import {
   RefreshCw,
@@ -47,6 +57,14 @@ export default function WooCustomers() {
   const [search, setSearch] = useState("");
   const [viewMode, setViewMode] = useState<"pending" | "all">("pending");
 
+  // Confirmation dialog state
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const pendingStatusChange = useRef<{ customerId: number; sent: boolean } | null>(null);
+
+  // Bulk confirm dialog state
+  const [bulkConfirmOpen, setBulkConfirmOpen] = useState(false);
+  const pendingBulkChange = useRef<{ sent: boolean } | null>(null);
+
   const utils = trpc.useUtils();
 
   const { data: creds } = trpc.woo.getCredentials.useQuery();
@@ -75,12 +93,51 @@ export default function WooCustomers() {
     onSuccess: (_data, variables) => {
       utils.woo.listPending.invalidate();
       utils.woo.listAll.invalidate();
+      toast.success(variables.sent ? "Marked as Sent" : "Marked as Pending");
+    },
+    onError: (err) => toast.error(`Failed: ${err.message}`),
+  });
+
+  const bulkSetStatus = trpc.woo.bulkSetStatus.useMutation({
+    onSuccess: (data, variables) => {
+      utils.woo.listPending.invalidate();
+      utils.woo.listAll.invalidate();
+      setSelectedIds(new Set());
       toast.success(
-        variables.sent ? "Marked as Sent" : "Marked as Pending"
+        `${data.count} customer${data.count !== 1 ? "s" : ""} marked as ${variables.sent ? "Sent" : "Pending"}.`
       );
     },
     onError: (err) => toast.error(`Failed: ${err.message}`),
   });
+
+  function requestStatusChange(customerId: number, sent: boolean) {
+    pendingStatusChange.current = { customerId, sent };
+    setConfirmOpen(true);
+  }
+
+  function confirmStatusChange() {
+    if (pendingStatusChange.current) {
+      setStatus.mutate(pendingStatusChange.current);
+      pendingStatusChange.current = null;
+    }
+    setConfirmOpen(false);
+  }
+
+  function requestBulkStatusChange(sent: boolean) {
+    pendingBulkChange.current = { sent };
+    setBulkConfirmOpen(true);
+  }
+
+  function confirmBulkStatusChange() {
+    if (pendingBulkChange.current) {
+      bulkSetStatus.mutate({
+        customerIds: Array.from(selectedIds),
+        sent: pendingBulkChange.current.sent,
+      });
+      pendingBulkChange.current = null;
+    }
+    setBulkConfirmOpen(false);
+  }
 
   const bulkSend = trpc.woo.bulkSend.useMutation({
     onSuccess: (result) => {
@@ -176,6 +233,41 @@ export default function WooCustomers() {
 
   return (
     <div className="min-h-screen pb-24" style={{ background: "oklch(0.975 0.003 100)" }}>
+      {/* Single-customer status change confirmation */}
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Change customer status?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {pendingStatusChange.current?.sent
+                ? "This will mark the customer as Sent and remove them from the Pending list."
+                : "This will mark the customer as Pending so they can receive a review request again."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmStatusChange}>Confirm</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Bulk status change confirmation */}
+      <AlertDialog open={bulkConfirmOpen} onOpenChange={setBulkConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Bulk status change?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {pendingBulkChange.current?.sent
+                ? `Mark all ${selectedIds.size} selected customer${selectedIds.size !== 1 ? "s" : ""} as Sent?`
+                : `Mark all ${selectedIds.size} selected customer${selectedIds.size !== 1 ? "s" : ""} as Pending?`}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={confirmBulkStatusChange}>Confirm</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       {/* Navy header */}
       <div
         className="px-5 pt-14 pb-6"
@@ -323,21 +415,42 @@ export default function WooCustomers() {
               </label>
 
               {selectedIds.size > 0 && (
-                <Button
-                  size="sm"
-                  onClick={() =>
-                    bulkSend.mutate({ customerIds: Array.from(selectedIds) })
-                  }
-                  disabled={bulkSend.isPending}
-                  className="flex items-center gap-2"
-                  style={{
-                    background: "oklch(0.80 0.18 80)",
-                    color: "oklch(0.22 0.09 260)",
-                  }}
-                >
-                  <Send size={13} />
-                  {bulkSend.isPending ? "Sending…" : `Send to ${selectedIds.size}`}
-                </Button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => requestBulkStatusChange(false)}
+                    disabled={bulkSetStatus.isPending}
+                    className="flex items-center gap-1 text-xs px-2 py-1 h-auto"
+                  >
+                    <RotateCcw size={11} /> Pending
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => requestBulkStatusChange(true)}
+                    disabled={bulkSetStatus.isPending}
+                    className="flex items-center gap-1 text-xs px-2 py-1 h-auto"
+                    style={{ borderColor: "oklch(0.65 0.15 145)", color: "oklch(0.35 0.12 145)" }}
+                  >
+                    <MailCheck size={11} /> Mark Sent
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() =>
+                      bulkSend.mutate({ customerIds: Array.from(selectedIds) })
+                    }
+                    disabled={bulkSend.isPending}
+                    className="flex items-center gap-2"
+                    style={{
+                      background: "oklch(0.80 0.18 80)",
+                      color: "oklch(0.22 0.09 260)",
+                    }}
+                  >
+                    <Send size={13} />
+                    {bulkSend.isPending ? "Sending…" : `Send to ${selectedIds.size}`}
+                  </Button>
+                </div>
               )}
             </div>
 
@@ -369,6 +482,11 @@ export default function WooCustomers() {
                         {customer.productName}
                       </p>
                     )}
+                    {customer.lastStatusChangedAt && (
+                      <p className="text-xs mt-1" style={{ color: "oklch(0.55 0.05 260)" }}>
+                        Status changed {formatDate(customer.lastStatusChangedAt)}
+                      </p>
+                    )}
                   </div>
                   <div className="text-right shrink-0 flex flex-col items-end gap-1">
                     <p className="text-xs text-gray-400">
@@ -395,10 +513,7 @@ export default function WooCustomers() {
                         disabled={setStatus.isPending}
                         onClick={(e) => {
                           e.stopPropagation();
-                          setStatus.mutate({
-                            customerId: customer.id,
-                            sent: !customer.reviewRequestSentAt,
-                          });
+                          requestStatusChange(customer.id, !customer.reviewRequestSentAt);
                         }}
                         className="p-1 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors disabled:opacity-40"
                       >

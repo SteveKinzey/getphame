@@ -107,6 +107,7 @@ export const wooCustomers = mysqlTable("woo_customers", {
   productName: varchar("productName", { length: 512 }),
   orderDate: bigint("orderDate", { mode: "number" }).notNull(), // Unix ms
   reviewRequestSentAt: bigint("reviewRequestSentAt", { mode: "number" }), // null = not yet sent
+  lastStatusChangedAt: bigint("lastStatusChangedAt", { mode: "number" }), // Unix ms of last manual status change
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 

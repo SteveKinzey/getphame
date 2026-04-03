@@ -25,6 +25,7 @@ import {
   getAllWooCustomers,
   markWooCustomersSent,
   setWooCustomerStatus,
+  bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
 import { stripeSubscriptions } from "../drizzle/schema";
@@ -196,6 +197,14 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         await setWooCustomerStatus(ctx.user.id, input.customerId, input.sent);
         return { ok: true };
+      }),
+
+    /** Bulk mark selected customers as Sent or Pending */
+    bulkSetStatus: protectedProcedure
+      .input(z.object({ customerIds: z.array(z.number().int()).min(1), sent: z.boolean() }))
+      .mutation(async ({ ctx, input }) => {
+        await bulkSetWooCustomerStatus(ctx.user.id, input.customerIds, input.sent);
+        return { ok: true, count: input.customerIds.length };
       }),
 
     /** Bulk send review requests to selected WooCommerce customers */

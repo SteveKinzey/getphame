@@ -77,3 +77,6 @@
 - [x] Search bar on WooCustomers page for real-time filtering by name or email
 - [x] Pending/All toggle + Sent/Pending status badge on WooCustomers page
 - [x] Manual Sent/Pending toggle on each WooCommerce customer row
+- [x] Confirmation dialog before manual status toggle on WooCommerce customer row
+- [x] Bulk Sent/Pending edit for selected customers in WooCustomers page
+- [x] Last manual status change timestamp stored and displayed per customer

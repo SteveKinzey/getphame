@@ -201,13 +201,42 @@ export async function setWooCustomerStatus(
 ): Promise<void> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
+  const now = Date.now();
   await db
     .update(wooCustomers)
-    .set({ reviewRequestSentAt: sent ? Date.now() : null })
+    .set({
+      reviewRequestSentAt: sent ? now : null,
+      lastStatusChangedAt: now,
+    })
     .where(
       and(
         eq(wooCustomers.userId, userId),
         eq(wooCustomers.id, customerId)
+      )
+    );
+}
+
+/**
+ * Bulk set status for multiple customers at once.
+ */
+export async function bulkSetWooCustomerStatus(
+  userId: number,
+  customerIds: number[],
+  sent: boolean
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const now = Date.now();
+  await db
+    .update(wooCustomers)
+    .set({
+      reviewRequestSentAt: sent ? now : null,
+      lastStatusChangedAt: now,
+    })
+    .where(
+      and(
+        eq(wooCustomers.userId, userId),
+        inArray(wooCustomers.id, customerIds)
       )
     );
 }
