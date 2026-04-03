@@ -20,6 +20,7 @@ import {
   ShoppingBag,
   ChevronRight,
   Clock,
+  RefreshCw,
 } from "lucide-react";
 import ProBadge from "@/components/ProBadge";
 import { toast } from "sonner";
@@ -78,6 +79,14 @@ export default function SettingsPage() {
       setWooSecret("");
     },
     onError: (err) => toast.error(err.message),
+  });
+
+  const quickSync = trpc.woo.sync.useMutation({
+    onSuccess: (result) => {
+      utils.woo.getCredentials.invalidate();
+      toast.success(`Synced — ${result.added} new customer${result.added !== 1 ? "s" : ""} added.`);
+    },
+    onError: (err) => toast.error(`Sync failed: ${err.message}`),
   });
 
   function handleSaveWoo() {
@@ -404,14 +413,29 @@ export default function SettingsPage() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold" style={{ color: "oklch(0.30 0.12 145)" }}>Store Connected</p>
                   <p className="text-xs truncate" style={{ color: "oklch(0.45 0.10 145)" }}>{wooCreds.storeUrl}</p>
-                  {wooCreds.lastSyncedAt ? (
-                    <p className="text-xs mt-0.5 flex items-center gap-1" style={{ color: "oklch(0.50 0.10 145)" }}>
-                      <Clock size={10} />
-                      Last synced {new Date(wooCreds.lastSyncedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
-                    </p>
-                  ) : (
-                    <p className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.08 80)" }}>Not yet synced — visit Customers to sync</p>
-                  )}
+                  <div className="flex items-center gap-2 mt-0.5">
+                    {wooCreds.lastSyncedAt ? (
+                      <p className="text-xs flex items-center gap-1" style={{ color: "oklch(0.50 0.10 145)" }}>
+                        <Clock size={10} />
+                        Last synced {new Date(wooCreds.lastSyncedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                      </p>
+                    ) : (
+                      <p className="text-xs" style={{ color: "oklch(0.55 0.08 80)" }}>Not yet synced</p>
+                    )}
+                    <button
+                      onClick={() => quickSync.mutate({ days: 30 })}
+                      disabled={quickSync.isPending}
+                      className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full transition-opacity disabled:opacity-60"
+                      style={{ background: "oklch(0.88 0.06 145)", color: "oklch(0.30 0.12 145)" }}
+                    >
+                      {quickSync.isPending ? (
+                        <Loader2 size={9} className="animate-spin" />
+                      ) : (
+                        <RefreshCw size={9} />
+                      )}
+                      {quickSync.isPending ? "Syncing…" : "Sync"}
+                    </button>
+                  </div>
                 </div>
               </div>
               <button
