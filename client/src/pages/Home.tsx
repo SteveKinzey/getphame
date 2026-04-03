@@ -1,46 +1,52 @@
-// ReviewRocket — Home Screen
-// Design: Navy header panel with rocket + stats, white content area below
-// Shows quick stats, recent activity, and quick-send CTA
+// ReviewRocket — Home Dashboard
+// Shows stats, Gmail connection status, and quick-send CTA
 
-import { useApp } from '@/contexts/AppContext';
-import { useLocation } from 'wouter';
-import { Rocket, Star, Send, TrendingUp, Clock, ChevronRight, Crown } from 'lucide-react';
-import { format } from 'date-fns';
+import { useAuth } from "@/_core/hooks/useAuth";
+import { trpc } from "@/lib/trpc";
+import { Rocket, Star, Send, TrendingUp, Clock, Crown, AlertCircle, CheckCircle2 } from "lucide-react";
+import { useLocation } from "wouter";
+import { format } from "date-fns";
 
-const HERO_IMG = 'https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp';
+const HERO_IMG =
+  "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
 
-function formatRelativeTime(dateStr: string): string {
-  const date = new Date(dateStr);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
+function formatRelativeTime(date: Date): string {
+  const diffMs = Date.now() - date.getTime();
   const diffMins = Math.floor(diffMs / 60000);
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
-  if (diffMins < 1) return 'just now';
+  if (diffMins < 1) return "just now";
   if (diffMins < 60) return `${diffMins}m ago`;
   if (diffHours < 24) return `${diffHours}h ago`;
   if (diffDays < 7) return `${diffDays}d ago`;
-  return format(date, 'MMM d');
+  return format(date, "MMM d");
 }
 
 export default function HomePage() {
-  const { profile, requests, monthlyCount, totalCount, atFreeLimit, remainingFree, freeTierLimit } = useApp();
+  const { user } = useAuth();
   const [, navigate] = useLocation();
 
-  const recentRequests = requests.slice(0, 5);
-  const isPro = profile?.tier === 'pro';
+  const { data: profile } = trpc.profile.get.useQuery();
+  const { data: gmailStatus } = trpc.gmail.status.useQuery();
+  const { data: stats } = trpc.requests.stats.useQuery();
+
+  const isPro = profile?.tier === "pro";
+  const gmailConnected = gmailStatus?.connected ?? false;
+  const profileComplete = !!profile?.businessName && !!profile?.reviewLink;
+  const atFreeLimit = !isPro && (stats?.thisMonth ?? 0) >= 10;
+  const remainingFree = Math.max(0, 10 - (stats?.thisMonth ?? 0));
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: 'oklch(0.975 0.003 100)' }}>
+    <div className="min-h-screen pb-24" style={{ background: "oklch(0.975 0.003 100)" }}>
       {/* Navy Header Panel */}
       <div
         className="relative px-5 pt-14 pb-8 overflow-hidden"
-        style={{ background: 'oklch(0.22 0.09 260)' }}
+        style={{ background: "oklch(0.22 0.09 260)" }}
       >
         {/* Background rocket image */}
         <div
           className="absolute right-0 top-0 w-40 h-40 opacity-15 pointer-events-none"
-          style={{ transform: 'translate(10%, -10%)' }}
+          style={{ transform: "translate(10%, -10%)" }}
         >
           <img src={HERO_IMG} alt="" className="w-full h-full object-contain" />
         </div>
@@ -49,36 +55,34 @@ export default function HomePage() {
         <div className="flex items-center justify-between mb-6 relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Rocket size={16} style={{ color: 'oklch(0.80 0.18 80)' }} />
+              <Rocket size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
               <span
                 className="text-xs font-bold tracking-widest uppercase"
-                style={{ color: 'oklch(0.80 0.18 80)', fontFamily: "'Syne', sans-serif" }}
+                style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
               >
                 ReviewRocket
               </span>
             </div>
             <h1
               className="text-2xl leading-tight"
-              style={{ color: 'white', fontFamily: "'Syne', sans-serif", fontWeight: 900 }}
+              style={{ color: "white", fontFamily: "'Syne', sans-serif", fontWeight: 900 }}
             >
-              Hey, {profile?.name?.split(' ')[0] || 'there'}! 👋
+              {profile?.businessName ? `Hey, ${profile.businessName.split(" ")[0]}!` : `Welcome back!`}
             </h1>
-            <p
-              className="text-sm mt-1"
-              style={{ color: 'oklch(0.65 0.04 260)', fontFamily: "'Nunito', sans-serif" }}
-            >
-              Ready to collect more reviews today?
+            <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>
+              {user?.name ?? user?.email ?? ""}
             </p>
           </div>
+
           {isPro && (
             <div
               className="flex items-center gap-1 px-3 py-1.5 rounded-full"
-              style={{ background: 'oklch(0.80 0.18 80)' }}
+              style={{ background: "oklch(0.80 0.18 80)" }}
             >
-              <Crown size={12} style={{ color: 'oklch(0.22 0.09 260)' }} />
+              <Crown size={12} style={{ color: "oklch(0.22 0.09 260)" }} />
               <span
-                className="text-xs font-bold"
-                style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Syne', sans-serif" }}
+                className="text-xs font-black"
+                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
               >
                 PRO
               </span>
@@ -89,258 +93,177 @@ export default function HomePage() {
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-3 relative z-10">
           {[
-            { label: 'This Month', value: monthlyCount, icon: TrendingUp },
-            { label: 'All Time', value: totalCount, icon: Send },
+            { label: "This Month", value: stats?.thisMonth ?? 0, icon: <Send size={14} /> },
+            { label: "All Time", value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
             {
-              label: isPro ? 'Unlimited' : 'Remaining',
-              value: isPro ? '∞' : remainingFree,
-              icon: Star,
+              label: isPro ? "Unlimited" : `${remainingFree} Left`,
+              value: isPro ? "∞" : remainingFree,
+              icon: <Star size={14} />,
             },
-          ].map(({ label, value, icon: Icon }) => (
+          ].map((s) => (
             <div
-              key={label}
-              className="flex flex-col items-center py-3 px-2 rounded-xl"
-              style={{ background: 'oklch(0.30 0.08 260)' }}
+              key={s.label}
+              className="rounded-xl px-3 py-3 text-center"
+              style={{ background: "oklch(0.30 0.08 260)" }}
             >
-              <Icon size={14} style={{ color: 'oklch(0.80 0.18 80)', marginBottom: '4px' }} />
-              <span
-                className="rr-stat-number text-2xl leading-none"
-                style={{ fontFamily: "'Syne', sans-serif", fontWeight: 900 }}
+              <div
+                className="flex items-center justify-center gap-1 mb-1"
+                style={{ color: "oklch(0.80 0.18 80)" }}
               >
-                {value}
-              </span>
-              <span
-                className="text-xs mt-1 text-center"
-                style={{ color: 'oklch(0.60 0.04 260)', fontFamily: "'Nunito', sans-serif" }}
+                {s.icon}
+              </div>
+              <div
+                className="text-2xl font-black"
+                style={{ color: "white", fontFamily: "'Syne', sans-serif" }}
               >
-                {label}
-              </span>
+                {s.value}
+              </div>
+              <div className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+                {s.label}
+              </div>
             </div>
           ))}
         </div>
-
-        {/* Free tier progress bar */}
-        {!isPro && (
-          <div className="mt-4 relative z-10">
-            <div className="flex justify-between items-center mb-1.5">
-              <span
-                className="text-xs"
-                style={{ color: 'oklch(0.60 0.04 260)', fontFamily: "'Nunito', sans-serif" }}
-              >
-                Free tier: {monthlyCount}/{freeTierLimit} requests used this month
-              </span>
-              {atFreeLimit && (
-                <span
-                  className="text-xs font-bold"
-                  style={{ color: 'oklch(0.80 0.18 80)', fontFamily: "'Syne', sans-serif" }}
-                >
-                  Limit reached
-                </span>
-              )}
-            </div>
-            <div
-              className="w-full h-2 rounded-full overflow-hidden"
-              style={{ background: 'oklch(0.30 0.08 260)' }}
-            >
-              <div
-                className="h-full rounded-full transition-all duration-500"
-                style={{
-                  width: `${Math.min(100, (monthlyCount / freeTierLimit) * 100)}%`,
-                  background: atFreeLimit
-                    ? 'oklch(0.65 0.22 27)'
-                    : 'oklch(0.80 0.18 80)',
-                }}
-              />
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Content Area */}
-      <div className="px-5 pt-5">
-        {/* Quick Send CTA */}
-        {atFreeLimit ? (
-          <button
-            onClick={() => navigate('/upgrade')}
-            className="w-full flex items-center justify-between px-5 py-4 rounded-2xl mb-5 transition-all active:scale-98"
-            style={{
-              background: 'linear-gradient(135deg, oklch(0.22 0.09 260) 0%, oklch(0.30 0.08 260) 100%)',
-              border: '2px solid oklch(0.80 0.18 80)',
-            }}
-          >
-            <div className="flex items-center gap-3">
-              <Crown size={24} style={{ color: 'oklch(0.80 0.18 80)' }} />
-              <div className="text-left">
-                <p
-                  className="font-bold text-sm"
-                  style={{ color: 'white', fontFamily: "'Syne', sans-serif" }}
-                >
-                  Upgrade to Pro
-                </p>
-                <p
-                  className="text-xs"
-                  style={{ color: 'oklch(0.65 0.04 260)', fontFamily: "'Nunito', sans-serif" }}
-                >
-                  Unlimited requests + auto-reminders
-                </p>
+      <div className="px-4 py-4 flex flex-col gap-4">
+        {/* ── Setup nudges ─────────────────────────────────────────────────── */}
+        {(!gmailConnected || !profileComplete) && (
+          <div className="bg-white rounded-2xl p-4 shadow-sm">
+            <p
+              className="text-sm font-black mb-3"
+              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+            >
+              Complete your setup
+            </p>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-3">
+                {profileComplete ? (
+                  <CheckCircle2 size={16} style={{ color: "oklch(0.55 0.18 145)" }} />
+                ) : (
+                  <AlertCircle size={16} style={{ color: "oklch(0.65 0.18 80)" }} />
+                )}
+                <span className="text-sm" style={{ color: profileComplete ? "oklch(0.45 0.10 145)" : "oklch(0.40 0.04 260)" }}>
+                  Business profile {profileComplete ? "complete" : "— add your business name & review link"}
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                {gmailConnected ? (
+                  <CheckCircle2 size={16} style={{ color: "oklch(0.55 0.18 145)" }} />
+                ) : (
+                  <AlertCircle size={16} style={{ color: "oklch(0.65 0.18 80)" }} />
+                )}
+                <span className="text-sm" style={{ color: gmailConnected ? "oklch(0.45 0.10 145)" : "oklch(0.40 0.04 260)" }}>
+                  Gmail {gmailConnected ? `connected (${gmailStatus?.gmailEmail})` : "— connect your Gmail account"}
+                </span>
               </div>
             </div>
-            <ChevronRight size={20} style={{ color: 'oklch(0.80 0.18 80)' }} />
-          </button>
-        ) : (
-          <button
-            onClick={() => navigate('/send')}
-            className="rr-gold-btn w-full flex items-center justify-center gap-3 text-lg mb-5"
-            style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800 }}
-          >
-            <Send size={22} />
-            Send a Review Request
-          </button>
-        )}
-
-        {/* Recent Activity */}
-        <div className="mb-4">
-          <div className="flex items-center justify-between mb-3">
-            <h2
-              className="text-lg"
-              style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Syne', sans-serif", fontWeight: 800 }}
-            >
-              Recent Activity
-            </h2>
-            {requests.length > 5 && (
+            {(!gmailConnected || !profileComplete) && (
               <button
-                onClick={() => navigate('/dashboard')}
-                className="text-xs font-bold flex items-center gap-1"
-                style={{ color: 'oklch(0.80 0.18 80)', fontFamily: "'Nunito', sans-serif" }}
+                onClick={() => navigate("/settings")}
+                className="mt-3 w-full py-2.5 rounded-xl text-sm font-black"
+                style={{
+                  background: "oklch(0.22 0.09 260)",
+                  color: "oklch(0.80 0.18 80)",
+                  fontFamily: "'Syne', sans-serif",
+                }}
               >
-                View all <ChevronRight size={14} />
+                Go to Settings →
               </button>
             )}
           </div>
+        )}
 
-          {recentRequests.length === 0 ? (
-            <div
-              className="rr-card p-8 flex flex-col items-center text-center"
-            >
-              <div className="flex gap-1 mb-3">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <Star
-                    key={i}
-                    size={24}
-                    fill="oklch(0.88 0.15 80)"
-                    style={{ color: 'oklch(0.88 0.15 80)' }}
-                  />
-                ))}
-              </div>
-              <p
-                className="font-bold text-base mb-1"
-                style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Syne', sans-serif" }}
+        {/* ── Quick Send CTA ───────────────────────────────────────────────── */}
+        <button
+          onClick={() => navigate("/send")}
+          disabled={atFreeLimit || !gmailConnected || !profileComplete}
+          className="w-full py-5 rounded-2xl flex items-center justify-center gap-3 font-black text-xl transition-transform active:scale-95"
+          style={{
+            background:
+              atFreeLimit || !gmailConnected || !profileComplete
+                ? "oklch(0.80 0.03 260)"
+                : "oklch(0.80 0.18 80)",
+            color:
+              atFreeLimit || !gmailConnected || !profileComplete
+                ? "oklch(0.55 0.03 260)"
+                : "oklch(0.22 0.09 260)",
+            fontFamily: "'Syne', sans-serif",
+          }}
+        >
+          <Rocket size={24} />
+          Send a Review Request
+        </button>
+
+        {atFreeLimit && (
+          <button
+            onClick={() => navigate("/upgrade")}
+            className="w-full py-3 rounded-2xl flex items-center justify-center gap-2 font-black text-sm"
+            style={{
+              background: "oklch(0.22 0.09 260)",
+              color: "oklch(0.80 0.18 80)",
+              fontFamily: "'Syne', sans-serif",
+            }}
+          >
+            <Crown size={16} />
+            Upgrade to Pro — Unlimited Requests
+          </button>
+        )}
+
+        {/* ── Recent Activity ──────────────────────────────────────────────── */}
+        {stats?.recent && stats.recent.length > 0 && (
+          <div className="bg-white rounded-2xl p-4 shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <h3
+                className="text-sm font-black"
+                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
               >
-                No requests yet
-              </p>
-              <p
-                className="text-sm"
-                style={{ color: 'oklch(0.52 0.04 260)', fontFamily: "'Nunito', sans-serif" }}
+                Recent Requests
+              </h3>
+              <button
+                onClick={() => navigate("/dashboard")}
+                className="text-xs font-bold"
+                style={{ color: "oklch(0.50 0.10 260)" }}
               >
-                Send your first review request and start collecting those 5-star reviews!
-              </p>
+                View All →
+              </button>
             </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {recentRequests.map((req, i) => (
-                <div
-                  key={req.id}
-                  className="rr-card flex items-center gap-4 px-4 py-3.5 animate-fade-in-up"
-                  style={{ animationDelay: `${i * 0.05}s` }}
-                >
-                  <div
-                    className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-sm"
-                    style={{
-                      background: 'oklch(0.22 0.09 260)',
-                      color: 'oklch(0.80 0.18 80)',
-                      fontFamily: "'Syne', sans-serif",
-                    }}
-                  >
-                    {req.customerName.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p
-                      className="font-bold text-sm truncate"
-                      style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Syne', sans-serif" }}
+            <div className="flex flex-col gap-2">
+              {stats.recent.map((req) => (
+                <div key={req.id} className="flex items-center justify-between py-2 border-b last:border-0" style={{ borderColor: "oklch(0.94 0.01 260)" }}>
+                  <div className="flex items-center gap-3">
+                    <div
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black"
+                      style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
                     >
-                      {req.customerName}
-                    </p>
-                    <p
-                      className="text-xs"
-                      style={{ color: 'oklch(0.52 0.04 260)', fontFamily: "'Nunito', sans-serif" }}
-                    >
-                      {req.method === 'email' ? '📧 Email' : req.method === 'sms' ? '📱 SMS' : '📧📱 Email & SMS'} · {formatRelativeTime(req.sentAt)}
-                    </p>
+                      {req.customerName[0].toUpperCase()}
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>
+                        {req.customerName}
+                      </p>
+                      <p className="text-xs" style={{ color: "oklch(0.60 0.03 260)" }}>
+                        {req.customerEmail}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1">
-                    {req.status === 'reminded' ? (
-                      <span
-                        className="text-xs px-2 py-1 rounded-full font-semibold"
-                        style={{
-                          background: 'oklch(0.88 0.15 80 / 0.2)',
-                          color: 'oklch(0.68 0.18 75)',
-                          fontFamily: "'Nunito', sans-serif",
-                        }}
-                      >
-                        Reminded
-                      </span>
-                    ) : (
-                      <span
-                        className="text-xs px-2 py-1 rounded-full font-semibold"
-                        style={{
-                          background: 'oklch(0.22 0.09 260 / 0.08)',
-                          color: 'oklch(0.30 0.08 260)',
-                          fontFamily: "'Nunito', sans-serif",
-                        }}
-                      >
-                        Sent
-                      </span>
-                    )}
+                  <div className="text-right">
+                    <div
+                      className="text-xs px-2 py-0.5 rounded-full font-bold"
+                      style={{
+                        background: "oklch(0.96 0.04 145)",
+                        color: "oklch(0.45 0.12 145)",
+                      }}
+                    >
+                      Sent
+                    </div>
+                    <p className="text-xs mt-0.5" style={{ color: "oklch(0.65 0.03 260)" }}>
+                      {formatRelativeTime(new Date(req.sentAt))}
+                    </p>
                   </div>
                 </div>
               ))}
             </div>
-          )}
-        </div>
-
-        {/* Upgrade nudge for free users */}
-        {!isPro && !atFreeLimit && monthlyCount > 0 && (
-          <button
-            onClick={() => navigate('/upgrade')}
-            className="w-full flex items-center justify-between px-4 py-3.5 rounded-xl mt-2 mb-4"
-            style={{ background: 'oklch(0.80 0.18 80 / 0.12)', border: '1.5px solid oklch(0.80 0.18 80 / 0.3)' }}
-          >
-            <div className="flex items-center gap-3">
-              <Crown size={18} style={{ color: 'oklch(0.68 0.18 75)' }} />
-              <span
-                className="text-sm font-bold"
-                style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Syne', sans-serif" }}
-              >
-                Go Pro — Unlimited requests for $29/mo
-              </span>
-            </div>
-            <ChevronRight size={16} style={{ color: 'oklch(0.68 0.18 75)' }} />
-          </button>
-        )}
-
-        {/* Pending reminders notice */}
-        {profile?.tier === 'pro' && (
-          <div
-            className="flex items-center gap-3 px-4 py-3.5 rounded-xl mb-4"
-            style={{ background: 'oklch(0.22 0.09 260 / 0.06)' }}
-          >
-            <Clock size={18} style={{ color: 'oklch(0.52 0.04 260)' }} />
-            <p
-              className="text-sm"
-              style={{ color: 'oklch(0.40 0.06 260)', fontFamily: "'Nunito', sans-serif" }}
-            >
-              Auto-reminders are active — customers who haven't reviewed after 3 days get a friendly nudge.
-            </p>
           </div>
         )}
       </div>
