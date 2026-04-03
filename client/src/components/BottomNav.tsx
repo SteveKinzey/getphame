@@ -2,7 +2,8 @@
 // Design: Navy background, gold active state, large tap targets (48px+)
 
 import { useLocation } from 'wouter';
-import { Home, Send, BarChart2, Settings } from 'lucide-react';
+import { Home, Send, BarChart2, Settings, Crown } from 'lucide-react';
+import { trpc } from '@/lib/trpc';
 
 const NAV_ITEMS = [
   { path: '/', label: 'Home', Icon: Home },
@@ -13,6 +14,8 @@ const NAV_ITEMS = [
 
 export default function BottomNav() {
   const [location, navigate] = useLocation();
+  const { data: profile } = trpc.profile.get.useQuery();
+  const isPro = profile?.tier === 'pro';
 
   return (
     <nav
@@ -35,21 +38,32 @@ export default function BottomNav() {
               style={{ minHeight: '60px' }}
               aria-label={label}
             >
-              <div
-                className="flex items-center justify-center rounded-full transition-all duration-200"
-                style={{
-                  width: '40px',
-                  height: '32px',
-                  background: isActive ? 'oklch(0.80 0.18 80 / 0.15)' : 'transparent',
-                }}
-              >
-                <Icon
-                  size={22}
-                  strokeWidth={isActive ? 2.5 : 1.8}
+              <div className="relative">
+                <div
+                  className="flex items-center justify-center rounded-full transition-all duration-200"
                   style={{
-                    color: isActive ? 'oklch(0.80 0.18 80)' : 'oklch(0.70 0.04 260)',
+                    width: '40px',
+                    height: '32px',
+                    background: isActive ? 'oklch(0.80 0.18 80 / 0.15)' : 'transparent',
                   }}
-                />
+                >
+                  <Icon
+                    size={22}
+                    strokeWidth={isActive ? 2.5 : 1.8}
+                    style={{
+                      color: isActive ? 'oklch(0.80 0.18 80)' : 'oklch(0.70 0.04 260)',
+                    }}
+                  />
+                </div>
+                {/* Pro crown dot on Settings tab */}
+                {isPro && path === '/settings' && (
+                  <div
+                    className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center"
+                    style={{ background: 'oklch(0.80 0.18 80)' }}
+                  >
+                    <Crown size={8} style={{ color: 'oklch(0.22 0.09 260)' }} strokeWidth={2.5} />
+                  </div>
+                )}
               </div>
               <span
                 className="text-xs font-semibold tracking-wide"

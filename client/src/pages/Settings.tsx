@@ -18,6 +18,7 @@ import {
   ExternalLink,
   CreditCard,
 } from "lucide-react";
+import ProBadge from "@/components/ProBadge";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 
@@ -105,9 +106,12 @@ export default function SettingsPage() {
           Account & Profile
         </h1>
         {user && (
-          <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>
-            {user.name ?? user.email ?? "Signed in"}
-          </p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
+              {user.name ?? user.email ?? "Signed in"}
+            </p>
+            {profile?.tier === "pro" && <ProBadge size="sm" />}
+          </div>
         )}
       </div>
 

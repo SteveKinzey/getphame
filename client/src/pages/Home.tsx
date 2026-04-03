@@ -4,6 +4,7 @@
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { Rocket, Star, Send, TrendingUp, Clock, Crown, AlertCircle, CheckCircle2 } from "lucide-react";
+import ProBadge from "@/components/ProBadge";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 
@@ -69,25 +70,15 @@ export default function HomePage() {
             >
               {profile?.businessName ? `Hey, ${profile.businessName.split(" ")[0]}!` : `Welcome back!`}
             </h1>
-            <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>
-              {user?.name ?? user?.email ?? ""}
-            </p>
+            <div className="flex items-center gap-2 mt-1">
+              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
+                {user?.name ?? user?.email ?? ""}
+              </p>
+              {isPro && <ProBadge size="sm" />}
+            </div>
           </div>
 
-          {isPro && (
-            <div
-              className="flex items-center gap-1 px-3 py-1.5 rounded-full"
-              style={{ background: "oklch(0.80 0.18 80)" }}
-            >
-              <Crown size={12} style={{ color: "oklch(0.22 0.09 260)" }} />
-              <span
-                className="text-xs font-black"
-                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
-              >
-                PRO
-              </span>
-            </div>
-          )}
+          {isPro && <ProBadge size="lg" />}
         </div>
 
         {/* Stats row */}
