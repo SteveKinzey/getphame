@@ -4,12 +4,20 @@ import { ArrowLeft } from "lucide-react";
 export default function TermsOfService() {
   const [, navigate] = useLocation();
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      navigate("/");
+    }
+  };
+
   return (
     <div className="min-h-screen" style={{ background: "oklch(0.975 0.003 100)" }}>
       {/* Header */}
       <div className="px-5 pt-12 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
         <button
-          onClick={() => navigate("/")}
+          onClick={handleBack}
           className="flex items-center gap-2 mb-4 text-sm"
           style={{ color: "oklch(0.80 0.18 80)" }}
         >

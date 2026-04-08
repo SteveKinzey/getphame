@@ -160,3 +160,7 @@
 - [x] Move legal links out of Settings page, into a global gold footer strip below the bottom nav bar
 - [x] Gold background (oklch(0.80 0.18 80)), dark navy link text, Poppins font
 - [x] Adjust page bottom padding to account for nav bar + footer height (existing pb-24 covers both)
+
+## Back Button Fix
+- [x] Fix back button on Privacy Policy page (window.history.back() with / fallback)
+- [x] Fix back button on Terms of Service page (window.history.back() with / fallback)
