@@ -44,7 +44,7 @@ export default function HomePage() {
   const remainingFree = Math.max(0, 10 - (stats?.thisMonth ?? 0));
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-32" style={{ background: "oklch(0.975 0.003 100)" }}>
       {/* Navy Header Panel */}
       <div
         className="relative px-5 pt-14 pb-8 overflow-hidden"

@@ -84,7 +84,7 @@ export default function UpgradePage() {
   if (isPro) {
     return (
       <div
-        className="min-h-screen flex flex-col items-center justify-center px-6 pb-28"
+        className="min-h-screen flex flex-col items-center justify-center px-6 pb-32"
         style={{ background: "oklch(0.22 0.09 260)" }}
       >
         <Crown size={64} style={{ color: "oklch(0.80 0.18 80)" }} className="mb-4" />
@@ -136,7 +136,7 @@ export default function UpgradePage() {
   }
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: "oklch(0.22 0.09 260)" }}>
+    <div className="min-h-screen pb-32" style={{ background: "oklch(0.22 0.09 260)" }}>
       {/* Header */}
       <div className="px-5 pt-14 pb-6">
         <button

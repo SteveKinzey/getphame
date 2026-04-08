@@ -138,7 +138,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-32" style={{ background: "oklch(0.975 0.003 100)" }}>
       {/* Navy Header */}
       <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
         <div className="flex items-center gap-2 mb-1">
@@ -602,24 +602,6 @@ export default function SettingsPage() {
           Sign Out
         </button>
 
-        {/* ── Legal Footer ─────────────────────────────────────────────────── */}
-        <div className="flex items-center justify-center gap-4 pb-2">
-          <a
-            href="/privacy-policy"
-            className="text-xs hover:underline transition-colors"
-            style={{ color: 'oklch(0.60 0.03 260)', fontFamily: "'Nunito', sans-serif" }}
-          >
-            Privacy Policy
-          </a>
-          <span style={{ color: 'oklch(0.75 0.02 260)', fontSize: '10px' }}>·</span>
-          <a
-            href="/terms-of-service"
-            className="text-xs hover:underline transition-colors"
-            style={{ color: 'oklch(0.60 0.03 260)', fontFamily: "'Nunito', sans-serif" }}
-          >
-            Terms of Service
-          </a>
-        </div>
       </div>
     </div>
   );

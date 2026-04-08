@@ -60,7 +60,7 @@ export default function DashboardPage() {
   }, [allRequests]);
 
   return (
-    <div className="min-h-screen pb-28" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-32" style={{ background: "oklch(0.975 0.003 100)" }}>
       {/* Navy Header */}
       <div className="px-5 pt-14 pb-8" style={{ background: "oklch(0.22 0.09 260)" }}>
         <div className="flex items-center gap-2 mb-1">

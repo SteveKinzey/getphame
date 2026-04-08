@@ -155,3 +155,8 @@
 
 ## Footer Legal Links
 - [x] Add Privacy Policy and Terms of Service links to the app footer (Settings page, below Sign Out)
+
+## Footer Redesign
+- [x] Move legal links out of Settings page, into a global gold footer strip below the bottom nav bar
+- [x] Gold background (oklch(0.80 0.18 80)), dark navy link text, Poppins font
+- [x] Adjust page bottom padding to account for nav bar + footer height (existing pb-24 covers both)
