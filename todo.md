@@ -152,3 +152,6 @@
 - [x] UI: redeem code input on Upgrade page (below Stripe button)
 - [x] UI: admin /admin/codes page to create, list, and revoke codes
 - [x] UI: route /admin/codes registered in App.tsx (owner-only)
+
+## Footer Legal Links
+- [x] Add Privacy Policy and Terms of Service links to the app footer (Settings page, below Sign Out)

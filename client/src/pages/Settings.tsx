@@ -601,6 +601,25 @@ export default function SettingsPage() {
           <LogOut size={16} />
           Sign Out
         </button>
+
+        {/* ── Legal Footer ─────────────────────────────────────────────────── */}
+        <div className="flex items-center justify-center gap-4 pb-2">
+          <a
+            href="/privacy-policy"
+            className="text-xs hover:underline transition-colors"
+            style={{ color: 'oklch(0.60 0.03 260)', fontFamily: "'Nunito', sans-serif" }}
+          >
+            Privacy Policy
+          </a>
+          <span style={{ color: 'oklch(0.75 0.02 260)', fontSize: '10px' }}>·</span>
+          <a
+            href="/terms-of-service"
+            className="text-xs hover:underline transition-colors"
+            style={{ color: 'oklch(0.60 0.03 260)', fontFamily: "'Nunito', sans-serif" }}
+          >
+            Terms of Service
+          </a>
+        </div>
       </div>
     </div>
   );
