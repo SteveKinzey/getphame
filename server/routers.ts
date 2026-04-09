@@ -18,6 +18,7 @@ import {
   sendViaGmail,
 } from "./gmail";
 import { createCheckoutSession, createPortalSession } from "./stripe";
+import { createOrGetZohoCustomer, createZohoInvoice, sendZohoInvoice } from "./zoho";
 import {
   getWooCredentials,
   upsertWooCredentials,
@@ -29,7 +30,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import {
   listSavedContacts,
@@ -128,6 +129,46 @@ export const appRouter = router({
           replyTo: input.replyTo ?? existing?.replyTo ?? null,
         });
         return getBusinessProfile(ctx.user.id);
+      }),
+  }),
+
+  zoho: router({
+    /** Create a Zoho Books invoice for Pro subscription and email it to the user */
+    createInvoice: protectedProcedure
+      .mutation(async ({ ctx }) => {
+        const profile = await getBusinessProfile(ctx.user.id);
+        if (!profile) throw new TRPCError({ code: "BAD_REQUEST", message: "Please complete your business profile first." });
+
+        const userEmail = ctx.user.email ?? "";
+        const userName = ctx.user.name ?? profile.businessName;
+
+        // Create or retrieve Zoho customer
+        const zohoCustomerId = await createOrGetZohoCustomer({
+          email: userEmail,
+          name: userName,
+        });
+
+        // Save zohoCustomerId on the profile
+        const db = await getDb();
+        await db!.update(businessProfiles)
+          .set({ zohoCustomerId })
+          .where(eq(businessProfiles.userId, ctx.user.id));
+
+        // Create and send the invoice
+        const invoice = await createZohoInvoice({
+          zohoCustomerId,
+          userEmail,
+          userName,
+          userId: ctx.user.id,
+        });
+
+        await sendZohoInvoice(invoice.invoiceId);
+
+        return {
+          invoiceId: invoice.invoiceId,
+          invoiceNumber: invoice.invoiceNumber,
+          message: `Invoice ${invoice.invoiceNumber} has been sent to ${userEmail}. Click the Pay Now link in the email to activate Pro.`,
+        };
       }),
   }),
 

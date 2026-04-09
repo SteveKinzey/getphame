@@ -1,9 +1,10 @@
 // ReviewLink — Upgrade to Pro Screen
 // Design: Navy background, gold crown hero, premium pricing card
+// Billing: Zoho Books invoice (primary) + Stripe direct (secondary)
 
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
-import { Crown, Check, Star, Zap, BarChart2, ChevronLeft, Infinity, Loader2, CreditCard, Settings, Ticket, Unlock } from "lucide-react";
+import { Crown, Check, Star, Zap, BarChart2, ChevronLeft, Infinity, Loader2, CreditCard, FileText, Ticket, Unlock } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -28,7 +29,19 @@ export default function UpgradePage() {
   const [, navigate] = useLocation();
   const { data: profile } = trpc.profile.get.useQuery();
   const { data: subStatus } = trpc.stripe.subscriptionStatus.useQuery();
+  const utils = trpc.useUtils();
 
+  // Zoho Books invoice (primary billing method)
+  const createInvoice = trpc.zoho.createInvoice.useMutation({
+    onSuccess: (data) => {
+      toast.success(data.message, { duration: 8000 });
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to create invoice. Please try again.");
+    },
+  });
+
+  // Stripe direct checkout (fallback)
   const createCheckout = trpc.stripe.createCheckout.useMutation({
     onSuccess: ({ url }) => {
       toast.info("Redirecting to secure checkout...");
@@ -50,7 +63,6 @@ export default function UpgradePage() {
   });
 
   const isPro = profile?.tier === "pro";
-  const utils = trpc.useUtils();
 
   const [accessCode, setAccessCode] = useState("");
   const redeemCode = trpc.accessCodes.redeem.useMutation({
@@ -73,7 +85,11 @@ export default function UpgradePage() {
     redeemCode.mutate({ code: accessCode.trim() });
   }
 
-  function handleUpgrade() {
+  function handleInvoice() {
+    createInvoice.mutate();
+  }
+
+  function handleStripeCheckout() {
     createCheckout.mutate({ origin: window.location.origin });
   }
 
@@ -212,28 +228,54 @@ export default function UpgradePage() {
             ))}
           </div>
 
-          {/* Stripe Checkout Button */}
+          {/* Primary CTA: Zoho Books Invoice */}
           <button
-            onClick={handleUpgrade}
-            disabled={createCheckout.isPending}
-            className="w-full py-4 rounded-2xl font-black text-lg transition-transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-70"
+            onClick={handleInvoice}
+            disabled={createInvoice.isPending}
+            className="w-full py-4 rounded-2xl font-black text-lg transition-transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-70 mb-3"
             style={{
               background: "oklch(0.80 0.18 80)",
               color: "oklch(0.22 0.09 260)",
               fontFamily: "'Poppins', sans-serif",
             }}
           >
-            {createCheckout.isPending ? (
+            {createInvoice.isPending ? (
               <Loader2 size={18} className="animate-spin" />
             ) : (
-              <Crown size={18} />
+              <FileText size={18} />
             )}
-            {createCheckout.isPending ? "Loading checkout..." : "Upgrade to Pro — $29/mo"}
+            {createInvoice.isPending ? "Sending invoice..." : "Get Invoice — $29/mo"}
           </button>
 
-          <p className="text-center text-xs mt-3" style={{ color: "rgba(255,255,255,0.35)" }}>
-            Secure payment powered by Stripe
+          <p className="text-center text-xs mb-4" style={{ color: "rgba(255,255,255,0.45)" }}>
+            An invoice will be emailed to you. Pay by card via the invoice link.
           </p>
+
+          {/* Divider */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.12)" }} />
+            <span className="text-xs" style={{ color: "rgba(255,255,255,0.3)" }}>or pay instantly</span>
+            <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.12)" }} />
+          </div>
+
+          {/* Secondary CTA: Stripe direct */}
+          <button
+            onClick={handleStripeCheckout}
+            disabled={createCheckout.isPending}
+            className="w-full py-3 rounded-2xl font-bold text-sm transition-transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-70"
+            style={{
+              background: "transparent",
+              color: "rgba(255,255,255,0.7)",
+              border: "1px solid rgba(255,255,255,0.2)",
+            }}
+          >
+            {createCheckout.isPending ? (
+              <Loader2 size={16} className="animate-spin" />
+            ) : (
+              <CreditCard size={16} />
+            )}
+            {createCheckout.isPending ? "Loading..." : "Pay by card now (Stripe)"}
+          </button>
         </div>
 
         {/* Access Code Redeem */}
@@ -303,22 +345,6 @@ export default function UpgradePage() {
                 </span>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Test card notice */}
-        <div
-          className="rounded-2xl p-4 flex items-start gap-3"
-          style={{ background: "oklch(0.28 0.06 260)", border: "1px solid rgba(255,255,255,0.1)" }}
-        >
-          <CreditCard size={16} style={{ color: "oklch(0.80 0.18 80)" }} className="mt-0.5 shrink-0" />
-          <div>
-            <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.80 0.18 80)" }}>
-              Testing? Use card 4242 4242 4242 4242
-            </p>
-            <p className="text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
-              Any future date and any 3-digit CVC. This is a test environment.
-            </p>
           </div>
         </div>
 

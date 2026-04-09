@@ -12,4 +12,9 @@ export const ENV = {
   // Pin the exact redirect URI registered in Google Cloud Console.
   // This ensures the same URI is used in both dev and production.
   gmailRedirectUri: process.env.GMAIL_REDIRECT_URI ?? "",
+  // Zoho Books integration
+  zohoClientId: process.env.ZOHO_CLIENT_ID ?? "",
+  zohoClientSecret: process.env.ZOHO_CLIENT_SECRET ?? "",
+  zohoOrgId: process.env.ZOHO_ORG_ID ?? "",
+  zohoRefreshToken: process.env.ZOHO_REFRESH_TOKEN ?? "",
 };

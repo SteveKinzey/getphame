@@ -71,6 +71,13 @@
       "when": 1775739698474,
       "tag": "0009_foamy_vargas",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "5",
+      "when": 1775777656616,
+      "tag": "0010_acoustic_professor_monster",
+      "breakpoints": true
     }
   ]
 }

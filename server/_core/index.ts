@@ -16,6 +16,7 @@ import { sdk } from "./sdk";
 import { startReminderScheduler } from "../reminders";
 import { startGmailHealthCheckScheduler } from "../gmailHealthCheck";
 import { registerSitemapRoutes } from "../sitemap";
+import { registerZohoRoutes } from "../zoho";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -170,6 +171,9 @@ async function startServer() {
 
   // SEO: sitemap.xml and robots.txt (must be before static/Vite catch-all)
   registerSitemapRoutes(app);
+
+  // Zoho Books OAuth + webhook routes
+  registerZohoRoutes(app);
 
   // tRPC API
   app.use(

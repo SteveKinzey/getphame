@@ -175,3 +175,14 @@
 - [x] Add dynamic /sitemap.xml server endpoint with all public routes
 - [x] Add /robots.txt pointing to sitemap
 - [x] Verify sitemap returns valid XML at reviewlink.app/sitemap.xml
+
+## Zoho Books Integration
+- [ ] Store ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_ORG_ID, ZOHO_REFRESH_TOKEN as secrets
+- [ ] Build Zoho OAuth token exchange and refresh logic (server/zoho.ts)
+- [ ] Build Zoho Books API helpers: createCustomer, createInvoice, sendInvoice
+- [ ] Add zohoCustomerId column to users table and migrate
+- [ ] Replace Stripe checkout with Zoho invoice creation in upgrade flow
+- [ ] Build /api/zoho/webhook endpoint to auto-upgrade user on invoice payment
+- [ ] Build /api/zoho/callback OAuth redirect handler
+- [ ] Update upgrade UI to show "Invoice will be sent to your email"
+- [ ] Test full flow end-to-end
