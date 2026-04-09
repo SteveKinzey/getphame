@@ -78,6 +78,13 @@
       "when": 1775777656616,
       "tag": "0010_acoustic_professor_monster",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1775778782511,
+      "tag": "0011_abnormal_victor_mancha",
+      "breakpoints": true
     }
   ]
 }

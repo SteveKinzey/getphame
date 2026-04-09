@@ -36,7 +36,8 @@ export const businessProfiles = mysqlTable("business_profiles", {
   userId: int("userId").notNull().unique(),
   businessName: varchar("businessName", { length: 255 }).notNull(),
   reviewLink: text("reviewLink").notNull(),
-  tier: mysqlEnum("tier", ["free", "pro"]).default("free").notNull(),
+  tier: mysqlEnum("tier", ["free", "pro", "annual", "lifetime"]).default("free").notNull(),
+  planExpiresAt: bigint("planExpiresAt", { mode: "number" }), // Unix ms — null for lifetime, set for monthly/annual
   monthlyCount: int("monthlyCount").default(0).notNull(),
   monthlyResetDate: varchar("monthlyResetDate", { length: 7 }).notNull(), // "YYYY-MM"
   // Stripe customer ID — stored for creating checkout sessions and portal links

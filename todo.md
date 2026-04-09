@@ -177,12 +177,23 @@
 - [x] Verify sitemap returns valid XML at reviewlink.app/sitemap.xml
 
 ## Zoho Books Integration
-- [ ] Store ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_ORG_ID, ZOHO_REFRESH_TOKEN as secrets
-- [ ] Build Zoho OAuth token exchange and refresh logic (server/zoho.ts)
-- [ ] Build Zoho Books API helpers: createCustomer, createInvoice, sendInvoice
-- [ ] Add zohoCustomerId column to users table and migrate
-- [ ] Replace Stripe checkout with Zoho invoice creation in upgrade flow
-- [ ] Build /api/zoho/webhook endpoint to auto-upgrade user on invoice payment
-- [ ] Build /api/zoho/callback OAuth redirect handler
-- [ ] Update upgrade UI to show "Invoice will be sent to your email"
-- [ ] Test full flow end-to-end
+- [x] Store ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_ORG_ID, ZOHO_REFRESH_TOKEN as secrets
+- [x] Build Zoho OAuth token exchange and refresh logic (server/zoho.ts)
+- [x] Build Zoho Books API helpers: createCustomer, createInvoice, sendInvoice
+- [x] Add zohoCustomerId column to users table and migrate
+- [x] Replace Stripe checkout with Zoho invoice creation in upgrade flow
+- [x] Build /api/zoho/webhook endpoint to auto-upgrade user on invoice payment
+- [x] Build /api/zoho/callback OAuth redirect handler
+- [x] Update upgrade UI to show "Invoice will be sent to your email"
+- [x] Test full flow end-to-end
+
+## Three-Tier Pricing & Invoice-Only Access Gate
+- [ ] Update DB schema: extend tier enum to include 'annual' and 'lifetime', add planExpiresAt column
+- [ ] Run pnpm db:push for schema changes
+- [ ] Update Zoho invoice creation to support monthly ($29), annual ($290), and lifetime ($1,247) plans
+- [ ] Update Zoho webhook to set correct tier (pro/annual/lifetime) based on invoice line item
+- [ ] Build server-side access gate: non-free check on all protected app procedures
+- [ ] Build frontend access gate: redirect free-tier users to /upgrade on all protected pages
+- [ ] Rebuild Upgrade page with three plan cards (Monthly / Annual / Lifetime)
+- [ ] Add annual savings callout ("Save $58/yr") and lifetime value callout on Upgrade page
+- [ ] Update Settings page to show correct plan label (Monthly Pro / Annual Pro / Lifetime)

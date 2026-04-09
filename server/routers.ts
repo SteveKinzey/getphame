@@ -133,9 +133,10 @@ export const appRouter = router({
   }),
 
   zoho: router({
-    /** Create a Zoho Books invoice for Pro subscription and email it to the user */
+    /** Create a Zoho Books invoice for the selected plan and email it to the user */
     createInvoice: protectedProcedure
-      .mutation(async ({ ctx }) => {
+      .input(z.object({ plan: z.enum(["monthly", "annual", "lifetime"]) }))
+      .mutation(async ({ ctx, input }) => {
         const profile = await getBusinessProfile(ctx.user.id);
         if (!profile) throw new TRPCError({ code: "BAD_REQUEST", message: "Please complete your business profile first." });
 
@@ -154,20 +155,23 @@ export const appRouter = router({
           .set({ zohoCustomerId })
           .where(eq(businessProfiles.userId, ctx.user.id));
 
-        // Create and send the invoice
+        // Create and send the plan-specific invoice
         const invoice = await createZohoInvoice({
           zohoCustomerId,
           userEmail,
           userName,
           userId: ctx.user.id,
+          plan: input.plan,
         });
 
-        await sendZohoInvoice(invoice.invoiceId);
+        await sendZohoInvoice(invoice.invoiceId, input.plan);
 
+        const planLabels = { monthly: "Monthly Pro", annual: "Annual Pro", lifetime: "Lifetime License" };
         return {
           invoiceId: invoice.invoiceId,
           invoiceNumber: invoice.invoiceNumber,
-          message: `Invoice ${invoice.invoiceNumber} has been sent to ${userEmail}. Click the Pay Now link in the email to activate Pro.`,
+          plan: input.plan,
+          message: `Invoice ${invoice.invoiceNumber} for ${planLabels[input.plan]} has been sent to ${userEmail}. Click the Pay Now link in the email to activate your account.`,
         };
       }),
   }),

@@ -215,6 +215,7 @@ describe("Zoho Books Integration", () => {
         userEmail: "steve@example.com",
         userName: "Steve Kinzey",
         userId: 42,
+        plan: "monthly",
       });
 
       expect(result.invoiceId).toBe("inv-789");
