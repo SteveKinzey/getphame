@@ -183,12 +183,16 @@ export async function deleteGmailTokens(userId: number): Promise<void> {
 /**
  * Send an email via the Gmail API using the user's stored tokens.
  * The email appears to come from the user's own Gmail address.
+ * @param fromName  Optional display name shown in the From header (e.g. "Maria's Salon")
+ * @param replyTo   Optional reply-to address (e.g. a professional Workspace address)
  */
 export async function sendViaGmail(
   userId: number,
   to: string,
   subject: string,
-  htmlBody: string
+  htmlBody: string,
+  fromName?: string | null,
+  replyTo?: string | null
 ): Promise<void> {
   const tokenData = await getValidAccessToken(userId);
   if (!tokenData) {
@@ -197,16 +201,31 @@ export async function sendViaGmail(
 
   const { accessToken, gmailEmail } = tokenData;
 
+  // Sanitize header values to prevent RFC 2822 header injection
+  // Strip any newline or carriage return characters from user-supplied values
+  const safeFromName = fromName ? fromName.replace(/[\r\n]/g, " ").trim() : null;
+  const safeReplyTo = replyTo ? replyTo.replace(/[\r\n]/g, "").trim() : null;
+
+  // Build the From header — use display name if provided
+  const fromHeader = safeFromName
+    ? `From: ${safeFromName} <${gmailEmail}>`
+    : `From: ${gmailEmail}`;
+
   // Build RFC 2822 email message
-  const message = [
-    `From: ${gmailEmail}`,
+  const headers = [
+    fromHeader,
     `To: ${to}`,
     `Subject: ${subject}`,
     "MIME-Version: 1.0",
     'Content-Type: text/html; charset="UTF-8"',
-    "",
-    htmlBody,
-  ].join("\r\n");
+  ];
+
+  // Add Reply-To header if a different address is configured
+  if (safeReplyTo && safeReplyTo !== gmailEmail) {
+    headers.push(`Reply-To: ${safeReplyTo}`);
+  }
+
+  const message = [...headers, "", htmlBody].join("\r\n");
 
   // Base64url encode
   const encoded = Buffer.from(message)

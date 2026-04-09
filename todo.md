@@ -164,3 +164,9 @@
 ## Back Button Fix
 - [x] Fix back button on Privacy Policy page (window.history.back() with / fallback)
 - [x] Fix back button on Terms of Service page (window.history.back() with / fallback)
+
+## From Name / Reply-To Setting
+- [x] Add fromName and replyTo columns to users/profiles table in DB schema
+- [x] Add From Name and Reply-To input fields to Settings page
+- [x] Save fromName and replyTo via tRPC procedure
+- [x] Wire fromName and replyTo into Gmail send logic (review requests + follow-ups)

@@ -109,6 +109,8 @@ export const appRouter = router({
           businessName: z.string().min(1),
           reviewLink: z.string().url(),
           tier: z.enum(["free", "pro"]).optional(),
+          fromName: z.string().max(255).optional(),
+          replyTo: z.string().email().optional().or(z.literal("")),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -122,6 +124,8 @@ export const appRouter = router({
           tier: input.tier ?? existing?.tier ?? "free",
           monthlyCount: existing?.monthlyCount ?? 0,
           monthlyResetDate: existing?.monthlyResetDate ?? yearMonth,
+          fromName: input.fromName ?? existing?.fromName ?? null,
+          replyTo: input.replyTo ?? existing?.replyTo ?? null,
         });
         return getBusinessProfile(ctx.user.id);
       }),
@@ -300,7 +304,7 @@ export const appRouter = router({
             </div>
           `;
           try {
-            await sendViaGmail(ctx.user.id, customer.customerEmail, subject, htmlBody);
+            await sendViaGmail(ctx.user.id, customer.customerEmail, subject, htmlBody, profile.fromName, profile.replyTo);
             sentIds.push(customer.id);
             await createCustomerRequest({
               userId: ctx.user.id,
@@ -448,7 +452,7 @@ export const appRouter = router({
               subject = `${profile.businessName} would love your feedback!`;
               htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2>Hi ${contact.name}!</h2><p>Thank you for choosing <strong>${profile.businessName}</strong>. We hope you had a great experience!</p><p>Could you take 30 seconds to leave us a quick review?</p><div style="text-align: center; margin: 32px 0;"><a href="${profile.reviewLink}" style="background: #FFB800; color: #0F1F4B; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold;">Leave a Review</a></div></div>`;
             }
-            await sendViaGmail(ctx.user.id, contact.email, subject, htmlBody);
+            await sendViaGmail(ctx.user.id, contact.email, subject, htmlBody, profile.fromName, profile.replyTo);
             await createCustomerRequest({
               userId: ctx.user.id,
               customerName: contact.name,
@@ -609,7 +613,7 @@ export const appRouter = router({
         `;
         }
 
-        await sendViaGmail(ctx.user.id, input.customerEmail, subject, htmlBody);
+        await sendViaGmail(ctx.user.id, input.customerEmail, subject, htmlBody, profile.fromName, profile.replyTo);
 
         await createCustomerRequest({
           userId: ctx.user.id,

@@ -41,6 +41,10 @@ export const businessProfiles = mysqlTable("business_profiles", {
   monthlyResetDate: varchar("monthlyResetDate", { length: 7 }).notNull(), // "YYYY-MM"
   // Stripe customer ID — stored for creating checkout sessions and portal links
   stripeCustomerId: varchar("stripeCustomerId", { length: 64 }),
+  // Email sender display name — shown as "From: <name>" in outgoing review request emails
+  fromName: varchar("fromName", { length: 255 }),
+  // Reply-To address — if set, replies go here instead of the connected Gmail address
+  replyTo: varchar("replyTo", { length: 320 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

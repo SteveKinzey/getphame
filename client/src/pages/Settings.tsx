@@ -1,7 +1,7 @@
 // ReviewLink — Settings Page
 // Sections: Business Profile, Gmail Connection, Plan
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import {
@@ -34,14 +34,18 @@ export default function SettingsPage() {
   const { data: profile, isLoading: profileLoading } = trpc.profile.get.useQuery();
   const [businessName, setBusinessName] = useState("");
   const [reviewLink, setReviewLink] = useState("");
-  const [profileInitialized, setProfileInitialized] = useState(false);
+  const [fromName, setFromName] = useState("");
+  const [replyTo, setReplyTo] = useState("");
 
-  // Populate form once profile loads
-  if (profile && !profileInitialized) {
-    setBusinessName(profile.businessName);
-    setReviewLink(profile.reviewLink);
-    setProfileInitialized(true);
-  }
+  // Populate form once profile loads (useEffect avoids render-phase setState)
+  useEffect(() => {
+    if (profile) {
+      setBusinessName(profile.businessName);
+      setReviewLink(profile.reviewLink);
+      setFromName(profile.fromName ?? "");
+      setReplyTo(profile.replyTo ?? "");
+    }
+  }, [profile?.id]);
 
   const utils = trpc.useUtils();
   const upsertProfile = trpc.profile.upsert.useMutation({
@@ -128,7 +132,12 @@ export default function SettingsPage() {
   function handleSaveProfile() {
     if (!businessName.trim()) { toast.error("Business name is required"); return; }
     if (!reviewLink.trim()) { toast.error("Google review link is required"); return; }
-    upsertProfile.mutate({ businessName: businessName.trim(), reviewLink: reviewLink.trim() });
+    upsertProfile.mutate({
+      businessName: businessName.trim(),
+      reviewLink: reviewLink.trim(),
+      fromName: fromName.trim() || undefined,
+      replyTo: replyTo.trim() || undefined,
+    });
   }
 
   function handleConnectGmail() {
@@ -223,6 +232,60 @@ export default function SettingsPage() {
                 <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>
                   Find this in Google Business Profile → "Get more reviews"
                 </p>
+              </div>
+
+              {/* ── Email Sender Settings ───────────────────────────────── */}
+              <div
+                className="rounded-xl p-3 mt-1"
+                style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}
+              >
+                <p className="text-xs font-black mb-3" style={{ color: "oklch(0.40 0.04 260)", fontFamily: "'Poppins', sans-serif" }}>
+                  Email Sender Settings
+                </p>
+                <div className="flex flex-col gap-3">
+                  <div>
+                    <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+                      From Name
+                    </label>
+                    <input
+                      type="text"
+                      value={fromName}
+                      onChange={(e) => setFromName(e.target.value)}
+                      placeholder={businessName || "e.g. Maria's Hair Salon"}
+                      className="w-full px-3 py-3 rounded-xl text-sm outline-none"
+                      style={{
+                        border: "2px solid oklch(0.90 0.02 260)",
+                        fontFamily: "'Nunito', sans-serif",
+                        fontSize: "16px",
+                        background: "white",
+                      }}
+                    />
+                    <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>
+                      How your name appears in the customer's inbox. Defaults to your business name.
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+                      Reply-To Email
+                    </label>
+                    <input
+                      type="email"
+                      value={replyTo}
+                      onChange={(e) => setReplyTo(e.target.value)}
+                      placeholder="e.g. steve@sk-america.com"
+                      className="w-full px-3 py-3 rounded-xl text-sm outline-none"
+                      style={{
+                        border: "2px solid oklch(0.90 0.02 260)",
+                        fontFamily: "'Nunito', sans-serif",
+                        fontSize: "16px",
+                        background: "white",
+                      }}
+                    />
+                    <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>
+                      When a customer replies to the email, it goes here. Leave blank to use your connected Gmail.
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <button

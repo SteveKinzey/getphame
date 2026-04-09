@@ -78,7 +78,7 @@ export async function processDueReminders() {
       const subject = `Just checking in — have you had a chance to leave us a review?`;
       const body = `Hi ${reminder.customerName},<br><br>We wanted to follow up on our earlier message. If you've had a chance to try our service, we'd love to hear what you think!<br><br>Leaving a review only takes a minute and helps us a lot:<br><a href="${profile.reviewLink}">${profile.reviewLink}</a><br><br>Thank you so much for your support!<br><br>${profile.businessName}`;
 
-      await sendViaGmail(reminder.userId, reminder.customerEmail, subject, body);
+      await sendViaGmail(reminder.userId, reminder.customerEmail, subject, body, profile.fromName, profile.replyTo);
 
       // Mark as sent
       await db
@@ -112,7 +112,7 @@ export async function sendReminderNow(userId: number, reminderId: number) {
   if (!profile) throw new Error("Business profile not found.");
   const subject = `Just checking in — have you had a chance to leave us a review?`;
   const body = `Hi ${reminder.customerName},<br><br>We wanted to follow up on our earlier message. If you've had a chance to try our service, we'd love to hear what you think!<br><br>Leaving a review only takes a minute and helps us a lot:<br><a href="${profile.reviewLink}">${profile.reviewLink}</a><br><br>Thank you so much for your support!<br><br>${profile.businessName}`;
-  await sendViaGmail(userId, reminder.customerEmail, subject, body);
+  await sendViaGmail(userId, reminder.customerEmail, subject, body, profile.fromName, profile.replyTo);
   await db
     .update(followUpReminders)
     .set({ status: "sent", sentAt: Date.now() })

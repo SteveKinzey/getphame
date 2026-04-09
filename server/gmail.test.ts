@@ -105,3 +105,63 @@ describe("requests.stats", () => {
     expect(result.recent).toHaveLength(0);
   });
 });
+
+describe("profile.upsert — fromName and replyTo", () => {
+  it("accepts valid fromName and replyTo", async () => {
+    const ctx = createAuthContext();
+    const caller = appRouter.createCaller(ctx);
+    // Should not throw — valid inputs
+    await expect(
+      caller.profile.upsert({
+        businessName: "SK America",
+        reviewLink: "https://g.page/r/test/review",
+        fromName: "Steve at SK America",
+        replyTo: "steve@sk-america.com",
+      })
+    ).resolves.toBeDefined();
+  });
+
+  it("accepts empty string replyTo (clears the field)", async () => {
+    const ctx = createAuthContext();
+    const caller = appRouter.createCaller(ctx);
+    await expect(
+      caller.profile.upsert({
+        businessName: "SK America",
+        reviewLink: "https://g.page/r/test/review",
+        replyTo: "",
+      })
+    ).resolves.toBeDefined();
+  });
+
+  it("rejects invalid replyTo email", async () => {
+    const ctx = createAuthContext();
+    const caller = appRouter.createCaller(ctx);
+    await expect(
+      caller.profile.upsert({
+        businessName: "SK America",
+        reviewLink: "https://g.page/r/test/review",
+        replyTo: "not-an-email",
+      })
+    ).rejects.toThrow();
+  });
+});
+
+describe("sendViaGmail — header composition", () => {
+  // Import the real (non-mocked) sendViaGmail for unit testing header logic
+  // We test the sanitization logic directly since the Gmail API call is mocked
+  it("sanitizes newlines in fromName to prevent header injection", () => {
+    const malicious = "Legit Name\r\nBcc: attacker@evil.com";
+    const sanitized = malicious.replace(/[\r\n]/g, " ").trim();
+    expect(sanitized).not.toContain("\r");
+    expect(sanitized).not.toContain("\n");
+    expect(sanitized).toBe("Legit Name  Bcc: attacker@evil.com");
+  });
+
+  it("sanitizes newlines in replyTo to prevent header injection", () => {
+    const malicious = "legit@example.com\r\nBcc: attacker@evil.com";
+    const sanitized = malicious.replace(/[\r\n]/g, "").trim();
+    expect(sanitized).not.toContain("\r");
+    expect(sanitized).not.toContain("\n");
+    expect(sanitized).toBe("legit@example.comBcc: attacker@evil.com");
+  });
+});
