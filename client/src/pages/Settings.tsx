@@ -443,23 +443,22 @@ export default function SettingsPage() {
             <span
               className="text-xs font-bold px-2 py-1 rounded-full"
               style={{
-                background: profile?.tier === "pro" ? "oklch(0.80 0.18 80)" : "oklch(0.93 0.02 260)",
-                color: profile?.tier === "pro" ? "oklch(0.22 0.09 260)" : "oklch(0.45 0.04 260)",
+                background: (profile?.tier && profile.tier !== "free") ? "oklch(0.80 0.18 80)" : "oklch(0.93 0.02 260)",
+                color: (profile?.tier && profile.tier !== "free") ? "oklch(0.22 0.09 260)" : "oklch(0.45 0.04 260)",
               }}
             >
-              {profile?.tier === "pro" ? "PRO" : "FREE"}
+              {profile?.tier === "lifetime" ? "LIFETIME" : profile?.tier === "annual" ? "ANNUAL PRO" : profile?.tier === "pro" ? "MONTHLY PRO" : "FREE"}
             </span>
           </div>
 
-          {profile?.tier === "pro" ? (
+          {(profile?.tier === "pro" || profile?.tier === "annual" || profile?.tier === "lifetime") ? (
             <div className="flex flex-col gap-2">
               <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
-                Unlimited requests · Active subscription
-                {subStatus?.status && (
-                  <span className="ml-1" style={{ color: "oklch(0.55 0.18 145)" }}>
-                    ({subStatus.status})
-                  </span>
-                )}
+                {profile?.tier === "lifetime"
+                  ? "Unlimited requests · Lifetime license — no renewals"
+                  : profile?.tier === "annual"
+                  ? "Unlimited requests · Annual subscription"
+                  : "Unlimited requests · Monthly subscription"}
               </p>
               <button
                 onClick={() => createPortal.mutate({ origin: window.location.origin })}

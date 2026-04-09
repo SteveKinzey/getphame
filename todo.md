@@ -188,12 +188,12 @@
 - [x] Test full flow end-to-end
 
 ## Three-Tier Pricing & Invoice-Only Access Gate
-- [ ] Update DB schema: extend tier enum to include 'annual' and 'lifetime', add planExpiresAt column
-- [ ] Run pnpm db:push for schema changes
-- [ ] Update Zoho invoice creation to support monthly ($29), annual ($290), and lifetime ($1,247) plans
-- [ ] Update Zoho webhook to set correct tier (pro/annual/lifetime) based on invoice line item
-- [ ] Build server-side access gate: non-free check on all protected app procedures
-- [ ] Build frontend access gate: redirect free-tier users to /upgrade on all protected pages
-- [ ] Rebuild Upgrade page with three plan cards (Monthly / Annual / Lifetime)
-- [ ] Add annual savings callout ("Save $58/yr") and lifetime value callout on Upgrade page
-- [ ] Update Settings page to show correct plan label (Monthly Pro / Annual Pro / Lifetime)
+- [x] Update DB schema: extend tier enum to include 'annual' and 'lifetime', add planExpiresAt column
+- [x] Run pnpm db:push for schema changes
+- [x] Update Zoho invoice creation to support monthly ($29), annual ($290), and lifetime ($1,247) plans
+- [x] Update Zoho webhook to set correct tier (pro/annual/lifetime) based on invoice line item
+- [x] Build server-side access gate: non-free check on all protected app procedures
+- [x] Build frontend access gate: redirect free-tier users to /upgrade on all protected pages
+- [x] Rebuild Upgrade page with three plan cards (Monthly / Annual / Lifetime)
+- [x] Add annual savings callout ("Save $58/yr") and lifetime value callout on Upgrade page
+- [x] Update Settings page to show correct plan label (Monthly Pro / Annual Pro / Lifetime)
