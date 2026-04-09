@@ -15,6 +15,7 @@ import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
 import { startReminderScheduler } from "../reminders";
 import { startGmailHealthCheckScheduler } from "../gmailHealthCheck";
+import { registerSitemapRoutes } from "../sitemap";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -166,6 +167,9 @@ async function startServer() {
       res.redirect(`${fallbackOrigin}/?gmail_error=1#/settings`);
     }
   });
+
+  // SEO: sitemap.xml and robots.txt (must be before static/Vite catch-all)
+  registerSitemapRoutes(app);
 
   // tRPC API
   app.use(

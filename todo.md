@@ -170,3 +170,8 @@
 - [x] Add From Name and Reply-To input fields to Settings page
 - [x] Save fromName and replyTo via tRPC procedure
 - [x] Wire fromName and replyTo into Gmail send logic (review requests + follow-ups)
+
+## Sitemap & SEO
+- [x] Add dynamic /sitemap.xml server endpoint with all public routes
+- [x] Add /robots.txt pointing to sitemap
+- [x] Verify sitemap returns valid XML at reviewlink.app/sitemap.xml
