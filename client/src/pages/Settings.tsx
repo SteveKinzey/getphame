@@ -21,6 +21,12 @@ import {
   ChevronRight,
   Clock,
   RefreshCw,
+  Plus,
+  Trash2,
+  Star,
+  Globe,
+  Pencil,
+  X,
 } from "lucide-react";
 import ProBadge from "@/components/ProBadge";
 import { toast } from "sonner";
@@ -113,6 +119,78 @@ export default function SettingsPage() {
     if (!wooSecret.trim()) { toast.error("Consumer Secret is required"); return; }
     saveWooCreds.mutate({ storeUrl: wooUrl.trim(), consumerKey: wooKey.trim(), consumerSecret: wooSecret.trim() });
   }
+
+  // ── Review Platforms ─────────────────────────────────────────────────────
+  const { data: platforms, isLoading: platformsLoading } = trpc.reviewPlatforms.list.useQuery();
+  const [showAddPlatform, setShowAddPlatform] = useState(false);
+  const [editingPlatformId, setEditingPlatformId] = useState<number | null>(null);
+  const [newPlatformType, setNewPlatformType] = useState<string>("google");
+  const [newPlatformUrl, setNewPlatformUrl] = useState("");
+  const [newPlatformLabel, setNewPlatformLabel] = useState("");
+
+  const addPlatform = trpc.reviewPlatforms.add.useMutation({
+    onSuccess: () => {
+      utils.reviewPlatforms.list.invalidate();
+      setShowAddPlatform(false);
+      setNewPlatformUrl("");
+      setNewPlatformLabel("");
+      setNewPlatformType("google");
+      toast.success("Review platform added!");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const updatePlatform = trpc.reviewPlatforms.update.useMutation({
+    onSuccess: () => {
+      utils.reviewPlatforms.list.invalidate();
+      setEditingPlatformId(null);
+      toast.success("Platform updated!");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const removePlatform = trpc.reviewPlatforms.remove.useMutation({
+    onSuccess: () => {
+      utils.reviewPlatforms.list.invalidate();
+      toast.success("Platform removed.");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const setDefaultPlatform = trpc.reviewPlatforms.setDefault.useMutation({
+    onSuccess: () => {
+      utils.reviewPlatforms.list.invalidate();
+      toast.success("Default platform updated!");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const PLATFORM_LABELS: Record<string, string> = {
+    google: "Google",
+    yelp: "Yelp",
+    tripadvisor: "TripAdvisor",
+    bing: "Bing",
+    facebook: "Facebook",
+    other: "Other",
+  };
+
+  const PLATFORM_ICONS: Record<string, string> = {
+    google: "🔍",
+    yelp: "⭐",
+    tripadvisor: "🦉",
+    bing: "🌐",
+    facebook: "👍",
+    other: "🔗",
+  };
+
+  const PLATFORM_PLACEHOLDERS: Record<string, string> = {
+    google: "https://g.page/r/your-business/review",
+    yelp: "https://www.yelp.com/biz/your-business",
+    tripadvisor: "https://www.tripadvisor.com/Restaurant_Review-...",
+    bing: "https://www.bingplaces.com/...",
+    facebook: "https://www.facebook.com/your-page/reviews",
+    other: "https://...",
+  };
 
   // ── Gmail status ───────────────────────────────────────────────────────────
   const { data: gmailStatus, isLoading: gmailLoading } = trpc.gmail.status.useQuery();
@@ -310,8 +388,238 @@ export default function SettingsPage() {
           )}
         </div>
 
-        {/* ── Gmail Connection ──────────────────────────────────────────────── */}
+        {/* ── Review Platforms ─────────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-1">
+            <div className="flex items-center gap-2">
+              <Globe size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+              <h2
+                className="text-base font-black"
+                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+              >
+                Review Platforms
+              </h2>
+            </div>
+            <button
+              onClick={() => { setShowAddPlatform(true); setEditingPlatformId(null); }}
+              className="flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full transition-colors"
+              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+            >
+              <Plus size={12} />
+              Add
+            </button>
+          </div>
+          <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.03 260)" }}>
+            Add your review page URLs for Google, Yelp, TripAdvisor, Bing, Facebook, and more. Paste the public link customers use to leave a review.
+          </p>
+
+          {platformsLoading ? (
+            <div className="flex justify-center py-3">
+              <Loader2 className="animate-spin" size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {(platforms ?? []).map((p) => (
+                <div key={p.id}>
+                  {editingPlatformId === p.id ? (
+                    /* Edit form inline */
+                    <div
+                      className="rounded-xl p-3 flex flex-col gap-2"
+                      style={{ border: "2px solid oklch(0.80 0.18 80)", background: "oklch(0.98 0.01 80)" }}
+                    >
+                      <input
+                        type="url"
+                        defaultValue={p.url}
+                        id={`edit-url-${p.id}`}
+                        placeholder={PLATFORM_PLACEHOLDERS[p.platform] ?? "https://..."}
+                        className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                        style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                      />
+                      {p.platform === "other" && (
+                        <input
+                          type="text"
+                          defaultValue={p.label ?? ""}
+                          id={`edit-label-${p.id}`}
+                          placeholder="Custom label (e.g. Houzz)"
+                          className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                          style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                        />
+                      )}
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            const urlEl = document.getElementById(`edit-url-${p.id}`) as HTMLInputElement;
+                            const labelEl = document.getElementById(`edit-label-${p.id}`) as HTMLInputElement | null;
+                            updatePlatform.mutate({ id: p.id, url: urlEl.value, label: labelEl?.value || undefined });
+                          }}
+                          disabled={updatePlatform.isPending}
+                          className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-bold"
+                          style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                        >
+                          {updatePlatform.isPending ? <Loader2 size={12} className="animate-spin" /> : <Save size={12} />}
+                          Save
+                        </button>
+                        <button
+                          onClick={() => setEditingPlatformId(null)}
+                          className="px-3 py-2 rounded-lg text-xs font-bold"
+                          style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.45 0.04 260)" }}
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    /* Platform row */
+                    <div
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl"
+                      style={{
+                        background: p.isDefault ? "oklch(0.96 0.04 145)" : "oklch(0.97 0.01 260)",
+                        border: p.isDefault ? "1px solid oklch(0.80 0.15 145)" : "1px solid oklch(0.92 0.02 260)",
+                      }}
+                    >
+                      <span className="text-lg shrink-0">{PLATFORM_ICONS[p.platform] ?? "🔗"}</span>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-black" style={{ color: "oklch(0.22 0.09 260)" }}>
+                            {p.label || PLATFORM_LABELS[p.platform] || p.platform}
+                          </span>
+                          {p.isDefault === 1 && (
+                            <span
+                              className="text-xs font-bold px-1.5 py-0.5 rounded-full"
+                              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontSize: "9px" }}
+                            >
+                              DEFAULT
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-xs truncate" style={{ color: "oklch(0.55 0.03 260)" }}>{p.url}</p>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        {p.isDefault !== 1 && (
+                          <button
+                            onClick={() => setDefaultPlatform.mutate({ id: p.id })}
+                            title="Set as default"
+                            className="p-1.5 rounded-lg transition-colors hover:bg-yellow-50"
+                            style={{ color: "oklch(0.65 0.18 80)" }}
+                          >
+                            <Star size={13} />
+                          </button>
+                        )}
+                        <button
+                          onClick={() => setEditingPlatformId(p.id)}
+                          title="Edit URL"
+                          className="p-1.5 rounded-lg transition-colors hover:bg-gray-100"
+                          style={{ color: "oklch(0.45 0.04 260)" }}
+                        >
+                          <Pencil size={13} />
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (confirm(`Remove ${PLATFORM_LABELS[p.platform] ?? p.platform}?`)) {
+                              removePlatform.mutate({ id: p.id });
+                            }
+                          }}
+                          title="Remove"
+                          className="p-1.5 rounded-lg transition-colors hover:bg-red-50"
+                          style={{ color: "oklch(0.55 0.22 27)" }}
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {(platforms ?? []).length === 0 && !showAddPlatform && (
+                <div
+                  className="text-center py-4 rounded-xl"
+                  style={{ background: "oklch(0.97 0.01 260)", border: "1px dashed oklch(0.85 0.03 260)" }}
+                >
+                  <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+                    No review platforms added yet. Click <strong>Add</strong> to get started.
+                  </p>
+                </div>
+              )}
+
+              {/* Add new platform form */}
+              {showAddPlatform && (
+                <div
+                  className="rounded-xl p-3 flex flex-col gap-2 mt-1"
+                  style={{ border: "2px solid oklch(0.80 0.18 80)", background: "oklch(0.98 0.01 80)" }}
+                >
+                  <div>
+                    <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Platform</label>
+                    <select
+                      value={newPlatformType}
+                      onChange={(e) => setNewPlatformType(e.target.value)}
+                      className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                      style={{ border: "2px solid oklch(0.90 0.02 260)", background: "white", fontSize: "16px" }}
+                    >
+                      {Object.entries(PLATFORM_LABELS).map(([val, label]) => (
+                        <option key={val} value={val}>{PLATFORM_ICONS[val]} {label}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Review Page URL *</label>
+                    <input
+                      type="url"
+                      value={newPlatformUrl}
+                      onChange={(e) => setNewPlatformUrl(e.target.value)}
+                      placeholder={PLATFORM_PLACEHOLDERS[newPlatformType] ?? "https://..."}
+                      className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                      style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                    />
+                    <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>
+                      Paste the public URL customers use to leave a review on this platform.
+                    </p>
+                  </div>
+                  {newPlatformType === "other" && (
+                    <div>
+                      <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Custom Label</label>
+                      <input
+                        type="text"
+                        value={newPlatformLabel}
+                        onChange={(e) => setNewPlatformLabel(e.target.value)}
+                        placeholder="e.g. Houzz, Angi, Thumbtack"
+                        className="w-full px-3 py-2 rounded-lg text-sm outline-none"
+                        style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                      />
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        if (!newPlatformUrl.trim()) { toast.error("URL is required"); return; }
+                        addPlatform.mutate({
+                          platform: newPlatformType as "google" | "yelp" | "tripadvisor" | "bing" | "facebook" | "other",
+                          url: newPlatformUrl.trim(),
+                          label: newPlatformLabel.trim() || undefined,
+                        });
+                      }}
+                      disabled={addPlatform.isPending}
+                      className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-black"
+                      style={{ background: "oklch(0.22 0.09 260)", color: "white", fontFamily: "'Poppins', sans-serif" }}
+                    >
+                      {addPlatform.isPending ? <Loader2 size={12} className="animate-spin" /> : <Plus size={12} />}
+                      Add Platform
+                    </button>
+                    <button
+                      onClick={() => { setShowAddPlatform(false); setNewPlatformUrl(""); setNewPlatformLabel(""); }}
+                      className="px-3 py-2 rounded-lg text-xs font-bold"
+                      style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.45 0.04 260)" }}
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* ── Gmail Connection ────────────────────────────────────────────────────── */}      <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-1">
             <Mail size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
             <h2

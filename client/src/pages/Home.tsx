@@ -213,11 +213,11 @@ export default function HomePage() {
             className="text-sm font-black mb-2"
             style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
           >
-            Get More Google Reviews for Your Business
+            Get More Business Reviews
           </h2>
           <p className="text-xs leading-relaxed" style={{ color: "oklch(0.55 0.03 260)" }}>
-            ReviewLink makes it easy to send personalized Google review requests to your customers via email.
-            Build your online reputation, increase star ratings, and attract new customers — all from one simple dashboard.
+            ReviewLink makes it easy to send personalized review requests to your customers via email — for Google, Yelp, TripAdvisor, Bing, Facebook, and more.
+            Build your online reputation across every platform, increase star ratings, and attract new customers — all from one simple dashboard.
           </p>
         </div>
 

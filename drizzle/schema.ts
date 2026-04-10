@@ -214,3 +214,22 @@ export const zohoTokens = mysqlTable("zoho_tokens", {
 
 export type ZohoToken = typeof zohoTokens.$inferSelect;
 export type InsertZohoToken = typeof zohoTokens.$inferInsert;
+
+/**
+ * Review platform URLs per user — Google, Yelp, TripAdvisor, Bing, Facebook, Other.
+ * Each user can have multiple platforms; one is marked as default.
+ * The URL is pasted by the business owner (public review page link).
+ */
+export const reviewPlatforms = mysqlTable("review_platforms", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  platform: mysqlEnum("platform", ["google", "yelp", "tripadvisor", "bing", "facebook", "other"]).notNull(),
+  label: varchar("label", { length: 255 }), // custom label for "Other" or override
+  url: text("url").notNull(), // public review page URL
+  isDefault: int("isDefault").default(0).notNull(), // 1 = default platform for this user
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type ReviewPlatform = typeof reviewPlatforms.$inferSelect;
+export type InsertReviewPlatform = typeof reviewPlatforms.$inferInsert;

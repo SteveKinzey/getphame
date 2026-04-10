@@ -45,6 +45,8 @@ import {
   Rocket,
   Tag,
   Plus,
+  Globe,
+  ChevronDown,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
@@ -86,6 +88,12 @@ export default function SavedContacts() {
   // Bulk selection state
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [bulkConfirmOpen, setBulkConfirmOpen] = useState(false);
+  const [bulkPlatformId, setBulkPlatformId] = useState<number | null>(null);
+
+  // Review platforms
+  const { data: platforms = [] } = trpc.reviewPlatforms.list.useQuery(undefined, { enabled: isAuthenticated });
+  const PLATFORM_ICONS: Record<string, string> = { google: "🔍", yelp: "⭐", tripadvisor: "🦉", bing: "🌐", facebook: "👍", other: "🔗" };
+  const PLATFORM_LABELS: Record<string, string> = { google: "Google", yelp: "Yelp", tripadvisor: "TripAdvisor", bing: "Bing", facebook: "Facebook", other: "Other" };
 
   const utils = trpc.useUtils();
 
@@ -703,11 +711,42 @@ export default function SavedContacts() {
               This will send a review request email to all {selectedCount} selected contact{selectedCount !== 1 ? "s" : ""} using your default email template.
             </AlertDialogDescription>
           </AlertDialogHeader>
+          {platforms.length > 0 && (
+            <div className="mt-1">
+              <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+                <Globe size={12} className="inline mr-1" />
+                Review Platform
+              </label>
+              <div className="relative">
+                <select
+                  value={bulkPlatformId ?? "default"}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setBulkPlatformId(val === "default" ? null : Number(val));
+                  }}
+                  className="w-full px-3 py-2 pr-8 rounded-xl text-sm outline-none appearance-none"
+                  style={{ border: "2px solid oklch(0.90 0.02 260)", background: "white", fontSize: "14px" }}
+                >
+                  <option value="default">
+                    {platforms.find((p) => p.isDefault === 1)
+                      ? `${PLATFORM_ICONS[platforms.find((p) => p.isDefault === 1)!.platform] ?? "🔗"} ${platforms.find((p) => p.isDefault === 1)!.label || PLATFORM_LABELS[platforms.find((p) => p.isDefault === 1)!.platform] || "Default"} (default)`
+                      : "Default platform"}
+                  </option>
+                  {platforms.filter((p) => p.isDefault !== 1).map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {PLATFORM_ICONS[p.platform] ?? "🔗"} {p.label || PLATFORM_LABELS[p.platform] || p.platform}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "oklch(0.50 0.04 260)" }} />
+              </div>
+            </div>
+          )}
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               disabled={bulkSendMutation.isPending}
-              onClick={() => bulkSendMutation.mutate({ contactIds: selectedIds })}
+              onClick={() => bulkSendMutation.mutate({ contactIds: selectedIds, platformId: bulkPlatformId ?? undefined })}
               style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
             >
               {bulkSendMutation.isPending ? (

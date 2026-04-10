@@ -62,6 +62,14 @@ import {
   redeemAccessCode,
   generateCode,
 } from "./accessCodes";
+import {
+  listReviewPlatforms,
+  addReviewPlatform,
+  updateReviewPlatform,
+  deleteReviewPlatform,
+  setDefaultReviewPlatform,
+  getDefaultReviewPlatform,
+} from "./reviewPlatforms";
 
 const FREE_LIMIT = 10;
 
@@ -158,7 +166,6 @@ export const appRouter = router({
         // Create and send the plan-specific invoice
         const invoice = await createZohoInvoice({
           zohoCustomerId,
-          userEmail,
           userName,
           userId: ctx.user.id,
           plan: input.plan,
@@ -327,6 +334,10 @@ export const appRouter = router({
         }
         const toSend = profile.tier === "free" ? customers.slice(0, remaining) : customers;
 
+        // Resolve review URL: use default platform if available, else profile.reviewLink
+        const wooDefaultPlatform = await getDefaultReviewPlatform(ctx.user.id);
+        const wooReviewUrl = wooDefaultPlatform?.url ?? profile.reviewLink ?? "";
+
         const subject = `${profile.businessName} would love your feedback!`;
         const sentIds: number[] = [];
         const errors: string[] = [];
@@ -338,7 +349,7 @@ export const appRouter = router({
               <p>Thank you for your recent purchase${customer.productName ? ` of <strong>${customer.productName}</strong>` : ""}. We hope you love it!</p>
               <p>Could you take 30 seconds to leave us a quick review? It means the world to us and helps other customers find us.</p>
               <div style="text-align: center; margin: 32px 0;">
-                <a href="${profile.reviewLink}"
+                <a href="${wooReviewUrl}"
                    style="background: #FFB800; color: #0F1F4B; padding: 14px 32px; border-radius: 8px;
                           text-decoration: none; font-weight: bold; font-size: 16px; display: inline-block;">
                   Leave a Review
@@ -436,6 +447,7 @@ export const appRouter = router({
         z.object({
           contactIds: z.array(z.number().int()).min(1).max(200),
           templateId: z.number().int().optional(),
+          platformId: z.number().int().optional(), // optional: specific review platform to link to
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -454,6 +466,17 @@ export const appRouter = router({
         const remaining = profile.tier === "free" ? Math.max(0, FREE_LIMIT - profile.monthlyCount) : Infinity;
         if (remaining === 0) {
           throw new Error(`Free plan limit reached (${FREE_LIMIT}/month). Upgrade to Pro for unlimited requests.`);
+        }
+
+        // Resolve review URL: use selected platform, else default platform, else profile.reviewLink
+        let reviewUrl = profile.reviewLink ?? "";
+        if (input.platformId) {
+          const platforms = await listReviewPlatforms(ctx.user.id);
+          const chosen = platforms.find((p) => p.id === input.platformId);
+          if (chosen) reviewUrl = chosen.url;
+        } else {
+          const defaultPlatform = await getDefaultReviewPlatform(ctx.user.id);
+          if (defaultPlatform) reviewUrl = defaultPlatform.url;
         }
 
         // Fetch all contacts for this user and filter to requested IDs
@@ -479,8 +502,8 @@ export const appRouter = router({
             .replace(/\{\{customerName\}\}/g, customerName)
             .replace(/\{\{business_name\}\}/g, profile.businessName)
             .replace(/\{\{businessName\}\}/g, profile.businessName)
-            .replace(/\{\{review_link\}\}/g, profile.reviewLink ?? "")
-            .replace(/\{\{reviewLink\}\}/g, profile.reviewLink ?? "");
+            .replace(/\{\{review_link\}\}/g, reviewUrl)
+            .replace(/\{\{reviewLink\}\}/g, reviewUrl);
 
         let sent = 0;
         let failed = 0;
@@ -495,7 +518,7 @@ export const appRouter = router({
               htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">${replacePlaceholders(resolvedTemplate.body, contact.name).replace(/\n/g, "<br>")}</div>`;
             } else {
               subject = `${profile.businessName} would love your feedback!`;
-              htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2>Hi ${contact.name}!</h2><p>Thank you for choosing <strong>${profile.businessName}</strong>. We hope you had a great experience!</p><p>Could you take 30 seconds to leave us a quick review?</p><div style="text-align: center; margin: 32px 0;"><a href="${profile.reviewLink}" style="background: #FFB800; color: #0F1F4B; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold;">Leave a Review</a></div></div>`;
+              htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2>Hi ${contact.name}!</h2><p>Thank you for choosing <strong>${profile.businessName}</strong>. We hope you had a great experience!</p><p>Could you take 30 seconds to leave us a quick review?</p><div style="text-align: center; margin: 32px 0;"><a href="${reviewUrl}" style="background: #FFB800; color: #0F1F4B; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold;">Leave a Review</a></div></div>`;
             }
             await sendViaGmail(ctx.user.id, contact.email, subject, htmlBody, profile.fromName, profile.replyTo);
             await createCustomerRequest({
@@ -599,6 +622,7 @@ export const appRouter = router({
           customerEmail: z.string().email(),
           method: z.enum(["email", "sms", "both"]),
           templateId: z.number().int().optional(),
+          platformId: z.number().int().optional(), // optional: specific review platform to link to
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -618,6 +642,20 @@ export const appRouter = router({
           throw new Error(`Free plan limit reached (${FREE_LIMIT}/month). Upgrade to Pro for unlimited requests.`);
         }
 
+        // Resolve review URL: use selected platform, else fall back to profile.reviewLink
+        let reviewUrl = profile.reviewLink ?? "";
+        if (input.platformId) {
+          const platform = await getDefaultReviewPlatform(ctx.user.id);
+          // Find the specific platform by ID
+          const platforms = await listReviewPlatforms(ctx.user.id);
+          const chosen = platforms.find((p) => p.id === input.platformId);
+          if (chosen) reviewUrl = chosen.url;
+        } else {
+          // Use default platform if available
+          const defaultPlatform = await getDefaultReviewPlatform(ctx.user.id);
+          if (defaultPlatform) reviewUrl = defaultPlatform.url;
+        }
+
         // Resolve template: use specified templateId, else fall back to user's default template
         let subject: string;
         let htmlBody: string;
@@ -634,8 +672,8 @@ export const appRouter = router({
               .replace(/\{\{customerName\}\}/g, input.customerName)
               .replace(/\{\{business_name\}\}/g, profile.businessName)
               .replace(/\{\{businessName\}\}/g, profile.businessName)
-              .replace(/\{\{review_link\}\}/g, profile.reviewLink ?? "")
-              .replace(/\{\{reviewLink\}\}/g, profile.reviewLink ?? "");
+              .replace(/\{\{review_link\}\}/g, reviewUrl)
+              .replace(/\{\{reviewLink\}\}/g, reviewUrl);
           subject = replacePlaceholders(resolvedTemplate.subject);
           htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">${replacePlaceholders(resolvedTemplate.body).replace(/\n/g, "<br>")}</div>`;
         } else {
@@ -646,7 +684,7 @@ export const appRouter = router({
             <p>Thank you for choosing <strong>${profile.businessName}</strong>. We hope you had a great experience!</p>
             <p>Could you take 30 seconds to leave us a quick review? It means the world to us and helps other customers find us.</p>
             <div style="text-align: center; margin: 32px 0;">
-              <a href="${profile.reviewLink}"
+              <a href="${reviewUrl}"
                  style="background: #FFB800; color: #0F1F4B; padding: 14px 32px; border-radius: 8px;
                         text-decoration: none; font-weight: bold; font-size: 16px; display: inline-block;">
                 Leave a Review
@@ -764,6 +802,56 @@ export const appRouter = router({
         if (!result.success) throw new TRPCError({ code: "BAD_REQUEST", message: result.error });
         return { note: result.note };
       }),
+  }),
+
+  /** Review platform URL manager — multi-platform support (Google, Yelp, TripAdvisor, Bing, Facebook, Other) */
+  reviewPlatforms: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return listReviewPlatforms(ctx.user.id);
+    }),
+
+    add: protectedProcedure
+      .input(
+        z.object({
+          platform: z.enum(["google", "yelp", "tripadvisor", "bing", "facebook", "other"]),
+          url: z.string().url("Please enter a valid URL"),
+          label: z.string().max(255).optional(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        return addReviewPlatform(ctx.user.id, input.platform, input.url, input.label);
+      }),
+
+    update: protectedProcedure
+      .input(
+        z.object({
+          id: z.number().int(),
+          url: z.string().url("Please enter a valid URL"),
+          label: z.string().max(255).optional(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        await updateReviewPlatform(ctx.user.id, input.id, input.url, input.label);
+        return { ok: true };
+      }),
+
+    remove: protectedProcedure
+      .input(z.object({ id: z.number().int() }))
+      .mutation(async ({ ctx, input }) => {
+        await deleteReviewPlatform(ctx.user.id, input.id);
+        return { ok: true };
+      }),
+
+    setDefault: protectedProcedure
+      .input(z.object({ id: z.number().int() }))
+      .mutation(async ({ ctx, input }) => {
+        await setDefaultReviewPlatform(ctx.user.id, input.id);
+        return { ok: true };
+      }),
+
+    getDefault: protectedProcedure.query(async ({ ctx }) => {
+      return getDefaultReviewPlatform(ctx.user.id);
+    }),
   }),
 });
 

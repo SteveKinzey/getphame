@@ -197,3 +197,14 @@
 - [x] Rebuild Upgrade page with three plan cards (Monthly / Annual / Lifetime)
 - [x] Add annual savings callout ("Save $58/yr") and lifetime value callout on Upgrade page
 - [x] Update Settings page to show correct plan label (Monthly Pro / Annual Pro / Lifetime)
+
+## Multi-Platform Business Reviews
+- [x] Update Home page H2 from "Get More Google Reviews for Your Business" to "Get More Business Reviews"
+- [x] Update Home page paragraph to mention Google, Yelp, TripAdvisor, Bing, Facebook
+- [x] Add review_platforms DB table (id, userId, platform, label, url, isDefault, createdAt)
+- [x] Add backend procedures: reviewPlatforms.list, add, update, remove, setDefault
+- [x] Build "Review Platforms" section in Settings with add/edit/delete platform URLs
+- [x] Platform dropdown: Google, Yelp, TripAdvisor, Bing, Facebook, Other
+- [x] Wire platform selection into Send Review Request flow (pick which platform URL to include)
+- [x] Wire platform selection into Bulk Send flow
+- [x] Update email template to use selected platform URL (not hardcoded Google URL)

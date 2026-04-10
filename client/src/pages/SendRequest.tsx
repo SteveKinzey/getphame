@@ -3,7 +3,7 @@
 
 import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import { Send, Rocket, Mail, User, Star, Crown, AlertCircle, Settings2, Loader2, FileText, ChevronDown } from "lucide-react";
+import { Send, Rocket, Mail, User, Star, Crown, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 
@@ -22,9 +22,36 @@ export default function SendRequestPage() {
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState<number | null>(null);
+  const [selectedPlatformId, setSelectedPlatformId] = useState<number | null>(null);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
+
+  const { data: platforms } = trpc.reviewPlatforms.list.useQuery();
+
+  const PLATFORM_ICONS: Record<string, string> = {
+    google: "🔍",
+    yelp: "⭐",
+    tripadvisor: "🦉",
+    bing: "🌐",
+    facebook: "👍",
+    other: "🔗",
+  };
+
+  const PLATFORM_LABELS: Record<string, string> = {
+    google: "Google",
+    yelp: "Yelp",
+    tripadvisor: "TripAdvisor",
+    bing: "Bing",
+    facebook: "Facebook",
+    other: "Other",
+  };
+
+  // Resolve the active review URL for preview
+  const activePlatform = platforms?.find((p) => p.id === selectedPlatformId)
+    ?? platforms?.find((p) => p.isDefault === 1)
+    ?? platforms?.[0];
+  const activeReviewUrl = activePlatform?.url ?? profile?.reviewLink ?? "";
 
   const sendRequest = trpc.requests.send.useMutation({
     onSuccess: () => {
@@ -58,9 +85,9 @@ export default function SendRequestPage() {
       .replace(/\{\{customerName\}\}/g, customerName || "Customer")
       .replace(/\{\{business_name\}\}/g, profile?.businessName ?? "")
       .replace(/\{\{businessName\}\}/g, profile?.businessName ?? "")
-      .replace(/\{\{review_link\}\}/g, profile?.reviewLink ?? "")
-      .replace(/\{\{reviewLink\}\}/g, profile?.reviewLink ?? "");
-  }, [activeTemplate, customerName, profile]);
+      .replace(/\{\{review_link\}\}/g, activeReviewUrl)
+      .replace(/\{\{reviewLink\}\}/g, activeReviewUrl);
+  }, [activeTemplate, customerName, profile, activeReviewUrl]);
 
   const previewBody = useMemo(() => {
     if (!activeTemplate) {
@@ -73,9 +100,9 @@ export default function SendRequestPage() {
       .replace(/\{\{customerName\}\}/g, customerName || "Customer")
       .replace(/\{\{business_name\}\}/g, profile?.businessName ?? "")
       .replace(/\{\{businessName\}\}/g, profile?.businessName ?? "")
-      .replace(/\{\{review_link\}\}/g, profile?.reviewLink ?? "")
-      .replace(/\{\{reviewLink\}\}/g, profile?.reviewLink ?? "");
-  }, [activeTemplate, customerName, profile]);
+      .replace(/\{\{review_link\}\}/g, activeReviewUrl)
+      .replace(/\{\{reviewLink\}\}/g, activeReviewUrl);
+  }, [activeTemplate, customerName, profile, activeReviewUrl]);
 
   function validate() {
     const errs: Record<string, string> = {};
@@ -95,6 +122,7 @@ export default function SendRequestPage() {
       customerEmail: customerEmail.trim(),
       method: "email",
       templateId: selectedTemplateId ?? undefined,
+      platformId: selectedPlatformId ?? undefined,
     });
   }
 
@@ -353,6 +381,74 @@ export default function SendRequestPage() {
                 </p>
               )}
             </div>
+
+            {/* Platform selector */}
+            {platforms && platforms.length > 0 && (
+              <div>
+                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+                  <Globe size={12} className="inline mr-1" />
+                  Review Platform
+                </label>
+                <div className="relative">
+                  <select
+                    value={selectedPlatformId ?? "default"}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setSelectedPlatformId(val === "default" ? null : Number(val));
+                    }}
+                    className="w-full px-3 py-3 pr-8 rounded-xl text-sm outline-none appearance-none"
+                    style={{
+                      border: "2px solid oklch(0.90 0.02 260)",
+                      fontFamily: "'Nunito', sans-serif",
+                      fontSize: "15px",
+                      background: "white",
+                      color: "oklch(0.22 0.09 260)",
+                    }}
+                  >
+                    <option value="default">
+                      {platforms.find((p) => p.isDefault === 1)
+                        ? `${PLATFORM_ICONS[platforms.find((p) => p.isDefault === 1)!.platform] ?? "🔗"} ${platforms.find((p) => p.isDefault === 1)!.label || PLATFORM_LABELS[platforms.find((p) => p.isDefault === 1)!.platform] || "Default"} (default)`
+                        : platforms[0]
+                        ? `${PLATFORM_ICONS[platforms[0].platform] ?? "🔗"} ${platforms[0].label || PLATFORM_LABELS[platforms[0].platform] || "First platform"}`
+                        : "Default platform"}
+                    </option>
+                    {platforms
+                      .filter((p) => p.isDefault !== 1)
+                      .map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {PLATFORM_ICONS[p.platform] ?? "🔗"} {p.label || PLATFORM_LABELS[p.platform] || p.platform}
+                        </option>
+                      ))}
+                  </select>
+                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "oklch(0.50 0.04 260)" }} />
+                </div>
+                {activePlatform && (
+                  <p className="text-xs mt-1 truncate" style={{ color: "oklch(0.60 0.03 260)" }}>
+                    Link: {activePlatform.url}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {/* No platforms warning */}
+            {platforms && platforms.length === 0 && !profile?.reviewLink && (
+              <div
+                className="flex items-start gap-2 px-3 py-2.5 rounded-xl"
+                style={{ background: "oklch(0.97 0.03 80)" }}
+              >
+                <AlertCircle size={14} style={{ color: "oklch(0.65 0.18 80)" }} className="shrink-0 mt-0.5" />
+                <p className="text-xs" style={{ color: "oklch(0.50 0.08 80)" }}>
+                  No review platforms configured.{" "}
+                  <button
+                    onClick={() => navigate("/settings")}
+                    className="underline font-semibold"
+                    style={{ color: "oklch(0.40 0.10 80)" }}
+                  >
+                    Add one in Settings →
+                  </button>
+                </p>
+              </div>
+            )}
 
             {/* Live Email Preview */}
             {profile?.businessName && (
