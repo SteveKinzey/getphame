@@ -5,7 +5,7 @@
 import { getDb } from "./db";
 import { followUpReminders, businessProfiles } from "../drizzle/schema";
 import { eq, and, lte } from "drizzle-orm";
-import { sendViaGmail } from "./gmail";
+import { sendMailViaSmtp } from "./smtp";
 import { getDefaultReviewPlatform } from "./reviewPlatforms";
 
 const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
@@ -81,7 +81,7 @@ export async function processDueReminders() {
       const subject = `Just checking in — have you had a chance to leave us a review?`;
       const body = `Hi ${reminder.customerName},<br><br>We wanted to follow up on our earlier message. If you've had a chance to try our service, we'd love to hear what you think!<br><br>Leaving a review only takes a minute and helps us a lot:<br><a href="${reminderReviewUrl}">${reminderReviewUrl}</a><br><br>Thank you so much for your support!<br><br>${profile.businessName}`;
 
-      await sendViaGmail(reminder.userId, reminder.customerEmail, subject, body, profile.fromName, profile.replyTo);
+      await sendMailViaSmtp({ userId: reminder.userId, to: reminder.customerEmail, subject, html: body });
 
       // Mark as sent
       await db
@@ -117,7 +117,7 @@ export async function sendReminderNow(userId: number, reminderId: number) {
   const nowReviewUrl = nowDefaultPlatform?.url ?? profile.reviewLink ?? "";
   const subject = `Just checking in — have you had a chance to leave us a review?`;
   const body = `Hi ${reminder.customerName},<br><br>We wanted to follow up on our earlier message. If you've had a chance to try our service, we'd love to hear what you think!<br><br>Leaving a review only takes a minute and helps us a lot:<br><a href="${nowReviewUrl}">${nowReviewUrl}</a><br><br>Thank you so much for your support!<br><br>${profile.businessName}`;
-  await sendViaGmail(userId, reminder.customerEmail, subject, body, profile.fromName, profile.replyTo);
+  await sendMailViaSmtp({ userId, to: reminder.customerEmail, subject, html: body });
   await db
     .update(followUpReminders)
     .set({ status: "sent", sentAt: Date.now() })

@@ -233,3 +233,22 @@ export const reviewPlatforms = mysqlTable("review_platforms", {
 
 export type ReviewPlatform = typeof reviewPlatforms.$inferSelect;
 export type InsertReviewPlatform = typeof reviewPlatforms.$inferInsert;
+
+/** SMTP credentials for each user — used to send review request emails from their own email account */
+export const smtpCredentials = mysqlTable("smtp_credentials", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  host: varchar("host", { length: 255 }).notNull(),
+  port: int("port").notNull().default(587),
+  secure: int("secure").notNull().default(0), // 0 = STARTTLS (port 587), 1 = SSL (port 465)
+  user: varchar("user", { length: 320 }).notNull(), // email address / SMTP username
+  encryptedPass: text("encryptedPass").notNull(), // AES-256 encrypted password
+  fromName: varchar("fromName", { length: 255 }), // display name in From header
+  replyTo: varchar("replyTo", { length: 320 }), // optional reply-to override
+  verified: int("verified").notNull().default(0), // 1 = test send succeeded
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type SmtpCredential = typeof smtpCredentials.$inferSelect;
+export type InsertSmtpCredential = typeof smtpCredentials.$inferInsert;

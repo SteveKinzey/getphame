@@ -1,5 +1,5 @@
 // ReviewLink — Send Request Page
-// Sends a review request email via the user's connected Gmail account
+// Sends a review request email via the user's connected email account (SMTP)
 
 import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
@@ -14,7 +14,7 @@ export default function SendRequestPage() {
   const [, navigate] = useLocation();
 
   const { data: profile } = trpc.profile.get.useQuery();
-  const { data: gmailStatus } = trpc.gmail.status.useQuery();
+  const { data: smtpStatus } = trpc.smtp.status.useQuery();
   const { data: stats } = trpc.requests.stats.useQuery();
   const { data: templates } = trpc.templates.list.useQuery();
   const { data: defaultTemplate } = trpc.templates.getDefault.useQuery();
@@ -66,7 +66,7 @@ export default function SendRequestPage() {
   });
 
   const atFreeLimit = profile?.tier === "free" && (stats?.thisMonth ?? 0) >= 10;
-  const gmailConnected = gmailStatus?.connected ?? false;
+  const emailConnected = smtpStatus?.connected ?? false;
   const profileComplete = !!profile?.businessName && !!profile?.reviewLink;
 
   // Resolve active template: explicit selection > default > null (uses server fallback)
@@ -116,6 +116,42 @@ export default function SendRequestPage() {
 
   async function handleSend() {
     if (!validate()) return;
+    // If no platform URL is available, show a multi-action toast instead of silently sending
+    if (!activeReviewUrl) {
+      toast.custom(
+        (toastId) => (
+          <div
+            className="flex flex-col gap-2 px-4 py-3 rounded-xl shadow-lg"
+            style={{ background: "white", border: "1px solid oklch(0.90 0.02 260)", minWidth: "280px", maxWidth: "320px" }}
+          >
+            <p className="text-sm font-semibold" style={{ color: "oklch(0.22 0.09 260)" }}>
+              No review platform configured
+            </p>
+            <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+              Add a review link in Settings so customers know where to leave their review.
+            </p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => { navigate("/settings"); toast.dismiss(toastId); }}
+                className="flex-1 py-1.5 rounded-lg text-xs font-black"
+                style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+              >
+                Go to Settings
+              </button>
+              <button
+                onClick={() => toast.dismiss(toastId)}
+                className="px-3 py-1.5 rounded-lg text-xs font-bold"
+                style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.45 0.04 260)" }}
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        ),
+        { duration: Infinity }
+      );
+      return;
+    }
     setSending(true);
     sendRequest.mutate({
       customerName: customerName.trim(),
@@ -151,11 +187,11 @@ export default function SendRequestPage() {
         </h2>
         <p className="text-center mb-2" style={{ color: "rgba(255,255,255,0.7)" }}>
           Your review request was sent to{" "}
-          <strong style={{ color: "oklch(0.80 0.18 80)" }}>{customerName}</strong> from your Gmail
+          <strong style={{ color: "oklch(0.80 0.18 80)" }}>{customerName}</strong> from your email
           account.
         </p>
         <p className="text-sm text-center mb-8" style={{ color: "rgba(255,255,255,0.5)" }}>
-          The email comes from <strong>{gmailStatus?.gmailEmail}</strong> so it feels personal.
+          The email comes from <strong>{smtpStatus?.email}</strong> so it feels personal.
         </p>
         <div className="flex gap-1 mb-8">
           {[1, 2, 3, 4, 5].map((i) => (
@@ -198,14 +234,14 @@ export default function SendRequestPage() {
         </h1>
         {profile && (
           <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>
-            From: {gmailStatus?.gmailEmail ?? "Gmail not connected"}
+            From: {smtpStatus?.email ?? "No email connected"}
           </p>
         )}
       </div>
 
       <div className="px-4 py-4 flex flex-col gap-4">
-        {/* ── Gmail not connected warning ──────────────────────────────────── */}
-        {!gmailConnected && (
+        {/* ── Email not connected warning ────────────────────────────────────── */}
+        {!emailConnected && (
           <div
             className="flex items-start gap-3 px-4 py-4 rounded-2xl"
             style={{ background: "oklch(0.97 0.03 80)" }}
@@ -213,10 +249,10 @@ export default function SendRequestPage() {
             <AlertCircle size={20} style={{ color: "oklch(0.65 0.18 80)" }} className="shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.40 0.10 80)" }}>
-                Gmail not connected
+                Email not connected
               </p>
               <p className="text-xs mb-2" style={{ color: "oklch(0.50 0.08 80)" }}>
-                Connect your Gmail account in Settings so emails are sent from your own address.
+                Connect your email account in Settings. Works with Gmail, Outlook, Yahoo, or any business email.
               </p>
               <button
                 onClick={() => navigate("/settings")}
@@ -460,7 +496,7 @@ export default function SendRequestPage() {
                   Email Preview
                 </p>
                 <p className="text-xs mb-1" style={{ color: "oklch(0.50 0.03 260)" }}>
-                  <strong>From:</strong> {gmailStatus?.gmailEmail ?? "your-gmail@gmail.com"}
+                  <strong>From:</strong> {smtpStatus?.email ?? "your@email.com"}
                 </p>
                 <p className="text-xs mb-1" style={{ color: "oklch(0.50 0.03 260)" }}>
                   <strong>Subject:</strong> {previewSubject}
@@ -474,15 +510,15 @@ export default function SendRequestPage() {
             {/* Send button */}
             <button
               onClick={handleSend}
-              disabled={sending || atFreeLimit || !gmailConnected || !profileComplete}
+              disabled={sending || atFreeLimit || !emailConnected || !profileComplete}
               className="flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-lg transition-transform active:scale-95"
               style={{
                 background:
-                  sending || atFreeLimit || !gmailConnected || !profileComplete
+                  sending || atFreeLimit || !emailConnected || !profileComplete
                     ? "oklch(0.80 0.03 260)"
                     : "oklch(0.80 0.18 80)",
                 color:
-                  sending || atFreeLimit || !gmailConnected || !profileComplete
+                  sending || atFreeLimit || !emailConnected || !profileComplete
                     ? "oklch(0.55 0.03 260)"
                     : "oklch(0.22 0.09 260)",
                 fontFamily: "'Poppins', sans-serif",

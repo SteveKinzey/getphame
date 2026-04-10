@@ -135,7 +135,6 @@ export default function SettingsPage() {
       setNewPlatformUrl("");
       setNewPlatformLabel("");
       setNewPlatformType("google");
-      toast.success("Review platform added!");
     },
     onError: (err) => toast.error(err.message),
   });
@@ -144,17 +143,23 @@ export default function SettingsPage() {
     onSuccess: () => {
       utils.reviewPlatforms.list.invalidate();
       setEditingPlatformId(null);
-      toast.success("Platform updated!");
     },
     onError: (err) => toast.error(err.message),
   });
 
+  const restorePlatform = trpc.reviewPlatforms.restore.useMutation({
+    onSuccess: () => utils.reviewPlatforms.list.invalidate(),
+    onError: (err) => toast.error(`Restore failed: ${err.message}`),
+  });
+
   const removePlatform = trpc.reviewPlatforms.remove.useMutation({
-    onSuccess: () => {
+    onSuccess: (_, _variables) => {
       utils.reviewPlatforms.list.invalidate();
-      toast.success("Platform removed.");
     },
-    onError: (err) => toast.error(err.message),
+    onError: (err) => {
+      utils.reviewPlatforms.list.invalidate(); // re-sync in case of partial state
+      toast.error(`Could not remove platform: ${err.message}`);
+    },
   });
 
   const setDefaultPlatform = trpc.reviewPlatforms.setDefault.useMutation({
@@ -192,17 +197,46 @@ export default function SettingsPage() {
     other: "https://...",
   };
 
-  // ── Gmail status ───────────────────────────────────────────────────────────
-  const { data: gmailStatus, isLoading: gmailLoading } = trpc.gmail.status.useQuery();
-  const { data: authUrlData } = trpc.gmail.authUrl.useQuery(
-    { origin: window.location.origin },
-    { enabled: !!user }
-  );
+  // ── SMTP email connection ──────────────────────────────────────────────────
+  const { data: smtpStatus, isLoading: smtpLoading } = trpc.smtp.status.useQuery();
+  const [smtpEmail, setSmtpEmail] = useState("");
+  const [smtpPassword, setSmtpPassword] = useState("");
+  const [smtpHost, setSmtpHost] = useState("");
+  const [smtpPort, setSmtpPort] = useState(587);
+  const [smtpSecure, setSmtpSecure] = useState(0);
+  const [smtpFromName, setSmtpFromName] = useState("");
+  const [smtpHint, setSmtpHint] = useState<string | null>(null);
+  const [showSmtpForm, setShowSmtpForm] = useState(false);
+  const [showSmtpPassword, setShowSmtpPassword] = useState(false);
 
-  const disconnectGmail = trpc.gmail.disconnect.useMutation({
+  // Auto-detect SMTP settings when email changes
+  const { data: smtpDetect } = trpc.smtp.detect.useQuery(
+    { email: smtpEmail },
+    { enabled: smtpEmail.includes("@") && smtpEmail.includes(".") }
+  );
+  useEffect(() => {
+    if (smtpDetect?.detected) {
+      setSmtpHost(smtpDetect.detected.host);
+      setSmtpPort(smtpDetect.detected.port);
+      setSmtpSecure(smtpDetect.detected.secure);
+    }
+    setSmtpHint(smtpDetect?.hint ?? null);
+  }, [smtpDetect]);
+
+  const connectSmtp = trpc.smtp.connect.useMutation({
     onSuccess: () => {
-      utils.gmail.status.invalidate();
-      toast.success("Gmail disconnected.");
+      utils.smtp.status.invalidate();
+      setShowSmtpForm(false);
+      setSmtpPassword("");
+      toast.success("Email account connected!");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const disconnectSmtp = trpc.smtp.disconnect.useMutation({
+    onSuccess: () => {
+      utils.smtp.status.invalidate();
+      toast.success("Email account disconnected.");
     },
     onError: (err) => toast.error(err.message),
   });
@@ -216,12 +250,6 @@ export default function SettingsPage() {
       fromName: fromName.trim() || undefined,
       replyTo: replyTo.trim() || undefined,
     });
-  }
-
-  function handleConnectGmail() {
-    if (authUrlData?.url) {
-      window.location.href = authUrlData.url;
-    }
   }
 
   return (
@@ -448,9 +476,15 @@ export default function SettingsPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => {
-                            const urlEl = document.getElementById(`edit-url-${p.id}`) as HTMLInputElement;
+                            const urlEl = document.getElementById(`edit-url-${p.id}`) as HTMLInputElement | null;
                             const labelEl = document.getElementById(`edit-label-${p.id}`) as HTMLInputElement | null;
-                            updatePlatform.mutate({ id: p.id, url: urlEl.value, label: labelEl?.value || undefined });
+                            if (!urlEl?.value?.trim()) { toast.error("URL is required"); return; }
+                            const promise = updatePlatform.mutateAsync({ id: p.id, url: urlEl.value.trim(), label: labelEl?.value?.trim() || undefined });
+                            toast.promise(promise, {
+                              loading: "Saving...",
+                              success: "Platform updated!",
+                              error: (err) => err?.message ?? "Failed to update platform",
+                            });
                           }}
                           disabled={updatePlatform.isPending}
                           className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-bold"
@@ -514,10 +548,36 @@ export default function SettingsPage() {
                           <Pencil size={13} />
                         </button>
                         <button
-                          onClick={() => {
-                            if (confirm(`Remove ${PLATFORM_LABELS[p.platform] ?? p.platform}?`)) {
-                              removePlatform.mutate({ id: p.id });
+                          onClick={async () => {
+                            // Snapshot before delete for undo
+                            const snapshot = { platform: p.platform as "google" | "yelp" | "tripadvisor" | "bing" | "facebook" | "other", url: p.url, label: p.label ?? undefined, isDefault: p.isDefault };
+                            try {
+                              await removePlatform.mutateAsync({ id: p.id });
+                            } catch {
+                              return; // onError already shows toast
                             }
+                            toast.custom(
+                              (toastId) => (
+                                <div
+                                  className="flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg"
+                                  style={{ background: "oklch(0.22 0.09 260)", color: "white", minWidth: "260px" }}
+                                >
+                                  <Trash2 size={14} style={{ opacity: 0.7, flexShrink: 0 }} />
+                                  <span className="text-sm flex-1">{PLATFORM_LABELS[snapshot.platform] ?? snapshot.platform} removed</span>
+                                  <button
+                                    onClick={() => {
+                                      restorePlatform.mutate(snapshot);
+                                      toast.dismiss(toastId);
+                                    }}
+                                    className="text-xs font-black px-2 py-1 rounded-lg shrink-0"
+                                    style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+                                  >
+                                    Undo
+                                  </button>
+                                </div>
+                              ),
+                              { duration: 5000 }
+                            );
                           }}
                           title="Remove"
                           className="p-1.5 rounded-lg transition-colors hover:bg-red-50"
@@ -592,10 +652,15 @@ export default function SettingsPage() {
                     <button
                       onClick={() => {
                         if (!newPlatformUrl.trim()) { toast.error("URL is required"); return; }
-                        addPlatform.mutate({
+                        const promise = addPlatform.mutateAsync({
                           platform: newPlatformType as "google" | "yelp" | "tripadvisor" | "bing" | "facebook" | "other",
                           url: newPlatformUrl.trim(),
                           label: newPlatformLabel.trim() || undefined,
+                        });
+                        toast.promise(promise, {
+                          loading: "Adding platform...",
+                          success: "Review platform added!",
+                          error: (err) => err?.message ?? "Failed to add platform",
                         });
                       }}
                       disabled={addPlatform.isPending}
@@ -619,25 +684,26 @@ export default function SettingsPage() {
           )}
         </div>
 
-        {/* ── Gmail Connection ────────────────────────────────────────────────────── */}      <div className="bg-white rounded-2xl p-5 shadow-sm">
+        {/* ── Email Connection (SMTP) ───────────────────────────────────────────── */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-1">
             <Mail size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
             <h2
               className="text-base font-black"
               style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
             >
-              Gmail Connection
+              Email Account
             </h2>
           </div>
           <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.03 260)" }}>
-            Connect your Gmail so review requests are sent from your own email address.
+            Connect your email so review requests are sent from your own address. Works with Gmail, Outlook, Yahoo, Zoho, and any business email.
           </p>
 
-          {gmailLoading ? (
+          {smtpLoading ? (
             <div className="flex justify-center py-4">
               <Loader2 className="animate-spin" style={{ color: "oklch(0.22 0.09 260)" }} />
             </div>
-          ) : gmailStatus?.connected ? (
+          ) : smtpStatus?.connected && !showSmtpForm ? (
             <div className="flex flex-col gap-3">
               {/* Connected state */}
               <div
@@ -645,93 +711,187 @@ export default function SettingsPage() {
                 style={{ background: "oklch(0.96 0.04 145)" }}
               >
                 <CheckCircle2 size={18} style={{ color: "oklch(0.55 0.18 145)" }} />
-                <div>
+                <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold" style={{ color: "oklch(0.30 0.12 145)" }}>
-                    Gmail Connected
+                    Email Connected
                   </p>
-                  <p className="text-xs" style={{ color: "oklch(0.45 0.10 145)" }}>
-                    {gmailStatus.gmailEmail}
+                  <p className="text-xs truncate" style={{ color: "oklch(0.45 0.10 145)" }}>
+                    {smtpStatus.email}
                   </p>
                 </div>
               </div>
-
-              {/* Gmail API not-enabled warning — shown whenever Gmail is connected */}
-              <div
-                className="rounded-xl p-4"
-                style={{ background: "oklch(0.97 0.03 30)", border: "1px solid oklch(0.88 0.08 30)" }}
-              >
-                <div className="flex items-start gap-2 mb-2">
-                  <AlertCircle size={15} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 30)" }} />
-                  <p className="text-xs font-bold" style={{ color: "oklch(0.40 0.12 30)" }}>
-                    Gmail API must be enabled
-                  </p>
-                </div>
-                <p className="text-xs mb-3" style={{ color: "oklch(0.50 0.08 30)" }}>
-                  If sends fail with "Gmail API has not been used", click below to enable it in Google Cloud. One-time setup — takes 2 minutes.
-                </p>
-                <a
-                  href="https://console.developers.google.com/apis/api/gmail.googleapis.com/overview"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-black transition-transform active:scale-95 w-full"
-                  style={{ background: "oklch(0.55 0.18 30)", color: "white" }}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => { setSmtpEmail(smtpStatus.email ?? ""); setSmtpFromName(smtpStatus.fromName ?? ""); setShowSmtpForm(true); }}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95"
+                  style={{ background: "oklch(0.96 0.01 260)", color: "oklch(0.45 0.04 260)" }}
                 >
-                  <ExternalLink size={13} />
-                  Enable Gmail API in Google Cloud
-                </a>
-                <p className="text-xs text-center mt-2" style={{ color: "oklch(0.60 0.05 30)" }}>
-                  Click Enable, wait 2–3 min, then try sending again.
-                </p>
+                  <Pencil size={14} />
+                  Change Email
+                </button>
+                <button
+                  onClick={() => disconnectSmtp.mutate()}
+                  disabled={disconnectSmtp.isPending}
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95"
+                  style={{ background: "oklch(0.97 0.02 27)", color: "oklch(0.50 0.18 27)" }}
+                >
+                  {disconnectSmtp.isPending ? <Loader2 size={14} className="animate-spin" /> : <LogOut size={14} />}
+                  Disconnect
+                </button>
               </div>
-
-              <button
-                onClick={() => disconnectGmail.mutate()}
-                disabled={disconnectGmail.isPending}
-                className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-transform active:scale-95"
-                style={{
-                  background: "oklch(0.96 0.01 260)",
-                  color: "oklch(0.55 0.03 260)",
-                  fontFamily: "'Nunito', sans-serif",
-                }}
-              >
-                {disconnectGmail.isPending ? (
-                  <Loader2 size={14} className="animate-spin" />
-                ) : (
-                  <LogOut size={14} />
-                )}
-                Disconnect Gmail
-              </button>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
-              {/* Not connected state */}
-              <div
-                className="flex items-start gap-3 px-4 py-3 rounded-xl"
-                style={{ background: "oklch(0.97 0.03 80)" }}
-              >
-                <AlertCircle size={18} style={{ color: "oklch(0.65 0.18 80)" }} className="mt-0.5 shrink-0" />
-                <p className="text-xs" style={{ color: "oklch(0.45 0.10 80)" }}>
-                  Gmail is not connected. Review requests cannot be sent until you connect your Gmail account.
-                </p>
+              {/* Not connected / edit form */}
+              {!smtpStatus?.connected && (
+                <div
+                  className="flex items-start gap-3 px-4 py-3 rounded-xl"
+                  style={{ background: "oklch(0.97 0.03 80)" }}
+                >
+                  <AlertCircle size={16} style={{ color: "oklch(0.65 0.18 80)" }} className="mt-0.5 shrink-0" />
+                  <p className="text-xs" style={{ color: "oklch(0.45 0.10 80)" }}>
+                    No email connected. Add your email below to start sending review requests.
+                  </p>
+                </div>
+              )}
+
+              {/* Email field */}
+              <div>
+                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Your Email Address *</label>
+                <input
+                  type="email"
+                  value={smtpEmail}
+                  onChange={(e) => setSmtpEmail(e.target.value)}
+                  placeholder="you@yourbusiness.com"
+                  className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
+                  style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                />
               </div>
 
-              <button
-                onClick={handleConnectGmail}
-                className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
-                style={{
-                  background: "oklch(0.80 0.18 80)",
-                  color: "oklch(0.22 0.09 260)",
-                  fontFamily: "'Poppins', sans-serif",
-                }}
-              >
-                <Mail size={16} />
-                Connect Gmail Account
-                <ExternalLink size={14} />
-              </button>
+              {/* Password field */}
+              <div>
+                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Password *</label>
+                <div className="relative">
+                  <input
+                    type={showSmtpPassword ? "text" : "password"}
+                    value={smtpPassword}
+                    onChange={(e) => setSmtpPassword(e.target.value)}
+                    placeholder={smtpStatus?.connected ? "Enter new password to update" : "Your email password or app password"}
+                    className="w-full px-3 py-2.5 rounded-xl text-sm outline-none pr-10"
+                    style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowSmtpPassword((v) => !v)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs"
+                    style={{ color: "oklch(0.55 0.03 260)" }}
+                  >
+                    {showSmtpPassword ? "Hide" : "Show"}
+                  </button>
+                </div>
+                {smtpHint && (
+                  <div
+                    className="mt-2 px-3 py-2 rounded-lg text-xs"
+                    style={{ background: "oklch(0.97 0.03 80)", color: "oklch(0.45 0.10 80)" }}
+                  >
+                    💡 {smtpHint}
+                  </div>
+                )}
+              </div>
 
-              <p className="text-xs text-center" style={{ color: "oklch(0.60 0.03 260)" }}>
-                You'll be redirected to Google to authorize access. We only request permission to send emails — we cannot read your inbox.
-              </p>
+              {/* Display name */}
+              <div>
+                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Display Name (optional)</label>
+                <input
+                  type="text"
+                  value={smtpFromName}
+                  onChange={(e) => setSmtpFromName(e.target.value)}
+                  placeholder="e.g. Steve at Acme Plumbing"
+                  className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
+                  style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                />
+                <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>Shown as the sender name in your customer's inbox.</p>
+              </div>
+
+              {/* Advanced: host/port — collapsed by default, auto-filled */}
+              <details className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+                <summary className="cursor-pointer font-semibold py-1">Advanced settings (auto-detected)</summary>
+                <div className="flex flex-col gap-2 mt-2">
+                  <div>
+                    <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>SMTP Host</label>
+                    <input
+                      type="text"
+                      value={smtpHost}
+                      onChange={(e) => setSmtpHost(e.target.value)}
+                      placeholder="smtp.yourdomain.com"
+                      className="w-full px-3 py-2 rounded-xl text-sm outline-none"
+                      style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <div className="flex-1">
+                      <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Port</label>
+                      <input
+                        type="number"
+                        value={smtpPort}
+                        onChange={(e) => setSmtpPort(Number(e.target.value))}
+                        className="w-full px-3 py-2 rounded-xl text-sm outline-none"
+                        style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Security</label>
+                      <select
+                        value={smtpSecure}
+                        onChange={(e) => setSmtpSecure(Number(e.target.value))}
+                        className="w-full px-3 py-2 rounded-xl text-sm outline-none"
+                        style={{ border: "2px solid oklch(0.90 0.02 260)", background: "white", fontSize: "16px" }}
+                      >
+                        <option value={0}>STARTTLS (587)</option>
+                        <option value={1}>SSL/TLS (465)</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+              </details>
+
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    if (!smtpEmail.trim()) { toast.error("Email address is required"); return; }
+                    if (!smtpPassword.trim()) { toast.error("Password is required"); return; }
+                    if (!smtpHost.trim()) { toast.error("SMTP host is required — check Advanced settings"); return; }
+                    const promise = connectSmtp.mutateAsync({
+                      email: smtpEmail.trim(),
+                      password: smtpPassword,
+                      host: smtpHost.trim(),
+                      port: smtpPort,
+                      secure: smtpSecure,
+                      fromName: smtpFromName.trim() || undefined,
+                    });
+                    toast.promise(promise, {
+                      loading: "Testing connection...",
+                      success: "Email account connected!",
+                      error: (err) => err?.message ?? "Connection failed",
+                    });
+                  }}
+                  disabled={connectSmtp.isPending}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
+                  style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                >
+                  {connectSmtp.isPending ? <Loader2 size={16} className="animate-spin" /> : <Mail size={16} />}
+                  Connect Email
+                </button>
+                {showSmtpForm && (
+                  <button
+                    onClick={() => setShowSmtpForm(false)}
+                    className="px-4 py-3 rounded-xl text-sm font-bold"
+                    style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.45 0.04 260)" }}
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
             </div>
           )}
         </div>

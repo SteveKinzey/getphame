@@ -15,8 +15,8 @@ import {
   buildGmailAuthUrl,
   deleteGmailTokens,
   getValidAccessToken,
-  sendViaGmail,
 } from "./gmail";
+import { sendMailViaSmtp } from "./smtp";
 import { createCheckoutSession, createPortalSession } from "./stripe";
 import { createOrGetZohoCustomer, createZohoInvoice, sendZohoInvoice } from "./zoho";
 import {
@@ -70,6 +70,17 @@ import {
   setDefaultReviewPlatform,
   getDefaultReviewPlatform,
 } from "./reviewPlatforms";
+import {
+  getSmtpCredentials,
+  saveSmtpCredentials,
+  deleteSmtpCredentials,
+  markSmtpVerified,
+  testSmtpConnection,
+  encryptPassword,
+  decryptPassword,
+  detectSmtpSettings,
+  getAppPasswordHint,
+} from "./smtp";
 
 const FREE_LIMIT = 10;
 
@@ -103,6 +114,76 @@ export const appRouter = router({
 
     disconnect: protectedProcedure.mutation(async ({ ctx }) => {
       await deleteGmailTokens(ctx.user.id);
+      return { success: true };
+    }),
+  }),
+
+  smtp: router({
+    /** Return connection status without exposing credentials */
+    status: protectedProcedure.query(async ({ ctx }) => {
+      const creds = await getSmtpCredentials(ctx.user.id);
+      if (!creds) return { connected: false, email: null, fromName: null, verified: false };
+      return {
+        connected: true,
+        email: creds.user,
+        fromName: creds.fromName ?? null,
+        verified: creds.verified === 1,
+      };
+    }),
+
+    /** Detect SMTP settings from email domain */
+    detect: protectedProcedure
+      .input(z.object({ email: z.string().email() }))
+      .query(({ input }) => {
+        const detected = detectSmtpSettings(input.email);
+        const hint = getAppPasswordHint(input.email);
+        return { detected, hint };
+      }),
+
+    /** Save credentials and verify the connection */
+    connect: protectedProcedure
+      .input(
+        z.object({
+          email: z.string().email(),
+          password: z.string().min(1),
+          host: z.string().min(1),
+          port: z.number().int().min(1).max(65535),
+          secure: z.number().int().min(0).max(1),
+          fromName: z.string().max(255).optional(),
+          replyTo: z.string().email().optional().or(z.literal("")),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        // Test connection before saving
+        const test = await testSmtpConnection({
+          host: input.host,
+          port: input.port,
+          secure: input.secure === 1,
+          user: input.email,
+          pass: input.password,
+        });
+        if (!test.ok) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: test.error ?? "Could not connect to email server. Check your credentials and try again.",
+          });
+        }
+        await saveSmtpCredentials(ctx.user.id, {
+          host: input.host,
+          port: input.port,
+          secure: input.secure,
+          user: input.email,
+          password: input.password,
+          fromName: input.fromName,
+          replyTo: input.replyTo || undefined,
+        });
+        await markSmtpVerified(ctx.user.id);
+        return { success: true, email: input.email };
+      }),
+
+    /** Remove stored SMTP credentials */
+    disconnect: protectedProcedure.mutation(async ({ ctx }) => {
+      await deleteSmtpCredentials(ctx.user.id);
       return { success: true };
     }),
   }),
@@ -360,7 +441,7 @@ export const appRouter = router({
             </div>
           `;
           try {
-            await sendViaGmail(ctx.user.id, customer.customerEmail, subject, htmlBody, profile.fromName, profile.replyTo);
+            await sendMailViaSmtp({ userId: ctx.user.id, to: customer.customerEmail, subject, html: htmlBody });
             sentIds.push(customer.id);
             await createCustomerRequest({
               userId: ctx.user.id,
@@ -520,7 +601,7 @@ export const appRouter = router({
               subject = `${profile.businessName} would love your feedback!`;
               htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2>Hi ${contact.name}!</h2><p>Thank you for choosing <strong>${profile.businessName}</strong>. We hope you had a great experience!</p><p>Could you take 30 seconds to leave us a quick review?</p><div style="text-align: center; margin: 32px 0;"><a href="${reviewUrl}" style="background: #FFB800; color: #0F1F4B; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold;">Leave a Review</a></div></div>`;
             }
-            await sendViaGmail(ctx.user.id, contact.email, subject, htmlBody, profile.fromName, profile.replyTo);
+            await sendMailViaSmtp({ userId: ctx.user.id, to: contact.email, subject, html: htmlBody });
             await createCustomerRequest({
               userId: ctx.user.id,
               customerName: contact.name,
@@ -696,7 +777,7 @@ export const appRouter = router({
         `;
         }
 
-        await sendViaGmail(ctx.user.id, input.customerEmail, subject, htmlBody, profile.fromName, profile.replyTo);
+        await sendMailViaSmtp({ userId: ctx.user.id, to: input.customerEmail, subject, html: htmlBody });
 
         await createCustomerRequest({
           userId: ctx.user.id,
@@ -839,6 +920,25 @@ export const appRouter = router({
       .input(z.object({ id: z.number().int() }))
       .mutation(async ({ ctx, input }) => {
         await deleteReviewPlatform(ctx.user.id, input.id);
+        return { ok: true };
+      }),
+
+    restore: protectedProcedure
+      .input(
+        z.object({
+          platform: z.enum(["google", "yelp", "tripadvisor", "bing", "facebook", "other"]),
+          url: z.string().url(),
+          label: z.string().max(255).optional(),
+          isDefault: z.number().int().optional(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        // Re-insert the deleted platform (used by undo-delete toast)
+        const restored = await addReviewPlatform(ctx.user.id, input.platform, input.url, input.label);
+        // If it was the default, promote it back
+        if (input.isDefault === 1) {
+          await setDefaultReviewPlatform(ctx.user.id, restored.id);
+        }
         return { ok: true };
       }),
 

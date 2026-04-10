@@ -208,3 +208,26 @@
 - [x] Wire platform selection into Send Review Request flow (pick which platform URL to include)
 - [x] Wire platform selection into Bulk Send flow
 - [x] Update email template to use selected platform URL (not hardcoded Google URL)
+
+## Toast UX Improvements
+
+- [x] Undo-delete toast on platform remove (5s window, optimistic delete with restore)
+- [x] toast.promise() on add platform mutation (loading → success → error)
+- [x] toast.promise() on update platform mutation
+- [x] Multi-action no-default-platform warning toast in SendRequest send flow
+
+## SMTP Email Sending (Replace Gmail API)
+
+- [x] Install nodemailer + @types/nodemailer
+- [x] Add smtp_credentials table to DB schema (userId, host, port, secure, user, encryptedPass, fromName, replyTo)
+- [x] Write server/smtp.ts helpers (encrypt/decrypt password, createTransport, sendMail, testConnection)
+- [x] Add tRPC procedures: smtp.connect, smtp.status, smtp.disconnect, smtp.test
+- [x] Replace Gmail send logic in requests.send with SMTP
+- [x] Replace Gmail send logic in contacts.bulkSend with SMTP
+- [x] Replace Gmail send logic in woo.bulkSend with SMTP
+- [x] Replace Gmail send logic in reminders.ts with SMTP
+- [x] Replace Gmail connect UI in Settings with SMTP form (email, password, host auto-detect, port, test button)
+- [x] Update SendRequest page — remove Gmail-specific guards, wire SMTP connected status
+- [x] Auto-detect SMTP host from email domain (gmail.com → smtp.gmail.com, outlook.com → smtp-mail.outlook.com, etc.)
+- [x] Show app-password hint for Gmail/Outlook users
+- [x] Keep Gmail OAuth routes as legacy no-op (backward compatible)
