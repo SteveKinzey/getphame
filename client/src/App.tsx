@@ -27,6 +27,7 @@ import ImportContactsPage from "./pages/ImportContacts";
 import AdminCodesPage from "./pages/AdminCodes";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
+import OnboardingWizard from "./components/OnboardingWizard";
 
 // Route guard: redirects free-tier users to /upgrade before rendering protected pages
 function PaidRoute({ component: Component }: { component: React.ComponentType }) {
@@ -57,6 +58,16 @@ function PaidRoute({ component: Component }: { component: React.ComponentType })
 
 function AppShell() {
   const { user, loading } = useAuth();
+  const { data: onboardingStatus } = trpc.onboarding.status.useQuery(undefined, {
+    enabled: !!user,
+    refetchInterval: 5000,
+  });
+
+  const showWizard =
+    !!user &&
+    !!onboardingStatus &&
+    !onboardingStatus.dismissed &&
+    !onboardingStatus.allDone;
 
   // Check for Gmail OAuth callback result in URL
   useEffect(() => {
@@ -91,6 +102,13 @@ function AppShell() {
 
   return (
     <div className="mobile-screen">
+      {showWizard && (
+        <OnboardingWizard
+          onDismiss={() => {
+            // Status will refetch automatically via the query
+          }}
+        />
+      )}
       <Switch>
         <Route path="/" component={HomePage} />
         <Route path="/send">{() => <PaidRoute component={SendRequestPage} />}</Route>

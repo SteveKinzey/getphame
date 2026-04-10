@@ -953,7 +953,51 @@ export const appRouter = router({
       return getDefaultReviewPlatform(ctx.user.id);
     }),
   }),
+
+  onboarding: router({
+    /** Returns the current onboarding state derived from existing data. */
+    status: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+
+      const { smtpCredentials, reviewPlatforms, customerRequests } = await import("../drizzle/schema");
+      const { eq: eqOp, count } = await import("drizzle-orm");
+
+      const [smtpRow] = await db
+        .select({ verified: smtpCredentials.verified })
+        .from(smtpCredentials)
+        .where(eqOp(smtpCredentials.userId, ctx.user.id))
+        .limit(1);
+
+      const [platformRow] = await db
+        .select({ id: reviewPlatforms.id })
+        .from(reviewPlatforms)
+        .where(eqOp(reviewPlatforms.userId, ctx.user.id))
+        .limit(1);
+
+      const [requestRow] = await db
+        .select({ cnt: count() })
+        .from(customerRequests)
+        .where(eqOp(customerRequests.userId, ctx.user.id));
+
+      const profile = await getBusinessProfile(ctx.user.id);
+
+      const smtpConnected = !!smtpRow?.verified;
+      const hasPlatform = !!platformRow;
+      const hasSentRequest = (requestRow?.cnt ?? 0) > 0;
+      const dismissed = profile?.onboardingDismissed === 1;
+      const allDone = smtpConnected && hasPlatform && hasSentRequest;
+
+      return { smtpConnected, hasPlatform, hasSentRequest, allDone, dismissed };
+    }),
+
+    /** Permanently dismisses the onboarding wizard for this user. */
+    dismiss: protectedProcedure.mutation(async ({ ctx }) => {
+      const profile = await getBusinessProfile(ctx.user.id);
+      if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Profile not found" });
+      await upsertBusinessProfile({ ...profile, onboardingDismissed: 1 });
+      return { ok: true };
+    }),
+  }),
 });
-
 export type AppRouter = typeof appRouter;
-

@@ -1,0 +1,1 @@
+ALTER TABLE `business_profiles` ADD `onboardingDismissed` int DEFAULT 0 NOT NULL;

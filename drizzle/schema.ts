@@ -48,6 +48,8 @@ export const businessProfiles = mysqlTable("business_profiles", {
   fromName: varchar("fromName", { length: 255 }),
   // Reply-To address — if set, replies go here instead of the connected Gmail address
   replyTo: varchar("replyTo", { length: 320 }),
+  // Onboarding wizard dismissed flag — 1 = user has dismissed or completed the wizard
+  onboardingDismissed: int("onboardingDismissed").default(0).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

@@ -231,3 +231,24 @@
 - [x] Auto-detect SMTP host from email domain (gmail.com → smtp.gmail.com, outlook.com → smtp-mail.outlook.com, etc.)
 - [x] Show app-password hint for Gmail/Outlook users
 - [x] Keep Gmail OAuth routes as legacy no-op (backward compatible)
+
+## Onboarding Wizard (3-Step First-Login Flow)
+
+- [x] Derive onboarding state server-side from existing data (smtpConnected, hasPlatform, hasSentRequest) — no new DB column needed
+- [x] Add tRPC procedure: onboarding.status (returns { smtpConnected, hasPlatform, hasSentRequest, allDone })
+- [x] Add tRPC procedure: onboarding.dismiss (sets onboarding_dismissed flag on businessProfiles)
+- [x] Add onboarding_dismissed boolean column to businessProfiles schema + db:push
+- [x] Build OnboardingWizard.tsx component (full-screen overlay, 3 steps, progress bar, inline SMTP form on step 1, inline platform URL form on step 2, navigate to Send on step 3)
+- [x] Step 1: Connect Email — inline SMTP form with auto-detect, test + save, marks step complete when smtp connected
+- [x] Step 2: Add Review Platform — inline platform type + URL form, marks step complete when at least one platform saved
+- [x] Step 3: Send First Request — CTA button navigating to /send, marks wizard complete
+- [x] Wire OnboardingWizard into App.tsx — show when user is authenticated and !allDone and !dismissed
+- [x] Skip/Dismiss button on wizard — calls onboarding.dismiss, hides wizard permanently
+- [x] Wizard auto-hides when all 3 steps complete (allDone = true)
+
+## Onboarding Wizard — Gap Resolutions
+
+- [x] onboardingDismissed column intentionally added to businessProfiles (dismiss is separate from completion)
+- [x] onboarding.status returns { smtpConnected, hasPlatform, hasSentRequest, allDone, dismissed } — dismissed field is intentional for skip-without-completing flow
+- [x] Step 3 CTA dismisses wizard + navigates to /send; wizard also auto-hides when hasSentRequest becomes true via 5s polling
+- [x] Wizard show/hide logic: shown when authenticated + !dismissed + !allDone; hides automatically when allDone=true (all 3 steps done)
