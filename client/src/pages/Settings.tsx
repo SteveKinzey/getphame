@@ -27,6 +27,7 @@ import {
   Globe,
   Pencil,
   X,
+  RotateCcw,
 } from "lucide-react";
 import ProBadge from "@/components/ProBadge";
 import { toast } from "sonner";
@@ -58,6 +59,15 @@ export default function SettingsPage() {
     onSuccess: () => {
       utils.profile.get.invalidate();
       toast.success("Business profile saved!");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  // ── Onboarding reset ─────────────────────────────────────────────────────
+  const resetOnboarding = trpc.onboarding.reset.useMutation({
+    onSuccess: () => {
+      utils.onboarding.status.invalidate();
+      toast.success("Setup wizard reopened! Check the home screen.");
     },
     onError: (err) => toast.error(err.message),
   });
@@ -1103,7 +1113,7 @@ export default function SettingsPage() {
           )}
         </div>
 
-        {/* ── Tools ───────────────────────────────────────────────────────── */}
+        {/* ── Tools ──────────────────────────────────────────────────────────────────────── */}
         <div className="rounded-2xl p-4 shadow-sm" style={{ background: 'white', border: '1px solid oklch(0.92 0.02 260)' }}>
           <h2 className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: 'oklch(0.55 0.03 260)', fontFamily: "'Poppins', sans-serif" }}>Tools</h2>
           <div className="flex flex-col gap-1">
@@ -1115,10 +1125,24 @@ export default function SettingsPage() {
                 <ChevronRight size={14} className="text-gray-400" />
               </button>
             ))}
-          </div>
-        </div>
 
-        {/* ── Sign Out ─────────────────────────────────────────────────────── */}
+            {/* Redo Setup */}
+            <button
+              onClick={() => resetOnboarding.mutate()}
+              disabled={resetOnboarding.isPending}
+              className="flex items-center justify-between py-2.5 px-1 rounded-lg hover:bg-gray-50 transition-colors text-sm font-semibold"
+              style={{ color: 'oklch(0.30 0.04 260)' }}
+            >
+              <span className="flex items-center gap-2">
+                {resetOnboarding.isPending
+                  ? <Loader2 size={15} className="animate-spin" />
+                  : <RotateCcw size={15} />}
+                Redo Setup Wizard
+              </span>
+              <ChevronRight size={14} className="text-gray-400" />
+            </button>
+          </div>
+        </div>     {/* ── Sign Out ─────────────────────────────────────────────────────── */}
         <button
           onClick={() => logout()}
           className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold"

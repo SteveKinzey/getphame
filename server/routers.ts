@@ -998,6 +998,14 @@ export const appRouter = router({
       await upsertBusinessProfile({ ...profile, onboardingDismissed: 1 });
       return { ok: true };
     }),
+
+    /** Resets the dismissed flag so the onboarding wizard is shown again. */
+    reset: protectedProcedure.mutation(async ({ ctx }) => {
+      const profile = await getBusinessProfile(ctx.user.id);
+      if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Profile not found" });
+      await upsertBusinessProfile({ ...profile, onboardingDismissed: 0 });
+      return { ok: true };
+    }),
   }),
 });
 export type AppRouter = typeof appRouter;

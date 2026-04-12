@@ -252,3 +252,8 @@
 - [x] onboarding.status returns { smtpConnected, hasPlatform, hasSentRequest, allDone, dismissed } — dismissed field is intentional for skip-without-completing flow
 - [x] Step 3 CTA dismisses wizard + navigates to /send; wizard also auto-hides when hasSentRequest becomes true via 5s polling
 - [x] Wizard show/hide logic: shown when authenticated + !dismissed + !allDone; hides automatically when allDone=true (all 3 steps done)
+
+## Redo Setup Feature
+
+- [x] Add onboarding.reset tRPC procedure (sets onboardingDismissed = 0 on businessProfiles)
+- [x] Add "Redo Setup" link/button in Settings page that calls onboarding.reset and shows wizard
