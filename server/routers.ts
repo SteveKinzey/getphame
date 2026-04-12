@@ -80,6 +80,7 @@ import {
   decryptPassword,
   detectSmtpSettings,
   getAppPasswordHint,
+  sendWelcomeEmail,
 } from "./smtp";
 
 const FREE_LIMIT = 10;
@@ -178,6 +179,13 @@ export const appRouter = router({
           replyTo: input.replyTo || undefined,
         });
         await markSmtpVerified(ctx.user.id);
+
+        // Send welcome/confirmation email to the user's own address.
+        // Fire-and-forget — don't let a welcome email failure block the connect response.
+        sendWelcomeEmail(ctx.user.id).catch((err) =>
+          console.warn("[smtp.connect] Welcome email failed (non-fatal):", err)
+        );
+
         return { success: true, email: input.email };
       }),
 

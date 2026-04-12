@@ -226,3 +226,116 @@ export async function testSmtpConnection(opts: {
     return { ok: false, error: message };
   }
 }
+
+// ── Welcome email ─────────────────────────────────────────────────────────────
+
+/**
+ * Sends a branded welcome/confirmation email to the user's own connected address.
+ * Called automatically after smtp.connect succeeds so the user can verify
+ * their connection works and see a preview of what their customers will receive.
+ */
+export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const creds = await getSmtpCredentials(userId);
+    if (!creds) return { ok: false, error: "No SMTP credentials found" };
+
+    const fromName = creds.fromName ?? creds.user;
+    const toAddress = creds.replyTo ?? creds.user;
+
+    const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're connected to ReviewLink!</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+
+          <!-- Header -->
+          <tr>
+            <td style="background:#1a2a5e;padding:32px 40px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">ReviewLink</p>
+              <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">Your email is connected! 🚀</h1>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:36px 40px;">
+              <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">
+                Hi ${fromName},
+              </p>
+              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">
+                This email confirms that <strong>${creds.user}</strong> is successfully connected to ReviewLink. Your review request emails will be sent from this address — so they land in your customers' inboxes looking like a personal message from you, not a bulk mailer.
+              </p>
+
+              <!-- Sample preview box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9ff;border:1px solid #e0e4f0;border-radius:12px;margin:24px 0;">
+                <tr>
+                  <td style="padding:24px 28px;">
+                    <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#f0a500;">Sample review request</p>
+                    <p style="margin:0 0 12px;font-size:15px;font-weight:700;color:#1a2a5e;">Subject: We'd love your feedback!</p>
+                    <p style="margin:0;font-size:14px;color:#555;line-height:1.7;">
+                      Hi [Customer Name],<br/><br/>
+                      Thank you for choosing us! We'd really appreciate it if you could take 60 seconds to leave us a review — it helps other customers find us and means the world to our team.<br/><br/>
+                      <a href="#" style="color:#1a2a5e;font-weight:700;">⭐ Leave a Review</a><br/><br/>
+                      Thank you so much,<br/>
+                      ${fromName}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">
+                Ready to start collecting reviews? Head to the app and send your first request — it takes less than 30 seconds.
+              </p>
+
+              <!-- CTA button -->
+              <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
+                <tr>
+                  <td style="background:#1a2a5e;border-radius:10px;padding:14px 32px;text-align:center;">
+                    <a href="https://reviewlink.app/send" style="color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;letter-spacing:0.3px;">Send Your First Review Request →</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
+              <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">
+                You received this because you just connected your email to ReviewLink.<br/>
+                <a href="https://reviewlink.app/settings" style="color:#1a2a5e;">Manage your settings</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+
+    const text = `Hi ${fromName},\n\nYour email (${creds.user}) is now connected to ReviewLink.\n\nYou're ready to send review requests to your customers. Head to https://reviewlink.app/send to get started.\n\n— The ReviewLink Team`;
+
+    await sendMailViaSmtp({
+      userId,
+      to: toAddress,
+      subject: "You're connected to ReviewLink! 🚀",
+      html,
+      text,
+    });
+
+    return { ok: true };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    return { ok: false, error: message };
+  }
+}

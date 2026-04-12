@@ -257,3 +257,11 @@
 
 - [x] Add onboarding.reset tRPC procedure (sets onboardingDismissed = 0 on businessProfiles)
 - [x] Add "Redo Setup" link/button in Settings page that calls onboarding.reset and shows wizard
+
+## Welcome Email on SMTP Connect
+
+- [x] Add sendWelcomeEmail(userId) helper in server/smtp.ts — sends to user's own SMTP address
+- [x] Wire sendWelcomeEmail into smtp.connect procedure (fire after successful connection test)
+- [x] Welcome email HTML: branded ReviewLink template, confirms connection works, shows sample review request preview, links to /send
+- [x] OnboardingWizard Step 1 UI: show "Check your inbox — we sent a test email" confirmation after SMTP connected
+- [x] Add vitest test for sendWelcomeEmail helper

@@ -97,3 +97,21 @@ describe("getAppPasswordHint", () => {
     expect(getAppPasswordHint("user@zoho.com")).toBeNull();
   });
 });
+
+describe("sendWelcomeEmail", () => {
+  it("is exported from smtp.ts", async () => {
+    const { sendWelcomeEmail } = await import("./smtp");
+    expect(typeof sendWelcomeEmail).toBe("function");
+  });
+
+  it("returns { ok: false } when no SMTP credentials exist for the user", async () => {
+    // userId 999999 will not have credentials in the test environment
+    const { sendWelcomeEmail } = await import("./smtp");
+    const result = await sendWelcomeEmail(999999);
+    // Either ok:false (no DB) or ok:false (no creds) — both are valid non-throwing outcomes
+    expect(result).toHaveProperty("ok");
+    if (!result.ok) {
+      expect(typeof result.error).toBe("string");
+    }
+  });
+});

@@ -120,11 +120,15 @@ function Step1Email({ onDone }: { onDone: () => void }) {
   const [testing, setTesting] = useState(false);
 
   const connectSmtp = trpc.smtp.connect.useMutation({
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       utils.smtp.status.invalidate();
       utils.onboarding.status.invalidate();
-      toast.success("Email connected! Moving to next step...");
-      setTimeout(onDone, 800);
+      // Show inbox confirmation — welcome email fires server-side automatically
+      toast.success(
+        `Email connected! Check ${variables.email} — we sent you a test email to confirm everything works.`,
+        { duration: 6000 }
+      );
+      setTimeout(onDone, 1000);
     },
     onError: (err) => toast.error(err.message),
   });
