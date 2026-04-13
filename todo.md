@@ -557,3 +557,9 @@
 ## Legal Pages
 
 - [x] Rewrite PrivacyPolicy.tsx with complete, substantive content covering all required sections
+
+## ToS + Account Deletion
+
+- [x] Rewrite TermsOfService.tsx with full depth (acceptable use, DMCA, liability cap, arbitration clause)
+- [x] Add accounts.deleteAccount tRPC procedure that wipes all user data
+- [x] Add "Delete Account" button with confirmation dialog to Settings page

@@ -27,7 +27,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, accessCodeRedemptions, gmailTokens } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import {
   listSavedContacts,
@@ -1365,6 +1365,35 @@ export const appRouter = router({
       const profile = await getBusinessProfile(ctx.user.id);
       if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Profile not found" });
       await upsertBusinessProfile({ ...profile, onboardingDismissed: 0 });
+      return { ok: true };
+    }),
+  }),
+
+  /** Account self-service: delete all data and the account itself */
+  account: router({
+    delete: protectedProcedure.mutation(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      const uid = ctx.user.id;
+      // Delete all user data in dependency order (children before parents)
+      await db.delete(emailEvents).where(eq(emailEvents.userId, uid));
+      await db.delete(followUpReminders).where(eq(followUpReminders.userId, uid));
+      await db.delete(customerRequests).where(eq(customerRequests.userId, uid));
+      await db.delete(savedContacts).where(eq(savedContacts.userId, uid));
+      await db.delete(emailTemplates).where(eq(emailTemplates.userId, uid));
+      await db.delete(reviewPlatforms).where(eq(reviewPlatforms.userId, uid));
+      await db.delete(smtpCredentials).where(eq(smtpCredentials.userId, uid));
+      await db.delete(wooCustomers).where(eq(wooCustomers.userId, uid));
+      await db.delete(wooCredentials).where(eq(wooCredentials.userId, uid));
+      await db.delete(accessCodeRedemptions).where(eq(accessCodeRedemptions.userId, uid));
+      await db.delete(stripeSubscriptions).where(eq(stripeSubscriptions.userId, uid));
+      await db.delete(businessProfiles).where(eq(businessProfiles.userId, uid));
+      await db.delete(gmailTokens).where(eq(gmailTokens.userId, uid));
+      // Finally delete the user row itself
+      await db.delete(users).where(eq(users.id, uid));
+      // Clear the session cookie
+      const cookieOptions = getSessionCookieOptions(ctx.req);
+      ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { ok: true };
     }),
   }),

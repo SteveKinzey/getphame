@@ -1,7 +1,7 @@
 // ReviewLink — Settings Page
 // Sections: Business Profile, Email Connection, Plan
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import {
@@ -151,6 +151,83 @@ function InlineReplyToEdit({ current, onSaved }: { current: string; onSaved: () 
       >
         {updateReplyTo.isPending ? <Loader2 size={12} className="animate-spin" /> : "Save"}
       </button>
+    </div>
+  );
+}
+
+// ── Delete Account Section ────────────────────────────────────────────────────
+function DeleteAccountSection() {
+  const [open, setOpen] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
+  const [, navigate] = useLocation();
+  const { logout } = useAuth();
+
+  const deleteAccount = trpc.account.delete.useMutation({
+    onSuccess: () => {
+      toast.success("Account deleted. Goodbye!");
+      logout();
+      navigate("/");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold w-full"
+        style={{ color: "oklch(0.55 0.15 25)", background: "transparent" }}
+      >
+        <Trash2 size={14} />
+        Delete Account
+      </button>
+    );
+  }
+
+  return (
+    <div
+      className="rounded-2xl p-5 space-y-3"
+      style={{ background: "oklch(0.99 0.005 25)", border: "1.5px solid oklch(0.80 0.12 25)" }}
+    >
+      <p className="text-sm font-bold" style={{ color: "oklch(0.40 0.15 25)", fontFamily: "'Poppins', sans-serif" }}>
+        Delete your account?
+      </p>
+      <p className="text-xs leading-relaxed" style={{ color: "oklch(0.45 0.05 260)" }}>
+        This will permanently delete your account, all contacts, email templates, review requests, tracking data, and SMTP credentials. This action cannot be undone.
+      </p>
+      <label className="flex items-start gap-2 cursor-pointer">
+        <input
+          type="checkbox"
+          checked={confirmed}
+          onChange={(e) => setConfirmed(e.target.checked)}
+          className="mt-0.5"
+        />
+        <span className="text-xs" style={{ color: "oklch(0.45 0.05 260)" }}>
+          I understand this is permanent and cannot be reversed.
+        </span>
+      </label>
+      <div className="flex gap-2">
+        <button
+          onClick={() => { setOpen(false); setConfirmed(false); }}
+          className="flex-1 py-2 rounded-xl text-xs font-bold"
+          style={{ background: "oklch(0.94 0.01 260)", color: "oklch(0.40 0.04 260)" }}
+        >
+          Cancel
+        </button>
+        <button
+          disabled={!confirmed || deleteAccount.isPending}
+          onClick={() => deleteAccount.mutate()}
+          className="flex-1 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1"
+          style={{
+            background: confirmed ? "oklch(0.50 0.18 25)" : "oklch(0.80 0.05 25)",
+            color: "white",
+            cursor: confirmed ? "pointer" : "not-allowed",
+          }}
+        >
+          {deleteAccount.isPending ? <Loader2 size={12} className="animate-spin" /> : <Trash2 size={12} />}
+          Delete Forever
+        </button>
+      </div>
     </div>
   );
 }
@@ -1396,6 +1473,9 @@ export default function SettingsPage() {
             </button>
           </div>
         </div>     {/* ── Sign Out ─────────────────────────────────────────────────────── */}
+        {/* ── Delete Account ───────────────────────────────────────────────── */}
+        <DeleteAccountSection />
+
         <button
           onClick={() => logout()}
           className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold"
