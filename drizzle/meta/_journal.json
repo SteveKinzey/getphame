@@ -141,6 +141,13 @@
       "when": 1776048234322,
       "tag": "0019_married_squadron_supreme",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "5",
+      "when": 1776050734561,
+      "tag": "0020_careful_ultimates",
+      "breakpoints": true
     }
   ]
 }

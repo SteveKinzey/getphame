@@ -34,6 +34,7 @@ import { useLocation } from "wouter";
 type Template = {
   id: number;
   name: string;
+  usageCount?: number;
   subject: string;
   body: string;
   isDefault: boolean;
@@ -52,7 +53,10 @@ Could you take 30 seconds to leave us a quick review? It means the world to us a
 
 Thank you so much for your support!
 
-The {{businessName}} team`;
+The {{businessName}} team
+
+---
+You received this email because you are a customer of {{businessName}}. To stop receiving these emails, reply with "unsubscribe".`;
 
 const emptyForm: FormData = {
   name: "",
@@ -221,12 +225,23 @@ export default function EmailTemplates() {
             <div key={t.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 flex-wrap">
                     <p className="font-bold text-gray-900 truncate">{t.name}</p>
                     {t.isDefault && (
                       <span className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full"
                         style={{ background: "oklch(0.96 0.12 80)", color: "oklch(0.55 0.18 80)" }}>
                         <Star size={10} fill="currentColor" /> Default
+                      </span>
+                    )}
+                    {((t as Template & { usageCount?: number }).usageCount ?? 0) > 0 ? (
+                      <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+                        style={{ background: "oklch(0.95 0.02 260)", color: "oklch(0.45 0.05 260)" }}>
+                        Used {(t as Template & { usageCount?: number }).usageCount} {((t as Template & { usageCount?: number }).usageCount ?? 0) === 1 ? "time" : "times"}
+                      </span>
+                    ) : (
+                      <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+                        style={{ background: "oklch(0.97 0.01 260)", color: "oklch(0.65 0.03 260)" }}>
+                        Not used yet
                       </span>
                     )}
                   </div>
@@ -306,6 +321,11 @@ export default function EmailTemplates() {
                   className="font-mono text-sm"
                   placeholder="Write your email body here…"
                 />
+                <p className="text-xs mt-1" style={{ color: "oklch(0.55 0.06 30)" }}>
+                  <strong>CAN-SPAM tip:</strong> Include an unsubscribe line in your template. Use{" "}
+                  <code className="bg-gray-100 px-1 rounded text-xs">reply with "unsubscribe"</code>{" "}
+                  or a similar phrase so recipients can opt out.
+                </p>
               </div>
               <div className="flex items-center gap-2">
                 <input

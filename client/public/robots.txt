@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /settings
+Disallow: /dashboard
+Disallow: /send
+Disallow: /contacts
+Disallow: /templates
+Disallow: /reminders
+Disallow: /import
+Disallow: /woo-customers
+Disallow: /upgrade
+Disallow: /payment-success
+
+Sitemap: https://reviewlink.app/sitemap.xml

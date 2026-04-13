@@ -2,11 +2,12 @@
 // Shows: total requests, monthly count, weekly breakdown chart, full activity log
 
 import { trpc } from "@/lib/trpc";
-import { BarChart2, Send, TrendingUp, Star, Crown, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X } from "lucide-react";
+import { BarChart2, Send, TrendingUp, Star, Crown, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import { useLocation } from "wouter";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
 
 function formatDate(date: Date): string {
   try {
@@ -50,6 +51,10 @@ export default function DashboardPage() {
     }
   };
 
+  // Search + status filter state
+  const [activitySearch, setActivitySearch] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "reviewed">("all");
+
   // Bulk mark-as-responded mutation with optimistic update
   const bulkMarkRespondedMutation = trpc.requests.bulkMarkResponded.useMutation({
     onMutate: async ({ ids, responded }) => {
@@ -71,6 +76,41 @@ export default function DashboardPage() {
       setSelected(new Set());
     },
   });
+
+  // Filtered requests for activity feed
+  const filteredRequests = useMemo(() => {
+    if (!allRequests) return [];
+    return allRequests.filter((r) => {
+      const q = activitySearch.toLowerCase();
+      const matchesSearch = !q ||
+        r.customerName.toLowerCase().includes(q) ||
+        (r.customerEmail ?? "").toLowerCase().includes(q);
+      const matchesStatus =
+        statusFilter === "all" ||
+        (statusFilter === "reviewed" && !!r.respondedAt) ||
+        (statusFilter === "pending" && !r.respondedAt);
+      return matchesSearch && matchesStatus;
+    });
+  }, [allRequests, activitySearch, statusFilter]);
+
+  // Keep Select All in sync with filtered list
+  const allFilteredSelected = filteredRequests.length > 0 && filteredRequests.every((r) => selected.has(r.id));
+
+  const toggleSelectAllFiltered = () => {
+    if (allFilteredSelected) {
+      setSelected((prev) => {
+        const next = new Set(prev);
+        filteredRequests.forEach((r) => next.delete(r.id));
+        return next;
+      });
+    } else {
+      setSelected((prev) => {
+        const next = new Set(prev);
+        filteredRequests.forEach((r) => next.add(r.id));
+        return next;
+      });
+    }
+  };
 
   const isPro = profile?.tier === "pro";
 
@@ -286,27 +326,90 @@ export default function DashboardPage() {
 
         {/* Activity Feed */}
         <div className="bg-white rounded-2xl p-4 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
+          {/* Header row */}
+          <div className="flex items-center justify-between mb-3">
             <h3
               className="text-sm font-black"
               style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
             >
               All Activity
+              {(allRequests?.length ?? 0) > 0 && (
+                <span className="ml-1.5 text-xs font-normal" style={{ color: "oklch(0.60 0.03 260)" }}>
+                  {filteredRequests.length !== allRequests!.length
+                    ? `${filteredRequests.length} of ${allRequests!.length}`
+                    : allRequests!.length}
+                </span>
+              )}
             </h3>
             {(allRequests?.length ?? 0) > 0 && (
               <button
-                onClick={toggleSelectAll}
+                onClick={toggleSelectAllFiltered}
                 className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg font-bold transition-colors"
                 style={{
-                  background: allSelected ? "oklch(0.22 0.09 260)" : "oklch(0.96 0.01 260)",
-                  color: allSelected ? "oklch(0.80 0.18 80)" : "oklch(0.45 0.05 260)",
+                  background: allFilteredSelected ? "oklch(0.22 0.09 260)" : "oklch(0.96 0.01 260)",
+                  color: allFilteredSelected ? "oklch(0.80 0.18 80)" : "oklch(0.45 0.05 260)",
                 }}
               >
-                {allSelected ? <CheckSquare size={13} /> : <Square size={13} />}
-                {allSelected ? "Deselect All" : "Select All"}
+                {allFilteredSelected ? <CheckSquare size={13} /> : <Square size={13} />}
+                {allFilteredSelected ? "Deselect All" : "Select All"}
               </button>
             )}
           </div>
+
+          {/* Search + status filter */}
+          {(allRequests?.length ?? 0) > 0 && (
+            <div className="flex flex-col gap-2 mb-3">
+              <div className="relative">
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "oklch(0.65 0.03 260)" }} />
+                <Input
+                  value={activitySearch}
+                  onChange={(e) => setActivitySearch(e.target.value)}
+                  placeholder="Search by name or email…"
+                  className="pl-8 pr-8 text-sm h-9 bg-gray-50 border-gray-200"
+                />
+                {activitySearch && (
+                  <button
+                    onClick={() => setActivitySearch("")}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
+              <div className="flex items-center gap-1.5">
+                {(["all", "pending", "reviewed"] as const).map((opt) => {
+                  const labels = { all: "All", pending: "Pending", reviewed: "Reviewed" };
+                  const active = statusFilter === opt;
+                  return (
+                    <button
+                      key={opt}
+                      onClick={() => setStatusFilter(opt)}
+                      className="px-3 py-1 rounded-full text-xs font-bold transition-colors"
+                      style={{
+                        background: active
+                          ? opt === "reviewed" ? "oklch(0.88 0.10 80)" : opt === "pending" ? "oklch(0.96 0.04 145)" : "oklch(0.22 0.09 260)"
+                          : "oklch(0.96 0.01 260)",
+                        color: active
+                          ? opt === "reviewed" ? "oklch(0.35 0.12 80)" : opt === "pending" ? "oklch(0.45 0.12 145)" : "oklch(0.80 0.18 80)"
+                          : "oklch(0.45 0.05 260)",
+                      }}
+                    >
+                      {labels[opt]}
+                    </button>
+                  );
+                })}
+                {(activitySearch || statusFilter !== "all") && (
+                  <button
+                    onClick={() => { setActivitySearch(""); setStatusFilter("all"); }}
+                    className="ml-auto text-xs px-2 py-1 rounded-lg"
+                    style={{ color: "oklch(0.55 0.03 260)" }}
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
 
           {(isLoading || listLoading) ? (
             <div className="flex justify-center py-8">
@@ -321,14 +424,26 @@ export default function DashboardPage() {
                 Send your first one from the Send tab!
               </p>
             </div>
+          ) : filteredRequests.length === 0 ? (
+            <div className="flex flex-col items-center py-6 gap-2">
+              <Search size={28} style={{ color: "oklch(0.80 0.03 260)" }} />
+              <p className="text-sm" style={{ color: "oklch(0.60 0.03 260)" }}>No matching requests</p>
+              <button
+                onClick={() => { setActivitySearch(""); setStatusFilter("all"); }}
+                className="text-xs font-bold px-3 py-1.5 rounded-lg mt-1"
+                style={{ background: "oklch(0.96 0.01 260)", color: "oklch(0.45 0.05 260)" }}
+              >
+                Clear filters
+              </button>
+            </div>
           ) : (
             <div className="flex flex-col gap-0">
-              {allRequests.map((req, idx) => (
+              {filteredRequests.map((req, idx) => (
                 <div
                   key={req.id}
                   className="flex items-center justify-between py-3"
                   style={{
-                    borderBottom: idx < allRequests.length - 1 ? "1px solid oklch(0.94 0.01 260)" : "none",
+                    borderBottom: idx < filteredRequests.length - 1 ? "1px solid oklch(0.94 0.01 260)" : "none",
                     background: selected.has(req.id) ? "oklch(0.97 0.02 260)" : "transparent",
                     borderRadius: selected.has(req.id) ? "8px" : undefined,
                     paddingLeft: selected.has(req.id) ? "6px" : undefined,

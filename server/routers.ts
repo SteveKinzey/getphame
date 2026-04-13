@@ -13,6 +13,7 @@ import {
 } from "./db";
 
 import { sendMailViaSmtp } from "./smtp";
+import { checkSendRateLimit } from "./rateLimiter";
 import { createCheckoutSession, createPortalSession } from "./stripe";
 import { createOrGetZohoCustomer, createZohoInvoice, sendZohoInvoice } from "./zoho";
 import {
@@ -623,6 +624,9 @@ export const appRouter = router({
           throw new Error(`Free plan limit reached (${FREE_LIMIT}/month). Upgrade to Pro for unlimited requests.`);
         }
 
+        // Hourly rate limit: check upfront for the whole batch
+        checkSendRateLimit(ctx.user.id, input.contactIds.length);
+
         // Resolve review URL: use selected platform, else default platform, else profile.reviewLink
         let reviewUrl = profile.reviewLink ?? "";
         if (input.platformId) {
@@ -673,7 +677,7 @@ export const appRouter = router({
               htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">${replacePlaceholders(resolvedTemplate.body, contact.name).replace(/\n/g, "<br>")}</div>`;
             } else {
               subject = `${profile.businessName} would love your feedback!`;
-              htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2>Hi ${contact.name}!</h2><p>Thank you for choosing <strong>${profile.businessName}</strong>. We hope you had a great experience!</p><p>Could you take 30 seconds to leave us a quick review?</p><div style="text-align: center; margin: 32px 0;"><a href="${reviewUrl}" style="background: #FFB800; color: #0F1F4B; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold;">Leave a Review</a></div></div>`;
+              htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2>Hi ${contact.name}!</h2><p>Thank you for choosing <strong>${profile.businessName}</strong>. We hope you had a great experience!</p><p>Could you take 30 seconds to leave us a quick review?</p><div style="text-align: center; margin: 32px 0;"><a href="${reviewUrl}" style="background: #FFB800; color: #0F1F4B; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold;">Leave a Review</a></div><hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" /><p style="color: #aaa; font-size: 11px; text-align: center;">You received this email because you are a customer of ${profile.businessName}. To stop receiving these emails, reply with &quot;unsubscribe&quot;.</p></div>`;
             }
             await sendMailViaSmtp({ userId: ctx.user.id, to: contact.email, subject, html: htmlBody });
             await createCustomerRequest({
@@ -698,6 +702,16 @@ export const appRouter = router({
           } catch (err) {
             failed++;
             errors.push(`${contact.email}: ${err instanceof Error ? err.message : String(err)}`);
+          }
+        }
+
+        // Increment template usage counter once for the whole bulk send
+        if (resolvedTemplate && sent > 0) {
+          const dbT = await import("./db").then((m) => m.getDb());
+          if (dbT) {
+            const { emailTemplates: etTable } = await import("../drizzle/schema");
+            const { eq: eqT, sql: sqlT } = await import("drizzle-orm");
+            await dbT.update(etTable).set({ usageCount: sqlT`${etTable.usageCount} + ${sent}` }).where(eqT(etTable.id, resolvedTemplate.id));
           }
         }
 
@@ -870,6 +884,9 @@ export const appRouter = router({
           throw new Error(`Free plan limit reached (${FREE_LIMIT}/month). Upgrade to Pro for unlimited requests.`);
         }
 
+        // Hourly rate limit: max 200 sends per user per rolling hour
+        checkSendRateLimit(ctx.user.id, 1);
+
         // Resolve review URL: use selected platform, else fall back to profile.reviewLink
         let reviewUrl = profile.reviewLink ?? "";
         if (input.platformId) {
@@ -920,6 +937,8 @@ export const appRouter = router({
             </div>
             <p style="color: #666; font-size: 14px;">Thank you so much!</p>
             <p style="color: #666; font-size: 14px;">The ${profile.businessName} team</p>
+            <hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" />
+            <p style="color: #aaa; font-size: 11px; text-align: center;">You received this email because you are a customer of ${profile.businessName}. To stop receiving these emails, reply with "unsubscribe".</p>
           </div>
         `;
         }
@@ -934,6 +953,16 @@ export const appRouter = router({
           status: "sent",
           platformId: input.platformId ?? null,
         });
+
+        // Increment template usage counter
+        if (resolvedTemplate) {
+          const db2 = await getDb();
+          if (db2) {
+            const { emailTemplates } = await import("../drizzle/schema");
+            const { eq: eqT, sql: sqlT } = await import("drizzle-orm");
+            await db2.update(emailTemplates).set({ usageCount: sqlT`${emailTemplates.usageCount} + 1` }).where(eqT(emailTemplates.id, resolvedTemplate.id));
+          }
+        }
 
         await upsertBusinessProfile({
           ...profile,

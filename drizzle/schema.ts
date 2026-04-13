@@ -155,6 +155,7 @@ export const emailTemplates = mysqlTable("email_templates", {
   subject: varchar("subject", { length: 512 }).notNull(),
   body: text("body").notNull(), // Supports {{customer_name}}, {{business_name}}, {{review_link}}
   isDefault: int("isDefault").default(0).notNull(), // 1 = default template for this user
+  usageCount: int("usageCount").default(0).notNull(), // incremented each time this template is used to send a request
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

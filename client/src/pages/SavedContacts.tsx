@@ -531,33 +531,54 @@ export default function SavedContacts() {
 
         {/* Tag filter pills */}
         {allTags.length > 0 && (
-          <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            <Tag size={13} style={{ color: "oklch(0.55 0.03 260)", flexShrink: 0 }} />
-            <button
-              onClick={() => setTagFilter(null)}
-              className="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors"
-              style={{
-                background: tagFilter === null ? "oklch(0.55 0.12 160)" : "white",
-                color: tagFilter === null ? "white" : "oklch(0.45 0.05 260)",
-                border: "1px solid oklch(0.88 0.02 260)",
-              }}
-            >
-              All tags
-            </button>
-            {allTags.map((tag) => (
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center gap-2 overflow-x-auto pb-1">
+              <Tag size={13} style={{ color: "oklch(0.55 0.03 260)", flexShrink: 0 }} />
               <button
-                key={tag}
-                onClick={() => setTagFilter(tagFilter === tag ? null : tag)}
+                onClick={() => setTagFilter(null)}
                 className="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors"
                 style={{
-                  background: tagFilter === tag ? "oklch(0.55 0.12 160)" : "white",
-                  color: tagFilter === tag ? "white" : "oklch(0.45 0.05 260)",
+                  background: tagFilter === null ? "oklch(0.55 0.12 160)" : "white",
+                  color: tagFilter === null ? "white" : "oklch(0.45 0.05 260)",
                   border: "1px solid oklch(0.88 0.02 260)",
                 }}
               >
-                {tag}
+                All tags
               </button>
-            ))}
+              {allTags.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => setTagFilter(tagFilter === tag ? null : tag)}
+                  className="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors"
+                  style={{
+                    background: tagFilter === tag ? "oklch(0.55 0.12 160)" : "white",
+                    color: tagFilter === tag ? "white" : "oklch(0.45 0.05 260)",
+                    border: "1px solid oklch(0.88 0.02 260)",
+                  }}
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+
+            {/* Bulk-send shortcut — appears when a tag filter is active */}
+            {tagFilter !== null && filtered.length > 0 && (
+              <button
+                onClick={() => {
+                  // Select all contacts matching the current tag filter, then open bulk-send dialog
+                  setSelected(new Set(filtered.map((c) => c.id)));
+                  setBulkConfirmOpen(true);
+                }}
+                className="flex items-center gap-2 self-start px-4 py-2 rounded-xl text-sm font-bold transition-colors"
+                style={{
+                  background: "oklch(0.22 0.09 260)",
+                  color: "oklch(0.80 0.18 80)",
+                }}
+              >
+                <Rocket size={14} />
+                Send to all "{tagFilter}" ({filtered.length})
+              </button>
+            )}
           </div>
         )}
 

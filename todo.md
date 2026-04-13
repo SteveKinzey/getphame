@@ -444,3 +444,28 @@
 - [x] Preview renders body in a styled email-card panel (pre-formatted, no iframe needed)
 - [x] Subject line preview shown above the body preview
 - [x] Live preview toggle button (Show/Hide Preview) in dialog header
+
+## Dashboard Search & Filter
+
+- [x] Search bar above activity feed (filter by customer name or email, client-side)
+- [x] Responded/Pending filter pills (All / Pending / Reviewed) above activity feed
+- [x] Show filtered count e.g. "12 of 48 requests"
+- [x] Clear search/filter button when active
+
+## Template Usage Counter
+
+- [x] Add usageCount int column to email_templates schema + db:push
+- [x] Increment usageCount when a template is used in requests.send or contacts.bulkSend
+- [x] Show "Used N times" badge on each template card in EmailTemplates list
+
+## Bulk Send from Tag Segment
+
+- [x] When a tag filter is active in SavedContacts, show a "Send to all [tag]" action button
+- [x] Clicking it selects all filtered contacts and opens the bulk-send confirm dialog
+
+## Pre-Launch Hardening
+
+- [x] Item 5: Admin routes already self-redirect non-admins; not linked from any nav component — no UI changes needed
+- [x] Item 7: Add robots.txt and sitemap.xml to client/public/
+- [x] Item 8: Add per-user in-memory rate limiting on requests.send and contacts.bulkSend (max 200/hr)
+- [x] Item 9: Add unsubscribe footer line to default email template body and add CAN-SPAM hint in template editor
