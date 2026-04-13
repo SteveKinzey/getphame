@@ -584,3 +584,11 @@
 - [x] A11y: Add :focus-visible ring styles globally in index.css
 - [x] A11y: Add sr-only utility class to index.css
 - [x] A11y: Wrap Switch in <main id="main-content"> landmark for screen readers
+
+## Changelog + WooCommerce Sync Indicator
+
+- [x] Build /changelog page with What's New entries (static, navy/gold design matching app)
+- [x] Register /changelog route in App.tsx (public + authenticated)
+- [x] Add "What's New" link to BottomNav legal footer strip
+- [x] Add WooCommerce last-synced status line below Contacts toolbar
+- [x] Remove isPro/Crown from BottomNav (no pro plan)

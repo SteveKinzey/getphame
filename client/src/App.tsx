@@ -27,6 +27,7 @@ import RemindersPage from "./pages/Reminders";
 import ImportContactsPage from "./pages/ImportContacts";
 import AdminCodesPage from "./pages/AdminCodes";
 import AdminSmtpStatsPage from "./pages/AdminSmtpStats";
+import ChangelogPage from "./pages/Changelog";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
 import OnboardingWizard from "./components/OnboardingWizard";
@@ -61,6 +62,7 @@ function AppShell() {
   if (path === "/privacy-policy") return <PrivacyPolicyPage />;
   if (path === "/terms-of-service") return <TermsOfServicePage />;
   if (path === "/payment-success") return <PaymentSuccessPage />;
+  if (path === "/changelog") return <ChangelogPage />;
 
   if (!user) {
     // Show the public marketing landing page at /, Onboarding at /onboarding
@@ -96,6 +98,7 @@ function AppShell() {
         <Route path="/import" component={ImportContactsPage} />
         <Route path="/admin/codes" component={AdminCodesPage} />
         <Route path="/admin/smtp-stats" component={AdminSmtpStatsPage} />
+        <Route path="/changelog" component={ChangelogPage} />
         <Route component={HomePage} />
       </Switch>
       </main>

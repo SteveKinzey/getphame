@@ -434,6 +434,27 @@ export default function SavedContacts() {
         </div>
       </div>
 
+      {/* WooCommerce last-synced status line */}
+      {wooCreds && (
+        <div
+          className="flex items-center gap-1.5 px-4 py-2"
+          style={{ background: "oklch(0.96 0.02 260)", borderBottom: "1px solid oklch(0.91 0.02 260)" }}
+        >
+          <ShoppingCart size={12} style={{ color: "oklch(0.50 0.05 260)" }} aria-hidden="true" />
+          <span className="text-xs" style={{ color: "oklch(0.50 0.05 260)", fontFamily: "'Nunito', sans-serif" }}>
+            WooCommerce —
+            {syncFromWooMutation.isPending ? (
+              <span className="ml-1 font-semibold" style={{ color: "oklch(0.72 0.18 160)" }}>Syncing…</span>
+            ) : wooCreds.lastSyncedAt ? (
+              <span className="ml-1 font-semibold" style={{ color: "oklch(0.40 0.05 260)" }}>
+                Last synced {format(new Date(wooCreds.lastSyncedAt), "MMM d 'at' h:mm a")}
+              </span>
+            ) : (
+              <span className="ml-1 font-semibold" style={{ color: "oklch(0.60 0.04 260)" }}>Never synced — tap WooCommerce above to import</span>
+            )}
+          </span>
+        </div>
+      )}
       <div className="px-4 pt-4 space-y-3">
         {/* Search + Select All row */}
         <div className="flex items-center gap-2">

@@ -2,8 +2,7 @@
 // Design: Navy background, gold active state, large tap targets (48px+)
 
 import { useLocation } from 'wouter';
-import { Home, Send, BarChart2, Settings, Crown } from 'lucide-react';
-import { trpc } from '@/lib/trpc';
+import { Home, Send, BarChart2, Settings } from 'lucide-react';
 
 const NAV_ITEMS = [
   { path: '/', label: 'Home', Icon: Home },
@@ -14,9 +13,6 @@ const NAV_ITEMS = [
 
 export default function BottomNav() {
   const [location, navigate] = useLocation();
-  const { data: profile } = trpc.profile.get.useQuery();
-  const isPro = profile?.tier === 'pro';
-
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 bottom-nav"
@@ -55,15 +51,7 @@ export default function BottomNav() {
                     }}
                   />
                 </div>
-                {/* Pro crown dot on Settings tab */}
-                {isPro && path === '/settings' && (
-                  <div
-                    className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center"
-                    style={{ background: 'oklch(0.80 0.18 80)' }}
-                  >
-                    <Crown size={8} style={{ color: 'oklch(0.22 0.09 260)' }} strokeWidth={2.5} />
-                  </div>
-                )}
+
               </div>
               <span
                 className="text-xs font-semibold tracking-wide"
@@ -98,6 +86,14 @@ export default function BottomNav() {
           style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
         >
           Terms of Service
+        </a>
+        <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
+        <a
+          href="/changelog"
+          className="text-xs font-semibold hover:underline transition-colors"
+          style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
+        >
+          What's New
         </a>
       </div>
     </nav>

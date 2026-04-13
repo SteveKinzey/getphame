@@ -1,0 +1,300 @@
+// ReviewLink — Changelog / What's New
+// Design: Navy header, white content area, gold accent for version badges
+
+import { useLocation } from "wouter";
+import { ArrowLeft, Rocket, Star, Shield, Zap, Users, BarChart2, Mail } from "lucide-react";
+
+interface ChangeEntry {
+  version: string;
+  date: string;
+  label: "new" | "improved" | "fix";
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+}
+
+const CHANGELOG: { version: string; date: string; entries: ChangeEntry[] }[] = [
+  {
+    version: "1.3",
+    date: "April 2026",
+    entries: [
+      {
+        version: "1.3",
+        date: "April 2026",
+        label: "new",
+        icon: <BarChart2 size={15} />,
+        title: "Email Performance Dashboard",
+        description:
+          "Open rate and click rate now appear as an at-a-glance summary card on your Home screen, so you can see how your review requests are performing without digging into individual records.",
+      },
+      {
+        version: "1.3",
+        date: "April 2026",
+        label: "new",
+        icon: <Star size={15} />,
+        title: "Top Template Badge",
+        description:
+          "The email template with the highest click rate now shows a gold 🏆 Top Template badge on the Templates list, so you always know which message is converting best.",
+      },
+      {
+        version: "1.3",
+        date: "April 2026",
+        label: "improved",
+        icon: <Mail size={15} />,
+        title: "Reminder Email Tracking",
+        description:
+          "Open and click tracking now covers reminder follow-up emails, not just the initial send. All engagement data rolls up under the original request so your stats stay clean.",
+      },
+      {
+        version: "1.3",
+        date: "April 2026",
+        label: "new",
+        icon: <Rocket size={15} />,
+        title: "Share ReviewLink Referral Card",
+        description:
+          "A new card on the Home screen lets you share ReviewLink with other local businesses in one tap — using the native share sheet on mobile or clipboard copy on desktop.",
+      },
+    ],
+  },
+  {
+    version: "1.2",
+    date: "March 2026",
+    entries: [
+      {
+        version: "1.2",
+        date: "March 2026",
+        label: "new",
+        icon: <Users size={15} />,
+        title: "CSV Contact Import",
+        description:
+          "Import your entire customer list from a spreadsheet in four steps: upload, map columns, preview, and confirm. Supports up to 5,000 contacts per import with automatic duplicate detection.",
+      },
+      {
+        version: "1.2",
+        date: "March 2026",
+        label: "new",
+        icon: <Users size={15} />,
+        title: "Bulk Send to Contacts",
+        description:
+          "Select multiple saved contacts and send personalised review requests to all of them at once. Filter by tag to target specific customer groups.",
+      },
+      {
+        version: "1.2",
+        date: "March 2026",
+        label: "improved",
+        icon: <Zap size={15} />,
+        title: "WooCommerce Sync",
+        description:
+          "Connect your WooCommerce store and import recent customers directly into your contacts list. Choose a 30, 60, or 90-day sync window to control how far back to look.",
+      },
+      {
+        version: "1.2",
+        date: "March 2026",
+        label: "improved",
+        icon: <Mail size={15} />,
+        title: "Reminder Follow-ups",
+        description:
+          "Set up automatic follow-up reminders for customers who haven't left a review yet. Configure the delay and message per template, and ReviewLink handles the rest.",
+      },
+    ],
+  },
+  {
+    version: "1.1",
+    date: "February 2026",
+    entries: [
+      {
+        version: "1.1",
+        date: "February 2026",
+        label: "new",
+        icon: <Star size={15} />,
+        title: "Multi-Platform Review Links",
+        description:
+          "Add multiple review destinations — Google, Yelp, TripAdvisor, Facebook, or any custom URL — and set a default. Each outbound email uses the platform you choose.",
+      },
+      {
+        version: "1.1",
+        date: "February 2026",
+        label: "new",
+        icon: <BarChart2 size={15} />,
+        title: "Open & Click Tracking",
+        description:
+          "Every review request email now includes an invisible tracking pixel and a click-tracked review link. See exactly who opened your email and who clicked through to leave a review.",
+      },
+      {
+        version: "1.1",
+        date: "February 2026",
+        label: "improved",
+        icon: <Mail size={15} />,
+        title: "Email Templates",
+        description:
+          "Create, edit, and manage multiple email templates. Set a default template for quick sends, or choose a specific template per request.",
+      },
+    ],
+  },
+  {
+    version: "1.0",
+    date: "January 2026",
+    entries: [
+      {
+        version: "1.0",
+        date: "January 2026",
+        label: "new",
+        icon: <Rocket size={15} />,
+        title: "ReviewLink Launch",
+        description:
+          "Send personalised review request emails from your own email account — not a bulk mailer. Customers receive a message that looks like it came directly from you.",
+      },
+      {
+        version: "1.0",
+        date: "January 2026",
+        label: "new",
+        icon: <Shield size={15} />,
+        title: "CAN-SPAM Compliant",
+        description:
+          "Every email includes a compliant unsubscribe footer and your business address. ReviewLink handles the legal requirements so you don't have to.",
+      },
+    ],
+  },
+];
+
+const LABEL_STYLES: Record<ChangeEntry["label"], { bg: string; color: string; text: string }> = {
+  new: { bg: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)", text: "New" },
+  improved: { bg: "oklch(0.88 0.10 80)", color: "oklch(0.35 0.12 80)", text: "Improved" },
+  fix: { bg: "oklch(0.92 0.04 145)", color: "oklch(0.40 0.12 145)", text: "Fix" },
+};
+
+export default function ChangelogPage() {
+  const [, navigate] = useLocation();
+
+  return (
+    <div className="min-h-screen pb-24" style={{ background: "oklch(0.975 0.003 100)" }}>
+      {/* Navy header */}
+      <div
+        className="relative px-5 pt-14 pb-8"
+        style={{ background: "oklch(0.22 0.09 260)" }}
+      >
+        <button
+          onClick={() => navigate("/")}
+          aria-label="Back to Home"
+          className="flex items-center gap-2 mb-4 transition-opacity active:opacity-70"
+          style={{ color: "oklch(0.80 0.18 80)" }}
+        >
+          <ArrowLeft size={16} aria-hidden="true" />
+          <span className="text-xs font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>
+            Back
+          </span>
+        </button>
+
+        <div className="flex items-center gap-2 mb-1">
+          <Rocket size={16} style={{ color: "oklch(0.80 0.18 80)" }} aria-hidden="true" />
+          <span
+            className="text-xs font-bold tracking-widest uppercase"
+            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
+          >
+            ReviewLink
+          </span>
+        </div>
+        <h1
+          className="text-2xl leading-tight"
+          style={{ color: "white", fontFamily: "'Syne', sans-serif", fontWeight: 900 }}
+        >
+          What's New
+        </h1>
+        <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.60)" }}>
+          Every update, improvement, and fix — in one place.
+        </p>
+      </div>
+
+      {/* Release sections */}
+      <div className="px-4 pt-6 flex flex-col gap-8">
+        {CHANGELOG.map((release) => (
+          <div key={release.version}>
+            {/* Version header */}
+            <div className="flex items-center gap-3 mb-4">
+              <div
+                className="px-3 py-1 rounded-full text-xs font-black"
+                style={{
+                  background: "oklch(0.22 0.09 260)",
+                  color: "oklch(0.80 0.18 80)",
+                  fontFamily: "'Poppins', sans-serif",
+                }}
+              >
+                v{release.version}
+              </div>
+              <span
+                className="text-xs font-semibold"
+                style={{ color: "oklch(0.60 0.03 260)", fontFamily: "'Nunito', sans-serif" }}
+              >
+                {release.date}
+              </span>
+              <div
+                className="flex-1 h-px"
+                style={{ background: "oklch(0.90 0.01 260)" }}
+              />
+            </div>
+
+            {/* Entries */}
+            <div className="flex flex-col gap-3">
+              {release.entries.map((entry, i) => {
+                const style = LABEL_STYLES[entry.label];
+                return (
+                  <div
+                    key={i}
+                    className="rounded-2xl p-4 flex gap-3"
+                    style={{ background: "white", boxShadow: "0 1px 4px oklch(0.22 0.09 260 / 0.08)" }}
+                  >
+                    {/* Icon */}
+                    <div
+                      className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
+                      style={{ background: "oklch(0.96 0.02 260)", color: "oklch(0.22 0.09 260)" }}
+                      aria-hidden="true"
+                    >
+                      {entry.icon}
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <span
+                          className="text-sm font-black leading-tight"
+                          style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                        >
+                          {entry.title}
+                        </span>
+                        <span
+                          className="text-xs font-bold px-2 py-0.5 rounded-full"
+                          style={{ background: style.bg, color: style.color }}
+                        >
+                          {style.text}
+                        </span>
+                      </div>
+                      <p
+                        className="text-xs leading-relaxed"
+                        style={{ color: "oklch(0.50 0.03 260)" }}
+                      >
+                        {entry.description}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Footer note */}
+      <div className="px-4 pt-6 pb-4 text-center">
+        <p className="text-xs" style={{ color: "oklch(0.65 0.02 260)" }}>
+          Have a feature request?{" "}
+          <a
+            href="mailto:support@reviewlink.app"
+            className="font-bold underline"
+            style={{ color: "oklch(0.45 0.05 260)" }}
+          >
+            Let us know
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+}
