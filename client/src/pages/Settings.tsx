@@ -1035,6 +1035,24 @@ export default function SettingsPage() {
                 <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>Shown as the sender name in your customer's inbox.</p>
               </div>
 
+              {/* ── Deliverability guidance callout ───────────────────────────────────────── */}
+              <div
+                className="flex items-start gap-3 px-3 py-3 rounded-xl text-xs"
+                style={{ background: "oklch(0.97 0.02 260)", border: "1px solid oklch(0.90 0.03 260)" }}
+              >
+                <AlertCircle size={15} className="shrink-0 mt-0.5" style={{ color: "oklch(0.50 0.12 260)" }} />
+                <div style={{ color: "oklch(0.40 0.04 260)" }}>
+                  <p className="font-bold mb-1">Sending limits by provider</p>
+                  <ul className="flex flex-col gap-0.5" style={{ listStyle: "disc", paddingLeft: "1rem" }}>
+                    <li><span className="font-semibold">Gmail / Google Workspace</span> — 500 emails/day (free), 2,000/day (Workspace)</li>
+                    <li><span className="font-semibold">Outlook / Microsoft 365</span> — 300 emails/day</li>
+                    <li><span className="font-semibold">Yahoo Mail</span> — 500 emails/day</li>
+                    <li><span className="font-semibold">Zoho Mail</span> — 500 emails/day (free), 1,000/day (paid)</li>
+                  </ul>
+                  <p className="mt-1.5">For high-volume sending, use a dedicated <span className="font-semibold">reviews@yourdomain.com</span> address to keep your main inbox clean and avoid hitting personal limits.</p>
+                </div>
+              </div>
+
               {/* Advanced: host/port — collapsed by default, auto-filled */}
               <details className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
                 <summary className="cursor-pointer font-semibold py-1">Advanced settings (auto-detected)</summary>

@@ -472,9 +472,9 @@
 
 ## OG Image & Meta Tags + Deliverability Guidance
 
-- [ ] Generate 1200x630 OG social preview image (navy bg, gold rocket logo, tagline)
-- [ ] Upload OG image to CDN and add OG/Twitter meta tags to client/index.html
-- [ ] Add email deliverability guidance callout in SMTP setup screen (Gmail 500/day, Outlook 300/day limits)
+- [x] Generate 1200x630 OG social preview image (navy bg, gold rocket logo, tagline)
+- [x] Upload OG image to CDN and add OG/Twitter meta tags to client/index.html
+- [x] Add email deliverability guidance callout in SMTP setup screen (Gmail 500/day, Outlook 300/day limits)
 
 ## Make App Fully Free
 
