@@ -1,13 +1,14 @@
 // ReviewLink — Home Dashboard
 // Shows stats, SMTP connection status, and quick-send CTA
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Rocket, Star, Send, TrendingUp, Clock, Crown, AlertCircle, CheckCircle2, WifiOff } from "lucide-react";
+import { Rocket, Star, Send, TrendingUp, Clock, Crown, AlertCircle, CheckCircle2, WifiOff, BookOpen } from "lucide-react";
 import ProBadge from "@/components/ProBadge";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
+import OnboardingGuide from "@/components/OnboardingGuide";
 
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
@@ -27,6 +28,7 @@ function formatRelativeTime(date: Date): string {
 export default function HomePage() {
   const { user } = useAuth();
   const [, navigate] = useLocation();
+  const [guideOpen, setGuideOpen] = useState(false);
 
   const { data: profile } = trpc.profile.get.useQuery();
   const { data: smtpStatus } = trpc.smtp.status.useQuery();
@@ -47,6 +49,7 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen pb-32" style={{ background: "oklch(0.975 0.003 100)" }}>
+      <OnboardingGuide open={guideOpen} onClose={() => setGuideOpen(false)} />
       {/* Navy Header Panel */}
       <div
         className="relative px-5 pt-14 pb-8 overflow-hidden"
@@ -86,7 +89,18 @@ export default function HomePage() {
             </div>
           </div>
 
-          {isPro && <ProBadge size="lg" />}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setGuideOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors"
+              style={{ background: "oklch(0.32 0.08 260)", color: "oklch(0.80 0.18 80)" }}
+              title="Open setup guide"
+            >
+              <BookOpen size={13} />
+              <span className="hidden sm:inline">Guide</span>
+            </button>
+            {isPro && <ProBadge size="lg" />}
+          </div>
         </div>
 
         {/* Stats row */}

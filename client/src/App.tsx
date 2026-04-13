@@ -29,6 +29,7 @@ import AdminSmtpStatsPage from "./pages/AdminSmtpStats";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
 import OnboardingWizard from "./components/OnboardingWizard";
+import OnboardingGuide, { useOnboardingGuide } from "./components/OnboardingGuide";
 
 // Route guard: redirects free-tier users to /upgrade before rendering protected pages
 function PaidRoute({ component: Component }: { component: React.ComponentType }) {
@@ -58,7 +59,8 @@ function PaidRoute({ component: Component }: { component: React.ComponentType })
 }
 
 function AppShell() {
-  const { user, loading } = useAuth();
+  const { user, loading, isAuthenticated } = useAuth();
+  const { open: guideOpen, setOpen: setGuideOpen, handleClose: handleGuideClose } = useOnboardingGuide(isAuthenticated);
 
   const { data: onboardingStatus } = trpc.onboarding.status.useQuery(undefined, {
     enabled: !!user,
@@ -98,6 +100,7 @@ function AppShell() {
           }}
         />
       )}
+      <OnboardingGuide open={guideOpen} onClose={handleGuideClose} />
       <Switch>
         <Route path="/" component={HomePage} />
         <Route path="/send">{() => <PaidRoute component={SendRequestPage} />}</Route>

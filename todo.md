@@ -399,3 +399,22 @@
 
 - [x] Show contact count per source in filter pills (e.g. "Stripe (24) · WooCommerce (61) · Manual (8)")
 - [x] Add configurable day range dropdown to WooCommerce sync button (30 / 60 / 90 days)
+
+## Individual Email Dispatch (No Group Sends)
+
+- [ ] Audit all bulk send paths (contacts.bulkSend, woo.bulkSend, reminders) to confirm each email is sent as a separate SMTP message with a single recipient
+- [ ] Fix any paths that pass multiple recipients in a single sendMail call
+- [ ] Verify To/CC/BCC fields never contain more than one address per send
+
+## Onboarding Guide Modal
+
+- [x] Build OnboardingGuide.tsx — full-screen modal with paginated step-by-step setup directions
+- [x] Step 1: Welcome — what ReviewLink does, what you'll set up
+- [x] Step 2: Connect Your Email — SMTP setup directions with provider-specific notes
+- [x] Step 3: Add a Review Platform — how to find and add your Google/Yelp/etc. review link
+- [x] Step 4: Saved Contacts — how to import CSV, sync Stripe/WooCommerce, add manually
+- [x] Step 5: Send a Review Request — how to use the Send screen
+- [x] Step 6: You're Ready — summary of what's set up, links to key pages
+- [x] Add "Setup Guide" button to Home page header and Settings page
+- [x] Track guide_seen flag so it auto-shows on first login (separate from onboarding wizard)
+- [x] Progress dots / step counter in modal header

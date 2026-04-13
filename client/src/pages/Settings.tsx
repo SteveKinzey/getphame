@@ -29,7 +29,9 @@ import {
   X,
   RotateCcw,
   Send,
+  BookOpen,
 } from "lucide-react";
+import OnboardingGuide from "@/components/OnboardingGuide";
 import ProBadge from "@/components/ProBadge";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -156,6 +158,7 @@ function InlineReplyToEdit({ current, onSaved }: { current: string; onSaved: () 
 export default function SettingsPage() {
   const { user, logout } = useAuth();
   const [, navigate] = useLocation();
+  const [guideOpen, setGuideOpen] = useState(false);
 
   // ── Profile form state ─────────────────────────────────────────────────────
   const { data: profile, isLoading: profileLoading } = trpc.profile.get.useQuery();
@@ -413,16 +416,27 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen pb-32" style={{ background: "oklch(0.975 0.003 100)" }}>
+      <OnboardingGuide open={guideOpen} onClose={() => setGuideOpen(false)} />
       {/* Navy Header */}
       <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
-        <div className="flex items-center gap-2 mb-1">
-          <Settings size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
-          <span
-            className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-2">
+            <Settings size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+            <span
+              className="text-xs font-bold tracking-widest uppercase"
+              style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+            >
+              Settings
+            </span>
+          </div>
+          <button
+            onClick={() => setGuideOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold"
+            style={{ background: "oklch(0.32 0.08 260)", color: "oklch(0.80 0.18 80)" }}
           >
-            Settings
-          </span>
+            <BookOpen size={13} />
+            Setup Guide
+          </button>
         </div>
         <h1
           className="text-2xl"
