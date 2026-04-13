@@ -265,3 +265,17 @@
 - [x] Welcome email HTML: branded ReviewLink template, confirms connection works, shows sample review request preview, links to /send
 - [x] OnboardingWizard Step 1 UI: show "Check your inbox — we sent a test email" confirmation after SMTP connected
 - [x] Add vitest test for sendWelcomeEmail helper
+
+## SMTP Email UX Improvements
+
+- [x] Add smtp.test tRPC procedure (re-tests live connection using stored credentials)
+- [x] Health check badge in Settings Email Connection card (green dot = connected & verified, red = failed, grey = not connected)
+- [x] Add smtp.sendWelcome tRPC procedure (triggers sendWelcomeEmail for the current user)
+- [x] Resend Confirmation Email button in Settings Email Connection card
+- [x] Promote From Name field to main Step 1 wizard form (move out of Advanced section)
+- [x] From Name field also visible in Settings Email Connection card (editable inline)
+
+## SMTP UX Gap Resolutions
+
+- [x] Add grey health badge/dot state in Settings Email Connection card when no SMTP account is connected
+- [x] Add inline editable From Name input directly in the connected Settings Email Connection card

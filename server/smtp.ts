@@ -339,3 +339,13 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
     return { ok: false, error: message };
   }
 }
+
+/** Update only the fromName field on an existing SMTP credential row */
+export async function updateSmtpFromName(userId: number, fromName: string | null) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db
+    .update(smtpCredentials)
+    .set({ fromName: fromName || null })
+    .where(eq(smtpCredentials.userId, userId));
+}

@@ -81,6 +81,7 @@ import {
   detectSmtpSettings,
   getAppPasswordHint,
   sendWelcomeEmail,
+  updateSmtpFromName,
 } from "./smtp";
 
 const FREE_LIMIT = 10;
@@ -192,6 +193,46 @@ export const appRouter = router({
     /** Remove stored SMTP credentials */
     disconnect: protectedProcedure.mutation(async ({ ctx }) => {
       await deleteSmtpCredentials(ctx.user.id);
+      return { success: true };
+    }),
+
+    /** Re-test the stored SMTP connection and return live status */
+    test: protectedProcedure.mutation(async ({ ctx }) => {
+      const creds = await getSmtpCredentials(ctx.user.id);
+      if (!creds) return { ok: false, error: "No email account connected." };
+      const pass = decryptPassword(creds.encryptedPass);
+      const result = await testSmtpConnection({
+        host: creds.host,
+        port: creds.port,
+        secure: creds.secure === 1,
+        user: creds.user,
+        pass,
+      });
+      if (result.ok) {
+        await markSmtpVerified(ctx.user.id);
+      }
+      return result;
+    }),
+
+    /** Update only the sender display name without changing credentials */
+    updateFromName: protectedProcedure
+      .input(z.object({ fromName: z.string().max(100) }))
+      .mutation(async ({ ctx, input }) => {
+        const creds = await getSmtpCredentials(ctx.user.id);
+        if (!creds) throw new TRPCError({ code: "NOT_FOUND", message: "No email account connected." });
+        await updateSmtpFromName(ctx.user.id, input.fromName || null);
+        return { success: true };
+      }),
+
+    /** Re-send the welcome/confirmation email to the user's own address */
+    sendWelcome: protectedProcedure.mutation(async ({ ctx }) => {
+      const result = await sendWelcomeEmail(ctx.user.id);
+      if (!result.ok) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: result.error ?? "Failed to send confirmation email.",
+        });
+      }
       return { success: true };
     }),
   }),

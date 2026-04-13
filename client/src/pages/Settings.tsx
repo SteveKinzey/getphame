@@ -28,10 +28,71 @@ import {
   Pencil,
   X,
   RotateCcw,
+  Send,
 } from "lucide-react";
 import ProBadge from "@/components/ProBadge";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
+
+// ── Inline From Name editor (shown in connected SMTP card) ─────────────────────
+function InlineFromNameEdit({ current, onSaved }: { current: string; onSaved: () => void }) {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(current);
+
+  useEffect(() => { setValue(current); }, [current]);
+
+  const updateFromName = trpc.smtp.updateFromName.useMutation({
+    onSuccess: () => { onSaved(); setEditing(false); toast.success("Sender name updated!"); },
+    onError: (err) => toast.error(err.message),
+  });
+
+  if (!editing) {
+    return (
+      <div className="flex items-center gap-2">
+        <p className="text-xs flex-1" style={{ color: "oklch(0.55 0.04 260)" }}>
+          <span style={{ color: "oklch(0.40 0.04 260)", fontWeight: 600 }}>Sender name:</span>{" "}
+          {current || <span style={{ color: "oklch(0.65 0.02 260)" }}>Not set</span>}
+        </p>
+        <button
+          onClick={() => setEditing(true)}
+          className="text-xs px-2 py-1 rounded-lg font-bold"
+          style={{ color: "oklch(0.45 0.04 260)", background: "oklch(0.96 0.01 260)" }}
+        >
+          Edit
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        type="text"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="e.g. Steve at Acme Plumbing"
+        className="flex-1 px-3 py-2 rounded-xl text-xs outline-none"
+        style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
+        autoFocus
+      />
+      <button
+        onClick={() => setEditing(false)}
+        className="text-xs px-2 py-1 rounded-lg font-bold"
+        style={{ color: "oklch(0.55 0.04 260)", background: "oklch(0.96 0.01 260)" }}
+      >
+        Cancel
+      </button>
+      <button
+        disabled={updateFromName.isPending}
+        onClick={() => updateFromName.mutate({ fromName: value.trim() })}
+        className="text-xs px-2 py-1 rounded-lg font-bold"
+        style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+      >
+        {updateFromName.isPending ? <Loader2 size={12} className="animate-spin" /> : "Save"}
+      </button>
+    </div>
+  );
+}
 
 export default function SettingsPage() {
   const { user, logout } = useAuth();
@@ -247,6 +308,25 @@ export default function SettingsPage() {
     onSuccess: () => {
       utils.smtp.status.invalidate();
       toast.success("Email account disconnected.");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const testSmtp = trpc.smtp.test.useMutation({
+    onSuccess: (result) => {
+      utils.smtp.status.invalidate();
+      if (result.ok) {
+        toast.success("Connection verified — your email is working correctly.");
+      } else {
+        toast.error(`Connection failed: ${result.error ?? "Unknown error"}`);
+      }
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const resendWelcome = trpc.smtp.sendWelcome.useMutation({
+    onSuccess: () => {
+      toast.success(`Confirmation email sent! Check your inbox at ${smtpStatus?.email ?? "your email"}.`, { duration: 5000 });
     },
     onError: (err) => toast.error(err.message),
   });
@@ -715,22 +795,48 @@ export default function SettingsPage() {
             </div>
           ) : smtpStatus?.connected && !showSmtpForm ? (
             <div className="flex flex-col gap-3">
-              {/* Connected state */}
+              {/* Health badge row */}
               <div
                 className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                style={{ background: "oklch(0.96 0.04 145)" }}
+                style={{ background: smtpStatus.verified ? "oklch(0.96 0.04 145)" : "oklch(0.97 0.03 27)" }}
               >
-                <CheckCircle2 size={18} style={{ color: "oklch(0.55 0.18 145)" }} />
+                {smtpStatus.verified
+                  ? <CheckCircle2 size={18} style={{ color: "oklch(0.55 0.18 145)" }} />
+                  : <AlertCircle size={18} style={{ color: "oklch(0.55 0.18 27)" }} />
+                }
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold" style={{ color: "oklch(0.30 0.12 145)" }}>
-                    Email Connected
-                  </p>
-                  <p className="text-xs truncate" style={{ color: "oklch(0.45 0.10 145)" }}>
+                  <div className="flex items-center gap-2">
+                    <p className="text-sm font-bold" style={{ color: smtpStatus.verified ? "oklch(0.30 0.12 145)" : "oklch(0.40 0.15 27)" }}>
+                      {smtpStatus.verified ? "Email Connected" : "Connection Unverified"}
+                    </p>
+                    {/* Live status dot */}
+                    <span
+                      className="inline-block w-2 h-2 rounded-full"
+                      style={{ background: smtpStatus.verified ? "oklch(0.55 0.18 145)" : "oklch(0.65 0.18 27)" }}
+                    />
+                  </div>
+                  <p className="text-xs truncate" style={{ color: smtpStatus.verified ? "oklch(0.45 0.10 145)" : "oklch(0.50 0.12 27)" }}>
                     {smtpStatus.email}
+                    {smtpStatus.fromName && ` · ${smtpStatus.fromName}`}
                   </p>
                 </div>
+                {/* Test connection button */}
+                <button
+                  onClick={() => testSmtp.mutate()}
+                  disabled={testSmtp.isPending}
+                  className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-transform active:scale-95"
+                  style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                  title="Test connection"
+                >
+                  {testSmtp.isPending
+                    ? <Loader2 size={12} className="animate-spin" />
+                    : <RefreshCw size={12} />}
+                  Test
+                </button>
               </div>
-              <div className="flex gap-2">
+
+              {/* Action buttons */}
+              <div className="flex gap-2 flex-wrap">
                 <button
                   onClick={() => { setSmtpEmail(smtpStatus.email ?? ""); setSmtpFromName(smtpStatus.fromName ?? ""); setShowSmtpForm(true); }}
                   className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95"
@@ -738,6 +844,16 @@ export default function SettingsPage() {
                 >
                   <Pencil size={14} />
                   Change Email
+                </button>
+                <button
+                  onClick={() => resendWelcome.mutate()}
+                  disabled={resendWelcome.isPending}
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95"
+                  style={{ background: "oklch(0.96 0.04 260)", color: "oklch(0.22 0.09 260)" }}
+                  title="Resend confirmation email to your inbox"
+                >
+                  {resendWelcome.isPending ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
+                  Resend Email
                 </button>
                 <button
                   onClick={() => disconnectSmtp.mutate()}
@@ -749,18 +865,27 @@ export default function SettingsPage() {
                   Disconnect
                 </button>
               </div>
+
+              {/* Inline From Name edit */}
+              <InlineFromNameEdit
+                current={smtpStatus?.fromName ?? ""}
+                onSaved={() => utils.smtp.status.invalidate()}
+              />
             </div>
           ) : (
             <div className="flex flex-col gap-3">
-              {/* Not connected / edit form */}
+              {/* Not connected — grey health badge */}
               {!smtpStatus?.connected && (
                 <div
-                  className="flex items-start gap-3 px-4 py-3 rounded-xl"
-                  style={{ background: "oklch(0.97 0.03 80)" }}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl"
+                  style={{ background: "oklch(0.96 0.01 260)" }}
                 >
-                  <AlertCircle size={16} style={{ color: "oklch(0.65 0.18 80)" }} className="mt-0.5 shrink-0" />
-                  <p className="text-xs" style={{ color: "oklch(0.45 0.10 80)" }}>
-                    No email connected. Add your email below to start sending review requests.
+                  <span
+                    className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
+                    style={{ background: "oklch(0.70 0.02 260)" }}
+                  />
+                  <p className="text-xs" style={{ color: "oklch(0.45 0.04 260)" }}>
+                    No email connected. Enter your details below to start sending review requests.
                   </p>
                 </div>
               )}

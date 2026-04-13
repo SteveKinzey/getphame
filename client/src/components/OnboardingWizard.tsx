@@ -118,6 +118,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
   const [port, setPort] = useState(587);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [testing, setTesting] = useState(false);
+  const [fromName, setFromName] = useState("");
 
   const connectSmtp = trpc.smtp.connect.useMutation({
     onSuccess: (_, variables) => {
@@ -158,6 +159,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
         host: host || `smtp.${email.split("@")[1]}`,
         port,
         secure: port === 465 ? 1 : 0,
+        fromName: fromName.trim() || undefined,
       });
     } finally {
       setTesting(false);
@@ -219,6 +221,28 @@ function Step1Email({ onDone }: { onDone: () => void }) {
             <p className="text-xs">{hint}</p>
           </div>
         )}
+      </div>
+
+      {/* From Name — promoted to main form */}
+      <div>
+        <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+          Your Name <span style={{ color: "oklch(0.55 0.04 260)", fontWeight: 400 }}>(shown as sender)</span>
+        </label>
+        <input
+          type="text"
+          value={fromName}
+          onChange={(e) => setFromName(e.target.value)}
+          placeholder="e.g. Steve at Acme Plumbing"
+          className="w-full px-4 py-3 rounded-xl text-sm outline-none"
+          style={{
+            background: "oklch(0.18 0.06 260)",
+            color: "white",
+            border: "1px solid oklch(0.32 0.06 260)",
+          }}
+        />
+        <p className="text-xs mt-1" style={{ color: "oklch(0.55 0.04 260)" }}>
+          Customers will see this as the sender name in their inbox.
+        </p>
       </div>
 
       {detectedAuto && (
