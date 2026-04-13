@@ -47,6 +47,14 @@ export default function AdminSmtpStatsPage() {
     { enabled: user?.role === "admin" }
   );
 
+  const runHealthCheck = trpc.admin.runHealthCheck.useMutation({
+    onSuccess: (result) => {
+      toast.success(`Health check complete — ran at ${new Date(result.ranAt).toLocaleTimeString()}`);
+      refetch();
+    },
+    onError: (err) => toast.error(err.message || "Health check failed."),
+  });
+
   // Redirect non-admins
   if (!loading && user?.role !== "admin") {
     navigate("/");
@@ -99,15 +107,27 @@ export default function AdminSmtpStatsPage() {
               Health check results across all connected accounts
             </p>
           </div>
-          <button
-            onClick={() => { refetch(); toast.success("Refreshed"); }}
-            disabled={isFetching}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold"
-            style={{ background: "oklch(0.30 0.07 260)", color: "white" }}
-          >
-            {isFetching ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
-            Refresh
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => runHealthCheck.mutate()}
+              disabled={runHealthCheck.isPending || isFetching}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold"
+              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+              title="Run health check now across all connected accounts"
+            >
+              {runHealthCheck.isPending ? <Loader2 size={12} className="animate-spin" /> : <CheckCircle2 size={12} />}
+              {runHealthCheck.isPending ? "Running..." : "Run Now"}
+            </button>
+            <button
+              onClick={() => { refetch(); toast.success("Refreshed"); }}
+              disabled={isFetching}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold"
+              style={{ background: "oklch(0.30 0.07 260)", color: "white" }}
+            >
+              {isFetching ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
+              Refresh
+            </button>
+          </div>
         </div>
       </div>
 

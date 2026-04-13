@@ -78,6 +78,7 @@ import {
   getAppPasswordHint,
   sendWelcomeEmail,
   updateSmtpFromName,
+  runSmtpHealthChecks,
 } from "./smtp";
 
 const FREE_LIMIT = 10;
@@ -1143,6 +1144,13 @@ export const appRouter = router({
         lastRunAt: rows.reduce((max, r) => Math.max(max, r.lastHealthCheck ?? 0), 0) || null,
       };
       return { summary, totals };
+    }),
+
+    /** Trigger SMTP health check on demand (admin only) */
+    runHealthCheck: protectedProcedure.mutation(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      await runSmtpHealthChecks();
+      return { ok: true, ranAt: Date.now() };
     }),
   }),
 });

@@ -357,3 +357,13 @@
 - [x] Add "Test Connection" button to Settings SMTP form (uses smtp.testCredentials procedure, shows inline green/red result)
 - [x] Add Zoho setup note to Settings SMTP form (server-side detect query now returns Zoho hint for zoho.com, zohomail.com, and smtp.zoho.com host)
 - [x] Build admin SMTP provider failure stats dashboard at /admin/smtp-stats (breakdown by host, failure rate, health bar, recent error samples)
+
+## Settings SMTP Zoho Preset
+
+- [x] Add Zoho Mail preset button to Settings SMTP advanced panel (matches wizard presets — was already present from Google Workspace session)
+
+## Round 4 Features
+
+- [x] Add "Run Health Check Now" button to /admin/smtp-stats (admin.runHealthCheck mutation, auto-refreshes stats after run)
+- [x] Reply-To edit field in Settings → Email was already present from prior session (InlineReplyToEdit component)
+- [x] Add weekly SMTP failure digest cron (smtpWeeklyDigest.ts, runs Sunday 08:00 UTC, notifyOwner if any accounts failing, 5 new tests — 43 total passing)
