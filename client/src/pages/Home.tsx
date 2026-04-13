@@ -13,6 +13,67 @@ import { toast } from "sonner";
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
 
+const SHARE_URL = "https://reviewlink.app";
+const SHARE_TEXT = "I've been using ReviewLink to send review requests from my own email — it's free and works great. Worth checking out:";
+
+function ShareReferralCard() {
+  const [copied, setCopied] = useState(false);
+
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "ReviewLink — Free review request tool",
+          text: SHARE_TEXT,
+          url: SHARE_URL,
+        });
+      } catch {
+        // user dismissed the share sheet — no action needed
+      }
+      return;
+    }
+    // Fallback: copy to clipboard
+    try {
+      await navigator.clipboard.writeText(`${SHARE_TEXT} ${SHARE_URL}`);
+      setCopied(true);
+      toast.success("Link copied to clipboard!");
+      setTimeout(() => setCopied(false), 3000);
+    } catch {
+      toast.error("Could not copy link.");
+    }
+  };
+
+  return (
+    <div
+      className="rounded-2xl p-4 flex items-center gap-3"
+      style={{ background: "oklch(0.22 0.09 260)", border: "none" }}
+    >
+      <div
+        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+        style={{ background: "oklch(0.80 0.18 80)" }}
+      >
+        <Share2 size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-xs font-black leading-tight" style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}>
+          Know a local business that needs more reviews?
+        </p>
+        <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.60)" }}>
+          Share ReviewLink — it's free.
+        </p>
+      </div>
+      <button
+        onClick={handleShare}
+        className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black flex-shrink-0 transition-transform active:scale-95"
+        style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+      >
+        {copied ? <Check size={13} /> : <Share2 size={13} />}
+        {copied ? "Copied!" : "Share"}
+      </button>
+    </div>
+  );
+}
+
 function formatRelativeTime(date: Date): string {
   const diffMs = Date.now() - date.getTime();
   const diffMins = Math.floor(diffMs / 60000);
@@ -515,6 +576,9 @@ export default function HomePage() {
 
         {/* ── Email Tracking Summary Card ────────────────────────────── */}
         <TrackingSummaryCard />
+
+        {/* ── Referral Nudge ───────────────────────────────────────────── */}
+        <ShareReferralCard />
 
         {/* Platform Breakdown */}
         {stats?.platformBreakdown && stats.platformBreakdown.filter((p) => p.platform !== "unknown").length > 0 && (

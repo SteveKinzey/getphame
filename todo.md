@@ -567,3 +567,7 @@
 ## Landing Page Testimonials
 
 - [x] Replace placeholder testimonial with Sarah (freelance photographer) and Tom (local cafe owner) quotes
+
+## Referral Nudge
+
+- [x] Add "Share ReviewLink" referral card to Home screen with Web Share API + clipboard fallback
