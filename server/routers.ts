@@ -27,7 +27,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, accessCodeRedemptions, gmailTokens } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import {
   listSavedContacts,
@@ -424,8 +424,35 @@ export const appRouter = router({
     sync: protectedProcedure
       .input(z.object({ days: z.number().int().min(1).max(90).default(30) }))
       .mutation(async ({ ctx, input }) => {
-        return syncWooOrders(ctx.user.id, input.days);
+        const result = await syncWooOrders(ctx.user.id, input.days);
+        // Write a sync log entry
+        const db = await getDb();
+        if (db) {
+          const creds = await getWooCredentials(ctx.user.id);
+          await db.insert(wooSyncLogs).values({
+            userId: ctx.user.id,
+            syncedAt: Date.now(),
+            daysWindow: input.days,
+            added: result.added,
+            total: result.total,
+            storeUrl: creds?.storeUrl ?? null,
+          });
+        }
+        return result;
       }),
+
+    /** Return the last 20 sync log entries for the current user */
+    syncHistory: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) return [];
+      const { desc } = await import("drizzle-orm");
+      return db
+        .select()
+        .from(wooSyncLogs)
+        .where(eq(wooSyncLogs.userId, ctx.user.id))
+        .orderBy(desc(wooSyncLogs.syncedAt))
+        .limit(20);
+    }),
 
     /** List pending customers (not yet sent a review request) */
     listPending: protectedProcedure.query(async ({ ctx }) => {

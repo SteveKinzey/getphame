@@ -1,13 +1,16 @@
 // ReviewLink — Changelog / What's New
 // Design: Navy header, white content area, gold accent for version badges
 
+import { useState } from "react";
 import { useLocation } from "wouter";
 import { ArrowLeft, Rocket, Star, Shield, Zap, Users, BarChart2, Mail } from "lucide-react";
+
+type Label = "new" | "improved" | "fix";
 
 interface ChangeEntry {
   version: string;
   date: string;
-  label: "new" | "improved" | "fix";
+  label: Label;
   icon: React.ReactNode;
   title: string;
   description: string;
@@ -157,20 +160,44 @@ const CHANGELOG: { version: string; date: string; entries: ChangeEntry[] }[] = [
   },
 ];
 
-const LABEL_STYLES: Record<ChangeEntry["label"], { bg: string; color: string; text: string }> = {
+const LABEL_STYLES: Record<Label, { bg: string; color: string; text: string }> = {
   new: { bg: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)", text: "New" },
   improved: { bg: "oklch(0.88 0.10 80)", color: "oklch(0.35 0.12 80)", text: "Improved" },
   fix: { bg: "oklch(0.92 0.04 145)", color: "oklch(0.40 0.12 145)", text: "Fix" },
 };
 
+type FilterTab = "all" | Label;
+
+const FILTER_TABS: { id: FilterTab; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "new", label: "New" },
+  { id: "improved", label: "Improved" },
+  { id: "fix", label: "Fix" },
+];
+
 export default function ChangelogPage() {
   const [, navigate] = useLocation();
+  const [activeFilter, setActiveFilter] = useState<FilterTab>("all");
+
+  // Flatten all entries across releases for filtering
+  const allEntries = CHANGELOG.flatMap((r) => r.entries);
+  const filteredEntries = activeFilter === "all" ? allEntries : allEntries.filter((e) => e.label === activeFilter);
+
+  // Group filtered entries back by version for display
+  const filteredReleases = CHANGELOG.map((release) => ({
+    ...release,
+    entries: release.entries.filter(
+      (e) => activeFilter === "all" || e.label === activeFilter
+    ),
+  })).filter((r) => r.entries.length > 0);
+
+  const totalCount = filteredEntries.length;
 
   return (
     <div className="min-h-screen pb-24" style={{ background: "oklch(0.975 0.003 100)" }}>
       {/* Navy header */}
       <div
-        className="relative px-5 pt-14 pb-8"
+        className="relative px-5 pt-14 pb-6"
         style={{ background: "oklch(0.22 0.09 260)" }}
       >
         <button
@@ -203,83 +230,129 @@ export default function ChangelogPage() {
         <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.60)" }}>
           Every update, improvement, and fix — in one place.
         </p>
+
+        {/* Filter tabs */}
+        <div className="flex items-center gap-2 mt-5 overflow-x-auto pb-1 scrollbar-hide" role="tablist" aria-label="Filter changelog by category">
+          {FILTER_TABS.map((tab) => {
+            const isActive = activeFilter === tab.id;
+            return (
+              <button
+                key={tab.id}
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => setActiveFilter(tab.id)}
+                className="flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-150 active:scale-95"
+                style={{
+                  background: isActive ? "oklch(0.80 0.18 80)" : "oklch(0.30 0.07 260)",
+                  color: isActive ? "oklch(0.22 0.09 260)" : "oklch(0.70 0.04 260)",
+                  fontFamily: "'Poppins', sans-serif",
+                  border: "none",
+                }}
+              >
+                {tab.label}
+                {tab.id !== "all" && (
+                  <span
+                    className="ml-1.5 text-xs opacity-70"
+                    style={{ fontWeight: 400 }}
+                  >
+                    {allEntries.filter((e) => e.label === tab.id).length}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Result count */}
+      <div className="px-4 pt-4 pb-1">
+        <p className="text-xs" style={{ color: "oklch(0.60 0.03 260)", fontFamily: "'Nunito', sans-serif" }}>
+          {totalCount} {totalCount === 1 ? "update" : "updates"}
+          {activeFilter !== "all" ? ` matching "${LABEL_STYLES[activeFilter as Label]?.text}"` : " total"}
+        </p>
       </div>
 
       {/* Release sections */}
-      <div className="px-4 pt-6 flex flex-col gap-8">
-        {CHANGELOG.map((release) => (
-          <div key={release.version}>
-            {/* Version header */}
-            <div className="flex items-center gap-3 mb-4">
-              <div
-                className="px-3 py-1 rounded-full text-xs font-black"
-                style={{
-                  background: "oklch(0.22 0.09 260)",
-                  color: "oklch(0.80 0.18 80)",
-                  fontFamily: "'Poppins', sans-serif",
-                }}
-              >
-                v{release.version}
-              </div>
-              <span
-                className="text-xs font-semibold"
-                style={{ color: "oklch(0.60 0.03 260)", fontFamily: "'Nunito', sans-serif" }}
-              >
-                {release.date}
-              </span>
-              <div
-                className="flex-1 h-px"
-                style={{ background: "oklch(0.90 0.01 260)" }}
-              />
-            </div>
-
-            {/* Entries */}
-            <div className="flex flex-col gap-3">
-              {release.entries.map((entry, i) => {
-                const style = LABEL_STYLES[entry.label];
-                return (
-                  <div
-                    key={i}
-                    className="rounded-2xl p-4 flex gap-3"
-                    style={{ background: "white", boxShadow: "0 1px 4px oklch(0.22 0.09 260 / 0.08)" }}
-                  >
-                    {/* Icon */}
-                    <div
-                      className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-                      style={{ background: "oklch(0.96 0.02 260)", color: "oklch(0.22 0.09 260)" }}
-                      aria-hidden="true"
-                    >
-                      {entry.icon}
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1 flex-wrap">
-                        <span
-                          className="text-sm font-black leading-tight"
-                          style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
-                        >
-                          {entry.title}
-                        </span>
-                        <span
-                          className="text-xs font-bold px-2 py-0.5 rounded-full"
-                          style={{ background: style.bg, color: style.color }}
-                        >
-                          {style.text}
-                        </span>
-                      </div>
-                      <p
-                        className="text-xs leading-relaxed"
-                        style={{ color: "oklch(0.50 0.03 260)" }}
-                      >
-                        {entry.description}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+      <div className="px-4 pt-2 flex flex-col gap-8">
+        {filteredReleases.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-sm" style={{ color: "oklch(0.60 0.03 260)" }}>No updates in this category yet.</p>
           </div>
-        ))}
+        ) : (
+          filteredReleases.map((release) => (
+            <div key={release.version}>
+              {/* Version header */}
+              <div className="flex items-center gap-3 mb-4">
+                <div
+                  className="px-3 py-1 rounded-full text-xs font-black"
+                  style={{
+                    background: "oklch(0.22 0.09 260)",
+                    color: "oklch(0.80 0.18 80)",
+                    fontFamily: "'Poppins', sans-serif",
+                  }}
+                >
+                  v{release.version}
+                </div>
+                <span
+                  className="text-xs font-semibold"
+                  style={{ color: "oklch(0.60 0.03 260)", fontFamily: "'Nunito', sans-serif" }}
+                >
+                  {release.date}
+                </span>
+                <div
+                  className="flex-1 h-px"
+                  style={{ background: "oklch(0.90 0.01 260)" }}
+                />
+              </div>
+
+              {/* Entries */}
+              <div className="flex flex-col gap-3">
+                {release.entries.map((entry, i) => {
+                  const style = LABEL_STYLES[entry.label];
+                  return (
+                    <div
+                      key={i}
+                      className="rounded-2xl p-4 flex gap-3"
+                      style={{ background: "white", boxShadow: "0 1px 4px oklch(0.22 0.09 260 / 0.08)" }}
+                    >
+                      {/* Icon */}
+                      <div
+                        className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
+                        style={{ background: "oklch(0.96 0.02 260)", color: "oklch(0.22 0.09 260)" }}
+                        aria-hidden="true"
+                      >
+                        {entry.icon}
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1 flex-wrap">
+                          <span
+                            className="text-sm font-black leading-tight"
+                            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                          >
+                            {entry.title}
+                          </span>
+                          <span
+                            className="text-xs font-bold px-2 py-0.5 rounded-full"
+                            style={{ background: style.bg, color: style.color }}
+                          >
+                            {style.text}
+                          </span>
+                        </div>
+                        <p
+                          className="text-xs leading-relaxed"
+                          style={{ color: "oklch(0.50 0.03 260)" }}
+                        >
+                          {entry.description}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       {/* Footer note */}

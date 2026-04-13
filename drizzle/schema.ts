@@ -128,6 +128,19 @@ export const wooCustomers = mysqlTable("woo_customers", {
 export type WooCustomer = typeof wooCustomers.$inferSelect;
 export type InsertWooCustomer = typeof wooCustomers.$inferInsert;
 
+/** WooCommerce sync history log — one row per sync run */
+export const wooSyncLogs = mysqlTable("woo_sync_logs", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  syncedAt: bigint("syncedAt", { mode: "number" }).notNull(), // Unix ms
+  daysWindow: int("daysWindow").notNull().default(30),
+  added: int("added").notNull().default(0),
+  total: int("total").notNull().default(0),
+  storeUrl: varchar("storeUrl", { length: 512 }),
+});
+export type WooSyncLog = typeof wooSyncLogs.$inferSelect;
+export type InsertWooSyncLog = typeof wooSyncLogs.$inferInsert;
+
 /** Saved contacts for repeat review request sending */
 export const savedContacts = mysqlTable("saved_contacts", {
   id: int("id").autoincrement().primaryKey(),

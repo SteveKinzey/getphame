@@ -94,6 +94,11 @@ export default function SavedContacts() {
 
   // WooCommerce sync day range
   const [wooDays, setWooDays] = useState<30 | 60 | 90>(30);
+  const [wooSyncHistoryOpen, setWooSyncHistoryOpen] = useState(false);
+
+  const { data: wooSyncHistory = [] } = trpc.woo.syncHistory.useQuery(undefined, {
+    enabled: isAuthenticated && wooSyncHistoryOpen,
+  });
 
   // Bulk selection state
   const [selected, setSelected] = useState<Set<number>>(new Set());
@@ -441,14 +446,24 @@ export default function SavedContacts() {
           style={{ background: "oklch(0.96 0.02 260)", borderBottom: "1px solid oklch(0.91 0.02 260)" }}
         >
           <ShoppingCart size={12} style={{ color: "oklch(0.50 0.05 260)" }} aria-hidden="true" />
-          <span className="text-xs" style={{ color: "oklch(0.50 0.05 260)", fontFamily: "'Nunito', sans-serif" }}>
+          <span className="text-xs flex items-center gap-1" style={{ color: "oklch(0.50 0.05 260)", fontFamily: "'Nunito', sans-serif" }}>
             WooCommerce —
             {syncFromWooMutation.isPending ? (
               <span className="ml-1 font-semibold" style={{ color: "oklch(0.72 0.18 160)" }}>Syncing…</span>
             ) : wooCreds.lastSyncedAt ? (
-              <span className="ml-1 font-semibold" style={{ color: "oklch(0.40 0.05 260)" }}>
-                Last synced {format(new Date(wooCreds.lastSyncedAt), "MMM d 'at' h:mm a")}
-              </span>
+              <>
+                <span className="ml-1 font-semibold" style={{ color: "oklch(0.40 0.05 260)" }}>
+                  Last synced {format(new Date(wooCreds.lastSyncedAt), "MMM d 'at' h:mm a")}
+                </span>
+                <button
+                  onClick={() => setWooSyncHistoryOpen(true)}
+                  aria-label="View sync history"
+                  className="ml-1 inline-flex items-center justify-center rounded hover:bg-gray-100 p-0.5 transition-colors"
+                  title="View sync history"
+                >
+                  <Clock size={12} style={{ color: "oklch(0.55 0.08 260)" }} />
+                </button>
+              </>
             ) : (
               <span className="ml-1 font-semibold" style={{ color: "oklch(0.60 0.04 260)" }}>Never synced — tap WooCommerce above to import</span>
             )}
@@ -963,6 +978,55 @@ export default function SavedContacts() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* WooCommerce Sync History Modal */}
+      <Dialog open={wooSyncHistoryOpen} onOpenChange={setWooSyncHistoryOpen}>
+        <DialogContent className="max-w-sm mx-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+              <ShoppingCart size={16} aria-hidden="true" />
+              WooCommerce Sync History
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-2 max-h-80 overflow-y-auto">
+            {wooSyncHistory.length === 0 ? (
+              <p className="text-sm text-center py-6" style={{ color: "oklch(0.55 0.05 260)" }}>
+                No sync history yet. Run a sync to see results here.
+              </p>
+            ) : (
+              wooSyncHistory.map((log) => (
+                <div
+                  key={log.id}
+                  className="rounded-lg px-3 py-2.5 flex items-start gap-3"
+                  style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.92 0.02 260)" }}
+                >
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold" style={{ color: "oklch(0.22 0.09 260)" }}>
+                      {format(new Date(log.syncedAt), "MMM d, yyyy 'at' h:mm a")}
+                    </p>
+                    <p className="text-xs mt-0.5" style={{ color: "oklch(0.50 0.05 260)" }}>
+                      {log.added > 0
+                        ? <><span className="font-semibold" style={{ color: "oklch(0.45 0.15 160)" }}>{log.added} new</span> customer{log.added !== 1 ? "s" : ""} imported · {log.total} orders scanned ({log.daysWindow}d window)</>
+                        : <>No new customers · {log.total} orders scanned ({log.daysWindow}d window)</>}
+                    </p>
+                  </div>
+                  <RefreshCw size={12} style={{ color: "oklch(0.70 0.05 260)", flexShrink: 0, marginTop: 2 }} aria-hidden="true" />
+                </div>
+              ))
+            )}
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setWooSyncHistoryOpen(false)}
+              style={{ fontFamily: "'Nunito', sans-serif" }}
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

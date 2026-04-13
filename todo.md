@@ -592,3 +592,10 @@
 - [x] Add "What's New" link to BottomNav legal footer strip
 - [x] Add WooCommerce last-synced status line below Contacts toolbar
 - [x] Remove isPro/Crown from BottomNav (no pro plan)
+
+## Changelog Filter + WooCommerce Sync History
+
+- [x] Add category filter tabs (All / New / Improved / Fix) to Changelog page
+- [x] Add clickable WooCommerce sync status icon that opens a sync history/logs modal on Contacts page
+- [x] Add woo.syncHistory tRPC procedure returning last N sync events with counts and timestamps
+- [x] Add woo_sync_logs table to schema and push migration (0023_steep_tiger_shark.sql)

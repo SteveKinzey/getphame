@@ -162,6 +162,13 @@
       "when": 1776054042236,
       "tag": "0022_black_stardust",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "5",
+      "when": 1776060184410,
+      "tag": "0023_steep_tiger_shark",
+      "breakpoints": true
     }
   ]
 }
