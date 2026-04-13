@@ -11,6 +11,7 @@ import { toast } from "sonner";
 
 // Pages
 import OnboardingPage from "./pages/Onboarding";
+import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/Home";
 import SendRequestPage from "./pages/SendRequest";
 import DashboardPage from "./pages/Dashboard";
@@ -62,7 +63,9 @@ function AppShell() {
   if (path === "/payment-success") return <PaymentSuccessPage />;
 
   if (!user) {
-    return <OnboardingPage />;
+    // Show the public marketing landing page at /, Onboarding at /onboarding
+    if (path === "/onboarding") return <OnboardingPage />;
+    return <LandingPage />;
   }
 
   return (

@@ -485,3 +485,26 @@
 - [x] Remove atFreeLimit / remainingFree / tier logic from Home.tsx and SendRequest.tsx
 - [x] Replace Plan section in Settings.tsx with Free Forever badge
 - [x] Update Home.tsx stats card from "N Left" to "Free Forever ✓"
+
+## Public Landing Page
+
+- [x] Create LandingPage.tsx — public marketing page shown at / when not logged in
+- [x] Hero section: headline, subheadline, "Get Started Free" CTA button
+- [x] 3 feature bullets: personalised emails, bulk send, free forever
+- [x] Social proof / trust line (e.g. "Trusted by local businesses")
+- [x] Wire App.tsx: show LandingPage when unauthenticated, HomePage when authenticated
+
+## Refer-a-Friend Share Button
+
+- [x] Add share button to Home screen header area
+- [x] On click: use Web Share API if available, fallback to copy-to-clipboard
+- [x] Pre-filled message: "I use ReviewLink to collect Google reviews — it's free: reviewlink.app"
+- [x] Show toast confirmation after share or copy
+
+## Monthly Review Goal Tracker
+
+- [x] Add reviewGoal int column to businessProfiles table in DB schema + db:push
+- [x] Add profile.setGoal tRPC procedure (set monthly review goal integer)
+- [x] Add goal progress card to Home screen (progress bar: responded requests / goal this month)
+- [x] Tap on card opens a small inline editor to set/update the goal
+- [x] Show motivational label: "X of Y goal reached" or "Goal reached! 🎉"

@@ -4,10 +4,11 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Rocket, Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen } from "lucide-react";
+import { Rocket, Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import OnboardingGuide from "@/components/OnboardingGuide";
+import { toast } from "sonner";
 
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
@@ -32,6 +33,37 @@ export default function HomePage() {
   const { data: profile } = trpc.profile.get.useQuery();
   const { data: smtpStatus } = trpc.smtp.status.useQuery();
   const { data: stats } = trpc.requests.stats.useQuery();
+  const utils = trpc.useUtils();
+
+  // Goal tracker state
+  const [editingGoal, setEditingGoal] = useState(false);
+  const [goalInput, setGoalInput] = useState("");
+  const setGoalMutation = trpc.profile.setGoal.useMutation({
+    onSuccess: () => { utils.profile.get.invalidate(); setEditingGoal(false); },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const reviewGoal = profile?.reviewGoal ?? 0;
+  // Count responded requests this calendar month
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+  const respondedThisMonth = stats?.recent
+    ? (stats as any).respondedThisMonth ?? 0
+    : 0;
+
+  const handleShare = async () => {
+    const shareText = "I use ReviewLink to collect Google reviews — it's free: https://reviewlink.app";
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "ReviewLink", text: shareText, url: "https://reviewlink.app" });
+      } catch {
+        // user cancelled — no action needed
+      }
+    } else {
+      await navigator.clipboard.writeText(shareText);
+      toast.success("Copied to clipboard! Share it with a friend.");
+    }
+  };
 
   // SEO: dynamic page title with keywords
   useEffect(() => {
@@ -85,6 +117,15 @@ export default function HomePage() {
         </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={handleShare}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors"
+              style={{ background: "oklch(0.32 0.08 260)", color: "oklch(0.80 0.18 80)" }}
+              title="Share ReviewLink with a friend"
+            >
+              <Share2 size={13} />
+              <span className="hidden sm:inline">Share</span>
+            </button>
             <button
               onClick={() => setGuideOpen(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors"
@@ -301,7 +342,123 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* ── Platform Breakdown ──────────────────────────────────── */}
+        {/* ── Monthly Review Goal Tracker ──────────────────────────── */}
+        <div className="bg-white rounded-2xl p-4 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Target size={16} style={{ color: "oklch(0.22 0.09 260)" }} />
+              <h3
+                className="text-sm font-black"
+                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+              >
+                Monthly Goal
+              </h3>
+            </div>
+            {!editingGoal ? (
+              <button
+                onClick={() => { setGoalInput(String(reviewGoal || "")); setEditingGoal(true); }}
+                className="flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg"
+                style={{ color: "oklch(0.50 0.10 260)", background: "oklch(0.96 0.01 260)" }}
+              >
+                <Pencil size={11} />
+                {reviewGoal > 0 ? "Edit" : "Set goal"}
+              </button>
+            ) : (
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => {
+                    const val = parseInt(goalInput, 10);
+                    if (!isNaN(val) && val >= 0) setGoalMutation.mutate({ goal: val });
+                  }}
+                  disabled={setGoalMutation.isPending}
+                  className="p-1.5 rounded-lg"
+                  style={{ background: "oklch(0.55 0.18 145)", color: "white" }}
+                >
+                  <Check size={13} />
+                </button>
+                <button
+                  onClick={() => setEditingGoal(false)}
+                  className="p-1.5 rounded-lg"
+                  style={{ background: "oklch(0.96 0.01 260)", color: "oklch(0.50 0.03 260)" }}
+                >
+                  <X size={13} />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {editingGoal ? (
+            <div className="flex items-center gap-2">
+              <input
+                type="number"
+                min={0}
+                max={10000}
+                value={goalInput}
+                onChange={(e) => setGoalInput(e.target.value)}
+                placeholder="e.g. 10"
+                className="flex-1 px-3 py-2 rounded-xl text-sm outline-none"
+                style={{ border: "2px solid oklch(0.80 0.10 260)", fontSize: "16px" }}
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    const val = parseInt(goalInput, 10);
+                    if (!isNaN(val) && val >= 0) setGoalMutation.mutate({ goal: val });
+                  }
+                  if (e.key === "Escape") setEditingGoal(false);
+                }}
+              />
+              <span className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>reviews / month</span>
+            </div>
+          ) : reviewGoal > 0 ? (
+            <div>
+              <div className="flex items-end justify-between mb-2">
+                <div>
+                  <span
+                    className="text-3xl font-black"
+                    style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                  >
+                    {stats?.respondedThisMonth ?? 0}
+                  </span>
+                  <span className="text-sm ml-1" style={{ color: "oklch(0.55 0.03 260)" }}>
+                    / {reviewGoal} goal
+                  </span>
+                </div>
+                {(stats?.respondedThisMonth ?? 0) >= reviewGoal ? (
+                  <span
+                    className="text-xs font-black px-2.5 py-1 rounded-full"
+                    style={{ background: "oklch(0.92 0.08 145)", color: "oklch(0.35 0.15 145)" }}
+                  >
+                    Goal reached! 🎉
+                  </span>
+                ) : (
+                  <span className="text-xs" style={{ color: "oklch(0.60 0.03 260)" }}>
+                    {reviewGoal - (stats?.respondedThisMonth ?? 0)} to go
+                  </span>
+                )}
+              </div>
+              <div className="w-full h-3 rounded-full overflow-hidden" style={{ background: "oklch(0.94 0.01 260)" }}>
+                <div
+                  className="h-3 rounded-full transition-all duration-500"
+                  style={{
+                    width: `${Math.min(100, Math.round(((stats?.respondedThisMonth ?? 0) / reviewGoal) * 100))}%`,
+                    background: (stats?.respondedThisMonth ?? 0) >= reviewGoal
+                      ? "oklch(0.55 0.18 145)"
+                      : "oklch(0.80 0.18 80)",
+                  }}
+                />
+              </div>
+              <p className="text-xs mt-1.5" style={{ color: "oklch(0.65 0.03 260)" }}>
+                {Math.min(100, Math.round(((stats?.respondedThisMonth ?? 0) / reviewGoal) * 100))}% of monthly goal
+              </p>
+            </div>
+          ) : (
+            <p className="text-xs" style={{ color: "oklch(0.60 0.03 260)" }}>
+              Set a monthly review goal to track your progress and stay motivated.
+            </p>
+          )}
+        </div>
+
+        {/* Platform Breakdown */}
         {stats?.platformBreakdown && stats.platformBreakdown.filter((p) => p.platform !== "unknown").length > 0 && (
           <div className="bg-white rounded-2xl p-4 shadow-sm">
             <h3

@@ -1,0 +1,1 @@
+ALTER TABLE `business_profiles` ADD `reviewGoal` int DEFAULT 0 NOT NULL;

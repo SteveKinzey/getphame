@@ -286,6 +286,15 @@ export const appRouter = router({
         });
         return getBusinessProfile(ctx.user.id);
       }),
+
+    setGoal: protectedProcedure
+      .input(z.object({ goal: z.number().int().min(0).max(10000) }))
+      .mutation(async ({ ctx, input }) => {
+        const existing = await getBusinessProfile(ctx.user.id);
+        if (!existing) throw new TRPCError({ code: "NOT_FOUND", message: "Profile not found" });
+        await upsertBusinessProfile({ ...existing, reviewGoal: input.goal });
+        return { ok: true };
+      }),
   }),
 
   zoho: router({
@@ -1015,9 +1024,15 @@ export const appRouter = router({
         }
         platformBreakdown.sort((a, b) => b.count - a.count);
       }
+      // Count requests that have been responded to this calendar month
+      const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+      const respondedThisMonth = all.filter(
+        (r) => r.respondedAt !== null && r.respondedAt !== undefined && r.respondedAt >= monthStart
+      ).length;
       return {
         total: all.length,
         thisMonth: monthly,
+        respondedThisMonth,
         recent: all.slice(0, 5),
         platformBreakdown,
       };

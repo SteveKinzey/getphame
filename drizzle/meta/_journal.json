@@ -148,6 +148,13 @@
       "when": 1776050734561,
       "tag": "0020_careful_ultimates",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "5",
+      "when": 1776053493211,
+      "tag": "0021_slimy_magdalene",
+      "breakpoints": true
     }
   ]
 }

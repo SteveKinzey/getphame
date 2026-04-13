@@ -50,6 +50,8 @@ export const businessProfiles = mysqlTable("business_profiles", {
   replyTo: varchar("replyTo", { length: 320 }),
   // Onboarding wizard dismissed flag — 1 = user has dismissed or completed the wizard
   onboardingDismissed: int("onboardingDismissed").default(0).notNull(),
+  // Monthly review goal — number of responded requests the user aims to reach each month
+  reviewGoal: int("reviewGoal").default(0).notNull(),
   // Last time Stripe customers were synced into saved_contacts (Unix ms)
   stripeLastSyncedAt: bigint("stripeLastSyncedAt", { mode: "number" }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
