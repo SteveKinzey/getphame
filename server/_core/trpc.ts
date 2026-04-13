@@ -43,6 +43,7 @@ export const paidProcedure = t.procedure.use(
     }
 
     const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database not available" });
     const profile = await db.query.businessProfiles.findFirst({
       where: eq(businessProfiles.userId, ctx.user.id),
     });

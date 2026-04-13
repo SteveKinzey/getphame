@@ -1,5 +1,5 @@
 // ReviewLink — Settings Page
-// Sections: Business Profile, Gmail Connection, Plan
+// Sections: Business Profile, Email Connection, Plan
 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -537,7 +537,7 @@ export default function SettingsPage() {
                       }}
                     />
                     <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>
-                      When a customer replies to the email, it goes here. Leave blank to use your connected Gmail.
+                      When a customer replies to the email, it goes here. Leave blank to use your connected email address.
                     </p>
                   </div>
                 </div>

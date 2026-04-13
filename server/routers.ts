@@ -11,11 +11,7 @@ import {
   getCustomerRequests,
   getMonthlyRequestCount,
 } from "./db";
-import {
-  buildGmailAuthUrl,
-  deleteGmailTokens,
-  getValidAccessToken,
-} from "./gmail";
+
 import { sendMailViaSmtp } from "./smtp";
 import { createCheckoutSession, createPortalSession } from "./stripe";
 import { createOrGetZohoCustomer, createZohoInvoice, sendZohoInvoice } from "./zoho";
@@ -30,7 +26,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import {
   listSavedContacts,
@@ -95,28 +91,6 @@ export const appRouter = router({
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
-    }),
-  }),
-
-  gmail: router({
-    authUrl: protectedProcedure
-      .input(z.object({ origin: z.string() }))
-      .query(({ ctx, input }) => {
-        const url = buildGmailAuthUrl(input.origin, ctx.user.id);
-        return { url };
-      }),
-
-    status: protectedProcedure.query(async ({ ctx }) => {
-      const tokenData = await getValidAccessToken(ctx.user.id);
-      return {
-        connected: tokenData !== null,
-        gmailEmail: tokenData?.gmailEmail ?? null,
-      };
-    }),
-
-    disconnect: protectedProcedure.mutation(async ({ ctx }) => {
-      await deleteGmailTokens(ctx.user.id);
-      return { success: true };
     }),
   }),
 
@@ -523,6 +497,7 @@ export const appRouter = router({
               customerEmail: customer.customerEmail,
               method: "email",
               status: "sent",
+              platformId: input.platformId ?? null,
             });
           } catch (err) {
             errors.push(`${customer.customerEmail}: ${(err as Error).message}`);
@@ -682,6 +657,7 @@ export const appRouter = router({
               customerEmail: contact.email,
               method: "email",
               status: "sent",
+              platformId: input.platformId ?? null,
             });
             // Mark contact as sent
             const db = await import("./db").then((m) => m.getDb());
@@ -859,6 +835,7 @@ export const appRouter = router({
           customerEmail: input.customerEmail,
           method: input.method,
           status: "sent",
+          platformId: input.platformId ?? null,
         });
 
         await upsertBusinessProfile({
@@ -874,7 +851,6 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         const db = await getDb();
         if (!db) throw new Error("Database not available");
-        const { customerRequests } = await import("../drizzle/schema");
         const { and, eq: eqOp } = await import("drizzle-orm");
         await db
           .update(customerRequests)
@@ -889,10 +865,32 @@ export const appRouter = router({
         getCustomerRequests(ctx.user.id, 1000),
         getMonthlyRequestCount(ctx.user.id, yearMonth),
       ]);
+      // Build platform breakdown: count requests per platformId
+      const db = await getDb();
+      let platformBreakdown: { platformId: number | null; platform: string; label: string | null; count: number }[] = [];
+      if (db) {
+        const allPlatforms = await db.select().from(reviewPlatforms).where(eq(reviewPlatforms.userId, ctx.user.id));
+        const platformMap = new Map(allPlatforms.map((p) => [p.id, p]));
+        const countMap = new Map<number | null, number>();
+        for (const req of all) {
+          const pid = req.platformId ?? null;
+          countMap.set(pid, (countMap.get(pid) ?? 0) + 1);
+        }
+        for (const [pid, count] of Array.from(countMap.entries())) {
+          if (pid === null) {
+            platformBreakdown.push({ platformId: null, platform: "unknown", label: "No platform", count });
+          } else {
+            const p = platformMap.get(pid);
+            if (p) platformBreakdown.push({ platformId: pid, platform: p.platform, label: p.label ?? null, count });
+          }
+        }
+        platformBreakdown.sort((a, b) => b.count - a.count);
+      }
       return {
         total: all.length,
         thisMonth: monthly,
         recent: all.slice(0, 5),
+        platformBreakdown,
       };
     }),
   }),

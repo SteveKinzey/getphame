@@ -31,7 +31,7 @@ export default function PrivacyPolicy() {
           Privacy Policy
         </h1>
         <p className="text-sm mt-1" style={{ color: "oklch(0.75 0.05 260)" }}>
-          Last updated: April 2, 2026
+          Last updated: April 12, 2026
         </p>
       </div>
 
@@ -53,9 +53,9 @@ export default function PrivacyPolicy() {
           </h2>
           <p className="mb-2">We collect the following types of information:</p>
           <ul className="list-disc pl-5 space-y-1">
-            <li><strong>Account information:</strong> Your name and email address provided when you sign in with Google.</li>
-            <li><strong>Business profile:</strong> Your business name, Google review link, and other profile details you enter in the app.</li>
-            <li><strong>Gmail access tokens:</strong> OAuth tokens that allow the app to send emails on your behalf. These are stored securely and used solely to send review request emails to your customers.</li>
+            <li><strong>Account information:</strong> Your name and email address provided when you sign in.</li>
+            <li><strong>Business profile:</strong> Your business name, review platform links, and other profile details you enter in the app.</li>
+            <li><strong>SMTP credentials:</strong> Your outgoing email server credentials (email address and app password) that allow the app to send emails on your behalf. Passwords are stored encrypted using AES-256-GCM and are never transmitted in plain text.</li>
             <li><strong>Customer data:</strong> Names and email addresses of customers you enter to send review requests. This data is stored in our database and used only to send the requested emails.</li>
             <li><strong>Usage data:</strong> Information about how you use the Service, including the number of review requests sent per month.</li>
           </ul>
@@ -63,28 +63,20 @@ export default function PrivacyPolicy() {
 
         <section>
           <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
-            3. How We Use Gmail Access
+            3. How We Use Your Email Credentials
           </h2>
           <p className="mb-2">
-            ReviewLink requests access to your Gmail account solely to send review request emails to your customers on your behalf. Specifically, we use the <strong>Gmail API send scope</strong> (<code>https://www.googleapis.com/auth/gmail.send</code>) which allows us to:
+            ReviewLink uses your SMTP credentials solely to send review request emails to your customers on your behalf. Specifically, we use your credentials to:
           </p>
           <ul className="list-disc pl-5 space-y-1">
-            <li>Send emails from your Gmail address to customers you specify</li>
+            <li>Send emails from your email address to customers you specify</li>
+            <li>Verify that your email connection is working correctly (daily health check)</li>
           </ul>
           <p className="mt-2">
-            We do <strong>not</strong> read, store, or process any of your existing Gmail messages, contacts, or other Gmail data. Our use of Gmail API data is limited to sending outbound emails you explicitly initiate through the app.
+            We do <strong>not</strong> read, store, or process any of your existing email messages, contacts, or other mailbox data. Your credentials are used exclusively for sending outbound emails you explicitly initiate through the app.
           </p>
           <p className="mt-2">
-            ReviewLink's use and transfer of information received from Google APIs adheres to the{" "}
-            <a
-              href="https://developers.google.com/terms/api-services-user-data-policy"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "oklch(0.50 0.18 260)" }}
-            >
-              Google API Services User Data Policy
-            </a>
-            , including the Limited Use requirements.
+            Your SMTP password is encrypted with AES-256-GCM before storage and is never logged or shared with third parties.
           </p>
         </section>
 
@@ -93,7 +85,7 @@ export default function PrivacyPolicy() {
             4. Data Storage and Security
           </h2>
           <p>
-            Your data is stored in a secure, encrypted database. Gmail OAuth tokens are stored securely and are never shared with third parties. We implement industry-standard security measures to protect your information against unauthorized access, alteration, disclosure, or destruction.
+            Your data is stored in a secure, encrypted database. SMTP credentials are encrypted at rest and are never shared with third parties. We implement industry-standard security measures to protect your information against unauthorized access, alteration, disclosure, or destruction.
           </p>
         </section>
 
@@ -106,7 +98,6 @@ export default function PrivacyPolicy() {
           </p>
           <ul className="list-disc pl-5 space-y-1 mt-2">
             <li><strong>Stripe:</strong> For payment processing. Stripe's privacy policy governs their use of your payment data.</li>
-            <li><strong>Google:</strong> To authenticate your account and send emails via the Gmail API.</li>
             <li><strong>Service providers:</strong> Infrastructure providers who help us operate the Service, bound by confidentiality agreements.</li>
           </ul>
         </section>
@@ -116,7 +107,7 @@ export default function PrivacyPolicy() {
             6. Your Rights and Data Deletion
           </h2>
           <p>
-            You may disconnect your Gmail account at any time from the Settings screen, which revokes our access and deletes your stored OAuth tokens. You may request deletion of all your data by contacting us at the email below. We will process deletion requests within 30 days.
+            You may disconnect your email account at any time from the Settings screen, which removes your stored SMTP credentials. You may request deletion of all your data by contacting us at the email below. We will process deletion requests within 30 days.
           </p>
         </section>
 

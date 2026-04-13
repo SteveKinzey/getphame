@@ -69,19 +69,6 @@ function AppShell() {
     !onboardingStatus.dismissed &&
     !onboardingStatus.allDone;
 
-  // Check for Gmail OAuth callback result in URL
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get("gmail_connected") === "1") {
-      toast.success("Gmail connected! You can now send review requests from your Gmail account.");
-      window.history.replaceState({}, "", window.location.pathname);
-    }
-    if (params.get("gmail_error") === "1") {
-      toast.error("Gmail connection failed. Please try again in Settings.");
-      window.history.replaceState({}, "", window.location.pathname);
-    }
-  }, []);
-
   if (loading) {
     return (
       <div className="mobile-screen flex items-center justify-center" style={{ background: "oklch(0.22 0.09 260)" }}>

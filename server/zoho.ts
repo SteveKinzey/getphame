@@ -57,6 +57,7 @@ const PLANS: Record<ZohoPlan, { label: string; description: string; rate: number
 
 export async function getZohoAccessToken(): Promise<string> {
   const db = await getDb();
+  if (!db) throw new Error("Database not available");
   const stored = await db.query.zohoTokens.findFirst({
     orderBy: (t, { desc }) => [desc(t.updatedAt)],
   });
@@ -90,6 +91,7 @@ async function refreshZohoToken(refreshToken: string): Promise<string> {
 
   const expiresAt = BigInt(Date.now() + (data.expires_in ?? 3600) * 1000);
   const db = await getDb();
+  if (!db) throw new Error("Database not available");
   const existing = await db.query.zohoTokens.findFirst();
   if (existing) {
     await db.update(zohoTokens)
@@ -230,6 +232,7 @@ export function registerZohoRoutes(app: Express): void {
 
       const expiresAt = BigInt(Date.now() + (tokenData.expires_in ?? 3600) * 1000);
       const db = await getDb();
+      if (!db) throw new Error("Database not available");
       const existing = await db.query.zohoTokens.findFirst();
       if (existing) {
         await db.update(zohoTokens).set({
@@ -290,6 +293,7 @@ export function registerZohoRoutes(app: Express): void {
         : null;
 
       const db = await getDb();
+      if (!db) throw new Error("Database not available");
       await db.update(businessProfiles)
         .set({ tier: planConfig.tier, planExpiresAt })
         .where(eq(businessProfiles.userId, userId));

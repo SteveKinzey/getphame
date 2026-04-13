@@ -119,7 +119,7 @@ export default function Reminders() {
       <div className="px-4 pt-4 space-y-5">
         {/* Info banner */}
         <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-700">
-          <strong>How it works:</strong> When you send a review request, a follow-up reminder is automatically scheduled for 3 days later. The reminder is sent from your connected Gmail and uses your business profile. Use <strong>Send Now</strong> to skip the wait.
+          <strong>How it works:</strong> When you send a review request, a follow-up reminder is automatically scheduled for 3 days later. The reminder is sent from your connected email account and uses your business profile. Use <strong>Send Now</strong> to skip the wait.
         </div>
 
         {isLoading ? (

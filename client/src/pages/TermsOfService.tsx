@@ -31,7 +31,7 @@ export default function TermsOfService() {
           Terms of Service
         </h1>
         <p className="text-sm mt-1" style={{ color: "oklch(0.75 0.05 260)" }}>
-          Last updated: April 2, 2026
+          Last updated: April 12, 2026
         </p>
       </div>
 
@@ -52,7 +52,7 @@ export default function TermsOfService() {
             2. Description of Service
           </h2>
           <p>
-            ReviewLink is a mobile web application that helps small business owners send review request emails to their customers via their connected Gmail account. The Service includes a free tier (up to 10 requests per month) and a paid Pro tier ($29/month) with unlimited requests and additional features.
+            ReviewLink is a mobile web application that helps small business owners send review request emails to their customers via their connected email account. The Service includes a free tier (up to 10 requests per month) and a paid Pro tier with unlimited requests and additional features.
           </p>
         </section>
 
@@ -61,7 +61,7 @@ export default function TermsOfService() {
             3. User Accounts
           </h2>
           <p>
-            You must sign in with a valid Google account to use the Service. You are responsible for maintaining the confidentiality of your account and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use of your account.
+            You must sign in with a valid account to use the Service. You are responsible for maintaining the confidentiality of your account and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use of your account.
           </p>
         </section>
 
@@ -84,10 +84,10 @@ export default function TermsOfService() {
 
         <section>
           <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
-            5. Gmail Integration
+            5. Email Integration
           </h2>
           <p>
-            By connecting your Gmail account, you authorize ReviewLink to send emails on your behalf using the Gmail API. You may revoke this authorization at any time from the Settings screen. You remain solely responsible for the content of emails sent through the Service and for compliance with all applicable laws governing email communications.
+            By connecting your email account via SMTP, you authorize ReviewLink to send emails on your behalf. You may disconnect your email account at any time from the Settings screen, which removes your stored credentials. You remain solely responsible for the content of emails sent through the Service and for compliance with all applicable laws governing email communications.
           </p>
         </section>
 

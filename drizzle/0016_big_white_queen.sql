@@ -1,0 +1,1 @@
+ALTER TABLE `customer_requests` ADD `platformId` int;

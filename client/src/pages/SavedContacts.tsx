@@ -176,9 +176,9 @@ export default function SavedContacts() {
           (result.skippedDueToLimit > 0 ? ` (${result.skippedDueToLimit} skipped — free limit reached)` : "")
         );
       } else if (result.sent > 0 && result.failed > 0) {
-        toast.warning(`${result.sent} sent, ${result.failed} failed. Check your Gmail connection.`);
+        toast.warning(`${result.sent} sent, ${result.failed} failed. Check your email connection in Settings.`);
       } else {
-        toast.error(`All ${result.failed} sends failed. Check your Gmail connection in Settings.`);
+        toast.error(`All ${result.failed} sends failed. Check your email connection in Settings.`);
       }
     },
     onError: (e) => {

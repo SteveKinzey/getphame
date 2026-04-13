@@ -7,14 +7,12 @@ import { registerOAuthRoutes } from "./oauth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
-import { exchangeCodeForTokens, saveGmailTokens } from "../gmail";
 import { stripe } from "../stripe";
 import { getDb } from "../db";
 import { businessProfiles, stripeSubscriptions } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
 import { startReminderScheduler } from "../reminders";
-import { startGmailHealthCheckScheduler } from "../gmailHealthCheck";
 import { startSmtpHealthCheckScheduler } from "../smtpHealthCheck";
 import { registerSitemapRoutes } from "../sitemap";
 import { registerZohoRoutes } from "../zoho";
@@ -133,43 +131,6 @@ async function startServer() {
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
 
-  // Gmail OAuth callback: /api/gmail/callback
-  app.get("/api/gmail/callback", async (req, res) => {
-    try {
-      const code = req.query.code as string;
-      const rawState = req.query.state as string;
-      if (!code || !rawState) {
-        return res.status(400).send("Invalid callback parameters");
-      }
-
-      // Decode state — may be base64url JSON {userId, origin} or legacy plain userId string
-      let userId: number;
-      let origin: string;
-      try {
-        const decoded = JSON.parse(Buffer.from(rawState, "base64url").toString());
-        userId = decoded.userId;
-        origin = decoded.origin;
-      } catch {
-        // Legacy fallback: state was just the userId
-        userId = parseInt(rawState, 10);
-        origin = `${req.protocol}://${req.get("host")}`;
-      }
-
-      if (isNaN(userId) || !origin) {
-        return res.status(400).send("Invalid callback parameters");
-      }
-
-      const { accessToken, refreshToken, expiresAt, email } = await exchangeCodeForTokens(code, origin);
-      await saveGmailTokens(userId, accessToken, refreshToken, expiresAt, email);
-      // Redirect back to the settings page with a success flag
-      res.redirect(`${origin}/?gmail_connected=1#/settings`);
-    } catch (err) {
-      console.error("[Gmail OAuth] Callback error:", err);
-      const fallbackOrigin = `${req.protocol}://${req.get("host")}`;
-      res.redirect(`${fallbackOrigin}/?gmail_error=1#/settings`);
-    }
-  });
-
   // SEO: sitemap.xml and robots.txt (must be before static/Vite catch-all)
   registerSitemapRoutes(app);
 
@@ -201,7 +162,6 @@ async function startServer() {
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
     startReminderScheduler();
-    startGmailHealthCheckScheduler();
     startSmtpHealthCheckScheduler();
   });
 }

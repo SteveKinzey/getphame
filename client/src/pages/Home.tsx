@@ -1,10 +1,10 @@
 // ReviewLink — Home Dashboard
-// Shows stats, Gmail connection status, and quick-send CTA
+// Shows stats, SMTP connection status, and quick-send CTA
 
 import { useEffect } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Rocket, Star, Send, TrendingUp, Clock, Crown, AlertCircle, CheckCircle2 } from "lucide-react";
+import { Rocket, Star, Send, TrendingUp, Clock, Crown, AlertCircle, CheckCircle2, WifiOff } from "lucide-react";
 import ProBadge from "@/components/ProBadge";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
@@ -29,7 +29,7 @@ export default function HomePage() {
   const [, navigate] = useLocation();
 
   const { data: profile } = trpc.profile.get.useQuery();
-  const { data: gmailStatus } = trpc.gmail.status.useQuery();
+  const { data: smtpStatus } = trpc.smtp.status.useQuery();
   const { data: stats } = trpc.requests.stats.useQuery();
 
   // SEO: dynamic page title with keywords
@@ -38,10 +38,12 @@ export default function HomePage() {
   }, []);
 
   const isPro = profile?.tier === "pro";
-  const gmailConnected = gmailStatus?.connected ?? false;
+  const smtpConnected = smtpStatus?.connected ?? false;
   const profileComplete = !!profile?.businessName && !!profile?.reviewLink;
   const atFreeLimit = !isPro && (stats?.thisMonth ?? 0) >= 10;
   const remainingFree = Math.max(0, 10 - (stats?.thisMonth ?? 0));
+  // Show health alert only when SMTP is connected but the last check failed
+  const smtpHealthFailed = smtpConnected && smtpStatus?.lastHealthStatus === "fail";
 
   return (
     <div className="min-h-screen pb-32" style={{ background: "oklch(0.975 0.003 100)" }}>
@@ -124,8 +126,35 @@ export default function HomePage() {
       </div>
 
       <div className="px-4 py-4 flex flex-col gap-4">
+        {/* ── SMTP Health Failure Alert ─────────────────────────────────── */}
+        {smtpHealthFailed && (
+          <div
+            className="rounded-2xl p-4 flex flex-col gap-3"
+            style={{ background: "oklch(0.98 0.04 30)", border: "1.5px solid oklch(0.75 0.18 30)" }}
+          >
+            <div className="flex items-start gap-3">
+              <WifiOff size={18} style={{ color: "oklch(0.55 0.22 30)", flexShrink: 0, marginTop: 1 }} />
+              <div className="flex flex-col gap-0.5">
+                <p className="text-sm font-black" style={{ color: "oklch(0.35 0.12 30)", fontFamily: "'Poppins', sans-serif" }}>
+                  Email connection issue detected
+                </p>
+                <p className="text-xs" style={{ color: "oklch(0.50 0.08 30)" }}>
+                  Your daily health check failed. Review requests may not be sending.
+                  {smtpStatus?.lastHealthCheck ? ` Last checked ${formatRelativeTime(new Date(smtpStatus.lastHealthCheck))}.` : ""}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => navigate("/settings")}
+              className="w-full py-2 rounded-xl text-xs font-black"
+              style={{ background: "oklch(0.55 0.22 30)", color: "white", fontFamily: "'Poppins', sans-serif" }}
+            >
+              Fix in Settings →
+            </button>
+          </div>
+        )}
         {/* ── Setup nudges ─────────────────────────────────────────────────── */}
-        {(!gmailConnected || !profileComplete) && (
+        {(!smtpConnected || !profileComplete) && (
           <div className="bg-white rounded-2xl p-4 shadow-sm">
             <p
               className="text-sm font-black mb-3"
@@ -145,17 +174,17 @@ export default function HomePage() {
                 </span>
               </div>
               <div className="flex items-center gap-3">
-                {gmailConnected ? (
+                {smtpConnected ? (
                   <CheckCircle2 size={16} style={{ color: "oklch(0.55 0.18 145)" }} />
                 ) : (
                   <AlertCircle size={16} style={{ color: "oklch(0.65 0.18 80)" }} />
                 )}
-                <span className="text-sm" style={{ color: gmailConnected ? "oklch(0.45 0.10 145)" : "oklch(0.40 0.04 260)" }}>
-                  Gmail {gmailConnected ? `connected (${gmailStatus?.gmailEmail})` : "— connect your Gmail account"}
+                <span className="text-sm" style={{ color: smtpConnected ? "oklch(0.45 0.10 145)" : "oklch(0.40 0.04 260)" }}>
+                  Email {smtpConnected ? `connected (${smtpStatus?.email})` : "— connect your email account"}
                 </span>
               </div>
             </div>
-            {(!gmailConnected || !profileComplete) && (
+            {(!smtpConnected || !profileComplete) && (
               <button
                 onClick={() => navigate("/settings")}
                 className="mt-3 w-full py-2.5 rounded-xl text-sm font-black"
@@ -174,15 +203,15 @@ export default function HomePage() {
         {/* ── Quick Send CTA ───────────────────────────────────────────────── */}
         <button
           onClick={() => navigate("/send")}
-          disabled={atFreeLimit || !gmailConnected || !profileComplete}
+          disabled={atFreeLimit || !smtpConnected || !profileComplete}
           className="w-full py-5 rounded-2xl flex items-center justify-center gap-3 font-black text-xl transition-transform active:scale-95"
           style={{
             background:
-              atFreeLimit || !gmailConnected || !profileComplete
+              atFreeLimit || !smtpConnected || !profileComplete
                 ? "oklch(0.80 0.03 260)"
                 : "oklch(0.80 0.18 80)",
             color:
-              atFreeLimit || !gmailConnected || !profileComplete
+              atFreeLimit || !smtpConnected || !profileComplete
                 ? "oklch(0.55 0.03 260)"
                 : "oklch(0.22 0.09 260)",
             fontFamily: "'Poppins', sans-serif",
@@ -274,6 +303,54 @@ export default function HomePage() {
                   </div>
                 </div>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── Platform Breakdown ──────────────────────────────────── */}
+        {stats?.platformBreakdown && stats.platformBreakdown.filter((p) => p.platform !== "unknown").length > 0 && (
+          <div className="bg-white rounded-2xl p-4 shadow-sm">
+            <h3
+              className="text-sm font-black mb-3"
+              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+            >
+              Requests by Platform
+            </h3>
+            <div className="flex flex-col gap-2">
+              {stats.platformBreakdown
+                .filter((p) => p.platform !== "unknown")
+                .map((p) => {
+                  const total = stats.total || 1;
+                  const pct = Math.round((p.count / total) * 100);
+                  const platformLabel = p.label ?? p.platform.charAt(0).toUpperCase() + p.platform.slice(1);
+                  const colors: Record<string, string> = {
+                    google: "oklch(0.55 0.20 145)",
+                    yelp: "oklch(0.55 0.22 30)",
+                    tripadvisor: "oklch(0.50 0.18 155)",
+                    bing: "oklch(0.50 0.18 260)",
+                    facebook: "oklch(0.45 0.18 250)",
+                    other: "oklch(0.55 0.10 280)",
+                  };
+                  const barColor = colors[p.platform] ?? colors.other;
+                  return (
+                    <div key={p.platformId ?? p.platform}>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-bold" style={{ color: "oklch(0.35 0.05 260)" }}>
+                          {platformLabel}
+                        </span>
+                        <span className="text-xs font-black" style={{ color: "oklch(0.22 0.09 260)" }}>
+                          {p.count} ({pct}%)
+                        </span>
+                      </div>
+                      <div className="w-full h-2 rounded-full" style={{ background: "oklch(0.94 0.01 260)" }}>
+                        <div
+                          className="h-2 rounded-full transition-all"
+                          style={{ width: `${pct}%`, background: barColor }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
           </div>
         )}

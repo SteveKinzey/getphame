@@ -46,7 +46,7 @@ export const businessProfiles = mysqlTable("business_profiles", {
   zohoCustomerId: varchar("zohoCustomerId", { length: 64 }),
   // Email sender display name — shown as "From: <name>" in outgoing review request emails
   fromName: varchar("fromName", { length: 255 }),
-  // Reply-To address — if set, replies go here instead of the connected Gmail address
+  // Reply-To address — if set, replies go here instead of the connected email address
   replyTo: varchar("replyTo", { length: 320 }),
   // Onboarding wizard dismissed flag — 1 = user has dismissed or completed the wizard
   onboardingDismissed: int("onboardingDismissed").default(0).notNull(),
@@ -69,9 +69,9 @@ export const customerRequests = mysqlTable("customer_requests", {
   respondedAt: bigint("respondedAt", { mode: "number" }), // Unix ms when customer left a review (null = not yet)
   sentAt: timestamp("sentAt").defaultNow().notNull(),
   followUpAt: timestamp("followUpAt"),
+  platformId: int("platformId"), // FK to review_platforms.id — which platform was linked in this request
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
-
 export type CustomerRequest = typeof customerRequests.$inferSelect;
 export type InsertCustomerRequest = typeof customerRequests.$inferInsert;
 

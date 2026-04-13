@@ -302,3 +302,40 @@
 - [x] Add platform selector state + trpc.reviewPlatforms.list query to WooCustomers.tsx
 - [x] Add platform dropdown in the WooCommerce bulk send confirm dialog
 - [x] Pass selectedPlatformId to woo.bulkSend mutation
+
+## Remove Gmail API (Replaced by SMTP)
+
+- [x] Delete server/gmailHealthCheck.ts (was already deleted in previous session)
+- [x] Remove startGmailHealthCheckScheduler import and call from server/_core/index.ts
+- [x] Remove gmail router block from server/routers.ts
+- [x] Delete server/gmail.ts (was already deleted in previous session)
+- [x] Remove any Gmail-related imports from server/routers.ts
+- [x] Remove Gmail section from client/src/pages/Settings.tsx
+- [x] Remove any Gmail-related state/mutations from Settings.tsx
+- [x] Confirm no remaining sendViaGmail calls anywhere
+- [x] Remove GMAIL_REDIRECT_URI and Google OAuth client vars from env.ts
+- [x] Update Privacy Policy and Terms of Service to remove Gmail API references
+- [x] Update Reminders.tsx, Onboarding.tsx, SavedContacts.tsx toast messages
+- [x] Delete obsolete google-credentials.test.ts
+- [x] Run pnpm test — 35 tests passing
+
+## Three Pending Features (Approved)
+
+### Feature 1: SMTP Connection Failure Notification
+- [x] When daily health check marks SMTP as failed, send in-app notification to user via notifyOwner or push notification
+- [x] Add in-app alert banner on home screen when SMTP health status is "failed"
+- [x] Show last-checked timestamp and "Fix in Settings" button in alert
+
+### Feature 2: Reply-To Field in Onboarding Wizard Step 1
+- [x] Add Reply-To input field to OnboardingWizard Step 1 (alongside Sender Name)
+- [x] Wire Reply-To to smtp.connect mutation (pass replyTo in step 1 save)
+- [x] Show hint text: "Optional — where customer replies will go"
+
+### Feature 3: Platform Performance Tracking
+- [x] Add platformId column to customer_requests table in schema.ts
+- [x] Run pnpm db:push to migrate (migration 0016 applied)
+- [x] Update requests.send procedure to save platformId
+- [x] Update contacts.bulkSend to save platformId per request
+- [x] Update woo.bulkSend to save platformId per request
+- [x] Add dashboard query: requests grouped by platform (count per platform) in requests.stats
+- [x] Show platform breakdown bar chart on Home dashboard page

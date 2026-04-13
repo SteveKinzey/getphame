@@ -67,8 +67,6 @@ export async function processDueReminders() {
 
   for (const reminder of due) {
     try {
-      // Verify Gmail is connected (getValidAccessToken handles refresh)
-
       // Get business profile for review link
       const [profile] = await db
         .select()

@@ -45,7 +45,7 @@ export default function OnboardingPage() {
             <span style={{ color: "oklch(0.80 0.18 80)" }}>Google Reviews</span>
           </h1>
           <p className="text-base leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
-            Send personalized review requests from your own Gmail account. Your customers see it
+            Send personalized review requests from your own email account. Your customers see it
             come from you — not a generic sender.
           </p>
         </div>
@@ -59,7 +59,7 @@ export default function OnboardingPage() {
 
         {/* Feature pills */}
         <div className="flex flex-wrap gap-2 justify-center">
-          {["Sends from your Gmail", "One-tap requests", "Free to start"].map((f) => (
+          {["Sends from your email", "One-tap requests", "Free to start"].map((f) => (
             <span
               key={f}
               className="text-xs font-semibold px-3 py-1 rounded-full"
