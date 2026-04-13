@@ -112,10 +112,10 @@ export const appRouter = router({
 
     /** Detect SMTP settings from email domain */
     detect: protectedProcedure
-      .input(z.object({ email: z.string().email() }))
+      .input(z.object({ email: z.string().email(), host: z.string().optional() }))
       .query(({ input }) => {
         const detected = detectSmtpSettings(input.email);
-        const hint = getAppPasswordHint(input.email);
+        const hint = getAppPasswordHint(input.email, input.host);
         return { detected, hint };
       }),
 

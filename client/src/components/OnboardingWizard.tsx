@@ -74,13 +74,28 @@ const APP_PASSWORD_HINTS: Record<string, string> = {
   "yahoo.com": "Yahoo requires an App Password. Go to account.yahoo.com → Security → Generate app password.",
 };
 
+// Preset SMTP configurations for one-tap selection in the advanced panel
+const SMTP_PRESETS = [
+  { label: "Google Workspace", host: "smtp.gmail.com", port: 587 },
+  { label: "Outlook / Microsoft 365", host: "smtp-mail.outlook.com", port: 587 },
+  { label: "Zoho Mail", host: "smtp.zoho.com", port: 587 },
+  { label: "Yahoo Mail", host: "smtp.mail.yahoo.com", port: 587 },
+] as const;
+
+const GOOGLE_WORKSPACE_HINT = "Using Google Workspace? Your SMTP host is smtp.gmail.com (port 587). You'll need an App Password — go to myaccount.google.com → Security → App Passwords.";
+
 function detectHost(email: string) {
   const domain = email.split("@")[1]?.toLowerCase();
   return domain ? KNOWN_HOSTS[domain] ?? null : null;
 }
 
-function getHint(email: string) {
+/** Returns the app-password hint based on email domain OR manually-entered host */
+function getHint(email: string, host?: string) {
   const domain = email.split("@")[1]?.toLowerCase();
+  // If the user manually typed smtp.gmail.com, show the Google Workspace hint
+  if (host === "smtp.gmail.com" && domain && !KNOWN_HOSTS[domain]) {
+    return GOOGLE_WORKSPACE_HINT;
+  }
   return domain ? APP_PASSWORD_HINTS[domain] ?? null : null;
 }
 
@@ -144,8 +159,14 @@ function Step1Email({ onDone }: { onDone: () => void }) {
     }
   }, [email]);
 
-  const hint = getHint(email);
+  const hint = getHint(email, host);
   const detectedAuto = !!detectHost(email);
+  // Show Google Workspace disclosure when auto-detect fails and user has a custom domain
+  const showWorkspaceDisclosure =
+    !detectedAuto &&
+    email.includes("@") &&
+    !host && // hasn't manually set a host yet
+    !!email.split("@")[1]; // has a domain
 
   async function handleConnect() {
     if (!email || !password) {
@@ -273,6 +294,37 @@ function Step1Email({ onDone }: { onDone: () => void }) {
         </p>
       )}
 
+      {/* Google Workspace disclosure — shown when domain is unknown and no host set yet */}
+      {showWorkspaceDisclosure && (
+        <div
+          className="flex items-start gap-2 px-3 py-3 rounded-xl"
+          style={{ background: "oklch(0.18 0.08 250)", border: "1px solid oklch(0.35 0.10 250)" }}
+        >
+          <AlertCircle size={14} className="shrink-0 mt-0.5" style={{ color: "oklch(0.70 0.15 250)" }} />
+          <div className="flex flex-col gap-1.5">
+            <p className="text-xs font-bold" style={{ color: "oklch(0.85 0.08 250)" }}>
+              Using Google Workspace or a custom domain?
+            </p>
+            <p className="text-xs" style={{ color: "oklch(0.70 0.05 250)" }}>
+              We couldn’t auto-detect your SMTP settings. Select your email provider below or enter settings manually.
+            </p>
+            <div className="flex flex-wrap gap-2 mt-1">
+              {SMTP_PRESETS.map((preset) => (
+                <button
+                  key={preset.host}
+                  type="button"
+                  onClick={() => { setHost(preset.host); setPort(preset.port); setShowAdvanced(true); }}
+                  className="px-3 py-1.5 rounded-lg text-xs font-bold transition-colors"
+                  style={{ background: "oklch(0.28 0.10 250)", color: "oklch(0.85 0.08 250)" }}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {!detectedAuto && email.includes("@") && (
         <button
           onClick={() => setShowAdvanced(!showAdvanced)}
@@ -284,39 +336,61 @@ function Step1Email({ onDone }: { onDone: () => void }) {
       )}
 
       {(showAdvanced || (!detectedAuto && email.includes("@"))) && (
-        <div className="flex gap-3">
-          <div className="flex-1">
-            <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-              SMTP Host
-            </label>
-            <input
-              type="text"
-              value={host}
-              onChange={(e) => setHost(e.target.value)}
-              placeholder={`smtp.${email.split("@")[1] ?? "yourdomain.com"}`}
-              className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-              style={{
-                background: "oklch(0.18 0.06 260)",
-                color: "white",
-                border: "1px solid oklch(0.32 0.06 260)",
-              }}
-            />
-          </div>
-          <div className="w-24">
-            <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-              Port
-            </label>
-            <input
-              type="number"
-              value={port}
-              onChange={(e) => setPort(Number(e.target.value))}
-              className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-              style={{
-                background: "oklch(0.18 0.06 260)",
-                color: "white",
-                border: "1px solid oklch(0.32 0.06 260)",
-              }}
-            />
+        <div className="flex flex-col gap-3">
+          {/* Preset quick-fill buttons in advanced panel */}
+          {!detectedAuto && (
+            <div className="flex flex-wrap gap-2">
+              {SMTP_PRESETS.map((preset) => (
+                <button
+                  key={preset.host}
+                  type="button"
+                  onClick={() => { setHost(preset.host); setPort(preset.port); }}
+                  className="px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors"
+                  style={{
+                    background: host === preset.host ? "oklch(0.80 0.18 80)" : "oklch(0.22 0.06 260)",
+                    color: host === preset.host ? "oklch(0.15 0.05 260)" : "oklch(0.70 0.04 260)",
+                    borderColor: host === preset.host ? "oklch(0.80 0.18 80)" : "oklch(0.35 0.06 260)",
+                  }}
+                >
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="flex gap-3">
+            <div className="flex-1">
+              <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+                SMTP Host
+              </label>
+              <input
+                type="text"
+                value={host}
+                onChange={(e) => setHost(e.target.value)}
+                placeholder={`smtp.${email.split("@")[1] ?? "yourdomain.com"}`}
+                className="w-full px-3 py-2 rounded-xl text-sm outline-none"
+                style={{
+                  background: "oklch(0.18 0.06 260)",
+                  color: "white",
+                  border: "1px solid oklch(0.32 0.06 260)",
+                }}
+              />
+            </div>
+            <div className="w-24">
+              <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+                Port
+              </label>
+              <input
+                type="number"
+                value={port}
+                onChange={(e) => setPort(Number(e.target.value))}
+                className="w-full px-3 py-2 rounded-xl text-sm outline-none"
+                style={{
+                  background: "oklch(0.18 0.06 260)",
+                  color: "white",
+                  border: "1px solid oklch(0.32 0.06 260)",
+                }}
+              />
+            </div>
           </div>
         </div>
       )}

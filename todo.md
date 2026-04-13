@@ -339,3 +339,9 @@
 - [x] Update woo.bulkSend to save platformId per request
 - [x] Add dashboard query: requests grouped by platform (count per platform) in requests.stats
 - [x] Show platform breakdown bar chart on Home dashboard page
+
+## Google Workspace SMTP Improvements
+
+- [x] Add "Using Google Workspace?" disclosure in wizard when auto-detect fails and host is not a known provider
+- [x] Add smtp.gmail.com preset button in advanced settings panel (OnboardingWizard + Settings SMTP form)
+- [x] Update app password hint logic to also fire when host is manually set to smtp.gmail.com (server + client)

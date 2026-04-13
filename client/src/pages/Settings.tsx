@@ -339,9 +339,9 @@ export default function SettingsPage() {
   const [showSmtpForm, setShowSmtpForm] = useState(false);
   const [showSmtpPassword, setShowSmtpPassword] = useState(false);
 
-  // Auto-detect SMTP settings when email changes
+  // Auto-detect SMTP settings when email changes; also pass host so hint fires for Google Workspace
   const { data: smtpDetect } = trpc.smtp.detect.useQuery(
-    { email: smtpEmail },
+    { email: smtpEmail, host: smtpHost || undefined },
     { enabled: smtpEmail.includes("@") && smtpEmail.includes(".") }
   );
   useEffect(() => {
@@ -1026,6 +1026,32 @@ export default function SettingsPage() {
               <details className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
                 <summary className="cursor-pointer font-semibold py-1">Advanced settings (auto-detected)</summary>
                 <div className="flex flex-col gap-2 mt-2">
+                  {/* Provider preset quick-fill buttons */}
+                  <div>
+                    <p className="text-xs font-bold mb-1.5" style={{ color: "oklch(0.40 0.04 260)" }}>Quick-fill by provider</p>
+                    <div className="flex flex-wrap gap-2">
+                      {([
+                        { label: "Google Workspace", host: "smtp.gmail.com", port: 587 },
+                        { label: "Outlook / M365", host: "smtp-mail.outlook.com", port: 587 },
+                        { label: "Zoho Mail", host: "smtp.zoho.com", port: 587 },
+                        { label: "Yahoo Mail", host: "smtp.mail.yahoo.com", port: 587 },
+                      ] as const).map((preset) => (
+                        <button
+                          key={preset.host}
+                          type="button"
+                          onClick={() => { setSmtpHost(preset.host); setSmtpPort(preset.port); setSmtpSecure(0); }}
+                          className="px-2.5 py-1 rounded-lg text-xs font-bold border transition-colors"
+                          style={{
+                            background: smtpHost === preset.host ? "oklch(0.22 0.09 260)" : "oklch(0.96 0.01 260)",
+                            color: smtpHost === preset.host ? "oklch(0.80 0.18 80)" : "oklch(0.40 0.04 260)",
+                            borderColor: smtpHost === preset.host ? "oklch(0.22 0.09 260)" : "oklch(0.88 0.02 260)",
+                          }}
+                        >
+                          {preset.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                   <div>
                     <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>SMTP Host</label>
                     <input

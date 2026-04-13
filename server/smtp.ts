@@ -66,10 +66,14 @@ export function detectSmtpSettings(email: string): { host: string; port: number;
   return KNOWN_HOSTS[domain] ?? null;
 }
 
-export function getAppPasswordHint(email: string): string | null {
+export function getAppPasswordHint(email: string, host?: string): string | null {
   const domain = email.split("@")[1]?.toLowerCase();
   if (domain === "gmail.com" || domain === "googlemail.com") {
     return "Gmail requires an App Password when 2-Step Verification is on. Go to myaccount.google.com → Security → App Passwords to create one.";
+  }
+  // Google Workspace: custom domain using smtp.gmail.com as host
+  if (host === "smtp.gmail.com" && domain && domain !== "gmail.com" && domain !== "googlemail.com") {
+    return "Google Workspace requires an App Password. Go to myaccount.google.com → Security → App Passwords and create one for \"Mail\".";
   }
   if (domain === "outlook.com" || domain === "hotmail.com" || domain === "live.com") {
     return "Outlook may require an App Password if two-step verification is enabled. Go to account.microsoft.com → Security → Advanced security options.";
