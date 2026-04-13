@@ -98,7 +98,7 @@ export const appRouter = router({
     /** Return connection status without exposing credentials */
     status: protectedProcedure.query(async ({ ctx }) => {
       const creds = await getSmtpCredentials(ctx.user.id);
-      if (!creds) return { connected: false, email: null, fromName: null, replyTo: null, verified: false, lastHealthCheck: null, lastHealthStatus: null };
+      if (!creds) return { connected: false, email: null, fromName: null, replyTo: null, verified: false, lastHealthCheck: null, lastHealthStatus: null, lastHealthError: null };
       return {
         connected: true,
         email: creds.user,
@@ -107,6 +107,7 @@ export const appRouter = router({
         verified: creds.verified === 1,
         lastHealthCheck: creds.lastHealthCheck ?? null,
         lastHealthStatus: creds.lastHealthStatus ?? null,
+        lastHealthError: creds.lastHealthError ?? null,
       };
     }),
 
@@ -117,6 +118,28 @@ export const appRouter = router({
         const detected = detectSmtpSettings(input.email);
         const hint = getAppPasswordHint(input.email, input.host);
         return { detected, hint };
+      }),
+
+    /** Test SMTP credentials without saving — used by wizard Test Connection button */
+    testCredentials: protectedProcedure
+      .input(
+        z.object({
+          email: z.string().email(),
+          password: z.string().min(1),
+          host: z.string().min(1),
+          port: z.number().int().min(1).max(65535),
+          secure: z.number().int().min(0).max(1),
+        })
+      )
+      .mutation(async ({ input }) => {
+        const result = await testSmtpConnection({
+          host: input.host,
+          port: input.port,
+          secure: input.secure === 1,
+          user: input.email,
+          pass: input.password,
+        });
+        return result;
       }),
 
     /** Save credentials and verify the connection */

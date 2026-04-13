@@ -345,3 +345,9 @@
 - [x] Add "Using Google Workspace?" disclosure in wizard when auto-detect fails and host is not a known provider
 - [x] Add smtp.gmail.com preset button in advanced settings panel (OnboardingWizard + Settings SMTP form)
 - [x] Update app password hint logic to also fire when host is manually set to smtp.gmail.com (server + client)
+
+## SMTP UX Improvements (Round 2)
+
+- [x] Add Zoho SMTP setup note when smtp.zoho.com is selected (enable SMTP in Zoho account settings)
+- [x] Add "Test Connection" button in OnboardingWizard Step 1 (verify before committing) + new smtp.testCredentials procedure
+- [x] Track SMTP connection failures by provider in health check cron (log host + error to smtpCredentials.lastHealthError, migration 0017 applied)

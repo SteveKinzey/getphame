@@ -120,6 +120,13 @@
       "when": 1776043088368,
       "tag": "0016_big_white_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "5",
+      "when": 1776044443801,
+      "tag": "0017_wooden_blacklash",
+      "breakpoints": true
     }
   ]
 }

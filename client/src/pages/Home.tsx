@@ -142,6 +142,11 @@ export default function HomePage() {
                   Your daily health check failed. Review requests may not be sending.
                   {smtpStatus?.lastHealthCheck ? ` Last checked ${formatRelativeTime(new Date(smtpStatus.lastHealthCheck))}.` : ""}
                 </p>
+                {smtpStatus?.lastHealthError && (
+                  <p className="text-xs mt-1 font-mono" style={{ color: "oklch(0.45 0.10 30)", wordBreak: "break-word" }}>
+                    Error: {smtpStatus.lastHealthError}
+                  </p>
+                )}
               </div>
             </div>
             <button

@@ -364,9 +364,11 @@ export async function updateSmtpFromName(userId: number, fromName: string | null
 export async function runSmtpHealthChecks(): Promise<void> {
   const db = await getDb();
   if (!db) return;
-
   const allCreds = await db.select().from(smtpCredentials);
   console.log(`[SmtpHealthCheck] Running checks for ${allCreds.length} connected account(s)...`);
+
+  // Track failures by provider host for aggregate reporting
+  const providerFailures: Record<string, { count: number; errors: string[] }> = {};
 
   for (const creds of allCreds) {
     try {
@@ -378,25 +380,46 @@ export async function runSmtpHealthChecks(): Promise<void> {
         user: creds.user,
         pass,
       });
-
-      await db
-        .update(smtpCredentials)
-        .set({
-          lastHealthCheck: Date.now(),
-          lastHealthStatus: result.ok ? "ok" : "fail",
-        })
-        .where(eq(smtpCredentials.userId, creds.userId));
-
-      console.log(`[SmtpHealthCheck] userId=${creds.userId} → ${result.ok ? "✓ ok" : `✗ fail: ${result.error}`}`);
+      if (result.ok) {
+        await db
+          .update(smtpCredentials)
+          .set({ lastHealthCheck: Date.now(), lastHealthStatus: "ok", lastHealthError: null })
+          .where(eq(smtpCredentials.userId, creds.userId));
+        console.log(`[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} → ✓ ok`);
+      } else {
+        const errMsg = result.error ?? "Unknown error";
+        await db
+          .update(smtpCredentials)
+          .set({ lastHealthCheck: Date.now(), lastHealthStatus: "fail", lastHealthError: errMsg.slice(0, 500) })
+          .where(eq(smtpCredentials.userId, creds.userId));
+        console.warn(`[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} → ✗ fail: ${errMsg}`);
+        // Aggregate by provider host
+        if (!providerFailures[creds.host]) providerFailures[creds.host] = { count: 0, errors: [] };
+        providerFailures[creds.host].count++;
+        if (providerFailures[creds.host].errors.length < 3) providerFailures[creds.host].errors.push(errMsg);
+      }
     } catch (err) {
       // Don't let one failure abort the whole batch
-      console.error(`[SmtpHealthCheck] userId=${creds.userId} threw:`, err);
+      const errMsg = err instanceof Error ? err.message : String(err);
+      console.error(`[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} threw:`, errMsg);
       await db
         .update(smtpCredentials)
-        .set({ lastHealthCheck: Date.now(), lastHealthStatus: "fail" })
+        .set({ lastHealthCheck: Date.now(), lastHealthStatus: "fail", lastHealthError: errMsg.slice(0, 500) })
         .where(eq(smtpCredentials.userId, creds.userId));
+      if (!providerFailures[creds.host]) providerFailures[creds.host] = { count: 0, errors: [] };
+      providerFailures[creds.host].count++;
+      if (providerFailures[creds.host].errors.length < 3) providerFailures[creds.host].errors.push(errMsg);
     }
   }
 
-  console.log("[SmtpHealthCheck] Done.");
+  // Log provider-level failure summary
+  const failingHosts = Object.keys(providerFailures);
+  if (failingHosts.length > 0) {
+    console.warn("[SmtpHealthCheck] Provider failure summary:");
+    for (const host of failingHosts) {
+      const { count, errors } = providerFailures[host];
+      console.warn(`  ${host}: ${count} failure(s) — ${errors.join(" | ")}`);
+    }
+  }
+  console.log(`[SmtpHealthCheck] Done. ${allCreds.length} checked, ${failingHosts.reduce((t, h) => t + providerFailures[h].count, 0)} failed.`);
 }

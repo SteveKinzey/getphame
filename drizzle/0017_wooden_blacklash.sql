@@ -1,0 +1,1 @@
+ALTER TABLE `smtp_credentials` ADD `lastHealthError` varchar(500);

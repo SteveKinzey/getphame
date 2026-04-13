@@ -72,6 +72,8 @@ const APP_PASSWORD_HINTS: Record<string, string> = {
   "outlook.com": "Outlook may require an App Password if two-step verification is enabled. Go to account.microsoft.com → Security → Advanced security options.",
   "hotmail.com": "Outlook may require an App Password if two-step verification is enabled. Go to account.microsoft.com → Security → Advanced security options.",
   "yahoo.com": "Yahoo requires an App Password. Go to account.yahoo.com → Security → Generate app password.",
+  "zoho.com": "Zoho requires SMTP access to be enabled first. Go to mail.zoho.com → Settings → Mail Accounts → SMTP and enable \"SMTP Access\".",
+  "zohomail.com": "Zoho requires SMTP access to be enabled first. Go to mail.zoho.com → Settings → Mail Accounts → SMTP and enable \"SMTP Access\".",
 };
 
 // Preset SMTP configurations for one-tap selection in the advanced panel
@@ -83,6 +85,7 @@ const SMTP_PRESETS = [
 ] as const;
 
 const GOOGLE_WORKSPACE_HINT = "Using Google Workspace? Your SMTP host is smtp.gmail.com (port 587). You'll need an App Password — go to myaccount.google.com → Security → App Passwords.";
+const ZOHO_HOST_HINT = "Zoho requires SMTP access to be enabled first. Go to mail.zoho.com → Settings → Mail Accounts → SMTP and enable \"SMTP Access\". Then use your Zoho email and password here.";
 
 function detectHost(email: string) {
   const domain = email.split("@")[1]?.toLowerCase();
@@ -92,9 +95,13 @@ function detectHost(email: string) {
 /** Returns the app-password hint based on email domain OR manually-entered host */
 function getHint(email: string, host?: string) {
   const domain = email.split("@")[1]?.toLowerCase();
-  // If the user manually typed smtp.gmail.com, show the Google Workspace hint
+  // Google Workspace: custom domain using smtp.gmail.com
   if (host === "smtp.gmail.com" && domain && !KNOWN_HOSTS[domain]) {
     return GOOGLE_WORKSPACE_HINT;
+  }
+  // Zoho: custom domain using smtp.zoho.com
+  if (host === "smtp.zoho.com" && domain && domain !== "zoho.com" && domain !== "zohomail.com") {
+    return ZOHO_HOST_HINT;
   }
   return domain ? APP_PASSWORD_HINTS[domain] ?? null : null;
 }
@@ -133,8 +140,12 @@ function Step1Email({ onDone }: { onDone: () => void }) {
   const [port, setPort] = useState(587);
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [testing, setTesting] = useState(false);
+  const [testingCredentials, setTestingCredentials] = useState(false);
+  const [testResult, setTestResult] = useState<{ ok: boolean; error?: string } | null>(null);
   const [fromName, setFromName] = useState("");
   const [replyTo, setReplyTo] = useState("");
+
+  const testCredentials = trpc.smtp.testCredentials.useMutation();
 
   const connectSmtp = trpc.smtp.connect.useMutation({
     onSuccess: (_, variables) => {
@@ -167,6 +178,31 @@ function Step1Email({ onDone }: { onDone: () => void }) {
     email.includes("@") &&
     !host && // hasn't manually set a host yet
     !!email.split("@")[1]; // has a domain
+
+  async function handleTestCredentials() {
+    if (!email || !password) {
+      toast.error("Please enter your email and password.");
+      return;
+    }
+    const resolvedHost = host || `smtp.${email.split("@")[1]}`;
+    setTestingCredentials(true);
+    setTestResult(null);
+    try {
+      const result = await testCredentials.mutateAsync({
+        email,
+        password,
+        host: resolvedHost,
+        port,
+        secure: port === 465 ? 1 : 0,
+      });
+      setTestResult(result);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Connection test failed";
+      setTestResult({ ok: false, error: message });
+    } finally {
+      setTestingCredentials(false);
+    }
+  }
 
   async function handleConnect() {
     if (!email || !password) {
@@ -395,34 +431,66 @@ function Step1Email({ onDone }: { onDone: () => void }) {
         </div>
       )}
 
-      <button
-        onClick={handleConnect}
-        disabled={testing || connectSmtp.isPending || !email || !password}
-        className="flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-sm transition-transform active:scale-95"
-        style={{
-          background:
-            testing || connectSmtp.isPending || !email || !password
-              ? "oklch(0.35 0.05 260)"
-              : "oklch(0.80 0.18 80)",
-          color:
-            testing || connectSmtp.isPending || !email || !password
-              ? "oklch(0.55 0.03 260)"
-              : "oklch(0.15 0.05 260)",
-          fontFamily: "'Poppins', sans-serif",
-        }}
-      >
-        {testing || connectSmtp.isPending ? (
-          <>
-            <Loader2 size={16} className="animate-spin" />
-            Testing connection...
-          </>
-        ) : (
-          <>
-            <Mail size={16} />
-            Connect Email
-          </>
-        )}
-      </button>
+      {/* Test result feedback */}
+      {testResult && (
+        <div
+          className="flex items-start gap-2 px-3 py-2.5 rounded-xl text-xs"
+          style={{
+            background: testResult.ok ? "oklch(0.18 0.06 145)" : "oklch(0.18 0.06 30)",
+            border: `1px solid ${testResult.ok ? "oklch(0.40 0.12 145)" : "oklch(0.40 0.12 30)"}`,
+            color: testResult.ok ? "oklch(0.75 0.15 145)" : "oklch(0.75 0.15 30)",
+          }}
+        >
+          <span className="shrink-0 mt-0.5">{testResult.ok ? "✓" : "✗"}</span>
+          <span>{testResult.ok ? "Connection successful! You can now click Connect Email." : (testResult.error ?? "Connection failed. Check your credentials and settings.")}</span>
+        </div>
+      )}
+
+      <div className="flex gap-2">
+        {/* Test Connection — verify before committing */}
+        <button
+          type="button"
+          onClick={handleTestCredentials}
+          disabled={testingCredentials || !email || !password}
+          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-sm transition-transform active:scale-95"
+          style={{
+            background: "oklch(0.22 0.09 260)",
+            color: testingCredentials || !email || !password ? "oklch(0.45 0.05 260)" : "oklch(0.70 0.04 260)",
+            border: "1px solid oklch(0.35 0.06 260)",
+            fontFamily: "'Poppins', sans-serif",
+          }}
+        >
+          {testingCredentials ? (
+            <><Loader2 size={14} className="animate-spin" />Testing...</>
+          ) : (
+            <>Test Connection</>
+          )}
+        </button>
+
+        {/* Connect Email — saves and sends welcome email */}
+        <button
+          onClick={handleConnect}
+          disabled={testing || connectSmtp.isPending || !email || !password}
+          className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl font-black text-sm transition-transform active:scale-95"
+          style={{
+            background:
+              testing || connectSmtp.isPending || !email || !password
+                ? "oklch(0.35 0.05 260)"
+                : "oklch(0.80 0.18 80)",
+            color:
+              testing || connectSmtp.isPending || !email || !password
+                ? "oklch(0.55 0.03 260)"
+                : "oklch(0.15 0.05 260)",
+            fontFamily: "'Poppins', sans-serif",
+          }}
+        >
+          {testing || connectSmtp.isPending ? (
+            <><Loader2 size={16} className="animate-spin" />Connecting...</>
+          ) : (
+            <><Mail size={16} />Connect Email</>
+          )}
+        </button>
+      </div>
     </div>
   );
 }
