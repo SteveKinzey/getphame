@@ -47,6 +47,9 @@ import {
   Plus,
   Globe,
   ChevronDown,
+  RefreshCw,
+  ShoppingCart,
+  CreditCard,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
@@ -60,6 +63,7 @@ type Contact = {
   lastSentAt: number | null;
   totalSent: number;
   tags: string | null;
+  source: string | null;
 };
 
 function parseTags(raw: string | null): string[] {
@@ -148,6 +152,18 @@ export default function SavedContacts() {
   });
 
   const markSentMutation = trpc.contacts.markSent.useMutation();
+
+  const syncFromStripeMutation = trpc.contacts.syncFromStripe.useMutation({
+    onSuccess: (result) => {
+      utils.contacts.list.invalidate();
+      if (result.inserted > 0) {
+        toast.success(`${result.inserted} new contact${result.inserted !== 1 ? "s" : ""} imported from Stripe.`);
+      } else {
+        toast.info(result.total === 0 ? "No Stripe customers found." : "All Stripe customers are already in your contacts.");
+      }
+    },
+    onError: (e) => toast.error(e.message),
+  });
 
   const setTagsMutation = trpc.contacts.setTags.useMutation({
     onSuccess: () => {
@@ -297,6 +313,22 @@ export default function SavedContacts() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <Button
+              onClick={() => syncFromStripeMutation.mutate()}
+              disabled={syncFromStripeMutation.isPending}
+              size="sm"
+              variant="outline"
+              className="font-bold border-0"
+              style={{ background: "oklch(0.32 0.07 260)", color: "oklch(0.80 0.18 80)" }}
+              title="Import customers from Stripe"
+            >
+              {syncFromStripeMutation.isPending ? (
+                <Loader2 size={14} className="mr-1 animate-spin" />
+              ) : (
+                <CreditCard size={14} className="mr-1" />
+              )}
+              Stripe
+            </Button>
             <Button
               onClick={() => navigate("/import")}
               size="sm"
@@ -540,6 +572,16 @@ export default function SavedContacts() {
                         <span className="flex items-center gap-1 text-xs text-gray-400">
                           <Clock size={10} />
                           Last: {format(new Date(c.lastSentAt), "MMM d, yyyy")}
+                        </span>
+                      )}
+                      {c.source === "stripe" && (
+                        <span className="flex items-center gap-1 text-xs font-semibold px-1.5 py-0.5 rounded-full" style={{ background: "oklch(0.93 0.04 280)", color: "oklch(0.45 0.12 280)" }}>
+                          <CreditCard size={9} /> Stripe
+                        </span>
+                      )}
+                      {c.source === "woocommerce" && (
+                        <span className="flex items-center gap-1 text-xs font-semibold px-1.5 py-0.5 rounded-full" style={{ background: "oklch(0.93 0.05 200)", color: "oklch(0.40 0.12 200)" }}>
+                          <ShoppingCart size={9} /> WooCommerce
                         </span>
                       )}
                     </div>

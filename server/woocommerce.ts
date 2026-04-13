@@ -10,6 +10,7 @@ import { and, desc, eq, inArray, isNull } from "drizzle-orm";
 import { getDb } from "./db";
 import { wooCredentials, wooCustomers } from "../drizzle/schema";
 import type { InsertWooCredentials, InsertWooCustomer } from "../drizzle/schema";
+import { upsertContactsFromSource } from "./contacts";
 
 // ─── Credentials helpers ──────────────────────────────────────────────────────
 
@@ -146,14 +147,26 @@ export async function syncWooOrders(
 
   if (toInsert.length > 0) {
     await db.insert(wooCustomers).values(toInsert);
+    // Also upsert into saved_contacts (deduped by email across all sources)
+    const contactRows = toInsert
+      .filter((r) => r.customerEmail)
+      .map((r) => ({
+        name: r.customerName,
+        email: r.customerEmail!,
+        source: "woocommerce" as const,
+        externalId: r.wooOrderId,
+      }));
+    if (contactRows.length > 0) {
+      await upsertContactsFromSource(userId, contactRows).catch((err) =>
+        console.warn("[WooCommerce] Failed to upsert contacts from source:", err)
+      );
+    }
   }
-
   // Update lastSyncedAt
   await db
     .update(wooCredentials)
     .set({ lastSyncedAt: Date.now() })
     .where(eq(wooCredentials.userId, userId));
-
   return { added: toInsert.length, total: orders.length };
 }
 

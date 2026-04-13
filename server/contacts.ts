@@ -108,6 +108,51 @@ export async function importContacts(
   return { imported: toInsert.length, skipped };
 }
 
+/**
+ * Upsert contacts from an external source (stripe or woocommerce).
+ * Deduplicates by email (case-insensitive) against ALL existing contacts for this user.
+ * - If a contact with the same email already exists (any source), skip it (don't overwrite manual edits).
+ * - If no contact exists, insert with the given source and externalId.
+ * Returns counts of inserted and skipped rows.
+ */
+export async function upsertContactsFromSource(
+  userId: number,
+  rows: { name: string; email: string; phone?: string; source: "stripe" | "woocommerce"; externalId?: string }[]
+): Promise<{ inserted: number; skipped: number }> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  // Fetch existing emails for this user (all sources)
+  const existing = await db
+    .select({ email: savedContacts.email })
+    .from(savedContacts)
+    .where(eq(savedContacts.userId, userId));
+  const existingEmails = new Set(existing.map((r) => r.email.toLowerCase()));
+
+  const toInsert = rows.filter((r) => r.email && !existingEmails.has(r.email.toLowerCase()));
+  const skipped = rows.length - toInsert.length;
+
+  if (toInsert.length > 0) {
+    for (let i = 0; i < toInsert.length; i += 100) {
+      const batch = toInsert.slice(i, i + 100);
+      await db.insert(savedContacts).values(
+        batch.map((r) => ({
+          userId,
+          name: r.name || r.email,
+          email: r.email,
+          phone: r.phone ?? null,
+          notes: null,
+          totalSent: 0,
+          source: r.source,
+          externalId: r.externalId ?? null,
+        }))
+      );
+    }
+  }
+
+  return { inserted: toInsert.length, skipped };
+}
+
 /** Update the tags array for a single contact */
 export async function setContactTags(userId: number, contactId: number, tags: string[]) {
   const db = await getDb();

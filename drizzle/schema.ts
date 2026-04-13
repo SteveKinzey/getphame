@@ -135,6 +135,9 @@ export const savedContacts = mysqlTable("saved_contacts", {
   lastSentAt: bigint("lastSentAt", { mode: "number" }), // Unix ms of last review request
   totalSent: int("totalSent").default(0).notNull(),
   tags: text("tags"), // JSON array of tag strings e.g. ["plumbing","new"] — nullable in TiDB (no TEXT default allowed)
+  // Source tracking — where this contact came from
+  source: mysqlEnum("source", ["manual", "woocommerce", "stripe"]).default("manual").notNull(),
+  externalId: varchar("externalId", { length: 128 }), // Stripe customer ID or WooCommerce order ID for dedup
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

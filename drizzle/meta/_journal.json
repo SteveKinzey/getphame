@@ -127,6 +127,13 @@
       "when": 1776044443801,
       "tag": "0017_wooden_blacklash",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "5",
+      "when": 1776047648766,
+      "tag": "0018_aberrant_crusher_hogan",
+      "breakpoints": true
     }
   ]
 }

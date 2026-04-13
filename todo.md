@@ -367,3 +367,13 @@
 - [x] Add "Run Health Check Now" button to /admin/smtp-stats (admin.runHealthCheck mutation, auto-refreshes stats after run)
 - [x] Reply-To edit field in Settings → Email was already present from prior session (InlineReplyToEdit component)
 - [x] Add weekly SMTP failure digest cron (smtpWeeklyDigest.ts, runs Sunday 08:00 UTC, notifyOwner if any accounts failing, 5 new tests — 43 total passing)
+
+## Unified Contacts Auto-Population (WooCommerce + Stripe)
+
+- [x] Add `source` column to saved_contacts table (enum: 'manual' | 'woocommerce' | 'stripe'), default 'manual'
+- [x] Add `externalId` column to saved_contacts table (nullable, stores Stripe customer ID or WooCommerce order ID for dedup)
+- [x] Run pnpm db:push to migrate new columns (migration 0018 applied)
+- [x] Build contacts.syncFromStripe procedure: fetch Stripe customers via API, upsert into saved_contacts deduped by email
+- [x] Wire WooCommerce syncWooOrders to also upsert completed order customers into saved_contacts (deduped by email)
+- [x] Update SavedContacts UI: show source badge (WooCommerce / Stripe) on each contact card
+- [x] Update SavedContacts UI: add "Stripe" sync button in header (calls contacts.syncFromStripe)

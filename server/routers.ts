@@ -36,6 +36,7 @@ import {
   markContactSent,
   importContacts,
   setContactTags,
+  upsertContactsFromSource,
 } from "./contacts";
 import {
   listTemplates,
@@ -705,6 +706,62 @@ export const appRouter = router({
 
         return { sent, failed, skippedDueToLimit, errors };
       }),
+
+    /**
+     * Sync contacts from Stripe — fetches all Stripe customers for this user's Stripe account
+     * and upserts them into saved_contacts (deduped by email against all existing contacts).
+     * Only runs if the user has a stripeCustomerId (i.e., has used Stripe billing).
+     */
+    syncFromStripe: protectedProcedure.mutation(async ({ ctx }) => {
+      const { stripe } = await import("./stripe");
+      const profile = await getBusinessProfile(ctx.user.id);
+
+      // Fetch all Stripe customers using the platform Stripe key (owner's account)
+      // We identify this user's customers by metadata.user_id set during checkout
+      let allCustomers: { name: string; email: string; stripeId: string }[] = [];
+      let hasMore = true;
+      let startingAfter: string | undefined;
+
+      while (hasMore) {
+        const page = await stripe.customers.list({
+          limit: 100,
+          ...(startingAfter ? { starting_after: startingAfter } : {}),
+        });
+
+        for (const customer of page.data) {
+          // Only include customers linked to this ReviewLink user via metadata
+          const metaUserId = customer.metadata?.user_id;
+          if (metaUserId && String(metaUserId) !== String(ctx.user.id)) continue;
+          if (!customer.email) continue;
+          allCustomers.push({
+            name: customer.name || customer.email,
+            email: customer.email,
+            stripeId: customer.id,
+          });
+        }
+
+        hasMore = page.has_more;
+        if (page.data.length > 0) {
+          startingAfter = page.data[page.data.length - 1].id;
+        } else {
+          hasMore = false;
+        }
+      }
+
+      if (allCustomers.length === 0) {
+        return { inserted: 0, skipped: 0, total: 0 };
+      }
+
+      const rows = allCustomers.map((c) => ({
+        name: c.name,
+        email: c.email,
+        source: "stripe" as const,
+        externalId: c.stripeId,
+      }));
+
+      const result = await upsertContactsFromSource(ctx.user.id, rows);
+      return { ...result, total: allCustomers.length };
+    }),
   }),
 
   templates: router({
