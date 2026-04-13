@@ -526,7 +526,13 @@
 
 ## Tracking Enhancements
 
-- [ ] Add tracking.overallStats tRPC procedure (total sends, unique opens, unique clicks, open rate %, click rate %)
-- [ ] Dashboard: add "Email Performance" summary card above activity feed showing open rate + click rate
-- [ ] EmailTemplates: add "Top Template" badge to the template with the highest click rate
-- [ ] Wire tracking pixel + click redirect into reminder emails (server/reminders.ts processDueReminders + sendReminderNow)
+- [x] Add tracking.overallStats tRPC procedure (total sends, unique opens, unique clicks, open rate %, click rate %)
+- [x] Dashboard: add "Email Performance" summary card above activity feed showing open rate + click rate
+- [x] EmailTemplates: add "Top Template" badge to the template with the highest click rate
+- [x] Wire tracking pixel + click redirect into reminder emails (server/reminders.ts processDueReminders + sendReminderNow)
+
+## Pre-Launch Fixes
+
+- [x] Set APP_BASE_URL=https://reviewlink.app as a project secret; harden reminder tracking fallback to use it
+- [x] Add physical mailing address to Privacy Policy and Terms of Service
+- [x] Add CAN-SPAM / user-responsibility clause to Terms of Service

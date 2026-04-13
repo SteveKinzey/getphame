@@ -80,7 +80,7 @@ export async function processDueReminders() {
       const subject = `Just checking in — have you had a chance to leave us a review?`;
       // Build tracking token using the original customerRequestId so opens/clicks link back to the request
       const trackingToken = encodeTrackingToken(reminder.customerRequestId, reminder.userId, null);
-      const baseUrl = process.env.APP_BASE_URL ?? "";
+      const baseUrl = process.env.APP_BASE_URL ?? "https://reviewlink.app";
       const trackedReviewUrl = wrapClickUrl(reminderReviewUrl, trackingToken, baseUrl);
       const openPixel = buildOpenPixel(trackingToken, baseUrl);
       const body = `Hi ${reminder.customerName},<br><br>We wanted to follow up on our earlier message. If you've had a chance to try our service, we'd love to hear what you think!<br><br>Leaving a review only takes a minute and helps us a lot:<br><a href="${trackedReviewUrl}">${reminderReviewUrl}</a><br><br>Thank you so much for your support!<br><br>${profile.businessName}${openPixel}`;
@@ -121,7 +121,7 @@ export async function sendReminderNow(userId: number, reminderId: number) {
   const nowReviewUrl = nowDefaultPlatform?.url ?? profile.reviewLink ?? "";
   const subject = `Just checking in — have you had a chance to leave us a review?`;
   const nowTrackingToken = encodeTrackingToken(reminder.customerRequestId, userId, null);
-  const nowBaseUrl = process.env.APP_BASE_URL ?? "";
+  const nowBaseUrl = process.env.APP_BASE_URL ?? "https://reviewlink.app";
   const trackedNowUrl = wrapClickUrl(nowReviewUrl, nowTrackingToken, nowBaseUrl);
   const nowOpenPixel = buildOpenPixel(nowTrackingToken, nowBaseUrl);
   const body = `Hi ${reminder.customerName},<br><br>We wanted to follow up on our earlier message. If you've had a chance to try our service, we'd love to hear what you think!<br><br>Leaving a review only takes a minute and helps us a lot:<br><a href="${trackedNowUrl}">${nowReviewUrl}</a><br><br>Thank you so much for your support!<br><br>${profile.businessName}${nowOpenPixel}`;

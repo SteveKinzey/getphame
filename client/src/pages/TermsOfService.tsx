@@ -31,12 +31,12 @@ export default function TermsOfService() {
           Terms of Service
         </h1>
         <p className="text-sm mt-1" style={{ color: "oklch(0.75 0.05 260)" }}>
-          Last updated: April 12, 2026
+          Last updated: April 13, 2026
         </p>
       </div>
 
       {/* Content */}
-      <div className="px-5 py-6 max-w-2xl mx-auto space-y-6 text-sm leading-relaxed" style={{ color: "oklch(0.30 0.05 260)" }}>
+      <div className="px-5 py-6 max-w-2xl mx-auto space-y-6 text-sm leading-relaxed pb-32" style={{ color: "oklch(0.30 0.05 260)" }}>
 
         <section>
           <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
@@ -52,7 +52,7 @@ export default function TermsOfService() {
             2. Description of Service
           </h2>
           <p>
-            ReviewLink is a mobile web application that helps small business owners send review request emails to their customers via their connected email account. The Service includes a free tier (up to 10 requests per month) and a paid Pro tier with unlimited requests and additional features.
+            ReviewLink is a web application that helps small business owners send personalised review request emails to their customers via their own connected email account (SMTP). The Service is provided free of charge with no artificial sending limits. We reserve the right to introduce optional paid features in the future, which will be clearly disclosed before any charge is incurred.
           </p>
         </section>
 
@@ -76,6 +76,7 @@ export default function TermsOfService() {
             <li>Impersonate any person or entity or misrepresent your affiliation with any person or entity</li>
             <li>Use the Service in any way that violates applicable laws or regulations, including CAN-SPAM, GDPR, or CASL</li>
             <li>Attempt to gain unauthorized access to any part of the Service or its related systems</li>
+            <li>Use automated scripts or bots to send emails in volumes that circumvent the Service's built-in rate limits</li>
           </ul>
           <p className="mt-2">
             You are solely responsible for ensuring that recipients of your review request emails have a legitimate prior relationship with your business and that your use complies with all applicable anti-spam laws.
@@ -84,19 +85,29 @@ export default function TermsOfService() {
 
         <section>
           <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
-            5. Email Integration
+            5. CAN-SPAM, GDPR, and Anti-Spam Compliance
           </h2>
-          <p>
-            By connecting your email account via SMTP, you authorize ReviewLink to send emails on your behalf. You may disconnect your email account at any time from the Settings screen, which removes your stored credentials. You remain solely responsible for the content of emails sent through the Service and for compliance with all applicable laws governing email communications.
+          <p className="mb-2">
+            ReviewLink provides infrastructure for sending emails — you are the sender of record for every email transmitted through your connected account. You acknowledge and agree that:
+          </p>
+          <ul className="list-disc pl-5 space-y-1">
+            <li>You are solely responsible for complying with the CAN-SPAM Act (US), GDPR (EU), CASL (Canada), and any other anti-spam or data protection laws applicable in your jurisdiction.</li>
+            <li>You will only send review request emails to customers with whom you have a genuine, existing business relationship.</li>
+            <li>You will not use purchased, rented, or scraped email lists.</li>
+            <li>You will honour all unsubscribe or opt-out requests promptly. All emails sent through the Service include an unsubscribe notice; if a recipient asks to stop receiving emails, you must not send them further messages.</li>
+            <li>ReviewLink is not liable for any fines, penalties, or damages arising from your failure to comply with applicable email laws.</li>
+          </ul>
+          <p className="mt-2">
+            <strong>CAN-SPAM physical address requirement:</strong> The CAN-SPAM Act requires that all commercial emails include a valid physical postal address of the sender. Our address is listed in Section 13 of these Terms. As the sender of record, you should ensure your own business address is included in any email templates you customise.
           </p>
         </section>
 
         <section>
           <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
-            6. Subscription and Billing
+            6. Email Integration
           </h2>
           <p>
-            The Pro plan is billed at $29 per month. Subscriptions automatically renew unless cancelled before the renewal date. You may cancel your subscription at any time through the billing portal accessible from the Settings screen. Refunds are not provided for partial months. Payment is processed by Stripe, and you agree to Stripe's terms of service in addition to these Terms.
+            By connecting your email account via SMTP, you authorize ReviewLink to send emails on your behalf. You may disconnect your email account at any time from the Settings screen, which removes your stored credentials. You remain solely responsible for the content of emails sent through the Service and for compliance with all applicable laws governing email communications.
           </p>
         </section>
 
@@ -123,7 +134,7 @@ export default function TermsOfService() {
             9. Limitation of Liability
           </h2>
           <p>
-            To the fullest extent permitted by law, ReviewLink shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Service. Our total liability to you for any claims arising from these Terms or the Service shall not exceed the amount you paid us in the 12 months preceding the claim.
+            To the fullest extent permitted by law, ReviewLink shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the Service, including but not limited to damages resulting from regulatory fines or penalties related to your email sending practices. Our total liability to you for any claims arising from these Terms or the Service shall not exceed the amount you paid us in the 12 months preceding the claim.
           </p>
         </section>
 
@@ -132,7 +143,7 @@ export default function TermsOfService() {
             10. Termination
           </h2>
           <p>
-            We reserve the right to suspend or terminate your account at any time for violation of these Terms or for any other reason at our sole discretion. Upon termination, your right to use the Service will immediately cease.
+            We reserve the right to suspend or terminate your account at any time for violation of these Terms, including but not limited to sending spam or violating anti-spam laws, or for any other reason at our sole discretion. Upon termination, your right to use the Service will immediately cease.
           </p>
         </section>
 
@@ -150,7 +161,7 @@ export default function TermsOfService() {
             12. Governing Law
           </h2>
           <p>
-            These Terms shall be governed by and construed in accordance with the laws of the United States, without regard to its conflict of law provisions.
+            These Terms shall be governed by and construed in accordance with the laws of the State of California, United States, without regard to its conflict of law provisions. Any disputes arising under these Terms shall be subject to the exclusive jurisdiction of the courts located in San Bernardino County, California.
           </p>
         </section>
 
@@ -158,12 +169,19 @@ export default function TermsOfService() {
           <h2 className="text-base font-bold mb-2" style={{ fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" }}>
             13. Contact Us
           </h2>
-          <p>
+          <p className="mb-2">
             If you have questions about these Terms, please contact us at:{" "}
             <a href="mailto:legal@reviewlink.app" style={{ color: "oklch(0.50 0.18 260)" }}>
               legal@reviewlink.app
             </a>
           </p>
+          <p className="font-medium" style={{ color: "oklch(0.22 0.09 260)" }}>Mailing address:</p>
+          <address className="not-italic mt-1 leading-relaxed">
+            ReviewLink<br />
+            255 N D St, Suite 200XIX<br />
+            San Bernardino, CA 92401<br />
+            United States
+          </address>
         </section>
 
       </div>
