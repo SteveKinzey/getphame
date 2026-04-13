@@ -90,10 +90,11 @@ export async function upsertBusinessProfile(profile: InsertBusinessProfile) {
 
 // ─── Customer request helpers ─────────────────────────────────────────────────
 
-export async function createCustomerRequest(req: InsertCustomerRequest) {
+export async function createCustomerRequest(req: InsertCustomerRequest): Promise<number> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  await db.insert(customerRequests).values(req);
+  const [result] = await db.insert(customerRequests).values(req);
+  return (result as unknown as { insertId: number }).insertId;
 }
 
 export async function getCustomerRequests(userId: number, limit = 50) {

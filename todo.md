@@ -508,3 +508,18 @@
 - [x] Add goal progress card to Home screen (progress bar: responded requests / goal this month)
 - [x] Tap on card opens a small inline editor to set/update the goal
 - [x] Show motivational label: "X of Y goal reached" or "Goal reached! 🎉"
+
+## Email Open & Click Tracking
+
+- [x] DB schema: email_events table (id, requestId, type enum open/click, url, userAgent, ip, createdAt)
+- [x] DB: run pnpm db:push
+- [x] Server: GET /api/track/open/:token — serve 1px transparent GIF, record open event
+- [x] Server: GET /api/track/click/:token — redirect to destination URL, record click event
+- [x] Server: generate signed tracking token (base64 requestId + secret) for each send
+- [x] Wire open pixel into email HTML body (img tag at bottom of every email)
+- [x] Wire click redirect into review link href in every email (wrap {{review_link}} with redirect URL)
+- [x] Server: tracking.requestStats tRPC procedure — return opens/clicks per requestId
+- [x] Server: tracking.templateStats tRPC procedure — aggregate opens/clicks per templateId
+- [x] Dashboard: show open/click badge on each request row (eye icon + click icon)
+- [x] EmailTemplates: show opens + clicks count badges on each template card
+- [ ] Write vitest tests for token generation and event recording (deferred — no secrets available in test env)

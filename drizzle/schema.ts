@@ -265,3 +265,23 @@ export const smtpCredentials = mysqlTable("smtp_credentials", {
 
 export type SmtpCredential = typeof smtpCredentials.$inferSelect;
 export type InsertSmtpCredential = typeof smtpCredentials.$inferInsert;
+
+/**
+ * Tracks email open and click events for review request emails.
+ * Each row represents one open (pixel load) or one click (redirect through tracking link).
+ * requestId links back to customer_requests; templateId is nullable (null = no template used).
+ */
+export const emailEvents = mysqlTable("email_events", {
+  id: int("id").autoincrement().primaryKey(),
+  requestId: int("requestId").notNull(),   // FK to customer_requests.id
+  userId: int("userId").notNull(),          // denormalised for fast per-user queries
+  templateId: int("templateId"),            // FK to email_templates.id (nullable)
+  type: mysqlEnum("type", ["open", "click"]).notNull(),
+  url: varchar("url", { length: 2048 }),    // destination URL (click events only)
+  userAgent: varchar("userAgent", { length: 512 }),
+  ip: varchar("ip", { length: 64 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type EmailEvent = typeof emailEvents.$inferSelect;
+export type InsertEmailEvent = typeof emailEvents.$inferInsert;

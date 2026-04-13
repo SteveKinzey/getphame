@@ -83,6 +83,8 @@ import {
   runSmtpHealthChecks,
 } from "./smtp";
 
+import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
+
 // App is free — no send limits enforced
 
 export const appRouter = router({
@@ -678,8 +680,8 @@ export const appRouter = router({
               subject = `${profile.businessName} would love your feedback!`;
               htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2>Hi ${contact.name}!</h2><p>Thank you for choosing <strong>${profile.businessName}</strong>. We hope you had a great experience!</p><p>Could you take 30 seconds to leave us a quick review?</p><div style="text-align: center; margin: 32px 0;"><a href="${reviewUrl}" style="background: #FFB800; color: #0F1F4B; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold;">Leave a Review</a></div><hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" /><p style="color: #aaa; font-size: 11px; text-align: center;">You received this email because you are a customer of ${profile.businessName}. To stop receiving these emails, reply with &quot;unsubscribe&quot;.</p></div>`;
             }
-            await sendMailViaSmtp({ userId: ctx.user.id, to: contact.email, subject, html: htmlBody });
-            await createCustomerRequest({
+            // Create request row first to get its ID for tracking
+            const bulkRequestId = await createCustomerRequest({
               userId: ctx.user.id,
               customerName: contact.name,
               customerEmail: contact.email,
@@ -687,6 +689,17 @@ export const appRouter = router({
               status: "sent",
               platformId: input.platformId ?? null,
             });
+
+            // Inject open pixel + click-tracking wrapper
+            const bulkToken = encodeTrackingToken(bulkRequestId, ctx.user.id, resolvedTemplate?.id ?? null);
+            const bulkBase = "https://reviewlink.app";
+            const trackedBulkUrl = wrapClickUrl(reviewUrl, bulkToken, bulkBase);
+            const bulkPixel = buildOpenPixel(bulkToken, bulkBase);
+            const trackedBulkHtml = htmlBody
+              .replace(new RegExp(reviewUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), trackedBulkUrl)
+              .replace(/<\/div>\s*$/, `${bulkPixel}</div>`);
+
+            await sendMailViaSmtp({ userId: ctx.user.id, to: contact.email, subject, html: trackedBulkHtml });
             // Mark contact as sent
             const db = await import("./db").then((m) => m.getDb());
             if (db) {
@@ -938,9 +951,8 @@ export const appRouter = router({
         `;
         }
 
-        await sendMailViaSmtp({ userId: ctx.user.id, to: input.customerEmail, subject, html: htmlBody });
-
-        await createCustomerRequest({
+        // Create the request row first so we have its ID for tracking tokens
+        const newRequestId = await createCustomerRequest({
           userId: ctx.user.id,
           customerName: input.customerName,
           customerEmail: input.customerEmail,
@@ -948,6 +960,18 @@ export const appRouter = router({
           status: "sent",
           platformId: input.platformId ?? null,
         });
+
+        // Inject open pixel + click-tracking wrapper into the email HTML
+        const trackingToken = encodeTrackingToken(newRequestId, ctx.user.id, resolvedTemplate?.id ?? null);
+        const baseUrl = (ctx.req.headers.origin as string | undefined) ?? "https://reviewlink.app";
+        const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
+        const openPixel = buildOpenPixel(trackingToken, baseUrl);
+        // Replace bare review URL with tracked URL and append pixel before </div>
+        const trackedHtmlBody = htmlBody
+          .replace(new RegExp(reviewUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), trackedReviewUrl)
+          .replace(/<\/div>\s*$/, `${openPixel}</div>`);
+
+        await sendMailViaSmtp({ userId: ctx.user.id, to: input.customerEmail, subject, html: trackedHtmlBody });
 
         // Increment template usage counter
         if (resolvedTemplate) {
@@ -1036,6 +1060,81 @@ export const appRouter = router({
         recent: all.slice(0, 5),
         platformBreakdown,
       };
+    }),
+  }),
+
+  tracking: router({
+    /**
+     * Returns open and click counts for a list of request IDs.
+     * Used by Dashboard to show per-row open/click badges.
+     */
+    requestStats: protectedProcedure
+      .input(z.object({ requestIds: z.array(z.number().int()).max(500) }))
+      .query(async ({ ctx, input }) => {
+        if (input.requestIds.length === 0) return [];
+        const db = await getDb();
+        if (!db) return [];
+        const { emailEvents } = await import("../drizzle/schema");
+        const { and, eq: eqOp, inArray, sql: sqlOp } = await import("drizzle-orm");
+        const rows = await db
+          .select({
+            requestId: emailEvents.requestId,
+            type: emailEvents.type,
+            count: sqlOp<number>`count(*)`,
+          })
+          .from(emailEvents)
+          .where(
+            and(
+              eqOp(emailEvents.userId, ctx.user.id),
+              inArray(emailEvents.requestId, input.requestIds)
+            )
+          )
+          .groupBy(emailEvents.requestId, emailEvents.type);
+
+        // Pivot into { requestId, opens, clicks }
+        const map = new Map<number, { opens: number; clicks: number }>();
+        for (const row of rows) {
+          const entry = map.get(row.requestId) ?? { opens: 0, clicks: 0 };
+          if (row.type === "open") entry.opens = Number(row.count);
+          if (row.type === "click") entry.clicks = Number(row.count);
+          map.set(row.requestId, entry);
+        }
+        return Array.from(map.entries()).map(([requestId, stats]) => ({ requestId, ...stats }));
+      }),
+
+    /**
+     * Returns aggregate open/click stats per template for the current user.
+     * Used by EmailTemplates to show open rate % and click rate % on each card.
+     */
+    templateStats: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) return [];
+      const { emailEvents } = await import("../drizzle/schema");
+      const { and, eq: eqOp, isNotNull, sql: sqlOp } = await import("drizzle-orm");
+      const rows = await db
+        .select({
+          templateId: emailEvents.templateId,
+          type: emailEvents.type,
+          count: sqlOp<number>`count(*)`,
+        })
+        .from(emailEvents)
+        .where(
+          and(
+            eqOp(emailEvents.userId, ctx.user.id),
+            isNotNull(emailEvents.templateId)
+          )
+        )
+        .groupBy(emailEvents.templateId, emailEvents.type);
+
+      const map = new Map<number, { opens: number; clicks: number }>();
+      for (const row of rows) {
+        if (row.templateId === null) continue;
+        const entry = map.get(row.templateId) ?? { opens: 0, clicks: 0 };
+        if (row.type === "open") entry.opens = Number(row.count);
+        if (row.type === "click") entry.clicks = Number(row.count);
+        map.set(row.templateId, entry);
+      }
+      return Array.from(map.entries()).map(([templateId, stats]) => ({ templateId, ...stats }));
     }),
   }),
 

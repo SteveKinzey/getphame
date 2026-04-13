@@ -17,6 +17,7 @@ import { startSmtpHealthCheckScheduler } from "../smtpHealthCheck";
 import { startSmtpWeeklyDigestScheduler } from "../smtpWeeklyDigest";
 import { registerSitemapRoutes } from "../sitemap";
 import { registerZohoRoutes } from "../zoho";
+import { handleOpenPixel, handleClickRedirect } from "../emailTracking";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -137,6 +138,10 @@ async function startServer() {
 
   // Zoho Books OAuth + webhook routes
   registerZohoRoutes(app);
+
+  // Email open pixel and click redirect (unauthenticated — must be before tRPC catch-all)
+  app.get("/api/track/open/:token", handleOpenPixel);
+  app.get("/api/track/click/:token", handleClickRedirect);
 
   // tRPC API
   app.use(

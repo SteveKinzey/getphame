@@ -28,7 +28,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { FileText, Plus, Pencil, Trash2, ChevronLeft, Star, Eye, EyeOff } from "lucide-react";
+import { FileText, Plus, Pencil, Trash2, ChevronLeft, Star, Eye, EyeOff, MousePointerClick } from "lucide-react";
 import { useLocation } from "wouter";
 
 type Template = {
@@ -83,6 +83,14 @@ export default function EmailTemplates() {
   const { data: templates = [], isLoading } = trpc.templates.list.useQuery(undefined, {
     enabled: isAuthenticated,
   });
+
+  // Fetch per-template open/click stats
+  const { data: templateTrackingStats = [] } = trpc.tracking.templateStats.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+  const templateStatsMap = new Map(
+    templateTrackingStats.map((s) => [s.templateId, { opens: s.opens, clicks: s.clicks }])
+  );
 
   // Fetch real profile data for live preview substitution
   const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: isAuthenticated });
@@ -243,6 +251,29 @@ export default function EmailTemplates() {
                         style={{ background: "oklch(0.97 0.01 260)", color: "oklch(0.65 0.03 260)" }}>
                         Not used yet
                       </span>
+                    )}
+                    {/* Open / click tracking badges */}
+                    {templateStatsMap.has(t.id) && (
+                      <>
+                        {(templateStatsMap.get(t.id)!.opens > 0) && (
+                          <span
+                            className="flex items-center gap-0.5 text-xs px-2 py-0.5 rounded-full font-medium"
+                            style={{ background: "oklch(0.93 0.04 260)", color: "oklch(0.40 0.08 260)" }}
+                            title="Total opens for emails sent with this template"
+                          >
+                            <Eye size={10} /> {templateStatsMap.get(t.id)!.opens} open{templateStatsMap.get(t.id)!.opens !== 1 ? "s" : ""}
+                          </span>
+                        )}
+                        {(templateStatsMap.get(t.id)!.clicks > 0) && (
+                          <span
+                            className="flex items-center gap-0.5 text-xs px-2 py-0.5 rounded-full font-medium"
+                            style={{ background: "oklch(0.92 0.08 80)", color: "oklch(0.40 0.12 80)" }}
+                            title="Total review link clicks for emails sent with this template"
+                          >
+                            <MousePointerClick size={10} /> {templateStatsMap.get(t.id)!.clicks} click{templateStatsMap.get(t.id)!.clicks !== 1 ? "s" : ""}
+                          </span>
+                        )}
+                      </>
                     )}
                   </div>
                   <p className="text-sm text-gray-500 mt-0.5 truncate">{t.subject}</p>

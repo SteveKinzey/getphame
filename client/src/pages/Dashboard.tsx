@@ -2,7 +2,7 @@
 // Shows: total requests, monthly count, weekly breakdown chart, full activity log
 
 import { trpc } from "@/lib/trpc";
-import { BarChart2, Send, TrendingUp, Star, Crown, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search } from "lucide-react";
+import { BarChart2, Send, TrendingUp, Star, Crown, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import { useLocation } from "wouter";
 import { useMemo, useState } from "react";
@@ -113,6 +113,18 @@ export default function DashboardPage() {
   };
 
   const isPro = profile?.tier === "pro";
+
+  // Fetch open/click tracking stats for all loaded requests
+  const requestIds = useMemo(() => allRequests?.map((r) => r.id) ?? [], [allRequests]);
+  const { data: trackingStats } = trpc.tracking.requestStats.useQuery(
+    { requestIds },
+    { enabled: requestIds.length > 0 }
+  );
+  const trackingMap = useMemo(() => {
+    const m = new Map<number, { opens: number; clicks: number }>();
+    trackingStats?.forEach((s) => m.set(s.requestId, { opens: s.opens, clicks: s.clicks }));
+    return m;
+  }, [trackingStats]);
 
   // Build last-7-days bar chart data
   const weeklyData = useMemo(() => {
@@ -498,6 +510,31 @@ export default function DashboardPage() {
                     <p className="text-xs" style={{ color: "oklch(0.65 0.03 260)" }}>
                       {formatDate(new Date(req.sentAt))}
                     </p>
+                    {/* Open / click badges */}
+                    {trackingMap.has(req.id) && (
+                      <div className="flex items-center gap-1.5 mt-0.5">
+                        {(trackingMap.get(req.id)!.opens > 0) && (
+                          <span
+                            className="flex items-center gap-0.5 text-xs px-1.5 py-0.5 rounded-full font-bold"
+                            style={{ background: "oklch(0.93 0.04 260)", color: "oklch(0.40 0.08 260)" }}
+                            title="Email opened"
+                          >
+                            <Eye size={10} />
+                            {trackingMap.get(req.id)!.opens}
+                          </span>
+                        )}
+                        {(trackingMap.get(req.id)!.clicks > 0) && (
+                          <span
+                            className="flex items-center gap-0.5 text-xs px-1.5 py-0.5 rounded-full font-bold"
+                            style={{ background: "oklch(0.92 0.08 80)", color: "oklch(0.40 0.12 80)" }}
+                            title="Review link clicked"
+                          >
+                            <MousePointerClick size={10} />
+                            {trackingMap.get(req.id)!.clicks}
+                          </span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
