@@ -394,3 +394,8 @@
 ## WooCommerce Sync Button in Saved Contacts
 
 - [x] Add WooCommerce sync button to Saved Contacts header (mirrors Stripe button, shows last-synced timestamp in teal, only shown when WooCommerce is connected)
+
+## Saved Contacts Filter + Sync UX
+
+- [x] Show contact count per source in filter pills (e.g. "Stripe (24) · WooCommerce (61) · Manual (8)")
+- [x] Add configurable day range dropdown to WooCommerce sync button (30 / 60 / 90 days)

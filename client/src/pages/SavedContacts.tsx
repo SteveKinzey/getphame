@@ -90,6 +90,9 @@ export default function SavedContacts() {
   const [sendTarget, setSendTarget] = useState<Contact | null>(null);
   const [form, setForm] = useState<FormData>(emptyForm);
 
+  // WooCommerce sync day range
+  const [wooDays, setWooDays] = useState<30 | 60 | 90>(30);
+
   // Bulk selection state
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [bulkConfirmOpen, setBulkConfirmOpen] = useState(false);
@@ -175,6 +178,13 @@ export default function SavedContacts() {
     },
     onError: (e) => toast.error(e.message),
   });
+
+  // Source counts (computed from full contacts list, not filtered)
+  const sourceCounts = {
+    stripe: contacts.filter((c) => c.source === "stripe").length,
+    woocommerce: contacts.filter((c) => c.source === "woocommerce").length,
+    manual: contacts.filter((c) => !c.source || c.source === "manual").length,
+  };
 
   const syncFromStripeMutation = trpc.contacts.syncFromStripe.useMutation({
     onSuccess: (result) => {
@@ -338,26 +348,47 @@ export default function SavedContacts() {
           </div>
           <div className="flex items-center gap-2">
             {wooCreds && (
-              <Button
-                onClick={() => syncFromWooMutation.mutate({ days: 30 })}
-                disabled={syncFromWooMutation.isPending}
-                size="sm"
-                variant="outline"
-                className="font-bold border-0"
-                style={{ background: "oklch(0.32 0.07 260)", color: "oklch(0.72 0.18 160)" }}
-                title={wooCreds.lastSyncedAt ? `Last synced ${format(new Date(wooCreds.lastSyncedAt), "MMM d, h:mm a")}` : "Import customers from WooCommerce"}
-              >
-                {syncFromWooMutation.isPending ? (
-                  <Loader2 size={14} className="mr-1 animate-spin" />
-                ) : (
-                  <ShoppingCart size={14} className="mr-1" />
-                )}
-                WooCommerce{wooCreds.lastSyncedAt ? (
-                  <span className="ml-1 opacity-60 text-xs font-normal hidden sm:inline">
-                    · {format(new Date(wooCreds.lastSyncedAt), "MMM d")}
-                  </span>
-                ) : null}
-              </Button>
+              <div className="flex items-center gap-1">
+                {/* Day-range picker */}
+                <select
+                  value={wooDays}
+                  onChange={(e) => setWooDays(Number(e.target.value) as 30 | 60 | 90)}
+                  disabled={syncFromWooMutation.isPending}
+                  className="text-xs font-bold rounded-lg px-2 py-1.5 outline-none appearance-none cursor-pointer"
+                  style={{
+                    background: "oklch(0.32 0.07 260)",
+                    color: "oklch(0.72 0.18 160)",
+                    border: "none",
+                    minWidth: "72px",
+                  }}
+                  title="Sync window"
+                >
+                  <option value={30}>30 days</option>
+                  <option value={60}>60 days</option>
+                  <option value={90}>90 days</option>
+                </select>
+                {/* Sync button */}
+                <Button
+                  onClick={() => syncFromWooMutation.mutate({ days: wooDays })}
+                  disabled={syncFromWooMutation.isPending}
+                  size="sm"
+                  variant="outline"
+                  className="font-bold border-0"
+                  style={{ background: "oklch(0.32 0.07 260)", color: "oklch(0.72 0.18 160)" }}
+                  title={wooCreds.lastSyncedAt ? `Last synced ${format(new Date(wooCreds.lastSyncedAt), "MMM d, h:mm a")}` : "Import customers from WooCommerce"}
+                >
+                  {syncFromWooMutation.isPending ? (
+                    <Loader2 size={14} className="mr-1 animate-spin" />
+                  ) : (
+                    <ShoppingCart size={14} className="mr-1" />
+                  )}
+                  WooCommerce{wooCreds.lastSyncedAt ? (
+                    <span className="ml-1 opacity-60 text-xs font-normal hidden sm:inline">
+                      · {format(new Date(wooCreds.lastSyncedAt), "MMM d")}
+                    </span>
+                  ) : null}
+                </Button>
+              </div>
             )}
             <Button
               onClick={() => syncFromStripeMutation.mutate()}
@@ -440,11 +471,16 @@ export default function SavedContacts() {
           const hasStripe = contacts.some((c) => c.source === "stripe");
           const hasWoo = contacts.some((c) => c.source === "woocommerce");
           if (!hasStripe && !hasWoo) return null;
+          const pillLabels: Record<string, string> = {
+            all: `All Sources (${contacts.length})`,
+            stripe: `Stripe (${sourceCounts.stripe})`,
+            woocommerce: `WooCommerce (${sourceCounts.woocommerce})`,
+            manual: `Manual (${sourceCounts.manual})`,
+          };
           return (
             <div className="flex items-center gap-2 overflow-x-auto pb-1">
               <Globe size={13} style={{ color: "oklch(0.55 0.03 260)", flexShrink: 0 }} />
               {(["all", ...(hasStripe ? ["stripe"] : []), ...(hasWoo ? ["woocommerce"] : []), "manual"] as const).map((opt) => {
-                const labels: Record<string, string> = { all: "All Sources", stripe: "Stripe", woocommerce: "WooCommerce", manual: "Manual" };
                 const active = sourceFilter === opt;
                 return (
                   <button
@@ -457,7 +493,7 @@ export default function SavedContacts() {
                       border: "1px solid oklch(0.88 0.02 260)",
                     }}
                   >
-                    {labels[opt]}
+                    {pillLabels[opt]}
                   </button>
                 );
               })}
