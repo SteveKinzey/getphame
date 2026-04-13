@@ -320,21 +320,74 @@ export default function LandingPage() {
       </section>
 
       {/* ── Social proof strip ──────────────────────────────────────────────── */}
-      <section className="px-5 py-8 max-w-lg mx-auto w-full text-center">
-        <div className="flex items-center justify-center gap-1 mb-2">
-          {[...Array(5)].map((_, i) => (
-            <Star key={i} size={16} fill="oklch(0.80 0.18 80)" style={{ color: "oklch(0.80 0.18 80)" }} />
-          ))}
-        </div>
-        <p
-          className="text-sm font-semibold mb-1"
-          style={{ color: "oklch(0.22 0.09 260)" }}
+      <section className="px-5 py-8 max-w-lg mx-auto w-full">
+        <h2
+          className="text-center text-base font-black mb-5"
+          style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
         >
-          "Finally a tool that doesn't make my review requests look spammy."
-        </p>
-        <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
-          — Local business owner
-        </p>
+          What our users say
+        </h2>
+        <div className="flex flex-col gap-4">
+          {/* Testimonial 1 — Sarah */}
+          <div
+            className="rounded-2xl p-5 shadow-sm"
+            style={{ background: "white", border: "1px solid oklch(0.92 0.02 260)" }}
+          >
+            <div className="flex items-center gap-1 mb-3">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} size={14} fill="oklch(0.80 0.18 80)" style={{ color: "oklch(0.80 0.18 80)" }} />
+              ))}
+            </div>
+            <p
+              className="text-sm leading-relaxed mb-3"
+              style={{ color: "oklch(0.30 0.05 260)", fontStyle: "italic" }}
+            >
+              "I used to dread asking clients for reviews — it felt awkward and salesy. ReviewLink sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks."
+            </p>
+            <div className="flex items-center gap-3">
+              <div
+                className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0"
+                style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+              >
+                S
+              </div>
+              <div>
+                <p className="text-xs font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>Sarah M.</p>
+                <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Freelance Photographer</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Testimonial 2 — Tom */}
+          <div
+            className="rounded-2xl p-5 shadow-sm"
+            style={{ background: "white", border: "1px solid oklch(0.92 0.02 260)" }}
+          >
+            <div className="flex items-center gap-1 mb-3">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} size={14} fill="oklch(0.80 0.18 80)" style={{ color: "oklch(0.80 0.18 80)" }} />
+              ))}
+            </div>
+            <p
+              className="text-sm leading-relaxed mb-3"
+              style={{ color: "oklch(0.30 0.05 260)", fontStyle: "italic" }}
+            >
+              "We serve about 80 customers a day. I import the week's regulars from a CSV on Friday, hit send, and by Monday morning we've usually picked up 8–10 new reviews. It's become part of our weekly routine."
+            </p>
+            <div className="flex items-center gap-3">
+              <div
+                className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0"
+                style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+              >
+                T
+              </div>
+              <div>
+                <p className="text-xs font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>Tom R.</p>
+                <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Owner, The Corner Café</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ── FAQ ─────────────────────────────────────────────────────────────── */}
