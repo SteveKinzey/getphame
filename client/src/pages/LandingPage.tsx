@@ -383,6 +383,7 @@ export default function LandingPage() {
         <div className="flex items-center gap-4">
           <a href="/privacy-policy" style={{ color: "rgba(255,255,255,0.40)" }}>Privacy</a>
           <a href="/terms-of-service" style={{ color: "rgba(255,255,255,0.40)" }}>Terms</a>
+          <a href="mailto:support@reviewlink.app" style={{ color: "rgba(255,255,255,0.40)" }}>Support</a>
         </div>
       </footer>
     </div>

@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import helmet from "helmet";
 import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
@@ -127,9 +128,18 @@ async function startServer() {
     res.json({ received: true });
   });
 
-  // Configure body parser with larger size limit for file uploads
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  // Security headers
+  app.use(
+    helmet({
+      // Allow inline scripts/styles needed by Vite HMR in development
+      contentSecurityPolicy: process.env.NODE_ENV === "production",
+      crossOriginEmbedderPolicy: false, // required for OAuth popup flows
+    })
+  );
+
+  // Body parser — 5 MB is sufficient for all current payloads
+  app.use(express.json({ limit: "5mb" }));
+  app.use(express.urlencoded({ limit: "5mb", extended: true }));
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
 

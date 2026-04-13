@@ -1,5 +1,5 @@
 // ReviewLink — Global App Context
-// Manages business profile, requests, and tier state across all screens
+// Manages business profile, requests, and reminder state across all screens
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import {
@@ -11,10 +11,7 @@ import {
   updateRequest,
   getMonthlyCount,
   getTotalCount,
-  isAtFreeLimit,
-  getRemainingFreeRequests,
   getPendingReminders,
-  FREE_TIER_LIMIT,
 } from '@/lib/storage';
 
 interface AppContextValue {
@@ -22,9 +19,6 @@ interface AppContextValue {
   requests: ReviewRequest[];
   monthlyCount: number;
   totalCount: number;
-  atFreeLimit: boolean;
-  remainingFree: number;
-  freeTierLimit: number;
   pendingReminders: ReviewRequest[];
   updateProfile: (profile: BusinessProfile) => void;
   addReviewRequest: (req: ReviewRequest) => void;
@@ -70,8 +64,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const requests = data.requests;
   const monthlyCount = getMonthlyCount();
   const totalCount = getTotalCount();
-  const atFreeLimit = isAtFreeLimit();
-  const remainingFree = getRemainingFreeRequests();
   const pendingReminders = getPendingReminders();
 
   return (
@@ -81,9 +73,6 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         requests,
         monthlyCount,
         totalCount,
-        atFreeLimit,
-        remainingFree,
-        freeTierLimit: FREE_TIER_LIMIT,
         pendingReminders,
         updateProfile,
         addReviewRequest,

@@ -1,5 +1,5 @@
 import { trpc } from "@/lib/trpc";
-import { UNAUTHED_ERR_MSG, UNPAID_ERR_MSG } from '@shared/const';
+import { UNAUTHED_ERR_MSG } from '@shared/const';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
 import { createRoot } from "react-dom/client";
@@ -19,12 +19,6 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
     return;
   }
 
-  // Redirect unpaid users to the upgrade page
-  if (error.message === UNPAID_ERR_MSG) {
-    if (!window.location.pathname.startsWith("/upgrade")) {
-      window.location.href = "/upgrade";
-    }
-  }
 };
 
 queryClient.getQueryCache().subscribe(event => {

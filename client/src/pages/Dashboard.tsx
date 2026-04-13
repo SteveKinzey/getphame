@@ -2,7 +2,7 @@
 // Shows: total requests, monthly count, weekly breakdown chart, full activity log
 
 import { trpc } from "@/lib/trpc";
-import { BarChart2, Send, TrendingUp, Star, Crown, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick } from "lucide-react";
+import { BarChart2, Send, TrendingUp, Star, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import { useLocation } from "wouter";
 import { useMemo, useState } from "react";
@@ -113,7 +113,7 @@ export default function DashboardPage() {
     }
   };
 
-  const isPro = profile?.tier === "pro";
+
 
   // Fetch open/click tracking stats for all loaded requests
   const requestIds = useMemo(() => allRequests?.map((r) => r.id) ?? [], [allRequests]);
@@ -300,42 +300,6 @@ export default function DashboardPage() {
           )}
         </div>
 
-        {/* Free tier progress */}
-        {!isPro && (
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
-                Free Plan Usage
-              </p>
-              <span className="text-xs font-bold" style={{ color: "oklch(0.50 0.04 260)" }}>
-                {stats?.thisMonth ?? 0} / 10 this month
-              </span>
-            </div>
-            <div className="w-full h-2 rounded-full overflow-hidden" style={{ background: "oklch(0.93 0.01 260)" }}>
-              <div
-                className="h-full rounded-full transition-all"
-                style={{
-                  width: `${Math.min(100, ((stats?.thisMonth ?? 0) / 10) * 100)}%`,
-                  background: (stats?.thisMonth ?? 0) >= 10 ? "oklch(0.65 0.22 27)" : "oklch(0.80 0.18 80)",
-                }}
-              />
-            </div>
-            {(stats?.thisMonth ?? 0) >= 10 && (
-              <button
-                onClick={() => navigate("/upgrade")}
-                className="mt-3 w-full py-2.5 rounded-xl text-sm font-black flex items-center justify-center gap-2"
-                style={{
-                  background: "oklch(0.22 0.09 260)",
-                  color: "oklch(0.80 0.18 80)",
-                  fontFamily: "'Poppins', sans-serif",
-                }}
-              >
-                <Crown size={14} />
-                Upgrade to Pro — Unlimited Requests
-              </button>
-            )}
-          </div>
-        )}
 
         {/* Email Performance Card */}
         {emailPerf && emailPerf.totalSent > 0 && (

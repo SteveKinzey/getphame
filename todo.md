@@ -545,3 +545,11 @@
 
 - [x] Add "Free forever, Pro features coming soon" pricing section to landing page
 - [x] Add product screenshot to hero section for social proof / concreteness
+
+## Pre-Launch Hardening
+
+- [x] Install helmet and add HTTP security headers to Express server
+- [x] Reduce body parser limit from 50 MB to 5 MB
+- [x] Remove all "10 sends/month" free-tier cap UI from Dashboard and Home
+- [x] Remove all "Upgrade to Pro" / upgrade CTA references from the app
+- [x] Add support@reviewlink.app to landing page footer
