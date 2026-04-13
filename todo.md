@@ -402,9 +402,9 @@
 
 ## Individual Email Dispatch (No Group Sends)
 
-- [ ] Audit all bulk send paths (contacts.bulkSend, woo.bulkSend, reminders) to confirm each email is sent as a separate SMTP message with a single recipient
-- [ ] Fix any paths that pass multiple recipients in a single sendMail call
-- [ ] Verify To/CC/BCC fields never contain more than one address per send
+- [x] Audit all bulk send paths (contacts.bulkSend, woo.bulkSend, reminders) to confirm each email is sent as a separate SMTP message with a single recipient
+- [x] Fix any paths that pass multiple recipients in a single sendMail call (none found — all paths already correct)
+- [x] Verify To/CC/BCC fields never contain more than one address per send (confirmed — no CC/BCC anywhere, to: is always a single string)
 
 ## Onboarding Guide Modal
 
@@ -418,3 +418,29 @@
 - [x] Add "Setup Guide" button to Home page header and Settings page
 - [x] Track guide_seen flag so it auto-shows on first login (separate from onboarding wizard)
 - [x] Progress dots / step counter in modal header
+
+## Contact Tags / Segments
+
+- [x] Add `tags` text column (JSON array) to saved_contacts schema + db:push (already existed)
+- [x] Add contacts.setTags tRPC procedure (already existed)
+- [x] Add contacts.allTags tRPC procedure (computed client-side from contacts list — no server procedure needed)
+- [x] Tag pills on each contact card in SavedContacts (already implemented)
+- [x] Tag filter bar below source pills (already implemented)
+- [x] Tag filter applies to bulk-select (already implemented — filtered list drives Select All)
+
+## Bulk Mark-as-Responded (Dashboard)
+
+- [x] Add requests.bulkMarkResponded tRPC procedure (array of IDs, sets respondedAt)
+- [x] Checkbox column on each request row in Dashboard
+- [x] "Select All" checkbox in table header
+- [x] Sticky action bar appears when ≥1 row selected — "Mark X as Responded" button
+- [x] Optimistic update: mark rows immediately, rollback on error
+
+## Email Template Editor (Live Preview)
+
+- [x] Read existing EmailTemplates.tsx to understand current template CRUD
+- [x] Add live preview panel to template editor (renders subject + body with placeholder substitution)
+- [x] Preview uses real profile data: customer_name = "Alex Johnson", business_name = user's actual business name, review_link = user's default platform URL
+- [x] Preview renders body in a styled email-card panel (pre-formatted, no iframe needed)
+- [x] Subject line preview shown above the body preview
+- [x] Live preview toggle button (Show/Hide Preview) in dialog header

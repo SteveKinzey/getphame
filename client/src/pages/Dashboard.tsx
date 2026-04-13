@@ -2,10 +2,11 @@
 // Shows: total requests, monthly count, weekly breakdown chart, full activity log
 
 import { trpc } from "@/lib/trpc";
-import { BarChart2, Send, TrendingUp, Star, Crown, Loader2, Calendar, Zap, CheckCircle2, Circle } from "lucide-react";
+import { BarChart2, Send, TrendingUp, Star, Crown, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
 import { useLocation } from "wouter";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { toast } from "sonner";
 
 function formatDate(date: Date): string {
   try {
@@ -22,8 +23,53 @@ export default function DashboardPage() {
   const { data: profile } = trpc.profile.get.useQuery();
   const utils = trpc.useUtils();
 
+  // Single-row toggle
   const markRespondedMutation = trpc.requests.markResponded.useMutation({
     onSuccess: () => utils.requests.list.invalidate(),
+  });
+
+  // Bulk selection state
+  const [selected, setSelected] = useState<Set<number>>(new Set());
+
+  const toggleSelect = (id: number) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const allSelected = (allRequests?.length ?? 0) > 0 && allRequests!.every((r) => selected.has(r.id));
+
+  const toggleSelectAll = () => {
+    if (!allRequests) return;
+    if (allSelected) {
+      setSelected(new Set());
+    } else {
+      setSelected(new Set(allRequests.map((r) => r.id)));
+    }
+  };
+
+  // Bulk mark-as-responded mutation with optimistic update
+  const bulkMarkRespondedMutation = trpc.requests.bulkMarkResponded.useMutation({
+    onMutate: async ({ ids, responded }) => {
+      await utils.requests.list.cancel();
+      const prev = utils.requests.list.getData();
+      utils.requests.list.setData(undefined, (old) =>
+        old?.map((r) => ids.includes(r.id) ? { ...r, respondedAt: responded ? Date.now() : null } : r)
+      );
+      return { prev };
+    },
+    onError: (_err, _vars, ctx) => {
+      if (ctx?.prev) utils.requests.list.setData(undefined, ctx.prev);
+      toast.error("Failed to update requests.");
+    },
+    onSuccess: (result) => {
+      utils.requests.list.invalidate();
+      utils.requests.stats.invalidate();
+      toast.success(`${result.updated} request${result.updated !== 1 ? "s" : ""} updated.`);
+      setSelected(new Set());
+    },
   });
 
   const isPro = profile?.tier === "pro";
@@ -240,12 +286,27 @@ export default function DashboardPage() {
 
         {/* Activity Feed */}
         <div className="bg-white rounded-2xl p-4 shadow-sm">
-          <h3
-            className="text-sm font-black mb-4"
-            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
-          >
-            All Activity
-          </h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3
+              className="text-sm font-black"
+              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+            >
+              All Activity
+            </h3>
+            {(allRequests?.length ?? 0) > 0 && (
+              <button
+                onClick={toggleSelectAll}
+                className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg font-bold transition-colors"
+                style={{
+                  background: allSelected ? "oklch(0.22 0.09 260)" : "oklch(0.96 0.01 260)",
+                  color: allSelected ? "oklch(0.80 0.18 80)" : "oklch(0.45 0.05 260)",
+                }}
+              >
+                {allSelected ? <CheckSquare size={13} /> : <Square size={13} />}
+                {allSelected ? "Deselect All" : "Select All"}
+              </button>
+            )}
+          </div>
 
           {(isLoading || listLoading) ? (
             <div className="flex justify-center py-8">
@@ -268,9 +329,24 @@ export default function DashboardPage() {
                   className="flex items-center justify-between py-3"
                   style={{
                     borderBottom: idx < allRequests.length - 1 ? "1px solid oklch(0.94 0.01 260)" : "none",
+                    background: selected.has(req.id) ? "oklch(0.97 0.02 260)" : "transparent",
+                    borderRadius: selected.has(req.id) ? "8px" : undefined,
+                    paddingLeft: selected.has(req.id) ? "6px" : undefined,
+                    paddingRight: selected.has(req.id) ? "6px" : undefined,
+                    marginLeft: selected.has(req.id) ? "-6px" : undefined,
+                    marginRight: selected.has(req.id) ? "-6px" : undefined,
                   }}
                 >
                   <div className="flex items-center gap-3">
+                    {/* Checkbox */}
+                    <button
+                      onClick={() => toggleSelect(req.id)}
+                      className="shrink-0 text-gray-300 hover:text-gray-500 transition-colors"
+                      style={{ color: selected.has(req.id) ? "oklch(0.45 0.12 280)" : undefined }}
+                      title={selected.has(req.id) ? "Deselect" : "Select"}
+                    >
+                      {selected.has(req.id) ? <CheckSquare size={16} /> : <Square size={16} />}
+                    </button>
                     <div
                       className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black shrink-0"
                       style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
@@ -314,6 +390,48 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
+
+      {/* Sticky bulk action bar */}
+      {selected.size > 0 && (
+        <div
+          className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-3 rounded-2xl shadow-xl"
+          style={{ background: "oklch(0.22 0.09 260)", minWidth: "280px" }}
+        >
+          <span className="text-xs font-bold flex-1" style={{ color: "oklch(0.80 0.18 80)" }}>
+            {selected.size} selected
+          </span>
+          <button
+            onClick={() => bulkMarkRespondedMutation.mutate({ ids: Array.from(selected), responded: true })}
+            disabled={bulkMarkRespondedMutation.isPending}
+            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-bold transition-colors"
+            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+          >
+            {bulkMarkRespondedMutation.isPending ? (
+              <Loader2 size={12} className="animate-spin" />
+            ) : (
+              <CheckCircle2 size={12} />
+            )}
+            Mark Reviewed
+          </button>
+          <button
+            onClick={() => bulkMarkRespondedMutation.mutate({ ids: Array.from(selected), responded: false })}
+            disabled={bulkMarkRespondedMutation.isPending}
+            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-bold transition-colors"
+            style={{ background: "oklch(0.32 0.07 260)", color: "rgba(255,255,255,0.8)" }}
+          >
+            <Circle size={12} />
+            Mark Sent
+          </button>
+          <button
+            onClick={() => setSelected(new Set())}
+            className="p-1.5 rounded-lg transition-colors"
+            style={{ color: "rgba(255,255,255,0.5)" }}
+            title="Clear selection"
+          >
+            <X size={14} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

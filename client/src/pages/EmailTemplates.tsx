@@ -28,7 +28,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { FileText, Plus, Pencil, Trash2, ChevronLeft, Star } from "lucide-react";
+import { FileText, Plus, Pencil, Trash2, ChevronLeft, Star, Eye, EyeOff } from "lucide-react";
 import { useLocation } from "wouter";
 
 type Template = {
@@ -72,12 +72,18 @@ export default function EmailTemplates() {
   const [deleteTarget, setDeleteTarget] = useState<Template | null>(null);
   const [form, setForm] = useState<FormData>(emptyForm);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [showLivePreview, setShowLivePreview] = useState(true);
 
   const utils = trpc.useUtils();
 
   const { data: templates = [], isLoading } = trpc.templates.list.useQuery(undefined, {
     enabled: isAuthenticated,
   });
+
+  // Fetch real profile data for live preview substitution
+  const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: isAuthenticated });
+  const { data: platforms = [] } = trpc.reviewPlatforms.list.useQuery(undefined, { enabled: isAuthenticated });
+  const defaultPlatform = (platforms as Array<{ isDefault: number; url: string }>).find((p) => p.isDefault) ?? (platforms as Array<{ url: string }>)[0];
 
   const createMutation = trpc.templates.create.useMutation({
     onSuccess: () => {
@@ -149,11 +155,20 @@ export default function EmailTemplates() {
 
   const isSaving = createMutation.isPending || updateMutation.isPending;
 
-  // Preview: replace placeholders with sample values
-  const previewBody = form.body
-    .replace(/\{\{customerName\}\}/g, "Jane Smith")
-    .replace(/\{\{businessName\}\}/g, "Acme Co.")
-    .replace(/\{\{reviewLink\}\}/g, "https://g.page/r/your-review-link");
+  // Preview: replace placeholders with real profile data (or sample fallbacks)
+  const sampleCustomer = "Alex Johnson";
+  const sampleBusiness = profile?.businessName || "Your Business";
+  const sampleReviewLink = defaultPlatform?.url || "https://g.page/r/your-review-link";
+
+  function applyPreview(text: string) {
+    return text
+      .replace(/\{\{customerName\}\}/g, sampleCustomer)
+      .replace(/\{\{businessName\}\}/g, sampleBusiness)
+      .replace(/\{\{reviewLink\}\}/g, sampleReviewLink);
+  }
+
+  const previewSubject = applyPreview(form.subject);
+  const previewBody = applyPreview(form.body);
 
   return (
     <div className="min-h-screen pb-32" style={{ background: "oklch(0.975 0.003 100)" }}>
@@ -238,62 +253,127 @@ export default function EmailTemplates() {
         )}
       </div>
 
-      {/* Create / Edit Dialog */}
+      {/* Create / Edit Dialog — wide layout with live preview */}
       <Dialog open={dialogOpen} onOpenChange={(o) => { if (!o) { setDialogOpen(false); setEditTemplate(null); setForm(emptyForm); } }}>
-        <DialogContent className="max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
+        <DialogContent className="w-full max-w-4xl mx-4 max-h-[92vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>{editTemplate ? "Edit Template" : "New Template"}</DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogTitle>{editTemplate ? "Edit Template" : "New Template"}</DialogTitle>
+              <button
+                type="button"
+                onClick={() => setShowLivePreview((v) => !v)}
+                className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg font-bold transition-colors"
+                style={{
+                  background: showLivePreview ? "oklch(0.22 0.09 260)" : "oklch(0.96 0.01 260)",
+                  color: showLivePreview ? "oklch(0.80 0.18 80)" : "oklch(0.45 0.05 260)",
+                }}
+              >
+                {showLivePreview ? <EyeOff size={13} /> : <Eye size={13} />}
+                {showLivePreview ? "Hide Preview" : "Show Preview"}
+              </button>
+            </div>
           </DialogHeader>
-          <div className="space-y-3">
-            <div>
-              <Label>Template name *</Label>
-              <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Standard follow-up" />
-            </div>
-            <div>
-              <Label>Subject line *</Label>
-              <Input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} placeholder="{{businessName}} would love your feedback!" />
-            </div>
-            <div>
-              <Label>Body *</Label>
-              <div className="flex flex-wrap gap-1 mb-1">
-                {PLACEHOLDERS.map((p) => (
-                  <button
-                    key={p}
-                    type="button"
-                    onClick={() => insertPlaceholder(p)}
-                    className="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded px-2 py-0.5 hover:bg-blue-100 transition-colors"
-                  >
-                    + {p}
-                  </button>
-                ))}
+
+          <div className={`grid gap-4 ${showLivePreview ? "md:grid-cols-2" : "grid-cols-1"}`}>
+            {/* ── Left: Editor ── */}
+            <div className="space-y-3">
+              <div>
+                <Label>Template name *</Label>
+                <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="e.g. Standard follow-up" />
               </div>
-              <Textarea
-                value={form.body}
-                onChange={(e) => setForm({ ...form, body: e.target.value })}
-                rows={8}
-                className="font-mono text-sm"
-                placeholder="Write your email body here…"
-              />
+              <div>
+                <Label>Subject line *</Label>
+                <Input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} placeholder="{{businessName}} would love your feedback!" />
+              </div>
+              <div>
+                <Label>Body *</Label>
+                <div className="flex flex-wrap gap-1 mb-1">
+                  {PLACEHOLDERS.map((p) => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => insertPlaceholder(p)}
+                      className="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded px-2 py-0.5 hover:bg-blue-100 transition-colors"
+                    >
+                      + {p}
+                    </button>
+                  ))}
+                </div>
+                <Textarea
+                  value={form.body}
+                  onChange={(e) => setForm({ ...form, body: e.target.value })}
+                  rows={showLivePreview ? 10 : 12}
+                  className="font-mono text-sm"
+                  placeholder="Write your email body here…"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="isDefault"
+                  checked={form.isDefault}
+                  onChange={(e) => setForm({ ...form, isDefault: e.target.checked })}
+                  className="w-4 h-4 accent-yellow-500"
+                />
+                <Label htmlFor="isDefault" className="cursor-pointer">Set as default template</Label>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="isDefault"
-                checked={form.isDefault}
-                onChange={(e) => setForm({ ...form, isDefault: e.target.checked })}
-                className="w-4 h-4 accent-yellow-500"
-              />
-              <Label htmlFor="isDefault" className="cursor-pointer">Set as default template</Label>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setPreviewOpen(true)}
-              className="w-full"
-            >
-              Preview with sample data
-            </Button>
+
+            {/* ── Right: Live Preview ── */}
+            {showLivePreview && (
+              <div className="flex flex-col gap-2">
+                <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "oklch(0.55 0.03 260)" }}>
+                  Live Preview
+                </p>
+                <p className="text-xs" style={{ color: "oklch(0.65 0.03 260)" }}>
+                  Sample: <strong>{sampleCustomer}</strong> · {sampleBusiness}
+                </p>
+
+                {/* Subject preview */}
+                <div className="rounded-xl p-3 border" style={{ background: "oklch(0.97 0.01 260)", borderColor: "oklch(0.90 0.02 260)" }}>
+                  <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.55 0.03 260)" }}>SUBJECT</p>
+                  <p className="text-sm font-semibold" style={{ color: "oklch(0.22 0.09 260)" }}>
+                    {previewSubject || <span className="opacity-40 italic">No subject yet</span>}
+                  </p>
+                </div>
+
+                {/* Body preview — email-style card */}
+                <div
+                  className="rounded-xl border flex-1 overflow-hidden"
+                  style={{ borderColor: "oklch(0.90 0.02 260)" }}
+                >
+                  {/* Email header bar */}
+                  <div className="px-3 py-2 flex items-center gap-2" style={{ background: "oklch(0.94 0.01 260)" }}>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black" style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}>
+                      {sampleBusiness[0]?.toUpperCase() ?? "B"}
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>{sampleBusiness}</p>
+                      <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>To: {sampleCustomer}</p>
+                    </div>
+                  </div>
+                  {/* Body */}
+                  <div className="p-3 overflow-y-auto" style={{ maxHeight: "280px", background: "white" }}>
+                    <pre
+                      className="text-sm whitespace-pre-wrap font-sans"
+                      style={{ color: "oklch(0.25 0.03 260)", lineHeight: "1.6" }}
+                    >
+                      {previewBody || <span className="opacity-40 italic">No body yet</span>}
+                    </pre>
+                  </div>
+                </div>
+
+                {/* Review link highlight */}
+                {form.body.includes("{{reviewLink}}") && (
+                  <div className="rounded-lg px-3 py-2 text-xs" style={{ background: "oklch(0.96 0.06 145)", color: "oklch(0.35 0.12 145)" }}>
+                    <strong>Review link:</strong>{" "}
+                    <span className="break-all">{sampleReviewLink}</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
+
           <DialogFooter className="mt-2">
             <Button variant="outline" onClick={() => { setDialogOpen(false); setForm(emptyForm); }}>Cancel</Button>
             <Button onClick={handleSubmit} disabled={isSaving} style={{ background: "oklch(0.22 0.09 260)", color: "white" }}>

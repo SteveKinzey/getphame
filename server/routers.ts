@@ -955,6 +955,23 @@ export const appRouter = router({
           .where(and(eqOp(customerRequests.userId, ctx.user.id), eqOp(customerRequests.id, input.id)));
         return { ok: true };
       }),
+    bulkMarkResponded: protectedProcedure
+      .input(z.object({ ids: z.array(z.number().int()).min(1).max(500), responded: z.boolean() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const { and, inArray, eq: eqOp } = await import("drizzle-orm");
+        await db
+          .update(customerRequests)
+          .set({ respondedAt: input.responded ? Date.now() : null })
+          .where(
+            and(
+              eqOp(customerRequests.userId, ctx.user.id),
+              inArray(customerRequests.id, input.ids)
+            )
+          );
+        return { updated: input.ids.length };
+      }),
     stats: protectedProcedure.query(async ({ ctx }) => {
       const now = new Date();
       const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
