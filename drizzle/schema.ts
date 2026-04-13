@@ -248,6 +248,8 @@ export const smtpCredentials = mysqlTable("smtp_credentials", {
   fromName: varchar("fromName", { length: 255 }), // display name in From header
   replyTo: varchar("replyTo", { length: 320 }), // optional reply-to override
   verified: int("verified").notNull().default(0), // 1 = test send succeeded
+  lastHealthCheck: bigint("lastHealthCheck", { mode: "number" }), // Unix ms of last automated health check
+  lastHealthStatus: mysqlEnum("lastHealthStatus", ["ok", "fail"]), // null = never checked
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

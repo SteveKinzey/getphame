@@ -279,3 +279,26 @@
 
 - [x] Add grey health badge/dot state in Settings Email Connection card when no SMTP account is connected
 - [x] Add inline editable From Name input directly in the connected Settings Email Connection card
+
+## Daily SMTP Health Check Job
+
+- [x] Add lastHealthCheck (timestamp) and lastHealthStatus ('ok'|'fail'|null) columns to smtp_credentials schema + db:push
+- [x] Add runSmtpHealthChecks() function in smtp.ts — queries all connected users, tests each connection, updates lastHealthCheck + lastHealthStatus
+- [x] Wire runSmtpHealthChecks into a daily cron job in server/_core/index.ts (runs at 3am UTC)
+- [x] Update smtp.status tRPC procedure to return lastHealthCheck and lastHealthStatus
+- [x] Update Settings health dot to use lastHealthStatus from status query (green=ok, red=fail, grey=null/not-connected)
+
+## Reply-To Field
+
+- [x] Add replyTo column to smtp_credentials schema + db:push
+- [x] Add replyTo to smtp.connect input schema and saveSmtpCredentials helper
+- [x] Add smtp.updateReplyTo tRPC procedure
+- [x] Add Reply-To input field in Settings Email Connection card (inline editable)
+- [x] Add Reply-To field in OnboardingWizard Step 1 Advanced section
+- [x] Use replyTo in all sendMailViaSmtp calls
+
+## WooCommerce Bulk Send Platform Picker
+
+- [x] Add platform selector state + trpc.reviewPlatforms.list query to WooCustomers.tsx
+- [x] Add platform dropdown in the WooCommerce bulk send confirm dialog
+- [x] Pass selectedPlatformId to woo.bulkSend mutation

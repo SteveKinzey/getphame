@@ -94,6 +94,65 @@ function InlineFromNameEdit({ current, onSaved }: { current: string; onSaved: ()
   );
 }
 
+function InlineReplyToEdit({ current, onSaved }: { current: string; onSaved: () => void }) {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(current);
+
+  useEffect(() => { setValue(current); }, [current]);
+
+  const updateReplyTo = trpc.smtp.updateReplyTo.useMutation({
+    onSuccess: () => { onSaved(); setEditing(false); toast.success("Reply-To address updated!"); },
+    onError: (err) => toast.error(err.message),
+  });
+
+  if (!editing) {
+    return (
+      <div className="flex items-center gap-2">
+        <p className="text-xs flex-1" style={{ color: "oklch(0.55 0.04 260)" }}>
+          <span style={{ color: "oklch(0.40 0.04 260)", fontWeight: 600 }}>Reply-To:</span>{" "}
+          {current || <span style={{ color: "oklch(0.65 0.02 260)" }}>Same as sending address</span>}
+        </p>
+        <button
+          onClick={() => setEditing(true)}
+          className="text-xs px-2 py-1 rounded-lg font-bold"
+          style={{ color: "oklch(0.45 0.04 260)", background: "oklch(0.96 0.01 260)" }}
+        >
+          Edit
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2">
+      <input
+        type="email"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        placeholder="e.g. support@mycompany.com"
+        className="flex-1 px-3 py-2 rounded-xl text-xs outline-none"
+        style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
+        autoFocus
+      />
+      <button
+        onClick={() => setEditing(false)}
+        className="text-xs px-2 py-1 rounded-lg font-bold"
+        style={{ color: "oklch(0.55 0.04 260)", background: "oklch(0.96 0.01 260)" }}
+      >
+        Cancel
+      </button>
+      <button
+        disabled={updateReplyTo.isPending}
+        onClick={() => updateReplyTo.mutate({ replyTo: value.trim() })}
+        className="text-xs px-2 py-1 rounded-lg font-bold"
+        style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+      >
+        {updateReplyTo.isPending ? <Loader2 size={12} className="animate-spin" /> : "Save"}
+      </button>
+    </div>
+  );
+}
+
 export default function SettingsPage() {
   const { user, logout } = useAuth();
   const [, navigate] = useLocation();
@@ -871,6 +930,21 @@ export default function SettingsPage() {
                 current={smtpStatus?.fromName ?? ""}
                 onSaved={() => utils.smtp.status.invalidate()}
               />
+              {/* Inline Reply-To edit */}
+              <InlineReplyToEdit
+                current={smtpStatus?.replyTo ?? ""}
+                onSaved={() => utils.smtp.status.invalidate()}
+              />
+              {/* Last health check timestamp */}
+              {smtpStatus?.lastHealthCheck && (
+                <p className="text-xs" style={{ color: "oklch(0.65 0.02 260)" }}>
+                  Last auto-check: {new Date(smtpStatus.lastHealthCheck).toLocaleString()}
+                  {" · "}
+                  <span style={{ color: smtpStatus.lastHealthStatus === "ok" ? "oklch(0.50 0.18 145)" : "oklch(0.50 0.18 27)", fontWeight: 600 }}>
+                    {smtpStatus.lastHealthStatus === "ok" ? "✓ Healthy" : "✗ Failed"}
+                  </span>
+                </p>
+              )}
             </div>
           ) : (
             <div className="flex flex-col gap-3">

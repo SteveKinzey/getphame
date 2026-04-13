@@ -65,9 +65,14 @@ export default function WooCustomers() {
   const [bulkConfirmOpen, setBulkConfirmOpen] = useState(false);
   const pendingBulkChange = useRef<{ sent: boolean } | null>(null);
 
+  // Bulk send confirm dialog state
+  const [sendConfirmOpen, setSendConfirmOpen] = useState(false);
+  const [wooPlatformId, setWooPlatformId] = useState<number | null>(null);
+
   const utils = trpc.useUtils();
 
   const { data: creds } = trpc.woo.getCredentials.useQuery();
+  const { data: platforms = [] } = trpc.reviewPlatforms.list.useQuery();
   const { data: pendingCustomers = [], isLoading: loadingPending } = trpc.woo.listPending.useQuery();
   const { data: allCustomers = [], isLoading: loadingAll } = trpc.woo.listAll.useQuery();
 
@@ -143,7 +148,7 @@ export default function WooCustomers() {
     onSuccess: (result) => {
       if (result.errors.length > 0) {
         toast.warning(
-          `Sent ${result.sent} — ${result.errors.length} failed. Check your Gmail connection.`
+          `Sent ${result.sent} — ${result.errors.length} failed. Check your email connection.`
         );
       } else {
         toast.success(
@@ -153,6 +158,7 @@ export default function WooCustomers() {
       utils.woo.listPending.invalidate();
       utils.woo.listAll.invalidate();
       setSelectedIds(new Set());
+      setSendConfirmOpen(false);
     },
     onError: (err) => {
       toast.error(`Send failed: ${err.message}`);
@@ -247,6 +253,57 @@ export default function WooCustomers() {
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={confirmStatusChange}>Confirm</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Send review requests confirm dialog with platform picker */}
+      <AlertDialog open={sendConfirmOpen} onOpenChange={setSendConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Send Review Requests</AlertDialogTitle>
+            <AlertDialogDescription>
+              Send review request emails to {selectedIds.size} selected customer{selectedIds.size !== 1 ? "s" : ""}.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          {/* Platform picker */}
+          {platforms.length > 0 && (
+            <div className="py-2">
+              <label className="block text-xs font-bold mb-1.5" style={{ color: "oklch(0.40 0.04 260)" }}>
+                Review Platform
+              </label>
+              <select
+                value={wooPlatformId ?? ""}
+                onChange={(e) => setWooPlatformId(e.target.value ? Number(e.target.value) : null)}
+                className="w-full px-3 py-2 rounded-xl text-sm outline-none"
+                style={{ border: "2px solid oklch(0.90 0.02 260)", background: "white" }}
+              >
+                <option value="">Use default platform</option>
+                {platforms.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.platform === "other" ? p.label : `${p.platform.charAt(0).toUpperCase()}${p.platform.slice(1)}`}
+                    {p.isDefault ? " (default)" : ""}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {platforms.length === 0 && (
+            <p className="text-xs py-2" style={{ color: "oklch(0.55 0.15 27)" }}>
+              No review platforms configured. Add one in Settings → Review Platforms.
+            </p>
+          )}
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => bulkSend.mutate({ customerIds: Array.from(selectedIds), platformId: wooPlatformId ?? undefined })}
+              disabled={bulkSend.isPending}
+            >
+              {bulkSend.isPending ? "Sending…" : "Send"}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -437,9 +494,12 @@ export default function WooCustomers() {
                   </Button>
                   <Button
                     size="sm"
-                    onClick={() =>
-                      bulkSend.mutate({ customerIds: Array.from(selectedIds) })
-                    }
+                    onClick={() => {
+                      // Pre-select default platform
+                      const def = platforms.find((p) => p.isDefault);
+                      setWooPlatformId(def?.id ?? platforms[0]?.id ?? null);
+                      setSendConfirmOpen(true);
+                    }}
                     disabled={bulkSend.isPending}
                     className="flex items-center gap-2"
                     style={{

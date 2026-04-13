@@ -15,6 +15,7 @@ import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
 import { startReminderScheduler } from "../reminders";
 import { startGmailHealthCheckScheduler } from "../gmailHealthCheck";
+import { startSmtpHealthCheckScheduler } from "../smtpHealthCheck";
 import { registerSitemapRoutes } from "../sitemap";
 import { registerZohoRoutes } from "../zoho";
 
@@ -201,6 +202,7 @@ async function startServer() {
     console.log(`Server running on http://localhost:${port}/`);
     startReminderScheduler();
     startGmailHealthCheckScheduler();
+    startSmtpHealthCheckScheduler();
   });
 }
 

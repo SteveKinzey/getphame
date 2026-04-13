@@ -30,7 +30,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import {
   listSavedContacts,
@@ -124,12 +124,15 @@ export const appRouter = router({
     /** Return connection status without exposing credentials */
     status: protectedProcedure.query(async ({ ctx }) => {
       const creds = await getSmtpCredentials(ctx.user.id);
-      if (!creds) return { connected: false, email: null, fromName: null, verified: false };
+      if (!creds) return { connected: false, email: null, fromName: null, replyTo: null, verified: false, lastHealthCheck: null, lastHealthStatus: null };
       return {
         connected: true,
         email: creds.user,
         fromName: creds.fromName ?? null,
+        replyTo: creds.replyTo ?? null,
         verified: creds.verified === 1,
+        lastHealthCheck: creds.lastHealthCheck ?? null,
+        lastHealthStatus: creds.lastHealthStatus ?? null,
       };
     }),
 
@@ -221,6 +224,21 @@ export const appRouter = router({
         const creds = await getSmtpCredentials(ctx.user.id);
         if (!creds) throw new TRPCError({ code: "NOT_FOUND", message: "No email account connected." });
         await updateSmtpFromName(ctx.user.id, input.fromName || null);
+        return { success: true };
+      }),
+
+    /** Update only the reply-to address without changing credentials */
+    updateReplyTo: protectedProcedure
+      .input(z.object({ replyTo: z.string().email().optional().or(z.literal("")) }))
+      .mutation(async ({ ctx, input }) => {
+        const creds = await getSmtpCredentials(ctx.user.id);
+        if (!creds) throw new TRPCError({ code: "NOT_FOUND", message: "No email account connected." });
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        await db
+          .update(smtpCredentials)
+          .set({ replyTo: input.replyTo || null })
+          .where(eq(smtpCredentials.userId, ctx.user.id));
         return { success: true };
       }),
 
@@ -426,7 +444,7 @@ export const appRouter = router({
 
     /** Bulk send review requests to selected WooCommerce customers */
     bulkSend: protectedProcedure
-      .input(z.object({ customerIds: z.array(z.number().int()).min(1) }))
+      .input(z.object({ customerIds: z.array(z.number().int()).min(1), platformId: z.number().int().optional() }))
       .mutation(async ({ ctx, input }) => {
         const profile = await getBusinessProfile(ctx.user.id);
         if (!profile) throw new Error("Please complete your business profile first.");
@@ -464,9 +482,16 @@ export const appRouter = router({
         }
         const toSend = profile.tier === "free" ? customers.slice(0, remaining) : customers;
 
-        // Resolve review URL: use default platform if available, else profile.reviewLink
-        const wooDefaultPlatform = await getDefaultReviewPlatform(ctx.user.id);
-        const wooReviewUrl = wooDefaultPlatform?.url ?? profile.reviewLink ?? "";
+        // Resolve review URL: use selected platform → default platform → legacy reviewLink
+        let wooReviewUrl = profile.reviewLink ?? "";
+        if (input.platformId) {
+          const allPlatforms = await listReviewPlatforms(ctx.user.id);
+          const selected = allPlatforms.find((p) => p.id === input.platformId);
+          if (selected) wooReviewUrl = selected.url;
+        } else {
+          const wooDefaultPlatform = await getDefaultReviewPlatform(ctx.user.id);
+          if (wooDefaultPlatform) wooReviewUrl = wooDefaultPlatform.url;
+        }
 
         const subject = `${profile.businessName} would love your feedback!`;
         const sentIds: number[] = [];

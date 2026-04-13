@@ -349,3 +349,50 @@ export async function updateSmtpFromName(userId: number, fromName: string | null
     .set({ fromName: fromName || null })
     .where(eq(smtpCredentials.userId, userId));
 }
+
+// ── Daily health check ────────────────────────────────────────────────────────
+
+/**
+ * Runs a silent SMTP connection test for every connected user.
+ * Updates lastHealthCheck (Unix ms) and lastHealthStatus ('ok'|'fail') on each row.
+ * Called once per day from the server cron job.
+ */
+export async function runSmtpHealthChecks(): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+
+  const allCreds = await db.select().from(smtpCredentials);
+  console.log(`[SmtpHealthCheck] Running checks for ${allCreds.length} connected account(s)...`);
+
+  for (const creds of allCreds) {
+    try {
+      const pass = decryptPassword(creds.encryptedPass);
+      const result = await testSmtpConnection({
+        host: creds.host,
+        port: creds.port,
+        secure: creds.secure === 1,
+        user: creds.user,
+        pass,
+      });
+
+      await db
+        .update(smtpCredentials)
+        .set({
+          lastHealthCheck: Date.now(),
+          lastHealthStatus: result.ok ? "ok" : "fail",
+        })
+        .where(eq(smtpCredentials.userId, creds.userId));
+
+      console.log(`[SmtpHealthCheck] userId=${creds.userId} → ${result.ok ? "✓ ok" : `✗ fail: ${result.error}`}`);
+    } catch (err) {
+      // Don't let one failure abort the whole batch
+      console.error(`[SmtpHealthCheck] userId=${creds.userId} threw:`, err);
+      await db
+        .update(smtpCredentials)
+        .set({ lastHealthCheck: Date.now(), lastHealthStatus: "fail" })
+        .where(eq(smtpCredentials.userId, creds.userId));
+    }
+  }
+
+  console.log("[SmtpHealthCheck] Done.");
+}
