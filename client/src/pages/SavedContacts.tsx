@@ -51,6 +51,7 @@ import {
   RefreshCw,
   ShoppingCart,
   CreditCard,
+  Search,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
@@ -95,6 +96,7 @@ export default function SavedContacts() {
   // WooCommerce sync day range
   const [wooDays, setWooDays] = useState<30 | 60 | 90>(30);
   const [wooSyncHistoryOpen, setWooSyncHistoryOpen] = useState(false);
+  const [wooHistorySearch, setWooHistorySearch] = useState("");
 
   const { data: wooSyncHistory = [] } = trpc.woo.syncHistory.useQuery(undefined, {
     enabled: isAuthenticated && wooSyncHistoryOpen,
@@ -980,7 +982,7 @@ export default function SavedContacts() {
       </AlertDialog>
 
       {/* WooCommerce Sync History Modal */}
-      <Dialog open={wooSyncHistoryOpen} onOpenChange={setWooSyncHistoryOpen}>
+      <Dialog open={wooSyncHistoryOpen} onOpenChange={(open) => { setWooSyncHistoryOpen(open); if (!open) setWooHistorySearch(""); }}>
         <DialogContent className="max-w-sm mx-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
@@ -988,13 +990,54 @@ export default function SavedContacts() {
               WooCommerce Sync History
             </DialogTitle>
           </DialogHeader>
-          <div className="space-y-2 max-h-80 overflow-y-auto">
-            {wooSyncHistory.length === 0 ? (
-              <p className="text-sm text-center py-6" style={{ color: "oklch(0.55 0.05 260)" }}>
-                No sync history yet. Run a sync to see results here.
-              </p>
-            ) : (
-              wooSyncHistory.map((log) => (
+
+          {/* Search / filter input */}
+          {wooSyncHistory.length > 0 && (
+            <div className="relative">
+              <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "oklch(0.60 0.05 260)" }} aria-hidden="true" />
+              <Input
+                placeholder="Filter by date or result…"
+                value={wooHistorySearch}
+                onChange={(e) => setWooHistorySearch(e.target.value)}
+                className="pl-8 pr-8 text-xs h-8"
+                aria-label="Filter sync history"
+              />
+              {wooHistorySearch && (
+                <button
+                  onClick={() => setWooHistorySearch("")}
+                  aria-label="Clear filter"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded hover:bg-gray-100 p-0.5"
+                >
+                  <X size={12} style={{ color: "oklch(0.55 0.05 260)" }} />
+                </button>
+              )}
+            </div>
+          )}
+
+          <div className="space-y-2 max-h-72 overflow-y-auto">
+            {(() => {
+              const q = wooHistorySearch.toLowerCase();
+              const filtered = wooSyncHistory.filter((log) => {
+                if (!q) return true;
+                const dateStr = format(new Date(log.syncedAt), "MMM d, yyyy h:mm a").toLowerCase();
+                const resultStr = log.added > 0 ? `${log.added} new` : "no new";
+                return dateStr.includes(q) || resultStr.includes(q) || String(log.total).includes(q);
+              });
+              if (wooSyncHistory.length === 0) {
+                return (
+                  <p className="text-sm text-center py-6" style={{ color: "oklch(0.55 0.05 260)" }}>
+                    No sync history yet. Run a sync to see results here.
+                  </p>
+                );
+              }
+              if (filtered.length === 0) {
+                return (
+                  <p className="text-sm text-center py-4" style={{ color: "oklch(0.55 0.05 260)" }}>
+                    No results for "{wooHistorySearch}"
+                  </p>
+                );
+              }
+              return filtered.map((log) => (
                 <div
                   key={log.id}
                   className="rounded-lg px-3 py-2.5 flex items-start gap-3"
@@ -1012,14 +1055,26 @@ export default function SavedContacts() {
                   </div>
                   <RefreshCw size={12} style={{ color: "oklch(0.70 0.05 260)", flexShrink: 0, marginTop: 2 }} aria-hidden="true" />
                 </div>
-              ))
-            )}
+              ));
+            })()}
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex items-center justify-between gap-2">
+            <Button
+              size="sm"
+              disabled={syncFromWooMutation.isPending || !wooCreds}
+              onClick={() => wooCreds && syncFromWooMutation.mutate({ days: wooDays })}
+              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)", fontFamily: "'Nunito', sans-serif" }}
+            >
+              {syncFromWooMutation.isPending ? (
+                <><Loader2 size={13} className="animate-spin mr-1" aria-hidden="true" /> Syncing…</>
+              ) : (
+                <><RefreshCw size={13} className="mr-1" aria-hidden="true" /> Sync Now ({wooDays}d)</>
+              )}
+            </Button>
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setWooSyncHistoryOpen(false)}
+              onClick={() => { setWooSyncHistoryOpen(false); setWooHistorySearch(""); }}
               style={{ fontFamily: "'Nunito', sans-serif" }}
             >
               Close

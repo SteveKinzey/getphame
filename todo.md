@@ -599,3 +599,8 @@
 - [x] Add clickable WooCommerce sync status icon that opens a sync history/logs modal on Contacts page
 - [x] Add woo.syncHistory tRPC procedure returning last N sync events with counts and timestamps
 - [x] Add woo_sync_logs table to schema and push migration (0023_steep_tiger_shark.sql)
+
+## WooCommerce Sync Enhancements
+
+- [x] Add search/filter input to WooCommerce sync history modal (filter by date or result)
+- [x] Add manual WooCommerce sync trigger button inside the sync history modal footer (Sync Now)
