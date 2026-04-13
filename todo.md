@@ -536,3 +536,7 @@
 - [x] Set APP_BASE_URL=https://reviewlink.app as a project secret; harden reminder tracking fallback to use it
 - [x] Add physical mailing address to Privacy Policy and Terms of Service
 - [x] Add CAN-SPAM / user-responsibility clause to Terms of Service
+
+## Landing Page FAQ
+
+- [x] Add 4-question FAQ section to LandingPage.tsx (spam, email providers, free, CSV import)

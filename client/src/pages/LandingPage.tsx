@@ -2,7 +2,8 @@
 // Navy/gold design system matching the authenticated app
 
 import { getLoginUrl } from "@/const";
-import { Rocket, Star, Send, Users, CheckCircle2, ArrowRight, Mail, Globe } from "lucide-react";
+import { Rocket, Star, Send, Users, CheckCircle2, ArrowRight, Mail, Globe, ChevronDown } from "lucide-react";
+import { useState } from "react";
 
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
@@ -28,12 +29,81 @@ const FEATURES = [
   },
 ];
 
+const FAQS = [
+  {
+    q: "Will it look like spam?",
+    a: "No. Every email is sent directly from your own email account via SMTP — not from a shared bulk-sending server. Your customer sees your name, your email address, and a message written in your voice. It lands in the inbox like a personal note, not a marketing blast.",
+  },
+  {
+    q: "What email providers work?",
+    a: "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to ReviewLink.",
+  },
+  {
+    q: "Is it really free?",
+    a: "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap (Gmail allows ~500/day, most others are similar). There are no hidden fees and no credit card required to get started.",
+  },
+  {
+    q: "Can I import my customer list?",
+    a: "Yes. You can upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store. Once imported, you can bulk-select contacts and send personalised review requests in a single click.",
+  },
+];
+
 const HOW_IT_WORKS = [
   { step: "1", label: "Connect your email account (SMTP)" },
   { step: "2", label: "Add your Google (or other) review link" },
   { step: "3", label: "Import or add your customers" },
   { step: "4", label: "Send personalised review requests" },
 ];
+
+function FAQSection() {
+  const [open, setOpen] = useState<number | null>(null);
+  return (
+    <section className="px-5 py-10 max-w-lg mx-auto w-full">
+      <h2
+        className="text-xl font-black text-center mb-6"
+        style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+      >
+        Frequently asked questions
+      </h2>
+      <div className="flex flex-col gap-3">
+        {FAQS.map((faq, i) => (
+          <div
+            key={i}
+            className="bg-white rounded-2xl shadow-sm overflow-hidden"
+          >
+            <button
+              onClick={() => setOpen(open === i ? null : i)}
+              className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left"
+            >
+              <span
+                className="text-sm font-black"
+                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+              >
+                {faq.q}
+              </span>
+              <ChevronDown
+                size={16}
+                className="shrink-0 transition-transform duration-200"
+                style={{
+                  color: "oklch(0.80 0.18 80)",
+                  transform: open === i ? "rotate(180deg)" : "rotate(0deg)",
+                }}
+              />
+            </button>
+            {open === i && (
+              <div
+                className="px-5 pb-5 text-xs leading-relaxed"
+                style={{ color: "oklch(0.40 0.04 260)" }}
+              >
+                {faq.a}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
 
 export default function LandingPage() {
   const loginUrl = getLoginUrl();
@@ -213,6 +283,9 @@ export default function LandingPage() {
           — Local business owner
         </p>
       </section>
+
+      {/* ── FAQ ─────────────────────────────────────────────────────────────── */}
+      <FAQSection />
 
       {/* ── Bottom CTA ──────────────────────────────────────────────────────── */}
       <section
