@@ -6,12 +6,14 @@ import { trpc } from "@/lib/trpc";
 import { Send, Rocket, Mail, User, Star, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const SUCCESS_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-send-success-8kZtg3dvEuiCrR8DrxxgKA.webp";
 
 export default function SendRequestPage() {
   const [, navigate] = useLocation();
+  const { track } = useAnalytics();
 
   const { data: profile } = trpc.profile.get.useQuery();
   const { data: smtpStatus } = trpc.smtp.status.useQuery();
@@ -57,6 +59,7 @@ export default function SendRequestPage() {
     onSuccess: () => {
       setSending(false);
       setSent(true);
+      track("send_request", { platform: activePlatform?.platform ?? "unknown" });
       toast.success("Review request sent!");
     },
     onError: (err) => {

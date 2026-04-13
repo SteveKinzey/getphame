@@ -303,15 +303,17 @@ export default function EmailTemplates() {
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => openEdit(t)}
+                    aria-label={`Edit template: ${t.name}`}
                     className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
                   >
-                    <Pencil size={15} />
+                    <Pencil size={15} aria-hidden="true" />
                   </button>
                   <button
                     onClick={() => setDeleteTarget(t)}
+                    aria-label={`Delete template: ${t.name}`}
                     className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
                   >
-                    <Trash2 size={15} />
+                    <Trash2 size={15} aria-hidden="true" />
                   </button>
                 </div>
               </div>

@@ -9,6 +9,7 @@ import { useLocation } from "wouter";
 import { format } from "date-fns";
 import OnboardingGuide from "@/components/OnboardingGuide";
 import { toast } from "sonner";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
@@ -18,8 +19,10 @@ const SHARE_TEXT = "I've been using ReviewLink to send review requests from my o
 
 function ShareReferralCard() {
   const [copied, setCopied] = useState(false);
+  const { track } = useAnalytics();
 
   const handleShare = async () => {
+    track("share_referral");
     if (navigator.share) {
       try {
         await navigator.share({

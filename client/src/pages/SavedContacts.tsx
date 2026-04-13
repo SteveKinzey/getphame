@@ -28,6 +28,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import {
   UserPlus,
   Send,
@@ -77,6 +78,7 @@ const emptyForm: FormData = { name: "", email: "", phone: "", notes: "" };
 export default function SavedContacts() {
   const { isAuthenticated, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
+  const { track } = useAnalytics();
 
   const [search, setSearch] = useState("");
   const [dormancyFilter, setDormancyFilter] = useState<"all" | "30" | "60" | "90">("all");
@@ -218,6 +220,7 @@ export default function SavedContacts() {
       utils.requests.stats.invalidate();
       setSelected(new Set());
       setBulkConfirmOpen(false);
+      if (result.sent > 0) track("bulk_send", { count: result.sent });
 
       if (result.sent > 0 && result.failed === 0) {
         toast.success(
@@ -728,15 +731,17 @@ export default function SavedContacts() {
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       onClick={() => openEdit(c)}
+                      aria-label={`Edit contact: ${c.name}`}
                       className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
                     >
-                      <Pencil size={15} />
+                      <Pencil size={15} aria-hidden="true" />
                     </button>
                     <button
                       onClick={() => setDeleteTarget(c)}
+                      aria-label={`Delete contact: ${c.name}`}
                       className="p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
                     >
-                      <Trash2 size={15} />
+                      <Trash2 size={15} aria-hidden="true" />
                     </button>
                     <Button
                       size="sm"

@@ -35,6 +35,7 @@ import OnboardingGuide from "@/components/OnboardingGuide";
 
 import { toast } from "sonner";
 import { useLocation } from "wouter";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 // ── Inline From Name editor (shown in connected SMTP card) ─────────────────────
 function InlineFromNameEdit({ current, onSaved }: { current: string; onSaved: () => void }) {
@@ -236,6 +237,7 @@ export default function SettingsPage() {
   const { user, logout } = useAuth();
   const [, navigate] = useLocation();
   const [guideOpen, setGuideOpen] = useState(false);
+  const { track } = useAnalytics();
 
   // ── Profile form state ─────────────────────────────────────────────────────
   const { data: profile, isLoading: profileLoading } = trpc.profile.get.useQuery();
@@ -428,6 +430,7 @@ export default function SettingsPage() {
       utils.smtp.status.invalidate();
       setShowSmtpForm(false);
       setSmtpPassword("");
+      track("smtp_connect");
       toast.success("Email account connected!");
     },
     onError: (err) => toast.error(err.message),

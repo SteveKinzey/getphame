@@ -70,6 +70,8 @@ function AppShell() {
 
   return (
     <div className="mobile-screen">
+      {/* Skip to main content — visible on keyboard focus for screen readers */}
+      <a href="#main-content" className="skip-to-content">Skip to main content</a>
       {showWizard && (
         <OnboardingWizard
           onDismiss={() => {
@@ -78,6 +80,7 @@ function AppShell() {
         />
       )}
       <OnboardingGuide open={guideOpen} onClose={handleGuideClose} />
+      <main id="main-content">
       <Switch>
         <Route path="/" component={HomePage} />
         <Route path="/send" component={SendRequestPage} />
@@ -95,6 +98,7 @@ function AppShell() {
         <Route path="/admin/smtp-stats" component={AdminSmtpStatsPage} />
         <Route component={HomePage} />
       </Switch>
+      </main>
       <BottomNav />
     </div>
   );

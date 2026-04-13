@@ -17,6 +17,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type RawRow = Record<string, string>;
@@ -112,6 +113,7 @@ const STEPS = ["Upload", "Map Columns", "Preview", "Done"];
 export default function ImportContactsPage() {
   const [, navigate] = useLocation();
   const utils = trpc.useUtils();
+  const { track } = useAnalytics();
 
   const [step, setStep] = useState<0 | 1 | 2 | 3>(0);
   const [isDragging, setIsDragging] = useState(false);
@@ -128,6 +130,7 @@ export default function ImportContactsPage() {
       setImportResult(result);
       setStep(3);
       utils.contacts.list.invalidate();
+      track("csv_import", { imported: result.imported, skipped: result.skipped });
     },
     onError: (err) => {
       toast.error(err.message);

@@ -247,6 +247,76 @@
     animation: shimmer 2s linear infinite;
   }
 
+  /* ── Accessibility ─────────────────────────────────────────────────── */
+
+  /* Skip to main content link (visible on keyboard focus) */
+  .skip-to-content {
+    position: absolute;
+    top: -100%;
+    left: 1rem;
+    z-index: 9999;
+    background: oklch(0.22 0.09 260);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: top 0.1s;
+  }
+  .skip-to-content:focus {
+    top: 1rem;
+  }
+
+  /* Screen-reader only utility */
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  /* Consistent focus ring for keyboard navigation */
+  :focus-visible {
+    outline: 2px solid oklch(0.80 0.18 80);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* ── Scroll-reveal animation ────────────────────────────────────────── */
+  @keyframes revealUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+  }
+  .reveal.revealed {
+    animation: revealUp 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  /* Stagger delays for reveal children */
+  .reveal-delay-1 { animation-delay: 0.05s; }
+  .reveal-delay-2 { animation-delay: 0.12s; }
+  .reveal-delay-3 { animation-delay: 0.19s; }
+  .reveal-delay-4 { animation-delay: 0.26s; }
+
+  /* ── Enhanced card shadows ──────────────────────────────────────────── */
+  .rr-card-elevated {
+    background: white;
+    border-radius: 1.25rem;
+    box-shadow:
+      0 1px 2px oklch(0.22 0.09 260 / 0.04),
+      0 4px 12px oklch(0.22 0.09 260 / 0.08),
+      0 12px 32px oklch(0.22 0.09 260 / 0.06);
+  }
+
   /* PWA mobile viewport fix */
   .mobile-screen {
     min-height: 100dvh;

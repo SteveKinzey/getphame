@@ -571,3 +571,16 @@
 ## Referral Nudge
 
 - [x] Add "Share ReviewLink" referral card to Home screen with Web Share API + clipboard fallback
+
+## UI / Analytics / Accessibility Sprint
+
+- [x] UI: Improve landing page hero typography hierarchy and CTA button contrast
+- [x] UI: Add micro-animations (scroll-reveal, button press feedback) to landing page
+- [x] UI: Improve card shadow depth (rr-card-elevated class) across Dashboard/Home
+- [x] Analytics: Add useAnalytics hook wrapping Umami window.umami for event tracking
+- [x] Analytics: Track key events (send_request, bulk_send, csv_import, smtp_connect, share_referral)
+- [x] A11y: Add aria-label to icon-only buttons in EmailTemplates, SavedContacts, Dashboard
+- [x] A11y: Add skip-to-content link at top of app (visible on keyboard focus)
+- [x] A11y: Add :focus-visible ring styles globally in index.css
+- [x] A11y: Add sr-only utility class to index.css
+- [x] A11y: Wrap Switch in <main id="main-content"> landmark for screen readers

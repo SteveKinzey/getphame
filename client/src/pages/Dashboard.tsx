@@ -393,9 +393,10 @@ export default function DashboardPage() {
                 {activitySearch && (
                   <button
                     onClick={() => setActivitySearch("")}
+                    aria-label="Clear search"
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
-                    <X size={14} />
+                    <X size={14} aria-hidden="true" />
                   </button>
                 )}
               </div>
@@ -479,11 +480,12 @@ export default function DashboardPage() {
                     {/* Checkbox */}
                     <button
                       onClick={() => toggleSelect(req.id)}
+                      aria-label={selected.has(req.id) ? `Deselect ${req.customerName}` : `Select ${req.customerName}`}
+                      aria-pressed={selected.has(req.id)}
                       className="shrink-0 text-gray-300 hover:text-gray-500 transition-colors"
                       style={{ color: selected.has(req.id) ? "oklch(0.45 0.12 280)" : undefined }}
-                      title={selected.has(req.id) ? "Deselect" : "Select"}
                     >
-                      {selected.has(req.id) ? <CheckSquare size={16} /> : <Square size={16} />}
+                      {selected.has(req.id) ? <CheckSquare size={16} aria-hidden="true" /> : <Square size={16} aria-hidden="true" />}
                     </button>
                     <div
                       className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black shrink-0"
@@ -587,11 +589,11 @@ export default function DashboardPage() {
           </button>
           <button
             onClick={() => setSelected(new Set())}
+            aria-label="Clear selection"
             className="p-1.5 rounded-lg transition-colors"
             style={{ color: "rgba(255,255,255,0.5)" }}
-            title="Clear selection"
           >
-            <X size={14} />
+            <X size={14} aria-hidden="true" />
           </button>
         </div>
       )}
