@@ -59,6 +59,16 @@ function PaidRoute({ component: Component }: { component: React.ComponentType })
 
 function AppShell() {
   const { user, loading } = useAuth();
+
+  // Silently sync Stripe customers into contacts once per session when user logs in
+  const silentStripeSyncMutation = trpc.contacts.syncFromStripe.useMutation();
+  useEffect(() => {
+    if (user && !silentStripeSyncMutation.isPending && !silentStripeSyncMutation.isSuccess) {
+      silentStripeSyncMutation.mutate();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [!!user]);
+
   const { data: onboardingStatus } = trpc.onboarding.status.useQuery(undefined, {
     enabled: !!user,
     refetchInterval: 5000,

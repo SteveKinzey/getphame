@@ -760,7 +760,23 @@ export const appRouter = router({
       }));
 
       const result = await upsertContactsFromSource(ctx.user.id, rows);
+
+      // Save last synced timestamp to businessProfiles
+      const db = await getDb();
+      if (db && profile) {
+        await db.update(businessProfiles)
+          .set({ stripeLastSyncedAt: Date.now() })
+          .where(eq(businessProfiles.userId, ctx.user.id));
+      }
+
       return { ...result, total: allCustomers.length };
+    }),
+
+    syncStatus: protectedProcedure.query(async ({ ctx }) => {
+      const profile = await getBusinessProfile(ctx.user.id);
+      return {
+        stripeLastSyncedAt: profile?.stripeLastSyncedAt ?? null,
+      };
     }),
   }),
 

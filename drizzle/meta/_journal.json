@@ -134,6 +134,13 @@
       "when": 1776047648766,
       "tag": "0018_aberrant_crusher_hogan",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "5",
+      "when": 1776048234322,
+      "tag": "0019_married_squadron_supreme",
+      "breakpoints": true
     }
   ]
 }

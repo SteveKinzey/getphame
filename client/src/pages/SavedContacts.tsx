@@ -81,6 +81,7 @@ export default function SavedContacts() {
   const [search, setSearch] = useState("");
   const [dormancyFilter, setDormancyFilter] = useState<"all" | "30" | "60" | "90">("all");
   const [tagFilter, setTagFilter] = useState<string | null>(null);
+  const [sourceFilter, setSourceFilter] = useState<"all" | "stripe" | "woocommerce" | "manual">("all");
   const [tagInputId, setTagInputId] = useState<number | null>(null);
   const [tagInputValue, setTagInputValue] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -102,6 +103,10 @@ export default function SavedContacts() {
   const utils = trpc.useUtils();
 
   const { data: contacts = [], isLoading } = trpc.contacts.list.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  const { data: syncStatus } = trpc.contacts.syncStatus.useQuery(undefined, {
     enabled: isAuthenticated,
   });
 
@@ -210,6 +215,7 @@ export default function SavedContacts() {
       c.email.toLowerCase().includes(search.toLowerCase());
     if (!matchesSearch) return false;
     if (tagFilter && !parseTags(c.tags).includes(tagFilter)) return false;
+    if (sourceFilter !== "all" && c.source !== sourceFilter) return false;
     if (dormancyFilter === "all") return true;
     const days = parseInt(dormancyFilter, 10);
     const cutoff = now - days * 24 * 60 * 60 * 1000;
@@ -320,14 +326,18 @@ export default function SavedContacts() {
               variant="outline"
               className="font-bold border-0"
               style={{ background: "oklch(0.32 0.07 260)", color: "oklch(0.80 0.18 80)" }}
-              title="Import customers from Stripe"
+              title={syncStatus?.stripeLastSyncedAt ? `Last synced ${format(new Date(syncStatus.stripeLastSyncedAt), "MMM d, h:mm a")}` : "Import customers from Stripe"}
             >
               {syncFromStripeMutation.isPending ? (
                 <Loader2 size={14} className="mr-1 animate-spin" />
               ) : (
                 <CreditCard size={14} className="mr-1" />
               )}
-              Stripe
+              Stripe{syncStatus?.stripeLastSyncedAt ? (
+                <span className="ml-1 opacity-60 text-xs font-normal hidden sm:inline">
+                  · {format(new Date(syncStatus.stripeLastSyncedAt), "MMM d")}
+                </span>
+              ) : null}
             </Button>
             <Button
               onClick={() => navigate("/import")}
@@ -384,6 +394,36 @@ export default function SavedContacts() {
             </button>
           )}
         </div>
+
+        {/* Source filter pills */}
+        {(() => {
+          const hasStripe = contacts.some((c) => c.source === "stripe");
+          const hasWoo = contacts.some((c) => c.source === "woocommerce");
+          if (!hasStripe && !hasWoo) return null;
+          return (
+            <div className="flex items-center gap-2 overflow-x-auto pb-1">
+              <Globe size={13} style={{ color: "oklch(0.55 0.03 260)", flexShrink: 0 }} />
+              {(["all", ...(hasStripe ? ["stripe"] : []), ...(hasWoo ? ["woocommerce"] : []), "manual"] as const).map((opt) => {
+                const labels: Record<string, string> = { all: "All Sources", stripe: "Stripe", woocommerce: "WooCommerce", manual: "Manual" };
+                const active = sourceFilter === opt;
+                return (
+                  <button
+                    key={opt}
+                    onClick={() => setSourceFilter(opt as "all" | "stripe" | "woocommerce" | "manual")}
+                    className="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors"
+                    style={{
+                      background: active ? "oklch(0.45 0.12 280)" : "white",
+                      color: active ? "white" : "oklch(0.45 0.05 260)",
+                      border: "1px solid oklch(0.88 0.02 260)",
+                    }}
+                  >
+                    {labels[opt]}
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })()}
 
         {/* Dormancy filter pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1">

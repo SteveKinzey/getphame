@@ -377,3 +377,12 @@
 - [x] Wire WooCommerce syncWooOrders to also upsert completed order customers into saved_contacts (deduped by email)
 - [x] Update SavedContacts UI: show source badge (WooCommerce / Stripe) on each contact card
 - [x] Update SavedContacts UI: add "Stripe" sync button in header (calls contacts.syncFromStripe)
+
+## Saved Contacts UX Round 2
+
+- [x] Add stripeLastSyncedAt column to businessProfiles table (not users), run db:push (migration 0019 applied)
+- [x] Update contacts.syncFromStripe to save stripeLastSyncedAt after each sync
+- [x] Add contacts.syncStatus procedure: return stripeLastSyncedAt
+- [x] Auto-trigger contacts.syncFromStripe silently on app load (useEffect in AppShell in App.tsx, once per session)
+- [x] Add source filter pills to SavedContacts (All Sources / Stripe / WooCommerce / Manual) — only shown when Stripe or WooCommerce contacts exist
+- [x] Show last-synced timestamp on the Stripe sync button (tooltip + inline date on wide screens)
