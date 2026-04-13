@@ -390,3 +390,7 @@
 ## Stripe Sync UX Fix
 
 - [x] Remove silent auto-trigger Stripe sync from App.tsx (keep as manual button only in SavedContacts header)
+
+## WooCommerce Sync Button in Saved Contacts
+
+- [x] Add WooCommerce sync button to Saved Contacts header (mirrors Stripe button, shows last-synced timestamp in teal, only shown when WooCommerce is connected)

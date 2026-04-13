@@ -158,6 +158,24 @@ export default function SavedContacts() {
 
   const markSentMutation = trpc.contacts.markSent.useMutation();
 
+  // WooCommerce credentials (for last-synced timestamp)
+  const { data: wooCreds } = trpc.woo.getCredentials.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  const syncFromWooMutation = trpc.woo.sync.useMutation({
+    onSuccess: (result) => {
+      utils.contacts.list.invalidate();
+      utils.woo.getCredentials.invalidate();
+      const newContacts = result.added ?? 0;
+      toast.success(
+        `WooCommerce synced — ${result.total} customer${result.total !== 1 ? "s" : ""}` +
+        (newContacts > 0 ? `, ${newContacts} new contact${newContacts !== 1 ? "s" : ""} added.` : ".")
+      );
+    },
+    onError: (e) => toast.error(e.message),
+  });
+
   const syncFromStripeMutation = trpc.contacts.syncFromStripe.useMutation({
     onSuccess: (result) => {
       utils.contacts.list.invalidate();
@@ -319,6 +337,28 @@ export default function SavedContacts() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            {wooCreds && (
+              <Button
+                onClick={() => syncFromWooMutation.mutate({ days: 30 })}
+                disabled={syncFromWooMutation.isPending}
+                size="sm"
+                variant="outline"
+                className="font-bold border-0"
+                style={{ background: "oklch(0.32 0.07 260)", color: "oklch(0.72 0.18 160)" }}
+                title={wooCreds.lastSyncedAt ? `Last synced ${format(new Date(wooCreds.lastSyncedAt), "MMM d, h:mm a")}` : "Import customers from WooCommerce"}
+              >
+                {syncFromWooMutation.isPending ? (
+                  <Loader2 size={14} className="mr-1 animate-spin" />
+                ) : (
+                  <ShoppingCart size={14} className="mr-1" />
+                )}
+                WooCommerce{wooCreds.lastSyncedAt ? (
+                  <span className="ml-1 opacity-60 text-xs font-normal hidden sm:inline">
+                    · {format(new Date(wooCreds.lastSyncedAt), "MMM d")}
+                  </span>
+                ) : null}
+              </Button>
+            )}
             <Button
               onClick={() => syncFromStripeMutation.mutate()}
               disabled={syncFromStripeMutation.isPending}
