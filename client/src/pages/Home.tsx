@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Rocket, Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X } from "lucide-react";
+import { Rocket, Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X, Eye, MousePointerClick } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import OnboardingGuide from "@/components/OnboardingGuide";
@@ -23,6 +23,61 @@ function formatRelativeTime(date: Date): string {
   if (diffHours < 24) return `${diffHours}h ago`;
   if (diffDays < 7) return `${diffDays}d ago`;
   return format(date, "MMM d");
+}
+
+function TrackingSummaryCard() {
+  const { isAuthenticated } = useAuth();
+  const { data: overallStats, isLoading } = trpc.tracking.overallStats.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  // Don't render until we have data and there's at least one sent email
+  if (isLoading || !overallStats || overallStats.totalSent === 0) return null;
+
+  const { totalSent, uniqueOpens, uniqueClicks, openRate, clickRate } = overallStats;
+
+  return (
+    <div className="bg-white rounded-2xl p-4 shadow-sm">
+      <div className="flex items-center gap-2 mb-3">
+        <TrendingUp size={16} style={{ color: "oklch(0.22 0.09 260)" }} />
+        <h3
+          className="text-sm font-black"
+          style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+        >
+          Email Performance
+        </h3>
+      </div>
+      <div className="grid grid-cols-3 gap-3">
+        {/* Sent */}
+        <div className="flex flex-col items-center rounded-xl py-3 px-2" style={{ background: "oklch(0.97 0.01 260)" }}>
+          <Send size={14} style={{ color: "oklch(0.50 0.10 260)", marginBottom: 4 }} />
+          <span className="text-xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+            {totalSent}
+          </span>
+          <span className="text-xs" style={{ color: "oklch(0.60 0.03 260)" }}>Sent</span>
+        </div>
+        {/* Open Rate */}
+        <div className="flex flex-col items-center rounded-xl py-3 px-2" style={{ background: "oklch(0.95 0.05 220)" }}>
+          <Eye size={14} style={{ color: "oklch(0.45 0.15 220)", marginBottom: 4 }} />
+          <span className="text-xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+            {openRate}%
+          </span>
+          <span className="text-xs" style={{ color: "oklch(0.50 0.08 220)" }}>Open Rate</span>
+        </div>
+        {/* Click Rate */}
+        <div className="flex flex-col items-center rounded-xl py-3 px-2" style={{ background: "oklch(0.96 0.06 80)" }}>
+          <MousePointerClick size={14} style={{ color: "oklch(0.55 0.18 80)", marginBottom: 4 }} />
+          <span className="text-xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+            {clickRate}%
+          </span>
+          <span className="text-xs" style={{ color: "oklch(0.55 0.12 80)" }}>Click Rate</span>
+        </div>
+      </div>
+      <p className="text-xs mt-2.5 text-center" style={{ color: "oklch(0.65 0.03 260)" }}>
+        {uniqueOpens} opened · {uniqueClicks} clicked · across {totalSent} requests
+      </p>
+    </div>
+  );
 }
 
 export default function HomePage() {
@@ -457,6 +512,9 @@ export default function HomePage() {
             </p>
           )}
         </div>
+
+        {/* ── Email Tracking Summary Card ────────────────────────────── */}
+        <TrackingSummaryCard />
 
         {/* Platform Breakdown */}
         {stats?.platformBreakdown && stats.platformBreakdown.filter((p) => p.platform !== "unknown").length > 0 && (

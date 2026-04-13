@@ -22,6 +22,7 @@ export default function DashboardPage() {
   const { data: stats, isLoading } = trpc.requests.stats.useQuery();
   const { data: allRequests, isLoading: listLoading } = trpc.requests.list.useQuery();
   const { data: profile } = trpc.profile.get.useQuery();
+  const { data: emailPerf } = trpc.tracking.overallStats.useQuery();
   const utils = trpc.useUtils();
 
   // Single-row toggle
@@ -333,6 +334,52 @@ export default function DashboardPage() {
                 Upgrade to Pro — Unlimited Requests
               </button>
             )}
+          </div>
+        )}
+
+        {/* Email Performance Card */}
+        {emailPerf && emailPerf.totalSent > 0 && (
+          <div className="bg-white rounded-2xl p-4 shadow-sm">
+            <h3
+              className="text-sm font-black mb-3"
+              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+            >
+              Email Performance
+            </h3>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="text-center">
+                <p className="text-xs mb-1" style={{ color: "oklch(0.55 0.03 260)" }}>Sent</p>
+                <p className="text-xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                  {emailPerf.totalSent}
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs mb-1" style={{ color: "oklch(0.55 0.03 260)" }}>Open Rate</p>
+                <p className="text-xl font-black" style={{ color: "oklch(0.55 0.20 145)", fontFamily: "'Poppins', sans-serif" }}>
+                  {emailPerf.openRate}%
+                </p>
+              </div>
+              <div className="text-center">
+                <p className="text-xs mb-1" style={{ color: "oklch(0.55 0.03 260)" }}>Click Rate</p>
+                <p className="text-xl font-black" style={{ color: "oklch(0.75 0.18 80)", fontFamily: "'Poppins', sans-serif" }}>
+                  {emailPerf.clickRate}%
+                </p>
+              </div>
+            </div>
+            <div className="mt-3 pt-3 flex gap-4" style={{ borderTop: "1px solid oklch(0.94 0.01 260)" }}>
+              <div className="flex items-center gap-1.5">
+                <Eye size={13} style={{ color: "oklch(0.55 0.20 145)" }} />
+                <span className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+                  {emailPerf.uniqueOpens} unique opens
+                </span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <MousePointerClick size={13} style={{ color: "oklch(0.75 0.18 80)" }} />
+                <span className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+                  {emailPerf.uniqueClicks} unique clicks
+                </span>
+              </div>
+            </div>
           </div>
         )}
 

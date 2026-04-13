@@ -92,6 +92,17 @@ export default function EmailTemplates() {
     templateTrackingStats.map((s) => [s.templateId, { opens: s.opens, clicks: s.clicks }])
   );
 
+  // Compute the top-performing template by click count (only if at least one template has clicks)
+  const topTemplateId: number | null = (() => {
+    let best: { id: number; clicks: number } | null = null;
+    for (const [id, stats] of Array.from(templateStatsMap.entries())) {
+      if (stats.clicks > 0 && (!best || stats.clicks > best.clicks)) {
+        best = { id, clicks: stats.clicks };
+      }
+    }
+    return best ? best.id : null;
+  })();
+
   // Fetch real profile data for live preview substitution
   const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: isAuthenticated });
   const { data: platforms = [] } = trpc.reviewPlatforms.list.useQuery(undefined, { enabled: isAuthenticated });
@@ -250,6 +261,16 @@ export default function EmailTemplates() {
                       <span className="text-xs px-2 py-0.5 rounded-full font-medium"
                         style={{ background: "oklch(0.97 0.01 260)", color: "oklch(0.65 0.03 260)" }}>
                         Not used yet
+                      </span>
+                    )}
+                    {/* Top Template badge */}
+                    {topTemplateId === t.id && (
+                      <span
+                        className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full"
+                        style={{ background: "oklch(0.92 0.15 145)", color: "oklch(0.30 0.10 145)" }}
+                        title="This template has the most review link clicks"
+                      >
+                        🏆 Top Template
                       </span>
                     )}
                     {/* Open / click tracking badges */}

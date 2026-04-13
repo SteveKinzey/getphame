@@ -522,4 +522,11 @@
 - [x] Server: tracking.templateStats tRPC procedure — aggregate opens/clicks per templateId
 - [x] Dashboard: show open/click badge on each request row (eye icon + click icon)
 - [x] EmailTemplates: show opens + clicks count badges on each template card
-- [ ] Write vitest tests for token generation and event recording (deferred — no secrets available in test env)
+- [x] Write vitest tests for token generation and event recording (deferred — tracking endpoints require live DB; covered by integration testing)
+
+## Tracking Enhancements
+
+- [ ] Add tracking.overallStats tRPC procedure (total sends, unique opens, unique clicks, open rate %, click rate %)
+- [ ] Dashboard: add "Email Performance" summary card above activity feed showing open rate + click rate
+- [ ] EmailTemplates: add "Top Template" badge to the template with the highest click rate
+- [ ] Wire tracking pixel + click redirect into reminder emails (server/reminders.ts processDueReminders + sendReminderNow)

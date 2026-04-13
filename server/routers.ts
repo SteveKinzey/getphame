@@ -1136,6 +1136,52 @@ export const appRouter = router({
       }
       return Array.from(map.entries()).map(([templateId, stats]) => ({ templateId, ...stats }));
     }),
+
+    /**
+     * Returns overall open/click rates across all emails sent by the user.
+     * Used by Dashboard summary card.
+     */
+    overallStats: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) return { totalSent: 0, uniqueOpens: 0, uniqueClicks: 0, openRate: 0, clickRate: 0 };
+      const { emailEvents, customerRequests } = await import("../drizzle/schema");
+      const { eq: eqOp, sql: sqlOp } = await import("drizzle-orm");
+
+      // Total emails sent by this user
+      const sentRows = await db
+        .select({ count: sqlOp<number>`count(*)` })
+        .from(customerRequests)
+        .where(eqOp(customerRequests.userId, ctx.user.id));
+      const totalSent = Number(sentRows[0]?.count ?? 0);
+
+      // Unique opens (one per request)
+      const openRows = await db
+        .select({ count: sqlOp<number>`count(distinct ${emailEvents.requestId})` })
+        .from(emailEvents)
+        .where(
+          (await import("drizzle-orm")).and(
+            eqOp(emailEvents.userId, ctx.user.id),
+            eqOp(emailEvents.type, "open")
+          )
+        );
+      const uniqueOpens = Number(openRows[0]?.count ?? 0);
+
+      // Unique clicks (one per request)
+      const clickRows = await db
+        .select({ count: sqlOp<number>`count(distinct ${emailEvents.requestId})` })
+        .from(emailEvents)
+        .where(
+          (await import("drizzle-orm")).and(
+            eqOp(emailEvents.userId, ctx.user.id),
+            eqOp(emailEvents.type, "click")
+          )
+        );
+      const uniqueClicks = Number(clickRows[0]?.count ?? 0);
+
+      const openRate = totalSent > 0 ? Math.round((uniqueOpens / totalSent) * 100) : 0;
+      const clickRate = totalSent > 0 ? Math.round((uniqueClicks / totalSent) * 100) : 0;
+      return { totalSent, uniqueOpens, uniqueClicks, openRate, clickRate };
+    }),
   }),
 
   accessCodes: router({
