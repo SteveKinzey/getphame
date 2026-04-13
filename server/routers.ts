@@ -1102,5 +1102,48 @@ export const appRouter = router({
       return { ok: true };
     }),
   }),
+
+  /** Admin-only analytics and diagnostics */
+  admin: router({
+    /** SMTP provider failure stats — breakdown by host across all users */
+    smtpStats: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      const rows = await db.select().from(smtpCredentials);
+      // Aggregate by host
+      const byHost: Record<string, {
+        host: string;
+        total: number;
+        ok: number;
+        fail: number;
+        neverChecked: number;
+        recentErrors: string[];
+      }> = {};
+      for (const row of rows) {
+        const h = row.host || "(unknown)";
+        if (!byHost[h]) byHost[h] = { host: h, total: 0, ok: 0, fail: 0, neverChecked: 0, recentErrors: [] };
+        byHost[h].total++;
+        if (row.lastHealthStatus === "ok") byHost[h].ok++;
+        else if (row.lastHealthStatus === "fail") {
+          byHost[h].fail++;
+          if (row.lastHealthError && byHost[h].recentErrors.length < 3) {
+            byHost[h].recentErrors.push(row.lastHealthError);
+          }
+        } else {
+          byHost[h].neverChecked++;
+        }
+      }
+      const summary = Object.values(byHost).sort((a, b) => b.fail - a.fail);
+      const totals = {
+        total: rows.length,
+        ok: rows.filter(r => r.lastHealthStatus === "ok").length,
+        fail: rows.filter(r => r.lastHealthStatus === "fail").length,
+        neverChecked: rows.filter(r => !r.lastHealthStatus).length,
+        lastRunAt: rows.reduce((max, r) => Math.max(max, r.lastHealthCheck ?? 0), 0) || null,
+      };
+      return { summary, totals };
+    }),
+  }),
 });
 export type AppRouter = typeof appRouter;

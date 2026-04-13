@@ -351,3 +351,9 @@
 - [x] Add Zoho SMTP setup note when smtp.zoho.com is selected (enable SMTP in Zoho account settings)
 - [x] Add "Test Connection" button in OnboardingWizard Step 1 (verify before committing) + new smtp.testCredentials procedure
 - [x] Track SMTP connection failures by provider in health check cron (log host + error to smtpCredentials.lastHealthError, migration 0017 applied)
+
+## Settings SMTP + Admin Dashboard (Round 3)
+
+- [x] Add "Test Connection" button to Settings SMTP form (uses smtp.testCredentials procedure, shows inline green/red result)
+- [x] Add Zoho setup note to Settings SMTP form (server-side detect query now returns Zoho hint for zoho.com, zohomail.com, and smtp.zoho.com host)
+- [x] Build admin SMTP provider failure stats dashboard at /admin/smtp-stats (breakdown by host, failure rate, health bar, recent error samples)

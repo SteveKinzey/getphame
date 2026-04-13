@@ -81,6 +81,9 @@ export function getAppPasswordHint(email: string, host?: string): string | null 
   if (domain === "yahoo.com") {
     return "Yahoo requires an App Password. Go to account.yahoo.com → Security → Generate app password.";
   }
+  if (domain === "zoho.com" || domain === "zohomail.com" || host === "smtp.zoho.com") {
+    return "Zoho Mail requires SMTP access to be enabled first. Go to mail.zoho.com → Settings → Mail Accounts → SMTP and enable \"Allow SMTP Access\".";
+  }
   return null;
 }
 

@@ -92,9 +92,26 @@ describe("getAppPasswordHint", () => {
     expect(hint).toContain("App Password");
   });
 
+  it("returns Zoho SMTP hint for zoho.com", () => {
+    const hint = getAppPasswordHint("user@zoho.com");
+    expect(hint).not.toBeNull();
+    expect(hint).toContain("SMTP Access");
+  });
+
+  it("returns Zoho SMTP hint for zohomail.com", () => {
+    const hint = getAppPasswordHint("user@zohomail.com");
+    expect(hint).not.toBeNull();
+    expect(hint).toContain("SMTP Access");
+  });
+
+  it("returns Zoho SMTP hint when host is smtp.zoho.com", () => {
+    const hint = getAppPasswordHint("user@custombiz.com", "smtp.zoho.com");
+    expect(hint).not.toBeNull();
+    expect(hint).toContain("SMTP Access");
+  });
+
   it("returns null for unknown providers", () => {
     expect(getAppPasswordHint("user@mycompany.com")).toBeNull();
-    expect(getAppPasswordHint("user@zoho.com")).toBeNull();
   });
 });
 

@@ -338,6 +338,7 @@ export default function SettingsPage() {
   const [smtpHint, setSmtpHint] = useState<string | null>(null);
   const [showSmtpForm, setShowSmtpForm] = useState(false);
   const [showSmtpPassword, setShowSmtpPassword] = useState(false);
+  const [smtpTestResult, setSmtpTestResult] = useState<{ ok: boolean; error?: string | null } | null>(null);
 
   // Auto-detect SMTP settings when email changes; also pass host so hint fires for Google Workspace
   const { data: smtpDetect } = trpc.smtp.detect.useQuery(
@@ -381,6 +382,15 @@ export default function SettingsPage() {
       }
     },
     onError: (err) => toast.error(err.message),
+  });
+
+  const testCredentials = trpc.smtp.testCredentials.useMutation({
+    onSuccess: (result) => {
+      setSmtpTestResult(result);
+    },
+    onError: (err) => {
+      setSmtpTestResult({ ok: false, error: err.message });
+    },
   });
 
   const resendWelcome = trpc.smtp.sendWelcome.useMutation({
@@ -1090,7 +1100,45 @@ export default function SettingsPage() {
                 </div>
               </details>
 
+              {/* Test result inline feedback */}
+              {smtpTestResult && (
+                <div
+                  className="flex items-start gap-2 px-3 py-2 rounded-xl text-xs"
+                  style={{
+                    background: smtpTestResult.ok ? "oklch(0.96 0.04 145)" : "oklch(0.97 0.03 27)",
+                    color: smtpTestResult.ok ? "oklch(0.40 0.12 145)" : "oklch(0.45 0.12 27)",
+                  }}
+                >
+                  <span className="font-black shrink-0">{smtpTestResult.ok ? "✓ Connection OK" : "✗ Connection failed"}</span>
+                  {!smtpTestResult.ok && smtpTestResult.error && (
+                    <span className="font-mono" style={{ wordBreak: "break-word" }}>— {smtpTestResult.error}</span>
+                  )}
+                </div>
+              )}
               <div className="flex gap-2">
+                {/* Test Connection button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (!smtpEmail.trim()) { toast.error("Email address is required"); return; }
+                    if (!smtpPassword.trim()) { toast.error("Password is required"); return; }
+                    if (!smtpHost.trim()) { toast.error("SMTP host is required — check Advanced settings"); return; }
+                    setSmtpTestResult(null);
+                    testCredentials.mutate({
+                      email: smtpEmail.trim(),
+                      password: smtpPassword,
+                      host: smtpHost.trim(),
+                      port: smtpPort,
+                      secure: smtpSecure,
+                    });
+                  }}
+                  disabled={testCredentials.isPending || connectSmtp.isPending}
+                  className="flex items-center justify-center gap-1.5 px-4 py-3 rounded-xl text-sm font-bold transition-transform active:scale-95"
+                  style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.35 0.04 260)" }}
+                >
+                  {testCredentials.isPending ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
+                  Test
+                </button>
                 <button
                   onClick={() => {
                     if (!smtpEmail.trim()) { toast.error("Email address is required"); return; }

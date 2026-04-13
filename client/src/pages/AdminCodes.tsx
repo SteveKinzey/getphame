@@ -126,15 +126,26 @@ export default function AdminCodesPage() {
             Admin
           </span>
         </div>
-        <h1
-          className="text-2xl font-black"
-          style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
-        >
-          Access Codes
-        </h1>
-        <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.5)" }}>
-          Create and manage beta / promo codes that grant free Pro access.
-        </p>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h1
+              className="text-2xl font-black"
+              style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+            >
+              Access Codes
+            </h1>
+            <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.5)" }}>
+              Create and manage beta / promo codes that grant free Pro access.
+            </p>
+          </div>
+          <button
+            onClick={() => navigate("/admin/smtp-stats")}
+            className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold mt-1"
+            style={{ background: "oklch(0.30 0.07 260)", color: "oklch(0.80 0.18 80)", border: "1px solid rgba(255,255,255,0.12)" }}
+          >
+            SMTP Stats
+          </button>
+        </div>
       </div>
 
       <div className="px-4 flex flex-col gap-4">

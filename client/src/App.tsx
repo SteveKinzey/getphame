@@ -25,6 +25,7 @@ import EmailTemplatesPage from "./pages/EmailTemplates";
 import RemindersPage from "./pages/Reminders";
 import ImportContactsPage from "./pages/ImportContacts";
 import AdminCodesPage from "./pages/AdminCodes";
+import AdminSmtpStatsPage from "./pages/AdminSmtpStats";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
 import OnboardingWizard from "./components/OnboardingWizard";
@@ -111,6 +112,7 @@ function AppShell() {
         <Route path="/reminders">{() => <PaidRoute component={RemindersPage} />}</Route>
         <Route path="/import">{() => <PaidRoute component={ImportContactsPage} />}</Route>
         <Route path="/admin/codes" component={AdminCodesPage} />
+        <Route path="/admin/smtp-stats" component={AdminSmtpStatsPage} />
         <Route component={HomePage} />
       </Switch>
       <BottomNav />
