@@ -32,7 +32,7 @@ import {
   BookOpen,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
-import ProBadge from "@/components/ProBadge";
+
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 
@@ -191,17 +191,6 @@ export default function SettingsPage() {
     onSuccess: () => {
       utils.onboarding.status.invalidate();
       toast.success("Setup wizard reopened! Check the home screen.");
-    },
-    onError: (err) => toast.error(err.message),
-  });
-
-  // ── Stripe subscription status ────────────────────────────────────────────
-  const { data: subStatus } = trpc.stripe.subscriptionStatus.useQuery();
-
-  const createPortal = trpc.stripe.createPortal.useMutation({
-    onSuccess: ({ url }) => {
-      toast.info("Opening billing portal...");
-      window.open(url, "_blank");
     },
     onError: (err) => toast.error(err.message),
   });
@@ -449,7 +438,7 @@ export default function SettingsPage() {
             <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
               {user.name ?? user.email ?? "Signed in"}
             </p>
-            {profile?.tier === "pro" && <ProBadge size="sm" />}
+
           </div>
         )}
       </div>
@@ -1195,9 +1184,9 @@ export default function SettingsPage() {
 
         {/* ── Plan ─────────────────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center justify-between mb-2">
             <div className="flex items-center gap-2">
-              <Crown size={18} style={{ color: "oklch(0.80 0.18 80)" }} />
+              <Star size={18} style={{ color: "oklch(0.80 0.18 80)" }} />
               <h2
                 className="text-base font-black"
                 style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
@@ -1207,55 +1196,14 @@ export default function SettingsPage() {
             </div>
             <span
               className="text-xs font-bold px-2 py-1 rounded-full"
-              style={{
-                background: (profile?.tier && profile.tier !== "free") ? "oklch(0.80 0.18 80)" : "oklch(0.93 0.02 260)",
-                color: (profile?.tier && profile.tier !== "free") ? "oklch(0.22 0.09 260)" : "oklch(0.45 0.04 260)",
-              }}
+              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
             >
-              {profile?.tier === "lifetime" ? "LIFETIME" : profile?.tier === "annual" ? "ANNUAL PRO" : profile?.tier === "pro" ? "MONTHLY PRO" : "FREE"}
+              FREE FOREVER
             </span>
           </div>
-
-          {(profile?.tier === "pro" || profile?.tier === "annual" || profile?.tier === "lifetime") ? (
-            <div className="flex flex-col gap-2">
-              <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
-                {profile?.tier === "lifetime"
-                  ? "Unlimited requests · Lifetime license — no renewals"
-                  : profile?.tier === "annual"
-                  ? "Unlimited requests · Annual subscription"
-                  : "Unlimited requests · Monthly subscription"}
-              </p>
-              <button
-                onClick={() => createPortal.mutate({ origin: window.location.origin })}
-                disabled={createPortal.isPending}
-                className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 disabled:opacity-70"
-                style={{
-                  background: "oklch(0.22 0.09 260)",
-                  color: "oklch(0.80 0.18 80)",
-                  fontFamily: "'Poppins', sans-serif",
-                }}
-              >
-                {createPortal.isPending ? (
-                  <Loader2 size={14} className="animate-spin" />
-                ) : (
-                  <CreditCard size={14} />
-                )}
-                Manage Billing
-              </button>
-            </div>
-          ) : (
-            <button
-              onClick={() => navigate("/upgrade")}
-              className="w-full py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
-              style={{
-                background: "oklch(0.22 0.09 260)",
-                color: "oklch(0.80 0.18 80)",
-                fontFamily: "'Poppins', sans-serif",
-              }}
-            >
-              Upgrade to Pro — Unlimited Requests
-            </button>
-          )}
+          <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+            ReviewLink is free — unlimited review requests, no credit card required.
+          </p>
         </div>
 
         {/* ── WooCommerce ──────────────────────────────────────────────────── */}

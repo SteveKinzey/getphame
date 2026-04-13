@@ -15,7 +15,7 @@ import HomePage from "./pages/Home";
 import SendRequestPage from "./pages/SendRequest";
 import DashboardPage from "./pages/Dashboard";
 import SettingsPage from "./pages/Settings";
-import UpgradePage from "./pages/Upgrade";
+
 import PrivacyPolicyPage from "./pages/PrivacyPolicy";
 import PaymentSuccessPage from "./pages/PaymentSuccess";
 import TermsOfServicePage from "./pages/TermsOfService";
@@ -31,32 +31,6 @@ import { useLocation } from "wouter";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, { useOnboardingGuide } from "./components/OnboardingGuide";
 
-// Route guard: redirects free-tier users to /upgrade before rendering protected pages
-function PaidRoute({ component: Component }: { component: React.ComponentType }) {
-  const { data: profile, isLoading } = trpc.profile.get.useQuery();
-  const [, navigate] = useLocation();
-
-  if (isLoading) {
-    return (
-      <div className="flex-1 flex items-center justify-center" style={{ background: "oklch(0.975 0.003 100)" }}>
-        <Loader2 className="animate-spin" size={24} style={{ color: "oklch(0.22 0.09 260)" }} />
-      </div>
-    );
-  }
-
-  const tier = profile?.tier;
-  const isPaid = tier === "pro" || tier === "annual" || tier === "lifetime";
-
-  if (!isPaid) {
-    // Redirect to upgrade — use effect to avoid render-phase navigation
-    if (typeof window !== "undefined" && !window.location.pathname.startsWith("/upgrade")) {
-      navigate("/upgrade");
-    }
-    return null;
-  }
-
-  return <Component />;
-}
 
 function AppShell() {
   const { user, loading, isAuthenticated } = useAuth();
@@ -103,18 +77,17 @@ function AppShell() {
       <OnboardingGuide open={guideOpen} onClose={handleGuideClose} />
       <Switch>
         <Route path="/" component={HomePage} />
-        <Route path="/send">{() => <PaidRoute component={SendRequestPage} />}</Route>
-        <Route path="/dashboard">{() => <PaidRoute component={DashboardPage} />}</Route>
+        <Route path="/send" component={SendRequestPage} />
+        <Route path="/dashboard" component={DashboardPage} />
         <Route path="/settings" component={SettingsPage} />
-        <Route path="/upgrade" component={UpgradePage} />
         <Route path="/payment-success" component={PaymentSuccessPage} />
         <Route path="/privacy-policy" component={PrivacyPolicyPage} />
         <Route path="/terms-of-service" component={TermsOfServicePage} />
-        <Route path="/woo-customers">{() => <PaidRoute component={WooCustomersPage} />}</Route>
-        <Route path="/contacts">{() => <PaidRoute component={SavedContactsPage} />}</Route>
-        <Route path="/templates">{() => <PaidRoute component={EmailTemplatesPage} />}</Route>
-        <Route path="/reminders">{() => <PaidRoute component={RemindersPage} />}</Route>
-        <Route path="/import">{() => <PaidRoute component={ImportContactsPage} />}</Route>
+        <Route path="/woo-customers" component={WooCustomersPage} />
+        <Route path="/contacts" component={SavedContactsPage} />
+        <Route path="/templates" component={EmailTemplatesPage} />
+        <Route path="/reminders" component={RemindersPage} />
+        <Route path="/import" component={ImportContactsPage} />
         <Route path="/admin/codes" component={AdminCodesPage} />
         <Route path="/admin/smtp-stats" component={AdminSmtpStatsPage} />
         <Route component={HomePage} />

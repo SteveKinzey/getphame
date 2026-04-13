@@ -3,7 +3,7 @@
 
 import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import { Send, Rocket, Mail, User, Star, Crown, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe } from "lucide-react";
+import { Send, Rocket, Mail, User, Star, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 
@@ -65,7 +65,6 @@ export default function SendRequestPage() {
     },
   });
 
-  const atFreeLimit = profile?.tier === "free" && (stats?.thisMonth ?? 0) >= 10;
   const emailConnected = smtpStatus?.connected ?? false;
   const profileComplete = !!profile?.businessName && !!profile?.reviewLink;
 
@@ -292,31 +291,6 @@ export default function SendRequestPage() {
           </div>
         )}
 
-        {/* ── Free limit warning ───────────────────────────────────────────── */}
-        {atFreeLimit && (
-          <div
-            className="flex items-start gap-3 px-4 py-4 rounded-2xl"
-            style={{ background: "oklch(0.22 0.09 260)" }}
-          >
-            <Crown size={20} style={{ color: "oklch(0.80 0.18 80)" }} className="shrink-0 mt-0.5" />
-            <div>
-              <p className="text-sm font-bold mb-1" style={{ color: "white" }}>
-                Free plan limit reached
-              </p>
-              <p className="text-xs mb-2" style={{ color: "rgba(255,255,255,0.7)" }}>
-                You've used all 10 free requests this month.
-              </p>
-              <button
-                onClick={() => navigate("/upgrade")}
-                className="text-xs font-bold"
-                style={{ color: "oklch(0.80 0.18 80)" }}
-              >
-                Upgrade to Pro →
-              </button>
-            </div>
-          </div>
-        )}
-
         {/* ── Customer form ────────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <h2
@@ -510,15 +484,15 @@ export default function SendRequestPage() {
             {/* Send button */}
             <button
               onClick={handleSend}
-              disabled={sending || atFreeLimit || !emailConnected || !profileComplete}
+              disabled={sending || !emailConnected || !profileComplete}
               className="flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-lg transition-transform active:scale-95"
               style={{
                 background:
-                  sending || atFreeLimit || !emailConnected || !profileComplete
+                  sending || !emailConnected || !profileComplete
                     ? "oklch(0.80 0.03 260)"
                     : "oklch(0.80 0.18 80)",
                 color:
-                  sending || atFreeLimit || !emailConnected || !profileComplete
+                  sending || !emailConnected || !profileComplete
                     ? "oklch(0.55 0.03 260)"
                     : "oklch(0.22 0.09 260)",
                 fontFamily: "'Poppins', sans-serif",
@@ -537,12 +511,7 @@ export default function SendRequestPage() {
               )}
             </button>
 
-            {/* Monthly count */}
-            {profile?.tier === "free" && (
-              <p className="text-center text-xs" style={{ color: "oklch(0.60 0.03 260)" }}>
-                {stats?.thisMonth ?? 0} / 10 free requests used this month
-              </p>
-            )}
+
           </div>
         </div>
       </div>

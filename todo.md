@@ -469,3 +469,19 @@
 - [x] Item 7: Add robots.txt and sitemap.xml to client/public/
 - [x] Item 8: Add per-user in-memory rate limiting on requests.send and contacts.bulkSend (max 200/hr)
 - [x] Item 9: Add unsubscribe footer line to default email template body and add CAN-SPAM hint in template editor
+
+## OG Image & Meta Tags + Deliverability Guidance
+
+- [ ] Generate 1200x630 OG social preview image (navy bg, gold rocket logo, tagline)
+- [ ] Upload OG image to CDN and add OG/Twitter meta tags to client/index.html
+- [ ] Add email deliverability guidance callout in SMTP setup screen (Gmail 500/day, Outlook 300/day limits)
+
+## Make App Fully Free
+
+- [x] Remove FREE_LIMIT checks from contacts.bulkSend, woo.bulkSend, and requests.send in routers.ts
+- [x] Tier/quota fields kept in DB for compatibility but no longer used for gating
+- [x] Remove upgrade prompts, pro badges, and Stripe checkout CTAs from client UI
+- [x] Remove /upgrade route and UpgradePage import from App.tsx
+- [x] Remove atFreeLimit / remainingFree / tier logic from Home.tsx and SendRequest.tsx
+- [x] Replace Plan section in Settings.tsx with Free Forever badge
+- [x] Update Home.tsx stats card from "N Left" to "Free Forever ✓"

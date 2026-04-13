@@ -4,8 +4,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Rocket, Star, Send, TrendingUp, Clock, Crown, AlertCircle, CheckCircle2, WifiOff, BookOpen } from "lucide-react";
-import ProBadge from "@/components/ProBadge";
+import { Rocket, Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import OnboardingGuide from "@/components/OnboardingGuide";
@@ -39,11 +38,8 @@ export default function HomePage() {
     document.title = "ReviewLink — Send Google Review Requests Fast";
   }, []);
 
-  const isPro = profile?.tier === "pro";
   const smtpConnected = smtpStatus?.connected ?? false;
   const profileComplete = !!profile?.businessName && !!profile?.reviewLink;
-  const atFreeLimit = !isPro && (stats?.thisMonth ?? 0) >= 10;
-  const remainingFree = Math.max(0, 10 - (stats?.thisMonth ?? 0));
   // Show health alert only when SMTP is connected but the last check failed
   const smtpHealthFailed = smtpConnected && smtpStatus?.lastHealthStatus === "fail";
 
@@ -85,9 +81,8 @@ export default function HomePage() {
               <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
                 {user?.name ?? user?.email ?? ""}
               </p>
-              {isPro && <ProBadge size="sm" />}
-            </div>
           </div>
+        </div>
 
           <div className="flex items-center gap-2">
             <button
@@ -99,7 +94,6 @@ export default function HomePage() {
               <BookOpen size={13} />
               <span className="hidden sm:inline">Guide</span>
             </button>
-            {isPro && <ProBadge size="lg" />}
           </div>
         </div>
 
@@ -108,11 +102,7 @@ export default function HomePage() {
           {[
             { label: "This Month", value: stats?.thisMonth ?? 0, icon: <Send size={14} /> },
             { label: "All Time", value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
-            {
-              label: isPro ? "Unlimited" : `${remainingFree} Left`,
-              value: isPro ? "∞" : remainingFree,
-              icon: <Star size={14} />,
-            },
+            { label: "Free Forever", value: "✓", icon: <Star size={14} /> },
           ].map((s) => (
             <div
               key={s.label}
@@ -222,15 +212,15 @@ export default function HomePage() {
         {/* ── Quick Send CTA ───────────────────────────────────────────────── */}
         <button
           onClick={() => navigate("/send")}
-          disabled={atFreeLimit || !smtpConnected || !profileComplete}
+          disabled={!smtpConnected || !profileComplete}
           className="w-full py-5 rounded-2xl flex items-center justify-center gap-3 font-black text-xl transition-transform active:scale-95"
           style={{
             background:
-              atFreeLimit || !smtpConnected || !profileComplete
+              !smtpConnected || !profileComplete
                 ? "oklch(0.80 0.03 260)"
                 : "oklch(0.80 0.18 80)",
             color:
-              atFreeLimit || !smtpConnected || !profileComplete
+              !smtpConnected || !profileComplete
                 ? "oklch(0.55 0.03 260)"
                 : "oklch(0.22 0.09 260)",
             fontFamily: "'Poppins', sans-serif",
@@ -239,21 +229,6 @@ export default function HomePage() {
           <Rocket size={24} />
           Send a Review Request
         </button>
-
-        {atFreeLimit && (
-          <button
-            onClick={() => navigate("/upgrade")}
-            className="w-full py-3 rounded-2xl flex items-center justify-center gap-2 font-black text-sm"
-            style={{
-              background: "oklch(0.22 0.09 260)",
-              color: "oklch(0.80 0.18 80)",
-              fontFamily: "'Poppins', sans-serif",
-            }}
-          >
-            <Crown size={16} />
-            Upgrade to Pro — Unlimited Requests
-          </button>
-        )}
 
         {/* ── SEO keyword section — visible to crawlers, useful to users ─── */}
         <div className="bg-white rounded-2xl p-4 shadow-sm">

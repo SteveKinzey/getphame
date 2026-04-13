@@ -83,7 +83,7 @@ import {
   runSmtpHealthChecks,
 } from "./smtp";
 
-const FREE_LIMIT = 10;
+// App is free — no send limits enforced
 
 export const appRouter = router({
   system: systemRouter,
@@ -476,11 +476,7 @@ export const appRouter = router({
 
         if (customers.length === 0) throw new Error("No eligible customers found.");
 
-        const remaining = profile.tier === "free" ? FREE_LIMIT - profile.monthlyCount : Infinity;
-        if (profile.tier === "free" && remaining <= 0) {
-          throw new Error(`Free plan limit reached (${FREE_LIMIT}/month). Upgrade to Pro for unlimited requests.`);
-        }
-        const toSend = profile.tier === "free" ? customers.slice(0, remaining) : customers;
+        const toSend = customers;
 
         // Resolve review URL: use selected platform → default platform → legacy reviewLink
         let wooReviewUrl = profile.reviewLink ?? "";
@@ -619,11 +615,6 @@ export const appRouter = router({
           profile.monthlyResetDate = yearMonth;
         }
 
-        const remaining = profile.tier === "free" ? Math.max(0, FREE_LIMIT - profile.monthlyCount) : Infinity;
-        if (remaining === 0) {
-          throw new Error(`Free plan limit reached (${FREE_LIMIT}/month). Upgrade to Pro for unlimited requests.`);
-        }
-
         // Hourly rate limit: check upfront for the whole batch
         checkSendRateLimit(ctx.user.id, input.contactIds.length);
 
@@ -645,9 +636,8 @@ export const appRouter = router({
           .map((id) => contactMap.get(id))
           .filter(Boolean) as typeof allContacts;
 
-        // Cap to remaining quota for free tier
-        const toSend = profile.tier === "free" ? targets.slice(0, remaining) : targets;
-        const skippedDueToLimit = targets.length - toSend.length;
+        const toSend = targets;
+        const skippedDueToLimit = 0;
 
         // Resolve template
         const allTemplates = await listTemplates(ctx.user.id);
@@ -878,10 +868,6 @@ export const appRouter = router({
           await upsertBusinessProfile({ ...profile, monthlyCount: 0, monthlyResetDate: yearMonth });
           profile.monthlyCount = 0;
           profile.monthlyResetDate = yearMonth;
-        }
-
-        if (profile.tier === "free" && profile.monthlyCount >= FREE_LIMIT) {
-          throw new Error(`Free plan limit reached (${FREE_LIMIT}/month). Upgrade to Pro for unlimited requests.`);
         }
 
         // Hourly rate limit: max 200 sends per user per rolling hour
