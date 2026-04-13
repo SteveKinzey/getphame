@@ -52,6 +52,7 @@ import {
   ShoppingCart,
   CreditCard,
   Search,
+  Download,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
@@ -1058,19 +1059,69 @@ export default function SavedContacts() {
               ));
             })()}
           </div>
+          {/* Sync progress bar — visible only while syncing */}
+          {syncFromWooMutation.isPending && (
+            <div className="px-1">
+              <div className="flex items-center gap-2 mb-1">
+                <Loader2 size={12} className="animate-spin" style={{ color: "oklch(0.80 0.18 80)" }} aria-hidden="true" />
+                <span className="text-xs font-semibold" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Nunito', sans-serif" }}>
+                  Syncing WooCommerce orders…
+                </span>
+              </div>
+              <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: "oklch(0.92 0.02 260)" }}>
+                <div
+                  className="h-full rounded-full animate-pulse"
+                  style={{ width: "60%", background: "oklch(0.80 0.18 80)" }}
+                />
+              </div>
+            </div>
+          )}
           <DialogFooter className="flex items-center justify-between gap-2">
-            <Button
-              size="sm"
-              disabled={syncFromWooMutation.isPending || !wooCreds}
-              onClick={() => wooCreds && syncFromWooMutation.mutate({ days: wooDays })}
-              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)", fontFamily: "'Nunito', sans-serif" }}
-            >
-              {syncFromWooMutation.isPending ? (
-                <><Loader2 size={13} className="animate-spin mr-1" aria-hidden="true" /> Syncing…</>
-              ) : (
-                <><RefreshCw size={13} className="mr-1" aria-hidden="true" /> Sync Now ({wooDays}d)</>
+            <div className="flex items-center gap-1.5">
+              <Button
+                size="sm"
+                disabled={syncFromWooMutation.isPending || !wooCreds}
+                onClick={() => wooCreds && syncFromWooMutation.mutate({ days: wooDays })}
+                style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)", fontFamily: "'Nunito', sans-serif" }}
+                aria-label={syncFromWooMutation.isPending ? "Syncing WooCommerce orders" : `Sync WooCommerce orders (last ${wooDays} days)`}
+              >
+                {syncFromWooMutation.isPending ? (
+                  <><Loader2 size={13} className="animate-spin mr-1" aria-hidden="true" /> Syncing…</>
+                ) : (
+                  <><RefreshCw size={13} className="mr-1" aria-hidden="true" /> Sync Now ({wooDays}d)</>
+                )}
+              </Button>
+              {wooSyncHistory.length > 0 && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  aria-label="Export sync history as CSV"
+                  title="Export sync history as CSV"
+                  onClick={() => {
+                    const rows = [
+                      ["Date", "New Customers", "Orders Scanned", "Days Window"],
+                      ...wooSyncHistory.map((log) => [
+                        new Date(log.syncedAt).toLocaleString(),
+                        String(log.added),
+                        String(log.total),
+                        String(log.daysWindow),
+                      ]),
+                    ];
+                    const csv = rows.map((r) => r.map((v) => `"${v.replace(/"/g, '""')}"`).join(",")).join("\n");
+                    const blob = new Blob([csv], { type: "text/csv" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `woo-sync-history-${new Date().toISOString().slice(0, 10)}.csv`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  style={{ fontFamily: "'Nunito', sans-serif" }}
+                >
+                  <Download size={13} className="mr-1" aria-hidden="true" /> CSV
+                </Button>
               )}
-            </Button>
+            </div>
             <Button
               variant="outline"
               size="sm"

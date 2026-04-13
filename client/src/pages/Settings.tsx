@@ -156,6 +156,112 @@ function InlineReplyToEdit({ current, onSaved }: { current: string; onSaved: () 
   );
 }
 
+// ── Send Feedback Section ────────────────────────────────────────────────────
+function SendFeedbackSection() {
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState("");
+  const [sending, setSending] = useState(false);
+
+  const handleSend = async () => {
+    if (!message.trim()) return;
+    setSending(true);
+    try {
+      // Build a mailto link as a lightweight feedback channel
+      const subject = encodeURIComponent("ReviewLink Feedback");
+      const body = encodeURIComponent(message.trim());
+      window.location.href = `mailto:support@reviewlink.app?subject=${subject}&body=${body}`;
+      toast.success("Opening your email client to send feedback");
+      setMessage("");
+      setOpen(false);
+    } catch {
+      toast.error("Could not open email client. Please email support@reviewlink.app directly.");
+    } finally {
+      setSending(false);
+    }
+  };
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold w-full"
+        style={{ color: "oklch(0.45 0.10 260)", background: "transparent" }}
+        aria-label="Send feedback to ReviewLink support"
+      >
+        <Send size={14} aria-hidden="true" />
+        Send Feedback
+      </button>
+    );
+  }
+
+  return (
+    <div
+      className="rounded-2xl p-5 space-y-3"
+      style={{ background: "oklch(0.97 0.01 260)", border: "1.5px solid oklch(0.88 0.04 260)" }}
+    >
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+          Send Feedback
+        </p>
+        <button
+          onClick={() => { setOpen(false); setMessage(""); }}
+          aria-label="Close feedback form"
+          className="rounded-full p-1 hover:bg-gray-100"
+        >
+          <X size={14} style={{ color: "oklch(0.55 0.05 260)" }} />
+        </button>
+      </div>
+      <p className="text-xs leading-relaxed" style={{ color: "oklch(0.50 0.05 260)" }}>
+        Found a bug? Have a suggestion? We read every message.
+      </p>
+      <textarea
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        placeholder="Describe what you found or what you'd love to see…"
+        rows={4}
+        maxLength={1000}
+        className="w-full rounded-xl px-3 py-2.5 text-xs resize-none outline-none"
+        style={{
+          background: "white",
+          border: "1.5px solid oklch(0.88 0.04 260)",
+          color: "oklch(0.22 0.09 260)",
+          fontFamily: "'Nunito', sans-serif",
+        }}
+        aria-label="Feedback message"
+      />
+      <div className="flex items-center justify-between gap-2">
+        <span className="text-xs" style={{ color: "oklch(0.65 0.04 260)" }}>
+          {message.length}/1000
+        </span>
+        <div className="flex gap-2">
+          <button
+            onClick={() => { setOpen(false); setMessage(""); }}
+            className="px-4 py-2 rounded-xl text-xs font-bold"
+            style={{ background: "oklch(0.94 0.01 260)", color: "oklch(0.40 0.04 260)" }}
+          >
+            Cancel
+          </button>
+          <button
+            disabled={!message.trim() || sending}
+            onClick={handleSend}
+            className="px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1"
+            style={{
+              background: message.trim() ? "oklch(0.22 0.09 260)" : "oklch(0.70 0.04 260)",
+              color: "oklch(0.80 0.18 80)",
+              cursor: message.trim() ? "pointer" : "not-allowed",
+              fontFamily: "'Nunito', sans-serif",
+            }}
+            aria-label="Send feedback"
+          >
+            {sending ? <Loader2 size={12} className="animate-spin" aria-hidden="true" /> : <Send size={12} aria-hidden="true" />}
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Delete Account Section ────────────────────────────────────────────────────
 function DeleteAccountSection() {
   const [open, setOpen] = useState(false);
@@ -1476,6 +1582,9 @@ export default function SettingsPage() {
             </button>
           </div>
         </div>     {/* ── Sign Out ─────────────────────────────────────────────────────── */}
+        {/* ── Send Feedback ────────────────────────────────────────────────── */}
+        <SendFeedbackSection />
+
         {/* ── Delete Account ───────────────────────────────────────────────── */}
         <DeleteAccountSection />
 

@@ -604,3 +604,9 @@
 
 - [x] Add search/filter input to WooCommerce sync history modal (filter by date or result)
 - [x] Add manual WooCommerce sync trigger button inside the sync history modal footer (Sync Now)
+
+## WooCommerce + Settings Enhancements
+
+- [x] Add CSV export button to WooCommerce sync history modal
+- [x] Add Send Feedback form to Settings page (one-field, emails support@reviewlink.app)
+- [x] Add visual loading indicator (spinner + progress bar) to Sync Now button in sync history modal
