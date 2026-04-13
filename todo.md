@@ -553,3 +553,7 @@
 - [x] Remove all "10 sends/month" free-tier cap UI from Dashboard and Home
 - [x] Remove all "Upgrade to Pro" / upgrade CTA references from the app
 - [x] Add support@reviewlink.app to landing page footer
+
+## Legal Pages
+
+- [x] Rewrite PrivacyPolicy.tsx with complete, substantive content covering all required sections
