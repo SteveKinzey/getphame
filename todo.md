@@ -386,3 +386,7 @@
 - [x] Auto-trigger contacts.syncFromStripe silently on app load (useEffect in AppShell in App.tsx, once per session)
 - [x] Add source filter pills to SavedContacts (All Sources / Stripe / WooCommerce / Manual) — only shown when Stripe or WooCommerce contacts exist
 - [x] Show last-synced timestamp on the Stripe sync button (tooltip + inline date on wide screens)
+
+## Stripe Sync UX Fix
+
+- [x] Remove silent auto-trigger Stripe sync from App.tsx (keep as manual button only in SavedContacts header)
