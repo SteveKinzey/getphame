@@ -540,3 +540,8 @@
 ## Landing Page FAQ
 
 - [x] Add 4-question FAQ section to LandingPage.tsx (spam, email providers, free, CSV import)
+
+## Landing Page Hero Enhancements
+
+- [x] Add "Free forever, Pro features coming soon" pricing section to landing page
+- [x] Add product screenshot to hero section for social proof / concreteness

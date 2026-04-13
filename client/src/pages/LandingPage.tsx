@@ -11,6 +11,9 @@ const HERO_IMG =
 const OG_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/og-preview-PB5uoBDhiPJXzuqM8A9kzf.png";
 
+const APP_PREVIEW_IMG =
+  "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/reviewlink-app-preview_cbdf33af.png";
+
 const FEATURES = [
   {
     icon: <Mail size={22} style={{ color: "oklch(0.80 0.18 80)" }} />,
@@ -191,6 +194,30 @@ export default function LandingPage() {
             Takes less than 2 minutes to set up
           </p>
         </div>
+
+        {/* Product screenshot */}
+        <div className="relative mt-10 mx-auto pb-6" style={{ maxWidth: 280 }}>
+          <div
+            className="absolute inset-0 rounded-3xl blur-2xl opacity-25 pointer-events-none"
+            style={{ background: "oklch(0.80 0.18 80)", transform: "scale(0.90) translateY(12px)" }}
+          />
+          <div
+            className="relative rounded-3xl overflow-hidden shadow-2xl border-4"
+            style={{ borderColor: "oklch(0.35 0.08 260)" }}
+          >
+            <img
+              src={APP_PREVIEW_IMG}
+              alt="ReviewLink dashboard showing sent requests and email performance stats"
+              className="w-full block"
+            />
+          </div>
+          <div
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"
+            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+          >
+            Your dashboard — live stats
+          </div>
+        </div>
       </section>
 
       {/* ── Features ────────────────────────────────────────────────────────── */}
@@ -262,6 +289,32 @@ export default function LandingPage() {
                 )}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Pricing note ────────────────────────────────────────────────────── */}
+      <section className="px-5 py-8" style={{ background: "oklch(0.97 0.005 260)" }}>
+        <div className="max-w-lg mx-auto">
+          <div
+            className="rounded-2xl p-6 text-center border"
+            style={{ background: "white", borderColor: "oklch(0.90 0.03 260)" }}
+          >
+            <div
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-3"
+              style={{ background: "oklch(0.95 0.05 150)", color: "oklch(0.30 0.15 150)" }}
+            >
+              &#10003; Free Forever
+            </div>
+            <h2
+              className="text-lg font-black mb-2"
+              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+            >
+              No plans. No paywalls. No credit card.
+            </h2>
+            <p className="text-sm" style={{ color: "oklch(0.45 0.04 260)" }}>
+              ReviewLink is completely free to use. You connect your own email account — there are no sending limits beyond your provider's daily cap. Optional Pro features are coming soon and will always be clearly labelled before any charge is introduced.
+            </p>
           </div>
         </div>
       </section>
