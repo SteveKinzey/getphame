@@ -610,3 +610,6 @@
 - [x] Add CSV export button to WooCommerce sync history modal
 - [x] Add Send Feedback form to Settings page (one-field, emails support@reviewlink.app)
 - [x] Add visual loading indicator (spinner + progress bar) to Sync Now button in sync history modal
+
+## Bug Fixes
+- [x] Fix OnboardingGuide Step 1-4 rows not tappable on mobile (were plain divs, now buttons with onClick navigating to /settings, /settings, /import, /send + ChevronRight indicator added)

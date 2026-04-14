@@ -30,7 +30,9 @@ interface Step {
   content: React.ReactNode;
 }
 
-function StepWelcome() {
+const STEP_ROUTES = ["/settings", "/settings", "/import", "/send"];
+
+function StepWelcome({ onNavigate }: { onNavigate: (path: string) => void }) {
   return (
     <div className="space-y-5">
       <div
@@ -57,9 +59,10 @@ function StepWelcome() {
           { icon: <Users size={16} />, label: "Import or add your customer contacts" },
           { icon: <Send size={16} />, label: "Send your first review request" },
         ].map((item, i) => (
-          <div
+          <button
             key={i}
-            className="flex items-center gap-3 rounded-xl px-4 py-3"
+            onClick={() => onNavigate(STEP_ROUTES[i])}
+            className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-transform active:scale-95"
             style={{ background: "white", border: "1px solid oklch(0.91 0.02 260)" }}
           >
             <div
@@ -71,10 +74,11 @@ function StepWelcome() {
             <span className="text-sm font-medium" style={{ color: "oklch(0.22 0.09 260)" }}>
               {item.label}
             </span>
-            <div className="ml-auto" style={{ color: "oklch(0.55 0.05 260)" }}>
+            <div className="ml-auto flex items-center gap-1" style={{ color: "oklch(0.55 0.05 260)" }}>
               {item.icon}
+              <ChevronRight size={14} />
             </div>
-          </div>
+          </button>
         ))}
       </div>
 
@@ -580,7 +584,7 @@ export default function OnboardingGuide({ open, onClose }: OnboardingGuideProps)
       icon: <Rocket size={20} />,
       title: "Welcome to ReviewLink",
       subtitle: "Here's what we'll set up together",
-      content: <StepWelcome />,
+      content: <StepWelcome onNavigate={handleNavigate} />,
     },
     {
       id: 1,
