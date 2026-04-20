@@ -516,6 +516,7 @@ export default function SettingsPage() {
   const [showSmtpForm, setShowSmtpForm] = useState(false);
   const [showSmtpPassword, setShowSmtpPassword] = useState(false);
   const [showPasswordGuide, setShowPasswordGuide] = useState(false);
+  const [showAdvanced, setShowAdvanced] = useState(false);
   const [smtpTestResult, setSmtpTestResult] = useState<{ ok: boolean; error?: string | null } | null>(null);
 
   // Auto-detect SMTP settings when email changes; also pass host so hint fires for Google Workspace
@@ -530,6 +531,10 @@ export default function SettingsPage() {
       setSmtpSecure(smtpDetect.detected.secure);
     }
     setSmtpHint(smtpDetect?.hint ?? null);
+    // Auto-expand Advanced panel for custom/unrecognised domains
+    if (smtpDetect && !smtpDetect.detected?.host) {
+      setShowAdvanced(true);
+    }
   }, [smtpDetect]);
 
   const connectSmtp = trpc.smtp.connect.useMutation({
@@ -1408,8 +1413,8 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              {/* Advanced: host/port — collapsed by default, auto-filled */}
-              <details className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+              {/* Advanced: host/port — collapsed by default, auto-expanded for custom domains */}
+              <details className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }} open={showAdvanced} onToggle={(e) => setShowAdvanced((e.target as HTMLDetailsElement).open)}>
                 <summary className="cursor-pointer font-semibold py-1">Advanced settings (auto-detected)</summary>
                 <div className="flex flex-col gap-2 mt-2">
                   {/* Provider preset quick-fill buttons */}

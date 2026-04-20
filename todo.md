@@ -648,3 +648,8 @@
 ## Dependency & Email Fixes
 - [x] Add baseline-browser-mapping pnpm override to silence stale data warning
 - [x] Fix email header: change blue heading to navy background (#1a2744) with white title and gold brand label — also updated all fallback email CTAs to #f0a500/#1a2744
+
+## Email & UX Polish
+- [x] Add branded navy header (REVIEWLINK label + bold title on #1a2744) to all outbound review request emails via shared buildReviewRequestEmail() helper in server/emailTemplates.ts
+- [x] Auto-expand Advanced SMTP panel in Settings when email domain is unrecognised (custom domain)
+- [x] Add CAN-SPAM unsubscribe footer to all outbound emails via shared template (buildReviewRequestEmail)
