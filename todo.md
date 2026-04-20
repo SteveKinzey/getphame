@@ -614,18 +614,6 @@
 ## Bug Fixes
 - [x] Fix OnboardingGuide Step 1-4 rows not tappable on mobile (were plain divs, now buttons with onClick navigating to /settings, /settings, /import, /send + ChevronRight indicator added)
 
-## Gmail OAuth 2.0 Migration (replace SMTP App Password)
-- [ ] Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to env secrets
-- [ ] Add googleClientId and googleClientSecret to server/_core/env.ts
-- [ ] Create server/gmail.ts: OAuth2 client, getAuthUrl, exchangeCode, refreshAccessToken, sendViaOAuth helpers
-- [ ] Add /api/gmail/callback Express route in server/_core/index.ts
-- [ ] Add tRPC procedures: gmail.authUrl, gmail.status, gmail.disconnect
-- [ ] Update smtp.ts sendMailViaSmtp to check for OAuth tokens first, fall back to SMTP
-- [ ] Update Settings UI: replace SMTP connect form with "Connect Gmail" OAuth button
-- [ ] Show connected Gmail address and disconnect button when OAuth is active
-- [ ] Keep SMTP as fallback option for non-Gmail providers (Outlook, Yahoo, custom SMTP)
-- [ ] Update all email send paths to prefer OAuth over SMTP when available
-- [ ] Write vitest tests for gmail OAuth procedures
 
 ## Pricing Model Revert
 - [x] Revert to 10 free review requests total (lifetime), then require paid monthly subscription
@@ -645,3 +633,11 @@
 - [x] Show provider logo/icon next to email field when domain is recognised (via dynamic label)
 - [x] Remove all visible SMTP technical fields (host, port, TLS) from the default view — hide behind "Advanced" toggle (already existed)
 - [x] Keep SMTP test on connect, show clear success/error state
+
+## SMTP Provider Expansion (Yahoo, Zoho, Microsoft 365, Custom)
+- [x] Add Yahoo Mail App Password detection (yahoo.com, yahoo.co.uk, ymail.com) with inline 4-step guide
+- [x] Add Zoho Mail detection (zoho.com, zohomail.com) with inline guide (no app password needed, use account password with SMTP enabled)
+- [x] Add Microsoft 365 / Outlook detection (outlook.com, hotmail.com, live.com) with inline guide
+- [x] Add custom SMTP fallback: when domain is unrecognised, show inline hint pointing to Advanced settings
+- [x] Ensure all 6 provider paths (Gmail, Google Workspace, Yahoo, Zoho, Microsoft, iCloud, Custom) auto-configure correct host/port/TLS
+- [x] Update inline password guide label and steps for each provider (Gmail, Google Workspace, Outlook/M365, Yahoo, Zoho, iCloud)

@@ -1180,18 +1180,49 @@ export default function SettingsPage() {
               {/* Password field — smart provider-aware */}
               {(() => {
                 const emailDomain = smtpEmail.split('@')[1]?.toLowerCase() ?? '';
+                // Provider detection
                 const isGmail = emailDomain === 'gmail.com' || emailDomain === 'googlemail.com' || smtpHost === 'smtp.gmail.com';
-                const isOutlook = ['outlook.com','hotmail.com','live.com'].includes(emailDomain);
-                const isYahoo = emailDomain === 'yahoo.com';
-                const passwordLabel = isGmail ? 'Gmail App Password *' : isOutlook ? 'Microsoft App Password *' : isYahoo ? 'Yahoo App Password *' : 'Email Password *';
-                const passwordPlaceholder = smtpStatus?.connected ? 'Enter new password to update' : isGmail ? '16-character App Password (no spaces)' : 'Your email password';
+                const isGoogleWorkspace = smtpHost === 'smtp.gmail.com' && !isGmail;
+                const isOutlook = ['outlook.com','hotmail.com','live.com'].includes(emailDomain) || smtpHost === 'smtp-mail.outlook.com';
+                const isYahoo = emailDomain === 'yahoo.com' || emailDomain === 'yahoo.co.uk' || emailDomain === 'ymail.com' || smtpHost === 'smtp.mail.yahoo.com';
+                const isZoho = emailDomain === 'zoho.com' || emailDomain === 'zohomail.com' || smtpHost === 'smtp.zoho.com';
+                const isIcloud = emailDomain === 'icloud.com' || emailDomain === 'me.com' || smtpHost === 'smtp.mail.me.com';
+                const isKnownProvider = isGmail || isGoogleWorkspace || isOutlook || isYahoo || isZoho || isIcloud;
+                const isCustom = emailDomain.length > 0 && !isKnownProvider;
+
+                // Smart label
+                const passwordLabel = isGmail
+                  ? 'Gmail App Password *'
+                  : isGoogleWorkspace
+                  ? 'Google Workspace App Password *'
+                  : isOutlook
+                  ? 'Microsoft App Password *'
+                  : isYahoo
+                  ? 'Yahoo App Password *'
+                  : isZoho
+                  ? 'Zoho Mail Password *'
+                  : isIcloud
+                  ? 'Apple App-Specific Password *'
+                  : 'Email Password *';
+
+                // Smart placeholder
+                const passwordPlaceholder = smtpStatus?.connected
+                  ? 'Enter new password to update'
+                  : isGmail || isGoogleWorkspace
+                  ? '16-character App Password (no spaces)'
+                  : isIcloud
+                  ? 'xxxx-xxxx-xxxx-xxxx'
+                  : 'Your email password';
+
                 const showGuide = showPasswordGuide;
                 const setShowGuide = setShowPasswordGuide;
+                const hasGuide = isGmail || isGoogleWorkspace || isOutlook || isYahoo || isZoho || isIcloud;
+
                 return (
                   <div>
                     <div className="flex items-center justify-between mb-1">
                       <label className="text-xs font-bold" style={{ color: 'oklch(0.40 0.04 260)' }}>{passwordLabel}</label>
-                      {(isGmail || isOutlook || isYahoo) && (
+                      {hasGuide && (
                         <button
                           type="button"
                           onClick={() => setShowGuide((v) => !v)}
@@ -1203,6 +1234,8 @@ export default function SettingsPage() {
                         </button>
                       )}
                     </div>
+
+                    {/* Gmail guide */}
                     {showGuide && isGmail && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
                         <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Gmail App Password — 4 steps</p>
@@ -1212,34 +1245,84 @@ export default function SettingsPage() {
                           <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>myaccount.google.com/apppasswords</span> → name it <span className="font-bold">ReviewLink</span> → click Create</li>
                           <li>Copy the <span className="font-bold">16-character code</span> and paste it here — <span className="font-bold">remove all spaces</span></li>
                         </ol>
-                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>Google Workspace users: enable 2FA in admin.google.com first, then follow the same steps.</p>
+                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>Tip: use a dedicated <span className="font-bold">reviews@gmail.com</span> account to keep your main inbox separate.</p>
                         <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
                       </div>
                     )}
+
+                    {/* Google Workspace guide */}
+                    {showGuide && isGoogleWorkspace && (
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
+                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Google Workspace App Password — 4 steps</p>
+                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
+                          <li>Ask your Workspace admin to enable 2-Step Verification in <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>admin.google.com</span></li>
+                          <li>Sign in to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>myaccount.google.com</span> with your work account → Security</li>
+                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>myaccount.google.com/apppasswords</span> → name it <span className="font-bold">ReviewLink</span> → click Create</li>
+                          <li>Copy the <span className="font-bold">16-character code</span> and paste it here — <span className="font-bold">remove all spaces</span></li>
+                        </ol>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                      </div>
+                    )}
+
+                    {/* Microsoft / Outlook guide */}
                     {showGuide && isOutlook && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
                         <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Microsoft App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
                           <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>account.microsoft.com</span> → Security</li>
                           <li>Click <span className="font-bold">Advanced security options</span></li>
-                          <li>Under App passwords, click <span className="font-bold">Create a new app password</span></li>
+                          <li>Under <span className="font-bold">App passwords</span>, click <span className="font-bold">Create a new app password</span></li>
                           <li>Copy and paste the generated password here</li>
                         </ol>
+                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>Microsoft 365 (work accounts): contact your IT admin to allow SMTP AUTH for your mailbox.</p>
                         <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
                       </div>
                     )}
+
+                    {/* Yahoo guide */}
                     {showGuide && isYahoo && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
                         <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Yahoo App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
                           <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>account.yahoo.com</span> → Security</li>
                           <li>Click <span className="font-bold">Generate app password</span></li>
-                          <li>Select <span className="font-bold">Other app</span>, name it ReviewLink</li>
+                          <li>Select <span className="font-bold">Other app</span>, name it <span className="font-bold">ReviewLink</span></li>
                           <li>Copy and paste the password here</li>
                         </ol>
                         <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
                       </div>
                     )}
+
+                    {/* Zoho guide */}
+                    {showGuide && isZoho && (
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
+                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Zoho Mail — Enable SMTP Access</p>
+                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
+                          <li>Log in to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>mail.zoho.com</span></li>
+                          <li>Go to <span className="font-bold">Settings</span> → <span className="font-bold">Mail Accounts</span></li>
+                          <li>Click your email address → scroll to <span className="font-bold">SMTP</span></li>
+                          <li>Toggle <span className="font-bold">Allow SMTP Access</span> to ON, then use your <span className="font-bold">regular Zoho password</span> here</li>
+                        </ol>
+                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>No app password needed — just enable SMTP and use your normal Zoho login password.</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                      </div>
+                    )}
+
+                    {/* iCloud guide */}
+                    {showGuide && isIcloud && (
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
+                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Apple iCloud — App-Specific Password</p>
+                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
+                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>appleid.apple.com</span> → Sign In & Security</li>
+                          <li>Click <span className="font-bold">App-Specific Passwords</span> → <span className="font-bold">Generate an App-Specific Password</span></li>
+                          <li>Name it <span className="font-bold">ReviewLink</span> and click Create</li>
+                          <li>Copy the <span className="font-bold">xxxx-xxxx-xxxx-xxxx</span> password and paste it here</li>
+                        </ol>
+                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>Requires two-factor authentication to be enabled on your Apple ID.</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                      </div>
+                    )}
+
                     <div className="relative">
                       <input
                         type={showSmtpPassword ? 'text' : 'password'}
@@ -1258,12 +1341,33 @@ export default function SettingsPage() {
                         {showSmtpPassword ? 'Hide' : 'Show'}
                       </button>
                     </div>
-                    {isGmail && !smtpStatus?.connected && !showGuide && (
+
+                    {/* Inline hint for known providers that need app passwords */}
+                    {(isGmail || isGoogleWorkspace) && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
                         Not your regular Gmail password — use an <span className="font-bold">App Password</span>. Tap <span className="font-bold">? How to get it</span> above.
                       </p>
                     )}
-                    {!isGmail && !isOutlook && !isYahoo && smtpHint && (
+                    {isIcloud && !smtpStatus?.connected && !showGuide && (
+                      <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
+                        Use an <span className="font-bold">App-Specific Password</span>, not your Apple ID password. Tap <span className="font-bold">? How to get it</span> above.
+                      </p>
+                    )}
+                    {isZoho && !smtpStatus?.connected && !showGuide && (
+                      <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
+                        Enable SMTP access in Zoho first, then use your regular Zoho password. Tap <span className="font-bold">? How to get it</span> above.
+                      </p>
+                    )}
+
+                    {/* Custom SMTP notice */}
+                    {isCustom && !smtpStatus?.connected && (
+                      <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
+                        Custom domain detected — SMTP settings auto-filled below. Check <span className="font-bold">Advanced settings</span> to verify or adjust host/port.
+                      </p>
+                    )}
+
+                    {/* Fallback hint from server for unrecognised providers */}
+                    {!isKnownProvider && !isCustom && smtpHint && (
                       <div className="mt-2 px-3 py-2 rounded-lg text-xs" style={{ background: 'oklch(0.97 0.03 80)', color: 'oklch(0.45 0.10 80)' }}>
                         💡 {smtpHint}
                       </div>
