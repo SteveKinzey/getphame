@@ -653,3 +653,10 @@
 - [x] Add branded navy header (REVIEWLINK label + bold title on #1a2744) to all outbound review request emails via shared buildReviewRequestEmail() helper in server/emailTemplates.ts
 - [x] Auto-expand Advanced SMTP panel in Settings when email domain is unrecognised (custom domain)
 - [x] Add CAN-SPAM unsubscribe footer to all outbound emails via shared template (buildReviewRequestEmail)
+
+## Saved Contacts & Bulk Send
+- [x] Fix Saved Contacts page header — two-row layout: title+Add on top, sync/import buttons on scrollable second row
+- [x] Add dailySendLimit column to business_profiles schema (default 50, max 500), migrated
+- [x] Enforce daily send limit in contacts bulk-send procedure via getTodaySentCount helper
+- [x] Add Daily Send Limit number input + Save button to Settings Email section
+- [x] Confirmed: bulk send iterates contacts and calls sendMailViaSmtp individually per recipient

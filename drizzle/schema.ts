@@ -54,6 +54,8 @@ export const businessProfiles = mysqlTable("business_profiles", {
   reviewGoal: int("reviewGoal").default(0).notNull(),
   // Last time Stripe customers were synced into saved_contacts (Unix ms)
   stripeLastSyncedAt: bigint("stripeLastSyncedAt", { mode: "number" }),
+  // Max emails to send per day during bulk sends (default 50, max 500)
+  dailySendLimit: int("dailySendLimit").default(50).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

@@ -352,6 +352,8 @@ export default function SettingsPage() {
   const [fromName, setFromName] = useState("");
   const [replyTo, setReplyTo] = useState("");
 
+  const [dailySendLimit, setDailySendLimit] = useState(50);
+
   // Populate form once profile loads (useEffect avoids render-phase setState)
   useEffect(() => {
     if (profile) {
@@ -359,6 +361,7 @@ export default function SettingsPage() {
       setReviewLink(profile.reviewLink);
       setFromName(profile.fromName ?? "");
       setReplyTo(profile.replyTo ?? "");
+      setDailySendLimit(profile.dailySendLimit ?? 50);
     }
   }, [profile?.id]);
 
@@ -367,6 +370,14 @@ export default function SettingsPage() {
     onSuccess: () => {
       utils.profile.get.invalidate();
       toast.success("Business profile saved!");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const setDailySendLimitMutation = trpc.profile.setDailySendLimit.useMutation({
+    onSuccess: () => {
+      utils.profile.get.invalidate();
+      toast.success("Daily send limit saved!");
     },
     onError: (err) => toast.error(err.message),
   });
@@ -1411,6 +1422,33 @@ export default function SettingsPage() {
                   </ul>
                   <p className="mt-1.5">For high-volume sending, use a dedicated <span className="font-semibold">reviews@yourdomain.com</span> address to keep your main inbox clean and avoid hitting personal limits.</p>
                 </div>
+              </div>
+
+              {/* ── Daily send limit ───────────────────────────────────────────────────── */}
+              <div>
+                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Daily Send Limit</label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="number"
+                    min={1}
+                    max={500}
+                    value={dailySendLimit}
+                    onChange={(e) => setDailySendLimit(Math.min(500, Math.max(1, Number(e.target.value))))}
+                    className="w-24 px-3 py-2.5 rounded-xl text-sm outline-none"
+                    style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                  />
+                  <span className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>emails per day (max 500)</span>
+                  <button
+                    type="button"
+                    onClick={() => setDailySendLimitMutation.mutate({ limit: dailySendLimit })}
+                    disabled={setDailySendLimitMutation.isPending || dailySendLimit === (profile?.dailySendLimit ?? 50)}
+                    className="ml-auto px-3 py-1.5 rounded-lg text-xs font-bold transition-opacity disabled:opacity-40"
+                    style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+                  >
+                    {setDailySendLimitMutation.isPending ? "Saving…" : "Save"}
+                  </button>
+                </div>
+                <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>Bulk sends will stop after this many emails per day. Resets at midnight UTC. Default: 50.</p>
               </div>
 
               {/* Advanced: host/port — collapsed by default, auto-expanded for custom domains */}

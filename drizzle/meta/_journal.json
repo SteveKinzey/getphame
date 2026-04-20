@@ -169,6 +169,13 @@
       "when": 1776060184410,
       "tag": "0023_steep_tiger_shark",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "5",
+      "when": 1776729185938,
+      "tag": "0024_eager_jetstream",
+      "breakpoints": true
     }
   ]
 }

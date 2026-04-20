@@ -11,6 +11,7 @@ import {
   getCustomerRequests,
   getMonthlyRequestCount,
   getTotalRequestCount,
+  getTodaySentCount,
 } from "./db";
 
 import { sendMailViaSmtp } from "./smtp";
@@ -335,6 +336,15 @@ export const appRouter = router({
         const existing = await getBusinessProfile(ctx.user.id);
         if (!existing) throw new TRPCError({ code: "NOT_FOUND", message: "Profile not found" });
         await upsertBusinessProfile({ ...existing, reviewGoal: input.goal });
+        return { ok: true };
+      }),
+
+    setDailySendLimit: protectedProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(500) }))
+      .mutation(async ({ ctx, input }) => {
+        const existing = await getBusinessProfile(ctx.user.id);
+        if (!existing) throw new TRPCError({ code: "NOT_FOUND", message: "Profile not found" });
+        await upsertBusinessProfile({ ...existing, dailySendLimit: input.limit });
         return { ok: true };
       }),
   }),
@@ -703,8 +713,15 @@ export const appRouter = router({
           .map((id) => contactMap.get(id))
           .filter(Boolean) as typeof allContacts;
 
-        const toSend = targets;
-        const skippedDueToLimit = 0;
+        // Daily send limit: cap the batch to the user's configured daily limit
+        const dailyLimit = profile.dailySendLimit ?? 50;
+        const todaySent = await getTodaySentCount(ctx.user.id);
+        const remaining = Math.max(0, dailyLimit - todaySent);
+        const toSend = targets.slice(0, remaining);
+        const skippedDueToLimit = targets.length - toSend.length;
+        if (toSend.length === 0) {
+          throw new Error(`Daily send limit reached (${dailyLimit}/day). Remaining sends reset at midnight UTC.`);
+        }
 
         // Resolve template
         const allTemplates = await listTemplates(ctx.user.id);

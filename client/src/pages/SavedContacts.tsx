@@ -343,7 +343,8 @@ export default function SavedContacts() {
         >
           <ChevronLeft size={16} /> Back
         </button>
-        <div className="flex items-center justify-between">
+        {/* Title row */}
+        <div className="flex items-start justify-between mb-3">
           <div>
             <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
               Saved Contacts
@@ -357,88 +358,84 @@ export default function SavedContacts() {
               )}
             </p>
           </div>
-          <div className="flex items-center gap-2">
-            {wooCreds && (
-              <div className="flex items-center gap-1">
-                {/* Day-range picker */}
-                <select
-                  value={wooDays}
-                  onChange={(e) => setWooDays(Number(e.target.value) as 30 | 60 | 90)}
-                  disabled={syncFromWooMutation.isPending}
-                  className="text-xs font-bold rounded-lg px-2 py-1.5 outline-none appearance-none cursor-pointer"
-                  style={{
-                    background: "oklch(0.32 0.07 260)",
-                    color: "oklch(0.72 0.18 160)",
-                    border: "none",
-                    minWidth: "72px",
-                  }}
-                  title="Sync window"
-                >
-                  <option value={30}>30 days</option>
-                  <option value={60}>60 days</option>
-                  <option value={90}>90 days</option>
-                </select>
-                {/* Sync button */}
-                <Button
-                  onClick={() => syncFromWooMutation.mutate({ days: wooDays })}
-                  disabled={syncFromWooMutation.isPending}
-                  size="sm"
-                  variant="outline"
-                  className="font-bold border-0"
-                  style={{ background: "oklch(0.32 0.07 260)", color: "oklch(0.72 0.18 160)" }}
-                  title={wooCreds.lastSyncedAt ? `Last synced ${format(new Date(wooCreds.lastSyncedAt), "MMM d, h:mm a")}` : "Import customers from WooCommerce"}
-                >
-                  {syncFromWooMutation.isPending ? (
-                    <Loader2 size={14} className="mr-1 animate-spin" />
-                  ) : (
-                    <ShoppingCart size={14} className="mr-1" />
-                  )}
-                  WooCommerce{wooCreds.lastSyncedAt ? (
-                    <span className="ml-1 opacity-60 text-xs font-normal hidden sm:inline">
-                      · {format(new Date(wooCreds.lastSyncedAt), "MMM d")}
-                    </span>
-                  ) : null}
-                </Button>
-              </div>
+          {/* Gold Add button stays top-right */}
+          <Button
+            onClick={openCreate}
+            size="sm"
+            className="font-bold shrink-0"
+            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+          >
+            <UserPlus size={16} className="mr-1" /> Add
+          </Button>
+        </div>
+        {/* Action buttons row — scrollable on mobile */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+          {wooCreds && (
+            <>
+              <select
+                value={wooDays}
+                onChange={(e) => setWooDays(Number(e.target.value) as 30 | 60 | 90)}
+                disabled={syncFromWooMutation.isPending}
+                className="text-xs font-bold rounded-lg px-2 py-1.5 outline-none appearance-none cursor-pointer shrink-0"
+                style={{
+                  background: "oklch(0.32 0.07 260)",
+                  color: "oklch(0.72 0.18 160)",
+                  border: "none",
+                  minWidth: "72px",
+                }}
+                title="Sync window"
+              >
+                <option value={30}>30 days</option>
+                <option value={60}>60 days</option>
+                <option value={90}>90 days</option>
+              </select>
+              <Button
+                onClick={() => syncFromWooMutation.mutate({ days: wooDays })}
+                disabled={syncFromWooMutation.isPending}
+                size="sm"
+                variant="outline"
+                className="font-bold border-0 shrink-0"
+                style={{ background: "oklch(0.32 0.07 260)", color: "oklch(0.72 0.18 160)" }}
+                title={wooCreds.lastSyncedAt ? `Last synced ${format(new Date(wooCreds.lastSyncedAt), "MMM d, h:mm a")}` : "Import customers from WooCommerce"}
+              >
+                {syncFromWooMutation.isPending ? (
+                  <Loader2 size={14} className="mr-1 animate-spin" />
+                ) : (
+                  <ShoppingCart size={14} className="mr-1" />
+                )}
+                WooCommerce
+              </Button>
+            </>
+          )}
+          <Button
+            onClick={() => syncFromStripeMutation.mutate()}
+            disabled={syncFromStripeMutation.isPending}
+            size="sm"
+            variant="outline"
+            className="font-bold border-0 shrink-0"
+            style={{ background: "oklch(0.32 0.07 260)", color: "oklch(0.80 0.18 80)" }}
+            title={syncStatus?.stripeLastSyncedAt ? `Last synced ${format(new Date(syncStatus.stripeLastSyncedAt), "MMM d, h:mm a")}` : "Import customers from Stripe"}
+          >
+            {syncFromStripeMutation.isPending ? (
+              <Loader2 size={14} className="mr-1 animate-spin" />
+            ) : (
+              <CreditCard size={14} className="mr-1" />
             )}
-            <Button
-              onClick={() => syncFromStripeMutation.mutate()}
-              disabled={syncFromStripeMutation.isPending}
-              size="sm"
-              variant="outline"
-              className="font-bold border-0"
-              style={{ background: "oklch(0.32 0.07 260)", color: "oklch(0.80 0.18 80)" }}
-              title={syncStatus?.stripeLastSyncedAt ? `Last synced ${format(new Date(syncStatus.stripeLastSyncedAt), "MMM d, h:mm a")}` : "Import customers from Stripe"}
-            >
-              {syncFromStripeMutation.isPending ? (
-                <Loader2 size={14} className="mr-1 animate-spin" />
-              ) : (
-                <CreditCard size={14} className="mr-1" />
-              )}
-              Stripe{syncStatus?.stripeLastSyncedAt ? (
-                <span className="ml-1 opacity-60 text-xs font-normal hidden sm:inline">
-                  · {format(new Date(syncStatus.stripeLastSyncedAt), "MMM d")}
-                </span>
-              ) : null}
-            </Button>
-            <Button
-              onClick={() => navigate("/import")}
-              size="sm"
-              variant="outline"
-              className="font-bold border-0"
-              style={{ background: "oklch(0.32 0.07 260)", color: "oklch(0.80 0.18 80)" }}
-            >
-              <Upload size={14} className="mr-1" /> Import CSV
-            </Button>
-            <Button
-              onClick={openCreate}
-              size="sm"
-              className="font-bold"
-              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
-            >
-              <UserPlus size={16} className="mr-1" /> Add
-            </Button>
-          </div>
+            Stripe{syncStatus?.stripeLastSyncedAt ? (
+              <span className="ml-1 opacity-60 text-xs font-normal">
+                · {format(new Date(syncStatus.stripeLastSyncedAt), "MMM d")}
+              </span>
+            ) : null}
+          </Button>
+          <Button
+            onClick={() => navigate("/import")}
+            size="sm"
+            variant="outline"
+            className="font-bold border-0 shrink-0"
+            style={{ background: "oklch(0.32 0.07 260)", color: "oklch(0.80 0.18 80)" }}
+          >
+            <Upload size={14} className="mr-1" /> Import CSV
+          </Button>
         </div>
       </div>
 
