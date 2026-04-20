@@ -159,7 +159,7 @@ export default function DashboardPage() {
   }, [allRequests]);
 
   return (
-    <div className="min-h-screen pb-32" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
       {/* Navy Header */}
       <div className="px-5 pt-14 pb-8" style={{ background: "oklch(0.22 0.09 260)" }}>
         <div className="flex items-center gap-2 mb-1">
@@ -559,7 +559,7 @@ export default function DashboardPage() {
       {/* Sticky bulk action bar */}
       {selected.size > 0 && (
         <div
-          className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 px-4 py-3 rounded-2xl shadow-xl"
+          className="fixed bottom-28 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 px-4 py-3 rounded-2xl shadow-xl"
           style={{ background: "oklch(0.22 0.09 260)", minWidth: "280px" }}
         >
           <span className="text-xs font-bold flex-1" style={{ color: "oklch(0.80 0.18 80)" }}>

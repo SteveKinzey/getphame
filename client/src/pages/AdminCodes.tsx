@@ -106,7 +106,7 @@ export default function AdminCodesPage() {
   }
 
   return (
-    <div className="min-h-screen pb-32" style={{ background: "oklch(0.22 0.09 260)" }}>
+    <div className="min-h-screen pb-40" style={{ background: "oklch(0.22 0.09 260)" }}>
       {/* Header */}
       <div className="px-5 pt-14 pb-6">
         <button

@@ -42,7 +42,7 @@ export default function TermsOfService() {
       </div>
 
       {/* Content */}
-      <div className="px-5 py-6 max-w-2xl mx-auto space-y-7 text-sm leading-relaxed pb-32" style={BODY}>
+      <div className="px-5 py-6 max-w-2xl mx-auto space-y-7 text-sm leading-relaxed pb-40" style={BODY}>
 
         {/* 1. Acceptance */}
         <section>

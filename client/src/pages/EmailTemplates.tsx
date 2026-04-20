@@ -194,7 +194,7 @@ export default function EmailTemplates() {
   const previewBody = applyPreview(form.body);
 
   return (
-    <div className="min-h-screen pb-32" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
       {/* Header */}
       <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
         <button

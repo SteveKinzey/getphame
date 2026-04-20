@@ -94,7 +94,7 @@ export default function UpgradePage() {
     const tierLabel = tier === "lifetime" ? "Lifetime License" : tier === "annual" ? "Annual Pro" : "Monthly Pro";
     return (
       <div
-        className="min-h-screen flex flex-col items-center justify-center px-6 pb-32"
+        className="min-h-screen flex flex-col items-center justify-center px-6 pb-40"
         style={{ background: "oklch(0.22 0.09 260)" }}
       >
         <Crown size={64} style={{ color: "oklch(0.80 0.18 80)" }} className="mb-4" />
@@ -119,7 +119,7 @@ export default function UpgradePage() {
   }
 
   return (
-    <div className="min-h-screen pb-32" style={{ background: "oklch(0.22 0.09 260)" }}>
+    <div className="min-h-screen pb-40" style={{ background: "oklch(0.22 0.09 260)" }}>
       {/* Header */}
       <div className="px-5 pt-14 pb-4">
         <button

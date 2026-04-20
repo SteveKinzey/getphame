@@ -333,7 +333,7 @@ export default function SavedContacts() {
   const isSaving = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <div className="min-h-screen pb-36" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
       {/* Header */}
       <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
         <button
@@ -801,7 +801,7 @@ export default function SavedContacts() {
       {/* ── Sticky Bulk Send Bar ─────────────────────────────────────────────── */}
       {selectedCount > 0 && (
         <div
-          className="fixed bottom-20 left-0 right-0 px-4 z-50"
+          className="fixed bottom-28 left-0 right-0 px-4 z-40"
           style={{ maxWidth: "430px", margin: "0 auto" }}
         >
           <div

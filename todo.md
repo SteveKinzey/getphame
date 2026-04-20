@@ -641,3 +641,6 @@
 - [x] Add custom SMTP fallback: when domain is unrecognised, show inline hint pointing to Advanced settings
 - [x] Ensure all 6 provider paths (Gmail, Google Workspace, Yahoo, Zoho, Microsoft, iCloud, Custom) auto-configure correct host/port/TLS
 - [x] Update inline password guide label and steps for each provider (Gmail, Google Workspace, Outlook/M365, Yahoo, Zoho, iCloud)
+
+## Layout Fixes
+- [x] Fix bottom nav overlapping bulk-action bar and footer strip on Dashboard page

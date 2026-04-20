@@ -181,7 +181,7 @@ export default function SendRequestPage() {
   if (sent) {
     return (
       <div
-        className="min-h-screen flex flex-col items-center justify-center px-6 pb-32"
+        className="min-h-screen flex flex-col items-center justify-center px-6 pb-40"
         style={{ background: "oklch(0.22 0.09 260)" }}
       >
         <div className="w-40 h-40 mb-6">
@@ -222,7 +222,7 @@ export default function SendRequestPage() {
   }
 
   return (
-    <div className="min-h-screen pb-32" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
       {/* Navy Header */}
       <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
         <div className="flex items-center gap-2 mb-1">
