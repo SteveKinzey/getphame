@@ -265,7 +265,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
 
           <!-- Header -->
           <tr>
-            <td style="background:#1a2a5e;padding:32px 40px;text-align:center;">
+            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
               <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">ReviewLink</p>
               <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">Your email is connected! 🚀</h1>
             </td>
@@ -286,11 +286,11 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
                 <tr>
                   <td style="padding:24px 28px;">
                     <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#f0a500;">Sample review request</p>
-                    <p style="margin:0 0 12px;font-size:15px;font-weight:700;color:#1a2a5e;">Subject: We'd love your feedback!</p>
+                    <p style="margin:0 0 12px;font-size:15px;font-weight:700;color:#1a2744;">Subject: We'd love your feedback!</p>
                     <p style="margin:0;font-size:14px;color:#555;line-height:1.7;">
                       Hi [Customer Name],<br/><br/>
                       Thank you for choosing us! We'd really appreciate it if you could take 60 seconds to leave us a review — it helps other customers find us and means the world to our team.<br/><br/>
-                      <a href="#" style="color:#1a2a5e;font-weight:700;">⭐ Leave a Review</a><br/><br/>
+                      <a href="#" style="color:#1a2744;font-weight:700;">⭐ Leave a Review</a><br/><br/>
                       Thank you so much,<br/>
                       ${fromName}
                     </p>
@@ -305,7 +305,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
               <!-- CTA button -->
               <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
                 <tr>
-                  <td style="background:#1a2a5e;border-radius:10px;padding:14px 32px;text-align:center;">
+                  <td style="background:#1a2744;border-radius:10px;padding:14px 32px;text-align:center;">
                     <a href="https://reviewlink.app/send" style="color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;letter-spacing:0.3px;">Send Your First Review Request →</a>
                   </td>
                 </tr>
@@ -318,7 +318,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
             <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
               <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">
                 You received this because you just connected your email to ReviewLink.<br/>
-                <a href="https://reviewlink.app/settings" style="color:#1a2a5e;">Manage your settings</a>
+                <a href="https://reviewlink.app/settings" style="color:#1a2744;">Manage your settings</a>
               </p>
             </td>
           </tr>

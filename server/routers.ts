@@ -572,12 +572,12 @@ export const appRouter = router({
         for (const customer of toSend) {
           const htmlBody = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h2 style="color: #0F1F4B;">Hi ${customer.customerName}!</h2>
+              <h2 style="color: #1a2744;">Hi ${customer.customerName}!</h2>
               <p>Thank you for your recent purchase${customer.productName ? ` of <strong>${customer.productName}</strong>` : ""}. We hope you love it!</p>
               <p>Could you take 30 seconds to leave us a quick review? It means the world to us and helps other customers find us.</p>
               <div style="text-align: center; margin: 32px 0;">
                 <a href="${wooReviewUrl}"
-                   style="background: #FFB800; color: #0F1F4B; padding: 14px 32px; border-radius: 8px;
+                   style="background: #f0a500; color: #1a2744; padding: 14px 32px; border-radius: 8px;
                           text-decoration: none; font-weight: bold; font-size: 16px; display: inline-block;">
                   Leave a Review
                 </a>
@@ -743,7 +743,7 @@ export const appRouter = router({
               htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">${replacePlaceholders(resolvedTemplate.body, contact.name).replace(/\n/g, "<br>")}</div>`;
             } else {
               subject = `${profile.businessName} would love your feedback!`;
-              htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2>Hi ${contact.name}!</h2><p>Thank you for choosing <strong>${profile.businessName}</strong>. We hope you had a great experience!</p><p>Could you take 30 seconds to leave us a quick review?</p><div style="text-align: center; margin: 32px 0;"><a href="${reviewUrl}" style="background: #FFB800; color: #0F1F4B; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold;">Leave a Review</a></div><hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" /><p style="color: #aaa; font-size: 11px; text-align: center;">You received this email because you are a customer of ${profile.businessName}. To stop receiving these emails, reply with &quot;unsubscribe&quot;.</p></div>`;
+              htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;"><h2>Hi ${contact.name}!</h2><p>Thank you for choosing <strong>${profile.businessName}</strong>. We hope you had a great experience!</p><p>Could you take 30 seconds to leave us a quick review?</p><div style="text-align: center; margin: 32px 0;"><a href="${reviewUrl}" style="background: #f0a500; color: #1a2744; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: bold;">Leave a Review</a></div><hr style="margin: 24px 0; border: none; border-top: 1px solid #eee;" /><p style="color: #aaa; font-size: 11px; text-align: center;">You received this email because you are a customer of ${profile.businessName}. To stop receiving these emails, reply with &quot;unsubscribe&quot;.</p></div>`;
             }
             // Create request row first to get its ID for tracking
             const bulkRequestId = await createCustomerRequest({
@@ -997,12 +997,12 @@ export const appRouter = router({
           subject = `${profile.businessName} would love your feedback!`;
           htmlBody = `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #0F1F4B;">Hi ${input.customerName}!</h2>
+            <h2 style="color: #1a2744;">Hi ${input.customerName}!</h2>
             <p>Thank you for choosing <strong>${profile.businessName}</strong>. We hope you had a great experience!</p>
             <p>Could you take 30 seconds to leave us a quick review? It means the world to us and helps other customers find us.</p>
             <div style="text-align: center; margin: 32px 0;">
               <a href="${reviewUrl}"
-                 style="background: #FFB800; color: #0F1F4B; padding: 14px 32px; border-radius: 8px;
+                 style="background: #f0a500; color: #1a2744; padding: 14px 32px; border-radius: 8px;
                         text-decoration: none; font-weight: bold; font-size: 16px; display: inline-block;">
                 Leave a Review
               </a>

@@ -644,3 +644,7 @@
 
 ## Layout Fixes
 - [x] Fix bottom nav overlapping bulk-action bar and footer strip on Dashboard page
+
+## Dependency & Email Fixes
+- [x] Add baseline-browser-mapping pnpm override to silence stale data warning
+- [x] Fix email header: change blue heading to navy background (#1a2744) with white title and gold brand label — also updated all fallback email CTAs to #f0a500/#1a2744
