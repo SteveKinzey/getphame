@@ -637,3 +637,11 @@
 - [x] Add free-limit usage counter banner to SendRequest.tsx (shows remaining sends + Upgrade button)
 - [x] Add FORBIDDEN error redirect to /upgrade in SendRequest.tsx onError handler
 - [x] Register /upgrade route in App.tsx
+
+## Simplified Email Connect UX (macOS Mail style)
+- [x] Redesign Settings email connect form: email + password fields only, auto-detect provider from email domain
+- [x] Add inline "What password do I use?" expandable hint with App Password instructions
+- [x] Auto-configure SMTP host/port based on email domain (Gmail → smtp.gmail.com:587, Outlook → smtp.office365.com:587, Yahoo → smtp.mail.yahoo.com:587, custom → show advanced fields)
+- [x] Show provider logo/icon next to email field when domain is recognised (via dynamic label)
+- [x] Remove all visible SMTP technical fields (host, port, TLS) from the default view — hide behind "Advanced" toggle (already existed)
+- [x] Keep SMTP test on connect, show clear success/error state

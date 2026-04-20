@@ -515,6 +515,7 @@ export default function SettingsPage() {
   const [smtpHint, setSmtpHint] = useState<string | null>(null);
   const [showSmtpForm, setShowSmtpForm] = useState(false);
   const [showSmtpPassword, setShowSmtpPassword] = useState(false);
+  const [showPasswordGuide, setShowPasswordGuide] = useState(false);
   const [smtpTestResult, setSmtpTestResult] = useState<{ ok: boolean; error?: string | null } | null>(null);
 
   // Auto-detect SMTP settings when email changes; also pass host so hint fires for Google Workspace
@@ -1176,36 +1177,100 @@ export default function SettingsPage() {
                 />
               </div>
 
-              {/* Password field */}
-              <div>
-                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Password *</label>
-                <div className="relative">
-                  <input
-                    type={showSmtpPassword ? "text" : "password"}
-                    value={smtpPassword}
-                    onChange={(e) => setSmtpPassword(e.target.value)}
-                    placeholder={smtpStatus?.connected ? "Enter new password to update" : "Your email password or app password"}
-                    className="w-full px-3 py-2.5 rounded-xl text-sm outline-none pr-10"
-                    style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowSmtpPassword((v) => !v)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-xs"
-                    style={{ color: "oklch(0.55 0.03 260)" }}
-                  >
-                    {showSmtpPassword ? "Hide" : "Show"}
-                  </button>
-                </div>
-                {smtpHint && (
-                  <div
-                    className="mt-2 px-3 py-2 rounded-lg text-xs"
-                    style={{ background: "oklch(0.97 0.03 80)", color: "oklch(0.45 0.10 80)" }}
-                  >
-                    💡 {smtpHint}
+              {/* Password field — smart provider-aware */}
+              {(() => {
+                const emailDomain = smtpEmail.split('@')[1]?.toLowerCase() ?? '';
+                const isGmail = emailDomain === 'gmail.com' || emailDomain === 'googlemail.com' || smtpHost === 'smtp.gmail.com';
+                const isOutlook = ['outlook.com','hotmail.com','live.com'].includes(emailDomain);
+                const isYahoo = emailDomain === 'yahoo.com';
+                const passwordLabel = isGmail ? 'Gmail App Password *' : isOutlook ? 'Microsoft App Password *' : isYahoo ? 'Yahoo App Password *' : 'Email Password *';
+                const passwordPlaceholder = smtpStatus?.connected ? 'Enter new password to update' : isGmail ? '16-character App Password (no spaces)' : 'Your email password';
+                const showGuide = showPasswordGuide;
+                const setShowGuide = setShowPasswordGuide;
+                return (
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-xs font-bold" style={{ color: 'oklch(0.40 0.04 260)' }}>{passwordLabel}</label>
+                      {(isGmail || isOutlook || isYahoo) && (
+                        <button
+                          type="button"
+                          onClick={() => setShowGuide((v) => !v)}
+                          className="flex items-center gap-1 text-xs font-bold"
+                          style={{ color: 'oklch(0.45 0.18 260)' }}
+                        >
+                          <span className="inline-flex items-center justify-center w-4 h-4 rounded-full text-white text-[10px] font-black" style={{ background: 'oklch(0.45 0.18 260)' }}>?</span>
+                          How to get it
+                        </button>
+                      )}
+                    </div>
+                    {showGuide && isGmail && (
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
+                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Gmail App Password — 4 steps</p>
+                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
+                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>myaccount.google.com</span> → Security</li>
+                          <li>Turn on <span className="font-bold">2-Step Verification</span> if not already on</li>
+                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>myaccount.google.com/apppasswords</span> → name it <span className="font-bold">ReviewLink</span> → click Create</li>
+                          <li>Copy the <span className="font-bold">16-character code</span> and paste it here — <span className="font-bold">remove all spaces</span></li>
+                        </ol>
+                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>Google Workspace users: enable 2FA in admin.google.com first, then follow the same steps.</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                      </div>
+                    )}
+                    {showGuide && isOutlook && (
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
+                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Microsoft App Password — 4 steps</p>
+                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
+                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>account.microsoft.com</span> → Security</li>
+                          <li>Click <span className="font-bold">Advanced security options</span></li>
+                          <li>Under App passwords, click <span className="font-bold">Create a new app password</span></li>
+                          <li>Copy and paste the generated password here</li>
+                        </ol>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                      </div>
+                    )}
+                    {showGuide && isYahoo && (
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
+                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Yahoo App Password — 4 steps</p>
+                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
+                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>account.yahoo.com</span> → Security</li>
+                          <li>Click <span className="font-bold">Generate app password</span></li>
+                          <li>Select <span className="font-bold">Other app</span>, name it ReviewLink</li>
+                          <li>Copy and paste the password here</li>
+                        </ol>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                      </div>
+                    )}
+                    <div className="relative">
+                      <input
+                        type={showSmtpPassword ? 'text' : 'password'}
+                        value={smtpPassword}
+                        onChange={(e) => setSmtpPassword(e.target.value)}
+                        placeholder={passwordPlaceholder}
+                        className="w-full px-3 py-2.5 rounded-xl text-sm outline-none pr-10"
+                        style={{ border: '2px solid oklch(0.90 0.02 260)', fontSize: '16px' }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowSmtpPassword((v) => !v)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs"
+                        style={{ color: 'oklch(0.55 0.03 260)' }}
+                      >
+                        {showSmtpPassword ? 'Hide' : 'Show'}
+                      </button>
+                    </div>
+                    {isGmail && !smtpStatus?.connected && !showGuide && (
+                      <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
+                        Not your regular Gmail password — use an <span className="font-bold">App Password</span>. Tap <span className="font-bold">? How to get it</span> above.
+                      </p>
+                    )}
+                    {!isGmail && !isOutlook && !isYahoo && smtpHint && (
+                      <div className="mt-2 px-3 py-2 rounded-lg text-xs" style={{ background: 'oklch(0.97 0.03 80)', color: 'oklch(0.45 0.10 80)' }}>
+                        💡 {smtpHint}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
+                );
+              })()}
 
               {/* Display name */}
               <div>
