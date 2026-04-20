@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { COOKIE_NAME } from "@shared/const";
+import { COOKIE_NAME, FREE_LIMIT, FREE_LIMIT_ERR_MSG } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
@@ -10,6 +10,7 @@ import {
   createCustomerRequest,
   getCustomerRequests,
   getMonthlyRequestCount,
+  getTotalRequestCount,
 } from "./db";
 
 import { sendMailViaSmtp } from "./smtp";
@@ -84,8 +85,19 @@ import {
 } from "./smtp";
 
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
+import { getGmailAuthUrl, getGmailRedirectUri, getGmailStatus, disconnectGmail } from "./gmail";
 
-// App is free — no send limits enforced
+/**
+ * Enforce the 10-request free-tier limit.
+ * Throws a FORBIDDEN TRPCError if the user is on the free tier and has already sent FREE_LIMIT requests.
+ */
+async function enforceFreeLimit(userId: number, tier: string) {
+  if (tier !== "free") return; // paid users have no limit
+  const total = await getTotalRequestCount(userId);
+  if (total >= FREE_LIMIT) {
+    throw new TRPCError({ code: "FORBIDDEN", message: FREE_LIMIT_ERR_MSG });
+  }
+}
 
 export const appRouter = router({
   system: systemRouter,
@@ -257,9 +269,36 @@ export const appRouter = router({
     }),
   }),
 
+  gmail: router({
+    /** Return Gmail OAuth connection status */
+    status: protectedProcedure.query(async ({ ctx }) => {
+      return getGmailStatus(ctx.user.id);
+    }),
+
+    /** Generate the Google OAuth consent URL for Gmail send scope */
+    getAuthUrl: protectedProcedure
+      .input(z.object({ origin: z.string().url() }))
+      .mutation(({ ctx, input }) => {
+        const redirectUri = getGmailRedirectUri(input.origin);
+        // state = base64(origin) so the callback can reconstruct the redirect URI
+        const state = Buffer.from(input.origin).toString("base64");
+        const url = getGmailAuthUrl(redirectUri, state);
+        return { url };
+      }),
+
+    /** Disconnect Gmail OAuth tokens */
+    disconnect: protectedProcedure.mutation(async ({ ctx }) => {
+      await disconnectGmail(ctx.user.id);
+      return { success: true };
+    }),
+  }),
+
   profile: router({
     get: protectedProcedure.query(async ({ ctx }) => {
-      return getBusinessProfile(ctx.user.id);
+      const profile = await getBusinessProfile(ctx.user.id);
+      if (!profile) return null;
+      const totalSent = await getTotalRequestCount(ctx.user.id);
+      return { ...profile, totalSent };
     }),
 
     upsert: protectedProcedure
@@ -484,18 +523,17 @@ export const appRouter = router({
     bulkSend: protectedProcedure
       .input(z.object({ customerIds: z.array(z.number().int()).min(1), platformId: z.number().int().optional() }))
       .mutation(async ({ ctx, input }) => {
-        const profile = await getBusinessProfile(ctx.user.id);
+         const profile = await getBusinessProfile(ctx.user.id);
         if (!profile) throw new Error("Please complete your business profile first.");
-
+        // Free-tier limit: 10 total sends, then subscription required
+        await enforceFreeLimit(ctx.user.id, profile.tier);
         const now = new Date();
         const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-
         if (profile.monthlyResetDate !== yearMonth) {
           await upsertBusinessProfile({ ...profile, monthlyCount: 0, monthlyResetDate: yearMonth });
           profile.monthlyCount = 0;
           profile.monthlyResetDate = yearMonth;
         }
-
         // Fetch the selected customers
         const db = await getDb();
         if (!db) throw new Error("Database not available");
@@ -643,7 +681,8 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         const profile = await getBusinessProfile(ctx.user.id);
         if (!profile) throw new Error("Please complete your business profile first.");
-
+        // Free-tier limit: 10 total sends, then subscription required
+        await enforceFreeLimit(ctx.user.id, profile.tier);
         // Reset monthly count if needed
         const now = new Date();
         const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
@@ -652,7 +691,6 @@ export const appRouter = router({
           profile.monthlyCount = 0;
           profile.monthlyResetDate = yearMonth;
         }
-
         // Hourly rate limit: check upfront for the whole batch
         checkSendRateLimit(ctx.user.id, input.contactIds.length);
 
@@ -907,18 +945,17 @@ export const appRouter = router({
         })
       )
       .mutation(async ({ ctx, input }) => {
-        const profile = await getBusinessProfile(ctx.user.id);
+           const profile = await getBusinessProfile(ctx.user.id);
         if (!profile) throw new Error("Please complete your business profile first.");
-
+        // Free-tier limit: 10 total sends, then subscription required
+        await enforceFreeLimit(ctx.user.id, profile.tier);
         const now = new Date();
         const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
-
         if (profile.monthlyResetDate !== yearMonth) {
           await upsertBusinessProfile({ ...profile, monthlyCount: 0, monthlyResetDate: yearMonth });
           profile.monthlyCount = 0;
           profile.monthlyResetDate = yearMonth;
         }
-
         // Hourly rate limit: max 200 sends per user per rolling hour
         checkSendRateLimit(ctx.user.id, 1);
 

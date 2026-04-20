@@ -7,6 +7,9 @@ export const ENV = {
   isProduction: process.env.NODE_ENV === "production",
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
+  // Google OAuth 2.0 (Gmail send)
+  googleClientId: process.env.GOOGLE_CLIENT_ID ?? "",
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
   // Zoho Books integration
   zohoClientId: process.env.ZOHO_CLIENT_ID ?? "",
   zohoClientSecret: process.env.ZOHO_CLIENT_SECRET ?? "",

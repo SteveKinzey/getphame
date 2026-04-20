@@ -18,6 +18,8 @@ import { startSmtpHealthCheckScheduler } from "../smtpHealthCheck";
 import { startSmtpWeeklyDigestScheduler } from "../smtpWeeklyDigest";
 import { registerSitemapRoutes } from "../sitemap";
 import { registerZohoRoutes } from "../zoho";
+import { exchangeGmailCode, getGmailRedirectUri } from "../gmail";
+
 import { handleOpenPixel, handleClickRedirect } from "../emailTracking";
 
 function isPortAvailable(port: number): Promise<boolean> {
@@ -148,6 +150,42 @@ async function startServer() {
 
   // Zoho Books OAuth + webhook routes
   registerZohoRoutes(app);
+
+  // Gmail OAuth 2.0 callback
+  app.get("/api/gmail/callback", async (req, res) => {
+    const { code, state, error } = req.query as Record<string, string>;
+
+    if (error) {
+      console.error("[Gmail OAuth] Error from Google:", error);
+      return res.redirect("/?gmailError=" + encodeURIComponent(error));
+    }
+
+    if (!code || !state) {
+      return res.redirect("/?gmailError=missing_params");
+    }
+
+    try {
+      // state encodes the origin so we can build the correct redirect URI
+      const origin = Buffer.from(state, "base64").toString("utf8");
+      const redirectUri = getGmailRedirectUri(origin);
+
+      // Authenticate the user from the session cookie using the sdk
+      let user;
+      try {
+        user = await sdk.authenticateRequest(req as any);
+      } catch {
+        return res.redirect("/settings?gmailError=not_logged_in");
+      }
+
+      const { email } = await exchangeGmailCode(code, redirectUri, user.id);
+      console.log(`[Gmail OAuth] Connected Gmail for user ${user.id}: ${email}`);
+
+      return res.redirect("/settings?gmailConnected=1");
+    } catch (err: any) {
+      console.error("[Gmail OAuth] Callback error:", err.message);
+      return res.redirect("/settings?gmailError=" + encodeURIComponent(err.message));
+    }
+  });
 
   // Email open pixel and click redirect (unauthenticated — must be before tRPC catch-all)
   app.get("/api/track/open/:token", handleOpenPixel);

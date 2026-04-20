@@ -123,3 +123,14 @@ export async function getMonthlyRequestCount(userId: number, yearMonth: string) 
     );
   return Number(rows[0]?.count ?? 0);
 }
+
+/** Count total review requests ever sent by a user (used for free-tier limit) */
+export async function getTotalRequestCount(userId: number): Promise<number> {
+  const db = await getDb();
+  if (!db) return 0;
+  const rows = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(customerRequests)
+    .where(eq(customerRequests.userId, userId));
+  return Number(rows[0]?.count ?? 0);
+}

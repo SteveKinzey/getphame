@@ -613,3 +613,27 @@
 
 ## Bug Fixes
 - [x] Fix OnboardingGuide Step 1-4 rows not tappable on mobile (were plain divs, now buttons with onClick navigating to /settings, /settings, /import, /send + ChevronRight indicator added)
+
+## Gmail OAuth 2.0 Migration (replace SMTP App Password)
+- [ ] Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to env secrets
+- [ ] Add googleClientId and googleClientSecret to server/_core/env.ts
+- [ ] Create server/gmail.ts: OAuth2 client, getAuthUrl, exchangeCode, refreshAccessToken, sendViaOAuth helpers
+- [ ] Add /api/gmail/callback Express route in server/_core/index.ts
+- [ ] Add tRPC procedures: gmail.authUrl, gmail.status, gmail.disconnect
+- [ ] Update smtp.ts sendMailViaSmtp to check for OAuth tokens first, fall back to SMTP
+- [ ] Update Settings UI: replace SMTP connect form with "Connect Gmail" OAuth button
+- [ ] Show connected Gmail address and disconnect button when OAuth is active
+- [ ] Keep SMTP as fallback option for non-Gmail providers (Outlook, Yahoo, custom SMTP)
+- [ ] Update all email send paths to prefer OAuth over SMTP when available
+- [ ] Write vitest tests for gmail OAuth procedures
+
+## Pricing Model Revert
+- [x] Revert to 10 free review requests total (lifetime), then require paid monthly subscription
+- [x] Add getTotalRequestCount helper to server/db.ts
+- [x] Add FREE_LIMIT (10) and FREE_LIMIT_ERR_MSG constants to shared/const.ts
+- [x] Add enforceFreeLimit() helper to server/routers.ts
+- [x] Wire enforceFreeLimit into requests.send, contacts.bulkSend, and woo.bulkSend
+- [x] Add totalSent to profile.get response
+- [x] Add free-limit usage counter banner to SendRequest.tsx (shows remaining sends + Upgrade button)
+- [x] Add FORBIDDEN error redirect to /upgrade in SendRequest.tsx onError handler
+- [x] Register /upgrade route in App.tsx

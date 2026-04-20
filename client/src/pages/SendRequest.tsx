@@ -3,7 +3,8 @@
 
 import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import { Send, Rocket, Mail, User, Star, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe } from "lucide-react";
+import { Send, Rocket, Mail, User, Star, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap } from "lucide-react";
+import { FREE_LIMIT } from "@shared/const";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import { useAnalytics } from "@/hooks/useAnalytics";
@@ -64,6 +65,11 @@ export default function SendRequestPage() {
     },
     onError: (err) => {
       setSending(false);
+      // Free-tier limit hit — redirect to upgrade page
+      if (err.message.includes('10004')) {
+        navigate('/upgrade');
+        return;
+      }
       toast.error(err.message);
     },
   });
@@ -293,6 +299,59 @@ export default function SendRequestPage() {
             </div>
           </div>
         )}
+
+        {/* ── Free-tier usage counter ─────────────────────────────────────── */}
+        {profile && profile.tier === 'free' && (() => {
+          const totalSent = (profile as any).totalSent ?? 0;
+          const remaining = Math.max(0, FREE_LIMIT - totalSent);
+          const atLimit = totalSent >= FREE_LIMIT;
+          if (atLimit) {
+            return (
+              <div
+                className="flex items-start gap-3 px-4 py-4 rounded-2xl"
+                style={{ background: 'oklch(0.97 0.02 260)', border: '1px solid oklch(0.88 0.04 260)' }}
+              >
+                <Zap size={20} style={{ color: 'oklch(0.55 0.18 260)' }} className="shrink-0 mt-0.5" />
+                <div className="flex-1">
+                  <p className="text-sm font-bold mb-1" style={{ color: 'oklch(0.22 0.09 260)' }}>
+                    Free limit reached
+                  </p>
+                  <p className="text-xs mb-2" style={{ color: 'oklch(0.45 0.05 260)' }}>
+                    You've used all {FREE_LIMIT} free review requests. Upgrade to Pro to keep sending.
+                  </p>
+                  <button
+                    onClick={() => navigate('/upgrade')}
+                    className="flex items-center gap-1 text-xs font-bold"
+                    style={{ color: 'oklch(0.55 0.18 260)' }}
+                  >
+                    <Zap size={12} />
+                    Upgrade to Pro →
+                  </button>
+                </div>
+              </div>
+            );
+          }
+          return (
+            <div
+              className="flex items-center justify-between px-4 py-3 rounded-2xl"
+              style={{ background: 'oklch(0.97 0.02 260)', border: '1px solid oklch(0.88 0.04 260)' }}
+            >
+              <div className="flex items-center gap-2">
+                <Zap size={16} style={{ color: 'oklch(0.55 0.18 260)' }} />
+                <span className="text-xs font-semibold" style={{ color: 'oklch(0.35 0.06 260)' }}>
+                  Free plan: {remaining} of {FREE_LIMIT} sends remaining
+                </span>
+              </div>
+              <button
+                onClick={() => navigate('/upgrade')}
+                className="text-xs font-bold px-3 py-1 rounded-lg"
+                style={{ background: 'oklch(0.22 0.09 260)', color: 'oklch(0.80 0.18 80)' }}
+              >
+                Upgrade
+              </button>
+            </div>
+          );
+        })()}
 
         {/* ── Customer form ────────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
