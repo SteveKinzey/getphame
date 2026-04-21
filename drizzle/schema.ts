@@ -56,6 +56,10 @@ export const businessProfiles = mysqlTable("business_profiles", {
   stripeLastSyncedAt: bigint("stripeLastSyncedAt", { mode: "number" }),
   // Max emails to send per day during bulk sends (default 50, max 500)
   dailySendLimit: int("dailySendLimit").default(50).notNull(),
+  // Follow-up reminder settings — 1 = enabled (default), 0 = disabled
+  followUpEnabled: int("followUpEnabled").default(1).notNull(),
+  // Days after initial send before step-1 follow-up (default 3, range 1-14)
+  followUpDelayDays: int("followUpDelayDays").default(3).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

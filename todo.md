@@ -1031,3 +1031,12 @@
 - [x] Activate dark mode: uncomment .dark {} block in index.css, enable switchable=true in ThemeProvider, add Moon/Sun toggle button in Settings header
 - [x] Add --spacing-* tokens to index.css (xs/sm/md/lg/xl/2xl/3xl)
 - [x] Add Compliance link to app footer (gold strip below BottomNav)
+
+## Session #27 — Skill, Dark Mode Polish, Reminder Scheduler, Compliance Badge (Apr 21 2026)
+- [x] Create /skills/reminder-email-scheduler/SKILL.md documenting reminder follow-up email patterns
+- [x] Dark mode polish: replace hardcoded oklch(0.22 0.09 260) on Home/Dashboard outer header divs with var(--navy); add --navy + --navy-light overrides to .dark block; replace page background with var(--background)
+- [x] Reminder scheduler: existing follow_up_reminders table confirmed; added followUpEnabled + followUpDelayDays columns to business_profiles; ran pnpm db:push
+- [x] Reminder scheduler: existing hourly cron job confirmed; updated scheduleFollowUp() to respect followUpEnabled toggle and use configurable delay
+- [x] Reminder scheduler: added reminders.getSettings and reminders.updateSettings tRPC procedures
+- [x] Reminder scheduler: added Automatic Follow-ups toggle + delay input in Settings (Email Connection section)
+- [x] Compliance badge: added green "Compliance: Active" chip below stats row on Home screen, links to /compliance

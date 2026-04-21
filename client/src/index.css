@@ -439,10 +439,14 @@
  * Uncomment and adjust when adding a user-switchable dark mode.
  */
 .dark {
-  --text-on-dark-primary:   oklch(0.15 0.04 260);
-  --text-on-dark-secondary: oklch(0.30 0.05 260);
-  --text-on-dark-muted:     oklch(0.50 0.04 260);
-  --text-on-dark-disabled:  oklch(0.65 0.03 260);
+  --text-on-dark-primary:   oklch(0.92 0.01 260);
+  --text-on-dark-secondary: oklch(0.75 0.03 260);
+  --text-on-dark-muted:     oklch(0.55 0.03 260);
+  --text-on-dark-disabled:  oklch(0.40 0.02 260);
+
+  /* Navy header panels darken slightly in dark mode */
+  --navy:       oklch(0.16 0.07 260);
+  --navy-light: oklch(0.22 0.06 260);
 
   --background: oklch(0.12 0.04 260);
   --foreground: oklch(0.95 0.01 260);

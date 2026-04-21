@@ -28,6 +28,17 @@ export async function scheduleFollowUp(
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
+
+  // Respect per-user follow-up toggle — skip if disabled
+  const [profile] = await db
+    .select({ followUpEnabled: businessProfiles.followUpEnabled, followUpDelayDays: businessProfiles.followUpDelayDays })
+    .from(businessProfiles)
+    .where(eq(businessProfiles.userId, userId));
+  if (profile && profile.followUpEnabled === 0) return;
+
+  const step1DelayMs = ((profile?.followUpDelayDays ?? 3)) * 24 * 60 * 60 * 1000;
+  const step2DelayMs = step1DelayMs + 7 * 24 * 60 * 60 * 1000; // step 2 always 7 days after step 1
+
   const now = Date.now();
   await db.insert(followUpReminders).values([
     {
@@ -35,7 +46,7 @@ export async function scheduleFollowUp(
       customerRequestId,
       customerName,
       customerEmail,
-      scheduledAt: now + THREE_DAYS_MS,
+      scheduledAt: now + step1DelayMs,
       status: "pending",
       sequenceStep: 1,
     },
@@ -44,7 +55,7 @@ export async function scheduleFollowUp(
       customerRequestId,
       customerName,
       customerEmail,
-      scheduledAt: now + TEN_DAYS_MS,
+      scheduledAt: now + step2DelayMs,
       status: "pending",
       sequenceStep: 2,
     },

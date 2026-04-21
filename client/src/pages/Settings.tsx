@@ -46,6 +46,7 @@ import {
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
 import { useTheme } from "@/contexts/ThemeContext";
+import { Switch } from "@/components/ui/switch";
 
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -528,6 +529,13 @@ export default function SettingsPage() {
   const [replyTo, setReplyTo] = useState("");
 
   const [dailySendLimit, setDailySendLimit] = useState(50);
+
+  // Reminder settings state
+  const { data: reminderSettings } = trpc.reminders.getSettings.useQuery();
+  const updateReminderSettings = trpc.reminders.updateSettings.useMutation({
+    onSuccess: () => { toast.success("Follow-up reminder settings saved!"); },
+    onError: (err) => toast.error(err.message),
+  });
 
   // Populate form once profile loads (useEffect avoids render-phase setState)
   useEffect(() => {
@@ -1832,6 +1840,42 @@ export default function SettingsPage() {
                   </button>
                 </div>
                 <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>Bulk sends will stop after this many emails per day. Resets at midnight UTC. Default: 50.</p>
+              </div>
+
+              {/* ── Follow-up Reminder Settings ────────────────────────────────────────── */}
+              <div className="rounded-xl p-3.5" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.91 0.02 260)" }}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <Bell size={14} style={{ color: "oklch(0.45 0.10 260)" }} />
+                    <span className="text-xs font-black" style={{ color: "oklch(0.30 0.04 260)", fontFamily: "'Poppins', sans-serif" }}>Automatic Follow-ups</span>
+                  </div>
+                  <Switch
+                    checked={(reminderSettings?.followUpEnabled ?? 1) === 1}
+                    onCheckedChange={(v) => updateReminderSettings.mutate({
+                      followUpEnabled: v ? 1 : 0,
+                      followUpDelayDays: reminderSettings?.followUpDelayDays ?? 3,
+                    })}
+                  />
+                </div>
+                <p className="text-xs mb-3" style={{ color: "oklch(0.55 0.03 260)" }}>Automatically send day-3 and day-10 follow-up emails to customers who haven&apos;t clicked your review link.</p>
+                {(reminderSettings?.followUpEnabled ?? 1) === 1 && (
+                  <div className="flex items-center gap-2">
+                    <label className="text-xs font-bold" style={{ color: "oklch(0.40 0.04 260)" }}>First follow-up after</label>
+                    <input
+                      type="number"
+                      min={1}
+                      max={14}
+                      value={reminderSettings?.followUpDelayDays ?? 3}
+                      onChange={(e) => updateReminderSettings.mutate({
+                        followUpEnabled: reminderSettings?.followUpEnabled ?? 1,
+                        followUpDelayDays: Math.min(14, Math.max(1, Number(e.target.value))),
+                      })}
+                      className="w-16 px-2 py-1.5 rounded-lg text-sm outline-none text-center"
+                      style={{ border: "2px solid oklch(0.88 0.02 260)", fontSize: "16px" }}
+                    />
+                    <span className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>days (second follow-up 7 days later)</span>
+                  </div>
+                )}
               </div>
 
               {/* Advanced: host/port — collapsed by default, auto-expanded for custom domains */}

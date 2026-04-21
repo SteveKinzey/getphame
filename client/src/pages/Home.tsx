@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Rocket, Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X, Eye, MousePointerClick } from "lucide-react";
+import { Rocket, Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X, Eye, MousePointerClick, ShieldCheck } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import OnboardingGuide from "@/components/OnboardingGuide";
@@ -231,7 +231,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-24" style={{ background: "var(--background)" }}>
       <OnboardingGuide
         open={guideOpen}
         onClose={() => setGuideOpen(false)}
@@ -245,7 +245,7 @@ export default function HomePage() {
       {/* Navy Header Panel */}
       <div
         className="relative px-5 pt-8 pb-6 overflow-hidden"
-        style={{ background: "oklch(0.22 0.09 260)" }}
+        style={{ background: "var(--navy)" }}
       >
         {/* Background rocket image */}
         <div
@@ -336,6 +336,18 @@ export default function HomePage() {
             </div>
           ))}
         </div>
+
+        {/* Compliance badge */}
+        <button
+          onClick={() => navigate("/compliance")}
+          className="flex items-center gap-1.5 mt-3 relative z-10"
+          style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
+          title="View Compliance Guide"
+        >
+          <ShieldCheck size={12} style={{ color: "oklch(0.65 0.18 145)" }} />
+          <span className="text-xs font-bold" style={{ color: "oklch(0.65 0.18 145)" }}>Compliance: Active</span>
+          <span className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>— view guide</span>
+        </button>
       </div>
 
       <div className="px-4 py-4 flex flex-col gap-4">

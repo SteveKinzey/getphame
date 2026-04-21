@@ -1176,6 +1176,33 @@ export const appRouter = router({
         await sendReminderNow(ctx.user.id, input.id);
         return { ok: true };
       }),
+
+    getSettings: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+      const { eq: eqR } = await import("drizzle-orm");
+      const [profile] = await db
+        .select({ followUpEnabled: businessProfiles.followUpEnabled, followUpDelayDays: businessProfiles.followUpDelayDays })
+        .from(businessProfiles)
+        .where(eqR(businessProfiles.userId, ctx.user.id));
+      return { followUpEnabled: profile?.followUpEnabled ?? 1, followUpDelayDays: profile?.followUpDelayDays ?? 3 };
+    }),
+
+    updateSettings: protectedProcedure
+      .input(z.object({
+        followUpEnabled: z.number().int().min(0).max(1),
+        followUpDelayDays: z.number().int().min(1).max(14),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+        const { eq: eqR } = await import("drizzle-orm");
+        await db
+          .update(businessProfiles)
+          .set({ followUpEnabled: input.followUpEnabled, followUpDelayDays: input.followUpDelayDays })
+          .where(eqR(businessProfiles.userId, ctx.user.id));
+        return { ok: true };
+      }),
   }),
 
   requests: router({
