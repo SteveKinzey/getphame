@@ -657,6 +657,7 @@ export const appRouter = router({
             reviewUrl: wooReviewUrl,
             productName: customer.productName ?? null,
             unsubscribeUrl: unsubUrl,
+            showPoweredBy: profile.tier === 'free',
           });
           try {
             await sendMailViaSmtp({ userId: ctx.user.id, to: customer.customerEmail, subject, html: htmlBody });
@@ -875,6 +876,7 @@ export const appRouter = router({
                 businessName: profile.businessName,
                 reviewUrl,
                 unsubscribeUrl: buildUnsubUrl("contact", contact.id, ctx.user.id),
+                showPoweredBy: profile.tier === 'free',
               });
             }
             // Create request row first to get its ID for tracking
@@ -1225,6 +1227,7 @@ export const appRouter = router({
             customerName: input.customerName,
             businessName: profile.businessName,
             reviewUrl,
+            showPoweredBy: profile.tier === 'free',
           });
         }
 

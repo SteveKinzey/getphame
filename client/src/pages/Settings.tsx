@@ -350,6 +350,7 @@ type ProfileData = {
 
 function BillingSection({ profile }: { profile: ProfileData | null | undefined }) {
   const [, navigate] = useLocation();
+  const [showRetention, setShowRetention] = useState(false);
   const createPortal = trpc.stripe.createPortal.useMutation({
     onSuccess: ({ url }) => window.open(url, '_blank'),
     onError: (err) => toast.error(err.message),
@@ -427,15 +428,59 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
       ) : (
         <div className="flex flex-col gap-2">
           {hasStripe ? (
-            <button
-              onClick={() => createPortal.mutate({ origin: window.location.origin })}
-              disabled={createPortal.isPending}
-              className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 disabled:opacity-60"
-              style={{ background: 'oklch(0.22 0.09 260)', color: 'white', fontFamily: "'Poppins', sans-serif" }}
-            >
-              {createPortal.isPending ? <Loader2 size={16} className="animate-spin" /> : <ExternalLink size={16} />}
-              Manage Billing
-            </button>
+            showRetention ? (
+              /* ── Retention prompt ─────────────────────────────────────── */
+              <div
+                className="rounded-xl p-4 space-y-3"
+                style={{ background: 'oklch(0.97 0.005 260)', border: '1.5px solid oklch(0.88 0.03 260)' }}
+              >
+                <p className="text-sm font-black" style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}>
+                  Before you go...
+                </p>
+                <div className="space-y-1.5">
+                  {[
+                    tier === 'annual' ? '2 months free vs monthly — already paid' : null,
+                    'Automated follow-up reminders (day 3 + day 10)',
+                    'Unlimited review requests',
+                    'Priority support',
+                  ].filter(Boolean).map((perk) => (
+                    <div key={perk as string} className="flex items-center gap-2">
+                      <CheckCircle2 size={13} style={{ color: 'oklch(0.55 0.18 145)', flexShrink: 0 }} />
+                      <span className="text-xs" style={{ color: 'oklch(0.40 0.04 260)' }}>{perk}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs" style={{ color: 'oklch(0.55 0.03 260)' }}>
+                  Cancelling will downgrade your account to Free at the end of the billing period.
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setShowRetention(false)}
+                    className="flex-1 py-2.5 rounded-xl text-xs font-black transition-transform active:scale-95"
+                    style={{ background: 'oklch(0.80 0.18 80)', color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
+                  >
+                    Keep My Plan
+                  </button>
+                  <button
+                    onClick={() => { setShowRetention(false); createPortal.mutate({ origin: window.location.origin }); }}
+                    disabled={createPortal.isPending}
+                    className="flex-1 py-2.5 rounded-xl text-xs font-bold disabled:opacity-60"
+                    style={{ background: 'oklch(0.94 0.01 260)', color: 'oklch(0.45 0.04 260)' }}
+                  >
+                    {createPortal.isPending ? <Loader2 size={12} className="animate-spin mx-auto" /> : 'Continue to Billing'}
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => setShowRetention(true)}
+                className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
+                style={{ background: 'oklch(0.22 0.09 260)', color: 'white', fontFamily: "'Poppins', sans-serif" }}
+              >
+                <ExternalLink size={16} />
+                Manage Billing
+              </button>
+            )
           ) : (
             <p className="text-xs" style={{ color: 'oklch(0.55 0.03 260)' }}>
               Your plan is active. Contact support to manage billing.

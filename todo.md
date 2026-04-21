@@ -813,3 +813,9 @@
 - [x] Settings: add Billing section showing current tier, renewal date (Monthly/Annual), and Manage Billing button (Stripe Customer Portal)
 - [x] Payment Success page: build proper confirmation screen with tier-specific messaging and CTA to Send page
 - [x] Home screen: upgrade ShareReferralCard to prominent card with message preview and full-width CTA button
+
+## New Features (Session — Apr 21 2026 #3)
+
+- [x] Settings Billing: add retention confirmation dialog before Manage Billing opens Stripe Portal
+- [x] Send page: add post-send milestone rating nudge at 10th and 25th request sent
+- [x] Email sending: append "Powered by ReviewLink" footer to outgoing emails for free-tier users (Pro/Lifetime get clean footer automatically)

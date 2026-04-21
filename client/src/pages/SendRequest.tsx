@@ -178,6 +178,11 @@ export default function SendRequestPage() {
   }
 
   // ── Success screen ─────────────────────────────────────────────────────────
+  // Milestone: total AFTER this send = stats.total + 1 (stats is pre-send)
+  const totalAfterSend = (stats?.total ?? 0) + 1;
+  const isMilestone = totalAfterSend === 10 || totalAfterSend === 25;
+  const milestoneNum = totalAfterSend;
+
   if (sent) {
     return (
       <div
@@ -206,6 +211,40 @@ export default function SendRequestPage() {
             <Star key={i} size={28} fill="oklch(0.80 0.18 80)" style={{ color: "oklch(0.80 0.18 80)" }} />
           ))}
         </div>
+
+        {/* ── Milestone rating nudge ───────────────────────────────────── */}
+        {isMilestone && (
+          <div
+            className="w-full max-w-xs rounded-2xl p-4 mb-6"
+            style={{ background: "oklch(0.30 0.08 260)", border: "1.5px solid oklch(0.80 0.18 80)" }}
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <div
+                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                style={{ background: "oklch(0.80 0.18 80)" }}
+              >
+                <Rocket size={15} style={{ color: "oklch(0.22 0.09 260)" }} />
+              </div>
+              <p className="text-sm font-black" style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}>
+                {milestoneNum} requests sent!
+              </p>
+            </div>
+            <p className="text-xs mb-3" style={{ color: "rgba(255,255,255,0.70)" }}>
+              You're getting results for real businesses. If ReviewLink is helping you, a quick review means the world to us.
+            </p>
+            <a
+              href="https://reviewlink.app/review"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-black transition-transform active:scale-95"
+              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+            >
+              <Star size={13} />
+              Rate ReviewLink
+            </a>
+          </div>
+        )}
+
         <button
           onClick={handleSendAnother}
           className="w-full max-w-xs py-4 rounded-2xl font-black text-lg"
