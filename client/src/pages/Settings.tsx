@@ -1988,6 +1988,9 @@ export default function SettingsPage() {
                       <p className="text-xs flex items-center gap-1" style={{ color: "oklch(0.50 0.10 145)" }}>
                         <Clock size={10} />
                         Last synced {new Date(wooCreds.lastSyncedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
+                        {(wooCreds.lastSyncCount ?? 0) > 0 && (
+                          <span style={{ color: "oklch(0.40 0.12 145)" }}>· {wooCreds.lastSyncCount} staged</span>
+                        )}
                       </p>
                     ) : (
                       <p className="text-xs" style={{ color: "oklch(0.55 0.08 80)" }}>Not yet synced</p>
@@ -2480,7 +2483,7 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
                   </div>
                   <div className="flex gap-1 shrink-0">
                     <button
-                      onClick={() => testWebhook.mutate({ url: wh.url })}
+                      onClick={() => testWebhook.mutate({ id: wh.id, url: wh.url })}
                       disabled={testWebhook.isPending}
                       className="px-2 py-1 rounded-lg text-xs font-bold"
                       style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.30 0.08 260)" }}
@@ -2549,6 +2552,20 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
               style={{ background: notifPrefs?.wooAutoImportNotify ? "oklch(0.50 0.15 145)" : "oklch(0.80 0.02 260)" }}
             >
               <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform" style={{ left: notifPrefs?.wooAutoImportNotify ? "calc(100% - 1.35rem)" : "0.1rem" }} />
+            </button>
+          </div>
+          <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 mt-2" style={{ background: "oklch(0.97 0.01 260)" }}>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>Email open notifications</p>
+              <p className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.04 260)" }}>Receive an in-app notification each time a customer opens your review request email.</p>
+            </div>
+            <button
+              onClick={() => updateNotifPrefs.mutate({ notifyOnEmailOpen: !notifPrefs?.notifyOnEmailOpen })}
+              disabled={updateNotifPrefs.isPending}
+              className="shrink-0 w-10 h-6 rounded-full transition-colors relative"
+              style={{ background: notifPrefs?.notifyOnEmailOpen ? "oklch(0.50 0.15 145)" : "oklch(0.80 0.02 260)" }}
+            >
+              <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform" style={{ left: notifPrefs?.notifyOnEmailOpen ? "calc(100% - 1.35rem)" : "0.1rem" }} />
             </button>
           </div>
         </div>

@@ -954,3 +954,16 @@
 - [x] Add notify-on-import toggle: user setting + fire notifyOwner when scheduler auto-imports
 - [x] Add CSV export button to Recent Imports feed in Settings
 - [x] Create reusable skill for webhook logs + notify-on-import + CSV export patterns
+## Session #17 — Follow-up Fixes (Apr 21 2026)
+- [x] Fix webhook.test frontend call: pass { id: wh.id, url: wh.url } instead of { url: wh.url }
+- [x] Update webhook.test tRPC procedure to accept { id, url } and use fireTestWebhook so test pings appear in delivery logs
+- [x] Add notifyOnEmailOpen boolean column to notification_prefs table (default false)
+- [x] Update updateNotificationPrefs helper to accept notifyOnEmailOpen
+- [x] Update notificationPrefs.update tRPC procedure to accept notifyOnEmailOpen
+- [x] Add notifyOnEmailOpen check in handleOpenPixel (emailTracking.ts) — fires notifyOwner when enabled
+- [x] Add Email open notifications toggle to Notification Preferences card in Settings
+- [x] Add lastSyncCount int column to woo_credentials table (default 0)
+- [x] Update woo.sync procedure to write lastSyncedAt + lastSyncCount after staging
+- [x] Update woo.getCredentials to return lastSyncCount
+- [x] Update Settings WooCommerce card to show "Last synced [date] · N staged"
+- [x] Update saas-observability skill with all new patterns (test webhook logging, open-tracking notification, WooCommerce last-synced)

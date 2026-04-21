@@ -134,7 +134,6 @@ export function buildUnsubUrl(contactType: "contact" | "woo", id: number, userId
   const base = process.env.APP_BASE_URL ?? "https://reviewlink.app";
   return `${base}/unsubscribe?token=${token}`;
 }
-import { getGmailAuthUrl, getGmailRedirectUri, getGmailStatus, disconnectGmail } from "./gmail";
 
 /**
  * Enforce the 10-request free-tier limit.
@@ -349,30 +348,6 @@ export const appRouter = router({
     }),
   }),
 
-  gmail: router({
-    /** Return Gmail OAuth connection status */
-    status: protectedProcedure.query(async ({ ctx }) => {
-      return getGmailStatus(ctx.user.id);
-    }),
-
-    /** Generate the Google OAuth consent URL for Gmail send scope */
-    getAuthUrl: protectedProcedure
-      .input(z.object({ origin: z.string().url() }))
-      .mutation(({ ctx, input }) => {
-        const redirectUri = getGmailRedirectUri(input.origin);
-        // state = base64(origin) so the callback can reconstruct the redirect URI
-        const state = Buffer.from(input.origin).toString("base64");
-        const url = getGmailAuthUrl(redirectUri, state);
-        return { url };
-      }),
-
-    /** Disconnect Gmail OAuth tokens */
-    disconnect: protectedProcedure.mutation(async ({ ctx }) => {
-      await disconnectGmail(ctx.user.id);
-      return { success: true };
-    }),
-  }),
-
   profile: router({
     get: protectedProcedure.query(async ({ ctx }) => {
       const profile = await getBusinessProfile(ctx.user.id);
@@ -527,6 +502,7 @@ export const appRouter = router({
         storeUrl: creds.storeUrl,
         consumerKey: creds.consumerKey.slice(0, 8) + "...",
         lastSyncedAt: creds.lastSyncedAt,
+        lastSyncCount: creds.lastSyncCount ?? 0,
       };
     }),
 
@@ -559,7 +535,7 @@ export const appRouter = router({
         const orders = await fetchWooOrders(creds.storeUrl, creds.consumerKey, creds.consumerSecret, input.days);
         const { stageWooOrders } = await import("./wooImportScheduler");
         const staged = await stageWooOrders(ctx.user.id, orders);
-        // Write a sync log entry
+        // Write a sync log entry and update lastSyncedAt / lastSyncCount on credentials
         const db = await getDb();
         if (db) {
           await db.insert(wooSyncLogs).values({
@@ -570,6 +546,11 @@ export const appRouter = router({
             total: orders.length,
             storeUrl: creds.storeUrl,
           });
+          // Update the timestamp and staged count so the UI can show "Last synced X ago · Y orders staged"
+          await db
+            .update(wooCredentials)
+            .set({ lastSyncedAt: Date.now(), lastSyncCount: staged.staged })
+            .where(eq(wooCredentials.userId, ctx.user.id));
         }
         return { added: staged.staged, total: orders.length, staged: staged.staged, skipped: staged.skipped };
       }),
@@ -2001,26 +1982,16 @@ export const appRouter = router({
         await deleteWebhookConfig(ctx.user.id, input.id);
         return { success: true };
       }),
-    /** Send a test ping to a webhook URL */
+    /** Send a test ping to a webhook URL — logs the delivery so it appears in the Logs panel */
     test: protectedProcedure
-      .input(z.object({ url: z.string().url() }))
+      .input(z.object({ id: z.number().int().positive(), url: z.string().url() }))
       .mutation(async ({ ctx, input }) => {
-        try {
-          const payload = JSON.stringify({
-            event: "test",
-            timestamp: Date.now(),
-            data: { message: "ReviewLink webhook test ping", userId: ctx.user.id },
-          });
-          const res = await fetch(input.url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", "X-ReviewLink-Event": "test" },
-            body: payload,
-            signal: AbortSignal.timeout(8000),
-          });
-          return { success: res.ok, status: res.status };
-        } catch (err: any) {
-          return { success: false, status: 0, error: err.message };
-        }
+        const { fireTestWebhook } = await import("./webhookHelpers");
+        // Fetch the secret for this webhook (if any) so the signature header is correct
+        const configs = await getWebhookConfigs(ctx.user.id);
+        const cfg = configs.find((c) => c.id === input.id);
+        const secret = cfg?.secret ?? null;
+        return fireTestWebhook(input.id, ctx.user.id, input.url, secret);
       }),
     /** Get the last 5 delivery logs for a specific webhook */
     deliveryLogs: protectedProcedure
@@ -2040,6 +2011,7 @@ export const appRouter = router({
     update: protectedProcedure
       .input(z.object({
         wooAutoImportNotify: z.boolean().optional(),
+        notifyOnEmailOpen: z.boolean().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         await updateNotificationPrefs(ctx.user.id, input);

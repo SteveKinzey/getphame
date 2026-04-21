@@ -349,7 +349,7 @@ export async function getNotificationPrefs(userId: number) {
 }
 
 /** Update notification prefs for a user. */
-export async function updateNotificationPrefs(userId: number, prefs: { wooAutoImportNotify?: boolean }) {
+export async function updateNotificationPrefs(userId: number, prefs: { wooAutoImportNotify?: boolean; notifyOnEmailOpen?: boolean }) {
   const db = await getDb();
   if (!db) return;
   await db

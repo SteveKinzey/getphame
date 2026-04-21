@@ -1,0 +1,1 @@
+ALTER TABLE `notification_prefs` ADD `notifyOnEmailOpen` boolean DEFAULT false NOT NULL;

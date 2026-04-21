@@ -10,65 +10,10 @@
  */
 
 import { Router, Request, Response } from "express";
-import { getUserByApiKey, logApiImport, getWebhookConfigs, updateWebhookStatus, logWebhookDelivery } from "./db";
+import { getUserByApiKey, logApiImport } from "./db";
 import { upsertApiContact } from "./contacts";
 import { listApiKeys } from "./db";
-import { createHash } from "crypto";
-
-/** Fire outbound webhooks for a user on a given event. Fire-and-forget. */
-async function fireWebhooks(userId: number, event: string, data: object): Promise<void> {
-  try {
-    const configs = await getWebhookConfigs(userId);
-    const active = configs.filter((c) => c.active && c.events.split(",").map(e => e.trim()).includes(event));
-    for (const cfg of active) {
-      const payload = JSON.stringify({ event, timestamp: Date.now(), data });
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-        "X-ReviewLink-Event": event,
-      };
-      if (cfg.secret) {
-        const sig = createHash("sha256").update(cfg.secret + payload).digest("hex");
-        headers["X-ReviewLink-Signature"] = `sha256=${sig}`;
-      }
-      const startMs = Date.now();
-      fetch(cfg.url, { method: "POST", headers, body: payload, signal: AbortSignal.timeout(8000) })
-        .then(async (r) => {
-          const durationMs = Date.now() - startMs;
-          let responseBody = "";
-          try { responseBody = (await r.text()).slice(0, 500); } catch { /* ignore */ }
-          updateWebhookStatus(cfg.id, r.status).catch(() => {});
-          logWebhookDelivery({
-            webhookId: cfg.id,
-            userId: cfg.userId,
-            event,
-            url: cfg.url,
-            statusCode: r.status,
-            success: r.ok,
-            responseBody,
-            durationMs,
-            createdAt: Date.now(),
-          }).catch(() => {});
-        })
-        .catch((err) => {
-          const durationMs = Date.now() - startMs;
-          updateWebhookStatus(cfg.id, 0).catch(() => {});
-          logWebhookDelivery({
-            webhookId: cfg.id,
-            userId: cfg.userId,
-            event,
-            url: cfg.url,
-            statusCode: null,
-            success: false,
-            errorMessage: String(err?.message ?? err).slice(0, 500),
-            durationMs,
-            createdAt: Date.now(),
-          }).catch(() => {});
-        });
-    }
-  } catch (err) {
-    console.warn("[Webhook] Fire error:", err);
-  }
-}
+import { fireWebhooks } from "./webhookHelpers";
 
 // Simple in-memory rate limiter: { keyHash -> { count, resetAt } }
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();

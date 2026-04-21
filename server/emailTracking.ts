@@ -109,6 +109,23 @@ export async function handleOpenPixel(req: Request, res: Response): Promise<void
   if (decoded) {
     // Fire-and-forget — do not await so the image is served immediately
     void recordEvent(decoded.requestId, decoded.userId, decoded.templateId, "open", null, req);
+    // Notify the business owner if they have the open-tracking notification pref enabled
+    void (async () => {
+      try {
+        const { getNotificationPrefs } = await import("./db");
+        const prefs = await getNotificationPrefs(decoded.userId);
+        if (prefs?.notifyOnEmailOpen) {
+          const { notifyOwner } = await import("./_core/notification");
+          await notifyOwner({
+            title: "📬 Review request opened",
+            content: `A customer opened your review request email (request #${decoded.requestId}).`,
+          });
+        }
+      } catch (err) {
+        // Non-fatal — notification failures must never break tracking
+        console.warn("[EmailTracking] notifyOnEmailOpen failed:", err);
+      }
+    })();
   }
   res.set({
     "Content-Type": "image/gif",

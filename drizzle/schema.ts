@@ -106,10 +106,10 @@ export const wooCredentials = mysqlTable("woo_credentials", {
   consumerKey: text("consumerKey").notNull(),
   consumerSecret: text("consumerSecret").notNull(),
   lastSyncedAt: bigint("lastSyncedAt", { mode: "number" }), // Unix ms
+  lastSyncCount: int("lastSyncCount").default(0), // number of orders staged in the last sync
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
-
 export type WooCredentials = typeof wooCredentials.$inferSelect;
 export type InsertWooCredentials = typeof wooCredentials.$inferInsert;
 
@@ -447,6 +447,7 @@ export const notificationPrefs = mysqlTable("notification_prefs", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull().unique(),
   wooAutoImportNotify: boolean("wooAutoImportNotify").notNull().default(true),
+  notifyOnEmailOpen: boolean("notifyOnEmailOpen").notNull().default(false),
   updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
 });
 export type NotificationPref = typeof notificationPrefs.$inferSelect;

@@ -239,6 +239,20 @@
       "when": 1776755202081,
       "tag": "0033_unusual_elektra",
       "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "5",
+      "when": 1776756903979,
+      "tag": "0034_bent_punisher",
+      "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "5",
+      "when": 1776757120480,
+      "tag": "0035_flippant_screwball",
+      "breakpoints": true
     }
   ]
 }
