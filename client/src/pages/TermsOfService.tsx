@@ -1,5 +1,23 @@
 import { useLocation } from "wouter";
 import { ArrowLeft } from "lucide-react";
+import { useState, useEffect } from "react";
+
+const TH_ADDRESS = (
+  <>
+    88/14 Phuttomonthon Sai 2 Soi 31<br />
+    Sala Thammasop, Thawi Wattana<br />
+    Bangkok 10170<br />
+    Thailand
+  </>
+);
+
+const US_ADDRESS = (
+  <>
+    255 N D St, Suite 200XIX<br />
+    San Bernardino, CA 92401<br />
+    United States
+  </>
+);
 
 const SH = "text-base font-bold mb-3";
 const SHS = { fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" };
@@ -9,6 +27,11 @@ const BORDER = { borderColor: "oklch(0.80 0.18 80)" };
 
 export default function TermsOfService() {
   const [, navigate] = useLocation();
+  const [isThai, setIsThai] = useState(false);
+  useEffect(() => {
+    setIsThai(localStorage.getItem('rr-lang') === 'th');
+  }, []);
+  const ADDR = isThai ? TH_ADDRESS : US_ADDRESS;
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -280,9 +303,7 @@ export default function TermsOfService() {
           </p>
           <address className="not-italic leading-relaxed pl-3 border-l-2" style={BORDER}>
             ReviewLink — Legal<br />
-            255 N D St, Suite 200XIX<br />
-            San Bernardino, CA 92401<br />
-            United States<br />
+            {ADDR}<br />
             <a href="mailto:legal@reviewlink.app" style={LINK}>legal@reviewlink.app</a>
           </address>
         </section>

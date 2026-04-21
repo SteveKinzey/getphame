@@ -1115,3 +1115,8 @@
 - [x] Set STRIPE_PRICE_ID_THB_MONTHLY, STRIPE_PRICE_ID_THB_ANNUAL, STRIPE_PRICE_ID_THB_LIFETIME as env secrets
 - [x] createThbCheckoutSession() already reads from env vars — no code change needed
 - [x] Verified via vitest: all 4 THB price ID tests pass (price_ prefix, non-empty, distinct)
+
+## Session #37 — Thai Company Address on Legal Pages (Apr 21 2026)
+- [x] Replace US address with Thai address on Privacy Policy (sections 2 + 16) when rr-lang=th
+- [x] Replace US address with Thai address on Terms of Service (section 17) when rr-lang=th
+- [x] Address: 88/14 Phuttomonthon Sai 2 Soi 31, Sala Thammasop, Thawi Wattana, Bangkok 10170, Thailand

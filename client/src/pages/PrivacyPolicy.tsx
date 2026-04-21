@@ -1,5 +1,23 @@
 import { useLocation } from "wouter";
 import { ArrowLeft } from "lucide-react";
+import { useState, useEffect } from "react";
+
+const TH_ADDRESS = (
+  <>
+    88/14 Phuttomonthon Sai 2 Soi 31<br />
+    Sala Thammasop, Thawi Wattana<br />
+    Bangkok 10170<br />
+    Thailand
+  </>
+);
+
+const US_ADDRESS = (
+  <>
+    255 N D St, Suite 200XIX<br />
+    San Bernardino, CA 92401<br />
+    United States
+  </>
+);
 
 const SECTION_HEADING = "text-base font-bold mb-3";
 const SECTION_HEADING_STYLE = { fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" };
@@ -8,6 +26,11 @@ const LINK_STYLE = { color: "oklch(0.50 0.18 260)" };
 
 export default function PrivacyPolicy() {
   const [, navigate] = useLocation();
+  const [isThai, setIsThai] = useState(false);
+  useEffect(() => {
+    setIsThai(localStorage.getItem('rr-lang') === 'th');
+  }, []);
+  const ADDR = isThai ? TH_ADDRESS : US_ADDRESS;
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -62,9 +85,7 @@ export default function PrivacyPolicy() {
           </p>
           <address className="not-italic leading-relaxed pl-3 border-l-2" style={{ borderColor: "oklch(0.80 0.18 80)" }}>
             ReviewLink<br />
-            255 N D St, Suite 200XIX<br />
-            San Bernardino, CA 92401<br />
-            United States<br />
+            {ADDR}<br />
             <a href="mailto:privacy@reviewlink.app" style={LINK_STYLE}>privacy@reviewlink.app</a>
           </address>
           <p className="mt-3">
@@ -303,9 +324,7 @@ export default function PrivacyPolicy() {
           </p>
           <address className="not-italic leading-relaxed pl-3 border-l-2" style={{ borderColor: "oklch(0.80 0.18 80)" }}>
             ReviewLink — Privacy Team<br />
-            255 N D St, Suite 200XIX<br />
-            San Bernardino, CA 92401<br />
-            United States<br />
+            {ADDR}<br />
             <a href="mailto:privacy@reviewlink.app" style={LINK_STYLE}>privacy@reviewlink.app</a>
           </address>
           <p className="mt-3">
