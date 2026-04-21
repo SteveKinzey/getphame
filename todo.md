@@ -995,3 +995,6 @@
 - [x] Migrate inline fontFamily strings to rr-* utility classes across all files (CSS inheritance approach)
 - [x] Add --fw-* font-weight tokens to index.css
 - [x] Add .dark override block for dark mode variant in index.css (commented out, ready to activate)
+
+## Session #23 — Swipe Gesture Navigation (Apr 21 2026)
+- [x] Add swipe left/right gesture navigation to OnboardingGuide steps

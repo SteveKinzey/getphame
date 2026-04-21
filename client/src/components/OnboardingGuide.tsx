@@ -13,7 +13,7 @@
  * Re-openable via the "Setup Guide" button on Home and Settings.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { X, ChevronRight, ChevronLeft, Mail, Star, Users, Send, CheckCircle2, Rocket, Globe, Upload, CreditCard, ShoppingCart, BookOpen, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
@@ -900,14 +900,39 @@ interface OnboardingGuideProps {
 export default function OnboardingGuide({ open, onClose, stepsDone }: OnboardingGuideProps) {
   const [step, setStep] = useState(0);
   const [, navigate] = useLocation();
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
 
   // Reset to first step whenever modal opens
   useEffect(() => {
     if (open) setStep(0);
   }, [open]);
 
-  if (!open) return null;
+  // Swipe handlers — horizontal swipe > 50px advances/retreats steps
+  // Vertical swipe is ignored so normal scrolling still works
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+  }, []);
 
+  const handleTouchEnd = useCallback((e: React.TouchEvent, totalSteps: number) => {
+    if (touchStartX.current === null || touchStartY.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    const dy = e.changedTouches[0].clientY - touchStartY.current;
+    touchStartX.current = null;
+    touchStartY.current = null;
+    // Only act on predominantly horizontal swipes of at least 50px
+    if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
+    if (dx < 0) {
+      // swipe left → next step
+      setStep(s => Math.min(s + 1, totalSteps - 1));
+    } else {
+      // swipe right → previous step
+      setStep(s => Math.max(s - 1, 0));
+    }
+  }, []);
+
+  if (!open) return null;
   const handleNavigate = (path: string) => {
     onClose();
     navigate(path);
@@ -997,7 +1022,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
         </div>
 
         {/* Step progress dots — 44px touch targets, 14px visible dots */}
-        <div className="flex items-center gap-4 mb-3">
+        <div className="flex items-center gap-4 mb-6">
           {STEPS.map((s, i) => (
             <button
               key={s.id}
@@ -1026,7 +1051,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
         </div>
 
         {/* Step title */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 mt-2">
           <div
             className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
             style={{ background: "oklch(0.32 0.08 260)", color: "oklch(0.80 0.18 80)" }}
@@ -1048,7 +1073,11 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
       </div>
 
       {/* ── Scrollable content ──────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-5 py-5 pb-32">
+      <div
+        className="flex-1 overflow-y-auto px-5 py-5 pb-32"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={(e) => handleTouchEnd(e, STEPS.length)}
+      >
         {current.content}
       </div>
 
