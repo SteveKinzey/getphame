@@ -1696,6 +1696,57 @@ export const appRouter = router({
 
   /** Admin-only analytics and diagnostics */
   admin: router({
+    /** Overall platform stats — user count, tier breakdown, recent signups, recent sends */
+    stats: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+
+      // User counts by tier
+      const allProfiles = await db.select().from(businessProfiles);
+      const tierCounts = { free: 0, pro: 0, annual: 0, lifetime: 0 };
+      for (const p of allProfiles) {
+        if (p.tier in tierCounts) tierCounts[p.tier as keyof typeof tierCounts]++;
+      }
+
+      // Recent signups (last 10 users)
+      const recentUsers = await db
+        .select({ id: users.id, name: users.name, email: users.email, createdAt: users.createdAt })
+        .from(users)
+        .orderBy(users.createdAt)
+        .limit(10);
+
+      // Total sends in last 30 days
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      const recentSends = await db
+        .select()
+        .from(customerRequests)
+        .where(eq(customerRequests.userId, customerRequests.userId)); // all rows
+      const sendsLast30 = recentSends.filter(r => r.sentAt && r.sentAt > thirtyDaysAgo).length;
+
+      // Total sends all time
+      const totalSends = recentSends.length;
+
+      // Active SMTP connections
+      const smtpRows = await db.select().from(smtpCredentials);
+      const activeSmtp = smtpRows.filter(r => r.lastHealthStatus === "ok").length;
+
+      return {
+        totalUsers: allProfiles.length,
+        tierCounts,
+        recentUsers: recentUsers.map(u => ({
+          id: u.id,
+          name: u.name,
+          email: u.email,
+          createdAt: u.createdAt,
+        })),
+        totalSends,
+        sendsLast30,
+        activeSmtp,
+        totalSmtp: smtpRows.length,
+      };
+    }),
+
     /** SMTP provider failure stats — breakdown by host across all users */
     smtpStats: protectedProcedure.query(async ({ ctx }) => {
       if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });

@@ -9,7 +9,8 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { stripe } from "../stripe";
-import { getDb } from "../db";
+import { getDb, getUserByOpenId } from "../db";
+import { ENV } from "./env";
 import { businessProfiles, stripeSubscriptions } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
@@ -21,6 +22,7 @@ import { registerZohoRoutes } from "../zoho";
 import { exchangeGmailCode, getGmailRedirectUri } from "../gmail";
 
 import { handleOpenPixel, handleClickRedirect } from "../emailTracking";
+import { sendUpgradeReceiptEmail } from "../smtp";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -121,6 +123,23 @@ async function startServer() {
           }
 
           console.log(`[Stripe Webhook] User ${userId} upgraded to ${newTier} (plan: ${plan}, mode: ${mode})`);
+
+          // Send upgrade receipt email (fire-and-forget)
+          const customerEmail = session.metadata?.customer_email as string | undefined;
+          const customerName = session.metadata?.customer_name as string | undefined;
+          if (customerEmail) {
+            const ownerUser = await getUserByOpenId(ENV.ownerOpenId);
+            if (ownerUser) {
+              sendUpgradeReceiptEmail({
+                ownerUserId: ownerUser.id,
+                toEmail: customerEmail,
+                toName: customerName ?? null,
+                tier: newTier,
+              }).catch((err: unknown) => {
+                console.warn("[Stripe Webhook] Upgrade receipt email failed (non-fatal):", err);
+              });
+            }
+          }
         }
       }
 

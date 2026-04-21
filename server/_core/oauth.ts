@@ -1,6 +1,8 @@
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import { ENV } from "./env";
 import type { Express, Request, Response } from "express";
 import * as db from "../db";
+import { sendUserWelcomeEmail } from "../smtp";
 import { getSessionCookieOptions } from "./cookies";
 import { sdk } from "./sdk";
 
@@ -28,6 +30,10 @@ export function registerOAuthRoutes(app: Express) {
         return;
       }
 
+      // Check if this is a new user before upserting
+      const existingUser = await db.getUserByOpenId(userInfo.openId);
+      const isNewUser = !existingUser;
+
       await db.upsertUser({
         openId: userInfo.openId,
         name: userInfo.name || null,
@@ -35,6 +41,20 @@ export function registerOAuthRoutes(app: Express) {
         loginMethod: userInfo.loginMethod ?? userInfo.platform ?? null,
         lastSignedIn: new Date(),
       });
+
+      // Send welcome email to new users (fire-and-forget, non-blocking)
+      if (isNewUser && userInfo.email) {
+        const ownerUser = await db.getUserByOpenId(ENV.ownerOpenId);
+        if (ownerUser) {
+          sendUserWelcomeEmail({
+            ownerUserId: ownerUser.id,
+            toEmail: userInfo.email,
+            toName: userInfo.name || null,
+          }).catch((err: unknown) => {
+            console.warn("[OAuth] Welcome email failed (non-fatal):", err);
+          });
+        }
+      }
 
       const sessionToken = await sdk.createSessionToken(userInfo.openId, {
         name: userInfo.name || "",

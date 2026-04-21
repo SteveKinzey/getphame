@@ -832,3 +832,9 @@
 
 - [x] Build PWAInstallPrompt component: iOS Safari instructions (Share -> Add to Home Screen), Android Chrome instructions (menu -> Add to Home Screen), dismiss + localStorage persistence
 - [x] Mount PWAInstallPrompt in App.tsx: show after 3s delay on first visit, hide if already installed (standalone mode), hide in Capacitor native app
+
+## New Features (Session — Apr 21 2026 #2)
+
+- [x] Admin dashboard (/admin): user count, tier breakdown (free/pro/annual/lifetime), recent signups table, recent sends count
+- [x] Transactional emails: welcome email on first login, upgrade receipt email on tier change (pro/annual/lifetime)
+- [x] Settings: add "Install app on your phone" button that resets localStorage PWA dismiss flag and re-triggers the install prompt

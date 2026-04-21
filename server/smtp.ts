@@ -426,3 +426,202 @@ export async function runSmtpHealthChecks(): Promise<void> {
   }
   console.log(`[SmtpHealthCheck] Done. ${allCreds.length} checked, ${failingHosts.reduce((t, h) => t + providerFailures[h].count, 0)} failed.`);
 }
+
+// ── Transactional emails (sent from owner's SMTP to app users) ────────────────
+
+/**
+ * Send a welcome email to a new user via the owner's connected SMTP.
+ * Silently skips if the owner has no SMTP configured.
+ */
+export async function sendUserWelcomeEmail(opts: {
+  ownerUserId: number;
+  toEmail: string;
+  toName: string | null;
+}): Promise<void> {
+  const creds = await getSmtpCredentials(opts.ownerUserId);
+  if (!creds) return; // Owner has no SMTP — skip gracefully
+
+  const fromName = creds.fromName ?? creds.user;
+  const displayName = opts.toName || "there";
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to ReviewLink!</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
+          <tr>
+            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">ReviewLink</p>
+              <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">Welcome aboard! 🚀</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:36px 40px;">
+              <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
+              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">
+                Thanks for joining ReviewLink! You're now set up to send personalised review request emails directly from your own email account — so your customers see a message from <em>you</em>, not a bulk mailer.
+              </p>
+              <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">
+                Here's how to get started in 3 steps:
+              </p>
+              <table width="100%" cellpadding="0" cellspacing="0" style="background:#f8f9ff;border:1px solid #e0e4f0;border-radius:12px;margin:0 0 24px;">
+                <tr><td style="padding:20px 24px;">
+                  <p style="margin:0 0 10px;font-size:14px;color:#1a2744;line-height:1.6;"><strong>1.</strong> Connect your email account in Settings</p>
+                  <p style="margin:0 0 10px;font-size:14px;color:#1a2744;line-height:1.6;"><strong>2.</strong> Add your Google (or Yelp, TripAdvisor, etc.) review link</p>
+                  <p style="margin:0;font-size:14px;color:#1a2744;line-height:1.6;"><strong>3.</strong> Send your first review request — takes under 30 seconds</p>
+                </td></tr>
+              </table>
+              <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
+                <tr>
+                  <td style="background:#1a2744;border-radius:10px;padding:14px 32px;text-align:center;">
+                    <a href="https://reviewlink.app" style="color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;">Get Started →</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
+              <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">
+                You received this because you signed up for ReviewLink.<br/>
+                <a href="https://reviewlink.app/settings" style="color:#1a2744;">Manage your settings</a>
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+
+  const text = `Hi ${displayName},\n\nWelcome to ReviewLink!\n\nYou're now set up to send personalised review request emails directly from your own email account.\n\nGet started at https://reviewlink.app\n\n— ${fromName}`;
+
+  const pass = decryptPassword(creds.encryptedPass);
+  const transporter = createTransporter({
+    host: creds.host,
+    port: creds.port,
+    secure: creds.secure === 1,
+    user: creds.user,
+    pass,
+  });
+  const from = `"${fromName}" <${creds.user}>`;
+  await transporter.sendMail({
+    from,
+    replyTo: creds.replyTo ?? creds.user,
+    to: opts.toEmail,
+    subject: "Welcome to ReviewLink! 🚀",
+    html,
+    text,
+  });
+}
+
+/**
+ * Send an upgrade receipt/confirmation email to a user via the owner's connected SMTP.
+ * Silently skips if the owner has no SMTP configured.
+ */
+export async function sendUpgradeReceiptEmail(opts: {
+  ownerUserId: number;
+  toEmail: string;
+  toName: string | null;
+  tier: "pro" | "annual" | "lifetime";
+}): Promise<void> {
+  const creds = await getSmtpCredentials(opts.ownerUserId);
+  if (!creds) return;
+
+  const fromName = creds.fromName ?? creds.user;
+  const displayName = opts.toName || "there";
+
+  const tierLabels: Record<string, string> = {
+    pro: "Pro Monthly",
+    annual: "Pro Annual",
+    lifetime: "Lifetime",
+  };
+  const tierLabel = tierLabels[opts.tier] ?? "Pro";
+
+  const tierPerks: Record<string, string[]> = {
+    pro: ["Unlimited review requests", "Automated follow-up reminders", "Priority support"],
+    annual: ["Everything in Pro Monthly", "2 months free vs monthly billing", "Priority support"],
+    lifetime: ["Everything in Pro Annual", "Never pay again — one-time fee", "Lifetime updates included"],
+  };
+  const perks = tierPerks[opts.tier] ?? [];
+
+  const perksHtml = perks.map(p => `<li style="margin:0 0 8px;font-size:14px;color:#333;line-height:1.6;">✅ ${p}</li>`).join("");
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>You're now on ReviewLink ${tierLabel}!</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
+          <tr>
+            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">ReviewLink</p>
+              <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">You're on ${tierLabel}! 🎉</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:36px 40px;">
+              <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
+              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">
+                Your ReviewLink account has been upgraded to <strong>${tierLabel}</strong>. Here's what you now have access to:
+              </p>
+              <ul style="margin:0 0 24px;padding:0 0 0 4px;list-style:none;">
+                ${perksHtml}
+              </ul>
+              <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
+                <tr>
+                  <td style="background:#1a2744;border-radius:10px;padding:14px 32px;text-align:center;">
+                    <a href="https://reviewlink.app/send" style="color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;">Start Sending Reviews →</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
+              <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">
+                Questions? Reply to this email or visit <a href="https://reviewlink.app/settings" style="color:#1a2744;">your settings</a>.
+              </p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+
+  const text = `Hi ${displayName},\n\nYour ReviewLink account has been upgraded to ${tierLabel}!\n\nStart sending review requests at https://reviewlink.app/send\n\n— ${fromName}`;
+
+  const pass = decryptPassword(creds.encryptedPass);
+  const transporter = createTransporter({
+    host: creds.host,
+    port: creds.port,
+    secure: creds.secure === 1,
+    user: creds.user,
+    pass,
+  });
+  const from = `"${fromName}" <${creds.user}>`;
+  await transporter.sendMail({
+    from,
+    replyTo: creds.replyTo ?? creds.user,
+    to: opts.toEmail,
+    subject: `You're now on ReviewLink ${tierLabel}! 🎉`,
+    html,
+    text,
+  });
+}

@@ -31,6 +31,7 @@ import {
   Send,
   BookOpen,
   Eye,
+  Smartphone,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
 
@@ -2036,7 +2037,21 @@ export default function SettingsPage() {
             </button>
           </div>
         </div>     {/* ── Sign Out ─────────────────────────────────────────────────────── */}
-        {/* ── Send Feedback ────────────────────────────────────────────────── */}
+          {/* ── Install App ──────────────────────────────────────────────── */}
+        <button
+          onClick={() => {
+            localStorage.removeItem('pwa-prompt-dismissed');
+            window.location.reload();
+          }}
+          className="flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold w-full"
+          style={{ color: "oklch(0.45 0.10 260)", background: "transparent" }}
+          aria-label="Show app install instructions"
+        >
+          <Smartphone size={14} aria-hidden="true" />
+          Install App on Your Phone
+        </button>
+
+        {/* ── Send Feedback ────────────────────────────────────────────── */}
         <SendFeedbackSection />
 
         {/* ── Delete Account ───────────────────────────────────────────────── */}

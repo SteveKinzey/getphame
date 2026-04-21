@@ -26,6 +26,7 @@ import EmailTemplatesPage from "./pages/EmailTemplates";
 import RemindersPage from "./pages/Reminders";
 import ImportContactsPage from "./pages/ImportContacts";
 import AdminCodesPage from "./pages/AdminCodes";
+import AdminDashboardPage from "./pages/AdminDashboard";
 import AdminSmtpStatsPage from "./pages/AdminSmtpStats";
 import ChangelogPage from "./pages/Changelog";
 import UnsubscribePage from "./pages/Unsubscribe";
@@ -102,6 +103,7 @@ function AppShell() {
         <Route path="/reminders" component={RemindersPage} />
         <Route path="/import" component={ImportContactsPage} />
         <Route path="/upgrade" component={UpgradePage} />
+        <Route path="/admin" component={AdminDashboardPage} />
         <Route path="/admin/codes" component={AdminCodesPage} />
         <Route path="/admin/smtp-stats" component={AdminSmtpStatsPage} />
         <Route path="/changelog" component={ChangelogPage} />
