@@ -1102,3 +1102,8 @@
 - [x] ACTION REQUIRED: Create THB-denominated Stripe prices in Dashboard and set STRIPE_PRICE_ID_THB_* env vars
 - [x] ACTION REQUIRED: Enable PromptPay in Stripe Dashboard → Settings → Payment methods
 - [x] TypeScript: 0 errors. Tests: 39/43 pass (4 pre-existing smtpWeeklyDigest mock failures)
+
+## Session #34 — Thai Locale Detection + Social Proof Copy (Apr 21 2026)
+- [x] Auto-detect Thai locale on Upgrade page: show PromptPay CTA only when navigator.language starts with 'th'
+- [x] Add social-proof line near PromptPay button: "Most businesses recover cost in 90 days" (bilingual: Thai + English)
+- [x] Add a manual "Pay with PromptPay" toggle/link for non-Thai locale users (subtle gold link, dismissible)

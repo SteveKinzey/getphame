@@ -84,6 +84,9 @@ export default function UpgradePage() {
   const utils = trpc.useUtils();
   const [selectedPlan, setSelectedPlan] = useState<Plan>("annual");
   const [accessCode, setAccessCode] = useState("");
+  // Show PromptPay if Thai locale detected, or user manually reveals it
+  const isThai = typeof navigator !== "undefined" && navigator.language.toLowerCase().startsWith("th");
+  const [showPromptPay, setShowPromptPay] = useState(isThai);
 
   const createInvoice = trpc.zoho.createInvoice.useMutation({
     onSuccess: (data) => {
@@ -368,29 +371,69 @@ export default function UpgradePage() {
             Secure checkout via Stripe. Charged in USD.
           </p>
 
-          {/* PromptPay CTA — Thailand users */}
-          <button
-            onClick={() => createThbCheckout.mutate({ origin: window.location.origin, plan: selectedPlan })}
-            disabled={createThbCheckout.isPending}
-            className="w-full py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 mt-2 transition-opacity disabled:opacity-50"
-            style={{
-              background: "oklch(0.18 0.07 260)",
-              color: "white",
-              border: "1px solid rgba(255,255,255,0.15)",
-            }}
-          >
-            {createThbCheckout.isPending ? (
-              <Loader2 size={14} className="animate-spin" />
-            ) : (
-              <span className="text-base">&#x0E3F;</span>
-            )}
-            {createThbCheckout.isPending
-              ? "Redirecting..."
-              : `Pay with PromptPay — ${PLANS[selectedPlan].thb}`}
-          </button>
-          <p className="text-center text-xs mt-1 mb-1" style={{ color: "var(--text-on-dark-muted)" }}>
-            Thailand only · QR code payment · Charged in THB
-          </p>
+          {/* PromptPay CTA — Thailand users (locale-detected or manually revealed) */}
+          {showPromptPay ? (
+            <div className="mt-3">
+              {/* Social proof — shown only with PromptPay */}
+              <div
+                className="rounded-xl px-3 py-2.5 mb-2 flex items-start gap-2"
+                style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
+              >
+                <span className="text-sm mt-0.5">💬</span>
+                <div>
+                  <p className="text-xs font-black" style={{ color: "oklch(0.35 0.12 80)" }}>
+                    ธุรกิจส่วนใหญ่คืนทุนภายใน 90 วัน
+                  </p>
+                  <p className="text-xs" style={{ color: "oklch(0.45 0.08 80)" }}>
+                    Most businesses recover cost in 90 days — reviews drive repeat bookings and new customers on autopilot.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => createThbCheckout.mutate({ origin: window.location.origin, plan: selectedPlan })}
+                disabled={createThbCheckout.isPending}
+                className="w-full py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-opacity disabled:opacity-50"
+                style={{
+                  background: "oklch(0.18 0.07 260)",
+                  color: "white",
+                  border: "1px solid rgba(255,255,255,0.15)",
+                }}
+              >
+                {createThbCheckout.isPending ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <span className="text-base">&#x0E3F;</span>
+                )}
+                {createThbCheckout.isPending
+                  ? "Redirecting..."
+                  : `Pay with PromptPay — ${PLANS[selectedPlan].thb}`}
+              </button>
+              <p className="text-center text-xs mt-1 mb-1" style={{ color: "var(--text-on-dark-muted)" }}>
+                Thailand only · QR code payment · Charged in THB
+                {!isThai && (
+                  <button
+                    onClick={() => setShowPromptPay(false)}
+                    className="ml-2 underline"
+                    style={{ color: "var(--text-on-dark-muted)" }}
+                  >
+                    Hide
+                  </button>
+                )}
+              </p>
+            </div>
+          ) : (
+            // Non-Thai locale: show a subtle reveal link
+            <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-muted)" }}>
+              Based in Thailand?{" "}
+              <button
+                onClick={() => setShowPromptPay(true)}
+                className="underline font-semibold"
+                style={{ color: "oklch(0.80 0.18 80)" }}
+              >
+                Pay with PromptPay (฿)
+              </button>
+            </p>
+          )}
 
           {/* Secondary — invoice option */}
           <button
