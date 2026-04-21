@@ -72,29 +72,29 @@ export default function BottomNav() {
         className="flex items-center justify-center gap-4 py-1.5"
         style={{ background: 'oklch(0.80 0.18 80)' }}
       >
-        <a
-          href="/privacy-policy"
+        <button
+          onClick={() => navigate('/privacy-policy')}
           className="text-xs font-semibold hover:underline transition-colors"
           style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
         >
           Privacy Policy
-        </a>
+        </button>
         <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
-        <a
-          href="/terms-of-service"
+        <button
+          onClick={() => navigate('/terms-of-service')}
           className="text-xs font-semibold hover:underline transition-colors"
           style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
         >
           Terms of Service
-        </a>
+        </button>
         <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
-        <a
-          href="/changelog"
+        <button
+          onClick={() => navigate('/changelog')}
           className="text-xs font-semibold hover:underline transition-colors"
           style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
         >
           What's New
-        </a>
+        </button>
       </div>
     </nav>
   );

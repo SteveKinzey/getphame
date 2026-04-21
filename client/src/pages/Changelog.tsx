@@ -212,7 +212,11 @@ export default function ChangelogPage() {
           </span>
         </button>
 
-        <div className="flex items-center gap-2 mb-1">
+        <button
+          onClick={() => navigate("/")}
+          className="flex items-center gap-2 mb-1 active:opacity-70 transition-opacity"
+          aria-label="Go to Home"
+        >
           <Rocket size={16} style={{ color: "oklch(0.80 0.18 80)" }} aria-hidden="true" />
           <span
             className="text-xs font-bold tracking-widest uppercase"
@@ -220,7 +224,7 @@ export default function ChangelogPage() {
           >
             ReviewLink
           </span>
-        </div>
+        </button>
         <h1
           className="text-2xl leading-tight"
           style={{ color: "white", fontFamily: "'Syne', sans-serif", fontWeight: 900 }}

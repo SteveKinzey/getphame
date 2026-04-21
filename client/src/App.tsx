@@ -64,12 +64,13 @@ function AppShell() {
   if (path === "/privacy-policy") return <div className="mobile-screen"><PrivacyPolicyPage /></div>;
   if (path === "/terms-of-service") return <div className="mobile-screen"><TermsOfServicePage /></div>;
   if (path === "/payment-success") return <div className="mobile-screen"><PaymentSuccessPage /></div>;
-  if (path === "/changelog") return <div className="mobile-screen"><ChangelogPage /></div>;
   if (path === "/unsubscribe") return <div className="mobile-screen"><UnsubscribePage /></div>;
 
   if (!user) {
     // Show the public marketing landing page at /, Onboarding at /onboarding
     if (path === "/onboarding") return <div className="mobile-screen"><OnboardingPage /></div>;
+    // Changelog is public — render without BottomNav for unauthenticated visitors
+    if (path === "/changelog") return <div className="mobile-screen"><ChangelogPage /></div>;
     return <div className="mobile-screen"><LandingPage /></div>;
   }
 

@@ -802,3 +802,8 @@
 - [x] Stripe webhook: store plan metadata in stripe_subscriptions or users table for Lifetime (sentinel record with status=lifetime)
 - [x] Cancel all pending reminders for same customerRequestId when respondedAt is set on customer_request
 - [x] Verify Stripe checkout flow end-to-end (monthly, annual, lifetime) — ready for testing on deployed domain
+
+## Navigation Fixes (Session — Apr 21 2026)
+
+- [x] Fix back button on What's New page and all other pages that have a back button
+- [x] Make ReviewLink logo tap navigate to home screen on all pages
