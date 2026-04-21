@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Rocket, Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X, Eye, MousePointerClick, ShieldCheck } from "lucide-react";
+import { Rocket, Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X, Eye, MousePointerClick, ShieldCheck, AlertTriangle, CreditCard } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import OnboardingGuide from "@/components/OnboardingGuide";
@@ -230,6 +230,24 @@ export default function HomePage() {
     setSetupBannerDismissed(true);
   };
 
+  // Subscription expiry warning banner — show when planExpiresAt < 7 days away
+  const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+  const isExpiringSoon =
+    profile?.planExpiresAt != null &&
+    profile.planExpiresAt > Date.now() &&
+    profile.planExpiresAt - Date.now() < SEVEN_DAYS_MS;
+  const expiryDismissKey = `rr_expiry_banner_dismissed_${new Date().toISOString().slice(0, 10)}`;
+  const [expiryBannerDismissed, setExpiryBannerDismissed] = useState(
+    () => localStorage.getItem(expiryDismissKey) === "1"
+  );
+  const dismissExpiryBanner = () => {
+    localStorage.setItem(expiryDismissKey, "1");
+    setExpiryBannerDismissed(true);
+  };
+  const daysUntilExpiry = profile?.planExpiresAt
+    ? Math.ceil((profile.planExpiresAt - Date.now()) / (24 * 60 * 60 * 1000))
+    : null;
+
   return (
     <div className="min-h-screen pb-24" style={{ background: "var(--background)" }}>
       <OnboardingGuide
@@ -403,6 +421,40 @@ export default function HomePage() {
               aria-label="Dismiss"
               className="shrink-0 p-1 rounded-lg"
               style={{ color: 'oklch(0.50 0.10 145)' }}
+            >
+              <X size={14} />
+            </button>
+          </div>
+        )}
+
+        {/* ── Subscription expiry warning banner ─────────────────────────── */}
+        {isExpiringSoon && !expiryBannerDismissed && (
+          <div
+            className="rounded-2xl p-4 shadow-sm flex items-start gap-3"
+            style={{ background: 'oklch(0.97 0.06 80)', border: '1.5px solid oklch(0.82 0.14 80)' }}
+          >
+            <AlertTriangle size={22} className="mt-0.5 shrink-0" style={{ color: 'oklch(0.60 0.18 60)' }} />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-black" style={{ color: 'oklch(0.30 0.10 60)', fontFamily: "'Poppins', sans-serif" }}>
+                Your plan expires in {daysUntilExpiry} day{daysUntilExpiry === 1 ? '' : 's'}
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: 'oklch(0.40 0.08 60)' }}>
+                Update your payment method to keep sending review requests without interruption.
+              </p>
+              <button
+                onClick={() => navigate('/settings')}
+                className="mt-2 flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-opacity active:opacity-70"
+                style={{ background: 'oklch(0.60 0.18 60)', color: 'white' }}
+              >
+                <CreditCard size={12} />
+                Manage Billing
+              </button>
+            </div>
+            <button
+              onClick={dismissExpiryBanner}
+              aria-label="Dismiss"
+              className="shrink-0 p-1 rounded-lg"
+              style={{ color: 'oklch(0.55 0.10 60)' }}
             >
               <X size={14} />
             </button>

@@ -26,7 +26,7 @@ import { registerZohoRoutes } from "../zoho";
 import { exchangeGmailCode, getGmailRedirectUri } from "../gmail";
 
 import { handleOpenPixel, handleClickRedirect } from "../emailTracking";
-import { sendUpgradeReceiptEmail, sendChurnRecoveryEmail } from "../smtp";
+import { sendUpgradeReceiptEmail, sendChurnRecoveryEmail, sendPaymentFailedEmail } from "../smtp";
 import { registerPublicApiRoutes } from "../publicApi";
 
 function isPortAvailable(port: number): Promise<boolean> {
@@ -243,6 +243,44 @@ async function startServer() {
                 .set({ status: "active" })
                 .where(eq(stripeSubscriptions.stripeSubscriptionId, subscriptionId));
               console.log(`[Stripe Webhook] Subscription renewed for user ${userId} — planExpiresAt: ${planExpiresAt}`);
+            }
+          }
+        }
+      }
+      // Handle failed payment — send recovery email nudging user to update card
+      if (event.type === "invoice.payment_failed") {
+        const invoice = event.data.object as any;
+        const subscriptionId = invoice.subscription as string | null;
+        const attemptCount = (invoice.attempt_count as number) ?? 1;
+        if (subscriptionId) {
+          const rows = await db
+            .select()
+            .from(stripeSubscriptions)
+            .where(eq(stripeSubscriptions.stripeSubscriptionId, subscriptionId))
+            .limit(1);
+          if (rows.length > 0) {
+            const userId = rows[0].userId;
+            const existingStatus = rows[0].status;
+            if (existingStatus !== "lifetime") {
+              const ownerUser = await getUserByOpenId(ENV.ownerOpenId);
+              if (ownerUser) {
+                const [failedUser] = await db
+                  .select({ email: users.email, name: users.name })
+                  .from(users)
+                  .where(eq(users.id, userId))
+                  .limit(1);
+                if (failedUser?.email) {
+                  sendPaymentFailedEmail({
+                    ownerUserId: ownerUser.id,
+                    toEmail: failedUser.email,
+                    toName: failedUser.name ?? null,
+                    attemptCount,
+                  }).catch((err: unknown) => {
+                    console.warn("[Stripe Webhook] Payment failed email error (non-fatal):", err);
+                  });
+                  console.log(`[Stripe Webhook] Payment failed for user ${userId} (attempt ${attemptCount})`);
+                }
+              }
             }
           }
         }

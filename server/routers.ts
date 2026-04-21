@@ -1969,6 +1969,75 @@ export const appRouter = router({
       }
       return { total: rows.length, counts, recent: rows.slice(-10).reverse() };
     }),
+
+    /** Revenue dashboard — MRR, ARR, tier breakdown, monthly subscriber growth, churn rate */
+    revenue: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+
+      // Pricing constants (USD cents)
+      const MONTHLY_PRICE_CENTS = 2900;  // $29/mo
+      const ANNUAL_PRICE_CENTS  = 29900; // $299/yr
+      const LIFETIME_PRICE_CENTS = 79900; // $799 one-time
+
+      // Tier counts
+      const allProfiles = await db.select({ tier: businessProfiles.tier, createdAt: businessProfiles.createdAt }).from(businessProfiles);
+      const tierCounts = { free: 0, pro: 0, annual: 0, lifetime: 0 };
+      for (const p of allProfiles) {
+        if (p.tier in tierCounts) tierCounts[p.tier as keyof typeof tierCounts]++;
+      }
+
+      // MRR = (pro × monthly) + (annual × monthly-equivalent)
+      const mrrCents = (tierCounts.pro * MONTHLY_PRICE_CENTS) + (tierCounts.annual * Math.round(ANNUAL_PRICE_CENTS / 12));
+      const arrCents = mrrCents * 12;
+
+      // Lifetime revenue (all-time)
+      const lifetimeRevenueCents = tierCounts.lifetime * LIFETIME_PRICE_CENTS;
+
+      // Monthly subscriber growth — new paid users per month for last 6 months
+      const allSubs = await db
+        .select({ createdAt: stripeSubscriptions.createdAt, status: stripeSubscriptions.status })
+        .from(stripeSubscriptions)
+        .orderBy(stripeSubscriptions.createdAt);
+
+      const monthlyGrowth: Record<string, number> = {};
+      const now = new Date();
+      for (let i = 5; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+        monthlyGrowth[key] = 0;
+      }
+      for (const sub of allSubs) {
+        if (!sub.createdAt || sub.status === "lifetime") continue;
+        const d = new Date(sub.createdAt);
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+        if (key in monthlyGrowth) monthlyGrowth[key]++;
+      }
+      const growthChart = Object.entries(monthlyGrowth).map(([month, newSubs]) => ({ month, newSubs }));
+
+      // Churn rate — canceled subscriptions in last 30 days / active subscriptions
+      const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+      const allSubRows = await db.select().from(stripeSubscriptions);
+      const activeSubs = allSubRows.filter(s => s.status === "active").length;
+      const recentCancels = allSubRows.filter(s =>
+        s.status === "canceled" &&
+        s.createdAt &&
+        new Date(s.createdAt).getTime() > thirtyDaysAgo
+      ).length;
+      const churnRate = activeSubs > 0 ? Math.round((recentCancels / activeSubs) * 100 * 10) / 10 : 0;
+
+      return {
+        mrrCents,
+        arrCents,
+        lifetimeRevenueCents,
+        tierCounts,
+        growthChart,
+        activeSubs,
+        recentCancels,
+        churnRate,
+      };
+    }),
   }),
 
   /** Public churn survey submission */

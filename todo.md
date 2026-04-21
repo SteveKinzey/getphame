@@ -1073,3 +1073,14 @@
 ## Session #31 — Payment Flow Audit & Fix (Apr 21 2026)
 - [x] Add invoice.payment_succeeded webhook handler to reset planExpiresAt on subscription renewal
 - [x] Stripe Dashboard webhook events to register: checkout.session.completed, customer.subscription.deleted, customer.subscription.updated, invoice.payment_succeeded
+
+## Session #32 — Stripe Skill, Expiry Banner, Failed-Payment Recovery, Admin Revenue Dashboard (Apr 21 2026)
+- [x] Create /skills/stripe-payment-flow/SKILL.md documenting full Stripe integration pattern
+- [x] Add subscription expiry warning banner to Home screen (amber, dismissible, shows when planExpiresAt < 7 days)
+- [x] Add invoice.payment_failed webhook handler in index.ts
+- [x] Add sendPaymentFailedEmail helper (fire-and-forget, non-fatal)
+- [x] Add admin.revenue tRPC procedure (MRR, ARR, lifetime revenue, tier counts, 6-month growth chart, churn rate)
+- [x] Create AdminRevenue.tsx page with recharts BarChart, KPI cards, tier breakdown, churn rate
+- [x] Register /admin/revenue route in App.tsx
+- [x] Add Revenue Dashboard link to AdminDashboard quick links
+- [x] TypeScript: 0 errors. Tests: 39/43 pass (4 pre-existing smtpWeeklyDigest mock failures)
