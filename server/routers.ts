@@ -401,6 +401,28 @@ export const appRouter = router({
         await upsertBusinessProfile({ ...existing, dailySendLimit: input.limit });
         return { ok: true };
       }),
+
+    getReEngagementSettings: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+      const [profile] = await db
+        .select({ reEngagementEnabled: businessProfiles.reEngagementEnabled })
+        .from(businessProfiles)
+        .where(eq(businessProfiles.userId, ctx.user.id));
+      return { reEngagementEnabled: profile?.reEngagementEnabled ?? 1 };
+    }),
+
+    updateReEngagementSettings: protectedProcedure
+      .input(z.object({ reEngagementEnabled: z.number().int().min(0).max(1) }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+        await db
+          .update(businessProfiles)
+          .set({ reEngagementEnabled: input.reEngagementEnabled })
+          .where(eq(businessProfiles.userId, ctx.user.id));
+        return { ok: true };
+      }),
   }),
 
   zoho: router({
@@ -1202,6 +1224,15 @@ export const appRouter = router({
           .set({ followUpEnabled: input.followUpEnabled, followUpDelayDays: input.followUpDelayDays })
           .where(eqR(businessProfiles.userId, ctx.user.id));
         return { ok: true };
+      }),
+
+    /** Return rendered HTML preview of a follow-up reminder email */
+    previewEmail: protectedProcedure
+      .input(z.object({ step: z.number().int().min(1).max(2).default(1) }))
+      .query(async ({ ctx, input }) => {
+        const { getReminderPreviewHtml } = await import("./reminders");
+        const html = await getReminderPreviewHtml(ctx.user.id, input.step);
+        return { html };
       }),
   }),
 

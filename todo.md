@@ -1040,3 +1040,20 @@
 - [x] Reminder scheduler: added reminders.getSettings and reminders.updateSettings tRPC procedures
 - [x] Reminder scheduler: added Automatic Follow-ups toggle + delay input in Settings (Email Connection section)
 - [x] Compliance badge: added green "Compliance: Active" chip below stats row on Home screen, links to /compliance
+
+## Session #28 — Skill, Re-engagement Toggle, Reminder Preview, Nav Dark Mode, Pre-launch (Apr 21 2026)
+- [x] Create /skills/re-engagement-scheduler/SKILL.md documenting re-engagement email patterns
+- [x] Add reEngagementEnabled column to businessProfiles schema + pnpm db:push
+- [x] Add reEngagementEnabled guard to runReEngagementCheck in reEngagementScheduler.ts
+- [x] Add profile.getReEngagementSettings and profile.updateReEngagementSettings tRPC procedures
+- [x] Add Re-engagement Win-back toggle in Settings (after Automatic Follow-ups section)
+- [x] Add previewEmail tRPC procedure to reminders router (returns rendered HTML for step 1 or 2)
+- [x] Add getReminderPreviewHtml export to reminders.ts
+- [x] Add Preview 1st/2nd Follow-up buttons to Reminders page info banner
+- [x] Add email preview modal to Reminders page (bottom sheet, step switcher, close on backdrop)
+- [x] Add Moon/Sun dark mode toggle button to BottomNav bar (after Settings tab)
+- [x] Pre-launch polish: update manifest.json name to ReviewRocket
+- [x] Pre-launch polish: update index.html title/meta/OG/Twitter tags to ReviewRocket branding
+- [x] Pre-launch polish: add /compliance and /changelog to sitemap.xml
+- [x] Pre-launch polish: verify legal pages (Privacy Policy, Terms of Service) exist and are routed
+- [x] Final TypeScript check: clean (0 errors). Tests: 39/43 pass (4 pre-existing smtpWeeklyDigest mock failures)

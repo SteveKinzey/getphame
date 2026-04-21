@@ -213,6 +213,17 @@ export async function sendReminderNow(userId: number, reminderId: number) {
     .where(eq(followUpReminders.id, reminderId));
 }
 
+/** Build a preview of a follow-up reminder email for the given user and sequence step */
+export async function getReminderPreviewHtml(userId: number, step: number): Promise<string> {
+  const db = await getDb();
+  const profile = db
+    ? (await db.select().from(businessProfiles).where(eq(businessProfiles.userId, userId)).limit(1))[0]
+    : null;
+  const businessName = profile?.businessName ?? "Your Business";
+  const reviewUrl = "https://g.page/r/example-preview";
+  return getReminderBody(step, "Alex Johnson", businessName, reviewUrl, reviewUrl, "");
+}
+
 /**
  * Start the background scheduler — runs every hour.
  */

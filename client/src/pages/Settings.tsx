@@ -537,6 +537,12 @@ export default function SettingsPage() {
     onError: (err) => toast.error(err.message),
   });
 
+  const { data: reEngagementSettings } = trpc.profile.getReEngagementSettings.useQuery();
+  const updateReEngagementSettings = trpc.profile.updateReEngagementSettings.useMutation({
+    onSuccess: () => { toast.success("Re-engagement settings saved!"); },
+    onError: (err) => toast.error(err.message),
+  });
+
   // Populate form once profile loads (useEffect avoids render-phase setState)
   useEffect(() => {
     if (profile) {
@@ -1876,6 +1882,21 @@ export default function SettingsPage() {
                     <span className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>days (second follow-up 7 days later)</span>
                   </div>
                 )}
+              </div>
+
+              {/* ── Re-engagement Win-back Settings ────────────────────────────────── */}
+              <div className="rounded-xl p-3.5" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.91 0.02 260)" }}>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    <RefreshCw size={14} style={{ color: "oklch(0.45 0.10 260)" }} />
+                    <span className="text-xs font-black" style={{ color: "oklch(0.30 0.04 260)", fontFamily: "'Poppins', sans-serif" }}>Re-engagement Win-back</span>
+                  </div>
+                  <Switch
+                    checked={(reEngagementSettings?.reEngagementEnabled ?? 1) === 1}
+                    onCheckedChange={(v) => updateReEngagementSettings.mutate({ reEngagementEnabled: v ? 1 : 0 })}
+                  />
+                </div>
+                <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Send a single win-back email to churned users 3 days after they cancel. Includes an unsubscribe link.</p>
               </div>
 
               {/* Advanced: host/port — collapsed by default, auto-expanded for custom domains */}

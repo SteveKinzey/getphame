@@ -16,7 +16,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Bell, ChevronLeft, Clock, CheckCircle2, XCircle, Ban, SendHorizonal } from "lucide-react";
+import { Bell, ChevronLeft, Clock, CheckCircle2, XCircle, Ban, SendHorizonal, Eye, X } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import { useState } from "react";
@@ -61,6 +61,7 @@ export default function Reminders() {
   const [sendNowTarget, setSendNowTarget] = useState<Reminder | null>(null);
   const [bulkCancelOpen, setBulkCancelOpen] = useState(false);
   const [bulkCancelling, setBulkCancelling] = useState(false);
+  const [previewStep, setPreviewStep] = useState<number | null>(null);
 
   const utils = trpc.useUtils();
 
@@ -88,6 +89,11 @@ export default function Reminders() {
       toast.error(e.message);
     },
   });
+
+  const { data: previewData, isLoading: previewLoading } = trpc.reminders.previewEmail.useQuery(
+    { step: previewStep ?? 1 },
+    { enabled: previewStep !== null && isAuthenticated }
+  );
 
   if (authLoading) return null;
   if (!isAuthenticated) {
@@ -123,6 +129,22 @@ export default function Reminders() {
         {/* Info banner */}
         <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-700">
           <strong>How it works:</strong> When you send a review request, a follow-up reminder is automatically scheduled for 3 days later. The reminder is sent from your connected email account and uses your business profile. Use <strong>Send Now</strong> to skip the wait.
+          <div className="flex gap-2 mt-2.5">
+            <button
+              onClick={() => setPreviewStep(1)}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors"
+              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+            >
+              <Eye size={11} /> Preview 1st Follow-up
+            </button>
+            <button
+              onClick={() => setPreviewStep(2)}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors"
+              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+            >
+              <Eye size={11} /> Preview 2nd Follow-up
+            </button>
+          </div>
         </div>
 
         {isLoading ? (
@@ -239,6 +261,65 @@ export default function Reminders() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Email Preview Modal */}
+      {previewStep !== null && (
+        <div
+          className="fixed inset-0 z-50 flex items-end justify-center"
+          style={{ background: "rgba(0,0,0,0.55)" }}
+          onClick={() => setPreviewStep(null)}
+        >
+          <div
+            className="w-full max-w-lg rounded-t-2xl overflow-hidden"
+            style={{ background: "white", maxHeight: "80vh", display: "flex", flexDirection: "column" }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal header */}
+            <div className="flex items-center justify-between px-4 py-3 shrink-0" style={{ background: "oklch(0.22 0.09 260)", borderBottom: "1px solid oklch(0.30 0.08 260)" }}>
+              <div>
+                <p className="text-xs font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                  {previewStep === 2 ? "2nd Follow-up Preview" : "1st Follow-up Preview"}
+                </p>
+                <p className="text-xs mt-0.5" style={{ color: "oklch(0.70 0.04 260)" }}>
+                  Subject: {previewStep === 2 ? "One last nudge — we'd love your review!" : "Just checking in — have you had a chance to leave us a review?"}
+                </p>
+              </div>
+              <button onClick={() => setPreviewStep(null)} className="p-1 rounded-full hover:bg-white/10 transition-colors">
+                <X size={18} style={{ color: "oklch(0.80 0.18 80)" }} />
+              </button>
+            </div>
+            {/* Email body */}
+            <div className="flex-1 overflow-y-auto p-4">
+              {previewLoading ? (
+                <div className="text-center py-8 text-gray-400 text-sm">Loading preview…</div>
+              ) : (
+                <div
+                  className="text-sm text-gray-700 leading-relaxed"
+                  style={{ fontFamily: "Arial, sans-serif" }}
+                  dangerouslySetInnerHTML={{ __html: previewData?.html ?? "" }}
+                />
+              )}
+            </div>
+            {/* Step switcher */}
+            <div className="flex gap-2 px-4 py-3 shrink-0" style={{ borderTop: "1px solid oklch(0.93 0.02 260)" }}>
+              <button
+                onClick={() => setPreviewStep(1)}
+                className="flex-1 py-2 rounded-xl text-xs font-bold transition-colors"
+                style={{ background: previewStep === 1 ? "oklch(0.22 0.09 260)" : "oklch(0.95 0.01 260)", color: previewStep === 1 ? "oklch(0.80 0.18 80)" : "oklch(0.40 0.04 260)" }}
+              >
+                1st Follow-up
+              </button>
+              <button
+                onClick={() => setPreviewStep(2)}
+                className="flex-1 py-2 rounded-xl text-xs font-bold transition-colors"
+                style={{ background: previewStep === 2 ? "oklch(0.22 0.09 260)" : "oklch(0.95 0.01 260)", color: previewStep === 2 ? "oklch(0.80 0.18 80)" : "oklch(0.40 0.04 260)" }}
+              >
+                2nd Follow-up
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Cancel Confirm */}
       <AlertDialog open={!!cancelTarget} onOpenChange={(o) => { if (!o) setCancelTarget(null); }}>

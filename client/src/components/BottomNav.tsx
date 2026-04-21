@@ -2,7 +2,8 @@
 // Design: Navy background, gold active state, large tap targets (48px+)
 
 import { useLocation } from 'wouter';
-import { Home, Send, BarChart2, Settings } from 'lucide-react';
+import { Home, Send, BarChart2, Settings, Moon, Sun } from 'lucide-react';
+import { useTheme } from '@/contexts/ThemeContext';
 
 const NAV_ITEMS = [
   { path: '/', label: 'Home', Icon: Home },
@@ -13,6 +14,9 @@ const NAV_ITEMS = [
 
 export default function BottomNav() {
   const [location, navigate] = useLocation();
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === 'dark';
+
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 bottom-nav"
@@ -51,7 +55,6 @@ export default function BottomNav() {
                     }}
                   />
                 </div>
-
               </div>
               <span
                 className="text-xs font-semibold tracking-wide"
@@ -66,7 +69,37 @@ export default function BottomNav() {
             </button>
           );
         })}
+
+        {/* Dark mode toggle */}
+        <button
+          onClick={toggleTheme}
+          className="flex flex-col items-center justify-center py-3 gap-1 transition-all duration-150 active:scale-95 px-3"
+          style={{ minHeight: '60px' }}
+          aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+        >
+          <div
+            className="flex items-center justify-center rounded-full transition-all duration-200"
+            style={{ width: '40px', height: '32px', background: 'transparent' }}
+          >
+            {isDark ? (
+              <Sun size={20} strokeWidth={1.8} style={{ color: 'oklch(0.80 0.18 80)' }} />
+            ) : (
+              <Moon size={20} strokeWidth={1.8} style={{ color: 'oklch(0.70 0.04 260)' }} />
+            )}
+          </div>
+          <span
+            className="text-xs font-semibold tracking-wide"
+            style={{
+              fontFamily: "'Nunito', sans-serif",
+              color: 'oklch(0.60 0.04 260)',
+              fontSize: '10px',
+            }}
+          >
+            {isDark ? 'Light' : 'Dark'}
+          </span>
+        </button>
       </div>
+
       {/* ── Legal footer strip ─────────────────────────────────────────── */}
       <div
         className="flex items-center justify-center gap-4 py-1.5"

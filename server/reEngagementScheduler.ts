@@ -7,7 +7,7 @@
  * Sends sendReEngagementEmail() and marks reEngagementSentAt.
  */
 import { getDb } from "./db";
-import { churnSurveys, stripeSubscriptions, users } from "../drizzle/schema";
+import { churnSurveys, stripeSubscriptions, users, businessProfiles } from "../drizzle/schema";
 import { and, isNull, lte, gte, eq, ne } from "drizzle-orm";
 import { sendReEngagementEmail } from "./smtp";
 import crypto from "crypto";
@@ -39,6 +39,18 @@ export async function runReEngagementCheck(): Promise<void> {
     );
 
   if (eligible.length === 0) return;
+
+  // Check owner-level re-engagement toggle (userId=1 is the platform owner)
+  const [ownerProfile] = await db
+    .select({ reEngagementEnabled: businessProfiles.reEngagementEnabled })
+    .from(businessProfiles)
+    .where(eq(businessProfiles.userId, 1))
+    .limit(1);
+  if (ownerProfile && ownerProfile.reEngagementEnabled === 0) {
+    console.log("[ReEngagement] Disabled by owner — skipping.");
+    return;
+  }
+
   console.log(`[ReEngagement] ${eligible.length} candidate(s) in the 3-day window.`);
 
   for (const survey of eligible) {

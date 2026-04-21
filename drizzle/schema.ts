@@ -60,6 +60,8 @@ export const businessProfiles = mysqlTable("business_profiles", {
   followUpEnabled: int("followUpEnabled").default(1).notNull(),
   // Days after initial send before step-1 follow-up (default 3, range 1-14)
   followUpDelayDays: int("followUpDelayDays").default(3).notNull(),
+  // Re-engagement email — 1 = enabled (default), 0 = disabled
+  reEngagementEnabled: int("reEngagementEnabled").default(1).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
