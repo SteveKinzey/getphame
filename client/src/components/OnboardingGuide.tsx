@@ -899,13 +899,22 @@ interface OnboardingGuideProps {
 
 export default function OnboardingGuide({ open, onClose, stepsDone }: OnboardingGuideProps) {
   const [step, setStep] = useState(0);
+  const [slideDir, setSlideDir] = useState<'left' | 'right' | null>(null);
+  const [animKey, setAnimKey] = useState(0);
   const [, navigate] = useLocation();
   const touchStartX = useRef<number | null>(null);
   const touchStartY = useRef<number | null>(null);
 
+  // Helper: navigate with direction tracking for slide animation
+  const goToStep = useCallback((next: number, current: number) => {
+    setSlideDir(next > current ? 'left' : 'right');
+    setAnimKey(k => k + 1);
+    setStep(next);
+  }, []);
+
   // Reset to first step whenever modal opens
   useEffect(() => {
-    if (open) setStep(0);
+    if (open) { setStep(0); setSlideDir(null); }
   }, [open]);
 
   // Swipe handlers — horizontal swipe > 50px advances/retreats steps
@@ -915,7 +924,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
     touchStartY.current = e.touches[0].clientY;
   }, []);
 
-  const handleTouchEnd = useCallback((e: React.TouchEvent, totalSteps: number) => {
+  const handleTouchEnd = useCallback((e: React.TouchEvent, totalSteps: number, currentStep: number) => {
     if (touchStartX.current === null || touchStartY.current === null) return;
     const dx = e.changedTouches[0].clientX - touchStartX.current;
     const dy = e.changedTouches[0].clientY - touchStartY.current;
@@ -925,12 +934,14 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
     if (Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx)) return;
     if (dx < 0) {
       // swipe left → next step
-      setStep(s => Math.min(s + 1, totalSteps - 1));
+      const next = Math.min(currentStep + 1, totalSteps - 1);
+      if (next !== currentStep) goToStep(next, currentStep);
     } else {
       // swipe right → previous step
-      setStep(s => Math.max(s - 1, 0));
+      const next = Math.max(currentStep - 1, 0);
+      if (next !== currentStep) goToStep(next, currentStep);
     }
-  }, []);
+  }, [goToStep]);
 
   if (!open) return null;
   const handleNavigate = (path: string) => {
@@ -1072,13 +1083,35 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
         </div>
       </div>
 
-      {/* ── Scrollable content ──────────────────────────────────────────────── */}
+      {/* ── Scrollable content with slide animation ─────────────────────────── */}
       <div
-        className="flex-1 overflow-y-auto px-5 py-5 pb-32"
+        className="flex-1 overflow-hidden relative"
         onTouchStart={handleTouchStart}
-        onTouchEnd={(e) => handleTouchEnd(e, STEPS.length)}
+        onTouchEnd={(e) => handleTouchEnd(e, STEPS.length, step)}
       >
-        {current.content}
+        <div
+          key={animKey}
+          className="h-full overflow-y-auto px-5 py-5 pb-32"
+          style={{
+            animation: slideDir
+              ? `slideIn${slideDir === 'left' ? 'FromRight' : 'FromLeft'} 0.28s cubic-bezier(0.4,0,0.2,1) both`
+              : undefined,
+          }}
+        >
+          {current.content}
+          {/* Optional step skip link */}
+          {(step === 3 || step === 4) && (
+            <div className="text-center mt-6 pb-2">
+              <button
+                onClick={() => goToStep(Math.min(step + 1, STEPS.length - 1), step)}
+                className="text-sm font-medium underline underline-offset-2"
+                style={{ color: "oklch(0.55 0.05 260)" }}
+              >
+                Skip for now →
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* ── Footer navigation ───────────────────────────────────────────────── */}
@@ -1089,7 +1122,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
         >
           <Button
             variant="outline"
-            onClick={() => setStep((s) => s - 1)}
+            onClick={() => goToStep(step - 1, step)}
             disabled={isFirst}
             className="font-bold"
             style={{ opacity: isFirst ? 0 : 1, pointerEvents: isFirst ? "none" : "auto" }}
@@ -1097,7 +1130,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
             <ChevronLeft size={15} className="mr-1" /> Back
           </Button>
           <Button
-            onClick={() => setStep((s) => s + 1)}
+            onClick={() => goToStep(step + 1, step)}
             className="flex-1 font-bold"
             style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
           >

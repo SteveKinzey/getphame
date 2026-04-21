@@ -401,6 +401,16 @@
       0 12px 32px oklch(0.22 0.09 260 / 0.06);
   }
 
+  /* ── Step slide animations (OnboardingGuide / OnboardingWizard) ────────── */
+  @keyframes slideInFromRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+  }
+  @keyframes slideInFromLeft {
+    from { transform: translateX(-100%); opacity: 0; }
+    to   { transform: translateX(0);     opacity: 1; }
+  }
+
   /* PWA mobile viewport fix */
   .mobile-screen {
     min-height: 100dvh;

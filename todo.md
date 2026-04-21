@@ -998,3 +998,7 @@
 
 ## Session #23 — Swipe Gesture Navigation (Apr 21 2026)
 - [x] Add swipe left/right gesture navigation to OnboardingGuide steps
+
+## Session #24 — Slide Animation + Optional Steps (Apr 21 2026)
+- [x] Add CSS translateX slide-in transition between OnboardingGuide steps (direction-aware)
+- [x] Mark Import Contacts and Send Request steps as optional with "Skip for now" link
