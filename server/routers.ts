@@ -52,6 +52,7 @@ import {
 import {
   listReminders,
   cancelReminder,
+  cancelRemindersByRequestId,
   scheduleFollowUp,
   sendReminderNow,
 } from "./reminders";
@@ -1277,6 +1278,10 @@ export const appRouter = router({
           .update(customerRequests)
           .set({ respondedAt: input.responded ? Date.now() : null })
           .where(and(eqOp(customerRequests.userId, ctx.user.id), eqOp(customerRequests.id, input.id)));
+        // Cancel all pending follow-up reminders for this request when marked as responded
+        if (input.responded) {
+          await cancelRemindersByRequestId(ctx.user.id, input.id);
+        }
         return { ok: true };
       }),
     bulkMarkResponded: protectedProcedure
@@ -1294,6 +1299,12 @@ export const appRouter = router({
               inArray(customerRequests.id, input.ids)
             )
           );
+        // Cancel all pending follow-up reminders for each responded request
+        if (input.responded) {
+          await Promise.all(
+            input.ids.map((id) => cancelRemindersByRequestId(ctx.user.id, id))
+          );
+        }
         return { updated: input.ids.length };
       }),
     stats: protectedProcedure.query(async ({ ctx }) => {

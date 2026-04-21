@@ -74,23 +74,53 @@ async function startServer() {
         const session = event.data.object as any;
         const userId = parseInt(session.metadata?.user_id ?? session.client_reference_id ?? "0", 10);
         const customerId = session.customer as string;
-        const subscriptionId = session.subscription as string;
+        const subscriptionId = session.subscription as string | null;
+        const plan = (session.metadata?.plan ?? "monthly") as "monthly" | "annual" | "lifetime";
+        const mode = session.mode as string; // "subscription" | "payment"
+
+        // Map plan to tier
+        const tierMap: Record<string, "pro" | "annual" | "lifetime"> = {
+          monthly: "pro",
+          annual: "annual",
+          lifetime: "lifetime",
+        };
+        const newTier = tierMap[plan] ?? "pro";
+
+        // Lifetime = no expiry; monthly/annual expire based on billing cycle
+        const planExpiresAt = newTier === "lifetime" ? null : undefined;
 
         if (userId && customerId) {
-          // Save Stripe customer ID on the business profile
+          // Save Stripe customer ID and upgrade tier
           await db
             .update(businessProfiles)
-            .set({ stripeCustomerId: customerId, tier: "pro" })
+            .set({
+              stripeCustomerId: customerId,
+              tier: newTier,
+              ...(planExpiresAt !== undefined ? { planExpiresAt } : {}),
+            })
             .where(eq(businessProfiles.userId, userId));
 
-          // Upsert subscription record
-          if (subscriptionId) {
+          // Upsert subscription record for recurring plans
+          if (subscriptionId && mode === "subscription") {
             await db
               .insert(stripeSubscriptions)
               .values({ userId, stripeSubscriptionId: subscriptionId, status: "active" })
               .onDuplicateKeyUpdate({ set: { stripeSubscriptionId: subscriptionId, status: "active" } });
           }
-          console.log(`[Stripe Webhook] User ${userId} upgraded to Pro`);
+
+          // For Lifetime (one-time payment), store a sentinel subscription record
+          // so the subscription.deleted webhook doesn't accidentally downgrade them
+          if (mode === "payment" && newTier === "lifetime") {
+            const paymentIntentId = session.payment_intent as string | null;
+            if (paymentIntentId) {
+              await db
+                .insert(stripeSubscriptions)
+                .values({ userId, stripeSubscriptionId: `lifetime_${paymentIntentId}`, status: "lifetime" })
+                .onDuplicateKeyUpdate({ set: { status: "lifetime" } });
+            }
+          }
+
+          console.log(`[Stripe Webhook] User ${userId} upgraded to ${newTier} (plan: ${plan}, mode: ${mode})`);
         }
       }
 
@@ -108,18 +138,36 @@ async function startServer() {
 
         if (rows.length > 0) {
           const userId = rows[0].userId;
-          await db
-            .update(stripeSubscriptions)
-            .set({ status })
-            .where(eq(stripeSubscriptions.stripeSubscriptionId, subscriptionId));
+          const existingStatus = rows[0].status;
 
-          // Downgrade to free if subscription is canceled or unpaid
-          if (["canceled", "unpaid", "incomplete_expired"].includes(status)) {
+          // Never downgrade a Lifetime user — their sentinel record has status="lifetime"
+          if (existingStatus === "lifetime") {
+            console.log(`[Stripe Webhook] Skipping downgrade for Lifetime user ${userId}`);
+          } else {
             await db
-              .update(businessProfiles)
-              .set({ tier: "free" })
-              .where(eq(businessProfiles.userId, userId));
-            console.log(`[Stripe Webhook] User ${userId} downgraded to Free (status: ${status})`);
+              .update(stripeSubscriptions)
+              .set({ status })
+              .where(eq(stripeSubscriptions.stripeSubscriptionId, subscriptionId));
+
+            // Downgrade to free if subscription is canceled or unpaid
+            if (["canceled", "unpaid", "incomplete_expired"].includes(status)) {
+              // Double-check current tier — don't downgrade a Lifetime user
+              const [profile] = await db
+                .select({ tier: businessProfiles.tier })
+                .from(businessProfiles)
+                .where(eq(businessProfiles.userId, userId))
+                .limit(1);
+
+              if (profile && profile.tier !== "lifetime") {
+                await db
+                  .update(businessProfiles)
+                  .set({ tier: "free" })
+                  .where(eq(businessProfiles.userId, userId));
+                console.log(`[Stripe Webhook] User ${userId} downgraded to Free (status: ${status})`);
+              } else {
+                console.log(`[Stripe Webhook] Skipping downgrade — user ${userId} is on Lifetime tier`);
+              }
+            }
           }
         }
       }

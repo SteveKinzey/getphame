@@ -70,6 +70,26 @@ export async function cancelReminder(userId: number, reminderId: number) {
     .where(and(eq(followUpReminders.userId, userId), eq(followUpReminders.id, reminderId)));
 }
 
+/**
+ * Cancel ALL pending reminders for a given customerRequestId.
+ * Called when a customer is marked as responded so they stop receiving follow-ups.
+ */
+export async function cancelRemindersByRequestId(userId: number, customerRequestId: number) {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .update(followUpReminders)
+    .set({ status: "cancelled" })
+    .where(
+      and(
+        eq(followUpReminders.userId, userId),
+        eq(followUpReminders.customerRequestId, customerRequestId),
+        eq(followUpReminders.status, "pending")
+      )
+    );
+  console.log(`[Reminders] Cancelled all pending reminders for request ${customerRequestId}`);
+}
+
 /** Build the email subject line based on sequence step */
 function getReminderSubject(step: number): string {
   if (step === 2) {

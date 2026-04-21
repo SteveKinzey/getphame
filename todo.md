@@ -795,3 +795,10 @@
 - [x] Second reminder: suppress second reminder if customer already unsubscribed or already left a review (respondedAt set)
 - [x] Second reminder: show second reminder entries on Reminders page with correct label ("2nd Follow-up")
 - [x] Stripe Price IDs: update server/stripe.ts with real price_... IDs (monthly/annual/lifetime wired, plan param added to createCheckout procedure and frontend handler)
+
+## Follow-up Features (Session — Apr 20 2026 cont. 2)
+
+- [x] Stripe webhook: handle checkout.session.completed with mode=payment to activate Lifetime tier
+- [x] Stripe webhook: store plan metadata in stripe_subscriptions or users table for Lifetime (sentinel record with status=lifetime)
+- [x] Cancel all pending reminders for same customerRequestId when respondedAt is set on customer_request
+- [x] Verify Stripe checkout flow end-to-end (monthly, annual, lifetime) — ready for testing on deployed domain
