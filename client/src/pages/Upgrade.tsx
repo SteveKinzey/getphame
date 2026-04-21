@@ -9,7 +9,7 @@ import {
   Loader2, FileText, Ticket, Unlock, Calendar, Shield, CreditCard
 } from "lucide-react";
 import { toast } from "sonner";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const UPGRADE_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-upgrade-hero-jBNmQektQK78tAwwYJ9c87.webp";
@@ -102,6 +102,20 @@ export default function UpgradePage() {
       toast.error(err.message || "Invalid code. Please try again.");
     },
   });
+
+  // Track page view with UTM params on mount
+  const trackPageView = trpc.analytics.trackPageView.useMutation();
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    trackPageView.mutate({
+      page: "/upgrade",
+      utmSource: params.get("utm_source") ?? undefined,
+      utmMedium: params.get("utm_medium") ?? undefined,
+      utmCampaign: params.get("utm_campaign") ?? undefined,
+      referrer: document.referrer || undefined,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function handleInvoice() {
     createInvoice.mutate({ plan: selectedPlan });

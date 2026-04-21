@@ -30,7 +30,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents } from "../drizzle/schema";
 import { eq, like, or } from "drizzle-orm";
 import {
   listSavedContacts,
@@ -1816,6 +1816,102 @@ export const appRouter = router({
           .where(or(like(users.name, q), like(users.email, q)))
           .limit(20);
         return rows;
+      }),
+
+    /** Manually override a user's tier — admin only */
+    setTier: protectedProcedure
+      .input(z.object({
+        userId: z.number().int().positive(),
+        tier: z.enum(["free", "pro", "annual", "lifetime"]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        await db
+          .update(businessProfiles)
+          .set({ tier: input.tier })
+          .where(eq(businessProfiles.userId, input.userId));
+        console.log(`[Admin] User ${input.userId} tier set to ${input.tier} by admin ${ctx.user.id}`);
+        return { ok: true };
+      }),
+
+    /** Upsell click stats — powered-by footer clicks to /upgrade (last 30d) */
+    upsellStats: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      const rows = await db
+        .select()
+        .from(pageEvents)
+        .where(eq(pageEvents.utmSource, "powered_by_footer"));
+      const last30 = rows.filter(r => r.createdAt > thirtyDaysAgo).length;
+      return { total: rows.length, last30 };
+    }),
+
+    /** Churn survey responses — admin only */
+    churnSurveys: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      const rows = await db
+        .select()
+        .from(churnSurveys)
+        .orderBy(churnSurveys.createdAt);
+      // Aggregate by reason
+      const counts: Record<string, number> = {};
+      for (const r of rows) {
+        counts[r.reason] = (counts[r.reason] ?? 0) + 1;
+      }
+      return { total: rows.length, counts, recent: rows.slice(-10).reverse() };
+    }),
+  }),
+
+  /** Public churn survey submission */
+  churn: router({
+    submit: publicProcedure
+      .input(z.object({
+        reason: z.enum(["too_expensive", "not_using", "switching_tools", "missing_feature", "other"]),
+        comment: z.string().max(1000).optional(),
+        email: z.string().email().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) return { ok: true }; // fail silently
+        await db.insert(churnSurveys).values({
+          userId: (ctx as any).user?.id ?? null,
+          email: input.email ?? null,
+          reason: input.reason,
+          comment: input.comment ?? null,
+        });
+        return { ok: true };
+      }),
+  }),
+
+  /** Analytics / page event tracking */
+  analytics: router({
+    trackPageView: publicProcedure
+      .input(z.object({
+        page: z.string().max(255),
+        utmSource: z.string().max(128).optional(),
+        utmMedium: z.string().max(128).optional(),
+        utmCampaign: z.string().max(128).optional(),
+        referrer: z.string().max(2048).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) return { ok: true };
+        await db.insert(pageEvents).values({
+          userId: (ctx as any).user?.id ?? null,
+          page: input.page,
+          utmSource: input.utmSource ?? null,
+          utmMedium: input.utmMedium ?? null,
+          utmCampaign: input.utmCampaign ?? null,
+          referrer: input.referrer ?? null,
+          userAgent: (ctx as any).req?.headers?.["user-agent"]?.slice(0, 512) ?? null,
+        });
+        return { ok: true };
       }),
   }),
 });

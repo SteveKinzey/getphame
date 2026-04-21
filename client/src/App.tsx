@@ -31,6 +31,7 @@ import AdminSmtpStatsPage from "./pages/AdminSmtpStats";
 import ChangelogPage from "./pages/Changelog";
 import UnsubscribePage from "./pages/Unsubscribe";
 import UpgradePage from "./pages/Upgrade";
+import ChurnSurveyPage from "./pages/ChurnSurvey";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
 import OnboardingWizard from "./components/OnboardingWizard";
@@ -103,6 +104,7 @@ function AppShell() {
         <Route path="/reminders" component={RemindersPage} />
         <Route path="/import" component={ImportContactsPage} />
         <Route path="/upgrade" component={UpgradePage} />
+        <Route path="/cancel" component={ChurnSurveyPage} />
         <Route path="/admin" component={AdminDashboardPage} />
         <Route path="/admin/codes" component={AdminCodesPage} />
         <Route path="/admin/smtp-stats" component={AdminSmtpStatsPage} />

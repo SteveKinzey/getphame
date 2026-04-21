@@ -19,9 +19,11 @@ import {
   Infinity,
   Search,
   X,
+  CheckCircle2,
 } from "lucide-react";
 import { Rocket } from "lucide-react";
 import { useDebounce } from "use-debounce";
+import { toast } from "sonner";
 
 export default function AdminDashboard() {
   const { user, isAuthenticated } = useAuth();
@@ -32,12 +34,26 @@ export default function AdminDashboard() {
     refetchInterval: 30_000,
   });
 
+  const { data: upsellStats } = trpc.admin.upsellStats.useQuery(undefined, {
+    enabled: !!user,
+    refetchInterval: 60_000,
+  });
+
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch] = useDebounce(searchInput, 300);
+  const utils = trpc.useUtils();
   const { data: searchResults, isFetching: isSearching } = trpc.admin.searchUsers.useQuery(
     { query: debouncedSearch },
     { enabled: !!user && debouncedSearch.trim().length >= 2 }
   );
+
+  const setTier = trpc.admin.setTier.useMutation({
+    onSuccess: (_data, vars) => {
+      toast.success(`Tier updated to ${vars.tier}`);
+      utils.admin.searchUsers.invalidate();
+    },
+    onError: (err) => toast.error(err.message || "Failed to update tier"),
+  });
 
   // Redirect non-admins
   useEffect(() => {
@@ -130,6 +146,16 @@ export default function AdminDashboard() {
                 icon={<Wifi size={20} style={{ color: "oklch(0.80 0.18 80)" }} />}
                 label="Active SMTP"
                 value={`${stats.activeSmtp} / ${stats.totalSmtp}`}
+              />
+              <KpiCard
+                icon={<TrendingUp size={20} style={{ color: "oklch(0.55 0.18 150)" }} />}
+                label="Upsell Clicks (30d)"
+                value={upsellStats ? upsellStats.last30.toLocaleString() : "—"}
+              />
+              <KpiCard
+                icon={<CheckCircle2 size={20} style={{ color: "oklch(0.55 0.18 150)" }} />}
+                label="Upsell Clicks (all)"
+                value={upsellStats ? upsellStats.total.toLocaleString() : "—"}
               />
             </div>
 
@@ -295,23 +321,33 @@ export default function AdminDashboard() {
                         </p>
                         <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>{u.email}</p>
                       </div>
-                      <span
-                        className="text-xs font-bold px-2 py-0.5 rounded-full capitalize"
-                        style={{
-                          background: u.tier === "lifetime"
-                            ? "oklch(0.92 0.08 150)"
-                            : u.tier === "annual" || u.tier === "pro"
-                              ? "oklch(0.95 0.08 80)"
-                              : "oklch(0.93 0.02 260)",
-                          color: u.tier === "lifetime"
-                            ? "oklch(0.35 0.15 150)"
-                            : u.tier === "annual" || u.tier === "pro"
-                              ? "oklch(0.45 0.15 80)"
-                              : "oklch(0.45 0.04 260)",
-                        }}
-                      >
-                        {u.tier ?? "free"}
-                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <select
+                          value={u.tier ?? "free"}
+                          disabled={setTier.isPending}
+                          onChange={e => setTier.mutate({ userId: u.id, tier: e.target.value as "free" | "pro" | "annual" | "lifetime" })}
+                          className="text-xs font-bold rounded-lg px-2 py-1 outline-none cursor-pointer"
+                          style={{
+                            background: u.tier === "lifetime"
+                              ? "oklch(0.92 0.08 150)"
+                              : u.tier === "annual" || u.tier === "pro"
+                                ? "oklch(0.95 0.08 80)"
+                                : "oklch(0.93 0.02 260)",
+                            color: u.tier === "lifetime"
+                              ? "oklch(0.35 0.15 150)"
+                              : u.tier === "annual" || u.tier === "pro"
+                                ? "oklch(0.45 0.15 80)"
+                                : "oklch(0.45 0.04 260)",
+                            border: "none",
+                          }}
+                        >
+                          <option value="free">free</option>
+                          <option value="pro">pro</option>
+                          <option value="annual">annual</option>
+                          <option value="lifetime">lifetime</option>
+                        </select>
+                        {setTier.isPending && <Loader2 size={10} className="animate-spin" style={{ color: "oklch(0.55 0.04 260)" }} />}
+                      </div>
                     </div>
                   ))}
                 </div>

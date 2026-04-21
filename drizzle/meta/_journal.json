@@ -190,6 +190,13 @@
       "when": 1776740012398,
       "tag": "0026_hot_vance_astro",
       "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "5",
+      "when": 1776746484649,
+      "tag": "0027_flowery_thaddeus_ross",
+      "breakpoints": true
     }
   ]
 }

@@ -308,3 +308,42 @@ export const emailEvents = mysqlTable("email_events", {
 
 export type EmailEvent = typeof emailEvents.$inferSelect;
 export type InsertEmailEvent = typeof emailEvents.$inferInsert;
+
+/**
+ * Churn survey responses — one row per cancellation.
+ * Stored before the user is redirected to the Stripe cancel flow.
+ */
+export const churnSurveys = mysqlTable("churn_surveys", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId"),                          // null = anonymous / not logged in
+  email: varchar("email", { length: 320 }),        // captured from query param if available
+  reason: mysqlEnum("reason", [
+    "too_expensive",
+    "not_using",
+    "switching_tools",
+    "missing_feature",
+    "other",
+  ]).notNull(),
+  comment: text("comment"),                        // optional free-text
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type ChurnSurvey = typeof churnSurveys.$inferSelect;
+export type InsertChurnSurvey = typeof churnSurveys.$inferInsert;
+
+/**
+ * Page-level analytics events — lightweight UTM / referral tracking.
+ * Used to measure powered-by footer upsell click-throughs.
+ */
+export const pageEvents = mysqlTable("page_events", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId"),                          // null = not logged in
+  page: varchar("page", { length: 255 }).notNull(), // e.g. "/upgrade"
+  utmSource: varchar("utmSource", { length: 128 }),
+  utmMedium: varchar("utmMedium", { length: 128 }),
+  utmCampaign: varchar("utmCampaign", { length: 128 }),
+  referrer: varchar("referrer", { length: 2048 }),
+  userAgent: varchar("userAgent", { length: 512 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type PageEvent = typeof pageEvents.$inferSelect;
+export type InsertPageEvent = typeof pageEvents.$inferInsert;
