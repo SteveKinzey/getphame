@@ -15,41 +15,48 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
   apiVersion: "2025-01-27.acacia",
 });
 
-/** The Pro plan price — $29/month recurring */
-export const PRO_PRICE = {
-  amount: 2900, // cents
-  currency: "usd",
-  interval: "month" as const,
-  name: "ReviewLink Pro",
-  description: "Unlimited review requests, priority sending, advanced analytics",
-};
+/** Stripe Price IDs for each plan */
+export const STRIPE_PRICE_IDS = {
+  monthly:  "price_1TOTkwLryXlEZmjywwPjXYRn",
+  annual:   "price_1TOTnALryXlEZmjy8JdDiu3P",
+  lifetime: "price_1TOTniLryXlEZmjyMnmX9Qe7",
+} as const;
 
-/** Create a Stripe Checkout Session for the Pro subscription */
+export type StripePlan = keyof typeof STRIPE_PRICE_IDS;
+
+/** Create a Stripe Checkout Session for the selected plan */
 export async function createCheckoutSession({
   userId,
   userEmail,
   userName,
   stripeCustomerId,
   origin,
+  plan = "monthly",
 }: {
   userId: number;
   userEmail: string | null;
   userName: string | null;
   stripeCustomerId: string | null;
   origin: string;
+  plan?: StripePlan;
 }): Promise<string> {
-  const params = {
-    mode: "subscription" as const,
+  const priceId = STRIPE_PRICE_IDS[plan];
+  const isLifetime = plan === "lifetime";
+
+  const params: Parameters<typeof stripe.checkout.sessions.create>[0] = {
+    // Lifetime is a one-time payment; monthly/annual are subscriptions
+    mode: isLifetime ? "payment" : "subscription",
     allow_promotion_codes: true,
     client_reference_id: String(userId),
     metadata: {
       user_id: String(userId),
+      plan,
       customer_email: userEmail ?? "",
       customer_name: userName ?? "",
     },
     line_items: [
       {
-        price: "price_1TI4UjLsFTLV3eoVDtB7m34H",
+        price: priceId,
         quantity: 1,
       },
     ],

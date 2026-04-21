@@ -186,7 +186,7 @@ export const emailTemplates = mysqlTable("email_templates", {
 export type EmailTemplate = typeof emailTemplates.$inferSelect;
 export type InsertEmailTemplate = typeof emailTemplates.$inferInsert;
 
-/** Follow-up reminders — scheduled 3-day follow-ups for sent review requests */
+/** Follow-up reminders — scheduled 3-day and 10-day follow-ups for sent review requests */
 export const followUpReminders = mysqlTable("follow_up_reminders", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(),
@@ -196,6 +196,8 @@ export const followUpReminders = mysqlTable("follow_up_reminders", {
   scheduledAt: bigint("scheduledAt", { mode: "number" }).notNull(), // Unix ms when to send
   sentAt: bigint("sentAt", { mode: "number" }), // null = not yet sent
   status: mysqlEnum("status", ["pending", "sent", "cancelled"]).default("pending").notNull(),
+  /** 1 = first follow-up (day 3), 2 = second follow-up (day 10) */
+  sequenceStep: int("sequenceStep").default(1).notNull(),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 

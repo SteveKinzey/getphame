@@ -6,13 +6,29 @@ import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
 import {
   Crown, Check, Star, Zap, BarChart2, ChevronLeft, Infinity,
-  Loader2, FileText, Ticket, Unlock, Calendar, Shield
+  Loader2, FileText, Ticket, Unlock, Calendar, Shield, CreditCard
 } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 
 const UPGRADE_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-upgrade-hero-jBNmQektQK78tAwwYJ9c87.webp";
+
+// ── Feature comparison table ─────────────────────────────────────────────────
+const COMPARISON_ROWS: { feature: string; free: string | boolean; pro: string | boolean; lifetime: string | boolean }[] = [
+  { feature: "Review requests / month",   free: "10",        pro: "Unlimited",  lifetime: "Unlimited" },
+  { feature: "Follow-up reminders",        free: true,       pro: true,         lifetime: true },
+  { feature: "Saved contacts",             free: true,       pro: true,         lifetime: true },
+  { feature: "CSV import",                 free: true,       pro: true,         lifetime: true },
+  { feature: "WooCommerce sync",           free: false,      pro: true,         lifetime: true },
+  { feature: "Email open & click tracking",free: false,      pro: true,         lifetime: true },
+  { feature: "Advanced analytics",         free: false,      pro: true,         lifetime: true },
+  { feature: "Multi-platform review links",free: "1",        pro: "Unlimited",  lifetime: "Unlimited" },
+  { feature: "Daily send limit",           free: "50/day",   pro: "500/day",    lifetime: "500/day" },
+  { feature: "Priority support",           free: false,      pro: true,         lifetime: true },
+  { feature: "Future updates",             free: false,      pro: "While active",lifetime: "Forever" },
+  { feature: "Price",                      free: "Free",     pro: "$29/mo",     lifetime: "$1,247" },
+];
 
 const PRO_FEATURES = [
   { icon: <Infinity size={14} />, text: "Unlimited review requests" },
@@ -63,6 +79,15 @@ export default function UpgradePage() {
     },
   });
 
+  const createCheckout = trpc.stripe.createCheckout.useMutation({
+    onSuccess: (data) => {
+      window.location.href = data.url;
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to start checkout. Please try again.");
+    },
+  });
+
   const redeemCode = trpc.accessCodes.redeem.useMutation({
     onSuccess: (data) => {
       toast.success(
@@ -80,6 +105,10 @@ export default function UpgradePage() {
 
   function handleInvoice() {
     createInvoice.mutate({ plan: selectedPlan });
+  }
+
+  function handleStripeCheckout() {
+    createCheckout.mutate({ origin: window.location.origin, plan: selectedPlan });
   }
 
   function handleRedeemCode() {
@@ -263,10 +292,10 @@ export default function UpgradePage() {
             ))}
           </div>
 
-          {/* CTA */}
+          {/* Primary CTA — Stripe Checkout */}
           <button
-            onClick={handleInvoice}
-            disabled={createInvoice.isPending}
+            onClick={handleStripeCheckout}
+            disabled={createCheckout.isPending}
             className="w-full py-4 rounded-2xl font-black text-lg transition-transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-70"
             style={{
               background: "oklch(0.80 0.18 80)",
@@ -274,19 +303,30 @@ export default function UpgradePage() {
               fontFamily: "'Poppins', sans-serif",
             }}
           >
-            {createInvoice.isPending ? (
+            {createCheckout.isPending ? (
               <Loader2 size={18} className="animate-spin" />
             ) : (
-              <FileText size={18} />
+              <CreditCard size={18} />
             )}
-            {createInvoice.isPending
-              ? "Sending invoice..."
-              : `Get Invoice — ${PLANS[selectedPlan].price}`}
+            {createCheckout.isPending
+              ? "Redirecting to checkout..."
+              : `Pay by Card — ${PLANS[selectedPlan].price}`}
           </button>
 
-          <p className="text-center text-xs mt-3" style={{ color: "rgba(255,255,255,0.4)" }}>
-            An invoice will be emailed to you. Pay by card via the secure invoice link.
+          <p className="text-center text-xs mt-2" style={{ color: "rgba(255,255,255,0.35)" }}>
+            Secure checkout via Stripe. No account required.
           </p>
+
+          {/* Secondary — invoice option */}
+          <button
+            onClick={handleInvoice}
+            disabled={createInvoice.isPending}
+            className="w-full py-2.5 rounded-xl font-semibold text-sm transition-opacity flex items-center justify-center gap-2 disabled:opacity-50 mt-1"
+            style={{ color: "rgba(255,255,255,0.45)", background: "transparent" }}
+          >
+            {createInvoice.isPending ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />}
+            {createInvoice.isPending ? "Sending invoice..." : "Prefer an invoice? Send to my email"}
+          </button>
         </div>
 
         {/* Access Code Redeem */}
@@ -340,6 +380,61 @@ export default function UpgradePage() {
         </div>
         <p className="text-center text-xs pb-4" style={{ color: "rgba(255,255,255,0.4)" }}>
           Trusted by local businesses to get more 5-star reviews
+        </p>
+
+        {/* ── Plan comparison table ────────────────────────────────────────────── */}
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{ border: "1px solid rgba(255,255,255,0.12)" }}
+        >
+          {/* Table header */}
+          <div
+            className="grid grid-cols-4 text-center text-xs font-black py-3 px-2"
+            style={{ background: "oklch(0.18 0.07 260)", fontFamily: "'Poppins', sans-serif" }}
+          >
+            <div className="text-left pl-2" style={{ color: "rgba(255,255,255,0.5)" }}>Feature</div>
+            <div style={{ color: "rgba(255,255,255,0.55)" }}>Free</div>
+            <div style={{ color: "oklch(0.80 0.18 80)" }}>Pro</div>
+            <div style={{ color: "oklch(0.90 0.14 80)" }}>Lifetime</div>
+          </div>
+
+          {/* Table rows */}
+          {COMPARISON_ROWS.map((row, i) => {
+            const isLast = i === COMPARISON_ROWS.length - 1;
+            const renderCell = (val: string | boolean) => {
+              if (val === true) return <Check size={14} style={{ color: "oklch(0.65 0.18 145)" }} className="mx-auto" />;
+              if (val === false) return <span style={{ color: "rgba(255,255,255,0.2)" }}>—</span>;
+              return <span>{val}</span>;
+            };
+            return (
+              <div
+                key={row.feature}
+                className="grid grid-cols-4 text-center text-xs py-2.5 px-2 items-center"
+                style={{
+                  background: isLast
+                    ? "oklch(0.26 0.10 260)"
+                    : i % 2 === 0
+                      ? "oklch(0.28 0.08 260)"
+                      : "oklch(0.25 0.08 260)",
+                  borderTop: "1px solid rgba(255,255,255,0.06)",
+                  fontWeight: isLast ? 800 : 400,
+                  color: isLast ? "oklch(0.80 0.18 80)" : "rgba(255,255,255,0.75)",
+                  fontFamily: isLast ? "'Poppins', sans-serif" : undefined,
+                }}
+              >
+                <div className="text-left pl-2" style={{ color: isLast ? "oklch(0.80 0.18 80)" : "rgba(255,255,255,0.55)", fontWeight: isLast ? 800 : 500 }}>
+                  {row.feature}
+                </div>
+                <div>{renderCell(row.free)}</div>
+                <div>{renderCell(row.pro)}</div>
+                <div>{renderCell(row.lifetime)}</div>
+              </div>
+            );
+          })}
+        </div>
+
+        <p className="text-center text-xs pb-6" style={{ color: "rgba(255,255,255,0.3)" }}>
+          All plans include a 10-request free trial. No credit card required to start.
         </p>
       </div>
     </div>

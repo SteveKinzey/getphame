@@ -786,3 +786,12 @@
 - [x] OnboardingGuide: add pb-32 to scrollable content area so content clears footer nav on all 6 steps
 - [x] Upgrade page: add Best Value ROI callout to Lifetime plan card ("Pays for itself in under 4 years")
 - [x] LandingPage: inject og:image, og:title, og:description, og:type, twitter:card, twitter:image meta tags via useEffect
+
+## New Features (Session — Apr 20 2026 cont.)
+
+- [x] Upgrade page: add Free / Pro / Lifetime feature comparison table below the pricing card
+- [x] Second follow-up reminder: add sequenceStep column to follow_up_reminders, schedule second reminder 10 days after initial send (7 days after first reminder at day 3)
+- [x] Second reminder: update scheduleFollowUp() to also schedule a day-10 job
+- [x] Second reminder: suppress second reminder if customer already unsubscribed or already left a review (respondedAt set)
+- [x] Second reminder: show second reminder entries on Reminders page with correct label ("2nd Follow-up")
+- [x] Stripe Price IDs: update server/stripe.ts with real price_... IDs (monthly/annual/lifetime wired, plan param added to createCheckout procedure and frontend handler)

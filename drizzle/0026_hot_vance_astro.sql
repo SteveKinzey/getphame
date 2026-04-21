@@ -1,0 +1,1 @@
+ALTER TABLE `follow_up_reminders` ADD `sequenceStep` int DEFAULT 1 NOT NULL;

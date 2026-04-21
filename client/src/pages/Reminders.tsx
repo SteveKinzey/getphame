@@ -28,6 +28,7 @@ type Reminder = {
   scheduledAt: number;
   sentAt: number | null;
   status: string;
+  sequenceStep?: number;
 };
 
 const STATUS_CONFIG: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
@@ -277,7 +278,12 @@ function ReminderRow({
     <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-gray-900 truncate">{reminder.customerName}</p>
+          <div className="flex items-center gap-2 mb-0.5">
+            <p className="font-bold text-gray-900 truncate">{reminder.customerName}</p>
+            <span className="text-xs font-semibold px-1.5 py-0.5 rounded-full shrink-0" style={{ background: (reminder.sequenceStep ?? 1) === 2 ? 'oklch(0.93 0.08 80)' : 'oklch(0.93 0.06 260)', color: (reminder.sequenceStep ?? 1) === 2 ? 'oklch(0.45 0.12 80)' : 'oklch(0.35 0.08 260)' }}>
+              {(reminder.sequenceStep ?? 1) === 2 ? '2nd Follow-up' : '1st Follow-up'}
+            </span>
+          </div>
           <p className="text-sm text-gray-500 truncate">{reminder.customerEmail}</p>
           <div className="flex items-center gap-3 mt-2">
             <span className={`flex items-center gap-1 text-xs font-semibold px-2 py-0.5 rounded-full ${cfg.color}`}>

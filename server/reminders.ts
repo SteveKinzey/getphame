@@ -1,5 +1,8 @@
 /**
- * Follow-up Reminders — schedule and process 3-day follow-up emails.
+ * Follow-up Reminders — two-step sequence per review request:
+ *   Step 1 — day 3 after initial send  ("Just checking in…")
+ *   Step 2 — day 10 after initial send ("Last chance to share your thoughts…")
+ *
  * The scheduler runs every hour via setInterval on server start.
  */
 import { getDb } from "./db";
@@ -9,8 +12,14 @@ import { sendMailViaSmtp } from "./smtp";
 import { getDefaultReviewPlatform } from "./reviewPlatforms";
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
 
-const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
+const THREE_DAYS_MS = 3  * 24 * 60 * 60 * 1000; // day 3  — first follow-up
+const TEN_DAYS_MS   = 10 * 24 * 60 * 60 * 1000; // day 10 — second follow-up
 
+/**
+ * Schedule both follow-up reminders for a sent review request:
+ *   Step 1 — 3 days after initial send
+ *   Step 2 — 10 days after initial send (7 days after step 1)
+ */
 export async function scheduleFollowUp(
   userId: number,
   customerRequestId: number,
@@ -19,14 +28,27 @@ export async function scheduleFollowUp(
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  await db.insert(followUpReminders).values({
-    userId,
-    customerRequestId,
-    customerName,
-    customerEmail,
-    scheduledAt: Date.now() + THREE_DAYS_MS,
-    status: "pending",
-  });
+  const now = Date.now();
+  await db.insert(followUpReminders).values([
+    {
+      userId,
+      customerRequestId,
+      customerName,
+      customerEmail,
+      scheduledAt: now + THREE_DAYS_MS,
+      status: "pending",
+      sequenceStep: 1,
+    },
+    {
+      userId,
+      customerRequestId,
+      customerName,
+      customerEmail,
+      scheduledAt: now + TEN_DAYS_MS,
+      status: "pending",
+      sequenceStep: 2,
+    },
+  ]);
 }
 
 export async function listReminders(userId: number) {
@@ -46,6 +68,29 @@ export async function cancelReminder(userId: number, reminderId: number) {
     .update(followUpReminders)
     .set({ status: "cancelled" })
     .where(and(eq(followUpReminders.userId, userId), eq(followUpReminders.id, reminderId)));
+}
+
+/** Build the email subject line based on sequence step */
+function getReminderSubject(step: number): string {
+  if (step === 2) {
+    return `One last nudge — we'd love your review!`;
+  }
+  return `Just checking in — have you had a chance to leave us a review?`;
+}
+
+/** Build the email body based on sequence step */
+function getReminderBody(
+  step: number,
+  customerName: string,
+  businessName: string,
+  trackedReviewUrl: string,
+  reviewUrl: string,
+  openPixel: string
+): string {
+  if (step === 2) {
+    return `Hi ${customerName},<br><br>We know life gets busy — this is our last follow-up, we promise! 😊<br><br>If you've had a chance to experience our service, it would mean the world to us if you could spare a minute to share your thoughts:<br><br><a href="${trackedReviewUrl}">${reviewUrl}</a><br><br>Your feedback helps other customers find us and helps us keep improving.<br><br>Thank you so much,<br>${businessName}${openPixel}`;
+  }
+  return `Hi ${customerName},<br><br>We wanted to follow up on our earlier message. If you've had a chance to try our service, we'd love to hear what you think!<br><br>Leaving a review only takes a minute and helps us a lot:<br><a href="${trackedReviewUrl}">${reviewUrl}</a><br><br>Thank you so much for your support!<br><br>${businessName}${openPixel}`;
 }
 
 /**
@@ -68,32 +113,31 @@ export async function processDueReminders() {
 
   for (const reminder of due) {
     try {
-      // Get business profile for review link
       const [profile] = await db
         .select()
         .from(businessProfiles)
         .where(eq(businessProfiles.userId, reminder.userId));
       if (!profile) continue;
 
-      const reminderDefaultPlatform = await getDefaultReviewPlatform(reminder.userId);
-      const reminderReviewUrl = reminderDefaultPlatform?.url ?? profile.reviewLink ?? "";
-      const subject = `Just checking in — have you had a chance to leave us a review?`;
-      // Build tracking token using the original customerRequestId so opens/clicks link back to the request
+      const defaultPlatform = await getDefaultReviewPlatform(reminder.userId);
+      const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
       const trackingToken = encodeTrackingToken(reminder.customerRequestId, reminder.userId, null);
       const baseUrl = process.env.APP_BASE_URL ?? "https://reviewlink.app";
-      const trackedReviewUrl = wrapClickUrl(reminderReviewUrl, trackingToken, baseUrl);
+      const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
       const openPixel = buildOpenPixel(trackingToken, baseUrl);
-      const body = `Hi ${reminder.customerName},<br><br>We wanted to follow up on our earlier message. If you've had a chance to try our service, we'd love to hear what you think!<br><br>Leaving a review only takes a minute and helps us a lot:<br><a href="${trackedReviewUrl}">${reminderReviewUrl}</a><br><br>Thank you so much for your support!<br><br>${profile.businessName}${openPixel}`;
 
-      await sendMailViaSmtp({ userId: reminder.userId, to: reminder.customerEmail, subject, html: body });
+      const step = reminder.sequenceStep ?? 1;
+      const subject = getReminderSubject(step);
+      const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel);
 
-      // Mark as sent
+      await sendMailViaSmtp({ userId: reminder.userId, to: reminder.customerEmail, subject, html });
+
       await db
         .update(followUpReminders)
         .set({ status: "sent", sentAt: Date.now() })
         .where(eq(followUpReminders.id, reminder.id));
 
-      console.log(`[Reminders] Follow-up sent to ${reminder.customerEmail}`);
+      console.log(`[Reminders] Step ${step} follow-up sent to ${reminder.customerEmail}`);
     } catch (err) {
       console.error(`[Reminders] Failed to send follow-up for reminder ${reminder.id}:`, err);
     }
@@ -106,26 +150,32 @@ export async function processDueReminders() {
 export async function sendReminderNow(userId: number, reminderId: number) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
+
   const [reminder] = await db
     .select()
     .from(followUpReminders)
     .where(and(eq(followUpReminders.userId, userId), eq(followUpReminders.id, reminderId)));
   if (!reminder) throw new Error("Reminder not found.");
   if (reminder.status !== "pending") throw new Error("Only pending reminders can be sent now.");
+
   const [profile] = await db
     .select()
     .from(businessProfiles)
     .where(eq(businessProfiles.userId, userId));
   if (!profile) throw new Error("Business profile not found.");
-  const nowDefaultPlatform = await getDefaultReviewPlatform(userId);
-  const nowReviewUrl = nowDefaultPlatform?.url ?? profile.reviewLink ?? "";
-  const subject = `Just checking in — have you had a chance to leave us a review?`;
-  const nowTrackingToken = encodeTrackingToken(reminder.customerRequestId, userId, null);
-  const nowBaseUrl = process.env.APP_BASE_URL ?? "https://reviewlink.app";
-  const trackedNowUrl = wrapClickUrl(nowReviewUrl, nowTrackingToken, nowBaseUrl);
-  const nowOpenPixel = buildOpenPixel(nowTrackingToken, nowBaseUrl);
-  const body = `Hi ${reminder.customerName},<br><br>We wanted to follow up on our earlier message. If you've had a chance to try our service, we'd love to hear what you think!<br><br>Leaving a review only takes a minute and helps us a lot:<br><a href="${trackedNowUrl}">${nowReviewUrl}</a><br><br>Thank you so much for your support!<br><br>${profile.businessName}${nowOpenPixel}`;
-  await sendMailViaSmtp({ userId, to: reminder.customerEmail, subject, html: body });
+
+  const defaultPlatform = await getDefaultReviewPlatform(userId);
+  const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
+  const trackingToken = encodeTrackingToken(reminder.customerRequestId, userId, null);
+  const baseUrl = process.env.APP_BASE_URL ?? "https://reviewlink.app";
+  const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
+  const openPixel = buildOpenPixel(trackingToken, baseUrl);
+
+  const step = reminder.sequenceStep ?? 1;
+  const subject = getReminderSubject(step);
+  const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel);
+
+  await sendMailViaSmtp({ userId, to: reminder.customerEmail, subject, html });
   await db
     .update(followUpReminders)
     .set({ status: "sent", sentAt: Date.now() })

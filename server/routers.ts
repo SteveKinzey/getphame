@@ -459,9 +459,9 @@ export const appRouter = router({
   }),
 
   stripe: router({
-    /** Create a Stripe Checkout Session for Pro subscription */
+    /** Create a Stripe Checkout Session for the selected plan */
     createCheckout: protectedProcedure
-      .input(z.object({ origin: z.string() }))
+      .input(z.object({ origin: z.string(), plan: z.enum(["monthly", "annual", "lifetime"]).default("monthly") }))
       .mutation(async ({ ctx, input }) => {
         const profile = await getBusinessProfile(ctx.user.id);
         const url = await createCheckoutSession({
@@ -470,6 +470,7 @@ export const appRouter = router({
           userName: ctx.user.name ?? null,
           stripeCustomerId: profile?.stripeCustomerId ?? null,
           origin: input.origin,
+          plan: input.plan,
         });
         return { url };
       }),
