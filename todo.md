@@ -928,10 +928,10 @@
 - [x] Create skill documenting the OnboardingGuide expansion pattern
 
 ## Session #16 — API Key System + Test Email + Platform Icons
-- [ ] DB schema: add api_keys table (id, userId, key hash, label, createdAt, lastUsedAt, revokedAt)
-- [ ] tRPC procedures: apiKey.generate, apiKey.list, apiKey.revoke
-- [ ] Settings UI: API Keys card with generate/copy/revoke, integration code snippet
-- [ ] Public endpoint: POST /api/public/contacts with Bearer auth, upsert logic, rate limiting
+- [x] DB schema: add api_keys table (id, userId, key hash, label, createdAt, lastUsedAt, revokedAt)
+- [x] tRPC procedures: apiKey.generate, apiKey.list, apiKey.revoke
+- [x] Settings UI: API Keys card with generate/copy/revoke, integration code snippet
+- [x] Public endpoint: POST /api/public/contacts with Bearer auth, upsert logic, rate limiting
 - [x] Add Send Test Email button to OnboardingGuide email step (fires real test email to connected address)
-- [ ] Add platform-specific emoji/icons to Review Platforms list in Settings
-- [ ] Create skill: api-key-contacts-import documenting the pattern
+- [x] Add platform-specific emoji/icons to Review Platforms list in Settings
+- [x] Create skill: api-key-contacts-import documenting the pattern
