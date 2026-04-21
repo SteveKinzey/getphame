@@ -15,7 +15,10 @@ import {
   Users,
   ChevronRight,
   Loader2,
+  BookUser,
 } from "lucide-react";
+import { useContacts } from "@/hooks/useContacts";
+import ContactPickerModal from "@/components/ContactPickerModal";
 import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
@@ -125,6 +128,9 @@ export default function ImportContactsPage() {
   const [importResult, setImportResult] = useState<{ imported: number; skipped: number } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  const [contactPickerOpen, setContactPickerOpen] = useState(false);
+  const { isNative } = useContacts();
+
   const importMutation = trpc.contacts.importCSV.useMutation({
     onSuccess: (result) => {
       setImportResult(result);
@@ -207,6 +213,7 @@ export default function ImportContactsPage() {
 
   // ── Render ───────────────────────────────────────────────────────────────────
   return (
+    <>
     <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
       {/* Header */}
       <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
@@ -255,9 +262,33 @@ export default function ImportContactsPage() {
 
       <div className="px-4 py-4">
 
-        {/* ── Step 0: Upload ─────────────────────────────────────────────────── */}
+        {/* Step 0: Upload */}
         {step === 0 && (
           <div className="flex flex-col gap-4">
+            {/* Native contacts import - only shown in Capacitor app */}
+            {isNative && (
+              <button
+                onClick={() => setContactPickerOpen(true)}
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-sm"
+                style={{
+                  background: "oklch(0.22 0.09 260)",
+                  color: "oklch(0.80 0.18 80)",
+                  fontFamily: "'Poppins', sans-serif",
+                }}
+              >
+                <BookUser size={18} />
+                Import from Phone Contacts
+              </button>
+            )}
+
+            {isNative && (
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-px" style={{ background: "oklch(0.88 0.02 260)" }} />
+                <span className="text-xs" style={{ color: "oklch(0.60 0.03 260)" }}>or upload a CSV file</span>
+                <div className="flex-1 h-px" style={{ background: "oklch(0.88 0.02 260)" }} />
+              </div>
+            )}
+
             {/* Template download */}
             <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
               <div>
@@ -318,7 +349,7 @@ export default function ImportContactsPage() {
           </div>
         )}
 
-        {/* ── Step 1: Column Mapper ──────────────────────────────────────────── */}
+        {/* Step 1: Column Mapper */}
         {step === 1 && (
           <div className="flex flex-col gap-4">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
@@ -388,7 +419,7 @@ export default function ImportContactsPage() {
           </div>
         )}
 
-        {/* ── Step 2: Preview ────────────────────────────────────────────────── */}
+        {/* Step 2: Preview */}
         {step === 2 && (
           <div className="flex flex-col gap-4">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
@@ -470,7 +501,7 @@ export default function ImportContactsPage() {
           </div>
         )}
 
-        {/* ── Step 3: Done ──────────────────────────────────────────────────── */}
+        {/* Step 3: Done */}
         {step === 3 && importResult && (
           <div className="flex flex-col items-center gap-4 pt-8">
             <div
@@ -509,5 +540,18 @@ export default function ImportContactsPage() {
         )}
       </div>
     </div>
+
+    {/* Native contacts picker - only rendered in Capacitor app */}
+    <ContactPickerModal
+      open={contactPickerOpen}
+      onClose={() => setContactPickerOpen(false)}
+      onImport={(contacts) => {
+        // Map native contacts directly into the importCSV mutation format
+        const rows = contacts.map((c) => ({ name: c.name, email: c.email }));
+        importMutation.mutate({ rows });
+        setContactPickerOpen(false);
+      }}
+    />
+    </>
   );
 }

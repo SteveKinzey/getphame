@@ -819,3 +819,11 @@
 - [x] Settings Billing: add retention confirmation dialog before Manage Billing opens Stripe Portal
 - [x] Send page: add post-send milestone rating nudge at 10th and 25th request sent
 - [x] Email sending: append "Powered by ReviewLink" footer to outgoing emails for free-tier users (Pro/Lifetime get clean footer automatically)
+
+## Capacitor / Native App (Session — Apr 21 2026)
+
+- [x] Install Capacitor core, CLI, iOS platform, and @capacitor-community/contacts plugin
+- [x] Create capacitor.config.ts with bundle ID com.reviewlink.app pointing to reviewlink.app
+- [x] Add cap:sync and cap:build scripts to package.json
+- [x] Build multi-select ContactPickerModal (search, checkboxes, Select All, Import CTA) wired into Send page and ImportContacts page
+- [x] Write Xcode + TestFlight step-by-step instructions document

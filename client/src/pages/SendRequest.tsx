@@ -3,7 +3,9 @@
 
 import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import { Send, Rocket, Mail, User, Star, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap } from "lucide-react";
+import { Send, Rocket, Mail, User, Star, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser } from "lucide-react";
+import { useContacts } from "@/hooks/useContacts";
+import ContactPickerModal from "@/components/ContactPickerModal";
 import { FREE_LIMIT } from "@shared/const";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -25,6 +27,8 @@ export default function SendRequestPage() {
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState<number | null>(null);
+  const [contactPickerOpen, setContactPickerOpen] = useState(false);
+  const { isNative } = useContacts();
   const [selectedPlatformId, setSelectedPlatformId] = useState<number | null>(null);
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
@@ -261,6 +265,7 @@ export default function SendRequestPage() {
   }
 
   return (
+    <>
     <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
       {/* Navy Header */}
       <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
@@ -403,6 +408,23 @@ export default function SendRequestPage() {
 
           <div className="flex flex-col gap-4">
             {/* Name */}
+            {/* Import from Contacts button — only shown in native app */}
+            {isNative && (
+              <button
+                type="button"
+                onClick={() => setContactPickerOpen(true)}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all active:scale-98"
+                style={{
+                  background: 'oklch(0.22 0.09 260)',
+                  color: 'oklch(0.80 0.18 80)',
+                  fontFamily: "'Poppins', sans-serif",
+                }}
+              >
+                <BookUser size={16} />
+                Import from Contacts
+              </button>
+            )}
+
             <div>
               <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
                 <User size={12} className="inline mr-1" />
@@ -617,5 +639,26 @@ export default function SendRequestPage() {
         </div>
       </div>
     </div>
+
+    {/* Native contacts picker - only rendered in Capacitor app */}
+    <ContactPickerModal
+      open={contactPickerOpen}
+      onClose={() => setContactPickerOpen(false)}
+      onImport={(contacts) => {
+        if (contacts.length === 1) {
+          setCustomerName(contacts[0].name);
+          setCustomerEmail(contacts[0].email);
+          setErrors({});
+          toast.success(`Imported ${contacts[0].name}`);
+        } else {
+          // For multiple contacts, pre-fill the first and show a toast
+          setCustomerName(contacts[0].name);
+          setCustomerEmail(contacts[0].email);
+          setErrors({});
+          toast.success(`Imported ${contacts.length} contacts - sending to first contact. Use Bulk Send for multiple.`);
+        }
+      }}
+    />
+    </>
   );
 }
