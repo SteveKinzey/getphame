@@ -1172,3 +1172,11 @@
 - [x] Replace all inline styles in component files with Tailwind/CSS classes
 - [x] Create PWA manifest.json with correct icons, theme color, and app metadata
 - [x] Wire manifest.json into index.html
+
+## Session #46 — PWA Manifest Skill + PromptPay KPI + PWA Mobile Test + Zoho Payments Research (Apr 21 2026)
+- [x] Create pwa-manifest skill documenting full production PWA manifest spec (shortcuts, screenshots, display_override, maskable icons, service worker, installability checklist, common pitfalls)
+- [x] Add PromptPay reveal KPI card to AdminRevenue page (Total Reveals, Last 30 Days, Reveal→Paid conversion rate)
+- [x] Add promptpayRevealTotal / promptpayRevealLast30 / promptpayConversionRate to admin.revenue procedure
+- [x] PWA mobile audit: manifest.json valid on deployed site (reviewlink.app/manifest.json), all Apple meta tags present, service worker registered via AppContext, icons 192+512 both any+maskable, shortcuts ×3, screenshots ×1 narrow — all installability criteria met
+- [x] Research Zoho Payments API: US+India only, no PromptPay, no Thailand, subscriptions require Zoho Billing (separate product) — not viable as Stripe replacement for ReviewLink's Thai market
+- [x] TypeScript: 0 errors | Tests: 50/50 passing

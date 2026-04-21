@@ -2005,6 +2005,32 @@ export const appRouter = router({
       }
       const growthChart = Object.entries(monthlyGrowth).map(([month, newSubs]) => ({ month, newSubs }));
 
+      // PromptPay reveal clicks — users who tapped "Reveal PromptPay QR" on the upgrade page
+      const promptpayRevealRows = await db
+        .select({ count: sqlRev<number>`count(*)` })
+        .from(pageEvents)
+        .where(eqRev(pageEvents.page, "/upgrade/promptpay-reveal"));
+      const promptpayRevealTotal = Number(promptpayRevealRows[0]?.count ?? 0);
+
+      // PromptPay reveals in last 30 days
+      const thirtyDaysAgoTs = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+      const promptpayRevealLast30Rows = await db
+        .select({ count: sqlRev<number>`count(*)` })
+        .from(pageEvents)
+        .where(
+          andRev(
+            eqRev(pageEvents.page, "/upgrade/promptpay-reveal"),
+            sqlRev`${pageEvents.createdAt} >= ${thirtyDaysAgoTs}`
+          )
+        );
+      const promptpayRevealLast30 = Number(promptpayRevealLast30Rows[0]?.count ?? 0);
+
+      // PromptPay reveal-to-paid conversion rate (reveals vs lifetime+annual+pro Thai users)
+      // We approximate by comparing reveals to total paid conversions
+      const promptpayConversionRate = promptpayRevealTotal > 0
+        ? Math.round(((tierCounts.pro + tierCounts.annual + tierCounts.lifetime) / promptpayRevealTotal) * 100 * 10) / 10
+        : 0;
+
       // Churn rate — canceled subscriptions in last 30 days / active subscriptions
       const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
       const allSubRows = await db.select().from(stripeSubscriptions);
@@ -2030,6 +2056,9 @@ export const appRouter = router({
         platformUniqueClicks,
         platformOpenRate,
         platformClickRate,
+        promptpayRevealTotal,
+        promptpayRevealLast30,
+        promptpayConversionRate,
       };
     }),
   }),

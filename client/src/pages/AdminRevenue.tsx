@@ -15,6 +15,7 @@ import {
   Mail,
   MousePointerClick,
   Eye,
+  QrCode,
 } from "lucide-react";
 import {
   BarChart,
@@ -223,6 +224,33 @@ export default function AdminRevenuePage() {
                   <span className="text-xs text-white/30">Industry avg: 2–5%</span>
                 </div>
               </div>
+            </div>
+
+            {/* PromptPay reveal funnel */}
+            <div className="rounded-2xl p-4" style={{ background: NAVY }}>
+              <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: GOLD }}>
+                PromptPay Upgrade Funnel (Thai Users)
+              </p>
+              <div className="grid grid-cols-3 gap-3 mb-3">
+                <KpiCard
+                  icon={<QrCode size={16} style={{ color: GOLD }} />}
+                  label="Total Reveals"
+                  value={data.promptpayRevealTotal.toLocaleString()}
+                />
+                <KpiCard
+                  icon={<QrCode size={16} style={{ color: GOLD }} />}
+                  label="Last 30 Days"
+                  value={data.promptpayRevealLast30.toLocaleString()}
+                />
+                <KpiCard
+                  icon={<TrendingUp size={16} style={{ color: GOLD }} />}
+                  label="Reveal→Paid"
+                  value={`${data.promptpayConversionRate}%`}
+                />
+              </div>
+              <p className="text-xs text-white/30">
+                Reveals = users who tapped "Show PromptPay QR" on the upgrade page. Reveal→Paid = total paid users ÷ total reveals (all-time approximation).
+              </p>
             </div>
 
             {/* Pricing reference */}
