@@ -827,3 +827,8 @@
 - [x] Add cap:sync and cap:build scripts to package.json
 - [x] Build multi-select ContactPickerModal (search, checkboxes, Select All, Import CTA) wired into Send page and ImportContacts page
 - [x] Write Xcode + TestFlight step-by-step instructions document
+
+## PWA Install Prompt (Session — Apr 21 2026)
+
+- [x] Build PWAInstallPrompt component: iOS Safari instructions (Share -> Add to Home Screen), Android Chrome instructions (menu -> Add to Home Screen), dismiss + localStorage persistence
+- [x] Mount PWAInstallPrompt in App.tsx: show after 3s delay on first visit, hide if already installed (standalone mode), hide in Capacitor native app

@@ -34,6 +34,7 @@ import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, { useOnboardingGuide } from "./components/OnboardingGuide";
+import PWAInstallPrompt from "./components/PWAInstallPrompt";
 
 
 function AppShell() {
@@ -108,6 +109,7 @@ function AppShell() {
       </Switch>
       </main>
       <BottomNav />
+      <PWAInstallPrompt />
     </div>
   );
 }
