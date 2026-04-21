@@ -5,9 +5,11 @@ import { createHash, randomBytes } from "crypto";
 import {
   InsertUser,
   apiKeys,
+  apiImportEvents,
   businessProfiles,
   customerRequests,
   users,
+  webhookConfigs,
   type InsertBusinessProfile,
   type InsertCustomerRequest,
 } from "../drizzle/schema";
@@ -200,4 +202,94 @@ export async function getUserByApiKey(rawKey: string): Promise<number | null> {
   // Update lastUsedAt asynchronously — don’t block the request
   db.update(apiKeys).set({ lastUsedAt: Date.now() }).where(eq(apiKeys.id, row.id)).catch(() => {});
   return row.userId;
+}
+
+// ── API Import Events ──────────────────────────────────────────────────────────
+
+/** Log a contact import via the public API. */
+export async function logApiImport(params: {
+  userId: number;
+  apiKeyId: number | null;
+  keyLabel: string;
+  contactId: number | null;
+  email: string;
+  created: boolean;
+}): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.insert(apiImportEvents).values({
+    userId: params.userId,
+    apiKeyId: params.apiKeyId,
+    keyLabel: params.keyLabel,
+    contactId: params.contactId,
+    email: params.email,
+    created: params.created,
+    createdAt: Date.now(),
+  });
+}
+
+/** Get the last N import events for a user. */
+export async function getRecentApiImports(userId: number, limit = 10) {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(apiImportEvents)
+    .where(eq(apiImportEvents.userId, userId))
+    .orderBy(desc(apiImportEvents.createdAt))
+    .limit(limit);
+}
+
+// ── Webhook Configs ────────────────────────────────────────────────────────────
+
+/** Get all webhook configs for a user. */
+export async function getWebhookConfigs(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(webhookConfigs)
+    .where(eq(webhookConfigs.userId, userId))
+    .orderBy(webhookConfigs.createdAt);
+}
+
+/** Create a new webhook config. */
+export async function createWebhookConfig(params: {
+  userId: number;
+  url: string;
+  label: string;
+  secret?: string;
+  events?: string;
+}): Promise<number> {
+  const db = await getDb();
+  if (!db) return 0;
+  const [result] = await db.insert(webhookConfigs).values({
+    userId: params.userId,
+    url: params.url,
+    label: params.label,
+    secret: params.secret ?? null,
+    events: params.events ?? "contact.created",
+    active: true,
+    createdAt: Date.now(),
+  });
+  return (result as any).insertId ?? 0;
+}
+
+/** Delete a webhook config by id. */
+export async function deleteWebhookConfig(userId: number, id: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .delete(webhookConfigs)
+    .where(and(eq(webhookConfigs.id, id), eq(webhookConfigs.userId, userId)));
+}
+
+/** Update lastFiredAt and lastStatus on a webhook config. */
+export async function updateWebhookStatus(id: number, status: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .update(webhookConfigs)
+    .set({ lastFiredAt: Date.now(), lastStatus: status })
+    .where(eq(webhookConfigs.id, id));
 }

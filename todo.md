@@ -935,3 +935,15 @@
 - [x] Add Send Test Email button to OnboardingGuide email step (fires real test email to connected address)
 - [x] Add platform-specific emoji/icons to Review Platforms list in Settings
 - [x] Create skill: api-key-contacts-import documenting the pattern
+
+## Session #15 — Copy Snippet, Import Log, Webhook, WooCommerce Guide
+- [x] Copy snippet button in API Keys card (one-tap copy of full HTML/JS integration code)
+- [x] api_import_events table (userId, keyId, keyLabel, contactId, email, createdAt)
+- [x] Log each API contact push to api_import_events
+- [x] Recent Imports feed in API Keys card (last 10 imports with email + key label + time)
+- [x] Outbound webhook: webhook_configs table (userId, url, secret, events[], active)
+- [x] Outbound webhook: fire on new contact creation from any source
+- [x] Outbound webhook: Settings UI card (add/test/delete webhook URLs)
+- [x] WooCommerce guide step in OnboardingGuide
+- [x] WooCommerce hold-until-import logic (pending_woo_imports table or flag)
+- [x] WooCommerce auto-import scheduler: every Monday 03:00 GMT if data older than 7 days

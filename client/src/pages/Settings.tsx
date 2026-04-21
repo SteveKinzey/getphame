@@ -37,6 +37,7 @@ import {
   Apple,
   Key,
   Copy,
+  Download,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
 
@@ -583,22 +584,35 @@ export default function SettingsPage() {
     onSuccess: (result) => {
       utils.woo.getCredentials.invalidate();
       utils.woo.listPending.invalidate();
-      if (result.added > 0) {
+      utils.woo.pendingCount.invalidate();
+      if ((result.staged ?? result.added) > 0) {
         toast.success(
-          `Synced — ${result.added} new customer${result.added !== 1 ? "s" : ""} added.`,
-          {
-            action: {
-              label: "View new customers",
-              onClick: () => navigate("/woo-customers"),
-            },
-            duration: 6000,
-          }
+          `Synced — ${result.staged ?? result.added} order${(result.staged ?? result.added) !== 1 ? "s" : ""} staged for import. Review them in the Pending Imports banner below.`,
+          { duration: 6000 }
         );
       } else {
-        toast.success("Sync complete — no new customers found.");
+        toast.success("Sync complete — no new orders found.");
       }
     },
     onError: (err) => toast.error(`Sync failed: ${err.message}`),
+  });
+
+  // ── WooCommerce pending imports ────────────────────────────────────────────
+  const { data: wooPending } = trpc.woo.pendingCount.useQuery(undefined, { enabled: !!wooCreds });
+  const importPending = trpc.woo.importPending.useMutation({
+    onSuccess: (result) => {
+      utils.woo.pendingCount.invalidate();
+      utils.woo.listPending.invalidate();
+      toast.success(`Imported ${result.imported} customer${result.imported !== 1 ? "s" : ""} from WooCommerce.`);
+    },
+    onError: (err) => toast.error(err.message),
+  });
+  const dismissPending = trpc.woo.dismissPending.useMutation({
+    onSuccess: () => {
+      utils.woo.pendingCount.invalidate();
+      toast.success("Pending imports dismissed.");
+    },
+    onError: (err) => toast.error(err.message),
   });
 
   function handleSaveWoo() {
@@ -612,6 +626,7 @@ export default function SettingsPage() {
   const { data: apiKeyList, isLoading: apiKeysLoading } = trpc.apiKey.list.useQuery();
   const [newKeyLabel, setNewKeyLabel] = useState("My API Key");
   const [revealedKey, setRevealedKey] = useState<string | null>(null);
+  const [showSnippet, setShowSnippet] = useState(false);
   const generateKey = trpc.apiKey.generate.useMutation({
     onSuccess: (data) => {
       utils.apiKey.list.invalidate();
@@ -624,6 +639,36 @@ export default function SettingsPage() {
     onSuccess: () => {
       utils.apiKey.list.invalidate();
       toast.success("API key revoked.");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  // ── Recent API Imports & Webhooks ─────────────────────────────────────────
+  const { data: recentImports } = trpc.apiKey.recentImports.useQuery({ limit: 10 });
+  const { data: webhookList } = trpc.webhook.list.useQuery();
+  const [showAddWebhook, setShowAddWebhook] = useState(false);
+  const [newWebhookUrl, setNewWebhookUrl] = useState("");
+  const [newWebhookLabel, setNewWebhookLabel] = useState("My Webhook");
+  const [newWebhookSecret, setNewWebhookSecret] = useState("");
+  const createWebhook = trpc.webhook.create.useMutation({
+    onSuccess: () => {
+      utils.webhook.list.invalidate();
+      setShowAddWebhook(false);
+      setNewWebhookUrl("");
+      setNewWebhookLabel("My Webhook");
+      setNewWebhookSecret("");
+      toast.success("Webhook created.");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+  const deleteWebhook = trpc.webhook.delete.useMutation({
+    onSuccess: () => { utils.webhook.list.invalidate(); toast.success("Webhook deleted."); },
+    onError: (err) => toast.error(err.message),
+  });
+  const testWebhook = trpc.webhook.test.useMutation({
+    onSuccess: (data) => {
+      if (data.success) toast.success(`Test ping sent — got HTTP ${data.status}`);
+      else toast.error(`Webhook test failed (HTTP ${data.status})`);
     },
     onError: (err) => toast.error(err.message),
   });
@@ -1939,6 +1984,43 @@ export default function SettingsPage() {
                   </div>
                 </div>
               </div>
+              {/* Pending Imports Banner */}
+              {wooPending && wooPending.count > 0 && (
+                <div
+                  className="rounded-xl px-4 py-3"
+                  style={{ background: "oklch(0.97 0.04 80)", border: "1px solid oklch(0.88 0.08 80)" }}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <Clock size={14} style={{ color: "oklch(0.55 0.12 80)" }} />
+                    <p className="text-sm font-bold" style={{ color: "oklch(0.35 0.10 80)" }}>
+                      {wooPending.count} pending import{wooPending.count !== 1 ? "s" : ""}
+                    </p>
+                  </div>
+                  <p className="text-xs mb-3" style={{ color: "oklch(0.45 0.06 80)" }}>
+                    These WooCommerce orders are staged and waiting. Import them now, or they'll be auto-imported on Monday at 03:00 GMT if they're older than 7 days.
+                  </p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => importPending.mutate()}
+                      disabled={importPending.isPending}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-black transition-opacity disabled:opacity-60"
+                      style={{ background: "oklch(0.22 0.09 260)", color: "white", fontFamily: "'Poppins', sans-serif" }}
+                    >
+                      {importPending.isPending ? <Loader2 size={12} className="animate-spin" /> : <Download size={12} />}
+                      Import Now
+                    </button>
+                    <button
+                      onClick={() => dismissPending.mutate()}
+                      disabled={dismissPending.isPending}
+                      className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-opacity disabled:opacity-60"
+                      style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.45 0.04 260)" }}
+                    >
+                      {dismissPending.isPending ? <Loader2 size={12} className="animate-spin" /> : null}
+                      Dismiss
+                    </button>
+                  </div>
+                </div>
+              )}
               <button
                 onClick={() => navigate("/woo-customers")}
                 className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
@@ -2182,24 +2264,212 @@ export default function SettingsPage() {
             </button>
           </div>
 
-          {/* Endpoint reference */}
+          {/* Endpoint reference + snippet */}
           <div
-            className="mt-4 rounded-xl p-3"
+            className="mt-4 rounded-xl p-3 space-y-2"
             style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}
           >
-            <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.22 0.09 260)" }}>Endpoint</p>
-            <code className="text-xs break-all" style={{ color: "oklch(0.40 0.08 260)", fontFamily: "monospace" }}>
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>Website Integration</p>
+              <button
+                onClick={() => setShowSnippet(!showSnippet)}
+                className="text-xs px-2 py-1 rounded-lg font-bold flex items-center gap-1"
+                style={{ background: "oklch(0.92 0.02 260)", color: "oklch(0.40 0.06 260)" }}
+              >
+                <Copy size={11} />
+                {showSnippet ? "Hide snippet" : "Show snippet"}
+              </button>
+            </div>
+            <code className="text-xs break-all block" style={{ color: "oklch(0.40 0.08 260)", fontFamily: "monospace" }}>
               POST https://reviewlink.app/api/public/contacts
             </code>
-            <p className="text-xs mt-2" style={{ color: "oklch(0.55 0.04 260)" }}>
+            <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>
               Send <code style={{ fontFamily: "monospace" }}>name</code>, <code style={{ fontFamily: "monospace" }}>email</code>, and optionally <code style={{ fontFamily: "monospace" }}>phone</code>, <code style={{ fontFamily: "monospace" }}>notes</code>, <code style={{ fontFamily: "monospace" }}>tags[]</code>.
               Include your key as <code style={{ fontFamily: "monospace" }}>Authorization: Bearer rl_...</code>.
             </p>
+            {showSnippet && (() => {
+              const firstKey = apiKeyList?.[0];
+              const keyPlaceholder = firstKey ? `rl_YOUR_KEY_HERE` : `rl_YOUR_KEY_HERE`;
+              const snippet = `<form id="rl-form">
+  <input name="name" placeholder="Your name" required />
+  <input name="email" type="email" placeholder="Email" required />
+  <input name="phone" placeholder="Phone (optional)" />
+  <button type="submit">Submit</button>
+</form>
+<script>
+document.getElementById('rl-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  const res = await fetch('https://reviewlink.app/api/public/contacts', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${keyPlaceholder}'
+    },
+    body: JSON.stringify(data)
+  });
+  const json = await res.json();
+  if (json.success) alert('Thank you!');
+});
+<\/script>`;
+              return (
+                <div className="relative">
+                  <pre
+                    className="text-xs rounded-xl p-3 overflow-x-auto"
+                    style={{
+                      background: "oklch(0.18 0.06 260)",
+                      color: "oklch(0.85 0.04 260)",
+                      fontFamily: "monospace",
+                      fontSize: "11px",
+                      lineHeight: 1.6,
+                      whiteSpace: "pre-wrap",
+                      wordBreak: "break-all",
+                    }}
+                  >
+                    {snippet}
+                  </pre>
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(snippet);
+                      toast.success("Snippet copied to clipboard!");
+                    }}
+                    className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold"
+                    style={{ background: "oklch(0.30 0.08 260)", color: "oklch(0.80 0.18 80)" }}
+                  >
+                    <Copy size={11} /> Copy
+                  </button>
+                </div>
+              );
+            })()}
+          </div>
+        </div>
+            {/* ── Recent API Imports ────────────────────────────────────────────────────────────────────────────── */}
+        {recentImports && recentImports.length > 0 && (
+          <div className="bg-white rounded-2xl p-5 shadow-sm">
+            <div className="flex items-center gap-2 mb-3">
+              <Clock size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+              <h2 className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                Recent API Imports
+              </h2>
+            </div>
+            <div className="space-y-2">
+              {recentImports.map((ev) => (
+                <div key={ev.id} className="flex items-center justify-between gap-2 rounded-xl px-3 py-2" style={{ background: "oklch(0.97 0.01 260)" }}>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-semibold truncate" style={{ color: "oklch(0.22 0.09 260)" }}>{ev.email}</p>
+                    <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>
+                      via <span className="font-medium">{ev.keyLabel}</span> · {ev.created ? "✨ new contact" : "updated"}
+                    </p>
+                  </div>
+                  <span className="text-xs shrink-0" style={{ color: "oklch(0.65 0.04 260)" }}>
+                    {new Date(ev.createdAt).toLocaleString()}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── Outbound Webhooks ────────────────────────────────────────────────────────────────────────────────────── */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Globe size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+              <h2 className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                Outbound Webhooks
+              </h2>
+            </div>
+            <button
+              onClick={() => setShowAddWebhook(!showAddWebhook)}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold"
+              style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+            >
+              <Plus size={12} /> Add
+            </button>
+          </div>
+          <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.04 260)" }}>
+            Fire a POST request to your URL whenever a new contact is created. Use this to push contacts into a CRM, Slack, or Google Sheets.
+          </p>
+          {showAddWebhook && (
+            <div className="rounded-xl p-4 mb-4 space-y-3" style={{ background: "oklch(0.97 0.01 260)" }}>
+              <input
+                type="text"
+                value={newWebhookLabel}
+                onChange={(e) => setNewWebhookLabel(e.target.value)}
+                placeholder="Label (e.g. Zapier CRM)"
+                className="w-full px-3 py-2 rounded-xl text-xs outline-none"
+                style={{ border: "1.5px solid oklch(0.88 0.04 260)", background: "white" }}
+              />
+              <input
+                type="url"
+                value={newWebhookUrl}
+                onChange={(e) => setNewWebhookUrl(e.target.value)}
+                placeholder="https://hooks.zapier.com/..."
+                className="w-full px-3 py-2 rounded-xl text-xs outline-none"
+                style={{ border: "1.5px solid oklch(0.88 0.04 260)", background: "white" }}
+              />
+              <input
+                type="text"
+                value={newWebhookSecret}
+                onChange={(e) => setNewWebhookSecret(e.target.value)}
+                placeholder="Signing secret (optional — HMAC-SHA256)"
+                className="w-full px-3 py-2 rounded-xl text-xs outline-none"
+                style={{ border: "1.5px solid oklch(0.88 0.04 260)", background: "white" }}
+              />
+              <div className="flex gap-2 justify-end">
+                <button onClick={() => setShowAddWebhook(false)} className="px-3 py-1.5 rounded-xl text-xs font-bold" style={{ background: "oklch(0.94 0.01 260)", color: "oklch(0.40 0.04 260)" }}>Cancel</button>
+                <button
+                  disabled={!newWebhookUrl.trim() || createWebhook.isPending}
+                  onClick={() => createWebhook.mutate({ url: newWebhookUrl.trim(), label: newWebhookLabel.trim() || "My Webhook", secret: newWebhookSecret.trim() || undefined })}
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1"
+                  style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                >
+                  {createWebhook.isPending ? <Loader2 size={12} className="animate-spin" /> : <Plus size={12} />} Save
+                </button>
+              </div>
+            </div>
+          )}
+          {(!webhookList || webhookList.length === 0) && !showAddWebhook && (
+            <p className="text-xs text-center py-4" style={{ color: "oklch(0.65 0.04 260)" }}>No webhooks yet. Click Add to create one.</p>
+          )}
+          <div className="space-y-2">
+            {(webhookList ?? []).map((wh) => (
+              <div key={wh.id} className="rounded-xl p-3" style={{ background: "oklch(0.97 0.01 260)" }}>
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold truncate" style={{ color: "oklch(0.22 0.09 260)" }}>{wh.label}</p>
+                    <p className="text-xs truncate" style={{ color: "oklch(0.55 0.04 260)" }}>{wh.url}</p>
+                    {wh.lastFiredAt && (
+                      <p className="text-xs mt-0.5" style={{ color: wh.lastStatus && wh.lastStatus >= 200 && wh.lastStatus < 300 ? "oklch(0.50 0.15 145)" : "oklch(0.55 0.15 25)" }}>
+                        Last: HTTP {wh.lastStatus} · {new Date(wh.lastFiredAt).toLocaleString()}
+                      </p>
+                    )}
+                  </div>
+                  <div className="flex gap-1 shrink-0">
+                    <button
+                      onClick={() => testWebhook.mutate({ url: wh.url })}
+                      disabled={testWebhook.isPending}
+                      className="px-2 py-1 rounded-lg text-xs font-bold"
+                      style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.30 0.08 260)" }}
+                    >
+                      Test
+                    </button>
+                    <button
+                      onClick={() => { if (confirm(`Delete webhook "${wh.label}"?`)) deleteWebhook.mutate({ id: wh.id }); }}
+                      className="p-1.5 rounded-lg"
+                      style={{ background: "oklch(0.96 0.01 25)", color: "oklch(0.55 0.15 25)" }}
+                    >
+                      <Trash2 size={12} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
-        {/* ── Send Feedback ───────────────────────────────────────────────────────────────── */}
-        <SendFeedbackSection />        {/* ── Admin: OAuth & Auth Integrations ────────────────────────────── */}
+        <SendFeedbackSection />
+        {/* ── Admin: OAuth & Auth Integrations ────────────────────────────── */}
         {user?.role === "admin" && (
           <div className="bg-white rounded-2xl p-5 shadow-sm">
             <div className="flex items-center gap-2 mb-4">

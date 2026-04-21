@@ -1,4 +1,4 @@
-import { bigint, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { bigint, boolean, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
   id: int("id").autoincrement().primaryKey(),
@@ -367,3 +367,55 @@ export const apiKeys = mysqlTable("api_keys", {
 });
 export type ApiKey = typeof apiKeys.$inferSelect;
 export type InsertApiKey = typeof apiKeys.$inferInsert;
+
+/**
+ * API import events — log of each contact pushed via the public REST API.
+ * Used to show the "Recent Imports" feed in the API Keys settings card.
+ */
+export const apiImportEvents = mysqlTable("api_import_events", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  apiKeyId: int("apiKeyId"), // null if key was deleted
+  keyLabel: varchar("keyLabel", { length: 100 }).notNull().default("API Key"),
+  contactId: int("contactId"), // null if contact was deleted
+  email: varchar("email", { length: 320 }).notNull(),
+  created: boolean("created").notNull().default(true), // true = new contact, false = updated
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+});
+export type ApiImportEvent = typeof apiImportEvents.$inferSelect;
+export type InsertApiImportEvent = typeof apiImportEvents.$inferInsert;
+
+/**
+ * Outbound webhook configurations — per-user webhook URLs fired on contact events.
+ */
+export const webhookConfigs = mysqlTable("webhook_configs", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  url: text("url").notNull(),
+  secret: varchar("secret", { length: 64 }), // HMAC-SHA256 signing secret (optional)
+  events: varchar("events", { length: 500 }).notNull().default("contact.created"), // comma-separated event names
+  active: boolean("active").notNull().default(true),
+  label: varchar("label", { length: 100 }).notNull().default("Webhook"),
+  lastFiredAt: bigint("lastFiredAt", { mode: "number" }),
+  lastStatus: int("lastStatus"), // HTTP status of last delivery
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+});
+export type WebhookConfig = typeof webhookConfigs.$inferSelect;
+export type InsertWebhookConfig = typeof webhookConfigs.$inferInsert;
+
+/**
+ * WooCommerce pending imports — holds WooCommerce customers fetched but not yet imported.
+ * Cleared when the user manually imports or when the auto-import scheduler runs.
+ */
+export const wooPendingImports = mysqlTable("woo_pending_imports", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  email: varchar("email", { length: 320 }).notNull(),
+  name: varchar("name", { length: 255 }),
+  phone: varchar("phone", { length: 30 }),
+  orderId: varchar("orderId", { length: 64 }),
+  orderDate: bigint("orderDate", { mode: "number" }), // Unix ms of WooCommerce order date
+  fetchedAt: bigint("fetchedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+});
+export type WooPendingImport = typeof wooPendingImports.$inferSelect;
+export type InsertWooPendingImport = typeof wooPendingImports.$inferInsert;

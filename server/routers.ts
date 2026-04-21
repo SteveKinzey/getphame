@@ -15,6 +15,10 @@ import {
   generateApiKey,
   listApiKeys,
   revokeApiKey,
+  getRecentApiImports,
+  getWebhookConfigs,
+  createWebhookConfig,
+  deleteWebhookConfig,
 } from "./db";
 
 import { sendMailViaSmtp } from "./smtp";
@@ -26,6 +30,7 @@ import {
   getWooCredentials,
   upsertWooCredentials,
   syncWooOrders,
+  fetchWooOrders,
   getPendingWooCustomers,
   getAllWooCustomers,
   markWooCustomersSent,
@@ -545,21 +550,25 @@ export const appRouter = router({
     sync: protectedProcedure
       .input(z.object({ days: z.number().int().min(1).max(90).default(30) }))
       .mutation(async ({ ctx, input }) => {
-        const result = await syncWooOrders(ctx.user.id, input.days);
+        // Fetch orders and stage them in woo_pending_imports (hold-until-import logic)
+        const creds = await getWooCredentials(ctx.user.id);
+        if (!creds) throw new TRPCError({ code: "BAD_REQUEST", message: "WooCommerce credentials not configured." });
+        const orders = await fetchWooOrders(creds.storeUrl, creds.consumerKey, creds.consumerSecret, input.days);
+        const { stageWooOrders } = await import("./wooImportScheduler");
+        const staged = await stageWooOrders(ctx.user.id, orders);
         // Write a sync log entry
         const db = await getDb();
         if (db) {
-          const creds = await getWooCredentials(ctx.user.id);
           await db.insert(wooSyncLogs).values({
             userId: ctx.user.id,
             syncedAt: Date.now(),
             daysWindow: input.days,
-            added: result.added,
-            total: result.total,
-            storeUrl: creds?.storeUrl ?? null,
+            added: staged.staged,
+            total: orders.length,
+            storeUrl: creds.storeUrl,
           });
         }
-        return result;
+        return { added: staged.staged, total: orders.length, staged: staged.staged, skipped: staged.skipped };
       }),
 
     /** Return the last 20 sync log entries for the current user */
@@ -690,6 +699,22 @@ export const appRouter = router({
         return { sent: sentIds.length, errors, sentRequests };
       }),
 
+    /** Count pending WooCommerce imports waiting for user action */
+    pendingCount: protectedProcedure.query(async ({ ctx }) => {
+      const { getPendingWooImportCount } = await import("./wooImportScheduler");
+      return { count: await getPendingWooImportCount(ctx.user.id) };
+    }),
+    /** Import all pending WooCommerce orders now */
+    importPending: protectedProcedure.mutation(async ({ ctx }) => {
+      const { importPendingWooOrders } = await import("./wooImportScheduler");
+      return importPendingWooOrders(ctx.user.id);
+    }),
+    /** Dismiss all pending WooCommerce orders without importing */
+    dismissPending: protectedProcedure.mutation(async ({ ctx }) => {
+      const { dismissPendingWooOrders } = await import("./wooImportScheduler");
+      await dismissPendingWooOrders(ctx.user.id);
+      return { ok: true };
+    }),
     /**
      * Return send history for a specific WooCommerce customer — all customer_requests rows
      * linked to this customer's email address, ordered newest first.
@@ -1932,6 +1957,67 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         await revokeApiKey(ctx.user.id, input.id);
         return { success: true };
+      }),
+    /** Get recent API import events */
+    recentImports: protectedProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(50).default(10) }))
+      .query(async ({ ctx, input }) => {
+        return getRecentApiImports(ctx.user.id, input.limit);
+      }),
+  }),
+
+  /** Outbound webhooks — fire on contact.created events */
+  webhook: router({
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return getWebhookConfigs(ctx.user.id);
+    }),
+    create: protectedProcedure
+      .input(z.object({
+        url: z.string().url().max(2048),
+        label: z.string().min(1).max(100).default("My Webhook"),
+        secret: z.string().max(64).optional(),
+        events: z.string().max(500).default("contact.created"),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const existing = await getWebhookConfigs(ctx.user.id);
+        if (existing.length >= 10) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Maximum 10 webhooks allowed." });
+        }
+        const id = await createWebhookConfig({
+          userId: ctx.user.id,
+          url: input.url,
+          label: input.label,
+          secret: input.secret,
+          events: input.events,
+        });
+        return { success: true, id };
+      }),
+    delete: protectedProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        await deleteWebhookConfig(ctx.user.id, input.id);
+        return { success: true };
+      }),
+    /** Send a test ping to a webhook URL */
+    test: protectedProcedure
+      .input(z.object({ url: z.string().url() }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          const payload = JSON.stringify({
+            event: "test",
+            timestamp: Date.now(),
+            data: { message: "ReviewLink webhook test ping", userId: ctx.user.id },
+          });
+          const res = await fetch(input.url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", "X-ReviewLink-Event": "test" },
+            body: payload,
+            signal: AbortSignal.timeout(8000),
+          });
+          return { success: res.ok, status: res.status };
+        } catch (err: any) {
+          return { success: false, status: 0, error: err.message };
+        }
       }),
   }),
 

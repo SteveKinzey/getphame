@@ -10,8 +10,34 @@
  */
 
 import { Router, Request, Response } from "express";
-import { getUserByApiKey } from "./db";
+import { getUserByApiKey, logApiImport, getWebhookConfigs, updateWebhookStatus } from "./db";
 import { upsertApiContact } from "./contacts";
+import { listApiKeys } from "./db";
+import { createHash } from "crypto";
+
+/** Fire outbound webhooks for a user on a given event. Fire-and-forget. */
+async function fireWebhooks(userId: number, event: string, data: object): Promise<void> {
+  try {
+    const configs = await getWebhookConfigs(userId);
+    const active = configs.filter((c) => c.active && c.events.split(",").map(e => e.trim()).includes(event));
+    for (const cfg of active) {
+      const payload = JSON.stringify({ event, timestamp: Date.now(), data });
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        "X-ReviewLink-Event": event,
+      };
+      if (cfg.secret) {
+        const sig = createHash("sha256").update(cfg.secret + payload).digest("hex");
+        headers["X-ReviewLink-Signature"] = `sha256=${sig}`;
+      }
+      fetch(cfg.url, { method: "POST", headers, body: payload, signal: AbortSignal.timeout(8000) })
+        .then((r) => updateWebhookStatus(cfg.id, r.status))
+        .catch(() => updateWebhookStatus(cfg.id, 0));
+    }
+  } catch (err) {
+    console.warn("[Webhook] Fire error:", err);
+  }
+}
 
 // Simple in-memory rate limiter: { keyHash -> { count, resetAt } }
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -91,6 +117,20 @@ export function registerPublicApiRoutes(app: Router) {
     }
 
     // 5. Upsert the contact (deduped by email per user)
+    // Also look up the API key id and label for logging
+    let apiKeyId: number | null = null;
+    let keyLabel = "API Key";
+    try {
+      const keys = await listApiKeys(userId);
+      // Match by checking lastUsedAt — the key was just updated by getUserByApiKey
+      // We can't match exactly, so just use the most-recently-used key
+      const sorted = keys.sort((a, b) => (b.lastUsedAt ?? 0) - (a.lastUsedAt ?? 0));
+      if (sorted.length > 0) {
+        apiKeyId = sorted[0].id;
+        keyLabel = sorted[0].label;
+      }
+    } catch { /* non-fatal */ }
+
     try {
       const result = await upsertApiContact(userId, {
         name: name.trim().slice(0, 255),
@@ -99,6 +139,26 @@ export function registerPublicApiRoutes(app: Router) {
         notes: notes?.trim().slice(0, 2000) ?? undefined,
         tags: tags ?? undefined,
       });
+
+      // Log the import event (fire-and-forget)
+      logApiImport({
+        userId,
+        apiKeyId,
+        keyLabel,
+        contactId: result.id,
+        email: email.trim().toLowerCase().slice(0, 320),
+        created: result.created,
+      }).catch(() => {});
+
+      // Fire webhooks for new contacts (fire-and-forget)
+      if (result.created) {
+        fireWebhooks(userId, "contact.created", {
+          contactId: result.id,
+          email: email.trim().toLowerCase(),
+          name: name.trim(),
+          source: "api",
+        }).catch(() => {});
+      }
 
       return res.json({
         success: true,

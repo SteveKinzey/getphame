@@ -645,22 +645,59 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
           <ShoppingCart size={14} className="text-white" />
           <p className="text-sm font-bold text-white">Option C — Sync from WooCommerce</p>
         </div>
-        <div className="px-4 py-3 space-y-2 bg-white">
-          {[
-            { step: "1", desc: "Go to Settings → WooCommerce and enter your store URL, consumer key, and consumer secret." },
-            { step: "2", desc: "To generate API keys: in WordPress go to WooCommerce → Settings → Advanced → REST API → Add Key. Set permissions to Read." },
-            { step: "3", desc: "Once connected, open Saved Contacts and tap the \"WooCommerce\" sync button. Choose how many days of orders to pull (30 / 60 / 90)." },
-          ].map((item) => (
-            <div key={item.step} className="flex gap-2.5 items-start">
-              <span
-                className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5"
-                style={{ background: "oklch(0.93 0.04 200)", color: "oklch(0.30 0.10 200)" }}
-              >
-                {item.step}
-              </span>
-              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>{item.desc}</p>
+        <div className="px-4 py-3 space-y-3 bg-white">
+          {/* Step 1: Generate API keys */}
+          <div className="flex gap-2.5 items-start">
+            <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5" style={{ background: "oklch(0.93 0.04 200)", color: "oklch(0.30 0.10 200)" }}>1</span>
+            <div>
+              <p className="text-xs font-semibold mb-0.5" style={{ color: "oklch(0.22 0.09 260)" }}>Generate WooCommerce API keys</p>
+              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>In your WordPress admin, go to <strong>WooCommerce → Settings → Advanced → REST API</strong> and click <strong>Add Key</strong>. Give it a description (e.g. "ReviewLink"), set the User to your admin account, and set Permissions to <strong>Read</strong>. Click <strong>Generate API Key</strong>.</p>
+              <p className="text-xs mt-1 px-2 py-1 rounded" style={{ background: "oklch(0.97 0.02 200)", color: "oklch(0.35 0.08 200)" }}>⚠️ Copy the Consumer Key and Consumer Secret immediately — they are only shown once.</p>
             </div>
-          ))}
+          </div>
+          {/* Step 2: Connect in Settings */}
+          <div className="flex gap-2.5 items-start">
+            <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5" style={{ background: "oklch(0.93 0.04 200)", color: "oklch(0.30 0.10 200)" }}>2</span>
+            <div>
+              <p className="text-xs font-semibold mb-0.5" style={{ color: "oklch(0.22 0.09 260)" }}>Connect your store in Settings</p>
+              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>Open <strong>Settings → WooCommerce</strong> and enter your <strong>Store URL</strong> (e.g. <code className="text-xs px-1 py-0.5 rounded" style={{ background: "oklch(0.95 0.01 260)" }}>https://yourstore.com</code>), the <strong>Consumer Key</strong>, and the <strong>Consumer Secret</strong>. Tap <strong>Save &amp; Connect</strong>.</p>
+            </div>
+          </div>
+          {/* Step 3: Sync orders */}
+          <div className="flex gap-2.5 items-start">
+            <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5" style={{ background: "oklch(0.93 0.04 200)", color: "oklch(0.30 0.10 200)" }}>3</span>
+            <div>
+              <p className="text-xs font-semibold mb-0.5" style={{ color: "oklch(0.22 0.09 260)" }}>Sync orders</p>
+              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>In <strong>Settings → WooCommerce</strong>, tap <strong>Sync Orders</strong> and choose how many days of completed orders to pull (30 / 60 / 90 days). Orders are held as <em>pending imports</em> — they won't appear in your contacts list until you review and confirm them.</p>
+            </div>
+          </div>
+          {/* Step 4: Review and import */}
+          <div className="flex gap-2.5 items-start">
+            <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5" style={{ background: "oklch(0.93 0.04 200)", color: "oklch(0.30 0.10 200)" }}>4</span>
+            <div>
+              <p className="text-xs font-semibold mb-0.5" style={{ color: "oklch(0.22 0.09 260)" }}>Review and import (or let it auto-import)</p>
+              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>After syncing, a <strong>Pending Imports</strong> banner appears in Settings. Tap <strong>Import Now</strong> to immediately move customers into your contacts list, or tap <strong>Dismiss</strong> to discard them. If you take no action, any pending orders older than <strong>7 days</strong> are automatically imported every <strong>Monday at 03:00 GMT</strong>.</p>
+            </div>
+          </div>
+          {/* Step 5: Send review requests */}
+          <div className="flex gap-2.5 items-start">
+            <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5" style={{ background: "oklch(0.93 0.04 200)", color: "oklch(0.30 0.10 200)" }}>5</span>
+            <div>
+              <p className="text-xs font-semibold mb-0.5" style={{ color: "oklch(0.22 0.09 260)" }}>Send review requests</p>
+              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>Once imported, customers appear in the <strong>WooCommerce</strong> tab on the Saved Contacts page. Select the ones you want to reach and tap <strong>Send Review Request</strong>. Each customer can only be sent one request (the button is disabled after sending).</p>
+            </div>
+          </div>
+          {/* Troubleshooting note */}
+          <div className="rounded-lg px-3 py-2" style={{ background: "oklch(0.97 0.02 100)", border: "1px solid oklch(0.90 0.04 100)" }}>
+            <p className="text-xs font-semibold mb-0.5" style={{ color: "oklch(0.35 0.08 100)" }}>Troubleshooting tips</p>
+            <ul className="text-xs space-y-0.5 list-disc list-inside" style={{ color: "oklch(0.45 0.04 260)" }}>
+              <li>Store URL must include <code className="text-xs">https://</code> and no trailing slash</li>
+              <li>If you get a 401 error, regenerate your API keys — they may have expired</li>
+              <li>If your store uses a subdirectory (e.g. <code className="text-xs">/shop</code>), include it in the URL</li>
+              <li>Ensure the REST API is not blocked by a security plugin (e.g. Wordfence, iThemes Security)</li>
+              <li>Only orders with status <strong>Completed</strong> are synced</li>
+            </ul>
+          </div>
         </div>
       </div>
 
