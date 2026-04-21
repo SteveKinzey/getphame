@@ -1233,7 +1233,10 @@ export default function SettingsPage() {
                 const isYahoo = emailDomain === 'yahoo.com' || emailDomain === 'yahoo.co.uk' || emailDomain === 'ymail.com' || smtpHost === 'smtp.mail.yahoo.com';
                 const isZoho = emailDomain === 'zoho.com' || emailDomain === 'zohomail.com' || smtpHost === 'smtp.zoho.com';
                 const isIcloud = emailDomain === 'icloud.com' || emailDomain === 'me.com' || smtpHost === 'smtp.mail.me.com';
-                const isKnownProvider = isGmail || isGoogleWorkspace || isOutlook || isYahoo || isZoho || isIcloud;
+                const isAol = emailDomain === 'aol.com' || emailDomain === 'aim.com' || smtpHost === 'smtp.aol.com';
+                const isProtonMail = emailDomain === 'proton.me' || emailDomain === 'protonmail.com' || emailDomain === 'pm.me' || smtpHost === 'smtp.protonmail.ch';
+                const isFastmail = emailDomain === 'fastmail.com' || emailDomain === 'fastmail.fm' || emailDomain === 'fastmail.org' || smtpHost === 'smtp.fastmail.com';
+                const isKnownProvider = isGmail || isGoogleWorkspace || isOutlook || isYahoo || isZoho || isIcloud || isAol || isProtonMail || isFastmail;
                 const isCustom = emailDomain.length > 0 && !isKnownProvider;
 
                 // Smart label
@@ -1249,6 +1252,12 @@ export default function SettingsPage() {
                   ? 'Zoho Mail Password *'
                   : isIcloud
                   ? 'Apple App-Specific Password *'
+                  : isAol
+                  ? 'AOL App Password *'
+                  : isProtonMail
+                  ? 'ProtonMail SMTP Password *'
+                  : isFastmail
+                  ? 'Fastmail App Password *'
                   : 'Email Password *';
 
                 // Smart placeholder
@@ -1262,7 +1271,7 @@ export default function SettingsPage() {
 
                 const showGuide = showPasswordGuide;
                 const setShowGuide = setShowPasswordGuide;
-                const hasGuide = isGmail || isGoogleWorkspace || isOutlook || isYahoo || isZoho || isIcloud;
+                const hasGuide = isGmail || isGoogleWorkspace || isOutlook || isYahoo || isZoho || isIcloud || isAol || isProtonMail || isFastmail;
 
                 return (
                   <div>
@@ -1354,6 +1363,51 @@ export default function SettingsPage() {
                       </div>
                     )}
 
+                    {/* AOL guide */}
+                    {showGuide && isAol && (
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
+                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>AOL Mail App Password — 4 steps</p>
+                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
+                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>account.aol.com</span> → Security</li>
+                          <li>Click <span className="font-bold">Generate app password</span></li>
+                          <li>Select <span className="font-bold">Other app</span>, name it <span className="font-bold">ReviewLink</span></li>
+                          <li>Copy and paste the password here — do <span className="font-bold">not</span> use your regular AOL password</li>
+                        </ol>
+                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>AOL requires 2-step verification to be enabled before generating app passwords.</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                      </div>
+                    )}
+
+                    {/* ProtonMail guide */}
+                    {showGuide && isProtonMail && (
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
+                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>ProtonMail — SMTP Bridge Password</p>
+                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
+                          <li>Download and install <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>Proton Mail Bridge</span> from proton.me/mail/bridge</li>
+                          <li>Sign in to Bridge with your Proton account</li>
+                          <li>In Bridge, click your account → copy the <span className="font-bold">SMTP password</span> shown</li>
+                          <li>Paste that SMTP password here — <span className="font-bold">not</span> your regular Proton login password</li>
+                        </ol>
+                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>ProtonMail Bridge must be running on your computer for SMTP to work. Use port 1025 (localhost) or 587 via Bridge.</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                      </div>
+                    )}
+
+                    {/* Fastmail guide */}
+                    {showGuide && isFastmail && (
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
+                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Fastmail App Password — 4 steps</p>
+                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
+                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>app.fastmail.com</span> → Settings → Privacy & Security</li>
+                          <li>Scroll to <span className="font-bold">Third-party apps</span> → click <span className="font-bold">New app password</span></li>
+                          <li>Name it <span className="font-bold">ReviewLink</span>, set access to <span className="font-bold">Mail (SMTP)</span></li>
+                          <li>Copy and paste the generated password here</li>
+                        </ol>
+                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>Fastmail app passwords are provider-specific — do not use your regular Fastmail login password.</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                      </div>
+                    )}
+
                     {/* iCloud guide */}
                     {showGuide && isIcloud && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
@@ -1402,6 +1456,21 @@ export default function SettingsPage() {
                     {isZoho && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
                         Enable SMTP access in Zoho first, then use your regular Zoho password. Tap <span className="font-bold">? How to get it</span> above.
+                      </p>
+                    )}
+                    {isAol && !smtpStatus?.connected && !showGuide && (
+                      <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
+                        Not your regular AOL password — use an <span className="font-bold">App Password</span>. Tap <span className="font-bold">? How to get it</span> above.
+                      </p>
+                    )}
+                    {isProtonMail && !smtpStatus?.connected && !showGuide && (
+                      <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
+                        ProtonMail requires the <span className="font-bold">Proton Bridge</span> app — use its SMTP password, not your Proton login. Tap <span className="font-bold">? How to get it</span> above.
+                      </p>
+                    )}
+                    {isFastmail && !smtpStatus?.connected && !showGuide && (
+                      <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
+                        Not your regular Fastmail password — use an <span className="font-bold">App Password</span>. Tap <span className="font-bold">? How to get it</span> above.
                       </p>
                     )}
 

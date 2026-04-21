@@ -672,3 +672,9 @@
 - [x] Add gold "Preview Email" button in Settings → Email Connection section (next to Resend Email)
 - [x] Build preview modal with iframe rendering the full email HTML, navy header, sender/to/subject rows
 - [x] Show dummy customer name "Alex Johnson" and active platform link in preview
+
+## SMTP Provider Expansion — AOL, ProtonMail, Fastmail
+- [x] Add AOL Mail (aol.com, aim.com) App Password detection + 4-step inline guide
+- [x] Add ProtonMail (proton.me, protonmail.com, pm.me) SMTP Bridge detection + inline guide
+- [x] Add Fastmail (fastmail.com, fastmail.fm, fastmail.org) App Password detection + 4-step inline guide
+- [x] Update smtp-email-connect skill references/provider-guides.md with AOL, ProtonMail, Fastmail guide cards
