@@ -850,3 +850,9 @@
 - [x] Churn survey: /cancel page with one-question reason selector (too expensive / not using it / switching tools / other), stores reason in churn_surveys table, redirects to Stripe cancel flow after submission
 - [x] Admin tier override: admin.setTier mutation + tier dropdown in admin user search results to manually upgrade/downgrade any user
 - [x] UTM attribution: track /upgrade page visits from utm_source=powered_by_footer in page_events table, surface "Upsell clicks (last 30d)" KPI card on admin dashboard
+
+## New Features (Session — Apr 21 2026 #5)
+
+- [x] Wire "Cancel Subscription" in Settings → /cancel churn survey page instead of directly to Stripe portal
+- [x] Build /admin/churn page: reason breakdown bar chart + last 10 free-text responses (admin.churnSurveys data)
+- [x] Add discount offer card on /cancel churn survey when user selects "too_expensive" (promo code + stay offer before portal redirect)

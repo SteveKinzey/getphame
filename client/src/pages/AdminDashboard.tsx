@@ -381,6 +381,17 @@ export default function AdminDashboard() {
                 </span>
                 <span style={{ color: "oklch(0.80 0.18 80)" }}>→</span>
               </button>
+              <button
+                onClick={() => navigate("/admin/churn")}
+                className="w-full flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold"
+                style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+              >
+                <span className="flex items-center gap-2">
+                  <TrendingUp size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+                  Churn Surveys
+                </span>
+                <span style={{ color: "oklch(0.80 0.18 80)" }}>→</span>
+              </button>
             </div>
           </>
         )}

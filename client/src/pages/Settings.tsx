@@ -463,12 +463,11 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
                     Keep My Plan
                   </button>
                   <button
-                    onClick={() => { setShowRetention(false); createPortal.mutate({ origin: window.location.origin }); }}
-                    disabled={createPortal.isPending}
-                    className="flex-1 py-2.5 rounded-xl text-xs font-bold disabled:opacity-60"
+                    onClick={() => { setShowRetention(false); navigate('/cancel'); }}
+                    className="flex-1 py-2.5 rounded-xl text-xs font-bold"
                     style={{ background: 'oklch(0.94 0.01 260)', color: 'oklch(0.45 0.04 260)' }}
                   >
-                    {createPortal.isPending ? <Loader2 size={12} className="animate-spin mx-auto" /> : 'Continue to Billing'}
+                    Continue to Cancel
                   </button>
                 </div>
               </div>

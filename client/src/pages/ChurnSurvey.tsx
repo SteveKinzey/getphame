@@ -131,6 +131,46 @@ export default function ChurnSurveyPage() {
               ))}
             </div>
 
+            {/* Discount offer — shown only when too_expensive is selected */}
+            {selected === "too_expensive" && (
+              <div
+                className="rounded-2xl px-4 py-4 mb-4 flex flex-col gap-3"
+                style={{
+                  background: "oklch(0.22 0.09 260)",
+                  border: "2px solid oklch(0.80 0.18 80)",
+                }}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-xl">🎁</span>
+                  <p
+                    className="text-sm font-black"
+                    style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+                  >
+                    Wait — here's a deal for you
+                  </p>
+                </div>
+                <p className="text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>
+                  Stay on ReviewLink for <strong style={{ color: "oklch(0.80 0.18 80)" }}>40% off for 3 months</strong>. Use code at checkout:
+                </p>
+                <div
+                  className="rounded-xl px-4 py-2.5 text-center font-black tracking-widest text-base select-all"
+                  style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", letterSpacing: "0.15em" }}
+                >
+                  STAY40
+                </div>
+                <p className="text-xs" style={{ color: "rgba(255,255,255,0.50)" }}>
+                  Valid for 7 days. Apply at checkout when resubscribing.
+                </p>
+                <button
+                  onClick={() => navigate("/upgrade")}
+                  className="w-full rounded-xl py-3 text-sm font-black"
+                  style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+                >
+                  Claim Offer — Keep My Plan
+                </button>
+              </div>
+            )}
+
             {/* Optional comment */}
             <div className="mb-6">
               <label

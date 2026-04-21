@@ -28,6 +28,7 @@ import ImportContactsPage from "./pages/ImportContacts";
 import AdminCodesPage from "./pages/AdminCodes";
 import AdminDashboardPage from "./pages/AdminDashboard";
 import AdminSmtpStatsPage from "./pages/AdminSmtpStats";
+import AdminChurnPage from "./pages/AdminChurn";
 import ChangelogPage from "./pages/Changelog";
 import UnsubscribePage from "./pages/Unsubscribe";
 import UpgradePage from "./pages/Upgrade";
@@ -108,6 +109,7 @@ function AppShell() {
         <Route path="/admin" component={AdminDashboardPage} />
         <Route path="/admin/codes" component={AdminCodesPage} />
         <Route path="/admin/smtp-stats" component={AdminSmtpStatsPage} />
+        <Route path="/admin/churn" component={AdminChurnPage} />
         <Route path="/changelog" component={ChangelogPage} />
         <Route component={HomePage} />
       </Switch>
