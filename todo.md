@@ -1110,3 +1110,8 @@
 
 ## Session #35 — Fix Bottom Nav Overlap in Thai Mode (Apr 21 2026)
 - [x] Fix content overlapping bottom nav bar in Thai mode — bumped all under-padded pages from pb-24/pb-32 to pb-40 (Home, ChurnSurvey, AdminDashboard, AdminChurn, AdminRevenue)
+
+## Session #36 — Wire THB Stripe Price IDs (Apr 21 2026)
+- [x] Set STRIPE_PRICE_ID_THB_MONTHLY, STRIPE_PRICE_ID_THB_ANNUAL, STRIPE_PRICE_ID_THB_LIFETIME as env secrets
+- [x] createThbCheckoutSession() already reads from env vars — no code change needed
+- [x] Verified via vitest: all 4 THB price ID tests pass (price_ prefix, non-empty, distinct)
