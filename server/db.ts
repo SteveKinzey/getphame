@@ -1,8 +1,10 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, isNull, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import * as schema from "../drizzle/schema";
+import { createHash, randomBytes } from "crypto";
 import {
   InsertUser,
+  apiKeys,
   businessProfiles,
   customerRequests,
   users,
@@ -149,4 +151,53 @@ export async function getTotalRequestCount(userId: number): Promise<number> {
     .from(customerRequests)
     .where(eq(customerRequests.userId, userId));
   return Number(rows[0]?.count ?? 0);
+}
+
+// ─── API Key helpers ─────────────────────────────────────────────────────────────────────────────────
+
+/** Generate a new raw API key, store its SHA-256 hash, return the raw key (shown once). */
+export async function generateApiKey(userId: number, label: string): Promise<{ raw: string; id: number }> {
+  const db = await getDb();
+  if (!db) throw new Error("Database unavailable");
+  const raw = "rl_" + randomBytes(32).toString("hex");
+  const keyHash = createHash("sha256").update(raw).digest("hex");
+  const [result] = await db.insert(apiKeys).values({ userId, keyHash, label });
+  return { raw, id: Number((result as any).insertId) };
+}
+
+/** List active (non-revoked) API keys for a user — never returns the raw key. */
+export async function listApiKeys(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(apiKeys)
+    .where(and(eq(apiKeys.userId, userId), isNull(apiKeys.revokedAt)))
+    .orderBy(apiKeys.createdAt);
+}
+
+/** Revoke an API key by id (soft-delete). */
+export async function revokeApiKey(userId: number, keyId: number): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .update(apiKeys)
+    .set({ revokedAt: Date.now() })
+    .where(and(eq(apiKeys.id, keyId), eq(apiKeys.userId, userId)));
+}
+
+/** Look up a user by their raw API key. Returns null if not found or revoked. Updates lastUsedAt. */
+export async function getUserByApiKey(rawKey: string): Promise<number | null> {
+  const db = await getDb();
+  if (!db) return null;
+  const keyHash = createHash("sha256").update(rawKey).digest("hex");
+  const [row] = await db
+    .select()
+    .from(apiKeys)
+    .where(and(eq(apiKeys.keyHash, keyHash), isNull(apiKeys.revokedAt)))
+    .limit(1);
+  if (!row) return null;
+  // Update lastUsedAt asynchronously — don’t block the request
+  db.update(apiKeys).set({ lastUsedAt: Date.now() }).where(eq(apiKeys.id, row.id)).catch(() => {});
+  return row.userId;
 }

@@ -162,3 +162,49 @@ export async function setContactTags(userId: number, contactId: number, tags: st
     .set({ tags: JSON.stringify(tags) })
     .where(and(eq(savedContacts.userId, userId), eq(savedContacts.id, contactId)));
 }
+
+/**
+ * Upsert a single contact from the public API.
+ * If a contact with the same email already exists for this user, update notes/phone/tags.
+ * Returns the contact id and whether it was newly created.
+ */
+export async function upsertApiContact(
+  userId: number,
+  data: { name: string; email: string; phone?: string; notes?: string; tags?: string[] }
+): Promise<{ id: number; created: boolean }> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  const emailLower = data.email.toLowerCase();
+  const [existing] = await db
+    .select()
+    .from(savedContacts)
+    .where(and(eq(savedContacts.userId, userId), eq(savedContacts.email, emailLower)))
+    .limit(1);
+
+  if (existing) {
+    // Update mutable fields — don't overwrite name if already set
+    await db
+      .update(savedContacts)
+      .set({
+        phone: data.phone ?? existing.phone,
+        notes: data.notes ?? existing.notes,
+        tags: data.tags ? JSON.stringify(data.tags) : existing.tags,
+      })
+      .where(eq(savedContacts.id, existing.id));
+    return { id: existing.id, created: false };
+  }
+
+  const [result] = await db.insert(savedContacts).values({
+    userId,
+    name: data.name,
+    email: emailLower,
+    phone: data.phone ?? null,
+    notes: data.notes ?? null,
+    tags: data.tags ? JSON.stringify(data.tags) : null,
+    totalSent: 0,
+    source: "manual",
+    externalId: null,
+  });
+  return { id: Number((result as any).insertId), created: true };
+}

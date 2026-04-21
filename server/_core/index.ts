@@ -26,6 +26,7 @@ import { exchangeGmailCode, getGmailRedirectUri } from "../gmail";
 
 import { handleOpenPixel, handleClickRedirect } from "../emailTracking";
 import { sendUpgradeReceiptEmail, sendChurnRecoveryEmail } from "../smtp";
+import { registerPublicApiRoutes } from "../publicApi";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -282,6 +283,9 @@ async function startServer() {
   // Email open pixel and click redirect (unauthenticated — must be before tRPC catch-all)
   app.get("/api/track/open/:token", handleOpenPixel);
   app.get("/api/track/click/:token", handleClickRedirect);
+
+  // Public REST API — API key authenticated (contacts import, etc.)
+  registerPublicApiRoutes(app as any);
 
   // One-click unsubscribe for re-engagement emails
   app.get("/api/reengagement/unsubscribe/:token", async (req, res) => {

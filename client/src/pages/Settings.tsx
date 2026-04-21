@@ -31,9 +31,12 @@ import {
   Send,
   BookOpen,
   Eye,
+  EyeOff,
   Smartphone,
   Info,
   Apple,
+  Key,
+  Copy,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
 
@@ -605,6 +608,26 @@ export default function SettingsPage() {
     saveWooCreds.mutate({ storeUrl: wooUrl.trim(), consumerKey: wooKey.trim(), consumerSecret: wooSecret.trim() });
   }
 
+  // ── API Keys ──────────────────────────────────────────────────────────────
+  const { data: apiKeyList, isLoading: apiKeysLoading } = trpc.apiKey.list.useQuery();
+  const [newKeyLabel, setNewKeyLabel] = useState("My API Key");
+  const [revealedKey, setRevealedKey] = useState<string | null>(null);
+  const generateKey = trpc.apiKey.generate.useMutation({
+    onSuccess: (data) => {
+      utils.apiKey.list.invalidate();
+      setRevealedKey(data.raw);
+      toast.success("API key generated! Copy it now — it won't be shown again.");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+  const revokeKey = trpc.apiKey.revoke.useMutation({
+    onSuccess: () => {
+      utils.apiKey.list.invalidate();
+      toast.success("API key revoked.");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
   // ── Review Platforms ─────────────────────────────────────────────────────
   const { data: platforms, isLoading: platformsLoading } = trpc.reviewPlatforms.list.useQuery();
   const [showAddPlatform, setShowAddPlatform] = useState(false);
@@ -665,12 +688,12 @@ export default function SettingsPage() {
   };
 
   const PLATFORM_ICONS: Record<string, string> = {
-    google: "🔍",
-    yelp: "⭐",
-    tripadvisor: "🦉",
-    bing: "🌐",
-    facebook: "👍",
-    other: "🔗",
+    google: "🔴",   // Google red circle
+    yelp: "🍔",      // Yelp red brand
+    tripadvisor: "🦉", // TripAdvisor owl
+    bing: "🔵",      // Bing blue circle
+    facebook: "🔷", // Facebook blue diamond
+    other: "🔗",    // generic link
   };
 
   const PLATFORM_PLACEHOLDERS: Record<string, string> = {
@@ -2051,11 +2074,132 @@ export default function SettingsPage() {
           <Smartphone size={14} aria-hidden="true" />
           Install App on Your Phone
         </button>
+        {/* ── API Keys ───────────────────────────────────────────────────────────────── */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center gap-2 mb-1">
+            <Key size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+            <h2 className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+              API Keys
+            </h2>
+          </div>
+          <p className="text-xs mb-4 leading-relaxed" style={{ color: "oklch(0.50 0.04 260)" }}>
+            Use an API key to import contacts from your website forms.
+            Each key is shown <strong>once</strong> at creation — copy it immediately.
+          </p>
 
-        {/* ── Send Feedback ────────────────────────────────────────────── */}
-        <SendFeedbackSection />
+          {/* Revealed key banner */}
+          {revealedKey && (
+            <div
+              className="rounded-xl p-3 mb-4 flex items-start gap-2"
+              style={{ background: "oklch(0.96 0.06 145)", border: "1.5px solid oklch(0.80 0.12 145)" }}
+            >
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.30 0.10 145)" }}>Your new API key — copy now!</p>
+                <code
+                  className="text-xs break-all select-all"
+                  style={{ color: "oklch(0.22 0.09 260)", fontFamily: "monospace" }}
+                >
+                  {revealedKey}
+                </code>
+              </div>
+              <button
+                onClick={() => { navigator.clipboard.writeText(revealedKey); toast.success("Copied!"); }}
+                className="shrink-0 p-1.5 rounded-lg"
+                style={{ background: "oklch(0.80 0.12 145)" }}
+                title="Copy to clipboard"
+              >
+                <Copy size={14} style={{ color: "oklch(0.22 0.09 260)" }} />
+              </button>
+              <button
+                onClick={() => setRevealedKey(null)}
+                className="shrink-0 p-1.5 rounded-lg"
+                style={{ background: "oklch(0.80 0.12 145)" }}
+                title="Dismiss"
+              >
+                <X size={14} style={{ color: "oklch(0.22 0.09 260)" }} />
+              </button>
+            </div>
+          )}
 
-        {/* ── Admin: OAuth & Auth Integrations ────────────────────────────── */}
+          {/* Existing keys list */}
+          {apiKeysLoading ? (
+            <div className="flex justify-center py-4">
+              <Loader2 size={20} className="animate-spin" style={{ color: "oklch(0.55 0.04 260)" }} />
+            </div>
+          ) : apiKeyList && apiKeyList.length > 0 ? (
+            <div className="space-y-2 mb-4">
+              {apiKeyList.map((k) => (
+                <div
+                  key={k.id}
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5"
+                  style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}
+                >
+                  <Key size={14} style={{ color: "oklch(0.55 0.04 260)" }} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold truncate" style={{ color: "oklch(0.22 0.09 260)" }}>{k.label}</p>
+                    <p className="text-xs" style={{ color: "oklch(0.60 0.04 260)" }}>
+                      Created {new Date(k.createdAt).toLocaleDateString()}
+                      {k.lastUsedAt ? ` · Last used ${new Date(k.lastUsedAt).toLocaleDateString()}` : " · Never used"}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => { if (confirm(`Revoke "${k.label}"? This cannot be undone.`)) revokeKey.mutate({ id: k.id }); }}
+                    className="shrink-0 p-1.5 rounded-lg"
+                    style={{ background: "oklch(0.96 0.01 260)" }}
+                    title="Revoke key"
+                  >
+                    <Trash2 size={14} style={{ color: "oklch(0.55 0.15 25)" }} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs mb-4" style={{ color: "oklch(0.65 0.04 260)" }}>No API keys yet.</p>
+          )}
+
+          {/* Generate new key */}
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={newKeyLabel}
+              onChange={(e) => setNewKeyLabel(e.target.value)}
+              placeholder="Key label (e.g. Website Form)"
+              maxLength={100}
+              className="flex-1 px-3 py-2 rounded-xl text-xs outline-none"
+              style={{ border: "1.5px solid oklch(0.88 0.04 260)", fontSize: "13px" }}
+            />
+            <button
+              disabled={generateKey.isPending || !newKeyLabel.trim()}
+              onClick={() => generateKey.mutate({ label: newKeyLabel.trim() })}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold shrink-0"
+              style={{
+                background: newKeyLabel.trim() ? "oklch(0.22 0.09 260)" : "oklch(0.80 0.04 260)",
+                color: newKeyLabel.trim() ? "oklch(0.80 0.18 80)" : "oklch(0.60 0.04 260)",
+              }}
+            >
+              {generateKey.isPending ? <Loader2 size={12} className="animate-spin" /> : <Plus size={12} />}
+              Generate
+            </button>
+          </div>
+
+          {/* Endpoint reference */}
+          <div
+            className="mt-4 rounded-xl p-3"
+            style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}
+          >
+            <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.22 0.09 260)" }}>Endpoint</p>
+            <code className="text-xs break-all" style={{ color: "oklch(0.40 0.08 260)", fontFamily: "monospace" }}>
+              POST https://reviewlink.app/api/public/contacts
+            </code>
+            <p className="text-xs mt-2" style={{ color: "oklch(0.55 0.04 260)" }}>
+              Send <code style={{ fontFamily: "monospace" }}>name</code>, <code style={{ fontFamily: "monospace" }}>email</code>, and optionally <code style={{ fontFamily: "monospace" }}>phone</code>, <code style={{ fontFamily: "monospace" }}>notes</code>, <code style={{ fontFamily: "monospace" }}>tags[]</code>.
+              Include your key as <code style={{ fontFamily: "monospace" }}>Authorization: Bearer rl_...</code>.
+            </p>
+          </div>
+        </div>
+
+        {/* ── Send Feedback ───────────────────────────────────────────────────────────────── */}
+        <SendFeedbackSection />        {/* ── Admin: OAuth & Auth Integrations ────────────────────────────── */}
         {user?.role === "admin" && (
           <div className="bg-white rounded-2xl p-5 shadow-sm">
             <div className="flex items-center gap-2 mb-4">

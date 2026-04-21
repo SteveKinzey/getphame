@@ -351,3 +351,19 @@ export const pageEvents = mysqlTable("page_events", {
 });
 export type PageEvent = typeof pageEvents.$inferSelect;
 export type InsertPageEvent = typeof pageEvents.$inferInsert;
+
+/**
+ * API keys — per-user keys for the public REST API (e.g. contacts import from website forms).
+ * The raw key is only shown once at creation time; only the SHA-256 hash is stored.
+ */
+export const apiKeys = mysqlTable("api_keys", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  keyHash: varchar("keyHash", { length: 64 }).notNull().unique(), // SHA-256 hex of the raw key
+  label: varchar("label", { length: 100 }).notNull().default("My API Key"),
+  lastUsedAt: bigint("lastUsedAt", { mode: "number" }), // Unix ms
+  revokedAt: bigint("revokedAt", { mode: "number" }), // Unix ms — null = active
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+export type ApiKey = typeof apiKeys.$inferSelect;
+export type InsertApiKey = typeof apiKeys.$inferInsert;

@@ -12,6 +12,9 @@ import {
   getMonthlyRequestCount,
   getTotalRequestCount,
   getTodaySentCount,
+  generateApiKey,
+  listApiKeys,
+  revokeApiKey,
 } from "./db";
 
 import { sendMailViaSmtp } from "./smtp";
@@ -30,7 +33,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys } from "../drizzle/schema";
 import { eq, like, or, inArray } from "drizzle-orm";
 import {
   listSavedContacts,
@@ -1903,6 +1906,32 @@ export const appRouter = router({
           offerValidUntil,
         });
         return { ok: true, offerValidUntil };
+      }),
+  }),
+
+  /** Per-user API keys for the public REST API (contacts import, etc.) */
+  apiKey: router({
+    /** List all active (non-revoked) API keys for the current user */
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return listApiKeys(ctx.user.id);
+    }),
+    /** Generate a new API key — returns the raw key ONCE */
+    generate: protectedProcedure
+      .input(z.object({ label: z.string().min(1).max(100).default("My API Key") }))
+      .mutation(async ({ ctx, input }) => {
+        // Limit to 5 active keys per user
+        const existing = await listApiKeys(ctx.user.id);
+        if (existing.length >= 5) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Maximum 5 active API keys allowed. Revoke one to create a new key." });
+        }
+        return generateApiKey(ctx.user.id, input.label);
+      }),
+    /** Revoke (soft-delete) an API key */
+    revoke: protectedProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        await revokeApiKey(ctx.user.id, input.id);
+        return { success: true };
       }),
   }),
 

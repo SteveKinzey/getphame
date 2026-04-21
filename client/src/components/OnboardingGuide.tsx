@@ -14,9 +14,11 @@
  */
 
 import { useState, useEffect } from "react";
-import { X, ChevronRight, ChevronLeft, Mail, Star, Users, Send, CheckCircle2, Rocket, Globe, Upload, CreditCard, ShoppingCart, BookOpen } from "lucide-react";
+import { X, ChevronRight, ChevronLeft, Mail, Star, Users, Send, CheckCircle2, Rocket, Globe, Upload, CreditCard, ShoppingCart, BookOpen, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
+import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
 
 const GUIDE_SEEN_KEY = "rl_guide_seen";
 
@@ -302,6 +304,32 @@ const REVIEW_PLATFORMS = [
   },
 ];
 
+function SendTestEmailButton() {
+  const { data: smtpStatus } = trpc.smtp.status.useQuery();
+  const sendWelcome = trpc.smtp.sendWelcome.useMutation({
+    onSuccess: () => toast.success("Test email sent! Check your inbox."),
+    onError: (err) => toast.error(err.message),
+  });
+  if (!smtpStatus?.connected) return null;
+  return (
+    <button
+      disabled={sendWelcome.isPending}
+      onClick={() => sendWelcome.mutate()}
+      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold"
+      style={{
+        background: "oklch(0.96 0.06 145)",
+        border: "1.5px solid oklch(0.80 0.12 145)",
+        color: "oklch(0.28 0.10 145)",
+      }}
+    >
+      {sendWelcome.isPending
+        ? <Loader2 size={15} className="animate-spin" />
+        : <Send size={15} />}
+      Send Test Email to Myself
+    </button>
+  );
+}
+
 function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
@@ -406,6 +434,7 @@ function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }
         })}
       </div>
 
+      <SendTestEmailButton />
       <Button
         onClick={() => onNavigate("/settings")}
         className="w-full font-bold"
