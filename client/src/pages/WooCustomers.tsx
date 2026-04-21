@@ -68,6 +68,13 @@ export default function WooCustomers() {
   // Bulk send confirm dialog state
   const [sendConfirmOpen, setSendConfirmOpen] = useState(false);
   const [wooPlatformId, setWooPlatformId] = useState<number | null>(null);
+  const [scheduleReminders, setScheduleReminders] = useState(false);
+
+  // Reminder scheduling mutation
+  const scheduleRemindersMutation = trpc.contacts.scheduleReminders.useMutation({
+    onSuccess: (r) => toast.success(`${r.scheduled} follow-up reminder${r.scheduled !== 1 ? "s" : ""} scheduled for 3 days from now.`),
+    onError: (e) => toast.error(`Reminder scheduling failed: ${e.message}`),
+  });
 
   const utils = trpc.useUtils();
 
@@ -155,6 +162,10 @@ export default function WooCustomers() {
         toast.success(
           `Sent ${result.sent} review request${result.sent !== 1 ? "s" : ""} successfully.`
         );
+      }
+      // Schedule follow-up reminders if checkbox was checked
+      if (scheduleReminders && result.sentRequests && result.sentRequests.length > 0) {
+        scheduleRemindersMutation.mutate({ reminders: result.sentRequests });
       }
       utils.woo.listPending.invalidate();
       utils.woo.listAll.invalidate();
@@ -311,6 +322,27 @@ export default function WooCustomers() {
             </p>
           )}
 
+          {/* Reminder toggle */}
+          <div
+            className="mt-2 flex items-start gap-3 rounded-xl px-3 py-2.5 cursor-pointer"
+            style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.03 260)" }}
+            onClick={() => setScheduleReminders((v) => !v)}
+          >
+            <Checkbox
+              id="woo-reminder-checkbox"
+              checked={scheduleReminders}
+              onCheckedChange={(v) => setScheduleReminders(Boolean(v))}
+              className="mt-0.5 shrink-0"
+            />
+            <div>
+              <label htmlFor="woo-reminder-checkbox" className="text-xs font-semibold cursor-pointer block" style={{ color: "oklch(0.22 0.09 260)" }}>
+                Schedule 3-day follow-up reminders
+              </label>
+              <p className="text-xs mt-0.5" style={{ color: "oklch(0.50 0.04 260)" }}>
+                Automatically send a reminder to any customer who hasn't responded in 3 days.
+              </p>
+            </div>
+          </div>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction

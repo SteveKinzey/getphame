@@ -56,6 +56,7 @@ import {
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
+import { Checkbox } from "@/components/ui/checkbox";
 
 type Contact = {
   id: number;
@@ -67,6 +68,7 @@ type Contact = {
   totalSent: number;
   tags: string | null;
   source: string | null;
+  optedOut?: number | null;
 };
 
 function parseTags(raw: string | null): string[] {
@@ -107,6 +109,21 @@ export default function SavedContacts() {
   const [selected, setSelected] = useState<Set<number>>(new Set());
   const [bulkConfirmOpen, setBulkConfirmOpen] = useState(false);
   const [bulkPlatformId, setBulkPlatformId] = useState<number | null>(null);
+  const [scheduleReminders, setScheduleReminders] = useState(false);
+
+  // Send history drawer state
+  const [historyContact, setHistoryContact] = useState<Contact | null>(null);
+  const [historyDrawerOpen, setHistoryDrawerOpen] = useState(false);
+  const { data: sendHistory = [], isLoading: historyLoading } = trpc.contacts.sendHistory.useQuery(
+    { contactId: historyContact?.id ?? 0 },
+    { enabled: historyDrawerOpen && !!historyContact }
+  );
+
+  // Reminder scheduling mutation
+  const scheduleRemindersMutation = trpc.contacts.scheduleReminders.useMutation({
+    onSuccess: (r) => toast.success(`${r.scheduled} follow-up reminder${r.scheduled !== 1 ? "s" : ""} scheduled for 3 days from now.`),
+    onError: (e) => toast.error(`Reminder scheduling failed: ${e.message}`),
+  });
 
   // Daily send status
   const { data: dailyStatus } = trpc.contacts.getDailyStatus.useQuery(undefined, { enabled: isAuthenticated });
@@ -233,6 +250,11 @@ export default function SavedContacts() {
       setSelected(new Set());
       setBulkConfirmOpen(false);
       if (result.sent > 0) track("bulk_send", { count: result.sent });
+
+      // Schedule follow-up reminders if checkbox was checked
+      if (scheduleReminders && result.sentRequests && result.sentRequests.length > 0) {
+        scheduleRemindersMutation.mutate({ reminders: result.sentRequests });
+      }
 
       if (result.sent > 0 && result.failed === 0) {
         toast.success(
@@ -770,6 +792,14 @@ export default function SavedContacts() {
                   {/* Actions */}
                   <div className="flex items-center gap-1 shrink-0">
                     <button
+                      onClick={() => { setHistoryContact(c); setHistoryDrawerOpen(true); }}
+                      aria-label={`View send history for ${c.name}`}
+                      title="Send history"
+                      className="p-2 rounded-lg hover:bg-blue-50 text-gray-400 hover:text-blue-500 transition-colors"
+                    >
+                      <Clock size={15} aria-hidden="true" />
+                    </button>
+                    <button
                       onClick={() => openEdit(c)}
                       aria-label={`Edit contact: ${c.name}`}
                       className="p-2 rounded-lg hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors"
@@ -787,7 +817,9 @@ export default function SavedContacts() {
                       size="sm"
                       onClick={() => setSendTarget(c)}
                       className="font-bold text-xs px-3"
-                      style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                      style={{ background: c.optedOut ? "oklch(0.70 0.02 260)" : "oklch(0.22 0.09 260)", color: "white" }}
+                      disabled={!!c.optedOut}
+                      title={c.optedOut ? "Contact has unsubscribed" : undefined}
                     >
                       <Send size={13} className="mr-1" /> Send
                     </Button>
@@ -979,6 +1011,27 @@ export default function SavedContacts() {
               </div>
             </div>
           )}
+          {/* Reminder toggle */}
+          <div
+            className="mt-2 flex items-start gap-3 rounded-xl px-3 py-2.5 cursor-pointer"
+            style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.03 260)" }}
+            onClick={() => setScheduleReminders((v) => !v)}
+          >
+            <Checkbox
+              id="bulk-reminder-checkbox"
+              checked={scheduleReminders}
+              onCheckedChange={(v) => setScheduleReminders(Boolean(v))}
+              className="mt-0.5 shrink-0"
+            />
+            <div>
+              <label htmlFor="bulk-reminder-checkbox" className="text-xs font-semibold cursor-pointer block" style={{ color: "oklch(0.22 0.09 260)" }}>
+                Schedule 3-day follow-up reminders
+              </label>
+              <p className="text-xs mt-0.5" style={{ color: "oklch(0.50 0.04 260)" }}>
+                Automatically send a reminder to any contact who hasn't responded in 3 days.
+              </p>
+            </div>
+          </div>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
@@ -1141,6 +1194,82 @@ export default function SavedContacts() {
               size="sm"
               onClick={() => { setWooSyncHistoryOpen(false); setWooHistorySearch(""); }}
               style={{ fontFamily: "'Nunito', sans-serif" }}
+            >
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* ── Send History Drawer ─────────────────────────────────────────────── */}
+      <Dialog open={historyDrawerOpen} onOpenChange={(o) => { if (!o) { setHistoryDrawerOpen(false); setHistoryContact(null); } }}>
+        <DialogContent className="max-w-sm mx-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+              <Clock size={16} aria-hidden="true" />
+              Send History
+            </DialogTitle>
+            {historyContact && (
+              <p className="text-xs mt-0.5" style={{ color: "oklch(0.50 0.04 260)" }}>
+                {historyContact.name} &middot; {historyContact.email}
+              </p>
+            )}
+          </DialogHeader>
+
+          {historyLoading ? (
+            <div className="flex justify-center py-8">
+              <Loader2 size={28} className="animate-spin" style={{ color: "oklch(0.22 0.09 260)" }} />
+            </div>
+          ) : sendHistory.length === 0 ? (
+            <div className="py-8 text-center">
+              <Mail size={32} className="mx-auto mb-3" style={{ color: "oklch(0.75 0.04 260)" }} />
+              <p className="text-sm" style={{ color: "oklch(0.50 0.04 260)" }}>No emails sent to this contact yet.</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-2 max-h-80 overflow-y-auto pr-1">
+              {sendHistory.map((row) => (
+                <div
+                  key={row.id}
+                  className="rounded-xl px-3 py-2.5 flex items-start justify-between gap-2"
+                  style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}
+                >
+                  <div className="min-w-0">
+                    <p className="text-xs font-semibold" style={{ color: "oklch(0.22 0.09 260)" }}>
+                      {row.sentAt ? format(new Date(row.sentAt), "MMM d, yyyy 'at' h:mm a") : "Unknown date"}
+                    </p>
+                    {row.platformLabel && (
+                      <p className="text-xs mt-0.5" style={{ color: "oklch(0.50 0.04 260)" }}>
+                        Platform: {row.platformLabel}
+                      </p>
+                    )}
+                  </div>
+                  <span
+                    className="shrink-0 text-xs font-bold px-2 py-0.5 rounded-full"
+                    style={{
+                      background: row.status === "followed_up"
+                        ? "oklch(0.92 0.08 145)"
+                        : row.status === "sent"
+                        ? "oklch(0.94 0.04 260)"
+                        : "oklch(0.94 0.02 260)",
+                      color: row.status === "followed_up"
+                        ? "oklch(0.35 0.12 145)"
+                        : row.status === "sent"
+                        ? "oklch(0.30 0.08 260)"
+                        : "oklch(0.40 0.04 260)",
+                    }}
+                  >
+                    {row.status === "followed_up" ? "Followed Up" : row.status === "sent" ? "Sent" : row.status === "pending" ? "Pending" : row.status}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => { setHistoryDrawerOpen(false); setHistoryContact(null); }}
             >
               Close
             </Button>

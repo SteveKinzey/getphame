@@ -688,3 +688,27 @@
 - [x] Add "Setup complete" congratulations banner to Home screen when all 4 onboarding steps are done, with dismiss button (persisted in localStorage)
 - [x] Add AOL, ProtonMail, Fastmail to the Sending Limits callout in Settings
 - [x] Invalidate contacts.getDailyStatus after each bulk send in SavedContacts and WooCustomers
+
+## Reminder Follow-up Scheduling
+- [x] Schema: add `scheduledReminders` table (id, userId, contactId, wooCustomerId, sendAt bigint, platformId, status enum sent/pending/cancelled)
+- [x] Server: contacts.scheduleReminders procedure (bulk schedule reminders for given contactIds + sendAt offset)
+- [x] Server: reminder cron job (every 5 min, pick due pending reminders, send email, mark sent)
+- [x] SavedContacts bulk-send dialog: "Send reminder in 3 days" checkbox — schedules reminders for all selected contacts on confirm
+- [x] WooCustomers bulk-send dialog: same "Send reminder in 3 days" checkbox
+
+## Unsubscribe / Opt-out Tracking
+- [x] Schema: add `optedOut` boolean column (default false) + `optedOutAt` bigint nullable to saved_contacts table
+- [x] Schema: add `wooOptedOut` boolean + `wooOptedOutAt` to woo_customers table
+- [x] Run db:push for schema changes
+- [x] Server: contacts.unsubscribe public procedure (validate HMAC token, mark contact opted out)
+- [x] Server: woo.unsubscribe public procedure (validate HMAC token, mark woo customer opted out)
+- [x] Server: generate signed unsubscribe URL in buildReviewRequestEmail() helper
+- [x] Server: suppress opted-out contacts/customers in bulkSend procedures
+- [x] Client: /unsubscribe page — reads token from URL, calls unsubscribe procedure, shows confirmation
+- [x] Route: register /unsubscribe in App.tsx
+
+## Send History Drawer (SavedContacts)
+- [x] Server: contacts.sendHistory procedure — return all customer_requests rows for a given contactId (date, subject, platform, status)
+- [x] SavedContacts: add history icon button to each contact row
+- [x] SavedContacts: slide-out Sheet drawer showing send history table (date, platform, status badge)
+- [x] Show "No sends yet" empty state when history is empty

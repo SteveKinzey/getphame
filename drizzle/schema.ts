@@ -124,6 +124,9 @@ export const wooCustomers = mysqlTable("woo_customers", {
   orderDate: bigint("orderDate", { mode: "number" }).notNull(), // Unix ms
   reviewRequestSentAt: bigint("reviewRequestSentAt", { mode: "number" }), // null = not yet sent
   lastStatusChangedAt: bigint("lastStatusChangedAt", { mode: "number" }), // Unix ms of last manual status change
+  // Opt-out / unsubscribe tracking
+  optedOut: int("optedOut").default(0).notNull(), // 1 = unsubscribed, suppress future sends
+  optedOutAt: bigint("optedOutAt", { mode: "number" }), // Unix ms when opted out
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
@@ -157,6 +160,9 @@ export const savedContacts = mysqlTable("saved_contacts", {
   // Source tracking — where this contact came from
   source: mysqlEnum("source", ["manual", "woocommerce", "stripe"]).default("manual").notNull(),
   externalId: varchar("externalId", { length: 128 }), // Stripe customer ID or WooCommerce order ID for dedup
+  // Opt-out / unsubscribe tracking
+  optedOut: int("optedOut").default(0).notNull(), // 1 = unsubscribed, suppress future sends
+  optedOutAt: bigint("optedOutAt", { mode: "number" }), // Unix ms when opted out
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

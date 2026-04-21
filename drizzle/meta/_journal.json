@@ -176,6 +176,13 @@
       "when": 1776729185938,
       "tag": "0024_eager_jetstream",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "5",
+      "when": 1776731244342,
+      "tag": "0025_goofy_giant_girl",
+      "breakpoints": true
     }
   ]
 }

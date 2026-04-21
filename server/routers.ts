@@ -87,6 +87,41 @@ import {
 } from "./smtp";
 
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
+import crypto from "crypto";
+
+// ── Unsubscribe token helpers ────────────────────────────────────────────────
+const UNSUB_SECRET = process.env.JWT_SECRET ?? "reviewlink-unsub-secret";
+
+/** Generate a signed unsubscribe token: base64url(contactType:id:userId:sig) */
+export function buildUnsubToken(contactType: "contact" | "woo", id: number, userId: number): string {
+  const payload = `${contactType}:${id}:${userId}`;
+  const sig = crypto.createHmac("sha256", UNSUB_SECRET).update(payload).digest("hex").slice(0, 16);
+  return Buffer.from(`${payload}:${sig}`).toString("base64url");
+}
+
+/** Verify and decode an unsubscribe token. Returns null if invalid. */
+export function verifyUnsubToken(token: string): { contactType: "contact" | "woo"; id: number; userId: number } | null {
+  try {
+    const raw = Buffer.from(token, "base64url").toString("utf8");
+    const parts = raw.split(":");
+    if (parts.length !== 4) return null;
+    const [contactType, idStr, userIdStr, sig] = parts;
+    if (contactType !== "contact" && contactType !== "woo") return null;
+    const payload = `${contactType}:${idStr}:${userIdStr}`;
+    const expected = crypto.createHmac("sha256", UNSUB_SECRET).update(payload).digest("hex").slice(0, 16);
+    if (sig !== expected) return null;
+    return { contactType: contactType as "contact" | "woo", id: parseInt(idStr, 10), userId: parseInt(userIdStr, 10) };
+  } catch {
+    return null;
+  }
+}
+
+/** Build the full unsubscribe URL for a contact or woo customer */
+export function buildUnsubUrl(contactType: "contact" | "woo", id: number, userId: number): string {
+  const token = buildUnsubToken(contactType, id, userId);
+  const base = process.env.APP_BASE_URL ?? "https://reviewlink.app";
+  return `${base}/unsubscribe?token=${token}`;
+}
 import { getGmailAuthUrl, getGmailRedirectUri, getGmailStatus, disconnectGmail } from "./gmail";
 
 /**
@@ -592,9 +627,9 @@ export const appRouter = router({
             )
           );
 
-        if (customers.length === 0) throw new Error("No eligible customers found.");
-
-        const toSend = customers;
+        // Filter out opted-out customers
+        const toSend = customers.filter((c) => !c.optedOut);
+        if (toSend.length === 0) throw new Error("No eligible customers found (all may have unsubscribed).");
 
         // Resolve review URL: use selected platform → default platform → legacy reviewLink
         let wooReviewUrl = profile.reviewLink ?? "";
@@ -610,18 +645,21 @@ export const appRouter = router({
         const subject = `${profile.businessName} would love your feedback!`;
         const sentIds: number[] = [];
         const errors: string[] = [];
+        const sentRequests: { customerRequestId: number; customerName: string; customerEmail: string }[] = [];
 
         for (const customer of toSend) {
+          const unsubUrl = buildUnsubUrl("woo", customer.id, ctx.user.id);
           const htmlBody = buildReviewRequestEmail({
             customerName: customer.customerName,
             businessName: profile.businessName,
             reviewUrl: wooReviewUrl,
             productName: customer.productName ?? null,
+            unsubscribeUrl: unsubUrl,
           });
           try {
             await sendMailViaSmtp({ userId: ctx.user.id, to: customer.customerEmail, subject, html: htmlBody });
             sentIds.push(customer.id);
-            await createCustomerRequest({
+            const wooReqId = await createCustomerRequest({
               userId: ctx.user.id,
               customerName: customer.customerName,
               customerEmail: customer.customerEmail,
@@ -629,6 +667,7 @@ export const appRouter = router({
               status: "sent",
               platformId: input.platformId ?? null,
             });
+            sentRequests.push({ customerRequestId: wooReqId, customerName: customer.customerName, customerEmail: customer.customerEmail });
           } catch (err) {
             errors.push(`${customer.customerEmail}: ${(err as Error).message}`);
           }
@@ -642,7 +681,7 @@ export const appRouter = router({
           });
         }
 
-        return { sent: sentIds.length, errors };
+        return { sent: sentIds.length, errors, sentRequests };
       }),
   }),
 
@@ -745,12 +784,13 @@ export const appRouter = router({
           if (defaultPlatform) reviewUrl = defaultPlatform.url;
         }
 
-        // Fetch all contacts for this user and filter to requested IDs
+        // Fetch all contacts for this user and filter to requested IDs (skip opted-out)
         const allContacts = await listSavedContacts(ctx.user.id);
         const contactMap = new Map(allContacts.map((c) => [c.id, c]));
-        const targets = input.contactIds
+        const targets = (input.contactIds
           .map((id) => contactMap.get(id))
-          .filter(Boolean) as typeof allContacts;
+          .filter((c): c is NonNullable<typeof c> => Boolean(c))
+          .filter((c) => !c.optedOut)) as typeof allContacts;
 
         // Daily send limit: cap the batch to the user's configured daily limit
         const dailyLimit = profile.dailySendLimit ?? 50;
@@ -780,6 +820,7 @@ export const appRouter = router({
         let sent = 0;
         let failed = 0;
         const errors: string[] = [];
+        const sentRequests: { customerRequestId: number; customerName: string; customerEmail: string }[] = [];
 
         for (const contact of toSend) {
           try {
@@ -794,6 +835,7 @@ export const appRouter = router({
                 customerName: contact.name,
                 businessName: profile.businessName,
                 reviewUrl,
+                unsubscribeUrl: buildUnsubUrl("contact", contact.id, ctx.user.id),
               });
             }
             // Create request row first to get its ID for tracking
@@ -826,6 +868,7 @@ export const appRouter = router({
                 await db.update(savedContacts).set({ lastSentAt: Date.now(), totalSent: (existing.totalSent ?? 0) + 1 }).where(and(eq(savedContacts.userId, ctx.user.id), eq(savedContacts.id, contact.id)));
               }
             }
+            sentRequests.push({ customerRequestId: bulkRequestId, customerName: contact.name, customerEmail: contact.email });
             sent++;
           } catch (err) {
             failed++;
@@ -846,7 +889,7 @@ export const appRouter = router({
         // Update monthly count
         await upsertBusinessProfile({ ...profile, monthlyCount: profile.monthlyCount + sent });
 
-        return { sent, failed, skippedDueToLimit, errors };
+        return { sent, failed, skippedDueToLimit, errors, sentRequests };
       }),
 
     /**
@@ -920,6 +963,99 @@ export const appRouter = router({
         stripeLastSyncedAt: profile?.stripeLastSyncedAt ?? null,
       };
     }),
+
+    /**
+     * Return send history for a specific contact — all customer_requests rows
+     * linked to this contact's email address, ordered newest first.
+     */
+    sendHistory: protectedProcedure
+      .input(z.object({ contactId: z.number().int() }))
+      .query(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) return [];
+        const { and: andH, eq: eqH, desc: descH } = await import("drizzle-orm");
+        // Look up the contact to get their email
+        const contacts = await db
+          .select({ email: savedContacts.email, name: savedContacts.name })
+          .from(savedContacts)
+          .where(andH(eqH(savedContacts.userId, ctx.user.id), eqH(savedContacts.id, input.contactId)));
+        if (contacts.length === 0) return [];
+        const contact = contacts[0];
+        const rows = await db
+          .select({
+            id: customerRequests.id,
+            sentAt: customerRequests.sentAt,
+            status: customerRequests.status,
+            respondedAt: customerRequests.respondedAt,
+            platformId: customerRequests.platformId,
+          })
+          .from(customerRequests)
+          .where(andH(eqH(customerRequests.userId, ctx.user.id), eqH(customerRequests.customerEmail, contact.email)))
+          .orderBy(descH(customerRequests.sentAt));
+        // Attach platform label if available
+        const platforms = await listReviewPlatforms(ctx.user.id);
+        const platformMap = new Map(platforms.map((p) => [p.id, p]));
+        return rows.map((r) => ({
+          ...r,
+          platformLabel: r.platformId ? (platformMap.get(r.platformId)?.label ?? platformMap.get(r.platformId)?.platform ?? null) : null,
+          sentAt: r.sentAt instanceof Date ? r.sentAt.toISOString() : String(r.sentAt),
+        }));
+      }),
+
+    /**
+     * Schedule 3-day follow-up reminders for a list of contacts after a bulk send.
+     * Expects the customerRequestIds returned from the bulk send (one per contact).
+     */
+    scheduleReminders: protectedProcedure
+      .input(
+        z.object({
+          reminders: z.array(
+            z.object({
+              customerRequestId: z.number().int(),
+              customerName: z.string(),
+              customerEmail: z.string().email(),
+            })
+          ).min(1).max(200),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        let scheduled = 0;
+        for (const r of input.reminders) {
+          try {
+            await scheduleFollowUp(ctx.user.id, r.customerRequestId, r.customerName, r.customerEmail);
+            scheduled++;
+          } catch {
+            // Non-fatal — skip individual failures
+          }
+        }
+        return { scheduled };
+      }),
+
+    /**
+     * Public unsubscribe — validates HMAC token and marks the contact as opted out.
+     * Called from the /unsubscribe page with the token from the email footer link.
+     */
+    unsubscribe: publicProcedure
+      .input(z.object({ token: z.string() }))
+      .mutation(async ({ input }) => {
+        const decoded = verifyUnsubToken(input.token);
+        if (!decoded) throw new TRPCError({ code: "BAD_REQUEST", message: "Invalid or expired unsubscribe link." });
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+        const { eq: eqU } = await import("drizzle-orm");
+        if (decoded.contactType === "contact") {
+          await db
+            .update(savedContacts)
+            .set({ optedOut: 1, optedOutAt: Date.now() })
+            .where(eqU(savedContacts.id, decoded.id));
+        } else {
+          await db
+            .update(wooCustomers)
+            .set({ optedOut: 1, optedOutAt: Date.now() })
+            .where(eqU(wooCustomers.id, decoded.id));
+        }
+        return { ok: true, contactType: decoded.contactType };
+      }),
   }),
 
   templates: router({

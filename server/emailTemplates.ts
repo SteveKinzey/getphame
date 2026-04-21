@@ -20,6 +20,8 @@ export interface ReviewEmailOptions {
   subject?: string;
   /** Optional product name for WooCommerce purchase context */
   productName?: string | null;
+  /** Optional signed unsubscribe URL — if provided, renders a real clickable link in the footer */
+  unsubscribeUrl?: string;
 }
 
 const NAVY = "#1a2744";
@@ -27,7 +29,7 @@ const GOLD = "#f0a500";
 
 /** Shared branded email wrapper — navy header, white body, gold CTA, CAN-SPAM footer */
 export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
-  const { customerName, businessName, reviewUrl, bodyHtml, productName } = opts;
+  const { customerName, businessName, reviewUrl, bodyHtml, productName, unsubscribeUrl } = opts;
 
   const defaultBody = productName
     ? `<p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">
@@ -44,6 +46,12 @@ export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
       </p>`;
 
   const body = bodyHtml ?? defaultBody;
+
+  const footerText = unsubscribeUrl
+    ? `You received this email because you are a customer of ${businessName}.<br/>
+       <a href="${unsubscribeUrl}" style="color:#aaa;text-decoration:underline;">Unsubscribe</a> to stop receiving these emails.`
+    : `You received this email because you are a customer of ${businessName}.<br/>
+       To stop receiving these emails, reply with &quot;unsubscribe&quot;.`;
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -92,8 +100,7 @@ export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
           <tr>
             <td style="background:#f8f9ff;padding:18px 40px;text-align:center;border-top:1px solid #e8eaf0;">
               <p style="margin:0;font-size:11px;color:#aaa;line-height:1.6;">
-                You received this email because you are a customer of ${businessName}.<br/>
-                To stop receiving these emails, reply with &quot;unsubscribe&quot;.
+                ${footerText}
               </p>
             </td>
           </tr>
@@ -108,9 +115,12 @@ export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
 
 /** Convenience: build the plain-text fallback for the same email */
 export function buildReviewRequestText(opts: ReviewEmailOptions): string {
-  const { customerName, businessName, reviewUrl, productName } = opts;
+  const { customerName, businessName, reviewUrl, productName, unsubscribeUrl } = opts;
   const context = productName
     ? `Thank you for your recent purchase of ${productName}. We hope you love it!`
     : `Thank you for choosing ${businessName}. We hope you had a great experience!`;
-  return `Hi ${customerName}!\n\n${context}\n\nCould you take 30 seconds to leave us a quick review?\n\n${reviewUrl}\n\nThank you so much!\nThe ${businessName} team\n\n---\nYou received this email because you are a customer of ${businessName}. To unsubscribe, reply with "unsubscribe".`;
+  const unsubLine = unsubscribeUrl
+    ? `To unsubscribe: ${unsubscribeUrl}`
+    : `To unsubscribe, reply with "unsubscribe".`;
+  return `Hi ${customerName}!\n\n${context}\n\nCould you take 30 seconds to leave us a quick review?\n\n${reviewUrl}\n\nThank you so much!\nThe ${businessName} team\n\n---\nYou received this email because you are a customer of ${businessName}. ${unsubLine}`;
 }

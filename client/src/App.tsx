@@ -28,6 +28,7 @@ import ImportContactsPage from "./pages/ImportContacts";
 import AdminCodesPage from "./pages/AdminCodes";
 import AdminSmtpStatsPage from "./pages/AdminSmtpStats";
 import ChangelogPage from "./pages/Changelog";
+import UnsubscribePage from "./pages/Unsubscribe";
 import UpgradePage from "./pages/Upgrade";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
@@ -64,6 +65,7 @@ function AppShell() {
   if (path === "/terms-of-service") return <TermsOfServicePage />;
   if (path === "/payment-success") return <PaymentSuccessPage />;
   if (path === "/changelog") return <ChangelogPage />;
+  if (path === "/unsubscribe") return <UnsubscribePage />;
 
   if (!user) {
     // Show the public marketing landing page at /, Onboarding at /onboarding
