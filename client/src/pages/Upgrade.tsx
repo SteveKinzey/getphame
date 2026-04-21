@@ -130,29 +130,30 @@ export default function UpgradePage() {
           <ChevronLeft size={16} />
           Back
         </button>
-        <div className="flex items-center gap-2 mb-2">
-          <Crown size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
-          <span
-            className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
-          >
-            Upgrade
-          </span>
-        </div>
-        <h1
-          className="text-3xl leading-tight"
-          style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
-        >
-          Go Pro.
-          <br />
-          <span style={{ color: "oklch(0.80 0.18 80)" }}>No Limits.</span>
-        </h1>
-      </div>
-
-      {/* Hero image */}
-      <div className="flex justify-center mb-4">
-        <div className="w-28 h-28">
-          <img src={UPGRADE_IMG} alt="Pro" className="w-full h-full object-contain" />
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <Crown size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+              <span
+                className="text-xs font-bold tracking-widest uppercase"
+                style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+              >
+                Upgrade
+              </span>
+            </div>
+            <h1
+              className="text-3xl leading-tight"
+              style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
+            >
+              Go Pro.
+              <br />
+              <span style={{ color: "oklch(0.80 0.18 80)" }}>No Limits.</span>
+            </h1>
+          </div>
+          {/* Hero image — aligned with text, uncropped */}
+          <div className="shrink-0" style={{ width: 100, height: 100 }}>
+            <img src={UPGRADE_IMG} alt="ReviewLink Pro upgrade" className="w-full h-full object-contain" />
+          </div>
         </div>
       </div>
 
