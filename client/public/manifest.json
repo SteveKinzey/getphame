@@ -1,7 +1,7 @@
 {
-  "name": "ReviewRocket",
-  "short_name": "RevRocket",
-  "description": "Send personalised review request emails and get more 5-star reviews for your business",
+  "name": "ReviewLink",
+  "short_name": "ReviewLink",
+  "description": "Get more 5-star Google reviews for your business",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0F1F4B",
