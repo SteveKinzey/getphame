@@ -320,6 +320,14 @@ export default function AdminDashboard() {
                           {u.name || "(no name)"}
                         </p>
                         <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>{u.email}</p>
+                        {u.churnReason && (
+                          <span
+                            className="inline-block text-xs font-bold rounded-full px-2 py-0.5 mt-0.5"
+                            style={{ background: "oklch(0.95 0.04 20)", color: "oklch(0.45 0.15 20)" }}
+                          >
+                            Churned: {u.churnReason.replace(/_/g, " ")}
+                          </span>
+                        )}
                       </div>
                       <div className="flex items-center gap-1.5">
                         <select

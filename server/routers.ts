@@ -31,7 +31,7 @@ import {
 } from "./woocommerce";
 import { getDb } from "./db";
 import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents } from "../drizzle/schema";
-import { eq, like, or } from "drizzle-orm";
+import { eq, like, or, inArray } from "drizzle-orm";
 import {
   listSavedContacts,
   createSavedContact,
@@ -1802,6 +1802,7 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
         const q = `%${input.query}%`;
+        // Fetch matching users
         const rows = await db
           .select({
             id: users.id,
@@ -1815,7 +1816,21 @@ export const appRouter = router({
           .leftJoin(businessProfiles, eq(users.id, businessProfiles.userId))
           .where(or(like(users.name, q), like(users.email, q)))
           .limit(20);
-        return rows;
+        // Attach most recent churn reason for each user (if any)
+        const userIds = rows.map(r => r.id);
+        let churnMap: Record<number, string> = {};
+        if (userIds.length > 0) {
+          const churnRows = await db
+            .select({ userId: churnSurveys.userId, reason: churnSurveys.reason })
+            .from(churnSurveys)
+            .where(inArray(churnSurveys.userId, userIds))
+            .orderBy(churnSurveys.createdAt);
+          // Keep the most recent reason per user
+          for (const c of churnRows) {
+            if (c.userId !== null) churnMap[c.userId] = c.reason;
+          }
+        }
+        return rows.map(r => ({ ...r, churnReason: churnMap[r.id] ?? null }));
       }),
 
     /** Manually override a user's tier — admin only */

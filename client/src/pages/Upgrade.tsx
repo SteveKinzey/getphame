@@ -3,6 +3,7 @@
 // All billing via Zoho Books invoice (Stripe processes the card inside Zoho)
 
 import { trpc } from "@/lib/trpc";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation } from "wouter";
 import {
   Crown, Check, Star, Zap, BarChart2, ChevronLeft, Infinity,
@@ -65,6 +66,7 @@ const PLANS: Record<Plan, { label: string; price: string; sub: string; badge?: s
 
 export default function UpgradePage() {
   const [, navigate] = useLocation();
+  const { user } = useAuth();
   const { data: profile } = trpc.profile.get.useQuery();
   const utils = trpc.useUtils();
   const [selectedPlan, setSelectedPlan] = useState<Plan>("annual");
@@ -131,10 +133,10 @@ export default function UpgradePage() {
   }
 
   const tier = profile?.tier;
-  const isPaid = tier === "pro" || tier === "annual" || tier === "lifetime";
-
+  const isAdmin = user?.role === "admin";
+  const isPaid = isAdmin || tier === "pro" || tier === "annual" || tier === "lifetime";
   if (isPaid) {
-    const tierLabel = tier === "lifetime" ? "Lifetime License" : tier === "annual" ? "Annual Pro" : "Monthly Pro";
+    const tierLabel = isAdmin && !tier ? "Admin Access" : tier === "lifetime" ? "Lifetime License" : tier === "annual" ? "Annual Pro" : "Monthly Pro";
     return (
       <div
         className="min-h-screen flex flex-col items-center justify-center px-6 pb-40"

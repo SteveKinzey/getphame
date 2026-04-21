@@ -856,3 +856,10 @@
 - [x] Wire "Cancel Subscription" in Settings → /cancel churn survey page instead of directly to Stripe portal
 - [x] Build /admin/churn page: reason breakdown bar chart + last 10 free-text responses (admin.churnSurveys data)
 - [x] Add discount offer card on /cancel churn survey when user selects "too_expensive" (promo code + stay offer before portal redirect)
+
+## New Features (Session — Apr 21 2026 #6)
+
+- [x] Verify owner account has lifetime tier in DB (admin auto-gets full product access)
+- [x] Create STAY40 Stripe coupon (40% off 3 months) via Stripe API + surface it on admin dashboard
+- [x] Add STAY40 promo code to sendChurnRecoveryEmail body so cancelled users see the offer
+- [x] Show churn reason badge in admin user search results when user has a churn survey entry

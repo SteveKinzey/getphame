@@ -49,6 +49,12 @@ export const paidProcedure = t.procedure.use(
     });
 
     const tier = profile?.tier ?? "free";
+
+    // Admin (owner) always bypasses the paywall — full product access regardless of tier
+    if (ctx.user.role === "admin") {
+      return next({ ctx: { ...ctx, user: ctx.user } });
+    }
+
     const isPaid = tier === "pro" || tier === "annual" || tier === "lifetime";
 
     // For monthly/annual: also check expiry

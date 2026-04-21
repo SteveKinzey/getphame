@@ -662,6 +662,24 @@ export async function sendChurnRecoveryEmail(opts: {
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
               <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">Your ReviewLink subscription has been cancelled. Your account has been moved back to the free plan.</p>
               <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">If you cancelled by mistake, or if there is anything we can do to help, just reply to this email.</p>
+              <!-- Discount offer block -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;background:#1a2744;border-radius:12px;overflow:hidden;">
+                <tr>
+                  <td style="padding:24px 28px;">
+                    <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#f0a500;">Special offer — just for you</p>
+                    <p style="margin:0 0 14px;font-size:16px;font-weight:700;color:#ffffff;line-height:1.4;">Come back for <span style="color:#f0a500;">40% off for 3 months</span></p>
+                    <p style="margin:0 0 14px;font-size:14px;color:rgba(255,255,255,0.75);">Use this code at checkout:</p>
+                    <table cellpadding="0" cellspacing="0" style="margin:0 0 14px;">
+                      <tr>
+                        <td style="background:#f0a500;border-radius:8px;padding:10px 24px;text-align:center;">
+                          <span style="color:#1a2744;font-size:18px;font-weight:900;letter-spacing:4px;">STAY40</span>
+                        </td>
+                      </tr>
+                    </table>
+                    <p style="margin:0;font-size:12px;color:rgba(255,255,255,0.45);">Valid for 7 days. Apply at checkout when resubscribing.</p>
+                  </td>
+                </tr>
+              </table>
               <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">Whenever you are ready to come back, your account is waiting:</p>
               <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
                 <tr>
