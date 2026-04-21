@@ -114,6 +114,16 @@
   --fw-medium:    500;
   --fw-normal:    400;  /* rr-b1, rr-b2 */
 
+  /* ── Spacing tokens ────────────────────────────────────────────────── */
+  /* Use var(--sp-xs) etc. instead of hardcoding px/rem values */
+  --sp-xs:  0.25rem;   /* 4px  — tight gaps, icon padding */
+  --sp-sm:  0.5rem;    /* 8px  — small gaps, compact rows */
+  --sp-md:  1rem;      /* 16px — standard gap, card padding */
+  --sp-lg:  1.5rem;    /* 24px — section gap, panel padding */
+  --sp-xl:  2rem;      /* 32px — large section gap */
+  --sp-2xl: 3rem;      /* 48px — hero spacing */
+  --sp-3xl: 4rem;      /* 64px — page-level vertical rhythm */
+
   /* ReviewLink Brand Colors */
   --navy: oklch(0.22 0.09 260);
   --navy-light: oklch(0.30 0.08 260);
@@ -428,7 +438,6 @@
  * Brand colors (navy, gold) remain unchanged — they are used as accents.
  * Uncomment and adjust when adding a user-switchable dark mode.
  */
-/*
 .dark {
   --text-on-dark-primary:   oklch(0.15 0.04 260);
   --text-on-dark-secondary: oklch(0.30 0.05 260);
@@ -446,4 +455,3 @@
   --border:      oklch(0.28 0.04 260);
   --input:       oklch(0.28 0.04 260);
 }
-*/

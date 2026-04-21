@@ -41,8 +41,11 @@ import {
   Download,
   Bell,
   ShieldCheck,
+  Moon,
+  Sun,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
+import { useTheme } from "@/contexts/ThemeContext";
 
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -512,6 +515,7 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
 
 export default function SettingsPage() {
   const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [, navigate] = useLocation();
   const [guideOpen, setGuideOpen] = useState(false);
   const { track } = useAnalytics();
@@ -908,14 +912,25 @@ export default function SettingsPage() {
               Settings
             </span>
           </div>
-          <button
-            onClick={() => setGuideOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold"
-            style={{ background: "oklch(0.32 0.08 260)", color: "oklch(0.80 0.18 80)" }}
-          >
-            <BookOpen size={13} />
-            Setup Guide
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleTheme}
+              className="flex items-center justify-center w-8 h-8 rounded-xl transition-colors"
+              style={{ background: "oklch(0.32 0.08 260)", color: "oklch(0.80 0.18 80)" }}
+              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              title={theme === "dark" ? "Light mode" : "Dark mode"}
+            >
+              {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
+            </button>
+            <button
+              onClick={() => setGuideOpen(true)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold"
+              style={{ background: "oklch(0.32 0.08 260)", color: "oklch(0.80 0.18 80)" }}
+            >
+              <BookOpen size={13} />
+              Setup Guide
+            </button>
+          </div>
         </div>
         <h1
           className="text-2xl"

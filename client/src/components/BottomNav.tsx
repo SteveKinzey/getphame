@@ -95,6 +95,14 @@ export default function BottomNav() {
         >
           What's New
         </button>
+        <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
+        <button
+          onClick={() => navigate('/compliance')}
+          className="text-xs font-semibold hover:underline transition-colors"
+          style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
+        >
+          Compliance
+        </button>
       </div>
     </nav>
   );

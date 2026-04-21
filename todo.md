@@ -1025,3 +1025,9 @@
 - [x] Add bulk-send warning when sending to 20+ contacts at once
 - [x] Add pre-send compliance checklist (3 checkboxes) before bulk send — disables Send button until all checked
 - [x] Wire Compliance Guide link into Settings page (above Delete Account)
+
+## Session #26 — Skill, Dark Mode, Spacing Tokens, Footer Link (Apr 21 2026)
+- [x] Create /skills/compliance-guide/SKILL.md documenting compliance patterns, warnings, checklist, and Compliance Guide page
+- [x] Activate dark mode: uncomment .dark {} block in index.css, enable switchable=true in ThemeProvider, add Moon/Sun toggle button in Settings header
+- [x] Add --spacing-* tokens to index.css (xs/sm/md/lg/xl/2xl/3xl)
+- [x] Add Compliance link to app footer (gold strip below BottomNav)
