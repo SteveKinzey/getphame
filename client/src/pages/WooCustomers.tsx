@@ -73,6 +73,7 @@ export default function WooCustomers() {
 
   const { data: creds } = trpc.woo.getCredentials.useQuery();
   const { data: platforms = [] } = trpc.reviewPlatforms.list.useQuery();
+  const { data: dailyStatus } = trpc.contacts.getDailyStatus.useQuery();
   const { data: pendingCustomers = [], isLoading: loadingPending } = trpc.woo.listPending.useQuery();
   const { data: allCustomers = [], isLoading: loadingAll } = trpc.woo.listAll.useQuery();
 
@@ -265,6 +266,19 @@ export default function WooCustomers() {
             <AlertDialogDescription>
               Send review request emails to {selectedIds.size} selected customer{selectedIds.size !== 1 ? "s" : ""}.
             </AlertDialogDescription>
+            {dailyStatus && (
+              <div className="mt-2 rounded-xl px-3 py-2 text-xs"
+                   style={{ background: dailyStatus.remaining < selectedIds.size ? 'oklch(0.97 0.02 30)' : 'oklch(0.97 0.01 260)', border: '1px solid', borderColor: dailyStatus.remaining < selectedIds.size ? 'oklch(0.85 0.08 30)' : 'oklch(0.88 0.03 260)' }}>
+                <span style={{ color: dailyStatus.remaining < selectedIds.size ? 'oklch(0.50 0.15 30)' : 'oklch(0.40 0.06 260)' }}>
+                  {dailyStatus.todayCount} sent today &nbsp;·&nbsp; <strong>{dailyStatus.remaining} remaining</strong> of {dailyStatus.dailyLimit} daily limit
+                  {dailyStatus.remaining < selectedIds.size && (
+                    <span className="block mt-0.5">
+                      ⚠ Only {dailyStatus.remaining} will be sent — limit reached after that.
+                    </span>
+                  )}
+                </span>
+              </div>
+            )}
           </AlertDialogHeader>
 
           {/* Platform picker */}

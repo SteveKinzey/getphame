@@ -108,6 +108,9 @@ export default function SavedContacts() {
   const [bulkConfirmOpen, setBulkConfirmOpen] = useState(false);
   const [bulkPlatformId, setBulkPlatformId] = useState<number | null>(null);
 
+  // Daily send status
+  const { data: dailyStatus } = trpc.contacts.getDailyStatus.useQuery(undefined, { enabled: isAuthenticated });
+
   // Review platforms
   const { data: platforms = [] } = trpc.reviewPlatforms.list.useQuery(undefined, { enabled: isAuthenticated });
   const PLATFORM_ICONS: Record<string, string> = { google: "🔍", yelp: "⭐", tripadvisor: "🦉", bing: "🌐", facebook: "👍", other: "🔗" };
@@ -930,6 +933,19 @@ export default function SavedContacts() {
             <AlertDialogDescription>
               This will send a review request email to all {selectedCount} selected contact{selectedCount !== 1 ? "s" : ""} using your default email template.
             </AlertDialogDescription>
+            {dailyStatus && (
+              <div className="mt-2 rounded-xl px-3 py-2 text-xs flex items-center gap-2"
+                   style={{ background: dailyStatus.remaining < selectedCount ? 'oklch(0.97 0.02 30)' : 'oklch(0.97 0.01 260)', border: '1px solid', borderColor: dailyStatus.remaining < selectedCount ? 'oklch(0.85 0.08 30)' : 'oklch(0.88 0.03 260)' }}>
+                <span style={{ color: dailyStatus.remaining < selectedCount ? 'oklch(0.50 0.15 30)' : 'oklch(0.40 0.06 260)' }}>
+                  {dailyStatus.todayCount} sent today &nbsp;·&nbsp; <strong>{dailyStatus.remaining} remaining</strong> of {dailyStatus.dailyLimit} daily limit
+                  {dailyStatus.remaining < selectedCount && (
+                    <span className="block mt-0.5" style={{ color: 'oklch(0.50 0.15 30)' }}>
+                      ⚠ Only {dailyStatus.remaining} will be sent — limit reached after that.
+                    </span>
+                  )}
+                </span>
+              </div>
+            )}
           </AlertDialogHeader>
           {platforms.length > 0 && (
             <div className="mt-1">

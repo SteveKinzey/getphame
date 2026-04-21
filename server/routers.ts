@@ -651,6 +651,14 @@ export const appRouter = router({
       return listSavedContacts(ctx.user.id);
     }),
 
+    getDailyStatus: protectedProcedure.query(async ({ ctx }) => {
+      const profile = await getBusinessProfile(ctx.user.id);
+      const dailyLimit = profile?.dailySendLimit ?? 50;
+      const todayCount = await getTodaySentCount(ctx.user.id);
+      const remaining = Math.max(0, dailyLimit - todayCount);
+      return { todayCount, dailyLimit, remaining };
+    }),
+
     create: protectedProcedure
       .input(z.object({ name: z.string().min(1), email: z.string().email(), phone: z.string().optional(), notes: z.string().optional() }))
       .mutation(async ({ ctx, input }) => {

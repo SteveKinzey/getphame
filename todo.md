@@ -678,3 +678,8 @@
 - [x] Add ProtonMail (proton.me, protonmail.com, pm.me) SMTP Bridge detection + inline guide
 - [x] Add Fastmail (fastmail.com, fastmail.fm, fastmail.org) App Password detection + 4-step inline guide
 - [x] Update smtp-email-connect skill references/provider-guides.md with AOL, ProtonMail, Fastmail guide cards
+
+## Bulk Send Dialog — Daily Limit Display
+- [x] Add tRPC contacts.getDailyStatus procedure returning todayCount, dailyLimit, remaining
+- [x] Show "X sent today / Y remaining of Z daily limit" in SavedContacts bulk-send confirmation dialog (amber warning when selection exceeds remaining)
+- [x] Show same daily limit status in WooCustomers bulk-send confirmation dialog
