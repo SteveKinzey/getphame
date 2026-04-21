@@ -807,3 +807,9 @@
 
 - [x] Fix back button on What's New page and all other pages that have a back button
 - [x] Make ReviewLink logo tap navigate to home screen on all pages
+
+## New Features (Session — Apr 21 2026 #2)
+
+- [x] Settings: add Billing section showing current tier, renewal date (Monthly/Annual), and Manage Billing button (Stripe Customer Portal)
+- [x] Payment Success page: build proper confirmation screen with tier-specific messaging and CTA to Send page
+- [x] Home screen: upgrade ShareReferralCard to prominent card with message preview and full-width CTA button

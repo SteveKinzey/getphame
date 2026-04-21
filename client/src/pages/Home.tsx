@@ -48,31 +48,52 @@ function ShareReferralCard() {
 
   return (
     <div
-      className="rounded-2xl p-4 flex items-center gap-3"
-      style={{ background: "oklch(0.22 0.09 260)", border: "none" }}
+      className="rounded-2xl overflow-hidden"
+      style={{ background: "oklch(0.22 0.09 260)" }}
     >
-      <div
-        className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-        style={{ background: "oklch(0.80 0.18 80)" }}
-      >
-        <Share2 size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+      {/* Gold accent bar */}
+      <div className="h-1 w-full" style={{ background: "oklch(0.80 0.18 80)" }} />
+
+      <div className="p-4">
+        {/* Header row */}
+        <div className="flex items-center gap-2 mb-3">
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+            style={{ background: "oklch(0.80 0.18 80)" }}
+          >
+            <Share2 size={15} style={{ color: "oklch(0.22 0.09 260)" }} />
+          </div>
+          <div>
+            <p className="text-xs font-black leading-tight" style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}>
+              Know a local business owner?
+            </p>
+            <p className="text-xs" style={{ color: "rgba(255,255,255,0.55)" }}>
+              Help them get more reviews — it's free.
+            </p>
+          </div>
+        </div>
+
+        {/* Message preview */}
+        <div
+          className="rounded-xl px-3 py-2.5 mb-3 text-xs leading-relaxed"
+          style={{ background: "oklch(0.30 0.08 260)", color: "rgba(255,255,255,0.70)" }}
+        >
+          <span style={{ color: "oklch(0.80 0.18 80)", fontWeight: 700 }}>"</span>
+          {SHARE_TEXT}{" "}
+          <span style={{ color: "oklch(0.80 0.18 80)" }}>{SHARE_URL}</span>
+          <span style={{ color: "oklch(0.80 0.18 80)", fontWeight: 700 }}>"</span>
+        </div>
+
+        {/* CTA button */}
+        <button
+          onClick={handleShare}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-black transition-transform active:scale-95"
+          style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+        >
+          {copied ? <Check size={15} /> : <Share2 size={15} />}
+          {copied ? "Copied to clipboard!" : "Share ReviewLink"}
+        </button>
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-xs font-black leading-tight" style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}>
-          Know a local business that needs more reviews?
-        </p>
-        <p className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.60)" }}>
-          Share ReviewLink — it's free.
-        </p>
-      </div>
-      <button
-        onClick={handleShare}
-        className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black flex-shrink-0 transition-transform active:scale-95"
-        style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
-      >
-        {copied ? <Check size={13} /> : <Share2 size={13} />}
-        {copied ? "Copied!" : "Share"}
-      </button>
     </div>
   );
 }

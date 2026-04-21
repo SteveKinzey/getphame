@@ -1,31 +1,102 @@
 // ReviewLink — Payment Success Page
-// Shown after a successful Stripe checkout. Confirms Pro activation and guides next steps.
+// Shown after a successful Stripe checkout. Tier-aware messaging for Pro/Annual/Lifetime.
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useLocation } from "wouter";
-import { Crown, CheckCircle2, Rocket, Star, ArrowRight, Infinity, Zap, BarChart2 } from "lucide-react";
+import {
+  Crown,
+  CheckCircle2,
+  Rocket,
+  Star,
+  ArrowRight,
+  Infinity,
+  Zap,
+  BarChart2,
+  Shield,
+  Bell,
+} from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
-const PRO_PERKS = [
-  { icon: <Infinity size={15} />, text: "Unlimited review requests" },
-  { icon: <Zap size={15} />, text: "Priority sending" },
-  { icon: <BarChart2 size={15} />, text: "Advanced analytics" },
-  { icon: <Star size={15} />, text: "Custom email templates" },
-  { icon: <Crown size={15} />, text: "Pro badge & priority support" },
-];
+const PERKS_BY_TIER: Record<string, { icon: React.ReactNode; text: string }[]> = {
+  pro: [
+    { icon: <Infinity size={15} />, text: "Unlimited review requests" },
+    { icon: <Zap size={15} />, text: "Priority sending" },
+    { icon: <Bell size={15} />, text: "Automated follow-up reminders" },
+    { icon: <BarChart2 size={15} />, text: "Advanced analytics" },
+    { icon: <Crown size={15} />, text: "Priority support" },
+  ],
+  annual: [
+    { icon: <Infinity size={15} />, text: "Unlimited review requests" },
+    { icon: <Zap size={15} />, text: "Priority sending" },
+    { icon: <Bell size={15} />, text: "Automated follow-up reminders" },
+    { icon: <BarChart2 size={15} />, text: "Advanced analytics" },
+    { icon: <Star size={15} />, text: "2 months free vs monthly" },
+  ],
+  lifetime: [
+    { icon: <Infinity size={15} />, text: "Unlimited review requests — forever" },
+    { icon: <Shield size={15} />, text: "Never pay again — one-time fee" },
+    { icon: <Bell size={15} />, text: "Automated follow-up reminders" },
+    { icon: <BarChart2 size={15} />, text: "Advanced analytics" },
+    { icon: <Crown size={15} />, text: "Lifetime priority support" },
+  ],
+};
+
+const HEADING_BY_TIER: Record<string, { top: string; highlight: string; sub: string }> = {
+  pro: {
+    top: "You're",
+    highlight: "Pro!",
+    sub: "Monthly plan activated. Your account is upgraded.",
+  },
+  annual: {
+    top: "You're",
+    highlight: "Pro Annual!",
+    sub: "Annual plan activated — you're saving 2 months.",
+  },
+  lifetime: {
+    top: "You're a",
+    highlight: "Lifetime Member!",
+    sub: "One-time payment. Access forever. No renewals.",
+  },
+};
+
+const CARD_TITLE_BY_TIER: Record<string, string> = {
+  pro: "Your Pro Perks",
+  annual: "Your Annual Perks",
+  lifetime: "Your Lifetime Perks",
+};
 
 export default function PaymentSuccessPage() {
   const [, navigate] = useLocation();
-  const [confettiDone, setConfettiDone] = useState(false);
   const utils = trpc.useUtils();
 
-  // Invalidate profile so Pro status reflects immediately
+  // Read tier from profile (invalidated on mount so it reflects the new state)
+  const { data: profile } = trpc.profile.get.useQuery();
+  const tier = (profile?.tier ?? "pro") as "pro" | "annual" | "lifetime";
+
+  // Stable random star positions — computed once per mount
+  const stars = useMemo(
+    () =>
+      Array.from({ length: 18 }, (_, i) => ({
+        id: i,
+        size: Math.random() * 4 + 2,
+        top: Math.random() * 100,
+        left: Math.random() * 100,
+        opacity: Math.random() * 0.5 + 0.1,
+        delay: Math.random() * 2,
+        duration: Math.random() * 2 + 2,
+      })),
+    []
+  );
+
+  // Invalidate profile so tier reflects immediately
   useEffect(() => {
     utils.profile.get.invalidate();
     utils.stripe.subscriptionStatus.invalidate();
-    const timer = setTimeout(() => setConfettiDone(true), 2800);
-    return () => clearTimeout(timer);
   }, [utils]);
+
+  const heading = HEADING_BY_TIER[tier] ?? HEADING_BY_TIER.pro;
+  const perks = PERKS_BY_TIER[tier] ?? PERKS_BY_TIER.pro;
+  const cardTitle = CARD_TITLE_BY_TIER[tier] ?? "Your Perks";
 
   return (
     <div
@@ -34,31 +105,35 @@ export default function PaymentSuccessPage() {
     >
       {/* Animated background stars */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {[...Array(18)].map((_, i) => (
+        {stars.map((s) => (
           <div
-            key={i}
+            key={s.id}
             className="absolute rounded-full animate-pulse"
             style={{
-              width: `${Math.random() * 4 + 2}px`,
-              height: `${Math.random() * 4 + 2}px`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
+              width: `${s.size}px`,
+              height: `${s.size}px`,
+              top: `${s.top}%`,
+              left: `${s.left}%`,
               background: "oklch(0.80 0.18 80)",
-              opacity: Math.random() * 0.5 + 0.1,
-              animationDelay: `${Math.random() * 2}s`,
-              animationDuration: `${Math.random() * 2 + 2}s`,
+              opacity: s.opacity,
+              animationDelay: `${s.delay}s`,
+              animationDuration: `${s.duration}s`,
             }}
           />
         ))}
       </div>
 
-      {/* Crown hero */}
+      {/* Crown / shield hero */}
       <div className="relative mb-6 flex flex-col items-center">
         <div
           className="w-24 h-24 rounded-full flex items-center justify-center mb-4 shadow-2xl"
           style={{ background: "oklch(0.80 0.18 80)" }}
         >
-          <Crown size={44} style={{ color: "oklch(0.22 0.09 260)" }} />
+          {tier === "lifetime" ? (
+            <Shield size={44} style={{ color: "oklch(0.22 0.09 260)" }} />
+          ) : (
+            <Crown size={44} style={{ color: "oklch(0.22 0.09 260)" }} />
+          )}
         </div>
 
         {/* Animated check badge */}
@@ -78,11 +153,11 @@ export default function PaymentSuccessPage() {
         className="text-4xl font-black text-center mb-2 leading-tight"
         style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
       >
-        You're{" "}
-        <span style={{ color: "oklch(0.80 0.18 80)" }}>Pro!</span>
+        {heading.top}{" "}
+        <span style={{ color: "oklch(0.80 0.18 80)" }}>{heading.highlight}</span>
       </h1>
       <p className="text-center text-base mb-1" style={{ color: "rgba(255,255,255,0.75)" }}>
-        Payment confirmed. Welcome to the Pro plan.
+        Payment confirmed. {heading.sub}
       </p>
       <p className="text-center text-sm mb-8" style={{ color: "rgba(255,255,255,0.4)" }}>
         Your account has been upgraded instantly.
@@ -97,10 +172,10 @@ export default function PaymentSuccessPage() {
           className="text-xs font-black tracking-widest uppercase mb-4"
           style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
         >
-          Your Pro Perks
+          {cardTitle}
         </p>
         <div className="flex flex-col gap-3">
-          {PRO_PERKS.map((perk) => (
+          {perks.map((perk) => (
             <div key={perk.text} className="flex items-center gap-3">
               <div
                 className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"

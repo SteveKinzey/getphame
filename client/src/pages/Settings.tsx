@@ -340,6 +340,122 @@ function DeleteAccountSection() {
   );
 }
 
+// ── Billing Section ─────────────────────────────────────────────────────────
+type ProfileData = {
+  tier: string;
+  planExpiresAt?: number | null;
+  stripeCustomerId?: string | null;
+  [key: string]: unknown;
+};
+
+function BillingSection({ profile }: { profile: ProfileData | null | undefined }) {
+  const [, navigate] = useLocation();
+  const createPortal = trpc.stripe.createPortal.useMutation({
+    onSuccess: ({ url }) => window.open(url, '_blank'),
+    onError: (err) => toast.error(err.message),
+  });
+
+  const tier = profile?.tier ?? 'free';
+  const planExpiresAt = profile?.planExpiresAt;
+  const hasStripe = !!profile?.stripeCustomerId;
+
+  const TIER_LABELS: Record<string, string> = {
+    free: 'Free',
+    pro: 'Pro Monthly',
+    annual: 'Pro Annual',
+    lifetime: 'Lifetime',
+  };
+  const TIER_COLORS: Record<string, { bg: string; text: string }> = {
+    free:     { bg: 'oklch(0.94 0.01 260)', text: 'oklch(0.45 0.04 260)' },
+    pro:      { bg: 'oklch(0.80 0.18 80)', text: 'oklch(0.22 0.09 260)' },
+    annual:   { bg: 'oklch(0.80 0.18 80)', text: 'oklch(0.22 0.09 260)' },
+    lifetime: { bg: 'oklch(0.22 0.09 260)', text: 'oklch(0.80 0.18 80)' },
+  };
+  const colors = TIER_COLORS[tier] ?? TIER_COLORS.free;
+
+  const renewalLabel = (() => {
+    if (tier === 'lifetime') return 'Never renews — yours forever';
+    if (tier === 'free') return null;
+    if (planExpiresAt) {
+      const d = new Date(planExpiresAt);
+      return `Renews ${d.toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}`;
+    }
+    return null;
+  })();
+
+  return (
+    <div className="bg-white rounded-2xl p-5 shadow-sm">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <CreditCard size={18} style={{ color: 'oklch(0.80 0.18 80)' }} />
+          <h2
+            className="text-base font-black"
+            style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
+          >
+            Billing
+          </h2>
+        </div>
+        <span
+          className="text-xs font-bold px-2.5 py-1 rounded-full"
+          style={{ background: colors.bg, color: colors.text }}
+        >
+          {TIER_LABELS[tier] ?? tier.toUpperCase()}
+        </span>
+      </div>
+
+      {renewalLabel && (
+        <p className="text-xs mb-3 flex items-center gap-1.5" style={{ color: 'oklch(0.50 0.04 260)' }}>
+          <Clock size={12} />
+          {renewalLabel}
+        </p>
+      )}
+
+      {tier === 'free' ? (
+        <div className="flex flex-col gap-2">
+          <p className="text-xs" style={{ color: 'oklch(0.55 0.03 260)' }}>
+            Upgrade to Pro for unlimited sends, follow-up reminders, and priority support.
+          </p>
+          <button
+            onClick={() => navigate('/upgrade')}
+            className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
+            style={{ background: 'oklch(0.80 0.18 80)', color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
+          >
+            <Crown size={16} />
+            Upgrade to Pro
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2">
+          {hasStripe ? (
+            <button
+              onClick={() => createPortal.mutate({ origin: window.location.origin })}
+              disabled={createPortal.isPending}
+              className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 disabled:opacity-60"
+              style={{ background: 'oklch(0.22 0.09 260)', color: 'white', fontFamily: "'Poppins', sans-serif" }}
+            >
+              {createPortal.isPending ? <Loader2 size={16} className="animate-spin" /> : <ExternalLink size={16} />}
+              Manage Billing
+            </button>
+          ) : (
+            <p className="text-xs" style={{ color: 'oklch(0.55 0.03 260)' }}>
+              Your plan is active. Contact support to manage billing.
+            </p>
+          )}
+          {tier !== 'lifetime' && (
+            <button
+              onClick={() => navigate('/upgrade')}
+              className="text-xs text-center py-1.5"
+              style={{ color: 'oklch(0.55 0.03 260)' }}
+            >
+              View all plans
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function SettingsPage() {
   const { user, logout } = useAuth();
   const [, navigate] = useLocation();
@@ -1700,29 +1816,8 @@ export default function SettingsPage() {
           )}
         </div>
 
-        {/* ── Plan ─────────────────────────────────────────────────────────── */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <Star size={18} style={{ color: "oklch(0.80 0.18 80)" }} />
-              <h2
-                className="text-base font-black"
-                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
-              >
-                Your Plan
-              </h2>
-            </div>
-            <span
-              className="text-xs font-bold px-2 py-1 rounded-full"
-              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
-            >
-              FREE FOREVER
-            </span>
-          </div>
-          <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
-            ReviewLink is free — unlimited review requests, no credit card required.
-          </p>
-        </div>
+        {/* ── Billing ──────────────────────────────────────────────────────── */}
+        <BillingSection profile={profile} />
 
         {/* ── WooCommerce ──────────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
