@@ -2,7 +2,7 @@
 // Navy/gold design system matching the authenticated app
 
 import { getLoginUrl } from "@/const";
-import { Rocket, Star, Send, Users, CheckCircle2, ArrowRight, Mail, Globe, ChevronDown } from "lucide-react";
+import { Rocket, Star, Send, Users, CheckCircle2, ArrowRight, Mail, Globe, ChevronDown, X, Check } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const HERO_IMG =
@@ -312,29 +312,153 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ── Pricing note ────────────────────────────────────────────────────── */}
-      <section className="px-5 py-8" style={{ background: "oklch(0.97 0.005 260)" }}>
+      {/* ── Pricing ─────────────────────────────────────────────────────────── */}
+      <section className="px-5 py-10" style={{ background: "oklch(0.97 0.005 260)" }}>
         <div className="max-w-lg mx-auto">
-          <div
-            className="rounded-2xl p-6 text-center border"
-            style={{ background: "white", borderColor: "oklch(0.90 0.03 260)" }}
+          <h2
+            className="text-xl font-black text-center mb-2"
+            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
           >
+            Simple, honest pricing
+          </h2>
+          <p className="text-sm text-center mb-6" style={{ color: "oklch(0.50 0.04 260)" }}>
+            Start free. Upgrade when you're ready.
+          </p>
+          <div className="flex flex-col gap-3">
+            {/* Free */}
             <div
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-3"
-              style={{ background: "oklch(0.95 0.05 150)", color: "oklch(0.30 0.15 150)" }}
+              className="rounded-2xl p-5 border"
+              style={{ background: "white", borderColor: "oklch(0.90 0.03 260)" }}
             >
-              &#10003; Free Forever
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>Free</span>
+                <span className="text-lg font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>$0</span>
+              </div>
+              <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>10 review requests to get started — no credit card required.</p>
             </div>
-            <h2
-              className="text-lg font-black mb-2"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+            {/* Pro Monthly */}
+            <div
+              className="rounded-2xl p-5 border-2"
+              style={{ background: "white", borderColor: "oklch(0.80 0.18 80)" }}
             >
-              No plans. No paywalls. No credit card.
-            </h2>
-            <p className="text-sm" style={{ color: "oklch(0.45 0.04 260)" }}>
-              ReviewLink is completely free to use. You connect your own email account — there are no sending limits beyond your provider's daily cap. Optional Pro features are coming soon and will always be clearly labelled before any charge is introduced.
-            </p>
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>Pro Monthly</span>
+                  <span
+                    className="px-2 py-0.5 rounded-full text-xs font-bold"
+                    style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                  >Most Popular</span>
+                </div>
+                <span className="text-lg font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>$29<span className="text-xs font-normal">/mo</span></span>
+              </div>
+              <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Unlimited review requests, bulk send, follow-up reminders, WooCommerce sync.</p>
+            </div>
+            {/* Pro Annual */}
+            <div
+              className="rounded-2xl p-5 border"
+              style={{ background: "white", borderColor: "oklch(0.90 0.03 260)" }}
+            >
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>Pro Annual</span>
+                  <span
+                    className="px-2 py-0.5 rounded-full text-xs font-bold"
+                    style={{ background: "oklch(0.95 0.05 150)", color: "oklch(0.30 0.15 150)", fontFamily: "'Poppins', sans-serif" }}
+                  >Save 15%</span>
+                </div>
+                <span className="text-lg font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>$297<span className="text-xs font-normal">/yr</span></span>
+              </div>
+              <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Everything in Pro Monthly — billed once a year. Equivalent to $24.75/month.</p>
+            </div>
+            {/* Lifetime */}
+            <div
+              className="rounded-2xl p-5 border"
+              style={{ background: "oklch(0.22 0.09 260)", borderColor: "oklch(0.30 0.08 260)" }}
+            >
+              <div className="flex items-center justify-between mb-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-black" style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}>Lifetime</span>
+                  <span
+                    className="px-2 py-0.5 rounded-full text-xs font-bold"
+                    style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                  >Own it forever</span>
+                </div>
+                <span className="text-lg font-black" style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}>$1,247<span className="text-xs font-normal" style={{ color: "rgba(255,255,255,0.5)" }}> once</span></span>
+              </div>
+              <p className="text-xs" style={{ color: "rgba(255,255,255,0.60)" }}>One payment, lifetime access. No renewals, no surprises.</p>
+            </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── Competitor comparison ────────────────────────────────────────────── */}
+      <section className="px-5 py-10" style={{ background: "white" }}>
+        <div className="max-w-lg mx-auto">
+          <h2
+            className="text-xl font-black text-center mb-2"
+            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+          >
+            10–20× cheaper than the big players
+          </h2>
+          <p className="text-sm text-center mb-6" style={{ color: "oklch(0.50 0.04 260)" }}>
+            Birdeye and Podium charge enterprise prices for features ReviewLink gives you at a fraction of the cost.
+          </p>
+
+          {/* Comparison table */}
+          <div className="rounded-2xl overflow-hidden border" style={{ borderColor: "oklch(0.90 0.03 260)" }}>
+            {/* Header */}
+            <div
+              className="grid grid-cols-3 px-4 py-3 text-xs font-black"
+              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+            >
+              <span>Platform</span>
+              <span className="text-center">Starting price</span>
+              <span className="text-center">Lifetime option</span>
+            </div>
+            {/* ReviewLink row — highlighted */}
+            <div
+              className="grid grid-cols-3 px-4 py-3 items-center border-b-2"
+              style={{ background: "oklch(0.97 0.06 80)", borderColor: "oklch(0.80 0.18 80)" }}
+            >
+              <div className="flex items-center gap-1.5">
+                <Rocket size={13} style={{ color: "oklch(0.80 0.18 80)" }} />
+                <span className="text-xs font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>ReviewLink</span>
+              </div>
+              <div className="text-center">
+                <span className="text-xs font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>$29<span className="font-normal">/mo</span></span>
+              </div>
+              <div className="flex justify-center">
+                <Check size={16} style={{ color: "oklch(0.40 0.18 150)" }} />
+              </div>
+            </div>
+            {/* Competitor rows */}
+            {[
+              { name: "Birdeye", price: "$299/mo", lifetime: false },
+              { name: "Podium", price: "$249/mo", lifetime: false },
+              { name: "NiceJob", price: "$75/mo", lifetime: false },
+              { name: "Grade.us", price: "$110/mo", lifetime: false },
+              { name: "ReviewTrackers", price: "$89/mo", lifetime: false },
+            ].map((c, i, arr) => (
+              <div
+                key={c.name}
+                className="grid grid-cols-3 px-4 py-3 items-center"
+                style={{
+                  background: i % 2 === 0 ? "white" : "oklch(0.975 0.003 100)",
+                  borderBottom: i < arr.length - 1 ? "1px solid oklch(0.93 0.02 260)" : "none",
+                }}
+              >
+                <span className="text-xs font-semibold" style={{ color: "oklch(0.35 0.04 260)" }}>{c.name}</span>
+                <span className="text-xs text-center" style={{ color: "oklch(0.50 0.04 260)" }}>{c.price}</span>
+                <div className="flex justify-center">
+                  <X size={14} style={{ color: "oklch(0.65 0.15 25)" }} />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-xs text-center mt-4" style={{ color: "oklch(0.60 0.03 260)" }}>
+            Prices based on publicly listed entry-tier plans as of April 2026.
+          </p>
         </div>
       </section>
 

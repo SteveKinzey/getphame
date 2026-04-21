@@ -752,3 +752,9 @@
 - [x] Fix page title: set document.title to a 30-60 char keyword-rich string in LandingPage
 - [x] Add meta keywords tag to index.html (or via useEffect in LandingPage)
 - [x] Fix missing alt text on 1 of 2 images on the landing page
+
+## Competitor Comparison on Landing Page
+- [x] Add competitor pricing comparison section to LandingPage.tsx (visible to unauthenticated users)
+- [x] Include Birdeye, Podium, NiceJob, Grade.us, ReviewTrackers vs ReviewLink in a styled table
+- [x] Highlight ReviewLink's price advantage and lifetime option with checkmarks/badges
+- [x] Match landing page navy/gold design system
