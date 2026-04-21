@@ -1,26 +1,76 @@
 {
-  "name": "ReviewLink",
+  "name": "ReviewLink — Google Review Requests",
   "short_name": "ReviewLink",
-  "description": "Get more 5-star Google reviews for your business",
-  "start_url": "/",
+  "description": "Send personalised Google review requests from your own email. Free forever.",
+  "start_url": "/?source=pwa",
+  "id": "reviewlink-pwa",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
   "background_color": "#0F1F4B",
   "theme_color": "#0F1F4B",
-  "orientation": "portrait",
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "dir": "ltr",
+  "scope": "/",
+  "categories": ["business", "productivity", "utilities"],
   "icons": [
     {
       "src": "/icons/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "/icons/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
-  "categories": ["business", "productivity"],
-  "screenshots": []
+  "shortcuts": [
+    {
+      "name": "Send Review Request",
+      "short_name": "Send",
+      "description": "Send a new review request to a customer",
+      "url": "/send?source=shortcut",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View your review request stats",
+      "url": "/dashboard?source=shortcut",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Saved Contacts",
+      "short_name": "Contacts",
+      "description": "Browse and manage your saved customers",
+      "url": "/contacts?source=shortcut",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "ReviewLink home screen"
+    }
+  ],
+  "prefer_related_applications": false,
+  "related_applications": []
 }

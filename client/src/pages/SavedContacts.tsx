@@ -370,13 +370,12 @@ export default function SavedContacts() {
   const isSaving = createMutation.isPending || updateMutation.isPending;
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Header */}
-      <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
+      <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-1 mb-4 text-sm opacity-70 hover:opacity-100 transition-opacity"
-          style={{ color: "oklch(0.80 0.18 80)" }}
+          className="flex items-center gap-1 mb-4 text-sm opacity-70 hover:opacity-100 transition-opacity rr-text-gold"
         >
           <ChevronLeft size={16} /> Back
         </button>
@@ -389,7 +388,7 @@ export default function SavedContacts() {
             <p className="text-sm mt-1 opacity-70 text-white">
               {contacts.length} contact{contacts.length !== 1 ? "s" : ""}
               {selectedCount > 0 && (
-                <span style={{ color: "oklch(0.80 0.18 80)" }}>
+                <span className="rr-text-gold">
                   {" "}· {selectedCount} selected
                 </span>
               )}
@@ -399,8 +398,7 @@ export default function SavedContacts() {
           <Button
             onClick={openCreate}
             size="sm"
-            className="font-bold shrink-0"
-            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+            className="font-bold shrink-0 rr-bg-gold rr-text-navy"
           >
             <UserPlus size={16} className="mr-1" /> Add
           </Button>
@@ -449,8 +447,7 @@ export default function SavedContacts() {
             disabled={syncFromStripeMutation.isPending}
             size="sm"
             variant="outline"
-            className="font-bold border-0 shrink-0"
-            style={{ background: "oklch(0.32 0.07 260)", color: "oklch(0.80 0.18 80)" }}
+            className="font-bold border-0 shrink-0 rr-text-gold" style={{ background: "oklch(0.32 0.07 260)" }}
             title={syncStatus?.stripeLastSyncedAt ? `Last synced ${format(new Date(syncStatus.stripeLastSyncedAt), "MMM d, h:mm a")}` : "Import customers from Stripe"}
           >
             {syncFromStripeMutation.isPending ? (
@@ -468,8 +465,7 @@ export default function SavedContacts() {
             onClick={() => navigate("/import")}
             size="sm"
             variant="outline"
-            className="font-bold border-0 shrink-0"
-            style={{ background: "oklch(0.32 0.07 260)", color: "oklch(0.80 0.18 80)" }}
+            className="font-bold border-0 shrink-0 rr-text-gold" style={{ background: "oklch(0.32 0.07 260)" }}
           >
             <Upload size={14} className="mr-1" /> Import CSV
           </Button>
@@ -482,8 +478,8 @@ export default function SavedContacts() {
           className="flex items-center gap-1.5 px-4 py-2"
           style={{ background: "oklch(0.96 0.02 260)", borderBottom: "1px solid oklch(0.91 0.02 260)" }}
         >
-          <ShoppingCart size={12} style={{ color: "oklch(0.50 0.05 260)" }} aria-hidden="true" />
-          <span className="text-xs flex items-center gap-1" style={{ color: "oklch(0.50 0.05 260)", fontFamily: "'Nunito', sans-serif" }}>
+          <ShoppingCart size={12} className="rr-text-navy-muted" aria-hidden="true" />
+          <span className="text-xs flex items-center gap-1 rr-text-navy-muted">
             WooCommerce —
             {syncFromWooMutation.isPending ? (
               <span className="ml-1 font-semibold" style={{ color: "oklch(0.72 0.18 160)" }}>Syncing…</span>
@@ -555,7 +551,7 @@ export default function SavedContacts() {
           };
           return (
             <div className="flex items-center gap-2 overflow-x-auto pb-1">
-              <Globe size={13} style={{ color: "oklch(0.55 0.03 260)", flexShrink: 0 }} />
+              <Globe size={13} className="rr-text-navy-muted" style={{ flexShrink: "0" }} />
               {(["all", ...(hasStripe ? ["stripe"] : []), ...(hasWoo ? ["woocommerce"] : []), "manual"] as const).map((opt) => {
                 const active = sourceFilter === opt;
                 return (
@@ -580,7 +576,7 @@ export default function SavedContacts() {
         {/* Unsubscribed filter pill */}
         {contacts.some((c) => c.optedOut) && (
           <div className="flex items-center gap-2 overflow-x-auto pb-1">
-            <UserX size={13} style={{ color: "oklch(0.55 0.03 260)", flexShrink: 0 }} />
+            <UserX size={13} className="rr-text-navy-muted" style={{ flexShrink: "0" }} />
             {(["all", "unsubscribed"] as const).map((opt) => {
               const label = opt === "all" ? "All" : "Unsubscribed";
               const active = optedOutFilter === opt;
@@ -600,7 +596,7 @@ export default function SavedContacts() {
               );
             })}
             {optedOutFilter === "unsubscribed" && (
-              <span className="text-xs ml-1" style={{ color: "oklch(0.55 0.03 260)" }}>
+              <span className="text-xs ml-1 rr-text-navy-muted">
                 {filtered.length} contact{filtered.length !== 1 ? "s" : ""}
               </span>
             )}
@@ -609,7 +605,7 @@ export default function SavedContacts() {
 
         {/* Dormancy filter pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
-          <Clock size={13} style={{ color: "oklch(0.55 0.03 260)", flexShrink: 0 }} />
+          <Clock size={13} className="rr-text-navy-muted" style={{ flexShrink: "0" }} />
           {(["all", "30", "60", "90"] as const).map((opt) => {
             const label = opt === "all" ? "All" : `Not in ${opt}d`;
             const active = dormancyFilter === opt;
@@ -629,7 +625,7 @@ export default function SavedContacts() {
             );
           })}
           {dormancyFilter !== "all" && (
-            <span className="text-xs ml-1" style={{ color: "oklch(0.55 0.03 260)" }}>
+            <span className="text-xs ml-1 rr-text-navy-muted">
               {filtered.length} contact{filtered.length !== 1 ? "s" : ""}
             </span>
           )}
@@ -639,7 +635,7 @@ export default function SavedContacts() {
         {allTags.length > 0 && (
           <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2 overflow-x-auto pb-1">
-              <Tag size={13} style={{ color: "oklch(0.55 0.03 260)", flexShrink: 0 }} />
+              <Tag size={13} className="rr-text-navy-muted" style={{ flexShrink: "0" }} />
               <button
                 onClick={() => setTagFilter(null)}
                 className="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors"
@@ -675,11 +671,7 @@ export default function SavedContacts() {
                   setSelected(new Set(filtered.map((c) => c.id)));
                   setBulkConfirmOpen(true);
                 }}
-                className="flex items-center gap-2 self-start px-4 py-2 rounded-xl text-sm font-bold transition-colors"
-                style={{
-                  background: "oklch(0.22 0.09 260)",
-                  color: "oklch(0.80 0.18 80)",
-                }}
+                className="flex items-center gap-2 self-start px-4 py-2 rounded-xl text-sm font-bold transition-colors rr-bg-navy rr-text-gold"
               >
                 <Rocket size={14} />
                 Send to all "{tagFilter}" ({filtered.length})
@@ -703,8 +695,7 @@ export default function SavedContacts() {
                 <Button
                   onClick={() => navigate("/import")}
                   size="sm"
-                  className="font-bold mt-1"
-                  style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+                  className="font-bold mt-1 rr-bg-navy rr-text-gold"
                 >
                   <Upload size={14} className="mr-1" /> Import CSV
                 </Button>
@@ -890,13 +881,11 @@ export default function SavedContacts() {
           style={{ maxWidth: "430px", margin: "0 auto" }}
         >
           <div
-            className="rounded-2xl px-4 py-3 flex items-center justify-between gap-3 shadow-xl"
-            style={{ background: "oklch(0.22 0.09 260)", border: "1px solid oklch(0.35 0.07 260)" }}
+            className="rounded-2xl px-4 py-3 flex items-center justify-between gap-3 shadow-xl rr-bg-navy" style={{ border: "1px solid oklch(0.35 0.07 260)" }}
           >
             <div className="flex items-center gap-2">
               <div
-                className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0"
-                style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+                className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0 rr-bg-gold rr-text-navy"
               >
                 {selectedCount}
               </div>
@@ -914,8 +903,7 @@ export default function SavedContacts() {
               </button>
               <button
                 onClick={() => setBulkConfirmOpen(true)}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-black transition-all"
-                style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-black transition-all rr-bg-gold rr-text-navy"
               >
                 <Rocket size={14} />
                 Send to {selectedCount}
@@ -951,7 +939,7 @@ export default function SavedContacts() {
           </div>
           <DialogFooter className="mt-2">
             <Button variant="outline" onClick={() => { setDialogOpen(false); setForm(emptyForm); }}>Cancel</Button>
-            <Button onClick={handleSubmit} disabled={isSaving} style={{ background: "oklch(0.22 0.09 260)", color: "white" }}>
+            <Button onClick={handleSubmit} disabled={isSaving} className="rr-bg-navy text-white">
               {isSaving ? "Saving…" : editContact ? "Update" : "Save"}
             </Button>
           </DialogFooter>
@@ -1000,7 +988,7 @@ export default function SavedContacts() {
                   method: "email",
                 })
               }
-              style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+              className="rr-bg-navy text-white"
             >
               {sendMutation.isPending ? (
                 <><Loader2 size={14} className="animate-spin mr-1" /> Sending…</>
@@ -1021,10 +1009,9 @@ export default function SavedContacts() {
 
             {/* Yelp warning */}
             {platforms.some((p) => p.platform === "yelp") && (
-              <div className="mt-2 rounded-xl px-3 py-2 text-xs flex items-start gap-2"
-                   style={{ background: "oklch(0.97 0.06 80)", border: "1px solid oklch(0.85 0.12 80)" }}>
+              <div className="mt-2 rounded-xl px-3 py-2 text-xs flex items-start gap-2 rr-bg-gold-pale" style={{ border: "1px solid oklch(0.85 0.12 80)" }}>
                 <AlertTriangle size={13} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 80)" }} />
-                <span style={{ color: "oklch(0.40 0.10 80)" }}>
+                <span className="rr-text-gold-dim">
                   <strong>Yelp note:</strong> Your Yelp listing will appear as a search suggestion rather than a direct link. Yelp discourages direct solicitation.
                 </span>
               </div>
@@ -1032,10 +1019,9 @@ export default function SavedContacts() {
 
             {/* Bulk-send volume warning */}
             {selectedCount >= 20 && (
-              <div className="mt-2 rounded-xl px-3 py-2 text-xs flex items-start gap-2"
-                   style={{ background: "oklch(0.97 0.06 80)", border: "1px solid oklch(0.85 0.12 80)" }}>
+              <div className="mt-2 rounded-xl px-3 py-2 text-xs flex items-start gap-2 rr-bg-gold-pale" style={{ border: "1px solid oklch(0.85 0.12 80)" }}>
                 <AlertTriangle size={13} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 80)" }} />
-                <span style={{ color: "oklch(0.40 0.10 80)" }}>
+                <span className="rr-text-gold-dim">
                   <strong>Large send ({selectedCount} contacts):</strong> Sudden spikes can look spammy to review platforms. Consider spreading sends over multiple days.
                 </span>
               </div>
@@ -1056,7 +1042,7 @@ export default function SavedContacts() {
           </AlertDialogHeader>
           {platforms.length > 0 && (
             <div className="mt-1">
-              <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+              <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
                 <Globe size={12} className="inline mr-1" />
                 Review Platform
               </label>
@@ -1067,8 +1053,7 @@ export default function SavedContacts() {
                     const val = e.target.value;
                     setBulkPlatformId(val === "default" ? null : Number(val));
                   }}
-                  className="w-full px-3 py-2 pr-8 rounded-xl text-sm outline-none appearance-none"
-                  style={{ border: "2px solid oklch(0.90 0.02 260)", background: "white", fontSize: "14px" }}
+                  className="w-full px-3 py-2 pr-8 rounded-xl text-sm outline-none appearance-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
                 >
                   <option value="default">
                     {platforms.find((p) => p.isDefault === 1)
@@ -1081,14 +1066,13 @@ export default function SavedContacts() {
                     </option>
                   ))}
                 </select>
-                <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "oklch(0.50 0.04 260)" }} />
+                <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rr-text-navy-mid" />
               </div>
             </div>
           )}
           {/* Reminder toggle */}
           <div
-            className="mt-2 flex items-start gap-3 rounded-xl px-3 py-2.5 cursor-pointer"
-            style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.03 260)" }}
+            className="mt-2 flex items-start gap-3 rounded-xl px-3 py-2.5 cursor-pointer rr-bg-white-card" style={{ border: "1px solid oklch(0.88 0.03 260)" }}
             onClick={() => setScheduleReminders((v) => !v)}
           >
             <Checkbox
@@ -1098,20 +1082,20 @@ export default function SavedContacts() {
               className="mt-0.5 shrink-0"
             />
             <div>
-              <label htmlFor="bulk-reminder-checkbox" className="text-xs font-semibold cursor-pointer block" style={{ color: "oklch(0.22 0.09 260)" }}>
+              <label htmlFor="bulk-reminder-checkbox" className="text-xs font-semibold cursor-pointer block rr-text-navy">
                 Schedule 3-day follow-up reminders
               </label>
-              <p className="text-xs mt-0.5" style={{ color: "oklch(0.50 0.04 260)" }}>
+              <p className="text-xs mt-0.5 rr-text-navy-mid">
                 Automatically send a reminder to any contact who hasn't responded in 3 days.
               </p>
             </div>
           </div>
 
           {/* Compliance checklist */}
-          <div className="mt-2 rounded-xl p-3" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.03 260)" }}>
+          <div className="mt-2 rounded-xl p-3 rr-bg-white-card" style={{ border: "1px solid oklch(0.88 0.03 260)" }}>
             <div className="flex items-center gap-1.5 mb-2">
-              <ShieldCheck size={13} style={{ color: "oklch(0.55 0.18 145)" }} />
-              <p className="text-xs font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>Compliance Checklist</p>
+              <ShieldCheck size={13} className="rr-text-green" />
+              <p className="text-xs font-bold rr-text-navy">Compliance Checklist</p>
             </div>
             {([
               { key: "realCustomers" as const, label: "These are real customers who transacted with me" },
@@ -1120,7 +1104,7 @@ export default function SavedContacts() {
             ]).map(({ key, label }) => (
               <div key={key} className="flex items-start gap-2 py-1 cursor-pointer" onClick={() => setComplianceChecked((v) => ({ ...v, [key]: !v[key] }))}>
                 {complianceChecked[key]
-                  ? <CheckCircle2 size={14} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 145)" }} />
+                  ? <CheckCircle2 size={14} className="mt-0.5 shrink-0 rr-text-green" />
                   : <div className="w-3.5 h-3.5 mt-0.5 shrink-0 rounded-full border-2" style={{ borderColor: "oklch(0.70 0.04 260)" }} />}
                 <span className="text-xs" style={{ color: complianceChecked[key] ? "oklch(0.35 0.05 260)" : "oklch(0.50 0.04 260)" }}>{label}</span>
               </div>
@@ -1132,7 +1116,7 @@ export default function SavedContacts() {
             <AlertDialogAction
               disabled={bulkSendMutation.isPending || !allComplianceChecked}
               onClick={() => bulkSendMutation.mutate({ contactIds: selectedIds, platformId: bulkPlatformId ?? undefined })}
-              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+              className="rr-bg-navy rr-text-gold"
             >
               {bulkSendMutation.isPending ? (
                 <><Loader2 size={14} className="animate-spin mr-1" /> Sending…</>
@@ -1148,7 +1132,7 @@ export default function SavedContacts() {
       <Dialog open={wooSyncHistoryOpen} onOpenChange={(open) => { setWooSyncHistoryOpen(open); if (!open) setWooHistorySearch(""); }}>
         <DialogContent className="max-w-sm mx-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+            <DialogTitle className="flex items-center gap-2 rr-text-navy">
               <ShoppingCart size={16} aria-hidden="true" />
               WooCommerce Sync History
             </DialogTitle>
@@ -1171,7 +1155,7 @@ export default function SavedContacts() {
                   aria-label="Clear filter"
                   className="absolute right-2 top-1/2 -translate-y-1/2 rounded hover:bg-gray-100 p-0.5"
                 >
-                  <X size={12} style={{ color: "oklch(0.55 0.05 260)" }} />
+                  <X size={12} className="rr-text-navy-muted" />
                 </button>
               )}
             </div>
@@ -1188,14 +1172,14 @@ export default function SavedContacts() {
               });
               if (wooSyncHistory.length === 0) {
                 return (
-                  <p className="text-sm text-center py-6" style={{ color: "oklch(0.55 0.05 260)" }}>
+                  <p className="text-sm text-center py-6 rr-text-navy-muted">
                     No sync history yet. Run a sync to see results here.
                   </p>
                 );
               }
               if (filtered.length === 0) {
                 return (
-                  <p className="text-sm text-center py-4" style={{ color: "oklch(0.55 0.05 260)" }}>
+                  <p className="text-sm text-center py-4 rr-text-navy-muted">
                     No results for "{wooHistorySearch}"
                   </p>
                 );
@@ -1203,14 +1187,13 @@ export default function SavedContacts() {
               return filtered.map((log) => (
                 <div
                   key={log.id}
-                  className="rounded-lg px-3 py-2.5 flex items-start gap-3"
-                  style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.92 0.02 260)" }}
+                  className="rounded-lg px-3 py-2.5 flex items-start gap-3 rr-bg-white-card" style={{ border: "1px solid oklch(0.92 0.02 260)" }}
                 >
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold" style={{ color: "oklch(0.22 0.09 260)" }}>
+                    <p className="text-xs font-semibold rr-text-navy">
                       {format(new Date(log.syncedAt), "MMM d, yyyy 'at' h:mm a")}
                     </p>
-                    <p className="text-xs mt-0.5" style={{ color: "oklch(0.50 0.05 260)" }}>
+                    <p className="text-xs mt-0.5 rr-text-navy-muted">
                       {log.added > 0
                         ? <><span className="font-semibold" style={{ color: "oklch(0.45 0.15 160)" }}>{log.added} new</span> customer{log.added !== 1 ? "s" : ""} imported · {log.total} orders scanned ({log.daysWindow}d window)</>
                         : <>No new customers · {log.total} orders scanned ({log.daysWindow}d window)</>}
@@ -1225,15 +1208,14 @@ export default function SavedContacts() {
           {syncFromWooMutation.isPending && (
             <div className="px-1">
               <div className="flex items-center gap-2 mb-1">
-                <Loader2 size={12} className="animate-spin" style={{ color: "oklch(0.80 0.18 80)" }} aria-hidden="true" />
-                <span className="text-xs font-semibold" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Nunito', sans-serif" }}>
+                <Loader2 size={12} className="animate-spin rr-text-gold" aria-hidden="true" />
+                <span className="text-xs font-semibold rr-text-navy">
                   Syncing WooCommerce orders…
                 </span>
               </div>
               <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: "oklch(0.92 0.02 260)" }}>
                 <div
-                  className="h-full rounded-full animate-pulse"
-                  style={{ width: "60%", background: "oklch(0.80 0.18 80)" }}
+                  className="h-full rounded-full animate-pulse rr-bg-gold" style={{ width: "60%" }}
                 />
               </div>
             </div>
@@ -1244,7 +1226,7 @@ export default function SavedContacts() {
                 size="sm"
                 disabled={syncFromWooMutation.isPending || !wooCreds}
                 onClick={() => wooCreds && syncFromWooMutation.mutate({ days: wooDays })}
-                style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)", fontFamily: "'Nunito', sans-serif" }}
+                className="rr-bg-navy rr-text-gold"
                 aria-label={syncFromWooMutation.isPending ? "Syncing WooCommerce orders" : `Sync WooCommerce orders (last ${wooDays} days)`}
               >
                 {syncFromWooMutation.isPending ? (
@@ -1300,12 +1282,12 @@ export default function SavedContacts() {
       <Dialog open={historyDrawerOpen} onOpenChange={(o) => { if (!o) { setHistoryDrawerOpen(false); setHistoryContact(null); } }}>
         <DialogContent className="max-w-sm mx-auto">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}>
+            <DialogTitle className="flex items-center gap-2 rr-text-navy">
               <Clock size={16} aria-hidden="true" />
               Send History
             </DialogTitle>
             {historyContact && (
-              <p className="text-xs mt-0.5" style={{ color: "oklch(0.50 0.04 260)" }}>
+              <p className="text-xs mt-0.5 rr-text-navy-mid">
                 {historyContact.name} &middot; {historyContact.email}
               </p>
             )}
@@ -1313,27 +1295,26 @@ export default function SavedContacts() {
 
           {historyLoading ? (
             <div className="flex justify-center py-8">
-              <Loader2 size={28} className="animate-spin" style={{ color: "oklch(0.22 0.09 260)" }} />
+              <Loader2 size={28} className="animate-spin rr-text-navy" />
             </div>
           ) : sendHistory.length === 0 ? (
             <div className="py-8 text-center">
               <Mail size={32} className="mx-auto mb-3" style={{ color: "oklch(0.75 0.04 260)" }} />
-              <p className="text-sm" style={{ color: "oklch(0.50 0.04 260)" }}>No emails sent to this contact yet.</p>
+              <p className="text-sm rr-text-navy-mid">No emails sent to this contact yet.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-2 max-h-80 overflow-y-auto pr-1">
               {sendHistory.map((row) => (
                 <div
                   key={row.id}
-                  className="rounded-xl px-3 py-2.5 flex items-start justify-between gap-2"
-                  style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}
+                  className="rounded-xl px-3 py-2.5 flex items-start justify-between gap-2 rr-bg-white-card" style={{ border: "1px solid oklch(0.90 0.02 260)" }}
                 >
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold" style={{ color: "oklch(0.22 0.09 260)" }}>
+                    <p className="text-xs font-semibold rr-text-navy">
                       {row.sentAt ? format(new Date(row.sentAt), "MMM d, yyyy 'at' h:mm a") : "Unknown date"}
                     </p>
                     {row.platformLabel && (
-                      <p className="text-xs mt-0.5" style={{ color: "oklch(0.50 0.04 260)" }}>
+                      <p className="text-xs mt-0.5 rr-text-navy-mid">
                         Platform: {row.platformLabel}
                       </p>
                     )}

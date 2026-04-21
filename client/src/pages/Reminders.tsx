@@ -105,13 +105,12 @@ export default function Reminders() {
   const history = (reminders as Reminder[]).filter((r) => r.status !== "pending");
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Header */}
-      <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
+      <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-1 mb-4 text-sm opacity-70 hover:opacity-100 transition-opacity"
-          style={{ color: "oklch(0.80 0.18 80)" }}
+          className="flex items-center gap-1 mb-4 text-sm opacity-70 hover:opacity-100 transition-opacity rr-text-gold"
         >
           <ChevronLeft size={16} /> Back
         </button>
@@ -132,15 +131,13 @@ export default function Reminders() {
           <div className="flex gap-2 mt-2.5">
             <button
               onClick={() => setPreviewStep(1)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors"
-              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors rr-bg-navy rr-text-gold"
             >
               <Eye size={11} /> Preview 1st Follow-up
             </button>
             <button
               onClick={() => setPreviewStep(2)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors"
-              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors rr-bg-navy rr-text-gold"
             >
               <Eye size={11} /> Preview 2nd Follow-up
             </button>
@@ -217,7 +214,7 @@ export default function Reminders() {
             <AlertDialogCancel>Not yet</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => sendNowTarget && sendNowMutation.mutate({ id: sendNowTarget.id })}
-              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+              className="rr-bg-navy rr-text-gold"
             >
               Send Now
             </AlertDialogAction>
@@ -270,12 +267,11 @@ export default function Reminders() {
           onClick={() => setPreviewStep(null)}
         >
           <div
-            className="w-full max-w-lg rounded-t-2xl overflow-hidden"
-            style={{ background: "white", maxHeight: "80vh", display: "flex", flexDirection: "column" }}
+            className="w-full max-w-lg rounded-t-2xl overflow-hidden bg-white" style={{ maxHeight: "80vh", display: "flex", flexDirection: "column" }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal header */}
-            <div className="flex items-center justify-between px-4 py-3 shrink-0" style={{ background: "oklch(0.22 0.09 260)", borderBottom: "1px solid oklch(0.30 0.08 260)" }}>
+            <div className="flex items-center justify-between px-4 py-3 shrink-0 rr-bg-navy" style={{ borderBottom: "1px solid oklch(0.30 0.08 260)" }}>
               <div>
                 <p className="text-xs font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
                   {previewStep === 2 ? "2nd Follow-up Preview" : "1st Follow-up Preview"}
@@ -285,7 +281,7 @@ export default function Reminders() {
                 </p>
               </div>
               <button onClick={() => setPreviewStep(null)} className="p-1 rounded-full hover:bg-white/10 transition-colors">
-                <X size={18} style={{ color: "oklch(0.80 0.18 80)" }} />
+                <X size={18} className="rr-text-gold" />
               </button>
             </div>
             {/* Email body */}
@@ -383,8 +379,7 @@ function ReminderRow({
               <Button
                 size="sm"
                 onClick={onSendNow}
-                className="text-xs h-7 px-2.5 gap-1"
-                style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+                className="text-xs h-7 px-2.5 gap-1 rr-bg-navy rr-text-gold"
               >
                 <SendHorizonal size={11} />
                 Send Now

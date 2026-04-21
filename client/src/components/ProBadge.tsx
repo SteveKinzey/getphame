@@ -17,13 +17,8 @@ export default function ProBadge({ size = "md", className = "" }: ProBadgeProps)
   const s = sizes[size];
   return (
     <span
-      className={`inline-flex items-center ${s.gap} ${s.px} rounded-full font-black tracking-widest uppercase ${s.text} ${className}`}
-      style={{
-        background: "oklch(0.80 0.18 80)",
-        color: "oklch(0.22 0.09 260)",
-        fontFamily: "'Poppins', sans-serif",
-        letterSpacing: "0.08em",
-      }}
+      className={`inline-flex items-center rr-bg-gold rr-text-navy ${s.gap} ${s.px} rounded-full font-black tracking-widest uppercase ${s.text} ${className}`}
+      style={{ letterSpacing: "0.08em" }}
     >
       <Crown size={s.crown} strokeWidth={2.5} />
       PRO

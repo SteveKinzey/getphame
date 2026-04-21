@@ -70,7 +70,7 @@ export default function AdminDashboard() {
 
   if (user.role !== "admin") {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "oklch(0.975 0.003 100)" }}>
+      <div className="min-h-screen flex items-center justify-center rr-bg-cream-warm">
         <div className="text-center px-6">
           <ShieldAlert size={48} className="mx-auto mb-3" style={{ color: "oklch(0.55 0.18 25)" }} />
           <h2 className="text-xl font-black" style={{ fontFamily: "'Poppins', sans-serif" }}>Access Denied</h2>
@@ -81,28 +81,25 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Header */}
-      <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
+      <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-1.5 mb-4 text-xs font-bold"
-          style={{ color: "oklch(0.80 0.18 80)" }}
+          className="flex items-center gap-1.5 mb-4 text-xs font-bold rr-text-gold"
         >
           <ArrowLeft size={14} /> Back to Home
         </button>
         <div className="flex items-center gap-2 mb-1">
-          <Rocket size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+          <Rocket size={16} className="rr-text-gold" />
           <span
-            className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+            className="text-xs font-bold tracking-widest uppercase rr-text-gold"
           >
             ReviewLink
           </span>
         </div>
         <h1
-          className="text-2xl"
-          style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
+          className="text-2xl text-white rr-fw-black"
         >
           Admin Dashboard
         </h1>
@@ -114,7 +111,7 @@ export default function AdminDashboard() {
       <div className="px-4 py-5 flex flex-col gap-5">
         {isLoading && (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="animate-spin" size={32} style={{ color: "oklch(0.22 0.09 260)" }} />
+            <Loader2 className="animate-spin rr-text-navy" size={32} />
           </div>
         )}
 
@@ -137,14 +134,12 @@ export default function AdminDashboard() {
               const arr = mrr * 12;
               return (
                 <div
-                  className="rounded-2xl px-4 py-4"
-                  style={{ background: "oklch(0.22 0.09 260)", border: "2px solid oklch(0.80 0.18 80)" }}
+                  className="rounded-2xl px-4 py-4 rr-bg-navy" style={{ border: "2px solid oklch(0.80 0.18 80)" }}
                 >
                   <div className="flex items-center gap-2 mb-3">
-                    <DollarSign size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+                    <DollarSign size={16} className="rr-text-gold" />
                     <span
-                      className="text-xs font-black uppercase tracking-widest"
-                      style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+                      className="text-xs font-black uppercase tracking-widest rr-text-gold"
                     >
                       Revenue
                     </span>
@@ -153,8 +148,7 @@ export default function AdminDashboard() {
                     <div>
                       <p className="text-xs mb-0.5" style={{ color: "var(--text-on-dark-muted)" }}>MRR</p>
                       <p
-                        className="text-2xl font-black"
-                        style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+                        className="text-2xl font-black text-white"
                       >
                         ${mrr.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                       </p>
@@ -162,8 +156,7 @@ export default function AdminDashboard() {
                     <div>
                       <p className="text-xs mb-0.5" style={{ color: "var(--text-on-dark-muted)" }}>ARR</p>
                       <p
-                        className="text-2xl font-black"
-                        style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+                        className="text-2xl font-black rr-text-gold"
                       >
                         ${arr.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                       </p>
@@ -171,8 +164,7 @@ export default function AdminDashboard() {
                   </div>
                   <button
                     onClick={() => navigate("/admin/revenue")}
-                    className="mt-3 text-xs font-bold"
-                    style={{ color: "oklch(0.80 0.18 80)" }}
+                    className="mt-3 text-xs font-bold rr-text-gold"
                   >
                     Full Revenue Dashboard →
                   </button>
@@ -183,22 +175,22 @@ export default function AdminDashboard() {
             {/* Top KPI row */}
             <div className="grid grid-cols-2 gap-3">
               <KpiCard
-                icon={<Users size={20} style={{ color: "oklch(0.80 0.18 80)" }} />}
+                icon={<Users size={20} className="rr-text-gold" />}
                 label="Total Users"
                 value={stats.totalUsers.toLocaleString()}
               />
               <KpiCard
-                icon={<Send size={20} style={{ color: "oklch(0.80 0.18 80)" }} />}
+                icon={<Send size={20} className="rr-text-gold" />}
                 label="Total Sends"
                 value={stats.totalSends.toLocaleString()}
               />
               <KpiCard
-                icon={<TrendingUp size={20} style={{ color: "oklch(0.80 0.18 80)" }} />}
+                icon={<TrendingUp size={20} className="rr-text-gold" />}
                 label="Sends (30d)"
                 value={stats.sendsLast30.toLocaleString()}
               />
               <KpiCard
-                icon={<Wifi size={20} style={{ color: "oklch(0.80 0.18 80)" }} />}
+                icon={<Wifi size={20} className="rr-text-gold" />}
                 label="Active SMTP"
                 value={`${stats.activeSmtp} / ${stats.totalSmtp}`}
               />
@@ -216,18 +208,16 @@ export default function AdminDashboard() {
 
             {/* Tier breakdown */}
             <div
-              className="rounded-2xl px-4 py-4"
-              style={{ background: "white", boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
+              className="rounded-2xl px-4 py-4 bg-white" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
             >
               <h3
-                className="text-sm font-black mb-3 uppercase tracking-widest"
-                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                className="text-sm font-black mb-3 uppercase tracking-widest rr-text-navy"
               >
                 Tier Breakdown
               </h3>
               <div className="flex flex-col gap-2">
                 <TierRow
-                  icon={<Users size={14} style={{ color: "oklch(0.55 0.04 260)" }} />}
+                  icon={<Users size={14} className="rr-text-navy-muted" />}
                   label="Free"
                   count={stats.tierCounts.free}
                   total={stats.totalUsers}
@@ -261,8 +251,8 @@ export default function AdminDashboard() {
                 className="mt-3 pt-3 flex items-center justify-between text-xs"
                 style={{ borderTop: "1px solid oklch(0.92 0.01 260)" }}
               >
-                <span style={{ color: "oklch(0.55 0.04 260)" }}>Paid conversion rate</span>
-                <span className="font-black" style={{ color: "oklch(0.22 0.09 260)" }}>
+                <span className="rr-text-navy-muted">Paid conversion rate</span>
+                <span className="font-black rr-text-navy">
                   {stats.totalUsers > 0
                     ? (
                         ((stats.tierCounts.pro + stats.tierCounts.annual + stats.tierCounts.lifetime) /
@@ -277,12 +267,10 @@ export default function AdminDashboard() {
 
             {/* Recent signups */}
             <div
-              className="rounded-2xl px-4 py-4"
-              style={{ background: "white", boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
+              className="rounded-2xl px-4 py-4 bg-white" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
             >
               <h3
-                className="text-sm font-black mb-3 uppercase tracking-widest"
-                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                className="text-sm font-black mb-3 uppercase tracking-widest rr-text-navy"
               >
                 Recent Signups
               </h3>
@@ -293,10 +281,10 @@ export default function AdminDashboard() {
                   {[...stats.recentUsers].reverse().map((u) => (
                     <div key={u.id} className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>
+                        <p className="text-sm font-bold rr-text-navy">
                           {u.name || "(no name)"}
                         </p>
-                        <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>
+                        <p className="text-xs rr-text-navy-muted">
                           {u.email}
                         </p>
                       </div>
@@ -316,38 +304,29 @@ export default function AdminDashboard() {
 
             {/* User search */}
             <div
-              className="rounded-2xl px-4 py-4"
-              style={{ background: "white", boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
+              className="rounded-2xl px-4 py-4 bg-white" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
             >
               <h3
-                className="text-sm font-black mb-3 uppercase tracking-widest"
-                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                className="text-sm font-black mb-3 uppercase tracking-widest rr-text-navy"
               >
                 User Search
               </h3>
               <div className="relative mb-3">
                 <Search
                   size={14}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
-                  style={{ color: "oklch(0.55 0.04 260)" }}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none rr-text-navy-muted"
                 />
                 <input
                   type="text"
                   value={searchInput}
                   onChange={e => setSearchInput(e.target.value)}
                   placeholder="Search by name or email…"
-                  className="w-full rounded-xl pl-8 pr-8 py-2.5 text-sm outline-none"
-                  style={{
-                    background: "oklch(0.97 0.003 260)",
-                    border: "1px solid oklch(0.88 0.02 260)",
-                    color: "oklch(0.22 0.09 260)",
-                  }}
+                  className="w-full rounded-xl pl-8 pr-8 py-2.5 text-sm outline-none rr-text-navy" style={{ background: "oklch(0.97 0.003 260)", border: "1px solid oklch(0.88 0.02 260)" }}
                 />
                 {searchInput && (
                   <button
                     onClick={() => setSearchInput("")}
-                    className="absolute right-3 top-1/2 -translate-y-1/2"
-                    style={{ color: "oklch(0.55 0.04 260)" }}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 rr-text-navy-muted"
                   >
                     <X size={13} />
                   </button>
@@ -355,12 +334,12 @@ export default function AdminDashboard() {
               </div>
               {isSearching && (
                 <div className="flex items-center gap-2 py-2">
-                  <Loader2 size={14} className="animate-spin" style={{ color: "oklch(0.55 0.04 260)" }} />
-                  <span className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>Searching…</span>
+                  <Loader2 size={14} className="animate-spin rr-text-navy-muted" />
+                  <span className="text-xs rr-text-navy-muted">Searching…</span>
                 </div>
               )}
               {!isSearching && searchResults && searchResults.length === 0 && debouncedSearch.length >= 2 && (
-                <p className="text-xs py-2" style={{ color: "oklch(0.55 0.04 260)" }}>No users found.</p>
+                <p className="text-xs py-2 rr-text-navy-muted">No users found.</p>
               )}
               {!isSearching && searchResults && searchResults.length > 0 && (
                 <div className="flex flex-col gap-2">
@@ -371,10 +350,10 @@ export default function AdminDashboard() {
                       style={{ borderBottom: "1px solid oklch(0.94 0.01 260)" }}
                     >
                       <div>
-                        <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>
+                        <p className="text-sm font-bold rr-text-navy">
                           {u.name || "(no name)"}
                         </p>
-                        <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>{u.email}</p>
+                        <p className="text-xs rr-text-navy-muted">{u.email}</p>
                         {u.churnReason && (
                           <span
                             className="inline-block text-xs font-bold rounded-full px-2 py-0.5 mt-0.5"
@@ -409,14 +388,14 @@ export default function AdminDashboard() {
                           <option value="annual">annual</option>
                           <option value="lifetime">lifetime</option>
                         </select>
-                        {setTier.isPending && <Loader2 size={10} className="animate-spin" style={{ color: "oklch(0.55 0.04 260)" }} />}
+                        {setTier.isPending && <Loader2 size={10} className="animate-spin rr-text-navy-muted" />}
                       </div>
                     </div>
                   ))}
                 </div>
               )}
               {debouncedSearch.length < 2 && (
-                <p className="text-xs" style={{ color: "oklch(0.70 0.03 260)" }}>Type at least 2 characters to search.</p>
+                <p className="text-xs rr-text-navy-faint">Type at least 2 characters to search.</p>
               )}
             </div>
 
@@ -424,47 +403,43 @@ export default function AdminDashboard() {
             <div className="flex flex-col gap-2">
               <button
                 onClick={() => navigate("/admin/codes")}
-                className="w-full flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold"
-                style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                className="w-full flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold rr-bg-navy text-white"
               >
                 <span className="flex items-center gap-2">
-                  <Crown size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+                  <Crown size={16} className="rr-text-gold" />
                   Access Codes
                 </span>
-                <span style={{ color: "oklch(0.80 0.18 80)" }}>→</span>
+                <span className="rr-text-gold">→</span>
               </button>
               <button
                 onClick={() => navigate("/admin/smtp-stats")}
-                className="w-full flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold"
-                style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                className="w-full flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold rr-bg-navy text-white"
               >
                 <span className="flex items-center gap-2">
-                  <Wifi size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+                  <Wifi size={16} className="rr-text-gold" />
                   SMTP Health
                 </span>
-                <span style={{ color: "oklch(0.80 0.18 80)" }}>→</span>
+                <span className="rr-text-gold">→</span>
               </button>
               <button
                 onClick={() => navigate("/admin/churn")}
-                className="w-full flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold"
-                style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                className="w-full flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold rr-bg-navy text-white"
               >
                 <span className="flex items-center gap-2">
-                  <TrendingUp size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+                  <TrendingUp size={16} className="rr-text-gold" />
                   Churn Surveys
                 </span>
-                <span style={{ color: "oklch(0.80 0.18 80)" }}>→</span>
+                <span className="rr-text-gold">→</span>
               </button>
               <button
                 onClick={() => navigate("/admin/revenue")}
-                className="w-full flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold"
-                style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                className="w-full flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold rr-bg-navy text-white"
               >
                 <span className="flex items-center gap-2">
-                  <Rocket size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+                  <Rocket size={16} className="rr-text-gold" />
                   Revenue Dashboard
                 </span>
-                <span style={{ color: "oklch(0.80 0.18 80)" }}>→</span>
+                <span className="rr-text-gold">→</span>
               </button>
             </div>
           </>
@@ -485,14 +460,13 @@ function KpiCard({
 }) {
   return (
     <div
-      className="rounded-2xl px-4 py-4 flex flex-col gap-2"
-      style={{ background: "white", boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
+      className="rounded-2xl px-4 py-4 flex flex-col gap-2 bg-white" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
     >
       {icon}
-      <p className="text-2xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+      <p className="text-2xl font-black rr-text-navy">
         {value}
       </p>
-      <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>
+      <p className="text-xs rr-text-navy-muted">
         {label}
       </p>
     </div>
@@ -521,7 +495,7 @@ function TierRow({
           <span className="text-xs font-bold" style={{ color: "oklch(0.35 0.04 260)" }}>
             {label}
           </span>
-          <span className="text-xs font-black" style={{ color: "oklch(0.22 0.09 260)" }}>
+          <span className="text-xs font-black rr-text-navy">
             {count}
           </span>
         </div>

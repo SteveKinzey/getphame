@@ -36,8 +36,7 @@ export default function UnsubscribePage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-6 pt-16 pb-40"
-      style={{ background: "oklch(0.975 0.003 100)" }}
+      className="min-h-screen flex flex-col items-center justify-center px-6 pt-16 pb-40 rr-bg-cream-warm"
     >
       {/* Card */}
       <div
@@ -46,12 +45,10 @@ export default function UnsubscribePage() {
       >
         {/* Navy header */}
         <div
-          className="px-8 py-6 text-center"
-          style={{ background: "oklch(0.22 0.09 260)" }}
+          className="px-8 py-6 text-center rr-bg-navy"
         >
           <p
-            className="text-xs font-bold tracking-widest uppercase mb-1"
-            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
+            className="text-xs font-bold tracking-widest uppercase mb-1 rr-text-gold"
           >
             ReviewLink
           </p>
@@ -67,8 +64,8 @@ export default function UnsubscribePage() {
         <div className="px-8 py-8 text-center">
           {status === "loading" && (
             <div className="flex flex-col items-center gap-3">
-              <Loader2 size={40} className="animate-spin" style={{ color: "oklch(0.22 0.09 260)" }} />
-              <p className="text-sm" style={{ color: "oklch(0.40 0.04 260)" }}>
+              <Loader2 size={40} className="animate-spin rr-text-navy" />
+              <p className="text-sm rr-text-navy-mid">
                 Processing your request…
               </p>
             </div>
@@ -79,12 +76,11 @@ export default function UnsubscribePage() {
               <CheckCircle2 size={48} className="text-green-500" />
               <div>
                 <p
-                  className="text-lg font-bold mb-1"
-                  style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                  className="text-lg font-bold mb-1 rr-text-navy"
                 >
                   You've been unsubscribed
                 </p>
-                <p className="text-sm" style={{ color: "oklch(0.50 0.04 260)" }}>
+                <p className="text-sm rr-text-navy-mid">
                   You won't receive any more review request emails. If this was a mistake, please
                   contact the business directly.
                 </p>
@@ -97,12 +93,11 @@ export default function UnsubscribePage() {
               <XCircle size={48} className="text-red-500" />
               <div>
                 <p
-                  className="text-lg font-bold mb-1"
-                  style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                  className="text-lg font-bold mb-1 rr-text-navy"
                 >
                   Something went wrong
                 </p>
-                <p className="text-sm" style={{ color: "oklch(0.50 0.04 260)" }}>
+                <p className="text-sm rr-text-navy-mid">
                   {errorMsg || "This unsubscribe link may be invalid or expired."}
                 </p>
               </div>

@@ -56,20 +56,18 @@ export default function PrivacyPolicy() {
   };
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Header */}
-      <div className="px-5 pt-12 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
+      <div className="px-5 pt-12 pb-6 rr-bg-navy">
         <button
           onClick={handleBack}
-          className="flex items-center gap-2 mb-4 text-sm"
-          style={{ color: "oklch(0.80 0.18 80)" }}
+          className="flex items-center gap-2 mb-4 text-sm rr-text-gold"
         >
           <ArrowLeft size={16} />
           Back
         </button>
         <h1
-          className="text-2xl"
-          style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
+          className="text-2xl text-white rr-fw-black"
         >
           Privacy Policy
         </h1>
@@ -114,7 +112,7 @@ export default function PrivacyPolicy() {
           <h2 className={SECTION_HEADING} style={SECTION_HEADING_STYLE}>3. Information We Collect</h2>
           <p className="mb-3">We collect information in three ways: information you provide directly, information generated automatically when you use the Service, and information about your customers that you upload to the Service.</p>
 
-          <h3 className="font-bold mb-1.5 mt-3" style={{ color: "oklch(0.22 0.09 260)" }}>3.1 Information You Provide</h3>
+          <h3 className="font-bold mb-1.5 mt-3 rr-text-navy">3.1 Information You Provide</h3>
           <p className="mb-2">
             <strong>Account information.</strong> When you sign in via Google OAuth, we receive your name and email address from Google. We do not receive or store your Google account password.
           </p>
@@ -128,7 +126,7 @@ export default function PrivacyPolicy() {
             <strong>Customer contact data.</strong> You may manually enter, import via CSV, or sync from WooCommerce or Stripe the names and email addresses of your customers. This data is stored in your account and used exclusively to send review request emails that you initiate. We do not use your customers' contact information for any other purpose.
           </p>
 
-          <h3 className="font-bold mb-1.5 mt-4" style={{ color: "oklch(0.22 0.09 260)" }}>3.2 Information Generated Automatically</h3>
+          <h3 className="font-bold mb-1.5 mt-4 rr-text-navy">3.2 Information Generated Automatically</h3>
           <p className="mb-2">
             <strong>Email tracking events.</strong> Each review request email contains a 1×1 tracking pixel and a click-tracking redirect link. When a recipient opens the email or clicks the review link, we record the event timestamp, the approximate IP address (used only to determine country-level geography), and the email client's user agent string. This data is associated with the specific review request in your account and displayed to you as open and click analytics. We do not use this data to build profiles of your customers or share it with third parties.
           </p>
@@ -139,7 +137,7 @@ export default function PrivacyPolicy() {
             <strong>Usage data.</strong> We record the number of review requests sent per month per account for operational purposes (rate limiting, capacity planning). We do not sell or share this data.
           </p>
 
-          <h3 className="font-bold mb-1.5 mt-4" style={{ color: "oklch(0.22 0.09 260)" }}>3.3 Information We Do Not Collect</h3>
+          <h3 className="font-bold mb-1.5 mt-4 rr-text-navy">3.3 Information We Do Not Collect</h3>
           <p>
             We do not read, index, or store the contents of your existing emails, your inbox, your sent folder, or any other mailbox data. Your SMTP credentials are used exclusively to send outbound emails you explicitly initiate through the Service. We have no access to your email history.
           </p>

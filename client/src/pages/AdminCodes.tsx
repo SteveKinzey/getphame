@@ -88,15 +88,15 @@ export default function AdminCodesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "oklch(0.22 0.09 260)" }}>
-        <Loader2 size={32} className="animate-spin" style={{ color: "oklch(0.80 0.18 80)" }} />
+      <div className="min-h-screen flex items-center justify-center rr-bg-navy">
+        <Loader2 size={32} className="animate-spin rr-text-gold" />
       </div>
     );
   }
 
   if (!user || user.role !== "admin") {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center px-6" style={{ background: "oklch(0.22 0.09 260)" }}>
+      <div className="min-h-screen flex flex-col items-center justify-center px-6 rr-bg-navy">
         <p className="text-white text-lg font-bold mb-4">Admin access required.</p>
         <button onClick={() => navigate("/")} className="text-sm" style={{ color: "var(--text-on-dark-secondary)" }}>
           Go home
@@ -106,7 +106,7 @@ export default function AdminCodesPage() {
   }
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.22 0.09 260)" }}>
+    <div className="min-h-screen pb-40 rr-bg-navy">
       {/* Header */}
       <div className="px-5 pt-14 pb-6">
         <button
@@ -118,10 +118,9 @@ export default function AdminCodesPage() {
           Back
         </button>
         <div className="flex items-center gap-2 mb-1">
-          <Ticket size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+          <Ticket size={16} className="rr-text-gold" />
           <span
-            className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+            className="text-xs font-bold tracking-widest uppercase rr-text-gold"
           >
             Admin
           </span>
@@ -129,8 +128,7 @@ export default function AdminCodesPage() {
         <div className="flex items-start justify-between gap-3">
           <div>
             <h1
-              className="text-2xl font-black"
-              style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+              className="text-2xl font-black text-white"
             >
               Access Codes
             </h1>
@@ -140,8 +138,7 @@ export default function AdminCodesPage() {
           </div>
           <button
             onClick={() => navigate("/admin/smtp-stats")}
-            className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold mt-1"
-            style={{ background: "oklch(0.30 0.07 260)", color: "oklch(0.80 0.18 80)", border: "1px solid rgba(255,255,255,0.12)" }}
+            className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold mt-1 rr-text-gold" style={{ background: "oklch(0.30 0.07 260)", border: "1px solid rgba(255,255,255,0.12)" }}
           >
             SMTP Stats
           </button>
@@ -150,10 +147,9 @@ export default function AdminCodesPage() {
 
       <div className="px-4 flex flex-col gap-4">
         {/* Create Code Card */}
-        <div className="rounded-2xl p-5" style={{ background: "oklch(0.30 0.08 260)" }}>
+        <div className="rounded-2xl p-5 rr-bg-navy-mid">
           <h2
-            className="text-sm font-black mb-4"
-            style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+            className="text-sm font-black mb-4 text-white"
           >
             Create New Code
           </h2>
@@ -162,8 +158,7 @@ export default function AdminCodesPage() {
           {preview && (
             <div className="flex items-center gap-2 mb-4">
               <span
-                className="flex-1 px-3 py-2 rounded-xl text-sm font-mono tracking-wider text-center"
-                style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+                className="flex-1 px-3 py-2 rounded-xl text-sm font-mono tracking-wider text-center rr-bg-navy rr-text-gold"
               >
                 {preview.code}
               </span>
@@ -189,12 +184,7 @@ export default function AdminCodesPage() {
                 value={customCode}
                 onChange={(e) => setCustomCode(e.target.value.toUpperCase())}
                 placeholder="e.g. LAUNCH2026"
-                className="w-full px-4 py-3 rounded-xl text-sm font-mono tracking-wider outline-none"
-                style={{
-                  background: "oklch(0.22 0.09 260)",
-                  color: "white",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                }}
+                className="w-full px-4 py-3 rounded-xl text-sm font-mono tracking-wider outline-none rr-bg-navy text-white" style={{ border: "1px solid rgba(255,255,255,0.15)" }}
               />
             </div>
 
@@ -208,12 +198,7 @@ export default function AdminCodesPage() {
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder="e.g. Beta cohort — Jan 2026"
-                className="w-full px-4 py-3 rounded-xl text-sm outline-none"
-                style={{
-                  background: "oklch(0.22 0.09 260)",
-                  color: "white",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                }}
+                className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white" style={{ border: "1px solid rgba(255,255,255,0.15)" }}
               />
             </div>
 
@@ -229,12 +214,7 @@ export default function AdminCodesPage() {
                   value={maxUses}
                   onChange={(e) => setMaxUses(e.target.value)}
                   placeholder="∞"
-                  className="w-full px-4 py-3 rounded-xl text-sm outline-none"
-                  style={{
-                    background: "oklch(0.22 0.09 260)",
-                    color: "white",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                  }}
+                  className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white" style={{ border: "1px solid rgba(255,255,255,0.15)" }}
                 />
               </div>
 
@@ -249,12 +229,7 @@ export default function AdminCodesPage() {
                   value={expiryDays}
                   onChange={(e) => setExpiryDays(e.target.value)}
                   placeholder="never"
-                  className="w-full px-4 py-3 rounded-xl text-sm outline-none"
-                  style={{
-                    background: "oklch(0.22 0.09 260)",
-                    color: "white",
-                    border: "1px solid rgba(255,255,255,0.15)",
-                  }}
+                  className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white" style={{ border: "1px solid rgba(255,255,255,0.15)" }}
                 />
               </div>
             </div>
@@ -262,12 +237,7 @@ export default function AdminCodesPage() {
             <button
               onClick={handleCreate}
               disabled={createCode.isPending}
-              className="w-full py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition-transform active:scale-95 disabled:opacity-60"
-              style={{
-                background: "oklch(0.80 0.18 80)",
-                color: "oklch(0.22 0.09 260)",
-                fontFamily: "'Poppins', sans-serif",
-              }}
+              className="w-full py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition-transform active:scale-95 disabled:opacity-60 rr-bg-gold rr-text-navy"
             >
               {createCode.isPending ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
               {createCode.isPending ? "Creating..." : "Create Code"}
@@ -276,11 +246,10 @@ export default function AdminCodesPage() {
         </div>
 
         {/* Existing Codes List */}
-        <div className="rounded-2xl overflow-hidden" style={{ background: "oklch(0.30 0.08 260)" }}>
+        <div className="rounded-2xl overflow-hidden rr-bg-navy-mid">
           <div className="px-5 py-4 flex items-center justify-between">
             <h2
-              className="text-sm font-black"
-              style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+              className="text-sm font-black text-white"
             >
               All Codes ({codes?.length ?? 0})
             </h2>

@@ -471,6 +471,113 @@
     to   { transform: translateX(0);     opacity: 1; }
   }
 
+  /* ── Additional brand color utilities ─────────────────────────────── */
+  /* Background utilities */
+  .rr-bg-navy          { background: var(--navy); }
+  .rr-bg-navy-light    { background: var(--navy-light); }
+  .rr-bg-navy-mid      { background: oklch(0.30 0.08 260); }
+  .rr-bg-navy-deep     { background: oklch(0.22 0.09 260); }
+  .rr-bg-navy-darker   { background: oklch(0.18 0.08 260); }
+  .rr-bg-gold          { background: var(--gold); }
+  .rr-bg-gold-light    { background: var(--gold-light); }
+  .rr-bg-gold-pale     { background: oklch(0.97 0.06 80); }
+  .rr-bg-cream         { background: var(--cream); }
+  .rr-bg-cream-warm    { background: oklch(0.975 0.003 100); }
+  .rr-bg-white-card    { background: oklch(0.97 0.01 260); }
+  .rr-bg-surface       { background: oklch(0.96 0.01 260); }
+  .rr-bg-green         { background: oklch(0.55 0.18 145); }
+  .rr-bg-green-pale    { background: oklch(0.96 0.04 145); }
+  .rr-bg-red-pale      { background: oklch(0.96 0.02 20); }
+
+  /* Text color utilities */
+  .rr-text-navy        { color: var(--navy); }
+  .rr-text-navy-mid    { color: oklch(0.40 0.04 260); }
+  .rr-text-navy-muted  { color: oklch(0.55 0.03 260); }
+  .rr-text-navy-faint  { color: oklch(0.65 0.03 260); }
+  .rr-text-gold        { color: var(--gold); }
+  .rr-text-gold-dark   { color: var(--gold-dark); }
+  .rr-text-gold-dim    { color: oklch(0.40 0.10 80); }
+  .rr-text-white       { color: oklch(1 0 0); }
+  .rr-text-white-soft  { color: oklch(0.90 0.02 260); }
+  .rr-text-green       { color: oklch(0.55 0.18 145); }
+  .rr-text-red         { color: oklch(0.55 0.18 20); }
+  .rr-text-mono        { font-family: monospace; }
+
+  /* Border utilities */
+  .rr-border-navy      { border-color: oklch(0.30 0.08 260); }
+  .rr-border-navy-faint { border-color: oklch(0.35 0.05 260); }
+  .rr-border-gold      { border-color: var(--gold); }
+  .rr-border-gold-faint { border-color: oklch(0.88 0.06 80); }
+  .rr-border-green     { border-color: oklch(0.55 0.18 145); }
+
+  /* Font weight utilities (supplement Tailwind's font-* classes) */
+  .rr-fw-black         { font-weight: var(--fw-black); }
+  .rr-fw-extrabold     { font-weight: var(--fw-extrabold); }
+  .rr-fw-bold          { font-weight: var(--fw-bold); }
+  .rr-fw-semibold      { font-weight: var(--fw-semibold); }
+  .rr-fw-normal        { font-weight: var(--fw-normal); }
+
+  /* Font family shorthand */
+  .rr-font-poppins     { font-family: 'Poppins', 'Noto Sans Thai', sans-serif; }
+  .rr-font-nunito      { font-family: 'Nunito', 'Sarabun', sans-serif; }
+  .rr-font-mono        { font-family: monospace; }
+
+  /* Syne brand label (used in app header/logo) */
+  .rr-font-syne        { font-family: 'Syne', 'Poppins', sans-serif; font-weight: 900; }
+
+  /* Navy panel with inner card */
+  .rr-navy-card {
+    background: oklch(0.30 0.08 260);
+    border-radius: 0.75rem;
+    color: white;
+  }
+
+  /* Subtle navy surface (slightly lighter than panel) */
+  .rr-navy-surface {
+    background: oklch(0.28 0.08 260);
+    border-radius: 0.5rem;
+  }
+
+  /* Gold accent badge */
+  .rr-gold-badge {
+    background: var(--gold);
+    color: var(--navy);
+    font-family: 'Poppins', sans-serif;
+    font-weight: var(--fw-bold);
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+  }
+
+  /* Green success badge */
+  .rr-green-badge {
+    background: oklch(0.55 0.18 145);
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    font-weight: var(--fw-semibold);
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+  }
+
+  /* Stat card number (large gold number) */
+  .rr-stat-label {
+    font-family: 'Nunito', sans-serif;
+    font-weight: var(--fw-semibold);
+    color: oklch(0.88 0.02 260);
+    font-size: var(--font-l2);
+  }
+
+  /* Tracking widest uppercase label (used in nav/header eyebrows) */
+  .rr-eyebrow {
+    font-family: 'Syne', 'Poppins', sans-serif;
+    font-weight: var(--fw-bold);
+    font-size: var(--font-l2);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
   /* PWA mobile viewport fix */
   .mobile-screen {
     min-height: 100dvh;

@@ -62,11 +62,10 @@ export default function ChurnSurveyPage() {
   }
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Header */}
       <div
-        className="px-5 pt-14 pb-8"
-        style={{ background: "oklch(0.22 0.09 260)" }}
+        className="px-5 pt-14 pb-8 rr-bg-navy"
       >
         <div className="flex items-center gap-3 mb-4">
           <button
@@ -74,25 +73,23 @@ export default function ChurnSurveyPage() {
             className="p-2 rounded-xl"
             style={{ background: "oklch(0.30 0.07 260)" }}
           >
-            <ArrowRight size={16} style={{ color: "white", transform: "rotate(180deg)" }} />
+            <ArrowRight size={16} className="text-white" style={{ transform: "rotate(180deg)" }} />
           </button>
           <div>
             <p
-              className="text-xs font-bold tracking-widest uppercase mb-0.5"
-              style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
+              className="text-xs font-bold tracking-widest uppercase mb-0.5 rr-text-gold"
             >
               ReviewLink
             </p>
             <h1
-              className="text-xl font-black leading-tight"
-              style={{ color: "white", fontFamily: "'Syne', sans-serif" }}
+              className="text-xl font-black leading-tight text-white"
             >
               Before you go…
             </h1>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Frown size={18} style={{ color: "oklch(0.80 0.18 80)" }} />
+          <Frown size={18} className="rr-text-gold" />
           <p className="text-sm" style={{ color: "oklch(0.80 0.90 80)" }}>
             Help us improve by telling us why you're leaving.
           </p>
@@ -128,8 +125,7 @@ export default function ChurnSurveyPage() {
                   </span>
                   {selected === r.value && (
                     <span
-                      className="ml-auto text-xs font-black"
-                      style={{ color: "oklch(0.80 0.18 80)" }}
+                      className="ml-auto text-xs font-black rr-text-gold"
                     >
                       ✓
                     </span>
@@ -141,27 +137,21 @@ export default function ChurnSurveyPage() {
             {/* Discount offer — shown only when too_expensive is selected AND offer hasn't expired */}
             {selected === "too_expensive" && offerActive !== false && (
               <div
-                className="rounded-2xl px-4 py-4 mb-4 flex flex-col gap-3"
-                style={{
-                  background: "oklch(0.22 0.09 260)",
-                  border: "2px solid oklch(0.80 0.18 80)",
-                }}
+                className="rounded-2xl px-4 py-4 mb-4 flex flex-col gap-3 rr-bg-navy" style={{ border: "2px solid oklch(0.80 0.18 80)" }}
               >
                 <div className="flex items-center gap-2">
                   <span className="text-xl">🎁</span>
                   <p
-                    className="text-sm font-black"
-                    style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+                    className="text-sm font-black rr-text-gold"
                   >
                     Wait — here's a deal for you
                   </p>
                 </div>
                 <p className="text-sm" style={{ color: "var(--text-on-dark-primary)" }}>
-                  Stay on ReviewLink for <strong style={{ color: "oklch(0.80 0.18 80)" }}>40% off for 3 months</strong>. Use code at checkout:
+                  Stay on ReviewLink for <strong className="rr-text-gold">40% off for 3 months</strong>. Use code at checkout:
                 </p>
                 <div
-                  className="rounded-xl px-4 py-2.5 text-center font-black tracking-widest text-base select-all"
-                  style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", letterSpacing: "0.15em" }}
+                  className="rounded-xl px-4 py-2.5 text-center font-black tracking-widest text-base select-all rr-bg-gold rr-text-navy" style={{ letterSpacing: "0.15em" }}
                 >
                   STAY40
                 </div>
@@ -170,8 +160,7 @@ export default function ChurnSurveyPage() {
                 </p>
                 <button
                   onClick={() => navigate("/upgrade")}
-                  className="w-full rounded-xl py-3 text-sm font-black"
-                  style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+                  className="w-full rounded-xl py-3 text-sm font-black rr-bg-gold rr-text-navy"
                 >
                   Claim Offer — Keep My Plan
                 </button>
@@ -181,8 +170,7 @@ export default function ChurnSurveyPage() {
             {/* Optional comment */}
             <div className="mb-6">
               <label
-                className="block text-xs font-bold mb-2 uppercase tracking-widest"
-                style={{ color: "oklch(0.45 0.04 260)" }}
+                className="block text-xs font-bold mb-2 uppercase tracking-widest rr-text-navy-mid"
               >
                 Anything else? (optional)
               </label>
@@ -191,13 +179,7 @@ export default function ChurnSurveyPage() {
                 onChange={e => setComment(e.target.value)}
                 placeholder="Tell us more…"
                 rows={3}
-                className="w-full rounded-2xl px-4 py-3 text-sm outline-none resize-none"
-                style={{
-                  background: "white",
-                  border: "1px solid oklch(0.88 0.02 260)",
-                  color: "oklch(0.22 0.09 260)",
-                  boxShadow: "0 1px 8px rgba(0,0,0,0.04)",
-                }}
+                className="w-full rounded-2xl px-4 py-3 text-sm outline-none resize-none bg-white rr-text-navy" style={{ border: "1px solid oklch(0.88 0.02 260)", boxShadow: "0 1px 8px rgba(0,0,0,0.04)" }}
               />
             </div>
 
@@ -230,24 +212,21 @@ export default function ChurnSurveyPage() {
         ) : (
           /* Post-submit: show proceed button */
           <div
-            className="rounded-2xl px-6 py-8 text-center"
-            style={{ background: "white", boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
+            className="rounded-2xl px-6 py-8 text-center bg-white" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
           >
             <p className="text-3xl mb-3">🙏</p>
             <h2
-              className="text-lg font-black mb-2"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Syne', sans-serif" }}
+              className="text-lg font-black mb-2 rr-text-navy"
             >
               Thanks for the feedback
             </h2>
-            <p className="text-sm mb-6" style={{ color: "oklch(0.55 0.04 260)" }}>
+            <p className="text-sm mb-6 rr-text-navy-muted">
               Click below to open the billing portal and complete your cancellation.
             </p>
             <button
               onClick={handleProceedToCancel}
               disabled={getPortalUrl.isPending}
-              className="w-full rounded-2xl py-4 text-sm font-black flex items-center justify-center gap-2"
-              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+              className="w-full rounded-2xl py-4 text-sm font-black flex items-center justify-center gap-2 rr-bg-gold rr-text-navy"
             >
               {getPortalUrl.isPending ? (
                 <Loader2 size={16} className="animate-spin" />

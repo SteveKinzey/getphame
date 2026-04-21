@@ -18,15 +18,13 @@ export default function OnboardingPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-between pb-40 px-6 pt-16"
-      style={{ background: "oklch(0.22 0.09 260)" }}
+      className="min-h-screen flex flex-col items-center justify-between pb-40 px-6 pt-16 rr-bg-navy"
     >
       {/* Logo */}
       <div className="flex items-center gap-2 self-start">
-        <Rocket size={20} style={{ color: "oklch(0.80 0.18 80)" }} />
+        <Rocket size={20} className="rr-text-gold" />
         <span
-          className="text-sm font-bold tracking-widest uppercase"
-          style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+          className="text-sm font-bold tracking-widest uppercase rr-text-gold"
         >
           ReviewLink
         </span>
@@ -40,12 +38,11 @@ export default function OnboardingPage() {
 
         <div>
           <h1
-            className="text-4xl font-black leading-tight mb-3"
-            style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+            className="text-4xl font-black leading-tight mb-3 text-white"
           >
             Get More 5-Star
             <br />
-            <span style={{ color: "oklch(0.80 0.18 80)" }}>Google Reviews</span>
+            <span className="rr-text-gold">Google Reviews</span>
           </h1>
           <p className="text-base leading-relaxed" style={{ color: "var(--text-on-dark-secondary)" }}>
             Send personalized review requests from your own email account. Your customers see it
@@ -56,7 +53,7 @@ export default function OnboardingPage() {
         {/* Stars */}
         <div className="flex gap-1">
           {[1, 2, 3, 4, 5].map((i) => (
-            <Star key={i} size={24} fill="oklch(0.80 0.18 80)" style={{ color: "oklch(0.80 0.18 80)" }} />
+            <Star key={i} size={24} fill="oklch(0.80 0.18 80)" className="rr-text-gold" />
           ))}
         </div>
 
@@ -65,8 +62,7 @@ export default function OnboardingPage() {
           {["Sends from your email", "One-tap requests", "Free to start"].map((f) => (
             <span
               key={f}
-              className="text-xs font-semibold px-3 py-1 rounded-full"
-              style={{ background: "rgba(255,184,0,0.15)", color: "oklch(0.80 0.18 80)" }}
+              className="text-xs font-semibold px-3 py-1 rounded-full rr-text-gold" style={{ background: "rgba(255,184,0,0.15)" }}
             >
               {f}
             </span>
@@ -79,12 +75,7 @@ export default function OnboardingPage() {
         {/* Google Sign In */}
         <button
           onClick={handleGoogleSignIn}
-          className="w-full py-4 rounded-2xl font-bold text-base transition-transform active:scale-95 flex items-center justify-center gap-3"
-          style={{
-            background: "white",
-            color: "#1a1a2e",
-            fontFamily: "'Poppins', sans-serif",
-          }}
+          className="w-full py-4 rounded-2xl font-bold text-base transition-transform active:scale-95 flex items-center justify-center gap-3 bg-white" style={{ color: "#1a1a2e" }}
         >
           {/* Google SVG logo */}
           <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
@@ -99,12 +90,7 @@ export default function OnboardingPage() {
         {/* Apple Sign In */}
         <button
           onClick={handleAppleSignIn}
-          className="w-full py-4 rounded-2xl font-bold text-base transition-transform active:scale-95 flex items-center justify-center gap-3"
-          style={{
-            background: "black",
-            color: "white",
-            fontFamily: "'Poppins', sans-serif",
-          }}
+          className="w-full py-4 rounded-2xl font-bold text-base transition-transform active:scale-95 flex items-center justify-center gap-3 text-white" style={{ background: "black" }}
         >
           {/* Apple SVG logo */}
           <svg width="18" height="22" viewBox="0 0 814 1000" xmlns="http://www.w3.org/2000/svg" fill="white">

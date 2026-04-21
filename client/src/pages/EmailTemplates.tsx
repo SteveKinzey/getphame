@@ -273,13 +273,12 @@ export default function EmailTemplates() {
   const previewBody = applyPreview(form.body);
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Header */}
-      <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
+      <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/settings")}
-          className="flex items-center gap-1 mb-4 text-sm opacity-70 hover:opacity-100 transition-opacity"
-          style={{ color: "oklch(0.80 0.18 80)" }}
+          className="flex items-center gap-1 mb-4 text-sm opacity-70 hover:opacity-100 transition-opacity rr-text-gold"
         >
           <ChevronLeft size={16} /> Settings
         </button>
@@ -293,8 +292,7 @@ export default function EmailTemplates() {
           <Button
             onClick={openCreate}
             size="sm"
-            className="font-bold"
-            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+            className="font-bold rr-bg-gold rr-text-navy"
           >
             <Plus size={16} className="mr-1" /> New
           </Button>
@@ -374,8 +372,7 @@ export default function EmailTemplates() {
                         Used {(t as Template & { usageCount?: number }).usageCount} {((t as Template & { usageCount?: number }).usageCount ?? 0) === 1 ? "time" : "times"}
                       </span>
                     ) : (
-                      <span className="text-xs px-2 py-0.5 rounded-full font-medium"
-                        style={{ background: "oklch(0.97 0.01 260)", color: "oklch(0.65 0.03 260)" }}>
+                      <span className="text-xs px-2 py-0.5 rounded-full font-medium rr-bg-white-card rr-text-navy-faint">
                         Not used yet
                       </span>
                     )}
@@ -512,17 +509,17 @@ export default function EmailTemplates() {
             {/* ── Right: Live Preview ── */}
             {showLivePreview && (
               <div className="flex flex-col gap-2">
-                <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "oklch(0.55 0.03 260)" }}>
+                <p className="text-xs font-bold uppercase tracking-wide rr-text-navy-muted">
                   Live Preview
                 </p>
-                <p className="text-xs" style={{ color: "oklch(0.65 0.03 260)" }}>
+                <p className="text-xs rr-text-navy-faint">
                   Sample: <strong>{sampleCustomer}</strong> · {sampleBusiness}
                 </p>
 
                 {/* Subject preview */}
-                <div className="rounded-xl p-3 border" style={{ background: "oklch(0.97 0.01 260)", borderColor: "oklch(0.90 0.02 260)" }}>
-                  <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.55 0.03 260)" }}>SUBJECT</p>
-                  <p className="text-sm font-semibold" style={{ color: "oklch(0.22 0.09 260)" }}>
+                <div className="rounded-xl p-3 border rr-bg-white-card" style={{ borderColor: "oklch(0.90 0.02 260)" }}>
+                  <p className="text-xs font-bold mb-1 rr-text-navy-muted">SUBJECT</p>
+                  <p className="text-sm font-semibold rr-text-navy">
                     {previewSubject || <span className="opacity-40 italic">No subject yet</span>}
                   </p>
                 </div>
@@ -534,16 +531,16 @@ export default function EmailTemplates() {
                 >
                   {/* Email header bar */}
                   <div className="px-3 py-2 flex items-center gap-2" style={{ background: "oklch(0.94 0.01 260)" }}>
-                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black" style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}>
+                    <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black rr-bg-navy rr-text-gold">
                       {sampleBusiness[0]?.toUpperCase() ?? "B"}
                     </div>
                     <div>
-                      <p className="text-xs font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>{sampleBusiness}</p>
-                      <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>To: {sampleCustomer}</p>
+                      <p className="text-xs font-bold rr-text-navy">{sampleBusiness}</p>
+                      <p className="text-xs rr-text-navy-muted">To: {sampleCustomer}</p>
                     </div>
                   </div>
                   {/* Body */}
-                  <div className="p-3 overflow-y-auto" style={{ maxHeight: "280px", background: "white" }}>
+                  <div className="p-3 overflow-y-auto bg-white" style={{ maxHeight: "280px" }}>
                     <pre
                       className="text-sm whitespace-pre-wrap font-sans"
                       style={{ color: "oklch(0.25 0.03 260)", lineHeight: "1.6" }}
@@ -566,7 +563,7 @@ export default function EmailTemplates() {
 
           <DialogFooter className="mt-2">
             <Button variant="outline" onClick={() => { setDialogOpen(false); setForm(emptyForm); }}>Cancel</Button>
-            <Button onClick={handleSubmit} disabled={isSaving} style={{ background: "oklch(0.22 0.09 260)", color: "white" }}>
+            <Button onClick={handleSubmit} disabled={isSaving} className="rr-bg-navy text-white">
               {isSaving ? "Saving…" : editTemplate ? "Update" : "Save"}
             </Button>
           </DialogFooter>

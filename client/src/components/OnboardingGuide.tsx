@@ -51,10 +51,9 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
   return (
     <div className="space-y-5">
       <div
-        className="rounded-2xl p-5 text-center"
-        style={{ background: "oklch(0.30 0.08 260)" }}
+        className="rounded-2xl p-5 text-center rr-bg-navy-mid"
       >
-        <Rocket size={36} className="mx-auto mb-3" style={{ color: "oklch(0.80 0.18 80)" }} />
+        <Rocket size={36} className="mx-auto mb-3 rr-text-gold" />
         <p className="text-white font-bold text-lg leading-snug" style={{ fontFamily: "'Poppins', sans-serif" }}>
           ReviewLink sends personalised review request emails from your own email account.
         </p>
@@ -107,7 +106,7 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
         ))}
       </div>
 
-      <p className="text-xs text-center" style={{ color: "oklch(0.60 0.03 260)" }}>
+      <p className="text-xs text-center rr-text-navy-muted">
         Setup takes about 3 minutes. You can come back to this guide any time from the Home screen.
       </p>
     </div>
@@ -339,10 +338,10 @@ function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }
         className="rounded-2xl p-4"
         style={{ background: "oklch(0.96 0.02 260)", border: "1px solid oklch(0.88 0.03 260)" }}
       >
-        <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.22 0.09 260)" }}>
+        <p className="text-sm font-bold mb-1 rr-text-navy">
           Why connect your email?
         </p>
-        <p className="text-sm" style={{ color: "oklch(0.40 0.04 260)" }}>
+        <p className="text-sm rr-text-navy-mid">
           ReviewLink sends emails through your own account using SMTP — the same protocol your email app uses. Review requests arrive looking like a personal message from you, not a marketing blast.
         </p>
       </div>
@@ -362,21 +361,20 @@ function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }
         ].map((item) => (
           <div key={item.step} className="flex gap-3">
             <div
-              className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-black mt-0.5"
-              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+              className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-black mt-0.5 rr-bg-navy rr-text-gold"
             >
               {item.step}
             </div>
             <div>
-              <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>{item.title}</p>
-              <p className="text-xs mt-0.5" style={{ color: "oklch(0.45 0.04 260)" }}>{item.desc}</p>
+              <p className="text-sm font-bold rr-text-navy">{item.title}</p>
+              <p className="text-xs mt-0.5 rr-text-navy-mid">{item.desc}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Provider-specific accordion */}
-      <p className="text-xs font-bold uppercase tracking-wide pt-1" style={{ color: "oklch(0.55 0.05 260)" }}>
+      <p className="text-xs font-bold uppercase tracking-wide pt-1 rr-text-navy-muted">
         Provider setup — tap to expand
       </p>
 
@@ -414,7 +412,7 @@ function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }
                       >
                         {s.step}
                       </span>
-                      <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>{s.desc}</p>
+                      <p className="text-xs rr-text-navy-mid">{s.desc}</p>
                     </div>
                   ))}
                   {provider.note && (
@@ -437,8 +435,7 @@ function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }
       <SendTestEmailButton />
       <Button
         onClick={() => onNavigate("/settings")}
-        className="w-full font-bold"
-        style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+        className="w-full font-bold rr-bg-navy rr-text-gold"
       >
         <Mail size={15} className="mr-2" /> Go to Settings → Email Connection
       </Button>
@@ -455,16 +452,16 @@ function StepReviewPlatform({ onNavigate }: { onNavigate: (path: string) => void
         className="rounded-2xl p-4"
         style={{ background: "oklch(0.96 0.02 260)", border: "1px solid oklch(0.88 0.03 260)" }}
       >
-        <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.22 0.09 260)" }}>
+        <p className="text-sm font-bold mb-1 rr-text-navy">
           What is a review platform?
         </p>
-        <p className="text-sm" style={{ color: "oklch(0.40 0.04 260)" }}>
+        <p className="text-sm rr-text-navy-mid">
           This is the link your customers click to leave you a review — on Google, Yelp, TripAdvisor, Facebook, or anywhere else. ReviewLink embeds this link as a button inside every review request email.
         </p>
       </div>
 
       {/* Platform-specific accordion */}
-      <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "oklch(0.55 0.05 260)" }}>
+      <p className="text-xs font-bold uppercase tracking-wide rr-text-navy-muted">
         How to find your review link — tap your platform
       </p>
 
@@ -506,7 +503,7 @@ function StepReviewPlatform({ onNavigate }: { onNavigate: (path: string) => void
                       >
                         {s.step}
                       </span>
-                      <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>{s.desc}</p>
+                      <p className="text-xs rr-text-navy-mid">{s.desc}</p>
                     </div>
                   ))}
                   {platform.note && (
@@ -539,14 +536,13 @@ function StepReviewPlatform({ onNavigate }: { onNavigate: (path: string) => void
         ].map((item) => (
           <div key={item.step} className="flex gap-3">
             <div
-              className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-black mt-0.5"
-              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+              className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-black mt-0.5 rr-bg-navy rr-text-gold"
             >
               {item.step}
             </div>
             <div>
-              <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>{item.title}</p>
-              <p className="text-xs mt-0.5" style={{ color: "oklch(0.45 0.04 260)" }}>{item.desc}</p>
+              <p className="text-sm font-bold rr-text-navy">{item.title}</p>
+              <p className="text-xs mt-0.5 rr-text-navy-mid">{item.desc}</p>
             </div>
           </div>
         ))}
@@ -554,8 +550,7 @@ function StepReviewPlatform({ onNavigate }: { onNavigate: (path: string) => void
 
       <Button
         onClick={() => onNavigate("/settings")}
-        className="w-full font-bold"
-        style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+        className="w-full font-bold rr-bg-navy rr-text-gold"
       >
         <Globe size={15} className="mr-2" /> Go to Settings → Review Platforms
       </Button>
@@ -570,18 +565,18 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
         className="rounded-2xl p-4"
         style={{ background: "oklch(0.96 0.02 260)", border: "1px solid oklch(0.88 0.03 260)" }}
       >
-        <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.22 0.09 260)" }}>
+        <p className="text-sm font-bold mb-1 rr-text-navy">
           Three ways to add contacts
         </p>
-        <p className="text-sm" style={{ color: "oklch(0.40 0.04 260)" }}>
+        <p className="text-sm rr-text-navy-mid">
           Your Saved Contacts list is where you store repeat customers so you can send review requests to them in bulk or individually, without re-entering their details each time.
         </p>
       </div>
 
       {/* Method 1: CSV */}
       <div className="rounded-xl overflow-hidden" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
-        <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: "oklch(0.22 0.09 260)" }}>
-          <Upload size={14} style={{ color: "oklch(0.80 0.18 80)" }} />
+        <div className="px-4 py-2.5 flex items-center gap-2 rr-bg-navy">
+          <Upload size={14} className="rr-text-gold" />
           <p className="text-sm font-bold text-white">Option A — Import a CSV file</p>
         </div>
         <div className="px-4 py-3 space-y-2 bg-white">
@@ -599,7 +594,7 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
               >
                 {item.step}
               </span>
-              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>{item.desc}</p>
+              <p className="text-xs rr-text-navy-mid">{item.desc}</p>
             </div>
           ))}
           <Button
@@ -633,7 +628,7 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
               >
                 {item.step}
               </span>
-              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>{item.desc}</p>
+              <p className="text-xs rr-text-navy-mid">{item.desc}</p>
             </div>
           ))}
         </div>
@@ -650,8 +645,8 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
           <div className="flex gap-2.5 items-start">
             <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5" style={{ background: "oklch(0.93 0.04 200)", color: "oklch(0.30 0.10 200)" }}>1</span>
             <div>
-              <p className="text-xs font-semibold mb-0.5" style={{ color: "oklch(0.22 0.09 260)" }}>Generate WooCommerce API keys</p>
-              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>In your WordPress admin, go to <strong>WooCommerce → Settings → Advanced → REST API</strong> and click <strong>Add Key</strong>. Give it a description (e.g. "ReviewLink"), set the User to your admin account, and set Permissions to <strong>Read</strong>. Click <strong>Generate API Key</strong>.</p>
+              <p className="text-xs font-semibold mb-0.5 rr-text-navy">Generate WooCommerce API keys</p>
+              <p className="text-xs rr-text-navy-mid">In your WordPress admin, go to <strong>WooCommerce → Settings → Advanced → REST API</strong> and click <strong>Add Key</strong>. Give it a description (e.g. "ReviewLink"), set the User to your admin account, and set Permissions to <strong>Read</strong>. Click <strong>Generate API Key</strong>.</p>
               <p className="text-xs mt-1 px-2 py-1 rounded" style={{ background: "oklch(0.97 0.02 200)", color: "oklch(0.35 0.08 200)" }}>⚠️ Copy the Consumer Key and Consumer Secret immediately — they are only shown once.</p>
             </div>
           </div>
@@ -659,38 +654,38 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
           <div className="flex gap-2.5 items-start">
             <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5" style={{ background: "oklch(0.93 0.04 200)", color: "oklch(0.30 0.10 200)" }}>2</span>
             <div>
-              <p className="text-xs font-semibold mb-0.5" style={{ color: "oklch(0.22 0.09 260)" }}>Connect your store in Settings</p>
-              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>Open <strong>Settings → WooCommerce</strong> and enter your <strong>Store URL</strong> (e.g. <code className="text-xs px-1 py-0.5 rounded" style={{ background: "oklch(0.95 0.01 260)" }}>https://yourstore.com</code>), the <strong>Consumer Key</strong>, and the <strong>Consumer Secret</strong>. Tap <strong>Save &amp; Connect</strong>.</p>
+              <p className="text-xs font-semibold mb-0.5 rr-text-navy">Connect your store in Settings</p>
+              <p className="text-xs rr-text-navy-mid">Open <strong>Settings → WooCommerce</strong> and enter your <strong>Store URL</strong> (e.g. <code className="text-xs px-1 py-0.5 rounded" style={{ background: "oklch(0.95 0.01 260)" }}>https://yourstore.com</code>), the <strong>Consumer Key</strong>, and the <strong>Consumer Secret</strong>. Tap <strong>Save &amp; Connect</strong>.</p>
             </div>
           </div>
           {/* Step 3: Sync orders */}
           <div className="flex gap-2.5 items-start">
             <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5" style={{ background: "oklch(0.93 0.04 200)", color: "oklch(0.30 0.10 200)" }}>3</span>
             <div>
-              <p className="text-xs font-semibold mb-0.5" style={{ color: "oklch(0.22 0.09 260)" }}>Sync orders</p>
-              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>In <strong>Settings → WooCommerce</strong>, tap <strong>Sync Orders</strong> and choose how many days of completed orders to pull (30 / 60 / 90 days). Orders are held as <em>pending imports</em> — they won't appear in your contacts list until you review and confirm them.</p>
+              <p className="text-xs font-semibold mb-0.5 rr-text-navy">Sync orders</p>
+              <p className="text-xs rr-text-navy-mid">In <strong>Settings → WooCommerce</strong>, tap <strong>Sync Orders</strong> and choose how many days of completed orders to pull (30 / 60 / 90 days). Orders are held as <em>pending imports</em> — they won't appear in your contacts list until you review and confirm them.</p>
             </div>
           </div>
           {/* Step 4: Review and import */}
           <div className="flex gap-2.5 items-start">
             <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5" style={{ background: "oklch(0.93 0.04 200)", color: "oklch(0.30 0.10 200)" }}>4</span>
             <div>
-              <p className="text-xs font-semibold mb-0.5" style={{ color: "oklch(0.22 0.09 260)" }}>Review and import (or let it auto-import)</p>
-              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>After syncing, a <strong>Pending Imports</strong> banner appears in Settings. Tap <strong>Import Now</strong> to immediately move customers into your contacts list, or tap <strong>Dismiss</strong> to discard them. If you take no action, any pending orders older than <strong>7 days</strong> are automatically imported every <strong>Monday at 03:00 GMT</strong>.</p>
+              <p className="text-xs font-semibold mb-0.5 rr-text-navy">Review and import (or let it auto-import)</p>
+              <p className="text-xs rr-text-navy-mid">After syncing, a <strong>Pending Imports</strong> banner appears in Settings. Tap <strong>Import Now</strong> to immediately move customers into your contacts list, or tap <strong>Dismiss</strong> to discard them. If you take no action, any pending orders older than <strong>7 days</strong> are automatically imported every <strong>Monday at 03:00 GMT</strong>.</p>
             </div>
           </div>
           {/* Step 5: Send review requests */}
           <div className="flex gap-2.5 items-start">
             <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5" style={{ background: "oklch(0.93 0.04 200)", color: "oklch(0.30 0.10 200)" }}>5</span>
             <div>
-              <p className="text-xs font-semibold mb-0.5" style={{ color: "oklch(0.22 0.09 260)" }}>Send review requests</p>
-              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>Once imported, customers appear in the <strong>WooCommerce</strong> tab on the Saved Contacts page. Select the ones you want to reach and tap <strong>Send Review Request</strong>. Each customer can only be sent one request (the button is disabled after sending).</p>
+              <p className="text-xs font-semibold mb-0.5 rr-text-navy">Send review requests</p>
+              <p className="text-xs rr-text-navy-mid">Once imported, customers appear in the <strong>WooCommerce</strong> tab on the Saved Contacts page. Select the ones you want to reach and tap <strong>Send Review Request</strong>. Each customer can only be sent one request (the button is disabled after sending).</p>
             </div>
           </div>
           {/* Troubleshooting note */}
           <div className="rounded-lg px-3 py-2" style={{ background: "oklch(0.97 0.02 100)", border: "1px solid oklch(0.90 0.04 100)" }}>
             <p className="text-xs font-semibold mb-0.5" style={{ color: "oklch(0.35 0.08 100)" }}>Troubleshooting tips</p>
-            <ul className="text-xs space-y-0.5 list-disc list-inside" style={{ color: "oklch(0.45 0.04 260)" }}>
+            <ul className="text-xs space-y-0.5 list-disc list-inside rr-text-navy-mid">
               <li>Store URL must include <code className="text-xs">https://</code> and no trailing slash</li>
               <li>If you get a 401 error, regenerate your API keys — they may have expired</li>
               <li>If your store uses a subdirectory (e.g. <code className="text-xs">/shop</code>), include it in the URL</li>
@@ -703,21 +698,19 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
 
       {/* Method 4: Manual */}
       <div
-        className="rounded-xl px-4 py-3"
-        style={{ background: "white", border: "1px solid oklch(0.91 0.02 260)" }}
+        className="rounded-xl px-4 py-3 bg-white" style={{ border: "1px solid oklch(0.91 0.02 260)" }}
       >
-        <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.22 0.09 260)" }}>
+        <p className="text-sm font-bold mb-1 rr-text-navy">
           Option D — Add contacts manually
         </p>
-        <p className="text-xs" style={{ color: "oklch(0.45 0.04 260)" }}>
+        <p className="text-xs rr-text-navy-mid">
           Open Saved Contacts and tap the "+ Add" button in the top-right corner. Enter the customer's name, email, and optional phone number or notes.
         </p>
       </div>
 
       <Button
         onClick={() => onNavigate("/contacts")}
-        className="w-full font-bold"
-        style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+        className="w-full font-bold rr-bg-navy rr-text-gold"
       >
         <Users size={15} className="mr-2" /> Go to Saved Contacts
       </Button>
@@ -732,18 +725,18 @@ function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void })
         className="rounded-2xl p-4"
         style={{ background: "oklch(0.96 0.02 260)", border: "1px solid oklch(0.88 0.03 260)" }}
       >
-        <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.22 0.09 260)" }}>
+        <p className="text-sm font-bold mb-1 rr-text-navy">
           Two ways to send
         </p>
-        <p className="text-sm" style={{ color: "oklch(0.40 0.04 260)" }}>
+        <p className="text-sm rr-text-navy-mid">
           You can send a review request to a single customer on the spot, or bulk-send to multiple saved contacts at once.
         </p>
       </div>
 
       {/* Single send */}
       <div className="rounded-xl overflow-hidden" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
-        <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: "oklch(0.22 0.09 260)" }}>
-          <Send size={14} style={{ color: "oklch(0.80 0.18 80)" }} />
+        <div className="px-4 py-2.5 flex items-center gap-2 rr-bg-navy">
+          <Send size={14} className="rr-text-gold" />
           <p className="text-sm font-bold text-white">Send to one customer</p>
         </div>
         <div className="px-4 py-3 space-y-2 bg-white">
@@ -762,14 +755,13 @@ function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void })
               >
                 {item.step}
               </span>
-              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>{item.desc}</p>
+              <p className="text-xs rr-text-navy-mid">{item.desc}</p>
             </div>
           ))}
           <Button
             size="sm"
             onClick={() => onNavigate("/send")}
-            className="w-full mt-1 font-bold text-xs"
-            style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+            className="w-full mt-1 font-bold text-xs rr-bg-navy rr-text-gold"
           >
             <Send size={12} className="mr-1" /> Go to Send Request
           </Button>
@@ -798,7 +790,7 @@ function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void })
               >
                 {item.step}
               </span>
-              <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>{item.desc}</p>
+              <p className="text-xs rr-text-navy-mid">{item.desc}</p>
             </div>
           ))}
           <Button
@@ -817,7 +809,7 @@ function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void })
         className="rounded-xl px-4 py-3"
         style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
       >
-        <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.10 80)" }}>
+        <p className="text-xs font-bold mb-1 rr-text-gold-dim">
           💡 Pro tip: Follow-up reminders
         </p>
         <p className="text-xs" style={{ color: "oklch(0.50 0.06 80)" }}>
@@ -832,17 +824,17 @@ function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void;
   return (
     <div className="space-y-5">
       <div className="text-center py-4">
-        <CheckCircle2 size={52} className="mx-auto mb-3" style={{ color: "oklch(0.55 0.18 145)" }} />
-        <h2 className="text-xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+        <CheckCircle2 size={52} className="mx-auto mb-3 rr-text-green" />
+        <h2 className="text-xl font-black rr-text-navy">
           You're all set!
         </h2>
-        <p className="text-sm mt-2" style={{ color: "oklch(0.45 0.04 260)" }}>
+        <p className="text-sm mt-2 rr-text-navy-mid">
           ReviewLink is ready to start collecting reviews for your business.
         </p>
       </div>
 
       <div className="space-y-2">
-        <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "oklch(0.55 0.05 260)" }}>
+        <p className="text-xs font-bold uppercase tracking-wide rr-text-navy-muted">
           Quick links
         </p>
         {[
@@ -854,14 +846,13 @@ function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void;
           <button
             key={link.path}
             onClick={() => { onClose(); onNavigate(link.path); }}
-            className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-colors hover:opacity-80"
-            style={{ background: "white", border: "1px solid oklch(0.91 0.02 260)" }}
+            className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-colors hover:opacity-80 bg-white" style={{ border: "1px solid oklch(0.91 0.02 260)" }}
           >
             <div style={{ color: "oklch(0.55 0.08 260)" }}>{link.icon}</div>
-            <span className="text-sm font-medium flex-1" style={{ color: "oklch(0.22 0.09 260)" }}>
+            <span className="text-sm font-medium flex-1 rr-text-navy">
               {link.label}
             </span>
-            <ChevronRight size={14} style={{ color: "oklch(0.70 0.03 260)" }} />
+            <ChevronRight size={14} className="rr-text-navy-faint" />
           </button>
         ))}
       </div>
@@ -870,7 +861,7 @@ function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void;
         className="rounded-xl px-4 py-3"
         style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
       >
-        <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.10 80)" }}>
+        <p className="text-xs font-bold mb-1 rr-text-gold-dim">
           Need to revisit this guide?
         </p>
         <p className="text-xs" style={{ color: "oklch(0.50 0.06 80)" }}>
@@ -880,8 +871,7 @@ function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void;
 
       <Button
         onClick={onClose}
-        className="w-full font-bold"
-        style={{ background: "oklch(0.55 0.18 145)", color: "white" }}
+        className="w-full font-bold rr-bg-green text-white"
       >
         <Rocket size={15} className="mr-2" /> Start Using ReviewLink
       </Button>
@@ -1000,24 +990,21 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
 
   return (
     /* Full-screen backdrop */
-    <div className="fixed inset-0 z-50 flex justify-center" style={{ background: "oklch(0.22 0.09 260)" }}>
+    <div className="fixed inset-0 z-50 flex justify-center rr-bg-navy">
     {/* Mobile-constrained panel */}
     <div
-      className="relative flex flex-col w-full"
-      style={{ maxWidth: 480, background: "oklch(0.975 0.003 100)", height: "100%" }}
+      className="relative flex flex-col w-full rr-bg-cream-warm" style={{ height: "100%", maxWidth: "480" }}
     >
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div
-        className="px-5 pt-8 pb-4 shrink-0"
-        style={{ background: "oklch(0.22 0.09 260)" }}
+        className="px-5 pt-8 pb-4 shrink-0 rr-bg-navy"
       >
         {/* Top row: guide label + close */}
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <BookOpen size={14} style={{ color: "oklch(0.80 0.18 80)" }} />
+            <BookOpen size={14} className="rr-text-gold" />
             <span
-              className="text-xs font-bold tracking-widest uppercase"
-              style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+              className="text-xs font-bold tracking-widest uppercase rr-text-gold"
             >
               Setup Guide
             </span>
@@ -1064,8 +1051,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
         {/* Step title */}
         <div className="flex items-center gap-3 mt-2">
           <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-            style={{ background: "oklch(0.32 0.08 260)", color: "oklch(0.80 0.18 80)" }}
+            className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
           >
             {current.icon}
           </div>
@@ -1104,8 +1090,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
             <div className="text-center mt-6 pb-2">
               <button
                 onClick={() => goToStep(Math.min(step + 1, STEPS.length - 1), step)}
-                className="text-sm font-medium underline underline-offset-2"
-                style={{ color: "oklch(0.55 0.05 260)" }}
+                className="text-sm font-medium underline underline-offset-2 rr-text-navy-muted"
               >
                 Skip for now →
               </button>
@@ -1117,8 +1102,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
       {/* ── Footer navigation ───────────────────────────────────────────────── */}
       {!isLast && (
         <div
-          className="px-5 py-4 flex items-center gap-3 shrink-0"
-          style={{ borderTop: "1px solid oklch(0.91 0.02 260)", background: "white" }}
+          className="px-5 py-4 flex items-center gap-3 shrink-0 bg-white" style={{ borderTop: "1px solid oklch(0.91 0.02 260)" }}
         >
           <Button
             variant="outline"
@@ -1131,8 +1115,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
           </Button>
           <Button
             onClick={() => goToStep(step + 1, step)}
-            className="flex-1 font-bold"
-            style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+            className="flex-1 font-bold rr-bg-navy rr-text-gold"
           >
             {step === STEPS.length - 2 ? "Finish" : "Next"}
             <ChevronRight size={15} className="ml-1" />

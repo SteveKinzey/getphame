@@ -48,23 +48,21 @@ function ShareReferralCard() {
 
   return (
     <div
-      className="rounded-2xl overflow-hidden"
-      style={{ background: "oklch(0.22 0.09 260)" }}
+      className="rounded-2xl overflow-hidden rr-bg-navy"
     >
       {/* Gold accent bar */}
-      <div className="h-1 w-full" style={{ background: "oklch(0.80 0.18 80)" }} />
+      <div className="h-1 w-full rr-bg-gold" />
 
       <div className="p-4">
         {/* Header row */}
         <div className="flex items-center gap-2 mb-3">
           <div
-            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-            style={{ background: "oklch(0.80 0.18 80)" }}
+            className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 rr-bg-gold"
           >
-            <Share2 size={15} style={{ color: "oklch(0.22 0.09 260)" }} />
+            <Share2 size={15} className="rr-text-navy" />
           </div>
           <div>
-            <p className="text-xs font-black leading-tight" style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}>
+            <p className="text-xs font-black leading-tight text-white">
               Know a local business owner?
             </p>
             <p className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
@@ -78,17 +76,16 @@ function ShareReferralCard() {
           className="rounded-xl px-3 py-2.5 mb-3 text-xs leading-relaxed"
           style={{ background: "oklch(0.30 0.08 260)", color: "var(--text-on-dark-secondary)" }}
         >
-          <span style={{ color: "oklch(0.80 0.18 80)", fontWeight: 700 }}>"</span>
+          <span className="rr-text-gold rr-fw-bold">"</span>
           {SHARE_TEXT}{" "}
-          <span style={{ color: "oklch(0.80 0.18 80)" }}>{SHARE_URL}</span>
-          <span style={{ color: "oklch(0.80 0.18 80)", fontWeight: 700 }}>"</span>
+          <span className="rr-text-gold">{SHARE_URL}</span>
+          <span className="rr-text-gold rr-fw-bold">"</span>
         </div>
 
         {/* CTA button */}
         <button
           onClick={handleShare}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-black transition-transform active:scale-95"
-          style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-black transition-transform active:scale-95 rr-bg-gold rr-text-navy"
         >
           {copied ? <Check size={15} /> : <Share2 size={15} />}
           {copied ? "Copied to clipboard!" : "Share ReviewLink"}
@@ -124,27 +121,26 @@ function TrackingSummaryCard() {
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm">
       <div className="flex items-center gap-2 mb-3">
-        <TrendingUp size={16} style={{ color: "oklch(0.22 0.09 260)" }} />
+        <TrendingUp size={16} className="rr-text-navy" />
         <h3
-          className="text-sm font-black"
-          style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+          className="text-sm font-black rr-text-navy"
         >
           Email Performance
         </h3>
       </div>
       <div className="grid grid-cols-3 gap-3">
         {/* Sent */}
-        <div className="flex flex-col items-center rounded-xl py-3 px-2" style={{ background: "oklch(0.97 0.01 260)" }}>
+        <div className="flex flex-col items-center rounded-xl py-3 px-2 rr-bg-white-card">
           <Send size={14} style={{ color: "oklch(0.50 0.10 260)", marginBottom: 4 }} />
-          <span className="text-xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+          <span className="text-xl font-black rr-text-navy">
             {totalSent}
           </span>
-          <span className="text-xs" style={{ color: "oklch(0.60 0.03 260)" }}>Sent</span>
+          <span className="text-xs rr-text-navy-muted">Sent</span>
         </div>
         {/* Open Rate */}
         <div className="flex flex-col items-center rounded-xl py-3 px-2" style={{ background: "oklch(0.95 0.05 220)" }}>
           <Eye size={14} style={{ color: "oklch(0.45 0.15 220)", marginBottom: 4 }} />
-          <span className="text-xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+          <span className="text-xl font-black rr-text-navy">
             {openRate}%
           </span>
           <span className="text-xs" style={{ color: "oklch(0.50 0.08 220)" }}>Open Rate</span>
@@ -152,13 +148,13 @@ function TrackingSummaryCard() {
         {/* Click Rate */}
         <div className="flex flex-col items-center rounded-xl py-3 px-2" style={{ background: "oklch(0.96 0.06 80)" }}>
           <MousePointerClick size={14} style={{ color: "oklch(0.55 0.18 80)", marginBottom: 4 }} />
-          <span className="text-xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+          <span className="text-xl font-black rr-text-navy">
             {clickRate}%
           </span>
           <span className="text-xs" style={{ color: "oklch(0.55 0.12 80)" }}>Click Rate</span>
         </div>
       </div>
-      <p className="text-xs mt-2.5 text-center" style={{ color: "oklch(0.65 0.03 260)" }}>
+      <p className="text-xs mt-2.5 text-center rr-text-navy-faint">
         {uniqueOpens} opened · {uniqueClicks} clicked · across {totalSent} requests
       </p>
     </div>
@@ -277,17 +273,15 @@ export default function HomePage() {
         <div className="flex items-center justify-between mb-6 relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <Rocket size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+              <Rocket size={16} className="rr-text-gold" />
               <span
-                className="text-xs font-bold tracking-widest uppercase"
-                style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+                className="text-xs font-bold tracking-widest uppercase rr-text-gold"
               >
                 ReviewLink
               </span>
             </div>
             <h1
-              className="text-2xl leading-tight"
-              style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
+              className="text-2xl leading-tight text-white rr-fw-black"
             >
               {profile?.businessName ? `Hey, ${profile.businessName.split(" ")[0]}!` : `Welcome back!`}
             </h1>
@@ -301,8 +295,7 @@ export default function HomePage() {
           <div className="flex items-center gap-2">
             <button
               onClick={handleShare}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors"
-              style={{ background: "oklch(0.32 0.08 260)", color: "oklch(0.80 0.18 80)" }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
               title="Share ReviewLink with a friend"
             >
               <Share2 size={13} />
@@ -310,8 +303,7 @@ export default function HomePage() {
             </button>
             <button
               onClick={() => setGuideOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors"
-              style={{ background: "oklch(0.32 0.08 260)", color: "oklch(0.80 0.18 80)" }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
               title="Open setup guide"
             >
               <BookOpen size={13} />
@@ -333,18 +325,15 @@ export default function HomePage() {
           ].map((s) => (
             <div
               key={s.label}
-              className="rounded-xl px-3 py-3 text-center"
-              style={{ background: "oklch(0.30 0.08 260)" }}
+              className="rounded-xl px-3 py-3 text-center rr-bg-navy-mid"
             >
               <div
-                className="flex items-center justify-center gap-1 mb-1"
-                style={{ color: "oklch(0.80 0.18 80)" }}
+                className="flex items-center justify-center gap-1 mb-1 rr-text-gold"
               >
                 {s.icon}
               </div>
               <div
-                className="text-2xl font-black"
-                style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+                className="text-2xl font-black text-white"
               >
                 {s.value}
               </div>
@@ -394,8 +383,7 @@ export default function HomePage() {
             </div>
             <button
               onClick={() => navigate("/settings")}
-              className="w-full py-2 rounded-xl text-xs font-black"
-              style={{ background: "oklch(0.55 0.22 30)", color: "white", fontFamily: "'Poppins', sans-serif" }}
+              className="w-full py-2 rounded-xl text-xs font-black text-white" style={{ background: "oklch(0.55 0.22 30)" }}
             >
               Fix in Settings →
             </button>
@@ -430,8 +418,7 @@ export default function HomePage() {
         {/* ── Subscription expiry warning banner ─────────────────────────── */}
         {isExpiringSoon && !expiryBannerDismissed && (
           <div
-            className="rounded-2xl p-4 shadow-sm flex items-start gap-3"
-            style={{ background: 'oklch(0.97 0.06 80)', border: '1.5px solid oklch(0.82 0.14 80)' }}
+            className="rounded-2xl p-4 shadow-sm flex items-start gap-3 rr-bg-gold-pale" style={{ border: "1.5px solid oklch(0.82 0.14 80)" }}
           >
             <AlertTriangle size={22} className="mt-0.5 shrink-0" style={{ color: 'oklch(0.60 0.18 60)' }} />
             <div className="flex-1 min-w-0">
@@ -443,8 +430,7 @@ export default function HomePage() {
               </p>
               <button
                 onClick={() => navigate('/settings')}
-                className="mt-2 flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-opacity active:opacity-70"
-                style={{ background: 'oklch(0.60 0.18 60)', color: 'white' }}
+                className="mt-2 flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-opacity active:opacity-70 text-white" style={{ background: "oklch(0.60 0.18 60)" }}
               >
                 <CreditCard size={12} />
                 Manage Billing
@@ -465,15 +451,14 @@ export default function HomePage() {
         {(!smtpConnected || !profileComplete) && (
           <div className="bg-white rounded-2xl p-4 shadow-sm">
             <p
-              className="text-sm font-black mb-3"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+              className="text-sm font-black mb-3 rr-text-navy"
             >
               Complete your setup
             </p>
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-3">
                 {profileComplete ? (
-                  <CheckCircle2 size={16} style={{ color: "oklch(0.55 0.18 145)" }} />
+                  <CheckCircle2 size={16} className="rr-text-green" />
                 ) : (
                   <AlertCircle size={16} style={{ color: "oklch(0.65 0.18 80)" }} />
                 )}
@@ -483,7 +468,7 @@ export default function HomePage() {
               </div>
               <div className="flex items-center gap-3">
                 {smtpConnected ? (
-                  <CheckCircle2 size={16} style={{ color: "oklch(0.55 0.18 145)" }} />
+                  <CheckCircle2 size={16} className="rr-text-green" />
                 ) : (
                   <AlertCircle size={16} style={{ color: "oklch(0.65 0.18 80)" }} />
                 )}
@@ -495,12 +480,7 @@ export default function HomePage() {
             {(!smtpConnected || !profileComplete) && (
               <button
                 onClick={() => navigate("/settings")}
-                className="mt-3 w-full py-2.5 rounded-xl text-sm font-black"
-                style={{
-                  background: "oklch(0.22 0.09 260)",
-                  color: "oklch(0.80 0.18 80)",
-                  fontFamily: "'Poppins', sans-serif",
-                }}
+                className="mt-3 w-full py-2.5 rounded-xl text-sm font-black rr-bg-navy rr-text-gold"
               >
                 Go to Settings →
               </button>
@@ -532,12 +512,11 @@ export default function HomePage() {
         {/* ── SEO keyword section — visible to crawlers, useful to users ─── */}
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <h2
-            className="text-sm font-black mb-2"
-            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+            className="text-sm font-black mb-2 rr-text-navy"
           >
             Get More Business Reviews
           </h2>
-          <p className="text-xs leading-relaxed" style={{ color: "oklch(0.55 0.03 260)" }}>
+          <p className="text-xs leading-relaxed rr-text-navy-muted">
             ReviewLink makes it easy to send personalized review requests to your customers via email — for Google, Yelp, TripAdvisor, Bing, Facebook, and more.
             Build your online reputation across every platform, increase star ratings, and attract new customers — all from one simple dashboard.
           </p>
@@ -548,8 +527,7 @@ export default function HomePage() {
           <div className="bg-white rounded-2xl p-4 shadow-sm">
             <div className="flex items-center justify-between mb-3">
               <h3
-                className="text-sm font-black"
-                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                className="text-sm font-black rr-text-navy"
               >
                 Recent Requests
               </h3>
@@ -566,31 +544,26 @@ export default function HomePage() {
                 <div key={req.id} className="flex items-center justify-between py-2 border-b last:border-0" style={{ borderColor: "oklch(0.94 0.01 260)" }}>
                   <div className="flex items-center gap-3">
                     <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black"
-                      style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black rr-bg-navy rr-text-gold"
                     >
                       {req.customerName[0].toUpperCase()}
                     </div>
                     <div>
-                      <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>
+                      <p className="text-sm font-bold rr-text-navy">
                         {req.customerName}
                       </p>
-                      <p className="text-xs" style={{ color: "oklch(0.60 0.03 260)" }}>
+                      <p className="text-xs rr-text-navy-muted">
                         {req.customerEmail}
                       </p>
                     </div>
                   </div>
                   <div className="text-right">
                     <div
-                      className="text-xs px-2 py-0.5 rounded-full font-bold"
-                      style={{
-                        background: "oklch(0.96 0.04 145)",
-                        color: "oklch(0.45 0.12 145)",
-                      }}
+                      className="text-xs px-2 py-0.5 rounded-full font-bold rr-bg-green-pale" style={{ color: "oklch(0.45 0.12 145)" }}
                     >
                       Sent
                     </div>
-                    <p className="text-xs mt-0.5" style={{ color: "oklch(0.65 0.03 260)" }}>
+                    <p className="text-xs mt-0.5 rr-text-navy-faint">
                       {formatRelativeTime(new Date(req.sentAt))}
                     </p>
                   </div>
@@ -604,10 +577,9 @@ export default function HomePage() {
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <Target size={16} style={{ color: "oklch(0.22 0.09 260)" }} />
+              <Target size={16} className="rr-text-navy" />
               <h3
-                className="text-sm font-black"
-                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                className="text-sm font-black rr-text-navy"
               >
                 Monthly Goal
               </h3>
@@ -615,8 +587,7 @@ export default function HomePage() {
             {!editingGoal ? (
               <button
                 onClick={() => { setGoalInput(String(reviewGoal || "")); setEditingGoal(true); }}
-                className="flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg"
-                style={{ color: "oklch(0.50 0.10 260)", background: "oklch(0.96 0.01 260)" }}
+                className="flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg rr-bg-surface" style={{ color: "oklch(0.50 0.10 260)" }}
               >
                 <Pencil size={11} />
                 {reviewGoal > 0 ? "Edit" : "Set goal"}
@@ -629,15 +600,13 @@ export default function HomePage() {
                     if (!isNaN(val) && val >= 0) setGoalMutation.mutate({ goal: val });
                   }}
                   disabled={setGoalMutation.isPending}
-                  className="p-1.5 rounded-lg"
-                  style={{ background: "oklch(0.55 0.18 145)", color: "white" }}
+                  className="p-1.5 rounded-lg rr-bg-green text-white"
                 >
                   <Check size={13} />
                 </button>
                 <button
                   onClick={() => setEditingGoal(false)}
-                  className="p-1.5 rounded-lg"
-                  style={{ background: "oklch(0.96 0.01 260)", color: "oklch(0.50 0.03 260)" }}
+                  className="p-1.5 rounded-lg rr-bg-surface" style={{ color: "oklch(0.50 0.03 260)" }}
                 >
                   <X size={13} />
                 </button>
@@ -665,19 +634,18 @@ export default function HomePage() {
                   if (e.key === "Escape") setEditingGoal(false);
                 }}
               />
-              <span className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>reviews / month</span>
+              <span className="text-xs rr-text-navy-muted">reviews / month</span>
             </div>
           ) : reviewGoal > 0 ? (
             <div>
               <div className="flex items-end justify-between mb-2">
                 <div>
                   <span
-                    className="text-3xl font-black"
-                    style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                    className="text-3xl font-black rr-text-navy"
                   >
                     {stats?.respondedThisMonth ?? 0}
                   </span>
-                  <span className="text-sm ml-1" style={{ color: "oklch(0.55 0.03 260)" }}>
+                  <span className="text-sm ml-1 rr-text-navy-muted">
                     / {reviewGoal} goal
                   </span>
                 </div>
@@ -689,7 +657,7 @@ export default function HomePage() {
                     Goal reached! 🎉
                   </span>
                 ) : (
-                  <span className="text-xs" style={{ color: "oklch(0.60 0.03 260)" }}>
+                  <span className="text-xs rr-text-navy-muted">
                     {reviewGoal - (stats?.respondedThisMonth ?? 0)} to go
                   </span>
                 )}
@@ -705,12 +673,12 @@ export default function HomePage() {
                   }}
                 />
               </div>
-              <p className="text-xs mt-1.5" style={{ color: "oklch(0.65 0.03 260)" }}>
+              <p className="text-xs mt-1.5 rr-text-navy-faint">
                 {Math.min(100, Math.round(((stats?.respondedThisMonth ?? 0) / reviewGoal) * 100))}% of monthly goal
               </p>
             </div>
           ) : (
-            <p className="text-xs" style={{ color: "oklch(0.60 0.03 260)" }}>
+            <p className="text-xs rr-text-navy-muted">
               Set a monthly review goal to track your progress and stay motivated.
             </p>
           )}
@@ -726,8 +694,7 @@ export default function HomePage() {
         {stats?.platformBreakdown && stats.platformBreakdown.filter((p) => p.platform !== "unknown").length > 0 && (
           <div className="bg-white rounded-2xl p-4 shadow-sm">
             <h3
-              className="text-sm font-black mb-3"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+              className="text-sm font-black mb-3 rr-text-navy"
             >
               Requests by Platform
             </h3>
@@ -753,7 +720,7 @@ export default function HomePage() {
                         <span className="text-xs font-bold" style={{ color: "oklch(0.35 0.05 260)" }}>
                           {platformLabel}
                         </span>
-                        <span className="text-xs font-black" style={{ color: "oklch(0.22 0.09 260)" }}>
+                        <span className="text-xs font-black rr-text-navy">
                           {p.count} ({pct}%)
                         </span>
                       </div>

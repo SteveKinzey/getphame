@@ -57,20 +57,18 @@ export default function TermsOfService() {
   };
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Header */}
-      <div className="px-5 pt-12 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
+      <div className="px-5 pt-12 pb-6 rr-bg-navy">
         <button
           onClick={handleBack}
-          className="flex items-center gap-2 mb-4 text-sm"
-          style={{ color: "oklch(0.80 0.18 80)" }}
+          className="flex items-center gap-2 mb-4 text-sm rr-text-gold"
         >
           <ArrowLeft size={16} />
           Back
         </button>
         <h1
-          className="text-2xl"
-          style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
+          className="text-2xl text-white rr-fw-black"
         >
           Terms of Service
         </h1>

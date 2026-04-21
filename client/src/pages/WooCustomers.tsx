@@ -245,21 +245,18 @@ export default function WooCustomers() {
 
   if (!creds) {
     return (
-      <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+      <div className="min-h-screen pb-40 rr-bg-cream-warm">
         <div
-          className="px-5 pt-14 pb-6"
-          style={{ background: "oklch(0.22 0.09 260)" }}
+          className="px-5 pt-14 pb-6 rr-bg-navy"
         >
           <button
             onClick={() => navigate("/settings")}
-            className="flex items-center gap-1 text-sm mb-4"
-            style={{ color: "oklch(0.80 0.18 80)" }}
+            className="flex items-center gap-1 text-sm mb-4 rr-text-gold"
           >
             <ArrowLeft size={14} /> Settings
           </button>
           <h1
-            className="text-2xl font-black"
-            style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+            className="text-2xl font-black text-white"
           >
             WooCommerce Customers
           </h1>
@@ -276,7 +273,7 @@ export default function WooCustomers() {
   }
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Single-customer status change confirmation */}
       <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <AlertDialogContent>
@@ -305,20 +302,18 @@ export default function WooCustomers() {
             </AlertDialogDescription>
 
             {platforms.some((p) => p.platform === "yelp") && (
-              <div className="mt-2 rounded-xl px-3 py-2 text-xs flex items-start gap-2"
-                   style={{ background: "oklch(0.97 0.06 80)", border: "1px solid oklch(0.85 0.12 80)" }}>
+              <div className="mt-2 rounded-xl px-3 py-2 text-xs flex items-start gap-2 rr-bg-gold-pale" style={{ border: "1px solid oklch(0.85 0.12 80)" }}>
                 <AlertTriangle size={13} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 80)" }} />
-                <span style={{ color: "oklch(0.40 0.10 80)" }}>
+                <span className="rr-text-gold-dim">
                   <strong>Yelp note:</strong> Your Yelp listing will appear as a search suggestion rather than a direct link.
                 </span>
               </div>
             )}
 
             {selectedIds.size >= 20 && (
-              <div className="mt-2 rounded-xl px-3 py-2 text-xs flex items-start gap-2"
-                   style={{ background: "oklch(0.97 0.06 80)", border: "1px solid oklch(0.85 0.12 80)" }}>
+              <div className="mt-2 rounded-xl px-3 py-2 text-xs flex items-start gap-2 rr-bg-gold-pale" style={{ border: "1px solid oklch(0.85 0.12 80)" }}>
                 <AlertTriangle size={13} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 80)" }} />
-                <span style={{ color: "oklch(0.40 0.10 80)" }}>
+                <span className="rr-text-gold-dim">
                   <strong>Large send ({selectedIds.size} customers):</strong> Sudden spikes can look spammy. Consider spreading sends over multiple days.
                 </span>
               </div>
@@ -341,14 +336,13 @@ export default function WooCustomers() {
           {/* Platform picker */}
           {platforms.length > 0 && (
             <div className="py-2">
-              <label className="block text-xs font-bold mb-1.5" style={{ color: "oklch(0.40 0.04 260)" }}>
+              <label className="block text-xs font-bold mb-1.5 rr-text-navy-mid">
                 Review Platform
               </label>
               <select
                 value={wooPlatformId ?? ""}
                 onChange={(e) => setWooPlatformId(e.target.value ? Number(e.target.value) : null)}
-                className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-                style={{ border: "2px solid oklch(0.90 0.02 260)", background: "white" }}
+                className="w-full px-3 py-2 rounded-xl text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)" }}
               >
                 <option value="">Use default platform</option>
                 {platforms.map((p) => (
@@ -369,8 +363,7 @@ export default function WooCustomers() {
 
           {/* Reminder toggle */}
           <div
-            className="mt-2 flex items-start gap-3 rounded-xl px-3 py-2.5 cursor-pointer"
-            style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.03 260)" }}
+            className="mt-2 flex items-start gap-3 rounded-xl px-3 py-2.5 cursor-pointer rr-bg-white-card" style={{ border: "1px solid oklch(0.88 0.03 260)" }}
             onClick={() => setScheduleReminders((v) => !v)}
           >
             <Checkbox
@@ -380,20 +373,20 @@ export default function WooCustomers() {
               className="mt-0.5 shrink-0"
             />
             <div>
-              <label htmlFor="woo-reminder-checkbox" className="text-xs font-semibold cursor-pointer block" style={{ color: "oklch(0.22 0.09 260)" }}>
+              <label htmlFor="woo-reminder-checkbox" className="text-xs font-semibold cursor-pointer block rr-text-navy">
                 Schedule 3-day follow-up reminders
               </label>
-              <p className="text-xs mt-0.5" style={{ color: "oklch(0.50 0.04 260)" }}>
+              <p className="text-xs mt-0.5 rr-text-navy-mid">
                 Automatically send a reminder to any customer who hasn't responded in 3 days.
               </p>
             </div>
           </div>
 
           {/* Compliance checklist */}
-          <div className="mt-2 rounded-xl p-3" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.03 260)" }}>
+          <div className="mt-2 rounded-xl p-3 rr-bg-white-card" style={{ border: "1px solid oklch(0.88 0.03 260)" }}>
             <div className="flex items-center gap-1.5 mb-2">
-              <ShieldCheck size={13} style={{ color: "oklch(0.55 0.18 145)" }} />
-              <p className="text-xs font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>Compliance Checklist</p>
+              <ShieldCheck size={13} className="rr-text-green" />
+              <p className="text-xs font-bold rr-text-navy">Compliance Checklist</p>
             </div>
             {([
               { key: "realCustomers" as const, label: "These are real customers who transacted with me" },
@@ -402,7 +395,7 @@ export default function WooCustomers() {
             ]).map(({ key, label }) => (
               <div key={key} className="flex items-start gap-2 py-1 cursor-pointer" onClick={() => setWooComplianceChecked((v) => ({ ...v, [key]: !v[key] }))}>
                 {wooComplianceChecked[key]
-                  ? <CheckCircle2 size={14} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 145)" }} />
+                  ? <CheckCircle2 size={14} className="mt-0.5 shrink-0 rr-text-green" />
                   : <div className="w-3.5 h-3.5 mt-0.5 shrink-0 rounded-full border-2" style={{ borderColor: "oklch(0.70 0.04 260)" }} />}
                 <span className="text-xs" style={{ color: wooComplianceChecked[key] ? "oklch(0.35 0.05 260)" : "oklch(0.50 0.04 260)" }}>{label}</span>
               </div>
@@ -440,21 +433,18 @@ export default function WooCustomers() {
       </AlertDialog>
       {/* Navy header */}
       <div
-        className="px-5 pt-14 pb-6"
-        style={{ background: "oklch(0.22 0.09 260)" }}
+        className="px-5 pt-14 pb-6 rr-bg-navy"
       >
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-1 text-sm mb-4"
-          style={{ color: "oklch(0.80 0.18 80)" }}
+          className="flex items-center gap-1 text-sm mb-4 rr-text-gold"
         >
           <ArrowLeft size={14} /> Home
         </button>
         <div className="flex items-center justify-between">
           <div>
             <h1
-              className="text-2xl font-black"
-              style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+              className="text-2xl font-black text-white"
             >
               WooCommerce
             </h1>
@@ -462,7 +452,7 @@ export default function WooCustomers() {
               {creds.storeUrl}
             </p>
           </div>
-          <ShoppingBag size={28} style={{ color: "oklch(0.80 0.18 80)" }} />
+          <ShoppingBag size={28} className="rr-text-gold" />
         </div>
 
         {creds.lastSyncedAt && (
@@ -539,8 +529,7 @@ export default function WooCustomers() {
         <Button
           onClick={() => sync.mutate({ days })}
           disabled={sync.isPending}
-          className="flex items-center gap-2"
-          style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+          className="flex items-center gap-2 rr-bg-navy text-white"
         >
           <RefreshCw size={14} className={sync.isPending ? "animate-spin" : ""} />
           {sync.isPending ? "Syncing…" : "Sync Orders"}
@@ -614,11 +603,7 @@ export default function WooCustomers() {
                       setSendConfirmOpen(true);
                     }}
                     disabled={bulkSend.isPending}
-                    className="flex items-center gap-2"
-                    style={{
-                      background: "oklch(0.80 0.18 80)",
-                      color: "oklch(0.22 0.09 260)",
-                    }}
+                    className="flex items-center gap-2 rr-bg-gold rr-text-navy"
                   >
                     <Send size={13} />
                     {bulkSend.isPending ? "Sending…" : `Send to ${selectedIds.size}`}
@@ -667,7 +652,7 @@ export default function WooCustomers() {
                       </p>
                     )}
                     {customer.lastStatusChangedAt && (
-                      <p className="text-xs mt-1" style={{ color: "oklch(0.55 0.05 260)" }}>
+                      <p className="text-xs mt-1 rr-text-navy-muted">
                         Status changed {formatDate(customer.lastStatusChangedAt)}
                       </p>
                     )}
@@ -743,7 +728,7 @@ export default function WooCustomers() {
         <DialogContent className="max-w-md w-full">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <Clock size={16} style={{ color: "oklch(0.22 0.09 260)" }} />
+              <Clock size={16} className="rr-text-navy" />
               Send History
             </DialogTitle>
             {historyCustomer && (
@@ -784,7 +769,7 @@ export default function WooCustomers() {
                         ) : row.status === "sent" ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "oklch(0.92 0.06 145)", color: "oklch(0.35 0.12 145)" }}>Sent</span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.45 0.04 260)" }}>{row.status}</span>
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}>{row.status}</span>
                         )}
                       </td>
                     </tr>
@@ -796,8 +781,7 @@ export default function WooCustomers() {
           <DialogFooter>
             <button
               onClick={() => setHistoryOpen(false)}
-              className="px-4 py-2 rounded-xl text-sm font-bold transition-transform active:scale-95"
-              style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+              className="px-4 py-2 rounded-xl text-sm font-bold transition-transform active:scale-95 rr-bg-navy text-white"
             >
               Close
             </button>

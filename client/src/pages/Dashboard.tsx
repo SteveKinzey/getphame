@@ -163,17 +163,15 @@ export default function DashboardPage() {
       {/* Navy Header */}
       <div className="px-5 pt-14 pb-8" style={{ background: "var(--navy)" }}>
         <div className="flex items-center gap-2 mb-1">
-          <BarChart2 size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+          <BarChart2 size={16} className="rr-text-gold" />
           <span
-            className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+            className="text-xs font-bold tracking-widest uppercase rr-text-gold"
           >
             Dashboard
           </span>
         </div>
         <h1
-          className="text-2xl mb-6"
-          style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
+          className="text-2xl mb-6 text-white rr-fw-black"
         >
           Your Results
         </h1>
@@ -187,18 +185,15 @@ export default function DashboardPage() {
           ].map((s) => (
             <div
               key={s.label}
-              className="rounded-xl px-3 py-3 text-center"
-              style={{ background: "oklch(0.30 0.08 260)" }}
+              className="rounded-xl px-3 py-3 text-center rr-bg-navy-mid"
             >
               <div
-                className="flex items-center justify-center gap-1 mb-1"
-                style={{ color: "oklch(0.80 0.18 80)" }}
+                className="flex items-center justify-center gap-1 mb-1 rr-text-gold"
               >
                 {s.icon}
               </div>
               <div
-                className="text-2xl font-black"
-                style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+                className="text-2xl font-black text-white"
               >
                 {isLoading ? "—" : s.value}
               </div>
@@ -215,8 +210,7 @@ export default function DashboardPage() {
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <h3
-              className="text-sm font-black"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+              className="text-sm font-black rr-text-navy"
             >
               <Calendar size={14} className="inline mr-1.5 mb-0.5" />
               Last 7 Days
@@ -236,11 +230,11 @@ export default function DashboardPage() {
 
           {(isLoading || listLoading) ? (
             <div className="flex justify-center py-6">
-              <Loader2 className="animate-spin" style={{ color: "oklch(0.22 0.09 260)" }} />
+              <Loader2 className="animate-spin rr-text-navy" />
             </div>
           ) : weeklyData.every((d) => d.count === 0) ? (
             <div className="text-center py-6">
-              <p className="text-sm" style={{ color: "oklch(0.60 0.03 260)" }}>
+              <p className="text-sm rr-text-navy-muted">
                 No requests in the last 7 days
               </p>
             </div>
@@ -257,11 +251,11 @@ export default function DashboardPage() {
                       }}
                     />
                   </div>
-                  <span className="text-xs font-bold" style={{ color: "oklch(0.55 0.03 260)" }}>
+                  <span className="text-xs font-bold rr-text-navy-muted">
                     {day.label}
                   </span>
                   {day.count > 0 && (
-                    <span className="text-xs font-black" style={{ color: "oklch(0.22 0.09 260)" }}>
+                    <span className="text-xs font-black rr-text-navy">
                       {day.count}
                     </span>
                   )}
@@ -277,22 +271,22 @@ export default function DashboardPage() {
               style={{ borderTop: "1px solid oklch(0.94 0.01 260)" }}
             >
               <div className="text-center flex-1">
-                <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>This week</p>
-                <p className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                <p className="text-xs rr-text-navy-muted">This week</p>
+                <p className="text-base font-black rr-text-navy">
                   {velocity.last7}
                 </p>
               </div>
               <div className="w-px h-8" style={{ background: "oklch(0.90 0.01 260)" }} />
               <div className="text-center flex-1">
-                <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Prior week</p>
-                <p className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                <p className="text-xs rr-text-navy-muted">Prior week</p>
+                <p className="text-base font-black rr-text-navy">
                   {velocity.prior7}
                 </p>
               </div>
               <div className="w-px h-8" style={{ background: "oklch(0.90 0.01 260)" }} />
               <div className="text-center flex-1">
-                <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>All time</p>
-                <p className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                <p className="text-xs rr-text-navy-muted">All time</p>
+                <p className="text-base font-black rr-text-navy">
                   {stats?.total ?? 0}
                 </p>
               </div>
@@ -305,26 +299,25 @@ export default function DashboardPage() {
         {emailPerf && emailPerf.totalSent > 0 && (
           <div className="bg-white rounded-2xl p-4 shadow-sm">
             <h3
-              className="text-sm font-black mb-3"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+              className="text-sm font-black mb-3 rr-text-navy"
             >
               Email Performance
             </h3>
             <div className="grid grid-cols-3 gap-3">
               <div className="text-center">
-                <p className="text-xs mb-1" style={{ color: "oklch(0.55 0.03 260)" }}>Sent</p>
-                <p className="text-xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                <p className="text-xs mb-1 rr-text-navy-muted">Sent</p>
+                <p className="text-xl font-black rr-text-navy">
                   {emailPerf.totalSent}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs mb-1" style={{ color: "oklch(0.55 0.03 260)" }}>Open Rate</p>
+                <p className="text-xs mb-1 rr-text-navy-muted">Open Rate</p>
                 <p className="text-xl font-black" style={{ color: "oklch(0.55 0.20 145)", fontFamily: "'Poppins', sans-serif" }}>
                   {emailPerf.openRate}%
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs mb-1" style={{ color: "oklch(0.55 0.03 260)" }}>Click Rate</p>
+                <p className="text-xs mb-1 rr-text-navy-muted">Click Rate</p>
                 <p className="text-xl font-black" style={{ color: "oklch(0.75 0.18 80)", fontFamily: "'Poppins', sans-serif" }}>
                   {emailPerf.clickRate}%
                 </p>
@@ -333,13 +326,13 @@ export default function DashboardPage() {
             <div className="mt-3 pt-3 flex gap-4" style={{ borderTop: "1px solid oklch(0.94 0.01 260)" }}>
               <div className="flex items-center gap-1.5">
                 <Eye size={13} style={{ color: "oklch(0.55 0.20 145)" }} />
-                <span className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+                <span className="text-xs rr-text-navy-muted">
                   {emailPerf.uniqueOpens} unique opens
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <MousePointerClick size={13} style={{ color: "oklch(0.75 0.18 80)" }} />
-                <span className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+                <span className="text-xs rr-text-navy-muted">
                   {emailPerf.uniqueClicks} unique clicks
                 </span>
               </div>
@@ -352,12 +345,11 @@ export default function DashboardPage() {
           {/* Header row */}
           <div className="flex items-center justify-between mb-3">
             <h3
-              className="text-sm font-black"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+              className="text-sm font-black rr-text-navy"
             >
               All Activity
               {(allRequests?.length ?? 0) > 0 && (
-                <span className="ml-1.5 text-xs font-normal" style={{ color: "oklch(0.60 0.03 260)" }}>
+                <span className="ml-1.5 text-xs font-normal rr-text-navy-muted">
                   {filteredRequests.length !== allRequests!.length
                     ? `${filteredRequests.length} of ${allRequests!.length}`
                     : allRequests!.length}
@@ -383,7 +375,7 @@ export default function DashboardPage() {
           {(allRequests?.length ?? 0) > 0 && (
             <div className="flex flex-col gap-2 mb-3">
               <div className="relative">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "oklch(0.65 0.03 260)" }} />
+                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none rr-text-navy-faint" />
                 <Input
                   value={activitySearch}
                   onChange={(e) => setActivitySearch(e.target.value)}
@@ -425,8 +417,7 @@ export default function DashboardPage() {
                 {(activitySearch || statusFilter !== "all") && (
                   <button
                     onClick={() => { setActivitySearch(""); setStatusFilter("all"); }}
-                    className="ml-auto text-xs px-2 py-1 rounded-lg"
-                    style={{ color: "oklch(0.55 0.03 260)" }}
+                    className="ml-auto text-xs px-2 py-1 rounded-lg rr-text-navy-muted"
                   >
                     Clear
                   </button>
@@ -437,12 +428,12 @@ export default function DashboardPage() {
 
           {(isLoading || listLoading) ? (
             <div className="flex justify-center py-8">
-              <Loader2 className="animate-spin" style={{ color: "oklch(0.22 0.09 260)" }} />
+              <Loader2 className="animate-spin rr-text-navy" />
             </div>
           ) : !allRequests || allRequests.length === 0 ? (
             <div className="flex flex-col items-center py-8 gap-3">
               <Send size={32} style={{ color: "oklch(0.80 0.03 260)" }} />
-              <p className="text-sm text-center" style={{ color: "oklch(0.60 0.03 260)" }}>
+              <p className="text-sm text-center rr-text-navy-muted">
                 No review requests yet.
                 <br />
                 Send your first one from the Send tab!
@@ -451,11 +442,10 @@ export default function DashboardPage() {
           ) : filteredRequests.length === 0 ? (
             <div className="flex flex-col items-center py-6 gap-2">
               <Search size={28} style={{ color: "oklch(0.80 0.03 260)" }} />
-              <p className="text-sm" style={{ color: "oklch(0.60 0.03 260)" }}>No matching requests</p>
+              <p className="text-sm rr-text-navy-muted">No matching requests</p>
               <button
                 onClick={() => { setActivitySearch(""); setStatusFilter("all"); }}
-                className="text-xs font-bold px-3 py-1.5 rounded-lg mt-1"
-                style={{ background: "oklch(0.96 0.01 260)", color: "oklch(0.45 0.05 260)" }}
+                className="text-xs font-bold px-3 py-1.5 rounded-lg mt-1 rr-bg-surface" style={{ color: "oklch(0.45 0.05 260)" }}
               >
                 Clear filters
               </button>
@@ -488,16 +478,15 @@ export default function DashboardPage() {
                       {selected.has(req.id) ? <CheckSquare size={16} aria-hidden="true" /> : <Square size={16} aria-hidden="true" />}
                     </button>
                     <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black shrink-0"
-                      style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+                      className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black shrink-0 rr-bg-navy rr-text-gold"
                     >
                       {req.customerName[0].toUpperCase()}
                     </div>
                     <div>
-                      <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>
+                      <p className="text-sm font-bold rr-text-navy">
                         {req.customerName}
                       </p>
-                      <p className="text-xs" style={{ color: "oklch(0.60 0.03 260)" }}>
+                      <p className="text-xs rr-text-navy-muted">
                         {req.customerEmail}
                       </p>
                     </div>
@@ -520,7 +509,7 @@ export default function DashboardPage() {
                         : <><Circle size={11} className="mr-0.5" /> Sent</>
                       }
                     </button>
-                    <p className="text-xs" style={{ color: "oklch(0.65 0.03 260)" }}>
+                    <p className="text-xs rr-text-navy-faint">
                       {formatDate(new Date(req.sentAt))}
                     </p>
                     {/* Open / click badges */}
@@ -559,17 +548,15 @@ export default function DashboardPage() {
       {/* Sticky bulk action bar */}
       {selected.size > 0 && (
         <div
-          className="fixed bottom-28 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 px-4 py-3 rounded-2xl shadow-xl"
-          style={{ background: "oklch(0.22 0.09 260)", minWidth: "280px" }}
+          className="fixed bottom-28 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 px-4 py-3 rounded-2xl shadow-xl rr-bg-navy" style={{ minWidth: "280px" }}
         >
-          <span className="text-xs font-bold flex-1" style={{ color: "oklch(0.80 0.18 80)" }}>
+          <span className="text-xs font-bold flex-1 rr-text-gold">
             {selected.size} selected
           </span>
           <button
             onClick={() => bulkMarkRespondedMutation.mutate({ ids: Array.from(selected), responded: true })}
             disabled={bulkMarkRespondedMutation.isPending}
-            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-bold transition-colors"
-            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-bold transition-colors rr-bg-gold rr-text-navy"
           >
             {bulkMarkRespondedMutation.isPending ? (
               <Loader2 size={12} className="animate-spin" />

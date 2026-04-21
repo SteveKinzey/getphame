@@ -16,17 +16,17 @@ const APP_PREVIEW_IMG =
 
 const FEATURES = [
   {
-    icon: <Mail size={22} style={{ color: "oklch(0.80 0.18 80)" }} />,
+    icon: <Mail size={22} className="rr-text-gold" />,
     title: "Sent from your own email",
     desc: "Every request lands in your customer's inbox looking like a personal message — not a bulk blast. No shared sender, no spam filters.",
   },
   {
-    icon: <Users size={22} style={{ color: "oklch(0.80 0.18 80)" }} />,
+    icon: <Users size={22} className="rr-text-gold" />,
     title: "Bulk send in seconds",
     desc: "Import contacts from CSV, Stripe, or WooCommerce. Select all, hit send — each customer gets their own personalised email.",
   },
   {
-    icon: <Globe size={22} style={{ color: "oklch(0.80 0.18 80)" }} />,
+    icon: <Globe size={22} className="rr-text-gold" />,
     title: "Works with any review platform",
     desc: "Google, Yelp, Trustpilot, TripAdvisor, Facebook — add any review link. Your customers are taken straight to your review page.",
   },
@@ -63,8 +63,7 @@ function FAQSection() {
   return (
     <section className="px-5 py-10 max-w-lg mx-auto w-full">
       <h2
-        className="text-xl font-black text-center mb-6"
-        style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+        className="text-xl font-black text-center mb-6 rr-text-navy"
       >
         Frequently asked questions
       </h2>
@@ -79,8 +78,7 @@ function FAQSection() {
               className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left"
             >
               <span
-                className="text-sm font-black"
-                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                className="text-sm font-black rr-text-navy"
               >
                 {faq.q}
               </span>
@@ -95,8 +93,7 @@ function FAQSection() {
             </button>
             {open === i && (
               <div
-                className="px-5 pb-5 text-xs leading-relaxed"
-                style={{ color: "oklch(0.40 0.04 260)" }}
+                className="px-5 pb-5 text-xs leading-relaxed rr-text-navy-mid"
               >
                 {faq.a}
               </div>
@@ -148,30 +145,23 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen flex flex-col rr-bg-cream-warm">
 
       {/* ── Nav ─────────────────────────────────────────────────────────────── */}
       <nav
-        className="flex items-center justify-between px-5 py-4"
-        style={{ background: "oklch(0.22 0.09 260)" }}
+        className="flex items-center justify-between px-5 py-4 rr-bg-navy"
       >
         <div className="flex items-center gap-2">
-          <Rocket size={18} style={{ color: "oklch(0.80 0.18 80)" }} />
+          <Rocket size={18} className="rr-text-gold" />
           <span
-            className="text-sm font-black tracking-widest uppercase"
-            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+            className="text-sm font-black tracking-widest uppercase rr-text-gold"
           >
             ReviewLink
           </span>
         </div>
         <a
           href={loginUrl}
-          className="px-4 py-2 rounded-xl text-xs font-black transition-transform active:scale-95"
-          style={{
-            background: "oklch(0.80 0.18 80)",
-            color: "oklch(0.22 0.09 260)",
-            fontFamily: "'Poppins', sans-serif",
-          }}
+          className="px-4 py-2 rounded-xl text-xs font-black transition-transform active:scale-95 rr-bg-gold rr-text-navy"
         >
           Sign In
         </a>
@@ -179,8 +169,7 @@ export default function LandingPage() {
 
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
       <section
-        className="relative px-5 pt-12 pb-16 overflow-hidden text-center"
-        style={{ background: "oklch(0.22 0.09 260)" }}
+        className="relative px-5 pt-12 pb-16 overflow-hidden text-center rr-bg-navy"
       >
         {/* Background rocket watermark */}
         <div
@@ -192,16 +181,14 @@ export default function LandingPage() {
 
         <div className="relative z-10 max-w-sm mx-auto">
           <div
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-5"
-            style={{ background: "oklch(0.30 0.08 260)", color: "oklch(0.80 0.18 80)" }}
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-5 rr-bg-navy-mid rr-text-gold"
           >
             <Star size={11} fill="currentColor" />
             Free to start — No credit card required
           </div>
 
           <h1
-            className="text-3xl leading-tight mb-4"
-            style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
+            className="text-3xl leading-tight mb-4 text-white rr-fw-black"
           >
             Get more 5-star reviews without the awkward ask
           </h1>
@@ -213,13 +200,7 @@ export default function LandingPage() {
 
           <a
             href={loginUrl}
-            className="inline-flex items-center justify-center gap-2 w-full max-w-xs mx-auto py-4 rounded-2xl font-black text-lg transition-transform active:scale-95"
-            style={{
-              background: "oklch(0.80 0.18 80)",
-              color: "oklch(0.22 0.09 260)",
-              fontFamily: "'Poppins', sans-serif",
-              display: "flex",
-            }}
+            className="inline-flex items-center justify-center gap-2 w-full max-w-xs mx-auto py-4 rounded-2xl font-black text-lg transition-transform active:scale-95 rr-bg-gold rr-text-navy" style={{ display: "flex" }}
           >
             <Rocket size={20} />
             Get Started Free
@@ -234,8 +215,7 @@ export default function LandingPage() {
         {/* Product screenshot */}
         <div className="relative mt-10 mx-auto pb-6" style={{ maxWidth: 280 }}>
           <div
-            className="absolute inset-0 rounded-3xl blur-2xl opacity-25 pointer-events-none"
-            style={{ background: "oklch(0.80 0.18 80)", transform: "scale(0.90) translateY(12px)" }}
+            className="absolute inset-0 rounded-3xl blur-2xl opacity-25 pointer-events-none rr-bg-gold" style={{ transform: "scale(0.90) translateY(12px)" }}
           />
           <div
             className="relative rounded-3xl overflow-hidden shadow-2xl border-4"
@@ -248,8 +228,7 @@ export default function LandingPage() {
             />
           </div>
           <div
-            className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap"
-            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap rr-bg-gold rr-text-navy"
           >
             Your dashboard — live stats
           </div>
@@ -259,8 +238,7 @@ export default function LandingPage() {
       {/* ── Features ────────────────────────────────────────────────────────── */}
       <section className="px-5 py-10 max-w-lg mx-auto w-full">
         <h2
-          className="text-xl font-black text-center mb-6"
-          style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+          className="text-xl font-black text-center mb-6 rr-text-navy"
         >
           Why businesses choose ReviewLink
         </h2>
@@ -271,15 +249,13 @@ export default function LandingPage() {
               className="flex items-start gap-4 bg-white rounded-2xl p-5 shadow-sm"
             >
               <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: "oklch(0.22 0.09 260)" }}
+                className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 rr-bg-navy"
               >
                 {f.icon}
               </div>
               <div>
                 <p
-                  className="text-sm font-black mb-1"
-                  style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                  className="text-sm font-black mb-1 rr-text-navy"
                 >
                   {f.title}
                 </p>
@@ -294,13 +270,11 @@ export default function LandingPage() {
 
       {/* ── How it works ────────────────────────────────────────────────────── */}
       <section
-        className="px-5 py-10"
-        style={{ background: "oklch(0.22 0.09 260)" }}
+        className="px-5 py-10 rr-bg-navy"
       >
         <div className="max-w-lg mx-auto">
           <h2
-            className="text-xl font-black text-center mb-6"
-            style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+            className="text-xl font-black text-center mb-6 text-white"
           >
             Up and running in 4 steps
           </h2>
@@ -308,12 +282,7 @@ export default function LandingPage() {
             {HOW_IT_WORKS.map((item, i) => (
               <div key={item.step} className="flex items-center gap-4">
                 <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-black"
-                  style={{
-                    background: "oklch(0.80 0.18 80)",
-                    color: "oklch(0.22 0.09 260)",
-                    fontFamily: "'Poppins', sans-serif",
-                  }}
+                  className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 text-sm font-black rr-bg-gold rr-text-navy"
                 >
                   {item.step}
                 </div>
@@ -333,74 +302,67 @@ export default function LandingPage() {
       <section className="px-5 py-10" style={{ background: "oklch(0.97 0.005 260)" }}>
         <div className="max-w-lg mx-auto">
           <h2
-            className="text-xl font-black text-center mb-2"
-            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+            className="text-xl font-black text-center mb-2 rr-text-navy"
           >
             Simple, honest pricing
           </h2>
-          <p className="text-sm text-center mb-6" style={{ color: "oklch(0.50 0.04 260)" }}>
+          <p className="text-sm text-center mb-6 rr-text-navy-mid">
             Start free. Upgrade when you're ready.
           </p>
           <div className="flex flex-col gap-3">
             {/* Free */}
             <div
-              className="rounded-2xl p-5 border"
-              style={{ background: "white", borderColor: "oklch(0.90 0.03 260)" }}
+              className="rounded-2xl p-5 border bg-white" style={{ borderColor: "oklch(0.90 0.03 260)" }}
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>Free</span>
-                <span className="text-lg font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>$0</span>
+                <span className="text-sm font-black rr-text-navy">Free</span>
+                <span className="text-lg font-black rr-text-navy">$0</span>
               </div>
-              <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>10 review requests to get started — no credit card required.</p>
+              <p className="text-xs rr-text-navy-muted">10 review requests to get started — no credit card required.</p>
             </div>
             {/* Pro Monthly */}
             <div
-              className="rounded-2xl p-5 border-2"
-              style={{ background: "white", borderColor: "oklch(0.80 0.18 80)" }}
+              className="rounded-2xl p-5 border-2 bg-white" style={{ borderColor: "oklch(0.80 0.18 80)" }}
             >
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>Pro Monthly</span>
+                  <span className="text-sm font-black rr-text-navy">Pro Monthly</span>
                   <span
-                    className="px-2 py-0.5 rounded-full text-xs font-bold"
-                    style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                    className="px-2 py-0.5 rounded-full text-xs font-bold rr-bg-gold rr-text-navy"
                   >Most Popular</span>
                 </div>
-                <span className="text-lg font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>$29<span className="text-xs font-normal">/mo</span></span>
+                <span className="text-lg font-black rr-text-navy">$29<span className="text-xs font-normal">/mo</span></span>
               </div>
-              <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Unlimited review requests, bulk send, follow-up reminders, WooCommerce sync.</p>
+              <p className="text-xs rr-text-navy-muted">Unlimited review requests, bulk send, follow-up reminders, WooCommerce sync.</p>
             </div>
             {/* Pro Annual */}
             <div
-              className="rounded-2xl p-5 border"
-              style={{ background: "white", borderColor: "oklch(0.90 0.03 260)" }}
+              className="rounded-2xl p-5 border bg-white" style={{ borderColor: "oklch(0.90 0.03 260)" }}
             >
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>Pro Annual</span>
+                  <span className="text-sm font-black rr-text-navy">Pro Annual</span>
                   <span
                     className="px-2 py-0.5 rounded-full text-xs font-bold"
                     style={{ background: "oklch(0.95 0.05 150)", color: "oklch(0.30 0.15 150)", fontFamily: "'Poppins', sans-serif" }}
                   >Save 15%</span>
                 </div>
-                <span className="text-lg font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>$297<span className="text-xs font-normal">/yr</span></span>
+                <span className="text-lg font-black rr-text-navy">$297<span className="text-xs font-normal">/yr</span></span>
               </div>
-              <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Everything in Pro Monthly — billed once a year. Equivalent to $24.75/month.</p>
+              <p className="text-xs rr-text-navy-muted">Everything in Pro Monthly — billed once a year. Equivalent to $24.75/month.</p>
             </div>
             {/* Lifetime */}
             <div
-              className="rounded-2xl p-5 border"
-              style={{ background: "oklch(0.22 0.09 260)", borderColor: "oklch(0.30 0.08 260)" }}
+              className="rounded-2xl p-5 border rr-bg-navy" style={{ borderColor: "oklch(0.30 0.08 260)" }}
             >
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-black" style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}>Lifetime</span>
+                  <span className="text-sm font-black text-white">Lifetime</span>
                   <span
-                    className="px-2 py-0.5 rounded-full text-xs font-bold"
-                    style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                    className="px-2 py-0.5 rounded-full text-xs font-bold rr-bg-gold rr-text-navy"
                   >Own it forever</span>
                 </div>
-                <span className="text-lg font-black" style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}>$1,247<span className="text-xs font-normal" style={{ color: "var(--text-on-dark-secondary)" }}> once</span></span>
+                <span className="text-lg font-black rr-text-gold">$1,247<span className="text-xs font-normal" style={{ color: "var(--text-on-dark-secondary)" }}> once</span></span>
               </div>
               <p className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>One payment, lifetime access. No renewals, no surprises.</p>
             </div>
@@ -409,15 +371,14 @@ export default function LandingPage() {
       </section>
 
       {/* ── Competitor comparison ────────────────────────────────────────────── */}
-      <section className="px-5 py-10" style={{ background: "white" }}>
+      <section className="px-5 py-10 bg-white">
         <div className="max-w-lg mx-auto">
           <h2
-            className="text-xl font-black text-center mb-2"
-            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+            className="text-xl font-black text-center mb-2 rr-text-navy"
           >
             10–20× cheaper than the big players
           </h2>
-          <p className="text-sm text-center mb-6" style={{ color: "oklch(0.50 0.04 260)" }}>
+          <p className="text-sm text-center mb-6 rr-text-navy-mid">
             Birdeye and Podium charge enterprise prices for features ReviewLink gives you at a fraction of the cost.
           </p>
 
@@ -425,8 +386,7 @@ export default function LandingPage() {
           <div className="rounded-2xl overflow-hidden border" style={{ borderColor: "oklch(0.90 0.03 260)" }}>
             {/* Header */}
             <div
-              className="grid grid-cols-3 px-4 py-3 text-xs font-black"
-              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+              className="grid grid-cols-3 px-4 py-3 text-xs font-black rr-bg-navy rr-text-gold"
             >
               <span>Platform</span>
               <span className="text-center">Starting price</span>
@@ -434,15 +394,14 @@ export default function LandingPage() {
             </div>
             {/* ReviewLink row — highlighted */}
             <div
-              className="grid grid-cols-3 px-4 py-3 items-center border-b-2"
-              style={{ background: "oklch(0.97 0.06 80)", borderColor: "oklch(0.80 0.18 80)" }}
+              className="grid grid-cols-3 px-4 py-3 items-center border-b-2 rr-bg-gold-pale" style={{ borderColor: "oklch(0.80 0.18 80)" }}
             >
               <div className="flex items-center gap-1.5">
-                <Rocket size={13} style={{ color: "oklch(0.80 0.18 80)" }} />
-                <span className="text-xs font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>ReviewLink</span>
+                <Rocket size={13} className="rr-text-gold" />
+                <span className="text-xs font-black rr-text-navy">ReviewLink</span>
               </div>
               <div className="text-center">
-                <span className="text-xs font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>$29<span className="font-normal">/mo</span></span>
+                <span className="text-xs font-black rr-text-navy">$29<span className="font-normal">/mo</span></span>
               </div>
               <div className="flex justify-center">
                 <Check size={16} style={{ color: "oklch(0.40 0.18 150)" }} />
@@ -465,7 +424,7 @@ export default function LandingPage() {
                 }}
               >
                 <span className="text-xs font-semibold" style={{ color: "oklch(0.35 0.04 260)" }}>{c.name}</span>
-                <span className="text-xs text-center" style={{ color: "oklch(0.50 0.04 260)" }}>{c.price}</span>
+                <span className="text-xs text-center rr-text-navy-mid">{c.price}</span>
                 <div className="flex justify-center">
                   <X size={14} style={{ color: "oklch(0.65 0.15 25)" }} />
                 </div>
@@ -473,7 +432,7 @@ export default function LandingPage() {
             ))}
           </div>
 
-          <p className="text-xs text-center mt-4" style={{ color: "oklch(0.60 0.03 260)" }}>
+          <p className="text-xs text-center mt-4 rr-text-navy-muted">
             Prices based on publicly listed entry-tier plans as of April 2026.
           </p>
         </div>
@@ -482,20 +441,18 @@ export default function LandingPage() {
       {/* ── Social proof strip ──────────────────────────────────────────────── */}
       <section className="px-5 py-8 max-w-lg mx-auto w-full">
         <h2
-          className="text-center text-base font-black mb-5"
-          style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+          className="text-center text-base font-black mb-5 rr-text-navy"
         >
           What our users say
         </h2>
         <div className="flex flex-col gap-4">
           {/* Testimonial 1 — Sarah */}
           <div
-            className="rounded-2xl p-5 shadow-sm"
-            style={{ background: "white", border: "1px solid oklch(0.92 0.02 260)" }}
+            className="rounded-2xl p-5 shadow-sm bg-white" style={{ border: "1px solid oklch(0.92 0.02 260)" }}
           >
             <div className="flex items-center gap-1 mb-3">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} size={14} fill="oklch(0.80 0.18 80)" style={{ color: "oklch(0.80 0.18 80)" }} />
+                <Star key={i} size={14} fill="oklch(0.80 0.18 80)" className="rr-text-gold" />
               ))}
             </div>
             <p
@@ -506,26 +463,24 @@ export default function LandingPage() {
             </p>
             <div className="flex items-center gap-3">
               <div
-                className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0"
-                style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+                className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0 rr-bg-navy rr-text-gold"
               >
                 S
               </div>
               <div>
-                <p className="text-xs font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>Sarah M.</p>
-                <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Freelance Photographer</p>
+                <p className="text-xs font-bold rr-text-navy">Sarah M.</p>
+                <p className="text-xs rr-text-navy-muted">Freelance Photographer</p>
               </div>
             </div>
           </div>
 
           {/* Testimonial 2 — Tom */}
           <div
-            className="rounded-2xl p-5 shadow-sm"
-            style={{ background: "white", border: "1px solid oklch(0.92 0.02 260)" }}
+            className="rounded-2xl p-5 shadow-sm bg-white" style={{ border: "1px solid oklch(0.92 0.02 260)" }}
           >
             <div className="flex items-center gap-1 mb-3">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} size={14} fill="oklch(0.80 0.18 80)" style={{ color: "oklch(0.80 0.18 80)" }} />
+                <Star key={i} size={14} fill="oklch(0.80 0.18 80)" className="rr-text-gold" />
               ))}
             </div>
             <p
@@ -536,14 +491,13 @@ export default function LandingPage() {
             </p>
             <div className="flex items-center gap-3">
               <div
-                className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0"
-                style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+                className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0 rr-bg-navy rr-text-gold"
               >
                 T
               </div>
               <div>
-                <p className="text-xs font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>Tom R.</p>
-                <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Owner, The Corner Café</p>
+                <p className="text-xs font-bold rr-text-navy">Tom R.</p>
+                <p className="text-xs rr-text-navy-muted">Owner, The Corner Café</p>
               </div>
             </div>
           </div>
@@ -555,13 +509,11 @@ export default function LandingPage() {
 
       {/* ── Bottom CTA ──────────────────────────────────────────────────────── */}
       <section
-        className="px-5 py-12 text-center"
-        style={{ background: "oklch(0.22 0.09 260)" }}
+        className="px-5 py-12 text-center rr-bg-navy"
       >
         <div className="max-w-sm mx-auto">
           <h2
-            className="text-2xl font-black mb-3"
-            style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+            className="text-2xl font-black mb-3 text-white"
           >
             Start collecting reviews today
           </h2>
@@ -570,13 +522,7 @@ export default function LandingPage() {
           </p>
           <a
             href={loginUrl}
-            className="inline-flex items-center justify-center gap-2 w-full max-w-xs mx-auto py-4 rounded-2xl font-black text-lg transition-transform active:scale-95"
-            style={{
-              background: "oklch(0.80 0.18 80)",
-              color: "oklch(0.22 0.09 260)",
-              fontFamily: "'Poppins', sans-serif",
-              display: "flex",
-            }}
+            className="inline-flex items-center justify-center gap-2 w-full max-w-xs mx-auto py-4 rounded-2xl font-black text-lg transition-transform active:scale-95 rr-bg-gold rr-text-navy" style={{ display: "flex" }}
           >
             <Send size={18} />
             Get Started Free
@@ -590,8 +536,8 @@ export default function LandingPage() {
         style={{ background: "oklch(0.18 0.07 260)", color: "var(--text-on-dark-muted)" }}
       >
         <div className="flex items-center gap-1.5">
-          <Rocket size={12} style={{ color: "oklch(0.80 0.18 80)" }} />
-          <span style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 700 }}>ReviewLink</span>
+          <Rocket size={12} className="rr-text-gold" />
+          <span className="rr-fw-bold">ReviewLink</span>
         </div>
         <div className="flex items-center gap-4">
           <a href="/privacy-policy" style={{ color: "var(--text-on-dark-muted)" }}>Privacy</a>

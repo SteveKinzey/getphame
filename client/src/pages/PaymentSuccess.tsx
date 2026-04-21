@@ -100,8 +100,7 @@ export default function PaymentSuccessPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-5 pb-40 pt-14 relative overflow-hidden"
-      style={{ background: "oklch(0.22 0.09 260)" }}
+      className="min-h-screen flex flex-col items-center justify-center px-5 pb-40 pt-14 relative overflow-hidden rr-bg-navy"
     >
       {/* Animated background stars */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -126,23 +125,18 @@ export default function PaymentSuccessPage() {
       {/* Crown / shield hero */}
       <div className="relative mb-6 flex flex-col items-center">
         <div
-          className="w-24 h-24 rounded-full flex items-center justify-center mb-4 shadow-2xl"
-          style={{ background: "oklch(0.80 0.18 80)" }}
+          className="w-24 h-24 rounded-full flex items-center justify-center mb-4 shadow-2xl rr-bg-gold"
         >
           {tier === "lifetime" ? (
-            <Shield size={44} style={{ color: "oklch(0.22 0.09 260)" }} />
+            <Shield size={44} className="rr-text-navy" />
           ) : (
-            <Crown size={44} style={{ color: "oklch(0.22 0.09 260)" }} />
+            <Crown size={44} className="rr-text-navy" />
           )}
         </div>
 
         {/* Animated check badge */}
         <div
-          className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center border-2"
-          style={{
-            background: "oklch(0.55 0.18 145)",
-            borderColor: "oklch(0.22 0.09 260)",
-          }}
+          className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center border-2 rr-bg-green" style={{ borderColor: "oklch(0.22 0.09 260)" }}
         >
           <CheckCircle2 size={16} color="white" />
         </div>
@@ -150,11 +144,10 @@ export default function PaymentSuccessPage() {
 
       {/* Heading */}
       <h1
-        className="text-4xl font-black text-center mb-2 leading-tight"
-        style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+        className="text-4xl font-black text-center mb-2 leading-tight text-white"
       >
         {heading.top}{" "}
-        <span style={{ color: "oklch(0.80 0.18 80)" }}>{heading.highlight}</span>
+        <span className="rr-text-gold">{heading.highlight}</span>
       </h1>
       <p className="text-center text-base mb-1" style={{ color: "var(--text-on-dark-secondary)" }}>
         Payment confirmed. {heading.sub}
@@ -165,12 +158,10 @@ export default function PaymentSuccessPage() {
 
       {/* Perks card */}
       <div
-        className="w-full max-w-xs rounded-2xl p-5 mb-6"
-        style={{ background: "oklch(0.30 0.08 260)" }}
+        className="w-full max-w-xs rounded-2xl p-5 mb-6 rr-bg-navy-mid"
       >
         <p
-          className="text-xs font-black tracking-widest uppercase mb-4"
-          style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+          className="text-xs font-black tracking-widest uppercase mb-4 rr-text-gold"
         >
           {cardTitle}
         </p>
@@ -178,12 +169,11 @@ export default function PaymentSuccessPage() {
           {perks.map((perk) => (
             <div key={perk.text} className="flex items-center gap-3">
               <div
-                className="w-7 h-7 rounded-full flex items-center justify-center shrink-0"
-                style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+                className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 rr-bg-gold rr-text-navy"
               >
                 {perk.icon}
               </div>
-              <span className="text-sm font-semibold" style={{ color: "white" }}>
+              <span className="text-sm font-semibold text-white">
                 {perk.text}
               </span>
             </div>
@@ -195,12 +185,7 @@ export default function PaymentSuccessPage() {
       <div className="w-full max-w-xs flex flex-col gap-3">
         <button
           onClick={() => navigate("/send")}
-          className="w-full py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-2 transition-transform active:scale-95"
-          style={{
-            background: "oklch(0.80 0.18 80)",
-            color: "oklch(0.22 0.09 260)",
-            fontFamily: "'Poppins', sans-serif",
-          }}
+          className="w-full py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-2 transition-transform active:scale-95 rr-bg-gold rr-text-navy"
         >
           <Rocket size={18} />
           Send Your First Request
@@ -219,7 +204,7 @@ export default function PaymentSuccessPage() {
       {/* Stars */}
       <div className="flex justify-center gap-1 mt-8">
         {[1, 2, 3, 4, 5].map((i) => (
-          <Star key={i} size={18} fill="oklch(0.80 0.18 80)" style={{ color: "oklch(0.80 0.18 80)" }} />
+          <Star key={i} size={18} fill="oklch(0.80 0.18 80)" className="rr-text-gold" />
         ))}
       </div>
       <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-disabled)" }}>

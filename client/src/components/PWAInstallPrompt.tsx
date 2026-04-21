@@ -59,13 +59,7 @@ export default function PWAInstallPrompt() {
 
       {/* Bottom sheet */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl px-5 pt-5 pb-10"
-        style={{
-          background: "oklch(0.22 0.09 260)",
-          maxWidth: 480,
-          margin: "0 auto",
-          animation: "slideUp 0.3s ease-out",
-        }}
+        className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl px-5 pt-5 pb-10 rr-bg-navy" style={{ margin: "0 auto", animation: "slideUp 0.3s ease-out", maxWidth: "480" }}
       >
         {/* Handle bar */}
         <div className="w-10 h-1 rounded-full mx-auto mb-4" style={{ background: "rgba(255,255,255,0.2)" }} />
@@ -75,15 +69,13 @@ export default function PWAInstallPrompt() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span
-                className="text-xs font-bold tracking-widest uppercase"
-                style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+                className="text-xs font-bold tracking-widest uppercase rr-text-gold"
               >
                 ReviewLink
               </span>
             </div>
             <h2
-              className="text-xl"
-              style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
+              className="text-xl text-white rr-fw-black"
             >
               Add to Home Screen
             </h2>
@@ -106,11 +98,11 @@ export default function PWAInstallPrompt() {
             <>
               <Step
                 number={1}
-                icon={<Share size={18} style={{ color: "oklch(0.80 0.18 80)" }} />}
+                icon={<Share size={18} className="rr-text-gold" />}
                 text={
                   <>
                     Tap the{" "}
-                    <span className="font-bold" style={{ color: "oklch(0.80 0.18 80)" }}>
+                    <span className="font-bold rr-text-gold">
                       Share
                     </span>{" "}
                     button at the bottom of Safari
@@ -119,11 +111,11 @@ export default function PWAInstallPrompt() {
               />
               <Step
                 number={2}
-                icon={<Plus size={18} style={{ color: "oklch(0.80 0.18 80)" }} />}
+                icon={<Plus size={18} className="rr-text-gold" />}
                 text={
                   <>
                     Scroll down and tap{" "}
-                    <span className="font-bold" style={{ color: "oklch(0.80 0.18 80)" }}>
+                    <span className="font-bold rr-text-gold">
                       Add to Home Screen
                     </span>
                   </>
@@ -132,14 +124,14 @@ export default function PWAInstallPrompt() {
               <Step
                 number={3}
                 icon={
-                  <span className="text-sm font-black" style={{ color: "oklch(0.80 0.18 80)" }}>
+                  <span className="text-sm font-black rr-text-gold">
                     ✓
                   </span>
                 }
                 text={
                   <>
                     Tap{" "}
-                    <span className="font-bold" style={{ color: "oklch(0.80 0.18 80)" }}>
+                    <span className="font-bold rr-text-gold">
                       Add
                     </span>{" "}
                     — ReviewLink will appear on your home screen
@@ -151,11 +143,11 @@ export default function PWAInstallPrompt() {
             <>
               <Step
                 number={1}
-                icon={<MoreVertical size={18} style={{ color: "oklch(0.80 0.18 80)" }} />}
+                icon={<MoreVertical size={18} className="rr-text-gold" />}
                 text={
                   <>
                     Tap the{" "}
-                    <span className="font-bold" style={{ color: "oklch(0.80 0.18 80)" }}>
+                    <span className="font-bold rr-text-gold">
                       three-dot menu
                     </span>{" "}
                     in the top-right of Chrome
@@ -164,11 +156,11 @@ export default function PWAInstallPrompt() {
               />
               <Step
                 number={2}
-                icon={<Plus size={18} style={{ color: "oklch(0.80 0.18 80)" }} />}
+                icon={<Plus size={18} className="rr-text-gold" />}
                 text={
                   <>
                     Tap{" "}
-                    <span className="font-bold" style={{ color: "oklch(0.80 0.18 80)" }}>
+                    <span className="font-bold rr-text-gold">
                       Add to Home screen
                     </span>
                   </>
@@ -177,14 +169,14 @@ export default function PWAInstallPrompt() {
               <Step
                 number={3}
                 icon={
-                  <span className="text-sm font-black" style={{ color: "oklch(0.80 0.18 80)" }}>
+                  <span className="text-sm font-black rr-text-gold">
                     ✓
                   </span>
                 }
                 text={
                   <>
                     Tap{" "}
-                    <span className="font-bold" style={{ color: "oklch(0.80 0.18 80)" }}>
+                    <span className="font-bold rr-text-gold">
                       Add
                     </span>{" "}
                     — ReviewLink will appear on your home screen
@@ -231,8 +223,7 @@ function Step({
     >
       {/* Step number */}
       <div
-        className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0"
-        style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+        className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black flex-shrink-0 rr-bg-gold rr-text-navy"
       >
         {number}
       </div>

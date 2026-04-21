@@ -214,23 +214,22 @@ export default function ImportContactsPage() {
   // ── Render ───────────────────────────────────────────────────────────────────
   return (
     <>
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Header */}
-      <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
+      <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/contacts")}
-          className="flex items-center gap-1.5 mb-4 text-xs font-bold"
-          style={{ color: "oklch(0.80 0.18 80)" }}
+          className="flex items-center gap-1.5 mb-4 text-xs font-bold rr-text-gold"
         >
           <ArrowLeft size={14} /> Back to Contacts
         </button>
         <div className="flex items-center gap-2 mb-1">
-          <Upload size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
-          <span className="text-xs font-bold tracking-widest uppercase" style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}>
+          <Upload size={16} className="rr-text-gold" />
+          <span className="text-xs font-bold tracking-widest uppercase rr-text-gold">
             Import
           </span>
         </div>
-        <h1 className="text-2xl" style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}>
+        <h1 className="text-2xl text-white rr-fw-black">
           Import Clients
         </h1>
 
@@ -269,12 +268,7 @@ export default function ImportContactsPage() {
             {isNative && (
               <button
                 onClick={() => setContactPickerOpen(true)}
-                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-sm"
-                style={{
-                  background: "oklch(0.22 0.09 260)",
-                  color: "oklch(0.80 0.18 80)",
-                  fontFamily: "'Poppins', sans-serif",
-                }}
+                className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-sm rr-bg-navy rr-text-gold"
               >
                 <BookUser size={18} />
                 Import from Phone Contacts
@@ -284,7 +278,7 @@ export default function ImportContactsPage() {
             {isNative && (
               <div className="flex items-center gap-3">
                 <div className="flex-1 h-px" style={{ background: "oklch(0.88 0.02 260)" }} />
-                <span className="text-xs" style={{ color: "oklch(0.60 0.03 260)" }}>or upload a CSV file</span>
+                <span className="text-xs rr-text-navy-muted">or upload a CSV file</span>
                 <div className="flex-1 h-px" style={{ background: "oklch(0.88 0.02 260)" }} />
               </div>
             )}
@@ -292,17 +286,16 @@ export default function ImportContactsPage() {
             {/* Template download */}
             <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
               <div>
-                <p className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                <p className="text-sm font-black rr-text-navy">
                   Need a template?
                 </p>
-                <p className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.03 260)" }}>
+                <p className="text-xs mt-0.5 rr-text-navy-muted">
                   Download our pre-formatted CSV
                 </p>
               </div>
               <button
                 onClick={downloadTemplate}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black"
-                style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black rr-bg-navy rr-text-gold"
               >
                 <Download size={12} /> Template
               </button>
@@ -325,13 +318,13 @@ export default function ImportContactsPage() {
                 className="w-14 h-14 rounded-2xl flex items-center justify-center"
                 style={{ background: "oklch(0.96 0.02 260)" }}
               >
-                <FileText size={28} style={{ color: "oklch(0.22 0.09 260)" }} />
+                <FileText size={28} className="rr-text-navy" />
               </div>
               <div className="text-center px-4">
-                <p className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                <p className="text-sm font-black rr-text-navy">
                   Drop your CSV here
                 </p>
-                <p className="text-xs mt-1" style={{ color: "oklch(0.55 0.03 260)" }}>
+                <p className="text-xs mt-1 rr-text-navy-muted">
                   or tap to browse files
                 </p>
                 <p className="text-xs mt-2" style={{ color: "oklch(0.70 0.02 260)" }}>
@@ -354,14 +347,14 @@ export default function ImportContactsPage() {
           <div className="flex flex-col gap-4">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
               <div className="flex items-center justify-between mb-1">
-                <p className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                <p className="text-sm font-black rr-text-navy">
                   Map Your Columns
                 </p>
-                <span className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+                <span className="text-xs rr-text-navy-muted">
                   {rawRows.length} rows in <strong>{fileName}</strong>
                 </span>
               </div>
-              <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.03 260)" }}>
+              <p className="text-xs mb-4 rr-text-navy-muted">
                 Tell us what each column in your file represents. We've auto-detected where we can.
               </p>
 
@@ -369,15 +362,13 @@ export default function ImportContactsPage() {
                 {headers.map((h) => (
                   <div key={h} className="flex items-center justify-between gap-3">
                     <div
-                      className="flex-1 px-3 py-2 rounded-xl text-xs font-bold truncate"
-                      style={{ background: "oklch(0.96 0.01 260)", color: "oklch(0.35 0.05 260)" }}
+                      className="flex-1 px-3 py-2 rounded-xl text-xs font-bold truncate rr-bg-surface" style={{ color: "oklch(0.35 0.05 260)" }}
                     >
                       {h}
                     </div>
                     <ChevronRight size={14} style={{ color: "oklch(0.70 0.02 260)", flexShrink: 0 }} />
                     <select
-                      className="flex-1 px-3 py-2 rounded-xl text-xs font-bold border-0 outline-none"
-                      style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+                      className="flex-1 px-3 py-2 rounded-xl text-xs font-bold border-0 outline-none rr-bg-navy rr-text-gold"
                       value={mapping[h] ?? "skip"}
                       onChange={(e) => setMapping((m) => ({ ...m, [h]: e.target.value as ColumnKey }))}
                     >
@@ -410,8 +401,7 @@ export default function ImportContactsPage() {
               <button
                 onClick={goToPreview}
                 disabled={!Object.values(mapping).includes("email")}
-                className="flex-1 py-3 rounded-xl text-sm font-black disabled:opacity-40"
-                style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+                className="flex-1 py-3 rounded-xl text-sm font-black disabled:opacity-40 rr-bg-gold rr-text-navy"
               >
                 Preview →
               </button>
@@ -424,12 +414,11 @@ export default function ImportContactsPage() {
           <div className="flex flex-col gap-4">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                <p className="text-sm font-black rr-text-navy">
                   Review Before Import
                 </p>
                 <span
-                  className="text-xs font-bold px-2 py-0.5 rounded-full"
-                  style={{ background: "oklch(0.96 0.04 145)", color: "oklch(0.45 0.12 145)" }}
+                  className="text-xs font-bold px-2 py-0.5 rounded-full rr-bg-green-pale" style={{ color: "oklch(0.45 0.12 145)" }}
                 >
                   {mappedRows.length} contacts
                 </span>
@@ -444,23 +433,22 @@ export default function ImportContactsPage() {
                   >
                     <div className="flex items-center gap-3">
                       <div
-                        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0"
-                        style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+                        className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shrink-0 rr-bg-navy rr-text-gold"
                       >
                         {row.name[0]?.toUpperCase() ?? "?"}
                       </div>
                       <div>
-                        <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>{row.name}</p>
-                        <p className="text-xs" style={{ color: "oklch(0.60 0.03 260)" }}>{row.email}</p>
+                        <p className="text-sm font-bold rr-text-navy">{row.name}</p>
+                        <p className="text-xs rr-text-navy-muted">{row.email}</p>
                       </div>
                     </div>
                     {row.phone && (
-                      <span className="text-xs" style={{ color: "oklch(0.65 0.03 260)" }}>{row.phone}</span>
+                      <span className="text-xs rr-text-navy-faint">{row.phone}</span>
                     )}
                   </div>
                 ))}
                 {mappedRows.length > 100 && (
-                  <p className="text-xs text-center py-3" style={{ color: "oklch(0.60 0.03 260)" }}>
+                  <p className="text-xs text-center py-3 rr-text-navy-muted">
                     …and {mappedRows.length - 100} more
                   </p>
                 )}
@@ -471,8 +459,8 @@ export default function ImportContactsPage() {
               className="bg-white rounded-2xl p-3 flex items-center gap-2 shadow-sm"
               style={{ border: "1px solid oklch(0.92 0.02 260)" }}
             >
-              <AlertCircle size={14} style={{ color: "oklch(0.55 0.03 260)" }} />
-              <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+              <AlertCircle size={14} className="rr-text-navy-muted" />
+              <p className="text-xs rr-text-navy-muted">
                 Duplicate emails already in your contacts will be skipped automatically.
               </p>
             </div>
@@ -488,8 +476,7 @@ export default function ImportContactsPage() {
               <button
                 onClick={confirmImport}
                 disabled={importMutation.isPending}
-                className="flex-1 py-3 rounded-xl text-sm font-black flex items-center justify-center gap-2 disabled:opacity-60"
-                style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+                className="flex-1 py-3 rounded-xl text-sm font-black flex items-center justify-center gap-2 disabled:opacity-60 rr-bg-navy rr-text-gold"
               >
                 {importMutation.isPending ? (
                   <><Loader2 size={14} className="animate-spin" /> Importing…</>
@@ -505,16 +492,15 @@ export default function ImportContactsPage() {
         {step === 3 && importResult && (
           <div className="flex flex-col items-center gap-4 pt-8">
             <div
-              className="w-20 h-20 rounded-full flex items-center justify-center"
-              style={{ background: "oklch(0.96 0.04 145)" }}
+              className="w-20 h-20 rounded-full flex items-center justify-center rr-bg-green-pale"
             >
               <CheckCircle2 size={40} style={{ color: "oklch(0.45 0.12 145)" }} />
             </div>
             <div className="text-center">
-              <h2 className="text-2xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+              <h2 className="text-2xl font-black rr-text-navy">
                 Import Complete!
               </h2>
-              <p className="text-sm mt-2" style={{ color: "oklch(0.55 0.03 260)" }}>
+              <p className="text-sm mt-2 rr-text-navy-muted">
                 {importResult.imported} contact{importResult.imported !== 1 ? "s" : ""} added
                 {importResult.skipped > 0 && `, ${importResult.skipped} duplicate${importResult.skipped !== 1 ? "s" : ""} skipped`}.
               </p>
@@ -523,8 +509,7 @@ export default function ImportContactsPage() {
             <div className="w-full flex flex-col gap-3 mt-4">
               <button
                 onClick={() => navigate("/contacts")}
-                className="w-full py-3.5 rounded-2xl text-sm font-black flex items-center justify-center gap-2"
-                style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+                className="w-full py-3.5 rounded-2xl text-sm font-black flex items-center justify-center gap-2 rr-bg-navy rr-text-gold"
               >
                 <Users size={16} /> View Contacts & Send Requests
               </button>

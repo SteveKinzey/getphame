@@ -194,17 +194,15 @@ export default function ChangelogPage() {
   const totalCount = filteredEntries.length;
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Navy header */}
       <div
-        className="relative px-5 pt-14 pb-6"
-        style={{ background: "oklch(0.22 0.09 260)" }}
+        className="relative px-5 pt-14 pb-6 rr-bg-navy"
       >
         <button
           onClick={() => navigate("/")}
           aria-label="Back to Home"
-          className="flex items-center gap-2 mb-4 transition-opacity active:opacity-70"
-          style={{ color: "oklch(0.80 0.18 80)" }}
+          className="flex items-center gap-2 mb-4 transition-opacity active:opacity-70 rr-text-gold"
         >
           <ArrowLeft size={16} aria-hidden="true" />
           <span className="text-xs font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>
@@ -217,17 +215,15 @@ export default function ChangelogPage() {
           className="flex items-center gap-2 mb-1 active:opacity-70 transition-opacity"
           aria-label="Go to Home"
         >
-          <Rocket size={16} style={{ color: "oklch(0.80 0.18 80)" }} aria-hidden="true" />
+          <Rocket size={16} className="rr-text-gold" aria-hidden="true" />
           <span
-            className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Syne', sans-serif" }}
+            className="text-xs font-bold tracking-widest uppercase rr-text-gold"
           >
             ReviewLink
           </span>
         </button>
         <h1
-          className="text-2xl leading-tight"
-          style={{ color: "white", fontFamily: "'Syne', sans-serif", fontWeight: 900 }}
+          className="text-2xl leading-tight text-white rr-fw-black"
         >
           What's New
         </h1>
@@ -256,8 +252,7 @@ export default function ChangelogPage() {
                 {tab.label}
                 {tab.id !== "all" && (
                   <span
-                    className="ml-1.5 text-xs opacity-70"
-                    style={{ fontWeight: 400 }}
+                    className="ml-1.5 text-xs opacity-70 rr-fw-normal"
                   >
                     {allEntries.filter((e) => e.label === tab.id).length}
                   </span>
@@ -270,7 +265,7 @@ export default function ChangelogPage() {
 
       {/* Result count */}
       <div className="px-4 pt-4 pb-1">
-        <p className="text-xs" style={{ color: "oklch(0.60 0.03 260)", fontFamily: "'Nunito', sans-serif" }}>
+        <p className="text-xs rr-text-navy-muted">
           {totalCount} {totalCount === 1 ? "update" : "updates"}
           {activeFilter !== "all" ? ` matching "${LABEL_STYLES[activeFilter as Label]?.text}"` : " total"}
         </p>
@@ -280,7 +275,7 @@ export default function ChangelogPage() {
       <div className="px-4 pt-2 flex flex-col gap-8">
         {filteredReleases.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-sm" style={{ color: "oklch(0.60 0.03 260)" }}>No updates in this category yet.</p>
+            <p className="text-sm rr-text-navy-muted">No updates in this category yet.</p>
           </div>
         ) : (
           filteredReleases.map((release) => (
@@ -288,18 +283,12 @@ export default function ChangelogPage() {
               {/* Version header */}
               <div className="flex items-center gap-3 mb-4">
                 <div
-                  className="px-3 py-1 rounded-full text-xs font-black"
-                  style={{
-                    background: "oklch(0.22 0.09 260)",
-                    color: "oklch(0.80 0.18 80)",
-                    fontFamily: "'Poppins', sans-serif",
-                  }}
+                  className="px-3 py-1 rounded-full text-xs font-black rr-bg-navy rr-text-gold"
                 >
                   v{release.version}
                 </div>
                 <span
-                  className="text-xs font-semibold"
-                  style={{ color: "oklch(0.60 0.03 260)", fontFamily: "'Nunito', sans-serif" }}
+                  className="text-xs font-semibold rr-text-navy-muted"
                 >
                   {release.date}
                 </span>
@@ -316,13 +305,11 @@ export default function ChangelogPage() {
                   return (
                     <div
                       key={i}
-                      className="rounded-2xl p-4 flex gap-3"
-                      style={{ background: "white", boxShadow: "0 1px 4px oklch(0.22 0.09 260 / 0.08)" }}
+                      className="rounded-2xl p-4 flex gap-3 bg-white" style={{ boxShadow: "0 1px 4px oklch(0.22 0.09 260 / 0.08)" }}
                     >
                       {/* Icon */}
                       <div
-                        className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5"
-                        style={{ background: "oklch(0.96 0.02 260)", color: "oklch(0.22 0.09 260)" }}
+                        className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 rr-text-navy" style={{ background: "oklch(0.96 0.02 260)" }}
                         aria-hidden="true"
                       >
                         {entry.icon}
@@ -331,8 +318,7 @@ export default function ChangelogPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <span
-                            className="text-sm font-black leading-tight"
-                            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                            className="text-sm font-black leading-tight rr-text-navy"
                           >
                             {entry.title}
                           </span>
@@ -361,7 +347,7 @@ export default function ChangelogPage() {
 
       {/* Footer note */}
       <div className="px-4 pt-6 pb-4 text-center">
-        <p className="text-xs" style={{ color: "oklch(0.65 0.02 260)" }}>
+        <p className="text-xs rr-text-navy-faint">
           Have a feature request?{" "}
           <a
             href="mailto:support@reviewlink.app"

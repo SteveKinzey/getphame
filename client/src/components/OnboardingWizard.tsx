@@ -237,12 +237,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@yourbusiness.com"
-          className="w-full px-4 py-3 rounded-xl text-sm outline-none"
-          style={{
-            background: "oklch(0.18 0.06 260)",
-            color: "white",
-            border: "1px solid oklch(0.32 0.06 260)",
-          }}
+          className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
         />
       </div>
 
@@ -256,26 +251,19 @@ function Step1Email({ onDone }: { onDone: () => void }) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder={hint ? "16-character app password" : "Your email password"}
-            className="w-full px-4 py-3 pr-10 rounded-xl text-sm outline-none"
-            style={{
-              background: "oklch(0.18 0.06 260)",
-              color: "white",
-              border: "1px solid oklch(0.32 0.06 260)",
-            }}
+            className="w-full px-4 py-3 pr-10 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
           />
           <button
             type="button"
             onClick={() => setShowPass(!showPass)}
-            className="absolute right-3 top-1/2 -translate-y-1/2"
-            style={{ color: "oklch(0.55 0.04 260)" }}
+            className="absolute right-3 top-1/2 -translate-y-1/2 rr-text-navy-muted"
           >
             {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
           </button>
         </div>
         {hint && (
           <div
-            className="flex items-start gap-2 mt-2 px-3 py-2 rounded-lg"
-            style={{ background: "oklch(0.22 0.08 80)", color: "oklch(0.80 0.18 80)" }}
+            className="flex items-start gap-2 mt-2 px-3 py-2 rounded-lg rr-text-gold" style={{ background: "oklch(0.22 0.08 80)" }}
           >
             <AlertCircle size={14} className="shrink-0 mt-0.5" />
             <p className="text-xs">{hint}</p>
@@ -286,47 +274,37 @@ function Step1Email({ onDone }: { onDone: () => void }) {
       {/* From Name — promoted to main form */}
       <div>
         <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          Your Name <span style={{ color: "oklch(0.55 0.04 260)", fontWeight: 400 }}>(shown as sender)</span>
+          Your Name <span className="rr-text-navy-muted rr-fw-normal">(shown as sender)</span>
         </label>
         <input
           type="text"
           value={fromName}
           onChange={(e) => setFromName(e.target.value)}
           placeholder="e.g. Steve at Acme Plumbing"
-          className="w-full px-4 py-3 rounded-xl text-sm outline-none"
-          style={{
-            background: "oklch(0.18 0.06 260)",
-            color: "white",
-            border: "1px solid oklch(0.32 0.06 260)",
-          }}
+          className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
         />
-        <p className="text-xs mt-1" style={{ color: "oklch(0.55 0.04 260)" }}>
+        <p className="text-xs mt-1 rr-text-navy-muted">
           Customers will see this as the sender name in their inbox.
         </p>
       </div>
       {/* Reply-To — optional */}
       <div>
         <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          Reply-To <span style={{ color: "oklch(0.55 0.04 260)", fontWeight: 400 }}>(optional)</span>
+          Reply-To <span className="rr-text-navy-muted rr-fw-normal">(optional)</span>
         </label>
         <input
           type="email"
           value={replyTo}
           onChange={(e) => setReplyTo(e.target.value)}
           placeholder="e.g. support@yourbusiness.com"
-          className="w-full px-4 py-3 rounded-xl text-sm outline-none"
-          style={{
-            background: "oklch(0.18 0.06 260)",
-            color: "white",
-            border: "1px solid oklch(0.32 0.06 260)",
-          }}
+          className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
         />
-        <p className="text-xs mt-1" style={{ color: "oklch(0.55 0.04 260)" }}>
+        <p className="text-xs mt-1 rr-text-navy-muted">
           Where customer replies will go. Leave blank to use your sending address.
         </p>
       </div>
       {detectedAuto && (
-        <p className="text-xs" style={{ color: "oklch(0.55 0.18 145)" }}>
+        <p className="text-xs rr-text-green">
           ✓ SMTP settings auto-detected for {email.split("@")[1]}
         </p>
       )}
@@ -404,12 +382,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
                 value={host}
                 onChange={(e) => setHost(e.target.value)}
                 placeholder={`smtp.${email.split("@")[1] ?? "yourdomain.com"}`}
-                className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-                style={{
-                  background: "oklch(0.18 0.06 260)",
-                  color: "white",
-                  border: "1px solid oklch(0.32 0.06 260)",
-                }}
+                className="w-full px-3 py-2 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
               />
             </div>
             <div className="w-24">
@@ -420,12 +393,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
                 type="number"
                 value={port}
                 onChange={(e) => setPort(Number(e.target.value))}
-                className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-                style={{
-                  background: "oklch(0.18 0.06 260)",
-                  color: "white",
-                  border: "1px solid oklch(0.32 0.06 260)",
-                }}
+                className="w-full px-3 py-2 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
               />
             </div>
           </div>
@@ -533,12 +501,7 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
         <select
           value={platform}
           onChange={(e) => { setPlatform(e.target.value); setUrl(""); }}
-          className="w-full px-4 py-3 rounded-xl text-sm outline-none appearance-none"
-          style={{
-            background: "oklch(0.18 0.06 260)",
-            color: "white",
-            border: "1px solid oklch(0.32 0.06 260)",
-          }}
+          className="w-full px-4 py-3 rounded-xl text-sm outline-none appearance-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
         >
           {PLATFORM_OPTIONS.map((p) => (
             <option key={p.value} value={p.value}>
@@ -557,12 +520,7 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           placeholder={PLATFORM_PLACEHOLDERS[platform]}
-          className="w-full px-4 py-3 rounded-xl text-sm outline-none"
-          style={{
-            background: "oklch(0.18 0.06 260)",
-            color: "white",
-            border: "1px solid oklch(0.32 0.06 260)",
-          }}
+          className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
         />
         <p className="text-xs mt-1" style={{ color: "oklch(0.50 0.03 260)" }}>
           Paste the link customers click to leave you a review.
@@ -622,15 +580,13 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
   return (
     <div className="flex flex-col items-center gap-6 text-center py-4">
       <div
-        className="w-20 h-20 rounded-full flex items-center justify-center"
-        style={{ background: "oklch(0.22 0.09 260)" }}
+        className="w-20 h-20 rounded-full flex items-center justify-center rr-bg-navy"
       >
-        <Rocket size={36} style={{ color: "oklch(0.80 0.18 80)" }} />
+        <Rocket size={36} className="rr-text-gold" />
       </div>
       <div>
         <h3
-          className="text-xl font-black mb-2"
-          style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+          className="text-xl font-black mb-2 text-white"
         >
           You're all set!
         </h3>
@@ -641,12 +597,7 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
       </div>
       <button
         onClick={handleGoSend}
-        className="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-black text-base transition-transform active:scale-95 w-full"
-        style={{
-          background: "oklch(0.80 0.18 80)",
-          color: "oklch(0.15 0.05 260)",
-          fontFamily: "'Poppins', sans-serif",
-        }}
+        className="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-black text-base transition-transform active:scale-95 w-full rr-bg-gold" style={{ color: "oklch(0.15 0.05 260)" }}
       >
         <Rocket size={18} />
         Send My First Review Request
@@ -700,15 +651,13 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
       >
         {/* Header */}
         <div
-          className="px-6 pt-6 pb-4"
-          style={{ background: "oklch(0.22 0.09 260)" }}
+          className="px-6 pt-6 pb-4 rr-bg-navy"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Rocket size={18} style={{ color: "oklch(0.80 0.18 80)" }} />
+              <Rocket size={18} className="rr-text-gold" />
               <span
-                className="text-xs font-bold tracking-widest uppercase"
-                style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+                className="text-xs font-bold tracking-widest uppercase rr-text-gold"
               >
                 ReviewLink Setup
               </span>
@@ -779,8 +728,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
           {/* Step title */}
           <div className="mb-5">
             <h2
-              className="text-lg font-black mb-1"
-              style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+              className="text-lg font-black mb-1 text-white"
             >
               {currentStep === 1 && "Connect your email"}
               {currentStep === 2 && "Add your review page"}
@@ -805,13 +753,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
             {currentStep > 1 && (
               <button
                 onClick={handlePrev}
-                className="flex items-center gap-1 px-4 py-3 rounded-2xl font-bold text-sm transition-transform active:scale-95"
-                style={{
-                  background: "oklch(0.22 0.09 260)",
-                  color: "oklch(0.70 0.04 260)",
-                  border: "1px solid oklch(0.35 0.06 260)",
-                  fontFamily: "'Poppins', sans-serif",
-                }}
+                className="flex items-center gap-1 px-4 py-3 rounded-2xl font-bold text-sm transition-transform active:scale-95 rr-bg-navy" style={{ color: "oklch(0.70 0.04 260)", border: "1px solid oklch(0.35 0.06 260)" }}
               >
                 <ChevronLeft size={16} />
                 Previous

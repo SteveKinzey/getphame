@@ -134,12 +134,7 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
     >
       {/* Sheet */}
       <div
-        className="w-full flex flex-col"
-        style={{
-          background: 'oklch(0.975 0.003 100)',
-          borderRadius: '24px 24px 0 0',
-          maxHeight: '92vh',
-        }}
+        className="w-full flex flex-col rr-bg-cream-warm" style={{ borderRadius: "24px 24px 0 0", maxHeight: "92vh" }}
       >
         {/* Drag handle */}
         <div className="flex justify-center pt-3 pb-1 flex-shrink-0">
@@ -150,13 +145,12 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
         <div className="flex items-center justify-between px-5 py-3 flex-shrink-0">
           <div>
             <h2
-              className="text-lg font-black"
-              style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
+              className="text-lg font-black rr-text-navy"
             >
               Import Contacts
             </h2>
             {allContacts.length > 0 && (
-              <p className="text-xs" style={{ color: 'oklch(0.55 0.03 260)' }}>
+              <p className="text-xs rr-text-navy-muted">
                 {allContacts.length} contacts with email addresses
               </p>
             )}
@@ -166,7 +160,7 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
             className="w-8 h-8 rounded-full flex items-center justify-center"
             style={{ background: 'oklch(0.92 0.01 260)' }}
           >
-            <X size={16} style={{ color: 'oklch(0.40 0.04 260)' }} />
+            <X size={16} className="rr-text-navy-mid" />
           </button>
         </div>
 
@@ -176,18 +170,17 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
             className="flex items-center gap-2 px-3 py-2.5 rounded-xl"
             style={{ background: 'oklch(0.92 0.01 260)' }}
           >
-            <Search size={16} style={{ color: 'oklch(0.55 0.03 260)', flexShrink: 0 }} />
+            <Search size={16} className="rr-text-navy-muted" style={{ flexShrink: "0" }} />
             <input
               type="text"
               placeholder="Search by name or email..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="flex-1 bg-transparent text-sm outline-none"
-              style={{ color: 'oklch(0.22 0.09 260)' }}
+              className="flex-1 bg-transparent text-sm outline-none rr-text-navy"
             />
             {query && (
               <button onClick={() => setQuery('')}>
-                <X size={14} style={{ color: 'oklch(0.55 0.03 260)' }} />
+                <X size={14} className="rr-text-navy-muted" />
               </button>
             )}
           </div>
@@ -198,8 +191,7 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
           <div className="px-4 pb-2 flex-shrink-0">
             <button
               onClick={toggleSelectAll}
-              className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl text-sm font-semibold"
-              style={{ background: 'oklch(0.22 0.09 260)', color: 'oklch(0.80 0.18 80)' }}
+              className="flex items-center gap-2 w-full px-3 py-2.5 rounded-xl text-sm font-semibold rr-bg-navy rr-text-gold"
             >
               <CheckSquare size={16} />
               {allFilteredSelected
@@ -207,8 +199,7 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
                 : `Select All (${filtered.length})`}
               {selected.size > 0 && (
                 <span
-                  className="ml-auto text-xs font-black px-2 py-0.5 rounded-full"
-                  style={{ background: 'oklch(0.80 0.18 80)', color: 'oklch(0.22 0.09 260)' }}
+                  className="ml-auto text-xs font-black px-2 py-0.5 rounded-full rr-bg-gold rr-text-navy"
                 >
                   {selected.size} selected
                 </span>
@@ -221,8 +212,8 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
         <div className="flex-1 overflow-y-auto px-4 pb-4">
           {loadingAll ? (
             <div className="flex flex-col items-center justify-center py-16 gap-3">
-              <Loader2 size={28} className="animate-spin" style={{ color: 'oklch(0.80 0.18 80)' }} />
-              <p className="text-sm" style={{ color: 'oklch(0.55 0.03 260)' }}>
+              <Loader2 size={28} className="animate-spin rr-text-gold" />
+              <p className="text-sm rr-text-navy-muted">
                 Loading contacts...
               </p>
             </div>
@@ -235,8 +226,8 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
             </div>
           ) : filtered.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 gap-2 text-center">
-              <User size={28} style={{ color: 'oklch(0.70 0.03 260)' }} />
-              <p className="text-sm" style={{ color: 'oklch(0.55 0.03 260)' }}>
+              <User size={28} className="rr-text-navy-faint" />
+              <p className="text-sm rr-text-navy-muted">
                 {query ? 'No contacts match your search.' : 'No contacts with email addresses found.'}
               </p>
             </div>
@@ -283,7 +274,7 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
 
                     {/* Checkbox */}
                     {isSelected ? (
-                      <CheckCircle2 size={20} style={{ color: 'oklch(0.80 0.18 80)', flexShrink: 0 }} />
+                      <CheckCircle2 size={20} className="rr-text-gold" style={{ flexShrink: "0" }} />
                     ) : (
                       <Circle size={20} style={{ color: 'oklch(0.75 0.02 260)', flexShrink: 0 }} />
                     )}
@@ -302,12 +293,7 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
           >
             <button
               onClick={handleImport}
-              className="w-full py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2"
-              style={{
-                background: 'oklch(0.80 0.18 80)',
-                color: 'oklch(0.22 0.09 260)',
-                fontFamily: "'Poppins', sans-serif",
-              }}
+              className="w-full py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2 rr-bg-gold rr-text-navy"
             >
               <CheckCircle2 size={20} />
               Import {selected.size} Contact{selected.size !== 1 ? 's' : ''}

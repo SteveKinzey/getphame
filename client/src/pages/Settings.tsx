@@ -67,14 +67,13 @@ function InlineFromNameEdit({ current, onSaved }: { current: string; onSaved: ()
   if (!editing) {
     return (
       <div className="flex items-center gap-2">
-        <p className="text-xs flex-1" style={{ color: "oklch(0.55 0.04 260)" }}>
-          <span style={{ color: "oklch(0.40 0.04 260)", fontWeight: 600 }}>Sender name:</span>{" "}
-          {current || <span style={{ color: "oklch(0.65 0.02 260)" }}>Not set</span>}
+        <p className="text-xs flex-1 rr-text-navy-muted">
+          <span className="rr-text-navy-mid rr-fw-semibold">Sender name:</span>{" "}
+          {current || <span className="rr-text-navy-faint">Not set</span>}
         </p>
         <button
           onClick={() => setEditing(true)}
-          className="text-xs px-2 py-1 rounded-lg font-bold"
-          style={{ color: "oklch(0.45 0.04 260)", background: "oklch(0.96 0.01 260)" }}
+          className="text-xs px-2 py-1 rounded-lg font-bold rr-text-navy-mid rr-bg-surface"
         >
           Edit
         </button>
@@ -95,16 +94,14 @@ function InlineFromNameEdit({ current, onSaved }: { current: string; onSaved: ()
       />
       <button
         onClick={() => setEditing(false)}
-        className="text-xs px-2 py-1 rounded-lg font-bold"
-        style={{ color: "oklch(0.55 0.04 260)", background: "oklch(0.96 0.01 260)" }}
+        className="text-xs px-2 py-1 rounded-lg font-bold rr-text-navy-muted rr-bg-surface"
       >
         Cancel
       </button>
       <button
         disabled={updateFromName.isPending}
         onClick={() => updateFromName.mutate({ fromName: value.trim() })}
-        className="text-xs px-2 py-1 rounded-lg font-bold"
-        style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+        className="text-xs px-2 py-1 rounded-lg font-bold rr-bg-navy text-white"
       >
         {updateFromName.isPending ? <Loader2 size={12} className="animate-spin" /> : "Save"}
       </button>
@@ -126,14 +123,13 @@ function InlineReplyToEdit({ current, onSaved }: { current: string; onSaved: () 
   if (!editing) {
     return (
       <div className="flex items-center gap-2">
-        <p className="text-xs flex-1" style={{ color: "oklch(0.55 0.04 260)" }}>
-          <span style={{ color: "oklch(0.40 0.04 260)", fontWeight: 600 }}>Reply-To:</span>{" "}
-          {current || <span style={{ color: "oklch(0.65 0.02 260)" }}>Same as sending address</span>}
+        <p className="text-xs flex-1 rr-text-navy-muted">
+          <span className="rr-text-navy-mid rr-fw-semibold">Reply-To:</span>{" "}
+          {current || <span className="rr-text-navy-faint">Same as sending address</span>}
         </p>
         <button
           onClick={() => setEditing(true)}
-          className="text-xs px-2 py-1 rounded-lg font-bold"
-          style={{ color: "oklch(0.45 0.04 260)", background: "oklch(0.96 0.01 260)" }}
+          className="text-xs px-2 py-1 rounded-lg font-bold rr-text-navy-mid rr-bg-surface"
         >
           Edit
         </button>
@@ -154,16 +150,14 @@ function InlineReplyToEdit({ current, onSaved }: { current: string; onSaved: () 
       />
       <button
         onClick={() => setEditing(false)}
-        className="text-xs px-2 py-1 rounded-lg font-bold"
-        style={{ color: "oklch(0.55 0.04 260)", background: "oklch(0.96 0.01 260)" }}
+        className="text-xs px-2 py-1 rounded-lg font-bold rr-text-navy-muted rr-bg-surface"
       >
         Cancel
       </button>
       <button
         disabled={updateReplyTo.isPending}
         onClick={() => updateReplyTo.mutate({ replyTo: value.trim() })}
-        className="text-xs px-2 py-1 rounded-lg font-bold"
-        style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+        className="text-xs px-2 py-1 rounded-lg font-bold rr-bg-navy text-white"
       >
         {updateReplyTo.isPending ? <Loader2 size={12} className="animate-spin" /> : "Save"}
       </button>
@@ -199,8 +193,7 @@ function SendFeedbackSection() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold w-full"
-        style={{ color: "oklch(0.45 0.10 260)", background: "transparent" }}
+        className="flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold w-full bg-transparent" style={{ color: "oklch(0.45 0.10 260)" }}
         aria-label="Send feedback to ReviewLink support"
       >
         <Send size={14} aria-hidden="true" />
@@ -211,11 +204,10 @@ function SendFeedbackSection() {
 
   return (
     <div
-      className="rounded-2xl p-5 space-y-3"
-      style={{ background: "oklch(0.97 0.01 260)", border: "1.5px solid oklch(0.88 0.04 260)" }}
+      className="rounded-2xl p-5 space-y-3 rr-bg-white-card" style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
     >
       <div className="flex items-center justify-between">
-        <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+        <p className="text-sm font-bold rr-text-navy">
           Send Feedback
         </p>
         <button
@@ -223,10 +215,10 @@ function SendFeedbackSection() {
           aria-label="Close feedback form"
           className="rounded-full p-1 hover:bg-gray-100"
         >
-          <X size={14} style={{ color: "oklch(0.55 0.05 260)" }} />
+          <X size={14} className="rr-text-navy-muted" />
         </button>
       </div>
-      <p className="text-xs leading-relaxed" style={{ color: "oklch(0.50 0.05 260)" }}>
+      <p className="text-xs leading-relaxed rr-text-navy-muted">
         Found a bug? Have a suggestion? We read every message.
       </p>
       <textarea
@@ -235,13 +227,7 @@ function SendFeedbackSection() {
         placeholder="Describe what you found or what you'd love to see…"
         rows={4}
         maxLength={1000}
-        className="w-full rounded-xl px-3 py-2.5 text-xs resize-none outline-none"
-        style={{
-          background: "white",
-          border: "1.5px solid oklch(0.88 0.04 260)",
-          color: "oklch(0.22 0.09 260)",
-          fontFamily: "'Nunito', sans-serif",
-        }}
+        className="w-full rounded-xl px-3 py-2.5 text-xs resize-none outline-none bg-white rr-text-navy" style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
         aria-label="Feedback message"
       />
       <div className="flex items-center justify-between gap-2">
@@ -251,8 +237,7 @@ function SendFeedbackSection() {
         <div className="flex gap-2">
           <button
             onClick={() => { setOpen(false); setMessage(""); }}
-            className="px-4 py-2 rounded-xl text-xs font-bold"
-            style={{ background: "oklch(0.94 0.01 260)", color: "oklch(0.40 0.04 260)" }}
+            className="px-4 py-2 rounded-xl text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.94 0.01 260)" }}
           >
             Cancel
           </button>
@@ -297,8 +282,7 @@ function DeleteAccountSection() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold w-full"
-        style={{ color: "oklch(0.55 0.15 25)", background: "transparent" }}
+        className="flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold w-full bg-transparent" style={{ color: "oklch(0.55 0.15 25)" }}
       >
         <Trash2 size={14} />
         Delete Account
@@ -331,8 +315,7 @@ function DeleteAccountSection() {
       <div className="flex gap-2">
         <button
           onClick={() => { setOpen(false); setConfirmed(false); }}
-          className="flex-1 py-2 rounded-xl text-xs font-bold"
-          style={{ background: "oklch(0.94 0.01 260)", color: "oklch(0.40 0.04 260)" }}
+          className="flex-1 py-2 rounded-xl text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.94 0.01 260)" }}
         >
           Cancel
         </button>
@@ -402,10 +385,9 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
     <div className="bg-white rounded-2xl p-5 shadow-sm">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <CreditCard size={18} style={{ color: 'oklch(0.80 0.18 80)' }} />
+          <CreditCard size={18} className="rr-text-gold" />
           <h2
-            className="text-base font-black"
-            style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
+            className="text-base font-black rr-text-navy"
           >
             Billing
           </h2>
@@ -419,7 +401,7 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
       </div>
 
       {renewalLabel && (
-        <p className="text-xs mb-3 flex items-center gap-1.5" style={{ color: 'oklch(0.50 0.04 260)' }}>
+        <p className="text-xs mb-3 flex items-center gap-1.5 rr-text-navy-mid">
           <Clock size={12} />
           {renewalLabel}
         </p>
@@ -427,13 +409,12 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
 
       {tier === 'free' ? (
         <div className="flex flex-col gap-2">
-          <p className="text-xs" style={{ color: 'oklch(0.55 0.03 260)' }}>
+          <p className="text-xs rr-text-navy-muted">
             Upgrade to Pro for unlimited sends, follow-up reminders, and priority support.
           </p>
           <button
             onClick={() => navigate('/upgrade')}
-            className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
-            style={{ background: 'oklch(0.80 0.18 80)', color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
+            className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-gold rr-text-navy"
           >
             <Crown size={16} />
             Upgrade to Pro
@@ -448,7 +429,7 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
                 className="rounded-xl p-4 space-y-3"
                 style={{ background: 'oklch(0.97 0.005 260)', border: '1.5px solid oklch(0.88 0.03 260)' }}
               >
-                <p className="text-sm font-black" style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}>
+                <p className="text-sm font-black rr-text-navy">
                   Before you go...
                 </p>
                 <div className="space-y-1.5">
@@ -459,26 +440,24 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
                     'Priority support',
                   ].filter(Boolean).map((perk) => (
                     <div key={perk as string} className="flex items-center gap-2">
-                      <CheckCircle2 size={13} style={{ color: 'oklch(0.55 0.18 145)', flexShrink: 0 }} />
-                      <span className="text-xs" style={{ color: 'oklch(0.40 0.04 260)' }}>{perk}</span>
+                      <CheckCircle2 size={13} className="rr-text-green" style={{ flexShrink: "0" }} />
+                      <span className="text-xs rr-text-navy-mid">{perk}</span>
                     </div>
                   ))}
                 </div>
-                <p className="text-xs" style={{ color: 'oklch(0.55 0.03 260)' }}>
+                <p className="text-xs rr-text-navy-muted">
                   Cancelling will downgrade your account to Free at the end of the billing period.
                 </p>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setShowRetention(false)}
-                    className="flex-1 py-2.5 rounded-xl text-xs font-black transition-transform active:scale-95"
-                    style={{ background: 'oklch(0.80 0.18 80)', color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
+                    className="flex-1 py-2.5 rounded-xl text-xs font-black transition-transform active:scale-95 rr-bg-gold rr-text-navy"
                   >
                     Keep My Plan
                   </button>
                   <button
                     onClick={() => { setShowRetention(false); navigate('/cancel'); }}
-                    className="flex-1 py-2.5 rounded-xl text-xs font-bold"
-                    style={{ background: 'oklch(0.94 0.01 260)', color: 'oklch(0.45 0.04 260)' }}
+                    className="flex-1 py-2.5 rounded-xl text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.94 0.01 260)" }}
                   >
                     Continue to Cancel
                   </button>
@@ -487,23 +466,21 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
             ) : (
               <button
                 onClick={() => setShowRetention(true)}
-                className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
-                style={{ background: 'oklch(0.22 0.09 260)', color: 'white', fontFamily: "'Poppins', sans-serif" }}
+                className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-navy text-white"
               >
                 <ExternalLink size={16} />
                 Manage Billing
               </button>
             )
           ) : (
-            <p className="text-xs" style={{ color: 'oklch(0.55 0.03 260)' }}>
+            <p className="text-xs rr-text-navy-muted">
               Your plan is active. Contact support to manage billing.
             </p>
           )}
           {tier !== 'lifetime' && (
             <button
               onClick={() => navigate('/upgrade')}
-              className="text-xs text-center py-1.5"
-              style={{ color: 'oklch(0.55 0.03 260)' }}
+              className="text-xs text-center py-1.5 rr-text-navy-muted"
             >
               View all plans
             </button>
@@ -903,7 +880,7 @@ export default function SettingsPage() {
 
   return (
     <>
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40 rr-bg-cream-warm">
       <OnboardingGuide
         open={guideOpen}
         onClose={() => setGuideOpen(false)}
@@ -915,13 +892,12 @@ export default function SettingsPage() {
         }}
       />
       {/* Navy Header */}
-      <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
+      <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-2">
-            <Settings size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+            <Settings size={16} className="rr-text-gold" />
             <span
-              className="text-xs font-bold tracking-widest uppercase"
-              style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+              className="text-xs font-bold tracking-widest uppercase rr-text-gold"
             >
               Settings
             </span>
@@ -929,8 +905,7 @@ export default function SettingsPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={toggleTheme}
-              className="flex items-center justify-center w-8 h-8 rounded-xl transition-colors"
-              style={{ background: "oklch(0.32 0.08 260)", color: "oklch(0.80 0.18 80)" }}
+              className="flex items-center justify-center w-8 h-8 rounded-xl transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
               aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               title={theme === "dark" ? "Light mode" : "Dark mode"}
             >
@@ -938,8 +913,7 @@ export default function SettingsPage() {
             </button>
             <button
               onClick={() => setGuideOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold"
-              style={{ background: "oklch(0.32 0.08 260)", color: "oklch(0.80 0.18 80)" }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
             >
               <BookOpen size={13} />
               Setup Guide
@@ -947,8 +921,7 @@ export default function SettingsPage() {
           </div>
         </div>
         <h1
-          className="text-2xl"
-          style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
+          className="text-2xl text-white rr-fw-black"
         >
           Account & Profile
         </h1>
@@ -966,10 +939,9 @@ export default function SettingsPage() {
         {/* ── Business Profile ──────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
-            <Building2 size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+            <Building2 size={18} className="rr-text-navy" />
             <h2
-              className="text-base font-black"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+              className="text-base font-black rr-text-navy"
             >
               Business Profile
             </h2>
@@ -977,12 +949,12 @@ export default function SettingsPage() {
 
           {profileLoading ? (
             <div className="flex justify-center py-4">
-              <Loader2 className="animate-spin" style={{ color: "oklch(0.22 0.09 260)" }} />
+              <Loader2 className="animate-spin rr-text-navy" />
             </div>
           ) : (
             <div className="flex flex-col gap-3">
               <div>
-                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
                   Business Name *
                 </label>
                 <input
@@ -1000,7 +972,7 @@ export default function SettingsPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
                   <Link2 size={12} className="inline mr-1" />
                   Google Review Link *
                 </label>
@@ -1016,22 +988,21 @@ export default function SettingsPage() {
                     fontSize: "16px",
                   }}
                 />
-                <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>
+                <p className="text-xs mt-1 rr-text-navy-muted">
                   Find this in Google Business Profile → "Get more reviews"
                 </p>
               </div>
 
               {/* ── Email Sender Settings ───────────────────────────────── */}
               <div
-                className="rounded-xl p-3 mt-1"
-                style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}
+                className="rounded-xl p-3 mt-1 rr-bg-white-card" style={{ border: "1px solid oklch(0.90 0.02 260)" }}
               >
-                <p className="text-xs font-black mb-3" style={{ color: "oklch(0.40 0.04 260)", fontFamily: "'Poppins', sans-serif" }}>
+                <p className="text-xs font-black mb-3 rr-text-navy-mid">
                   Email Sender Settings
                 </p>
                 <div className="flex flex-col gap-3">
                   <div>
-                    <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+                    <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
                       From Name
                     </label>
                     <input
@@ -1039,20 +1010,14 @@ export default function SettingsPage() {
                       value={fromName}
                       onChange={(e) => setFromName(e.target.value)}
                       placeholder={businessName || "e.g. Maria's Hair Salon"}
-                      className="w-full px-3 py-3 rounded-xl text-sm outline-none"
-                      style={{
-                        border: "2px solid oklch(0.90 0.02 260)",
-                        fontFamily: "'Nunito', sans-serif",
-                        fontSize: "16px",
-                        background: "white",
-                      }}
+                      className="w-full px-3 py-3 rounded-xl text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                     />
-                    <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>
+                    <p className="text-xs mt-1 rr-text-navy-muted">
                       How your name appears in the customer's inbox. Defaults to your business name.
                     </p>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+                    <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
                       Reply-To Email
                     </label>
                     <input
@@ -1060,15 +1025,9 @@ export default function SettingsPage() {
                       value={replyTo}
                       onChange={(e) => setReplyTo(e.target.value)}
                       placeholder="e.g. steve@sk-america.com"
-                      className="w-full px-3 py-3 rounded-xl text-sm outline-none"
-                      style={{
-                        border: "2px solid oklch(0.90 0.02 260)",
-                        fontFamily: "'Nunito', sans-serif",
-                        fontSize: "16px",
-                        background: "white",
-                      }}
+                      className="w-full px-3 py-3 rounded-xl text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                     />
-                    <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>
+                    <p className="text-xs mt-1 rr-text-navy-muted">
                       When a customer replies to the email, it goes here. Leave blank to use your connected email address.
                     </p>
                   </div>
@@ -1101,30 +1060,28 @@ export default function SettingsPage() {
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-1">
             <div className="flex items-center gap-2">
-              <Globe size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+              <Globe size={18} className="rr-text-navy" />
               <h2
-                className="text-base font-black"
-                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                className="text-base font-black rr-text-navy"
               >
                 Review Platforms
               </h2>
             </div>
             <button
               onClick={() => { setShowAddPlatform(true); setEditingPlatformId(null); }}
-              className="flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full transition-colors"
-              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+              className="flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full transition-colors rr-bg-gold rr-text-navy"
             >
               <Plus size={12} />
               Add
             </button>
           </div>
-          <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.03 260)" }}>
+          <p className="text-xs mb-4 rr-text-navy-muted">
             Add your review page URLs for Google, Yelp, TripAdvisor, Bing, Facebook, and more. Paste the public link customers use to leave a review.
           </p>
 
           {platformsLoading ? (
             <div className="flex justify-center py-3">
-              <Loader2 className="animate-spin" size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+              <Loader2 className="animate-spin rr-text-navy" size={18} />
             </div>
           ) : (
             <div className="flex flex-col gap-2">
@@ -1168,16 +1125,14 @@ export default function SettingsPage() {
                             });
                           }}
                           disabled={updatePlatform.isPending}
-                          className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-bold"
-                          style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                          className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-bold rr-bg-navy text-white"
                         >
                           {updatePlatform.isPending ? <Loader2 size={12} className="animate-spin" /> : <Save size={12} />}
                           Save
                         </button>
                         <button
                           onClick={() => setEditingPlatformId(null)}
-                          className="px-3 py-2 rounded-lg text-xs font-bold"
-                          style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.45 0.04 260)" }}
+                          className="px-3 py-2 rounded-lg text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}
                         >
                           <X size={12} />
                         </button>
@@ -1195,19 +1150,18 @@ export default function SettingsPage() {
                       <span className="text-lg shrink-0">{PLATFORM_ICONS[p.platform] ?? "🔗"}</span>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
-                          <span className="text-xs font-black" style={{ color: "oklch(0.22 0.09 260)" }}>
+                          <span className="text-xs font-black rr-text-navy">
                             {p.label || PLATFORM_LABELS[p.platform] || p.platform}
                           </span>
                           {p.isDefault === 1 && (
                             <span
-                              className="text-xs font-bold px-1.5 py-0.5 rounded-full"
-                              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontSize: "9px" }}
+                              className="text-xs font-bold px-1.5 py-0.5 rounded-full rr-bg-gold rr-text-navy" style={{ fontSize: "9px" }}
                             >
                               DEFAULT
                             </span>
                           )}
                         </div>
-                        <p className="text-xs truncate" style={{ color: "oklch(0.55 0.03 260)" }}>{p.url}</p>
+                        <p className="text-xs truncate rr-text-navy-muted">{p.url}</p>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
                         {p.isDefault !== 1 && (
@@ -1223,8 +1177,7 @@ export default function SettingsPage() {
                         <button
                           onClick={() => setEditingPlatformId(p.id)}
                           title="Edit URL"
-                          className="p-1.5 rounded-lg transition-colors hover:bg-gray-100"
-                          style={{ color: "oklch(0.45 0.04 260)" }}
+                          className="p-1.5 rounded-lg transition-colors hover:bg-gray-100 rr-text-navy-mid"
                         >
                           <Pencil size={13} />
                         </button>
@@ -1240,8 +1193,7 @@ export default function SettingsPage() {
                             toast.custom(
                               (toastId) => (
                                 <div
-                                  className="flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg"
-                                  style={{ background: "oklch(0.22 0.09 260)", color: "white", minWidth: "260px" }}
+                                  className="flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg rr-bg-navy text-white" style={{ minWidth: "260px" }}
                                 >
                                   <Trash2 size={14} style={{ opacity: 0.7, flexShrink: 0 }} />
                                   <span className="text-sm flex-1">{PLATFORM_LABELS[snapshot.platform] ?? snapshot.platform} removed</span>
@@ -1250,8 +1202,7 @@ export default function SettingsPage() {
                                       restorePlatform.mutate(snapshot);
                                       toast.dismiss(toastId);
                                     }}
-                                    className="text-xs font-black px-2 py-1 rounded-lg shrink-0"
-                                    style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+                                    className="text-xs font-black px-2 py-1 rounded-lg shrink-0 rr-bg-gold rr-text-navy"
                                   >
                                     Undo
                                   </button>
@@ -1274,10 +1225,9 @@ export default function SettingsPage() {
 
               {(platforms ?? []).length === 0 && !showAddPlatform && (
                 <div
-                  className="text-center py-4 rounded-xl"
-                  style={{ background: "oklch(0.97 0.01 260)", border: "1px dashed oklch(0.85 0.03 260)" }}
+                  className="text-center py-4 rounded-xl rr-bg-white-card" style={{ border: "1px dashed oklch(0.85 0.03 260)" }}
                 >
-                  <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+                  <p className="text-xs rr-text-navy-muted">
                     No review platforms added yet. Click <strong>Add</strong> to get started.
                   </p>
                 </div>
@@ -1290,12 +1240,11 @@ export default function SettingsPage() {
                   style={{ border: "2px solid oklch(0.80 0.18 80)", background: "oklch(0.98 0.01 80)" }}
                 >
                   <div>
-                    <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Platform</label>
+                    <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Platform</label>
                     <select
                       value={newPlatformType}
                       onChange={(e) => setNewPlatformType(e.target.value)}
-                      className="w-full px-3 py-2 rounded-lg text-sm outline-none"
-                      style={{ border: "2px solid oklch(0.90 0.02 260)", background: "white", fontSize: "16px" }}
+                      className="w-full px-3 py-2 rounded-lg text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                     >
                       {Object.entries(PLATFORM_LABELS).map(([val, label]) => (
                         <option key={val} value={val}>{PLATFORM_ICONS[val]} {label}</option>
@@ -1303,7 +1252,7 @@ export default function SettingsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Review Page URL *</label>
+                    <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Review Page URL *</label>
                     <input
                       type="url"
                       value={newPlatformUrl}
@@ -1312,13 +1261,13 @@ export default function SettingsPage() {
                       className="w-full px-3 py-2 rounded-lg text-sm outline-none"
                       style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                     />
-                    <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>
+                    <p className="text-xs mt-1 rr-text-navy-muted">
                       Paste the public URL customers use to leave a review on this platform.
                     </p>
                   </div>
                   {newPlatformType === "other" && (
                     <div>
-                      <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Custom Label</label>
+                      <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Custom Label</label>
                       <input
                         type="text"
                         value={newPlatformLabel}
@@ -1345,16 +1294,14 @@ export default function SettingsPage() {
                         });
                       }}
                       disabled={addPlatform.isPending}
-                      className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-black"
-                      style={{ background: "oklch(0.22 0.09 260)", color: "white", fontFamily: "'Poppins', sans-serif" }}
+                      className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-black rr-bg-navy text-white"
                     >
                       {addPlatform.isPending ? <Loader2 size={12} className="animate-spin" /> : <Plus size={12} />}
                       Add Platform
                     </button>
                     <button
                       onClick={() => { setShowAddPlatform(false); setNewPlatformUrl(""); setNewPlatformLabel(""); }}
-                      className="px-3 py-2 rounded-lg text-xs font-bold"
-                      style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.45 0.04 260)" }}
+                      className="px-3 py-2 rounded-lg text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}
                     >
                       <X size={12} />
                     </button>
@@ -1368,21 +1315,20 @@ export default function SettingsPage() {
         {/* ── Email Connection (SMTP) ───────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-1">
-            <Mail size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+            <Mail size={18} className="rr-text-navy" />
             <h2
-              className="text-base font-black"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+              className="text-base font-black rr-text-navy"
             >
               Email Account
             </h2>
           </div>
-          <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.03 260)" }}>
+          <p className="text-xs mb-4 rr-text-navy-muted">
             Connect your email so review requests are sent from your own address. Works with Gmail, Outlook, Yahoo, Zoho, and any business email.
           </p>
 
           {smtpLoading ? (
             <div className="flex justify-center py-4">
-              <Loader2 className="animate-spin" style={{ color: "oklch(0.22 0.09 260)" }} />
+              <Loader2 className="animate-spin rr-text-navy" />
             </div>
           ) : smtpStatus?.connected && !showSmtpForm ? (
             <div className="flex flex-col gap-3">
@@ -1392,7 +1338,7 @@ export default function SettingsPage() {
                 style={{ background: smtpStatus.verified ? "oklch(0.96 0.04 145)" : "oklch(0.97 0.03 27)" }}
               >
                 {smtpStatus.verified
-                  ? <CheckCircle2 size={18} style={{ color: "oklch(0.55 0.18 145)" }} />
+                  ? <CheckCircle2 size={18} className="rr-text-green" />
                   : <AlertCircle size={18} style={{ color: "oklch(0.55 0.18 27)" }} />
                 }
                 <div className="flex-1 min-w-0">
@@ -1415,8 +1361,7 @@ export default function SettingsPage() {
                 <button
                   onClick={() => testSmtp.mutate()}
                   disabled={testSmtp.isPending}
-                  className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-transform active:scale-95"
-                  style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                  className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold transition-transform active:scale-95 rr-bg-navy text-white"
                   title="Test connection"
                 >
                   {testSmtp.isPending
@@ -1430,16 +1375,14 @@ export default function SettingsPage() {
               <div className="flex gap-2 flex-wrap">
                 <button
                   onClick={() => { setSmtpEmail(smtpStatus.email ?? ""); setSmtpFromName(smtpStatus.fromName ?? ""); setShowSmtpForm(true); }}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap"
-                  style={{ background: "oklch(0.96 0.01 260)", color: "oklch(0.45 0.04 260)" }}
+                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap rr-bg-surface rr-text-navy-mid"
                 >
                   <Pencil size={13} />
                   Change
                 </button>
                 <button
                   onClick={() => setPreviewOpen(true)}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap"
-                  style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap rr-bg-gold rr-text-navy"
                   title="Preview the email your customers will receive"
                 >
                   <Eye size={13} />
@@ -1448,8 +1391,7 @@ export default function SettingsPage() {
                 <button
                   onClick={() => resendWelcome.mutate()}
                   disabled={resendWelcome.isPending}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap"
-                  style={{ background: "oklch(0.96 0.04 260)", color: "oklch(0.22 0.09 260)" }}
+                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap rr-text-navy" style={{ background: "oklch(0.96 0.04 260)" }}
                   title="Resend confirmation email to your inbox"
                 >
                   {resendWelcome.isPending ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />}
@@ -1478,7 +1420,7 @@ export default function SettingsPage() {
               />
               {/* Last health check timestamp */}
               {smtpStatus?.lastHealthCheck && (
-                <p className="text-xs" style={{ color: "oklch(0.65 0.02 260)" }}>
+                <p className="text-xs rr-text-navy-faint">
                   Last auto-check: {new Date(smtpStatus.lastHealthCheck).toLocaleString()}
                   {" · "}
                   <span style={{ color: smtpStatus.lastHealthStatus === "ok" ? "oklch(0.50 0.18 145)" : "oklch(0.50 0.18 27)", fontWeight: 600 }}>
@@ -1492,14 +1434,13 @@ export default function SettingsPage() {
               {/* Not connected — grey health badge */}
               {!smtpStatus?.connected && (
                 <div
-                  className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                  style={{ background: "oklch(0.96 0.01 260)" }}
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl rr-bg-surface"
                 >
                   <span
                     className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
                     style={{ background: "oklch(0.70 0.02 260)" }}
                   />
-                  <p className="text-xs" style={{ color: "oklch(0.45 0.04 260)" }}>
+                  <p className="text-xs rr-text-navy-mid">
                     No email connected. Enter your details below to start sending review requests.
                   </p>
                 </div>
@@ -1507,7 +1448,7 @@ export default function SettingsPage() {
 
               {/* Email field */}
               <div>
-                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Your Email Address *</label>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Your Email Address *</label>
                 <input
                   type="email"
                   value={smtpEmail}
@@ -1571,7 +1512,7 @@ export default function SettingsPage() {
                 return (
                   <div>
                     <div className="flex items-center justify-between mb-1">
-                      <label className="text-xs font-bold" style={{ color: 'oklch(0.40 0.04 260)' }}>{passwordLabel}</label>
+                      <label className="text-xs font-bold rr-text-navy-mid">{passwordLabel}</label>
                       {hasGuide && (
                         <button
                           type="button"
@@ -1587,134 +1528,134 @@ export default function SettingsPage() {
 
                     {/* Gmail guide */}
                     {showGuide && isGmail && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
-                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Gmail App Password — 4 steps</p>
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
+                        <p className="font-black text-sm rr-text-gold">Gmail App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>myaccount.google.com</span> → Security</li>
+                          <li>Go to <span className="font-bold rr-text-gold">myaccount.google.com</span> → Security</li>
                           <li>Turn on <span className="font-bold">2-Step Verification</span> if not already on</li>
-                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>myaccount.google.com/apppasswords</span> → name it <span className="font-bold">ReviewLink</span> → click Create</li>
+                          <li>Go to <span className="font-bold rr-text-gold">myaccount.google.com/apppasswords</span> → name it <span className="font-bold">ReviewLink</span> → click Create</li>
                           <li>Copy the <span className="font-bold">16-character code</span> and paste it here — <span className="font-bold">remove all spaces</span></li>
                         </ol>
-                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>Tip: use a dedicated <span className="font-bold">reviews@gmail.com</span> account to keep your main inbox separate.</p>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                        <p className="text-[10px] mt-1 rr-text-navy-faint">Tip: use a dedicated <span className="font-bold">reviews@gmail.com</span> account to keep your main inbox separate.</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
                       </div>
                     )}
 
                     {/* Google Workspace guide */}
                     {showGuide && isGoogleWorkspace && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
-                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Google Workspace App Password — 4 steps</p>
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
+                        <p className="font-black text-sm rr-text-gold">Google Workspace App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Ask your Workspace admin to enable 2-Step Verification in <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>admin.google.com</span></li>
-                          <li>Sign in to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>myaccount.google.com</span> with your work account → Security</li>
-                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>myaccount.google.com/apppasswords</span> → name it <span className="font-bold">ReviewLink</span> → click Create</li>
+                          <li>Ask your Workspace admin to enable 2-Step Verification in <span className="font-bold rr-text-gold">admin.google.com</span></li>
+                          <li>Sign in to <span className="font-bold rr-text-gold">myaccount.google.com</span> with your work account → Security</li>
+                          <li>Go to <span className="font-bold rr-text-gold">myaccount.google.com/apppasswords</span> → name it <span className="font-bold">ReviewLink</span> → click Create</li>
                           <li>Copy the <span className="font-bold">16-character code</span> and paste it here — <span className="font-bold">remove all spaces</span></li>
                         </ol>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
                       </div>
                     )}
 
                     {/* Microsoft / Outlook guide */}
                     {showGuide && isOutlook && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
-                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Microsoft App Password — 4 steps</p>
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
+                        <p className="font-black text-sm rr-text-gold">Microsoft App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>account.microsoft.com</span> → Security</li>
+                          <li>Go to <span className="font-bold rr-text-gold">account.microsoft.com</span> → Security</li>
                           <li>Click <span className="font-bold">Advanced security options</span></li>
                           <li>Under <span className="font-bold">App passwords</span>, click <span className="font-bold">Create a new app password</span></li>
                           <li>Copy and paste the generated password here</li>
                         </ol>
-                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>Microsoft 365 (work accounts): contact your IT admin to allow SMTP AUTH for your mailbox.</p>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                        <p className="text-[10px] mt-1 rr-text-navy-faint">Microsoft 365 (work accounts): contact your IT admin to allow SMTP AUTH for your mailbox.</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
                       </div>
                     )}
 
                     {/* Yahoo guide */}
                     {showGuide && isYahoo && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
-                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Yahoo App Password — 4 steps</p>
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
+                        <p className="font-black text-sm rr-text-gold">Yahoo App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>account.yahoo.com</span> → Security</li>
+                          <li>Go to <span className="font-bold rr-text-gold">account.yahoo.com</span> → Security</li>
                           <li>Click <span className="font-bold">Generate app password</span></li>
                           <li>Select <span className="font-bold">Other app</span>, name it <span className="font-bold">ReviewLink</span></li>
                           <li>Copy and paste the password here</li>
                         </ol>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
                       </div>
                     )}
 
                     {/* Zoho guide */}
                     {showGuide && isZoho && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
-                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Zoho Mail — Enable SMTP Access</p>
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
+                        <p className="font-black text-sm rr-text-gold">Zoho Mail — Enable SMTP Access</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Log in to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>mail.zoho.com</span></li>
+                          <li>Log in to <span className="font-bold rr-text-gold">mail.zoho.com</span></li>
                           <li>Go to <span className="font-bold">Settings</span> → <span className="font-bold">Mail Accounts</span></li>
                           <li>Click your email address → scroll to <span className="font-bold">SMTP</span></li>
                           <li>Toggle <span className="font-bold">Allow SMTP Access</span> to ON, then use your <span className="font-bold">regular Zoho password</span> here</li>
                         </ol>
-                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>No app password needed — just enable SMTP and use your normal Zoho login password.</p>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                        <p className="text-[10px] mt-1 rr-text-navy-faint">No app password needed — just enable SMTP and use your normal Zoho login password.</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
                       </div>
                     )}
 
                     {/* AOL guide */}
                     {showGuide && isAol && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
-                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>AOL Mail App Password — 4 steps</p>
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
+                        <p className="font-black text-sm rr-text-gold">AOL Mail App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>account.aol.com</span> → Security</li>
+                          <li>Go to <span className="font-bold rr-text-gold">account.aol.com</span> → Security</li>
                           <li>Click <span className="font-bold">Generate app password</span></li>
                           <li>Select <span className="font-bold">Other app</span>, name it <span className="font-bold">ReviewLink</span></li>
                           <li>Copy and paste the password here — do <span className="font-bold">not</span> use your regular AOL password</li>
                         </ol>
-                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>AOL requires 2-step verification to be enabled before generating app passwords.</p>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                        <p className="text-[10px] mt-1 rr-text-navy-faint">AOL requires 2-step verification to be enabled before generating app passwords.</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
                       </div>
                     )}
 
                     {/* ProtonMail guide */}
                     {showGuide && isProtonMail && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
-                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>ProtonMail — SMTP Bridge Password</p>
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
+                        <p className="font-black text-sm rr-text-gold">ProtonMail — SMTP Bridge Password</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Download and install <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>Proton Mail Bridge</span> from proton.me/mail/bridge</li>
+                          <li>Download and install <span className="font-bold rr-text-gold">Proton Mail Bridge</span> from proton.me/mail/bridge</li>
                           <li>Sign in to Bridge with your Proton account</li>
                           <li>In Bridge, click your account → copy the <span className="font-bold">SMTP password</span> shown</li>
                           <li>Paste that SMTP password here — <span className="font-bold">not</span> your regular Proton login password</li>
                         </ol>
-                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>ProtonMail Bridge must be running on your computer for SMTP to work. Use port 1025 (localhost) or 587 via Bridge.</p>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                        <p className="text-[10px] mt-1 rr-text-navy-faint">ProtonMail Bridge must be running on your computer for SMTP to work. Use port 1025 (localhost) or 587 via Bridge.</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
                       </div>
                     )}
 
                     {/* Fastmail guide */}
                     {showGuide && isFastmail && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
-                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Fastmail App Password — 4 steps</p>
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
+                        <p className="font-black text-sm rr-text-gold">Fastmail App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>app.fastmail.com</span> → Settings → Privacy & Security</li>
+                          <li>Go to <span className="font-bold rr-text-gold">app.fastmail.com</span> → Settings → Privacy & Security</li>
                           <li>Scroll to <span className="font-bold">Third-party apps</span> → click <span className="font-bold">New app password</span></li>
                           <li>Name it <span className="font-bold">ReviewLink</span>, set access to <span className="font-bold">Mail (SMTP)</span></li>
                           <li>Copy and paste the generated password here</li>
                         </ol>
-                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>Fastmail app passwords are provider-specific — do not use your regular Fastmail login password.</p>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                        <p className="text-[10px] mt-1 rr-text-navy-faint">Fastmail app passwords are provider-specific — do not use your regular Fastmail login password.</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
                       </div>
                     )}
 
                     {/* iCloud guide */}
                     {showGuide && isIcloud && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2" style={{ background: 'oklch(0.22 0.09 260)', color: 'white' }}>
-                        <p className="font-black text-sm" style={{ color: 'oklch(0.80 0.18 80)' }}>Apple iCloud — App-Specific Password</p>
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
+                        <p className="font-black text-sm rr-text-gold">Apple iCloud — App-Specific Password</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Go to <span className="font-bold" style={{ color: 'oklch(0.80 0.18 80)' }}>appleid.apple.com</span> → Sign In & Security</li>
+                          <li>Go to <span className="font-bold rr-text-gold">appleid.apple.com</span> → Sign In & Security</li>
                           <li>Click <span className="font-bold">App-Specific Passwords</span> → <span className="font-bold">Generate an App-Specific Password</span></li>
                           <li>Name it <span className="font-bold">ReviewLink</span> and click Create</li>
                           <li>Copy the <span className="font-bold">xxxx-xxxx-xxxx-xxxx</span> password and paste it here</li>
                         </ol>
-                        <p className="text-[10px] mt-1" style={{ color: 'oklch(0.70 0.03 260)' }}>Requires two-factor authentication to be enabled on your Apple ID.</p>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1" style={{ color: 'oklch(0.80 0.18 80)' }}>Got it ✓</button>
+                        <p className="text-[10px] mt-1 rr-text-navy-faint">Requires two-factor authentication to be enabled on your Apple ID.</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
                       </div>
                     )}
 
@@ -1730,8 +1671,7 @@ export default function SettingsPage() {
                       <button
                         type="button"
                         onClick={() => setShowSmtpPassword((v) => !v)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs"
-                        style={{ color: 'oklch(0.55 0.03 260)' }}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs rr-text-navy-muted"
                       >
                         {showSmtpPassword ? 'Hide' : 'Show'}
                       </button>
@@ -1788,7 +1728,7 @@ export default function SettingsPage() {
 
               {/* Display name */}
               <div>
-                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Display Name (optional)</label>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Display Name (optional)</label>
                 <input
                   type="text"
                   value={smtpFromName}
@@ -1797,7 +1737,7 @@ export default function SettingsPage() {
                   className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
                   style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                 />
-                <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>Shown as the sender name in your customer's inbox.</p>
+                <p className="text-xs mt-1 rr-text-navy-muted">Shown as the sender name in your customer's inbox.</p>
               </div>
 
               {/* ── Deliverability guidance callout ───────────────────────────────────────── */}
@@ -1806,7 +1746,7 @@ export default function SettingsPage() {
                 style={{ background: "oklch(0.97 0.02 260)", border: "1px solid oklch(0.90 0.03 260)" }}
               >
                 <AlertCircle size={15} className="shrink-0 mt-0.5" style={{ color: "oklch(0.50 0.12 260)" }} />
-                <div style={{ color: "oklch(0.40 0.04 260)" }}>
+                <div className="rr-text-navy-mid">
                   <p className="font-bold mb-1">Sending limits by provider</p>
                   <ul className="flex flex-col gap-0.5" style={{ listStyle: "disc", paddingLeft: "1rem" }}>
                     <li><span className="font-semibold">Gmail / Google Workspace</span> — 500 emails/day (free), 2,000/day (Workspace)</li>
@@ -1823,7 +1763,7 @@ export default function SettingsPage() {
 
               {/* ── Daily send limit ───────────────────────────────────────────────────── */}
               <div>
-                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Daily Send Limit</label>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Daily Send Limit</label>
                 <div className="flex items-center gap-2">
                   <input
                     type="number"
@@ -1834,22 +1774,21 @@ export default function SettingsPage() {
                     className="w-24 px-3 py-2.5 rounded-xl text-sm outline-none"
                     style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                   />
-                  <span className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>emails per day (max 500)</span>
+                  <span className="text-xs rr-text-navy-muted">emails per day (max 500)</span>
                   <button
                     type="button"
                     onClick={() => setDailySendLimitMutation.mutate({ limit: dailySendLimit })}
                     disabled={setDailySendLimitMutation.isPending || dailySendLimit === (profile?.dailySendLimit ?? 50)}
-                    className="ml-auto px-3 py-1.5 rounded-lg text-xs font-bold transition-opacity disabled:opacity-40"
-                    style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+                    className="ml-auto px-3 py-1.5 rounded-lg text-xs font-bold transition-opacity disabled:opacity-40 rr-bg-navy rr-text-gold"
                   >
                     {setDailySendLimitMutation.isPending ? "Saving…" : "Save"}
                   </button>
                 </div>
-                <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>Bulk sends will stop after this many emails per day. Resets at midnight UTC. Default: 50.</p>
+                <p className="text-xs mt-1 rr-text-navy-muted">Bulk sends will stop after this many emails per day. Resets at midnight UTC. Default: 50.</p>
               </div>
 
               {/* ── Follow-up Reminder Settings ────────────────────────────────────────── */}
-              <div className="rounded-xl p-3.5" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.91 0.02 260)" }}>
+              <div className="rounded-xl p-3.5 rr-bg-white-card" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <Bell size={14} style={{ color: "oklch(0.45 0.10 260)" }} />
@@ -1863,10 +1802,10 @@ export default function SettingsPage() {
                     })}
                   />
                 </div>
-                <p className="text-xs mb-3" style={{ color: "oklch(0.55 0.03 260)" }}>Automatically send day-3 and day-10 follow-up emails to customers who haven&apos;t clicked your review link.</p>
+                <p className="text-xs mb-3 rr-text-navy-muted">Automatically send day-3 and day-10 follow-up emails to customers who haven&apos;t clicked your review link.</p>
                 {(reminderSettings?.followUpEnabled ?? 1) === 1 && (
                   <div className="flex items-center gap-2">
-                    <label className="text-xs font-bold" style={{ color: "oklch(0.40 0.04 260)" }}>First follow-up after</label>
+                    <label className="text-xs font-bold rr-text-navy-mid">First follow-up after</label>
                     <input
                       type="number"
                       min={1}
@@ -1879,13 +1818,13 @@ export default function SettingsPage() {
                       className="w-16 px-2 py-1.5 rounded-lg text-sm outline-none text-center"
                       style={{ border: "2px solid oklch(0.88 0.02 260)", fontSize: "16px" }}
                     />
-                    <span className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>days (second follow-up 7 days later)</span>
+                    <span className="text-xs rr-text-navy-muted">days (second follow-up 7 days later)</span>
                   </div>
                 )}
               </div>
 
               {/* ── Re-engagement Win-back Settings ────────────────────────────────── */}
-              <div className="rounded-xl p-3.5" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.91 0.02 260)" }}>
+              <div className="rounded-xl p-3.5 rr-bg-white-card" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <RefreshCw size={14} style={{ color: "oklch(0.45 0.10 260)" }} />
@@ -1896,16 +1835,16 @@ export default function SettingsPage() {
                     onCheckedChange={(v) => updateReEngagementSettings.mutate({ reEngagementEnabled: v ? 1 : 0 })}
                   />
                 </div>
-                <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Send a single win-back email to churned users 3 days after they cancel. Includes an unsubscribe link.</p>
+                <p className="text-xs rr-text-navy-muted">Send a single win-back email to churned users 3 days after they cancel. Includes an unsubscribe link.</p>
               </div>
 
               {/* Advanced: host/port — collapsed by default, auto-expanded for custom domains */}
-              <details className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }} open={showAdvanced} onToggle={(e) => setShowAdvanced((e.target as HTMLDetailsElement).open)}>
+              <details className="text-xs rr-text-navy-muted" open={showAdvanced} onToggle={(e) => setShowAdvanced((e.target as HTMLDetailsElement).open)}>
                 <summary className="cursor-pointer font-semibold py-1">Advanced settings (auto-detected)</summary>
                 <div className="flex flex-col gap-2 mt-2">
                   {/* Provider preset quick-fill buttons */}
                   <div>
-                    <p className="text-xs font-bold mb-1.5" style={{ color: "oklch(0.40 0.04 260)" }}>Quick-fill by provider</p>
+                    <p className="text-xs font-bold mb-1.5 rr-text-navy-mid">Quick-fill by provider</p>
                     <div className="flex flex-wrap gap-2">
                       {([
                         { label: "Google Workspace", host: "smtp.gmail.com", port: 587 },
@@ -1930,7 +1869,7 @@ export default function SettingsPage() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>SMTP Host</label>
+                    <label className="block text-xs font-bold mb-1 rr-text-navy-mid">SMTP Host</label>
                     <input
                       type="text"
                       value={smtpHost}
@@ -1942,7 +1881,7 @@ export default function SettingsPage() {
                   </div>
                   <div className="flex gap-2">
                     <div className="flex-1">
-                      <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Port</label>
+                      <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Port</label>
                       <input
                         type="number"
                         value={smtpPort}
@@ -1952,12 +1891,11 @@ export default function SettingsPage() {
                       />
                     </div>
                     <div className="flex-1">
-                      <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Security</label>
+                      <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Security</label>
                       <select
                         value={smtpSecure}
                         onChange={(e) => setSmtpSecure(Number(e.target.value))}
-                        className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-                        style={{ border: "2px solid oklch(0.90 0.02 260)", background: "white", fontSize: "16px" }}
+                        className="w-full px-3 py-2 rounded-xl text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                       >
                         <option value={0}>STARTTLS (587)</option>
                         <option value={1}>SSL/TLS (465)</option>
@@ -2026,8 +1964,7 @@ export default function SettingsPage() {
                     });
                   }}
                   disabled={connectSmtp.isPending}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
-                  style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-gold rr-text-navy"
                 >
                   {connectSmtp.isPending ? <Loader2 size={16} className="animate-spin" /> : <Mail size={16} />}
                   Connect Email
@@ -2035,8 +1972,7 @@ export default function SettingsPage() {
                 {showSmtpForm && (
                   <button
                     onClick={() => setShowSmtpForm(false)}
-                    className="px-4 py-3 rounded-xl text-sm font-bold"
-                    style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.45 0.04 260)" }}
+                    className="px-4 py-3 rounded-xl text-sm font-bold rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}
                   >
                     <X size={14} />
                   </button>
@@ -2052,25 +1988,23 @@ export default function SettingsPage() {
         {/* ── WooCommerce ──────────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-1">
-            <ShoppingBag size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+            <ShoppingBag size={18} className="rr-text-navy" />
             <h2
-              className="text-base font-black"
-              style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+              className="text-base font-black rr-text-navy"
             >
               WooCommerce
             </h2>
           </div>
-          <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.03 260)" }}>
+          <p className="text-xs mb-4 rr-text-navy-muted">
             Connect your store to import customers from completed orders.
           </p>
 
           {wooCreds ? (
             <div className="flex flex-col gap-3">
               <div
-                className="flex items-center gap-3 px-4 py-3 rounded-xl"
-                style={{ background: "oklch(0.96 0.04 145)" }}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl rr-bg-green-pale"
               >
-                <CheckCircle2 size={18} style={{ color: "oklch(0.55 0.18 145)" }} />
+                <CheckCircle2 size={18} className="rr-text-green" />
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold" style={{ color: "oklch(0.30 0.12 145)" }}>Store Connected</p>
                   <p className="text-xs truncate" style={{ color: "oklch(0.45 0.10 145)" }}>{wooCreds.storeUrl}</p>
@@ -2121,8 +2055,7 @@ export default function SettingsPage() {
                     <button
                       onClick={() => importPending.mutate()}
                       disabled={importPending.isPending}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-black transition-opacity disabled:opacity-60"
-                      style={{ background: "oklch(0.22 0.09 260)", color: "white", fontFamily: "'Poppins', sans-serif" }}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-black transition-opacity disabled:opacity-60 rr-bg-navy text-white"
                     >
                       {importPending.isPending ? <Loader2 size={12} className="animate-spin" /> : <Download size={12} />}
                       Import Now
@@ -2130,8 +2063,7 @@ export default function SettingsPage() {
                     <button
                       onClick={() => dismissPending.mutate()}
                       disabled={dismissPending.isPending}
-                      className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-opacity disabled:opacity-60"
-                      style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.45 0.04 260)" }}
+                      className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-opacity disabled:opacity-60 rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}
                     >
                       {dismissPending.isPending ? <Loader2 size={12} className="animate-spin" /> : null}
                       Dismiss
@@ -2141,8 +2073,8 @@ export default function SettingsPage() {
               )}
               {/* Sync History Chart */}
               {syncHistory && syncHistory.length > 1 && (
-                <div className="rounded-xl px-4 py-3" style={{ background: "oklch(0.97 0.01 260)" }}>
-                  <p className="text-xs font-bold mb-2" style={{ color: "oklch(0.40 0.04 260)" }}>Sync History (last {syncHistory.length} syncs)</p>
+                <div className="rounded-xl px-4 py-3 rr-bg-white-card">
+                  <p className="text-xs font-bold mb-2 rr-text-navy-mid">Sync History (last {syncHistory.length} syncs)</p>
                   <ResponsiveContainer width="100%" height={64}>
                     <BarChart data={[...syncHistory].reverse().map((s, i) => ({ i, added: s.added, total: s.total }))} barSize={8}>
                       <XAxis dataKey="i" hide />
@@ -2156,7 +2088,7 @@ export default function SettingsPage() {
                     </BarChart>
                   </ResponsiveContainer>
                   <div className="flex items-center gap-3 mt-1">
-                    <span className="flex items-center gap-1 text-xs" style={{ color: "oklch(0.50 0.04 260)" }}>
+                    <span className="flex items-center gap-1 text-xs rr-text-navy-mid">
                       <span className="inline-block w-2 h-2 rounded-sm" style={{ background: "oklch(0.85 0.04 260)" }} /> Fetched
                     </span>
                     <span className="flex items-center gap-1 text-xs" style={{ color: "oklch(0.40 0.12 145)" }}>
@@ -2167,8 +2099,7 @@ export default function SettingsPage() {
               )}
               <button
                 onClick={() => navigate("/woo-customers")}
-                className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
-                style={{ background: "oklch(0.22 0.09 260)", color: "white", fontFamily: "'Poppins', sans-serif" }}
+                className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-navy text-white"
               >
                 <ShoppingBag size={16} />
                 View Customers
@@ -2176,8 +2107,7 @@ export default function SettingsPage() {
               </button>
               <button
                 onClick={() => { setWooUrl(wooCreds.storeUrl); setWooFormOpen(true); }}
-                className="text-xs text-center py-2"
-                style={{ color: "oklch(0.55 0.03 260)" }}
+                className="text-xs text-center py-2 rr-text-navy-muted"
               >
                 Update credentials
               </button>
@@ -2187,8 +2117,7 @@ export default function SettingsPage() {
               {!wooFormOpen ? (
                 <button
                   onClick={() => setWooFormOpen(true)}
-                  className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
-                  style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                  className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-gold rr-text-navy"
                 >
                   <ShoppingBag size={16} />
                   Connect WooCommerce Store
@@ -2200,7 +2129,7 @@ export default function SettingsPage() {
           {wooFormOpen && (
             <div className="flex flex-col gap-3 mt-3">
               <div>
-                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Store URL *</label>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Store URL *</label>
                 <input
                   type="url"
                   value={wooUrl}
@@ -2211,7 +2140,7 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Consumer Key *</label>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Consumer Key *</label>
                 <input
                   type="text"
                   value={wooKey}
@@ -2222,7 +2151,7 @@ export default function SettingsPage() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>Consumer Secret *</label>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Consumer Secret *</label>
                 <input
                   type="password"
                   value={wooSecret}
@@ -2231,7 +2160,7 @@ export default function SettingsPage() {
                   className="w-full px-3 py-3 rounded-xl text-sm outline-none"
                   style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                 />
-                <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>
+                <p className="text-xs mt-1 rr-text-navy-muted">
                   WooCommerce → Settings → Advanced → REST API → Add key (Read permission)
                 </p>
               </div>
@@ -2239,16 +2168,14 @@ export default function SettingsPage() {
                 <button
                   onClick={handleSaveWoo}
                   disabled={saveWooCreds.isPending}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm"
-                  style={{ background: "oklch(0.22 0.09 260)", color: "white", fontFamily: "'Poppins', sans-serif" }}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm rr-bg-navy text-white"
                 >
                   {saveWooCreds.isPending ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
                   Save
                 </button>
                 <button
                   onClick={() => setWooFormOpen(false)}
-                  className="px-4 py-3 rounded-xl text-sm font-bold"
-                  style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.45 0.04 260)" }}
+                  className="px-4 py-3 rounded-xl text-sm font-bold rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}
                 >
                   Cancel
                 </button>
@@ -2258,8 +2185,8 @@ export default function SettingsPage() {
         </div>
 
         {/* ── Tools ──────────────────────────────────────────────────────────────────────── */}
-        <div className="rounded-2xl p-4 shadow-sm" style={{ background: 'white', border: '1px solid oklch(0.92 0.02 260)' }}>
-          <h2 className="text-xs font-black uppercase tracking-widest mb-3" style={{ color: 'oklch(0.55 0.03 260)', fontFamily: "'Poppins', sans-serif" }}>Tools</h2>
+        <div className="rounded-2xl p-4 shadow-sm bg-white" style={{ border: "1px solid oklch(0.92 0.02 260)" }}>
+          <h2 className="text-xs font-black uppercase tracking-widest mb-3 rr-text-navy-muted">Tools</h2>
           <div className="flex flex-col gap-1">
             {[{ label: 'Saved Contacts', icon: <Mail size={15} />, path: '/contacts' }, { label: 'Email Templates', icon: <Settings size={15} />, path: '/templates' }, { label: 'Follow-up Reminders', icon: <Clock size={15} />, path: '/reminders' }].map(({ label, icon, path }) => (
               <button key={path} onClick={() => navigate(path)}
@@ -2293,8 +2220,7 @@ export default function SettingsPage() {
             localStorage.removeItem('pwa-prompt-dismissed');
             window.location.reload();
           }}
-          className="flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold w-full"
-          style={{ color: "oklch(0.45 0.10 260)", background: "transparent" }}
+          className="flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold w-full bg-transparent" style={{ color: "oklch(0.45 0.10 260)" }}
           aria-label="Show app install instructions"
         >
           <Smartphone size={14} aria-hidden="true" />
@@ -2303,12 +2229,12 @@ export default function SettingsPage() {
         {/* ── API Keys ───────────────────────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-1">
-            <Key size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
-            <h2 className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+            <Key size={18} className="rr-text-navy" />
+            <h2 className="text-base font-black rr-text-navy">
               API Keys
             </h2>
           </div>
-          <p className="text-xs mb-4 leading-relaxed" style={{ color: "oklch(0.50 0.04 260)" }}>
+          <p className="text-xs mb-4 leading-relaxed rr-text-navy-mid">
             Use an API key to import contacts from your website forms.
             Each key is shown <strong>once</strong> at creation — copy it immediately.
           </p>
@@ -2322,8 +2248,7 @@ export default function SettingsPage() {
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.30 0.10 145)" }}>Your new API key — copy now!</p>
                 <code
-                  className="text-xs break-all select-all"
-                  style={{ color: "oklch(0.22 0.09 260)", fontFamily: "monospace" }}
+                  className="text-xs break-all select-all rr-text-navy rr-font-mono"
                 >
                   {revealedKey}
                 </code>
@@ -2334,7 +2259,7 @@ export default function SettingsPage() {
                 style={{ background: "oklch(0.80 0.12 145)" }}
                 title="Copy to clipboard"
               >
-                <Copy size={14} style={{ color: "oklch(0.22 0.09 260)" }} />
+                <Copy size={14} className="rr-text-navy" />
               </button>
               <button
                 onClick={() => setRevealedKey(null)}
@@ -2342,7 +2267,7 @@ export default function SettingsPage() {
                 style={{ background: "oklch(0.80 0.12 145)" }}
                 title="Dismiss"
               >
-                <X size={14} style={{ color: "oklch(0.22 0.09 260)" }} />
+                <X size={14} className="rr-text-navy" />
               </button>
             </div>
           )}
@@ -2350,19 +2275,18 @@ export default function SettingsPage() {
           {/* Existing keys list */}
           {apiKeysLoading ? (
             <div className="flex justify-center py-4">
-              <Loader2 size={20} className="animate-spin" style={{ color: "oklch(0.55 0.04 260)" }} />
+              <Loader2 size={20} className="animate-spin rr-text-navy-muted" />
             </div>
           ) : apiKeyList && apiKeyList.length > 0 ? (
             <div className="space-y-2 mb-4">
               {apiKeyList.map((k) => (
                 <div
                   key={k.id}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5"
-                  style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 rr-bg-white-card" style={{ border: "1px solid oklch(0.90 0.02 260)" }}
                 >
-                  <Key size={14} style={{ color: "oklch(0.55 0.04 260)" }} />
+                  <Key size={14} className="rr-text-navy-muted" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold truncate" style={{ color: "oklch(0.22 0.09 260)" }}>{k.label}</p>
+                    <p className="text-xs font-bold truncate rr-text-navy">{k.label}</p>
                     <p className="text-xs" style={{ color: "oklch(0.60 0.04 260)" }}>
                       Created {new Date(k.createdAt).toLocaleDateString()}
                       {k.lastUsedAt ? ` · Last used ${new Date(k.lastUsedAt).toLocaleDateString()}` : " · Never used"}
@@ -2370,8 +2294,7 @@ export default function SettingsPage() {
                   </div>
                   <button
                     onClick={() => { if (confirm(`Revoke "${k.label}"? This cannot be undone.`)) revokeKey.mutate({ id: k.id }); }}
-                    className="shrink-0 p-1.5 rounded-lg"
-                    style={{ background: "oklch(0.96 0.01 260)" }}
+                    className="shrink-0 p-1.5 rounded-lg rr-bg-surface"
                     title="Revoke key"
                   >
                     <Trash2 size={14} style={{ color: "oklch(0.55 0.15 25)" }} />
@@ -2410,11 +2333,10 @@ export default function SettingsPage() {
 
           {/* Endpoint reference + snippet */}
           <div
-            className="mt-4 rounded-xl p-3 space-y-2"
-            style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}
+            className="mt-4 rounded-xl p-3 space-y-2 rr-bg-white-card" style={{ border: "1px solid oklch(0.90 0.02 260)" }}
           >
             <div className="flex items-center justify-between">
-              <p className="text-xs font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>Website Integration</p>
+              <p className="text-xs font-bold rr-text-navy">Website Integration</p>
               <button
                 onClick={() => setShowSnippet(!showSnippet)}
                 className="text-xs px-2 py-1 rounded-lg font-bold flex items-center gap-1"
@@ -2424,12 +2346,12 @@ export default function SettingsPage() {
                 {showSnippet ? "Hide snippet" : "Show snippet"}
               </button>
             </div>
-            <code className="text-xs break-all block" style={{ color: "oklch(0.40 0.08 260)", fontFamily: "monospace" }}>
+            <code className="text-xs break-all block rr-font-mono" style={{ color: "oklch(0.40 0.08 260)" }}>
               POST https://reviewlink.app/api/public/contacts
             </code>
-            <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>
-              Send <code style={{ fontFamily: "monospace" }}>name</code>, <code style={{ fontFamily: "monospace" }}>email</code>, and optionally <code style={{ fontFamily: "monospace" }}>phone</code>, <code style={{ fontFamily: "monospace" }}>notes</code>, <code style={{ fontFamily: "monospace" }}>tags[]</code>.
-              Include your key as <code style={{ fontFamily: "monospace" }}>Authorization: Bearer rl_...</code>.
+            <p className="text-xs rr-text-navy-muted">
+              Send <code className="rr-font-mono">name</code>, <code className="rr-font-mono">email</code>, and optionally <code className="rr-font-mono">phone</code>, <code className="rr-font-mono">notes</code>, <code className="rr-font-mono">tags[]</code>.
+              Include your key as <code className="rr-font-mono">Authorization: Bearer rl_...</code>.
             </p>
             {showSnippet && (() => {
               const firstKey = apiKeyList?.[0];
@@ -2459,16 +2381,7 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
               return (
                 <div className="relative">
                   <pre
-                    className="text-xs rounded-xl p-3 overflow-x-auto"
-                    style={{
-                      background: "oklch(0.18 0.06 260)",
-                      color: "oklch(0.85 0.04 260)",
-                      fontFamily: "monospace",
-                      fontSize: "11px",
-                      lineHeight: 1.6,
-                      whiteSpace: "pre-wrap",
-                      wordBreak: "break-all",
-                    }}
+                    className="text-xs rounded-xl p-3 overflow-x-auto rr-font-mono" style={{ background: "oklch(0.18 0.06 260)", color: "oklch(0.85 0.04 260)", fontSize: "11px", whiteSpace: "pre-wrap", wordBreak: "break-all" }}
                   >
                     {snippet}
                   </pre>
@@ -2477,8 +2390,7 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
                       navigator.clipboard.writeText(snippet);
                       toast.success("Snippet copied to clipboard!");
                     }}
-                    className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold"
-                    style={{ background: "oklch(0.30 0.08 260)", color: "oklch(0.80 0.18 80)" }}
+                    className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold rr-bg-navy-mid rr-text-gold"
                   >
                     <Copy size={11} /> Copy
                   </button>
@@ -2492,25 +2404,24 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
           <div className="bg-white rounded-2xl p-5 shadow-sm">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <Clock size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
-                <h2 className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                <Clock size={18} className="rr-text-navy" />
+                <h2 className="text-base font-black rr-text-navy">
                   Recent API Imports
                 </h2>
               </div>
               <button
                 onClick={handleExportImportsCsv}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold"
-                style={{ background: "oklch(0.97 0.01 260)", color: "oklch(0.40 0.08 260)", border: "1.5px solid oklch(0.88 0.04 260)" }}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold rr-bg-white-card" style={{ color: "oklch(0.40 0.08 260)", border: "1.5px solid oklch(0.88 0.04 260)" }}
               >
                 <Download size={12} /> Export CSV
               </button>
             </div>
             <div className="space-y-2">
               {recentImports.map((ev) => (
-                <div key={ev.id} className="flex items-center justify-between gap-2 rounded-xl px-3 py-2" style={{ background: "oklch(0.97 0.01 260)" }}>
+                <div key={ev.id} className="flex items-center justify-between gap-2 rounded-xl px-3 py-2 rr-bg-white-card">
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold truncate" style={{ color: "oklch(0.22 0.09 260)" }}>{ev.email}</p>
-                    <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>
+                    <p className="text-xs font-semibold truncate rr-text-navy">{ev.email}</p>
+                    <p className="text-xs rr-text-navy-muted">
                       via <span className="font-medium">{ev.keyLabel}</span> · {ev.created ? "✨ new contact" : "updated"}
                     </p>
                   </div>
@@ -2527,55 +2438,50 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Globe size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
-              <h2 className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+              <Globe size={18} className="rr-text-navy" />
+              <h2 className="text-base font-black rr-text-navy">
                 Outbound Webhooks
               </h2>
             </div>
             <button
               onClick={() => setShowAddWebhook(!showAddWebhook)}
-              className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold"
-              style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+              className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold rr-bg-navy text-white"
             >
               <Plus size={12} /> Add
             </button>
           </div>
-          <p className="text-xs mb-4" style={{ color: "oklch(0.55 0.04 260)" }}>
+          <p className="text-xs mb-4 rr-text-navy-muted">
             Fire a POST request to your URL whenever a new contact is created. Use this to push contacts into a CRM, Slack, or Google Sheets.
           </p>
           {showAddWebhook && (
-            <div className="rounded-xl p-4 mb-4 space-y-3" style={{ background: "oklch(0.97 0.01 260)" }}>
+            <div className="rounded-xl p-4 mb-4 space-y-3 rr-bg-white-card">
               <input
                 type="text"
                 value={newWebhookLabel}
                 onChange={(e) => setNewWebhookLabel(e.target.value)}
                 placeholder="Label (e.g. Zapier CRM)"
-                className="w-full px-3 py-2 rounded-xl text-xs outline-none"
-                style={{ border: "1.5px solid oklch(0.88 0.04 260)", background: "white" }}
+                className="w-full px-3 py-2 rounded-xl text-xs outline-none bg-white" style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
               />
               <input
                 type="url"
                 value={newWebhookUrl}
                 onChange={(e) => setNewWebhookUrl(e.target.value)}
                 placeholder="https://hooks.zapier.com/..."
-                className="w-full px-3 py-2 rounded-xl text-xs outline-none"
-                style={{ border: "1.5px solid oklch(0.88 0.04 260)", background: "white" }}
+                className="w-full px-3 py-2 rounded-xl text-xs outline-none bg-white" style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
               />
               <input
                 type="text"
                 value={newWebhookSecret}
                 onChange={(e) => setNewWebhookSecret(e.target.value)}
                 placeholder="Signing secret (optional — HMAC-SHA256)"
-                className="w-full px-3 py-2 rounded-xl text-xs outline-none"
-                style={{ border: "1.5px solid oklch(0.88 0.04 260)", background: "white" }}
+                className="w-full px-3 py-2 rounded-xl text-xs outline-none bg-white" style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
               />
               <div className="flex gap-2 justify-end">
-                <button onClick={() => setShowAddWebhook(false)} className="px-3 py-1.5 rounded-xl text-xs font-bold" style={{ background: "oklch(0.94 0.01 260)", color: "oklch(0.40 0.04 260)" }}>Cancel</button>
+                <button onClick={() => setShowAddWebhook(false)} className="px-3 py-1.5 rounded-xl text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.94 0.01 260)" }}>Cancel</button>
                 <button
                   disabled={!newWebhookUrl.trim() || createWebhook.isPending}
                   onClick={() => createWebhook.mutate({ url: newWebhookUrl.trim(), label: newWebhookLabel.trim() || "My Webhook", secret: newWebhookSecret.trim() || undefined })}
-                  className="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1"
-                  style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 rr-bg-navy text-white"
                 >
                   {createWebhook.isPending ? <Loader2 size={12} className="animate-spin" /> : <Plus size={12} />} Save
                 </button>
@@ -2587,11 +2493,11 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
           )}
           <div className="space-y-2">
             {(webhookList ?? []).map((wh) => (
-              <div key={wh.id} className="rounded-xl p-3" style={{ background: "oklch(0.97 0.01 260)" }}>
+              <div key={wh.id} className="rounded-xl p-3 rr-bg-white-card">
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold truncate" style={{ color: "oklch(0.22 0.09 260)" }}>{wh.label}</p>
-                    <p className="text-xs truncate" style={{ color: "oklch(0.55 0.04 260)" }}>{wh.url}</p>
+                    <p className="text-xs font-bold truncate rr-text-navy">{wh.label}</p>
+                    <p className="text-xs truncate rr-text-navy-muted">{wh.url}</p>
                     {wh.lastFiredAt && (
                       <p className="text-xs mt-0.5" style={{ color: wh.lastStatus && wh.lastStatus >= 200 && wh.lastStatus < 300 ? "oklch(0.50 0.15 145)" : "oklch(0.55 0.15 25)" }}>
                         Last: HTTP {wh.lastStatus} · {new Date(wh.lastFiredAt).toLocaleString()}
@@ -2642,14 +2548,13 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
                                   <button
                                     onClick={() => retryDelivery.mutate({ webhookId: wh.id, logId: log.id })}
                                     disabled={retryDelivery.isPending}
-                                    className="text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1 transition-opacity disabled:opacity-60"
-                                    style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                                    className="text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1 transition-opacity disabled:opacity-60 rr-bg-navy text-white"
                                   >
                                     {retryDelivery.isPending ? <Loader2 size={9} className="animate-spin" /> : <RotateCcw size={9} />}
                                     Retry
                                   </button>
                                 )}
-                                <span className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>{new Date(log.createdAt).toLocaleString()}</span>
+                                <span className="text-xs rr-text-navy-muted">{new Date(log.createdAt).toLocaleString()}</span>
                               </div>
                             </div>
                             {log.errorMessage && <p className="text-xs mt-0.5 truncate" style={{ color: "oklch(0.50 0.18 25)" }}>{log.errorMessage}</p>}
@@ -2667,13 +2572,13 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
         {/* ── Notification Preferences ─────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
-            <Bell size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
-            <h2 className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>Notification Preferences</h2>
+            <Bell size={18} className="rr-text-navy" />
+            <h2 className="text-base font-black rr-text-navy">Notification Preferences</h2>
           </div>
-          <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3" style={{ background: "oklch(0.97 0.01 260)" }}>
+          <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 rr-bg-white-card">
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>WooCommerce auto-import notification</p>
-              <p className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.04 260)" }}>Receive an in-app notification when the Monday auto-import runs and contacts are added.</p>
+              <p className="text-sm font-bold rr-text-navy">WooCommerce auto-import notification</p>
+              <p className="text-xs mt-0.5 rr-text-navy-muted">Receive an in-app notification when the Monday auto-import runs and contacts are added.</p>
             </div>
             <button
               onClick={() => updateNotifPrefs.mutate({ wooAutoImportNotify: !notifPrefs?.wooAutoImportNotify })}
@@ -2684,10 +2589,10 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
               <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform" style={{ left: notifPrefs?.wooAutoImportNotify ? "calc(100% - 1.35rem)" : "0.1rem" }} />
             </button>
           </div>
-          <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 mt-2" style={{ background: "oklch(0.97 0.01 260)" }}>
+          <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 mt-2 rr-bg-white-card">
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>Email open notifications</p>
-              <p className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.04 260)" }}>Receive an in-app notification each time a customer opens your review request email.</p>
+              <p className="text-sm font-bold rr-text-navy">Email open notifications</p>
+              <p className="text-xs mt-0.5 rr-text-navy-muted">Receive an in-app notification each time a customer opens your review request email.</p>
             </div>
             <button
               onClick={() => updateNotifPrefs.mutate({ notifyOnEmailOpen: !notifPrefs?.notifyOnEmailOpen })}
@@ -2704,10 +2609,9 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
         {user?.role === "admin" && (
           <div className="bg-white rounded-2xl p-5 shadow-sm">
             <div className="flex items-center gap-2 mb-4">
-              <Settings size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+              <Settings size={18} className="rr-text-navy" />
               <h2
-                className="text-base font-black"
-                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                className="text-base font-black rr-text-navy"
               >
                 Auth Integrations
               </h2>
@@ -2715,13 +2619,12 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
 
             {/* Google OAuth redirect URI reminder */}
             <div
-              className="rounded-xl p-4 mb-4"
-              style={{ background: "oklch(0.97 0.01 260)" }}
+              className="rounded-xl p-4 mb-4 rr-bg-white-card"
             >
               <div className="flex items-start gap-3">
                 <Info size={16} className="mt-0.5 shrink-0" style={{ color: "oklch(0.50 0.15 260)" }} />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.22 0.09 260)" }}>
+                  <p className="text-sm font-bold mb-1 rr-text-navy">
                     Google OAuth — Redirect URI Required
                   </p>
                   <p className="text-xs mb-2" style={{ color: "oklch(0.45 0.05 260)" }}>
@@ -2765,13 +2668,12 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
 
             {/* Apple Sign In setup */}
             <div
-              className="rounded-xl p-4"
-              style={{ background: "oklch(0.97 0.01 260)" }}
+              className="rounded-xl p-4 rr-bg-white-card"
             >
               <div className="flex items-start gap-3">
-                <Apple size={16} className="mt-0.5 shrink-0" style={{ color: "oklch(0.22 0.09 260)" }} />
+                <Apple size={16} className="mt-0.5 shrink-0 rr-text-navy" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.22 0.09 260)" }}>
+                  <p className="text-sm font-bold mb-1 rr-text-navy">
                     Sign in with Apple — 4 Secrets Required
                   </p>
                   <p className="text-xs mb-3" style={{ color: "oklch(0.45 0.05 260)" }}>
@@ -2785,8 +2687,8 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
                       { key: "APPLE_PRIVATE_KEY", hint: "Full contents of the .p8 file including header/footer" },
                     ].map(({ key, hint }) => (
                       <div key={key}>
-                        <p className="text-xs font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>{key}</p>
-                        <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>{hint}</p>
+                        <p className="text-xs font-bold rr-text-navy">{key}</p>
+                        <p className="text-xs rr-text-navy-muted">{hint}</p>
                       </div>
                     ))}
                   </div>
@@ -2794,8 +2696,7 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
                     href="https://developer.apple.com/account/resources/identifiers/list"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs font-bold mt-3"
-                    style={{ color: "oklch(0.22 0.09 260)" }}
+                    className="inline-flex items-center gap-1 text-xs font-bold mt-3 rr-text-navy"
                   >
                     Open Apple Developer Console <ExternalLink size={11} />
                   </a>
@@ -2816,11 +2717,11 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
               <ShieldCheck size={18} style={{ color: "oklch(0.40 0.14 150)" }} />
             </div>
             <div className="text-left">
-              <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>Compliance Guide</p>
-              <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Platform rules, legal notes &amp; best practices</p>
+              <p className="text-sm font-bold rr-text-navy">Compliance Guide</p>
+              <p className="text-xs rr-text-navy-muted">Platform rules, legal notes &amp; best practices</p>
             </div>
           </div>
-          <ChevronRight size={16} style={{ color: "oklch(0.65 0.03 260)" }} />
+          <ChevronRight size={16} className="rr-text-navy-faint" />
         </button>
 
         {/* ── Delete Account ───────────────────────────────────────────────── */}
@@ -2828,12 +2729,7 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
 
         <button
           onClick={() => logout()}
-          className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold"
-          style={{
-            background: "transparent",
-            color: "oklch(0.55 0.03 260)",
-            fontFamily: "'Nunito', sans-serif",
-          }}
+          className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold bg-transparent rr-text-navy-muted"
         >
           <LogOut size={16} />
           Sign Out
@@ -2857,7 +2753,7 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
           {/* Modal header */}
           <div className="flex items-center justify-between px-5 py-4 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.10)" }}>
             <div>
-              <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "oklch(0.80 0.18 80)" }}>Email Preview</p>
+              <p className="text-xs font-bold tracking-widest uppercase rr-text-gold">Email Preview</p>
               <p className="text-sm font-bold text-white mt-0.5">What your customers will see</p>
             </div>
             <button
@@ -2870,7 +2766,7 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
           </div>
 
           {/* Dummy sender row */}
-          <div className="px-5 py-3 shrink-0" style={{ background: "oklch(0.18 0.08 260)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+          <div className="px-5 py-3 shrink-0 rr-bg-navy-darker" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
             <p className="text-xs" style={{ color: "oklch(0.70 0.05 260)" }}>
               <span className="font-semibold text-white">From:</span>{" "}
               {smtpStatus?.fromName ? `${smtpStatus.fromName} <${smtpStatus.email}>` : smtpStatus?.email ?? "your@email.com"}
@@ -2887,7 +2783,7 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
           <div className="flex-1 overflow-auto bg-white">
             {previewLoading ? (
               <div className="flex items-center justify-center h-64">
-                <Loader2 size={28} className="animate-spin" style={{ color: "oklch(0.22 0.09 260)" }} />
+                <Loader2 size={28} className="animate-spin rr-text-navy" />
               </div>
             ) : previewData?.html ? (
               <iframe
@@ -2898,14 +2794,14 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
                 sandbox="allow-same-origin"
               />
             ) : (
-              <div className="flex items-center justify-center h-64 text-sm" style={{ color: "oklch(0.50 0.04 260)" }}>
+              <div className="flex items-center justify-center h-64 text-sm rr-text-navy-mid">
                 Could not load preview.
               </div>
             )}
           </div>
 
           {/* Footer note */}
-          <div className="px-5 py-3 shrink-0 text-center" style={{ background: "oklch(0.18 0.08 260)", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+          <div className="px-5 py-3 shrink-0 text-center rr-bg-navy-darker" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
             <p className="text-xs" style={{ color: "oklch(0.60 0.04 260)" }}>
               Preview uses <strong className="text-white">Alex Johnson</strong> as a sample customer name.
             </p>

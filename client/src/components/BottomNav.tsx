@@ -19,13 +19,7 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 bottom-nav"
-      style={{
-        background: 'oklch(0.22 0.09 260)',
-        borderTop: '1px solid oklch(0.30 0.08 260)',
-        maxWidth: '480px',
-        margin: '0 auto',
-      }}
+      className="fixed bottom-0 left-0 right-0 z-50 bottom-nav rr-bg-navy" style={{ borderTop: "1px solid oklch(0.30 0.08 260)", maxWidth: "480px", margin: "0 auto" }}
     >
       <div className="flex items-stretch">
         {NAV_ITEMS.map(({ path, label, Icon }) => {
@@ -78,11 +72,10 @@ export default function BottomNav() {
           aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
         >
           <div
-            className="flex items-center justify-center rounded-full transition-all duration-200"
-            style={{ width: '40px', height: '32px', background: 'transparent' }}
+            className="flex items-center justify-center rounded-full transition-all duration-200 bg-transparent" style={{ width: "40px", height: "32px" }}
           >
             {isDark ? (
-              <Sun size={20} strokeWidth={1.8} style={{ color: 'oklch(0.80 0.18 80)' }} />
+              <Sun size={20} strokeWidth={1.8} className="rr-text-gold" />
             ) : (
               <Moon size={20} strokeWidth={1.8} style={{ color: 'oklch(0.70 0.04 260)' }} />
             )}
@@ -102,37 +95,32 @@ export default function BottomNav() {
 
       {/* ── Legal footer strip ─────────────────────────────────────────── */}
       <div
-        className="flex items-center justify-center gap-4 py-1.5"
-        style={{ background: 'oklch(0.80 0.18 80)' }}
+        className="flex items-center justify-center gap-4 py-1.5 rr-bg-gold"
       >
         <button
           onClick={() => navigate('/privacy-policy')}
-          className="text-xs font-semibold hover:underline transition-colors"
-          style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
+          className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
         >
           Privacy Policy
         </button>
         <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
         <button
           onClick={() => navigate('/terms-of-service')}
-          className="text-xs font-semibold hover:underline transition-colors"
-          style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
+          className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
         >
           Terms of Service
         </button>
         <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
         <button
           onClick={() => navigate('/changelog')}
-          className="text-xs font-semibold hover:underline transition-colors"
-          style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
+          className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
         >
           What's New
         </button>
         <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
         <button
           onClick={() => navigate('/compliance')}
-          className="text-xs font-semibold hover:underline transition-colors"
-          style={{ color: 'oklch(0.22 0.09 260)', fontFamily: "'Poppins', sans-serif" }}
+          className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
         >
           Compliance
         </button>

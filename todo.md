@@ -1164,3 +1164,11 @@
 - [x] 11 vitest tests for createThbCheckoutSession: price IDs per plan, promptpay in payment_method_types, thb currency, customer_email prefill, stripeCustomerId override, missing env var guard for all 3 plans
 - [x] Refactored getThbPriceIds() to read env vars at call time (not module load) for testability
 - [x] Tests: 50/50 passing
+
+## Session #45 — Inline Style Removal + PWA Manifest (Apr 21 2026)
+- [x] Audit all inline style= attributes across all pages and components
+- [x] Centralise all design tokens (colors, fonts, shadows) in index.css as CSS custom properties and utility classes
+- [x] Replace all inline styles in page files with Tailwind/CSS classes
+- [x] Replace all inline styles in component files with Tailwind/CSS classes
+- [x] Create PWA manifest.json with correct icons, theme color, and app metadata
+- [x] Wire manifest.json into index.html

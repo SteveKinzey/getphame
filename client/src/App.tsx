@@ -76,7 +76,7 @@ function AppShell() {
 
   if (loading) {
     return (
-      <div className="mobile-screen flex items-center justify-center" style={{ background: "oklch(0.22 0.09 260)" }}>
+      <div className="mobile-screen flex items-center justify-center rr-bg-navy">
         <Loader2 className="animate-spin text-white" size={32} />
       </div>
     );

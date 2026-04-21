@@ -42,7 +42,7 @@ export default function AdminChurnPage() {
 
   if (user.role !== "admin") {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "oklch(0.975 0.003 100)" }}>
+      <div className="min-h-screen flex items-center justify-center rr-bg-cream-warm">
         <div className="text-center px-6">
           <ShieldAlert size={48} className="mx-auto mb-3" style={{ color: "oklch(0.55 0.18 25)" }} />
           <h2 className="text-xl font-black" style={{ fontFamily: "'Poppins', sans-serif" }}>Access Denied</h2>
@@ -57,28 +57,25 @@ export default function AdminChurnPage() {
     : 1;
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Header */}
-      <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
+      <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/admin")}
-          className="flex items-center gap-1.5 mb-4 text-xs font-bold"
-          style={{ color: "oklch(0.80 0.18 80)" }}
+          className="flex items-center gap-1.5 mb-4 text-xs font-bold rr-text-gold"
         >
           <ArrowLeft size={14} /> Back to Admin
         </button>
         <div className="flex items-center gap-2 mb-1">
-          <Rocket size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+          <Rocket size={16} className="rr-text-gold" />
           <span
-            className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+            className="text-xs font-bold tracking-widest uppercase rr-text-gold"
           >
             ReviewLink
           </span>
         </div>
         <h1
-          className="text-2xl"
-          style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
+          className="text-2xl text-white rr-fw-black"
         >
           Churn Surveys
         </h1>
@@ -90,7 +87,7 @@ export default function AdminChurnPage() {
       <div className="px-4 py-5 flex flex-col gap-5">
         {isLoading && (
           <div className="flex items-center justify-center py-16">
-            <Loader2 className="animate-spin" size={32} style={{ color: "oklch(0.22 0.09 260)" }} />
+            <Loader2 className="animate-spin rr-text-navy" size={32} />
           </div>
         )}
 
@@ -107,36 +104,33 @@ export default function AdminChurnPage() {
           <>
             {/* Total count */}
             <div
-              className="rounded-2xl px-4 py-4 flex items-center gap-3"
-              style={{ background: "white", boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
+              className="rounded-2xl px-4 py-4 flex items-center gap-3 bg-white" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
             >
               <div
                 className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
                 style={{ background: "oklch(0.95 0.02 260)" }}
               >
-                <Frown size={20} style={{ color: "oklch(0.55 0.04 260)" }} />
+                <Frown size={20} className="rr-text-navy-muted" />
               </div>
               <div>
-                <p className="text-2xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                <p className="text-2xl font-black rr-text-navy">
                   {data.total}
                 </p>
-                <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>Total cancellation surveys submitted</p>
+                <p className="text-xs rr-text-navy-muted">Total cancellation surveys submitted</p>
               </div>
             </div>
 
             {/* Reason breakdown bar chart */}
             <div
-              className="rounded-2xl px-4 py-4"
-              style={{ background: "white", boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
+              className="rounded-2xl px-4 py-4 bg-white" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
             >
               <h3
-                className="text-sm font-black mb-4 uppercase tracking-widest"
-                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                className="text-sm font-black mb-4 uppercase tracking-widest rr-text-navy"
               >
                 Cancellation Reasons
               </h3>
               {data.total === 0 ? (
-                <p className="text-sm py-4 text-center" style={{ color: "oklch(0.65 0.03 260)" }}>
+                <p className="text-sm py-4 text-center rr-text-navy-faint">
                   No survey responses yet.
                 </p>
               ) : (
@@ -152,7 +146,7 @@ export default function AdminChurnPage() {
                             {label}
                           </span>
                           <span className="text-xs font-black" style={{ color: REASON_COLORS[key] }}>
-                            {count} <span className="font-normal" style={{ color: "oklch(0.65 0.03 260)" }}>({pct}%)</span>
+                            {count} <span className="font-normal rr-text-navy-faint">({pct}%)</span>
                           </span>
                         </div>
                         <div
@@ -176,17 +170,15 @@ export default function AdminChurnPage() {
 
             {/* Last 10 free-text responses */}
             <div
-              className="rounded-2xl px-4 py-4"
-              style={{ background: "white", boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
+              className="rounded-2xl px-4 py-4 bg-white" style={{ boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
             >
               <h3
-                className="text-sm font-black mb-3 uppercase tracking-widest"
-                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                className="text-sm font-black mb-3 uppercase tracking-widest rr-text-navy"
               >
                 Recent Responses
               </h3>
               {data.recent.length === 0 ? (
-                <p className="text-sm py-4 text-center" style={{ color: "oklch(0.65 0.03 260)" }}>
+                <p className="text-sm py-4 text-center rr-text-navy-faint">
                   No responses yet.
                 </p>
               ) : (
@@ -209,7 +201,7 @@ export default function AdminChurnPage() {
                         >
                           {REASON_LABELS[r.reason] ?? r.reason}
                         </span>
-                        <span className="text-xs" style={{ color: "oklch(0.65 0.03 260)" }}>
+                        <span className="text-xs rr-text-navy-faint">
                           {new Date(r.createdAt).toLocaleDateString()}
                         </span>
                       </div>
@@ -218,12 +210,12 @@ export default function AdminChurnPage() {
                           "{r.comment}"
                         </p>
                       ) : (
-                        <p className="text-xs italic mt-1" style={{ color: "oklch(0.65 0.03 260)" }}>
+                        <p className="text-xs italic mt-1 rr-text-navy-faint">
                           No comment provided.
                         </p>
                       )}
                       {r.email && (
-                        <p className="text-xs mt-1" style={{ color: "oklch(0.55 0.04 260)" }}>
+                        <p className="text-xs mt-1 rr-text-navy-muted">
                           {r.email}
                         </p>
                       )}

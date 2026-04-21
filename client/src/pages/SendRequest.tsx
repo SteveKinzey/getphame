@@ -144,27 +144,24 @@ export default function SendRequestPage() {
       toast.custom(
         (toastId) => (
           <div
-            className="flex flex-col gap-2 px-4 py-3 rounded-xl shadow-lg"
-            style={{ background: "white", border: "1px solid oklch(0.90 0.02 260)", minWidth: "280px", maxWidth: "320px" }}
+            className="flex flex-col gap-2 px-4 py-3 rounded-xl shadow-lg bg-white" style={{ border: "1px solid oklch(0.90 0.02 260)", minWidth: "280px", maxWidth: "320px" }}
           >
-            <p className="text-sm font-semibold" style={{ color: "oklch(0.22 0.09 260)" }}>
+            <p className="text-sm font-semibold rr-text-navy">
               No review platform configured
             </p>
-            <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+            <p className="text-xs rr-text-navy-muted">
               Add a review link in Settings so customers know where to leave their review.
             </p>
             <div className="flex gap-2">
               <button
                 onClick={() => { navigate("/settings"); toast.dismiss(toastId); }}
-                className="flex-1 py-1.5 rounded-lg text-xs font-black"
-                style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                className="flex-1 py-1.5 rounded-lg text-xs font-black rr-bg-navy text-white"
               >
                 Go to Settings
               </button>
               <button
                 onClick={() => toast.dismiss(toastId)}
-                className="px-3 py-1.5 rounded-lg text-xs font-bold"
-                style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.45 0.04 260)" }}
+                className="px-3 py-1.5 rounded-lg text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}
               >
                 Dismiss
               </button>
@@ -203,21 +200,19 @@ export default function SendRequestPage() {
   if (sent) {
     return (
       <div
-        className="min-h-screen flex flex-col items-center justify-center px-6 pb-40"
-        style={{ background: "oklch(0.22 0.09 260)" }}
+        className="min-h-screen flex flex-col items-center justify-center px-6 pb-40 rr-bg-navy"
       >
         <div className="w-40 h-40 mb-6">
           <img src={SUCCESS_IMG} alt="Sent!" className="w-full h-full object-contain" />
         </div>
         <h2
-          className="text-3xl font-black text-center mb-2"
-          style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+          className="text-3xl font-black text-center mb-2 text-white"
         >
           Request Sent! 🚀
         </h2>
         <p className="text-center mb-2" style={{ color: "var(--text-on-dark-secondary)" }}>
           Your review request was sent to{" "}
-          <strong style={{ color: "oklch(0.80 0.18 80)" }}>{customerName}</strong> from your email
+          <strong className="rr-text-gold">{customerName}</strong> from your email
           account.
         </p>
         <p className="text-sm text-center mb-8" style={{ color: "var(--text-on-dark-secondary)" }}>
@@ -225,24 +220,22 @@ export default function SendRequestPage() {
         </p>
         <div className="flex gap-1 mb-8">
           {[1, 2, 3, 4, 5].map((i) => (
-            <Star key={i} size={28} fill="oklch(0.80 0.18 80)" style={{ color: "oklch(0.80 0.18 80)" }} />
+            <Star key={i} size={28} fill="oklch(0.80 0.18 80)" className="rr-text-gold" />
           ))}
         </div>
 
         {/* ── Milestone rating nudge ───────────────────────────────────── */}
         {isMilestone && (
           <div
-            className="w-full max-w-xs rounded-2xl p-4 mb-6"
-            style={{ background: "oklch(0.30 0.08 260)", border: "1.5px solid oklch(0.80 0.18 80)" }}
+            className="w-full max-w-xs rounded-2xl p-4 mb-6 rr-bg-navy-mid" style={{ border: "1.5px solid oklch(0.80 0.18 80)" }}
           >
             <div className="flex items-center gap-2 mb-2">
               <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                style={{ background: "oklch(0.80 0.18 80)" }}
+                className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 rr-bg-gold"
               >
-                <Rocket size={15} style={{ color: "oklch(0.22 0.09 260)" }} />
+                <Rocket size={15} className="rr-text-navy" />
               </div>
-              <p className="text-sm font-black" style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}>
+              <p className="text-sm font-black rr-text-gold">
                 {milestoneNum} requests sent!
               </p>
             </div>
@@ -253,8 +246,7 @@ export default function SendRequestPage() {
               href="https://reviewlink.app/review"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-black transition-transform active:scale-95"
-              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+              className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-black transition-transform active:scale-95 rr-bg-gold rr-text-navy"
             >
               <Star size={13} />
               Rate ReviewLink
@@ -266,21 +258,20 @@ export default function SendRequestPage() {
         {/* Show only if auto-reminders are OFF and we have a requestId */}
         {lastRequestId && reminderSettings?.followUpEnabled === 0 && (
           <div
-            className="w-full max-w-xs rounded-2xl p-4 mb-4"
-            style={{ background: "oklch(0.30 0.08 260)", border: "1.5px solid oklch(0.45 0.08 260)" }}
+            className="w-full max-w-xs rounded-2xl p-4 mb-4 rr-bg-navy-mid" style={{ border: "1.5px solid oklch(0.45 0.08 260)" }}
           >
             {reminderScheduled ? (
               <div className="flex items-center gap-2">
-                <CheckCircle2 size={18} style={{ color: "oklch(0.80 0.18 80)" }} />
-                <p className="text-sm font-bold" style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}>
+                <CheckCircle2 size={18} className="rr-text-gold" />
+                <p className="text-sm font-bold rr-text-gold">
                   Follow-up scheduled!
                 </p>
               </div>
             ) : (
               <>
                 <div className="flex items-center gap-2 mb-2">
-                  <Bell size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
-                  <p className="text-sm font-bold" style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}>
+                  <Bell size={16} className="rr-text-gold" />
+                  <p className="text-sm font-bold text-white">
                     Schedule a follow-up?
                   </p>
                 </div>
@@ -297,8 +288,7 @@ export default function SendRequestPage() {
                       })
                     }
                     disabled={scheduleFollowUpNow.isPending}
-                    className="flex-1 py-2 rounded-xl text-xs font-black transition-transform active:scale-95 flex items-center justify-center gap-1"
-                    style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                    className="flex-1 py-2 rounded-xl text-xs font-black transition-transform active:scale-95 flex items-center justify-center gap-1 rr-bg-gold rr-text-navy"
                   >
                     {scheduleFollowUpNow.isPending ? <Loader2 size={12} className="animate-spin" /> : <Bell size={12} />}
                     Yes, remind me
@@ -318,12 +308,7 @@ export default function SendRequestPage() {
 
         <button
           onClick={handleSendAnother}
-          className="w-full max-w-xs py-4 rounded-2xl font-black text-lg"
-          style={{
-            background: "oklch(0.80 0.18 80)",
-            color: "oklch(0.22 0.09 260)",
-            fontFamily: "'Poppins', sans-serif",
-          }}
+          className="w-full max-w-xs py-4 rounded-2xl font-black text-lg rr-bg-gold rr-text-navy"
         >
           Send Another Request
         </button>
@@ -333,21 +318,19 @@ export default function SendRequestPage() {
 
   return (
     <>
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Navy Header */}
-      <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
+      <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <div className="flex items-center gap-2 mb-1">
-          <Send size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+          <Send size={16} className="rr-text-gold" />
           <span
-            className="text-xs font-bold tracking-widest uppercase"
-            style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+            className="text-xs font-bold tracking-widest uppercase rr-text-gold"
           >
             Send Request
           </span>
         </div>
         <h1
-          className="text-2xl"
-          style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
+          className="text-2xl text-white rr-fw-black"
         >
           Request a Review
         </h1>
@@ -367,7 +350,7 @@ export default function SendRequestPage() {
           >
             <AlertCircle size={20} style={{ color: "oklch(0.65 0.18 80)" }} className="shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.40 0.10 80)" }}>
+              <p className="text-sm font-bold mb-1 rr-text-gold-dim">
                 Email not connected
               </p>
               <p className="text-xs mb-2" style={{ color: "oklch(0.50 0.08 80)" }}>
@@ -375,8 +358,7 @@ export default function SendRequestPage() {
               </p>
               <button
                 onClick={() => navigate("/settings")}
-                className="flex items-center gap-1 text-xs font-bold"
-                style={{ color: "oklch(0.40 0.10 80)" }}
+                className="flex items-center gap-1 text-xs font-bold rr-text-gold-dim"
               >
                 <Settings2 size={12} />
                 Go to Settings →
@@ -393,7 +375,7 @@ export default function SendRequestPage() {
           >
             <AlertCircle size={20} style={{ color: "oklch(0.65 0.18 80)" }} className="shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.40 0.10 80)" }}>
+              <p className="text-sm font-bold mb-1 rr-text-gold-dim">
                 Business profile incomplete
               </p>
               <p className="text-xs mb-2" style={{ color: "oklch(0.50 0.08 80)" }}>
@@ -401,8 +383,7 @@ export default function SendRequestPage() {
               </p>
               <button
                 onClick={() => navigate("/settings")}
-                className="flex items-center gap-1 text-xs font-bold"
-                style={{ color: "oklch(0.40 0.10 80)" }}
+                className="flex items-center gap-1 text-xs font-bold rr-text-gold-dim"
               >
                 <Settings2 size={12} />
                 Go to Settings →
@@ -424,7 +405,7 @@ export default function SendRequestPage() {
               >
                 <Zap size={20} style={{ color: 'oklch(0.55 0.18 260)' }} className="shrink-0 mt-0.5" />
                 <div className="flex-1">
-                  <p className="text-sm font-bold mb-1" style={{ color: 'oklch(0.22 0.09 260)' }}>
+                  <p className="text-sm font-bold mb-1 rr-text-navy">
                     Free limit reached
                   </p>
                   <p className="text-xs mb-2" style={{ color: 'oklch(0.45 0.05 260)' }}>
@@ -455,8 +436,7 @@ export default function SendRequestPage() {
               </div>
               <button
                 onClick={() => navigate('/upgrade')}
-                className="text-xs font-bold px-3 py-1 rounded-lg"
-                style={{ background: 'oklch(0.22 0.09 260)', color: 'oklch(0.80 0.18 80)' }}
+                className="text-xs font-bold px-3 py-1 rounded-lg rr-bg-navy rr-text-gold"
               >
                 Upgrade
               </button>
@@ -467,8 +447,7 @@ export default function SendRequestPage() {
         {/* ── Customer form ────────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <h2
-            className="text-base font-black mb-4"
-            style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+            className="text-base font-black mb-4 rr-text-navy"
           >
             Customer Details
           </h2>
@@ -480,12 +459,7 @@ export default function SendRequestPage() {
               <button
                 type="button"
                 onClick={() => setContactPickerOpen(true)}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all active:scale-98"
-                style={{
-                  background: 'oklch(0.22 0.09 260)',
-                  color: 'oklch(0.80 0.18 80)',
-                  fontFamily: "'Poppins', sans-serif",
-                }}
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm transition-all active:scale-98 rr-bg-navy rr-text-gold"
               >
                 <BookUser size={16} />
                 Import from Contacts
@@ -493,7 +467,7 @@ export default function SendRequestPage() {
             )}
 
             <div>
-              <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+              <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
                 <User size={12} className="inline mr-1" />
                 Customer Name *
               </label>
@@ -516,7 +490,7 @@ export default function SendRequestPage() {
 
             {/* Email */}
             <div>
-              <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+              <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
                 <Mail size={12} className="inline mr-1" />
                 Email Address *
               </label>
@@ -539,7 +513,7 @@ export default function SendRequestPage() {
 
             {/* Template selector */}
             <div>
-              <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+              <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
                 <FileText size={12} className="inline mr-1" />
                 Email Template
               </label>
@@ -550,14 +524,7 @@ export default function SendRequestPage() {
                     const val = e.target.value;
                     setSelectedTemplateId(val === "default" ? null : Number(val));
                   }}
-                  className="w-full px-3 py-3 pr-8 rounded-xl text-sm outline-none appearance-none"
-                  style={{
-                    border: "2px solid oklch(0.90 0.02 260)",
-                    fontFamily: "'Nunito', sans-serif",
-                    fontSize: "15px",
-                    background: "white",
-                    color: "oklch(0.22 0.09 260)",
-                  }}
+                  className="w-full px-3 py-3 pr-8 rounded-xl text-sm outline-none appearance-none bg-white rr-text-navy" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "15px" }}
                 >
                   <option value="default">
                     {defaultTemplate ? `${defaultTemplate.name} (default)` : "Default template"}
@@ -566,10 +533,10 @@ export default function SendRequestPage() {
                     <option key={t.id} value={t.id}>{t.name}</option>
                   ))}
                 </select>
-                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "oklch(0.50 0.04 260)" }} />
+                <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rr-text-navy-mid" />
               </div>
               {templates && templates.length === 0 && (
-                <p className="text-xs mt-1" style={{ color: "oklch(0.60 0.03 260)" }}>
+                <p className="text-xs mt-1 rr-text-navy-muted">
                   No templates yet.{" "}
                   <button
                     onClick={() => navigate("/templates")}
@@ -585,7 +552,7 @@ export default function SendRequestPage() {
             {/* Platform selector */}
             {platforms && platforms.length > 0 && (
               <div>
-                <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.40 0.04 260)" }}>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
                   <Globe size={12} className="inline mr-1" />
                   Review Platform
                 </label>
@@ -596,14 +563,7 @@ export default function SendRequestPage() {
                       const val = e.target.value;
                       setSelectedPlatformId(val === "default" ? null : Number(val));
                     }}
-                    className="w-full px-3 py-3 pr-8 rounded-xl text-sm outline-none appearance-none"
-                    style={{
-                      border: "2px solid oklch(0.90 0.02 260)",
-                      fontFamily: "'Nunito', sans-serif",
-                      fontSize: "15px",
-                      background: "white",
-                      color: "oklch(0.22 0.09 260)",
-                    }}
+                    className="w-full px-3 py-3 pr-8 rounded-xl text-sm outline-none appearance-none bg-white rr-text-navy" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "15px" }}
                   >
                     <option value="default">
                       {platforms.find((p) => p.isDefault === 1)
@@ -620,10 +580,10 @@ export default function SendRequestPage() {
                         </option>
                       ))}
                   </select>
-                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" style={{ color: "oklch(0.50 0.04 260)" }} />
+                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none rr-text-navy-mid" />
                 </div>
                 {activePlatform && (
-                  <p className="text-xs mt-1 truncate" style={{ color: "oklch(0.60 0.03 260)" }}>
+                  <p className="text-xs mt-1 truncate rr-text-navy-muted">
                     Link: {activePlatform.url}
                   </p>
                 )}
@@ -641,8 +601,7 @@ export default function SendRequestPage() {
                   No review platforms configured.{" "}
                   <button
                     onClick={() => navigate("/settings")}
-                    className="underline font-semibold"
-                    style={{ color: "oklch(0.40 0.10 80)" }}
+                    className="underline font-semibold rr-text-gold-dim"
                   >
                     Add one in Settings →
                   </button>
@@ -653,10 +612,9 @@ export default function SendRequestPage() {
             {/* Live Email Preview */}
             {profile?.businessName && (
               <div
-                className="px-4 py-3 rounded-xl"
-                style={{ background: "oklch(0.97 0.01 260)" }}
+                className="px-4 py-3 rounded-xl rr-bg-white-card"
               >
-                <p className="text-xs font-bold mb-2" style={{ color: "oklch(0.40 0.04 260)" }}>
+                <p className="text-xs font-bold mb-2 rr-text-navy-mid">
                   Email Preview
                 </p>
                 <p className="text-xs mb-1" style={{ color: "oklch(0.50 0.03 260)" }}>

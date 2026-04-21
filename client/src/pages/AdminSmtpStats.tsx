@@ -63,8 +63,8 @@ export default function AdminSmtpStatsPage() {
 
   if (loading || isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ background: "oklch(0.975 0.003 100)" }}>
-        <Loader2 size={24} className="animate-spin" style={{ color: "oklch(0.55 0.04 260)" }} />
+      <div className="min-h-screen flex items-center justify-center rr-bg-cream-warm">
+        <Loader2 size={24} className="animate-spin rr-text-navy-muted" />
       </div>
     );
   }
@@ -75,13 +75,12 @@ export default function AdminSmtpStatsPage() {
     : 0;
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Navy Header */}
-      <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
+      <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/admin/codes")}
-          className="flex items-center gap-1 mb-4 text-xs font-bold"
-          style={{ color: "oklch(0.80 0.18 80)" }}
+          className="flex items-center gap-1 mb-4 text-xs font-bold rr-text-gold"
         >
           <ChevronLeft size={14} />
           Admin
@@ -89,17 +88,15 @@ export default function AdminSmtpStatsPage() {
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <BarChart2 size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+              <BarChart2 size={16} className="rr-text-gold" />
               <span
-                className="text-xs font-bold tracking-widest uppercase"
-                style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+                className="text-xs font-bold tracking-widest uppercase rr-text-gold"
               >
                 Admin
               </span>
             </div>
             <h1
-              className="text-2xl"
-              style={{ color: "white", fontFamily: "'Poppins', sans-serif", fontWeight: 900 }}
+              className="text-2xl text-white rr-fw-black"
             >
               SMTP Provider Stats
             </h1>
@@ -111,8 +108,7 @@ export default function AdminSmtpStatsPage() {
             <button
               onClick={() => runHealthCheck.mutate()}
               disabled={runHealthCheck.isPending || isFetching}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold"
-              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold rr-bg-gold rr-text-navy"
               title="Run health check now across all connected accounts"
             >
               {runHealthCheck.isPending ? <Loader2 size={12} className="animate-spin" /> : <CheckCircle2 size={12} />}
@@ -121,8 +117,7 @@ export default function AdminSmtpStatsPage() {
             <button
               onClick={() => { refetch(); toast.success("Refreshed"); }}
               disabled={isFetching}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold"
-              style={{ background: "oklch(0.30 0.07 260)", color: "white" }}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold text-white" style={{ background: "oklch(0.30 0.07 260)" }}
             >
               {isFetching ? <Loader2 size={12} className="animate-spin" /> : <RefreshCw size={12} />}
               Refresh
@@ -136,13 +131,13 @@ export default function AdminSmtpStatsPage() {
         {totals && (
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
-              <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.55 0.03 260)" }}>Connected Accounts</p>
-              <p className="text-3xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+              <p className="text-xs font-bold mb-1 rr-text-navy-muted">Connected Accounts</p>
+              <p className="text-3xl font-black rr-text-navy">
                 {totals.total}
               </p>
             </div>
             <div className="bg-white rounded-2xl p-4 shadow-sm">
-              <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.55 0.03 260)" }}>Failure Rate</p>
+              <p className="text-xs font-bold mb-1 rr-text-navy-muted">Failure Rate</p>
               <p
                 className="text-3xl font-black"
                 style={{
@@ -154,17 +149,17 @@ export default function AdminSmtpStatsPage() {
               </p>
             </div>
             <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
-              <CheckCircle2 size={18} style={{ color: "oklch(0.55 0.18 145)" }} />
+              <CheckCircle2 size={18} className="rr-text-green" />
               <div>
-                <p className="text-xs font-bold" style={{ color: "oklch(0.55 0.03 260)" }}>Healthy</p>
-                <p className="text-xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>{totals.ok}</p>
+                <p className="text-xs font-bold rr-text-navy-muted">Healthy</p>
+                <p className="text-xl font-black rr-text-navy">{totals.ok}</p>
               </div>
             </div>
             <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
               <AlertCircle size={18} style={{ color: "oklch(0.60 0.20 27)" }} />
               <div>
-                <p className="text-xs font-bold" style={{ color: "oklch(0.55 0.03 260)" }}>Failing</p>
-                <p className="text-xl font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>{totals.fail}</p>
+                <p className="text-xs font-bold rr-text-navy-muted">Failing</p>
+                <p className="text-xl font-black rr-text-navy">{totals.fail}</p>
               </div>
             </div>
           </div>
@@ -172,16 +167,16 @@ export default function AdminSmtpStatsPage() {
 
         {/* Last run timestamp */}
         {totals?.lastRunAt ? (
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl" style={{ background: "oklch(0.96 0.01 260)" }}>
-            <Clock size={12} style={{ color: "oklch(0.55 0.03 260)" }} />
-            <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl rr-bg-surface">
+            <Clock size={12} className="rr-text-navy-muted" />
+            <p className="text-xs rr-text-navy-muted">
               Last health check run: <span className="font-bold">{new Date(totals.lastRunAt).toLocaleString()}</span>
             </p>
           </div>
         ) : (
-          <div className="flex items-center gap-2 px-4 py-2 rounded-xl" style={{ background: "oklch(0.96 0.01 260)" }}>
-            <Clock size={12} style={{ color: "oklch(0.55 0.03 260)" }} />
-            <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>No health checks have run yet.</p>
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl rr-bg-surface">
+            <Clock size={12} className="rr-text-navy-muted" />
+            <p className="text-xs rr-text-navy-muted">No health checks have run yet.</p>
           </div>
         )}
 
@@ -189,8 +184,8 @@ export default function AdminSmtpStatsPage() {
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b" style={{ borderColor: "oklch(0.93 0.02 260)" }}>
             <div className="flex items-center gap-2">
-              <Server size={16} style={{ color: "oklch(0.55 0.04 260)" }} />
-              <h2 className="text-sm font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+              <Server size={16} className="rr-text-navy-muted" />
+              <h2 className="text-sm font-black rr-text-navy">
                 By Provider
               </h2>
             </div>
@@ -198,7 +193,7 @@ export default function AdminSmtpStatsPage() {
 
           {summary.length === 0 ? (
             <div className="px-5 py-8 text-center">
-              <p className="text-sm" style={{ color: "oklch(0.60 0.03 260)" }}>No SMTP accounts connected yet.</p>
+              <p className="text-sm rr-text-navy-muted">No SMTP accounts connected yet.</p>
             </div>
           ) : (
             <div className="divide-y" style={{ borderColor: "oklch(0.95 0.01 260)" }}>
@@ -206,14 +201,14 @@ export default function AdminSmtpStatsPage() {
                 <div key={row.host} className="px-5 py-4">
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold truncate" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                      <p className="text-sm font-bold truncate rr-text-navy">
                         {row.host}
                       </p>
-                      <div className="flex items-center gap-3 mt-0.5 text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>
+                      <div className="flex items-center gap-3 mt-0.5 text-xs rr-text-navy-muted">
                         <span>{row.total} account{row.total !== 1 ? "s" : ""}</span>
                         {row.ok > 0 && <span style={{ color: "oklch(0.45 0.18 145)" }}>✓ {row.ok} ok</span>}
                         {row.fail > 0 && <span style={{ color: "oklch(0.50 0.18 27)" }}>✗ {row.fail} failing</span>}
-                        {row.neverChecked > 0 && <span style={{ color: "oklch(0.65 0.02 260)" }}>— {row.neverChecked} unchecked</span>}
+                        {row.neverChecked > 0 && <span className="rr-text-navy-faint">— {row.neverChecked} unchecked</span>}
                       </div>
                     </div>
                     {row.fail > 0 && (
@@ -226,8 +221,7 @@ export default function AdminSmtpStatsPage() {
                     )}
                     {row.fail === 0 && row.ok > 0 && (
                       <span
-                        className="shrink-0 px-2 py-0.5 rounded-full text-xs font-bold"
-                        style={{ background: "oklch(0.96 0.04 145)", color: "oklch(0.40 0.12 145)" }}
+                        className="shrink-0 px-2 py-0.5 rounded-full text-xs font-bold rr-bg-green-pale" style={{ color: "oklch(0.40 0.12 145)" }}
                       >
                         All healthy
                       </span>
