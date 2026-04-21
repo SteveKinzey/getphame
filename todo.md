@@ -1133,3 +1133,13 @@
 - [x] Update US_ADDRESS in TermsOfService.tsx with same full contact details
 - [x] Update locale-legal-address skill US_ADDRESS reference
 - [x] tRPC HTML error diagnosed: one-time crash from syntax error during hot-reload at 07:27 — server auto-recovered, no persistent bug
+
+## Session #40 — Locale-Conditional Contact Emails on Legal Pages (Apr 21 2026)
+- [x] PrivacyPolicy.tsx: show steve@sk-america.com (EN) / michael@botflowlab.com (TH) on all contact email links (6 occurrences)
+- [x] TermsOfService.tsx: show steve@sk-america.com (EN) / michael@botflowlab.com (TH) on all contact email links (8 occurrences)
+- [x] Updated locale-legal-address skill with CONTACT_EMAIL pattern, translate=no note, and updated file table
+
+## Session #41 — Add Emails to Address Blocks (Apr 21 2026)
+- [x] Add michael@botflowlab.com to TH_ADDRESS in PrivacyPolicy.tsx and TermsOfService.tsx
+- [x] Add steve@sk-america.com to US_ADDRESS in PrivacyPolicy.tsx and TermsOfService.tsx
+- [x] Update locale-legal-address skill address constants

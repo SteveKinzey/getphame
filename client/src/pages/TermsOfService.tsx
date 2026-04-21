@@ -10,7 +10,8 @@ const TH_ADDRESS = (
     Sala Thammasop, Thawi Wattana<br />
     Bangkok 10170<br />
     Thailand<br />
-    +66 6-3094-9914
+    +66 6-3094-9914<br />
+    michael@botflowlab.com
   </>
 );
 
@@ -21,7 +22,8 @@ const US_ADDRESS = (
     255 N D St, Suite 200XIX<br />
     San Bernardino, CA 92401<br />
     United States<br />
-    909 644-9828
+    909 644-9828<br />
+    steve@sk-america.com
   </>
 );
 
@@ -38,6 +40,7 @@ export default function TermsOfService() {
     setIsThai(localStorage.getItem('rr-lang') === 'th');
   }, []);
   const ADDR = isThai ? TH_ADDRESS : US_ADDRESS;
+  const CONTACT_EMAIL = isThai ? 'michael@botflowlab.com' : 'steve@sk-america.com';
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -102,7 +105,7 @@ export default function TermsOfService() {
             You must be at least 18 years of age and capable of forming a binding contract to use the Service. The Service is intended for business use and is not directed at consumers acting in a personal capacity.
           </p>
           <p className="mb-3">
-            You must sign in using a valid Google account to access the Service. You are responsible for maintaining the confidentiality of your session and for all activity that occurs under your account. You agree to notify us immediately at <a href="mailto:support@reviewlink.app" style={LINK}>support@reviewlink.app</a> if you become aware of any unauthorised use of your account.
+            You must sign in using a valid Google account to access the Service. You are responsible for maintaining the confidentiality of your session and for all activity that occurs under your account. You agree to notify us immediately at <a href={`mailto:${CONTACT_EMAIL}`} style={LINK}>{CONTACT_EMAIL}</a> if you become aware of any unauthorised use of your account.
           </p>
           <p>
             We reserve the right to refuse registration or terminate accounts at our sole discretion, including where we believe the account is being used in violation of these Terms or applicable law.
@@ -174,7 +177,7 @@ export default function TermsOfService() {
             You represent and warrant that: (a) you have the legal right to upload and use the customer data you provide; (b) your collection and use of that data complies with all applicable data protection laws; and (c) where required, you have obtained appropriate consents from your customers for the processing of their data.
           </p>
           <p>
-            You may delete individual customer records at any time from the Contacts screen. You may request deletion of all your data by using the account deletion feature in Settings or by contacting us at <a href="mailto:privacy@reviewlink.app" style={LINK}>privacy@reviewlink.app</a>. We will process deletion requests within 30 days.
+            You may delete individual customer records at any time from the Contacts screen. You may request deletion of all your data by using the account deletion feature in Settings or by contacting us at <a href={`mailto:${CONTACT_EMAIL}`} style={LINK}>{CONTACT_EMAIL}</a>. We will process deletion requests within 30 days.
           </p>
         </section>
 
@@ -199,7 +202,7 @@ export default function TermsOfService() {
             ReviewLink respects the intellectual property rights of others and expects users to do the same. If you believe that content accessible through the Service infringes your copyright, you may submit a DMCA takedown notice to our designated agent. Your notice must include: (a) a physical or electronic signature of the copyright owner or authorised agent; (b) identification of the copyrighted work claimed to have been infringed; (c) identification of the allegedly infringing material and its location on the Service; (d) your contact information; (e) a statement that you have a good faith belief that the use is not authorised by the copyright owner; and (f) a statement, under penalty of perjury, that the information in the notice is accurate and that you are authorised to act on behalf of the copyright owner.
           </p>
           <p className="mb-3">
-            DMCA notices should be sent to: <a href="mailto:legal@reviewlink.app" style={LINK}>legal@reviewlink.app</a>
+            DMCA notices should be sent to: <a href={`mailto:${CONTACT_EMAIL}`} style={LINK}>{CONTACT_EMAIL}</a>
           </p>
           <p>
             If you believe that content you submitted was removed in error, you may submit a counter-notification. Repeated infringement of third-party intellectual property rights may result in termination of your account.
@@ -246,7 +249,7 @@ export default function TermsOfService() {
         <section>
           <h2 className={SH} style={SHS}>13. Termination</h2>
           <p className="mb-3">
-            You may terminate your account at any time by using the account deletion feature in the Settings screen or by contacting us at <a href="mailto:support@reviewlink.app" style={LINK}>support@reviewlink.app</a>. Upon deletion, your account data will be removed from our active systems within 30 days, subject to any retention obligations under applicable law.
+            You may terminate your account at any time by using the account deletion feature in the Settings screen or by contacting us at <a href={`mailto:${CONTACT_EMAIL}`} style={LINK}>{CONTACT_EMAIL}</a>. Upon deletion, your account data will be removed from our active systems within 30 days, subject to any retention obligations under applicable law.
           </p>
           <p>
             We reserve the right to suspend or terminate your account immediately, with or without notice, for any violation of these Terms, including but not limited to sending spam, violating anti-spam laws, or engaging in conduct that we determine, in our sole discretion, is harmful to the Service, other users, or third parties. Upon termination, your licence to use the Service ceases immediately. Sections 5, 7, 8, 10, 11, 12, 14, and 15 of these Terms survive termination.
@@ -257,7 +260,7 @@ export default function TermsOfService() {
         <section>
           <h2 className={SH} style={SHS}>14. Dispute Resolution and Arbitration</h2>
           <p className="mb-3">
-            <strong>Informal resolution.</strong> Before initiating any formal dispute process, you agree to contact us at <a href="mailto:legal@reviewlink.app" style={LINK}>legal@reviewlink.app</a> and give us at least 30 days to attempt to resolve the dispute informally. Most concerns can be resolved quickly this way.
+            <strong>Informal resolution.</strong> Before initiating any formal dispute process, you agree to contact us at <a href={`mailto:${CONTACT_EMAIL}`} style={LINK}>{CONTACT_EMAIL}</a> and give us at least 30 days to attempt to resolve the dispute informally. Most concerns can be resolved quickly this way.
           </p>
           {isThai ? (
             <>
@@ -283,7 +286,7 @@ export default function TermsOfService() {
                 <strong>Exceptions.</strong> Either party may seek emergency injunctive or other equitable relief from a court of competent jurisdiction to prevent actual or threatened infringement, misappropriation, or violation of intellectual property rights or confidential information. Small claims court actions that qualify may be brought in San Bernardino County, California.
               </p>
               <p>
-                <strong>Opt-out.</strong> You may opt out of binding arbitration within 30 days of first accepting these Terms by sending written notice to <a href="mailto:legal@reviewlink.app" style={LINK}>legal@reviewlink.app</a> with the subject line "Arbitration Opt-Out." If you opt out, disputes shall be resolved exclusively in the state or federal courts located in San Bernardino County, California, and you consent to personal jurisdiction in those courts.
+                <strong>Opt-out.</strong> You may opt out of binding arbitration within 30 days of first accepting these Terms by sending written notice to <a href={`mailto:${CONTACT_EMAIL}`} style={LINK}>{CONTACT_EMAIL}</a> with the subject line "Arbitration Opt-Out." If you opt out, disputes shall be resolved exclusively in the state or federal courts located in San Bernardino County, California, and you consent to personal jurisdiction in those courts.
               </p>
             </>
           )}
@@ -334,7 +337,7 @@ export default function TermsOfService() {
               ReviewLink — Legal<br />
               {ADDR}<br />
             </span>
-            <a href="mailto:legal@reviewlink.app" style={LINK}>legal@reviewlink.app</a>
+            <a href={`mailto:${CONTACT_EMAIL}`} style={LINK}>{CONTACT_EMAIL}</a>
           </address>
         </section>
 

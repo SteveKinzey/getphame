@@ -10,7 +10,8 @@ const TH_ADDRESS = (
     Sala Thammasop, Thawi Wattana<br />
     Bangkok 10170<br />
     Thailand<br />
-    +66 6-3094-9914
+    +66 6-3094-9914<br />
+    michael@botflowlab.com
   </>
 );
 
@@ -21,7 +22,8 @@ const US_ADDRESS = (
     255 N D St, Suite 200XIX<br />
     San Bernardino, CA 92401<br />
     United States<br />
-    909 644-9828
+    909 644-9828<br />
+    steve@sk-america.com
   </>
 );
 
@@ -37,6 +39,7 @@ export default function PrivacyPolicy() {
     setIsThai(localStorage.getItem('rr-lang') === 'th');
   }, []);
   const ADDR = isThai ? TH_ADDRESS : US_ADDRESS;
+  const CONTACT_EMAIL = isThai ? 'michael@botflowlab.com' : 'steve@sk-america.com';
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -94,7 +97,7 @@ export default function PrivacyPolicy() {
               ReviewLink<br />
               {ADDR}<br />
             </span>
-            <a href="mailto:privacy@reviewlink.app" style={LINK_STYLE}>privacy@reviewlink.app</a>
+            <a href={`mailto:${CONTACT_EMAIL}`} style={LINK_STYLE}>{CONTACT_EMAIL}</a>
           </address>
           <p className="mt-3">
             We aim to respond to all privacy-related requests within 30 calendar days.
@@ -205,7 +208,7 @@ export default function PrivacyPolicy() {
             As the business owner using ReviewLink, you are the data controller for your customers' contact information and for the tracking data generated when they interact with your emails. You are responsible for ensuring that your use of email tracking complies with applicable laws in your jurisdiction, including GDPR, CASL, and any other applicable privacy regulations.
           </p>
           <p>
-            Tracking data (open/click events) is stored only in your account, is visible only to you, and is not shared with or sold to any third party. We retain this data for as long as your account is active. You may request deletion of all tracking data by contacting us at <a href="mailto:privacy@reviewlink.app" style={LINK_STYLE}>privacy@reviewlink.app</a>.
+            Tracking data (open/click events) is stored only in your account, is visible only to you, and is not shared with or sold to any third party. We retain this data for as long as your account is active. You may request deletion of all tracking data by contacting us at <a href={`mailto:${CONTACT_EMAIL}`} style={LINK_STYLE}>{CONTACT_EMAIL}</a>.
           </p>
         </section>
 
@@ -239,7 +242,7 @@ export default function PrivacyPolicy() {
             <strong>HTTP security headers.</strong> Our servers apply standard HTTP security headers (including X-Frame-Options, X-Content-Type-Options, Strict-Transport-Security, and Referrer-Policy) on all responses.
           </p>
           <p>
-            No method of transmission over the internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your data, we cannot guarantee absolute security. If you believe your account has been compromised, please contact us immediately at <a href="mailto:privacy@reviewlink.app" style={LINK_STYLE}>privacy@reviewlink.app</a>.
+            No method of transmission over the internet or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your data, we cannot guarantee absolute security. If you believe your account has been compromised, please contact us immediately at <a href={`mailto:${CONTACT_EMAIL}`} style={LINK_STYLE}>{CONTACT_EMAIL}</a>.
           </p>
         </section>
 
@@ -268,7 +271,7 @@ export default function PrivacyPolicy() {
             <strong>Right to withdraw consent.</strong> Where processing is based on consent, you may withdraw consent at any time without affecting the lawfulness of processing before withdrawal.
           </p>
           <p>
-            To exercise any of these rights, contact us at <a href="mailto:privacy@reviewlink.app" style={LINK_STYLE}>privacy@reviewlink.app</a>. We may need to verify your identity before processing certain requests.
+            To exercise any of these rights, contact us at <a href={`mailto:${CONTACT_EMAIL}`} style={LINK_STYLE}>{CONTACT_EMAIL}</a>. We may need to verify your identity before processing certain requests.
           </p>
           <p className="mt-2">
             If you are located in the EEA or UK and believe we have not addressed your concerns adequately, you have the right to lodge a complaint with your local data protection supervisory authority.
@@ -304,7 +307,7 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className={SECTION_HEADING} style={SECTION_HEADING_STYLE}>13. Children's Privacy</h2>
           <p>
-            ReviewLink is a business tool intended for use by adults aged 18 and over. We do not knowingly collect personal information from individuals under the age of 18. If you believe a minor has provided us with personal information, please contact us at <a href="mailto:privacy@reviewlink.app" style={LINK_STYLE}>privacy@reviewlink.app</a> and we will delete that information promptly.
+            ReviewLink is a business tool intended for use by adults aged 18 and over. We do not knowingly collect personal information from individuals under the age of 18. If you believe a minor has provided us with personal information, please contact us at <a href={`mailto:${CONTACT_EMAIL}`} style={LINK_STYLE}>{CONTACT_EMAIL}</a> and we will delete that information promptly.
           </p>
         </section>
 
@@ -335,7 +338,7 @@ export default function PrivacyPolicy() {
               ReviewLink — Privacy Team<br />
               {ADDR}<br />
             </span>
-            <a href="mailto:privacy@reviewlink.app" style={LINK_STYLE}>privacy@reviewlink.app</a>
+            <a href={`mailto:${CONTACT_EMAIL}`} style={LINK_STYLE}>{CONTACT_EMAIL}</a>
           </address>
           <p className="mt-3">
             We aim to respond to all privacy-related inquiries within 30 calendar days. For urgent security concerns, please include "URGENT" in the subject line.
