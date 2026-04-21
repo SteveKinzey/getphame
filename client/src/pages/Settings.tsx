@@ -32,6 +32,8 @@ import {
   BookOpen,
   Eye,
   Smartphone,
+  Info,
+  Apple,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
 
@@ -2052,6 +2054,111 @@ export default function SettingsPage() {
 
         {/* ── Send Feedback ────────────────────────────────────────────── */}
         <SendFeedbackSection />
+
+        {/* ── Admin: OAuth & Auth Integrations ────────────────────────────── */}
+        {user?.role === "admin" && (
+          <div className="bg-white rounded-2xl p-5 shadow-sm">
+            <div className="flex items-center gap-2 mb-4">
+              <Settings size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+              <h2
+                className="text-base font-black"
+                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+              >
+                Auth Integrations
+              </h2>
+            </div>
+
+            {/* Google OAuth redirect URI reminder */}
+            <div
+              className="rounded-xl p-4 mb-4"
+              style={{ background: "oklch(0.97 0.01 260)" }}
+            >
+              <div className="flex items-start gap-3">
+                <Info size={16} className="mt-0.5 shrink-0" style={{ color: "oklch(0.50 0.15 260)" }} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.22 0.09 260)" }}>
+                    Google OAuth — Redirect URI Required
+                  </p>
+                  <p className="text-xs mb-2" style={{ color: "oklch(0.45 0.05 260)" }}>
+                    Add these two URIs to your Google Cloud Console OAuth client before Google login will work on the live domain.
+                  </p>
+                  <div className="space-y-1">
+                    {[
+                      "https://reviewlink.app/api/auth/google/callback",
+                      "https://revrocket-j5ynazte.manus.space/api/auth/google/callback",
+                    ].map((uri) => (
+                      <div
+                        key={uri}
+                        className="flex items-center justify-between gap-2 rounded-lg px-3 py-2"
+                        style={{ background: "oklch(0.93 0.02 260)" }}
+                      >
+                        <code className="text-xs truncate" style={{ color: "oklch(0.30 0.08 260)" }}>
+                          {uri}
+                        </code>
+                        <button
+                          onClick={() => { navigator.clipboard.writeText(uri); toast.success("Copied!"); }}
+                          className="shrink-0 text-xs font-bold px-2 py-0.5 rounded"
+                          style={{ color: "oklch(0.50 0.15 260)", background: "oklch(0.88 0.03 260)" }}
+                        >
+                          Copy
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <a
+                    href="https://console.cloud.google.com/apis/credentials"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-bold mt-3"
+                    style={{ color: "oklch(0.50 0.15 260)" }}
+                  >
+                    Open Google Cloud Console <ExternalLink size={11} />
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Apple Sign In setup */}
+            <div
+              className="rounded-xl p-4"
+              style={{ background: "oklch(0.97 0.01 260)" }}
+            >
+              <div className="flex items-start gap-3">
+                <Apple size={16} className="mt-0.5 shrink-0" style={{ color: "oklch(0.22 0.09 260)" }} />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold mb-1" style={{ color: "oklch(0.22 0.09 260)" }}>
+                    Sign in with Apple — 4 Secrets Required
+                  </p>
+                  <p className="text-xs mb-3" style={{ color: "oklch(0.45 0.05 260)" }}>
+                    Add these secrets in Settings → Secrets to enable Apple Sign In.
+                  </p>
+                  <div className="space-y-2">
+                    {[
+                      { key: "APPLE_CLIENT_ID", hint: "Services ID identifier, e.g. app.reviewlink.signin" },
+                      { key: "APPLE_TEAM_ID", hint: "10-char string, top-right of developer.apple.com" },
+                      { key: "APPLE_KEY_ID", hint: "Key ID shown after creating a Sign in with Apple key" },
+                      { key: "APPLE_PRIVATE_KEY", hint: "Full contents of the .p8 file including header/footer" },
+                    ].map(({ key, hint }) => (
+                      <div key={key}>
+                        <p className="text-xs font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>{key}</p>
+                        <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>{hint}</p>
+                      </div>
+                    ))}
+                  </div>
+                  <a
+                    href="https://developer.apple.com/account/resources/identifiers/list"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-xs font-bold mt-3"
+                    style={{ color: "oklch(0.22 0.09 260)" }}
+                  >
+                    Open Apple Developer Console <ExternalLink size={11} />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── Delete Account ───────────────────────────────────────────────── */}
         <DeleteAccountSection />

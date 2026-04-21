@@ -897,3 +897,10 @@
 - [x] Test Google OAuth flow end-to-end (302 → accounts.google.com confirmed)
 - [x] Email preview modal in Settings: already implemented in previous session, verified present
 - [x] Cancel Plan deep-link on Upgrade page routes to /cancel churn survey instead of direct portal
+
+## New Features (Session — Apr 21 2026 #13)
+
+- [x] Update skill with cancel plan deep-link and churn funnel patterns
+- [x] Google OAuth redirect URI reminder banner in Settings (shows until redirect URI is confirmed)
+- [x] Apple Sign In credential setup card in Settings (shows 4 required secrets with instructions)
+- [x] Write GitHub README.md for the review-rocket repo
