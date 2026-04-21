@@ -747,3 +747,8 @@
 
 ## WooCommerce Opted-Out Badge
 - [x] WooCustomers: show "Unsubscribed" pill badge on rows where optedOut = 1, matching SavedContacts design
+
+## SEO Fixes — Landing Page (/)
+- [x] Fix page title: set document.title to a 30-60 char keyword-rich string in LandingPage
+- [x] Add meta keywords tag to index.html (or via useEffect in LandingPage)
+- [x] Fix missing alt text on 1 of 2 images on the landing page

@@ -3,7 +3,7 @@
 
 import { getLoginUrl } from "@/const";
 import { Rocket, Star, Send, Users, CheckCircle2, ArrowRight, Mail, Globe, ChevronDown } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
@@ -111,6 +111,25 @@ function FAQSection() {
 export default function LandingPage() {
   const loginUrl = getLoginUrl();
 
+  useEffect(() => {
+    // SEO: keyword-rich title (30-60 chars)
+    document.title = "ReviewLink — Get More 5-Star Google Reviews";
+
+    // SEO: meta keywords
+    let kw = document.querySelector<HTMLMetaElement>('meta[name="keywords"]');
+    if (!kw) {
+      kw = document.createElement("meta");
+      kw.name = "keywords";
+      document.head.appendChild(kw);
+    }
+    kw.content =
+      "review requests, Google reviews, get more reviews, review automation, small business reviews, send review request email, WooCommerce reviews, Stripe reviews";
+
+    return () => {
+      document.title = "ReviewLink";
+    };
+  }, []);
+
   return (
     <div className="min-h-screen flex flex-col" style={{ background: "oklch(0.975 0.003 100)" }}>
 
@@ -151,7 +170,7 @@ export default function LandingPage() {
           className="absolute right-0 top-0 w-56 h-56 opacity-10 pointer-events-none"
           style={{ transform: "translate(15%, -15%)" }}
         >
-          <img src={HERO_IMG} alt="" className="w-full h-full object-contain" />
+          <img src={HERO_IMG} alt="ReviewLink rocket illustration" className="w-full h-full object-contain" />
         </div>
 
         <div className="relative z-10 max-w-sm mx-auto">
