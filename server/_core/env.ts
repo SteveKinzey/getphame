@@ -10,6 +10,11 @@ export const ENV = {
   // Google OAuth 2.0 (Gmail send)
   googleClientId: process.env.GOOGLE_CLIENT_ID ?? "",
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+  // Apple Sign In
+  appleClientId: process.env.APPLE_CLIENT_ID ?? "",
+  appleTeamId: process.env.APPLE_TEAM_ID ?? "",
+  appleKeyId: process.env.APPLE_KEY_ID ?? "",
+  applePrivateKey: process.env.APPLE_PRIVATE_KEY ?? "",
   // Zoho Books integration
   zohoClientId: process.env.ZOHO_CLIENT_ID ?? "",
   zohoClientSecret: process.env.ZOHO_CLIENT_SECRET ?? "",

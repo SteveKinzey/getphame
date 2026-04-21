@@ -877,10 +877,16 @@
 
 ## New Features (Session — Apr 21 2026 #9)
 
-- [ ] Remove "Powered by Manus" text from login screen
-- [ ] Fix tRPC JSON parse error on home page (Upgrade.tsx parse error causing HTML response)
+- [x] Remove "Powered by Manus" text from login screen (solved by direct Google OAuth — no Manus portal redirect)
+- [x] Fix tRPC JSON parse error on home page (Upgrade.tsx parse error causing HTML response)
 
 ## New Features (Session — Apr 21 2026 #10)
 
 - [x] Direct Google OAuth login: /api/auth/google + /api/auth/google/callback routes, bypass Manus portal
 - [x] Update Onboarding.tsx login button to use /api/auth/google instead of Manus portal URL
+
+## New Features (Session — Apr 21 2026 #11)
+
+- [x] Sign in with Apple: install apple-signin-auth, add APPLE_CLIENT_ID / APPLE_TEAM_ID / APPLE_KEY_ID / APPLE_PRIVATE_KEY env vars
+- [x] Server routes: /api/auth/apple (initiate) and /api/auth/apple/callback (exchange + session)
+- [x] Onboarding.tsx: add Sign in with Apple button below Google button
