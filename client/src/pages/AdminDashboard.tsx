@@ -20,6 +20,7 @@ import {
   Search,
   X,
   CheckCircle2,
+  DollarSign,
 } from "lucide-react";
 import { Rocket } from "lucide-react";
 import { useDebounce } from "use-debounce";
@@ -128,6 +129,57 @@ export default function AdminDashboard() {
 
         {stats && (
           <>
+            {/* MRR highlight card */}
+            {(() => {
+              const MONTHLY_PRICE = 29;
+              const ANNUAL_MONTHLY_EQUIV = Math.round(290 / 12 * 100) / 100;
+              const mrr = (stats.tierCounts.pro * MONTHLY_PRICE) + (stats.tierCounts.annual * ANNUAL_MONTHLY_EQUIV);
+              const arr = mrr * 12;
+              return (
+                <div
+                  className="rounded-2xl px-4 py-4"
+                  style={{ background: "oklch(0.22 0.09 260)", border: "2px solid oklch(0.80 0.18 80)" }}
+                >
+                  <div className="flex items-center gap-2 mb-3">
+                    <DollarSign size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+                    <span
+                      className="text-xs font-black uppercase tracking-widest"
+                      style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+                    >
+                      Revenue
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-xs mb-0.5" style={{ color: "var(--text-on-dark-muted)" }}>MRR</p>
+                      <p
+                        className="text-2xl font-black"
+                        style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}
+                      >
+                        ${mrr.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs mb-0.5" style={{ color: "var(--text-on-dark-muted)" }}>ARR</p>
+                      <p
+                        className="text-2xl font-black"
+                        style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}
+                      >
+                        ${arr.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => navigate("/admin/revenue")}
+                    className="mt-3 text-xs font-bold"
+                    style={{ color: "oklch(0.80 0.18 80)" }}
+                  >
+                    Full Revenue Dashboard →
+                  </button>
+                </div>
+              );
+            })()}
+
             {/* Top KPI row */}
             <div className="grid grid-cols-2 gap-3">
               <KpiCard

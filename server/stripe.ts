@@ -73,6 +73,69 @@ export async function createCheckoutSession({
   return session.url!;
 }
 
+/**
+ * THB Price IDs for PromptPay checkout (Thailand users).
+ * These must be created in the Stripe Dashboard with currency=THB.
+ * Set STRIPE_PRICE_IDS_THB_MONTHLY, _ANNUAL, _LIFETIME env vars to activate.
+ */
+export const STRIPE_PRICE_IDS_THB = {
+  monthly:  process.env.STRIPE_PRICE_ID_THB_MONTHLY ?? "",
+  annual:   process.env.STRIPE_PRICE_ID_THB_ANNUAL ?? "",
+  lifetime: process.env.STRIPE_PRICE_ID_THB_LIFETIME ?? "",
+} as const;
+
+/**
+ * Create a Stripe Checkout Session in THB with PromptPay enabled.
+ * Requires THB-denominated Price IDs set via env vars.
+ * PromptPay must be enabled in Stripe Dashboard → Settings → Payment methods.
+ */
+export async function createThbCheckoutSession({
+  userId,
+  userEmail,
+  userName,
+  stripeCustomerId,
+  origin,
+  plan = "monthly",
+}: {
+  userId: number;
+  userEmail: string | null;
+  userName: string | null;
+  stripeCustomerId: string | null;
+  origin: string;
+  plan?: StripePlan;
+}): Promise<string> {
+  const priceId = STRIPE_PRICE_IDS_THB[plan];
+  if (!priceId) {
+    throw new Error(`THB price ID not configured for plan: ${plan}. Set STRIPE_PRICE_ID_THB_${plan.toUpperCase()} env var.`);
+  }
+  const isLifetime = plan === "lifetime";
+
+  const params: Parameters<typeof stripe.checkout.sessions.create>[0] = {
+    mode: isLifetime ? "payment" : "subscription",
+    currency: "thb",
+    payment_method_types: ["card", "promptpay"],
+    allow_promotion_codes: true,
+    client_reference_id: String(userId),
+    metadata: {
+      user_id: String(userId),
+      plan,
+      customer_email: userEmail ?? "",
+      customer_name: userName ?? "",
+    },
+    line_items: [{ price: priceId, quantity: 1 }],
+    success_url: `${origin}/payment-success`,
+    cancel_url: `${origin}/upgrade`,
+    ...(stripeCustomerId
+      ? { customer: stripeCustomerId }
+      : userEmail
+        ? { customer_email: userEmail }
+        : {}),
+  };
+
+  const session = await stripe.checkout.sessions.create(params);
+  return session.url!;
+}
+
 /** Create a Stripe Customer Portal session for managing billing */
 export async function createPortalSession(
   stripeCustomerId: string,

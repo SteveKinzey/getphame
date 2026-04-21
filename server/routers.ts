@@ -27,7 +27,7 @@ import {
 import { sendMailViaSmtp } from "./smtp";
 import { buildReviewRequestEmail, buildReviewRequestText } from "./emailTemplates";
 import { checkSendRateLimit } from "./rateLimiter";
-import { createCheckoutSession, createPortalSession } from "./stripe";
+import { createCheckoutSession, createPortalSession, createThbCheckoutSession } from "./stripe";
 import { createOrGetZohoCustomer, createZohoInvoice, sendZohoInvoice } from "./zoho";
 import {
   getWooCredentials,
@@ -475,6 +475,22 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         const profile = await getBusinessProfile(ctx.user.id);
         const url = await createCheckoutSession({
+          userId: ctx.user.id,
+          userEmail: ctx.user.email ?? null,
+          userName: ctx.user.name ?? null,
+          stripeCustomerId: profile?.stripeCustomerId ?? null,
+          origin: input.origin,
+          plan: input.plan,
+        });
+        return { url };
+      }),
+
+    /** Create a Stripe Checkout Session in THB with PromptPay enabled (Thailand users) */
+    createThbCheckout: protectedProcedure
+      .input(z.object({ origin: z.string(), plan: z.enum(["monthly", "annual", "lifetime"]).default("monthly") }))
+      .mutation(async ({ ctx, input }) => {
+        const profile = await getBusinessProfile(ctx.user.id);
+        const url = await createThbCheckoutSession({
           userId: ctx.user.id,
           userEmail: ctx.user.email ?? null,
           userName: ctx.user.name ?? null,
@@ -1981,6 +1997,23 @@ export const appRouter = router({
       const ANNUAL_PRICE_CENTS  = 29900; // $299/yr
       const LIFETIME_PRICE_CENTS = 79900; // $799 one-time
 
+      // Platform-wide email open/click stats
+      const { sql: sqlRev, and: andRev, eq: eqRev } = await import("drizzle-orm");
+      const totalSentRows = await db.select({ count: sqlRev<number>`count(*)` }).from(customerRequests);
+      const platformTotalSent = Number(totalSentRows[0]?.count ?? 0);
+      const platformOpenRows = await db
+        .select({ count: sqlRev<number>`count(distinct ${emailEvents.requestId})` })
+        .from(emailEvents)
+        .where(eqRev(emailEvents.type, "open"));
+      const platformUniqueOpens = Number(platformOpenRows[0]?.count ?? 0);
+      const platformClickRows = await db
+        .select({ count: sqlRev<number>`count(distinct ${emailEvents.requestId})` })
+        .from(emailEvents)
+        .where(eqRev(emailEvents.type, "click"));
+      const platformUniqueClicks = Number(platformClickRows[0]?.count ?? 0);
+      const platformOpenRate = platformTotalSent > 0 ? Math.round((platformUniqueOpens / platformTotalSent) * 100 * 10) / 10 : 0;
+      const platformClickRate = platformTotalSent > 0 ? Math.round((platformUniqueClicks / platformTotalSent) * 100 * 10) / 10 : 0;
+
       // Tier counts
       const allProfiles = await db.select({ tier: businessProfiles.tier, createdAt: businessProfiles.createdAt }).from(businessProfiles);
       const tierCounts = { free: 0, pro: 0, annual: 0, lifetime: 0 };
@@ -2036,6 +2069,11 @@ export const appRouter = router({
         activeSubs,
         recentCancels,
         churnRate,
+        platformTotalSent,
+        platformUniqueOpens,
+        platformUniqueClicks,
+        platformOpenRate,
+        platformClickRate,
       };
     }),
   }),

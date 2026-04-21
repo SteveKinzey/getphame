@@ -12,6 +12,16 @@ import {
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
 
+// ── THB dual-currency display ─────────────────────────────────────────────────
+// Fixed rate — update manually when USD/THB shifts significantly
+const THB_PER_USD = 35;
+function toThb(usdAmount: number): string {
+  const raw = usdAmount * THB_PER_USD;
+  // Round up to nearest 50 baht for clean pricing
+  const rounded = Math.ceil(raw / 50) * 50;
+  return `฿${rounded.toLocaleString()}`;
+}
+
 const UPGRADE_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-upgrade-hero-jBNmQektQK78tAwwYJ9c87.webp";
 
@@ -42,15 +52,17 @@ const PRO_FEATURES = [
 
 type Plan = "monthly" | "annual" | "lifetime";
 
-const PLANS: Record<Plan, { label: string; price: string; sub: string; badge?: string; savings?: string }> = {
+const PLANS: Record<Plan, { label: string; price: string; thb: string; sub: string; badge?: string; savings?: string }> = {
   monthly: {
     label: "Monthly",
     price: "$29",
+    thb: toThb(29),
     sub: "/ month",
   },
   annual: {
     label: "Annual",
     price: "$290",
+    thb: toThb(290),
     sub: "/ year",
     badge: "Most Popular",
     savings: "Save $58/yr",
@@ -58,6 +70,7 @@ const PLANS: Record<Plan, { label: string; price: string; sub: string; badge?: s
   lifetime: {
     label: "Lifetime",
     price: "$1,247",
+    thb: toThb(1247),
     sub: "one-time",
     badge: "Best Value",
     savings: "Pay once, own forever",
@@ -87,6 +100,15 @@ export default function UpgradePage() {
     },
     onError: (err) => {
       toast.error(err.message || "Failed to start checkout. Please try again.");
+    },
+  });
+
+  const createThbCheckout = trpc.stripe.createThbCheckout.useMutation({
+    onSuccess: (data) => {
+      window.location.href = data.url;
+    },
+    onError: (err) => {
+      toast.error(err.message || "PromptPay checkout unavailable. Please use card payment.");
     },
   });
 
@@ -258,6 +280,10 @@ export default function UpgradePage() {
               {PLANS[selectedPlan].sub}
             </span>
           </div>
+          {/* THB equivalent — display only, USD is the charge currency */}
+          <p className="text-xs mb-2" style={{ color: "var(--text-on-dark-muted)" }}>
+            ≈ {PLANS[selectedPlan].thb} THB
+          </p>
 
           {PLANS[selectedPlan].savings && (
             <div
@@ -339,7 +365,31 @@ export default function UpgradePage() {
           </button>
 
           <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-muted)" }}>
-            Secure checkout via Stripe. No account required.
+            Secure checkout via Stripe. Charged in USD.
+          </p>
+
+          {/* PromptPay CTA — Thailand users */}
+          <button
+            onClick={() => createThbCheckout.mutate({ origin: window.location.origin, plan: selectedPlan })}
+            disabled={createThbCheckout.isPending}
+            className="w-full py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 mt-2 transition-opacity disabled:opacity-50"
+            style={{
+              background: "oklch(0.18 0.07 260)",
+              color: "white",
+              border: "1px solid rgba(255,255,255,0.15)",
+            }}
+          >
+            {createThbCheckout.isPending ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <span className="text-base">&#x0E3F;</span>
+            )}
+            {createThbCheckout.isPending
+              ? "Redirecting..."
+              : `Pay with PromptPay — ${PLANS[selectedPlan].thb}`}
+          </button>
+          <p className="text-center text-xs mt-1 mb-1" style={{ color: "var(--text-on-dark-muted)" }}>
+            Thailand only · QR code payment · Charged in THB
           </p>
 
           {/* Secondary — invoice option */}

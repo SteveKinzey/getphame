@@ -12,6 +12,9 @@ import {
   DollarSign,
   Infinity,
   AlertTriangle,
+  Mail,
+  MousePointerClick,
+  Eye,
 } from "lucide-react";
 import {
   BarChart,
@@ -170,6 +173,58 @@ export default function AdminRevenuePage() {
               </ResponsiveContainer>
             </div>
 
+            {/* Email engagement KPIs */}
+            <div className="rounded-2xl p-4" style={{ background: NAVY }}>
+              <p className="text-xs font-bold tracking-widest uppercase mb-3" style={{ color: GOLD }}>
+                Platform Email Engagement
+              </p>
+              <div className="grid grid-cols-3 gap-3 mb-3">
+                <KpiCard
+                  icon={<Mail size={16} style={{ color: GOLD }} />}
+                  label="Total Sent"
+                  value={data.platformTotalSent.toLocaleString()}
+                />
+                <KpiCard
+                  icon={<Eye size={16} style={{ color: GOLD }} />}
+                  label="Unique Opens"
+                  value={data.platformUniqueOpens.toLocaleString()}
+                />
+                <KpiCard
+                  icon={<MousePointerClick size={16} style={{ color: GOLD }} />}
+                  label="Unique Clicks"
+                  value={data.platformUniqueClicks.toLocaleString()}
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div
+                  className="rounded-xl p-3 flex flex-col gap-1"
+                  style={{ background: "rgba(255,255,255,0.06)" }}
+                >
+                  <span className="text-xs text-white/50">Open Rate</span>
+                  <span
+                    className="text-2xl font-black"
+                    style={{ color: data.platformOpenRate >= 30 ? "oklch(0.70 0.18 145)" : data.platformOpenRate >= 15 ? GOLD : "#f87171" }}
+                  >
+                    {data.platformOpenRate}%
+                  </span>
+                  <span className="text-xs text-white/30">Industry avg: 20–30%</span>
+                </div>
+                <div
+                  className="rounded-xl p-3 flex flex-col gap-1"
+                  style={{ background: "rgba(255,255,255,0.06)" }}
+                >
+                  <span className="text-xs text-white/50">Click Rate</span>
+                  <span
+                    className="text-2xl font-black"
+                    style={{ color: data.platformClickRate >= 5 ? "oklch(0.70 0.18 145)" : data.platformClickRate >= 2 ? GOLD : "#f87171" }}
+                  >
+                    {data.platformClickRate}%
+                  </span>
+                  <span className="text-xs text-white/30">Industry avg: 2–5%</span>
+                </div>
+              </div>
+            </div>
+
             {/* Pricing reference */}
             <div className="rounded-2xl p-4 border border-white/10" style={{ background: "rgba(255,255,255,0.03)" }}>
               <p className="text-xs font-bold tracking-widest uppercase mb-2 text-white/40">
@@ -177,8 +232,8 @@ export default function AdminRevenuePage() {
               </p>
               <div className="flex flex-col gap-1 text-sm text-white/50">
                 <span>Monthly Pro: $29/mo</span>
-                <span>Annual: $299/yr ($24.92/mo)</span>
-                <span>Lifetime: $799 one-time</span>
+                <span>Annual: $290/yr ($24.17/mo)</span>
+                <span>Lifetime: $1,247 one-time</span>
               </div>
             </div>
           </>

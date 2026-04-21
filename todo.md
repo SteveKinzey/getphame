@@ -1084,3 +1084,21 @@
 - [x] Register /admin/revenue route in App.tsx
 - [x] Add Revenue Dashboard link to AdminDashboard quick links
 - [x] TypeScript: 0 errors. Tests: 39/43 pass (4 pre-existing smtpWeeklyDigest mock failures)
+
+## Session #33 — Stripe Thailand Payments, MRR on Admin Overview, Email KPIs, PromptPay, THB Pricing (Apr 21 2026)
+- [x] Create /skills/stripe-thailand-payments/SKILL.md (PromptPay integration + dual-currency display pattern)
+- [x] Add MRR/ARR highlight card to AdminDashboard overview page (computed from tierCounts, no extra DB query)
+- [x] Add platform-wide email open/click stats to admin.revenue tRPC procedure (platformTotalSent, platformUniqueOpens, platformUniqueClicks, platformOpenRate, platformClickRate)
+- [x] Add Platform Email Engagement section to AdminRevenue.tsx (Total Sent, Unique Opens, Unique Clicks, Open Rate %, Click Rate % with industry benchmarks)
+- [x] Fix stale pricing reference in AdminRevenue.tsx (Annual: $290/yr, Lifetime: $1,247)
+- [x] Add createThbCheckoutSession() to server/stripe.ts (THB currency, payment_method_types: card + promptpay)
+- [x] Add STRIPE_PRICE_IDS_THB constants (env-var driven: STRIPE_PRICE_ID_THB_MONTHLY/ANNUAL/LIFETIME)
+- [x] Add stripe.createThbCheckout tRPC procedure in routers.ts
+- [x] Add THB dual-currency display to Upgrade.tsx (toThb() helper, THB_PER_USD=35, round up to nearest ฿50)
+- [x] Show ≈ {thb} THB below USD price on pricing card
+- [x] Add PromptPay CTA button on Upgrade page (dark navy, ฿ icon, "Pay with PromptPay — ฿X,XXX")
+- [x] Add "Thailand only · QR code payment · Charged in THB" note below PromptPay button
+- [x] Update Stripe checkout note to "Charged in USD" to clarify currency
+- [x] ACTION REQUIRED: Create THB-denominated Stripe prices in Dashboard and set STRIPE_PRICE_ID_THB_* env vars
+- [x] ACTION REQUIRED: Enable PromptPay in Stripe Dashboard → Settings → Payment methods
+- [x] TypeScript: 0 errors. Tests: 39/43 pass (4 pre-existing smtpWeeklyDigest mock failures)
