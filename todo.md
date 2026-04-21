@@ -863,3 +863,9 @@
 - [x] Create STAY40 Stripe coupon (40% off 3 months) via Stripe API + surface it on admin dashboard
 - [x] Add STAY40 promo code to sendChurnRecoveryEmail body so cancelled users see the offer
 - [x] Show churn reason badge in admin user search results when user has a churn survey entry
+
+## New Features (Session — Apr 21 2026 #7)
+
+- [x] Expiring STAY40 offer: add offerValidUntil (bigint, 7-day expiry) to churn_surveys table, hide offer card after expiry, disable code server-side after expiry
+- [x] Churn reason in weekly digest: add "Cancellations this week" section to SmtpWeeklyDigest pulling churn_surveys grouped by reason
+- [x] Re-engagement email sequence: scheduler checks 3 days after churn recovery email, sends second "Here's what you're missing" email if user has not resubscribed

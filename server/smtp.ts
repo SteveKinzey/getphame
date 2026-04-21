@@ -720,3 +720,131 @@ export async function sendChurnRecoveryEmail(opts: {
     text,
   });
 }
+
+/**
+ * Send a re-engagement email 3 days after the churn recovery email,
+ * if the user has still not resubscribed. Softer angle — "here's what you're missing".
+ * Silently skips if the owner has no SMTP configured.
+ */
+export async function sendReEngagementEmail(opts: {
+  ownerUserId: number;
+  toEmail: string;
+  toName: string | null;
+}): Promise<void> {
+  const creds = await getSmtpCredentials(opts.ownerUserId);
+  if (!creds) return;
+  const fromName = creds.fromName ?? creds.user;
+  const displayName = opts.toName || "there";
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Here's what you're missing</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
+          <tr>
+            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">ReviewLink</p>
+              <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">Here's what you're missing</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:36px 40px;">
+              <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
+              <p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">It's been a few days since your ReviewLink subscription ended. We wanted to share a quick reminder of what's waiting for you when you come back:</p>
+              <!-- Feature list -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
+                <tr>
+                  <td style="padding:10px 16px;background:#f8f9ff;border-radius:10px;margin-bottom:8px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="28" style="vertical-align:top;padding-top:2px;">
+                          <span style="font-size:16px;">⭐</span>
+                        </td>
+                        <td>
+                          <p style="margin:0;font-size:14px;font-weight:700;color:#1a2744;">Automated review requests</p>
+                          <p style="margin:2px 0 0;font-size:13px;color:#777;">Send personalised review emails from your own inbox — no bulk mailer look.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr><td style="height:8px;"></td></tr>
+                <tr>
+                  <td style="padding:10px 16px;background:#f8f9ff;border-radius:10px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="28" style="vertical-align:top;padding-top:2px;">
+                          <span style="font-size:16px;">📈</span>
+                        </td>
+                        <td>
+                          <p style="margin:0;font-size:14px;font-weight:700;color:#1a2744;">Follow-up sequences</p>
+                          <p style="margin:2px 0 0;font-size:13px;color:#777;">3-day and 10-day reminders that run automatically — more reviews, less manual work.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr><td style="height:8px;"></td></tr>
+                <tr>
+                  <td style="padding:10px 16px;background:#f8f9ff;border-radius:10px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="28" style="vertical-align:top;padding-top:2px;">
+                          <span style="font-size:16px;">🔗</span>
+                        </td>
+                        <td>
+                          <p style="margin:0;font-size:14px;font-weight:700;color:#1a2744;">Multi-platform review links</p>
+                          <p style="margin:2px 0 0;font-size:13px;color:#777;">Google, Yelp, TripAdvisor, Facebook — send customers exactly where you need reviews.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <!-- CTA -->
+              <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
+                <tr>
+                  <td style="background:#f0a500;border-radius:10px;padding:14px 32px;text-align:center;">
+                    <a href="https://reviewlink.app/upgrade" style="color:#1a2744;font-size:15px;font-weight:700;text-decoration:none;">Come Back — Reactivate Now</a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:16px 0 0;font-size:13px;color:#aaa;text-align:center;">Still not sure? Just reply to this email — we'd love to hear your feedback.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
+              <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">Questions? Reply to this email or visit <a href="https://reviewlink.app/settings" style="color:#1a2744;">your settings</a>.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+  const text = `Hi ${displayName},\n\nIt's been a few days since your ReviewLink subscription ended. Here's what's waiting for you:\n\n• Automated review requests from your own inbox\n• 3-day and 10-day follow-up sequences\n• Multi-platform review links (Google, Yelp, TripAdvisor, Facebook)\n\nCome back: https://reviewlink.app/upgrade\n\nQuestions? Just reply to this email.\n\n-- ${fromName}`;
+  const pass = decryptPassword(creds.encryptedPass);
+  const transporter = createTransporter({
+    host: creds.host,
+    port: creds.port,
+    secure: creds.secure === 1,
+    user: creds.user,
+    pass,
+  });
+  const from = `"${fromName}" <${creds.user}>`;
+  await transporter.sendMail({
+    from,
+    replyTo: creds.replyTo ?? creds.user,
+    to: opts.toEmail,
+    subject: "Here's what you're missing — ReviewLink",
+    html,
+    text,
+  });
+}

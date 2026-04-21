@@ -1,18 +1,28 @@
 /**
- * Weekly SMTP failure digest.
- * Every Sunday at 08:00 UTC, aggregates lastHealthError across all smtp_credentials
- * rows and sends a summary notification to the owner via notifyOwner().
- * Only fires if there is at least one failing account.
+ * Weekly digest.
+ * Every Sunday at 08:00 UTC:
+ *  - SMTP health summary (failing accounts)
+ *  - Cancellations this week (churn_surveys grouped by reason)
+ * Sends via notifyOwner(). Always fires so the owner gets a weekly pulse.
  */
 import { getDb } from "./db";
-import { smtpCredentials } from "../drizzle/schema";
+import { smtpCredentials, churnSurveys } from "../drizzle/schema";
 import { notifyOwner } from "./_core/notification";
+import { gte } from "drizzle-orm";
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 
+const REASON_LABELS: Record<string, string> = {
+  too_expensive: "Too expensive",
+  not_using: "Not using it",
+  switching_tools: "Switching tools",
+  missing_feature: "Missing a feature",
+  other: "Other",
+};
+
 /**
  * Build and send the weekly digest.
- * Returns true if a digest was sent, false if skipped (no failures / DB unavailable).
+ * Returns true if sent, false if DB unavailable.
  */
 export async function sendSmtpWeeklyDigest(): Promise<boolean> {
   const db = await getDb();
@@ -21,16 +31,11 @@ export async function sendSmtpWeeklyDigest(): Promise<boolean> {
     return false;
   }
 
-  const rows = await db.select().from(smtpCredentials);
-  const failing = rows.filter((r) => r.lastHealthStatus === "fail");
-  const total = rows.length;
+  // ── SMTP health ──────────────────────────────────────────────────────────
+  const smtpRows = await db.select().from(smtpCredentials);
+  const failing = smtpRows.filter((r) => r.lastHealthStatus === "fail");
+  const total = smtpRows.length;
 
-  if (failing.length === 0) {
-    console.log(`[SmtpWeeklyDigest] All ${total} account(s) healthy — no digest needed.`);
-    return false;
-  }
-
-  // Aggregate by host
   const byHost: Record<string, { count: number; errors: string[] }> = {};
   for (const row of failing) {
     const host = row.host || "(unknown)";
@@ -42,39 +47,73 @@ export async function sendSmtpWeeklyDigest(): Promise<boolean> {
   }
 
   const failRate = Math.round((failing.length / total) * 100);
-  const lastRunAt = rows.reduce((max, r) => Math.max(max, r.lastHealthCheck ?? 0), 0);
-  const lastRunStr = lastRunAt
-    ? new Date(lastRunAt).toUTCString()
-    : "never";
+  const lastRunAt = smtpRows.reduce((max, r) => Math.max(max, r.lastHealthCheck ?? 0), 0);
+  const lastRunStr = lastRunAt ? new Date(lastRunAt).toUTCString() : "never";
 
-  // Build digest content
-  const lines: string[] = [
-    `Weekly SMTP Health Digest — ${new Date().toUTCString()}`,
-    ``,
-    `Summary: ${failing.length} of ${total} connected account(s) are failing (${failRate}% failure rate).`,
-    `Last health check ran: ${lastRunStr}`,
-    ``,
-    `Breakdown by provider:`,
-  ];
+  // ── Churn this week ───────────────────────────────────────────────────────
+  const weekAgo = new Date(Date.now() - WEEK_MS);
+  const churnRows = await db
+    .select()
+    .from(churnSurveys)
+    .where(gte(churnSurveys.createdAt, weekAgo));
 
-  for (const [host, { count, errors }] of Object.entries(byHost).sort((a, b) => b[1].count - a[1].count)) {
-    lines.push(`  ${host}: ${count} failing account(s)`);
-    for (const err of errors) {
-      lines.push(`    • ${err}`);
-    }
+  const churnCounts: Record<string, number> = {};
+  for (const r of churnRows) {
+    churnCounts[r.reason] = (churnCounts[r.reason] ?? 0) + 1;
   }
 
-  lines.push(``);
-  lines.push(`Action: Visit /admin/smtp-stats to see the full breakdown and run an on-demand health check.`);
+  // ── Build digest ──────────────────────────────────────────────────────────
+  const lines: string[] = [
+    `Weekly ReviewLink Digest — ${new Date().toUTCString()}`,
+    ``,
+    `━━ SMTP Health ━━`,
+    total === 0
+      ? `No SMTP accounts connected.`
+      : failing.length === 0
+        ? `✓ All ${total} connected account(s) healthy.`
+        : `⚠ ${failing.length} of ${total} account(s) failing (${failRate}% failure rate).`,
+    `Last health check: ${lastRunStr}`,
+  ];
+
+  if (failing.length > 0) {
+    lines.push(``, `Breakdown by provider:`);
+    for (const [host, { count, errors }] of Object.entries(byHost).sort((a, b) => b[1].count - a[1].count)) {
+      lines.push(`  ${host}: ${count} failing`);
+      for (const err of errors) lines.push(`    • ${err}`);
+    }
+    lines.push(``, `→ Visit /admin/smtp-stats to run an on-demand health check.`);
+  }
+
+  lines.push(``, `━━ Cancellations This Week ━━`);
+  if (churnRows.length === 0) {
+    lines.push(`No cancellations this week. 🎉`);
+  } else {
+    lines.push(`${churnRows.length} cancellation(s) recorded:`);
+    for (const [reason, count] of Object.entries(churnCounts).sort((a, b) => b[1] - a[1])) {
+      const label = REASON_LABELS[reason] ?? reason;
+      lines.push(`  ${label}: ${count}`);
+    }
+    // Show last 3 comments
+    const withComments = churnRows.filter(r => r.comment).slice(-3);
+    if (withComments.length > 0) {
+      lines.push(``, `Recent comments:`);
+      for (const r of withComments) {
+        lines.push(`  "${r.comment}" (${r.email ?? "anonymous"})`);
+      }
+    }
+    lines.push(``, `→ Visit /admin/churn for the full breakdown.`);
+  }
 
   const content = lines.join("\n");
+  const smtpBadge = failing.length > 0 ? `⚠️ ${failing.length} SMTP fail · ` : "";
+  const churnBadge = churnRows.length > 0 ? `${churnRows.length} cancellation(s)` : "0 cancellations";
 
   try {
     await notifyOwner({
-      title: `⚠️ SMTP Digest: ${failing.length}/${total} accounts failing`,
+      title: `📊 Weekly Digest — ${smtpBadge}${churnBadge}`,
       content,
     });
-    console.log(`[SmtpWeeklyDigest] Digest sent — ${failing.length} failing account(s) across ${Object.keys(byHost).length} provider(s).`);
+    console.log(`[SmtpWeeklyDigest] Digest sent — ${failing.length} SMTP failing, ${churnRows.length} churn(s) this week.`);
     return true;
   } catch (err) {
     console.error("[SmtpWeeklyDigest] Failed to send digest notification:", err);
@@ -96,7 +135,6 @@ export function startSmtpWeeklyDigestScheduler(): void {
     sendSmtpWeeklyDigest().catch((err) =>
       console.error("[SmtpWeeklyDigest] First run failed:", err)
     );
-    // Repeat every 7 days
     setInterval(() => {
       sendSmtpWeeklyDigest().catch((err) =>
         console.error("[SmtpWeeklyDigest] Scheduled run failed:", err)
@@ -108,11 +146,9 @@ export function startSmtpWeeklyDigestScheduler(): void {
 function getMsUntilNextSundayAt8UTC(): number {
   const now = new Date();
   const next = new Date(now);
-  // Advance to next Sunday
   const daysUntilSunday = (7 - now.getUTCDay()) % 7 || 7;
   next.setUTCDate(now.getUTCDate() + daysUntilSunday);
   next.setUTCHours(8, 0, 0, 0);
   const ms = next.getTime() - now.getTime();
-  // If somehow negative (e.g., exactly Sunday 08:00), schedule for next week
   return ms > 0 ? ms : WEEK_MS;
 }

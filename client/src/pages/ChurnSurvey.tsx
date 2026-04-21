@@ -24,9 +24,16 @@ export default function ChurnSurveyPage() {
   const [selected, setSelected] = useState<Reason | null>(null);
   const [comment, setComment] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [offerValidUntil, setOfferValidUntil] = useState<number | null>(null);
+
+  // Offer is still valid if within 7 days of survey submission
+  const offerActive = offerValidUntil !== null && Date.now() < offerValidUntil;
 
   const submitSurvey = trpc.churn.submit.useMutation({
-    onSuccess: () => setSubmitted(true),
+    onSuccess: (data) => {
+      if (data.offerValidUntil) setOfferValidUntil(data.offerValidUntil);
+      setSubmitted(true);
+    },
     onError: () => setSubmitted(true), // proceed even on error
   });
 
@@ -131,8 +138,8 @@ export default function ChurnSurveyPage() {
               ))}
             </div>
 
-            {/* Discount offer — shown only when too_expensive is selected */}
-            {selected === "too_expensive" && (
+            {/* Discount offer — shown only when too_expensive is selected AND offer hasn't expired */}
+            {selected === "too_expensive" && offerActive !== false && (
               <div
                 className="rounded-2xl px-4 py-4 mb-4 flex flex-col gap-3"
                 style={{

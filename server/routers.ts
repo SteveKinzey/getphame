@@ -1894,13 +1894,15 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         const db = await getDb();
         if (!db) return { ok: true }; // fail silently
+        const offerValidUntil = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
         await db.insert(churnSurveys).values({
           userId: (ctx as any).user?.id ?? null,
           email: input.email ?? null,
           reason: input.reason,
           comment: input.comment ?? null,
+          offerValidUntil,
         });
-        return { ok: true };
+        return { ok: true, offerValidUntil };
       }),
   }),
 

@@ -17,6 +17,7 @@ import { sdk } from "./sdk";
 import { startReminderScheduler } from "../reminders";
 import { startSmtpHealthCheckScheduler } from "../smtpHealthCheck";
 import { startSmtpWeeklyDigestScheduler } from "../smtpWeeklyDigest";
+import { startReEngagementScheduler } from "../reEngagementScheduler";
 import { registerSitemapRoutes } from "../sitemap";
 import { registerZohoRoutes } from "../zoho";
 import { exchangeGmailCode, getGmailRedirectUri } from "../gmail";
@@ -305,6 +306,7 @@ async function startServer() {
     startReminderScheduler();
     startSmtpHealthCheckScheduler();
     startSmtpWeeklyDigestScheduler();
+    startReEngagementScheduler();
   });
 }
 
