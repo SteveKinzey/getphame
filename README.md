@@ -2,7 +2,7 @@
 
 **ReviewLink** is a mobile-first SaaS PWA that helps local businesses automate review requests. Owners connect their own email account (SMTP), import or sync customers, and send personalized review-request emails that look like they came directly from the business — not a bulk mailer. The app tracks opens and clicks, sends automated follow-up reminders, and includes a full churn-recovery and re-engagement email sequence.
 
-Live: [reviewlink.app](https://reviewlink.app) · Staging: [revrocket-j5ynazte.manus.space](https://revrocket-j5ynazte.manus.space)
+Live: [reviewlink.app](https://reviewlink.app) 
 
 ---
 
