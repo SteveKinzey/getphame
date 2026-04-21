@@ -44,6 +44,22 @@ function AppShell() {
   const { user, loading, isAuthenticated } = useAuth();
   const { open: guideOpen, setOpen: setGuideOpen, handleClose: handleGuideClose } = useOnboardingGuide(isAuthenticated);
 
+  // Show a toast if Google/Apple OAuth returned an error (e.g. user denied consent)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const authError = params.get('auth_error');
+    if (authError) {
+      if (authError === 'denied') {
+        toast.error('Sign-in cancelled. Please try again.');
+      } else {
+        toast.error('Sign-in failed. Please try again or contact support.');
+      }
+      // Remove the query param so the toast doesn't re-appear on refresh
+      const cleanUrl = window.location.pathname;
+      window.history.replaceState({}, '', cleanUrl);
+    }
+  }, []);
+
   const { data: onboardingStatus } = trpc.onboarding.status.useQuery(undefined, {
     enabled: !!user,
     refetchInterval: 5000,

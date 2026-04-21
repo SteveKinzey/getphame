@@ -307,7 +307,11 @@ export default function HomePage() {
           {[
             { label: "This Month", value: stats?.thisMonth ?? 0, icon: <Send size={14} /> },
             { label: "All Time", value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
-            { label: "Free Forever", value: "✓", icon: <Star size={14} /> },
+            {
+              label: profile?.tier === "pro" ? "Monthly Pro" : profile?.tier === "annual" ? "Annual Pro" : profile?.tier === "lifetime" ? "Lifetime" : "Free Plan",
+              value: profile?.tier === "free" || !profile?.tier ? `${Math.max(0, 10 - (profile?.totalSent ?? 0))}/10` : "✓",
+              icon: <Star size={14} />
+            },
           ].map((s) => (
             <div
               key={s.label}

@@ -196,7 +196,7 @@ export default function LandingPage() {
             style={{ background: "oklch(0.30 0.08 260)", color: "oklch(0.80 0.18 80)" }}
           >
             <Star size={11} fill="currentColor" />
-            Free Forever — No credit card required
+            Free to start — No credit card required
           </div>
 
           <h1

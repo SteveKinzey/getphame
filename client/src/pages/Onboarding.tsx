@@ -114,7 +114,7 @@ export default function OnboardingPage() {
         </button>
 
         <p className="text-center text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
-          10 free review requests per month. No credit card required.
+          Start free — 10 review requests included. No credit card required.
         </p>
       </div>
     </div>

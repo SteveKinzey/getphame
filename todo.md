@@ -904,3 +904,19 @@
 - [x] Google OAuth redirect URI reminder banner in Settings (shows until redirect URI is confirmed)
 - [x] Apple Sign In credential setup card in Settings (shows 4 required secrets with instructions)
 - [x] Write GitHub README.md for the review-rocket repo
+
+## Pre-Launch Prep (Session — Apr 21 2026 #14)
+
+- [ ] Update skill with Settings admin auth panel patterns
+- [ ] Update onboarding guide step 1 text from "Connect Gmail" to "Connect your email account (SMTP)"
+- [ ] Pre-launch audit: review all 5 critical user flows end-to-end
+- [ ] Fix any broken flows, missing error states, or UX dead ends found in audit
+- [ ] Verify Google OAuth redirect URI is configured in Google Cloud Console (manual step for Steve)
+
+## Audit Fixes (Session #14 — Apr 21 2026)
+
+- [x] Fix: LandingPage "Get Started Free" CTAs use getLoginUrl() (Manus portal) — fixed via const.ts update to return /onboarding
+- [x] Fix: main.tsx redirectToLoginIfUnauthorized uses getLoginUrl() — fixed via const.ts
+- [x] Fix: Home page shows "Free Forever ✓" in stats row — misleading for 10-request free tier; replace with tier badge
+- [x] Fix: No auth_error toast when Google OAuth returns ?auth_error=denied or ?auth_error=failed
+- [x] Fix: LandingPage "Free Forever" badge in hero — update to "10 free requests" to be accurate

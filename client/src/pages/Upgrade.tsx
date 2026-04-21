@@ -17,7 +17,7 @@ const UPGRADE_IMG =
 
 // ── Feature comparison table ─────────────────────────────────────────────────
 const COMPARISON_ROWS: { feature: string; free: string | boolean; pro: string | boolean; lifetime: string | boolean }[] = [
-  { feature: "Review requests / month",   free: "10",        pro: "Unlimited",  lifetime: "Unlimited" },
+  { feature: "Review requests (total)",   free: "10",        pro: "Unlimited",  lifetime: "Unlimited" },
   { feature: "Follow-up reminders",        free: true,       pro: true,         lifetime: true },
   { feature: "Saved contacts",             free: true,       pro: true,         lifetime: true },
   { feature: "CSV import",                 free: true,       pro: true,         lifetime: true },
