@@ -174,21 +174,71 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Nunito', 'Sarabun', 'Noto Sans Thai', sans-serif;
     -webkit-tap-highlight-color: transparent;
     -webkit-font-smoothing: antialiased;
   }
   h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', 'Noto Sans Thai', 'Sarabun', sans-serif;
     font-weight: 800;
   }
-  /* Poppins for any element explicitly using Poppins via class */
+  /* Poppins for any element explicitly using Poppins via class (Thai falls back to Noto Sans Thai) */
   .font-poppins, [class*="rr-h"], [class*="rr-l"] {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', 'Noto Sans Thai', 'Sarabun', sans-serif;
   }
-  /* Nunito for body-level elements */
+  /* Nunito for body-level elements (Thai falls back to Sarabun) */
   .font-nunito, [class*="rr-b"] {
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Nunito', 'Sarabun', 'Noto Sans Thai', sans-serif;
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* Google Translate — hide default widget UI, keep translation engine  */
+  /* ------------------------------------------------------------------ */
+  /* Hide the top banner iframe Google injects after translating */
+  .goog-te-banner-frame.skiptranslate,
+  iframe.goog-te-banner-frame {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  /* Google forces body top offset when banner is visible — cancel it */
+  body {
+    top: 0 !important;
+    position: static !important;
+  }
+  /* Hide the gadget dropdown itself (we drive it programmatically) */
+  #rr-google-translate,
+  .goog-te-gadget {
+    position: absolute !important;
+    left: -10000px !important;
+    top: -10000px !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+  }
+  /* Hide the word-hover tooltip and translation highlight styling */
+  #goog-gt-tt,
+  .goog-te-balloon-frame,
+  .goog-tooltip,
+  .goog-tooltip:hover {
+    display: none !important;
+  }
+  .goog-text-highlight {
+    background: transparent !important;
+    box-shadow: none !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Prefer Thai-native fonts once translation is applied (html lang="th") */
+  html[lang="th"] body,
+  html[lang^="th"] body {
+    font-family: 'Sarabun', 'Noto Sans Thai', 'Nunito', sans-serif;
+  }
+  html[lang="th"] h1, html[lang="th"] h2, html[lang="th"] h3,
+  html[lang="th"] h4, html[lang="th"] h5, html[lang="th"] h6,
+  html[lang="th"] .font-poppins,
+  html[lang="th"] [class*="rr-h"],
+  html[lang="th"] [class*="rr-l"] {
+    font-family: 'Noto Sans Thai', 'Sarabun', 'Poppins', sans-serif;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),

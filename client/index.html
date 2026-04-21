@@ -18,7 +18,37 @@
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=Nunito:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Google Translate — widget + custom EN/TH toggle driver -->
+    <script>
+      // Apply saved language cookie BEFORE the widget loads so it picks it up on first paint.
+      (function () {
+        try {
+          var saved = localStorage.getItem('rr-lang');
+          if (saved === 'th') {
+            var host = window.location.hostname;
+            var value = '/en/th';
+            document.cookie = 'googtrans=' + value + ';path=/';
+            document.cookie = 'googtrans=' + value + ';path=/;domain=' + host;
+            var parts = host.split('.');
+            if (parts.length > 1) {
+              document.cookie = 'googtrans=' + value + ';path=/;domain=.' + parts.slice(-2).join('.');
+            }
+          }
+        } catch (e) {}
+      })();
+
+      function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+          pageLanguage: 'en',
+          includedLanguages: 'en,th',
+          autoDisplay: false,
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'rr-google-translate');
+      }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -41,6 +71,8 @@
   </head>
 
   <body>
+    <!-- Hidden mount point for Google Translate widget (driven by our custom EN/TH toggle) -->
+    <div id="rr-google-translate" aria-hidden="true"></div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script

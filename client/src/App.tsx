@@ -40,6 +40,7 @@ import { useLocation } from "wouter";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, { useOnboardingGuide } from "./components/OnboardingGuide";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
+import LanguageToggle from "./components/LanguageToggle";
 
 
 function AppShell() {
@@ -146,6 +147,9 @@ function App() {
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
           <Toaster position="top-center" richColors />
+          {/* Global EN | TH language toggle — rendered above the AppShell
+              so it appears on every route (loading, landing, authenticated). */}
+          <LanguageToggle />
           <AppShell />
         </TooltipProvider>
       </ThemeProvider>
