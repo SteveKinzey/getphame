@@ -65,7 +65,78 @@ const emptyForm: FormData = {
   isDefault: false,
 };
 
-const PLACEHOLDERS = ["{{customerName}}", "{{businessName}}", "{{reviewLink}}"];
+const PLACEHOLDERS = ["{{customerName}}", "{{businessName}}", "{{reviewLink}}", "{{platformLinks}}"];
+
+const PRESET_TEMPLATES = [
+  {
+    id: "quick-favor",
+    name: "Quick favor?",
+    tag: "General",
+    subject: "Quick favor?",
+    body: `Hi {{customerName}},
+
+Thanks again for choosing {{businessName}}.
+
+If you have a minute, I'd appreciate your honest feedback. It helps others make informed decisions and helps us improve.
+
+You can leave a review on any platform you prefer:
+
+{{platformLinks}}
+
+No pressure at all — just your honest experience.
+
+Appreciate your time,
+{{businessName}} Team
+
+---
+You received this email because you are a customer of {{businessName}}. To stop receiving these emails, reply with "unsubscribe".`,
+  },
+  {
+    id: "how-did-we-do",
+    name: "How did we do?",
+    tag: "Follow-up",
+    subject: "How did we do?",
+    body: `Hi {{customerName}},
+
+I wanted to follow up and see how everything went with your recent experience.
+
+If you're open to it, I'd value your feedback. It helps us grow and helps other customers know what to expect.
+
+You can leave a review here:
+
+{{platformLinks}}
+
+Thanks again for your business — I appreciate it.
+
+{{businessName}} Team
+
+---
+You received this email because you are a customer of {{businessName}}. To stop receiving these emails, reply with "unsubscribe".`,
+  },
+  {
+    id: "woo-order",
+    name: "Thanks for your order",
+    tag: "WooCommerce",
+    subject: "Thanks for your order — got a minute?",
+    body: `Hi {{customerName}},
+
+Your recent order with {{businessName}} means a lot — thank you.
+
+When you've had a chance to use your purchase, I'd like to hear your honest feedback.
+
+If you want to share it publicly, you can do that here:
+
+{{platformLinks}}
+
+Or just reply to this email — I read every response.
+
+Thanks again,
+{{businessName}} Team
+
+---
+You received this email because you are a customer of {{businessName}}. To stop receiving these emails, reply with "unsubscribe".`,
+  },
+];
 
 export default function EmailTemplates() {
   const { isAuthenticated, loading: authLoading } = useAuth();
@@ -183,11 +254,19 @@ export default function EmailTemplates() {
   const sampleBusiness = profile?.businessName || "Your Business";
   const sampleReviewLink = defaultPlatform?.url || "https://g.page/r/your-review-link";
 
+  // Build sample platformLinks for preview
+  const samplePlatformLinks = (platforms as Array<{ label?: string; platform: string; url: string }>).length > 0
+    ? (platforms as Array<{ label?: string; platform: string; url: string }>)
+        .map((p) => `- ${p.label || p.platform}: ${p.url}`)
+        .join("\n")
+    : `- Google: https://g.page/r/your-review-link\n- Yelp: Search "Your Business" on Yelp`;
+
   function applyPreview(text: string) {
     return text
       .replace(/\{\{customerName\}\}/g, sampleCustomer)
       .replace(/\{\{businessName\}\}/g, sampleBusiness)
-      .replace(/\{\{reviewLink\}\}/g, sampleReviewLink);
+      .replace(/\{\{reviewLink\}\}/g, sampleReviewLink)
+      .replace(/\{\{platformLinks\}\}/g, samplePlatformLinks);
   }
 
   const previewSubject = applyPreview(form.subject);
@@ -223,6 +302,43 @@ export default function EmailTemplates() {
       </div>
 
       <div className="px-4 pt-4 space-y-3">
+        {/* Preset Templates */}
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wide mb-2" style={{ color: "oklch(0.45 0.05 260)" }}>Starter Templates</p>
+          <div className="space-y-2">
+            {PRESET_TEMPLATES.map((preset) => (
+              <div key={preset.id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap mb-1">
+                      <p className="font-bold text-gray-900">{preset.name}</p>
+                      <span className="text-xs px-2 py-0.5 rounded-full font-medium"
+                        style={{ background: preset.tag === "WooCommerce" ? "oklch(0.96 0.08 150)" : preset.tag === "Follow-up" ? "oklch(0.95 0.06 260)" : "oklch(0.96 0.12 80)",
+                          color: preset.tag === "WooCommerce" ? "oklch(0.40 0.14 150)" : preset.tag === "Follow-up" ? "oklch(0.40 0.08 260)" : "oklch(0.45 0.18 80)" }}>
+                        {preset.tag}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-400">Subject: {preset.subject}</p>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="shrink-0 text-xs font-bold"
+                    style={{ borderColor: "oklch(0.80 0.18 80)", color: "oklch(0.45 0.18 80)" }}
+                    onClick={() => {
+                      setEditTemplate(null);
+                      setForm({ name: preset.name, subject: preset.subject, body: preset.body, isDefault: false });
+                      setDialogOpen(true);
+                    }}
+                  >
+                    Use this
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Placeholder hint */}
         <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-700">
           <strong>Available placeholders:</strong>{" "}

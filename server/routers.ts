@@ -82,6 +82,7 @@ import {
   deleteReviewPlatform,
   setDefaultReviewPlatform,
   getDefaultReviewPlatform,
+  PLATFORM_LABELS,
 } from "./reviewPlatforms";
 import {
   getSmtpCredentials,
@@ -859,7 +860,14 @@ export const appRouter = router({
         const resolvedTemplate = input.templateId
           ? allTemplates.find((t) => t.id === input.templateId) ?? null
           : await getDefaultTemplate(ctx.user.id);
-
+        // Build {{platformLinks}} — a formatted list of only the user's configured platforms
+        const allUserPlatforms = await listReviewPlatforms(ctx.user.id);
+        const platformLinksList = allUserPlatforms.length > 0
+          ? allUserPlatforms.map((p) => {
+              const label = p.label || (PLATFORM_LABELS as Record<string, string>)[p.platform] || p.platform;
+              return `- ${label}: ${p.url}`;
+            }).join("\n")
+          : `- Leave a review: ${reviewUrl}`;
         const replacePlaceholders = (text: string, customerName: string) =>
           text
             .replace(/\{\{customer_name\}\}/g, customerName)
@@ -867,7 +875,8 @@ export const appRouter = router({
             .replace(/\{\{business_name\}\}/g, profile.businessName)
             .replace(/\{\{businessName\}\}/g, profile.businessName)
             .replace(/\{\{review_link\}\}/g, reviewUrl)
-            .replace(/\{\{reviewLink\}\}/g, reviewUrl);
+            .replace(/\{\{reviewLink\}\}/g, reviewUrl)
+            .replace(/\{\{platformLinks\}\}/g, platformLinksList);
 
         let sent = 0;
         let failed = 0;
@@ -1223,6 +1232,14 @@ export const appRouter = router({
           : await getDefaultTemplate(ctx.user.id);
 
         if (resolvedTemplate) {
+          // Build {{platformLinks}} for this user
+          const wooUserPlatforms = await listReviewPlatforms(ctx.user.id);
+          const wooPlatformLinksList = wooUserPlatforms.length > 0
+            ? wooUserPlatforms.map((p) => {
+                const label = p.label || (PLATFORM_LABELS as Record<string, string>)[p.platform] || p.platform;
+                return `- ${label}: ${p.url}`;
+              }).join("\n")
+            : `- Leave a review: ${reviewUrl}`;
           const replacePlaceholders = (text: string) =>
             text
               .replace(/\{\{customer_name\}\}/g, input.customerName)
@@ -1230,7 +1247,8 @@ export const appRouter = router({
               .replace(/\{\{business_name\}\}/g, profile.businessName)
               .replace(/\{\{businessName\}\}/g, profile.businessName)
               .replace(/\{\{review_link\}\}/g, reviewUrl)
-              .replace(/\{\{reviewLink\}\}/g, reviewUrl);
+              .replace(/\{\{reviewLink\}\}/g, reviewUrl)
+              .replace(/\{\{platformLinks\}\}/g, wooPlatformLinksList);
           subject = replacePlaceholders(resolvedTemplate.subject);
           htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">${replacePlaceholders(resolvedTemplate.body).replace(/\n/g, "<br>")}</div>`;
         } else {

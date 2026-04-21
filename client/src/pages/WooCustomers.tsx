@@ -49,6 +49,8 @@ import {
   Mail,
   Loader2,
   UserX,
+  AlertTriangle,
+  ShieldCheck,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
@@ -80,6 +82,10 @@ export default function WooCustomers() {
   const [sendConfirmOpen, setSendConfirmOpen] = useState(false);
   const [wooPlatformId, setWooPlatformId] = useState<number | null>(null);
   const [scheduleReminders, setScheduleReminders] = useState(false);
+
+  // Compliance checklist state
+  const [wooComplianceChecked, setWooComplianceChecked] = useState({ realCustomers: false, noIncentives: false, allCustomers: false });
+  const allWooComplianceChecked = wooComplianceChecked.realCustomers && wooComplianceChecked.noIncentives && wooComplianceChecked.allCustomers;
 
   // Send history dialog state
   const [historyCustomer, setHistoryCustomer] = useState<{ id: number; name: string; email: string } | null>(null);
@@ -297,6 +303,26 @@ export default function WooCustomers() {
             <AlertDialogDescription>
               Send review request emails to {selectedIds.size} selected customer{selectedIds.size !== 1 ? "s" : ""}.
             </AlertDialogDescription>
+
+            {platforms.some((p) => p.platform === "yelp") && (
+              <div className="mt-2 rounded-xl px-3 py-2 text-xs flex items-start gap-2"
+                   style={{ background: "oklch(0.97 0.06 80)", border: "1px solid oklch(0.85 0.12 80)" }}>
+                <AlertTriangle size={13} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 80)" }} />
+                <span style={{ color: "oklch(0.40 0.10 80)" }}>
+                  <strong>Yelp note:</strong> Your Yelp listing will appear as a search suggestion rather than a direct link.
+                </span>
+              </div>
+            )}
+
+            {selectedIds.size >= 20 && (
+              <div className="mt-2 rounded-xl px-3 py-2 text-xs flex items-start gap-2"
+                   style={{ background: "oklch(0.97 0.06 80)", border: "1px solid oklch(0.85 0.12 80)" }}>
+                <AlertTriangle size={13} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 80)" }} />
+                <span style={{ color: "oklch(0.40 0.10 80)" }}>
+                  <strong>Large send ({selectedIds.size} customers):</strong> Sudden spikes can look spammy. Consider spreading sends over multiple days.
+                </span>
+              </div>
+            )}
             {dailyStatus && (
               <div className="mt-2 rounded-xl px-3 py-2 text-xs"
                    style={{ background: dailyStatus.remaining < selectedIds.size ? 'oklch(0.97 0.02 30)' : 'oklch(0.97 0.01 260)', border: '1px solid', borderColor: dailyStatus.remaining < selectedIds.size ? 'oklch(0.85 0.08 30)' : 'oklch(0.88 0.03 260)' }}>
@@ -362,11 +388,32 @@ export default function WooCustomers() {
               </p>
             </div>
           </div>
+
+          {/* Compliance checklist */}
+          <div className="mt-2 rounded-xl p-3" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.03 260)" }}>
+            <div className="flex items-center gap-1.5 mb-2">
+              <ShieldCheck size={13} style={{ color: "oklch(0.55 0.18 145)" }} />
+              <p className="text-xs font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>Compliance Checklist</p>
+            </div>
+            {([
+              { key: "realCustomers" as const, label: "These are real customers who transacted with me" },
+              { key: "noIncentives" as const, label: "No incentives or discounts are being offered" },
+              { key: "allCustomers" as const, label: "Sending to all customers, not filtering by satisfaction" },
+            ]).map(({ key, label }) => (
+              <div key={key} className="flex items-start gap-2 py-1 cursor-pointer" onClick={() => setWooComplianceChecked((v) => ({ ...v, [key]: !v[key] }))}>
+                {wooComplianceChecked[key]
+                  ? <CheckCircle2 size={14} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 145)" }} />
+                  : <div className="w-3.5 h-3.5 mt-0.5 shrink-0 rounded-full border-2" style={{ borderColor: "oklch(0.70 0.04 260)" }} />}
+                <span className="text-xs" style={{ color: wooComplianceChecked[key] ? "oklch(0.35 0.05 260)" : "oklch(0.50 0.04 260)" }}>{label}</span>
+              </div>
+            ))}
+          </div>
+
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => bulkSend.mutate({ customerIds: Array.from(selectedIds), platformId: wooPlatformId ?? undefined })}
-              disabled={bulkSend.isPending}
+              disabled={bulkSend.isPending || !allWooComplianceChecked}
             >
               {bulkSend.isPending ? "Sending…" : "Send"}
             </AlertDialogAction>

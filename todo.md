@@ -1002,3 +1002,26 @@
 ## Session #24 — Slide Animation + Optional Steps (Apr 21 2026)
 - [x] Add CSS translateX slide-in transition between OnboardingGuide steps (direction-aware)
 - [x] Mark Import Contacts and Send Request steps as optional with "Skip for now" link
+
+## Session #23 — Multi-Platform Email Template (Apr 21 2026)
+- [x] Add "Multi-Platform" email template (subject: "Quick favor?") with dynamic platform list matching user-configured platforms
+- [x] Update template renderer to inject only configured platform links
+- [x] Add template to template picker UI
+
+## Session #24 — Preset Email Templates (Apr 21 2026)
+- [x] Add {{platformLinks}} placeholder resolution to both send procedures in routers.ts
+- [x] Add "Quick favor?" preset template (multi-platform, dynamic platform list)
+- [x] Add "How did we do?" preset template (follow-up, dynamic platform list)
+- [x] Add Preset Templates section in EmailTemplates.tsx with Use This button
+- [x] Update live preview to resolve {{platformLinks}} from user's actual platforms
+- [x] Add "Thanks for your order" WooCommerce preset template (dynamic platform list)
+
+## Session #25 — Compliance + Preset Templates (Apr 21 2026)
+- [x] Finish {{platformLinks}} resolver in WooCommerce send procedure (second replacePlaceholders at line ~1226)
+- [x] Add 3 preset templates to EmailTemplates.tsx (Quick favor?, How did we do?, Thanks for your order)
+- [x] Add live preview {{platformLinks}} resolution in EmailTemplates.tsx using user's platforms
+- [x] Build /compliance Compliance Guide page with platform risk levels, legal notes, best-practice playbook
+- [x] Add Yelp contextual warning in bulk-send dialogs when Yelp platform is configured
+- [x] Add bulk-send warning when sending to 20+ contacts at once
+- [x] Add pre-send compliance checklist (3 checkboxes) before bulk send — disables Send button until all checked
+- [x] Wire Compliance Guide link into Settings page (above Delete Account)

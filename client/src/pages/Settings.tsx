@@ -40,6 +40,7 @@ import {
   Copy,
   Download,
   Bell,
+  ShieldCheck,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
 
@@ -2723,6 +2724,24 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
             </div>
           </div>
         )}
+
+        {/* ── Compliance Guide ─────────────────────────────────────────────── */}
+        <button
+          onClick={() => navigate("/compliance")}
+          className="w-full flex items-center justify-between bg-white rounded-2xl px-5 py-4 shadow-sm"
+          style={{ border: "1px solid oklch(0.91 0.02 260)" }}
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: "oklch(0.96 0.08 150)" }}>
+              <ShieldCheck size={18} style={{ color: "oklch(0.40 0.14 150)" }} />
+            </div>
+            <div className="text-left">
+              <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>Compliance Guide</p>
+              <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>Platform rules, legal notes &amp; best practices</p>
+            </div>
+          </div>
+          <ChevronRight size={16} style={{ color: "oklch(0.65 0.03 260)" }} />
+        </button>
 
         {/* ── Delete Account ───────────────────────────────────────────────── */}
         <DeleteAccountSection />

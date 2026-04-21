@@ -33,6 +33,7 @@ import ChangelogPage from "./pages/Changelog";
 import UnsubscribePage from "./pages/Unsubscribe";
 import UpgradePage from "./pages/Upgrade";
 import ChurnSurveyPage from "./pages/ChurnSurvey";
+import CompliancePage from "./pages/Compliance";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
 import OnboardingWizard from "./components/OnboardingWizard";
@@ -127,6 +128,7 @@ function AppShell() {
         <Route path="/admin/smtp-stats" component={AdminSmtpStatsPage} />
         <Route path="/admin/churn" component={AdminChurnPage} />
         <Route path="/changelog" component={ChangelogPage} />
+        <Route path="/compliance" component={CompliancePage} />
         <Route component={HomePage} />
       </Switch>
       </main>
