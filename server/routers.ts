@@ -31,7 +31,7 @@ import {
 } from "./woocommerce";
 import { getDb } from "./db";
 import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens } from "../drizzle/schema";
-import { eq } from "drizzle-orm";
+import { eq, like, or } from "drizzle-orm";
 import {
   listSavedContacts,
   createSavedContact,
@@ -1793,6 +1793,30 @@ export const appRouter = router({
       await runSmtpHealthChecks();
       return { ok: true, ranAt: Date.now() };
     }),
+
+    /** Search users by name or email — admin only */
+    searchUsers: protectedProcedure
+      .input(z.object({ query: z.string().min(1).max(100) }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const q = `%${input.query}%`;
+        const rows = await db
+          .select({
+            id: users.id,
+            name: users.name,
+            email: users.email,
+            createdAt: users.createdAt,
+            tier: businessProfiles.tier,
+            totalSent: businessProfiles.monthlyCount,
+          })
+          .from(users)
+          .leftJoin(businessProfiles, eq(users.id, businessProfiles.userId))
+          .where(or(like(users.name, q), like(users.email, q)))
+          .limit(20);
+        return rows;
+      }),
   }),
 });
 export type AppRouter = typeof appRouter;

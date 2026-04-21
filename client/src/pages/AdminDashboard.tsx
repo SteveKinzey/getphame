@@ -4,7 +4,7 @@
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation } from "wouter";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   Users,
   Send,
@@ -17,8 +17,11 @@ import {
   Star,
   Zap,
   Infinity,
+  Search,
+  X,
 } from "lucide-react";
 import { Rocket } from "lucide-react";
+import { useDebounce } from "use-debounce";
 
 export default function AdminDashboard() {
   const { user, isAuthenticated } = useAuth();
@@ -28,6 +31,13 @@ export default function AdminDashboard() {
     enabled: !!user,
     refetchInterval: 30_000,
   });
+
+  const [searchInput, setSearchInput] = useState("");
+  const [debouncedSearch] = useDebounce(searchInput, 300);
+  const { data: searchResults, isFetching: isSearching } = trpc.admin.searchUsers.useQuery(
+    { query: debouncedSearch },
+    { enabled: !!user && debouncedSearch.trim().length >= 2 }
+  );
 
   // Redirect non-admins
   useEffect(() => {
@@ -220,6 +230,94 @@ export default function AdminDashboard() {
                     </div>
                   ))}
                 </div>
+              )}
+            </div>
+
+            {/* User search */}
+            <div
+              className="rounded-2xl px-4 py-4"
+              style={{ background: "white", boxShadow: "0 1px 8px rgba(0,0,0,0.06)" }}
+            >
+              <h3
+                className="text-sm font-black mb-3 uppercase tracking-widest"
+                style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+              >
+                User Search
+              </h3>
+              <div className="relative mb-3">
+                <Search
+                  size={14}
+                  className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+                  style={{ color: "oklch(0.55 0.04 260)" }}
+                />
+                <input
+                  type="text"
+                  value={searchInput}
+                  onChange={e => setSearchInput(e.target.value)}
+                  placeholder="Search by name or email…"
+                  className="w-full rounded-xl pl-8 pr-8 py-2.5 text-sm outline-none"
+                  style={{
+                    background: "oklch(0.97 0.003 260)",
+                    border: "1px solid oklch(0.88 0.02 260)",
+                    color: "oklch(0.22 0.09 260)",
+                  }}
+                />
+                {searchInput && (
+                  <button
+                    onClick={() => setSearchInput("")}
+                    className="absolute right-3 top-1/2 -translate-y-1/2"
+                    style={{ color: "oklch(0.55 0.04 260)" }}
+                  >
+                    <X size={13} />
+                  </button>
+                )}
+              </div>
+              {isSearching && (
+                <div className="flex items-center gap-2 py-2">
+                  <Loader2 size={14} className="animate-spin" style={{ color: "oklch(0.55 0.04 260)" }} />
+                  <span className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>Searching…</span>
+                </div>
+              )}
+              {!isSearching && searchResults && searchResults.length === 0 && debouncedSearch.length >= 2 && (
+                <p className="text-xs py-2" style={{ color: "oklch(0.55 0.04 260)" }}>No users found.</p>
+              )}
+              {!isSearching && searchResults && searchResults.length > 0 && (
+                <div className="flex flex-col gap-2">
+                  {searchResults.map(u => (
+                    <div
+                      key={u.id}
+                      className="flex items-center justify-between py-1.5"
+                      style={{ borderBottom: "1px solid oklch(0.94 0.01 260)" }}
+                    >
+                      <div>
+                        <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>
+                          {u.name || "(no name)"}
+                        </p>
+                        <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>{u.email}</p>
+                      </div>
+                      <span
+                        className="text-xs font-bold px-2 py-0.5 rounded-full capitalize"
+                        style={{
+                          background: u.tier === "lifetime"
+                            ? "oklch(0.92 0.08 150)"
+                            : u.tier === "annual" || u.tier === "pro"
+                              ? "oklch(0.95 0.08 80)"
+                              : "oklch(0.93 0.02 260)",
+                          color: u.tier === "lifetime"
+                            ? "oklch(0.35 0.15 150)"
+                            : u.tier === "annual" || u.tier === "pro"
+                              ? "oklch(0.45 0.15 80)"
+                              : "oklch(0.45 0.04 260)",
+                        }}
+                      >
+                        {u.tier ?? "free"}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {debouncedSearch.length < 2 && (
+                <p className="text-xs" style={{ color: "oklch(0.70 0.03 260)" }}>Type at least 2 characters to search.</p>
               )}
             </div>
 

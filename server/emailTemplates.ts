@@ -59,7 +59,7 @@ export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
        To stop receiving these emails, reply with &quot;unsubscribe&quot;.`;
 
   const poweredByLine = showPoweredBy
-    ? `<br/><br/><a href="https://reviewlink.app" style="color:#bbb;text-decoration:none;font-size:10px;">Powered by <strong>ReviewLink</strong></a>`
+    ? `<br/><br/><a href="https://reviewlink.app/upgrade?utm_source=powered_by_footer&utm_medium=email&utm_campaign=free_tier" style="color:#bbb;text-decoration:none;font-size:10px;">Powered by <strong>ReviewLink</strong> &mdash; <span style="text-decoration:underline;">Remove branding &rarr;</span></a>`
     : '';
 
   return `<!DOCTYPE html>

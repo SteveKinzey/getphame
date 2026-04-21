@@ -838,3 +838,9 @@
 - [x] Admin dashboard (/admin): user count, tier breakdown (free/pro/annual/lifetime), recent signups table, recent sends count
 - [x] Transactional emails: welcome email on first login, upgrade receipt email on tier change (pro/annual/lifetime)
 - [x] Settings: add "Install app on your phone" button that resets localStorage PWA dismiss flag and re-triggers the install prompt
+
+## New Features (Session — Apr 21 2026 #3)
+
+- [x] Churn recovery email: sendChurnRecoveryEmail() in smtp.ts, wired into customer.subscription.deleted webhook when status=canceled
+- [x] Admin user search: admin.searchUsers procedure + search input with debounce on AdminDashboard.tsx
+- [x] Powered-by footer upgrade upsell: replace plain "Powered by ReviewLink" link with "Powered by ReviewLink — Remove branding ↗" that deep-links to /upgrade?utm_source=powered_by_footer

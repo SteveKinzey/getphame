@@ -625,3 +625,80 @@ export async function sendUpgradeReceiptEmail(opts: {
     text,
   });
 }
+
+/**
+ * Send a churn recovery email when a user cancels their subscription.
+ * Silently skips if the owner has no SMTP configured.
+ */
+export async function sendChurnRecoveryEmail(opts: {
+  ownerUserId: number;
+  toEmail: string;
+  toName: string | null;
+}): Promise<void> {
+  const creds = await getSmtpCredentials(opts.ownerUserId);
+  if (!creds) return;
+  const fromName = creds.fromName ?? creds.user;
+  const displayName = opts.toName || "there";
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>We're sorry to see you go</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
+          <tr>
+            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">ReviewLink</p>
+              <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">We're sorry to see you go</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:36px 40px;">
+              <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
+              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">Your ReviewLink subscription has been cancelled. Your account has been moved back to the free plan.</p>
+              <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">If you cancelled by mistake, or if there is anything we can do to help, just reply to this email.</p>
+              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">Whenever you are ready to come back, your account is waiting:</p>
+              <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
+                <tr>
+                  <td style="background:#f0a500;border-radius:10px;padding:14px 32px;text-align:center;">
+                    <a href="https://reviewlink.app/upgrade" style="color:#1a2744;font-size:15px;font-weight:700;text-decoration:none;">Reactivate My Account</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
+              <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">Questions? Reply to this email or visit <a href="https://reviewlink.app/settings" style="color:#1a2744;">your settings</a>.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+  const text = `Hi ${displayName},\n\nYour ReviewLink subscription has been cancelled and your account is now on the free plan.\n\nIf you cancelled by mistake or want to come back, reactivate at https://reviewlink.app/upgrade\n\nQuestions? Just reply to this email.\n\n-- ${fromName}`;
+  const pass = decryptPassword(creds.encryptedPass);
+  const transporter = createTransporter({
+    host: creds.host,
+    port: creds.port,
+    secure: creds.secure === 1,
+    user: creds.user,
+    pass,
+  });
+  const from = `"${fromName}" <${creds.user}>`;
+  await transporter.sendMail({
+    from,
+    replyTo: creds.replyTo ?? creds.user,
+    to: opts.toEmail,
+    subject: "We're sorry to see you go -- ReviewLink",
+    html,
+    text,
+  });
+}

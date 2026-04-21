@@ -11,7 +11,7 @@ import { serveStatic, setupVite } from "./vite";
 import { stripe } from "../stripe";
 import { getDb, getUserByOpenId } from "../db";
 import { ENV } from "./env";
-import { businessProfiles, stripeSubscriptions } from "../../drizzle/schema";
+import { businessProfiles, stripeSubscriptions, users } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
 import { startReminderScheduler } from "../reminders";
@@ -22,7 +22,7 @@ import { registerZohoRoutes } from "../zoho";
 import { exchangeGmailCode, getGmailRedirectUri } from "../gmail";
 
 import { handleOpenPixel, handleClickRedirect } from "../emailTracking";
-import { sendUpgradeReceiptEmail } from "../smtp";
+import { sendUpgradeReceiptEmail, sendChurnRecoveryEmail } from "../smtp";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -183,6 +183,26 @@ async function startServer() {
                   .set({ tier: "free" })
                   .where(eq(businessProfiles.userId, userId));
                 console.log(`[Stripe Webhook] User ${userId} downgraded to Free (status: ${status})`);
+                // Fire churn recovery email on cancellation (fire-and-forget)
+                if (status === "canceled") {
+                  const ownerUser = await getUserByOpenId(ENV.ownerOpenId);
+                  if (ownerUser) {
+                    const [churningUser] = await db
+                      .select({ email: users.email, name: users.name })
+                      .from(users)
+                      .where(eq(users.id, userId))
+                      .limit(1);
+                    if (churningUser?.email) {
+                      sendChurnRecoveryEmail({
+                        ownerUserId: ownerUser.id,
+                        toEmail: churningUser.email,
+                        toName: churningUser.name ?? null,
+                      }).catch((err: unknown) => {
+                        console.warn("[Stripe Webhook] Churn recovery email failed (non-fatal):", err);
+                      });
+                    }
+                  }
+                }
               } else {
                 console.log(`[Stripe Webhook] Skipping downgrade — user ${userId} is on Lifetime tier`);
               }
