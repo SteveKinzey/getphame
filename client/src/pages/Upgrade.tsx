@@ -1,13 +1,12 @@
 // ReviewLink — Upgrade Page
 // Three-tier pricing: Monthly $29 | Annual $290 | Lifetime $1,247
-// All billing via Zoho Books invoice (Stripe processes the card inside Zoho)
 
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation } from "wouter";
 import {
   Crown, Check, Star, Zap, BarChart2, ChevronLeft, Infinity,
-  Loader2, FileText, Ticket, Unlock, Calendar, Shield, CreditCard
+  Loader2, Ticket, Unlock, Calendar, Shield, CreditCard
 } from "lucide-react";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
@@ -88,15 +87,6 @@ export default function UpgradePage() {
   const isThai = typeof navigator !== "undefined" && navigator.language.toLowerCase().startsWith("th");
   const [showPromptPay, setShowPromptPay] = useState(isThai);
 
-  const createInvoice = trpc.zoho.createInvoice.useMutation({
-    onSuccess: (data) => {
-      toast.success(data.message, { duration: 10000 });
-    },
-    onError: (err) => {
-      toast.error(err.message || "Failed to create invoice. Please try again.");
-    },
-  });
-
   const createCheckout = trpc.stripe.createCheckout.useMutation({
     onSuccess: (data) => {
       window.location.href = data.url;
@@ -143,10 +133,6 @@ export default function UpgradePage() {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  function handleInvoice() {
-    createInvoice.mutate({ plan: selectedPlan });
-  }
 
   function handleStripeCheckout() {
     createCheckout.mutate({ origin: window.location.origin, plan: selectedPlan });
@@ -435,16 +421,6 @@ export default function UpgradePage() {
             </p>
           )}
 
-          {/* Secondary — invoice option */}
-          <button
-            onClick={handleInvoice}
-            disabled={createInvoice.isPending}
-            className="w-full py-2.5 rounded-xl font-semibold text-sm transition-opacity flex items-center justify-center gap-2 disabled:opacity-50 mt-1"
-            style={{ color: "var(--text-on-dark-muted)", background: "transparent" }}
-          >
-            {createInvoice.isPending ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />}
-            {createInvoice.isPending ? "Sending invoice..." : "Prefer an invoice? Send to my email"}
-          </button>
         </div>
 
         {/* Access Code Redeem */}

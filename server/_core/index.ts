@@ -22,7 +22,6 @@ import { startSmtpWeeklyDigestScheduler } from "../smtpWeeklyDigest";
 import { startReEngagementScheduler } from "../reEngagementScheduler";
 import { startWooAutoImportScheduler } from "../wooImportScheduler";
 import { registerSitemapRoutes } from "../sitemap";
-import { registerZohoRoutes } from "../zoho";
 import { exchangeGmailCode, getGmailRedirectUri } from "../gmail";
 
 import { handleOpenPixel, handleClickRedirect } from "../emailTracking";
@@ -323,8 +322,6 @@ async function startServer() {
   // SEO: sitemap.xml and robots.txt (must be before static/Vite catch-all)
   registerSitemapRoutes(app);
 
-  // Zoho Books OAuth + webhook routes
-  registerZohoRoutes(app);
 
   // Gmail OAuth 2.0 callback
   app.get("/api/gmail/callback", async (req, res) => {

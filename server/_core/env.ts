@@ -15,9 +15,4 @@ export const ENV = {
   appleTeamId: process.env.APPLE_TEAM_ID ?? "",
   appleKeyId: process.env.APPLE_KEY_ID ?? "",
   applePrivateKey: process.env.APPLE_PRIVATE_KEY ?? "",
-  // Zoho Books integration
-  zohoClientId: process.env.ZOHO_CLIENT_ID ?? "",
-  zohoClientSecret: process.env.ZOHO_CLIENT_SECRET ?? "",
-  zohoOrgId: process.env.ZOHO_ORG_ID ?? "",
-  zohoRefreshToken: process.env.ZOHO_REFRESH_TOKEN ?? "",
 };

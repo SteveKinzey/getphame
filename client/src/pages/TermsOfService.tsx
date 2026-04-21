@@ -2,30 +2,34 @@ import { useLocation } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 
-const TH_ADDRESS = (
-  <>
-    Michael Kiattanabumroong<br />
-    BotflowLab.com<br />
-    88/14 Phuttomonthon Sai 2 Soi 31<br />
-    Sala Thammasop, Thawi Wattana<br />
-    Bangkok 10170<br />
-    Thailand<br />
-    +66 6-3094-9914<br />
-    michael@botflowlab.com
-  </>
-);
+function TH_ADDRESS({ email, linkStyle }: { email: string; linkStyle: React.CSSProperties }) {
+  return (
+    <>
+      Michael Kiattanabumroong<br />
+      BotflowLab.com<br />
+      88/14 Phuttomonthon Sai 2 Soi 31<br />
+      Sala Thammasop, Thawi Wattana<br />
+      Bangkok 10170<br />
+      Thailand<br />
+      +66 6-3094-9914<br />
+      <a href={`mailto:${email}`} style={linkStyle} className="break-all">{email}</a>
+    </>
+  );
+}
 
-const US_ADDRESS = (
-  <>
-    Stephen Kinzey<br />
-    SK America LLC<br />
-    255 N D St, Suite 200XIX<br />
-    San Bernardino, CA 92401<br />
-    United States<br />
-    909 644-9828<br />
-    steve@sk-america.com
-  </>
-);
+function US_ADDRESS({ email, linkStyle }: { email: string; linkStyle: React.CSSProperties }) {
+  return (
+    <>
+      Stephen Kinzey<br />
+      SK America LLC<br />
+      255 N D St, Suite 200XIX<br />
+      San Bernardino, CA 92401<br />
+      United States<br />
+      909 644-9828<br />
+      <a href={`mailto:${email}`} style={linkStyle} className="break-all">{email}</a>
+    </>
+  );
+}
 
 const SH = "text-base font-bold mb-3";
 const SHS = { fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" };
@@ -39,8 +43,10 @@ export default function TermsOfService() {
   useEffect(() => {
     setIsThai(localStorage.getItem('rr-lang') === 'th');
   }, []);
-  const ADDR = isThai ? TH_ADDRESS : US_ADDRESS;
   const CONTACT_EMAIL = isThai ? 'michael@botflowlab.com' : 'steve@sk-america.com';
+  const ADDR = isThai
+    ? <TH_ADDRESS email={CONTACT_EMAIL} linkStyle={LINK} />
+    : <US_ADDRESS email={CONTACT_EMAIL} linkStyle={LINK} />;
 
   const handleBack = () => {
     if (window.history.length > 1) {
@@ -335,9 +341,8 @@ export default function TermsOfService() {
           <address className="not-italic leading-relaxed pl-3 border-l-2" style={BORDER}>
             <span translate="no">
               ReviewLink — Legal<br />
-              {ADDR}<br />
+              {ADDR}
             </span>
-            <a href={`mailto:${CONTACT_EMAIL}`} style={LINK}>{CONTACT_EMAIL}</a>
           </address>
         </section>
 

@@ -28,7 +28,6 @@ import { sendMailViaSmtp } from "./smtp";
 import { buildReviewRequestEmail, buildReviewRequestText } from "./emailTemplates";
 import { checkSendRateLimit } from "./rateLimiter";
 import { createCheckoutSession, createPortalSession, createThbCheckoutSession } from "./stripe";
-import { createOrGetZohoCustomer, createZohoInvoice, sendZohoInvoice } from "./zoho";
 import {
   getWooCredentials,
   upsertWooCredentials,
@@ -422,49 +421,6 @@ export const appRouter = router({
           .set({ reEngagementEnabled: input.reEngagementEnabled })
           .where(eq(businessProfiles.userId, ctx.user.id));
         return { ok: true };
-      }),
-  }),
-
-  zoho: router({
-    /** Create a Zoho Books invoice for the selected plan and email it to the user */
-    createInvoice: protectedProcedure
-      .input(z.object({ plan: z.enum(["monthly", "annual", "lifetime"]) }))
-      .mutation(async ({ ctx, input }) => {
-        const profile = await getBusinessProfile(ctx.user.id);
-        if (!profile) throw new TRPCError({ code: "BAD_REQUEST", message: "Please complete your business profile first." });
-
-        const userEmail = ctx.user.email ?? "";
-        const userName = ctx.user.name ?? profile.businessName;
-
-        // Create or retrieve Zoho customer
-        const zohoCustomerId = await createOrGetZohoCustomer({
-          email: userEmail,
-          name: userName,
-        });
-
-        // Save zohoCustomerId on the profile
-        const db = await getDb();
-        await db!.update(businessProfiles)
-          .set({ zohoCustomerId })
-          .where(eq(businessProfiles.userId, ctx.user.id));
-
-        // Create and send the plan-specific invoice
-        const invoice = await createZohoInvoice({
-          zohoCustomerId,
-          userName,
-          userId: ctx.user.id,
-          plan: input.plan,
-        });
-
-        await sendZohoInvoice(invoice.invoiceId, input.plan);
-
-        const planLabels = { monthly: "Monthly Pro", annual: "Annual Pro", lifetime: "Lifetime License" };
-        return {
-          invoiceId: invoice.invoiceId,
-          invoiceNumber: invoice.invoiceNumber,
-          plan: input.plan,
-          message: `Invoice ${invoice.invoiceNumber} for ${planLabels[input.plan]} has been sent to ${userEmail}. Click the Pay Now link in the email to activate your account.`,
-        };
       }),
   }),
 

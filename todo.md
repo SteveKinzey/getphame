@@ -1143,3 +1143,9 @@
 - [x] Add michael@botflowlab.com to TH_ADDRESS in PrivacyPolicy.tsx and TermsOfService.tsx
 - [x] Add steve@sk-america.com to US_ADDRESS in PrivacyPolicy.tsx and TermsOfService.tsx
 - [x] Update locale-legal-address skill address constants
+
+## Session #42 — Clickable Address Emails + Zoho Removal (Apr 21 2026)
+- [x] Create clickable-address-email skill documenting mailto link pattern inside address blocks
+- [x] Make email in TH_ADDRESS clickable (mailto) in PrivacyPolicy.tsx and TermsOfService.tsx
+- [x] Make email in US_ADDRESS clickable (mailto) in PrivacyPolicy.tsx and TermsOfService.tsx
+- [x] Removed server/zoho.ts, server/zoho.test.ts, zoho tRPC router, registerZohoRoutes in index.ts, Zoho env vars in env.ts, invoice button in Upgrade.tsx
