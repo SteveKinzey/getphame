@@ -1127,3 +1127,9 @@
 - [x] Zoho invoice change reverted — not applicable (Zoho invoices to be removed)
 - [x] Add translate="no" wrapper to all address blocks in PrivacyPolicy.tsx and TermsOfService.tsx
 - [x] Updated TH_ADDRESS with full contact: Michael Kiattanabumroong, BotflowLab.com, full Bangkok address + phone
+
+## Session #39 — US Address Update + tRPC Error Fix (Apr 21 2026)
+- [x] Update US_ADDRESS in PrivacyPolicy.tsx with full contact: Stephen Kinzey, SK America LLC, 255 N D St Suite 200XIX, San Bernardino CA 92401, 909 644-9828
+- [x] Update US_ADDRESS in TermsOfService.tsx with same full contact details
+- [x] Update locale-legal-address skill US_ADDRESS reference
+- [x] tRPC HTML error diagnosed: one-time crash from syntax error during hot-reload at 07:27 — server auto-recovered, no persistent bug

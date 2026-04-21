@@ -16,9 +16,12 @@ const TH_ADDRESS = (
 
 const US_ADDRESS = (
   <>
+    Stephen Kinzey<br />
+    SK America LLC<br />
     255 N D St, Suite 200XIX<br />
     San Bernardino, CA 92401<br />
-    United States
+    United States<br />
+    909 644-9828
   </>
 );
 
