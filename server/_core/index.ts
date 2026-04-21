@@ -215,6 +215,38 @@ async function startServer() {
           }
         }
       }
+      // Handle subscription renewal — keep user active and extend planExpiresAt
+      if (event.type === "invoice.payment_succeeded") {
+        const invoice = event.data.object as any;
+        const subscriptionId = invoice.subscription as string | null;
+        const billingReason = invoice.billing_reason as string | null;
+        // Only process renewal invoices (not the initial checkout.session.completed)
+        if (subscriptionId && billingReason === "subscription_cycle") {
+          const rows = await db
+            .select()
+            .from(stripeSubscriptions)
+            .where(eq(stripeSubscriptions.stripeSubscriptionId, subscriptionId))
+            .limit(1);
+          if (rows.length > 0) {
+            const userId = rows[0].userId;
+            const existingStatus = rows[0].status;
+            if (existingStatus !== "lifetime") {
+              // Determine renewal period from invoice lines
+              const periodEnd = invoice.lines?.data?.[0]?.period?.end as number | undefined;
+              const planExpiresAt = periodEnd ? periodEnd * 1000 : null;
+              await db
+                .update(businessProfiles)
+                .set({ planExpiresAt })
+                .where(eq(businessProfiles.userId, userId));
+              await db
+                .update(stripeSubscriptions)
+                .set({ status: "active" })
+                .where(eq(stripeSubscriptions.stripeSubscriptionId, subscriptionId));
+              console.log(`[Stripe Webhook] Subscription renewed for user ${userId} — planExpiresAt: ${planExpiresAt}`);
+            }
+          }
+        }
+      }
     } catch (err) {
       console.error("[Stripe Webhook] Processing error:", err);
     }

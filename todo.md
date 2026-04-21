@@ -1069,3 +1069,7 @@
 - [x] Update requests.send to return requestId alongside success (required for reminder scheduling)
 - [x] Stripe webhook: ACTION REQUIRED — update Stripe Dashboard webhook URL to https://reviewlink.app/api/stripe/webhook
 - [x] TypeScript: 0 errors. Tests: 39/43 pass (4 pre-existing smtpWeeklyDigest mock failures)
+
+## Session #31 — Payment Flow Audit & Fix (Apr 21 2026)
+- [x] Add invoice.payment_succeeded webhook handler to reset planExpiresAt on subscription renewal
+- [x] Stripe Dashboard webhook events to register: checkout.session.completed, customer.subscription.deleted, customer.subscription.updated, invoice.payment_succeeded
