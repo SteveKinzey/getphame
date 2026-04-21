@@ -244,7 +244,7 @@ export default function HomePage() {
       />
       {/* Navy Header Panel */}
       <div
-        className="relative px-5 pt-14 pb-8 overflow-hidden"
+        className="relative px-5 pt-8 pb-6 overflow-hidden"
         style={{ background: "oklch(0.22 0.09 260)" }}
       >
         {/* Background rocket image */}

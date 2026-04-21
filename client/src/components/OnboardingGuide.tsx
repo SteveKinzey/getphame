@@ -112,7 +112,199 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
   );
 }
 
+// ── Email provider data ───────────────────────────────────────────────────────
+
+const EMAIL_PROVIDERS = [
+  {
+    label: "Gmail / Google Workspace",
+    color: "oklch(0.55 0.20 25)",
+    bg: "oklch(0.97 0.02 25)",
+    border: "oklch(0.88 0.06 25)",
+    steps: [
+      { step: "1", desc: "Go to myaccount.google.com and sign in." },
+      { step: "2", desc: "Click Security in the left sidebar." },
+      { step: "3", desc: "Under \"How you sign in to Google\", click 2-Step Verification and make sure it is turned ON. App Passwords require 2FA to be active." },
+      { step: "4", desc: "Return to Security and scroll down to find App Passwords (search for it if you don't see it)." },
+      { step: "5", desc: "Click App Passwords, then choose \"Mail\" as the app and \"Other\" as the device. Give it a name like \"ReviewLink\"." },
+      { step: "6", desc: "Google shows you a 16-character password. Copy it — you will only see it once." },
+      { step: "7", desc: "In ReviewLink Settings → Email Connection, enter your Gmail address and paste the App Password (not your regular Google password)." },
+    ],
+    note: "Google Workspace (business Gmail) follows the same steps. If your admin has disabled App Passwords, ask them to enable \"Less secure app access\" or use an OAuth-based SMTP relay.",
+  },
+  {
+    label: "Outlook / Microsoft 365",
+    color: "oklch(0.45 0.18 240)",
+    bg: "oklch(0.97 0.02 240)",
+    border: "oklch(0.88 0.05 240)",
+    steps: [
+      { step: "1", desc: "Sign in at account.microsoft.com." },
+      { step: "2", desc: "Click Security → Advanced security options." },
+      { step: "3", desc: "Under App passwords, click Create a new app password." },
+      { step: "4", desc: "Copy the generated password." },
+      { step: "5", desc: "In ReviewLink, enter your full Outlook/Hotmail/Microsoft 365 email address and paste the App Password." },
+      { step: "6", desc: "SMTP host: smtp.office365.com · Port: 587 · Security: STARTTLS (ReviewLink auto-detects this from your email domain)." },
+    ],
+    note: "Microsoft 365 business accounts: if your IT admin has disabled SMTP AUTH, they must enable it per-mailbox in the Microsoft 365 admin centre under Users → Active users → Mail → Manage email apps → Authenticated SMTP.",
+  },
+  {
+    label: "Yahoo Mail",
+    color: "oklch(0.45 0.22 300)",
+    bg: "oklch(0.97 0.02 300)",
+    border: "oklch(0.88 0.05 300)",
+    steps: [
+      { step: "1", desc: "Sign in at account.yahoo.com." },
+      { step: "2", desc: "Click Security in the left menu." },
+      { step: "3", desc: "Scroll to \"Generate app password\" and click it." },
+      { step: "4", desc: "Select \"Other app\" from the dropdown, type \"ReviewLink\", and click Generate." },
+      { step: "5", desc: "Copy the 16-character password shown." },
+      { step: "6", desc: "In ReviewLink, enter your Yahoo email address and paste the App Password. SMTP host: smtp.mail.yahoo.com · Port: 587." },
+    ],
+    note: "Yahoo no longer supports regular passwords for third-party apps. You must use an App Password — your regular Yahoo password will not work.",
+  },
+  {
+    label: "Zoho Mail",
+    color: "oklch(0.50 0.18 160)",
+    bg: "oklch(0.97 0.02 160)",
+    border: "oklch(0.88 0.05 160)",
+    steps: [
+      { step: "1", desc: "Log in at mail.zoho.com." },
+      { step: "2", desc: "Click the gear icon (Settings) in the top-right corner." },
+      { step: "3", desc: "Go to Mail Accounts → select your account → SMTP." },
+      { step: "4", desc: "Make sure \"Allow SMTP Access\" is toggled ON. Save." },
+      { step: "5", desc: "In ReviewLink, enter your Zoho email address and your regular Zoho password (no App Password needed if 2FA is off)." },
+      { step: "6", desc: "If 2FA is enabled on your Zoho account, go to Zoho Accounts → Security → App Passwords and generate one first." },
+      { step: "7", desc: "SMTP host: smtp.zoho.com · Port: 587 (or 465 for SSL)." },
+    ],
+    note: "Zoho Workplace (business) accounts: SMTP access may be disabled by your organisation admin. Ask them to enable it under Zoho Mail Admin Console → Mail Settings → SMTP.",
+  },
+  {
+    label: "Apple iCloud Mail",
+    color: "oklch(0.40 0.05 260)",
+    bg: "oklch(0.97 0.01 260)",
+    border: "oklch(0.88 0.03 260)",
+    steps: [
+      { step: "1", desc: "Sign in at appleid.apple.com." },
+      { step: "2", desc: "Click Sign-In and Security → App-Specific Passwords." },
+      { step: "3", desc: "Click the + icon to generate a new password. Label it \"ReviewLink\"." },
+      { step: "4", desc: "Copy the generated password (format: xxxx-xxxx-xxxx-xxxx)." },
+      { step: "5", desc: "In ReviewLink, enter your iCloud email address (yourname@icloud.com or @me.com or @mac.com) and paste the App-Specific Password." },
+      { step: "6", desc: "SMTP host: smtp.mail.me.com · Port: 587." },
+    ],
+    note: "Apple requires 2FA on your Apple ID before App-Specific Passwords are available. If you don't see the option, enable 2FA first under Apple ID → Password & Security.",
+  },
+  {
+    label: "Business / cPanel / Hosting Email",
+    color: "oklch(0.45 0.10 80)",
+    bg: "oklch(0.97 0.02 80)",
+    border: "oklch(0.88 0.05 80)",
+    steps: [
+      { step: "1", desc: "Log in to your hosting control panel (cPanel, Plesk, DirectAdmin, etc.)." },
+      { step: "2", desc: "Go to Email → Email Accounts and find the account you want to use." },
+      { step: "3", desc: "Click Connect Devices or Set Up Mail Client to see the SMTP host, port, and security settings." },
+      { step: "4", desc: "Common settings: host = mail.yourdomain.com · Port: 587 (STARTTLS) or 465 (SSL)." },
+      { step: "5", desc: "In ReviewLink, enter your full business email address as the username and your email account password." },
+    ],
+    note: "If you're not sure of your SMTP settings, contact your hosting provider's support. They can provide the exact host, port, and security type for your account.",
+  },
+];
+
+// ── Review platform data ──────────────────────────────────────────────────────
+
+const REVIEW_PLATFORMS = [
+  {
+    label: "Google Business Profile",
+    emoji: "🔵",
+    color: "oklch(0.45 0.18 240)",
+    bg: "oklch(0.97 0.02 240)",
+    border: "oklch(0.88 0.05 240)",
+    steps: [
+      { step: "1", desc: "Go to maps.google.com and search for your business name." },
+      { step: "2", desc: "Click on your business listing to open the full panel on the left." },
+      { step: "3", desc: "Click \"Write a review\". A review dialog opens." },
+      { step: "4", desc: "Copy the full URL from your browser's address bar — this is your direct review link." },
+      { step: "5", desc: "Alternative: log in at business.google.com → your profile → click \"Ask for reviews\" or \"Get more reviews\" to find a shareable short link." },
+    ],
+    note: "The short link from Google Business Profile (maps.app.goo.gl/...) is cleaner and more reliable than the full Maps URL. Use that if available.",
+  },
+  {
+    label: "Yelp",
+    emoji: "🔴",
+    color: "oklch(0.50 0.22 25)",
+    bg: "oklch(0.97 0.02 25)",
+    border: "oklch(0.88 0.06 25)",
+    steps: [
+      { step: "1", desc: "Go to yelp.com and search for your business." },
+      { step: "2", desc: "Open your business listing page." },
+      { step: "3", desc: "Click \"Write a Review\" — a login/review dialog appears." },
+      { step: "4", desc: "Copy the URL from your browser's address bar." },
+      { step: "5", desc: "Alternatively, log in to biz.yelp.com → your business → Business Information → copy the \"Yelp Page URL\" shown there." },
+    ],
+    note: "Yelp actively discourages soliciting reviews and may filter reviews that come from direct requests. Consider using Yelp links for passive placement (email signature, receipts) rather than active bulk sends.",
+  },
+  {
+    label: "TripAdvisor",
+    emoji: "🟢",
+    color: "oklch(0.45 0.18 155)",
+    bg: "oklch(0.97 0.02 155)",
+    border: "oklch(0.88 0.05 155)",
+    steps: [
+      { step: "1", desc: "Go to tripadvisor.com and search for your business." },
+      { step: "2", desc: "Open your listing page." },
+      { step: "3", desc: "Click \"Write a Review\" at the top of the listing." },
+      { step: "4", desc: "Copy the URL from your browser's address bar." },
+      { step: "5", desc: "For a cleaner link: log in at tripadvisor.com/owners → your property → Review Express → copy the direct review URL provided there." },
+    ],
+    note: "TripAdvisor's Review Express tool (available to registered owners) generates a clean, trackable review link specifically designed for email campaigns.",
+  },
+  {
+    label: "Facebook",
+    emoji: "🔵",
+    color: "oklch(0.40 0.18 255)",
+    bg: "oklch(0.97 0.02 255)",
+    border: "oklch(0.88 0.05 255)",
+    steps: [
+      { step: "1", desc: "Go to your Facebook Business Page." },
+      { step: "2", desc: "Click the \"Reviews\" or \"Recommendations\" tab on your page." },
+      { step: "3", desc: "Copy the URL from your browser's address bar — it will look like facebook.com/YourBusiness/reviews." },
+      { step: "4", desc: "You can also use your page URL directly: facebook.com/YourBusinessName — customers can find the Reviews tab from there." },
+    ],
+    note: "Facebook renamed \"Reviews\" to \"Recommendations\" in some regions. Both link to the same place. Make sure Reviews/Recommendations are enabled on your page: Page Settings → Templates and Tabs → Reviews → On.",
+  },
+  {
+    label: "Bing Places",
+    emoji: "🟡",
+    color: "oklch(0.50 0.15 200)",
+    bg: "oklch(0.97 0.02 200)",
+    border: "oklch(0.88 0.05 200)",
+    steps: [
+      { step: "1", desc: "Go to bing.com/maps and search for your business." },
+      { step: "2", desc: "Click on your business listing." },
+      { step: "3", desc: "Click \"Write a review\" on the listing panel." },
+      { step: "4", desc: "Copy the URL from your browser's address bar." },
+      { step: "5", desc: "To claim and manage your listing: bingplaces.com → sign in with a Microsoft account → verify your business." },
+    ],
+    note: "Bing reviews pull from Tripadvisor and other sources in some regions. Verify your listing at bingplaces.com to ensure reviews are attributed correctly to your business.",
+  },
+  {
+    label: "Custom / Other Platform",
+    emoji: "🔗",
+    color: "oklch(0.45 0.05 260)",
+    bg: "oklch(0.97 0.01 260)",
+    border: "oklch(0.88 0.03 260)",
+    steps: [
+      { step: "1", desc: "Navigate to your review platform (Trustpilot, G2, Capterra, Houzz, Angi, HomeAdvisor, Healthgrades, etc.)." },
+      { step: "2", desc: "Find your business or product listing." },
+      { step: "3", desc: "Look for a \"Write a Review\" or \"Leave Feedback\" button and click it." },
+      { step: "4", desc: "Copy the URL from your browser's address bar." },
+      { step: "5", desc: "In ReviewLink, select \"Other\" as the platform type and paste the URL." },
+    ],
+    note: "Any URL that takes a customer directly to a review form works. Test it in a private/incognito browser window first to confirm it opens the review form without requiring a login.",
+  },
+];
+
 function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }) {
+  const [expanded, setExpanded] = useState<string | null>(null);
+
   return (
     <div className="space-y-4">
       <div
@@ -123,46 +315,22 @@ function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }
           Why connect your email?
         </p>
         <p className="text-sm" style={{ color: "oklch(0.40 0.04 260)" }}>
-          ReviewLink sends emails through your own account using SMTP — the same protocol your email app uses. This means review requests arrive in your customers' inboxes looking like a personal message from you, not a marketing blast.
+          ReviewLink sends emails through your own account using SMTP — the same protocol your email app uses. Review requests arrive looking like a personal message from you, not a marketing blast.
         </p>
       </div>
 
       <p className="text-sm font-bold" style={{ color: "oklch(0.30 0.05 260)" }}>
-        Step-by-step: Settings → Email Connection
+        General setup steps
       </p>
 
       <div className="space-y-3">
         {[
-          {
-            step: "1",
-            title: "Open Settings",
-            desc: "Tap the Settings icon in the bottom navigation bar.",
-          },
-          {
-            step: "2",
-            title: "Find the Email Connection section",
-            desc: "Scroll down to the \"Email Connection\" card. Tap \"Connect Email Account\".",
-          },
-          {
-            step: "3",
-            title: "Enter your email address and password",
-            desc: "Type your full email address (e.g. jane@yourbusiness.com) and your email password or app password.",
-          },
-          {
-            step: "4",
-            title: "Set your Sender Name",
-            desc: "This is the name customers will see in their inbox — e.g. \"Jane at Acme Plumbing\". Make it personal.",
-          },
-          {
-            step: "5",
-            title: "Test the connection",
-            desc: "Tap \"Test Connection\" to verify your credentials work before saving. A green tick confirms success.",
-          },
-          {
-            step: "6",
-            title: "Save",
-            desc: "Tap \"Connect\". ReviewLink will send a confirmation email to your address so you can see exactly what your customers will receive.",
-          },
+          { step: "1", title: "Open Settings", desc: "Tap the Settings icon in the bottom navigation bar." },
+          { step: "2", title: "Find Email Connection", desc: "Scroll down to the \"Email Connection\" card and tap \"Connect Email Account\"." },
+          { step: "3", title: "Enter your email and password", desc: "Type your full email address and your email password or app password (see provider notes below)." },
+          { step: "4", title: "Set your Sender Name", desc: "This is what customers see in their inbox — e.g. \"Jane at Acme Plumbing\". Make it personal." },
+          { step: "5", title: "Test the connection", desc: "Tap \"Test Connection\" to verify your credentials. A green tick confirms success." },
+          { step: "6", title: "Save", desc: "Tap \"Connect\". ReviewLink sends a confirmation email to your address so you can see exactly what customers receive." },
         ].map((item) => (
           <div key={item.step} className="flex gap-3">
             <div
@@ -179,26 +347,63 @@ function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }
         ))}
       </div>
 
+      {/* Provider-specific accordion */}
+      <p className="text-xs font-bold uppercase tracking-wide pt-1" style={{ color: "oklch(0.55 0.05 260)" }}>
+        Provider setup — tap to expand
+      </p>
+
       <div className="space-y-2">
-        <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "oklch(0.55 0.05 260)" }}>
-          Provider notes
-        </p>
-        {[
-          { label: "Gmail / Google Workspace", note: "You must use an App Password, not your regular Google password. Go to myaccount.google.com → Security → App Passwords." },
-          { label: "Outlook / Microsoft 365", note: "Use an App Password if two-step verification is on. Go to account.microsoft.com → Security → Advanced security options." },
-          { label: "Yahoo Mail", note: "Generate an App Password at account.yahoo.com → Security → Generate app password." },
-          { label: "Zoho Mail", note: "Enable SMTP access first: mail.zoho.com → Settings → Mail Accounts → SMTP → Allow SMTP Access." },
-          { label: "Business / cPanel email", note: "Use your full email address as the username. Your host, port, and password are in your hosting control panel." },
-        ].map((p) => (
-          <div
-            key={p.label}
-            className="rounded-xl px-3 py-2.5"
-            style={{ background: "white", border: "1px solid oklch(0.91 0.02 260)" }}
-          >
-            <p className="text-xs font-bold" style={{ color: "oklch(0.30 0.08 260)" }}>{p.label}</p>
-            <p className="text-xs mt-0.5" style={{ color: "oklch(0.50 0.03 260)" }}>{p.note}</p>
-          </div>
-        ))}
+        {EMAIL_PROVIDERS.map((provider) => {
+          const isOpen = expanded === provider.label;
+          return (
+            <div
+              key={provider.label}
+              className="rounded-xl overflow-hidden"
+              style={{ border: `1px solid ${provider.border}` }}
+            >
+              <button
+                className="w-full flex items-center justify-between px-3 py-2.5 text-left"
+                style={{ background: provider.bg }}
+                onClick={() => setExpanded(isOpen ? null : provider.label)}
+              >
+                <p className="text-xs font-bold" style={{ color: provider.color }}>{provider.label}</p>
+                <ChevronRight
+                  size={14}
+                  style={{
+                    color: provider.color,
+                    transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                    transition: "transform 0.2s",
+                  }}
+                />
+              </button>
+              {isOpen && (
+                <div className="px-3 py-3 bg-white space-y-2">
+                  {provider.steps.map((s) => (
+                    <div key={s.step} className="flex gap-2.5 items-start">
+                      <span
+                        className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5"
+                        style={{ background: provider.bg, color: provider.color }}
+                      >
+                        {s.step}
+                      </span>
+                      <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>{s.desc}</p>
+                    </div>
+                  ))}
+                  {provider.note && (
+                    <div
+                      className="rounded-lg px-3 py-2 mt-1"
+                      style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
+                    >
+                      <p className="text-xs" style={{ color: "oklch(0.45 0.08 80)" }}>
+                        <span className="font-bold">Note: </span>{provider.note}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
 
       <Button
@@ -213,6 +418,8 @@ function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }
 }
 
 function StepReviewPlatform({ onNavigate }: { onNavigate: (path: string) => void }) {
+  const [expanded, setExpanded] = useState<string | null>("Google Business Profile");
+
   return (
     <div className="space-y-4">
       <div
@@ -223,45 +430,83 @@ function StepReviewPlatform({ onNavigate }: { onNavigate: (path: string) => void
           What is a review platform?
         </p>
         <p className="text-sm" style={{ color: "oklch(0.40 0.04 260)" }}>
-          This is the link your customers will click to leave you a review — on Google, Yelp, TripAdvisor, Facebook, or anywhere else. ReviewLink embeds this link as a button inside every review request email.
+          This is the link your customers click to leave you a review — on Google, Yelp, TripAdvisor, Facebook, or anywhere else. ReviewLink embeds this link as a button inside every review request email.
         </p>
       </div>
 
-      <p className="text-sm font-bold" style={{ color: "oklch(0.30 0.05 260)" }}>
-        How to find your Google review link
+      {/* Platform-specific accordion */}
+      <p className="text-xs font-bold uppercase tracking-wide" style={{ color: "oklch(0.55 0.05 260)" }}>
+        How to find your review link — tap your platform
       </p>
-      <div className="space-y-3">
-        {[
-          { step: "1", title: "Open Google Maps", desc: "Search for your business by name on maps.google.com." },
-          { step: "2", title: "Open your business listing", desc: "Click on your business name to open the full listing panel." },
-          { step: "3", title: "Click \"Write a review\"", desc: "This opens the review dialog. Copy the URL from your browser's address bar — that is your review link." },
-          { step: "4", title: "Alternative: Google Business Profile", desc: "Log in at business.google.com, go to your profile, and click \"Get more reviews\" to find a shareable link." },
-        ].map((item) => (
-          <div key={item.step} className="flex gap-3">
+
+      <div className="space-y-2">
+        {REVIEW_PLATFORMS.map((platform) => {
+          const isOpen = expanded === platform.label;
+          return (
             <div
-              className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 text-xs font-black mt-0.5"
-              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+              key={platform.label}
+              className="rounded-xl overflow-hidden"
+              style={{ border: `1px solid ${platform.border}` }}
             >
-              {item.step}
+              <button
+                className="w-full flex items-center justify-between px-3 py-2.5 text-left gap-2"
+                style={{ background: platform.bg }}
+                onClick={() => setExpanded(isOpen ? null : platform.label)}
+              >
+                <div className="flex items-center gap-2">
+                  <span className="text-sm">{platform.emoji}</span>
+                  <p className="text-xs font-bold" style={{ color: platform.color }}>{platform.label}</p>
+                </div>
+                <ChevronRight
+                  size={14}
+                  style={{
+                    color: platform.color,
+                    transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
+                    transition: "transform 0.2s",
+                    flexShrink: 0,
+                  }}
+                />
+              </button>
+              {isOpen && (
+                <div className="px-3 py-3 bg-white space-y-2">
+                  {platform.steps.map((s) => (
+                    <div key={s.step} className="flex gap-2.5 items-start">
+                      <span
+                        className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5"
+                        style={{ background: platform.bg, color: platform.color }}
+                      >
+                        {s.step}
+                      </span>
+                      <p className="text-xs" style={{ color: "oklch(0.40 0.04 260)" }}>{s.desc}</p>
+                    </div>
+                  ))}
+                  {platform.note && (
+                    <div
+                      className="rounded-lg px-3 py-2 mt-1"
+                      style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
+                    >
+                      <p className="text-xs" style={{ color: "oklch(0.45 0.08 80)" }}>
+                        <span className="font-bold">Note: </span>{platform.note}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
-            <div>
-              <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>{item.title}</p>
-              <p className="text-xs mt-0.5" style={{ color: "oklch(0.45 0.04 260)" }}>{item.desc}</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
-      <p className="text-sm font-bold" style={{ color: "oklch(0.30 0.05 260)" }}>
+      <p className="text-sm font-bold pt-1" style={{ color: "oklch(0.30 0.05 260)" }}>
         Adding the link in ReviewLink
       </p>
       <div className="space-y-3">
         {[
           { step: "1", title: "Open Settings", desc: "Tap the Settings icon in the bottom navigation bar." },
           { step: "2", title: "Scroll to Review Platforms", desc: "Find the \"Review Platforms\" section and tap \"Add Platform\"." },
-          { step: "3", title: "Choose your platform type", desc: "Select Google, Yelp, TripAdvisor, Facebook, or Other." },
-          { step: "4", title: "Paste your review link", desc: "Paste the URL you copied from Google Maps (or your other platform)." },
-          { step: "5", title: "Set as default", desc: "If this is your primary review destination, toggle \"Set as default\". The default platform is used in all review requests unless you choose a different one." },
+          { step: "3", title: "Choose your platform type", desc: "Select Google, Yelp, TripAdvisor, Facebook, Bing, or Other." },
+          { step: "4", title: "Paste your review link", desc: "Paste the URL you copied from your platform." },
+          { step: "5", title: "Set as default", desc: "Toggle \"Set as default\" if this is your primary review destination. The default platform is used in all review requests." },
         ].map((item) => (
           <div key={item.step} className="flex gap-3">
             <div
@@ -661,11 +906,11 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
     >
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div
-        className="px-5 pt-12 pb-5 shrink-0"
+        className="px-5 pt-8 pb-4 shrink-0"
         style={{ background: "oklch(0.22 0.09 260)" }}
       >
         {/* Top row: guide label + close */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <BookOpen size={14} style={{ color: "oklch(0.80 0.18 80)" }} />
             <span
@@ -686,7 +931,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
         </div>
 
         {/* Step progress dots */}
-        <div className="flex items-center gap-1.5 mb-4">
+        <div className="flex items-center gap-1.5 mb-3">
           {STEPS.map((s, i) => (
             <button
               key={s.id}

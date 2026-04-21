@@ -920,3 +920,9 @@
 - [x] Fix: Home page shows "Free Forever ✓" in stats row — misleading for 10-request free tier; replace with tier badge
 - [x] Fix: No auth_error toast when Google OAuth returns ?auth_error=denied or ?auth_error=failed
 - [x] Fix: LandingPage "Free Forever" badge in hero — update to "10 free requests" to be accurate
+
+## Session #15 — Guide Expansion + Header Padding
+- [x] Expand OnboardingGuide email step with provider-specific setup notes for Outlook/M365, Yahoo, Zoho, iCloud, custom SMTP (matching Gmail treatment)
+- [x] Expand OnboardingGuide review platform step with platform-specific instructions for Google, Yelp, TripAdvisor, Bing, Facebook, and custom URL
+- [x] Reduce header top padding on Home screen navy panel (pt-14 → pt-8)
+- [x] Create skill documenting the OnboardingGuide expansion pattern
