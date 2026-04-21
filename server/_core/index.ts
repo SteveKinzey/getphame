@@ -222,6 +222,17 @@ async function startServer() {
     res.json({ received: true });
   });
 
+  // www → apex 301 redirect (www.reviewlink.app → reviewlink.app)
+  app.use((req, res, next) => {
+    const host = req.headers.host || "";
+    if (host.startsWith("www.")) {
+      const apexHost = host.slice(4); // strip "www."
+      const proto = req.headers["x-forwarded-proto"] || req.protocol || "https";
+      return res.redirect(301, `${proto}://${apexHost}${req.originalUrl}`);
+    }
+    next();
+  });
+
   // Security headers
   app.use(
     helmet({

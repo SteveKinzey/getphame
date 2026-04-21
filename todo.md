@@ -1057,3 +1057,6 @@
 - [x] Pre-launch polish: add /compliance and /changelog to sitemap.xml
 - [x] Pre-launch polish: verify legal pages (Privacy Policy, Terms of Service) exist and are routed
 - [x] Final TypeScript check: clean (0 errors). Tests: 39/43 pass (4 pre-existing smtpWeeklyDigest mock failures)
+
+## Session #29 — www → apex redirect (Apr 21 2026)
+- [x] Add Express middleware: 301 redirect www.reviewlink.app → reviewlink.app
