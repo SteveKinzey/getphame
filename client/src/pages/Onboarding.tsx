@@ -3,14 +3,13 @@
 // After login, they set up their business profile in Settings.
 
 import { Rocket, Star } from "lucide-react";
-import { getLoginUrl } from "@/const";
 
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
 
 export default function OnboardingPage() {
   function handleGetStarted() {
-    window.location.href = getLoginUrl();
+    window.location.href = "/api/auth/google";
   }
 
   return (

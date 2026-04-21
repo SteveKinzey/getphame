@@ -1,0 +1,136 @@
+/**
+ * Direct Google OAuth 2.0 login flow.
+ * Replaces the Manus portal redirect so users see a clean ReviewLink-branded login.
+ *
+ * Routes:
+ *   GET /api/auth/google          → redirects to Google consent screen
+ *   GET /api/auth/google/callback → exchanges code, creates session cookie, redirects to /
+ *
+ * Required env vars (already present):
+ *   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, JWT_SECRET
+ *
+ * Google Cloud Console — add these Authorized redirect URIs:
+ *   https://reviewlink.app/api/auth/google/callback
+ *   https://revrocket-j5ynazte.manus.space/api/auth/google/callback  (staging)
+ */
+
+import type { Express, Request, Response } from "express";
+import { google } from "googleapis";
+import { ENV } from "./_core/env";
+import { sdk } from "./_core/sdk";
+import { getSessionCookieOptions } from "./_core/cookies";
+import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import * as db from "./db";
+import { sendUserWelcomeEmail } from "./smtp";
+
+function getOAuth2Client(redirectUri: string) {
+  return new google.auth.OAuth2(
+    ENV.googleClientId,
+    ENV.googleClientSecret,
+    redirectUri
+  );
+}
+
+function buildRedirectUri(req: Request): string {
+  // Use the origin from the request so it works on both reviewlink.app and staging
+  const proto = req.headers["x-forwarded-proto"] ?? req.protocol ?? "https";
+  const host = req.headers["x-forwarded-host"] ?? req.headers.host ?? "reviewlink.app";
+  return `${proto}://${host}/api/auth/google/callback`;
+}
+
+export function registerGoogleAuthRoutes(app: Express) {
+  // Step 1: Redirect user to Google consent screen
+  app.get("/api/auth/google", (req: Request, res: Response) => {
+    const redirectUri = buildRedirectUri(req);
+    const oauth2Client = getOAuth2Client(redirectUri);
+
+    const authUrl = oauth2Client.generateAuthUrl({
+      access_type: "online",
+      scope: ["openid", "email", "profile"],
+      prompt: "select_account",
+      // Store redirectUri in state so callback can reconstruct the same client
+      state: Buffer.from(redirectUri).toString("base64"),
+    });
+
+    res.redirect(302, authUrl);
+  });
+
+  // Step 2: Google redirects back here with ?code=...&state=...
+  app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
+    const code = typeof req.query.code === "string" ? req.query.code : null;
+    const state = typeof req.query.state === "string" ? req.query.state : null;
+    const error = typeof req.query.error === "string" ? req.query.error : null;
+
+    if (error) {
+      console.warn("[GoogleAuth] User denied consent:", error);
+      return res.redirect(302, "/?auth_error=denied");
+    }
+
+    if (!code || !state) {
+      return res.status(400).send("Missing code or state.");
+    }
+
+    try {
+      // Reconstruct the same redirectUri used in step 1
+      const redirectUri = Buffer.from(state, "base64").toString("utf8");
+      const oauth2Client = getOAuth2Client(redirectUri);
+
+      // Exchange code for tokens
+      const { tokens } = await oauth2Client.getToken(code);
+      oauth2Client.setCredentials(tokens);
+
+      // Get user profile from Google
+      const oauth2 = google.oauth2({ version: "v2", auth: oauth2Client });
+      const { data: profile } = await oauth2.userinfo.get();
+
+      if (!profile.id) {
+        return res.status(400).send("Google did not return a user ID.");
+      }
+
+      // Use Google sub (stable unique ID) as openId
+      const openId = `google_${profile.id}`;
+      const email = profile.email ?? null;
+      const name = profile.name ?? null;
+
+      // Check if new user before upsert
+      const existingUser = await db.getUserByOpenId(openId);
+      const isNewUser = !existingUser;
+
+      await db.upsertUser({
+        openId,
+        name,
+        email,
+        loginMethod: "google",
+        lastSignedIn: new Date(),
+      });
+
+      // Send welcome email to new users (fire-and-forget)
+      if (isNewUser && email) {
+        const ownerUser = await db.getUserByOpenId(ENV.ownerOpenId);
+        if (ownerUser) {
+          sendUserWelcomeEmail({
+            ownerUserId: ownerUser.id,
+            toEmail: email,
+            toName: name,
+          }).catch((err: unknown) => {
+            console.warn("[GoogleAuth] Welcome email failed (non-fatal):", err);
+          });
+        }
+      }
+
+      // Create session JWT (same mechanism as Manus OAuth)
+      const sessionToken = await sdk.createSessionToken(openId, {
+        name: name ?? "",
+        expiresInMs: ONE_YEAR_MS,
+      });
+
+      const cookieOptions = getSessionCookieOptions(req);
+      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+
+      res.redirect(302, "/");
+    } catch (err) {
+      console.error("[GoogleAuth] Callback failed:", err);
+      res.redirect(302, "/?auth_error=failed");
+    }
+  });
+}

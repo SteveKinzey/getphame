@@ -874,3 +874,13 @@
 
 - [x] /admin/churn deep-link: clicking a recent response row navigates to /admin?search=email so admin can see tier + send history inline
 - [x] Re-engagement unsubscribe: add unsubscribeToken (varchar, unique) to churn_surveys, include one-click unsubscribe link in re-engagement email footer, /api/reengagement/unsubscribe/:token endpoint marks opted-out and shows confirmation page
+
+## New Features (Session — Apr 21 2026 #9)
+
+- [ ] Remove "Powered by Manus" text from login screen
+- [ ] Fix tRPC JSON parse error on home page (Upgrade.tsx parse error causing HTML response)
+
+## New Features (Session — Apr 21 2026 #10)
+
+- [x] Direct Google OAuth login: /api/auth/google + /api/auth/google/callback routes, bypass Manus portal
+- [x] Update Onboarding.tsx login button to use /api/auth/google instead of Manus portal URL
