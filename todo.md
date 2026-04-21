@@ -974,3 +974,11 @@
 - [x] Update saas-observability skill with all three new patterns
 - [x] Pre-launch audit: 5 critical flows end-to-end
 - [x] Fix any blockers found in audit (TS error in wooImportScheduler.ts fixed)
+
+## Session #19 — Setup Guide Modal Fix (Apr 21 2026)
+- [x] Fix setup guide modal: fits entirely between header and footer, overflow-y-auto on content area, maxHeight calc(100dvh - 7rem), paddingBottom accounts for bottom nav + footer
+
+## Session #20 — Onboarding Wizard Nav (Apr 21 2026)
+- [x] Replace small dot step indicators with tappable full-width step bar (numbered pills + label)
+- [x] Add Previous / Next buttons at bottom of each step content area
+- [x] Step 3 (final): show only "Send My First Request" CTA — no Next button needed

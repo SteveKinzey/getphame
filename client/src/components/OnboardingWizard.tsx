@@ -20,6 +20,7 @@ import {
   CheckCircle2,
   X,
   ChevronRight,
+  ChevronLeft,
   Loader2,
   Eye,
   EyeOff,
@@ -665,29 +666,37 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
     onSuccess: onDismiss,
   });
 
-  // Derive current step from server state
-  const currentStep = !status?.smtpConnected ? 1 : !status?.hasPlatform ? 2 : 3;
-
+  // Derive minimum step from server state (can't go back below what's done)
+  const minStep = !status?.smtpConnected ? 1 : !status?.hasPlatform ? 2 : 3;
+  const [viewStep, setViewStep] = useState<number | null>(null);
+  // Auto-advance viewStep when server confirms a step is done
+  const currentStep = viewStep ?? minStep;
   const steps = [
     { id: 1, label: "Connect Email", icon: Mail, done: !!status?.smtpConnected },
     { id: 2, label: "Review Platform", icon: Globe, done: !!status?.hasPlatform },
     { id: 3, label: "Send Request", icon: Rocket, done: !!status?.hasSentRequest },
   ];
-
   function handleStepDone() {
-    // status will auto-refresh via refetchInterval — no manual advance needed
+    // Auto-advance to next step when server confirms completion
+    setViewStep((prev) => Math.min((prev ?? minStep) + 1, 3));
+  }
+  function handleNext() {
+    setViewStep((prev) => Math.min((prev ?? currentStep) + 1, 3));
+  }
+  function handlePrev() {
+    setViewStep((prev) => Math.max((prev ?? currentStep) - 1, 1));
   }
 
   if (isLoading) return null;
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
-      style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)" }}
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4"
+      style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)", paddingBottom: "calc(5rem + env(safe-area-inset-bottom))", paddingTop: "1rem" }}
     >
       <div
-        className="w-full max-w-md rounded-3xl overflow-hidden"
-        style={{ background: "oklch(0.14 0.05 260)" }}
+        className="w-full max-w-md rounded-3xl flex flex-col"
+        style={{ background: "oklch(0.14 0.05 260)", maxHeight: "calc(100dvh - 7rem)", overflow: "hidden" }}
       >
         {/* Header */}
         <div
@@ -714,50 +723,59 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
             </button>
           </div>
 
-          {/* Step indicators */}
-          <div className="flex items-center gap-2">
-            {steps.map((step, i) => (
-              <div key={step.id} className="flex items-center gap-2 flex-1">
-                <StepDot step={step.id} current={currentStep} done={step.done} />
-                <div className="flex-1">
-                  <p
-                    className="text-xs font-bold"
+          {/* Tappable step bar */}
+          <div className="flex gap-2 mt-1">
+            {steps.map((step) => {
+              const isActive = step.id === currentStep;
+              const isDone = step.done;
+              return (
+                <button
+                  key={step.id}
+                  onClick={() => setViewStep(step.id)}
+                  className="flex-1 flex flex-col items-center gap-1 py-2 px-1 rounded-xl transition-all active:scale-95"
+                  style={{
+                    background: isActive
+                      ? "oklch(0.80 0.18 80 / 0.15)"
+                      : "transparent",
+                    border: isActive
+                      ? "1px solid oklch(0.80 0.18 80 / 0.4)"
+                      : "1px solid transparent",
+                  }}
+                >
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black"
                     style={{
-                      color:
-                        step.done
-                          ? "oklch(0.55 0.18 145)"
-                          : step.id === currentStep
-                          ? "white"
-                          : "oklch(0.45 0.03 260)",
+                      background: isDone
+                        ? "oklch(0.55 0.18 145)"
+                        : isActive
+                        ? "oklch(0.80 0.18 80)"
+                        : "oklch(0.30 0.05 260)",
+                      color: isDone || isActive ? "oklch(0.15 0.05 260)" : "oklch(0.55 0.03 260)",
+                    }}
+                  >
+                    {isDone ? <CheckCircle2 size={14} /> : step.id}
+                  </div>
+                  <span
+                    className="text-xs font-bold leading-tight text-center"
+                    style={{
+                      color: isDone
+                        ? "oklch(0.55 0.18 145)"
+                        : isActive
+                        ? "white"
+                        : "oklch(0.45 0.03 260)",
+                      fontFamily: "'Poppins', sans-serif",
                     }}
                   >
                     {step.label}
-                  </p>
-                </div>
-                {i < steps.length - 1 && (
-                  <ChevronRight size={14} style={{ color: "oklch(0.35 0.04 260)" }} />
-                )}
-              </div>
-            ))}
-          </div>
-
-          {/* Progress bar */}
-          <div
-            className="mt-4 h-1 rounded-full overflow-hidden"
-            style={{ background: "oklch(0.28 0.06 260)" }}
-          >
-            <div
-              className="h-full rounded-full transition-all duration-500"
-              style={{
-                width: `${((currentStep - 1) / 3) * 100}%`,
-                background: "oklch(0.80 0.18 80)",
-              }}
-            />
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
         {/* Step content */}
-        <div className="px-6 py-6">
+        <div className="px-6 py-6 overflow-y-auto flex-1">
           {/* Step title */}
           <div className="mb-5">
             <h2
@@ -782,12 +800,45 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
           {currentStep === 2 && <Step2Platform onDone={handleStepDone} />}
           {currentStep === 3 && <Step3Send onDismiss={onDismiss} />}
 
+          {/* Prev / Next navigation */}
+          <div className="flex items-center gap-3 mt-6">
+            {currentStep > 1 && (
+              <button
+                onClick={handlePrev}
+                className="flex items-center gap-1 px-4 py-3 rounded-2xl font-bold text-sm transition-transform active:scale-95"
+                style={{
+                  background: "oklch(0.22 0.09 260)",
+                  color: "oklch(0.70 0.04 260)",
+                  border: "1px solid oklch(0.35 0.06 260)",
+                  fontFamily: "'Poppins', sans-serif",
+                }}
+              >
+                <ChevronLeft size={16} />
+                Previous
+              </button>
+            )}
+            {currentStep < 3 && (
+              <button
+                onClick={handleNext}
+                className="flex-1 flex items-center justify-center gap-1 px-4 py-3 rounded-2xl font-bold text-sm transition-transform active:scale-95"
+                style={{
+                  background: "oklch(0.26 0.07 260)",
+                  color: "oklch(0.75 0.04 260)",
+                  border: "1px solid oklch(0.38 0.06 260)",
+                  fontFamily: "'Poppins', sans-serif",
+                }}
+              >
+                Next step
+                <ChevronRight size={16} />
+              </button>
+            )}
+          </div>
           {/* Skip link */}
           {currentStep < 3 && (
             <button
               onClick={() => dismissMutation.mutate()}
-              className="w-full text-center text-xs mt-4"
-              style={{ color: "oklch(0.45 0.03 260)" }}
+              className="w-full text-center text-xs mt-3"
+              style={{ color: "oklch(0.40 0.03 260)" }}
             >
               Skip setup — I'll do this later
             </button>
