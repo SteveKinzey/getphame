@@ -159,6 +159,15 @@ export default function UpgradePage() {
         >
           Back to Dashboard
         </button>
+        {!isAdmin && (tier === "pro" || tier === "annual") && (
+          <button
+            onClick={() => navigate("/cancel")}
+            className="mt-4 text-xs"
+            style={{ color: "rgba(255,255,255,0.35)" }}
+          >
+            Cancel plan
+          </button>
+        )}
       </div>
     );
   }

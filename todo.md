@@ -890,3 +890,10 @@
 - [x] Sign in with Apple: install apple-signin-auth, add APPLE_CLIENT_ID / APPLE_TEAM_ID / APPLE_KEY_ID / APPLE_PRIVATE_KEY env vars
 - [x] Server routes: /api/auth/apple (initiate) and /api/auth/apple/callback (exchange + session)
 - [x] Onboarding.tsx: add Sign in with Apple button below Google button
+
+## New Features (Session — Apr 21 2026 #12)
+
+- [x] Update skill with Google/Apple OAuth patterns
+- [x] Test Google OAuth flow end-to-end (302 → accounts.google.com confirmed)
+- [x] Email preview modal in Settings: already implemented in previous session, verified present
+- [x] Cancel Plan deep-link on Upgrade page routes to /cancel churn survey instead of direct portal
