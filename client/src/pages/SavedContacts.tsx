@@ -229,6 +229,7 @@ export default function SavedContacts() {
     onSuccess: (result) => {
       utils.contacts.list.invalidate();
       utils.requests.stats.invalidate();
+      utils.contacts.getDailyStatus.invalidate();
       setSelected(new Set());
       setBulkConfirmOpen(false);
       if (result.sent > 0) track("bulk_send", { count: result.sent });

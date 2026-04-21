@@ -195,6 +195,20 @@ export default function HomePage() {
   // Show health alert only when SMTP is connected but the last check failed
   const smtpHealthFailed = smtpConnected && smtpStatus?.lastHealthStatus === "fail";
 
+  // Setup complete banner — all 4 onboarding steps done
+  const allDone =
+    (onboardingStatus?.smtpConnected ?? false) &&
+    (onboardingStatus?.hasPlatform ?? false) &&
+    (onboardingStatus?.hasContacts ?? false) &&
+    (onboardingStatus?.hasSentRequest ?? false);
+  const [setupBannerDismissed, setSetupBannerDismissed] = useState(
+    () => localStorage.getItem("rr_setup_banner_dismissed") === "1"
+  );
+  const dismissSetupBanner = () => {
+    localStorage.setItem("rr_setup_banner_dismissed", "1");
+    setSetupBannerDismissed(true);
+  };
+
   return (
     <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
       <OnboardingGuide
@@ -332,6 +346,32 @@ export default function HomePage() {
             </button>
           </div>
         )}
+        {/* ── Setup complete banner ─────────────────────────────────────── */}
+        {allDone && !setupBannerDismissed && (
+          <div
+            className="rounded-2xl p-4 shadow-sm flex items-start gap-3"
+            style={{ background: 'oklch(0.96 0.06 145)', border: '1.5px solid oklch(0.80 0.14 145)' }}
+          >
+            <CheckCircle2 size={22} className="mt-0.5 shrink-0" style={{ color: 'oklch(0.50 0.18 145)' }} />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-black" style={{ color: 'oklch(0.28 0.10 145)', fontFamily: "'Poppins', sans-serif" }}>
+                You're all set! 🚀
+              </p>
+              <p className="text-xs mt-0.5" style={{ color: 'oklch(0.38 0.08 145)' }}>
+                Email connected, review platform saved, contacts imported, first request sent. ReviewLink is fully operational.
+              </p>
+            </div>
+            <button
+              onClick={dismissSetupBanner}
+              aria-label="Dismiss"
+              className="shrink-0 p-1 rounded-lg"
+              style={{ color: 'oklch(0.50 0.10 145)' }}
+            >
+              <X size={14} />
+            </button>
+          </div>
+        )}
+
         {/* ── Setup nudges ─────────────────────────────────────────────────── */}
         {(!smtpConnected || !profileComplete) && (
           <div className="bg-white rounded-2xl p-4 shadow-sm">

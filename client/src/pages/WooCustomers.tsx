@@ -158,6 +158,7 @@ export default function WooCustomers() {
       }
       utils.woo.listPending.invalidate();
       utils.woo.listAll.invalidate();
+      utils.contacts.getDailyStatus.invalidate();
       setSelectedIds(new Set());
       setSendConfirmOpen(false);
     },

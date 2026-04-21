@@ -683,3 +683,8 @@
 - [x] Add tRPC contacts.getDailyStatus procedure returning todayCount, dailyLimit, remaining
 - [x] Show "X sent today / Y remaining of Z daily limit" in SavedContacts bulk-send confirmation dialog (amber warning when selection exceeds remaining)
 - [x] Show same daily limit status in WooCustomers bulk-send confirmation dialog
+
+## Home Screen & Bulk Send Polish
+- [x] Add "Setup complete" congratulations banner to Home screen when all 4 onboarding steps are done, with dismiss button (persisted in localStorage)
+- [x] Add AOL, ProtonMail, Fastmail to the Sending Limits callout in Settings
+- [x] Invalidate contacts.getDailyStatus after each bulk send in SavedContacts and WooCustomers

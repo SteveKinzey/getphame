@@ -1518,6 +1518,9 @@ export default function SettingsPage() {
                     <li><span className="font-semibold">Outlook / Microsoft 365</span> — 300 emails/day</li>
                     <li><span className="font-semibold">Yahoo Mail</span> — 500 emails/day</li>
                     <li><span className="font-semibold">Zoho Mail</span> — 500 emails/day (free), 1,000/day (paid)</li>
+                    <li><span className="font-semibold">AOL Mail</span> — 500 emails/day</li>
+                    <li><span className="font-semibold">Fastmail</span> — 1,000 emails/day</li>
+                    <li><span className="font-semibold">ProtonMail</span> — 150 emails/day (free), 1,000/day (paid) via Bridge</li>
                   </ul>
                   <p className="mt-1.5">For high-volume sending, use a dedicated <span className="font-semibold">reviews@yourdomain.com</span> address to keep your main inbox clean and avoid hitting personal limits.</p>
                 </div>
