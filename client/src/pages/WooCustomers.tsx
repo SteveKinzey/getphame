@@ -48,6 +48,7 @@ import {
   RotateCcw,
   Mail,
   Loader2,
+  UserX,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
@@ -596,9 +597,20 @@ export default function WooCustomers() {
                     className="mt-0.5"
                   />
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-gray-900 truncate">
-                      {customer.customerName}
-                    </p>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <p className="font-semibold text-gray-900 truncate">
+                        {customer.customerName}
+                      </p>
+                      {customer.optedOut ? (
+                        <span
+                          className="inline-flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full shrink-0"
+                          style={{ background: "oklch(0.95 0.04 25)", color: "oklch(0.50 0.18 25)" }}
+                          title="This customer has unsubscribed from review request emails"
+                        >
+                          <UserX size={10} /> Unsubscribed
+                        </span>
+                      ) : null}
+                    </div>
                     <p className="text-sm text-gray-500 truncate">
                       {customer.customerEmail}
                     </p>

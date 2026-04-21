@@ -29,7 +29,7 @@ export default function PaymentSuccessPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-5 pb-10 pt-14 relative overflow-hidden"
+      className="min-h-screen flex flex-col items-center justify-center px-5 pb-40 pt-14 relative overflow-hidden"
       style={{ background: "oklch(0.22 0.09 260)" }}
     >
       {/* Animated background stars */}

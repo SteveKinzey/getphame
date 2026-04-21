@@ -53,6 +53,8 @@ import {
   CreditCard,
   Search,
   Download,
+  UserX,
+  History,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
@@ -88,6 +90,7 @@ export default function SavedContacts() {
   const [dormancyFilter, setDormancyFilter] = useState<"all" | "30" | "60" | "90">("all");
   const [tagFilter, setTagFilter] = useState<string | null>(null);
   const [sourceFilter, setSourceFilter] = useState<"all" | "stripe" | "woocommerce" | "manual">("all");
+  const [optedOutFilter, setOptedOutFilter] = useState<"all" | "unsubscribed">("all");
   const [tagInputId, setTagInputId] = useState<number | null>(null);
   const [tagInputValue, setTagInputValue] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -281,6 +284,7 @@ export default function SavedContacts() {
     if (!matchesSearch) return false;
     if (tagFilter && !parseTags(c.tags).includes(tagFilter)) return false;
     if (sourceFilter !== "all" && c.source !== sourceFilter) return false;
+    if (optedOutFilter === "unsubscribed" && !c.optedOut) return false;
     if (dormancyFilter === "all") return true;
     const days = parseInt(dormancyFilter, 10);
     const cutoff = now - days * 24 * 60 * 60 * 1000;
@@ -565,6 +569,36 @@ export default function SavedContacts() {
             </div>
           );
         })()}
+
+        {/* Unsubscribed filter pill */}
+        {contacts.some((c) => c.optedOut) && (
+          <div className="flex items-center gap-2 overflow-x-auto pb-1">
+            <UserX size={13} style={{ color: "oklch(0.55 0.03 260)", flexShrink: 0 }} />
+            {(["all", "unsubscribed"] as const).map((opt) => {
+              const label = opt === "all" ? "All" : "Unsubscribed";
+              const active = optedOutFilter === opt;
+              return (
+                <button
+                  key={opt}
+                  onClick={() => setOptedOutFilter(opt)}
+                  className="px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors"
+                  style={{
+                    background: active ? (opt === "unsubscribed" ? "oklch(0.60 0.18 25)" : "oklch(0.22 0.09 260)") : "white",
+                    color: active ? "white" : "oklch(0.45 0.05 260)",
+                    border: "1px solid oklch(0.88 0.02 260)",
+                  }}
+                >
+                  {label}
+                </button>
+              );
+            })}
+            {optedOutFilter === "unsubscribed" && (
+              <span className="text-xs ml-1" style={{ color: "oklch(0.55 0.03 260)" }}>
+                {filtered.length} contact{filtered.length !== 1 ? "s" : ""}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Dormancy filter pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1">

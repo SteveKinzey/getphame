@@ -58,6 +58,8 @@ export default function Reminders() {
   const [, navigate] = useLocation();
   const [cancelTarget, setCancelTarget] = useState<Reminder | null>(null);
   const [sendNowTarget, setSendNowTarget] = useState<Reminder | null>(null);
+  const [bulkCancelOpen, setBulkCancelOpen] = useState(false);
+  const [bulkCancelling, setBulkCancelling] = useState(false);
 
   const utils = trpc.useUtils();
 
@@ -135,9 +137,19 @@ export default function Reminders() {
             {/* Pending */}
             {pending.length > 0 && (
               <div>
-                <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-2">
-                  Scheduled ({pending.length})
-                </h2>
+                <div className="flex items-center justify-between mb-2">
+                  <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wide">
+                    Scheduled ({pending.length})
+                  </h2>
+                  {pending.length > 1 && (
+                    <button
+                      onClick={() => setBulkCancelOpen(true)}
+                      className="text-xs font-semibold text-red-500 hover:text-red-700 transition-colors"
+                    >
+                      Cancel all
+                    </button>
+                  )}
+                </div>
                 <div className="space-y-2">
                   {pending.map((r) => (
                     <ReminderRow
@@ -185,6 +197,43 @@ export default function Reminders() {
               style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
             >
               Send Now
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Bulk Cancel All Confirm */}
+      <AlertDialog open={bulkCancelOpen} onOpenChange={(o) => { if (!o && !bulkCancelling) setBulkCancelOpen(false); }}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Cancel all {pending.length} reminders?</AlertDialogTitle>
+            <AlertDialogDescription>
+              All scheduled follow-up reminders will be cancelled and won't be sent. This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={bulkCancelling}>Keep them</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={bulkCancelling}
+              className="bg-red-600 hover:bg-red-700 text-white"
+              onClick={async (e) => {
+                e.preventDefault();
+                setBulkCancelling(true);
+                try {
+                  for (const r of pending) {
+                    await cancelMutation.mutateAsync({ id: r.id });
+                  }
+                  utils.reminders.list.invalidate();
+                  toast.success(`Cancelled ${pending.length} reminder${pending.length !== 1 ? 's' : ''}.`);
+                } catch {
+                  toast.error('Some reminders could not be cancelled.');
+                } finally {
+                  setBulkCancelling(false);
+                  setBulkCancelOpen(false);
+                }
+              }}
+            >
+              {bulkCancelling ? 'Cancelling…' : `Cancel All ${pending.length}`}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

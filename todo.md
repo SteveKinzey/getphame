@@ -731,3 +731,19 @@
 - [x] Server: contacts.cancelReminder procedure — cancel a single scheduled reminder by ID
 - [x] Reminders page: add "Scheduled Follow-ups" section listing upcoming reminders (contact name, email, scheduled date, platform)
 - [x] Each reminder row has a "Cancel" button that calls cancelReminder and removes it from the list
+
+## Mobile Page Width & Bottom Padding Audit
+- [x] Audit every page: ensure min-h-screen wrapper uses pb-40 (or pb-44) so content clears bottom nav + gold footer
+- [x] Ensure every page has px-4 or px-5 side margins on content (no full-bleed text)
+- [x] Pages to check: Home, Send, Dashboard, Settings, Contacts, WooCustomers, Reminders, Templates, Import, Upgrade, PaymentSuccess, PrivacyPolicy, TermsOfService, Changelog, AdminCodes, Unsubscribe, OnboardingGuide steps
+
+## Opted-Out Filter in SavedContacts
+- [x] Add "Unsubscribed" filter option to the dormancy/tag filter row in SavedContacts
+- [x] Filter hides non-opted-out contacts when active, showing only unsubscribed contacts
+
+## Bulk Cancel Reminders
+- [x] Reminders page: add "Cancel all scheduled" button in the Scheduled section header
+- [x] Confirm dialog before bulk cancel, then call reminders.cancel for each pending reminder
+
+## WooCommerce Opted-Out Badge
+- [x] WooCustomers: show "Unsubscribed" pill badge on rows where optedOut = 1, matching SavedContacts design

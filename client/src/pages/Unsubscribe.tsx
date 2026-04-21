@@ -36,7 +36,7 @@ export default function UnsubscribePage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-6 py-16"
+      className="min-h-screen flex flex-col items-center justify-center px-6 pt-16 pb-40"
       style={{ background: "oklch(0.975 0.003 100)" }}
     >
       {/* Card */}
