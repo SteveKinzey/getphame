@@ -695,7 +695,18 @@ export default function SavedContacts() {
 
                   {/* Contact info */}
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-gray-900 truncate">{c.name}</p>
+                    <div className="flex items-center gap-2 min-w-0">
+                      <p className="font-bold text-gray-900 truncate">{c.name}</p>
+                      {!!c.optedOut && (
+                        <span
+                          className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold"
+                          style={{ background: "oklch(0.95 0.02 27)", color: "oklch(0.50 0.15 27)", border: "1px solid oklch(0.85 0.08 27)" }}
+                          title="This contact has unsubscribed from emails"
+                        >
+                          Unsubscribed
+                        </span>
+                      )}
+                    </div>
                     <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5">
                       <Mail size={12} />
                       <span className="truncate">{c.email}</span>

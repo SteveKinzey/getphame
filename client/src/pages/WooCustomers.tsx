@@ -26,6 +26,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
   RefreshCw,
@@ -39,8 +46,11 @@ import {
   X,
   MailCheck,
   RotateCcw,
+  Mail,
+  Loader2,
 } from "lucide-react";
 import { useLocation } from "wouter";
+import { format } from "date-fns";
 
 function formatDate(ms: number) {
   return new Date(ms).toLocaleDateString(undefined, {
@@ -69,6 +79,14 @@ export default function WooCustomers() {
   const [sendConfirmOpen, setSendConfirmOpen] = useState(false);
   const [wooPlatformId, setWooPlatformId] = useState<number | null>(null);
   const [scheduleReminders, setScheduleReminders] = useState(false);
+
+  // Send history dialog state
+  const [historyCustomer, setHistoryCustomer] = useState<{ id: number; name: string; email: string } | null>(null);
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const { data: sendHistory = [], isLoading: historyLoading } = trpc.woo.sendHistory.useQuery(
+    { customerId: historyCustomer?.id ?? 0 },
+    { enabled: historyOpen && !!historyCustomer }
+  );
 
   // Reminder scheduling mutation
   const scheduleRemindersMutation = trpc.contacts.scheduleReminders.useMutation({
@@ -626,6 +644,17 @@ export default function WooCustomers() {
                       >
                         <RotateCcw size={11} />
                       </button>
+                      <button
+                        title="View send history"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setHistoryCustomer({ id: customer.id, name: customer.customerName, email: customer.customerEmail });
+                          setHistoryOpen(true);
+                        }}
+                        className="p-1 rounded-full text-gray-400 hover:text-blue-500 hover:bg-blue-50 transition-colors"
+                      >
+                        <Clock size={11} />
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -649,6 +678,73 @@ export default function WooCustomers() {
           </>
         )}
       </div>
+
+      {/* Send History Dialog */}
+      <Dialog open={historyOpen} onOpenChange={(o) => { setHistoryOpen(o); if (!o) setHistoryCustomer(null); }}>
+        <DialogContent className="max-w-md w-full">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Clock size={16} style={{ color: "oklch(0.22 0.09 260)" }} />
+              Send History
+            </DialogTitle>
+            {historyCustomer && (
+              <p className="text-sm text-gray-500">{historyCustomer.name} · {historyCustomer.email}</p>
+            )}
+          </DialogHeader>
+          <div className="mt-2 max-h-72 overflow-y-auto">
+            {historyLoading ? (
+              <div className="flex justify-center py-8">
+                <Loader2 size={20} className="animate-spin text-gray-400" />
+              </div>
+            ) : sendHistory.length === 0 ? (
+              <div className="flex flex-col items-center gap-2 py-8 text-gray-400">
+                <Mail size={28} className="opacity-40" />
+                <p className="text-sm">No emails sent yet</p>
+              </div>
+            ) : (
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="text-xs text-gray-400 border-b">
+                    <th className="text-left pb-2 font-semibold">Date</th>
+                    <th className="text-left pb-2 font-semibold">Platform</th>
+                    <th className="text-left pb-2 font-semibold">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sendHistory.map((row) => (
+                    <tr key={row.id} className="border-b last:border-0">
+                      <td className="py-2 text-gray-600 whitespace-nowrap">
+                        {format(new Date(row.sentAt), "MMM d, yyyy")}
+                      </td>
+                      <td className="py-2 text-gray-600">
+                        {row.platformLabel ?? <span className="text-gray-300">—</span>}
+                      </td>
+                      <td className="py-2">
+                        {row.respondedAt ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "oklch(0.92 0.06 80)", color: "oklch(0.45 0.12 80)" }}>Reviewed</span>
+                        ) : row.status === "sent" ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "oklch(0.92 0.06 145)", color: "oklch(0.35 0.12 145)" }}>Sent</span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.45 0.04 260)" }}>{row.status}</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+          <DialogFooter>
+            <button
+              onClick={() => setHistoryOpen(false)}
+              className="px-4 py-2 rounded-xl text-sm font-bold transition-transform active:scale-95"
+              style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+            >
+              Close
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

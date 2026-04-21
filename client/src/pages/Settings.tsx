@@ -1135,38 +1135,38 @@ export default function SettingsPage() {
               <div className="flex gap-2 flex-wrap">
                 <button
                   onClick={() => { setSmtpEmail(smtpStatus.email ?? ""); setSmtpFromName(smtpStatus.fromName ?? ""); setShowSmtpForm(true); }}
-                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95"
+                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap"
                   style={{ background: "oklch(0.96 0.01 260)", color: "oklch(0.45 0.04 260)" }}
                 >
-                  <Pencil size={14} />
-                  Change Email
+                  <Pencil size={13} />
+                  Change
                 </button>
                 <button
                   onClick={() => setPreviewOpen(true)}
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95"
+                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap"
                   style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
                   title="Preview the email your customers will receive"
                 >
-                  <Eye size={14} />
-                  Preview Email
+                  <Eye size={13} />
+                  Preview
                 </button>
                 <button
                   onClick={() => resendWelcome.mutate()}
                   disabled={resendWelcome.isPending}
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95"
+                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap"
                   style={{ background: "oklch(0.96 0.04 260)", color: "oklch(0.22 0.09 260)" }}
                   title="Resend confirmation email to your inbox"
                 >
-                  {resendWelcome.isPending ? <Loader2 size={14} className="animate-spin" /> : <Send size={14} />}
-                  Resend Email
+                  {resendWelcome.isPending ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />}
+                  Resend
                 </button>
                 <button
                   onClick={() => disconnectSmtp.mutate()}
                   disabled={disconnectSmtp.isPending}
-                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95"
+                  className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap"
                   style={{ background: "oklch(0.97 0.02 27)", color: "oklch(0.50 0.18 27)" }}
                 >
-                  {disconnectSmtp.isPending ? <Loader2 size={14} className="animate-spin" /> : <LogOut size={14} />}
+                  {disconnectSmtp.isPending ? <Loader2 size={13} className="animate-spin" /> : <LogOut size={13} />}
                   Disconnect
                 </button>
               </div>

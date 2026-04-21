@@ -712,3 +712,22 @@
 - [x] SavedContacts: add history icon button to each contact row
 - [x] SavedContacts: slide-out Sheet drawer showing send history table (date, platform, status badge)
 - [x] Show "No sends yet" empty state when history is empty
+
+## SMTP Button Label Fix
+- [x] Settings: rename "Change Email" → "Change", "Preview Email" → "Preview", "Resend Email" → "Resend" — drop the word "Email" from each button, ensure icon + text fit with sufficient internal padding
+
+## Opted-Out Badge on Contact Rows
+- [x] SavedContacts: show "Unsubscribed" pill badge on rows where optedOut = 1
+- [x] Badge should be visually distinct (e.g., red/muted) and positioned near the contact name/email
+
+## WooCommerce Send History
+- [x] Server: woo.sendHistory procedure — return all customer_requests rows for a given wooCustomer email (date, platform, status)
+- [x] WooCustomers: add history icon button to each customer row
+- [x] WooCustomers: dialog showing send history (date, platform, status badge), same design as SavedContacts history dialog
+- [x] Show "No emails sent yet" empty state
+
+## Reminder Management Page
+- [x] Server: contacts.listScheduledReminders procedure — return all pending/sent follow-up reminders for the user
+- [x] Server: contacts.cancelReminder procedure — cancel a single scheduled reminder by ID
+- [x] Reminders page: add "Scheduled Follow-ups" section listing upcoming reminders (contact name, email, scheduled date, platform)
+- [x] Each reminder row has a "Cancel" button that calls cancelReminder and removes it from the list

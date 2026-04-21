@@ -683,8 +683,45 @@ export const appRouter = router({
 
         return { sent: sentIds.length, errors, sentRequests };
       }),
-  }),
 
+    /**
+     * Return send history for a specific WooCommerce customer — all customer_requests rows
+     * linked to this customer's email address, ordered newest first.
+     */
+    sendHistory: protectedProcedure
+      .input(z.object({ customerId: z.number().int() }))
+      .query(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) return [];
+        const { wooCustomers } = await import("../drizzle/schema");
+        const { and: andW, eq: eqW, desc: descW } = await import("drizzle-orm");
+        // Look up the woo customer to get their email
+        const rows = await db
+          .select({ email: wooCustomers.customerEmail })
+          .from(wooCustomers)
+          .where(andW(eqW(wooCustomers.userId, ctx.user.id), eqW(wooCustomers.id, input.customerId)));
+        if (rows.length === 0) return [];
+        const email = rows[0].email;
+        const history = await db
+          .select({
+            id: customerRequests.id,
+            sentAt: customerRequests.sentAt,
+            status: customerRequests.status,
+            respondedAt: customerRequests.respondedAt,
+            platformId: customerRequests.platformId,
+          })
+          .from(customerRequests)
+          .where(andW(eqW(customerRequests.userId, ctx.user.id), eqW(customerRequests.customerEmail, email)))
+          .orderBy(descW(customerRequests.sentAt));
+        const platforms = await listReviewPlatforms(ctx.user.id);
+        const platformMap = new Map(platforms.map((p) => [p.id, p]));
+        return history.map((r) => ({
+          ...r,
+          platformLabel: r.platformId ? (platformMap.get(r.platformId)?.label ?? platformMap.get(r.platformId)?.platform ?? null) : null,
+          sentAt: r.sentAt instanceof Date ? r.sentAt.toISOString() : String(r.sentAt),
+        }));
+      }),
+  }),
   contacts: router({
     list: protectedProcedure.query(async ({ ctx }) => {
       return listSavedContacts(ctx.user.id);
