@@ -42,8 +42,6 @@ export const businessProfiles = mysqlTable("business_profiles", {
   monthlyResetDate: varchar("monthlyResetDate", { length: 7 }).notNull(), // "YYYY-MM"
   // Stripe customer ID — stored for creating checkout sessions and portal links
   stripeCustomerId: varchar("stripeCustomerId", { length: 64 }),
-  // Zoho Books customer ID — stored for creating invoices
-  zohoCustomerId: varchar("zohoCustomerId", { length: 64 }),
   // Email sender display name — shown as "From: <name>" in outgoing review request emails
   fromName: varchar("fromName", { length: 255 }),
   // Reply-To address — if set, replies go here instead of the connected email address
@@ -238,21 +236,6 @@ export const accessCodeRedemptions = mysqlTable("access_code_redemptions", {
 
 export type AccessCodeRedemption = typeof accessCodeRedemptions.$inferSelect;
 export type InsertAccessCodeRedemption = typeof accessCodeRedemptions.$inferInsert;
-
-/**
- * Stores Zoho Books OAuth tokens (one row — the owner's connection).
- * Access token is refreshed automatically before each API call.
- */
-export const zohoTokens = mysqlTable("zoho_tokens", {
-  id: int("id").autoincrement().primaryKey(),
-  accessToken: text("accessToken").notNull(),
-  refreshToken: text("refreshToken").notNull(),
-  expiresAt: bigint("expiresAt", { mode: "bigint" }).notNull(), // Unix ms
-  updatedAt: bigint("updatedAt", { mode: "bigint" }).notNull(), // Unix ms
-});
-
-export type ZohoToken = typeof zohoTokens.$inferSelect;
-export type InsertZohoToken = typeof zohoTokens.$inferInsert;
 
 /**
  * Review platform URLs per user — Google, Yelp, TripAdvisor, Bing, Facebook, Other.

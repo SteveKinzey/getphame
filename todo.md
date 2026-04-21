@@ -1149,3 +1149,11 @@
 - [x] Make email in TH_ADDRESS clickable (mailto) in PrivacyPolicy.tsx and TermsOfService.tsx
 - [x] Make email in US_ADDRESS clickable (mailto) in PrivacyPolicy.tsx and TermsOfService.tsx
 - [x] Removed server/zoho.ts, server/zoho.test.ts, zoho tRPC router, registerZohoRoutes in index.ts, Zoho env vars in env.ts, invoice button in Upgrade.tsx
+
+## Session #43 — Zoho Removal Skill + 3 Follow-ups (Apr 21 2026)
+- [x] Create reusable skill: zoho-removal (documents the full Zoho Books cleanup pattern)
+- [x] App already published — deployment confirmed live at reviewlink.app
+- [x] Fixed all 4 smtpWeeklyDigest test failures: updated mock to support .where() chaining, corrected assertions to match actual function behaviour (weekly pulse always fires)
+- [x] Removed zohoCustomerId column from drizzle/schema.ts + ran pnpm db:push (migration 0038)
+- [x] Removed zohoTokens table from drizzle/schema.ts + ran pnpm db:push (migration 0039)
+- [x] Tests: 39/39 passing

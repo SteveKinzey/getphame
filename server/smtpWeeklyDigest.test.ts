@@ -51,24 +51,47 @@ describe("sendSmtpWeeklyDigest", () => {
     expect(mockNotifyOwner).not.toHaveBeenCalled();
   });
 
-  it("returns false and skips when all accounts are healthy", async () => {
-    const db = {
-      select: () => ({ from: () => Promise.resolve([makeRow({ lastHealthStatus: "ok" })]) }),
+  /**
+   * Helper: build a chainable Drizzle-style mock.
+   * - First call to .from() returns smtpRows (no .where() needed)
+   * - Second call to .from() returns a chainable object with .where() that resolves churnRows
+   */
+  function makeDb(smtpRows: ReturnType<typeof makeRow>[], churnRows: object[] = []) {
+    let callCount = 0;
+    return {
+      select: () => ({
+        from: () => {
+          callCount++;
+          if (callCount === 1) {
+            // smtpCredentials query — no .where()
+            return Promise.resolve(smtpRows);
+          }
+          // churnSurveys query — has .where()
+          return {
+            where: () => Promise.resolve(churnRows),
+          };
+        },
+      }),
     } as any;
-    mockGetDb.mockResolvedValue(db);
+  }
+
+  it("sends digest even when all accounts are healthy (weekly pulse always fires)", async () => {
+    mockGetDb.mockResolvedValue(makeDb([makeRow({ lastHealthStatus: "ok" })]));
     const result = await sendSmtpWeeklyDigest();
-    expect(result).toBe(false);
-    expect(mockNotifyOwner).not.toHaveBeenCalled();
+    // The digest always fires — it's a weekly pulse, not just an alert
+    expect(result).toBe(true);
+    expect(mockNotifyOwner).toHaveBeenCalledOnce();
+    const call = mockNotifyOwner.mock.calls[0][0];
+    expect(call.content).toContain("All 1 connected account(s) healthy");
   });
 
-  it("returns false and skips when no accounts exist", async () => {
-    const db = {
-      select: () => ({ from: () => Promise.resolve([]) }),
-    } as any;
-    mockGetDb.mockResolvedValue(db);
+  it("sends digest even when no accounts exist (weekly pulse always fires)", async () => {
+    mockGetDb.mockResolvedValue(makeDb([]));
     const result = await sendSmtpWeeklyDigest();
-    expect(result).toBe(false);
-    expect(mockNotifyOwner).not.toHaveBeenCalled();
+    expect(result).toBe(true);
+    expect(mockNotifyOwner).toHaveBeenCalledOnce();
+    const call = mockNotifyOwner.mock.calls[0][0];
+    expect(call.content).toContain("No SMTP accounts connected");
   });
 
   it("sends digest and returns true when there are failing accounts", async () => {
@@ -77,17 +100,15 @@ describe("sendSmtpWeeklyDigest", () => {
       makeRow({ host: "smtp.zoho.com", lastHealthStatus: "fail", lastHealthError: "Auth failed" }),
       makeRow({ host: "smtp.zoho.com", lastHealthStatus: "fail", lastHealthError: "Connection refused" }),
     ];
-    const db = {
-      select: () => ({ from: () => Promise.resolve(rows) }),
-    } as any;
-    mockGetDb.mockResolvedValue(db);
+    mockGetDb.mockResolvedValue(makeDb(rows));
 
     const result = await sendSmtpWeeklyDigest();
     expect(result).toBe(true);
     expect(mockNotifyOwner).toHaveBeenCalledOnce();
 
     const call = mockNotifyOwner.mock.calls[0][0];
-    expect(call.title).toContain("2/3");
+    // Title format: "📊 Weekly Digest — ⚠️ 2 SMTP fail · 0 cancellations"
+    expect(call.title).toContain("2 SMTP fail");
     expect(call.content).toContain("smtp.zoho.com");
     expect(call.content).toContain("Auth failed");
   });
@@ -96,10 +117,7 @@ describe("sendSmtpWeeklyDigest", () => {
     const rows = Array.from({ length: 5 }, (_, i) =>
       makeRow({ host: "smtp.outlook.com", lastHealthStatus: "fail", lastHealthError: `Error ${i + 1}` })
     );
-    const db = {
-      select: () => ({ from: () => Promise.resolve(rows) }),
-    } as any;
-    mockGetDb.mockResolvedValue(db);
+    mockGetDb.mockResolvedValue(makeDb(rows));
 
     await sendSmtpWeeklyDigest();
     const call = mockNotifyOwner.mock.calls[0][0];
