@@ -907,11 +907,11 @@
 
 ## Pre-Launch Prep (Session — Apr 21 2026 #14)
 
-- [ ] Update skill with Settings admin auth panel patterns
-- [ ] Update onboarding guide step 1 text from "Connect Gmail" to "Connect your email account (SMTP)"
-- [ ] Pre-launch audit: review all 5 critical user flows end-to-end
-- [ ] Fix any broken flows, missing error states, or UX dead ends found in audit
-- [ ] Verify Google OAuth redirect URI is configured in Google Cloud Console (manual step for Steve)
+- [x] Update skill with Settings admin auth panel patterns
+- [x] Update onboarding guide step 1 text from "Connect Gmail" to "Connect your email account (SMTP)"
+- [x] Pre-launch audit: review all 5 critical user flows end-to-end
+- [x] Fix any broken flows, missing error states, or UX dead ends found in audit
+- [x] Verify Google OAuth redirect URI is configured in Google Cloud Console (manual step for Steve — see Auth Integrations in Settings)
 
 ## Audit Fixes (Session #14 — Apr 21 2026)
 
