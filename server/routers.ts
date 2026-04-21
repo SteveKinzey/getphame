@@ -1384,7 +1384,7 @@ export const appRouter = router({
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
 
-      const { smtpCredentials, reviewPlatforms, customerRequests } = await import("../drizzle/schema");
+      const { smtpCredentials, reviewPlatforms, customerRequests, savedContacts } = await import("../drizzle/schema");
       const { eq: eqOp, count } = await import("drizzle-orm");
 
       const [smtpRow] = await db
@@ -1404,15 +1404,21 @@ export const appRouter = router({
         .from(customerRequests)
         .where(eqOp(customerRequests.userId, ctx.user.id));
 
+      const [contactRow] = await db
+        .select({ cnt: count() })
+        .from(savedContacts)
+        .where(eqOp(savedContacts.userId, ctx.user.id));
+
       const profile = await getBusinessProfile(ctx.user.id);
 
       const smtpConnected = !!smtpRow?.verified;
       const hasPlatform = !!platformRow;
       const hasSentRequest = (requestRow?.cnt ?? 0) > 0;
+      const hasContacts = (contactRow?.cnt ?? 0) > 0;
       const dismissed = profile?.onboardingDismissed === 1;
-      const allDone = smtpConnected && hasPlatform && hasSentRequest;
+      const allDone = smtpConnected && hasPlatform && hasContacts && hasSentRequest;
 
-      return { smtpConnected, hasPlatform, hasSentRequest, allDone, dismissed };
+      return { smtpConnected, hasPlatform, hasSentRequest, hasContacts, allDone, dismissed };
     }),
 
     /** Permanently dismisses the onboarding wizard for this user. */

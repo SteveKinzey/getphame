@@ -32,7 +32,20 @@ interface Step {
 
 const STEP_ROUTES = ["/settings", "/settings", "/import", "/send"];
 
-function StepWelcome({ onNavigate }: { onNavigate: (path: string) => void }) {
+interface StepsDone {
+  smtp: boolean;
+  platform: boolean;
+  contacts: boolean;
+  sent: boolean;
+}
+
+function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => void; stepsDone?: StepsDone }) {
+  const done = [
+    stepsDone?.smtp ?? false,
+    stepsDone?.platform ?? false,
+    stepsDone?.contacts ?? false,
+    stepsDone?.sent ?? false,
+  ];
   return (
     <div className="space-y-5">
       <div
@@ -63,20 +76,30 @@ function StepWelcome({ onNavigate }: { onNavigate: (path: string) => void }) {
             key={i}
             onClick={() => onNavigate(STEP_ROUTES[i])}
             className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-transform active:scale-95"
-            style={{ background: "white", border: "1px solid oklch(0.91 0.02 260)" }}
+            style={{
+              background: done[i] ? "oklch(0.96 0.04 145)" : "white",
+              border: `1px solid ${done[i] ? "oklch(0.80 0.12 145)" : "oklch(0.91 0.02 260)"}`,
+            }}
           >
             <div
               className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 font-black text-xs"
-              style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
+              style={{
+                background: done[i] ? "oklch(0.55 0.18 145)" : "oklch(0.22 0.09 260)",
+                color: "white",
+              }}
             >
-              {i + 1}
+              {done[i] ? <CheckCircle2 size={14} /> : i + 1}
             </div>
-            <span className="text-sm font-medium" style={{ color: "oklch(0.22 0.09 260)" }}>
+            <span
+              className="text-sm font-medium"
+              style={{ color: done[i] ? "oklch(0.35 0.12 145)" : "oklch(0.22 0.09 260)" }}
+            >
               {item.label}
+              {done[i] && <span className="ml-1.5 text-xs font-bold" style={{ color: "oklch(0.50 0.15 145)" }}>✓ Done</span>}
             </span>
-            <div className="ml-auto flex items-center gap-1" style={{ color: "oklch(0.55 0.05 260)" }}>
-              {item.icon}
-              <ChevronRight size={14} />
+            <div className="ml-auto flex items-center gap-1" style={{ color: done[i] ? "oklch(0.55 0.18 145)" : "oklch(0.55 0.05 260)" }}>
+              {done[i] ? <CheckCircle2 size={14} /> : item.icon}
+              {!done[i] && <ChevronRight size={14} />}
             </div>
           </button>
         ))}
@@ -560,9 +583,10 @@ function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void;
 interface OnboardingGuideProps {
   open: boolean;
   onClose: () => void;
+  stepsDone?: StepsDone;
 }
 
-export default function OnboardingGuide({ open, onClose }: OnboardingGuideProps) {
+export default function OnboardingGuide({ open, onClose, stepsDone }: OnboardingGuideProps) {
   const [step, setStep] = useState(0);
   const [, navigate] = useLocation();
 
@@ -584,7 +608,7 @@ export default function OnboardingGuide({ open, onClose }: OnboardingGuideProps)
       icon: <Rocket size={20} />,
       title: "Welcome to ReviewLink",
       subtitle: "Here's what we'll set up together",
-      content: <StepWelcome onNavigate={handleNavigate} />,
+      content: <StepWelcome onNavigate={handleNavigate} stepsDone={stepsDone} />,
     },
     {
       id: 1,

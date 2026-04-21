@@ -382,6 +382,9 @@ export default function SettingsPage() {
     onError: (err) => toast.error(err.message),
   });
 
+  // ── Onboarding status ──────────────────────────────────────────────────────
+  const { data: onboardingStatus } = trpc.onboarding.status.useQuery();
+
   // ── Onboarding reset ─────────────────────────────────────────────────────
   const resetOnboarding = trpc.onboarding.reset.useMutation({
     onSuccess: () => {
@@ -608,7 +611,16 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
-      <OnboardingGuide open={guideOpen} onClose={() => setGuideOpen(false)} />
+      <OnboardingGuide
+        open={guideOpen}
+        onClose={() => setGuideOpen(false)}
+        stepsDone={{
+          smtp: onboardingStatus?.smtpConnected ?? false,
+          platform: onboardingStatus?.hasPlatform ?? false,
+          contacts: onboardingStatus?.hasContacts ?? false,
+          sent: onboardingStatus?.hasSentRequest ?? false,
+        }}
+      />
       {/* Navy Header */}
       <div className="px-5 pt-14 pb-6" style={{ background: "oklch(0.22 0.09 260)" }}>
         <div className="flex items-center justify-between mb-1">

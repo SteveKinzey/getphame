@@ -152,6 +152,7 @@ export default function HomePage() {
   const { data: profile } = trpc.profile.get.useQuery();
   const { data: smtpStatus } = trpc.smtp.status.useQuery();
   const { data: stats } = trpc.requests.stats.useQuery();
+  const { data: onboardingStatus } = trpc.onboarding.status.useQuery();
   const utils = trpc.useUtils();
 
   // Goal tracker state
@@ -196,7 +197,16 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
-      <OnboardingGuide open={guideOpen} onClose={() => setGuideOpen(false)} />
+      <OnboardingGuide
+        open={guideOpen}
+        onClose={() => setGuideOpen(false)}
+        stepsDone={{
+          smtp: onboardingStatus?.smtpConnected ?? false,
+          platform: onboardingStatus?.hasPlatform ?? false,
+          contacts: onboardingStatus?.hasContacts ?? false,
+          sent: onboardingStatus?.hasSentRequest ?? false,
+        }}
+      />
       {/* Navy Header Panel */}
       <div
         className="relative px-5 pt-14 pb-8 overflow-hidden"

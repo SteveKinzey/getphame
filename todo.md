@@ -660,3 +660,9 @@
 - [x] Enforce daily send limit in contacts bulk-send procedure via getTodaySentCount helper
 - [x] Add Daily Send Limit number input + Save button to Settings Email section
 - [x] Confirmed: bulk send iterates contacts and calls sendMailViaSmtp individually per recipient
+
+## Onboarding Checkmarks
+- [x] Show green checkmark on Home screen step 1 when SMTP is connected and verified
+- [x] Show green checkmark on Home screen step 2 when at least one review platform is saved
+- [x] Show green checkmark on Home screen step 3 when at least one contact exists
+- [x] Show green checkmark on Home screen step 4 when at least one review request has been sent
