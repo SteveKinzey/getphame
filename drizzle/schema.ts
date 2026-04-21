@@ -419,3 +419,35 @@ export const wooPendingImports = mysqlTable("woo_pending_imports", {
 });
 export type WooPendingImport = typeof wooPendingImports.$inferSelect;
 export type InsertWooPendingImport = typeof wooPendingImports.$inferInsert;
+
+/**
+ * Webhook delivery logs — records each outbound webhook attempt.
+ * Keeps the last N deliveries per webhook for debugging in Settings.
+ */
+export const webhookDeliveryLogs = mysqlTable("webhook_delivery_logs", {
+  id: int("id").autoincrement().primaryKey(),
+  webhookId: int("webhookId").notNull(),
+  userId: int("userId").notNull(),
+  event: varchar("event", { length: 64 }).notNull(),
+  url: text("url").notNull(),
+  statusCode: int("statusCode"), // null if network error
+  success: boolean("success").notNull().default(false),
+  responseBody: text("responseBody"), // truncated to 500 chars
+  errorMessage: text("errorMessage"), // set on network/timeout error
+  durationMs: int("durationMs"), // round-trip time in ms
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+});
+export type WebhookDeliveryLog = typeof webhookDeliveryLogs.$inferSelect;
+export type InsertWebhookDeliveryLog = typeof webhookDeliveryLogs.$inferInsert;
+
+/**
+ * User notification preferences — stores per-user toggles for in-app notifications.
+ */
+export const notificationPrefs = mysqlTable("notification_prefs", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  wooAutoImportNotify: boolean("wooAutoImportNotify").notNull().default(true),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+});
+export type NotificationPref = typeof notificationPrefs.$inferSelect;
+export type InsertNotificationPref = typeof notificationPrefs.$inferInsert;

@@ -19,6 +19,9 @@ import {
   getWebhookConfigs,
   createWebhookConfig,
   deleteWebhookConfig,
+  getWebhookDeliveryLogs,
+  getNotificationPrefs,
+  updateNotificationPrefs,
 } from "./db";
 
 import { sendMailViaSmtp } from "./smtp";
@@ -2018,6 +2021,29 @@ export const appRouter = router({
         } catch (err: any) {
           return { success: false, status: 0, error: err.message };
         }
+      }),
+    /** Get the last 5 delivery logs for a specific webhook */
+    deliveryLogs: protectedProcedure
+      .input(z.object({ webhookId: z.number().int().positive(), limit: z.number().int().min(1).max(20).default(5) }))
+      .query(async ({ ctx, input }) => {
+        const configs = await getWebhookConfigs(ctx.user.id);
+        const owned = configs.find((c) => c.id === input.webhookId);
+        if (!owned) throw new TRPCError({ code: "NOT_FOUND", message: "Webhook not found." });
+        return getWebhookDeliveryLogs(input.webhookId, input.limit);
+      }),
+  }),
+  /** User notification preferences */
+  notificationPrefs: router({
+    get: protectedProcedure.query(async ({ ctx }) => {
+      return getNotificationPrefs(ctx.user.id);
+    }),
+    update: protectedProcedure
+      .input(z.object({
+        wooAutoImportNotify: z.boolean().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        await updateNotificationPrefs(ctx.user.id, input);
+        return { success: true };
       }),
   }),
 

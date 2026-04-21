@@ -8,10 +8,11 @@
  *   automatically imported into woo_customers and saved_contacts.
  */
 
-import { getDb } from "./db";
+import { getDb, getNotificationPrefs } from "./db";
 import { wooPendingImports, wooCustomers, savedContacts } from "../drizzle/schema";
 import { eq, lt, and, inArray } from "drizzle-orm";
 import { upsertContactsFromSource } from "./contacts";
+import { notifyOwner } from "./_core/notification";
 
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
@@ -199,6 +200,18 @@ async function runAutoImport(): Promise<void> {
     try {
       const result = await importPendingWooOrders(userId);
       console.log(`[WooAutoImport] User ${userId}: imported ${result.imported} contacts.`);
+      // Notify the user if they have the notify-on-import preference enabled
+      try {
+        const prefs = await getNotificationPrefs(userId);
+        if (prefs?.wooAutoImportNotify) {
+          await notifyOwner({
+            title: "WooCommerce Auto-Import Complete",
+            content: `ReviewLink automatically imported ${result.imported} WooCommerce contact${result.imported !== 1 ? "s" : ""} into your contacts list. These customers are now ready to receive review requests.`,
+          });
+        }
+      } catch (notifyErr) {
+        console.warn(`[WooAutoImport] Notify failed for user ${userId}:`, notifyErr);
+      }
     } catch (err) {
       console.error(`[WooAutoImport] User ${userId} failed:`, err);
     }

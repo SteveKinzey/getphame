@@ -38,6 +38,7 @@ import {
   Key,
   Copy,
   Download,
+  Bell,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
 
@@ -646,6 +647,29 @@ export default function SettingsPage() {
   // ── Recent API Imports & Webhooks ─────────────────────────────────────────
   const { data: recentImports } = trpc.apiKey.recentImports.useQuery({ limit: 10 });
   const { data: webhookList } = trpc.webhook.list.useQuery();
+  const { data: notifPrefs } = trpc.notificationPrefs.get.useQuery();
+  const updateNotifPrefs = trpc.notificationPrefs.update.useMutation({
+    onSuccess: () => { utils.notificationPrefs.get.invalidate(); toast.success("Notification preference saved."); },
+    onError: (err) => toast.error(err.message),
+  });
+  const [expandedWebhookId, setExpandedWebhookId] = useState<number | null>(null);
+  const { data: webhookLogs } = trpc.webhook.deliveryLogs.useQuery(
+    { webhookId: expandedWebhookId ?? 0, limit: 5 },
+    { enabled: expandedWebhookId !== null }
+  );
+  const handleExportImportsCsv = () => {
+    if (!recentImports || recentImports.length === 0) { toast.error("No imports to export."); return; }
+    const header = "Date,Email,Key Label,Action";
+    const rows = recentImports.map((ev: any) =>
+      `"${new Date(ev.createdAt).toLocaleString()}","${ev.email}","${ev.keyLabel}","${ev.created ? 'Created' : 'Updated'}"`
+    );
+    const csv = [header, ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `reviewlink-api-imports-${Date.now()}.csv`; a.click();
+    URL.revokeObjectURL(url);
+  };
   const [showAddWebhook, setShowAddWebhook] = useState(false);
   const [newWebhookUrl, setNewWebhookUrl] = useState("");
   const [newWebhookLabel, setNewWebhookLabel] = useState("My Webhook");
@@ -2346,11 +2370,20 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
             {/* ── Recent API Imports ────────────────────────────────────────────────────────────────────────────── */}
         {recentImports && recentImports.length > 0 && (
           <div className="bg-white rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center gap-2 mb-3">
-              <Clock size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
-              <h2 className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
-                Recent API Imports
-              </h2>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Clock size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+                <h2 className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>
+                  Recent API Imports
+                </h2>
+              </div>
+              <button
+                onClick={handleExportImportsCsv}
+                className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold"
+                style={{ background: "oklch(0.97 0.01 260)", color: "oklch(0.40 0.08 260)", border: "1.5px solid oklch(0.88 0.04 260)" }}
+              >
+                <Download size={12} /> Export CSV
+              </button>
             </div>
             <div className="space-y-2">
               {recentImports.map((ev) => (
@@ -2455,19 +2488,70 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
                       Test
                     </button>
                     <button
+                      onClick={() => setExpandedWebhookId(expandedWebhookId === wh.id ? null : wh.id)}
+                      className="px-2 py-1 rounded-lg text-xs font-bold"
+                      style={{ background: expandedWebhookId === wh.id ? "oklch(0.22 0.09 260)" : "oklch(0.93 0.02 260)", color: expandedWebhookId === wh.id ? "white" : "oklch(0.30 0.08 260)" }}
+                    >
+                      Logs
+                    </button>
+                    <button
                       onClick={() => { if (confirm(`Delete webhook "${wh.label}"?`)) deleteWebhook.mutate({ id: wh.id }); }}
                       className="p-1.5 rounded-lg"
                       style={{ background: "oklch(0.96 0.01 25)", color: "oklch(0.55 0.15 25)" }}
                     >
                       <Trash2 size={12} />
                     </button>
-                  </div>
+                   </div>
                 </div>
+                {/* Delivery logs panel */}
+                {expandedWebhookId === wh.id && (
+                  <div className="mt-2 rounded-xl p-3" style={{ background: "oklch(0.94 0.01 260)" }}>
+                    <p className="text-xs font-bold mb-2" style={{ color: "oklch(0.30 0.08 260)" }}>Last 5 Deliveries</p>
+                    {!webhookLogs || webhookLogs.length === 0 ? (
+                      <p className="text-xs" style={{ color: "oklch(0.60 0.04 260)" }}>No deliveries yet — fire a test ping to see logs here.</p>
+                    ) : (
+                      <div className="space-y-1.5">
+                        {webhookLogs.map((log: any) => (
+                          <div key={log.id} className="rounded-lg px-2.5 py-2" style={{ background: log.success ? "oklch(0.96 0.04 145)" : "oklch(0.97 0.03 25)" }}>
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-xs font-bold" style={{ color: log.success ? "oklch(0.40 0.15 145)" : "oklch(0.50 0.18 25)" }}>
+                                {log.success ? "✓" : "✗"} HTTP {log.statusCode ?? "ERR"} · {log.durationMs}ms
+                              </span>
+                              <span className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>{new Date(log.createdAt).toLocaleString()}</span>
+                            </div>
+                            {log.errorMessage && <p className="text-xs mt-0.5 truncate" style={{ color: "oklch(0.50 0.18 25)" }}>{log.errorMessage}</p>}
+                            {log.responseBody && <p className="text-xs mt-0.5 truncate" style={{ color: "oklch(0.45 0.05 260)" }}>{log.responseBody}</p>}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
-
+        {/* ── Notification Preferences ─────────────────────────────────────────── */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm">
+          <div className="flex items-center gap-2 mb-4">
+            <Bell size={18} style={{ color: "oklch(0.22 0.09 260)" }} />
+            <h2 className="text-base font-black" style={{ color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}>Notification Preferences</h2>
+          </div>
+          <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3" style={{ background: "oklch(0.97 0.01 260)" }}>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>WooCommerce auto-import notification</p>
+              <p className="text-xs mt-0.5" style={{ color: "oklch(0.55 0.04 260)" }}>Receive an in-app notification when the Monday auto-import runs and contacts are added.</p>
+            </div>
+            <button
+              onClick={() => updateNotifPrefs.mutate({ wooAutoImportNotify: !notifPrefs?.wooAutoImportNotify })}
+              disabled={updateNotifPrefs.isPending}
+              className="shrink-0 w-10 h-6 rounded-full transition-colors relative"
+              style={{ background: notifPrefs?.wooAutoImportNotify ? "oklch(0.50 0.15 145)" : "oklch(0.80 0.02 260)" }}
+            >
+              <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform" style={{ left: notifPrefs?.wooAutoImportNotify ? "calc(100% - 1.35rem)" : "0.1rem" }} />
+            </button>
+          </div>
+        </div>
         <SendFeedbackSection />
         {/* ── Admin: OAuth & Auth Integrations ────────────────────────────── */}
         {user?.role === "admin" && (

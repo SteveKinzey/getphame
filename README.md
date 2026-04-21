@@ -1,181 +1,164 @@
-# ReviewLink
+# ReviewLink — Get More Reviews on Autopilot
 
-**ReviewLink** is a mobile-first SaaS PWA that helps local businesses automate review requests. Owners connect their own email account (SMTP), import or sync customers, and send personalized review-request emails that look like they came directly from the business — not a bulk mailer. The app tracks opens and clicks, sends automated follow-up reminders, and includes a full churn-recovery and re-engagement email sequence.
+**ReviewLink** helps local businesses collect more Google, Yelp, and TripAdvisor reviews by sending personalised review-request emails directly from your own email account. Customers receive a message that looks like it came from you — not a bulk mailer — which means higher open rates and more genuine reviews.
 
-Live: [reviewlink.app](https://reviewlink.app) 
+🌐 **Live app:** [reviewlink.app](https://reviewlink.app)
 
 ---
 
-## Tech Stack
+## What ReviewLink Does
 
-| Layer | Technology |
+ReviewLink connects to your existing email account (Gmail, Outlook, Yahoo, or any business email) and sends personalised review-request emails to your customers. You control the message, the timing, and which review platform you want to direct customers to. The app tracks who opened the email and who clicked the review link, and automatically sends up to two follow-up reminders to customers who haven't responded yet.
+
+---
+
+## Getting Started
+
+### Step 1 — Create your account
+
+Go to [reviewlink.app](https://reviewlink.app) and tap **Get Started Free**. Sign in with your Google or Apple account. No credit card required.
+
+### Step 2 — Connect your email
+
+Go to **Settings → Email Connection** and enter your SMTP credentials. ReviewLink sends emails from your own address, so customers see your name in the "From" field.
+
+| Provider | What you need |
 |---|---|
-| Frontend | React 19, Vite, Tailwind CSS 4, shadcn/ui, Radix UI, Wouter, Framer Motion |
-| Backend | Express 4, tRPC 11, Superjson |
-| Database | MySQL / TiDB (Drizzle ORM) |
-| Auth | Direct Google OAuth 2.0, Sign in with Apple |
-| Payments | Stripe (monthly/annual/lifetime) |
-| Email | User-supplied SMTP relay (Nodemailer), AES-256-GCM encrypted credentials |
-| Storage | AWS S3 |
-| Mobile | Capacitor (iOS + Android PWA wrapper) |
-| Testing | Vitest |
+| Gmail | Enable 2-Step Verification, then generate an [App Password](https://myaccount.google.com/apppasswords) |
+| Outlook / Microsoft 365 | Generate an App Password in your Microsoft account security settings |
+| Yahoo | Enable 2-Step Verification, then generate an App Password |
+| Zoho Mail | Enable SMTP access in Zoho Mail settings (Settings → Mail Accounts → SMTP) |
+| iCloud | Generate an App-Specific Password at [appleid.apple.com](https://appleid.apple.com) |
+| Business / cPanel | Use the SMTP host, port, and password from your hosting control panel |
+
+After saving, tap **Send Test Email** to confirm the connection is working.
+
+### Step 3 — Add your review platform link
+
+Go to **Settings → Review Platforms** and add the URL where you want customers to leave a review. You can add multiple platforms (Google, Yelp, TripAdvisor, Facebook, Bing) and set a default. The default link is used in all outbound emails.
+
+**How to find your review link:**
+
+- **Google** — Search your business on Google Maps, click "Write a review", and copy the URL from your browser.
+- **Yelp** — Go to your Yelp business page and copy the URL.
+- **TripAdvisor** — Go to your TripAdvisor listing and copy the URL.
+- **Facebook** — Go to your Facebook Page → Reviews tab and copy the URL.
+
+### Step 4 — Import your customers
+
+You have four ways to add contacts:
+
+**Manual entry** — Tap **Send** and enter a name and email address to send a one-off request immediately.
+
+**CSV import** — Go to **Saved Contacts → Import CSV**. Your file needs at minimum a `first_name` and `email` column. Optional columns: `last_name`, `phone`, `notes`.
+
+**WooCommerce sync** — Go to **Settings → WooCommerce**, enter your store URL and API keys (see the setup guide in the app), then tap **Sync Orders**. Synced orders are held as pending imports — review and confirm them before they appear in your contacts list. Any pending imports older than 7 days are automatically imported every Monday at 03:00 GMT.
+
+**API / website form** — Go to **Settings → API Keys**, generate a key, and use the provided HTML/JS snippet to add a contact capture form to any webpage. Contacts submitted through the form appear in your Saved Contacts list automatically.
+
+### Step 5 — Send review requests
+
+Go to **Send** and enter a customer's name and email, or go to **Saved Contacts**, select one or more customers, and tap **Send Review Request**. ReviewLink sends the email from your connected account and starts tracking opens and clicks.
 
 ---
 
-## Features
+## Automatic Follow-ups
 
-### Core
+ReviewLink sends up to two follow-up emails per customer automatically:
 
-ReviewLink sends personalized review-request emails from the user's own SMTP account. Each email is built from a customizable template, includes the business name and review platform link, and is tracked for opens and clicks via a pixel and redirect proxy. Contacts can be imported via CSV, synced from WooCommerce, or added manually. The app enforces a configurable daily send limit and a per-contact cooldown to prevent over-mailing.
+- **Day 3** — a gentle reminder if the customer hasn't clicked the review link yet
+- **Day 10** — a final nudge if still no click
 
-### Follow-up Reminders
-
-A scheduler runs every 10 minutes and sends up to two follow-up emails per request: one at 3 days and one at 10 days after the initial send, if the contact has not yet clicked the review link. Contacts who click unsubscribe are permanently opted out.
-
-### Multi-platform Review Links
-
-Users can configure multiple review platform URLs (Google, Yelp, TripAdvisor, Facebook, Bing, and custom) and set a default. The review link in outbound emails always uses the active default.
-
-### Subscription & Billing
-
-Three tiers: Free (10 requests/month), Pro ($29/month or $290/year), Lifetime ($1,247 one-time). Stripe handles card processing. Access codes allow manual tier upgrades (useful for beta users, partnerships, or support). The owner account is permanently admin and bypasses all tier gates.
-
-### Churn Recovery
-
-When a paying user cancels, they are routed through a one-question churn survey (`/cancel`) before reaching the Stripe portal. If they select "too expensive", an inline discount offer appears (promo code `STAY40` — 40% off for 3 months, valid for 7 days). A churn-recovery email is sent immediately after cancellation. A re-engagement email fires 3 days later if the user has not resubscribed. Both emails include a one-click unsubscribe link.
-
-### Admin Dashboard
-
-The `/admin` route (role-gated) shows platform-wide stats: total users, tier breakdown, recent signups, recent send volume, and upsell click counts from the powered-by footer. A user search with a 300ms debounce lets the owner look up any user by name or email, see their tier and churn reason, and instantly override their tier via a dropdown. `/admin/churn` shows a bar chart of reason breakdowns and the last 10 free-text cancellation comments, each clickable to deep-link to the user search.
-
-### Transactional Emails
-
-The app sends four owner-to-user transactional emails via the owner's SMTP: welcome (first login), upgrade receipt (tier change), churn recovery (cancellation), and re-engagement (3 days post-churn). A weekly digest email summarises SMTP health failures and cancellations by reason.
-
-### PWA & Mobile
-
-The app is a fully installable PWA with a custom install prompt. Capacitor wraps it for native iOS and Android distribution. The Settings page includes an "Install App on Your Phone" button that re-triggers the install prompt.
+Customers who click **Unsubscribe** in any email are permanently opted out and will never receive another message.
 
 ---
 
-## Project Structure
+## Dashboard & Tracking
+
+The **Dashboard** shows your recent send activity, open rates, click rates, and which customers have left a review (clicked the link). Use this to identify customers who opened but didn't click — they're your warmest leads for a personal follow-up.
+
+---
+
+## Plans & Pricing
+
+| Plan | Price | Requests |
+|---|---|---|
+| Free | $0 | 10 review requests (total) |
+| Pro Monthly | $29 / month | Unlimited |
+| Pro Annual | $290 / year | Unlimited (save $58) |
+| Lifetime | $1,247 once | Unlimited, forever |
+
+Upgrade at any time from **Settings → Upgrade Plan**. Stripe handles all payments securely.
+
+---
+
+## Integrations
+
+### WooCommerce
+
+Connect your WooCommerce store to automatically pull in customers from completed orders. Go to **Settings → WooCommerce** and follow the in-app setup guide. Only orders with status **Completed** are synced.
+
+### API — Import contacts from any form
+
+Generate an API key in **Settings → API Keys** and use the provided snippet to capture contacts from any website form, landing page, or checkout flow. The endpoint accepts `first_name`, `last_name`, `email`, `phone`, and `notes`.
 
 ```
-client/
-  src/
-    pages/          ← All page components
-    components/     ← Shared UI (DashboardLayout, OnboardingGuide, etc.)
-    hooks/          ← Custom hooks (useAnalytics, useDebounce)
-    contexts/       ← AppContext (profile, requests, stats)
-    lib/trpc.ts     ← tRPC client binding
-    App.tsx         ← Routes
-drizzle/
-  schema.ts         ← All DB tables
-server/
-  routers.ts        ← All tRPC procedures
-  db.ts             ← Drizzle query helpers
-  smtp.ts           ← All transactional email functions
-  emailTemplates.ts ← HTML email builder (review request + powered-by footer)
-  googleAuth.ts     ← Direct Google OAuth routes
-  appleAuth.ts      ← Sign in with Apple routes
-  stripe.ts         ← Stripe checkout + webhook handler
-  smtpWeeklyDigest.ts ← Weekly owner digest scheduler
-  reEngagementScheduler.ts ← 3-day post-churn re-engagement scheduler
-  _core/
-    index.ts        ← Express app entry, route registration, schedulers
-    trpc.ts         ← publicProcedure, protectedProcedure, paidProcedure, adminProcedure
-    oauth.ts        ← Manus OAuth callback (legacy fallback)
-    env.ts          ← Typed environment variables
+POST https://reviewlink.app/api/public/contacts
+Authorization: Bearer YOUR_API_KEY
+Content-Type: application/json
+
+{
+  "first_name": "Jane",
+  "last_name": "Smith",
+  "email": "jane@example.com",
+  "phone": "555-1234",
+  "notes": "Purchased product X"
+}
 ```
 
----
+### Outbound Webhooks
 
-## Database Schema
-
-| Table | Purpose |
-|---|---|
-| `users` | Auth identity (openId, name, email, role, loginMethod) |
-| `business_profiles` | Per-user settings (businessName, tier, reviewLink, dailySendLimit) |
-| `smtp_credentials` | AES-256-GCM encrypted SMTP config per user |
-| `contacts` | Customer list (name, email, phone, tags, optedOut, lastSentAt) |
-| `review_requests` | Sent requests (contactId, status, openedAt, clickedAt, reminderSentAt) |
-| `platform_links` | Multi-platform review URLs per user |
-| `stripe_subscriptions` | Active Stripe subscription IDs per user |
-| `access_codes` | Manual upgrade codes (code, tier, note, usedBy) |
-| `churn_surveys` | Cancellation reason, comment, offerValidUntil, reEngagementSentAt, unsubscribeToken |
-| `page_events` | UTM attribution events (page, utmSource, utmMedium, utmCampaign, referrer) |
+Go to **Settings → Webhooks** to configure a URL that ReviewLink will call whenever a new contact is created. Use this to push new contacts into a CRM, trigger a Zapier workflow, or post a Slack notification. You can filter by event type (`contact.created`, `contact.updated`, or both) and test the webhook from the Settings page.
 
 ---
 
-## Environment Variables
+## Privacy & Unsubscribes
 
-The following secrets must be configured (via Settings → Secrets in the Manus Management UI or a `.env` file locally):
+Every review-request email includes a one-click unsubscribe link. Customers who unsubscribe are immediately and permanently opted out — they will not receive any further emails from ReviewLink, including reminders. You can see opted-out contacts in **Saved Contacts** (they are marked and cannot be selected for sending).
 
-| Variable | Purpose |
-|---|---|
-| `DATABASE_URL` | MySQL / TiDB connection string |
-| `JWT_SECRET` | Session cookie signing key |
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
-| `STRIPE_SECRET_KEY` | Stripe secret key |
-| `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret |
-| `VITE_STRIPE_PUBLISHABLE_KEY` | Stripe publishable key (frontend) |
-| `APPLE_CLIENT_ID` | Apple Services ID (e.g., `app.reviewlink.signin`) |
-| `APPLE_TEAM_ID` | Apple Developer Team ID (10-char) |
-| `APPLE_KEY_ID` | Apple Sign In key ID |
-| `APPLE_PRIVATE_KEY` | Contents of the `.p8` private key file |
-| `APP_BASE_URL` | Public base URL (e.g. `https://reviewlink.app`) |
-| `OWNER_OPEN_ID` | Manus open ID of the app owner (auto-admin) |
+ReviewLink does not share your customer data with third parties. Your SMTP credentials are encrypted at rest using AES-256-GCM.
 
 ---
 
-## Google OAuth Setup
+## Installing the App on Your Phone
 
-Before Google Sign In will work on the live domain, add these two **Authorized redirect URIs** to your OAuth 2.0 client in [Google Cloud Console](https://console.cloud.google.com/apis/credentials):
+ReviewLink is a Progressive Web App (PWA) — you can install it on your home screen for a native app experience.
 
-```
-https://reviewlink.app/api/auth/google/callback
-https://revrocket-j5ynazte.manus.space/api/auth/google/callback
-```
-
----
-
-## Apple Sign In Setup
-
-1. In [Apple Developer Console](https://developer.apple.com) → Identifiers → your App ID → enable **Sign in with Apple**.
-2. Create a **Services ID** (this becomes `APPLE_CLIENT_ID`) and add the return URLs above.
-3. Create a **Sign in with Apple Key** to get `APPLE_KEY_ID` and download the `.p8` file (`APPLE_PRIVATE_KEY`).
-4. Add all four secrets via Settings → Secrets.
+- **iPhone / iPad** — Open [reviewlink.app](https://reviewlink.app) in Safari, tap the Share button, and select **Add to Home Screen**.
+- **Android** — Open [reviewlink.app](https://reviewlink.app) in Chrome, tap the three-dot menu, and select **Add to Home Screen** (or **Install App** if prompted automatically).
+- **From the app** — Go to **Settings** and tap **Install App on Your Phone** to re-trigger the install prompt.
 
 ---
 
-## Local Development
+## Frequently Asked Questions
 
-```bash
-# Install dependencies
-pnpm install
+**Will my customers know I'm using ReviewLink?**
+No. Emails are sent from your own email address using your own SMTP credentials. The only branding is a small "Powered by ReviewLink" footer link, which can be removed on the Pro plan.
 
-# Push DB schema
-pnpm db:push
+**What happens if a customer already left a review?**
+ReviewLink tracks whether a customer clicked the review link. If they clicked, no further reminders are sent. If they left a review without clicking the link (e.g. found you directly on Google), you can manually mark them as reviewed in Saved Contacts.
 
-# Start dev server (Express + Vite)
-pnpm dev
+**Can I customise the email template?**
+Yes. Go to **Settings → Email Templates** to edit the subject line, body text, and call-to-action button. You can use `{{first_name}}`, `{{business_name}}`, and `{{review_link}}` as merge tags.
 
-# Run tests
-pnpm test
+**How do I cancel?**
+Go to **Settings → Upgrade Plan → Manage Subscription**. You can cancel at any time. Your account reverts to the Free plan at the end of your billing period — your data and contacts are preserved.
 
-# Type check
-npx tsc --noEmit
-```
+**I'm getting a "connection refused" error when connecting my email.**
+Double-check that you're using an App Password (not your regular login password) and that the SMTP host and port match your provider's settings. Gmail uses `smtp.gmail.com` on port 587. See the in-app setup guide for provider-specific instructions.
 
 ---
 
-## Deployment
+## Support
 
-Click **Publish** in the Manus Management UI after saving a checkpoint. The app is hosted at `reviewlink.app` with automatic SSL. No manual deploy steps required.
-
----
-
-## License
-
-Private — all rights reserved. Not open source.
+If you need help, open the in-app **Setup Guide** (tap the book icon on the Home screen) for step-by-step instructions. For further assistance, contact us at [support@reviewlink.app](mailto:support@reviewlink.app).

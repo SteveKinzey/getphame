@@ -947,3 +947,10 @@
 - [x] WooCommerce guide step in OnboardingGuide
 - [x] WooCommerce hold-until-import logic (pending_woo_imports table or flag)
 - [x] WooCommerce auto-import scheduler: every Monday 03:00 GMT if data older than 7 days
+
+## Session #15 — README rewrite + follow-ups
+- [x] Rewrite README.md as user-facing product guide (not admin/dev docs)
+- [x] Add webhook delivery logs table + log each attempt + surface last 5 in Settings
+- [x] Add notify-on-import toggle: user setting + fire notifyOwner when scheduler auto-imports
+- [x] Add CSV export button to Recent Imports feed in Settings
+- [x] Create reusable skill for webhook logs + notify-on-import + CSV export patterns

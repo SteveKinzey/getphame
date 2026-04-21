@@ -293,3 +293,67 @@ export async function updateWebhookStatus(id: number, status: number): Promise<v
     .set({ lastFiredAt: Date.now(), lastStatus: status })
     .where(eq(webhookConfigs.id, id));
 }
+
+// ── Webhook delivery logs ─────────────────────────────────────────────────────
+import { webhookDeliveryLogs, notificationPrefs, type InsertWebhookDeliveryLog } from "../drizzle/schema";
+
+/** Log a webhook delivery attempt. */
+export async function logWebhookDelivery(entry: InsertWebhookDeliveryLog): Promise<void> {
+  const db = await getDb();
+  if (!db) return;
+  await db.insert(webhookDeliveryLogs).values(entry);
+  // Prune: keep only the last 50 logs per webhook to avoid unbounded growth
+  const rows = await db
+    .select({ id: webhookDeliveryLogs.id })
+    .from(webhookDeliveryLogs)
+    .where(eq(webhookDeliveryLogs.webhookId, entry.webhookId))
+    .orderBy(desc(webhookDeliveryLogs.createdAt));
+  if (rows.length > 50) {
+    const idsToDelete = rows.slice(50).map((r) => r.id);
+    for (const id of idsToDelete) {
+      await db.delete(webhookDeliveryLogs).where(eq(webhookDeliveryLogs.id, id));
+    }
+  }
+}
+
+/** Get the last N delivery logs for a webhook. */
+export async function getWebhookDeliveryLogs(webhookId: number, limit = 5) {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(webhookDeliveryLogs)
+    .where(eq(webhookDeliveryLogs.webhookId, webhookId))
+    .orderBy(desc(webhookDeliveryLogs.createdAt))
+    .limit(limit);
+}
+
+// ── Notification preferences ─────────────────────────────────────────────────
+/** Get or create notification prefs for a user. */
+export async function getNotificationPrefs(userId: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const [existing] = await db
+    .select()
+    .from(notificationPrefs)
+    .where(eq(notificationPrefs.userId, userId))
+    .limit(1);
+  if (existing) return existing;
+  await db.insert(notificationPrefs).values({ userId });
+  const [created] = await db
+    .select()
+    .from(notificationPrefs)
+    .where(eq(notificationPrefs.userId, userId))
+    .limit(1);
+  return created ?? null;
+}
+
+/** Update notification prefs for a user. */
+export async function updateNotificationPrefs(userId: number, prefs: { wooAutoImportNotify?: boolean }) {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .insert(notificationPrefs)
+    .values({ userId, ...prefs, updatedAt: Date.now() })
+    .onDuplicateKeyUpdate({ set: { ...prefs, updatedAt: Date.now() } });
+}

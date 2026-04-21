@@ -10,7 +10,7 @@
  */
 
 import { Router, Request, Response } from "express";
-import { getUserByApiKey, logApiImport, getWebhookConfigs, updateWebhookStatus } from "./db";
+import { getUserByApiKey, logApiImport, getWebhookConfigs, updateWebhookStatus, logWebhookDelivery } from "./db";
 import { upsertApiContact } from "./contacts";
 import { listApiKeys } from "./db";
 import { createHash } from "crypto";
@@ -30,9 +30,40 @@ async function fireWebhooks(userId: number, event: string, data: object): Promis
         const sig = createHash("sha256").update(cfg.secret + payload).digest("hex");
         headers["X-ReviewLink-Signature"] = `sha256=${sig}`;
       }
+      const startMs = Date.now();
       fetch(cfg.url, { method: "POST", headers, body: payload, signal: AbortSignal.timeout(8000) })
-        .then((r) => updateWebhookStatus(cfg.id, r.status))
-        .catch(() => updateWebhookStatus(cfg.id, 0));
+        .then(async (r) => {
+          const durationMs = Date.now() - startMs;
+          let responseBody = "";
+          try { responseBody = (await r.text()).slice(0, 500); } catch { /* ignore */ }
+          updateWebhookStatus(cfg.id, r.status).catch(() => {});
+          logWebhookDelivery({
+            webhookId: cfg.id,
+            userId: cfg.userId,
+            event,
+            url: cfg.url,
+            statusCode: r.status,
+            success: r.ok,
+            responseBody,
+            durationMs,
+            createdAt: Date.now(),
+          }).catch(() => {});
+        })
+        .catch((err) => {
+          const durationMs = Date.now() - startMs;
+          updateWebhookStatus(cfg.id, 0).catch(() => {});
+          logWebhookDelivery({
+            webhookId: cfg.id,
+            userId: cfg.userId,
+            event,
+            url: cfg.url,
+            statusCode: null,
+            success: false,
+            errorMessage: String(err?.message ?? err).slice(0, 500),
+            durationMs,
+            createdAt: Date.now(),
+          }).catch(() => {});
+        });
     }
   } catch (err) {
     console.warn("[Webhook] Fire error:", err);
