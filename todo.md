@@ -1107,3 +1107,6 @@
 - [x] Auto-detect Thai locale on Upgrade page: show PromptPay CTA only when navigator.language starts with 'th'
 - [x] Add social-proof line near PromptPay button: "Most businesses recover cost in 90 days" (bilingual: Thai + English)
 - [x] Add a manual "Pay with PromptPay" toggle/link for non-Thai locale users (subtle gold link, dismissible)
+
+## Session #35 — Fix Bottom Nav Overlap in Thai Mode (Apr 21 2026)
+- [x] Fix content overlapping bottom nav bar in Thai mode — bumped all under-padded pages from pb-24/pb-32 to pb-40 (Home, ChurnSurvey, AdminDashboard, AdminChurn, AdminRevenue)

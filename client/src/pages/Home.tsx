@@ -249,7 +249,7 @@ export default function HomePage() {
     : null;
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: "var(--background)" }}>
+    <div className="min-h-screen pb-40" style={{ background: "var(--background)" }}>
       <OnboardingGuide
         open={guideOpen}
         onClose={() => setGuideOpen(false)}

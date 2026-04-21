@@ -47,7 +47,7 @@ export default function AdminRevenuePage() {
   }, [isAuthenticated, navigate]);
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: "var(--background)" }}>
+    <div className="min-h-screen pb-40" style={{ background: "var(--background)" }}>
       {/* Header */}
       <div className="px-5 pt-14 pb-6" style={{ background: NAVY }}>
         <div className="flex items-center gap-3 mb-4">

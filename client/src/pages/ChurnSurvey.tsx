@@ -62,7 +62,7 @@ export default function ChurnSurveyPage() {
   }
 
   return (
-    <div className="min-h-screen pb-24" style={{ background: "oklch(0.975 0.003 100)" }}>
+    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
       {/* Header */}
       <div
         className="px-5 pt-14 pb-8"
