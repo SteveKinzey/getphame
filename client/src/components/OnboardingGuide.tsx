@@ -996,23 +996,28 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
           </button>
         </div>
 
-        {/* Step progress dots */}
-        <div className="flex items-center gap-1.5 mb-3">
+        {/* Step progress dots — 44px touch targets, 14px visible dots */}
+        <div className="flex items-center gap-4 mb-3">
           {STEPS.map((s, i) => (
             <button
               key={s.id}
               onClick={() => setStep(i)}
+              aria-label={`Go to step ${i + 1}`}
               className="transition-all rounded-full"
               style={{
-                width: i === step ? "24px" : "8px",
-                height: "8px",
+                /* visible dot size */
+                width: i === step ? "32px" : "14px",
+                height: "14px",
+                minWidth: i === step ? "32px" : "14px",
+                /* expand tap area to 44px without affecting layout */
+                padding: "15px 0",
+                margin: "-15px 0",
                 background: i === step
                   ? "oklch(0.80 0.18 80)"
                   : i < step
-                    ? "oklch(0.55 0.10 80)"
+                    ? "oklch(0.65 0.12 80)"
                     : "oklch(0.40 0.05 260)",
               }}
-              aria-label={`Go to step ${i + 1}`}
             />
           ))}
           <span className="ml-auto text-xs font-semibold" style={{ color: "var(--text-on-dark-primary)" }}>
