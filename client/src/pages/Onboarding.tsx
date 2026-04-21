@@ -15,7 +15,7 @@ export default function OnboardingPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-between pb-12 px-6 pt-16"
+      className="min-h-screen flex flex-col items-center justify-between pb-40 px-6 pt-16"
       style={{ background: "oklch(0.22 0.09 260)" }}
     >
       {/* Logo */}

@@ -61,16 +61,16 @@ function AppShell() {
 
   // Public pages accessible without login
   const path = window.location.pathname;
-  if (path === "/privacy-policy") return <PrivacyPolicyPage />;
-  if (path === "/terms-of-service") return <TermsOfServicePage />;
-  if (path === "/payment-success") return <PaymentSuccessPage />;
-  if (path === "/changelog") return <ChangelogPage />;
-  if (path === "/unsubscribe") return <UnsubscribePage />;
+  if (path === "/privacy-policy") return <div className="mobile-screen"><PrivacyPolicyPage /></div>;
+  if (path === "/terms-of-service") return <div className="mobile-screen"><TermsOfServicePage /></div>;
+  if (path === "/payment-success") return <div className="mobile-screen"><PaymentSuccessPage /></div>;
+  if (path === "/changelog") return <div className="mobile-screen"><ChangelogPage /></div>;
+  if (path === "/unsubscribe") return <div className="mobile-screen"><UnsubscribePage /></div>;
 
   if (!user) {
     // Show the public marketing landing page at /, Onboarding at /onboarding
-    if (path === "/onboarding") return <OnboardingPage />;
-    return <LandingPage />;
+    if (path === "/onboarding") return <div className="mobile-screen"><OnboardingPage /></div>;
+    return <div className="mobile-screen"><LandingPage /></div>;
   }
 
   return (

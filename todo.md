@@ -758,3 +758,24 @@
 - [x] Include Birdeye, Podium, NiceJob, Grade.us, ReviewTrackers vs ReviewLink in a styled table
 - [x] Highlight ReviewLink's price advantage and lifetime option with checkmarks/badges
 - [x] Match landing page navy/gold design system
+
+## Mobile Width & Bottom Margin Audit (Full Pass)
+- [x] Audit every page for max-w constraint and pb-40 minimum bottom padding
+- [x] Fix Home.tsx
+- [x] Fix Send.tsx
+- [x] Fix Dashboard.tsx
+- [x] Fix Settings.tsx
+- [x] Fix SavedContacts.tsx
+- [x] Fix WooCustomers.tsx
+- [x] Fix Reminders.tsx
+- [x] Fix Templates.tsx
+- [x] Fix Import.tsx
+- [x] Fix Upgrade.tsx
+- [x] Fix PaymentSuccess.tsx
+- [x] Fix PrivacyPolicy.tsx
+- [x] Fix TermsOfService.tsx
+- [x] Fix Changelog.tsx
+- [x] Fix AdminCodes.tsx
+- [x] Fix AdminSmtpStats.tsx
+- [x] Fix Unsubscribe.tsx
+- [x] Fix LandingPage.tsx
