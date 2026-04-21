@@ -4,10 +4,13 @@ import { useState, useEffect } from "react";
 
 const TH_ADDRESS = (
   <>
+    Michael Kiattanabumroong<br />
+    BotflowLab.com<br />
     88/14 Phuttomonthon Sai 2 Soi 31<br />
     Sala Thammasop, Thawi Wattana<br />
     Bangkok 10170<br />
-    Thailand
+    Thailand<br />
+    +66 6-3094-9914
   </>
 );
 
@@ -253,26 +256,48 @@ export default function TermsOfService() {
           <p className="mb-3">
             <strong>Informal resolution.</strong> Before initiating any formal dispute process, you agree to contact us at <a href="mailto:legal@reviewlink.app" style={LINK}>legal@reviewlink.app</a> and give us at least 30 days to attempt to resolve the dispute informally. Most concerns can be resolved quickly this way.
           </p>
-          <p className="mb-3">
-            <strong>Binding arbitration.</strong> If informal resolution fails, any dispute, claim, or controversy arising out of or relating to these Terms or the Service — including questions about their existence, validity, interpretation, breach, or termination — shall be resolved by binding individual arbitration administered by JAMS under its Streamlined Arbitration Rules and Procedures, except as otherwise provided herein. The arbitration shall be conducted in San Bernardino County, California, or remotely by video conference. The arbitrator's decision shall be final and binding and may be entered as a judgment in any court of competent jurisdiction.
-          </p>
-          <p className="mb-3">
-            <strong>Class action waiver.</strong> YOU AND REVIEWLINK AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN AN INDIVIDUAL CAPACITY AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS, CONSOLIDATED, OR REPRESENTATIVE ACTION OR PROCEEDING. The arbitrator may not consolidate more than one person's claims and may not preside over any form of class or representative proceeding.
-          </p>
-          <p className="mb-3">
-            <strong>Exceptions.</strong> Either party may seek emergency injunctive or other equitable relief from a court of competent jurisdiction to prevent actual or threatened infringement, misappropriation, or violation of intellectual property rights or confidential information. Small claims court actions that qualify may be brought in San Bernardino County, California.
-          </p>
-          <p>
-            <strong>Opt-out.</strong> You may opt out of binding arbitration within 30 days of first accepting these Terms by sending written notice to <a href="mailto:legal@reviewlink.app" style={LINK}>legal@reviewlink.app</a> with the subject line "Arbitration Opt-Out." If you opt out, disputes shall be resolved exclusively in the state or federal courts located in San Bernardino County, California, and you consent to personal jurisdiction in those courts.
-          </p>
+          {isThai ? (
+            <>
+              <p className="mb-3">
+                <strong>Dispute resolution.</strong> If informal resolution fails, disputes shall be submitted to the Thai Arbitration Institute (TAI) under its Arbitration Rules, conducted in Bangkok, Thailand. The arbitration may be conducted in the Thai language, or bilingually in Thai and English by mutual agreement. The arbitrator's decision shall be final and binding.
+              </p>
+              <p className="mb-3">
+                <strong>Class action waiver.</strong> YOU AND REVIEWLINK AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN AN INDIVIDUAL CAPACITY AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS, CONSOLIDATED, OR REPRESENTATIVE ACTION OR PROCEEDING.
+              </p>
+              <p>
+                <strong>Exceptions.</strong> Either party may seek emergency injunctive or other equitable relief from a court of competent jurisdiction in Bangkok, Thailand to prevent actual or threatened infringement, misappropriation, or violation of intellectual property rights or confidential information.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="mb-3">
+                <strong>Binding arbitration.</strong> If informal resolution fails, any dispute, claim, or controversy arising out of or relating to these Terms or the Service — including questions about their existence, validity, interpretation, breach, or termination — shall be resolved by binding individual arbitration administered by JAMS under its Streamlined Arbitration Rules and Procedures, except as otherwise provided herein. The arbitration shall be conducted in San Bernardino County, California, or remotely by video conference. The arbitrator's decision shall be final and binding and may be entered as a judgment in any court of competent jurisdiction.
+              </p>
+              <p className="mb-3">
+                <strong>Class action waiver.</strong> YOU AND REVIEWLINK AGREE THAT EACH MAY BRING CLAIMS AGAINST THE OTHER ONLY IN AN INDIVIDUAL CAPACITY AND NOT AS A PLAINTIFF OR CLASS MEMBER IN ANY PURPORTED CLASS, CONSOLIDATED, OR REPRESENTATIVE ACTION OR PROCEEDING. The arbitrator may not consolidate more than one person's claims and may not preside over any form of class or representative proceeding.
+              </p>
+              <p className="mb-3">
+                <strong>Exceptions.</strong> Either party may seek emergency injunctive or other equitable relief from a court of competent jurisdiction to prevent actual or threatened infringement, misappropriation, or violation of intellectual property rights or confidential information. Small claims court actions that qualify may be brought in San Bernardino County, California.
+              </p>
+              <p>
+                <strong>Opt-out.</strong> You may opt out of binding arbitration within 30 days of first accepting these Terms by sending written notice to <a href="mailto:legal@reviewlink.app" style={LINK}>legal@reviewlink.app</a> with the subject line "Arbitration Opt-Out." If you opt out, disputes shall be resolved exclusively in the state or federal courts located in San Bernardino County, California, and you consent to personal jurisdiction in those courts.
+              </p>
+            </>
+          )}
         </section>
 
         {/* 15. Governing Law */}
         <section>
           <h2 className={SH} style={SHS}>15. Governing Law</h2>
-          <p>
-            These Terms and any dispute arising out of or related to them or the Service shall be governed by and construed in accordance with the laws of the State of California, United States, without regard to its conflict of law principles. Subject to the arbitration clause above, you consent to the exclusive jurisdiction of the state and federal courts located in San Bernardino County, California for any disputes not subject to arbitration.
-          </p>
+          {isThai ? (
+            <p>
+              These Terms and any dispute arising out of or related to them or the Service shall be governed by and construed in accordance with the laws of Thailand. Subject to the arbitration clause above, you consent to the exclusive jurisdiction of the courts of Bangkok, Thailand for any disputes not subject to arbitration.
+            </p>
+          ) : (
+            <p>
+              These Terms and any dispute arising out of or related to them or the Service shall be governed by and construed in accordance with the laws of the State of California, United States, without regard to its conflict of law principles. Subject to the arbitration clause above, you consent to the exclusive jurisdiction of the state and federal courts located in San Bernardino County, California for any disputes not subject to arbitration.
+            </p>
+          )}
         </section>
 
         {/* 16. General */}
@@ -302,8 +327,10 @@ export default function TermsOfService() {
             If you have questions about these Terms or wish to report a violation, please contact our legal team:
           </p>
           <address className="not-italic leading-relaxed pl-3 border-l-2" style={BORDER}>
-            ReviewLink — Legal<br />
-            {ADDR}<br />
+            <span translate="no">
+              ReviewLink — Legal<br />
+              {ADDR}<br />
+            </span>
             <a href="mailto:legal@reviewlink.app" style={LINK}>legal@reviewlink.app</a>
           </address>
         </section>

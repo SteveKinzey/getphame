@@ -1120,3 +1120,10 @@
 - [x] Replace US address with Thai address on Privacy Policy (sections 2 + 16) when rr-lang=th
 - [x] Replace US address with Thai address on Terms of Service (section 17) when rr-lang=th
 - [x] Address: 88/14 Phuttomonthon Sai 2 Soi 31, Sala Thammasop, Thawi Wattana, Bangkok 10170, Thailand
+
+## Session #38 — Locale Address Skill + 3 Follow-ups (Apr 21 2026)
+- [x] Create reusable skill: locale-legal-address (conditional address + governing law for TH/EN)
+- [x] Update ToS governing law clause: show Thai law / Bangkok jurisdiction when rr-lang=th
+- [x] Zoho invoice change reverted — not applicable (Zoho invoices to be removed)
+- [x] Add translate="no" wrapper to all address blocks in PrivacyPolicy.tsx and TermsOfService.tsx
+- [x] Updated TH_ADDRESS with full contact: Michael Kiattanabumroong, BotflowLab.com, full Bangkok address + phone

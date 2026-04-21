@@ -4,10 +4,13 @@ import { useState, useEffect } from "react";
 
 const TH_ADDRESS = (
   <>
+    Michael Kiattanabumroong<br />
+    BotflowLab.com<br />
     88/14 Phuttomonthon Sai 2 Soi 31<br />
     Sala Thammasop, Thawi Wattana<br />
     Bangkok 10170<br />
-    Thailand
+    Thailand<br />
+    +66 6-3094-9914
   </>
 );
 
@@ -84,8 +87,10 @@ export default function PrivacyPolicy() {
             ReviewLink is operated as a software-as-a-service product. For all privacy-related inquiries, data deletion requests, or concerns about this policy, you may contact us at:
           </p>
           <address className="not-italic leading-relaxed pl-3 border-l-2" style={{ borderColor: "oklch(0.80 0.18 80)" }}>
-            ReviewLink<br />
-            {ADDR}<br />
+            <span translate="no">
+              ReviewLink<br />
+              {ADDR}<br />
+            </span>
             <a href="mailto:privacy@reviewlink.app" style={LINK_STYLE}>privacy@reviewlink.app</a>
           </address>
           <p className="mt-3">
@@ -323,8 +328,10 @@ export default function PrivacyPolicy() {
             If you have any questions, concerns, or requests relating to this Privacy Policy or our data practices, please contact our privacy team:
           </p>
           <address className="not-italic leading-relaxed pl-3 border-l-2" style={{ borderColor: "oklch(0.80 0.18 80)" }}>
-            ReviewLink — Privacy Team<br />
-            {ADDR}<br />
+            <span translate="no">
+              ReviewLink — Privacy Team<br />
+              {ADDR}<br />
+            </span>
             <a href="mailto:privacy@reviewlink.app" style={LINK_STYLE}>privacy@reviewlink.app</a>
           </address>
           <p className="mt-3">
