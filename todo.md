@@ -869,3 +869,8 @@
 - [x] Expiring STAY40 offer: add offerValidUntil (bigint, 7-day expiry) to churn_surveys table, hide offer card after expiry, disable code server-side after expiry
 - [x] Churn reason in weekly digest: add "Cancellations this week" section to SmtpWeeklyDigest pulling churn_surveys grouped by reason
 - [x] Re-engagement email sequence: scheduler checks 3 days after churn recovery email, sends second "Here's what you're missing" email if user has not resubscribed
+
+## New Features (Session — Apr 21 2026 #8)
+
+- [x] /admin/churn deep-link: clicking a recent response row navigates to /admin?search=email so admin can see tier + send history inline
+- [x] Re-engagement unsubscribe: add unsubscribeToken (varchar, unique) to churn_surveys, include one-click unsubscribe link in re-engagement email footer, /api/reengagement/unsubscribe/:token endpoint marks opted-out and shows confirmation page

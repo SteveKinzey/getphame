@@ -730,6 +730,7 @@ export async function sendReEngagementEmail(opts: {
   ownerUserId: number;
   toEmail: string;
   toName: string | null;
+  unsubscribeUrl?: string;
 }): Promise<void> {
   const creds = await getSmtpCredentials(opts.ownerUserId);
   if (!creds) return;
@@ -821,6 +822,7 @@ export async function sendReEngagementEmail(opts: {
           <tr>
             <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
               <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">Questions? Reply to this email or visit <a href="https://reviewlink.app/settings" style="color:#1a2744;">your settings</a>.</p>
+              ${opts.unsubscribeUrl ? `<p style="margin:8px 0 0;font-size:11px;color:#ccc;">Don't want these emails? <a href="${opts.unsubscribeUrl}" style="color:#aaa;text-decoration:underline;">Unsubscribe</a></p>` : ""}
             </td>
           </tr>
         </table>
@@ -829,7 +831,7 @@ export async function sendReEngagementEmail(opts: {
   </table>
 </body>
 </html>`;
-  const text = `Hi ${displayName},\n\nIt's been a few days since your ReviewLink subscription ended. Here's what's waiting for you:\n\n• Automated review requests from your own inbox\n• 3-day and 10-day follow-up sequences\n• Multi-platform review links (Google, Yelp, TripAdvisor, Facebook)\n\nCome back: https://reviewlink.app/upgrade\n\nQuestions? Just reply to this email.\n\n-- ${fromName}`;
+  const text = `Hi ${displayName},\n\nIt's been a few days since your ReviewLink subscription ended. Here's what's waiting for you:\n\n• Automated review requests from your own inbox\n• 3-day and 10-day follow-up sequences\n• Multi-platform review links (Google, Yelp, TripAdvisor, Facebook)\n\nCome back: https://reviewlink.app/upgrade\n\nQuestions? Just reply to this email.\n\n-- ${fromName}${opts.unsubscribeUrl ? `\n\nUnsubscribe from these emails: ${opts.unsubscribeUrl}` : ""}`;
   const pass = decryptPassword(creds.encryptedPass);
   const transporter = createTransporter({
     host: creds.host,

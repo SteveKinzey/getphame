@@ -8,8 +8,9 @@
  */
 import { getDb } from "./db";
 import { churnSurveys, stripeSubscriptions, users } from "../drizzle/schema";
-import { and, isNull, lte, gte, eq } from "drizzle-orm";
+import { and, isNull, lte, gte, eq, ne } from "drizzle-orm";
 import { sendReEngagementEmail } from "./smtp";
+import crypto from "crypto";
 
 
 const HOUR_MS = 60 * 60 * 1000;
@@ -24,7 +25,7 @@ export async function runReEngagementCheck(): Promise<void> {
   const windowStart = new Date(now - FOUR_DAYS_MS);
   const windowEnd = new Date(now - THREE_DAYS_MS);
 
-  // Find eligible churn survey rows in the 3–4 day window, not yet re-engaged
+  // Find eligible churn survey rows in the 3–4 day window, not yet re-engaged and not opted out
   const eligible = await db
     .select()
     .from(churnSurveys)
@@ -32,7 +33,8 @@ export async function runReEngagementCheck(): Promise<void> {
       and(
         gte(churnSurveys.createdAt, windowStart),
         lte(churnSurveys.createdAt, windowEnd),
-        isNull(churnSurveys.reEngagementSentAt)
+        isNull(churnSurveys.reEngagementSentAt),
+        ne(churnSurveys.reEngagementOptedOut, 1)
       )
     );
 
@@ -79,7 +81,7 @@ export async function runReEngagementCheck(): Promise<void> {
       }
 
       // Need an email address to send to
-      const emailTarget = toEmail ?? (survey.userId ? null : null);
+      const emailTarget = toEmail ?? null;
       if (!emailTarget) {
         console.log(`[ReEngagement] survey id=${survey.id} has no email — skipping.`);
         await db
@@ -89,14 +91,27 @@ export async function runReEngagementCheck(): Promise<void> {
         continue;
       }
 
+      // Generate unsubscribe token if not already set
+      let token = survey.unsubscribeToken;
+      if (!token) {
+        token = crypto.randomBytes(32).toString("hex");
+        await db
+          .update(churnSurveys)
+          .set({ unsubscribeToken: token })
+          .where(eq(churnSurveys.id, survey.id));
+      }
+
+      const appBaseUrl = process.env.APP_BASE_URL ?? "https://reviewlink.app";
+      const unsubscribeUrl = `${appBaseUrl}/api/reengagement/unsubscribe/${token}`;
+
       // Use owner's SMTP (userId=1 is the platform owner)
-      // The owner's SMTP is used to send on behalf of the platform
       ownerUserId = 1;
 
       await sendReEngagementEmail({
         ownerUserId,
         toEmail: emailTarget,
         toName,
+        unsubscribeUrl,
       });
 
       // Mark as sent

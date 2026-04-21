@@ -3,7 +3,7 @@
 
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
-import { useLocation } from "wouter";
+import { useLocation, useSearch } from "wouter";
 import { useEffect, useState } from "react";
 import {
   Users,
@@ -39,7 +39,10 @@ export default function AdminDashboard() {
     refetchInterval: 60_000,
   });
 
-  const [searchInput, setSearchInput] = useState("");
+  // Pre-fill search from ?search= URL param (e.g., deep-link from /admin/churn)
+  const searchString = useSearch();
+  const initialSearch = new URLSearchParams(searchString).get("search") ?? "";
+  const [searchInput, setSearchInput] = useState(initialSearch);
   const [debouncedSearch] = useDebounce(searchInput, 300);
   const utils = trpc.useUtils();
   const { data: searchResults, isFetching: isSearching } = trpc.admin.searchUsers.useQuery(

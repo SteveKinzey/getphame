@@ -327,6 +327,8 @@ export const churnSurveys = mysqlTable("churn_surveys", {
   comment: text("comment"),                        // optional free-text
   offerValidUntil: bigint("offerValidUntil", { mode: "number" }),  // UTC ms — STAY40 offer expires 7 days after survey
   reEngagementSentAt: bigint("reEngagementSentAt", { mode: "number" }), // UTC ms — when 2nd re-engagement email was sent
+  unsubscribeToken: varchar("unsubscribeToken", { length: 64 }),       // hex token for one-click unsubscribe from re-engagement emails
+  reEngagementOptedOut: int("reEngagementOptedOut").notNull().default(0), // 1 = user clicked unsubscribe
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 export type ChurnSurvey = typeof churnSurveys.$inferSelect;

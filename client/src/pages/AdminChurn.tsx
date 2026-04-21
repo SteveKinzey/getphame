@@ -194,8 +194,10 @@ export default function AdminChurnPage() {
                   {(data.recent as Array<{ id: number; reason: string; comment: string | null; email: string | null; createdAt: Date }>).map((r) => (
                     <div
                       key={r.id}
-                      className="rounded-xl px-3 py-3"
-                      style={{ background: "oklch(0.975 0.003 100)", border: "1px solid oklch(0.93 0.01 260)" }}
+                      className="rounded-xl px-3 py-3 transition-all"
+                      style={{ background: "oklch(0.975 0.003 100)", border: "1px solid oklch(0.93 0.01 260)", cursor: r.email ? "pointer" : "default" }}
+                      onClick={() => r.email && navigate("/admin?search=" + encodeURIComponent(r.email))}
+                      title={r.email ? `View ${r.email} in admin` : undefined}
                     >
                       <div className="flex items-center justify-between mb-1">
                         <span
