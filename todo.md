@@ -1060,3 +1060,12 @@
 
 ## Session #29 — www → apex redirect (Apr 21 2026)
 - [x] Add Express middleware: 301 redirect www.reviewlink.app → reviewlink.app
+
+## Session #30 — Skill, Canonical Tag, Post-Send Reminder Prompt, Stripe Verify (Apr 21 2026)
+- [x] Create /skills/www-to-apex-redirect/SKILL.md documenting the Express 301 redirect pattern
+- [x] Add <link rel="canonical" href="https://reviewlink.app/"> to index.html
+- [x] Build post-send reminder prompt: after successful send, show one-tap card "Schedule a 3-day follow-up?" on Send page
+- [x] Add tRPC check: only show prompt if followUpEnabled is false (don't show if reminders already auto-scheduled)
+- [x] Update requests.send to return requestId alongside success (required for reminder scheduling)
+- [x] Stripe webhook: ACTION REQUIRED — update Stripe Dashboard webhook URL to https://reviewlink.app/api/stripe/webhook
+- [x] TypeScript: 0 errors. Tests: 39/43 pass (4 pre-existing smtpWeeklyDigest mock failures)

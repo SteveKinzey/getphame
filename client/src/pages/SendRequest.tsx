@@ -3,7 +3,7 @@
 
 import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import { Send, Rocket, Mail, User, Star, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser } from "lucide-react";
+import { Send, Rocket, Mail, User, Star, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser, Bell, BellOff, CheckCircle2 } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
 import ContactPickerModal from "@/components/ContactPickerModal";
 import { FREE_LIMIT } from "@shared/const";
@@ -33,6 +33,16 @@ export default function SendRequestPage() {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
+  const [reminderScheduled, setReminderScheduled] = useState(false);
+  const [lastRequestId, setLastRequestId] = useState<number | null>(null);
+  const { data: reminderSettings } = trpc.reminders.getSettings.useQuery();
+  const scheduleFollowUpNow = trpc.reminders.scheduleFollowUp.useMutation({
+    onSuccess: () => {
+      setReminderScheduled(true);
+      toast.success("Follow-up reminder scheduled!");
+    },
+    onError: (err) => toast.error(err.message),
+  });
 
   const { data: platforms } = trpc.reviewPlatforms.list.useQuery();
 
@@ -61,9 +71,10 @@ export default function SendRequestPage() {
   const activeReviewUrl = activePlatform?.url ?? profile?.reviewLink ?? "";
 
   const sendRequest = trpc.requests.send.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
       setSending(false);
       setSent(true);
+      setLastRequestId(data.requestId ?? null);
       track("send_request", { platform: activePlatform?.platform ?? "unknown" });
       toast.success("Review request sent!");
     },
@@ -179,6 +190,8 @@ export default function SendRequestPage() {
     setCustomerEmail("");
     setErrors({});
     setSent(false);
+    setReminderScheduled(false);
+    setLastRequestId(null);
   }
 
   // ── Success screen ─────────────────────────────────────────────────────────
@@ -246,6 +259,60 @@ export default function SendRequestPage() {
               <Star size={13} />
               Rate ReviewLink
             </a>
+          </div>
+        )}
+
+        {/* ── Post-send reminder prompt ─────────────────────────────────── */}
+        {/* Show only if auto-reminders are OFF and we have a requestId */}
+        {lastRequestId && reminderSettings?.followUpEnabled === 0 && (
+          <div
+            className="w-full max-w-xs rounded-2xl p-4 mb-4"
+            style={{ background: "oklch(0.30 0.08 260)", border: "1.5px solid oklch(0.45 0.08 260)" }}
+          >
+            {reminderScheduled ? (
+              <div className="flex items-center gap-2">
+                <CheckCircle2 size={18} style={{ color: "oklch(0.80 0.18 80)" }} />
+                <p className="text-sm font-bold" style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}>
+                  Follow-up scheduled!
+                </p>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 mb-2">
+                  <Bell size={16} style={{ color: "oklch(0.80 0.18 80)" }} />
+                  <p className="text-sm font-bold" style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}>
+                    Schedule a follow-up?
+                  </p>
+                </div>
+                <p className="text-xs mb-3" style={{ color: "var(--text-on-dark-secondary)" }}>
+                  Auto-send a gentle reminder to {customerName} in {reminderSettings?.followUpDelayDays ?? 3} days if they haven't reviewed yet.
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() =>
+                      scheduleFollowUpNow.mutate({
+                        customerRequestId: lastRequestId!,
+                        customerName,
+                        customerEmail,
+                      })
+                    }
+                    disabled={scheduleFollowUpNow.isPending}
+                    className="flex-1 py-2 rounded-xl text-xs font-black transition-transform active:scale-95 flex items-center justify-center gap-1"
+                    style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
+                  >
+                    {scheduleFollowUpNow.isPending ? <Loader2 size={12} className="animate-spin" /> : <Bell size={12} />}
+                    Yes, remind me
+                  </button>
+                  <button
+                    onClick={() => setLastRequestId(null)}
+                    className="flex-1 py-2 rounded-xl text-xs font-bold transition-transform active:scale-95"
+                    style={{ background: "oklch(0.35 0.06 260)", color: "var(--text-on-dark-secondary)", fontFamily: "'Poppins', sans-serif" }}
+                  >
+                    No thanks
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )}
 

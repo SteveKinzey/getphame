@@ -1356,7 +1356,7 @@ export const appRouter = router({
           monthlyCount: profile.monthlyCount + 1,
         });
 
-        return { success: true };
+        return { success: true, requestId: newRequestId };
       }),
 
     markResponded: protectedProcedure
