@@ -30,6 +30,7 @@ import {
   RotateCcw,
   Send,
   BookOpen,
+  Eye,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
 
@@ -591,6 +592,13 @@ export default function SettingsPage() {
     },
   });
 
+  // ── Email preview ─────────────────────────────────────────────────────────
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const { data: previewData, isLoading: previewLoading } = trpc.smtp.previewEmail.useQuery(
+    undefined,
+    { enabled: previewOpen }
+  );
+
   const resendWelcome = trpc.smtp.sendWelcome.useMutation({
     onSuccess: () => {
       toast.success(`Confirmation email sent! Check your inbox at ${smtpStatus?.email ?? "your email"}.`, { duration: 5000 });
@@ -610,6 +618,7 @@ export default function SettingsPage() {
   }
 
   return (
+    <>
     <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
       <OnboardingGuide
         open={guideOpen}
@@ -1131,6 +1140,15 @@ export default function SettingsPage() {
                 >
                   <Pencil size={14} />
                   Change Email
+                </button>
+                <button
+                  onClick={() => setPreviewOpen(true)}
+                  className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95"
+                  style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
+                  title="Preview the email your customers will receive"
+                >
+                  <Eye size={14} />
+                  Preview Email
                 </button>
                 <button
                   onClick={() => resendWelcome.mutate()}
@@ -1827,5 +1845,78 @@ export default function SettingsPage() {
 
       </div>
     </div>
+
+    {/* ── Email Preview Modal ─────────────────────────────────────────────── */}
+    {previewOpen && (
+      <div
+        className="fixed inset-0 z-50 flex flex-col"
+        style={{ background: "rgba(10,16,40,0.75)" }}
+        onClick={() => setPreviewOpen(false)}
+      >
+        <div
+          className="relative flex flex-col w-full max-w-lg mx-auto mt-12 mb-4 rounded-2xl overflow-hidden shadow-2xl"
+          style={{ background: "oklch(0.22 0.09 260)", maxHeight: "calc(100vh - 80px)" }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Modal header */}
+          <div className="flex items-center justify-between px-5 py-4 shrink-0" style={{ borderBottom: "1px solid rgba(255,255,255,0.10)" }}>
+            <div>
+              <p className="text-xs font-bold tracking-widest uppercase" style={{ color: "oklch(0.80 0.18 80)" }}>Email Preview</p>
+              <p className="text-sm font-bold text-white mt-0.5">What your customers will see</p>
+            </div>
+            <button
+              onClick={() => setPreviewOpen(false)}
+              className="rounded-full p-2 hover:bg-white/10 transition-colors"
+              aria-label="Close preview"
+            >
+              <X size={18} className="text-white" />
+            </button>
+          </div>
+
+          {/* Dummy sender row */}
+          <div className="px-5 py-3 shrink-0" style={{ background: "oklch(0.18 0.08 260)", borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+            <p className="text-xs" style={{ color: "oklch(0.70 0.05 260)" }}>
+              <span className="font-semibold text-white">From:</span>{" "}
+              {smtpStatus?.fromName ? `${smtpStatus.fromName} <${smtpStatus.email}>` : smtpStatus?.email ?? "your@email.com"}
+            </p>
+            <p className="text-xs mt-1" style={{ color: "oklch(0.70 0.05 260)" }}>
+              <span className="font-semibold text-white">To:</span> Alex Johnson &lt;customer@example.com&gt;
+            </p>
+            <p className="text-xs mt-1" style={{ color: "oklch(0.70 0.05 260)" }}>
+              <span className="font-semibold text-white">Subject:</span> We'd love your feedback! ⭐
+            </p>
+          </div>
+
+          {/* Email iframe */}
+          <div className="flex-1 overflow-auto bg-white">
+            {previewLoading ? (
+              <div className="flex items-center justify-center h-64">
+                <Loader2 size={28} className="animate-spin" style={{ color: "oklch(0.22 0.09 260)" }} />
+              </div>
+            ) : previewData?.html ? (
+              <iframe
+                srcDoc={previewData.html}
+                title="Email preview"
+                className="w-full border-0"
+                style={{ height: "520px" }}
+                sandbox="allow-same-origin"
+              />
+            ) : (
+              <div className="flex items-center justify-center h-64 text-sm" style={{ color: "oklch(0.50 0.04 260)" }}>
+                Could not load preview.
+              </div>
+            )}
+          </div>
+
+          {/* Footer note */}
+          <div className="px-5 py-3 shrink-0 text-center" style={{ background: "oklch(0.18 0.08 260)", borderTop: "1px solid rgba(255,255,255,0.08)" }}>
+            <p className="text-xs" style={{ color: "oklch(0.60 0.04 260)" }}>
+              Preview uses <strong className="text-white">Alex Johnson</strong> as a sample customer name.
+            </p>
+          </div>
+        </div>
+      </div>
+    )}
+    </>
   );
 }

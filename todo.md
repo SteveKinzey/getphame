@@ -666,3 +666,9 @@
 - [x] Show green checkmark on Home screen step 2 when at least one review platform is saved
 - [x] Show green checkmark on Home screen step 3 when at least one contact exists
 - [x] Show green checkmark on Home screen step 4 when at least one review request has been sent
+
+## Email Preview
+- [x] Add tRPC procedure smtp.previewEmail that returns rendered HTML using user's real profile data
+- [x] Add gold "Preview Email" button in Settings → Email Connection section (next to Resend Email)
+- [x] Build preview modal with iframe rendering the full email HTML, navy header, sender/to/subject rows
+- [x] Show dummy customer name "Alex Johnson" and active platform link in preview

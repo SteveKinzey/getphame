@@ -269,6 +269,37 @@ export const appRouter = router({
       }
       return { success: true };
     }),
+
+    /** Return rendered HTML preview of the review request email using real profile data */
+    previewEmail: protectedProcedure.query(async ({ ctx }) => {
+      const { buildReviewRequestEmail } = await import("./emailTemplates");
+      const profile = await getBusinessProfile(ctx.user.id);
+      const db = await getDb();
+      let reviewUrl = "https://g.page/r/example";
+      if (db) {
+        const { reviewPlatforms } = await import("../drizzle/schema");
+        const { eq: eqOp, and } = await import("drizzle-orm");
+        const [defaultPlatform] = await db
+          .select({ url: reviewPlatforms.url })
+          .from(reviewPlatforms)
+          .where(and(eqOp(reviewPlatforms.userId, ctx.user.id), eqOp(reviewPlatforms.isDefault, 1)))
+          .limit(1);
+        const [anyPlatform] = !defaultPlatform
+          ? await db
+              .select({ url: reviewPlatforms.url })
+              .from(reviewPlatforms)
+              .where(eqOp(reviewPlatforms.userId, ctx.user.id))
+              .limit(1)
+          : [null];
+        reviewUrl = defaultPlatform?.url ?? anyPlatform?.url ?? reviewUrl;
+      }
+      const html = buildReviewRequestEmail({
+        customerName: "Alex Johnson",
+        businessName: profile?.businessName || "Your Business",
+        reviewUrl,
+      });
+      return { html, businessName: profile?.businessName || "Your Business", reviewUrl };
+    }),
   }),
 
   gmail: router({
