@@ -78,11 +78,14 @@ export async function createCheckoutSession({
  * These must be created in the Stripe Dashboard with currency=THB.
  * Set STRIPE_PRICE_IDS_THB_MONTHLY, _ANNUAL, _LIFETIME env vars to activate.
  */
-export const STRIPE_PRICE_IDS_THB = {
-  monthly:  process.env.STRIPE_PRICE_ID_THB_MONTHLY ?? "",
-  annual:   process.env.STRIPE_PRICE_ID_THB_ANNUAL ?? "",
-  lifetime: process.env.STRIPE_PRICE_ID_THB_LIFETIME ?? "",
-} as const;
+// Read at call time (not module load) so tests can override env vars per-test
+export function getThbPriceIds() {
+  return {
+    monthly:  process.env.STRIPE_PRICE_ID_THB_MONTHLY ?? "",
+    annual:   process.env.STRIPE_PRICE_ID_THB_ANNUAL ?? "",
+    lifetime: process.env.STRIPE_PRICE_ID_THB_LIFETIME ?? "",
+  };
+}
 
 /**
  * Create a Stripe Checkout Session in THB with PromptPay enabled.
@@ -104,7 +107,7 @@ export async function createThbCheckoutSession({
   origin: string;
   plan?: StripePlan;
 }): Promise<string> {
-  const priceId = STRIPE_PRICE_IDS_THB[plan];
+  const priceId = getThbPriceIds()[plan];
   if (!priceId) {
     throw new Error(`THB price ID not configured for plan: ${plan}. Set STRIPE_PRICE_ID_THB_${plan.toUpperCase()} env var.`);
   }

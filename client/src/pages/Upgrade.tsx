@@ -412,7 +412,16 @@ export default function UpgradePage() {
             <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-muted)" }}>
               Based in Thailand?{" "}
               <button
-                onClick={() => setShowPromptPay(true)}
+                onClick={() => {
+                  setShowPromptPay(true);
+                  // Track non-Thai locale users who manually reveal the PromptPay CTA
+                  // Use page path convention so it's queryable in Admin dashboard
+                  trackPageView.mutate({
+                    page: "/upgrade/promptpay-reveal",
+                    utmSource: new URLSearchParams(window.location.search).get("utm_source") ?? undefined,
+                    utmCampaign: `plan:${selectedPlan}`,
+                  });
+                }}
                 className="underline font-semibold"
                 style={{ color: "oklch(0.80 0.18 80)" }}
               >

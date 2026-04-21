@@ -1157,3 +1157,10 @@
 - [x] Removed zohoCustomerId column from drizzle/schema.ts + ran pnpm db:push (migration 0038)
 - [x] Removed zohoTokens table from drizzle/schema.ts + ran pnpm db:push (migration 0039)
 - [x] Tests: 39/39 passing
+
+## Session #44 — Publish + PromptPay Tracking + Test (Apr 21 2026)
+- [x] Confirmed deployment live at reviewlink.app (auto-deployed)
+- [x] PromptPay reveal click tracked via trackPageView (page=/upgrade/promptpay-reveal, utmCampaign=plan:X)
+- [x] 11 vitest tests for createThbCheckoutSession: price IDs per plan, promptpay in payment_method_types, thb currency, customer_email prefill, stripeCustomerId override, missing env var guard for all 3 plans
+- [x] Refactored getThbPriceIds() to read env vars at call time (not module load) for testability
+- [x] Tests: 50/50 passing
