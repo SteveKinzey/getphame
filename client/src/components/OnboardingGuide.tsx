@@ -652,9 +652,12 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
   const isLast = step === STEPS.length - 1;
 
   return (
+    /* Full-screen backdrop */
+    <div className="fixed inset-0 z-50 flex justify-center" style={{ background: "oklch(0.22 0.09 260)" }}>
+    {/* Mobile-constrained panel */}
     <div
-      className="fixed inset-0 z-50 flex flex-col"
-      style={{ background: "oklch(0.975 0.003 100)" }}
+      className="relative flex flex-col w-full"
+      style={{ maxWidth: 480, background: "oklch(0.975 0.003 100)", height: "100%" }}
     >
       {/* ── Header ─────────────────────────────────────────────────────────── */}
       <div
@@ -729,7 +732,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
       </div>
 
       {/* ── Scrollable content ──────────────────────────────────────────────── */}
-      <div className="flex-1 overflow-y-auto px-5 py-5">
+      <div className="flex-1 overflow-y-auto px-5 py-5 pb-32">
         {current.content}
       </div>
 
@@ -758,6 +761,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
           </Button>
         </div>
       )}
+    </div>
     </div>
   );
 }

@@ -779,3 +779,10 @@
 - [x] Fix AdminSmtpStats.tsx
 - [x] Fix Unsubscribe.tsx
 - [x] Fix LandingPage.tsx
+
+## Mobile Layout & UX Fixes (Session — Apr 20 2026)
+
+- [x] OnboardingGuide: wrap in 480px mobile-constrained panel (fixed inset-0 backdrop + inner max-width:480px div)
+- [x] OnboardingGuide: add pb-32 to scrollable content area so content clears footer nav on all 6 steps
+- [x] Upgrade page: add Best Value ROI callout to Lifetime plan card ("Pays for itself in under 4 years")
+- [x] LandingPage: inject og:image, og:title, og:description, og:type, twitter:card, twitter:image meta tags via useEffect

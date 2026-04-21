@@ -227,9 +227,23 @@ export default function UpgradePage() {
             </p>
           )}
           {selectedPlan === "lifetime" && (
-            <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.4)" }}>
-              One-time payment. No renewals, ever.
-            </p>
+            <>
+              <p className="text-xs mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>
+                One-time payment. No renewals, ever.
+              </p>
+              {/* Best Value ROI callout */}
+              <div
+                className="rounded-xl px-4 py-3 mb-4"
+                style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
+              >
+                <p className="text-xs font-black mb-0.5" style={{ color: "oklch(0.35 0.12 80)" }}>
+                  💰 Pays for itself in under 4 years
+                </p>
+                <p className="text-xs" style={{ color: "oklch(0.45 0.08 80)" }}>
+                  Monthly plan costs $348/yr. At that rate, the lifetime license breaks even at year 3.6 — then it's free forever. Most users recover the cost in their first year of reviews.
+                </p>
+              </div>
+            </>
           )}
 
           {/* Features */}

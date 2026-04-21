@@ -125,6 +125,23 @@ export default function LandingPage() {
     kw.content =
       "review requests, Google reviews, get more reviews, review automation, small business reviews, send review request email, WooCommerce reviews, Stripe reviews";
 
+    // OG: open graph image for social sharing previews
+    const setMeta = (property: string, content: string) => {
+      let el = document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute("property", property);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
+    setMeta("og:image", OG_IMG);
+    setMeta("og:title", "ReviewLink — Get More 5-Star Google Reviews");
+    setMeta("og:description", "Send personalised review request emails from your own email account. Works with Google, Yelp, TripAdvisor and more.");
+    setMeta("og:type", "website");
+    setMeta("twitter:card", "summary_large_image");
+    setMeta("twitter:image", OG_IMG);
+
     return () => {
       document.title = "ReviewLink";
     };
