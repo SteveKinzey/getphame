@@ -105,6 +105,15 @@
   /* L2 — secondary label / caption */
   --font-l2: clamp(0.6875rem, 1.5vw + 0.05rem, 0.8125rem); /* 11px → 13px */
 
+  /* ── Font weight tokens ──────────────────────────────────────────────── */
+  /* Use var(--fw-bold) instead of hardcoding 700 everywhere */
+  --fw-black:     900;  /* rr-h1 */
+  --fw-extrabold: 800;  /* rr-h2, rr-h3 */
+  --fw-bold:      700;  /* rr-h4, rr-h5, rr-h6 */
+  --fw-semibold:  600;  /* rr-l1, rr-l2 */
+  --fw-medium:    500;
+  --fw-normal:    400;  /* rr-b1, rr-b2 */
+
   /* ReviewLink Brand Colors */
   --navy: oklch(0.22 0.09 260);
   --navy-light: oklch(0.30 0.08 260);
@@ -163,6 +172,14 @@
     font-family: 'Poppins', sans-serif;
     font-weight: 800;
   }
+  /* Poppins for any element explicitly using Poppins via class */
+  .font-poppins, [class*="rr-h"], [class*="rr-l"] {
+    font-family: 'Poppins', sans-serif;
+  }
+  /* Nunito for body-level elements */
+  .font-nunito, [class*="rr-b"] {
+    font-family: 'Nunito', sans-serif;
+  }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
   [type="button"]:not(:disabled),
@@ -207,16 +224,16 @@
 
   /* ── Type scale utility classes ──────────────────────────────────────── */
   /* Usage: className="rr-h1" etc. instead of inline font-size + font-family */
-  .rr-h1 { font-size: var(--font-h1); font-family: 'Poppins', sans-serif; font-weight: 900; line-height: 1.15; }
-  .rr-h2 { font-size: var(--font-h2); font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1.2; }
-  .rr-h3 { font-size: var(--font-h3); font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1.25; }
-  .rr-h4 { font-size: var(--font-h4); font-family: 'Poppins', sans-serif; font-weight: 700; line-height: 1.3; }
-  .rr-h5 { font-size: var(--font-h5); font-family: 'Poppins', sans-serif; font-weight: 700; line-height: 1.35; }
-  .rr-h6 { font-size: var(--font-h6); font-family: 'Poppins', sans-serif; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.4; }
-  .rr-b1 { font-size: var(--font-b1); font-family: 'Nunito', sans-serif; font-weight: 400; line-height: 1.6; }
-  .rr-b2 { font-size: var(--font-b2); font-family: 'Nunito', sans-serif; font-weight: 400; line-height: 1.55; }
-  .rr-l1 { font-size: var(--font-l1); font-family: 'Poppins', sans-serif; font-weight: 600; line-height: 1.4; }
-  .rr-l2 { font-size: var(--font-l2); font-family: 'Nunito', sans-serif; font-weight: 600; line-height: 1.4; letter-spacing: 0.02em; }
+  .rr-h1 { font-size: var(--font-h1); font-family: 'Poppins', sans-serif; font-weight: var(--fw-black);     line-height: 1.15; }
+  .rr-h2 { font-size: var(--font-h2); font-family: 'Poppins', sans-serif; font-weight: var(--fw-extrabold); line-height: 1.2; }
+  .rr-h3 { font-size: var(--font-h3); font-family: 'Poppins', sans-serif; font-weight: var(--fw-extrabold); line-height: 1.25; }
+  .rr-h4 { font-size: var(--font-h4); font-family: 'Poppins', sans-serif; font-weight: var(--fw-bold);      line-height: 1.3; }
+  .rr-h5 { font-size: var(--font-h5); font-family: 'Poppins', sans-serif; font-weight: var(--fw-bold);      line-height: 1.35; }
+  .rr-h6 { font-size: var(--font-h6); font-family: 'Poppins', sans-serif; font-weight: var(--fw-bold);      letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.4; }
+  .rr-b1 { font-size: var(--font-b1); font-family: 'Nunito', sans-serif;  font-weight: var(--fw-normal);    line-height: 1.6; }
+  .rr-b2 { font-size: var(--font-b2); font-family: 'Nunito', sans-serif;  font-weight: var(--fw-normal);    line-height: 1.55; }
+  .rr-l1 { font-size: var(--font-l1); font-family: 'Poppins', sans-serif; font-weight: var(--fw-semibold);  line-height: 1.4; }
+  .rr-l2 { font-size: var(--font-l2); font-family: 'Nunito', sans-serif;  font-weight: var(--fw-semibold);  line-height: 1.4; letter-spacing: 0.02em; }
 
   /* ── Text-on-dark semantic utilities ───────────────────────────────── */
   /* Use on any element inside a navy/dark panel */
@@ -393,3 +410,30 @@
     overflow-x: hidden;
   }
 }
+
+/* ── Dark mode override ─────────────────────────────────────────────────────── */
+/*
+ * Activate by setting defaultTheme="dark" in ThemeProvider (App.tsx).
+ * All text-on-dark roles flip to dark-on-light equivalents.
+ * Brand colors (navy, gold) remain unchanged — they are used as accents.
+ * Uncomment and adjust when adding a user-switchable dark mode.
+ */
+/*
+.dark {
+  --text-on-dark-primary:   oklch(0.15 0.04 260);
+  --text-on-dark-secondary: oklch(0.30 0.05 260);
+  --text-on-dark-muted:     oklch(0.50 0.04 260);
+  --text-on-dark-disabled:  oklch(0.65 0.03 260);
+
+  --background: oklch(0.12 0.04 260);
+  --foreground: oklch(0.95 0.01 260);
+  --card:        oklch(0.18 0.05 260);
+  --card-foreground: oklch(0.95 0.01 260);
+  --popover:     oklch(0.18 0.05 260);
+  --popover-foreground: oklch(0.95 0.01 260);
+  --muted:       oklch(0.25 0.04 260);
+  --muted-foreground: oklch(0.65 0.03 260);
+  --border:      oklch(0.28 0.04 260);
+  --input:       oklch(0.28 0.04 260);
+}
+*/

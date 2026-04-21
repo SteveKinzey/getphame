@@ -989,3 +989,9 @@
 - [x] Add utility classes (rr-h1 through rr-l2, rr-on-dark through rr-on-dark-disabled)
 - [x] Global replacement of all raw rgba(255,255,255,0.x) color values with CSS tokens (0 remaining)
 - [x] Wire close buttons and step counters to var(--text-on-dark-primary) for bright white
+
+## Session #22 — Design Token Follow-ups (Apr 21 2026)
+- [x] Create reusable design-token skill (SKILL.md)
+- [x] Migrate inline fontFamily strings to rr-* utility classes across all files (CSS inheritance approach)
+- [x] Add --fw-* font-weight tokens to index.css
+- [x] Add .dark override block for dark mode variant in index.css (commented out, ready to activate)
