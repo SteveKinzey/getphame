@@ -924,7 +924,7 @@ export default function SettingsPage() {
         </h1>
         {user && (
           <div className="flex items-center gap-2 mt-1">
-            <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
+            <p className="text-sm" style={{ color: "var(--text-on-dark-secondary)" }}>
               {user.name ?? user.email ?? "Signed in"}
             </p>
 

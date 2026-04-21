@@ -82,7 +82,7 @@ export default function AdminChurnPage() {
         >
           Churn Surveys
         </h1>
-        <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.55)" }}>
+        <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
           Why users cancel
         </p>
       </div>

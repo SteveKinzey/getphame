@@ -202,7 +202,7 @@ export default function DashboardPage() {
               >
                 {isLoading ? "—" : s.value}
               </div>
-              <div className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+              <div className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
                 {s.label}
               </div>
             </div>
@@ -591,7 +591,7 @@ export default function DashboardPage() {
             onClick={() => setSelected(new Set())}
             aria-label="Clear selection"
             className="p-1.5 rounded-lg transition-colors"
-            style={{ color: "rgba(255,255,255,0.5)" }}
+            style={{ color: "var(--text-on-dark-secondary)" }}
           >
             <X size={14} aria-hidden="true" />
           </button>

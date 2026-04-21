@@ -243,12 +243,12 @@ export default function ImportContactsPage() {
                   className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-black"
                   style={{
                     background: i <= step ? "oklch(0.80 0.18 80)" : "oklch(0.35 0.06 260)",
-                    color: i <= step ? "oklch(0.22 0.09 260)" : "rgba(255,255,255,0.4)",
+                    color: i <= step ? "oklch(0.22 0.09 260)" : "var(--text-on-dark-muted)",
                   }}
                 >
                   {i < step ? <CheckCircle2 size={12} /> : i + 1}
                 </div>
-                <span className="text-xs mt-1" style={{ color: i <= step ? "oklch(0.80 0.18 80)" : "rgba(255,255,255,0.4)" }}>
+                <span className="text-xs mt-1" style={{ color: i <= step ? "oklch(0.80 0.18 80)" : "var(--text-on-dark-muted)" }}>
                   {label}
                 </span>
               </div>

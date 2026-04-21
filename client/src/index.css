@@ -55,9 +55,56 @@
   --color-gold-light: var(--gold-light);
   --color-gold-dark: var(--gold-dark);
   --color-cream: var(--cream);
+
+  /* ── Type scale tokens ──────────────────────────────────────────────── */
+  --color-text-on-dark-primary:   var(--text-on-dark-primary);
+  --color-text-on-dark-secondary: var(--text-on-dark-secondary);
+  --color-text-on-dark-muted:     var(--text-on-dark-muted);
+  --color-text-on-dark-disabled:  var(--text-on-dark-disabled);
+
+  /* ── Font size scale tokens ─────────────────────────────────────────── */
+  --fs-h1: var(--font-h1);
+  --fs-h2: var(--font-h2);
+  --fs-h3: var(--font-h3);
+  --fs-h4: var(--font-h4);
+  --fs-h5: var(--font-h5);
+  --fs-h6: var(--font-h6);
+  --fs-b1: var(--font-b1);
+  --fs-b2: var(--font-b2);
+  --fs-l1: var(--font-l1);
+  --fs-l2: var(--font-l2);
 }
 
 :root {
+  /* ── Text-on-dark semantic roles ────────────────────────────────────── */
+  /* Use these on any navy/dark panel instead of raw rgba or dim oklch values */
+  --text-on-dark-primary:   oklch(1 0 0);           /* pure white  — headings, CTAs, close buttons, step counters */
+  --text-on-dark-secondary: oklch(0.88 0.02 260);   /* soft white  — subheadings, card descriptions */
+  --text-on-dark-muted:     oklch(0.72 0.03 260);   /* medium grey — helper text, secondary labels */
+  --text-on-dark-disabled:  oklch(0.52 0.04 260);   /* dim grey    — disabled states, placeholder copy */
+
+  /* ── Fluid type scale (clamp: min @ 320px → max @ 480px) ───────────── */
+  /* H1 — page hero / splash titles */
+  --font-h1: clamp(1.75rem, 5vw + 0.5rem, 2.25rem);   /* 28px → 36px */
+  /* H2 — section headings */
+  --font-h2: clamp(1.375rem, 4vw + 0.25rem, 1.75rem);  /* 22px → 28px */
+  /* H3 — card / panel headings */
+  --font-h3: clamp(1.125rem, 3vw + 0.2rem, 1.375rem);  /* 18px → 22px */
+  /* H4 — sub-section labels */
+  --font-h4: clamp(1rem, 2.5vw + 0.1rem, 1.125rem);    /* 16px → 18px */
+  /* H5 — small headings / step titles */
+  --font-h5: clamp(0.875rem, 2vw + 0.1rem, 1rem);      /* 14px → 16px */
+  /* H6 — overlines / eyebrow text */
+  --font-h6: clamp(0.75rem, 1.5vw + 0.05rem, 0.875rem); /* 12px → 14px */
+  /* B1 — primary body copy */
+  --font-b1: clamp(0.9375rem, 2.5vw + 0.1rem, 1rem);   /* 15px → 16px */
+  /* B2 — secondary body / descriptions */
+  --font-b2: clamp(0.8125rem, 2vw + 0.1rem, 0.9375rem); /* 13px → 15px */
+  /* L1 — primary label / button text */
+  --font-l1: clamp(0.875rem, 2vw + 0.1rem, 1rem);      /* 14px → 16px */
+  /* L2 — secondary label / caption */
+  --font-l2: clamp(0.6875rem, 1.5vw + 0.05rem, 0.8125rem); /* 11px → 13px */
+
   /* ReviewLink Brand Colors */
   --navy: oklch(0.22 0.09 260);
   --navy-light: oklch(0.30 0.08 260);
@@ -157,6 +204,26 @@
       max-width: 480px;
     }
   }
+
+  /* ── Type scale utility classes ──────────────────────────────────────── */
+  /* Usage: className="rr-h1" etc. instead of inline font-size + font-family */
+  .rr-h1 { font-size: var(--font-h1); font-family: 'Poppins', sans-serif; font-weight: 900; line-height: 1.15; }
+  .rr-h2 { font-size: var(--font-h2); font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1.2; }
+  .rr-h3 { font-size: var(--font-h3); font-family: 'Poppins', sans-serif; font-weight: 800; line-height: 1.25; }
+  .rr-h4 { font-size: var(--font-h4); font-family: 'Poppins', sans-serif; font-weight: 700; line-height: 1.3; }
+  .rr-h5 { font-size: var(--font-h5); font-family: 'Poppins', sans-serif; font-weight: 700; line-height: 1.35; }
+  .rr-h6 { font-size: var(--font-h6); font-family: 'Poppins', sans-serif; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1.4; }
+  .rr-b1 { font-size: var(--font-b1); font-family: 'Nunito', sans-serif; font-weight: 400; line-height: 1.6; }
+  .rr-b2 { font-size: var(--font-b2); font-family: 'Nunito', sans-serif; font-weight: 400; line-height: 1.55; }
+  .rr-l1 { font-size: var(--font-l1); font-family: 'Poppins', sans-serif; font-weight: 600; line-height: 1.4; }
+  .rr-l2 { font-size: var(--font-l2); font-family: 'Nunito', sans-serif; font-weight: 600; line-height: 1.4; letter-spacing: 0.02em; }
+
+  /* ── Text-on-dark semantic utilities ───────────────────────────────── */
+  /* Use on any element inside a navy/dark panel */
+  .rr-on-dark          { color: var(--text-on-dark-primary); }   /* white  — headings, close btns, counters */
+  .rr-on-dark-secondary { color: var(--text-on-dark-secondary); } /* soft white — subheadings */
+  .rr-on-dark-muted    { color: var(--text-on-dark-muted); }     /* mid grey — helper text */
+  .rr-on-dark-disabled { color: var(--text-on-dark-disabled); }  /* dim grey — disabled/placeholder */
 
   /* ReviewLink custom components */
   .rr-navy-panel {

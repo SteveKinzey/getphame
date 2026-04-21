@@ -206,7 +206,7 @@ export default function LandingPage() {
             Get more 5-star reviews without the awkward ask
           </h1>
 
-          <p className="text-sm mb-8" style={{ color: "rgba(255,255,255,0.70)" }}>
+          <p className="text-sm mb-8" style={{ color: "var(--text-on-dark-secondary)" }}>
             ReviewLink sends personalised review request emails from your own email account.
             Customers receive a message that looks like it came directly from you — not a bulk mailer.
           </p>
@@ -226,7 +226,7 @@ export default function LandingPage() {
             <ArrowRight size={18} />
           </a>
 
-          <p className="text-xs mt-3" style={{ color: "rgba(255,255,255,0.40)" }}>
+          <p className="text-xs mt-3" style={{ color: "var(--text-on-dark-muted)" }}>
             Takes less than 2 minutes to set up
           </p>
         </div>
@@ -317,7 +317,7 @@ export default function LandingPage() {
                 >
                   {item.step}
                 </div>
-                <p className="text-sm font-semibold" style={{ color: "rgba(255,255,255,0.85)" }}>
+                <p className="text-sm font-semibold" style={{ color: "var(--text-on-dark-primary)" }}>
                   {item.label}
                 </p>
                 {i < HOW_IT_WORKS.length - 1 && (
@@ -400,9 +400,9 @@ export default function LandingPage() {
                     style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)", fontFamily: "'Poppins', sans-serif" }}
                   >Own it forever</span>
                 </div>
-                <span className="text-lg font-black" style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}>$1,247<span className="text-xs font-normal" style={{ color: "rgba(255,255,255,0.5)" }}> once</span></span>
+                <span className="text-lg font-black" style={{ color: "oklch(0.80 0.18 80)", fontFamily: "'Poppins', sans-serif" }}>$1,247<span className="text-xs font-normal" style={{ color: "var(--text-on-dark-secondary)" }}> once</span></span>
               </div>
-              <p className="text-xs" style={{ color: "rgba(255,255,255,0.60)" }}>One payment, lifetime access. No renewals, no surprises.</p>
+              <p className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>One payment, lifetime access. No renewals, no surprises.</p>
             </div>
           </div>
         </div>
@@ -565,7 +565,7 @@ export default function LandingPage() {
           >
             Start collecting reviews today
           </h2>
-          <p className="text-sm mb-6" style={{ color: "rgba(255,255,255,0.65)" }}>
+          <p className="text-sm mb-6" style={{ color: "var(--text-on-dark-secondary)" }}>
             Free forever. No credit card. Set up in under 2 minutes.
           </p>
           <a
@@ -587,16 +587,16 @@ export default function LandingPage() {
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
       <footer
         className="px-5 py-4 flex items-center justify-between text-xs"
-        style={{ background: "oklch(0.18 0.07 260)", color: "rgba(255,255,255,0.40)" }}
+        style={{ background: "oklch(0.18 0.07 260)", color: "var(--text-on-dark-muted)" }}
       >
         <div className="flex items-center gap-1.5">
           <Rocket size={12} style={{ color: "oklch(0.80 0.18 80)" }} />
           <span style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 700 }}>ReviewLink</span>
         </div>
         <div className="flex items-center gap-4">
-          <a href="/privacy-policy" style={{ color: "rgba(255,255,255,0.40)" }}>Privacy</a>
-          <a href="/terms-of-service" style={{ color: "rgba(255,255,255,0.40)" }}>Terms</a>
-          <a href="mailto:support@reviewlink.app" style={{ color: "rgba(255,255,255,0.40)" }}>Support</a>
+          <a href="/privacy-policy" style={{ color: "var(--text-on-dark-muted)" }}>Privacy</a>
+          <a href="/terms-of-service" style={{ color: "var(--text-on-dark-muted)" }}>Terms</a>
+          <a href="mailto:support@reviewlink.app" style={{ color: "var(--text-on-dark-muted)" }}>Support</a>
         </div>
       </footer>
     </div>

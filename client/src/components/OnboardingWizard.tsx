@@ -716,7 +716,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
             <button
               onClick={() => dismissMutation.mutate()}
               className="p-1 rounded-lg transition-colors"
-              style={{ color: "oklch(0.55 0.04 260)" }}
+              style={{ color: "var(--text-on-dark-primary)" }}
               title="Skip setup"
             >
               <X size={18} />

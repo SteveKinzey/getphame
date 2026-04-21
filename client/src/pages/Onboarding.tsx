@@ -47,7 +47,7 @@ export default function OnboardingPage() {
             <br />
             <span style={{ color: "oklch(0.80 0.18 80)" }}>Google Reviews</span>
           </h1>
-          <p className="text-base leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
+          <p className="text-base leading-relaxed" style={{ color: "var(--text-on-dark-secondary)" }}>
             Send personalized review requests from your own email account. Your customers see it
             come from you — not a generic sender.
           </p>
@@ -113,7 +113,7 @@ export default function OnboardingPage() {
           Continue with Apple
         </button>
 
-        <p className="text-center text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+        <p className="text-center text-xs" style={{ color: "var(--text-on-dark-muted)" }}>
           Start free — 10 review requests included. No credit card required.
         </p>
       </div>

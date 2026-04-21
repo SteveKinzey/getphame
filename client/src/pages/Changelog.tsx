@@ -231,7 +231,7 @@ export default function ChangelogPage() {
         >
           What's New
         </h1>
-        <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.60)" }}>
+        <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
           Every update, improvement, and fix — in one place.
         </p>
 

@@ -156,7 +156,7 @@ export default function ChurnSurveyPage() {
                     Wait — here's a deal for you
                   </p>
                 </div>
-                <p className="text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>
+                <p className="text-sm" style={{ color: "var(--text-on-dark-primary)" }}>
                   Stay on ReviewLink for <strong style={{ color: "oklch(0.80 0.18 80)" }}>40% off for 3 months</strong>. Use code at checkout:
                 </p>
                 <div
@@ -165,7 +165,7 @@ export default function ChurnSurveyPage() {
                 >
                   STAY40
                 </div>
-                <p className="text-xs" style={{ color: "rgba(255,255,255,0.50)" }}>
+                <p className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
                   Valid for 7 days. Apply at checkout when resubscribing.
                 </p>
                 <button

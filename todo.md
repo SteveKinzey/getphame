@@ -982,3 +982,10 @@
 - [x] Replace small dot step indicators with tappable full-width step bar (numbered pills + label)
 - [x] Add Previous / Next buttons at bottom of each step content area
 - [x] Step 3 (final): show only "Send My First Request" CTA — no Next button needed
+
+## Session #21 — Design Token System (Apr 21 2026)
+- [x] Add full type scale tokens to index.css (H1–H6, B1–B2, L1–L2 with fluid clamp sizing)
+- [x] Add semantic text-on-dark color tokens (primary/secondary/muted/disabled)
+- [x] Add utility classes (rr-h1 through rr-l2, rr-on-dark through rr-on-dark-disabled)
+- [x] Global replacement of all raw rgba(255,255,255,0.x) color values with CSS tokens (0 remaining)
+- [x] Wire close buttons and step counters to var(--text-on-dark-primary) for bright white

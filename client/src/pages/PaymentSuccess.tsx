@@ -156,10 +156,10 @@ export default function PaymentSuccessPage() {
         {heading.top}{" "}
         <span style={{ color: "oklch(0.80 0.18 80)" }}>{heading.highlight}</span>
       </h1>
-      <p className="text-center text-base mb-1" style={{ color: "rgba(255,255,255,0.75)" }}>
+      <p className="text-center text-base mb-1" style={{ color: "var(--text-on-dark-secondary)" }}>
         Payment confirmed. {heading.sub}
       </p>
-      <p className="text-center text-sm mb-8" style={{ color: "rgba(255,255,255,0.4)" }}>
+      <p className="text-center text-sm mb-8" style={{ color: "var(--text-on-dark-muted)" }}>
         Your account has been upgraded instantly.
       </p>
 
@@ -210,7 +210,7 @@ export default function PaymentSuccessPage() {
         <button
           onClick={() => navigate("/")}
           className="w-full py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2"
-          style={{ color: "rgba(255,255,255,0.5)", border: "1px solid rgba(255,255,255,0.15)" }}
+          style={{ color: "var(--text-on-dark-secondary)", border: "1px solid rgba(255,255,255,0.15)" }}
         >
           Go to Dashboard
         </button>
@@ -222,7 +222,7 @@ export default function PaymentSuccessPage() {
           <Star key={i} size={18} fill="oklch(0.80 0.18 80)" style={{ color: "oklch(0.80 0.18 80)" }} />
         ))}
       </div>
-      <p className="text-center text-xs mt-2" style={{ color: "rgba(255,255,255,0.3)" }}>
+      <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-disabled)" }}>
         Thank you for supporting ReviewLink
       </p>
     </div>

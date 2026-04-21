@@ -98,7 +98,7 @@ export default function AdminCodesPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-6" style={{ background: "oklch(0.22 0.09 260)" }}>
         <p className="text-white text-lg font-bold mb-4">Admin access required.</p>
-        <button onClick={() => navigate("/")} className="text-sm" style={{ color: "rgba(255,255,255,0.5)" }}>
+        <button onClick={() => navigate("/")} className="text-sm" style={{ color: "var(--text-on-dark-secondary)" }}>
           Go home
         </button>
       </div>
@@ -112,7 +112,7 @@ export default function AdminCodesPage() {
         <button
           onClick={() => navigate("/")}
           className="flex items-center gap-1 text-sm mb-4"
-          style={{ color: "rgba(255,255,255,0.5)" }}
+          style={{ color: "var(--text-on-dark-secondary)" }}
         >
           <ChevronLeft size={16} />
           Back
@@ -134,7 +134,7 @@ export default function AdminCodesPage() {
             >
               Access Codes
             </h1>
-            <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.5)" }}>
+            <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
               Create and manage beta / promo codes that grant free Pro access.
             </p>
           </div>
@@ -170,7 +170,7 @@ export default function AdminCodesPage() {
               <button
                 onClick={() => refreshPreview()}
                 className="p-2 rounded-xl"
-                style={{ background: "oklch(0.22 0.09 260)", color: "rgba(255,255,255,0.5)" }}
+                style={{ background: "oklch(0.22 0.09 260)", color: "var(--text-on-dark-secondary)" }}
                 title="Generate new random code"
               >
                 <RefreshCw size={14} />
@@ -181,7 +181,7 @@ export default function AdminCodesPage() {
           <div className="flex flex-col gap-3">
             {/* Custom code override */}
             <div>
-              <label className="text-xs font-semibold mb-1 block" style={{ color: "rgba(255,255,255,0.6)" }}>
+              <label className="text-xs font-semibold mb-1 block" style={{ color: "var(--text-on-dark-secondary)" }}>
                 Custom code (optional — leave blank to use the one above)
               </label>
               <input
@@ -200,7 +200,7 @@ export default function AdminCodesPage() {
 
             {/* Internal note */}
             <div>
-              <label className="text-xs font-semibold mb-1 block" style={{ color: "rgba(255,255,255,0.6)" }}>
+              <label className="text-xs font-semibold mb-1 block" style={{ color: "var(--text-on-dark-secondary)" }}>
                 Internal note (shown in success message)
               </label>
               <input
@@ -220,7 +220,7 @@ export default function AdminCodesPage() {
             <div className="flex gap-3">
               {/* Max uses */}
               <div className="flex-1">
-                <label className="text-xs font-semibold mb-1 block" style={{ color: "rgba(255,255,255,0.6)" }}>
+                <label className="text-xs font-semibold mb-1 block" style={{ color: "var(--text-on-dark-secondary)" }}>
                   Max uses (blank = unlimited)
                 </label>
                 <input
@@ -240,7 +240,7 @@ export default function AdminCodesPage() {
 
               {/* Expiry days */}
               <div className="flex-1">
-                <label className="text-xs font-semibold mb-1 block" style={{ color: "rgba(255,255,255,0.6)" }}>
+                <label className="text-xs font-semibold mb-1 block" style={{ color: "var(--text-on-dark-secondary)" }}>
                   Expires in days (blank = never)
                 </label>
                 <input
@@ -287,7 +287,7 @@ export default function AdminCodesPage() {
             <button
               onClick={() => refetch()}
               className="p-1.5 rounded-lg"
-              style={{ color: "rgba(255,255,255,0.4)" }}
+              style={{ color: "var(--text-on-dark-muted)" }}
             >
               <RefreshCw size={14} />
             </button>
@@ -295,11 +295,11 @@ export default function AdminCodesPage() {
 
           {codesLoading ? (
             <div className="flex justify-center py-8">
-              <Loader2 size={24} className="animate-spin" style={{ color: "rgba(255,255,255,0.3)" }} />
+              <Loader2 size={24} className="animate-spin" style={{ color: "var(--text-on-dark-disabled)" }} />
             </div>
           ) : !codes || codes.length === 0 ? (
             <div className="px-5 pb-6 text-center">
-              <p className="text-sm" style={{ color: "rgba(255,255,255,0.4)" }}>
+              <p className="text-sm" style={{ color: "var(--text-on-dark-muted)" }}>
                 No codes yet. Create one above.
               </p>
             </div>
@@ -318,14 +318,14 @@ export default function AdminCodesPage() {
                         <div className="flex items-center gap-2 mb-1">
                           <span
                             className="font-mono text-sm font-bold tracking-wider"
-                            style={{ color: isActive ? "oklch(0.80 0.18 80)" : "rgba(255,255,255,0.3)" }}
+                            style={{ color: isActive ? "oklch(0.80 0.18 80)" : "var(--text-on-dark-disabled)" }}
                           >
                             {c.code}
                           </span>
                           <button
                             onClick={() => copyCode(c.code)}
                             className="p-1 rounded"
-                            style={{ color: "rgba(255,255,255,0.3)" }}
+                            style={{ color: "var(--text-on-dark-disabled)" }}
                           >
                             <Copy size={12} />
                           </button>
@@ -345,13 +345,13 @@ export default function AdminCodesPage() {
 
                         {/* Note */}
                         {c.note && (
-                          <p className="text-xs mb-1" style={{ color: "rgba(255,255,255,0.5)" }}>
+                          <p className="text-xs mb-1" style={{ color: "var(--text-on-dark-secondary)" }}>
                             {c.note}
                           </p>
                         )}
 
                         {/* Stats */}
-                        <div className="flex items-center gap-3 text-xs" style={{ color: "rgba(255,255,255,0.35)" }}>
+                        <div className="flex items-center gap-3 text-xs" style={{ color: "var(--text-on-dark-muted)" }}>
                           <span>
                             {c.usedCount} used
                             {c.maxUses !== null ? ` / ${c.maxUses}` : " / "}

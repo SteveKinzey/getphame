@@ -58,7 +58,7 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
         <p className="text-white font-bold text-lg leading-snug" style={{ fontFamily: "'Poppins', sans-serif" }}>
           ReviewLink sends personalised review request emails from your own email account.
         </p>
-        <p className="text-sm mt-2" style={{ color: "rgba(255,255,255,0.65)" }}>
+        <p className="text-sm mt-2" style={{ color: "var(--text-on-dark-secondary)" }}>
           Customers receive a message that looks like it came directly from you — not a bulk mailer.
         </p>
       </div>
@@ -989,7 +989,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
           <button
             onClick={onClose}
             className="p-1.5 rounded-lg transition-colors"
-            style={{ color: "rgba(255,255,255,0.5)" }}
+            style={{ color: "var(--text-on-dark-primary)" }}
             aria-label="Close guide"
           >
             <X size={18} />
@@ -1015,7 +1015,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
               aria-label={`Go to step ${i + 1}`}
             />
           ))}
-          <span className="ml-auto text-xs" style={{ color: "rgba(255,255,255,0.45)" }}>
+          <span className="ml-auto text-xs font-semibold" style={{ color: "var(--text-on-dark-primary)" }}>
             {step + 1} / {STEPS.length}
           </span>
         </div>
@@ -1035,7 +1035,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
             >
               {current.title}
             </h2>
-            <p className="text-xs" style={{ color: "rgba(255,255,255,0.55)" }}>
+            <p className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
               {current.subtitle}
             </p>
           </div>

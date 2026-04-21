@@ -202,12 +202,12 @@ export default function SendRequestPage() {
         >
           Request Sent! 🚀
         </h2>
-        <p className="text-center mb-2" style={{ color: "rgba(255,255,255,0.7)" }}>
+        <p className="text-center mb-2" style={{ color: "var(--text-on-dark-secondary)" }}>
           Your review request was sent to{" "}
           <strong style={{ color: "oklch(0.80 0.18 80)" }}>{customerName}</strong> from your email
           account.
         </p>
-        <p className="text-sm text-center mb-8" style={{ color: "rgba(255,255,255,0.5)" }}>
+        <p className="text-sm text-center mb-8" style={{ color: "var(--text-on-dark-secondary)" }}>
           The email comes from <strong>{smtpStatus?.email}</strong> so it feels personal.
         </p>
         <div className="flex gap-1 mb-8">
@@ -233,7 +233,7 @@ export default function SendRequestPage() {
                 {milestoneNum} requests sent!
               </p>
             </div>
-            <p className="text-xs mb-3" style={{ color: "rgba(255,255,255,0.70)" }}>
+            <p className="text-xs mb-3" style={{ color: "var(--text-on-dark-secondary)" }}>
               You're getting results for real businesses. If ReviewLink is helping you, a quick review means the world to us.
             </p>
             <a
@@ -285,7 +285,7 @@ export default function SendRequestPage() {
           Request a Review
         </h1>
         {profile && (
-          <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.6)" }}>
+          <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
             From: {smtpStatus?.email ?? "No email connected"}
           </p>
         )}

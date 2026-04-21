@@ -87,7 +87,7 @@ export default function PWAInstallPrompt() {
             >
               Add to Home Screen
             </h2>
-            <p className="text-sm mt-1" style={{ color: "rgba(255,255,255,0.65)" }}>
+            <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
               Install ReviewLink for the best experience — works like a real app.
             </p>
           </div>
@@ -199,7 +199,7 @@ export default function PWAInstallPrompt() {
         <button
           onClick={dismiss}
           className="w-full text-center text-xs mt-5"
-          style={{ color: "rgba(255,255,255,0.4)" }}
+          style={{ color: "var(--text-on-dark-muted)" }}
         >
           Maybe later
         </button>
@@ -239,7 +239,7 @@ function Step({
       {/* Icon */}
       <div className="flex-shrink-0">{icon}</div>
       {/* Text */}
-      <p className="text-sm" style={{ color: "rgba(255,255,255,0.85)" }}>
+      <p className="text-sm" style={{ color: "var(--text-on-dark-primary)" }}>
         {text}
       </p>
     </div>

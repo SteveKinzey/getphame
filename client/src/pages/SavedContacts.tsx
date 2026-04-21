@@ -901,7 +901,7 @@ export default function SavedContacts() {
               <button
                 onClick={clearSelection}
                 className="p-1.5 rounded-lg transition-colors"
-                style={{ color: "rgba(255,255,255,0.5)" }}
+                style={{ color: "var(--text-on-dark-secondary)" }}
               >
                 <X size={16} />
               </button>

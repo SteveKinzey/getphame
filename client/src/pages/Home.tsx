@@ -67,7 +67,7 @@ function ShareReferralCard() {
             <p className="text-xs font-black leading-tight" style={{ color: "white", fontFamily: "'Poppins', sans-serif" }}>
               Know a local business owner?
             </p>
-            <p className="text-xs" style={{ color: "rgba(255,255,255,0.55)" }}>
+            <p className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
               Help them get more reviews — it's free.
             </p>
           </div>
@@ -76,7 +76,7 @@ function ShareReferralCard() {
         {/* Message preview */}
         <div
           className="rounded-xl px-3 py-2.5 mb-3 text-xs leading-relaxed"
-          style={{ background: "oklch(0.30 0.08 260)", color: "rgba(255,255,255,0.70)" }}
+          style={{ background: "oklch(0.30 0.08 260)", color: "var(--text-on-dark-secondary)" }}
         >
           <span style={{ color: "oklch(0.80 0.18 80)", fontWeight: 700 }}>"</span>
           {SHARE_TEXT}{" "}
@@ -274,7 +274,7 @@ export default function HomePage() {
               {profile?.businessName ? `Hey, ${profile.businessName.split(" ")[0]}!` : `Welcome back!`}
             </h1>
             <div className="flex items-center gap-2 mt-1">
-              <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
+              <p className="text-sm" style={{ color: "var(--text-on-dark-secondary)" }}>
                 {user?.name ?? user?.email ?? ""}
               </p>
           </div>
@@ -330,7 +330,7 @@ export default function HomePage() {
               >
                 {s.value}
               </div>
-              <div className="text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+              <div className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
                 {s.label}
               </div>
             </div>

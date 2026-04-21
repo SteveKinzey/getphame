@@ -149,13 +149,13 @@ export default function UpgradePage() {
         >
           You're on {tierLabel}!
         </h2>
-        <p className="text-center mb-8" style={{ color: "rgba(255,255,255,0.7)" }}>
+        <p className="text-center mb-8" style={{ color: "var(--text-on-dark-secondary)" }}>
           Enjoy unlimited review requests and all Pro features.
         </p>
         <button
           onClick={() => navigate("/")}
           className="py-3 px-8 rounded-2xl font-bold text-base flex items-center justify-center gap-2"
-          style={{ color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.2)" }}
+          style={{ color: "var(--text-on-dark-secondary)", border: "1px solid rgba(255,255,255,0.2)" }}
         >
           Back to Dashboard
         </button>
@@ -163,7 +163,7 @@ export default function UpgradePage() {
           <button
             onClick={() => navigate("/cancel")}
             className="mt-4 text-xs"
-            style={{ color: "rgba(255,255,255,0.35)" }}
+            style={{ color: "var(--text-on-dark-muted)" }}
           >
             Cancel plan
           </button>
@@ -179,7 +179,7 @@ export default function UpgradePage() {
         <button
           onClick={() => navigate("/")}
           className="flex items-center gap-1 text-sm mb-4"
-          style={{ color: "rgba(255,255,255,0.5)" }}
+          style={{ color: "var(--text-on-dark-secondary)" }}
         >
           <ChevronLeft size={16} />
           Back
@@ -224,7 +224,7 @@ export default function UpgradePage() {
               className="flex-1 py-2 rounded-xl text-xs font-bold transition-all relative"
               style={{
                 background: selectedPlan === plan ? "oklch(0.80 0.18 80)" : "transparent",
-                color: selectedPlan === plan ? "oklch(0.22 0.09 260)" : "rgba(255,255,255,0.5)",
+                color: selectedPlan === plan ? "oklch(0.22 0.09 260)" : "var(--text-on-dark-secondary)",
                 fontFamily: "'Poppins', sans-serif",
               }}
             >
@@ -254,7 +254,7 @@ export default function UpgradePage() {
             >
               {PLANS[selectedPlan].price}
             </span>
-            <span className="text-lg mb-2" style={{ color: "rgba(255,255,255,0.6)" }}>
+            <span className="text-lg mb-2" style={{ color: "var(--text-on-dark-secondary)" }}>
               {PLANS[selectedPlan].sub}
             </span>
           </div>
@@ -271,18 +271,18 @@ export default function UpgradePage() {
           )}
 
           {selectedPlan === "monthly" && (
-            <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.4)" }}>
+            <p className="text-xs mb-4" style={{ color: "var(--text-on-dark-muted)" }}>
               Cancel anytime. No contracts.
             </p>
           )}
           {selectedPlan === "annual" && (
-            <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.4)" }}>
+            <p className="text-xs mb-4" style={{ color: "var(--text-on-dark-muted)" }}>
               Billed once per year. Equivalent to $24.17/mo.
             </p>
           )}
           {selectedPlan === "lifetime" && (
             <>
-              <p className="text-xs mb-3" style={{ color: "rgba(255,255,255,0.4)" }}>
+              <p className="text-xs mb-3" style={{ color: "var(--text-on-dark-muted)" }}>
                 One-time payment. No renewals, ever.
               </p>
               {/* Best Value ROI callout */}
@@ -338,7 +338,7 @@ export default function UpgradePage() {
               : `Pay by Card — ${PLANS[selectedPlan].price}`}
           </button>
 
-          <p className="text-center text-xs mt-2" style={{ color: "rgba(255,255,255,0.35)" }}>
+          <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-muted)" }}>
             Secure checkout via Stripe. No account required.
           </p>
 
@@ -347,7 +347,7 @@ export default function UpgradePage() {
             onClick={handleInvoice}
             disabled={createInvoice.isPending}
             className="w-full py-2.5 rounded-xl font-semibold text-sm transition-opacity flex items-center justify-center gap-2 disabled:opacity-50 mt-1"
-            style={{ color: "rgba(255,255,255,0.45)", background: "transparent" }}
+            style={{ color: "var(--text-on-dark-muted)", background: "transparent" }}
           >
             {createInvoice.isPending ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />}
             {createInvoice.isPending ? "Sending invoice..." : "Prefer an invoice? Send to my email"}
@@ -368,7 +368,7 @@ export default function UpgradePage() {
               Have an access code?
             </h3>
           </div>
-          <p className="text-xs mb-4" style={{ color: "rgba(255,255,255,0.5)" }}>
+          <p className="text-xs mb-4" style={{ color: "var(--text-on-dark-secondary)" }}>
             Enter your beta or promo code to unlock Pro access.
           </p>
           <div className="flex gap-2">
@@ -403,7 +403,7 @@ export default function UpgradePage() {
             <Star key={i} size={20} fill="oklch(0.80 0.18 80)" style={{ color: "oklch(0.80 0.18 80)" }} />
           ))}
         </div>
-        <p className="text-center text-xs pb-4" style={{ color: "rgba(255,255,255,0.4)" }}>
+        <p className="text-center text-xs pb-4" style={{ color: "var(--text-on-dark-muted)" }}>
           Trusted by local businesses to get more 5-star reviews
         </p>
 
@@ -417,8 +417,8 @@ export default function UpgradePage() {
             className="grid grid-cols-4 text-center text-xs font-black py-3 px-2"
             style={{ background: "oklch(0.18 0.07 260)", fontFamily: "'Poppins', sans-serif" }}
           >
-            <div className="text-left pl-2" style={{ color: "rgba(255,255,255,0.5)" }}>Feature</div>
-            <div style={{ color: "rgba(255,255,255,0.55)" }}>Free</div>
+            <div className="text-left pl-2" style={{ color: "var(--text-on-dark-secondary)" }}>Feature</div>
+            <div style={{ color: "var(--text-on-dark-secondary)" }}>Free</div>
             <div style={{ color: "oklch(0.80 0.18 80)" }}>Pro</div>
             <div style={{ color: "oklch(0.90 0.14 80)" }}>Lifetime</div>
           </div>
@@ -428,7 +428,7 @@ export default function UpgradePage() {
             const isLast = i === COMPARISON_ROWS.length - 1;
             const renderCell = (val: string | boolean) => {
               if (val === true) return <Check size={14} style={{ color: "oklch(0.65 0.18 145)" }} className="mx-auto" />;
-              if (val === false) return <span style={{ color: "rgba(255,255,255,0.2)" }}>—</span>;
+              if (val === false) return <span style={{ color: "var(--text-on-dark-disabled)" }}>—</span>;
               return <span>{val}</span>;
             };
             return (
@@ -443,11 +443,11 @@ export default function UpgradePage() {
                       : "oklch(0.25 0.08 260)",
                   borderTop: "1px solid rgba(255,255,255,0.06)",
                   fontWeight: isLast ? 800 : 400,
-                  color: isLast ? "oklch(0.80 0.18 80)" : "rgba(255,255,255,0.75)",
+                  color: isLast ? "oklch(0.80 0.18 80)" : "var(--text-on-dark-secondary)",
                   fontFamily: isLast ? "'Poppins', sans-serif" : undefined,
                 }}
               >
-                <div className="text-left pl-2" style={{ color: isLast ? "oklch(0.80 0.18 80)" : "rgba(255,255,255,0.55)", fontWeight: isLast ? 800 : 500 }}>
+                <div className="text-left pl-2" style={{ color: isLast ? "oklch(0.80 0.18 80)" : "var(--text-on-dark-secondary)", fontWeight: isLast ? 800 : 500 }}>
                   {row.feature}
                 </div>
                 <div>{renderCell(row.free)}</div>
@@ -458,7 +458,7 @@ export default function UpgradePage() {
           })}
         </div>
 
-        <p className="text-center text-xs pb-6" style={{ color: "rgba(255,255,255,0.3)" }}>
+        <p className="text-center text-xs pb-6" style={{ color: "var(--text-on-dark-disabled)" }}>
           All plans include a 10-request free trial. No credit card required to start.
         </p>
       </div>
