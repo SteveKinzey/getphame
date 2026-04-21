@@ -2002,6 +2002,19 @@ export const appRouter = router({
         if (!owned) throw new TRPCError({ code: "NOT_FOUND", message: "Webhook not found." });
         return getWebhookDeliveryLogs(input.webhookId, input.limit);
       }),
+    /** Retry a specific failed delivery log entry */
+    retryDelivery: protectedProcedure
+      .input(z.object({ webhookId: z.number().int().positive(), logId: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        const configs = await getWebhookConfigs(ctx.user.id);
+        const cfg = configs.find((c) => c.id === input.webhookId);
+        if (!cfg) throw new TRPCError({ code: "NOT_FOUND", message: "Webhook not found." });
+        const logs = await getWebhookDeliveryLogs(input.webhookId, 20);
+        const log = logs.find((l) => l.id === input.logId);
+        if (!log) throw new TRPCError({ code: "NOT_FOUND", message: "Delivery log not found." });
+        const { retryWebhookDelivery } = await import("./webhookHelpers");
+        return retryWebhookDelivery(cfg.id, ctx.user.id, cfg.url, cfg.secret ?? null, log.event ?? "contact.created", null);
+      }),
   }),
   /** User notification preferences */
   notificationPrefs: router({

@@ -2,6 +2,7 @@
 // Sections: Business Profile, Email Connection, Plan
 
 import { useState, useEffect, useRef } from "react";
+import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import {
@@ -581,6 +582,7 @@ export default function SettingsPage() {
     onError: (err) => toast.error(err.message),
   });
 
+  const { data: syncHistory } = trpc.woo.syncHistory.useQuery(undefined, { enabled: !!wooCreds });
   const quickSync = trpc.woo.sync.useMutation({
     onSuccess: (result) => {
       utils.woo.getCredentials.invalidate();
@@ -693,6 +695,14 @@ export default function SettingsPage() {
     onSuccess: (data) => {
       if (data.success) toast.success(`Test ping sent — got HTTP ${data.status}`);
       else toast.error(`Webhook test failed (HTTP ${data.status})`);
+    },
+    onError: (err) => toast.error(err.message),
+  });
+  const retryDelivery = trpc.webhook.retryDelivery.useMutation({
+    onSuccess: (data) => {
+      utils.webhook.deliveryLogs.invalidate();
+      if (data.success) toast.success(`Retry succeeded — HTTP ${data.status}`);
+      else toast.error(`Retry failed (HTTP ${data.status ?? "ERR"})`);
     },
     onError: (err) => toast.error(err.message),
   });
@@ -2048,6 +2058,32 @@ export default function SettingsPage() {
                   </div>
                 </div>
               )}
+              {/* Sync History Chart */}
+              {syncHistory && syncHistory.length > 1 && (
+                <div className="rounded-xl px-4 py-3" style={{ background: "oklch(0.97 0.01 260)" }}>
+                  <p className="text-xs font-bold mb-2" style={{ color: "oklch(0.40 0.04 260)" }}>Sync History (last {syncHistory.length} syncs)</p>
+                  <ResponsiveContainer width="100%" height={64}>
+                    <BarChart data={[...syncHistory].reverse().map((s, i) => ({ i, added: s.added, total: s.total }))} barSize={8}>
+                      <XAxis dataKey="i" hide />
+                      <Tooltip
+                        formatter={(value: number, name: string) => [value, name === "added" ? "Staged" : "Fetched"]}
+                        labelFormatter={() => ""}
+                        contentStyle={{ fontSize: 11, padding: "4px 8px", borderRadius: 6 }}
+                      />
+                      <Bar dataKey="total" fill="oklch(0.85 0.04 260)" radius={[3, 3, 0, 0]} />
+                      <Bar dataKey="added" fill="oklch(0.50 0.15 145)" radius={[3, 3, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                  <div className="flex items-center gap-3 mt-1">
+                    <span className="flex items-center gap-1 text-xs" style={{ color: "oklch(0.50 0.04 260)" }}>
+                      <span className="inline-block w-2 h-2 rounded-sm" style={{ background: "oklch(0.85 0.04 260)" }} /> Fetched
+                    </span>
+                    <span className="flex items-center gap-1 text-xs" style={{ color: "oklch(0.40 0.12 145)" }}>
+                      <span className="inline-block w-2 h-2 rounded-sm" style={{ background: "oklch(0.50 0.15 145)" }} /> Staged
+                    </span>
+                  </div>
+                </div>
+              )}
               <button
                 onClick={() => navigate("/woo-customers")}
                 className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95"
@@ -2520,7 +2556,20 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
                               <span className="text-xs font-bold" style={{ color: log.success ? "oklch(0.40 0.15 145)" : "oklch(0.50 0.18 25)" }}>
                                 {log.success ? "✓" : "✗"} HTTP {log.statusCode ?? "ERR"} · {log.durationMs}ms
                               </span>
-                              <span className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>{new Date(log.createdAt).toLocaleString()}</span>
+                              <div className="flex items-center gap-1.5">
+                                {!log.success && (
+                                  <button
+                                    onClick={() => retryDelivery.mutate({ webhookId: wh.id, logId: log.id })}
+                                    disabled={retryDelivery.isPending}
+                                    className="text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1 transition-opacity disabled:opacity-60"
+                                    style={{ background: "oklch(0.22 0.09 260)", color: "white" }}
+                                  >
+                                    {retryDelivery.isPending ? <Loader2 size={9} className="animate-spin" /> : <RotateCcw size={9} />}
+                                    Retry
+                                  </button>
+                                )}
+                                <span className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>{new Date(log.createdAt).toLocaleString()}</span>
+                              </div>
                             </div>
                             {log.errorMessage && <p className="text-xs mt-0.5 truncate" style={{ color: "oklch(0.50 0.18 25)" }}>{log.errorMessage}</p>}
                             {log.responseBody && <p className="text-xs mt-0.5 truncate" style={{ color: "oklch(0.45 0.05 260)" }}>{log.responseBody}</p>}

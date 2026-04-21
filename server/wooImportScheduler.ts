@@ -193,7 +193,7 @@ async function runAutoImport(): Promise<void> {
     .from(wooPendingImports)
     .where(lt(wooPendingImports.fetchedAt, cutoff));
 
-  const userIds = [...new Set(stale.map((r) => r.userId))];
+  const userIds = Array.from(new Set(stale.map((r) => r.userId)));
   console.log(`[WooAutoImport] Found ${userIds.length} user(s) with stale pending imports.`);
 
   for (const userId of userIds) {

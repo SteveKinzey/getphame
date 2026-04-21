@@ -967,3 +967,10 @@
 - [x] Update woo.getCredentials to return lastSyncCount
 - [x] Update Settings WooCommerce card to show "Last synced [date] · N staged"
 - [x] Update saas-observability skill with all new patterns (test webhook logging, open-tracking notification, WooCommerce last-synced)
+## Session #18 — Follow-ups + Pre-Launch (Apr 21 2026)
+- [x] Open-notification throttle: max 1 notifyOwner per 30 min per user for email opens
+- [x] WooCommerce sync history bar chart in Settings (orders staged per sync, last 10 syncs)
+- [x] Webhook retry logic: 1 retry after 5s on failure in fireWebhooks + Retry button on failed delivery log entries
+- [x] Update saas-observability skill with all three new patterns
+- [x] Pre-launch audit: 5 critical flows end-to-end
+- [x] Fix any blockers found in audit (TS error in wooImportScheduler.ts fixed)

@@ -101,6 +101,22 @@ async function recordEvent(
   }
 }
 
+// ── Open-notification throttle ────────────────────────────────────────────────
+// In-memory map: userId → last notification timestamp (ms)
+// Prevents notification spam when many customers open emails in a short window.
+// Resets on server restart (acceptable — notifications are advisory, not critical).
+const OPEN_NOTIFY_THROTTLE_MS = 30 * 60 * 1000; // 30 minutes
+const lastOpenNotifyAt = new Map<number, number>();
+
+function canSendOpenNotify(userId: number): boolean {
+  const last = lastOpenNotifyAt.get(userId) ?? 0;
+  return Date.now() - last >= OPEN_NOTIFY_THROTTLE_MS;
+}
+
+function markOpenNotifySent(userId: number): void {
+  lastOpenNotifyAt.set(userId, Date.now());
+}
+
 // ── Express route handlers ────────────────────────────────────────────────────
 
 /** GET /api/track/open/:token — serve 1×1 GIF and record open event */
@@ -109,17 +125,20 @@ export async function handleOpenPixel(req: Request, res: Response): Promise<void
   if (decoded) {
     // Fire-and-forget — do not await so the image is served immediately
     void recordEvent(decoded.requestId, decoded.userId, decoded.templateId, "open", null, req);
-    // Notify the business owner if they have the open-tracking notification pref enabled
+    // Notify the business owner if they have the open-tracking notification pref enabled,
+    // subject to a 30-minute per-user throttle to prevent notification spam.
     void (async () => {
       try {
+        if (!canSendOpenNotify(decoded.userId)) return;
         const { getNotificationPrefs } = await import("./db");
         const prefs = await getNotificationPrefs(decoded.userId);
         if (prefs?.notifyOnEmailOpen) {
           const { notifyOwner } = await import("./_core/notification");
-          await notifyOwner({
+          const sent = await notifyOwner({
             title: "📬 Review request opened",
             content: `A customer opened your review request email (request #${decoded.requestId}).`,
           });
+          if (sent) markOpenNotifySent(decoded.userId);
         }
       } catch (err) {
         // Non-fatal — notification failures must never break tracking
