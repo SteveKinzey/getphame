@@ -140,8 +140,7 @@ export default function SavedContacts() {
 
   // Review platforms
   const { data: platforms = [] } = trpc.reviewPlatforms.list.useQuery(undefined, { enabled: isAuthenticated });
-  const PLATFORM_ICONS: Record<string, string> = { google: "🔍", yelp: "⭐", tripadvisor: "🦉", bing: "🌐", facebook: "👍", other: "🔗" };
-  const PLATFORM_LABELS: Record<string, string> = { google: "Google", yelp: "Yelp", tripadvisor: "TripAdvisor", bing: "Bing", facebook: "Facebook", other: "Other" };
+  const PLATFORM_LABELS: Record<string, string> = { google: "Google", yelp: "Yelp", tripadvisor: "TripAdvisor", bing: "Bing", facebook: "Facebook", apple: "Apple Maps", other: "Other" };
 
   const utils = trpc.useUtils();
 
@@ -1057,12 +1056,12 @@ export default function SavedContacts() {
                 >
                   <option value="default">
                     {platforms.find((p) => p.isDefault === 1)
-                      ? `${PLATFORM_ICONS[platforms.find((p) => p.isDefault === 1)!.platform] ?? "🔗"} ${platforms.find((p) => p.isDefault === 1)!.label || PLATFORM_LABELS[platforms.find((p) => p.isDefault === 1)!.platform] || "Default"} (default)`
+                      ? `${platforms.find((p) => p.isDefault === 1)!.label || PLATFORM_LABELS[platforms.find((p) => p.isDefault === 1)!.platform] || "Default"} (default)`
                       : "Default platform"}
                   </option>
                   {platforms.filter((p) => p.isDefault !== 1).map((p) => (
                     <option key={p.id} value={p.id}>
-                      {PLATFORM_ICONS[p.platform] ?? "🔗"} {p.label || PLATFORM_LABELS[p.platform] || p.platform}
+                      {p.label || PLATFORM_LABELS[p.platform] || p.platform}
                     </option>
                   ))}
                 </select>

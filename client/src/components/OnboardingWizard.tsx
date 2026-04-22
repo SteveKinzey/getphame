@@ -41,6 +41,7 @@ const PLATFORM_OPTIONS = [
   { value: "tripadvisor", label: "TripAdvisor" },
   { value: "facebook", label: "Facebook" },
   { value: "bing", label: "Bing" },
+  { value: "apple", label: "Apple Maps" },
   { value: "other", label: "Other" },
 ] as const;
 
@@ -50,6 +51,7 @@ const PLATFORM_PLACEHOLDERS: Record<string, string> = {
   tripadvisor: "https://www.tripadvisor.com/UserReviewEdit-...",
   facebook: "https://www.facebook.com/your-page/reviews",
   bing: "https://www.bingplaces.com/...",
+  apple: "https://maps.apple.com/?cid=your-business-id",
   other: "https://your-review-page.com",
 };
 
@@ -487,7 +489,7 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
       return;
     }
     addPlatform.mutate({
-      platform: platform as "google" | "yelp" | "tripadvisor" | "bing" | "facebook" | "other",
+      platform: platform as "google" | "yelp" | "tripadvisor" | "bing" | "facebook" | "apple" | "other",
       url: url.trim(),
     });
   }

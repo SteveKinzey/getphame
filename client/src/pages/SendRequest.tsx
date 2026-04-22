@@ -46,21 +46,13 @@ export default function SendRequestPage() {
 
   const { data: platforms } = trpc.reviewPlatforms.list.useQuery();
 
-  const PLATFORM_ICONS: Record<string, string> = {
-    google: "🔍",
-    yelp: "⭐",
-    tripadvisor: "🦉",
-    bing: "🌐",
-    facebook: "👍",
-    other: "🔗",
-  };
-
   const PLATFORM_LABELS: Record<string, string> = {
     google: "Google",
     yelp: "Yelp",
     tripadvisor: "TripAdvisor",
     bing: "Bing",
     facebook: "Facebook",
+    apple: "Apple Maps",
     other: "Other",
   };
 
@@ -567,16 +559,16 @@ export default function SendRequestPage() {
                   >
                     <option value="default">
                       {platforms.find((p) => p.isDefault === 1)
-                        ? `${PLATFORM_ICONS[platforms.find((p) => p.isDefault === 1)!.platform] ?? "🔗"} ${platforms.find((p) => p.isDefault === 1)!.label || PLATFORM_LABELS[platforms.find((p) => p.isDefault === 1)!.platform] || "Default"} (default)`
+                        ? `${platforms.find((p) => p.isDefault === 1)!.label || PLATFORM_LABELS[platforms.find((p) => p.isDefault === 1)!.platform] || "Default"} (default)`
                         : platforms[0]
-                        ? `${PLATFORM_ICONS[platforms[0].platform] ?? "🔗"} ${platforms[0].label || PLATFORM_LABELS[platforms[0].platform] || "First platform"}`
+                        ? `${platforms[0].label || PLATFORM_LABELS[platforms[0].platform] || "First platform"}`
                         : "Default platform"}
                     </option>
                     {platforms
                       .filter((p) => p.isDefault !== 1)
                       .map((p) => (
                         <option key={p.id} value={p.id}>
-                          {PLATFORM_ICONS[p.platform] ?? "🔗"} {p.label || PLATFORM_LABELS[p.platform] || p.platform}
+                          {p.label || PLATFORM_LABELS[p.platform] || p.platform}
                         </option>
                       ))}
                   </select>

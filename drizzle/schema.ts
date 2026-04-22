@@ -245,7 +245,7 @@ export type InsertAccessCodeRedemption = typeof accessCodeRedemptions.$inferInse
 export const reviewPlatforms = mysqlTable("review_platforms", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull(),
-  platform: mysqlEnum("platform", ["google", "yelp", "tripadvisor", "bing", "facebook", "other"]).notNull(),
+  platform: mysqlEnum("platform", ["google", "yelp", "tripadvisor", "bing", "facebook", "apple", "other"]).notNull(),
   label: varchar("label", { length: 255 }), // custom label for "Other" or override
   url: text("url").notNull(), // public review page URL
   isDefault: int("isDefault").default(0).notNull(), // 1 = default platform for this user

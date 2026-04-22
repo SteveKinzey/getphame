@@ -7,7 +7,7 @@ import { eq, and } from "drizzle-orm";
 import { getDb } from "./db";
 import { reviewPlatforms, type ReviewPlatform } from "../drizzle/schema";
 
-export type PlatformType = "google" | "yelp" | "tripadvisor" | "bing" | "facebook" | "other";
+export type PlatformType = "google" | "yelp" | "tripadvisor" | "bing" | "facebook" | "apple" | "other";
 
 export const PLATFORM_LABELS: Record<PlatformType, string> = {
   google: "Google",
@@ -15,6 +15,7 @@ export const PLATFORM_LABELS: Record<PlatformType, string> = {
   tripadvisor: "TripAdvisor",
   bing: "Bing",
   facebook: "Facebook",
+  apple: "Apple Maps",
   other: "Other",
 };
 
@@ -24,6 +25,7 @@ export const PLATFORM_ICONS: Record<PlatformType, string> = {
   tripadvisor: "🦉",
   bing: "🌐",
   facebook: "👍",
+  apple: "🍎",
   other: "🔗",
 };
 

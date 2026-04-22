@@ -1605,7 +1605,7 @@ export const appRouter = router({
     add: protectedProcedure
       .input(
         z.object({
-          platform: z.enum(["google", "yelp", "tripadvisor", "bing", "facebook", "other"]),
+          platform: z.enum(["google", "yelp", "tripadvisor", "bing", "facebook", "apple", "other"]),
           url: z.string().url("Please enter a valid URL"),
           label: z.string().max(255).optional(),
         })
@@ -1637,7 +1637,7 @@ export const appRouter = router({
     restore: protectedProcedure
       .input(
         z.object({
-          platform: z.enum(["google", "yelp", "tripadvisor", "bing", "facebook", "other"]),
+          platform: z.enum(["google", "yelp", "tripadvisor", "bing", "facebook", "apple", "other"]),
           url: z.string().url(),
           label: z.string().max(255).optional(),
           isDefault: z.number().int().optional(),

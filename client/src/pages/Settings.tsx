@@ -45,6 +45,7 @@ import {
   Sun,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
+import PlatformIcon from "@/components/PlatformIcon";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Switch } from "@/components/ui/switch";
 
@@ -753,30 +754,32 @@ export default function SettingsPage() {
     onError: (err) => toast.error(err.message),
   });
 
-  const PLATFORM_LABELS: Record<string, string> = {
+   const PLATFORM_LABELS: Record<string, string> = {
     google: "Google",
     yelp: "Yelp",
     tripadvisor: "TripAdvisor",
     bing: "Bing",
     facebook: "Facebook",
+    apple: "Apple Maps",
     other: "Other",
   };
-
+  // PLATFORM_ICONS kept for <select> option text only (SVG can't go inside <option>)
   const PLATFORM_ICONS: Record<string, string> = {
-    google: "🔴",   // Google red circle
-    yelp: "🍔",      // Yelp red brand
-    tripadvisor: "🦉", // TripAdvisor owl
-    bing: "🔵",      // Bing blue circle
-    facebook: "🔷", // Facebook blue diamond
-    other: "🔗",    // generic link
+    google: "Google",
+    yelp: "Yelp",
+    tripadvisor: "TripAdvisor",
+    bing: "Bing",
+    facebook: "Facebook",
+    apple: "Apple Maps",
+    other: "Other",
   };
-
   const PLATFORM_PLACEHOLDERS: Record<string, string> = {
     google: "https://g.page/r/your-business/review",
     yelp: "https://www.yelp.com/biz/your-business",
     tripadvisor: "https://www.tripadvisor.com/Restaurant_Review-...",
     bing: "https://www.bingplaces.com/...",
     facebook: "https://www.facebook.com/your-page/reviews",
+    apple: "https://maps.apple.com/?cid=your-business-id",
     other: "https://...",
   };
 
@@ -1147,7 +1150,7 @@ export default function SettingsPage() {
                         border: p.isDefault ? "1px solid oklch(0.80 0.15 145)" : "1px solid oklch(0.92 0.02 260)",
                       }}
                     >
-                      <span className="text-lg shrink-0">{PLATFORM_ICONS[p.platform] ?? "🔗"}</span>
+                      <PlatformIcon platform={p.platform} size={22} className="shrink-0" />
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1.5">
                           <span className="text-xs font-black rr-text-navy">
@@ -1184,7 +1187,7 @@ export default function SettingsPage() {
                         <button
                           onClick={async () => {
                             // Snapshot before delete for undo
-                            const snapshot = { platform: p.platform as "google" | "yelp" | "tripadvisor" | "bing" | "facebook" | "other", url: p.url, label: p.label ?? undefined, isDefault: p.isDefault };
+                            const snapshot = { platform: p.platform as "google" | "yelp" | "tripadvisor" | "bing" | "facebook" | "apple" | "other", url: p.url, label: p.label ?? undefined, isDefault: p.isDefault };
                             try {
                               await removePlatform.mutateAsync({ id: p.id });
                             } catch {
@@ -1247,7 +1250,7 @@ export default function SettingsPage() {
                       className="w-full px-3 py-2 rounded-lg text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                     >
                       {Object.entries(PLATFORM_LABELS).map(([val, label]) => (
-                        <option key={val} value={val}>{PLATFORM_ICONS[val]} {label}</option>
+                        <option key={val} value={val}>{label}</option>
                       ))}
                     </select>
                   </div>
@@ -1283,7 +1286,7 @@ export default function SettingsPage() {
                       onClick={() => {
                         if (!newPlatformUrl.trim()) { toast.error("URL is required"); return; }
                         const promise = addPlatform.mutateAsync({
-                          platform: newPlatformType as "google" | "yelp" | "tripadvisor" | "bing" | "facebook" | "other",
+                          platform: newPlatformType as "google" | "yelp" | "tripadvisor" | "bing" | "facebook" | "apple" | "other",
                           url: newPlatformUrl.trim(),
                           label: newPlatformLabel.trim() || undefined,
                         });

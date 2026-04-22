@@ -1210,3 +1210,9 @@
 - [ ] Save checkpoint + deploy after both fixes confirmed
 - [x] Suppress Google Translate auto-translation popup — add translate="no" and x-google-translate-customization meta to index.html
 - [x] Apple Developer Portal: add reviewlink.app domain + https://reviewlink.app/api/auth/apple/callback return URL to Services ID com.reviewlink.siwa Website URLs (currently empty — root cause of Apple Sign In failure)
+
+## Session #51 — Platform Icons + Apple Maps (Apr 22 2026)
+- [x] Replace all platform emoji icons with PlatformIcon SVG component (Settings, SendRequest, SavedContacts)
+- [x] Add Apple Maps as a supported review platform (schema enum, server validators, all client maps)
+- [x] Run db:push after schema change (migration 0040 applied)
+- [ ] Save checkpoint + deploy
