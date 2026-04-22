@@ -18,17 +18,20 @@
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=Nunito:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=Nunito:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
 
-    <!-- Google Translate — widget + custom EN/TH toggle driver -->
+    <!-- Google Translate — lazy-loaded only when user selects TH or CN.
+         The cookie bootstrap runs eagerly so the widget picks up the saved
+         language on first paint when it IS loaded by LanguageToggle.tsx. -->
     <script>
-      // Apply saved language cookie BEFORE the widget loads so it picks it up on first paint.
+      // Apply saved language cookie BEFORE the widget loads.
       (function () {
         try {
           var saved = localStorage.getItem('rr-lang');
-          if (saved === 'th') {
+          var gtCode = saved === 'th' ? 'th' : saved === 'cn' ? 'zh-CN' : null;
+          if (gtCode) {
             var host = window.location.hostname;
-            var value = '/en/th';
+            var value = '/en/' + gtCode;
             document.cookie = 'googtrans=' + value + ';path=/';
             document.cookie = 'googtrans=' + value + ';path=/;domain=' + host;
             var parts = host.split('.');
@@ -38,17 +41,7 @@
           }
         } catch (e) {}
       })();
-
-      function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-          pageLanguage: 'en',
-          includedLanguages: 'en,th',
-          autoDisplay: false,
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-        }, 'rr-google-translate');
-      }
     </script>
-    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />

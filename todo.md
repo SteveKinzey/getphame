@@ -1215,4 +1215,21 @@
 - [x] Replace all platform emoji icons with PlatformIcon SVG component (Settings, SendRequest, SavedContacts)
 - [x] Add Apple Maps as a supported review platform (schema enum, server validators, all client maps)
 - [x] Run db:push after schema change (migration 0040 applied)
+- [x] Save checkpoint + deploy (version 46d9f553)
+
+## Session #52 — SEO Alt Text Fix (Apr 22 2026)
+- [x] Root cause identified: 4 images were Google Translate tracking pixels injected by the eager script load
+- [x] Fixed by lazy-loading Google Translate (only injected when user selects TH or CN)
+- [x] Save checkpoint + deploy (combined with Session #53)
+
+## Session #52 — SEO + www Redirect (Apr 22 2026)
+- [x] Add 301 permanent redirect from www.reviewlink.app to reviewlink.app in Express server (already present from Session #48)
+- [x] Lazy-load Google Translate only on TH/CN click (removes injected tracking pixel images that cause 4 SEO alt text flags)
+- [x] Save checkpoint + deploy (combined with Session #53)
+
+## Session #53 — CN Language Option (Apr 22 2026)
+- [x] Add CN (Simplified Chinese / zh-CN) to LanguageToggle (EN|TH|CN pill)
+- [x] Update Google Translate includedLanguages to include zh-CN
+- [x] Lazy-load Google Translate script (only inject when user selects TH or CN — fixes 4 SEO alt text flags)
+- [x] Add Noto Sans SC (Simplified Chinese) font to index.html for clean Chinese rendering
 - [ ] Save checkpoint + deploy
