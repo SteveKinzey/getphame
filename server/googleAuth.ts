@@ -32,9 +32,14 @@ function getOAuth2Client(redirectUri: string) {
 }
 
 function buildRedirectUri(req: Request): string {
-  // Use the origin from the request so it works on both reviewlink.app and staging
-  const proto = req.headers["x-forwarded-proto"] ?? req.protocol ?? "https";
-  const host = req.headers["x-forwarded-host"] ?? req.headers.host ?? "reviewlink.app";
+  // Use APP_BASE_URL if set (production) so the redirect URI exactly matches
+  // what is registered in the Google Cloud Console.
+  // Falls back to dynamic host detection for local dev.
+  if (process.env.APP_BASE_URL) {
+    return `${process.env.APP_BASE_URL.replace(/\/$/, "")}/api/auth/google/callback`;
+  }
+  const proto = (req.headers["x-forwarded-proto"] as string) ?? req.protocol ?? "https";
+  const host = (req.headers["x-forwarded-host"] as string) ?? req.headers.host ?? "reviewlink.app";
   return `${proto}://${host}/api/auth/google/callback`;
 }
 

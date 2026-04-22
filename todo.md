@@ -1202,3 +1202,10 @@
 - [x] Fix EN|TH language toggle overlapping Sign In button on LandingPage nav (changed px-5 → pl-5 pr-16)
 - [ ] Verify Google Sign In works end-to-end on reviewlink.app
 - [ ] Verify Apple Sign In works end-to-end on reviewlink.app (requires publish)
+
+## Session #50 — Google + Apple Sign In Fixes (Apr 22 2026)
+- [x] Fix Google Sign In redirect_uri_mismatch — use APP_BASE_URL in buildRedirectUri() instead of x-forwarded-host
+- [ ] Fix Apple Sign In 2FA loop — investigate cause (likely response_mode or redirect URI mismatch causing Apple to re-initiate auth)
+- [ ] Save checkpoint + deploy after both fixes confirmed
+- [x] Suppress Google Translate auto-translation popup — add translate="no" and x-google-translate-customization meta to index.html
+- [ ] Apple Developer Portal: add reviewlink.app domain + https://reviewlink.app/api/auth/apple/callback return URL to Services ID com.reviewlink.siwa Website URLs (currently empty — root cause of Apple Sign In failure)
