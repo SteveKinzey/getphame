@@ -1,4 +1,4 @@
-// LanguageToggle — floating EN | TH pill, top-right of every screen.
+// LanguageToggle — inline EN | TH pill, placed in the header/nav of each screen.
 //
 // Strategy: we embed the Google Translate Website widget (see index.html)
 // and drive it via the `googtrans` cookie. Flipping the cookie + reloading
@@ -8,6 +8,9 @@
 // The user's choice is persisted to localStorage under `rr-lang` so a
 // subsequent visit (and the pre-paint bootstrap in index.html) picks up
 // the same language before the widget initialises.
+//
+// This component is NOT floating — it must be placed explicitly inside
+// the header/nav of each page (Home, LandingPage, Onboarding, etc.).
 
 import { useCallback, useEffect, useState } from "react";
 import { useLocation } from "wouter";
@@ -58,10 +61,7 @@ function writeGoogTransCookie(lang: Lang) {
 
 /**
  * Ask the hidden Google Translate widget to re-scan the DOM and translate
- * whatever is currently rendered. We flip the dropdown to empty (the widget
- * treats that as “show original”) and then back to Thai on the next frame —
- * that round-trip forces a full re-translation of the current subtree,
- * including nodes React mounted after the widget's initial pass.
+ * whatever is currently rendered.
  */
 function pokeGoogleTranslate(target: Lang) {
   if (target !== "th") return;
@@ -79,23 +79,23 @@ function pokeGoogleTranslate(target: Lang) {
   }
 }
 
-export default function LanguageToggle() {
+interface LanguageToggleProps {
+  /** Optional extra className for the wrapper div */
+  className?: string;
+}
+
+export default function LanguageToggle({ className = "" }: LanguageToggleProps) {
   const [lang, setLang] = useState<Lang>(() => readStoredLang());
   const [location] = useLocation();
 
-  // Keep <html lang="..."> in sync so our CSS font swap + accessibility
-  // tooling (screen readers) know which language is being rendered.
+  // Keep <html lang="..."> in sync
   useEffect(() => {
     if (typeof document !== "undefined") {
       document.documentElement.lang = lang;
     }
   }, [lang]);
 
-  // SPA navigation fix: wouter swaps route subtrees without a page reload,
-  // and Google Translate's own MutationObserver frequently misses those
-  // React-committed changes (especially with tRPC async content that lands
-  // after route mount). Re-poke the widget on every navigation while Thai
-  // is active, with a few staggered retries to catch async content.
+  // SPA navigation fix: re-poke the widget on every navigation while Thai is active
   useEffect(() => {
     if (lang !== "th") return;
     const delays = [60, 250, 800, 1800];
@@ -105,25 +105,14 @@ export default function LanguageToggle() {
     return () => timers.forEach((id) => clearTimeout(id));
   }, [location, lang]);
 
-  // Dynamic content (modals, tRPC results, toasts) can land well after the
-  // route change settles. A MutationObserver on #root catches those and
-  // triggers a debounced re-translate.
-  //
-  // Loop-prevention: the Google widget mutates the DOM when it translates
-  // (it wraps text nodes in <font> tags), which would retrigger our observer
-  // and cause an infinite poke loop. We disconnect the observer BEFORE each
-  // poke and reconnect ~1s later, after Google's translation pass has
-  // settled.
+  // MutationObserver for dynamic content (modals, tRPC results, toasts)
   useEffect(() => {
     if (lang !== "th") return;
     if (typeof document === "undefined") return;
     const root = document.getElementById("root");
     if (!root) return;
 
-    const OBSERVER_OPTS: MutationObserverInit = {
-      childList: true,
-      subtree: true,
-    };
+    const OBSERVER_OPTS: MutationObserverInit = { childList: true, subtree: true };
     let debounceTimer: number | undefined;
     let reconnectTimer: number | undefined;
 
@@ -157,11 +146,6 @@ export default function LanguageToggle() {
         /* ignore quota / privacy-mode errors */
       }
       writeGoogTransCookie(next);
-      // Full reload is the simplest way to get Google Translate to
-      // either (a) re-translate against the new target or (b) restore
-      // the original untranslated DOM. Trying to toggle via the hidden
-      // <select> leaves the page in an inconsistent half-translated
-      // state on many pages.
       window.location.reload();
     },
     [lang],
@@ -169,33 +153,17 @@ export default function LanguageToggle() {
 
   return (
     <div
-      // Mark the toggle itself as "do not translate" so the Google
-      // widget doesn't mangle the "EN"/"TH" labels or the aria text.
-      className="notranslate"
+      className={`notranslate inline-flex items-center p-0.5 rounded-full select-none ${className}`}
       translate="no"
       role="group"
       aria-label="Language"
       style={{
-        position: "fixed",
-        top: "max(0.5rem, env(safe-area-inset-top, 0.5rem))",
-        // The app shell is capped at 480px wide and centered (.mobile-screen).
-        // On wider viewports the right edge of the app sits at `50vw + 240px`,
-        // so offset the pill inwards from that. On narrow viewports we fall
-        // back to a simple 0.5rem inset via max().
-        right: "max(0.5rem, calc(50vw - 240px + 0.5rem))",
-        zIndex: 60,
-        display: "inline-flex",
-        alignItems: "center",
-        padding: "2px",
-        borderRadius: "9999px",
-        background: "rgba(15, 31, 75, 0.82)", // navy, semi-transparent
+        background: "rgba(15, 31, 75, 0.82)",
         border: "1px solid rgba(255, 255, 255, 0.7)",
         backdropFilter: "blur(6px)",
         WebkitBackdropFilter: "blur(6px)",
-        boxShadow: "0 2px 8px rgba(0,0,0,0.18)",
         fontFamily: "'Poppins', sans-serif",
         lineHeight: 1,
-        userSelect: "none",
       }}
     >
       <button

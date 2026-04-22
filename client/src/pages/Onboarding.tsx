@@ -3,6 +3,7 @@
 // After login, they set up their business profile in Settings.
 
 import { Rocket, Star } from "lucide-react";
+import LanguageToggle from "@/components/LanguageToggle";
 
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
@@ -20,14 +21,17 @@ export default function OnboardingPage() {
     <div
       className="min-h-screen flex flex-col items-center justify-between pb-40 px-6 pt-16 rr-bg-navy"
     >
-      {/* Logo */}
-      <div className="flex items-center gap-2 self-start">
-        <Rocket size={20} className="rr-text-gold" />
-        <span
-          className="text-sm font-bold tracking-widest uppercase rr-text-gold"
-        >
-          ReviewLink
-        </span>
+      {/* Top bar: logo + language toggle */}
+      <div className="flex items-center justify-between w-full">
+        <div className="flex items-center gap-2">
+          <Rocket size={20} className="rr-text-gold" />
+          <span
+            className="text-sm font-bold tracking-widest uppercase rr-text-gold"
+          >
+            ReviewLink
+          </span>
+        </div>
+        <LanguageToggle />
       </div>
 
       {/* Hero content */}

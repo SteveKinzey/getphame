@@ -147,9 +147,6 @@ function App() {
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
           <Toaster position="top-center" richColors />
-          {/* Global EN | TH language toggle — rendered above the AppShell
-              so it appears on every route (loading, landing, authenticated). */}
-          <LanguageToggle />
           <AppShell />
         </TooltipProvider>
       </ThemeProvider>

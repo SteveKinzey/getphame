@@ -8,6 +8,7 @@ import { Rocket, Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiO
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import OnboardingGuide from "@/components/OnboardingGuide";
+import LanguageToggle from "@/components/LanguageToggle";
 import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 
@@ -293,6 +294,7 @@ export default function HomePage() {
         </div>
 
           <div className="flex items-center gap-2">
+            <LanguageToggle />
             <button
               onClick={handleShare}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}

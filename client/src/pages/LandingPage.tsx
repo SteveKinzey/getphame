@@ -4,6 +4,7 @@
 import { getLoginUrl } from "@/const";
 import { Rocket, Star, Send, Users, CheckCircle2, ArrowRight, Mail, Globe, ChevronDown, X, Check } from "lucide-react";
 import { useState, useEffect } from "react";
+import LanguageToggle from "@/components/LanguageToggle";
 
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
@@ -149,7 +150,7 @@ export default function LandingPage() {
 
       {/* ── Nav ─────────────────────────────────────────────────────────────── */}
       <nav
-        className="flex items-center justify-between pl-5 pr-16 py-4 rr-bg-navy"
+        className="flex items-center justify-between px-5 py-4 rr-bg-navy"
       >
         <div className="flex items-center gap-2">
           <Rocket size={18} className="rr-text-gold" />
@@ -159,12 +160,15 @@ export default function LandingPage() {
             ReviewLink
           </span>
         </div>
-        <a
-          href={loginUrl}
-          className="px-4 py-2 rounded-xl text-xs font-black transition-transform active:scale-95 rr-bg-gold rr-text-navy"
-        >
-          Sign In
-        </a>
+        <div className="flex items-center gap-2">
+          <LanguageToggle />
+          <a
+            href={loginUrl}
+            className="px-4 py-2 rounded-xl text-xs font-black transition-transform active:scale-95 rr-bg-gold rr-text-navy"
+          >
+            Sign In
+          </a>
+        </div>
       </nav>
 
       {/* ── Hero ────────────────────────────────────────────────────────────── */}
