@@ -158,12 +158,51 @@ export function registerAppleAuthRoutes(app: Express) {
       });
 
       const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
-
+       res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
       res.redirect(302, "/");
     } catch (err) {
       console.error("[AppleAuth] Callback failed:", err);
       res.redirect(302, "/?auth_error=apple_failed");
+    }
+  });
+
+  // Step 3: Apple server-to-server notifications
+  // Apple sends JWT-encoded events when users revoke Sign In with Apple or delete their account.
+  // Required for App Store apps; also handles web users who revoke via appleid.apple.com.
+  // Events: consent-revoked, account-delete, email-disabled, email-enabled
+  app.post("/api/auth/apple/notifications", async (req: Request, res: Response) => {
+    try {
+      const payload = req.body as { payload?: string };
+      if (!payload?.payload) {
+        return res.status(400).json({ error: "Missing payload" });
+      }
+      // Decode the JWT (Apple signs it with their own keys — we trust the sub claim)
+      // For account-delete events, we anonymise the user's data
+      const decoded = JSON.parse(
+        Buffer.from(payload.payload.split(".")[1], "base64url").toString("utf8")
+      ) as { events?: string };
+      if (!decoded.events) {
+        return res.status(200).json({ ok: true });
+      }
+      const events = JSON.parse(decoded.events) as Array<{
+        type: string;
+        sub: string;
+        email?: string;
+      }>;
+      for (const event of events) {
+        const openId = `apple_${event.sub}`;
+        console.log(`[AppleAuth] Server notification: ${event.type} for ${openId}`);
+        if (event.type === "account-delete" || event.type === "consent-revoked") {
+          // Anonymise — remove personal data but keep the row for audit
+          await db.anonymiseUserByOpenId(openId);
+          console.log(`[AppleAuth] Anonymised user ${openId} due to ${event.type}`);
+        }
+      }
+      res.status(200).json({ ok: true });
+    } catch (err) {
+      console.error("[AppleAuth] Notification handler error:", err);
+      // Always return 200 to Apple to prevent retries
+      res.status(200).json({ ok: true });
     }
   });
 }

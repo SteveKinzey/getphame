@@ -357,3 +357,22 @@ export async function updateNotificationPrefs(userId: number, prefs: { wooAutoIm
     .values({ userId, ...prefs, updatedAt: Date.now() })
     .onDuplicateKeyUpdate({ set: { ...prefs, updatedAt: Date.now() } });
 }
+
+// ── Apple Sign In account deletion ───────────────────────────────────────────
+/**
+ * Anonymise a user's personal data when Apple sends an account-delete or
+ * consent-revoked server-to-server notification. Keeps the row for audit
+ * purposes but removes name, email, and login method.
+ */
+export async function anonymiseUserByOpenId(openId: string) {
+  const db = await getDb();
+  if (!db) return;
+  await db
+    .update(users)
+    .set({
+      name: "[deleted]",
+      email: null,
+      loginMethod: "deleted",
+    })
+    .where(eq(users.openId, openId));
+}

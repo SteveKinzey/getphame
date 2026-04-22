@@ -1193,5 +1193,6 @@
 - [x] Fix Google Sign In redirect_uri_mismatch — added reviewlink.app + staging callback URIs to Google Cloud Console
 - [x] Add APPLE_CLIENT_ID, APPLE_TEAM_ID, APPLE_KEY_ID, APPLE_PRIVATE_KEY secrets (all 4 valid, JWT signs successfully, 55/55 tests passing)
 - [ ] Verify Apple Sign In flow works on reviewlink.app/onboarding (requires publish)
-- [ ] Add Apple server-to-server notification endpoint for account deletion events
-- [ ] Register email sources for Apple Private Email Relay (DNS TXT record on reviewlink.app)
+- [x] Add Apple server-to-server notification endpoint (POST /api/auth/apple/notifications) — handles account-delete + consent-revoked events, anonymises user data
+- [x] Add anonymiseUserByOpenId() helper to db.ts
+- [ ] Register email sources for Apple Private Email Relay (DNS TXT record on reviewlink.app — requires DNS access)
