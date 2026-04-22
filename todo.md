@@ -1180,3 +1180,11 @@
 - [x] PWA mobile audit: manifest.json valid on deployed site (reviewlink.app/manifest.json), all Apple meta tags present, service worker registered via AppContext, icons 192+512 both any+maskable, shortcuts ×3, screenshots ×1 narrow — all installability criteria met
 - [x] Research Zoho Payments API: US+India only, no PromptPay, no Thailand, subscriptions require Zoho Billing (separate product) — not viable as Stripe replacement for ReviewLink's Thai market
 - [x] TypeScript: 0 errors | Tests: 50/50 passing
+
+## Session #47 — Real PWA Screenshot in manifest.json (Apr 21 2026)
+- [x] Captured real 1080×1920 dashboard screenshot from dev server (setup guide dismissed, clean dashboard view)
+- [x] Processed screenshot with Pillow: cropped browser chrome, scaled to 1080px wide, padded to 1920px tall on navy background
+- [x] Installed storage proxy (server/_core/storageProxy.ts + registered in index.ts) — 307 redirect confirmed working
+- [x] Uploaded screenshot to CDN: /manus-storage/pwa-screenshot-dashboard_9ec49e80.png
+- [x] Updated manifest.json screenshots array: real 1080×1920 PNG with descriptive label, form_factor=narrow
+- [x] TypeScript: 0 errors | Tests: 50/50 passing

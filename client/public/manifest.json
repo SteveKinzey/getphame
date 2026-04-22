@@ -64,11 +64,11 @@
   ],
   "screenshots": [
     {
-      "src": "/icons/icon-512.png",
-      "sizes": "512x512",
+      "src": "/manus-storage/pwa-screenshot-dashboard_9ec49e80.png",
+      "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "ReviewLink home screen"
+      "label": "ReviewLink dashboard — track your review requests, open rates, and activity"
     }
   ],
   "prefer_related_applications": false,
