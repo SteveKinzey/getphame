@@ -1197,3 +1197,8 @@
 - [x] Add Apple server-to-server notification endpoint (POST /api/auth/apple/notifications) — handles account-delete + consent-revoked events, anonymises user data
 - [x] Add anonymiseUserByOpenId() helper to db.ts
 - [ ] Register email sources for Apple Private Email Relay (DNS TXT record on reviewlink.app — requires DNS access)
+
+## Session #49 — Nav Overlap Fix + Auth Testing (Apr 21 2026)
+- [x] Fix EN|TH language toggle overlapping Sign In button on LandingPage nav (changed px-5 → pl-5 pr-16)
+- [ ] Verify Google Sign In works end-to-end on reviewlink.app
+- [ ] Verify Apple Sign In works end-to-end on reviewlink.app (requires publish)

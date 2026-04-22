@@ -149,7 +149,7 @@ export default function LandingPage() {
 
       {/* ── Nav ─────────────────────────────────────────────────────────────── */}
       <nav
-        className="flex items-center justify-between px-5 py-4 rr-bg-navy"
+        className="flex items-center justify-between pl-5 pr-16 py-4 rr-bg-navy"
       >
         <div className="flex items-center gap-2">
           <Rocket size={18} className="rr-text-gold" />
