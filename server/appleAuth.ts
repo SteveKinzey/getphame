@@ -27,6 +27,12 @@ import { sendUserWelcomeEmail } from "./smtp";
 import crypto from "crypto";
 
 function buildRedirectUri(req: Request): string {
+  // Use APP_BASE_URL if set (production) so the redirect URI exactly matches
+  // what is registered in the Apple Developer Portal Services ID.
+  // Falls back to dynamic host detection for local dev.
+  if (process.env.APP_BASE_URL) {
+    return `${process.env.APP_BASE_URL.replace(/\/$/, "")}/api/auth/apple/callback`;
+  }
   const proto = (req.headers["x-forwarded-proto"] as string) ?? req.protocol ?? "https";
   const host = (req.headers["x-forwarded-host"] as string) ?? req.headers.host ?? "reviewlink.app";
   return `${proto}://${host}/api/auth/apple/callback`;
