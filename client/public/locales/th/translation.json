@@ -1,0 +1,1126 @@
+{
+  "seo": {
+    "title": "ReviewLink — รับรีวิว Google 5 ดาวเพิ่มขึ้น",
+    "keywords": "ขอรีวิว, รีวิว Google, ได้รีวิวเพิ่ม, ระบบรีวิวอัตโนมัติ, รีวิวสำหรับธุรกิจขนาดเล็ก, ส่งอีเมลขอรีวิว, รีวิว WooCommerce, รีวิว Stripe",
+    "ogDescription": "ส่งอีเมลขอรีวิวส่วนตัวจากบัญชีอีเมลของคุณเอง ใช้งานได้กับ Google, Yelp, TripAdvisor และอื่นๆ",
+    "shortTitle": "ReviewLink"
+  },
+  "nav": {
+    "brandName": "ReviewLink",
+    "signIn": "ลงชื่อเข้าใช้",
+    "home": "หน้าแรก",
+    "send": "ส่ง",
+    "dashboard": "แดชบอร์ด",
+    "settings": "การตั้งค่า"
+  },
+  "hero": {
+    "tagline": "เริ่มต้นฟรี — ไม่ต้องใช้บัตรเครดิต",
+    "headline": "รับรีวิว 5 ดาวเพิ่มขึ้น โดยไม่ต้องขอแบบเขินๆ",
+    "description": "ส่งคำขอรีวิวส่วนตัวจากบัญชีอีเมลของคุณเอง ลูกค้าของคุณจะเห็นว่ามาจากคุณ — ไม่ใช่ผู้ส่งทั่วไป",
+    "cta": "เริ่มต้นฟรี",
+    "setupTime": "ใช้เวลาตั้งค่าน้อยกว่า 2 นาที",
+    "rocketIllustrationAlt": "ภาพประกอบจรวด ReviewLink",
+    "dashboardAlt": "แดชบอร์ด ReviewLink แสดงคำขอที่ส่งไปและสถิติประสิทธิภาพอีเมล",
+    "dashboardStats": "แดชบอร์ดของคุณ — สถิติแบบเรียลไทม์",
+    "titlePart1": "รับรีวิว 5 ดาว",
+    "titlePart2": "จาก Google เพิ่มขึ้น"
+  },
+  "features": {
+    "sectionTitle": "ทำไมธุรกิจถึงเลือก ReviewLink",
+    "emailFeature": {
+      "title": "ส่งจากอีเมลของคุณเอง",
+      "description": "ทุกคำขอจะไปถึงกล่องจดหมายของลูกค้าของคุณในรูปแบบข้อความส่วนตัว — ไม่ใช่การส่งแบบจำนวนมาก ไม่มีผู้ส่งร่วมกัน ไม่มีตัวกรองสแปม"
+    },
+    "bulkSendFeature": {
+      "title": "ส่งจำนวนมากในไม่กี่วินาที",
+      "description": "นำเข้าผู้ติดต่อจาก CSV, Stripe หรือ WooCommerce เลือกทั้งหมด กดส่ง — ลูกค้าแต่ละรายจะได้รับอีเมลส่วนตัวของตนเอง"
+    },
+    "platformFeature": {
+      "title": "ใช้งานได้กับทุกแพลตฟอร์มรีวิว",
+      "description": "Google, Yelp, Trustpilot, TripAdvisor, Facebook — เพิ่มลิงก์รีวิวใดก็ได้ ลูกค้าของคุณจะถูกนำไปยังหน้ารีวิวของคุณโดยตรง"
+    },
+    "customerQuote": {
+      "quote": "ReviewLink เป็นตัวเปลี่ยนเกมสำหรับธุรกิจขนาดเล็กของเรา เราเห็นรีวิวเชิงบวกเพิ่มขึ้นอย่างมาก และใช้งานง่ายมาก!",
+      "author": "ทอม อาร์.",
+      "authorTitle": "เจ้าของร้าน The Corner Café"
+    },
+    "sendsFromYourEmail": "ส่งจากอีเมลของคุณ",
+    "oneTapRequests": "ขอรีวิวด้วยแตะเดียว",
+    "freeToStart": "เริ่มต้นฟรี",
+    "pills": {
+      "sendsFromYourEmail": "ส่งจากอีเมลของคุณ",
+      "oneTapRequests": "ขอรีวิวด้วยแตะเดียว",
+      "freeToStart": "เริ่มต้นฟรี"
+    }
+  },
+  "howItWorks": {
+    "step1": "เชื่อมต่อบัญชีอีเมลของคุณ (SMTP)",
+    "step2": "เพิ่มลิงก์รีวิว Google (หรืออื่นๆ) ของคุณ",
+    "step3": "นำเข้าหรือเพิ่มลูกค้าของคุณ",
+    "step4": "ส่งคำขอรีวิวส่วนตัว",
+    "sectionTitle": "วิธีการทำงาน"
+  },
+  "faq": {
+    "sectionTitle": "คำถามที่พบบ่อย",
+    "spamQuestion": "มันจะดูเหมือนสแปมไหม?",
+    "spamAnswer": "ไม่ อีเมลทุกฉบับจะถูกส่งโดยตรงจากบัญชีอีเมลของคุณเองผ่าน SMTP — ไม่ใช่จากเซิร์ฟเวอร์ส่งจำนวนมากที่ใช้ร่วมกัน ลูกค้าของคุณจะเห็นชื่อของคุณ ที่อยู่อีเมลของคุณ และข้อความที่เขียนด้วยน้ำเสียงของคุณ มันจะไปถึงกล่องจดหมายเหมือนบันทึกส่วนตัว ไม่ใช่การส่งเสริมการตลาด",
+    "providersQuestion": "ผู้ให้บริการอีเมลใดบ้างที่ใช้งานได้?",
+    "providersAnswer": "ผู้ให้บริการใดๆ ที่รองรับ SMTP ใช้งานได้: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, อีเมลธุรกิจ cPanel/Zoho และเซิร์ฟเวอร์เมลของผู้ให้บริการโฮสติ้งเกือบทุกราย หากคุณสามารถตั้งค่าแอปอีเมลบนโทรศัพท์ของคุณได้ คุณก็สามารถเชื่อมต่อกับ ReviewLink ได้",
+    "freeQuestion": "ฟรีจริงหรือ?",
+    "freeAnswer": "ใช่ — ฟรีโดยไม่มีข้อจำกัดการส่งเทียม คุณเชื่อมต่อบัญชีอีเมลของคุณเอง ดังนั้นข้อจำกัดเดียวคือขีดจำกัดการส่งรายวันของผู้ให้บริการอีเมลของคุณ (Gmail อนุญาตประมาณ 500 ฉบับต่อวัน ส่วนใหญ่ก็คล้ายกัน) ไม่มีค่าธรรมเนียมแอบแฝงและไม่ต้องใช้บัตรเครดิตในการเริ่มต้น",
+    "importQuestion": "ฉันสามารถนำเข้ารายชื่อลูกค้าของฉันได้หรือไม่?",
+    "importAnswer": "ได้ คุณสามารถอัปโหลดไฟล์ CSV ที่มีชื่อและที่อยู่อีเมลของลูกค้าของคุณ หรือซิงค์โดยตรงจาก WooCommerce หากคุณมีร้านค้าออนไลน์ เมื่อนำเข้าแล้ว คุณสามารถเลือกผู้ติดต่อจำนวนมากและส่งคำขอรีวิวส่วนตัวได้ในคลิกเดียว"
+  },
+  "bottomCta": {
+    "headline": "เริ่มเก็บรีวิวได้แล้ววันนี้",
+    "description": "ฟรีตลอดไป ไม่ต้องใช้บัตรเครดิต ตั้งค่าได้ภายใน 2 นาที",
+    "cta": "เริ่มต้นฟรีเลย",
+    "title": "พร้อมรับรีวิวเพิ่มขึ้นแล้วหรือยัง?",
+    "subtitle": "ฟรีตลอดไป ไม่ต้องใช้บัตรเครดิต ตั้งค่าได้ภายใน 2 นาที"
+  },
+  "footer": {
+    "brandName": "ReviewLink",
+    "privacy": "ความเป็นส่วนตัว",
+    "terms": "ข้อกำหนด",
+    "support": "การสนับสนุน",
+    "privacyPolicy": "นโยบายความเป็นส่วนตัว",
+    "termsOfService": "ข้อกำหนดในการให้บริการ",
+    "whatsNew": "มีอะไรใหม่",
+    "compliance": "การปฏิบัติตามข้อกำหนด"
+  },
+  "shareReferralCard": {
+    "title": "ReviewLink — เครื่องมือขอรีวิวฟรี",
+    "shareText": "ฉันใช้ ReviewLink เพื่อส่งคำขอรีวิวจากอีเมลของฉันเอง — ฟรีและใช้งานได้ดีมาก น่าลองดู:",
+    "copySuccessToast": "คัดลอกลิงก์ไปยังคลิปบอร์ดแล้ว!",
+    "copyErrorToast": "ไม่สามารถคัดลอกลิงก์ได้",
+    "header": "รู้จักเจ้าของธุรกิจในท้องถิ่นไหม?",
+    "subHeader": "ช่วยให้พวกเขาได้รับรีวิวเพิ่มขึ้น — ฟรี",
+    "copiedToClipboard": "คัดลอกไปยังคลิปบอร์ดแล้ว!",
+    "shareReviewLink": "แชร์ ReviewLink"
+  },
+  "relativeTime": {
+    "justNow": "เมื่อสักครู่",
+    "minutesAgo": "{{diffMins}} นาทีที่แล้ว",
+    "hoursAgo": "{{diffHours}} ชั่วโมงที่แล้ว",
+    "daysAgo": "{{diffDays}} วันที่แล้ว"
+  },
+  "trackingSummaryCard": {
+    "title": "ประสิทธิภาพอีเมล",
+    "sent": "ส่งแล้ว",
+    "openRate": "อัตราการเปิด",
+    "clickRate": "อัตราการคลิก",
+    "summary": "เปิดแล้ว {{uniqueOpens}} ครั้ง · คลิกแล้ว {{uniqueClicks}} ครั้ง · จากคำขอทั้งหมด {{totalSent}} ครั้ง"
+  },
+  "homePage": {
+    "setGoalErrorToast": "{{err.message}}",
+    "shareSuccessToast": "คัดลอกไปยังคลิปบอร์ดแล้ว! แชร์ให้เพื่อน",
+    "pageTitle": "ReviewLink — ส่งคำขอรีวิว Google ได้อย่างรวดเร็ว",
+    "greeting": "สวัสดี, {{user.firstName}}",
+    "welcomeBack": "ยินดีต้อนรับกลับมา,",
+    "setupBannerTitle": "ตั้งค่าเสร็จสมบูรณ์!",
+    "setupBannerText": "คุณได้กำหนดค่าบัญชีของคุณและส่งคำขอแรกของคุณแล้ว ทำได้ดีมาก!",
+    "dismiss": "ปิด",
+    "expiryBannerTitle": "การสมัครสมาชิกหมดอายุแล้ว",
+    "expiryBannerText": "การเข้าถึงของคุณหมดอายุแล้ว โปรดต่ออายุแผนของคุณเพื่อใช้งาน ReviewLink ต่อไป",
+    "renewSubscription": "ต่ออายุการสมัครสมาชิก",
+    "expiringSoonTitle": "การสมัครสมาชิกกำลังจะหมดอายุ",
+    "expiringSoonText": "แผนของคุณจะหมดอายุในอีก {{daysUntilExpiry}} วัน ต่ออายุตอนนี้เพื่อหลีกเลี่ยงการหยุดชะงักของบริการ",
+    "smtpHealthAlertTitle": "ปัญหาการเชื่อมต่อ SMTP",
+    "smtpHealthAlertText": "เราไม่สามารถเชื่อมต่อกับบัญชีอีเมลของคุณได้ โปรดตรวจสอบการตั้งค่า SMTP ของคุณเพื่อให้แน่ใจว่าสามารถส่งคำขอได้",
+    "viewSettings": "ดูการตั้งค่า",
+    "quickSendTitle": "รับรีวิวถัดไปของคุณ",
+    "quickSendSubtitle": "ส่งคำขอถึงลูกค้าล่าสุด",
+    "sendRequest": "ส่งคำขอ",
+    "monthlyGoal": "เป้าหมายรายเดือน",
+    "reviewsThisMonth": "รีวิวเดือนนี้",
+    "reviews": "รีวิว",
+    "setYourGoal": "ตั้งเป้าหมายของคุณ",
+    "goalDescription": "ตั้งเป้าหมายรีวิวรายเดือนเพื่อติดตามความคืบหน้าของคุณ",
+    "editGoal": "แก้ไขเป้าหมาย",
+    "saveGoal": "บันทึกเป้าหมาย",
+    "cancel": "ยกเลิก",
+    "reviewsPlural": "รีวิว",
+    "reviewSingular": "รีวิว",
+    "goalProgress": "เก็บได้ {{respondedThisMonth}} จาก {{reviewGoal}} {{reviewsPlural}} ในเดือนนี้",
+    "recentRequestsTitle": "คำขอล่าสุด",
+    "noRequestsSent": "ยังไม่มีคำขอที่ส่งไป",
+    "noRequestsSentSubtitle": "คำขอที่คุณส่งไปจะปรากฏที่นี่",
+    "sentTo": "ส่งถึง {{request.customerName}}",
+    "viaEmail": "ผ่านอีเมล",
+    "responded": "ตอบกลับแล้ว",
+    "opened": "เปิดแล้ว",
+    "clicked": "คลิกแล้ว",
+    "sent": "ส่งแล้ว",
+    "viewAllRequests": "ดูคำขอทั้งหมด",
+    "onboardingHeroTitle": "รับรีวิวเพิ่มขึ้นโดยอัตโนมัติ",
+    "onboardingHeroSubtitle": "เชื่อมต่ออีเมลของคุณ เพิ่มลูกค้าของคุณ และเริ่มส่งคำขอรีวิวได้ในไม่กี่นาที",
+    "getStarted": "เริ่มต้น",
+    "learnMore": "เรียนรู้เพิ่มเติม",
+    "fromYourOwnEmail": "จากอีเมลของคุณเอง",
+    "fromYourOwnEmailDescription": "เชื่อมต่อบัญชีอีเมลใดก็ได้ผ่าน SMTP ไม่มีแบรนด์ 'via reviewlink.app'",
+    "worksWithAnyPlatform": "ใช้งานได้กับทุกแพลตฟอร์ม",
+    "worksWithAnyPlatformDescription": "Google, Yelp, Trustpilot, Capterra... หากมีลิงก์ คุณก็สามารถใช้ได้",
+    "privacyFocused": "เน้นความเป็นส่วนตัว",
+    "privacyFocusedDescription": "เราไม่ขายข้อมูลของคุณ ลูกค้า อีเมล และสถิติของคุณเป็นของคุณคนเดียว",
+    "viewLiveDemo": "ดูการสาธิตสด",
+    "watchVideo": "ดูวิดีโอ",
+    "allSystemsGo": "ระบบพร้อมใช้งาน!",
+    "smtpNotConnected": "SMTP ไม่ได้เชื่อมต่อ",
+    "connectYourEmail": "เชื่อมต่ออีเมลของคุณเพื่อส่งคำขอ",
+    "profileNotComplete": "โปรไฟล์ยังไม่สมบูรณ์",
+    "addBusinessDetails": "เพิ่มรายละเอียดธุรกิจและลิงก์รีวิว",
+    "setupGuide": "คู่มือการตั้งค่า",
+    "helpAndSupport": "ความช่วยเหลือและการสนับสนุน",
+    "featureRequests": "คำขอคุณสมบัติ",
+    "whatsNew": "มีอะไรใหม่?",
+    "reviewLinkOnX": "ReviewLink บน X",
+    "buyTheCode": "ซื้อโค้ด"
+  },
+  "notifications": {
+    "followUpReminderScheduled": "กำหนดการแจ้งเตือนติดตามผลแล้ว!",
+    "reviewRequestSent": "ส่งคำขอรีวิวแล้ว!",
+    "noReviewPlatformConfigured": "ไม่ได้กำหนดค่าแพลตฟอร์มรีวิว",
+    "addReviewLinkSettings": "เพิ่มลิงก์รีวิวในการตั้งค่าเพื่อให้ลูกค้าทราบว่าจะเขียนรีวิวได้ที่ไหน",
+    "goToSettings": "ไปที่การตั้งค่า",
+    "dismiss": "ปิด",
+    "importedContact": "นำเข้า {{name}}",
+    "importedMultipleContacts": "นำเข้า {{count}} รายชื่อ - กำลังส่งไปยังรายชื่อแรก ใช้การส่งจำนวนมากสำหรับหลายรายชื่อ"
+  },
+  "platformLabels": {
+    "google": "Google",
+    "yelp": "Yelp",
+    "tripadvisor": "TripAdvisor",
+    "bing": "Bing",
+    "facebook": "Facebook",
+    "apple": "Apple Maps",
+    "other": "อื่นๆ"
+  },
+  "validationErrors": {
+    "customerNameRequired": "ต้องระบุชื่อลูกค้า",
+    "emailAddressRequired": "ต้องระบุที่อยู่อีเมล",
+    "invalidEmailAddress": "ป้อนที่อยู่อีเมลที่ถูกต้อง"
+  },
+  "successScreen": {
+    "requestSent": "ส่งคำขอแล้ว! 🚀",
+    "requestSentTo": "คำขอรีวิวของคุณถูกส่งไปยัง {{customerName}} จากบัญชีอีเมลของคุณแล้ว",
+    "emailComesFrom": "อีเมลมาจาก {{email}} เพื่อให้ดูเป็นส่วนตัว",
+    "requestsSentMilestone": "ส่งคำขอแล้ว {{milestoneNum}} ครั้ง!",
+    "milestoneDescription": "คุณกำลังสร้างผลลัพธ์ให้กับธุรกิจจริง หาก ReviewLink ช่วยคุณได้ การรีวิวสั้นๆ มีความหมายกับเรามาก",
+    "rateReviewLink": "ให้คะแนน ReviewLink",
+    "scheduleFollowUp": "กำหนดเวลาติดตามผล",
+    "sendAnother": "ส่งอีกครั้ง",
+    "notNow": "ไม่ใช่ตอนนี้",
+    "followUpRemindersOff": "การแจ้งเตือนการติดตามผลปิดอยู่",
+    "enableInSettings": "เปิดใช้งานในการตั้งค่า →",
+    "sendAnotherReviewRequest": "ส่งคำขอรีวิวอีกครั้ง",
+    "goToDashboard": "ไปที่แดชบอร์ด"
+  },
+  "mainForm": {
+    "pageTitle": "ส่งคำขอรีวิว",
+    "customerNameLabel": "ชื่อลูกค้า",
+    "customerNamePlaceholder": "เช่น John Doe",
+    "customerEmailLabel": "อีเมลลูกค้า",
+    "customerEmailPlaceholder": "เช่น john.doe@example.com",
+    "emailTemplateLabel": "เทมเพลตอีเมล",
+    "defaultTemplate": "เทมเพลตเริ่มต้น",
+    "defaultTemplateWithName": "{{templateName}} (ค่าเริ่มต้น)",
+    "createOne": "สร้าง →",
+    "noTemplatesYet": "ยังไม่มีเทมเพลต",
+    "reviewPlatformLabel": "แพลตฟอร์มรีวิว",
+    "defaultPlatform": "แพลตฟอร์มเริ่มต้น",
+    "firstPlatform": "แพลตฟอร์มแรก",
+    "link": "ลิงก์: {{url}}",
+    "noReviewPlatformsConfigured": "ยังไม่ได้กำหนดค่าแพลตฟอร์มรีวิว",
+    "addOneInSettings": "เพิ่มในการตั้งค่า →",
+    "emailPreview": "ตัวอย่างอีเมล",
+    "from": "จาก:",
+    "subject": "หัวข้อ:",
+    "body": "เนื้อหา:",
+    "sending": "กำลังส่ง...",
+    "sendReviewRequest": "ส่งคำขอรีวิว"
+  },
+  "page": {
+    "title": "การตั้งค่า",
+    "description": "จัดการโปรไฟล์ธุรกิจ การเชื่อมต่ออีเมล และแผนของคุณ"
+  },
+  "tabs": {
+    "account": "บัญชี",
+    "billing": "การเรียกเก็บเงิน",
+    "integrations": "การเชื่อมต่อ",
+    "notifications": "การแจ้งเตือน",
+    "support": "การสนับสนุน"
+  },
+  "inlineFromNameEdit": {
+    "senderName": "ชื่อผู้ส่ง:",
+    "notSet": "ไม่ได้ตั้งค่า",
+    "edit": "แก้ไข",
+    "cancel": "ยกเลิก",
+    "save": "บันทึก",
+    "placeholder": "เช่น Steve ที่ Acme Plumbing",
+    "successToast": "อัปเดตชื่อผู้ส่งแล้ว!"
+  },
+  "inlineReplyToEdit": {
+    "replyTo": "ตอบกลับถึง:",
+    "sameAsSendingAddress": "เหมือนกับที่อยู่ผู้ส่ง",
+    "edit": "แก้ไข",
+    "cancel": "ยกเลิก",
+    "save": "บันทึก",
+    "placeholder": "เช่น support@mycompany.com",
+    "successToast": "อัปเดตที่อยู่ตอบกลับถึงแล้ว!"
+  },
+  "sendFeedback": {
+    "buttonText": "ส่งข้อเสนอแนะ",
+    "title": "ส่งข้อเสนอแนะ",
+    "description": "พบบั๊ก? มีข้อเสนอแนะ? เราอ่านทุกข้อความ",
+    "placeholder": "อธิบายสิ่งที่คุณพบหรือสิ่งที่คุณอยากเห็น...",
+    "characterCount": "{{length}}/1000",
+    "cancel": "ยกเลิก",
+    "send": "ส่ง",
+    "successToast": "กำลังเปิดโปรแกรมอีเมลของคุณเพื่อส่งข้อเสนอแนะ",
+    "errorToast": "ไม่สามารถเปิดโปรแกรมอีเมลได้ โปรดส่งอีเมลไปที่ support@reviewlink.app โดยตรง"
+  },
+  "deleteAccount": {
+    "buttonText": "ลบบัญชี",
+    "title": "ลบบัญชีของคุณ?",
+    "confirmation": "การดำเนินการนี้จะลบบัญชีของคุณ ผู้ติดต่อทั้งหมด เทมเพลตอีเมล คำขอรีวิว ข้อมูลการติดตาม และข้อมูลรับรอง SMTP อย่างถาวร การดำเนินการนี้ไม่สามารถยกเลิกได้",
+    "checkboxLabel": "ฉันเข้าใจว่านี่เป็นการดำเนินการถาวรและต้องการดำเนินการต่อ",
+    "confirmButton": "ลบบัญชีของฉันอย่างถาวร",
+    "cancelButton": "ยกเลิก",
+    "successToast": "ลบบัญชีแล้ว ลาก่อน!"
+  },
+  "profile": {
+    "title": "โปรไฟล์ธุรกิจ",
+    "description": "บอกเราเกี่ยวกับธุรกิจของคุณ ข้อมูลนี้ใช้สำหรับการปรับแต่งอีเมลและแบรนด์",
+    "businessName": "ชื่อธุรกิจ",
+    "businessNamePlaceholder": "เช่น Acme Plumbing Inc.",
+    "businessNameDescription": "ชื่อทางกฎหมายหรือชื่อทางการค้าของบริษัทคุณ",
+    "reviewLink": "ลิงก์รีวิว Google หลัก",
+    "reviewLinkPlaceholder": "https://g.page/r/...",
+    "reviewLinkDescription": "ลิงก์หลักที่ลูกค้าจะถูกส่งไป คุณสามารถเพิ่มลิงก์เพิ่มเติมได้ด้านล่าง",
+    "emailSenderSettings": "การตั้งค่าผู้ส่งอีเมล",
+    "fromName": "ชื่อผู้ส่ง",
+    "fromNamePlaceholder": "เช่น ร้านทำผมของ Maria",
+    "fromNameDescription": "ชื่อของคุณจะปรากฏในกล่องจดหมายของลูกค้าอย่างไร ค่าเริ่มต้นคือชื่อธุรกิจของคุณ",
+    "replyToEmail": "อีเมลตอบกลับถึง",
+    "replyToEmailPlaceholder": "เช่น steve@sk-america.com",
+    "replyToEmailDescription": "เมื่อลูกค้าตอบกลับอีเมล จะถูกส่งมาที่นี่ เว้นว่างไว้เพื่อใช้ที่อยู่อีเมลที่เชื่อมต่อของคุณ",
+    "saveProfile": "บันทึกโปรไฟล์",
+    "successToast": "บันทึกโปรไฟล์ธุรกิจแล้ว!",
+    "dailySendLimitSaved": "บันทึกขีดจำกัดการส่งรายวันแล้ว!"
+  },
+  "reviewPlatforms": {
+    "title": "แพลตฟอร์มรีวิว",
+    "description": "เพิ่ม URL หน้าการรีวิวของคุณสำหรับ Google, Yelp, TripAdvisor, Bing, Facebook และอื่นๆ วางลิงก์สาธารณะที่ลูกค้าใช้ในการเขียนรีวิว",
+    "add": "เพิ่ม",
+    "emptyState": "ยังไม่ได้เพิ่มแพลตฟอร์มรีวิว คลิก \"เพิ่ม\" เพื่อเริ่มต้น",
+    "editUrl": "แก้ไข URL",
+    "customLabelPlaceholder": "ป้ายกำกับที่กำหนดเอง (เช่น Houzz)",
+    "save": "บันทึก",
+    "saving": "กำลังบันทึก...",
+    "updateSuccess": "อัปเดตแพลตฟอร์มแล้ว!",
+    "updateError": "ไม่สามารถอัปเดตแพลตฟอร์มได้",
+    "default": "ค่าเริ่มต้น",
+    "setAsDefault": "ตั้งเป็นค่าเริ่มต้น",
+    "removedToast": "ลบ {{platform}} แล้ว",
+    "undo": "เลิกทำ",
+    "addPlatformTitle": "เพิ่มแพลตฟอร์มรีวิว",
+    "platformType": "แพลตฟอร์ม",
+    "platformUrl": "URL หน้าการรีวิว",
+    "platformLabel": "ป้ายกำกับ (ไม่บังคับ)",
+    "platformLabelDescription": "แสดงในอีเมลหากคุณเลือก \"อื่นๆ\"",
+    "addPlatform": "เพิ่มแพลตฟอร์ม",
+    "urlRequired": "ต้องระบุ URL",
+    "restoreFailed": "กู้คืนไม่สำเร็จ: {{message}}",
+    "removeFailed": "ไม่สามารถลบแพลตฟอร์มได้: {{message}}"
+  },
+  "smtp": {
+    "title": "การเชื่อมต่ออีเมล (SMTP)",
+    "description": "เชื่อมต่อบัญชีอีเมลของคุณเองเพื่อส่งคำขอรีวิว เราเข้ารหัสรหัสผ่านของคุณและไม่เปิดเผยข้อมูล",
+    "testConnection": "ทดสอบการเชื่อมต่อ",
+    "previewEmail": "ดูตัวอย่างอีเมล",
+    "resendVerification": "ส่งการยืนยันอีกครั้ง",
+    "disconnect": "ยกเลิกการเชื่อมต่อ",
+    "emailAddress": "ที่อยู่อีเมล",
+    "password": "รหัสผ่าน",
+    "displayName": "ชื่อที่แสดง",
+    "passwordPlaceholderUpdate": "ป้อนรหัสผ่านใหม่เพื่ออัปเดต",
+    "passwordPlaceholderGmail": "รหัสผ่านแอป 16 ตัวอักษร (ไม่มีช่องว่าง)",
+    "passwordPlaceholderIcloud": "xxxx-xxxx-xxxx-xxxx",
+    "passwordPlaceholderDefault": "รหัสผ่านอีเมลของคุณ",
+    "howToGetIt": "วิธีรับ",
+    "gotIt": "รับแล้ว ✓",
+    "gmailGuideTitle": "รหัสผ่านแอป Gmail — 4 ขั้นตอน",
+    "gmailGuideStep1": "ไปที่ myaccount.google.com → ความปลอดภัย",
+    "gmailGuideStep2": "เปิดการยืนยันแบบ 2 ขั้นตอน หากยังไม่ได้เปิด",
+    "gmailGuideStep3": "ไปที่ myaccount.google.com/apppasswords → ตั้งชื่อว่า ReviewLink → คลิกสร้าง",
+    "gmailGuideStep4": "คัดลอกรหัส 16 ตัวอักษรและวางที่นี่ — ลบช่องว่างทั้งหมด",
+    "gmailGuideTip": "เคล็ดลับ: ใช้บัญชี reviews@gmail.com โดยเฉพาะเพื่อแยกกล่องจดหมายหลักของคุณ",
+    "googleWorkspaceGuideTitle": "รหัสผ่านแอป Google Workspace — 4 ขั้นตอน",
+    "googleWorkspaceGuideStep1": "ขอให้ผู้ดูแลระบบ Workspace ของคุณเปิดใช้งานการยืนยันแบบ 2 ขั้นตอนใน admin.google.com",
+    "googleWorkspaceGuideStep2": "ลงชื่อเข้าใช้ myaccount.google.com ด้วยบัญชีงานของคุณ → ความปลอดภัย",
+    "googleWorkspaceGuideStep3": "ไปที่ myaccount.google.com/apppasswords → ตั้งชื่อว่า ReviewLink → คลิกสร้าง",
+    "googleWorkspaceGuideStep4": "คัดลอกรหัส 16 ตัวอักษรและวางที่นี่ — ลบช่องว่างทั้งหมด",
+    "outlookGuideTitle": "รหัสผ่านแอป Microsoft — 4 ขั้นตอน",
+    "outlookGuideStep1": "ไปที่ account.microsoft.com → ความปลอดภัย",
+    "outlookGuideStep2": "คลิกตัวเลือกความปลอดภัยขั้นสูง",
+    "outlookGuideStep3": "ภายใต้รหัสผ่านแอป คลิกสร้างรหัสผ่านแอปใหม่",
+    "outlookGuideStep4": "คัดลอกและวางรหัสผ่านที่สร้างขึ้นที่นี่",
+    "outlookGuideTip": "Microsoft 365 (บัญชีงาน): ติดต่อผู้ดูแลระบบ IT ของคุณเพื่ออนุญาต SMTP AUTH สำหรับกล่องจดหมายของคุณ",
+    "yahooGuideTitle": "รหัสผ่านแอป Yahoo — 4 ขั้นตอน",
+    "yahooGuideStep1": "ไปที่ account.yahoo.com → ความปลอดภัย",
+    "yahooGuideStep2": "คลิกสร้างรหัสผ่านแอป",
+    "yahooGuideStep3": "เลือกแอปอื่นๆ ตั้งชื่อว่า ReviewLink",
+    "yahooGuideStep4": "คัดลอกและวางรหัสผ่านที่นี่",
+    "zohoGuideTitle": "Zoho Mail — เปิดใช้งานการเข้าถึง SMTP",
+    "zohoGuideStep1": "เข้าสู่ระบบ mail.zoho.com",
+    "zohoGuideStep2": "ไปที่การตั้งค่า → บัญชีอีเมล",
+    "zohoGuideStep3": "คลิกที่อยู่อีเมลของคุณ → เลื่อนไปที่ SMTP",
+    "zohoGuideStep4": "สลับอนุญาตการเข้าถึง SMTP เป็นเปิด จากนั้นใช้รหัสผ่าน Zoho ปกติของคุณที่นี่",
+    "zohoGuideTip": "ไม่จำเป็นต้องใช้รหัสผ่านแอป — เพียงเปิดใช้งาน SMTP และใช้รหัสผ่านเข้าสู่ระบบ Zoho ปกติของคุณ",
+    "aolGuideTitle": "รหัสผ่านแอป AOL Mail — 4 ขั้นตอน",
+    "aolGuideStep1": "ไปที่ account.aol.com → ความปลอดภัย",
+    "aolGuideStep2": "คลิกสร้างรหัสผ่านแอป",
+    "aolGuideStep3": "เลือกแอปอื่นๆ ตั้งชื่อว่า ReviewLink",
+    "aolGuideStep4": "คัดลอกและวางรหัสผ่านที่นี่ — อย่าใช้รหัสผ่าน AOL ปกติของคุณ",
+    "aolGuideTip": "AOL กำหนดให้เปิดใช้งานการยืนยันแบบ 2 ขั้นตอนก่อนที่จะสร้างรหัสผ่านแอป",
+    "protonMailGuideTitle": "ProtonMail — รหัสผ่าน SMTP Bridge",
+    "protonMailGuideStep1": "ดาวน์โหลดและติดตั้ง Proton Mail Bridge จาก proton.me/mail/bridge",
+    "protonMailGuideStep2": "ลงชื่อเข้าใช้ Bridge ด้วยบัญชี Proton ของคุณ",
+    "protonMailGuideStep3": "ใน Bridge คลิกบัญชีของคุณ → คัดลอกรหัสผ่าน SMTP ที่แสดง",
+    "protonMailGuideStep4": "วางรหัสผ่าน SMTP นั้นที่นี่ — ไม่ใช่รหัสผ่านเข้าสู่ระบบ Proton ปกติของคุณ",
+    "protonMailTip": "ProtonMail Bridge ต้องทำงานบนคอมพิวเตอร์ของคุณเพื่อให้ SMTP ทำงานได้ ใช้พอร์ต 1025 (localhost) หรือ 587 ผ่าน Bridge",
+    "fastmailGuideTitle": "รหัสผ่านแอป Fastmail — 4 ขั้นตอน",
+    "fastmailGuideStep1": "ไปที่ app.fastmail.com → การตั้งค่า → ความเป็นส่วนตัวและความปลอดภัย",
+    "fastmailGuideStep2": "คลิกรหัสผ่านแอป → รหัสผ่านแอปใหม่",
+    "fastmailGuideStep3": "ตั้งชื่อว่า ReviewLink เลือก SMTP จากนั้นคลิกสร้างรหัสผ่าน",
+    "fastmailGuideStep4": "คัดลอกและวางรหัสผ่านที่สร้างขึ้นที่นี่",
+    "iCloudGuideTitle": "รหัสผ่านแอป Apple iCloud Mail — 4 ขั้นตอน",
+    "iCloudGuideStep1": "ไปที่ appleid.apple.com และลงชื่อเข้าใช้",
+    "iCloudGuideStep2": "ภายใต้การลงชื่อเข้าใช้และความปลอดภัย คลิกที่รหัสผ่านเฉพาะแอป",
+    "iCloudGuideStep3": "คลิกสร้างรหัสผ่านเฉพาะแอป... ตั้งชื่อว่า ReviewLink คลิกสร้าง",
+    "iCloudGuideStep4": "คัดลอกรหัสผ่าน xxxx-xxxx-xxxx-xxxx และวางที่นี่",
+    "iCloudTip": "ต้องเปิดใช้งานการยืนยันสองปัจจัยสำหรับ Apple ID ของคุณ",
+    "providerWarning": "เราไม่สามารถตรวจพบผู้ให้บริการอีเมลของคุณได้ โปรดป้อนรายละเอียดของคุณด้วยตนเอง",
+    "advancedSettings": "การตั้งค่าขั้นสูง (สำหรับเซิร์ฟเวอร์ที่กำหนดเอง)",
+    "sendingLimit": "ขีดจำกัดการส่ง",
+    "sendingLimitDescription": "จำนวนอีเมลสูงสุดต่อวันเพื่อหลีกเลี่ยงตัวกรองสแปม เราแนะนำ 50-100 สำหรับบัญชีใหม่",
+    "connect": "เชื่อมต่อ",
+    "update": "อัปเดต",
+    "testSuccess": "เชื่อมต่อสำเร็จ!",
+    "testError": "การเชื่อมต่อล้มเหลว: {{message}}",
+    "previewSuccess": "ส่งอีเมลทดสอบไปยัง {{email}} แล้ว!",
+    "previewError": "ไม่สามารถส่งอีเมลทดสอบได้: {{message}}",
+    "disconnectConfirm": "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเชื่อมต่ออีเมลของคุณ? การดำเนินการนี้จะหยุดอีเมลขาออกทั้งหมด",
+    "disconnectSuccess": "ยกเลิกการเชื่อมต่อบัญชีอีเมลแล้ว",
+    "disconnectError": "ไม่สามารถยกเลิกการเชื่อมต่อบัญชีได้: {{message}}"
+  },
+  "wooCommerce": {
+    "title": "WooCommerce",
+    "description": "เชื่อมต่อร้านค้าของคุณเพื่อนำเข้าลูกค้าจากคำสั่งซื้อที่เสร็จสมบูรณ์",
+    "storeConnected": "เชื่อมต่อร้านค้าแล้ว",
+    "lastSynced": "ซิงค์ล่าสุด {{date}}",
+    "stagedCount": "· {{count}} รายการที่จัดเตรียมไว้",
+    "notYetSynced": "ยังไม่ได้ซิงค์",
+    "syncing": "กำลังซิงค์...",
+    "sync": "ซิงค์",
+    "pendingImports": "{{count}} รายการที่รอนำเข้า",
+    "pendingImportsDescription": "คำสั่งซื้อ WooCommerce เหล่านี้ถูกจัดเตรียมไว้และกำลังรอการนำเข้า นำเข้าตอนนี้ หรือจะถูกนำเข้าโดยอัตโนมัติในวันจันทร์ เวลา 03:00 GMT หากมีอายุมากกว่า 7 วัน",
+    "importNow": "นำเข้าตอนนี้",
+    "dismiss": "ยกเลิก",
+    "syncHistory": "ประวัติการซิงค์ ({{count}} ครั้งล่าสุด)",
+    "fetched": "ดึงข้อมูลแล้ว",
+    "staged": "จัดเตรียมไว้",
+    "viewCustomers": "ดูลูกค้า",
+    "updateCredentials": "อัปเดตข้อมูลรับรอง",
+    "connectStore": "เชื่อมต่อร้านค้า WooCommerce",
+    "storeUrl": "URL ร้านค้า *",
+    "storeUrlPlaceholder": "https://yourstore.com",
+    "consumerKey": "Consumer Key *",
+    "consumerKeyPlaceholder": "ck_xxxxxxxxxxxxxxxx",
+    "consumerSecret": "Consumer Secret *",
+    "consumerSecretPlaceholder": "cs_xxxxxxxxxxxxxxxx",
+    "apiHelp": "WooCommerce → การตั้งค่า → ขั้นสูง → REST API → เพิ่มคีย์ (สิทธิ์อ่าน)",
+    "save": "บันทึก",
+    "cancel": "ยกเลิก",
+    "connectedToast": "เชื่อมต่อร้านค้า WooCommerce แล้ว!",
+    "syncSuccessToast": "ซิงค์แล้ว — {{count}} รายการที่จัดเตรียมไว้สำหรับการนำเข้า ตรวจสอบได้ในแบนเนอร์การนำเข้าที่รอดำเนินการด้านล่าง",
+    "syncSuccessNoOrdersToast": "ซิงค์เสร็จสมบูรณ์ — ไม่พบคำสั่งซื้อใหม่",
+    "syncFailedToast": "การซิงค์ล้มเหลว: {{errorMessage}}",
+    "importSuccessToast": "นำเข้าลูกค้า {{count}} รายจาก WooCommerce แล้ว",
+    "dismissSuccessToast": "ยกเลิกการนำเข้าที่รอดำเนินการแล้ว",
+    "storeUrlRequired": "ต้องระบุ URL ร้านค้า",
+    "consumerKeyRequired": "ต้องระบุ Consumer Key",
+    "consumerSecretRequired": "ต้องระบุ Consumer Secret"
+  },
+  "tools": {
+    "title": "เครื่องมือ",
+    "savedContacts": "ผู้ติดต่อที่บันทึกไว้",
+    "emailTemplates": "เทมเพลตอีเมล",
+    "followUpReminders": "การแจ้งเตือนการติดตามผล"
+  },
+  "theme": {
+    "toggleLight": "เปลี่ยนเป็นโหมดสว่าง",
+    "toggleDark": "เปลี่ยนเป็นโหมดมืด",
+    "light": "สว่าง",
+    "dark": "มืด",
+    "switchToLight": "เปลี่ยนเป็นโหมดสว่าง",
+    "switchToDark": "เปลี่ยนเป็นโหมดมืด"
+  },
+  "logout": {
+    "button": "ออกจากระบบ"
+  },
+  "pageHeader": {
+    "title": "รายชื่อติดต่อที่บันทึกไว้",
+    "addContact": "เพิ่มรายชื่อติดต่อ",
+    "importFromStripe": "นำเข้าจาก Stripe",
+    "syncFromWooCommerce": "ซิงค์จาก WooCommerce",
+    "viewSyncHistory": "ดูประวัติการซิงค์",
+    "exportCsv": "ส่งออก CSV"
+  },
+  "filters": {
+    "searchPlaceholder": "ค้นหาด้วยชื่อหรืออีเมล...",
+    "selectAll": "เลือกทั้งหมด",
+    "deselectAll": "ยกเลิกการเลือกทั้งหมด",
+    "allSources": "ทุกแหล่งที่มา ({{count}})",
+    "stripeSource": "Stripe ({{count}})",
+    "wooCommerceSource": "WooCommerce ({{count}})",
+    "manualSource": "ด้วยตนเอง ({{count}})",
+    "all": "ทั้งหมด",
+    "unsubscribed": "ยกเลิกการสมัครรับข้อมูล",
+    "contactCount": "{{count}} รายชื่อติดต่อ",
+    "notSentInDays": "ไม่ได้ส่งใน {{days}} วัน",
+    "allTags": "แท็กทั้งหมด",
+    "sendToTag": "ส่งถึง \"{{tag}}\" ทั้งหมด ({{count}})"
+  },
+  "contactList": {
+    "loading": "กำลังโหลด...",
+    "noMatches": "ไม่พบข้อมูลที่ตรงกัน",
+    "noContacts": "ยังไม่มีรายชื่อติดต่อที่บันทึกไว้",
+    "importPrompt": "นำเข้า CSV หรือเพิ่มรายชื่อติดต่อด้วยตนเอง",
+    "importCsv": "นำเข้า CSV",
+    "unsubscribedBadge": "ยกเลิกการสมัครรับข้อมูล",
+    "unsubscribedTooltip": "รายชื่อติดต่อนี้นได้ยกเลิกการสมัครรับอีเมลแล้ว",
+    "lastSent": "ส่งล่าสุด: {{date}}",
+    "neverSent": "ไม่เคยส่ง",
+    "totalSent": "ส่งทั้งหมด: {{count}}",
+    "addTags": "เพิ่มแท็ก",
+    "saveTags": "บันทึกแท็ก",
+    "send": "ส่ง",
+    "edit": "แก้ไข",
+    "history": "ประวัติ",
+    "delete": "ลบ",
+    "select": "เลือก",
+    "deselect": "ยกเลิกการเลือก"
+  },
+  "contactForm": {
+    "addTitle": "เพิ่มรายชื่อติดต่อใหม่",
+    "editTitle": "แก้ไขรายชื่อติดต่อ",
+    "nameLabel": "ชื่อ",
+    "emailLabel": "อีเมล",
+    "phoneLabel": "โทรศัพท์ (ไม่บังคับ)",
+    "notesLabel": "บันทึก (ไม่บังคับ, สำหรับใช้ภายใน)",
+    "cancel": "ยกเลิก",
+    "save": "บันทึกรายชื่อติดต่อ",
+    "update": "อัปเดตรายชื่อติดต่อ"
+  },
+  "deleteDialog": {
+    "title": "ลบ {{name}} ใช่หรือไม่?",
+    "description": "คุณแน่ใจหรือไม่ว่าต้องการลบรายชื่อติดต่อนี่ การดำเนินการนี้ไม่สามารถย้อนกลับได้",
+    "cancel": "ยกเลิก",
+    "delete": "ลบ"
+  },
+  "sendDialog": {
+    "title": "ส่งคำขอถึง {{name}} ใช่หรือไม่?",
+    "description": "นี่จะส่งคำขอรีวิวไปยัง {{email}}",
+    "cancel": "ยกเลิก",
+    "send": "ส่งตอนนี้"
+  },
+  "bulkSendDialog": {
+    "title": "ส่งถึง {{count}} รายชื่อติดต่อใช่หรือไม่?",
+    "description": "นี่จะส่งอีเมลคำขอรีวิวไปยังรายชื่อติดต่อที่เลือกทั้งหมด {{count}} รายชื่อ โดยใช้เทมเพลตอีเมลเริ่มต้นของคุณ",
+    "yelpWarning": "หมายเหตุ Yelp: รายชื่อ Yelp ของคุณจะปรากฏเป็นคำแนะนำการค้นหาแทนที่จะเป็นลิงก์โดยตรง Yelp ไม่สนับสนุนการร้องขอโดยตรง",
+    "largeSendWarning": "การส่งจำนวนมาก ({{count}} รายชื่อติดต่อ): การเพิ่มขึ้นอย่างกะทันหันอาจดูเหมือนสแปมสำหรับแพลตฟอร์มรีวิว ลองกระจายการส่งออกไปหลายวัน",
+    "dailyLimitStatus": "ส่งแล้ว {{sent}} วันนี้ · เหลือ {{remaining}} จากขีดจำกัดรายวัน {{limit}}",
+    "dailyLimitReached": "⚠ จะส่งได้เพียง {{remaining}} เท่านั้น — ขีดจำกัดจะถึงหลังจากนั้น",
+    "reviewPlatformLabel": "แพลตฟอร์มรีวิว",
+    "defaultPlatform": "แพลตฟอร์มเริ่มต้น",
+    "defaultPlatformWithName": "{{platformName}} (ค่าเริ่มต้น)",
+    "scheduleRemindersLabel": "กำหนดเวลาการแจ้งเตือนติดตามผล 3 วัน",
+    "scheduleRemindersDescription": "ส่งการแจ้งเตือนโดยอัตโนมัติไปยังรายชื่อติดต่อที่ยังไม่ได้ตอบกลับภายใน 3 วัน",
+    "complianceChecklistTitle": "รายการตรวจสอบการปฏิบัติตามข้อกำหนด",
+    "realCustomersCheck": "นี่คือลูกค้าจริงที่ทำธุรกรรมกับฉัน",
+    "noIncentivesCheck": "ไม่มีการเสนอสิ่งจูงใจหรือส่วนลด",
+    "allCustomersCheck": "ฉันกำลังส่งถึงลูกค้าทุกคน ไม่ได้กรองตามความพึงพอใจ",
+    "cancel": "ยกเลิก",
+    "sending": "กำลังส่ง...",
+    "sendButton": "ส่ง {{count}} คำขอ"
+  },
+  "wooSyncHistory": {
+    "title": "ประวัติการซิงค์ WooCommerce",
+    "filterPlaceholder": "กรองตามวันที่หรือผลลัพธ์...",
+    "clearFilter": "ล้างตัวกรอง",
+    "noHistory": "ยังไม่มีประวัติการซิงค์ เรียกใช้การซิงค์เพื่อดูผลลัพธ์ที่นี่",
+    "noResults": "ไม่พบผลลัพธ์สำหรับ \"{{query}}\"",
+    "syncing": "กำลังซิงค์คำสั่งซื้อ WooCommerce...",
+    "syncingDescription": "อาจใช้เวลาสักครู่ คุณสามารถปิดหน้านี้ได้",
+    "close": "ปิด",
+    "newCustomers": "นำเข้าลูกค้าใหม่ {{count}} ราย · สแกนคำสั่งซื้อ {{total}} รายการ (ช่วง {{days}} วัน)",
+    "noNewCustomers": "ไม่มีลูกค้าใหม่ · สแกนคำสั่งซื้อ {{total}} รายการ (ช่วง {{days}} วัน)"
+  },
+  "sendHistoryDrawer": {
+    "title": "ประวัติการส่งสำหรับ {{name}}",
+    "loading": "กำลังโหลดประวัติ...",
+    "noHistory": "ยังไม่มีการส่งคำขอถึงรายชื่อติดต่อนี่",
+    "sentOn": "ส่งเมื่อ {{date}}",
+    "opened": "เปิดแล้ว",
+    "clicked": "คลิกแล้ว",
+    "notOpened": "ยังไม่เปิด",
+    "reminderScheduled": "กำหนดเวลาการแจ้งเตือนสำหรับ {{date}}",
+    "reminderSent": "ส่งการแจ้งเตือนเมื่อ {{date}}",
+    "reminderCancelled": "ยกเลิกการแจ้งเตือนแล้ว",
+    "cancelReminder": "ยกเลิกการแจ้งเตือน",
+    "sendReminderNow": "ส่งการแจ้งเตือนตอนนี้"
+  },
+  "toasts": {
+    "remindersScheduled": "กำหนดเวลาการแจ้งเตือนติดตามผล {{count}} รายการสำหรับ 3 วันนับจากนี้",
+    "reminderSchedulingFailed": "การกำหนดเวลาการแจ้งเตือนล้มเหลว: {{error}}",
+    "contactSaved": "บันทึกรายชื่อติดต่อแล้ว",
+    "contactUpdated": "อัปเดตรายชื่อติดต่อแล้ว",
+    "contactDeleted": "ลบรายชื่อติดต่อแล้ว",
+    "requestSent": "ส่งคำขอรีวิวแล้ว!",
+    "wooCommerceSynced": "ซิงค์ WooCommerce แล้ว — ลูกค้า {{total}} ราย, เพิ่มรายชื่อติดต่อใหม่ {{new}} ราย",
+    "wooCommerceSyncedNoNew": "ซิงค์ WooCommerce แล้ว — ลูกค้า {{total}} ราย",
+    "stripeImported": "นำเข้ารายชื่อติดต่อใหม่ {{count}} รายจาก Stripe",
+    "noStripeCustomers": "ไม่พบลูกค้า Stripe",
+    "allStripeCustomersExist": "ลูกค้า Stripe ทั้งหมดมีอยู่ในรายชื่อติดต่อของคุณแล้ว",
+    "bulkSendSuccess": "ส่งคำขอรีวิว {{sent}} รายการแล้ว!",
+    "bulkSendSuccessWithSkipped": "ส่งคำขอรีวิว {{sent}} รายการแล้ว! (ข้ามไป {{skipped}} รายการ — ถึงขีดจำกัดฟรีแล้ว)",
+    "bulkSendPartialSuccess": "ส่งแล้ว {{sent}} รายการ, ล้มเหลว {{failed}} รายการ ตรวจสอบการเชื่อมต่ออีเมลของคุณในการตั้งค่า",
+    "bulkSendFailed": "การส่งทั้งหมด {{failed}} รายการล้มเหลว ตรวจสอบการเชื่อมต่ออีเมลของคุณในการตั้งค่า"
+  },
+  "header": {
+    "back": "ย้อนกลับ",
+    "title": "อัปเกรดเป็น Pro",
+    "subtitle": "อีเมลติดตามผลอัตโนมัติ 3 วันสำหรับลูกค้าที่ยังไม่ได้รีวิว",
+    "upgrade": "อัปเกรด",
+    "noLimits": "ไม่จำกัด",
+    "heroImageAlt": "อัปเกรด ReviewLink Pro",
+    "backToContacts": "กลับไปที่รายชื่อติดต่อ",
+    "import": "นำเข้า",
+    "importClients": "นำเข้าลูกค้า",
+    "settings": "การตั้งค่า",
+    "emailTemplates": "เทมเพลตอีเมล",
+    "customizeMessages": "ปรับแต่งข้อความคำขอรีวิวของคุณ",
+    "new": "ใหม่",
+    "logoText": "ReviewLink"
+  },
+  "infoBanner": {
+    "howItWorks": "วิธีการทำงาน:",
+    "description": "เมื่อคุณส่งคำขอรีวิว การแจ้งเตือนติดตามผลจะถูกกำหนดเวลาโดยอัตโนมัติสำหรับ 3 วันถัดไป การแจ้งเตือนจะถูกส่งจากบัญชีอีเมลที่เชื่อมต่อของคุณและใช้โปรไฟล์ธุรกิจของคุณ ใช้ **ส่งตอนนี้** เพื่อข้ามการรอ",
+    "preview1stFollowUp": "ดูตัวอย่างการติดตามผลครั้งที่ 1",
+    "preview2ndFollowUp": "ดูตัวอย่างการติดตามผลครั้งที่ 2"
+  },
+  "emptyState": {
+    "loading": "กำลังโหลด...",
+    "noRemindersYet": "ยังไม่มีการแจ้งเตือน",
+    "remindersCreatedAutomatically": "การแจ้งเตือนจะถูกสร้างขึ้นโดยอัตโนมัติเมื่อคุณส่งคำขอรีวิว"
+  },
+  "sections": {
+    "scheduled": "กำหนดเวลาแล้ว ({{count}})",
+    "cancelAll": "ยกเลิกทั้งหมด",
+    "history": "ประวัติ ({{count}})"
+  },
+  "sendNowConfirm": {
+    "title": "ส่งการแจ้งเตือนตอนนี้ใช่หรือไม่?",
+    "description": "นี่จะส่งอีเมลติดตามผลไปยัง {{customerName}} ทันทีโดยไม่ต้องรอวันที่กำหนด",
+    "notYet": "ยังไม่ส่ง",
+    "sendNow": "ส่งตอนนี้"
+  },
+  "bulkCancelConfirm": {
+    "title": "ยกเลิกการแจ้งเตือนทั้งหมด {{count}} รายการหรือไม่?",
+    "description": "การแจ้งเตือนติดตามผลที่กำหนดเวลาไว้ทั้งหมดจะถูกยกเลิกและจะไม่ถูกส่ง การดำเนินการนี้ไม่สามารถย้อนกลับได้",
+    "keepThem": "เก็บไว้",
+    "cancelling": "กำลังยกเลิก...",
+    "cancelAll": "ยกเลิกทั้งหมด {{count}} รายการ",
+    "successMessage": "ยกเลิกการแจ้งเตือน {{count}} รายการแล้ว",
+    "errorMessage": "ไม่สามารถยกเลิกการแจ้งเตือนบางรายการได้"
+  },
+  "emailPreviewModal": {
+    "title1stFollowUp": "ตัวอย่างการติดตามผลครั้งที่ 1",
+    "title2ndFollowUp": "ตัวอย่างการติดตามผลครั้งที่ 2",
+    "subject1stFollowUp": "หัวข้อ: แวะมาทักทาย — คุณมีโอกาสได้รีวิวให้เราหรือยัง?",
+    "subject2ndFollowUp": "หัวข้อ: เตือนครั้งสุดท้าย — เราอยากได้รีวิวจากคุณ!",
+    "loadingPreview": "กำลังโหลดตัวอย่าง...",
+    "1stFollowUp": "ติดตามผลครั้งที่ 1",
+    "2ndFollowUp": "ติดตามผลครั้งที่ 2"
+  },
+  "cancelConfirm": {
+    "title": "ยกเลิกการแจ้งเตือนหรือไม่?",
+    "description": "การแจ้งเตือนติดตามผลสำหรับ {{customerName}} จะถูกยกเลิกและจะไม่ถูกส่ง",
+    "keepIt": "เก็บไว้",
+    "cancelReminder": "ยกเลิกการแจ้งเตือน"
+  },
+  "reminderRow": {
+    "1stFollowUp": "ติดตามผลครั้งที่ 1",
+    "2ndFollowUp": "ติดตามผลครั้งที่ 2",
+    "status": {
+      "pending": "กำหนดเวลาแล้ว",
+      "sent": "ส่งแล้ว",
+      "cancelled": "ยกเลิกแล้ว",
+      "failed": "ล้มเหลว"
+    },
+    "sentAt": "ส่งเมื่อ {{date}}",
+    "scheduledAt": "กำหนดเวลา {{date}}",
+    "sendNow": "ส่งตอนนี้",
+    "cancel": "ยกเลิก"
+  },
+  "toastMessages": {
+    "reminderCancelled": "ยกเลิกการแจ้งเตือนแล้ว",
+    "followUpReminderSent": "ส่งการแจ้งเตือนติดตามผลแล้ว!",
+    "failedToStartCheckout": "ไม่สามารถเริ่มการชำระเงินได้ กรุณาลองอีกครั้ง",
+    "promptPayUnavailable": "ไม่สามารถชำระเงินด้วย PromptPay ได้ กรุณาชำระด้วยบัตร",
+    "uploadCsvFile": "กรุณาอัปโหลดไฟล์ .csv",
+    "csvNoData": "ไฟล์ CSV ไม่มีข้อมูล",
+    "mapEmailColumn": "โปรดตรวจสอบให้แน่ใจว่าคุณได้จับคู่คอลัมน์อีเมลแล้ว"
+  },
+  "planSelector": {
+    "monthly": "รายเดือน",
+    "annual": "รายปี",
+    "mostPopularBadge": "ยอดนิยมที่สุด",
+    "lifetime": "ตลอดชีพ",
+    "bestValueBadge": "คุ้มค่าที่สุด"
+  },
+  "pricingCard": {
+    "monthlySub": "/ เดือน",
+    "annualSub": "/ ปี",
+    "lifetimeSub": "ชำระครั้งเดียว",
+    "annualSavings": "ประหยัด $58/ปี",
+    "lifetimeSavings": "จ่ายครั้งเดียว เป็นเจ้าของตลอดไป",
+    "monthlyDescription": "ยกเลิกได้ทุกเมื่อ ไม่มีสัญญาผูกมัด",
+    "annualDescription": "เรียกเก็บเงินปีละครั้ง เทียบเท่า $24.17/เดือน",
+    "lifetimeDescription": "ชำระครั้งเดียว ไม่มีการต่ออายุ",
+    "lifetimeRoiCalloutTitle": "💰 คืนทุนในเวลาไม่ถึง 4 ปี",
+    "lifetimeRoiCalloutDescription": "แผนรายเดือนมีค่าใช้จ่าย $348/ปี ด้วยอัตรานี้ ใบอนุญาตตลอดชีพจะคุ้มทุนในปีที่ 3.6 — หลังจากนั้นก็ฟรีตลอดไป ผู้ใช้ส่วนใหญ่คืนทุนได้ภายในปีแรกของการขอรีวิว",
+    "unlimitedReviewRequests": "ขอรีวิวได้ไม่จำกัด",
+    "prioritySending": "ส่งและติดตามผลแบบจัดลำดับความสำคัญ",
+    "advancedAnalytics": "การวิเคราะห์ขั้นสูง",
+    "customEmailTemplates": "เทมเพลตอีเมลที่กำหนดเอง",
+    "woocommerceSync": "ซิงค์ WooCommerce",
+    "prioritySupport": "การสนับสนุนแบบจัดลำดับความสำคัญ",
+    "redirectingToCheckout": "กำลังเปลี่ยนเส้นทางไปยังหน้าชำระเงิน...",
+    "payByCard": "ชำระด้วยบัตร — {{price}}",
+    "secureCheckoutNote": "ชำระเงินอย่างปลอดภัยผ่าน Stripe เรียกเก็บเป็น USD",
+    "promptPaySocialProofTitle": "ธุรกิจส่วนใหญ่คืนทุนภายใน 90 วัน",
+    "promptPaySocialProofDescription": "ธุรกิจส่วนใหญ่คืนทุนได้ภายใน 90 วัน — รีวิวช่วยกระตุ้นการจองซ้ำและลูกค้าใหม่โดยอัตโนมัติ",
+    "promptPayRedirecting": "กำลังเปลี่ยนเส้นทาง...",
+    "payWithPromptPay": "ชำระด้วย PromptPay — {{thb}}",
+    "promptPayNote": "สำหรับประเทศไทยเท่านั้น · ชำระด้วย QR Code · เรียกเก็บเป็น THB",
+    "hidePromptPay": "ซ่อน",
+    "promptPayReveal": "อยู่ในประเทศไทยใช่หรือไม่?",
+    "promptPayRevealLink": "ชำระด้วย PromptPay (฿)"
+  },
+  "accessCode": {
+    "title": "มีรหัสเข้าใช้งานหรือไม่?",
+    "description": "ป้อนรหัสเบต้าหรือรหัสโปรโมชันของคุณเพื่อปลดล็อกการเข้าถึง Pro",
+    "placeholder": "เช่น BETA-X7K2-P9QM",
+    "redeem": "แลกใช้",
+    "codeAcceptedPro": "🎉 รหัสถูกต้อง! ตอนนี้คุณเป็น Pro แล้ว!",
+    "codeAcceptedNote": "🎉 รหัสถูกต้อง! {{note}} — ตอนนี้คุณเป็น Pro แล้ว!",
+    "invalidCodeError": "รหัสไม่ถูกต้อง กรุณาลองอีกครั้ง"
+  },
+  "socialProof": {
+    "trustedByBusinesses": "ธุรกิจท้องถิ่นไว้วางใจให้ช่วยเพิ่มรีวิว 5 ดาว"
+  },
+  "comparisonTable": {
+    "feature": "คุณสมบัติ",
+    "free": "ฟรี",
+    "pro": "โปร",
+    "lifetime": "ตลอดชีพ",
+    "reviewRequestsTotal": "คำขอรีวิว (ทั้งหมด)",
+    "followUpReminders": "การแจ้งเตือนติดตามผล",
+    "savedContacts": "รายชื่อติดต่อที่บันทึกไว้",
+    "csvImport": "นำเข้า CSV",
+    "woocommerceSync": "ซิงค์ WooCommerce",
+    "emailOpenClickTracking": "ติดตามการเปิดและคลิกอีเมล",
+    "advancedAnalytics": "การวิเคราะห์ขั้นสูง",
+    "multiPlatformReviewLinks": "ลิงก์รีวิวหลายแพลตฟอร์ม",
+    "dailySendLimit": "จำกัดการส่งรายวัน",
+    "prioritySupport": "การสนับสนุนแบบจัดลำดับความสำคัญ",
+    "futureUpdates": "การอัปเดตในอนาคต",
+    "price": "ราคา",
+    "freeTrialNote": "ทุกแผนมีทดลองใช้ฟรี 10 คำขอ ไม่ต้องใช้บัตรเครดิตเพื่อเริ่มต้น"
+  },
+  "paidUser": {
+    "adminAccess": "การเข้าถึงผู้ดูแลระบบ",
+    "lifetimeLicense": "ใบอนุญาตตลอดชีพ",
+    "annualPro": "โปรรายปี",
+    "monthlyPro": "โปรรายเดือน",
+    "onPro": "คุณใช้ {{tierLabel}}!",
+    "enjoyFeatures": "เพลิดเพลินกับการขอรีวิวได้ไม่จำกัดและคุณสมบัติ Pro ทั้งหมด",
+    "backToDashboard": "กลับไปที่แดชบอร์ด",
+    "cancelPlan": "ยกเลิกแผน"
+  },
+  "columnLabels": {
+    "fullName": "ชื่อเต็ม",
+    "email": "อีเมล",
+    "phoneOptional": "โทรศัพท์ (ไม่บังคับ)",
+    "notesOptional": "หมายเหตุ (ไม่บังคับ)",
+    "skipColumn": "— ข้ามคอลัมน์นี้ —"
+  },
+  "steps": {
+    "upload": "อัปโหลด",
+    "mapColumns": "จับคู่คอลัมน์",
+    "preview": "ดูตัวอย่าง",
+    "done": "เสร็จสิ้น"
+  },
+  "step0": {
+    "importFromPhoneContacts": "นำเข้าจากรายชื่อติดต่อในโทรศัพท์",
+    "orUploadCsv": "หรืออัปโหลดไฟล์ CSV",
+    "downloadTemplateTitle": "ดาวน์โหลดเทมเพลต CSV",
+    "downloadTemplateDescription": "เริ่มต้นด้วยเทมเพลต CSV ที่จัดรูปแบบไว้ล่วงหน้าของเรา",
+    "downloadTemplateButton": "ดาวน์โหลดเทมเพลต",
+    "dragDropTitle": "ลากและวางไฟล์ CSV ของคุณที่นี่",
+    "dragDropSubtitle": "หรือคลิกเพื่ออัปโหลด",
+    "uploadButton": "อัปโหลดไฟล์ CSV"
+  },
+  "step1": {
+    "mapColumnsTitle": "จับคู่คอลัมน์",
+    "mapColumnsDescription": "จับคู่คอลัมน์ CSV ของคุณกับช่องข้อมูลผู้ติดต่อของเรา",
+    "csvFile": "ไฟล์ CSV: {{fileName}}",
+    "column": "คอลัมน์",
+    "field": "ช่องข้อมูล",
+    "nextButton": "ถัดไป: ดูตัวอย่างการนำเข้า"
+  },
+  "step2": {
+    "previewImportTitle": "ดูตัวอย่างการนำเข้า",
+    "previewImportDescription": "ตรวจสอบรายชื่อผู้ติดต่อก่อนนำเข้า",
+    "contactsToImport": "รายชื่อผู้ติดต่อ {{count}} รายการที่จะนำเข้า",
+    "name": "ชื่อ",
+    "email": "อีเมล",
+    "phone": "โทรศัพท์",
+    "notes": "หมายเหตุ",
+    "confirmImportButton": "ยืนยันการนำเข้า"
+  },
+  "step3": {
+    "importCompleteTitle": "นำเข้าเสร็จสมบูรณ์!",
+    "importSummary": "เพิ่มผู้ติดต่อแล้ว {{imported}} ราย{{imported_plural}}{{skipped_summary}}",
+    "skippedDuplicates": " ข้ามรายการที่ซ้ำกัน {{skipped}} รายการ",
+    "viewContactsButton": "ดูรายชื่อผู้ติดต่อและส่งคำขอ",
+    "importAnotherFileButton": "นำเข้าไฟล์อื่น"
+  },
+  "starterTemplates": {
+    "title": "เทมเพลตเริ่มต้น",
+    "quickFavor": {
+      "name": "ขอความช่วยเหลือเล็กน้อย?",
+      "tag": "ทั่วไป",
+      "subject": "ขอความช่วยเหลือเล็กน้อย?",
+      "body": [
+        "ขอบคุณอีกครั้งที่เลือกใช้บริการของ {{businessName}}",
+        "หากคุณมีเวลาสักครู่ ฉันจะยินดีมากหากคุณให้ข้อเสนอแนะตามความเป็นจริง สิ่งนี้ช่วยให้ผู้อื่นตัดสินใจได้อย่างมีข้อมูลและช่วยให้เราปรับปรุงบริการได้ดียิ่งขึ้น",
+        "คุณสามารถแสดงความคิดเห็นบนแพลตฟอร์มที่คุณต้องการได้:",
+        "{{platformLinks}}",
+        "ไม่ต้องกังวลใจเลยค่ะ แค่ประสบการณ์จริงของคุณก็พอ",
+        "ขอบคุณสำหรับเวลาของคุณ",
+        "ทีมงาน {{businessName}}",
+        "---",
+        "คุณได้รับอีเมลนี้เนื่องจากคุณเป็นลูกค้าของ {{businessName}} หากต้องการหยุดรับอีเมลเหล่านี้ โปรดตอบกลับด้วยคำว่า \"unsubscribe\""
+      ]
+    },
+    "howDidWeDo": {
+      "name": "เราทำได้ดีแค่ไหน?",
+      "tag": "ติดตามผล",
+      "subject": "เราทำได้ดีแค่ไหน?",
+      "body": [
+        "ฉันต้องการติดตามผลและดูว่าประสบการณ์ล่าสุดของคุณเป็นอย่างไรบ้าง",
+        "หากคุณเปิดใจ ฉันจะยินดีมากสำหรับข้อเสนอแนะของคุณ สิ่งนี้ช่วยให้เราเติบโตและช่วยให้ลูกค้ารายอื่นทราบว่าจะคาดหวังอะไรได้บ้าง",
+        "คุณสามารถแสดงความคิดเห็นได้ที่นี่:",
+        "{{platformLinks}}",
+        "ขอบคุณอีกครั้งที่ใช้บริการของเรา ฉันซาบซึ้งใจมากค่ะ",
+        "ทีมงาน {{businessName}}",
+        "---",
+        "คุณได้รับอีเมลนี้เนื่องจากคุณเป็นลูกค้าของ {{businessName}} หากต้องการหยุดรับอีเมลเหล่านี้ โปรดตอบกลับด้วยคำว่า \"unsubscribe\""
+      ]
+    },
+    "wooOrder": {
+      "name": "ขอบคุณสำหรับคำสั่งซื้อของคุณ",
+      "tag": "WooCommerce",
+      "subject": "ขอบคุณสำหรับคำสั่งซื้อของคุณ — มีเวลาสักครู่ไหม?",
+      "body": [
+        "คำสั่งซื้อล่าสุดของคุณกับ {{businessName}} มีความหมายมากสำหรับเรา — ขอบคุณค่ะ",
+        "เมื่อคุณมีโอกาสได้ใช้สินค้าแล้ว ฉันอยากจะรับฟังความคิดเห็นที่ตรงไปตรงมาของคุณ",
+        "หากคุณต้องการแบ่งปันต่อสาธารณะ คุณสามารถทำได้ที่นี่:",
+        "{{platformLinks}}",
+        "หรือเพียงแค่ตอบกลับอีเมลนี้ — ฉันอ่านทุกข้อความค่ะ",
+        "ขอบคุณอีกครั้ง",
+        "ทีมงาน {{businessName}}",
+        "---",
+        "คุณได้รับอีเมลนี้เนื่องจากคุณเป็นลูกค้าของ {{businessName}} หากต้องการหยุดรับอีเมลเหล่านี้ โปรดตอบกลับด้วยคำว่า \"unsubscribe\""
+      ]
+    }
+  },
+  "defaultTemplate": {
+    "subject": "{{businessName}} อยากได้ข้อเสนอแนะจากคุณ!",
+    "body": [
+      "สวัสดี {{customerName}},",
+      "ขอบคุณที่เลือกใช้บริการของ {{businessName}}! เราหวังว่าคุณจะได้รับประสบการณ์ที่ดีเยี่ยม",
+      "คุณช่วยสละเวลา 30 วินาทีเพื่อเขียนรีวิวสั้นๆ ให้เราได้ไหมคะ? มันมีความหมายกับเรามากและช่วยให้ลูกค้ารายอื่นค้นพบเราได้ง่ายขึ้น",
+      "👉 {{reviewLink}}",
+      "ขอบคุณมากสำหรับการสนับสนุนของคุณ!",
+      "ทีมงาน {{businessName}}",
+      "---",
+      "คุณได้รับอีเมลนี้เนื่องจากคุณเป็นลูกค้าของ {{businessName}} หากต้องการหยุดรับอีเมลเหล่านี้ โปรดตอบกลับด้วยคำว่า \"unsubscribe\""
+    ]
+  },
+  "templates": {
+    "title": "เทมเพลตของคุณ",
+    "emptyState": "ยังไม่มีเทมเพลต คลิก 'สร้างใหม่' เพื่อสร้างเทมเพลตอีเมลแรกของคุณ",
+    "usage": "การใช้งาน",
+    "opens": "เปิด",
+    "clicks": "คลิก",
+    "bestPerforming": "ประสิทธิภาพดีที่สุด!",
+    "actions": "การดำเนินการ",
+    "edit": "แก้ไข",
+    "delete": "ลบ",
+    "preview": "ดูตัวอย่าง"
+  },
+  "templateDialog": {
+    "createTitle": "สร้างเทมเพลตใหม่",
+    "editTitle": "แก้ไขเทมเพลต",
+    "nameLabel": "ชื่อเทมเพลต",
+    "namePlaceholder": "เช่น คำขอรีวิวของฉัน",
+    "subjectLabel": "หัวข้ออีเมล",
+    "subjectPlaceholder": "เช่น ประสบการณ์ของคุณกับ {{businessName}} เป็นอย่างไรบ้าง?",
+    "bodyLabel": "เนื้อหาอีเมล",
+    "bodyPlaceholder": "เช่น สวัสดี {{customerName}}, ...",
+    "placeholders": {
+      "title": "ตัวยึดตำแหน่ง",
+      "customerName": "ชื่อลูกค้า",
+      "businessName": "ชื่อธุรกิจ",
+      "reviewLink": "ลิงก์รีวิว",
+      "platformLinks": "ลิงก์แพลตฟอร์ม"
+    },
+    "setDefault": "ตั้งเป็นเทมเพลตเริ่มต้น",
+    "livePreview": {
+      "title": "ดูตัวอย่างสด",
+      "sample": "ตัวอย่าง: {{sampleCustomer}} · {{sampleBusiness}}",
+      "subject": "หัวข้อ",
+      "noSubject": "ยังไม่มีหัวข้อ",
+      "to": "ถึง: {{sampleCustomer}}",
+      "noBody": "ยังไม่มีเนื้อหา",
+      "reviewLink": "ลิงก์รีวิว:"
+    },
+    "validation": "ต้องระบุชื่อ หัวข้อ และเนื้อหา",
+    "saving": "กำลังบันทึก...",
+    "update": "อัปเดต",
+    "save": "บันทึก",
+    "cancel": "ยกเลิก",
+    "toast": {
+      "successSave": "บันทึกเทมเพลตแล้ว",
+      "successUpdate": "อัปเดตเทมเพลตแล้ว",
+      "successDelete": "ลบเทมเพลตแล้ว",
+      "error": "{{errorMessage}}"
+    }
+  },
+  "previewDialog": {
+    "title": "ดูตัวอย่าง",
+    "subject": "หัวข้อ",
+    "body": "เนื้อหา",
+    "close": "ปิด"
+  },
+  "deleteConfirm": {
+    "title": "ลบเทมเพลต?",
+    "description": "การดำเนินการนี้จะลบ **{{templateName}}** อย่างถาวร ไม่สามารถยกเลิกได้",
+    "cancel": "ยกเลิก",
+    "delete": "ลบ"
+  },
+  "callToAction": {
+    "googleSignInButton": "ดำเนินการต่อด้วย Google",
+    "appleSignInButton": "ดำเนินการต่อด้วย Apple",
+    "freeTrialDescription": "เริ่มต้นฟรี — รวมคำขอรีวิว 10 รายการ ไม่ต้องใช้บัตรเครดิต"
+  },
+  "themeToggle": {
+    "switchToLightMode": "เปลี่ยนเป็นโหมดสว่าง",
+    "switchToDarkMode": "เปลี่ยนเป็นโหมดมืด",
+    "light": "สว่าง",
+    "dark": "มืด"
+  },
+  "onboardingWizard": {
+    "header": {
+      "title": "ตั้งค่า ReviewLink",
+      "skipSetupTooltip": "ข้ามการตั้งค่า"
+    },
+    "steps": {
+      "connectEmail": "เชื่อมต่ออีเมล",
+      "reviewPlatform": "แพลตฟอร์มรีวิว",
+      "sendRequest": "ส่งคำขอ"
+    },
+    "stepContent": {
+      "step1": {
+        "title": "เชื่อมต่ออีเมลของคุณ",
+        "description": "ReviewLink ส่งอีเมลจากบัญชีของคุณเอง — ใช้งานได้กับ Gmail, Outlook, Yahoo หรืออีเมลธุรกิจใดๆ"
+      },
+      "step2": {
+        "title": "เพิ่มหน้ารีวิวของคุณ",
+        "description": "วางลิงก์ที่ลูกค้าสามารถเขียนรีวิวให้คุณได้ คุณสามารถเพิ่มแพลตฟอร์มอื่นๆ ได้ในภายหลังในการตั้งค่า"
+      },
+      "step3": {
+        "title": "พร้อมใช้งานแล้ว 🚀",
+        "description": "ทุกอย่างถูกตั้งค่าเรียบร้อยแล้ว ส่งคำขอรีวิวแรกของคุณได้ในไม่กี่วินาที"
+      }
+    },
+    "navigation": {
+      "previous": "ก่อนหน้า",
+      "nextStep": "ขั้นตอนถัดไป",
+      "skipSetupLater": "ข้ามการตั้งค่า — ฉันจะทำภายหลัง"
+    }
+  },
+  "step1Email": {
+    "emailAddressLabel": "ที่อยู่อีเมล",
+    "emailAddressPlaceholder": "คุณ@ธุรกิจของคุณ.com",
+    "passwordLabel": "รหัสผ่าน",
+    "appPasswordRequiredSuffix": "(ต้องใช้รหัสผ่านสำหรับแอป)",
+    "appPasswordPlaceholder": "รหัสผ่านสำหรับแอป 16 ตัวอักษร",
+    "emailPasswordPlaceholder": "รหัสผ่านอีเมลของคุณ",
+    "toast": {
+      "enterEmailPassword": "โปรดป้อนอีเมลและรหัสผ่านของคุณ",
+      "connectionTestFailed": "การทดสอบการเชื่อมต่อล้มเหลว",
+      "emailConnectedSuccess": "เชื่อมต่ออีเมลแล้ว! ตรวจสอบ {{email}} — เราได้ส่งอีเมลทดสอบไปให้คุณเพื่อยืนยันว่าทุกอย่างทำงานได้ดี"
+    },
+    "fromNameLabel": "ชื่อผู้ส่ง",
+    "fromNamePlaceholder": "เช่น ชื่อธุรกิจของคุณ",
+    "replyToEmailLabel": "อีเมลสำหรับตอบกลับ",
+    "replyToEmailPlaceholder": "เช่น support@ธุรกิจของคุณ.com",
+    "showAdvancedSettings": "แสดงการตั้งค่าขั้นสูง",
+    "hideAdvancedSettings": "ซ่อนการตั้งค่าขั้นสูง",
+    "smtpHostLabel": "โฮสต์ SMTP",
+    "smtpHostPlaceholder": "เช่น smtp.sendgrid.net",
+    "smtpPortLabel": "พอร์ต SMTP",
+    "smtpPortPlaceholder": "เช่น 587",
+    "testCredentialsButton": "ทดสอบข้อมูลรับรอง",
+    "testingButton": "กำลังทดสอบ...",
+    "testSuccessful": "ทดสอบสำเร็จ!",
+    "testFailed": "ทดสอบล้มเหลว: {{error}}",
+    "connectEmailButton": "เชื่อมต่ออีเมล",
+    "connectingButton": "กำลังเชื่อมต่อ...",
+    "hints": {
+      "gmailAppPassword": "Gmail ต้องใช้รหัสผ่านสำหรับแอปเมื่อเปิดการยืนยันแบบ 2 ขั้นตอน ไปที่ myaccount.google.com → ความปลอดภัย → รหัสผ่านสำหรับแอป",
+      "outlookAppPassword": "Outlook อาจต้องใช้รหัสผ่านสำหรับแอปหากเปิดการยืนยันแบบสองขั้นตอน ไปที่ account.microsoft.com → ความปลอดภัย → ตัวเลือกความปลอดภัยขั้นสูง",
+      "yahooAppPassword": "Yahoo ต้องใช้รหัสผ่านสำหรับแอป ไปที่ account.yahoo.com → ความปลอดภัย → สร้างรหัสผ่านสำหรับแอป",
+      "zohoSmtpAccess": "Zoho ต้องเปิดใช้งานการเข้าถึง SMTP ก่อน ไปที่ mail.zoho.com → การตั้งค่า → บัญชีอีเมล → SMTP และเปิดใช้งาน \"SMTP Access\"",
+      "googleWorkspaceHint": "ใช้ Google Workspace ใช่ไหม? โฮสต์ SMTP ของคุณคือ smtp.gmail.com (พอร์ต 587) คุณจะต้องใช้รหัสผ่านสำหรับแอป — ไปที่ myaccount.google.com → ความปลอดภัย → รหัสผ่านสำหรับแอป",
+      "zohoHostHint": "Zoho ต้องเปิดใช้งานการเข้าถึง SMTP ก่อน ไปที่ mail.zoho.com → การตั้งค่า → บัญชีอีเมล → SMTP และเปิดใช้งาน \"SMTP Access\" จากนั้นใช้ที่อยู่อีเมลและรหัสผ่าน Zoho ของคุณที่นี่"
+    },
+    "smtpPresets": {
+      "googleWorkspace": "Google Workspace",
+      "outlookMicrosoft365": "Outlook / Microsoft 365",
+      "zohoMail": "Zoho Mail",
+      "yahooMail": "Yahoo Mail"
+    }
+  },
+  "dashboard": {
+    "header": {
+      "label": "แดชบอร์ด",
+      "title": "ผลลัพธ์ของคุณ"
+    },
+    "stats": {
+      "thisMonth": "เดือนนี้",
+      "allTime": "ตลอดเวลา",
+      "last7Days": "7 วันที่ผ่านมา"
+    },
+    "weeklyBreakdown": {
+      "title": "7 วันที่ผ่านมา",
+      "vsLabel": "เทียบกับสัปดาห์ก่อนหน้า",
+      "noRequests": "ไม่มีคำขอในช่วง 7 วันที่ผ่านมา",
+      "thisWeek": "สัปดาห์นี้",
+      "priorWeek": "สัปดาห์ก่อนหน้า",
+      "allTime": "ตลอดเวลา"
+    },
+    "emailPerformance": {
+      "title": "ประสิทธิภาพอีเมล",
+      "sent": "ส่งแล้ว",
+      "openRate": "อัตราการเปิด",
+      "clickRate": "อัตราการคลิก",
+      "uniqueOpens": "เปิดไม่ซ้ำกัน {{count}} ครั้ง",
+      "uniqueClicks": "คลิกไม่ซ้ำกัน {{count}} ครั้ง"
+    },
+    "activityFeed": {
+      "title": "กิจกรรมทั้งหมด",
+      "searchPlaceholder": "ค้นหาด้วยชื่อหรืออีเมล...",
+      "filterAll": "ทั้งหมด",
+      "filterPending": "รอดำเนินการ",
+      "filterReviewed": "รีวิวแล้ว",
+      "clearFilters": "ล้างตัวกรอง",
+      "selectAll": "เลือกทั้งหมด",
+      "deselectAll": "ยกเลิกการเลือกทั้งหมด",
+      "noRequestsYet": "ยังไม่มีคำขอรีวิว\nส่งคำขอแรกของคุณจากแท็บ 'ส่ง'!",
+      "noMatchingRequests": "ไม่พบคำขอที่ตรงกัน",
+      "clearFiltersButton": "ล้างตัวกรอง",
+      "statusReviewed": "รีวิวแล้ว",
+      "statusSent": "ส่งแล้ว",
+      "markAsReviewed": "ทำเครื่องหมายว่ารีวิวแล้ว",
+      "markAsNotReviewed": "ทำเครื่องหมายว่าไม่ตอบกลับ",
+      "emailOpenedTooltip": "เปิดอีเมลแล้ว",
+      "reviewLinkClickedTooltip": "คลิกลิงก์รีวิวแล้ว",
+      "clearSearchAriaLabel": "ล้างการค้นหา",
+      "clearSelectionAriaLabel": "ล้างการเลือก"
+    },
+    "bulkActions": {
+      "selectedCount": "เลือกแล้ว {{count}} รายการ",
+      "markReviewed": "ทำเครื่องหมายว่ารีวิวแล้ว",
+      "markSent": "ทำเครื่องหมายว่าส่งแล้ว"
+    },
+    "toasts": {
+      "updateFailed": "อัปเดตคำขอไม่สำเร็จ",
+      "updatedSuccess": "อัปเดตคำขอแล้ว {{count}} รายการ",
+      "updatedSuccessPlural": "อัปเดตคำขอแล้ว {{count}} รายการ"
+    }
+  },
+  "pricing": {
+    "sectionTitle": "ราคาที่เรียบง่ายและโปร่งใส",
+    "sectionSubtitle": "เริ่มต้นฟรี อัปเกรดเมื่อพร้อม",
+    "free": "ฟรี",
+    "freePrice": "$0",
+    "freeDescription": "ส่งคำขอรีวิวได้ 10 ครั้ง — ไม่ต้องใช้บัตรเครดิต",
+    "proMonthly": "Pro รายเดือน",
+    "mostPopular": "ยอดนิยม",
+    "proMonthlyPrice": "$29",
+    "proMonthlyPer": "/เดือน",
+    "proMonthlyDescription": "ส่งคำขอรีวิวไม่จำกัด ส่งจำนวนมาก ติดตามผล และซิงค์ WooCommerce",
+    "proAnnual": "Pro รายปี",
+    "save15": "ประหยัด 15%",
+    "proAnnualPrice": "$297",
+    "proAnnualPer": "/ปี",
+    "proAnnualDescription": "ทุกอย่างใน Pro รายเดือน — ชำระปีละครั้ง เทียบเท่า $24.75/เดือน",
+    "lifetime": "ตลอดชีพ",
+    "ownItForever": "เป็นเจ้าของตลอดไป",
+    "lifetimePrice": "$1,247",
+    "lifetimeOnce": " ครั้งเดียว",
+    "lifetimeDescription": "จ่ายครั้งเดียว ใช้ได้ตลอดชีพ ไม่มีค่าต่ออายุ"
+  },
+  "comparison": {
+    "sectionTitle": "ถูกกว่าคู่แข่งรายใหญ่ 10–20 เท่า",
+    "sectionSubtitle": "Birdeye และ Podium คิดราคาระดับองค์กร แต่ ReviewLink ให้ฟีเจอร์เดียวกันในราคาที่คุ้มกว่ามาก",
+    "colPlatform": "แพลตฟอร์ม",
+    "colStartingPrice": "ราคาเริ่มต้น",
+    "colLifetime": "ตัวเลือกตลอดชีพ",
+    "priceDisclaimer": "ราคาอ้างอิงจากแผนเริ่มต้นที่ประกาศบนเว็บไซต์ ณ เดือนเมษายน 2026"
+  },
+  "testimonials": {
+    "sectionTitle": "เสียงจากผู้ใช้จริง",
+    "sarah": {
+      "quote": "ฉันเคยกลัวการขอรีวิวจากลูกค้า รู้สึกเขินและดูเหมือนขายของ แต่ ReviewLink ส่งอีเมลจาก Gmail ของฉันเอง ดูเหมือนฉันเขียนเอง ยอดรีวิว Google เพิ่มจาก 12 เป็น 47 ภายในหกสัปดาห์",
+      "name": "Sarah M.",
+      "role": "ช่างภาพอิสระ"
+    },
+    "tom": {
+      "quote": "เราให้บริการลูกค้าประมาณ 80 คนต่อวัน ทุกวันศุกร์ฉันนำเข้ารายชื่อจาก CSV แล้วกดส่ง พอถึงเช้าวันจันทร์มักได้รีวิวใหม่ 8–10 รายการ กลายเป็นส่วนหนึ่งของกิจวัตรประจำสัปดาห์แล้ว",
+      "name": "Tom R.",
+      "role": "เจ้าของร้าน The Corner Café"
+    }
+  },
+  "onboarding": {
+    "googleBtn": "ดำเนินการต่อด้วย Google",
+    "appleBtn": "ดำเนินการต่อด้วย Apple",
+    "finePrint": "เริ่มต้นฟรี — รวม 10 คำขอรีวิว ไม่ต้องใช้บัตรเครดิต"
+  }
+}

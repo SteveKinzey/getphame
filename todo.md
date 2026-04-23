@@ -1232,4 +1232,21 @@
 - [x] Update Google Translate includedLanguages to include zh-CN
 - [x] Lazy-load Google Translate script (only inject when user selects TH or CN — fixes 4 SEO alt text flags)
 - [x] Add Noto Sans SC (Simplified Chinese) font to index.html for clean Chinese rendering
-- [ ] Save checkpoint + deploy
+- [x] Save checkpoint + deploy (version 2c09c539)
+
+## Session #54 — i18n Migration: react-i18next (Apr 22 2026)
+- [x] Install react-i18next + i18next packages
+- [x] Scaffold i18n config (client/src/lib/i18n.ts) with EN/TH/CN locale detection
+- [x] Extract all UI strings from all pages/components into client/public/locales/en/translation.json (73 top-level keys, 1065 lines)
+- [x] Generate client/public/locales/th/translation.json via built-in LLM (Angelina framework)
+- [x] Generate client/public/locales/zh-CN/translation.json via built-in LLM (Angelina framework)
+- [x] Update LanguageToggle to use i18next changeLanguage() instead of Google Translate cookie
+- [x] Initialize i18n in main.tsx before app renders
+
+## Session #54b — i18n Phase 1: Public Pages (Apr 22 2026)
+- [x] Wire LandingPage.tsx with t() calls (all hardcoded strings → translation keys)
+- [x] Wire Onboarding.tsx with t() calls
+- [x] Wire BottomNav.tsx with t() calls (nav labels + footer links)
+- [x] Remove Google Translate script from index.html entirely
+- [x] Verify EN|TH|CN toggle switches all three pages instantly (TH + CN confirmed in dev browser)
+- [x] Save checkpoint + deploy

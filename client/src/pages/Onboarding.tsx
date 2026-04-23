@@ -1,14 +1,17 @@
 // ReviewLink — Onboarding / Login screen
-// Shown when user is not authenticated. Prompts them to sign in with Manus OAuth.
+// Shown when user is not authenticated. Prompts them to sign in with Google or Apple OAuth.
 // After login, they set up their business profile in Settings.
 
 import { Rocket, Star } from "lucide-react";
 import LanguageToggle from "@/components/LanguageToggle";
+import { useTranslation } from "react-i18next";
 
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
 
 export default function OnboardingPage() {
+  const { t } = useTranslation();
+
   function handleGoogleSignIn() {
     window.location.href = "/api/auth/google";
   }
@@ -16,6 +19,12 @@ export default function OnboardingPage() {
   function handleAppleSignIn() {
     window.location.href = "/api/auth/apple";
   }
+
+  const featurePills: string[] = [
+    t("features.sendsFromYourEmail"),
+    t("features.oneTapRequests"),
+    t("features.freeToStart"),
+  ];
 
   return (
     <div
@@ -28,7 +37,7 @@ export default function OnboardingPage() {
           <span
             className="text-sm font-bold tracking-widest uppercase rr-text-gold"
           >
-            ReviewLink
+            {t("nav.brandName")}
           </span>
         </div>
         <LanguageToggle />
@@ -37,20 +46,19 @@ export default function OnboardingPage() {
       {/* Hero content */}
       <div className="flex flex-col items-center text-center gap-6 flex-1 justify-center">
         <div className="w-48 h-48 rounded-3xl overflow-hidden shadow-2xl">
-          <img src={HERO_IMG} alt="ReviewLink" className="w-full h-full object-cover" />
+          <img src={HERO_IMG} alt={t("hero.rocketIllustrationAlt")} className="w-full h-full object-cover" />
         </div>
 
         <div>
           <h1
             className="text-4xl font-black leading-tight mb-3 text-white"
           >
-            Get More 5-Star
+            {t("hero.titlePart1")}
             <br />
-            <span className="rr-text-gold">Google Reviews</span>
+            <span className="rr-text-gold">{t("hero.titlePart2")}</span>
           </h1>
           <p className="text-base leading-relaxed" style={{ color: "var(--text-on-dark-secondary)" }}>
-            Send personalized review requests from your own email account. Your customers see it
-            come from you — not a generic sender.
+            {t("hero.description")}
           </p>
         </div>
 
@@ -63,7 +71,7 @@ export default function OnboardingPage() {
 
         {/* Feature pills */}
         <div className="flex flex-wrap gap-2 justify-center">
-          {["Sends from your email", "One-tap requests", "Free to start"].map((f) => (
+          {featurePills.map((f) => (
             <span
               key={f}
               className="text-xs font-semibold px-3 py-1 rounded-full rr-text-gold" style={{ background: "rgba(255,184,0,0.15)" }}
@@ -88,7 +96,7 @@ export default function OnboardingPage() {
             <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
             <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
           </svg>
-          Continue with Google
+          {t("onboarding.googleBtn")}
         </button>
 
         {/* Apple Sign In */}
@@ -100,11 +108,11 @@ export default function OnboardingPage() {
           <svg width="18" height="22" viewBox="0 0 814 1000" xmlns="http://www.w3.org/2000/svg" fill="white">
             <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 376.7 0 248.1 0 125.8 0 56.3 25.6 0 75.4 0c52.1 0 84.1 34.1 116.6 34.1 31.1 0 79.3-36.3 134.2-36.3 26.5 0 98.1 2.6 150.2 76.2zm-220-176.4c28.3-35.1 49.3-84.4 49.3-133.7 0-6.5-.6-13-1.9-18.1-46.9 1.9-101.9 31.4-135.3 71.9-26.5 29.9-50.6 79.2-50.6 129.2 0 7.1 1.3 14.3 1.9 16.5 3.2.6 8.4 1.3 13.6 1.3 42.2 0 95.2-28.3 123-66.1z"/>
           </svg>
-          Continue with Apple
+          {t("onboarding.appleBtn")}
         </button>
 
         <p className="text-center text-xs" style={{ color: "var(--text-on-dark-muted)" }}>
-          Start free — 10 review requests included. No credit card required.
+          {t("onboarding.finePrint")}
         </p>
       </div>
     </div>

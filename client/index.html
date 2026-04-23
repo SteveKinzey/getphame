@@ -20,29 +20,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=Nunito:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
 
-    <!-- Google Translate — lazy-loaded only when user selects TH or CN.
-         The cookie bootstrap runs eagerly so the widget picks up the saved
-         language on first paint when it IS loaded by LanguageToggle.tsx. -->
-    <script>
-      // Apply saved language cookie BEFORE the widget loads.
-      (function () {
-        try {
-          var saved = localStorage.getItem('rr-lang');
-          var gtCode = saved === 'th' ? 'th' : saved === 'cn' ? 'zh-CN' : null;
-          if (gtCode) {
-            var host = window.location.hostname;
-            var value = '/en/' + gtCode;
-            document.cookie = 'googtrans=' + value + ';path=/';
-            document.cookie = 'googtrans=' + value + ';path=/;domain=' + host;
-            var parts = host.split('.');
-            if (parts.length > 1) {
-              document.cookie = 'googtrans=' + value + ';path=/;domain=.' + parts.slice(-2).join('.');
-            }
-          }
-        } catch (e) {}
-      })();
-    </script>
-
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="ReviewLink" />
@@ -64,8 +41,6 @@
   </head>
 
   <body>
-    <!-- Hidden mount point for Google Translate widget (driven by our custom EN/TH toggle) -->
-    <div id="rr-google-translate" aria-hidden="true"></div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script

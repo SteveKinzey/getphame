@@ -1,0 +1,1126 @@
+{
+  "seo": {
+    "title": "ReviewLink — 获得更多五星好评",
+    "keywords": "评论请求, Google 评论, 获得更多评论, 评论自动化, 小型企业评论, 发送评论请求邮件, WooCommerce 评论, Stripe 评论",
+    "ogDescription": "通过您自己的电子邮件账户发送个性化的评论请求邮件。支持 Google、Yelp、TripAdvisor 等。",
+    "shortTitle": "ReviewLink"
+  },
+  "nav": {
+    "brandName": "ReviewLink",
+    "signIn": "登录",
+    "home": "首页",
+    "send": "发送",
+    "dashboard": "仪表盘",
+    "settings": "设置"
+  },
+  "hero": {
+    "tagline": "免费开始 — 无需信用卡",
+    "headline": "无需尴尬请求，即可获得更多五星好评",
+    "description": "通过您自己的电子邮件账户发送个性化的评论请求。您的客户会看到邮件来自您本人 — 而非通用发件人。",
+    "cta": "免费开始",
+    "setupTime": "设置只需不到2分钟",
+    "rocketIllustrationAlt": "ReviewLink 火箭插图",
+    "dashboardAlt": "ReviewLink 仪表盘显示已发送请求和邮件表现统计数据",
+    "dashboardStats": "您的仪表盘 — 实时统计数据",
+    "titlePart1": "获得更多五星",
+    "titlePart2": "Google 评论"
+  },
+  "features": {
+    "sectionTitle": "为什么企业选择 ReviewLink",
+    "emailFeature": {
+      "title": "通过您自己的电子邮件发送",
+      "description": "每封请求邮件都会以个人消息的形式送达客户收件箱 — 而非群发。没有共享发件人，没有垃圾邮件过滤器。"
+    },
+    "bulkSendFeature": {
+      "title": "几秒钟内批量发送",
+      "description": "从 CSV、Stripe 或 WooCommerce 导入联系人。全选，点击发送 — 每位客户都会收到个性化邮件。"
+    },
+    "platformFeature": {
+      "title": "适用于任何评论平台",
+      "description": "Google、Yelp、Trustpilot、TripAdvisor、Facebook — 添加任何评论链接。您的客户将直接跳转到您的评论页面。"
+    },
+    "customerQuote": {
+      "quote": "ReviewLink 对我们的小型企业来说是一个颠覆性的改变。我们看到了积极评论的显著增长，而且它非常易于使用！",
+      "author": "Tom R.",
+      "authorTitle": "The Corner Café 店主"
+    },
+    "sendsFromYourEmail": "从您的邮箱发送",
+    "oneTapRequests": "一键请求",
+    "freeToStart": "免费开始",
+    "pills": {
+      "sendsFromYourEmail": "从您的邮箱发送",
+      "oneTapRequests": "一键请求",
+      "freeToStart": "免费开始"
+    }
+  },
+  "howItWorks": {
+    "step1": "连接您的电子邮件账户 (SMTP)",
+    "step2": "添加您的 Google（或其他）评论链接",
+    "step3": "导入或添加您的客户",
+    "step4": "发送个性化评论请求",
+    "sectionTitle": "使用流程"
+  },
+  "faq": {
+    "sectionTitle": "常见问题",
+    "spamQuestion": "它会看起来像垃圾邮件吗？",
+    "spamAnswer": "不会。每封邮件都通过 SMTP 直接从您自己的电子邮件账户发送 — 而非来自共享的批量发送服务器。您的客户会看到您的姓名、您的电子邮件地址以及以您的口吻撰写的信息。它会像个人便条一样送达收件箱，而不是营销群发邮件。",
+    "providersQuestion": "支持哪些电子邮件提供商？",
+    "providersAnswer": "任何支持 SMTP 的提供商都适用：Gmail、Outlook、Yahoo Mail、Apple iCloud Mail、cPanel/Zoho 商业电子邮件，以及几乎所有托管服务提供商的邮件服务器。如果您可以在手机上设置电子邮件应用，您就可以将其连接到 ReviewLink。",
+    "freeQuestion": "它真的是免费的吗？",
+    "freeAnswer": "是的 — 免费且没有人为的发送限制。您连接的是您自己的电子邮件账户，因此唯一的限制是您的电子邮件提供商的每日发送上限（Gmail 每天允许发送约500封，大多数其他提供商也类似）。没有隐藏费用，也无需信用卡即可开始使用。",
+    "importQuestion": "我可以导入我的客户列表吗？",
+    "importAnswer": "是的。您可以上传包含客户姓名和电子邮件地址的 CSV 文件，或者如果您经营在线商店，可以直接从 WooCommerce 同步。导入后，您可以批量选择联系人，并一键发送个性化评论请求。"
+  },
+  "bottomCta": {
+    "headline": "立即开始收集评论",
+    "description": "永久免费。无需信用卡。2分钟内完成设置。",
+    "cta": "免费开始",
+    "title": "准备好获取更多评价了吗？",
+    "subtitle": "永久免费，无需信用卡，2分钟内完成设置。"
+  },
+  "footer": {
+    "brandName": "ReviewLink",
+    "privacy": "隐私",
+    "terms": "条款",
+    "support": "支持",
+    "privacyPolicy": "隐私政策",
+    "termsOfService": "服务条款",
+    "whatsNew": "最新动态",
+    "compliance": "合规性"
+  },
+  "shareReferralCard": {
+    "title": "ReviewLink — 免费评论请求工具",
+    "shareText": "我一直在使用 ReviewLink 通过我自己的电子邮件发送评论请求 — 它是免费的，而且效果很好。值得一试：",
+    "copySuccessToast": "链接已复制到剪贴板！",
+    "copyErrorToast": "无法复制链接。",
+    "header": "认识当地的企业主吗？",
+    "subHeader": "帮助他们获得更多评论 — 它是免费的。",
+    "copiedToClipboard": "已复制到剪贴板！",
+    "shareReviewLink": "分享 ReviewLink"
+  },
+  "relativeTime": {
+    "justNow": "刚刚",
+    "minutesAgo": "{{diffMins}}分钟前",
+    "hoursAgo": "{{diffHours}}小时前",
+    "daysAgo": "{{diffDays}}天前"
+  },
+  "trackingSummaryCard": {
+    "title": "邮件表现",
+    "sent": "已发送",
+    "openRate": "打开率",
+    "clickRate": "点击率",
+    "summary": "在 {{totalSent}} 个请求中，{{uniqueOpens}} 个已打开 · {{uniqueClicks}} 个已点击"
+  },
+  "homePage": {
+    "setGoalErrorToast": "{{err.message}}",
+    "shareSuccessToast": "已复制到剪贴板！分享给朋友。",
+    "pageTitle": "ReviewLink — 快速发送 Google 评论请求",
+    "greeting": "您好，{{user.firstName}}",
+    "welcomeBack": "欢迎回来，",
+    "setupBannerTitle": "设置完成！",
+    "setupBannerText": "您已配置好账户并发送了第一个请求。做得好！",
+    "dismiss": "关闭",
+    "expiryBannerTitle": "订阅已过期",
+    "expiryBannerText": "您的访问权限已过期。请续订您的计划以继续使用 ReviewLink。",
+    "renewSubscription": "续订订阅",
+    "expiringSoonTitle": "订阅即将到期",
+    "expiringSoonText": "您的计划将在 {{daysUntilExpiry}} 天后到期。立即续订以避免服务中断。",
+    "smtpHealthAlertTitle": "SMTP 连接问题",
+    "smtpHealthAlertText": "我们无法连接到您的电子邮件账户。请检查您的 SMTP 设置，以确保您的请求可以发送。",
+    "viewSettings": "查看设置",
+    "quickSendTitle": "获取您的下一个评论",
+    "quickSendSubtitle": "向最近的客户发送请求。",
+    "sendRequest": "发送请求",
+    "monthlyGoal": "月度目标",
+    "reviewsThisMonth": "本月评论",
+    "reviews": "评论",
+    "setYourGoal": "设定您的目标",
+    "goalDescription": "设定月度评论目标以跟踪您的进度。",
+    "editGoal": "编辑目标",
+    "saveGoal": "保存目标",
+    "cancel": "取消",
+    "reviewsPlural": "评论",
+    "reviewSingular": "评论",
+    "goalProgress": "本月已收集 {{reviewGoal}} 条评论中的 {{respondedThisMonth}} 条",
+    "recentRequestsTitle": "最近的请求",
+    "noRequestsSent": "尚未发送请求",
+    "noRequestsSentSubtitle": "您发送的请求将显示在此处。",
+    "sentTo": "已发送给 {{request.customerName}}",
+    "viaEmail": "通过电子邮件",
+    "responded": "已回复",
+    "opened": "已打开",
+    "clicked": "已点击",
+    "sent": "已发送",
+    "viewAllRequests": "查看所有请求",
+    "onboardingHeroTitle": "自动获取更多评论",
+    "onboardingHeroSubtitle": "连接您的电子邮件，添加您的客户，并在几分钟内开始发送评论请求。",
+    "getStarted": "开始使用",
+    "learnMore": "了解更多",
+    "fromYourOwnEmail": "通过您自己的电子邮件",
+    "fromYourOwnEmailDescription": "通过 SMTP 连接任何电子邮件账户。没有“via reviewlink.app”品牌。",
+    "worksWithAnyPlatform": "适用于任何平台",
+    "worksWithAnyPlatformDescription": "Google、Yelp、Trustpilot、Capterra... 只要有链接，您就可以使用。",
+    "privacyFocused": "注重隐私",
+    "privacyFocusedDescription": "我们不出售您的数据。您的客户、电子邮件和统计数据仅属于您。",
+    "viewLiveDemo": "查看实时演示",
+    "watchVideo": "观看视频",
+    "allSystemsGo": "一切就绪！",
+    "smtpNotConnected": "SMTP 未连接",
+    "connectYourEmail": "连接您的电子邮件以发送请求。",
+    "profileNotComplete": "个人资料未完成",
+    "addBusinessDetails": "添加业务详情和评论链接。",
+    "setupGuide": "设置指南",
+    "helpAndSupport": "帮助与支持",
+    "featureRequests": "功能请求",
+    "whatsNew": "最新动态？",
+    "reviewLinkOnX": "ReviewLink 在 X 上",
+    "buyTheCode": "购买代码"
+  },
+  "notifications": {
+    "followUpReminderScheduled": "已安排跟进提醒！",
+    "reviewRequestSent": "评论请求已发送！",
+    "noReviewPlatformConfigured": "未配置评论平台",
+    "addReviewLinkSettings": "在“设置”中添加评论链接，以便客户知道在哪里留下评论。",
+    "goToSettings": "前往设置",
+    "dismiss": "关闭",
+    "importedContact": "已导入 {{name}}",
+    "importedMultipleContacts": "已导入 {{count}} 个联系人 - 正在发送给第一个联系人。如需发送给多个联系人，请使用批量发送功能。"
+  },
+  "platformLabels": {
+    "google": "Google",
+    "yelp": "Yelp",
+    "tripadvisor": "TripAdvisor",
+    "bing": "Bing",
+    "facebook": "Facebook",
+    "apple": "Apple 地图",
+    "other": "其他"
+  },
+  "validationErrors": {
+    "customerNameRequired": "客户姓名是必填项",
+    "emailAddressRequired": "电子邮件地址是必填项",
+    "invalidEmailAddress": "请输入有效的电子邮件地址"
+  },
+  "successScreen": {
+    "requestSent": "请求已发送！🚀",
+    "requestSentTo": "您的评论请求已通过您的电子邮件帐户发送给 {{customerName}}。",
+    "emailComesFrom": "邮件来自 {{email}}，因此感觉更私人。",
+    "requestsSentMilestone": "已发送 {{milestoneNum}} 个请求！",
+    "milestoneDescription": "您正在为真实企业取得成果。如果 ReviewLink 对您有所帮助，您的快速评论对我们来说意义重大。",
+    "rateReviewLink": "评价 ReviewLink",
+    "scheduleFollowUp": "安排跟进",
+    "sendAnother": "再发送一个",
+    "notNow": "暂不",
+    "followUpRemindersOff": "跟进提醒已关闭",
+    "enableInSettings": "在设置中启用 →",
+    "sendAnotherReviewRequest": "发送另一个评论请求",
+    "goToDashboard": "前往仪表板"
+  },
+  "mainForm": {
+    "pageTitle": "发送评论请求",
+    "customerNameLabel": "客户姓名",
+    "customerNamePlaceholder": "例如：张三",
+    "customerEmailLabel": "客户邮箱",
+    "customerEmailPlaceholder": "例如：zhangsan@example.com",
+    "emailTemplateLabel": "邮件模板",
+    "defaultTemplate": "默认模板",
+    "defaultTemplateWithName": "{{templateName}} (默认)",
+    "createOne": "创建一个 →",
+    "noTemplatesYet": "暂无模板。",
+    "reviewPlatformLabel": "评论平台",
+    "defaultPlatform": "默认平台",
+    "firstPlatform": "首选平台",
+    "link": "链接：{{url}}",
+    "noReviewPlatformsConfigured": "未配置评论平台。",
+    "addOneInSettings": "在设置中添加 →",
+    "emailPreview": "邮件预览",
+    "from": "发件人：",
+    "subject": "主题：",
+    "body": "正文：",
+    "sending": "正在发送...",
+    "sendReviewRequest": "发送评论请求"
+  },
+  "page": {
+    "title": "设置",
+    "description": "管理您的商家资料、邮件连接和套餐。"
+  },
+  "tabs": {
+    "account": "账户",
+    "billing": "账单",
+    "integrations": "集成",
+    "notifications": "通知",
+    "support": "支持"
+  },
+  "inlineFromNameEdit": {
+    "senderName": "发件人姓名：",
+    "notSet": "未设置",
+    "edit": "编辑",
+    "cancel": "取消",
+    "save": "保存",
+    "placeholder": "例如：Acme 水管公司的 Steve",
+    "successToast": "发件人姓名已更新！"
+  },
+  "inlineReplyToEdit": {
+    "replyTo": "回复到：",
+    "sameAsSendingAddress": "与发件地址相同",
+    "edit": "编辑",
+    "cancel": "取消",
+    "save": "保存",
+    "placeholder": "例如：support@mycompany.com",
+    "successToast": "回复地址已更新！"
+  },
+  "sendFeedback": {
+    "buttonText": "发送反馈",
+    "title": "发送反馈",
+    "description": "发现错误？有建议？我们阅读每一条消息。",
+    "placeholder": "描述您发现的问题或您希望看到的功能…",
+    "characterCount": "{{length}}/1000",
+    "cancel": "取消",
+    "send": "发送",
+    "successToast": "正在打开您的邮件客户端以发送反馈",
+    "errorToast": "无法打开邮件客户端。请直接发送邮件至 support@reviewlink.app。"
+  },
+  "deleteAccount": {
+    "buttonText": "删除账户",
+    "title": "删除您的账户？",
+    "confirmation": "这将永久删除您的账户、所有联系人、邮件模板、评论请求、跟踪数据和 SMTP 凭据。此操作无法撤销。",
+    "checkboxLabel": "我明白这是永久性的，并希望继续。",
+    "confirmButton": "永久删除我的账户",
+    "cancelButton": "取消",
+    "successToast": "账户已删除。再见！"
+  },
+  "profile": {
+    "title": "商家资料",
+    "description": "告诉我们您的业务。此信息用于邮件个性化和品牌推广。",
+    "businessName": "商家名称",
+    "businessNamePlaceholder": "例如：Acme 水管公司",
+    "businessNameDescription": "您公司的法定或商用名称。",
+    "reviewLink": "主要 Google 评论链接",
+    "reviewLinkPlaceholder": "https://g.page/r/...",
+    "reviewLinkDescription": "客户将被发送到的主要链接。您可以在下方添加更多链接。",
+    "emailSenderSettings": "邮件发件人设置",
+    "fromName": "发件人姓名",
+    "fromNamePlaceholder": "例如：Maria 美发沙龙",
+    "fromNameDescription": "您的姓名在客户收件箱中的显示方式。默认为您的商家名称。",
+    "replyToEmail": "回复邮件",
+    "replyToEmailPlaceholder": "例如：steve@sk-america.com",
+    "replyToEmailDescription": "当客户回复邮件时，邮件将发送到此处。留空则使用您已连接的邮件地址。",
+    "saveProfile": "保存资料",
+    "successToast": "商家资料已保存！",
+    "dailySendLimitSaved": "每日发送限制已保存！"
+  },
+  "reviewPlatforms": {
+    "title": "评论平台",
+    "description": "添加您的 Google、Yelp、TripAdvisor、Bing、Facebook 等评论页面 URL。粘贴客户用于留下评论的公共链接。",
+    "add": "添加",
+    "emptyState": "尚未添加评论平台。点击“添加”开始。",
+    "editUrl": "编辑 URL",
+    "customLabelPlaceholder": "自定义标签（例如：Houzz）",
+    "save": "保存",
+    "saving": "正在保存...",
+    "updateSuccess": "平台已更新！",
+    "updateError": "更新平台失败",
+    "default": "默认",
+    "setAsDefault": "设为默认",
+    "removedToast": "{{platform}} 已移除",
+    "undo": "撤销",
+    "addPlatformTitle": "添加评论平台",
+    "platformType": "平台",
+    "platformUrl": "评论页面 URL",
+    "platformLabel": "标签（可选）",
+    "platformLabelDescription": "如果您选择“其他”，则会在邮件中显示。",
+    "addPlatform": "添加平台",
+    "urlRequired": "URL 为必填项",
+    "restoreFailed": "恢复失败：{{message}}",
+    "removeFailed": "无法移除平台：{{message}}"
+  },
+  "smtp": {
+    "title": "邮件连接 (SMTP)",
+    "description": "连接您自己的邮件账户以发送评论请求。我们对您的密码进行加密，绝不共享。",
+    "testConnection": "测试连接",
+    "previewEmail": "预览邮件",
+    "resendVerification": "重新发送验证",
+    "disconnect": "断开连接",
+    "emailAddress": "邮件地址",
+    "password": "密码",
+    "displayName": "显示名称",
+    "passwordPlaceholderUpdate": "输入新密码以更新",
+    "passwordPlaceholderGmail": "16 位应用密码（无空格）",
+    "passwordPlaceholderIcloud": "xxxx-xxxx-xxxx-xxxx",
+    "passwordPlaceholderDefault": "您的邮件密码",
+    "howToGetIt": "如何获取",
+    "gotIt": "知道了 ✓",
+    "gmailGuideTitle": "Gmail 应用密码 — 4 步",
+    "gmailGuideStep1": "前往 myaccount.google.com → 安全",
+    "gmailGuideStep2": "如果尚未开启，请开启两步验证",
+    "gmailGuideStep3": "前往 myaccount.google.com/apppasswords → 命名为 ReviewLink → 点击创建",
+    "gmailGuideStep4": "复制 16 位代码并粘贴到此处 — 删除所有空格",
+    "gmailGuideTip": "提示：使用专用的 reviews@gmail.com 账户，以使您的主收件箱保持独立。",
+    "googleWorkspaceGuideTitle": "Google Workspace 应用密码 — 4 步",
+    "googleWorkspaceGuideStep1": "请您的 Workspace 管理员在 admin.google.com 中启用两步验证",
+    "googleWorkspaceGuideStep2": "使用您的工作账户登录 myaccount.google.com → 安全",
+    "googleWorkspaceGuideStep3": "前往 myaccount.google.com/apppasswords → 命名为 ReviewLink → 点击创建",
+    "googleWorkspaceGuideStep4": "复制 16 位代码并粘贴到此处 — 删除所有空格",
+    "outlookGuideTitle": "Microsoft 应用密码 — 4 步",
+    "outlookGuideStep1": "前往 account.microsoft.com → 安全",
+    "outlookGuideStep2": "点击高级安全选项",
+    "outlookGuideStep3": "在“应用密码”下，点击“创建新应用密码”",
+    "outlookGuideStep4": "复制并粘贴生成的密码到此处",
+    "outlookGuideTip": "Microsoft 365（工作账户）：请联系您的 IT 管理员，为您的邮箱启用 SMTP AUTH。",
+    "yahooGuideTitle": "Yahoo 应用密码 — 4 步",
+    "yahooGuideStep1": "前往 account.yahoo.com → 安全",
+    "yahooGuideStep2": "点击生成应用密码",
+    "yahooGuideStep3": "选择“其他应用”，命名为 ReviewLink",
+    "yahooGuideStep4": "复制并粘贴密码到此处",
+    "zohoGuideTitle": "Zoho Mail — 启用 SMTP 访问",
+    "zohoGuideStep1": "登录 mail.zoho.com",
+    "zohoGuideStep2": "前往设置 → 邮件账户",
+    "zohoGuideStep3": "点击您的邮件地址 → 滚动到 SMTP",
+    "zohoGuideStep4": "将“允许 SMTP 访问”切换为“开”，然后在此处使用您的常规 Zoho 密码",
+    "zohoGuideTip": "无需应用密码 — 只需启用 SMTP 并使用您的常规 Zoho 登录密码。",
+    "aolGuideTitle": "AOL Mail 应用密码 — 4 步",
+    "aolGuideStep1": "前往 account.aol.com → 安全",
+    "aolGuideStep2": "点击生成应用密码",
+    "aolGuideStep3": "选择“其他应用”，命名为 ReviewLink",
+    "aolGuideStep4": "复制并粘贴密码到此处 — 不要使用您的常规 AOL 密码",
+    "aolGuideTip": "AOL 要求在生成应用密码之前启用两步验证。",
+    "protonMailGuideTitle": "ProtonMail — SMTP 桥接密码",
+    "protonMailGuideStep1": "从 proton.me/mail/bridge 下载并安装 Proton Mail Bridge",
+    "protonMailGuideStep2": "使用您的 Proton 账户登录 Bridge",
+    "protonMailGuideStep3": "在 Bridge 中，点击您的账户 → 复制显示的 SMTP 密码",
+    "protonMailGuideStep4": "将该 SMTP 密码粘贴到此处 — 而不是您的常规 Proton 登录密码",
+    "protonMailTip": "ProtonMail Bridge 必须在您的计算机上运行，SMTP 才能工作。通过 Bridge 使用端口 1025 (localhost) 或 587。",
+    "fastmailGuideTitle": "Fastmail 应用密码 — 4 步",
+    "fastmailGuideStep1": "前往 app.fastmail.com → 设置 → 隐私与安全",
+    "fastmailGuideStep2": "点击应用密码 → 新应用密码",
+    "fastmailGuideStep3": "命名为 ReviewLink，选择 SMTP，然后点击生成密码",
+    "fastmailGuideStep4": "复制并粘贴生成的密码到此处",
+    "iCloudGuideTitle": "Apple iCloud Mail 应用密码 — 4 步",
+    "iCloudGuideStep1": "前往 appleid.apple.com 并登录",
+    "iCloudGuideStep2": "在“登录与安全”下，点击“应用专用密码”",
+    "iCloudGuideStep3": "点击“生成应用专用密码...”，命名为 ReviewLink，点击“创建”",
+    "iCloudGuideStep4": "复制 xxxx-xxxx-xxxx-xxxx 密码并粘贴到此处",
+    "iCloudTip": "您的 Apple ID 必须启用双重认证。",
+    "providerWarning": "我们无法检测到您的邮件提供商。请手动输入您的详细信息。",
+    "advancedSettings": "高级设置（用于自定义服务器）",
+    "sendingLimit": "发送限制",
+    "sendingLimitDescription": "每天最大邮件发送量，以避免垃圾邮件过滤器。我们建议新账户为 50-100 封。",
+    "connect": "连接",
+    "update": "更新",
+    "testSuccess": "连接成功！",
+    "testError": "连接失败：{{message}}",
+    "previewSuccess": "测试邮件已发送至 {{email}}！",
+    "previewError": "无法发送测试邮件：{{message}}",
+    "disconnectConfirm": "您确定要断开您的邮件连接吗？这将停止所有外发邮件。",
+    "disconnectSuccess": "邮件账户已断开连接。",
+    "disconnectError": "无法断开账户：{{message}}"
+  },
+  "wooCommerce": {
+    "title": "WooCommerce",
+    "description": "连接您的商店以从已完成的订单中导入客户。",
+    "storeConnected": "商店已连接",
+    "lastSynced": "上次同步时间 {{date}}",
+    "stagedCount": "· {{count}} 个待处理",
+    "notYetSynced": "尚未同步",
+    "syncing": "正在同步…",
+    "sync": "同步",
+    "pendingImports": "{{count}} 个待导入{{plural}}",
+    "pendingImportsDescription": "这些 WooCommerce 订单已暂存并等待处理。立即导入，否则如果它们超过 7 天，将在格林威治标准时间周一 03:00 自动导入。",
+    "importNow": "立即导入",
+    "dismiss": "关闭",
+    "syncHistory": "同步历史（最近 {{count}} 次同步）",
+    "fetched": "已获取",
+    "staged": "已暂存",
+    "viewCustomers": "查看客户",
+    "updateCredentials": "更新凭据",
+    "connectStore": "连接 WooCommerce 商店",
+    "storeUrl": "商店 URL *",
+    "storeUrlPlaceholder": "https://yourstore.com",
+    "consumerKey": "消费者密钥 *",
+    "consumerKeyPlaceholder": "ck_xxxxxxxxxxxxxxxx",
+    "consumerSecret": "消费者密钥 *",
+    "consumerSecretPlaceholder": "cs_xxxxxxxxxxxxxxxx",
+    "apiHelp": "WooCommerce → 设置 → 高级 → REST API → 添加密钥（读取权限）",
+    "save": "保存",
+    "cancel": "取消",
+    "connectedToast": "WooCommerce 商店已连接！",
+    "syncSuccessToast": "已同步 — {{count}} 个订单{{plural}}已暂存待导入。请在下方的“待导入”横幅中查看。",
+    "syncSuccessNoOrdersToast": "同步完成 — 未发现新订单。",
+    "syncFailedToast": "同步失败：{{errorMessage}}",
+    "importSuccessToast": "已从 WooCommerce 导入 {{count}} 位客户{{plural}}。",
+    "dismissSuccessToast": "待导入项已关闭。",
+    "storeUrlRequired": "商店 URL 为必填项",
+    "consumerKeyRequired": "消费者密钥为必填项",
+    "consumerSecretRequired": "消费者密钥为必填项"
+  },
+  "tools": {
+    "title": "工具",
+    "savedContacts": "已保存的联系人",
+    "emailTemplates": "邮件模板",
+    "followUpReminders": "跟进提醒"
+  },
+  "theme": {
+    "toggleLight": "切换到浅色模式",
+    "toggleDark": "切换到深色模式",
+    "light": "浅色",
+    "dark": "深色",
+    "switchToLight": "切换到浅色模式",
+    "switchToDark": "切换到深色模式"
+  },
+  "logout": {
+    "button": "退出登录"
+  },
+  "pageHeader": {
+    "title": "已保存的联系人",
+    "addContact": "添加联系人",
+    "importFromStripe": "从 Stripe 导入",
+    "syncFromWooCommerce": "从 WooCommerce 同步",
+    "viewSyncHistory": "查看同步历史",
+    "exportCsv": "导出 CSV"
+  },
+  "filters": {
+    "searchPlaceholder": "按姓名或邮箱搜索…",
+    "selectAll": "全选",
+    "deselectAll": "取消全选",
+    "allSources": "所有来源 ({{count}})",
+    "stripeSource": "Stripe ({{count}})",
+    "wooCommerceSource": "WooCommerce ({{count}})",
+    "manualSource": "手动 ({{count}})",
+    "all": "全部",
+    "unsubscribed": "已取消订阅",
+    "contactCount": "{{count}} 位联系人",
+    "notSentInDays": "{{days}}天内未发送",
+    "allTags": "所有标签",
+    "sendToTag": "发送给所有“{{tag}}” ({{count}})"
+  },
+  "contactList": {
+    "loading": "加载中…",
+    "noMatches": "未找到匹配项",
+    "noContacts": "暂无已保存的联系人",
+    "importPrompt": "导入 CSV 或手动添加联系人",
+    "importCsv": "导入 CSV",
+    "unsubscribedBadge": "已取消订阅",
+    "unsubscribedTooltip": "此联系人已取消订阅邮件",
+    "lastSent": "上次发送：{{date}}",
+    "neverSent": "从未发送",
+    "totalSent": "总发送量：{{count}}",
+    "addTags": "添加标签",
+    "saveTags": "保存标签",
+    "send": "发送",
+    "edit": "编辑",
+    "history": "历史记录",
+    "delete": "删除",
+    "select": "选择",
+    "deselect": "取消选择"
+  },
+  "contactForm": {
+    "addTitle": "添加新联系人",
+    "editTitle": "编辑联系人",
+    "nameLabel": "姓名",
+    "emailLabel": "邮箱",
+    "phoneLabel": "电话（可选）",
+    "notesLabel": "备注（可选，仅供内部使用）",
+    "cancel": "取消",
+    "save": "保存联系人",
+    "update": "更新联系人"
+  },
+  "deleteDialog": {
+    "title": "删除 {{name}}？",
+    "description": "您确定要删除此联系人吗？此操作无法撤消。",
+    "cancel": "取消",
+    "delete": "删除"
+  },
+  "sendDialog": {
+    "title": "向 {{name}} 发送请求？",
+    "description": "这将向 {{email}} 发送评论请求。",
+    "cancel": "取消",
+    "send": "立即发送"
+  },
+  "bulkSendDialog": {
+    "title": "发送给 {{count}} 位联系人？",
+    "description": "这将使用您的默认邮件模板向所有 {{count}} 位选定的联系人发送评论请求邮件。",
+    "yelpWarning": "Yelp 注意：您的 Yelp 商家信息将显示为搜索建议，而非直接链接。Yelp 不鼓励直接招揽评论。",
+    "largeSendWarning": "大量发送（{{count}} 位联系人）：突然激增的发送量可能会被评论平台视为垃圾邮件。请考虑分多天发送。",
+    "dailyLimitStatus": "今日已发送 {{sent}} 封 · 每日限额 {{limit}} 封，剩余 {{remaining}} 封",
+    "dailyLimitReached": "⚠ 仅会发送 {{remaining}} 封 — 之后将达到限额。",
+    "reviewPlatformLabel": "评论平台",
+    "defaultPlatform": "默认平台",
+    "defaultPlatformWithName": "{{platformName}} (默认)",
+    "scheduleRemindersLabel": "安排 3 天后跟进提醒",
+    "scheduleRemindersDescription": "自动向 3 天内未回复的联系人发送提醒。",
+    "complianceChecklistTitle": "合规性清单",
+    "realCustomersCheck": "这些是与我进行过交易的真实客户",
+    "noIncentivesCheck": "未提供任何奖励或折扣",
+    "allCustomersCheck": "我正在向所有客户发送，而不是根据满意度进行筛选",
+    "cancel": "取消",
+    "sending": "发送中…",
+    "sendButton": "发送 {{count}} 个请求"
+  },
+  "wooSyncHistory": {
+    "title": "WooCommerce 同步历史",
+    "filterPlaceholder": "按日期或结果筛选…",
+    "clearFilter": "清除筛选",
+    "noHistory": "暂无同步历史。运行同步以在此处查看结果。",
+    "noResults": "未找到“{{query}}”的结果",
+    "syncing": "正在同步 WooCommerce 订单…",
+    "syncingDescription": "这可能需要一分钟。您可以随时关闭此窗口。",
+    "close": "关闭",
+    "newCustomers": "导入了 {{count}} 位新客户 · 扫描了 {{total}} 份订单（{{days}} 天窗口期）",
+    "noNewCustomers": "无新客户 · 扫描了 {{total}} 份订单（{{days}} 天窗口期）"
+  },
+  "sendHistoryDrawer": {
+    "title": "{{name}} 的发送历史",
+    "loading": "正在加载历史记录…",
+    "noHistory": "尚未向此联系人发送任何请求。",
+    "sentOn": "发送于 {{date}}",
+    "opened": "已打开",
+    "clicked": "已点击",
+    "notOpened": "未打开",
+    "reminderScheduled": "提醒已安排在 {{date}}",
+    "reminderSent": "提醒已发送于 {{date}}",
+    "reminderCancelled": "提醒已取消",
+    "cancelReminder": "取消提醒",
+    "sendReminderNow": "立即发送提醒"
+  },
+  "toasts": {
+    "remindersScheduled": "{{count}} 个跟进提醒已安排在 3 天后。",
+    "reminderSchedulingFailed": "提醒安排失败：{{error}}",
+    "contactSaved": "联系人已保存。",
+    "contactUpdated": "联系人已更新。",
+    "contactDeleted": "联系人已删除。",
+    "requestSent": "评论请求已发送！",
+    "wooCommerceSynced": "WooCommerce 已同步 — {{total}} 位客户，新增 {{new}} 位联系人。",
+    "wooCommerceSyncedNoNew": "WooCommerce 已同步 — {{total}} 位客户。",
+    "stripeImported": "从 Stripe 导入了 {{count}} 位新联系人。",
+    "noStripeCustomers": "未找到 Stripe 客户。",
+    "allStripeCustomersExist": "所有 Stripe 客户已存在于您的联系人中。",
+    "bulkSendSuccess": "{{sent}} 个评论请求已发送！",
+    "bulkSendSuccessWithSkipped": "{{sent}} 个评论请求已发送！ (跳过 {{skipped}} 个 — 已达到免费限额)",
+    "bulkSendPartialSuccess": "已发送 {{sent}} 个，{{failed}} 个失败。请检查您在“设置”中的邮箱连接。",
+    "bulkSendFailed": "所有 {{failed}} 个发送均失败。请检查您在“设置”中的邮箱连接。"
+  },
+  "header": {
+    "back": "返回",
+    "title": "升级专业版。",
+    "subtitle": "为尚未评论的客户自动发送 3 天后跟进邮件",
+    "upgrade": "升级",
+    "noLimits": "无限制。",
+    "heroImageAlt": "ReviewLink 专业版升级",
+    "backToContacts": "返回联系人",
+    "import": "导入",
+    "importClients": "导入客户",
+    "settings": "设置",
+    "emailTemplates": "邮件模板",
+    "customizeMessages": "自定义您的评论请求消息",
+    "new": "新",
+    "logoText": "ReviewLink"
+  },
+  "infoBanner": {
+    "howItWorks": "工作原理：",
+    "description": "当您发送评论请求时，系统会自动安排 3 天后发送跟进提醒。提醒将从您连接的邮箱账户发送，并使用您的商家资料。使用“**立即发送**”可跳过等待。",
+    "preview1stFollowUp": "预览第一次跟进",
+    "preview2ndFollowUp": "预览第二次跟进"
+  },
+  "emptyState": {
+    "loading": "加载中…",
+    "noRemindersYet": "暂无提醒",
+    "remindersCreatedAutomatically": "当您发送评论请求时，提醒会自动创建"
+  },
+  "sections": {
+    "scheduled": "已安排 ({{count}})",
+    "cancelAll": "取消全部",
+    "history": "历史记录 ({{count}})"
+  },
+  "sendNowConfirm": {
+    "title": "立即发送提醒？",
+    "description": "这将立即向 {{customerName}} 发送跟进邮件，无需等待预定日期。",
+    "notYet": "暂不",
+    "sendNow": "立即发送"
+  },
+  "bulkCancelConfirm": {
+    "title": "取消所有 {{count}} 个提醒？",
+    "description": "所有已安排的跟进提醒都将被取消，并且不会发送。此操作无法撤销。",
+    "keepThem": "保留它们",
+    "cancelling": "正在取消…",
+    "cancelAll": "取消所有 {{count}} 个",
+    "successMessage": "已取消 {{count}} 个提醒。",
+    "errorMessage": "部分提醒未能取消。"
+  },
+  "emailPreviewModal": {
+    "title1stFollowUp": "第一次跟进预览",
+    "title2ndFollowUp": "第二次跟进预览",
+    "subject1stFollowUp": "主题：只是想确认一下 — 您有机会给我们留下评论了吗？",
+    "subject2ndFollowUp": "主题：最后一次提醒 — 我们很期待您的评论！",
+    "loadingPreview": "正在加载预览…",
+    "1stFollowUp": "第一次跟进",
+    "2ndFollowUp": "第二次跟进"
+  },
+  "cancelConfirm": {
+    "title": "取消提醒？",
+    "description": "给 {{customerName}} 的跟进提醒将被取消，并且不会发送。",
+    "keepIt": "保留它",
+    "cancelReminder": "取消提醒"
+  },
+  "reminderRow": {
+    "1stFollowUp": "第一次跟进",
+    "2ndFollowUp": "第二次跟进",
+    "status": {
+      "pending": "已安排",
+      "sent": "已发送",
+      "cancelled": "已取消",
+      "failed": "失败"
+    },
+    "sentAt": "已发送 {{date}}",
+    "scheduledAt": "已安排 {{date}}",
+    "sendNow": "立即发送",
+    "cancel": "取消"
+  },
+  "toastMessages": {
+    "reminderCancelled": "提醒已取消。",
+    "followUpReminderSent": "跟进提醒已发送！",
+    "failedToStartCheckout": "未能开始结账。请重试。",
+    "promptPayUnavailable": "PromptPay 结账不可用。请使用银行卡支付。",
+    "uploadCsvFile": "请上传 .csv 文件。",
+    "csvNoData": "CSV 文件中没有数据。",
+    "mapEmailColumn": "请确保您已映射“电子邮件”列。"
+  },
+  "planSelector": {
+    "monthly": "月付",
+    "annual": "年付",
+    "mostPopularBadge": "最受欢迎",
+    "lifetime": "终身",
+    "bestValueBadge": "最划算"
+  },
+  "pricingCard": {
+    "monthlySub": "/ 月",
+    "annualSub": "/ 年",
+    "lifetimeSub": "一次性",
+    "annualSavings": "每年节省 $58",
+    "lifetimeSavings": "一次性支付，永久拥有",
+    "monthlyDescription": "随时取消。无合同。",
+    "annualDescription": "每年结算一次。相当于每月 $24.17。",
+    "lifetimeDescription": "一次性付款。永不续订。",
+    "lifetimeRoiCalloutTitle": "💰 不到 4 年即可回本",
+    "lifetimeRoiCalloutDescription": "月付计划每年花费 $348。按此费率，终身许可证在 3.6 年时即可回本 — 之后永久免费。大多数用户在获得评论的第一年即可收回成本。",
+    "unlimitedReviewRequests": "无限评论请求",
+    "prioritySending": "优先发送和跟进",
+    "advancedAnalytics": "高级分析",
+    "customEmailTemplates": "自定义邮件模板",
+    "woocommerceSync": "WooCommerce 同步",
+    "prioritySupport": "优先支持",
+    "redirectingToCheckout": "正在重定向到结账页面...",
+    "payByCard": "银行卡支付 — {{price}}",
+    "secureCheckoutNote": "通过 Stripe 安全结账。以美元计费。",
+    "promptPaySocialProofTitle": "ธุรกิจส่วนใหญ่คืนทุนภายใน 90 วัน",
+    "promptPaySocialProofDescription": "大多数企业在 90 天内收回成本 — 评论可自动带来重复预订和新客户。",
+    "promptPayRedirecting": "正在重定向...",
+    "payWithPromptPay": "使用 PromptPay 支付 — {{thb}}",
+    "promptPayNote": "仅限泰国 · 二维码支付 · 以泰铢计费",
+    "hidePromptPay": "隐藏",
+    "promptPayReveal": "在泰国？",
+    "promptPayRevealLink": "使用 PromptPay 支付 (฿)"
+  },
+  "accessCode": {
+    "title": "有访问码吗？",
+    "description": "输入您的测试版或促销码以解锁专业版访问权限。",
+    "placeholder": "例如 BETA-X7K2-P9QM",
+    "redeem": "兑换",
+    "codeAcceptedPro": "🎉 代码已接受！您现在是专业版用户！",
+    "codeAcceptedNote": "🎉 代码已接受！{{note}} — 您现在是专业版用户！",
+    "invalidCodeError": "无效代码。请重试。"
+  },
+  "socialProof": {
+    "trustedByBusinesses": "深受本地企业信赖，助您获得更多五星好评"
+  },
+  "comparisonTable": {
+    "feature": "功能",
+    "free": "免费版",
+    "pro": "专业版",
+    "lifetime": "终身版",
+    "reviewRequestsTotal": "评论请求（总计）",
+    "followUpReminders": "跟进提醒",
+    "savedContacts": "已保存联系人",
+    "csvImport": "CSV 导入",
+    "woocommerceSync": "WooCommerce 同步",
+    "emailOpenClickTracking": "邮件打开和点击跟踪",
+    "advancedAnalytics": "高级分析",
+    "multiPlatformReviewLinks": "多平台评论链接",
+    "dailySendLimit": "每日发送限制",
+    "prioritySupport": "优先支持",
+    "futureUpdates": "未来更新",
+    "price": "价格",
+    "freeTrialNote": "所有计划均包含 10 次请求的免费试用。无需信用卡即可开始。"
+  },
+  "paidUser": {
+    "adminAccess": "管理员权限",
+    "lifetimeLicense": "终身许可证",
+    "annualPro": "年度专业版",
+    "monthlyPro": "月度专业版",
+    "onPro": "您是 {{tierLabel}} 用户！",
+    "enjoyFeatures": "享受无限评论请求和所有专业版功能。",
+    "backToDashboard": "返回仪表盘",
+    "cancelPlan": "取消计划"
+  },
+  "columnLabels": {
+    "fullName": "全名",
+    "email": "电子邮件",
+    "phoneOptional": "电话（可选）",
+    "notesOptional": "备注（可选）",
+    "skipColumn": "— 跳过此列 —"
+  },
+  "steps": {
+    "upload": "上传",
+    "mapColumns": "映射列",
+    "preview": "预览",
+    "done": "完成"
+  },
+  "step0": {
+    "importFromPhoneContacts": "从手机联系人导入",
+    "orUploadCsv": "或上传 CSV 文件",
+    "downloadTemplateTitle": "下载 CSV 模板",
+    "downloadTemplateDescription": "使用我们预格式化的 CSV 模板开始。",
+    "downloadTemplateButton": "下载模板",
+    "dragDropTitle": "将您的 CSV 文件拖放到此处",
+    "dragDropSubtitle": "或点击上传",
+    "uploadButton": "上传 CSV 文件"
+  },
+  "step1": {
+    "mapColumnsTitle": "映射列",
+    "mapColumnsDescription": "将您的 CSV 列与我们的联系人字段匹配。",
+    "csvFile": "CSV 文件：{{fileName}}",
+    "column": "列",
+    "field": "字段",
+    "nextButton": "下一步：预览导入"
+  },
+  "step2": {
+    "previewImportTitle": "预览导入",
+    "previewImportDescription": "导入前请先查看联系人。",
+    "contactsToImport": "将导入{{count}}个联系人",
+    "name": "姓名",
+    "email": "电子邮件",
+    "phone": "电话",
+    "notes": "备注",
+    "confirmImportButton": "确认导入"
+  },
+  "step3": {
+    "importCompleteTitle": "导入完成！",
+    "importSummary": "已添加{{imported}}个联系人{{imported_plural}}{{skipped_summary}}。",
+    "skippedDuplicates": "，跳过{{skipped}}个重复联系人{{skipped_plural}}",
+    "viewContactsButton": "查看联系人并发送请求",
+    "importAnotherFileButton": "导入另一个文件"
+  },
+  "starterTemplates": {
+    "title": "入门模板",
+    "quickFavor": {
+      "name": "帮个小忙？",
+      "tag": "通用",
+      "subject": "帮个小忙？",
+      "body": [
+        "再次感谢您选择{{businessName}}。",
+        "如果您有空，我将非常感谢您的真实反馈。这有助于其他人做出明智的决定，也有助于我们改进。",
+        "您可以在任何您喜欢的平台留下评论：",
+        "{{platformLinks}}",
+        "完全没有压力——只需您的真实体验。",
+        "感谢您的时间，",
+        "{{businessName}}团队",
+        "---",
+        "您收到此邮件是因为您是{{businessName}}的客户。要停止接收此类邮件，请回复“取消订阅”。"
+      ]
+    },
+    "howDidWeDo": {
+      "name": "我们做得怎么样？",
+      "tag": "跟进",
+      "subject": "我们做得怎么样？",
+      "body": [
+        "我想跟进一下，看看您最近的体验如何。",
+        "如果您愿意，我很乐意听取您的反馈。这有助于我们成长，也有助于其他客户了解预期。",
+        "您可以在这里留下评论：",
+        "{{platformLinks}}",
+        "再次感谢您的惠顾——我非常感激。",
+        "{{businessName}}团队",
+        "---",
+        "您收到此邮件是因为您是{{businessName}}的客户。要停止接收此类邮件，请回复“取消订阅”。"
+      ]
+    },
+    "wooOrder": {
+      "name": "感谢您的订单",
+      "tag": "WooCommerce",
+      "subject": "感谢您的订单——有空吗？",
+      "body": [
+        "您在{{businessName}}的近期订单意义重大——谢谢您。",
+        "当您有机会使用您的购买商品后，我希望听到您的真实反馈。",
+        "如果您想公开分享，可以在这里进行：",
+        "{{platformLinks}}",
+        "或者直接回复此邮件——我阅读每一封回复。",
+        "再次感谢，",
+        "{{businessName}}团队",
+        "---",
+        "您收到此邮件是因为您是{{businessName}}的客户。要停止接收此类邮件，请回复“取消订阅”。"
+      ]
+    }
+  },
+  "defaultTemplate": {
+    "subject": "{{businessName}}期待您的反馈！",
+    "body": [
+      "您好，{{customerName}}，",
+      "感谢您选择{{businessName}}！希望您有愉快的体验。",
+      "您能花30秒给我们留下一个简短的评论吗？这对我们意义重大，也有助于其他客户找到我们。",
+      "👉 {{reviewLink}}",
+      "非常感谢您的支持！",
+      "{{businessName}}团队",
+      "---",
+      "您收到此邮件是因为您是{{businessName}}的客户。要停止接收此类邮件，请回复“取消订阅”。"
+    ]
+  },
+  "templates": {
+    "title": "您的模板",
+    "emptyState": "暂无模板。点击“新建”创建您的第一个邮件模板。",
+    "usage": "使用情况",
+    "opens": "打开数",
+    "clicks": "点击数",
+    "bestPerforming": "表现最佳！",
+    "actions": "操作",
+    "edit": "编辑",
+    "delete": "删除",
+    "preview": "预览"
+  },
+  "templateDialog": {
+    "createTitle": "创建新模板",
+    "editTitle": "编辑模板",
+    "nameLabel": "模板名称",
+    "namePlaceholder": "例如：我的评论请求",
+    "subjectLabel": "主题行",
+    "subjectPlaceholder": "例如：您在{{businessName}}的体验如何？",
+    "bodyLabel": "邮件正文",
+    "bodyPlaceholder": "例如：您好，{{customerName}}，...",
+    "placeholders": {
+      "title": "占位符",
+      "customerName": "客户姓名",
+      "businessName": "商家名称",
+      "reviewLink": "评论链接",
+      "platformLinks": "平台链接"
+    },
+    "setDefault": "设为默认模板",
+    "livePreview": {
+      "title": "实时预览",
+      "sample": "示例：{{sampleCustomer}} · {{sampleBusiness}}",
+      "subject": "主题",
+      "noSubject": "暂无主题",
+      "to": "收件人：{{sampleCustomer}}",
+      "noBody": "暂无正文",
+      "reviewLink": "评论链接："
+    },
+    "validation": "名称、主题和正文为必填项。",
+    "saving": "正在保存…",
+    "update": "更新",
+    "save": "保存",
+    "cancel": "取消",
+    "toast": {
+      "successSave": "模板已保存。",
+      "successUpdate": "模板已更新。",
+      "successDelete": "模板已删除。",
+      "error": "{{errorMessage}}"
+    }
+  },
+  "previewDialog": {
+    "title": "预览",
+    "subject": "主题",
+    "body": "正文",
+    "close": "关闭"
+  },
+  "deleteConfirm": {
+    "title": "删除模板？",
+    "description": "这将永久删除**{{templateName}}**。此操作无法撤消。",
+    "cancel": "取消",
+    "delete": "删除"
+  },
+  "callToAction": {
+    "googleSignInButton": "使用 Google 登录",
+    "appleSignInButton": "使用 Apple 登录",
+    "freeTrialDescription": "免费开始 — 包含10个评论请求。无需信用卡。"
+  },
+  "themeToggle": {
+    "switchToLightMode": "切换到浅色模式",
+    "switchToDarkMode": "切换到深色模式",
+    "light": "浅色",
+    "dark": "深色"
+  },
+  "onboardingWizard": {
+    "header": {
+      "title": "ReviewLink 设置",
+      "skipSetupTooltip": "跳过设置"
+    },
+    "steps": {
+      "connectEmail": "连接邮箱",
+      "reviewPlatform": "评论平台",
+      "sendRequest": "发送请求"
+    },
+    "stepContent": {
+      "step1": {
+        "title": "连接您的邮箱",
+        "description": "ReviewLink 从您自己的账户发送邮件——支持 Gmail、Outlook、Yahoo 或任何企业邮箱。"
+      },
+      "step2": {
+        "title": "添加您的评论页面",
+        "description": "粘贴客户可以给您留下评论的链接。您稍后可以在“设置”中添加更多平台。"
+      },
+      "step3": {
+        "title": "准备启动 🚀",
+        "description": "一切就绪。在几秒钟内发送您的第一个评论请求。"
+      }
+    },
+    "navigation": {
+      "previous": "上一步",
+      "nextStep": "下一步",
+      "skipSetupLater": "跳过设置——我稍后再做"
+    }
+  },
+  "step1Email": {
+    "emailAddressLabel": "电子邮件地址",
+    "emailAddressPlaceholder": "you@yourbusiness.com",
+    "passwordLabel": "密码",
+    "appPasswordRequiredSuffix": "（需要应用密码）",
+    "appPasswordPlaceholder": "16位应用密码",
+    "emailPasswordPlaceholder": "您的邮箱密码",
+    "toast": {
+      "enterEmailPassword": "请输入您的邮箱和密码。",
+      "connectionTestFailed": "连接测试失败",
+      "emailConnectedSuccess": "邮箱已连接！请检查{{email}}——我们已向您发送一封测试邮件以确认一切正常。"
+    },
+    "fromNameLabel": "发件人姓名",
+    "fromNamePlaceholder": "例如：您的商家名称",
+    "replyToEmailLabel": "回复邮件",
+    "replyToEmailPlaceholder": "例如：support@yourbusiness.com",
+    "showAdvancedSettings": "显示高级设置",
+    "hideAdvancedSettings": "隐藏高级设置",
+    "smtpHostLabel": "SMTP 主机",
+    "smtpHostPlaceholder": "例如：smtp.sendgrid.net",
+    "smtpPortLabel": "SMTP 端口",
+    "smtpPortPlaceholder": "例如：587",
+    "testCredentialsButton": "测试凭据",
+    "testingButton": "正在测试...",
+    "testSuccessful": "测试成功！",
+    "testFailed": "测试失败：{{error}}",
+    "connectEmailButton": "连接邮箱",
+    "connectingButton": "正在连接...",
+    "hints": {
+      "gmailAppPassword": "当两步验证开启时，Gmail 需要应用密码。请前往 myaccount.google.com → 安全 → 应用密码。",
+      "outlookAppPassword": "如果启用了两步验证，Outlook 可能需要应用密码。请前往 account.microsoft.com → 安全 → 高级安全选项。",
+      "yahooAppPassword": "Yahoo 需要应用密码。请前往 account.yahoo.com → 安全 → 生成应用密码。",
+      "zohoSmtpAccess": "Zoho 需要先启用 SMTP 访问。请前往 mail.zoho.com → 设置 → 邮件账户 → SMTP 并启用“SMTP 访问”。",
+      "googleWorkspaceHint": "使用 Google Workspace？您的 SMTP 主机是 smtp.gmail.com（端口 587）。您需要一个应用密码——请前往 myaccount.google.com → 安全 → 应用密码。",
+      "zohoHostHint": "Zoho 需要先启用 SMTP 访问。请前往 mail.zoho.com → 设置 → 邮件账户 → SMTP 并启用“SMTP 访问”。然后在此处使用您的 Zoho 邮箱和密码。"
+    },
+    "smtpPresets": {
+      "googleWorkspace": "Google Workspace",
+      "outlookMicrosoft365": "Outlook / Microsoft 365",
+      "zohoMail": "Zoho Mail",
+      "yahooMail": "Yahoo Mail"
+    }
+  },
+  "dashboard": {
+    "header": {
+      "label": "仪表盘",
+      "title": "您的结果"
+    },
+    "stats": {
+      "thisMonth": "本月",
+      "allTime": "所有时间",
+      "last7Days": "过去7天"
+    },
+    "weeklyBreakdown": {
+      "title": "过去7天",
+      "vsLabel": "对比上周",
+      "noRequests": "过去7天没有请求",
+      "thisWeek": "本周",
+      "priorWeek": "上周",
+      "allTime": "所有时间"
+    },
+    "emailPerformance": {
+      "title": "邮件表现",
+      "sent": "已发送",
+      "openRate": "打开率",
+      "clickRate": "点击率",
+      "uniqueOpens": "{{count}}次独立打开",
+      "uniqueClicks": "{{count}}次独立点击"
+    },
+    "activityFeed": {
+      "title": "所有活动",
+      "searchPlaceholder": "按姓名或邮箱搜索…",
+      "filterAll": "全部",
+      "filterPending": "待处理",
+      "filterReviewed": "已评论",
+      "clearFilters": "清除",
+      "selectAll": "全选",
+      "deselectAll": "取消全选",
+      "noRequestsYet": "暂无评论请求。\n从“发送”选项卡发送您的第一个请求！",
+      "noMatchingRequests": "没有匹配的请求",
+      "clearFiltersButton": "清除筛选器",
+      "statusReviewed": "已评论",
+      "statusSent": "已发送",
+      "markAsReviewed": "标记为已留下评论",
+      "markAsNotReviewed": "标记为未回复",
+      "emailOpenedTooltip": "邮件已打开",
+      "reviewLinkClickedTooltip": "评论链接已点击",
+      "clearSearchAriaLabel": "清除搜索",
+      "clearSelectionAriaLabel": "清除选择"
+    },
+    "bulkActions": {
+      "selectedCount": "已选择{{count}}个",
+      "markReviewed": "标记为已评论",
+      "markSent": "标记为已发送"
+    },
+    "toasts": {
+      "updateFailed": "更新请求失败。",
+      "updatedSuccess": "已更新{{count}}个请求。",
+      "updatedSuccessPlural": "已更新{{count}}个请求。"
+    }
+  },
+  "pricing": {
+    "sectionTitle": "简单透明的定价",
+    "sectionSubtitle": "免费开始，随时升级。",
+    "free": "免费",
+    "freePrice": "$0",
+    "freeDescription": "10次评价请求，无需信用卡。",
+    "proMonthly": "专业版（月付）",
+    "mostPopular": "最受欢迎",
+    "proMonthlyPrice": "$29",
+    "proMonthlyPer": "/月",
+    "proMonthlyDescription": "无限评价请求、批量发送、跟进提醒、WooCommerce同步。",
+    "proAnnual": "专业版（年付）",
+    "save15": "节省15%",
+    "proAnnualPrice": "$297",
+    "proAnnualPer": "/年",
+    "proAnnualDescription": "包含月付专业版所有功能，按年一次性计费，相当于每月$24.75。",
+    "lifetime": "终身版",
+    "ownItForever": "永久拥有",
+    "lifetimePrice": "$1,247",
+    "lifetimeOnce": " 一次性",
+    "lifetimeDescription": "一次付款，终身使用，无需续费，无任何隐藏费用。"
+  },
+  "comparison": {
+    "sectionTitle": "比大型竞争对手便宜10–20倍",
+    "sectionSubtitle": "Birdeye和Podium收取企业级价格，而ReviewLink以极低的成本提供相同功能。",
+    "colPlatform": "平台",
+    "colStartingPrice": "起始价格",
+    "colLifetime": "终身版选项",
+    "priceDisclaimer": "价格基于2026年4月各平台官网公开的入门级方案。"
+  },
+  "testimonials": {
+    "sectionTitle": "用户真实评价",
+    "sarah": {
+      "quote": "以前我很害怕向客户索取评价，感觉很尴尬。ReviewLink用我自己的Gmail发送请求，看起来就像我亲自写的一样。六周内，我的Google评价从12条增加到了47条。",
+      "name": "Sarah M.",
+      "role": "自由摄影师"
+    },
+    "tom": {
+      "quote": "我们每天服务约80位顾客。每周五我从CSV导入本周常客名单，点击发送，周一早上通常就能收到8–10条新评价。这已经成为我们每周的固定流程。",
+      "name": "Tom R.",
+      "role": "The Corner Café 老板"
+    }
+  },
+  "onboarding": {
+    "googleBtn": "使用 Google 继续",
+    "appleBtn": "使用 Apple 继续",
+    "finePrint": "免费开始 — 包含10次评价请求，无需信用卡。"
+  }
+}

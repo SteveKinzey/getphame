@@ -1,10 +1,11 @@
-// Public marketing landing page — shown at / when the user is not logged in
+// ReviewRocket — Landing Page
 // Navy/gold design system matching the authenticated app
 
 import { getLoginUrl } from "@/const";
 import { Rocket, Star, Send, Users, CheckCircle2, ArrowRight, Mail, Globe, ChevronDown, X, Check } from "lucide-react";
 import { useState, useEffect } from "react";
 import LanguageToggle from "@/components/LanguageToggle";
+import { useTranslation } from "react-i18next";
 
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
@@ -15,58 +16,23 @@ const OG_IMG =
 const APP_PREVIEW_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/reviewlink-app-preview_cbdf33af.png";
 
-const FEATURES = [
-  {
-    icon: <Mail size={22} className="rr-text-gold" />,
-    title: "Sent from your own email",
-    desc: "Every request lands in your customer's inbox looking like a personal message — not a bulk blast. No shared sender, no spam filters.",
-  },
-  {
-    icon: <Users size={22} className="rr-text-gold" />,
-    title: "Bulk send in seconds",
-    desc: "Import contacts from CSV, Stripe, or WooCommerce. Select all, hit send — each customer gets their own personalised email.",
-  },
-  {
-    icon: <Globe size={22} className="rr-text-gold" />,
-    title: "Works with any review platform",
-    desc: "Google, Yelp, Trustpilot, TripAdvisor, Facebook — add any review link. Your customers are taken straight to your review page.",
-  },
-];
-
-const FAQS = [
-  {
-    q: "Will it look like spam?",
-    a: "No. Every email is sent directly from your own email account via SMTP — not from a shared bulk-sending server. Your customer sees your name, your email address, and a message written in your voice. It lands in the inbox like a personal note, not a marketing blast.",
-  },
-  {
-    q: "What email providers work?",
-    a: "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to ReviewLink.",
-  },
-  {
-    q: "Is it really free?",
-    a: "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap (Gmail allows ~500/day, most others are similar). There are no hidden fees and no credit card required to get started.",
-  },
-  {
-    q: "Can I import my customer list?",
-    a: "Yes. You can upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store. Once imported, you can bulk-select contacts and send personalised review requests in a single click.",
-  },
-];
-
-const HOW_IT_WORKS = [
-  { step: "1", label: "Connect your email account (SMTP)" },
-  { step: "2", label: "Add your Google (or other) review link" },
-  { step: "3", label: "Import or add your customers" },
-  { step: "4", label: "Send personalised review requests" },
-];
-
 function FAQSection() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState<number | null>(null);
+
+  const FAQS = [
+    { q: t("faq.q1"), a: t("faq.a1") },
+    { q: t("faq.q2"), a: t("faq.a2") },
+    { q: t("faq.q3"), a: t("faq.a3") },
+    { q: t("faq.q4"), a: t("faq.a4") },
+  ];
+
   return (
     <section className="px-5 py-10 max-w-lg mx-auto w-full">
       <h2
         className="text-xl font-black text-center mb-6 rr-text-navy"
       >
-        Frequently asked questions
+        {t("faq.sectionTitle")}
       </h2>
       <div className="flex flex-col gap-3">
         {FAQS.map((faq, i) => (
@@ -107,23 +73,45 @@ function FAQSection() {
 }
 
 export default function LandingPage() {
+  const { t } = useTranslation();
   const loginUrl = getLoginUrl();
 
-  useEffect(() => {
-    // SEO: keyword-rich title (30-60 chars)
-    document.title = "ReviewLink — Get More 5-Star Google Reviews";
+  const FEATURES = [
+    {
+      icon: <Mail size={22} className="rr-text-gold" />,
+      title: t("features.sentFromYourEmail.title"),
+      desc: t("features.sentFromYourEmail.desc"),
+    },
+    {
+      icon: <Users size={22} className="rr-text-gold" />,
+      title: t("features.bulkSend.title"),
+      desc: t("features.bulkSend.desc"),
+    },
+    {
+      icon: <Globe size={22} className="rr-text-gold" />,
+      title: t("features.anyPlatform.title"),
+      desc: t("features.anyPlatform.desc"),
+    },
+  ];
 
-    // SEO: meta keywords
+  const HOW_IT_WORKS = [
+    { step: "1", label: t("howItWorks.step1") },
+    { step: "2", label: t("howItWorks.step2") },
+    { step: "3", label: t("howItWorks.step3") },
+    { step: "4", label: t("howItWorks.step4") },
+  ];
+
+  useEffect(() => {
+    document.title = t("seo.title");
+
     let kw = document.querySelector<HTMLMetaElement>('meta[name="keywords"]');
     if (!kw) {
       kw = document.createElement("meta");
       kw.name = "keywords";
       document.head.appendChild(kw);
     }
-    kw.content =
-      "review requests, Google reviews, get more reviews, review automation, small business reviews, send review request email, WooCommerce reviews, Stripe reviews";
+    kw.content = t("seo.keywords");
 
-    // OG: open graph image for social sharing previews
     const setMeta = (property: string, content: string) => {
       let el = document.querySelector<HTMLMetaElement>(`meta[property="${property}"]`);
       if (!el) {
@@ -134,8 +122,8 @@ export default function LandingPage() {
       el.setAttribute("content", content);
     };
     setMeta("og:image", OG_IMG);
-    setMeta("og:title", "ReviewLink — Get More 5-Star Google Reviews");
-    setMeta("og:description", "Send personalised review request emails from your own email account. Works with Google, Yelp, TripAdvisor and more.");
+    setMeta("og:title", t("seo.title"));
+    setMeta("og:description", t("seo.ogDescription"));
     setMeta("og:type", "website");
     setMeta("twitter:card", "summary_large_image");
     setMeta("twitter:image", OG_IMG);
@@ -143,7 +131,7 @@ export default function LandingPage() {
     return () => {
       document.title = "ReviewLink";
     };
-  }, []);
+  }, [t]);
 
   return (
     <div className="min-h-screen flex flex-col rr-bg-cream-warm">
@@ -157,7 +145,7 @@ export default function LandingPage() {
           <span
             className="text-sm font-black tracking-widest uppercase rr-text-gold"
           >
-            ReviewLink
+            {t("nav.brandName")}
           </span>
         </div>
         <div className="flex items-center gap-2">
@@ -166,7 +154,7 @@ export default function LandingPage() {
             href={loginUrl}
             className="px-4 py-2 rounded-xl text-xs font-black transition-transform active:scale-95 rr-bg-gold rr-text-navy"
           >
-            Sign In
+            {t("nav.signIn")}
           </a>
         </div>
       </nav>
@@ -180,7 +168,7 @@ export default function LandingPage() {
           className="absolute right-0 top-0 w-56 h-56 opacity-10 pointer-events-none"
           style={{ transform: "translate(15%, -15%)" }}
         >
-          <img src={HERO_IMG} alt="ReviewLink rocket illustration" className="w-full h-full object-contain" />
+          <img src={HERO_IMG} alt={t("hero.rocketIllustrationAlt")} className="w-full h-full object-contain" />
         </div>
 
         <div className="relative z-10 max-w-sm mx-auto">
@@ -188,18 +176,17 @@ export default function LandingPage() {
             className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-5 rr-bg-navy-mid rr-text-gold"
           >
             <Star size={11} fill="currentColor" />
-            Free to start — No credit card required
+            {t("hero.tagline")}
           </div>
 
           <h1
             className="text-3xl leading-tight mb-4 text-white rr-fw-black"
           >
-            Get more 5-star reviews without the awkward ask
+            {t("hero.headline")}
           </h1>
 
           <p className="text-sm mb-8" style={{ color: "var(--text-on-dark-secondary)" }}>
-            ReviewLink sends personalised review request emails from your own email account.
-            Customers receive a message that looks like it came directly from you — not a bulk mailer.
+            {t("hero.description")}
           </p>
 
           <a
@@ -207,12 +194,12 @@ export default function LandingPage() {
             className="inline-flex items-center justify-center gap-2 w-full max-w-xs mx-auto py-4 rounded-2xl font-black text-lg transition-transform active:scale-95 rr-bg-gold rr-text-navy" style={{ display: "flex" }}
           >
             <Rocket size={20} />
-            Get Started Free
+            {t("hero.cta")}
             <ArrowRight size={18} />
           </a>
 
           <p className="text-xs mt-3" style={{ color: "var(--text-on-dark-muted)" }}>
-            Takes less than 2 minutes to set up
+            {t("hero.setupTime")}
           </p>
         </div>
 
@@ -227,14 +214,14 @@ export default function LandingPage() {
           >
             <img
               src={APP_PREVIEW_IMG}
-              alt="ReviewLink dashboard showing sent requests and email performance stats"
+              alt={t("hero.dashboardAlt")}
               className="w-full block"
             />
           </div>
           <div
             className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap rr-bg-gold rr-text-navy"
           >
-            Your dashboard — live stats
+            {t("hero.dashboardStats")}
           </div>
         </div>
       </section>
@@ -244,7 +231,7 @@ export default function LandingPage() {
         <h2
           className="text-xl font-black text-center mb-6 rr-text-navy"
         >
-          Why businesses choose ReviewLink
+          {t("features.sectionTitle")}
         </h2>
         <div className="flex flex-col gap-4">
           {FEATURES.map((f) => (
@@ -280,7 +267,7 @@ export default function LandingPage() {
           <h2
             className="text-xl font-black text-center mb-6 text-white"
           >
-            Up and running in 4 steps
+            {t("howItWorks.sectionTitle")}
           </h2>
           <div className="flex flex-col gap-3">
             {HOW_IT_WORKS.map((item, i) => (
@@ -308,10 +295,10 @@ export default function LandingPage() {
           <h2
             className="text-xl font-black text-center mb-2 rr-text-navy"
           >
-            Simple, honest pricing
+            {t("pricing.sectionTitle")}
           </h2>
           <p className="text-sm text-center mb-6 rr-text-navy-mid">
-            Start free. Upgrade when you're ready.
+            {t("pricing.sectionSubtitle")}
           </p>
           <div className="flex flex-col gap-3">
             {/* Free */}
@@ -319,10 +306,10 @@ export default function LandingPage() {
               className="rounded-2xl p-5 border bg-white" style={{ borderColor: "oklch(0.90 0.03 260)" }}
             >
               <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-black rr-text-navy">Free</span>
-                <span className="text-lg font-black rr-text-navy">$0</span>
+                <span className="text-sm font-black rr-text-navy">{t("pricing.free")}</span>
+                <span className="text-lg font-black rr-text-navy">{t("pricing.freePrice")}</span>
               </div>
-              <p className="text-xs rr-text-navy-muted">10 review requests to get started — no credit card required.</p>
+              <p className="text-xs rr-text-navy-muted">{t("pricing.freeDescription")}</p>
             </div>
             {/* Pro Monthly */}
             <div
@@ -330,14 +317,14 @@ export default function LandingPage() {
             >
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-black rr-text-navy">Pro Monthly</span>
+                  <span className="text-sm font-black rr-text-navy">{t("pricing.proMonthly")}</span>
                   <span
                     className="px-2 py-0.5 rounded-full text-xs font-bold rr-bg-gold rr-text-navy"
-                  >Most Popular</span>
+                  >{t("pricing.mostPopular")}</span>
                 </div>
-                <span className="text-lg font-black rr-text-navy">$29<span className="text-xs font-normal">/mo</span></span>
+                <span className="text-lg font-black rr-text-navy">{t("pricing.proMonthlyPrice")}<span className="text-xs font-normal">{t("pricing.proMonthlyPer")}</span></span>
               </div>
-              <p className="text-xs rr-text-navy-muted">Unlimited review requests, bulk send, follow-up reminders, WooCommerce sync.</p>
+              <p className="text-xs rr-text-navy-muted">{t("pricing.proMonthlyDescription")}</p>
             </div>
             {/* Pro Annual */}
             <div
@@ -345,15 +332,15 @@ export default function LandingPage() {
             >
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-black rr-text-navy">Pro Annual</span>
+                  <span className="text-sm font-black rr-text-navy">{t("pricing.proAnnual")}</span>
                   <span
                     className="px-2 py-0.5 rounded-full text-xs font-bold"
                     style={{ background: "oklch(0.95 0.05 150)", color: "oklch(0.30 0.15 150)", fontFamily: "'Poppins', sans-serif" }}
-                  >Save 15%</span>
+                  >{t("pricing.save15")}</span>
                 </div>
-                <span className="text-lg font-black rr-text-navy">$297<span className="text-xs font-normal">/yr</span></span>
+                <span className="text-lg font-black rr-text-navy">{t("pricing.proAnnualPrice")}<span className="text-xs font-normal">{t("pricing.proAnnualPer")}</span></span>
               </div>
-              <p className="text-xs rr-text-navy-muted">Everything in Pro Monthly — billed once a year. Equivalent to $24.75/month.</p>
+              <p className="text-xs rr-text-navy-muted">{t("pricing.proAnnualDescription")}</p>
             </div>
             {/* Lifetime */}
             <div
@@ -361,14 +348,14 @@ export default function LandingPage() {
             >
               <div className="flex items-center justify-between mb-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-black text-white">Lifetime</span>
+                  <span className="text-sm font-black text-white">{t("pricing.lifetime")}</span>
                   <span
                     className="px-2 py-0.5 rounded-full text-xs font-bold rr-bg-gold rr-text-navy"
-                  >Own it forever</span>
+                  >{t("pricing.ownItForever")}</span>
                 </div>
-                <span className="text-lg font-black rr-text-gold">$1,247<span className="text-xs font-normal" style={{ color: "var(--text-on-dark-secondary)" }}> once</span></span>
+                <span className="text-lg font-black rr-text-gold">{t("pricing.lifetimePrice")}<span className="text-xs font-normal" style={{ color: "var(--text-on-dark-secondary)" }}>{t("pricing.lifetimeOnce")}</span></span>
               </div>
-              <p className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>One payment, lifetime access. No renewals, no surprises.</p>
+              <p className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>{t("pricing.lifetimeDescription")}</p>
             </div>
           </div>
         </div>
@@ -380,10 +367,10 @@ export default function LandingPage() {
           <h2
             className="text-xl font-black text-center mb-2 rr-text-navy"
           >
-            10–20× cheaper than the big players
+            {t("comparison.sectionTitle")}
           </h2>
           <p className="text-sm text-center mb-6 rr-text-navy-mid">
-            Birdeye and Podium charge enterprise prices for features ReviewLink gives you at a fraction of the cost.
+            {t("comparison.sectionSubtitle")}
           </p>
 
           {/* Comparison table */}
@@ -392,9 +379,9 @@ export default function LandingPage() {
             <div
               className="grid grid-cols-3 px-4 py-3 text-xs font-black rr-bg-navy rr-text-gold"
             >
-              <span>Platform</span>
-              <span className="text-center">Starting price</span>
-              <span className="text-center">Lifetime option</span>
+              <span>{t("comparison.colPlatform")}</span>
+              <span className="text-center">{t("comparison.colStartingPrice")}</span>
+              <span className="text-center">{t("comparison.colLifetime")}</span>
             </div>
             {/* ReviewLink row — highlighted */}
             <div
@@ -437,7 +424,7 @@ export default function LandingPage() {
           </div>
 
           <p className="text-xs text-center mt-4 rr-text-navy-muted">
-            Prices based on publicly listed entry-tier plans as of April 2026.
+            {t("comparison.priceDisclaimer")}
           </p>
         </div>
       </section>
@@ -447,7 +434,7 @@ export default function LandingPage() {
         <h2
           className="text-center text-base font-black mb-5 rr-text-navy"
         >
-          What our users say
+          {t("testimonials.sectionTitle")}
         </h2>
         <div className="flex flex-col gap-4">
           {/* Testimonial 1 — Sarah */}
@@ -463,7 +450,7 @@ export default function LandingPage() {
               className="text-sm leading-relaxed mb-3"
               style={{ color: "oklch(0.30 0.05 260)", fontStyle: "italic" }}
             >
-              "I used to dread asking clients for reviews — it felt awkward and salesy. ReviewLink sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks."
+              "{t("testimonials.sarah.quote")}"
             </p>
             <div className="flex items-center gap-3">
               <div
@@ -472,8 +459,8 @@ export default function LandingPage() {
                 S
               </div>
               <div>
-                <p className="text-xs font-bold rr-text-navy">Sarah M.</p>
-                <p className="text-xs rr-text-navy-muted">Freelance Photographer</p>
+                <p className="text-xs font-bold rr-text-navy">{t("testimonials.sarah.name")}</p>
+                <p className="text-xs rr-text-navy-muted">{t("testimonials.sarah.role")}</p>
               </div>
             </div>
           </div>
@@ -491,7 +478,7 @@ export default function LandingPage() {
               className="text-sm leading-relaxed mb-3"
               style={{ color: "oklch(0.30 0.05 260)", fontStyle: "italic" }}
             >
-              "We serve about 80 customers a day. I import the week's regulars from a CSV on Friday, hit send, and by Monday morning we've usually picked up 8–10 new reviews. It's become part of our weekly routine."
+              "{t("testimonials.tom.quote")}"
             </p>
             <div className="flex items-center gap-3">
               <div
@@ -500,8 +487,8 @@ export default function LandingPage() {
                 T
               </div>
               <div>
-                <p className="text-xs font-bold rr-text-navy">Tom R.</p>
-                <p className="text-xs rr-text-navy-muted">Owner, The Corner Café</p>
+                <p className="text-xs font-bold rr-text-navy">{t("testimonials.tom.name")}</p>
+                <p className="text-xs rr-text-navy-muted">{t("testimonials.tom.role")}</p>
               </div>
             </div>
           </div>
@@ -519,17 +506,17 @@ export default function LandingPage() {
           <h2
             className="text-2xl font-black mb-3 text-white"
           >
-            Start collecting reviews today
+            {t("bottomCta.title")}
           </h2>
           <p className="text-sm mb-6" style={{ color: "var(--text-on-dark-secondary)" }}>
-            Free forever. No credit card. Set up in under 2 minutes.
+            {t("bottomCta.subtitle")}
           </p>
           <a
             href={loginUrl}
             className="inline-flex items-center justify-center gap-2 w-full max-w-xs mx-auto py-4 rounded-2xl font-black text-lg transition-transform active:scale-95 rr-bg-gold rr-text-navy" style={{ display: "flex" }}
           >
             <Send size={18} />
-            Get Started Free
+            {t("bottomCta.cta")}
           </a>
         </div>
       </section>
@@ -541,12 +528,12 @@ export default function LandingPage() {
       >
         <div className="flex items-center gap-1.5">
           <Rocket size={12} className="rr-text-gold" />
-          <span className="rr-fw-bold">ReviewLink</span>
+          <span className="rr-fw-bold">{t("nav.brandName")}</span>
         </div>
         <div className="flex items-center gap-4">
-          <a href="/privacy-policy" style={{ color: "var(--text-on-dark-muted)" }}>Privacy</a>
-          <a href="/terms-of-service" style={{ color: "var(--text-on-dark-muted)" }}>Terms</a>
-          <a href="mailto:support@reviewlink.app" style={{ color: "var(--text-on-dark-muted)" }}>Support</a>
+          <a href="/privacy-policy" style={{ color: "var(--text-on-dark-muted)" }}>{t("footer.privacy")}</a>
+          <a href="/terms-of-service" style={{ color: "var(--text-on-dark-muted)" }}>{t("footer.terms")}</a>
+          <a href="mailto:support@reviewlink.app" style={{ color: "var(--text-on-dark-muted)" }}>{t("footer.support")}</a>
         </div>
       </footer>
     </div>

@@ -4,18 +4,20 @@
 import { useLocation } from 'wouter';
 import { Home, Send, BarChart2, Settings, Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
-
-const NAV_ITEMS = [
-  { path: '/', label: 'Home', Icon: Home },
-  { path: '/send', label: 'Send', Icon: Send },
-  { path: '/dashboard', label: 'Dashboard', Icon: BarChart2 },
-  { path: '/settings', label: 'Settings', Icon: Settings },
-];
+import { useTranslation } from 'react-i18next';
 
 export default function BottomNav() {
   const [location, navigate] = useLocation();
   const { theme, toggleTheme } = useTheme();
+  const { t } = useTranslation();
   const isDark = theme === 'dark';
+
+  const NAV_ITEMS = [
+    { path: '/', label: t('nav.home'), Icon: Home },
+    { path: '/send', label: t('nav.send'), Icon: Send },
+    { path: '/dashboard', label: t('nav.dashboard'), Icon: BarChart2 },
+    { path: '/settings', label: t('nav.settings'), Icon: Settings },
+  ];
 
   return (
     <nav
@@ -69,7 +71,7 @@ export default function BottomNav() {
           onClick={toggleTheme}
           className="flex flex-col items-center justify-center py-3 gap-1 transition-all duration-150 active:scale-95 px-3"
           style={{ minHeight: '60px' }}
-          aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+          aria-label={isDark ? t('theme.switchToLight') : t('theme.switchToDark')}
         >
           <div
             className="flex items-center justify-center rounded-full transition-all duration-200 bg-transparent" style={{ width: "40px", height: "32px" }}
@@ -88,7 +90,7 @@ export default function BottomNav() {
               fontSize: '10px',
             }}
           >
-            {isDark ? 'Light' : 'Dark'}
+            {isDark ? t('theme.light') : t('theme.dark')}
           </span>
         </button>
       </div>
@@ -101,28 +103,28 @@ export default function BottomNav() {
           onClick={() => navigate('/privacy-policy')}
           className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
         >
-          Privacy Policy
+          {t('footer.privacyPolicy')}
         </button>
         <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
         <button
           onClick={() => navigate('/terms-of-service')}
           className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
         >
-          Terms of Service
+          {t('footer.termsOfService')}
         </button>
         <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
         <button
           onClick={() => navigate('/changelog')}
           className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
         >
-          What's New
+          {t('footer.whatsNew')}
         </button>
         <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
         <button
           onClick={() => navigate('/compliance')}
           className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
         >
-          Compliance
+          {t('footer.compliance')}
         </button>
       </div>
     </nav>
