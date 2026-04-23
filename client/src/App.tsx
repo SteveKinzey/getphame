@@ -42,6 +42,7 @@ import { useLocation } from "wouter";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, { useOnboardingGuide } from "./components/OnboardingGuide";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
+import LanguageFlyout from "./components/LanguageFlyout";
 import { useHapticEvents } from "./hooks/useHapticEvents";
 
 /**
@@ -111,18 +112,24 @@ function AppShell() {
 
   // Public pages accessible without login
   const path = window.location.pathname;
-  if (path === "/privacy-policy") return <div className="mobile-screen"><PrivacyPolicyPage /></div>;
-  if (path === "/terms-of-service") return <div className="mobile-screen"><TermsOfServicePage /></div>;
-  if (path === "/payment-success") return <div className="mobile-screen"><PaymentSuccessPage /></div>;
-  if (path === "/unsubscribe") return <div className="mobile-screen"><UnsubscribePage /></div>;
+  const globalLangFlyout = (
+    <div style={{ position: "fixed", bottom: "24px", right: "16px", zIndex: 9998 }}>
+      <LanguageFlyout />
+    </div>
+  );
+
+  if (path === "/privacy-policy") return <div className="mobile-screen"><PrivacyPolicyPage />{globalLangFlyout}</div>;
+  if (path === "/terms-of-service") return <div className="mobile-screen"><TermsOfServicePage />{globalLangFlyout}</div>;
+  if (path === "/payment-success") return <div className="mobile-screen"><PaymentSuccessPage />{globalLangFlyout}</div>;
+  if (path === "/unsubscribe") return <div className="mobile-screen"><UnsubscribePage />{globalLangFlyout}</div>;
   if (path === "/auth/apple/landing") return <div className="mobile-screen"><AppleAuthLanding /></div>;
 
   if (!user) {
     // Show the public marketing landing page at /, Onboarding at /onboarding
-    if (path === "/onboarding") return <div className="mobile-screen"><OnboardingPage /></div>;
+    if (path === "/onboarding") return <div className="mobile-screen"><OnboardingPage />{globalLangFlyout}</div>;
     // Changelog is public — render without BottomNav for unauthenticated visitors
-    if (path === "/changelog") return <div className="mobile-screen"><ChangelogPage /></div>;
-    return <div className="mobile-screen"><LandingPage /></div>;
+    if (path === "/changelog") return <div className="mobile-screen"><ChangelogPage />{globalLangFlyout}</div>;
+    return <div className="mobile-screen"><LandingPage />{globalLangFlyout}</div>;
   }
 
   return (
@@ -167,6 +174,10 @@ function AppShell() {
       </main>
       <BottomNav />
       <PWAInstallPrompt />
+      {/* Global language flyout — fixed overlay, always visible on every screen */}
+      <div style={{ position: "fixed", bottom: "80px", right: "16px", zIndex: 9998 }}>
+        <LanguageFlyout />
+      </div>
     </div>
   );
 }

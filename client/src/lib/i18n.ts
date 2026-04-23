@@ -69,6 +69,7 @@ export function saveLang(lang: SupportedLang): void {
 
 /**
  * Switch language, persist, and update i18n.
+ * Pre-loads the locale file before switching to avoid Suspense failures.
  * Marks the choice as USER-CHOSEN so it is never overridden by auto-detection.
  */
 export function setLanguage(lang: SupportedLang): void {
@@ -79,7 +80,13 @@ export function setLanguage(lang: SupportedLang): void {
   } catch {
     // ignore
   }
-  i18n.changeLanguage(lang);
+  // Pre-load the locale file, then switch — avoids Suspense/silent-fail issues
+  i18n.loadLanguages(lang).then(() => {
+    i18n.changeLanguage(lang);
+  }).catch(() => {
+    // Fallback: try switching anyway
+    i18n.changeLanguage(lang);
+  });
 }
 
 /**
@@ -160,7 +167,9 @@ i18n
       escapeValue: false,
     },
     react: {
-      useSuspense: true,
+      // Disable Suspense — without a <Suspense> boundary, useSuspense:true causes
+      // language switches to silently fail when the new locale file is loading.
+      useSuspense: false,
     },
   });
 

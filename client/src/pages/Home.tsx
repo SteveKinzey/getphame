@@ -8,7 +8,6 @@ import { Rocket, Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiO
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import OnboardingGuide from "@/components/OnboardingGuide";
-import LanguageFlyout from "@/components/LanguageFlyout";
 import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
@@ -284,7 +283,6 @@ export default function HomePage() {
         <div className="relative z-10 mb-6">
           {/* Row 1: Language selector */}
           <div className="flex justify-end mb-2">
-            <LanguageFlyout />
           </div>
           {/* Row 2: Brand label (left) + Share / Guide buttons (right) */}
           <div className="flex items-center justify-between gap-2 mb-1">

@@ -1352,4 +1352,24 @@
 - [x] Audit all 6 locale files (en, th, zh-CN, fr, es, it) for missing or untranslated keys
 - [x] Fill in missing/English-fallback keys in FR, ES, ZH-CN, TH, IT locales (FR: 90ns, ES: 90ns, ZH-CN: 83ns, TH: 83ns, IT: 91ns)
 - [x] Add flag emojis to LanguageFlyout (🇬🇧 🇹🇭 🇨🇳 🇫🇷 🇪🇸 🇮🇹)
-- [ ] Save checkpoint + deploy
+- [x] Save checkpoint + deploy
+
+## Session #64 — Language Flyout Always Visible (Apr 23 2026)
+- [x] Audit every screen/layout for LanguageFlyout presence — only Home, LandingPage, Onboarding had it
+- [x] Move LanguageFlyout to a global persistent overlay (fixed position, always on top) in App.tsx
+- [x] Ensure flyout is never hidden by modals, bottom nav, or page-level overflow (z-index: 9998)
+- [x] Save checkpoint + deploy
+## Session #65 — Locale Pre-caching + Language Switch Fix (Apr 23 2026)
+- [x] Fix language switching bug: set useSuspense:false in i18n config, use loadLanguages() before changeLanguage()
+- [x] Pre-cache all 6 locale files in service worker (install event) so switching is instant + works offline
+- [x] Add global LanguageFlyout fixed overlay to App.tsx (all routes), remove per-page duplicates
+- [x] Bump service worker cache version to v3 to force re-install with new locale cache
+- [x] Save checkpoint + deploy
+## Session #66 — LanguageFlyout Toggle Bug Fix (Apr 23 2026)
+- [x] Fix LanguageFlyout open→close race: changed outside-click handler from 'mousedown' to 'click' event
+- [x] Add stopPropagation to trigger button onClick to prevent document click handler from seeing it
+- [x] Add panelRef to portal div and check both btnRef + panelRef in outside-click guard
+- [x] Add onClick stopPropagation to panel div to prevent click bubbling through portal
+- [x] Fix panel positioning: changed from position:absolute (uses scrollY offset) to position:fixed (viewport-relative)
+- [x] Verified: flyout opens and stays open, language switching works (EN→IT→EN confirmed)
+- [x] Save checkpoint + deploy

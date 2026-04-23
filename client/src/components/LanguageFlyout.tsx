@@ -33,6 +33,7 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
   });
   const [panelPos, setPanelPos] = useState<{ top: number; right: number } | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   // Keep local state in sync with i18n (e.g. after IP detection resolves)
   useEffect(() => {
@@ -44,16 +45,26 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
   }, []);
 
   // Compute portal position from button bounding rect
-  const openPanel = useCallback(() => {
-    if (!btnRef.current) return;
+  const computePos = useCallback(() => {
+    if (!btnRef.current) return null;
     const rect = btnRef.current.getBoundingClientRect();
-    // Anchor to the right edge of the button, just below it
-    setPanelPos({
-      top: rect.bottom + window.scrollY + 6,
+    return {
+      top: rect.bottom + 6,
       right: window.innerWidth - rect.right,
-    });
-    setOpen(true);
+    };
   }, []);
+
+  // Toggle handler — uses onClick with stopPropagation so the document
+  // 'click' outside-handler never sees this event (prevents open→close race).
+  const handleToggle = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setOpen(prev => {
+      if (prev) return false;
+      const pos = computePos();
+      if (pos) setPanelPos(pos);
+      return true;
+    });
+  }, [computePos]);
 
   // Close on outside click or scroll
   useEffect(() => {
@@ -61,13 +72,17 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
     const close = (e: Event) => {
       if (e.type === "scroll") { setOpen(false); return; }
       const target = (e as MouseEvent).target as Node;
+      // Don't close if click is inside the trigger button or the panel
       if (btnRef.current && btnRef.current.contains(target)) return;
+      if (panelRef.current && panelRef.current.contains(target)) return;
       setOpen(false);
     };
-    document.addEventListener("mousedown", close);
+    // Use 'click' (not 'mousedown') — the button's onClick fires first with
+    // stopPropagation, so this handler never sees trigger-button clicks.
+    document.addEventListener("click", close);
     document.addEventListener("scroll", close, true);
     return () => {
-      document.removeEventListener("mousedown", close);
+      document.removeEventListener("click", close);
       document.removeEventListener("scroll", close, true);
     };
   }, [open]);
@@ -82,8 +97,10 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
 
   const panel = open && panelPos ? createPortal(
     <div
+      ref={panelRef}
+      onClick={(e) => e.stopPropagation()}
       style={{
-        position: "absolute",
+        position: "fixed",
         top: panelPos.top,
         right: panelPos.right,
         zIndex: 99999,
@@ -104,6 +121,7 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
           <button
             key={code}
             type="button"
+            onMouseDown={(e) => e.stopPropagation()}
             onClick={() => handleSelect(code)}
             style={{
               display: "flex",
@@ -148,7 +166,7 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
       <button
         ref={btnRef}
         type="button"
-        onClick={openPanel}
+        onClick={handleToggle}
         aria-label="Select language"
         aria-expanded={open}
         className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full select-none transition-all ${className}`}
