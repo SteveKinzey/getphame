@@ -1261,3 +1261,27 @@
 - [ ] i18n Phase 2: wire SavedContacts, EmailTemplates, Reminders, Upgrade, Changelog (lower priority)
 - [ ] React Native Expo staging build scaffold
 - [ ] Save checkpoint + deploy
+
+## Session #56 — React Native Expo App (Apr 23 2026)
+- [ ] Add /api/staging health endpoint to web project (returns 200 + version) so mobile app can verify connectivity
+- [ ] Scaffold Expo project at /home/ubuntu/reviewlink-mobile (Expo SDK 52, Expo Router v3, TypeScript)
+- [ ] Install NativeWind v4 + Tailwind CSS for styling
+- [ ] Install @trpc/client + @tanstack/react-query + superjson for API calls
+- [ ] Configure tRPC client pointing at staging URL (env-switchable to production)
+- [ ] Implement Google Sign-In (expo-auth-session + Google OAuth, hits /api/auth/google/callback)
+- [ ] Implement Apple Sign-In (expo-apple-authentication, hits /api/auth/apple/callback)
+- [ ] JWT session cookie storage via expo-secure-store
+- [ ] Home screen: stats cards (This Month / All Time / Last 7 Days) + quick send CTA
+- [ ] Send screen: customer name/email form + send button
+- [ ] Dashboard screen: activity feed with Reviewed/Sent toggle
+- [ ] Settings screen: business profile edit + SMTP connect + sign out
+- [ ] Bottom tab navigation (Home / Send / Dashboard / Settings)
+- [ ] Configure app.json (bundle ID: app.reviewlink, name: ReviewLink)
+- [ ] Configure eas.json for iOS (TestFlight) and Android (APK) build profiles
+- [ ] Add .env.staging and .env.production with API URL switching
+- [ ] Verify build compiles without errors (expo export)
+- [ ] Save checkpoint + deliver EAS build instructions to user
+
+## Session #55b — Home Header Layout Fix (Apr 23 2026)
+- [x] Move LanguageToggle inline into Home header: same row as greeting, between greeting text and Share/Guide buttons
+- [ ] Save checkpoint + deploy

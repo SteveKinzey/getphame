@@ -281,49 +281,45 @@ export default function HomePage() {
         </div>
 
         {/* Header top row */}
-        <div className="flex items-center justify-between mb-6 relative z-10">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <Rocket size={16} className="rr-text-gold" />
-              <span
-                className="text-xs font-bold tracking-widest uppercase rr-text-gold"
-              >
-                {t("nav.brandName")}
-              </span>
-            </div>
-            <h1
-              className="text-2xl leading-tight text-white rr-fw-black"
-            >
+        <div className="relative z-10 mb-6">
+          {/* Brand label */}
+          <div className="flex items-center gap-2 mb-1">
+            <Rocket size={16} className="rr-text-gold" />
+            <span className="text-xs font-bold tracking-widest uppercase rr-text-gold">
+              {t("nav.brandName")}
+            </span>
+          </div>
+          {/* Greeting row: h1 + toggle + share + guide all on same line */}
+          <div className="flex items-center gap-2">
+            <h1 className="text-2xl leading-tight text-white rr-fw-black flex-1 min-w-0 truncate">
               {profile?.businessName
                 ? t("homePage.greeting", { defaultValue: `Hey, ${profile.businessName.split(" ")[0]}!`, name: profile.businessName.split(" ")[0] })
                 : t("homePage.welcomeBack")}
             </h1>
-            <div className="flex items-center gap-2 mt-1">
-              <p className="text-sm" style={{ color: "var(--text-on-dark-secondary)" }}>
-                {user?.name ?? user?.email ?? ""}
-              </p>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <LanguageToggle />
+              <button
+                onClick={handleShare}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
+                title={t("nav.shareHint", { defaultValue: "Share ReviewLink with a friend" })}
+              >
+                <Share2 size={13} />
+                <span className="hidden sm:inline">{t("nav.share", { defaultValue: "Share" })}</span>
+              </button>
+              <button
+                onClick={() => setGuideOpen(true)}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
+                title={t("nav.guideHint", { defaultValue: "Open setup guide" })}
+              >
+                <BookOpen size={13} />
+                <span className="hidden sm:inline">{t("nav.guide", { defaultValue: "Guide" })}</span>
+              </button>
+            </div>
           </div>
-        </div>
-
-          <div className="flex items-center gap-2">
-            <LanguageToggle />
-            <button
-              onClick={handleShare}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
-              title={t("nav.shareHint", { defaultValue: "Share ReviewLink with a friend" })}
-            >
-              <Share2 size={13} />
-              <span className="hidden sm:inline">{t("nav.share", { defaultValue: "Share" })}</span>
-            </button>
-            <button
-              onClick={() => setGuideOpen(true)}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
-              title={t("nav.guideHint", { defaultValue: "Open setup guide" })}
-            >
-              <BookOpen size={13} />
-              <span className="hidden sm:inline">{t("nav.guide", { defaultValue: "Guide" })}</span>
-            </button>
-          </div>
+          {/* User name below greeting */}
+          <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
+            {user?.name ?? user?.email ?? ""}
+          </p>
         </div>
 
         {/* Stats row */}
