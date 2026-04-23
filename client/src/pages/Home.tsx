@@ -527,10 +527,9 @@ export default function HomePage() {
           }}
         >
           <img
-            src="/manus-storage/rocket-transparent_8c5792a3.svg"
+            src="/manus-storage/rocket-stroked_2f31df13.svg"
             alt=""
             className="h-10 w-10 object-contain flex-shrink-0"
-            style={{ filter: 'drop-shadow(0 0 1px #4a90d9) drop-shadow(0 0 1px #4a90d9)' }}
           />
           {t("homePage.sendRequest")}
         </button>
