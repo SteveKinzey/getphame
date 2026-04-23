@@ -523,17 +523,23 @@ export default function LandingPage() {
 
       {/* ── Footer ──────────────────────────────────────────────────────────── */}
       <footer
-        className="px-5 py-4 flex items-center justify-between text-xs"
+        className="px-5 py-6 flex flex-col items-center gap-4 text-xs"
         style={{ background: "oklch(0.18 0.07 260)", color: "var(--text-on-dark-muted)" }}
       >
-        <div className="flex items-center gap-1.5">
-          <Rocket size={12} className="rr-text-gold" />
-          <span className="rr-fw-bold">{t("nav.brandName")}</span>
-        </div>
+        {/* Language selector — centred for easy discovery by international visitors */}
+        <LanguageToggle />
+
+        {/* Legal links */}
         <div className="flex items-center gap-4">
           <a href="/privacy-policy" style={{ color: "var(--text-on-dark-muted)" }}>{t("footer.privacy")}</a>
           <a href="/terms-of-service" style={{ color: "var(--text-on-dark-muted)" }}>{t("footer.terms")}</a>
           <a href="mailto:support@reviewlink.app" style={{ color: "var(--text-on-dark-muted)" }}>{t("footer.support")}</a>
+        </div>
+
+        {/* Brand */}
+        <div className="flex items-center gap-1.5">
+          <Rocket size={12} className="rr-text-gold" />
+          <span className="rr-fw-bold">{t("nav.brandName")}</span>
         </div>
       </footer>
     </div>

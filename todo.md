@@ -1250,3 +1250,13 @@
 - [x] Remove Google Translate script from index.html entirely
 - [x] Verify EN|TH|CN toggle switches all three pages instantly (TH + CN confirmed in dev browser)
 - [x] Save checkpoint + deploy
+
+## Session #55 — Footer Language Toggle + i18n Phase 2 (Apr 22 2026)
+- [x] Add LanguageToggle to LandingPage footer (between links and copyright)
+- [ ] i18n Phase 2: wire Home.tsx with t() calls
+- [ ] i18n Phase 2: wire SendRequest.tsx with t() calls
+- [ ] i18n Phase 2: wire Settings.tsx with t() calls
+- [ ] i18n Phase 2: wire Dashboard.tsx with t() calls
+- [ ] i18n Phase 2: wire OnboardingWizard.tsx with t() calls
+- [ ] React Native Expo staging build scaffold
+- [ ] Save checkpoint + deploy
