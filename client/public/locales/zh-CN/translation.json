@@ -781,7 +781,7 @@
     "redirectingToCheckout": "正在重定向到结账页面...",
     "payByCard": "银行卡支付 — {{price}}",
     "secureCheckoutNote": "通过 Stripe 安全结账。以美元计费。",
-    "promptPaySocialProofTitle": "ธุรกิจส่วนใหญ่คืนทุนภายใน 90 วัน",
+    "promptPaySocialProofTitle": "大多数企业在90天内收回成本",
     "promptPaySocialProofDescription": "大多数企业在 90 天内收回成本 — 评论可自动带来重复预订和新客户。",
     "promptPayRedirecting": "正在重定向...",
     "payWithPromptPay": "使用 PromptPay 支付 — {{thb}}",
@@ -1193,5 +1193,98 @@
     "googleBtn": "使用 Google 继续",
     "appleBtn": "使用 Apple 继续",
     "finePrint": "免费开始 — 包含10次评价请求，无需信用卡。"
+  },
+  "bulkBar": {
+    "sendTo": "发送给 {{count}} 位联系人"
+  },
+  "changelog": {
+    "title": "更新日志",
+    "subtitle": "新功能、修复和改进",
+    "filterAll": "全部",
+    "filterNew": "新功能",
+    "filterImproved": "改进",
+    "filterFix": "修复",
+    "filterAriaLabel": "筛选更新",
+    "homeAriaLabel": "返回主页",
+    "backAriaLabel": "返回",
+    "featureRequest": "建议功能",
+    "labelNew": "新功能",
+    "labelImproved": "改进",
+    "labelFix": "修复",
+    "noEntries": "暂无更新记录",
+    "loadingError": "加载更新日志失败"
+  },
+  "onboardingGuide": {
+    "title": "设置指南",
+    "stepOf": "第 {{current}} / {{total}} 步",
+    "welcome": "欢迎使用 ReviewLink",
+    "connectEmail": "连接邮箱",
+    "reviewPlatform": "评价平台",
+    "importContacts": "导入联系人",
+    "sendRequest": "发送请求",
+    "allSet": "设置完成",
+    "navigation": {
+      "back": "返回",
+      "next": "下一步",
+      "finish": "完成",
+      "skipForNow": "暂时跳过 →"
+    },
+    "welcome_section": {
+      "heroText": "ReviewLink 通过您自己的邮箱账户发送个性化的评价请求邮件。",
+      "heroSubtext": "客户收到的邮件看起来像是您直接发送的——而不是群发邮件。",
+      "setupStepsIntro": "本指南将引导您完成 4 个快速设置步骤：",
+      "step1Label": "连接您的邮箱账户（SMTP）",
+      "step2Label": "添加评价平台链接（Google、Yelp 等）",
+      "step3Label": "导入或添加客户联系人",
+      "step4Label": "发送您的第一条评价请求",
+      "doneLabel": "✓ 完成",
+      "setupTime": "设置大约需要 3 分钟。您可以随时从主屏幕重新打开本指南。"
+    },
+    "connectEmail_section": {
+      "whyTitle": "为什么要连接邮箱？",
+      "whyDesc": "ReviewLink 通过您自己的账户使用 SMTP 发送邮件——与您的邮件应用使用的协议相同。评价请求看起来像是您的私人邮件，而不是营销邮件。",
+      "goToSettingsButton": "前往设置 → 邮箱连接",
+      "testEmailButton": "向自己发送测试邮件",
+      "testEmailSent": "测试邮件已发送！请查收收件箱。"
+    },
+    "reviewPlatform_section": {
+      "whatIsTitle": "什么是评价平台？",
+      "whatIsDesc": "这是客户点击留下评价的链接——在 Google、Yelp、TripAdvisor、Facebook 或其他平台上。ReviewLink 将此链接作为按钮嵌入每封评价请求邮件中。",
+      "goToSettingsButton": "前往设置 → 评价平台"
+    },
+    "contacts_section": {
+      "threeWaysTitle": "三种添加联系人的方式",
+      "goToImportButton": "前往导入 CSV",
+      "goToContactsButton": "前往已保存联系人"
+    },
+    "sendRequest_section": {
+      "twoWaysTitle": "两种发送方式",
+      "goToSendButton": "前往发送请求",
+      "goToContactsButton": "前往已保存联系人"
+    },
+    "allSet_section": {
+      "title": "一切就绪！",
+      "subtitle": "ReviewLink 已准备好为您的业务收集评价。",
+      "startButton": "开始使用 ReviewLink"
+    }
+  },
+  "step2Platform": {
+    "reviewPlatformLabel": "评价平台",
+    "reviewPageUrlLabel": "您的评价页面链接",
+    "reviewPageUrlHint": "粘贴客户点击留下评价的链接。",
+    "savePlatformButton": "保存平台",
+    "savingButton": "保存中...",
+    "toast": {
+      "enterUrl": "请输入您的评价页面链接。",
+      "platformAdded": "评价平台已添加！"
+    }
+  },
+  "step3Send": {
+    "allSetTitle": "一切就绪！",
+    "allSetDescription": "您的邮箱已连接，评价平台已准备好。发送您的第一条评价请求，开始建立您的口碑。",
+    "sendFirstRequestButton": "发送我的第一条评价请求"
+  },
+  "wooStatus": {
+    "neverSynced": "从未同步——点击上方 WooCommerce 导入"
   }
 }

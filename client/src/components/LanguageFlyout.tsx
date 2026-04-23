@@ -12,13 +12,13 @@ import { Globe, Check } from "lucide-react";
 import { setLanguage, getSavedLang, type SupportedLang } from "@/lib/i18n";
 import i18n from "@/lib/i18n";
 
-const LANGS: { code: SupportedLang; label: string; native: string }[] = [
-  { code: "en",    label: "EN", native: "English"    },
-  { code: "th",    label: "TH", native: "ภาษาไทย"    },
-  { code: "zh-CN", label: "CN", native: "中文"        },
-  { code: "fr",    label: "FR", native: "Français"   },
-  { code: "es",    label: "ES", native: "Español"    },
-  { code: "it",    label: "IT", native: "Italiano"   },
+const LANGS: { code: SupportedLang; label: string; native: string; flag: string }[] = [
+  { code: "en",    label: "EN", native: "English",   flag: "🇬🇧" },
+  { code: "th",    label: "TH", native: "ภาษาไทย",   flag: "🇹🇭" },
+  { code: "zh-CN", label: "CN", native: "中文",       flag: "🇨🇳" },
+  { code: "fr",    label: "FR", native: "Français",  flag: "🇫🇷" },
+  { code: "es",    label: "ES", native: "Español",   flag: "🇪🇸" },
+  { code: "it",    label: "IT", native: "Italiano",  flag: "🇮🇹" },
 ];
 
 interface LanguageFlyoutProps {
@@ -98,7 +98,7 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
       }}
       translate="no"
     >
-      {LANGS.map(({ code, label, native }, idx) => {
+      {LANGS.map(({ code, label, native, flag }, idx) => {
         const isActive = activeLang === code;
         return (
           <button
@@ -121,6 +121,7 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
             }}
           >
             <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{ fontSize: "16px", lineHeight: 1, flexShrink: 0 }}>{flag}</span>
               <span style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "0.04em", opacity: 0.7 }}>
                 {label}
               </span>

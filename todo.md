@@ -1346,4 +1346,10 @@
 - [x] Register Italian in i18n.ts (SUPPORTED_LANGS, LANG_LABELS, LANG_NAMES, getSavedLang, detectLangFromBrowser, detectLangFromIP, supportedLngs)
 - [x] Add Italian option to LanguageFlyout component (IT / Italiano)
 - [x] Add Italian country code (IT, SM, VA) to server-side detect-language endpoint
+- [x] Save checkpoint + deploy
+
+## Session #63 — Translation Audit + Flag Emojis (Apr 23 2026)
+- [x] Audit all 6 locale files (en, th, zh-CN, fr, es, it) for missing or untranslated keys
+- [x] Fill in missing/English-fallback keys in FR, ES, ZH-CN, TH, IT locales (FR: 90ns, ES: 90ns, ZH-CN: 83ns, TH: 83ns, IT: 91ns)
+- [x] Add flag emojis to LanguageFlyout (🇬🇧 🇹🇭 🇨🇳 🇫🇷 🇪🇸 🇮🇹)
 - [ ] Save checkpoint + deploy
