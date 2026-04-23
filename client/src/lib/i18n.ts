@@ -3,6 +3,12 @@ import { initReactI18next } from "react-i18next";
 import HttpBackend from "i18next-http-backend";
 
 const STORAGE_KEY = "rr-lang";
+/**
+ * A second key that marks the language as USER-CHOSEN (vs auto-detected).
+ * When this key is set, we NEVER override the language — the user explicitly picked it.
+ * When this key is absent, the stored language was auto-detected and can be refreshed.
+ */
+const USER_CHOSEN_KEY = "rr-lang-chosen";
 
 // Supported language codes (i18next format)
 export const SUPPORTED_LANGS = ["en", "th", "zh-CN", "fr", "es"] as const;
@@ -40,6 +46,15 @@ export function getSavedLang(): SupportedLang | null {
   return null;
 }
 
+/** Returns true if the user has explicitly chosen a language (vs auto-detected) */
+function isUserChosen(): boolean {
+  try {
+    return localStorage.getItem(USER_CHOSEN_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
 /** Persist language choice to localStorage */
 export function saveLang(lang: SupportedLang): void {
   try {
@@ -49,10 +64,36 @@ export function saveLang(lang: SupportedLang): void {
   }
 }
 
-/** Switch language, persist, and update i18n */
+/**
+ * Switch language, persist, and update i18n.
+ * Marks the choice as USER-CHOSEN so it is never overridden by auto-detection.
+ */
 export function setLanguage(lang: SupportedLang): void {
   saveLang(lang);
+  try {
+    // Mark as explicitly chosen — this persists forever until user picks again
+    localStorage.setItem(USER_CHOSEN_KEY, "1");
+  } catch {
+    // ignore
+  }
   i18n.changeLanguage(lang);
+}
+
+/**
+ * Detect language from the browser's navigator.language.
+ * Maps browser locale to one of our supported languages.
+ */
+function detectLangFromBrowser(): SupportedLang {
+  try {
+    const browserLang = (navigator.language || navigator.languages?.[0] || "").toLowerCase();
+    if (browserLang.startsWith("th")) return "th";
+    if (browserLang.startsWith("zh")) return "zh-CN";
+    if (browserLang.startsWith("fr")) return "fr";
+    if (browserLang.startsWith("es")) return "es";
+  } catch {
+    // ignore
+  }
+  return "en";
 }
 
 /** Detect language from server IP geolocation (called only on first visit) */
@@ -71,11 +112,33 @@ async function detectLangFromIP(): Promise<SupportedLang> {
   return "en";
 }
 
-// Determine initial language:
-// 1. If user has previously chosen a language → use that (localStorage)
-// 2. Otherwise → detect from IP, save, and use
+// ── Language resolution order ─────────────────────────────────────────────────
+//
+// 1. User explicitly chose a language → ALWAYS use it, never override
+// 2. Language was auto-detected (no USER_CHOSEN_KEY) → re-detect from browser
+//    locale on every load (instant, no network) and update if different
+// 3. No saved language at all → detect from browser locale, save it
+//
+// This ensures:
+//   - FR/ES/TH chosen by user stays FR/ES/TH forever
+//   - Stale TH from old IP detection gets corrected to en-US on next load
+//   - New users get their browser locale immediately
+
+const userChosen = isUserChosen();
 const savedLang = getSavedLang();
-const initialLang: SupportedLang = savedLang ?? "en";
+const browserLang = detectLangFromBrowser();
+
+let initialLang: SupportedLang;
+
+if (userChosen && savedLang) {
+  // User explicitly picked — respect it unconditionally
+  initialLang = savedLang;
+} else {
+  // Auto-detected or first visit — use browser locale (most reliable)
+  initialLang = browserLang;
+  // Update localStorage to match browser locale (corrects stale IP detections)
+  saveLang(browserLang);
+}
 
 i18n
   .use(HttpBackend)
@@ -97,12 +160,13 @@ i18n
     },
   });
 
-// If no saved preference, detect from IP and apply asynchronously
-if (!savedLang) {
-  detectLangFromIP().then((detected) => {
-    saveLang(detected);
-    if (detected !== "en") {
-      i18n.changeLanguage(detected);
+// If no user-chosen preference, optionally refine with IP detection
+// (only if browser gave us English but IP might suggest another language)
+if (!userChosen && browserLang === "en") {
+  detectLangFromIP().then((ipLang) => {
+    if (ipLang !== "en") {
+      saveLang(ipLang);
+      i18n.changeLanguage(ipLang);
     }
   });
 }

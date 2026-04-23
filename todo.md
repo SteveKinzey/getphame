@@ -1324,3 +1324,7 @@
 - [x] Notification haptics: distinct pattern when customer opens email (first time)
 - [x] Notification haptics: celebration pattern when review is posted
 - [x] Wire haptic triggers into tracking event polling logic
+
+## Session #59 — Language Detection Bug Fix (Apr 23 2026)
+- [x] Fix: language selector defaults to TH instead of detecting browser locale (en-US for LA users)
+- [x] Fix: user-selected language (FR, ES, TH, etc.) must persist across sessions until user explicitly changes it — never overwritten by auto-detection
