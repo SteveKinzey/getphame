@@ -289,8 +289,8 @@ export default function HomePage() {
           {/* Row 2: Brand label (left) + Share / Guide buttons (right) */}
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center gap-2">
-              <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-9 h-9 rounded-lg object-contain" />
-              <span className="text-xs font-bold tracking-widest uppercase rr-text-gold">
+              <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-12 h-12 rounded-xl object-contain" />
+              <span className="text-sm font-bold tracking-widest uppercase rr-text-gold">
                 {t("nav.brandName")}
               </span>
             </div>
@@ -526,7 +526,7 @@ export default function HomePage() {
             fontFamily: "'Poppins', sans-serif",
           }}
         >
-          <Rocket size={24} />
+          <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="" className="w-7 h-7 object-contain" />
           {t("homePage.sendRequest")}
         </button>
 
