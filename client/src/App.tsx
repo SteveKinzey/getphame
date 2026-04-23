@@ -41,7 +41,6 @@ import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, { useOnboardingGuide } from "./components/OnboardingGuide";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
 import { useHapticEvents } from "./hooks/useHapticEvents";
-// LanguageToggle replaced by LanguageFlyout — see individual page headers
 
 /**
  * PageTransition — wraps route output in a fade-up animation that triggers
