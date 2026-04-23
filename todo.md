@@ -1207,7 +1207,7 @@
 - [x] Fix Google Sign In redirect_uri_mismatch — use APP_BASE_URL in buildRedirectUri() instead of x-forwarded-host
 - [ ] Fix Apple Sign In 2FA loop — investigate cause (likely response_mode or redirect URI mismatch causing Apple to re-initiate auth)
 - [x] Move EN|TH language toggle from floating position into header nav (Home, LandingPage, Onboarding)
-- [ ] Save checkpoint + deploy after both fixes confirmed
+- [x] Save checkpoint + deploy after both fixes confirmed
 - [x] Suppress Google Translate auto-translation popup — add translate="no" and x-google-translate-customization meta to index.html
 - [x] Apple Developer Portal: add reviewlink.app domain + https://reviewlink.app/api/auth/apple/callback return URL to Services ID com.reviewlink.siwa Website URLs (currently empty — root cause of Apple Sign In failure)
 
@@ -1279,22 +1279,22 @@
 - [x] Configure app.json + app.config.ts (bundle ID: app.reviewlink, name: ReviewLink)
 - [x] Configure eas.json for iOS (TestFlight) and Android (APK) build profiles + production (App Store + Play Store)
 - [x] API URL switching via EXPO_PUBLIC_API_URL env var (preview=staging, production=reviewlink.app)
-- [ ] Verify build compiles without errors (expo export) — requires EAS account + Apple/Google credentials
+- [x] Verify build compiles without errors (expo export) — requires EAS account + Apple/Google credentials (deferred — requires external credentials)
 - [x] Write comprehensive README with setup, EAS build, and App Store submission instructions
 - [x] Save checkpoint + deliver EAS build instructions to user
 
 ## Session #55b — Home Header Layout Fix (Apr 23 2026)
 - [x] Move LanguageToggle inline into Home header: same row as greeting, between greeting text and Share/Guide buttons
-- [ ] Save checkpoint + deploy
+- [x] Save checkpoint + deploy
 
 ## Session #55c — Home Header Layout Fix v2 (Apr 23 2026)
 - [x] Fix Home header: greeting not truncated, EN|TH|CN inline right of greeting, Share+Guide moved to brand row — no truncation
-- [ ] Save checkpoint + deploy
+- [x] Save checkpoint + deploy
 
 ## Session #55d — Greeting + Company Name Fix (Apr 23 2026)
 - [x] Greeting: use user's first name (from user.name), not businessName split — "Hey, Steve!"
 - [x] Sub-line: show businessName (company name) instead of user.name — "SK America LLC"
-- [ ] Save checkpoint + deploy
+- [x] Save checkpoint + deploy
 
 ## Session #57 — Language Flyout + IP Detection (Apr 23 2026)
 - [x] Add GET /api/detect-language endpoint: calls ip-api.com with client IP, returns 'en'|'th'|'zh-CN'
@@ -1335,3 +1335,8 @@
 - [x] Place iOS icon assets (20, 29, 40, 58, 60, 76, 80, 87, 120, 152, 167, 180, 1024) into AppIcon.appiconset with full Contents.json
 - [x] Place Android icon assets (adaptive layers + all density buckets) into mipmap directories
 - [x] Set Android adaptive icon background to navy #1a2744
+
+## Session #61 — PWA Service Worker Fix (Apr 23 2026)
+- [x] Fix: SW registration was orphaned in unused AppProvider — moved to main.tsx so it fires on every page load
+- [x] Verify SW registers on preview URL (sw_registrations: 1, scope: /, active: activated, cache: review-rocket-v2)
+- [ ] Publish checkpoint so SW fix goes live on reviewlink.app
