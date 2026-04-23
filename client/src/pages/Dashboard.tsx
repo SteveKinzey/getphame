@@ -1,6 +1,7 @@
 // ReviewLink — Dashboard / Analytics Screen
 // Shows: total requests, monthly count, weekly breakdown chart, full activity log
 
+import { useTranslation } from 'react-i18next';
 import { trpc } from "@/lib/trpc";
 import { BarChart2, Send, TrendingUp, Star, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick } from "lucide-react";
 import { format, subDays, startOfDay } from "date-fns";
@@ -18,6 +19,7 @@ function formatDate(date: Date): string {
 }
 
 export default function DashboardPage() {
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const { data: stats, isLoading } = trpc.requests.stats.useQuery();
   const { data: allRequests, isLoading: listLoading } = trpc.requests.list.useQuery();
@@ -167,21 +169,21 @@ export default function DashboardPage() {
           <span
             className="text-xs font-bold tracking-widest uppercase rr-text-gold"
           >
-            Dashboard
+            {t('dashboard.header.label')}
           </span>
         </div>
         <h1
           className="text-2xl mb-6 text-white rr-fw-black"
         >
-          Your Results
+          {t('dashboard.header.title')}
         </h1>
 
         {/* Stats grid */}
         <div className="grid grid-cols-3 gap-3">
           {[
-            { label: "This Month", value: stats?.thisMonth ?? 0, icon: <Send size={14} /> },
-            { label: "All Time", value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
-            { label: "Last 7 Days", value: velocity?.last7 ?? 0, icon: <Star size={14} /> },
+            { label: t('dashboard.stats.thisMonth'), value: stats?.thisMonth ?? 0, icon: <Send size={14} /> },
+            { label: t('dashboard.stats.allTime'), value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
+            { label: t('dashboard.stats.last7Days'), value: velocity?.last7 ?? 0, icon: <Star size={14} /> },
           ].map((s) => (
             <div
               key={s.label}
@@ -213,7 +215,7 @@ export default function DashboardPage() {
               className="text-sm font-black rr-text-navy"
             >
               <Calendar size={14} className="inline mr-1.5 mb-0.5" />
-              Last 7 Days
+              {t('dashboard.weeklyBreakdown.title')}
             </h3>
             {velocity && (
               <div className="flex items-center gap-1">
@@ -222,7 +224,7 @@ export default function DashboardPage() {
                   className="text-xs font-bold"
                   style={{ color: velocity.delta >= 0 ? "oklch(0.45 0.12 145)" : "oklch(0.55 0.18 27)" }}
                 >
-                  {velocity.delta >= 0 ? "+" : ""}{velocity.delta} vs prior week
+                  {velocity.delta >= 0 ? "+" : ""}{velocity.delta} {t('dashboard.weeklyBreakdown.vsLabel')}
                 </span>
               </div>
             )}
@@ -235,7 +237,7 @@ export default function DashboardPage() {
           ) : weeklyData.every((d) => d.count === 0) ? (
             <div className="text-center py-6">
               <p className="text-sm rr-text-navy-muted">
-                No requests in the last 7 days
+                {t('dashboard.weeklyBreakdown.noRequests')}
               </p>
             </div>
           ) : (
@@ -271,21 +273,21 @@ export default function DashboardPage() {
               style={{ borderTop: "1px solid oklch(0.94 0.01 260)" }}
             >
               <div className="text-center flex-1">
-                <p className="text-xs rr-text-navy-muted">This week</p>
+                <p className="text-xs rr-text-navy-muted">{t('dashboard.weeklyBreakdown.thisWeek')}</p>
                 <p className="text-base font-black rr-text-navy">
                   {velocity.last7}
                 </p>
               </div>
               <div className="w-px h-8" style={{ background: "oklch(0.90 0.01 260)" }} />
               <div className="text-center flex-1">
-                <p className="text-xs rr-text-navy-muted">Prior week</p>
+                <p className="text-xs rr-text-navy-muted">{t('dashboard.weeklyBreakdown.priorWeek')}</p>
                 <p className="text-base font-black rr-text-navy">
                   {velocity.prior7}
                 </p>
               </div>
               <div className="w-px h-8" style={{ background: "oklch(0.90 0.01 260)" }} />
               <div className="text-center flex-1">
-                <p className="text-xs rr-text-navy-muted">All time</p>
+                <p className="text-xs rr-text-navy-muted">{t('dashboard.weeklyBreakdown.allTime')}</p>
                 <p className="text-base font-black rr-text-navy">
                   {stats?.total ?? 0}
                 </p>
@@ -301,23 +303,23 @@ export default function DashboardPage() {
             <h3
               className="text-sm font-black mb-3 rr-text-navy"
             >
-              Email Performance
+              {t('dashboard.emailPerformance.title')}
             </h3>
             <div className="grid grid-cols-3 gap-3">
               <div className="text-center">
-                <p className="text-xs mb-1 rr-text-navy-muted">Sent</p>
+                <p className="text-xs mb-1 rr-text-navy-muted">{t('dashboard.emailPerformance.sent')}</p>
                 <p className="text-xl font-black rr-text-navy">
                   {emailPerf.totalSent}
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs mb-1 rr-text-navy-muted">Open Rate</p>
+                <p className="text-xs mb-1 rr-text-navy-muted">{t('dashboard.emailPerformance.openRate')}</p>
                 <p className="text-xl font-black" style={{ color: "oklch(0.55 0.20 145)", fontFamily: "'Poppins', sans-serif" }}>
                   {emailPerf.openRate}%
                 </p>
               </div>
               <div className="text-center">
-                <p className="text-xs mb-1 rr-text-navy-muted">Click Rate</p>
+                <p className="text-xs mb-1 rr-text-navy-muted">{t('dashboard.emailPerformance.clickRate')}</p>
                 <p className="text-xl font-black" style={{ color: "oklch(0.75 0.18 80)", fontFamily: "'Poppins', sans-serif" }}>
                   {emailPerf.clickRate}%
                 </p>
@@ -327,13 +329,13 @@ export default function DashboardPage() {
               <div className="flex items-center gap-1.5">
                 <Eye size={13} style={{ color: "oklch(0.55 0.20 145)" }} />
                 <span className="text-xs rr-text-navy-muted">
-                  {emailPerf.uniqueOpens} unique opens
+                  {t('dashboard.emailPerformance.uniqueOpens', { count: emailPerf.uniqueOpens })}
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <MousePointerClick size={13} style={{ color: "oklch(0.75 0.18 80)" }} />
                 <span className="text-xs rr-text-navy-muted">
-                  {emailPerf.uniqueClicks} unique clicks
+                  {t('dashboard.emailPerformance.uniqueClicks', { count: emailPerf.uniqueClicks })}
                 </span>
               </div>
             </div>
@@ -347,7 +349,7 @@ export default function DashboardPage() {
             <h3
               className="text-sm font-black rr-text-navy"
             >
-              All Activity
+              {t('dashboard.activityFeed.title')}
               {(allRequests?.length ?? 0) > 0 && (
                 <span className="ml-1.5 text-xs font-normal rr-text-navy-muted">
                   {filteredRequests.length !== allRequests!.length
@@ -366,7 +368,7 @@ export default function DashboardPage() {
                 }}
               >
                 {allFilteredSelected ? <CheckSquare size={13} /> : <Square size={13} />}
-                {allFilteredSelected ? "Deselect All" : "Select All"}
+                {allFilteredSelected ? t('dashboard.activityFeed.deselectAll') : t('dashboard.activityFeed.selectAll')}
               </button>
             )}
           </div>
@@ -379,13 +381,13 @@ export default function DashboardPage() {
                 <Input
                   value={activitySearch}
                   onChange={(e) => setActivitySearch(e.target.value)}
-                  placeholder="Search by name or email…"
+                  placeholder={t('dashboard.activityFeed.searchPlaceholder')}
                   className="pl-8 pr-8 text-sm h-9 bg-gray-50 border-gray-200"
                 />
                 {activitySearch && (
                   <button
                     onClick={() => setActivitySearch("")}
-                    aria-label="Clear search"
+                    aria-label={t('dashboard.activityFeed.clearSearchAriaLabel')}
                     className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
                     <X size={14} aria-hidden="true" />
@@ -394,7 +396,7 @@ export default function DashboardPage() {
               </div>
               <div className="flex items-center gap-1.5">
                 {(["all", "pending", "reviewed"] as const).map((opt) => {
-                  const labels = { all: "All", pending: "Pending", reviewed: "Reviewed" };
+                  const labels = { all: t('dashboard.activityFeed.filterAll'), pending: t('dashboard.activityFeed.filterPending'), reviewed: t('dashboard.activityFeed.filterReviewed') };
                   const active = statusFilter === opt;
                   return (
                     <button
@@ -419,7 +421,7 @@ export default function DashboardPage() {
                     onClick={() => { setActivitySearch(""); setStatusFilter("all"); }}
                     className="ml-auto text-xs px-2 py-1 rounded-lg rr-text-navy-muted"
                   >
-                    Clear
+                    {t('dashboard.activityFeed.clearFilters')}
                   </button>
                 )}
               </div>
@@ -434,20 +436,18 @@ export default function DashboardPage() {
             <div className="flex flex-col items-center py-8 gap-3">
               <Send size={32} style={{ color: "oklch(0.80 0.03 260)" }} />
               <p className="text-sm text-center rr-text-navy-muted">
-                No review requests yet.
-                <br />
-                Send your first one from the Send tab!
+                {t('dashboard.activityFeed.noRequestsYet')}
               </p>
             </div>
           ) : filteredRequests.length === 0 ? (
             <div className="flex flex-col items-center py-6 gap-2">
               <Search size={28} style={{ color: "oklch(0.80 0.03 260)" }} />
-              <p className="text-sm rr-text-navy-muted">No matching requests</p>
+              <p className="text-sm rr-text-navy-muted">{t('dashboard.activityFeed.noMatchingRequests')}</p>
               <button
                 onClick={() => { setActivitySearch(""); setStatusFilter("all"); }}
                 className="text-xs font-bold px-3 py-1.5 rounded-lg mt-1 rr-bg-surface" style={{ color: "oklch(0.45 0.05 260)" }}
               >
-                Clear filters
+                {t('dashboard.activityFeed.clearFiltersButton')}
               </button>
             </div>
           ) : (
@@ -495,7 +495,7 @@ export default function DashboardPage() {
                     <button
                       onClick={() => markRespondedMutation.mutate({ id: req.id, responded: !req.respondedAt })}
                       className="flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-bold transition-colors"
-                      title={req.respondedAt ? "Mark as not responded" : "Mark as left a review"}
+                      title={req.respondedAt ? t('dashboard.activityFeed.markAsNotReviewed') : t('dashboard.activityFeed.markAsReviewed')}
                       style={req.respondedAt ? {
                         background: "oklch(0.88 0.10 80)",
                         color: "oklch(0.35 0.12 80)",
@@ -505,8 +505,8 @@ export default function DashboardPage() {
                       }}
                     >
                       {req.respondedAt
-                        ? <><CheckCircle2 size={11} className="mr-0.5" /> Reviewed</>
-                        : <><Circle size={11} className="mr-0.5" /> Sent</>
+                        ? <><CheckCircle2 size={11} className="mr-0.5" /> {t('dashboard.activityFeed.statusReviewed')}</>
+                        : <><Circle size={11} className="mr-0.5" /> {t('dashboard.activityFeed.statusSent')}</>
                       }
                     </button>
                     <p className="text-xs rr-text-navy-faint">
@@ -519,7 +519,7 @@ export default function DashboardPage() {
                           <span
                             className="flex items-center gap-0.5 text-xs px-1.5 py-0.5 rounded-full font-bold"
                             style={{ background: "oklch(0.93 0.04 260)", color: "oklch(0.40 0.08 260)" }}
-                            title="Email opened"
+                            title={t('dashboard.activityFeed.emailOpenedTooltip')}
                           >
                             <Eye size={10} />
                             {trackingMap.get(req.id)!.opens}
@@ -529,7 +529,7 @@ export default function DashboardPage() {
                           <span
                             className="flex items-center gap-0.5 text-xs px-1.5 py-0.5 rounded-full font-bold"
                             style={{ background: "oklch(0.92 0.08 80)", color: "oklch(0.40 0.12 80)" }}
-                            title="Review link clicked"
+                            title={t('dashboard.activityFeed.reviewLinkClickedTooltip')}
                           >
                             <MousePointerClick size={10} />
                             {trackingMap.get(req.id)!.clicks}
@@ -551,7 +551,7 @@ export default function DashboardPage() {
           className="fixed bottom-28 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 px-4 py-3 rounded-2xl shadow-xl rr-bg-navy" style={{ minWidth: "280px" }}
         >
           <span className="text-xs font-bold flex-1 rr-text-gold">
-            {selected.size} selected
+            {t('dashboard.bulkActions.selectedCount', { count: selected.size })}
           </span>
           <button
             onClick={() => bulkMarkRespondedMutation.mutate({ ids: Array.from(selected), responded: true })}
@@ -563,7 +563,7 @@ export default function DashboardPage() {
             ) : (
               <CheckCircle2 size={12} />
             )}
-            Mark Reviewed
+            {t('dashboard.bulkActions.markReviewed')}
           </button>
           <button
             onClick={() => bulkMarkRespondedMutation.mutate({ ids: Array.from(selected), responded: false })}
@@ -572,11 +572,11 @@ export default function DashboardPage() {
             style={{ background: "oklch(0.32 0.07 260)", color: "rgba(255,255,255,0.8)" }}
           >
             <Circle size={12} />
-            Mark Sent
+            {t('dashboard.bulkActions.markSent')}
           </button>
           <button
             onClick={() => setSelected(new Set())}
-            aria-label="Clear selection"
+            aria-label={t('dashboard.activityFeed.clearSelectionAriaLabel')}
             className="p-1.5 rounded-lg transition-colors"
             style={{ color: "var(--text-on-dark-secondary)" }}
           >

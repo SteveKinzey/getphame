@@ -52,6 +52,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { useTranslation } from "react-i18next";
 
 // ── Inline From Name editor (shown in connected SMTP card) ─────────────────────
 function InlineFromNameEdit({ current, onSaved }: { current: string; onSaved: () => void }) {
@@ -493,6 +494,7 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
 }
 
 export default function SettingsPage() {
+  const { t } = useTranslation();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [, navigate] = useLocation();
@@ -902,15 +904,15 @@ export default function SettingsPage() {
             <span
               className="text-xs font-bold tracking-widest uppercase rr-text-gold"
             >
-              Settings
+              {t('nav.settings')}
             </span>
           </div>
           <div className="flex items-center gap-2">
             <button
               onClick={toggleTheme}
               className="flex items-center justify-center w-8 h-8 rounded-xl transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
-              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-              title={theme === "dark" ? "Light mode" : "Dark mode"}
+              aria-label={theme === "dark" ? t('theme.switchToLight', { defaultValue: 'Switch to light mode' }) : t('theme.switchToDark', { defaultValue: 'Switch to dark mode' })}
+              title={theme === "dark" ? t('theme.light') : t('theme.dark')}
             >
               {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
             </button>
@@ -919,14 +921,14 @@ export default function SettingsPage() {
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
             >
               <BookOpen size={13} />
-              Setup Guide
+              {t('nav.guide')}
             </button>
           </div>
         </div>
         <h1
           className="text-2xl text-white rr-fw-black"
         >
-          Account & Profile
+              {t('tabs.account', { defaultValue: 'Account & Profile' })}
         </h1>
         {user && (
           <div className="flex items-center gap-2 mt-1">
@@ -946,7 +948,7 @@ export default function SettingsPage() {
             <h2
               className="text-base font-black rr-text-navy"
             >
-              Business Profile
+              {t('profile.title')}
             </h2>
           </div>
 
@@ -958,7 +960,7 @@ export default function SettingsPage() {
             <div className="flex flex-col gap-3">
               <div>
                 <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
-                  Business Name *
+                  {t('profile.businessName')} *
                 </label>
                 <input
                   type="text"
@@ -977,7 +979,7 @@ export default function SettingsPage() {
               <div>
                 <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
                   <Link2 size={12} className="inline mr-1" />
-                  Google Review Link *
+                  {t('profile.reviewLink')} *
                 </label>
                 <input
                   type="url"
@@ -992,7 +994,7 @@ export default function SettingsPage() {
                   }}
                 />
                 <p className="text-xs mt-1 rr-text-navy-muted">
-                  Find this in Google Business Profile → "Get more reviews"
+                  {t('profile.reviewLinkDescription')}
                 </p>
               </div>
 
@@ -1001,12 +1003,12 @@ export default function SettingsPage() {
                 className="rounded-xl p-3 mt-1 rr-bg-white-card" style={{ border: "1px solid oklch(0.90 0.02 260)" }}
               >
                 <p className="text-xs font-black mb-3 rr-text-navy-mid">
-                  Email Sender Settings
+                  {t('profile.emailSenderSettings', { defaultValue: 'Email Sender Settings' })}
                 </p>
                 <div className="flex flex-col gap-3">
                   <div>
                     <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
-                      From Name
+                      {t('profile.fromName')}
                     </label>
                     <input
                       type="text"
@@ -1016,12 +1018,12 @@ export default function SettingsPage() {
                       className="w-full px-3 py-3 rounded-xl text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                     />
                     <p className="text-xs mt-1 rr-text-navy-muted">
-                      How your name appears in the customer's inbox. Defaults to your business name.
+                      {t('profile.fromNameDescription')}
                     </p>
                   </div>
                   <div>
                     <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
-                      Reply-To Email
+                      {t('profile.replyToEmail')}
                     </label>
                     <input
                       type="email"
@@ -1031,7 +1033,7 @@ export default function SettingsPage() {
                       className="w-full px-3 py-3 rounded-xl text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                     />
                     <p className="text-xs mt-1 rr-text-navy-muted">
-                      When a customer replies to the email, it goes here. Leave blank to use your connected email address.
+                      {t('profile.replyToEmailDescription')}
                     </p>
                   </div>
                 </div>
@@ -1053,7 +1055,7 @@ export default function SettingsPage() {
                 ) : (
                   <Save size={16} />
                 )}
-                Save Profile
+                {t('profile.saveProfile')}
               </button>
             </div>
           )}
@@ -1067,15 +1069,15 @@ export default function SettingsPage() {
               <h2
                 className="text-base font-black rr-text-navy"
               >
-                Review Platforms
-              </h2>
+              {t('reviewPlatforms.title', { defaultValue: 'Review Platforms' })}
+            </h2>
             </div>
             <button
               onClick={() => { setShowAddPlatform(true); setEditingPlatformId(null); }}
               className="flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full transition-colors rr-bg-gold rr-text-navy"
             >
               <Plus size={12} />
-              Add
+              {t('reviewPlatforms.add')}
             </button>
           </div>
           <p className="text-xs mb-4 rr-text-navy-muted">
@@ -1322,11 +1324,11 @@ export default function SettingsPage() {
             <h2
               className="text-base font-black rr-text-navy"
             >
-              Email Account
+              {t('smtp.title')}
             </h2>
           </div>
           <p className="text-xs mb-4 rr-text-navy-muted">
-            Connect your email so review requests are sent from your own address. Works with Gmail, Outlook, Yahoo, Zoho, and any business email.
+            {t('smtp.description')}
           </p>
 
           {smtpLoading ? (
@@ -1347,7 +1349,7 @@ export default function SettingsPage() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <p className="text-sm font-bold" style={{ color: smtpStatus.verified ? "oklch(0.30 0.12 145)" : "oklch(0.40 0.15 27)" }}>
-                      {smtpStatus.verified ? "Email Connected" : "Connection Unverified"}
+                      {smtpStatus.verified ? t('smtp.emailConnected', { defaultValue: 'Email Connected' }) : t('smtp.emailNotConnectedTitle', { defaultValue: 'Connection Unverified' })}
                     </p>
                     {/* Live status dot */}
                     <span
@@ -1370,7 +1372,7 @@ export default function SettingsPage() {
                   {testSmtp.isPending
                     ? <Loader2 size={12} className="animate-spin" />
                     : <RefreshCw size={12} />}
-                  Test
+                  {t('smtp.testConnection')}
                 </button>
               </div>
 
@@ -1381,7 +1383,7 @@ export default function SettingsPage() {
                   className="flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-bold transition-transform active:scale-95 whitespace-nowrap rr-bg-surface rr-text-navy-mid"
                 >
                   <Pencil size={13} />
-                  Change
+                  {t('smtp.update', { defaultValue: 'Change' })}
                 </button>
                 <button
                   onClick={() => setPreviewOpen(true)}
@@ -1389,7 +1391,7 @@ export default function SettingsPage() {
                   title="Preview the email your customers will receive"
                 >
                   <Eye size={13} />
-                  Preview
+                  {t('smtp.previewEmail')}
                 </button>
                 <button
                   onClick={() => resendWelcome.mutate()}
@@ -1398,7 +1400,7 @@ export default function SettingsPage() {
                   title="Resend confirmation email to your inbox"
                 >
                   {resendWelcome.isPending ? <Loader2 size={13} className="animate-spin" /> : <Send size={13} />}
-                  Resend
+                  {t('smtp.resendVerification')}
                 </button>
                 <button
                   onClick={() => disconnectSmtp.mutate()}
@@ -1407,7 +1409,7 @@ export default function SettingsPage() {
                   style={{ background: "oklch(0.97 0.02 27)", color: "oklch(0.50 0.18 27)" }}
                 >
                   {disconnectSmtp.isPending ? <Loader2 size={13} className="animate-spin" /> : <LogOut size={13} />}
-                  Disconnect
+                  {t('smtp.disconnect')}
                 </button>
               </div>
 
@@ -1945,7 +1947,7 @@ export default function SettingsPage() {
                   style={{ background: "oklch(0.93 0.02 260)", color: "oklch(0.35 0.04 260)" }}
                 >
                   {testCredentials.isPending ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
-                  Test
+                  {t('smtp.testConnection')}
                 </button>
                 <button
                   onClick={() => {
@@ -1995,11 +1997,11 @@ export default function SettingsPage() {
             <h2
               className="text-base font-black rr-text-navy"
             >
-              WooCommerce
+              {t('wooCommerce.title')}
             </h2>
           </div>
           <p className="text-xs mb-4 rr-text-navy-muted">
-            Connect your store to import customers from completed orders.
+            {t('wooCommerce.description')}
           </p>
 
           {wooCreds ? (
@@ -2009,7 +2011,7 @@ export default function SettingsPage() {
               >
                 <CheckCircle2 size={18} className="rr-text-green" />
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold" style={{ color: "oklch(0.30 0.12 145)" }}>Store Connected</p>
+                  <p className="text-sm font-bold" style={{ color: "oklch(0.30 0.12 145)" }}>{t('wooCommerce.storeConnected')}</p>
                   <p className="text-xs truncate" style={{ color: "oklch(0.45 0.10 145)" }}>{wooCreds.storeUrl}</p>
                   <div className="flex items-center gap-2 mt-0.5">
                     {wooCreds.lastSyncedAt ? (
@@ -2034,7 +2036,7 @@ export default function SettingsPage() {
                       ) : (
                         <RefreshCw size={9} />
                       )}
-                      {quickSync.isPending ? "Syncing…" : "Sync"}
+                      {quickSync.isPending ? t('wooCommerce.syncing') : t('wooCommerce.sync')}
                     </button>
                   </div>
                 </div>
@@ -2105,14 +2107,14 @@ export default function SettingsPage() {
                 className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-navy text-white"
               >
                 <ShoppingBag size={16} />
-                View Customers
+                  {t('wooCommerce.viewCustomers')}
                 <ChevronRight size={14} />
               </button>
               <button
                 onClick={() => { setWooUrl(wooCreds.storeUrl); setWooFormOpen(true); }}
                 className="text-xs text-center py-2 rr-text-navy-muted"
               >
-                Update credentials
+                {t('wooCommerce.updateCredentials')}
               </button>
             </div>
           ) : (
@@ -2234,7 +2236,7 @@ export default function SettingsPage() {
           <div className="flex items-center gap-2 mb-1">
             <Key size={18} className="rr-text-navy" />
             <h2 className="text-base font-black rr-text-navy">
-              API Keys
+              {t('tools.title', { defaultValue: 'API Keys' })}
             </h2>
           </div>
           <p className="text-xs mb-4 leading-relaxed rr-text-navy-mid">
@@ -2576,7 +2578,7 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
             <Bell size={18} className="rr-text-navy" />
-            <h2 className="text-base font-black rr-text-navy">Notification Preferences</h2>
+            <h2 className="text-base font-black rr-text-navy">{t('tabs.notifications', { defaultValue: 'Notification Preferences' })}</h2>
           </div>
           <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 rr-bg-white-card">
             <div className="flex-1 min-w-0">

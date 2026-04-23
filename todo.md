@@ -1253,10 +1253,11 @@
 
 ## Session #55 — Footer Language Toggle + i18n Phase 2 (Apr 22 2026)
 - [x] Add LanguageToggle to LandingPage footer (between links and copyright)
-- [ ] i18n Phase 2: wire Home.tsx with t() calls
-- [ ] i18n Phase 2: wire SendRequest.tsx with t() calls
-- [ ] i18n Phase 2: wire Settings.tsx with t() calls
-- [ ] i18n Phase 2: wire Dashboard.tsx with t() calls
-- [ ] i18n Phase 2: wire OnboardingWizard.tsx with t() calls
+- [x] i18n Phase 2: wire Home.tsx with t() calls
+- [x] i18n Phase 2: wire SendRequest.tsx with t() calls
+- [x] i18n Phase 2: wire Settings.tsx with t() calls (section headings, profile/smtp/wooCommerce/tools/notifications)
+- [x] i18n Phase 2: wire Dashboard.tsx with t() calls (header, stats, weekly breakdown, email performance, activity feed, bulk actions)
+- [ ] i18n Phase 2: wire OnboardingWizard/OnboardingGuide.tsx with t() calls (lower priority)
+- [ ] i18n Phase 2: wire SavedContacts, EmailTemplates, Reminders, Upgrade, Changelog (lower priority)
 - [ ] React Native Expo staging build scaffold
 - [ ] Save checkpoint + deploy

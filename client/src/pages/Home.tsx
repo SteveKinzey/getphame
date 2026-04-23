@@ -11,14 +11,15 @@ import OnboardingGuide from "@/components/OnboardingGuide";
 import LanguageToggle from "@/components/LanguageToggle";
 import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { useTranslation } from "react-i18next";
 
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
 
 const SHARE_URL = "https://reviewlink.app";
-const SHARE_TEXT = "I've been using ReviewLink to send review requests from my own email — it's free and works great. Worth checking out:";
 
 function ShareReferralCard() {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const { track } = useAnalytics();
 
@@ -27,8 +28,8 @@ function ShareReferralCard() {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "ReviewLink — Free review request tool",
-          text: SHARE_TEXT,
+          title: t("shareReferralCard.title"),
+          text: t("shareReferralCard.shareText"),
           url: SHARE_URL,
         });
       } catch {
@@ -38,12 +39,12 @@ function ShareReferralCard() {
     }
     // Fallback: copy to clipboard
     try {
-      await navigator.clipboard.writeText(`${SHARE_TEXT} ${SHARE_URL}`);
+      await navigator.clipboard.writeText(`${t("shareReferralCard.shareText")} ${SHARE_URL}`);
       setCopied(true);
-      toast.success("Link copied to clipboard!");
+      toast.success(t("shareReferralCard.copySuccessToast"));
       setTimeout(() => setCopied(false), 3000);
     } catch {
-      toast.error("Could not copy link.");
+      toast.error(t("shareReferralCard.copyErrorToast"));
     }
   };
 
@@ -64,10 +65,10 @@ function ShareReferralCard() {
           </div>
           <div>
             <p className="text-xs font-black leading-tight text-white">
-              Know a local business owner?
+              {t("shareReferralCard.header")}
             </p>
             <p className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
-              Help them get more reviews — it's free.
+              {t("shareReferralCard.subHeader")}
             </p>
           </div>
         </div>
@@ -78,7 +79,7 @@ function ShareReferralCard() {
           style={{ background: "oklch(0.30 0.08 260)", color: "var(--text-on-dark-secondary)" }}
         >
           <span className="rr-text-gold rr-fw-bold">"</span>
-          {SHARE_TEXT}{" "}
+          {t("shareReferralCard.shareText")}{" "}
           <span className="rr-text-gold">{SHARE_URL}</span>
           <span className="rr-text-gold rr-fw-bold">"</span>
         </div>
@@ -89,26 +90,27 @@ function ShareReferralCard() {
           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-black transition-transform active:scale-95 rr-bg-gold rr-text-navy"
         >
           {copied ? <Check size={15} /> : <Share2 size={15} />}
-          {copied ? "Copied to clipboard!" : "Share ReviewLink"}
+          {copied ? t("shareReferralCard.copiedToClipboard") : t("shareReferralCard.shareReviewLink")}
         </button>
       </div>
     </div>
   );
 }
 
-function formatRelativeTime(date: Date): string {
+function formatRelativeTime(date: Date, t: (key: string, opts?: Record<string, unknown>) => string): string {
   const diffMs = Date.now() - date.getTime();
   const diffMins = Math.floor(diffMs / 60000);
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
-  if (diffMins < 1) return "just now";
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffMins < 1) return t("relativeTime.justNow");
+  if (diffMins < 60) return t("relativeTime.minutesAgo", { diffMins });
+  if (diffHours < 24) return t("relativeTime.hoursAgo", { diffHours });
+  if (diffDays < 7) return t("relativeTime.daysAgo", { diffDays });
   return format(date, "MMM d");
 }
 
 function TrackingSummaryCard() {
+  const { t } = useTranslation();
   const { isAuthenticated } = useAuth();
   const { data: overallStats, isLoading } = trpc.tracking.overallStats.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -126,7 +128,7 @@ function TrackingSummaryCard() {
         <h3
           className="text-sm font-black rr-text-navy"
         >
-          Email Performance
+          {t("trackingSummaryCard.title")}
         </h3>
       </div>
       <div className="grid grid-cols-3 gap-3">
@@ -136,7 +138,7 @@ function TrackingSummaryCard() {
           <span className="text-xl font-black rr-text-navy">
             {totalSent}
           </span>
-          <span className="text-xs rr-text-navy-muted">Sent</span>
+          <span className="text-xs rr-text-navy-muted">{t("trackingSummaryCard.sent")}</span>
         </div>
         {/* Open Rate */}
         <div className="flex flex-col items-center rounded-xl py-3 px-2" style={{ background: "oklch(0.95 0.05 220)" }}>
@@ -144,7 +146,7 @@ function TrackingSummaryCard() {
           <span className="text-xl font-black rr-text-navy">
             {openRate}%
           </span>
-          <span className="text-xs" style={{ color: "oklch(0.50 0.08 220)" }}>Open Rate</span>
+          <span className="text-xs" style={{ color: "oklch(0.50 0.08 220)" }}>{t("trackingSummaryCard.openRate")}</span>
         </div>
         {/* Click Rate */}
         <div className="flex flex-col items-center rounded-xl py-3 px-2" style={{ background: "oklch(0.96 0.06 80)" }}>
@@ -152,17 +154,18 @@ function TrackingSummaryCard() {
           <span className="text-xl font-black rr-text-navy">
             {clickRate}%
           </span>
-          <span className="text-xs" style={{ color: "oklch(0.55 0.12 80)" }}>Click Rate</span>
+          <span className="text-xs" style={{ color: "oklch(0.55 0.12 80)" }}>{t("trackingSummaryCard.clickRate")}</span>
         </div>
       </div>
       <p className="text-xs mt-2.5 text-center rr-text-navy-faint">
-        {uniqueOpens} opened · {uniqueClicks} clicked · across {totalSent} requests
+        {t("trackingSummaryCard.summary", { uniqueOpens, uniqueClicks, totalSent })}
       </p>
     </div>
   );
 }
 
 export default function HomePage() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [, navigate] = useLocation();
   const [guideOpen, setGuideOpen] = useState(false);
@@ -190,23 +193,23 @@ export default function HomePage() {
     : 0;
 
   const handleShare = async () => {
-    const shareText = "I use ReviewLink to collect Google reviews — it's free: https://reviewlink.app";
+    const shareText = t("shareReferralCard.shareText") + " " + SHARE_URL;
     if (navigator.share) {
       try {
-        await navigator.share({ title: "ReviewLink", text: shareText, url: "https://reviewlink.app" });
+        await navigator.share({ title: "ReviewLink", text: shareText, url: SHARE_URL });
       } catch {
         // user cancelled — no action needed
       }
     } else {
       await navigator.clipboard.writeText(shareText);
-      toast.success("Copied to clipboard! Share it with a friend.");
+      toast.success(t("homePage.shareSuccessToast"));
     }
   };
 
   // SEO: dynamic page title with keywords
   useEffect(() => {
-    document.title = "ReviewLink — Send Google Review Requests Fast";
-  }, []);
+    document.title = t("homePage.pageTitle");
+  }, [t]);
 
   const smtpConnected = smtpStatus?.connected ?? false;
   const profileComplete = !!profile?.businessName && !!profile?.reviewLink;
@@ -245,6 +248,13 @@ export default function HomePage() {
     ? Math.ceil((profile.planExpiresAt - Date.now()) / (24 * 60 * 60 * 1000))
     : null;
 
+  // Tier label
+  const tierLabel =
+    profile?.tier === "pro" ? t("homePage.monthlyPro", { defaultValue: "Monthly Pro" }) :
+    profile?.tier === "annual" ? t("homePage.annualPro", { defaultValue: "Annual Pro" }) :
+    profile?.tier === "lifetime" ? t("homePage.lifetime", { defaultValue: "Lifetime" }) :
+    t("homePage.freePlan", { defaultValue: "Free Plan" });
+
   return (
     <div className="min-h-screen pb-40" style={{ background: "var(--background)" }}>
       <OnboardingGuide
@@ -278,13 +288,15 @@ export default function HomePage() {
               <span
                 className="text-xs font-bold tracking-widest uppercase rr-text-gold"
               >
-                ReviewLink
+                {t("nav.brandName")}
               </span>
             </div>
             <h1
               className="text-2xl leading-tight text-white rr-fw-black"
             >
-              {profile?.businessName ? `Hey, ${profile.businessName.split(" ")[0]}!` : `Welcome back!`}
+              {profile?.businessName
+                ? t("homePage.greeting", { defaultValue: `Hey, ${profile.businessName.split(" ")[0]}!`, name: profile.businessName.split(" ")[0] })
+                : t("homePage.welcomeBack")}
             </h1>
             <div className="flex items-center gap-2 mt-1">
               <p className="text-sm" style={{ color: "var(--text-on-dark-secondary)" }}>
@@ -298,18 +310,18 @@ export default function HomePage() {
             <button
               onClick={handleShare}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
-              title="Share ReviewLink with a friend"
+              title={t("nav.shareHint", { defaultValue: "Share ReviewLink with a friend" })}
             >
               <Share2 size={13} />
-              <span className="hidden sm:inline">Share</span>
+              <span className="hidden sm:inline">{t("nav.share", { defaultValue: "Share" })}</span>
             </button>
             <button
               onClick={() => setGuideOpen(true)}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
-              title="Open setup guide"
+              title={t("nav.guideHint", { defaultValue: "Open setup guide" })}
             >
               <BookOpen size={13} />
-              <span className="hidden sm:inline">Guide</span>
+              <span className="hidden sm:inline">{t("nav.guide", { defaultValue: "Guide" })}</span>
             </button>
           </div>
         </div>
@@ -317,10 +329,10 @@ export default function HomePage() {
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-3 relative z-10">
           {[
-            { label: "This Month", value: stats?.thisMonth ?? 0, icon: <Send size={14} /> },
-            { label: "All Time", value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
+            { label: t("homePage.thisMonth", { defaultValue: "This Month" }), value: stats?.thisMonth ?? 0, icon: <Send size={14} /> },
+            { label: t("homePage.allTime", { defaultValue: "All Time" }), value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
             {
-              label: profile?.tier === "pro" ? "Monthly Pro" : profile?.tier === "annual" ? "Annual Pro" : profile?.tier === "lifetime" ? "Lifetime" : "Free Plan",
+              label: tierLabel,
               value: profile?.tier === "free" || !profile?.tier ? `${Math.max(0, 10 - (profile?.totalSent ?? 0))}/10` : "✓",
               icon: <Star size={14} />
             },
@@ -351,11 +363,11 @@ export default function HomePage() {
           onClick={() => navigate("/compliance")}
           className="flex items-center gap-1.5 mt-3 relative z-10"
           style={{ background: "none", border: "none", padding: 0, cursor: "pointer" }}
-          title="View Compliance Guide"
+          title={t("nav.complianceHint", { defaultValue: "View Compliance Guide" })}
         >
           <ShieldCheck size={12} style={{ color: "oklch(0.65 0.18 145)" }} />
-          <span className="text-xs font-bold" style={{ color: "oklch(0.65 0.18 145)" }}>Compliance: Active</span>
-          <span className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>— view guide</span>
+          <span className="text-xs font-bold" style={{ color: "oklch(0.65 0.18 145)" }}>{t("nav.complianceActive", { defaultValue: "Compliance: Active" })}</span>
+          <span className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>{t("nav.complianceViewGuide", { defaultValue: "— view guide" })}</span>
         </button>
       </div>
 
@@ -370,15 +382,15 @@ export default function HomePage() {
               <WifiOff size={18} style={{ color: "oklch(0.55 0.22 30)", flexShrink: 0, marginTop: 1 }} />
               <div className="flex flex-col gap-0.5">
                 <p className="text-sm font-black" style={{ color: "oklch(0.35 0.12 30)", fontFamily: "'Poppins', sans-serif" }}>
-                  Email connection issue detected
+                  {t("homePage.smtpHealthAlertTitle")}
                 </p>
                 <p className="text-xs" style={{ color: "oklch(0.50 0.08 30)" }}>
-                  Your daily health check failed. Review requests may not be sending.
-                  {smtpStatus?.lastHealthCheck ? ` Last checked ${formatRelativeTime(new Date(smtpStatus.lastHealthCheck))}.` : ""}
+                  {t("homePage.smtpHealthAlertText")}
+                  {smtpStatus?.lastHealthCheck ? ` ${t("homePage.lastChecked", { defaultValue: "Last checked" })} ${formatRelativeTime(new Date(smtpStatus.lastHealthCheck), t)}.` : ""}
                 </p>
                 {smtpStatus?.lastHealthError && (
                   <p className="text-xs mt-1 font-mono" style={{ color: "oklch(0.45 0.10 30)", wordBreak: "break-word" }}>
-                    Error: {smtpStatus.lastHealthError}
+                    {t("homePage.errorPrefix", { defaultValue: "Error:" })} {smtpStatus.lastHealthError}
                   </p>
                 )}
               </div>
@@ -387,7 +399,7 @@ export default function HomePage() {
               onClick={() => navigate("/settings")}
               className="w-full py-2 rounded-xl text-xs font-black text-white" style={{ background: "oklch(0.55 0.22 30)" }}
             >
-              Fix in Settings →
+              {t("homePage.fixInSettings", { defaultValue: "Fix in Settings →" })}
             </button>
           </div>
         )}
@@ -400,15 +412,15 @@ export default function HomePage() {
             <CheckCircle2 size={22} className="mt-0.5 shrink-0" style={{ color: 'oklch(0.50 0.18 145)' }} />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-black" style={{ color: 'oklch(0.28 0.10 145)', fontFamily: "'Poppins', sans-serif" }}>
-                You're all set! 🚀
+                {t("homePage.setupBannerTitle")}
               </p>
               <p className="text-xs mt-0.5" style={{ color: 'oklch(0.38 0.08 145)' }}>
-                Email connected, review platform saved, contacts imported, first request sent. ReviewLink is fully operational.
+                {t("homePage.setupBannerText")}
               </p>
             </div>
             <button
               onClick={dismissSetupBanner}
-              aria-label="Dismiss"
+              aria-label={t("homePage.dismiss")}
               className="shrink-0 p-1 rounded-lg"
               style={{ color: 'oklch(0.50 0.10 145)' }}
             >
@@ -425,22 +437,22 @@ export default function HomePage() {
             <AlertTriangle size={22} className="mt-0.5 shrink-0" style={{ color: 'oklch(0.60 0.18 60)' }} />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-black" style={{ color: 'oklch(0.30 0.10 60)', fontFamily: "'Poppins', sans-serif" }}>
-                Your plan expires in {daysUntilExpiry} day{daysUntilExpiry === 1 ? '' : 's'}
+                {t("homePage.expiringSoonTitle")}
               </p>
               <p className="text-xs mt-0.5" style={{ color: 'oklch(0.40 0.08 60)' }}>
-                Update your payment method to keep sending review requests without interruption.
+                {t("homePage.expiringSoonText", { daysUntilExpiry })}
               </p>
               <button
                 onClick={() => navigate('/settings')}
                 className="mt-2 flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-lg transition-opacity active:opacity-70 text-white" style={{ background: "oklch(0.60 0.18 60)" }}
               >
                 <CreditCard size={12} />
-                Manage Billing
+                {t("homePage.manageBilling", { defaultValue: "Manage Billing" })}
               </button>
             </div>
             <button
               onClick={dismissExpiryBanner}
-              aria-label="Dismiss"
+              aria-label={t("homePage.dismiss")}
               className="shrink-0 p-1 rounded-lg"
               style={{ color: 'oklch(0.55 0.10 60)' }}
             >
@@ -455,7 +467,7 @@ export default function HomePage() {
             <p
               className="text-sm font-black mb-3 rr-text-navy"
             >
-              Complete your setup
+              {t("homePage.completeSetup", { defaultValue: "Complete your setup" })}
             </p>
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-3">
@@ -465,7 +477,9 @@ export default function HomePage() {
                   <AlertCircle size={16} style={{ color: "oklch(0.65 0.18 80)" }} />
                 )}
                 <span className="text-sm" style={{ color: profileComplete ? "oklch(0.45 0.10 145)" : "oklch(0.40 0.04 260)" }}>
-                  Business profile {profileComplete ? "complete" : "— add your business name & review link"}
+                  {profileComplete
+                    ? t("homePage.profileComplete", { defaultValue: "Business profile complete" })
+                    : t("homePage.profileIncomplete", { defaultValue: "Business profile — add your business name & review link" })}
                 </span>
               </div>
               <div className="flex items-center gap-3">
@@ -475,7 +489,9 @@ export default function HomePage() {
                   <AlertCircle size={16} style={{ color: "oklch(0.65 0.18 80)" }} />
                 )}
                 <span className="text-sm" style={{ color: smtpConnected ? "oklch(0.45 0.10 145)" : "oklch(0.40 0.04 260)" }}>
-                  Email {smtpConnected ? `connected (${smtpStatus?.email})` : "— connect your email account"}
+                  {smtpConnected
+                    ? t("homePage.emailConnected", { defaultValue: `Email connected (${smtpStatus?.email})`, email: smtpStatus?.email })
+                    : t("homePage.emailNotConnected", { defaultValue: "Email — connect your email account" })}
                 </span>
               </div>
             </div>
@@ -484,7 +500,7 @@ export default function HomePage() {
                 onClick={() => navigate("/settings")}
                 className="mt-3 w-full py-2.5 rounded-xl text-sm font-black rr-bg-navy rr-text-gold"
               >
-                Go to Settings →
+                {t("homePage.goToSettings", { defaultValue: "Go to Settings →" })}
               </button>
             )}
           </div>
@@ -508,7 +524,7 @@ export default function HomePage() {
           }}
         >
           <Rocket size={24} />
-          Send a Review Request
+          {t("homePage.sendRequest")}
         </button>
 
         {/* ── SEO keyword section — visible to crawlers, useful to users ─── */}
@@ -516,11 +532,10 @@ export default function HomePage() {
           <h2
             className="text-sm font-black mb-2 rr-text-navy"
           >
-            Get More Business Reviews
+            {t("homePage.seoTitle", { defaultValue: "Get More Business Reviews" })}
           </h2>
           <p className="text-xs leading-relaxed rr-text-navy-muted">
-            ReviewLink makes it easy to send personalized review requests to your customers via email — for Google, Yelp, TripAdvisor, Bing, Facebook, and more.
-            Build your online reputation across every platform, increase star ratings, and attract new customers — all from one simple dashboard.
+            {t("homePage.seoDescription", { defaultValue: "ReviewLink makes it easy to send personalized review requests to your customers via email — for Google, Yelp, TripAdvisor, Bing, Facebook, and more. Build your online reputation across every platform, increase star ratings, and attract new customers — all from one simple dashboard." })}
           </p>
         </div>
 
@@ -531,14 +546,14 @@ export default function HomePage() {
               <h3
                 className="text-sm font-black rr-text-navy"
               >
-                Recent Requests
+                {t("homePage.recentRequestsTitle")}
               </h3>
               <button
                 onClick={() => navigate("/dashboard")}
                 className="text-xs font-bold"
                 style={{ color: "oklch(0.50 0.10 260)" }}
               >
-                View All →
+                {t("homePage.viewAllRequests")}
               </button>
             </div>
             <div className="flex flex-col gap-2">
@@ -563,10 +578,10 @@ export default function HomePage() {
                     <div
                       className="text-xs px-2 py-0.5 rounded-full font-bold rr-bg-green-pale" style={{ color: "oklch(0.45 0.12 145)" }}
                     >
-                      Sent
+                      {t("homePage.sent")}
                     </div>
                     <p className="text-xs mt-0.5 rr-text-navy-faint">
-                      {formatRelativeTime(new Date(req.sentAt))}
+                      {formatRelativeTime(new Date(req.sentAt), t)}
                     </p>
                   </div>
                 </div>
@@ -583,7 +598,7 @@ export default function HomePage() {
               <h3
                 className="text-sm font-black rr-text-navy"
               >
-                Monthly Goal
+                {t("homePage.monthlyGoal")}
               </h3>
             </div>
             {!editingGoal ? (
@@ -592,7 +607,7 @@ export default function HomePage() {
                 className="flex items-center gap-1 text-xs font-bold px-2 py-1 rounded-lg rr-bg-surface" style={{ color: "oklch(0.50 0.10 260)" }}
               >
                 <Pencil size={11} />
-                {reviewGoal > 0 ? "Edit" : "Set goal"}
+                {reviewGoal > 0 ? t("homePage.editGoal") : t("homePage.setYourGoal")}
               </button>
             ) : (
               <div className="flex items-center gap-1">
@@ -636,7 +651,7 @@ export default function HomePage() {
                   if (e.key === "Escape") setEditingGoal(false);
                 }}
               />
-              <span className="text-xs rr-text-navy-muted">reviews / month</span>
+              <span className="text-xs rr-text-navy-muted">{t("homePage.reviewsPerMonth", { defaultValue: "reviews / month" })}</span>
             </div>
           ) : reviewGoal > 0 ? (
             <div>
@@ -648,7 +663,7 @@ export default function HomePage() {
                     {stats?.respondedThisMonth ?? 0}
                   </span>
                   <span className="text-sm ml-1 rr-text-navy-muted">
-                    / {reviewGoal} goal
+                    / {reviewGoal} {t("homePage.goal", { defaultValue: "goal" })}
                   </span>
                 </div>
                 {(stats?.respondedThisMonth ?? 0) >= reviewGoal ? (
@@ -656,11 +671,11 @@ export default function HomePage() {
                     className="text-xs font-black px-2.5 py-1 rounded-full"
                     style={{ background: "oklch(0.92 0.08 145)", color: "oklch(0.35 0.15 145)" }}
                   >
-                    Goal reached! 🎉
+                    {t("homePage.goalReached", { defaultValue: "Goal reached! 🎉" })}
                   </span>
                 ) : (
                   <span className="text-xs rr-text-navy-muted">
-                    {reviewGoal - (stats?.respondedThisMonth ?? 0)} to go
+                    {reviewGoal - (stats?.respondedThisMonth ?? 0)} {t("homePage.toGo", { defaultValue: "to go" })}
                   </span>
                 )}
               </div>
@@ -676,12 +691,12 @@ export default function HomePage() {
                 />
               </div>
               <p className="text-xs mt-1.5 rr-text-navy-faint">
-                {Math.min(100, Math.round(((stats?.respondedThisMonth ?? 0) / reviewGoal) * 100))}% of monthly goal
+                {Math.min(100, Math.round(((stats?.respondedThisMonth ?? 0) / reviewGoal) * 100))}% {t("homePage.ofMonthlyGoal", { defaultValue: "of monthly goal" })}
               </p>
             </div>
           ) : (
             <p className="text-xs rr-text-navy-muted">
-              Set a monthly review goal to track your progress and stay motivated.
+              {t("homePage.goalDescription")}
             </p>
           )}
         </div>
@@ -698,7 +713,7 @@ export default function HomePage() {
             <h3
               className="text-sm font-black mb-3 rr-text-navy"
             >
-              Requests by Platform
+              {t("homePage.requestsByPlatform", { defaultValue: "Requests by Platform" })}
             </h3>
             <div className="flex flex-col gap-2">
               {stats.platformBreakdown

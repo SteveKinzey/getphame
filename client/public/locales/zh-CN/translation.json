@@ -11,7 +11,14 @@
     "home": "首页",
     "send": "发送",
     "dashboard": "仪表盘",
-    "settings": "设置"
+    "settings": "设置",
+    "shareHint": "与朋友分享 ReviewLink",
+    "share": "分享",
+    "guideHint": "打开设置指南",
+    "guide": "指南",
+    "complianceHint": "查看合规指南",
+    "complianceActive": "合规状态：已启用",
+    "complianceViewGuide": "— 查看指南"
   },
   "hero": {
     "tagline": "免费开始 — 无需信用卡",
@@ -113,7 +120,7 @@
   },
   "homePage": {
     "setGoalErrorToast": "{{err.message}}",
-    "shareSuccessToast": "已复制到剪贴板！分享给朋友。",
+    "shareSuccessToast": "已复制链接！分享给朋友吧。",
     "pageTitle": "ReviewLink — 快速发送 Google 评论请求",
     "greeting": "您好，{{user.firstName}}",
     "welcomeBack": "欢迎回来，",
@@ -151,7 +158,7 @@
     "opened": "已打开",
     "clicked": "已点击",
     "sent": "已发送",
-    "viewAllRequests": "查看所有请求",
+    "viewAllRequests": "查看全部 →",
     "onboardingHeroTitle": "自动获取更多评论",
     "onboardingHeroSubtitle": "连接您的电子邮件，添加您的客户，并在几分钟内开始发送评论请求。",
     "getStarted": "开始使用",
@@ -174,7 +181,31 @@
     "featureRequests": "功能请求",
     "whatsNew": "最新动态？",
     "reviewLinkOnX": "ReviewLink 在 X 上",
-    "buyTheCode": "购买代码"
+    "buyTheCode": "购买代码",
+    "monthlyPro": "月度专业版",
+    "annualPro": "年度专业版",
+    "lifetime": "终身版",
+    "freePlan": "免费计划",
+    "thisMonth": "本月",
+    "allTime": "全部",
+    "completeSetup": "完成设置",
+    "profileComplete": "商家资料已完善",
+    "profileIncomplete": "商家资料 — 添加您的商家名称和评价链接",
+    "emailConnected": "邮箱已连接 ({{email}})",
+    "emailNotConnected": "邮箱 — 连接您的邮箱账户",
+    "goToSettings": "前往设置 →",
+    "fixInSettings": "在设置中修复 →",
+    "lastChecked": "上次检查",
+    "errorPrefix": "错误：",
+    "manageBilling": "管理账单",
+    "seoTitle": "获取更多商家评价",
+    "seoDescription": "ReviewLink 让您轻松通过电子邮件向客户发送个性化评价请求 — 支持 Google、Yelp、TripAdvisor、Bing、Facebook 等平台。",
+    "goal": "目标",
+    "goalReached": "达成目标！🎉",
+    "toGo": "还差",
+    "reviewsPerMonth": "条评价 / 月",
+    "ofMonthlyGoal": "月度目标完成率",
+    "requestsByPlatform": "按平台统计请求"
   },
   "notifications": {
     "followUpReminderScheduled": "已安排跟进提醒！",
@@ -196,9 +227,11 @@
     "other": "其他"
   },
   "validationErrors": {
-    "customerNameRequired": "客户姓名是必填项",
+    "customerNameRequired": "请输入客户姓名",
     "emailAddressRequired": "电子邮件地址是必填项",
-    "invalidEmailAddress": "请输入有效的电子邮件地址"
+    "invalidEmailAddress": "请输入有效的电子邮件地址",
+    "emailRequired": "请输入电子邮件地址",
+    "emailInvalid": "请输入有效的电子邮件地址"
   },
   "successScreen": {
     "requestSent": "请求已发送！🚀",
@@ -213,7 +246,9 @@
     "followUpRemindersOff": "跟进提醒已关闭",
     "enableInSettings": "在设置中启用 →",
     "sendAnotherReviewRequest": "发送另一个评论请求",
-    "goToDashboard": "前往仪表板"
+    "goToDashboard": "前往仪表板",
+    "followUpDescription": "如果 {{customerName}} 在 {{days}} 天内未评价，自动发送温馨提醒。",
+    "yesRemindMe": "是的，提醒我"
   },
   "mainForm": {
     "pageTitle": "发送评论请求",
@@ -241,7 +276,17 @@
   },
   "page": {
     "title": "设置",
-    "description": "管理您的商家资料、邮件连接和套餐。"
+    "description": "管理您的商家资料、邮件连接和套餐。",
+    "requestAReview": "请求评价",
+    "customerDetails": "客户信息",
+    "importFromContacts": "从通讯录导入",
+    "freeLimitReached": "已达免费上限",
+    "freeLimitReachedDesc": "您已用完 {{FREE_LIMIT}} 次免费评价请求。升级到专业版继续发送。",
+    "freePlanRemaining": "免费计划：剩余 {{remaining}} / {{FREE_LIMIT}} 次",
+    "upgradeToPro": "升级到专业版 →",
+    "upgrade": "升级",
+    "imported": "已导入",
+    "importedMultiple": "已导入 {{count}} 个联系人 — 正在发送给第一个。如需批量发送，请使用批量发送功能。"
   },
   "tabs": {
     "account": "账户",
@@ -306,7 +351,8 @@
     "replyToEmailDescription": "当客户回复邮件时，邮件将发送到此处。留空则使用您已连接的邮件地址。",
     "saveProfile": "保存资料",
     "successToast": "商家资料已保存！",
-    "dailySendLimitSaved": "每日发送限制已保存！"
+    "dailySendLimitSaved": "每日发送限制已保存！",
+    "addBusinessNameAndLink": "请先在设置中添加您的商家名称和 Google 评价链接。"
   },
   "reviewPlatforms": {
     "title": "评论平台",
@@ -412,7 +458,10 @@
     "previewError": "无法发送测试邮件：{{message}}",
     "disconnectConfirm": "您确定要断开您的邮件连接吗？这将停止所有外发邮件。",
     "disconnectSuccess": "邮件账户已断开连接。",
-    "disconnectError": "无法断开账户：{{message}}"
+    "disconnectError": "无法断开账户：{{message}}",
+    "noEmailConnected": "未连接邮箱",
+    "emailNotConnectedTitle": "未连接邮箱",
+    "emailNotConnectedDesc": "请在设置中连接您的邮箱账户。支持 Gmail、Outlook、Yahoo 或任何商务邮箱。"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -596,7 +645,9 @@
     "bulkSendSuccess": "{{sent}} 个评论请求已发送！",
     "bulkSendSuccessWithSkipped": "{{sent}} 个评论请求已发送！ (跳过 {{skipped}} 个 — 已达到免费限额)",
     "bulkSendPartialSuccess": "已发送 {{sent}} 个，{{failed}} 个失败。请检查您在“设置”中的邮箱连接。",
-    "bulkSendFailed": "所有 {{failed}} 个发送均失败。请检查您在“设置”中的邮箱连接。"
+    "bulkSendFailed": "所有 {{failed}} 个发送均失败。请检查您在“设置”中的邮箱连接。",
+    "scheduled": "已安排！",
+    "reviewRequestSent": "评价请求已发送！"
   },
   "header": {
     "back": "返回",

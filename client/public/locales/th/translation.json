@@ -11,7 +11,14 @@
     "home": "หน้าแรก",
     "send": "ส่ง",
     "dashboard": "แดชบอร์ด",
-    "settings": "การตั้งค่า"
+    "settings": "การตั้งค่า",
+    "shareHint": "แชร์ ReviewLink กับเพื่อน",
+    "share": "แชร์",
+    "guideHint": "เปิดคู่มือการตั้งค่า",
+    "guide": "คู่มือ",
+    "complianceHint": "ดูคู่มือการปฏิบัติตามกฎ",
+    "complianceActive": "การปฏิบัติตามกฎ: เปิดใช้งาน",
+    "complianceViewGuide": "— ดูคู่มือ"
   },
   "hero": {
     "tagline": "เริ่มต้นฟรี — ไม่ต้องใช้บัตรเครดิต",
@@ -113,7 +120,7 @@
   },
   "homePage": {
     "setGoalErrorToast": "{{err.message}}",
-    "shareSuccessToast": "คัดลอกไปยังคลิปบอร์ดแล้ว! แชร์ให้เพื่อน",
+    "shareSuccessToast": "คัดลอกลิงก์แล้ว! แชร์ให้เพื่อน",
     "pageTitle": "ReviewLink — ส่งคำขอรีวิว Google ได้อย่างรวดเร็ว",
     "greeting": "สวัสดี, {{user.firstName}}",
     "welcomeBack": "ยินดีต้อนรับกลับมา,",
@@ -151,7 +158,7 @@
     "opened": "เปิดแล้ว",
     "clicked": "คลิกแล้ว",
     "sent": "ส่งแล้ว",
-    "viewAllRequests": "ดูคำขอทั้งหมด",
+    "viewAllRequests": "ดูทั้งหมด →",
     "onboardingHeroTitle": "รับรีวิวเพิ่มขึ้นโดยอัตโนมัติ",
     "onboardingHeroSubtitle": "เชื่อมต่ออีเมลของคุณ เพิ่มลูกค้าของคุณ และเริ่มส่งคำขอรีวิวได้ในไม่กี่นาที",
     "getStarted": "เริ่มต้น",
@@ -174,7 +181,31 @@
     "featureRequests": "คำขอคุณสมบัติ",
     "whatsNew": "มีอะไรใหม่?",
     "reviewLinkOnX": "ReviewLink บน X",
-    "buyTheCode": "ซื้อโค้ด"
+    "buyTheCode": "ซื้อโค้ด",
+    "monthlyPro": "โปรรายเดือน",
+    "annualPro": "โปรรายปี",
+    "lifetime": "ตลอดชีพ",
+    "freePlan": "แผนฟรี",
+    "thisMonth": "เดือนนี้",
+    "allTime": "ทั้งหมด",
+    "completeSetup": "ตั้งค่าให้ครบ",
+    "profileComplete": "โปรไฟล์ธุรกิจครบแล้ว",
+    "profileIncomplete": "โปรไฟล์ธุรกิจ — เพิ่มชื่อธุรกิจและลิงก์รีวิว",
+    "emailConnected": "เชื่อมต่ออีเมลแล้ว ({{email}})",
+    "emailNotConnected": "อีเมล — เชื่อมต่อบัญชีอีเมลของคุณ",
+    "goToSettings": "ไปที่การตั้งค่า →",
+    "fixInSettings": "แก้ไขในการตั้งค่า →",
+    "lastChecked": "ตรวจสอบล่าสุด",
+    "errorPrefix": "ข้อผิดพลาด:",
+    "manageBilling": "จัดการการเรียกเก็บเงิน",
+    "seoTitle": "รับรีวิวธุรกิจเพิ่มขึ้น",
+    "seoDescription": "ReviewLink ช่วยให้คุณส่งคำขอรีวิวส่วนตัวถึงลูกค้าทางอีเมล — สำหรับ Google, Yelp, TripAdvisor, Bing, Facebook และอื่นๆ",
+    "goal": "เป้าหมาย",
+    "goalReached": "ถึงเป้าหมายแล้ว! 🎉",
+    "toGo": "อีกนิด",
+    "reviewsPerMonth": "รีวิว / เดือน",
+    "ofMonthlyGoal": "ของเป้าหมายรายเดือน",
+    "requestsByPlatform": "คำขอตามแพลตฟอร์ม"
   },
   "notifications": {
     "followUpReminderScheduled": "กำหนดการแจ้งเตือนติดตามผลแล้ว!",
@@ -196,9 +227,11 @@
     "other": "อื่นๆ"
   },
   "validationErrors": {
-    "customerNameRequired": "ต้องระบุชื่อลูกค้า",
+    "customerNameRequired": "กรุณากรอกชื่อลูกค้า",
     "emailAddressRequired": "ต้องระบุที่อยู่อีเมล",
-    "invalidEmailAddress": "ป้อนที่อยู่อีเมลที่ถูกต้อง"
+    "invalidEmailAddress": "ป้อนที่อยู่อีเมลที่ถูกต้อง",
+    "emailRequired": "กรุณากรอกที่อยู่อีเมล",
+    "emailInvalid": "กรุณากรอกอีเมลที่ถูกต้อง"
   },
   "successScreen": {
     "requestSent": "ส่งคำขอแล้ว! 🚀",
@@ -213,7 +246,9 @@
     "followUpRemindersOff": "การแจ้งเตือนการติดตามผลปิดอยู่",
     "enableInSettings": "เปิดใช้งานในการตั้งค่า →",
     "sendAnotherReviewRequest": "ส่งคำขอรีวิวอีกครั้ง",
-    "goToDashboard": "ไปที่แดชบอร์ด"
+    "goToDashboard": "ไปที่แดชบอร์ด",
+    "followUpDescription": "ส่งการแจ้งเตือนอัตโนมัติถึง {{customerName}} ใน {{days}} วัน หากยังไม่ได้รีวิว",
+    "yesRemindMe": "ใช่ แจ้งเตือนฉัน"
   },
   "mainForm": {
     "pageTitle": "ส่งคำขอรีวิว",
@@ -241,7 +276,17 @@
   },
   "page": {
     "title": "การตั้งค่า",
-    "description": "จัดการโปรไฟล์ธุรกิจ การเชื่อมต่ออีเมล และแผนของคุณ"
+    "description": "จัดการโปรไฟล์ธุรกิจ การเชื่อมต่ออีเมล และแผนของคุณ",
+    "requestAReview": "ขอรีวิว",
+    "customerDetails": "ข้อมูลลูกค้า",
+    "importFromContacts": "นำเข้าจากรายชื่อ",
+    "freeLimitReached": "ถึงขีดจำกัดฟรีแล้ว",
+    "freeLimitReachedDesc": "คุณใช้คำขอรีวิวฟรีครบ {{FREE_LIMIT}} ครั้งแล้ว อัปเกรดเป็น Pro เพื่อส่งต่อ",
+    "freePlanRemaining": "แผนฟรี: เหลือ {{remaining}} จาก {{FREE_LIMIT}} ครั้ง",
+    "upgradeToPro": "อัปเกรดเป็น Pro →",
+    "upgrade": "อัปเกรด",
+    "imported": "นำเข้าแล้ว",
+    "importedMultiple": "นำเข้า {{count}} รายชื่อ — ส่งให้รายชื่อแรกก่อน ใช้ Bulk Send สำหรับหลายรายชื่อ"
   },
   "tabs": {
     "account": "บัญชี",
@@ -306,7 +351,8 @@
     "replyToEmailDescription": "เมื่อลูกค้าตอบกลับอีเมล จะถูกส่งมาที่นี่ เว้นว่างไว้เพื่อใช้ที่อยู่อีเมลที่เชื่อมต่อของคุณ",
     "saveProfile": "บันทึกโปรไฟล์",
     "successToast": "บันทึกโปรไฟล์ธุรกิจแล้ว!",
-    "dailySendLimitSaved": "บันทึกขีดจำกัดการส่งรายวันแล้ว!"
+    "dailySendLimitSaved": "บันทึกขีดจำกัดการส่งรายวันแล้ว!",
+    "addBusinessNameAndLink": "เพิ่มชื่อธุรกิจและลิงก์รีวิว Google ในการตั้งค่าก่อน"
   },
   "reviewPlatforms": {
     "title": "แพลตฟอร์มรีวิว",
@@ -412,7 +458,10 @@
     "previewError": "ไม่สามารถส่งอีเมลทดสอบได้: {{message}}",
     "disconnectConfirm": "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการเชื่อมต่ออีเมลของคุณ? การดำเนินการนี้จะหยุดอีเมลขาออกทั้งหมด",
     "disconnectSuccess": "ยกเลิกการเชื่อมต่อบัญชีอีเมลแล้ว",
-    "disconnectError": "ไม่สามารถยกเลิกการเชื่อมต่อบัญชีได้: {{message}}"
+    "disconnectError": "ไม่สามารถยกเลิกการเชื่อมต่อบัญชีได้: {{message}}",
+    "noEmailConnected": "ยังไม่ได้เชื่อมต่ออีเมล",
+    "emailNotConnectedTitle": "ยังไม่ได้เชื่อมต่ออีเมล",
+    "emailNotConnectedDesc": "เชื่อมต่อบัญชีอีเมลในการตั้งค่า รองรับ Gmail, Outlook, Yahoo หรืออีเมลธุรกิจ"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -596,7 +645,9 @@
     "bulkSendSuccess": "ส่งคำขอรีวิว {{sent}} รายการแล้ว!",
     "bulkSendSuccessWithSkipped": "ส่งคำขอรีวิว {{sent}} รายการแล้ว! (ข้ามไป {{skipped}} รายการ — ถึงขีดจำกัดฟรีแล้ว)",
     "bulkSendPartialSuccess": "ส่งแล้ว {{sent}} รายการ, ล้มเหลว {{failed}} รายการ ตรวจสอบการเชื่อมต่ออีเมลของคุณในการตั้งค่า",
-    "bulkSendFailed": "การส่งทั้งหมด {{failed}} รายการล้มเหลว ตรวจสอบการเชื่อมต่ออีเมลของคุณในการตั้งค่า"
+    "bulkSendFailed": "การส่งทั้งหมด {{failed}} รายการล้มเหลว ตรวจสอบการเชื่อมต่ออีเมลของคุณในการตั้งค่า",
+    "scheduled": "กำหนดเวลาแล้ว!",
+    "reviewRequestSent": "ส่งคำขอรีวิวแล้ว!"
   },
   "header": {
     "back": "ย้อนกลับ",

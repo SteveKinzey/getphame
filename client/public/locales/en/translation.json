@@ -11,7 +11,14 @@
     "home": "Home",
     "send": "Send",
     "dashboard": "Dashboard",
-    "settings": "Settings"
+    "settings": "Settings",
+    "shareHint": "Share ReviewLink with a friend",
+    "share": "Share",
+    "guideHint": "Open setup guide",
+    "guide": "Guide",
+    "complianceHint": "View Compliance Guide",
+    "complianceActive": "Compliance: Active",
+    "complianceViewGuide": "— view guide"
   },
   "hero": {
     "tagline": "Free to start — No credit card required",
@@ -151,7 +158,7 @@
     "opened": "Opened",
     "clicked": "Clicked",
     "sent": "Sent",
-    "viewAllRequests": "View All Requests",
+    "viewAllRequests": "View All →",
     "onboardingHeroTitle": "Get more reviews on autopilot",
     "onboardingHeroSubtitle": "Connect your email, add your customers, and start sending review requests in minutes.",
     "getStarted": "Get Started",
@@ -174,7 +181,31 @@
     "featureRequests": "Feature Requests",
     "whatsNew": "What's New?",
     "reviewLinkOnX": "ReviewLink on X",
-    "buyTheCode": "Buy the Code"
+    "buyTheCode": "Buy the Code",
+    "monthlyPro": "Monthly Pro",
+    "annualPro": "Annual Pro",
+    "lifetime": "Lifetime",
+    "freePlan": "Free Plan",
+    "thisMonth": "This Month",
+    "allTime": "All Time",
+    "completeSetup": "Complete your setup",
+    "profileComplete": "Business profile complete",
+    "profileIncomplete": "Business profile — add your business name & review link",
+    "emailConnected": "Email connected ({{email}})",
+    "emailNotConnected": "Email — connect your email account",
+    "goToSettings": "Go to Settings →",
+    "fixInSettings": "Fix in Settings →",
+    "lastChecked": "Last checked",
+    "errorPrefix": "Error:",
+    "manageBilling": "Manage Billing",
+    "seoTitle": "Get More Business Reviews",
+    "seoDescription": "ReviewLink makes it easy to send personalized review requests to your customers via email — for Google, Yelp, TripAdvisor, Bing, Facebook, and more. Build your online reputation across every platform, increase star ratings, and attract new customers — all from one simple dashboard.",
+    "goal": "goal",
+    "goalReached": "Goal reached! 🎉",
+    "toGo": "to go",
+    "reviewsPerMonth": "reviews / month",
+    "ofMonthlyGoal": "of monthly goal",
+    "requestsByPlatform": "Requests by Platform"
   },
   "notifications": {
     "followUpReminderScheduled": "Follow-up reminder scheduled!",
@@ -198,7 +229,9 @@
   "validationErrors": {
     "customerNameRequired": "Customer name is required",
     "emailAddressRequired": "Email address is required",
-    "invalidEmailAddress": "Enter a valid email address"
+    "invalidEmailAddress": "Enter a valid email address",
+    "emailRequired": "Email address is required",
+    "emailInvalid": "Enter a valid email address"
   },
   "successScreen": {
     "requestSent": "Request Sent! 🚀",
@@ -213,7 +246,9 @@
     "followUpRemindersOff": "Follow-up reminders are OFF",
     "enableInSettings": "Enable in Settings →",
     "sendAnotherReviewRequest": "Send another review request",
-    "goToDashboard": "Go to Dashboard"
+    "goToDashboard": "Go to Dashboard",
+    "followUpDescription": "Auto-send a gentle reminder to {{customerName}} in {{days}} days if they haven't reviewed yet.",
+    "yesRemindMe": "Yes, remind me"
   },
   "mainForm": {
     "pageTitle": "Send Review Request",
@@ -241,7 +276,17 @@
   },
   "page": {
     "title": "Settings",
-    "description": "Manage your business profile, email connection, and plan."
+    "description": "Manage your business profile, email connection, and plan.",
+    "requestAReview": "Request a Review",
+    "customerDetails": "Customer Details",
+    "importFromContacts": "Import from Contacts",
+    "freeLimitReached": "Free limit reached",
+    "freeLimitReachedDesc": "You've used all {{FREE_LIMIT}} free review requests. Upgrade to Pro to keep sending.",
+    "freePlanRemaining": "Free plan: {{remaining}} of {{FREE_LIMIT}} sends remaining",
+    "upgradeToPro": "Upgrade to Pro →",
+    "upgrade": "Upgrade",
+    "imported": "Imported",
+    "importedMultiple": "Imported {{count}} contacts - sending to first contact. Use Bulk Send for multiple."
   },
   "tabs": {
     "account": "Account",
@@ -306,7 +351,8 @@
     "replyToEmailDescription": "When a customer replies to the email, it goes here. Leave blank to use your connected email address.",
     "saveProfile": "Save Profile",
     "successToast": "Business profile saved!",
-    "dailySendLimitSaved": "Daily send limit saved!"
+    "dailySendLimitSaved": "Daily send limit saved!",
+    "addBusinessNameAndLink": "Add your business name and Google review link in Settings first."
   },
   "reviewPlatforms": {
     "title": "Review Platforms",
@@ -412,7 +458,10 @@
     "previewError": "Could not send test email: {{message}}",
     "disconnectConfirm": "Are you sure you want to disconnect your email? This will stop all outgoing emails.",
     "disconnectSuccess": "Email account disconnected.",
-    "disconnectError": "Could not disconnect account: {{message}}"
+    "disconnectError": "Could not disconnect account: {{message}}",
+    "noEmailConnected": "No email connected",
+    "emailNotConnectedTitle": "Email not connected",
+    "emailNotConnectedDesc": "Connect your email account in Settings. Works with Gmail, Outlook, Yahoo, or any business email."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -596,7 +645,9 @@
     "bulkSendSuccess": "{{sent}} review request{{plural}} sent!",
     "bulkSendSuccessWithSkipped": "{{sent}} review request{{plural}} sent! ({{skipped}} skipped — free limit reached)",
     "bulkSendPartialSuccess": "{{sent}} sent, {{failed}} failed. Check your email connection in Settings.",
-    "bulkSendFailed": "All {{failed}} sends failed. Check your email connection in Settings."
+    "bulkSendFailed": "All {{failed}} sends failed. Check your email connection in Settings.",
+    "scheduled": "scheduled!",
+    "reviewRequestSent": "Review request sent!"
   },
   "header": {
     "back": "Back",
