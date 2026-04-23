@@ -165,7 +165,13 @@ export function registerAppleAuthRoutes(app: Express) {
 
       const cookieOptions = getSessionCookieOptions(req);
        res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
-      res.redirect(302, "/");
+      // Redirect to a same-origin landing page instead of / directly.
+      // Apple's form_post is cross-origin (appleid.apple.com), so Safari ITP may
+      // not send the session cookie on the immediate redirect. The landing page
+      // does a client-side navigation after a 150ms delay, ensuring the cookie
+      // is treated as first-party on the next request.
+      const returnPath = "/";
+      res.redirect(302, `/auth/apple/landing?return=${encodeURIComponent(returnPath)}`);
     } catch (err) {
       console.error("[AppleAuth] Callback failed:", err);
       res.redirect(302, "/?auth_error=apple_failed");

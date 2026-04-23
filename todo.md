@@ -1297,14 +1297,14 @@
 - [ ] Save checkpoint + deploy
 
 ## Session #57 — Language Flyout + IP Detection (Apr 23 2026)
-- [ ] Add GET /api/detect-language endpoint: calls ip-api.com with client IP, returns 'en'|'th'|'zh-CN'
-- [ ] Build LanguageFlyout component: globe icon trigger, slide-down panel, EN/TH/CN options with gold checkmark on active
-- [ ] Update i18n.ts: on init, check localStorage first, then call /api/detect-language, set and persist result
-- [ ] Replace LanguageToggle with LanguageFlyout in Home header (top-left of header panel)
-- [ ] Replace LanguageToggle with LanguageFlyout in LandingPage (top-left of nav bar)
-- [ ] Remove LanguageToggle from BottomNav (language is now global, not per-page)
-- [ ] Verify: first visit auto-detects language, switching persists across page reloads
-- [ ] Save checkpoint + deploy
+- [x] Add GET /api/detect-language endpoint: calls ip-api.com with client IP, returns 'en'|'th'|'zh-CN'
+- [x] Build LanguageFlyout component: globe icon trigger, slide-down panel, EN/TH/CN options with gold checkmark on active
+- [x] Update i18n.ts: on init, check localStorage first, then call /api/detect-language, set and persist result
+- [x] Replace LanguageToggle with LanguageFlyout in Home header (top-left of header panel)
+- [x] Replace LanguageToggle with LanguageFlyout in LandingPage (top-left of nav bar)
+- [x] Remove LanguageToggle from BottomNav (language is now global, not per-page)
+- [x] Verify: first visit auto-detects language, switching persists across page reloads
+- [x] Save checkpoint + deploy
 
 ## Session #58 — Micro-Animations (Apr 23 2026)
 - [x] Add global animation keyframes + utility classes to index.css (fadeUp, scaleIn, slideDown, shimmer)

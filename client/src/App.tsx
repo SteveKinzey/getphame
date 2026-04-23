@@ -12,6 +12,7 @@ import { toast } from "sonner";
 
 // Pages
 import OnboardingPage from "./pages/Onboarding";
+import AppleAuthLanding from "./pages/AppleAuthLanding";
 import LandingPage from "./pages/LandingPage";
 import HomePage from "./pages/Home";
 import SendRequestPage from "./pages/SendRequest";
@@ -114,6 +115,7 @@ function AppShell() {
   if (path === "/terms-of-service") return <div className="mobile-screen"><TermsOfServicePage /></div>;
   if (path === "/payment-success") return <div className="mobile-screen"><PaymentSuccessPage /></div>;
   if (path === "/unsubscribe") return <div className="mobile-screen"><UnsubscribePage /></div>;
+  if (path === "/auth/apple/landing") return <div className="mobile-screen"><AppleAuthLanding /></div>;
 
   if (!user) {
     // Show the public marketing landing page at /, Onboarding at /onboarding
