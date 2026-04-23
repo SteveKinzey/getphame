@@ -1286,3 +1286,7 @@
 ## Session #55b — Home Header Layout Fix (Apr 23 2026)
 - [x] Move LanguageToggle inline into Home header: same row as greeting, between greeting text and Share/Guide buttons
 - [ ] Save checkpoint + deploy
+
+## Session #55c — Home Header Layout Fix v2 (Apr 23 2026)
+- [x] Fix Home header: greeting not truncated, EN|TH|CN inline right of greeting, Share+Guide moved to brand row — no truncation
+- [ ] Save checkpoint + deploy
