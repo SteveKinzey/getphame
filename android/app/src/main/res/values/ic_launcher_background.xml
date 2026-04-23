@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- ReviewLink brand navy background for adaptive launcher icon -->
+    <color name="ic_launcher_background">#1a2744</color>
+</resources>

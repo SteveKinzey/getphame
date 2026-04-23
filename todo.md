@@ -1328,3 +1328,10 @@
 ## Session #59 — Language Detection Bug Fix (Apr 23 2026)
 - [x] Fix: language selector defaults to TH instead of detecting browser locale (en-US for LA users)
 - [x] Fix: user-selected language (FR, ES, TH, etc.) must persist across sessions until user explicitly changes it — never overwritten by auto-detection
+## Session #60 — Native App Setup + Brand Icons (Apr 23 2026)
+- [x] Update PWA icons (192px, 512px) from master-v2.svg source
+- [x] Update app logo — CDN path: /manus-storage/icon-1024_4f5cbdf4.png (update via Settings → General)
+- [x] Run cap add ios + cap add android to generate native project folders
+- [x] Place iOS icon assets (20, 29, 40, 58, 60, 76, 80, 87, 120, 152, 167, 180, 1024) into AppIcon.appiconset with full Contents.json
+- [x] Place Android icon assets (adaptive layers + all density buckets) into mipmap directories
+- [x] Set Android adaptive icon background to navy #1a2744
