@@ -312,17 +312,21 @@ export default function HomePage() {
           {/* Row 2: Greeting h1 (left, no truncation) + EN|TH|CN toggle (right) */}
           <div className="flex items-center gap-3">
             <h1 className="text-2xl leading-tight text-white rr-fw-black flex-1">
-              {profile?.businessName
-                ? t("homePage.greeting", { defaultValue: `Hey, ${profile.businessName.split(" ")[0]}!`, name: profile.businessName.split(" ")[0] })
-                : t("homePage.welcomeBack")}
+              {(() => {
+                // Greeting uses the owner's first name (from OAuth profile), not the company name
+                const firstName = user?.name ? user.name.split(" ")[0] : null;
+                return firstName
+                  ? t("homePage.greeting", { defaultValue: `Hey, ${firstName}!`, name: firstName })
+                  : t("homePage.welcomeBack");
+              })()}
             </h1>
             <div className="flex-shrink-0">
               <LanguageToggle />
             </div>
           </div>
-          {/* Row 3: User name */}
+          {/* Row 3: Company name (businessName from profile), fallback to email */}
           <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
-            {user?.name ?? user?.email ?? ""}
+            {profile?.businessName ?? user?.email ?? ""}
           </p>
         </div>
 

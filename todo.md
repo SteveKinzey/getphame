@@ -1290,3 +1290,8 @@
 ## Session #55c — Home Header Layout Fix v2 (Apr 23 2026)
 - [x] Fix Home header: greeting not truncated, EN|TH|CN inline right of greeting, Share+Guide moved to brand row — no truncation
 - [ ] Save checkpoint + deploy
+
+## Session #55d — Greeting + Company Name Fix (Apr 23 2026)
+- [x] Greeting: use user's first name (from user.name), not businessName split — "Hey, Steve!"
+- [x] Sub-line: show businessName (company name) instead of user.name — "SK America LLC"
+- [ ] Save checkpoint + deploy
