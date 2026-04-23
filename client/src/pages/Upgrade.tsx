@@ -1,4 +1,4 @@
-// ReviewLink — Upgrade Page
+// ReviewLink — Upgrade / Pricing page
 // Three-tier pricing: Monthly $29 | Annual $290 | Lifetime $1,247
 
 import { trpc } from "@/lib/trpc";
@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 // ── THB dual-currency display ─────────────────────────────────────────────────
 // Fixed rate — update manually when USD/THB shifts significantly
@@ -77,6 +78,7 @@ const PLANS: Record<Plan, { label: string; price: string; thb: string; sub: stri
 };
 
 export default function UpgradePage() {
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const { user } = useAuth();
   const { data: profile } = trpc.profile.get.useQuery();
@@ -92,7 +94,7 @@ export default function UpgradePage() {
       window.location.href = data.url;
     },
     onError: (err) => {
-      toast.error(err.message || "Failed to start checkout. Please try again.");
+      toast.error(err.message || t("toastMessages.failedToStartCheckout"));
     },
   });
 
@@ -101,7 +103,7 @@ export default function UpgradePage() {
       window.location.href = data.url;
     },
     onError: (err) => {
-      toast.error(err.message || "PromptPay checkout unavailable. Please use card payment.");
+      toast.error(err.message || t("toastMessages.promptPayUnavailable"));
     },
   });
 
@@ -109,14 +111,14 @@ export default function UpgradePage() {
     onSuccess: (data) => {
       toast.success(
         data.note
-          ? `🎉 Code accepted! ${data.note} — You're now on Pro!`
-          : "🎉 Code accepted! You're now on Pro!"
+          ? t("accessCode.codeAcceptedNote", { note: data.note })
+          : t("accessCode.codeAcceptedPro")
       );
       setAccessCode("");
       utils.profile.get.invalidate();
     },
     onError: (err) => {
-      toast.error(err.message || "Invalid code. Please try again.");
+      toast.error(err.message || t("accessCode.invalidCodeError"));
     },
   });
 
@@ -147,7 +149,7 @@ export default function UpgradePage() {
   const isAdmin = user?.role === "admin";
   const isPaid = isAdmin || tier === "pro" || tier === "annual" || tier === "lifetime";
   if (isPaid) {
-    const tierLabel = isAdmin && !tier ? "Admin Access" : tier === "lifetime" ? "Lifetime License" : tier === "annual" ? "Annual Pro" : "Monthly Pro";
+    const tierLabel = isAdmin && !tier ? t("paidUser.adminAccess") : tier === "lifetime" ? t("paidUser.lifetimeLicense") : tier === "annual" ? t("paidUser.annualPro") : t("paidUser.monthlyPro");
     return (
       <div
         className="min-h-screen flex flex-col items-center justify-center px-6 pb-40 rr-bg-navy"
@@ -156,17 +158,17 @@ export default function UpgradePage() {
         <h2
           className="text-3xl font-black text-center mb-2 text-white"
         >
-          You're on {tierLabel}!
+          {t("paidUser.onPro", { tierLabel })}
         </h2>
         <p className="text-center mb-8" style={{ color: "var(--text-on-dark-secondary)" }}>
-          Enjoy unlimited review requests and all Pro features.
+          {t("paidUser.enjoyFeatures")}
         </p>
         <button
           onClick={() => navigate("/")}
           className="py-3 px-8 rounded-2xl font-bold text-base flex items-center justify-center gap-2"
           style={{ color: "var(--text-on-dark-secondary)", border: "1px solid rgba(255,255,255,0.2)" }}
         >
-          Back to Dashboard
+          {t("paidUser.backToDashboard", "Back to Dashboard")}
         </button>
         {!isAdmin && (tier === "pro" || tier === "annual") && (
           <button
@@ -174,7 +176,7 @@ export default function UpgradePage() {
             className="mt-4 text-xs"
             style={{ color: "var(--text-on-dark-muted)" }}
           >
-            Cancel plan
+            {t("paidUser.cancelPlan", "Cancel plan")}
           </button>
         )}
       </div>
@@ -191,7 +193,7 @@ export default function UpgradePage() {
           style={{ color: "var(--text-on-dark-secondary)" }}
         >
           <ChevronLeft size={16} />
-          Back
+          {t("header.back")}
         </button>
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
@@ -200,20 +202,20 @@ export default function UpgradePage() {
               <span
                 className="text-xs font-bold tracking-widest uppercase rr-text-gold"
               >
-                Upgrade
+                {t("header.upgrade")}
               </span>
             </div>
             <h1
               className="text-3xl leading-tight text-white rr-fw-black"
             >
-              Go Pro.
+              {t("header.title")}
               <br />
-              <span className="rr-text-gold">No Limits.</span>
+              <span className="rr-text-gold">{t("header.noLimits")}</span>
             </h1>
           </div>
           {/* Hero image — aligned with text, uncropped */}
           <div className="shrink-0" style={{ width: 100, height: 100 }}>
-            <img src={UPGRADE_IMG} alt="ReviewLink Pro upgrade" className="w-full h-full object-contain" />
+            <img src={UPGRADE_IMG} alt={t("header.heroImageAlt")} className="w-full h-full object-contain" />
           </div>
         </div>
       </div>
@@ -223,27 +225,31 @@ export default function UpgradePage() {
         <div
           className="flex rounded-2xl p-1 gap-1 rr-bg-navy-mid"
         >
-          {(["monthly", "annual", "lifetime"] as Plan[]).map((plan) => (
-            <button
-              key={plan}
-              onClick={() => setSelectedPlan(plan)}
-              className="flex-1 py-2 rounded-xl text-xs font-bold transition-all relative"
-              style={{
-                background: selectedPlan === plan ? "oklch(0.80 0.18 80)" : "transparent",
-                color: selectedPlan === plan ? "oklch(0.22 0.09 260)" : "var(--text-on-dark-secondary)",
-                fontFamily: "'Poppins', sans-serif",
-              }}
-            >
-              {PLANS[plan].label}
-              {PLANS[plan].badge && selectedPlan !== plan && (
-                <span
-                  className="absolute -top-2 left-1/2 -translate-x-1/2 text-[9px] px-1.5 py-0.5 rounded-full font-black whitespace-nowrap rr-bg-gold rr-text-navy"
-                >
-                  {PLANS[plan].badge}
-                </span>
-              )}
-            </button>
-          ))}
+          {(["monthly", "annual", "lifetime"] as Plan[]).map((plan) => {
+            const planLabel = plan === "monthly" ? t("planSelector.monthly") : plan === "annual" ? t("planSelector.annual") : t("planSelector.lifetime");
+            const planBadge = plan === "annual" ? t("planSelector.mostPopularBadge") : plan === "lifetime" ? t("planSelector.bestValueBadge") : undefined;
+            return (
+              <button
+                key={plan}
+                onClick={() => setSelectedPlan(plan)}
+                className="flex-1 py-2 rounded-xl text-xs font-bold transition-all relative"
+                style={{
+                  background: selectedPlan === plan ? "oklch(0.80 0.18 80)" : "transparent",
+                  color: selectedPlan === plan ? "oklch(0.22 0.09 260)" : "var(--text-on-dark-secondary)",
+                  fontFamily: "'Poppins', sans-serif",
+                }}
+              >
+                {planLabel}
+                {planBadge && selectedPlan !== plan && (
+                  <span
+                    className="absolute -top-2 left-1/2 -translate-x-1/2 text-[9px] px-1.5 py-0.5 rounded-full font-black whitespace-nowrap rr-bg-gold rr-text-navy"
+                  >
+                    {planBadge}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
 
         {/* Pricing card */}
@@ -258,7 +264,7 @@ export default function UpgradePage() {
               {PLANS[selectedPlan].price}
             </span>
             <span className="text-lg mb-2" style={{ color: "var(--text-on-dark-secondary)" }}>
-              {PLANS[selectedPlan].sub}
+              {selectedPlan === "monthly" ? t("pricingCard.monthlySub") : selectedPlan === "annual" ? t("pricingCard.annualSub") : t("pricingCard.lifetimeSub")}
             </span>
           </div>
           {/* THB equivalent — display only, USD is the charge currency */}
@@ -272,24 +278,24 @@ export default function UpgradePage() {
             >
               {selectedPlan === "annual" && <Calendar size={11} />}
               {selectedPlan === "lifetime" && <Shield size={11} />}
-              {PLANS[selectedPlan].savings}
+              {selectedPlan === "annual" ? t("pricingCard.annualSavings") : t("pricingCard.lifetimeSavings")}
             </div>
           )}
 
           {selectedPlan === "monthly" && (
             <p className="text-xs mb-4" style={{ color: "var(--text-on-dark-muted)" }}>
-              Cancel anytime. No contracts.
+              {t("pricingCard.monthlyDescription", "Cancel anytime. No contracts.")}
             </p>
           )}
           {selectedPlan === "annual" && (
             <p className="text-xs mb-4" style={{ color: "var(--text-on-dark-muted)" }}>
-              Billed once per year. Equivalent to $24.17/mo.
+              {t("pricingCard.annualDescription", "Billed once per year. Equivalent to $24.17/mo.")}
             </p>
           )}
           {selectedPlan === "lifetime" && (
             <>
               <p className="text-xs mb-3" style={{ color: "var(--text-on-dark-muted)" }}>
-                One-time payment. No renewals, ever.
+                {t("pricingCard.lifetimeDescription", "One-time payment. No renewals, ever.")}
               </p>
               {/* Best Value ROI callout */}
               <div
@@ -297,10 +303,10 @@ export default function UpgradePage() {
                 style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
               >
                 <p className="text-xs font-black mb-0.5" style={{ color: "oklch(0.35 0.12 80)" }}>
-                  💰 Pays for itself in under 4 years
+                  {t("pricingCard.lifetimeRoiCalloutTitle")}
                 </p>
                 <p className="text-xs" style={{ color: "oklch(0.45 0.08 80)" }}>
-                  Monthly plan costs $348/yr. At that rate, the lifetime license breaks even at year 3.6 — then it's free forever. Most users recover the cost in their first year of reviews.
+                  {t("pricingCard.lifetimeRoiCalloutDescription")}
                 </p>
               </div>
             </>
@@ -334,12 +340,12 @@ export default function UpgradePage() {
               <CreditCard size={18} />
             )}
             {createCheckout.isPending
-              ? "Redirecting to checkout..."
-              : `Pay by Card — ${PLANS[selectedPlan].price}`}
+              ? t("pricingCard.redirectingToCheckout")
+              : t("pricingCard.payByCard", { price: PLANS[selectedPlan].price })}
           </button>
 
           <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-muted)" }}>
-            Secure checkout via Stripe. Charged in USD.
+            {t("pricingCard.secureCheckoutNote")}
           </p>
 
           {/* PromptPay CTA — Thailand users (locale-detected or manually revealed) */}
@@ -371,18 +377,18 @@ export default function UpgradePage() {
                   <span className="text-base">&#x0E3F;</span>
                 )}
                 {createThbCheckout.isPending
-                  ? "Redirecting..."
-                  : `Pay with PromptPay — ${PLANS[selectedPlan].thb}`}
+                  ? t("pricingCard.promptPayRedirecting")
+                  : t("pricingCard.payWithPromptPay", { thb: PLANS[selectedPlan].thb })}
               </button>
               <p className="text-center text-xs mt-1 mb-1" style={{ color: "var(--text-on-dark-muted)" }}>
-                Thailand only · QR code payment · Charged in THB
+                {t("pricingCard.promptPayNote")}
                 {!isThai && (
                   <button
                     onClick={() => setShowPromptPay(false)}
                     className="ml-2 underline"
                     style={{ color: "var(--text-on-dark-muted)" }}
                   >
-                    Hide
+                    {t("pricingCard.hidePromptPay")}
                   </button>
                 )}
               </p>
@@ -390,12 +396,10 @@ export default function UpgradePage() {
           ) : (
             // Non-Thai locale: show a subtle reveal link
             <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-muted)" }}>
-              Based in Thailand?{" "}
+              {t("pricingCard.promptPayReveal")}{" "}
               <button
                 onClick={() => {
                   setShowPromptPay(true);
-                  // Track non-Thai locale users who manually reveal the PromptPay CTA
-                  // Use page path convention so it's queryable in Admin dashboard
                   trackPageView.mutate({
                     page: "/upgrade/promptpay-reveal",
                     utmSource: new URLSearchParams(window.location.search).get("utm_source") ?? undefined,
@@ -404,7 +408,7 @@ export default function UpgradePage() {
                 }}
                 className="underline font-semibold rr-text-gold"
               >
-                Pay with PromptPay (฿)
+                {t("pricingCard.promptPayRevealLink")}
               </button>
             </p>
           )}
@@ -420,11 +424,11 @@ export default function UpgradePage() {
             <h3
               className="text-sm font-black text-white"
             >
-              Have an access code?
+              {t("accessCode.title")}
             </h3>
           </div>
           <p className="text-xs mb-4" style={{ color: "var(--text-on-dark-secondary)" }}>
-            Enter your beta or promo code to unlock Pro access.
+            {t("accessCode.description")}
           </p>
           <div className="flex gap-2">
             <input
@@ -432,7 +436,7 @@ export default function UpgradePage() {
               value={accessCode}
               onChange={(e) => setAccessCode(e.target.value.toUpperCase())}
               onKeyDown={(e) => e.key === "Enter" && handleRedeemCode()}
-              placeholder="e.g. BETA-X7K2-P9QM"
+              placeholder={t("accessCode.placeholder")}
               className="flex-1 px-4 py-3 rounded-xl text-sm font-mono tracking-wider outline-none rr-bg-navy text-white" style={{ border: "1px solid rgba(255,255,255,0.15)" }}
             />
             <button
@@ -441,7 +445,7 @@ export default function UpgradePage() {
               className="px-4 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-transform active:scale-95 disabled:opacity-50 rr-bg-gold rr-text-navy"
             >
               {redeemCode.isPending ? <Loader2 size={16} className="animate-spin" /> : <Unlock size={16} />}
-              {redeemCode.isPending ? "" : "Redeem"}
+              {redeemCode.isPending ? "" : t("accessCode.redeem")}
             </button>
           </div>
         </div>
@@ -453,7 +457,7 @@ export default function UpgradePage() {
           ))}
         </div>
         <p className="text-center text-xs pb-4" style={{ color: "var(--text-on-dark-muted)" }}>
-          Trusted by local businesses to get more 5-star reviews
+          {t("socialProof.trustedByBusinesses")}
         </p>
 
         {/* ── Plan comparison table ────────────────────────────────────────────── */}
@@ -466,10 +470,10 @@ export default function UpgradePage() {
             className="grid grid-cols-4 text-center text-xs font-black py-3 px-2"
             style={{ background: "oklch(0.18 0.07 260)", fontFamily: "'Poppins', sans-serif" }}
           >
-            <div className="text-left pl-2" style={{ color: "var(--text-on-dark-secondary)" }}>Feature</div>
-            <div style={{ color: "var(--text-on-dark-secondary)" }}>Free</div>
-            <div className="rr-text-gold">Pro</div>
-            <div style={{ color: "oklch(0.90 0.14 80)" }}>Lifetime</div>
+            <div className="text-left pl-2" style={{ color: "var(--text-on-dark-secondary)" }}>{t("comparisonTable.feature", "Feature")}</div>
+            <div style={{ color: "var(--text-on-dark-secondary)" }}>{t("comparisonTable.free", "Free")}</div>
+            <div className="rr-text-gold">{t("comparisonTable.pro", "Pro")}</div>
+            <div style={{ color: "oklch(0.90 0.14 80)" }}>{t("comparisonTable.lifetime", "Lifetime")}</div>
           </div>
 
           {/* Table rows */}
@@ -508,7 +512,7 @@ export default function UpgradePage() {
         </div>
 
         <p className="text-center text-xs pb-6" style={{ color: "var(--text-on-dark-disabled)" }}>
-          All plans include a 10-request free trial. No credit card required to start.
+          {t("comparisonTable.freeTrialNote")}
         </p>
       </div>
     </div>

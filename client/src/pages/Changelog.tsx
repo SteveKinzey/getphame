@@ -1,19 +1,18 @@
 // ReviewLink — Changelog / What's New
 // Design: Navy header, white content area, gold accent for version badges
-
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { ArrowLeft, Rocket, Star, Shield, Zap, Users, BarChart2, Mail } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 type Label = "new" | "improved" | "fix";
-
 interface ChangeEntry {
   version: string;
   date: string;
   label: Label;
   icon: React.ReactNode;
-  title: string;
-  description: string;
+  titleKey: string;
+  descriptionKey: string;
 }
 
 const CHANGELOG: { version: string; date: string; entries: ChangeEntry[] }[] = [
@@ -26,36 +25,32 @@ const CHANGELOG: { version: string; date: string; entries: ChangeEntry[] }[] = [
         date: "April 2026",
         label: "new",
         icon: <BarChart2 size={15} />,
-        title: "Email Performance Dashboard",
-        description:
-          "Open rate and click rate now appear as an at-a-glance summary card on your Home screen, so you can see how your review requests are performing without digging into individual records.",
+        titleKey: "changelog.v13.emailDashboard.title",
+        descriptionKey: "changelog.v13.emailDashboard.description",
       },
       {
         version: "1.3",
         date: "April 2026",
         label: "new",
         icon: <Star size={15} />,
-        title: "Top Template Badge",
-        description:
-          "The email template with the highest click rate now shows a gold 🏆 Top Template badge on the Templates list, so you always know which message is converting best.",
+        titleKey: "changelog.v13.topTemplateBadge.title",
+        descriptionKey: "changelog.v13.topTemplateBadge.description",
       },
       {
         version: "1.3",
         date: "April 2026",
         label: "improved",
         icon: <Mail size={15} />,
-        title: "Reminder Email Tracking",
-        description:
-          "Open and click tracking now covers reminder follow-up emails, not just the initial send. All engagement data rolls up under the original request so your stats stay clean.",
+        titleKey: "changelog.v13.reminderTracking.title",
+        descriptionKey: "changelog.v13.reminderTracking.description",
       },
       {
         version: "1.3",
         date: "April 2026",
         label: "new",
         icon: <Rocket size={15} />,
-        title: "Share ReviewLink Referral Card",
-        description:
-          "A new card on the Home screen lets you share ReviewLink with other local businesses in one tap — using the native share sheet on mobile or clipboard copy on desktop.",
+        titleKey: "changelog.v13.referralCard.title",
+        descriptionKey: "changelog.v13.referralCard.description",
       },
     ],
   },
@@ -68,36 +63,32 @@ const CHANGELOG: { version: string; date: string; entries: ChangeEntry[] }[] = [
         date: "March 2026",
         label: "new",
         icon: <Users size={15} />,
-        title: "CSV Contact Import",
-        description:
-          "Import your entire customer list from a spreadsheet in four steps: upload, map columns, preview, and confirm. Supports up to 5,000 contacts per import with automatic duplicate detection.",
+        titleKey: "changelog.v12.csvImport.title",
+        descriptionKey: "changelog.v12.csvImport.description",
       },
       {
         version: "1.2",
         date: "March 2026",
         label: "new",
         icon: <Users size={15} />,
-        title: "Bulk Send to Contacts",
-        description:
-          "Select multiple saved contacts and send personalised review requests to all of them at once. Filter by tag to target specific customer groups.",
+        titleKey: "changelog.v12.bulkSend.title",
+        descriptionKey: "changelog.v12.bulkSend.description",
       },
       {
         version: "1.2",
         date: "March 2026",
-        label: "improved",
+        label: "new",
         icon: <Zap size={15} />,
-        title: "WooCommerce Sync",
-        description:
-          "Connect your WooCommerce store and import recent customers directly into your contacts list. Choose a 30, 60, or 90-day sync window to control how far back to look.",
+        titleKey: "changelog.v12.wooSync.title",
+        descriptionKey: "changelog.v12.wooSync.description",
       },
       {
         version: "1.2",
         date: "March 2026",
-        label: "improved",
-        icon: <Mail size={15} />,
-        title: "Reminder Follow-ups",
-        description:
-          "Set up automatic follow-up reminders for customers who haven't left a review yet. Configure the delay and message per template, and ReviewLink handles the rest.",
+        label: "new",
+        icon: <BarChart2 size={15} />,
+        titleKey: "changelog.v12.emailTracking.title",
+        descriptionKey: "changelog.v12.emailTracking.description",
       },
     ],
   },
@@ -109,28 +100,25 @@ const CHANGELOG: { version: string; date: string; entries: ChangeEntry[] }[] = [
         version: "1.1",
         date: "February 2026",
         label: "new",
-        icon: <Star size={15} />,
-        title: "Multi-Platform Review Links",
-        description:
-          "Add multiple review destinations — Google, Yelp, TripAdvisor, Facebook, or any custom URL — and set a default. Each outbound email uses the platform you choose.",
+        icon: <Zap size={15} />,
+        titleKey: "changelog.v11.reminders.title",
+        descriptionKey: "changelog.v11.reminders.description",
       },
       {
         version: "1.1",
         date: "February 2026",
         label: "new",
-        icon: <BarChart2 size={15} />,
-        title: "Open & Click Tracking",
-        description:
-          "Every review request email now includes an invisible tracking pixel and a click-tracked review link. See exactly who opened your email and who clicked through to leave a review.",
+        icon: <Star size={15} />,
+        titleKey: "changelog.v11.multiPlatform.title",
+        descriptionKey: "changelog.v11.multiPlatform.description",
       },
       {
         version: "1.1",
         date: "February 2026",
         label: "improved",
-        icon: <Mail size={15} />,
-        title: "Email Templates",
-        description:
-          "Create, edit, and manage multiple email templates. Set a default template for quick sends, or choose a specific template per request.",
+        icon: <Shield size={15} />,
+        titleKey: "changelog.v11.compliance.title",
+        descriptionKey: "changelog.v11.compliance.description",
       },
     ],
   },
@@ -143,41 +131,32 @@ const CHANGELOG: { version: string; date: string; entries: ChangeEntry[] }[] = [
         date: "January 2026",
         label: "new",
         icon: <Rocket size={15} />,
-        title: "ReviewLink Launch",
-        description:
-          "Send personalised review request emails from your own email account — not a bulk mailer. Customers receive a message that looks like it came directly from you.",
-      },
-      {
-        version: "1.0",
-        date: "January 2026",
-        label: "new",
-        icon: <Shield size={15} />,
-        title: "CAN-SPAM Compliant",
-        description:
-          "Every email includes a compliant unsubscribe footer and your business address. ReviewLink handles the legal requirements so you don't have to.",
+        titleKey: "changelog.v10.launch.title",
+        descriptionKey: "changelog.v10.launch.description",
       },
     ],
   },
 ];
 
-const LABEL_STYLES: Record<Label, { bg: string; color: string; text: string }> = {
-  new: { bg: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)", text: "New" },
-  improved: { bg: "oklch(0.88 0.10 80)", color: "oklch(0.35 0.12 80)", text: "Improved" },
-  fix: { bg: "oklch(0.92 0.04 145)", color: "oklch(0.40 0.12 145)", text: "Fix" },
+const LABEL_STYLES: Record<Label, { bg: string; color: string; textKey: string }> = {
+  new: { bg: "oklch(0.92 0.06 260)", color: "oklch(0.35 0.12 260)", textKey: "changelog.labelNew" },
+  improved: { bg: "oklch(0.92 0.06 80)", color: "oklch(0.45 0.12 80)", textKey: "changelog.labelImproved" },
+  fix: { bg: "oklch(0.92 0.04 145)", color: "oklch(0.40 0.12 145)", textKey: "changelog.labelFix" },
 };
 
 type FilterTab = "all" | Label;
 
-const FILTER_TABS: { id: FilterTab; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "new", label: "New" },
-  { id: "improved", label: "Improved" },
-  { id: "fix", label: "Fix" },
-];
-
 export default function ChangelogPage() {
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const [activeFilter, setActiveFilter] = useState<FilterTab>("all");
+
+  const FILTER_TABS: { id: FilterTab; labelKey: string }[] = [
+    { id: "all", labelKey: "changelog.filterAll" },
+    { id: "new", labelKey: "changelog.filterNew" },
+    { id: "improved", labelKey: "changelog.filterImproved" },
+    { id: "fix", labelKey: "changelog.filterFix" },
+  ];
 
   // Flatten all entries across releases for filtering
   const allEntries = CHANGELOG.flatMap((r) => r.entries);
@@ -201,19 +180,19 @@ export default function ChangelogPage() {
       >
         <button
           onClick={() => navigate("/")}
-          aria-label="Back to Home"
+          aria-label={t("changelog.backAriaLabel", "Back to Home")}
           className="flex items-center gap-2 mb-4 transition-opacity active:opacity-70 rr-text-gold"
         >
           <ArrowLeft size={16} aria-hidden="true" />
           <span className="text-xs font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>
-            Back
+            {t("header.back")}
           </span>
         </button>
 
         <button
           onClick={() => navigate("/")}
           className="flex items-center gap-2 mb-1 active:opacity-70 transition-opacity"
-          aria-label="Go to Home"
+          aria-label={t("changelog.homeAriaLabel", "Go to Home")}
         >
           <Rocket size={16} className="rr-text-gold" aria-hidden="true" />
           <span
@@ -225,14 +204,14 @@ export default function ChangelogPage() {
         <h1
           className="text-2xl leading-tight text-white rr-fw-black"
         >
-          What's New
+          {t("changelog.title", "What's New")}
         </h1>
         <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
-          Every update, improvement, and fix — in one place.
+          {t("changelog.subtitle", "Every update, improvement, and fix — in one place.")}
         </p>
 
         {/* Filter tabs */}
-        <div className="flex items-center gap-2 mt-5 overflow-x-auto pb-1 scrollbar-hide" role="tablist" aria-label="Filter changelog by category">
+        <div className="flex items-center gap-2 mt-5 overflow-x-auto pb-1 scrollbar-hide" role="tablist" aria-label={t("changelog.filterAriaLabel", "Filter changelog by category")}>
           {FILTER_TABS.map((tab) => {
             const isActive = activeFilter === tab.id;
             return (
@@ -249,7 +228,7 @@ export default function ChangelogPage() {
                   border: "none",
                 }}
               >
-                {tab.label}
+                {t(tab.labelKey)}
                 {tab.id !== "all" && (
                   <span
                     className="ml-1.5 text-xs opacity-70 rr-fw-normal"
@@ -266,8 +245,8 @@ export default function ChangelogPage() {
       {/* Result count */}
       <div className="px-4 pt-4 pb-1">
         <p className="text-xs rr-text-navy-muted">
-          {totalCount} {totalCount === 1 ? "update" : "updates"}
-          {activeFilter !== "all" ? ` matching "${LABEL_STYLES[activeFilter as Label]?.text}"` : " total"}
+          {totalCount} {totalCount === 1 ? t("changelog.update", "update") : t("changelog.updates", "updates")}
+          {activeFilter !== "all" ? ` ${t("changelog.matching", "matching")} "${t(LABEL_STYLES[activeFilter as Label]?.textKey)}"` : ` ${t("changelog.total", "total")}`}
         </p>
       </div>
 
@@ -275,7 +254,7 @@ export default function ChangelogPage() {
       <div className="px-4 pt-2 flex flex-col gap-8">
         {filteredReleases.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-sm rr-text-navy-muted">No updates in this category yet.</p>
+            <p className="text-sm rr-text-navy-muted">{t("changelog.noUpdates", "No updates in this category yet.")}</p>
           </div>
         ) : (
           filteredReleases.map((release) => (
@@ -320,20 +299,20 @@ export default function ChangelogPage() {
                           <span
                             className="text-sm font-black leading-tight rr-text-navy"
                           >
-                            {entry.title}
+                            {t(entry.titleKey, entry.titleKey.split(".").pop() ?? "")}
                           </span>
                           <span
                             className="text-xs font-bold px-2 py-0.5 rounded-full"
                             style={{ background: style.bg, color: style.color }}
                           >
-                            {style.text}
+                            {t(style.textKey)}
                           </span>
                         </div>
                         <p
                           className="text-xs leading-relaxed"
                           style={{ color: "oklch(0.50 0.03 260)" }}
                         >
-                          {entry.description}
+                          {t(entry.descriptionKey, entry.descriptionKey.split(".").pop() ?? "")}
                         </p>
                       </div>
                     </div>
@@ -348,13 +327,13 @@ export default function ChangelogPage() {
       {/* Footer note */}
       <div className="px-4 pt-6 pb-4 text-center">
         <p className="text-xs rr-text-navy-faint">
-          Have a feature request?{" "}
+          {t("changelog.featureRequest", "Have a feature request?")}{" "}
           <a
             href="mailto:support@reviewlink.app"
             className="font-bold underline"
             style={{ color: "oklch(0.45 0.05 260)" }}
           >
-            Let us know
+            {t("changelog.letUsKnow", "Let us know")}
           </a>
         </p>
       </div>

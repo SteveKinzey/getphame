@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const GUIDE_SEEN_KEY = "rl_guide_seen";
 
@@ -42,6 +43,7 @@ interface StepsDone {
 }
 
 function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => void; stepsDone?: StepsDone }) {
+  const { t } = useTranslation();
   const done = [
     stepsDone?.smtp ?? false,
     stepsDone?.platform ?? false,
@@ -55,23 +57,23 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
       >
         <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-20 h-20 rounded-2xl object-contain mx-auto mb-3" />
         <p className="text-white font-bold text-lg leading-snug" style={{ fontFamily: "'Poppins', sans-serif" }}>
-          ReviewLink sends personalised review request emails from your own email account.
+          {t("onboardingGuide.welcome.heroText")}
         </p>
         <p className="text-sm mt-2" style={{ color: "var(--text-on-dark-secondary)" }}>
-          Customers receive a message that looks like it came directly from you — not a bulk mailer.
+          {t("onboardingGuide.welcome.heroSubtext")}
         </p>
       </div>
 
       <p className="text-sm font-semibold" style={{ color: "oklch(0.40 0.05 260)" }}>
-        This guide walks you through 4 quick setup steps:
+        {t("onboardingGuide.welcome.setupStepsIntro")}
       </p>
 
       <div className="space-y-3">
         {[
-          { icon: <Mail size={16} />, label: "Connect your email account (SMTP)" },
-          { icon: <Star size={16} />, label: "Add your review platform link (Google, Yelp, etc.)" },
-          { icon: <Users size={16} />, label: "Import or add your customer contacts" },
-          { icon: <Send size={16} />, label: "Send your first review request" },
+          { icon: <Mail size={16} />, label: t("onboardingGuide.welcome.step1Label") },
+          { icon: <Star size={16} />, label: t("onboardingGuide.welcome.step2Label") },
+          { icon: <Users size={16} />, label: t("onboardingGuide.welcome.step3Label") },
+          { icon: <Send size={16} />, label: t("onboardingGuide.welcome.step4Label") },
         ].map((item, i) => (
           <button
             key={i}
@@ -96,7 +98,7 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
               style={{ color: done[i] ? "oklch(0.35 0.12 145)" : "oklch(0.22 0.09 260)" }}
             >
               {item.label}
-              {done[i] && <span className="ml-1.5 text-xs font-bold" style={{ color: "oklch(0.50 0.15 145)" }}>✓ Done</span>}
+              {done[i] && <span className="ml-1.5 text-xs font-bold" style={{ color: "oklch(0.50 0.15 145)" }}>{t("onboardingGuide.welcome.doneLabel")}</span>}
             </span>
             <div className="ml-auto flex items-center gap-1" style={{ color: done[i] ? "oklch(0.55 0.18 145)" : "oklch(0.55 0.05 260)" }}>
               {done[i] ? <CheckCircle2 size={14} /> : item.icon}
@@ -107,7 +109,7 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
       </div>
 
       <p className="text-xs text-center rr-text-navy-muted">
-        Setup takes about 3 minutes. You can come back to this guide any time from the Home screen.
+        {t("onboardingGuide.welcome.setupTime")}
       </p>
     </div>
   );
@@ -304,9 +306,10 @@ const REVIEW_PLATFORMS = [
 ];
 
 function SendTestEmailButton() {
+  const { t } = useTranslation();
   const { data: smtpStatus } = trpc.smtp.status.useQuery();
   const sendWelcome = trpc.smtp.sendWelcome.useMutation({
-    onSuccess: () => toast.success("Test email sent! Check your inbox."),
+    onSuccess: () => toast.success(t("onboardingGuide.connectEmail.testEmailSent")),
     onError: (err) => toast.error(err.message),
   });
   if (!smtpStatus?.connected) return null;
@@ -324,12 +327,13 @@ function SendTestEmailButton() {
       {sendWelcome.isPending
         ? <Loader2 size={15} className="animate-spin" />
         : <Send size={15} />}
-      Send Test Email to Myself
+      {t("onboardingGuide.connectEmail.testEmailButton")}
     </button>
   );
 }
 
 function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState<string | null>(null);
 
   return (
@@ -339,15 +343,15 @@ function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }
         style={{ background: "oklch(0.96 0.02 260)", border: "1px solid oklch(0.88 0.03 260)" }}
       >
         <p className="text-sm font-bold mb-1 rr-text-navy">
-          Why connect your email?
+          {t("onboardingGuide.connectEmail.whyTitle")}
         </p>
         <p className="text-sm rr-text-navy-mid">
-          ReviewLink sends emails through your own account using SMTP — the same protocol your email app uses. Review requests arrive looking like a personal message from you, not a marketing blast.
+          {t("onboardingGuide.connectEmail.whyDesc")}
         </p>
       </div>
 
       <p className="text-sm font-bold" style={{ color: "oklch(0.30 0.05 260)" }}>
-        General setup steps
+        {t("onboardingGuide.connectEmail.generalStepsTitle")}
       </p>
 
       <div className="space-y-3">
@@ -375,7 +379,7 @@ function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }
 
       {/* Provider-specific accordion */}
       <p className="text-xs font-bold uppercase tracking-wide pt-1 rr-text-navy-muted">
-        Provider setup — tap to expand
+        {t("onboardingGuide.connectEmail.providerSectionTitle")}
       </p>
 
       <div className="space-y-2">
@@ -421,7 +425,7 @@ function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }
                       style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
                     >
                       <p className="text-xs" style={{ color: "oklch(0.45 0.08 80)" }}>
-                        <span className="font-bold">Note: </span>{provider.note}
+                        <span className="font-bold">{t("onboardingGuide.connectEmail.noteLabel")}</span>{provider.note}
                       </p>
                     </div>
                   )}
@@ -437,13 +441,14 @@ function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }
         onClick={() => onNavigate("/settings")}
         className="w-full font-bold rr-bg-navy rr-text-gold"
       >
-        <Mail size={15} className="mr-2" /> Go to Settings → Email Connection
+        <Mail size={15} className="mr-2" /> {t("onboardingGuide.connectEmail.goToSettingsButton")}
       </Button>
     </div>
   );
 }
 
 function StepReviewPlatform({ onNavigate }: { onNavigate: (path: string) => void }) {
+  const { t } = useTranslation();
   const [expanded, setExpanded] = useState<string | null>("Google Business Profile");
 
   return (
@@ -453,16 +458,16 @@ function StepReviewPlatform({ onNavigate }: { onNavigate: (path: string) => void
         style={{ background: "oklch(0.96 0.02 260)", border: "1px solid oklch(0.88 0.03 260)" }}
       >
         <p className="text-sm font-bold mb-1 rr-text-navy">
-          What is a review platform?
+          {t("onboardingGuide.reviewPlatform.whatIsTitle")}
         </p>
         <p className="text-sm rr-text-navy-mid">
-          This is the link your customers click to leave you a review — on Google, Yelp, TripAdvisor, Facebook, or anywhere else. ReviewLink embeds this link as a button inside every review request email.
+          {t("onboardingGuide.reviewPlatform.whatIsDesc")}
         </p>
       </div>
 
       {/* Platform-specific accordion */}
       <p className="text-xs font-bold uppercase tracking-wide rr-text-navy-muted">
-        How to find your review link — tap your platform
+        {t("onboardingGuide.reviewPlatform.findLinkTitle")}
       </p>
 
       <div className="space-y-2">
@@ -512,7 +517,7 @@ function StepReviewPlatform({ onNavigate }: { onNavigate: (path: string) => void
                       style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
                     >
                       <p className="text-xs" style={{ color: "oklch(0.45 0.08 80)" }}>
-                        <span className="font-bold">Note: </span>{platform.note}
+                        <span className="font-bold">{t("onboardingGuide.reviewPlatform.noteLabel")}</span>{platform.note}
                       </p>
                     </div>
                   )}
@@ -524,7 +529,7 @@ function StepReviewPlatform({ onNavigate }: { onNavigate: (path: string) => void
       </div>
 
       <p className="text-sm font-bold pt-1" style={{ color: "oklch(0.30 0.05 260)" }}>
-        Adding the link in ReviewLink
+        {t("onboardingGuide.reviewPlatform.addingLinkTitle")}
       </p>
       <div className="space-y-3">
         {[
@@ -552,13 +557,14 @@ function StepReviewPlatform({ onNavigate }: { onNavigate: (path: string) => void
         onClick={() => onNavigate("/settings")}
         className="w-full font-bold rr-bg-navy rr-text-gold"
       >
-        <Globe size={15} className="mr-2" /> Go to Settings → Review Platforms
+        <Globe size={15} className="mr-2" /> {t("onboardingGuide.reviewPlatform.goToSettingsButton")}
       </Button>
     </div>
   );
 }
 
 function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-4">
       <div
@@ -566,10 +572,10 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
         style={{ background: "oklch(0.96 0.02 260)", border: "1px solid oklch(0.88 0.03 260)" }}
       >
         <p className="text-sm font-bold mb-1 rr-text-navy">
-          Three ways to add contacts
+          {t("onboardingGuide.contacts.threeWaysTitle")}
         </p>
         <p className="text-sm rr-text-navy-mid">
-          Your Saved Contacts list is where you store repeat customers so you can send review requests to them in bulk or individually, without re-entering their details each time.
+          {t("onboardingGuide.contacts.threeWaysDesc")}
         </p>
       </div>
 
@@ -577,7 +583,7 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
       <div className="rounded-xl overflow-hidden" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
         <div className="px-4 py-2.5 flex items-center gap-2 rr-bg-navy">
           <Upload size={14} className="rr-text-gold" />
-          <p className="text-sm font-bold text-white">Option A — Import a CSV file</p>
+          <p className="text-sm font-bold text-white">{t("onboardingGuide.contacts.optionATitle")}</p>
         </div>
         <div className="px-4 py-3 space-y-2 bg-white">
           {[
@@ -604,7 +610,7 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
             className="w-full mt-1 font-bold text-xs"
             style={{ borderColor: "oklch(0.80 0.05 260)" }}
           >
-            <Upload size={12} className="mr-1" /> Go to Import CSV
+            <Upload size={12} className="mr-1" /> {t("onboardingGuide.contacts.goToImportButton")}
           </Button>
         </div>
       </div>
@@ -613,7 +619,7 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
       <div className="rounded-xl overflow-hidden" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
         <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: "oklch(0.45 0.12 280)" }}>
           <CreditCard size={14} className="text-white" />
-          <p className="text-sm font-bold text-white">Option B — Sync from Stripe</p>
+          <p className="text-sm font-bold text-white">{t("onboardingGuide.contacts.optionBTitle")}</p>
         </div>
         <div className="px-4 py-3 space-y-2 bg-white">
           {[
@@ -638,7 +644,7 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
       <div className="rounded-xl overflow-hidden" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
         <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: "oklch(0.40 0.12 200)" }}>
           <ShoppingCart size={14} className="text-white" />
-          <p className="text-sm font-bold text-white">Option C — Sync from WooCommerce</p>
+          <p className="text-sm font-bold text-white">{t("onboardingGuide.contacts.optionCTitle")}</p>
         </div>
         <div className="px-4 py-3 space-y-3 bg-white">
           {/* Step 1: Generate API keys */}
@@ -701,10 +707,10 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
         className="rounded-xl px-4 py-3 bg-white" style={{ border: "1px solid oklch(0.91 0.02 260)" }}
       >
         <p className="text-sm font-bold mb-1 rr-text-navy">
-          Option D — Add contacts manually
+          {t("onboardingGuide.contacts.optionDTitle")}
         </p>
         <p className="text-xs rr-text-navy-mid">
-          Open Saved Contacts and tap the "+ Add" button in the top-right corner. Enter the customer's name, email, and optional phone number or notes.
+          {t("onboardingGuide.contacts.optionDDesc")}
         </p>
       </div>
 
@@ -712,13 +718,14 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
         onClick={() => onNavigate("/contacts")}
         className="w-full font-bold rr-bg-navy rr-text-gold"
       >
-        <Users size={15} className="mr-2" /> Go to Saved Contacts
+        <Users size={15} className="mr-2" /> {t("onboardingGuide.contacts.goToContactsButton")}
       </Button>
     </div>
   );
 }
 
 function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-4">
       <div
@@ -726,10 +733,10 @@ function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void })
         style={{ background: "oklch(0.96 0.02 260)", border: "1px solid oklch(0.88 0.03 260)" }}
       >
         <p className="text-sm font-bold mb-1 rr-text-navy">
-          Two ways to send
+          {t("onboardingGuide.sendRequest.twoWaysTitle")}
         </p>
         <p className="text-sm rr-text-navy-mid">
-          You can send a review request to a single customer on the spot, or bulk-send to multiple saved contacts at once.
+          {t("onboardingGuide.sendRequest.twoWaysDesc")}
         </p>
       </div>
 
@@ -737,7 +744,7 @@ function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void })
       <div className="rounded-xl overflow-hidden" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
         <div className="px-4 py-2.5 flex items-center gap-2 rr-bg-navy">
           <Send size={14} className="rr-text-gold" />
-          <p className="text-sm font-bold text-white">Send to one customer</p>
+          <p className="text-sm font-bold text-white">{t("onboardingGuide.sendRequest.singleSendTitle")}</p>
         </div>
         <div className="px-4 py-3 space-y-2 bg-white">
           {[
@@ -763,7 +770,7 @@ function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void })
             onClick={() => onNavigate("/send")}
             className="w-full mt-1 font-bold text-xs rr-bg-navy rr-text-gold"
           >
-            <Send size={12} className="mr-1" /> Go to Send Request
+            <Send size={12} className="mr-1" /> {t("onboardingGuide.sendRequest.goToSendButton")}
           </Button>
         </div>
       </div>
@@ -772,7 +779,7 @@ function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void })
       <div className="rounded-xl overflow-hidden" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
         <div className="px-4 py-2.5 flex items-center gap-2" style={{ background: "oklch(0.55 0.12 160)" }}>
           <Users size={14} className="text-white" />
-          <p className="text-sm font-bold text-white">Bulk send to saved contacts</p>
+          <p className="text-sm font-bold text-white">{t("onboardingGuide.sendRequest.bulkSendTitle")}</p>
         </div>
         <div className="px-4 py-3 space-y-2 bg-white">
           {[
@@ -800,7 +807,7 @@ function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void })
             className="w-full mt-1 font-bold text-xs"
             style={{ borderColor: "oklch(0.80 0.05 260)" }}
           >
-            <Users size={12} className="mr-1" /> Go to Saved Contacts
+            <Users size={12} className="mr-1" /> {t("onboardingGuide.sendRequest.goToContactsButton")}
           </Button>
         </div>
       </div>
@@ -810,10 +817,10 @@ function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void })
         style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
       >
         <p className="text-xs font-bold mb-1 rr-text-gold-dim">
-          💡 Pro tip: Follow-up reminders
+          {t("onboardingGuide.sendRequest.proTipTitle")}
         </p>
         <p className="text-xs" style={{ color: "oklch(0.50 0.06 80)" }}>
-          ReviewLink can automatically send a polite follow-up email 3 days after the original request if the customer hasn't responded. Set this up in the Reminders section of Settings.
+          {t("onboardingGuide.sendRequest.proTipDesc")}
         </p>
       </div>
     </div>
@@ -821,27 +828,28 @@ function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void })
 }
 
 function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void; onClose: () => void }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-5">
       <div className="text-center py-4">
         <CheckCircle2 size={52} className="mx-auto mb-3 rr-text-green" />
         <h2 className="text-xl font-black rr-text-navy">
-          You're all set!
+          {t("onboardingGuide.allSet.title")}
         </h2>
         <p className="text-sm mt-2 rr-text-navy-mid">
-          ReviewLink is ready to start collecting reviews for your business.
+          {t("onboardingGuide.allSet.subtitle")}
         </p>
       </div>
 
       <div className="space-y-2">
         <p className="text-xs font-bold uppercase tracking-wide rr-text-navy-muted">
-          Quick links
+          {t("onboardingGuide.allSet.quickLinksTitle")}
         </p>
         {[
-          { label: "Send a review request now", path: "/send", icon: <Send size={14} /> },
-          { label: "View saved contacts", path: "/contacts", icon: <Users size={14} /> },
-          { label: "Check your dashboard", path: "/dashboard", icon: <Star size={14} /> },
-          { label: "Manage settings", path: "/settings", icon: <Globe size={14} /> },
+          { label: t("onboardingGuide.allSet.link1"), path: "/send", icon: <Send size={14} /> },
+          { label: t("onboardingGuide.allSet.link2"), path: "/contacts", icon: <Users size={14} /> },
+          { label: t("onboardingGuide.allSet.link3"), path: "/dashboard", icon: <Star size={14} /> },
+          { label: t("onboardingGuide.allSet.link4"), path: "/settings", icon: <Globe size={14} /> },
         ].map((link) => (
           <button
             key={link.path}
@@ -862,10 +870,10 @@ function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void;
         style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
       >
         <p className="text-xs font-bold mb-1 rr-text-gold-dim">
-          Need to revisit this guide?
+          {t("onboardingGuide.allSet.revisitTitle")}
         </p>
         <p className="text-xs" style={{ color: "oklch(0.50 0.06 80)" }}>
-          Tap the "Setup Guide" button on the Home screen or in Settings any time to reopen these instructions.
+          {t("onboardingGuide.allSet.revisitDesc")}
         </p>
       </div>
 
@@ -873,7 +881,7 @@ function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void;
         onClick={onClose}
         className="w-full font-bold rr-bg-green text-white"
       >
-        <Rocket size={15} className="mr-2" /> Start Using ReviewLink
+        <Rocket size={15} className="mr-2" /> {t("onboardingGuide.allSet.startButton")}
       </Button>
     </div>
   );
@@ -939,47 +947,48 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
     navigate(path);
   };
 
+  const { t } = useTranslation();
   const STEPS: Step[] = [
     {
       id: 0,
       icon: <Rocket size={20} />,
-      title: "Welcome to ReviewLink",
-      subtitle: "Here's what we'll set up together",
+      title: t("onboardingGuide.steps.welcome.title"),
+      subtitle: t("onboardingGuide.steps.welcome.subtitle"),
       content: <StepWelcome onNavigate={handleNavigate} stepsDone={stepsDone} />,
     },
     {
       id: 1,
       icon: <Mail size={20} />,
-      title: "Connect Your Email",
-      subtitle: "Send from your own email account",
+      title: t("onboardingGuide.steps.connectEmail.title"),
+      subtitle: t("onboardingGuide.steps.connectEmail.subtitle"),
       content: <StepConnectEmail onNavigate={handleNavigate} />,
     },
     {
       id: 2,
       icon: <Star size={20} />,
-      title: "Add a Review Platform",
-      subtitle: "Where should customers leave their review?",
+      title: t("onboardingGuide.steps.reviewPlatform.title"),
+      subtitle: t("onboardingGuide.steps.reviewPlatform.subtitle"),
       content: <StepReviewPlatform onNavigate={handleNavigate} />,
     },
     {
       id: 3,
       icon: <Users size={20} />,
-      title: "Import Your Contacts",
-      subtitle: "Build your customer list",
+      title: t("onboardingGuide.steps.importContacts.title"),
+      subtitle: t("onboardingGuide.steps.importContacts.subtitle"),
       content: <StepContacts onNavigate={handleNavigate} />,
     },
     {
       id: 4,
       icon: <Send size={20} />,
-      title: "Send a Review Request",
-      subtitle: "One customer or many — your choice",
+      title: t("onboardingGuide.steps.sendRequest.title"),
+      subtitle: t("onboardingGuide.steps.sendRequest.subtitle"),
       content: <StepSendRequest onNavigate={handleNavigate} />,
     },
     {
       id: 5,
       icon: <CheckCircle2 size={20} />,
-      title: "You're All Set",
-      subtitle: "Everything you need to get started",
+      title: t("onboardingGuide.steps.allSet.title"),
+      subtitle: t("onboardingGuide.steps.allSet.subtitle"),
       content: <StepDone onNavigate={handleNavigate} onClose={onClose} />,
     },
   ];
@@ -1006,14 +1015,14 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
             <span
               className="text-xs font-bold tracking-widest uppercase rr-text-gold"
             >
-              Setup Guide
+              {t("onboardingGuide.header.title")}
             </span>
           </div>
           <button
             onClick={onClose}
             className="p-1.5 rounded-lg transition-colors"
             style={{ color: "var(--text-on-dark-primary)" }}
-            aria-label="Close guide"
+            aria-label={t("onboardingGuide.header.closeAriaLabel")}
           >
             <X size={18} />
           </button>
@@ -1025,7 +1034,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
             <button
               key={s.id}
               onClick={() => setStep(i)}
-              aria-label={`Go to step ${i + 1}`}
+              aria-label={t("onboardingGuide.header.goToStepAriaLabel", { number: i + 1 })}
               className="transition-all rounded-full"
               style={{
                 /* visible dot size */
@@ -1092,7 +1101,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
                 onClick={() => goToStep(Math.min(step + 1, STEPS.length - 1), step)}
                 className="text-sm font-medium underline underline-offset-2 rr-text-navy-muted"
               >
-                Skip for now →
+                {t("onboardingGuide.navigation.skipForNow")}
               </button>
             </div>
           )}
@@ -1111,13 +1120,13 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
             className="font-bold"
             style={{ opacity: isFirst ? 0 : 1, pointerEvents: isFirst ? "none" : "auto" }}
           >
-            <ChevronLeft size={15} className="mr-1" /> Back
+            <ChevronLeft size={15} className="mr-1" /> {t("onboardingGuide.navigation.back")}
           </Button>
           <Button
             onClick={() => goToStep(step + 1, step)}
             className="flex-1 font-bold rr-bg-navy rr-text-gold"
           >
-            {step === STEPS.length - 2 ? "Finish" : "Next"}
+            {step === STEPS.length - 2 ? t("onboardingGuide.navigation.finish") : t("onboardingGuide.navigation.next")}
             <ChevronRight size={15} className="ml-1" />
           </Button>
         </div>

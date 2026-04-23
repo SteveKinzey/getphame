@@ -62,6 +62,7 @@ import {
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useTranslation } from "react-i18next";
 
 type Contact = {
   id: number;
@@ -85,6 +86,7 @@ type FormData = { name: string; email: string; phone: string; notes: string };
 const emptyForm: FormData = { name: "", email: "", phone: "", notes: "" };
 
 export default function SavedContacts() {
+  const { t } = useTranslation();
   const { isAuthenticated, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
   const { track } = useAnalytics();
@@ -437,7 +439,7 @@ export default function SavedContacts() {
                 ) : (
                   <ShoppingCart size={14} className="mr-1" />
                 )}
-                WooCommerce
+                {t("pageHeader.syncFromWooCommerce")}
               </Button>
             </>
           )}
@@ -454,7 +456,7 @@ export default function SavedContacts() {
             ) : (
               <CreditCard size={14} className="mr-1" />
             )}
-            Stripe{syncStatus?.stripeLastSyncedAt ? (
+            {t("pageHeader.importFromStripe")}{syncStatus?.stripeLastSyncedAt ? (
               <span className="ml-1 opacity-60 text-xs font-normal">
                 · {format(new Date(syncStatus.stripeLastSyncedAt), "MMM d")}
               </span>
@@ -466,7 +468,7 @@ export default function SavedContacts() {
             variant="outline"
             className="font-bold border-0 shrink-0 rr-text-gold" style={{ background: "oklch(0.32 0.07 260)" }}
           >
-            <Upload size={14} className="mr-1" /> Import CSV
+            <Upload size={14} className="mr-1" /> {t("pageHeader.importCsv", "Import CSV")}
           </Button>
         </div>
       </div>

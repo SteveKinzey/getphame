@@ -541,10 +541,17 @@
   "pageHeader": {
     "title": "Saved Contacts",
     "addContact": "Add Contact",
+    "importCsv": "Import CSV",
     "importFromStripe": "Import from Stripe",
     "syncFromWooCommerce": "Sync from WooCommerce",
     "viewSyncHistory": "View Sync History",
     "exportCsv": "Export CSV"
+  },
+  "wooStatus": {
+    "neverSynced": "Never synced \u2014 tap WooCommerce above to import"
+  },
+  "bulkBar": {
+    "sendTo": "Send to {{count}}"
   },
   "filters": {
     "searchPlaceholder": "Search by name or email…",
@@ -626,6 +633,7 @@
   },
   "wooSyncHistory": {
     "title": "WooCommerce Sync History",
+    "syncNow": "Sync Now ({{days}}d)",
     "filterPlaceholder": "Filter by date or result…",
     "clearFilter": "Clear filter",
     "noHistory": "No sync history yet. Run a sync to see results here.",
@@ -638,6 +646,9 @@
   },
   "sendHistoryDrawer": {
     "title": "Send History for {{name}}",
+    "followedUp": "Followed Up",
+    "sent": "Sent",
+    "pending": "Pending",
     "loading": "Loading history…",
     "noHistory": "No requests sent to this contact yet.",
     "sentOn": "Sent on {{date}}",
@@ -881,6 +892,11 @@
   },
   "starterTemplates": {
     "title": "Starter Templates",
+    "useThis": "Use this",
+    "availablePlaceholders": "Available placeholders:",
+    "canSpamTip": "Include an unsubscribe line in your template. Use",
+    "canSpamCode": "reply with \"unsubscribe\"",
+    "canSpamSuffix": "or a similar phrase so recipients can opt out.",
     "quickFavor": {
       "name": "Quick favor?",
       "tag": "General",
@@ -930,6 +946,8 @@
     }
   },
   "defaultTemplate": {
+    "badge": "Default",
+    "notUsedYet": "Not used yet",
     "subject": "{{businessName}} would love your feedback!",
     "body": [
       "Hi {{customerName}},",
@@ -956,6 +974,17 @@
   },
   "templateDialog": {
     "createTitle": "Create New Template",
+    "newTitle": "New Template",
+    "hidePreview": "Hide Preview",
+    "showPreview": "Show Preview",
+    "templateNameRequired": "Template name *",
+    "subjectRequired": "Subject line *",
+    "bodyRequired": "Body *",
+    "setDefaultLabel": "Set as default template",
+    "canSpamTip": "CAN-SPAM tip:",
+    "canSpamBody": "Include an unsubscribe line in your template. Use",
+    "canSpamCode": "reply with \"unsubscribe\"",
+    "canSpamSuffix": "or a similar phrase so recipients can opt out.",
     "editTitle": "Edit Template",
     "nameLabel": "Template Name",
     "namePlaceholder": "e.g. My Review Request",
@@ -1088,6 +1117,105 @@
       "yahooMail": "Yahoo Mail"
     }
   },
+  "onboardingGuide": {
+    "header": {
+      "title": "Setup Guide",
+      "closeAriaLabel": "Close guide",
+      "goToStepAriaLabel": "Go to step {{number}}"
+    },
+    "steps": {
+      "welcome": { "title": "Welcome to ReviewLink", "subtitle": "Here's what we'll set up together" },
+      "connectEmail": { "title": "Connect Your Email", "subtitle": "Send from your own email account" },
+      "reviewPlatform": { "title": "Add a Review Platform", "subtitle": "Where should customers leave their review?" },
+      "importContacts": { "title": "Import Your Contacts", "subtitle": "Build your customer list" },
+      "sendRequest": { "title": "Send a Review Request", "subtitle": "One customer or many — your choice" },
+      "allSet": { "title": "You're All Set", "subtitle": "Everything you need to get started" }
+    },
+    "navigation": {
+      "back": "Back",
+      "next": "Next",
+      "finish": "Finish",
+      "skipForNow": "Skip for now →"
+    },
+    "welcome": {
+      "heroText": "ReviewLink sends personalised review request emails from your own email account.",
+      "heroSubtext": "Customers receive a message that looks like it came directly from you — not a bulk mailer.",
+      "setupStepsIntro": "This guide walks you through 4 quick setup steps:",
+      "step1Label": "Connect your email account (SMTP)",
+      "step2Label": "Add your review platform link (Google, Yelp, etc.)",
+      "step3Label": "Import or add your customer contacts",
+      "step4Label": "Send your first review request",
+      "doneLabel": "✓ Done",
+      "setupTime": "Setup takes about 3 minutes. You can come back to this guide any time from the Home screen."
+    },
+    "connectEmail": {
+      "whyTitle": "Why connect your email?",
+      "whyDesc": "ReviewLink sends emails through your own account using SMTP — the same protocol your email app uses. Review requests arrive looking like a personal message from you, not a marketing blast.",
+      "generalStepsTitle": "General setup steps",
+      "providerSectionTitle": "Provider setup — tap to expand",
+      "noteLabel": "Note: ",
+      "goToSettingsButton": "Go to Settings → Email Connection",
+      "testEmailButton": "Send Test Email to Myself",
+      "testEmailSent": "Test email sent! Check your inbox."
+    },
+    "reviewPlatform": {
+      "whatIsTitle": "What is a review platform?",
+      "whatIsDesc": "This is the link your customers click to leave you a review — on Google, Yelp, TripAdvisor, Facebook, or anywhere else. ReviewLink embeds this link as a button inside every review request email.",
+      "findLinkTitle": "How to find your review link — tap your platform",
+      "addingLinkTitle": "Adding the link in ReviewLink",
+      "noteLabel": "Note: ",
+      "goToSettingsButton": "Go to Settings → Review Platforms"
+    },
+    "contacts": {
+      "threeWaysTitle": "Three ways to add contacts",
+      "threeWaysDesc": "Your Saved Contacts list is where you store repeat customers so you can send review requests to them in bulk or individually, without re-entering their details each time.",
+      "optionATitle": "Option A — Import a CSV file",
+      "optionBTitle": "Option B — Sync from Stripe",
+      "optionCTitle": "Option C — Sync from WooCommerce",
+      "optionDTitle": "Option D — Add contacts manually",
+      "optionDDesc": "Open Saved Contacts and tap the \"+ Add\" button in the top-right corner. Enter the customer's name, email, and optional phone number or notes.",
+      "goToImportButton": "Go to Import CSV",
+      "goToContactsButton": "Go to Saved Contacts"
+    },
+    "sendRequest": {
+      "twoWaysTitle": "Two ways to send",
+      "twoWaysDesc": "You can send a review request to a single customer on the spot, or bulk-send to multiple saved contacts at once.",
+      "singleSendTitle": "Send to one customer",
+      "bulkSendTitle": "Bulk send to saved contacts",
+      "proTipTitle": "💡 Pro tip: Follow-up reminders",
+      "proTipDesc": "ReviewLink can automatically send a polite follow-up email 3 days after the original request if the customer hasn't responded. Set this up in the Reminders section of Settings.",
+      "goToSendButton": "Go to Send Request",
+      "goToContactsButton": "Go to Saved Contacts"
+    },
+    "allSet": {
+      "title": "You're all set!",
+      "subtitle": "ReviewLink is ready to start collecting reviews for your business.",
+      "quickLinksTitle": "Quick links",
+      "link1": "Send a review request now",
+      "link2": "View saved contacts",
+      "link3": "Check your dashboard",
+      "link4": "Manage settings",
+      "revisitTitle": "Need to revisit this guide?",
+      "revisitDesc": "Tap the \"Setup Guide\" button on the Home screen or in Settings any time to reopen these instructions.",
+      "startButton": "Start Using ReviewLink"
+    }
+  },
+  "step2Platform": {
+    "reviewPlatformLabel": "Review Platform",
+    "reviewPageUrlLabel": "Your Review Page URL",
+    "reviewPageUrlHint": "Paste the link customers click to leave you a review.",
+    "savePlatformButton": "Save Platform",
+    "savingButton": "Saving...",
+    "toast": {
+      "enterUrl": "Please enter your review page URL.",
+      "platformAdded": "Review platform added!"
+    }
+  },
+  "step3Send": {
+    "allSetTitle": "You're all set!",
+    "allSetDescription": "Your email is connected and your review platform is ready. Send your first review request and start building your reputation.",
+    "sendFirstRequestButton": "Send My First Review Request"
+  },
   "dashboard": {
     "header": {
       "label": "Dashboard",
@@ -1193,5 +1321,82 @@
     "googleBtn": "Continue with Google",
     "appleBtn": "Continue with Apple",
     "finePrint": "Start free — 10 review requests included. No credit card required."
+  },
+  "changelog": {
+    "title": "What's New",
+    "subtitle": "Every update, improvement, and fix — in one place.",
+    "backAriaLabel": "Back to Home",
+    "homeAriaLabel": "Go to Home",
+    "filterAriaLabel": "Filter changelog by category",
+    "filterAll": "All",
+    "filterNew": "New",
+    "filterImproved": "Improved",
+    "filterFix": "Fix",
+    "labelNew": "New",
+    "labelImproved": "Improved",
+    "labelFix": "Fix",
+    "update": "update",
+    "updates": "updates",
+    "matching": "matching",
+    "total": "total",
+    "noUpdates": "No updates in this category yet.",
+    "featureRequest": "Have a feature request?",
+    "letUsKnow": "Let us know",
+    "v13": {
+      "emailDashboard": {
+        "title": "Email Performance Dashboard",
+        "description": "Open rate and click rate now appear as an at-a-glance summary card on your Home screen, so you can see how your review requests are performing without digging into individual records."
+      },
+      "topTemplateBadge": {
+        "title": "Top Template Badge",
+        "description": "The email template with the highest click rate now shows a gold 🏆 Top Template badge on the Templates list, so you always know which message is converting best."
+      },
+      "reminderTracking": {
+        "title": "Reminder Email Tracking",
+        "description": "Open and click tracking now covers reminder follow-up emails, not just the initial send. All engagement data rolls up under the original request so your stats stay clean."
+      },
+      "referralCard": {
+        "title": "Share ReviewLink Referral Card",
+        "description": "A new card on the Home screen lets you share ReviewLink with other local businesses in one tap — using the native share sheet on mobile or clipboard copy on desktop."
+      }
+    },
+    "v12": {
+      "csvImport": {
+        "title": "CSV Contact Import",
+        "description": "Import your entire customer list from a spreadsheet in four steps: upload, map columns, preview, and confirm. Supports up to 5,000 contacts per import with automatic duplicate detection."
+      },
+      "bulkSend": {
+        "title": "Bulk Send to Contacts",
+        "description": "Select multiple saved contacts and send review requests in one action. Daily send limits apply to keep your deliverability healthy."
+      },
+      "wooSync": {
+        "title": "WooCommerce Customer Sync",
+        "description": "Connect your WooCommerce store and automatically import customers from completed orders. Sync runs on demand or on a schedule."
+      },
+      "emailTracking": {
+        "title": "Email Open & Click Tracking",
+        "description": "See exactly which customers opened your review request and who clicked the link. Per-request tracking data appears in the Send History drawer."
+      }
+    },
+    "v11": {
+      "reminders": {
+        "title": "Follow-up Reminders",
+        "description": "Automatically schedule a follow-up email 3 days after the initial review request for customers who haven't responded yet."
+      },
+      "multiPlatform": {
+        "title": "Multi-Platform Review Links",
+        "description": "Add multiple review destinations (Google, Yelp, TripAdvisor, Facebook) and let customers choose where to leave their review."
+      },
+      "compliance": {
+        "title": "Compliance Guide",
+        "description": "Built-in compliance guide covers FTC rules, platform-specific policies, and best practices for ethical review solicitation."
+      }
+    },
+    "v10": {
+      "launch": {
+        "title": "ReviewLink Launch",
+        "description": "Send personalised review request emails from your own email account — not a bulk mailer. Customers receive a message that looks like it came directly from you."
+      }
+    }
   }
 }

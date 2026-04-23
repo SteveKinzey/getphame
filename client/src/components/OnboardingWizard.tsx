@@ -10,6 +10,7 @@
  */
 
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -69,15 +70,7 @@ const KNOWN_HOSTS: Record<string, { host: string; port: number; secure: number }
   "fastmail.com": { host: "smtp.fastmail.com", port: 587, secure: 0 },
 };
 
-const APP_PASSWORD_HINTS: Record<string, string> = {
-  "gmail.com": "Gmail requires an App Password when 2-Step Verification is on. Go to myaccount.google.com → Security → App Passwords.",
-  "googlemail.com": "Gmail requires an App Password when 2-Step Verification is on. Go to myaccount.google.com → Security → App Passwords.",
-  "outlook.com": "Outlook may require an App Password if two-step verification is enabled. Go to account.microsoft.com → Security → Advanced security options.",
-  "hotmail.com": "Outlook may require an App Password if two-step verification is enabled. Go to account.microsoft.com → Security → Advanced security options.",
-  "yahoo.com": "Yahoo requires an App Password. Go to account.yahoo.com → Security → Generate app password.",
-  "zoho.com": "Zoho requires SMTP access to be enabled first. Go to mail.zoho.com → Settings → Mail Accounts → SMTP and enable \"SMTP Access\".",
-  "zohomail.com": "Zoho requires SMTP access to be enabled first. Go to mail.zoho.com → Settings → Mail Accounts → SMTP and enable \"SMTP Access\".",
-};
+// APP_PASSWORD_HINTS are now resolved via t() using step1Email.hints keys
 
 // Preset SMTP configurations for one-tap selection in the advanced panel
 const SMTP_PRESETS = [
@@ -87,26 +80,28 @@ const SMTP_PRESETS = [
   { label: "Yahoo Mail", host: "smtp.mail.yahoo.com", port: 587 },
 ] as const;
 
-const GOOGLE_WORKSPACE_HINT = "Using Google Workspace? Your SMTP host is smtp.gmail.com (port 587). You'll need an App Password — go to myaccount.google.com → Security → App Passwords.";
-const ZOHO_HOST_HINT = "Zoho requires SMTP access to be enabled first. Go to mail.zoho.com → Settings → Mail Accounts → SMTP and enable \"SMTP Access\". Then use your Zoho email and password here.";
+// GOOGLE_WORKSPACE_HINT and ZOHO_HOST_HINT are now resolved via t() using step1Email.hints keys
 
 function detectHost(email: string) {
   const domain = email.split("@")[1]?.toLowerCase();
   return domain ? KNOWN_HOSTS[domain] ?? null : null;
 }
 
-/** Returns the app-password hint based on email domain OR manually-entered host */
-function getHint(email: string, host?: string) {
+/** Returns the app-password hint key based on email domain OR manually-entered host */
+function getHintKey(email: string, host?: string): string | null {
   const domain = email.split("@")[1]?.toLowerCase();
-  // Google Workspace: custom domain using smtp.gmail.com
   if (host === "smtp.gmail.com" && domain && !KNOWN_HOSTS[domain]) {
-    return GOOGLE_WORKSPACE_HINT;
+    return "step1Email.hints.googleWorkspaceHint";
   }
-  // Zoho: custom domain using smtp.zoho.com
   if (host === "smtp.zoho.com" && domain && domain !== "zoho.com" && domain !== "zohomail.com") {
-    return ZOHO_HOST_HINT;
+    return "step1Email.hints.zohoHostHint";
   }
-  return domain ? APP_PASSWORD_HINTS[domain] ?? null : null;
+  if (!domain) return null;
+  if (domain === "gmail.com" || domain === "googlemail.com") return "step1Email.hints.gmailAppPassword";
+  if (domain === "outlook.com" || domain === "hotmail.com" || domain === "live.com") return "step1Email.hints.outlookAppPassword";
+  if (domain === "yahoo.com") return "step1Email.hints.yahooAppPassword";
+  if (domain === "zoho.com" || domain === "zohomail.com") return "step1Email.hints.zohoSmtpAccess";
+  return null;
 }
 
 // ── Step indicator ─────────────────────────────────────────────────────────────
@@ -135,6 +130,7 @@ function StepDot({ step, current, done }: { step: number; current: number; done:
 // ── Step 1: Connect Email ──────────────────────────────────────────────────────
 
 function Step1Email({ onDone }: { onDone: () => void }) {
+  const { t } = useTranslation();
   const utils = trpc.useUtils();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -154,9 +150,8 @@ function Step1Email({ onDone }: { onDone: () => void }) {
     onSuccess: (_, variables) => {
       utils.smtp.status.invalidate();
       utils.onboarding.status.invalidate();
-      // Show inbox confirmation — welcome email fires server-side automatically
       toast.success(
-        `Email connected! Check ${variables.email} — we sent you a test email to confirm everything works.`,
+        t("step1Email.toast.emailConnectedSuccess", { email: variables.email }),
         { duration: 6000 }
       );
       setTimeout(onDone, 1000);
@@ -173,7 +168,8 @@ function Step1Email({ onDone }: { onDone: () => void }) {
     }
   }, [email]);
 
-  const hint = getHint(email, host);
+  const hintKey = getHintKey(email, host);
+  const hint = hintKey ? t(hintKey) : null;
   const detectedAuto = !!detectHost(email);
   // Show Google Workspace disclosure when auto-detect fails and user has a custom domain
   const showWorkspaceDisclosure =
@@ -184,7 +180,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
 
   async function handleTestCredentials() {
     if (!email || !password) {
-      toast.error("Please enter your email and password.");
+      toast.error(t("step1Email.toast.enterEmailPassword"));
       return;
     }
     const resolvedHost = host || `smtp.${email.split("@")[1]}`;
@@ -200,7 +196,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
       });
       setTestResult(result);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Connection test failed";
+      const message = err instanceof Error ? err.message : t("step1Email.toast.connectionTestFailed");
       setTestResult({ ok: false, error: message });
     } finally {
       setTestingCredentials(false);
@@ -209,7 +205,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
 
   async function handleConnect() {
     if (!email || !password) {
-      toast.error("Please enter your email and password.");
+      toast.error(t("step1Email.toast.enterEmailPassword"));
       return;
     }
     setTesting(true);
@@ -232,27 +228,27 @@ function Step1Email({ onDone }: { onDone: () => void }) {
     <div className="flex flex-col gap-5">
       <div>
         <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          Email Address
+          {t("step1Email.emailAddressLabel")}
         </label>
         <input
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@yourbusiness.com"
+          placeholder={t("step1Email.emailAddressPlaceholder")}
           className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
         />
       </div>
 
       <div>
         <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          Password {hint ? "(App Password required)" : ""}
+          {t("step1Email.passwordLabel")} {hint ? t("step1Email.appPasswordRequiredSuffix") : ""}
         </label>
         <div className="relative">
           <input
             type={showPass ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder={hint ? "16-character app password" : "Your email password"}
+            placeholder={hint ? t("step1Email.appPasswordPlaceholder") : t("step1Email.emailPasswordPlaceholder")}
             className="w-full px-4 py-3 pr-10 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
           />
           <button
@@ -276,38 +272,38 @@ function Step1Email({ onDone }: { onDone: () => void }) {
       {/* From Name — promoted to main form */}
       <div>
         <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          Your Name <span className="rr-text-navy-muted rr-fw-normal">(shown as sender)</span>
+          {t("step1Email.fromNameLabel")} <span className="rr-text-navy-muted rr-fw-normal">({t("settings.fromNameHint", "shown as sender")})</span>
         </label>
         <input
           type="text"
           value={fromName}
           onChange={(e) => setFromName(e.target.value)}
-          placeholder="e.g. Steve at Acme Plumbing"
+          placeholder={t("step1Email.fromNamePlaceholder")}
           className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
         />
         <p className="text-xs mt-1 rr-text-navy-muted">
-          Customers will see this as the sender name in their inbox.
+          {t("settings.fromNameDescription", "Customers will see this as the sender name in their inbox.")}
         </p>
       </div>
       {/* Reply-To — optional */}
       <div>
         <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          Reply-To <span className="rr-text-navy-muted rr-fw-normal">(optional)</span>
+          {t("step1Email.replyToEmailLabel")} <span className="rr-text-navy-muted rr-fw-normal">({t("settings.optional", "optional")})</span>
         </label>
         <input
           type="email"
           value={replyTo}
           onChange={(e) => setReplyTo(e.target.value)}
-          placeholder="e.g. support@yourbusiness.com"
+          placeholder={t("step1Email.replyToEmailPlaceholder")}
           className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
         />
         <p className="text-xs mt-1 rr-text-navy-muted">
-          Where customer replies will go. Leave blank to use your sending address.
+          {t("settings.replyToDescription", "Where customer replies will go. Leave blank to use your sending address.")}
         </p>
       </div>
       {detectedAuto && (
         <p className="text-xs rr-text-green">
-          ✓ SMTP settings auto-detected for {email.split("@")[1]}
+          ✓ {t("settings.smtpAutoDetected", { domain: email.split("@")[1], defaultValue: `SMTP settings auto-detected for ${email.split("@")[1]}` })}
         </p>
       )}
 
@@ -320,10 +316,10 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           <AlertCircle size={14} className="shrink-0 mt-0.5" style={{ color: "oklch(0.70 0.15 250)" }} />
           <div className="flex flex-col gap-1.5">
             <p className="text-xs font-bold" style={{ color: "oklch(0.85 0.08 250)" }}>
-              Using Google Workspace or a custom domain?
+              {t("settings.googleWorkspaceTitle", "Using Google Workspace or a custom domain?")}
             </p>
             <p className="text-xs" style={{ color: "oklch(0.70 0.05 250)" }}>
-              We couldn’t auto-detect your SMTP settings. Select your email provider below or enter settings manually.
+              {t("settings.googleWorkspaceDescription", "We couldn't auto-detect your SMTP settings. Select your email provider below or enter settings manually.")}
             </p>
             <div className="flex flex-wrap gap-2 mt-1">
               {SMTP_PRESETS.map((preset) => (
@@ -348,7 +344,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           className="text-xs text-left"
           style={{ color: "oklch(0.60 0.04 260)" }}
         >
-          {showAdvanced ? "▲ Hide" : "▼ Show"} advanced SMTP settings
+          {showAdvanced ? t("step1Email.hideAdvancedSettings") : t("step1Email.showAdvancedSettings")}
         </button>
       )}
 
@@ -377,7 +373,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           <div className="flex gap-3">
             <div className="flex-1">
               <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-                SMTP Host
+                {t("step1Email.smtpHostLabel")}
               </label>
               <input
                 type="text"
@@ -389,7 +385,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
             </div>
             <div className="w-24">
               <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-                Port
+                {t("step1Email.smtpPortLabel")}
               </label>
               <input
                 type="number"
@@ -413,7 +409,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           }}
         >
           <span className="shrink-0 mt-0.5">{testResult.ok ? "✓" : "✗"}</span>
-          <span>{testResult.ok ? "Connection successful! You can now click Connect Email." : (testResult.error ?? "Connection failed. Check your credentials and settings.")}</span>
+            <span>{testResult.ok ? t("step1Email.testSuccessful") : (testResult.error ?? t("step1Email.testFailed", { error: "" }))}</span>
         </div>
       )}
 
@@ -432,9 +428,9 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           }}
         >
           {testingCredentials ? (
-            <><Loader2 size={14} className="animate-spin" />Testing...</>
+            <><Loader2 size={14} className="animate-spin" />{t("step1Email.testingButton")}</>
           ) : (
-            <>Test Connection</>
+            <>{t("step1Email.testCredentialsButton")}</>
           )}
         </button>
 
@@ -456,9 +452,9 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           }}
         >
           {testing || connectSmtp.isPending ? (
-            <><Loader2 size={16} className="animate-spin" />Connecting...</>
+            <><Loader2 size={16} className="animate-spin" />{t("step1Email.connectingButton")}</>
           ) : (
-            <><Mail size={16} />Connect Email</>
+            <><Mail size={16} />{t("step1Email.connectEmailButton")}</>
           )}
         </button>
       </div>
@@ -469,6 +465,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
 // ── Step 2: Add Review Platform ────────────────────────────────────────────────
 
 function Step2Platform({ onDone }: { onDone: () => void }) {
+  const { t } = useTranslation();
   const utils = trpc.useUtils();
   const [platform, setPlatform] = useState<string>("google");
   const [url, setUrl] = useState("");
@@ -477,7 +474,7 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
     onSuccess: () => {
       utils.reviewPlatforms.list.invalidate();
       utils.onboarding.status.invalidate();
-      toast.success("Review platform added!");
+      toast.success(t("step2Platform.toast.platformAdded"));
       setTimeout(onDone, 800);
     },
     onError: (err) => toast.error(err.message),
@@ -485,7 +482,7 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
 
   function handleAdd() {
     if (!url.trim()) {
-      toast.error("Please enter your review page URL.");
+      toast.error(t("step2Platform.toast.enterUrl"));
       return;
     }
     addPlatform.mutate({
@@ -498,7 +495,7 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
     <div className="flex flex-col gap-5">
       <div>
         <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          Review Platform
+          {t("step2Platform.reviewPlatformLabel")}
         </label>
         <select
           value={platform}
@@ -515,7 +512,7 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
 
       <div>
         <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          Your Review Page URL
+          {t("step2Platform.reviewPageUrlLabel")}
         </label>
         <input
           type="url"
@@ -525,7 +522,7 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
           className="w-full px-4 py-3 rounded-xl text-sm outline-none text-white" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
         />
         <p className="text-xs mt-1" style={{ color: "oklch(0.50 0.03 260)" }}>
-          Paste the link customers click to leave you a review.
+          {t("step2Platform.reviewPageUrlHint")}
         </p>
       </div>
 
@@ -548,12 +545,12 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
         {addPlatform.isPending ? (
           <>
             <Loader2 size={16} className="animate-spin" />
-            Saving...
+            {t("step2Platform.savingButton")}
           </>
         ) : (
           <>
             <Globe size={16} />
-            Save Platform
+            {t("step2Platform.savePlatformButton")}
           </>
         )}
       </button>
@@ -564,6 +561,7 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
 // ── Step 3: Send First Request ─────────────────────────────────────────────────
 
 function Step3Send({ onDismiss }: { onDismiss: () => void }) {
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const dismissMutation = trpc.onboarding.dismiss.useMutation();
 
@@ -590,11 +588,10 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
         <h3
           className="text-xl font-black mb-2 text-white"
         >
-          You're all set!
+          {t("step3Send.allSetTitle")}
         </h3>
         <p className="text-sm" style={{ color: "oklch(0.65 0.04 260)" }}>
-          Your email is connected and your review platform is ready. Send your first review request
-          and start building your reputation.
+          {t("step3Send.allSetDescription")}
         </p>
       </div>
       <button
@@ -602,7 +599,7 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
         className="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-black text-base transition-transform active:scale-95 w-full rr-bg-gold" style={{ color: "oklch(0.15 0.05 260)" }}
       >
         <Rocket size={18} />
-        Send My First Review Request
+        {t("step3Send.sendFirstRequestButton")}
       </button>
     </div>
   );
@@ -611,6 +608,7 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
 // ── Main Wizard ────────────────────────────────────────────────────────────────
 
 export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
+  const { t } = useTranslation();
   const { data: status, isLoading } = trpc.onboarding.status.useQuery(undefined, {
     refetchInterval: 3000, // poll so steps auto-advance when completed elsewhere
   });
@@ -625,9 +623,9 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
   // Auto-advance viewStep when server confirms a step is done
   const currentStep = viewStep ?? minStep;
   const steps = [
-    { id: 1, label: "Connect Email", icon: Mail, done: !!status?.smtpConnected },
-    { id: 2, label: "Review Platform", icon: Globe, done: !!status?.hasPlatform },
-    { id: 3, label: "Send Request", icon: Rocket, done: !!status?.hasSentRequest },
+    { id: 1, label: t("onboardingWizard.steps.connectEmail"), icon: Mail, done: !!status?.smtpConnected },
+    { id: 2, label: t("onboardingWizard.steps.reviewPlatform"), icon: Globe, done: !!status?.hasPlatform },
+    { id: 3, label: t("onboardingWizard.steps.sendRequest"), icon: Rocket, done: !!status?.hasSentRequest },
   ];
   function handleStepDone() {
     // Auto-advance to next step when server confirms completion
@@ -661,14 +659,14 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
               <span
                 className="text-xs font-bold tracking-widest uppercase rr-text-gold"
               >
-                ReviewLink Setup
+                {t("onboardingWizard.header.title")}
               </span>
             </div>
             <button
               onClick={() => dismissMutation.mutate()}
               className="p-1 rounded-lg transition-colors"
               style={{ color: "var(--text-on-dark-primary)" }}
-              title="Skip setup"
+              title={t("onboardingWizard.header.skipSetupTooltip")}
             >
               <X size={18} />
             </button>
@@ -732,17 +730,14 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
             <h2
               className="text-lg font-black mb-1 text-white"
             >
-              {currentStep === 1 && "Connect your email"}
-              {currentStep === 2 && "Add your review page"}
-              {currentStep === 3 && "Ready to launch 🚀"}
+              {currentStep === 1 && t("onboardingWizard.stepContent.step1.title")}
+              {currentStep === 2 && t("onboardingWizard.stepContent.step2.title")}
+              {currentStep === 3 && t("onboardingWizard.stepContent.step3.title")}
             </h2>
             <p className="text-sm" style={{ color: "oklch(0.60 0.04 260)" }}>
-              {currentStep === 1 &&
-                "ReviewLink sends emails from your own account — works with Gmail, Outlook, Yahoo, or any business email."}
-              {currentStep === 2 &&
-                "Paste the link where customers can leave you a review. You can add more platforms in Settings later."}
-              {currentStep === 3 &&
-                "Everything is set up. Send your first review request in seconds."}
+              {currentStep === 1 && t("onboardingWizard.stepContent.step1.description")}
+              {currentStep === 2 && t("onboardingWizard.stepContent.step2.description")}
+              {currentStep === 3 && t("onboardingWizard.stepContent.step3.description")}
             </p>
           </div>
 
@@ -758,7 +753,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
                 className="flex items-center gap-1 px-4 py-3 rounded-2xl font-bold text-sm transition-transform active:scale-95 rr-bg-navy" style={{ color: "oklch(0.70 0.04 260)", border: "1px solid oklch(0.35 0.06 260)" }}
               >
                 <ChevronLeft size={16} />
-                Previous
+                {t("onboardingWizard.navigation.previous")}
               </button>
             )}
             {currentStep < 3 && (
@@ -772,7 +767,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
                   fontFamily: "'Poppins', sans-serif",
                 }}
               >
-                Next step
+                {t("onboardingWizard.navigation.nextStep")}
                 <ChevronRight size={16} />
               </button>
             )}
@@ -784,7 +779,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
               className="w-full text-center text-xs mt-3"
               style={{ color: "oklch(0.40 0.03 260)" }}
             >
-              Skip setup — I'll do this later
+              {t("onboardingWizard.navigation.skipSetupLater")}
             </button>
           )}
         </div>

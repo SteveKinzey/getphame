@@ -20,6 +20,7 @@ import { Bell, ChevronLeft, Clock, CheckCircle2, XCircle, Ban, SendHorizonal, Ey
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 type Reminder = {
   id: number;
@@ -31,30 +32,8 @@ type Reminder = {
   sequenceStep?: number;
 };
 
-const STATUS_CONFIG: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
-  pending: {
-    label: "Scheduled",
-    icon: <Clock size={13} />,
-    color: "text-blue-600 bg-blue-50",
-  },
-  sent: {
-    label: "Sent",
-    icon: <CheckCircle2 size={13} />,
-    color: "text-green-600 bg-green-50",
-  },
-  cancelled: {
-    label: "Cancelled",
-    icon: <Ban size={13} />,
-    color: "text-gray-500 bg-gray-100",
-  },
-  failed: {
-    label: "Failed",
-    icon: <XCircle size={13} />,
-    color: "text-red-600 bg-red-50",
-  },
-};
-
 export default function Reminders() {
+  const { t } = useTranslation();
   const { isAuthenticated, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
   const [cancelTarget, setCancelTarget] = useState<Reminder | null>(null);
@@ -73,7 +52,7 @@ export default function Reminders() {
     onSuccess: () => {
       utils.reminders.list.invalidate();
       setCancelTarget(null);
-      toast.success("Reminder cancelled.");
+      toast.success(t("toastMessages.reminderCancelled"));
     },
     onError: (e) => toast.error(e.message),
   });
@@ -82,7 +61,7 @@ export default function Reminders() {
     onSuccess: () => {
       utils.reminders.list.invalidate();
       setSendNowTarget(null);
-      toast.success("Follow-up reminder sent!");
+      toast.success(t("toastMessages.followUpReminderSent"));
     },
     onError: (e) => {
       setSendNowTarget(null);
@@ -104,6 +83,29 @@ export default function Reminders() {
   const pending = (reminders as Reminder[]).filter((r) => r.status === "pending");
   const history = (reminders as Reminder[]).filter((r) => r.status !== "pending");
 
+  const STATUS_CONFIG: Record<string, { label: string; icon: React.ReactNode; color: string }> = {
+    pending: {
+      label: t("reminderRow.status.pending"),
+      icon: <Clock size={13} />,
+      color: "text-blue-600 bg-blue-50",
+    },
+    sent: {
+      label: t("reminderRow.status.sent"),
+      icon: <CheckCircle2 size={13} />,
+      color: "text-green-600 bg-green-50",
+    },
+    cancelled: {
+      label: t("reminderRow.status.cancelled"),
+      icon: <Ban size={13} />,
+      color: "text-gray-500 bg-gray-100",
+    },
+    failed: {
+      label: t("reminderRow.status.failed"),
+      icon: <XCircle size={13} />,
+      color: "text-red-600 bg-red-50",
+    },
+  };
+
   return (
     <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Header */}
@@ -112,14 +114,14 @@ export default function Reminders() {
           onClick={() => navigate("/")}
           className="flex items-center gap-1 mb-4 text-sm opacity-70 hover:opacity-100 transition-opacity rr-text-gold"
         >
-          <ChevronLeft size={16} /> Back
+          <ChevronLeft size={16} /> {t("header.back")}
         </button>
         <div>
           <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
             Follow-up Reminders
           </h1>
           <p className="text-sm mt-1 opacity-70 text-white">
-            Automatic 3-day follow-up emails for customers who haven't reviewed yet
+            {t("header.subtitle")}
           </p>
         </div>
       </div>
@@ -127,30 +129,30 @@ export default function Reminders() {
       <div className="px-4 pt-4 space-y-5">
         {/* Info banner */}
         <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-700">
-          <strong>How it works:</strong> When you send a review request, a follow-up reminder is automatically scheduled for 3 days later. The reminder is sent from your connected email account and uses your business profile. Use <strong>Send Now</strong> to skip the wait.
+          <strong>{t("infoBanner.howItWorks")}</strong> {t("infoBanner.description")}
           <div className="flex gap-2 mt-2.5">
             <button
               onClick={() => setPreviewStep(1)}
               className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors rr-bg-navy rr-text-gold"
             >
-              <Eye size={11} /> Preview 1st Follow-up
+              <Eye size={11} /> {t("infoBanner.preview1stFollowUp")}
             </button>
             <button
               onClick={() => setPreviewStep(2)}
               className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors rr-bg-navy rr-text-gold"
             >
-              <Eye size={11} /> Preview 2nd Follow-up
+              <Eye size={11} /> {t("infoBanner.preview2ndFollowUp")}
             </button>
           </div>
         </div>
 
         {isLoading ? (
-          <div className="text-center py-12 text-gray-400">Loading…</div>
+          <div className="text-center py-12 text-gray-400">{t("emptyState.loading")}</div>
         ) : reminders.length === 0 ? (
           <div className="text-center py-16">
             <Bell size={40} className="mx-auto mb-3 text-gray-300" />
-            <p className="text-gray-500 font-medium">No reminders yet</p>
-            <p className="text-gray-400 text-sm mt-1">Reminders are created automatically when you send review requests</p>
+            <p className="text-gray-500 font-medium">{t("emptyState.noRemindersYet")}</p>
+            <p className="text-gray-400 text-sm mt-1">{t("emptyState.remindersCreatedAutomatically")}</p>
           </div>
         ) : (
           <>
@@ -159,14 +161,14 @@ export default function Reminders() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wide">
-                    Scheduled ({pending.length})
+                    {t("sections.scheduled", { count: pending.length })}
                   </h2>
                   {pending.length > 1 && (
                     <button
                       onClick={() => setBulkCancelOpen(true)}
                       className="text-xs font-semibold text-red-500 hover:text-red-700 transition-colors"
                     >
-                      Cancel all
+                      {t("sections.cancelAll")}
                     </button>
                   )}
                 </div>
@@ -175,8 +177,10 @@ export default function Reminders() {
                     <ReminderRow
                       key={r.id}
                       reminder={r}
+                      statusConfig={STATUS_CONFIG}
                       onCancel={() => setCancelTarget(r)}
                       onSendNow={() => setSendNowTarget(r)}
+                      t={t}
                     />
                   ))}
                 </div>
@@ -187,11 +191,11 @@ export default function Reminders() {
             {history.length > 0 && (
               <div>
                 <h2 className="text-sm font-bold text-gray-500 uppercase tracking-wide mb-2">
-                  History ({history.length})
+                  {t("sections.history", { count: history.length })}
                 </h2>
                 <div className="space-y-2">
                   {history.map((r) => (
-                    <ReminderRow key={r.id} reminder={r} />
+                    <ReminderRow key={r.id} reminder={r} statusConfig={STATUS_CONFIG} t={t} />
                   ))}
                 </div>
               </div>
@@ -204,19 +208,18 @@ export default function Reminders() {
       <AlertDialog open={!!sendNowTarget} onOpenChange={(o) => { if (!o) setSendNowTarget(null); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Send reminder now?</AlertDialogTitle>
+            <AlertDialogTitle>{t("sendNowConfirm.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will immediately send the follow-up email to{" "}
-              <strong>{sendNowTarget?.customerName}</strong> without waiting for the scheduled date.
+              {t("sendNowConfirm.description", { customerName: sendNowTarget?.customerName ?? "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Not yet</AlertDialogCancel>
+            <AlertDialogCancel>{t("sendNowConfirm.notYet")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => sendNowTarget && sendNowMutation.mutate({ id: sendNowTarget.id })}
               className="rr-bg-navy rr-text-gold"
             >
-              Send Now
+              {t("sendNowConfirm.sendNow")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -226,13 +229,13 @@ export default function Reminders() {
       <AlertDialog open={bulkCancelOpen} onOpenChange={(o) => { if (!o && !bulkCancelling) setBulkCancelOpen(false); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Cancel all {pending.length} reminders?</AlertDialogTitle>
+            <AlertDialogTitle>{t("bulkCancelConfirm.title", { count: pending.length })}</AlertDialogTitle>
             <AlertDialogDescription>
-              All scheduled follow-up reminders will be cancelled and won't be sent. This cannot be undone.
+              {t("bulkCancelConfirm.description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={bulkCancelling}>Keep them</AlertDialogCancel>
+            <AlertDialogCancel disabled={bulkCancelling}>{t("bulkCancelConfirm.keepThem")}</AlertDialogCancel>
             <AlertDialogAction
               disabled={bulkCancelling}
               className="bg-red-600 hover:bg-red-700 text-white"
@@ -244,16 +247,16 @@ export default function Reminders() {
                     await cancelMutation.mutateAsync({ id: r.id });
                   }
                   utils.reminders.list.invalidate();
-                  toast.success(`Cancelled ${pending.length} reminder${pending.length !== 1 ? 's' : ''}.`);
+                  toast.success(t("bulkCancelConfirm.successMessage", { count: pending.length, plural: pending.length !== 1 ? 's' : '' }));
                 } catch {
-                  toast.error('Some reminders could not be cancelled.');
+                  toast.error(t("bulkCancelConfirm.errorMessage"));
                 } finally {
                   setBulkCancelling(false);
                   setBulkCancelOpen(false);
                 }
               }}
             >
-              {bulkCancelling ? 'Cancelling…' : `Cancel All ${pending.length}`}
+              {bulkCancelling ? t("bulkCancelConfirm.cancelling") : t("bulkCancelConfirm.cancelAll", { count: pending.length })}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -274,7 +277,7 @@ export default function Reminders() {
             <div className="flex items-center justify-between px-4 py-3 shrink-0 rr-bg-navy" style={{ borderBottom: "1px solid oklch(0.30 0.08 260)" }}>
               <div>
                 <p className="text-xs font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
-                  {previewStep === 2 ? "2nd Follow-up Preview" : "1st Follow-up Preview"}
+                  {previewStep === 2 ? t("reminderRow.2ndFollowUp") : t("reminderRow.1stFollowUp")} Preview
                 </p>
                 <p className="text-xs mt-0.5" style={{ color: "oklch(0.70 0.04 260)" }}>
                   Subject: {previewStep === 2 ? "One last nudge — we'd love your review!" : "Just checking in — have you had a chance to leave us a review?"}
@@ -287,7 +290,7 @@ export default function Reminders() {
             {/* Email body */}
             <div className="flex-1 overflow-y-auto p-4">
               {previewLoading ? (
-                <div className="text-center py-8 text-gray-400 text-sm">Loading preview…</div>
+                <div className="text-center py-8 text-gray-400 text-sm">{t("emptyState.loading")}</div>
               ) : (
                 <div
                   className="text-sm text-gray-700 leading-relaxed"
@@ -303,14 +306,14 @@ export default function Reminders() {
                 className="flex-1 py-2 rounded-xl text-xs font-bold transition-colors"
                 style={{ background: previewStep === 1 ? "oklch(0.22 0.09 260)" : "oklch(0.95 0.01 260)", color: previewStep === 1 ? "oklch(0.80 0.18 80)" : "oklch(0.40 0.04 260)" }}
               >
-                1st Follow-up
+                {t("reminderRow.1stFollowUp")}
               </button>
               <button
                 onClick={() => setPreviewStep(2)}
                 className="flex-1 py-2 rounded-xl text-xs font-bold transition-colors"
                 style={{ background: previewStep === 2 ? "oklch(0.22 0.09 260)" : "oklch(0.95 0.01 260)", color: previewStep === 2 ? "oklch(0.80 0.18 80)" : "oklch(0.40 0.04 260)" }}
               >
-                2nd Follow-up
+                {t("reminderRow.2ndFollowUp")}
               </button>
             </div>
           </div>
@@ -321,18 +324,18 @@ export default function Reminders() {
       <AlertDialog open={!!cancelTarget} onOpenChange={(o) => { if (!o) setCancelTarget(null); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Cancel reminder?</AlertDialogTitle>
+            <AlertDialogTitle>{t("cancelConfirm.title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              The follow-up reminder for <strong>{cancelTarget?.customerName}</strong> will be cancelled and won't be sent.
+              {t("cancelConfirm.description", { customerName: cancelTarget?.customerName ?? "" })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Keep it</AlertDialogCancel>
+            <AlertDialogCancel>{t("cancelConfirm.keepIt")}</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => cancelTarget && cancelMutation.mutate({ id: cancelTarget.id })}
               className="bg-red-600 hover:bg-red-700 text-white"
             >
-              Cancel Reminder
+              {t("cancelConfirm.cancelReminder")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -343,14 +346,18 @@ export default function Reminders() {
 
 function ReminderRow({
   reminder,
+  statusConfig,
   onCancel,
   onSendNow,
+  t,
 }: {
   reminder: Reminder;
+  statusConfig: Record<string, { label: string; icon: React.ReactNode; color: string }>;
   onCancel?: () => void;
   onSendNow?: () => void;
+  t: (key: string, opts?: Record<string, unknown>) => string;
 }) {
-  const cfg = STATUS_CONFIG[reminder.status] ?? STATUS_CONFIG.pending;
+  const cfg = statusConfig[reminder.status] ?? statusConfig.pending;
   return (
     <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
       <div className="flex items-start justify-between gap-2">
@@ -358,7 +365,7 @@ function ReminderRow({
           <div className="flex items-center gap-2 mb-0.5">
             <p className="font-bold text-gray-900 truncate">{reminder.customerName}</p>
             <span className="text-xs font-semibold px-1.5 py-0.5 rounded-full shrink-0" style={{ background: (reminder.sequenceStep ?? 1) === 2 ? 'oklch(0.93 0.08 80)' : 'oklch(0.93 0.06 260)', color: (reminder.sequenceStep ?? 1) === 2 ? 'oklch(0.45 0.12 80)' : 'oklch(0.35 0.08 260)' }}>
-              {(reminder.sequenceStep ?? 1) === 2 ? '2nd Follow-up' : '1st Follow-up'}
+              {(reminder.sequenceStep ?? 1) === 2 ? t("reminderRow.2ndFollowUp") : t("reminderRow.1stFollowUp")}
             </span>
           </div>
           <p className="text-sm text-gray-500 truncate">{reminder.customerEmail}</p>
@@ -368,8 +375,8 @@ function ReminderRow({
             </span>
             <span className="text-xs text-gray-400">
               {reminder.status === "sent" && reminder.sentAt
-                ? `Sent ${format(new Date(reminder.sentAt), "MMM d, yyyy")}`
-                : `Scheduled ${format(new Date(reminder.scheduledAt), "MMM d, yyyy")}`}
+                ? t("reminderRow.sentAt", { date: format(new Date(reminder.sentAt), "MMM d, yyyy") })
+                : t("reminderRow.scheduledAt", { date: format(new Date(reminder.scheduledAt), "MMM d, yyyy") })}
             </span>
           </div>
         </div>
@@ -382,7 +389,7 @@ function ReminderRow({
                 className="text-xs h-7 px-2.5 gap-1 rr-bg-navy rr-text-gold"
               >
                 <SendHorizonal size={11} />
-                Send Now
+                {t("reminderRow.sendNow")}
               </Button>
             )}
             {onCancel && (
@@ -392,7 +399,7 @@ function ReminderRow({
                 onClick={onCancel}
                 className="text-xs h-7 px-2.5 text-red-500 border-red-200 hover:bg-red-50"
               >
-                Cancel
+                {t("reminderRow.cancel")}
               </Button>
             )}
           </div>
