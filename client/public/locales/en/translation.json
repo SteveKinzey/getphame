@@ -119,10 +119,10 @@
     "summary": "{{uniqueOpens}} opened · {{uniqueClicks}} clicked · across {{totalSent}} requests"
   },
   "homePage": {
-    "setGoalErrorToast": "{{err.message}}",
+    "setGoalErrorToast": "{{message}}",
     "shareSuccessToast": "Copied to clipboard! Share it with a friend.",
     "pageTitle": "ReviewLink — Send Google Review Requests Fast",
-    "greeting": "Hello, {{user.firstName}}",
+    "greeting": "Hey, {{name}}!",
     "welcomeBack": "Welcome back,",
     "setupBannerTitle": "Setup complete!",
     "setupBannerText": "You've configured your account and sent your first request. Nicely done!",
@@ -152,7 +152,7 @@
     "recentRequestsTitle": "Recent Requests",
     "noRequestsSent": "No requests sent yet",
     "noRequestsSentSubtitle": "Your sent requests will appear here.",
-    "sentTo": "Sent to {{request.customerName}}",
+    "sentTo": "Sent to {{customerName}}",
     "viaEmail": "via Email",
     "responded": "Responded",
     "opened": "Opened",

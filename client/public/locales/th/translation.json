@@ -119,10 +119,10 @@
     "summary": "เปิดแล้ว {{uniqueOpens}} ครั้ง · คลิกแล้ว {{uniqueClicks}} ครั้ง · จากคำขอทั้งหมด {{totalSent}} ครั้ง"
   },
   "homePage": {
-    "setGoalErrorToast": "{{err.message}}",
+    "setGoalErrorToast": "{{message}}",
     "shareSuccessToast": "คัดลอกลิงก์แล้ว! แชร์ให้เพื่อน",
     "pageTitle": "ReviewLink — ส่งคำขอรีวิว Google ได้อย่างรวดเร็ว",
-    "greeting": "สวัสดี, {{user.firstName}}",
+    "greeting": "สวัสดี, {{name}}!",
     "welcomeBack": "ยินดีต้อนรับกลับมา,",
     "setupBannerTitle": "ตั้งค่าเสร็จสมบูรณ์!",
     "setupBannerText": "คุณได้กำหนดค่าบัญชีของคุณและส่งคำขอแรกของคุณแล้ว ทำได้ดีมาก!",
@@ -152,7 +152,7 @@
     "recentRequestsTitle": "คำขอล่าสุด",
     "noRequestsSent": "ยังไม่มีคำขอที่ส่งไป",
     "noRequestsSentSubtitle": "คำขอที่คุณส่งไปจะปรากฏที่นี่",
-    "sentTo": "ส่งถึง {{request.customerName}}",
+    "sentTo": "ส่งถึง {{customerName}}",
     "viaEmail": "ผ่านอีเมล",
     "responded": "ตอบกลับแล้ว",
     "opened": "เปิดแล้ว",

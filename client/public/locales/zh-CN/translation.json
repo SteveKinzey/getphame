@@ -119,10 +119,10 @@
     "summary": "在 {{totalSent}} 个请求中，{{uniqueOpens}} 个已打开 · {{uniqueClicks}} 个已点击"
   },
   "homePage": {
-    "setGoalErrorToast": "{{err.message}}",
+    "setGoalErrorToast": "{{message}}",
     "shareSuccessToast": "已复制链接！分享给朋友吧。",
     "pageTitle": "ReviewLink — 快速发送 Google 评论请求",
-    "greeting": "您好，{{user.firstName}}",
+    "greeting": "您好，{{name}}！",
     "welcomeBack": "欢迎回来，",
     "setupBannerTitle": "设置完成！",
     "setupBannerText": "您已配置好账户并发送了第一个请求。做得好！",
@@ -152,7 +152,7 @@
     "recentRequestsTitle": "最近的请求",
     "noRequestsSent": "尚未发送请求",
     "noRequestsSentSubtitle": "您发送的请求将显示在此处。",
-    "sentTo": "已发送给 {{request.customerName}}",
+    "sentTo": "已发送给 {{customerName}}",
     "viaEmail": "通过电子邮件",
     "responded": "已回复",
     "opened": "已打开",
