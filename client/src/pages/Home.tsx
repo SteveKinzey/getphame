@@ -282,7 +282,11 @@ export default function HomePage() {
 
         {/* Header top row */}
         <div className="relative z-10 mb-6">
-          {/* Row 1: Brand label (left) + Share / Guide buttons (right) */}
+          {/* Row 1: Language selector */}
+          <div className="flex justify-end mb-2">
+            <LanguageFlyout align="right" />
+          </div>
+          {/* Row 2: Brand label (left) + Share / Guide buttons (right) */}
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center gap-2">
               <Rocket size={16} className="rr-text-gold" />
@@ -309,21 +313,15 @@ export default function HomePage() {
               </button>
             </div>
           </div>
-          {/* Row 2: Greeting h1 (left, no truncation) + EN|TH|CN toggle (right) */}
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl leading-tight text-white rr-fw-black flex-1">
-              {(() => {
-                // Greeting uses the owner's first name (from OAuth profile), not the company name
-                const firstName = user?.name ? user.name.split(" ")[0] : null;
-                return firstName
-                  ? t("homePage.greeting", { defaultValue: `Hey, ${firstName}!`, name: firstName })
-                  : t("homePage.welcomeBack");
-              })()}
-            </h1>
-            <div className="flex-shrink-0">
-              <LanguageFlyout align="right" />
-            </div>
-          </div>
+          {/* Row 3: Greeting h1 */}
+          <h1 className="text-2xl leading-tight text-white rr-fw-black">
+            {(() => {
+              const firstName = user?.name ? user.name.split(" ")[0] : null;
+              return firstName
+                ? t("homePage.greeting", { defaultValue: `Hey, ${firstName}!`, name: firstName })
+                : t("homePage.welcomeBack");
+            })()}
+          </h1>
           {/* Row 3: Company name (businessName from profile), fallback to email */}
           <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
             {profile?.businessName ?? user?.email ?? ""}
