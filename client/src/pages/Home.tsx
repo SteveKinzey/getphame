@@ -513,7 +513,7 @@ export default function HomePage() {
         <button
           onClick={() => navigate("/send")}
           disabled={!smtpConnected || !profileComplete}
-          className="w-full py-5 rounded-2xl flex items-center justify-center gap-3 font-black text-xl transition-transform active:scale-95"
+          className="w-full h-16 rounded-2xl flex items-center justify-center gap-3 font-black text-xl transition-transform active:scale-95 overflow-hidden"
           style={{
             background:
               !smtpConnected || !profileComplete
@@ -529,7 +529,7 @@ export default function HomePage() {
           <img
             src="/manus-storage/rocket-stroked_2f31df13.svg"
             alt=""
-            className="h-10 w-10 object-contain flex-shrink-0"
+            className="h-full w-auto object-contain flex-shrink-0 -my-0"
           />
           {t("homePage.sendRequest")}
         </button>
