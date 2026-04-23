@@ -40,7 +40,7 @@ import { useLocation } from "wouter";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, { useOnboardingGuide } from "./components/OnboardingGuide";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
-import LanguageToggle from "./components/LanguageToggle";
+// LanguageToggle replaced by LanguageFlyout — see individual page headers
 
 
 function AppShell() {

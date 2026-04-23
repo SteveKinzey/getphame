@@ -8,7 +8,7 @@ import { Rocket, Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiO
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import OnboardingGuide from "@/components/OnboardingGuide";
-import LanguageToggle from "@/components/LanguageToggle";
+import LanguageFlyout from "@/components/LanguageFlyout";
 import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
@@ -321,7 +321,7 @@ export default function HomePage() {
               })()}
             </h1>
             <div className="flex-shrink-0">
-              <LanguageToggle />
+              <LanguageFlyout align="right" />
             </div>
           </div>
           {/* Row 3: Company name (businessName from profile), fallback to email */}

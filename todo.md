@@ -1295,3 +1295,13 @@
 - [x] Greeting: use user's first name (from user.name), not businessName split — "Hey, Steve!"
 - [x] Sub-line: show businessName (company name) instead of user.name — "SK America LLC"
 - [ ] Save checkpoint + deploy
+
+## Session #57 — Language Flyout + IP Detection (Apr 23 2026)
+- [ ] Add GET /api/detect-language endpoint: calls ip-api.com with client IP, returns 'en'|'th'|'zh-CN'
+- [ ] Build LanguageFlyout component: globe icon trigger, slide-down panel, EN/TH/CN options with gold checkmark on active
+- [ ] Update i18n.ts: on init, check localStorage first, then call /api/detect-language, set and persist result
+- [ ] Replace LanguageToggle with LanguageFlyout in Home header (top-left of header panel)
+- [ ] Replace LanguageToggle with LanguageFlyout in LandingPage (top-left of nav bar)
+- [ ] Remove LanguageToggle from BottomNav (language is now global, not per-page)
+- [ ] Verify: first visit auto-detects language, switching persists across page reloads
+- [ ] Save checkpoint + deploy

@@ -4,7 +4,7 @@
 import { getLoginUrl } from "@/const";
 import { Rocket, Star, Send, Users, CheckCircle2, ArrowRight, Mail, Globe, ChevronDown, X, Check } from "lucide-react";
 import { useState, useEffect } from "react";
-import LanguageToggle from "@/components/LanguageToggle";
+import LanguageFlyout from "@/components/LanguageFlyout";
 import { useTranslation } from "react-i18next";
 
 const HERO_IMG =
@@ -149,7 +149,7 @@ export default function LandingPage() {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <LanguageToggle />
+          <LanguageFlyout align="right" />
           <a
             href={loginUrl}
             className="px-4 py-2 rounded-xl text-xs font-black transition-transform active:scale-95 rr-bg-gold rr-text-navy"
@@ -527,7 +527,7 @@ export default function LandingPage() {
         style={{ background: "oklch(0.18 0.07 260)", color: "var(--text-on-dark-muted)" }}
       >
         {/* Language selector — centred for easy discovery by international visitors */}
-        <LanguageToggle />
+        <LanguageFlyout align="left" />
 
         {/* Legal links */}
         <div className="flex items-center gap-4">

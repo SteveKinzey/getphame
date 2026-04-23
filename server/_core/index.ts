@@ -323,6 +323,30 @@ async function startServer() {
   registerAppleAuthRoutes(app);
   registerMobileAuthRoutes(app);
 
+  // IP-based language detection — returns 'en' | 'th' | 'zh-CN' based on client IP
+  app.get("/api/detect-language", async (req, res) => {
+    try {
+      const ip =
+        (req.headers["x-forwarded-for"] as string)?.split(",")[0]?.trim() ||
+        req.socket.remoteAddress ||
+        "";
+      // Skip detection for localhost/private IPs
+      if (!ip || ip === "127.0.0.1" || ip === "::1" || ip.startsWith("192.168.") || ip.startsWith("10.")) {
+        return res.json({ lang: "en" });
+      }
+      const response = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`);
+      const data = await response.json() as { countryCode?: string };
+      const country = data.countryCode ?? "";
+      // Map country codes to supported languages
+      let lang = "en";
+      if (country === "TH") lang = "th";
+      else if (["CN", "TW", "HK", "MO", "SG"].includes(country)) lang = "zh-CN";
+      return res.json({ lang });
+    } catch {
+      return res.json({ lang: "en" });
+    }
+  });
+
   // SEO: sitemap.xml and robots.txt (must be before static/Vite catch-all)
   registerSitemapRoutes(app);
 

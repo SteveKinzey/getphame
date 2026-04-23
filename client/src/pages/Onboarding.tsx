@@ -3,7 +3,7 @@
 // After login, they set up their business profile in Settings.
 
 import { Rocket, Star } from "lucide-react";
-import LanguageToggle from "@/components/LanguageToggle";
+import LanguageFlyout from "@/components/LanguageFlyout";
 import { useTranslation } from "react-i18next";
 
 const HERO_IMG =
@@ -40,7 +40,7 @@ export default function OnboardingPage() {
             {t("nav.brandName")}
           </span>
         </div>
-        <LanguageToggle />
+        <LanguageFlyout align="right" />
       </div>
 
       {/* Hero content */}
