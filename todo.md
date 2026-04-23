@@ -1340,3 +1340,10 @@
 - [x] Fix: SW registration was orphaned in unused AppProvider — moved to main.tsx so it fires on every page load
 - [x] Verify SW registers on preview URL (sw_registrations: 1, scope: /, active: activated, cache: review-rocket-v2)
 - [x] Publish checkpoint so SW fix goes live on reviewlink.app
+
+## Session #62 — Italian Language Support (Apr 23 2026)
+- [x] Create /locales/it/translation.json with full Italian translation (91 keys)
+- [x] Register Italian in i18n.ts (SUPPORTED_LANGS, LANG_LABELS, LANG_NAMES, getSavedLang, detectLangFromBrowser, detectLangFromIP, supportedLngs)
+- [x] Add Italian option to LanguageFlyout component (IT / Italiano)
+- [x] Add Italian country code (IT, SM, VA) to server-side detect-language endpoint
+- [ ] Save checkpoint + deploy

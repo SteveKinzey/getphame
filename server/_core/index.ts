@@ -341,6 +341,7 @@ async function startServer() {
       let lang = "en";
       if (country === "TH") lang = "th";
       else if (["CN", "TW", "HK", "MO", "SG"].includes(country)) lang = "zh-CN";
+      else if (["IT", "SM", "VA"].includes(country)) lang = "it"; // Italy, San Marino, Vatican
       return res.json({ lang });
     } catch {
       return res.json({ lang: "en" });

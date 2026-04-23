@@ -18,6 +18,7 @@ const LANGS: { code: SupportedLang; label: string; native: string }[] = [
   { code: "zh-CN", label: "CN", native: "中文"        },
   { code: "fr",    label: "FR", native: "Français"   },
   { code: "es",    label: "ES", native: "Español"    },
+  { code: "it",    label: "IT", native: "Italiano"   },
 ];
 
 interface LanguageFlyoutProps {

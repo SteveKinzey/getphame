@@ -11,7 +11,7 @@ const STORAGE_KEY = "rr-lang";
 const USER_CHOSEN_KEY = "rr-lang-chosen";
 
 // Supported language codes (i18next format)
-export const SUPPORTED_LANGS = ["en", "th", "zh-CN", "fr", "es"] as const;
+export const SUPPORTED_LANGS = ["en", "th", "zh-CN", "fr", "es", "it"] as const;
 export type SupportedLang = (typeof SUPPORTED_LANGS)[number];
 
 // Human-readable labels for the flyout
@@ -21,6 +21,7 @@ export const LANG_LABELS: Record<SupportedLang, string> = {
   "zh-CN": "CN",
   fr: "FR",
   es: "ES",
+  it: "IT",
 };
 
 export const LANG_NAMES: Record<SupportedLang, string> = {
@@ -29,6 +30,7 @@ export const LANG_NAMES: Record<SupportedLang, string> = {
   "zh-CN": "中文",
   fr: "Français",
   es: "Español",
+  it: "Italiano",
 };
 
 /** Read persisted language from localStorage. Returns null if not set yet. */
@@ -39,6 +41,7 @@ export function getSavedLang(): SupportedLang | null {
     if (saved === "zh-CN") return "zh-CN";
     if (saved === "fr") return "fr";
     if (saved === "es") return "es";
+    if (saved === "it") return "it";
     if (saved === "en") return "en";
   } catch {
     // ignore
@@ -90,6 +93,7 @@ function detectLangFromBrowser(): SupportedLang {
     if (browserLang.startsWith("zh")) return "zh-CN";
     if (browserLang.startsWith("fr")) return "fr";
     if (browserLang.startsWith("es")) return "es";
+    if (browserLang.startsWith("it")) return "it";
   } catch {
     // ignore
   }
@@ -103,7 +107,7 @@ async function detectLangFromIP(): Promise<SupportedLang> {
     if (!res.ok) return "en";
     const data = await res.json() as { lang?: string };
     const lang = data.lang;
-    if (lang === "th" || lang === "zh-CN" || lang === "fr" || lang === "es") {
+    if (lang === "th" || lang === "zh-CN" || lang === "fr" || lang === "es" || lang === "it") {
       return lang as SupportedLang;
     }
   } catch {
@@ -146,7 +150,7 @@ i18n
   .init({
     lng: initialLang,
     fallbackLng: "en",
-    supportedLngs: ["en", "th", "zh-CN", "fr", "es"],
+    supportedLngs: ["en", "th", "zh-CN", "fr", "es", "it"],
     ns: ["translation"],
     defaultNS: "translation",
     backend: {
