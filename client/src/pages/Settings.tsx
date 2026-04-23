@@ -53,6 +53,7 @@ import { toast } from "sonner";
 import { useLocation } from "wouter";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
+import { useHaptics } from "@/hooks/useHaptics";
 
 // ── Inline From Name editor (shown in connected SMTP card) ─────────────────────
 function InlineFromNameEdit({ current, onSaved }: { current: string; onSaved: () => void }) {
@@ -497,6 +498,7 @@ export default function SettingsPage() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { hapticEnabled, setHapticEnabled } = useHaptics();
   const [, navigate] = useLocation();
   const [guideOpen, setGuideOpen] = useState(false);
   const { track } = useAnalytics();
@@ -2606,6 +2608,21 @@ document.getElementById('rl-form').addEventListener('submit', async (e) => {
               style={{ background: notifPrefs?.notifyOnEmailOpen ? "oklch(0.50 0.15 145)" : "oklch(0.80 0.02 260)" }}
             >
               <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform" style={{ left: notifPrefs?.notifyOnEmailOpen ? "calc(100% - 1.35rem)" : "0.1rem" }} />
+            </button>
+          </div>
+          {/* ── Haptic Feedback toggle ────────────────────────────────── */}
+          <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 mt-2 rr-bg-white-card">
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold rr-text-navy">Haptic Feedback</p>
+              <p className="text-xs mt-0.5 rr-text-navy-muted">Vibrate on key presses, button taps, and when a customer opens your email or posts a review. Requires a device with vibration support.</p>
+            </div>
+            <button
+              onClick={() => setHapticEnabled(!hapticEnabled)}
+              className="shrink-0 w-10 h-6 rounded-full transition-colors relative"
+              style={{ background: hapticEnabled ? "oklch(0.50 0.15 145)" : "oklch(0.80 0.02 260)" }}
+              aria-label={hapticEnabled ? "Disable haptic feedback" : "Enable haptic feedback"}
+            >
+              <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform" style={{ left: hapticEnabled ? "calc(100% - 1.35rem)" : "0.1rem" }} />
             </button>
           </div>
         </div>

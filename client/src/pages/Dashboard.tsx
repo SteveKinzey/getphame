@@ -455,8 +455,9 @@ export default function DashboardPage() {
               {filteredRequests.map((req, idx) => (
                 <div
                   key={req.id}
-                  className="flex items-center justify-between py-3"
+                  className="flex items-center justify-between py-3 animate-fade-up"
                   style={{
+                    animationDelay: `${Math.min(idx * 40, 400)}ms`,
                     borderBottom: idx < filteredRequests.length - 1 ? "1px solid oklch(0.94 0.01 260)" : "none",
                     background: selected.has(req.id) ? "oklch(0.97 0.02 260)" : "transparent",
                     borderRadius: selected.has(req.id) ? "8px" : undefined,

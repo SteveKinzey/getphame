@@ -1488,6 +1488,38 @@ export const appRouter = router({
     }),
 
     /**
+     * Returns the most recent email open and click events for the current user.
+     * Used by the frontend haptic feedback system to detect new activity.
+     * Returns up to 20 events from the last 24 hours, sorted newest first.
+     */
+    recentEvents: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) return [];
+      const { emailEvents, customerRequests } = await import("../drizzle/schema");
+      const { and, eq: eqOp, gte, desc } = await import("drizzle-orm");
+      const since = new Date(Date.now() - 24 * 60 * 60 * 1000); // last 24 hours
+      const rows = await db
+        .select({
+          id: emailEvents.id,
+          type: emailEvents.type,
+          requestId: emailEvents.requestId,
+          createdAt: emailEvents.createdAt,
+          customerName: customerRequests.customerName,
+        })
+        .from(emailEvents)
+        .leftJoin(customerRequests, eqOp(emailEvents.requestId, customerRequests.id))
+        .where(
+          and(
+            eqOp(emailEvents.userId, ctx.user.id),
+            gte(emailEvents.createdAt, since)
+          )
+        )
+        .orderBy(desc(emailEvents.createdAt))
+        .limit(20);
+      return rows;
+    }),
+
+    /**
      * Returns overall open/click rates across all emails sent by the user.
      * Used by Dashboard summary card.
      */

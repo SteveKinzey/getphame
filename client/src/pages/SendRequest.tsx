@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { useLocation } from "wouter";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
+import { useHaptics } from "@/hooks/useHaptics";
 
 const SUCCESS_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-send-success-8kZtg3dvEuiCrR8DrxxgKA.webp";
@@ -18,6 +19,7 @@ const SUCCESS_IMG =
 export default function SendRequestPage() {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
+  const { keyPressHaptic, buttonPressHaptic } = useHaptics();
   const { track } = useAnalytics();
 
   const { data: profile } = trpc.profile.get.useQuery();
@@ -316,7 +318,7 @@ export default function SendRequestPage() {
     <>
     <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Navy Header */}
-      <div className="px-5 pt-14 pb-6 rr-bg-navy">
+      <div className="px-5 pt-14 pb-6 rr-bg-navy animate-scale-in">
         <div className="flex items-center gap-2 mb-1">
           <Send size={16} className="rr-text-gold" />
           <span
@@ -337,7 +339,7 @@ export default function SendRequestPage() {
         )}
       </div>
 
-      <div className="px-4 py-4 flex flex-col gap-4">
+      <div className="px-4 py-4 flex flex-col gap-4 animate-fade-up" style={{ animationDelay: '100ms' }}>
         {/* ── Email not connected warning ────────────────────────────────────── */}
         {!emailConnected && (
           <div
@@ -471,6 +473,7 @@ export default function SendRequestPage() {
                 type="text"
                 value={customerName}
                 onChange={(e) => { setCustomerName(e.target.value); setErrors((p) => ({ ...p, name: undefined })); }}
+                onKeyDown={(e) => { if (e.key.length === 1 || ['Backspace','Delete'].includes(e.key)) keyPressHaptic(); }}
                 placeholder={t("mainForm.customerNamePlaceholder")}
                 className="w-full px-3 py-3 rounded-xl text-sm outline-none"
                 style={{
@@ -494,6 +497,7 @@ export default function SendRequestPage() {
                 type="email"
                 value={customerEmail}
                 onChange={(e) => { setCustomerEmail(e.target.value); setErrors((p) => ({ ...p, email: undefined })); }}
+                onKeyDown={(e) => { if (e.key.length === 1 || ['Backspace','Delete'].includes(e.key)) keyPressHaptic(); }}
                 placeholder={t("mainForm.customerEmailPlaceholder")}
                 className="w-full px-3 py-3 rounded-xl text-sm outline-none"
                 style={{
@@ -629,7 +633,7 @@ export default function SendRequestPage() {
 
             {/* Send button */}
             <button
-              onClick={handleSend}
+              onClick={() => { buttonPressHaptic(); handleSend(); }}
               disabled={sending || !emailConnected || !profileComplete}
               className="flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-lg transition-transform active:scale-95"
               style={{

@@ -6,7 +6,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { useAuth } from "./_core/hooks/useAuth";
 import BottomNav from "./components/BottomNav";
 import { Loader2 } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 // Pages
@@ -40,12 +40,38 @@ import { useLocation } from "wouter";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, { useOnboardingGuide } from "./components/OnboardingGuide";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
+import { useHapticEvents } from "./hooks/useHapticEvents";
 // LanguageToggle replaced by LanguageFlyout — see individual page headers
 
+/**
+ * PageTransition — wraps route output in a fade-up animation that triggers
+ * whenever the wouter location changes. Uses a key-based remount so each
+ * navigation gets a fresh animation without Framer Motion.
+ */
+function PageTransition({ children }: { children: React.ReactNode }) {
+  const [location] = useLocation();
+  const [key, setKey] = useState(location);
+  const prevRef = useRef(location);
+
+  useEffect(() => {
+    if (prevRef.current !== location) {
+      prevRef.current = location;
+      setKey(location);
+    }
+  }, [location]);
+
+  return (
+    <div key={key} className="page-enter">
+      {children}
+    </div>
+  );
+}
 
 function AppShell() {
   const { user, loading, isAuthenticated } = useAuth();
   const { open: guideOpen, setOpen: setGuideOpen, handleClose: handleGuideClose } = useOnboardingGuide(isAuthenticated);
+  // Haptic feedback for email opens and review clicks — only active when logged in
+  useHapticEvents(isAuthenticated);
 
   // Show a toast if Google/Apple OAuth returned an error (e.g. user denied consent)
   useEffect(() => {
@@ -110,6 +136,7 @@ function AppShell() {
       )}
       <OnboardingGuide open={guideOpen} onClose={handleGuideClose} />
       <main id="main-content">
+      <PageTransition>
       <Switch>
         <Route path="/" component={HomePage} />
         <Route path="/send" component={SendRequestPage} />
@@ -134,6 +161,7 @@ function AppShell() {
         <Route path="/compliance" component={CompliancePage} />
         <Route component={HomePage} />
       </Switch>
+      </PageTransition>
       </main>
       <BottomNav />
       <PWAInstallPrompt />

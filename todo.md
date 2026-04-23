@@ -1305,3 +1305,22 @@
 - [ ] Remove LanguageToggle from BottomNav (language is now global, not per-page)
 - [ ] Verify: first visit auto-detects language, switching persists across page reloads
 - [ ] Save checkpoint + deploy
+
+## Session #58 — Micro-Animations (Apr 23 2026)
+- [x] Add global animation keyframes + utility classes to index.css (fadeUp, scaleIn, slideDown, shimmer)
+- [x] Home: staggered fade-up entrance on stat cards + header
+- [x] Dashboard: activity feed rows fade-up staggered on load
+- [x] Send: form fields fade-up on mount
+- [x] BottomNav: active tab scale pulse + gold underline slide
+- [x] Buttons: active:scale-95 press feedback on all primary/gold buttons
+- [x] LanguageFlyout: already has slideDown — ensure it uses the global keyframe
+- [x] Page transitions: fade-in on route change (App.tsx wrapper)
+
+## Session #58b — Haptic Feedback (Apr 23 2026)
+- [x] Build useHaptics hook (Vibration API, localStorage pref, respects prefers-reduced-motion)
+- [x] Add hapticEnabled toggle to Settings page (Preferences section)
+- [x] Keyboard haptics: light buzz on every key press in all text inputs
+- [x] Button haptics: medium buzz on all primary/gold button press
+- [x] Notification haptics: distinct pattern when customer opens email (first time)
+- [x] Notification haptics: celebration pattern when review is posted
+- [x] Wire haptic triggers into tracking event polling logic

@@ -616,3 +616,56 @@
   --border:      oklch(0.28 0.04 260);
   --input:       oklch(0.28 0.04 260);
 }
+test
+
+/* ── Micro-animation keyframes ──────────────────────────────────────────────── */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.92); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes goldPulse {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.80 0.18 80 / 0); }
+  50%       { box-shadow: 0 0 0 4px oklch(0.80 0.18 80 / 0.25); }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-slide-down {
+  animation: slideDown 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.stagger-1 { animation-delay: 0ms;   }
+.stagger-2 { animation-delay: 70ms;  }
+.stagger-3 { animation-delay: 140ms; }
+.stagger-4 { animation-delay: 210ms; }
+.stagger-5 { animation-delay: 280ms; }
+
+.btn-gold {
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.btn-gold:active {
+  transform: scale(0.95);
+  box-shadow: 0 1px 4px oklch(0 0 0 / 0.18);
+}
+
+.page-enter {
+  animation: fadeUp 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}

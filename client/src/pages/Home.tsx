@@ -269,7 +269,7 @@ export default function HomePage() {
       />
       {/* Navy Header Panel */}
       <div
-        className="relative px-5 pt-8 pb-6 overflow-hidden"
+        className="relative px-5 pt-8 pb-6 overflow-hidden animate-scale-in"
         style={{ background: "var(--navy)" }}
       >
         {/* Background rocket image */}
@@ -338,10 +338,11 @@ export default function HomePage() {
               value: profile?.tier === "free" || !profile?.tier ? `${Math.max(0, 10 - (profile?.totalSent ?? 0))}/10` : "✓",
               icon: <Star size={14} />
             },
-          ].map((s) => (
+          ].map((s, i) => (
             <div
               key={s.label}
-              className="rounded-xl px-3 py-3 text-center rr-bg-navy-mid"
+              className="rounded-xl px-3 py-3 text-center rr-bg-navy-mid animate-fade-up"
+              style={{ animationDelay: `${i * 70}ms` }}
             >
               <div
                 className="flex items-center justify-center gap-1 mb-1 rr-text-gold"
@@ -373,7 +374,7 @@ export default function HomePage() {
         </button>
       </div>
 
-      <div className="px-4 py-4 flex flex-col gap-4">
+      <div className="px-4 py-4 flex flex-col gap-4 animate-fade-up" style={{ animationDelay: '120ms' }}>
         {/* ── SMTP Health Failure Alert ─────────────────────────────────── */}
         {smtpHealthFailed && (
           <div
