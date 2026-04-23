@@ -526,7 +526,12 @@ export default function HomePage() {
             fontFamily: "'Poppins', sans-serif",
           }}
         >
-          <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="" className="w-7 h-7 object-contain" />
+          <img
+            src="/manus-storage/rocket-transparent_8c5792a3.svg"
+            alt=""
+            className="h-10 w-10 object-contain flex-shrink-0"
+            style={{ filter: 'drop-shadow(0 0 1px #4a90d9) drop-shadow(0 0 1px #4a90d9)' }}
+          />
           {t("homePage.sendRequest")}
         </button>
 
