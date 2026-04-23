@@ -149,7 +149,7 @@ export default function LandingPage() {
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <LanguageFlyout align="right" />
+          <LanguageFlyout />
           <a
             href={loginUrl}
             className="px-4 py-2 rounded-xl text-xs font-black transition-transform active:scale-95 rr-bg-gold rr-text-navy"
@@ -527,7 +527,7 @@ export default function LandingPage() {
         style={{ background: "oklch(0.18 0.07 260)", color: "var(--text-on-dark-muted)" }}
       >
         {/* Language selector — centred for easy discovery by international visitors */}
-        <LanguageFlyout align="left" />
+        <LanguageFlyout />
 
         {/* Legal links */}
         <div className="flex items-center gap-4">

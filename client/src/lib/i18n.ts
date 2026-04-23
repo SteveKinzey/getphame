@@ -5,7 +5,7 @@ import HttpBackend from "i18next-http-backend";
 const STORAGE_KEY = "rr-lang";
 
 // Supported language codes (i18next format)
-export const SUPPORTED_LANGS = ["en", "th", "zh-CN"] as const;
+export const SUPPORTED_LANGS = ["en", "th", "zh-CN", "fr", "es"] as const;
 export type SupportedLang = (typeof SUPPORTED_LANGS)[number];
 
 // Human-readable labels for the flyout
@@ -13,12 +13,16 @@ export const LANG_LABELS: Record<SupportedLang, string> = {
   en: "EN",
   th: "TH",
   "zh-CN": "CN",
+  fr: "FR",
+  es: "ES",
 };
 
 export const LANG_NAMES: Record<SupportedLang, string> = {
   en: "English",
   th: "ภาษาไทย",
   "zh-CN": "中文",
+  fr: "Français",
+  es: "Español",
 };
 
 /** Read persisted language from localStorage. Returns null if not set yet. */
@@ -27,6 +31,8 @@ export function getSavedLang(): SupportedLang | null {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved === "th") return "th";
     if (saved === "zh-CN") return "zh-CN";
+    if (saved === "fr") return "fr";
+    if (saved === "es") return "es";
     if (saved === "en") return "en";
   } catch {
     // ignore
@@ -56,7 +62,9 @@ async function detectLangFromIP(): Promise<SupportedLang> {
     if (!res.ok) return "en";
     const data = await res.json() as { lang?: string };
     const lang = data.lang;
-    if (lang === "th" || lang === "zh-CN") return lang;
+    if (lang === "th" || lang === "zh-CN" || lang === "fr" || lang === "es") {
+      return lang as SupportedLang;
+    }
   } catch {
     // network error — fall back to English
   }
@@ -75,7 +83,7 @@ i18n
   .init({
     lng: initialLang,
     fallbackLng: "en",
-    supportedLngs: ["en", "th", "zh-CN"],
+    supportedLngs: ["en", "th", "zh-CN", "fr", "es"],
     ns: ["translation"],
     defaultNS: "translation",
     backend: {

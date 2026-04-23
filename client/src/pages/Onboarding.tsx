@@ -40,7 +40,7 @@ export default function OnboardingPage() {
             {t("nav.brandName")}
           </span>
         </div>
-        <LanguageFlyout align="right" />
+        <LanguageFlyout />
       </div>
 
       {/* Hero content */}

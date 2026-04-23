@@ -1,56 +1,74 @@
-// LanguageFlyout — globe icon that opens a slide-down language picker.
+// LanguageFlyout — globe icon that opens a language picker rendered via portal.
+//
+// Uses ReactDOM.createPortal to render the dropdown at document.body level,
+// so it is NEVER clipped by any parent stacking context, overflow, or z-index.
 //
 // - First visit: language auto-detected from IP (handled in i18n.ts)
 // - Choice persisted to localStorage — never asks again unless user opens the menu
-// - Replaces the old inline EN|TH|CN pill everywhere in the app
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { Globe, Check } from "lucide-react";
-import { setLanguage, getSavedLang, LANG_NAMES, type SupportedLang } from "@/lib/i18n";
+import { setLanguage, getSavedLang, type SupportedLang } from "@/lib/i18n";
 import i18n from "@/lib/i18n";
 
 const LANGS: { code: SupportedLang; label: string; native: string }[] = [
-  { code: "en", label: "EN", native: "English" },
-  { code: "th", label: "TH", native: "ภาษาไทย" },
-  { code: "zh-CN", label: "CN", native: "中文" },
+  { code: "en",    label: "EN", native: "English"    },
+  { code: "th",    label: "TH", native: "ภาษาไทย"    },
+  { code: "zh-CN", label: "CN", native: "中文"        },
+  { code: "fr",    label: "FR", native: "Français"   },
+  { code: "es",    label: "ES", native: "Español"    },
 ];
 
 interface LanguageFlyoutProps {
-  /** Where the flyout panel anchors. Default: 'left' */
-  align?: "left" | "right";
-  /** Extra class on the wrapper */
   className?: string;
 }
 
-export default function LanguageFlyout({ align = "left", className = "" }: LanguageFlyoutProps) {
+export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) {
   const [open, setOpen] = useState(false);
   const [activeLang, setActiveLang] = useState<SupportedLang>(() => {
     const saved = getSavedLang();
     return saved ?? "en";
   });
-  const ref = useRef<HTMLDivElement>(null);
+  const [panelPos, setPanelPos] = useState<{ top: number; right: number } | null>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   // Keep local state in sync with i18n (e.g. after IP detection resolves)
   useEffect(() => {
     const handler = (lng: string) => {
-      if (lng === "en" || lng === "th" || lng === "zh-CN") {
-        setActiveLang(lng as SupportedLang);
-      }
+      if (LANGS.some(l => l.code === lng)) setActiveLang(lng as SupportedLang);
     };
     i18n.on("languageChanged", handler);
     return () => { i18n.off("languageChanged", handler); };
   }, []);
 
-  // Close on outside click
+  // Compute portal position from button bounding rect
+  const openPanel = useCallback(() => {
+    if (!btnRef.current) return;
+    const rect = btnRef.current.getBoundingClientRect();
+    // Anchor to the right edge of the button, just below it
+    setPanelPos({
+      top: rect.bottom + window.scrollY + 6,
+      right: window.innerWidth - rect.right,
+    });
+    setOpen(true);
+  }, []);
+
+  // Close on outside click or scroll
   useEffect(() => {
     if (!open) return;
-    const handleClick = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
+    const close = (e: Event) => {
+      if (e.type === "scroll") { setOpen(false); return; }
+      const target = (e as MouseEvent).target as Node;
+      if (btnRef.current && btnRef.current.contains(target)) return;
+      setOpen(false);
     };
-    document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    document.addEventListener("mousedown", close);
+    document.addEventListener("scroll", close, true);
+    return () => {
+      document.removeEventListener("mousedown", close);
+      document.removeEventListener("scroll", close, true);
+    };
   }, [open]);
 
   const handleSelect = (code: SupportedLang) => {
@@ -61,85 +79,93 @@ export default function LanguageFlyout({ align = "left", className = "" }: Langu
 
   const activeLabel = LANGS.find(l => l.code === activeLang)?.label ?? "EN";
 
-  return (
+  const panel = open && panelPos ? createPortal(
     <div
-      ref={ref}
-      className={`relative inline-block ${className}`}
+      style={{
+        position: "absolute",
+        top: panelPos.top,
+        right: panelPos.right,
+        zIndex: 99999,
+        minWidth: "160px",
+        background: "oklch(0.22 0.09 260)",
+        border: "1px solid rgba(255,255,255,0.15)",
+        borderRadius: "12px",
+        boxShadow: "0 8px 32px rgba(0,0,0,0.45)",
+        overflow: "hidden",
+        animation: "lfSlideDown 120ms ease",
+        fontFamily: "'Poppins', sans-serif",
+      }}
       translate="no"
-      style={{ fontFamily: "'Poppins', sans-serif" }}
     >
-      {/* Globe trigger button */}
+      {LANGS.map(({ code, label, native }, idx) => {
+        const isActive = activeLang === code;
+        return (
+          <button
+            key={code}
+            type="button"
+            onClick={() => handleSelect(code)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+              padding: "12px 16px",
+              background: isActive ? "rgba(255,255,255,0.08)" : "transparent",
+              color: isActive ? "oklch(0.80 0.18 80)" : "rgba(255,255,255,0.9)",
+              fontSize: "13px",
+              fontWeight: isActive ? 700 : 500,
+              borderBottom: idx < LANGS.length - 1 ? "1px solid rgba(255,255,255,0.07)" : "none",
+              cursor: "pointer",
+              textAlign: "left",
+            }}
+          >
+            <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <span style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "0.04em", opacity: 0.7 }}>
+                {label}
+              </span>
+              <span>{native}</span>
+            </span>
+            {isActive && (
+              <Check size={14} strokeWidth={3} style={{ color: "oklch(0.80 0.18 80)", flexShrink: 0 }} />
+            )}
+          </button>
+        );
+      })}
+      <style>{`
+        @keyframes lfSlideDown {
+          from { opacity: 0; transform: translateY(-6px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </div>,
+    document.body
+  ) : null;
+
+  return (
+    <>
       <button
+        ref={btnRef}
         type="button"
-        onClick={() => setOpen(v => !v)}
+        onClick={openPanel}
         aria-label="Select language"
         aria-expanded={open}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full select-none transition-all"
+        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-full select-none transition-all ${className}`}
         style={{
           background: open ? "oklch(0.80 0.18 80)" : "rgba(15, 31, 75, 0.82)",
           border: "1px solid rgba(255,255,255,0.7)",
           backdropFilter: "blur(6px)",
           WebkitBackdropFilter: "blur(6px)",
           color: open ? "oklch(0.22 0.09 260)" : "rgba(255,255,255,0.95)",
+          fontFamily: "'Poppins', sans-serif",
         }}
+        translate="no"
       >
         <Globe size={13} strokeWidth={2.5} />
         <span style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "0.04em", lineHeight: 1 }}>
           {activeLabel}
         </span>
       </button>
-
-      {/* Flyout panel */}
-      {open && (
-        <div
-          className="absolute z-50 mt-1.5 rounded-xl overflow-hidden shadow-xl"
-          style={{
-            top: "100%",
-            ...(align === "left" ? { left: 0 } : { right: 0 }),
-            minWidth: "140px",
-            background: "oklch(0.22 0.09 260)",
-            border: "1px solid rgba(255,255,255,0.15)",
-            animation: "slideDown 120ms ease",
-          }}
-        >
-          {LANGS.map(({ code, label, native }) => {
-            const isActive = activeLang === code;
-            return (
-              <button
-                key={code}
-                type="button"
-                onClick={() => handleSelect(code)}
-                className="w-full flex items-center justify-between px-4 py-3 transition-colors"
-                style={{
-                  background: isActive ? "rgba(255,255,255,0.08)" : "transparent",
-                  color: isActive ? "oklch(0.80 0.18 80)" : "rgba(255,255,255,0.9)",
-                  fontSize: "13px",
-                  fontWeight: isActive ? 700 : 500,
-                  borderBottom: code !== "zh-CN" ? "1px solid rgba(255,255,255,0.07)" : "none",
-                  cursor: "pointer",
-                }}
-              >
-                <span className="flex items-center gap-2.5">
-                  <span style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "0.04em", opacity: 0.7 }}>
-                    {label}
-                  </span>
-                  <span>{native}</span>
-                </span>
-                {isActive && (
-                  <Check size={14} strokeWidth={3} style={{ color: "oklch(0.80 0.18 80)", flexShrink: 0 }} />
-                )}
-              </button>
-            );
-          })}
-        </div>
-      )}
-
-      <style>{`
-        @keyframes slideDown {
-          from { opacity: 0; transform: translateY(-6px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
-    </div>
+      {panel}
+    </>
   );
 }
