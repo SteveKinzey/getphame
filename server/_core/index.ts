@@ -28,6 +28,7 @@ import { exchangeGmailCode, getGmailRedirectUri } from "../gmail";
 import { handleOpenPixel, handleClickRedirect } from "../emailTracking";
 import { sendUpgradeReceiptEmail, sendChurnRecoveryEmail, sendPaymentFailedEmail } from "../smtp";
 import { registerPublicApiRoutes } from "../publicApi";
+import { registerMobileAuthRoutes } from "../mobileAuth";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -320,6 +321,7 @@ async function startServer() {
   registerOAuthRoutes(app);
   registerGoogleAuthRoutes(app);
   registerAppleAuthRoutes(app);
+  registerMobileAuthRoutes(app);
 
   // SEO: sitemap.xml and robots.txt (must be before static/Vite catch-all)
   registerSitemapRoutes(app);
