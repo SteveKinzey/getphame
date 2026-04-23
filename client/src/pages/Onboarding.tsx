@@ -33,7 +33,7 @@ export default function OnboardingPage() {
       {/* Top bar: logo + language toggle */}
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-2">
-          <Rocket size={20} className="rr-text-gold" />
+          <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-7 h-7 rounded-md object-contain" />
           <span
             className="text-sm font-bold tracking-widest uppercase rr-text-gold"
           >

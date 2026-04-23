@@ -289,7 +289,7 @@ export default function HomePage() {
           {/* Row 2: Brand label (left) + Share / Guide buttons (right) */}
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center gap-2">
-              <Rocket size={16} className="rr-text-gold" />
+              <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-6 h-6 rounded-md object-contain" />
               <span className="text-xs font-bold tracking-widest uppercase rr-text-gold">
                 {t("nav.brandName")}
               </span>

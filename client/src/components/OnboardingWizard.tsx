@@ -582,9 +582,9 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
   return (
     <div className="flex flex-col items-center gap-6 text-center py-4">
       <div
-        className="w-20 h-20 rounded-full flex items-center justify-center rr-bg-navy"
+        className="w-20 h-20 rounded-full flex items-center justify-center rr-bg-navy overflow-hidden"
       >
-        <Rocket size={36} className="rr-text-gold" />
+        <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-16 h-16 object-contain" />
       </div>
       <div>
         <h3
