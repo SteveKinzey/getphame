@@ -58,6 +58,18 @@
       "sendsFromYourEmail": "从您的邮箱发送",
       "oneTapRequests": "一键请求",
       "freeToStart": "免费开始"
+    },
+    "sentFromYourEmail": {
+      "title": "从您的邮箱发送",
+      "desc": "客户看到的是您的姓名和邮箱地址——而非通用发件人。感觉很个人化，因为确实如此。"
+    },
+    "bulkSend": {
+      "title": "一键批量发送",
+      "desc": "通过CSV或WooCommerce同步导入客户名单，一次性发送个性化评价请求。"
+    },
+    "anyPlatform": {
+      "title": "支持任意评价平台",
+      "desc": "Google、Yelp、TripAdvisor、Bing、Facebook等。您选择将客户引导到哪里。"
     }
   },
   "howItWorks": {
@@ -76,7 +88,15 @@
     "freeQuestion": "它真的是免费的吗？",
     "freeAnswer": "是的 — 免费且没有人为的发送限制。您连接的是您自己的电子邮件账户，因此唯一的限制是您的电子邮件提供商的每日发送上限（Gmail 每天允许发送约500封，大多数其他提供商也类似）。没有隐藏费用，也无需信用卡即可开始使用。",
     "importQuestion": "我可以导入我的客户列表吗？",
-    "importAnswer": "是的。您可以上传包含客户姓名和电子邮件地址的 CSV 文件，或者如果您经营在线商店，可以直接从 WooCommerce 同步。导入后，您可以批量选择联系人，并一键发送个性化评论请求。"
+    "importAnswer": "是的。您可以上传包含客户姓名和电子邮件地址的 CSV 文件，或者如果您经营在线商店，可以直接从 WooCommerce 同步。导入后，您可以批量选择联系人，并一键发送个性化评论请求。",
+    "q1": "邮件会被当作垃圾邮件吗？",
+    "a1": "不会。每封邮件都直接从您自己的邮箱账户通过SMTP发送，客户会看到您的姓名和邮箱地址。",
+    "q2": "支持哪些邮件服务商？",
+    "a2": "支持所有SMTP邮件服务商：Gmail、Outlook、Yahoo Mail、Apple iCloud Mail等。",
+    "q3": "真的免费吗？",
+    "a3": "是的——免费且无人为发送限制。您连接自己的邮箱账户，唯一的限制是您的邮件服务商的每日发送上限。",
+    "q4": "可以导入客户名单吗？",
+    "a4": "可以。上传包含客户姓名和邮箱地址的CSV文件，或直接从WooCommerce同步。"
   },
   "bottomCta": {
     "headline": "立即开始收集评论",

@@ -58,6 +58,18 @@
       "sendsFromYourEmail": "Sends from your email",
       "oneTapRequests": "One-tap requests",
       "freeToStart": "Free to start"
+    },
+    "sentFromYourEmail": {
+      "title": "Sent from your email",
+      "desc": "Customers see your name and email address — not a generic sender. It feels personal because it is."
+    },
+    "bulkSend": {
+      "title": "Bulk send in one click",
+      "desc": "Import your customer list via CSV or WooCommerce sync, select all, and send personalised requests in seconds."
+    },
+    "anyPlatform": {
+      "title": "Any review platform",
+      "desc": "Google, Yelp, TripAdvisor, Bing, Facebook and more. You choose where to send customers."
     }
   },
   "howItWorks": {
@@ -76,7 +88,15 @@
     "freeQuestion": "Is it really free?",
     "freeAnswer": "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap (Gmail allows ~500/day, most others are similar). There are no hidden fees and no credit card required to get started.",
     "importQuestion": "Can I import my customer list?",
-    "importAnswer": "Yes. You can upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store. Once imported, you can bulk-select contacts and send personalised review requests in a single click."
+    "importAnswer": "Yes. You can upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store. Once imported, you can bulk-select contacts and send personalised review requests in a single click.",
+    "q1": "Will it look like spam?",
+    "a1": "No. Every email is sent directly from your own email account via SMTP — not from a shared bulk-sending server. Your customer sees your name, your email address, and a message written in your voice.",
+    "q2": "What email providers work?",
+    "a2": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server.",
+    "q3": "Is it really free?",
+    "a3": "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap.",
+    "q4": "Can I import my customer list?",
+    "a4": "Yes. Upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store."
   },
   "bottomCta": {
     "headline": "Start collecting reviews today",
