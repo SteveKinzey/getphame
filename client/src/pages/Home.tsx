@@ -289,7 +289,7 @@ export default function HomePage() {
           {/* Row 2: Brand label (left) + Share / Guide buttons (right) */}
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center gap-2">
-              <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-6 h-6 rounded-md object-contain" />
+              <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-9 h-9 rounded-lg object-contain" />
               <span className="text-xs font-bold tracking-widest uppercase rr-text-gold">
                 {t("nav.brandName")}
               </span>

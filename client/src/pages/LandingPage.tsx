@@ -141,7 +141,7 @@ export default function LandingPage() {
         className="flex items-center justify-between px-5 py-4 rr-bg-navy"
       >
         <div className="flex items-center gap-2">
-          <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-7 h-7 rounded-md object-contain" />
+          <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-9 h-9 rounded-lg object-contain" />
           <span
             className="text-sm font-black tracking-widest uppercase rr-text-gold"
           >

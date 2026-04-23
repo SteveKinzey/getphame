@@ -53,7 +53,7 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
       <div
         className="rounded-2xl p-5 text-center rr-bg-navy-mid"
       >
-        <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-16 h-16 rounded-2xl object-contain mx-auto mb-3" />
+        <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-20 h-20 rounded-2xl object-contain mx-auto mb-3" />
         <p className="text-white font-bold text-lg leading-snug" style={{ fontFamily: "'Poppins', sans-serif" }}>
           ReviewLink sends personalised review request emails from your own email account.
         </p>
