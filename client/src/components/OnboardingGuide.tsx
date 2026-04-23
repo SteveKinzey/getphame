@@ -941,13 +941,12 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
     }
   }, [goToStep]);
 
+  const { t } = useTranslation();
   if (!open) return null;
   const handleNavigate = (path: string) => {
     onClose();
     navigate(path);
   };
-
-  const { t } = useTranslation();
   const STEPS: Step[] = [
     {
       id: 0,
