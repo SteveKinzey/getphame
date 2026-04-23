@@ -1196,7 +1196,7 @@
 - [x] Verify Apple Sign In flow works on reviewlink.app/onboarding — button visible, redirects to Apple consent screen correctly
 - [x] Add Apple server-to-server notification endpoint (POST /api/auth/apple/notifications) — handles account-delete + consent-revoked events, anonymises user data
 - [x] Add anonymiseUserByOpenId() helper to db.ts
-- [ ] Register email sources for Apple Private Email Relay (DNS TXT record on reviewlink.app — requires DNS access)
+- [x] Register email sources for Apple Private Email Relay — reviewlink.app already registered and SPF verified (green checkmark) in Apple Developer Portal. No further DNS action needed.
 
 ## Session #49 — Nav Overlap Fix + Auth Testing (Apr 21 2026)
 - [x] Fix EN|TH language toggle overlapping Sign In button on LandingPage nav (changed px-5 → pl-5 pr-16)
