@@ -513,7 +513,7 @@ export default function HomePage() {
         <button
           onClick={() => navigate("/send")}
           disabled={!smtpConnected || !profileComplete}
-          className="w-full h-16 rounded-2xl flex items-center justify-center gap-3 font-black text-xl transition-transform active:scale-95 overflow-hidden"
+          className="w-full h-16 rounded-2xl flex items-center justify-center font-black text-xl transition-transform active:scale-95 overflow-hidden"
           style={{
             background:
               !smtpConnected || !profileComplete
@@ -526,12 +526,14 @@ export default function HomePage() {
             fontFamily: "'Poppins', sans-serif",
           }}
         >
-          <img
-            src="/manus-storage/rocket-stroked_2f31df13.svg"
-            alt=""
-            className="h-full w-auto object-contain flex-shrink-0 -my-0"
-          />
-          {t("homePage.sendRequest")}
+          <span className="inline-flex items-center gap-1.5">
+            <img
+              src="/manus-storage/rocket-stroked_2f31df13.svg"
+              alt=""
+              className="h-12 w-auto object-contain flex-shrink-0"
+            />
+            {t("homePage.sendRequest")}
+          </span>
         </button>
 
         {/* ── SEO keyword section — visible to crawlers, useful to users ─── */}
