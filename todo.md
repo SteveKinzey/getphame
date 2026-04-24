@@ -1373,3 +1373,9 @@
 - [x] Fix panel positioning: changed from position:absolute (uses scrollY offset) to position:fixed (viewport-relative)
 - [x] Verified: flyout opens and stays open, language switching works (EN→IT→EN confirmed)
 - [x] Save checkpoint + deploy
+## Session #67 — LanguageFlyout Back to Header (Apr 23 2026)
+- [x] Remove LanguageFlyout from global overlay in App.tsx (bottom-right corner)
+- [x] Add LanguageFlyout into the header top-right on Home, Send, Dashboard, Settings screens (alongside Share/Guide buttons)
+- [x] Ensure flyout dropdown z-index is high enough to always render above all buttons/modals
+- [x] Verify on all screens that flyout is visible and functional
+- [x] Save checkpoint + deploy

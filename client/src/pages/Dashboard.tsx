@@ -9,6 +9,7 @@ import { useLocation } from "wouter";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import LanguageFlyout from "@/components/LanguageFlyout";
 
 function formatDate(date: Date): string {
   try {
@@ -164,13 +165,16 @@ export default function DashboardPage() {
     <div className="min-h-screen pb-40" style={{ background: "var(--background)" }}>
       {/* Navy Header */}
       <div className="px-5 pt-14 pb-8" style={{ background: "var(--navy)" }}>
-        <div className="flex items-center gap-2 mb-1">
-          <BarChart2 size={16} className="rr-text-gold" />
-          <span
-            className="text-xs font-bold tracking-widest uppercase rr-text-gold"
-          >
-            {t('dashboard.header.label')}
-          </span>
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <div className="flex items-center gap-2">
+            <BarChart2 size={16} className="rr-text-gold" />
+            <span
+              className="text-xs font-bold tracking-widest uppercase rr-text-gold"
+            >
+              {t('dashboard.header.label')}
+            </span>
+          </div>
+          <LanguageFlyout />
         </div>
         <h1
           className="text-2xl mb-6 text-white rr-fw-black"

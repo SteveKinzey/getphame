@@ -12,6 +12,7 @@ import { useLocation } from "wouter";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
+import LanguageFlyout from "@/components/LanguageFlyout";
 
 const SUCCESS_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-send-success-8kZtg3dvEuiCrR8DrxxgKA.webp";
@@ -319,13 +320,16 @@ export default function SendRequestPage() {
     <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Navy Header */}
       <div className="px-5 pt-14 pb-6 rr-bg-navy animate-scale-in">
-        <div className="flex items-center gap-2 mb-1">
-          <Send size={16} className="rr-text-gold" />
-          <span
-            className="text-xs font-bold tracking-widest uppercase rr-text-gold"
-          >
-            {t("mainForm.pageTitle")}
-          </span>
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <div className="flex items-center gap-2">
+            <Send size={16} className="rr-text-gold" />
+            <span
+              className="text-xs font-bold tracking-widest uppercase rr-text-gold"
+            >
+              {t("mainForm.pageTitle")}
+            </span>
+          </div>
+          <LanguageFlyout />
         </div>
         <h1
           className="text-2xl text-white rr-fw-black"

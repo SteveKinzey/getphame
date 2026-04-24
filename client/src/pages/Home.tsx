@@ -8,6 +8,7 @@ import { Rocket, Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiO
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import OnboardingGuide from "@/components/OnboardingGuide";
+import LanguageFlyout from "@/components/LanguageFlyout";
 import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
@@ -309,6 +310,7 @@ export default function HomePage() {
                 <BookOpen size={13} />
                 <span>{t("nav.guide", { defaultValue: "Guide" })}</span>
               </button>
+              <LanguageFlyout />
             </div>
           </div>
           {/* Row 3: Greeting h1 */}

@@ -112,11 +112,7 @@ function AppShell() {
 
   // Public pages accessible without login
   const path = window.location.pathname;
-  const globalLangFlyout = (
-    <div style={{ position: "fixed", bottom: "24px", right: "16px", zIndex: 9998 }}>
-      <LanguageFlyout />
-    </div>
-  );
+  const globalLangFlyout = null;
 
   if (path === "/privacy-policy") return <div className="mobile-screen"><PrivacyPolicyPage />{globalLangFlyout}</div>;
   if (path === "/terms-of-service") return <div className="mobile-screen"><TermsOfServicePage />{globalLangFlyout}</div>;
@@ -174,10 +170,7 @@ function AppShell() {
       </main>
       <BottomNav />
       <PWAInstallPrompt />
-      {/* Global language flyout — fixed overlay, always visible on every screen */}
-      <div style={{ position: "fixed", bottom: "80px", right: "16px", zIndex: 9998 }}>
-        <LanguageFlyout />
-      </div>
+      {/* LanguageFlyout is placed in each screen's header instead */}
     </div>
   );
 }

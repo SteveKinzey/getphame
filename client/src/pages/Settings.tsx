@@ -54,6 +54,7 @@ import { useLocation } from "wouter";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
+import LanguageFlyout from "@/components/LanguageFlyout";
 
 // ── Inline From Name editor (shown in connected SMTP card) ─────────────────────
 function InlineFromNameEdit({ current, onSaved }: { current: string; onSaved: () => void }) {
@@ -925,6 +926,7 @@ export default function SettingsPage() {
               <BookOpen size={13} />
               {t('nav.guide')}
             </button>
+            <LanguageFlyout />
           </div>
         </div>
         <h1
