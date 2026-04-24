@@ -55,6 +55,7 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
 import LanguageFlyout from "@/components/LanguageFlyout";
+import { IntegrationGuide } from "@/components/IntegrationGuide";
 
 // ── Inline From Name editor (shown in connected SMTP card) ─────────────────────
 function InlineFromNameEdit({ current, onSaved }: { current: string; onSaved: () => void }) {
@@ -2340,73 +2341,8 @@ export default function SettingsPage() {
             </button>
           </div>
 
-          {/* Endpoint reference + snippet */}
-          <div
-            className="mt-4 rounded-xl p-3 space-y-2 rr-bg-white-card" style={{ border: "1px solid oklch(0.90 0.02 260)" }}
-          >
-            <div className="flex items-center justify-between">
-              <p className="text-xs font-bold rr-text-navy">Website Integration</p>
-              <button
-                onClick={() => setShowSnippet(!showSnippet)}
-                className="text-xs px-2 py-1 rounded-lg font-bold flex items-center gap-1"
-                style={{ background: "oklch(0.92 0.02 260)", color: "oklch(0.40 0.06 260)" }}
-              >
-                <Copy size={11} />
-                {showSnippet ? "Hide snippet" : "Show snippet"}
-              </button>
-            </div>
-            <code className="text-xs break-all block rr-font-mono" style={{ color: "oklch(0.40 0.08 260)" }}>
-              POST https://reviewlink.app/api/public/contacts
-            </code>
-            <p className="text-xs rr-text-navy-muted">
-              Send <code className="rr-font-mono">name</code>, <code className="rr-font-mono">email</code>, and optionally <code className="rr-font-mono">phone</code>, <code className="rr-font-mono">notes</code>, <code className="rr-font-mono">tags[]</code>.
-              Include your key as <code className="rr-font-mono">Authorization: Bearer rl_...</code>.
-            </p>
-            {showSnippet && (() => {
-              const firstKey = apiKeyList?.[0];
-              const keyPlaceholder = firstKey ? `rl_YOUR_KEY_HERE` : `rl_YOUR_KEY_HERE`;
-              const snippet = `<form id="rl-form">
-  <input name="name" placeholder="Your name" required />
-  <input name="email" type="email" placeholder="Email" required />
-  <input name="phone" placeholder="Phone (optional)" />
-  <button type="submit">Submit</button>
-</form>
-<script>
-document.getElementById('rl-form').addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const data = Object.fromEntries(new FormData(e.target));
-  const res = await fetch('https://reviewlink.app/api/public/contacts', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${keyPlaceholder}'
-    },
-    body: JSON.stringify(data)
-  });
-  const json = await res.json();
-  if (json.success) alert('Thank you!');
-});
-<\/script>`;
-              return (
-                <div className="relative">
-                  <pre
-                    className="text-xs rounded-xl p-3 overflow-x-auto rr-font-mono" style={{ background: "oklch(0.18 0.06 260)", color: "oklch(0.85 0.04 260)", fontSize: "11px", whiteSpace: "pre-wrap", wordBreak: "break-all" }}
-                  >
-                    {snippet}
-                  </pre>
-                  <button
-                    onClick={() => {
-                      navigator.clipboard.writeText(snippet);
-                      toast.success("Snippet copied to clipboard!");
-                    }}
-                    className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold rr-bg-navy-mid rr-text-gold"
-                  >
-                    <Copy size={11} /> Copy
-                  </button>
-                </div>
-              );
-            })()}
-          </div>
+          {/* Integration Guide */}
+          <IntegrationGuide showSnippet={showSnippet} setShowSnippet={setShowSnippet} />
         </div>
             {/* ── Recent API Imports ────────────────────────────────────────────────────────────────────────────── */}
         {recentImports && recentImports.length > 0 && (

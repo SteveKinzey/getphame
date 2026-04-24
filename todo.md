@@ -1398,4 +1398,16 @@
 - [x] Rebuild create/edit dialog: shortcode reference panel, inline insertion buttons for all shortcodes, subject + body fields, set-default toggle
 - [x] Add a "Shortcodes" info card at top of page explaining every available shortcode
 - [x] Ensure {{platformLinks}} is substituted at send time (multi-platform block from user's configured platforms)
-- [ ] Save checkpoint + deploy
+- [x] Save checkpoint + deploy
+
+## Session #69 — WordPress Form API Integration (Apr 23 2026)
+- [x] Add api_keys table to DB schema (id, userId, keyHash, label, lastUsedAt, createdAt, revokedAt)
+- [x] Run pnpm db:push to migrate schema
+- [x] Build POST /api/public/send public REST endpoint (auth via Bearer API key, accepts customerName + customerEmail + optional templateId)
+- [x] tRPC procedures apiKey.list, apiKey.generate, apiKey.revoke, apiKey.recentImports already existed — verified working
+- [x] API Keys section already in Settings — verified key generation, revocation, and copy work
+- [x] Create IntegrationGuide component with 5 tabs: Elementor, Gravity Forms, WS Form, Fluent Forms, Custom/HTML
+- [x] Replace basic snippet in Settings API Keys section with IntegrationGuide component
+- [x] Fix enforceFreeLimit inline in publicApi.ts (not exported from routers.ts)
+- [x] End-to-end test: generated API key, POST to /api/public/send → {"success":true,"requestId":60002}
+- [x] Save checkpoint + deploy

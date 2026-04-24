@@ -10,10 +10,19 @@
  */
 
 import { Router, Request, Response } from "express";
-import { getUserByApiKey, logApiImport } from "./db";
+import { getUserByApiKey, logApiImport, getBusinessProfile, createCustomerRequest, upsertBusinessProfile, getTotalRequestCount } from "./db";
+import { getDefaultReviewPlatform, listReviewPlatforms, PLATFORM_LABELS } from "./reviewPlatforms";
+import { getDefaultTemplate, listTemplates } from "./templates";
+import { checkSendRateLimit } from "./rateLimiter";
+import { FREE_LIMIT, FREE_LIMIT_ERR_MSG } from "@shared/const";
 import { upsertApiContact } from "./contacts";
-import { listApiKeys } from "./db";
+import { listApiKeys, getDb } from "./db";
 import { fireWebhooks } from "./webhookHelpers";
+import { sendMailViaSmtp } from "./smtp";
+import { buildReviewRequestEmail } from "./emailTemplates";
+import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
+import { smtpCredentials, emailTemplates as emailTemplatesTable } from "../drizzle/schema";
+import { eq, sql as sqlOp } from "drizzle-orm";
 
 // Simple in-memory rate limiter: { keyHash -> { count, resetAt } }
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -144,6 +153,141 @@ export function registerPublicApiRoutes(app: Router) {
     } catch (err: any) {
       console.error("[Public API] contacts upsert error:", err?.message);
       return res.status(500).json({ error: "Internal server error. Please try again." });
+    }
+  });
+
+  /**
+   * POST /api/public/send
+   *
+   * Immediately sends a review-request email to a single customer.
+   * Used by WordPress form builders (Elementor, Gravity Forms, WS Form, Fluent Forms)
+   * via their HTTP/webhook action after a form submission.
+   *
+   * Body (JSON):
+   * {
+   *   customerName:  string  (required)
+   *   customerEmail: string  (required)
+   *   templateId?:   number  (optional — defaults to user's default template)
+   * }
+   *
+   * Response 200: { success: true, requestId: number }
+   * Response 400: { error: string }
+   * Response 401: { error: string }
+   * Response 429: { error: string }
+   */
+  app.post("/api/public/send", async (req: Request, res: Response) => {
+    // 1. Auth
+    const authHeader = req.headers.authorization ?? "";
+    const rawKey = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
+    if (!rawKey || !rawKey.startsWith("rl_")) {
+      return res.status(401).json({ error: "Invalid or missing API key. Use Authorization: Bearer rl_<key>" });
+    }
+    // 2. Rate limit
+    const rateLimitKey = rawKey.slice(0, 20);
+    if (!checkRateLimit(rateLimitKey)) {
+      return res.status(429).json({ error: "Rate limit exceeded. Max 60 requests per minute." });
+    }
+    // 3. Resolve user
+    const userId = await getUserByApiKey(rawKey);
+    if (!userId) {
+      return res.status(401).json({ error: "Invalid or revoked API key." });
+    }
+    // 4. Validate body
+    const { customerName, customerEmail, templateId } = req.body ?? {};
+    if (!customerName || typeof customerName !== "string" || !customerName.trim()) {
+      return res.status(400).json({ error: "customerName is required." });
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!customerEmail || typeof customerEmail !== "string" || !emailRegex.test(customerEmail.trim())) {
+      return res.status(400).json({ error: "customerEmail must be a valid email address." });
+    }
+    // 5. Send
+    try {
+      const profile = await getBusinessProfile(userId);
+      if (!profile) {
+        return res.status(400).json({ error: "Business profile not configured. Please complete setup in ReviewLink." });
+      }
+      // Check SMTP configured
+      const db = await getDb();
+      if (!db) return res.status(503).json({ error: "Database unavailable" });
+      const [smtpRow] = await db.select({ id: smtpCredentials.id }).from(smtpCredentials).where(eq(smtpCredentials.userId, userId)).limit(1);
+      if (!smtpRow) {
+        return res.status(400).json({ error: "SMTP not configured. Connect your email account in ReviewLink Settings." });
+      }
+      // Free-tier limit
+      if (profile.tier === 'free') {
+        const total = await getTotalRequestCount(userId);
+        if (total >= FREE_LIMIT) {
+          return res.status(429).json({ error: FREE_LIMIT_ERR_MSG });
+        }
+      }
+      // Monthly reset
+      const now = new Date();
+      const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+      if (profile.monthlyResetDate !== yearMonth) {
+        await upsertBusinessProfile({ ...profile, monthlyCount: 0, monthlyResetDate: yearMonth });
+        profile.monthlyCount = 0;
+      }
+      // Rate limit
+      checkSendRateLimit(userId, 1);
+      // Resolve review URL
+      const defaultPlatform = await getDefaultReviewPlatform(userId);
+      const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
+      // Resolve template
+      const allTemplates = await listTemplates(userId);
+      const resolvedTemplate = templateId
+        ? allTemplates.find((t) => t.id === Number(templateId)) ?? null
+        : await getDefaultTemplate(userId);
+      // Build platformLinks block
+      const allPlatforms = await listReviewPlatforms(userId);
+      const platformLinksList = allPlatforms.length > 0
+        ? allPlatforms.map((p) => {
+            const label = p.label || (PLATFORM_LABELS as Record<string, string>)[p.platform] || p.platform;
+            return `- ${label}: ${p.url}`;
+          }).join("\n")
+        : `- Leave a review: ${reviewUrl}`;
+      const name = customerName.trim();
+      const email = customerEmail.trim().toLowerCase();
+      const replacePlaceholders = (text: string) =>
+        text
+          .replace(/\{\{customer_name\}\}/g, name)
+          .replace(/\{\{customerName\}\}/g, name)
+          .replace(/\{\{business_name\}\}/g, profile.businessName)
+          .replace(/\{\{businessName\}\}/g, profile.businessName)
+          .replace(/\{\{review_link\}\}/g, reviewUrl)
+          .replace(/\{\{reviewLink\}\}/g, reviewUrl)
+          .replace(/\{\{platformLinks\}\}/g, platformLinksList);
+      let subject: string;
+      let htmlBody: string;
+      if (resolvedTemplate) {
+        subject = replacePlaceholders(resolvedTemplate.subject);
+        htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">${replacePlaceholders(resolvedTemplate.body).replace(/\n/g, "<br>")}</div>`;
+      } else {
+        subject = `${profile.businessName} would love your feedback!`;
+        htmlBody = buildReviewRequestEmail({ customerName: name, businessName: profile.businessName, reviewUrl, showPoweredBy: profile.tier === "free" });
+      }
+      // Create request row
+      const newRequestId = await createCustomerRequest({ userId, customerName: name, customerEmail: email, method: "email", status: "sent", platformId: null });
+      // Inject tracking
+      const baseUrl = `${req.protocol}://${req.get("host")}`;
+      const trackingToken = encodeTrackingToken(newRequestId, userId, resolvedTemplate?.id ?? null);
+      const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
+      const openPixel = buildOpenPixel(trackingToken, baseUrl);
+      const trackedHtmlBody = htmlBody
+        .replace(new RegExp(reviewUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), trackedReviewUrl)
+        .replace(/<\/div>\s*$/, `${openPixel}</div>`);
+      await sendMailViaSmtp({ userId, to: email, subject, html: trackedHtmlBody });
+      // Increment template usage
+      if (resolvedTemplate) {
+        await db.update(emailTemplatesTable).set({ usageCount: sqlOp`${emailTemplatesTable.usageCount} + 1` }).where(eq(emailTemplatesTable.id, resolvedTemplate.id));
+      }
+      // Increment monthly count
+      await upsertBusinessProfile({ ...profile, monthlyCount: profile.monthlyCount + 1 });
+      return res.json({ success: true, requestId: newRequestId });
+    } catch (err: any) {
+      const msg = err instanceof Error ? err.message : "Internal error";
+      const isUserError = msg.includes("limit") || msg.includes("SMTP") || msg.includes("profile") || msg.includes("subscription");
+      return res.status(isUserError ? 400 : 500).json({ error: msg });
     }
   });
 }
