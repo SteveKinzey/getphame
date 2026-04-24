@@ -1379,3 +1379,23 @@
 - [x] Ensure flyout dropdown z-index is high enough to always render above all buttons/modals
 - [x] Verify on all screens that flyout is visible and functional
 - [x] Save checkpoint + deploy
+## Session #68 — Email Templates Audit + Full Editor UI (Apr 23 2026)
+- [ ] Audit DB schema for email_templates table
+- [ ] Audit server/routers for templates procedures (list, create, update, delete, setDefault)
+- [ ] Audit current EmailTemplates.tsx UI — what editing is currently possible
+- [ ] Identify which templates Steve provided that are missing
+- [ ] Restore all missing templates as seeded defaults (per-user)
+- [ ] Build full template editor: create new, edit subject/body, delete, set default
+- [ ] Add HTML upload option so users can paste or upload custom HTML template
+- [ ] Wire dynamic platform name into template body (uses user's configured review link)
+- [ ] Verify all templates show in Send screen dropdown
+- [ ] Save checkpoint + deploy
+## Session #68 — Templates Overhaul: Seed Presets + Shortcode Editor (Apr 23 2026)
+- [x] Add server-side seedDefaultTemplates(userId) that inserts the 3 preset templates if user has zero templates
+- [x] Call seedDefaultTemplates on login/first profile fetch so every new user gets the 3 templates pre-loaded
+- [x] Remove the read-only "Starter Templates" section from EmailTemplates.tsx — presets are now in the DB
+- [x] Rebuild template list UI: each card shows name, subject preview, shortcode badges, usage count, default badge
+- [x] Rebuild create/edit dialog: shortcode reference panel, inline insertion buttons for all shortcodes, subject + body fields, set-default toggle
+- [x] Add a "Shortcodes" info card at top of page explaining every available shortcode
+- [x] Ensure {{platformLinks}} is substituted at send time (multi-platform block from user's configured platforms)
+- [ ] Save checkpoint + deploy

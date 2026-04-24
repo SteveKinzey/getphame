@@ -58,6 +58,7 @@ import {
   createTemplate,
   updateTemplate,
   deleteTemplate,
+  seedDefaultTemplates,
 } from "./templates";
 import {
   listReminders,
@@ -1116,6 +1117,8 @@ export const appRouter = router({
 
   templates: router({
     list: protectedProcedure.query(async ({ ctx }) => {
+      // Seed the 3 starter templates for new users who have none yet
+      await seedDefaultTemplates(ctx.user.id);
       return listTemplates(ctx.user.id);
     }),
 
