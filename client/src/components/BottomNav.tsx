@@ -93,7 +93,7 @@ export default function BottomNav() {
             buttonPressHaptic();
             toggleTheme?.();
           }}
-          className="flex flex-col items-center justify-center py-3 gap-1 transition-all duration-150 active:scale-95 px-3"
+          className="flex-1 flex flex-col items-center justify-center py-3 gap-1 transition-all duration-150 active:scale-95"
           style={{ minHeight: '60px' }}
           aria-label={isDark ? t('theme.switchToLight') : t('theme.switchToDark')}
         >
