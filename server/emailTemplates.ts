@@ -12,8 +12,13 @@ export interface ReviewEmailOptions {
   customerName: string;
   /** Business name shown in body copy and footer */
   businessName: string;
-  /** Full review URL the CTA button points to */
+  /** Full review URL the CTA button points to — OR plain-text Yelp search instruction */
   reviewUrl: string;
+  /**
+   * When true, `reviewUrl` is a plain-text search instruction (Yelp compliance mode).
+   * The CTA button is replaced with a styled plain-text instruction block; no <a href> is generated.
+   */
+  isYelpInstruction?: boolean;
   /** Optional body paragraph(s) — overrides the default copy */
   bodyHtml?: string;
   /** Optional subject override (not used in HTML, just exported for convenience) */
@@ -34,7 +39,7 @@ const GOLD = "#f0a500";
 
 /** Shared branded email wrapper — navy header, white body, gold CTA, CAN-SPAM footer */
 export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
-  const { customerName, businessName, reviewUrl, bodyHtml, productName, unsubscribeUrl, showPoweredBy } = opts;
+  const { customerName, businessName, reviewUrl, isYelpInstruction, bodyHtml, productName, unsubscribeUrl, showPoweredBy } = opts;
 
   const defaultBody = productName
     ? `<p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">
@@ -51,6 +56,25 @@ export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
       </p>`;
 
   const body = bodyHtml ?? defaultBody;
+
+  // CTA: Yelp compliance mode — plain-text instruction, no hyperlink
+  const ctaBlock = isYelpInstruction
+    ? `<!-- Yelp plain-text instruction (no link — compliance) -->
+              <table cellpadding="0" cellspacing="0" style="margin:28px auto 8px;width:100%;max-width:480px;">
+                <tr>
+                  <td style="background:#f8f9ff;border-radius:10px;padding:16px 24px;text-align:center;border:2px solid ${GOLD};">
+                    <p style="margin:0;color:${NAVY};font-size:15px;font-weight:800;letter-spacing:0.3px;">⭐ ${reviewUrl}</p>
+                  </td>
+                </tr>
+              </table>`
+    : `<!-- CTA button -->
+              <table cellpadding="0" cellspacing="0" style="margin:28px auto 8px;">
+                <tr>
+                  <td style="background:${GOLD};border-radius:10px;padding:14px 36px;text-align:center;">
+                    <a href="${reviewUrl}" style="color:${NAVY};font-size:15px;font-weight:800;text-decoration:none;letter-spacing:0.3px;">⭐ Leave a Review</a>
+                  </td>
+                </tr>
+              </table>`;
 
   const footerText = unsubscribeUrl
     ? `You received this email because you are a customer of ${businessName}.<br/>
@@ -89,14 +113,7 @@ export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${customerName}!</p>
               ${body}
 
-              <!-- CTA button -->
-              <table cellpadding="0" cellspacing="0" style="margin:28px auto 8px;">
-                <tr>
-                  <td style="background:${GOLD};border-radius:10px;padding:14px 36px;text-align:center;">
-                    <a href="${reviewUrl}" style="color:${NAVY};font-size:15px;font-weight:800;text-decoration:none;letter-spacing:0.3px;">⭐ Leave a Review</a>
-                  </td>
-                </tr>
-              </table>
+              ${ctaBlock}
 
               <p style="margin:24px 0 0;font-size:14px;color:#666;line-height:1.6;">
                 Thank you so much!<br/>

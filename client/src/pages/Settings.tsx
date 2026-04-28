@@ -779,23 +779,9 @@ export default function SettingsPage() {
     apple: "Apple Maps",
     other: "Other",
   };
-  // Converts a plain-text Yelp search query into a Yelp search URL.
-  // Supports "Business Name in City, ST" — splits on " in " to separate
-  // find_desc from find_loc. Falls back to encoding the whole string as find_desc.
-  function buildYelpSearchUrl(query: string): string {
-    const trimmed = query.trim();
-    const inIdx = trimmed.toLowerCase().lastIndexOf(" in ");
-    if (inIdx !== -1) {
-      const desc = trimmed.slice(0, inIdx).trim();
-      const loc  = trimmed.slice(inIdx + 4).trim();
-      return `https://www.yelp.com/search?find_desc=${encodeURIComponent(desc)}&find_loc=${encodeURIComponent(loc)}`;
-    }
-    return `https://www.yelp.com/search?find_desc=${encodeURIComponent(trimmed)}`;
-  }
-
   const PLATFORM_PLACEHOLDERS: Record<string, string> = {
     google: "https://g.page/r/your-business/review",
-    yelp: "e.g. SK America in San Bernardino, CA",
+    yelp: "e.g. Search for SK America on Yelp in San Bernardino, CA",
     tripadvisor: "https://www.tripadvisor.com/Restaurant_Review-...",
     bing: "https://www.bingplaces.com/...",
     facebook: "https://www.facebook.com/your-page/reviews",
@@ -1100,7 +1086,7 @@ export default function SettingsPage() {
             </button>
           </div>
           <p className="text-xs mb-4 rr-text-navy-muted">
-            Add your review page URLs for Google, TripAdvisor, Bing, Facebook, and more. Paste the public link customers use to leave a review. For Yelp, enter your business name and city — customers will be directed to search for your listing.
+            Add your review page URLs for Google, TripAdvisor, Bing, Facebook, and more. For Yelp, enter a plain-text search instruction — this text will appear in the email body instead of a link, keeping you compliant with Yelp's review solicitation policy.
           </p>
 
           {platformsLoading ? (
@@ -1118,11 +1104,11 @@ export default function SettingsPage() {
                       style={{ border: "2px solid oklch(0.80 0.18 80)", background: "oklch(0.98 0.01 80)" }}
                     >
                       {p.platform === "yelp" && (
-                        <p className="text-xs rr-text-navy-muted mb-1">Enter your business name and city — customers will search for your Yelp listing.</p>
+                        <p className="text-xs rr-text-navy-muted mb-1">Enter a plain-text search instruction (e.g. "Search for SK America on Yelp in San Bernardino, CA"). This text appears in the email — no link is generated, keeping you Yelp-compliant.</p>
                       )}
                       <input
                         type={p.platform === "yelp" ? "text" : "url"}
-                        defaultValue={p.platform === "yelp" ? (() => { try { const u = new URL(p.url); const desc = u.searchParams.get("find_desc") ?? ""; const loc = u.searchParams.get("find_loc") ?? ""; return loc ? `${desc} in ${loc}` : desc; } catch { return p.url; } })() : p.url}
+                        defaultValue={p.url}
                         id={`edit-url-${p.id}`}
                         placeholder={PLATFORM_PLACEHOLDERS[p.platform] ?? "https://..."}
                         className="w-full px-3 py-2 rounded-lg text-sm outline-none"
@@ -1143,9 +1129,8 @@ export default function SettingsPage() {
                           onClick={() => {
                             const urlEl = document.getElementById(`edit-url-${p.id}`) as HTMLInputElement | null;
                             const labelEl = document.getElementById(`edit-label-${p.id}`) as HTMLInputElement | null;
-                            if (!urlEl?.value?.trim()) { toast.error(p.platform === "yelp" ? "Business name is required" : "URL is required"); return; }
-                            const finalUrl = p.platform === "yelp" ? buildYelpSearchUrl(urlEl.value) : urlEl.value.trim();
-                            const promise = updatePlatform.mutateAsync({ id: p.id, url: finalUrl, label: labelEl?.value?.trim() || undefined });
+                            if (!urlEl?.value?.trim()) { toast.error(p.platform === "yelp" ? "Search instruction is required" : "URL is required"); return; }
+                            const promise = updatePlatform.mutateAsync({ id: p.id, url: urlEl.value.trim(), label: labelEl?.value?.trim() || undefined });
                             toast.promise(promise, {
                               loading: "Saving...",
                               success: "Platform updated!",
@@ -1281,7 +1266,7 @@ export default function SettingsPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
-                      {newPlatformType === "yelp" ? "Yelp Search Query *" : "Review Page URL *"}
+                      {newPlatformType === "yelp" ? "Yelp Search Instruction *" : "Review Page URL *"}
                     </label>
                     <input
                       type={newPlatformType === "yelp" ? "text" : "url"}
@@ -1293,7 +1278,7 @@ export default function SettingsPage() {
                     />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {newPlatformType === "yelp"
-                        ? "Enter your business name and city (e.g. SK America in San Bernardino, CA). Customers will be directed to search for your listing on Yelp."
+                        ? <>Enter a plain-text search instruction. This text appears in the email body — no link is created. Recommended for Yelp compliance (e.g. <em>Search for SK America on Yelp in San Bernardino, CA</em>).</>
                         : "Paste the public URL customers use to leave a review on this platform."}
                     </p>
                   </div>
@@ -1313,11 +1298,10 @@ export default function SettingsPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
-                        if (!newPlatformUrl.trim()) { toast.error(newPlatformType === "yelp" ? "Business name is required" : "URL is required"); return; }
-                        const finalNewUrl = newPlatformType === "yelp" ? buildYelpSearchUrl(newPlatformUrl) : newPlatformUrl.trim();
+                        if (!newPlatformUrl.trim()) { toast.error(newPlatformType === "yelp" ? "Search instruction is required" : "URL is required"); return; }
                         const promise = addPlatform.mutateAsync({
                           platform: newPlatformType as "google" | "yelp" | "tripadvisor" | "bing" | "facebook" | "apple" | "other",
-                          url: finalNewUrl,
+                          url: newPlatformUrl.trim(),
                           label: newPlatformLabel.trim() || undefined,
                         });
                         toast.promise(promise, {

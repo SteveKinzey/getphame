@@ -823,13 +823,14 @@ export const appRouter = router({
 
         // Resolve review URL: use selected platform, else default platform, else profile.reviewLink
         let reviewUrl = profile.reviewLink ?? "";
+        let isYelpPlatform = false;
         if (input.platformId) {
           const platforms = await listReviewPlatforms(ctx.user.id);
           const chosen = platforms.find((p) => p.id === input.platformId);
-          if (chosen) reviewUrl = chosen.url;
+          if (chosen) { reviewUrl = chosen.url; isYelpPlatform = chosen.platform === "yelp"; }
         } else {
           const defaultPlatform = await getDefaultReviewPlatform(ctx.user.id);
-          if (defaultPlatform) reviewUrl = defaultPlatform.url;
+          if (defaultPlatform) { reviewUrl = defaultPlatform.url; isYelpPlatform = defaultPlatform.platform === "yelp"; }
         }
 
         // Fetch all contacts for this user and filter to requested IDs (skip opted-out)
@@ -860,6 +861,8 @@ export const appRouter = router({
         const platformLinksList = allUserPlatforms.length > 0
           ? allUserPlatforms.map((p) => {
               const label = p.label || (PLATFORM_LABELS as Record<string, string>)[p.platform] || p.platform;
+              // Yelp: stored value is plain-text search instruction, not a URL — render as-is (no link)
+              if (p.platform === "yelp") return `- ${label}: ${p.url}`;
               return `- ${label}: ${p.url}`;
             }).join("\n")
           : `- Leave a review: ${reviewUrl}`;
@@ -891,6 +894,7 @@ export const appRouter = router({
                 customerName: contact.name,
                 businessName: profile.businessName,
                 reviewUrl,
+                isYelpInstruction: isYelpPlatform,
                 unsubscribeUrl: buildUnsubUrl("contact", contact.id, ctx.user.id),
                 showPoweredBy: profile.tier === 'free',
               });
@@ -906,13 +910,18 @@ export const appRouter = router({
             });
 
             // Inject open pixel + click-tracking wrapper
+            // Skip URL replacement for Yelp (plain-text instruction, not a URL)
             const bulkToken = encodeTrackingToken(bulkRequestId, ctx.user.id, resolvedTemplate?.id ?? null);
             const bulkBase = "https://phame.app";
-            const trackedBulkUrl = wrapClickUrl(reviewUrl, bulkToken, bulkBase);
             const bulkPixel = buildOpenPixel(bulkToken, bulkBase);
-            const trackedBulkHtml = htmlBody
-              .replace(new RegExp(reviewUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), trackedBulkUrl)
-              .replace(/<\/div>\s*$/, `${bulkPixel}</div>`);
+            const trackedBulkHtml = isYelpPlatform
+              ? htmlBody.replace(/<\/div>\s*$/, `${bulkPixel}</div>`)
+              : (() => {
+                  const trackedBulkUrl = wrapClickUrl(reviewUrl, bulkToken, bulkBase);
+                  return htmlBody
+                    .replace(new RegExp(reviewUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), trackedBulkUrl)
+                    .replace(/<\/div>\s*$/, `${bulkPixel}</div>`);
+                })();
 
             await sendMailViaSmtp({ userId: ctx.user.id, to: contact.email, subject, html: trackedBulkHtml });
             // Mark contact as sent
@@ -1243,16 +1252,16 @@ export const appRouter = router({
 
         // Resolve review URL: use selected platform, else fall back to profile.reviewLink
         let reviewUrl = profile.reviewLink ?? "";
+        let isYelpSingle = false;
         if (input.platformId) {
-          const platform = await getDefaultReviewPlatform(ctx.user.id);
           // Find the specific platform by ID
           const platforms = await listReviewPlatforms(ctx.user.id);
           const chosen = platforms.find((p) => p.id === input.platformId);
-          if (chosen) reviewUrl = chosen.url;
+          if (chosen) { reviewUrl = chosen.url; isYelpSingle = chosen.platform === "yelp"; }
         } else {
           // Use default platform if available
           const defaultPlatform = await getDefaultReviewPlatform(ctx.user.id);
-          if (defaultPlatform) reviewUrl = defaultPlatform.url;
+          if (defaultPlatform) { reviewUrl = defaultPlatform.url; isYelpSingle = defaultPlatform.platform === "yelp"; }
         }
 
         // Resolve template: use specified templateId, else fall back to user's default template
@@ -1270,6 +1279,8 @@ export const appRouter = router({
           const wooPlatformLinksList = wooUserPlatforms.length > 0
             ? wooUserPlatforms.map((p) => {
                 const label = p.label || (PLATFORM_LABELS as Record<string, string>)[p.platform] || p.platform;
+                // Yelp: stored value is plain-text search instruction, not a URL — render as-is (no link)
+                if (p.platform === "yelp") return `- ${label}: ${p.url}`;
                 return `- ${label}: ${p.url}`;
               }).join("\n")
             : `- Leave a review: ${reviewUrl}`;
@@ -1290,6 +1301,7 @@ export const appRouter = router({
             customerName: input.customerName,
             businessName: profile.businessName,
             reviewUrl,
+            isYelpInstruction: isYelpSingle,
             showPoweredBy: profile.tier === 'free',
           });
         }
@@ -1305,14 +1317,18 @@ export const appRouter = router({
         });
 
         // Inject open pixel + click-tracking wrapper into the email HTML
+        // Skip URL replacement for Yelp (plain-text instruction, not a URL)
         const trackingToken = encodeTrackingToken(newRequestId, ctx.user.id, resolvedTemplate?.id ?? null);
         const baseUrl = (ctx.req.headers.origin as string | undefined) ?? "https://phame.app";
-        const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
         const openPixel = buildOpenPixel(trackingToken, baseUrl);
-        // Replace bare review URL with tracked URL and append pixel before </div>
-        const trackedHtmlBody = htmlBody
-          .replace(new RegExp(reviewUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), trackedReviewUrl)
-          .replace(/<\/div>\s*$/, `${openPixel}</div>`);
+        const trackedHtmlBody = isYelpSingle
+          ? htmlBody.replace(/<\/div>\s*$/, `${openPixel}</div>`)
+          : (() => {
+              const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
+              return htmlBody
+                .replace(new RegExp(reviewUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), trackedReviewUrl)
+                .replace(/<\/div>\s*$/, `${openPixel}</div>`);
+            })();
 
         await sendMailViaSmtp({ userId: ctx.user.id, to: input.customerEmail, subject, html: trackedHtmlBody });
 
