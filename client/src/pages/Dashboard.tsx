@@ -3,7 +3,8 @@
 
 import { useTranslation } from 'react-i18next';
 import { trpc } from "@/lib/trpc";
-import { BarChart2, Send, TrendingUp, Star, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick } from "lucide-react";
+import { BarChart2, Send, TrendingUp, Star, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick, RotateCcw } from "lucide-react";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { format, subDays, startOfDay } from "date-fns";
 import { useLocation } from "wouter";
 import { useMemo, useState } from "react";
@@ -60,6 +61,22 @@ export default function DashboardPage() {
   // Search + status filter state
   const [activitySearch, setActivitySearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "reviewed">("all");
+
+  // Bulk restart campaign mutation
+  const [bulkRestartConfirmOpen, setBulkRestartConfirmOpen] = useState(false);
+  const bulkRestartMutation = trpc.requests.bulkRestart.useMutation({
+    onSuccess: ({ sent, errors }) => {
+      utils.requests.list.invalidate();
+      utils.requests.stats.invalidate();
+      if (errors.length > 0) {
+        toast.warning(`Restarted ${sent} campaign(s). ${errors.length} failed.`);
+      } else {
+        toast.success(`Restarted ${sent} campaign(s) successfully.`);
+      }
+      setSelected(new Set());
+    },
+    onError: (err) => toast.error(err.message),
+  });
 
   // Bulk mark-as-responded mutation with optimistic update
   const bulkMarkRespondedMutation = trpc.requests.bulkMarkResponded.useMutation({
@@ -585,6 +602,25 @@ export default function DashboardPage() {
             {t('dashboard.bulkActions.markSent')}
           </button>
           <button
+            onClick={() => {
+              const nonResponded = Array.from(selected).filter(id => {
+                const req = allRequests?.find(r => r.id === id);
+                return req && !req.respondedAt;
+              });
+              if (nonResponded.length === 0) {
+                toast.info("All selected clients have already responded.");
+                return;
+              }
+              setBulkRestartConfirmOpen(true);
+            }}
+            disabled={bulkRestartMutation.isPending}
+            className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-xl font-bold transition-colors"
+            style={{ background: "oklch(0.38 0.10 30)", color: "rgba(255,255,255,0.9)" }}
+          >
+            {bulkRestartMutation.isPending ? <Loader2 size={12} className="animate-spin" /> : <RotateCcw size={12} />}
+            Restart
+          </button>
+          <button
             onClick={() => setSelected(new Set())}
             aria-label={t('dashboard.activityFeed.clearSelectionAriaLabel')}
             className="p-1.5 rounded-lg transition-colors"
@@ -594,6 +630,37 @@ export default function DashboardPage() {
           </button>
         </div>
       )}
+
+      {/* Bulk Restart Campaign confirmation modal */}
+      {bulkRestartConfirmOpen && (() => {
+        const nonResponded = Array.from(selected).filter(id => {
+          const req = allRequests?.find(r => r.id === id);
+          return req && !req.respondedAt;
+        });
+        return (
+          <AlertDialog open={bulkRestartConfirmOpen} onOpenChange={setBulkRestartConfirmOpen}>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Restart {nonResponded.length} campaign{nonResponded.length !== 1 ? 's' : ''}?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This cancels pending reminders and resends the original email to each selected client who has not yet responded. The campaign clock resets for each.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => {
+                    setBulkRestartConfirmOpen(false);
+                    bulkRestartMutation.mutate({ ids: nonResponded });
+                  }}
+                >
+                  Yes, restart {nonResponded.length}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        );
+      })()}
 
       {/* Client detail sheet — opens when tapping a client name */}
       <ClientDetailSheet

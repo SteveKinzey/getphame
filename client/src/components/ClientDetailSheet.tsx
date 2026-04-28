@@ -2,9 +2,20 @@
 // Shows: sent email subject + body (editable), Update Reminder Email button, Restart Campaign button
 
 import { useState, useEffect } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
-import { X, Mail, Pencil, RefreshCw, Send, Loader2, RotateCcw, ChevronDown, ChevronUp } from "lucide-react";
+import { X, Mail, Pencil, RefreshCw, Send, Loader2, RotateCcw, ChevronDown, ChevronUp, Bell, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { format } from "date-fns";
 
 interface ClientDetailSheetProps {
   requestId: number | null;
@@ -13,6 +24,7 @@ interface ClientDetailSheetProps {
 
 export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSheetProps) {
   const isOpen = requestId !== null;
+  const [restartConfirmOpen, setRestartConfirmOpen] = useState(false);
 
   const { data: request, isLoading } = trpc.requests.getById.useQuery(
     { id: requestId! },
@@ -55,6 +67,11 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
     },
     onError: (err) => toast.error(err.message),
   });
+
+  const { data: reminders } = trpc.reminders.listForRequest.useQuery(
+    { requestId: requestId! },
+    { enabled: requestId !== null }
+  );
 
   const hasEmail = !!(request?.emailSubject || request?.emailBody);
   const isDirty = editSubject !== (request?.emailSubject ?? "") || editBody !== (request?.emailBody ?? "");
@@ -175,6 +192,47 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
                 ) : null}
               </div>
 
+              {/* Campaign Timeline */}
+              {!isEditing && (
+                <div className="rounded-xl p-3 space-y-2" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}>
+                  <p className="text-xs font-black rr-text-navy uppercase tracking-wider">Campaign Timeline</p>
+
+                  {/* Initial send */}
+                  {request?.sentAt && (
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 size={13} style={{ color: "oklch(0.55 0.15 145)", flexShrink: 0 }} />
+                      <span className="text-xs rr-text-navy">
+                        Email sent — {format(new Date(request.sentAt), "MMM d, h:mm a")}
+                      </span>
+                    </div>
+                  )}
+
+                  {/* Reminders */}
+                  {reminders && reminders.length > 0 ? (
+                    reminders.map((r, i) => {
+                      const icon = r.status === "sent"
+                        ? <CheckCircle2 size={13} style={{ color: "oklch(0.55 0.15 145)", flexShrink: 0 }} />
+                        : r.status === "cancelled"
+                        ? <XCircle size={13} style={{ color: "oklch(0.60 0.08 30)", flexShrink: 0 }} />
+                        : <Clock size={13} style={{ color: "oklch(0.65 0.14 80)", flexShrink: 0 }} />;
+                      const label = r.status === "sent" ? "Sent" : r.status === "cancelled" ? "Cancelled" : "Scheduled";
+                      return (
+                        <div key={r.id} className="flex items-center gap-2">
+                          {icon}
+                          <span className="text-xs rr-text-navy">
+                            <Bell size={11} className="inline mr-1 opacity-60" />
+                            Reminder {i + 1} — {format(new Date(r.scheduledAt), "MMM d, h:mm a")}
+                            <span className="ml-1 opacity-60">({label})</span>
+                          </span>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <p className="text-xs rr-text-navy-muted">No reminders scheduled.</p>
+                  )}
+                </div>
+              )}
+
               {/* Edit toggle */}
               {!isEditing ? (
                 <button
@@ -223,11 +281,7 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
               Resend This Email
             </button>
             <button
-              onClick={() => {
-                if (confirm(`Restart the full review request campaign for ${request?.customerName}? This will cancel any pending reminders and send a fresh email.`)) {
-                  resendMutation.mutate({ id: requestId!, emailSubject: editSubject, emailBody: editBody, restart: true });
-                }
-              }}
+              onClick={() => setRestartConfirmOpen(true)}
               disabled={resendMutation.isPending}
               className="flex items-center gap-2 text-sm font-bold px-4 py-3 rounded-xl w-full justify-center"
               style={{ background: "oklch(0.97 0.02 30)", border: "1.5px solid oklch(0.85 0.08 30)", color: "oklch(0.40 0.14 30)" }}
@@ -235,6 +289,29 @@ export default function ClientDetailSheet({ requestId, onClose }: ClientDetailSh
               {resendMutation.isPending ? <Loader2 size={14} className="animate-spin" /> : <RotateCcw size={14} />}
               Restart Campaign
             </button>
+
+            {/* Restart Campaign confirmation modal */}
+            <AlertDialog open={restartConfirmOpen} onOpenChange={setRestartConfirmOpen}>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Restart campaign for {request?.customerName}?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    This cancels any pending reminders and sends a fresh review request email. The campaign clock resets to today.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => {
+                      setRestartConfirmOpen(false);
+                      resendMutation.mutate({ id: requestId!, emailSubject: editSubject, emailBody: editBody, restart: true });
+                    }}
+                  >
+                    Yes, restart
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         )}
       </div>

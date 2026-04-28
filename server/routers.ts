@@ -1215,6 +1215,20 @@ export const appRouter = router({
         return { ok: true };
       }),
 
+    /** List reminders for a specific customer request */
+    listForRequest: protectedProcedure
+      .input(z.object({ requestId: z.number().int() }))
+      .query(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) return [];
+        const { eq: eqR, and: andR, asc } = await import("drizzle-orm");
+        return db
+          .select()
+          .from(followUpReminders)
+          .where(andR(eq(followUpReminders.userId, ctx.user.id), eqR(followUpReminders.customerRequestId, input.requestId)))
+          .orderBy(asc(followUpReminders.scheduledAt));
+      }),
+
     /** Return rendered HTML preview of a follow-up reminder email */
     previewEmail: protectedProcedure
       .input(z.object({ step: z.number().int().min(1).max(2).default(1) }))
@@ -1480,6 +1494,63 @@ export const appRouter = router({
         }
         return { updated: input.ids.length };
       }),
+
+    bulkRestart: protectedProcedure
+      .input(z.object({ ids: z.array(z.number().int()).min(1).max(200) }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const { and, eq: eqOp } = await import("drizzle-orm");
+        const profile = await getBusinessProfile(ctx.user.id);
+        if (!profile) throw new Error("Business profile not found");
+
+        let sent = 0;
+        const errors: string[] = [];
+
+        for (const id of input.ids) {
+          try {
+            await enforceFreeLimit(ctx.user.id, profile.tier);
+
+            const [original] = await db
+              .select()
+              .from(customerRequests)
+              .where(and(eqOp(customerRequests.userId, ctx.user.id), eqOp(customerRequests.id, id)))
+              .limit(1);
+
+            if (!original || !original.customerEmail) {
+              errors.push(`Request ${id}: missing email address`);
+              continue;
+            }
+            if (!original.emailSubject || !original.emailBody) {
+              errors.push(`Request ${id}: no stored email content`);
+              continue;
+            }
+
+            // Cancel existing reminders and reset the request
+            await cancelRemindersByRequestId(ctx.user.id, id);
+            await db
+              .update(customerRequests)
+              .set({ respondedAt: null, sentAt: new Date(), status: "sent" })
+              .where(and(eqOp(customerRequests.userId, ctx.user.id), eqOp(customerRequests.id, id)));
+
+            // Re-inject tracking and resend
+            const baseUrl = "https://phame.app";
+            const trackingToken = encodeTrackingToken(id, ctx.user.id, null);
+            const openPixel = buildOpenPixel(trackingToken, baseUrl);
+            const trackedHtml = original.emailBody.replace(/<\/div>\s*$/, `${openPixel}</div>`);
+
+            await sendMailViaSmtp({ userId: ctx.user.id, to: original.customerEmail, subject: original.emailSubject, html: trackedHtml });
+            await upsertBusinessProfile({ ...profile, monthlyCount: profile.monthlyCount + 1 });
+            sent++;
+          } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : String(err);
+            errors.push(`Request ${id}: ${msg}`);
+          }
+        }
+
+        return { sent, errors };
+      }),
+
     stats: protectedProcedure.query(async ({ ctx }) => {
       const now = new Date();
       const yearMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
