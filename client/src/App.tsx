@@ -76,6 +76,17 @@ function AppShell() {
   // Haptic feedback for email opens and review clicks — only active when logged in
   useHapticEvents(isAuthenticated);
 
+  // Claim referral: if a ?ref= code was stored before login, link the new user to the referrer
+  const claimReferral = trpc.referral.claimReferral.useMutation();
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const refCode = localStorage.getItem("phame_ref");
+    if (!refCode) return;
+    // Remove immediately so it only fires once
+    localStorage.removeItem("phame_ref");
+    claimReferral.mutate({ code: refCode });
+  }, [isAuthenticated]);
+
   // Show a toast if Google/Apple OAuth returned an error (e.g. user denied consent)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);

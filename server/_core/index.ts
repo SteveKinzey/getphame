@@ -29,6 +29,7 @@ import { handleOpenPixel, handleClickRedirect } from "../emailTracking";
 import { sendUpgradeReceiptEmail, sendChurnRecoveryEmail, sendPaymentFailedEmail } from "../smtp";
 import { registerPublicApiRoutes } from "../publicApi";
 import { registerMobileAuthRoutes } from "../mobileAuth";
+import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -129,6 +130,20 @@ async function startServer() {
           }
 
           console.log(`[Stripe Webhook] User ${userId} upgraded to ${newTier} (plan: ${plan}, mode: ${mode})`);
+
+          // Check for referral reward — if this user was referred, reward the referrer with 1 free month
+          // Only reward for monthly/annual/lifetime plans (not free), and only once per referred user
+          if (newTier !== "free") {
+            try {
+              const referral = await getUnrewardedReferral(userId);
+              if (referral) {
+                await rewardReferrer(referral.id, referral.referrerUserId);
+                console.log(`[Referral] Rewarded user ${referral.referrerUserId} +30 days for referring user ${userId}`);
+              }
+            } catch (refErr) {
+              console.warn("[Referral] Reward failed (non-fatal):", refErr);
+            }
+          }
 
           // Send upgrade receipt email (fire-and-forget)
           const customerEmail = session.metadata?.customer_email as string | undefined;

@@ -40,7 +40,8 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals } from "../drizzle/schema";
+import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
 import { eq, like, or, inArray, desc } from "drizzle-orm";
 import {
   listSavedContacts,
@@ -2515,5 +2516,39 @@ export const appRouter = router({
       }),
   }),
   bulkSender: bulkSenderRouter,
+
+  /** Referral / affiliate system */
+  referral: router({
+    /** Get (or generate) the current user's referral code and share URL */
+    getCode: protectedProcedure.query(async ({ ctx }) => {
+      const code = await getOrCreateReferralCode(ctx.user.id);
+      const shareUrl = `https://getphame.app?ref=${code}`;
+      return { code, shareUrl };
+    }),
+
+    /** Get referral stats for the current user */
+    getStats: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) return { totalReferrals: 0, convertedReferrals: 0, monthsEarned: 0 };
+      const rows = await db
+        .select()
+        .from(referrals)
+        .where(eq(referrals.referrerUserId, ctx.user.id));
+      const totalReferrals = rows.length;
+      const convertedReferrals = rows.filter(r => r.convertedAt !== null).length;
+      const monthsEarned = rows.filter(r => r.rewardedAt !== null).length;
+      return { totalReferrals, convertedReferrals, monthsEarned };
+    }),
+
+    /** Called on signup when a ?ref=CODE param was present — links the new user to the referrer */
+    claimReferral: protectedProcedure
+      .input(z.object({ code: z.string().min(4).max(32) }))
+      .mutation(async ({ ctx, input }) => {
+        const referrerUserId = await getReferrerByCode(input.code);
+        if (!referrerUserId || referrerUserId === ctx.user.id) return { ok: false };
+        await recordReferral(referrerUserId, ctx.user.id, input.code);
+        return { ok: true };
+      }),
+  }),
 });
 export type AppRouter = typeof appRouter;

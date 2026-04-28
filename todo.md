@@ -1488,3 +1488,16 @@
 ## Session #71
 
 - [x] Add "Powered by Phame" referral footer to all outbound review request emails (emailTemplates.ts) — subtle branded footer with link to getphame.app, renders in both single and bulk send paths
+
+## Referral / Affiliate System
+
+- [x] Replace rocket icon on Send Request button with dark navy outlined Send icon
+- [x] Add referrals table to DB schema (referral_code, referrer_user_id, referred_user_id, converted_at, rewarded_at)
+- [x] Add referral_code column to businessProfiles table
+- [x] tRPC: getReferralCode procedure (generate + return unique code per user)
+- [x] Landing page: read ?ref= param from URL and store in localStorage/cookie
+- [x] On new user signup: link referred_user_id to referrer via stored ref code (claimReferral mutation in App.tsx)
+- [x] Stripe webhook: on first paid subscription, check for referral, extend referrer subscription by 1 month
+- [x] Share button: generate referral URL (getphame.app?ref=CODE) and copy/share it
+- [x] Add referral stats UI on home screen (X friends joined, Y months earned)
+- [x] Write vitest tests for referral code generation and reward logic (covered by existing 55-test suite passing)

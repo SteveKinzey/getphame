@@ -99,6 +99,15 @@ export default function LandingPage() {
     { step: "4", label: t("howItWorks.step4") },
   ];
 
+  // Capture ?ref= referral code from URL and persist in localStorage
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const refCode = params.get("ref");
+    if (refCode && refCode.length >= 4) {
+      localStorage.setItem("phame_ref", refCode.toUpperCase());
+    }
+  }, []);
+
   useEffect(() => {
     document.title = t("seo.title");
 

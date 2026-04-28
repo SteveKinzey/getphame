@@ -16,12 +16,13 @@ import { useTranslation } from "react-i18next";
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
 
-const SHARE_URL = "https://getphame.app";
-
 function ShareReferralCard() {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const { track } = useAnalytics();
+  const { data: referralData } = trpc.referral.getCode.useQuery();
+  const { data: referralStats } = trpc.referral.getStats.useQuery();
+  const shareUrl = referralData?.shareUrl ?? "https://getphame.app";
 
   const handleShare = async () => {
     track("share_referral");
@@ -30,7 +31,7 @@ function ShareReferralCard() {
         await navigator.share({
           title: t("shareReferralCard.title"),
           text: t("shareReferralCard.shareText"),
-          url: SHARE_URL,
+          url: shareUrl,
         });
       } catch {
         // user dismissed the share sheet — no action needed
@@ -39,7 +40,7 @@ function ShareReferralCard() {
     }
     // Fallback: copy to clipboard
     try {
-      await navigator.clipboard.writeText(`${t("shareReferralCard.shareText")} ${SHARE_URL}`);
+      await navigator.clipboard.writeText(`${t("shareReferralCard.shareText")} ${shareUrl}`);
       setCopied(true);
       toast.success(t("shareReferralCard.copySuccessToast"));
       setTimeout(() => setCopied(false), 3000);
@@ -80,7 +81,7 @@ function ShareReferralCard() {
         >
           <span className="rr-text-gold rr-fw-bold">"</span>
           {t("shareReferralCard.shareText")}{" "}
-          <span className="rr-text-gold">{SHARE_URL}</span>
+          <span className="rr-text-gold">{shareUrl}</span>
           <span className="rr-text-gold rr-fw-bold">"</span>
         </div>
 
@@ -92,6 +93,20 @@ function ShareReferralCard() {
           {copied ? <Check size={15} /> : <Share2 size={15} />}
           {copied ? t("shareReferralCard.copiedToClipboard") : t("shareReferralCard.sharePhame")}
         </button>
+
+        {/* Referral stats */}
+        {referralStats && (referralStats.totalReferrals > 0 || referralStats.monthsEarned > 0) && (
+          <div className="mt-3 flex items-center justify-between text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
+            <span>
+              <span className="rr-text-gold font-black">{referralStats.totalReferrals}</span>{" "}
+              {referralStats.totalReferrals === 1 ? "friend joined" : "friends joined"}
+            </span>
+            <span>
+              <span className="rr-text-gold font-black">{referralStats.monthsEarned}</span>{" "}
+              {referralStats.monthsEarned === 1 ? "free month earned" : "free months earned"}
+            </span>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -174,6 +189,7 @@ export default function HomePage() {
   const { data: smtpStatus } = trpc.smtp.status.useQuery();
   const { data: stats } = trpc.requests.stats.useQuery();
   const { data: onboardingStatus } = trpc.onboarding.status.useQuery();
+  const { data: referralData } = trpc.referral.getCode.useQuery();
   const utils = trpc.useUtils();
 
   // Goal tracker state
@@ -193,10 +209,11 @@ export default function HomePage() {
     : 0;
 
   const handleShare = async () => {
-    const shareText = t("shareReferralCard.shareText") + " " + SHARE_URL;
+    const shareUrl = referralData?.shareUrl ?? "https://getphame.app";
+    const shareText = t("shareReferralCard.shareText") + " " + shareUrl;
     if (navigator.share) {
       try {
-        await navigator.share({ title: "Phame", text: shareText, url: SHARE_URL });
+        await navigator.share({ title: "Phame", text: shareText, url: shareUrl });
       } catch {
         // user cancelled — no action needed
       }
@@ -528,12 +545,8 @@ export default function HomePage() {
             fontFamily: "'Poppins', sans-serif",
           }}
         >
-          <span className="inline-flex items-center gap-1.5">
-            <img
-              src="/manus-storage/rocket-stroked_2f31df13.svg"
-              alt=""
-              className="h-12 w-auto object-contain flex-shrink-0"
-            />
+          <span className="inline-flex items-center gap-2">
+            <Send size={22} strokeWidth={2.5} style={{ color: 'oklch(0.22 0.09 260)' }} className="flex-shrink-0" />
             {t("homePage.sendRequest")}
           </span>
         </button>

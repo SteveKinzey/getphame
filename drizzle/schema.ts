@@ -60,6 +60,8 @@ export const businessProfiles = mysqlTable("business_profiles", {
   followUpDelayDays: int("followUpDelayDays").default(3).notNull(),
   // Re-engagement email — 1 = enabled (default), 0 = disabled
   reEngagementEnabled: int("reEngagementEnabled").default(1).notNull(),
+  // Referral code — unique 8-char code used to generate share links (getphame.app?ref=CODE)
+  referralCode: varchar("referralCode", { length: 32 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -481,3 +483,21 @@ export const bulkSenderCredentials = mysqlTable("bulk_sender_credentials", {
 });
 export type BulkSenderCredential = typeof bulkSenderCredentials.$inferSelect;
 export type InsertBulkSenderCredential = typeof bulkSenderCredentials.$inferInsert;
+
+/**
+ * Referral / affiliate tracking.
+ * Each user gets a unique referral code. When a new user signs up via a referral link
+ * (?ref=CODE) and later converts to any paid plan (≥ 1 month), the referrer earns
+ * one free month added to their planExpiresAt.
+ */
+export const referrals = mysqlTable("referrals", {
+  id: int("id").autoincrement().primaryKey(),
+  referrerUserId: int("referrerUserId").notNull(),    // the user who shared the link
+  referredUserId: int("referredUserId").notNull().unique(), // the new user who signed up
+  referralCode: varchar("referralCode", { length: 32 }).notNull(), // code used at signup
+  convertedAt: bigint("convertedAt", { mode: "number" }),  // Unix ms — null until paid conversion
+  rewardedAt: bigint("rewardedAt", { mode: "number" }),    // Unix ms — null until reward applied
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+});
+export type Referral = typeof referrals.$inferSelect;
+export type InsertReferral = typeof referrals.$inferInsert;
