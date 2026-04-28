@@ -13,7 +13,7 @@ const OG_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/og-preview-PB5uoBDhiPJXzuqM8A9kzf.png";
 
 const APP_PREVIEW_IMG =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/phame-app-preview_cbdf33af.png";
+  "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/phame-app-preview-ayDw9YEHzwftWUxzyt9io2.webp";
 
 function FAQSection() {
   const { t } = useTranslation();
