@@ -536,22 +536,6 @@ export default function HomePage() {
           </span>
         </button>
 
-        {/* ── Quick Link: Client Reviews ────────────────────────────────── */}
-        <button
-          onClick={() => navigate('/reviews')}
-          className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3 text-left hover:shadow-md transition-shadow active:scale-95 w-full"
-        >
-          <div
-            className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'oklch(0.95 0.05 80)' }}
-          >
-            <Star size={18} style={{ color: 'oklch(0.65 0.18 80)' }} fill="oklch(0.65 0.18 80)" />
-          </div>
-          <div>
-            <p className="text-sm font-black rr-text-navy">Client Reviews</p>
-            <p className="text-xs rr-text-navy-muted mt-0.5">View &amp; log reviews left by your customers</p>
-          </div>
-        </button>
 
         {/* ── SEO keyword section — visible to crawlers, useful to users ─── */}
         <div className="bg-white rounded-2xl p-4 shadow-sm">

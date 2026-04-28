@@ -10,6 +10,7 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import LanguageFlyout from "@/components/LanguageFlyout";
+import ClientDetailSheet from "@/components/ClientDetailSheet";
 
 function formatDate(date: Date): string {
   try {
@@ -22,6 +23,7 @@ function formatDate(date: Date): string {
 export default function DashboardPage() {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
+  const [selectedRequestId, setSelectedRequestId] = useState<number | null>(null);
   const { data: stats, isLoading } = trpc.requests.stats.useQuery();
   const { data: allRequests, isLoading: listLoading } = trpc.requests.list.useQuery();
   const { data: profile } = trpc.profile.get.useQuery();
@@ -487,14 +489,17 @@ export default function DashboardPage() {
                     >
                       {req.customerName[0].toUpperCase()}
                     </div>
-                    <div>
-                      <p className="text-sm font-bold rr-text-navy">
+                    <button
+                      onClick={() => setSelectedRequestId(req.id)}
+                      className="text-left hover:opacity-80 transition-opacity"
+                    >
+                      <p className="text-sm font-bold rr-text-navy underline decoration-dotted underline-offset-2">
                         {req.customerName}
                       </p>
                       <p className="text-xs rr-text-navy-muted">
                         {req.customerEmail}
                       </p>
-                    </div>
+                    </button>
                   </div>
                   <div className="text-right shrink-0 ml-2 flex flex-col items-end gap-1">
                     <button
@@ -589,6 +594,12 @@ export default function DashboardPage() {
           </button>
         </div>
       )}
+
+      {/* Client detail sheet — opens when tapping a client name */}
+      <ClientDetailSheet
+        requestId={selectedRequestId}
+        onClose={() => setSelectedRequestId(null)}
+      />
     </div>
   );
 }

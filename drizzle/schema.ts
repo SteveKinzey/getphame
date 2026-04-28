@@ -80,6 +80,8 @@ export const customerRequests = mysqlTable("customer_requests", {
   sentAt: timestamp("sentAt").defaultNow().notNull(),
   followUpAt: timestamp("followUpAt"),
   platformId: int("platformId"), // FK to review_platforms.id — which platform was linked in this request
+  emailSubject: varchar("emailSubject", { length: 500 }), // Subject line of the sent email
+  emailBody: text("emailBody"), // HTML body of the sent email (stored for client detail view)
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 export type CustomerRequest = typeof customerRequests.$inferSelect;

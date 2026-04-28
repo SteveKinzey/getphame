@@ -662,6 +662,8 @@ export const appRouter = router({
               method: "email",
               status: "sent",
               platformId: input.platformId ?? null,
+              emailSubject: subject,
+              emailBody: htmlBody,
             });
             sentRequests.push({ customerRequestId: wooReqId, customerName: customer.customerName, customerEmail: customer.customerEmail });
           } catch (err) {
@@ -908,6 +910,8 @@ export const appRouter = router({
               method: "email",
               status: "sent",
               platformId: input.platformId ?? null,
+              emailSubject: subject,
+              emailBody: htmlBody,
             });
 
             // Inject open pixel + click-tracking wrapper
@@ -1315,6 +1319,8 @@ export const appRouter = router({
           method: input.method,
           status: "sent",
           platformId: input.platformId ?? null,
+          emailSubject: subject,
+          emailBody: htmlBody, // store pre-tracking HTML so it's editable
         });
 
         // Inject open pixel + click-tracking wrapper into the email HTML
@@ -1349,6 +1355,90 @@ export const appRouter = router({
         });
 
         return { success: true, requestId: newRequestId };
+      }),
+
+    getById: protectedProcedure
+      .input(z.object({ id: z.number().int() }))
+      .query(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const { and, eq: eqOp } = await import("drizzle-orm");
+        const [row] = await db
+          .select()
+          .from(customerRequests)
+          .where(and(eqOp(customerRequests.userId, ctx.user.id), eqOp(customerRequests.id, input.id)))
+          .limit(1);
+        if (!row) throw new Error("Request not found");
+        return row;
+      }),
+
+    updateEmail: protectedProcedure
+      .input(z.object({
+        id: z.number().int(),
+        emailSubject: z.string().min(1),
+        emailBody: z.string().min(1),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const { and, eq: eqOp } = await import("drizzle-orm");
+        await db
+          .update(customerRequests)
+          .set({ emailSubject: input.emailSubject, emailBody: input.emailBody })
+          .where(and(eqOp(customerRequests.userId, ctx.user.id), eqOp(customerRequests.id, input.id)));
+        return { ok: true };
+      }),
+
+    resend: protectedProcedure
+      .input(z.object({
+        id: z.number().int(),
+        emailSubject: z.string().min(1),
+        emailBody: z.string().min(1),
+        restart: z.boolean().default(false), // true = new campaign row; false = resend same row
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database not available");
+        const { and, eq: eqOp } = await import("drizzle-orm");
+        // Fetch original request to get customer info
+        const [original] = await db
+          .select()
+          .from(customerRequests)
+          .where(and(eqOp(customerRequests.userId, ctx.user.id), eqOp(customerRequests.id, input.id)))
+          .limit(1);
+        if (!original) throw new Error("Request not found");
+        if (!original.customerEmail) throw new Error("No email address on file for this customer");
+
+        const profile = await getBusinessProfile(ctx.user.id);
+        if (!profile) throw new Error("Business profile not found");
+        await enforceFreeLimit(ctx.user.id, profile.tier);
+
+        // Save updated email body on original row
+        await db
+          .update(customerRequests)
+          .set({ emailSubject: input.emailSubject, emailBody: input.emailBody })
+          .where(and(eqOp(customerRequests.userId, ctx.user.id), eqOp(customerRequests.id, input.id)));
+
+        // Build tracking for the resend
+        const baseUrl = "https://phame.app";
+        const trackingToken = encodeTrackingToken(input.id, ctx.user.id, null);
+        const openPixel = buildOpenPixel(trackingToken, baseUrl);
+        const trackedHtml = input.emailBody.replace(/<\/div>\s*$/, `${openPixel}</div>`);
+
+        await sendMailViaSmtp({ userId: ctx.user.id, to: original.customerEmail, subject: input.emailSubject, html: trackedHtml });
+
+        if (input.restart) {
+          // Cancel existing reminders for the original request
+          await cancelRemindersByRequestId(ctx.user.id, input.id);
+          // Reset respondedAt and sentAt on original row
+          await db
+            .update(customerRequests)
+            .set({ respondedAt: null, sentAt: new Date(), status: "sent" })
+            .where(and(eqOp(customerRequests.userId, ctx.user.id), eqOp(customerRequests.id, input.id)));
+        }
+
+        await upsertBusinessProfile({ ...profile, monthlyCount: profile.monthlyCount + 1 });
+        return { ok: true };
       }),
 
     markResponded: protectedProcedure
