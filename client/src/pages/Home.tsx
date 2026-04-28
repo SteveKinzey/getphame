@@ -291,8 +291,8 @@ export default function HomePage() {
               <img
                 src="/manus-storage/phame-logo-transparent_487ff925.png"
                 alt="Phame"
-                className="h-10 w-auto object-contain"
-                style={{ width: '160px', height: '50px', objectFit: 'contain', marginLeft: '-20px' }}
+                className="block"
+                style={{ width: '160px', height: '60px', objectFit: 'cover', marginLeft: '-20px' }}
               />
             </div>
             <div className="flex items-center gap-2">
