@@ -441,3 +441,41 @@ export const notificationPrefs = mysqlTable("notification_prefs", {
 });
 export type NotificationPref = typeof notificationPrefs.$inferSelect;
 export type InsertNotificationPref = typeof notificationPrefs.$inferInsert;
+
+/**
+ * Client reviews — reviews manually logged by the business owner after a customer leaves one.
+ * Stores the reviewer's name, star rating, review text, platform, and date.
+ */
+export const clientReviews = mysqlTable("client_reviews", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(), // FK to users.id (the business owner)
+  reviewerName: varchar("reviewerName", { length: 255 }).notNull(),
+  rating: int("rating").notNull(), // 1–5 stars
+  reviewText: text("reviewText"), // nullable — some reviews are rating-only
+  platform: mysqlEnum("platform", ["google", "yelp", "tripadvisor", "bing", "facebook", "apple", "other"]).notNull().default("google"),
+  reviewedAt: bigint("reviewedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()), // Unix ms
+  // Optional link back to the customer request that triggered this review
+  requestId: int("requestId"),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+});
+export type ClientReview = typeof clientReviews.$inferSelect;
+export type InsertClientReview = typeof clientReviews.$inferInsert;
+
+/**
+ * Public profile pages — each business owner gets a public-facing profile URL.
+ * Slug is auto-generated from businessName but can be customised.
+ */
+export const publicProfiles = mysqlTable("public_profiles", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  slug: varchar("slug", { length: 100 }).notNull().unique(), // URL-safe slug e.g. "steves-plumbing"
+  headline: varchar("headline", { length: 255 }), // short tagline shown on profile
+  bio: text("bio"), // longer description
+  logoUrl: text("logoUrl"), // CDN URL of uploaded logo/photo
+  // Visibility — 1 = public (default), 0 = hidden
+  isPublic: int("isPublic").notNull().default(1),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+});
+export type PublicProfile = typeof publicProfiles.$inferSelect;
+export type InsertPublicProfile = typeof publicProfiles.$inferInsert;

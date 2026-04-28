@@ -1411,3 +1411,7 @@
 - [x] Fix enforceFreeLimit inline in publicApi.ts (not exported from routers.ts)
 - [x] End-to-end test: generated API key, POST to /api/public/send → {"success":true,"requestId":60002}
 - [x] Save checkpoint + deploy
+
+## New Features (Phame Rebrand Session)
+- [x] Client reviews view — screen where owner sees reviews customers have left, with star rating, date, reviewer name, platform badge, and review text
+- [x] Personal/public profile page — public URL (/p/[username] or /profile/[slug]) showing business name, logo, short bio, star rating summary, and CTA button to leave a review on the default platform

@@ -288,6 +288,13 @@
       "when": 1776873229342,
       "tag": "0040_salty_white_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "5",
+      "when": 1777373632985,
+      "tag": "0041_old_red_hulk",
+      "breakpoints": true
     }
   ]
 }

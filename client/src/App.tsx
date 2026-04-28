@@ -37,6 +37,8 @@ import UnsubscribePage from "./pages/Unsubscribe";
 import UpgradePage from "./pages/Upgrade";
 import ChurnSurveyPage from "./pages/ChurnSurvey";
 import CompliancePage from "./pages/Compliance";
+import ClientReviewsPage from "./pages/ClientReviews";
+import { ProfileSettingsPage, PublicProfileView } from "./pages/PublicProfile";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
 import OnboardingWizard from "./components/OnboardingWizard";
@@ -114,6 +116,9 @@ function AppShell() {
   const path = window.location.pathname;
   const globalLangFlyout = null;
 
+  // Public profile view — accessible without login
+  if (path.startsWith("/p/")) return <div className="mobile-screen"><PublicProfileView /></div>;
+
   if (path === "/privacy-policy") return <div className="mobile-screen"><PrivacyPolicyPage />{globalLangFlyout}</div>;
   if (path === "/terms-of-service") return <div className="mobile-screen"><TermsOfServicePage />{globalLangFlyout}</div>;
   if (path === "/payment-success") return <div className="mobile-screen"><PaymentSuccessPage />{globalLangFlyout}</div>;
@@ -164,6 +169,9 @@ function AppShell() {
         <Route path="/admin/revenue" component={AdminRevenuePage} />
         <Route path="/changelog" component={ChangelogPage} />
         <Route path="/compliance" component={CompliancePage} />
+        <Route path="/reviews" component={ClientReviewsPage} />
+        <Route path="/profile" component={ProfileSettingsPage} />
+        <Route path="/p/:slug" component={PublicProfileView} />
         <Route component={HomePage} />
       </Switch>
       </PageTransition>
