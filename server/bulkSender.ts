@@ -22,7 +22,7 @@ export type BulkSenderProvider = "sendgrid" | "mailgun" | "postmark";
 // ── DB helpers ────────────────────────────────────────────────────────────────
 
 export async function getBulkSenderCreds(userId: number) {
-  const db = getDb();
+  const db = await getDb();
   const [row] = await db
     .select()
     .from(bulkSenderCredentials)
@@ -131,7 +131,7 @@ export const bulkSenderRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       // Fetch tier from business profile
-      const db = getDb();
+      const db = await getDb();
       const { businessProfiles } = await import("../drizzle/schema");
       const [profile] = await db
         .select({ tier: businessProfiles.tier })
@@ -191,7 +191,7 @@ export const bulkSenderRouter = router({
 
   /** Disconnect bulk sender */
   disconnect: protectedProcedure.mutation(async ({ ctx }) => {
-    const db = getDb();
+    const db = await getDb();
     await db
       .delete(bulkSenderCredentials)
       .where(eq(bulkSenderCredentials.userId, ctx.user.id));
