@@ -25,7 +25,7 @@ export default function BottomNav() {
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 bottom-nav rr-bg-navy"
-      style={{ borderTop: "1px solid oklch(0.30 0.08 260)", maxWidth: "480px", margin: "0 auto" }}
+      style={{ borderTop: "1px solid oklch(0.30 0.08 260)" }}
     >
       <div className="flex items-stretch">
         {NAV_ITEMS.map(({ path, label, Icon }) => {
