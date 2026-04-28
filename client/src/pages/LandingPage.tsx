@@ -12,8 +12,7 @@ const HERO_IMG =
 const OG_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/og-preview-PB5uoBDhiPJXzuqM8A9kzf.png";
 
-const APP_PREVIEW_IMG =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/phame-app-preview-ayDw9YEHzwftWUxzyt9io2.webp";
+const APP_PREVIEW_IMG = "/manus-storage/phame-app-preview-v2_62bb6b85.png";
 
 function FAQSection() {
   const { t } = useTranslation();
