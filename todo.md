@@ -1501,3 +1501,10 @@
 - [x] Share button: generate referral URL (getphame.app?ref=CODE) and copy/share it
 - [x] Add referral stats UI on home screen (X friends joined, Y months earned)
 - [x] Write vitest tests for referral code generation and reward logic (covered by existing 55-test suite passing)
+
+## UI Fixes (Session #72b)
+
+- [x] Replace landing page dashboard image with the real app screenshot (Hey Steve home screen)
+- [x] Fix bottom nav: even spacing across all 4 items (Home, Send, Dashboard, Settings)
+- [x] Add copyright notice below bottom nav: "Copyright © 2026 SK America" — small, centered, blue text on gold ribbon
+- [x] Fix landing page footer: even spacing across all 4 links (Privacy Policy, Terms, What's New, Compliance)

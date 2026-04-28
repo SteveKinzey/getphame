@@ -28,7 +28,8 @@ export default function BottomNav() {
       className="fixed bottom-0 left-0 right-0 z-50 bottom-nav rr-bg-navy"
       style={{ borderTop: "1px solid oklch(0.30 0.08 260)" }}
     >
-      <div className="flex items-stretch">
+      {/* Nav items row — 5 equal columns (4 nav + 1 theme toggle) */}
+      <div className="grid gap-0" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
         {NAV_ITEMS.map(({ path, label, Icon }) => {
           const isActive = location === path || (path !== '/' && location.startsWith(path));
           return (
@@ -38,7 +39,7 @@ export default function BottomNav() {
                 buttonPressHaptic();
                 navigate(path);
               }}
-              className="nav-item flex-1 flex flex-col items-center justify-center py-3 gap-1 relative overflow-hidden group"
+              className="nav-item flex flex-col items-center justify-center py-3 gap-1 relative overflow-hidden group"
               style={{ minHeight: '60px' }}
               aria-label={label}
               aria-current={isActive ? 'page' : undefined}
@@ -63,7 +64,6 @@ export default function BottomNav() {
                     ? 'oklch(0.80 0.18 80 / 0.15)'
                     : 'transparent',
                   transform: isActive ? 'scale(1.08)' : undefined,
-                  // Gold glow on hover via box-shadow applied through CSS class below
                 }}
               >
                 <Icon
@@ -94,13 +94,13 @@ export default function BottomNav() {
           );
         })}
 
-        {/* Dark mode toggle */}
+        {/* Dark mode toggle — same grid cell width as nav items */}
         <button
           onClick={() => {
             buttonPressHaptic();
             toggleTheme?.();
           }}
-          className="flex-1 flex flex-col items-center justify-center py-3 gap-1 group"
+          className="flex flex-col items-center justify-center py-3 gap-1 group"
           style={{ minHeight: '60px' }}
           aria-label={isDark ? t('theme.switchToLight') : t('theme.switchToDark')}
         >
@@ -136,35 +136,51 @@ export default function BottomNav() {
         </button>
       </div>
 
-      {/* ── Legal footer strip ─────────────────────────────────────────── */}
-      <div className="flex items-center justify-center gap-4 py-1.5 rr-bg-gold">
-        <button
-          onClick={() => navigate('/privacy-policy')}
-          className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
+      {/* ── Gold ribbon footer ─────────────────────────────────────────── */}
+      <div className="rr-bg-gold px-4 pt-1.5 pb-1">
+        {/* Legal links — evenly spaced */}
+        <div className="flex items-center justify-evenly">
+          <button
+            onClick={() => navigate('/privacy-policy')}
+            className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
+          >
+            {t('footer.privacyPolicy')}
+          </button>
+          <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
+          <button
+            onClick={() => navigate('/terms-of-service')}
+            className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
+          >
+            {t('footer.termsOfService')}
+          </button>
+          <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
+          <button
+            onClick={() => navigate('/changelog')}
+            className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
+          >
+            {t('footer.whatsNew')}
+          </button>
+          <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
+          <button
+            onClick={() => navigate('/compliance')}
+            className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
+          >
+            {t('footer.compliance')}
+          </button>
+        </div>
+
+        {/* Copyright notice */}
+        <p
+          className="text-center mt-0.5 pb-0.5"
+          style={{
+            fontSize: '9px',
+            color: 'oklch(0.30 0.12 260)',
+            fontFamily: "'Nunito', sans-serif",
+            letterSpacing: '0.02em',
+          }}
         >
-          {t('footer.privacyPolicy')}
-        </button>
-        <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
-        <button
-          onClick={() => navigate('/terms-of-service')}
-          className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
-        >
-          {t('footer.termsOfService')}
-        </button>
-        <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
-        <button
-          onClick={() => navigate('/changelog')}
-          className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
-        >
-          {t('footer.whatsNew')}
-        </button>
-        <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
-        <button
-          onClick={() => navigate('/compliance')}
-          className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
-        >
-          {t('footer.compliance')}
-        </button>
+          Copyright &copy; 2026 SK America
+        </p>
       </div>
     </nav>
   );
