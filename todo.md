@@ -1,4 +1,4 @@
-# ReviewLink TODO
+# Phame TODO
 
 ## Core App
 - [x] Mobile PWA scaffold (Vite + React + TailwindCSS)
@@ -60,7 +60,7 @@
 - [x] Route registered: /woo-customers
 
 ## Branding
-- [x] Renamed ReviewRocket → ReviewLink throughout codebase
+- [x] Renamed ReviewRocket → Phame throughout codebase
 - [x] localStorage key updated (review-rocket-data → review-link-data)
 - [x] package.json name updated
 
@@ -85,7 +85,7 @@
 - [x] Wire Send Request form to use user's default email template (subject + body pre-filled)
 - [x] Add "Send reminder now" override button on pending reminders
 - [x] Add analytics card to Dashboard showing request volume stats
-- [x] Debug reviewlink.app custom domain not loading (Cloudflare Error 1000 — DNS A records point to Cloudflare IPs)
+- [x] Debug phame.app custom domain not loading (Cloudflare Error 1000 — DNS A records point to Cloudflare IPs)
 
 ## CSV Client Import
 - [x] Server: contacts.importCSV procedure (parse rows, deduplicate by email, bulk-save to saved_contacts)
@@ -112,7 +112,7 @@
 - [x] Switch heading font from Syne to Poppins (Google Fonts import + CSS variable + all TSX files)
 
 ## SEO Fixes — Home Page (/)
-- [x] Page title: set to 45 chars — "ReviewLink — Send Google Review Requests Fast" (index.html + useEffect)
+- [x] Page title: set to 45 chars — "Phame — Send Google Review Requests Fast" (index.html + useEffect)
 - [x] Add H2 heading with keywords to the home page content
 - [x] Add keyword-rich visible text to home page (review requests, Google reviews, etc.)
 - [x] Set meta description in index.html (already present, verified)
@@ -174,7 +174,7 @@
 ## Sitemap & SEO
 - [x] Add dynamic /sitemap.xml server endpoint with all public routes
 - [x] Add /robots.txt pointing to sitemap
-- [x] Verify sitemap returns valid XML at reviewlink.app/sitemap.xml
+- [x] Verify sitemap returns valid XML at phame.app/sitemap.xml
 
 ## Zoho Books Integration
 - [x] Store ZOHO_CLIENT_ID, ZOHO_CLIENT_SECRET, ZOHO_ORG_ID, ZOHO_REFRESH_TOKEN as secrets
@@ -262,7 +262,7 @@
 
 - [x] Add sendWelcomeEmail(userId) helper in server/smtp.ts — sends to user's own SMTP address
 - [x] Wire sendWelcomeEmail into smtp.connect procedure (fire after successful connection test)
-- [x] Welcome email HTML: branded ReviewLink template, confirms connection works, shows sample review request preview, links to /send
+- [x] Welcome email HTML: branded Phame template, confirms connection works, shows sample review request preview, links to /send
 - [x] OnboardingWizard Step 1 UI: show "Check your inbox — we sent a test email" confirmation after SMTP connected
 - [x] Add vitest test for sendWelcomeEmail helper
 
@@ -409,7 +409,7 @@
 ## Onboarding Guide Modal
 
 - [x] Build OnboardingGuide.tsx — full-screen modal with paginated step-by-step setup directions
-- [x] Step 1: Welcome — what ReviewLink does, what you'll set up
+- [x] Step 1: Welcome — what Phame does, what you'll set up
 - [x] Step 2: Connect Your Email — SMTP setup directions with provider-specific notes
 - [x] Step 3: Add a Review Platform — how to find and add your Google/Yelp/etc. review link
 - [x] Step 4: Saved Contacts — how to import CSV, sync Stripe/WooCommerce, add manually
@@ -498,7 +498,7 @@
 
 - [x] Add share button to Home screen header area
 - [x] On click: use Web Share API if available, fallback to copy-to-clipboard
-- [x] Pre-filled message: "I use ReviewLink to collect Google reviews — it's free: reviewlink.app"
+- [x] Pre-filled message: "I use Phame to collect Google reviews — it's free: phame.app"
 - [x] Show toast confirmation after share or copy
 
 ## Monthly Review Goal Tracker
@@ -533,7 +533,7 @@
 
 ## Pre-Launch Fixes
 
-- [x] Set APP_BASE_URL=https://reviewlink.app as a project secret; harden reminder tracking fallback to use it
+- [x] Set APP_BASE_URL=https://phame.app as a project secret; harden reminder tracking fallback to use it
 - [x] Add physical mailing address to Privacy Policy and Terms of Service
 - [x] Add CAN-SPAM / user-responsibility clause to Terms of Service
 
@@ -552,7 +552,7 @@
 - [x] Reduce body parser limit from 50 MB to 5 MB
 - [x] Remove all "10 sends/month" free-tier cap UI from Dashboard and Home
 - [x] Remove all "Upgrade to Pro" / upgrade CTA references from the app
-- [x] Add support@reviewlink.app to landing page footer
+- [x] Add support@phame.app to landing page footer
 
 ## Legal Pages
 
@@ -570,7 +570,7 @@
 
 ## Referral Nudge
 
-- [x] Add "Share ReviewLink" referral card to Home screen with Web Share API + clipboard fallback
+- [x] Add "Share Phame" referral card to Home screen with Web Share API + clipboard fallback
 
 ## UI / Analytics / Accessibility Sprint
 
@@ -608,7 +608,7 @@
 ## WooCommerce + Settings Enhancements
 
 - [x] Add CSV export button to WooCommerce sync history modal
-- [x] Add Send Feedback form to Settings page (one-field, emails support@reviewlink.app)
+- [x] Add Send Feedback form to Settings page (one-field, emails support@phame.app)
 - [x] Add visual loading indicator (spinner + progress bar) to Sync Now button in sync history modal
 
 ## Bug Fixes
@@ -755,8 +755,8 @@
 
 ## Competitor Comparison on Landing Page
 - [x] Add competitor pricing comparison section to LandingPage.tsx (visible to unauthenticated users)
-- [x] Include Birdeye, Podium, NiceJob, Grade.us, ReviewTrackers vs ReviewLink in a styled table
-- [x] Highlight ReviewLink's price advantage and lifetime option with checkmarks/badges
+- [x] Include Birdeye, Podium, NiceJob, Grade.us, ReviewTrackers vs Phame in a styled table
+- [x] Highlight Phame's price advantage and lifetime option with checkmarks/badges
 - [x] Match landing page navy/gold design system
 
 ## Mobile Width & Bottom Margin Audit (Full Pass)
@@ -806,7 +806,7 @@
 ## Navigation Fixes (Session — Apr 21 2026)
 
 - [x] Fix back button on What's New page and all other pages that have a back button
-- [x] Make ReviewLink logo tap navigate to home screen on all pages
+- [x] Make Phame logo tap navigate to home screen on all pages
 
 ## New Features (Session — Apr 21 2026 #2)
 
@@ -818,12 +818,12 @@
 
 - [x] Settings Billing: add retention confirmation dialog before Manage Billing opens Stripe Portal
 - [x] Send page: add post-send milestone rating nudge at 10th and 25th request sent
-- [x] Email sending: append "Powered by ReviewLink" footer to outgoing emails for free-tier users (Pro/Lifetime get clean footer automatically)
+- [x] Email sending: append "Powered by Phame" footer to outgoing emails for free-tier users (Pro/Lifetime get clean footer automatically)
 
 ## Capacitor / Native App (Session — Apr 21 2026)
 
 - [x] Install Capacitor core, CLI, iOS platform, and @capacitor-community/contacts plugin
-- [x] Create capacitor.config.ts with bundle ID com.reviewlink.app pointing to reviewlink.app
+- [x] Create capacitor.config.ts with bundle ID com.phame.app pointing to phame.app
 - [x] Add cap:sync and cap:build scripts to package.json
 - [x] Build multi-select ContactPickerModal (search, checkboxes, Select All, Import CTA) wired into Send page and ImportContacts page
 - [x] Write Xcode + TestFlight step-by-step instructions document
@@ -843,7 +843,7 @@
 
 - [x] Churn recovery email: sendChurnRecoveryEmail() in smtp.ts, wired into customer.subscription.deleted webhook when status=canceled
 - [x] Admin user search: admin.searchUsers procedure + search input with debounce on AdminDashboard.tsx
-- [x] Powered-by footer upgrade upsell: replace plain "Powered by ReviewLink" link with "Powered by ReviewLink — Remove branding ↗" that deep-links to /upgrade?utm_source=powered_by_footer
+- [x] Powered-by footer upgrade upsell: replace plain "Powered by Phame" link with "Powered by Phame — Remove branding ↗" that deep-links to /upgrade?utm_source=powered_by_footer
 
 ## New Features (Session — Apr 21 2026 #4)
 
@@ -1059,15 +1059,15 @@
 - [x] Final TypeScript check: clean (0 errors). Tests: 39/43 pass (4 pre-existing smtpWeeklyDigest mock failures)
 
 ## Session #29 — www → apex redirect (Apr 21 2026)
-- [x] Add Express middleware: 301 redirect www.reviewlink.app → reviewlink.app
+- [x] Add Express middleware: 301 redirect www.phame.app → phame.app
 
 ## Session #30 — Skill, Canonical Tag, Post-Send Reminder Prompt, Stripe Verify (Apr 21 2026)
 - [x] Create /skills/www-to-apex-redirect/SKILL.md documenting the Express 301 redirect pattern
-- [x] Add <link rel="canonical" href="https://reviewlink.app/"> to index.html
+- [x] Add <link rel="canonical" href="https://phame.app/"> to index.html
 - [x] Build post-send reminder prompt: after successful send, show one-tap card "Schedule a 3-day follow-up?" on Send page
 - [x] Add tRPC check: only show prompt if followUpEnabled is false (don't show if reminders already auto-scheduled)
 - [x] Update requests.send to return requestId alongside success (required for reminder scheduling)
-- [x] Stripe webhook: ACTION REQUIRED — update Stripe Dashboard webhook URL to https://reviewlink.app/api/stripe/webhook
+- [x] Stripe webhook: ACTION REQUIRED — update Stripe Dashboard webhook URL to https://phame.app/api/stripe/webhook
 - [x] TypeScript: 0 errors. Tests: 39/43 pass (4 pre-existing smtpWeeklyDigest mock failures)
 
 ## Session #31 — Payment Flow Audit & Fix (Apr 21 2026)
@@ -1152,14 +1152,14 @@
 
 ## Session #43 — Zoho Removal Skill + 3 Follow-ups (Apr 21 2026)
 - [x] Create reusable skill: zoho-removal (documents the full Zoho Books cleanup pattern)
-- [x] App already published — deployment confirmed live at reviewlink.app
+- [x] App already published — deployment confirmed live at phame.app
 - [x] Fixed all 4 smtpWeeklyDigest test failures: updated mock to support .where() chaining, corrected assertions to match actual function behaviour (weekly pulse always fires)
 - [x] Removed zohoCustomerId column from drizzle/schema.ts + ran pnpm db:push (migration 0038)
 - [x] Removed zohoTokens table from drizzle/schema.ts + ran pnpm db:push (migration 0039)
 - [x] Tests: 39/39 passing
 
 ## Session #44 — Publish + PromptPay Tracking + Test (Apr 21 2026)
-- [x] Confirmed deployment live at reviewlink.app (auto-deployed)
+- [x] Confirmed deployment live at phame.app (auto-deployed)
 - [x] PromptPay reveal click tracked via trackPageView (page=/upgrade/promptpay-reveal, utmCampaign=plan:X)
 - [x] 11 vitest tests for createThbCheckoutSession: price IDs per plan, promptpay in payment_method_types, thb currency, customer_email prefill, stripeCustomerId override, missing env var guard for all 3 plans
 - [x] Refactored getThbPriceIds() to read env vars at call time (not module load) for testability
@@ -1177,8 +1177,8 @@
 - [x] Create pwa-manifest skill documenting full production PWA manifest spec (shortcuts, screenshots, display_override, maskable icons, service worker, installability checklist, common pitfalls)
 - [x] Add PromptPay reveal KPI card to AdminRevenue page (Total Reveals, Last 30 Days, Reveal→Paid conversion rate)
 - [x] Add promptpayRevealTotal / promptpayRevealLast30 / promptpayConversionRate to admin.revenue procedure
-- [x] PWA mobile audit: manifest.json valid on deployed site (reviewlink.app/manifest.json), all Apple meta tags present, service worker registered via AppContext, icons 192+512 both any+maskable, shortcuts ×3, screenshots ×1 narrow — all installability criteria met
-- [x] Research Zoho Payments API: US+India only, no PromptPay, no Thailand, subscriptions require Zoho Billing (separate product) — not viable as Stripe replacement for ReviewLink's Thai market
+- [x] PWA mobile audit: manifest.json valid on deployed site (phame.app/manifest.json), all Apple meta tags present, service worker registered via AppContext, icons 192+512 both any+maskable, shortcuts ×3, screenshots ×1 narrow — all installability criteria met
+- [x] Research Zoho Payments API: US+India only, no PromptPay, no Thailand, subscriptions require Zoho Billing (separate product) — not viable as Stripe replacement for Phame's Thai market
 - [x] TypeScript: 0 errors | Tests: 50/50 passing
 
 ## Session #47 — Real PWA Screenshot in manifest.json (Apr 21 2026)
@@ -1190,26 +1190,26 @@
 - [x] TypeScript: 0 errors | Tests: 50/50 passing
 
 ## Session #48 — Apple Sign In Activation + Google OAuth Fix (Apr 21 2026)
-- [x] Fix Google Sign In redirect_uri_mismatch — added reviewlink.app + staging callback URIs to Google Cloud Console
+- [x] Fix Google Sign In redirect_uri_mismatch — added phame.app + staging callback URIs to Google Cloud Console
 - [x] Add APPLE_CLIENT_ID, APPLE_TEAM_ID, APPLE_KEY_ID, APPLE_PRIVATE_KEY secrets (all 4 valid, JWT signs successfully, 55/55 tests passing)
-- [x] Fix Apple Sign In invalid_web_redirect_url — buildRedirectUri now uses APP_BASE_URL env var (https://reviewlink.app) instead of dynamic host detection
-- [x] Verify Apple Sign In flow works on reviewlink.app/onboarding — button visible, redirects to Apple consent screen correctly
+- [x] Fix Apple Sign In invalid_web_redirect_url — buildRedirectUri now uses APP_BASE_URL env var (https://phame.app) instead of dynamic host detection
+- [x] Verify Apple Sign In flow works on phame.app/onboarding — button visible, redirects to Apple consent screen correctly
 - [x] Add Apple server-to-server notification endpoint (POST /api/auth/apple/notifications) — handles account-delete + consent-revoked events, anonymises user data
 - [x] Add anonymiseUserByOpenId() helper to db.ts
-- [x] Register email sources for Apple Private Email Relay — reviewlink.app already registered and SPF verified (green checkmark) in Apple Developer Portal. No further DNS action needed.
+- [x] Register email sources for Apple Private Email Relay — phame.app already registered and SPF verified (green checkmark) in Apple Developer Portal. No further DNS action needed.
 
 ## Session #49 — Nav Overlap Fix + Auth Testing (Apr 21 2026)
 - [x] Fix EN|TH language toggle overlapping Sign In button on LandingPage nav (changed px-5 → pl-5 pr-16)
-- [x] Verify Google Sign In works end-to-end on reviewlink.app — OAuth flow confirmed: redirects to accounts.google.com with correct client_id, redirect_uri, and scope
-- [x] Verify Apple Sign In works end-to-end on reviewlink.app — button visible and routes to /api/auth/apple correctly; full flow requires Apple ID device test
+- [x] Verify Google Sign In works end-to-end on phame.app — OAuth flow confirmed: redirects to accounts.google.com with correct client_id, redirect_uri, and scope
+- [x] Verify Apple Sign In works end-to-end on phame.app — button visible and routes to /api/auth/apple correctly; full flow requires Apple ID device test
 
 ## Session #50 — Google + Apple Sign In Fixes (Apr 22 2026)
 - [x] Fix Google Sign In redirect_uri_mismatch — use APP_BASE_URL in buildRedirectUri() instead of x-forwarded-host
-- [x] Fix Apple Sign In 2FA loop — investigated: APP_BASE_URL=https://reviewlink.app is set, response_mode=form_post is correct, AppleAuthLanding handles ITP cookie issue. 2FA prompt is Apple's standard security behavior for new browser sessions, not a code bug. No code changes needed.
+- [x] Fix Apple Sign In 2FA loop — investigated: APP_BASE_URL=https://phame.app is set, response_mode=form_post is correct, AppleAuthLanding handles ITP cookie issue. 2FA prompt is Apple's standard security behavior for new browser sessions, not a code bug. No code changes needed.
 - [x] Move EN|TH language toggle from floating position into header nav (Home, LandingPage, Onboarding)
 - [x] Save checkpoint + deploy after both fixes confirmed
 - [x] Suppress Google Translate auto-translation popup — add translate="no" and x-google-translate-customization meta to index.html
-- [x] Apple Developer Portal: add reviewlink.app domain + https://reviewlink.app/api/auth/apple/callback return URL to Services ID com.reviewlink.siwa Website URLs (currently empty — root cause of Apple Sign In failure)
+- [x] Apple Developer Portal: add phame.app domain + https://phame.app/api/auth/apple/callback return URL to Services ID com.reviewlink.siwa Website URLs (currently empty — root cause of Apple Sign In failure)
 
 ## Session #51 — Platform Icons + Apple Maps (Apr 22 2026)
 - [x] Replace all platform emoji icons with PlatformIcon SVG component (Settings, SendRequest, SavedContacts)
@@ -1223,7 +1223,7 @@
 - [x] Save checkpoint + deploy (combined with Session #53)
 
 ## Session #52 — SEO + www Redirect (Apr 22 2026)
-- [x] Add 301 permanent redirect from www.reviewlink.app to reviewlink.app in Express server (already present from Session #48)
+- [x] Add 301 permanent redirect from www.phame.app to phame.app in Express server (already present from Session #48)
 - [x] Lazy-load Google Translate only on TH/CN click (removes injected tracking pixel images that cause 4 SEO alt text flags)
 - [x] Save checkpoint + deploy (combined with Session #53)
 
@@ -1276,9 +1276,9 @@
 - [x] Dashboard screen: activity feed with search + All/Pending/Reviewed filter + mark-reviewed toggle
 - [x] Settings screen: business profile edit + SMTP status + plan tier + sign out
 - [x] Bottom tab navigation (Home / Send / Dashboard / Settings) with navy/gold design
-- [x] Configure app.json + app.config.ts (bundle ID: app.reviewlink, name: ReviewLink)
+- [x] Configure app.json + app.config.ts (bundle ID: app.reviewlink, name: Phame)
 - [x] Configure eas.json for iOS (TestFlight) and Android (APK) build profiles + production (App Store + Play Store)
-- [x] API URL switching via EXPO_PUBLIC_API_URL env var (preview=staging, production=reviewlink.app)
+- [x] API URL switching via EXPO_PUBLIC_API_URL env var (preview=staging, production=phame.app)
 - [x] Verify build compiles without errors (expo export) — requires EAS account + Apple/Google credentials (deferred — requires external credentials)
 - [x] Write comprehensive README with setup, EAS build, and App Store submission instructions
 - [x] Save checkpoint + deliver EAS build instructions to user
@@ -1339,7 +1339,7 @@
 ## Session #61 — PWA Service Worker Fix (Apr 23 2026)
 - [x] Fix: SW registration was orphaned in unused AppProvider — moved to main.tsx so it fires on every page load
 - [x] Verify SW registers on preview URL (sw_registrations: 1, scope: /, active: activated, cache: review-rocket-v2)
-- [x] Publish checkpoint so SW fix goes live on reviewlink.app
+- [x] Publish checkpoint so SW fix goes live on phame.app
 
 ## Session #62 — Italian Language Support (Apr 23 2026)
 - [x] Create /locales/it/translation.json with full Italian translation (91 keys)

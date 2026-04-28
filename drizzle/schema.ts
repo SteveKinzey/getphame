@@ -30,7 +30,7 @@ export const gmailTokens = mysqlTable("gmail_tokens", {
 export type GmailToken = typeof gmailTokens.$inferSelect;
 export type InsertGmailToken = typeof gmailTokens.$inferInsert;
 
-/** Business profile for each ReviewLink user */
+/** Business profile for each Phame user */
 export const businessProfiles = mysqlTable("business_profiles", {
   id: int("id").autoincrement().primaryKey(),
   userId: int("userId").notNull().unique(),
@@ -120,7 +120,7 @@ export type InsertWooCredentials = typeof wooCredentials.$inferInsert;
 /** Customers imported from WooCommerce orders */
 export const wooCustomers = mysqlTable("woo_customers", {
   id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull(), // ReviewLink user (business owner)
+  userId: int("userId").notNull(), // Phame user (business owner)
   wooOrderId: varchar("wooOrderId", { length: 64 }).notNull(),
   customerName: varchar("customerName", { length: 255 }).notNull(),
   customerEmail: varchar("customerEmail", { length: 320 }).notNull(),

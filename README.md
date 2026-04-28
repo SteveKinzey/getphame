@@ -1,14 +1,14 @@
-# ReviewLink — Get More Reviews on Autopilot
+# Phame — Get More Reviews on Autopilot
 
-**ReviewLink** helps local businesses collect more Google, Yelp, and TripAdvisor reviews by sending personalised review-request emails directly from your own email account. Customers receive a message that looks like it came from you — not a bulk mailer — which means higher open rates and more genuine reviews.
+**Phame** helps local businesses collect more Google, Yelp, and TripAdvisor reviews by sending personalised review-request emails directly from your own email account. Customers receive a message that looks like it came from you — not a bulk mailer — which means higher open rates and more genuine reviews.
 
-🌐 **Live app:** [reviewlink.app](https://reviewlink.app)
+🌐 **Live app:** [phame.app](https://phame.app)
 
 ---
 
-## What ReviewLink Does
+## What Phame Does
 
-ReviewLink connects to your existing email account (Gmail, Outlook, Yahoo, or any business email) and sends personalised review-request emails to your customers. You control the message, the timing, and which review platform you want to direct customers to. The app tracks who opened the email and who clicked the review link, and automatically sends up to two follow-up reminders to customers who haven't responded yet.
+Phame connects to your existing email account (Gmail, Outlook, Yahoo, or any business email) and sends personalised review-request emails to your customers. You control the message, the timing, and which review platform you want to direct customers to. The app tracks who opened the email and who clicked the review link, and automatically sends up to two follow-up reminders to customers who haven't responded yet.
 
 ---
 
@@ -16,11 +16,11 @@ ReviewLink connects to your existing email account (Gmail, Outlook, Yahoo, or an
 
 ### Step 1 — Create your account
 
-Go to [reviewlink.app](https://reviewlink.app) and tap **Get Started Free**. Sign in with your Google or Apple account. No credit card required.
+Go to [phame.app](https://phame.app) and tap **Get Started Free**. Sign in with your Google or Apple account. No credit card required.
 
 ### Step 2 — Connect your email
 
-Go to **Settings → Email Connection** and enter your SMTP credentials. ReviewLink sends emails from your own address, so customers see your name in the "From" field.
+Go to **Settings → Email Connection** and enter your SMTP credentials. Phame sends emails from your own address, so customers see your name in the "From" field.
 
 | Provider | What you need |
 |---|---|
@@ -58,13 +58,13 @@ You have four ways to add contacts:
 
 ### Step 5 — Send review requests
 
-Go to **Send** and enter a customer's name and email, or go to **Saved Contacts**, select one or more customers, and tap **Send Review Request**. ReviewLink sends the email from your connected account and starts tracking opens and clicks.
+Go to **Send** and enter a customer's name and email, or go to **Saved Contacts**, select one or more customers, and tap **Send Review Request**. Phame sends the email from your connected account and starts tracking opens and clicks.
 
 ---
 
 ## Automatic Follow-ups
 
-ReviewLink sends up to two follow-up emails per customer automatically:
+Phame sends up to two follow-up emails per customer automatically:
 
 - **Day 3** — a gentle reminder if the customer hasn't clicked the review link yet
 - **Day 10** — a final nudge if still no click
@@ -103,7 +103,7 @@ Connect your WooCommerce store to automatically pull in customers from completed
 Generate an API key in **Settings → API Keys** and use the provided snippet to capture contacts from any website form, landing page, or checkout flow. The endpoint accepts `first_name`, `last_name`, `email`, `phone`, and `notes`.
 
 ```
-POST https://reviewlink.app/api/public/contacts
+POST https://phame.app/api/public/contacts
 Authorization: Bearer YOUR_API_KEY
 Content-Type: application/json
 
@@ -118,35 +118,35 @@ Content-Type: application/json
 
 ### Outbound Webhooks
 
-Go to **Settings → Webhooks** to configure a URL that ReviewLink will call whenever a new contact is created. Use this to push new contacts into a CRM, trigger a Zapier workflow, or post a Slack notification. You can filter by event type (`contact.created`, `contact.updated`, or both) and test the webhook from the Settings page.
+Go to **Settings → Webhooks** to configure a URL that Phame will call whenever a new contact is created. Use this to push new contacts into a CRM, trigger a Zapier workflow, or post a Slack notification. You can filter by event type (`contact.created`, `contact.updated`, or both) and test the webhook from the Settings page.
 
 ---
 
 ## Privacy & Unsubscribes
 
-Every review-request email includes a one-click unsubscribe link. Customers who unsubscribe are immediately and permanently opted out — they will not receive any further emails from ReviewLink, including reminders. You can see opted-out contacts in **Saved Contacts** (they are marked and cannot be selected for sending).
+Every review-request email includes a one-click unsubscribe link. Customers who unsubscribe are immediately and permanently opted out — they will not receive any further emails from Phame, including reminders. You can see opted-out contacts in **Saved Contacts** (they are marked and cannot be selected for sending).
 
-ReviewLink does not share your customer data with third parties. Your SMTP credentials are encrypted at rest using AES-256-GCM.
+Phame does not share your customer data with third parties. Your SMTP credentials are encrypted at rest using AES-256-GCM.
 
 ---
 
 ## Installing the App on Your Phone
 
-ReviewLink is a Progressive Web App (PWA) — you can install it on your home screen for a native app experience.
+Phame is a Progressive Web App (PWA) — you can install it on your home screen for a native app experience.
 
-- **iPhone / iPad** — Open [reviewlink.app](https://reviewlink.app) in Safari, tap the Share button, and select **Add to Home Screen**.
-- **Android** — Open [reviewlink.app](https://reviewlink.app) in Chrome, tap the three-dot menu, and select **Add to Home Screen** (or **Install App** if prompted automatically).
+- **iPhone / iPad** — Open [phame.app](https://phame.app) in Safari, tap the Share button, and select **Add to Home Screen**.
+- **Android** — Open [phame.app](https://phame.app) in Chrome, tap the three-dot menu, and select **Add to Home Screen** (or **Install App** if prompted automatically).
 - **From the app** — Go to **Settings** and tap **Install App on Your Phone** to re-trigger the install prompt.
 
 ---
 
 ## Frequently Asked Questions
 
-**Will my customers know I'm using ReviewLink?**
-No. Emails are sent from your own email address using your own SMTP credentials. The only branding is a small "Powered by ReviewLink" footer link, which can be removed on the Pro plan.
+**Will my customers know I'm using Phame?**
+No. Emails are sent from your own email address using your own SMTP credentials. The only branding is a small "Powered by Phame" footer link, which can be removed on the Pro plan.
 
 **What happens if a customer already left a review?**
-ReviewLink tracks whether a customer clicked the review link. If they clicked, no further reminders are sent. If they left a review without clicking the link (e.g. found you directly on Google), you can manually mark them as reviewed in Saved Contacts.
+Phame tracks whether a customer clicked the review link. If they clicked, no further reminders are sent. If they left a review without clicking the link (e.g. found you directly on Google), you can manually mark them as reviewed in Saved Contacts.
 
 **Can I customise the email template?**
 Yes. Go to **Settings → Email Templates** to edit the subject line, body text, and call-to-action button. You can use `{{first_name}}`, `{{business_name}}`, and `{{review_link}}` as merge tags.
@@ -161,4 +161,4 @@ Double-check that you're using an App Password (not your regular login password)
 
 ## Support
 
-If you need help, open the in-app **Setup Guide** (tap the book icon on the Home screen) for step-by-step instructions. For further assistance, contact us at [support@reviewlink.app](mailto:support@reviewlink.app).
+If you need help, open the in-app **Setup Guide** (tap the book icon on the Home screen) for step-by-step instructions. For further assistance, contact us at [support@phame.app](mailto:support@phame.app).

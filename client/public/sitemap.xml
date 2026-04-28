@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://reviewlink.app/</loc>
+    <loc>https://phame.app/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://reviewlink.app/privacy-policy</loc>
+    <loc>https://phame.app/privacy-policy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://reviewlink.app/terms-of-service</loc>
+    <loc>https://phame.app/terms-of-service</loc>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
-    <loc>https://reviewlink.app/compliance</loc>
+    <loc>https://phame.app/compliance</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://reviewlink.app/changelog</loc>
+    <loc>https://phame.app/changelog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.4</priority>
   </url>

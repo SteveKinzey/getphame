@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">ReviewLink</string>
-    <string name="title_activity_main">ReviewLink</string>
-    <string name="package_name">com.reviewlink.app</string>
-    <string name="custom_url_scheme">com.reviewlink.app</string>
+    <string name="app_name">Phame</string>
+    <string name="title_activity_main">Phame</string>
+    <string name="package_name">com.phame.app</string>
+    <string name="custom_url_scheme">com.phame.app</string>
 </resources>

@@ -1,18 +1,18 @@
 {
   "seo": {
-    "title": "ReviewLink — Get More 5-Star Google Reviews",
+    "title": "Phame — Get More 5-Star Google Reviews",
     "keywords": "review requests, Google reviews, get more reviews, review automation, small business reviews, send review request email, WooCommerce reviews, Stripe reviews",
     "ogDescription": "Send personalised review request emails from your own email account. Works with Google, Yelp, TripAdvisor and more.",
-    "shortTitle": "ReviewLink"
+    "shortTitle": "Phame"
   },
   "nav": {
-    "brandName": "ReviewLink",
+    "brandName": "Phame",
     "signIn": "Sign In",
     "home": "Home",
     "send": "Send",
     "dashboard": "Dashboard",
     "settings": "Settings",
-    "shareHint": "Share ReviewLink with a friend",
+    "shareHint": "Share Phame with a friend",
     "share": "Share",
     "guideHint": "Open setup guide",
     "guide": "Guide",
@@ -26,14 +26,14 @@
     "description": "Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender.",
     "cta": "Get Started Free",
     "setupTime": "Takes less than 2 minutes to set up",
-    "rocketIllustrationAlt": "ReviewLink rocket illustration",
-    "dashboardAlt": "ReviewLink dashboard showing sent requests and email performance stats",
+    "rocketIllustrationAlt": "Phame rocket illustration",
+    "dashboardAlt": "Phame dashboard showing sent requests and email performance stats",
     "dashboardStats": "Your dashboard — live stats",
     "titlePart1": "Get More 5-Star",
     "titlePart2": "Google Reviews"
   },
   "features": {
-    "sectionTitle": "Why businesses choose ReviewLink",
+    "sectionTitle": "Why businesses choose Phame",
     "emailFeature": {
       "title": "Sent from your own email",
       "description": "Every request lands in your customer's inbox looking like a personal message — not a bulk blast. No shared sender, no spam filters."
@@ -47,7 +47,7 @@
       "description": "Google, Yelp, Trustpilot, TripAdvisor, Facebook — add any review link. Your customers are taken straight to your review page."
     },
     "customerQuote": {
-      "quote": "ReviewLink has been a game-changer for our small business. We've seen a significant increase in positive reviews, and it's so easy to use!",
+      "quote": "Phame has been a game-changer for our small business. We've seen a significant increase in positive reviews, and it's so easy to use!",
       "author": "Tom R.",
       "authorTitle": "Owner, The Corner Café"
     },
@@ -84,7 +84,7 @@
     "spamQuestion": "Will it look like spam?",
     "spamAnswer": "No. Every email is sent directly from your own email account via SMTP — not from a shared bulk-sending server. Your customer sees your name, your email address, and a message written in your voice. It lands in the inbox like a personal note, not a marketing blast.",
     "providersQuestion": "What email providers work?",
-    "providersAnswer": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to ReviewLink.",
+    "providersAnswer": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to Phame.",
     "freeQuestion": "Is it really free?",
     "freeAnswer": "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap (Gmail allows ~500/day, most others are similar). There are no hidden fees and no credit card required to get started.",
     "importQuestion": "Can I import my customer list?",
@@ -106,7 +106,7 @@
     "subtitle": "Free forever. No credit card. Set up in under 2 minutes."
   },
   "footer": {
-    "brandName": "ReviewLink",
+    "brandName": "Phame",
     "privacy": "Privacy",
     "terms": "Terms",
     "support": "Support",
@@ -116,14 +116,14 @@
     "compliance": "Compliance"
   },
   "shareReferralCard": {
-    "title": "ReviewLink — Free review request tool",
-    "shareText": "I've been using ReviewLink to send review requests from my own email — it's free and works great. Worth checking out:",
+    "title": "Phame — Free review request tool",
+    "shareText": "I've been using Phame to send review requests from my own email — it's free and works great. Worth checking out:",
     "copySuccessToast": "Link copied to clipboard!",
     "copyErrorToast": "Could not copy link.",
     "header": "Know a local business owner?",
     "subHeader": "Help them get more reviews — it's free.",
     "copiedToClipboard": "Copied to clipboard!",
-    "shareReviewLink": "Share ReviewLink"
+    "sharePhame": "Share Phame"
   },
   "relativeTime": {
     "justNow": "just now",
@@ -141,14 +141,14 @@
   "homePage": {
     "setGoalErrorToast": "{{message}}",
     "shareSuccessToast": "Copied to clipboard! Share it with a friend.",
-    "pageTitle": "ReviewLink — Send Google Review Requests Fast",
+    "pageTitle": "Phame — Send Google Review Requests Fast",
     "greeting": "Hey, {{name}}!",
     "welcomeBack": "Welcome back,",
     "setupBannerTitle": "Setup complete!",
     "setupBannerText": "You've configured your account and sent your first request. Nicely done!",
     "dismiss": "Dismiss",
     "expiryBannerTitle": "Subscription expired",
-    "expiryBannerText": "Your access has expired. Please renew your plan to continue using ReviewLink.",
+    "expiryBannerText": "Your access has expired. Please renew your plan to continue using Phame.",
     "renewSubscription": "Renew Subscription",
     "expiringSoonTitle": "Subscription expiring soon",
     "expiringSoonText": "Your plan expires in {{daysUntilExpiry}} days. Renew now to avoid any interruption in service.",
@@ -184,7 +184,7 @@
     "getStarted": "Get Started",
     "learnMore": "Learn More",
     "fromYourOwnEmail": "From your own email",
-    "fromYourOwnEmailDescription": "Connect any email account via SMTP. No 'via reviewlink.app' branding.",
+    "fromYourOwnEmailDescription": "Connect any email account via SMTP. No 'via phame.app' branding.",
     "worksWithAnyPlatform": "Works with any platform",
     "worksWithAnyPlatformDescription": "Google, Yelp, Trustpilot, Capterra... if it has a link, you can use it.",
     "privacyFocused": "Privacy-focused",
@@ -200,7 +200,7 @@
     "helpAndSupport": "Help & Support",
     "featureRequests": "Feature Requests",
     "whatsNew": "What's New?",
-    "reviewLinkOnX": "ReviewLink on X",
+    "reviewLinkOnX": "Phame on X",
     "buyTheCode": "Buy the Code",
     "monthlyPro": "Monthly Pro",
     "annualPro": "Annual Pro",
@@ -219,7 +219,7 @@
     "errorPrefix": "Error:",
     "manageBilling": "Manage Billing",
     "seoTitle": "Get More Business Reviews",
-    "seoDescription": "ReviewLink makes it easy to send personalized review requests to your customers via email — for Google, Yelp, TripAdvisor, Bing, Facebook, and more. Build your online reputation across every platform, increase star ratings, and attract new customers — all from one simple dashboard.",
+    "seoDescription": "Phame makes it easy to send personalized review requests to your customers via email — for Google, Yelp, TripAdvisor, Bing, Facebook, and more. Build your online reputation across every platform, increase star ratings, and attract new customers — all from one simple dashboard.",
     "goal": "goal",
     "goalReached": "Goal reached! 🎉",
     "toGo": "to go",
@@ -231,7 +231,7 @@
     "followUpReminderScheduled": "Follow-up reminder scheduled!",
     "reviewRequestSent": "Review request sent!",
     "noReviewPlatformConfigured": "No review platform configured",
-    "addReviewLinkSettings": "Add a review link in Settings so customers know where to leave their review.",
+    "addPhameSettings": "Add a review link in Settings so customers know where to leave their review.",
     "goToSettings": "Go to Settings",
     "dismiss": "Dismiss",
     "importedContact": "Imported {{name}}",
@@ -258,8 +258,8 @@
     "requestSentTo": "Your review request was sent to {{customerName}} from your email account.",
     "emailComesFrom": "The email comes from {{email}} so it feels personal.",
     "requestsSentMilestone": "{{milestoneNum}} requests sent!",
-    "milestoneDescription": "You're getting results for real businesses. If ReviewLink is helping you, a quick review means the world to us.",
-    "rateReviewLink": "Rate ReviewLink",
+    "milestoneDescription": "You're getting results for real businesses. If Phame is helping you, a quick review means the world to us.",
+    "ratePhame": "Rate Phame",
     "scheduleFollowUp": "Schedule Follow-up",
     "sendAnother": "Send Another",
     "notNow": "Not now",
@@ -342,7 +342,7 @@
     "cancel": "Cancel",
     "send": "Send",
     "successToast": "Opening your email client to send feedback",
-    "errorToast": "Could not open email client. Please email support@reviewlink.app directly."
+    "errorToast": "Could not open email client. Please email support@phame.app directly."
   },
   "deleteAccount": {
     "buttonText": "Delete Account",
@@ -418,13 +418,13 @@
     "gmailGuideTitle": "Gmail App Password — 4 steps",
     "gmailGuideStep1": "Go to myaccount.google.com → Security",
     "gmailGuideStep2": "Turn on 2-Step Verification if not already on",
-    "gmailGuideStep3": "Go to myaccount.google.com/apppasswords → name it ReviewLink → click Create",
+    "gmailGuideStep3": "Go to myaccount.google.com/apppasswords → name it Phame → click Create",
     "gmailGuideStep4": "Copy the 16-character code and paste it here — remove all spaces",
     "gmailGuideTip": "Tip: use a dedicated reviews@gmail.com account to keep your main inbox separate.",
     "googleWorkspaceGuideTitle": "Google Workspace App Password — 4 steps",
     "googleWorkspaceGuideStep1": "Ask your Workspace admin to enable 2-Step Verification in admin.google.com",
     "googleWorkspaceGuideStep2": "Sign in to myaccount.google.com with your work account → Security",
-    "googleWorkspaceGuideStep3": "Go to myaccount.google.com/apppasswords → name it ReviewLink → click Create",
+    "googleWorkspaceGuideStep3": "Go to myaccount.google.com/apppasswords → name it Phame → click Create",
     "googleWorkspaceGuideStep4": "Copy the 16-character code and paste it here — remove all spaces",
     "outlookGuideTitle": "Microsoft App Password — 4 steps",
     "outlookGuideStep1": "Go to account.microsoft.com → Security",
@@ -435,7 +435,7 @@
     "yahooGuideTitle": "Yahoo App Password — 4 steps",
     "yahooGuideStep1": "Go to account.yahoo.com → Security",
     "yahooGuideStep2": "Click Generate app password",
-    "yahooGuideStep3": "Select Other app, name it ReviewLink",
+    "yahooGuideStep3": "Select Other app, name it Phame",
     "yahooGuideStep4": "Copy and paste the password here",
     "zohoGuideTitle": "Zoho Mail — Enable SMTP Access",
     "zohoGuideStep1": "Log in to mail.zoho.com",
@@ -446,7 +446,7 @@
     "aolGuideTitle": "AOL Mail App Password — 4 steps",
     "aolGuideStep1": "Go to account.aol.com → Security",
     "aolGuideStep2": "Click Generate app password",
-    "aolGuideStep3": "Select Other app, name it ReviewLink",
+    "aolGuideStep3": "Select Other app, name it Phame",
     "aolGuideStep4": "Copy and paste the password here — do not use your regular AOL password",
     "aolGuideTip": "AOL requires 2-step verification to be enabled before generating app passwords.",
     "protonMailGuideTitle": "ProtonMail — SMTP Bridge Password",
@@ -458,12 +458,12 @@
     "fastmailGuideTitle": "Fastmail App Password — 4 steps",
     "fastmailGuideStep1": "Go to app.fastmail.com → Settings → Privacy & Security",
     "fastmailGuideStep2": "Click App passwords → New app password",
-    "fastmailGuideStep3": "Name it ReviewLink, select SMTP, then click Generate password",
+    "fastmailGuideStep3": "Name it Phame, select SMTP, then click Generate password",
     "fastmailGuideStep4": "Copy and paste the generated password here",
     "iCloudGuideTitle": "Apple iCloud Mail App Password — 4 steps",
     "iCloudGuideStep1": "Go to appleid.apple.com and sign in",
     "iCloudGuideStep2": "Under Sign-In and Security, click App-Specific Passwords",
-    "iCloudGuideStep3": "Click Generate an app-specific password..., name it ReviewLink, click Create",
+    "iCloudGuideStep3": "Click Generate an app-specific password..., name it Phame, click Create",
     "iCloudGuideStep4": "Copy the xxxx-xxxx-xxxx-xxxx password and paste it here",
     "iCloudTip": "Two-factor authentication must be enabled for your Apple ID.",
     "providerWarning": "We couldn't detect your email provider. Please enter your details manually.",
@@ -686,7 +686,7 @@
     "subtitle": "Automatic 3-day follow-up emails for customers who haven't reviewed yet",
     "upgrade": "Upgrade",
     "noLimits": "No Limits.",
-    "heroImageAlt": "ReviewLink Pro upgrade",
+    "heroImageAlt": "Phame Pro upgrade",
     "backToContacts": "Back to Contacts",
     "import": "Import",
     "importClients": "Import Clients",
@@ -694,7 +694,7 @@
     "emailTemplates": "Email Templates",
     "customizeMessages": "Customise your review request messages",
     "new": "New",
-    "logoText": "ReviewLink"
+    "logoText": "Phame"
   },
   "infoBanner": {
     "howItWorks": "How it works:",
@@ -825,7 +825,7 @@
     "woocommerceSync": "WooCommerce sync",
     "emailOpenClickTracking": "Email open & click tracking",
     "advancedAnalytics": "Advanced analytics",
-    "multiPlatformReviewLinks": "Multi-platform review links",
+    "multiPlatformPhames": "Multi-platform review links",
     "dailySendLimit": "Daily send limit",
     "prioritySupport": "Priority support",
     "futureUpdates": "Future updates",
@@ -1046,7 +1046,7 @@
   },
   "onboardingWizard": {
     "header": {
-      "title": "ReviewLink Setup",
+      "title": "Phame Setup",
       "skipSetupTooltip": "Skip setup"
     },
     "steps": {
@@ -1057,7 +1057,7 @@
     "stepContent": {
       "step1": {
         "title": "Connect your email",
-        "description": "ReviewLink sends emails from your own account — works with Gmail, Outlook, Yahoo, or any business email."
+        "description": "Phame sends emails from your own account — works with Gmail, Outlook, Yahoo, or any business email."
       },
       "step2": {
         "title": "Add your review page",
@@ -1124,7 +1124,7 @@
       "goToStepAriaLabel": "Go to step {{number}}"
     },
     "steps": {
-      "welcome": { "title": "Welcome to ReviewLink", "subtitle": "Here's what we'll set up together" },
+      "welcome": { "title": "Welcome to Phame", "subtitle": "Here's what we'll set up together" },
       "connectEmail": { "title": "Connect Your Email", "subtitle": "Send from your own email account" },
       "reviewPlatform": { "title": "Add a Review Platform", "subtitle": "Where should customers leave their review?" },
       "importContacts": { "title": "Import Your Contacts", "subtitle": "Build your customer list" },
@@ -1138,7 +1138,7 @@
       "skipForNow": "Skip for now →"
     },
     "welcome": {
-      "heroText": "ReviewLink sends personalised review request emails from your own email account.",
+      "heroText": "Phame sends personalised review request emails from your own email account.",
       "heroSubtext": "Customers receive a message that looks like it came directly from you — not a bulk mailer.",
       "setupStepsIntro": "This guide walks you through 4 quick setup steps:",
       "step1Label": "Connect your email account (SMTP)",
@@ -1150,7 +1150,7 @@
     },
     "connectEmail": {
       "whyTitle": "Why connect your email?",
-      "whyDesc": "ReviewLink sends emails through your own account using SMTP — the same protocol your email app uses. Review requests arrive looking like a personal message from you, not a marketing blast.",
+      "whyDesc": "Phame sends emails through your own account using SMTP — the same protocol your email app uses. Review requests arrive looking like a personal message from you, not a marketing blast.",
       "generalStepsTitle": "General setup steps",
       "providerSectionTitle": "Provider setup — tap to expand",
       "noteLabel": "Note: ",
@@ -1160,9 +1160,9 @@
     },
     "reviewPlatform": {
       "whatIsTitle": "What is a review platform?",
-      "whatIsDesc": "This is the link your customers click to leave you a review — on Google, Yelp, TripAdvisor, Facebook, or anywhere else. ReviewLink embeds this link as a button inside every review request email.",
+      "whatIsDesc": "This is the link your customers click to leave you a review — on Google, Yelp, TripAdvisor, Facebook, or anywhere else. Phame embeds this link as a button inside every review request email.",
       "findLinkTitle": "How to find your review link — tap your platform",
-      "addingLinkTitle": "Adding the link in ReviewLink",
+      "addingLinkTitle": "Adding the link in Phame",
       "noteLabel": "Note: ",
       "goToSettingsButton": "Go to Settings → Review Platforms"
     },
@@ -1183,13 +1183,13 @@
       "singleSendTitle": "Send to one customer",
       "bulkSendTitle": "Bulk send to saved contacts",
       "proTipTitle": "💡 Pro tip: Follow-up reminders",
-      "proTipDesc": "ReviewLink can automatically send a polite follow-up email 3 days after the original request if the customer hasn't responded. Set this up in the Reminders section of Settings.",
+      "proTipDesc": "Phame can automatically send a polite follow-up email 3 days after the original request if the customer hasn't responded. Set this up in the Reminders section of Settings.",
       "goToSendButton": "Go to Send Request",
       "goToContactsButton": "Go to Saved Contacts"
     },
     "allSet": {
       "title": "You're all set!",
-      "subtitle": "ReviewLink is ready to start collecting reviews for your business.",
+      "subtitle": "Phame is ready to start collecting reviews for your business.",
       "quickLinksTitle": "Quick links",
       "link1": "Send a review request now",
       "link2": "View saved contacts",
@@ -1197,7 +1197,7 @@
       "link4": "Manage settings",
       "revisitTitle": "Need to revisit this guide?",
       "revisitDesc": "Tap the \"Setup Guide\" button on the Home screen or in Settings any time to reopen these instructions.",
-      "startButton": "Start Using ReviewLink"
+      "startButton": "Start Using Phame"
     }
   },
   "step2Platform": {
@@ -1298,7 +1298,7 @@
   },
   "comparison": {
     "sectionTitle": "10–20× cheaper than the big players",
-    "sectionSubtitle": "Birdeye and Podium charge enterprise prices for features ReviewLink gives you at a fraction of the cost.",
+    "sectionSubtitle": "Birdeye and Podium charge enterprise prices for features Phame gives you at a fraction of the cost.",
     "colPlatform": "Platform",
     "colStartingPrice": "Starting price",
     "colLifetime": "Lifetime option",
@@ -1307,7 +1307,7 @@
   "testimonials": {
     "sectionTitle": "What our users say",
     "sarah": {
-      "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. ReviewLink sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks.",
+      "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. Phame sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks.",
       "name": "Sarah M.",
       "role": "Freelance Photographer"
     },
@@ -1356,8 +1356,8 @@
         "description": "Open and click tracking now covers reminder follow-up emails, not just the initial send. All engagement data rolls up under the original request so your stats stay clean."
       },
       "referralCard": {
-        "title": "Share ReviewLink Referral Card",
-        "description": "A new card on the Home screen lets you share ReviewLink with other local businesses in one tap — using the native share sheet on mobile or clipboard copy on desktop."
+        "title": "Share Phame Referral Card",
+        "description": "A new card on the Home screen lets you share Phame with other local businesses in one tap — using the native share sheet on mobile or clipboard copy on desktop."
       }
     },
     "v12": {
@@ -1394,7 +1394,7 @@
     },
     "v10": {
       "launch": {
-        "title": "ReviewLink Launch",
+        "title": "Phame Launch",
         "description": "Send personalised review request emails from your own email account — not a bulk mailer. Customers receive a message that looks like it came directly from you."
       }
     }

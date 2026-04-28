@@ -1,18 +1,18 @@
 {
   "seo": {
-    "title": "ReviewLink — 获得更多五星好评",
+    "title": "Phame — 获得更多五星好评",
     "keywords": "评论请求, Google 评论, 获得更多评论, 评论自动化, 小型企业评论, 发送评论请求邮件, WooCommerce 评论, Stripe 评论",
     "ogDescription": "通过您自己的电子邮件账户发送个性化的评论请求邮件。支持 Google、Yelp、TripAdvisor 等。",
-    "shortTitle": "ReviewLink"
+    "shortTitle": "Phame"
   },
   "nav": {
-    "brandName": "ReviewLink",
+    "brandName": "Phame",
     "signIn": "登录",
     "home": "首页",
     "send": "发送",
     "dashboard": "仪表盘",
     "settings": "设置",
-    "shareHint": "与朋友分享 ReviewLink",
+    "shareHint": "与朋友分享 Phame",
     "share": "分享",
     "guideHint": "打开设置指南",
     "guide": "指南",
@@ -26,14 +26,14 @@
     "description": "通过您自己的电子邮件账户发送个性化的评论请求。您的客户会看到邮件来自您本人 — 而非通用发件人。",
     "cta": "免费开始",
     "setupTime": "设置只需不到2分钟",
-    "rocketIllustrationAlt": "ReviewLink 火箭插图",
-    "dashboardAlt": "ReviewLink 仪表盘显示已发送请求和邮件表现统计数据",
+    "rocketIllustrationAlt": "Phame 火箭插图",
+    "dashboardAlt": "Phame 仪表盘显示已发送请求和邮件表现统计数据",
     "dashboardStats": "您的仪表盘 — 实时统计数据",
     "titlePart1": "获得更多五星",
     "titlePart2": "Google 评论"
   },
   "features": {
-    "sectionTitle": "为什么企业选择 ReviewLink",
+    "sectionTitle": "为什么企业选择 Phame",
     "emailFeature": {
       "title": "通过您自己的电子邮件发送",
       "description": "每封请求邮件都会以个人消息的形式送达客户收件箱 — 而非群发。没有共享发件人，没有垃圾邮件过滤器。"
@@ -47,7 +47,7 @@
       "description": "Google、Yelp、Trustpilot、TripAdvisor、Facebook — 添加任何评论链接。您的客户将直接跳转到您的评论页面。"
     },
     "customerQuote": {
-      "quote": "ReviewLink 对我们的小型企业来说是一个颠覆性的改变。我们看到了积极评论的显著增长，而且它非常易于使用！",
+      "quote": "Phame 对我们的小型企业来说是一个颠覆性的改变。我们看到了积极评论的显著增长，而且它非常易于使用！",
       "author": "Tom R.",
       "authorTitle": "The Corner Café 店主"
     },
@@ -84,7 +84,7 @@
     "spamQuestion": "它会看起来像垃圾邮件吗？",
     "spamAnswer": "不会。每封邮件都通过 SMTP 直接从您自己的电子邮件账户发送 — 而非来自共享的批量发送服务器。您的客户会看到您的姓名、您的电子邮件地址以及以您的口吻撰写的信息。它会像个人便条一样送达收件箱，而不是营销群发邮件。",
     "providersQuestion": "支持哪些电子邮件提供商？",
-    "providersAnswer": "任何支持 SMTP 的提供商都适用：Gmail、Outlook、Yahoo Mail、Apple iCloud Mail、cPanel/Zoho 商业电子邮件，以及几乎所有托管服务提供商的邮件服务器。如果您可以在手机上设置电子邮件应用，您就可以将其连接到 ReviewLink。",
+    "providersAnswer": "任何支持 SMTP 的提供商都适用：Gmail、Outlook、Yahoo Mail、Apple iCloud Mail、cPanel/Zoho 商业电子邮件，以及几乎所有托管服务提供商的邮件服务器。如果您可以在手机上设置电子邮件应用，您就可以将其连接到 Phame。",
     "freeQuestion": "它真的是免费的吗？",
     "freeAnswer": "是的 — 免费且没有人为的发送限制。您连接的是您自己的电子邮件账户，因此唯一的限制是您的电子邮件提供商的每日发送上限（Gmail 每天允许发送约500封，大多数其他提供商也类似）。没有隐藏费用，也无需信用卡即可开始使用。",
     "importQuestion": "我可以导入我的客户列表吗？",
@@ -106,7 +106,7 @@
     "subtitle": "永久免费，无需信用卡，2分钟内完成设置。"
   },
   "footer": {
-    "brandName": "ReviewLink",
+    "brandName": "Phame",
     "privacy": "隐私",
     "terms": "条款",
     "support": "支持",
@@ -116,14 +116,14 @@
     "compliance": "合规性"
   },
   "shareReferralCard": {
-    "title": "ReviewLink — 免费评论请求工具",
-    "shareText": "我一直在使用 ReviewLink 通过我自己的电子邮件发送评论请求 — 它是免费的，而且效果很好。值得一试：",
+    "title": "Phame — 免费评论请求工具",
+    "shareText": "我一直在使用 Phame 通过我自己的电子邮件发送评论请求 — 它是免费的，而且效果很好。值得一试：",
     "copySuccessToast": "链接已复制到剪贴板！",
     "copyErrorToast": "无法复制链接。",
     "header": "认识当地的企业主吗？",
     "subHeader": "帮助他们获得更多评论 — 它是免费的。",
     "copiedToClipboard": "已复制到剪贴板！",
-    "shareReviewLink": "分享 ReviewLink"
+    "sharePhame": "分享 Phame"
   },
   "relativeTime": {
     "justNow": "刚刚",
@@ -141,14 +141,14 @@
   "homePage": {
     "setGoalErrorToast": "{{message}}",
     "shareSuccessToast": "已复制链接！分享给朋友吧。",
-    "pageTitle": "ReviewLink — 快速发送 Google 评论请求",
+    "pageTitle": "Phame — 快速发送 Google 评论请求",
     "greeting": "您好，{{name}}！",
     "welcomeBack": "欢迎回来，",
     "setupBannerTitle": "设置完成！",
     "setupBannerText": "您已配置好账户并发送了第一个请求。做得好！",
     "dismiss": "关闭",
     "expiryBannerTitle": "订阅已过期",
-    "expiryBannerText": "您的访问权限已过期。请续订您的计划以继续使用 ReviewLink。",
+    "expiryBannerText": "您的访问权限已过期。请续订您的计划以继续使用 Phame。",
     "renewSubscription": "续订订阅",
     "expiringSoonTitle": "订阅即将到期",
     "expiringSoonText": "您的计划将在 {{daysUntilExpiry}} 天后到期。立即续订以避免服务中断。",
@@ -184,7 +184,7 @@
     "getStarted": "开始使用",
     "learnMore": "了解更多",
     "fromYourOwnEmail": "通过您自己的电子邮件",
-    "fromYourOwnEmailDescription": "通过 SMTP 连接任何电子邮件账户。没有“via reviewlink.app”品牌。",
+    "fromYourOwnEmailDescription": "通过 SMTP 连接任何电子邮件账户。没有“via phame.app”品牌。",
     "worksWithAnyPlatform": "适用于任何平台",
     "worksWithAnyPlatformDescription": "Google、Yelp、Trustpilot、Capterra... 只要有链接，您就可以使用。",
     "privacyFocused": "注重隐私",
@@ -200,7 +200,7 @@
     "helpAndSupport": "帮助与支持",
     "featureRequests": "功能请求",
     "whatsNew": "最新动态？",
-    "reviewLinkOnX": "ReviewLink 在 X 上",
+    "reviewLinkOnX": "Phame 在 X 上",
     "buyTheCode": "购买代码",
     "monthlyPro": "月度专业版",
     "annualPro": "年度专业版",
@@ -219,7 +219,7 @@
     "errorPrefix": "错误：",
     "manageBilling": "管理账单",
     "seoTitle": "获取更多商家评价",
-    "seoDescription": "ReviewLink 让您轻松通过电子邮件向客户发送个性化评价请求 — 支持 Google、Yelp、TripAdvisor、Bing、Facebook 等平台。",
+    "seoDescription": "Phame 让您轻松通过电子邮件向客户发送个性化评价请求 — 支持 Google、Yelp、TripAdvisor、Bing、Facebook 等平台。",
     "goal": "目标",
     "goalReached": "达成目标！🎉",
     "toGo": "还差",
@@ -231,7 +231,7 @@
     "followUpReminderScheduled": "已安排跟进提醒！",
     "reviewRequestSent": "评论请求已发送！",
     "noReviewPlatformConfigured": "未配置评论平台",
-    "addReviewLinkSettings": "在“设置”中添加评论链接，以便客户知道在哪里留下评论。",
+    "addPhameSettings": "在“设置”中添加评论链接，以便客户知道在哪里留下评论。",
     "goToSettings": "前往设置",
     "dismiss": "关闭",
     "importedContact": "已导入 {{name}}",
@@ -258,8 +258,8 @@
     "requestSentTo": "您的评论请求已通过您的电子邮件帐户发送给 {{customerName}}。",
     "emailComesFrom": "邮件来自 {{email}}，因此感觉更私人。",
     "requestsSentMilestone": "已发送 {{milestoneNum}} 个请求！",
-    "milestoneDescription": "您正在为真实企业取得成果。如果 ReviewLink 对您有所帮助，您的快速评论对我们来说意义重大。",
-    "rateReviewLink": "评价 ReviewLink",
+    "milestoneDescription": "您正在为真实企业取得成果。如果 Phame 对您有所帮助，您的快速评论对我们来说意义重大。",
+    "ratePhame": "评价 Phame",
     "scheduleFollowUp": "安排跟进",
     "sendAnother": "再发送一个",
     "notNow": "暂不",
@@ -342,7 +342,7 @@
     "cancel": "取消",
     "send": "发送",
     "successToast": "正在打开您的邮件客户端以发送反馈",
-    "errorToast": "无法打开邮件客户端。请直接发送邮件至 support@reviewlink.app。"
+    "errorToast": "无法打开邮件客户端。请直接发送邮件至 support@phame.app。"
   },
   "deleteAccount": {
     "buttonText": "删除账户",
@@ -418,13 +418,13 @@
     "gmailGuideTitle": "Gmail 应用密码 — 4 步",
     "gmailGuideStep1": "前往 myaccount.google.com → 安全",
     "gmailGuideStep2": "如果尚未开启，请开启两步验证",
-    "gmailGuideStep3": "前往 myaccount.google.com/apppasswords → 命名为 ReviewLink → 点击创建",
+    "gmailGuideStep3": "前往 myaccount.google.com/apppasswords → 命名为 Phame → 点击创建",
     "gmailGuideStep4": "复制 16 位代码并粘贴到此处 — 删除所有空格",
     "gmailGuideTip": "提示：使用专用的 reviews@gmail.com 账户，以使您的主收件箱保持独立。",
     "googleWorkspaceGuideTitle": "Google Workspace 应用密码 — 4 步",
     "googleWorkspaceGuideStep1": "请您的 Workspace 管理员在 admin.google.com 中启用两步验证",
     "googleWorkspaceGuideStep2": "使用您的工作账户登录 myaccount.google.com → 安全",
-    "googleWorkspaceGuideStep3": "前往 myaccount.google.com/apppasswords → 命名为 ReviewLink → 点击创建",
+    "googleWorkspaceGuideStep3": "前往 myaccount.google.com/apppasswords → 命名为 Phame → 点击创建",
     "googleWorkspaceGuideStep4": "复制 16 位代码并粘贴到此处 — 删除所有空格",
     "outlookGuideTitle": "Microsoft 应用密码 — 4 步",
     "outlookGuideStep1": "前往 account.microsoft.com → 安全",
@@ -435,7 +435,7 @@
     "yahooGuideTitle": "Yahoo 应用密码 — 4 步",
     "yahooGuideStep1": "前往 account.yahoo.com → 安全",
     "yahooGuideStep2": "点击生成应用密码",
-    "yahooGuideStep3": "选择“其他应用”，命名为 ReviewLink",
+    "yahooGuideStep3": "选择“其他应用”，命名为 Phame",
     "yahooGuideStep4": "复制并粘贴密码到此处",
     "zohoGuideTitle": "Zoho Mail — 启用 SMTP 访问",
     "zohoGuideStep1": "登录 mail.zoho.com",
@@ -446,7 +446,7 @@
     "aolGuideTitle": "AOL Mail 应用密码 — 4 步",
     "aolGuideStep1": "前往 account.aol.com → 安全",
     "aolGuideStep2": "点击生成应用密码",
-    "aolGuideStep3": "选择“其他应用”，命名为 ReviewLink",
+    "aolGuideStep3": "选择“其他应用”，命名为 Phame",
     "aolGuideStep4": "复制并粘贴密码到此处 — 不要使用您的常规 AOL 密码",
     "aolGuideTip": "AOL 要求在生成应用密码之前启用两步验证。",
     "protonMailGuideTitle": "ProtonMail — SMTP 桥接密码",
@@ -458,12 +458,12 @@
     "fastmailGuideTitle": "Fastmail 应用密码 — 4 步",
     "fastmailGuideStep1": "前往 app.fastmail.com → 设置 → 隐私与安全",
     "fastmailGuideStep2": "点击应用密码 → 新应用密码",
-    "fastmailGuideStep3": "命名为 ReviewLink，选择 SMTP，然后点击生成密码",
+    "fastmailGuideStep3": "命名为 Phame，选择 SMTP，然后点击生成密码",
     "fastmailGuideStep4": "复制并粘贴生成的密码到此处",
     "iCloudGuideTitle": "Apple iCloud Mail 应用密码 — 4 步",
     "iCloudGuideStep1": "前往 appleid.apple.com 并登录",
     "iCloudGuideStep2": "在“登录与安全”下，点击“应用专用密码”",
-    "iCloudGuideStep3": "点击“生成应用专用密码...”，命名为 ReviewLink，点击“创建”",
+    "iCloudGuideStep3": "点击“生成应用专用密码...”，命名为 Phame，点击“创建”",
     "iCloudGuideStep4": "复制 xxxx-xxxx-xxxx-xxxx 密码并粘贴到此处",
     "iCloudTip": "您的 Apple ID 必须启用双重认证。",
     "providerWarning": "我们无法检测到您的邮件提供商。请手动输入您的详细信息。",
@@ -675,7 +675,7 @@
     "subtitle": "为尚未评论的客户自动发送 3 天后跟进邮件",
     "upgrade": "升级",
     "noLimits": "无限制。",
-    "heroImageAlt": "ReviewLink 专业版升级",
+    "heroImageAlt": "Phame 专业版升级",
     "backToContacts": "返回联系人",
     "import": "导入",
     "importClients": "导入客户",
@@ -683,7 +683,7 @@
     "emailTemplates": "邮件模板",
     "customizeMessages": "自定义您的评论请求消息",
     "new": "新",
-    "logoText": "ReviewLink"
+    "logoText": "Phame"
   },
   "infoBanner": {
     "howItWorks": "工作原理：",
@@ -814,7 +814,7 @@
     "woocommerceSync": "WooCommerce 同步",
     "emailOpenClickTracking": "邮件打开和点击跟踪",
     "advancedAnalytics": "高级分析",
-    "multiPlatformReviewLinks": "多平台评论链接",
+    "multiPlatformPhames": "多平台评论链接",
     "dailySendLimit": "每日发送限制",
     "prioritySupport": "优先支持",
     "futureUpdates": "未来更新",
@@ -1017,7 +1017,7 @@
   },
   "onboardingWizard": {
     "header": {
-      "title": "ReviewLink 设置",
+      "title": "Phame 设置",
       "skipSetupTooltip": "跳过设置"
     },
     "steps": {
@@ -1028,7 +1028,7 @@
     "stepContent": {
       "step1": {
         "title": "连接您的邮箱",
-        "description": "ReviewLink 从您自己的账户发送邮件——支持 Gmail、Outlook、Yahoo 或任何企业邮箱。"
+        "description": "Phame 从您自己的账户发送邮件——支持 Gmail、Outlook、Yahoo 或任何企业邮箱。"
       },
       "step2": {
         "title": "添加您的评论页面",
@@ -1170,7 +1170,7 @@
   },
   "comparison": {
     "sectionTitle": "比大型竞争对手便宜10–20倍",
-    "sectionSubtitle": "Birdeye和Podium收取企业级价格，而ReviewLink以极低的成本提供相同功能。",
+    "sectionSubtitle": "Birdeye和Podium收取企业级价格，而Phame以极低的成本提供相同功能。",
     "colPlatform": "平台",
     "colStartingPrice": "起始价格",
     "colLifetime": "终身版选项",
@@ -1179,7 +1179,7 @@
   "testimonials": {
     "sectionTitle": "用户真实评价",
     "sarah": {
-      "quote": "以前我很害怕向客户索取评价，感觉很尴尬。ReviewLink用我自己的Gmail发送请求，看起来就像我亲自写的一样。六周内，我的Google评价从12条增加到了47条。",
+      "quote": "以前我很害怕向客户索取评价，感觉很尴尬。Phame用我自己的Gmail发送请求，看起来就像我亲自写的一样。六周内，我的Google评价从12条增加到了47条。",
       "name": "Sarah M.",
       "role": "自由摄影师"
     },
@@ -1217,7 +1217,7 @@
   "onboardingGuide": {
     "title": "设置指南",
     "stepOf": "第 {{current}} / {{total}} 步",
-    "welcome": "欢迎使用 ReviewLink",
+    "welcome": "欢迎使用 Phame",
     "connectEmail": "连接邮箱",
     "reviewPlatform": "评价平台",
     "importContacts": "导入联系人",
@@ -1230,7 +1230,7 @@
       "skipForNow": "暂时跳过 →"
     },
     "welcome_section": {
-      "heroText": "ReviewLink 通过您自己的邮箱账户发送个性化的评价请求邮件。",
+      "heroText": "Phame 通过您自己的邮箱账户发送个性化的评价请求邮件。",
       "heroSubtext": "客户收到的邮件看起来像是您直接发送的——而不是群发邮件。",
       "setupStepsIntro": "本指南将引导您完成 4 个快速设置步骤：",
       "step1Label": "连接您的邮箱账户（SMTP）",
@@ -1242,14 +1242,14 @@
     },
     "connectEmail_section": {
       "whyTitle": "为什么要连接邮箱？",
-      "whyDesc": "ReviewLink 通过您自己的账户使用 SMTP 发送邮件——与您的邮件应用使用的协议相同。评价请求看起来像是您的私人邮件，而不是营销邮件。",
+      "whyDesc": "Phame 通过您自己的账户使用 SMTP 发送邮件——与您的邮件应用使用的协议相同。评价请求看起来像是您的私人邮件，而不是营销邮件。",
       "goToSettingsButton": "前往设置 → 邮箱连接",
       "testEmailButton": "向自己发送测试邮件",
       "testEmailSent": "测试邮件已发送！请查收收件箱。"
     },
     "reviewPlatform_section": {
       "whatIsTitle": "什么是评价平台？",
-      "whatIsDesc": "这是客户点击留下评价的链接——在 Google、Yelp、TripAdvisor、Facebook 或其他平台上。ReviewLink 将此链接作为按钮嵌入每封评价请求邮件中。",
+      "whatIsDesc": "这是客户点击留下评价的链接——在 Google、Yelp、TripAdvisor、Facebook 或其他平台上。Phame 将此链接作为按钮嵌入每封评价请求邮件中。",
       "goToSettingsButton": "前往设置 → 评价平台"
     },
     "contacts_section": {
@@ -1264,8 +1264,8 @@
     },
     "allSet_section": {
       "title": "一切就绪！",
-      "subtitle": "ReviewLink 已准备好为您的业务收集评价。",
-      "startButton": "开始使用 ReviewLink"
+      "subtitle": "Phame 已准备好为您的业务收集评价。",
+      "startButton": "开始使用 Phame"
     }
   },
   "step2Platform": {
