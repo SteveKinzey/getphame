@@ -140,9 +140,10 @@ export default function LandingPage() {
       >
         <div className="flex items-center">
           <img
-            src="/manus-storage/phame-logo-on-navy-1200px_4f738b05.png"
+            src="/manus-storage/phame-logo-transparent_487ff925.png"
             alt="Phame"
-            className="h-9 w-auto object-contain"
+            className="h-10 w-auto object-contain"
+            style={{ maxWidth: '160px' }}
           />
         </div>
         <div className="flex items-center gap-2">
