@@ -1415,3 +1415,8 @@
 ## New Features (Phame Rebrand Session)
 - [x] Client reviews view — screen where owner sees reviews customers have left, with star rating, date, reviewer name, platform badge, and review text
 - [x] Personal/public profile page — public URL (/p/[username] or /profile/[slug]) showing business name, logo, short bio, star rating summary, and CTA button to leave a review on the default platform
+
+## Reminder Email Schedule Update
+- [x] Change reminder delays from Day 3/Day 10 to Day 4/Day 11 in scheduler logic
+- [x] Auto-cancel pending reminders when a request is marked as reviewed (markResponded mutation) — already wired, confirmed working
+- [x] Verify cancellation works for both Day 4 and Day 11 reminders — cancelRemindersByRequestId() called in both markResponded and bulkMarkResponded
