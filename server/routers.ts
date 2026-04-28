@@ -1641,7 +1641,9 @@ export const appRouter = router({
       .input(
         z.object({
           platform: z.enum(["google", "yelp", "tripadvisor", "bing", "facebook", "apple", "other"]),
-          url: z.string().url("Please enter a valid URL"),
+          // Yelp entries are stored as search URLs (built client-side from plain text);
+          // all other platforms supply a direct URL — accept any non-empty string.
+          url: z.string().min(1, "Please enter a value"),
           label: z.string().max(255).optional(),
         })
       )
@@ -1653,7 +1655,7 @@ export const appRouter = router({
       .input(
         z.object({
           id: z.number().int(),
-          url: z.string().url("Please enter a valid URL"),
+          url: z.string().min(1, "Please enter a value"),
           label: z.string().max(255).optional(),
         })
       )
@@ -1673,7 +1675,7 @@ export const appRouter = router({
       .input(
         z.object({
           platform: z.enum(["google", "yelp", "tripadvisor", "bing", "facebook", "apple", "other"]),
-          url: z.string().url(),
+          url: z.string().min(1),
           label: z.string().max(255).optional(),
           isDefault: z.number().int().optional(),
         })
