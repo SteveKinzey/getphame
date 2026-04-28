@@ -2,7 +2,7 @@
 // Sections: Business Profile, Email Connection, Plan
 
 import { useState, useEffect, useRef } from "react";
-import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, XAxis, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import {
@@ -2120,7 +2120,7 @@ export default function SettingsPage() {
                   <ResponsiveContainer width="100%" height={64}>
                     <BarChart data={[...syncHistory].reverse().map((s, i) => ({ i, added: s.added, total: s.total }))} barSize={8}>
                       <XAxis dataKey="i" hide />
-                      <Tooltip
+                      <RechartsTooltip
                         formatter={(value: number, name: string) => [value, name === "added" ? "Staged" : "Fetched"]}
                         labelFormatter={() => ""}
                         contentStyle={{ fontSize: 11, padding: "4px 8px", borderRadius: 6 }}
