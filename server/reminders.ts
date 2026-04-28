@@ -11,6 +11,7 @@ import { eq, and, lte } from "drizzle-orm";
 import { sendMailViaSmtp } from "./smtp";
 import { getDefaultReviewPlatform } from "./reviewPlatforms";
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
+import { buildReviewRequestEmail } from "./emailTemplates";
 
 const FOUR_DAYS_MS   = 4  * 24 * 60 * 60 * 1000; // day 4  — first follow-up
 const ELEVEN_DAYS_MS = 11 * 24 * 60 * 60 * 1000; // day 11 — second follow-up
@@ -109,19 +110,30 @@ function getReminderSubject(step: number): string {
   return `Just checking in — have you had a chance to leave us a review?`;
 }
 
-/** Build the email body based on sequence step */
+/** Build the reminder email body HTML using the shared branded template */
 function getReminderBody(
   step: number,
   customerName: string,
   businessName: string,
   trackedReviewUrl: string,
   reviewUrl: string,
-  openPixel: string
+  openPixel: string,
+  showPoweredBy = false
 ): string {
-  if (step === 2) {
-    return `Hi ${customerName},<br><br>We know life gets busy — this is our last follow-up, we promise! 😊<br><br>If you've had a chance to experience our service, it would mean the world to us if you could spare a minute to share your thoughts:<br><br><a href="${trackedReviewUrl}">${reviewUrl}</a><br><br>Your feedback helps other customers find us and helps us keep improving.<br><br>Thank you so much,<br>${businessName}${openPixel}`;
-  }
-  return `Hi ${customerName},<br><br>We wanted to follow up on our earlier message. If you've had a chance to try our service, we'd love to hear what you think!<br><br>Leaving a review only takes a minute and helps us a lot:<br><a href="${trackedReviewUrl}">${reviewUrl}</a><br><br>Thank you so much for your support!<br><br>${businessName}${openPixel}`;
+  const bodyHtml = step === 2
+    ? `<p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">We know life gets busy — this is our last follow-up, we promise! 😊</p>
+       <p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">If you've had a chance to experience our service, it would mean the world to us if you could spare a minute to share your thoughts.</p>
+       <p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">Your feedback helps other customers find us and helps us keep improving.</p>`
+    : `<p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">We wanted to follow up on our earlier message. If you've had a chance to try our service, we'd love to hear what you think!</p>
+       <p style="margin:0 0 14px;font-size:15px;color:#555;line-height:1.7;">Leaving a review only takes a minute and helps us a lot.</p>`;
+
+  return buildReviewRequestEmail({
+    customerName,
+    businessName,
+    reviewUrl: trackedReviewUrl,
+    bodyHtml: bodyHtml + openPixel,
+    showPoweredBy,
+  });
 }
 
 /**
@@ -159,7 +171,8 @@ export async function processDueReminders() {
 
       const step = reminder.sequenceStep ?? 1;
       const subject = getReminderSubject(step);
-      const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel);
+      const showPoweredBy = !profile.tier || profile.tier === 'free';
+      const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel, showPoweredBy);
 
       await sendMailViaSmtp({ userId: reminder.userId, to: reminder.customerEmail, subject, html });
 
@@ -204,7 +217,8 @@ export async function sendReminderNow(userId: number, reminderId: number) {
 
   const step = reminder.sequenceStep ?? 1;
   const subject = getReminderSubject(step);
-  const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel);
+  const showPoweredBy = !profile.tier || profile.tier === 'free';
+  const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel, showPoweredBy);
 
   await sendMailViaSmtp({ userId, to: reminder.customerEmail, subject, html });
   await db

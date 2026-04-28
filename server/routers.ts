@@ -345,6 +345,7 @@ export const appRouter = router({
         customerName: "Alex Johnson",
         businessName: profile?.businessName || "Your Business",
         reviewUrl,
+        showPoweredBy: !profile || profile.tier === 'free',
       });
       return { html, businessName: profile?.businessName || "Your Business", reviewUrl };
     }),

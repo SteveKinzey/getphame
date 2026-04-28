@@ -1484,3 +1484,7 @@
 ## Session #70b — Domain URL Fix (Apr 28 2026)
 - [x] Fix hardcoded phame.app URLs in smtp.ts (churn recovery email + payment failed email) → getphame.app
 - [x] Fix phame.app in stripe.thb.checkout.test.ts test fixture → getphame.app
+
+## Session #71
+
+- [x] Add "Powered by Phame" referral footer to all outbound review request emails (emailTemplates.ts) — subtle branded footer with link to getphame.app, renders in both single and bulk send paths
