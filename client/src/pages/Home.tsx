@@ -292,7 +292,7 @@ export default function HomePage() {
                 src="/manus-storage/phame-logo-transparent_487ff925.png"
                 alt="Phame"
                 className="h-10 w-auto object-contain"
-                style={{ maxWidth: '160px' }}
+                style={{ width: '160px', height: '50px', objectFit: 'contain', marginLeft: '-20px' }}
               />
             </div>
             <div className="flex items-center gap-2">
@@ -316,7 +316,7 @@ export default function HomePage() {
             </div>
           </div>
           {/* Row 3: Greeting h1 */}
-          <h1 className="text-2xl leading-tight text-white rr-fw-black">
+          <h1 className="text-2xl leading-tight rr-fw-black" style={{ paddingTop: '10px', color: '#f9ae00' }}>
             {(() => {
               const firstName = user?.name ? user.name.split(" ")[0] : null;
               return firstName
