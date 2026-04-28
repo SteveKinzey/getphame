@@ -753,7 +753,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
   );
 }
 
-export default function SettingsPage() {{
+export default function SettingsPage() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
