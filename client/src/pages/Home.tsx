@@ -287,11 +287,12 @@ export default function HomePage() {
           </div>
           {/* Row 2: Brand label (left) + Share / Guide buttons (right) */}
           <div className="flex items-center justify-between gap-2 mb-1">
-            <div className="flex items-center gap-2">
-              <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="Phame" className="w-12 h-12 rounded-xl object-contain" />
-              <span className="text-sm font-bold tracking-widest uppercase rr-text-gold">
-                {t("nav.brandName")}
-              </span>
+            <div className="flex items-center">
+              <img
+                src="/manus-storage/phame-logo-on-navy-1200px_4f738b05.png"
+                alt="Phame"
+                className="h-10 w-auto object-contain"
+              />
             </div>
             <div className="flex items-center gap-2">
               <button
