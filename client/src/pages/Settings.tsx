@@ -48,6 +48,7 @@ import OnboardingGuide from "@/components/OnboardingGuide";
 import PlatformIcon from "@/components/PlatformIcon";
 import { useTheme } from "@/contexts/ThemeContext";
 import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -1104,7 +1105,19 @@ export default function SettingsPage() {
                       style={{ border: "2px solid oklch(0.80 0.18 80)", background: "oklch(0.98 0.01 80)" }}
                     >
                       {p.platform === "yelp" && (
-                        <p className="text-xs rr-text-navy-muted mb-1">Enter a plain-text search instruction (e.g. "Search for SK America on Yelp in San Bernardino, CA"). This text appears in the email — no link is generated, keeping you Yelp-compliant.</p>
+                        <div className="flex items-start gap-1.5 mb-1">
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="cursor-help inline-flex items-center mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.04 260)" }}>
+                                <Info size={13} />
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">
+                              <strong>Why no link?</strong> Yelp's Terms of Service prohibit directly soliciting reviews via a link. A plain-text search instruction keeps your emails compliant — customers find your listing themselves.
+                            </TooltipContent>
+                          </Tooltip>
+                          <p className="text-xs rr-text-navy-muted">Enter a plain-text search instruction. This text appears in the email — no link is generated, keeping you Yelp-compliant.</p>
+                        </div>
                       )}
                       <input
                         type={p.platform === "yelp" ? "text" : "url"}
@@ -1265,8 +1278,20 @@ export default function SettingsPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
+                    <label className="block text-xs font-bold mb-1 rr-text-navy-mid flex items-center gap-1">
                       {newPlatformType === "yelp" ? "Yelp Search Instruction *" : "Review Page URL *"}
+                      {newPlatformType === "yelp" && (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="cursor-help inline-flex items-center" style={{ color: "oklch(0.55 0.04 260)" }}>
+                              <Info size={13} />
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">
+                            <strong>Why no link?</strong> Yelp's Terms of Service prohibit directly soliciting reviews via a link. Entering a plain-text search instruction (e.g. "Search for SK America on Yelp in San Bernardino, CA") keeps your emails compliant — customers find your listing themselves.
+                          </TooltipContent>
+                        </Tooltip>
+                      )}
                     </label>
                     <input
                       type={newPlatformType === "yelp" ? "text" : "url"}
