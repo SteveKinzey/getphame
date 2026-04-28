@@ -100,6 +100,7 @@ import {
 } from "./smtp";
 
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
+import { bulkSenderRouter } from "./bulkSender";
 import crypto from "crypto";
 
 // ── Unsubscribe token helpers ────────────────────────────────────────────────
@@ -2351,5 +2352,6 @@ export const appRouter = router({
         return { ok: true };
       }),
   }),
+  bulkSender: bulkSenderRouter,
 });
 export type AppRouter = typeof appRouter;

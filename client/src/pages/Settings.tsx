@@ -43,6 +43,9 @@ import {
   ShieldCheck,
   Moon,
   Sun,
+  Zap,
+  AlertTriangle,
+  CheckCircle,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
 import PlatformIcon from "@/components/PlatformIcon";
@@ -497,7 +500,260 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
   );
 }
 
-export default function SettingsPage() {
+// ── Bulk Sender Section ──────────────────────────────────────────────────────
+const PROVIDER_LABELS: Record<string, string> = {
+  sendgrid: "SendGrid",
+  mailgun: "Mailgun",
+  postmark: "Postmark",
+};
+const PROVIDER_DOCS: Record<string, string> = {
+  sendgrid: "https://app.sendgrid.com/settings/api_keys",
+  mailgun: "https://app.mailgun.com/settings/api_security",
+  postmark: "https://account.postmarkapp.com/servers",
+};
+
+function BulkSenderSection({ profile }: { profile: ProfileData | null | undefined }) {
+  const tier = profile?.tier ?? "free";
+  const isPro = tier !== "free";
+  const { data: status, refetch } = trpc.bulkSender.status.useQuery();
+  const [provider, setProvider] = useState<"sendgrid" | "mailgun" | "postmark">("sendgrid");
+  const [apiKey, setApiKey] = useState("");
+  const [fromEmail, setFromEmail] = useState("");
+  const [fromName, setFromName] = useState("");
+  const [mailgunDomain, setMailgunDomain] = useState("");
+  const [mailgunRegion, setMailgunRegion] = useState<"us" | "eu">("us");
+  const [showForm, setShowForm] = useState(false);
+  const [showKey, setShowKey] = useState(false);
+
+  const connectMutation = trpc.bulkSender.connect.useMutation({
+    onSuccess: () => {
+      toast.success("Bulk sender connected!");
+      setShowForm(false);
+      setApiKey("");
+      refetch();
+    },
+    onError: (err) => toast.error(err.message),
+  });
+  const disconnectMutation = trpc.bulkSender.disconnect.useMutation({
+    onSuccess: () => { toast.success("Bulk sender disconnected."); refetch(); },
+    onError: (err) => toast.error(err.message),
+  });
+  const testMutation = trpc.bulkSender.test.useMutation({
+    onSuccess: (res) => {
+      if (res.ok) toast.success("Connection healthy ✓");
+      else toast.error(res.error ?? "Connection test failed");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  return (
+    <div className="bg-white rounded-2xl p-5 shadow-sm">
+      <div className="flex items-center justify-between mb-1">
+        <div className="flex items-center gap-2">
+          <Zap size={18} className="rr-text-gold" />
+          <h2 className="text-base font-black rr-text-navy">Bulk Sender</h2>
+          {!isPro && (
+            <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}>Pro</span>
+          )}
+        </div>
+        {isPro && status?.connected && !showForm && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="text-xs font-semibold rr-text-navy-mid hover:rr-text-navy"
+          >
+            Update
+          </button>
+        )}
+      </div>
+      <p className="text-xs mb-4 rr-text-navy-muted">
+        Connect SendGrid, Mailgun, or Postmark to send at scale without hitting SMTP daily limits.
+      </p>
+
+      {!isPro ? (
+        <div className="rounded-xl p-4 flex items-start gap-3" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.03 260)" }}>
+          <Crown size={16} className="mt-0.5 shrink-0 rr-text-gold" />
+          <div>
+            <p className="text-sm font-bold rr-text-navy mb-0.5">Pro feature</p>
+            <p className="text-xs rr-text-navy-muted">Upgrade to Pro to connect a bulk email service and remove daily send limits.</p>
+          </div>
+        </div>
+      ) : status?.connected && !showForm ? (
+        <div className="space-y-3">
+          <div className="rounded-xl p-3 flex items-center gap-3" style={{ background: "oklch(0.97 0.02 150)", border: "1px solid oklch(0.85 0.08 150)" }}>
+            <CheckCircle size={16} className="shrink-0" style={{ color: "oklch(0.45 0.15 150)" }} />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold rr-text-navy">{PROVIDER_LABELS[status.provider!]} connected</p>
+              <p className="text-xs rr-text-navy-muted truncate">{status.fromEmail}</p>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => testMutation.mutate()}
+              disabled={testMutation.isPending}
+              className="flex-1 py-2 rounded-xl text-xs font-bold border rr-text-navy-mid"
+              style={{ border: "1.5px solid oklch(0.88 0.03 260)" }}
+            >
+              {testMutation.isPending ? <Loader2 size={12} className="animate-spin inline mr-1" /> : null}
+              Test Connection
+            </button>
+            <button
+              onClick={() => disconnectMutation.mutate()}
+              disabled={disconnectMutation.isPending}
+              className="flex-1 py-2 rounded-xl text-xs font-bold"
+              style={{ background: "oklch(0.97 0.02 30)", border: "1.5px solid oklch(0.85 0.08 30)", color: "oklch(0.50 0.15 30)" }}
+            >
+              Disconnect
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {/* Provider selector */}
+          <div>
+            <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Provider</label>
+            <div className="flex gap-2">
+              {(["sendgrid", "mailgun", "postmark"] as const).map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setProvider(p)}
+                  className="flex-1 py-2 rounded-xl text-xs font-bold transition-colors"
+                  style={{
+                    background: provider === p ? "oklch(0.22 0.09 260)" : "oklch(0.97 0.01 260)",
+                    color: provider === p ? "oklch(0.80 0.18 80)" : "oklch(0.45 0.04 260)",
+                    border: "1.5px solid",
+                    borderColor: provider === p ? "oklch(0.22 0.09 260)" : "oklch(0.88 0.03 260)",
+                  }}
+                >
+                  {PROVIDER_LABELS[p]}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* API Key */}
+          <div>
+            <div className="flex items-center justify-between mb-1">
+              <label className="text-xs font-bold rr-text-navy-mid">API Key</label>
+              <a href={PROVIDER_DOCS[provider]} target="_blank" rel="noopener noreferrer" className="text-xs flex items-center gap-0.5" style={{ color: "oklch(0.40 0.14 150)" }}>
+                Get key <ExternalLink size={10} />
+              </a>
+            </div>
+            <div className="relative">
+              <input
+                type={showKey ? "text" : "password"}
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                placeholder={`Paste your ${PROVIDER_LABELS[provider]} API key`}
+                className="w-full px-3 py-2 pr-9 rounded-xl text-sm outline-none"
+                style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
+              />
+              <button
+                type="button"
+                onClick={() => setShowKey((v) => !v)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 rr-text-navy-muted"
+              >
+                {showKey ? <EyeOff size={14} /> : <Eye size={14} />}
+              </button>
+            </div>
+          </div>
+
+          {/* From Email */}
+          <div>
+            <label className="block text-xs font-bold mb-1 rr-text-navy-mid">From Email</label>
+            <input
+              type="email"
+              value={fromEmail}
+              onChange={(e) => setFromEmail(e.target.value)}
+              placeholder="noreply@yourdomain.com"
+              className="w-full px-3 py-2 rounded-xl text-sm outline-none"
+              style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
+            />
+            <p className="text-xs mt-1 rr-text-navy-muted">Must be a verified sender in your {PROVIDER_LABELS[provider]} account.</p>
+          </div>
+
+          {/* From Name (optional) */}
+          <div>
+            <label className="block text-xs font-bold mb-1 rr-text-navy-mid">From Name <span className="font-normal">(optional)</span></label>
+            <input
+              type="text"
+              value={fromName}
+              onChange={(e) => setFromName(e.target.value)}
+              placeholder="Your Business Name"
+              className="w-full px-3 py-2 rounded-xl text-sm outline-none"
+              style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
+            />
+          </div>
+
+          {/* Mailgun-specific fields */}
+          {provider === "mailgun" && (
+            <>
+              <div>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Mailgun Domain</label>
+                <input
+                  type="text"
+                  value={mailgunDomain}
+                  onChange={(e) => setMailgunDomain(e.target.value)}
+                  placeholder="mg.yourdomain.com"
+                  className="w-full px-3 py-2 rounded-xl text-sm outline-none"
+                  style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Region</label>
+                <div className="flex gap-2">
+                  {(["us", "eu"] as const).map((r) => (
+                    <button
+                      key={r}
+                      onClick={() => setMailgunRegion(r)}
+                      className="flex-1 py-2 rounded-xl text-xs font-bold"
+                      style={{
+                        background: mailgunRegion === r ? "oklch(0.22 0.09 260)" : "oklch(0.97 0.01 260)",
+                        color: mailgunRegion === r ? "oklch(0.80 0.18 80)" : "oklch(0.45 0.04 260)",
+                        border: "1.5px solid",
+                        borderColor: mailgunRegion === r ? "oklch(0.22 0.09 260)" : "oklch(0.88 0.03 260)",
+                      }}
+                    >
+                      {r.toUpperCase()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Compliance note */}
+          <div className="rounded-xl px-3 py-2 flex items-start gap-2" style={{ background: "oklch(0.97 0.02 80)", border: "1px solid oklch(0.88 0.08 80)" }}>
+            <AlertTriangle size={12} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 80)" }} />
+            <p className="text-xs" style={{ color: "oklch(0.45 0.10 80)" }}>
+              You are responsible for CAN-SPAM / GDPR compliance. Always include an unsubscribe link — ReviewRocket adds one automatically.
+            </p>
+          </div>
+
+          <div className="flex gap-2">
+            {status?.connected && (
+              <button
+                onClick={() => setShowForm(false)}
+                className="flex-1 py-2.5 rounded-xl text-sm font-bold border rr-text-navy-mid"
+                style={{ border: "1.5px solid oklch(0.88 0.03 260)" }}
+              >
+                Cancel
+              </button>
+            )}
+            <button
+              onClick={() => connectMutation.mutate({ provider, apiKey, fromEmail, fromName: fromName || undefined, mailgunDomain: mailgunDomain || undefined, mailgunRegion })}
+              disabled={connectMutation.isPending || !apiKey || !fromEmail}
+              className="flex-1 py-2.5 rounded-xl text-sm font-bold rr-bg-navy rr-text-gold"
+            >
+              {connectMutation.isPending ? <><Loader2 size={14} className="animate-spin inline mr-1" />Connecting…</> : "Connect & Test"}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default function SettingsPage() {{
   const { t } = useTranslation();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -782,7 +1038,7 @@ export default function SettingsPage() {
   };
   const PLATFORM_PLACEHOLDERS: Record<string, string> = {
     google: "https://g.page/r/your-business/review",
-    yelp: "e.g. Search for SK America on Yelp in San Bernardino, CA",
+    yelp: "e.g. Search for [Your Business Name] on Yelp in [City, State]",
     tripadvisor: "https://www.tripadvisor.com/Restaurant_Review-...",
     bing: "https://www.bingplaces.com/...",
     facebook: "https://www.facebook.com/your-page/reviews",
@@ -1303,7 +1559,7 @@ export default function SettingsPage() {
                     />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {newPlatformType === "yelp"
-                        ? <>Enter a plain-text search instruction. This text appears in the email body — no link is created. Recommended for Yelp compliance (e.g. <em>Search for SK America on Yelp in San Bernardino, CA</em>).</>
+                        ? <>Enter a plain-text search instruction (e.g. <em>Search for [Your Business] on Yelp in [City, State]</em>). This text appears in the email body — no link is created, keeping you Yelp-compliant.</>
                         : "Paste the public URL customers use to leave a review on this platform."}
                     </p>
                   </div>
@@ -2026,6 +2282,9 @@ export default function SettingsPage() {
 
         {/* ── Billing ──────────────────────────────────────────────────────── */}
         <BillingSection profile={profile} />
+
+        {/* ── Bulk Sender ──────────────────────────────────────────────────── */}
+        <BulkSenderSection profile={profile} />
 
         {/* ── WooCommerce ──────────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">

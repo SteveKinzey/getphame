@@ -51,6 +51,7 @@ import {
   UserX,
   AlertTriangle,
   ShieldCheck,
+  ExternalLink,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
@@ -384,9 +385,14 @@ export default function WooCustomers() {
 
           {/* Compliance checklist */}
           <div className="mt-2 rounded-xl p-3 rr-bg-white-card" style={{ border: "1px solid oklch(0.88 0.03 260)" }}>
-            <div className="flex items-center gap-1.5 mb-2">
-              <ShieldCheck size={13} className="rr-text-green" />
-              <p className="text-xs font-bold rr-text-navy">Compliance Checklist</p>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-1.5">
+                <ShieldCheck size={13} className="rr-text-green" />
+                <p className="text-xs font-bold rr-text-navy">Compliance Checklist</p>
+              </div>
+              <a href="/compliance" target="_blank" rel="noopener noreferrer" className="text-xs font-medium flex items-center gap-0.5" style={{ color: "oklch(0.40 0.14 150)" }} onClick={(e) => e.stopPropagation()}>
+                Full Guide <ExternalLink size={10} />
+              </a>
             </div>
             {([
               { key: "realCustomers" as const, label: "These are real customers who transacted with me" },

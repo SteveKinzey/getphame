@@ -1427,3 +1427,8 @@
 - [x] Remove publicProfiles tRPC procedures from routers.ts
 - [x] Remove public_profiles DB table from schema.ts and push migration
 - [x] Remove "Public Profile" quick-access card from Home.tsx
+
+## Yelp & Compliance Improvements
+- [x] Update Yelp placeholder text to cleaner copy
+- [x] Build compliance pre-send modal (brief bullets + link to /compliance page)
+- [x] Build bulk sender connection UI as Pro-gated feature in Settings (SendGrid/Mailgun/Postmark API key)

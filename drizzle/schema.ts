@@ -460,3 +460,22 @@ export const clientReviews = mysqlTable("client_reviews", {
 });
 export type ClientReview = typeof clientReviews.$inferSelect;
 export type InsertClientReview = typeof clientReviews.$inferInsert;
+
+/** Bulk sender API credentials — Pro-only feature for high-volume sending via SendGrid/Mailgun/Postmark */
+export const bulkSenderCredentials = mysqlTable("bulk_sender_credentials", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  provider: mysqlEnum("provider", ["sendgrid", "mailgun", "postmark"]).notNull(),
+  apiKey: text("apiKey").notNull(), // AES-256-GCM encrypted
+  fromEmail: varchar("fromEmail", { length: 320 }).notNull(),
+  fromName: varchar("fromName", { length: 255 }),
+  // Mailgun-specific: sending domain (e.g. mg.yourdomain.com)
+  mailgunDomain: varchar("mailgunDomain", { length: 255 }),
+  // Mailgun-specific: EU region flag
+  mailgunRegion: mysqlEnum("mailgunRegion", ["us", "eu"]).default("us"),
+  connected: int("connected").default(1).notNull(), // 1 = active
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+});
+export type BulkSenderCredential = typeof bulkSenderCredentials.$inferSelect;
+export type InsertBulkSenderCredential = typeof bulkSenderCredentials.$inferInsert;

@@ -302,6 +302,13 @@
       "when": 1777376280908,
       "tag": "0042_sturdy_puppet_master",
       "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "5",
+      "when": 1777380396021,
+      "tag": "0043_powerful_blockbuster",
+      "breakpoints": true
     }
   ]
 }
