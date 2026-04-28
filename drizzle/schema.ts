@@ -460,22 +460,3 @@ export const clientReviews = mysqlTable("client_reviews", {
 });
 export type ClientReview = typeof clientReviews.$inferSelect;
 export type InsertClientReview = typeof clientReviews.$inferInsert;
-
-/**
- * Public profile pages — each business owner gets a public-facing profile URL.
- * Slug is auto-generated from businessName but can be customised.
- */
-export const publicProfiles = mysqlTable("public_profiles", {
-  id: int("id").autoincrement().primaryKey(),
-  userId: int("userId").notNull().unique(),
-  slug: varchar("slug", { length: 100 }).notNull().unique(), // URL-safe slug e.g. "steves-plumbing"
-  headline: varchar("headline", { length: 255 }), // short tagline shown on profile
-  bio: text("bio"), // longer description
-  logoUrl: text("logoUrl"), // CDN URL of uploaded logo/photo
-  // Visibility — 1 = public (default), 0 = hidden
-  isPublic: int("isPublic").notNull().default(1),
-  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
-  updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
-});
-export type PublicProfile = typeof publicProfiles.$inferSelect;
-export type InsertPublicProfile = typeof publicProfiles.$inferInsert;

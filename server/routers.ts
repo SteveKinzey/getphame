@@ -40,7 +40,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, publicProfiles } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews } from "../drizzle/schema";
 import { eq, like, or, inArray, desc } from "drizzle-orm";
 import {
   listSavedContacts,
@@ -2306,76 +2306,6 @@ export const appRouter = router({
       for (const r of rows) { byPlatform[r.platform] = (byPlatform[r.platform] ?? 0) + 1; }
       return { total, avgRating: Math.round(avgRating * 10) / 10, byPlatform };
     }),
-  }),
-
-  /** Public profile pages — each user gets a public /p/:slug page */
-  publicProfile: router({
-    /** Get the current user's public profile (creates one if missing) */
-    get: protectedProcedure.query(async ({ ctx }) => {
-      const db = await getDb();
-      if (!db) return null;
-      const [profile] = await db.select().from(publicProfiles).where(eq(publicProfiles.userId, ctx.user.id)).limit(1);
-      return profile ?? null;
-    }),
-    /** Upsert the public profile */
-    upsert: protectedProcedure
-      .input(z.object({
-        slug: z.string().min(2).max(100).regex(/^[a-z0-9-]+$/, "Slug must be lowercase letters, numbers, and hyphens only"),
-        headline: z.string().max(255).optional(),
-        bio: z.string().max(2000).optional(),
-        logoUrl: z.string().url().optional().or(z.literal("")),
-        isPublic: z.number().int().min(0).max(1).optional(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        const db = await getDb();
-        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-        // Check slug uniqueness (excluding current user)
-        const [existing] = await db.select({ userId: publicProfiles.userId }).from(publicProfiles).where(eq(publicProfiles.slug, input.slug)).limit(1);
-        if (existing && existing.userId !== ctx.user.id) {
-          throw new TRPCError({ code: "CONFLICT", message: "That URL is already taken. Try a different one." });
-        }
-        await db.insert(publicProfiles).values({
-          userId: ctx.user.id,
-          slug: input.slug,
-          headline: input.headline ?? null,
-          bio: input.bio ?? null,
-          logoUrl: input.logoUrl || null,
-          isPublic: input.isPublic ?? 1,
-        }).onDuplicateKeyUpdate({
-          set: {
-            slug: input.slug,
-            headline: input.headline ?? null,
-            bio: input.bio ?? null,
-            logoUrl: input.logoUrl || null,
-            isPublic: input.isPublic ?? 1,
-            updatedAt: Date.now(),
-          },
-        });
-        return { success: true, slug: input.slug };
-      }),
-    /** Public lookup by slug — no auth required */
-    bySlug: publicProcedure
-      .input(z.object({ slug: z.string().min(1).max(100) }))
-      .query(async ({ input }) => {
-        const db = await getDb();
-        if (!db) return null;
-        const [profile] = await db.select().from(publicProfiles).where(eq(publicProfiles.slug, input.slug)).limit(1);
-        if (!profile || profile.isPublic === 0) return null;
-        // Get the business name and default review platform URL
-        const [biz] = await db.select({ businessName: businessProfiles.businessName }).from(businessProfiles).where(eq(businessProfiles.userId, profile.userId)).limit(1);
-        const [platform] = await db.select({ url: reviewPlatforms.url, platform: reviewPlatforms.platform, label: reviewPlatforms.label }).from(reviewPlatforms).where(eq(reviewPlatforms.userId, profile.userId)).orderBy(desc(reviewPlatforms.isDefault)).limit(1);
-        // Get review stats
-        const reviews = await db.select({ rating: clientReviews.rating }).from(clientReviews).where(eq(clientReviews.userId, profile.userId));
-        const avgRating = reviews.length > 0 ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
-        return {
-          ...profile,
-          businessName: biz?.businessName ?? "Business",
-          reviewPlatformUrl: platform?.url ?? null,
-          reviewPlatformName: platform?.label ?? platform?.platform ?? "Google",
-          reviewCount: reviews.length,
-          avgRating: Math.round(avgRating * 10) / 10,
-        };
-      }),
   }),
 
   /** Analytics / page event tracking */
