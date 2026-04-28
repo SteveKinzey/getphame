@@ -1,4 +1,4 @@
-// ReviewLink — CSV Client Import
+// Phame — CSV Client Import
 // Drag-drop CSV upload → column mapper → preview table → confirm import → saved contacts
 
 import { useState, useCallback, useRef } from "react";

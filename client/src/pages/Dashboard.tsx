@@ -1,4 +1,4 @@
-// ReviewLink — Dashboard / Analytics Screen
+// Phame — Dashboard / Analytics Screen
 // Shows: total requests, monthly count, weekly breakdown chart, full activity log
 
 import { useTranslation } from 'react-i18next';

@@ -205,14 +205,14 @@ export function registerPublicApiRoutes(app: Router) {
     try {
       const profile = await getBusinessProfile(userId);
       if (!profile) {
-        return res.status(400).json({ error: "Business profile not configured. Please complete setup in ReviewLink." });
+        return res.status(400).json({ error: "Business profile not configured. Please complete setup in Phame." });
       }
       // Check SMTP configured
       const db = await getDb();
       if (!db) return res.status(503).json({ error: "Database unavailable" });
       const [smtpRow] = await db.select({ id: smtpCredentials.id }).from(smtpCredentials).where(eq(smtpCredentials.userId, userId)).limit(1);
       if (!smtpRow) {
-        return res.status(400).json({ error: "SMTP not configured. Connect your email account in ReviewLink Settings." });
+        return res.status(400).json({ error: "SMTP not configured. Connect your email account in Phame Settings." });
       }
       // Free-tier limit
       if (profile.tier === 'free') {

@@ -1,4 +1,4 @@
-// ReviewLink — Onboarding / Login screen
+// Phame — Onboarding / Login screen
 // Shown when user is not authenticated. Prompts them to sign in with Google or Apple OAuth.
 // After login, they set up their business profile in Settings.
 
@@ -32,7 +32,7 @@ export default function OnboardingPage() {
       {/* Top bar: logo + language toggle */}
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-2">
-          <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-9 h-9 rounded-lg object-contain" />
+          <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="Phame" className="w-9 h-9 rounded-lg object-contain" />
           <span
             className="text-sm font-bold tracking-widest uppercase rr-text-gold"
           >

@@ -1,5 +1,5 @@
 /**
- * Stripe integration for ReviewLink Pro subscriptions.
+ * Stripe integration for Phame Pro subscriptions.
  *
  * Flow:
  * 1. User clicks "Upgrade to Pro" → frontend calls stripe.createCheckout

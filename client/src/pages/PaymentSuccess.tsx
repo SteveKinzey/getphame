@@ -1,4 +1,4 @@
-// ReviewLink — Payment Success Page
+// Phame — Payment Success Page
 // Shown after a successful Stripe checkout. Tier-aware messaging for Pro/Annual/Lifetime.
 
 import { useEffect, useMemo } from "react";
@@ -208,7 +208,7 @@ export default function PaymentSuccessPage() {
         ))}
       </div>
       <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-disabled)" }}>
-        Thank you for supporting ReviewLink
+        Thank you for supporting Phame
       </p>
     </div>
   );

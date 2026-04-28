@@ -23,7 +23,7 @@ export interface ReviewEmailOptions {
   /** Optional signed unsubscribe URL — if provided, renders a real clickable link in the footer */
   unsubscribeUrl?: string;
   /**
-   * When true (free-tier users), appends a small "Powered by ReviewLink" line to the footer.
+   * When true (free-tier users), appends a small "Powered by Phame" line to the footer.
    * Pro/Annual/Lifetime users get a clean footer.
    */
   showPoweredBy?: boolean;
@@ -59,7 +59,7 @@ export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
        To stop receiving these emails, reply with &quot;unsubscribe&quot;.`;
 
   const poweredByLine = showPoweredBy
-    ? `<br/><br/><a href="https://reviewlink.app/upgrade?utm_source=powered_by_footer&utm_medium=email&utm_campaign=free_tier" style="color:#bbb;text-decoration:none;font-size:10px;">Powered by <strong>ReviewLink</strong> &mdash; <span style="text-decoration:underline;">Remove branding &rarr;</span></a>`
+    ? `<br/><br/><a href="https://phame.app/upgrade?utm_source=powered_by_footer&utm_medium=email&utm_campaign=free_tier" style="color:#bbb;text-decoration:none;font-size:10px;">Powered by <strong>Phame</strong> &mdash; <span style="text-decoration:underline;">Remove branding &rarr;</span></a>`
     : '';
 
   return `<!DOCTYPE html>
@@ -78,7 +78,7 @@ export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
           <!-- Header -->
           <tr>
             <td style="background:${NAVY};padding:28px 40px;text-align:center;">
-              <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:${GOLD};">ReviewLink</p>
+              <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:${GOLD};">Phame</p>
               <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">We'd love your feedback! ⭐</h1>
             </td>
           </tr>
@@ -131,6 +131,6 @@ export function buildReviewRequestText(opts: ReviewEmailOptions): string {
   const unsubLine = unsubscribeUrl
     ? `To unsubscribe: ${unsubscribeUrl}`
     : `To unsubscribe, reply with "unsubscribe".`;
-  const poweredBy = showPoweredBy ? '\n\nPowered by ReviewLink — https://reviewlink.app' : '';
+  const poweredBy = showPoweredBy ? '\n\nPowered by Phame — https://phame.app' : '';
   return `Hi ${customerName}!\n\n${context}\n\nCould you take 30 seconds to leave us a quick review?\n\n${reviewUrl}\n\nThank you so much!\nThe ${businessName} team\n\n---\nYou received this email because you are a customer of ${businessName}. ${unsubLine}${poweredBy}`;
 }

@@ -1,4 +1,4 @@
-// ReviewLink — Send Request Page
+// Phame — Send Request Page
 // Sends a review request email via the user's connected email account (SMTP)
 
 import { useState, useMemo } from "react";
@@ -238,13 +238,13 @@ export default function SendRequestPage() {
               {t("successScreen.milestoneDescription")}
             </p>
             <a
-              href="https://reviewlink.app/review"
+              href="https://phame.app/review"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-xs font-black transition-transform active:scale-95 rr-bg-gold rr-text-navy"
             >
               <Star size={13} />
-              {t("successScreen.rateReviewLink")}
+              {t("successScreen.ratePhame")}
             </a>
           </div>
         )}

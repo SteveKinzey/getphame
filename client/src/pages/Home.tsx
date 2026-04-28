@@ -1,4 +1,4 @@
-// ReviewLink — Home Dashboard
+// Phame — Home Dashboard
 // Shows stats, SMTP connection status, and quick-send CTA
 
 import { useEffect, useState } from "react";
@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
 
-const SHARE_URL = "https://reviewlink.app";
+const SHARE_URL = "https://phame.app";
 
 function ShareReferralCard() {
   const { t } = useTranslation();
@@ -90,7 +90,7 @@ function ShareReferralCard() {
           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-black transition-transform active:scale-95 rr-bg-gold rr-text-navy"
         >
           {copied ? <Check size={15} /> : <Share2 size={15} />}
-          {copied ? t("shareReferralCard.copiedToClipboard") : t("shareReferralCard.shareReviewLink")}
+          {copied ? t("shareReferralCard.copiedToClipboard") : t("shareReferralCard.sharePhame")}
         </button>
       </div>
     </div>
@@ -196,7 +196,7 @@ export default function HomePage() {
     const shareText = t("shareReferralCard.shareText") + " " + SHARE_URL;
     if (navigator.share) {
       try {
-        await navigator.share({ title: "ReviewLink", text: shareText, url: SHARE_URL });
+        await navigator.share({ title: "Phame", text: shareText, url: SHARE_URL });
       } catch {
         // user cancelled — no action needed
       }
@@ -288,7 +288,7 @@ export default function HomePage() {
           {/* Row 2: Brand label (left) + Share / Guide buttons (right) */}
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center gap-2">
-              <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-12 h-12 rounded-xl object-contain" />
+              <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="Phame" className="w-12 h-12 rounded-xl object-contain" />
               <span className="text-sm font-bold tracking-widest uppercase rr-text-gold">
                 {t("nav.brandName")}
               </span>
@@ -297,7 +297,7 @@ export default function HomePage() {
               <button
                 onClick={handleShare}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
-                title={t("nav.shareHint", { defaultValue: "Share ReviewLink with a friend" })}
+                title={t("nav.shareHint", { defaultValue: "Share Phame with a friend" })}
               >
                 <Share2 size={13} />
                 <span>{t("nav.share", { defaultValue: "Share" })}</span>
@@ -544,7 +544,7 @@ export default function HomePage() {
             {t("homePage.seoTitle", { defaultValue: "Get More Business Reviews" })}
           </h2>
           <p className="text-xs leading-relaxed rr-text-navy-muted">
-            {t("homePage.seoDescription", { defaultValue: "ReviewLink makes it easy to send personalized review requests to your customers via email — for Google, Yelp, TripAdvisor, Bing, Facebook, and more. Build your online reputation across every platform, increase star ratings, and attract new customers — all from one simple dashboard." })}
+            {t("homePage.seoDescription", { defaultValue: "Phame makes it easy to send personalized review requests to your customers via email — for Google, Yelp, TripAdvisor, Bing, Facebook, and more. Build your online reputation across every platform, increase star ratings, and attract new customers — all from one simple dashboard." })}
           </p>
         </div>
 

@@ -1,5 +1,5 @@
 /**
- * SMTP email sending helpers for ReviewLink.
+ * SMTP email sending helpers for Phame.
  * Replaces Gmail API OAuth — users connect any email account using
  * their standard SMTP credentials (email + password/app-password).
  *
@@ -255,7 +255,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>You're connected to ReviewLink!</title>
+  <title>You're connected to Phame!</title>
 </head>
 <body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
@@ -266,7 +266,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
           <!-- Header -->
           <tr>
             <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">ReviewLink</p>
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Phame</p>
               <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">Your email is connected! 🚀</h1>
             </td>
           </tr>
@@ -278,7 +278,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
                 Hi ${fromName},
               </p>
               <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">
-                This email confirms that <strong>${creds.user}</strong> is successfully connected to ReviewLink. Your review request emails will be sent from this address — so they land in your customers' inboxes looking like a personal message from you, not a bulk mailer.
+                This email confirms that <strong>${creds.user}</strong> is successfully connected to Phame. Your review request emails will be sent from this address — so they land in your customers' inboxes looking like a personal message from you, not a bulk mailer.
               </p>
 
               <!-- Sample preview box -->
@@ -306,7 +306,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
               <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
                 <tr>
                   <td style="background:#1a2744;border-radius:10px;padding:14px 32px;text-align:center;">
-                    <a href="https://reviewlink.app/send" style="color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;letter-spacing:0.3px;">Send Your First Review Request →</a>
+                    <a href="https://phame.app/send" style="color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;letter-spacing:0.3px;">Send Your First Review Request →</a>
                   </td>
                 </tr>
               </table>
@@ -317,8 +317,8 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
           <tr>
             <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
               <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">
-                You received this because you just connected your email to ReviewLink.<br/>
-                <a href="https://reviewlink.app/settings" style="color:#1a2744;">Manage your settings</a>
+                You received this because you just connected your email to Phame.<br/>
+                <a href="https://phame.app/settings" style="color:#1a2744;">Manage your settings</a>
               </p>
             </td>
           </tr>
@@ -330,12 +330,12 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
 </body>
 </html>`;
 
-    const text = `Hi ${fromName},\n\nYour email (${creds.user}) is now connected to ReviewLink.\n\nYou're ready to send review requests to your customers. Head to https://reviewlink.app/send to get started.\n\n— The ReviewLink Team`;
+    const text = `Hi ${fromName},\n\nYour email (${creds.user}) is now connected to Phame.\n\nYou're ready to send review requests to your customers. Head to https://phame.app/send to get started.\n\n— The Phame Team`;
 
     await sendMailViaSmtp({
       userId,
       to: toAddress,
-      subject: "You're connected to ReviewLink! 🚀",
+      subject: "You're connected to Phame! 🚀",
       html,
       text,
     });
@@ -449,7 +449,7 @@ export async function sendUserWelcomeEmail(opts: {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to ReviewLink!</title>
+  <title>Welcome to Phame!</title>
 </head>
 <body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
@@ -458,7 +458,7 @@ export async function sendUserWelcomeEmail(opts: {
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
           <tr>
             <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">ReviewLink</p>
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Phame</p>
               <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">Welcome aboard! 🚀</h1>
             </td>
           </tr>
@@ -466,7 +466,7 @@ export async function sendUserWelcomeEmail(opts: {
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
               <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">
-                Thanks for joining ReviewLink! You're now set up to send personalised review request emails directly from your own email account — so your customers see a message from <em>you</em>, not a bulk mailer.
+                Thanks for joining Phame! You're now set up to send personalised review request emails directly from your own email account — so your customers see a message from <em>you</em>, not a bulk mailer.
               </p>
               <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">
                 Here's how to get started in 3 steps:
@@ -481,7 +481,7 @@ export async function sendUserWelcomeEmail(opts: {
               <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
                 <tr>
                   <td style="background:#1a2744;border-radius:10px;padding:14px 32px;text-align:center;">
-                    <a href="https://reviewlink.app" style="color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;">Get Started →</a>
+                    <a href="https://phame.app" style="color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;">Get Started →</a>
                   </td>
                 </tr>
               </table>
@@ -490,8 +490,8 @@ export async function sendUserWelcomeEmail(opts: {
           <tr>
             <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
               <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">
-                You received this because you signed up for ReviewLink.<br/>
-                <a href="https://reviewlink.app/settings" style="color:#1a2744;">Manage your settings</a>
+                You received this because you signed up for Phame.<br/>
+                <a href="https://phame.app/settings" style="color:#1a2744;">Manage your settings</a>
               </p>
             </td>
           </tr>
@@ -502,7 +502,7 @@ export async function sendUserWelcomeEmail(opts: {
 </body>
 </html>`;
 
-  const text = `Hi ${displayName},\n\nWelcome to ReviewLink!\n\nYou're now set up to send personalised review request emails directly from your own email account.\n\nGet started at https://reviewlink.app\n\n— ${fromName}`;
+  const text = `Hi ${displayName},\n\nWelcome to Phame!\n\nYou're now set up to send personalised review request emails directly from your own email account.\n\nGet started at https://phame.app\n\n— ${fromName}`;
 
   const pass = decryptPassword(creds.encryptedPass);
   const transporter = createTransporter({
@@ -517,7 +517,7 @@ export async function sendUserWelcomeEmail(opts: {
     from,
     replyTo: creds.replyTo ?? creds.user,
     to: opts.toEmail,
-    subject: "Welcome to ReviewLink! 🚀",
+    subject: "Welcome to Phame! 🚀",
     html,
     text,
   });
@@ -560,7 +560,7 @@ export async function sendUpgradeReceiptEmail(opts: {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>You're now on ReviewLink ${tierLabel}!</title>
+  <title>You're now on Phame ${tierLabel}!</title>
 </head>
 <body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
@@ -569,7 +569,7 @@ export async function sendUpgradeReceiptEmail(opts: {
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
           <tr>
             <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">ReviewLink</p>
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Phame</p>
               <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">You're on ${tierLabel}! 🎉</h1>
             </td>
           </tr>
@@ -577,7 +577,7 @@ export async function sendUpgradeReceiptEmail(opts: {
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
               <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">
-                Your ReviewLink account has been upgraded to <strong>${tierLabel}</strong>. Here's what you now have access to:
+                Your Phame account has been upgraded to <strong>${tierLabel}</strong>. Here's what you now have access to:
               </p>
               <ul style="margin:0 0 24px;padding:0 0 0 4px;list-style:none;">
                 ${perksHtml}
@@ -585,7 +585,7 @@ export async function sendUpgradeReceiptEmail(opts: {
               <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
                 <tr>
                   <td style="background:#1a2744;border-radius:10px;padding:14px 32px;text-align:center;">
-                    <a href="https://reviewlink.app/send" style="color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;">Start Sending Reviews →</a>
+                    <a href="https://phame.app/send" style="color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;">Start Sending Reviews →</a>
                   </td>
                 </tr>
               </table>
@@ -594,7 +594,7 @@ export async function sendUpgradeReceiptEmail(opts: {
           <tr>
             <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
               <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">
-                Questions? Reply to this email or visit <a href="https://reviewlink.app/settings" style="color:#1a2744;">your settings</a>.
+                Questions? Reply to this email or visit <a href="https://phame.app/settings" style="color:#1a2744;">your settings</a>.
               </p>
             </td>
           </tr>
@@ -605,7 +605,7 @@ export async function sendUpgradeReceiptEmail(opts: {
 </body>
 </html>`;
 
-  const text = `Hi ${displayName},\n\nYour ReviewLink account has been upgraded to ${tierLabel}!\n\nStart sending review requests at https://reviewlink.app/send\n\n— ${fromName}`;
+  const text = `Hi ${displayName},\n\nYour Phame account has been upgraded to ${tierLabel}!\n\nStart sending review requests at https://phame.app/send\n\n— ${fromName}`;
 
   const pass = decryptPassword(creds.encryptedPass);
   const transporter = createTransporter({
@@ -620,7 +620,7 @@ export async function sendUpgradeReceiptEmail(opts: {
     from,
     replyTo: creds.replyTo ?? creds.user,
     to: opts.toEmail,
-    subject: `You're now on ReviewLink ${tierLabel}! 🎉`,
+    subject: `You're now on Phame ${tierLabel}! 🎉`,
     html,
     text,
   });
@@ -653,14 +653,14 @@ export async function sendChurnRecoveryEmail(opts: {
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
           <tr>
             <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">ReviewLink</p>
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Phame</p>
               <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">We're sorry to see you go</h1>
             </td>
           </tr>
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
-              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">Your ReviewLink subscription has been cancelled. Your account has been moved back to the free plan.</p>
+              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">Your Phame subscription has been cancelled. Your account has been moved back to the free plan.</p>
               <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">If you cancelled by mistake, or if there is anything we can do to help, just reply to this email.</p>
               <!-- Discount offer block -->
               <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;background:#1a2744;border-radius:12px;overflow:hidden;">
@@ -684,7 +684,7 @@ export async function sendChurnRecoveryEmail(opts: {
               <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
                 <tr>
                   <td style="background:#f0a500;border-radius:10px;padding:14px 32px;text-align:center;">
-                    <a href="https://reviewlink.app/upgrade" style="color:#1a2744;font-size:15px;font-weight:700;text-decoration:none;">Reactivate My Account</a>
+                    <a href="https://phame.app/upgrade" style="color:#1a2744;font-size:15px;font-weight:700;text-decoration:none;">Reactivate My Account</a>
                   </td>
                 </tr>
               </table>
@@ -692,7 +692,7 @@ export async function sendChurnRecoveryEmail(opts: {
           </tr>
           <tr>
             <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
-              <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">Questions? Reply to this email or visit <a href="https://reviewlink.app/settings" style="color:#1a2744;">your settings</a>.</p>
+              <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">Questions? Reply to this email or visit <a href="https://phame.app/settings" style="color:#1a2744;">your settings</a>.</p>
             </td>
           </tr>
         </table>
@@ -701,7 +701,7 @@ export async function sendChurnRecoveryEmail(opts: {
   </table>
 </body>
 </html>`;
-  const text = `Hi ${displayName},\n\nYour ReviewLink subscription has been cancelled and your account is now on the free plan.\n\nIf you cancelled by mistake or want to come back, reactivate at https://reviewlink.app/upgrade\n\nQuestions? Just reply to this email.\n\n-- ${fromName}`;
+  const text = `Hi ${displayName},\n\nYour Phame subscription has been cancelled and your account is now on the free plan.\n\nIf you cancelled by mistake or want to come back, reactivate at https://phame.app/upgrade\n\nQuestions? Just reply to this email.\n\n-- ${fromName}`;
   const pass = decryptPassword(creds.encryptedPass);
   const transporter = createTransporter({
     host: creds.host,
@@ -715,7 +715,7 @@ export async function sendChurnRecoveryEmail(opts: {
     from,
     replyTo: creds.replyTo ?? creds.user,
     to: opts.toEmail,
-    subject: "We're sorry to see you go -- ReviewLink",
+    subject: "We're sorry to see you go -- Phame",
     html,
     text,
   });
@@ -750,14 +750,14 @@ export async function sendReEngagementEmail(opts: {
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
           <tr>
             <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">ReviewLink</p>
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Phame</p>
               <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">Here's what you're missing</h1>
             </td>
           </tr>
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
-              <p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">It's been a few days since your ReviewLink subscription ended. We wanted to share a quick reminder of what's waiting for you when you come back:</p>
+              <p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">It's been a few days since your Phame subscription ended. We wanted to share a quick reminder of what's waiting for you when you come back:</p>
               <!-- Feature list -->
               <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
                 <tr>
@@ -812,7 +812,7 @@ export async function sendReEngagementEmail(opts: {
               <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
                 <tr>
                   <td style="background:#f0a500;border-radius:10px;padding:14px 32px;text-align:center;">
-                    <a href="https://reviewlink.app/upgrade" style="color:#1a2744;font-size:15px;font-weight:700;text-decoration:none;">Come Back — Reactivate Now</a>
+                    <a href="https://phame.app/upgrade" style="color:#1a2744;font-size:15px;font-weight:700;text-decoration:none;">Come Back — Reactivate Now</a>
                   </td>
                 </tr>
               </table>
@@ -821,7 +821,7 @@ export async function sendReEngagementEmail(opts: {
           </tr>
           <tr>
             <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
-              <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">Questions? Reply to this email or visit <a href="https://reviewlink.app/settings" style="color:#1a2744;">your settings</a>.</p>
+              <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">Questions? Reply to this email or visit <a href="https://phame.app/settings" style="color:#1a2744;">your settings</a>.</p>
               ${opts.unsubscribeUrl ? `<p style="margin:8px 0 0;font-size:11px;color:#ccc;">Don't want these emails? <a href="${opts.unsubscribeUrl}" style="color:#aaa;text-decoration:underline;">Unsubscribe</a></p>` : ""}
             </td>
           </tr>
@@ -831,7 +831,7 @@ export async function sendReEngagementEmail(opts: {
   </table>
 </body>
 </html>`;
-  const text = `Hi ${displayName},\n\nIt's been a few days since your ReviewLink subscription ended. Here's what's waiting for you:\n\n• Automated review requests from your own inbox\n• 3-day and 10-day follow-up sequences\n• Multi-platform review links (Google, Yelp, TripAdvisor, Facebook)\n\nCome back: https://reviewlink.app/upgrade\n\nQuestions? Just reply to this email.\n\n-- ${fromName}${opts.unsubscribeUrl ? `\n\nUnsubscribe from these emails: ${opts.unsubscribeUrl}` : ""}`;
+  const text = `Hi ${displayName},\n\nIt's been a few days since your Phame subscription ended. Here's what's waiting for you:\n\n• Automated review requests from your own inbox\n• 3-day and 10-day follow-up sequences\n• Multi-platform review links (Google, Yelp, TripAdvisor, Facebook)\n\nCome back: https://phame.app/upgrade\n\nQuestions? Just reply to this email.\n\n-- ${fromName}${opts.unsubscribeUrl ? `\n\nUnsubscribe from these emails: ${opts.unsubscribeUrl}` : ""}`;
   const pass = decryptPassword(creds.encryptedPass);
   const transporter = createTransporter({
     host: creds.host,
@@ -845,7 +845,7 @@ export async function sendReEngagementEmail(opts: {
     from,
     replyTo: creds.replyTo ?? creds.user,
     to: opts.toEmail,
-    subject: "Here's what you're missing — ReviewLink",
+    subject: "Here's what you're missing — Phame",
     html,
     text,
   });
@@ -884,19 +884,19 @@ export async function sendPaymentFailedEmail(opts: {
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
           <tr>
             <td style="background:#b91c1c;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fca5a5;">ReviewLink</p>
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fca5a5;">Phame</p>
               <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">Payment failed — action required</h1>
             </td>
           </tr>
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
-              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">We were unable to process your ReviewLink subscription payment. ${attemptNote}</p>
+              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">We were unable to process your Phame subscription payment. ${attemptNote}</p>
               <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">To keep your account active and continue sending review requests, please update your payment method as soon as possible.</p>
               <table cellpadding="0" cellspacing="0" style="margin:0 auto 24px;">
                 <tr>
                   <td style="background:#f0a500;border-radius:10px;padding:14px 32px;text-align:center;">
-                    <a href="https://reviewlink.app/settings" style="color:#1a2744;font-size:15px;font-weight:700;text-decoration:none;">Update Payment Method</a>
+                    <a href="https://phame.app/settings" style="color:#1a2744;font-size:15px;font-weight:700;text-decoration:none;">Update Payment Method</a>
                   </td>
                 </tr>
               </table>
@@ -905,7 +905,7 @@ export async function sendPaymentFailedEmail(opts: {
           </tr>
           <tr>
             <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
-              <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">Questions? Reply to this email or visit <a href="https://reviewlink.app/settings" style="color:#1a2744;">your settings</a>.</p>
+              <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">Questions? Reply to this email or visit <a href="https://phame.app/settings" style="color:#1a2744;">your settings</a>.</p>
             </td>
           </tr>
         </table>
@@ -914,7 +914,7 @@ export async function sendPaymentFailedEmail(opts: {
   </table>
 </body>
 </html>`;
-  const text = `Hi ${displayName},\n\nWe were unable to process your ReviewLink subscription payment. ${attemptNote}\n\nPlease update your payment method to keep your account active:\nhttps://reviewlink.app/settings\n\nQuestions? Just reply to this email.\n\n-- ${fromName}`;
+  const text = `Hi ${displayName},\n\nWe were unable to process your Phame subscription payment. ${attemptNote}\n\nPlease update your payment method to keep your account active:\nhttps://phame.app/settings\n\nQuestions? Just reply to this email.\n\n-- ${fromName}`;
   const pass = decryptPassword(creds.encryptedPass);
   const transporter = createTransporter({
     host: creds.host,
@@ -928,7 +928,7 @@ export async function sendPaymentFailedEmail(opts: {
     from,
     replyTo: creds.replyTo ?? creds.user,
     to: opts.toEmail,
-    subject: "Action required: payment failed — ReviewLink",
+    subject: "Action required: payment failed — Phame",
     html,
     text,
   });

@@ -1,4 +1,4 @@
-// ReviewLink — Auto-Reminder Hook
+// Phame — Auto-Reminder Hook
 // Checks for pending 3-day follow-up reminders and processes them
 // Only active for Pro tier users
 
@@ -19,12 +19,12 @@ export function useReminders() {
         const message = buildReviewMessage(
           reminder.customerName,
           profile.name,
-          profile.googleReviewLink
+          profile.googlePhame
         );
 
         // In production: call email/SMS API here
         // For demo: log and mark as sent
-        console.log(`[ReviewLink] Sending reminder to ${reminder.customerName}`);
+        console.log(`[Phame] Sending reminder to ${reminder.customerName}`);
         console.log('Message:', message);
 
         // Simulate sending

@@ -1,4 +1,4 @@
-// ReviewLink — Global App Context
+// Phame — Global App Context
 // Manages business profile, requests, and reminder state across all screens
 
 import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';

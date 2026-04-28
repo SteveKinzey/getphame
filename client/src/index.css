@@ -1,4 +1,4 @@
-/* ReviewLink Design System
+/* Phame Design System
  * Movement: Bold Consumer App / Sports-Energy meets Local Business Tool
  * Colors: Deep Navy (#0F1F4B) base + Bright Gold (#FFB800) accent
  * Typography: Poppins (700/800/900) headings + Nunito (400/600) body
@@ -48,7 +48,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* ReviewLink custom tokens */
+  /* Phame custom tokens */
   --color-navy: var(--navy);
   --color-navy-light: var(--navy-light);
   --color-gold: var(--gold);
@@ -124,7 +124,7 @@
   --sp-2xl: 3rem;      /* 48px — hero spacing */
   --sp-3xl: 4rem;      /* 64px — page-level vertical rhythm */
 
-  /* ReviewLink Brand Colors */
+  /* Phame Brand Colors */
   --navy: oklch(0.22 0.09 260);
   --navy-light: oklch(0.30 0.08 260);
   --gold: oklch(0.80 0.18 80);
@@ -132,7 +132,7 @@
   --gold-dark: oklch(0.68 0.18 75);
   --cream: oklch(0.985 0.003 100);
 
-  /* Semantic tokens mapped to ReviewLink palette */
+  /* Semantic tokens mapped to Phame palette */
   --radius: 0.75rem;
   --background: oklch(0.975 0.003 100);
   --foreground: oklch(0.22 0.09 260);
@@ -302,7 +302,7 @@
   .rr-on-dark-muted    { color: var(--text-on-dark-muted); }     /* mid grey — helper text */
   .rr-on-dark-disabled { color: var(--text-on-dark-disabled); }  /* dim grey — disabled/placeholder */
 
-  /* ReviewLink custom components */
+  /* Phame custom components */
   .rr-navy-panel {
     background: oklch(0.22 0.09 260);
     color: white;

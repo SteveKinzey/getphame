@@ -79,7 +79,7 @@ export default function ChurnSurveyPage() {
             <p
               className="text-xs font-bold tracking-widest uppercase mb-0.5 rr-text-gold"
             >
-              ReviewLink
+              Phame
             </p>
             <h1
               className="text-xl font-black leading-tight text-white"
@@ -148,7 +148,7 @@ export default function ChurnSurveyPage() {
                   </p>
                 </div>
                 <p className="text-sm" style={{ color: "var(--text-on-dark-primary)" }}>
-                  Stay on ReviewLink for <strong className="rr-text-gold">40% off for 3 months</strong>. Use code at checkout:
+                  Stay on Phame for <strong className="rr-text-gold">40% off for 3 months</strong>. Use code at checkout:
                 </p>
                 <div
                   className="rounded-xl px-4 py-2.5 text-center font-black tracking-widest text-base select-all rr-bg-gold rr-text-navy" style={{ letterSpacing: "0.15em" }}

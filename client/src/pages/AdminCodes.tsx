@@ -1,4 +1,4 @@
-// ReviewLink — Admin: Access Code Management
+// Phame — Admin: Access Code Management
 // Only accessible to users with role === "admin"
 
 import { trpc } from "@/lib/trpc";

@@ -31,19 +31,19 @@ describe("/sitemap.xml", () => {
   it("includes the homepage URL", async () => {
     const app = buildTestApp();
     const res = await request(app).get("/sitemap.xml");
-    expect(res.text).toContain("<loc>https://reviewlink.app/</loc>");
+    expect(res.text).toContain("<loc>https://phame.app/</loc>");
   });
 
   it("includes privacy-policy URL", async () => {
     const app = buildTestApp();
     const res = await request(app).get("/sitemap.xml");
-    expect(res.text).toContain("<loc>https://reviewlink.app/privacy-policy</loc>");
+    expect(res.text).toContain("<loc>https://phame.app/privacy-policy</loc>");
   });
 
   it("includes terms-of-service URL", async () => {
     const app = buildTestApp();
     const res = await request(app).get("/sitemap.xml");
-    expect(res.text).toContain("<loc>https://reviewlink.app/terms-of-service</loc>");
+    expect(res.text).toContain("<loc>https://phame.app/terms-of-service</loc>");
   });
 
   it("includes lastmod, changefreq, and priority for each URL", async () => {
@@ -83,6 +83,6 @@ describe("/robots.txt", () => {
   it("points to the sitemap URL", async () => {
     const app = buildTestApp();
     const res = await request(app).get("/robots.txt");
-    expect(res.text).toContain("Sitemap: https://reviewlink.app/sitemap.xml");
+    expect(res.text).toContain("Sitemap: https://phame.app/sitemap.xml");
   });
 });

@@ -1,4 +1,4 @@
-// PWAInstallPrompt — bottom-sheet guiding users to install ReviewLink as a PWA
+// PWAInstallPrompt — bottom-sheet guiding users to install Phame as a PWA
 // Shows once per device, dismissed to localStorage, hidden if already installed or in Capacitor
 
 import { useState, useEffect } from "react";
@@ -71,7 +71,7 @@ export default function PWAInstallPrompt() {
               <span
                 className="text-xs font-bold tracking-widest uppercase rr-text-gold"
               >
-                ReviewLink
+                Phame
               </span>
             </div>
             <h2
@@ -80,7 +80,7 @@ export default function PWAInstallPrompt() {
               Add to Home Screen
             </h2>
             <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
-              Install ReviewLink for the best experience — works like a real app.
+              Install Phame for the best experience — works like a real app.
             </p>
           </div>
           <button
@@ -134,7 +134,7 @@ export default function PWAInstallPrompt() {
                     <span className="font-bold rr-text-gold">
                       Add
                     </span>{" "}
-                    — ReviewLink will appear on your home screen
+                    — Phame will appear on your home screen
                   </>
                 }
               />
@@ -179,7 +179,7 @@ export default function PWAInstallPrompt() {
                     <span className="font-bold rr-text-gold">
                       Add
                     </span>{" "}
-                    — ReviewLink will appear on your home screen
+                    — Phame will appear on your home screen
                   </>
                 }
               />

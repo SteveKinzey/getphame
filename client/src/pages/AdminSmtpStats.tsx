@@ -1,4 +1,4 @@
-// ReviewLink — Admin: SMTP Provider Failure Stats
+// Phame — Admin: SMTP Provider Failure Stats
 // Only accessible to users with role === "admin"
 // Shows breakdown of SMTP health check results per provider/host across all users
 

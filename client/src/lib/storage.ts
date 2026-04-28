@@ -1,10 +1,10 @@
-// ReviewLink — Local Storage Utilities
+// Phame — Local Storage Utilities
 // All app data persisted to localStorage for offline-first PWA behavior
 
 export interface BusinessProfile {
   name: string;
   logoUrl?: string;
-  googleReviewLink: string;
+  googlePhame: string;
   emailjsServiceId?: string;
   emailjsTemplateId?: string;
   emailjsPublicKey?: string;

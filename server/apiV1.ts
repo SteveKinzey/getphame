@@ -1,5 +1,5 @@
 /**
- * ReviewLink Public REST API — v1
+ * Phame Public REST API — v1
  *
  * All routes are authenticated via:
  *   Authorization: Bearer rl_<key>
@@ -116,7 +116,7 @@ apiV1Router.post("/send", async (req: Request, res: Response) => {
   try {
     const profile = await getBusinessProfile(userId);
     if (!profile) {
-      return res.status(400).json({ error: "Business profile not configured. Please complete setup in ReviewLink." });
+      return res.status(400).json({ error: "Business profile not configured. Please complete setup in Phame." });
     }
 
     // Check SMTP is configured
@@ -128,7 +128,7 @@ apiV1Router.post("/send", async (req: Request, res: Response) => {
       .where(eq(smtpCredentials.userId, userId))
       .limit(1);
     if (!smtpRow) {
-      return res.status(400).json({ error: "SMTP not configured. Connect your email account in ReviewLink Settings." });
+      return res.status(400).json({ error: "SMTP not configured. Connect your email account in Phame Settings." });
     }
 
     // Free-tier limit

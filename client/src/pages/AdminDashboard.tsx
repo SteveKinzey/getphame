@@ -95,7 +95,7 @@ export default function AdminDashboard() {
           <span
             className="text-xs font-bold tracking-widest uppercase rr-text-gold"
           >
-            ReviewLink
+            Phame
           </span>
         </div>
         <h1

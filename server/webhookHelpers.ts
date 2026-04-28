@@ -90,10 +90,10 @@ export async function fireWebhooks(
       const payload = JSON.stringify({ event, timestamp: Date.now(), data });
       const headers: Record<string, string> = {
         "Content-Type": "application/json",
-        "X-ReviewLink-Event": event,
+        "X-Phame-Event": event,
       };
       if (cfg.secret) {
-        headers["X-ReviewLink-Signature"] = buildSig(cfg.secret, payload);
+        headers["X-Phame-Signature"] = buildSig(cfg.secret, payload);
       }
 
       // Fire with retry — fire-and-forget but log the result
@@ -135,14 +135,14 @@ export async function fireTestWebhook(
   const payload = JSON.stringify({
     event,
     timestamp: Date.now(),
-    data: { message: "ReviewLink webhook test ping", userId },
+    data: { message: "Phame webhook test ping", userId },
   });
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    "X-ReviewLink-Event": event,
+    "X-Phame-Event": event,
   };
   if (secret) {
-    headers["X-ReviewLink-Signature"] = buildSig(secret, payload);
+    headers["X-Phame-Signature"] = buildSig(secret, payload);
   }
 
   const startMs = Date.now();
@@ -206,11 +206,11 @@ export async function retryWebhookDelivery(
   const payload = originalPayload ?? JSON.stringify({ event, timestamp: Date.now(), data: { retried: true } });
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    "X-ReviewLink-Event": event,
-    "X-ReviewLink-Retry": "1",
+    "X-Phame-Event": event,
+    "X-Phame-Retry": "1",
   };
   if (secret) {
-    headers["X-ReviewLink-Signature"] = buildSig(secret, payload);
+    headers["X-Phame-Signature"] = buildSig(secret, payload);
   }
 
   const startMs = Date.now();

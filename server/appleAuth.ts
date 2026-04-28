@@ -10,7 +10,7 @@
  *   - Services ID (APPLE_CLIENT_ID) — e.g. "app.reviewlink.signin"
  *   - Team ID (APPLE_TEAM_ID) — 10-char string from top-right of developer.apple.com
  *   - Key ID + private key (.p8) for Sign in with Apple (APPLE_KEY_ID, APPLE_PRIVATE_KEY)
- *   - Return URL registered: https://reviewlink.app/api/auth/apple/callback
+ *   - Return URL registered: https://phame.app/api/auth/apple/callback
  *
  * Note: Apple always POSTs to the callback (not GET), so the route is POST.
  * The private key env var should have literal \n replaced with actual newlines.
@@ -34,7 +34,7 @@ function buildRedirectUri(req: Request): string {
     return `${process.env.APP_BASE_URL.replace(/\/$/, "")}/api/auth/apple/callback`;
   }
   const proto = (req.headers["x-forwarded-proto"] as string) ?? req.protocol ?? "https";
-  const host = (req.headers["x-forwarded-host"] as string) ?? req.headers.host ?? "reviewlink.app";
+  const host = (req.headers["x-forwarded-host"] as string) ?? req.headers.host ?? "phame.app";
   return `${proto}://${host}/api/auth/apple/callback`;
 }
 

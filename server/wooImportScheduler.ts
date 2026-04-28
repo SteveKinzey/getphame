@@ -206,7 +206,7 @@ async function runAutoImport(): Promise<void> {
         if (prefs?.wooAutoImportNotify) {
           await notifyOwner({
             title: "WooCommerce Auto-Import Complete",
-            content: `ReviewLink automatically imported ${result.imported} WooCommerce contact${result.imported !== 1 ? "s" : ""} into your contacts list. These customers are now ready to receive review requests.`,
+            content: `Phame automatically imported ${result.imported} WooCommerce contact${result.imported !== 1 ? "s" : ""} into your contacts list. These customers are now ready to receive review requests.`,
           });
         }
       } catch (notifyErr) {

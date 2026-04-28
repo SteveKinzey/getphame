@@ -1,4 +1,4 @@
-// ReviewLink — Upgrade / Pricing page
+// Phame — Upgrade / Pricing page
 // Three-tier pricing: Monthly $29 | Annual $290 | Lifetime $1,247
 
 import { trpc } from "@/lib/trpc";

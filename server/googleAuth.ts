@@ -1,6 +1,6 @@
 /**
  * Direct Google OAuth 2.0 login flow.
- * Replaces the Manus portal redirect so users see a clean ReviewLink-branded login.
+ * Replaces the Manus portal redirect so users see a clean Phame-branded login.
  *
  * Routes:
  *   GET /api/auth/google          → redirects to Google consent screen
@@ -10,7 +10,7 @@
  *   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, JWT_SECRET
  *
  * Google Cloud Console — add these Authorized redirect URIs:
- *   https://reviewlink.app/api/auth/google/callback
+ *   https://phame.app/api/auth/google/callback
  *   https://revrocket-j5ynazte.manus.space/api/auth/google/callback  (staging)
  */
 
@@ -39,7 +39,7 @@ function buildRedirectUri(req: Request): string {
     return `${process.env.APP_BASE_URL.replace(/\/$/, "")}/api/auth/google/callback`;
   }
   const proto = (req.headers["x-forwarded-proto"] as string) ?? req.protocol ?? "https";
-  const host = (req.headers["x-forwarded-host"] as string) ?? req.headers.host ?? "reviewlink.app";
+  const host = (req.headers["x-forwarded-host"] as string) ?? req.headers.host ?? "phame.app";
   return `${proto}://${host}/api/auth/google/callback`;
 }
 

@@ -1,9 +1,9 @@
 {
-  "name": "ReviewLink — Google Review Requests",
-  "short_name": "ReviewLink",
+  "name": "Phame — Google Review Requests",
+  "short_name": "Phame",
   "description": "Send personalised Google review requests from your own email. Free forever.",
   "start_url": "/?source=pwa",
-  "id": "reviewlink-pwa",
+  "id": "phame-pwa",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui", "browser"],
   "background_color": "#0F1F4B",
@@ -68,7 +68,7 @@
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "ReviewLink dashboard — track your review requests, open rates, and activity"
+      "label": "Phame dashboard — track your review requests, open rates, and activity"
     }
   ],
   "prefer_related_applications": false,

@@ -1,4 +1,4 @@
-// ReviewLink — Bottom Navigation Bar
+// Phame — Bottom Navigation Bar
 // Design: Navy background, gold active state, large tap targets (48px+)
 // Animations: active tab gold underline slide, icon scale pulse, press haptic
 

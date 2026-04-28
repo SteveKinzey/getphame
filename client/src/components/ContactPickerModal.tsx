@@ -44,7 +44,7 @@ export default function ContactPickerModal({ open, onClose, onImport }: ContactP
         const permission = await Contacts.requestPermissions();
         if (permission.contacts !== 'granted') {
           setPermissionError(
-            'Contacts access denied. Go to Settings > ReviewLink > Contacts to enable.'
+            'Contacts access denied. Go to Settings > Phame > Contacts to enable.'
           );
           setLoadingAll(false);
           return;

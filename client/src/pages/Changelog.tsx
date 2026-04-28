@@ -1,4 +1,4 @@
-// ReviewLink — Changelog / What's New
+// Phame — Changelog / What's New
 // Design: Navy header, white content area, gold accent for version badges
 import { useState } from "react";
 import { useLocation } from "wouter";
@@ -198,7 +198,7 @@ export default function ChangelogPage() {
           <span
             className="text-xs font-bold tracking-widest uppercase rr-text-gold"
           >
-            ReviewLink
+            Phame
           </span>
         </button>
         <h1
@@ -329,7 +329,7 @@ export default function ChangelogPage() {
         <p className="text-xs rr-text-navy-faint">
           {t("changelog.featureRequest", "Have a feature request?")}{" "}
           <a
-            href="mailto:support@reviewlink.app"
+            href="mailto:support@phame.app"
             className="font-bold underline"
             style={{ color: "oklch(0.45 0.05 260)" }}
           >

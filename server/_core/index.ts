@@ -293,7 +293,7 @@ async function startServer() {
     res.json({ received: true });
   });
 
-  // www → apex 301 redirect (www.reviewlink.app → reviewlink.app)
+  // www → apex 301 redirect (www.phame.app → phame.app)
   app.use((req, res, next) => {
     const host = req.headers.host || "";
     if (host.startsWith("www.")) {
@@ -406,7 +406,7 @@ async function startServer() {
       const [row] = await db.select().from(cs).where(eqOp(cs.unsubscribeToken, token)).limit(1);
       if (!row) return res.status(404).send("Link not found or already used.");
       await db.update(cs).set({ reEngagementOptedOut: 1 }).where(eqOp(cs.id, row.id));
-      res.send(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Unsubscribed</title><style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f4f5f7;}div{text-align:center;max-width:400px;padding:40px;background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);}h2{color:#1a2744;margin:0 0 12px;}p{color:#666;margin:0;}a{color:#1a2744;}</style></head><body><div><h2>✓ Unsubscribed</h2><p>You won't receive any more re-engagement emails from ReviewLink.</p><p style="margin-top:16px;"><a href="https://reviewlink.app">Visit ReviewLink</a></p></div></body></html>`);
+      res.send(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Unsubscribed</title><style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;background:#f4f5f7;}div{text-align:center;max-width:400px;padding:40px;background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);}h2{color:#1a2744;margin:0 0 12px;}p{color:#666;margin:0;}a{color:#1a2744;}</style></head><body><div><h2>✓ Unsubscribed</h2><p>You won't receive any more re-engagement emails from Phame.</p><p style="margin-top:16px;"><a href="https://phame.app">Visit Phame</a></p></div></body></html>`);
     } catch (err) {
       console.error("[Unsubscribe] Error:", err);
       res.status(500).send("Something went wrong. Please try again.");

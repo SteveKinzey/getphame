@@ -1,5 +1,5 @@
 /**
- * WooCommerce REST API integration for ReviewLink.
+ * WooCommerce REST API integration for Phame.
  *
  * Fetches completed orders from a user's WooCommerce store and stores
  * customer records locally. Customers who already received a review

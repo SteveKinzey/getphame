@@ -132,7 +132,7 @@ export function verifyUnsubToken(token: string): { contactType: "contact" | "woo
 /** Build the full unsubscribe URL for a contact or woo customer */
 export function buildUnsubUrl(contactType: "contact" | "woo", id: number, userId: number): string {
   const token = buildUnsubToken(contactType, id, userId);
-  const base = process.env.APP_BASE_URL ?? "https://reviewlink.app";
+  const base = process.env.APP_BASE_URL ?? "https://phame.app";
   return `${base}/unsubscribe?token=${token}`;
 }
 
@@ -907,7 +907,7 @@ export const appRouter = router({
 
             // Inject open pixel + click-tracking wrapper
             const bulkToken = encodeTrackingToken(bulkRequestId, ctx.user.id, resolvedTemplate?.id ?? null);
-            const bulkBase = "https://reviewlink.app";
+            const bulkBase = "https://phame.app";
             const trackedBulkUrl = wrapClickUrl(reviewUrl, bulkToken, bulkBase);
             const bulkPixel = buildOpenPixel(bulkToken, bulkBase);
             const trackedBulkHtml = htmlBody
@@ -971,7 +971,7 @@ export const appRouter = router({
         });
 
         for (const customer of page.data) {
-          // Only include customers linked to this ReviewLink user via metadata
+          // Only include customers linked to this Phame user via metadata
           const metaUserId = customer.metadata?.user_id;
           if (metaUserId && String(metaUserId) !== String(ctx.user.id)) continue;
           if (!customer.email) continue;
@@ -1306,7 +1306,7 @@ export const appRouter = router({
 
         // Inject open pixel + click-tracking wrapper into the email HTML
         const trackingToken = encodeTrackingToken(newRequestId, ctx.user.id, resolvedTemplate?.id ?? null);
-        const baseUrl = (ctx.req.headers.origin as string | undefined) ?? "https://reviewlink.app";
+        const baseUrl = (ctx.req.headers.origin as string | undefined) ?? "https://phame.app";
         const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
         const openPixel = buildOpenPixel(trackingToken, baseUrl);
         // Replace bare review URL with tracked URL and append pixel before </div>

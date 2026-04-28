@@ -50,7 +50,7 @@ export default function UnsubscribePage() {
           <p
             className="text-xs font-bold tracking-widest uppercase mb-1 rr-text-gold"
           >
-            ReviewLink
+            Phame
           </p>
           <h1
             className="text-xl font-black text-white"
@@ -113,11 +113,11 @@ export default function UnsubscribePage() {
           <p className="text-xs" style={{ color: "#aaa" }}>
             Powered by{" "}
             <a
-              href="https://reviewlink.app"
+              href="https://phame.app"
               className="underline"
               style={{ color: "#aaa" }}
             >
-              ReviewLink
+              Phame
             </a>
           </p>
         </div>

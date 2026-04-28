@@ -1,7 +1,7 @@
 /**
  * IntegrationGuide
  *
- * Shows the two ReviewLink API endpoints and step-by-step instructions
+ * Shows the two Phame API endpoints and step-by-step instructions
  * for each supported WordPress form builder:
  *   - Elementor Forms
  *   - Gravity Forms
@@ -15,7 +15,7 @@ import { useState } from "react";
 import { Copy, ChevronDown, ChevronUp, Zap, Users } from "lucide-react";
 import { toast } from "sonner";
 
-const BASE_URL = "https://reviewlink.app";
+const BASE_URL = "https://phame.app";
 
 type FormBuilder = "elementor" | "gravity" | "wsform" | "fluent" | "custom";
 

@@ -262,7 +262,7 @@ export default function EmailTemplates() {
   // Live preview substitution
   const sampleCustomer = "Alex Johnson";
   const sampleBusiness = profile?.businessName || "Your Business";
-  const sampleReviewLink = defaultPlatform?.url || "https://g.page/r/your-review-link";
+  const samplePhame = defaultPlatform?.url || "https://g.page/r/your-review-link";
   const samplePlatformLinks =
     (platforms as Array<{ label?: string; platform: string; url: string }>).length > 0
       ? (platforms as Array<{ label?: string; platform: string; url: string }>)
@@ -274,7 +274,7 @@ export default function EmailTemplates() {
     return text
       .replace(/\{\{customerName\}\}/g, sampleCustomer)
       .replace(/\{\{businessName\}\}/g, sampleBusiness)
-      .replace(/\{\{reviewLink\}\}/g, sampleReviewLink)
+      .replace(/\{\{reviewLink\}\}/g, samplePhame)
       .replace(/\{\{platformLinks\}\}/g, samplePlatformLinks);
   }
 

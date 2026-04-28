@@ -64,7 +64,7 @@ export async function sendSmtpWeeklyDigest(): Promise<boolean> {
 
   // ── Build digest ──────────────────────────────────────────────────────────
   const lines: string[] = [
-    `Weekly ReviewLink Digest — ${new Date().toUTCString()}`,
+    `Weekly Phame Digest — ${new Date().toUTCString()}`,
     ``,
     `━━ SMTP Health ━━`,
     total === 0

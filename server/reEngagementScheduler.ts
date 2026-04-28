@@ -113,7 +113,7 @@ export async function runReEngagementCheck(): Promise<void> {
           .where(eq(churnSurveys.id, survey.id));
       }
 
-      const appBaseUrl = process.env.APP_BASE_URL ?? "https://reviewlink.app";
+      const appBaseUrl = process.env.APP_BASE_URL ?? "https://phame.app";
       const unsubscribeUrl = `${appBaseUrl}/api/reengagement/unsubscribe/${token}`;
 
       // Use owner's SMTP (userId=1 is the platform owner)

@@ -1,4 +1,4 @@
-// ReviewRocket — Landing Page
+// Phame — Landing Page
 // Navy/gold design system matching the authenticated app
 
 import { getLoginUrl } from "@/const";
@@ -128,7 +128,7 @@ export default function LandingPage() {
     setMeta("twitter:image", OG_IMG);
 
     return () => {
-      document.title = "ReviewLink";
+      document.title = "Phame";
     };
   }, [t]);
 
@@ -140,7 +140,7 @@ export default function LandingPage() {
         className="flex items-center justify-between px-5 py-4 rr-bg-navy"
       >
         <div className="flex items-center gap-2">
-          <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="ReviewLink" className="w-9 h-9 rounded-lg object-contain" />
+          <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="Phame" className="w-9 h-9 rounded-lg object-contain" />
           <span
             className="text-sm font-black tracking-widest uppercase rr-text-gold"
           >
@@ -381,13 +381,13 @@ export default function LandingPage() {
               <span className="text-center">{t("comparison.colStartingPrice")}</span>
               <span className="text-center">{t("comparison.colLifetime")}</span>
             </div>
-            {/* ReviewLink row — highlighted */}
+            {/* Phame row — highlighted */}
             <div
               className="grid grid-cols-3 px-4 py-3 items-center border-b-2 rr-bg-gold-pale" style={{ borderColor: "oklch(0.80 0.18 80)" }}
             >
               <div className="flex items-center gap-1.5">
                 <Rocket size={13} className="rr-text-gold" />
-                <span className="text-xs font-black rr-text-navy">ReviewLink</span>
+                <span className="text-xs font-black rr-text-navy">Phame</span>
               </div>
               <div className="text-center">
                 <span className="text-xs font-black rr-text-navy">$29<span className="font-normal">/mo</span></span>
@@ -530,7 +530,7 @@ export default function LandingPage() {
         <div className="flex items-center gap-4">
           <a href="/privacy-policy" style={{ color: "var(--text-on-dark-muted)" }}>{t("footer.privacy")}</a>
           <a href="/terms-of-service" style={{ color: "var(--text-on-dark-muted)" }}>{t("footer.terms")}</a>
-          <a href="mailto:support@reviewlink.app" style={{ color: "var(--text-on-dark-muted)" }}>{t("footer.support")}</a>
+          <a href="mailto:support@phame.app" style={{ color: "var(--text-on-dark-muted)" }}>{t("footer.support")}</a>
         </div>
 
         {/* Brand */}

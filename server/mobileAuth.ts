@@ -1,5 +1,5 @@
 /**
- * Mobile Auth Routes — ReviewLink Expo App
+ * Mobile Auth Routes — Phame Expo App
  *
  * These endpoints are used exclusively by the React Native / Expo mobile app.
  * Unlike the web flow (which uses cookies), mobile auth returns a JWT in the

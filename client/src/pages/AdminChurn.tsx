@@ -71,7 +71,7 @@ export default function AdminChurnPage() {
           <span
             className="text-xs font-bold tracking-widest uppercase rr-text-gold"
           >
-            ReviewLink
+            Phame
           </span>
         </div>
         <h1

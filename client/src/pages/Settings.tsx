@@ -1,4 +1,4 @@
-// ReviewLink — Settings Page
+// Phame — Settings Page
 // Sections: Business Profile, Email Connection, Plan
 
 import { useState, useEffect, useRef } from "react";
@@ -181,14 +181,14 @@ function SendFeedbackSection() {
     setSending(true);
     try {
       // Build a mailto link as a lightweight feedback channel
-      const subject = encodeURIComponent("ReviewLink Feedback");
+      const subject = encodeURIComponent("Phame Feedback");
       const body = encodeURIComponent(message.trim());
-      window.location.href = `mailto:support@reviewlink.app?subject=${subject}&body=${body}`;
+      window.location.href = `mailto:support@phame.app?subject=${subject}&body=${body}`;
       toast.success("Opening your email client to send feedback");
       setMessage("");
       setOpen(false);
     } catch {
-      toast.error("Could not open email client. Please email support@reviewlink.app directly.");
+      toast.error("Could not open email client. Please email support@phame.app directly.");
     } finally {
       setSending(false);
     }
@@ -199,7 +199,7 @@ function SendFeedbackSection() {
       <button
         onClick={() => setOpen(true)}
         className="flex items-center justify-center gap-2 py-2 rounded-xl text-xs font-bold w-full bg-transparent" style={{ color: "oklch(0.45 0.10 260)" }}
-        aria-label="Send feedback to ReviewLink support"
+        aria-label="Send feedback to Phame support"
       >
         <Send size={14} aria-hidden="true" />
         Send Feedback
@@ -508,7 +508,7 @@ export default function SettingsPage() {
   // ── Profile form state ─────────────────────────────────────────────────────
   const { data: profile, isLoading: profileLoading } = trpc.profile.get.useQuery();
   const [businessName, setBusinessName] = useState("");
-  const [reviewLink, setReviewLink] = useState("");
+  const [reviewLink, setPhame] = useState("");
   const [fromName, setFromName] = useState("");
   const [replyTo, setReplyTo] = useState("");
 
@@ -531,7 +531,7 @@ export default function SettingsPage() {
   useEffect(() => {
     if (profile) {
       setBusinessName(profile.businessName);
-      setReviewLink(profile.reviewLink);
+      setPhame(profile.reviewLink);
       setFromName(profile.fromName ?? "");
       setReplyTo(profile.replyTo ?? "");
       setDailySendLimit(profile.dailySendLimit ?? 50);
@@ -989,7 +989,7 @@ export default function SettingsPage() {
                 <input
                   type="url"
                   value={reviewLink}
-                  onChange={(e) => setReviewLink(e.target.value)}
+                  onChange={(e) => setPhame(e.target.value)}
                   placeholder="https://g.page/r/your-business/review"
                   className="w-full px-3 py-3 rounded-xl text-sm outline-none"
                   style={{
@@ -1543,7 +1543,7 @@ export default function SettingsPage() {
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
                           <li>Go to <span className="font-bold rr-text-gold">myaccount.google.com</span> → Security</li>
                           <li>Turn on <span className="font-bold">2-Step Verification</span> if not already on</li>
-                          <li>Go to <span className="font-bold rr-text-gold">myaccount.google.com/apppasswords</span> → name it <span className="font-bold">ReviewLink</span> → click Create</li>
+                          <li>Go to <span className="font-bold rr-text-gold">myaccount.google.com/apppasswords</span> → name it <span className="font-bold">Phame</span> → click Create</li>
                           <li>Copy the <span className="font-bold">16-character code</span> and paste it here — <span className="font-bold">remove all spaces</span></li>
                         </ol>
                         <p className="text-[10px] mt-1 rr-text-navy-faint">Tip: use a dedicated <span className="font-bold">reviews@gmail.com</span> account to keep your main inbox separate.</p>
@@ -1558,7 +1558,7 @@ export default function SettingsPage() {
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
                           <li>Ask your Workspace admin to enable 2-Step Verification in <span className="font-bold rr-text-gold">admin.google.com</span></li>
                           <li>Sign in to <span className="font-bold rr-text-gold">myaccount.google.com</span> with your work account → Security</li>
-                          <li>Go to <span className="font-bold rr-text-gold">myaccount.google.com/apppasswords</span> → name it <span className="font-bold">ReviewLink</span> → click Create</li>
+                          <li>Go to <span className="font-bold rr-text-gold">myaccount.google.com/apppasswords</span> → name it <span className="font-bold">Phame</span> → click Create</li>
                           <li>Copy the <span className="font-bold">16-character code</span> and paste it here — <span className="font-bold">remove all spaces</span></li>
                         </ol>
                         <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
@@ -1587,7 +1587,7 @@ export default function SettingsPage() {
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
                           <li>Go to <span className="font-bold rr-text-gold">account.yahoo.com</span> → Security</li>
                           <li>Click <span className="font-bold">Generate app password</span></li>
-                          <li>Select <span className="font-bold">Other app</span>, name it <span className="font-bold">ReviewLink</span></li>
+                          <li>Select <span className="font-bold">Other app</span>, name it <span className="font-bold">Phame</span></li>
                           <li>Copy and paste the password here</li>
                         </ol>
                         <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
@@ -1616,7 +1616,7 @@ export default function SettingsPage() {
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
                           <li>Go to <span className="font-bold rr-text-gold">account.aol.com</span> → Security</li>
                           <li>Click <span className="font-bold">Generate app password</span></li>
-                          <li>Select <span className="font-bold">Other app</span>, name it <span className="font-bold">ReviewLink</span></li>
+                          <li>Select <span className="font-bold">Other app</span>, name it <span className="font-bold">Phame</span></li>
                           <li>Copy and paste the password here — do <span className="font-bold">not</span> use your regular AOL password</li>
                         </ol>
                         <p className="text-[10px] mt-1 rr-text-navy-faint">AOL requires 2-step verification to be enabled before generating app passwords.</p>
@@ -1646,7 +1646,7 @@ export default function SettingsPage() {
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
                           <li>Go to <span className="font-bold rr-text-gold">app.fastmail.com</span> → Settings → Privacy & Security</li>
                           <li>Scroll to <span className="font-bold">Third-party apps</span> → click <span className="font-bold">New app password</span></li>
-                          <li>Name it <span className="font-bold">ReviewLink</span>, set access to <span className="font-bold">Mail (SMTP)</span></li>
+                          <li>Name it <span className="font-bold">Phame</span>, set access to <span className="font-bold">Mail (SMTP)</span></li>
                           <li>Copy and paste the generated password here</li>
                         </ol>
                         <p className="text-[10px] mt-1 rr-text-navy-faint">Fastmail app passwords are provider-specific — do not use your regular Fastmail login password.</p>
@@ -1661,7 +1661,7 @@ export default function SettingsPage() {
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
                           <li>Go to <span className="font-bold rr-text-gold">appleid.apple.com</span> → Sign In & Security</li>
                           <li>Click <span className="font-bold">App-Specific Passwords</span> → <span className="font-bold">Generate an App-Specific Password</span></li>
-                          <li>Name it <span className="font-bold">ReviewLink</span> and click Create</li>
+                          <li>Name it <span className="font-bold">Phame</span> and click Create</li>
                           <li>Copy the <span className="font-bold">xxxx-xxxx-xxxx-xxxx</span> password and paste it here</li>
                         </ol>
                         <p className="text-[10px] mt-1 rr-text-navy-faint">Requires two-factor authentication to be enabled on your Apple ID.</p>
@@ -2592,7 +2592,7 @@ export default function SettingsPage() {
                   </p>
                   <div className="space-y-1">
                     {[
-                      "https://reviewlink.app/api/auth/google/callback",
+                      "https://phame.app/api/auth/google/callback",
                       "https://revrocket-j5ynazte.manus.space/api/auth/google/callback",
                     ].map((uri) => (
                       <div

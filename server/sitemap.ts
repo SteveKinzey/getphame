@@ -8,7 +8,7 @@
  */
 import type { Express } from "express";
 
-const BASE_URL = "https://reviewlink.app";
+const BASE_URL = "https://phame.app";
 
 interface SitemapRoute {
   path: string;

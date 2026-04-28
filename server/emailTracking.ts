@@ -168,7 +168,7 @@ export async function handleClickRedirect(req: Request, res: Response): Promise<
     res.redirect(302, destination);
   } else {
     // Fallback — send to app if URL is missing
-    res.redirect(302, "https://reviewlink.app");
+    res.redirect(302, "https://phame.app");
   }
 }
 
