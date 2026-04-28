@@ -83,7 +83,7 @@ export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
        To stop receiving these emails, reply with &quot;unsubscribe&quot;.`;
 
   const poweredByLine = showPoweredBy
-    ? `<br/><br/><a href="https://phame.app/upgrade?utm_source=powered_by_footer&utm_medium=email&utm_campaign=free_tier" style="color:#bbb;text-decoration:none;font-size:10px;">Powered by <strong>Phame</strong> &mdash; <span style="text-decoration:underline;">Remove branding &rarr;</span></a>`
+    ? `<br/><br/><a href="https://getphame.app/upgrade?utm_source=powered_by_footer&utm_medium=email&utm_campaign=free_tier" style="color:#bbb;text-decoration:none;font-size:10px;">Powered by <strong>Phame</strong> &mdash; <span style="text-decoration:underline;">Remove branding &rarr;</span></a>`
     : '';
 
   return `<!DOCTYPE html>
@@ -148,6 +148,6 @@ export function buildReviewRequestText(opts: ReviewEmailOptions): string {
   const unsubLine = unsubscribeUrl
     ? `To unsubscribe: ${unsubscribeUrl}`
     : `To unsubscribe, reply with "unsubscribe".`;
-  const poweredBy = showPoweredBy ? '\n\nPowered by Phame — https://phame.app' : '';
+  const poweredBy = showPoweredBy ? '\n\nPowered by Phame — https://getphame.app' : '';
   return `Hi ${customerName}!\n\n${context}\n\nCould you take 30 seconds to leave us a quick review?\n\n${reviewUrl}\n\nThank you so much!\nThe ${businessName} team\n\n---\nYou received this email because you are a customer of ${businessName}. ${unsubLine}${poweredBy}`;
 }

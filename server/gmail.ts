@@ -25,7 +25,7 @@ function makeOAuth2Client(redirectUri: string) {
 // The redirect URI must match exactly what is registered in Google Cloud Console
 export function getGmailRedirectUri(origin: string): string {
   if (ENV.isProduction) {
-    return "https://phame.app/api/gmail/callback";
+    return "https://getphame.app/api/gmail/callback";
   }
   return `${origin}/api/gmail/callback`;
 }

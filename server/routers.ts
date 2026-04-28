@@ -133,7 +133,7 @@ export function verifyUnsubToken(token: string): { contactType: "contact" | "woo
 /** Build the full unsubscribe URL for a contact or woo customer */
 export function buildUnsubUrl(contactType: "contact" | "woo", id: number, userId: number): string {
   const token = buildUnsubToken(contactType, id, userId);
-  const base = process.env.APP_BASE_URL ?? "https://phame.app";
+  const base = process.env.APP_BASE_URL ?? "https://getphame.app";
   return `${base}/unsubscribe?token=${token}`;
 }
 
@@ -917,7 +917,7 @@ export const appRouter = router({
             // Inject open pixel + click-tracking wrapper
             // Skip URL replacement for Yelp (plain-text instruction, not a URL)
             const bulkToken = encodeTrackingToken(bulkRequestId, ctx.user.id, resolvedTemplate?.id ?? null);
-            const bulkBase = "https://phame.app";
+            const bulkBase = "https://getphame.app";
             const bulkPixel = buildOpenPixel(bulkToken, bulkBase);
             const trackedBulkHtml = isYelpPlatform
               ? htmlBody.replace(/<\/div>\s*$/, `${bulkPixel}</div>`)
@@ -1340,7 +1340,7 @@ export const appRouter = router({
         // Inject open pixel + click-tracking wrapper into the email HTML
         // Skip URL replacement for Yelp (plain-text instruction, not a URL)
         const trackingToken = encodeTrackingToken(newRequestId, ctx.user.id, resolvedTemplate?.id ?? null);
-        const baseUrl = (ctx.req.headers.origin as string | undefined) ?? "https://phame.app";
+        const baseUrl = (ctx.req.headers.origin as string | undefined) ?? "https://getphame.app";
         const openPixel = buildOpenPixel(trackingToken, baseUrl);
         const trackedHtmlBody = isYelpSingle
           ? htmlBody.replace(/<\/div>\s*$/, `${openPixel}</div>`)
@@ -1434,7 +1434,7 @@ export const appRouter = router({
           .where(and(eqOp(customerRequests.userId, ctx.user.id), eqOp(customerRequests.id, input.id)));
 
         // Build tracking for the resend
-        const baseUrl = "https://phame.app";
+        const baseUrl = "https://getphame.app";
         const trackingToken = encodeTrackingToken(input.id, ctx.user.id, null);
         const openPixel = buildOpenPixel(trackingToken, baseUrl);
         const trackedHtml = input.emailBody.replace(/<\/div>\s*$/, `${openPixel}</div>`);
@@ -1534,7 +1534,7 @@ export const appRouter = router({
               .where(and(eqOp(customerRequests.userId, ctx.user.id), eqOp(customerRequests.id, id)));
 
             // Re-inject tracking and resend
-            const baseUrl = "https://phame.app";
+            const baseUrl = "https://getphame.app";
             const trackingToken = encodeTrackingToken(id, ctx.user.id, null);
             const openPixel = buildOpenPixel(trackingToken, baseUrl);
             const trackedHtml = original.emailBody.replace(/<\/div>\s*$/, `${openPixel}</div>`);

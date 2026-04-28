@@ -1432,3 +1432,55 @@
 - [x] Update Yelp placeholder text to cleaner copy
 - [x] Build compliance pre-send modal (brief bullets + link to /compliance page)
 - [x] Build bulk sender connection UI as Pro-gated feature in Settings (SendGrid/Mailgun/Postmark API key)
+
+## Session #70 — Yelp Compliance, Client Detail Sheet, Bulk Restart, Skill (Apr 28 2026)
+
+### Yelp Compliance Mode
+- [x] Yelp platform field changed from URL input to plain-text search instruction (no URL construction, no CTA button link)
+- [x] Yelp placeholder updated to: `Search for [Your Business Name] on Yelp in [City, State]`
+- [x] Yelp tooltip (ⓘ) added to both add and edit forms explaining why no link is used (Yelp ToS compliance)
+- [x] Backend Zod validator relaxed from z.string().url() to z.string().min(1) for all platform procedures
+- [x] Email output: Yelp entries render as a styled plain-text instruction box (gold border, navy text) — no <a href> link
+- [x] Click-tracking skipped for Yelp entries (can't wrap plain text in tracking URL)
+- [x] Tooltip naming conflict fixed: recharts Tooltip aliased to RechartsTooltip in Settings.tsx
+
+### Compliance Checklist Enhancement
+- [x] "Read Full Compliance Guide →" link added to bulk-send compliance checklist in SavedContacts.tsx
+- [x] Same link added to WooCustomers.tsx bulk-send compliance checklist
+
+### Bulk Sender Connection UI (Pro-gated)
+- [x] bulk_sender_credentials DB table added to schema.ts + pnpm db:push (migration applied)
+- [x] server/bulkSender.ts created: AES-256-GCM encryption, connect/status/disconnect/test procedures
+- [x] bulkSenderRouter added to appRouter in routers.ts
+- [x] BulkSenderSection component added to Settings.tsx (between Billing and WooCommerce)
+- [x] Free tier: shows Pro upgrade prompt (Crown icon)
+- [x] Pro tier: provider selector (SendGrid / Mailgun / Postmark), API key input, from email/name, Mailgun domain/region, compliance warning, Connect & Test button
+- [x] Connected state: provider name + from email, Test Connection, Disconnect buttons
+
+### Client Detail Sheet
+- [x] emailSubject + emailBody columns added to customer_requests schema + pnpm db:push
+- [x] All three send paths (requests.send, contacts.bulkSend, woo.bulkSend) now store sent email subject + body
+- [x] requests.getById, requests.updateEmail, requests.resend, requests.bulkRestart procedures added to routers.ts
+- [x] reminders.listForRequest procedure added to reminders router
+- [x] ClientDetailSheet.tsx component created: iframe email preview, editable subject/body, Save Changes, Resend, Restart Campaign
+- [x] Campaign timeline added to ClientDetailSheet: initial send + each reminder with status (sent/scheduled/cancelled)
+- [x] Restart Campaign uses AlertDialog confirmation (not window.confirm)
+- [x] Dashboard: client name/email tappable (dotted underline) → opens ClientDetailSheet
+- [x] ClientDetailSheet wired into Dashboard.tsx with selectedRequestId state
+
+### Bulk Restart Campaign (Dashboard)
+- [x] requests.bulkRestart tRPC procedure: cancel pending reminders, reset campaign, resend stored email per request
+- [x] Bulk restart toolbar button (amber, RotateCcw icon) added to Dashboard selection toolbar
+- [x] AlertDialog confirmation shows count of non-responded clients before executing
+- [x] Non-responded filter: clients who already responded are automatically excluded
+
+### Skill Creation
+- [x] /skills/review-request-compliance-ux/SKILL.md created and validated (4 patterns: Yelp compliance, checklist, client detail sheet, bulk restart)
+- [x] /skills/client-detail-sheet/SKILL.md created and validated (dedicated skill for the client detail sheet pattern)
+
+### Home Screen
+- [x] "Client Reviews" quick-link card removed from Home.tsx
+
+## Session #70b — Domain URL Fix (Apr 28 2026)
+- [x] Fix hardcoded phame.app URLs in smtp.ts (churn recovery email + payment failed email) → getphame.app
+- [x] Fix phame.app in stripe.thb.checkout.test.ts test fixture → getphame.app

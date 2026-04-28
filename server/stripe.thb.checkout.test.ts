@@ -22,7 +22,7 @@ const BASE_PARAMS = {
   userEmail: "test@example.com",
   userName: "Test User",
   stripeCustomerId: null as string | null,
-  origin: "https://phame.app",
+  origin: "https://getphame.app",
 };
 
 describe("createThbCheckoutSession", () => {

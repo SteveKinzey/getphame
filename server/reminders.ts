@@ -153,7 +153,7 @@ export async function processDueReminders() {
       const defaultPlatform = await getDefaultReviewPlatform(reminder.userId);
       const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
       const trackingToken = encodeTrackingToken(reminder.customerRequestId, reminder.userId, null);
-      const baseUrl = process.env.APP_BASE_URL ?? "https://phame.app";
+      const baseUrl = process.env.APP_BASE_URL ?? "https://getphame.app";
       const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
       const openPixel = buildOpenPixel(trackingToken, baseUrl);
 
@@ -198,7 +198,7 @@ export async function sendReminderNow(userId: number, reminderId: number) {
   const defaultPlatform = await getDefaultReviewPlatform(userId);
   const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
   const trackingToken = encodeTrackingToken(reminder.customerRequestId, userId, null);
-  const baseUrl = process.env.APP_BASE_URL ?? "https://phame.app";
+  const baseUrl = process.env.APP_BASE_URL ?? "https://getphame.app";
   const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
   const openPixel = buildOpenPixel(trackingToken, baseUrl);
 

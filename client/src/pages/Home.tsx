@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 const HERO_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
 
-const SHARE_URL = "https://phame.app";
+const SHARE_URL = "https://getphame.app";
 
 function ShareReferralCard() {
   const { t } = useTranslation();

@@ -10,7 +10,7 @@
  *   - Services ID (APPLE_CLIENT_ID) — e.g. "app.phame.signin"
  *   - Team ID (APPLE_TEAM_ID) — 10-char string from top-right of developer.apple.com
  *   - Key ID + private key (.p8) for Sign in with Apple (APPLE_KEY_ID, APPLE_PRIVATE_KEY)
- *   - Return URL registered: https://phame.app/api/auth/apple/callback
+ *   - Return URL registered: https://getphame.app/api/auth/apple/callback
  *
  * Note: Apple always POSTs to the callback (not GET), so the route is POST.
  * The private key env var should have literal \n replaced with actual newlines.

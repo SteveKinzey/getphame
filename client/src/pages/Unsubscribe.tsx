@@ -113,7 +113,7 @@ export default function UnsubscribePage() {
           <p className="text-xs" style={{ color: "#aaa" }}>
             Powered by{" "}
             <a
-              href="https://phame.app"
+              href="https://getphame.app"
               className="underline"
               style={{ color: "#aaa" }}
             >

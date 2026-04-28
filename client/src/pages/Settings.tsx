@@ -2883,7 +2883,7 @@ export default function SettingsPage() {
                   </p>
                   <div className="space-y-1">
                     {[
-                      "https://phame.app/api/auth/google/callback",
+                      "https://getphame.app/api/auth/google/callback",
                       "https://revrocket-j5ynazte.manus.space/api/auth/google/callback",
                     ].map((uri) => (
                       <div

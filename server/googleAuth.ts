@@ -10,7 +10,7 @@
  *   GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, JWT_SECRET
  *
  * Google Cloud Console — add these Authorized redirect URIs:
- *   https://phame.app/api/auth/google/callback
+ *   https://getphame.app/api/auth/google/callback
  *   https://revrocket-j5ynazte.manus.space/api/auth/google/callback  (staging)
  */
 

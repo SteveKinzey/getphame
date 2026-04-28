@@ -7,7 +7,7 @@ const config: CapacitorConfig = {
   // This means web updates are instantly live without an App Store re-submission.
   webDir: 'dist/public',
   server: {
-    url: 'https://phame.app',
+    url: 'https://getphame.app',
     cleartext: false,
   },
   ios: {

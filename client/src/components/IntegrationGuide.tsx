@@ -15,7 +15,7 @@ import { useState } from "react";
 import { Copy, ChevronDown, ChevronUp, Zap, Users } from "lucide-react";
 import { toast } from "sonner";
 
-const BASE_URL = "https://phame.app";
+const BASE_URL = "https://getphame.app";
 
 type FormBuilder = "elementor" | "gravity" | "wsform" | "fluent" | "custom";
 
