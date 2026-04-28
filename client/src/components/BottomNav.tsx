@@ -174,9 +174,10 @@ export default function BottomNav() {
           className="text-center mt-0.5 pb-0.5"
           style={{
             fontSize: '9px',
-            color: 'oklch(0.30 0.12 260)',
+            color: '#000a29',
             fontFamily: "'Nunito', sans-serif",
             letterSpacing: '0.02em',
+            paddingTop: '8px',
           }}
         >
           Copyright &copy; 2026 SK America
