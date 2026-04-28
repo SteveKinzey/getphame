@@ -105,7 +105,7 @@ function downloadTemplate() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = "reviewlink-import-template.csv";
+  a.download = "phame-import-template.csv";
   a.click();
   URL.revokeObjectURL(url);
 }

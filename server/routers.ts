@@ -103,7 +103,7 @@ import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracki
 import crypto from "crypto";
 
 // ── Unsubscribe token helpers ────────────────────────────────────────────────
-const UNSUB_SECRET = process.env.JWT_SECRET ?? "reviewlink-unsub-secret";
+const UNSUB_SECRET = process.env.JWT_SECRET ?? "phame-unsub-secret";
 
 /** Generate a signed unsubscribe token: base64url(contactType:id:userId:sig) */
 export function buildUnsubToken(contactType: "contact" | "woo", id: number, userId: number): string {

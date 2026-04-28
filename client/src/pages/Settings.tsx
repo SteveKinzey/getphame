@@ -672,7 +672,7 @@ export default function SettingsPage() {
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    a.href = url; a.download = `reviewlink-api-imports-${Date.now()}.csv`; a.click();
+    a.href = url; a.download = `phame-api-imports-${Date.now()}.csv`; a.click();
     URL.revokeObjectURL(url);
   };
   const [showAddWebhook, setShowAddWebhook] = useState(false);
@@ -2641,7 +2641,7 @@ export default function SettingsPage() {
                   </p>
                   <div className="space-y-2">
                     {[
-                      { key: "APPLE_CLIENT_ID", hint: "Services ID identifier, e.g. app.reviewlink.signin" },
+                      { key: "APPLE_CLIENT_ID", hint: "Services ID identifier, e.g. app.phame.signin" },
                       { key: "APPLE_TEAM_ID", hint: "10-char string, top-right of developer.apple.com" },
                       { key: "APPLE_KEY_ID", hint: "Key ID shown after creating a Sign in with Apple key" },
                       { key: "APPLE_PRIVATE_KEY", hint: "Full contents of the .p8 file including header/footer" },

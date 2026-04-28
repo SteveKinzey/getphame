@@ -7,7 +7,7 @@
  *
  * Apple Developer Console setup required (see README / delivery message):
  *   - App ID with "Sign in with Apple" capability enabled
- *   - Services ID (APPLE_CLIENT_ID) — e.g. "app.reviewlink.signin"
+ *   - Services ID (APPLE_CLIENT_ID) — e.g. "app.phame.signin"
  *   - Team ID (APPLE_TEAM_ID) — 10-char string from top-right of developer.apple.com
  *   - Key ID + private key (.p8) for Sign in with Apple (APPLE_KEY_ID, APPLE_PRIVATE_KEY)
  *   - Return URL registered: https://phame.app/api/auth/apple/callback

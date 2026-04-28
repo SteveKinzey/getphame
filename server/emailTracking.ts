@@ -18,7 +18,7 @@ import { emailEvents } from "../drizzle/schema";
 
 // ── Token helpers ─────────────────────────────────────────────────────────────
 
-const TRACKING_SECRET = process.env.JWT_SECRET ?? "reviewlink-tracking-secret";
+const TRACKING_SECRET = process.env.JWT_SECRET ?? "phame-tracking-secret";
 
 /** Encode a tracking token for a sent email */
 export function encodeTrackingToken(
