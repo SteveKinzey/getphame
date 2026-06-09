@@ -6,12 +6,12 @@ import { Star, Send, Users, CheckCircle2, ArrowRight, Mail, Globe, ChevronDown, 
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-const HERO_IMG = "/manus-storage/phame-hero-illustration_349f17f2.png";
+const HERO_IMG = "/manus-storage/phame-hero-illustration_f081a8ab.png";
 
 const OG_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/og-preview-PB5uoBDhiPJXzuqM8A9kzf.png";
 
-const APP_PREVIEW_IMG = "/manus-storage/phame-app-preview-real_a36a28ed.png";
+const APP_PREVIEW_IMG = "/manus-storage/phame-app-screenshot_ef12f737.png";
 
 function FAQSection() {
   const { t } = useTranslation();
@@ -148,7 +148,7 @@ export default function LandingPage() {
       >
         <div className="flex items-center">
           <img
-            src="/manus-storage/phame-wordmark-transparent-clean_17d50f06.png"
+            src="/manus-storage/phame-wordmark-transparent-clean_75738dbd.png"
             alt="Phame"
             className="object-cover"
             style={{ width: '160px', height: '60px', objectFit: 'cover', marginLeft: '-20px' }}

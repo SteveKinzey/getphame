@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 
-const HERO_IMG = "/manus-storage/phame-hero-illustration_349f17f2.png";
+const HERO_IMG = "/manus-storage/phame-hero-illustration_f081a8ab.png";
 
 function ShareReferralCard() {
   const { t } = useTranslation();
@@ -305,7 +305,7 @@ export default function HomePage() {
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center">
               <img
-                src="/manus-storage/phame-wordmark-transparent-clean_17d50f06.png"
+                src="/manus-storage/phame-wordmark-transparent-clean_75738dbd.png"
                 alt="Phame"
                 className="block"
                 style={{ width: '160px', height: '60px', objectFit: 'cover', marginLeft: '-20px' }}
