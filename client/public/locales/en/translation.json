@@ -1342,6 +1342,36 @@
     "noUpdates": "No updates in this category yet.",
     "featureRequest": "Have a feature request?",
     "letUsKnow": "Let us know",
+    "v14": {
+      "brandRefresh": {
+        "title": "Phame Brand Refresh",
+        "description": "New visual identity across the entire app — star-and-arrow mark replaces the rocket, updated wordmark, new hero illustration, and a refreshed app icon. The brand now better reflects what Phame does: earn reviews automatically."
+      },
+      "referralSystem": {
+        "title": "Refer & Earn",
+        "description": "Share your unique referral link with other local businesses. When they sign up and upgrade to Pro, you automatically earn one free month — no codes to enter, no forms to fill."
+      },
+      "poweredByPhame": {
+        "title": "Powered by Phame Footer",
+        "description": "Free-tier users now send emails with a subtle \"Powered by Phame\" footer that links back to getphame.app, helping grow the community while keeping your emails professional."
+      },
+      "clientDetailSheet": {
+        "title": "Client Detail Sheet",
+        "description": "Tap any client name in the dashboard to open a full detail view: see the exact email that was sent, edit the subject and body, restart the campaign, or view the full reminder timeline."
+      },
+      "bulkRestart": {
+        "title": "Bulk Restart Campaigns",
+        "description": "Select multiple non-responding clients in the dashboard and restart all their review request campaigns in one action. Pending reminders are automatically rescheduled."
+      },
+      "yelpCompliance": {
+        "title": "Yelp Compliance Mode",
+        "description": "Yelp review links now render as plain-text instructions instead of clickable links, keeping your outreach fully compliant with Yelp's no-solicitation policy."
+      },
+      "domainMigration": {
+        "title": "New Home: getphame.app",
+        "description": "Phame has officially moved to getphame.app. All existing links, emails, and integrations have been updated automatically."
+      }
+    },
     "v13": {
       "emailDashboard": {
         "title": "Email Performance Dashboard",

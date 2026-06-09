@@ -582,7 +582,7 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
       <div
         className="w-24 h-24 rounded-full flex items-center justify-center rr-bg-navy overflow-hidden"
       >
-        <img src="/manus-storage/phame-app-icon-new_bcedda69.png" alt="Phame" className="w-20 h-20 object-contain" />
+        <img src="/manus-storage/phame-app-icon-new_6efe8008.png" alt="Phame" className="w-20 h-20 object-contain" />
       </div>
       <div>
         <h3

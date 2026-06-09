@@ -2,7 +2,7 @@
 // Design: Navy header, white content area, gold accent for version badges
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Star, Shield, Zap, Users, BarChart2, Mail } from "lucide-react";
+import { ArrowLeft, Star, Shield, Zap, Users, BarChart2, Mail, TrendingUp, Globe, RotateCcw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 type Label = "new" | "improved" | "fix";
@@ -16,6 +16,68 @@ interface ChangeEntry {
 }
 
 const CHANGELOG: { version: string; date: string; entries: ChangeEntry[] }[] = [
+  {
+    version: "1.4",
+    date: "June 2026",
+    entries: [
+      {
+        version: "1.4",
+        date: "June 2026",
+        label: "new",
+        icon: <Star size={15} />,
+        titleKey: "changelog.v14.brandRefresh.title",
+        descriptionKey: "changelog.v14.brandRefresh.description",
+      },
+      {
+        version: "1.4",
+        date: "June 2026",
+        label: "new",
+        icon: <TrendingUp size={15} />,
+        titleKey: "changelog.v14.referralSystem.title",
+        descriptionKey: "changelog.v14.referralSystem.description",
+      },
+      {
+        version: "1.4",
+        date: "June 2026",
+        label: "new",
+        icon: <Mail size={15} />,
+        titleKey: "changelog.v14.poweredByPhame.title",
+        descriptionKey: "changelog.v14.poweredByPhame.description",
+      },
+      {
+        version: "1.4",
+        date: "June 2026",
+        label: "new",
+        icon: <Users size={15} />,
+        titleKey: "changelog.v14.clientDetailSheet.title",
+        descriptionKey: "changelog.v14.clientDetailSheet.description",
+      },
+      {
+        version: "1.4",
+        date: "June 2026",
+        label: "new",
+        icon: <RotateCcw size={15} />,
+        titleKey: "changelog.v14.bulkRestart.title",
+        descriptionKey: "changelog.v14.bulkRestart.description",
+      },
+      {
+        version: "1.4",
+        date: "June 2026",
+        label: "improved",
+        icon: <Shield size={15} />,
+        titleKey: "changelog.v14.yelpCompliance.title",
+        descriptionKey: "changelog.v14.yelpCompliance.description",
+      },
+      {
+        version: "1.4",
+        date: "June 2026",
+        label: "improved",
+        icon: <Globe size={15} />,
+        titleKey: "changelog.v14.domainMigration.title",
+        descriptionKey: "changelog.v14.domainMigration.description",
+      },
+    ],
+  },
   {
     version: "1.3",
     date: "April 2026",

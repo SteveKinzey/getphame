@@ -5,7 +5,7 @@
 import { Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-const HERO_IMG = "/manus-storage/phame-hero-illustration_f081a8ab.png";
+const HERO_IMG = "/manus-storage/phame-hero-illustration_1d9cd896.png";
 
 export default function OnboardingPage() {
   const { t } = useTranslation();
@@ -32,7 +32,7 @@ export default function OnboardingPage() {
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-2">
           <img
-            src="/manus-storage/phame-wordmark-transparent-clean_75738dbd.png"
+            src="/manus-storage/phame-wordmark-transparent-clean_72cfd2fe.png"
             alt="Phame"
             style={{ width: '160px', height: '60px', objectFit: 'cover', marginLeft: '-20px' }}
           />
