@@ -7,7 +7,6 @@ import {
   Crown,
   CheckCircle2,
   Star,
-  Star,
   ArrowRight,
   Infinity,
   Zap,
