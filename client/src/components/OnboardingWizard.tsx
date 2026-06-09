@@ -17,7 +17,7 @@ import { useLocation } from "wouter";
 import {
   Mail,
   Globe,
-  Rocket,
+  Star,
   CheckCircle2,
   X,
   ChevronRight,
@@ -582,7 +582,7 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
       <div
         className="w-24 h-24 rounded-full flex items-center justify-center rr-bg-navy overflow-hidden"
       >
-        <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="Phame" className="w-20 h-20 object-contain" />
+        <img src="/manus-storage/phame-app-icon-new_bcedda69.png" alt="Phame" className="w-20 h-20 object-contain" />
       </div>
       <div>
         <h3
@@ -598,7 +598,7 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
         onClick={handleGoSend}
         className="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-black text-base transition-transform active:scale-95 w-full rr-bg-gold" style={{ color: "oklch(0.15 0.05 260)" }}
       >
-        <Rocket size={18} />
+        <Star size={18} />
         {t("step3Send.sendFirstRequestButton")}
       </button>
     </div>
@@ -625,7 +625,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
   const steps = [
     { id: 1, label: t("onboardingWizard.steps.connectEmail"), icon: Mail, done: !!status?.smtpConnected },
     { id: 2, label: t("onboardingWizard.steps.reviewPlatform"), icon: Globe, done: !!status?.hasPlatform },
-    { id: 3, label: t("onboardingWizard.steps.sendRequest"), icon: Rocket, done: !!status?.hasSentRequest },
+    { id: 3, label: t("onboardingWizard.steps.sendRequest"), icon: Star, done: !!status?.hasSentRequest },
   ];
   function handleStepDone() {
     // Auto-advance to next step when server confirms completion
@@ -655,7 +655,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
         >
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
-              <Rocket size={18} className="rr-text-gold" />
+              <Star size={18} className="rr-text-gold" />
               <span
                 className="text-xs font-bold tracking-widest uppercase rr-text-gold"
               >

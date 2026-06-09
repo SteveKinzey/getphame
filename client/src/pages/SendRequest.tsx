@@ -3,7 +3,7 @@
 
 import { useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import { Send, Rocket, Mail, User, Star, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser, Bell, BellOff, CheckCircle2 } from "lucide-react";
+import { Send, Star, Mail, User, Star, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser, Bell, BellOff, CheckCircle2 } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
 import ContactPickerModal from "@/components/ContactPickerModal";
 import { FREE_LIMIT } from "@shared/const";
@@ -228,7 +228,7 @@ export default function SendRequestPage() {
               <div
                 className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 rr-bg-gold"
               >
-                <Rocket size={15} className="rr-text-navy" />
+                <Star size={15} className="rr-text-navy" />
               </div>
               <p className="text-sm font-black rr-text-gold">
                 {t("successScreen.requestsSentMilestone", { milestoneNum })}
@@ -659,7 +659,7 @@ export default function SendRequestPage() {
                 </>
               ) : (
                 <>
-                  <Rocket size={20} />
+                  <Star size={20} />
                   {t("mainForm.sendReviewRequest")}
                 </>
               )}

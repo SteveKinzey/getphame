@@ -6,7 +6,7 @@ import { useLocation } from "wouter";
 import {
   Crown,
   CheckCircle2,
-  Rocket,
+  Star,
   Star,
   ArrowRight,
   Infinity,
@@ -187,7 +187,7 @@ export default function PaymentSuccessPage() {
           onClick={() => navigate("/send")}
           className="w-full py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-2 transition-transform active:scale-95 rr-bg-gold rr-text-navy"
         >
-          <Rocket size={18} />
+          <Star size={18} />
           Send Your First Request
           <ArrowRight size={16} />
         </button>

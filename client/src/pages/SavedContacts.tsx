@@ -43,7 +43,7 @@ import {
   Square,
   Loader2,
   X,
-  Rocket,
+  Star,
   Tag,
   Plus,
   Globe,
@@ -675,7 +675,7 @@ export default function SavedContacts() {
                 }}
                 className="flex items-center gap-2 self-start px-4 py-2 rounded-xl text-sm font-bold transition-colors rr-bg-navy rr-text-gold"
               >
-                <Rocket size={14} />
+                <Star size={14} />
                 Send to all "{tagFilter}" ({filtered.length})
               </button>
             )}
@@ -907,7 +907,7 @@ export default function SavedContacts() {
                 onClick={() => setBulkConfirmOpen(true)}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-black transition-all rr-bg-gold rr-text-navy"
               >
-                <Rocket size={14} />
+                <Star size={14} />
                 Send to {selectedCount}
               </button>
             </div>
@@ -1128,7 +1128,7 @@ export default function SavedContacts() {
               {bulkSendMutation.isPending ? (
                 <><Loader2 size={14} className="animate-spin mr-1" /> Sending…</>
               ) : (
-                <><Rocket size={14} className="mr-1" /> Send {selectedCount} Requests</>
+                <><Star size={14} className="mr-1" /> Send {selectedCount} Requests</>
               )}
             </AlertDialogAction>
           </AlertDialogFooter>

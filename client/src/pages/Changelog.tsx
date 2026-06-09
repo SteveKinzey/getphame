@@ -2,7 +2,7 @@
 // Design: Navy header, white content area, gold accent for version badges
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, Rocket, Star, Shield, Zap, Users, BarChart2, Mail } from "lucide-react";
+import { ArrowLeft, Star, Shield, Zap, Users, BarChart2, Mail } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 type Label = "new" | "improved" | "fix";
@@ -48,7 +48,7 @@ const CHANGELOG: { version: string; date: string; entries: ChangeEntry[] }[] = [
         version: "1.3",
         date: "April 2026",
         label: "new",
-        icon: <Rocket size={15} />,
+        icon: <Star size={15} />,
         titleKey: "changelog.v13.referralCard.title",
         descriptionKey: "changelog.v13.referralCard.description",
       },
@@ -130,7 +130,7 @@ const CHANGELOG: { version: string; date: string; entries: ChangeEntry[] }[] = [
         version: "1.0",
         date: "January 2026",
         label: "new",
-        icon: <Rocket size={15} />,
+        icon: <Star size={15} />,
         titleKey: "changelog.v10.launch.title",
         descriptionKey: "changelog.v10.launch.description",
       },
@@ -194,7 +194,7 @@ export default function ChangelogPage() {
           className="flex items-center gap-2 mb-1 active:opacity-70 transition-opacity"
           aria-label={t("changelog.homeAriaLabel", "Go to Home")}
         >
-          <Rocket size={16} className="rr-text-gold" aria-hidden="true" />
+          <Star size={16} className="rr-text-gold" aria-hidden="true" />
           <span
             className="text-xs font-bold tracking-widest uppercase rr-text-gold"
           >

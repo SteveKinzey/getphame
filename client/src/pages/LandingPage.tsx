@@ -2,12 +2,11 @@
 // Navy/gold design system matching the authenticated app
 
 import { getLoginUrl } from "@/const";
-import { Rocket, Star, Send, Users, CheckCircle2, ArrowRight, Mail, Globe, ChevronDown, X, Check } from "lucide-react";
+import { Star, Send, Users, CheckCircle2, ArrowRight, Mail, Globe, ChevronDown, X, Check } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-const HERO_IMG =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
+const HERO_IMG = "/manus-storage/phame-hero-illustration_349f17f2.png";
 
 const OG_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/og-preview-PB5uoBDhiPJXzuqM8A9kzf.png";
@@ -149,7 +148,7 @@ export default function LandingPage() {
       >
         <div className="flex items-center">
           <img
-            src="/manus-storage/phame-logo-transparent_487ff925.png"
+            src="/manus-storage/phame-wordmark-transparent-clean_17d50f06.png"
             alt="Phame"
             className="object-cover"
             style={{ width: '160px', height: '60px', objectFit: 'cover', marginLeft: '-20px' }}
@@ -199,7 +198,7 @@ export default function LandingPage() {
             href={loginUrl}
             className="inline-flex items-center justify-center gap-2 w-full max-w-xs mx-auto py-4 rounded-2xl font-black text-lg transition-transform active:scale-95 rr-bg-gold rr-text-navy" style={{ display: "flex" }}
           >
-            <Rocket size={20} />
+            <Star size={20} />
             {t("hero.cta")}
             <ArrowRight size={18} />
           </a>
@@ -394,7 +393,7 @@ export default function LandingPage() {
               className="grid grid-cols-3 px-4 py-3 items-center border-b-2 rr-bg-gold-pale" style={{ borderColor: "oklch(0.80 0.18 80)" }}
             >
               <div className="flex items-center gap-1.5">
-                <Rocket size={13} className="rr-text-gold" />
+                <Star size={13} className="rr-text-gold" />
                 <span className="text-xs font-black rr-text-navy">Phame</span>
               </div>
               <div className="text-center">
@@ -543,7 +542,7 @@ export default function LandingPage() {
 
         {/* Brand */}
         <div className="flex items-center gap-1.5">
-          <Rocket size={12} className="rr-text-gold" />
+          <Star size={12} className="rr-text-gold" />
           <span className="rr-fw-bold">{t("nav.brandName")}</span>
         </div>
       </footer>

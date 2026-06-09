@@ -7,7 +7,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation } from "wouter";
 import { useEffect } from "react";
 import { Loader2, ArrowLeft, Frown, ShieldAlert } from "lucide-react";
-import { Rocket } from "lucide-react";
+import { Star } from "lucide-react";
 
 const REASON_LABELS: Record<string, string> = {
   too_expensive:    "Too expensive",
@@ -67,7 +67,7 @@ export default function AdminChurnPage() {
           <ArrowLeft size={14} /> Back to Admin
         </button>
         <div className="flex items-center gap-2 mb-1">
-          <Rocket size={16} className="rr-text-gold" />
+          <Star size={16} className="rr-text-gold" />
           <span
             className="text-xs font-bold tracking-widest uppercase rr-text-gold"
           >

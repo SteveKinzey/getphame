@@ -2,11 +2,10 @@
 // Shown when user is not authenticated. Prompts them to sign in with Google or Apple OAuth.
 // After login, they set up their business profile in Settings.
 
-import { Rocket, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
-const HERO_IMG =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
+const HERO_IMG = "/manus-storage/phame-hero-illustration_349f17f2.png";
 
 export default function OnboardingPage() {
   const { t } = useTranslation();
@@ -32,12 +31,11 @@ export default function OnboardingPage() {
       {/* Top bar: logo + language toggle */}
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-2">
-          <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="Phame" className="w-9 h-9 rounded-lg object-contain" />
-          <span
-            className="text-sm font-bold tracking-widest uppercase rr-text-gold"
-          >
-            {t("nav.brandName")}
-          </span>
+          <img
+            src="/manus-storage/phame-wordmark-transparent-clean_17d50f06.png"
+            alt="Phame"
+            style={{ width: '160px', height: '60px', objectFit: 'cover', marginLeft: '-20px' }}
+          />
         </div>
       </div>
 

@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Rocket, Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X, Eye, MousePointerClick, ShieldCheck, AlertTriangle, CreditCard } from "lucide-react";
+import { Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X, Eye, MousePointerClick, ShieldCheck, AlertTriangle, CreditCard } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import OnboardingGuide from "@/components/OnboardingGuide";
@@ -13,8 +13,7 @@ import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 
-const HERO_IMG =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-hero-onboarding-8SYQEqGEorTANQPoVMWeZD.webp";
+const HERO_IMG = "/manus-storage/phame-hero-illustration_349f17f2.png";
 
 function ShareReferralCard() {
   const { t } = useTranslation();
@@ -289,7 +288,7 @@ export default function HomePage() {
         className="relative px-5 pt-8 pb-6 overflow-hidden animate-scale-in"
         style={{ background: "var(--navy)" }}
       >
-        {/* Background rocket image */}
+        {/* Background hero illustration */}
         <div
           className="absolute right-0 top-0 w-40 h-40 opacity-15 pointer-events-none"
           style={{ transform: "translate(10%, -10%)" }}
@@ -306,7 +305,7 @@ export default function HomePage() {
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center">
               <img
-                src="/manus-storage/phame-logo-transparent_487ff925.png"
+                src="/manus-storage/phame-wordmark-transparent-clean_17d50f06.png"
                 alt="Phame"
                 className="block"
                 style={{ width: '160px', height: '60px', objectFit: 'cover', marginLeft: '-20px' }}

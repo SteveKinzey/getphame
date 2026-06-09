@@ -22,7 +22,7 @@ import {
   CheckCircle2,
   DollarSign,
 } from "lucide-react";
-import { Rocket } from "lucide-react";
+
 import { useDebounce } from "use-debounce";
 import { toast } from "sonner";
 
@@ -91,7 +91,7 @@ export default function AdminDashboard() {
           <ArrowLeft size={14} /> Back to Home
         </button>
         <div className="flex items-center gap-2 mb-1">
-          <Rocket size={16} className="rr-text-gold" />
+          <Star size={16} className="rr-text-gold" />
           <span
             className="text-xs font-bold tracking-widest uppercase rr-text-gold"
           >
@@ -436,7 +436,7 @@ export default function AdminDashboard() {
                 className="w-full flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold rr-bg-navy text-white"
               >
                 <span className="flex items-center gap-2">
-                  <Rocket size={16} className="rr-text-gold" />
+                  <Star size={16} className="rr-text-gold" />
                   Revenue Dashboard
                 </span>
                 <span className="rr-text-gold">→</span>

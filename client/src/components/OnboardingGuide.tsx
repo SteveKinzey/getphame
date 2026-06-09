@@ -14,7 +14,7 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, ChevronRight, ChevronLeft, Mail, Star, Users, Send, CheckCircle2, Rocket, Globe, Upload, CreditCard, ShoppingCart, BookOpen, Loader2 } from "lucide-react";
+import { X, ChevronRight, ChevronLeft, Mail, Star, Users, Send, CheckCircle2, Star, Globe, Upload, CreditCard, ShoppingCart, BookOpen, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
@@ -55,7 +55,7 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
       <div
         className="rounded-2xl p-5 text-center rr-bg-navy-mid"
       >
-        <img src="/manus-storage/icon-1024_4f5cbdf4.png" alt="Phame" className="w-20 h-20 rounded-2xl object-contain mx-auto mb-3" />
+        <img src="/manus-storage/phame-app-icon-new_bcedda69.png" alt="Phame" className="w-20 h-20 rounded-2xl object-contain mx-auto mb-3" />
         <p className="text-white font-bold text-lg leading-snug" style={{ fontFamily: "'Poppins', sans-serif" }}>
           {t("onboardingGuide.welcome.heroText")}
         </p>
@@ -881,7 +881,7 @@ function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void;
         onClick={onClose}
         className="w-full font-bold rr-bg-green text-white"
       >
-        <Rocket size={15} className="mr-2" /> {t("onboardingGuide.allSet.startButton")}
+        <Star size={15} className="mr-2" /> {t("onboardingGuide.allSet.startButton")}
       </Button>
     </div>
   );
@@ -950,7 +950,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
   const STEPS: Step[] = [
     {
       id: 0,
-      icon: <Rocket size={20} />,
+      icon: <Star size={20} />,
       title: t("onboardingGuide.steps.welcome.title"),
       subtitle: t("onboardingGuide.steps.welcome.subtitle"),
       content: <StepWelcome onNavigate={handleNavigate} stepsDone={stepsDone} />,
