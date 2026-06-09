@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X, Eye, MousePointerClick, ShieldCheck, AlertTriangle, CreditCard } from "lucide-react";
+import { Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X, Eye, MousePointerClick, ShieldCheck, AlertTriangle, CreditCard, Gift, Users } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import OnboardingGuide from "@/components/OnboardingGuide";
@@ -14,6 +14,104 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 
 const HERO_IMG = "/manus-storage/phame-hero-illustration_1d9cd896.png";
+
+function ReferralRewardsCard() {
+  const { data: referralStats, isLoading } = trpc.referral.getStats.useQuery();
+  const { data: referralData } = trpc.referral.getCode.useQuery();
+  const shareUrl = referralData?.shareUrl ?? "https://getphame.app";
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyCode = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      toast.success("Referral link copied!");
+      setTimeout(() => setCopied(false), 3000);
+    } catch {
+      toast.error("Could not copy link.");
+    }
+  };
+
+  const total = referralStats?.totalReferrals ?? 0;
+  const converted = referralStats?.convertedReferrals ?? 0;
+  const months = referralStats?.monthsEarned ?? 0;
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+      {/* Gold accent bar */}
+      <div className="h-1 w-full rr-bg-gold" />
+      <div className="p-4">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 rr-bg-navy">
+              <Gift size={15} className="rr-text-gold" />
+            </div>
+            <div>
+              <p className="text-sm font-black rr-text-navy leading-tight">Referral Rewards</p>
+              <p className="text-xs rr-text-navy-muted">Earn 1 free month per paid referral</p>
+            </div>
+          </div>
+          {months > 0 && (
+            <div className="flex items-center gap-1 px-2 py-1 rounded-lg rr-bg-gold">
+              <Star size={11} className="rr-text-navy" fill="currentColor" />
+              <span className="text-xs font-black rr-text-navy">{months} mo</span>
+            </div>
+          )}
+        </div>
+
+        {/* Stats grid */}
+        <div className="grid grid-cols-3 gap-2 mb-3">
+          <div className="flex flex-col items-center rounded-xl py-2.5 px-2 rr-bg-white-card">
+            <Users size={13} className="rr-text-navy mb-1" />
+            <span className="text-lg font-black rr-text-navy">{isLoading ? "—" : total}</span>
+            <span className="text-xs rr-text-navy-muted text-center leading-tight">Joined</span>
+          </div>
+          <div className="flex flex-col items-center rounded-xl py-2.5 px-2" style={{ background: "oklch(0.96 0.04 80)" }}>
+            <CreditCard size={13} style={{ color: "oklch(0.55 0.18 80)", marginBottom: 4 }} />
+            <span className="text-lg font-black rr-text-navy">{isLoading ? "—" : converted}</span>
+            <span className="text-xs text-center leading-tight" style={{ color: "oklch(0.55 0.12 80)" }}>Converted</span>
+          </div>
+          <div className="flex flex-col items-center rounded-xl py-2.5 px-2" style={{ background: "oklch(0.96 0.06 145)" }}>
+            <Gift size={13} style={{ color: "oklch(0.45 0.18 145)", marginBottom: 4 }} />
+            <span className="text-lg font-black rr-text-navy">{isLoading ? "—" : months}</span>
+            <span className="text-xs text-center leading-tight" style={{ color: "oklch(0.45 0.12 145)" }}>Free Months</span>
+          </div>
+        </div>
+
+        {/* Referral link copy row */}
+        <div
+          className="flex items-center gap-2 rounded-xl px-3 py-2 cursor-pointer transition-opacity active:opacity-70"
+          style={{ background: "oklch(0.94 0.02 260)" }}
+          onClick={handleCopyCode}
+        >
+          <span className="flex-1 text-xs rr-text-navy-muted truncate">{shareUrl}</span>
+          <button className="flex items-center gap-1 text-xs font-black rr-text-navy flex-shrink-0">
+            {copied ? <Check size={12} /> : <Share2 size={12} />}
+            {copied ? "Copied" : "Copy"}
+          </button>
+        </div>
+
+        {/* Progress hint */}
+        {total === 0 && (
+          <p className="text-xs rr-text-navy-faint text-center mt-2.5">
+            Share your link below to start earning free months
+          </p>
+        )}
+        {total > 0 && converted < total && (
+          <p className="text-xs rr-text-navy-faint text-center mt-2.5">
+            {total - converted} friend{total - converted !== 1 ? "s" : ""} joined — waiting for them to upgrade
+          </p>
+        )}
+        {converted > 0 && months === 0 && (
+          <p className="text-xs text-center mt-2.5" style={{ color: "oklch(0.55 0.18 80)" }}>
+            Reward processing — your free month will be applied shortly
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
 
 function ShareReferralCard() {
   const { t } = useTranslation();
@@ -728,7 +826,9 @@ export default function HomePage() {
         {/* ── Email Tracking Summary Card ────────────────────────────── */}
         <TrackingSummaryCard />
 
-        {/* ── Referral Nudge ───────────────────────────────────────────── */}
+        {/* ── Referral Rewards Dashboard ─────────────────────────────── */}
+        <ReferralRewardsCard />
+        {/* ── Referral Share Nudge ─────────────────────────────────────── */}
         <ShareReferralCard />
 
         {/* Platform Breakdown */}

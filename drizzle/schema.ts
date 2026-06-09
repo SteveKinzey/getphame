@@ -62,6 +62,8 @@ export const businessProfiles = mysqlTable("business_profiles", {
   reEngagementEnabled: int("reEngagementEnabled").default(1).notNull(),
   // Referral code — unique 8-char code used to generate share links (getphame.app?ref=CODE)
   referralCode: varchar("referralCode", { length: 32 }),
+  // Inactive user re-engagement email — Unix ms when sent (null = not yet sent)
+  inactiveEmailSentAt: bigint("inactiveEmailSentAt", { mode: "number" }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });

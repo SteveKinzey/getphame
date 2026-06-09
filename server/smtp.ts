@@ -933,3 +933,118 @@ export async function sendPaymentFailedEmail(opts: {
     text,
   });
 }
+
+/**
+ * Send a re-engagement email to a user who signed up but never sent their first review request.
+ * Sent from the platform owner's SMTP (userId=1). Silently skips if no SMTP configured.
+ */
+export async function sendInactiveUserEmail(opts: {
+  ownerUserId: number;
+  toEmail: string;
+  toName: string | null;
+  unsubscribeUrl?: string;
+}): Promise<void> {
+  const creds = await getSmtpCredentials(opts.ownerUserId);
+  if (!creds) return;
+  const fromName = creds.fromName ?? "Phame";
+  const displayName = opts.toName || "there";
+  const unsubLine = opts.unsubscribeUrl
+    ? `<p style="margin:0;font-size:11px;color:#bbb;"><a href="${opts.unsubscribeUrl}" style="color:#bbb;">Unsubscribe</a></p>`
+    : "";
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your first review request is waiting</title>
+</head>
+<body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
+          <tr>
+            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Phame</p>
+              <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">Your first review request is waiting</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:36px 40px;">
+              <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
+              <p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">You signed up for Phame a week ago — but you haven't sent your first review request yet. That's a week of potential 5-star reviews sitting on the table.</p>
+              <p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">It takes under 2 minutes to send your first one. Here's all you need:</p>
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
+                <tr>
+                  <td style="padding:10px 16px;background:#f8f9ff;border-radius:10px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="28" style="vertical-align:top;padding-top:2px;"><span style="font-size:16px;">&#11088;</span></td>
+                        <td>
+                          <p style="margin:0;font-size:14px;font-weight:700;color:#1a2744;">A customer name + email</p>
+                          <p style="margin:2px 0 0;font-size:13px;color:#777;">Someone you've helped recently who'd be happy to leave a review.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr><td style="height:8px;"></td></tr>
+                <tr>
+                  <td style="padding:10px 16px;background:#f8f9ff;border-radius:10px;">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="28" style="vertical-align:top;padding-top:2px;"><span style="font-size:16px;">&#128279;</span></td>
+                        <td>
+                          <p style="margin:0;font-size:14px;font-weight:700;color:#1a2744;">Your review link</p>
+                          <p style="margin:2px 0 0;font-size:13px;color:#777;">Google, Yelp, TripAdvisor — wherever you want the review to land.</p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">Phame sends the email from your own inbox — so it looks personal, not automated. Customers are far more likely to act on it.</p>
+              <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
+                <tr>
+                  <td style="background:#f0a500;border-radius:10px;padding:14px 32px;text-align:center;">
+                    <a href="https://getphame.app/send" style="color:#1a2744;font-size:15px;font-weight:900;text-decoration:none;">Send My First Request &#8594;</a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:8px 0 0;font-size:12px;color:#aaa;text-align:center;">Takes less than 2 minutes</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
+              <p style="margin:0 0 6px;font-size:12px;color:#aaa;line-height:1.6;">
+                You received this because you signed up for Phame.<br/>
+                <a href="https://getphame.app/settings" style="color:#1a2744;">Manage your settings</a>
+              </p>
+              ${unsubLine}
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+  const text = `Hi ${displayName},\n\nYou signed up for Phame a week ago but haven't sent your first review request yet.\n\nIt takes under 2 minutes. Go to https://getphame.app/send to send your first one now.\n\n-- ${fromName}`;
+  const pass = decryptPassword(creds.encryptedPass);
+  const transporter = createTransporter({
+    host: creds.host,
+    port: creds.port,
+    secure: creds.secure === 1,
+    user: creds.user,
+    pass,
+  });
+  const from = `"${fromName}" <${creds.user}>`;
+  await transporter.sendMail({
+    from,
+    replyTo: creds.replyTo ?? creds.user,
+    to: opts.toEmail,
+    subject: "Your first review request is waiting — Phame",
+    html,
+    text,
+  });
+}

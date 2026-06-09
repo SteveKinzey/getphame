@@ -323,6 +323,13 @@
       "when": 1777406332854,
       "tag": "0045_nasty_old_lace",
       "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "5",
+      "when": 1781005324494,
+      "tag": "0046_dashing_blade",
+      "breakpoints": true
     }
   ]
 }

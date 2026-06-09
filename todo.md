@@ -1508,3 +1508,10 @@
 - [x] Fix bottom nav: even spacing across all 4 items (Home, Send, Dashboard, Settings)
 - [x] Add copyright notice below bottom nav: "Copyright © 2026 SK America" — small, centered, blue text on gold ribbon
 - [x] Fix landing page footer: even spacing across all 4 links (Privacy Policy, Terms, What's New, Compliance)
+
+## Session #73 — Brand Refresh Follow-ups (Jun 9 2026)
+- [x] Create phame-saas-brand-refresh reusable skill
+- [x] Fix all /manus-storage/ image URLs (re-upload assets, update all 5 files)
+- [x] Add Changelog v1.4 entries (7 items: brand refresh, referral, powered-by-phame, client detail, bulk restart, Yelp compliance, domain migration)
+- [x] Build inactive user re-engagement email + Heartbeat cron (targets users who signed up 7+ days ago with monthlyCount=0)
+- [x] Add referral rewards dashboard section to Home screen (referral stats card)

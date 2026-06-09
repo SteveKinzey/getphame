@@ -21,6 +21,7 @@ import { startReminderScheduler } from "../reminders";
 import { startSmtpHealthCheckScheduler } from "../smtpHealthCheck";
 import { startSmtpWeeklyDigestScheduler } from "../smtpWeeklyDigest";
 import { startReEngagementScheduler } from "../reEngagementScheduler";
+import { startInactiveUserScheduler } from "../inactiveUserScheduler";
 import { startWooAutoImportScheduler } from "../wooImportScheduler";
 import { registerSitemapRoutes } from "../sitemap";
 import { exchangeGmailCode, getGmailRedirectUri } from "../gmail";
@@ -456,6 +457,7 @@ async function startServer() {
     startSmtpHealthCheckScheduler();
     startSmtpWeeklyDigestScheduler();
     startReEngagementScheduler();
+    startInactiveUserScheduler();
     startWooAutoImportScheduler();
   });
 }
