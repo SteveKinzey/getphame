@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 
-const HERO_IMG = "/manus-storage/phame-hero-illustration_1d9cd896.png";
+const HERO_IMG = "https://assets.getphame.app/phame-hero-illustration.png";
 
 function ReferralRewardsCard() {
   const { data: referralStats, isLoading } = trpc.referral.getStats.useQuery();
@@ -403,7 +403,7 @@ export default function HomePage() {
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center">
               <img
-                src="/manus-storage/phame-wordmark-transparent-clean_72cfd2fe.png"
+                src="https://assets.getphame.app/phame-wordmark-transparent-clean.png"
                 alt="Phame"
                 className="block"
                 style={{ width: '160px', height: '60px', objectFit: 'cover', marginLeft: '-20px' }}

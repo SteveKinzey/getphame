@@ -1380,16 +1380,16 @@
 - [x] Verify on all screens that flyout is visible and functional
 - [x] Save checkpoint + deploy
 ## Session #68 — Email Templates Audit + Full Editor UI (Apr 23 2026)
-- [ ] Audit DB schema for email_templates table
-- [ ] Audit server/routers for templates procedures (list, create, update, delete, setDefault)
-- [ ] Audit current EmailTemplates.tsx UI — what editing is currently possible
-- [ ] Identify which templates Steve provided that are missing
-- [ ] Restore all missing templates as seeded defaults (per-user)
-- [ ] Build full template editor: create new, edit subject/body, delete, set default
-- [ ] Add HTML upload option so users can paste or upload custom HTML template
-- [ ] Wire dynamic platform name into template body (uses user's configured review link)
-- [ ] Verify all templates show in Send screen dropdown
-- [ ] Save checkpoint + deploy
+- [x] Audit DB schema for email_templates table
+- [x] Audit server/routers for templates procedures (list, create, update, delete, setDefault)
+- [x] Audit current EmailTemplates.tsx UI — what editing is currently possible
+- [x] Identify which templates Steve provided that are missing
+- [x] Restore all missing templates as seeded defaults (per-user)
+- [x] Build full template editor: create new, edit subject/body, delete, set default
+- [x] Add HTML upload option so users can paste or upload custom HTML template
+- [x] Wire dynamic platform name into template body (uses user's configured review link)
+- [x] Verify all templates show in Send screen dropdown
+- [x] Save checkpoint + deploy
 ## Session #68 — Templates Overhaul: Seed Presets + Shortcode Editor (Apr 23 2026)
 - [x] Add server-side seedDefaultTemplates(userId) that inserts the 3 preset templates if user has zero templates
 - [x] Call seedDefaultTemplates on login/first profile fetch so every new user gets the 3 templates pre-loaded
