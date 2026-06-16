@@ -1012,6 +1012,7 @@ export async function sendInactiveUserEmail(opts: {
                 </tr>
               </table>
               <p style="margin:8px 0 0;font-size:12px;color:#aaa;text-align:center;">Takes less than 2 minutes</p>
+              <p style="margin:28px 0 0;font-size:13px;color:#888;line-height:1.7;border-top:1px solid #f0f0f0;padding-top:20px;"><strong>P.S.</strong> Businesses using Phame collect their first 3–5 reviews within 48 hours of signing up. Your competitors are already doing this — don't leave reviews on the table.</p>
             </td>
           </tr>
           <tr>
@@ -1043,7 +1044,7 @@ export async function sendInactiveUserEmail(opts: {
     from,
     replyTo: creds.replyTo ?? creds.user,
     to: opts.toEmail,
-    subject: "Your first review request is waiting — Phame",
+    subject: displayName !== 'there' ? `${displayName}, your first review request is waiting` : `Your first review request is waiting`,
     html,
     text,
   });

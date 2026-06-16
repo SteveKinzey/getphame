@@ -324,7 +324,28 @@ async function startServer() {
   app.use(
     helmet({
       // Allow inline scripts/styles needed by Vite HMR in development
-      contentSecurityPolicy: process.env.NODE_ENV === "production",
+      contentSecurityPolicy: process.env.NODE_ENV === "production" ? {
+        directives: {
+          defaultSrc: ["'self'"],
+          baseUri: ["'self'"],
+          fontSrc: ["'self'", "https:", "data:"],
+          formAction: ["'self'"],
+          frameAncestors: ["'self'"],
+          // Allow images from self, data URIs, Cloudflare R2 CDN, and CloudFront
+          imgSrc: [
+            "'self'",
+            "data:",
+            "https://assets.getphame.app",
+            "https://*.r2.dev",
+            "https://d2xsxph8kpxj0f.cloudfront.net",
+          ],
+          objectSrc: ["'none'"],
+          scriptSrc: ["'self'"],
+          scriptSrcAttr: ["'none'"],
+          styleSrc: ["'self'", "https:", "'unsafe-inline'"],
+          upgradeInsecureRequests: [],
+        },
+      } : false,
       crossOriginEmbedderPolicy: false, // required for OAuth popup flows
     })
   );
