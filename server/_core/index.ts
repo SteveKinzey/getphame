@@ -134,7 +134,7 @@ async function startServer() {
 
           // Check for referral reward — if this user was referred, reward the referrer with 1 free month
           // Only reward for monthly/annual/lifetime plans (not free), and only once per referred user
-          if (newTier !== "free") {
+          if ((newTier as string) !== "free") {
             try {
               const referral = await getUnrewardedReferral(userId);
               if (referral) {

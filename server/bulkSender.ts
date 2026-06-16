@@ -23,6 +23,7 @@ export type BulkSenderProvider = "sendgrid" | "mailgun" | "postmark";
 
 export async function getBulkSenderCreds(userId: number) {
   const db = await getDb();
+  if (!db) return null;
   const [row] = await db
     .select()
     .from(bulkSenderCredentials)
@@ -132,6 +133,7 @@ export const bulkSenderRouter = router({
     .mutation(async ({ ctx, input }) => {
       // Fetch tier from business profile
       const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
       const { businessProfiles } = await import("../drizzle/schema");
       const [profile] = await db
         .select({ tier: businessProfiles.tier })
@@ -192,6 +194,7 @@ export const bulkSenderRouter = router({
   /** Disconnect bulk sender */
   disconnect: protectedProcedure.mutation(async ({ ctx }) => {
     const db = await getDb();
+    if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable" });
     await db
       .delete(bulkSenderCredentials)
       .where(eq(bulkSenderCredentials.userId, ctx.user.id));
