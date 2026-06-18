@@ -26,6 +26,9 @@ import {
   Eye,
   EyeOff,
   AlertCircle,
+  Plug2,
+  ExternalLink,
+  Download,
 } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -102,6 +105,183 @@ function getHintKey(email: string, host?: string): string | null {
   if (domain === "yahoo.com") return "step1Email.hints.yahooAppPassword";
   if (domain === "zoho.com" || domain === "zohomail.com") return "step1Email.hints.zohoSmtpAccess";
   return null;
+}
+
+// ── Step 4: WordPress Connector Plugin ───────────────────────────────────────
+
+function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
+  const { t } = useTranslation();
+  const [copied, setCopied] = useState(false);
+  const { data: apiKeyList } = trpc.apiKey.list.useQuery();
+  const generateKey = trpc.apiKey.generate.useMutation({
+    onSuccess: () => trpc.useUtils().apiKey.list.invalidate(),
+    onError: (err) => toast.error(err.message),
+  });
+
+  // Use the first available key or prompt to generate one
+  const firstKey = apiKeyList?.[0];
+
+  function handleCopy() {
+    if (!firstKey) return;
+    navigator.clipboard.writeText(firstKey.preview ?? "").then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  return (
+    <div className="flex flex-col gap-5">
+      {/* Intro */}
+      <div
+        className="flex items-start gap-3 px-4 py-4 rounded-2xl"
+        style={{ background: "oklch(0.18 0.06 80 / 0.3)", border: "1px solid oklch(0.35 0.12 80 / 0.4)" }}
+      >
+        <Plug2 size={20} className="rr-text-gold shrink-0 mt-0.5" />
+        <div>
+          <p className="text-sm font-bold text-white mb-1">
+            {t("step4Connector.intro.heading", "Using WordPress + WooCommerce?")}
+          </p>
+          <p className="text-xs" style={{ color: "oklch(0.65 0.04 260)" }}>
+            {t(
+              "step4Connector.intro.body",
+              "Install the free Get Phame Connector plugin to automatically sync every customer's first name, last name, and email to Phame every 6 hours — no CSV exports, no manual work."
+            )}
+          </p>
+        </div>
+      </div>
+
+      {/* Step-by-step instructions */}
+      <div className="flex flex-col gap-4">
+        {/* Step A */}
+        <div className="flex gap-3">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0"
+            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+          >
+            1
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-bold text-white mb-1">
+              {t("step4Connector.step1.title", "Download the plugin")}
+            </p>
+            <p className="text-xs mb-2" style={{ color: "oklch(0.60 0.04 260)" }}>
+              {t(
+                "step4Connector.step1.body",
+                "Download the Get Phame Connector .zip file from GitHub and upload it to your WordPress site."
+              )}
+            </p>
+            <a
+              href="https://github.com/SteveKinzey/get-phame-connector/releases/latest"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-transform active:scale-95"
+              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+            >
+              <Download size={14} />
+              {t("step4Connector.step1.downloadBtn", "Download Plugin (.zip)")}
+            </a>
+          </div>
+        </div>
+
+        {/* Step B */}
+        <div className="flex gap-3">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0"
+            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+          >
+            2
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-bold text-white mb-1">
+              {t("step4Connector.step2.title", "Install & activate in WordPress")}
+            </p>
+            <p className="text-xs" style={{ color: "oklch(0.60 0.04 260)" }}>
+              {t(
+                "step4Connector.step2.body",
+                "In your WordPress admin, go to Plugins → Add New → Upload Plugin, select the .zip file, then click Install Now and Activate."
+              )}
+            </p>
+            <a
+              href="https://wordpress.com/plugins"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-xs mt-1.5"
+              style={{ color: "oklch(0.70 0.15 250)" }}
+            >
+              <ExternalLink size={11} />
+              {t("step4Connector.step2.wpAdminLink", "Open WP Admin → Plugins")}
+            </a>
+          </div>
+        </div>
+
+        {/* Step C */}
+        <div className="flex gap-3">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0"
+            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+          >
+            3
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-bold text-white mb-1">
+              {t("step4Connector.step3.title", "Paste your API key")}
+            </p>
+            <p className="text-xs mb-2" style={{ color: "oklch(0.60 0.04 260)" }}>
+              {t(
+                "step4Connector.step3.body",
+                "In WordPress, go to Settings → Get Phame and paste your API key below. Then click Test Connection."
+              )}
+            </p>
+            {apiKeyList && apiKeyList.length > 0 ? (
+              <div
+                className="flex items-center gap-2 px-3 py-2 rounded-xl"
+                style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
+              >
+                <code className="text-xs flex-1 text-white truncate" style={{ fontFamily: "monospace" }}>
+                  {firstKey?.preview ?? "rl_..."}
+                </code>
+                <button
+                  onClick={handleCopy}
+                  className="text-xs font-bold px-2 py-1 rounded-lg transition-colors"
+                  style={{ background: copied ? "oklch(0.55 0.18 145)" : "oklch(0.28 0.08 260)", color: copied ? "oklch(0.15 0.05 260)" : "oklch(0.75 0.04 260)" }}
+                >
+                  {copied ? "✓ Copied" : "Copy"}
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => generateKey.mutate({ label: "WordPress Connector" })}
+                disabled={generateKey.isPending}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold transition-transform active:scale-95"
+                style={{ background: "oklch(0.26 0.07 260)", color: "oklch(0.75 0.04 260)", border: "1px solid oklch(0.38 0.06 260)" }}
+              >
+                {generateKey.isPending ? <Loader2 size={13} className="animate-spin" /> : <Plug2 size={13} />}
+                {t("step4Connector.step3.generateKeyBtn", "Generate API Key")}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Skip / Done */}
+      <div className="flex flex-col gap-2 mt-2">
+        <button
+          onClick={onDismiss}
+          className="w-full py-3.5 rounded-2xl font-bold text-sm transition-transform active:scale-95"
+          style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+        >
+          {t("step4Connector.doneBtn", "All done — go to Phame ✓")}
+        </button>
+        <button
+          onClick={onDismiss}
+          className="w-full text-center text-xs py-1"
+          style={{ color: "oklch(0.40 0.03 260)" }}
+        >
+          {t("step4Connector.skipBtn", "I don't use WordPress — skip this step")}
+        </button>
+      </div>
+    </div>
+  );
 }
 
 // ── Step indicator ─────────────────────────────────────────────────────────────
@@ -618,7 +798,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
   });
 
   // Derive minimum step from server state (can't go back below what's done)
-  const minStep = !status?.smtpConnected ? 1 : !status?.hasPlatform ? 2 : 3;
+  const minStep = !status?.smtpConnected ? 1 : !status?.hasPlatform ? 2 : !status?.hasSentRequest ? 3 : 4;
   const [viewStep, setViewStep] = useState<number | null>(null);
   // Auto-advance viewStep when server confirms a step is done
   const currentStep = viewStep ?? minStep;
@@ -626,13 +806,14 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
     { id: 1, label: t("onboardingWizard.steps.connectEmail"), icon: Mail, done: !!status?.smtpConnected },
     { id: 2, label: t("onboardingWizard.steps.reviewPlatform"), icon: Globe, done: !!status?.hasPlatform },
     { id: 3, label: t("onboardingWizard.steps.sendRequest"), icon: Star, done: !!status?.hasSentRequest },
+    { id: 4, label: t("onboardingWizard.steps.wpConnector", "WP Plugin"), icon: Plug2, done: false },
   ];
   function handleStepDone() {
     // Auto-advance to next step when server confirms completion
-    setViewStep((prev) => Math.min((prev ?? minStep) + 1, 3));
+    setViewStep((prev) => Math.min((prev ?? minStep) + 1, 4));
   }
   function handleNext() {
-    setViewStep((prev) => Math.min((prev ?? currentStep) + 1, 3));
+    setViewStep((prev) => Math.min((prev ?? currentStep) + 1, 4));
   }
   function handlePrev() {
     setViewStep((prev) => Math.max((prev ?? currentStep) - 1, 1));
@@ -733,17 +914,20 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
               {currentStep === 1 && t("onboardingWizard.stepContent.step1.title")}
               {currentStep === 2 && t("onboardingWizard.stepContent.step2.title")}
               {currentStep === 3 && t("onboardingWizard.stepContent.step3.title")}
+              {currentStep === 4 && t("onboardingWizard.stepContent.step4.title", "Connect WordPress")}
             </h2>
             <p className="text-sm" style={{ color: "oklch(0.60 0.04 260)" }}>
               {currentStep === 1 && t("onboardingWizard.stepContent.step1.description")}
               {currentStep === 2 && t("onboardingWizard.stepContent.step2.description")}
               {currentStep === 3 && t("onboardingWizard.stepContent.step3.description")}
+              {currentStep === 4 && t("onboardingWizard.stepContent.step4.description", "Install the free connector plugin on your WordPress site to auto-sync customers.")}
             </p>
           </div>
 
           {currentStep === 1 && <Step1Email onDone={handleStepDone} />}
           {currentStep === 2 && <Step2Platform onDone={handleStepDone} />}
-          {currentStep === 3 && <Step3Send onDismiss={onDismiss} />}
+          {currentStep === 3 && <Step3Send onDismiss={() => setViewStep(4)} />}
+          {currentStep === 4 && <Step4Connector onDismiss={onDismiss} />}
 
           {/* Prev / Next navigation */}
           <div className="flex items-center gap-3 mt-6">
@@ -756,7 +940,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
                 {t("onboardingWizard.navigation.previous")}
               </button>
             )}
-            {currentStep < 3 && (
+            {currentStep < 4 && currentStep !== 3 && (
               <button
                 onClick={handleNext}
                 className="flex-1 flex items-center justify-center gap-1 px-4 py-3 rounded-2xl font-bold text-sm transition-transform active:scale-95"
@@ -773,7 +957,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
             )}
           </div>
           {/* Skip link */}
-          {currentStep < 3 && (
+          {currentStep < 4 && currentStep !== 3 && (
             <button
               onClick={() => dismissMutation.mutate()}
               className="w-full text-center text-xs mt-3"
