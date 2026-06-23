@@ -71,7 +71,7 @@ export default function PWAInstallPrompt() {
               <span
                 className="text-xs font-bold tracking-widest uppercase rr-text-gold"
               >
-                Phame
+                Get Phame
               </span>
             </div>
             <h2
@@ -80,7 +80,7 @@ export default function PWAInstallPrompt() {
               Add to Home Screen
             </h2>
             <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
-              Install Phame for the best experience — works like a real app.
+              Install Get Phame for the best experience — works like a real app.
             </p>
           </div>
           <button
@@ -134,7 +134,7 @@ export default function PWAInstallPrompt() {
                     <span className="font-bold rr-text-gold">
                       Add
                     </span>{" "}
-                    — Phame will appear on your home screen
+                    — Get Phame will appear on your home screen
                   </>
                 }
               />
@@ -179,7 +179,7 @@ export default function PWAInstallPrompt() {
                     <span className="font-bold rr-text-gold">
                       Add
                     </span>{" "}
-                    — Phame will appear on your home screen
+                    — Get Phame will appear on your home screen
                   </>
                 }
               />

@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.phame.app',
-  appName: 'Phame',
+  appName: 'Get Phame',
   // The native app loads the live hosted site — no code bundled in the binary.
   // This means web updates are instantly live without an App Store re-submission.
   webDir: 'dist/public',

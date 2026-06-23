@@ -84,7 +84,7 @@ export default function TermsOfService() {
         <section>
           <h2 className={SH} style={SHS}>1. Acceptance of Terms</h2>
           <p className="mb-3">
-            By creating an account or otherwise accessing or using the Phame web application (the "Service"), you agree to be legally bound by these Terms of Service ("Terms") and our Privacy Policy, which is incorporated herein by reference. If you are using the Service on behalf of a business or other legal entity, you represent that you have authority to bind that entity to these Terms, and "you" refers to that entity.
+            By creating an account or otherwise accessing or using the Get Phame web application (the "Service"), you agree to be legally bound by these Terms of Service ("Terms") and our Privacy Policy, which is incorporated herein by reference. If you are using the Service on behalf of a business or other legal entity, you represent that you have authority to bind that entity to these Terms, and "you" refers to that entity.
           </p>
           <p>
             If you do not agree to these Terms in their entirety, you must not access or use the Service. We reserve the right to update these Terms at any time. Material changes will be communicated by updating the "Last updated" date above. Your continued use of the Service after any change constitutes acceptance of the revised Terms.
@@ -95,7 +95,7 @@ export default function TermsOfService() {
         <section>
           <h2 className={SH} style={SHS}>2. Description of Service</h2>
           <p className="mb-3">
-            Phame is a software-as-a-service (SaaS) web application that enables small business owners to send personalised review request emails to their customers using their own connected email account (via SMTP). The Service provides tools for managing customer contacts, creating email templates, scheduling follow-up reminders, and viewing delivery analytics (open and click tracking).
+            Get Phame is a software-as-a-service (SaaS) web application that enables small business owners to send personalised review request emails to their customers using their own connected email account (via SMTP). The Service provides tools for managing customer contacts, creating email templates, scheduling follow-up reminders, and viewing delivery analytics (open and click tracking).
           </p>
           <p>
             The Service is currently provided free of charge with no artificial sending limits. We reserve the right to introduce optional paid features or premium tiers in the future. Any such changes will be clearly disclosed in advance, and no charge will be incurred without your explicit consent. Your continued free access will not be retroactively restricted without reasonable notice.
@@ -147,13 +147,13 @@ export default function TermsOfService() {
         <section>
           <h2 className={SH} style={SHS}>5. CAN-SPAM, GDPR, CASL, and Anti-Spam Compliance</h2>
           <p className="mb-3">
-            Phame provides infrastructure for sending emails — you are the sender of record for every email transmitted through your connected email account. You acknowledge and agree that you are solely responsible for ensuring your use of the Service complies with the CAN-SPAM Act (US), the General Data Protection Regulation (EU/UK), the Canada Anti-Spam Legislation (CASL), and any other anti-spam, data protection, or electronic communications laws applicable in your jurisdiction and in the jurisdictions of your recipients.
+            Get Phame provides infrastructure for sending emails — you are the sender of record for every email transmitted through your connected email account. You acknowledge and agree that you are solely responsible for ensuring your use of the Service complies with the CAN-SPAM Act (US), the General Data Protection Regulation (EU/UK), the Canada Anti-Spam Legislation (CASL), and any other anti-spam, data protection, or electronic communications laws applicable in your jurisdiction and in the jurisdictions of your recipients.
           </p>
           <p className="mb-3">
             Specifically, you agree that: (a) you will only send review request emails to customers with whom you have a genuine, existing business relationship; (b) you will not use purchased, rented, or scraped email lists; (c) you will honour all unsubscribe or opt-out requests promptly and will not send further messages to any person who has opted out; (d) you will ensure that any email templates you customise include accurate sender identification and, where required by law, your physical postal address; and (e) you will obtain any consents required by applicable law before sending emails to recipients in jurisdictions where prior consent is required (e.g., CASL, GDPR).
           </p>
           <p>
-            Phame is not liable for any fines, penalties, regulatory actions, or damages arising from your failure to comply with applicable email laws. You agree to indemnify and hold Phame harmless from any claims, losses, or expenses (including reasonable legal fees) arising from your violation of applicable anti-spam or data protection laws.
+            Get Phame is not liable for any fines, penalties, regulatory actions, or damages arising from your failure to comply with applicable email laws. You agree to indemnify and hold Get Phame harmless from any claims, losses, or expenses (including reasonable legal fees) arising from your violation of applicable anti-spam or data protection laws.
           </p>
         </section>
 
@@ -161,13 +161,13 @@ export default function TermsOfService() {
         <section>
           <h2 className={SH} style={SHS}>6. Email Account Integration</h2>
           <p className="mb-3">
-            By connecting your email account via SMTP, you authorise Phame to send emails on your behalf using the credentials you provide. You represent that you are authorised to use the email account you connect and that doing so does not violate any terms of service of your email provider.
+            By connecting your email account via SMTP, you authorise Get Phame to send emails on your behalf using the credentials you provide. You represent that you are authorised to use the email account you connect and that doing so does not violate any terms of service of your email provider.
           </p>
           <p className="mb-3">
             Your SMTP password is encrypted using AES-256-GCM before storage and is never transmitted to any third party. You may disconnect your email account at any time from the Settings screen, which permanently removes your stored credentials from our systems.
           </p>
           <p>
-            Phame performs periodic automated health checks on your connected email account to verify that it remains reachable. You acknowledge that these checks involve a test connection to your mail server using your stored credentials. You may disable health checks by disconnecting your account.
+            Get Phame performs periodic automated health checks on your connected email account to verify that it remains reachable. You acknowledge that these checks involve a test connection to your mail server using your stored credentials. You may disable health checks by disconnecting your account.
           </p>
         </section>
 
@@ -175,7 +175,7 @@ export default function TermsOfService() {
         <section>
           <h2 className={SH} style={SHS}>7. Customer Data and Data Processing</h2>
           <p className="mb-3">
-            You are the data controller for all customer contact information (names, email addresses) that you upload to or generate within the Service. Phame acts as a data processor on your behalf with respect to that customer data, processing it solely to provide the Service in accordance with your instructions.
+            You are the data controller for all customer contact information (names, email addresses) that you upload to or generate within the Service. Get Phame acts as a data processor on your behalf with respect to that customer data, processing it solely to provide the Service in accordance with your instructions.
           </p>
           <p className="mb-3">
             You represent and warrant that: (a) you have the legal right to upload and use the customer data you provide; (b) your collection and use of that data complies with all applicable data protection laws; and (c) where required, you have obtained appropriate consents from your customers for the processing of their data.
@@ -189,10 +189,10 @@ export default function TermsOfService() {
         <section>
           <h2 className={SH} style={SHS}>8. Intellectual Property</h2>
           <p className="mb-3">
-            The Service, including its software, design, text, graphics, logos, and all other content created by Phame, is owned by or licensed to Phame and is protected by United States and international copyright, trademark, patent, trade secret, and other intellectual property laws. Nothing in these Terms grants you any right, title, or interest in the Service or its content beyond the limited licence to use the Service as described herein.
+            The Service, including its software, design, text, graphics, logos, and all other content created by Get Phame, is owned by or licensed to Get Phame and is protected by United States and international copyright, trademark, patent, trade secret, and other intellectual property laws. Nothing in these Terms grants you any right, title, or interest in the Service or its content beyond the limited licence to use the Service as described herein.
           </p>
           <p className="mb-3">
-            You retain all ownership rights in the content you create using the Service, including email templates you write and customer data you upload. By using the Service, you grant Phame a limited, non-exclusive, royalty-free licence to store, process, and transmit your content solely as necessary to provide the Service.
+            You retain all ownership rights in the content you create using the Service, including email templates you write and customer data you upload. By using the Service, you grant Get Phame a limited, non-exclusive, royalty-free licence to store, process, and transmit your content solely as necessary to provide the Service.
           </p>
           <p>
             You must not copy, modify, create derivative works from, distribute, sell, lease, sublicense, or otherwise exploit any part of the Service without our prior written consent. You must not remove or alter any copyright, trademark, or other proprietary notices from any part of the Service.
@@ -203,7 +203,7 @@ export default function TermsOfService() {
         <section>
           <h2 className={SH} style={SHS}>9. Digital Millennium Copyright Act (DMCA)</h2>
           <p className="mb-3">
-            Phame respects the intellectual property rights of others and expects users to do the same. If you believe that content accessible through the Service infringes your copyright, you may submit a DMCA takedown notice to our designated agent. Your notice must include: (a) a physical or electronic signature of the copyright owner or authorised agent; (b) identification of the copyrighted work claimed to have been infringed; (c) identification of the allegedly infringing material and its location on the Service; (d) your contact information; (e) a statement that you have a good faith belief that the use is not authorised by the copyright owner; and (f) a statement, under penalty of perjury, that the information in the notice is accurate and that you are authorised to act on behalf of the copyright owner.
+            Get Phame respects the intellectual property rights of others and expects users to do the same. If you believe that content accessible through the Service infringes your copyright, you may submit a DMCA takedown notice to our designated agent. Your notice must include: (a) a physical or electronic signature of the copyright owner or authorised agent; (b) identification of the copyrighted work claimed to have been infringed; (c) identification of the allegedly infringing material and its location on the Service; (d) your contact information; (e) a statement that you have a good faith belief that the use is not authorised by the copyright owner; and (f) a statement, under penalty of perjury, that the information in the notice is accurate and that you are authorised to act on behalf of the copyright owner.
           </p>
           <p className="mb-3">
             DMCA notices should be sent to: <a href={`mailto:${CONTACT_EMAIL}`} style={LINK}>{CONTACT_EMAIL}</a>
@@ -234,7 +234,7 @@ export default function TermsOfService() {
             TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, REVIEWLINK AND ITS OFFICERS, DIRECTORS, EMPLOYEES, AGENTS, AND LICENSORS SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, PUNITIVE, OR EXEMPLARY DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, LOSS OF DATA, LOSS OF GOODWILL, BUSINESS INTERRUPTION, OR COST OF SUBSTITUTE SERVICES, ARISING OUT OF OR IN CONNECTION WITH THESE TERMS OR YOUR USE OF OR INABILITY TO USE THE SERVICE, EVEN IF REVIEWLINK HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
           </p>
           <p className="mb-3">
-            <strong>Liability cap.</strong> In no event shall Phame's total aggregate liability to you for all claims arising out of or relating to these Terms or the Service exceed the greater of: (a) the total amount you paid to Phame in the twelve (12) months immediately preceding the event giving rise to the claim; or (b) one hundred US dollars (USD $100.00). This limitation applies regardless of the form of action, whether in contract, tort (including negligence), strict liability, or otherwise.
+            <strong>Liability cap.</strong> In no event shall Get Phame's total aggregate liability to you for all claims arising out of or relating to these Terms or the Service exceed the greater of: (a) the total amount you paid to Get Phame in the twelve (12) months immediately preceding the event giving rise to the claim; or (b) one hundred US dollars (USD $100.00). This limitation applies regardless of the form of action, whether in contract, tort (including negligence), strict liability, or otherwise.
           </p>
           <p>
             Some jurisdictions do not allow the limitation or exclusion of liability for incidental or consequential damages. In such jurisdictions, the above limitations apply to the fullest extent permitted by applicable law.
@@ -245,7 +245,7 @@ export default function TermsOfService() {
         <section>
           <h2 className={SH} style={SHS}>12. Indemnification</h2>
           <p>
-            You agree to defend, indemnify, and hold harmless Phame and its officers, directors, employees, agents, and licensors from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating to: (a) your use of the Service; (b) your violation of these Terms; (c) your violation of any applicable law or regulation, including anti-spam laws; (d) your infringement of any third-party intellectual property or privacy rights; or (e) any content you submit, post, or transmit through the Service.
+            You agree to defend, indemnify, and hold harmless Get Phame and its officers, directors, employees, agents, and licensors from and against any and all claims, damages, losses, liabilities, costs, and expenses (including reasonable attorneys' fees) arising out of or relating to: (a) your use of the Service; (b) your violation of these Terms; (c) your violation of any applicable law or regulation, including anti-spam laws; (d) your infringement of any third-party intellectual property or privacy rights; or (e) any content you submit, post, or transmit through the Service.
           </p>
         </section>
 
@@ -314,7 +314,7 @@ export default function TermsOfService() {
         <section>
           <h2 className={SH} style={SHS}>16. General Provisions</h2>
           <p className="mb-2">
-            <strong>Entire agreement.</strong> These Terms, together with the Privacy Policy, constitute the entire agreement between you and Phame with respect to the Service and supersede all prior agreements, representations, and understandings.
+            <strong>Entire agreement.</strong> These Terms, together with the Privacy Policy, constitute the entire agreement between you and Get Phame with respect to the Service and supersede all prior agreements, representations, and understandings.
           </p>
           <p className="mb-2">
             <strong>Severability.</strong> If any provision of these Terms is found to be unenforceable or invalid, that provision will be limited or eliminated to the minimum extent necessary, and the remaining provisions will continue in full force and effect.
@@ -326,7 +326,7 @@ export default function TermsOfService() {
             <strong>Assignment.</strong> You may not assign or transfer these Terms or your rights hereunder without our prior written consent. We may assign these Terms without restriction.
           </p>
           <p>
-            <strong>Force majeure.</strong> Phame shall not be liable for any failure or delay in performance resulting from causes beyond our reasonable control, including acts of God, natural disasters, war, terrorism, labour disputes, internet outages, or actions of third-party service providers.
+            <strong>Force majeure.</strong> Get Phame shall not be liable for any failure or delay in performance resulting from causes beyond our reasonable control, including acts of God, natural disasters, war, terrorism, labour disputes, internet outages, or actions of third-party service providers.
           </p>
         </section>
 
@@ -338,7 +338,7 @@ export default function TermsOfService() {
           </p>
           <address className="not-italic leading-relaxed pl-3 border-l-2" style={BORDER}>
             <span translate="no">
-              Phame — Legal<br />
+              Get Phame — Legal<br />
               {ADDR}
             </span>
           </address>

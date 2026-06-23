@@ -1,5 +1,5 @@
 /**
- * SMTP email sending helpers for Phame.
+ * SMTP email sending helpers for Get Phame.
  * Replaces Gmail API OAuth — users connect any email account using
  * their standard SMTP credentials (email + password/app-password).
  *
@@ -255,7 +255,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>You're connected to Phame!</title>
+  <title>You're connected to Get Phame!</title>
 </head>
 <body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
@@ -266,7 +266,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
           <!-- Header -->
           <tr>
             <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Phame</p>
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
               <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">Your email is connected! 🚀</h1>
             </td>
           </tr>
@@ -278,7 +278,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
                 Hi ${fromName},
               </p>
               <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">
-                This email confirms that <strong>${creds.user}</strong> is successfully connected to Phame. Your review request emails will be sent from this address — so they land in your customers' inboxes looking like a personal message from you, not a bulk mailer.
+                This email confirms that <strong>${creds.user}</strong> is successfully connected to Get Phame. Your review request emails will be sent from this address — so they land in your customers' inboxes looking like a personal message from you, not a bulk mailer.
               </p>
 
               <!-- Sample preview box -->
@@ -317,7 +317,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
           <tr>
             <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
               <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">
-                You received this because you just connected your email to Phame.<br/>
+                You received this because you just connected your email to Get Phame.<br/>
                 <a href="https://getphame.app/settings" style="color:#1a2744;">Manage your settings</a>
               </p>
             </td>
@@ -330,12 +330,12 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
 </body>
 </html>`;
 
-    const text = `Hi ${fromName},\n\nYour email (${creds.user}) is now connected to Phame.\n\nYou're ready to send review requests to your customers. Head to https://getphame.app/send to get started.\n\n— The Phame Team`;
+    const text = `Hi ${fromName},\n\nYour email (${creds.user}) is now connected to Get Phame.\n\nYou're ready to send review requests to your customers. Head to https://getphame.app/send to get started.\n\n— The Get Phame Team`;
 
     await sendMailViaSmtp({
       userId,
       to: toAddress,
-      subject: "You're connected to Phame! 🚀",
+      subject: "You're connected to Get Phame! 🚀",
       html,
       text,
     });
@@ -449,7 +449,7 @@ export async function sendUserWelcomeEmail(opts: {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Phame!</title>
+  <title>Welcome to Get Phame!</title>
 </head>
 <body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
@@ -458,7 +458,7 @@ export async function sendUserWelcomeEmail(opts: {
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
           <tr>
             <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Phame</p>
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
               <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">Welcome aboard! 🚀</h1>
             </td>
           </tr>
@@ -466,7 +466,7 @@ export async function sendUserWelcomeEmail(opts: {
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
               <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">
-                Thanks for joining Phame! You're now set up to send personalised review request emails directly from your own email account — so your customers see a message from <em>you</em>, not a bulk mailer.
+                Thanks for joining Get Phame! You're now set up to send personalised review request emails directly from your own email account — so your customers see a message from <em>you</em>, not a bulk mailer.
               </p>
               <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">
                 Here's how to get started in 3 steps:
@@ -490,7 +490,7 @@ export async function sendUserWelcomeEmail(opts: {
           <tr>
             <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
               <p style="margin:0;font-size:12px;color:#aaa;line-height:1.6;">
-                You received this because you signed up for Phame.<br/>
+                You received this because you signed up for Get Phame.<br/>
                 <a href="https://getphame.app/settings" style="color:#1a2744;">Manage your settings</a>
               </p>
             </td>
@@ -502,7 +502,7 @@ export async function sendUserWelcomeEmail(opts: {
 </body>
 </html>`;
 
-  const text = `Hi ${displayName},\n\nWelcome to Phame!\n\nYou're now set up to send personalised review request emails directly from your own email account.\n\nGet started at https://getphame.app\n\n— ${fromName}`;
+  const text = `Hi ${displayName},\n\nWelcome to Get Phame!\n\nYou're now set up to send personalised review request emails directly from your own email account.\n\nGet started at https://getphame.app\n\n— ${fromName}`;
 
   const pass = decryptPassword(creds.encryptedPass);
   const transporter = createTransporter({
@@ -517,7 +517,7 @@ export async function sendUserWelcomeEmail(opts: {
     from,
     replyTo: creds.replyTo ?? creds.user,
     to: opts.toEmail,
-    subject: "Welcome to Phame! 🚀",
+    subject: "Welcome to Get Phame! 🚀",
     html,
     text,
   });
@@ -560,7 +560,7 @@ export async function sendUpgradeReceiptEmail(opts: {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>You're now on Phame ${tierLabel}!</title>
+  <title>You're now on Get Phame ${tierLabel}!</title>
 </head>
 <body style="margin:0;padding:0;background:#f4f5f7;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:40px 0;">
@@ -569,7 +569,7 @@ export async function sendUpgradeReceiptEmail(opts: {
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
           <tr>
             <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Phame</p>
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
               <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">You're on ${tierLabel}! 🎉</h1>
             </td>
           </tr>
@@ -577,7 +577,7 @@ export async function sendUpgradeReceiptEmail(opts: {
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
               <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">
-                Your Phame account has been upgraded to <strong>${tierLabel}</strong>. Here's what you now have access to:
+                Your Get Phame account has been upgraded to <strong>${tierLabel}</strong>. Here's what you now have access to:
               </p>
               <ul style="margin:0 0 24px;padding:0 0 0 4px;list-style:none;">
                 ${perksHtml}
@@ -605,7 +605,7 @@ export async function sendUpgradeReceiptEmail(opts: {
 </body>
 </html>`;
 
-  const text = `Hi ${displayName},\n\nYour Phame account has been upgraded to ${tierLabel}!\n\nStart sending review requests at https://getphame.app/send\n\n— ${fromName}`;
+  const text = `Hi ${displayName},\n\nYour Get Phame account has been upgraded to ${tierLabel}!\n\nStart sending review requests at https://getphame.app/send\n\n— ${fromName}`;
 
   const pass = decryptPassword(creds.encryptedPass);
   const transporter = createTransporter({
@@ -620,7 +620,7 @@ export async function sendUpgradeReceiptEmail(opts: {
     from,
     replyTo: creds.replyTo ?? creds.user,
     to: opts.toEmail,
-    subject: `You're now on Phame ${tierLabel}! 🎉`,
+    subject: `You're now on Get Phame ${tierLabel}! 🎉`,
     html,
     text,
   });
@@ -653,14 +653,14 @@ export async function sendChurnRecoveryEmail(opts: {
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
           <tr>
             <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Phame</p>
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
               <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">We're sorry to see you go</h1>
             </td>
           </tr>
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
-              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">Your Phame subscription has been cancelled. Your account has been moved back to the free plan.</p>
+              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">Your Get Phame subscription has been cancelled. Your account has been moved back to the free plan.</p>
               <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">If you cancelled by mistake, or if there is anything we can do to help, just reply to this email.</p>
               <!-- Discount offer block -->
               <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;background:#1a2744;border-radius:12px;overflow:hidden;">
@@ -701,7 +701,7 @@ export async function sendChurnRecoveryEmail(opts: {
   </table>
 </body>
 </html>`;
-  const text = `Hi ${displayName},\n\nYour Phame subscription has been cancelled and your account is now on the free plan.\n\nIf you cancelled by mistake or want to come back, reactivate at https://getphame.app/upgrade\n\nQuestions? Just reply to this email.\n\n-- ${fromName}`;
+  const text = `Hi ${displayName},\n\nYour Get Phame subscription has been cancelled and your account is now on the free plan.\n\nIf you cancelled by mistake or want to come back, reactivate at https://getphame.app/upgrade\n\nQuestions? Just reply to this email.\n\n-- ${fromName}`;
   const pass = decryptPassword(creds.encryptedPass);
   const transporter = createTransporter({
     host: creds.host,
@@ -715,7 +715,7 @@ export async function sendChurnRecoveryEmail(opts: {
     from,
     replyTo: creds.replyTo ?? creds.user,
     to: opts.toEmail,
-    subject: "We're sorry to see you go -- Phame",
+    subject: "We're sorry to see you go -- Get Phame",
     html,
     text,
   });
@@ -750,14 +750,14 @@ export async function sendReEngagementEmail(opts: {
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
           <tr>
             <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Phame</p>
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
               <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">Here's what you're missing</h1>
             </td>
           </tr>
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
-              <p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">It's been a few days since your Phame subscription ended. We wanted to share a quick reminder of what's waiting for you when you come back:</p>
+              <p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">It's been a few days since your Get Phame subscription ended. We wanted to share a quick reminder of what's waiting for you when you come back:</p>
               <!-- Feature list -->
               <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
                 <tr>
@@ -831,7 +831,7 @@ export async function sendReEngagementEmail(opts: {
   </table>
 </body>
 </html>`;
-  const text = `Hi ${displayName},\n\nIt's been a few days since your Phame subscription ended. Here's what's waiting for you:\n\n• Automated review requests from your own inbox\n• 3-day and 10-day follow-up sequences\n• Multi-platform review links (Google, Yelp, TripAdvisor, Facebook)\n\nCome back: https://getphame.app/upgrade\n\nQuestions? Just reply to this email.\n\n-- ${fromName}${opts.unsubscribeUrl ? `\n\nUnsubscribe from these emails: ${opts.unsubscribeUrl}` : ""}`;
+  const text = `Hi ${displayName},\n\nIt's been a few days since your Get Phame subscription ended. Here's what's waiting for you:\n\n• Automated review requests from your own inbox\n• 3-day and 10-day follow-up sequences\n• Multi-platform review links (Google, Yelp, TripAdvisor, Facebook)\n\nCome back: https://getphame.app/upgrade\n\nQuestions? Just reply to this email.\n\n-- ${fromName}${opts.unsubscribeUrl ? `\n\nUnsubscribe from these emails: ${opts.unsubscribeUrl}` : ""}`;
   const pass = decryptPassword(creds.encryptedPass);
   const transporter = createTransporter({
     host: creds.host,
@@ -845,7 +845,7 @@ export async function sendReEngagementEmail(opts: {
     from,
     replyTo: creds.replyTo ?? creds.user,
     to: opts.toEmail,
-    subject: "Here's what you're missing — Phame",
+    subject: "Here's what you're missing — Get Phame",
     html,
     text,
   });
@@ -884,14 +884,14 @@ export async function sendPaymentFailedEmail(opts: {
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
           <tr>
             <td style="background:#b91c1c;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fca5a5;">Phame</p>
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fca5a5;">Get Phame</p>
               <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">Payment failed — action required</h1>
             </td>
           </tr>
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
-              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">We were unable to process your Phame subscription payment. ${attemptNote}</p>
+              <p style="margin:0 0 16px;font-size:15px;color:#555;line-height:1.7;">We were unable to process your Get Phame subscription payment. ${attemptNote}</p>
               <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">To keep your account active and continue sending review requests, please update your payment method as soon as possible.</p>
               <table cellpadding="0" cellspacing="0" style="margin:0 auto 24px;">
                 <tr>
@@ -914,7 +914,7 @@ export async function sendPaymentFailedEmail(opts: {
   </table>
 </body>
 </html>`;
-  const text = `Hi ${displayName},\n\nWe were unable to process your Phame subscription payment. ${attemptNote}\n\nPlease update your payment method to keep your account active:\nhttps://getphame.app/settings\n\nQuestions? Just reply to this email.\n\n-- ${fromName}`;
+  const text = `Hi ${displayName},\n\nWe were unable to process your Get Phame subscription payment. ${attemptNote}\n\nPlease update your payment method to keep your account active:\nhttps://getphame.app/settings\n\nQuestions? Just reply to this email.\n\n-- ${fromName}`;
   const pass = decryptPassword(creds.encryptedPass);
   const transporter = createTransporter({
     host: creds.host,
@@ -928,7 +928,7 @@ export async function sendPaymentFailedEmail(opts: {
     from,
     replyTo: creds.replyTo ?? creds.user,
     to: opts.toEmail,
-    subject: "Action required: payment failed — Phame",
+    subject: "Action required: payment failed — Get Phame",
     html,
     text,
   });
@@ -946,7 +946,7 @@ export async function sendInactiveUserEmail(opts: {
 }): Promise<void> {
   const creds = await getSmtpCredentials(opts.ownerUserId);
   if (!creds) return;
-  const fromName = creds.fromName ?? "Phame";
+  const fromName = creds.fromName ?? "Get Phame";
   const displayName = opts.toName || "there";
   const unsubLine = opts.unsubscribeUrl
     ? `<p style="margin:0;font-size:11px;color:#bbb;"><a href="${opts.unsubscribeUrl}" style="color:#bbb;">Unsubscribe</a></p>`
@@ -965,14 +965,14 @@ export async function sendInactiveUserEmail(opts: {
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
           <tr>
             <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Phame</p>
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
               <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">Your first review request is waiting</h1>
             </td>
           </tr>
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
-              <p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">You signed up for Phame a week ago — but you haven't sent your first review request yet. That's a week of potential 5-star reviews sitting on the table.</p>
+              <p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">You signed up for Get Phame a week ago — but you haven't sent your first review request yet. That's a week of potential 5-star reviews sitting on the table.</p>
               <p style="margin:0 0 20px;font-size:15px;color:#555;line-height:1.7;">It takes under 2 minutes to send your first one. Here's all you need:</p>
               <table width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;">
                 <tr>
@@ -1003,7 +1003,7 @@ export async function sendInactiveUserEmail(opts: {
                   </td>
                 </tr>
               </table>
-              <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">Phame sends the email from your own inbox — so it looks personal, not automated. Customers are far more likely to act on it.</p>
+              <p style="margin:0 0 24px;font-size:15px;color:#555;line-height:1.7;">Get Phame sends the email from your own inbox — so it looks personal, not automated. Customers are far more likely to act on it.</p>
               <table cellpadding="0" cellspacing="0" style="margin:0 auto 8px;">
                 <tr>
                   <td style="background:#f0a500;border-radius:10px;padding:14px 32px;text-align:center;">
@@ -1012,13 +1012,13 @@ export async function sendInactiveUserEmail(opts: {
                 </tr>
               </table>
               <p style="margin:8px 0 0;font-size:12px;color:#aaa;text-align:center;">Takes less than 2 minutes</p>
-              <p style="margin:28px 0 0;font-size:13px;color:#888;line-height:1.7;border-top:1px solid #f0f0f0;padding-top:20px;"><strong>P.S.</strong> Businesses using Phame collect their first 3–5 reviews within 48 hours of signing up. Your competitors are already doing this — don't leave reviews on the table.</p>
+              <p style="margin:28px 0 0;font-size:13px;color:#888;line-height:1.7;border-top:1px solid #f0f0f0;padding-top:20px;"><strong>P.S.</strong> Businesses using Get Phame collect their first 3–5 reviews within 48 hours of signing up. Your competitors are already doing this — don't leave reviews on the table.</p>
             </td>
           </tr>
           <tr>
             <td style="background:#f8f9ff;padding:20px 40px;text-align:center;border-top:1px solid #e8eaf0;">
               <p style="margin:0 0 6px;font-size:12px;color:#aaa;line-height:1.6;">
-                You received this because you signed up for Phame.<br/>
+                You received this because you signed up for Get Phame.<br/>
                 <a href="https://getphame.app/settings" style="color:#1a2744;">Manage your settings</a>
               </p>
               ${unsubLine}
@@ -1030,7 +1030,7 @@ export async function sendInactiveUserEmail(opts: {
   </table>
 </body>
 </html>`;
-  const text = `Hi ${displayName},\n\nYou signed up for Phame a week ago but haven't sent your first review request yet.\n\nIt takes under 2 minutes. Go to https://getphame.app/send to send your first one now.\n\n-- ${fromName}`;
+  const text = `Hi ${displayName},\n\nYou signed up for Get Phame a week ago but haven't sent your first review request yet.\n\nIt takes under 2 minutes. Go to https://getphame.app/send to send your first one now.\n\n-- ${fromName}`;
   const pass = decryptPassword(creds.encryptedPass);
   const transporter = createTransporter({
     host: creds.host,

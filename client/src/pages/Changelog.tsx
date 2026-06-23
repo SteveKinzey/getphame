@@ -260,7 +260,7 @@ export default function ChangelogPage() {
           <span
             className="text-xs font-bold tracking-widest uppercase rr-text-gold"
           >
-            Phame
+            Get Phame
           </span>
         </button>
         <h1

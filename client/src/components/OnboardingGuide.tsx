@@ -128,9 +128,9 @@ const EMAIL_PROVIDERS = [
       { step: "2", desc: "Click Security in the left sidebar." },
       { step: "3", desc: "Under \"How you sign in to Google\", click 2-Step Verification and make sure it is turned ON. App Passwords require 2FA to be active." },
       { step: "4", desc: "Return to Security and scroll down to find App Passwords (search for it if you don't see it)." },
-      { step: "5", desc: "Click App Passwords, then choose \"Mail\" as the app and \"Other\" as the device. Give it a name like \"Phame\"." },
+      { step: "5", desc: "Click App Passwords, then choose \"Mail\" as the app and \"Other\" as the device. Give it a name like \"Get Phame\"." },
       { step: "6", desc: "Google shows you a 16-character password. Copy it — you will only see it once." },
-      { step: "7", desc: "In Phame Settings → Email Connection, enter your Gmail address and paste the App Password (not your regular Google password)." },
+      { step: "7", desc: "In Get Phame Settings → Email Connection, enter your Gmail address and paste the App Password (not your regular Google password)." },
     ],
     note: "Google Workspace (business Gmail) follows the same steps. If your admin has disabled App Passwords, ask them to enable \"Less secure app access\" or use an OAuth-based SMTP relay.",
   },
@@ -144,8 +144,8 @@ const EMAIL_PROVIDERS = [
       { step: "2", desc: "Click Security → Advanced security options." },
       { step: "3", desc: "Under App passwords, click Create a new app password." },
       { step: "4", desc: "Copy the generated password." },
-      { step: "5", desc: "In Phame, enter your full Outlook/Hotmail/Microsoft 365 email address and paste the App Password." },
-      { step: "6", desc: "SMTP host: smtp.office365.com · Port: 587 · Security: STARTTLS (Phame auto-detects this from your email domain)." },
+      { step: "5", desc: "In Get Phame, enter your full Outlook/Hotmail/Microsoft 365 email address and paste the App Password." },
+      { step: "6", desc: "SMTP host: smtp.office365.com · Port: 587 · Security: STARTTLS (Get Phame auto-detects this from your email domain)." },
     ],
     note: "Microsoft 365 business accounts: if your IT admin has disabled SMTP AUTH, they must enable it per-mailbox in the Microsoft 365 admin centre under Users → Active users → Mail → Manage email apps → Authenticated SMTP.",
   },
@@ -158,9 +158,9 @@ const EMAIL_PROVIDERS = [
       { step: "1", desc: "Sign in at account.yahoo.com." },
       { step: "2", desc: "Click Security in the left menu." },
       { step: "3", desc: "Scroll to \"Generate app password\" and click it." },
-      { step: "4", desc: "Select \"Other app\" from the dropdown, type \"Phame\", and click Generate." },
+      { step: "4", desc: "Select \"Other app\" from the dropdown, type \"Get Phame\", and click Generate." },
       { step: "5", desc: "Copy the 16-character password shown." },
-      { step: "6", desc: "In Phame, enter your Yahoo email address and paste the App Password. SMTP host: smtp.mail.yahoo.com · Port: 587." },
+      { step: "6", desc: "In Get Phame, enter your Yahoo email address and paste the App Password. SMTP host: smtp.mail.yahoo.com · Port: 587." },
     ],
     note: "Yahoo no longer supports regular passwords for third-party apps. You must use an App Password — your regular Yahoo password will not work.",
   },
@@ -174,7 +174,7 @@ const EMAIL_PROVIDERS = [
       { step: "2", desc: "Click the gear icon (Settings) in the top-right corner." },
       { step: "3", desc: "Go to Mail Accounts → select your account → SMTP." },
       { step: "4", desc: "Make sure \"Allow SMTP Access\" is toggled ON. Save." },
-      { step: "5", desc: "In Phame, enter your Zoho email address and your regular Zoho password (no App Password needed if 2FA is off)." },
+      { step: "5", desc: "In Get Phame, enter your Zoho email address and your regular Zoho password (no App Password needed if 2FA is off)." },
       { step: "6", desc: "If 2FA is enabled on your Zoho account, go to Zoho Accounts → Security → App Passwords and generate one first." },
       { step: "7", desc: "SMTP host: smtp.zoho.com · Port: 587 (or 465 for SSL)." },
     ],
@@ -188,9 +188,9 @@ const EMAIL_PROVIDERS = [
     steps: [
       { step: "1", desc: "Sign in at appleid.apple.com." },
       { step: "2", desc: "Click Sign-In and Security → App-Specific Passwords." },
-      { step: "3", desc: "Click the + icon to generate a new password. Label it \"Phame\"." },
+      { step: "3", desc: "Click the + icon to generate a new password. Label it \"Get Phame\"." },
       { step: "4", desc: "Copy the generated password (format: xxxx-xxxx-xxxx-xxxx)." },
-      { step: "5", desc: "In Phame, enter your iCloud email address (yourname@icloud.com or @me.com or @mac.com) and paste the App-Specific Password." },
+      { step: "5", desc: "In Get Phame, enter your iCloud email address (yourname@icloud.com or @me.com or @mac.com) and paste the App-Specific Password." },
       { step: "6", desc: "SMTP host: smtp.mail.me.com · Port: 587." },
     ],
     note: "Apple requires 2FA on your Apple ID before App-Specific Passwords are available. If you don't see the option, enable 2FA first under Apple ID → Password & Security.",
@@ -205,7 +205,7 @@ const EMAIL_PROVIDERS = [
       { step: "2", desc: "Go to Email → Email Accounts and find the account you want to use." },
       { step: "3", desc: "Click Connect Devices or Set Up Mail Client to see the SMTP host, port, and security settings." },
       { step: "4", desc: "Common settings: host = mail.yourdomain.com · Port: 587 (STARTTLS) or 465 (SSL)." },
-      { step: "5", desc: "In Phame, enter your full business email address as the username and your email account password." },
+      { step: "5", desc: "In Get Phame, enter your full business email address as the username and your email account password." },
     ],
     note: "If you're not sure of your SMTP settings, contact your hosting provider's support. They can provide the exact host, port, and security type for your account.",
   },
@@ -299,7 +299,7 @@ const REVIEW_PLATFORMS = [
       { step: "2", desc: "Find your business or product listing." },
       { step: "3", desc: "Look for a \"Write a Review\" or \"Leave Feedback\" button and click it." },
       { step: "4", desc: "Copy the URL from your browser's address bar." },
-      { step: "5", desc: "In Phame, select \"Other\" as the platform type and paste the URL." },
+      { step: "5", desc: "In Get Phame, select \"Other\" as the platform type and paste the URL." },
     ],
     note: "Any URL that takes a customer directly to a review form works. Test it in a private/incognito browser window first to confirm it opens the review form without requiring a login.",
   },
@@ -361,7 +361,7 @@ function StepConnectEmail({ onNavigate }: { onNavigate: (path: string) => void }
           { step: "3", title: "Enter your email and password", desc: "Type your full email address and your email password or app password (see provider notes below)." },
           { step: "4", title: "Set your Sender Name", desc: "This is what customers see in their inbox — e.g. \"Jane at Acme Plumbing\". Make it personal." },
           { step: "5", title: "Test the connection", desc: "Tap \"Test Connection\" to verify your credentials. A green tick confirms success." },
-          { step: "6", title: "Save", desc: "Tap \"Connect\". Phame sends a confirmation email to your address so you can see exactly what customers receive." },
+          { step: "6", title: "Save", desc: "Tap \"Connect\". Get Phame sends a confirmation email to your address so you can see exactly what customers receive." },
         ].map((item) => (
           <div key={item.step} className="flex gap-3">
             <div
@@ -625,7 +625,7 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
           {[
             { step: "1", desc: "Go to Settings → Stripe and connect your Stripe account with your secret key." },
             { step: "2", desc: "Open Saved Contacts and tap the \"Stripe\" sync button in the header." },
-            { step: "3", desc: "Phame pulls all your Stripe customers and adds them as contacts automatically. Duplicates are skipped." },
+            { step: "3", desc: "Get Phame pulls all your Stripe customers and adds them as contacts automatically. Duplicates are skipped." },
           ].map((item) => (
             <div key={item.step} className="flex gap-2.5 items-start">
               <span
@@ -652,7 +652,7 @@ function StepContacts({ onNavigate }: { onNavigate: (path: string) => void }) {
             <span className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-black shrink-0 mt-0.5" style={{ background: "oklch(0.93 0.04 200)", color: "oklch(0.30 0.10 200)" }}>1</span>
             <div>
               <p className="text-xs font-semibold mb-0.5 rr-text-navy">Generate WooCommerce API keys</p>
-              <p className="text-xs rr-text-navy-mid">In your WordPress admin, go to <strong>WooCommerce → Settings → Advanced → REST API</strong> and click <strong>Add Key</strong>. Give it a description (e.g. "Phame"), set the User to your admin account, and set Permissions to <strong>Read</strong>. Click <strong>Generate API Key</strong>.</p>
+              <p className="text-xs rr-text-navy-mid">In your WordPress admin, go to <strong>WooCommerce → Settings → Advanced → REST API</strong> and click <strong>Add Key</strong>. Give it a description (e.g. "Get Phame"), set the User to your admin account, and set Permissions to <strong>Read</strong>. Click <strong>Generate API Key</strong>.</p>
               <p className="text-xs mt-1 px-2 py-1 rounded" style={{ background: "oklch(0.97 0.02 200)", color: "oklch(0.35 0.08 200)" }}>⚠️ Copy the Consumer Key and Consumer Secret immediately — they are only shown once.</p>
             </div>
           </div>

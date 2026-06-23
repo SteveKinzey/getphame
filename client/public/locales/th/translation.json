@@ -1,18 +1,18 @@
 {
   "seo": {
-    "title": "Phame — รับรีวิว Google 5 ดาวเพิ่มขึ้น",
+    "title": "Get Phame — รับรีวิว Google 5 ดาวเพิ่มขึ้น",
     "keywords": "ขอรีวิว, รีวิว Google, ได้รีวิวเพิ่ม, ระบบรีวิวอัตโนมัติ, รีวิวสำหรับธุรกิจขนาดเล็ก, ส่งอีเมลขอรีวิว, รีวิว WooCommerce, รีวิว Stripe",
     "ogDescription": "ส่งอีเมลขอรีวิวส่วนตัวจากบัญชีอีเมลของคุณเอง ใช้งานได้กับ Google, Yelp, TripAdvisor และอื่นๆ",
-    "shortTitle": "Phame"
+    "shortTitle": "Get Phame"
   },
   "nav": {
-    "brandName": "Phame",
+    "brandName": "Get Phame",
     "signIn": "ลงชื่อเข้าใช้",
     "home": "หน้าแรก",
     "send": "ส่ง",
     "dashboard": "แดชบอร์ด",
     "settings": "การตั้งค่า",
-    "shareHint": "แชร์ Phame กับเพื่อน",
+    "shareHint": "แชร์ Get Phame กับเพื่อน",
     "share": "แชร์",
     "guideHint": "เปิดคู่มือการตั้งค่า",
     "guide": "คู่มือ",
@@ -26,14 +26,14 @@
     "description": "ส่งคำขอรีวิวส่วนตัวจากบัญชีอีเมลของคุณเอง ลูกค้าของคุณจะเห็นว่ามาจากคุณ — ไม่ใช่ผู้ส่งทั่วไป",
     "cta": "เริ่มต้นฟรี",
     "setupTime": "ใช้เวลาตั้งค่าน้อยกว่า 2 นาที",
-    "rocketIllustrationAlt": "ภาพประกอบจรวด Phame",
-    "dashboardAlt": "แดชบอร์ด Phame แสดงคำขอที่ส่งไปและสถิติประสิทธิภาพอีเมล",
+    "rocketIllustrationAlt": "ภาพประกอบจรวด Get Phame",
+    "dashboardAlt": "แดชบอร์ด Get Phame แสดงคำขอที่ส่งไปและสถิติประสิทธิภาพอีเมล",
     "dashboardStats": "แดชบอร์ดของคุณ — สถิติแบบเรียลไทม์",
     "titlePart1": "รับรีวิว 5 ดาว",
     "titlePart2": "จาก Google เพิ่มขึ้น"
   },
   "features": {
-    "sectionTitle": "ทำไมธุรกิจถึงเลือก Phame",
+    "sectionTitle": "ทำไมธุรกิจถึงเลือก Get Phame",
     "emailFeature": {
       "title": "ส่งจากอีเมลของคุณเอง",
       "description": "ทุกคำขอจะไปถึงกล่องจดหมายของลูกค้าของคุณในรูปแบบข้อความส่วนตัว — ไม่ใช่การส่งแบบจำนวนมาก ไม่มีผู้ส่งร่วมกัน ไม่มีตัวกรองสแปม"
@@ -47,7 +47,7 @@
       "description": "Google, Yelp, Trustpilot, TripAdvisor, Facebook — เพิ่มลิงก์รีวิวใดก็ได้ ลูกค้าของคุณจะถูกนำไปยังหน้ารีวิวของคุณโดยตรง"
     },
     "customerQuote": {
-      "quote": "Phame เป็นตัวเปลี่ยนเกมสำหรับธุรกิจขนาดเล็กของเรา เราเห็นรีวิวเชิงบวกเพิ่มขึ้นอย่างมาก และใช้งานง่ายมาก!",
+      "quote": "Get Phame เป็นตัวเปลี่ยนเกมสำหรับธุรกิจขนาดเล็กของเรา เราเห็นรีวิวเชิงบวกเพิ่มขึ้นอย่างมาก และใช้งานง่ายมาก!",
       "author": "ทอม อาร์.",
       "authorTitle": "เจ้าของร้าน The Corner Café"
     },
@@ -84,7 +84,7 @@
     "spamQuestion": "มันจะดูเหมือนสแปมไหม?",
     "spamAnswer": "ไม่ อีเมลทุกฉบับจะถูกส่งโดยตรงจากบัญชีอีเมลของคุณเองผ่าน SMTP — ไม่ใช่จากเซิร์ฟเวอร์ส่งจำนวนมากที่ใช้ร่วมกัน ลูกค้าของคุณจะเห็นชื่อของคุณ ที่อยู่อีเมลของคุณ และข้อความที่เขียนด้วยน้ำเสียงของคุณ มันจะไปถึงกล่องจดหมายเหมือนบันทึกส่วนตัว ไม่ใช่การส่งเสริมการตลาด",
     "providersQuestion": "ผู้ให้บริการอีเมลใดบ้างที่ใช้งานได้?",
-    "providersAnswer": "ผู้ให้บริการใดๆ ที่รองรับ SMTP ใช้งานได้: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, อีเมลธุรกิจ cPanel/Zoho และเซิร์ฟเวอร์เมลของผู้ให้บริการโฮสติ้งเกือบทุกราย หากคุณสามารถตั้งค่าแอปอีเมลบนโทรศัพท์ของคุณได้ คุณก็สามารถเชื่อมต่อกับ Phame ได้",
+    "providersAnswer": "ผู้ให้บริการใดๆ ที่รองรับ SMTP ใช้งานได้: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, อีเมลธุรกิจ cPanel/Zoho และเซิร์ฟเวอร์เมลของผู้ให้บริการโฮสติ้งเกือบทุกราย หากคุณสามารถตั้งค่าแอปอีเมลบนโทรศัพท์ของคุณได้ คุณก็สามารถเชื่อมต่อกับ Get Phame ได้",
     "freeQuestion": "ฟรีจริงหรือ?",
     "freeAnswer": "ใช่ — ฟรีโดยไม่มีข้อจำกัดการส่งเทียม คุณเชื่อมต่อบัญชีอีเมลของคุณเอง ดังนั้นข้อจำกัดเดียวคือขีดจำกัดการส่งรายวันของผู้ให้บริการอีเมลของคุณ (Gmail อนุญาตประมาณ 500 ฉบับต่อวัน ส่วนใหญ่ก็คล้ายกัน) ไม่มีค่าธรรมเนียมแอบแฝงและไม่ต้องใช้บัตรเครดิตในการเริ่มต้น",
     "importQuestion": "ฉันสามารถนำเข้ารายชื่อลูกค้าของฉันได้หรือไม่?",
@@ -106,7 +106,7 @@
     "subtitle": "ฟรีตลอดไป ไม่ต้องใช้บัตรเครดิต ตั้งค่าได้ภายใน 2 นาที"
   },
   "footer": {
-    "brandName": "Phame",
+    "brandName": "Get Phame",
     "privacy": "ความเป็นส่วนตัว",
     "terms": "ข้อกำหนด",
     "support": "การสนับสนุน",
@@ -116,14 +116,14 @@
     "compliance": "การปฏิบัติตามข้อกำหนด"
   },
   "shareReferralCard": {
-    "title": "Phame — เครื่องมือขอรีวิวฟรี",
-    "shareText": "ฉันใช้ Phame เพื่อส่งคำขอรีวิวจากอีเมลของฉันเอง — ฟรีและใช้งานได้ดีมาก น่าลองดู:",
+    "title": "Get Phame — เครื่องมือขอรีวิวฟรี",
+    "shareText": "ฉันใช้ Get Phame เพื่อส่งคำขอรีวิวจากอีเมลของฉันเอง — ฟรีและใช้งานได้ดีมาก น่าลองดู:",
     "copySuccessToast": "คัดลอกลิงก์ไปยังคลิปบอร์ดแล้ว!",
     "copyErrorToast": "ไม่สามารถคัดลอกลิงก์ได้",
     "header": "รู้จักเจ้าของธุรกิจในท้องถิ่นไหม?",
     "subHeader": "ช่วยให้พวกเขาได้รับรีวิวเพิ่มขึ้น — ฟรี",
     "copiedToClipboard": "คัดลอกไปยังคลิปบอร์ดแล้ว!",
-    "sharePhame": "แชร์ Phame"
+    "sharePhame": "แชร์ Get Phame"
   },
   "relativeTime": {
     "justNow": "เมื่อสักครู่",
@@ -141,14 +141,14 @@
   "homePage": {
     "setGoalErrorToast": "{{message}}",
     "shareSuccessToast": "คัดลอกลิงก์แล้ว! แชร์ให้เพื่อน",
-    "pageTitle": "Phame — ส่งคำขอรีวิว Google ได้อย่างรวดเร็ว",
+    "pageTitle": "Get Phame — ส่งคำขอรีวิว Google ได้อย่างรวดเร็ว",
     "greeting": "สวัสดี, {{name}}!",
     "welcomeBack": "ยินดีต้อนรับกลับมา,",
     "setupBannerTitle": "ตั้งค่าเสร็จสมบูรณ์!",
     "setupBannerText": "คุณได้กำหนดค่าบัญชีของคุณและส่งคำขอแรกของคุณแล้ว ทำได้ดีมาก!",
     "dismiss": "ปิด",
     "expiryBannerTitle": "การสมัครสมาชิกหมดอายุแล้ว",
-    "expiryBannerText": "การเข้าถึงของคุณหมดอายุแล้ว โปรดต่ออายุแผนของคุณเพื่อใช้งาน Phame ต่อไป",
+    "expiryBannerText": "การเข้าถึงของคุณหมดอายุแล้ว โปรดต่ออายุแผนของคุณเพื่อใช้งาน Get Phame ต่อไป",
     "renewSubscription": "ต่ออายุการสมัครสมาชิก",
     "expiringSoonTitle": "การสมัครสมาชิกกำลังจะหมดอายุ",
     "expiringSoonText": "แผนของคุณจะหมดอายุในอีก {{daysUntilExpiry}} วัน ต่ออายุตอนนี้เพื่อหลีกเลี่ยงการหยุดชะงักของบริการ",
@@ -200,7 +200,7 @@
     "helpAndSupport": "ความช่วยเหลือและการสนับสนุน",
     "featureRequests": "คำขอคุณสมบัติ",
     "whatsNew": "มีอะไรใหม่?",
-    "reviewLinkOnX": "Phame บน X",
+    "reviewLinkOnX": "Get Phame บน X",
     "buyTheCode": "ซื้อโค้ด",
     "monthlyPro": "โปรรายเดือน",
     "annualPro": "โปรรายปี",
@@ -219,7 +219,7 @@
     "errorPrefix": "ข้อผิดพลาด:",
     "manageBilling": "จัดการการเรียกเก็บเงิน",
     "seoTitle": "รับรีวิวธุรกิจเพิ่มขึ้น",
-    "seoDescription": "Phame ช่วยให้คุณส่งคำขอรีวิวส่วนตัวถึงลูกค้าทางอีเมล — สำหรับ Google, Yelp, TripAdvisor, Bing, Facebook และอื่นๆ",
+    "seoDescription": "Get Phame ช่วยให้คุณส่งคำขอรีวิวส่วนตัวถึงลูกค้าทางอีเมล — สำหรับ Google, Yelp, TripAdvisor, Bing, Facebook และอื่นๆ",
     "goal": "เป้าหมาย",
     "goalReached": "ถึงเป้าหมายแล้ว! 🎉",
     "toGo": "อีกนิด",
@@ -258,8 +258,8 @@
     "requestSentTo": "คำขอรีวิวของคุณถูกส่งไปยัง {{customerName}} จากบัญชีอีเมลของคุณแล้ว",
     "emailComesFrom": "อีเมลมาจาก {{email}} เพื่อให้ดูเป็นส่วนตัว",
     "requestsSentMilestone": "ส่งคำขอแล้ว {{milestoneNum}} ครั้ง!",
-    "milestoneDescription": "คุณกำลังสร้างผลลัพธ์ให้กับธุรกิจจริง หาก Phame ช่วยคุณได้ การรีวิวสั้นๆ มีความหมายกับเรามาก",
-    "ratePhame": "ให้คะแนน Phame",
+    "milestoneDescription": "คุณกำลังสร้างผลลัพธ์ให้กับธุรกิจจริง หาก Get Phame ช่วยคุณได้ การรีวิวสั้นๆ มีความหมายกับเรามาก",
+    "ratePhame": "ให้คะแนน Get Phame",
     "scheduleFollowUp": "กำหนดเวลาติดตามผล",
     "sendAnother": "ส่งอีกครั้ง",
     "notNow": "ไม่ใช่ตอนนี้",
@@ -418,13 +418,13 @@
     "gmailGuideTitle": "รหัสผ่านแอป Gmail — 4 ขั้นตอน",
     "gmailGuideStep1": "ไปที่ myaccount.google.com → ความปลอดภัย",
     "gmailGuideStep2": "เปิดการยืนยันแบบ 2 ขั้นตอน หากยังไม่ได้เปิด",
-    "gmailGuideStep3": "ไปที่ myaccount.google.com/apppasswords → ตั้งชื่อว่า Phame → คลิกสร้าง",
+    "gmailGuideStep3": "ไปที่ myaccount.google.com/apppasswords → ตั้งชื่อว่า Get Phame → คลิกสร้าง",
     "gmailGuideStep4": "คัดลอกรหัส 16 ตัวอักษรและวางที่นี่ — ลบช่องว่างทั้งหมด",
     "gmailGuideTip": "เคล็ดลับ: ใช้บัญชี reviews@gmail.com โดยเฉพาะเพื่อแยกกล่องจดหมายหลักของคุณ",
     "googleWorkspaceGuideTitle": "รหัสผ่านแอป Google Workspace — 4 ขั้นตอน",
     "googleWorkspaceGuideStep1": "ขอให้ผู้ดูแลระบบ Workspace ของคุณเปิดใช้งานการยืนยันแบบ 2 ขั้นตอนใน admin.google.com",
     "googleWorkspaceGuideStep2": "ลงชื่อเข้าใช้ myaccount.google.com ด้วยบัญชีงานของคุณ → ความปลอดภัย",
-    "googleWorkspaceGuideStep3": "ไปที่ myaccount.google.com/apppasswords → ตั้งชื่อว่า Phame → คลิกสร้าง",
+    "googleWorkspaceGuideStep3": "ไปที่ myaccount.google.com/apppasswords → ตั้งชื่อว่า Get Phame → คลิกสร้าง",
     "googleWorkspaceGuideStep4": "คัดลอกรหัส 16 ตัวอักษรและวางที่นี่ — ลบช่องว่างทั้งหมด",
     "outlookGuideTitle": "รหัสผ่านแอป Microsoft — 4 ขั้นตอน",
     "outlookGuideStep1": "ไปที่ account.microsoft.com → ความปลอดภัย",
@@ -435,7 +435,7 @@
     "yahooGuideTitle": "รหัสผ่านแอป Yahoo — 4 ขั้นตอน",
     "yahooGuideStep1": "ไปที่ account.yahoo.com → ความปลอดภัย",
     "yahooGuideStep2": "คลิกสร้างรหัสผ่านแอป",
-    "yahooGuideStep3": "เลือกแอปอื่นๆ ตั้งชื่อว่า Phame",
+    "yahooGuideStep3": "เลือกแอปอื่นๆ ตั้งชื่อว่า Get Phame",
     "yahooGuideStep4": "คัดลอกและวางรหัสผ่านที่นี่",
     "zohoGuideTitle": "Zoho Mail — เปิดใช้งานการเข้าถึง SMTP",
     "zohoGuideStep1": "เข้าสู่ระบบ mail.zoho.com",
@@ -446,7 +446,7 @@
     "aolGuideTitle": "รหัสผ่านแอป AOL Mail — 4 ขั้นตอน",
     "aolGuideStep1": "ไปที่ account.aol.com → ความปลอดภัย",
     "aolGuideStep2": "คลิกสร้างรหัสผ่านแอป",
-    "aolGuideStep3": "เลือกแอปอื่นๆ ตั้งชื่อว่า Phame",
+    "aolGuideStep3": "เลือกแอปอื่นๆ ตั้งชื่อว่า Get Phame",
     "aolGuideStep4": "คัดลอกและวางรหัสผ่านที่นี่ — อย่าใช้รหัสผ่าน AOL ปกติของคุณ",
     "aolGuideTip": "AOL กำหนดให้เปิดใช้งานการยืนยันแบบ 2 ขั้นตอนก่อนที่จะสร้างรหัสผ่านแอป",
     "protonMailGuideTitle": "ProtonMail — รหัสผ่าน SMTP Bridge",
@@ -458,12 +458,12 @@
     "fastmailGuideTitle": "รหัสผ่านแอป Fastmail — 4 ขั้นตอน",
     "fastmailGuideStep1": "ไปที่ app.fastmail.com → การตั้งค่า → ความเป็นส่วนตัวและความปลอดภัย",
     "fastmailGuideStep2": "คลิกรหัสผ่านแอป → รหัสผ่านแอปใหม่",
-    "fastmailGuideStep3": "ตั้งชื่อว่า Phame เลือก SMTP จากนั้นคลิกสร้างรหัสผ่าน",
+    "fastmailGuideStep3": "ตั้งชื่อว่า Get Phame เลือก SMTP จากนั้นคลิกสร้างรหัสผ่าน",
     "fastmailGuideStep4": "คัดลอกและวางรหัสผ่านที่สร้างขึ้นที่นี่",
     "iCloudGuideTitle": "รหัสผ่านแอป Apple iCloud Mail — 4 ขั้นตอน",
     "iCloudGuideStep1": "ไปที่ appleid.apple.com และลงชื่อเข้าใช้",
     "iCloudGuideStep2": "ภายใต้การลงชื่อเข้าใช้และความปลอดภัย คลิกที่รหัสผ่านเฉพาะแอป",
-    "iCloudGuideStep3": "คลิกสร้างรหัสผ่านเฉพาะแอป... ตั้งชื่อว่า Phame คลิกสร้าง",
+    "iCloudGuideStep3": "คลิกสร้างรหัสผ่านเฉพาะแอป... ตั้งชื่อว่า Get Phame คลิกสร้าง",
     "iCloudGuideStep4": "คัดลอกรหัสผ่าน xxxx-xxxx-xxxx-xxxx และวางที่นี่",
     "iCloudTip": "ต้องเปิดใช้งานการยืนยันสองปัจจัยสำหรับ Apple ID ของคุณ",
     "providerWarning": "เราไม่สามารถตรวจพบผู้ให้บริการอีเมลของคุณได้ โปรดป้อนรายละเอียดของคุณด้วยตนเอง",
@@ -686,7 +686,7 @@
     "subtitle": "อีเมลติดตามผลอัตโนมัติ 3 วันสำหรับลูกค้าที่ยังไม่ได้รีวิว",
     "upgrade": "อัปเกรด",
     "noLimits": "ไม่จำกัด",
-    "heroImageAlt": "อัปเกรด Phame Pro",
+    "heroImageAlt": "อัปเกรด Get Phame Pro",
     "backToContacts": "กลับไปที่รายชื่อติดต่อ",
     "import": "นำเข้า",
     "importClients": "นำเข้าลูกค้า",
@@ -694,7 +694,7 @@
     "emailTemplates": "เทมเพลตอีเมล",
     "customizeMessages": "ปรับแต่งข้อความคำขอรีวิวของคุณ",
     "new": "ใหม่",
-    "logoText": "Phame"
+    "logoText": "Get Phame"
   },
   "infoBanner": {
     "howItWorks": "วิธีการทำงาน:",
@@ -1046,7 +1046,7 @@
   },
   "onboardingWizard": {
     "header": {
-      "title": "ตั้งค่า Phame",
+      "title": "ตั้งค่า Get Phame",
       "skipSetupTooltip": "ข้ามการตั้งค่า"
     },
     "steps": {
@@ -1057,7 +1057,7 @@
     "stepContent": {
       "step1": {
         "title": "เชื่อมต่ออีเมลของคุณ",
-        "description": "Phame ส่งอีเมลจากบัญชีของคุณเอง — ใช้งานได้กับ Gmail, Outlook, Yahoo หรืออีเมลธุรกิจใดๆ"
+        "description": "Get Phame ส่งอีเมลจากบัญชีของคุณเอง — ใช้งานได้กับ Gmail, Outlook, Yahoo หรืออีเมลธุรกิจใดๆ"
       },
       "step2": {
         "title": "เพิ่มหน้ารีวิวของคุณ",
@@ -1125,7 +1125,7 @@
     },
     "steps": {
       "welcome": {
-        "title": "ยินดีต้อนรับสู่ Phame",
+        "title": "ยินดีต้อนรับสู่ Get Phame",
         "subtitle": "นี่คือสิ่งที่เราจะตั้งค่าด้วยกัน"
       },
       "connectEmail": {
@@ -1156,7 +1156,7 @@
       "skipForNow": "ข้ามไปก่อน →"
     },
     "welcome": {
-      "heroText": "Phame ส่งอีเมลขอคำรีวิวแบบเฉพาะบุคคลจากบัญชีอีเมลของคุณเอง",
+      "heroText": "Get Phame ส่งอีเมลขอคำรีวิวแบบเฉพาะบุคคลจากบัญชีอีเมลของคุณเอง",
       "heroSubtext": "ลูกค้าได้รับข้อความที่ดูเหมือนมาจากคุณโดยตรง — ไม่ใช่อีเมลส่งฮือจำนวนมาก",
       "setupStepsIntro": "คู่มือนี้พาคุณผ่าน 4 ขั้นตอนการตั้งค่าอย่างรวดเร็ว:",
       "step1Label": "เชื่อมต่อบัญชีอีเมล (SMTP)",
@@ -1168,7 +1168,7 @@
     },
     "connectEmail": {
       "whyTitle": "ทำไมต้องเชื่อมต่ออีเมล?",
-      "whyDesc": "Phame ส่งอีเมลผ่านบัญชีของคุณโดยใช้ SMTP — โปรโตคอลเดียวกับที่แอพอีเมลใช้",
+      "whyDesc": "Get Phame ส่งอีเมลผ่านบัญชีของคุณโดยใช้ SMTP — โปรโตคอลเดียวกับที่แอพอีเมลใช้",
       "generalStepsTitle": "ขั้นตอนการตั้งค่าทั่วไป",
       "providerSectionTitle": "การตั้งค่าตามผู้ให้บริการ — แตะเพื่อขยาย",
       "noteLabel": "หมายเหตุ: ",
@@ -1180,7 +1180,7 @@
       "whatIsTitle": "แพลตฟอร์มรีวิวคืออะไร?",
       "whatIsDesc": "นี่คือลิงก์ที่ลูกค้าคลิกเพื่อเขียนรีวิวให้คุณ",
       "findLinkTitle": "วิธีค้นหาลิงก์รีวิวของคุณ — แตะแพลตฟอร์มของคุณ",
-      "addingLinkTitle": "การเพิ่มลิงก์ใน Phame",
+      "addingLinkTitle": "การเพิ่มลิงก์ใน Get Phame",
       "noteLabel": "หมายเหตุ: ",
       "goToSettingsButton": "ไปที่การตั้งค่า → แพลตฟอร์มรีวิว"
     },
@@ -1201,13 +1201,13 @@
       "singleSendTitle": "ส่งให้ลูกค้าคนเดียว",
       "bulkSendTitle": "ส่งจำนวนมากไปยังผู้ติดต่อที่บันทึก",
       "proTipTitle": "💡 เคล็ดลับ: การแจ้งเตือนติดตาม",
-      "proTipDesc": "Phame สามารถส่งอีเมลติดตามอย่างสุภาพอัตโนมัติ 3 วันหลังจากคำขอเดิม",
+      "proTipDesc": "Get Phame สามารถส่งอีเมลติดตามอย่างสุภาพอัตโนมัติ 3 วันหลังจากคำขอเดิม",
       "goToSendButton": "ไปที่ส่งคำขอ",
       "goToContactsButton": "ไปที่รายชื่อผู้ติดต่อที่บันทึก"
     },
     "allSet": {
       "title": "คุณพร้อมแล้ว!",
-      "subtitle": "Phame พร้อมเริ่มเก็บรีวิวสำหรับธุรกิจของคุณแล้ว",
+      "subtitle": "Get Phame พร้อมเริ่มเก็บรีวิวสำหรับธุรกิจของคุณแล้ว",
       "quickLinksTitle": "ลิงก์ด่วน",
       "link1": "ส่งคำขอรีวิวตอนนี้",
       "link2": "ดูรายชื่อผู้ติดต่อที่บันทึก",
@@ -1215,7 +1215,7 @@
       "link4": "จัดการการตั้งค่า",
       "revisitTitle": "ต้องการดูคู่มือนี้อีกครั้ง?",
       "revisitDesc": "แตะปุ่ม \"คู่มือตั้งค่า\" บนหน้าหลักหรือในการตั้งค่าได้ทุกเมื่อ",
-      "startButton": "เริ่มใช้ Phame"
+      "startButton": "เริ่มใช้ Get Phame"
     }
   },
   "step2Platform": {
@@ -1316,7 +1316,7 @@
   },
   "comparison": {
     "sectionTitle": "ถูกกว่าคู่แข่งรายใหญ่ 10–20 เท่า",
-    "sectionSubtitle": "Birdeye และ Podium คิดราคาระดับองค์กร แต่ Phame ให้ฟีเจอร์เดียวกันในราคาที่คุ้มกว่ามาก",
+    "sectionSubtitle": "Birdeye และ Podium คิดราคาระดับองค์กร แต่ Get Phame ให้ฟีเจอร์เดียวกันในราคาที่คุ้มกว่ามาก",
     "colPlatform": "แพลตฟอร์ม",
     "colStartingPrice": "ราคาเริ่มต้น",
     "colLifetime": "ตัวเลือกตลอดชีพ",
@@ -1325,7 +1325,7 @@
   "testimonials": {
     "sectionTitle": "เสียงจากผู้ใช้จริง",
     "sarah": {
-      "quote": "ฉันเคยกลัวการขอรีวิวจากลูกค้า รู้สึกเขินและดูเหมือนขายของ แต่ Phame ส่งอีเมลจาก Gmail ของฉันเอง ดูเหมือนฉันเขียนเอง ยอดรีวิว Google เพิ่มจาก 12 เป็น 47 ภายในหกสัปดาห์",
+      "quote": "ฉันเคยกลัวการขอรีวิวจากลูกค้า รู้สึกเขินและดูเหมือนขายของ แต่ Get Phame ส่งอีเมลจาก Gmail ของฉันเอง ดูเหมือนฉันเขียนเอง ยอดรีวิว Google เพิ่มจาก 12 เป็น 47 ภายในหกสัปดาห์",
       "name": "Sarah M.",
       "role": "ช่างภาพอิสระ"
     },
@@ -1374,8 +1374,8 @@
         "description": "การติดตามการเปิดและคลิกครอบคลุมอีเมลติดตามด้วย"
       },
       "referralCard": {
-        "title": "แชร์การ์ดแนะนำ Phame",
-        "description": "การ์ดใหม่บนหน้าหลักช่วยให้คุณแชร์ Phame กับธุรกิจอื่นๆ ด้วยการแชร์ผ่านมือถือหรือคัดลอกบนเดสก์ท็อป"
+        "title": "แชร์การ์ดแนะนำ Get Phame",
+        "description": "การ์ดใหม่บนหน้าหลักช่วยให้คุณแชร์ Get Phame กับธุรกิจอื่นๆ ด้วยการแชร์ผ่านมือถือหรือคัดลอกบนเดสก์ท็อป"
       }
     },
     "v12": {
@@ -1412,7 +1412,7 @@
     },
     "v10": {
       "launch": {
-        "title": "เปิดตัว Phame",
+        "title": "เปิดตัว Get Phame",
         "description": "ส่งอีเมลขอรีวิวแบบเฉพาะบุคคลจากบัญชีอีเมลของคุณเอง ไม่ใช่บริการส่งอีเมลจำนวนมาก"
       }
     }

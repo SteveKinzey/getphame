@@ -83,10 +83,10 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className={SECTION_HEADING} style={SECTION_HEADING_STYLE}>1. Introduction</h2>
           <p className="mb-3">
-            Phame ("we," "our," or "us") is a web application that helps small businesses collect customer reviews by sending personalised review request emails through the business owner's own email account. This Privacy Policy describes how we collect, use, store, and protect information when you use the Phame service (the "Service"), and explains the rights you have over your data.
+            Get Phame ("we," "our," or "us") is a web application that helps small businesses collect customer reviews by sending personalised review request emails through the business owner's own email account. This Privacy Policy describes how we collect, use, store, and protect information when you use the Get Phame service (the "Service"), and explains the rights you have over your data.
           </p>
           <p>
-            By creating an account and using the Service, you acknowledge that you have read and understood this Privacy Policy. If you do not agree with any part of this policy, please discontinue use of the Service. This policy applies to all users of Phame, including business owners who register for an account and the customers whose contact information is uploaded to the Service.
+            By creating an account and using the Service, you acknowledge that you have read and understood this Privacy Policy. If you do not agree with any part of this policy, please discontinue use of the Service. This policy applies to all users of Get Phame, including business owners who register for an account and the customers whose contact information is uploaded to the Service.
           </p>
         </section>
 
@@ -94,11 +94,11 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className={SECTION_HEADING} style={SECTION_HEADING_STYLE}>2. Who We Are and How to Contact Us</h2>
           <p className="mb-3">
-            Phame is operated as a software-as-a-service product. For all privacy-related inquiries, data deletion requests, or concerns about this policy, you may contact us at:
+            Get Phame is operated as a software-as-a-service product. For all privacy-related inquiries, data deletion requests, or concerns about this policy, you may contact us at:
           </p>
           <address className="not-italic leading-relaxed pl-3 border-l-2" style={{ borderColor: "oklch(0.80 0.18 80)" }}>
             <span translate="no">
-              Phame<br />
+              Get Phame<br />
               {ADDR}
             </span>
           </address>
@@ -148,7 +148,7 @@ export default function PrivacyPolicy() {
           <h2 className={SECTION_HEADING} style={SECTION_HEADING_STYLE}>4. How We Use Your Information</h2>
           <p className="mb-2">We use the information we collect for the following purposes:</p>
           <p className="mb-2">
-            <strong>Providing the Service.</strong> Your account information, business profile, SMTP credentials, and customer contact data are used to operate the core functionality of Phame — composing and sending personalised review request emails from your email account to your customers.
+            <strong>Providing the Service.</strong> Your account information, business profile, SMTP credentials, and customer contact data are used to operate the core functionality of Get Phame — composing and sending personalised review request emails from your email account to your customers.
           </p>
           <p className="mb-2">
             <strong>Analytics and reporting.</strong> Email tracking events (opens, clicks) are used to generate the analytics displayed in your account dashboard. This helps you understand which customers have engaged with your review requests.
@@ -197,7 +197,7 @@ export default function PrivacyPolicy() {
             <strong>WooCommerce / Stripe customer sync.</strong> If you choose to sync customers from your WooCommerce store or Stripe account, we retrieve only the name and email address of each customer via the API credentials you provide. We do not store your WooCommerce or Stripe API keys beyond the duration of the sync operation.
           </p>
           <p>
-            <strong>Legal requirements.</strong> We may disclose your information if required to do so by law, court order, or governmental authority, or if we believe in good faith that such disclosure is necessary to protect the rights, property, or safety of Phame, our users, or the public.
+            <strong>Legal requirements.</strong> We may disclose your information if required to do so by law, court order, or governmental authority, or if we believe in good faith that such disclosure is necessary to protect the rights, property, or safety of Get Phame, our users, or the public.
           </p>
         </section>
 
@@ -205,10 +205,10 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className={SECTION_HEADING} style={SECTION_HEADING_STYLE}>7. Email Tracking and Your Customers' Privacy</h2>
           <p className="mb-3">
-            Review request emails sent through Phame contain a tracking pixel (a small invisible image) and a click-tracking redirect link. When a recipient opens the email or clicks the review link, Phame records the event so you can see delivery analytics in your dashboard.
+            Review request emails sent through Get Phame contain a tracking pixel (a small invisible image) and a click-tracking redirect link. When a recipient opens the email or clicks the review link, Get Phame records the event so you can see delivery analytics in your dashboard.
           </p>
           <p className="mb-3">
-            As the business owner using Phame, you are the data controller for your customers' contact information and for the tracking data generated when they interact with your emails. You are responsible for ensuring that your use of email tracking complies with applicable laws in your jurisdiction, including GDPR, CASL, and any other applicable privacy regulations.
+            As the business owner using Get Phame, you are the data controller for your customers' contact information and for the tracking data generated when they interact with your emails. You are responsible for ensuring that your use of email tracking complies with applicable laws in your jurisdiction, including GDPR, CASL, and any other applicable privacy regulations.
           </p>
           <p>
             Tracking data (open/click events) is stored only in your account, is visible only to you, and is not shared with or sold to any third party. We retain this data for as long as your account is active. You may request deletion of all tracking data by contacting us at <a href={`mailto:${CONTACT_EMAIL}`} style={LINK_STYLE}>{CONTACT_EMAIL}</a>.
@@ -285,13 +285,13 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className={SECTION_HEADING} style={SECTION_HEADING_STYLE}>11. CAN-SPAM Act and Anti-Spam Compliance</h2>
           <p className="mb-2">
-            Phame is a tool that sends transactional and relationship-based emails on behalf of its users. As a user of the Service, you are the sender of record for all emails transmitted through your connected email account. You are solely responsible for ensuring that your use of the Service complies with the CAN-SPAM Act (US), GDPR (EU), CASL (Canada), and any other applicable anti-spam or data protection laws in your jurisdiction.
+            Get Phame is a tool that sends transactional and relationship-based emails on behalf of its users. As a user of the Service, you are the sender of record for all emails transmitted through your connected email account. You are solely responsible for ensuring that your use of the Service complies with the CAN-SPAM Act (US), GDPR (EU), CASL (Canada), and any other applicable anti-spam or data protection laws in your jurisdiction.
           </p>
           <p className="mb-2">
             All review request emails sent through the Service include a clear identification of the sender (your business name and email address) and an unsubscribe mechanism. You must only send emails to individuals with whom you have a genuine, prior business relationship. You must not use the Service to send unsolicited bulk email or to contact individuals who have previously opted out or unsubscribed.
           </p>
           <p>
-            Phame does not send marketing emails to your customers independently. All sends are initiated by you. Phame is not liable for your failure to comply with applicable email laws. See our Terms of Service for full details of your responsibilities as a sender.
+            Get Phame does not send marketing emails to your customers independently. All sends are initiated by you. Get Phame is not liable for your failure to comply with applicable email laws. See our Terms of Service for full details of your responsibilities as a sender.
           </p>
         </section>
 
@@ -299,7 +299,7 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className={SECTION_HEADING} style={SECTION_HEADING_STYLE}>12. Cookies and Session Data</h2>
           <p className="mb-2">
-            Phame uses a single, HTTP-only session cookie to maintain your login state after you authenticate via Google OAuth. This cookie is essential for the operation of the Service and cannot be disabled without preventing you from using the app. It does not track you across other websites and is not used for advertising purposes.
+            Get Phame uses a single, HTTP-only session cookie to maintain your login state after you authenticate via Google OAuth. This cookie is essential for the operation of the Service and cannot be disabled without preventing you from using the app. It does not track you across other websites and is not used for advertising purposes.
           </p>
           <p>
             We do not use third-party advertising cookies, analytics cookies, or any other non-essential cookies. We do not use Google Analytics or similar tracking services.
@@ -310,7 +310,7 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className={SECTION_HEADING} style={SECTION_HEADING_STYLE}>13. Children's Privacy</h2>
           <p>
-            Phame is a business tool intended for use by adults aged 18 and over. We do not knowingly collect personal information from individuals under the age of 18. If you believe a minor has provided us with personal information, please contact us at <a href={`mailto:${CONTACT_EMAIL}`} style={LINK_STYLE}>{CONTACT_EMAIL}</a> and we will delete that information promptly.
+            Get Phame is a business tool intended for use by adults aged 18 and over. We do not knowingly collect personal information from individuals under the age of 18. If you believe a minor has provided us with personal information, please contact us at <a href={`mailto:${CONTACT_EMAIL}`} style={LINK_STYLE}>{CONTACT_EMAIL}</a> and we will delete that information promptly.
           </p>
         </section>
 
@@ -318,7 +318,7 @@ export default function PrivacyPolicy() {
         <section>
           <h2 className={SECTION_HEADING} style={SECTION_HEADING_STYLE}>14. International Data Transfers</h2>
           <p>
-            Phame is operated from the United States. If you are accessing the Service from outside the United States, please be aware that your information may be transferred to, stored, and processed in the United States, where data protection laws may differ from those in your country. By using the Service, you consent to the transfer of your information to the United States. Where required by law (e.g., for EEA users), we rely on appropriate safeguards such as Standard Contractual Clauses for international data transfers.
+            Get Phame is operated from the United States. If you are accessing the Service from outside the United States, please be aware that your information may be transferred to, stored, and processed in the United States, where data protection laws may differ from those in your country. By using the Service, you consent to the transfer of your information to the United States. Where required by law (e.g., for EEA users), we rely on appropriate safeguards such as Standard Contractual Clauses for international data transfers.
           </p>
         </section>
 
@@ -338,7 +338,7 @@ export default function PrivacyPolicy() {
           </p>
           <address className="not-italic leading-relaxed pl-3 border-l-2" style={{ borderColor: "oklch(0.80 0.18 80)" }}>
             <span translate="no">
-              Phame — Privacy Team<br />
+              Get Phame — Privacy Team<br />
               {ADDR}
             </span>
           </address>

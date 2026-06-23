@@ -28,7 +28,7 @@ export interface ReviewEmailOptions {
   /** Optional signed unsubscribe URL — if provided, renders a real clickable link in the footer */
   unsubscribeUrl?: string;
   /**
-   * When true (free-tier users), appends a small "Powered by Phame" line to the footer.
+   * When true (free-tier users), appends a small "Powered by Get Phame" line to the footer.
    * Pro/Annual/Lifetime users get a clean footer.
    */
   showPoweredBy?: boolean;
@@ -102,7 +102,7 @@ export function buildReviewRequestEmail(opts: ReviewEmailOptions): string {
           <!-- Header -->
           <tr>
             <td style="background:${NAVY};padding:28px 40px;text-align:center;">
-              <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:${GOLD};">Phame</p>
+              <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:${GOLD};">Get Phame</p>
               <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">We'd love your feedback! ⭐</h1>
             </td>
           </tr>
@@ -148,6 +148,6 @@ export function buildReviewRequestText(opts: ReviewEmailOptions): string {
   const unsubLine = unsubscribeUrl
     ? `To unsubscribe: ${unsubscribeUrl}`
     : `To unsubscribe, reply with "unsubscribe".`;
-  const poweredBy = showPoweredBy ? '\n\nPowered by Phame — https://getphame.app' : '';
+  const poweredBy = showPoweredBy ? '\n\nPowered by Get Phame — https://getphame.app' : '';
   return `Hi ${customerName}!\n\n${context}\n\nCould you take 30 seconds to leave us a quick review?\n\n${reviewUrl}\n\nThank you so much!\nThe ${businessName} team\n\n---\nYou received this email because you are a customer of ${businessName}. ${unsubLine}${poweredBy}`;
 }

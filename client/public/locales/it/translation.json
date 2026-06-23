@@ -1,18 +1,18 @@
 {
   "seo": {
-    "title": "Phame — Ottieni più recensioni a 5 stelle su Google",
+    "title": "Get Phame — Ottieni più recensioni a 5 stelle su Google",
     "keywords": "richieste di recensioni, recensioni Google, ottenere più recensioni, automazione recensioni, recensioni piccole imprese, inviare email di richiesta recensione, recensioni WooCommerce, recensioni Stripe",
     "ogDescription": "Invia email personalizzate di richiesta recensione dal tuo account email. Funziona con Google, Yelp, TripAdvisor e altro.",
-    "shortTitle": "Phame"
+    "shortTitle": "Get Phame"
   },
   "nav": {
-    "brandName": "Phame",
+    "brandName": "Get Phame",
     "signIn": "Accedi",
     "home": "Home",
     "send": "Invia",
     "dashboard": "Dashboard",
     "settings": "Impostazioni",
-    "shareHint": "Condividi Phame con un amico",
+    "shareHint": "Condividi Get Phame con un amico",
     "share": "Condividi",
     "guideHint": "Apri la guida alla configurazione",
     "guide": "Guida",
@@ -26,14 +26,14 @@
     "description": "Invia richieste di recensioni personalizzate dal tuo account email. I tuoi clienti le ricevono da te — non da un mittente generico.",
     "cta": "Inizia Gratis",
     "setupTime": "Configurazione in meno di 2 minuti",
-    "rocketIllustrationAlt": "Illustrazione razzo Phame",
-    "dashboardAlt": "Dashboard Phame con richieste inviate e statistiche email",
+    "rocketIllustrationAlt": "Illustrazione razzo Get Phame",
+    "dashboardAlt": "Dashboard Get Phame con richieste inviate e statistiche email",
     "dashboardStats": "La tua dashboard — statistiche in tempo reale",
     "titlePart1": "Ottieni Più Recensioni",
     "titlePart2": "a 5 Stelle su Google"
   },
   "features": {
-    "sectionTitle": "Perché le aziende scelgono Phame",
+    "sectionTitle": "Perché le aziende scelgono Get Phame",
     "emailFeature": {
       "title": "Inviato dal tuo account email",
       "description": "Ogni richiesta arriva nella casella del cliente come un messaggio personale — non una comunicazione massiva. Nessun mittente condiviso, nessun filtro spam."
@@ -47,7 +47,7 @@
       "description": "Google, Yelp, Trustpilot, TripAdvisor, Facebook — aggiungi qualsiasi link di recensione. I tuoi clienti vengono portati direttamente alla tua pagina."
     },
     "customerQuote": {
-      "quote": "Phame ha cambiato le regole del gioco per la nostra piccola impresa. Abbiamo visto un aumento significativo nelle recensioni positive, ed è così facile da usare!",
+      "quote": "Get Phame ha cambiato le regole del gioco per la nostra piccola impresa. Abbiamo visto un aumento significativo nelle recensioni positive, ed è così facile da usare!",
       "author": "Tom R.",
       "authorTitle": "Proprietario, The Corner Café"
     },
@@ -84,7 +84,7 @@
     "spamQuestion": "Sembrerà spam?",
     "spamAnswer": "No. Ogni email viene inviata direttamente dal tuo account email tramite SMTP — non da un server di invio massivo condiviso. Il tuo cliente vede il tuo nome, il tuo indirizzo email e un messaggio scritto con la tua voce. Arriva nella casella di posta come una nota personale, non come una comunicazione di marketing.",
     "providersQuestion": "Quali provider email funzionano?",
-    "providersAnswer": "Qualsiasi provider che supporta SMTP funziona: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email e praticamente qualsiasi server di posta di un hosting provider. Se riesci a configurare un'app email sul telefono, puoi collegarla a Phame.",
+    "providersAnswer": "Qualsiasi provider che supporta SMTP funziona: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email e praticamente qualsiasi server di posta di un hosting provider. Se riesci a configurare un'app email sul telefono, puoi collegarla a Get Phame.",
     "freeQuestion": "È davvero gratuito?",
     "freeAnswer": "Sì — gratuito senza limiti di invio artificiali. Colleghi il tuo account email, quindi l'unico limite è il limite di invio giornaliero del tuo provider (Gmail consente ~500/giorno, la maggior parte degli altri è simile). Nessuna commissione nascosta e nessuna carta di credito richiesta per iniziare.",
     "importQuestion": "Posso importare la mia lista clienti?",
@@ -106,7 +106,7 @@
     "subtitle": "Gratuito per sempre. Nessuna carta di credito. Configurazione in meno di 2 minuti."
   },
   "footer": {
-    "brandName": "Phame",
+    "brandName": "Get Phame",
     "privacy": "Privacy",
     "terms": "Termini",
     "support": "Supporto",
@@ -116,14 +116,14 @@
     "compliance": "Conformità"
   },
   "shareReferralCard": {
-    "title": "Phame — Strumento gratuito per richieste di recensioni",
-    "shareText": "Sto usando Phame per inviare richieste di recensioni dalla mia email — è gratuito e funziona benissimo. Vale la pena provarlo:",
+    "title": "Get Phame — Strumento gratuito per richieste di recensioni",
+    "shareText": "Sto usando Get Phame per inviare richieste di recensioni dalla mia email — è gratuito e funziona benissimo. Vale la pena provarlo:",
     "copySuccessToast": "Link copiato negli appunti!",
     "copyErrorToast": "Impossibile copiare il link.",
     "header": "Conosci un imprenditore locale?",
     "subHeader": "Aiutali a ottenere più recensioni — è gratuito.",
     "copiedToClipboard": "Copiato negli appunti!",
-    "sharePhame": "Condividi Phame"
+    "sharePhame": "Condividi Get Phame"
   },
   "relativeTime": {
     "justNow": "proprio ora",
@@ -141,14 +141,14 @@
   "homePage": {
     "setGoalErrorToast": "{{message}}",
     "shareSuccessToast": "Copiato negli appunti! Condividilo con un amico.",
-    "pageTitle": "Phame — Invia Richieste di Recensioni Google Velocemente",
+    "pageTitle": "Get Phame — Invia Richieste di Recensioni Google Velocemente",
     "greeting": "Ciao, {{name}}!",
     "welcomeBack": "Bentornato,",
     "setupBannerTitle": "Configurazione completata!",
     "setupBannerText": "Hai configurato il tuo account e inviato la prima richiesta. Ben fatto!",
     "dismiss": "Chiudi",
     "expiryBannerTitle": "Abbonamento scaduto",
-    "expiryBannerText": "Il tuo accesso è scaduto. Rinnova il tuo piano per continuare a usare Phame.",
+    "expiryBannerText": "Il tuo accesso è scaduto. Rinnova il tuo piano per continuare a usare Get Phame.",
     "renewSubscription": "Rinnova Abbonamento",
     "expiringSoonTitle": "Abbonamento in scadenza",
     "expiringSoonText": "Il tuo piano scade tra {{daysUntilExpiry}} giorni. Rinnova ora per evitare interruzioni del servizio.",
@@ -200,7 +200,7 @@
     "helpAndSupport": "Aiuto e Supporto",
     "featureRequests": "Richieste di Funzionalità",
     "whatsNew": "Novità?",
-    "reviewLinkOnX": "Phame su X",
+    "reviewLinkOnX": "Get Phame su X",
     "buyTheCode": "Acquista il Codice",
     "monthlyPro": "Pro Mensile",
     "annualPro": "Pro Annuale",
@@ -242,7 +242,7 @@
     "noActivityYet": "Nessuna attività ancora",
     "activityWillAppear": "La tua attività recente apparirà qui.",
     "shareApp": "Condividi l'App",
-    "shareAppDesc": "Condividi Phame con altri imprenditori.",
+    "shareAppDesc": "Condividi Get Phame con altri imprenditori.",
     "copyLink": "Copia Link",
     "linkCopied": "Link Copiato!",
     "shareOnX": "Condividi su X",
@@ -250,8 +250,8 @@
     "shareViaEmail": "Condividi via Email",
     "nativeShareFailed": "Condivisione nativa non disponibile.",
     "shareError": "Errore durante la condivisione.",
-    "shareTitle": "Phame — Ottieni più recensioni",
-    "shareBody": "Sto usando Phame per inviare richieste di recensioni dalla mia email — è gratuito e funziona benissimo!",
+    "shareTitle": "Get Phame — Ottieni più recensioni",
+    "shareBody": "Sto usando Get Phame per inviare richieste di recensioni dalla mia email — è gratuito e funziona benissimo!",
     "proFeature": "Funzionalità Pro",
     "proFeatureDesc": "Questa funzionalità è disponibile solo per gli utenti Pro.",
     "upgradeNow": "Aggiorna Ora",
@@ -519,7 +519,7 @@
     "setupGuide": "Come ottenere la tua password app",
     "step1": "Vai alle impostazioni del tuo account {{provider}}",
     "step2": "Abilita l'autenticazione a due fattori se non è già attiva",
-    "step3": "Genera una password app per Phame",
+    "step3": "Genera una password app per Get Phame",
     "step4": "Copia e incolla la password app qui sopra",
     "gmailGuide": "Guida Gmail",
     "outlookGuide": "Guida Outlook",
@@ -800,7 +800,7 @@
     },
     "socialProof": {
       "title": "Amato da migliaia di aziende",
-      "review1": "Phame ha trasformato la nostra presenza online. Abbiamo triplicato le nostre recensioni Google in un mese!",
+      "review1": "Get Phame ha trasformato la nostra presenza online. Abbiamo triplicato le nostre recensioni Google in un mese!",
       "author1": "Sarah M., Proprietaria di Ristorante",
       "review2": "Così facile da usare. I miei clienti adorano ricevere email personalizzate invece di messaggi generici.",
       "author2": "James T., Idraulico",
@@ -824,7 +824,7 @@
   },
   "changelog": {
     "title": "Novità",
-    "subtitle": "Ultimi aggiornamenti e miglioramenti a Phame.",
+    "subtitle": "Ultimi aggiornamenti e miglioramenti a Get Phame.",
     "filterAll": "Tutti",
     "filterNew": "Nuovo",
     "filterImproved": "Migliorato",
@@ -840,13 +840,13 @@
   "compliance": {
     "title": "Guida alla Conformità",
     "subtitle": "Linee guida per la raccolta di recensioni in modo etico e conforme.",
-    "intro": "Phame è progettato per aiutarti a raccogliere recensioni autentiche rispettando le linee guida delle piattaforme e le leggi applicabili.",
+    "intro": "Get Phame è progettato per aiutarti a raccogliere recensioni autentiche rispettando le linee guida delle piattaforme e le leggi applicabili.",
     "section1Title": "Regole Generali",
     "section1Content": "Invia sempre richieste di recensioni solo a clienti reali che hanno effettivamente utilizzato il tuo prodotto o servizio. Non offrire incentivi in cambio di recensioni positive.",
     "section2Title": "Linee Guida di Google",
     "section2Content": "Google vieta le recensioni incentivate e le recensioni false. Assicurati che le tue richieste siano genuine e non manipolative.",
     "section3Title": "Linee Guida di Yelp",
-    "section3Content": "Yelp scoraggia attivamente la sollecitazione di recensioni. Usa Phame con cautela per le aziende che dipendono fortemente da Yelp.",
+    "section3Content": "Yelp scoraggia attivamente la sollecitazione di recensioni. Usa Get Phame con cautela per le aziende che dipendono fortemente da Yelp.",
     "section4Title": "Conformità FTC",
     "section4Content": "Se offri qualsiasi tipo di compensazione per le recensioni, devi divulgarlo chiaramente come richiesto dalla FTC.",
     "yelpWarning": "Attenzione: Yelp scoraggia attivamente la sollecitazione di recensioni. Usare con cautela.",
@@ -861,7 +861,7 @@
     "learnMore": "Scopri di più sulla conformità"
   },
   "onboardingWizard": {
-    "title": "Benvenuto in Phame",
+    "title": "Benvenuto in Get Phame",
     "subtitle": "Configuriamo il tuo account in pochi minuti.",
     "step1Title": "Connetti la tua Email",
     "step2Title": "Aggiungi la tua Piattaforma di Recensioni",
@@ -874,7 +874,7 @@
     "skip": "Salta",
     "complete": {
       "title": "Configurazione Completata!",
-      "subtitle": "Il tuo account Phame è pronto. Inizia a raccogliere recensioni oggi!",
+      "subtitle": "Il tuo account Get Phame è pronto. Inizia a raccogliere recensioni oggi!",
       "goToDashboard": "Vai alla Dashboard",
       "sendFirstRequest": "Invia la Prima Richiesta",
       "viewGuide": "Visualizza Guida",
@@ -975,7 +975,7 @@
   },
   "onboardingGuide": {
     "title": "Guida alla Configurazione",
-    "subtitle": "Segui questi passaggi per configurare Phame.",
+    "subtitle": "Segui questi passaggi per configurare Get Phame.",
     "close": "Chiudi",
     "back": "Indietro",
     "next": "Avanti",
@@ -983,7 +983,7 @@
     "skip": "Salta",
     "stepOf": "Passaggio {{current}} di {{total}}",
     "welcome": {
-      "title": "Benvenuto in Phame!",
+      "title": "Benvenuto in Get Phame!",
       "subtitle": "Configuriamo il tuo account in pochi minuti.",
       "getStarted": "Inizia"
     },
@@ -1645,7 +1645,7 @@
   },
   "socialProof": {
     "title": "Amato da migliaia di aziende",
-    "review1": "Phame ha trasformato la nostra presenza online. Abbiamo triplicato le nostre recensioni Google in un mese!",
+    "review1": "Get Phame ha trasformato la nostra presenza online. Abbiamo triplicato le nostre recensioni Google in un mese!",
     "author1": "Sarah M., Proprietaria di Ristorante",
     "review2": "Così facile da usare. I miei clienti adorano ricevere email personalizzate invece di messaggi generici.",
     "author2": "James T., Idraulico",
@@ -1705,7 +1705,7 @@
     "of": "di"
   },
   "step0": {
-    "title": "Benvenuto in Phame",
+    "title": "Benvenuto in Get Phame",
     "subtitle": "Configuriamo il tuo account in pochi minuti.",
     "getStarted": "Inizia",
     "skip": "Salta la configurazione"
@@ -1914,8 +1914,8 @@
   },
   "testimonials": {
     "title": "Cosa dicono i nostri clienti",
-    "subtitle": "Migliaia di aziende si fidano di Phame per raccogliere recensioni.",
-    "review1": "Phame ha trasformato la nostra presenza online. Abbiamo triplicato le nostre recensioni Google in un mese!",
+    "subtitle": "Migliaia di aziende si fidano di Get Phame per raccogliere recensioni.",
+    "review1": "Get Phame ha trasformato la nostra presenza online. Abbiamo triplicato le nostre recensioni Google in un mese!",
     "author1": "Sarah M.",
     "role1": "Proprietaria di Ristorante",
     "review2": "Così facile da usare. I miei clienti adorano ricevere email personalizzate invece di messaggi generici.",
@@ -1932,7 +1932,7 @@
     "role5": "Proprietaria di Boutique"
   },
   "onboarding": {
-    "title": "Benvenuto in Phame!",
+    "title": "Benvenuto in Get Phame!",
     "subtitle": "Configuriamo il tuo account in pochi minuti.",
     "step1Title": "Connetti la tua Email",
     "step2Title": "Aggiungi la tua Piattaforma",

@@ -1,18 +1,18 @@
 {
   "seo": {
-    "title": "Phame — Get More 5-Star Google Reviews",
+    "title": "Get Phame — Get More 5-Star Google Reviews",
     "keywords": "review requests, Google reviews, get more reviews, review automation, small business reviews, send review request email, WooCommerce reviews, Stripe reviews",
     "ogDescription": "Envoyer personalised review request emails from your own email account. Works with Google, Yelp, TripAdvisor and more.",
-    "shortTitle": "Phame"
+    "shortTitle": "Get Phame"
   },
   "nav": {
-    "brandName": "Phame",
+    "brandName": "Get Phame",
     "signIn": "Se connecter",
     "home": "Accueil",
     "send": "Envoyer",
     "dashboard": "Tableau de bord",
     "settings": "Paramètres",
-    "shareHint": "Partager Phame with a friend",
+    "shareHint": "Partager Get Phame with a friend",
     "share": "Partager",
     "guideHint": "Ouvrir le guide de configuration",
     "guide": "Guide",
@@ -31,8 +31,8 @@
     "description": "Envoyer personalized review requests from your own email account. Your customers see it come from you — not a generic sender.",
     "cta": "Commencer gratuitement",
     "setupTime": "Configuration en moins de 2 minutes",
-    "rocketIllustrationAlt": "Phame rocket illustration",
-    "dashboardAlt": "Phame dashboard showing sent requests and email performance stats",
+    "rocketIllustrationAlt": "Get Phame rocket illustration",
+    "dashboardAlt": "Get Phame dashboard showing sent requests and email performance stats",
     "dashboardStats": "Votre tableau de bord — statistiques en direct",
     "titlePart1": "Obtenez plus d'avis",
     "titlePart2": "5 étoiles",
@@ -63,10 +63,10 @@
       "description": "Google, Yelp, TripAdvisor, Facebook, Bing et plus encore."
     },
     "customerQuote": {
-      "quote": "Phame has been a game-changer for our small business. We've seen a significant increase in positive reviews, and it's so easy to use!",
+      "quote": "Get Phame has been a game-changer for our small business. We've seen a significant increase in positive reviews, and it's so easy to use!",
       "author": "Tom R.",
       "authorTitle": "Propriétaire, Le Café du Coin",
-      "text": "Phame m'a aidé à obtenir 47 nouveaux avis Google en un mois. Mes clients adorent recevoir un e-mail personnel.",
+      "text": "Get Phame m'a aidé à obtenir 47 nouveaux avis Google en un mois. Mes clients adorent recevoir un e-mail personnel.",
       "role": "Propriétaire de restaurant"
     },
     "sendsFromYourEmail": "Envoyers from your email",
@@ -130,7 +130,7 @@
     "spamQuestion": "Est-ce que ça ressemblera à du spam ?",
     "spamAnswer": "No. Every email is sent directly from your own email account via SMTP — not from a shared bulk-sending server. Your customer sees your name, your email address, and a message written in your voice. It lands in the inbox like a personal note, not a marketing blast.",
     "providersQuestion": "Quels fournisseurs d'e-mail fonctionnent ?",
-    "providersAnswer": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to Phame.",
+    "providersAnswer": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to Get Phame.",
     "freeQuestion": "Est-ce vraiment gratuit ?",
     "freeAnswer": "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap (Gmail allows ~500/day, most others are similar). There are no hidden fees and no credit card required to get started.",
     "importQuestion": "Puis-je importer ma liste de clients ?",
@@ -152,7 +152,7 @@
     "subtitle": "Gratuit pour toujours. Sans carte bancaire. Configuré en moins de 2 minutes."
   },
   "footer": {
-    "brandName": "Phame",
+    "brandName": "Get Phame",
     "privacy": "Confidentialité",
     "terms": "Conditions",
     "support": "Assistance",
@@ -163,16 +163,16 @@
     "changelog": "Journal des modifications"
   },
   "shareReferralCard": {
-    "title": "Phame — Free review request tool",
-    "shareText": "I've been using Phame to send review requests from my own email — it's free and works great. Worth checking out:",
+    "title": "Get Phame — Free review request tool",
+    "shareText": "I've been using Get Phame to send review requests from my own email — it's free and works great. Worth checking out:",
     "copySuccessToast": "Lien copié dans le presse-papiers !",
     "copyErrorToast": "Impossible de copier le lien.",
     "header": "Vous connaissez un propriétaire d'entreprise locale ?",
     "subHeader": "Aidez-les à obtenir plus d'avis — c'est gratuit.",
     "copiedToClipboard": "Copié dans le presse-papiers !",
-    "sharePhame": "Partager Phame",
-    "shareButton": "Partager Phame",
-    "subtitle": "Partagez Phame avec eux — c'est gratuit !"
+    "sharePhame": "Partager Get Phame",
+    "shareButton": "Partager Get Phame",
+    "subtitle": "Partagez Get Phame avec eux — c'est gratuit !"
   },
   "relativeTime": {
     "justNow": "à l'instant",
@@ -190,14 +190,14 @@
   "homePage": {
     "setGoalErrorToast": "{{message}}",
     "shareSuccessToast": "Copied to clipboard! Partager it with a friend.",
-    "pageTitle": "Phame — Envoyer Google Review Requests Fast",
+    "pageTitle": "Get Phame — Envoyer Google Review Requests Fast",
     "greeting": "Bonjour, {{name}} !",
     "welcomeBack": "Bon retour, {{name}} !",
     "setupBannerTitle": "Configuration terminée !",
     "setupBannerText": "Vous avez configuré votre compte et envoyé votre première demande. Continuez comme ça !",
     "dismiss": "Ignorer",
     "expiryBannerTitle": "Abonnement expiré",
-    "expiryBannerText": "Your access has expired. Please renew your plan to continue using Phame.",
+    "expiryBannerText": "Your access has expired. Please renew your plan to continue using Get Phame.",
     "renewSubscription": "Renouveler l'abonnement",
     "expiringSoonTitle": "Abonnement bientôt expiré",
     "expiringSoonText": "Votre forfait expire dans {{daysUntilExpiry}} jours. Renouvelez maintenant pour éviter toute interruption.",
@@ -249,7 +249,7 @@
     "helpAndSupport": "Aide et support",
     "featureRequests": "Demandes de fonctionnalités",
     "whatsNew": "Nouveautés?",
-    "reviewLinkOnX": "Phame on X",
+    "reviewLinkOnX": "Get Get Phame on X",
     "buyTheCode": "Acheter le code",
     "monthlyPro": "Mensuel Pro",
     "annualPro": "Annuel Pro",
@@ -268,7 +268,7 @@
     "errorPrefix": "Erreur :",
     "manageBilling": "Gérer la facturation",
     "seoTitle": "Obtenez plus d'avis commerciaux",
-    "seoDescription": "Phame makes it easy to send personalized review requests to your customers via email — for Google, Yelp, TripAdvisor, Bing, Facebook, and more. Build your online reputation across every platform, increase star ratings, and attract new customers — all from one simple dashboard.",
+    "seoDescription": "Get Phame makes it easy to send personalized review requests to your customers via email — for Google, Yelp, TripAdvisor, Bing, Facebook, and more. Build your online reputation across every platform, increase star ratings, and attract new customers — all from one simple dashboard.",
     "goal": "objectif",
     "goalReached": "Objectif atteint ! 🎉",
     "toGo": "restants",
@@ -300,7 +300,7 @@
     "shareApp": "Partager l'application",
     "freeUsage": "Utilisation gratuite : {{used}}/{{total}} envois",
     "upgradeToPro": "Passer à Pro pour des envois illimités",
-    "welcomeTitle": "Bienvenue sur Phame !",
+    "welcomeTitle": "Bienvenue sur Get Phame !",
     "welcomeText": "Commencez par configurer votre compte pour envoyer des demandes d'avis.",
     "startSetup": "Démarrer la configuration",
     "proFeatureTitle": "Fonctionnalité Pro",
@@ -355,8 +355,8 @@
     "requestSentTo": "Votre demande d'avis a été envoyée à {{customerName}} depuis votre e-mail.",
     "emailComesFrom": "L'e-mail vient de {{email}}, donc il semble personnel.",
     "requestsSentMilestone": "{{milestoneNum}} requests sent!",
-    "milestoneDescription": "You're getting results for real businesses. If Phame is helping you, a quick review means the world to us.",
-    "ratePhame": "Rate Phame",
+    "milestoneDescription": "You're getting results for real businesses. If Get Phame is helping you, a quick review means the world to us.",
+    "ratePhame": "Rate Get Phame",
     "scheduleFollowUp": "Programmer un suivi",
     "sendAnother": "Envoyer Another",
     "notNow": "Pas maintenant",
@@ -581,7 +581,7 @@
     "googleWorkspaceGuideTitle": "Google Workspace App Mot de passe — 4 steps",
     "googleWorkspaceGuideStep1": "Demandez à votre administrateur Workspace d'activer la vérification en 2 étapes dans admin.google.com",
     "googleWorkspaceGuideStep2": "Sign in to myaccount.google.com with your work account → Security",
-    "googleWorkspaceGuideStep3": "Go to myaccount.google.com/apppasswords → name it Phame → click Create",
+    "googleWorkspaceGuideStep3": "Go to myaccount.google.com/apppasswords → name it Get Phame → click Create",
     "googleWorkspaceGuideStep4": "Copiez le code à 16 caractères et collez-le ici — supprimez tous les espaces",
     "outlookGuideTitle": "Microsoft App Mot de passe — 4 steps",
     "outlookGuideStep1": "Allez sur account.microsoft.com → Sécurité",
@@ -603,7 +603,7 @@
     "aolGuideTitle": "AOL Mail App Mot de passe — 4 steps",
     "aolGuideStep1": "Allez sur account.aol.com → Sécurité",
     "aolGuideStep2": "Cliquez sur Générer un mot de passe d'application",
-    "aolGuideStep3": "Select Other app, name it Phame",
+    "aolGuideStep3": "Select Other app, name it Get Phame",
     "aolGuideStep4": "Copiez et collez le mot de passe ici — n'utilisez pas votre mot de passe AOL habituel",
     "aolGuideTip": "AOL nécessite la vérification en 2 étapes avant de générer des mots de passe d'application",
     "protonMailGuideTitle": "ProtonMail — SMTP Bridge Mot de passe",
@@ -615,12 +615,12 @@
     "fastmailGuideTitle": "Fastmail App Mot de passe — 4 steps",
     "fastmailGuideStep1": "Go to app.fastmail.com → Paramètres → Privacy & Security",
     "fastmailGuideStep2": "Cliquez sur Mots de passe d'application → Nouveau mot de passe d'application",
-    "fastmailGuideStep3": "Name it Phame, select SMTP, then click Generate password",
+    "fastmailGuideStep3": "Name it Get Phame, select SMTP, then click Generate password",
     "fastmailGuideStep4": "Copiez et collez le mot de passe généré ici",
     "iCloudGuideTitle": "Apple iCloud Mail App Mot de passe — 4 steps",
     "iCloudGuideStep1": "Go to appleid.apple.com and sign in",
     "iCloudGuideStep2": "Under Sign-In and Security, click App-Specific Mot de passes",
-    "iCloudGuideStep3": "Click Generate an app-specific password..., name it Phame, click Create",
+    "iCloudGuideStep3": "Click Generate an app-specific password..., name it Get Phame, click Create",
     "iCloudGuideStep4": "Copiez le mot de passe xxxx-xxxx-xxxx-xxxx et collez-le ici",
     "iCloudTip": "Two-factor authentication must be enabled for your Apple ID.",
     "providerWarning": "Nous n'avons pas pu détecter votre fournisseur d'e-mail. Veuillez entrer vos informations manuellement.",
@@ -982,7 +982,7 @@
     "subtitle": "E-mails de suivi automatiques à 3 jours pour les clients qui n'ont pas encore laissé d'avis.",
     "upgrade": "Passer à Pro",
     "noLimits": "Sans limites.",
-    "heroImageAlt": "Phame Pro upgrade",
+    "heroImageAlt": "Get Phame Pro upgrade",
     "backToContacts": "Retour to Contacts",
     "import": "Importer",
     "importClients": "Importer des clients",
@@ -990,7 +990,7 @@
     "emailTemplates": "E-mail Templates",
     "customizeMessages": "Personnalisez vos messages de demande d'avis",
     "new": "New",
-    "logoText": "Phame",
+    "logoText": "Get Phame",
     "tagline": "Obtenez plus d'avis 5 étoiles — automatiquement.",
     "description": "Envoyez des demandes d'avis personnalisées depuis votre propre adresse e-mail."
   },
@@ -1441,7 +1441,7 @@
   },
   "onboardingWizard": {
     "header": {
-      "title": "Phame Setup",
+      "title": "Get Phame Setup",
       "skipSetupTooltip": "Passer la configuration"
     },
     "steps": {
@@ -1452,7 +1452,7 @@
     "stepContent": {
       "step1": {
         "title": "Connecter your email",
-        "description": "Phame sends emails from your own account — works with Gmail, Outlook, Yahoo, or any business email."
+        "description": "Get Phame sends emails from your own account — works with Gmail, Outlook, Yahoo, or any business email."
       },
       "step2": {
         "title": "Ajoutez votre page d'avis",
@@ -1620,7 +1620,7 @@
   },
   "comparison": {
     "sectionTitle": "10 à 20× moins cher que les grands acteurs",
-    "sectionSubtitle": "Birdeye and Podium charge enterprise prices for features Phame gives you at a fraction of the cost.",
+    "sectionSubtitle": "Birdeye and Podium charge enterprise prices for features Get Phame gives you at a fraction of the cost.",
     "colPlatform": "Plateforme",
     "colStartingPrice": "Prix de départ",
     "colLifetime": "À vie option",
@@ -1629,10 +1629,10 @@
   "testimonials": {
     "sectionTitle": "Ce que disent nos utilisateurs",
     "sarah": {
-      "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. Phame sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks.",
+      "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. Get Phame sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks.",
       "name": "Sarah M.",
       "role": "Photographe indépendante",
-      "text": "Phame m'a aidée à obtenir 23 nouveaux avis en seulement 2 semaines !"
+      "text": "Get Phame m'a aidée à obtenir 23 nouveaux avis en seulement 2 semaines !"
     },
     "tom": {
       "quote": "Nous servons environ 80 clients par jour. J'importe les commandes de la semaine régulièrement et j'envoie des demandes en masse. C'est incroyablement simple.",
@@ -1678,7 +1678,7 @@
   "onboardingGuide": {
     "title": "Guide de configuration",
     "stepOf": "Étape {{current}} / {{total}}",
-    "welcome": "Bienvenue sur Phame",
+    "welcome": "Bienvenue sur Get Phame",
     "connectEmail": "Connecter l'e-mail",
     "reviewPlatform": "Plateforme d'avis",
     "importContacts": "Importer des contacts",
@@ -1691,7 +1691,7 @@
       "skipForNow": "Passer pour l'instant →"
     },
     "welcome_section": {
-      "heroText": "Phame envoie des e-mails de demande d'avis personnalisés depuis votre propre compte e-mail.",
+      "heroText": "Get Phame envoie des e-mails de demande d'avis personnalisés depuis votre propre compte e-mail.",
       "heroSubtext": "Les clients reçoivent un message qui semble venir directement de vous — pas d'un envoi en masse.",
       "setupStepsIntro": "Ce guide vous accompagne en 4 étapes rapides :",
       "step1Label": "Connectez votre compte e-mail (SMTP)",
@@ -1703,14 +1703,14 @@
     },
     "connectEmail_section": {
       "whyTitle": "Pourquoi connecter votre e-mail ?",
-      "whyDesc": "Phame envoie des e-mails via votre propre compte SMTP — le même protocole que votre application e-mail. Les demandes d'avis arrivent comme des messages personnels de votre part.",
+      "whyDesc": "Get Phame envoie des e-mails via votre propre compte SMTP — le même protocole que votre application e-mail. Les demandes d'avis arrivent comme des messages personnels de votre part.",
       "goToSettingsButton": "Aller aux Paramètres → Connexion e-mail",
       "testEmailButton": "Envoyer un e-mail test à moi-même",
       "testEmailSent": "E-mail test envoyé ! Vérifiez votre boîte de réception."
     },
     "reviewPlatform_section": {
       "whatIsTitle": "Qu'est-ce qu'une plateforme d'avis ?",
-      "whatIsDesc": "C'est le lien sur lequel vos clients cliquent pour laisser un avis — sur Google, Yelp, TripAdvisor, Facebook ou ailleurs. Phame intègre ce lien comme bouton dans chaque e-mail.",
+      "whatIsDesc": "C'est le lien sur lequel vos clients cliquent pour laisser un avis — sur Google, Yelp, TripAdvisor, Facebook ou ailleurs. Get Phame intègre ce lien comme bouton dans chaque e-mail.",
       "goToSettingsButton": "Aller aux Paramètres → Plateformes d'avis"
     },
     "contacts_section": {
@@ -1725,8 +1725,8 @@
     },
     "allSet_section": {
       "title": "Tout est prêt !",
-      "subtitle": "Phame est prêt à collecter des avis pour votre entreprise.",
-      "startButton": "Commencer à utiliser Phame"
+      "subtitle": "Get Phame est prêt à collecter des avis pour votre entreprise.",
+      "startButton": "Commencer à utiliser Get Phame"
     }
   },
   "step2Platform": {

@@ -33,8 +33,8 @@ export default function OnboardingPage() {
         <div className="flex items-center gap-2">
           <img
             src="https://assets.getphame.app/phame-wordmark-transparent-clean.png"
-            alt="Phame"
-            style={{ width: '160px', height: '60px', objectFit: 'cover', marginLeft: '-20px' }}
+            alt="Get Phame"
+            style={{ height: '36px', width: 'auto' }}
           />
         </div>
       </div>

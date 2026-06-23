@@ -207,7 +207,7 @@ export default function PaymentSuccessPage() {
         ))}
       </div>
       <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-disabled)" }}>
-        Thank you for supporting Phame
+        Thank you for supporting Get Phame
       </p>
     </div>
   );

@@ -50,7 +50,7 @@ export default function UnsubscribePage() {
           <p
             className="text-xs font-bold tracking-widest uppercase mb-1 rr-text-gold"
           >
-            Phame
+            Get Phame
           </p>
           <h1
             className="text-xl font-black text-white"
@@ -117,7 +117,7 @@ export default function UnsubscribePage() {
               className="underline"
               style={{ color: "#aaa" }}
             >
-              Phame
+            Get Phame
             </a>
           </p>
         </div>

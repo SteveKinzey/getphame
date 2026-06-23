@@ -84,7 +84,7 @@ function ReferralRewardsCard() {
           {/* WhatsApp */}
           <button
             onClick={() => {
-              const text = encodeURIComponent(`Get more 5-star reviews with Phame — ${shareUrl}`);
+              const text = encodeURIComponent(`Get more 5-star reviews with Get Phame — ${shareUrl}`);
               window.open(`https://wa.me/?text=${text}`, '_blank');
             }}
             className="flex flex-col items-center gap-1 rounded-xl py-2.5 px-2 transition-opacity active:opacity-70"
@@ -98,7 +98,7 @@ function ReferralRewardsCard() {
           {/* iMessage / SMS */}
           <button
             onClick={() => {
-              const text = encodeURIComponent(`Get more 5-star reviews with Phame — ${shareUrl}`);
+              const text = encodeURIComponent(`Get more 5-star reviews with Get Phame — ${shareUrl}`);
               window.open(`sms:?&body=${text}`, '_blank');
             }}
             className="flex flex-col items-center gap-1 rounded-xl py-2.5 px-2 transition-opacity active:opacity-70"
@@ -352,7 +352,7 @@ export default function HomePage() {
     const shareText = t("shareReferralCard.shareText") + " " + shareUrl;
     if (navigator.share) {
       try {
-        await navigator.share({ title: "Phame", text: shareText, url: shareUrl });
+        await navigator.share({ title: "Get Phame", text: shareText, url: shareUrl });
       } catch {
         // user cancelled — no action needed
       }
@@ -446,16 +446,16 @@ export default function HomePage() {
             <div className="flex items-center">
               <img
                 src="https://assets.getphame.app/phame-wordmark-transparent-clean.png"
-                alt="Phame"
+                alt="Get Phame"
                 className="block"
-                style={{ width: '160px', height: '60px', objectFit: 'cover', marginLeft: '-20px' }}
+                style={{ height: '36px', width: 'auto' }}
               />
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={handleShare}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
-                title={t("nav.shareHint", { defaultValue: "Share Phame with a friend" })}
+                title={t("nav.shareHint", { defaultValue: "Share Get Phame with a friend" })}
               >
                 <Share2 size={13} />
                 <span>{t("nav.share", { defaultValue: "Share" })}</span>
@@ -699,7 +699,7 @@ export default function HomePage() {
             {t("homePage.seoTitle", { defaultValue: "Get More Business Reviews" })}
           </h2>
           <p className="text-xs leading-relaxed rr-text-navy-muted">
-            {t("homePage.seoDescription", { defaultValue: "Phame makes it easy to send personalized review requests to your customers via email — for Google, Yelp, TripAdvisor, Bing, Facebook, and more. Build your online reputation across every platform, increase star ratings, and attract new customers — all from one simple dashboard." })}
+            {t("homePage.seoDescription", { defaultValue: "Get Phame makes it easy to send personalized review requests to your customers via email — for Google, Yelp, TripAdvisor, Bing, Facebook, and more. Build your online reputation across every platform, increase star ratings, and attract new customers — all from one simple dashboard." })}
           </p>
         </div>
 

@@ -24,7 +24,7 @@ export function useReminders() {
 
         // In production: call email/SMS API here
         // For demo: log and mark as sent
-        console.log(`[Phame] Sending reminder to ${reminder.customerName}`);
+        console.log(`[Get Phame] Sending reminder to ${reminder.customerName}`);
         console.log('Message:', message);
 
         // Simulate sending

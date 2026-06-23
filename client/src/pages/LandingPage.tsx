@@ -135,7 +135,7 @@ export default function LandingPage() {
     setMeta("twitter:image", OG_IMG);
 
     return () => {
-      document.title = "Phame";
+      document.title = "Get Phame";
     };
   }, [t]);
 
@@ -149,9 +149,8 @@ export default function LandingPage() {
         <div className="flex items-center">
           <img
             src="https://assets.getphame.app/phame-wordmark-transparent-clean.png"
-            alt="Phame"
-            className="object-cover"
-            style={{ width: '160px', height: '60px', objectFit: 'cover', marginLeft: '-20px' }}
+            alt="Get Phame"
+            style={{ height: '40px', width: 'auto' }}
           />
         </div>
         <div className="flex items-center gap-2">
@@ -388,13 +387,13 @@ export default function LandingPage() {
               <span className="text-center">{t("comparison.colStartingPrice")}</span>
               <span className="text-center">{t("comparison.colLifetime")}</span>
             </div>
-            {/* Phame row — highlighted */}
+            {/* Get Phame row — highlighted */}
             <div
               className="grid grid-cols-3 px-4 py-3 items-center border-b-2 rr-bg-gold-pale" style={{ borderColor: "oklch(0.80 0.18 80)" }}
             >
               <div className="flex items-center gap-1.5">
                 <Star size={13} className="rr-text-gold" />
-                <span className="text-xs font-black rr-text-navy">Phame</span>
+                <span className="text-xs font-black rr-text-navy">Get Phame</span>
               </div>
               <div className="text-center">
                 <span className="text-xs font-black rr-text-navy">$29<span className="font-normal">/mo</span></span>
