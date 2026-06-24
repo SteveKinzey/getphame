@@ -18,7 +18,10 @@
     "guide": "Guida",
     "complianceHint": "Visualizza la Guida alla Conformità",
     "complianceActive": "Conformità: Attiva",
-    "complianceViewGuide": "— visualizza la guida"
+    "complianceViewGuide": "— visualizza la guida",
+    "howItWorks": "How It Works",
+    "pricing": "Pricing",
+    "faq": "FAQ"
   },
   "hero": {
     "tagline": "Gratuito per iniziare — Nessuna carta di credito richiesta",
@@ -96,7 +99,23 @@
     "q3": "È davvero gratuito?",
     "a3": "Sì — gratuito senza limiti di invio artificiali. Colleghi il tuo account email, quindi l'unico limite è il limite di invio giornaliero del tuo provider.",
     "q4": "Posso importare la mia lista clienti?",
-    "a4": "Sì. Carica un file CSV con i nomi e gli indirizzi email dei tuoi clienti, o sincronizza direttamente da WooCommerce se gestisci un negozio online."
+    "a4": "Sì. Carica un file CSV con i nomi e gli indirizzi email dei tuoi clienti, o sincronizza direttamente da WooCommerce se gestisci un negozio online.",
+    "q5": "Does Get Phame store my email password?",
+    "a5": "Never. Get Phame uses your own SMTP credentials (or Gmail app password) to send emails directly from your account. Your password is encrypted at rest and never shared or stored in plain text. You can disconnect at any time from Settings.",
+    "q6": "Will my emails land in spam?",
+    "a6": "Because emails are sent from your own email address — not a generic sender — they land in the primary inbox far more reliably than bulk marketing tools. Your domain reputation stays intact.",
+    "q7": "What happens to my customer list?",
+    "a7": "Your customer data stays private. It is stored securely in your account and is never sold, shared, or used for any purpose other than sending your review requests. You can delete contacts at any time.",
+    "q8": "Can customers opt out?",
+    "a8": "Yes. Every review request email includes an unsubscribe link. Customers who opt out are automatically excluded from future sends.",
+    "q9": "Do I need technical skills to connect my email?",
+    "a9": "No. Get Phame auto-detects your email provider and shows step-by-step instructions for Gmail, Outlook, Yahoo, Zoho, and more. Setup takes under 2 minutes.",
+    "q10": "Which review platforms does it support?",
+    "a10": "Google, Yelp, TripAdvisor, Facebook, Bing, and any custom URL. You can add multiple platforms and choose which one to include in each send.",
+    "q11": "How does WooCommerce sync work?",
+    "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
+    "q12": "What does unlimited mean on the Pro plan?",
+    "a12": "Unlimited means no cap on review requests sent per month. The Free plan includes 10 requests to get you started. Pro removes that limit entirely."
   },
   "bottomCta": {
     "headline": "Inizia a raccogliere recensioni oggi",
@@ -985,7 +1004,9 @@
     "welcome": {
       "title": "Benvenuto in Get Phame!",
       "subtitle": "Configuriamo il tuo account in pochi minuti.",
-      "getStarted": "Inizia"
+      "getStarted": "Inizia",
+      "watchVideoLabel": "Watch: Get Phame in 90 seconds",
+      "watchVideoSub": "See how it works before you connect"
     },
     "connectEmail": {
       "title": "Connetti la tua Email",
@@ -1899,7 +1920,11 @@
     "lifetimeFeature3": "Aggiornamenti futuri inclusi",
     "lifetimeFeature4": "Accesso API",
     "annualDiscount": "Risparmia {{percent}}% con il piano annuale",
-    "moneyBackGuarantee": "Garanzia di rimborso 30 giorni"
+    "moneyBackGuarantee": "Garanzia di rimborso 30 giorni",
+    "freeDescription": "Try Get Phame with 10 review requests — no credit card required.",
+    "proMonthlyDescription": "Best for active businesses that send review requests weekly.",
+    "proAnnualDescription": "Best value for businesses committed to reputation growth.",
+    "lifetimeDescription": "Best for agencies, operators, and long-term owners. One business/location. Includes all future updates."
   },
   "comparison": {
     "title": "Confronto Piani",
@@ -1962,5 +1987,25 @@
     "sectionTitle": "Guarda come funziona",
     "sectionSubtitle": "Guarda una rapida panoramica di Get Phame in azione.",
     "caption": "Inizia gratis — nessuna carta di credito richiesta"
+  },
+  "trust": {
+    "encryptedPassword": "Password encrypted at rest",
+    "dataPrivacy": "Your customer list stays private",
+    "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
+    "unsubscribe": "Unsubscribe link in every email"
+  },
+  "proof": {
+    "sectionTitle": "Built for Businesses That Run on Reputation",
+    "sectionSubtitle": "Photographers, cafés, home services, clinics, agencies, and WooCommerce stores.",
+    "type1": "Cafés & Restaurants",
+    "type2": "Home Services",
+    "type3": "Photographers",
+    "type4": "Clinics & Salons",
+    "stat1Value": "10×",
+    "stat1Label": "more reviews vs. asking in person",
+    "stat2Value": "< 2 min",
+    "stat2Label": "average setup time",
+    "stat3Value": "Your inbox",
+    "stat3Label": "emails sent from your own address"
   }
 }

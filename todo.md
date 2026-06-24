@@ -1515,3 +1515,18 @@
 - [x] Add Changelog v1.4 entries (7 items: brand refresh, referral, powered-by-phame, client detail, bulk restart, Yelp compliance, domain migration)
 - [x] Build inactive user re-engagement email + Heartbeat cron (targets users who signed up 7+ days ago with monthlyCount=0)
 - [x] Add referral rewards dashboard section to Home screen (referral stats card)
+
+## Website Review Improvements (GetPhame.app_Website_Review.pdf)
+
+- [ ] Add anchor nav links: How It Works, Pricing, FAQ, Sign In
+- [ ] Add section-level CTAs after How It Works, Pricing, and Testimonials sections
+- [ ] Add trust signals bar (email provider logos, security note, data privacy)
+- [ ] Add proof section before pricing (outcome stats, business-type examples)
+- [ ] Improve desktop layout with wider max-width and two-column hero
+- [ ] Expand FAQ: email safety, deliverability, customer data, compliance, SMTP setup, platforms, WooCommerce, limits
+- [ ] Update pricing plan positioning copy (Free = try, Pro = operate, Annual = best value, Lifetime = agencies)
+- [ ] Add pricing source disclaimer / "verified as of" note to comparison table
+- [ ] Fix comparison table for mobile (stacked cards or horizontal scroll)
+- [ ] Update manifest.json app name from Phame to Get Phame
+- [ ] Add video translation keys to all 6 locale files
+- [ ] Increase body copy font size and line height on mobile hero
