@@ -548,7 +548,7 @@
     "exportCsv": "Export CSV"
   },
   "wooStatus": {
-    "neverSynced": "Never synced \u2014 tap WooCommerce above to import"
+    "neverSynced": "Never synced — tap WooCommerce above to import"
   },
   "bulkBar": {
     "sendTo": "Send to {{count}}"
@@ -1124,12 +1124,30 @@
       "goToStepAriaLabel": "Go to step {{number}}"
     },
     "steps": {
-      "welcome": { "title": "Welcome to Get Phame", "subtitle": "Here's what we'll set up together" },
-      "connectEmail": { "title": "Connect Your Email", "subtitle": "Send from your own email account" },
-      "reviewPlatform": { "title": "Add a Review Platform", "subtitle": "Where should customers leave their review?" },
-      "importContacts": { "title": "Import Your Contacts", "subtitle": "Build your customer list" },
-      "sendRequest": { "title": "Send a Review Request", "subtitle": "One customer or many — your choice" },
-      "allSet": { "title": "You're All Set", "subtitle": "Everything you need to get started" }
+      "welcome": {
+        "title": "Welcome to Get Phame",
+        "subtitle": "Here's what we'll set up together"
+      },
+      "connectEmail": {
+        "title": "Connect Your Email",
+        "subtitle": "Send from your own email account"
+      },
+      "reviewPlatform": {
+        "title": "Add a Review Platform",
+        "subtitle": "Where should customers leave their review?"
+      },
+      "importContacts": {
+        "title": "Import Your Contacts",
+        "subtitle": "Build your customer list"
+      },
+      "sendRequest": {
+        "title": "Send a Review Request",
+        "subtitle": "One customer or many — your choice"
+      },
+      "allSet": {
+        "title": "You're All Set",
+        "subtitle": "Everything you need to get started"
+      }
     },
     "navigation": {
       "back": "Back",
@@ -1428,5 +1446,10 @@
         "description": "Send personalised review request emails from your own email account — not a bulk mailer. Customers receive a message that looks like it came directly from you."
       }
     }
+  },
+  "video": {
+    "sectionTitle": "See How It Works",
+    "sectionSubtitle": "Watch a quick walkthrough of Get Phame in action.",
+    "caption": "Free to start — no credit card required"
   }
 }

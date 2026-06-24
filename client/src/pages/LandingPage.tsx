@@ -13,7 +13,7 @@ const OG_IMG =
 
 const APP_PREVIEW_IMG = "https://assets.getphame.app/phame-app-screenshot.png";
 
-const PROMO_VIDEO_URL = "https://manus.space/manus-storage/getphame-youtube-90s-cc_f2bdc9c6.mp4";
+const YOUTUBE_VIDEO_ID = "EWHSE1oyJOk";
 
 function FAQSection() {
   const { t } = useTranslation();
@@ -243,15 +243,21 @@ export default function LandingPage() {
           </p>
           <div
             className="relative rounded-2xl overflow-hidden shadow-2xl"
-            style={{ border: "2px solid oklch(0.35 0.08 260)" }}
+            style={{ border: "2px solid oklch(0.35 0.08 260)", paddingBottom: "56.25%", height: 0 }}
           >
-            <video
-              src={PROMO_VIDEO_URL}
-              controls
-              playsInline
-              preload="metadata"
-              className="w-full block"
-              style={{ background: "oklch(0.15 0.06 260)" }}
+            <iframe
+              src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?rel=0&modestbranding=1`}
+              title="Get Phame — See How It Works"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                border: "none",
+              }}
             />
           </div>
           <p className="text-xs text-center mt-3" style={{ color: "var(--text-on-dark-muted)" }}>

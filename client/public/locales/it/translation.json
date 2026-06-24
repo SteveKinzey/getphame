@@ -1957,5 +1957,10 @@
     "termsAgreement": "Continuando, accetti i nostri Termini di Servizio e la nostra Informativa sulla Privacy.",
     "termsOfService": "Termini di Servizio",
     "privacyPolicy": "Informativa sulla Privacy"
+  },
+  "video": {
+    "sectionTitle": "Guarda come funziona",
+    "sectionSubtitle": "Guarda una rapida panoramica di Get Phame in azione.",
+    "caption": "Inizia gratis — nessuna carta di credito richiesta"
   }
 }

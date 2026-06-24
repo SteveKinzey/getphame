@@ -1804,5 +1804,10 @@
     "reviewsMonth": "reseñas / mes",
     "ofMonthlyGoal": "del objetivo mensual",
     "requestsByPlatform": "Solicitudes por plataforma"
+  },
+  "video": {
+    "sectionTitle": "Mira cómo funciona",
+    "sectionSubtitle": "Mira una guía rápida de Get Phame en acción.",
+    "caption": "Gratis para empezar — sin tarjeta de crédito"
   }
 }

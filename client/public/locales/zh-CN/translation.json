@@ -1286,5 +1286,10 @@
   },
   "wooStatus": {
     "neverSynced": "从未同步——点击上方 WooCommerce 导入"
+  },
+  "video": {
+    "sectionTitle": "了解工作原理",
+    "sectionSubtitle": "观看 Get Phame 的快速演示。",
+    "caption": "免费开始 — 无需信用卡"
   }
 }
