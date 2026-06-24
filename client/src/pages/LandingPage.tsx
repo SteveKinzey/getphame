@@ -14,6 +14,8 @@ const OG_IMG =
 const APP_PREVIEW_IMG = "https://assets.getphame.app/phame-app-screenshot.png";
 
 const YOUTUBE_VIDEO_ID = "EWHSE1oyJOk";
+const EMAIL_PREVIEW_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/phame-email-preview-eP9MPPjeAcPwSE2fKv2Pk6.png";
+const DEMO_GIF = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/phame-demo_5cb160d4.gif";
 
 function FAQSection() {
   const { t } = useTranslation();
@@ -400,6 +402,52 @@ export default function LandingPage() {
             <p className="text-xs mt-2" style={{ color: "var(--text-on-dark-muted)" }}>
               {t("hero.setupTime")}
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Demo: GIF + Email Preview ────────────────────────────────────── */}
+      <section className="px-5 py-12 bg-white">
+        <div className="max-w-3xl mx-auto">
+          <h2 className="text-xl font-black text-center mb-2 rr-text-navy">
+            {t("demo.sectionTitle", "See It In Action")}
+          </h2>
+          <p className="text-sm text-center mb-8" style={{ color: "oklch(0.45 0.06 260)" }}>
+            {t("demo.sectionSubtitle", "Three steps. Under 60 seconds. Your customer gets a personal email from you.")}
+          </p>
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8">
+            {/* Demo GIF */}
+            <div className="flex flex-col items-center gap-3">
+              <div
+                className="rounded-2xl overflow-hidden shadow-lg border-2"
+                style={{ borderColor: "oklch(0.88 0.04 260)", maxWidth: 200, width: "100%" }}
+              >
+                <img
+                  src={DEMO_GIF}
+                  alt={t("demo.gifAlt", "Get Phame 3-step send flow demo")}
+                  className="w-full block"
+                />
+              </div>
+              <p className="text-xs font-bold rr-text-navy text-center">
+                {t("demo.gifCaption", "The 3-step send flow")}
+              </p>
+            </div>
+            {/* Email Preview */}
+            <div className="flex flex-col items-center gap-3">
+              <div
+                className="rounded-2xl overflow-hidden shadow-lg border-2"
+                style={{ borderColor: "oklch(0.88 0.04 260)", maxWidth: 200, width: "100%" }}
+              >
+                <img
+                  src={EMAIL_PREVIEW_IMG}
+                  alt={t("demo.emailAlt", "Example review request email on iPhone")}
+                  className="w-full block"
+                />
+              </div>
+              <p className="text-xs font-bold rr-text-navy text-center">
+                {t("demo.emailCaption", "What your customer receives")}
+              </p>
+            </div>
           </div>
         </div>
       </section>

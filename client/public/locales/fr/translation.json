@@ -1848,5 +1848,13 @@
     "stat2Label": "average setup time",
     "stat3Value": "Your inbox",
     "stat3Label": "emails sent from your own address"
+  },
+  "demo": {
+    "sectionTitle": "See It In Action",
+    "sectionSubtitle": "Three steps. Under 60 seconds. Your customer gets a personal email from you.",
+    "gifAlt": "Get Phame 3-step send flow demo",
+    "gifCaption": "The 3-step send flow",
+    "emailAlt": "Example review request email on iPhone",
+    "emailCaption": "What your customer receives"
   }
 }

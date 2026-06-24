@@ -1518,15 +1518,20 @@
 
 ## Website Review Improvements (GetPhame.app_Website_Review.pdf)
 
-- [ ] Add anchor nav links: How It Works, Pricing, FAQ, Sign In
-- [ ] Add section-level CTAs after How It Works, Pricing, and Testimonials sections
-- [ ] Add trust signals bar (email provider logos, security note, data privacy)
-- [ ] Add proof section before pricing (outcome stats, business-type examples)
-- [ ] Improve desktop layout with wider max-width and two-column hero
-- [ ] Expand FAQ: email safety, deliverability, customer data, compliance, SMTP setup, platforms, WooCommerce, limits
-- [ ] Update pricing plan positioning copy (Free = try, Pro = operate, Annual = best value, Lifetime = agencies)
-- [ ] Add pricing source disclaimer / "verified as of" note to comparison table
-- [ ] Fix comparison table for mobile (stacked cards or horizontal scroll)
-- [ ] Update manifest.json app name from Phame to Get Phame
-- [ ] Add video translation keys to all 6 locale files
-- [ ] Increase body copy font size and line height on mobile hero
+- [x] Add anchor nav links: How It Works, Pricing, FAQ, Sign In
+- [x] Add section-level CTAs after How It Works, Pricing, and Testimonials sections
+- [x] Add trust signals bar (email provider logos, security note, data privacy)
+- [x] Add proof section before pricing (outcome stats, business-type examples)
+- [x] Improve desktop layout with wider max-width and two-column hero
+- [x] Expand FAQ: email safety, deliverability, customer data, compliance, SMTP setup, platforms, WooCommerce, limits
+- [x] Update pricing plan positioning copy (Free = try, Pro = operate, Annual = best value, Lifetime = agencies)
+- [x] Add pricing source disclaimer / "verified as of" note to comparison table
+- [x] Fix comparison table for mobile (stacked cards or horizontal scroll)
+- [x] Update manifest.json app name from Phame to Get Phame
+- [x] Add video translation keys to all 6 locale files
+- [x] Increase body copy font size and line height on mobile hero
+
+## Conversion Asset Improvements (June 24, 2026)
+- [ ] Generate email preview mockup image and add to LandingPage hero section
+- [ ] Create demo GIF showing the 3-step send flow and add to How It Works section
+- [ ] Fix FAQ accordion expand/collapse on mobile and verify on 390px viewport
