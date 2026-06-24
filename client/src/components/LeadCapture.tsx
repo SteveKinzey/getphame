@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Mail, ArrowRight, Check } from "lucide-react";
+import FadeUp from "./FadeUp";
 
 export default function LeadCapture() {
   const [email, setEmail] = useState("");
@@ -7,21 +8,17 @@ export default function LeadCapture() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) {
-      setSubmitted(true);
-    }
+    if (email) setSubmitted(true);
   };
 
   return (
     <section className="py-16 md:py-20">
       <div className="container">
-        <div className="max-w-2xl mx-auto relative">
-          {/* Glass card */}
+        <FadeUp className="max-w-2xl mx-auto">
           <div className="relative p-8 md:p-12 rounded-3xl bg-card/60 backdrop-blur-sm border border-border/40 hover:border-primary/20 transition-colors duration-300 text-center overflow-hidden">
-            {/* Gold corner accent */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/8 to-transparent rounded-bl-[4rem]" />
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[3rem]" />
-            
+
             <div className="relative z-10">
               <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-5">
                 <Mail size={24} className="text-primary" />
@@ -63,7 +60,7 @@ export default function LeadCapture() {
               </p>
             </div>
           </div>
-        </div>
+        </FadeUp>
       </div>
     </section>
   );

@@ -1,4 +1,5 @@
 import { Mail, Users, Globe } from "lucide-react";
+import FadeUp, { StaggerChildren } from "./FadeUp";
 
 const features = [
   {
@@ -31,7 +32,7 @@ export default function Features() {
   return (
     <section className="py-20 md:py-28">
       <div className="container">
-        <div className="max-w-2xl mb-14">
+        <FadeUp className="max-w-2xl mb-14">
           <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
             Why it works
           </p>
@@ -41,9 +42,9 @@ export default function Features() {
           <p className="text-lg text-muted-foreground">
             The simplest way to turn happy customers into 5-star reviews — without expensive tools or awkward conversations.
           </p>
-        </div>
+        </FadeUp>
 
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+        <StaggerChildren className="grid md:grid-cols-3 gap-6 lg:gap-8" staggerDelay={0.12}>
           {features.map((feature, i) => (
             <div
               key={feature.title}
@@ -53,9 +54,7 @@ export default function Features() {
                 "bg-gradient-to-br from-card to-[oklch(0.16_0.035_260)]"
               }`}
             >
-              {/* Gold accent line at top */}
               <div className="absolute top-0 left-8 right-8 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              
               <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mb-5 group-hover:bg-primary/20 group-hover:border-primary/40 transition-all duration-300">
                 <feature.icon size={24} className="text-primary" />
               </div>
@@ -65,14 +64,13 @@ export default function Features() {
               <p className="text-muted-foreground leading-relaxed mb-6">
                 {feature.description}
               </p>
-              {/* Stat badge */}
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/5 border border-primary/15">
                 <span className="font-display font-extrabold text-lg text-primary">{feature.stat}</span>
                 <span className="text-xs text-muted-foreground">{feature.statLabel}</span>
               </div>
             </div>
           ))}
-        </div>
+        </StaggerChildren>
       </div>
     </section>
   );
