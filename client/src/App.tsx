@@ -94,6 +94,10 @@ function AppShell() {
     if (authError) {
       if (authError === 'denied') {
         toast.error('Sign-in cancelled. Please try again.');
+      } else if (authError === 'magic_link_expired') {
+        toast.error('That sign-in link has expired. Please request a new one.');
+      } else if (authError === 'invalid_magic_link') {
+        toast.error('Invalid or already-used sign-in link. Please request a new one.');
       } else {
         toast.error('Sign-in failed. Please try again or contact support.');
       }

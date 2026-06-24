@@ -30,6 +30,7 @@ import { handleOpenPixel, handleClickRedirect } from "../emailTracking";
 import { sendUpgradeReceiptEmail, sendChurnRecoveryEmail, sendPaymentFailedEmail } from "../smtp";
 import { registerPublicApiRoutes } from "../publicApi";
 import { registerMobileAuthRoutes } from "../mobileAuth";
+import { registerMagicAuthRoutes } from "../magicAuth";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 
 function isPortAvailable(port: number): Promise<boolean> {
@@ -359,6 +360,7 @@ async function startServer() {
   registerGoogleAuthRoutes(app);
   registerAppleAuthRoutes(app);
   registerMobileAuthRoutes(app);
+  registerMagicAuthRoutes(app);
 
   // IP-based language detection — returns 'en' | 'th' | 'zh-CN' based on client IP
   app.get("/api/detect-language", async (req, res) => {

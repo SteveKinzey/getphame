@@ -1,14 +1,22 @@
 // Phame — Onboarding / Login screen
-// Shown when user is not authenticated. Prompts them to sign in with Google or Apple OAuth.
-// After login, they set up their business profile in Settings.
+// Shown when user is not authenticated. Prompts them to sign in with Google, Apple, or email magic link.
 
-import { Star } from "lucide-react";
+import { Star, Mail, Loader2, CheckCircle2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
 
 const HERO_IMG = "https://assets.getphame.app/phame-hero-illustration.png";
 
+type MagicLinkState = "idle" | "loading" | "sent" | "error";
+
 export default function OnboardingPage() {
   const { t } = useTranslation();
+
+  // Magic link state
+  const [email, setEmail] = useState("");
+  const [magicState, setMagicState] = useState<MagicLinkState>("idle");
+  const [magicError, setMagicError] = useState("");
+  const [showEmailForm, setShowEmailForm] = useState(false);
 
   function handleGoogleSignIn() {
     window.location.href = "/api/auth/google";
@@ -16,6 +24,39 @@ export default function OnboardingPage() {
 
   function handleAppleSignIn() {
     window.location.href = "/api/auth/apple";
+  }
+
+  async function handleMagicLinkSend(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email.trim()) return;
+
+    setMagicState("loading");
+    setMagicError("");
+
+    try {
+      const res = await fetch("/api/auth/magic/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email.trim().toLowerCase() }),
+      });
+
+      const data = await res.json() as { ok?: boolean; error?: string };
+
+      if (!res.ok || !data.ok) {
+        setMagicError(data.error ?? "Something went wrong. Please try again.");
+        setMagicState("error");
+      } else {
+        setMagicState("sent");
+      }
+    } catch {
+      setMagicError("Network error. Please check your connection and try again.");
+      setMagicState("error");
+    }
+  }
+
+  function handleRetry() {
+    setMagicState("idle");
+    setMagicError("");
   }
 
   const featurePills: string[] = [
@@ -106,6 +147,94 @@ export default function OnboardingPage() {
           </svg>
           {t("onboarding.appleBtn")}
         </button>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 my-1">
+          <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.12)" }} />
+          <span className="text-xs font-medium" style={{ color: "var(--text-on-dark-muted)" }}>or</span>
+          <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.12)" }} />
+        </div>
+
+        {/* Email Magic Link */}
+        {!showEmailForm ? (
+          <button
+            onClick={() => setShowEmailForm(true)}
+            className="w-full py-4 rounded-2xl font-bold text-base transition-transform active:scale-95 flex items-center justify-center gap-3"
+            style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.85)", border: "1px solid rgba(255,255,255,0.15)" }}
+          >
+            <Mail size={20} />
+            Continue with Email
+          </button>
+        ) : magicState === "sent" ? (
+          /* Success state */
+          <div
+            className="w-full rounded-2xl p-5 flex flex-col items-center gap-3 text-center"
+            style={{ background: "rgba(255,184,0,0.10)", border: "1px solid rgba(255,184,0,0.3)" }}
+          >
+            <CheckCircle2 size={32} className="rr-text-gold" />
+            <div>
+              <p className="font-bold text-white text-sm mb-1">Check your inbox!</p>
+              <p className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
+                We sent a sign-in link to <strong className="text-white">{email}</strong>.
+                <br />It expires in 15 minutes.
+              </p>
+            </div>
+            <button
+              onClick={handleRetry}
+              className="text-xs underline mt-1"
+              style={{ color: "var(--text-on-dark-muted)" }}
+            >
+              Use a different email
+            </button>
+          </div>
+        ) : (
+          /* Email input form */
+          <form onSubmit={handleMagicLinkSend} className="flex flex-col gap-2">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
+              required
+              autoFocus
+              className="w-full px-4 py-4 rounded-2xl text-base font-medium outline-none"
+              style={{
+                background: "rgba(255,255,255,0.08)",
+                border: "1px solid rgba(255,255,255,0.2)",
+                color: "white",
+              }}
+            />
+            {magicError && (
+              <p className="text-xs px-1" style={{ color: "#ff6b6b" }}>{magicError}</p>
+            )}
+            <button
+              type="submit"
+              disabled={magicState === "loading" || !email.trim()}
+              className="w-full py-4 rounded-2xl font-bold text-base transition-transform active:scale-95 flex items-center justify-center gap-2 rr-bg-gold"
+              style={{ color: "#1a1a2e", opacity: magicState === "loading" ? 0.7 : 1 }}
+            >
+              {magicState === "loading" ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  Sending link…
+                </>
+              ) : (
+                <>
+                  <Mail size={18} />
+                  Send Sign-In Link
+                </>
+              )}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setShowEmailForm(false); setMagicState("idle"); setMagicError(""); setEmail(""); }}
+              className="text-xs text-center py-1"
+              style={{ color: "var(--text-on-dark-muted)" }}
+            >
+              Cancel
+            </button>
+          </form>
+        )}
 
         <p className="text-center text-xs" style={{ color: "var(--text-on-dark-muted)" }}>
           {t("onboarding.finePrint")}
