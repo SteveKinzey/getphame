@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 const APP_PREVIEW_IMG = "/phame-app-screenshot.png";
 const VIDEO_THUMBNAIL = "/phame-video-thumbnail.jpg";
 // Replace with your actual YouTube / Loom / Vimeo URL when ready
-const VIDEO_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+const VIDEO_URL = "https://www.youtube.com/watch?v=EWHSE1oyJOk";
 const OG_IMG = "https://assets.getphame.app/getphame-og-1200x630.png";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
