@@ -148,12 +148,25 @@ export default function LandingPage() {
       <nav
         className="flex items-center justify-between px-5 py-4 rr-bg-navy"
       >
-        <div className="flex items-center">
+        <div className="flex items-center" style={{ minWidth: 120, minHeight: 40 }}>
           <img
             src="https://assets.getphame.app/phame-wordmark-transparent-clean.png"
             alt="Get Phame"
-            style={{ height: '40px', width: 'auto', objectFit: 'contain' }}
+            style={{ height: '40px', width: 'auto', objectFit: 'contain', display: 'block' }}
+            onError={(e) => {
+              const el = e.currentTarget;
+              el.style.display = 'none';
+              const fallback = el.nextElementSibling as HTMLElement | null;
+              if (fallback) fallback.style.display = 'flex';
+            }}
           />
+          <span
+            className="items-center gap-2 font-black text-white"
+            style={{ display: 'none', fontFamily: "'Poppins', sans-serif", fontSize: 18 }}
+          >
+            <Star size={18} fill="oklch(0.80 0.18 80)" style={{ color: 'oklch(0.80 0.18 80)' }} />
+            Get Phame
+          </span>
         </div>
         <div className="flex items-center gap-2">
           <a
@@ -222,7 +235,20 @@ export default function LandingPage() {
               src={APP_PREVIEW_IMG}
               alt={t("hero.dashboardAlt")}
               className="w-full block"
+              onError={(e) => {
+                const el = e.currentTarget;
+                el.style.display = 'none';
+                const fallback = el.nextElementSibling as HTMLElement | null;
+                if (fallback) fallback.style.display = 'flex';
+              }}
             />
+            <div
+              className="items-center justify-center"
+              style={{ display: 'none', minHeight: 200, background: 'oklch(0.22 0.09 260)', color: 'var(--text-on-dark-secondary)', fontSize: 13 }}
+            >
+              <Star size={24} fill="oklch(0.80 0.18 80)" style={{ color: 'oklch(0.80 0.18 80)', marginBottom: 8 }} />
+              <span>Get Phame</span>
+            </div>
           </div>
           <div
             className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap rr-bg-gold rr-text-navy"

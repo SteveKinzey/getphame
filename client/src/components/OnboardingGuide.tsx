@@ -64,6 +64,33 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
         </p>
       </div>
 
+      {/* Watch video banner */}
+      <a
+        href="https://www.youtube.com/watch?v=EWHSE1oyJOk"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center gap-3 rounded-2xl px-4 py-3 transition-transform active:scale-95"
+        style={{ background: "oklch(0.22 0.09 260)", border: "1px solid oklch(0.35 0.08 260)" }}
+      >
+        <div
+          className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+          style={{ background: "oklch(0.80 0.18 80)" }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="oklch(0.22 0.09 260)">
+            <polygon points="5,3 19,12 5,21" />
+          </svg>
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-black text-white leading-tight">
+            {t("onboardingGuide.welcome.watchVideoLabel", "Watch: Get Phame in 90 seconds")}
+          </p>
+          <p className="text-xs mt-0.5" style={{ color: "var(--text-on-dark-secondary)" }}>
+            {t("onboardingGuide.welcome.watchVideoSub", "See exactly how it works before you set up")}
+          </p>
+        </div>
+        <ChevronRight size={16} style={{ color: "oklch(0.80 0.18 80)", flexShrink: 0 }} />
+      </a>
+
       <p className="text-sm font-semibold" style={{ color: "oklch(0.40 0.05 260)" }}>
         {t("onboardingGuide.welcome.setupStepsIntro")}
       </p>
