@@ -13,6 +13,8 @@ const OG_IMG =
 
 const APP_PREVIEW_IMG = "https://assets.getphame.app/phame-app-screenshot.png";
 
+const PROMO_VIDEO_URL = "https://manus.space/manus-storage/getphame-youtube-90s-cc_f2bdc9c6.mp4";
+
 function FAQSection() {
   const { t } = useTranslation();
   const [open, setOpen] = useState<number | null>(null);
@@ -150,7 +152,7 @@ export default function LandingPage() {
           <img
             src="https://assets.getphame.app/phame-wordmark-transparent-clean.png"
             alt="Get Phame"
-            style={{ height: '40px', width: 'auto' }}
+            style={{ height: '40px', width: 'auto', objectFit: 'contain' }}
           />
         </div>
         <div className="flex items-center gap-2">
@@ -227,6 +229,34 @@ export default function LandingPage() {
           >
             {t("hero.dashboardStats")}
           </div>
+        </div>
+      </section>
+
+      {/* ── Video ───────────────────────────────────────────────────────────── */}
+      <section className="px-5 py-10 rr-bg-navy">
+        <div className="max-w-lg mx-auto">
+          <h2 className="text-xl font-black text-center mb-2 text-white">
+            {t("video.sectionTitle", "See How It Works")}
+          </h2>
+          <p className="text-sm text-center mb-6" style={{ color: "var(--text-on-dark-secondary)" }}>
+            {t("video.sectionSubtitle", "Watch a quick walkthrough of Get Phame in action.")}
+          </p>
+          <div
+            className="relative rounded-2xl overflow-hidden shadow-2xl"
+            style={{ border: "2px solid oklch(0.35 0.08 260)" }}
+          >
+            <video
+              src={PROMO_VIDEO_URL}
+              controls
+              playsInline
+              preload="metadata"
+              className="w-full block"
+              style={{ background: "oklch(0.15 0.06 260)" }}
+            />
+          </div>
+          <p className="text-xs text-center mt-3" style={{ color: "var(--text-on-dark-muted)" }}>
+            {t("video.caption", "Free to start — no credit card required")}
+          </p>
         </div>
       </section>
 
