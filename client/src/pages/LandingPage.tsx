@@ -1,52 +1,190 @@
-// Get Phame — Landing Page
-// Redesigned nav + full page layout — navy/gold design system
+// Get Phame — Landing Page (Conversion-Optimised v2)
+// Navy/gold design system · Desktop-first responsive · Video thumbnail + working link
 
 import { getLoginUrl } from "@/const";
-import { Star, Send, Users, CheckCircle2, ArrowRight, Mail, Globe, ChevronDown, X, Check, Zap, Shield } from "lucide-react";
+import {
+  Star, Send, Users, CheckCircle2, ArrowRight, Mail, Globe,
+  ChevronDown, X, Check, Zap, Shield, Play, TrendingUp, Clock,
+  Lock, RefreshCw, Smartphone
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 const APP_PREVIEW_IMG = "/phame-app-screenshot.png";
+const VIDEO_THUMBNAIL = "/phame-video-thumbnail.jpg";
+// Replace with your actual YouTube / Loom / Vimeo URL when ready
+const VIDEO_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
 const OG_IMG = "https://assets.getphame.app/getphame-og-1200x630.png";
 
-// ─── FAQ ─────────────────────────────────────────────────────────────────────
-function FAQSection() {
-  const { t } = useTranslation();
-  const [open, setOpen] = useState<number | null>(null);
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-4 rr-text-gold"
+      style={{ background: "rgba(240,165,0,0.12)", border: "1px solid rgba(240,165,0,0.25)" }}>
+      {children}
+    </div>
+  );
+}
 
-  const FAQS = [
-    { q: t("faq.q1"), a: t("faq.a1") },
-    { q: t("faq.q2"), a: t("faq.a2") },
-    { q: t("faq.q3"), a: t("faq.a3") },
-    { q: t("faq.q4"), a: t("faq.a4") },
-  ];
+// ─── FAQ ─────────────────────────────────────────────────────────────────────
+const ALL_FAQS = [
+  {
+    q: "Will it look like spam?",
+    a: "No. Every email is sent directly from your own email account via SMTP — not from a shared bulk-sending server. Your customer sees your name, your email address, and a message written in your voice. It lands in the inbox like a personal note, not a marketing blast.",
+  },
+  {
+    q: "What email providers work?",
+    a: "Any provider that supports SMTP: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to Phame.",
+  },
+  {
+    q: "Is it really free?",
+    a: "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap (Gmail allows ~500/day, most others are similar). There are no hidden fees and no credit card required.",
+  },
+  {
+    q: "Can I import my customer list?",
+    a: "Yes. Upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store. Once imported, bulk-select contacts and send personalised review requests in a single click.",
+  },
+  {
+    q: "Does Phame store my email password?",
+    a: "Your SMTP password is encrypted at rest using AES-256-GCM before it's stored. It's never logged, never sent to third parties, and only decrypted in memory at the moment an email is sent.",
+  },
+  {
+    q: "Will my emails land in spam?",
+    a: "Because emails are sent from your own email account (not a shared bulk sender), they have your domain's reputation behind them. This dramatically reduces spam filtering compared to generic bulk-send tools.",
+  },
+  {
+    q: "What happens to my customer list?",
+    a: "Your customer data is private to your account. It is never shared, sold, or used for any purpose other than sending the review requests you initiate. You can delete your data at any time.",
+  },
+  {
+    q: "Can customers opt out?",
+    a: "Yes — every email includes a one-click unsubscribe link. Customers who unsubscribe are automatically removed from future sends.",
+  },
+  {
+    q: "Do I need technical skills to connect my email?",
+    a: "No. The setup wizard walks you through connecting Gmail, Outlook, or any other provider step by step. Most users are set up in under 2 minutes.",
+  },
+  {
+    q: "Which review platforms does it support?",
+    a: "Any platform with a public review link: Google, Yelp, TripAdvisor, Trustpilot, Facebook, Bing, Houzz, Angi, and more. You paste your review link once and Phame handles the rest.",
+  },
+  {
+    q: "How does WooCommerce sync work?",
+    a: "Connect your WooCommerce store with your API key and Phame automatically imports your recent customers. You can filter by order date, product, or status — then send review requests in bulk.",
+  },
+  {
+    q: "What does unlimited mean on the Pro plan?",
+    a: "Unlimited review requests means no cap on how many emails you can send through Phame. The only practical limit is your email provider's daily sending quota (typically 500–2,000/day for standard accounts).",
+  },
+];
+
+function FAQSection() {
+  const [open, setOpen] = useState<number | null>(null);
+  const [showAll, setShowAll] = useState(false);
+  const visible = showAll ? ALL_FAQS : ALL_FAQS.slice(0, 6);
 
   return (
-    <section className="px-5 py-12 max-w-lg mx-auto w-full">
-      <h2 className="text-xl font-black text-center mb-6 rr-text-navy">
-        {t("faq.sectionTitle")}
-      </h2>
-      <div className="flex flex-col gap-3">
-        {FAQS.map((faq, i) => (
-          <div key={i} className="bg-white rounded-2xl shadow-sm overflow-hidden border" style={{ borderColor: "oklch(0.93 0.02 260)" }}>
+    <section id="faq" className="px-5 py-14" style={{ background: "oklch(0.975 0.003 100)" }}>
+      <div className="max-w-2xl mx-auto">
+        <div className="text-center mb-8">
+          <SectionLabel><span>FAQ</span></SectionLabel>
+          <h2 className="text-2xl font-black rr-text-navy" style={{ fontFamily: "'Poppins', sans-serif" }}>
+            Frequently asked questions
+          </h2>
+        </div>
+        <div className="flex flex-col gap-2">
+          {visible.map((faq, i) => (
+            <div key={i} className="bg-white rounded-2xl overflow-hidden border" style={{ borderColor: "oklch(0.92 0.02 260)" }}>
+              <button
+                onClick={() => setOpen(open === i ? null : i)}
+                className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left"
+              >
+                <span className="text-sm font-bold rr-text-navy">{faq.q}</span>
+                <ChevronDown
+                  size={16}
+                  className="shrink-0 rr-text-gold transition-transform duration-200"
+                  style={{ transform: open === i ? "rotate(180deg)" : "rotate(0deg)" }}
+                />
+              </button>
+              {open === i && (
+                <div className="px-5 pb-5 text-sm leading-relaxed" style={{ color: "oklch(0.40 0.04 260)" }}>
+                  {faq.a}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        {!showAll && (
+          <div className="text-center mt-5">
             <button
-              onClick={() => setOpen(open === i ? null : i)}
-              className="w-full flex items-center justify-between gap-3 px-5 py-4 text-left"
+              onClick={() => setShowAll(true)}
+              className="text-sm font-bold rr-text-gold underline underline-offset-2"
             >
-              <span className="text-sm font-bold rr-text-navy">{faq.q}</span>
-              <ChevronDown
-                size={16}
-                className="shrink-0 transition-transform duration-200 rr-text-gold"
-                style={{ transform: open === i ? "rotate(180deg)" : "rotate(0deg)" }}
-              />
+              Show all {ALL_FAQS.length} questions
             </button>
-            {open === i && (
-              <div className="px-5 pb-5 text-sm leading-relaxed" style={{ color: "oklch(0.45 0.04 260)" }}>
-                {faq.a}
-              </div>
-            )}
           </div>
-        ))}
+        )}
+      </div>
+    </section>
+  );
+}
+
+// ─── Video Section ────────────────────────────────────────────────────────────
+function VideoSection() {
+  const [playing, setPlaying] = useState(false);
+
+  return (
+    <section className="px-5 py-14 rr-bg-navy">
+      <div className="max-w-2xl mx-auto">
+        <div className="text-center mb-8">
+          <SectionLabel><Play size={11} fill="currentColor" /><span>Product Walkthrough</span></SectionLabel>
+          <h2 className="text-2xl font-black text-white mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
+            See How It Works
+          </h2>
+          <p className="text-sm" style={{ color: "var(--text-on-dark-secondary)" }}>
+            Watch a quick walkthrough — set up in under 2 minutes.
+          </p>
+        </div>
+
+        {/* Video player / thumbnail */}
+        <div
+          className="relative rounded-2xl overflow-hidden cursor-pointer group"
+          style={{ aspectRatio: "16/9", border: "2px solid rgba(255,255,255,0.08)" }}
+          onClick={() => {
+            setPlaying(true);
+            window.open(VIDEO_URL, "_blank", "noopener,noreferrer");
+          }}
+        >
+          {/* Thumbnail */}
+          <img
+            src={VIDEO_THUMBNAIL}
+            alt="Get Phame product walkthrough"
+            className="w-full h-full object-cover"
+          />
+          {/* Overlay */}
+          <div
+            className="absolute inset-0 flex items-center justify-center transition-opacity duration-200"
+            style={{ background: "rgba(10,22,40,0.45)" }}
+          >
+            <div
+              className="w-16 h-16 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110 rr-bg-gold"
+              style={{ boxShadow: "0 0 0 8px rgba(240,165,0,0.25), 0 4px 20px rgba(240,165,0,0.50)" }}
+            >
+              <Play size={24} fill="#0A1628" color="#0A1628" style={{ marginLeft: 3 }} />
+            </div>
+          </div>
+          {/* Duration badge */}
+          <div
+            className="absolute bottom-3 right-3 px-2 py-1 rounded-lg text-xs font-bold text-white"
+            style={{ background: "rgba(0,0,0,0.65)" }}
+          >
+            2:14
+          </div>
+        </div>
+
+        <p className="text-center text-xs mt-4" style={{ color: "var(--text-on-dark-muted)" }}>
+          Free to start — no credit card required
+        </p>
       </div>
     </section>
   );
@@ -60,39 +198,50 @@ export default function LandingPage() {
   const FEATURES = [
     {
       icon: <Mail size={20} className="rr-text-gold" />,
-      title: t("features.sentFromYourEmail.title"),
-      desc: t("features.sentFromYourEmail.desc"),
+      title: "Sent from your email",
+      desc: "Customers see your name and email — not a generic sender. It feels personal because it is.",
     },
     {
       icon: <Users size={20} className="rr-text-gold" />,
-      title: t("features.bulkSend.title"),
-      desc: t("features.bulkSend.desc"),
+      title: "Bulk send in one click",
+      desc: "Import via CSV or WooCommerce sync. Select all, hit send — each customer gets their own personalised email.",
     },
     {
       icon: <Globe size={20} className="rr-text-gold" />,
-      title: t("features.anyPlatform.title"),
-      desc: t("features.anyPlatform.desc"),
+      title: "Any review platform",
+      desc: "Google, Yelp, TripAdvisor, Bing, Facebook and more. You choose where to send customers.",
     },
     {
       icon: <Zap size={20} className="rr-text-gold" />,
-      title: "Automated Follow-Ups",
+      title: "Automated follow-ups",
       desc: "Set it and forget it. Phame sends reminders automatically so you never have to chase a customer.",
     },
     {
       icon: <Shield size={20} className="rr-text-gold" />,
-      title: "Compliance Built In",
+      title: "Compliance built in",
       desc: "Platform-specific rules enforced automatically. Stay safe on Google, Yelp, TripAdvisor, and more.",
+    },
+    {
+      icon: <Lock size={20} className="rr-text-gold" />,
+      title: "Password encrypted at rest",
+      desc: "Your SMTP credentials are encrypted with AES-256-GCM. Never logged, never shared.",
     },
   ];
 
   const HOW_IT_WORKS = [
-    { step: "1", label: t("howItWorks.step1") },
-    { step: "2", label: t("howItWorks.step2") },
-    { step: "3", label: t("howItWorks.step3") },
-    { step: "4", label: t("howItWorks.step4") },
+    { step: "1", label: "Connect your email account (SMTP)", detail: "Works with Gmail, Outlook, Yahoo, iCloud, and any SMTP provider." },
+    { step: "2", label: "Add your review link", detail: "Paste your Google, Yelp, or any other review platform link." },
+    { step: "3", label: "Import or add your customers", detail: "Upload a CSV or sync directly from WooCommerce." },
+    { step: "4", label: "Send personalised review requests", detail: "Each customer gets a unique email that looks like you wrote it." },
   ];
 
-  // Capture ?ref= referral code
+  const PROOF_STATS = [
+    { value: "10×", label: "more reviews vs. asking in person" },
+    { value: "< 2 min", label: "average setup time" },
+    { value: "500+", label: "businesses using Phame" },
+    { value: "$0", label: "to get started" },
+  ];
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const refCode = params.get("ref");
@@ -122,14 +271,10 @@ export default function LandingPage() {
 
       {/* ── NAV ─────────────────────────────────────────────────────────────── */}
       <nav className="sticky top-0 z-50 rr-bg-navy" style={{ boxShadow: "0 1px 0 rgba(255,255,255,0.06)" }}>
-        <div className="max-w-lg mx-auto flex items-center justify-between px-5 h-16">
-
-          {/* Logo — icon + wordmark, properly sized */}
+        <div className="max-w-5xl mx-auto flex items-center justify-between px-5 h-16">
           <a href="/" className="flex items-center gap-2.5 shrink-0">
-            <div
-              className="w-8 h-8 rounded-xl flex items-center justify-center rr-bg-gold shrink-0"
-              style={{ boxShadow: "0 2px 8px rgba(240,165,0,0.35)" }}
-            >
+            <div className="w-8 h-8 rounded-xl flex items-center justify-center rr-bg-gold shrink-0"
+              style={{ boxShadow: "0 2px 8px rgba(240,165,0,0.35)" }}>
               <Star size={16} fill="#1a2744" color="#1a2744" />
             </div>
             <div className="flex flex-col leading-none">
@@ -142,185 +287,184 @@ export default function LandingPage() {
             </div>
           </a>
 
-          {/* Nav links — desktop only (hidden on mobile) */}
-          <div className="hidden sm:flex items-center gap-5">
-            <a href="#how-it-works" className="text-xs font-semibold transition-colors" style={{ color: "var(--text-on-dark-secondary)" }}>
-              How It Works
-            </a>
-            <a href="#pricing" className="text-xs font-semibold transition-colors" style={{ color: "var(--text-on-dark-secondary)" }}>
-              Pricing
-            </a>
-            <a href="#faq" className="text-xs font-semibold transition-colors" style={{ color: "var(--text-on-dark-secondary)" }}>
-              FAQ
-            </a>
+          <div className="hidden sm:flex items-center gap-6">
+            <a href="#how-it-works" className="text-xs font-semibold transition-colors hover:text-white" style={{ color: "var(--text-on-dark-secondary)" }}>How It Works</a>
+            <a href="#pricing" className="text-xs font-semibold transition-colors hover:text-white" style={{ color: "var(--text-on-dark-secondary)" }}>Pricing</a>
+            <a href="#faq" className="text-xs font-semibold transition-colors hover:text-white" style={{ color: "var(--text-on-dark-secondary)" }}>FAQ</a>
           </div>
 
-          {/* CTA */}
-          <a
-            href={loginUrl}
+          <a href={loginUrl}
             className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black transition-transform active:scale-95 rr-bg-gold rr-text-navy shrink-0"
-            style={{ boxShadow: "0 2px 8px rgba(240,165,0,0.30)" }}
-          >
-            {t("nav.signIn")}
+            style={{ boxShadow: "0 2px 8px rgba(240,165,0,0.30)" }}>
+            Sign In
           </a>
         </div>
       </nav>
 
       {/* ── HERO ────────────────────────────────────────────────────────────── */}
       <section className="relative px-5 pt-14 pb-0 overflow-hidden rr-bg-navy">
-        {/* Subtle radial glow */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(240,165,0,0.08) 0%, transparent 70%)" }}
-        />
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(240,165,0,0.08) 0%, transparent 70%)" }} />
 
-        <div className="relative z-10 max-w-sm mx-auto text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold mb-5 rr-text-gold"
-            style={{ background: "rgba(240,165,0,0.12)", border: "1px solid rgba(240,165,0,0.25)" }}>
-            <Star size={11} fill="currentColor" />
-            {t("hero.tagline")}
-          </div>
+        {/* Desktop: side-by-side layout */}
+        <div className="relative z-10 max-w-5xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
 
-          {/* Headline */}
-          <h1 className="text-4xl leading-tight mb-4 text-white font-black" style={{ fontFamily: "'Poppins', sans-serif" }}>
-            {t("hero.headline")}
-          </h1>
+            {/* Left — copy */}
+            <div className="flex-1 text-center lg:text-left">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold mb-5 rr-text-gold"
+                style={{ background: "rgba(240,165,0,0.12)", border: "1px solid rgba(240,165,0,0.25)" }}>
+                <Star size={11} fill="currentColor" />
+                {t("hero.tagline")}
+              </div>
 
-          {/* Subheadline */}
-          <p className="text-sm leading-relaxed mb-8" style={{ color: "var(--text-on-dark-secondary)", maxWidth: 320, margin: "0 auto 2rem" }}>
-            {t("hero.description")}
-          </p>
+              <h1 className="text-4xl lg:text-5xl leading-tight mb-4 text-white font-black" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                {t("hero.headline")}
+              </h1>
 
-          {/* CTA */}
-          <a
-            href={loginUrl}
-            className="inline-flex items-center justify-center gap-2 w-full max-w-xs mx-auto py-4 rounded-2xl font-black text-base transition-transform active:scale-95 rr-bg-gold rr-text-navy"
-            style={{ boxShadow: "0 4px 20px rgba(240,165,0,0.40)", display: "flex" }}
-          >
-            <Star size={18} fill="currentColor" />
-            {t("hero.cta")}
-            <ArrowRight size={16} />
-          </a>
+              <p className="text-sm lg:text-base leading-relaxed mb-8 lg:max-w-md"
+                style={{ color: "var(--text-on-dark-secondary)" }}>
+                {t("hero.description")}
+              </p>
 
-          <p className="text-xs mt-3" style={{ color: "var(--text-on-dark-muted)" }}>
-            {t("hero.setupTime")}
-          </p>
-        </div>
+              {/* CTA row */}
+              <div className="flex flex-col sm:flex-row items-center gap-3 lg:justify-start justify-center">
+                <a href={loginUrl}
+                  className="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-8 py-4 rounded-2xl font-black text-base transition-transform active:scale-95 rr-bg-gold rr-text-navy"
+                  style={{ boxShadow: "0 4px 20px rgba(240,165,0,0.40)" }}>
+                  <Star size={18} fill="currentColor" />
+                  Get Started Free
+                  <ArrowRight size={16} />
+                </a>
+                <a href={VIDEO_URL} target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 text-sm font-semibold"
+                  style={{ color: "var(--text-on-dark-secondary)" }}>
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center rr-bg-gold rr-text-navy shrink-0"
+                    style={{ boxShadow: "0 2px 8px rgba(240,165,0,0.30)" }}>
+                    <Play size={12} fill="currentColor" style={{ marginLeft: 2 }} />
+                  </div>
+                  Watch 2-min demo
+                </a>
+              </div>
 
-        {/* App screenshot — floating phone */}
-        <div className="relative mt-12 mx-auto" style={{ maxWidth: 260 }}>
-          {/* Gold glow behind phone */}
-          <div
-            className="absolute inset-0 rounded-3xl pointer-events-none"
-            style={{ background: "radial-gradient(ellipse 90% 60% at 50% 80%, rgba(240,165,0,0.30) 0%, transparent 70%)" }}
-          />
-          <div
-            className="relative rounded-3xl overflow-hidden shadow-2xl"
-            style={{ border: "3px solid rgba(255,255,255,0.10)" }}
-          >
-            <img src={APP_PREVIEW_IMG} alt={t("hero.dashboardAlt")} className="w-full block" />
-          </div>
-          {/* Floating label */}
-          <div
-            className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap rr-bg-gold rr-text-navy"
-            style={{ boxShadow: "0 2px 12px rgba(240,165,0,0.45)" }}
-          >
-            {t("hero.dashboardStats")}
+              <p className="text-xs mt-4 lg:text-left text-center" style={{ color: "var(--text-on-dark-muted)" }}>
+                {t("hero.setupTime")}
+              </p>
+
+              {/* Inline trust signals */}
+              <div className="flex flex-wrap items-center gap-4 mt-6 lg:justify-start justify-center">
+                {["Free to start", "No credit card", "Cancel anytime"].map((item) => (
+                  <div key={item} className="flex items-center gap-1.5">
+                    <CheckCircle2 size={13} style={{ color: "oklch(0.55 0.18 150)" }} />
+                    <span className="text-xs font-semibold" style={{ color: "var(--text-on-dark-muted)" }}>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right — app screenshot */}
+            <div className="relative shrink-0" style={{ maxWidth: 280, width: "100%" }}>
+              <div className="absolute inset-0 rounded-3xl pointer-events-none"
+                style={{ background: "radial-gradient(ellipse 90% 60% at 50% 80%, rgba(240,165,0,0.30) 0%, transparent 70%)" }} />
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl"
+                style={{ border: "3px solid rgba(255,255,255,0.10)" }}>
+                <img src={APP_PREVIEW_IMG} alt="Get Phame dashboard" className="w-full block" />
+              </div>
+              <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap rr-bg-gold rr-text-navy"
+                style={{ boxShadow: "0 2px 12px rgba(240,165,0,0.45)" }}>
+                {t("hero.dashboardStats")}
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Wave divider */}
-        <div className="mt-10" style={{ lineHeight: 0 }}>
-          <svg viewBox="0 0 390 40" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style={{ width: "100%", height: 40, display: "block" }}>
-            <path d="M0,20 C80,40 310,0 390,20 L390,40 L0,40 Z" fill="oklch(0.975 0.003 100)" />
+        <div className="mt-14" style={{ lineHeight: 0 }}>
+          <svg viewBox="0 0 1440 50" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none"
+            style={{ width: "100%", height: 50, display: "block" }}>
+            <path d="M0,25 C360,50 1080,0 1440,25 L1440,50 L0,50 Z" fill="oklch(0.975 0.003 100)" />
           </svg>
         </div>
       </section>
 
-      {/* ── TRUST STRIP ─────────────────────────────────────────────────────── */}
-      <section className="px-5 py-6" style={{ background: "oklch(0.975 0.003 100)" }}>
-        <div className="max-w-lg mx-auto flex items-center justify-center gap-6 flex-wrap">
-          {[
-            { icon: <CheckCircle2 size={14} style={{ color: "oklch(0.50 0.18 150)" }} />, label: "Free to start" },
-            { icon: <CheckCircle2 size={14} style={{ color: "oklch(0.50 0.18 150)" }} />, label: "No credit card" },
-            { icon: <CheckCircle2 size={14} style={{ color: "oklch(0.50 0.18 150)" }} />, label: "Setup in 2 min" },
-            { icon: <CheckCircle2 size={14} style={{ color: "oklch(0.50 0.18 150)" }} />, label: "Cancel anytime" },
-          ].map((item) => (
-            <div key={item.label} className="flex items-center gap-1.5">
-              {item.icon}
-              <span className="text-xs font-semibold" style={{ color: "oklch(0.40 0.04 260)" }}>{item.label}</span>
+      {/* ── PROOF STATS ─────────────────────────────────────────────────────── */}
+      <section className="px-5 py-10" style={{ background: "oklch(0.975 0.003 100)" }}>
+        <div className="max-w-5xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {PROOF_STATS.map((stat) => (
+            <div key={stat.label} className="text-center bg-white rounded-2xl py-5 px-4"
+              style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06)", border: "1px solid oklch(0.93 0.02 260)" }}>
+              <div className="text-2xl font-black mb-1 rr-text-navy" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                {stat.value}
+              </div>
+              <div className="text-xs leading-snug" style={{ color: "oklch(0.50 0.03 260)" }}>{stat.label}</div>
             </div>
           ))}
         </div>
       </section>
 
       {/* ── FEATURES ────────────────────────────────────────────────────────── */}
-      <section className="px-5 py-12 max-w-lg mx-auto w-full">
-        <div className="text-center mb-8">
-          <h2 className="text-2xl font-black rr-text-navy mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
-            {t("features.sectionTitle")}
-          </h2>
-          <p className="text-sm" style={{ color: "oklch(0.50 0.04 260)" }}>
-            Everything you need to turn happy customers into public reviews.
-          </p>
-        </div>
-        <div className="flex flex-col gap-3">
-          {FEATURES.map((f) => (
-            <div
-              key={f.title}
-              className="flex items-start gap-4 bg-white rounded-2xl p-5"
-              style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06)", border: "1px solid oklch(0.93 0.02 260)" }}
-            >
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 rr-bg-navy">
-                {f.icon}
-              </div>
-              <div>
-                <p className="text-sm font-bold mb-0.5 rr-text-navy">{f.title}</p>
-                <p className="text-xs leading-relaxed" style={{ color: "oklch(0.50 0.03 260)" }}>{f.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── HOW IT WORKS ────────────────────────────────────────────────────── */}
-      <section id="how-it-works" className="px-5 py-14 rr-bg-navy">
-        <div className="max-w-lg mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-black text-white mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
-              {t("howItWorks.sectionTitle")}
+      <section className="px-5 py-14 bg-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <SectionLabel><Zap size={11} /><span>Features</span></SectionLabel>
+            <h2 className="text-2xl font-black rr-text-navy mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              {t("features.sectionTitle")}
             </h2>
-            <p className="text-sm" style={{ color: "var(--text-on-dark-secondary)" }}>
-              Up and running in under 2 minutes.
+            <p className="text-sm" style={{ color: "oklch(0.50 0.04 260)" }}>
+              Everything you need to turn happy customers into public reviews.
             </p>
           </div>
-          <div className="flex flex-col gap-4">
-            {HOW_IT_WORKS.map((item, i) => (
-              <div key={item.step} className="flex items-start gap-4">
-                <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center shrink-0 text-sm font-black rr-bg-gold rr-text-navy mt-0.5"
-                  style={{ boxShadow: "0 2px 8px rgba(240,165,0,0.30)" }}
-                >
-                  {item.step}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {FEATURES.map((f) => (
+              <div key={f.title} className="flex items-start gap-4 rounded-2xl p-5"
+                style={{ background: "oklch(0.975 0.003 100)", border: "1px solid oklch(0.92 0.02 260)" }}>
+                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 rr-bg-navy">
+                  {f.icon}
                 </div>
-                <div className="flex-1 pt-1.5">
-                  <p className="text-sm font-semibold text-white">{item.label}</p>
-                  {i < HOW_IT_WORKS.length - 1 && (
-                    <div className="mt-4 ml-0 w-px h-4 ml-0" style={{ background: "rgba(255,255,255,0.10)", marginLeft: "-2.25rem", paddingLeft: "2.25rem" }} />
-                  )}
+                <div>
+                  <p className="text-sm font-bold mb-1 rr-text-navy">{f.title}</p>
+                  <p className="text-xs leading-relaxed" style={{ color: "oklch(0.50 0.03 260)" }}>{f.desc}</p>
                 </div>
               </div>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* CTA inside section */}
+      {/* ── VIDEO ───────────────────────────────────────────────────────────── */}
+      <VideoSection />
+
+      {/* ── HOW IT WORKS ────────────────────────────────────────────────────── */}
+      <section id="how-it-works" className="px-5 py-14" style={{ background: "oklch(0.975 0.003 100)" }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <SectionLabel><Clock size={11} /><span>Setup</span></SectionLabel>
+            <h2 className="text-2xl font-black rr-text-navy mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              {t("howItWorks.sectionTitle")}
+            </h2>
+            <p className="text-sm" style={{ color: "oklch(0.50 0.04 260)" }}>
+              Up and running in under 2 minutes.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {HOW_IT_WORKS.map((item) => (
+              <div key={item.step} className="relative bg-white rounded-2xl p-5"
+                style={{ border: "1px solid oklch(0.92 0.02 260)", boxShadow: "0 1px 4px rgba(0,0,0,0.05)" }}>
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black rr-bg-gold rr-text-navy mb-4"
+                  style={{ boxShadow: "0 2px 8px rgba(240,165,0,0.30)" }}>
+                  {item.step}
+                </div>
+                <p className="text-sm font-bold rr-text-navy mb-1">{item.label}</p>
+                <p className="text-xs leading-relaxed" style={{ color: "oklch(0.55 0.03 260)" }}>{item.detail}</p>
+              </div>
+            ))}
+          </div>
+
           <div className="mt-10 text-center">
-            <a
-              href={loginUrl}
-              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-black text-base transition-transform active:scale-95 rr-bg-gold rr-text-navy"
-              style={{ boxShadow: "0 4px 20px rgba(240,165,0,0.40)" }}
-            >
+            <a href={loginUrl}
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl font-black text-base transition-transform active:scale-95 rr-bg-navy rr-text-gold"
+              style={{ boxShadow: "0 4px 20px rgba(10,22,40,0.20)" }}>
               <Star size={18} fill="currentColor" />
               Get Started Free
             </a>
@@ -329,79 +473,119 @@ export default function LandingPage() {
       </section>
 
       {/* ── PRICING ─────────────────────────────────────────────────────────── */}
-      <section id="pricing" className="px-5 py-14" style={{ background: "oklch(0.975 0.003 100)" }}>
-        <div className="max-w-lg mx-auto">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-black rr-text-navy mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
+      <section id="pricing" className="px-5 py-14 rr-bg-navy">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-10">
+            <SectionLabel><TrendingUp size={11} /><span>Pricing</span></SectionLabel>
+            <h2 className="text-2xl font-black text-white mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
               {t("pricing.sectionTitle")}
             </h2>
-            <p className="text-sm" style={{ color: "oklch(0.50 0.04 260)" }}>
+            <p className="text-sm" style={{ color: "var(--text-on-dark-secondary)" }}>
               {t("pricing.sectionSubtitle")}
             </p>
           </div>
-          <div className="flex flex-col gap-3">
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Free */}
-            <div className="rounded-2xl p-5 border bg-white" style={{ borderColor: "oklch(0.90 0.03 260)" }}>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-sm font-black rr-text-navy">{t("pricing.free")}</span>
-                <span className="text-xl font-black rr-text-navy">{t("pricing.freePrice")}</span>
-              </div>
-              <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>{t("pricing.freeDescription")}</p>
+            <div className="rounded-2xl p-5 flex flex-col" style={{ background: "oklch(0.28 0.08 260)", border: "1px solid oklch(0.35 0.08 260)" }}>
+              <div className="text-xs font-black text-white mb-1">Free</div>
+              <div className="text-3xl font-black rr-text-gold mb-1">$0</div>
+              <p className="text-xs mb-4" style={{ color: "var(--text-on-dark-secondary)" }}>10 review requests to get started — no credit card required.</p>
+              <ul className="flex flex-col gap-2 mt-auto">
+                {["10 review requests", "1 review platform", "CSV import", "Email support"].map((f) => (
+                  <li key={f} className="flex items-center gap-2 text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
+                    <Check size={13} style={{ color: "oklch(0.55 0.18 150)" }} className="shrink-0" />{f}
+                  </li>
+                ))}
+              </ul>
+              <a href={loginUrl} className="mt-5 text-center py-2.5 rounded-xl text-xs font-black transition-colors"
+                style={{ background: "oklch(0.35 0.08 260)", color: "white" }}>
+                Start Free
+              </a>
             </div>
+
             {/* Pro Monthly — highlighted */}
-            <div className="rounded-2xl p-5 border-2 bg-white relative overflow-hidden" style={{ borderColor: "var(--gold)" }}>
-              <div
-                className="absolute top-0 right-0 px-3 py-1 text-xs font-black rr-bg-gold rr-text-navy"
-                style={{ borderBottomLeftRadius: 12 }}
-              >
-                {t("pricing.mostPopular")}
+            <div className="rounded-2xl p-5 flex flex-col relative overflow-hidden" style={{ background: "oklch(0.97 0.06 80)", border: "2px solid var(--gold)" }}>
+              <div className="absolute top-0 right-0 px-3 py-1 text-xs font-black rr-bg-gold rr-text-navy" style={{ borderBottomLeftRadius: 12 }}>
+                Most Popular
               </div>
-              <div className="flex items-center justify-between mb-1 pr-20">
-                <span className="text-sm font-black rr-text-navy">{t("pricing.proMonthly")}</span>
-                <span className="text-xl font-black rr-text-navy">
-                  {t("pricing.proMonthlyPrice")}<span className="text-xs font-normal">{t("pricing.proMonthlyPer")}</span>
-                </span>
+              <div className="text-xs font-black rr-text-navy mb-1">Pro Monthly</div>
+              <div className="flex items-end gap-1 mb-1">
+                <span className="text-3xl font-black rr-text-navy">$29</span>
+                <span className="text-sm rr-text-navy mb-1">/mo</span>
               </div>
-              <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>{t("pricing.proMonthlyDescription")}</p>
+              <p className="text-xs mb-4" style={{ color: "oklch(0.35 0.04 260)" }}>Unlimited review requests, bulk send, follow-up reminders, WooCommerce sync.</p>
+              <ul className="flex flex-col gap-2 mt-auto">
+                {["Unlimited requests", "All review platforms", "Bulk send", "Follow-up reminders", "WooCommerce sync", "Priority support"].map((f) => (
+                  <li key={f} className="flex items-center gap-2 text-xs rr-text-navy">
+                    <Check size={13} style={{ color: "oklch(0.40 0.18 150)" }} className="shrink-0" />{f}
+                  </li>
+                ))}
+              </ul>
+              <a href={loginUrl} className="mt-5 text-center py-2.5 rounded-xl text-xs font-black rr-bg-navy rr-text-gold transition-transform active:scale-95">
+                Start Pro
+              </a>
             </div>
+
             {/* Pro Annual */}
-            <div className="rounded-2xl p-5 border bg-white" style={{ borderColor: "oklch(0.90 0.03 260)" }}>
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-black rr-text-navy">{t("pricing.proAnnual")}</span>
-                  <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "oklch(0.95 0.05 150)", color: "oklch(0.30 0.15 150)" }}>
-                    {t("pricing.save15")}
-                  </span>
-                </div>
-                <span className="text-xl font-black rr-text-navy">
-                  {t("pricing.proAnnualPrice")}<span className="text-xs font-normal">{t("pricing.proAnnualPer")}</span>
-                </span>
+            <div className="rounded-2xl p-5 flex flex-col" style={{ background: "oklch(0.28 0.08 260)", border: "1px solid oklch(0.35 0.08 260)" }}>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-black text-white">Pro Annual</span>
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold" style={{ background: "oklch(0.30 0.15 150)", color: "oklch(0.80 0.18 150)" }}>Save 15%</span>
               </div>
-              <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>{t("pricing.proAnnualDescription")}</p>
+              <div className="flex items-end gap-1 mb-1">
+                <span className="text-3xl font-black rr-text-gold">$297</span>
+                <span className="text-sm mb-1" style={{ color: "var(--text-on-dark-secondary)" }}>/yr</span>
+              </div>
+              <p className="text-xs mb-4" style={{ color: "var(--text-on-dark-secondary)" }}>Everything in Pro Monthly — billed once a year. Equivalent to $24.75/month.</p>
+              <ul className="flex flex-col gap-2 mt-auto">
+                {["Everything in Pro", "2 months free", "Annual invoice"].map((f) => (
+                  <li key={f} className="flex items-center gap-2 text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
+                    <Check size={13} style={{ color: "oklch(0.55 0.18 150)" }} className="shrink-0" />{f}
+                  </li>
+                ))}
+              </ul>
+              <a href={loginUrl} className="mt-5 text-center py-2.5 rounded-xl text-xs font-black transition-colors"
+                style={{ background: "oklch(0.35 0.08 260)", color: "white" }}>
+                Start Annual
+              </a>
             </div>
+
             {/* Lifetime */}
-            <div className="rounded-2xl p-5 border rr-bg-navy" style={{ borderColor: "oklch(0.30 0.08 260)" }}>
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-black text-white">{t("pricing.lifetime")}</span>
-                  <span className="px-2 py-0.5 rounded-full text-xs font-bold rr-bg-gold rr-text-navy">
-                    {t("pricing.ownItForever")}
-                  </span>
-                </div>
-                <span className="text-xl font-black rr-text-gold">
-                  {t("pricing.lifetimePrice")}<span className="text-xs font-normal" style={{ color: "var(--text-on-dark-secondary)" }}>{t("pricing.lifetimeOnce")}</span>
-                </span>
+            <div className="rounded-2xl p-5 flex flex-col" style={{ background: "oklch(0.22 0.09 260)", border: "1px solid oklch(0.35 0.08 260)" }}>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-xs font-black text-white">Lifetime</span>
+                <span className="px-2 py-0.5 rounded-full text-xs font-bold rr-bg-gold rr-text-navy">Own it forever</span>
               </div>
-              <p className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>{t("pricing.lifetimeDescription")}</p>
+              <div className="flex items-end gap-1 mb-1">
+                <span className="text-3xl font-black rr-text-gold">$1,247</span>
+                <span className="text-xs mb-1" style={{ color: "var(--text-on-dark-secondary)" }}> once</span>
+              </div>
+              <p className="text-xs mb-4" style={{ color: "var(--text-on-dark-secondary)" }}>One payment, lifetime access. No renewals, no surprises.</p>
+              <ul className="flex flex-col gap-2 mt-auto">
+                {["Everything in Pro", "No renewals ever", "All future updates", "Lifetime support"].map((f) => (
+                  <li key={f} className="flex items-center gap-2 text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
+                    <Check size={13} style={{ color: "oklch(0.55 0.18 150)" }} className="shrink-0" />{f}
+                  </li>
+                ))}
+              </ul>
+              <a href={loginUrl} className="mt-5 text-center py-2.5 rounded-xl text-xs font-black rr-bg-gold rr-text-navy transition-transform active:scale-95">
+                Get Lifetime Access
+              </a>
             </div>
           </div>
+
+          <p className="text-center text-xs mt-6" style={{ color: "var(--text-on-dark-muted)" }}>
+            All plans include a 14-day money-back guarantee. No questions asked.
+          </p>
         </div>
       </section>
 
       {/* ── COMPETITOR COMPARISON ───────────────────────────────────────────── */}
-      <section className="px-5 py-12 bg-white">
-        <div className="max-w-lg mx-auto">
+      <section className="px-5 py-14 bg-white">
+        <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
+            <SectionLabel><TrendingUp size={11} /><span>Comparison</span></SectionLabel>
             <h2 className="text-2xl font-black rr-text-navy mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
               {t("comparison.sectionTitle")}
             </h2>
@@ -412,9 +596,9 @@ export default function LandingPage() {
 
           <div className="rounded-2xl overflow-hidden border" style={{ borderColor: "oklch(0.90 0.03 260)" }}>
             <div className="grid grid-cols-3 px-4 py-3 text-xs font-black rr-bg-navy rr-text-gold">
-              <span>{t("comparison.colPlatform")}</span>
-              <span className="text-center">{t("comparison.colStartingPrice")}</span>
-              <span className="text-center">{t("comparison.colLifetime")}</span>
+              <span>Platform</span>
+              <span className="text-center">Starting price</span>
+              <span className="text-center">Lifetime option</span>
             </div>
             {/* Phame row */}
             <div className="grid grid-cols-3 px-4 py-3 items-center border-b-2" style={{ background: "oklch(0.97 0.06 80)", borderColor: "var(--gold)" }}>
@@ -422,12 +606,8 @@ export default function LandingPage() {
                 <Star size={13} className="rr-text-gold" fill="currentColor" />
                 <span className="text-xs font-black rr-text-navy">Phame</span>
               </div>
-              <div className="text-center">
-                <span className="text-xs font-black rr-text-navy">$29<span className="font-normal">/mo</span></span>
-              </div>
-              <div className="flex justify-center">
-                <Check size={16} style={{ color: "oklch(0.40 0.18 150)" }} />
-              </div>
+              <div className="text-center"><span className="text-xs font-black rr-text-navy">$29<span className="font-normal">/mo</span></span></div>
+              <div className="flex justify-center"><Check size={16} style={{ color: "oklch(0.40 0.18 150)" }} /></div>
             </div>
             {[
               { name: "Birdeye", price: "$299/mo", lifetime: false },
@@ -436,19 +616,11 @@ export default function LandingPage() {
               { name: "Grade.us", price: "$110/mo", lifetime: false },
               { name: "ReviewTrackers", price: "$89/mo", lifetime: false },
             ].map((c, i, arr) => (
-              <div
-                key={c.name}
-                className="grid grid-cols-3 px-4 py-3 items-center"
-                style={{
-                  background: i % 2 === 0 ? "white" : "oklch(0.975 0.003 100)",
-                  borderBottom: i < arr.length - 1 ? "1px solid oklch(0.93 0.02 260)" : "none",
-                }}
-              >
+              <div key={c.name} className="grid grid-cols-3 px-4 py-3 items-center"
+                style={{ background: i % 2 === 0 ? "white" : "oklch(0.975 0.003 100)", borderBottom: i < arr.length - 1 ? "1px solid oklch(0.93 0.02 260)" : "none" }}>
                 <span className="text-xs font-semibold" style={{ color: "oklch(0.35 0.04 260)" }}>{c.name}</span>
                 <span className="text-xs text-center" style={{ color: "oklch(0.45 0.04 260)" }}>{c.price}</span>
-                <div className="flex justify-center">
-                  <X size={14} style={{ color: "oklch(0.65 0.15 25)" }} />
-                </div>
+                <div className="flex justify-center"><X size={14} style={{ color: "oklch(0.65 0.15 25)" }} /></div>
               </div>
             ))}
           </div>
@@ -459,54 +631,50 @@ export default function LandingPage() {
       </section>
 
       {/* ── TESTIMONIALS ────────────────────────────────────────────────────── */}
-      <section className="px-5 py-12 max-w-lg mx-auto w-full">
-        <h2 className="text-center text-xl font-black mb-6 rr-text-navy" style={{ fontFamily: "'Poppins', sans-serif" }}>
-          {t("testimonials.sectionTitle")}
-        </h2>
-        <div className="flex flex-col gap-4">
-          {[
-            { key: "sarah", initial: "S" },
-            { key: "tom", initial: "T" },
-          ].map(({ key, initial }) => (
-            <div
-              key={key}
-              className="rounded-2xl p-5 bg-white"
-              style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06)", border: "1px solid oklch(0.92 0.02 260)" }}
-            >
-              <div className="flex items-center gap-0.5 mb-3">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={14} fill="var(--gold)" className="rr-text-gold" />
-                ))}
-              </div>
-              <p className="text-sm leading-relaxed mb-4" style={{ color: "oklch(0.30 0.05 260)", fontStyle: "italic" }}>
-                "{t(`testimonials.${key}.quote`)}"
-              </p>
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black flex-shrink-0 rr-bg-navy rr-text-gold">
-                  {initial}
+      <section className="px-5 py-14" style={{ background: "oklch(0.975 0.003 100)" }}>
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-8">
+            <SectionLabel><Star size={11} fill="currentColor" /><span>Reviews</span></SectionLabel>
+            <h2 className="text-2xl font-black rr-text-navy" style={{ fontFamily: "'Poppins', sans-serif" }}>
+              {t("testimonials.sectionTitle")}
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {[
+              { key: "sarah", initial: "S" },
+              { key: "tom", initial: "T" },
+            ].map(({ key, initial }) => (
+              <div key={key} className="rounded-2xl p-5 bg-white"
+                style={{ boxShadow: "0 1px 4px rgba(0,0,0,0.06)", border: "1px solid oklch(0.92 0.02 260)" }}>
+                <div className="flex items-center gap-0.5 mb-3">
+                  {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="var(--gold)" className="rr-text-gold" />)}
                 </div>
-                <div>
-                  <p className="text-xs font-bold rr-text-navy">{t(`testimonials.${key}.name`)}</p>
-                  <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>{t(`testimonials.${key}.role`)}</p>
+                <p className="text-sm leading-relaxed mb-4" style={{ color: "oklch(0.30 0.05 260)", fontStyle: "italic" }}>
+                  "{t(`testimonials.${key}.quote`)}"
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-black shrink-0 rr-bg-navy rr-text-gold">
+                    {initial}
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold rr-text-navy">{t(`testimonials.${key}.name`)}</p>
+                    <p className="text-xs" style={{ color: "oklch(0.55 0.03 260)" }}>{t(`testimonials.${key}.role`)}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ── FAQ ─────────────────────────────────────────────────────────────── */}
-      <div id="faq">
-        <FAQSection />
-      </div>
+      <FAQSection />
 
       {/* ── BOTTOM CTA ──────────────────────────────────────────────────────── */}
       <section className="px-5 py-16 text-center rr-bg-navy" style={{ position: "relative", overflow: "hidden" }}>
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: "radial-gradient(ellipse 70% 50% at 50% 100%, rgba(240,165,0,0.10) 0%, transparent 70%)" }}
-        />
-        <div className="relative max-w-sm mx-auto">
+        <div className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 70% 50% at 50% 100%, rgba(240,165,0,0.10) 0%, transparent 70%)" }} />
+        <div className="relative max-w-lg mx-auto">
           <div className="flex justify-center gap-0.5 mb-4">
             {[...Array(5)].map((_, i) => <Star key={i} size={20} fill="var(--gold)" className="rr-text-gold" />)}
           </div>
@@ -516,11 +684,9 @@ export default function LandingPage() {
           <p className="text-sm mb-8" style={{ color: "var(--text-on-dark-secondary)" }}>
             {t("bottomCta.subtitle")}
           </p>
-          <a
-            href={loginUrl}
+          <a href={loginUrl}
             className="inline-flex items-center justify-center gap-2 w-full max-w-xs mx-auto py-4 rounded-2xl font-black text-base transition-transform active:scale-95 rr-bg-gold rr-text-navy"
-            style={{ boxShadow: "0 4px 20px rgba(240,165,0,0.40)", display: "flex" }}
-          >
+            style={{ boxShadow: "0 4px 20px rgba(240,165,0,0.40)", display: "flex" }}>
             <Send size={18} />
             {t("bottomCta.cta")}
           </a>
@@ -532,31 +698,18 @@ export default function LandingPage() {
 
       {/* ── FOOTER ──────────────────────────────────────────────────────────── */}
       <footer style={{ background: "oklch(0.14 0.06 260)" }}>
-        <div className="max-w-lg mx-auto px-5 py-8 flex flex-col items-center gap-5">
-          {/* Brand mark */}
+        <div className="max-w-5xl mx-auto px-5 py-8 flex flex-col items-center gap-5">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg flex items-center justify-center rr-bg-gold">
               <Star size={14} fill="#1a2744" color="#1a2744" />
             </div>
-            <span className="text-white font-black text-sm" style={{ fontFamily: "'Poppins', sans-serif" }}>
-              Get Phame
-            </span>
+            <span className="text-white font-black text-sm" style={{ fontFamily: "'Poppins', sans-serif" }}>Get Phame</span>
           </div>
-
-          {/* Legal links */}
           <div className="flex items-center gap-5 flex-wrap justify-center">
-            <a href="/privacy-policy" className="text-xs transition-colors" style={{ color: "var(--text-on-dark-muted)" }}>
-              {t("footer.privacy")}
-            </a>
-            <a href="/terms-of-service" className="text-xs transition-colors" style={{ color: "var(--text-on-dark-muted)" }}>
-              {t("footer.terms")}
-            </a>
-            <a href="mailto:support@getphame.app" className="text-xs transition-colors" style={{ color: "var(--text-on-dark-muted)" }}>
-              {t("footer.support")}
-            </a>
+            <a href="/privacy-policy" className="text-xs transition-colors" style={{ color: "var(--text-on-dark-muted)" }}>{t("footer.privacy")}</a>
+            <a href="/terms-of-service" className="text-xs transition-colors" style={{ color: "var(--text-on-dark-muted)" }}>{t("footer.terms")}</a>
+            <a href="mailto:support@getphame.app" className="text-xs transition-colors" style={{ color: "var(--text-on-dark-muted)" }}>{t("footer.support")}</a>
           </div>
-
-          {/* Copyright */}
           <p className="text-xs" style={{ color: "oklch(0.40 0.03 260)" }}>
             © {new Date().getFullYear()} Get Phame. All rights reserved.
           </p>
