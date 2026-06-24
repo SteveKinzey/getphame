@@ -6,7 +6,7 @@ import { Star, Send, Users, CheckCircle2, ArrowRight, Mail, Globe, ChevronDown, 
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-const APP_PREVIEW_IMG = "https://assets.getphame.app/phame-app-screenshot.png";
+const APP_PREVIEW_IMG = "/phame-app-screenshot.png";
 const OG_IMG = "https://assets.getphame.app/getphame-og-1200x630.png";
 
 // ─── FAQ ─────────────────────────────────────────────────────────────────────
