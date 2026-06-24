@@ -1,0 +1,46 @@
+const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/FK9bk5QsyQ42fQPrngzafd/phame-logo-mark-LWuqsnXvZV3htEC4hfkanS.webp";
+
+export default function Footer() {
+  return (
+    <footer className="py-12 border-t border-border/30">
+      <div className="container">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+          {/* Logo */}
+          <div className="flex items-center gap-2.5">
+            <img src={LOGO_URL} alt="Get Phame" className="w-7 h-7" />
+            <span className="font-display font-bold text-base text-white">
+              GET <span className="text-primary">PHAME</span>
+            </span>
+          </div>
+
+          {/* Links */}
+          <div className="flex items-center gap-6 text-sm">
+            <a
+              href="https://getphame.app/privacy-policy"
+              className="text-muted-foreground hover:text-white transition-colors"
+            >
+              Privacy
+            </a>
+            <a
+              href="https://getphame.app/terms-of-service"
+              className="text-muted-foreground hover:text-white transition-colors"
+            >
+              Terms
+            </a>
+            <a
+              href="mailto:support@getphame.app"
+              className="text-muted-foreground hover:text-white transition-colors"
+            >
+              Support
+            </a>
+          </div>
+
+          {/* Copyright */}
+          <p className="text-sm text-muted-foreground">
+            © {new Date().getFullYear()} Get Phame. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+}
