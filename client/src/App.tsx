@@ -141,7 +141,7 @@ function AppShell() {
     if (path === "/onboarding") return <div className="mobile-screen"><OnboardingPage />{globalLangFlyout}</div>;
     // Changelog is public — render without BottomNav for unauthenticated visitors
     if (path === "/changelog") return <div className="mobile-screen"><ChangelogPage />{globalLangFlyout}</div>;
-    return <div className="mobile-screen"><LandingPage />{globalLangFlyout}</div>;
+    return <><LandingPage /></>;
   }
 
   return (

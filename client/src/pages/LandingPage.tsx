@@ -85,7 +85,7 @@ function FAQSection() {
 
   return (
     <section id="faq" className="px-5 py-14" style={{ background: "oklch(0.975 0.003 100)" }}>
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <div className="text-center mb-8">
           <SectionLabel><span>FAQ</span></SectionLabel>
           <h2 className="text-2xl font-black rr-text-navy" style={{ fontFamily: "'Poppins', sans-serif" }}>
@@ -135,7 +135,7 @@ function VideoSection() {
 
   return (
     <section className="px-5 py-14 rr-bg-navy">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-5xl mx-auto">
         <div className="text-center mb-8">
           <SectionLabel><Play size={11} fill="currentColor" /><span>Product Walkthrough</span></SectionLabel>
           <h2 className="text-2xl font-black text-white mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
@@ -583,7 +583,7 @@ export default function LandingPage() {
 
       {/* ── COMPETITOR COMPARISON ───────────────────────────────────────────── */}
       <section className="px-5 py-14 bg-white">
-        <div className="max-w-2xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
             <SectionLabel><TrendingUp size={11} /><span>Comparison</span></SectionLabel>
             <h2 className="text-2xl font-black rr-text-navy mb-2" style={{ fontFamily: "'Poppins', sans-serif" }}>
@@ -674,7 +674,7 @@ export default function LandingPage() {
       <section className="px-5 py-16 text-center rr-bg-navy" style={{ position: "relative", overflow: "hidden" }}>
         <div className="absolute inset-0 pointer-events-none"
           style={{ background: "radial-gradient(ellipse 70% 50% at 50% 100%, rgba(240,165,0,0.10) 0%, transparent 70%)" }} />
-        <div className="relative max-w-lg mx-auto">
+        <div className="relative max-w-xl mx-auto">
           <div className="flex justify-center gap-0.5 mb-4">
             {[...Array(5)].map((_, i) => <Star key={i} size={20} fill="var(--gold)" className="rr-text-gold" />)}
           </div>
