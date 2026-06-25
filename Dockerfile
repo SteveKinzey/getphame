@@ -1,15 +1,15 @@
 # ─── Stage 1: Build ───────────────────────────────────────────────────────────
-FROM node:20-slim AS builder
+FROM node:22-slim AS builder
 
 # Install pnpm
-RUN corepack enable && corepack prepare pnpm@9 --activate
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
 # Install dependencies
 COPY package.json pnpm-lock.yaml ./
 COPY patches/ ./patches/
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --no-frozen-lockfile
 
 # Copy source
 COPY . .
@@ -18,9 +18,9 @@ COPY . .
 RUN pnpm run build
 
 # ─── Stage 2: Production ─────────────────────────────────────────────────────
-FROM node:20-slim AS runner
+FROM node:22-slim AS runner
 
-RUN corepack enable && corepack prepare pnpm@9 --activate
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
@@ -31,7 +31,7 @@ COPY --from=builder /app/pnpm-lock.yaml ./
 COPY --from=builder /app/patches/ ./patches/
 
 # Install production dependencies only
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --no-frozen-lockfile --prod
 
 # The app listens on PORT (default 3000)
 ENV NODE_ENV=production
