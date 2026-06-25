@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import TrustBar from "@/components/TrustBar";
+import VideoDemo from "@/components/VideoDemo";
 import Features from "@/components/Features";
 import HowItWorks from "@/components/HowItWorks";
 import ProductShowcase from "@/components/ProductShowcase";
@@ -19,6 +20,7 @@ export default function Home() {
       <Navbar />
       <Hero />
       <TrustBar />
+      <VideoDemo />
       <Features />
       <HowItWorks />
       <ProductShowcase />
