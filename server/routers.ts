@@ -2451,8 +2451,8 @@ export const appRouter = router({
           platform: input.platform,
           reviewedAt: input.reviewedAt ?? Date.now(),
           requestId: input.requestId ?? null,
-        });
-        return { id: (result as any).insertId };
+        }).returning({ id: clientReviews.id });
+        return { id: result.id };
       }),
     update: protectedProcedure
       .input(z.object({

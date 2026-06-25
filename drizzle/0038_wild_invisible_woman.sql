@@ -1,1 +1,0 @@
-ALTER TABLE `business_profiles` DROP COLUMN `zohoCustomerId`;

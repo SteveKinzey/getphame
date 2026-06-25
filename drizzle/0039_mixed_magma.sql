@@ -1,1 +1,0 @@
-DROP TABLE `zoho_tokens`;

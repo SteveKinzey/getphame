@@ -1,1 +1,0 @@
-ALTER TABLE `woo_credentials` ADD `lastSyncCount` int DEFAULT 0;

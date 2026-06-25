@@ -1,1 +1,0 @@
-ALTER TABLE `business_profiles` ADD `reEngagementEnabled` int DEFAULT 1 NOT NULL;

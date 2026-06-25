@@ -94,11 +94,11 @@ export async function recordReferral(
   const db = await getDb();
   if (!db) return;
   try {
-    await db.insert(referrals).ignore().values({
+    await db.insert(referrals).values({
       referrerUserId,
       referredUserId,
       referralCode: code.toUpperCase(),
-    });
+    }).onConflictDoNothing({ target: referrals.referredUserId });
   } catch {
     // already exists — ignore
   }

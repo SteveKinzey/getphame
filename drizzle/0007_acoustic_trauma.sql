@@ -1,1 +1,0 @@
-ALTER TABLE `saved_contacts` MODIFY COLUMN `tags` text;

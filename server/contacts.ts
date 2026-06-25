@@ -205,6 +205,6 @@ export async function upsertApiContact(
     totalSent: 0,
     source: "manual",
     externalId: null,
-  });
-  return { id: Number((result as any).insertId), created: true };
+  }).returning({ id: savedContacts.id });
+  return { id: result.id, created: true };
 }

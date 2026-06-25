@@ -1,1 +1,0 @@
-ALTER TABLE `woo_customers` ADD `lastStatusChangedAt` bigint;
