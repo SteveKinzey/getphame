@@ -18,7 +18,7 @@
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=Nunito:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800;900&family=Nunito:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600;700;800&family=Sarabun:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -38,6 +38,44 @@
     <meta name="twitter:description" content="Turn happy customers into 5-star reviews. Send review requests in seconds. Free to start." />
     <meta name="twitter:image" content="https://assets.getphame.app/getphame-og-1200x630.png" />
     <meta name="twitter:image:alt" content="Get Phame app — Turn happy customers into 5-star reviews" />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Get Phame",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "Send personalized review requests from your own email account. Get more 5-star Google reviews without the awkward ask.",
+      "url": "https://getphame.app",
+      "offers": [
+        { "@type": "Offer", "name": "Free Plan", "price": "0", "priceCurrency": "USD", "description": "10 review requests included" },
+        { "@type": "Offer", "name": "Pro Monthly", "price": "29", "priceCurrency": "USD", "description": "Unlimited review requests" },
+        { "@type": "Offer", "name": "Pro Annual", "price": "19", "priceCurrency": "USD", "description": "Billed annually at $228/year" },
+        { "@type": "Offer", "name": "Lifetime", "price": "349", "priceCurrency": "USD", "description": "One-time payment, lifetime access" }
+      ],
+      "provider": {
+        "@type": "Organization",
+        "name": "Get Phame",
+        "url": "https://getphame.app"
+      }
+    }
+    </script>
+    <!-- FAQ Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "Is my email password safe?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Your SMTP password is encrypted using AES-256-GCM before storage. Never logged or shared." } },
+        { "@type": "Question", "name": "Will this hurt my email deliverability?", "acceptedAnswer": { "@type": "Answer", "text": "No. Emails are sent individually from your own account, not in bulk blasts." } },
+        { "@type": "Question", "name": "What email providers are supported?", "acceptedAnswer": { "@type": "Answer", "text": "Gmail, Google Workspace, Outlook/Microsoft 365, Yahoo, Zoho, iCloud, and any SMTP server." } },
+        { "@type": "Question", "name": "Is this compliant with review platform guidelines?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Get Phame sends a link to your review page without incentivizing or filtering reviews." } },
+        { "@type": "Question", "name": "Can I cancel anytime?", "acceptedAnswer": { "@type": "Answer", "text": "Absolutely. No contracts, no cancellation fees. Cancel anytime from account settings." } }
+      ]
+    }
+    </script>
   </head>
 
   <body>

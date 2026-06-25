@@ -130,15 +130,15 @@ function AppShell() {
   const path = window.location.pathname;
   const globalLangFlyout = null;
 
-  if (path === "/privacy-policy") return <div className="mobile-screen"><PrivacyPolicyPage />{globalLangFlyout}</div>;
-  if (path === "/terms-of-service") return <div className="mobile-screen"><TermsOfServicePage />{globalLangFlyout}</div>;
+  if (path === "/privacy-policy") return <><PrivacyPolicyPage />{globalLangFlyout}</>;
+  if (path === "/terms-of-service") return <><TermsOfServicePage />{globalLangFlyout}</>;
   if (path === "/payment-success") return <div className="mobile-screen"><PaymentSuccessPage />{globalLangFlyout}</div>;
   if (path === "/unsubscribe") return <div className="mobile-screen"><UnsubscribePage />{globalLangFlyout}</div>;
   if (path === "/auth/apple/landing") return <div className="mobile-screen"><AppleAuthLanding /></div>;
 
   if (!user) {
     // Show the public marketing landing page at /, Onboarding at /onboarding
-    if (path === "/onboarding") return <div className="mobile-screen"><OnboardingPage />{globalLangFlyout}</div>;
+    if (path === "/onboarding") return <><OnboardingPage />{globalLangFlyout}</>;
     // Changelog is public — render without BottomNav for unauthenticated visitors
     if (path === "/changelog") return <div className="mobile-screen"><ChangelogPage />{globalLangFlyout}</div>;
     return <><LandingPage /></>;
