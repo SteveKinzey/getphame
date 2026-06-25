@@ -77,7 +77,7 @@ export default function Testimonials() {
 
         <FadeUp className="text-center">
           <a
-            href="https://getphame.app/onboarding"
+            href="/onboarding"
             className="inline-flex items-center gap-2 px-7 py-4 bg-primary text-primary-foreground font-bold text-base rounded-xl hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_30px_oklch(0.78_0.15_75/0.2)]"
           >
             Get Started Free

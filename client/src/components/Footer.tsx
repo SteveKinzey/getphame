@@ -6,23 +6,23 @@ export default function Footer() {
       <div className="container">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo */}
-          <div className="flex items-center gap-2.5">
+          <a href="/" className="flex items-center gap-2.5">
             <img src={LOGO_URL} alt="Get Phame" className="w-7 h-7" />
             <span className="font-display font-bold text-base text-white">
               GET <span className="text-primary">PHAME</span>
             </span>
-          </div>
+          </a>
 
           {/* Links */}
           <div className="flex items-center gap-6 text-sm">
             <a
-              href="https://getphame.app/privacy-policy"
+              href="/privacy-policy"
               className="text-muted-foreground hover:text-white transition-colors"
             >
               Privacy
             </a>
             <a
-              href="https://getphame.app/terms-of-service"
+              href="/terms-of-service"
               className="text-muted-foreground hover:text-white transition-colors"
             >
               Terms

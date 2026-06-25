@@ -22,7 +22,7 @@ export default function FinalCTA() {
             Free forever on the starter plan. No credit card. Set up in under 2 minutes. Start collecting 5-star reviews today.
           </p>
           <a
-            href="https://getphame.app/onboarding"
+            href="/onboarding"
             className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-bold text-lg rounded-xl hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_50px_oklch(0.78_0.15_75/0.3)]"
           >
             Get Started Free

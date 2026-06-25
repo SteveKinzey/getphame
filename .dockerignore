@@ -1,0 +1,25 @@
+# Dependencies (installed fresh in Docker)
+node_modules/
+.pnpm-store/
+
+# Build output (built inside Docker)
+dist/
+
+# Dev / editor files
+.env
+.env.*
+.DS_Store
+*.log
+.manus-logs/
+
+# Git
+.git/
+.gitignore
+
+# Docs / misc
+README.md
+*.md
+
+# Test files
+**/*.test.*
+**/*.spec.*
