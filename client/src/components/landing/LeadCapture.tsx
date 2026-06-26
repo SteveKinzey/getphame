@@ -1,14 +1,28 @@
 import { useState } from "react";
-import { Mail, ArrowRight, Check } from "lucide-react";
+import { Mail, ArrowRight, Check, Loader2 } from "lucide-react";
 import FadeUp from "./FadeUp";
+import { trpc } from "@/lib/trpc";
 
 export default function LeadCapture() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const submitLead = trpc.leadCapture.submit.useMutation({
+    onSuccess: () => {
+      setSubmitted(true);
+      setError(null);
+    },
+    onError: (err) => {
+      setError(err.message || "Something went wrong. Please try again.");
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (email) setSubmitted(true);
+    if (!email) return;
+    setError(null);
+    submitLead.mutate({ email });
   };
 
   return (
@@ -31,23 +45,39 @@ export default function LeadCapture() {
               </p>
 
               {!submitted ? (
-                <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email"
-                    required
-                    className="flex-1 px-4 py-3.5 bg-[#1a2744] border border-[#2a3a5c] rounded-xl text-white placeholder:text-slate-400 font-medium focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
-                  />
-                  <button
-                    type="submit"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl hover:brightness-110 transition-all duration-200 active:scale-[0.97] whitespace-nowrap shadow-[0_0_20px_oklch(0.78_0.15_75/0.2)]"
-                  >
-                    Send Guide
-                    <ArrowRight size={15} />
-                  </button>
-                </form>
+                <>
+                  <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email"
+                      required
+                      disabled={submitLead.isPending}
+                      className="flex-1 px-4 py-3.5 bg-[#1a2744] border border-[#2a3a5c] rounded-xl text-white placeholder:text-slate-400 font-medium focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all disabled:opacity-60"
+                    />
+                    <button
+                      type="submit"
+                      disabled={submitLead.isPending}
+                      className="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-primary text-primary-foreground font-semibold text-sm rounded-xl hover:brightness-110 transition-all duration-200 active:scale-[0.97] whitespace-nowrap shadow-[0_0_20px_oklch(0.78_0.15_75/0.2)] disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {submitLead.isPending ? (
+                        <>
+                          <Loader2 size={15} className="animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          Send Guide
+                          <ArrowRight size={15} />
+                        </>
+                      )}
+                    </button>
+                  </form>
+                  {error && (
+                    <p className="text-sm text-red-400 font-medium mt-3">{error}</p>
+                  )}
+                </>
               ) : (
                 <div className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
                   <Check size={18} className="text-emerald-400" />

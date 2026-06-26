@@ -529,3 +529,16 @@ export const magicLinkTokens = pgTable("magic_link_tokens", {
 });
 export type MagicLinkToken = typeof magicLinkTokens.$inferSelect;
 export type InsertMagicLinkToken = typeof magicLinkTokens.$inferInsert;
+
+/**
+ * Landing page lead captures — stores emails from the free guide form.
+ * guideSentAt is null until the system email with the PDF link is successfully sent.
+ */
+export const leads = pgTable("leads", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 320 }).notNull().unique(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  guideSentAt: timestamp("guideSentAt"),
+});
+export type Lead = typeof leads.$inferSelect;
+export type InsertLead = typeof leads.$inferInsert;

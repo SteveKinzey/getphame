@@ -40,7 +40,8 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads } from "../drizzle/schema";
+import { sendLeadGuideEmail } from "./leadGuideEmail";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
 import { eq, like, or, inArray, desc } from "drizzle-orm";
 import {
@@ -2548,6 +2549,35 @@ export const appRouter = router({
         if (!referrerUserId || referrerUserId === ctx.user.id) return { ok: false };
         await recordReferral(referrerUserId, ctx.user.id, input.code);
         return { ok: true };
+      }),
+  }),
+
+  /** Landing page lead capture — stores email and sends the free guide PDF */
+  leadCapture: router({
+    submit: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return { ok: true, sent: false };
+
+        // Upsert — don't error if email already exists
+        await db
+          .insert(leads)
+          .values({ email: input.email })
+          .onConflictDoNothing({ target: leads.email });
+
+        // Attempt to send the guide email
+        const { sent } = await sendLeadGuideEmail(input.email);
+
+        // Mark guideSentAt if email was sent successfully
+        if (sent) {
+          await db
+            .update(leads)
+            .set({ guideSentAt: new Date() })
+            .where(eq(leads.email, input.email));
+        }
+
+        return { ok: true, sent };
       }),
   }),
 });
