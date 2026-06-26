@@ -24,7 +24,7 @@ export default function Stats() {
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-slate-200 font-bold">
             {industries.map((ind, i) => (
               <span key={ind} className="flex items-center gap-2">
-                {i > 0 && <span className="text-border">·</span>}
+                {i > 0 && <span className="text-[#2a3a5c]">·</span>}
                 {ind}
               </span>
             ))}
@@ -33,7 +33,7 @@ export default function Stats() {
 
         <StaggerChildren className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6" staggerDelay={0.1}>
           {stats.map((stat) => (
-            <div key={stat.label} className="text-center p-6 md:p-8 rounded-2xl bg-card/60 backdrop-blur-sm border border-border/40 hover:border-primary/20 transition-colors duration-300">
+            <div key={stat.label} className="text-center p-6 md:p-8 rounded-2xl bg-[#0f1d32] border border-[#1e3050] hover:border-primary/20 transition-colors duration-300">
               <div className="font-display font-extrabold text-3xl md:text-4xl text-primary mb-2">
                 {stat.value}
               </div>

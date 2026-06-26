@@ -15,7 +15,7 @@ export default function LeadCapture() {
     <section className="py-16 md:py-20">
       <div className="container">
         <FadeUp className="max-w-2xl mx-auto">
-          <div className="relative p-8 md:p-12 rounded-3xl bg-card/60 backdrop-blur-sm border border-border/40 hover:border-primary/20 transition-colors duration-300 text-center overflow-hidden">
+          <div className="relative p-8 md:p-12 rounded-3xl bg-[#0f1d32] border border-[#1e3050] hover:border-primary/20 transition-colors duration-300 text-center overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-primary/8 to-transparent rounded-bl-[4rem]" />
             <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-primary/5 to-transparent rounded-tr-[3rem]" />
 
@@ -38,7 +38,7 @@ export default function LeadCapture() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                     required
-                    className="flex-1 px-4 py-3.5 bg-background border border-border/50 rounded-xl text-white placeholder:text-slate-400 font-medium focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+                    className="flex-1 px-4 py-3.5 bg-[#1a2744] border border-[#2a3a5c] rounded-xl text-white placeholder:text-slate-400 font-medium focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
                   />
                   <button
                     type="submit"

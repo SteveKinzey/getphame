@@ -48,10 +48,10 @@ export default function Features() {
           {features.map((feature, i) => (
             <div
               key={feature.title}
-              className={`group relative p-8 rounded-2xl border border-border/50 hover:border-primary/40 transition-all duration-300 hover:shadow-[0_0_50px_oklch(0.78_0.15_75/0.08)] backdrop-blur-sm ${
-                i === 0 ? "bg-gradient-to-br from-card to-[oklch(0.16_0.04_250)]" :
-                i === 1 ? "bg-gradient-to-br from-card to-[oklch(0.17_0.03_240)]" :
-                "bg-gradient-to-br from-card to-[oklch(0.16_0.035_260)]"
+              className={`group relative p-8 rounded-2xl border border-[#1e3050] hover:border-primary/40 transition-all duration-300 hover:shadow-[0_0_50px_oklch(0.78_0.15_75/0.08)] backdrop-blur-sm ${
+                i === 0 ? "bg-gradient-to-br from-[#0f1d32] to-[oklch(0.16_0.04_250)]" :
+                i === 1 ? "bg-gradient-to-br from-[#0f1d32] to-[oklch(0.17_0.03_240)]" :
+                "bg-gradient-to-br from-[#0f1d32] to-[oklch(0.16_0.035_260)]"
               }`}
             >
               <div className="absolute top-0 left-8 right-8 h-[2px] bg-gradient-to-r from-transparent via-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -64,7 +64,7 @@ export default function Features() {
               <p className="text-slate-200 leading-relaxed mb-6 font-medium">
                 {feature.description}
               </p>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/5 border border-primary/15">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/5 border border-[#1e3050]">
                 <span className="font-display font-extrabold text-lg text-primary">{feature.stat}</span>
                 <span className="text-sm text-slate-300 font-semibold">{feature.statLabel}</span>
               </div>

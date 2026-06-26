@@ -30,10 +30,10 @@ export default function Comparison() {
           </FadeUp>
 
           <FadeUp delay={0.15}>
-            <div className="hidden md:block rounded-2xl border border-border/50 overflow-hidden bg-card/60 backdrop-blur-sm">
+            <div className="hidden md:block rounded-2xl border border-[#1e3050] overflow-hidden bg-[#0f1d32]">
               <table className="w-full">
                 <thead>
-                  <tr className="border-b border-border/30">
+                  <tr className="border-b border-[#1e3050]">
                     <th className="text-left p-4 text-sm font-bold text-white uppercase tracking-wider">Platform</th>
                     <th className="text-left p-4 text-sm font-bold text-white uppercase tracking-wider">Starting Price</th>
                     <th className="text-center p-4 text-sm font-bold text-white uppercase tracking-wider">Lifetime</th>
@@ -41,7 +41,7 @@ export default function Comparison() {
                 </thead>
                 <tbody>
                   {competitors.map((comp) => (
-                    <tr key={comp.name} className={`border-t border-border/20 ${comp.highlight ? "bg-primary/5" : ""}`}>
+                    <tr key={comp.name} className={`border-t border-[#1a2744] ${comp.highlight ? "bg-primary/5" : ""}`}>
                       <td className="p-4">
                         <span className={`font-semibold text-sm ${comp.highlight ? "text-primary" : "text-white"}`}>{comp.name}</span>
                       </td>
@@ -63,9 +63,9 @@ export default function Comparison() {
 
             <div className="md:hidden space-y-2">
               {competitors.map((comp) => (
-                <div key={comp.name} className={`flex items-center justify-between p-4 rounded-xl border ${comp.highlight ? "bg-primary/5 border-primary/30" : "bg-card/60 border-border/30"}`}>
+                <div key={comp.name} className={`flex items-center justify-between p-4 rounded-xl border ${comp.highlight ? "bg-primary/5 border-primary/30" : "bg-[#0f1d32] border-[#1e3050]"}`}>
                   <span className={`font-semibold text-sm ${comp.highlight ? "text-primary" : "text-white"}`}>{comp.name}</span>
-                  <span className={`font-semibold text-sm ${comp.highlight ? "text-primary" : "text-muted-foreground"}`}>{comp.price}</span>
+                  <span className={`font-semibold text-sm ${comp.highlight ? "text-primary" : "text-slate-300"}`}>{comp.price}</span>
                 </div>
               ))}
             </div>

@@ -21,7 +21,7 @@ export default function VideoDemo() {
             <h2 className="font-display font-bold text-2xl md:text-3xl text-white mb-2">
               See How It Works
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-slate-300 font-medium">
               Watch a quick walkthrough — set up in under 2 minutes
             </p>
           </FadeUp>
@@ -32,7 +32,7 @@ export default function VideoDemo() {
               <button
                 onClick={() => setOpen(true)}
                 aria-label="Play product walkthrough video"
-                className="group relative w-full rounded-2xl overflow-hidden border border-border/50 hover:border-primary/40 transition-all duration-300 shadow-2xl shadow-black/40 hover:shadow-[0_0_60px_oklch(0.78_0.15_75/0.12)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                className="group relative w-full rounded-2xl overflow-hidden border border-[#1e3050] hover:border-primary/40 transition-all duration-300 shadow-2xl shadow-black/40 hover:shadow-[0_0_60px_oklch(0.78_0.15_75/0.12)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
                 {/* Thumbnail */}
                 <div className="relative aspect-video bg-[oklch(0.14_0.03_250)]">
@@ -69,13 +69,13 @@ export default function VideoDemo() {
                 </div>
 
                 {/* Bottom bar */}
-                <div className="flex items-center gap-3 px-5 py-3.5 bg-card/80 backdrop-blur-sm border-t border-border/30">
+                <div className="flex items-center gap-3 px-5 py-3.5 bg-[#0f1d32] border-t border-[#1e3050]">
                   <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
                     <Play size={14} className="text-primary fill-primary ml-0.5" />
                   </div>
                   <div className="text-left">
                     <p className="text-sm font-semibold text-white">GetPhame — Full Product Walkthrough</p>
-                    <p className="text-xs text-muted-foreground">Connect email · Import customers · Send requests · Track results</p>
+                    <p className="text-xs text-slate-400 font-medium">Connect email · Import customers · Send requests · Track results</p>
                   </div>
                   <div className="ml-auto shrink-0 text-xs font-medium text-primary group-hover:underline">
                     Watch now →
@@ -120,7 +120,7 @@ export default function VideoDemo() {
               </button>
 
               {/* iframe wrapper */}
-              <div className="relative aspect-video rounded-2xl overflow-hidden border border-border/40 shadow-2xl shadow-black/60">
+              <div className="relative aspect-video rounded-2xl overflow-hidden border border-[#1e3050] shadow-2xl shadow-black/60">
                 <iframe
                   src={YOUTUBE_EMBED}
                   title="GetPhame product walkthrough"

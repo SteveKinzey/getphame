@@ -3018,7 +3018,7 @@ export default function SettingsPage() {
 
           {/* Dummy sender row */}
           <div className="px-5 py-3 shrink-0 rr-bg-navy-darker" style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
-            <p className="text-xs" style={{ color: "oklch(0.70 0.05 260)" }}>
+            <p className="text-sm font-bold" style={{ color: "oklch(0.15 0.05 260)" }}>
               <span className="font-semibold text-white">From:</span>{" "}
               {smtpStatus?.fromName ? `${smtpStatus.fromName} <${smtpStatus.email}>` : smtpStatus?.email ?? "your@email.com"}
             </p>

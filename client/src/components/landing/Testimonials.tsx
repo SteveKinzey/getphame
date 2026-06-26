@@ -45,10 +45,10 @@ export default function Testimonials() {
           {testimonials.map((t, i) => (
             <div
               key={t.name}
-              className={`relative p-6 md:p-8 rounded-2xl backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-[0_0_40px_oklch(0.78_0.15_75/0.06)] ${
-                i === 0 ? "bg-gradient-to-br from-card/90 to-[oklch(0.16_0.04_250/0.8)]" :
-                i === 1 ? "bg-gradient-to-br from-card/90 to-[oklch(0.17_0.03_240/0.8)]" :
-                "bg-gradient-to-br from-card/90 to-[oklch(0.16_0.035_260/0.8)]"
+              className={`relative p-6 md:p-8 rounded-2xl backdrop-blur-sm border border-[#1e3050] hover:border-primary/30 transition-all duration-300 hover:shadow-[0_0_40px_oklch(0.78_0.15_75/0.06)] ${
+                i === 0 ? "bg-gradient-to-br from-[#0f1d32] to-[oklch(0.16_0.04_250/0.8)]" :
+                i === 1 ? "bg-gradient-to-br from-[#0f1d32] to-[oklch(0.17_0.03_240/0.8)]" :
+                "bg-gradient-to-br from-[#0f1d32] to-[oklch(0.16_0.035_260/0.8)]"
               }`}
             >
               <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-bl from-primary/5 to-transparent rounded-bl-3xl rounded-tr-2xl" />

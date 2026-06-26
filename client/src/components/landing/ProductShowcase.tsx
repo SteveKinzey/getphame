@@ -38,7 +38,7 @@ export default function ProductShowcase() {
               className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
                 activeTab === tab.id
                   ? "bg-primary text-primary-foreground shadow-[0_0_25px_oklch(0.78_0.15_75/0.25)]"
-                  : "bg-card border border-border/50 text-slate-200 font-bold hover:text-white hover:border-primary/30"
+                  : "bg-[#0f1d32] border border-[#1e3050] text-slate-200 font-bold hover:text-white hover:border-primary/30"
               }`}
             >
               <tab.icon size={16} />
@@ -75,7 +75,7 @@ export default function ProductShowcase() {
             >
               <div className="relative group">
                 <div className="absolute -inset-3 bg-primary/5 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="relative rounded-2xl overflow-hidden border border-border/50 shadow-2xl shadow-black/30 group-hover:border-primary/20 transition-colors duration-300">
+                <div className="relative rounded-2xl overflow-hidden border border-[#1e3050] shadow-2xl shadow-black/30 group-hover:border-primary/20 transition-colors duration-300">
                   <img src={activeItem.image} alt={activeItem.title} className="w-full h-auto" />
                   <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/5" />
                 </div>

@@ -115,7 +115,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.3, ease }}
           >
             <div className="animate-float">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-primary/10 border border-[oklch(0.30_0.03_250)]">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-primary/10 border border-[#1e3050]">
                 <img
                   src={DASHBOARD_MOCKUP}
                   alt="Get Phame dashboard showing review requests and email performance stats"

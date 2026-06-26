@@ -42,7 +42,7 @@ export default function FAQ() {
                 <AccordionItem
                   key={i}
                   value={`item-${i}`}
-                  className="bg-card/60 backdrop-blur-sm border border-border/40 rounded-xl px-5 md:px-6 data-[state=open]:border-primary/30 transition-colors"
+                  className="bg-[#0f1d32] border border-[#1e3050] rounded-xl px-5 md:px-6 data-[state=open]:border-primary/30 transition-colors"
                 >
                   <AccordionTrigger className="text-left font-semibold text-white hover:text-primary py-4 md:py-5 text-sm md:text-base [&[data-state=open]>svg]:text-primary">
                     {faq.question}

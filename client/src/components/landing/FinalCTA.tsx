@@ -4,7 +4,7 @@ import FadeUp from "./FadeUp";
 export default function FinalCTA() {
   return (
     <section className="py-20 md:py-28 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.12_0.025_250)] via-background to-background" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.12_0.025_250)] via-[#0a1628] to-[#0a1628]" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-primary/4 rounded-full blur-[120px]" />
 
       <div className="container relative z-10 text-center">

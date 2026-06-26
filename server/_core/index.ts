@@ -333,17 +333,8 @@ async function startServer() {
           formAction: ["'self'"],
           frameAncestors: ["'self'"],
           frameSrc: ["'self'", "https://www.youtube.com", "https://youtube.com"],
-          // Allow images from self, data URIs, Cloudflare R2 CDN, CloudFront, and YouTube thumbnails
-          imgSrc: [
-            "'self'",
-            "data:",
-            "https://assets.getphame.app",
-            "https://*.r2.dev",
-            "https://d2xsxph8kpxj0f.cloudfront.net",
-            "https://img.youtube.com",
-            "https://i.ytimg.com",
-            "https://*.cloudfront.net",
-          ],
+          // Allow all HTTPS image sources
+          imgSrc: ["'self'", "data:", "https:", "blob:"],
           objectSrc: ["'none'"],
           scriptSrc: ["'self'"],
           scriptSrcAttr: ["'none'"],

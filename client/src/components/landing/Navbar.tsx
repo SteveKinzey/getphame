@@ -27,7 +27,7 @@ export default function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[oklch(0.12_0.03_250/0.95)] backdrop-blur-xl border-b border-border/50 shadow-lg shadow-black/10"
+          ? "bg-[oklch(0.12_0.03_250/0.95)] backdrop-blur-xl border-b border-[#1e3050] shadow-lg shadow-black/10"
           : "bg-transparent"
       }`}
     >
@@ -86,7 +86,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-[oklch(0.12_0.03_250/0.98)] backdrop-blur-xl border-t border-border/50">
+        <div className="md:hidden bg-[oklch(0.12_0.03_250/0.98)] backdrop-blur-xl border-t border-[#1e3050]">
           <div className="container py-4 flex flex-col gap-3">
             {navLinks.map((link) => (
               <a
@@ -98,7 +98,7 @@ export default function Navbar() {
                 {link.label}
               </a>
             ))}
-            <hr className="border-border/30 my-2" />
+            <hr className="border-[#1e3050] my-2" />
             <a
               href="/onboarding"
               className="text-lg font-bold text-white py-2.5"

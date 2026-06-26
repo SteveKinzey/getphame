@@ -66,8 +66,8 @@ export default function Pricing() {
               key={plan.name}
               className={`relative flex flex-col p-6 lg:p-7 rounded-2xl border transition-all duration-300 ${
                 plan.highlight
-                  ? "bg-gradient-to-b from-card to-[oklch(0.16_0.04_250)] border-primary/50 shadow-[0_0_50px_oklch(0.78_0.15_75/0.12)] scale-[1.02]"
-                  : "bg-card/80 backdrop-blur-sm border-border/50 hover:border-primary/20"
+                  ? "bg-gradient-to-b from-[#0f1d32] to-[oklch(0.16_0.04_250)] border-primary/50 shadow-[0_0_50px_oklch(0.78_0.15_75/0.12)] scale-[1.02]"
+                  : "bg-[#0f1d32] border-[#1e3050] hover:border-primary/20"
               }`}
             >
               {plan.popular && (
@@ -106,7 +106,7 @@ export default function Pricing() {
                 className={`inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold text-sm rounded-xl transition-all duration-200 active:scale-[0.97] ${
                   plan.highlight
                     ? "bg-primary text-primary-foreground hover:brightness-110 shadow-[0_0_20px_oklch(0.78_0.15_75/0.2)]"
-                    : "bg-secondary/80 text-secondary-foreground border border-border/50 hover:border-primary/30 hover:text-white"
+                    : "bg-[#1a2744] text-white border border-[#2a3a5c] hover:border-primary/30 hover:text-white"
                 }`}
               >
                 {plan.cta}

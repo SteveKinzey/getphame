@@ -27,7 +27,7 @@ const steps = [
 export default function HowItWorks() {
   return (
     <section id="how-it-works" className="py-20 md:py-28 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.12_0.025_250)] via-background to-background" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.12_0.025_250)] via-[#0a1628] to-[#0a1628]" />
 
       <div className="container relative z-10">
         <div className="grid lg:grid-cols-5 gap-12 lg:gap-16 items-start">
@@ -59,7 +59,7 @@ export default function HowItWorks() {
             {steps.map((step, i) => (
               <div
                 key={step.number}
-                className="group relative p-6 md:p-8 rounded-2xl bg-card/80 backdrop-blur-sm border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-[0_0_40px_oklch(0.78_0.15_75/0.06)]"
+                className="group relative p-6 md:p-8 rounded-2xl bg-[#0f1d32] border border-[#1e3050] hover:border-primary/30 transition-all duration-300 hover:shadow-[0_0_40px_oklch(0.78_0.15_75/0.06)]"
               >
                 {i < steps.length - 1 && (
                   <div className="absolute left-[2.1rem] md:left-[2.6rem] top-[4.5rem] bottom-[-1rem] w-[2px] bg-gradient-to-b from-primary/30 to-transparent" />
