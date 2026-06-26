@@ -18,7 +18,7 @@ export default function FinalCTA() {
             Your inbox. Your reputation.{" "}
             <span className="text-primary">Your growth.</span>
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-8">
+          <p className="text-lg md:text-xl text-slate-200 font-medium max-w-xl mx-auto mb-8">
             Free forever on the starter plan. No credit card. Set up in under 2 minutes. Start collecting 5-star reviews today.
           </p>
           <a
@@ -28,7 +28,7 @@ export default function FinalCTA() {
             Get Started Free
             <ArrowRight size={20} />
           </a>
-          <p className="text-sm text-muted-foreground mt-5">
+          <p className="text-sm text-slate-300 font-medium mt-5">
             Join hundreds of businesses already growing their reputation with Get Phame.
           </p>
         </FadeUp>

@@ -160,7 +160,7 @@ export default function UpgradePage() {
         >
           {t("paidUser.onPro", { tierLabel })}
         </h2>
-        <p className="text-center mb-8" style={{ color: "var(--text-on-dark-secondary)" }}>
+        <p className="text-center mb-8 text-white font-bold text-lg">
           {t("paidUser.enjoyFeatures")}
         </p>
         <button
@@ -189,8 +189,7 @@ export default function UpgradePage() {
       <div className="px-5 pt-14 pb-4">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-1 text-sm mb-4"
-          style={{ color: "var(--text-on-dark-secondary)" }}
+          className="flex items-center gap-1 text-base font-bold mb-4 text-white"
         >
           <ChevronLeft size={16} />
           {t("header.back")}
@@ -200,7 +199,7 @@ export default function UpgradePage() {
             <div className="flex items-center gap-2 mb-2">
               <Crown size={16} className="rr-text-gold" />
               <span
-                className="text-xs font-bold tracking-widest uppercase rr-text-gold"
+                className="text-sm font-bold tracking-widest uppercase rr-text-gold"
               >
                 {t("header.upgrade")}
               </span>
@@ -235,7 +234,7 @@ export default function UpgradePage() {
                 className="flex-1 py-2 rounded-xl text-xs font-bold transition-all relative"
                 style={{
                   background: selectedPlan === plan ? "oklch(0.80 0.18 80)" : "transparent",
-                  color: selectedPlan === plan ? "oklch(0.22 0.09 260)" : "var(--text-on-dark-secondary)",
+                  color: selectedPlan === plan ? "oklch(0.15 0.05 260)" : "oklch(0.85 0.02 260)",
                   fontFamily: "'Poppins', sans-serif",
                 }}
               >
@@ -263,12 +262,12 @@ export default function UpgradePage() {
             >
               {PLANS[selectedPlan].price}
             </span>
-            <span className="text-lg mb-2" style={{ color: "var(--text-on-dark-secondary)" }}>
+            <span className="text-xl mb-2 text-white font-bold">
               {selectedPlan === "monthly" ? t("pricingCard.monthlySub") : selectedPlan === "annual" ? t("pricingCard.annualSub") : t("pricingCard.lifetimeSub")}
             </span>
           </div>
           {/* THB equivalent — display only, USD is the charge currency */}
-          <p className="text-xs mb-2" style={{ color: "var(--text-on-dark-muted)" }}>
+          <p className="text-sm mb-2 text-white/80 font-bold">
             ≈ {PLANS[selectedPlan].thb} THB
           </p>
 
@@ -283,18 +282,18 @@ export default function UpgradePage() {
           )}
 
           {selectedPlan === "monthly" && (
-            <p className="text-xs mb-4" style={{ color: "var(--text-on-dark-muted)" }}>
+            <p className="text-sm mb-4 text-white/80 font-bold">
               {t("pricingCard.monthlyDescription", "Cancel anytime. No contracts.")}
             </p>
           )}
           {selectedPlan === "annual" && (
-            <p className="text-xs mb-4" style={{ color: "var(--text-on-dark-muted)" }}>
+            <p className="text-sm mb-4 text-white/80 font-bold">
               {t("pricingCard.annualDescription", "Billed once per year. Equivalent to $24.17/mo.")}
             </p>
           )}
           {selectedPlan === "lifetime" && (
             <>
-              <p className="text-xs mb-3" style={{ color: "var(--text-on-dark-muted)" }}>
+              <p className="text-sm mb-3 text-white/80 font-bold">
                 {t("pricingCard.lifetimeDescription", "One-time payment. No renewals, ever.")}
               </p>
               {/* Best Value ROI callout */}
@@ -302,10 +301,10 @@ export default function UpgradePage() {
                 className="rounded-xl px-4 py-3 mb-4"
                 style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
               >
-                <p className="text-xs font-black mb-0.5" style={{ color: "oklch(0.35 0.12 80)" }}>
+                <p className="text-xs font-black mb-0.5" style={{ color: "oklch(0.20 0.08 80)" }}>
                   {t("pricingCard.lifetimeRoiCalloutTitle")}
                 </p>
-                <p className="text-xs" style={{ color: "oklch(0.45 0.08 80)" }}>
+                <p className="text-xs" style={{ color: "oklch(0.25 0.06 80)" }}>
                   {t("pricingCard.lifetimeRoiCalloutDescription")}
                 </p>
               </div>
@@ -344,7 +343,7 @@ export default function UpgradePage() {
               : t("pricingCard.payByCard", { price: PLANS[selectedPlan].price })}
           </button>
 
-          <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-muted)" }}>
+          <p className="text-center text-sm font-bold mt-2 text-white/60">
             {t("pricingCard.secureCheckoutNote")}
           </p>
 
@@ -358,10 +357,10 @@ export default function UpgradePage() {
               >
                 <span className="text-sm mt-0.5">💬</span>
                 <div>
-                  <p className="text-xs font-black" style={{ color: "oklch(0.35 0.12 80)" }}>
+                  <p className="text-xs font-black" style={{ color: "oklch(0.20 0.08 80)" }}>
                     ธุรกิจส่วนใหญ่คืนทุนภายใน 90 วัน
                   </p>
-                  <p className="text-xs" style={{ color: "oklch(0.45 0.08 80)" }}>
+                  <p className="text-xs" style={{ color: "oklch(0.25 0.06 80)" }}>
                     Most businesses recover cost in 90 days — reviews drive repeat bookings and new customers on autopilot.
                   </p>
                 </div>
@@ -395,7 +394,7 @@ export default function UpgradePage() {
             </div>
           ) : (
             // Non-Thai locale: show a subtle reveal link
-            <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-muted)" }}>
+            <p className="text-center text-sm font-bold mt-2 text-white/60">
               {t("pricingCard.promptPayReveal")}{" "}
               <button
                 onClick={() => {

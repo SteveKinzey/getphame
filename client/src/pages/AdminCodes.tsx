@@ -97,8 +97,8 @@ export default function AdminCodesPage() {
   if (!user || user.role !== "admin") {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center px-6 rr-bg-navy">
-        <p className="text-white text-lg font-bold mb-4">Admin access required.</p>
-        <button onClick={() => navigate("/")} className="text-sm" style={{ color: "var(--text-on-dark-secondary)" }}>
+        <p className="text-white text-xl font-black mb-4">Admin access required.</p>
+        <button onClick={() => navigate("/")} className="text-base font-bold" style={{ color: "white" }}>
           Go home
         </button>
       </div>
@@ -132,7 +132,7 @@ export default function AdminCodesPage() {
             >
               Access Codes
             </h1>
-            <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
+            <p className="text-base font-bold mt-1 text-white/90">
               Create and manage beta / promo codes that grant free Pro access.
             </p>
           </div>
@@ -176,7 +176,7 @@ export default function AdminCodesPage() {
           <div className="flex flex-col gap-3">
             {/* Custom code override */}
             <div>
-              <label className="text-xs font-semibold mb-1 block" style={{ color: "var(--text-on-dark-secondary)" }}>
+              <label className="text-sm font-bold mb-1 block text-white/80">
                 Custom code (optional — leave blank to use the one above)
               </label>
               <input
@@ -190,7 +190,7 @@ export default function AdminCodesPage() {
 
             {/* Internal note */}
             <div>
-              <label className="text-xs font-semibold mb-1 block" style={{ color: "var(--text-on-dark-secondary)" }}>
+              <label className="text-sm font-bold mb-1 block text-white/80">
                 Internal note (shown in success message)
               </label>
               <input
@@ -205,7 +205,7 @@ export default function AdminCodesPage() {
             <div className="flex gap-3">
               {/* Max uses */}
               <div className="flex-1">
-                <label className="text-xs font-semibold mb-1 block" style={{ color: "var(--text-on-dark-secondary)" }}>
+                <label className="text-sm font-bold mb-1 block text-white/80">
                   Max uses (blank = unlimited)
                 </label>
                 <input
@@ -220,7 +220,7 @@ export default function AdminCodesPage() {
 
               {/* Expiry days */}
               <div className="flex-1">
-                <label className="text-xs font-semibold mb-1 block" style={{ color: "var(--text-on-dark-secondary)" }}>
+                <label className="text-sm font-bold mb-1 block text-white/80">
                   Expires in days (blank = never)
                 </label>
                 <input
@@ -268,7 +268,7 @@ export default function AdminCodesPage() {
             </div>
           ) : !codes || codes.length === 0 ? (
             <div className="px-5 pb-6 text-center">
-              <p className="text-sm" style={{ color: "var(--text-on-dark-muted)" }}>
+              <p className="text-base font-bold text-white/70">
                 No codes yet. Create one above.
               </p>
             </div>
@@ -314,13 +314,13 @@ export default function AdminCodesPage() {
 
                         {/* Note */}
                         {c.note && (
-                          <p className="text-xs mb-1" style={{ color: "var(--text-on-dark-secondary)" }}>
+                          <p className="text-sm font-bold mb-1 text-white/90">
                             {c.note}
                           </p>
                         )}
 
                         {/* Stats */}
-                        <div className="flex items-center gap-3 text-xs" style={{ color: "var(--text-on-dark-muted)" }}>
+                        <div className="flex items-center gap-3 text-sm font-bold text-white/60">
                           <span>
                             {c.usedCount} used
                             {c.maxUses !== null ? ` / ${c.maxUses}` : " / "}

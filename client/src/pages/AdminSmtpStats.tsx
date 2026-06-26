@@ -80,7 +80,7 @@ export default function AdminSmtpStatsPage() {
       <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/admin/codes")}
-          className="flex items-center gap-1 mb-4 text-xs font-bold rr-text-gold"
+          className="flex items-center gap-1 mb-4 text-sm font-bold rr-text-gold"
         >
           <ChevronLeft size={14} />
           Admin
@@ -100,7 +100,7 @@ export default function AdminSmtpStatsPage() {
             >
               SMTP Provider Stats
             </h1>
-            <p className="text-xs mt-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+            <p className="text-sm font-bold mt-1 text-white/90">
               Health check results across all connected accounts
             </p>
           </div>
@@ -131,13 +131,13 @@ export default function AdminSmtpStatsPage() {
         {totals && (
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
-              <p className="text-xs font-bold mb-1 rr-text-navy-muted">Connected Accounts</p>
+              <p className="text-sm font-bold mb-1 rr-text-navy-mid">Connected Accounts</p>
               <p className="text-3xl font-black rr-text-navy">
                 {totals.total}
               </p>
             </div>
             <div className="bg-white rounded-2xl p-4 shadow-sm">
-              <p className="text-xs font-bold mb-1 rr-text-navy-muted">Failure Rate</p>
+              <p className="text-sm font-bold mb-1 rr-text-navy-mid">Failure Rate</p>
               <p
                 className="text-3xl font-black"
                 style={{
@@ -151,14 +151,14 @@ export default function AdminSmtpStatsPage() {
             <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
               <CheckCircle2 size={18} className="rr-text-green" />
               <div>
-                <p className="text-xs font-bold rr-text-navy-muted">Healthy</p>
+                <p className="text-sm font-bold rr-text-navy-mid">Healthy</p>
                 <p className="text-xl font-black rr-text-navy">{totals.ok}</p>
               </div>
             </div>
             <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center gap-3">
               <AlertCircle size={18} style={{ color: "oklch(0.60 0.20 27)" }} />
               <div>
-                <p className="text-xs font-bold rr-text-navy-muted">Failing</p>
+                <p className="text-sm font-bold rr-text-navy-mid">Failing</p>
                 <p className="text-xl font-black rr-text-navy">{totals.fail}</p>
               </div>
             </div>
@@ -169,14 +169,14 @@ export default function AdminSmtpStatsPage() {
         {totals?.lastRunAt ? (
           <div className="flex items-center gap-2 px-4 py-2 rounded-xl rr-bg-surface">
             <Clock size={12} className="rr-text-navy-muted" />
-            <p className="text-xs rr-text-navy-muted">
+            <p className="text-sm font-bold rr-text-navy-mid">
               Last health check run: <span className="font-bold">{new Date(totals.lastRunAt).toLocaleString()}</span>
             </p>
           </div>
         ) : (
           <div className="flex items-center gap-2 px-4 py-2 rounded-xl rr-bg-surface">
             <Clock size={12} className="rr-text-navy-muted" />
-            <p className="text-xs rr-text-navy-muted">No health checks have run yet.</p>
+            <p className="text-sm font-bold rr-text-navy-mid">No health checks have run yet.</p>
           </div>
         )}
 
@@ -201,10 +201,10 @@ export default function AdminSmtpStatsPage() {
                 <div key={row.host} className="px-5 py-4">
                   <div className="flex items-start justify-between gap-3 mb-2">
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold truncate rr-text-navy">
+                      <p className="text-base font-black truncate rr-text-navy">
                         {row.host}
                       </p>
-                      <div className="flex items-center gap-3 mt-0.5 text-xs rr-text-navy-muted">
+                      <div className="flex items-center gap-3 mt-0.5 text-sm font-bold rr-text-navy-mid">
                         <span>{row.total} account{row.total !== 1 ? "s" : ""}</span>
                         {row.ok > 0 && <span style={{ color: "oklch(0.45 0.18 145)" }}>✓ {row.ok} ok</span>}
                         {row.fail > 0 && <span style={{ color: "oklch(0.50 0.18 27)" }}>✗ {row.fail} failing</span>}
@@ -234,7 +234,7 @@ export default function AdminSmtpStatsPage() {
                       {row.recentErrors.map((err, i) => (
                         <p
                           key={i}
-                          className="text-xs font-mono px-2 py-1 rounded-lg truncate"
+                          className="text-sm font-bold font-mono px-2 py-1 rounded-lg truncate"
                           style={{ background: "oklch(0.97 0.02 27)", color: "oklch(0.45 0.10 27)" }}
                           title={err}
                         >

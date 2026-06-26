@@ -55,7 +55,7 @@ export default function Pricing() {
           <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
             Honest pricing. No surprises.
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-slate-200 font-medium max-w-2xl mx-auto">
             Start free. Upgrade when you're ready. Cancel anytime. No hidden fees.
           </p>
         </FadeUp>
@@ -89,13 +89,13 @@ export default function Pricing() {
                 <h3 className="font-display font-bold text-lg text-white mb-1">{plan.name}</h3>
                 <div className="flex items-baseline gap-0.5">
                   <span className="font-display font-extrabold text-4xl text-primary">{plan.price}</span>
-                  <span className="text-muted-foreground text-sm">{plan.period}</span>
+                  <span className="text-slate-200 text-sm font-bold">{plan.period}</span>
                 </div>
-                <p className="text-sm text-muted-foreground mt-2">{plan.description}</p>
+                <p className="text-sm text-white font-medium font-medium mt-2">{plan.description}</p>
               </div>
               <ul className="flex-1 space-y-3 mb-6">
                 {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2.5 text-sm text-slate-300">
+                  <li key={feature} className="flex items-start gap-2.5 text-sm text-white font-medium">
                     <Check size={15} className="text-emerald-400 shrink-0 mt-0.5" />
                     <span>{feature}</span>
                   </li>

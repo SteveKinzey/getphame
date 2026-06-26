@@ -39,7 +39,7 @@ export default function HowItWorks() {
             <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
               Two minutes to your first review request
             </h2>
-            <p className="text-lg text-muted-foreground mb-8">
+            <p className="text-lg text-slate-200 font-medium mb-8">
               No technical skills needed. No onboarding calls. Just connect, import, and send.
             </p>
             <a
@@ -49,7 +49,7 @@ export default function HowItWorks() {
               Get Started Free
               <ArrowRight size={18} />
             </a>
-            <p className="text-sm text-muted-foreground mt-3">
+            <p className="text-sm text-slate-300 font-medium mt-3">
               Takes less than 2 minutes to set up
             </p>
           </FadeUp>
@@ -70,7 +70,7 @@ export default function HowItWorks() {
                   </div>
                   <div>
                     <h3 className="font-display font-bold text-lg text-white mb-1.5">{step.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{step.description}</p>
+                    <p className="text-slate-200 leading-relaxed font-medium">{step.description}</p>
                   </div>
                 </div>
               </div>

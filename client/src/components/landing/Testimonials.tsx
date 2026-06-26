@@ -36,7 +36,7 @@ export default function Testimonials() {
           <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
             They asked. Customers answered.
           </h2>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg text-slate-200 font-medium">
             Real businesses using Get Phame to grow their reputation every week.
           </p>
         </FadeUp>
@@ -58,7 +58,7 @@ export default function Testimonials() {
                   <Star key={j} size={14} className="text-primary fill-primary" />
                 ))}
               </div>
-              <p className="text-slate-300 leading-relaxed mb-6 text-sm md:text-[15px]">"{t.quote}"</p>
+              <p className="text-white leading-relaxed mb-6 text-sm md:text-[15px] font-medium">"{t.quote}"</p>
               <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 mb-5">
                 <span className="text-xs font-semibold text-emerald-400">{t.result}</span>
               </div>
@@ -68,7 +68,7 @@ export default function Testimonials() {
                 </div>
                 <div>
                   <p className="font-semibold text-white text-sm">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.role}</p>
+                  <p className="text-sm text-slate-300 font-semibold">{t.role}</p>
                 </div>
               </div>
             </div>

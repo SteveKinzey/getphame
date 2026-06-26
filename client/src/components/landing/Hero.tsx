@@ -77,7 +77,7 @@ export default function Hero() {
 
             <motion.p
               {...fadeUp(0.32)}
-              className="text-lg md:text-xl text-slate-300 leading-relaxed mb-8 max-w-lg"
+              className="text-lg md:text-xl text-white leading-relaxed mb-8 max-w-lg font-medium"
             >
               Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender.
             </motion.p>
@@ -94,7 +94,7 @@ export default function Hero() {
 
             <motion.div
               {...fadeUp(0.54)}
-              className="flex flex-col sm:flex-row gap-4 text-sm text-slate-400"
+              className="flex flex-col sm:flex-row gap-4 text-sm text-slate-200 font-medium"
             >
               <span className="flex items-center gap-2">
                 <Shield size={14} className="text-emerald-400" />

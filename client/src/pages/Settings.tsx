@@ -76,13 +76,13 @@ function InlineFromNameEdit({ current, onSaved }: { current: string; onSaved: ()
   if (!editing) {
     return (
       <div className="flex items-center gap-2">
-        <p className="text-xs flex-1 rr-text-navy-muted">
+        <p className="text-base flex-1 rr-text-navy font-bold">
           <span className="rr-text-navy-mid rr-fw-semibold">Sender name:</span>{" "}
           {current || <span className="rr-text-navy-faint">Not set</span>}
         </p>
         <button
           onClick={() => setEditing(true)}
-          className="text-xs px-2 py-1 rounded-lg font-bold rr-text-navy-mid rr-bg-surface"
+          className="text-sm px-2 py-1 rounded-lg font-black rr-text-navy rr-bg-surface-darker"
         >
           Edit
         </button>
@@ -103,14 +103,14 @@ function InlineFromNameEdit({ current, onSaved }: { current: string; onSaved: ()
       />
       <button
         onClick={() => setEditing(false)}
-        className="text-xs px-2 py-1 rounded-lg font-bold rr-text-navy-muted rr-bg-surface"
+        className="text-sm px-2 py-1 rounded-lg font-black rr-text-navy-muted rr-bg-surface-darker"
       >
         Cancel
       </button>
       <button
         disabled={updateFromName.isPending}
         onClick={() => updateFromName.mutate({ fromName: value.trim() })}
-        className="text-xs px-2 py-1 rounded-lg font-bold rr-bg-navy text-white"
+        className="text-sm px-2 py-1 rounded-lg font-black rr-bg-navy text-white"
       >
         {updateFromName.isPending ? <Loader2 size={12} className="animate-spin" /> : "Save"}
       </button>
@@ -132,13 +132,13 @@ function InlineReplyToEdit({ current, onSaved }: { current: string; onSaved: () 
   if (!editing) {
     return (
       <div className="flex items-center gap-2">
-        <p className="text-xs flex-1 rr-text-navy-muted">
+        <p className="text-base flex-1 rr-text-navy font-bold">
           <span className="rr-text-navy-mid rr-fw-semibold">Reply-To:</span>{" "}
           {current || <span className="rr-text-navy-faint">Same as sending address</span>}
         </p>
         <button
           onClick={() => setEditing(true)}
-          className="text-xs px-2 py-1 rounded-lg font-bold rr-text-navy-mid rr-bg-surface"
+          className="text-sm px-2 py-1 rounded-lg font-black rr-text-navy rr-bg-surface-darker"
         >
           Edit
         </button>
@@ -159,14 +159,14 @@ function InlineReplyToEdit({ current, onSaved }: { current: string; onSaved: () 
       />
       <button
         onClick={() => setEditing(false)}
-        className="text-xs px-2 py-1 rounded-lg font-bold rr-text-navy-muted rr-bg-surface"
+        className="text-sm px-2 py-1 rounded-lg font-black rr-text-navy-muted rr-bg-surface-darker"
       >
         Cancel
       </button>
       <button
         disabled={updateReplyTo.isPending}
         onClick={() => updateReplyTo.mutate({ replyTo: value.trim() })}
-        className="text-xs px-2 py-1 rounded-lg font-bold rr-bg-navy text-white"
+        className="text-sm px-2 py-1 rounded-lg font-black rr-bg-navy text-white"
       >
         {updateReplyTo.isPending ? <Loader2 size={12} className="animate-spin" /> : "Save"}
       </button>
@@ -227,7 +227,7 @@ function SendFeedbackSection() {
           <X size={14} className="rr-text-navy-muted" />
         </button>
       </div>
-      <p className="text-xs leading-relaxed rr-text-navy-muted">
+      <p className="text-base font-bold leading-relaxed rr-text-navy-mid">
         Found a bug? Have a suggestion? We read every message.
       </p>
       <textarea
@@ -240,20 +240,20 @@ function SendFeedbackSection() {
         aria-label="Feedback message"
       />
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs" style={{ color: "oklch(0.65 0.04 260)" }}>
+        <span className="text-sm font-bold" style={{ color: "oklch(0.25 0.04 260)" }}>
           {message.length}/1000
         </span>
         <div className="flex gap-2">
           <button
             onClick={() => { setOpen(false); setMessage(""); }}
-            className="px-4 py-2 rounded-xl text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.94 0.01 260)" }}
+            className="px-4 py-2 rounded-xl text-sm font-black rr-text-navy" style={{ background: "oklch(0.90 0.01 260)" }}
           >
             Cancel
           </button>
           <button
             disabled={!message.trim() || sending}
             onClick={handleSend}
-            className="px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1"
+            className="px-4 py-2 rounded-xl text-sm font-black flex items-center gap-1"
             style={{
               background: message.trim() ? "oklch(0.22 0.09 260)" : "oklch(0.70 0.04 260)",
               color: "oklch(0.80 0.18 80)",
@@ -307,7 +307,7 @@ function DeleteAccountSection() {
       <p className="text-sm font-bold" style={{ color: "oklch(0.40 0.15 25)", fontFamily: "'Poppins', sans-serif" }}>
         Delete your account?
       </p>
-      <p className="text-xs leading-relaxed" style={{ color: "oklch(0.45 0.05 260)" }}>
+      <p className="text-sm font-bold leading-relaxed" style={{ color: "oklch(0.15 0.05 260)" }}>
         This will permanently delete your account, all contacts, email templates, review requests, tracking data, and SMTP credentials. This action cannot be undone.
       </p>
       <label className="flex items-start gap-2 cursor-pointer">
@@ -317,14 +317,14 @@ function DeleteAccountSection() {
           onChange={(e) => setConfirmed(e.target.checked)}
           className="mt-0.5"
         />
-        <span className="text-xs" style={{ color: "oklch(0.45 0.05 260)" }}>
+        <span className="text-sm font-bold" style={{ color: "oklch(0.15 0.05 260)" }}>
           I understand this is permanent and cannot be reversed.
         </span>
       </label>
       <div className="flex gap-2">
         <button
           onClick={() => { setOpen(false); setConfirmed(false); }}
-          className="flex-1 py-2 rounded-xl text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.94 0.01 260)" }}
+          className="flex-1 py-2 rounded-xl text-sm font-black rr-text-navy" style={{ background: "oklch(0.90 0.01 260)" }}
         >
           Cancel
         </button>
@@ -410,7 +410,7 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
       </div>
 
       {renewalLabel && (
-        <p className="text-xs mb-3 flex items-center gap-1.5 rr-text-navy-mid">
+        <p className="text-sm mb-3 flex items-center gap-1.5 rr-text-navy-mid font-bold">
           <Clock size={12} />
           {renewalLabel}
         </p>
@@ -418,7 +418,7 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
 
       {tier === 'free' ? (
         <div className="flex flex-col gap-2">
-          <p className="text-xs rr-text-navy-muted">
+          <p className="text-sm font-semibold rr-text-navy-mid">
             Upgrade to Pro for unlimited sends, follow-up reminders, and priority support.
           </p>
           <button
@@ -454,7 +454,7 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
                     </div>
                   ))}
                 </div>
-                <p className="text-xs rr-text-navy-muted">
+                <p className="text-sm font-semibold rr-text-navy-mid">
                   Cancelling will downgrade your account to Free at the end of the billing period.
                 </p>
                 <div className="flex gap-2">
@@ -466,7 +466,7 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
                   </button>
                   <button
                     onClick={() => { setShowRetention(false); navigate('/cancel'); }}
-                    className="flex-1 py-2.5 rounded-xl text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.94 0.01 260)" }}
+                    className="flex-1 py-2.5 rounded-xl text-sm font-black rr-text-navy" style={{ background: "oklch(0.90 0.01 260)" }}
                   >
                     Continue to Cancel
                   </button>
@@ -482,7 +482,7 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
               </button>
             )
           ) : (
-            <p className="text-xs rr-text-navy-muted">
+            <p className="text-sm font-semibold rr-text-navy-mid">
               Your plan is active. Contact support to manage billing.
             </p>
           )}
@@ -574,7 +574,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
           <Crown size={16} className="mt-0.5 shrink-0 rr-text-gold" />
           <div>
             <p className="text-sm font-bold rr-text-navy mb-0.5">Pro feature</p>
-            <p className="text-xs rr-text-navy-muted">Upgrade to Pro to connect a bulk email service and remove daily send limits.</p>
+            <p className="text-sm font-semibold rr-text-navy-mid">Upgrade to Pro to connect a bulk email service and remove daily send limits.</p>
           </div>
         </div>
       ) : status?.connected && !showForm ? (
@@ -583,7 +583,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
             <CheckCircle size={16} className="shrink-0" style={{ color: "oklch(0.45 0.15 150)" }} />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold rr-text-navy">{PROVIDER_LABELS[status.provider!]} connected</p>
-              <p className="text-xs rr-text-navy-muted truncate">{status.fromEmail}</p>
+              <p className="text-sm font-semibold rr-text-navy-mid truncate">{status.fromEmail}</p>
             </div>
           </div>
           <div className="flex gap-2">
@@ -1372,7 +1372,7 @@ export default function SettingsPage() {
                               <strong>Why no link?</strong> Yelp's Terms of Service prohibit directly soliciting reviews via a link. A plain-text search instruction keeps your emails compliant — customers find your listing themselves.
                             </TooltipContent>
                           </Tooltip>
-                          <p className="text-xs rr-text-navy-muted">Enter a plain-text search instruction. This text appears in the email — no link is generated, keeping you Yelp-compliant.</p>
+                          <p className="text-sm font-semibold rr-text-navy-mid">Enter a plain-text search instruction. This text appears in the email — no link is generated, keeping you Yelp-compliant.</p>
                         </div>
                       )}
                       <input
@@ -1509,7 +1509,7 @@ export default function SettingsPage() {
                 <div
                   className="text-center py-4 rounded-xl rr-bg-white-card" style={{ border: "1px dashed oklch(0.85 0.03 260)" }}
                 >
-                  <p className="text-xs rr-text-navy-muted">
+                  <p className="text-sm font-semibold rr-text-navy-mid">
                     No review platforms added yet. Click <strong>Add</strong> to get started.
                   </p>
                 </div>
@@ -1969,7 +1969,7 @@ export default function SettingsPage() {
                       <button
                         type="button"
                         onClick={() => setShowSmtpPassword((v) => !v)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-xs rr-text-navy-muted"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold rr-text-navy-mid"
                       >
                         {showSmtpPassword ? 'Hide' : 'Show'}
                       </button>
@@ -2072,7 +2072,7 @@ export default function SettingsPage() {
                     className="w-24 px-3 py-2.5 rounded-xl text-sm outline-none"
                     style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                   />
-                  <span className="text-xs rr-text-navy-muted">emails per day (max 500)</span>
+                  <span className="text-sm font-semibold rr-text-navy-mid">emails per day (max 500)</span>
                   <button
                     type="button"
                     onClick={() => setDailySendLimitMutation.mutate({ limit: dailySendLimit })}
@@ -2116,7 +2116,7 @@ export default function SettingsPage() {
                       className="w-16 px-2 py-1.5 rounded-lg text-sm outline-none text-center"
                       style={{ border: "2px solid oklch(0.88 0.02 260)", fontSize: "16px" }}
                     />
-                    <span className="text-xs rr-text-navy-muted">days (second follow-up 7 days later)</span>
+                    <span className="text-sm font-semibold rr-text-navy-mid">days (second follow-up 7 days later)</span>
                   </div>
                 )}
               </div>
@@ -2133,11 +2133,11 @@ export default function SettingsPage() {
                     onCheckedChange={(v) => updateReEngagementSettings.mutate({ reEngagementEnabled: v ? 1 : 0 })}
                   />
                 </div>
-                <p className="text-xs rr-text-navy-muted">Send a single win-back email to churned users 3 days after they cancel. Includes an unsubscribe link.</p>
+                <p className="text-sm font-semibold rr-text-navy-mid">Send a single win-back email to churned users 3 days after they cancel. Includes an unsubscribe link.</p>
               </div>
 
               {/* Advanced: host/port — collapsed by default, auto-expanded for custom domains */}
-              <details className="text-xs rr-text-navy-muted" open={showAdvanced} onToggle={(e) => setShowAdvanced((e.target as HTMLDetailsElement).open)}>
+              <details className="text-sm font-semibold rr-text-navy-mid" open={showAdvanced} onToggle={(e) => setShowAdvanced((e.target as HTMLDetailsElement).open)}>
                 <summary className="cursor-pointer font-semibold py-1">Advanced settings (auto-detected)</summary>
                 <div className="flex flex-col gap-2 mt-2">
                   {/* Provider preset quick-fill buttons */}
@@ -2604,7 +2604,7 @@ export default function SettingsPage() {
               ))}
             </div>
           ) : (
-            <p className="text-xs mb-4" style={{ color: "oklch(0.65 0.04 260)" }}>No API keys yet.</p>
+            <p className="text-xs mb-4" style={{ color: "oklch(0.35 0.04 260)" }}>No API keys yet.</p>
           )}
 
           {/* Generate new key */}
@@ -2657,11 +2657,11 @@ export default function SettingsPage() {
                 <div key={ev.id} className="flex items-center justify-between gap-2 rounded-xl px-3 py-2 rr-bg-white-card">
                   <div className="flex-1 min-w-0">
                     <p className="text-xs font-semibold truncate rr-text-navy">{ev.email}</p>
-                    <p className="text-xs rr-text-navy-muted">
+                    <p className="text-sm font-semibold rr-text-navy-mid">
                       via <span className="font-medium">{ev.keyLabel}</span> · {ev.created ? "✨ new contact" : "updated"}
                     </p>
                   </div>
-                  <span className="text-xs shrink-0" style={{ color: "oklch(0.65 0.04 260)" }}>
+                  <span className="text-xs shrink-0" style={{ color: "oklch(0.35 0.04 260)" }}>
                     {new Date(ev.createdAt).toLocaleString()}
                   </span>
                 </div>
@@ -2713,11 +2713,11 @@ export default function SettingsPage() {
                 className="w-full px-3 py-2 rounded-xl text-xs outline-none bg-white" style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
               />
               <div className="flex gap-2 justify-end">
-                <button onClick={() => setShowAddWebhook(false)} className="px-3 py-1.5 rounded-xl text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.94 0.01 260)" }}>Cancel</button>
+                <button onClick={() => setShowAddWebhook(false)} className="px-3 py-1.5 rounded-xl text-sm font-black rr-text-navy" style={{ background: "oklch(0.90 0.01 260)" }}>Cancel</button>
                 <button
                   disabled={!newWebhookUrl.trim() || createWebhook.isPending}
                   onClick={() => createWebhook.mutate({ url: newWebhookUrl.trim(), label: newWebhookLabel.trim() || "My Webhook", secret: newWebhookSecret.trim() || undefined })}
-                  className="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 rr-bg-navy text-white"
+                  className="px-3 py-1.5 rounded-xl text-sm font-black flex items-center gap-1 rr-bg-navy text-white"
                 >
                   {createWebhook.isPending ? <Loader2 size={12} className="animate-spin" /> : <Plus size={12} />} Save
                 </button>
@@ -2725,7 +2725,7 @@ export default function SettingsPage() {
             </div>
           )}
           {(!webhookList || webhookList.length === 0) && !showAddWebhook && (
-            <p className="text-xs text-center py-4" style={{ color: "oklch(0.65 0.04 260)" }}>No webhooks yet. Click Add to create one.</p>
+            <p className="text-xs text-center py-4" style={{ color: "oklch(0.35 0.04 260)" }}>No webhooks yet. Click Add to create one.</p>
           )}
           <div className="space-y-2">
             {(webhookList ?? []).map((wh) => (
@@ -2790,11 +2790,11 @@ export default function SettingsPage() {
                                     Retry
                                   </button>
                                 )}
-                                <span className="text-xs rr-text-navy-muted">{new Date(log.createdAt).toLocaleString()}</span>
+                                <span className="text-sm font-semibold rr-text-navy-mid">{new Date(log.createdAt).toLocaleString()}</span>
                               </div>
                             </div>
                             {log.errorMessage && <p className="text-xs mt-0.5 truncate" style={{ color: "oklch(0.50 0.18 25)" }}>{log.errorMessage}</p>}
-                            {log.responseBody && <p className="text-xs mt-0.5 truncate" style={{ color: "oklch(0.45 0.05 260)" }}>{log.responseBody}</p>}
+                            {log.responseBody && <p className="text-xs mt-0.5 truncate" style={{ color: "oklch(0.30 0.05 260)" }}>{log.responseBody}</p>}
                           </div>
                         ))}
                       </div>
@@ -2878,7 +2878,7 @@ export default function SettingsPage() {
                   <p className="text-sm font-bold mb-1 rr-text-navy">
                     Google OAuth — Redirect URI Required
                   </p>
-                  <p className="text-xs mb-2" style={{ color: "oklch(0.45 0.05 260)" }}>
+                  <p className="text-xs mb-2" style={{ color: "oklch(0.30 0.05 260)" }}>
                     Add these two URIs to your Google Cloud Console OAuth client before Google login will work on the live domain.
                   </p>
                   <div className="space-y-1">
@@ -2927,7 +2927,7 @@ export default function SettingsPage() {
                   <p className="text-sm font-bold mb-1 rr-text-navy">
                     Sign in with Apple — 4 Secrets Required
                   </p>
-                  <p className="text-xs mb-3" style={{ color: "oklch(0.45 0.05 260)" }}>
+                  <p className="text-xs mb-3" style={{ color: "oklch(0.30 0.05 260)" }}>
                     Add these secrets in Settings → Secrets to enable Apple Sign In.
                   </p>
                   <div className="space-y-2">
@@ -2939,7 +2939,7 @@ export default function SettingsPage() {
                     ].map(({ key, hint }) => (
                       <div key={key}>
                         <p className="text-xs font-bold rr-text-navy">{key}</p>
-                        <p className="text-xs rr-text-navy-muted">{hint}</p>
+                        <p className="text-sm font-semibold rr-text-navy-mid">{hint}</p>
                       </div>
                     ))}
                   </div>
@@ -2969,7 +2969,7 @@ export default function SettingsPage() {
             </div>
             <div className="text-left">
               <p className="text-sm font-bold rr-text-navy">Compliance Guide</p>
-              <p className="text-xs rr-text-navy-muted">Platform rules, legal notes &amp; best practices</p>
+              <p className="text-sm font-semibold rr-text-navy-mid">Platform rules, legal notes &amp; best practices</p>
             </div>
           </div>
           <ChevronRight size={16} className="rr-text-navy-faint" />

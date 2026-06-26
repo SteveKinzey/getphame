@@ -31,7 +31,7 @@ export default function FAQ() {
             <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
               Questions about email safety, privacy & setup
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-slate-200 font-medium">
               Everything you need to know before connecting your email and sending your first review request.
             </p>
           </FadeUp>
@@ -47,7 +47,7 @@ export default function FAQ() {
                   <AccordionTrigger className="text-left font-semibold text-white hover:text-primary py-4 md:py-5 text-sm md:text-base [&[data-state=open]>svg]:text-primary">
                     {faq.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-muted-foreground leading-relaxed pb-5 text-sm md:text-[15px]">
+                  <AccordionContent className="text-slate-200 font-medium leading-relaxed pb-5 text-base md:text-[16px]">
                     {faq.answer}
                   </AccordionContent>
                 </AccordionItem>

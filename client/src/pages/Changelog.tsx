@@ -246,7 +246,7 @@ export default function ChangelogPage() {
           className="flex items-center gap-2 mb-4 transition-opacity active:opacity-70 rr-text-gold"
         >
           <ArrowLeft size={16} aria-hidden="true" />
-          <span className="text-xs font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>
+          <span className="text-sm font-bold" style={{ fontFamily: "'Poppins', sans-serif" }}>
             {t("header.back")}
           </span>
         </button>
@@ -258,7 +258,7 @@ export default function ChangelogPage() {
         >
           <Star size={16} className="rr-text-gold" aria-hidden="true" />
           <span
-            className="text-xs font-bold tracking-widest uppercase rr-text-gold"
+            className="text-base font-bold tracking-widest uppercase rr-text-gold"
           >
             Phame
           </span>
@@ -268,7 +268,7 @@ export default function ChangelogPage() {
         >
           {t("changelog.title", "What's New")}
         </h1>
-        <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
+        <p className="text-base mt-1 text-white font-bold">
           {t("changelog.subtitle", "Every update, improvement, and fix — in one place.")}
         </p>
 
@@ -282,10 +282,10 @@ export default function ChangelogPage() {
                 role="tab"
                 aria-selected={isActive}
                 onClick={() => setActiveFilter(tab.id)}
-                className="flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-150 active:scale-95"
+                className="flex-shrink-0 px-4 py-1.5 rounded-full text-sm font-black transition-all duration-150 active:scale-95"
                 style={{
-                  background: isActive ? "oklch(0.80 0.18 80)" : "oklch(0.30 0.07 260)",
-                  color: isActive ? "oklch(0.22 0.09 260)" : "oklch(0.70 0.04 260)",
+                  background: isActive ? "oklch(0.80 0.18 80)" : "oklch(0.35 0.08 260)",
+                  color: isActive ? "oklch(0.15 0.05 260)" : "oklch(0.85 0.02 260)",
                   fontFamily: "'Poppins', sans-serif",
                   border: "none",
                 }}
@@ -293,7 +293,7 @@ export default function ChangelogPage() {
                 {t(tab.labelKey)}
                 {tab.id !== "all" && (
                   <span
-                    className="ml-1.5 text-xs opacity-70 rr-fw-normal"
+                    className="ml-1.5 text-sm font-black ml-1.5 opacity-80 rr-fw-normal"
                   >
                     {allEntries.filter((e) => e.label === tab.id).length}
                   </span>
@@ -306,7 +306,7 @@ export default function ChangelogPage() {
 
       {/* Result count */}
       <div className="px-4 pt-4 pb-1">
-        <p className="text-xs rr-text-navy-muted">
+        <p className="text-base font-bold rr-text-navy-mid">
           {totalCount} {totalCount === 1 ? t("changelog.update", "update") : t("changelog.updates", "updates")}
           {activeFilter !== "all" ? ` ${t("changelog.matching", "matching")} "${t(LABEL_STYLES[activeFilter as Label]?.textKey)}"` : ` ${t("changelog.total", "total")}`}
         </p>
@@ -316,7 +316,7 @@ export default function ChangelogPage() {
       <div className="px-4 pt-2 flex flex-col gap-8">
         {filteredReleases.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-sm rr-text-navy-muted">{t("changelog.noUpdates", "No updates in this category yet.")}</p>
+            <p className="text-lg font-black rr-text-navy-mid">{t("changelog.noUpdates", "No updates in this category yet.")}</p>
           </div>
         ) : (
           filteredReleases.map((release) => (
@@ -324,12 +324,12 @@ export default function ChangelogPage() {
               {/* Version header */}
               <div className="flex items-center gap-3 mb-4">
                 <div
-                  className="px-3 py-1 rounded-full text-xs font-black rr-bg-navy rr-text-gold"
+                  className="px-3 py-1 rounded-full text-sm font-black rr-bg-navy rr-text-gold"
                 >
                   v{release.version}
                 </div>
                 <span
-                  className="text-xs font-semibold rr-text-navy-muted"
+                  className="text-base font-bold rr-text-navy-mid"
                 >
                   {release.date}
                 </span>
@@ -359,20 +359,19 @@ export default function ChangelogPage() {
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1 flex-wrap">
                           <span
-                            className="text-sm font-black leading-tight rr-text-navy"
+                            className="text-base font-black leading-tight rr-text-navy"
                           >
                             {t(entry.titleKey, entry.titleKey.split(".").pop() ?? "")}
                           </span>
                           <span
-                            className="text-xs font-bold px-2 py-0.5 rounded-full"
+                            className="text-sm font-black px-2 py-0.5 rounded-full"
                             style={{ background: style.bg, color: style.color }}
                           >
                             {t(style.textKey)}
                           </span>
                         </div>
                         <p
-                          className="text-xs leading-relaxed"
-                          style={{ color: "oklch(0.50 0.03 260)" }}
+                          className="text-sm font-bold leading-relaxed" style={{ color: "oklch(0.20 0.04 260)" }}
                         >
                           {t(entry.descriptionKey, entry.descriptionKey.split(".").pop() ?? "")}
                         </p>
@@ -388,12 +387,12 @@ export default function ChangelogPage() {
 
       {/* Footer note */}
       <div className="px-4 pt-6 pb-4 text-center">
-        <p className="text-xs rr-text-navy-faint">
+        <p className="text-base font-bold rr-text-navy-mid">
           {t("changelog.featureRequest", "Have a feature request?")}{" "}
           <a
             href="mailto:support@phame.app"
             className="font-bold underline"
-            style={{ color: "oklch(0.45 0.05 260)" }}
+            style={{ color: "oklch(0.35 0.10 260)" }}
           >
             {t("changelog.letUsKnow", "Let us know")}
           </a>

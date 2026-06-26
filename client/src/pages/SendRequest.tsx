@@ -143,10 +143,10 @@ export default function SendRequestPage() {
           <div
             className="flex flex-col gap-2 px-4 py-3 rounded-xl shadow-lg bg-white" style={{ border: "1px solid oklch(0.90 0.02 260)", minWidth: "280px", maxWidth: "320px" }}
           >
-            <p className="text-sm font-semibold rr-text-navy">
+            <p className="text-base font-bold rr-text-navy">
               {t("mainForm.noReviewPlatformsConfigured")}
             </p>
-            <p className="text-xs rr-text-navy-muted">
+            <p className="text-sm font-bold rr-text-navy-mid">
               {t("mainForm.addOneInSettings")}
             </p>
             <div className="flex gap-2">
@@ -158,7 +158,7 @@ export default function SendRequestPage() {
               </button>
               <button
                 onClick={() => toast.dismiss(toastId)}
-                className="px-3 py-1.5 rounded-lg text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}
+                className="px-3 py-1.5 rounded-lg text-sm font-bold rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}
               >
                 {t("homePage.dismiss")}
               </button>
@@ -207,10 +207,10 @@ export default function SendRequestPage() {
         >
           {t("successScreen.requestSent")}
         </h2>
-        <p className="text-center mb-2" style={{ color: "var(--text-on-dark-secondary)" }}>
+        <p className="text-center mb-2 text-white font-bold text-lg">
           {t("successScreen.requestSentTo", { customerName })}
         </p>
-        <p className="text-sm text-center mb-8" style={{ color: "var(--text-on-dark-secondary)" }}>
+        <p className="text-base text-center mb-8 text-white/90 font-bold">
           {t("successScreen.emailComesFrom", { email: smtpStatus?.email })}
         </p>
         <div className="flex gap-1 mb-8">
@@ -234,7 +234,7 @@ export default function SendRequestPage() {
                 {t("successScreen.requestsSentMilestone", { milestoneNum })}
               </p>
             </div>
-            <p className="text-xs mb-3" style={{ color: "var(--text-on-dark-secondary)" }}>
+            <p className="text-sm mb-3 text-white/90 font-bold">
               {t("successScreen.milestoneDescription")}
             </p>
             <a
@@ -270,7 +270,7 @@ export default function SendRequestPage() {
                     {t("successScreen.scheduleFollowUp")}?
                   </p>
                 </div>
-                <p className="text-xs mb-3" style={{ color: "var(--text-on-dark-secondary)" }}>
+                <p className="text-sm mb-3 text-white/90 font-bold">
                   {t("successScreen.followUpDescription", {
                     defaultValue: `Auto-send a gentle reminder to ${customerName} in ${reminderSettings?.followUpDelayDays ?? 3} days if they haven't reviewed yet.`,
                     customerName,
@@ -324,7 +324,7 @@ export default function SendRequestPage() {
           <div className="flex items-center gap-2">
             <Send size={16} className="rr-text-gold" />
             <span
-              className="text-xs font-bold tracking-widest uppercase rr-text-gold"
+              className="text-sm font-bold tracking-widest uppercase rr-text-gold"
             >
               {t("mainForm.pageTitle")}
             </span>
@@ -337,7 +337,7 @@ export default function SendRequestPage() {
           {t("page.requestAReview", { defaultValue: "Request a Review" })}
         </h1>
         {profile && (
-          <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
+          <p className="text-base font-bold mt-1 text-white/90">
             {t("mainForm.from")} {smtpStatus?.email ?? t("smtp.noEmailConnected", { defaultValue: "No email connected" })}
           </p>
         )}

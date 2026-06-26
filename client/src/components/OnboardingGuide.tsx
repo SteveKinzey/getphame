@@ -56,15 +56,15 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
         className="rounded-2xl p-5 text-center rr-bg-navy-mid"
       >
         <img src="https://assets.getphame.app/phame-app-icon-new.png" alt="Phame" className="w-20 h-20 rounded-2xl object-contain mx-auto mb-3" />
-        <p className="text-white font-bold text-lg leading-snug" style={{ fontFamily: "'Poppins', sans-serif" }}>
+        <p className="text-white font-black text-xl leading-snug" style={{ fontFamily: "'Poppins', sans-serif" }}>
           {t("onboardingGuide.welcome.heroText")}
         </p>
-        <p className="text-sm mt-2" style={{ color: "var(--text-on-dark-secondary)" }}>
+        <p className="text-base font-bold mt-2 text-white/90">
           {t("onboardingGuide.welcome.heroSubtext")}
         </p>
       </div>
 
-      <p className="text-sm font-semibold" style={{ color: "oklch(0.40 0.05 260)" }}>
+      <p className="text-base font-bold" style={{ color: "oklch(0.15 0.05 260)" }}>
         {t("onboardingGuide.welcome.setupStepsIntro")}
       </p>
 
@@ -94,11 +94,10 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
               {done[i] ? <CheckCircle2 size={14} /> : i + 1}
             </div>
             <span
-              className="text-sm font-medium"
-              style={{ color: done[i] ? "oklch(0.35 0.12 145)" : "oklch(0.22 0.09 260)" }}
+              className="text-base font-bold" style={{ color: done[i] ? "oklch(0.15 0.08 145)" : "oklch(0.10 0.05 260)" }}
             >
               {item.label}
-              {done[i] && <span className="ml-1.5 text-xs font-bold" style={{ color: "oklch(0.50 0.15 145)" }}>{t("onboardingGuide.welcome.doneLabel")}</span>}
+              {done[i] && <span className="ml-1.5 text-xs font-bold" style={{ color: "oklch(0.35 0.12 145)", fontWeight: "black" }}>{t("onboardingGuide.welcome.doneLabel")}</span>}
             </span>
             <div className="ml-auto flex items-center gap-1" style={{ color: done[i] ? "oklch(0.55 0.18 145)" : "oklch(0.55 0.05 260)" }}>
               {done[i] ? <CheckCircle2 size={14} /> : item.icon}
@@ -108,7 +107,7 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
         ))}
       </div>
 
-      <p className="text-xs text-center rr-text-navy-muted">
+      <p className="text-base font-black text-center rr-text-navy-mid">
         {t("onboardingGuide.welcome.setupTime")}
       </p>
     </div>
@@ -1070,7 +1069,7 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
             >
               {current.title}
             </h2>
-            <p className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
+            <p className="text-xs" style={{ color: "oklch(0.92 0.02 260)", fontWeight: "bold" }}>
               {current.subtitle}
             </p>
           </div>

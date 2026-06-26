@@ -112,7 +112,7 @@ export default function Reminders() {
       <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-1 mb-4 text-sm opacity-70 hover:opacity-100 transition-opacity rr-text-gold"
+          className="flex items-center gap-1 mb-4 text-base font-bold rr-text-gold transition-opacity"
         >
           <ChevronLeft size={16} /> {t("header.back")}
         </button>
@@ -120,7 +120,7 @@ export default function Reminders() {
           <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
             Follow-up Reminders
           </h1>
-          <p className="text-sm mt-1 opacity-70 text-white">
+          <p className="text-base font-bold mt-1 text-white">
             {t("header.subtitle")}
           </p>
         </div>
@@ -128,18 +128,18 @@ export default function Reminders() {
 
       <div className="px-4 pt-4 space-y-5">
         {/* Info banner */}
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-700">
+        <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-sm font-bold text-blue-900">
           <strong>{t("infoBanner.howItWorks")}</strong> {t("infoBanner.description")}
           <div className="flex gap-2 mt-2.5">
             <button
               onClick={() => setPreviewStep(1)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors rr-bg-navy rr-text-gold"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-sm font-black transition-colors rr-bg-navy rr-text-gold"
             >
               <Eye size={11} /> {t("infoBanner.preview1stFollowUp")}
             </button>
             <button
               onClick={() => setPreviewStep(2)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold transition-colors rr-bg-navy rr-text-gold"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-sm font-black transition-colors rr-bg-navy rr-text-gold"
             >
               <Eye size={11} /> {t("infoBanner.preview2ndFollowUp")}
             </button>
@@ -276,10 +276,10 @@ export default function Reminders() {
             {/* Modal header */}
             <div className="flex items-center justify-between px-4 py-3 shrink-0 rr-bg-navy" style={{ borderBottom: "1px solid oklch(0.30 0.08 260)" }}>
               <div>
-                <p className="text-xs font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
+                <p className="text-sm font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
                   {previewStep === 2 ? t("reminderRow.2ndFollowUp") : t("reminderRow.1stFollowUp")} Preview
                 </p>
-                <p className="text-xs mt-0.5" style={{ color: "oklch(0.70 0.04 260)" }}>
+                <p className="text-sm font-bold mt-0.5" style={{ color: "oklch(0.85 0.04 260)" }}>
                   Subject: {previewStep === 2 ? "One last nudge — we'd love your review!" : "Just checking in — have you had a chance to leave us a review?"}
                 </p>
               </div>

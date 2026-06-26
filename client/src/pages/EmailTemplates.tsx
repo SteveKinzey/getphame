@@ -72,7 +72,7 @@ const SHORTCODES = [
     description: "Replaced with the recipient's first/full name",
     example: "Alex Johnson",
     color: "oklch(0.93 0.06 260)",
-    textColor: "oklch(0.35 0.10 260)",
+    textColor: "oklch(0.20 0.06 260)",
   },
   {
     code: "{{businessName}}",
@@ -80,7 +80,7 @@ const SHORTCODES = [
     description: "Your business name from your profile",
     example: "SK America",
     color: "oklch(0.93 0.10 145)",
-    textColor: "oklch(0.30 0.12 145)",
+    textColor: "oklch(0.15 0.08 145)",
   },
   {
     code: "{{reviewLink}}",
@@ -88,7 +88,7 @@ const SHORTCODES = [
     description: "Your default review platform URL (single link)",
     example: "https://g.page/r/...",
     color: "oklch(0.95 0.08 80)",
-    textColor: "oklch(0.40 0.14 80)",
+    textColor: "oklch(0.25 0.10 80)",
   },
   {
     code: "{{platformLinks}}",
@@ -96,7 +96,7 @@ const SHORTCODES = [
     description: "A list of all your review platforms with their URLs",
     example: "- Google: https://...\n- Yelp: https://...",
     color: "oklch(0.94 0.06 30)",
-    textColor: "oklch(0.40 0.12 30)",
+    textColor: "oklch(0.25 0.08 30)",
   },
 ];
 
@@ -293,7 +293,7 @@ export default function EmailTemplates() {
         <div className="flex items-center justify-between mb-4">
           <button
             onClick={() => navigate("/settings")}
-            className="flex items-center gap-1 text-sm opacity-70 hover:opacity-100 transition-opacity rr-text-gold"
+            className="flex items-center gap-1 text-base font-bold rr-text-gold transition-opacity"
           >
             <ChevronLeft size={16} /> Settings
           </button>
@@ -304,7 +304,7 @@ export default function EmailTemplates() {
             <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
               Email Templates
             </h1>
-            <p className="text-sm mt-1 text-white" style={{ opacity: 0.75 }}>
+            <p className="text-base font-bold mt-1 text-white">
               {typedTemplates.length} template{typedTemplates.length !== 1 ? "s" : ""} saved
             </p>
           </div>
@@ -328,14 +328,14 @@ export default function EmailTemplates() {
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <Info size={15} style={{ color: "oklch(0.40 0.08 260)" }} />
-              <p className="text-sm font-bold" style={{ color: "oklch(0.30 0.08 260)" }}>
+              <p className="text-sm font-bold" style={{ color: "oklch(0.20 0.06 260)" }}>
                 Available Shortcodes
               </p>
             </div>
             <button
               onClick={() => setShortcodeGuideOpen((v) => !v)}
               className="text-xs font-semibold"
-              style={{ color: "oklch(0.45 0.10 260)" }}
+              style={{ color: "oklch(0.30 0.08 260)", fontWeight: "bold" }}
             >
               {shortcodeGuideOpen ? "Hide" : "Show all"}
             </button>

@@ -20,12 +20,12 @@ export default function Comparison() {
             <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
               Enterprise features. Startup price.
             </h2>
-            <p className="text-lg text-muted-foreground mb-6">
+            <p className="text-lg text-slate-200 font-medium mb-6">
               The big players charge $250–$300/month for review request tools. Get Phame gives you the same core capability at a fraction of the cost. Plus a lifetime option they'll never offer.
             </p>
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-primary/5 border border-primary/15">
               <span className="font-display font-extrabold text-2xl text-primary">10–20×</span>
-              <span className="text-sm text-muted-foreground">cheaper than enterprise alternatives</span>
+              <span className="text-sm text-white font-medium font-semibold">cheaper than enterprise alternatives</span>
             </div>
           </FadeUp>
 
@@ -34,9 +34,9 @@ export default function Comparison() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border/30">
-                    <th className="text-left p-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Platform</th>
-                    <th className="text-left p-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Starting Price</th>
-                    <th className="text-center p-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Lifetime</th>
+                    <th className="text-left p-4 text-sm font-bold text-white uppercase tracking-wider">Platform</th>
+                    <th className="text-left p-4 text-sm font-bold text-white uppercase tracking-wider">Starting Price</th>
+                    <th className="text-center p-4 text-sm font-bold text-white uppercase tracking-wider">Lifetime</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -46,7 +46,7 @@ export default function Comparison() {
                         <span className={`font-semibold text-sm ${comp.highlight ? "text-primary" : "text-white"}`}>{comp.name}</span>
                       </td>
                       <td className="p-4">
-                        <span className={`font-semibold text-sm ${comp.highlight ? "text-primary" : "text-slate-300"}`}>{comp.price}</span>
+                        <span className={`font-semibold text-sm ${comp.highlight ? "text-primary" : "text-white font-medium"}`}>{comp.price}</span>
                       </td>
                       <td className="p-4 text-center">
                         {comp.lifetime ? (
@@ -70,7 +70,7 @@ export default function Comparison() {
               ))}
             </div>
 
-            <p className="text-xs text-muted-foreground mt-4">
+            <p className="text-sm text-slate-300 font-medium mt-4">
               Prices based on publicly listed entry-tier plans as of April 2026. Subject to change.
             </p>
           </FadeUp>

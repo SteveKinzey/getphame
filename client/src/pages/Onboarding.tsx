@@ -88,7 +88,7 @@ export default function OnboardingPage() {
                 <br />
                 <span style={{ color: "oklch(0.78 0.15 75)" }}>Google Reviews</span>
               </h1>
-              <p className="text-lg leading-relaxed" style={{ color: "rgba(255,255,255,0.7)" }}>
+              <p className="text-xl font-bold leading-relaxed text-white/90">
                 Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender.
               </p>
             </div>
@@ -104,7 +104,7 @@ export default function OnboardingPage() {
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(255,184,0,0.1)", border: "1px solid rgba(255,184,0,0.2)" }}>
                     <item.icon className="w-5 h-5" style={{ color: "oklch(0.78 0.15 75)" }} />
                   </div>
-                  <p className="text-sm leading-relaxed pt-2" style={{ color: "rgba(255,255,255,0.8)" }}>{item.text}</p>
+                  <p className="text-base font-bold leading-relaxed pt-2 text-white/90">{item.text}</p>
                 </div>
               ))}
             </div>
@@ -116,13 +116,13 @@ export default function OnboardingPage() {
                   <Star key={i} size={18} fill="oklch(0.78 0.15 75)" style={{ color: "oklch(0.78 0.15 75)" }} />
                 ))}
               </div>
-              <span className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>
+              <span className="text-base font-bold text-white/70">
                 Trusted by 500+ local businesses
               </span>
             </div>
 
             {/* Compliance note */}
-            <div className="flex items-center gap-2 text-xs" style={{ color: "rgba(255,255,255,0.5)" }}>
+            <div className="flex items-center gap-2 text-sm font-bold text-white/50">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
@@ -152,7 +152,7 @@ export default function OnboardingPage() {
                   <h2 className="font-display font-extrabold text-2xl" style={{ color: "oklch(0.78 0.15 75)" }}>
                     Google Reviews
                   </h2>
-                  <p className="text-sm mt-3 leading-relaxed" style={{ color: "rgba(255,255,255,0.6)" }}>
+                  <p className="text-base font-bold mt-3 leading-relaxed text-white/80">
                     Send personalized review requests from your own email account.
                   </p>
                 </div>
@@ -160,7 +160,7 @@ export default function OnboardingPage() {
                 {/* Desktop heading */}
                 <div className="hidden lg:block text-center mb-8">
                   <h2 className="font-display font-bold text-xl mb-1">Create your free account</h2>
-                  <p className="text-sm" style={{ color: "rgba(255,255,255,0.6)" }}>No credit card required</p>
+                  <p className="text-base font-bold text-white/70">No credit card required</p>
                 </div>
 
                 {/* Stars (mobile only) */}
@@ -217,7 +217,7 @@ export default function OnboardingPage() {
                   {/* Divider */}
                   <div className="flex items-center gap-3 my-1">
                     <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.12)" }} />
-                    <span className="text-xs font-medium" style={{ color: "rgba(255,255,255,0.4)" }}>or</span>
+                    <span className="text-sm font-black text-white/60">or</span>
                     <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.12)" }} />
                   </div>
 
@@ -239,15 +239,14 @@ export default function OnboardingPage() {
                       <CheckCircle2 size={32} style={{ color: "oklch(0.78 0.15 75)" }} />
                       <div>
                         <p className="font-bold text-white text-sm mb-1">Check your inbox!</p>
-                        <p className="text-xs" style={{ color: "rgba(255,255,255,0.6)" }}>
+                        <p className="text-base font-bold text-white/70">
                           We sent a sign-in link to <strong className="text-white">{email}</strong>.
                           <br />It expires in 15 minutes.
                         </p>
                       </div>
                       <button
                         onClick={handleRetry}
-                        className="text-xs underline mt-1"
-                        style={{ color: "rgba(255,255,255,0.5)" }}
+                        className="text-sm font-bold underline mt-1 text-white/60"
                       >
                         Use a different email
                       </button>
@@ -261,7 +260,7 @@ export default function OnboardingPage() {
                         placeholder="your@email.com"
                         required
                         autoFocus
-                        className="w-full px-4 py-4 rounded-xl text-base font-medium outline-none text-white placeholder:text-white/40"
+                        className="w-full px-4 py-4 rounded-xl text-base font-medium outline-none text-white placeholder:text-white/60 font-medium"
                         style={{
                           background: "rgba(255,255,255,0.06)",
                           border: "1px solid rgba(255,255,255,0.15)",
@@ -292,7 +291,7 @@ export default function OnboardingPage() {
                         type="button"
                         onClick={() => { setShowEmailForm(false); setMagicState("idle"); setMagicError(""); setEmail(""); }}
                         className="text-xs text-center py-1"
-                        style={{ color: "rgba(255,255,255,0.4)" }}
+                        style={{ color: "var(--text-on-dark-disabled)" }}
                       >
                         Cancel
                       </button>
@@ -301,7 +300,7 @@ export default function OnboardingPage() {
                 </div>
 
                 {/* Fine print */}
-                <p className="text-center text-xs mt-6" style={{ color: "rgba(255,255,255,0.4)" }}>
+                <p className="text-center text-sm font-bold text-white/80">
                   {t("onboarding.finePrint") || "Start free — 10 review requests included. No credit card required."}
                 </p>
               </div>
@@ -312,7 +311,7 @@ export default function OnboardingPage() {
 
       {/* Footer */}
       <footer className="py-6 px-6 text-center">
-        <div className="flex items-center justify-center gap-4 text-xs" style={{ color: "rgba(255,255,255,0.4)" }}>
+        <div className="flex items-center justify-center gap-4 text-sm font-bold text-white/50">
           <a href="/privacy-policy" className="hover:text-white transition-colors">Privacy</a>
           <span>·</span>
           <a href="/terms-of-service" className="hover:text-white transition-colors">Terms</a>

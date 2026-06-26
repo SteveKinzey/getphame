@@ -188,7 +188,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2">
             <BarChart2 size={16} className="rr-text-gold" />
             <span
-              className="text-xs font-bold tracking-widest uppercase rr-text-gold"
+              className="text-sm font-bold tracking-widest uppercase rr-text-gold"
             >
               {t('dashboard.header.label')}
             </span>
@@ -296,21 +296,21 @@ export default function DashboardPage() {
               style={{ borderTop: "1px solid oklch(0.94 0.01 260)" }}
             >
               <div className="text-center flex-1">
-                <p className="text-xs rr-text-navy-muted">{t('dashboard.weeklyBreakdown.thisWeek')}</p>
+                <p className="text-sm font-semibold rr-text-navy-mid">{t('dashboard.weeklyBreakdown.thisWeek')}</p>
                 <p className="text-base font-black rr-text-navy">
                   {velocity.last7}
                 </p>
               </div>
               <div className="w-px h-8" style={{ background: "oklch(0.90 0.01 260)" }} />
               <div className="text-center flex-1">
-                <p className="text-xs rr-text-navy-muted">{t('dashboard.weeklyBreakdown.priorWeek')}</p>
+                <p className="text-sm font-semibold rr-text-navy-mid">{t('dashboard.weeklyBreakdown.priorWeek')}</p>
                 <p className="text-base font-black rr-text-navy">
                   {velocity.prior7}
                 </p>
               </div>
               <div className="w-px h-8" style={{ background: "oklch(0.90 0.01 260)" }} />
               <div className="text-center flex-1">
-                <p className="text-xs rr-text-navy-muted">{t('dashboard.weeklyBreakdown.allTime')}</p>
+                <p className="text-sm font-semibold rr-text-navy-mid">{t('dashboard.weeklyBreakdown.allTime')}</p>
                 <p className="text-base font-black rr-text-navy">
                   {stats?.total ?? 0}
                 </p>
@@ -351,13 +351,13 @@ export default function DashboardPage() {
             <div className="mt-3 pt-3 flex gap-4" style={{ borderTop: "1px solid oklch(0.94 0.01 260)" }}>
               <div className="flex items-center gap-1.5">
                 <Eye size={13} style={{ color: "oklch(0.55 0.20 145)" }} />
-                <span className="text-xs rr-text-navy-muted">
+                <span className="text-sm font-semibold rr-text-navy-mid">
                   {t('dashboard.emailPerformance.uniqueOpens', { count: emailPerf.uniqueOpens })}
                 </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <MousePointerClick size={13} style={{ color: "oklch(0.75 0.18 80)" }} />
-                <span className="text-xs rr-text-navy-muted">
+                <span className="text-sm font-semibold rr-text-navy-mid">
                   {t('dashboard.emailPerformance.uniqueClicks', { count: emailPerf.uniqueClicks })}
                 </span>
               </div>
@@ -513,7 +513,7 @@ export default function DashboardPage() {
                       <p className="text-sm font-bold rr-text-navy underline decoration-dotted underline-offset-2">
                         {req.customerName}
                       </p>
-                      <p className="text-xs rr-text-navy-muted">
+                      <p className="text-sm font-semibold rr-text-navy-mid">
                         {req.customerEmail}
                       </p>
                     </button>
@@ -536,7 +536,7 @@ export default function DashboardPage() {
                         : <><Circle size={11} className="mr-0.5" /> {t('dashboard.activityFeed.statusSent')}</>
                       }
                     </button>
-                    <p className="text-xs rr-text-navy-faint">
+                    <p className="text-sm font-semibold rr-text-navy-mid">
                       {formatDate(new Date(req.sentAt))}
                     </p>
                     {/* Open / click badges */}

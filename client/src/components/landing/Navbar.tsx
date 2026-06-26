@@ -51,7 +51,7 @@ export default function Navbar() {
             <a
               key={link.href}
               href={isHomePage ? link.href : `/${link.href}`}
-              className="text-sm font-medium text-muted-foreground hover:text-white transition-colors duration-200 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all after:duration-200 hover:after:w-full"
+              className="text-sm font-medium text-slate-200 hover:text-white transition-colors duration-200 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all after:duration-200 hover:after:w-full"
             >
               {link.label}
             </a>
@@ -62,7 +62,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-4">
           <a
             href="/onboarding"
-            className="text-sm font-medium text-muted-foreground hover:text-white transition-colors"
+            className="text-base font-semibold text-slate-200 hover:text-white transition-colors"
           >
             Sign In
           </a>
@@ -93,7 +93,7 @@ export default function Navbar() {
                 key={link.href}
                 href={isHomePage ? link.href : `/${link.href}`}
                 onClick={() => setMobileOpen(false)}
-                className="text-base font-medium text-muted-foreground hover:text-white py-2.5 transition-colors"
+                className="text-lg font-bold text-white py-2.5 transition-colors"
               >
                 {link.label}
               </a>
@@ -101,7 +101,7 @@ export default function Navbar() {
             <hr className="border-border/30 my-2" />
             <a
               href="/onboarding"
-              className="text-base font-medium text-muted-foreground hover:text-white py-2.5"
+              className="text-lg font-bold text-white py-2.5"
             >
               Sign In
             </a>

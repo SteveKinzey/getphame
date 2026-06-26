@@ -21,7 +21,7 @@ export default function Stats() {
           <h2 className="font-display font-bold text-2xl md:text-3xl text-white mb-3">
             Built for businesses that run on reputation
           </h2>
-          <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+          <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-slate-200 font-bold">
             {industries.map((ind, i) => (
               <span key={ind} className="flex items-center gap-2">
                 {i > 0 && <span className="text-border">·</span>}
@@ -37,7 +37,7 @@ export default function Stats() {
               <div className="font-display font-extrabold text-3xl md:text-4xl text-primary mb-2">
                 {stat.value}
               </div>
-              <p className="text-sm text-muted-foreground">{stat.label}</p>
+              <p className="text-sm text-slate-200 font-bold">{stat.label}</p>
             </div>
           ))}
         </StaggerChildren>

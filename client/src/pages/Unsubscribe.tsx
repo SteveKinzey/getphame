@@ -48,7 +48,7 @@ export default function UnsubscribePage() {
           className="px-8 py-6 text-center rr-bg-navy"
         >
           <p
-            className="text-xs font-bold tracking-widest uppercase mb-1 rr-text-gold"
+            className="text-base font-bold tracking-widest uppercase mb-1 rr-text-gold"
           >
             Phame
           </p>
@@ -65,7 +65,7 @@ export default function UnsubscribePage() {
           {status === "loading" && (
             <div className="flex flex-col items-center gap-3">
               <Loader2 size={40} className="animate-spin rr-text-navy" />
-              <p className="text-sm rr-text-navy-mid">
+              <p className="text-base font-semibold rr-text-navy-mid">
                 Processing your request…
               </p>
             </div>
@@ -80,7 +80,7 @@ export default function UnsubscribePage() {
                 >
                   You've been unsubscribed
                 </p>
-                <p className="text-sm rr-text-navy-mid">
+                <p className="text-base font-semibold rr-text-navy-mid">
                   You won't receive any more review request emails. If this was a mistake, please
                   contact the business directly.
                 </p>
@@ -97,7 +97,7 @@ export default function UnsubscribePage() {
                 >
                   Something went wrong
                 </p>
-                <p className="text-sm rr-text-navy-mid">
+                <p className="text-base font-semibold rr-text-navy-mid">
                   {errorMsg || "This unsubscribe link may be invalid or expired."}
                 </p>
               </div>
@@ -110,12 +110,12 @@ export default function UnsubscribePage() {
           className="px-8 py-4 text-center border-t"
           style={{ borderColor: "#e8eaf0", background: "#f8f9ff" }}
         >
-          <p className="text-xs" style={{ color: "#aaa" }}>
+          <p className="text-sm font-bold" style={{ color: "#222" }}>
             Powered by{" "}
             <a
               href="https://getphame.app"
               className="underline"
-              style={{ color: "#aaa" }}
+              style={{ color: "#222", fontWeight: "bold" }}
             >
               Phame
             </a>

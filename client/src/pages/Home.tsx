@@ -49,7 +49,7 @@ function ReferralRewardsCard() {
             </div>
             <div>
               <p className="text-sm font-black rr-text-navy leading-tight">Referral Rewards</p>
-              <p className="text-xs rr-text-navy-muted">Earn 1 free month per paid referral</p>
+              <p className="text-sm font-semibold rr-text-navy-mid">Earn 1 free month per paid referral</p>
             </div>
           </div>
           {months > 0 && (
@@ -65,7 +65,7 @@ function ReferralRewardsCard() {
           <div className="flex flex-col items-center rounded-xl py-2.5 px-2 rr-bg-white-card">
             <Users size={13} className="rr-text-navy mb-1" />
             <span className="text-lg font-black rr-text-navy">{isLoading ? "—" : total}</span>
-            <span className="text-xs rr-text-navy-muted text-center leading-tight">Joined</span>
+            <span className="text-sm font-semibold rr-text-navy-mid text-center leading-tight">Joined</span>
           </div>
           <div className="flex flex-col items-center rounded-xl py-2.5 px-2" style={{ background: "oklch(0.96 0.04 80)" }}>
             <CreditCard size={13} style={{ color: "oklch(0.55 0.18 80)", marginBottom: 4 }} />
@@ -131,17 +131,17 @@ function ReferralRewardsCard() {
           className="flex items-center gap-2 rounded-xl px-3 py-2"
           style={{ background: "oklch(0.94 0.02 260)" }}
         >
-          <span className="flex-1 text-xs rr-text-navy-muted truncate">{shareUrl}</span>
+          <span className="flex-1 text-sm font-semibold rr-text-navy-mid truncate">{shareUrl}</span>
         </div>
 
         {/* Progress hint */}
         {total === 0 && (
-          <p className="text-xs rr-text-navy-faint text-center mt-2.5">
+          <p className="text-sm font-semibold rr-text-navy-mid text-center mt-2.5">
             Share your link below to start earning free months
           </p>
         )}
         {total > 0 && converted < total && (
-          <p className="text-xs rr-text-navy-faint text-center mt-2.5">
+          <p className="text-sm font-semibold rr-text-navy-mid text-center mt-2.5">
             {total - converted} friend{total - converted !== 1 ? "s" : ""} joined — waiting for them to upgrade
           </p>
         )}
@@ -292,7 +292,7 @@ function TrackingSummaryCard() {
           <span className="text-xl font-black rr-text-navy">
             {totalSent}
           </span>
-          <span className="text-xs rr-text-navy-muted">{t("trackingSummaryCard.sent")}</span>
+          <span className="text-sm font-semibold rr-text-navy-mid">{t("trackingSummaryCard.sent")}</span>
         </div>
         {/* Open Rate */}
         <div className="flex flex-col items-center rounded-xl py-3 px-2" style={{ background: "oklch(0.95 0.05 220)" }}>
@@ -733,7 +733,7 @@ export default function HomePage() {
                       <p className="text-sm font-bold rr-text-navy">
                         {req.customerName}
                       </p>
-                      <p className="text-xs rr-text-navy-muted">
+                      <p className="text-sm font-semibold rr-text-navy-mid">
                         {req.customerEmail}
                       </p>
                     </div>
@@ -815,7 +815,7 @@ export default function HomePage() {
                   if (e.key === "Escape") setEditingGoal(false);
                 }}
               />
-              <span className="text-xs rr-text-navy-muted">{t("homePage.reviewsPerMonth", { defaultValue: "reviews / month" })}</span>
+              <span className="text-sm font-semibold rr-text-navy-mid">{t("homePage.reviewsPerMonth", { defaultValue: "reviews / month" })}</span>
             </div>
           ) : reviewGoal > 0 ? (
             <div>
@@ -838,7 +838,7 @@ export default function HomePage() {
                     {t("homePage.goalReached", { defaultValue: "Goal reached! 🎉" })}
                   </span>
                 ) : (
-                  <span className="text-xs rr-text-navy-muted">
+                  <span className="text-sm font-semibold rr-text-navy-mid">
                     {reviewGoal - (stats?.respondedThisMonth ?? 0)} {t("homePage.toGo", { defaultValue: "to go" })}
                   </span>
                 )}
@@ -859,7 +859,7 @@ export default function HomePage() {
               </p>
             </div>
           ) : (
-            <p className="text-xs rr-text-navy-muted">
+            <p className="text-sm font-semibold rr-text-navy-mid">
               {t("homePage.goalDescription")}
             </p>
           )}

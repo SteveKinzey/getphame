@@ -71,9 +71,7 @@ export default function BottomNav() {
                   strokeWidth={isActive ? 2.5 : 1.8}
                   className="transition-all duration-200 group-hover:drop-shadow-[0_0_6px_oklch(0.80_0.18_80/0.7)]"
                   style={{
-                    color: isActive
-                      ? 'oklch(0.80 0.18 80)'
-                      : 'oklch(0.70 0.04 260)',
+                    color: isActive ? 'oklch(0.80 0.18 80)' : 'oklch(0.85 0.02 260)',
                   }}
                 />
               </div>
@@ -83,8 +81,8 @@ export default function BottomNav() {
                 className="text-xs font-semibold tracking-wide transition-all duration-200 group-hover:opacity-100"
                 style={{
                   fontFamily: "'Nunito', sans-serif",
-                  color: isActive ? 'oklch(0.80 0.18 80)' : 'oklch(0.60 0.04 260)',
-                  fontSize: '10px',
+                  color: isActive ? 'oklch(0.80 0.18 80)' : 'oklch(0.80 0.02 260)',
+                  fontSize: '12px',
                   fontWeight: isActive ? 700 : 600,
                 }}
               >
@@ -119,7 +117,7 @@ export default function BottomNav() {
                 size={20}
                 strokeWidth={1.8}
                 className="transition-all duration-200 group-hover:drop-shadow-[0_0_6px_oklch(0.80_0.18_80/0.5)]"
-                style={{ color: 'oklch(0.70 0.04 260)' }}
+                style={{ color: 'oklch(0.85 0.02 260)' }}
               />
             )}
           </div>
@@ -127,8 +125,8 @@ export default function BottomNav() {
             className="text-xs font-semibold tracking-wide transition-colors duration-200"
             style={{
               fontFamily: "'Nunito', sans-serif",
-              color: 'oklch(0.60 0.04 260)',
-              fontSize: '10px',
+              color: 'oklch(0.80 0.02 260)',
+              fontSize: '12px',
             }}
           >
             {isDark ? t('theme.light') : t('theme.dark')}
@@ -142,28 +140,28 @@ export default function BottomNav() {
         <div className="flex items-center justify-evenly">
           <button
             onClick={() => navigate('/privacy-policy')}
-            className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
+            className="text-sm font-bold hover:underline transition-colors rr-text-navy"
           >
             {t('footer.privacyPolicy')}
           </button>
           <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
           <button
             onClick={() => navigate('/terms-of-service')}
-            className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
+            className="text-sm font-bold hover:underline transition-colors rr-text-navy"
           >
             {t('footer.termsOfService')}
           </button>
           <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
           <button
             onClick={() => navigate('/changelog')}
-            className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
+            className="text-sm font-bold hover:underline transition-colors rr-text-navy"
           >
             {t('footer.whatsNew')}
           </button>
           <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
           <button
             onClick={() => navigate('/compliance')}
-            className="text-xs font-semibold hover:underline transition-colors rr-text-navy"
+            className="text-sm font-bold hover:underline transition-colors rr-text-navy"
           >
             {t('footer.compliance')}
           </button>
@@ -173,7 +171,7 @@ export default function BottomNav() {
         <p
           className="text-center mt-0.5 pb-0.5"
           style={{
-            fontSize: '9px',
+            fontSize: '11px',
             color: '#000a29',
             fontFamily: "'Nunito', sans-serif",
             letterSpacing: '0.02em',

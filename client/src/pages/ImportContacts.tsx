@@ -219,7 +219,7 @@ export default function ImportContactsPage() {
       <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/contacts")}
-          className="flex items-center gap-1.5 mb-4 text-xs font-bold rr-text-gold"
+          className="flex items-center gap-1.5 mb-4 text-sm font-bold rr-text-gold"
         >
           <ArrowLeft size={14} /> Back to Contacts
         </button>
@@ -247,7 +247,7 @@ export default function ImportContactsPage() {
                 >
                   {i < step ? <CheckCircle2 size={12} /> : i + 1}
                 </div>
-                <span className="text-xs mt-1" style={{ color: i <= step ? "oklch(0.80 0.18 80)" : "var(--text-on-dark-muted)" }}>
+                <span className="text-sm font-bold mt-1" style={{ color: i <= step ? "oklch(0.80 0.18 80)" : "var(--text-on-dark-muted)" }}>
                   {label}
                 </span>
               </div>
@@ -278,7 +278,7 @@ export default function ImportContactsPage() {
             {isNative && (
               <div className="flex items-center gap-3">
                 <div className="flex-1 h-px" style={{ background: "oklch(0.88 0.02 260)" }} />
-                <span className="text-xs rr-text-navy-muted">or upload a CSV file</span>
+                <span className="text-sm font-bold rr-text-navy-mid">or upload a CSV file</span>
                 <div className="flex-1 h-px" style={{ background: "oklch(0.88 0.02 260)" }} />
               </div>
             )}
@@ -286,10 +286,10 @@ export default function ImportContactsPage() {
             {/* Template download */}
             <div className="bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
               <div>
-                <p className="text-sm font-black rr-text-navy">
+                <p className="text-base font-black rr-text-navy">
                   Need a template?
                 </p>
-                <p className="text-xs mt-0.5 rr-text-navy-muted">
+                <p className="text-sm font-bold mt-0.5 rr-text-navy-mid">
                   Download our pre-formatted CSV
                 </p>
               </div>
@@ -321,13 +321,13 @@ export default function ImportContactsPage() {
                 <FileText size={28} className="rr-text-navy" />
               </div>
               <div className="text-center px-4">
-                <p className="text-sm font-black rr-text-navy">
+                <p className="text-base font-black rr-text-navy">
                   Drop your CSV here
                 </p>
-                <p className="text-xs mt-1 rr-text-navy-muted">
+                <p className="text-sm font-bold mt-1 rr-text-navy-mid">
                   or tap to browse files
                 </p>
-                <p className="text-xs mt-2" style={{ color: "oklch(0.70 0.02 260)" }}>
+                <p className="text-sm font-bold mt-2" style={{ color: "oklch(0.40 0.02 260)" }}>
                   Supports exports from Square, HoneyBook, Jobber,<br />QuickBooks, Acuity, Mindbody, and any spreadsheet
                 </p>
               </div>
@@ -347,14 +347,14 @@ export default function ImportContactsPage() {
           <div className="flex flex-col gap-4">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
               <div className="flex items-center justify-between mb-1">
-                <p className="text-sm font-black rr-text-navy">
+                <p className="text-base font-black rr-text-navy">
                   Map Your Columns
                 </p>
-                <span className="text-xs rr-text-navy-muted">
+                <span className="text-sm font-bold rr-text-navy-mid">
                   {rawRows.length} rows in <strong>{fileName}</strong>
                 </span>
               </div>
-              <p className="text-xs mb-4 rr-text-navy-muted">
+              <p className="text-sm font-bold mb-4 rr-text-navy-mid">
                 Tell us what each column in your file represents. We've auto-detected where we can.
               </p>
 
@@ -414,7 +414,7 @@ export default function ImportContactsPage() {
           <div className="flex flex-col gap-4">
             <div className="bg-white rounded-2xl p-4 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-sm font-black rr-text-navy">
+                <p className="text-base font-black rr-text-navy">
                   Review Before Import
                 </p>
                 <span
@@ -439,7 +439,7 @@ export default function ImportContactsPage() {
                       </div>
                       <div>
                         <p className="text-sm font-bold rr-text-navy">{row.name}</p>
-                        <p className="text-xs rr-text-navy-muted">{row.email}</p>
+                        <p className="text-sm font-bold rr-text-navy-mid">{row.email}</p>
                       </div>
                     </div>
                     {row.phone && (
@@ -460,7 +460,7 @@ export default function ImportContactsPage() {
               style={{ border: "1px solid oklch(0.92 0.02 260)" }}
             >
               <AlertCircle size={14} className="rr-text-navy-muted" />
-              <p className="text-xs rr-text-navy-muted">
+              <p className="text-sm font-bold rr-text-navy-mid">
                 Duplicate emails already in your contacts will be skipped automatically.
               </p>
             </div>

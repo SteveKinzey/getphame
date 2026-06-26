@@ -41,7 +41,7 @@ function Item({ icon, text, sub }: { icon: React.ReactNode; text: string; sub?: 
     <div className="flex items-start gap-2 py-1.5">
       <span className="mt-0.5 shrink-0">{icon}</span>
       <div>
-        <p className="text-sm font-medium" style={{ color: "oklch(0.25 0.05 260)" }}>{text}</p>
+        <p className="text-sm font-medium" style={{ color: "oklch(0.15 0.05 260)" }}>{text}</p>
         {sub && <p className="text-xs mt-0.5 rr-text-navy-muted">{sub}</p>}
       </div>
     </div>
@@ -64,7 +64,7 @@ export default function Compliance() {
         <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
           Compliance Guide
         </h1>
-        <p className="text-sm mt-1 text-white" style={{ opacity: 0.75 }}>
+        <p className="text-base mt-1 text-white font-bold">
           Stay safe, stay legal, and protect your reputation
         </p>
       </div>
@@ -165,9 +165,9 @@ export default function Compliance() {
         {/* Bottom line */}
         <div className="rounded-2xl p-4 rr-bg-navy">
           <p className="text-xs font-bold uppercase tracking-wide mb-2 rr-text-gold">Bottom Line</p>
-          <p className="text-sm text-white font-medium">Google + Bing → safe if done correctly.</p>
-          <p className="text-sm text-white font-medium">Yelp → proceed carefully or avoid direct solicitation.</p>
-          <p className="text-sm text-white font-medium">Legal risk → low if you stay honest and don't incentivize.</p>
+          <p className="text-base text-white font-bold">Google + Bing → safe if done correctly.</p>
+          <p className="text-base text-white font-bold">Yelp → proceed carefully or avoid direct solicitation.</p>
+          <p className="text-base text-white font-bold">Legal risk → low if you stay honest and don't incentivize.</p>
         </div>
       </div>
     </div>

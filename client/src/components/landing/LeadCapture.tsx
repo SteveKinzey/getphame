@@ -26,7 +26,7 @@ export default function LeadCapture() {
               <h2 className="font-display font-bold text-2xl md:text-3xl text-white mb-3">
                 Not ready to commit?
               </h2>
-              <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+              <p className="text-slate-200 font-medium mb-8 max-w-md mx-auto">
                 Get a free guide on how to 3× your Google reviews in 30 days — plus early access to new features and reputation tips.
               </p>
 
@@ -38,7 +38,7 @@ export default function LeadCapture() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                     required
-                    className="flex-1 px-4 py-3.5 bg-background border border-border/50 rounded-xl text-white placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+                    className="flex-1 px-4 py-3.5 bg-background border border-border/50 rounded-xl text-white placeholder:text-slate-400 font-medium focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
                   />
                   <button
                     type="submit"
@@ -55,7 +55,7 @@ export default function LeadCapture() {
                 </div>
               )}
 
-              <p className="text-xs text-muted-foreground mt-4">
+              <p className="text-sm text-slate-300 font-medium mt-4">
                 No spam. Unsubscribe anytime. We respect your inbox.
               </p>
             </div>

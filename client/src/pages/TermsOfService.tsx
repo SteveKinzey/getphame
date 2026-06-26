@@ -32,9 +32,9 @@ function US_ADDRESS({ email, linkStyle }: { email: string; linkStyle: React.CSSP
 }
 
 const SH = "text-base font-bold mb-3";
-const SHS = { fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" };
-const BODY = { color: "oklch(0.30 0.05 260)" };
-const LINK = { color: "oklch(0.50 0.18 260)" };
+const SHS = { fontFamily: "'Poppins', sans-serif", color: "oklch(0.15 0.05 260)" };
+const BODY = { color: "oklch(0.20 0.04 260)" };
+const LINK = { color: "oklch(0.35 0.15 260)" };
 const BORDER = { borderColor: "oklch(0.80 0.18 80)" };
 
 export default function TermsOfService() {
@@ -72,7 +72,7 @@ export default function TermsOfService() {
         >
           Terms of Service
         </h1>
-        <p className="text-sm mt-1" style={{ color: "oklch(0.75 0.05 260)" }}>
+        <p className="text-base mt-1" style={{ color: "oklch(0.90 0.02 260)" }}>
           Last updated: April 13, 2026
         </p>
       </div>

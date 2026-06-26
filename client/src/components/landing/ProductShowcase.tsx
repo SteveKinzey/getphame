@@ -25,7 +25,7 @@ export default function ProductShowcase() {
           <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
             Built to make review requests effortless
           </h2>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg text-slate-200 font-medium">
             One simple tool. Three powerful views. Everything you need to grow your reputation.
           </p>
         </FadeUp>
@@ -38,7 +38,7 @@ export default function ProductShowcase() {
               className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 ${
                 activeTab === tab.id
                   ? "bg-primary text-primary-foreground shadow-[0_0_25px_oklch(0.78_0.15_75/0.25)]"
-                  : "bg-card border border-border/50 text-muted-foreground hover:text-white hover:border-primary/30"
+                  : "bg-card border border-border/50 text-slate-200 font-bold hover:text-white hover:border-primary/30"
               }`}
             >
               <tab.icon size={16} />
@@ -59,7 +59,7 @@ export default function ProductShowcase() {
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
               <h3 className="font-display font-bold text-2xl md:text-3xl text-white mb-4">{activeItem.title}</h3>
-              <p className="text-lg text-muted-foreground leading-relaxed">{activeItem.description}</p>
+              <p className="text-lg text-slate-200 font-medium leading-relaxed">{activeItem.description}</p>
             </motion.div>
           </AnimatePresence>
 

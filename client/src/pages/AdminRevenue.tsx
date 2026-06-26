@@ -60,7 +60,7 @@ export default function AdminRevenuePage() {
             <ArrowLeft size={16} color="white" />
           </button>
           <div>
-            <p className="text-xs font-bold tracking-widest uppercase" style={{ color: GOLD }}>
+            <p className="text-sm font-bold tracking-widest uppercase" style={{ color: GOLD }}>
               Admin
             </p>
             <h1 className="text-xl font-black text-white">Revenue Dashboard</h1>
@@ -119,7 +119,7 @@ export default function AdminRevenuePage() {
                   { label: "Lifetime", count: data.tierCounts.lifetime, color: "oklch(0.75 0.15 300)" },
                 ].map(t => (
                   <div key={t.label} className="flex items-center justify-between">
-                    <span className="text-sm text-white/70">{t.label}</span>
+                    <span className="text-base font-bold text-white/90">{t.label}</span>
                     <span className="text-lg font-black" style={{ color: t.color }}>{t.count}</span>
                   </div>
                 ))}
@@ -132,7 +132,7 @@ export default function AdminRevenuePage() {
                 <p className="text-xs font-bold tracking-widest uppercase mb-1" style={{ color: GOLD }}>
                   30-Day Churn Rate
                 </p>
-                <p className="text-sm text-white/60">
+                <p className="text-base font-bold text-white/80">
                   {data.recentCancels} cancellation{data.recentCancels !== 1 ? "s" : ""} / {data.activeSubs} active
                 </p>
               </div>
@@ -201,27 +201,27 @@ export default function AdminRevenuePage() {
                   className="rounded-xl p-3 flex flex-col gap-1"
                   style={{ background: "rgba(255,255,255,0.06)" }}
                 >
-                  <span className="text-xs text-white/50">Open Rate</span>
+                  <span className="text-sm font-bold text-white/70">Open Rate</span>
                   <span
                     className="text-2xl font-black"
                     style={{ color: data.platformOpenRate >= 30 ? "oklch(0.70 0.18 145)" : data.platformOpenRate >= 15 ? GOLD : "#f87171" }}
                   >
                     {data.platformOpenRate}%
                   </span>
-                  <span className="text-xs text-white/30">Industry avg: 20–30%</span>
+                  <span className="text-sm font-bold text-white/50">Industry avg: 20–30%</span>
                 </div>
                 <div
                   className="rounded-xl p-3 flex flex-col gap-1"
                   style={{ background: "rgba(255,255,255,0.06)" }}
                 >
-                  <span className="text-xs text-white/50">Click Rate</span>
+                  <span className="text-sm font-bold text-white/70">Click Rate</span>
                   <span
                     className="text-2xl font-black"
                     style={{ color: data.platformClickRate >= 5 ? "oklch(0.70 0.18 145)" : data.platformClickRate >= 2 ? GOLD : "#f87171" }}
                   >
                     {data.platformClickRate}%
                   </span>
-                  <span className="text-xs text-white/30">Industry avg: 2–5%</span>
+                  <span className="text-sm font-bold text-white/50">Industry avg: 2–5%</span>
                 </div>
               </div>
             </div>
@@ -248,7 +248,7 @@ export default function AdminRevenuePage() {
                   value={`${data.promptpayConversionRate}%`}
                 />
               </div>
-              <p className="text-xs text-white/30">
+              <p className="text-sm font-bold text-white/50">
                 Reveals = users who tapped "Show PromptPay QR" on the upgrade page. Reveal→Paid = total paid users ÷ total reveals (all-time approximation).
               </p>
             </div>
@@ -275,7 +275,7 @@ function KpiCard({ icon, label, value }: { icon: React.ReactNode; label: string;
   return (
     <div className="rounded-2xl p-3 flex flex-col gap-1" style={{ background: NAVY }}>
       <div className="flex items-center gap-1 mb-1">{icon}</div>
-      <span className="text-xs text-white/50">{label}</span>
+      <span className="text-sm font-bold text-white/70">{label}</span>
       <span className="text-lg font-black text-white leading-tight">{value}</span>
     </div>
   );

@@ -17,26 +17,26 @@ export default function Footer() {
           <div className="flex items-center gap-6 text-sm">
             <a
               href="/privacy-policy"
-              className="text-muted-foreground hover:text-white transition-colors"
+              className="text-slate-200 hover:text-white transition-colors font-medium"
             >
               Privacy
             </a>
             <a
               href="/terms-of-service"
-              className="text-muted-foreground hover:text-white transition-colors"
+              className="text-slate-200 hover:text-white transition-colors font-medium"
             >
               Terms
             </a>
             <a
               href="mailto:support@getphame.app"
-              className="text-muted-foreground hover:text-white transition-colors"
+              className="text-slate-200 hover:text-white transition-colors font-medium"
             >
               Support
             </a>
           </div>
 
           {/* Copyright */}
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-slate-300 font-medium">
             © {new Date().getFullYear()} Get Phame. All rights reserved.
           </p>
         </div>

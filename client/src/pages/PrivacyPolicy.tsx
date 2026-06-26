@@ -32,9 +32,9 @@ function US_ADDRESS({ email, linkStyle }: { email: string; linkStyle: React.CSSP
 }
 
 const SECTION_HEADING = "text-base font-bold mb-3";
-const SECTION_HEADING_STYLE = { fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" };
-const BODY_STYLE = { color: "oklch(0.30 0.05 260)" };
-const LINK_STYLE = { color: "oklch(0.50 0.18 260)" };
+const SECTION_HEADING_STYLE = { fontFamily: "'Poppins', sans-serif", color: "oklch(0.15 0.05 260)" };
+const BODY_STYLE = { color: "oklch(0.20 0.04 260)" };
+const LINK_STYLE = { color: "oklch(0.35 0.15 260)" };
 
 export default function PrivacyPolicy() {
   const [, navigate] = useLocation();
@@ -71,7 +71,7 @@ export default function PrivacyPolicy() {
         >
           Privacy Policy
         </h1>
-        <p className="text-sm mt-1" style={{ color: "oklch(0.75 0.05 260)" }}>
+        <p className="text-base mt-1" style={{ color: "oklch(0.90 0.02 260)" }}>
           Last updated: April 13, 2026
         </p>
       </div>

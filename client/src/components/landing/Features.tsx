@@ -39,7 +39,7 @@ export default function Features() {
           <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
             From your inbox to their review
           </h2>
-          <p className="text-lg text-muted-foreground">
+          <p className="text-lg text-slate-200 font-medium">
             The simplest way to turn happy customers into 5-star reviews — without expensive tools or awkward conversations.
           </p>
         </FadeUp>
@@ -61,12 +61,12 @@ export default function Features() {
               <h3 className="font-display font-bold text-xl text-white mb-3">
                 {feature.title}
               </h3>
-              <p className="text-muted-foreground leading-relaxed mb-6">
+              <p className="text-slate-200 leading-relaxed mb-6 font-medium">
                 {feature.description}
               </p>
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-primary/5 border border-primary/15">
                 <span className="font-display font-extrabold text-lg text-primary">{feature.stat}</span>
-                <span className="text-xs text-muted-foreground">{feature.statLabel}</span>
+                <span className="text-sm text-slate-300 font-semibold">{feature.statLabel}</span>
               </div>
             </div>
           ))}
