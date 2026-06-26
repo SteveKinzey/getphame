@@ -1,15 +1,12 @@
 /**
- * Login.tsx — GetPhame authentication page
+ * Login.tsx — GetPhame authentication page (Magic Link)
  *
  * Displays three auth options:
  *   1. Continue with Google  (hidden if GOOGLE_CLIENT_ID not configured)
  *   2. Continue with Apple
- *   3. Email + password form (toggles between Sign In / Sign Up)
+ *   3. Email magic link — enter email, receive login link
  *
  * Design: navy (#0F1B2D) + gold (#C9A84C) theme, mobile-first, responsive.
- *
- * Dependencies: none beyond React + TailwindCSS (already in the project).
- * The Google button visibility is controlled by a /api/auth/google/status check.
  */
 import React, { useState, useEffect, useCallback } from "react";
 
@@ -17,16 +14,14 @@ import React, { useState, useEffect, useCallback } from "react";
 // Types
 // ---------------------------------------------------------------------------
 
-type AuthMode = "signin" | "signup";
-
 interface GoogleStatusResponse {
   enabled: boolean;
 }
 
-interface AuthApiResponse {
+interface MagicLinkResponse {
   ok?: boolean;
   error?: string;
-  redirect?: string;
+  email?: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -60,19 +55,10 @@ const AppleIcon = () => (
   </svg>
 );
 
-const EyeIcon = ({ open }: { open: boolean }) => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    {open ? (
-      <>
-        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-        <circle cx="12" cy="12" r="3" />
-      </>
-    ) : (
-      <>
-        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
-        <line x1="1" y1="1" x2="23" y2="23" />
-      </>
-    )}
+const MailIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+    <rect x="2" y="4" width="20" height="16" rx="2" />
+    <path d="M22 7l-10 7L2 7" />
   </svg>
 );
 
@@ -117,19 +103,13 @@ const OrDivider = () => (
 // ---------------------------------------------------------------------------
 
 export default function Login() {
-  const [mode, setMode] = useState<AuthMode>("signin");
-  const [googleEnabled, setGoogleEnabled] = useState<boolean | null>(null); // null = loading
+  const [googleEnabled, setGoogleEnabled] = useState<boolean | null>(null);
 
   // Form state
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-
-  // UI state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const [formSuccess, setFormSuccess] = useState<string | null>(null);
+  const [sentTo, setSentTo] = useState<string | null>(null); // shows success state
 
   // Check if Google OAuth is configured on the server
   useEffect(() => {
@@ -139,7 +119,7 @@ export default function Login() {
       .catch(() => setGoogleEnabled(false));
   }, []);
 
-  // Check for auth errors in the URL (e.g. /?auth_error=google_denied)
+  // Check for auth errors in the URL (e.g. /login?auth_error=link_expired)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const authError = params.get("auth_error");
@@ -150,6 +130,10 @@ export default function Login() {
         google_state_mismatch: "Security check failed. Please try again.",
         apple_failed: "Apple sign-in failed. Please try again.",
         apple_missing_token: "Apple sign-in failed. Please try again.",
+        invalid_link: "Invalid login link. Please request a new one.",
+        link_expired: "This login link has expired. Please request a new one.",
+        service_unavailable: "Service temporarily unavailable. Please try again.",
+        verification_failed: "Verification failed. Please request a new link.",
       };
       setFormError(messages[authError] ?? "Sign-in failed. Please try again.");
       // Clean the URL
@@ -157,70 +141,42 @@ export default function Login() {
     }
   }, []);
 
-  const clearMessages = () => {
-    setFormError(null);
-    setFormSuccess(null);
-  };
-
-  const handleModeToggle = () => {
-    setMode((m) => (m === "signin" ? "signup" : "signin"));
-    clearMessages();
-    setName("");
-    setEmail("");
-    setPassword("");
-  };
-
-  const handleEmailSubmit = useCallback(
+  const handleMagicLinkSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
-      clearMessages();
+      setFormError(null);
+      setSentTo(null);
 
       if (!email.trim()) {
         setFormError("Email is required.");
-        return;
-      }
-      if (!password) {
-        setFormError("Password is required.");
-        return;
-      }
-      if (mode === "signup" && password.length < 8) {
-        setFormError("Password must be at least 8 characters.");
         return;
       }
 
       setIsSubmitting(true);
 
       try {
-        const endpoint = mode === "signup" ? "/api/auth/register" : "/api/auth/login";
-        const body: Record<string, string> = { email: email.trim(), password };
-        if (mode === "signup" && name.trim()) body.name = name.trim();
-
-        const res = await fetch(endpoint, {
+        const res = await fetch("/api/auth/magic-link", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
+          body: JSON.stringify({ email: email.trim() }),
         });
 
-        const data = (await res.json()) as AuthApiResponse;
+        const data = (await res.json()) as MagicLinkResponse;
 
         if (!res.ok) {
           setFormError(data.error ?? "Something went wrong. Please try again.");
           return;
         }
 
-        // Success — redirect
-        if (data.redirect) {
-          window.location.href = data.redirect;
-        } else {
-          window.location.href = "/";
-        }
+        // Success — show confirmation
+        setSentTo(data.email ?? email.trim());
       } catch {
         setFormError("Network error. Please check your connection and try again.");
       } finally {
         setIsSubmitting(false);
       }
     },
-    [mode, email, password, name]
+    [email]
   );
 
   // ---------------------------------------------------------------------------
@@ -235,7 +191,7 @@ export default function Login() {
           Get<span className="text-[#C9A84C]">Phame</span>
         </h1>
         <p className="mt-2 text-sm text-white/50">
-          {mode === "signin" ? "Sign in to your account" : "Create your account"}
+          Sign in to your account
         </p>
       </div>
 
@@ -271,140 +227,80 @@ export default function Login() {
 
         <OrDivider />
 
-        {/* ── Email / Password Form ──────────────────────────────────────── */}
-        <form onSubmit={handleEmailSubmit} noValidate className="space-y-4">
-          {/* Name field — signup only */}
-          {mode === "signup" && (
+        {/* ── Magic Link Form ──────────────────────────────────────────── */}
+        {sentTo ? (
+          /* Success state — email sent */
+          <div className="text-center py-4">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#C9A84C]/10 mb-4">
+              <MailIcon />
+            </div>
+            <h2 className="text-lg font-semibold text-white mb-2">Check your inbox</h2>
+            <p className="text-sm text-white/50 mb-4">
+              We sent a login link to
+            </p>
+            <p className="text-sm font-medium text-[#C9A84C] mb-6">{sentTo}</p>
+            <p className="text-xs text-white/30 mb-4">
+              The link expires in 15 minutes. Check your spam folder if you don't see it.
+            </p>
+            <button
+              type="button"
+              onClick={() => { setSentTo(null); setEmail(""); }}
+              className="text-sm text-white/40 hover:text-white/60 underline transition-colors"
+            >
+              Use a different email
+            </button>
+          </div>
+        ) : (
+          /* Email input form */
+          <form onSubmit={handleMagicLinkSubmit} noValidate className="space-y-4">
             <div>
-              <label htmlFor="name" className="block text-xs font-medium text-white/60 mb-1.5">
-                Full name <span className="text-white/30">(optional)</span>
+              <label htmlFor="email" className="block text-xs font-medium text-white/60 mb-1.5">
+                Email address
               </label>
               <input
-                id="name"
-                type="text"
-                autoComplete="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Jane Smith"
+                id="email"
+                type="email"
+                autoComplete="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                required
                 className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/25 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/60 focus:border-[#C9A84C]/60 transition"
               />
             </div>
-          )}
 
-          {/* Email */}
-          <div>
-            <label htmlFor="email" className="block text-xs font-medium text-white/60 mb-1.5">
-              Email address
-            </label>
-            <input
-              id="email"
-              type="email"
-              autoComplete={mode === "signup" ? "email" : "username"}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              required
-              className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/25 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/60 focus:border-[#C9A84C]/60 transition"
-            />
-          </div>
-
-          {/* Password */}
-          <div>
-            <label htmlFor="password" className="block text-xs font-medium text-white/60 mb-1.5">
-              Password
-              {mode === "signup" && (
-                <span className="text-white/30 ml-1">(min 8 characters)</span>
-              )}
-            </label>
-            <div className="relative">
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                autoComplete={mode === "signup" ? "new-password" : "current-password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={mode === "signup" ? "Create a password" : "Enter your password"}
-                required
-                className="w-full px-4 py-3 pr-11 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/25 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/60 focus:border-[#C9A84C]/60 transition"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 transition"
-                aria-label={showPassword ? "Hide password" : "Show password"}
+            {/* Error message */}
+            {formError && (
+              <div
+                role="alert"
+                className="flex items-start gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm"
               >
-                <EyeIcon open={showPassword} />
-              </button>
-            </div>
-          </div>
-
-          {/* Error message */}
-          {formError && (
-            <div
-              role="alert"
-              className="flex items-start gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm"
-            >
-              <span className="mt-0.5 shrink-0">⚠</span>
-              <span>{formError}</span>
-            </div>
-          )}
-
-          {/* Success message */}
-          {formSuccess && (
-            <div
-              role="status"
-              className="flex items-start gap-2 px-4 py-3 rounded-xl bg-green-500/10 border border-green-500/20 text-green-400 text-sm"
-            >
-              <span className="mt-0.5 shrink-0">✓</span>
-              <span>{formSuccess}</span>
-            </div>
-          )}
-
-          {/* Submit button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 px-4 rounded-xl bg-[#C9A84C] hover:bg-[#b8943d] active:bg-[#a8843a] disabled:opacity-50 disabled:cursor-not-allowed text-[#0F1B2D] font-bold text-sm transition-colors duration-150 flex items-center justify-center gap-2"
-          >
-            {isSubmitting ? (
-              <>
-                <Spinner />
-                {mode === "signup" ? "Creating account…" : "Signing in…"}
-              </>
-            ) : mode === "signup" ? (
-              "Create Account"
-            ) : (
-              "Sign In"
+                <span className="mt-0.5 shrink-0">⚠</span>
+                <span>{formError}</span>
+              </div>
             )}
-          </button>
-        </form>
 
-        {/* ── Mode toggle ───────────────────────────────────────────────── */}
-        <p className="mt-6 text-center text-sm text-white/40">
-          {mode === "signin" ? (
-            <>
-              Don&apos;t have an account?{" "}
-              <button
-                type="button"
-                onClick={handleModeToggle}
-                className="text-[#C9A84C] hover:text-[#d4b460] font-medium transition-colors"
-              >
-                Sign up
-              </button>
-            </>
-          ) : (
-            <>
-              Already have an account?{" "}
-              <button
-                type="button"
-                onClick={handleModeToggle}
-                className="text-[#C9A84C] hover:text-[#d4b460] font-medium transition-colors"
-              >
-                Sign in
-              </button>
-            </>
-          )}
-        </p>
+            {/* Submit button */}
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-3 px-4 rounded-xl bg-[#C9A84C] hover:bg-[#b8943d] active:bg-[#a8843a] disabled:opacity-50 disabled:cursor-not-allowed text-[#0F1B2D] font-bold text-sm transition-colors duration-150 flex items-center justify-center gap-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <Spinner />
+                  Sending link…
+                </>
+              ) : (
+                "Send Magic Link"
+              )}
+            </button>
+
+            <p className="text-center text-xs text-white/30">
+              No password needed — we'll email you a secure login link.
+            </p>
+          </form>
+        )}
 
         {/* ── Legal ─────────────────────────────────────────────────────── */}
         <p className="mt-8 text-center text-xs text-white/25 leading-relaxed">
