@@ -46,6 +46,11 @@ export async function upsertUser(user: InsertUser): Promise<void> {
     values[field] = normalized;
     updateSet[field] = normalized;
   }
+  // passwordHash — only set on initial insert (registration), never overwritten on conflict
+  if (user.passwordHash !== undefined) {
+    values.passwordHash = user.passwordHash;
+    // intentionally NOT added to updateSet
+  }
   if (user.lastSignedIn !== undefined) {
     values.lastSignedIn = user.lastSignedIn;
     updateSet.lastSignedIn = user.lastSignedIn;
@@ -72,6 +77,19 @@ export async function getUserByOpenId(openId: string) {
   if (!db) { console.warn("[Database] Cannot get user: database not available"); return undefined; }
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
   return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getUserByEmail(email: string) {
+  const db = await getDb();
+  if (!db) { console.warn("[Database] Cannot get user by email: database not available"); return undefined; }
+  const result = await db.select().from(users).where(eq(users.email, email.toLowerCase())).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function updateUserLastSignedIn(openId: string, timestamp: Date) {
+  const db = await getDb();
+  if (!db) return;
+  await db.update(users).set({ lastSignedIn: timestamp, updatedAt: new Date() }).where(eq(users.openId, openId));
 }
 
 // ─── Business profile helpers ─────────────────────────────────────────────────

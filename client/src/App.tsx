@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import OnboardingPage from "./pages/Onboarding";
 import AppleAuthLanding from "./pages/AppleAuthLanding";
 import LandingPage from "./pages/LandingPage";
+import LoginPage from "./pages/Login";
 import HomePage from "./pages/Home";
 import SendRequestPage from "./pages/SendRequest";
 import DashboardPage from "./pages/Dashboard";
@@ -139,6 +140,7 @@ function AppShell() {
   if (!user) {
     // Show the public marketing landing page at /, Onboarding at /onboarding
     if (path === "/onboarding") return <><OnboardingPage />{globalLangFlyout}</>;
+    if (path === "/login") return <><LoginPage />{globalLangFlyout}</>;
     // Changelog is public — render without BottomNav for unauthenticated visitors
     if (path === "/changelog") return <div className="mobile-screen"><ChangelogPage />{globalLangFlyout}</div>;
     return <><LandingPage /></>;

@@ -6,7 +6,9 @@ import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
-import { registerGoogleAuthRoutes } from "../googleAuth";
+import { registerGoogleAuthRoutes } from "../auth-google";
+import { registerEmailAuthRoutes } from "../auth-email";
+import cookieParser from "cookie-parser";
 import { registerAppleAuthRoutes } from "../appleAuth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
@@ -349,11 +351,13 @@ async function startServer() {
   // Body parser — 5 MB is sufficient for all current payloads
   app.use(express.json({ limit: "5mb" }));
   app.use(express.urlencoded({ limit: "5mb", extended: true }));
+  app.use(cookieParser());
   // OAuth callback under /api/oauth/callback
   registerStorageProxy(app);
   registerOAuthRoutes(app);
   registerGoogleAuthRoutes(app);
   registerAppleAuthRoutes(app);
+  registerEmailAuthRoutes(app);
   registerMobileAuthRoutes(app);
   registerMagicAuthRoutes(app);
 
