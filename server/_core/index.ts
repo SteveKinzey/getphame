@@ -342,6 +342,7 @@ async function startServer() {
             "https://d2xsxph8kpxj0f.cloudfront.net",
             "https://img.youtube.com",
             "https://i.ytimg.com",
+            "https://*.cloudfront.net",
           ],
           objectSrc: ["'none'"],
           scriptSrc: ["'self'"],
