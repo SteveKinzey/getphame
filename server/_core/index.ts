@@ -33,6 +33,7 @@ import { sendUpgradeReceiptEmail, sendChurnRecoveryEmail, sendPaymentFailedEmail
 import { registerPublicApiRoutes } from "../publicApi";
 import { registerMobileAuthRoutes } from "../mobileAuth";
 import { registerMagicAuthRoutes } from "../magicAuth";
+import { registerPayPalRoutes } from "../paypal";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 
 function isPortAvailable(port: number): Promise<boolean> {
@@ -334,11 +335,11 @@ async function startServer() {
           fontSrc: ["'self'", "https:", "data:"],
           formAction: ["'self'"],
           frameAncestors: ["'self'"],
-          frameSrc: ["'self'", "https://www.youtube.com", "https://youtube.com"],
+          frameSrc: ["'self'", "https://www.youtube.com", "https://youtube.com", "https://www.paypal.com", "https://www.sandbox.paypal.com"],
           // Allow all HTTPS image sources
           imgSrc: ["'self'", "data:", "https:", "blob:"],
           objectSrc: ["'none'"],
-          scriptSrc: ["'self'"],
+          scriptSrc: ["'self'", "https://www.paypal.com", "https://www.sandbox.paypal.com"],
           scriptSrcAttr: ["'none'"],
           styleSrc: ["'self'", "https:", "'unsafe-inline'"],
           upgradeInsecureRequests: [],
@@ -360,6 +361,7 @@ async function startServer() {
   registerEmailAuthRoutes(app);
   registerMobileAuthRoutes(app);
   registerMagicAuthRoutes(app);
+  registerPayPalRoutes(app);
 
   // IP-based language detection — returns 'en' | 'th' | 'zh-CN' based on client IP
   app.get("/api/detect-language", async (req, res) => {

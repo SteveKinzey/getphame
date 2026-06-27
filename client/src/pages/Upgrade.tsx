@@ -9,8 +9,9 @@ import {
   Loader2, Ticket, Unlock, Calendar, Shield, CreditCard
 } from "lucide-react";
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 // ── THB dual-currency display ─────────────────────────────────────────────────
 // Fixed rate — update manually when USD/THB shifts significantly
@@ -88,6 +89,59 @@ export default function UpgradePage() {
   // Show PromptPay if Thai locale detected, or user manually reveals it
   const isThai = typeof navigator !== "undefined" && navigator.language.toLowerCase().startsWith("th");
   const [showPromptPay, setShowPromptPay] = useState(isThai);
+
+  // PayPal — check if configured on server
+  const [paypalClientId, setPaypalClientId] = useState<string | null>(null);
+  const [paypalLoading, setPaypalLoading] = useState(false);
+  useEffect(() => {
+    fetch("/api/paypal/status")
+      .then((r) => r.json() as Promise<{ enabled: boolean; clientId: string | null }>)
+      .then((d) => setPaypalClientId(d.enabled ? d.clientId : null))
+      .catch(() => setPaypalClientId(null));
+  }, []);
+
+  const handlePayPalCreateOrder = useCallback(async () => {
+    setPaypalLoading(true);
+    try {
+      const res = await fetch("/api/paypal/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: selectedPlan, origin: window.location.origin }),
+        credentials: "include",
+      });
+      const data = await res.json() as { orderId?: string; approvalUrl?: string; error?: string };
+      if (!res.ok || !data.orderId) {
+        toast.error(data.error ?? "Failed to start PayPal checkout.");
+        return "";
+      }
+      return data.orderId;
+    } catch {
+      toast.error("PayPal checkout failed. Please try again.");
+      return "";
+    } finally {
+      setPaypalLoading(false);
+    }
+  }, [selectedPlan]);
+
+  const handlePayPalApprove = useCallback(async (data: { orderID: string }) => {
+    try {
+      const res = await fetch("/api/paypal/capture-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: data.orderID }),
+        credentials: "include",
+      });
+      const result = await res.json() as { ok?: boolean; tier?: string; error?: string };
+      if (!res.ok || !result.ok) {
+        toast.error(result.error ?? "Payment capture failed.");
+        return;
+      }
+      utils.profile.get.invalidate();
+      navigate("/payment-success");
+    } catch {
+      toast.error("Payment capture failed. Please contact support.");
+    }
+  }, [utils, navigate]);
 
   const createCheckout = trpc.stripe.createCheckout.useMutation({
     onSuccess: (data) => {
@@ -346,6 +400,41 @@ export default function UpgradePage() {
           <p className="text-center text-sm font-bold mt-2 text-white/60">
             {t("pricingCard.secureCheckoutNote")}
           </p>
+
+          {/* PayPal CTA — shown only when PAYPAL_CLIENT_ID is configured */}
+          {paypalClientId && (
+            <div className="mt-3">
+              <div className="flex items-center gap-2 my-2">
+                <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.12)" }} />
+                <span className="text-xs font-bold" style={{ color: "var(--text-on-dark-muted)" }}>or pay with</span>
+                <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.12)" }} />
+              </div>
+              {paypalLoading ? (
+                <div className="w-full py-3 flex items-center justify-center">
+                  <Loader2 size={18} className="animate-spin text-white/60" />
+                </div>
+              ) : (
+                <PayPalScriptProvider
+                  options={{
+                    clientId: paypalClientId,
+                    currency: "USD",
+                    intent: "capture",
+                  }}
+                >
+                  <PayPalButtons
+                    style={{ layout: "horizontal", color: "gold", shape: "rect", label: "pay", height: 44 }}
+                    createOrder={handlePayPalCreateOrder}
+                    onApprove={handlePayPalApprove}
+                    onError={(err) => {
+                      console.error("[PayPal]", err);
+                      toast.error("PayPal encountered an error. Please try again.");
+                    }}
+                    onCancel={() => toast("PayPal payment cancelled.")}
+                  />
+                </PayPalScriptProvider>
+              )}
+            </div>
+          )}
 
           {/* PromptPay CTA — Thailand users (locale-detected or manually revealed) */}
           {showPromptPay ? (

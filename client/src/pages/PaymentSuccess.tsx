@@ -93,6 +93,32 @@ export default function PaymentSuccessPage() {
     utils.stripe.subscriptionStatus.invalidate();
   }, [utils]);
 
+  // PayPal: capture the order when returning from PayPal approval
+  // PayPal redirects to /payment-success?paypal=1&token=ORDER_ID
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const isPayPal = params.get("paypal") === "1";
+    const orderId = params.get("token"); // PayPal passes the order ID as ?token=
+    if (!isPayPal || !orderId) return;
+
+    // Clean the URL immediately so a refresh doesn't re-capture
+    window.history.replaceState({}, "", "/payment-success");
+
+    fetch("/api/paypal/capture-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId }),
+      credentials: "include",
+    })
+      .then((r) => r.json())
+      .then(() => {
+        utils.profile.get.invalidate();
+        utils.stripe.subscriptionStatus.invalidate();
+      })
+      .catch((err) => console.error("[PayPal] Capture failed:", err));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const heading = HEADING_BY_TIER[tier] ?? HEADING_BY_TIER.pro;
   const perks = PERKS_BY_TIER[tier] ?? PERKS_BY_TIER.pro;
   const cardTitle = CARD_TITLE_BY_TIER[tier] ?? "Your Perks";
