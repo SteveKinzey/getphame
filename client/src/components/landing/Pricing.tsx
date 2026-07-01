@@ -80,7 +80,7 @@ export default function Pricing() {
               )}
               {plan.badge && !plan.popular && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-500 text-white text-xs font-bold rounded-full">
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full shadow-[0_0_15px_oklch(0.78_0.15_75/0.4)]">
                     {plan.badge}
                   </span>
                 </div>
