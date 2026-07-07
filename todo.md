@@ -1561,3 +1561,6 @@
 - [x] Replace all ReviewLink/ReviewRocket branding with Get Phame across codebase
 - [x] Update LandingPage lifetime price display from $1,247 to $497
 - [x] Update Upgrade page lifetime price display from $1,247 to $497
+- [x] Update Thai locale lifetimePrice to ฿17,500
+- [x] Add Was $1,247 strikethrough anchor to Upgrade page
+- [x] Add Was $1,247 strikethrough anchor to LandingPage

@@ -555,7 +555,10 @@ export default function LandingPage() {
                   <span className="text-sm font-black text-white">{t("pricing.lifetime")}</span>
                   <span className="px-2 py-0.5 rounded-full text-xs font-bold rr-bg-gold rr-text-navy">{t("pricing.ownItForever")}</span>
                 </div>
-                <span className="text-lg font-black rr-text-gold">{t("pricing.lifetimePrice")}<span className="text-xs font-normal" style={{ color: "var(--text-on-dark-secondary)" }}>{t("pricing.lifetimeOnce")}</span></span>
+                <div className="flex flex-col items-end">
+                  <span className="text-lg font-black rr-text-gold">{t("pricing.lifetimePrice")}<span className="text-xs font-normal" style={{ color: "var(--text-on-dark-secondary)" }}>{t("pricing.lifetimeOnce")}</span></span>
+                  <span className="text-xs line-through" style={{ color: "var(--text-on-dark-muted)" }}>Was $1,247</span>
+                </div>
               </div>
               <p className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>{t("pricing.lifetimeDescription", "Best for agencies, operators, and long-term owners. One business/location. Includes all future updates.")}</p>
             </div>

@@ -271,6 +271,13 @@ export default function UpgradePage() {
           <p className="text-xs mb-2" style={{ color: "var(--text-on-dark-muted)" }}>
             ≈ {PLANS[selectedPlan].thb} THB
           </p>
+          {/* Strikethrough anchor — lifetime only */}
+          {selectedPlan === "lifetime" && (
+            <p className="text-xs mb-2">
+              <span className="line-through" style={{ color: "var(--text-on-dark-muted)" }}>Was $1,247</span>
+              <span className="ml-2 font-bold" style={{ color: "oklch(0.72 0.18 145)" }}>— Save $750</span>
+            </p>
+          )}
 
           {PLANS[selectedPlan].savings && (
             <div
