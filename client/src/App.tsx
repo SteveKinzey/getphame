@@ -6,7 +6,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { useAuth } from "./_core/hooks/useAuth";
 import BottomNav from "./components/BottomNav";
-import { Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react"; // kept for auth loading spinner
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
@@ -18,6 +18,7 @@ import SettingsPage from "./pages/Settings";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, { useOnboardingGuide } from "./components/OnboardingGuide";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
+import PageLoader from "./components/PageLoader";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
 import { useHapticEvents } from "./hooks/useHapticEvents";
@@ -53,14 +54,8 @@ const AdminSmtpStatsPage  = lazy(() => import("./pages/AdminSmtpStats"));
 const AdminChurnPage      = lazy(() => import("./pages/AdminChurn"));
 const AdminRevenuePage    = lazy(() => import("./pages/AdminRevenue"));
 
-// ── Shared loading fallback ──────────────────────────────────────────────────
-function PageLoader() {
-  return (
-    <div className="mobile-screen flex items-center justify-center rr-bg-navy">
-      <Loader2 className="animate-spin text-white" size={32} />
-    </div>
-  );
-}
+// Referral landing — public, lazy
+const ReferralLandingPage = lazy(() => import("./pages/ReferralLanding"));
 
 /**
  * PageTransition — wraps route output in a fade-up animation that triggers
@@ -147,6 +142,7 @@ function AppShell() {
   if (path === "/payment-success") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><PaymentSuccessPage />{globalLangFlyout}</div></Suspense>;
   if (path === "/unsubscribe") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><UnsubscribePage />{globalLangFlyout}</div></Suspense>;
   if (path === "/auth/apple/landing") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><AppleAuthLanding /></div></Suspense>;
+  if (path.startsWith("/ref/")) return <Suspense fallback={<PageLoader />}><ReferralLandingPage /></Suspense>;
 
   if (!user) {
     // Show the public marketing landing page at /, Onboarding at /onboarding
@@ -194,6 +190,7 @@ function AppShell() {
         <Route path="/changelog" component={ChangelogPage} />
         <Route path="/compliance" component={CompliancePage} />
         <Route path="/reviews" component={ClientReviewsPage} />
+        <Route path="/ref/:code" component={ReferralLandingPage} />
         <Route component={HomePage} />
       </Switch>
       </Suspense>

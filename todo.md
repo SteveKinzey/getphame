@@ -1541,3 +1541,8 @@
 - [x] Generate new OG/social preview image (navy/gold, Get Phame wordmark, 1200x630)
 - [x] Upload OG image to public CDN and update meta tags in client/index.html
 - [x] Add connect-src to CSP for external API calls (ip-api.com, analytics, fonts)
+
+## Bundle & UX Polish
+- [x] vite.config.ts manualChunks: vendor (react/trpc/date-fns), ui (radix/shadcn), charts
+- [x] /ref/:code referral landing page (store code, redirect to /, auto-claim on login)
+- [x] Custom branded Suspense PageLoader with Get Phame star icon animation

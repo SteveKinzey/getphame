@@ -167,6 +167,42 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          // React core + router — loaded on every page, cache separately
+          if (id.includes('node_modules/react/') ||
+              id.includes('node_modules/react-dom/') ||
+              id.includes('node_modules/scheduler/')) {
+            return 'vendor-react';
+          }
+          // tRPC + tanstack-query — data layer, changes less often than app code
+          if (id.includes('node_modules/@trpc/') ||
+              id.includes('node_modules/@tanstack/') ||
+              id.includes('node_modules/superjson/')) {
+            return 'vendor-trpc';
+          }
+          // Radix UI + shadcn/ui components — large, rarely changes
+          if (id.includes('node_modules/@radix-ui/') ||
+              id.includes('node_modules/class-variance-authority/') ||
+              id.includes('node_modules/clsx/') ||
+              id.includes('node_modules/tailwind-merge/')) {
+            return 'vendor-ui';
+          }
+          // Chart / date utilities — only needed on dashboard
+          if (id.includes('node_modules/recharts/') ||
+              id.includes('node_modules/date-fns/') ||
+              id.includes('node_modules/d3-')) {
+            return 'vendor-charts';
+          }
+          // i18n — large locale data, separate cache key
+          if (id.includes('node_modules/i18next') ||
+              id.includes('node_modules/react-i18next')) {
+            return 'vendor-i18n';
+          }
+        },
+      },
+    },
   },
   server: {
     host: true,
