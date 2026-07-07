@@ -2522,7 +2522,7 @@ export const appRouter = router({
     /** Get (or generate) the current user's referral code and share URL */
     getCode: protectedProcedure.query(async ({ ctx }) => {
       const code = await getOrCreateReferralCode(ctx.user.id);
-      const shareUrl = `https://getphame.app?ref=${code}`;
+      const shareUrl = `https://getphame.app/ref/${code}`;
       return { code, shareUrl };
     }),
 

@@ -189,11 +189,15 @@ export default defineConfig({
               id.includes('node_modules/tailwind-merge/')) {
             return 'vendor-ui';
           }
-          // Chart / date utilities — only needed on dashboard
+          // recharts + D3 — only loaded on Dashboard page
           if (id.includes('node_modules/recharts/') ||
-              id.includes('node_modules/date-fns/') ||
-              id.includes('node_modules/d3-')) {
-            return 'vendor-charts';
+              id.includes('node_modules/d3-') ||
+              id.includes('node_modules/victory-vendor/')) {
+            return 'vendor-recharts';
+          }
+          // date-fns — used across many pages (date formatting), separate from recharts
+          if (id.includes('node_modules/date-fns/')) {
+            return 'vendor-datefns';
           }
           // i18n — large locale data, separate cache key
           if (id.includes('node_modules/i18next') ||

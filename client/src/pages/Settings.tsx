@@ -46,6 +46,9 @@ import {
   Zap,
   AlertTriangle,
   CheckCircle,
+  Gift,
+  Users,
+  TrendingUp,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
 import PlatformIcon from "@/components/PlatformIcon";
@@ -60,6 +63,84 @@ import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
 import LanguageFlyout from "@/components/LanguageFlyout";
 import { IntegrationGuide } from "@/components/IntegrationGuide";
+
+// ── Share & Earn Card ────────────────────────────────────────────────────────
+function ShareAndEarnCard({ profile }: { profile: ProfileData | null | undefined }) {
+  const { data: codeData, isLoading: codeLoading } = trpc.referral.getCode.useQuery();
+  const { data: stats } = trpc.referral.getStats.useQuery();
+  const [copied, setCopied] = useState(false);
+
+  const tier = profile?.tier ?? 'free';
+  const isPaid = tier === 'pro' || tier === 'annual';
+
+  const handleCopy = () => {
+    if (!codeData?.shareUrl) return;
+    navigator.clipboard.writeText(codeData.shareUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+    toast.success('Referral link copied!');
+  };
+
+  return (
+    <div className="bg-white rounded-2xl p-5 shadow-sm" style={{ border: '1px solid oklch(0.91 0.02 260)' }}>
+      <div className="flex items-center gap-2 mb-3">
+        <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: 'oklch(0.80 0.18 80)' }}>
+          <Gift size={16} style={{ color: 'oklch(0.22 0.09 260)' }} />
+        </div>
+        <div>
+          <h2 className="text-sm font-black rr-text-navy">Share &amp; Earn</h2>
+          <p className="text-xs rr-text-navy-muted">Refer a friend — get 1 free month when they subscribe</p>
+        </div>
+      </div>
+
+      {/* Stats row */}
+      <div className="grid grid-cols-3 gap-2 mb-4">
+        {[
+          { icon: Users, label: 'Referred', value: stats?.totalReferrals ?? 0 },
+          { icon: TrendingUp, label: 'Converted', value: stats?.convertedReferrals ?? 0 },
+          { icon: Gift, label: 'Months Earned', value: stats?.monthsEarned ?? 0 },
+        ].map(({ icon: Icon, label, value }) => (
+          <div key={label} className="rounded-xl p-2.5 text-center" style={{ background: 'oklch(0.97 0.01 260)' }}>
+            <Icon size={14} className="mx-auto mb-1 rr-text-navy-muted" />
+            <p className="text-base font-black rr-text-navy">{value}</p>
+            <p className="text-xs rr-text-navy-muted">{label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Referral link */}
+      {codeLoading ? (
+        <div className="flex justify-center py-2"><Loader2 size={16} className="animate-spin rr-text-navy-muted" /></div>
+      ) : (
+        <div className="rounded-xl overflow-hidden" style={{ border: '1.5px solid oklch(0.88 0.04 260)' }}>
+          <div className="flex items-center gap-2 px-3 py-2.5" style={{ background: 'oklch(0.97 0.01 260)' }}>
+            <p className="text-xs flex-1 truncate font-mono rr-text-navy" style={{ fontSize: '11px' }}>
+              {codeData?.shareUrl ?? 'Loading...'}
+            </p>
+            <button
+              onClick={handleCopy}
+              className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold"
+              style={{
+                background: copied ? 'oklch(0.55 0.15 150)' : 'oklch(0.22 0.09 260)',
+                color: copied ? 'white' : 'oklch(0.80 0.18 80)',
+              }}
+            >
+              {copied ? <CheckCircle size={12} /> : <Copy size={12} />}
+              {copied ? 'Copied!' : 'Copy'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Eligibility note */}
+      {!isPaid && (
+        <p className="text-xs mt-3 text-center" style={{ color: 'oklch(0.55 0.08 260)' }}>
+          Upgrade to a paid plan to receive your free month reward when a referral converts.
+        </p>
+      )}
+    </div>
+  );
+}
 
 // ── Inline From Name editor (shown in connected SMTP card) ─────────────────────
 function InlineFromNameEdit({ current, onSaved }: { current: string; onSaved: () => void }) {
@@ -2956,6 +3037,9 @@ export default function SettingsPage() {
             </div>
           </div>
         )}
+
+        {/* ── Share & Earn ─────────────────────────────────────────────────── */}
+        <ShareAndEarnCard profile={profile} />
 
         {/* ── Compliance Guide ─────────────────────────────────────────────── */}
         <button

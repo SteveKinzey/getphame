@@ -1546,3 +1546,8 @@
 - [x] vite.config.ts manualChunks: vendor (react/trpc/date-fns), ui (radix/shadcn), charts
 - [x] /ref/:code referral landing page (store code, redirect to /, auto-claim on login)
 - [x] Custom branded Suspense PageLoader with Get Phame star icon animation
+
+## Share & Earn Referral Reward System
+- [x] Referral reward trigger: extend referrer Stripe subscription by 30 days when referral converts to paid (referrer must be paid subscriber, one reward per referral)
+- [x] Share & Earn card in Settings: referral link, copy button, stats (total referred, converted, months earned)
+- [x] Split vendor-charts: recharts (dashboard-only) vs date-fns (shared) into separate chunks
