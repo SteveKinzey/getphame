@@ -32,7 +32,7 @@ export default function OnboardingPage() {
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-2">
           <img
-            src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/pBVRBfuYVWCnYrAD.png"
+            src="https://assets.getphame.app/phame-wordmark-transparent-clean.png"
             alt="Get Phame"
             style={{ height: '36px', width: 'auto' }}
           />

@@ -7,7 +7,7 @@ import { useParams, useLocation } from "wouter";
 import { Star, ArrowRight, Users, Gift, CheckCircle2 } from "lucide-react";
 
 const WORDMARK_URL =
-  "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/pBVRBfuYVWCnYrAD.png";
+  "https://assets.getphame.app/phame-wordmark-transparent-clean.png";
 
 export default function ReferralLanding() {
   const params = useParams<{ code: string }>();

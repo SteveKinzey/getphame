@@ -11,11 +11,11 @@ const HERO_IMG = "https://assets.getphame.app/phame-hero-illustration.png";
 const OG_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/og-preview-PB5uoBDhiPJXzuqM8A9kzf.png";
 
-const APP_PREVIEW_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/SornnhFzTvZHyWXh.png";
+const APP_PREVIEW_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/kcuTkaZAyICEAZUd.png";
 
 const YOUTUBE_VIDEO_ID = "EWHSE1oyJOk";
 const EMAIL_PREVIEW_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/phame-email-preview-eP9MPPjeAcPwSE2fKv2Pk6.png";
-const DEMO_GIF = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/oFzMxekhhXbcmvHL.gif";
+const DEMO_GIF = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/McxYzxykjRUMLDms.gif";
 
 function FAQSection() {
   const { t } = useTranslation();
@@ -177,7 +177,7 @@ export default function LandingPage() {
       <nav className="flex items-center justify-between px-5 py-4 rr-bg-navy sticky top-0 z-50">
         <div className="flex items-center" style={{ minWidth: 120, minHeight: 40 }}>
           <img
-            src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/pBVRBfuYVWCnYrAD.png"
+            src="https://assets.getphame.app/phame-wordmark-transparent-clean.png"
             alt="Get Phame"
             style={{ height: '40px', width: 'auto', objectFit: 'contain', display: 'block' }}
             onError={(e) => {

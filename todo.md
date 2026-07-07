@@ -1568,3 +1568,9 @@
 - [x] Add 7-day guarantee trust badge above checkout button on Upgrade page
 - [x] Add smooth expand/collapse animation to Upgrade FAQ accordion
 - [x] Translate upgradeFaq keys into th/es/fr/zh-CN locale files
+
+## Broken Image Fix (Jul 7, 2026)
+- [x] Download APP_PREVIEW_IMG and DEMO_GIF from old manuscdn session URLs and re-upload to fresh public CDN URLs
+- [x] Replace wordmark manuscdn session URL in LandingPage.tsx, Onboarding.tsx, ReferralLanding.tsx with assets.getphame.app URL
+- [x] Replace APP_PREVIEW_IMG manuscdn session URL in LandingPage.tsx with fresh CDN URL
+- [x] Replace DEMO_GIF manuscdn session URL in LandingPage.tsx with fresh CDN URL
