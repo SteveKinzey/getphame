@@ -177,7 +177,7 @@ export default function LandingPage() {
       <nav className="flex items-center justify-between px-5 py-4 rr-bg-navy sticky top-0 z-50">
         <div className="flex items-center" style={{ minWidth: 120, minHeight: 40 }}>
           <img
-            src="https://assets.getphame.app/phame-wordmark-transparent-clean.png"
+            src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/pBVRBfuYVWCnYrAD.png"
             alt="Get Phame"
             style={{ height: '40px', width: 'auto', objectFit: 'contain', display: 'block' }}
             onError={(e) => {
