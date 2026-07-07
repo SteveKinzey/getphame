@@ -330,6 +330,13 @@
       "when": 1781005324494,
       "tag": "0046_dashing_blade",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "5",
+      "when": 1783466520148,
+      "tag": "0047_supreme_sleepwalker",
+      "breakpoints": true
     }
   ]
 }

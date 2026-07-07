@@ -1574,3 +1574,14 @@
 - [x] Replace wordmark manuscdn session URL in LandingPage.tsx, Onboarding.tsx, ReferralLanding.tsx with assets.getphame.app URL
 - [x] Replace APP_PREVIEW_IMG manuscdn session URL in LandingPage.tsx with fresh CDN URL
 - [x] Replace DEMO_GIF manuscdn session URL in LandingPage.tsx with fresh CDN URL
+
+## Landing Page Desktop Restoration (Jul 7, 2026)
+- [x] Copy all 17 Fly.io landing components into Manus project
+- [x] Wire component-based LandingPage.tsx (Navbar, Hero, TrustBar, VideoDemo, Features, HowItWorks, ProductShowcase, Stats, Testimonials, Pricing, Comparison, FAQ, LeadCapture, FinalCTA, Footer)
+- [x] Add Plus Jakarta Sans font to index.html
+- [x] Fix container max-width for desktop (480px → 1280px)
+- [x] Add animate-float keyframe and font-display/font-sans CSS variables
+- [x] Add leads table to schema and run db:push
+- [x] Add leadCapture tRPC router (submit procedure with onDuplicateKeyUpdate)
+- [x] Copy leadGuideEmail.ts server helper
+- [x] Update Pricing component with correct prices ($497 lifetime) and /upgrade hrefs

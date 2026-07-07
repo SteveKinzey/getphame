@@ -11,6 +11,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --font-sans: 'Inter', 'Nunito', system-ui, sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Poppins', system-ui, sans-serif;
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -278,7 +280,7 @@
     .container {
       padding-left: 2rem;
       padding-right: 2rem;
-      max-width: 480px;
+      max-width: 1280px;
     }
   }
 
@@ -341,6 +343,14 @@
   }
 
   /* Rocket launch animation */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+  }
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+
   @keyframes rocketLaunch {
     0% { transform: translateY(0) scale(1); opacity: 1; }
     50% { transform: translateY(-20px) scale(1.1); opacity: 0.8; }
