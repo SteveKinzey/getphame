@@ -335,6 +335,11 @@ export default function UpgradePage() {
             ))}
           </div>
 
+          {/* 7-day guarantee badge */}
+          <div className="flex items-center justify-center gap-1.5 mb-3 px-3 py-2 rounded-xl" style={{ background: "oklch(0.19 0.08 260)", border: "1px solid oklch(0.28 0.07 260)" }}>
+            <Shield size={13} className="rr-text-gold flex-shrink-0" />
+            <span className="text-xs font-bold rr-text-gold">{t("pricingCard.guarantee", "7-day money-back guarantee")}</span>
+          </div>
           {/* Primary CTA — Stripe Checkout */}
           <button
             onClick={handleStripeCheckout}
@@ -577,16 +582,22 @@ function UpgradeFaqItem({ q, a }: { q: string; a: string }) {
         <span className="text-sm font-bold text-white">{q}</span>
         <span
           className="shrink-0 text-lg leading-none rr-text-gold"
-          style={{ transform: open ? "rotate(45deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
+          style={{ transform: open ? "rotate(45deg)" : "rotate(0deg)", transition: "transform 0.2s ease" }}
         >
           +
         </span>
       </button>
-      {open && (
+      <div
+        style={{
+          maxHeight: open ? "300px" : "0px",
+          overflow: "hidden",
+          transition: "max-height 0.28s ease",
+        }}
+      >
         <div className="px-4 pb-4 text-xs leading-relaxed" style={{ color: "var(--text-on-dark-secondary)" }}>
           {a}
         </div>
-      )}
+      </div>
     </div>
   );
 }

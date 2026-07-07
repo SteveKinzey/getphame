@@ -1564,3 +1564,7 @@
 - [x] Update Thai locale lifetimePrice to ฿17,500
 - [x] Add Was $1,247 strikethrough anchor to Upgrade page
 - [x] Add Was $1,247 strikethrough anchor to LandingPage
+- [x] Fix mobile Home header to use wordmark PNG instead of text/icon lockup
+- [x] Add 7-day guarantee trust badge above checkout button on Upgrade page
+- [x] Add smooth expand/collapse animation to Upgrade FAQ accordion
+- [x] Translate upgradeFaq keys into th/es/fr/zh-CN locale files

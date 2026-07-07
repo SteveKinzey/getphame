@@ -1171,7 +1171,8 @@
     "oneTime": "paiement unique",
     "includes": "Inclut :",
     "everythingInFree": "Tout ce qui est dans Gratuit, plus :",
-    "bestValue": "Meilleure valeur"
+    "bestValue": "Meilleure valeur",
+    "guarantee": "Garantie de remboursement de 7 jours"
   },
   "accessCode": {
     "title": "Code d'accès",
@@ -1856,5 +1857,20 @@
     "gifCaption": "The 3-step send flow",
     "emailAlt": "Example review request email on iPhone",
     "emailCaption": "What your customer receives"
+  },
+  "upgradeFaq": {
+    "title": "Questions fréquentes",
+    "q1": "L'offre à vie est-elle vraiment un paiement unique?",
+    "a1": "Oui — vous payez 497 $ une seule fois et Get Phame vous appartient pour toujours. Pas de frais mensuels, pas de renouvellements, pas de surprises. Vous bénéficiez également de toutes les mises à jour futures incluses.",
+    "q2": "Que se passe-t-il si j'annule un plan mensuel ou annuel?",
+    "a2": "Vous conservez l'accès jusqu'à la fin de votre période de facturation actuelle. Ensuite, votre compte revient au niveau gratuit (10 demandes). Vos contacts et votre historique ne sont jamais supprimés.",
+    "q3": "Puis-je passer du mensuel à l'annuel plus tard?",
+    "a3": "Oui. Vous pouvez passer du mensuel à l'annuel ou à vie à tout moment depuis les Paramètres. La partie inutilisée de votre plan actuel n'est pas remboursée, mais le nouveau plan commence immédiatement.",
+    "q4": "Y a-t-il une politique de remboursement?",
+    "a4": "Nous offrons un remboursement de 7 jours sur tous les plans, sans questions. Contactez support@getphame.app dans les 7 jours suivant l'achat et nous traiterons le remboursement dans les 24 heures.",
+    "q5": "Le plan à vie couvre-t-il plusieurs emplacements?",
+    "a5": "Le plan à vie couvre une entreprise/un emplacement. Si vous gérez plusieurs emplacements, vous aurez besoin d'un compte séparé pour chacun. Contactez-nous pour les tarifs agence ou multi-emplacements.",
+    "q6": "Quels modes de paiement sont acceptés?",
+    "a6": "Toutes les principales cartes de crédit et de débit via Stripe. Les utilisateurs thaïlandais peuvent également payer via PromptPay — appuyez sur l'option PromptPay sous le bouton de paiement principal."
   }
 }

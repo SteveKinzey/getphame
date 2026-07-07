@@ -445,10 +445,10 @@ export default function HomePage() {
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center">
               <img
-                src="https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/pBVRBfuYVWCnYrAD.png"
+                src="https://assets.getphame.app/phame-wordmark-transparent-clean.png"
                 alt="Get Phame"
                 className="block"
-                style={{ height: '36px', width: 'auto' }}
+                style={{ width: '160px', height: '60px', objectFit: 'cover', marginLeft: '-20px' }}
               />
             </div>
             <div className="flex items-center gap-2">

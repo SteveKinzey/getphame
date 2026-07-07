@@ -807,7 +807,8 @@
     "promptPayNote": "仅限泰国 · 二维码支付 · 以泰铢计费",
     "hidePromptPay": "隐藏",
     "promptPayReveal": "在泰国？",
-    "promptPayRevealLink": "使用 PromptPay 支付 (฿)"
+    "promptPayRevealLink": "使用 PromptPay 支付 (฿)",
+    "guarantee": "7 天退款保证"
   },
   "accessCode": {
     "title": "有访问码吗？",
@@ -1338,5 +1339,20 @@
     "gifCaption": "The 3-step send flow",
     "emailAlt": "Example review request email on iPhone",
     "emailCaption": "What your customer receives"
+  },
+  "upgradeFaq": {
+    "title": "常见问题",
+    "q1": "终身套餐真的只需一次付款吗？",
+    "a1": "是的——只需支付 $497，Get Phame 就永远属于您。没有月费，没有续费，没有隐藏费用。您还将获得未来所有更新。",
+    "q2": "如果我取消月度或年度套餐会怎样？",
+    "a2": "您可以使用到当前计费周期结束。之后，您的账户将恢复为免费套餐（10 次请求）。您的联系人和历史记录永远不会被删除。",
+    "q3": "以后可以从月度升级到年度吗？",
+    "a3": "可以。您可以随时在设置中从月度升级到年度或终身套餐。当前套餐的未使用部分不予退款，但新套餐立即生效。",
+    "q4": "有退款政策吗？",
+    "a4": "我们为所有套餐提供 7 天无条件退款。在购买后 7 天内联系 support@getphame.app，我们将在 24 小时内处理退款。",
+    "q5": "终身套餐涵盖多个门店吗？",
+    "a5": "终身套餐涵盖一个商家/门店。如果您管理多个门店，每个门店需要单独的账户。如需代理或多门店定价，请联系我们。",
+    "q6": "接受哪些支付方式？",
+    "a6": "通过 Stripe 接受所有主要信用卡和借记卡。泰国用户也可以通过 PromptPay 付款——点击主要结账按钮下方的 PromptPay 选项。"
   }
 }

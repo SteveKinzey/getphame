@@ -1171,7 +1171,8 @@
     "oneTime": "pago único",
     "includes": "Incluye:",
     "everythingInFree": "Todo en Gratis, más:",
-    "bestValue": "Mejor valor"
+    "bestValue": "Mejor valor",
+    "guarantee": "Garantía de devolución de 7 días"
   },
   "accessCode": {
     "title": "Código de acceso",
@@ -1856,5 +1857,20 @@
     "gifCaption": "The 3-step send flow",
     "emailAlt": "Example review request email on iPhone",
     "emailCaption": "What your customer receives"
+  },
+  "upgradeFaq": {
+    "title": "Preguntas frecuentes",
+    "q1": "¿El plan de por vida es realmente un solo pago?",
+    "a1": "Sí — pagas $497 una sola vez y Get Phame es tuyo para siempre. Sin cuotas mensuales, sin renovaciones, sin sorpresas. También recibes todas las actualizaciones futuras incluidas.",
+    "q2": "¿Qué pasa si cancelo un plan mensual o anual?",
+    "a2": "Conservas el acceso hasta el final de tu período de facturación actual. Después, tu cuenta vuelve al nivel gratuito (10 solicitudes). Tus contactos e historial nunca se eliminan.",
+    "q3": "¿Puedo cambiar de mensual a anual más adelante?",
+    "a3": "Sí. Puedes actualizar de mensual a anual o de por vida en cualquier momento desde Configuración. La parte no utilizada de tu plan actual no se reembolsa, pero el nuevo plan comienza de inmediato.",
+    "q4": "¿Hay política de reembolso?",
+    "a4": "Ofrecemos reembolso de 7 días en todos los planes, sin preguntas. Contacta a support@getphame.app dentro de los 7 días posteriores a la compra y procesaremos el reembolso en 24 horas.",
+    "q5": "¿El plan de por vida cubre múltiples ubicaciones?",
+    "a5": "El plan de por vida cubre un negocio/ubicación. Si gestionas múltiples ubicaciones, necesitarás una cuenta separada para cada una. Contáctanos para precios de agencia o múltiples ubicaciones.",
+    "q6": "¿Qué métodos de pago se aceptan?",
+    "a6": "Todas las tarjetas de crédito y débito principales a través de Stripe. Los usuarios tailandeses también pueden pagar mediante PromptPay — toca la opción PromptPay debajo del botón de pago principal."
   }
 }
