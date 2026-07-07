@@ -1,5 +1,5 @@
 // Phame — Upgrade / Pricing page
-// Three-tier pricing: Monthly $29 | Annual $290 | Lifetime $1,247
+// Three-tier pricing: Monthly $29 | Annual $290 | Lifetime $497
 
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -38,7 +38,7 @@ const COMPARISON_ROWS: { feature: string; free: string | boolean; pro: string | 
   { feature: "Daily send limit",           free: "50/day",   pro: "500/day",    lifetime: "500/day" },
   { feature: "Priority support",           free: false,      pro: true,         lifetime: true },
   { feature: "Future updates",             free: false,      pro: "While active",lifetime: "Forever" },
-  { feature: "Price",                      free: "Free",     pro: "$29/mo",     lifetime: "$1,247" },
+  { feature: "Price",                      free: "Free",     pro: "$29/mo",     lifetime: "$497" },
 ];
 
 const PRO_FEATURES = [
@@ -69,8 +69,8 @@ const PLANS: Record<Plan, { label: string; price: string; thb: string; sub: stri
   },
   lifetime: {
     label: "Lifetime",
-    price: "$1,247",
-    thb: toThb(1247),
+    price: "$497",
+    thb: toThb(497),
     sub: "one-time",
     badge: "Best Value",
     savings: "Pay once, own forever",

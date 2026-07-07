@@ -12,4 +12,4 @@ Disallow: /woo-customers
 Disallow: /upgrade
 Disallow: /payment-success
 
-Sitemap: https://reviewlink.app/sitemap.xml
+Sitemap: https://getphame.app/sitemap.xml

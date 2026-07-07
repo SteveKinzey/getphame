@@ -1,6 +1,6 @@
-// ReviewRocket Service Worker v3 — All locale files pre-cached at install
+// Get Phame Service Worker v3 — All locale files pre-cached at install
 // Cache version bump forces old caches to be cleared on update
-const CACHE_NAME = 'review-rocket-v3';
+const CACHE_NAME = 'getphame-v3';
 
 // Pre-cache all locale files at install so language switching is instant
 // and works completely offline after the app is installed on the device.

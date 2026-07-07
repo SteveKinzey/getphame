@@ -19,7 +19,7 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
 export const STRIPE_PRICE_IDS = {
   monthly:  "price_1TOTkwLryXlEZmjywwPjXYRn",
   annual:   "price_1TOTnALryXlEZmjy8JdDiu3P",
-  lifetime: "price_1TOTniLryXlEZmjyMnmX9Qe7",
+  lifetime: "price_1TqgstLryXlEZmjyrabUcDFl", // $497 one-time (updated Jul 2026)
 } as const;
 
 export type StripePlan = keyof typeof STRIPE_PRICE_IDS;

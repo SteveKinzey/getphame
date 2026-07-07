@@ -806,7 +806,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
           <div className="rounded-xl px-3 py-2 flex items-start gap-2" style={{ background: "oklch(0.97 0.02 80)", border: "1px solid oklch(0.88 0.08 80)" }}>
             <AlertTriangle size={12} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 80)" }} />
             <p className="text-xs" style={{ color: "oklch(0.45 0.10 80)" }}>
-              You are responsible for CAN-SPAM / GDPR compliance. Always include an unsubscribe link — ReviewRocket adds one automatically.
+              You are responsible for CAN-SPAM / GDPR compliance. Always include an unsubscribe link — Get Phame adds one automatically.
             </p>
           </div>
 

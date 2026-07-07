@@ -2168,7 +2168,7 @@ export const appRouter = router({
       // Pricing constants (USD cents)
       const MONTHLY_PRICE_CENTS = 2900;  // $29/mo
       const ANNUAL_PRICE_CENTS  = 29900; // $299/yr
-      const LIFETIME_PRICE_CENTS = 79900; // $799 one-time
+      const LIFETIME_PRICE_CENTS = 49700; // $497 one-time (updated Jul 2026)
 
       // Platform-wide email open/click stats
       const { sql: sqlRev, and: andRev, eq: eqRev } = await import("drizzle-orm");

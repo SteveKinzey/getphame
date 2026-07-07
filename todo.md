@@ -1556,3 +1556,8 @@
 - [x] tRPC admin procedures: listDeferredRewards + processReward (single) + processAllRewards (bulk)
 - [x] AdminReferralRewards page: table of deferred rows with referrer name/tier, referred user, convertedAt, and process button
 - [x] Wire /admin/referral-rewards route into App.tsx admin nav
+- [x] Update lifetime Stripe price ID to price_1TqgstLryXlEZmjyrabUcDFl ($497)
+- [x] Fix admin revenue constant LIFETIME_PRICE_CENTS to 49700
+- [x] Replace all ReviewLink/ReviewRocket branding with Get Phame across codebase
+- [x] Update LandingPage lifetime price display from $1,247 to $497
+- [x] Update Upgrade page lifetime price display from $1,247 to $497
