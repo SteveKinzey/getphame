@@ -1,4 +1,4 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Route, Switch } from "wouter";
@@ -10,41 +10,57 @@ import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
-// Pages
-import OnboardingPage from "./pages/Onboarding";
-import AppleAuthLanding from "./pages/AppleAuthLanding";
-import LandingPage from "./pages/LandingPage";
+// ── Always-eager (core authenticated shell — tiny, needed immediately) ──────
 import HomePage from "./pages/Home";
 import SendRequestPage from "./pages/SendRequest";
 import DashboardPage from "./pages/Dashboard";
 import SettingsPage from "./pages/Settings";
-
-import PrivacyPolicyPage from "./pages/PrivacyPolicy";
-import PaymentSuccessPage from "./pages/PaymentSuccess";
-import TermsOfServicePage from "./pages/TermsOfService";
-import WooCustomersPage from "./pages/WooCustomers";
-import SavedContactsPage from "./pages/SavedContacts";
-import EmailTemplatesPage from "./pages/EmailTemplates";
-import RemindersPage from "./pages/Reminders";
-import ImportContactsPage from "./pages/ImportContacts";
-import AdminCodesPage from "./pages/AdminCodes";
-import AdminDashboardPage from "./pages/AdminDashboard";
-import AdminSmtpStatsPage from "./pages/AdminSmtpStats";
-import AdminChurnPage from "./pages/AdminChurn";
-import AdminRevenuePage from "./pages/AdminRevenue";
-import ChangelogPage from "./pages/Changelog";
-import UnsubscribePage from "./pages/Unsubscribe";
-import UpgradePage from "./pages/Upgrade";
-import ChurnSurveyPage from "./pages/ChurnSurvey";
-import CompliancePage from "./pages/Compliance";
-import ClientReviewsPage from "./pages/ClientReviews";
-import { trpc } from "./lib/trpc";
-import { useLocation } from "wouter";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, { useOnboardingGuide } from "./components/OnboardingGuide";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
-import LanguageFlyout from "./components/LanguageFlyout";
+import { trpc } from "./lib/trpc";
+import { useLocation } from "wouter";
 import { useHapticEvents } from "./hooks/useHapticEvents";
+
+// ── Lazy-loaded (public pages + heavy/rarely-visited pages) ─────────────────
+// Public marketing pages — large, only needed before login
+const LandingPage       = lazy(() => import("./pages/LandingPage"));
+const OnboardingPage    = lazy(() => import("./pages/Onboarding"));
+const AppleAuthLanding  = lazy(() => import("./pages/AppleAuthLanding"));
+
+// Legal / utility — rarely visited, no need to block initial load
+const PrivacyPolicyPage  = lazy(() => import("./pages/PrivacyPolicy"));
+const TermsOfServicePage = lazy(() => import("./pages/TermsOfService"));
+const ChangelogPage      = lazy(() => import("./pages/Changelog"));
+const UnsubscribePage    = lazy(() => import("./pages/Unsubscribe"));
+const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccess"));
+const ChurnSurveyPage    = lazy(() => import("./pages/ChurnSurvey"));
+
+// Feature pages — authenticated, deferred until navigation
+const WooCustomersPage    = lazy(() => import("./pages/WooCustomers"));
+const SavedContactsPage   = lazy(() => import("./pages/SavedContacts"));
+const EmailTemplatesPage  = lazy(() => import("./pages/EmailTemplates"));
+const RemindersPage       = lazy(() => import("./pages/Reminders"));
+const ImportContactsPage  = lazy(() => import("./pages/ImportContacts"));
+const UpgradePage         = lazy(() => import("./pages/Upgrade"));
+const CompliancePage      = lazy(() => import("./pages/Compliance"));
+const ClientReviewsPage   = lazy(() => import("./pages/ClientReviews"));
+
+// Admin pages — owner-only, always deferred
+const AdminDashboardPage  = lazy(() => import("./pages/AdminDashboard"));
+const AdminCodesPage      = lazy(() => import("./pages/AdminCodes"));
+const AdminSmtpStatsPage  = lazy(() => import("./pages/AdminSmtpStats"));
+const AdminChurnPage      = lazy(() => import("./pages/AdminChurn"));
+const AdminRevenuePage    = lazy(() => import("./pages/AdminRevenue"));
+
+// ── Shared loading fallback ──────────────────────────────────────────────────
+function PageLoader() {
+  return (
+    <div className="mobile-screen flex items-center justify-center rr-bg-navy">
+      <Loader2 className="animate-spin text-white" size={32} />
+    </div>
+  );
+}
 
 /**
  * PageTransition — wraps route output in a fade-up animation that triggers
@@ -126,18 +142,18 @@ function AppShell() {
   const path = window.location.pathname;
   const globalLangFlyout = null;
 
-  if (path === "/privacy-policy") return <div className="mobile-screen"><PrivacyPolicyPage />{globalLangFlyout}</div>;
-  if (path === "/terms-of-service") return <div className="mobile-screen"><TermsOfServicePage />{globalLangFlyout}</div>;
-  if (path === "/payment-success") return <div className="mobile-screen"><PaymentSuccessPage />{globalLangFlyout}</div>;
-  if (path === "/unsubscribe") return <div className="mobile-screen"><UnsubscribePage />{globalLangFlyout}</div>;
-  if (path === "/auth/apple/landing") return <div className="mobile-screen"><AppleAuthLanding /></div>;
+  if (path === "/privacy-policy") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><PrivacyPolicyPage />{globalLangFlyout}</div></Suspense>;
+  if (path === "/terms-of-service") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><TermsOfServicePage />{globalLangFlyout}</div></Suspense>;
+  if (path === "/payment-success") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><PaymentSuccessPage />{globalLangFlyout}</div></Suspense>;
+  if (path === "/unsubscribe") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><UnsubscribePage />{globalLangFlyout}</div></Suspense>;
+  if (path === "/auth/apple/landing") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><AppleAuthLanding /></div></Suspense>;
 
   if (!user) {
     // Show the public marketing landing page at /, Onboarding at /onboarding
-    if (path === "/onboarding") return <div className="mobile-screen"><OnboardingPage />{globalLangFlyout}</div>;
+    if (path === "/onboarding") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><OnboardingPage />{globalLangFlyout}</div></Suspense>;
     // Changelog is public — render without BottomNav for unauthenticated visitors
-    if (path === "/changelog") return <div className="mobile-screen"><ChangelogPage />{globalLangFlyout}</div>;
-    return <div className="mobile-screen"><LandingPage />{globalLangFlyout}</div>;
+    if (path === "/changelog") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><ChangelogPage />{globalLangFlyout}</div></Suspense>;
+    return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><LandingPage />{globalLangFlyout}</div></Suspense>;
   }
 
   return (
@@ -154,6 +170,7 @@ function AppShell() {
       <OnboardingGuide open={guideOpen} onClose={handleGuideClose} />
       <main id="main-content">
       <PageTransition>
+      <Suspense fallback={<PageLoader />}>
       <Switch>
         <Route path="/" component={HomePage} />
         <Route path="/send" component={SendRequestPage} />
@@ -179,6 +196,7 @@ function AppShell() {
         <Route path="/reviews" component={ClientReviewsPage} />
         <Route component={HomePage} />
       </Switch>
+      </Suspense>
       </PageTransition>
       </main>
       <BottomNav />

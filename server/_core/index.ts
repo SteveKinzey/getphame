@@ -345,6 +345,15 @@ async function startServer() {
             "https://www.youtube.com",
             "https://youtube.com",
           ],
+          // Allow outbound API calls: IP detection, analytics, font CDNs
+          connectSrc: [
+            "'self'",
+            "http://ip-api.com",
+            "https://ip-api.com",
+            "https://fonts.googleapis.com",
+            "https://fonts.gstatic.com",
+            "https://vitals.vercel-insights.com",
+          ],
           objectSrc: ["'none'"],
           scriptSrc: ["'self'"],
           scriptSrcAttr: ["'none'"],

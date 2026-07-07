@@ -1535,3 +1535,9 @@
 - [x] Generate email preview mockup image and add to LandingPage hero section
 - [x] Create demo GIF showing the 3-step send flow and add to How It Works section
 - [x] Fix FAQ accordion expand/collapse on mobile — confirmed working (useState toggle, chevron rotation)
+
+## Performance & SEO Improvements
+- [x] Code-split App.tsx with React.lazy() on LandingPage, PrivacyPolicy, TermsOfService, Changelog, ChurnSurvey, PaymentSuccess, Unsubscribe
+- [x] Generate new OG/social preview image (navy/gold, Get Phame wordmark, 1200x630)
+- [x] Upload OG image to public CDN and update meta tags in client/index.html
+- [x] Add connect-src to CSP for external API calls (ip-api.com, analytics, fonts)
