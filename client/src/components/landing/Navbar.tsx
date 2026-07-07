@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
+import { getLoginUrl } from "@/const";
 
 const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/FK9bk5QsyQ42fQPrngzafd/phame-logo-mark-LWuqsnXvZV3htEC4hfkanS.webp";
 
@@ -13,11 +14,17 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [loginUrl, setLoginUrl] = useState("/onboarding");
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    // getLoginUrl() encodes window.location.origin so it must run client-side
+    setLoginUrl(getLoginUrl("/home"));
   }, []);
 
   // Determine if we're on the home page (for anchor links)
@@ -61,13 +68,13 @@ export default function Navbar() {
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-4">
           <a
-            href="/onboarding"
+            href={loginUrl}
             className="text-base font-semibold text-slate-200 hover:text-white transition-colors"
           >
             Sign In
           </a>
           <a
-            href="/onboarding"
+            href={loginUrl}
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-lg hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_15px_oklch(0.78_0.15_75/0.2)]"
           >
             Get Started Free
@@ -100,13 +107,13 @@ export default function Navbar() {
             ))}
             <hr className="border-[#1e3050] my-2" />
             <a
-              href="/onboarding"
+              href={loginUrl}
               className="text-lg font-bold text-white py-2.5"
             >
               Sign In
             </a>
             <a
-              href="/onboarding"
+              href={loginUrl}
               className="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-primary text-primary-foreground font-semibold text-base rounded-xl mt-2"
             >
               Get Started Free
