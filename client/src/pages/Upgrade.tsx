@@ -522,6 +522,71 @@ export default function UpgradePage() {
           {t("comparisonTable.freeTrialNote")}
         </p>
       </div>
+
+      {/* ── FAQ section ─────────────────────────────────────────────────────── */}
+      <div className="px-4 pb-16">
+        <h2 className="text-lg font-black text-center text-white mb-5 mt-2">
+          {t("upgradeFaq.title", "Common Questions")}
+        </h2>
+        <div className="flex flex-col gap-3">
+          {[
+            {
+              q: t("upgradeFaq.q1", "Is the lifetime deal really one payment?"),
+              a: t("upgradeFaq.a1", "Yes — you pay $497 once and Get Phame is yours forever. No monthly fees, no renewals, no surprises. You also get all future updates included."),
+            },
+            {
+              q: t("upgradeFaq.q2", "What happens if I cancel a monthly or annual plan?"),
+              a: t("upgradeFaq.a2", "You keep access until the end of your current billing period. After that your account reverts to the free tier (10 requests). Your contacts and history are never deleted."),
+            },
+            {
+              q: t("upgradeFaq.q3", "Can I switch from monthly to annual later?"),
+              a: t("upgradeFaq.a3", "Yes. You can upgrade from monthly to annual or lifetime at any time from Settings. The unused portion of your current plan is not refunded, but the new plan starts immediately."),
+            },
+            {
+              q: t("upgradeFaq.q4", "Is there a refund policy?"),
+              a: t("upgradeFaq.a4", "We offer a 7-day refund on all plans, no questions asked. Contact support@getphame.app within 7 days of purchase and we will process the refund within 24 hours."),
+            },
+            {
+              q: t("upgradeFaq.q5", "Does the lifetime plan cover multiple locations?"),
+              a: t("upgradeFaq.a5", "The lifetime plan covers one business/location. If you manage multiple locations, you will need a separate account for each. Contact us for agency or multi-location pricing."),
+            },
+            {
+              q: t("upgradeFaq.q6", "What payment methods are accepted?"),
+              a: t("upgradeFaq.a6", "All major credit and debit cards via Stripe. Thai users can also pay via PromptPay — tap the PromptPay option below the main checkout button."),
+            },
+          ].map((faq, i) => (
+            <UpgradeFaqItem key={i} q={faq.q} a={faq.a} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UpgradeFaqItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div
+      className="rounded-2xl overflow-hidden"
+      style={{ background: "oklch(0.19 0.08 260)", border: "1px solid oklch(0.28 0.07 260)" }}
+    >
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="w-full flex items-center justify-between gap-3 px-4 py-4 text-left"
+      >
+        <span className="text-sm font-bold text-white">{q}</span>
+        <span
+          className="shrink-0 text-lg leading-none rr-text-gold"
+          style={{ transform: open ? "rotate(45deg)" : "rotate(0deg)", transition: "transform 0.2s" }}
+        >
+          +
+        </span>
+      </button>
+      {open && (
+        <div className="px-4 pb-4 text-xs leading-relaxed" style={{ color: "var(--text-on-dark-secondary)" }}>
+          {a}
+        </div>
+      )}
     </div>
   );
 }
