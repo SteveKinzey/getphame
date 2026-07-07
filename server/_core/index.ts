@@ -331,13 +331,19 @@ async function startServer() {
           fontSrc: ["'self'", "https:", "data:"],
           formAction: ["'self'"],
           frameAncestors: ["'self'"],
-          // Allow images from self, data URIs, Cloudflare R2 CDN, and CloudFront
+          // Allow images from self, data URIs, Cloudflare R2 CDN, CloudFront, and public manuscdn CDN
           imgSrc: [
             "'self'",
             "data:",
             "https://assets.getphame.app",
             "https://*.r2.dev",
             "https://d2xsxph8kpxj0f.cloudfront.net",
+            "https://files.manuscdn.com",
+          ],
+          // Allow YouTube iframes for the landing page video embed
+          frameSrc: [
+            "https://www.youtube.com",
+            "https://youtube.com",
           ],
           objectSrc: ["'none'"],
           scriptSrc: ["'self'"],

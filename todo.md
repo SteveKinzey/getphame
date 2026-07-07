@@ -1532,6 +1532,6 @@
 - [x] Increase body copy font size and line height on mobile hero
 
 ## Conversion Asset Improvements (June 24, 2026)
-- [ ] Generate email preview mockup image and add to LandingPage hero section
-- [ ] Create demo GIF showing the 3-step send flow and add to How It Works section
-- [ ] Fix FAQ accordion expand/collapse on mobile and verify on 390px viewport
+- [x] Generate email preview mockup image and add to LandingPage hero section
+- [x] Create demo GIF showing the 3-step send flow and add to How It Works section
+- [x] Fix FAQ accordion expand/collapse on mobile — confirmed working (useState toggle, chevron rotation)
