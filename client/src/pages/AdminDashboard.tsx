@@ -21,6 +21,7 @@ import {
   X,
   CheckCircle2,
   DollarSign,
+  Gift,
 } from "lucide-react";
 
 import { useDebounce } from "use-debounce";
@@ -438,6 +439,16 @@ export default function AdminDashboard() {
                 <span className="flex items-center gap-2">
                   <Star size={16} className="rr-text-gold" />
                   Revenue Dashboard
+                </span>
+                <span className="rr-text-gold">→</span>
+              </button>
+              <button
+                onClick={() => navigate("/admin/referral-rewards")}
+                className="w-full flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold rr-bg-navy text-white"
+              >
+                <span className="flex items-center gap-2">
+                  <Gift size={16} className="rr-text-gold" />
+                  Deferred Referral Rewards
                 </span>
                 <span className="rr-text-gold">→</span>
               </button>

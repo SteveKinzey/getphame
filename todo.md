@@ -1551,3 +1551,8 @@
 - [x] Referral reward trigger: extend referrer Stripe subscription by 30 days when referral converts to paid (referrer must be paid subscriber, one reward per referral)
 - [x] Share & Earn card in Settings: referral link, copy button, stats (total referred, converted, months earned)
 - [x] Split vendor-charts: recharts (dashboard-only) vs date-fns (shared) into separate chunks
+
+## Admin Deferred Referral Rewards
+- [x] tRPC admin procedures: listDeferredRewards + processReward (single) + processAllRewards (bulk)
+- [x] AdminReferralRewards page: table of deferred rows with referrer name/tier, referred user, convertedAt, and process button
+- [x] Wire /admin/referral-rewards route into App.tsx admin nav

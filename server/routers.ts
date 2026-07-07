@@ -42,7 +42,7 @@ import {
 import { getDb } from "./db";
 import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
-import { eq, like, or, inArray, desc } from "drizzle-orm";
+import { eq, like, or, inArray, desc, isNotNull, isNull, and } from "drizzle-orm";
 import {
   listSavedContacts,
   createSavedContact,
@@ -2277,6 +2277,148 @@ export const appRouter = router({
         promptpayRevealLast30,
         promptpayConversionRate,
       };
+    }),
+  }),
+
+  /** Admin: deferred referral reward management */
+  adminReferrals: router({
+    /**
+     * List referral rows where:
+     * - convertedAt IS NOT NULL (referred user paid)
+     * - rewardedAt IS NULL (reward not yet applied)
+     * - referrer is currently on tier = 'pro' or 'annual' (now eligible)
+     */
+    listDeferred: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      const db = await getDb();
+      if (!db) return [];
+
+      // Fetch all deferred rows (converted but not rewarded)
+      const rows = await db
+        .select()
+        .from(referrals)
+        .where(
+          and(
+            isNotNull(referrals.convertedAt),
+            isNull(referrals.rewardedAt)
+          )
+        )
+        .orderBy(desc(referrals.convertedAt));
+
+      if (rows.length === 0) return [];
+
+      // Fetch referrer profiles to check current tier
+      const referrerIds = Array.from(new Set(rows.map(r => r.referrerUserId)));
+      const referrerProfiles = await db
+        .select({
+          userId: businessProfiles.userId,
+          tier: businessProfiles.tier,
+          businessName: businessProfiles.businessName,
+          planExpiresAt: businessProfiles.planExpiresAt,
+        })
+        .from(businessProfiles)
+        .where(inArray(businessProfiles.userId, referrerIds));
+
+      const profileMap = new Map(referrerProfiles.map(p => [p.userId, p]));
+
+      // Fetch user names/emails for referrers and referred users
+      const allUserIds = Array.from(new Set([
+        ...rows.map(r => r.referrerUserId),
+        ...rows.map(r => r.referredUserId),
+      ]));
+      const userRows = await db
+        .select({ id: users.id, name: users.name, email: users.email })
+        .from(users)
+        .where(inArray(users.id, allUserIds));
+      const userMap = new Map(userRows.map(u => [u.id, u]));
+
+      const ELIGIBLE_TIERS = ["pro", "annual"];
+
+      return rows.map(row => {
+        const referrerProfile = profileMap.get(row.referrerUserId);
+        const referrerUser = userMap.get(row.referrerUserId);
+        const referredUser = userMap.get(row.referredUserId);
+        const isNowEligible = ELIGIBLE_TIERS.includes(referrerProfile?.tier ?? "");
+        return {
+          id: row.id,
+          referrerUserId: row.referrerUserId,
+          referredUserId: row.referredUserId,
+          referralCode: row.referralCode,
+          convertedAt: row.convertedAt,
+          referrerName: referrerUser?.name ?? referrerUser?.email ?? `User #${row.referrerUserId}`,
+          referrerEmail: referrerUser?.email ?? null,
+          referrerTier: referrerProfile?.tier ?? "unknown",
+          referrerPlanExpiresAt: referrerProfile?.planExpiresAt ?? null,
+          referredName: referredUser?.name ?? referredUser?.email ?? `User #${row.referredUserId}`,
+          isNowEligible,
+        };
+      });
+    }),
+
+    /** Process a single deferred reward by referral row ID */
+    processOne: protectedProcedure
+      .input(z.object({ referralId: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+
+        const [row] = await db
+          .select()
+          .from(referrals)
+          .where(eq(referrals.id, input.referralId))
+          .limit(1);
+
+        if (!row) throw new TRPCError({ code: "NOT_FOUND", message: "Referral row not found" });
+        if (row.rewardedAt) throw new TRPCError({ code: "BAD_REQUEST", message: "Already rewarded" });
+
+        const { rewardReferrer } = await import("./referrals");
+        await rewardReferrer(row.id, row.referrerUserId);
+        return { ok: true, referralId: row.id };
+      }),
+
+    /** Process ALL eligible deferred rewards in one go */
+    processAll: protectedProcedure.mutation(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+
+      const rows = await db
+        .select()
+        .from(referrals)
+        .where(
+          and(
+            isNotNull(referrals.convertedAt),
+            isNull(referrals.rewardedAt)
+          )
+        );
+
+      if (rows.length === 0) return { processed: 0, skipped: 0 };
+
+      const ELIGIBLE_TIERS = ["pro", "annual"];
+      const referrerIds = Array.from(new Set(rows.map(r => r.referrerUserId)));
+      const profiles = await db
+        .select({ userId: businessProfiles.userId, tier: businessProfiles.tier })
+        .from(businessProfiles)
+        .where(inArray(businessProfiles.userId, referrerIds));
+      const tierMap = new Map(profiles.map(p => [p.userId, p.tier]));
+
+      const { rewardReferrer } = await import("./referrals");
+      let processed = 0;
+      let skipped = 0;
+
+      for (const row of rows) {
+        const tier = tierMap.get(row.referrerUserId) ?? "free";
+        if (ELIGIBLE_TIERS.includes(tier)) {
+          await rewardReferrer(row.id, row.referrerUserId);
+          processed++;
+        } else {
+          skipped++;
+        }
+      }
+
+      console.log(`[AdminReferrals] processAll: ${processed} rewarded, ${skipped} skipped (not on paid plan)`);
+      return { processed, skipped };
     }),
   }),
 
