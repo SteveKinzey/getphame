@@ -11,11 +11,11 @@ const HERO_IMG = "https://assets.getphame.app/phame-hero-illustration.png";
 const OG_IMG =
   "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/og-preview-PB5uoBDhiPJXzuqM8A9kzf.png";
 
-const APP_PREVIEW_IMG = "https://assets.getphame.app/phame-app-screenshot.png";
+const APP_PREVIEW_IMG = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/SornnhFzTvZHyWXh.png";
 
 const YOUTUBE_VIDEO_ID = "EWHSE1oyJOk";
 const EMAIL_PREVIEW_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/phame-email-preview-eP9MPPjeAcPwSE2fKv2Pk6.png";
-const DEMO_GIF = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/phame-demo_5cb160d4.gif";
+const DEMO_GIF = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/oFzMxekhhXbcmvHL.gif";
 
 function FAQSection() {
   const { t } = useTranslation();
