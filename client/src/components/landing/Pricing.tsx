@@ -1,5 +1,7 @@
 import { Check, ArrowRight, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
 import FadeUp, { StaggerChildren } from "./FadeUp";
+import { getLoginUrl } from "@/const";
 
 // Plan type with optional href
 const plans: Array<{ name: string; price: string; period: string; description: string; features: string[]; cta: string; popular: boolean; highlight: boolean; badge?: string; href: string }> = [

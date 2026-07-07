@@ -1,9 +1,12 @@
+import { useState, useEffect } from "react";
 import { ArrowRight, Star } from "lucide-react";
 import FadeUp from "./FadeUp";
+import { getLoginUrl } from "@/const";
 
 export default function FinalCTA() {
   const [loginUrl, setLoginUrl] = useState("/onboarding");
   useEffect(() => { setLoginUrl(getLoginUrl("/home")); }, []);
+
   return (
     <section className="py-20 md:py-28 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.12_0.025_250)] via-[#0a1628] to-[#0a1628]" />
