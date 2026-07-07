@@ -12,7 +12,7 @@ const plans: Array<{ name: string; price: string; period: string; description: s
     cta: "Start Free",
     popular: false,
     highlight: false,
-    href: "/onboarding",
+    href: "/onboarding", // overridden below for Free plan
   },
   {
     name: "Pro Monthly",
@@ -52,6 +52,8 @@ const plans: Array<{ name: string; price: string; period: string; description: s
 ];
 
 export default function Pricing() {
+  const [freeLoginUrl, setFreeLoginUrl] = useState("/onboarding");
+  useEffect(() => { setFreeLoginUrl(getLoginUrl("/home")); }, []);
   return (
     <section id="pricing" className="py-20 md:py-28 bg-[oklch(0.12_0.025_250)]">
       <div className="container">

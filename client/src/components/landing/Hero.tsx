@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getLoginUrl } from "@/const";
 import { ArrowRight, Shield, Mail, Star } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -34,12 +35,17 @@ const fadeUp = (delay = 0) => ({
 
 export default function Hero() {
   const [ctaText, setCtaText] = useState<CTAVariant>(CTA_VARIANTS[0]);
+  const [loginUrl, setLoginUrl] = useState("/onboarding");
 
   useEffect(() => {
     const variant = getOrAssignVariant();
     setCtaText(variant);
     // Log variant for analytics (replace with your analytics call)
     console.info("[A/B] hero_cta_variant:", variant);
+  }, []);
+
+  useEffect(() => {
+    setLoginUrl(getLoginUrl("/home"));
   }, []);
 
   return (
@@ -84,7 +90,7 @@ export default function Hero() {
 
             <motion.div {...fadeUp(0.44)} className="flex flex-col sm:flex-row gap-4 mb-8">
               <a
-                href="/onboarding"
+                href={loginUrl}
                 className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-primary text-primary-foreground font-bold text-base rounded-xl hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_30px_oklch(0.78_0.15_75/0.3)]"
               >
                 {ctaText}

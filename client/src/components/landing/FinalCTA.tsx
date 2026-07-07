@@ -2,6 +2,8 @@ import { ArrowRight, Star } from "lucide-react";
 import FadeUp from "./FadeUp";
 
 export default function FinalCTA() {
+  const [loginUrl, setLoginUrl] = useState("/onboarding");
+  useEffect(() => { setLoginUrl(getLoginUrl("/home")); }, []);
   return (
     <section className="py-20 md:py-28 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.12_0.025_250)] via-[#0a1628] to-[#0a1628]" />
@@ -22,7 +24,7 @@ export default function FinalCTA() {
             Free forever on the starter plan. No credit card. Set up in under 2 minutes. Start collecting 5-star reviews today.
           </p>
           <a
-            href="/onboarding"
+            href={loginUrl}
             className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-bold text-lg rounded-xl hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_50px_oklch(0.78_0.15_75/0.3)]"
           >
             Get Started Free

@@ -150,7 +150,7 @@ function AppShell() {
     if (path === "/onboarding") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><OnboardingPage />{globalLangFlyout}</div></Suspense>;
     // Changelog is public — render without BottomNav for unauthenticated visitors
     if (path === "/changelog") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><ChangelogPage />{globalLangFlyout}</div></Suspense>;
-    return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><LandingPage />{globalLangFlyout}</div></Suspense>;
+    return <Suspense fallback={<PageLoader />}><LandingPage /></Suspense>;
   }
 
   return (
