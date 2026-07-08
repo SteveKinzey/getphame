@@ -1,4 +1,4 @@
-const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/FK9bk5QsyQ42fQPrngzafd/phame-logo-mark-LWuqsnXvZV3htEC4hfkanS.webp";
+const LOGO_URL = "https://assets.getphame.app/phame-logo-mark.webp";
 
 export default function Footer() {
   return (

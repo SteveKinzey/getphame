@@ -3,9 +3,9 @@ import { Monitor, Upload, TrendingUp } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import FadeUp from "./FadeUp";
 
-const EMAIL_PREVIEW = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/FK9bk5QsyQ42fQPrngzafd/phame-email-preview-ZjaDzUz6Dfun8nbQqZvidR.webp";
-const CUSTOMER_IMPORT = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/FK9bk5QsyQ42fQPrngzafd/phame-customer-import-9NmRfQtaWgULsTt5zeDj86.webp";
-const REVIEW_TRACKING = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/FK9bk5QsyQ42fQPrngzafd/phame-review-tracking-d347r8GuH2TYD3AdUS9bYH.webp";
+const EMAIL_PREVIEW = "https://assets.getphame.app/phame-email-preview.webp";
+const CUSTOMER_IMPORT = "https://assets.getphame.app/phame-customer-import.webp";
+const REVIEW_TRACKING = "https://assets.getphame.app/phame-review-tracking.webp";
 
 const tabs = [
   { id: "email", label: "Email Preview", icon: Monitor, title: "Emails that feel handwritten", description: "Each review request arrives from your actual email address with your name, your signature, and a personal tone. Customers trust it because it looks real — because it is.", image: EMAIL_PREVIEW },

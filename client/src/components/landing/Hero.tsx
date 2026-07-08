@@ -3,8 +3,8 @@ import { getLoginUrl } from "@/const";
 import { ArrowRight, Shield, Mail, Star } from "lucide-react";
 import { motion } from "framer-motion";
 
-const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/FK9bk5QsyQ42fQPrngzafd/phame-hero-bg-avecsnuEQ62t9BLESYJfW4.webp";
-const DASHBOARD_MOCKUP = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/FK9bk5QsyQ42fQPrngzafd/phame-dashboard-mockup-LQn8UoksYQenokEeoGwng7.webp";
+const HERO_BG = "https://assets.getphame.app/phame-hero-bg.webp";
+const DASHBOARD_MOCKUP = "https://assets.getphame.app/phame-dashboard-mockup.webp";
 
 // A/B test variants
 const CTA_VARIANTS = [

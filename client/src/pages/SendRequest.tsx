@@ -15,7 +15,7 @@ import { useHaptics } from "@/hooks/useHaptics";
 import LanguageFlyout from "@/components/LanguageFlyout";
 
 const SUCCESS_IMG =
-  "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/J5ynazTEDzwxyTMCadbnuz/rr-send-success-8kZtg3dvEuiCrR8DrxxgKA.webp";
+  "https://assets.getphame.app/rr-send-success.webp";
 
 export default function SendRequestPage() {
   const { t } = useTranslation();
