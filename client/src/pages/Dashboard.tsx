@@ -338,8 +338,34 @@ export default function DashboardPage() {
                       },
                     },
                     tooltip: {
+                      backgroundColor: "#0f1e4a",
+                      titleColor: "#ffffff",
+                      bodyColor: "#c8d0e8",
+                      borderColor: "rgba(255,255,255,0.12)",
+                      borderWidth: 1,
+                      padding: 10,
+                      cornerRadius: 8,
+                      titleFont: { size: 12, family: "Poppins", weight: "bold" as const },
+                      bodyFont: { size: 11, family: "Poppins" },
                       callbacks: {
                         title: (items) => items[0]?.label ?? "",
+                        label: (item) => {
+                          const val = item.parsed.y as number;
+                          return `  ${item.dataset.label}: ${val}`;
+                        },
+                        afterBody: (items) => {
+                          const sent = (items.find((i) => i.dataset.label === "Sent")?.parsed.y as number) ?? 0;
+                          const opens = (items.find((i) => i.dataset.label === "Opens")?.parsed.y as number) ?? 0;
+                          const clicks = (items.find((i) => i.dataset.label === "Clicks")?.parsed.y as number) ?? 0;
+                          if (sent === 0) return [];
+                          const openRate = Math.round((opens / sent) * 100);
+                          const clickRate = Math.round((clicks / sent) * 100);
+                          return [
+                            "",
+                            `  Open rate: ${openRate}%`,
+                            `  Click rate: ${clickRate}%`,
+                          ];
+                        },
                       },
                     },
                   },

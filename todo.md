@@ -1615,9 +1615,9 @@
 - [x] Replace text-based brand name in sidebar with wordmark image
 
 ## Dashboard & UX Upgrades (Session Latest)
-- [ ] Replace Dashboard bar chart with Chart.js 30-day open/click line chart
-- [ ] Apply two-column form + preview layout to Bulk Send page
-- [ ] Add gold "Send Request" CTA button to desktop sidebar in AppLayout
+- [x] Replace Dashboard bar chart with Chart.js 30-day open/click line chart
+- [x] Apply two-column form + preview layout to Bulk Send page
+- [x] Add gold "Send Request" CTA button to desktop sidebar in AppLayout
 
 ## Dashboard & UX Upgrades (Phase 3)
 - [x] Replace weekly bar chart with Chart.js 30-day open/click/send line chart

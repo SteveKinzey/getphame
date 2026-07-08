@@ -103,7 +103,7 @@ export default function WooCustomers() {
   });
 
   const utils = trpc.useUtils();
-  const { data: emailPreview } = trpc.smtp.previewEmail.useQuery();
+  const { data: emailPreview, isLoading: previewLoading } = trpc.smtp.previewEmail.useQuery();
 
   const { data: creds } = trpc.woo.getCredentials.useQuery();
   const { data: platforms = [] } = trpc.reviewPlatforms.list.useQuery();
@@ -743,7 +743,22 @@ export default function WooCustomers() {
             <div className="px-4 py-3 flex items-center gap-2" style={{ background: "oklch(0.22 0.09 260)" }}>
               <span className="text-xs font-bold text-white tracking-wide uppercase">Email Preview</span>
             </div>
-            {emailPreview ? (
+            {previewLoading ? (
+              /* Skeleton loading state */
+              <div className="p-4 space-y-3" style={{ height: "480px" }}>
+                <div className="h-4 rounded-full bg-gray-100 animate-pulse w-3/4" />
+                <div className="h-3 rounded-full bg-gray-100 animate-pulse w-1/2" />
+                <div className="h-24 rounded-xl bg-gray-100 animate-pulse mt-4" />
+                <div className="h-3 rounded-full bg-gray-100 animate-pulse w-full" />
+                <div className="h-3 rounded-full bg-gray-100 animate-pulse w-5/6" />
+                <div className="h-3 rounded-full bg-gray-100 animate-pulse w-4/6" />
+                <div className="h-3 rounded-full bg-gray-100 animate-pulse w-full" />
+                <div className="h-3 rounded-full bg-gray-100 animate-pulse w-3/4" />
+                <div className="h-10 rounded-xl bg-gray-100 animate-pulse mt-4 w-1/2 mx-auto" />
+                <div className="h-3 rounded-full bg-gray-100 animate-pulse w-full mt-4" />
+                <div className="h-3 rounded-full bg-gray-100 animate-pulse w-2/3" />
+              </div>
+            ) : emailPreview ? (
               <iframe
                 srcDoc={emailPreview.html}
                 title="Email Preview"
