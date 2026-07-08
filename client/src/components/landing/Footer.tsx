@@ -1,4 +1,4 @@
-const LOGO_URL = "https://assets.getphame.app/phame-logo-mark.webp";
+const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.png";
 
 export default function Footer() {
   return (
@@ -7,9 +7,9 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo */}
           <a href="/" className="flex items-center gap-2.5">
-            <img src={LOGO_URL} alt="Get Phame" className="w-7 h-7" />
-            <span className="font-display font-bold text-base text-white">
-              GET <span className="text-primary">PHAME</span>
+            <img src={LOGO_URL} alt="GetPhame" className="w-7 h-7 rounded-lg" />
+            <span className="font-display font-bold text-base">
+              <span className="text-white">GET</span><span className="text-primary">PHAME</span>
             </span>
           </a>
 
@@ -37,7 +37,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <p className="text-sm text-slate-300 font-medium">
-            © {new Date().getFullYear()} Get Phame. All rights reserved.
+            © {new Date().getFullYear()} GetPhame. All rights reserved.
           </p>
         </div>
       </div>

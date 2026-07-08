@@ -13,7 +13,8 @@ import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 
-const HERO_IMG = "https://assets.getphame.app/phame-hero-illustration.png";
+const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.png";
+const HERO_IMG = "https://assets.getphame.app/getphame-logo-mark.png";
 
 function ReferralRewardsCard() {
   const { data: referralStats, isLoading } = trpc.referral.getStats.useQuery();
@@ -444,9 +445,11 @@ export default function HomePage() {
           {/* Row 2: Brand label (left) + Share / Guide buttons (right) */}
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center">
-              <div className="flex items-baseline gap-1">
-                <span className="font-display font-extrabold text-xl tracking-tight text-white">GET</span>
-                <span className="font-display font-extrabold text-xl tracking-[0.08em]" style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
+              <div className="flex items-center gap-2">
+                <img src={LOGO_URL} alt="GetPhame" className="w-7 h-7 rounded-lg" />
+                <span className="font-display font-extrabold text-xl tracking-tight">
+                  <span className="text-white">GET</span><span style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
+                </span>
               </div>
             </div>
             <div className="flex items-center gap-2">

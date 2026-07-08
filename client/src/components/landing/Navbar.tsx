@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { getLoginUrl } from "@/const";
 
-const LOGO_URL = "https://assets.getphame.app/phame-logo-mark.webp";
+const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.png";
 
 const navLinks = [
   { label: "How It Works", href: "#how-it-works" },
@@ -40,16 +40,11 @@ export default function Navbar() {
     >
       <nav className="container flex items-center justify-between h-16 md:h-[4.5rem]">
         {/* Logo — prominent brand mark */}
-        <a href="/" className="flex items-center gap-2.5 group">
-          <img src={LOGO_URL} alt="Get Phame" className="w-9 h-9 md:w-10 md:h-10 transition-transform duration-200 group-hover:scale-105" />
-          <div className="flex items-baseline gap-1">
-            <span className="font-display font-extrabold text-xl md:text-[1.4rem] tracking-tight text-white">
-              GET
-            </span>
-            <span className="font-display font-extrabold text-xl md:text-[1.4rem] tracking-[0.08em] text-primary">
-              PHAME
-            </span>
-          </div>
+        <a href="/" className="flex items-center gap-2 group">
+          <img src={LOGO_URL} alt="GetPhame logo" className="w-8 h-8 md:w-9 md:h-9 rounded-xl transition-transform duration-200 group-hover:scale-105" />
+          <span className="font-display font-extrabold text-xl md:text-[1.4rem] tracking-tight">
+            <span className="text-white">GET</span><span className="text-primary">PHAME</span>
+          </span>
         </a>
 
         {/* Desktop Nav */}

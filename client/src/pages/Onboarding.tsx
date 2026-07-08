@@ -31,9 +31,11 @@ export default function OnboardingPage() {
       {/* Top bar: logo + language toggle */}
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-2">
-          <div className="flex items-baseline gap-1">
-            <span className="font-display font-extrabold text-xl tracking-tight text-white">GET</span>
-            <span className="font-display font-extrabold text-xl tracking-[0.08em]" style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
+          <div className="flex items-center gap-2">
+            <img src="https://assets.getphame.app/getphame-logo-mark.png" alt="GetPhame" className="w-8 h-8 rounded-xl" />
+            <span className="font-display font-extrabold text-xl tracking-tight">
+              <span className="text-white">GET</span><span style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
+            </span>
           </div>
         </div>
       </div>
