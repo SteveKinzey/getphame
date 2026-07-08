@@ -39,6 +39,12 @@ export default function Hero() {
   const [ctaText, setCtaText] = useState<CTAVariant>(CTA_VARIANTS[0]);
   const [loginUrl, setLoginUrl] = useState("/onboarding");
 
+  const scrollToProduct = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const el = document.getElementById("product");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   useEffect(() => {
     const variant = getOrAssignVariant();
     setCtaText(variant);
@@ -97,6 +103,13 @@ export default function Hero() {
               >
                 {ctaText}
                 <ArrowRight size={18} />
+              </a>
+              <a
+                href="#product"
+                onClick={scrollToProduct}
+                className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-white/10 text-white font-bold text-base rounded-xl border border-white/20 hover:bg-white/15 transition-all duration-200 active:scale-[0.97] backdrop-blur-sm"
+              >
+                See how it works
               </a>
             </motion.div>
 
