@@ -55,7 +55,7 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
       <div
         className="rounded-2xl p-5 text-center rr-bg-navy-mid"
       >
-        <img src="https://assets.getphame.app/phame-app-icon-new.png" alt="Phame" className="w-20 h-20 rounded-2xl object-contain mx-auto mb-3" />
+        <img src="https://assets.getphame.app/getphame-logo-mark.png" alt="Phame" className="w-20 h-20 rounded-2xl object-contain mx-auto mb-3" />
         <p className="text-white font-bold text-lg leading-snug" style={{ fontFamily: "'Poppins', sans-serif" }}>
           {t("onboardingGuide.welcome.heroText")}
         </p>
