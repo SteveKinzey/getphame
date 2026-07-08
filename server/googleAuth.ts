@@ -11,7 +11,7 @@
  *
  * Google Cloud Console — add these Authorized redirect URIs:
  *   https://getphame.app/api/auth/google/callback
- *   https://revrocket-j5ynazte.manus.space/api/auth/google/callback  (staging)
+ *   https://getphame.manus.space/api/auth/google/callback  (staging)
  */
 
 import type { Express, Request, Response } from "express";

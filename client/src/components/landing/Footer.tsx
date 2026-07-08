@@ -1,4 +1,4 @@
-const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.png";
+const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
 
 export default function Footer() {
   return (

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 import { getLoginUrl } from "@/const";
 
-const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.png";
+const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
 
 const navLinks = [
   { label: "How It Works", href: "#how-it-works" },

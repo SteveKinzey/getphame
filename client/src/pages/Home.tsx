@@ -13,8 +13,8 @@ import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 
-const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.png";
-const HERO_IMG = "https://assets.getphame.app/getphame-logo-mark.png";
+const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
+const HERO_IMG = "https://assets.getphame.app/getphame-logo-mark.webp";
 
 function ReferralRewardsCard() {
   const { data: referralStats, isLoading } = trpc.referral.getStats.useQuery();
