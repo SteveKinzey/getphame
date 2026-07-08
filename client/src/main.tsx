@@ -9,8 +9,48 @@ import App from "./App";
 import { getLoginUrl } from "./const";
 import "./index.css";
 
-const queryClient = new QueryClient();
+// ── Retry helper ──────────────────────────────────────────────────────────────
+// Retries failed queries up to MAX_RETRIES times with exponential backoff.
+// Skips retry for auth errors (UNAUTHORIZED / FORBIDDEN) and mutations.
+const MAX_RETRIES = 3;
+const BASE_DELAY_MS = 800; // 800ms → 1.6s → 3.2s
 
+function shouldRetry(failureCount: number, error: unknown): boolean {
+  if (failureCount >= MAX_RETRIES) return false;
+  if (!(error instanceof TRPCClientError)) return false;
+
+  const code = (error.data as { code?: string } | undefined)?.code;
+  // Never retry auth or permission errors
+  if (code === "UNAUTHORIZED" || code === "FORBIDDEN") return false;
+  // Never retry explicit "not found" — those won't change
+  if (code === "NOT_FOUND") return false;
+
+  // Retry on network errors (502/503/504) and parse errors (sandbox waking up)
+  return true;
+}
+
+function retryDelay(failureCount: number): number {
+  // Exponential backoff with jitter: 800ms, 1600ms, 3200ms (+ up to 200ms jitter)
+  return BASE_DELAY_MS * Math.pow(2, failureCount - 1) + Math.random() * 200;
+}
+
+// ── QueryClient with retry config ─────────────────────────────────────────────
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: shouldRetry,
+      retryDelay,
+      // Stale time of 30s prevents unnecessary refetches on tab focus
+      staleTime: 30_000,
+    },
+    mutations: {
+      // Don't retry mutations — they may have side effects
+      retry: false,
+    },
+  },
+});
+
+// ── Auth redirect ─────────────────────────────────────────────────────────────
 const redirectToLoginIfUnauthorized = (error: unknown) => {
   if (!(error instanceof TRPCClientError)) return;
   if (typeof window === "undefined") return;
@@ -19,14 +59,17 @@ const redirectToLoginIfUnauthorized = (error: unknown) => {
     window.location.href = getLoginUrl();
     return;
   }
-
 };
 
 queryClient.getQueryCache().subscribe(event => {
   if (event.type === "updated" && event.action.type === "error") {
     const error = event.query.state.error;
     redirectToLoginIfUnauthorized(error);
-    console.error("[API Query Error]", error);
+    // Only log after all retries exhausted (failureCount === MAX_RETRIES)
+    const failureCount = event.query.state.fetchFailureCount ?? 0;
+    if (failureCount >= MAX_RETRIES) {
+      console.error("[API Query Error]", error);
+    }
   }
 });
 
@@ -38,6 +81,7 @@ queryClient.getMutationCache().subscribe(event => {
   }
 });
 
+// ── tRPC client ───────────────────────────────────────────────────────────────
 const trpcClient = trpc.createClient({
   links: [
     httpBatchLink({
@@ -53,7 +97,7 @@ const trpcClient = trpc.createClient({
   ],
 });
 
-// Register service worker on every page load (including landing page)
+// ── Service worker ────────────────────────────────────────────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').catch(console.error);
