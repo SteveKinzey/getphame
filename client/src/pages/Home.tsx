@@ -429,15 +429,7 @@ export default function HomePage() {
         className="relative px-5 pt-8 pb-6 overflow-hidden animate-scale-in"
         style={{ background: "var(--navy)" }}
       >
-        {/* Background hero illustration */}
-        <div
-          className="absolute right-0 top-0 w-40 h-40 opacity-15 pointer-events-none"
-          style={{ transform: "translate(10%, -10%)" }}
-        >
-          <img src={HERO_IMG} alt="" className="w-full h-full object-contain" />
-        </div>
-
-        {/* Header top row */}
+                {/* Header top row */}
         <div className="relative z-10 mb-6">
           {/* Row 1: Language selector */}
           <div className="flex justify-end mb-2">
