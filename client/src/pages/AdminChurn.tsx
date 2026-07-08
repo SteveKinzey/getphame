@@ -62,7 +62,7 @@ export default function AdminChurnPage() {
       <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/admin")}
-          className="flex items-center gap-1.5 mb-4 text-xs font-bold rr-text-gold"
+          className="flex items-center gap-1.5 mb-4 text-sm font-bold rr-text-gold"
         >
           <ArrowLeft size={14} /> Back to Admin
         </button>
@@ -79,7 +79,7 @@ export default function AdminChurnPage() {
         >
           Churn Surveys
         </h1>
-        <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
+        <p className="text-base font-bold mt-1 text-white/90">
           Why users cancel
         </p>
       </div>
@@ -116,7 +116,7 @@ export default function AdminChurnPage() {
                 <p className="text-2xl font-black rr-text-navy">
                   {data.total}
                 </p>
-                <p className="text-xs rr-text-navy-muted">Total cancellation surveys submitted</p>
+                <p className="text-sm font-bold rr-text-navy-mid">Total cancellation surveys submitted</p>
               </div>
             </div>
 
@@ -142,7 +142,7 @@ export default function AdminChurnPage() {
                     return (
                       <div key={key}>
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs font-bold" style={{ color: "oklch(0.30 0.06 260)" }}>
+                          <span className="text-sm font-bold" style={{ color: "oklch(0.20 0.06 260)" }}>
                             {label}
                           </span>
                           <span className="text-xs font-black" style={{ color: REASON_COLORS[key] }}>
@@ -206,7 +206,7 @@ export default function AdminChurnPage() {
                         </span>
                       </div>
                       {r.comment ? (
-                        <p className="text-sm mt-1.5" style={{ color: "oklch(0.35 0.05 260)" }}>
+                        <p className="text-base font-bold mt-1.5" style={{ color: "oklch(0.15 0.05 260)" }}>
                           "{r.comment}"
                         </p>
                       ) : (

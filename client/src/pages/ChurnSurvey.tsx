@@ -79,7 +79,7 @@ export default function ChurnSurveyPage() {
             <p
               className="text-xs font-bold tracking-widest uppercase mb-0.5 rr-text-gold"
             >
-              Get Phame
+              Phame
             </p>
             <h1
               className="text-xl font-black leading-tight text-white"
@@ -90,7 +90,7 @@ export default function ChurnSurveyPage() {
         </div>
         <div className="flex items-center gap-2">
           <Frown size={18} className="rr-text-gold" />
-          <p className="text-sm" style={{ color: "oklch(0.80 0.90 80)" }}>
+          <p className="text-base font-bold text-white">
             Help us improve by telling us why you're leaving.
           </p>
         </div>
@@ -147,15 +147,15 @@ export default function ChurnSurveyPage() {
                     Wait — here's a deal for you
                   </p>
                 </div>
-                <p className="text-sm" style={{ color: "var(--text-on-dark-primary)" }}>
-                  Stay on Get Phame for <strong className="rr-text-gold">40% off for 3 months</strong>. Use code at checkout:
+                <p className="text-base font-bold text-white">
+                  Stay on Phame for <strong className="rr-text-gold">40% off for 3 months</strong>. Use code at checkout:
                 </p>
                 <div
                   className="rounded-xl px-4 py-2.5 text-center font-black tracking-widest text-base select-all rr-bg-gold rr-text-navy" style={{ letterSpacing: "0.15em" }}
                 >
                   STAY40
                 </div>
-                <p className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>
+                <p className="text-sm font-bold text-white/80">
                   Valid for 7 days. Apply at checkout when resubscribing.
                 </p>
                 <button
@@ -170,7 +170,7 @@ export default function ChurnSurveyPage() {
             {/* Optional comment */}
             <div className="mb-6">
               <label
-                className="block text-xs font-bold mb-2 uppercase tracking-widest rr-text-navy-mid"
+                className="block text-sm font-bold mb-2 uppercase tracking-widest rr-text-navy-mid"
               >
                 Anything else? (optional)
               </label>
@@ -203,8 +203,8 @@ export default function ChurnSurveyPage() {
             {/* Skip */}
             <button
               onClick={() => setSubmitted(true)}
-              className="w-full mt-3 py-2 text-xs text-center"
-              style={{ color: "oklch(0.60 0.04 260)" }}
+              className="w-full mt-3 py-2 text-sm font-bold text-center"
+              style={{ color: "oklch(0.35 0.04 260)" }}
             >
               Skip survey and cancel anyway
             </button>
@@ -236,8 +236,8 @@ export default function ChurnSurveyPage() {
             </button>
             <button
               onClick={() => navigate("/settings")}
-              className="w-full mt-3 py-2 text-xs text-center"
-              style={{ color: "oklch(0.60 0.04 260)" }}
+              className="w-full mt-3 py-2 text-sm font-bold text-center"
+              style={{ color: "oklch(0.35 0.04 260)" }}
             >
               Actually, I'll stay — go back to Settings
             </button>

@@ -9,8 +9,9 @@ import {
   Loader2, Ticket, Unlock, Calendar, Shield, CreditCard
 } from "lucide-react";
 import { toast } from "sonner";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
+import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 
 // ── THB dual-currency display ─────────────────────────────────────────────────
 // Fixed rate — update manually when USD/THB shifts significantly
@@ -89,6 +90,59 @@ export default function UpgradePage() {
   const isThai = typeof navigator !== "undefined" && navigator.language.toLowerCase().startsWith("th");
   const [showPromptPay, setShowPromptPay] = useState(isThai);
 
+  // PayPal — check if configured on server
+  const [paypalClientId, setPaypalClientId] = useState<string | null>(null);
+  const [paypalLoading, setPaypalLoading] = useState(false);
+  useEffect(() => {
+    fetch("/api/paypal/status")
+      .then((r) => r.json() as Promise<{ enabled: boolean; clientId: string | null }>)
+      .then((d) => setPaypalClientId(d.enabled ? d.clientId : null))
+      .catch(() => setPaypalClientId(null));
+  }, []);
+
+  const handlePayPalCreateOrder = useCallback(async () => {
+    setPaypalLoading(true);
+    try {
+      const res = await fetch("/api/paypal/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: selectedPlan, origin: window.location.origin }),
+        credentials: "include",
+      });
+      const data = await res.json() as { orderId?: string; approvalUrl?: string; error?: string };
+      if (!res.ok || !data.orderId) {
+        toast.error(data.error ?? "Failed to start PayPal checkout.");
+        return "";
+      }
+      return data.orderId;
+    } catch {
+      toast.error("PayPal checkout failed. Please try again.");
+      return "";
+    } finally {
+      setPaypalLoading(false);
+    }
+  }, [selectedPlan]);
+
+  const handlePayPalApprove = useCallback(async (data: { orderID: string }) => {
+    try {
+      const res = await fetch("/api/paypal/capture-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: data.orderID }),
+        credentials: "include",
+      });
+      const result = await res.json() as { ok?: boolean; tier?: string; error?: string };
+      if (!res.ok || !result.ok) {
+        toast.error(result.error ?? "Payment capture failed.");
+        return;
+      }
+      utils.profile.get.invalidate();
+      navigate("/payment-success");
+    } catch {
+      toast.error("Payment capture failed. Please contact support.");
+    }
+  }, [utils, navigate]);
+
   const createCheckout = trpc.stripe.createCheckout.useMutation({
     onSuccess: (data) => {
       window.location.href = data.url;
@@ -160,7 +214,7 @@ export default function UpgradePage() {
         >
           {t("paidUser.onPro", { tierLabel })}
         </h2>
-        <p className="text-center mb-8" style={{ color: "var(--text-on-dark-secondary)" }}>
+        <p className="text-center mb-8 text-white font-bold text-lg">
           {t("paidUser.enjoyFeatures")}
         </p>
         <button
@@ -189,8 +243,7 @@ export default function UpgradePage() {
       <div className="px-5 pt-14 pb-4">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-1 text-sm mb-4"
-          style={{ color: "var(--text-on-dark-secondary)" }}
+          className="flex items-center gap-1 text-base font-bold mb-4 text-white"
         >
           <ChevronLeft size={16} />
           {t("header.back")}
@@ -200,7 +253,7 @@ export default function UpgradePage() {
             <div className="flex items-center gap-2 mb-2">
               <Crown size={16} className="rr-text-gold" />
               <span
-                className="text-xs font-bold tracking-widest uppercase rr-text-gold"
+                className="text-sm font-bold tracking-widest uppercase rr-text-gold"
               >
                 {t("header.upgrade")}
               </span>
@@ -235,7 +288,7 @@ export default function UpgradePage() {
                 className="flex-1 py-2 rounded-xl text-xs font-bold transition-all relative"
                 style={{
                   background: selectedPlan === plan ? "oklch(0.80 0.18 80)" : "transparent",
-                  color: selectedPlan === plan ? "oklch(0.22 0.09 260)" : "var(--text-on-dark-secondary)",
+                  color: selectedPlan === plan ? "oklch(0.15 0.05 260)" : "oklch(0.85 0.02 260)",
                   fontFamily: "'Poppins', sans-serif",
                 }}
               >
@@ -263,12 +316,12 @@ export default function UpgradePage() {
             >
               {PLANS[selectedPlan].price}
             </span>
-            <span className="text-lg mb-2" style={{ color: "var(--text-on-dark-secondary)" }}>
+            <span className="text-xl mb-2 text-white font-bold">
               {selectedPlan === "monthly" ? t("pricingCard.monthlySub") : selectedPlan === "annual" ? t("pricingCard.annualSub") : t("pricingCard.lifetimeSub")}
             </span>
           </div>
           {/* THB equivalent — display only, USD is the charge currency */}
-          <p className="text-xs mb-2" style={{ color: "var(--text-on-dark-muted)" }}>
+          <p className="text-sm mb-2 text-white/80 font-bold">
             ≈ {PLANS[selectedPlan].thb} THB
           </p>
           {/* Strikethrough anchor — lifetime only */}
@@ -290,18 +343,18 @@ export default function UpgradePage() {
           )}
 
           {selectedPlan === "monthly" && (
-            <p className="text-xs mb-4" style={{ color: "var(--text-on-dark-muted)" }}>
+            <p className="text-sm mb-4 text-white/80 font-bold">
               {t("pricingCard.monthlyDescription", "Cancel anytime. No contracts.")}
             </p>
           )}
           {selectedPlan === "annual" && (
-            <p className="text-xs mb-4" style={{ color: "var(--text-on-dark-muted)" }}>
+            <p className="text-sm mb-4 text-white/80 font-bold">
               {t("pricingCard.annualDescription", "Billed once per year. Equivalent to $24.17/mo.")}
             </p>
           )}
           {selectedPlan === "lifetime" && (
             <>
-              <p className="text-xs mb-3" style={{ color: "var(--text-on-dark-muted)" }}>
+              <p className="text-sm mb-3 text-white/80 font-bold">
                 {t("pricingCard.lifetimeDescription", "One-time payment. No renewals, ever.")}
               </p>
               {/* Best Value ROI callout */}
@@ -309,10 +362,10 @@ export default function UpgradePage() {
                 className="rounded-xl px-4 py-3 mb-4"
                 style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
               >
-                <p className="text-xs font-black mb-0.5" style={{ color: "oklch(0.35 0.12 80)" }}>
+                <p className="text-xs font-black mb-0.5" style={{ color: "oklch(0.20 0.08 80)" }}>
                   {t("pricingCard.lifetimeRoiCalloutTitle")}
                 </p>
-                <p className="text-xs" style={{ color: "oklch(0.45 0.08 80)" }}>
+                <p className="text-xs" style={{ color: "oklch(0.25 0.06 80)" }}>
                   {t("pricingCard.lifetimeRoiCalloutDescription")}
                 </p>
               </div>
@@ -356,9 +409,44 @@ export default function UpgradePage() {
               : t("pricingCard.payByCard", { price: PLANS[selectedPlan].price })}
           </button>
 
-          <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-muted)" }}>
+          <p className="text-center text-sm font-bold mt-2 text-white/60">
             {t("pricingCard.secureCheckoutNote")}
           </p>
+
+          {/* PayPal CTA — shown only when PAYPAL_CLIENT_ID is configured */}
+          {paypalClientId && (
+            <div className="mt-3">
+              <div className="flex items-center gap-2 my-2">
+                <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.12)" }} />
+                <span className="text-xs font-bold" style={{ color: "var(--text-on-dark-muted)" }}>or pay with</span>
+                <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.12)" }} />
+              </div>
+              {paypalLoading ? (
+                <div className="w-full py-3 flex items-center justify-center">
+                  <Loader2 size={18} className="animate-spin text-white/60" />
+                </div>
+              ) : (
+                <PayPalScriptProvider
+                  options={{
+                    clientId: paypalClientId,
+                    currency: "USD",
+                    intent: "capture",
+                  }}
+                >
+                  <PayPalButtons
+                    style={{ layout: "horizontal", color: "gold", shape: "rect", label: "pay", height: 44 }}
+                    createOrder={handlePayPalCreateOrder}
+                    onApprove={handlePayPalApprove}
+                    onError={(err) => {
+                      console.error("[PayPal]", err);
+                      toast.error("PayPal encountered an error. Please try again.");
+                    }}
+                    onCancel={() => toast("PayPal payment cancelled.")}
+                  />
+                </PayPalScriptProvider>
+              )}
+            </div>
+          )}
 
           {/* PromptPay CTA — Thailand users (locale-detected or manually revealed) */}
           {showPromptPay ? (
@@ -370,10 +458,10 @@ export default function UpgradePage() {
               >
                 <span className="text-sm mt-0.5">💬</span>
                 <div>
-                  <p className="text-xs font-black" style={{ color: "oklch(0.35 0.12 80)" }}>
+                  <p className="text-xs font-black" style={{ color: "oklch(0.20 0.08 80)" }}>
                     ธุรกิจส่วนใหญ่คืนทุนภายใน 90 วัน
                   </p>
-                  <p className="text-xs" style={{ color: "oklch(0.45 0.08 80)" }}>
+                  <p className="text-xs" style={{ color: "oklch(0.25 0.06 80)" }}>
                     Most businesses recover cost in 90 days — reviews drive repeat bookings and new customers on autopilot.
                   </p>
                 </div>
@@ -407,7 +495,7 @@ export default function UpgradePage() {
             </div>
           ) : (
             // Non-Thai locale: show a subtle reveal link
-            <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-muted)" }}>
+            <p className="text-center text-sm font-bold mt-2 text-white/60">
               {t("pricingCard.promptPayReveal")}{" "}
               <button
                 onClick={() => {

@@ -1,1 +1,0 @@
-ALTER TABLE `review_platforms` MODIFY COLUMN `platform` enum('google','yelp','tripadvisor','bing','facebook','apple','other') NOT NULL;

@@ -93,6 +93,32 @@ export default function PaymentSuccessPage() {
     utils.stripe.subscriptionStatus.invalidate();
   }, [utils]);
 
+  // PayPal: capture the order when returning from PayPal approval
+  // PayPal redirects to /payment-success?paypal=1&token=ORDER_ID
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const isPayPal = params.get("paypal") === "1";
+    const orderId = params.get("token"); // PayPal passes the order ID as ?token=
+    if (!isPayPal || !orderId) return;
+
+    // Clean the URL immediately so a refresh doesn't re-capture
+    window.history.replaceState({}, "", "/payment-success");
+
+    fetch("/api/paypal/capture-order", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderId }),
+      credentials: "include",
+    })
+      .then((r) => r.json())
+      .then(() => {
+        utils.profile.get.invalidate();
+        utils.stripe.subscriptionStatus.invalidate();
+      })
+      .catch((err) => console.error("[PayPal] Capture failed:", err));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const heading = HEADING_BY_TIER[tier] ?? HEADING_BY_TIER.pro;
   const perks = PERKS_BY_TIER[tier] ?? PERKS_BY_TIER.pro;
   const cardTitle = CARD_TITLE_BY_TIER[tier] ?? "Your Perks";
@@ -148,10 +174,10 @@ export default function PaymentSuccessPage() {
         {heading.top}{" "}
         <span className="rr-text-gold">{heading.highlight}</span>
       </h1>
-      <p className="text-center text-base mb-1" style={{ color: "var(--text-on-dark-secondary)" }}>
+      <p className="text-center text-xl font-black mb-1 text-white">
         Payment confirmed. {heading.sub}
       </p>
-      <p className="text-center text-sm mb-8" style={{ color: "var(--text-on-dark-muted)" }}>
+      <p className="text-center text-lg font-bold mb-8 text-white/90">
         Your account has been upgraded instantly.
       </p>
 
@@ -160,7 +186,7 @@ export default function PaymentSuccessPage() {
         className="w-full max-w-xs rounded-2xl p-5 mb-6 rr-bg-navy-mid"
       >
         <p
-          className="text-xs font-black tracking-widest uppercase mb-4 rr-text-gold"
+          className="text-base font-black tracking-widest uppercase mb-4 rr-text-gold"
         >
           {cardTitle}
         </p>
@@ -172,7 +198,7 @@ export default function PaymentSuccessPage() {
               >
                 {perk.icon}
               </div>
-              <span className="text-sm font-semibold text-white">
+              <span className="text-base font-bold text-white">
                 {perk.text}
               </span>
             </div>
@@ -206,8 +232,8 @@ export default function PaymentSuccessPage() {
           <Star key={i} size={18} fill="oklch(0.80 0.18 80)" className="rr-text-gold" />
         ))}
       </div>
-      <p className="text-center text-xs mt-2" style={{ color: "var(--text-on-dark-disabled)" }}>
-        Thank you for supporting Get Phame
+      <p className="text-center text-base font-bold mt-2 text-white/80">
+        Thank you for supporting Phame
       </p>
     </div>
   );

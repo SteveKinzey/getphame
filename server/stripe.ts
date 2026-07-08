@@ -11,8 +11,26 @@
 
 import Stripe from "stripe";
 
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
-  apiVersion: "2025-01-27.acacia",
+let _stripe: Stripe | null = null;
+
+function getStripe(): Stripe {
+  if (!_stripe) {
+    const key = process.env.STRIPE_SECRET_KEY;
+    if (!key) {
+      throw new Error("STRIPE_SECRET_KEY is not configured");
+    }
+    _stripe = new Stripe(key, {
+      apiVersion: "2025-01-27.acacia",
+    });
+  }
+  return _stripe;
+}
+
+// Lazily initialize Stripe on first use so the app can start without the key
+export const stripe: Stripe = new Proxy({} as Stripe, {
+  get(_target, prop) {
+    return (getStripe() as any)[prop];
+  },
 });
 
 /** Stripe Price IDs for each plan */

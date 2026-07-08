@@ -130,9 +130,9 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
               width: "100%",
               padding: "12px 16px",
               background: isActive ? "rgba(255,255,255,0.08)" : "transparent",
-              color: isActive ? "oklch(0.80 0.18 80)" : "rgba(255,255,255,0.9)",
-              fontSize: "13px",
-              fontWeight: isActive ? 700 : 500,
+              color: isActive ? "oklch(0.80 0.18 80)" : "white",
+              fontSize: "15px",
+              fontWeight: 700,
               borderBottom: idx < LANGS.length - 1 ? "1px solid rgba(255,255,255,0.07)" : "none",
               cursor: "pointer",
               textAlign: "left",
@@ -140,7 +140,7 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
           >
             <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <span style={{ fontSize: "16px", lineHeight: 1, flexShrink: 0 }}>{flag}</span>
-              <span style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "0.04em", opacity: 0.7 }}>
+              <span style={{ fontSize: "13px", fontWeight: 900, letterSpacing: "0.04em", opacity: 0.9 }}>
                 {label}
               </span>
               <span>{native}</span>
@@ -181,7 +181,7 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
         translate="no"
       >
         <Globe size={13} strokeWidth={2.5} />
-        <span style={{ fontSize: "11px", fontWeight: 800, letterSpacing: "0.04em", lineHeight: 1 }}>
+        <span style={{ fontSize: "13px", fontWeight: 900, letterSpacing: "0.04em", lineHeight: 1 }}>
           {activeLabel}
         </span>
       </button>

@@ -81,9 +81,9 @@
   /* ── Text-on-dark semantic roles ────────────────────────────────────── */
   /* Use these on any navy/dark panel instead of raw rgba or dim oklch values */
   --text-on-dark-primary:   oklch(1 0 0);           /* pure white  — headings, CTAs, close buttons, step counters */
-  --text-on-dark-secondary: oklch(0.88 0.02 260);   /* soft white  — subheadings, card descriptions */
-  --text-on-dark-muted:     oklch(0.72 0.03 260);   /* medium grey — helper text, secondary labels */
-  --text-on-dark-disabled:  oklch(0.52 0.04 260);   /* dim grey    — disabled states, placeholder copy */
+  --text-on-dark-secondary: oklch(0.94 0.01 260);   /* soft white  — subheadings, card descriptions */
+  --text-on-dark-muted:     oklch(0.82 0.02 260);   /* medium grey — helper text, secondary labels */
+  --text-on-dark-disabled:  oklch(0.65 0.03 260);   /* dim grey    — disabled states, placeholder copy */
 
   /* ── Fluid type scale (clamp: min @ 320px → max @ 480px) ───────────── */
   /* H1 — page hero / splash titles */
@@ -101,11 +101,11 @@
   /* B1 — primary body copy */
   --font-b1: clamp(0.9375rem, 2.5vw + 0.1rem, 1rem);   /* 15px → 16px */
   /* B2 — secondary body / descriptions */
-  --font-b2: clamp(0.8125rem, 2vw + 0.1rem, 0.9375rem); /* 13px → 15px */
+  --font-b2: clamp(0.875rem, 2vw + 0.1rem, 1rem);      /* 14px → 16px */
   /* L1 — primary label / button text */
-  --font-l1: clamp(0.875rem, 2vw + 0.1rem, 1rem);      /* 14px → 16px */
+  --font-l1: clamp(0.9375rem, 2vw + 0.1rem, 1rem);     /* 15px → 16px */
   /* L2 — secondary label / caption */
-  --font-l2: clamp(0.6875rem, 1.5vw + 0.05rem, 0.8125rem); /* 11px → 13px */
+  --font-l2: clamp(0.75rem, 1.5vw + 0.05rem, 0.875rem); /* 12px → 14px */
 
   /* ── Font weight tokens ──────────────────────────────────────────────── */
   /* Use var(--fw-bold) instead of hardcoding 700 everywhere */
@@ -501,9 +501,9 @@
 
   /* Text color utilities */
   .rr-text-navy        { color: var(--navy); }
-  .rr-text-navy-mid    { color: oklch(0.40 0.04 260); }
-  .rr-text-navy-muted  { color: oklch(0.55 0.03 260); }
-  .rr-text-navy-faint  { color: oklch(0.65 0.03 260); }
+  .rr-text-navy-mid    { color: oklch(0.30 0.04 260); }
+  .rr-text-navy-muted  { color: oklch(0.40 0.03 260); }
+  .rr-text-navy-faint  { color: oklch(0.45 0.03 260); }
   .rr-text-gold        { color: var(--gold); }
   .rr-text-gold-dark   { color: var(--gold-dark); }
   .rr-text-gold-dim    { color: oklch(0.40 0.10 80); }

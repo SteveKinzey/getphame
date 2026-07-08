@@ -87,7 +87,7 @@ export default function AdminDashboard() {
       <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-1.5 mb-4 text-xs font-bold rr-text-gold"
+          className="flex items-center gap-1.5 mb-4 text-sm font-bold rr-text-gold"
         >
           <ArrowLeft size={14} /> Back to Home
         </button>
@@ -104,7 +104,7 @@ export default function AdminDashboard() {
         >
           Admin Dashboard
         </h1>
-        <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
+        <p className="text-base font-bold mt-1 text-white/90">
           Platform-wide stats
         </p>
       </div>
@@ -147,7 +147,7 @@ export default function AdminDashboard() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-xs mb-0.5" style={{ color: "var(--text-on-dark-muted)" }}>MRR</p>
+                      <p className="text-sm font-bold mb-0.5 text-white/70">MRR</p>
                       <p
                         className="text-2xl font-black text-white"
                       >
@@ -155,7 +155,7 @@ export default function AdminDashboard() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs mb-0.5" style={{ color: "var(--text-on-dark-muted)" }}>ARR</p>
+                      <p className="text-sm font-bold mb-0.5 text-white/70">ARR</p>
                       <p
                         className="text-2xl font-black rr-text-gold"
                       >
@@ -165,7 +165,7 @@ export default function AdminDashboard() {
                   </div>
                   <button
                     onClick={() => navigate("/admin/revenue")}
-                    className="mt-3 text-xs font-bold rr-text-gold"
+                    className="mt-3 text-sm font-bold rr-text-gold"
                   >
                     Full Revenue Dashboard →
                   </button>
@@ -285,11 +285,11 @@ export default function AdminDashboard() {
                         <p className="text-sm font-bold rr-text-navy">
                           {u.name || "(no name)"}
                         </p>
-                        <p className="text-xs rr-text-navy-muted">
+                        <p className="text-sm font-bold rr-text-navy-mid">
                           {u.email}
                         </p>
                       </div>
-                      <p className="text-xs" style={{ color: "oklch(0.65 0.04 260)" }}>
+                      <p className="text-sm font-bold" style={{ color: "oklch(0.35 0.04 260)" }}>
                         {u.createdAt
                           ? new Date(u.createdAt).toLocaleDateString(undefined, {
                               month: "short",
@@ -336,7 +336,7 @@ export default function AdminDashboard() {
               {isSearching && (
                 <div className="flex items-center gap-2 py-2">
                   <Loader2 size={14} className="animate-spin rr-text-navy-muted" />
-                  <span className="text-xs rr-text-navy-muted">Searching…</span>
+                  <span className="text-sm font-bold rr-text-navy-mid">Searching…</span>
                 </div>
               )}
               {!isSearching && searchResults && searchResults.length === 0 && debouncedSearch.length >= 2 && (
@@ -354,7 +354,7 @@ export default function AdminDashboard() {
                         <p className="text-sm font-bold rr-text-navy">
                           {u.name || "(no name)"}
                         </p>
-                        <p className="text-xs rr-text-navy-muted">{u.email}</p>
+                        <p className="text-sm font-bold rr-text-navy-mid">{u.email}</p>
                         {u.churnReason && (
                           <span
                             className="inline-block text-xs font-bold rounded-full px-2 py-0.5 mt-0.5"
@@ -477,7 +477,7 @@ function KpiCard({
       <p className="text-2xl font-black rr-text-navy">
         {value}
       </p>
-      <p className="text-xs rr-text-navy-muted">
+      <p className="text-sm font-bold rr-text-navy-mid">
         {label}
       </p>
     </div>

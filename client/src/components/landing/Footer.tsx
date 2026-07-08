@@ -1,4 +1,4 @@
-const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
+const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/FK9bk5QsyQ42fQPrngzafd/phame-logo-mark-LWuqsnXvZV3htEC4hfkanS.webp";
 
 export default function Footer() {
   return (
@@ -7,9 +7,9 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo */}
           <a href="/" className="flex items-center gap-2.5">
-            <img src={LOGO_URL} alt="GetPhame logo" className="w-7 h-7 rounded-lg" loading="lazy" decoding="async" />
-            <span className="font-display font-bold text-base">
-              <span className="text-white">GET</span><span className="text-primary">PHAME</span>
+            <img src={LOGO_URL} alt="Get Phame" className="w-7 h-7" />
+            <span className="font-display font-bold text-base text-white">
+              GET <span className="text-primary">PHAME</span>
             </span>
           </a>
 
@@ -28,12 +28,6 @@ export default function Footer() {
               Terms
             </a>
             <a
-              href="/data-usage"
-              className="text-slate-200 hover:text-white transition-colors font-medium"
-            >
-              Data Usage
-            </a>
-            <a
               href="mailto:support@getphame.app"
               className="text-slate-200 hover:text-white transition-colors font-medium"
             >
@@ -43,15 +37,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <p className="text-sm text-slate-300 font-medium">
-            © {new Date().getFullYear()} GetPhame. All rights reserved.
-          </p>
-        </div>
-
-        {/* Google OAuth disclosure — required for Google verification */}
-        <div className="mt-8 pt-6 border-t border-[#1e3050]">
-          <p className="text-xs text-slate-400 text-center max-w-2xl mx-auto leading-relaxed">
-            <strong className="text-slate-300">Sign in with Google:</strong> GetPhame uses Google Sign-In to create and access your account. We only request your name and email address. We do not access your Gmail, Google Drive, Google Calendar, or any other Google services. Your data is never sold or shared with third parties.{" "}
-            <a href="/privacy-policy" className="text-primary hover:underline">Privacy Policy</a>
+            © {new Date().getFullYear()} Get Phame. All rights reserved.
           </p>
         </div>
       </div>

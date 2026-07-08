@@ -13,7 +13,7 @@ export default function LeadCapture() {
       setSubmitted(true);
       setError(null);
     },
-    onError: (err: { message?: string }) => {
+    onError: (err) => {
       setError(err.message || "Something went wrong. Please try again.");
     },
   });

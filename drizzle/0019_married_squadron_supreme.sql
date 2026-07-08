@@ -1,1 +1,0 @@
-ALTER TABLE `business_profiles` ADD `stripeLastSyncedAt` bigint;

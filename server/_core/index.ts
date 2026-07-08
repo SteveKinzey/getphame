@@ -115,7 +115,7 @@ async function startServer() {
             await db
               .insert(stripeSubscriptions)
               .values({ userId, stripeSubscriptionId: subscriptionId, status: "active" })
-              .onDuplicateKeyUpdate({ set: { stripeSubscriptionId: subscriptionId, status: "active" } });
+              .onConflictDoUpdate({ target: stripeSubscriptions.stripeSubscriptionId, set: { stripeSubscriptionId: subscriptionId, status: "active" } });
           }
 
           // For Lifetime (one-time payment), store a sentinel subscription record
@@ -126,7 +126,7 @@ async function startServer() {
               await db
                 .insert(stripeSubscriptions)
                 .values({ userId, stripeSubscriptionId: `lifetime_${paymentIntentId}`, status: "lifetime" })
-                .onDuplicateKeyUpdate({ set: { status: "lifetime" } });
+                .onConflictDoUpdate({ target: stripeSubscriptions.stripeSubscriptionId, set: { status: "lifetime" } });
             }
           }
 

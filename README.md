@@ -116,6 +116,23 @@ Content-Type: application/json
 }
 ```
 
+### WordPress Connector Plugin
+
+If your business runs on WordPress and WooCommerce, install the **Get Phame Connector** plugin to automatically sync every customer's first name, last name, and email to your Phame contact list — no manual exports, no CSV files, no API code required.
+
+The plugin hooks into WooCommerce order status changes (`Processing` and `Completed`) and pushes customer data to Phame every 6 hours via a background queue. It also includes a one-click **Bulk Sync** button to import all existing customers at once.
+
+**Install it in two steps:**
+
+1. Download the plugin from the [Get Phame Connector GitHub repo](https://github.com/SteveKinzey/get-phame-connector) or install it directly from within the Phame app during onboarding.
+2. Go to **WP Admin → Settings → Get Phame**, paste your API key (generated in **Phame → Settings → API Keys**), and click **Test Connection**.
+
+The plugin is available as a free download and works on any WordPress site running WooCommerce 7.0+ and PHP 8.0+.
+
+> **App Store & Google Play:** The Phame mobile app (available on iOS and Android) includes a built-in onboarding step that guides you through installing and activating the connector plugin on your WordPress site during initial setup.
+
+---
+
 ### Outbound Webhooks
 
 Go to **Settings → Webhooks** to configure a URL that Phame will call whenever a new contact is created. Use this to push new contacts into a CRM, trigger a Zapier workflow, or post a Slack notification. You can filter by event type (`contact.created`, `contact.updated`, or both) and test the webhook from the Settings page.

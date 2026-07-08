@@ -1,10 +1,7 @@
 import { Check, ArrowRight, Sparkles } from "lucide-react";
-import { useState, useEffect } from "react";
 import FadeUp, { StaggerChildren } from "./FadeUp";
-import { getLoginUrl } from "@/const";
 
-// Plan type with optional href
-const plans: Array<{ name: string; price: string; period: string; description: string; features: string[]; cta: string; popular: boolean; highlight: boolean; badge?: string; href: string }> = [
+const plans = [
   {
     name: "Free",
     price: "$0",
@@ -14,7 +11,6 @@ const plans: Array<{ name: string; price: string; period: string; description: s
     cta: "Start Free",
     popular: false,
     highlight: false,
-    href: "/onboarding", // overridden below for Free plan
   },
   {
     name: "Pro Monthly",
@@ -25,7 +21,6 @@ const plans: Array<{ name: string; price: string; period: string; description: s
     cta: "Start Pro Monthly",
     popular: true,
     highlight: true,
-    href: "/upgrade",
   },
   {
     name: "Pro Annual",
@@ -37,11 +32,10 @@ const plans: Array<{ name: string; price: string; period: string; description: s
     popular: false,
     highlight: false,
     badge: "Save 34%",
-    href: "/upgrade",
   },
   {
     name: "Lifetime",
-    price: "$497",
+    price: "$349",
     period: " once",
     description: "One payment, lifetime access. No renewals, no surprises.",
     features: ["Everything in Pro", "Pay once, use forever", "All future updates included", "Priority support for life", "Perfect for agencies & operators"],
@@ -49,13 +43,10 @@ const plans: Array<{ name: string; price: string; period: string; description: s
     popular: false,
     highlight: false,
     badge: "Best Deal",
-    href: "/upgrade",
   },
 ];
 
 export default function Pricing() {
-  const [freeLoginUrl, setFreeLoginUrl] = useState("/onboarding");
-  useEffect(() => { setFreeLoginUrl(getLoginUrl("/home")); }, []);
   return (
     <section id="pricing" className="py-20 md:py-28 bg-[oklch(0.12_0.025_250)]">
       <div className="container">
@@ -111,7 +102,7 @@ export default function Pricing() {
                 ))}
               </ul>
               <a
-                href={plan.href}
+                href="/onboarding"
                 className={`inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold text-sm rounded-xl transition-all duration-200 active:scale-[0.97] ${
                   plan.highlight
                     ? "bg-primary text-primary-foreground hover:brightness-110 shadow-[0_0_20px_oklch(0.78_0.15_75/0.2)]"

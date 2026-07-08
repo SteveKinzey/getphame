@@ -148,7 +148,7 @@ function AddReviewSheet({ onAdded }: { onAdded: () => void }) {
         <div className="space-y-4">
           {/* Reviewer name */}
           <div>
-            <label className="text-xs font-semibold mb-1 block" style={{ color: 'oklch(0.40 0.05 260)' }}>
+            <label className="text-sm font-bold mb-1 block" style={{ color: 'oklch(0.20 0.05 260)' }}>
               Reviewer Name
             </label>
             <Input
@@ -161,7 +161,7 @@ function AddReviewSheet({ onAdded }: { onAdded: () => void }) {
 
           {/* Star rating */}
           <div>
-            <label className="text-xs font-semibold mb-2 block" style={{ color: 'oklch(0.40 0.05 260)' }}>
+            <label className="text-sm font-bold mb-2 block" style={{ color: 'oklch(0.20 0.05 260)' }}>
               Star Rating
             </label>
             <StarPicker value={rating} onChange={setRating} />
@@ -169,7 +169,7 @@ function AddReviewSheet({ onAdded }: { onAdded: () => void }) {
 
           {/* Platform */}
           <div>
-            <label className="text-xs font-semibold mb-1 block" style={{ color: 'oklch(0.40 0.05 260)' }}>
+            <label className="text-sm font-bold mb-1 block" style={{ color: 'oklch(0.20 0.05 260)' }}>
               Platform
             </label>
             <Select value={platform} onValueChange={setPlatform}>
@@ -186,7 +186,7 @@ function AddReviewSheet({ onAdded }: { onAdded: () => void }) {
 
           {/* Review text */}
           <div>
-            <label className="text-xs font-semibold mb-1 block" style={{ color: 'oklch(0.40 0.05 260)' }}>
+            <label className="text-sm font-bold mb-1 block" style={{ color: 'oklch(0.20 0.05 260)' }}>
               Review Text <span className="font-normal text-gray-400">(optional)</span>
             </label>
             <Textarea
@@ -269,7 +269,7 @@ export default function ClientReviewsPage() {
         >
           Client Reviews
         </h1>
-        <p className="text-sm" style={{ color: 'oklch(0.70 0.04 260)' }}>
+        <p className="text-base font-bold text-white/90">
           Reviews your customers have left you
         </p>
 
@@ -279,12 +279,12 @@ export default function ClientReviewsPage() {
             <div className="flex items-center gap-2">
               <TrendingUp size={16} style={{ color: 'oklch(0.80 0.18 80)' }} />
               <span className="text-white font-bold text-lg">{stats.avgRating}</span>
-              <span className="text-xs" style={{ color: 'oklch(0.70 0.04 260)' }}>avg rating</span>
+              <span className="text-sm font-bold text-white/70">avg rating</span>
             </div>
             <div className="flex items-center gap-2">
               <MessageSquare size={16} style={{ color: 'oklch(0.80 0.18 80)' }} />
               <span className="text-white font-bold text-lg">{stats.total}</span>
-              <span className="text-xs" style={{ color: 'oklch(0.70 0.04 260)' }}>total reviews</span>
+              <span className="text-sm font-bold text-white/70">total reviews</span>
             </div>
           </div>
         )}

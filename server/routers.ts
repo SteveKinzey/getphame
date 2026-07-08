@@ -2659,8 +2659,8 @@ export const appRouter = router({
           platform: input.platform,
           reviewedAt: input.reviewedAt ?? Date.now(),
           requestId: input.requestId ?? null,
-        });
-        return { id: (result as any).insertId };
+        }).returning({ id: clientReviews.id });
+        return { id: result.id };
       }),
     update: protectedProcedure
       .input(z.object({
@@ -2766,17 +2766,23 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         const db = await getDb();
         if (!db) return { ok: true, sent: false };
+        // Upsert — don't error if email already exists
         await db
           .insert(leads)
           .values({ email: input.email })
-          .onDuplicateKeyUpdate({ set: { email: input.email } });
+          .onConflictDoNothing({ target: leads.email });
+
+        // Attempt to send the guide email
         const { sent } = await sendLeadGuideEmail(input.email);
+
+        // Mark guideSentAt if email was sent successfully
         if (sent) {
           await db
             .update(leads)
-            .set({ guideSentAt: Date.now() })
+            .set({ guideSentAt: new Date() })
             .where(eq(leads.email, input.email));
         }
+
         return { ok: true, sent };
       }),
   }),

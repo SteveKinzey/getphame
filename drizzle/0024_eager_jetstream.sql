@@ -1,1 +1,0 @@
-ALTER TABLE `business_profiles` ADD `dailySendLimit` int DEFAULT 50 NOT NULL;

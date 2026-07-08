@@ -32,7 +32,7 @@ export async function upsertWooCredentials(creds: InsertWooCredentials) {
   await db
     .insert(wooCredentials)
     .values(creds)
-    .onDuplicateKeyUpdate({ set: rest });
+    .onConflictDoUpdate({ target: wooCredentials.userId, set: rest });
 }
 
 // ─── WooCommerce API fetch ────────────────────────────────────────────────────

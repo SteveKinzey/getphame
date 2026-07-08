@@ -26,9 +26,9 @@ import {
   Eye,
   EyeOff,
   AlertCircle,
-  Shield,
-  Lock,
-  XCircle,
+  Plug2,
+  ExternalLink,
+  Download,
 } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -105,6 +105,182 @@ function getHintKey(email: string, host?: string): string | null {
   if (domain === "yahoo.com") return "step1Email.hints.yahooAppPassword";
   if (domain === "zoho.com" || domain === "zohomail.com") return "step1Email.hints.zohoSmtpAccess";
   return null;
+}
+
+// ── Step 4: WordPress Connector Plugin ───────────────────────────────────────
+
+function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
+  const { t } = useTranslation();
+  const [copied, setCopied] = useState(false);
+  const { data: apiKeyList } = trpc.apiKey.list.useQuery();
+  const generateKey = trpc.apiKey.generate.useMutation({
+    onSuccess: () => trpc.useUtils().apiKey.list.invalidate(),
+    onError: (err) => toast.error(err.message),
+  });
+
+  // Use the first available key or prompt to generate one
+  const firstKey = apiKeyList?.[0];
+
+  function handleCopy() {
+    if (!firstKey) return;
+    navigator.clipboard.writeText(firstKey.label ?? "").then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  return (
+    <div className="flex flex-col gap-5">
+      {/* Intro */}
+      <div
+        className="flex items-start gap-3 px-4 py-4 rounded-2xl"
+        style={{ background: "oklch(0.18 0.06 80 / 0.3)", border: "1px solid oklch(0.35 0.12 80 / 0.4)" }}
+      >
+        <Plug2 size={20} className="rr-text-gold shrink-0 mt-0.5" />
+        <div>
+          <p className="text-base font-black text-white mb-1">
+            {t("step4Connector.intro.heading", "Using WordPress + WooCommerce?")}
+          </p>
+          <p className="text-sm font-bold" style={{ color: "oklch(0.95 0.02 260)" }}>
+            {t(
+              "step4Connector.intro.body",
+              "Install the free Get Phame Connector plugin to automatically sync every customer's first name, last name, and email to Phame every 6 hours — no CSV exports, no manual work."
+            )}
+          </p>
+        </div>
+      </div>
+
+      {/* Step-by-step instructions */}
+      <div className="flex flex-col gap-4">
+        {/* Step A */}
+        <div className="flex gap-3">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-black shrink-0"
+            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+          >
+            1
+          </div>
+          <div className="flex-1">
+            <p className="text-base font-black text-white mb-1">
+              {t("step4Connector.step1.title", "Download the plugin")}
+            </p>
+            <p className="text-sm font-bold mb-2" style={{ color: "oklch(0.92 0.02 260)" }}>
+              {t(
+                "step4Connector.step1.body",
+                "Download the Get Phame Connector .zip file from GitHub and upload it to your WordPress site."
+              )}
+            </p>
+            <a
+              href="https://github.com/SteveKinzey/get-phame-connector/releases/latest"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-black transition-transform active:scale-95"
+              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+            >
+              <Download size={14} />
+              {t("step4Connector.step1.downloadBtn", "Download Plugin (.zip)")}
+            </a>
+          </div>
+        </div>
+
+        {/* Step B */}
+        <div className="flex gap-3">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-black shrink-0"
+            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+          >
+            2
+          </div>
+          <div className="flex-1">
+            <p className="text-base font-black text-white mb-1">
+              {t("step4Connector.step2.title", "Install & activate in WordPress")}
+            </p>
+            <p className="text-sm font-bold" style={{ color: "oklch(0.92 0.02 260)" }}>
+              {t(
+                "step4Connector.step2.body",
+                "In your WordPress admin, go to Plugins → Add New → Upload Plugin, select the .zip file, then click Install Now and Activate."
+              )}
+            </p>
+            <a
+              href="https://wordpress.com/plugins"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-xs mt-1.5"
+              style={{ color: "oklch(0.85 0.12 250)" }}
+            >
+              <ExternalLink size={11} />
+              {t("step4Connector.step2.wpAdminLink", "Open WP Admin → Plugins")}
+            </a>
+          </div>
+        </div>
+
+        {/* Step C */}
+        <div className="flex gap-3">
+          <div
+            className="w-7 h-7 rounded-full flex items-center justify-center text-sm font-black shrink-0"
+            style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+          >
+            3
+          </div>
+          <div className="flex-1">
+            <p className="text-base font-black text-white mb-1">
+              {t("step4Connector.step3.title", "Paste your API key")}
+            </p>
+            <p className="text-sm font-bold mb-2" style={{ color: "oklch(0.92 0.02 260)" }}>
+              {t(
+                "step4Connector.step3.body",
+                "In WordPress, go to Settings → Get Phame and paste your API key below. Then click Test Connection."
+              )}
+            </p>
+            {apiKeyList && apiKeyList.length > 0 ? (
+              <div
+                className="flex items-center gap-2 px-3 py-2 rounded-xl"
+                style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
+              >
+                <code className="text-sm font-black flex-1 text-white truncate" style={{ fontFamily: "monospace" }}>
+                  {firstKey ? `rl_${firstKey.keyHash.slice(0, 8)}...` : "rl_..."}
+                </code>
+                <button
+                  onClick={handleCopy}
+                  className="text-sm font-black px-2 py-1 rounded-lg transition-colors"
+                  style={{ background: copied ? "oklch(0.55 0.18 145)" : "oklch(0.28 0.08 260)", color: copied ? "oklch(0.15 0.05 260)" : "oklch(0.75 0.04 260)" }}
+                >
+                  {copied ? "✓ Copied" : "Copy"}
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => generateKey.mutate({ label: "WordPress Connector" })}
+                disabled={generateKey.isPending}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-black transition-transform active:scale-95"
+                style={{ background: "oklch(0.26 0.07 260)", color: "oklch(0.75 0.04 260)", border: "1px solid oklch(0.38 0.06 260)" }}
+              >
+                {generateKey.isPending ? <Loader2 size={13} className="animate-spin" /> : <Plug2 size={13} />}
+                {t("step4Connector.step3.generateKeyBtn", "Generate API Key")}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Skip / Done */}
+      <div className="flex flex-col gap-2 mt-2">
+        <button
+          onClick={onDismiss}
+          className="w-full py-3.5 rounded-2xl font-bold text-sm transition-transform active:scale-95"
+          style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+        >
+          {t("step4Connector.doneBtn", "All done — go to Phame ✓")}
+        </button>
+        <button
+          onClick={onDismiss}
+          className="w-full text-center text-sm font-bold py-1" style={{ color: "oklch(0.85 0.03 260)" }}
+        >
+          {t("step4Connector.skipBtn", "I don't use WordPress — skip this step")}
+        </button>
+      </div>
+    </div>
+  );
 }
 
 // ── Step indicator ─────────────────────────────────────────────────────────────
@@ -316,7 +492,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
           className="flex items-start gap-2 px-3 py-3 rounded-xl"
           style={{ background: "oklch(0.18 0.08 250)", border: "1px solid oklch(0.35 0.10 250)" }}
         >
-          <AlertCircle size={14} className="shrink-0 mt-0.5" style={{ color: "oklch(0.70 0.15 250)" }} />
+          <AlertCircle size={14} className="shrink-0 mt-0.5" style={{ color: "oklch(0.85 0.12 250)" }} />
           <div className="flex flex-col gap-1.5">
             <p className="text-xs font-bold" style={{ color: "oklch(0.85 0.08 250)" }}>
               {t("settings.googleWorkspaceTitle", "Using Google Workspace or a custom domain?")}
@@ -345,7 +521,7 @@ function Step1Email({ onDone }: { onDone: () => void }) {
         <button
           onClick={() => setShowAdvanced(!showAdvanced)}
           className="text-xs text-left"
-          style={{ color: "oklch(0.60 0.04 260)" }}
+          style={{ color: "oklch(0.82 0.02 260)" }}
         >
           {showAdvanced ? t("step1Email.hideAdvancedSettings") : t("step1Email.showAdvancedSettings")}
         </button>
@@ -585,7 +761,7 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
       <div
         className="w-24 h-24 rounded-full flex items-center justify-center rr-bg-navy overflow-hidden"
       >
-        <img src="https://assets.getphame.app/phame-app-icon-new.webp" alt="GetPhame app icon" className="w-20 h-20 object-contain" loading="lazy" decoding="async" />
+        <img src="https://assets.getphame.app/phame-app-icon-new.png" alt="Phame" className="w-20 h-20 object-contain" />
       </div>
       <div>
         <h3
@@ -593,7 +769,7 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
         >
           {t("step3Send.allSetTitle")}
         </h3>
-        <p className="text-sm" style={{ color: "oklch(0.65 0.04 260)" }}>
+        <p className="text-sm" style={{ color: "oklch(0.85 0.02 260)" }}>
           {t("step3Send.allSetDescription")}
         </p>
       </div>
@@ -604,71 +780,6 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
         <Star size={18} />
         {t("step3Send.sendFirstRequestButton")}
       </button>
-    </div>
-  );
-}
-
-// ── Step 0: Your Data (trust screen shown once before email connect) ──────────
-
-function Step0Data({ onContinue }: { onContinue: () => void }) {
-  return (
-    <div className="flex flex-col gap-5">
-      {/* Hero badge */}
-      <div className="flex items-center gap-3 p-4 rounded-2xl" style={{ background: "oklch(0.80 0.18 80 / 0.08)", border: "1px solid oklch(0.80 0.18 80 / 0.25)" }}>
-        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "oklch(0.80 0.18 80 / 0.15)" }}>
-          <Shield size={20} style={{ color: "oklch(0.80 0.18 80)" }} />
-        </div>
-        <div>
-          <p className="text-sm font-black text-white">We only use your name &amp; email</p>
-          <p className="text-xs" style={{ color: "oklch(0.60 0.04 260)" }}>No Gmail, Drive, or Calendar access — ever</p>
-        </div>
-      </div>
-
-      {/* What we access */}
-      <div>
-        <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: "oklch(0.55 0.18 145)" }}>What Google shares with us</p>
-        <div className="space-y-2">
-          {[
-            { icon: Lock, label: "Your Google account ID", desc: "Links your GetPhame account to your Google identity" },
-            { icon: Mail, label: "Your email address", desc: "Used as your login identifier and for receipts" },
-            { icon: Eye, label: "Your display name", desc: "Pre-fills your account name — editable anytime" },
-          ].map(({ icon: Icon, label, desc }) => (
-            <div key={label} className="flex items-start gap-3 p-3 rounded-xl" style={{ background: "oklch(0.18 0.05 260)" }}>
-              <Icon size={15} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 145)" }} />
-              <div>
-                <p className="text-sm font-bold text-white">{label}</p>
-                <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>{desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* What we do NOT access */}
-      <div>
-        <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: "oklch(0.55 0.18 25)" }}>What we never access</p>
-        <div className="grid grid-cols-2 gap-2">
-          {["Gmail inbox", "Google Drive", "Google Calendar", "Google Contacts", "Google Photos", "Search history"].map((item) => (
-            <div key={item} className="flex items-center gap-2 p-2 rounded-lg" style={{ background: "oklch(0.16 0.04 260)" }}>
-              <XCircle size={13} style={{ color: "oklch(0.55 0.20 25)" }} className="shrink-0" />
-              <span className="text-xs font-medium" style={{ color: "oklch(0.50 0.03 260)" }}>{item}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* CTA */}
-      <button
-        onClick={onContinue}
-        className="flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-black text-base transition-transform active:scale-95 w-full rr-bg-gold"
-        style={{ color: "oklch(0.15 0.05 260)" }}
-      >
-        Got it — let's connect my email
-        <ChevronRight size={18} />
-      </button>
-      <p className="text-center text-xs" style={{ color: "oklch(0.38 0.03 260)" }}>
-        <a href="/data-usage" target="_blank" rel="noopener noreferrer" style={{ color: "oklch(0.55 0.12 260)" }} className="underline underline-offset-2">Full data usage details</a>
-      </p>
     </div>
   );
 }
@@ -686,68 +797,28 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
   });
 
   // Derive minimum step from server state (can't go back below what's done)
-  const minStep = !status?.smtpConnected ? 1 : !status?.hasPlatform ? 2 : 3;
+  const minStep = !status?.smtpConnected ? 1 : !status?.hasPlatform ? 2 : !status?.hasSentRequest ? 3 : 4;
   const [viewStep, setViewStep] = useState<number | null>(null);
-  // Show the data trust screen once before step 1 (only if SMTP not yet connected)
-  const [showDataScreen, setShowDataScreen] = useState<boolean>(!status?.smtpConnected);
   // Auto-advance viewStep when server confirms a step is done
   const currentStep = viewStep ?? minStep;
   const steps = [
     { id: 1, label: t("onboardingWizard.steps.connectEmail"), icon: Mail, done: !!status?.smtpConnected },
     { id: 2, label: t("onboardingWizard.steps.reviewPlatform"), icon: Globe, done: !!status?.hasPlatform },
     { id: 3, label: t("onboardingWizard.steps.sendRequest"), icon: Star, done: !!status?.hasSentRequest },
+    { id: 4, label: t("onboardingWizard.steps.wpConnector", "WP Plugin"), icon: Plug2, done: false },
   ];
   function handleStepDone() {
     // Auto-advance to next step when server confirms completion
-    setViewStep((prev) => Math.min((prev ?? minStep) + 1, 3));
+    setViewStep((prev) => Math.min((prev ?? minStep) + 1, 4));
   }
   function handleNext() {
-    setViewStep((prev) => Math.min((prev ?? currentStep) + 1, 3));
+    setViewStep((prev) => Math.min((prev ?? currentStep) + 1, 4));
   }
   function handlePrev() {
     setViewStep((prev) => Math.max((prev ?? currentStep) - 1, 1));
   }
 
   if (isLoading) return null;
-
-  // Show the data trust screen before step 1 for new users
-  if (showDataScreen && minStep === 1) {
-    return (
-      <div
-        className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4"
-        style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)", paddingBottom: "calc(5rem + env(safe-area-inset-bottom))", paddingTop: "1rem" }}
-      >
-        <div
-          className="w-full max-w-md rounded-3xl flex flex-col"
-          style={{ background: "oklch(0.14 0.05 260)", maxHeight: "calc(100dvh - 7rem)", overflow: "hidden" }}
-        >
-          {/* Header */}
-          <div className="px-6 pt-6 pb-4 rr-bg-navy">
-            <div className="flex items-center justify-between mb-2">
-              <div className="flex items-center gap-2">
-                <Shield size={18} className="rr-text-gold" />
-                <span className="text-xs font-bold tracking-widest uppercase rr-text-gold">
-                  Your Data &amp; Privacy
-                </span>
-              </div>
-              <button
-                onClick={() => dismissMutation.mutate()}
-                className="p-1 rounded-lg transition-colors"
-                style={{ color: "var(--text-on-dark-primary)" }}
-                title="Skip setup"
-              >
-                <X size={18} />
-              </button>
-            </div>
-          </div>
-          {/* Content */}
-          <div className="px-6 py-6 overflow-y-auto flex-1">
-            <Step0Data onContinue={() => setShowDataScreen(false)} />
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div
@@ -842,17 +913,20 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
               {currentStep === 1 && t("onboardingWizard.stepContent.step1.title")}
               {currentStep === 2 && t("onboardingWizard.stepContent.step2.title")}
               {currentStep === 3 && t("onboardingWizard.stepContent.step3.title")}
+              {currentStep === 4 && t("onboardingWizard.stepContent.step4.title", "Connect WordPress")}
             </h2>
-            <p className="text-sm" style={{ color: "oklch(0.60 0.04 260)" }}>
+            <p className="text-sm" style={{ color: "oklch(0.82 0.02 260)" }}>
               {currentStep === 1 && t("onboardingWizard.stepContent.step1.description")}
               {currentStep === 2 && t("onboardingWizard.stepContent.step2.description")}
               {currentStep === 3 && t("onboardingWizard.stepContent.step3.description")}
+              {currentStep === 4 && t("onboardingWizard.stepContent.step4.description", "Install the free connector plugin on your WordPress site to auto-sync customers.")}
             </p>
           </div>
 
           {currentStep === 1 && <Step1Email onDone={handleStepDone} />}
           {currentStep === 2 && <Step2Platform onDone={handleStepDone} />}
-          {currentStep === 3 && <Step3Send onDismiss={onDismiss} />}
+          {currentStep === 3 && <Step3Send onDismiss={() => setViewStep(4)} />}
+          {currentStep === 4 && <Step4Connector onDismiss={onDismiss} />}
 
           {/* Prev / Next navigation */}
           <div className="flex items-center gap-3 mt-6">
@@ -865,7 +939,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
                 {t("onboardingWizard.navigation.previous")}
               </button>
             )}
-            {currentStep < 3 && (
+            {currentStep < 4 && currentStep !== 3 && (
               <button
                 onClick={handleNext}
                 className="flex-1 flex items-center justify-center gap-1 px-4 py-3 rounded-2xl font-bold text-sm transition-transform active:scale-95"
@@ -882,11 +956,11 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
             )}
           </div>
           {/* Skip link */}
-          {currentStep < 3 && (
+          {currentStep < 4 && currentStep !== 3 && (
             <button
               onClick={() => dismissMutation.mutate()}
               className="w-full text-center text-xs mt-3"
-              style={{ color: "oklch(0.40 0.03 260)" }}
+              style={{ color: "oklch(0.70 0.03 260)" }}
             >
               {t("onboardingWizard.navigation.skipSetupLater")}
             </button>

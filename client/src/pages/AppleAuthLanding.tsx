@@ -29,7 +29,7 @@ export default function AppleAuthLanding() {
     <div className="mobile-screen flex items-center justify-center rr-bg-navy">
       <div className="flex flex-col items-center gap-4">
         <Loader2 className="animate-spin text-white" size={32} />
-        <p className="text-white/70 text-sm">Signing you in…</p>
+        <p className="text-white font-bold text-base">Signing you in…</p>
       </div>
     </div>
   );

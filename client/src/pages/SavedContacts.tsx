@@ -377,7 +377,7 @@ export default function SavedContacts() {
       <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-1 mb-4 text-sm opacity-70 hover:opacity-100 transition-opacity rr-text-gold"
+          className="flex items-center gap-1 mb-4 text-base font-bold rr-text-gold transition-opacity"
         >
           <ChevronLeft size={16} /> Back
         </button>
@@ -387,7 +387,7 @@ export default function SavedContacts() {
             <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
               Saved Contacts
             </h1>
-            <p className="text-sm mt-1 opacity-70 text-white">
+            <p className="text-base font-bold mt-1 text-white">
               {contacts.length} contact{contacts.length !== 1 ? "s" : ""}
               {selectedCount > 0 && (
                 <span className="rr-text-gold">
@@ -413,7 +413,7 @@ export default function SavedContacts() {
                 value={wooDays}
                 onChange={(e) => setWooDays(Number(e.target.value) as 30 | 60 | 90)}
                 disabled={syncFromWooMutation.isPending}
-                className="text-xs font-bold rounded-lg px-2 py-1.5 outline-none appearance-none cursor-pointer shrink-0"
+                className="text-sm font-bold rounded-lg px-2 py-1.5 outline-none appearance-none cursor-pointer shrink-0"
                 style={{
                   background: "oklch(0.32 0.07 260)",
                   color: "oklch(0.72 0.18 160)",

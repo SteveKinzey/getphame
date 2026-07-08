@@ -1,1 +1,0 @@
-ALTER TABLE `webhook_configs` MODIFY COLUMN `events` varchar(500) NOT NULL DEFAULT 'contact.created';

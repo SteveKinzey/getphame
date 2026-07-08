@@ -30,7 +30,7 @@ function CodeBlock({ code, label }: { code: string; label?: string }) {
   return (
     <div className="relative mt-2">
       {label && (
-        <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.65 0.04 260)" }}>
+        <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.35 0.04 260)", fontWeight: "bold" }}>
           {label}
         </p>
       )}
@@ -38,8 +38,8 @@ function CodeBlock({ code, label }: { code: string; label?: string }) {
         className="text-xs rounded-xl p-3 overflow-x-auto"
         style={{
           background: "oklch(0.18 0.06 260)",
-          color: "oklch(0.85 0.04 260)",
-          fontSize: "11px",
+          color: "oklch(0.95 0.02 260)",
+          fontSize: "13px",
           whiteSpace: "pre-wrap",
           wordBreak: "break-all",
           fontFamily: "monospace",
@@ -198,10 +198,10 @@ document.getElementById('rl-review-form').addEventListener('submit', async funct
     >
       {/* Header */}
       <div className="flex items-center justify-between">
-        <p className="text-xs font-bold rr-text-navy">WordPress Form Integration</p>
+        <p className="text-sm font-bold rr-text-navy">WordPress Form Integration</p>
         <button
           onClick={() => setShowSnippet(!showSnippet)}
-          className="text-xs px-2 py-1 rounded-lg font-bold flex items-center gap-1"
+          className="text-sm px-2 py-1 rounded-lg font-bold flex items-center gap-1"
           style={{ background: "oklch(0.92 0.02 260)", color: "oklch(0.40 0.06 260)" }}
         >
           {showSnippet ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
@@ -212,9 +212,9 @@ document.getElementById('rl-review-form').addEventListener('submit', async funct
       {/* Two endpoint pills */}
       <div className="flex flex-col gap-1.5">
         <div className="flex items-center gap-2 rounded-lg px-2.5 py-1.5" style={{ background: "oklch(0.93 0.03 145)" }}>
-          <Zap size={12} style={{ color: "oklch(0.35 0.12 145)" }} />
+          <Zap size={12} style={{ color: "oklch(0.25 0.10 145)" }} />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold" style={{ color: "oklch(0.30 0.10 145)" }}>Send immediately</p>
+            <p className="text-xs font-bold" style={{ color: "oklch(0.20 0.08 145)" }}>Send immediately</p>
             <code className="text-xs break-all" style={{ color: "oklch(0.35 0.10 145)", fontFamily: "monospace" }}>
               POST /api/public/send
             </code>
@@ -224,14 +224,14 @@ document.getElementById('rl-review-form').addEventListener('submit', async funct
             className="shrink-0 p-1 rounded"
             style={{ background: "oklch(0.80 0.10 145)" }}
           >
-            <Copy size={11} style={{ color: "oklch(0.30 0.10 145)" }} />
+            <Copy size={11} style={{ color: "oklch(0.20 0.08 145)" }} />
           </button>
         </div>
         <div className="flex items-center gap-2 rounded-lg px-2.5 py-1.5" style={{ background: "oklch(0.93 0.03 260)" }}>
-          <Users size={12} style={{ color: "oklch(0.35 0.08 260)" }} />
+          <Users size={12} style={{ color: "oklch(0.25 0.06 260)" }} />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold" style={{ color: "oklch(0.30 0.08 260)" }}>Import contact only</p>
-            <code className="text-xs break-all" style={{ color: "oklch(0.35 0.08 260)", fontFamily: "monospace" }}>
+            <p className="text-xs font-bold" style={{ color: "oklch(0.20 0.06 260)" }}>Import contact only</p>
+            <code className="text-xs break-all" style={{ color: "oklch(0.25 0.06 260)", fontFamily: "monospace" }}>
               POST /api/public/contacts
             </code>
           </div>
@@ -240,12 +240,12 @@ document.getElementById('rl-review-form').addEventListener('submit', async funct
             className="shrink-0 p-1 rounded"
             style={{ background: "oklch(0.80 0.06 260)" }}
           >
-            <Copy size={11} style={{ color: "oklch(0.30 0.08 260)" }} />
+            <Copy size={11} style={{ color: "oklch(0.20 0.06 260)" }} />
           </button>
         </div>
       </div>
 
-      <p className="text-xs rr-text-navy-muted leading-relaxed">
+      <p className="text-sm font-semibold rr-text-navy-mid leading-relaxed">
         Use <strong>/send</strong> to trigger the review email immediately when a form is submitted.
         Use <strong>/contacts</strong> to import the customer first and send manually later.
         Both require <code style={{ fontFamily: "monospace" }}>Authorization: Bearer rl_...</code> header.
@@ -263,7 +263,7 @@ document.getElementById('rl-review-form').addEventListener('submit', async funct
                 className="text-xs px-2.5 py-1 rounded-lg font-bold transition-colors"
                 style={{
                   background: activeBuilder === fb.id ? "oklch(0.22 0.09 260)" : "oklch(0.90 0.02 260)",
-                  color: activeBuilder === fb.id ? "oklch(0.80 0.18 80)" : "oklch(0.45 0.06 260)",
+                  color: activeBuilder === fb.id ? "oklch(0.15 0.05 260)" : "oklch(0.85 0.02 260)",
                 }}
               >
                 {fb.icon} {fb.label}
@@ -277,7 +277,7 @@ document.getElementById('rl-review-form').addEventListener('submit', async funct
           {/* Required fields reference */}
           <div className="rounded-xl p-3 space-y-1" style={{ background: "oklch(0.22 0.09 260)" }}>
             <p className="text-xs font-bold" style={{ color: "oklch(0.80 0.18 80)" }}>Required body fields</p>
-            <table className="w-full text-xs" style={{ color: "oklch(0.85 0.04 260)", fontFamily: "monospace" }}>
+            <table className="w-full text-xs" style={{ color: "oklch(0.95 0.02 260)", fontFamily: "monospace" }}>
               <tbody>
                 <tr>
                   <td className="pr-3 py-0.5 font-bold">customerName</td>
@@ -288,8 +288,8 @@ document.getElementById('rl-review-form').addEventListener('submit', async funct
                   <td>string — valid email address</td>
                 </tr>
                 <tr>
-                  <td className="pr-3 py-0.5" style={{ color: "oklch(0.65 0.04 260)" }}>templateId</td>
-                  <td style={{ color: "oklch(0.65 0.04 260)" }}>number (optional) — defaults to your default template</td>
+                  <td className="pr-3 py-0.5" style={{ color: "oklch(0.35 0.04 260)", fontWeight: "bold" }}>templateId</td>
+                  <td style={{ color: "oklch(0.35 0.04 260)", fontWeight: "bold" }}>number (optional) — defaults to your default template</td>
                 </tr>
               </tbody>
             </table>

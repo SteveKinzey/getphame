@@ -1,5 +1,6 @@
 // Get Phame — Redesigned Landing Page (Midnight Authority)
-// Component-based structure matching the original Fly.io design
+// Replaces the old landing page with the polished navy/gold version from the landing branch.
+// This is shown to unauthenticated visitors at the root URL (/).
 import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import SEOHead from "@/components/landing/SEOHead";

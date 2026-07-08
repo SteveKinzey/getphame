@@ -253,7 +253,7 @@ export default function WooCustomers() {
         >
           <button
             onClick={() => navigate("/settings")}
-            className="flex items-center gap-1 text-sm mb-4 rr-text-gold"
+            className="flex items-center gap-1 text-base font-bold mb-4 rr-text-gold"
           >
             <ArrowLeft size={14} /> Settings
           </button>
@@ -304,7 +304,7 @@ export default function WooCustomers() {
             </AlertDialogDescription>
 
             {platforms.some((p) => p.platform === "yelp") && (
-              <div className="mt-2 rounded-xl px-3 py-2 text-xs flex items-start gap-2 rr-bg-gold-pale" style={{ border: "1px solid oklch(0.85 0.12 80)" }}>
+              <div className="mt-2 rounded-xl px-3 py-2 text-sm font-semibold flex items-start gap-2 rr-bg-gold-pale" style={{ border: "1px solid oklch(0.85 0.12 80)" }}>
                 <AlertTriangle size={13} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 80)" }} />
                 <span className="rr-text-gold-dim">
                   <strong>Yelp note:</strong> Your Yelp listing will appear as a search suggestion rather than a direct link.
@@ -313,7 +313,7 @@ export default function WooCustomers() {
             )}
 
             {selectedIds.size >= 20 && (
-              <div className="mt-2 rounded-xl px-3 py-2 text-xs flex items-start gap-2 rr-bg-gold-pale" style={{ border: "1px solid oklch(0.85 0.12 80)" }}>
+              <div className="mt-2 rounded-xl px-3 py-2 text-sm font-semibold flex items-start gap-2 rr-bg-gold-pale" style={{ border: "1px solid oklch(0.85 0.12 80)" }}>
                 <AlertTriangle size={13} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 80)" }} />
                 <span className="rr-text-gold-dim">
                   <strong>Large send ({selectedIds.size} customers):</strong> Sudden spikes can look spammy. Consider spreading sends over multiple days.
@@ -338,7 +338,7 @@ export default function WooCustomers() {
           {/* Platform picker */}
           {platforms.length > 0 && (
             <div className="py-2">
-              <label className="block text-xs font-bold mb-1.5 rr-text-navy-mid">
+              <label className="block text-sm font-bold mb-1.5 rr-text-navy-mid">
                 Review Platform
               </label>
               <select
@@ -358,7 +358,7 @@ export default function WooCustomers() {
           )}
 
           {platforms.length === 0 && (
-            <p className="text-xs py-2" style={{ color: "oklch(0.55 0.15 27)" }}>
+            <p className="text-sm font-bold" style={{ color: "oklch(0.35 0.15 27)" }}>
               No review platforms configured. Add one in Settings → Review Platforms.
             </p>
           )}
@@ -378,7 +378,7 @@ export default function WooCustomers() {
               <label htmlFor="woo-reminder-checkbox" className="text-xs font-semibold cursor-pointer block rr-text-navy">
                 Schedule 3-day follow-up reminders
               </label>
-              <p className="text-xs mt-0.5 rr-text-navy-mid">
+              <p className="text-sm font-semibold mt-0.5 rr-text-navy-mid">
                 Automatically send a reminder to any customer who hasn't responded in 3 days.
               </p>
             </div>
@@ -444,7 +444,7 @@ export default function WooCustomers() {
       >
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-1 text-sm mb-4 rr-text-gold"
+          className="flex items-center gap-1 text-base font-bold mb-4 rr-text-gold"
         >
           <ArrowLeft size={14} /> Home
         </button>
