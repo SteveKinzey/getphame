@@ -32,7 +32,7 @@ export default function OnboardingPage() {
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2">
-            <img src="https://assets.getphame.app/getphame-logo-mark.webp" alt="GetPhame" className="w-8 h-8 rounded-xl" />
+            <img src="https://assets.getphame.app/getphame-logo-mark.webp" alt="GetPhame logo" className="w-8 h-8 rounded-xl" loading="eager" decoding="async" />
             <span className="font-display font-extrabold text-xl tracking-tight">
               <span className="text-white">GET</span><span style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
             </span>
@@ -43,7 +43,7 @@ export default function OnboardingPage() {
       {/* Hero content */}
       <div className="flex flex-col items-center text-center gap-6 flex-1 justify-center">
         <div className="w-48 h-48 rounded-3xl overflow-hidden shadow-2xl">
-          <img src={HERO_IMG} alt={t("hero.rocketIllustrationAlt")} className="w-full h-full object-cover" />
+          <img src={HERO_IMG} alt={t("hero.rocketIllustrationAlt")} className="w-full h-full object-cover" loading="lazy" decoding="async" />
         </div>
 
         <div>

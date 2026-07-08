@@ -215,7 +215,7 @@ export default function UpgradePage() {
           </div>
           {/* Hero image — aligned with text, uncropped */}
           <div className="shrink-0" style={{ width: 100, height: 100 }}>
-            <img src={UPGRADE_IMG} alt={t("header.heroImageAlt")} className="w-full h-full object-contain" />
+            <img src={UPGRADE_IMG} alt={t("header.heroImageAlt")} className="w-full h-full object-contain" loading="lazy" decoding="async" />
           </div>
         </div>
       </div>

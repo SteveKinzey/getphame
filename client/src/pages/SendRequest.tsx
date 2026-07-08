@@ -200,7 +200,7 @@ export default function SendRequestPage() {
         className="min-h-screen flex flex-col items-center justify-center px-6 pb-40 rr-bg-navy"
       >
         <div className="w-40 h-40 mb-6">
-          <img src={SUCCESS_IMG} alt={t("successScreen.requestSent")} className="w-full h-full object-contain" />
+          <img src={SUCCESS_IMG} alt={t("successScreen.requestSent")} className="w-full h-full object-contain" loading="lazy" decoding="async" />
         </div>
         <h2
           className="text-3xl font-black text-center mb-2 text-white"
