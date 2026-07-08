@@ -1597,3 +1597,19 @@
 - [x] Fix all page headers: pt-14 → md:pt-6 on desktop (no mobile status bar offset needed)
 - [x] Update PrivacyPolicy, TermsOfService, DataUsage pages to use dark PublicLayout theme
 - [x] Create PublicLayout component with Navbar + Footer for public pages
+
+## Responsive App Pages Redesign
+- [x] Create AppLayout with sidebar nav (icon-only on tablet, full labels on desktop)
+- [x] Update Home page to two-column grid on desktop
+- [x] Update Send page to two-column layout (form + live email preview panel)
+- [x] Update Dashboard page for wider desktop layout
+- [x] Update Settings page for wider desktop layout
+- [x] Add PublicLayout with Navbar + Footer for public pages
+- [x] Fix header padding (pt-14 → pt-6 on desktop)
+
+## Image Fixes
+- [x] Fix CSP to add img.youtube.com and i.ytimg.com for YouTube thumbnails
+- [x] Convert webp images to PNG and upload to R2 (phame-hero-bg, phame-dashboard-mockup, phame-email-preview, phame-customer-import, phame-review-tracking)
+- [x] Restore <picture> PNG source fallbacks in Hero.tsx and ProductShowcase.tsx
+- [x] Upload phame-wordmark-transparent-clean.png to R2
+- [x] Replace text-based brand name in sidebar with wordmark image

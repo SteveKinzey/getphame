@@ -344,7 +344,10 @@ export default function SendRequestPage() {
       </div>
 
       <div className="px-4 py-4 lg:px-8 lg:py-6 animate-fade-up" style={{ animationDelay: '100ms' }}>
-      <div className="max-w-2xl mx-auto flex flex-col gap-4">
+      {/* Desktop: two-column grid. Mobile: single column */}
+      <div className="max-w-5xl mx-auto lg:grid lg:grid-cols-[1fr_380px] lg:gap-8 flex flex-col gap-4">
+        {/* ── Left column ─────────────────────────────────────────────────────── */}
+        <div className="flex flex-col gap-4">
         {/* ── Email not connected warning ────────────────────────────────────── */}
         {!emailConnected && (
           <div
@@ -616,10 +619,10 @@ export default function SendRequestPage() {
               </div>
             )}
 
-            {/* Live Email Preview */}
+            {/* Live Email Preview — shown inline on mobile, hidden on desktop (shown in right column) */}
             {profile?.businessName && (
               <div
-                className="px-4 py-3 rounded-xl rr-bg-white-card"
+                className="px-4 py-3 rounded-xl rr-bg-white-card lg:hidden"
               >
                 <p className="text-xs font-bold mb-2 rr-text-navy-mid">
                   {t("mainForm.emailPreview")}
@@ -669,7 +672,58 @@ export default function SendRequestPage() {
 
           </div>
         </div>
-      </div>{/* end max-width wrapper */}
+      </div>{/* end left column */}
+
+        {/* ── Right column: Desktop email preview panel ─────────────────────── */}
+        <div className="hidden lg:block">
+          <div className="sticky top-6">
+            <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+              {/* Preview header */}
+              <div className="px-5 py-4 border-b border-gray-100">
+                <div className="flex items-center gap-2">
+                  <Mail size={14} className="rr-text-navy-mid" />
+                  <span className="text-sm font-black rr-text-navy">{t("mainForm.emailPreview")}</span>
+                </div>
+              </div>
+              {/* Preview body */}
+              <div className="px-5 py-4 flex flex-col gap-3">
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs font-bold rr-text-navy-mid">{t("mainForm.from")}</span>
+                  <span className="text-sm rr-text-navy">{smtpStatus?.email ?? "your@email.com"}</span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs font-bold rr-text-navy-mid">{t("mainForm.subject")}</span>
+                  <span className="text-sm rr-text-navy">{previewSubject || "—"}</span>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs font-bold rr-text-navy-mid">{t("mainForm.body")}</span>
+                  <div
+                    className="text-sm rr-text-navy leading-relaxed whitespace-pre-wrap rounded-xl p-3"
+                    style={{ background: "oklch(0.97 0.01 260)", minHeight: "120px" }}
+                  >
+                    {previewBody || <span className="opacity-40">Fill in customer details to see a preview…</span>}
+                  </div>
+                </div>
+                {/* Recipient info */}
+                {customerName && (
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: "oklch(0.97 0.03 80)" }}>
+                    <User size={13} className="rr-text-gold-dim shrink-0" />
+                    <span className="text-xs rr-text-navy-mid">
+                      Sending to <strong>{customerName}</strong>{customerEmail ? ` (${customerEmail})` : ""}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+            {/* Tips card */}
+            <div className="mt-4 px-4 py-3 rounded-2xl" style={{ background: "oklch(0.22 0.09 260)" }}>
+              <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.80 0.18 80)" }}>Pro tip</p>
+              <p className="text-xs" style={{ color: "oklch(0.80 0.06 260)" }}>Personalised emails with the customer's first name get 2× more clicks than generic ones.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>{/* end grid wrapper */}
       </div>{/* end outer padding */}
     </div>
 

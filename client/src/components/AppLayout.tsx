@@ -12,6 +12,7 @@ import { trpc } from "@/lib/trpc";
 import { ReactNode } from "react";
 
 const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
+const WORDMARK_URL = "https://assets.getphame.app/phame-wordmark-transparent-clean.png";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -74,13 +75,14 @@ export default function AppLayout({ children }: AppLayoutProps) {
             className="w-8 h-8 rounded-lg flex-shrink-0"
             loading="eager"
           />
-          <span
-            className="app-sidebar-brand-text font-display font-extrabold text-lg tracking-tight hidden"
-            style={{ whiteSpace: "nowrap" }}
-          >
-            <span className="text-white">GET</span>
-            <span style={{ color: "oklch(0.80 0.18 80)" }}>PHAME</span>
-          </span>
+          {/* Wordmark — shown on desktop, hidden on tablet icon-only mode */}
+          <img
+            src={WORDMARK_URL}
+            alt="Get Phame"
+            className="app-sidebar-brand-text h-6 w-auto object-contain hidden"
+            loading="eager"
+            style={{ maxWidth: "140px" }}
+          />
         </div>
 
         {/* Nav items */}
