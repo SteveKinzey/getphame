@@ -1613,3 +1613,14 @@
 - [x] Restore <picture> PNG source fallbacks in Hero.tsx and ProductShowcase.tsx
 - [x] Upload phame-wordmark-transparent-clean.png to R2
 - [x] Replace text-based brand name in sidebar with wordmark image
+
+## Dashboard & UX Upgrades (Session Latest)
+- [ ] Replace Dashboard bar chart with Chart.js 30-day open/click line chart
+- [ ] Apply two-column form + preview layout to Bulk Send page
+- [ ] Add gold "Send Request" CTA button to desktop sidebar in AppLayout
+
+## Dashboard & UX Upgrades (Phase 3)
+- [x] Replace weekly bar chart with Chart.js 30-day open/click/send line chart
+- [x] Add 30/60/90 day range toggle to Dashboard trend chart
+- [x] Apply two-column layout to WooCustomers bulk send page (list left, email preview right)
+- [x] Add gold "Send Request" CTA button to desktop sidebar in AppLayout

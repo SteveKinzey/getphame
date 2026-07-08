@@ -1704,6 +1704,62 @@ export const appRouter = router({
     }),
 
     /**
+     * Returns daily send/open/click counts for the last N days (default 30).
+     * Used by Dashboard 30-day line chart.
+     */
+    dailyTrend: protectedProcedure
+      .input(z.object({ days: z.number().int().min(7).max(90).default(30) }))
+      .query(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) return [];
+        const { emailEvents: evTable, customerRequests: crTable } = await import("../drizzle/schema");
+        const { and: andOp, eq: eqOp, gte, sql: sqlOp } = await import("drizzle-orm");
+        const since = new Date(Date.now() - input.days * 24 * 60 * 60 * 1000);
+
+        const sendRows = await db
+          .select({
+            day: sqlOp<string>`DATE(${crTable.sentAt})`,
+            count: sqlOp<number>`count(*)`,
+          })
+          .from(crTable)
+          .where(andOp(eqOp(crTable.userId, ctx.user.id), gte(crTable.sentAt, since)))
+          .groupBy(sqlOp`DATE(${crTable.sentAt})`);
+
+        const openRows = await db
+          .select({
+            day: sqlOp<string>`DATE(${evTable.createdAt})`,
+            count: sqlOp<number>`count(distinct ${evTable.requestId})`,
+          })
+          .from(evTable)
+          .where(andOp(eqOp(evTable.userId, ctx.user.id), eqOp(evTable.type, "open"), gte(evTable.createdAt, since)))
+          .groupBy(sqlOp`DATE(${evTable.createdAt})`);
+
+        const clickRows = await db
+          .select({
+            day: sqlOp<string>`DATE(${evTable.createdAt})`,
+            count: sqlOp<number>`count(distinct ${evTable.requestId})`,
+          })
+          .from(evTable)
+          .where(andOp(eqOp(evTable.userId, ctx.user.id), eqOp(evTable.type, "click"), gte(evTable.createdAt, since)))
+          .groupBy(sqlOp`DATE(${evTable.createdAt})`);
+
+        const map = new Map<string, { sends: number; opens: number; clicks: number }>();
+        const get = (d: string) => map.get(d) ?? { sends: 0, opens: 0, clicks: 0 };
+        for (const r of sendRows) { const e = get(r.day); e.sends = Number(r.count); map.set(r.day, e); }
+        for (const r of openRows) { const e = get(r.day); e.opens = Number(r.count); map.set(r.day, e); }
+        for (const r of clickRows) { const e = get(r.day); e.clicks = Number(r.count); map.set(r.day, e); }
+
+        const result: { date: string; sends: number; opens: number; clicks: number }[] = [];
+        for (let i = input.days - 1; i >= 0; i--) {
+          const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
+          const key = d.toISOString().slice(0, 10);
+          const entry = map.get(key) ?? { sends: 0, opens: 0, clicks: 0 };
+          result.push({ date: key, ...entry });
+        }
+        return result;
+      }),
+
+    /**
      * Returns overall open/click rates across all emails sent by the user.
      * Used by Dashboard summary card.
      */

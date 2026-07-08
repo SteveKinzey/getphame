@@ -103,6 +103,7 @@ export default function WooCustomers() {
   });
 
   const utils = trpc.useUtils();
+  const { data: emailPreview } = trpc.smtp.previewEmail.useQuery();
 
   const { data: creds } = trpc.woo.getCredentials.useQuery();
   const { data: platforms = [] } = trpc.reviewPlatforms.list.useQuery();
@@ -469,8 +470,12 @@ export default function WooCustomers() {
         )}
       </div>
 
+      {/* Two-column layout on desktop: customer list left, email preview right */}
+      <div className="lg:flex lg:gap-6 lg:px-8 lg:pt-6 lg:pb-6">
+      {/* Left column: customer list */}
+      <div className="lg:flex-1 lg:min-w-0">
       {/* Pending / All toggle */}
-      <div className="px-5 pt-4 pb-0 flex gap-2">
+      <div className="px-5 pt-4 pb-0 lg:px-0 flex gap-2">
         <button
           onClick={() => { setViewMode("pending"); setSelectedIds(new Set()); }}
           className="flex-1 py-2 rounded-xl text-sm font-bold transition-colors"
@@ -727,6 +732,35 @@ export default function WooCustomers() {
             )}
           </>
         )}
+      </div>
+      {/* End left column */}
+      </div>
+
+      {/* Right column: sticky email preview (desktop only) */}
+      <div className="hidden lg:block lg:w-80 xl:w-96 shrink-0">
+        <div className="sticky top-6">
+          <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
+            <div className="px-4 py-3 flex items-center gap-2" style={{ background: "oklch(0.22 0.09 260)" }}>
+              <span className="text-xs font-bold text-white tracking-wide uppercase">Email Preview</span>
+            </div>
+            {emailPreview ? (
+              <iframe
+                srcDoc={emailPreview.html}
+                title="Email Preview"
+                className="w-full border-0"
+                style={{ height: "480px" }}
+                sandbox="allow-same-origin"
+              />
+            ) : (
+              <div className="flex items-center justify-center py-16 text-sm text-gray-400">
+                Connect your email to see a preview
+              </div>
+            )}
+          </div>
+          <p className="text-xs text-gray-400 text-center mt-2">Live preview of the review request email</p>
+        </div>
+      </div>
+      {/* End two-column wrapper */}
       </div>
 
       {/* Send History Dialog */}

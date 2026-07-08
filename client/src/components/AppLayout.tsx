@@ -87,6 +87,30 @@ export default function AppLayout({ children }: AppLayoutProps) {
 
         {/* Nav items */}
         <nav className="flex-1 py-3 flex flex-col gap-1 px-2">
+          {/* Gold Send Request CTA — desktop only (hidden on icon-only tablet) */}
+          <button
+            onClick={() => { buttonPressHaptic(); navigate("/send"); }}
+            className="mb-2 flex items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2.5 rounded-xl w-full transition-all duration-200"
+            style={{
+              background: "oklch(0.75 0.18 80)",
+              boxShadow: "0 2px 8px oklch(0.75 0.18 80 / 0.35)",
+            }}
+            title="Send Request"
+          >
+            <Send
+              size={18}
+              strokeWidth={2.2}
+              className="flex-shrink-0"
+              style={{ color: "oklch(0.18 0.05 260)" }}
+            />
+            <span
+              className="app-sidebar-label text-sm font-black hidden"
+              style={{ color: "oklch(0.18 0.05 260)", whiteSpace: "nowrap" }}
+            >
+              Send Request
+            </span>
+          </button>
+
           {NAV_ITEMS.map(({ path, label, Icon }) => {
             const isActive =
               location === path || (path !== "/" && location.startsWith(path));

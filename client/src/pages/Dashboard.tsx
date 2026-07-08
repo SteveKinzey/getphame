@@ -12,6 +12,20 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import LanguageFlyout from "@/components/LanguageFlyout";
 import ClientDetailSheet from "@/components/ClientDetailSheet";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+import { Line } from "react-chartjs-2";
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
 
 function formatDate(date: Date): string {
   try {
@@ -29,6 +43,8 @@ export default function DashboardPage() {
   const { data: allRequests, isLoading: listLoading } = trpc.requests.list.useQuery();
   const { data: profile } = trpc.profile.get.useQuery();
   const { data: emailPerf } = trpc.tracking.overallStats.useQuery();
+  const [trendDays, setTrendDays] = useState<30 | 60 | 90>(30);
+  const { data: dailyTrend, isLoading: trendLoading } = trpc.tracking.dailyTrend.useQuery({ days: trendDays });
   const utils = trpc.useUtils();
 
   // Single-row toggle
@@ -232,89 +248,144 @@ export default function DashboardPage() {
 
       <div className="px-4 py-4 lg:px-8 lg:py-6">
       <div className="max-w-4xl mx-auto flex flex-col gap-4">
-        {/* ── Analytics Card: Weekly Breakdown ─────────────────────────────── */}
+        {/* ── Analytics Card: 30-Day Trend Line Chart ──────────────────────── */}
         <div className="bg-white rounded-2xl p-4 shadow-sm">
-          <div className="flex items-center justify-between mb-4">
-            <h3
-              className="text-sm font-black rr-text-navy"
-            >
-              <Calendar size={14} className="inline mr-1.5 mb-0.5" />
-              {t('dashboard.weeklyBreakdown.title')}
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-black rr-text-navy">
+              <TrendingUp size={14} className="inline mr-1.5 mb-0.5" />
+              Activity Trend
             </h3>
-            {velocity && (
-              <div className="flex items-center gap-1">
-                <Zap size={12} style={{ color: velocity.delta >= 0 ? "oklch(0.55 0.18 145)" : "oklch(0.55 0.18 27)" }} />
-                <span
-                  className="text-xs font-bold"
-                  style={{ color: velocity.delta >= 0 ? "oklch(0.45 0.12 145)" : "oklch(0.55 0.18 27)" }}
+            <div className="flex items-center gap-1">
+              {([30, 60, 90] as const).map((d) => (
+                <button
+                  key={d}
+                  onClick={() => setTrendDays(d)}
+                  className="text-xs px-2 py-0.5 rounded-full font-bold transition-colors"
+                  style={{
+                    background: trendDays === d ? "oklch(0.22 0.09 260)" : "oklch(0.94 0.01 260)",
+                    color: trendDays === d ? "white" : "oklch(0.40 0.06 260)",
+                  }}
                 >
-                  {velocity.delta >= 0 ? "+" : ""}{velocity.delta} {t('dashboard.weeklyBreakdown.vsLabel')}
-                </span>
-              </div>
-            )}
+                  {d}d
+                </button>
+              ))}
+            </div>
           </div>
 
-          {(isLoading || listLoading) ? (
-            <div className="flex justify-center py-6">
+          {trendLoading ? (
+            <div className="flex justify-center py-8">
               <Loader2 className="animate-spin rr-text-navy" />
             </div>
-          ) : weeklyData.every((d) => d.count === 0) ? (
-            <div className="text-center py-6">
-              <p className="text-sm rr-text-navy-muted">
-                {t('dashboard.weeklyBreakdown.noRequests')}
-              </p>
+          ) : !dailyTrend || dailyTrend.every((d) => d.sends === 0 && d.opens === 0 && d.clicks === 0) ? (
+            <div className="text-center py-8">
+              <p className="text-sm rr-text-navy-muted">No activity in the last {trendDays} days. Send your first request to see trends here.</p>
             </div>
           ) : (
-            <div className="flex items-end gap-1.5 h-24">
-              {weeklyData.map((day) => (
-                <div key={day.label} className="flex-1 flex flex-col items-center gap-1">
-                  <div className="w-full flex flex-col justify-end" style={{ height: "72px" }}>
-                    <div
-                      className="w-full rounded-t-md transition-all"
-                      style={{
-                        height: `${Math.max(4, (day.count / maxCount) * 72)}px`,
-                        background: day.count > 0 ? "oklch(0.22 0.09 260)" : "oklch(0.93 0.01 260)",
-                      }}
-                    />
-                  </div>
-                  <span className="text-xs font-bold rr-text-navy-muted">
-                    {day.label}
-                  </span>
-                  {day.count > 0 && (
-                    <span className="text-xs font-black rr-text-navy">
-                      {day.count}
-                    </span>
-                  )}
-                </div>
-              ))}
+            <div style={{ height: "200px" }}>
+              <Line
+                data={{
+                  labels: dailyTrend.map((d) => {
+                    const dt = new Date(d.date + "T00:00:00");
+                    return format(dt, "MMM d");
+                  }),
+                  datasets: [
+                    {
+                      label: "Sent",
+                      data: dailyTrend.map((d) => d.sends),
+                      borderColor: "#1a2a5e",
+                      backgroundColor: "rgba(26, 42, 94, 0.08)",
+                      fill: true,
+                      tension: 0.4,
+                      pointRadius: 2,
+                      pointHoverRadius: 5,
+                      borderWidth: 2,
+                    },
+                    {
+                      label: "Opens",
+                      data: dailyTrend.map((d) => d.opens),
+                      borderColor: "#22c55e",
+                      backgroundColor: "transparent",
+                      fill: false,
+                      tension: 0.4,
+                      pointRadius: 2,
+                      pointHoverRadius: 5,
+                      borderWidth: 2,
+                    },
+                    {
+                      label: "Clicks",
+                      data: dailyTrend.map((d) => d.clicks),
+                      borderColor: "#d4a017",
+                      backgroundColor: "transparent",
+                      fill: false,
+                      tension: 0.4,
+                      pointRadius: 2,
+                      pointHoverRadius: 5,
+                      borderWidth: 2,
+                    },
+                  ],
+                }}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  interaction: { mode: "index", intersect: false },
+                  plugins: {
+                    legend: {
+                      position: "top",
+                      labels: {
+                        boxWidth: 10,
+                        padding: 12,
+                        font: { size: 11, family: "Poppins" },
+                      },
+                    },
+                    tooltip: {
+                      callbacks: {
+                        title: (items) => items[0]?.label ?? "",
+                      },
+                    },
+                  },
+                  scales: {
+                    x: {
+                      grid: { display: false },
+                      ticks: {
+                        font: { size: 10, family: "Poppins" },
+                        maxTicksLimit: trendDays === 30 ? 10 : trendDays === 60 ? 8 : 6,
+                        color: "oklch(0.55 0.05 260)",
+                      },
+                    },
+                    y: {
+                      beginAtZero: true,
+                      grid: { color: "oklch(0.95 0.01 260)" },
+                      ticks: {
+                        font: { size: 10, family: "Poppins" },
+                        stepSize: 1,
+                        color: "oklch(0.55 0.05 260)",
+                      },
+                    },
+                  },
+                }}
+              />
             </div>
           )}
 
-          {/* Velocity summary */}
+          {/* Velocity summary row */}
           {velocity && (stats?.total ?? 0) > 0 && (
             <div
               className="mt-3 pt-3 flex items-center justify-between"
               style={{ borderTop: "1px solid oklch(0.94 0.01 260)" }}
             >
               <div className="text-center flex-1">
-                <p className="text-xs rr-text-navy-muted">{t('dashboard.weeklyBreakdown.thisWeek')}</p>
-                <p className="text-base font-black rr-text-navy">
-                  {velocity.last7}
-                </p>
+                <p className="text-xs rr-text-navy-muted">This Week</p>
+                <p className="text-base font-black rr-text-navy">{velocity.last7}</p>
               </div>
               <div className="w-px h-8" style={{ background: "oklch(0.90 0.01 260)" }} />
               <div className="text-center flex-1">
-                <p className="text-xs rr-text-navy-muted">{t('dashboard.weeklyBreakdown.priorWeek')}</p>
-                <p className="text-base font-black rr-text-navy">
-                  {velocity.prior7}
-                </p>
+                <p className="text-xs rr-text-navy-muted">Prior Week</p>
+                <p className="text-base font-black rr-text-navy">{velocity.prior7}</p>
               </div>
               <div className="w-px h-8" style={{ background: "oklch(0.90 0.01 260)" }} />
               <div className="text-center flex-1">
-                <p className="text-xs rr-text-navy-muted">{t('dashboard.weeklyBreakdown.allTime')}</p>
-                <p className="text-base font-black rr-text-navy">
-                  {stats?.total ?? 0}
-                </p>
+                <p className="text-xs rr-text-navy-muted">All Time</p>
+                <p className="text-base font-black rr-text-navy">{stats?.total ?? 0}</p>
               </div>
             </div>
           )}
