@@ -354,9 +354,9 @@ export default function DashboardPage() {
                           return `  ${item.dataset.label}: ${val}`;
                         },
                         afterBody: (items) => {
-                          const sent = (items.find((i) => i.dataset.label === "Sent")?.parsed.y as number) ?? 0;
-                          const opens = (items.find((i) => i.dataset.label === "Opens")?.parsed.y as number) ?? 0;
-                          const clicks = (items.find((i) => i.dataset.label === "Clicks")?.parsed.y as number) ?? 0;
+                          const sent = ((items as {dataset:{label:string},parsed:{y:number}}[]).find((i) => i.dataset.label === "Sent")?.parsed.y) ?? 0;
+                          const opens = ((items as {dataset:{label:string},parsed:{y:number}}[]).find((i) => i.dataset.label === "Opens")?.parsed.y) ?? 0;
+                          const clicks = ((items as {dataset:{label:string},parsed:{y:number}}[]).find((i) => i.dataset.label === "Clicks")?.parsed.y) ?? 0;
                           if (sent === 0) return [];
                           const openRate = Math.round((opens / sent) * 100);
                           const clickRate = Math.round((clicks / sent) * 100);
