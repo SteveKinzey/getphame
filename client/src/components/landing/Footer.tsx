@@ -40,6 +40,14 @@ export default function Footer() {
             © {new Date().getFullYear()} GetPhame. All rights reserved.
           </p>
         </div>
+
+        {/* Google OAuth disclosure — required for Google verification */}
+        <div className="mt-8 pt-6 border-t border-[#1e3050]">
+          <p className="text-xs text-slate-400 text-center max-w-2xl mx-auto leading-relaxed">
+            <strong className="text-slate-300">Sign in with Google:</strong> GetPhame uses Google Sign-In to create and access your account. We only request your name and email address. We do not access your Gmail, Google Drive, Google Calendar, or any other Google services. Your data is never sold or shared with third parties.{" "}
+            <a href="/privacy-policy" className="text-primary hover:underline">Privacy Policy</a>
+          </p>
+        </div>
       </div>
     </footer>
   );

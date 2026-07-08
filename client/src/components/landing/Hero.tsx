@@ -126,6 +126,14 @@ export default function Hero() {
                 Works with Gmail, Outlook, SMTP
               </span>
             </motion.div>
+
+            <motion.p
+              {...fadeUp(0.62)}
+              className="text-xs text-slate-400 mt-2 leading-relaxed"
+            >
+              Sign in with Google to create your account. We only access your name and email address — nothing else.{" "}
+              <a href="/privacy-policy" className="text-primary/80 hover:text-primary underline underline-offset-2">Privacy Policy</a>
+            </motion.p>
           </div>
 
           {/* Right Column — dashboard mockup slides in from right */}
