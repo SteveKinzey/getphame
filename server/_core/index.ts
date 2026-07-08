@@ -339,6 +339,9 @@ async function startServer() {
             "https://*.r2.dev",
             "https://d2xsxph8kpxj0f.cloudfront.net",
             "https://files.manuscdn.com",
+            // YouTube thumbnails used on landing page VideoDemo section
+            "https://img.youtube.com",
+            "https://i.ytimg.com",
           ],
           // Allow YouTube iframes for the landing page video embed
           frameSrc: [

@@ -4,11 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import FadeUp from "./FadeUp";
 
 const EMAIL_PREVIEW_WEBP = "https://assets.getphame.app/phame-email-preview.webp";
-const EMAIL_PREVIEW_PNG = "https://assets.getphame.app/phame-email-preview.png";
 const CUSTOMER_IMPORT_WEBP = "https://assets.getphame.app/phame-customer-import.webp";
-const CUSTOMER_IMPORT_PNG = "https://assets.getphame.app/phame-customer-import.png";
 const REVIEW_TRACKING_WEBP = "https://assets.getphame.app/phame-review-tracking.webp";
-const REVIEW_TRACKING_PNG = "https://assets.getphame.app/phame-review-tracking.png";
 
 const tabs = [
   {
@@ -18,7 +15,6 @@ const tabs = [
     title: "Emails that feel handwritten",
     description: "Each review request arrives from your actual email address with your name, your signature, and a personal tone. Customers trust it because it looks real — because it is.",
     webp: EMAIL_PREVIEW_WEBP,
-    png: EMAIL_PREVIEW_PNG,
     alt: "GetPhame personalized review request email preview showing customer name, business signature, and Google review link",
   },
   {
@@ -28,7 +24,6 @@ const tabs = [
     title: "Your entire list in seconds",
     description: "Drag and drop a CSV or sync directly from WooCommerce. We validate emails, remove duplicates, and flag bounces — so every send counts.",
     webp: CUSTOMER_IMPORT_WEBP,
-    png: CUSTOMER_IMPORT_PNG,
     alt: "GetPhame customer import screen showing CSV drag-and-drop upload with email validation and duplicate removal",
   },
   {
@@ -38,7 +33,6 @@ const tabs = [
     title: "Watch the reviews roll in",
     description: "Track every email sent, opened, and clicked. See your review count climb week over week with real-time analytics and growth charts.",
     webp: REVIEW_TRACKING_WEBP,
-    png: REVIEW_TRACKING_PNG,
     alt: "GetPhame review tracking dashboard showing email open rates, click-through rates, and weekly review count growth chart",
   },
 ];
@@ -104,9 +98,8 @@ function Lightbox({ item, onClose }: LightboxProps) {
         <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
           <picture>
             <source srcSet={item.webp} type="image/webp" />
-            <source srcSet={item.png} type="image/png" />
             <img
-              src={item.png}
+              src={item.webp}
               alt={item.alt}
               className="w-full h-auto"
               loading="eager"
@@ -218,9 +211,8 @@ export default function ProductShowcase() {
                   >
                     <picture>
                       <source srcSet={activeItem.webp} type="image/webp" />
-                      <source srcSet={activeItem.png} type="image/png" />
                       <img
-                        src={activeItem.png}
+                        src={activeItem.webp}
                         alt={activeItem.alt}
                         className="w-full h-auto"
                         width={900}
