@@ -448,7 +448,7 @@ export default function HomePage() {
                 src="https://assets.getphame.app/phame-wordmark-transparent-clean.png"
                 alt="Get Phame"
                 className="block"
-                style={{ width: '160px', height: '60px', objectFit: 'cover', marginLeft: '-20px' }}
+                style={{ width: '180px', height: '44px', objectFit: 'contain', objectPosition: 'left center' }}
               />
             </div>
             <div className="flex items-center gap-2">
