@@ -26,6 +26,9 @@ import {
   Eye,
   EyeOff,
   AlertCircle,
+  Shield,
+  Lock,
+  XCircle,
 } from "lucide-react";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -605,6 +608,71 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
   );
 }
 
+// ── Step 0: Your Data (trust screen shown once before email connect) ──────────
+
+function Step0Data({ onContinue }: { onContinue: () => void }) {
+  return (
+    <div className="flex flex-col gap-5">
+      {/* Hero badge */}
+      <div className="flex items-center gap-3 p-4 rounded-2xl" style={{ background: "oklch(0.80 0.18 80 / 0.08)", border: "1px solid oklch(0.80 0.18 80 / 0.25)" }}>
+        <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "oklch(0.80 0.18 80 / 0.15)" }}>
+          <Shield size={20} style={{ color: "oklch(0.80 0.18 80)" }} />
+        </div>
+        <div>
+          <p className="text-sm font-black text-white">We only use your name &amp; email</p>
+          <p className="text-xs" style={{ color: "oklch(0.60 0.04 260)" }}>No Gmail, Drive, or Calendar access — ever</p>
+        </div>
+      </div>
+
+      {/* What we access */}
+      <div>
+        <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: "oklch(0.55 0.18 145)" }}>What Google shares with us</p>
+        <div className="space-y-2">
+          {[
+            { icon: Lock, label: "Your Google account ID", desc: "Links your GetPhame account to your Google identity" },
+            { icon: Mail, label: "Your email address", desc: "Used as your login identifier and for receipts" },
+            { icon: Eye, label: "Your display name", desc: "Pre-fills your account name — editable anytime" },
+          ].map(({ icon: Icon, label, desc }) => (
+            <div key={label} className="flex items-start gap-3 p-3 rounded-xl" style={{ background: "oklch(0.18 0.05 260)" }}>
+              <Icon size={15} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 145)" }} />
+              <div>
+                <p className="text-sm font-bold text-white">{label}</p>
+                <p className="text-xs" style={{ color: "oklch(0.55 0.04 260)" }}>{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* What we do NOT access */}
+      <div>
+        <p className="text-xs font-bold uppercase tracking-wider mb-3" style={{ color: "oklch(0.55 0.18 25)" }}>What we never access</p>
+        <div className="grid grid-cols-2 gap-2">
+          {["Gmail inbox", "Google Drive", "Google Calendar", "Google Contacts", "Google Photos", "Search history"].map((item) => (
+            <div key={item} className="flex items-center gap-2 p-2 rounded-lg" style={{ background: "oklch(0.16 0.04 260)" }}>
+              <XCircle size={13} style={{ color: "oklch(0.55 0.20 25)" }} className="shrink-0" />
+              <span className="text-xs font-medium" style={{ color: "oklch(0.50 0.03 260)" }}>{item}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* CTA */}
+      <button
+        onClick={onContinue}
+        className="flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-black text-base transition-transform active:scale-95 w-full rr-bg-gold"
+        style={{ color: "oklch(0.15 0.05 260)" }}
+      >
+        Got it — let's connect my email
+        <ChevronRight size={18} />
+      </button>
+      <p className="text-center text-xs" style={{ color: "oklch(0.38 0.03 260)" }}>
+        <a href="/data-usage" target="_blank" rel="noopener noreferrer" style={{ color: "oklch(0.55 0.12 260)" }} className="underline underline-offset-2">Full data usage details</a>
+      </p>
+    </div>
+  );
+}
+
 // ── Main Wizard ────────────────────────────────────────────────────────────────
 
 export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
@@ -620,6 +688,8 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
   // Derive minimum step from server state (can't go back below what's done)
   const minStep = !status?.smtpConnected ? 1 : !status?.hasPlatform ? 2 : 3;
   const [viewStep, setViewStep] = useState<number | null>(null);
+  // Show the data trust screen once before step 1 (only if SMTP not yet connected)
+  const [showDataScreen, setShowDataScreen] = useState<boolean>(!status?.smtpConnected);
   // Auto-advance viewStep when server confirms a step is done
   const currentStep = viewStep ?? minStep;
   const steps = [
@@ -639,6 +709,45 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
   }
 
   if (isLoading) return null;
+
+  // Show the data trust screen before step 1 for new users
+  if (showDataScreen && minStep === 1) {
+    return (
+      <div
+        className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4"
+        style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)", paddingBottom: "calc(5rem + env(safe-area-inset-bottom))", paddingTop: "1rem" }}
+      >
+        <div
+          className="w-full max-w-md rounded-3xl flex flex-col"
+          style={{ background: "oklch(0.14 0.05 260)", maxHeight: "calc(100dvh - 7rem)", overflow: "hidden" }}
+        >
+          {/* Header */}
+          <div className="px-6 pt-6 pb-4 rr-bg-navy">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Shield size={18} className="rr-text-gold" />
+                <span className="text-xs font-bold tracking-widest uppercase rr-text-gold">
+                  Your Data &amp; Privacy
+                </span>
+              </div>
+              <button
+                onClick={() => dismissMutation.mutate()}
+                className="p-1 rounded-lg transition-colors"
+                style={{ color: "var(--text-on-dark-primary)" }}
+                title="Skip setup"
+              >
+                <X size={18} />
+              </button>
+            </div>
+          </div>
+          {/* Content */}
+          <div className="px-6 py-6 overflow-y-auto flex-1">
+            <Step0Data onContinue={() => setShowDataScreen(false)} />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
