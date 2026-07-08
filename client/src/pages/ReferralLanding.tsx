@@ -41,23 +41,10 @@ export default function ReferralLanding() {
     >
       {/* Logo */}
       <div className="mb-8">
-        <img
-          src={WORDMARK_URL}
-          alt="Get Phame"
-          style={{ height: 44, width: "auto", objectFit: "contain" }}
-          onError={(e) => {
-            e.currentTarget.style.display = "none";
-            const fb = e.currentTarget.nextElementSibling as HTMLElement | null;
-            if (fb) fb.style.display = "flex";
-          }}
-        />
-        <span
-          className="items-center gap-2 font-black text-white text-xl"
-          style={{ display: "none", fontFamily: "'Poppins', sans-serif" }}
-        >
-          <Star size={20} fill="oklch(0.80 0.18 80)" style={{ color: "oklch(0.80 0.18 80)" }} />
-          Get Phame
-        </span>
+        <div className="flex items-baseline gap-1">
+          <span className="font-display font-extrabold text-xl tracking-tight text-white">GET</span>
+          <span className="font-display font-extrabold text-xl tracking-[0.08em]" style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
+        </div>
       </div>
 
       {/* Card */}

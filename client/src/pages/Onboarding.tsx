@@ -31,11 +31,10 @@ export default function OnboardingPage() {
       {/* Top bar: logo + language toggle */}
       <div className="flex items-center justify-between w-full">
         <div className="flex items-center gap-2">
-          <img
-            src="https://assets.getphame.app/phame-wordmark-transparent-clean.png"
-            alt="Get Phame"
-            style={{ height: '36px', width: 'auto' }}
-          />
+          <div className="flex items-baseline gap-1">
+            <span className="font-display font-extrabold text-xl tracking-tight text-white">GET</span>
+            <span className="font-display font-extrabold text-xl tracking-[0.08em]" style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
+          </div>
         </div>
       </div>
 

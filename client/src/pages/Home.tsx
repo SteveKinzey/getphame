@@ -444,12 +444,10 @@ export default function HomePage() {
           {/* Row 2: Brand label (left) + Share / Guide buttons (right) */}
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center">
-              <img
-                src="https://assets.getphame.app/phame-wordmark-transparent-clean.png"
-                alt="Get Phame"
-                className="block"
-                style={{ width: '180px', height: '44px', objectFit: 'contain', objectPosition: 'left center' }}
-              />
+              <div className="flex items-baseline gap-1">
+                <span className="font-display font-extrabold text-xl tracking-tight text-white">GET</span>
+                <span className="font-display font-extrabold text-xl tracking-[0.08em]" style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <button
