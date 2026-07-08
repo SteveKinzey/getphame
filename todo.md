@@ -1585,3 +1585,15 @@
 - [x] Add leadCapture tRPC router (submit procedure with onDuplicateKeyUpdate)
 - [x] Copy leadGuideEmail.ts server helper
 - [x] Update Pricing component with correct prices ($497 lifetime) and /upgrade hrefs
+## Responsive App Pages Redesign (Jul 8, 2026)
+- [x] Create AppLayout component with sidebar on tablet/desktop (64px icon-only on md, 220px full labels on lg)
+- [x] Add app-sidebar class to aside element so CSS media query width rules apply
+- [x] Update App.tsx to wrap authenticated pages in AppLayout
+- [x] Update BottomNav to hide on md+ screens (sidebar handles navigation there)
+- [x] Update Home page — max-width container + desktop two-column grid layout
+- [x] Update SendRequest page — max-w-2xl centered form on desktop
+- [x] Update Dashboard page — max-w-4xl centered content on desktop
+- [x] Update Settings page — max-w-3xl centered content on desktop
+- [x] Fix all page headers: pt-14 → md:pt-6 on desktop (no mobile status bar offset needed)
+- [x] Update PrivacyPolicy, TermsOfService, DataUsage pages to use dark PublicLayout theme
+- [x] Create PublicLayout component with Navbar + Footer for public pages

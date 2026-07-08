@@ -1239,7 +1239,7 @@ export default function SettingsPage() {
         }}
       />
       {/* Navy Header */}
-      <div className="px-5 pt-14 pb-6 rr-bg-navy">
+      <div className="px-5 pt-14 md:pt-6 pb-6 rr-bg-navy">
         <div className="flex items-center justify-between mb-1">
           <div className="flex items-center gap-2">
             <Settings size={16} className="rr-text-gold" />
@@ -1283,7 +1283,8 @@ export default function SettingsPage() {
         )}
       </div>
 
-      <div className="px-4 py-4 flex flex-col gap-4">
+      <div className="px-4 py-4 lg:px-8 lg:py-6">
+      <div className="max-w-3xl mx-auto flex flex-col gap-4">
         {/* ── Business Profile ──────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
@@ -3070,7 +3071,8 @@ export default function SettingsPage() {
           Sign Out
         </button>
 
-      </div>
+      </div>{/* end max-width wrapper */}
+      </div>{/* end outer padding */}
     </div>
 
     {/* ── Email Preview Modal ─────────────────────────────────────────────── */}

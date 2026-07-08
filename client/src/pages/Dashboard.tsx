@@ -183,7 +183,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen pb-40" style={{ background: "var(--background)" }}>
       {/* Navy Header */}
-      <div className="px-5 pt-14 pb-8" style={{ background: "var(--navy)" }}>
+      <div className="px-5 pt-14 md:pt-6 pb-8" style={{ background: "var(--navy)" }}>
         <div className="flex items-center justify-between gap-2 mb-1">
           <div className="flex items-center gap-2">
             <BarChart2 size={16} className="rr-text-gold" />
@@ -230,7 +230,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="px-4 py-4 flex flex-col gap-4">
+      <div className="px-4 py-4 lg:px-8 lg:py-6">
+      <div className="max-w-4xl mx-auto flex flex-col gap-4">
         {/* ── Analytics Card: Weekly Breakdown ─────────────────────────────── */}
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <div className="flex items-center justify-between mb-4">
@@ -570,7 +571,8 @@ export default function DashboardPage() {
             </div>
           )}
         </div>
-      </div>
+      </div>{/* end max-width wrapper */}
+      </div>{/* end outer padding */}
 
       {/* Sticky bulk action bar */}
       {selected.size > 0 && (

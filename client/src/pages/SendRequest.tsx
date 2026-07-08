@@ -319,7 +319,7 @@ export default function SendRequestPage() {
     <>
     <div className="min-h-screen pb-40 rr-bg-cream-warm">
       {/* Navy Header */}
-      <div className="px-5 pt-14 pb-6 rr-bg-navy animate-scale-in">
+      <div className="px-5 pt-14 md:pt-6 pb-6 rr-bg-navy animate-scale-in">
         <div className="flex items-center justify-between gap-2 mb-1">
           <div className="flex items-center gap-2">
             <Send size={16} className="rr-text-gold" />
@@ -343,7 +343,8 @@ export default function SendRequestPage() {
         )}
       </div>
 
-      <div className="px-4 py-4 flex flex-col gap-4 animate-fade-up" style={{ animationDelay: '100ms' }}>
+      <div className="px-4 py-4 lg:px-8 lg:py-6 animate-fade-up" style={{ animationDelay: '100ms' }}>
+      <div className="max-w-2xl mx-auto flex flex-col gap-4">
         {/* ── Email not connected warning ────────────────────────────────────── */}
         {!emailConnected && (
           <div
@@ -668,7 +669,8 @@ export default function SendRequestPage() {
 
           </div>
         </div>
-      </div>
+      </div>{/* end max-width wrapper */}
+      </div>{/* end outer padding */}
     </div>
 
     {/* Native contacts picker - only rendered in Capacitor app */}

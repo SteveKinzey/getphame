@@ -2,9 +2,9 @@ import { useLocation } from "wouter";
 import { ArrowLeft, CheckCircle, XCircle, Shield, Lock, Eye } from "lucide-react";
 
 const SECTION_HEADING = "text-base font-bold mb-3";
-const SECTION_HEADING_STYLE = { fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" };
-const BODY_STYLE = { color: "oklch(0.30 0.05 260)" };
-const LINK_STYLE = { color: "oklch(0.50 0.18 260)" };
+const SECTION_HEADING_STYLE = { fontFamily: "'Poppins', sans-serif", color: "oklch(0.90 0.02 260)" };
+const BODY_STYLE = { color: "oklch(0.78 0.02 260)" };
+const LINK_STYLE = { color: "oklch(0.80 0.18 80)" };
 
 export default function DataUsage() {
   const [, navigate] = useLocation();
@@ -18,42 +18,25 @@ export default function DataUsage() {
   };
 
   return (
-    <div className="min-h-screen pb-40" style={{ background: "oklch(0.975 0.003 100)" }}>
-      {/* Header */}
-      <div
-        className="sticky top-0 z-10 flex items-center gap-3 px-4 py-3 border-b"
-        style={{ background: "oklch(0.975 0.003 100)", borderColor: "oklch(0.88 0.01 100)" }}
-      >
-        <button
-          onClick={handleBack}
-          className="flex items-center gap-1.5 text-sm font-semibold"
-          style={{ color: "oklch(0.22 0.09 260)" }}
-        >
-          <ArrowLeft size={16} />
-          Back
-        </button>
-        <span className="text-sm font-bold" style={SECTION_HEADING_STYLE}>
-          Data Usage &amp; Google OAuth
-        </span>
+    <div>
+      {/* Page header */}
+      <div className="container py-10">
+        <div className="flex items-center gap-3 mb-2">
+          <Shield size={24} style={{ color: "oklch(0.80 0.18 80)" }} />
+          <h1 className="text-3xl md:text-4xl font-display font-extrabold text-white">
+            Data Usage &amp; Google OAuth
+          </h1>
+        </div>
+        <p className="text-sm" style={{ color: "oklch(0.55 0.04 260)" }}>
+          Last updated: July 2026
+        </p>
+        <p className="mt-3 text-sm leading-relaxed max-w-2xl" style={BODY_STYLE}>
+          This page explains exactly what data GetPhame accesses when you sign in with Google,
+          why each piece of information is needed, and what we explicitly do not access.
+        </p>
       </div>
 
-      <div className="max-w-2xl mx-auto px-5 pt-8">
-        {/* Title */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-2">
-            <Shield size={20} style={{ color: "oklch(0.50 0.18 260)" }} />
-            <h1 className="text-2xl font-bold" style={SECTION_HEADING_STYLE}>
-              Data Usage &amp; Google OAuth Scopes
-            </h1>
-          </div>
-          <p className="text-sm" style={BODY_STYLE}>
-            Last updated: July 2026
-          </p>
-          <p className="mt-3 text-sm leading-relaxed" style={BODY_STYLE}>
-            This page explains exactly what data GetPhame accesses when you sign in with Google,
-            why each piece of information is needed, and what we explicitly do not access.
-          </p>
-        </div>
+      <div className="container pb-16 max-w-3xl">
 
         {/* What is GetPhame */}
         <section className="mb-8">
@@ -87,13 +70,13 @@ export default function DataUsage() {
             {/* openid */}
             <div
               className="rounded-xl p-4 border"
-              style={{ background: "white", borderColor: "oklch(0.88 0.01 100)" }}
+              style={{ background: "oklch(0.15 0.05 260)", borderColor: "oklch(0.28 0.08 260)" }}
             >
               <div className="flex items-start gap-3">
                 <Lock size={18} className="mt-0.5 shrink-0" style={{ color: "oklch(0.50 0.18 260)" }} />
                 <div>
                   <p className="text-sm font-bold mb-1" style={SECTION_HEADING_STYLE}>
-                    <code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded font-mono">openid</code>
+                    <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ background: "oklch(0.20 0.06 260)", color: "oklch(0.80 0.18 80)" }}>openid</code>
                     {" "}— Authentication
                   </p>
                   <p className="text-sm leading-relaxed" style={BODY_STYLE}>
@@ -112,13 +95,13 @@ export default function DataUsage() {
             {/* email */}
             <div
               className="rounded-xl p-4 border"
-              style={{ background: "white", borderColor: "oklch(0.88 0.01 100)" }}
+              style={{ background: "oklch(0.15 0.05 260)", borderColor: "oklch(0.28 0.08 260)" }}
             >
               <div className="flex items-start gap-3">
                 <Eye size={18} className="mt-0.5 shrink-0" style={{ color: "oklch(0.50 0.18 260)" }} />
                 <div>
                   <p className="text-sm font-bold mb-1" style={SECTION_HEADING_STYLE}>
-                    <code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded font-mono">email</code>
+                    <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ background: "oklch(0.20 0.06 260)", color: "oklch(0.80 0.18 80)" }}>email</code>
                     {" "}— Your Email Address
                   </p>
                   <p className="text-sm leading-relaxed" style={BODY_STYLE}>
@@ -138,13 +121,13 @@ export default function DataUsage() {
             {/* profile */}
             <div
               className="rounded-xl p-4 border"
-              style={{ background: "white", borderColor: "oklch(0.88 0.01 100)" }}
+              style={{ background: "oklch(0.15 0.05 260)", borderColor: "oklch(0.28 0.08 260)" }}
             >
               <div className="flex items-start gap-3">
                 <Eye size={18} className="mt-0.5 shrink-0" style={{ color: "oklch(0.50 0.18 260)" }} />
                 <div>
                   <p className="text-sm font-bold mb-1" style={SECTION_HEADING_STYLE}>
-                    <code className="text-xs bg-gray-100 px-1.5 py-0.5 rounded font-mono">profile</code>
+                    <code className="text-xs px-1.5 py-0.5 rounded font-mono" style={{ background: "oklch(0.20 0.06 260)", color: "oklch(0.80 0.18 80)" }}>profile</code>
                     {" "}— Your Display Name
                   </p>
                   <p className="text-sm leading-relaxed" style={BODY_STYLE}>

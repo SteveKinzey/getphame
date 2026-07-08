@@ -32,9 +32,9 @@ function US_ADDRESS({ email, linkStyle }: { email: string; linkStyle: React.CSSP
 }
 
 const SECTION_HEADING = "text-base font-bold mb-3";
-const SECTION_HEADING_STYLE = { fontFamily: "'Poppins', sans-serif", color: "oklch(0.22 0.09 260)" };
-const BODY_STYLE = { color: "oklch(0.30 0.05 260)" };
-const LINK_STYLE = { color: "oklch(0.50 0.18 260)" };
+const SECTION_HEADING_STYLE = { fontFamily: "'Poppins', sans-serif", color: "oklch(0.90 0.02 260)" };
+const BODY_STYLE = { color: "oklch(0.78 0.02 260)" };
+const LINK_STYLE = { color: "oklch(0.80 0.18 80)" };
 
 export default function PrivacyPolicy() {
   const [, navigate] = useLocation();
@@ -56,28 +56,19 @@ export default function PrivacyPolicy() {
   };
 
   return (
-    <div className="min-h-screen pb-40 rr-bg-cream-warm">
-      {/* Header */}
-      <div className="px-5 pt-12 pb-6 rr-bg-navy">
-        <button
-          onClick={handleBack}
-          className="flex items-center gap-2 mb-4 text-sm rr-text-gold"
-        >
-          <ArrowLeft size={16} />
-          Back
-        </button>
-        <h1
-          className="text-2xl text-white rr-fw-black"
-        >
+    <div>
+      {/* Page header */}
+      <div className="container py-10">
+        <h1 className="text-3xl md:text-4xl font-display font-extrabold text-white mb-2">
           Privacy Policy
         </h1>
-        <p className="text-sm mt-1" style={{ color: "oklch(0.75 0.05 260)" }}>
+        <p className="text-sm" style={{ color: "oklch(0.55 0.04 260)" }}>
           Last updated: April 13, 2026
         </p>
       </div>
 
       {/* Content */}
-      <div className="px-5 py-6 max-w-2xl mx-auto space-y-7 text-sm leading-relaxed pb-40" style={BODY_STYLE}>
+      <div className="container pb-16 max-w-3xl space-y-7 text-sm leading-relaxed" style={BODY_STYLE}>
 
         {/* Intro */}
         <section>

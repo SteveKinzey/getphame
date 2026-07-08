@@ -25,7 +25,7 @@ export default function BottomNav() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-50 bottom-nav rr-bg-navy"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-50 bottom-nav rr-bg-navy"
       style={{ borderTop: "1px solid oklch(0.30 0.08 260)" }}
     >
       {/* Nav items row — 5 equal columns (4 nav + 1 theme toggle) */}

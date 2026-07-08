@@ -525,7 +525,11 @@ export default function HomePage() {
         </button>
       </div>
 
-      <div className="px-4 py-4 flex flex-col gap-4 animate-fade-up" style={{ animationDelay: '120ms' }}>
+      <div className="px-4 py-4 lg:px-8 lg:py-6 animate-fade-up" style={{ animationDelay: '120ms' }}>
+      {/* Responsive grid: single column on mobile, 2-col on lg (main + sidebar) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
+      {/* ── Left column (main content) — spans 2 cols on desktop ── */}
+      <div className="lg:col-span-2 flex flex-col gap-4">
         {/* ── SMTP Health Failure Alert ─────────────────────────────────── */}
         {smtpHealthFailed && (
           <div
@@ -858,20 +862,10 @@ export default function HomePage() {
           )}
         </div>
 
-        {/* ── Email Tracking Summary Card ────────────────────────────── */}
-        <TrackingSummaryCard />
-
-        {/* ── Referral Rewards Dashboard ─────────────────────────────── */}
-        <ReferralRewardsCard />
-        {/* ── Referral Share Nudge ─────────────────────────────────────── */}
-        <ShareReferralCard />
-
         {/* Platform Breakdown */}
         {stats?.platformBreakdown && stats.platformBreakdown.filter((p) => p.platform !== "unknown").length > 0 && (
           <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <h3
-              className="text-sm font-black mb-3 rr-text-navy"
-            >
+            <h3 className="text-sm font-black mb-3 rr-text-navy">
               {t("homePage.requestsByPlatform", { defaultValue: "Requests by Platform" })}
             </h3>
             <div className="flex flex-col gap-2">
@@ -912,7 +906,17 @@ export default function HomePage() {
             </div>
           </div>
         )}
-      </div>
+      </div>{/* end left column */}
+
+      {/* ── Right column (sidebar widgets) — stacks below on mobile ── */}
+      <div className="flex flex-col gap-4">
+        <TrackingSummaryCard />
+        <ReferralRewardsCard />
+        <ShareReferralCard />
+      </div>{/* end right column */}
+
+      </div>{/* end grid */}
+      </div>{/* end outer padding */}
     </div>
   );
 }

@@ -1963,11 +1963,20 @@ export const appRouter = router({
       await db.delete(stripeSubscriptions).where(eq(stripeSubscriptions.userId, uid));
       await db.delete(businessProfiles).where(eq(businessProfiles.userId, uid));
       await db.delete(gmailTokens).where(eq(gmailTokens.userId, uid));
+      // Capture user email/name before deleting the user row
+      const deletedUser = ctx.user;
       // Finally delete the user row itself
       await db.delete(users).where(eq(users.id, uid));
       // Clear the session cookie
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
+      // Send deletion confirmation email (non-fatal — fire and forget)
+      try {
+        const { sendAccountDeletionEmail } = await import("./accountDeletionEmail");
+        await sendAccountDeletionEmail(deletedUser.email ?? "", deletedUser.name ?? "");
+      } catch (emailErr) {
+        console.warn("[account.delete] Confirmation email failed (non-fatal):", emailErr);
+      }
       return { ok: true };
     }),
   }),
