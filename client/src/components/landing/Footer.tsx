@@ -28,6 +28,12 @@ export default function Footer() {
               Terms
             </a>
             <a
+              href="/data-usage"
+              className="text-slate-200 hover:text-white transition-colors font-medium"
+            >
+              Data Usage
+            </a>
+            <a
               href="mailto:support@getphame.app"
               className="text-slate-200 hover:text-white transition-colors font-medium"
             >

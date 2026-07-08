@@ -32,6 +32,7 @@ const AppleAuthLanding  = lazy(() => import("./pages/AppleAuthLanding"));
 // Legal / utility — rarely visited, no need to block initial load
 const PrivacyPolicyPage  = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfServicePage = lazy(() => import("./pages/TermsOfService"));
+const DataUsagePage      = lazy(() => import("./pages/DataUsage"));
 const ChangelogPage      = lazy(() => import("./pages/Changelog"));
 const UnsubscribePage    = lazy(() => import("./pages/Unsubscribe"));
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccess"));
@@ -140,6 +141,7 @@ function AppShell() {
 
   if (path === "/privacy-policy") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><PrivacyPolicyPage />{globalLangFlyout}</div></Suspense>;
   if (path === "/terms-of-service") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><TermsOfServicePage />{globalLangFlyout}</div></Suspense>;
+  if (path === "/data-usage") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><DataUsagePage /></div></Suspense>;
   if (path === "/payment-success") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><PaymentSuccessPage />{globalLangFlyout}</div></Suspense>;
   if (path === "/unsubscribe") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><UnsubscribePage />{globalLangFlyout}</div></Suspense>;
   if (path === "/auth/apple/landing") return <Suspense fallback={<PageLoader />}><div className="mobile-screen"><AppleAuthLanding /></div></Suspense>;
