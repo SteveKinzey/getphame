@@ -36,8 +36,9 @@ const PAYPAL_API_BASE = process.env.PAYPAL_MODE === "sandbox"
   : "https://api-m.paypal.com";
 
 function getPayPalCredentials() {
-  const clientId = process.env.PAYPAL_CLIENT_ID ?? "";
-  const secret = process.env.PAYPAL_SECRET ?? "";
+  // Support multiple naming conventions for the credentials
+  const clientId = process.env.PAYPAL_CLIENT_ID ?? process.env.VITE_PAYPAL_CLIENT_ID ?? "";
+  const secret = process.env.PAYPAL_SECRET ?? process.env.PAYPAL_CLIENT_SECRET ?? "";
   return { clientId, secret, configured: !!(clientId && secret) };
 }
 

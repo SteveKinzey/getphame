@@ -7,11 +7,14 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 
 // ── Mock Stripe ───────────────────────────────────────────────────────────────
 const mockSessionCreate = vi.fn();
-vi.mock("stripe", () => ({
-  default: vi.fn().mockImplementation(() => ({
-    checkout: { sessions: { create: mockSessionCreate } },
-  })),
-}));
+
+// Stripe v22 exports a class; vi.mock must return a constructor (class/function)
+vi.mock("stripe", () => {
+  class MockStripe {
+    checkout = { sessions: { create: mockSessionCreate } };
+  }
+  return { default: MockStripe };
+});
 
 // ── Import after mocking ──────────────────────────────────────────────────────
 // We import the module fresh each test via dynamic import to pick up env changes.
