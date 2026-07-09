@@ -626,7 +626,6 @@
   --border:      oklch(0.28 0.04 260);
   --input:       oklch(0.28 0.04 260);
 }
-test
 
 /* ── Micro-animation keyframes ──────────────────────────────────────────────── */
 
@@ -678,4 +677,46 @@ test
 
 .page-enter {
   animation: fadeUp 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Extracted inline styles (moved from JSX to eliminate unsafe-inline CSP) ── */
+
+/* AppLayout: responsive sidebar widths */
+@media (min-width: 1024px) {
+  .app-sidebar { width: 220px !important; }
+  .app-sidebar-label { display: block !important; }
+  .app-sidebar-brand-text { display: flex !important; }
+}
+@media (min-width: 768px) {
+  .app-main { margin-left: 64px; }
+}
+@media (min-width: 1024px) {
+  .app-main { margin-left: 220px; }
+}
+
+/* LanguageFlyout: slide-down animation */
+@keyframes lfSlideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.lf-slide-down {
+  animation: lfSlideDown 0.18s ease forwards;
+}
+
+/* PWAInstallPrompt: slide-up animation */
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-up {
+  animation: slideUp 0.3s ease forwards;
+}
+
+/* PageLoader: phame pulse animation */
+@keyframes phame-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.12); opacity: 0.85; }
+}
+.animate-phame-pulse {
+  animation: phame-pulse 1.4s ease-in-out infinite;
 }

@@ -49,22 +49,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
           width: "64px",
         }}
       >
-        {/* Responsive width via CSS — 64px on md, 220px on lg */}
-        <style>{`
-          @media (min-width: 1024px) {
-            .app-sidebar { width: 220px !important; }
-            .app-sidebar-label { display: block !important; }
-            .app-sidebar-brand-text { display: flex !important; }
-          }
-          @media (min-width: 768px) {
-            .app-main { margin-left: 64px; }
-          }
-          @media (min-width: 1024px) {
-            .app-main { margin-left: 220px; }
-          }
-        `}</style>
-
-        {/* Brand */}
+        {/* Brand — sidebar responsive widths are in index.css (.app-sidebar, .app-main) */}
         <div
           className="flex items-center justify-center lg:justify-start gap-2.5 px-3 lg:px-4 py-4 border-b"
           style={{ borderColor: "oklch(0.28 0.08 260)", minHeight: "64px" }}

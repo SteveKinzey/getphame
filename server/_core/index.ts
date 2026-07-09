@@ -362,9 +362,14 @@ async function startServer() {
           ],
           objectSrc: ["'none'"],
           // Allow the Manus analytics script (Umami) injected by the platform at deploy time
+          // JSON-LD structured data scripts are type="application/ld+json" — not executable JS,
+          // but some CSP parsers flag them. 'unsafe-hashes' covers style= attribute usage.
           scriptSrc: ["'self'", "https://manus-analytics.com"],
           scriptSrcAttr: ["'none'"],
-          styleSrc: ["'self'", "https:", "'unsafe-inline'"],
+          // Remove 'unsafe-inline' — all inline <style> tags have been moved to index.css.
+          // The shadcn/ui chart component uses a dynamic <style> with CSS custom properties;
+          // 'unsafe-hashes' allows style= attribute values without allowing arbitrary inline scripts.
+          styleSrc: ["'self'", "https:", "'unsafe-hashes'"],
           upgradeInsecureRequests: [],
         },
       } : false,

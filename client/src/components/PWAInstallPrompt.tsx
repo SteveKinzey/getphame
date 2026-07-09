@@ -196,12 +196,6 @@ export default function PWAInstallPrompt() {
         </button>
       </div>
 
-      <style>{`
-        @keyframes slideUp {
-          from { transform: translateY(100%); opacity: 0; }
-          to { transform: translateY(0); opacity: 1; }
-        }
-      `}</style>
     </>
   );
 }
