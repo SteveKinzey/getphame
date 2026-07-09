@@ -5,8 +5,8 @@ import { motion } from "framer-motion";
 
 const HERO_BG = "https://assets.getphame.app/phame-hero-bg.webp";
 const HERO_BG_PNG = "https://assets.getphame.app/phame-hero-bg.png";
-const DASHBOARD_MOCKUP_WEBP = "https://assets.getphame.app/phame-dashboard-mockup.webp";
-const DASHBOARD_MOCKUP_PNG = "https://assets.getphame.app/phame-dashboard-mockup.png";
+const DASHBOARD_MOCKUP_WEBP = "https://assets.getphame.app/phame-app-screenshot.png";
+const DASHBOARD_MOCKUP_PNG = "https://assets.getphame.app/phame-app-screenshot.png";
 
 // A/B test variants
 const CTA_VARIANTS = [
@@ -150,10 +150,10 @@ export default function Hero() {
                   <source srcSet={DASHBOARD_MOCKUP_PNG} type="image/png" />
                   <img
                     src={DASHBOARD_MOCKUP_PNG}
-                    alt="GetPhame dashboard showing review request campaigns, email open rates, and 5-star review growth analytics for local businesses"
-                    className="w-full h-auto"
-                    width={800}
-                    height={520}
+                    alt="GetPhame app home screen showing review request stats, send button, and free plan usage for local businesses"
+                    className="w-full h-auto max-w-xs mx-auto"
+                    width={400}
+                    height={711}
                     loading="eager"
                     decoding="async"
                   />

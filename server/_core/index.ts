@@ -361,15 +361,18 @@ async function startServer() {
             "https://manus-analytics.com",
           ],
           objectSrc: ["'none'"],
-          // Allow the Manus analytics script (Umami) injected by the platform at deploy time
-          // JSON-LD structured data scripts are type="application/ld+json" — not executable JS,
-          // but some CSP parsers flag them. 'unsafe-hashes' covers style= attribute usage.
-          scriptSrc: ["'self'", "https://manus-analytics.com"],
+          // Allow the Manus analytics script (Umami) injected by the platform at deploy time.
+          // 'unsafe-inline' is required because the Manus platform injects an inline <script>
+          // into the served HTML at deploy time (line 146) that cannot be removed or hashed.
+          scriptSrc: ["'self'", "'unsafe-inline'", "https://manus-analytics.com"],
           scriptSrcAttr: ["'none'"],
-          // Remove 'unsafe-inline' — all inline <style> tags have been moved to index.css.
-          // The shadcn/ui chart component uses a dynamic <style> with CSS custom properties;
-          // 'unsafe-hashes' allows style= attribute values without allowing arbitrary inline scripts.
-          styleSrc: ["'self'", "https:", "'unsafe-hashes'"],
+          // 'unsafe-inline' is required for:
+          // 1. The Manus platform injects an inline script at line 146 of the served HTML
+          // 2. The shadcn/ui chart component injects dynamic <style> tags with CSS custom properties
+          // Removing it causes the app to break entirely (white screen).
+          // The Cloudflare warning is advisory — the actual XSS risk is low given the app has no
+          // user-generated HTML injection vectors. Revisit with a nonce-based approach later.
+          styleSrc: ["'self'", "https:", "'unsafe-inline'"],
           upgradeInsecureRequests: [],
         },
       } : false,
