@@ -438,9 +438,9 @@ export default function HomePage() {
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center">
               <div className="flex items-center gap-2">
-                <img src={LOGO_URL} alt="GetPhame logo" className="w-7 h-7 rounded-lg" loading="lazy" decoding="async" />
+                <img src={LOGO_URL} alt="GetPhame logo" className="w-7 h-7" loading="lazy" decoding="async" />
                 <span className="font-display font-extrabold text-xl tracking-tight">
-                  <span className="text-white">GET</span><span style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
+                  <span className="text-white">GET&nbsp;</span><span style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
                 </span>
               </div>
             </div>
