@@ -144,21 +144,64 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.3, ease }}
           >
             <div className="animate-float">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-primary/10">
-                <picture>
-                  <source srcSet={DASHBOARD_MOCKUP_WEBP} type="image/webp" />
-                  <source srcSet={DASHBOARD_MOCKUP_PNG} type="image/png" />
-                  <img
-                    src={DASHBOARD_MOCKUP_PNG}
-                    alt="GetPhame app home screen showing review request stats, send button, and free plan usage for local businesses"
-                    className="w-full h-auto max-w-xs mx-auto"
-                    width={400}
-                    height={711}
-                    loading="eager"
-                    decoding="async"
-                  />
-                </picture>
-                <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/5" />
+              {/* iPhone-style phone frame */}
+              <div className="relative mx-auto" style={{ width: 'fit-content' }}>
+                {/* Outer phone shell */}
+                <div
+                  className="relative"
+                  style={{
+                    background: 'linear-gradient(145deg, #2a2a2e 0%, #1a1a1e 40%, #111114 100%)',
+                    borderRadius: '44px',
+                    padding: '10px',
+                    boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 0 0 2px rgba(0,0,0,0.6), 0 32px 64px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.12)',
+                  }}
+                >
+                  {/* Volume buttons (left side) */}
+                  <div className="absolute" style={{ left: '-3px', top: '90px', width: '3px', height: '28px', background: '#2a2a2e', borderRadius: '2px 0 0 2px', boxShadow: '-1px 0 0 rgba(255,255,255,0.06)' }} />
+                  <div className="absolute" style={{ left: '-3px', top: '128px', width: '3px', height: '44px', background: '#2a2a2e', borderRadius: '2px 0 0 2px', boxShadow: '-1px 0 0 rgba(255,255,255,0.06)' }} />
+                  <div className="absolute" style={{ left: '-3px', top: '182px', width: '3px', height: '44px', background: '#2a2a2e', borderRadius: '2px 0 0 2px', boxShadow: '-1px 0 0 rgba(255,255,255,0.06)' }} />
+                  {/* Power button (right side) */}
+                  <div className="absolute" style={{ right: '-3px', top: '140px', width: '3px', height: '60px', background: '#2a2a2e', borderRadius: '0 2px 2px 0', boxShadow: '1px 0 0 rgba(255,255,255,0.06)' }} />
+                  {/* Screen area */}
+                  <div
+                    style={{
+                      borderRadius: '36px',
+                      overflow: 'hidden',
+                      position: 'relative',
+                      background: '#000',
+                    }}
+                  >
+                    {/* Dynamic Island notch */}
+                    <div
+                      className="absolute z-10 flex items-center justify-center"
+                      style={{
+                        top: '10px',
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        width: '96px',
+                        height: '26px',
+                        background: '#000',
+                        borderRadius: '20px',
+                      }}
+                    />
+                    <picture>
+                      <source srcSet={DASHBOARD_MOCKUP_WEBP} type="image/webp" />
+                      <source srcSet={DASHBOARD_MOCKUP_PNG} type="image/png" />
+                      <img
+                        src={DASHBOARD_MOCKUP_PNG}
+                        alt="GetPhame app home screen showing review request stats, send button, and free plan usage for local businesses"
+                        className="block"
+                        style={{ width: '260px', height: 'auto', display: 'block' }}
+                        width={400}
+                        height={711}
+                        loading="eager"
+                        decoding="async"
+                      />
+                    </picture>
+                    {/* Screen glare overlay */}
+                    <div className="absolute inset-0 pointer-events-none" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.04) 0%, transparent 50%)', borderRadius: '36px' }} />
+                  </div>
+                </div>
               </div>
             </div>
             <div className="absolute -inset-4 bg-primary/5 rounded-3xl blur-3xl -z-10" />

@@ -487,7 +487,7 @@ export default function HomePage() {
             {
               label: tierLabel,
               value: profile?.tier === "free" || !profile?.tier ? `${Math.max(0, 10 - (profile?.totalSent ?? 0))}/10` : "✓",
-              icon: <Star size={14} />
+              icon: <img src={LOGO_URL} alt="GetPhame" style={{ width: 16, height: 16, objectFit: 'contain' }} />
             },
           ].map((s, i) => (
             <div
