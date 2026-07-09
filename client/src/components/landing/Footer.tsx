@@ -28,6 +28,12 @@ export default function Footer() {
               Terms
             </a>
             <a
+              href="/security"
+              className="text-slate-200 hover:text-white transition-colors font-medium"
+            >
+              Security
+            </a>
+            <a
               href="mailto:support@getphame.app"
               className="text-slate-200 hover:text-white transition-colors font-medium"
             >

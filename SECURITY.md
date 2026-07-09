@@ -31,8 +31,12 @@ Current status: `pnpm audit --prod` reports **zero known vulnerabilities** (last
 
 **Please do not open a public GitHub issue for security vulnerabilities.**
 
-Report security issues privately via email:
+You can report security issues through two channels:
 
+**1. GitHub Private Security Advisory (preferred)**
+Use the [Report a vulnerability](https://github.com/SteveKinzey/getphame/security/advisories/new) button on the Security tab of this repository. Your report will be visible only to the repository maintainers.
+
+**2. Email**
 **security@getphame.app**
 
 Include:

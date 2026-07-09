@@ -165,6 +165,13 @@ export default function BottomNav() {
           >
             {t('footer.compliance')}
           </button>
+          <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
+          <button
+            onClick={() => navigate('/security')}
+            className="text-sm font-bold hover:underline transition-colors rr-text-navy"
+          >
+            Security
+          </button>
         </div>
 
         {/* Copyright notice */}

@@ -183,14 +183,26 @@ export default function SecurityPolicy() {
             <li>Credit you in our changelog (unless you prefer anonymity)</li>
           </ul>
           <div className="rounded-lg p-4" style={{ background: "oklch(0.18 0.04 260)", border: "1px solid oklch(0.25 0.04 260)" }}>
-            <p className="font-semibold mb-1" style={{ color: "oklch(0.90 0.02 260)" }}>Contact</p>
+            <p className="font-semibold mb-2" style={{ color: "oklch(0.90 0.02 260)" }}>Report a Vulnerability</p>
+            <p className="mb-1 text-xs font-semibold" style={{ color: GOLD }}>Option 1 — GitHub Private Advisory (preferred)</p>
+            <p className="mb-3">
+              <a
+                href="https://github.com/SteveKinzey/getphame/security/advisories/new"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={LINK_STYLE}
+              >
+                Submit a private security advisory on GitHub
+              </a>
+              {" "}— visible only to maintainers, no public exposure.
+            </p>
+            <p className="mb-1 text-xs font-semibold" style={{ color: GOLD }}>Option 2 — Email</p>
             <p>
-              Email:{" "}
               <a href={`mailto:${SECURITY_EMAIL}`} style={LINK_STYLE} className="break-all">
                 {SECURITY_EMAIL}
               </a>
             </p>
-            <p className="text-xs mt-2" style={{ color: "oklch(0.55 0.04 260)" }}>
+            <p className="text-xs mt-3" style={{ color: "oklch(0.55 0.04 260)" }}>
               Please include a description of the vulnerability, steps to reproduce, and your assessment of impact. Do not include sensitive customer data in your report.
             </p>
           </div>
