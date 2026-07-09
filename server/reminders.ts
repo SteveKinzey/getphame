@@ -140,51 +140,56 @@ function getReminderBody(
  * Process all due pending reminders — called by the background scheduler.
  */
 export async function processDueReminders() {
-  const db = await getDb();
-  if (!db) return;
+  try {
+    const db = await getDb();
+    if (!db) return;
 
-  const now = Date.now();
-  const due = await db
-    .select()
-    .from(followUpReminders)
-    .where(
-      and(
-        eq(followUpReminders.status, "pending"),
-        lte(followUpReminders.scheduledAt, now)
-      )
-    );
+    const now = Date.now();
+    const due = await db
+      .select()
+      .from(followUpReminders)
+      .where(
+        and(
+          eq(followUpReminders.status, "pending"),
+          lte(followUpReminders.scheduledAt, now)
+        )
+      );
 
-  for (const reminder of due) {
-    try {
-      const [profile] = await db
-        .select()
-        .from(businessProfiles)
-        .where(eq(businessProfiles.userId, reminder.userId));
-      if (!profile) continue;
+    for (const reminder of due) {
+      try {
+        const [profile] = await db
+          .select()
+          .from(businessProfiles)
+          .where(eq(businessProfiles.userId, reminder.userId));
+        if (!profile) continue;
 
-      const defaultPlatform = await getDefaultReviewPlatform(reminder.userId);
-      const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
-      const trackingToken = encodeTrackingToken(reminder.customerRequestId, reminder.userId, null);
-      const baseUrl = process.env.APP_BASE_URL ?? "https://getphame.app";
-      const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
-      const openPixel = buildOpenPixel(trackingToken, baseUrl);
+        const defaultPlatform = await getDefaultReviewPlatform(reminder.userId);
+        const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
+        const trackingToken = encodeTrackingToken(reminder.customerRequestId, reminder.userId, null);
+        const baseUrl = process.env.APP_BASE_URL ?? "https://getphame.app";
+        const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
+        const openPixel = buildOpenPixel(trackingToken, baseUrl);
 
-      const step = reminder.sequenceStep ?? 1;
-      const subject = getReminderSubject(step);
-      const showPoweredBy = !profile.tier || profile.tier === 'free';
-      const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel, showPoweredBy);
+        const step = reminder.sequenceStep ?? 1;
+        const subject = getReminderSubject(step);
+        const showPoweredBy = !profile.tier || profile.tier === 'free';
+        const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel, showPoweredBy);
 
-      await sendMailViaSmtp({ userId: reminder.userId, to: reminder.customerEmail, subject, html });
+        await sendMailViaSmtp({ userId: reminder.userId, to: reminder.customerEmail, subject, html });
 
-      await db
-        .update(followUpReminders)
-        .set({ status: "sent", sentAt: Date.now() })
-        .where(eq(followUpReminders.id, reminder.id));
+        await db
+          .update(followUpReminders)
+          .set({ status: "sent", sentAt: Date.now() })
+          .where(eq(followUpReminders.id, reminder.id));
 
-      console.log(`[Reminders] Step ${step} follow-up sent to ${reminder.customerEmail}`);
-    } catch (err) {
-      console.error(`[Reminders] Failed to send follow-up for reminder ${reminder.id}:`, err);
+        console.log(`[Reminders] Step ${step} follow-up sent to ${reminder.customerEmail}`);
+      } catch (err) {
+        console.error(`[Reminders] Failed to send follow-up for reminder ${reminder.id}:`, err);
+      }
     }
+  } catch (err) {
+    // Swallow DB connection errors (e.g. SSL timeout) so the server process stays alive
+    console.error("[Reminders] processDueReminders failed (will retry next interval):", err instanceof Error ? err.message : err);
   }
 }
 

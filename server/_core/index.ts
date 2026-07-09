@@ -357,9 +357,12 @@ async function startServer() {
             "https://fonts.gstatic.com",
             "https://vitals.vercel-insights.com",
             "https://files.manuscdn.com",
+            // Manus analytics (Umami) beacon endpoint
+            "https://manus-analytics.com",
           ],
           objectSrc: ["'none'"],
-          scriptSrc: ["'self'"],
+          // Allow the Manus analytics script (Umami) injected by the platform at deploy time
+          scriptSrc: ["'self'", "https://manus-analytics.com"],
           scriptSrcAttr: ["'none'"],
           styleSrc: ["'self'", "https:", "'unsafe-inline'"],
           upgradeInsecureRequests: [],

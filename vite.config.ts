@@ -167,6 +167,9 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    // Disable the modulepreload polyfill inline script — it violates CSP script-src 'self'
+    // Modern browsers (Chrome 66+, Firefox 115+, Safari 17+) support modulepreload natively
+    modulePreload: { polyfill: false },
     rollupOptions: {
       output: {
         manualChunks(id) {
