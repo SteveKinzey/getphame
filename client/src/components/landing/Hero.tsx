@@ -5,8 +5,8 @@ import { motion } from "framer-motion";
 
 const HERO_BG = "https://assets.getphame.app/phame-hero-bg.webp";
 const HERO_BG_PNG = "https://assets.getphame.app/phame-hero-bg.png";
-const DASHBOARD_MOCKUP_WEBP = "https://assets.getphame.app/phame-app-screenshot.png";
-const DASHBOARD_MOCKUP_PNG = "https://assets.getphame.app/phame-app-screenshot.png";
+const DASHBOARD_MOCKUP_WEBP = "https://assets.getphame.app/phame-app-screenshot.png?v=2";
+const DASHBOARD_MOCKUP_PNG = "https://assets.getphame.app/phame-app-screenshot.png?v=2";
 
 // A/B test variants
 const CTA_VARIANTS = [

@@ -5,6 +5,7 @@ import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import SEOHead from "@/components/landing/SEOHead";
 import TrustBar from "@/components/landing/TrustBar";
+import SocialProofBar from "@/components/landing/SocialProofBar";
 import VideoDemo from "@/components/landing/VideoDemo";
 import Features from "@/components/landing/Features";
 import HowItWorks from "@/components/landing/HowItWorks";
@@ -28,6 +29,7 @@ export default function LandingPage() {
       />
       <Navbar />
       <Hero />
+      <SocialProofBar />
       <TrustBar />
       <VideoDemo />
       <Features />
