@@ -1,6 +1,6 @@
-// Get Phame Service Worker v4 — All locale files pre-cached at install
+// Get Phame Service Worker v5 — Fixed cross-origin fetch handling
 // Cache version bump forces old caches to be cleared on update
-const CACHE_NAME = 'getphame-v4';
+const CACHE_NAME = 'getphame-v5';
 
 // Pre-cache all locale files at install so language switching is instant
 // and works completely offline after the app is installed on the device.
@@ -50,23 +50,33 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(event.request.url);
 
-  // Always fetch from network for JS/CSS/API calls (Vite dev assets)
-  // Only cache static shell assets
+  // Skip Vite dev server assets — let browser handle them normally
   if (
     url.pathname.startsWith('/src/') ||
     url.pathname.startsWith('/@') ||
     url.pathname.startsWith('/node_modules/')
   ) {
-    return; // Let browser handle it normally
+    return;
+  }
+
+  // Skip API calls — never intercept backend requests
+  if (url.pathname.startsWith('/api/')) {
+    return;
+  }
+
+  // Cross-origin requests (CDN images, YouTube thumbnails, external fonts, etc.)
+  // MUST be passed through directly — do NOT try to cache opaque responses
+  // as they can cause null response errors and inflate cache storage.
+  if (url.origin !== self.location.origin) {
+    // Just pass through to network — no caching, no interference
+    return;
   }
 
   // Locale files: cache-first strategy for instant language switching
-  // The locale files are pre-cached at install and updated when SW version bumps.
   if (url.pathname.startsWith('/locales/')) {
     event.respondWith(
       caches.match(event.request).then((cached) => {
         if (cached) return cached;
-        // Not in cache yet — fetch and cache it
         return fetch(event.request).then((response) => {
           if (response && response.status === 200) {
             const responseClone = response.clone();
@@ -75,16 +85,20 @@ self.addEventListener('fetch', (event) => {
             });
           }
           return response;
+        }).catch(() => {
+          // Locale fetch failed offline — return empty JSON to prevent crash
+          return new Response('{}', { status: 200, headers: { 'Content-Type': 'application/json' } });
         });
       })
     );
     return;
   }
 
+  // Same-origin assets: network-first, fall back to cache
   event.respondWith(
-    // Network-first strategy: always try network, fall back to cache
     fetch(event.request)
       .then((response) => {
+        // Only cache valid same-origin responses
         if (response && response.status === 200 && response.type === 'basic') {
           const responseClone = response.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -97,11 +111,11 @@ self.addEventListener('fetch', (event) => {
         // Offline fallback: serve from cache
         return caches.match(event.request).then((cached) => {
           if (cached) return cached;
+          // For navigation requests, serve the app shell
           if (event.request.destination === 'document') {
             return caches.match('/');
           }
-          // For favicon and icon requests that fail, return empty 204 response
-          // to prevent TypeError: Failed to convert value to 'Response'
+          // For favicon/icon requests that fail, return a 204 no-content
           if (
             url.pathname.includes('favicon') ||
             url.pathname.includes('.ico') ||
@@ -109,6 +123,9 @@ self.addEventListener('fetch', (event) => {
           ) {
             return new Response(null, { status: 204 });
           }
+          // For all other same-origin assets that fail offline,
+          // return a proper 503 response instead of null
+          return new Response('Offline', { status: 503, statusText: 'Service Unavailable' });
         });
       })
   );
