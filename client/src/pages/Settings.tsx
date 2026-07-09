@@ -2462,7 +2462,7 @@ export default function SettingsPage() {
                     <BarChart data={[...syncHistory].reverse().map((s, i) => ({ i, added: s.added, total: s.total }))} barSize={8}>
                       <XAxis dataKey="i" hide />
                       <RechartsTooltip
-                        formatter={(value: number, name: string) => [value, name === "added" ? "Staged" : "Fetched"]}
+                        formatter={(value, name) => [value, (name as string) === "added" ? "Staged" : "Fetched"]}
                         labelFormatter={() => ""}
                         contentStyle={{ fontSize: 11, padding: "4px 8px", borderRadius: 6 }}
                       />
