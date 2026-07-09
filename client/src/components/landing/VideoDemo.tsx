@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import FadeUp from "./FadeUp";
 
 const YOUTUBE_URL = "https://www.youtube.com/watch?v=EWHSE1oyJOk";
-const YOUTUBE_EMBED = "https://www.youtube.com/embed/EWHSE1oyJOk?autoplay=1&rel=0&modestbranding=1";
+const YOUTUBE_EMBED = "https://www.youtube.com/embed/EWHSE1oyJOk?autoplay=1&rel=0&modestbranding=1&origin=https://getphame.app";
 const YOUTUBE_THUMB = "https://img.youtube.com/vi/EWHSE1oyJOk/maxresdefault.jpg";
 
 export default function VideoDemo() {
@@ -124,8 +124,9 @@ export default function VideoDemo() {
                 <iframe
                   src={YOUTUBE_EMBED}
                   title="GetPhame product walkthrough"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
+                  referrerPolicy="strict-origin-when-cross-origin"
                   className="absolute inset-0 w-full h-full"
                 />
               </div>
