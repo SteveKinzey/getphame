@@ -144,7 +144,7 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.3, ease }}
           >
             <div className="animate-float">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-primary/10 border border-[#1e3050]">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl shadow-primary/10">
                 <picture>
                   <source srcSet={DASHBOARD_MOCKUP_WEBP} type="image/webp" />
                   <source srcSet={DASHBOARD_MOCKUP_PNG} type="image/png" />

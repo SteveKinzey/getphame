@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
 
-const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/FK9bk5QsyQ42fQPrngzafd/phame-logo-mark-LWuqsnXvZV3htEC4hfkanS.webp";
+const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
 
 const navLinks = [
   { label: "How It Works", href: "#how-it-works" },
@@ -35,13 +35,9 @@ export default function Navbar() {
         {/* Logo — prominent brand mark */}
         <a href="/" className="flex items-center gap-2.5 group">
           <img src={LOGO_URL} alt="Get Phame" className="w-9 h-9 md:w-10 md:h-10 transition-transform duration-200 group-hover:scale-105" />
-          <div className="flex items-baseline gap-1">
-            <span className="font-display font-extrabold text-xl md:text-[1.4rem] tracking-tight text-white">
-              GET
-            </span>
-            <span className="font-display font-extrabold text-xl md:text-[1.4rem] tracking-[0.08em] text-primary">
-              PHAME
-            </span>
+          <div className="flex items-baseline">
+            <span className="font-display font-extrabold text-xl md:text-[1.4rem] tracking-tight text-white">GET&nbsp;</span>
+            <span className="font-display font-extrabold text-xl md:text-[1.4rem] tracking-tight text-primary">PHAME</span>
           </div>
         </a>
 

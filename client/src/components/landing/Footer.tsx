@@ -1,4 +1,4 @@
-const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/FK9bk5QsyQ42fQPrngzafd/phame-logo-mark-LWuqsnXvZV3htEC4hfkanS.webp";
+const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
 
 export default function Footer() {
   return (
@@ -8,8 +8,8 @@ export default function Footer() {
           {/* Logo */}
           <a href="/" className="flex items-center gap-2.5">
             <img src={LOGO_URL} alt="Get Phame" className="w-7 h-7" />
-            <span className="font-display font-bold text-base text-white">
-              GET <span className="text-primary">PHAME</span>
+            <span className="font-display font-bold text-base">
+              <span className="text-white">GET&nbsp;</span><span className="text-primary">PHAME</span>
             </span>
           </a>
 
