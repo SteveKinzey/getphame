@@ -348,7 +348,7 @@ async function startServer() {
             "https://www.youtube.com",
             "https://youtube.com",
           ],
-          // Allow outbound API calls: IP detection, analytics, font CDNs
+          // Allow outbound API calls: IP detection, analytics, font CDNs, and public manuscdn CDN (used for app logo preload)
           connectSrc: [
             "'self'",
             "http://ip-api.com",
@@ -356,6 +356,7 @@ async function startServer() {
             "https://fonts.googleapis.com",
             "https://fonts.gstatic.com",
             "https://vitals.vercel-insights.com",
+            "https://files.manuscdn.com",
           ],
           objectSrc: ["'none'"],
           scriptSrc: ["'self'"],
@@ -378,7 +379,9 @@ async function startServer() {
   registerAppleAuthRoutes(app);
   registerMobileAuthRoutes(app);
 
-  // IP-based language detection — returns 'en' | 'th' | 'zh-CN' based on client IP
+  // IP-based language detection — returns 'en' | 'th' | 'zh-TW' based on client IP
+  // Note: Mainland China (CN) is excluded from zh-TW detection since YouTube is blocked there.
+  // Traditional Chinese (zh-TW) targets Taiwan, Hong Kong, Macau, and overseas Chinese communities.
   app.get("/api/detect-language", async (req, res) => {
     try {
       const ip =
@@ -393,9 +396,13 @@ async function startServer() {
       const data = await response.json() as { countryCode?: string };
       const country = data.countryCode ?? "";
       // Map country codes to supported languages
+      // TW=Taiwan, HK=Hong Kong, MO=Macau, SG=Singapore — all use Traditional Chinese
+      // CN (mainland China) intentionally excluded: YouTube is banned there
       let lang = "en";
       if (country === "TH") lang = "th";
-      else if (["CN", "TW", "HK", "MO", "SG"].includes(country)) lang = "zh-CN";
+      else if (["TW", "HK", "MO", "SG"].includes(country)) lang = "zh-TW";
+      else if (["FR", "BE", "CH", "LU", "MC"].includes(country)) lang = "fr"; // French-speaking countries
+      else if (["ES", "MX", "AR", "CO", "CL", "PE", "VE", "EC", "BO", "PY", "UY", "CR", "PA", "DO", "CU", "GT", "HN", "SV", "NI"].includes(country)) lang = "es"; // Spanish-speaking countries
       else if (["IT", "SM", "VA"].includes(country)) lang = "it"; // Italy, San Marino, Vatican
       return res.json({ lang });
     } catch {

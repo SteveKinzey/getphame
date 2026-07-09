@@ -1,6 +1,6 @@
-// Get Phame Service Worker v3 — All locale files pre-cached at install
+// Get Phame Service Worker v4 — All locale files pre-cached at install
 // Cache version bump forces old caches to be cleared on update
-const CACHE_NAME = 'getphame-v3';
+const CACHE_NAME = 'getphame-v4';
 
 // Pre-cache all locale files at install so language switching is instant
 // and works completely offline after the app is installed on the device.
@@ -11,7 +11,7 @@ const STATIC_ASSETS = [
   // All 6 language locale files — cached at install time
   '/locales/en/translation.json',
   '/locales/th/translation.json',
-  '/locales/zh-CN/translation.json',
+  '/locales/zh-TW/translation.json',
   '/locales/fr/translation.json',
   '/locales/es/translation.json',
   '/locales/it/translation.json',
@@ -99,6 +99,15 @@ self.addEventListener('fetch', (event) => {
           if (cached) return cached;
           if (event.request.destination === 'document') {
             return caches.match('/');
+          }
+          // For favicon and icon requests that fail, return empty 204 response
+          // to prevent TypeError: Failed to convert value to 'Response'
+          if (
+            url.pathname.includes('favicon') ||
+            url.pathname.includes('.ico') ||
+            url.pathname.includes('apple-touch-icon')
+          ) {
+            return new Response(null, { status: 204 });
           }
         });
       })
