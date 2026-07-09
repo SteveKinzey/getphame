@@ -34,6 +34,7 @@ const PrivacyPolicyPage  = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfServicePage = lazy(() => import("./pages/TermsOfService"));
 const DataUsagePage      = lazy(() => import("./pages/DataUsage"));
 const ChangelogPage      = lazy(() => import("./pages/Changelog"));
+const SecurityPolicyPage = lazy(() => import("./pages/SecurityPolicy"));
 const UnsubscribePage    = lazy(() => import("./pages/Unsubscribe"));
 const PaymentSuccessPage = lazy(() => import("./pages/PaymentSuccess"));
 const ChurnSurveyPage    = lazy(() => import("./pages/ChurnSurvey"));
@@ -187,6 +188,11 @@ function AppShell() {
         <PublicLayout><ChangelogPage /></PublicLayout>
       </Suspense>
     );
+    if (path === "/security") return (
+      <Suspense fallback={<PageLoader />}>
+        <PublicLayout><SecurityPolicyPage /></PublicLayout>
+      </Suspense>
+    );
     return <Suspense fallback={<PageLoader />}><LandingPage /></Suspense>;
   }
 
@@ -229,6 +235,7 @@ function AppShell() {
                 <Route path="/admin/referral-rewards" component={AdminReferralRewardsPage} />
                 <Route path="/changelog" component={ChangelogPage} />
                 <Route path="/compliance" component={CompliancePage} />
+                <Route path="/security" component={SecurityPolicyPage} />
                 <Route path="/reviews" component={ClientReviewsPage} />
                 <Route path="/ref/:code" component={ReferralLandingPage} />
                 <Route component={HomePage} />

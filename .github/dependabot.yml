@@ -1,0 +1,57 @@
+version: 2
+
+updates:
+  # ── npm / pnpm — production & dev dependencies ──────────────────────────────
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Los_Angeles"
+    open-pull-requests-limit: 10
+    # Group all patch/minor updates into a single PR per week to reduce noise.
+    # Critical CVE patches are always opened immediately regardless of grouping.
+    groups:
+      production-minor-patch:
+        applies-to: version-updates
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+      dev-minor-patch:
+        applies-to: version-updates
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+    # Security-only updates open PRs immediately (no grouping delay)
+    # when a CVE advisory is published — even between weekly runs.
+    # This is the default Dependabot behaviour; listed here for clarity.
+    labels:
+      - "dependencies"
+      - "security"
+    commit-message:
+      prefix: "chore"
+      prefix-development: "chore(dev)"
+      include: "scope"
+    reviewers:
+      - "SteveKinzey"
+    # Ignore the pnpm-workspace.yaml overrides section — those are intentional
+    # pins for transitive CVE fixes and should not be auto-bumped by Dependabot.
+    ignore:
+      # drizzle-kit bundles @esbuild-kit/core-utils which pins esbuild ≤0.24.2.
+      # This is a dev-only tool; ignore until drizzle-kit ships a fix upstream.
+      - dependency-name: "drizzle-kit"
+        update-types: ["version-update:semver-patch"]
+
+  # ── GitHub Actions ───────────────────────────────────────────────────────────
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore(ci)"
