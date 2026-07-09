@@ -5,6 +5,8 @@
  * /robots.txt   — instructs crawlers and points to sitemap
  *
  * To add a new public page, append an entry to PUBLIC_ROUTES below.
+ * Keep this list to genuinely public, human-readable pages only —
+ * no assets, no app routes, no API endpoints.
  */
 import type { Express } from "express";
 
@@ -24,6 +26,8 @@ interface SitemapRoute {
  */
 const PUBLIC_ROUTES: SitemapRoute[] = [
   { path: "/",                  changefreq: "weekly",  priority: "1.0" },
+  { path: "/pricing",           changefreq: "monthly", priority: "0.8" },
+  { path: "/security",          changefreq: "monthly", priority: "0.5" },
   { path: "/privacy-policy",    changefreq: "yearly",  priority: "0.3" },
   { path: "/terms-of-service",  changefreq: "yearly",  priority: "0.3" },
 ];
@@ -70,6 +74,28 @@ export function registerSitemapRoutes(app: Express): void {
       [
         "User-agent: *",
         "Allow: /",
+        "",
+        // Block JS/CSS asset bundles — not useful in search results
+        "Disallow: /assets/",
+        "",
+        // Block all authenticated app routes
+        "Disallow: /dashboard",
+        "Disallow: /settings",
+        "Disallow: /send",
+        "Disallow: /contacts",
+        "Disallow: /templates",
+        "Disallow: /reminders",
+        "Disallow: /import",
+        "Disallow: /woo-customers",
+        "Disallow: /upgrade",
+        "Disallow: /payment-success",
+        "Disallow: /onboarding",
+        "Disallow: /compliance",
+        "Disallow: /changelog",
+        "Disallow: /admin/",
+        "",
+        // Block API and internal endpoints
+        "Disallow: /api/",
         "",
         `Sitemap: ${BASE_URL}/sitemap.xml`,
         "",

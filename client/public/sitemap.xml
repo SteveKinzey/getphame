@@ -6,28 +6,23 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://getphame.app/onboarding</loc>
+    <loc>https://getphame.app/pricing</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://getphame.app/privacy-policy</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://getphame.app/terms-of-service</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://getphame.app/compliance</loc>
+    <loc>https://getphame.app/security</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://getphame.app/changelog</loc>
-    <changefreq>weekly</changefreq>
-    <priority>0.4</priority>
+    <loc>https://getphame.app/privacy-policy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://getphame.app/terms-of-service</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
   </url>
 </urlset>
