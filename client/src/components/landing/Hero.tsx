@@ -143,9 +143,9 @@ export default function Hero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease }}
           >
-            <div className="animate-float">
+            <div className="animate-float" style={{ perspective: '1200px' }}>
               {/* iPhone-style phone frame */}
-              <div className="relative mx-auto" style={{ width: 'fit-content' }}>
+              <div className="relative mx-auto" style={{ width: 'fit-content', transform: 'perspective(1200px) rotateY(-8deg)', transformStyle: 'preserve-3d' }}>
                 {/* Outer phone shell */}
                 <div
                   className="relative"
