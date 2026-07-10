@@ -6,7 +6,8 @@ import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
-import { registerGoogleAuthRoutes } from "../googleAuth";
+import { registerGoogleAuthRoutes } from "../auth-google";
+import cookieParser from "cookie-parser";
 import { registerAppleAuthRoutes } from "../appleAuth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
@@ -356,9 +357,11 @@ async function startServer() {
             "https://fonts.googleapis.com",
             "https://fonts.gstatic.com",
             "https://vitals.vercel-insights.com",
+            "https://files.manuscdn.com",
+            "https://manus-analytics.com",
           ],
           objectSrc: ["'none'"],
-          scriptSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "https://manus-analytics.com"],
           scriptSrcAttr: ["'none'"],
           styleSrc: ["'self'", "https:", "'unsafe-inline'"],
           upgradeInsecureRequests: [],
@@ -368,6 +371,8 @@ async function startServer() {
     })
   );
 
+  // Cookie parser — needed for CSRF state cookie in Google OAuth
+  app.use(cookieParser());
   // Body parser — 5 MB is sufficient for all current payloads
   app.use(express.json({ limit: "5mb" }));
   app.use(express.urlencoded({ limit: "5mb", extended: true }));

@@ -98,12 +98,16 @@ function AppShell() {
     const params = new URLSearchParams(window.location.search);
     const authError = params.get('auth_error');
     if (authError) {
-      if (authError === 'denied') {
+      if (authError === 'denied' || authError === 'google_denied') {
         toast.error('Sign-in cancelled. Please try again.');
       } else if (authError === 'magic_link_expired') {
         toast.error('That sign-in link has expired. Please request a new one.');
       } else if (authError === 'invalid_magic_link') {
         toast.error('Invalid or already-used sign-in link. Please request a new one.');
+      } else if (authError === 'google_failed' || authError === 'failed') {
+        toast.error('Google sign-in failed. Please try again or use the magic link option.');
+      } else if (authError === 'google_state_mismatch') {
+        toast.error('Security check failed. Please try signing in again.');
       } else {
         toast.error('Sign-in failed. Please try again or contact support.');
       }
