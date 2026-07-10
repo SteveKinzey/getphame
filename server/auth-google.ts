@@ -83,11 +83,13 @@ export function registerGoogleAuthRoutes(app: Express) {
     // Generate a CSRF state token to prevent open redirect attacks
     const state = crypto.randomBytes(16).toString("hex");
 
-    // Store state in a short-lived httpOnly cookie (10 minutes)
+    // Store state in a short-lived httpOnly cookie (10 minutes).
+    // Must use sameSite: "none" + secure so the cookie survives the
+    // cross-site redirect from accounts.google.com back to our callback.
     res.cookie("google_oauth_state", state, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      secure: true,
+      sameSite: "none",
       maxAge: 10 * 60 * 1000, // 10 minutes
     });
 
