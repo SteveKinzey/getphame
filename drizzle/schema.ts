@@ -1,4 +1,11 @@
-import { bigint, boolean, integer, pgEnum, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { bigint, boolean, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+
+// Keep the existing schema declarations readable while targeting the managed TiDB/MySQL database.
+const integer = int;
+const serial = (name: string) => int(name).autoincrement();
+const pgTable = mysqlTable;
+const pgEnum = <T extends [string, ...string[]]>(_typeName: string, values: T) =>
+  (columnName: string) => mysqlEnum(columnName, values);
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 export const roleEnum = pgEnum("role", ["user", "admin"]);

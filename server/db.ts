@@ -1,5 +1,5 @@
 import { and, desc, eq, isNull, sql } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/node-postgres";
+import { drizzle } from "drizzle-orm/mysql2";
 import * as schema from "../drizzle/schema";
 import { createHash, randomBytes } from "crypto";
 import {
@@ -20,12 +20,7 @@ let _db: ReturnType<typeof drizzle<typeof schema>> | null = null;
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      const { Pool } = await import("pg");
-      const pool = new Pool({
-        connectionString: process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false },
-      });
-      _db = drizzle(pool, { schema });
+      _db = drizzle(process.env.DATABASE_URL, { schema, mode: "default" });
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
@@ -69,12 +64,8 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   }
   if (!values.lastSignedIn) values.lastSignedIn = new Date();
   if (Object.keys(updateSet).length === 0) updateSet.lastSignedIn = new Date();
-  // PostgreSQL: use onConflictDoUpdate targeting the unique openId column
   updateSet.updatedAt = new Date();
-  await db.insert(users).values(values).onConflictDoUpdate({
-    target: users.openId,
-    set: updateSet,
-  });
+  await db.insert(users).values(values).onDuplicateKeyUpdate({ set: updateSet });
 }
 
 export async function getUserByOpenId(openId: string) {
@@ -117,10 +108,7 @@ export async function upsertBusinessProfile(profile: InsertBusinessProfile) {
   await db
     .insert(businessProfiles)
     .values(profile)
-    .onConflictDoUpdate({
-      target: businessProfiles.userId,
-      set: { ...rest, updatedAt: new Date() },
-    });
+    .onDuplicateKeyUpdate({ set: { ...rest, updatedAt: new Date() } });
 }
 
 // ─── Customer request helpers ─────────────────────────────────────────────────
@@ -128,8 +116,8 @@ export async function upsertBusinessProfile(profile: InsertBusinessProfile) {
 export async function createCustomerRequest(req: InsertCustomerRequest): Promise<number> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  const [result] = await db.insert(customerRequests).values(req).returning({ id: customerRequests.id });
-  return result.id;
+  const [result] = await db.insert(customerRequests).values(req);
+  return Number((result as unknown as { insertId: number }).insertId);
 }
 
 export async function getCustomerRequests(userId: number, limit = 50) {
@@ -153,7 +141,7 @@ export async function getMonthlyRequestCount(userId: number, yearMonth: string) 
     .where(
       and(
         eq(customerRequests.userId, userId),
-        sql`EXTRACT(YEAR FROM "sentAt") = ${Number(year)} AND EXTRACT(MONTH FROM "sentAt") = ${Number(month)}`
+        sql`YEAR(sentAt) = ${year} AND MONTH(sentAt) = ${month}`
       )
     );
   return Number(rows[0]?.count ?? 0);
@@ -169,7 +157,7 @@ export async function getTodaySentCount(userId: number): Promise<number> {
     .where(
       and(
         eq(customerRequests.userId, userId),
-        sql`"sentAt"::date = CURRENT_DATE`
+        sql`DATE(sentAt) = CURDATE()`
       )
     );
   return Number(rows[0]?.count ?? 0);
@@ -194,8 +182,8 @@ export async function generateApiKey(userId: number, label: string): Promise<{ r
   if (!db) throw new Error("Database unavailable");
   const raw = "rl_" + randomBytes(32).toString("hex");
   const keyHash = createHash("sha256").update(raw).digest("hex");
-  const [result] = await db.insert(apiKeys).values({ userId, keyHash, label }).returning({ id: apiKeys.id });
-  return { raw, id: result.id };
+  const [result] = await db.insert(apiKeys).values({ userId, keyHash, label });
+  return { raw, id: Number((result as unknown as { insertId: number }).insertId) };
 }
 
 /** List active (non-revoked) API keys for a user — never returns the raw key. */
@@ -302,8 +290,8 @@ export async function createWebhookConfig(params: {
     events: params.events ?? "contact.created",
     active: true,
     createdAt: Date.now(),
-  }).returning({ id: webhookConfigs.id });
-  return result.id;
+  });
+  return Number((result as unknown as { insertId: number }).insertId);
 }
 
 /** Delete a webhook config by id. */
@@ -386,10 +374,7 @@ export async function updateNotificationPrefs(userId: number, prefs: { wooAutoIm
   await db
     .insert(notificationPrefs)
     .values({ userId, ...prefs, updatedAt: Date.now() })
-    .onConflictDoUpdate({
-      target: notificationPrefs.userId,
-      set: { ...prefs, updatedAt: Date.now() },
-    });
+    .onDuplicateKeyUpdate({ set: { ...prefs, updatedAt: Date.now() } });
 }
 
 // ── Apple Sign In account deletion ───────────────────────────────────────────

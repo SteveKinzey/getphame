@@ -7,3 +7,11 @@
 - [x] Run focused tests, TypeScript checks, and a production build
 - [x] Verify the repaired endpoint in the live preview
 - [x] Save a publishable checkpoint for the authentication repair
+- [x] Confirm the repaired magic-link endpoint is live on both GetPhame production domains
+- [ ] Test the deployed magic-link request endpoint with a real deliverable email address
+- [ ] Complete a real magic-link sign-in on the deployed domain
+- [x] Diagnose the database SSL failures affecting background schedulers
+- [x] Restore the managed TiDB/MySQL database dialect for scheduler and authentication queries
+- [x] Add regression coverage that prevents a PostgreSQL driver/configuration mismatch
+- [x] Run focused tests, all 57 project tests, TypeScript checks, production build, and local scheduler log verification
+- [ ] Save a publishable checkpoint for the scheduler database SSL repair

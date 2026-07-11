@@ -108,7 +108,7 @@ export async function recordReferral(
       referrerUserId,
       referredUserId,
       referralCode: code.toUpperCase(),
-    }).onConflictDoNothing({ target: referrals.referredUserId });
+    });
   } catch {
     // already exists — ignore
   }

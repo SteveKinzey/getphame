@@ -2659,8 +2659,8 @@ export const appRouter = router({
           platform: input.platform,
           reviewedAt: input.reviewedAt ?? Date.now(),
           requestId: input.requestId ?? null,
-        }).returning({ id: clientReviews.id });
-        return { id: result.id };
+        });
+        return { id: result.insertId };
       }),
     update: protectedProcedure
       .input(z.object({
@@ -2770,7 +2770,7 @@ export const appRouter = router({
         await db
           .insert(leads)
           .values({ email: input.email })
-          .onConflictDoNothing({ target: leads.email });
+          .onDuplicateKeyUpdate({ set: { email: input.email } });
 
         // Attempt to send the guide email
         const { sent } = await sendLeadGuideEmail(input.email);
