@@ -6,4 +6,4 @@
 - [x] Add or update regression tests for route registration and client endpoint alignment
 - [x] Run focused tests, TypeScript checks, and a production build
 - [x] Verify the repaired endpoint in the live preview
-- [ ] Save a publishable checkpoint for the authentication repair
+- [x] Save a publishable checkpoint for the authentication repair
