@@ -30,7 +30,7 @@ export default function OnboardingPage() {
     setMagicState("loading");
     setMagicError("");
     try {
-      const res = await fetch("/api/auth/magic/send", {
+      const res = await fetch("/api/auth/magic-link", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: email.trim().toLowerCase() }),

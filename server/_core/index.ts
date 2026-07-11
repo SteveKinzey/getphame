@@ -7,6 +7,7 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
 import { registerGoogleAuthRoutes } from "../auth-google";
+import { registerEmailAuthRoutes } from "../auth-email";
 import cookieParser from "cookie-parser";
 import { registerAppleAuthRoutes } from "../appleAuth";
 import { appRouter } from "../routers";
@@ -380,6 +381,7 @@ async function startServer() {
   registerStorageProxy(app);
   registerOAuthRoutes(app);
   registerGoogleAuthRoutes(app);
+  registerEmailAuthRoutes(app);
   registerAppleAuthRoutes(app);
   registerMobileAuthRoutes(app);
 
