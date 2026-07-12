@@ -14,4 +14,39 @@
 - [x] Restore the managed TiDB/MySQL database dialect for scheduler and authentication queries
 - [x] Add regression coverage that prevents a PostgreSQL driver/configuration mismatch
 - [x] Run focused tests, all 57 project tests, TypeScript checks, production build, and local scheduler log verification
-- [ ] Save a publishable checkpoint for the scheduler database SSL repair
+- [x] Save a publishable checkpoint for the scheduler database SSL repair
+- [x] Trace the deployed `EMAIL_NOT_CONFIGURED` response to the exact missing mail transport configuration
+- [x] Restore a single administrator-managed transport for magic-link authentication emails
+- [x] Add regression coverage for magic-link delivery configuration and structured error handling
+- [x] Run focused tests, TypeScript checks, production build, and local delivery-path verification
+- [x] Save a publishable checkpoint for the magic-link email-delivery repair
+- [ ] Configure `smtp.gmail.com` as the administrator-managed Google Workspace transport for `Steve@sk-america.com`
+- [ ] Configure `no-reply@getphame.com` as the visible GetPhame sender while authenticating SMTP with `Steve@sk-america.com`
+- [ ] Keep magic-link delivery explicitly blocked until the administrator supplies the Google App Password
+- [ ] Validate the Google Workspace App Password through a Vitest-covered SMTP configuration check
+- [ ] Verify magic-link delivery and sign-in end to end on the deployed GetPhame domain
+- [ ] Evaluate whether Cloudflare can directly send `no-reply@getphame.com` transactional magic-link emails
+- [ ] Compare Cloudflare Email Routing, Workers-based provider delivery, and a direct transactional-email API
+- [ ] Confirm the lowest-maintenance production sender architecture before requesting any new credential
+- [ ] Verify Cloudflare Zero Trust Access email one-time PIN availability and free-plan limits
+- [ ] Determine whether Cloudflare Access can replace native magic-link user creation and app session issuance
+- [ ] Identify and prevent any direct `manus.space` domain path that could bypass Cloudflare Access
+- [ ] Preserve public signup for any valid customer email through GetPhame’s native magic-link flow
+- [ ] Reject Cloudflare Access OTP as the primary public SaaS authentication layer
+- [ ] Select a branded `no-reply@getphame.com` transactional sender that does not require Steve’s normal Google password
+- [ ] Retrieve the exact Cloudflare nameservers assigned to the `getphame.com` zone
+- [ ] Audit all currently authoritative Namecheap DNS records for `getphame.com`
+- [ ] Confirm Cloudflare contains matching website, Google Workspace, verification, and subdomain records
+- [ ] Change `getphame.com` at Namecheap from Namecheap BasicDNS to the assigned Cloudflare nameservers after explicit confirmation
+- [ ] Verify nameserver propagation and recheck website and Google Workspace DNS
+- [ ] Complete Resend DKIM, SPF, and return-path verification after Cloudflare becomes authoritative
+- [ ] Run an end-to-end deployed GetPhame magic-link delivery and sign-in test
+- [x] Stop the unnecessary `getphame.com` nameserver migration and leave that domain unchanged
+- [x] Create and verify `getphame.app` as the Resend transactional sender domain
+- [x] Publish the Resend DKIM, SPF, and return-path records in the existing `getphame.app` Cloudflare zone
+- [x] Change the branded system sender to `GetPhame <no-reply@getphame.app>`
+- [x] Update sender-domain regression coverage for `getphame.app`
+- [ ] Verify public magic-link delivery and sign-in from `no-reply@getphame.app`
+- [x] Verify current-build magic-link delivery to `steve@sk-america.com` from `no-reply@getphame.app`
+- [ ] Publish the checkpoint containing the Resend-backed magic-link route
+- [ ] Verify the live `getphame.app` endpoint returns JSON and complete the magic-link sign-in
