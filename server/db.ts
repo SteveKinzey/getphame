@@ -181,6 +181,129 @@ export async function getRecentAuthHealthCheckByTaskUid(taskUid: string, sinceMs
   return rows[0] ?? null;
 }
 
+export async function listAuthHealthChecksByTaskUid(taskUid: string, limit = 2) {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(authHealthChecks)
+    .where(eq(authHealthChecks.scheduleCronTaskUid, taskUid))
+    .orderBy(desc(authHealthChecks.checkedAt))
+    .limit(Math.min(Math.max(limit, 1), 100));
+}
+
+const AUTH_HEALTH_WINDOW_MS = 24 * 60 * 60 * 1000;
+const AUTH_HEALTH_INTERVAL_MS = 15 * 60 * 1000;
+
+export type AuthHealthUptimeRow = {
+  overallStatus: string;
+  configStatus: string;
+  databaseStatus: string;
+  userSchemaStatus: string;
+  magicLinkSchemaStatus: string;
+  sessionStatus: string;
+  emailProviderStatus: string;
+  durationMs: number;
+  checkedAt: number;
+};
+
+export function calculateAuthHealthUptimeSummary(inputRows: AuthHealthUptimeRow[]) {
+  const expectedRuns = Math.floor(AUTH_HEALTH_WINDOW_MS / AUTH_HEALTH_INTERVAL_MS);
+  const emptySummary = {
+    windowHours: 24,
+    expectedRuns,
+    runCount: 0,
+    successfulRuns: 0,
+    failedRuns: 0,
+    uptimePercent: null as number | null,
+    coveragePercent: 0,
+    remainingRuns: expectedRuns,
+    observationComplete: false,
+    incidentCount: 0,
+    currentIncidentOpen: false,
+    averageDurationMs: null as number | null,
+    latestStatus: null as "ok" | "fail" | null,
+    latestCheckedAt: null as number | null,
+    firstObservedAt: null as number | null,
+    nextExpectedAt: null as number | null,
+    components: [] as Array<{
+      key: string;
+      label: string;
+      latestStatus: "ok" | "fail" | null;
+      successfulRuns: number;
+      failedRuns: number;
+      uptimePercent: number | null;
+    }>,
+  };
+  const rows = [...inputRows].sort((a, b) => b.checkedAt - a.checkedAt);
+  if (!rows.length) return emptySummary;
+
+  const successfulRuns = rows.filter((row) => row.overallStatus === "ok").length;
+  const failedRuns = rows.length - successfulRuns;
+  const chronological = [...rows].reverse();
+  let incidentCount = 0;
+  let previousStatus: "ok" | "fail" | null = null;
+  for (const row of chronological) {
+    const currentStatus = row.overallStatus === "ok" ? "ok" : "fail";
+    if (currentStatus === "fail" && previousStatus !== "fail") incidentCount += 1;
+    previousStatus = currentStatus;
+  }
+
+  const componentFields = [
+    ["configStatus", "Configuration"],
+    ["databaseStatus", "Database"],
+    ["userSchemaStatus", "User schema"],
+    ["magicLinkSchemaStatus", "Magic-link schema"],
+    ["sessionStatus", "Session signing"],
+    ["emailProviderStatus", "Email provider"],
+  ] as const;
+  const components = componentFields.map(([key, label]) => {
+    const componentSuccesses = rows.filter((row) => row[key] === "ok").length;
+    return {
+      key,
+      label,
+      latestStatus: rows[0][key] === "ok" ? "ok" as const : "fail" as const,
+      successfulRuns: componentSuccesses,
+      failedRuns: rows.length - componentSuccesses,
+      uptimePercent: Math.round((componentSuccesses / rows.length) * 10_000) / 100,
+    };
+  });
+
+  return {
+    ...emptySummary,
+    runCount: rows.length,
+    successfulRuns,
+    failedRuns,
+    uptimePercent: Math.round((successfulRuns / rows.length) * 10_000) / 100,
+    coveragePercent: Math.min(100, Math.round((rows.length / expectedRuns) * 10_000) / 100),
+    remainingRuns: Math.max(0, expectedRuns - rows.length),
+    observationComplete: rows.length >= expectedRuns,
+    incidentCount,
+    currentIncidentOpen: rows[0].overallStatus === "fail",
+    averageDurationMs: Math.round(rows.reduce((sum, row) => sum + row.durationMs, 0) / rows.length),
+    latestStatus: rows[0].overallStatus === "ok" ? "ok" as const : "fail" as const,
+    latestCheckedAt: rows[0].checkedAt,
+    firstObservedAt: rows[rows.length - 1].checkedAt,
+    nextExpectedAt: rows[0].checkedAt + AUTH_HEALTH_INTERVAL_MS,
+    components,
+  };
+}
+
+export async function getAuthHealthUptimeSummary(nowMs = Date.now()) {
+  const db = await getDb();
+  if (!db) return calculateAuthHealthUptimeSummary([]);
+
+  const rows = await db
+    .select()
+    .from(authHealthChecks)
+    .where(and(
+      eq(authHealthChecks.triggerSource, "scheduled"),
+      gte(authHealthChecks.checkedAt, nowMs - AUTH_HEALTH_WINDOW_MS),
+    ))
+    .orderBy(desc(authHealthChecks.checkedAt));
+  return calculateAuthHealthUptimeSummary(rows);
+}
+
 export async function pruneAuthOperationsData(nowMs = Date.now()) {
   const db = await getDb();
   if (!db) return { diagnosticEventsDeleted: 0, healthChecksDeleted: 0 };

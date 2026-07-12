@@ -71,3 +71,11 @@
 - [x] Capture production Heartbeat evidence showing task UID `cLZ7gshNvQQx7dXJxnkaNQ`, enabled state, `/api/scheduled/auth-health` callback, permanent 15-minute cadence, and next execution time
 - [x] Verify a real scheduled Heartbeat execution returned HTTP 200 and persisted an all-OK `auth_health_checks` row tied to task UID `cLZ7gshNvQQx7dXJxnkaNQ`
 - [x] Verify second-account diagnostics contain one four-event correlated lifecycle with masked recipient, fingerprint-only token references, and no raw email in diagnostic details
+- [x] Define a production-safe auth-health failure-alert policy with deduplication and recovery behavior
+- [x] Implement owner failure alerts for scheduled auth-health degradation without exposing sensitive authentication data
+- [x] Add a durable 24-hour auth-health uptime summary query with run counts, success rate, latest status, and component health
+- [x] Add a responsive admin uptime summary card backed by the production health-check data
+- [x] Add regression coverage for alert authorization, deduplication, recovery, uptime calculations, and admin summary rendering
+- [x] Run the full test suite, TypeScript checks, production build, and responsive preview verification
+- [ ] Save a deployable checkpoint and begin the first 24-hour production observation window after publication
+- [x] Add explicit admin diagnostics query-error handling so unavailable uptime data never appears healthy

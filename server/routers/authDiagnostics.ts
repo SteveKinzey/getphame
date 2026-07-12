@@ -2,6 +2,7 @@ import { z } from "zod";
 import { adminProcedure, router } from "../_core/trpc";
 import {
   getAuthDiagnosticSummary,
+  getAuthHealthUptimeSummary,
   listAuthDiagnosticEvents,
   listAuthHealthChecks,
 } from "../db";
@@ -28,7 +29,7 @@ export const authDiagnosticsRouter = router({
       const emailFingerprint = filters.email
         ? fingerprintAuthValue(`email:${normalizeDiagnosticEmail(filters.email)}`)
         : undefined;
-      const [events, summary, healthChecks] = await Promise.all([
+      const [events, summary, healthChecks, uptime] = await Promise.all([
         listAuthDiagnosticEvents({
           emailFingerprint,
           outcome: filters.outcome,
@@ -38,8 +39,9 @@ export const authDiagnosticsRouter = router({
         }),
         getAuthDiagnosticSummary(sinceMs),
         listAuthHealthChecks(30),
+        getAuthHealthUptimeSummary(),
       ]);
-      return { events, summary, healthChecks, sinceMs };
+      return { events, summary, healthChecks, uptime, sinceMs };
     }),
 
   runHealthCheck: adminProcedure.mutation(async () => {
