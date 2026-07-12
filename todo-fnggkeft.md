@@ -8,7 +8,7 @@
 - [x] Verify the repaired endpoint in the live preview
 - [x] Save a publishable checkpoint for the authentication repair
 - [x] Confirm the repaired magic-link endpoint is live on both GetPhame production domains
-- [ ] Test the deployed magic-link request endpoint with a real deliverable email address
+- [x] Test the deployed magic-link request endpoint with a real deliverable email address
 - [ ] Complete a real magic-link sign-in on the deployed domain
 - [x] Diagnose the database SSL failures affecting background schedulers
 - [x] Restore the managed TiDB/MySQL database dialect for scheduler and authentication queries
@@ -48,5 +48,11 @@
 - [x] Update sender-domain regression coverage for `getphame.app`
 - [ ] Verify public magic-link delivery and sign-in from `no-reply@getphame.app`
 - [x] Verify current-build magic-link delivery to `steve@sk-america.com` from `no-reply@getphame.app`
-- [ ] Publish the checkpoint containing the Resend-backed magic-link route
+- [x] Publish the checkpoint containing the Resend-backed magic-link route
 - [ ] Verify the live `getphame.app` endpoint returns JSON and complete the magic-link sign-in
+- [x] Bind the existing `getphame.app` hostname to the current published Manus deployment in Settings → Domains
+- [x] Confirm `getphame.app` routes to the same live build as `getphame.manus.space` before sending the final magic link
+- [x] Capture the failed live magic-link verification redirect and corresponding production error
+- [x] Diagnose whether token lookup, user upsert, session signing, cookie scope, or redirect logic caused the failed sign-in
+- [x] Add regression coverage for the identified verification/session failure
+- [ ] Repair, test, checkpoint, publish, and revalidate successful sign-in on `getphame.app`

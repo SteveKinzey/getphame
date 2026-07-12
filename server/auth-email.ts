@@ -247,12 +247,6 @@ export function registerEmailAuthRoutes(app: Express) {
         return res.redirect(302, "/login?auth_error=link_expired");
       }
 
-      // Mark token as used
-      await database
-        .update(magicLinks)
-        .set({ usedAt: now })
-        .where(eq(magicLinks.id, record.id));
-
       const email = record.email;
       const openId = `email_${email}`;
 
@@ -288,6 +282,13 @@ export function registerEmailAuthRoutes(app: Express) {
         name: "",
         expiresInMs: ONE_YEAR_MS,
       });
+
+      // Consume the token only after account and session creation succeed.
+      // This keeps a valid link retryable if a database or signing error occurs.
+      await database
+        .update(magicLinks)
+        .set({ usedAt: now })
+        .where(and(eq(magicLinks.id, record.id), isNull(magicLinks.usedAt)));
 
       const cookieOptions = getSessionCookieOptions(req);
       res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });

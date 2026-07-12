@@ -3,6 +3,8 @@ import { fileURLToPath } from "node:url";
 import express from "express";
 import request from "supertest";
 import { describe, expect, it } from "vitest";
+import { getTableColumns } from "drizzle-orm";
+import { users } from "../drizzle/schema";
 import { registerEmailAuthRoutes } from "./auth-email";
 
 describe("email magic-link route wiring", () => {
@@ -34,5 +36,20 @@ describe("email magic-link route wiring", () => {
     expect(response.headers["content-type"]).toMatch(/application\/json/);
     expect(response.body).toEqual({ error: "A valid email address is required." });
   });
-});
 
+  it("keeps the required email-auth columns in the canonical users schema and migration", () => {
+    const migrationPath = fileURLToPath(
+      new URL("../drizzle/0001_add_user_auth_columns.sql", import.meta.url)
+    );
+    const migrationSql = readFileSync(migrationPath, "utf8");
+    const userColumns = getTableColumns(users);
+
+    expect(userColumns).toHaveProperty("passwordHash");
+    expect(userColumns).toHaveProperty("defaultFromEmail");
+    expect(userColumns).toHaveProperty("defaultFromName");
+
+    expect(migrationSql).toContain("ADD COLUMN `password_hash` text NULL");
+    expect(migrationSql).toContain("ADD COLUMN `default_from_email` text NULL");
+    expect(migrationSql).toContain("ADD COLUMN `default_from_name` text NULL");
+  });
+});
