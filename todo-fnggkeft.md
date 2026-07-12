@@ -77,5 +77,5 @@
 - [x] Add a responsive admin uptime summary card backed by the production health-check data
 - [x] Add regression coverage for alert authorization, deduplication, recovery, uptime calculations, and admin summary rendering
 - [x] Run the full test suite, TypeScript checks, production build, and responsive preview verification
-- [ ] Save a deployable checkpoint and begin the first 24-hour production observation window after publication
+- [x] Save a deployable checkpoint and begin the first 24-hour production observation window after publication
 - [x] Add explicit admin diagnostics query-error handling so unavailable uptime data never appears healthy
