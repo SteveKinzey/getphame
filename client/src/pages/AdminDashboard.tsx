@@ -22,6 +22,7 @@ import {
   CheckCircle2,
   DollarSign,
   Gift,
+  KeyRound,
 } from "lucide-react";
 
 import { useDebounce } from "use-debounce";
@@ -419,6 +420,16 @@ export default function AdminDashboard() {
                 <span className="flex items-center gap-2">
                   <Wifi size={16} className="rr-text-gold" />
                   SMTP Health
+                </span>
+                <span className="rr-text-gold">→</span>
+              </button>
+              <button
+                onClick={() => navigate("/admin/auth-diagnostics")}
+                className="w-full flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold rr-bg-navy text-white"
+              >
+                <span className="flex items-center gap-2">
+                  <KeyRound size={16} className="rr-text-gold" />
+                  Authentication Diagnostics
                 </span>
                 <span className="rr-text-gold">→</span>
               </button>

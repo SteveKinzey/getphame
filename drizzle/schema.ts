@@ -1,4 +1,4 @@
-import { bigint, boolean, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
+import { bigint, boolean, index, int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-orm/mysql-core";
 
 // Keep the existing schema declarations readable while targeting the managed TiDB/MySQL database.
 const integer = int;
@@ -20,6 +20,15 @@ export const churnReasonEnum = pgEnum("churn_reason", ["too_expensive", "not_usi
 export const healthStatusEnum = pgEnum("health_status", ["ok", "fail"]);
 export const bulkProviderEnum = pgEnum("bulk_provider", ["sendgrid", "mailgun", "postmark"]);
 export const mailgunRegionEnum = pgEnum("mailgun_region", ["us", "eu"]);
+export const authDiagnosticEventTypeEnum = pgEnum("auth_diagnostic_event_type", [
+  "request_received",
+  "token_created",
+  "provider_accepted",
+  "provider_failed",
+  "verification_succeeded",
+  "verification_failed",
+]);
+export const authHealthTriggerEnum = pgEnum("auth_health_trigger", ["scheduled", "manual"]);
 
 // ─── Tables ───────────────────────────────────────────────────────────────────
 
@@ -54,6 +63,57 @@ export const magicLinks = pgTable("magic_links", {
 
 export type MagicLink = typeof magicLinks.$inferSelect;
 export type InsertMagicLink = typeof magicLinks.$inferInsert;
+
+/**
+ * Privacy-bounded magic-link lifecycle diagnostics. Full recipients and raw
+ * tokens are deliberately excluded; fingerprints are one-way HMAC values.
+ */
+export const authDiagnosticEvents = pgTable("auth_diagnostic_events", {
+  id: serial("id").primaryKey(),
+  requestId: varchar("request_id", { length: 64 }).notNull(),
+  eventType: authDiagnosticEventTypeEnum("event_type").notNull(),
+  outcome: healthStatusEnum("outcome").notNull(),
+  emailFingerprint: varchar("email_fingerprint", { length: 64 }),
+  emailMasked: varchar("email_masked", { length: 320 }),
+  tokenFingerprint: varchar("token_fingerprint", { length: 64 }),
+  providerMessageId: varchar("provider_message_id", { length: 128 }),
+  detailCode: varchar("detail_code", { length: 64 }),
+  detailMessage: varchar("detail_message", { length: 500 }),
+  durationMs: integer("duration_ms"),
+  occurredAt: bigint("occurred_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("auth_diag_request_idx").on(table.requestId),
+  index("auth_diag_email_idx").on(table.emailFingerprint),
+  index("auth_diag_occurred_idx").on(table.occurredAt),
+]);
+
+export type AuthDiagnosticEvent = typeof authDiagnosticEvents.$inferSelect;
+export type InsertAuthDiagnosticEvent = typeof authDiagnosticEvents.$inferInsert;
+
+/** Results from deterministic, non-destructive production authentication checks. */
+export const authHealthChecks = pgTable("auth_health_checks", {
+  id: serial("id").primaryKey(),
+  triggerSource: authHealthTriggerEnum("trigger_source").notNull(),
+  scheduleCronTaskUid: varchar("schedule_cron_task_uid", { length: 65 }),
+  overallStatus: healthStatusEnum("overall_status").notNull(),
+  configStatus: healthStatusEnum("config_status").notNull(),
+  databaseStatus: healthStatusEnum("database_status").notNull(),
+  userSchemaStatus: healthStatusEnum("user_schema_status").notNull(),
+  magicLinkSchemaStatus: healthStatusEnum("magic_link_schema_status").notNull(),
+  sessionStatus: healthStatusEnum("session_status").notNull(),
+  emailProviderStatus: healthStatusEnum("email_provider_status").notNull(),
+  providerName: varchar("provider_name", { length: 64 }),
+  failureCode: varchar("failure_code", { length: 64 }),
+  failureDetail: varchar("failure_detail", { length: 500 }),
+  durationMs: integer("duration_ms").notNull(),
+  checkedAt: bigint("checked_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("auth_health_checked_idx").on(table.checkedAt),
+  index("auth_health_task_uid_idx").on(table.scheduleCronTaskUid),
+]);
+
+export type AuthHealthCheck = typeof authHealthChecks.$inferSelect;
+export type InsertAuthHealthCheck = typeof authHealthChecks.$inferInsert;
 
 /** Stores Gmail OAuth tokens for each business owner */
 export const gmailTokens = pgTable("gmail_tokens", {

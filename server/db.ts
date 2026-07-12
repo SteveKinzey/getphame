@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, desc, eq, gte, isNull, lt, sql, type SQL } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import * as schema from "../drizzle/schema";
 import { createHash, randomBytes } from "crypto";
@@ -6,10 +6,14 @@ import {
   InsertUser,
   apiKeys,
   apiImportEvents,
+  authDiagnosticEvents,
+  authHealthChecks,
   businessProfiles,
   customerRequests,
   users,
   webhookConfigs,
+  type InsertAuthDiagnosticEvent,
+  type InsertAuthHealthCheck,
   type InsertBusinessProfile,
   type InsertCustomerRequest,
 } from "../drizzle/schema";
@@ -86,6 +90,112 @@ export async function updateUserLastSignedIn(openId: string, timestamp: Date) {
   const db = await getDb();
   if (!db) return;
   await db.update(users).set({ lastSignedIn: timestamp, updatedAt: new Date() }).where(eq(users.openId, openId));
+}
+
+// ─── Authentication diagnostics ───────────────────────────────────────────────
+
+export async function createAuthDiagnosticEvent(event: InsertAuthDiagnosticEvent) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(authDiagnosticEvents).values(event);
+  return Number((result as unknown as { insertId: number }).insertId);
+}
+
+export async function getLatestAuthDiagnosticByTokenFingerprint(tokenFingerprint: string) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db
+    .select()
+    .from(authDiagnosticEvents)
+    .where(eq(authDiagnosticEvents.tokenFingerprint, tokenFingerprint))
+    .orderBy(desc(authDiagnosticEvents.occurredAt))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+export async function listAuthDiagnosticEvents(input?: {
+  emailFingerprint?: string;
+  outcome?: "ok" | "fail";
+  requestId?: string;
+  sinceMs?: number;
+  limit?: number;
+}) {
+  const db = await getDb();
+  if (!db) return [];
+  const filters: SQL[] = [];
+  if (input?.emailFingerprint) filters.push(eq(authDiagnosticEvents.emailFingerprint, input.emailFingerprint));
+  if (input?.outcome) filters.push(eq(authDiagnosticEvents.outcome, input.outcome));
+  if (input?.requestId) filters.push(eq(authDiagnosticEvents.requestId, input.requestId));
+  if (input?.sinceMs) filters.push(gte(authDiagnosticEvents.occurredAt, input.sinceMs));
+  return db
+    .select()
+    .from(authDiagnosticEvents)
+    .where(filters.length ? and(...filters) : undefined)
+    .orderBy(desc(authDiagnosticEvents.occurredAt))
+    .limit(Math.min(Math.max(input?.limit ?? 100, 1), 200));
+}
+
+export async function getAuthDiagnosticSummary(sinceMs: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select({
+      eventType: authDiagnosticEvents.eventType,
+      outcome: authDiagnosticEvents.outcome,
+      total: sql<number>`count(*)`,
+    })
+    .from(authDiagnosticEvents)
+    .where(gte(authDiagnosticEvents.occurredAt, sinceMs))
+    .groupBy(authDiagnosticEvents.eventType, authDiagnosticEvents.outcome);
+}
+
+export async function createAuthHealthCheck(check: InsertAuthHealthCheck) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [result] = await db.insert(authHealthChecks).values(check);
+  return Number((result as unknown as { insertId: number }).insertId);
+}
+
+export async function listAuthHealthChecks(limit = 30) {
+  const db = await getDb();
+  if (!db) return [];
+  return db
+    .select()
+    .from(authHealthChecks)
+    .orderBy(desc(authHealthChecks.checkedAt))
+    .limit(Math.min(Math.max(limit, 1), 100));
+}
+
+export async function getRecentAuthHealthCheckByTaskUid(taskUid: string, sinceMs: number) {
+  const db = await getDb();
+  if (!db) return null;
+  const rows = await db
+    .select()
+    .from(authHealthChecks)
+    .where(and(
+      eq(authHealthChecks.scheduleCronTaskUid, taskUid),
+      gte(authHealthChecks.checkedAt, sinceMs),
+    ))
+    .orderBy(desc(authHealthChecks.checkedAt))
+    .limit(1);
+  return rows[0] ?? null;
+}
+
+export async function pruneAuthOperationsData(nowMs = Date.now()) {
+  const db = await getDb();
+  if (!db) return { diagnosticEventsDeleted: 0, healthChecksDeleted: 0 };
+  const diagnosticsCutoff = nowMs - 30 * 24 * 60 * 60 * 1000;
+  const healthCutoff = nowMs - 90 * 24 * 60 * 60 * 1000;
+  const [diagnosticsResult] = await db
+    .delete(authDiagnosticEvents)
+    .where(lt(authDiagnosticEvents.occurredAt, diagnosticsCutoff));
+  const [healthResult] = await db
+    .delete(authHealthChecks)
+    .where(lt(authHealthChecks.checkedAt, healthCutoff));
+  return {
+    diagnosticEventsDeleted: Number((diagnosticsResult as unknown as { affectedRows?: number }).affectedRows ?? 0),
+    healthChecksDeleted: Number((healthResult as unknown as { affectedRows?: number }).affectedRows ?? 0),
+  };
 }
 
 // ─── Business profile helpers ─────────────────────────────────────────────────

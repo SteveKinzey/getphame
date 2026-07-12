@@ -103,6 +103,7 @@ import {
 
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
 import { bulkSenderRouter } from "./bulkSender";
+import { authDiagnosticsRouter } from "./routers/authDiagnostics";
 import crypto from "crypto";
 
 // ── Unsubscribe token helpers ────────────────────────────────────────────────
@@ -153,6 +154,7 @@ async function enforceFreeLimit(userId: number, tier: string) {
 
 export const appRouter = router({
   system: systemRouter,
+  authDiagnostics: authDiagnosticsRouter,
 
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),

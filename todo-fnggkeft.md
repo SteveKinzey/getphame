@@ -56,3 +56,15 @@
 - [x] Diagnose whether token lookup, user upsert, session signing, cookie scope, or redirect logic caused the failed sign-in
 - [x] Add regression coverage for the identified verification/session failure
 - [x] Repair, test, checkpoint, publish, and revalidate successful sign-in on `getphame.app`
+- [x] Reconcile the restored shared branch after the sandbox reset removed uncheckpointed auth-monitoring work
+- [x] Define a production-safe auth health contract that checks configuration, database connectivity, required auth schema access, session-signing configuration, and email-provider reachability without creating users, consuming tokens, issuing sessions, or sending email
+- [x] Add privacy-bounded magic-link diagnostic and auth health-check schema with additive migration and retention helpers
+- [x] Instrument magic-link request, provider acceptance/failure, and verification outcomes without storing full recipients or raw tokens
+- [x] Add an authenticated scheduled callback for deterministic production auth checks and bounded retention cleanup
+- [x] Add strict admin-only diagnostics procedures with secure exact-email fingerprint filtering and manual health-check execution
+- [x] Add a responsive GetPhame admin diagnostics page and dashboard navigation entry
+- [x] Add Vitest coverage for redaction, masking, authorization, instrumentation, callback behavior, and retention
+- [x] Run the full test suite, TypeScript checks, production build, preview verification, and database migration validation
+- [ ] Save a deployable checkpoint and request publication before creating the production heartbeat
+- [ ] Create and verify the platform heartbeat only after the callback is published
+- [ ] Test deployed onboarding with a second non-owner account and record delivery, verification, account creation, and onboarding evidence

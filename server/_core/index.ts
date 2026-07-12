@@ -31,6 +31,7 @@ import { handleOpenPixel, handleClickRedirect } from "../emailTracking";
 import { sendUpgradeReceiptEmail, sendChurnRecoveryEmail, sendPaymentFailedEmail } from "../smtp";
 import { registerPublicApiRoutes } from "../publicApi";
 import { registerMobileAuthRoutes } from "../mobileAuth";
+import { authHealthHandler } from "../authHealthRoutes";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 
 function isPortAvailable(port: number): Promise<boolean> {
@@ -391,6 +392,7 @@ async function startServer() {
   registerEmailAuthRoutes(app);
   registerAppleAuthRoutes(app);
   registerMobileAuthRoutes(app);
+  app.post("/api/scheduled/auth-health", authHealthHandler);
 
   // IP-based language detection — returns 'en' | 'th' | 'zh-TW' based on client IP
   // Note: Mainland China (CN) is excluded from zh-TW detection since YouTube is blocked there.

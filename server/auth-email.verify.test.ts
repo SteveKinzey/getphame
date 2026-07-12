@@ -8,6 +8,8 @@ const mocks = vi.hoisted(() => ({
   upsertUser: vi.fn(),
   createSessionToken: vi.fn(),
   sendUserWelcomeEmail: vi.fn(),
+  recordAuthLifecycleEvent: vi.fn().mockResolvedValue(null),
+  findAuthRequestByToken: vi.fn().mockResolvedValue(null),
 }));
 
 vi.mock("./db", () => ({
@@ -31,6 +33,14 @@ vi.mock("./_core/cookies", () => ({
 
 vi.mock("./smtp", () => ({
   sendUserWelcomeEmail: mocks.sendUserWelcomeEmail,
+}));
+
+vi.mock("./authOperations", () => ({
+  classifyAuthDiagnosticError: () => "operation_failed",
+  findAuthRequestByToken: mocks.findAuthRequestByToken,
+  maskDiagnosticEmail: (email: string) => email,
+  recordAuthLifecycleEvent: mocks.recordAuthLifecycleEvent,
+  redactAuthDiagnosticDetail: (error: unknown) => String(error),
 }));
 
 vi.mock("./_core/env", () => ({
@@ -94,5 +104,19 @@ describe("email magic-link verification", () => {
     expect(successfulRetry.headers.location).toBe("/");
     expect(database.update).toHaveBeenCalledTimes(1);
     expect(successfulRetry.headers["set-cookie"]?.[0]).toContain("signed-session-token");
+    expect(mocks.recordAuthLifecycleEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: "verification_failed",
+        outcome: "fail",
+        token: record.token,
+      }),
+    );
+    expect(mocks.recordAuthLifecycleEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        eventType: "verification_succeeded",
+        outcome: "ok",
+        token: record.token,
+      }),
+    );
   });
 });
