@@ -65,6 +65,9 @@
 - [x] Add a responsive GetPhame admin diagnostics page and dashboard navigation entry
 - [x] Add Vitest coverage for redaction, masking, authorization, instrumentation, callback behavior, and retention
 - [x] Run the full test suite, TypeScript checks, production build, preview verification, and database migration validation
-- [ ] Save a deployable checkpoint and request publication before creating the production heartbeat
-- [ ] Create and verify the platform heartbeat only after the callback is published
-- [ ] Test deployed onboarding with a second non-owner account and record delivery, verification, account creation, and onboarding evidence
+- [x] Save a deployable checkpoint and request publication before creating the production heartbeat
+- [x] Create and verify the platform heartbeat only after the callback is published
+- [x] Test deployed onboarding with a second non-owner account and record delivery, verification, account creation, and onboarding evidence
+- [x] Capture production Heartbeat evidence showing task UID `cLZ7gshNvQQx7dXJxnkaNQ`, enabled state, `/api/scheduled/auth-health` callback, permanent 15-minute cadence, and next execution time
+- [x] Verify a real scheduled Heartbeat execution returned HTTP 200 and persisted an all-OK `auth_health_checks` row tied to task UID `cLZ7gshNvQQx7dXJxnkaNQ`
+- [x] Verify second-account diagnostics contain one four-event correlated lifecycle with masked recipient, fingerprint-only token references, and no raw email in diagnostic details
