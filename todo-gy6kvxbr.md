@@ -99,7 +99,7 @@
 - [x] Reproduce and correlate the production Apple Sign In callback failure reported after successful Apple authorization.
 - [x] Repair Apple callback validation, identity resolution, session creation, or redirect handling without creating another duplicate user or losing existing account data.
 - [x] Add regression coverage for a successful Apple callback, an existing-email Apple login, and safe callback failure handling.
-- [ ] Verify Apple Sign In on the published custom domain, run complete quality gates, and publish the repair before resuming checkout validation.
+- [x] Verify Apple Sign In on the published custom domain, run complete quality gates, and publish the repair before resuming checkout validation.
 - [x] Capture the second failed Apple callback after the authorization-code exchange release and identify its distinct production error signature.
 - [x] Repair the newly identified Apple token-exchange, client-secret, token-verification, identity-linking, or session failure without creating another account.
 - [x] Add regression coverage for the exact second-stage Apple callback failure and publish the corrected release.
@@ -114,4 +114,4 @@
 - [x] Hide Apple and Google sign-in controls on every live Get Phame domain while keeping email magic-link login available.
 - [x] Preserve the Apple and Google OAuth implementations behind a reversible preview/staging-only gate instead of deleting server routes.
 - [x] Add regression coverage proving production hostnames hide social login and preview/localhost hostnames expose it for continued testing.
-- [ ] Publish the validated staging-gated release, then verify `getphame.app/login` hides Apple and Google while the preview host preserves both test controls.
+- [x] Publish the validated staging-gated release, then verify `getphame.app/login` hides Apple and Google while the preview host preserves both test controls.
