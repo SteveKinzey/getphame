@@ -1272,7 +1272,16 @@
     "planLabel": "Votre plan",
     "renewsOn": "Renouvellement le {{date}}",
     "expiresOn": "Expire le {{date}}",
-    "lifetimeAccess": "Accès à vie"
+    "lifetimeAccess": "Accès à vie",
+    "portalOpened": "La facturation sécurisée s’est ouverte dans un nouvel onglet.",
+    "currentStatus": "Votre statut : {{tierLabel}}",
+    "lifeMessage": "L’accès à vie est actif. Il n’y a rien à mettre à niveau ni à renouveler.",
+    "manageMessage": "Modifiez votre cycle de facturation ou mettez fin à votre abonnement ci-dessous.",
+    "subscription": "Abonnement",
+    "switchMonthly": "Passer au mensuel ou gérer la facturation",
+    "changePlan": "Changer de formule ou gérer la facturation",
+    "endSubscription": "Mettre fin à l’abonnement",
+    "endExplanation": "La fin de votre abonnement ramène le compte à l’offre gratuite à la fin de la période payée."
   },
   "columnLabels": {
     "fullName": "Nom complet",

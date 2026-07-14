@@ -910,7 +910,16 @@
     "onPro": "You're on {{tierLabel}}!",
     "enjoyFeatures": "Enjoy unlimited review requests and all Pro features.",
     "backToDashboard": "Back to Dashboard",
-    "cancelPlan": "Cancel plan"
+    "cancelPlan": "Cancel plan",
+    "portalOpened": "Secure billing opened in a new tab.",
+    "currentStatus": "Your status: {{tierLabel}}",
+    "lifeMessage": "Life access is active. There is nothing to upgrade or renew.",
+    "manageMessage": "Change your billing cycle or end your subscription below.",
+    "subscription": "Subscription",
+    "switchMonthly": "Switch to Monthly or manage billing",
+    "changePlan": "Change plan or manage billing",
+    "endSubscription": "End subscription",
+    "endExplanation": "Ending your subscription returns the account to Free at the end of the paid period."
   },
   "columnLabels": {
     "fullName": "Full Name",

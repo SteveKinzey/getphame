@@ -31,6 +31,7 @@ import {
   ExternalLink,
   Download,
 } from "lucide-react";
+import BrandLockup from "@/components/BrandLockup";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -779,11 +780,12 @@ function Step3Send({
 
   return (
     <div className="flex flex-col items-center gap-6 text-center py-4">
-      <div
-        className="w-24 h-24 rounded-full flex items-center justify-center rr-bg-navy overflow-hidden"
-      >
-        <img src="https://assets.getphame.app/phame-app-icon-new.png" alt="Phame" className="w-20 h-20 object-contain" />
-      </div>
+      <BrandLockup
+        className="justify-center"
+        iconClassName="w-16 h-16"
+        textClassName="text-xl"
+        tone="split"
+      />
       <div>
         <h3
           className="text-xl font-black mb-2 text-white"

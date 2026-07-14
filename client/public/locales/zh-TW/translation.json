@@ -900,7 +900,16 @@
     "onPro": "您是 {{tierLabel}} 使用者！",
     "enjoyFeatures": "享受無限評論請求和所有專業版功能。",
     "backToDashboard": "返回儀表盤",
-    "cancelPlan": "取消計劃"
+    "cancelPlan": "取消計劃",
+    "portalOpened": "安全付款管理已在新分頁開啟。",
+    "currentStatus": "您的狀態：{{tierLabel}}",
+    "lifeMessage": "終身存取權已啟用，無需升級或續訂。",
+    "manageMessage": "您可以在下方變更計費週期或結束訂閱。",
+    "subscription": "訂閱",
+    "switchMonthly": "切換為月繳或管理付款",
+    "changePlan": "變更方案或管理付款",
+    "endSubscription": "結束訂閱",
+    "endExplanation": "結束訂閱後，帳戶會在已付費期間結束時回到免費方案。"
   },
   "columnLabels": {
     "fullName": "全名",

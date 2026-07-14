@@ -1771,8 +1771,18 @@
   "paidUser": {
     "title": "Sei un utente Pro!",
     "subtitle": "Hai accesso a tutte le funzionalità Pro.",
-    "manageSubscription": "Gestisci Abbonamento",
-    "currentPlan": "Piano Attuale: {{plan}}"
+    "manageSubscription": "Gestisci abbonamento",
+    "currentPlan": "Piano attuale: {{plan}}",
+    "backToDashboard": "Torna alla dashboard",
+    "portalOpened": "La fatturazione sicura è stata aperta in una nuova scheda.",
+    "currentStatus": "Il tuo stato: {{tierLabel}}",
+    "lifeMessage": "L’accesso a vita è attivo. Non c’è nulla da aggiornare o rinnovare.",
+    "manageMessage": "Modifica il ciclo di fatturazione o termina l’abbonamento qui sotto.",
+    "subscription": "Abbonamento",
+    "switchMonthly": "Passa al mensile o gestisci la fatturazione",
+    "changePlan": "Cambia piano o gestisci la fatturazione",
+    "endSubscription": "Termina abbonamento",
+    "endExplanation": "Terminando l’abbonamento, l’account tornerà al piano gratuito alla fine del periodo pagato."
   },
   "columnLabels": {
     "name": "Nome",

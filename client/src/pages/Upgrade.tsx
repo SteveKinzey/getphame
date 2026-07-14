@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
 
 // ── THB dual-currency display ─────────────────────────────────────────────────
 // Fixed rate — update manually when USD/THB shifts significantly
@@ -176,6 +177,14 @@ export default function UpgradePage() {
     },
   });
 
+  const createPortal = trpc.stripe.createPortal.useMutation({
+    onSuccess: ({ url }) => {
+      window.open(url, "_blank", "noopener,noreferrer");
+      toast.success(t("paidUser.portalOpened", { defaultValue: "Secure billing opened in a new tab." }));
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
   // Track page view with UTM params on mount
   const trackPageView = trpc.analytics.trackPageView.useMutation();
   useEffect(() => {
@@ -199,11 +208,11 @@ export default function UpgradePage() {
     redeemCode.mutate({ code: accessCode.trim() });
   }
 
-  const tier = profile?.tier;
-  const isAdmin = user?.role === "admin";
-  const isPaid = isAdmin || tier === "pro" || tier === "annual" || tier === "lifetime";
-  if (isPaid) {
-    const tierLabel = isAdmin && !tier ? t("paidUser.adminAccess") : tier === "lifetime" ? t("paidUser.lifetimeLicense") : tier === "annual" ? t("paidUser.annualPro") : t("paidUser.monthlyPro");
+  const effectivePlan = getEffectivePlan(profile?.tier, user?.role);
+  const tierLabel = PLAN_LABELS[effectivePlan];
+  const isLife = effectivePlan === "life";
+  const canManage = canManageSubscription(effectivePlan);
+  if (effectivePlan !== "free") {
     return (
       <div
         className="min-h-screen flex flex-col items-center justify-center px-6 pb-40 rr-bg-navy"
@@ -212,11 +221,46 @@ export default function UpgradePage() {
         <h2
           className="text-3xl font-black text-center mb-2 text-white"
         >
-          {t("paidUser.onPro", { tierLabel })}
+          {t("paidUser.currentStatus", { defaultValue: "Your status: {{tierLabel}}", tierLabel })}
         </h2>
         <p className="text-center mb-8 text-white font-bold text-lg">
-          {t("paidUser.enjoyFeatures")}
+          {isLife
+            ? t("paidUser.lifeMessage", { defaultValue: "Life access is active. There is nothing to upgrade or renew." })
+            : t("paidUser.manageMessage", { defaultValue: "Change your billing cycle or end your subscription below." })}
         </p>
+        {canManage && (
+          <div className="w-full max-w-md rounded-2xl p-5 mb-6 rr-bg-navy-mid" style={{ border: "1px solid oklch(0.80 0.18 80 / 0.35)" }}>
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest rr-text-gold">
+                  {t("paidUser.subscription", { defaultValue: "Subscription" })}
+                </p>
+                <p className="text-lg font-black text-white">{tierLabel}</p>
+              </div>
+              <CreditCard size={24} className="rr-text-gold" />
+            </div>
+            <button
+              onClick={() => createPortal.mutate({ origin: window.location.origin })}
+              disabled={createPortal.isPending}
+              className="w-full py-3 px-5 rounded-xl font-black text-sm flex items-center justify-center gap-2 rr-bg-gold rr-text-navy disabled:opacity-60"
+            >
+              {createPortal.isPending ? <Loader2 size={16} className="animate-spin" /> : <CreditCard size={16} />}
+              {effectivePlan === "annual"
+                ? t("paidUser.switchMonthly", { defaultValue: "Switch to Monthly or manage billing" })
+                : t("paidUser.changePlan", { defaultValue: "Change plan or manage billing" })}
+            </button>
+            <button
+              onClick={() => navigate("/cancel")}
+              className="w-full mt-3 py-2.5 px-5 rounded-xl text-sm font-bold text-white/80 hover:text-white"
+              style={{ border: "1px solid rgba(255,255,255,0.18)" }}
+            >
+              {t("paidUser.endSubscription", { defaultValue: "End subscription" })}
+            </button>
+            <p className="text-xs text-white/60 text-center mt-3">
+              {t("paidUser.endExplanation", { defaultValue: "Ending your subscription returns the account to Free at the end of the paid period." })}
+            </p>
+          </div>
+        )}
         <button
           onClick={() => navigate("/")}
           className="py-3 px-8 rounded-2xl font-bold text-base flex items-center justify-center gap-2"
@@ -224,15 +268,6 @@ export default function UpgradePage() {
         >
           {t("paidUser.backToDashboard", "Back to Dashboard")}
         </button>
-        {!isAdmin && (tier === "pro" || tier === "annual") && (
-          <button
-            onClick={() => navigate("/cancel")}
-            className="mt-4 text-xs"
-            style={{ color: "var(--text-on-dark-muted)" }}
-          >
-            {t("paidUser.cancelPlan", "Cancel plan")}
-          </button>
-        )}
       </div>
     );
   }

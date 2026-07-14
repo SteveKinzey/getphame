@@ -19,3 +19,16 @@
 - [x] Fix the client/server routing or runtime condition causing Settings API calls to hit the HTML fallback
 - [x] Add regression coverage for the corrected tRPC endpoint behavior
 - [x] Validate Settings queries and mutations in the browser, then run focused TypeScript and Vitest checks
+- [x] Restore the public landing-page language selector with all six supported languages and persistent selection
+- [x] Replace obsolete image-based or legacy branding with the approved gold P mark plus CSS-rendered Get Phame wordmark
+- [x] Display each authenticated user’s Free, Monthly, Annual, or Life status in the requested sidebar position
+- [x] Guarantee admin users, including steve@sk-america.com, receive actual Life entitlements and never see an upgrade prompt
+- [x] Replace the generic Upgrade action with plan-aware subscription management for upgrades, annual-to-monthly changes, and cancellation
+- [x] Hide subscription management for Life users while preserving their Life status display
+- [x] Review remaining legacy English UI labels and translate the applicable operational strings across all supported locales
+- [x] Confirm a user-friendly language selector is available within Settings
+- [x] Add a Settings-page skeleton loading state while account data is fetched
+- [x] Package the Get Phame restoration and regression workflow as a reusable project skill
+- [x] Audit applicable Get Phame task sources for other unfinished work without modifying other sessions’ task ledgers
+- [x] Add or update Vitest coverage for branding, language controls, plan status, admin Life entitlement, subscription management, and Settings loading
+- [x] Verify desktop and mobile UI, run TypeScript and the full Vitest suite, then publish the completed update

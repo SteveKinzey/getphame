@@ -20,6 +20,7 @@ import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import BrandLockup from "@/components/BrandLockup";
 
 const GUIDE_SEEN_KEY = "rl_guide_seen";
 
@@ -55,7 +56,12 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
       <div
         className="rounded-2xl p-5 text-center rr-bg-navy-mid"
       >
-        <img src="https://assets.getphame.app/phame-app-icon-new.png" alt="Phame" className="w-20 h-20 rounded-2xl object-contain mx-auto mb-3" />
+        <BrandLockup
+          className="justify-center mb-4"
+          iconClassName="w-16 h-16"
+          textClassName="text-xl"
+          tone="split"
+        />
         <p className="text-white font-black text-xl leading-snug" style={{ fontFamily: "'Poppins', sans-serif" }}>
           {t("onboardingGuide.welcome.heroText")}
         </p>
@@ -954,7 +960,7 @@ export default function OnboardingGuide({ open, onClose, onNavigate, stepsDone }
   const STEPS: Step[] = [
     {
       id: 0,
-      icon: <Star size={20} />,
+      icon: <BrandLockup showText={false} iconClassName="w-6 h-6" />,
       title: t("onboardingGuide.steps.welcome.title"),
       subtitle: t("onboardingGuide.steps.welcome.subtitle"),
       content: <StepWelcome onNavigate={handleNavigate} stepsDone={stepsDone} />,

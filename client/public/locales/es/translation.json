@@ -1272,7 +1272,16 @@
     "planLabel": "Tu plan",
     "renewsOn": "Se renueva el {{date}}",
     "expiresOn": "Expira el {{date}}",
-    "lifetimeAccess": "Acceso de por vida"
+    "lifetimeAccess": "Acceso de por vida",
+    "portalOpened": "La facturación segura se abrió en una pestaña nueva.",
+    "currentStatus": "Tu estado: {{tierLabel}}",
+    "lifeMessage": "El acceso de por vida está activo. No hay nada que actualizar ni renovar.",
+    "manageMessage": "Cambia tu ciclo de facturación o finaliza tu suscripción a continuación.",
+    "subscription": "Suscripción",
+    "switchMonthly": "Cambiar a mensual o gestionar la facturación",
+    "changePlan": "Cambiar de plan o gestionar la facturación",
+    "endSubscription": "Finalizar suscripción",
+    "endExplanation": "Al finalizar tu suscripción, la cuenta volverá al plan gratuito al terminar el período pagado."
   },
   "columnLabels": {
     "fullName": "Nombre completo",

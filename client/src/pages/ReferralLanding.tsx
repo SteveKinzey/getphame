@@ -6,9 +6,6 @@ import { useEffect, useState } from "react";
 import { useParams, useLocation } from "wouter";
 import { Star, ArrowRight, Users, Gift, CheckCircle2 } from "lucide-react";
 
-const WORDMARK_URL =
-  "https://assets.getphame.app/phame-wordmark-transparent-clean.webp";
-
 export default function ReferralLanding() {
   const params = useParams<{ code: string }>();
   const [, navigate] = useLocation();

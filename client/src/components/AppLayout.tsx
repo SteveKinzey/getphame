@@ -10,9 +10,8 @@ import { useHaptics } from "@/hooks/useHaptics";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { ReactNode } from "react";
-
-const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
-const WORDMARK_URL = "https://assets.getphame.app/phame-wordmark-transparent-clean.png";
+import BrandLockup from "@/components/BrandLockup";
+import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -34,7 +33,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
     { path: "/settings", label: t("nav.settings"), Icon: Settings },
   ];
 
-  const isPro = profile?.tier && profile.tier !== "free";
+  const effectivePlan = getEffectivePlan(profile?.tier, user?.role);
+  const planLabel = PLAN_LABELS[effectivePlan];
+  const isLife = effectivePlan === "life";
+  const manageSubscription = canManageSubscription(effectivePlan);
 
   return (
     <>
@@ -54,19 +56,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
           className="flex items-center justify-center lg:justify-start gap-2.5 px-3 lg:px-4 py-4 border-b"
           style={{ borderColor: "oklch(0.28 0.08 260)", minHeight: "64px" }}
         >
-          <img
-            src={LOGO_URL}
-            alt="GetPhame"
-            className="w-8 h-8 rounded-lg flex-shrink-0"
-            loading="eager"
-          />
-          {/* Wordmark — shown on desktop, hidden on tablet icon-only mode */}
-          <img
-            src={WORDMARK_URL}
-            alt="Get Phame"
-            className="app-sidebar-brand-text h-6 w-auto object-contain hidden"
-            loading="eager"
-            style={{ maxWidth: "140px" }}
+          <BrandLockup
+            className="justify-center lg:justify-start"
+            iconClassName="w-8 h-8"
+            textClassName="app-sidebar-brand-text text-lg hidden"
           />
         </div>
 
@@ -145,35 +138,25 @@ export default function AppLayout({ children }: AppLayoutProps) {
           className="px-2 pb-4 flex flex-col gap-1.5 border-t pt-3"
           style={{ borderColor: "oklch(0.28 0.08 260)" }}
         >
-          {/* Plan badge / Upgrade CTA */}
-          {isPro ? (
-            <div
-              className="flex items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2 rounded-xl"
-              style={{
-                background: "oklch(0.80 0.18 80 / 0.10)",
-                border: "1px solid oklch(0.80 0.18 80 / 0.22)",
-              }}
-            >
-              <Crown
-                size={14}
-                className="flex-shrink-0"
-                style={{ color: "oklch(0.80 0.18 80)" }}
-              />
-              <span
-                className="app-sidebar-label text-xs font-bold hidden"
-                style={{ color: "oklch(0.80 0.18 80)" }}
-              >
-                {profile?.tier === "lifetime"
-                  ? "Lifetime"
-                  : profile?.tier === "annual"
-                  ? "Annual Pro"
-                  : "Pro"}
-              </span>
-            </div>
-          ) : (
+          {/* Account status is always visible; Life is terminal and has no upgrade action. */}
+          <div
+            className="flex items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2 rounded-xl"
+            title={`${planLabel} account`}
+            style={{
+              background: "oklch(0.80 0.18 80 / 0.10)",
+              border: "1px solid oklch(0.80 0.18 80 / 0.22)",
+            }}
+          >
+            <Crown size={14} className="flex-shrink-0" style={{ color: "oklch(0.80 0.18 80)" }} />
+            <span className="app-sidebar-label text-xs font-bold hidden" style={{ color: "oklch(0.80 0.18 80)" }}>
+              {t("account.status", { defaultValue: "Status" })}: {planLabel}
+            </span>
+          </div>
+
+          {!isLife && (
             <button
               onClick={() => navigate("/upgrade")}
-              title="Upgrade to Pro"
+              title={manageSubscription ? t("account.managePlan", { defaultValue: "Manage plan" }) : t("account.upgrade", { defaultValue: "Upgrade" })}
               className="flex items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2 rounded-xl transition-all duration-200 hover:opacity-80 w-full"
               style={{
                 background: "oklch(0.80 0.18 80 / 0.08)",
@@ -189,7 +172,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 className="app-sidebar-label text-xs font-bold hidden"
                 style={{ color: "oklch(0.80 0.18 80)" }}
               >
-                Upgrade
+                {manageSubscription ? t("account.managePlan", { defaultValue: "Manage plan" }) : t("account.upgrade", { defaultValue: "Upgrade" })}
               </span>
             </button>
           )}

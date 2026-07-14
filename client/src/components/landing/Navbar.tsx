@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Menu, X } from "lucide-react";
-
-const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
+import BrandLockup from "@/components/BrandLockup";
+import LanguageFlyout from "@/components/LanguageFlyout";
 
 const navLinks = [
   { label: "How It Works", href: "#how-it-works" },
@@ -34,11 +34,10 @@ export default function Navbar() {
       <nav className="container flex items-center justify-between h-16 md:h-[4.5rem]">
         {/* Logo — prominent brand mark */}
         <a href="/" className="flex items-center gap-2.5 group">
-          <img src={LOGO_URL} alt="Get Phame" className="w-9 h-9 md:w-10 md:h-10 transition-transform duration-200 group-hover:scale-105" />
-          <div className="flex items-baseline">
-            <span className="font-display font-extrabold text-xl md:text-[1.4rem] tracking-tight text-white">GET&nbsp;</span>
-            <span className="font-display font-extrabold text-xl md:text-[1.4rem] tracking-tight text-primary">PHAME</span>
-          </div>
+          <BrandLockup
+            iconClassName="w-9 h-9 md:w-10 md:h-10 transition-transform duration-200 group-hover:scale-105"
+            textClassName="text-xl md:text-[1.4rem]"
+          />
         </a>
 
         {/* Desktop Nav */}
@@ -56,6 +55,7 @@ export default function Navbar() {
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-4">
+          <LanguageFlyout />
           <a
             href="/onboarding"
             className="text-base font-semibold text-slate-200 hover:text-white transition-colors"
@@ -71,13 +71,16 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu Button */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 text-white"
-          aria-label="Toggle menu"
-        >
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="md:hidden flex items-center gap-2">
+          <LanguageFlyout />
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="p-2 text-white"
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile Menu */}

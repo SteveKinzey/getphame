@@ -62,7 +62,9 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
 import LanguageFlyout from "@/components/LanguageFlyout";
+import BrandLockup from "@/components/BrandLockup";
 import { IntegrationGuide } from "@/components/IntegrationGuide";
+import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
 
 // ── Share & Earn Card ────────────────────────────────────────────────────────
 function ShareAndEarnCard({ profile }: { profile: ProfileData | null | undefined }) {
@@ -444,15 +446,12 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
   });
 
   const tier = profile?.tier ?? 'free';
+  const effectivePlan = getEffectivePlan(tier);
+  const isLife = effectivePlan === 'life';
+  const canManage = canManageSubscription(effectivePlan);
   const planExpiresAt = profile?.planExpiresAt;
   const hasStripe = !!profile?.stripeCustomerId;
 
-  const TIER_LABELS: Record<string, string> = {
-    free: 'Free',
-    pro: 'Pro Monthly',
-    annual: 'Pro Annual',
-    lifetime: 'Lifetime',
-  };
   const TIER_COLORS: Record<string, { bg: string; text: string }> = {
     free:     { bg: 'oklch(0.94 0.01 260)', text: 'oklch(0.45 0.04 260)' },
     pro:      { bg: 'oklch(0.80 0.18 80)', text: 'oklch(0.22 0.09 260)' },
@@ -486,7 +485,7 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
           className="text-xs font-bold px-2.5 py-1 rounded-full"
           style={{ background: colors.bg, color: colors.text }}
         >
-          {TIER_LABELS[tier] ?? tier.toUpperCase()}
+          {PLAN_LABELS[effectivePlan]}
         </span>
       </div>
 
@@ -497,7 +496,7 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
         </p>
       )}
 
-      {tier === 'free' ? (
+      {effectivePlan === 'free' ? (
         <div className="flex flex-col gap-2">
           <p className="text-sm font-semibold rr-text-navy-mid">
             Upgrade to Pro for unlimited sends, follow-up reminders, and priority support.
@@ -510,9 +509,13 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
             Upgrade to Pro
           </button>
         </div>
+      ) : isLife ? (
+        <p className="text-sm font-semibold rr-text-navy-mid">
+          Life access is active. There are no renewals and no upgrade or cancellation actions.
+        </p>
       ) : (
         <div className="flex flex-col gap-2">
-          {hasStripe ? (
+          {hasStripe && canManage ? (
             showRetention ? (
               /* ── Retention prompt ─────────────────────────────────────── */
               <div
@@ -554,20 +557,29 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
                 </div>
               </div>
             ) : (
-              <button
-                onClick={() => setShowRetention(true)}
-                className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-navy text-white"
-              >
-                <ExternalLink size={16} />
-                Manage Billing
-              </button>
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => createPortal.mutate({ origin: window.location.origin })}
+                  disabled={createPortal.isPending}
+                  className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-navy text-white disabled:opacity-60"
+                >
+                  {createPortal.isPending ? <Loader2 size={16} className="animate-spin" /> : <ExternalLink size={16} />}
+                  {effectivePlan === 'annual' ? 'Switch to Monthly or Manage Billing' : 'Change Plan or Manage Billing'}
+                </button>
+                <button
+                  onClick={() => setShowRetention(true)}
+                  className="text-xs text-center py-2 rr-text-navy-muted"
+                >
+                  End subscription
+                </button>
+              </div>
             )
           ) : (
             <p className="text-sm font-semibold rr-text-navy-mid">
               Your plan is active. Contact support to manage billing.
             </p>
           )}
-          {tier !== 'lifetime' && (
+          {!isLife && (
             <button
               onClick={() => navigate('/upgrade')}
               className="text-xs text-center py-1.5 rr-text-navy-muted"
@@ -830,6 +842,37 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function SettingsSkeleton({ title }: { title: string }) {
+  return (
+    <div className="min-h-screen pb-40 rr-bg-cream-warm" aria-busy="true" aria-label="Loading settings">
+      <div className="px-5 pt-12 pb-5 rr-bg-navy">
+        <div className="flex items-center justify-between mb-4">
+          <BrandLockup iconClassName="w-8 h-8" textClassName="text-lg" />
+          <LanguageFlyout />
+        </div>
+        <h1 className="text-2xl text-white rr-fw-black">{title}</h1>
+        <div className="h-4 w-40 rounded-lg bg-white/15 animate-pulse mt-2" />
+      </div>
+      <div className="px-4 py-5 space-y-4 max-w-3xl mx-auto">
+        {[0, 1, 2].map((section) => (
+          <div key={section} className="bg-white rounded-2xl p-5 shadow-sm animate-pulse">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-9 h-9 rounded-xl rr-bg-surface-darker" />
+              <div className="h-5 w-36 rounded-lg rr-bg-surface-darker" />
+            </div>
+            <div className="space-y-3">
+              <div className="h-4 w-24 rounded rr-bg-surface-darker" />
+              <div className="h-11 w-full rounded-xl rr-bg-surface-darker" />
+              <div className="h-4 w-32 rounded rr-bg-surface-darker" />
+              <div className="h-11 w-full rounded-xl rr-bg-surface-darker" />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -1223,6 +1266,10 @@ export default function SettingsPage() {
       fromName: fromName.trim() || undefined,
       replyTo: replyTo.trim() || undefined,
     });
+  }
+
+  if (profileLoading) {
+    return <SettingsSkeleton title={t('tabs.account', { defaultValue: 'Account & Profile' })} />;
   }
 
   return (

@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { COOKIE_NAME, FREE_LIMIT, FREE_LIMIT_ERR_MSG } from "@shared/const";
+import { getEffectiveTier } from "@shared/plans";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { paidProcedure, protectedProcedure, publicProcedure, router } from "./_core/trpc";
@@ -148,6 +149,15 @@ export function buildUnsubUrl(contactType: "contact" | "woo", id: number, userId
  */
 async function enforceFreeLimit(userId: number, tier: string) {
   if (tier !== "free") return; // paid users have no limit
+  const db = await getDb();
+  if (db) {
+    const [account] = await db
+      .select({ role: users.role })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+    if (account?.role === "admin") return;
+  }
   const total = await getTotalRequestCount(userId);
   if (total >= FREE_LIMIT) {
     throw new TRPCError({ code: "FORBIDDEN", message: FREE_LIMIT_ERR_MSG });
@@ -362,7 +372,11 @@ export const appRouter = router({
       const profile = await getBusinessProfile(ctx.user.id);
       if (!profile) return null;
       const totalSent = await getTotalRequestCount(ctx.user.id);
-      return { ...profile, totalSent };
+      return {
+        ...profile,
+        tier: getEffectiveTier(profile.tier, ctx.user.role),
+        totalSent,
+      };
     }),
 
     upsert: protectedProcedure
