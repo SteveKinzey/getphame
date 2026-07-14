@@ -302,9 +302,27 @@ describe("Get Phame regression contracts", () => {
     expect(wizard).toContain("onClick={handleDismiss}");
     expect(wizard).toContain("<Step4Connector onDismiss={handleDismiss} />");
     expect(app).toContain("const onboardingDismissedUserIds = new Set<string>();");
-    expect(app).toContain("onboardingDismissedUserIds.add(userId)");
-    expect(app).toContain("onboardingDismissedUserIds.has(userId)");
+    expect(app).toContain('`getphame:onboarding-dismissed:${userId}`');
+    expect(app).toContain('window.localStorage.getItem(onboardingDismissalKey(userId)) === "1"');
+    expect(app).toContain('window.localStorage.setItem(onboardingDismissalKey(userId), "1")');
+    expect(app).toContain("rememberOnboardingDismissal(userId)");
     expect(app).toContain("<OnboardingWizard onDismiss={dismissOnboardingForSession} />");
+  });
+
+  it("keeps daily activity analytics portable by aggregating raw UTC timestamps outside SQL DATE grouping", () => {
+    const routers = readProjectFile("./routers.ts");
+    const start = routers.indexOf("dailyTrend: protectedProcedure");
+    const end = routers.indexOf("overallStats: protectedProcedure");
+    const dailyTrend = routers.slice(start, end);
+
+    expect(start).toBeGreaterThan(-1);
+    expect(end).toBeGreaterThan(start);
+    expect(dailyTrend).toContain(".select({ sentAt: crTable.sentAt })");
+    expect(dailyTrend).toContain("createdAt: evTable.createdAt");
+    expect(dailyTrend).toContain('inArrayOp(evTable.type, ["open", "click"])');
+    expect(dailyTrend).toContain("return buildDailyTrend({ days: input.days, nowMs, sendRows, eventRows })");
+    expect(dailyTrend).not.toContain("DATE(");
+    expect(dailyTrend).not.toContain(".groupBy(");
   });
 
   it("keeps the cancellation screen localized and wired to distinct refund and renewal actions", () => {

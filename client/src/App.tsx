@@ -26,10 +26,32 @@ import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
 import { useHapticEvents } from "./hooks/useHapticEvents";
 
-// Keep a same-tab dismissal guard outside the component lifecycle. This prevents
-// auth/session refreshes or error-boundary remounts from reopening the setup
-// wizard while the server-side dismissal preference is still being persisted.
+// Keep both a same-tab guard and a per-user browser preference. The in-memory
+// guard closes the modal synchronously; localStorage prevents a full reload from
+// reopening it while the server-side dismissal preference is being persisted.
 const onboardingDismissedUserIds = new Set<string>();
+const onboardingDismissalKey = (userId: string) => `getphame:onboarding-dismissed:${userId}`;
+
+function wasOnboardingDismissed(userId: string | null) {
+  if (!userId) return false;
+  if (onboardingDismissedUserIds.has(userId)) return true;
+
+  try {
+    return window.localStorage.getItem(onboardingDismissalKey(userId)) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function rememberOnboardingDismissal(userId: string) {
+  onboardingDismissedUserIds.add(userId);
+
+  try {
+    window.localStorage.setItem(onboardingDismissalKey(userId), "1");
+  } catch {
+    // The in-memory guard still guarantees immediate dismissal when storage is blocked.
+  }
+}
 
 // ── Lazy-loaded (public pages + heavy/rarely-visited pages) ─────────────────
 const LandingPage       = lazy(() => import("./pages/LandingPage"));
@@ -93,7 +115,7 @@ function AppShell() {
   const [, navigate] = useLocation();
   const userId = user?.id == null ? null : String(user.id);
   const [onboardingDismissed, setOnboardingDismissed] = useState(
-    () => !!userId && onboardingDismissedUserIds.has(userId),
+    () => wasOnboardingDismissed(userId),
   );
   const { data: onboardingStatus } = trpc.onboarding.status.useQuery(undefined, {
     enabled: !!user,
@@ -143,11 +165,11 @@ function AppShell() {
   }, [loading, navigate, user]);
 
   useEffect(() => {
-    setOnboardingDismissed(!!userId && onboardingDismissedUserIds.has(userId));
+    setOnboardingDismissed(wasOnboardingDismissed(userId));
   }, [userId]);
 
   const dismissOnboardingForSession = () => {
-    if (userId) onboardingDismissedUserIds.add(userId);
+    if (userId) rememberOnboardingDismissal(userId);
     setOnboardingDismissed(true);
   };
 

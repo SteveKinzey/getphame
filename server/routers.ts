@@ -42,6 +42,7 @@ import {
   getSubscriptionSnapshot,
 } from "./stripe";
 import { sendLeadGuideEmail } from "./leadGuideEmail";
+import { buildDailyTrend } from "./dailyTrend";
 import {
   getWooCredentials,
   upsertWooCredentials,
@@ -1834,50 +1835,29 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) return [];
         const { emailEvents: evTable, customerRequests: crTable } = await import("../drizzle/schema");
-        const { and: andOp, eq: eqOp, gte, sql: sqlOp } = await import("drizzle-orm");
-        const since = new Date(Date.now() - input.days * 24 * 60 * 60 * 1000);
+        const { and: andOp, eq: eqOp, gte, inArray: inArrayOp } = await import("drizzle-orm");
+        const nowMs = Date.now();
+        const since = new Date(nowMs - input.days * 24 * 60 * 60 * 1000);
 
         const sendRows = await db
-          .select({
-            day: sqlOp<string>`DATE(${crTable.sentAt})`,
-            count: sqlOp<number>`count(*)`,
-          })
+          .select({ sentAt: crTable.sentAt })
           .from(crTable)
-          .where(andOp(eqOp(crTable.userId, ctx.user.id), gte(crTable.sentAt, since)))
-          .groupBy(sqlOp`DATE(${crTable.sentAt})`);
+          .where(andOp(eqOp(crTable.userId, ctx.user.id), gte(crTable.sentAt, since)));
 
-        const openRows = await db
+        const eventRows = await db
           .select({
-            day: sqlOp<string>`DATE(${evTable.createdAt})`,
-            count: sqlOp<number>`count(distinct ${evTable.requestId})`,
+            createdAt: evTable.createdAt,
+            requestId: evTable.requestId,
+            type: evTable.type,
           })
           .from(evTable)
-          .where(andOp(eqOp(evTable.userId, ctx.user.id), eqOp(evTable.type, "open"), gte(evTable.createdAt, since)))
-          .groupBy(sqlOp`DATE(${evTable.createdAt})`);
+          .where(andOp(
+            eqOp(evTable.userId, ctx.user.id),
+            inArrayOp(evTable.type, ["open", "click"]),
+            gte(evTable.createdAt, since),
+          ));
 
-        const clickRows = await db
-          .select({
-            day: sqlOp<string>`DATE(${evTable.createdAt})`,
-            count: sqlOp<number>`count(distinct ${evTable.requestId})`,
-          })
-          .from(evTable)
-          .where(andOp(eqOp(evTable.userId, ctx.user.id), eqOp(evTable.type, "click"), gte(evTable.createdAt, since)))
-          .groupBy(sqlOp`DATE(${evTable.createdAt})`);
-
-        const map = new Map<string, { sends: number; opens: number; clicks: number }>();
-        const get = (d: string) => map.get(d) ?? { sends: 0, opens: 0, clicks: 0 };
-        for (const r of sendRows) { const e = get(r.day); e.sends = Number(r.count); map.set(r.day, e); }
-        for (const r of openRows) { const e = get(r.day); e.opens = Number(r.count); map.set(r.day, e); }
-        for (const r of clickRows) { const e = get(r.day); e.clicks = Number(r.count); map.set(r.day, e); }
-
-        const result: { date: string; sends: number; opens: number; clicks: number }[] = [];
-        for (let i = input.days - 1; i >= 0; i--) {
-          const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
-          const key = d.toISOString().slice(0, 10);
-          const entry = map.get(key) ?? { sends: 0, opens: 0, clicks: 0 };
-          result.push({ date: key, ...entry });
-        }
-        return result;
+        return buildDailyTrend({ days: input.days, nowMs, sendRows, eventRows });
       }),
 
     /**
