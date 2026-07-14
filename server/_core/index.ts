@@ -33,6 +33,7 @@ import { registerPublicApiRoutes } from "../publicApi";
 import { registerMobileAuthRoutes } from "../mobileAuth";
 import { authHealthHandler } from "../authHealthRoutes";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
+import { apiNotFoundHandler } from "./apiFallback";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -498,6 +499,10 @@ async function startServer() {
       createContext,
     })
   );
+  // API requests must always return JSON. Do not let unmatched API paths fall
+  // through to Vite's HTML app-shell fallback during restarts or route errors.
+  app.use("/api", apiNotFoundHandler);
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);

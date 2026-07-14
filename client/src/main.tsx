@@ -7,6 +7,7 @@ import { createRoot } from "react-dom/client";
 import superjson from "superjson";
 import App from "./App";
 import { getLoginUrl } from "./const";
+import { apiFetch } from "./lib/apiFetch";
 import "./index.css";
 
 // ── Retry helper ──────────────────────────────────────────────────────────────
@@ -87,12 +88,7 @@ const trpcClient = trpc.createClient({
     httpBatchLink({
       url: "/api/trpc",
       transformer: superjson,
-      fetch(input, init) {
-        return globalThis.fetch(input, {
-          ...(init ?? {}),
-          credentials: "include",
-        });
-      },
+      fetch: apiFetch,
     }),
   ],
 });

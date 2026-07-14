@@ -15,3 +15,7 @@
 - [ ] Add the new Settings keys to English and every supported non-English locale
 - [ ] Bump the locale cache version and verify locale parity
 - [ ] Run full TypeScript, Vitest, and representative mobile language validation
+- [x] Reproduce and trace the Settings tRPC query and mutation responses that return HTML instead of JSON
+- [x] Fix the client/server routing or runtime condition causing Settings API calls to hit the HTML fallback
+- [x] Add regression coverage for the corrected tRPC endpoint behavior
+- [x] Validate Settings queries and mutations in the browser, then run focused TypeScript and Vitest checks
