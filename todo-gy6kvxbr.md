@@ -159,3 +159,8 @@
 - [x] Add regression coverage for source-verified, target-verified, both-verified, and both-unverified SMTP merge outcomes.
 - [x] Run TypeScript, focused tests, the full Vitest suite, and the production build, then publish the verified SMTP merge update.
 - [x] Document the exact administrator workflow for removing an invalid SMTP connection from a duplicate account before combining it.
+- [x] Expose each user’s SMTP connection and verification status in the admin user-management data contract and Manage Users interface.
+- [x] Add an admin-only SMTP credential removal procedure that deletes only the selected user’s SMTP record and preserves all other account data.
+- [x] Add a Remove SMTP action with a typed email-address confirmation gate before permanent credential deletion.
+- [x] Add authorization, exact-email confirmation, SMTP-only deletion, status rendering, and UI interaction regression coverage.
+- [x] Run focused tests, the full Vitest suite, TypeScript validation, production build, visual verification, and publish the admin SMTP controls.

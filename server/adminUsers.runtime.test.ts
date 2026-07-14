@@ -8,11 +8,13 @@ import type { TrpcContext } from "./_core/context";
 const mocks = vi.hoisted(() => ({
   getDb: vi.fn(),
   updateWhere: vi.fn(),
+  deleteWhere: vi.fn(),
   upsertProfile: vi.fn(),
   setRoleMutate: vi.fn(),
   setLifeMutate: vi.fn(),
   deleteMutate: vi.fn(),
   combineMutate: vi.fn(),
+  removeSmtpMutate: vi.fn(),
 }));
 
 const directoryRows = [
@@ -24,6 +26,9 @@ const directoryRows = [
     createdAt: new Date("2026-01-01T00:00:00Z"),
     lastSignedIn: new Date("2026-07-01T00:00:00Z"),
     tier: "free" as const,
+    smtpCredentialId: 101,
+    smtpVerified: 1,
+    smtpFromEmail: "owner@example.test",
   },
   {
     id: 2,
@@ -33,6 +38,9 @@ const directoryRows = [
     createdAt: new Date("2026-02-01T00:00:00Z"),
     lastSignedIn: new Date("2026-07-02T00:00:00Z"),
     tier: "lifetime" as const,
+    smtpCredentialId: 202,
+    smtpVerified: 0,
+    smtpFromEmail: "life@example.test",
   },
 ];
 
@@ -43,14 +51,20 @@ function createDb(options?: { targetRole?: "admin" | "user"; targetTier?: "free"
         return { from: () => ({ where: async () => [{ count: 12 }] }) };
       }
       if ("id" in selection) {
-        return {
-          from: () => ({
-            leftJoin: () => ({
-              where: () => ({
-                orderBy: () => ({ limit: () => ({ offset: async () => directoryRows }) }),
-              }),
-            }),
+        const listChain = {
+          leftJoin: () => listChain,
+          where: () => ({
+            orderBy: () => ({ limit: () => ({ offset: async () => directoryRows }) }),
           }),
+        };
+        return {
+          from: () => "smtpCredentialId" in selection
+            ? listChain
+            : {
+                where: () => ({
+                  limit: async () => [{ id: 2, email: "target@example.test" }],
+                }),
+              },
         };
       }
       return {
@@ -69,6 +83,7 @@ function createDb(options?: { targetRole?: "admin" | "user"; targetTier?: "free"
       };
     }),
     update: vi.fn(() => ({ set: () => ({ where: mocks.updateWhere }) })),
+    delete: vi.fn(() => ({ where: mocks.deleteWhere })),
     insert: vi.fn(() => ({ values: () => ({ onDuplicateKeyUpdate: mocks.upsertProfile }) })),
   };
 }
@@ -109,6 +124,8 @@ vi.mock("@/lib/trpc", () => ({
             users: directoryRows.map((row) => ({
               ...row,
               lifeAccess: row.role === "admin" || row.tier === "lifetime",
+              smtpConnected: row.smtpCredentialId !== null,
+              smtpVerified: row.smtpVerified === 1,
             })),
             page: 1,
             pageSize: 25,
@@ -130,6 +147,9 @@ vi.mock("@/lib/trpc", () => ({
       },
       combineAccounts: {
         useMutation: () => ({ mutate: mocks.combineMutate, isPending: false, variables: undefined }),
+      },
+      removeUserSmtp: {
+        useMutation: () => ({ mutate: mocks.removeSmtpMutate, isPending: false, variables: undefined }),
       },
     },
   },
@@ -160,6 +180,7 @@ describe("administrator user-management runtime", () => {
     vi.clearAllMocks();
     vi.stubEnv("JWT_SECRET", "admin-users-runtime-test-secret-long-enough");
     mocks.updateWhere.mockResolvedValue(undefined);
+    mocks.deleteWhere.mockResolvedValue({ rowsAffected: 1 });
     mocks.upsertProfile.mockResolvedValue(undefined);
   });
 
@@ -170,6 +191,7 @@ describe("administrator user-management runtime", () => {
     await expect(caller.admin.setLifeAccess({ userId: 2, enabled: true })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.deleteUser({ userId: 2, confirmation: "DELETE" })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.combineAccounts({ sourceUserId: 2, targetUserId: 1, confirmation: "COMBINE" })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(caller.admin.removeUserSmtp({ userId: 2, confirmationEmail: "target@example.test" })).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 
   it("returns searched, paginated accounts with effective administrator and Life access", async () => {
@@ -177,8 +199,8 @@ describe("administrator user-management runtime", () => {
     const result = await appRouter.createCaller(context("admin")).admin.listUsers({ query: "member", page: 2, pageSize: 10 });
     expect(result).toMatchObject({ page: 2, pageSize: 10, total: 12, pageCount: 2 });
     expect(result.users).toEqual([
-      expect.objectContaining({ id: 1, role: "admin", lifeAccess: true }),
-      expect.objectContaining({ id: 2, tier: "lifetime", lifeAccess: true }),
+      expect.objectContaining({ id: 1, role: "admin", lifeAccess: true, smtpConnected: true, smtpVerified: true, smtpFromEmail: "owner@example.test" }),
+      expect.objectContaining({ id: 2, tier: "lifetime", lifeAccess: true, smtpConnected: true, smtpVerified: false, smtpFromEmail: "life@example.test" }),
     ]);
   });
 
@@ -208,13 +230,32 @@ describe("administrator user-management runtime", () => {
       message: "Administrators always have Life access. Change the role first.",
     });
   });
+
+  it("requires the target user's exact email before deleting only their SMTP credentials", async () => {
+    mocks.getDb.mockResolvedValue(createDb());
+    const caller = appRouter.createCaller(context("admin"));
+
+    await expect(caller.admin.removeUserSmtp({ userId: 2, confirmationEmail: "wrong@example.test" })).rejects.toMatchObject({
+      code: "BAD_REQUEST",
+      message: "Type the user's exact email address to remove SMTP credentials.",
+    });
+    expect(mocks.deleteWhere).not.toHaveBeenCalled();
+
+    await expect(caller.admin.removeUserSmtp({ userId: 2, confirmationEmail: " TARGET@example.test " })).resolves.toEqual({ ok: true, removed: true });
+    expect(mocks.deleteWhere).toHaveBeenCalledTimes(1);
+    expect(mocks.updateWhere).not.toHaveBeenCalled();
+    expect(mocks.upsertProfile).not.toHaveBeenCalled();
+  });
 });
 
 describe("administrator user-management rendered workflow", () => {
   let AdminUsersPage: React.ComponentType;
+  let matchesTypedEmail: (confirmation: string, email: string | null | undefined) => boolean;
 
   beforeAll(async () => {
-    AdminUsersPage = (await import("../client/src/pages/AdminUsers")).default;
+    const module = await import("../client/src/pages/AdminUsers");
+    AdminUsersPage = module.default;
+    matchesTypedEmail = module.matchesTypedEmail;
   });
 
   it("renders search, account states, role, Life, combine, delete, pagination, and self-protection controls", () => {
@@ -231,6 +272,11 @@ describe("administrator user-management rendered workflow", () => {
     expect(html).toMatch(/Remove admin<\/button>/);
     expect(html).toMatch(/Remove Life<\/button>/);
     expect(html).toContain("Combine");
+    expect(html).toContain("SMTP verified");
+    expect(html).toContain("SMTP unverified");
+    expect(html).toContain("Remove SMTP");
+    expect(html).toContain('data-testid="smtp-status-1"');
+    expect(html).toContain('data-testid="smtp-status-2"');
     expect(html).toContain("Delete");
     expect(html).toContain("disabled");
   });
@@ -243,5 +289,17 @@ describe("administrator user-management rendered workflow", () => {
     expect(source).toContain('defaultValue: "survives"');
     expect(source).toContain("sourceUserId: combineSource.id");
     expect(source).toContain("targetUserId: Number(combineTargetId)");
+  });
+
+  it("gates permanent SMTP removal behind the target email and sends only the SMTP removal payload", () => {
+    expect(matchesTypedEmail(" OWNER@EXAMPLE.TEST ", "owner@example.test")).toBe(true);
+    expect(matchesTypedEmail("wrong@example.test", "owner@example.test")).toBe(false);
+    expect(matchesTypedEmail("", null)).toBe(false);
+
+    const source = fs.readFileSync(path.join(process.cwd(), "client/src/pages/AdminUsers.tsx"), "utf8");
+    expect(source).toContain('id="remove-smtp-confirmation"');
+    expect(source).toContain("matchesTypedEmail(smtpConfirmation, smtpAccount.email)");
+    expect(source).toContain("removeUserSmtp.mutate({ userId: smtpAccount.id, confirmationEmail: smtpConfirmation.trim() })");
+    expect(source).toContain('defaultValue: "The user account, contacts, requests, plan, and history are not deleted."');
   });
 });

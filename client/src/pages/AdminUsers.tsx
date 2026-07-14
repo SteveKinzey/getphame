@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useDebounce } from "use-debounce";
-import { AlertTriangle, ArrowDown, ArrowLeft, ChevronLeft, ChevronRight, Crown, Loader2, Merge, Search, ShieldCheck, Trash2, Users } from "lucide-react";
+import { AlertTriangle, ArrowDown, ArrowLeft, ChevronLeft, ChevronRight, Crown, Loader2, MailCheck, MailWarning, Merge, Search, ShieldCheck, Trash2, Unplug, Users } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -15,6 +15,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+
+export function matchesTypedEmail(confirmation: string, email: string | null | undefined) {
+  return Boolean(email) && confirmation.trim().toLowerCase() === email!.trim().toLowerCase();
+}
 
 export default function AdminUsersPage() {
   const { user } = useAuth();
@@ -43,6 +47,8 @@ export default function AdminUsersPage() {
   const [combineSource, setCombineSource] = useState<DirectoryAccount | null>(null);
   const [combineTargetId, setCombineTargetId] = useState("");
   const [combineConfirmation, setCombineConfirmation] = useState("");
+  const [smtpAccount, setSmtpAccount] = useState<DirectoryAccount | null>(null);
+  const [smtpConfirmation, setSmtpConfirmation] = useState("");
 
   const mergeCandidates = trpc.admin.listUsers.useQuery(
     { query: "", page: 1, pageSize: 100 },
@@ -86,11 +92,23 @@ export default function AdminUsersPage() {
     },
     onError: (error) => toast.error(error.message),
   });
+  const removeUserSmtp = trpc.admin.removeUserSmtp.useMutation({
+    onSuccess: (data) => {
+      toast.success(data.removed
+        ? t("adminUsers.smtpRemoved", { defaultValue: "SMTP credentials removed." })
+        : t("adminUsers.smtpAlreadyAbsent", { defaultValue: "No SMTP credentials were connected." }));
+      setSmtpAccount(null);
+      setSmtpConfirmation("");
+      void refresh();
+    },
+    onError: (error) => toast.error(error.message),
+  });
 
   if (!user || user.role !== "admin") return null;
 
   const busyUserId = setRole.variables?.userId
     ?? setLifeAccess.variables?.userId
+    ?? removeUserSmtp.variables?.userId
     ?? deleteUser.variables?.userId
     ?? combineAccounts.variables?.sourceUserId
     ?? combineAccounts.variables?.targetUserId;
@@ -138,7 +156,7 @@ export default function AdminUsersPage() {
           <div className="flex flex-col gap-3">
             {directory.data?.users.map((account) => {
               const isSelf = account.id === user.id;
-              const isBusy = busyUserId === account.id && (setRole.isPending || setLifeAccess.isPending || deleteUser.isPending || combineAccounts.isPending);
+              const isBusy = busyUserId === account.id && (setRole.isPending || setLifeAccess.isPending || removeUserSmtp.isPending || deleteUser.isPending || combineAccounts.isPending);
               return (
                 <article key={account.id} className="rounded-2xl bg-white p-4 shadow-sm" data-testid={`admin-user-${account.id}`}>
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -153,6 +171,24 @@ export default function AdminUsersPage() {
                         )}
                       </div>
                       <p className="truncate text-sm font-semibold rr-text-navy-mid">{account.email || t("adminUsers.noEmail", { defaultValue: "No email" })}</p>
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        {account.smtpConnected ? (
+                          <span
+                            data-testid={`smtp-status-${account.id}`}
+                            className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-black ${account.smtpVerified ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-900"}`}
+                          >
+                            {account.smtpVerified ? <MailCheck size={13} /> : <MailWarning size={13} />}
+                            {account.smtpVerified
+                              ? t("adminUsers.smtpVerified", { defaultValue: "SMTP verified" })
+                              : t("adminUsers.smtpUnverified", { defaultValue: "SMTP unverified" })}
+                          </span>
+                        ) : (
+                          <span data-testid={`smtp-status-${account.id}`} className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-1 text-xs font-black text-slate-600">
+                            <Unplug size={13} /> {t("adminUsers.smtpNotConnected", { defaultValue: "No SMTP" })}
+                          </span>
+                        )}
+                        {account.smtpFromEmail && <span className="truncate text-xs font-semibold rr-text-navy-muted">{account.smtpFromEmail}</span>}
+                      </div>
                       <p className="mt-1 text-xs rr-text-navy-muted">
                         {t("adminUsers.accountMeta", {
                           defaultValue: "Joined {{date}} · Stored plan: {{tier}}",
@@ -194,6 +230,17 @@ export default function AdminUsersPage() {
                         className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3 text-sm font-black text-blue-800 transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45"
                       >
                         <Merge size={15} /> {t("adminUsers.combine", { defaultValue: "Combine" })}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={isBusy || !account.smtpConnected || !account.email}
+                        onClick={() => {
+                          setSmtpAccount(account);
+                          setSmtpConfirmation("");
+                        }}
+                        className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 text-sm font-black text-amber-900 transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45"
+                      >
+                        <Unplug size={15} /> {t("adminUsers.removeSmtp", { defaultValue: "Remove SMTP" })}
                       </button>
                       <button
                         type="button"
@@ -271,6 +318,52 @@ export default function AdminUsersPage() {
             >
               {deleteUser.isPending && <Loader2 className="mr-2 animate-spin" size={16} />}
               {t("adminUsers.deleteForever", { defaultValue: "Delete permanently" })}
+            </button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog open={Boolean(smtpAccount)} onOpenChange={(open) => {
+        if (!open && !removeUserSmtp.isPending) {
+          setSmtpAccount(null);
+          setSmtpConfirmation("");
+        }
+      }}>
+        <AlertDialogContent className="border-0 bg-white text-slate-950">
+          <AlertDialogHeader>
+            <div className="mb-1 flex size-11 items-center justify-center rounded-full bg-amber-100 text-amber-900"><Unplug size={22} /></div>
+            <AlertDialogTitle className="text-xl font-black text-slate-950">{t("adminUsers.removeSmtpTitle", { defaultValue: "Remove SMTP credentials?" })}</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-3 text-sm font-medium text-slate-600">
+              <span className="block">
+                {t("adminUsers.removeSmtpDescription", {
+                  defaultValue: "This permanently removes the SMTP host, username, encrypted password, sender details, and verification state for {{email}}.",
+                  email: smtpAccount?.email || "this user",
+                })}
+              </span>
+              <span className="block font-black text-amber-900">{t("adminUsers.removeSmtpPreservesAccount", { defaultValue: "The user account, contacts, requests, plan, and history are not deleted." })}</span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <label className="text-sm font-black text-slate-900" htmlFor="remove-smtp-confirmation">
+            {t("adminUsers.typeEmailToRemoveSmtp", { defaultValue: "Type {{email}} to confirm", email: smtpAccount?.email || "the user's email" })}
+          </label>
+          <input
+            id="remove-smtp-confirmation"
+            value={smtpConfirmation}
+            onChange={(event) => setSmtpConfirmation(event.target.value)}
+            autoComplete="off"
+            inputMode="email"
+            className="min-h-11 rounded-xl border border-slate-300 px-3 text-base font-black text-slate-950 outline-none focus:ring-2 focus:ring-amber-400"
+          />
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={removeUserSmtp.isPending}>{t("common.cancel", { defaultValue: "Cancel" })}</AlertDialogCancel>
+            <button
+              type="button"
+              disabled={!smtpAccount || !matchesTypedEmail(smtpConfirmation, smtpAccount.email) || removeUserSmtp.isPending}
+              onClick={() => smtpAccount && removeUserSmtp.mutate({ userId: smtpAccount.id, confirmationEmail: smtpConfirmation.trim() })}
+              className="inline-flex min-h-10 items-center justify-center rounded-md bg-amber-700 px-4 text-sm font-black text-white transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45"
+            >
+              {removeUserSmtp.isPending && <Loader2 className="mr-2 animate-spin" size={16} />}
+              {t("adminUsers.removeSmtpPermanently", { defaultValue: "Remove SMTP permanently" })}
             </button>
           </AlertDialogFooter>
         </AlertDialogContent>

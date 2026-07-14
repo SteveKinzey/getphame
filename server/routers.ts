@@ -2308,9 +2308,13 @@ export const appRouter = router({
             createdAt: users.createdAt,
             lastSignedIn: users.lastSignedIn,
             tier: businessProfiles.tier,
+            smtpCredentialId: smtpCredentials.id,
+            smtpVerified: smtpCredentials.verified,
+            smtpFromEmail: smtpCredentials.user,
           })
           .from(users)
           .leftJoin(businessProfiles, eq(users.id, businessProfiles.userId))
+          .leftJoin(smtpCredentials, eq(users.id, smtpCredentials.userId))
           .where(whereClause)
           .orderBy(desc(users.createdAt))
           .limit(input.pageSize)
@@ -2321,6 +2325,8 @@ export const appRouter = router({
             ...row,
             tier: row.tier ?? "free",
             lifeAccess: row.role === "admin" || row.tier === "lifetime",
+            smtpConnected: row.smtpCredentialId !== null,
+            smtpVerified: row.smtpVerified === 1,
           })),
           page: input.page,
           pageSize: input.pageSize,
@@ -2378,6 +2384,29 @@ export const appRouter = router({
           });
         console.log(`[Admin] User ${input.userId} Life access ${input.enabled ? "enabled" : "disabled"} by admin ${ctx.user.id}`);
         return { ok: true };
+      }),
+
+    removeUserSmtp: adminProcedure
+      .input(z.object({
+        userId: z.number().int().positive(),
+        confirmationEmail: z.string().trim().email(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const [target] = await db
+          .select({ id: users.id, email: users.email })
+          .from(users)
+          .where(eq(users.id, input.userId))
+          .limit(1);
+        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
+        if (!target.email || input.confirmationEmail.toLowerCase() !== target.email.trim().toLowerCase()) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Type the user's exact email address to remove SMTP credentials." });
+        }
+        const result = await db.delete(smtpCredentials).where(eq(smtpCredentials.userId, input.userId));
+        const removed = Number((result as { rowsAffected?: number })?.rowsAffected ?? 0) > 0;
+        console.log(`[Admin] SMTP credentials for user ${input.userId} ${removed ? "removed" : "were already absent"} by admin ${ctx.user.id}`);
+        return { ok: true, removed };
       }),
 
     deleteUser: adminProcedure
