@@ -126,7 +126,7 @@ describe("email magic-link verification", () => {
     );
   });
 
-  it("reuses an existing account found by normalized email and redirects the returning user home", async () => {
+  it("prefers the canonical normalized-email account over a stale direct-email identity", async () => {
     const record = {
       id: 88,
       email: "steve@example.test",
@@ -152,9 +152,16 @@ describe("email magic-link verification", () => {
       name: "Steve Existing",
       role: "user",
     };
+    const staleEmailAccount = {
+      id: 84,
+      openId: `email_${record.email}`,
+      email: record.email,
+      name: null,
+      role: "user",
+    };
 
     mocks.getDb.mockResolvedValue(database);
-    mocks.getUserByOpenId.mockResolvedValue(undefined);
+    mocks.getUserByOpenId.mockResolvedValue(staleEmailAccount);
     mocks.getUserByEmail.mockResolvedValue(existingAccount);
     mocks.upsertUser.mockResolvedValue(undefined);
     mocks.createSessionToken.mockResolvedValue("existing-account-session");
@@ -177,6 +184,7 @@ describe("email magic-link verification", () => {
       existingAccount.openId,
       expect.objectContaining({ name: existingAccount.name }),
     );
+    expect(mocks.getUserByOpenId).not.toHaveBeenCalled();
     expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
   });
 

@@ -353,9 +353,15 @@ export function registerEmailAuthRoutes(app: Express) {
       // Resolve both direct email-login accounts and accounts originally created
       // through Google, Apple, or another provider. This prevents a returning
       // customer from receiving a second empty account when using a magic link.
+      // Resolve the canonical data-owning account first. Historical releases
+      // could leave a direct `email_<address>` identity beside an older Google
+      // or Apple account for the same email. getUserByEmail ranks those
+      // candidates by role, paid access, onboarding data, and age; checking the
+      // direct email openId first would bypass that ranking and sign the user
+      // into the stale empty account.
       const existingUser =
-        (await db.getUserByOpenId(emailOpenId)) ??
-        (await db.getUserByEmail(email));
+        (await db.getUserByEmail(email)) ??
+        (await db.getUserByOpenId(emailOpenId));
       const isNewUser = !existingUser;
       const sessionOpenId = existingUser?.openId ?? emailOpenId;
       // Session verification requires a non-empty name. The previous empty

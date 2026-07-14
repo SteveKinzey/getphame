@@ -119,3 +119,6 @@
 - [x] Repair the magic-link verification, account resolution, session cookie, or redirect failure while preserving existing Apple, Google, and email authentication behavior.
 - [x] Add focused regression coverage for the exact failure and rerun TypeScript, the full Vitest suite, and the production build.
 - [ ] Publish the verified repair and confirm a newly requested custom-domain magic link reaches the authenticated dashboard.
+- [x] Determine whether the blocked `static.cloudflareinsights.com` beacon is an authentication dependency or an isolated optional-analytics CSP warning.
+- [ ] Inspect the fresh post-`71c480aa` production magic-link lifecycle and confirm whether the issued session now passes JWT verification.
+- [x] Change CSP or authentication code only if evidence shows a remaining functional failure, then rerun focused and complete release gates.
