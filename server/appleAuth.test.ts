@@ -152,9 +152,10 @@ describe("Apple Sign In callback", () => {
     expect(mocks.upsertUser).not.toHaveBeenCalled();
     expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
     expect(mocks.createSessionToken).toHaveBeenCalledWith(
-      "apple_apple-user-123",
+      "google-existing-steve",
       expect.objectContaining({ name: "Steve Existing" }),
     );
+    expect(response.headers["set-cookie"]?.[0]).toContain("signed-session-token");
   });
 
   it("returns a safe callback error when Apple does not provide an authorization code", async () => {

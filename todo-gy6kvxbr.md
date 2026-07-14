@@ -100,3 +100,8 @@
 - [x] Repair Apple callback validation, identity resolution, session creation, or redirect handling without creating another duplicate user or losing existing account data.
 - [x] Add regression coverage for a successful Apple callback, an existing-email Apple login, and safe callback failure handling.
 - [ ] Verify Apple Sign In on the published custom domain, run complete quality gates, and publish the repair before resuming checkout validation.
+- [x] Capture the second failed Apple callback after the authorization-code exchange release and identify its distinct production error signature.
+- [x] Repair the newly identified Apple token-exchange, client-secret, token-verification, identity-linking, or session failure without creating another account.
+- [ ] Add regression coverage for the exact second-stage Apple callback failure and publish the corrected release.
+- [x] Verify session JWT identities resolve through `login_identity_alias` before OAuth fallback; the shared user lookup already enforces this safeguard.
+- [x] Create existing-email Apple sessions with the canonical account identity and add privacy-safe callback-stage logging so the repaired production flow is both race-resistant and diagnosable.

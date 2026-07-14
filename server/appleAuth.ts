@@ -178,14 +178,25 @@ export function registerAppleAuthRoutes(app: Express) {
         }
       }
 
-      // Create session JWT (same mechanism as Google OAuth)
-      const sessionToken = await sdk.createSessionToken(openId, {
+      // Create the session with the canonical account identity. For an Apple
+      // identity linked by verified email, this avoids depending on immediate
+      // alias visibility on the first request after the callback.
+      const sessionOpenId = existingUser?.openId ?? openId;
+      const sessionToken = await sdk.createSessionToken(sessionOpenId, {
         name: name ?? "",
         expiresInMs: ONE_YEAR_MS,
       });
 
       const cookieOptions = getSessionCookieOptions(req);
-       res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+      console.info("[AppleAuth] Callback completed", {
+        accountResolution: existingEmailUser
+          ? "linked_existing_email"
+          : existingIdentityUser
+            ? "existing_apple_identity"
+            : "created_apple_identity",
+        canonicalSession: sessionOpenId !== openId,
+      });
       // Redirect to a same-origin landing page instead of / directly.
       // Apple's form_post is cross-origin (appleid.apple.com), so Safari ITP may
       // not send the session cookie on the immediate redirect. The landing page
