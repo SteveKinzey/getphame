@@ -16,6 +16,7 @@ const LANGS: { code: SupportedLang; label: string; native: string; flag: string 
   { code: "en",    label: "EN", native: "English",   flag: "🇬🇧" },
   { code: "th",    label: "TH", native: "ภาษาไทย",   flag: "🇹🇭" },
   { code: "zh-TW", label: "TW", native: "繁體中文",   flag: "🇹🇼" },
+  { code: "zh-CN", label: "CN", native: "简体中文",   flag: "🇨🇳" },
   { code: "fr",    label: "FR", native: "Français",  flag: "🇫🇷" },
   { code: "es",    label: "ES", native: "Español",   flag: "🇪🇸" },
   { code: "it",    label: "IT", native: "Italiano",  flag: "🇮🇹" },

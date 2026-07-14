@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Menu, X } from "lucide-react";
 import BrandLockup from "@/components/BrandLockup";
 import LanguageFlyout from "@/components/LanguageFlyout";
 
-const navLinks = [
-  { label: "How It Works", href: "#how-it-works" },
-  { label: "Product", href: "#product" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "FAQ", href: "#faq" },
-];
-
 export default function Navbar() {
+  const { t } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navLinks = [
+    { label: t("landing.navbar.howItWorks", { defaultValue: "How It Works" }), href: "#how-it-works" },
+    { label: t("landing.navbar.product", { defaultValue: "Product" }), href: "#product" },
+    { label: t("landing.navbar.pricing", { defaultValue: "Pricing" }), href: "#pricing" },
+    { label: t("landing.navbar.faq", { defaultValue: "FAQ" }), href: "#faq" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -60,13 +62,13 @@ export default function Navbar() {
             href="/onboarding"
             className="text-base font-semibold text-slate-200 hover:text-white transition-colors"
           >
-            Sign In
+            {t("landing.navbar.signIn", { defaultValue: "Sign In" })}
           </a>
           <a
             href="/onboarding"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-lg hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_15px_oklch(0.78_0.15_75/0.2)]"
           >
-            Get Started Free
+            {t("landing.navbar.getStartedFree", { defaultValue: "Get Started Free" })}
           </a>
         </div>
 
@@ -76,7 +78,7 @@ export default function Navbar() {
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="p-2 text-white"
-            aria-label="Toggle menu"
+            aria-label={t("landing.navbar.toggleMenu", { defaultValue: "Toggle menu" })}
           >
             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -102,13 +104,13 @@ export default function Navbar() {
               href="/onboarding"
               className="text-lg font-bold text-white py-2.5"
             >
-              Sign In
+              {t("landing.navbar.signIn", { defaultValue: "Sign In" })}
             </a>
             <a
               href="/onboarding"
               className="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-primary text-primary-foreground font-semibold text-base rounded-xl mt-2"
             >
-              Get Started Free
+              {t("landing.navbar.getStartedFree", { defaultValue: "Get Started Free" })}
             </a>
           </div>
         </div>

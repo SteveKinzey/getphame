@@ -68,6 +68,20 @@ describe("Get Phame regression contracts", () => {
     expect(layout).toContain("<ShieldCheck");
   });
 
+  it("places a translated logout action between the theme control and unchanged profile block", () => {
+    const layout = readProjectFile("../client/src/components/AppLayout.tsx");
+    const themeIndex = layout.indexOf("{/* Theme toggle */}");
+    const logoutIndex = layout.indexOf("data-testid=\"sidebar-logout\"");
+    const profileIndex = layout.indexOf("{/* User avatar */}");
+
+    expect(themeIndex).toBeGreaterThan(-1);
+    expect(logoutIndex).toBeGreaterThan(themeIndex);
+    expect(profileIndex).toBeGreaterThan(logoutIndex);
+    expect(layout).toContain('t("logout.button", { defaultValue: "Log Out" })');
+    expect(layout).toContain('void logout().then(() => navigate("/"))');
+    expect(layout).toContain("<LogOut");
+  });
+
   it("requires a clear plan-switch confirmation before handing Monthly or Annual users to Stripe", () => {
     const dialog = readProjectFile("../client/src/components/PlanSwitchDialog.tsx");
     const upgrade = readProjectFile("../client/src/pages/Upgrade.tsx");

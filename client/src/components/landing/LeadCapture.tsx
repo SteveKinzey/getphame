@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Mail, ArrowRight, Check, Loader2 } from "lucide-react";
 import FadeUp from "./FadeUp";
 import { trpc } from "@/lib/trpc";
 
 export default function LeadCapture() {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -14,7 +16,7 @@ export default function LeadCapture() {
       setError(null);
     },
     onError: (err) => {
-      setError(err.message || "Something went wrong. Please try again.");
+      setError(err.message || t("landing.leadCapture.errorMessage", { defaultValue: "Something went wrong. Please try again." }));
     },
   });
 
@@ -38,10 +40,10 @@ export default function LeadCapture() {
                 <Mail size={24} className="text-primary" />
               </div>
               <h2 className="font-display font-bold text-2xl md:text-3xl text-white mb-3">
-                Not ready to commit?
+                {t("landing.leadCapture.heading", { defaultValue: "Not ready to commit?" })}
               </h2>
               <p className="text-slate-200 font-medium mb-8 max-w-md mx-auto">
-                Get a free guide on how to 3× your Google reviews in 30 days — plus early access to new features and reputation tips.
+                {t("landing.leadCapture.description", { defaultValue: "Get a free guide on how to 3× your Google reviews in 30 days — plus early access to new features and reputation tips." })}
               </p>
 
               {!submitted ? (
@@ -51,7 +53,7 @@ export default function LeadCapture() {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter your email"
+                      placeholder={t("landing.leadCapture.emailPlaceholder", { defaultValue: "Enter your email" })}
                       required
                       disabled={submitLead.isPending}
                       className="flex-1 px-4 py-3.5 bg-[#1a2744] border border-[#2a3a5c] rounded-xl text-white placeholder:text-slate-400 font-medium focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all disabled:opacity-60"
@@ -64,11 +66,11 @@ export default function LeadCapture() {
                       {submitLead.isPending ? (
                         <>
                           <Loader2 size={15} className="animate-spin" />
-                          Sending...
+                          {t("landing.leadCapture.sending", { defaultValue: "Sending..." })}
                         </>
                       ) : (
                         <>
-                          Send Guide
+                          {t("landing.leadCapture.sendGuideButton", { defaultValue: "Send Guide" })}
                           <ArrowRight size={15} />
                         </>
                       )}
@@ -81,12 +83,12 @@ export default function LeadCapture() {
               ) : (
                 <div className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
                   <Check size={18} className="text-emerald-400" />
-                  <span className="text-emerald-400 font-medium">Check your inbox — guide is on the way!</span>
+                  <span className="text-emerald-400 font-medium">{t("landing.leadCapture.successMessage", { defaultValue: "Check your inbox — guide is on the way!" })}</span>
                 </div>
               )}
 
               <p className="text-sm text-slate-300 font-medium mt-4">
-                No spam. Unsubscribe anytime. We respect your inbox.
+                {t("landing.leadCapture.noSpamMessage", { defaultValue: "No spam. Unsubscribe anytime. We respect your inbox." })}
               </p>
             </div>
           </div>

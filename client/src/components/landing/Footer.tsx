@@ -1,6 +1,9 @@
+import { useTranslation } from "react-i18next";
+
 const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
 
 export default function Footer() {
+  const { t } = useTranslation();
   return (
     <footer className="py-12 border-t border-[#1e3050]">
       <div className="container">
@@ -20,31 +23,34 @@ export default function Footer() {
               href="/privacy-policy"
               className="text-slate-200 hover:text-white transition-colors font-medium"
             >
-              Privacy
+{t("landing.footer.privacy", { defaultValue: "Privacy" })}
             </a>
             <a
               href="/terms-of-service"
               className="text-slate-200 hover:text-white transition-colors font-medium"
             >
-              Terms
+{t("landing.footer.terms", { defaultValue: "Terms" })}
             </a>
             <a
               href="/security"
               className="text-slate-200 hover:text-white transition-colors font-medium"
             >
-              Security
+{t("landing.footer.security", { defaultValue: "Security" })}
             </a>
             <a
               href="mailto:support@getphame.app"
               className="text-slate-200 hover:text-white transition-colors font-medium"
             >
-              Support
+{t("landing.footer.support", { defaultValue: "Support" })}
             </a>
           </div>
 
           {/* Copyright — right column */}
           <p className="text-sm text-slate-300 font-medium text-center md:text-right">
-            © {new Date().getFullYear()} Get Phame. All rights reserved.
+            {t("landing.footer.copyright", {
+              year: new Date().getFullYear(),
+              defaultValue: "© {{year}} Get Phame. All rights reserved.",
+            })}
           </p>
         </div>
       </div>

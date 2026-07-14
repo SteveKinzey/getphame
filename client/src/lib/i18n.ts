@@ -11,7 +11,7 @@ const STORAGE_KEY = "rr-lang";
 const USER_CHOSEN_KEY = "rr-lang-chosen";
 
 // Supported language codes (i18next format)
-export const SUPPORTED_LANGS = ["en", "th", "zh-TW", "fr", "es", "it"] as const;
+export const SUPPORTED_LANGS = ["en", "th", "zh-TW", "zh-CN", "fr", "es", "it"] as const;
 export type SupportedLang = (typeof SUPPORTED_LANGS)[number];
 
 // Human-readable labels for the flyout
@@ -19,6 +19,7 @@ export const LANG_LABELS: Record<SupportedLang, string> = {
   en: "EN",
   th: "TH",
   "zh-TW": "TW",
+  "zh-CN": "CN",
   fr: "FR",
   es: "ES",
   it: "IT",
@@ -28,6 +29,7 @@ export const LANG_NAMES: Record<SupportedLang, string> = {
   en: "English",
   th: "ภาษาไทย",
   "zh-TW": "繁體中文",
+  "zh-CN": "简体中文",
   fr: "Français",
   es: "Español",
   it: "Italiano",
@@ -38,8 +40,8 @@ export function getSavedLang(): SupportedLang | null {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved === "th") return "th";
-    // Migrate any old zh-CN saved preference to zh-TW
-    if (saved === "zh-TW" || saved === "zh-CN") return "zh-TW";
+    if (saved === "zh-TW") return "zh-TW";
+    if (saved === "zh-CN") return "zh-CN";
     if (saved === "fr") return "fr";
     if (saved === "es") return "es";
     if (saved === "it") return "it";
@@ -93,13 +95,18 @@ export function setLanguage(lang: SupportedLang): void {
 /**
  * Detect language from the browser's navigator.language.
  * Maps browser locale to one of our supported languages.
- * Note: zh-TW (Traditional) is used for all Chinese locales since YouTube
- * is blocked in mainland China — Traditional Chinese targets Taiwan/HK/overseas.
+ * Distinguishes Simplified and Traditional Chinese browser locales so each
+ * supported landing translation is selected without rewriting user choice.
  */
 function detectLangFromBrowser(): SupportedLang {
   try {
     const browserLang = (navigator.language || navigator.languages?.[0] || "").toLowerCase();
     if (browserLang.startsWith("th")) return "th";
+    if (
+      browserLang.startsWith("zh-cn") ||
+      browserLang.startsWith("zh-sg") ||
+      browserLang.includes("hans")
+    ) return "zh-CN";
     if (browserLang.startsWith("zh")) return "zh-TW";
     if (browserLang.startsWith("fr")) return "fr";
     if (browserLang.startsWith("es")) return "es";
@@ -117,8 +124,7 @@ async function detectLangFromIP(): Promise<SupportedLang> {
     if (!res.ok) return "en";
     const data = await res.json() as { lang?: string };
     const lang = data.lang;
-    // Map zh-CN from server response to zh-TW
-    if (lang === "zh-CN" || lang === "zh-TW") return "zh-TW";
+    if (lang === "zh-CN" || lang === "zh-TW") return lang;
     if (lang === "th" || lang === "fr" || lang === "es" || lang === "it") {
       return lang as SupportedLang;
     }
@@ -162,11 +168,12 @@ i18n
   .init({
     lng: initialLang,
     fallbackLng: "en",
-    supportedLngs: ["en", "th", "zh-TW", "fr", "es", "it"],
-    ns: ["translation"],
-    defaultNS: "translation",
+    supportedLngs: [...SUPPORTED_LANGS],
+    ns: ["landing", "translation"],
+    defaultNS: "landing",
+    fallbackNS: "translation",
     backend: {
-      loadPath: "/locales/{{lng}}/translation.json?v=phame4",
+      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame6",
     },
     interpolation: {
       escapeValue: false,

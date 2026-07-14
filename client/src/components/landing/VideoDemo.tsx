@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Play, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import FadeUp from "./FadeUp";
@@ -8,6 +9,7 @@ const YOUTUBE_EMBED = "https://www.youtube.com/embed/EWHSE1oyJOk?autoplay=1&rel=
 const YOUTUBE_THUMB = "https://img.youtube.com/vi/EWHSE1oyJOk/maxresdefault.jpg";
 
 export default function VideoDemo() {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   return (
@@ -16,13 +18,13 @@ export default function VideoDemo() {
         <div className="container">
           <FadeUp className="text-center mb-8">
             <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
-              See it in action
+{t("landing.section.tagline", { defaultValue: "See it in action" })}
             </p>
             <h2 className="font-display font-bold text-2xl md:text-3xl text-white mb-2">
-              See How It Works
+{t("landing.section.title", { defaultValue: "See How It Works" })}
             </h2>
             <p className="text-slate-300 font-medium">
-              Watch a quick walkthrough — set up in under 2 minutes
+{t("landing.section.description", { defaultValue: "Watch a quick walkthrough — set up in under 2 minutes" })}
             </p>
           </FadeUp>
 
@@ -31,14 +33,14 @@ export default function VideoDemo() {
               {/* Video thumbnail card */}
               <button
                 onClick={() => setOpen(true)}
-                aria-label="Play product walkthrough video"
+                aria-label={t("landing.thumbnail.playButtonAriaLabel", { defaultValue: "Play product walkthrough video" })}
                 className="group relative w-full rounded-2xl overflow-hidden border border-[#1e3050] hover:border-primary/40 transition-all duration-300 shadow-2xl shadow-black/40 hover:shadow-[0_0_60px_oklch(0.78_0.15_75/0.12)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
                 {/* Thumbnail */}
                 <div className="relative aspect-video bg-[oklch(0.14_0.03_250)]">
                   <img
                     src={YOUTUBE_THUMB}
-                    alt="GetPhame product walkthrough video thumbnail"
+                    alt={t("landing.thumbnail.altText", { defaultValue: "GetPhame product walkthrough video thumbnail" })}
                     className="w-full h-full object-cover opacity-70 group-hover:opacity-85 transition-opacity duration-300"
                     onError={(e) => {
                       // Fallback to hqdefault if maxresdefault fails
@@ -74,11 +76,11 @@ export default function VideoDemo() {
                     <Play size={14} className="text-primary fill-primary ml-0.5" />
                   </div>
                   <div className="text-left">
-                    <p className="text-sm font-semibold text-white">GetPhame — Full Product Walkthrough</p>
-                    <p className="text-xs text-slate-400 font-medium">Connect email · Import customers · Send requests · Track results</p>
+                    <p className="text-sm font-semibold text-white">{t("landing.bottomBar.title", { defaultValue: "GetPhame — Full Product Walkthrough" })}</p>
+                    <p className="text-xs text-slate-400 font-medium">{t("landing.bottomBar.description", { defaultValue: "Connect email · Import customers · Send requests · Track results" })}</p>
                   </div>
                   <div className="ml-auto shrink-0 text-xs font-medium text-primary group-hover:underline">
-                    Watch now →
+{t("landing.bottomBar.watchNow", { defaultValue: "Watch now →" })}
                   </div>
                 </div>
               </button>
@@ -113,7 +115,7 @@ export default function VideoDemo() {
               {/* Close button */}
               <button
                 onClick={() => setOpen(false)}
-                aria-label="Close video"
+                aria-label={t("landing.modal.closeButtonAriaLabel", { defaultValue: "Close video" })}
                 className="absolute -top-10 right-0 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
                 <X size={16} className="text-white" />
@@ -123,7 +125,7 @@ export default function VideoDemo() {
               <div className="relative aspect-video rounded-2xl overflow-hidden border border-[#1e3050] shadow-2xl shadow-black/60">
                 <iframe
                   src={YOUTUBE_EMBED}
-                  title="GetPhame product walkthrough"
+                  title={t("landing.modal.iframeTitle", { defaultValue: "GetPhame product walkthrough" })}
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
                   referrerPolicy="strict-origin-when-cross-origin"

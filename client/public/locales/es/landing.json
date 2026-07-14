@@ -1,0 +1,301 @@
+{
+  "landing": {
+    "comparison": {
+      "getPhamePrice": "$29/mo",
+      "birdeyePrice": "$299/mo",
+      "podiumPrice": "$249/mo",
+      "niceJobPrice": "$75/mo",
+      "gradeUsPrice": "$110/mo",
+      "reviewTrackersPrice": "$89/mo",
+      "compare": "Comparar",
+      "enterpriseFeaturesStartupPrice": "Funciones empresariales. Precio para startups.",
+      "description": "Los grandes cobran $250–$300/mes por herramientas de solicitud de reseñas. Get Phame te ofrece la misma capacidad central por una fracción del costo. Además, una opción de por vida que ellos nunca ofrecerán.",
+      "cheaperThanAlternatives": "más económico que las alternativas empresariales",
+      "platformHeader": "Plataforma",
+      "startingPriceHeader": "Precio inicial",
+      "lifetimeHeader": "De por vida",
+      "pricingDisclaimer": "Precios basados en planes de nivel de entrada publicados públicamente a abril de 2026. Sujetos a cambios."
+    },
+    "faq": {
+      "q1": "¿Se verá como spam?",
+      "a1": "No. Cada correo se envía directamente desde tu propia dirección — no desde un servidor de terceros. Tus clientes ven tu nombre, tu dirección y tu firma. Parece exactamente como si lo hubieras escrito tú mismo. Las tasas de apertura promedian 45–60% porque los destinatarios reconocen al remitente.",
+      "q2": "¿Qué proveedores de correo funcionan?",
+      "a2": "Get Phame funciona con cualquier proveedor de correo que soporte SMTP: Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud y cualquier servidor SMTP personalizado. Si puedes enviar correo desde él, puedes conectarlo a Get Phame.",
+      "q3": "¿Es realmente gratis?",
+      "a3": "Sí. El plan gratuito te da 10 solicitudes de reseña iniciales y, después, 5 más por cada período móvil de 30 días — sin tarjeta de crédito y sin límite de tiempo. Si quieres solicitudes ilimitadas, envíos masivos, recordatorios y sincronización con WooCommerce, actualiza a Pro.",
+      "q4": "¿Puedo importar mi lista de clientes?",
+      "a4": "Absolutamente. Sube un archivo CSV con nombres y correos de clientes, o sincroniza directamente desde WooCommerce. Validamos los correos automáticamente, eliminamos duplicados y marcamos direcciones inválidas antes de enviar.",
+      "q5": "¿Get Phame almacena mi contraseña de correo?",
+      "a5": "Tus credenciales SMTP están cifradas en reposo usando AES-256. Nunca almacenamos contraseñas en texto plano. Tus credenciales solo se usan para enviar correos en tu nombre — no podemos leer tu bandeja de entrada ni acceder a otros datos de correo.",
+      "q6": "¿Mis correos acabarán en spam?",
+      "a6": "Como los correos se envían desde tu propia cuenta (no desde un servidor de envío masivo), tienen la misma entregabilidad que cualquier correo que enviarías manualmente. La reputación de tu dominio, SPF y DKIM aplican normalmente. Esta es una ventaja clave frente a remitentes de terceros.",
+      "q7": "¿Qué pasa con mi lista de clientes?",
+      "a7": "Los datos de tus clientes se almacenan de forma segura y nunca se comparten, venden ni se usan para otro propósito que no sea enviar tus solicitudes de reseña. Puedes exportar o eliminar toda tu lista en cualquier momento. Cumplimos con GDPR y CAN-SPAM.",
+      "q8": "¿Los clientes pueden optar por salir?",
+      "a8": "Sí. Cada correo incluye un enlace para darse de baja. Cuando un cliente se da de baja, se le elimina automáticamente de futuros envíos. Esto te mantiene conforme y protege tu reputación como remitente.",
+      "q9": "¿Necesito conocimientos técnicos para conectar mi correo?",
+      "a9": "No. Para Gmail y Outlook ofrecemos guías paso a paso con capturas. La mayoría de los usuarios se conectan en menos de 60 segundos. Para SMTP personalizado necesitarás la dirección del servidor, puerto y credenciales — tu proveedor de hosting puede proporcionarlos.",
+      "q10": "¿Qué plataformas de reseñas soporta?",
+      "a10": "Cualquier plataforma con un enlace de reseña: Google, Yelp, TripAdvisor, Facebook, Bing Places, Trustpilot, G2, Capterra y más. Solo pega tu enlace de reseña y lo incluiremos en cada solicitud. Puedes cambiar de plataforma en cualquier momento.",
+      "q11": "¿Cómo funciona la sincronización con WooCommerce?",
+      "a11": "Instala nuestro plugin gratuito de WooCommerce, ingresa tu clave API y los nuevos clientes se importan automáticamente después de cada pedido completado. Puedes establecer un retraso (por ejemplo, 7 días después de la compra) antes de que aparezcan en la cola de envío.",
+      "q12": "¿Qué significa ilimitado en el plan Pro?",
+      "a12": "Ilimitado significa sin límite en la cantidad de solicitudes de reseña que puedes enviar por mes. Envía 50 o 5,000 — sin cargos adicionales. El único límite es el propio del proveedor de correo (por ejemplo, Gmail permite ~500/día para cuentas personales, 2,000/día para Workspace).",
+      "sectionTitle": "Preguntas frecuentes",
+      "headline": "Preguntas sobre seguridad del correo, privacidad y configuración",
+      "description": "Todo lo que necesitas saber antes de conectar tu correo y enviar tu primera solicitud de reseña."
+    },
+    "feature1": {
+      "title": "Tu nombre. Tu bandeja. Su confianza.",
+      "description": "Cada solicitud de reseña llega desde tu dirección real. Los clientes reconocen al remitente, la abren — y responden.",
+      "statLabel": "tasa de apertura prom."
+    },
+    "feature2": {
+      "title": "Un clic para enviar a cientos",
+      "description": "Importa tu lista por CSV o sincroniza con WooCommerce, selecciona todo y envía solicitudes personalizadas en segundos. Sin copiar y pegar. Sin trabajo manual.",
+      "statLabel": "envíos por lote"
+    },
+    "feature3": {
+      "title": "Todas las plataformas. Tu elección.",
+      "description": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot y más. Pega tu enlace, cambia de plataforma cuando quieras. Una herramienta para todos tus destinos de reseñas.",
+      "statLabel": "plataformas compatibles"
+    },
+    "whyItWorks": "Por qué funciona",
+    "headline": "De tu bandeja a su reseña",
+    "subHeadline": "La forma más sencilla de convertir clientes satisfechos en reseñas de 5 estrellas — sin herramientas caras ni pedidos incómodos.",
+    "finalCta": {
+      "headlinePart1": "Tu bandeja. Tu reputación.",
+      "headlinePart2": "Tu crecimiento.",
+      "description": "Gratis para siempre: 10 solicitudes iniciales y, después, 5 más por cada período móvil de 30 días. Sin tarjeta. Configura en menos de 2 minutos.",
+      "getStartedButton": "Comenzar gratis",
+      "joinBusinesses": "Únete a cientos de negocios que ya hacen crecer su reputación con Get Phame."
+    },
+    "footer": {
+      "privacy": "Privacidad",
+      "terms": "Términos",
+      "security": "Seguridad",
+      "support": "Soporte",
+      "copyright": "© {{year}} Get Phame. Todos los derechos reservados."
+    },
+    "hero": {
+      "freeToStart": "Gratis para comenzar — No se requiere tarjeta",
+      "headlinePart1": "Consigue más reseñas de 5 estrellas",
+      "headlinePart2": "sin el pedido incómodo",
+      "description": "Envía solicitudes de reseña personalizadas desde tu propia cuenta de correo. Tus clientes ven que viene de ti — no de un remitente genérico.",
+      "ctaVariantA": "Comenzar gratis — Enviar 10 solicitudes",
+      "ctaVariantB": "Obtén tus primeras 10 reseñas gratis",
+      "howItWorks": "Ver cómo funciona",
+      "setupTime": "Configura en menos de 2 minutos",
+      "emailCompatibility": "Funciona con Gmail, Outlook y SMTP",
+      "googleSignInDisclaimer": "Inicia sesión con Google para crear tu cuenta. Solo accedemos a tu nombre y correo — nada más.",
+      "privacyPolicy": "Política de privacidad",
+      "dashboardMockupAlt": "Pantalla de inicio de la app Get Phame con estadísticas de solicitudes de reseña, botón de envío y uso del plan gratuito para negocios locales"
+    },
+    "howItWorks": {
+      "setupSteps": {
+        "step1": {
+          "title": "Conecta tu correo",
+          "description": "Vincula tu Gmail, Outlook o cualquier SMTP en 60 segundos. Credenciales cifradas con AES-256."
+        },
+        "step2": {
+          "title": "Agrega tu enlace de reseña",
+          "description": "Pega tu enlace de Google, Yelp, TripAdvisor o de cualquier plataforma de reseñas. Cambia de plataforma cuando quieras."
+        },
+        "step3": {
+          "title": "Importa tus clientes",
+          "description": "Sube un CSV, sincroniza desde WooCommerce o agrega contactos manualmente. Validamos los correos automáticamente."
+        },
+        "step4": {
+          "title": "Envía y sigue resultados",
+          "description": "Pulsa enviar. Cada cliente recibe un correo personal tuyo. Sigue aperturas, clics y nuevas reseñas en tiempo real."
+        }
+      },
+      "setupInSteps": "Configuración en 4 pasos",
+      "headline": "Dos minutos para tu primera solicitud de reseña",
+      "subtitle": "No se requieren conocimientos técnicos. Sin llamadas de incorporación. Solo conecta, importa y envía.",
+      "getStartedButton": "Comenzar gratis",
+      "setupTime": "Toma menos de 2 minutos configurarlo"
+    },
+    "leadCapture": {
+      "errorMessage": "Algo salió mal. Por favor intenta nuevamente.",
+      "heading": "¿No estás listo para comprometerte?",
+      "description": "Obtén una guía gratuita sobre cómo triplicar tus reseñas de Google en 30 días — además de acceso anticipado a nuevas funciones y consejos de reputación.",
+      "emailPlaceholder": "Ingresa tu correo",
+      "sending": "Enviando...",
+      "sendGuideButton": "Enviar guía",
+      "successMessage": "Revisa tu bandeja — la guía está en camino.",
+      "noSpamMessage": "Sin spam. Cancela la suscripción cuando quieras. Respetamos tu bandeja."
+    },
+    "navbar": {
+      "howItWorks": "Cómo funciona",
+      "product": "Producto",
+      "pricing": "Precios",
+      "faq": "FAQ",
+      "signIn": "Iniciar sesión",
+      "getStartedFree": "Comenzar gratis",
+      "toggleMenu": "Alternar menú"
+    },
+    "pricing": {
+      "free": {
+        "name": "Gratis",
+        "description": "Comienza con 10 solicitudes de reseña y recibe 5 más por cada período móvil de 30 días — sin tarjeta de crédito.",
+        "features": {
+          "requests": "10 solicitudes iniciales + 5 por cada período móvil de 30 días",
+          "email": "Conecta 1 cuenta de correo",
+          "platform": "Cualquier plataforma de reseñas",
+          "tracking": "Seguimiento de aperturas",
+          "import": "Importación CSV"
+        },
+        "cta": "Comenzar gratis"
+      },
+      "proMonthly": {
+        "name": "Pro Mensual",
+        "description": "Ideal para negocios activos que envían solicitudes de reseña semanalmente.",
+        "features": {
+          "requests": "Solicitudes de reseña ilimitadas",
+          "bulk": "Envío masivo con un clic",
+          "reminders": "Recordatorios de seguimiento",
+          "woocommerce": "Sincronización con WooCommerce",
+          "support": "Soporte prioritario",
+          "analytics": "Analíticas avanzadas"
+        },
+        "cta": "Comenzar Pro Mensual"
+      },
+      "proAnnual": {
+        "name": "Pro Anual",
+        "description": "Mejor valor para negocios comprometidos con el crecimiento de su reputación.",
+        "features": {
+          "everything": "Todo en Pro Mensual",
+          "billed": "Facturado anualmente ($228/año)",
+          "save": "Ahorra 34% frente al plan mensual",
+          "support": "Soporte prioritario",
+          "earlyAccess": "Acceso anticipado a nuevas funciones"
+        },
+        "cta": "Comenzar Pro Anual",
+        "badge": "Ahorra 34%"
+      },
+      "lifetime": {
+        "name": "De por vida",
+        "period": "una vez",
+        "description": "Pago único, acceso de por vida. Sin renovaciones, sin sorpresas.",
+        "features": {
+          "everything": "Todo en Pro",
+          "payOnce": "Paga una vez, usa para siempre",
+          "updates": "Todas las actualizaciones futuras incluidas",
+          "support": "Soporte prioritario de por vida",
+          "agencies": "Perfecto para agencias y operadores"
+        },
+        "cta": "Obtener acceso de por vida",
+        "badge": "Mejor oferta"
+      },
+      "sectionTitle": "Precios",
+      "headline": "Precios honestos. Sin sorpresas.",
+      "subtitle": "Comienza gratis. Mejora cuando estés listo. Cancela en cualquier momento. Sin cargos ocultos.",
+      "mostPopular": "Más popular"
+    },
+    "lightbox": {
+      "closeLightboxAriaLabel": "Cerrar vista ampliada",
+      "closeButtonAriaLabel": "Cerrar",
+      "closeButtonLabel": "Cerrar"
+    },
+    "productShowcase": {
+      "tabEmailLabel": "Vista previa del correo",
+      "tabEmailTitle": "Correos que parecen escritos a mano",
+      "tabEmailDescription": "Cada solicitud de reseña llega desde tu dirección real con tu nombre, tu firma y un tono personal. Los clientes confían porque parece real — porque lo es.",
+      "tabEmailAlt": "Vista previa de un correo personalizado de solicitud de reseña en Get Phame con el nombre del cliente, la firma del negocio y el enlace de reseña de Google",
+      "tabImportLabel": "Importar clientes",
+      "tabImportTitle": "Toda tu lista en segundos",
+      "tabImportDescription": "Arrastra y suelta un CSV o sincroniza directamente desde WooCommerce. Validamos correos, eliminamos duplicados y marcamos rebotes — para que cada envío cuente.",
+      "tabImportAlt": "Pantalla de importación de clientes de Get Phame con carga de CSV mediante arrastrar y soltar, validación de correos y eliminación de duplicados",
+      "tabTrackingLabel": "Seguimiento de reseñas",
+      "tabTrackingTitle": "Mira cómo llegan las reseñas",
+      "tabTrackingDescription": "Rastrea cada correo enviado, abierto y clicado. Observa cómo aumenta tu conteo de reseñas semana a semana con análisis en tiempo real y gráficos de crecimiento.",
+      "tabTrackingAlt": "Panel de seguimiento de reseñas de Get Phame con tasas de apertura, tasas de clics y un gráfico de crecimiento semanal de reseñas",
+      "sectionSubtitle": "El producto",
+      "sectionTitle": "Diseñado para que solicitar reseñas sea sencillo",
+      "sectionDescription": "Una herramienta simple. Tres vistas potentes. Todo lo que necesitas para hacer crecer tu reputación.",
+      "viewFullSizeButton": "Ver en tamaño completo",
+      "viewFullSizeAriaLabel": "Ver {{title}} en tamaño completo"
+    },
+    "socialProofBar": {
+      "reviews": {
+        "sarah": {
+          "quote": "Pasé de 12 a 47 reseñas en Google en 6 semanas. Los clientes realmente responden porque viene de mi correo real.",
+          "role": "Fotógrafa freelance"
+        },
+        "tom": {
+          "quote": "Importo a los habituales del viernes, doy enviar y el lunes amanezco con 8–10 reseñas nuevas. Ya es parte de nuestra rutina semanal.",
+          "role": "El Café de la Esquina"
+        },
+        "david": {
+          "quote": "Gestiono 12 ubicaciones de clientes desde una cuenta. La oferta de por vida se pagó sola en el primer mes.",
+          "role": "Propietario de agencia de marketing"
+        },
+        "lisa": {
+          "quote": "Lo configuré en menos de 2 minutos. Mi tasa de apertura es 68% — mucho mejor que cualquier plataforma de reseñas que probé.",
+          "role": "Propietaria de estudio de yoga"
+        }
+      },
+      "trustedBy": "Confiado por dueños de negocios locales"
+    },
+    "stats": {
+      "moreReviewsLabel": "más reseñas vs. pedir en persona",
+      "averageSetupTimeLabel": "tiempo promedio de configuración",
+      "emailsSentValue": "Tu bandeja",
+      "emailsSentLabel": "correos enviados desde tu propia dirección",
+      "averageResponseRateLabel": "tasa promedio de respuesta",
+      "industryPhotographers": "Fotógrafos",
+      "industryCafesRestaurants": "Cafés y restaurantes",
+      "industryHomeServices": "Servicios a domicilio",
+      "industryClinicsSalons": "Clínicas y salones",
+      "industryAgencies": "Agencias",
+      "industryWooCommerceStores": "Tiendas WooCommerce",
+      "heading": "Hecho para negocios que dependen de su reputación"
+    },
+    "testimonials": {
+      "sarah": {
+        "quote": "Antes me daba pena pedir reseñas — sonaba incómodo y vendedor. Get Phame envía la solicitud desde mi propio Gmail, así que realmente parece que la escribí yo. Pasé de 12 reseñas en Google a 47 en seis semanas.",
+        "role": "Fotógrafa freelance",
+        "result": "12 → 47 reseñas en 6 semanas"
+      },
+      "tom": {
+        "quote": "Atendemos unas 80 personas al día. Importo los habituales de la semana desde un CSV el viernes, doy enviar y el lunes por la mañana normalmente tenemos 8–10 reseñas nuevas. Ya forma parte de nuestra rutina semanal.",
+        "role": "Propietario, The Corner Café",
+        "result": "8–10 reseñas nuevas por semana"
+      },
+      "david": {
+        "quote": "Como agencia que gestiona 12 ubicaciones, la oferta de por vida fue una decisión obvia. Cada cliente tiene su propio enlace de reseña y envío solicitudes en su nombre. La inversión se recuperó el primer mes.",
+        "role": "Propietario de agencia de marketing digital",
+        "result": "12 ubicaciones gestionadas desde una cuenta"
+      },
+      "realResults": "Resultados reales",
+      "headline": "Ellos pidieron. Los clientes respondieron.",
+      "subtitle": "Negocios reales que usan Get Phame para crecer su reputación cada semana.",
+      "getStartedFree": "Comenzar gratis"
+    },
+    "trustBar": {
+      "passwordEncrypted": "Contraseña cifrada en reposo",
+      "customerListPrivate": "Tu lista de clientes permanece privada",
+      "worksWithEmailProviders": "Funciona con Gmail, Outlook, Yahoo y más",
+      "unsubscribeLink": "Enlace para darse de baja en cada correo"
+    },
+    "section": {
+      "tagline": "Véalo en acción",
+      "title": "Ve cómo funciona",
+      "description": "Mira un recorrido rápido — configúralo en menos de 2 minutos"
+    },
+    "thumbnail": {
+      "playButtonAriaLabel": "Reproducir video walkthrough del producto",
+      "altText": "Miniatura del video walkthrough del producto GetPhame"
+    },
+    "bottomBar": {
+      "title": "GetPhame — Recorrido completo del producto",
+      "description": "Conecta correo · Importa clientes · Envía solicitudes · Rastrea resultados",
+      "watchNow": "Ver ahora →"
+    },
+    "modal": {
+      "closeButtonAriaLabel": "Cerrar video",
+      "iframeTitle": "Recorrido del producto GetPhame"
+    }
+  }
+}

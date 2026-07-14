@@ -1,4 +1,9 @@
 {
+  "common": {
+    "gotIt": "知道了",
+    "hide": "隐藏",
+    "show": "显示"
+  },
   "seo": {
     "title": "Get Phame — 获得更多五星好评",
     "keywords": "评论请求, Google 评论, 获得更多评论, 评论自动化, 小型企业评论, 发送评论请求邮件, WooCommerce 评论, Stripe 评论",
@@ -509,7 +514,53 @@
     "disconnectError": "无法断开账户：{{message}}",
     "noEmailConnected": "未连接邮箱",
     "emailNotConnectedTitle": "未连接邮箱",
-    "emailNotConnectedDesc": "请在设置中连接您的邮箱账户。支持 Gmail、Outlook、Yahoo 或任何商务邮箱。"
+    "emailNotConnectedDesc": "请在设置中连接您的邮箱账户。支持 Gmail、Outlook、Yahoo 或任何商务邮箱。",
+    "displayNameHelp": "在客户收件箱中显示为发件人名称。",
+    "displayNameLabel": "发件人名称（可选）",
+    "displayNamePlaceholder": "例如：Acme Plumbing 的 Steve",
+    "emailAddressLabel": "您的电子邮箱地址 *",
+    "emailConnected": "邮箱已连接",
+    "failed": "✗ 失败",
+    "healthy": "✓ 正常",
+    "inlineHints": {
+      "aol": "不是常用的 AOL 密码 — 请使用应用专用密码。点击上方“如何获取”。",
+      "custom": "检测到自定义域名 — 下方已自动填写 SMTP 设置。请在高级设置中核实或调整主机和端口。",
+      "fastmail": "不是常用的 Fastmail 密码 — 请使用应用专用密码。点击上方“如何获取”。",
+      "google": "不是常用的 Gmail 密码 — 请使用应用专用密码。点击上方“如何获取”。",
+      "icloud": "请使用应用专用密码，而非 Apple ID 密码。点击上方“如何获取”。",
+      "proton": "ProtonMail 需要 Proton Bridge 应用 — 请使用 Bridge 提供的 SMTP 密码，而非 Proton 登录密码。点击上方“如何获取”。",
+      "zoho": "请先在 Zoho 中启用 SMTP 访问，然后使用常用的 Zoho 密码。点击上方“如何获取”。"
+    },
+    "lastAutoCheck": "上次自动检查：{{date}}",
+    "notConnectedDescription": "尚未连接邮箱。请在下方填写信息以开始发送评价请求。",
+    "passwordLabels": {
+      "aol": "AOL 应用专用密码 *",
+      "email": "邮箱密码 *",
+      "fastmail": "Fastmail 应用专用密码 *",
+      "gmail": "Gmail 应用专用密码 *",
+      "icloud": "Apple 应用专用密码 *",
+      "microsoft": "Microsoft 应用专用密码 *",
+      "proton": "ProtonMail SMTP 密码 *",
+      "workspace": "Google Workspace 应用专用密码 *",
+      "yahoo": "Yahoo 应用专用密码 *",
+      "zoho": "Zoho 邮箱密码 *"
+    },
+    "passwordPlaceholders": {
+      "default": "您的邮箱密码",
+      "google": "16 位应用专用密码（不含空格）",
+      "update": "输入新密码以更新"
+    },
+    "sendingLimits": {
+      "aol": "AOL Mail — 每日 500 封",
+      "fastmail": "Fastmail — 每日 1,000 封",
+      "gmail": "Gmail / Google Workspace — 每日 500 封（免费），每日 2,000 封（Workspace）",
+      "microsoft": "Outlook / Microsoft 365 — 每日 300 封",
+      "proton": "ProtonMail — 每日 150 封（免费），通过 Bridge 每日 1,000 封（付费）",
+      "tip": "大量发送时，请使用专用地址 reviews@yourdomain.com，以保持主邮箱整洁并避免触及个人限制。",
+      "title": "按服务商划分的发送限制",
+      "yahoo": "Yahoo Mail — 每日 500 封",
+      "zoho": "Zoho Mail — 每日 500 封（免费），每日 1,000 封（付费）"
+    }
   },
   "wooCommerce": {
     "title": "WooCommerce",

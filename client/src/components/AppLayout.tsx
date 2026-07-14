@@ -3,7 +3,7 @@
 // Tablet (768–1023px): icon-only sidebar (64px) + content
 // Desktop (1024px+): full sidebar (220px) with labels + content
 import { useLocation } from "wouter";
-import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown, ShieldCheck, Users } from "lucide-react";
+import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown, ShieldCheck, Users, LogOut } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
@@ -22,7 +22,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const { theme, toggleTheme } = useTheme();
   const { t } = useTranslation();
   const { buttonPressHaptic } = useHaptics();
-  const { user } = useAuth();
+  const { user, logout, loading: authLoading } = useAuth();
   const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: !!user });
   const { data: subscription } = trpc.stripe.subscriptionStatus.useQuery(undefined, {
     enabled: !!user && profile?.tier !== "free" && profile?.tier !== "lifetime",
@@ -235,6 +235,25 @@ export default function AppLayout({ children }: AppLayoutProps) {
               style={{ color: "oklch(0.65 0.04 260)" }}
             >
               {isDark ? "Light" : "Dark"}
+            </span>
+          </button>
+
+          {/* Direct logout action — intentionally placed between theme and profile. */}
+          <button
+            data-testid="sidebar-logout"
+            type="button"
+            disabled={authLoading}
+            onClick={() => {
+              buttonPressHaptic();
+              void logout().then(() => navigate("/"));
+            }}
+            title={t("logout.button", { defaultValue: "Log Out" })}
+            aria-label={t("logout.button", { defaultValue: "Log Out" })}
+            className="flex items-center justify-center lg:justify-start gap-3 px-2 lg:px-3 py-2.5 rounded-xl transition-all duration-200 hover:bg-white/5 disabled:cursor-wait disabled:opacity-60 w-full text-white"
+          >
+            <LogOut size={18} className="flex-shrink-0 text-white" />
+            <span className="app-sidebar-label text-sm font-medium hidden text-white">
+              {t("logout.button", { defaultValue: "Log Out" })}
             </span>
           </button>
 

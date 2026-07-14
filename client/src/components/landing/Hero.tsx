@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
 import { ArrowRight, Shield, Mail, Star } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslation } from "react-i18next";
 
 const HERO_BG = "https://assets.getphame.app/phame-hero-bg.webp";
 const HERO_BG_PNG = "https://assets.getphame.app/phame-hero-bg.png";
@@ -36,7 +37,8 @@ const fadeUp = (delay = 0) => ({
 });
 
 export default function Hero() {
-  const [ctaText, setCtaText] = useState<CTAVariant>(CTA_VARIANTS[0]);
+  const { t } = useTranslation();
+  const [ctaVariant, setCtaVariant] = useState<CTAVariant>(CTA_VARIANTS[0]);
   const [loginUrl, setLoginUrl] = useState("/onboarding");
 
   const scrollToProduct = (e: React.MouseEvent) => {
@@ -47,7 +49,7 @@ export default function Hero() {
 
   useEffect(() => {
     const variant = getOrAssignVariant();
-    setCtaText(variant);
+    setCtaVariant(variant);
     // Log variant for analytics (replace with your analytics call)
     console.info("[A/B] hero_cta_variant:", variant);
   }, []);
@@ -76,7 +78,7 @@ export default function Hero() {
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6">
                 <Star size={14} className="text-primary fill-primary" />
                 <span className="text-sm font-medium text-primary">
-                  Free to start — No credit card required
+                  {t("landing.hero.freeToStart", { defaultValue: "Free to start — No credit card required" })}
                 </span>
               </div>
             </motion.div>
@@ -85,15 +87,15 @@ export default function Hero() {
               {...fadeUp(0.2)}
               className="font-display font-extrabold text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.1] text-white mb-6"
             >
-              Get more 5-star reviews{" "}
-              <span className="text-primary">without the awkward ask</span>
+              {t("landing.hero.headlinePart1", { defaultValue: "Get more 5-star reviews" })}{" "}
+              <span className="text-primary">{t("landing.hero.headlinePart2", { defaultValue: "without the awkward ask" })}</span>
             </motion.h1>
 
             <motion.p
               {...fadeUp(0.32)}
               className="text-lg md:text-xl text-white leading-relaxed mb-8 max-w-lg font-medium"
             >
-              Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender.
+              {t("landing.hero.description", { defaultValue: "Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender." })}
             </motion.p>
 
             <motion.div {...fadeUp(0.44)} className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -101,7 +103,9 @@ export default function Hero() {
                 href={loginUrl}
                 className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-primary text-primary-foreground font-bold text-base rounded-xl hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_30px_oklch(0.78_0.15_75/0.3)]"
               >
-                {ctaText}
+                {ctaVariant === CTA_VARIANTS[0]
+                  ? t("landing.hero.ctaVariantA", { defaultValue: "Start Free — Send 10 Requests" })
+                  : t("landing.hero.ctaVariantB", { defaultValue: "Get Your First 10 Reviews Free" })}
                 <ArrowRight size={18} />
               </a>
               <a
@@ -109,7 +113,7 @@ export default function Hero() {
                 onClick={scrollToProduct}
                 className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-white/10 text-white font-bold text-base rounded-xl border border-white/20 hover:bg-white/15 transition-all duration-200 active:scale-[0.97] backdrop-blur-sm"
               >
-                See how it works
+                {t("landing.hero.howItWorks", { defaultValue: "See how it works" })}
               </a>
             </motion.div>
 
@@ -119,11 +123,11 @@ export default function Hero() {
             >
               <span className="flex items-center gap-2">
                 <Shield size={14} className="text-emerald-400" />
-                Set up in under 2 minutes
+                {t("landing.hero.setupTime", { defaultValue: "Set up in under 2 minutes" })}
               </span>
               <span className="flex items-center gap-2">
                 <Mail size={14} className="text-emerald-400" />
-                Works with Gmail, Outlook, SMTP
+                {t("landing.hero.emailCompatibility", { defaultValue: "Works with Gmail, Outlook, SMTP" })}
               </span>
             </motion.div>
 
@@ -131,8 +135,8 @@ export default function Hero() {
               {...fadeUp(0.62)}
               className="text-xs text-slate-400 mt-2 leading-relaxed"
             >
-              Sign in with Google to create your account. We only access your name and email address — nothing else.{" "}
-              <a href="/privacy-policy" className="text-primary/80 hover:text-primary underline underline-offset-2">Privacy Policy</a>
+              {t("landing.hero.googleSignInDisclaimer", { defaultValue: "Sign in with Google to create your account. We only access your name and email address — nothing else." })}{" "}
+              <a href="/privacy-policy" className="text-primary/80 hover:text-primary underline underline-offset-2">{t("landing.hero.privacyPolicy", { defaultValue: "Privacy Policy" })}</a>
             </motion.p>
           </div>
 
@@ -189,7 +193,7 @@ export default function Hero() {
                       <source srcSet={DASHBOARD_MOCKUP_PNG} type="image/png" />
                       <img
                         src={DASHBOARD_MOCKUP_PNG}
-                        alt="GetPhame app home screen showing review request stats, send button, and free plan usage for local businesses"
+                        alt={t("landing.hero.dashboardMockupAlt", { defaultValue: "GetPhame app home screen showing review request stats, send button, and free plan usage for local businesses" })}
                         className="block"
                         style={{ width: '260px', height: 'auto', display: 'block' }}
                         width={400}

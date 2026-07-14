@@ -1,0 +1,301 @@
+{
+  "landing": {
+    "comparison": {
+      "getPhamePrice": "$29/mo",
+      "birdeyePrice": "$299/mo",
+      "podiumPrice": "$249/mo",
+      "niceJobPrice": "$75/mo",
+      "gradeUsPrice": "$110/mo",
+      "reviewTrackersPrice": "$89/mo",
+      "compare": "Comparer",
+      "enterpriseFeaturesStartupPrice": "Fonctionnalités entreprise. Prix de lancement.",
+      "description": "Les acteurs majeurs facturent 250–300 $/mois pour des outils de demande d'avis. Get Phame vous offre la même capacité de base pour une fraction du coût. En plus, une option à vie qu'ils ne proposeront jamais.",
+      "cheaperThanAlternatives": "moins cher que les alternatives d'entreprise",
+      "platformHeader": "Plateforme",
+      "startingPriceHeader": "Prix de départ",
+      "lifetimeHeader": "À vie",
+      "pricingDisclaimer": "Prix basés sur les offres publiques d'entrée de gamme en date d'avril 2026. Susceptibles de changer."
+    },
+    "faq": {
+      "q1": "Est‑ce que ça ressemble à du spam ?",
+      "a1": "Non. Chaque email est envoyé directement depuis votre propre adresse — pas depuis un serveur tiers. Vos clients voient votre nom, votre adresse et votre signature. Cela paraît exactement comme si vous l'aviez tapé vous‑même. Les taux d'ouverture moyens sont de 45–60 % parce que les destinataires reconnaissent l'expéditeur.",
+      "q2": "Quels fournisseurs d'email sont pris en charge ?",
+      "a2": "Get Phame fonctionne avec tout fournisseur supportant SMTP : Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud et tout serveur SMTP personnalisé. Si vous pouvez envoyer des emails depuis ce compte, vous pouvez le connecter à Get Phame.",
+      "q3": "C'est vraiment gratuit ?",
+      "a3": "Oui. Le plan gratuit vous offre 10 demandes d'avis initiales, puis 5 supplémentaires par période glissante de 30 jours — sans carte de crédit et sans limite de durée. Si vous souhaitez des demandes illimitées, l'envoi en masse, des relances automatiques et la synchronisation WooCommerce, passez à Pro.",
+      "q4": "Puis‑je importer ma liste de clients ?",
+      "a4": "Absolument. Téléversez un fichier CSV avec les noms et adresses email, ou synchronisez directement depuis WooCommerce. Nous validons automatiquement les emails, supprimons les doublons et signalons les adresses invalides avant l'envoi.",
+      "q5": "Get Phame stocke‑t‑il mon mot de passe email ?",
+      "a5": "Vos identifiants SMTP sont chiffrés au repos avec AES-256. Nous ne stockons jamais de mots de passe en clair. Vos identifiants sont uniquement utilisés pour envoyer des emails en votre nom — nous ne pouvons pas lire votre boîte de réception ni accéder à d'autres données email.",
+      "q6": "Mes emails atterriront‑ils en spam ?",
+      "a6": "Comme les emails sont envoyés depuis votre propre compte (et non depuis un serveur d'envoi en masse), ils bénéficient de la même délivrabilité qu'un email manuel. La réputation de votre domaine, les enregistrements SPF et DKIM s'appliquent normalement. C'est un avantage clé par rapport aux expéditeurs tiers.",
+      "q7": "Qu'advient‑il de ma liste de clients ?",
+      "a7": "Vos données clients sont stockées de façon sécurisée et ne sont jamais partagées, vendues ou utilisées pour autre chose que l'envoi de vos demandes d'avis. Vous pouvez exporter ou supprimer l'intégralité de votre liste clients à tout moment. Nous respectons le GDPR et les exigences CAN-SPAM.",
+      "q8": "Les clients peuvent‑ils se désinscrire ?",
+      "a8": "Oui. Chaque email contient un lien de désinscription. Lorsqu'un client se désinscrit, il est automatiquement retiré des envois futurs. Cela vous maintient en conformité et protège votre réputation d'expéditeur.",
+      "q9": "Ai‑je besoin de compétences techniques pour connecter mon email ?",
+      "a9": "Non. Pour Gmail et Outlook, nous fournissons des guides pas à pas avec captures d'écran. La plupart des utilisateurs se connectent en moins de 60 secondes. Pour un SMTP personnalisé, vous aurez besoin de l'adresse du serveur, du port et des identifiants — votre hébergeur peut fournir ces informations.",
+      "q10": "Quelles plateformes d'avis sont prises en charge ?",
+      "a10": "Toute plateforme qui propose un lien d'avis : Google, Yelp, TripAdvisor, Facebook, Bing Places, Trustpilot, G2, Capterra, et plus encore. Collez votre lien d'avis et nous l'incluons dans chaque demande. Vous pouvez changer de plateforme à tout moment.",
+      "q11": "Comment fonctionne la synchronisation WooCommerce ?",
+      "a11": "Installez notre plugin WooCommerce gratuit, saisissez votre clé API et les nouveaux clients sont importés automatiquement après chaque commande complétée. Vous pouvez définir un délai (par ex. 7 jours après l'achat) avant qu'ils n'apparaissent dans la file d'envoi.",
+      "q12": "Que signifie « illimité » sur le plan Pro ?",
+      "a12": "Illimité signifie sans plafond sur le nombre de demandes d'avis que vous pouvez envoyer par mois. Envoyez 50 ou 5 000 — sans frais supplémentaires. La seule limite est celle imposée par votre fournisseur d'email (par exemple, Gmail autorise ~500/jour pour les comptes personnels, 2 000/jour pour Workspace).",
+      "sectionTitle": "FAQ",
+      "headline": "Questions concernant la sécurité des emails, la confidentialité et l'installation",
+      "description": "Tout ce que vous devez savoir avant de connecter votre email et d'envoyer votre première demande d'avis."
+    },
+    "feature1": {
+      "title": "Votre nom. Votre boîte. Leur confiance.",
+      "description": "Chaque demande d'avis arrive depuis votre adresse email réelle. Les clients reconnaissent l'expéditeur, ouvrent le message — et répondent.",
+      "statLabel": "taux d'ouverture moyen"
+    },
+    "feature2": {
+      "title": "Un clic pour envoyer à des centaines",
+      "description": "Importez votre liste via CSV ou synchronisation WooCommerce, sélectionnez tout et envoyez des demandes personnalisées en quelques secondes. Pas de copier‑coller. Pas de travail manuel.",
+      "statLabel": "envois par lot"
+    },
+    "feature3": {
+      "title": "Toutes les plateformes. À vous de choisir.",
+      "description": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, et plus. Collez votre lien, changez de plateforme quand vous voulez. Un outil pour toutes vos destinations d'avis.",
+      "statLabel": "plateformes prises en charge"
+    },
+    "whyItWorks": "Pourquoi ça fonctionne",
+    "headline": "De votre boîte à leur avis",
+    "subHeadline": "Le moyen le plus simple de transformer des clients satisfaits en avis 5 étoiles — sans outils coûteux ni conversations gênantes.",
+    "finalCta": {
+      "headlinePart1": "Votre boîte. Votre réputation.",
+      "headlinePart2": "Votre croissance.",
+      "description": "Gratuit pour toujours : 10 demandes initiales, puis 5 supplémentaires par période glissante de 30 jours. Pas de carte de crédit. Configuration en moins de 2 minutes.",
+      "getStartedButton": "Commencer gratuitement",
+      "joinBusinesses": "Rejoignez des centaines d'entreprises qui développent déjà leur réputation avec Get Phame."
+    },
+    "footer": {
+      "privacy": "Confidentialité",
+      "terms": "Conditions",
+      "security": "Sécurité",
+      "support": "Assistance",
+      "copyright": "© {{year}} Get Phame. Tous droits réservés."
+    },
+    "hero": {
+      "freeToStart": "Démarrage gratuit — aucune carte de crédit requise",
+      "headlinePart1": "Obtenez plus d'avis 5 étoiles",
+      "headlinePart2": "sans la demande gênante",
+      "description": "Envoyez des demandes d'avis personnalisées depuis votre propre compte email. Vos clients voient que ça vient de vous — pas d'un expéditeur générique.",
+      "ctaVariantA": "Commencer gratuitement — Envoyer 10 demandes",
+      "ctaVariantB": "Obtenez vos 10 premiers avis gratuits",
+      "howItWorks": "Voir comment ça marche",
+      "setupTime": "Configuration en moins de 2 minutes",
+      "emailCompatibility": "Fonctionne avec Gmail, Outlook, SMTP",
+      "googleSignInDisclaimer": "Connectez‑vous avec Google pour créer votre compte. Nous accédons uniquement à votre nom et à votre adresse email — rien d'autre.",
+      "privacyPolicy": "Politique de confidentialité",
+      "dashboardMockupAlt": "Écran d'accueil de l'application GetPhame montrant les statistiques de demandes d'avis, le bouton d'envoi et l'utilisation du plan gratuit pour les entreprises locales"
+    },
+    "howItWorks": {
+      "setupSteps": {
+        "step1": {
+          "title": "Connectez votre email",
+          "description": "Liez votre compte Gmail, Outlook ou tout email SMTP en 60 secondes. Identifiants chiffrés avec AES-256."
+        },
+        "step2": {
+          "title": "Ajoutez votre lien d'avis",
+          "description": "Collez votre lien Google, Yelp, TripAdvisor ou toute plateforme d'avis. Changez de plateforme à tout moment."
+        },
+        "step3": {
+          "title": "Importez vos clients",
+          "description": "Téléversez un CSV, synchronisez depuis WooCommerce ou ajoutez des contacts manuellement. Nous validons automatiquement les emails."
+        },
+        "step4": {
+          "title": "Envoyez & suivez les résultats",
+          "description": "Appuyez sur envoyer. Chaque client reçoit un email personnel de votre part. Suivez les ouvertures, clics et nouveaux avis en temps réel."
+        }
+      },
+      "setupInSteps": "Installation en 4 étapes",
+      "headline": "Deux minutes pour votre première demande d'avis",
+      "subtitle": "Aucune compétence technique nécessaire. Pas d'appels d'intégration. Connectez, importez et envoyez.",
+      "getStartedButton": "Commencer gratuitement",
+      "setupTime": "Prend moins de 2 minutes"
+    },
+    "leadCapture": {
+      "errorMessage": "Une erreur est survenue. Veuillez réessayer.",
+      "heading": "Pas prêt à vous engager ?",
+      "description": "Recevez un guide gratuit pour multiplier par 3 vos avis Google en 30 jours — plus un accès anticipé aux nouvelles fonctionnalités et des conseils pour votre réputation.",
+      "emailPlaceholder": "Entrez votre email",
+      "sending": "Envoi...",
+      "sendGuideButton": "Envoyer le guide",
+      "successMessage": "Vérifiez votre boîte — le guide est en route !",
+      "noSpamMessage": "Pas de spam. Désinscription possible à tout moment. Nous respectons votre boîte de réception."
+    },
+    "navbar": {
+      "howItWorks": "Comment ça marche",
+      "product": "Produit",
+      "pricing": "Tarifs",
+      "faq": "FAQ",
+      "signIn": "Se connecter",
+      "getStartedFree": "Commencer gratuitement",
+      "toggleMenu": "Basculer le menu"
+    },
+    "pricing": {
+      "free": {
+        "name": "Gratuit",
+        "description": "Commencez avec 10 demandes d'avis, puis recevez-en 5 supplémentaires par période glissante de 30 jours — aucune carte de crédit requise.",
+        "features": {
+          "requests": "10 demandes initiales + 5 supplémentaires par période glissante de 30 jours",
+          "email": "Connectez 1 compte email",
+          "platform": "Toute plateforme d'avis",
+          "tracking": "Suivi des ouvertures d'emails",
+          "import": "Import CSV"
+        },
+        "cta": "Commencer gratuitement"
+      },
+      "proMonthly": {
+        "name": "Pro Mensuel",
+        "description": "Idéal pour les entreprises actives qui envoient des demandes d'avis chaque semaine.",
+        "features": {
+          "requests": "Demandes d'avis illimitées",
+          "bulk": "Envoi en masse en un clic",
+          "reminders": "Relances automatiques",
+          "woocommerce": "Synchronisation WooCommerce",
+          "support": "Support prioritaire",
+          "analytics": "Analyses avancées"
+        },
+        "cta": "Commencer Pro Mensuel"
+      },
+      "proAnnual": {
+        "name": "Pro Annuel",
+        "description": "Meilleur rapport qualité‑prix pour les entreprises engagées dans la croissance de leur réputation.",
+        "features": {
+          "everything": "Tout ce qui est dans Pro Mensuel",
+          "billed": "Facturé annuellement ($228/yr)",
+          "save": "Économisez 34% vs mensuel",
+          "support": "Support prioritaire",
+          "earlyAccess": "Accès anticipé aux nouvelles fonctionnalités"
+        },
+        "cta": "Commencer Pro Annuel",
+        "badge": "Économisez 34%"
+      },
+      "lifetime": {
+        "name": "À vie",
+        "period": " une fois",
+        "description": "Paiement unique, accès à vie. Pas de renouvellements, pas de surprises.",
+        "features": {
+          "everything": "Tout ce qui est dans Pro",
+          "payOnce": "Payez une fois, utilisez à vie",
+          "updates": "Toutes les mises à jour futures incluses",
+          "support": "Support prioritaire à vie",
+          "agencies": "Parfait pour agences & exploitants"
+        },
+        "cta": "Obtenir l'accès à vie",
+        "badge": "Meilleure offre"
+      },
+      "sectionTitle": "Tarifs",
+      "headline": "Tarifs honnêtes. Pas de surprises.",
+      "subtitle": "Commencez gratuitement. Passez à une formule supérieure quand vous êtes prêt. Annulez à tout moment. Aucun frais caché.",
+      "mostPopular": "Le plus populaire"
+    },
+    "lightbox": {
+      "closeLightboxAriaLabel": "Fermer la lightbox",
+      "closeButtonAriaLabel": "Fermer",
+      "closeButtonLabel": "Fermer"
+    },
+    "productShowcase": {
+      "tabEmailLabel": "Aperçu de l'email",
+      "tabEmailTitle": "Des emails qui semblent écrits à la main",
+      "tabEmailDescription": "Chaque demande d'avis arrive depuis votre adresse email réelle avec votre nom, votre signature et un ton personnel. Les clients font confiance parce que c'est authentique — parce que c'est réel.",
+      "tabEmailAlt": "Aperçu d'un email personnalisé de demande d'avis GetPhame montrant le nom du client, la signature de l'entreprise et le lien Google",
+      "tabImportLabel": "Import clients",
+      "tabImportTitle": "Votre liste complète en quelques secondes",
+      "tabImportDescription": "Glissez‑déposez un CSV ou synchronisez directement depuis WooCommerce. Nous validons les emails, supprimons les doublons et détectons les rebonds — ainsi chaque envoi compte.",
+      "tabImportAlt": "Écran d'importation client GetPhame montrant le glisser‑déposer CSV avec validation d'emails et suppression des doublons",
+      "tabTrackingLabel": "Suivi des avis",
+      "tabTrackingTitle": "Regardez les avis affluer",
+      "tabTrackingDescription": "Suivez chaque email envoyé, ouvert et cliqué. Voyez votre nombre d'avis augmenter semaine après semaine avec des analyses et des graphiques de croissance en temps réel.",
+      "tabTrackingAlt": "Tableau de bord de suivi des avis GetPhame montrant les taux d'ouverture, taux de clic et graphique de croissance hebdomadaire du nombre d'avis",
+      "sectionSubtitle": "Le produit",
+      "sectionTitle": "Conçu pour rendre les demandes d'avis faciles",
+      "sectionDescription": "Un outil simple. Trois vues puissantes. Tout ce dont vous avez besoin pour développer votre réputation.",
+      "viewFullSizeButton": "Voir en plein écran",
+      "viewFullSizeAriaLabel": "Voir {{title}} en plein écran"
+    },
+    "socialProofBar": {
+      "reviews": {
+        "sarah": {
+          "quote": "Je suis passé de 12 à 47 avis Google en 6 semaines. Les clients répondent vraiment parce que ça vient de mon email réel.",
+          "role": "Photographe indépendant"
+        },
+        "tom": {
+          "quote": "J'importe les habitués du vendredi, j'appuie sur envoyer et je me réveille le lundi avec 8–10 nouveaux avis. C'est devenu notre routine hebdomadaire.",
+          "role": "The Corner Café"
+        },
+        "david": {
+          "quote": "Je gère 12 emplacements clients depuis un seul compte. L'offre à vie s'est remboursée dès le premier mois.",
+          "role": "Propriétaire d'agence marketing"
+        },
+        "lisa": {
+          "quote": "Installation en moins de 2 minutes. Mon taux d'ouverture est de 68 % — bien meilleur que n'importe quelle plateforme d'avis que j'ai testée.",
+          "role": "Propriétaire d'un studio de yoga"
+        }
+      },
+      "trustedBy": "Adopté par des propriétaires d'entreprises locales"
+    },
+    "stats": {
+      "moreReviewsLabel": "plus d'avis vs demander en personne",
+      "averageSetupTimeLabel": "temps de configuration moyen",
+      "emailsSentValue": "Votre boîte mail",
+      "emailsSentLabel": "emails envoyés depuis votre propre adresse",
+      "averageResponseRateLabel": "taux de réponse moyen",
+      "industryPhotographers": "Photographes",
+      "industryCafesRestaurants": "Cafés & Restaurants",
+      "industryHomeServices": "Services à domicile",
+      "industryClinicsSalons": "Cliniques & Salons",
+      "industryAgencies": "Agences",
+      "industryWooCommerceStores": "Boutiques WooCommerce",
+      "heading": "Conçu pour les entreprises qui vivent de leur réputation"
+    },
+    "testimonials": {
+      "sarah": {
+        "quote": "J'avais peur de demander des avis — c'était gênant et trop commercial. Get Phame envoie la demande depuis mon propre Gmail, donc on dirait vraiment que c'est moi qui l'ai écrit. Je suis passé de 12 avis Google à 47 en six semaines.",
+        "role": "Photographe indépendant",
+        "result": "12 → 47 avis en 6 semaines"
+      },
+      "tom": {
+        "quote": "Nous servons environ 80 clients par jour. J'importe la liste de la semaine depuis un CSV le vendredi, j'appuie sur envoyer et le lundi matin nous avons généralement 8–10 nouveaux avis. C'est devenu notre routine hebdomadaire.",
+        "role": "Propriétaire, The Corner Café",
+        "result": "8–10 nouveaux avis par semaine"
+      },
+      "david": {
+        "quote": "En tant qu'agence gérant 12 emplacements clients, l'offre à vie était une évidence. Chaque client a son propre lien d'avis et j'envoie les demandes en leur nom. Le retour sur investissement s'est fait le premier mois.",
+        "role": "Propriétaire d'une agence marketing digitale",
+        "result": "12 emplacements gérés depuis un compte"
+      },
+      "realResults": "Résultats réels",
+      "headline": "Ils ont demandé. Les clients ont répondu.",
+      "subtitle": "Des entreprises réelles utilisent Get Phame pour développer leur réputation chaque semaine.",
+      "getStartedFree": "Commencer gratuitement"
+    },
+    "trustBar": {
+      "passwordEncrypted": "Mot de passe chiffré au repos",
+      "customerListPrivate": "Votre liste de clients reste privée",
+      "worksWithEmailProviders": "Fonctionne avec Gmail, Outlook, Yahoo & plus",
+      "unsubscribeLink": "Lien de désinscription dans chaque email"
+    },
+    "section": {
+      "tagline": "Voyez‑le en action",
+      "title": "Voir comment ça marche",
+      "description": "Regardez une courte démonstration — configuration en moins de 2 minutes"
+    },
+    "thumbnail": {
+      "playButtonAriaLabel": "Lire la vidéo de démonstration produit",
+      "altText": "Vignette vidéo de présentation du produit GetPhame"
+    },
+    "bottomBar": {
+      "title": "GetPhame — Présentation complète du produit",
+      "description": "Connecter l'email · Importer les clients · Envoyer des demandes · Suivre les résultats",
+      "watchNow": "Regarder maintenant →"
+    },
+    "modal": {
+      "closeButtonAriaLabel": "Fermer la vidéo",
+      "iframeTitle": "Démonstration produit GetPhame"
+    }
+  }
+}

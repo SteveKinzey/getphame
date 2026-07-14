@@ -45,3 +45,20 @@
 - [x] Update and validate the reusable Get Phame regression-restoration skill with the new quota, admin, renewal, and Stripe-return safeguards
 - [x] Add or update Vitest coverage for quota messaging, admin authorization and management, renewal dates, and Stripe-return confirmation
 - [x] Verify desktop and mobile behavior, run TypeScript and the full Vitest suite, then publish the completed checkpoint
+
+- [x] Reproduce and fix the public landing page remaining in English when Thai is selected, restoring full Thai content and persisted language behavior.
+- [x] Add regression coverage proving the landing page renders translated Thai content—not only a Thai selector label—and verify desktop plus mobile.
+- [ ] Validate a Free account’s transition from 10 initial requests to the recurring 5-per-rolling-30-days allowance without corrupting production customer data.
+- [ ] Review the live `/admin/users` workflow end to end, including search, status visibility, role controls, Life controls, pagination, and self-demotion safeguards.
+- [ ] Run one live Stripe checkout with the 99% promo code, obtain confirmation immediately before any charge submission, and verify the in-app success return plus paid entitlement.
+- [ ] Run TypeScript, focused regressions, the full test suite, and production build, then publish the verified repair checkpoint.
+- [x] Superseded by the explicit Italian landing deferral: restore public landing-page sections to i18next for EN, TH, ES, FR, zh-CN, and zh-TW while keeping the existing Italian application locale intact.
+- [x] Add seven-locale landing regression coverage that rejects hardcoded-English rendering and verifies selector persistence plus content changes for each supported language.
+- [x] Replace the already-merged English `landing` block in the Spanish locale with a complete, validated Spanish translation.
+- [x] Add the complete Traditional Chinese `landing` namespace and reconcile active Simplified Chinese support with the seven-language requirement.
+- [x] Keep Italian application translations intact while explicitly deferring only the new Italian landing namespace until the dedicated translation pass.
+- [ ] Preserve and review the nested Mac clone's four untracked icon files before any future duplicate-directory cleanup; do not alter either Mac directory during this repair.
+- [x] Superseded by user: make the bottom sidebar account identity block clickable and reveal an accessible Log out action without disrupting Administrator, Life status, or theme controls.
+- [x] Superseded by user: add Vitest regression coverage for opening, keyboard-operating, and logging out through the sidebar account menu on desktop and mobile layouts.
+- [ ] Add a direct, translated Log out link below the Dark theme control and above the unchanged name/email profile block; implementation and regression coverage pass, with live desktop/tablet logout execution pending after publish.
+- [x] Add Vitest regression coverage that locks the sidebar logout link's placement, translated label, and shared authentication action.
