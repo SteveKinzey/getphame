@@ -112,6 +112,24 @@ describe("Get Phame regression contracts", () => {
     expect(settings).toContain("profileLoading");
   });
 
+  it("keeps form values, placeholders, autofill, disabled, and read-only content readable in both themes", () => {
+    const styles = readProjectFile("../client/src/index.css");
+    const input = readProjectFile("../client/src/components/ui/input.tsx");
+    const textarea = readProjectFile("../client/src/components/ui/textarea.tsx");
+    const select = readProjectFile("../client/src/components/ui/select.tsx");
+    const settings = readProjectFile("../client/src/pages/Settings.tsx");
+
+    expect(styles).toContain("color: var(--foreground);");
+    expect(styles).toContain("color: var(--muted-foreground);");
+    expect(styles).toContain(".rr-form-field");
+    expect(styles).toContain("-webkit-text-fill-color: var(--card-foreground);");
+    expect(styles).toContain(".dark :is(input, textarea, select).bg-white");
+    expect(input).toContain('"rr-form-field');
+    expect(textarea).toContain('"rr-form-field');
+    expect(select).toContain('"rr-form-field');
+    expect(settings.match(/rr-form-field/g)?.length ?? 0).toBeGreaterThanOrEqual(4);
+  });
+
   it("shows Life entitlements on the dashboard usage card instead of the Free label or quota", () => {
     const home = readProjectFile("../client/src/pages/Home.tsx");
     const quotaStatus = readProjectFile("../client/src/components/FreeQuotaStatus.tsx");

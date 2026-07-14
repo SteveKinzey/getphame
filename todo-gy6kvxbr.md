@@ -144,3 +144,6 @@
 - [x] Fix the live setup wizard reopening or remaining visible after its top-right X is clicked, then add a regression for the parent-state interaction and republish.
 - [x] Persist manual setup dismissal per authenticated user across full browser reloads while preserving the explicit Guide reopen action, then validate and republish.
 - [x] Fix the `/admin/users` customer-request activity query so MySQL date grouping uses a schema-qualified expression and compatible UTC cutoff parameter, then add an admin analytics regression and republish.
+- [x] Audit shared and page-specific form controls for light/dark text, placeholder, background, border, autofill, disabled, and read-only contrast inconsistencies across the authenticated site.
+- [x] Implement globally consistent, readable form-field colors in both light and dark modes without weakening existing GetPhame branding or interaction states.
+- [x] Add regression coverage, run complete release gates, verify representative forms in both themes, and publish the validated accessibility repair.

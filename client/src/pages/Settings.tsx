@@ -1367,7 +1367,7 @@ export default function SettingsPage() {
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
                   placeholder="e.g. Maria's Hair Salon"
-                  className="w-full px-3 py-3 rounded-xl text-sm outline-none border-2 transition-all"
+                  className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none border-2 transition-all"
                   style={{
                     border: "2px solid oklch(0.90 0.02 260)",
                     fontFamily: "'Nunito', sans-serif",
@@ -1386,7 +1386,7 @@ export default function SettingsPage() {
                   value={reviewLink}
                   onChange={(e) => setPhame(e.target.value)}
                   placeholder="https://g.page/r/your-business/review"
-                  className="w-full px-3 py-3 rounded-xl text-sm outline-none"
+                  className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none"
                   style={{
                     border: "2px solid oklch(0.90 0.02 260)",
                     fontFamily: "'Nunito', sans-serif",
@@ -1415,7 +1415,7 @@ export default function SettingsPage() {
                       value={fromName}
                       onChange={(e) => setFromName(e.target.value)}
                       placeholder={businessName || "e.g. Maria's Hair Salon"}
-                      className="w-full px-3 py-3 rounded-xl text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                      className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                     />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {t('profile.fromNameDescription')}
@@ -1430,7 +1430,7 @@ export default function SettingsPage() {
                       value={replyTo}
                       onChange={(e) => setReplyTo(e.target.value)}
                       placeholder="e.g. steve@sk-america.com"
-                      className="w-full px-3 py-3 rounded-xl text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                      className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                     />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {t('profile.replyToEmailDescription')}

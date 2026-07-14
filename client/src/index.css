@@ -442,6 +442,34 @@
     border-radius: 4px;
   }
 
+  /* Keep native form content readable even when a page uses raw controls. */
+  :where(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+    textarea,
+    select
+  ) {
+    color: var(--foreground);
+    caret-color: var(--foreground);
+  }
+
+  :where(input, textarea)::placeholder {
+    color: var(--muted-foreground);
+    opacity: 1;
+  }
+
+  :where(input, textarea, select):disabled,
+  :where(input, textarea, select)[readonly] {
+    color: var(--muted-foreground);
+    -webkit-text-fill-color: var(--muted-foreground);
+    opacity: 0.75;
+  }
+
+  /* Legacy raw white fields must not remain white-on-white in dark mode. */
+  .dark :is(input, textarea, select).bg-white:not(.text-white):not(.text-black):not(.text-foreground):not(.rr-text-navy):not(.rr-text-white) {
+    background-color: var(--card);
+    color: var(--card-foreground);
+  }
+
   /* ── Scroll-reveal animation ────────────────────────────────────────── */
   @keyframes revealUp {
     from { opacity: 0; transform: translateY(24px); }
@@ -509,6 +537,32 @@
   .rr-text-gold-dim    { color: oklch(0.40 0.10 80); }
   .rr-text-white       { color: oklch(1 0 0); }
   .rr-text-white-soft  { color: oklch(0.90 0.02 260); }
+
+  /* Semantic field surface shared by native and shadcn form controls. */
+  .rr-form-field {
+    background-color: var(--card);
+    color: var(--card-foreground);
+    border-color: var(--input);
+    caret-color: var(--card-foreground);
+  }
+  .rr-form-field::placeholder {
+    color: var(--muted-foreground);
+    opacity: 1;
+  }
+  .rr-form-field:disabled,
+  .rr-form-field[readonly] {
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+    -webkit-text-fill-color: var(--muted-foreground);
+    opacity: 0.75;
+  }
+  .rr-form-field:-webkit-autofill,
+  .rr-form-field:-webkit-autofill:hover,
+  .rr-form-field:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--card-foreground);
+    box-shadow: 0 0 0 1000px var(--card) inset;
+    caret-color: var(--card-foreground);
+  }
   .rr-text-green       { color: oklch(0.55 0.18 145); }
   .rr-text-red         { color: oklch(0.55 0.18 20); }
   .rr-text-mono        { font-family: monospace; }
