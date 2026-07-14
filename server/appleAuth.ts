@@ -26,6 +26,71 @@ import * as db from "./db";
 import { sendUserWelcomeEmail } from "./smtp";
 import crypto from "crypto";
 
+const APPLE_AUTHORIZATION_ENDPOINT = "https://appleid.apple.com/auth/authorize";
+const APPLE_STATE_TTL_MS = 10 * 60 * 1000;
+
+type AppleOAuthState = {
+  redirectUri: string;
+  nonce: string;
+  expiresAt: number;
+};
+
+function createSignedAppleState(redirectUri: string): { state: string; nonce: string } {
+  const nonce = crypto.randomBytes(32).toString("base64url");
+  const payload: AppleOAuthState = {
+    redirectUri,
+    nonce,
+    expiresAt: Date.now() + APPLE_STATE_TTL_MS,
+  };
+  const encodedPayload = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  const signature = crypto
+    .createHmac("sha256", ENV.cookieSecret)
+    .update(encodedPayload)
+    .digest("base64url");
+
+  return { state: `${encodedPayload}.${signature}`, nonce };
+}
+
+function verifySignedAppleState(state: string | undefined): AppleOAuthState | null {
+  if (!state || !ENV.cookieSecret) return null;
+  const [encodedPayload, suppliedSignature, ...extra] = state.split(".");
+  if (!encodedPayload || !suppliedSignature || extra.length > 0) return null;
+
+  const expectedSignature = crypto
+    .createHmac("sha256", ENV.cookieSecret)
+    .update(encodedPayload)
+    .digest();
+  let actualSignature: Buffer;
+  try {
+    actualSignature = Buffer.from(suppliedSignature, "base64url");
+  } catch {
+    return null;
+  }
+  if (
+    actualSignature.length !== expectedSignature.length ||
+    !crypto.timingSafeEqual(actualSignature, expectedSignature)
+  ) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(
+      Buffer.from(encodedPayload, "base64url").toString("utf8"),
+    ) as Partial<AppleOAuthState>;
+    if (
+      typeof parsed.redirectUri !== "string" ||
+      typeof parsed.nonce !== "string" ||
+      typeof parsed.expiresAt !== "number" ||
+      parsed.expiresAt < Date.now()
+    ) {
+      return null;
+    }
+    return parsed as AppleOAuthState;
+  } catch {
+    return null;
+  }
+}
+
 function buildRedirectUri(req: Request): string {
   // Use APP_BASE_URL if set (production) so the redirect URI exactly matches
   // what is registered in the Apple Developer Portal Services ID.
@@ -58,26 +123,34 @@ export function registerAppleAuthRoutes(app: Express) {
     }
 
     const redirectUri = buildRedirectUri(req);
-    // Store redirectUri in state so callback can reconstruct it
-    const state = Buffer.from(JSON.stringify({ redirectUri, nonce: crypto.randomBytes(8).toString("hex") })).toString("base64url");
+    const { state, nonce } = createSignedAppleState(redirectUri);
+    const authUrl = new URL(APPLE_AUTHORIZATION_ENDPOINT);
+    authUrl.searchParams.set("response_type", "code id_token");
+    authUrl.searchParams.set("response_mode", "form_post");
+    authUrl.searchParams.set("client_id", ENV.appleClientId);
+    authUrl.searchParams.set("redirect_uri", redirectUri);
+    authUrl.searchParams.set("scope", "name email");
+    authUrl.searchParams.set("state", state);
+    authUrl.searchParams.set("nonce", nonce);
 
-    const authUrl = appleSignin.getAuthorizationUrl({
-      clientID: ENV.appleClientId,
-      redirectUri,
-      state,
-      scope: "name email",
-      responseMode: "form_post",
-    });
-
-    res.redirect(302, authUrl);
+    res.redirect(302, authUrl.toString());
   });
 
   // Step 2: Apple POSTs back here with a short-lived authorization code.
   // The identity token is returned by Apple's server-to-server token exchange;
   // it is not guaranteed to be present in the browser callback payload.
   app.post("/api/auth/apple/callback", async (req: Request, res: Response) => {
-    const { code, user: userJson, error, error_description: errorDescription } = req.body as {
+    const {
+      code,
+      id_token: callbackIdToken,
+      state,
+      user: userJson,
+      error,
+      error_description: errorDescription,
+    } = req.body as {
       code?: string;
+      id_token?: string;
+      state?: string;
       user?: string;
       error?: string;
       error_description?: string;
@@ -94,21 +167,40 @@ export function registerAppleAuthRoutes(app: Express) {
     }
 
     try {
-      const redirectUri = buildRedirectUri(req);
-      const tokenResponse = await appleSignin.getAuthorizationToken(code, {
-        clientID: ENV.appleClientId,
-        redirectUri,
-        clientSecret: buildClientSecret(),
-      });
+      const verifiedState = verifySignedAppleState(state);
+      if (!verifiedState || verifiedState.redirectUri !== buildRedirectUri(req)) {
+        console.warn("[AppleAuth] State validation failed");
+        return res.redirect(302, "/?auth_error=apple_state_mismatch");
+      }
 
-      if (!tokenResponse.id_token) {
-        console.warn("[AppleAuth] Token exchange returned no identity token");
-        return res.redirect(302, "/?auth_error=apple_missing_token");
+      let identityToken = callbackIdToken;
+      if (!identityToken) {
+        const tokenResponse = await appleSignin.getAuthorizationToken(code, {
+          clientID: ENV.appleClientId,
+          redirectUri: verifiedState.redirectUri,
+          clientSecret: buildClientSecret(),
+        }) as {
+          id_token?: string;
+          error?: string;
+        };
+        identityToken = tokenResponse.id_token;
+
+        if (!identityToken) {
+          const providerError = typeof tokenResponse.error === "string"
+            ? tokenResponse.error.slice(0, 80)
+            : "missing_id_token";
+          console.warn("[AppleAuth] Token exchange failed", {
+            providerError,
+            responseKeys: Object.keys(tokenResponse).sort(),
+          });
+          return res.redirect(302, "/?auth_error=apple_token_exchange_failed");
+        }
       }
 
       // Verify the id_token with Apple's public keys
-      const appleUser = await appleSignin.verifyIdToken(tokenResponse.id_token, {
+      const appleUser = await appleSignin.verifyIdToken(identityToken, {
         audience: ENV.appleClientId,
+        nonce: verifiedState.nonce,
         ignoreExpiration: false,
       });
 

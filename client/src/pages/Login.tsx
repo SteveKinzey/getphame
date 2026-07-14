@@ -130,6 +130,8 @@ export default function Login() {
         google_state_mismatch: "Security check failed. Please try again.",
         apple_failed: "Apple sign-in failed. Please try again.",
         apple_missing_token: "Apple sign-in failed. Please try again.",
+        apple_token_exchange_failed: "Apple sign-in could not be completed. Please try again.",
+        apple_state_mismatch: "Apple sign-in security check failed. Please try again.",
         invalid_link: "Invalid login link. Please request a new one.",
         link_expired: "This login link has expired. Please request a new one.",
         service_unavailable: "Service temporarily unavailable. Please try again.",

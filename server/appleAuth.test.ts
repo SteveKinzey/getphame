@@ -48,6 +48,7 @@ vi.mock("./_core/cookies", () => ({
 
 vi.mock("./_core/env", () => ({
   ENV: {
+    cookieSecret: "test-cookie-signing-secret",
     appleClientId: "app.getphame.signin",
     appleTeamId: "TEAM123456",
     appleKeyId: "KEY1234567",
@@ -70,6 +71,17 @@ function createApp() {
   return app;
 }
 
+async function createAppleRequestState(app = createApp()) {
+  const response = await request(app).get("/api/auth/apple");
+  const authorizationUrl = new URL(response.headers.location);
+  return {
+    app,
+    state: authorizationUrl.searchParams.get("state"),
+    nonce: authorizationUrl.searchParams.get("nonce"),
+    authorizationUrl,
+  };
+}
+
 describe("Apple Sign In callback", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -84,16 +96,24 @@ describe("Apple Sign In callback", () => {
     mocks.getUserByEmail.mockResolvedValue(undefined);
   });
 
-  it("exchanges Apple's browser callback code for an identity token before verification", async () => {
+  it("requests and verifies Apple's signed identity token directly from the form-post callback", async () => {
     mocks.getUserByOpenId
       .mockResolvedValueOnce(undefined)
       .mockResolvedValueOnce({ id: 1, openId: "owner-open-id" });
+    const { app, state, nonce, authorizationUrl } = await createAppleRequestState();
 
-    const response = await request(createApp())
+    expect(authorizationUrl.searchParams.get("response_type")).toBe("code id_token");
+    expect(authorizationUrl.searchParams.get("response_mode")).toBe("form_post");
+    expect(state).toBeTruthy();
+    expect(nonce).toBeTruthy();
+
+    const response = await request(app)
       .post("/api/auth/apple/callback")
       .type("form")
       .send({
         code: "short-lived-authorization-code",
+        id_token: "callback-id-token",
+        state,
         user: JSON.stringify({
           email: "steve@example.test",
           name: { firstName: "Steve", lastName: "Kinzey" },
@@ -102,17 +122,13 @@ describe("Apple Sign In callback", () => {
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe("/auth/apple/landing?return=%2F");
-    expect(mocks.getAuthorizationToken).toHaveBeenCalledWith(
-      "short-lived-authorization-code",
-      expect.objectContaining({
-        clientID: "app.getphame.signin",
-        redirectUri: "https://getphame.app/api/auth/apple/callback",
-        clientSecret: "signed-apple-client-secret",
-      }),
-    );
+    expect(mocks.getAuthorizationToken).not.toHaveBeenCalled();
     expect(mocks.verifyIdToken).toHaveBeenCalledWith(
-      "verified-id-token",
-      expect.objectContaining({ audience: "app.getphame.signin" }),
+      "callback-id-token",
+      expect.objectContaining({
+        audience: "app.getphame.signin",
+        nonce,
+      }),
     );
     expect(mocks.upsertUser).toHaveBeenCalledWith(expect.objectContaining({
       openId: "apple_apple-user-123",
@@ -136,11 +152,12 @@ describe("Apple Sign In callback", () => {
       role: "admin",
     };
     mocks.getUserByEmail.mockResolvedValue(existingAccount);
+    const { app, state } = await createAppleRequestState();
 
-    const response = await request(createApp())
+    const response = await request(app)
       .post("/api/auth/apple/callback")
       .type("form")
-      .send({ code: "existing-user-code" });
+      .send({ code: "existing-user-code", state });
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe("/auth/apple/landing?return=%2F");
@@ -171,17 +188,37 @@ describe("Apple Sign In callback", () => {
   });
 
   it("does not create or link an account when Apple's token exchange fails", async () => {
-    mocks.getAuthorizationToken.mockRejectedValue(new Error("invalid_grant"));
+    mocks.getAuthorizationToken.mockResolvedValue({ error: "invalid_grant" });
+    const { app, state } = await createAppleRequestState();
 
-    const response = await request(createApp())
+    const response = await request(app)
       .post("/api/auth/apple/callback")
       .type("form")
-      .send({ code: "expired-or-reused-code" });
+      .send({ code: "expired-or-reused-code", state });
 
     expect(response.status).toBe(302);
-    expect(response.headers.location).toBe("/?auth_error=apple_failed");
+    expect(response.headers.location).toBe("/?auth_error=apple_token_exchange_failed");
     expect(mocks.verifyIdToken).not.toHaveBeenCalled();
     expect(mocks.linkUserIdentity).not.toHaveBeenCalled();
+    expect(mocks.upsertUser).not.toHaveBeenCalled();
+  });
+
+  it("rejects a tampered signed state before verifying or exchanging tokens", async () => {
+    const { app, state } = await createAppleRequestState();
+
+    const response = await request(app)
+      .post("/api/auth/apple/callback")
+      .type("form")
+      .send({
+        code: "authorization-code",
+        id_token: "callback-id-token",
+        state: `${state}tampered`,
+      });
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/?auth_error=apple_state_mismatch");
+    expect(mocks.getAuthorizationToken).not.toHaveBeenCalled();
+    expect(mocks.verifyIdToken).not.toHaveBeenCalled();
     expect(mocks.upsertUser).not.toHaveBeenCalled();
   });
 });

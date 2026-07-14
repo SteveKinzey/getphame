@@ -102,6 +102,12 @@
 - [ ] Verify Apple Sign In on the published custom domain, run complete quality gates, and publish the repair before resuming checkout validation.
 - [x] Capture the second failed Apple callback after the authorization-code exchange release and identify its distinct production error signature.
 - [x] Repair the newly identified Apple token-exchange, client-secret, token-verification, identity-linking, or session failure without creating another account.
-- [ ] Add regression coverage for the exact second-stage Apple callback failure and publish the corrected release.
+- [x] Add regression coverage for the exact second-stage Apple callback failure and publish the corrected release.
 - [x] Verify session JWT identities resolve through `login_identity_alias` before OAuth fallback; the shared user lookup already enforces this safeguard.
 - [x] Create existing-email Apple sessions with the canonical account identity and add privacy-safe callback-stage logging so the repaired production flow is both race-resistant and diagnosable.
+- [x] Open the current preview at the login entry and verify the authentication controls are reachable for a clean-state test.
+- [x] Determine whether a stale service worker, cached app shell, or persisted browser storage can preserve the reported Apple error after deployment; a clean preview-origin authorization produced a fresh production failure, ruling out a cached error page as the cause.
+- [x] Compare the latest production Apple callback diagnostics with the user’s repeated failure and identify the definitive failing stage: Apple accepts authorization but its server token exchange returns no `id_token`.
+- [x] Request and verify Apple’s signed `id_token` directly in the form-post callback using a signed state nonce, while retaining the authorization-code exchange as a backward-compatible fallback.
+- [x] Log only safe Apple token-exchange error metadata so any remaining provider/configuration error is visible without exposing codes, tokens, email, or identity data.
+- [x] Add regression coverage for signed Apple state/nonce validation and direct callback identity-token login, then run the complete release gate and publish.
