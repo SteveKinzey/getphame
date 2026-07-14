@@ -152,3 +152,6 @@
 - [x] Add homepage-purpose regression coverage, run complete release gates, verify public desktop and mobile layouts, and publish the Google-verification remediation.
 - [x] Fix the authenticated mobile header so the GetPhame logo mark and plain-text GET PHAME wordmark occupy the first row, with Share, Guide, and language controls on a second row without clipping or overlap; preserve the existing desktop header.
 - [ ] Add regression coverage, verify the repaired header on mobile and desktop, publish it, and complete the alternate non-admin production mobile validation.
+- [x] Restructure the authenticated mobile footer into two deliberate link rows: Privacy Policy, Terms of Service, and Compliance on row one; Security and What's New on row two; preserve the existing desktop footer.
+- [ ] Add regression coverage, verify the footer order and spacing on mobile plus desktop preservation, publish the footer polish, and confirm the alternate-account production mobile view.
+- [x] Add focused mobile-footer regression coverage and pass the full 38-file Vitest suite, TypeScript check, production build, mobile screenshot, and desktop-preservation screenshot before publication.

@@ -167,42 +167,44 @@ export default function BottomNav() {
       </div>
 
       {/* ── Gold ribbon footer ─────────────────────────────────────────── */}
-      <div className="rr-bg-gold px-4 pt-1.5 pb-1">
-        {/* Legal links — evenly spaced */}
-        <div className="flex items-center justify-evenly">
+      <div className="rr-bg-gold px-4 pt-2 pb-1">
+        {/* Mobile legal links — deliberate two-row order for readability. */}
+        <div data-testid="mobile-footer-primary-links" className="flex items-center justify-center gap-2">
           <button
             onClick={() => navigate('/privacy-policy')}
-            className="text-sm font-bold hover:underline transition-colors rr-text-navy"
+            className="text-sm font-bold leading-tight hover:underline transition-colors rr-text-navy"
           >
             {t('footer.privacyPolicy')}
           </button>
-          <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
+          <span aria-hidden="true" style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
           <button
             onClick={() => navigate('/terms-of-service')}
-            className="text-sm font-bold hover:underline transition-colors rr-text-navy"
+            className="text-sm font-bold leading-tight hover:underline transition-colors rr-text-navy"
           >
             {t('footer.termsOfService')}
           </button>
-          <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
-          <button
-            onClick={() => navigate('/changelog')}
-            className="text-sm font-bold hover:underline transition-colors rr-text-navy"
-          >
-            {t('footer.whatsNew')}
-          </button>
-          <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
+          <span aria-hidden="true" style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
           <button
             onClick={() => navigate('/compliance')}
-            className="text-sm font-bold hover:underline transition-colors rr-text-navy"
+            className="text-sm font-bold leading-tight hover:underline transition-colors rr-text-navy"
           >
             {t('footer.compliance')}
           </button>
-          <span style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
+        </div>
+
+        <div data-testid="mobile-footer-secondary-links" className="mt-1 flex items-center justify-center gap-2">
           <button
             onClick={() => navigate('/security')}
-            className="text-sm font-bold hover:underline transition-colors rr-text-navy"
+            className="text-sm font-bold leading-tight hover:underline transition-colors rr-text-navy"
           >
             Security
+          </button>
+          <span aria-hidden="true" style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
+          <button
+            onClick={() => navigate('/changelog')}
+            className="text-sm font-bold leading-tight hover:underline transition-colors rr-text-navy"
+          >
+            {t('footer.whatsNew')}
           </button>
         </div>
 
