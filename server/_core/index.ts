@@ -56,6 +56,10 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 
 async function startServer() {
   const app = express();
+  // The managed runtime terminates HTTPS before forwarding to Express.
+  // Trust only the first proxy so req.protocol and secure cookies reflect the
+  // public getphame.app request rather than the internal HTTP hop.
+  app.set("trust proxy", 1);
   const server = createServer(app);
 
   // ⚠️ Stripe webhook MUST use raw body — register BEFORE express.json()

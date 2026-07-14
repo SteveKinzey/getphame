@@ -82,6 +82,32 @@ describe("Get Phame regression contracts", () => {
     expect(layout).toContain("<LogOut");
   });
 
+  it("keeps translated logout reachable from the mobile More menu", () => {
+    const bottomNav = readProjectFile("../client/src/components/BottomNav.tsx");
+
+    expect(bottomNav).toContain("<DropdownMenu");
+    expect(bottomNav).toContain('data-testid="mobile-logout"');
+    expect(bottomNav).toContain("t('logout.button', { defaultValue: 'Log Out' })");
+    expect(bottomNav).toContain("void logout().then(() => navigate('/'))");
+    expect(bottomNav).toContain("<LogOut");
+  });
+
+  it("replaces authenticated magic-link onboarding URLs with the app home route", () => {
+    const app = readProjectFile("../client/src/App.tsx");
+
+    expect(app).toContain('window.location.pathname !== "/onboarding"');
+    expect(app).toContain('navigate("/", { replace: true })');
+  });
+
+  it("uses first-party secure cookie policy behind the managed proxy", () => {
+    const cookies = readProjectFile("./_core/cookies.ts");
+    const server = readProjectFile("./_core/index.ts");
+
+    expect(cookies).toContain('sameSite: "lax"');
+    expect(cookies).toContain("secure: isSecureRequest(req)");
+    expect(server).toContain('app.set("trust proxy", 1)');
+  });
+
   it("requires a clear plan-switch confirmation before handing Monthly or Annual users to Stripe", () => {
     const dialog = readProjectFile("../client/src/components/PlanSwitchDialog.tsx");
     const upgrade = readProjectFile("../client/src/pages/Upgrade.tsx");

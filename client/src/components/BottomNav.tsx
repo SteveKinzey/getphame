@@ -4,18 +4,25 @@
 //             hover scale + gold glow on icon container, label colour lift
 
 import { useLocation } from 'wouter';
-import { Home, Send, BarChart2, Settings, Moon, Sun, ShieldCheck } from 'lucide-react';
+import { Home, Send, BarChart2, Settings, Moon, Sun, ShieldCheck, MoreHorizontal, LogOut } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { useHaptics } from '@/hooks/useHaptics';
 import { useAuth } from '@/_core/hooks/useAuth';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 export default function BottomNav() {
   const [location, navigate] = useLocation();
   const { theme, toggleTheme } = useTheme();
   const { t } = useTranslation();
   const { buttonPressHaptic } = useHaptics();
-  const { user } = useAuth();
+  const { user, logout, loading: authLoading } = useAuth();
   const isDark = theme === 'dark';
 
   const NAV_ITEMS = [
@@ -31,7 +38,7 @@ export default function BottomNav() {
       className="md:hidden fixed bottom-0 left-0 right-0 z-50 bottom-nav rr-bg-navy"
       style={{ borderTop: "1px solid oklch(0.30 0.08 260)" }}
     >
-      {/* Equal-width app tabs plus theme toggle; admins receive one extra tab. */}
+      {/* Equal-width app tabs plus account menu; admins receive one extra tab. */}
       <div className="grid gap-0" style={{ gridTemplateColumns: `repeat(${NAV_ITEMS.length + 1}, 1fr)` }}>
         {NAV_ITEMS.map(({ path, label, Icon }) => {
           const isActive = location === path || (path !== '/' && location.startsWith(path));
@@ -95,46 +102,68 @@ export default function BottomNav() {
           );
         })}
 
-        {/* Dark mode toggle — same grid cell width as nav items */}
-        <button
-          onClick={() => {
-            buttonPressHaptic();
-            toggleTheme?.();
-          }}
-          className="flex flex-col items-center justify-center py-3 gap-1 group"
-          style={{ minHeight: '60px' }}
-          aria-label={isDark ? t('theme.switchToLight') : t('theme.switchToDark')}
-        >
-          <div
-            className="flex items-center justify-center rounded-full transition-all duration-200 ease-out bg-transparent group-hover:scale-110 group-active:scale-95"
-            style={{ width: "40px", height: "32px" }}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              className="flex flex-col items-center justify-center py-3 gap-1 group"
+              style={{ minHeight: '60px' }}
+              aria-label={t('nav.more', { defaultValue: 'More' })}
+            >
+              <div
+                className="flex items-center justify-center rounded-full transition-all duration-200 ease-out bg-transparent group-hover:scale-110 group-active:scale-95"
+                style={{ width: '40px', height: '32px' }}
+              >
+                <MoreHorizontal
+                  size={22}
+                  strokeWidth={1.8}
+                  className="transition-all duration-200 group-hover:drop-shadow-[0_0_6px_oklch(0.80_0.18_80/0.5)]"
+                  style={{ color: 'oklch(0.85 0.02 260)' }}
+                />
+              </div>
+              <span
+                className="text-xs font-semibold tracking-wide transition-colors duration-200"
+                style={{
+                  fontFamily: "'Nunito', sans-serif",
+                  color: 'oklch(0.80 0.02 260)',
+                  fontSize: '12px',
+                }}
+              >
+                {t('nav.more', { defaultValue: 'More' })}
+              </span>
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent
+            side="top"
+            align="end"
+            sideOffset={8}
+            className="w-56 border-white/15 bg-[#08172b] p-2 text-white shadow-2xl"
           >
-            {isDark ? (
-              <Sun
-                size={20}
-                strokeWidth={1.8}
-                className="rr-text-gold transition-all duration-200 group-hover:drop-shadow-[0_0_6px_oklch(0.80_0.18_80/0.7)]"
-              />
-            ) : (
-              <Moon
-                size={20}
-                strokeWidth={1.8}
-                className="transition-all duration-200 group-hover:drop-shadow-[0_0_6px_oklch(0.80_0.18_80/0.5)]"
-                style={{ color: 'oklch(0.85 0.02 260)' }}
-              />
-            )}
-          </div>
-          <span
-            className="text-xs font-semibold tracking-wide transition-colors duration-200"
-            style={{
-              fontFamily: "'Nunito', sans-serif",
-              color: 'oklch(0.80 0.02 260)',
-              fontSize: '12px',
-            }}
-          >
-            {isDark ? t('theme.light') : t('theme.dark')}
-          </span>
-        </button>
+            <DropdownMenuItem
+              onSelect={() => {
+                buttonPressHaptic();
+                toggleTheme?.();
+              }}
+              className="min-h-12 cursor-pointer gap-3 rounded-lg text-sm font-semibold focus:bg-white/10 focus:text-white"
+            >
+              {isDark ? <Sun size={18} className="rr-text-gold" /> : <Moon size={18} className="text-white" />}
+              {isDark ? t('theme.light') : t('theme.dark')}
+            </DropdownMenuItem>
+            <DropdownMenuSeparator className="bg-white/15" />
+            <DropdownMenuItem
+              data-testid="mobile-logout"
+              disabled={authLoading}
+              onSelect={() => {
+                buttonPressHaptic();
+                void logout().then(() => navigate('/'));
+              }}
+              className="min-h-12 cursor-pointer gap-3 rounded-lg text-sm font-semibold text-white focus:bg-white/10 focus:text-white disabled:cursor-wait"
+            >
+              <LogOut size={18} className="text-white" />
+              {t('logout.button', { defaultValue: 'Log Out' })}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
 
       {/* ── Gold ribbon footer ─────────────────────────────────────────── */}

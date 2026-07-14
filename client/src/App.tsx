@@ -123,6 +123,11 @@ function AppShell() {
   });
 
   useEffect(() => {
+    if (loading || !user || window.location.pathname !== "/onboarding") return;
+    navigate("/", { replace: true });
+  }, [loading, navigate, user]);
+
+  useEffect(() => {
     setOnboardingDismissed(false);
   }, [user?.id]);
 

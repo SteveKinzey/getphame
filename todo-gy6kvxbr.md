@@ -62,3 +62,7 @@
 - [x] Superseded by user: add Vitest regression coverage for opening, keyboard-operating, and logging out through the sidebar account menu on desktop and mobile layouts.
 - [ ] Add a direct, translated Log out link below the Dark theme control and above the unchanged name/email profile block; implementation and regression coverage pass, with live desktop/tablet logout execution pending after publish.
 - [x] Add Vitest regression coverage that locks the sidebar logout link's placement, translated label, and shared authentication action.
+- [x] Fix custom-domain email magic-link verification so a valid `getphame.app` link establishes the session and reaches the authenticated app instead of returning to generic onboarding.
+- [x] Add the translated Log out action to the mobile navigation using the existing authentication behavior, without changing the desktop profile block.
+- [x] Add focused Vitest coverage for custom-domain magic-link redirects/session establishment and mobile logout accessibility.
+- [ ] Verify both fixes on a phone-sized viewport and with the alternate non-admin production account before completing the remaining quota, admin, and checkout checks.
