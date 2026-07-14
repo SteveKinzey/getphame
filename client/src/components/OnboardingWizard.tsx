@@ -171,7 +171,7 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
               )}
             </p>
             <a
-              href="https://github.com/SteveKinzey/get-phame-connector/releases/latest"
+              href="https://github.com/SteveKinzey/get-phame-connector/releases/latest/download/get-phame-connector.zip"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-black transition-transform active:scale-95"
