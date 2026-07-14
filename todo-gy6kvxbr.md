@@ -155,3 +155,7 @@
 - [x] Restructure the authenticated mobile footer into two deliberate link rows: Privacy Policy, Terms of Service, and Compliance on row one; Security and What's New on row two; preserve the existing desktop footer.
 - [x] Add regression coverage, verify the footer order and spacing on mobile plus desktop preservation, publish the footer polish, and confirm the alternate-account production mobile view.
 - [x] Add focused mobile-footer regression coverage and pass the full 38-file Vitest suite, TypeScript check, production build, mobile screenshot, and desktop-preservation screenshot before publication.
+- [x] Change account combining so a verified SMTP connection automatically replaces an unverified duplicate while preserving safe conflict handling for ambiguous SMTP states.
+- [x] Add regression coverage for source-verified, target-verified, both-verified, and both-unverified SMTP merge outcomes.
+- [x] Run TypeScript, focused tests, the full Vitest suite, and the production build, then publish the verified SMTP merge update.
+- [x] Document the exact administrator workflow for removing an invalid SMTP connection from a duplicate account before combining it.

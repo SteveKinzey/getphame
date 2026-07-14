@@ -4,6 +4,7 @@ import path from "node:path";
 import {
   buildMergedProfileValues,
   buildMergedUserValues,
+  chooseSmtpMergeWinner,
   combineAccountsAsAdmin,
   deleteAccountAsAdmin,
 } from "./accountManagement";
@@ -51,7 +52,6 @@ describe("duplicate-account data preservation", () => {
     ];
     const conflictProtectedSingletons = [
       "gmailTokens",
-      "smtpCredentials",
       "wooCredentials",
       "bulkSenderCredentials",
       "stripeSubscriptions",
@@ -64,6 +64,9 @@ describe("duplicate-account data preservation", () => {
       expect(source).toContain(`assertNoSingletonConflict(tx, ${table}, sourceUserId, targetUserId`);
       expect(source).toContain(`tx.update(${table}).set({ userId: targetUserId })`);
     }
+    expect(source).toContain("resolveSmtpConflict(tx, sourceUserId, targetUserId)");
+    expect(source).toContain("tx.update(smtpCredentials).set({ userId: targetUserId })");
+    expect(source).toContain("tx.delete(smtpCredentials).where(eq(smtpCredentials.id, losingId))");
     expect(source).toContain("buildMergedProfileValues(sourceProfile, targetProfile)");
     expect(source).toContain("tx.update(notificationPrefs).set({ userId: targetUserId })");
     expect(source).toContain("tx.update(accessCodeRedemptions).set({ userId: targetUserId })");
@@ -71,6 +74,22 @@ describe("duplicate-account data preservation", () => {
     expect(source).toContain("tx.update(referrals).set({ referrerUserId: targetUserId })");
     expect(source).toContain("tx.update(userIdentityAliases).set({ userId: targetUserId })");
     expect(source).toContain("await tx.delete(users).where(eq(users.id, sourceUserId))");
+  });
+
+  it("keeps a verified source SMTP connection over an unverified survivor connection", () => {
+    expect(chooseSmtpMergeWinner({ verified: 1 }, { verified: 0 })).toBe("source");
+  });
+
+  it("keeps a verified survivor SMTP connection over an unverified source connection", () => {
+    expect(chooseSmtpMergeWinner({ verified: 0 }, { verified: 1 })).toBe("target");
+  });
+
+  it("requires an explicit choice when both SMTP connections are verified", () => {
+    expect(chooseSmtpMergeWinner({ verified: 1 }, { verified: 1 })).toBe("conflict");
+  });
+
+  it("requires verification or removal when both SMTP connections are unverified", () => {
+    expect(chooseSmtpMergeWinner({ verified: 0 }, { verified: 0 })).toBe("conflict");
   });
 
   it("keeps the survivor's preferred profile fields while preserving the strongest plan and accumulated usage", () => {

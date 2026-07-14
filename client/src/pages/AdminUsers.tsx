@@ -338,7 +338,7 @@ export default function AdminUsersPage() {
           )}
 
           <p className="rounded-xl bg-blue-50 p-3 text-xs font-semibold text-blue-950">
-            {t("adminUsers.combineRules", { defaultValue: "The survivor keeps its login identity and strongest role/plan. Contacts, requests, templates, platforms, analytics, and history move over. If both accounts have different billing or email-service connections, the merge stops so you can resolve the conflict first." })}
+            {t("adminUsers.combineRules", { defaultValue: "The survivor keeps its login identity and strongest role/plan. Contacts, requests, templates, platforms, analytics, and history move over. When one SMTP connection is verified and the other is not, the verified connection is kept automatically. The merge still stops if both SMTP connections share the same verification state or if another billing or email-service conflict needs your choice." })}
           </p>
 
           <label className="text-sm font-black text-slate-900" htmlFor="combine-account-confirmation">

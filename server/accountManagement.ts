@@ -59,6 +59,24 @@ type MergeUserInput = {
   defaultFromName: string | null;
 };
 
+type SmtpConnectionForMerge = {
+  verified: number;
+};
+
+export type SmtpMergeDecision = "source" | "target" | "conflict" | "none";
+
+export function chooseSmtpMergeWinner(
+  source: SmtpConnectionForMerge | undefined,
+  target: SmtpConnectionForMerge | undefined,
+): SmtpMergeDecision {
+  if (!source && !target) return "none";
+  if (source && !target) return "source";
+  if (!source && target) return "target";
+  if (source!.verified === 1 && target!.verified !== 1) return "source";
+  if (source!.verified !== 1 && target!.verified === 1) return "target";
+  return "conflict";
+}
+
 export function buildMergedProfileValues(source: MergeProfileInput, target: MergeProfileInput) {
   const sourceTier = normalizedTier(source.tier);
   const targetTier = normalizedTier(target.tier);
@@ -160,6 +178,31 @@ async function assertNoSingletonConflict(tx: any, table: any, sourceId: number, 
   }
 }
 
+async function resolveSmtpConflict(tx: any, sourceId: number, targetId: number) {
+  const rows = await tx
+    .select({ id: smtpCredentials.id, userId: smtpCredentials.userId, verified: smtpCredentials.verified })
+    .from(smtpCredentials)
+    .where(or(eq(smtpCredentials.userId, sourceId), eq(smtpCredentials.userId, targetId)));
+  const source = rows.find((row: { userId: number }) => row.userId === sourceId);
+  const target = rows.find((row: { userId: number }) => row.userId === targetId);
+  const winner = chooseSmtpMergeWinner(source, target);
+
+  if (winner === "conflict") {
+    const bothVerified = source?.verified === 1 && target?.verified === 1;
+    throw new TRPCError({
+      code: "CONFLICT",
+      message: bothVerified
+        ? "Both accounts have verified SMTP connections. Disconnect one before combining them."
+        : "Both accounts have unverified SMTP connections. Disconnect one or verify the connection you want to keep before combining them.",
+    });
+  }
+
+  if (source && target) {
+    const losingId = winner === "source" ? target.id : source.id;
+    await tx.delete(smtpCredentials).where(eq(smtpCredentials.id, losingId));
+  }
+}
+
 export async function combineAccountsAsAdmin(actorId: number, sourceUserId: number, targetUserId: number) {
   if (sourceUserId === targetUserId) {
     throw new TRPCError({ code: "BAD_REQUEST", message: "Choose two different accounts." });
@@ -177,7 +220,7 @@ export async function combineAccountsAsAdmin(actorId: number, sourceUserId: numb
     if (!source || !target) throw new TRPCError({ code: "NOT_FOUND", message: "One or both accounts no longer exist." });
 
     await assertNoSingletonConflict(tx, gmailTokens, sourceUserId, targetUserId, "Gmail connections");
-    await assertNoSingletonConflict(tx, smtpCredentials, sourceUserId, targetUserId, "SMTP connections");
+    await resolveSmtpConflict(tx, sourceUserId, targetUserId);
     await assertNoSingletonConflict(tx, wooCredentials, sourceUserId, targetUserId, "WooCommerce connections");
     await assertNoSingletonConflict(tx, bulkSenderCredentials, sourceUserId, targetUserId, "bulk-sender connections");
     await assertNoSingletonConflict(tx, stripeSubscriptions, sourceUserId, targetUserId, "active Stripe subscriptions");
