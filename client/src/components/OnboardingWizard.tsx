@@ -9,7 +9,7 @@
  * completed or dismissed onboarding. Dismissible at any time via the Skip button.
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { dismissAndNavigateToSend, getOnboardingFlow } from "@/lib/onboardingFlow";
 import { trpc } from "@/lib/trpc";
@@ -825,9 +825,24 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
     refetchInterval: 3000, // poll so steps auto-advance when completed elsewhere
   });
 
-  const dismissMutation = trpc.onboarding.dismiss.useMutation({
-    onSuccess: onDismiss,
-  });
+  const dismissMutation = trpc.onboarding.dismiss.useMutation();
+
+  const handleDismiss = useCallback(() => {
+    onDismiss();
+    dismissMutation.mutate(undefined, {
+      onError: () => {
+        toast.error(t("onboardingWizard.dismissError", "Setup was closed, but we couldn't save that preference. You can resume it later from Settings."));
+      },
+    });
+  }, [dismissMutation, onDismiss, t]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") handleDismiss();
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleDismiss]);
 
   const { canAccessConnector, maxStep, minStep } = getOnboardingFlow(status);
   const [viewStep, setViewStep] = useState<number | null>(null);
@@ -858,6 +873,12 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4"
       style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)", paddingBottom: "calc(5rem + env(safe-area-inset-bottom))", paddingTop: "1rem" }}
+      role="dialog"
+      aria-modal="true"
+      aria-label={t("onboardingWizard.header.title")}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) handleDismiss();
+      }}
     >
       <div
         className="w-full max-w-md rounded-3xl flex flex-col"
@@ -877,10 +898,12 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
               </span>
             </div>
             <button
-              onClick={() => dismissMutation.mutate()}
-              className="p-1 rounded-lg transition-colors"
+              type="button"
+              onClick={handleDismiss}
+              className="p-2 rounded-xl transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
               style={{ color: "var(--text-on-dark-primary)" }}
               title={t("onboardingWizard.header.skipSetupTooltip")}
+              aria-label={t("onboardingWizard.header.skipSetupTooltip")}
             >
               <X size={18} />
             </button>
@@ -961,12 +984,12 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
           {currentStep === 2 && <Step2Platform onDone={handleStepDone} />}
           {currentStep === 3 && (
             <Step3Send
-              onDismiss={onDismiss}
+              onDismiss={handleDismiss}
               onOpenConnector={canAccessConnector ? () => setViewStep(4) : undefined}
             />
           )}
           {currentStep === 4 && canAccessConnector && (
-            <Step4Connector onDismiss={() => dismissMutation.mutate()} />
+            <Step4Connector onDismiss={handleDismiss} />
           )}
 
           {/* Prev / Next navigation */}
@@ -997,15 +1020,14 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
             )}
           </div>
           {/* Skip link */}
-          {currentStep < maxStep && currentStep !== 3 && (
-            <button
-              onClick={() => dismissMutation.mutate()}
-              className="w-full text-center text-xs mt-3"
-              style={{ color: "oklch(0.70 0.03 260)" }}
-            >
-              {t("onboardingWizard.navigation.skipSetupLater")}
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={handleDismiss}
+            className="w-full text-center text-xs mt-3 rounded-lg py-2 font-semibold transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
+            style={{ color: "oklch(0.78 0.03 260)" }}
+          >
+            {t("onboardingWizard.navigation.skipSetupLater")}
+          </button>
         </div>
       </div>
     </div>

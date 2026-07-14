@@ -26,7 +26,7 @@ function toThb(usdAmount: number): string {
 }
 
 const UPGRADE_IMG =
-  "https://assets.getphame.app/rr-upgrade-hero.webp";
+  "/manus-storage/getphame-pro-whiteboard-growth_3e9448fc.png";
 
 // ── Feature comparison table ─────────────────────────────────────────────────
 const COMPARISON_ROWS: { feature: string; free: string | boolean; pro: string | boolean; lifetime: string | boolean }[] = [
@@ -297,7 +297,7 @@ export default function UpgradePage() {
   return (
     <div className="min-h-screen pb-40 rr-bg-navy">
       {/* Header */}
-      <div className="px-5 pt-14 pb-4">
+      <div className="px-5 pt-14 pb-5 max-w-6xl mx-auto">
         <button
           onClick={() => navigate("/")}
           className="flex items-center gap-1 text-base font-bold mb-4 text-white"
@@ -305,8 +305,8 @@ export default function UpgradePage() {
           <ChevronLeft size={16} />
           {t("header.back")}
         </button>
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
+        <div className="grid gap-6 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
+          <div>
             <div className="flex items-center gap-2 mb-2">
               <Crown size={16} className="rr-text-gold" />
               <span
@@ -316,21 +316,36 @@ export default function UpgradePage() {
               </span>
             </div>
             <h1
-              className="text-3xl leading-tight text-white rr-fw-black"
+              className="text-4xl sm:text-5xl lg:text-6xl leading-[0.95] text-white rr-fw-black"
             >
               {t("header.title")}
               <br />
               <span className="rr-text-gold">{t("header.noLimits")}</span>
             </h1>
+            <p className="mt-4 max-w-lg text-sm sm:text-base leading-relaxed text-white/75">
+              {t("header.proGrowthMessage", { defaultValue: "Turn every completed job into a repeatable reputation and revenue system." })}
+            </p>
           </div>
-          {/* Hero image — aligned with text, uncropped */}
-          <div className="shrink-0" style={{ width: 100, height: 100 }}>
-            <img src={UPGRADE_IMG} alt={t("header.heroImageAlt")} className="w-full h-full object-contain" loading="lazy" decoding="async" />
+          <div className="relative overflow-hidden rounded-[1.75rem] border border-[#D4A017]/70 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
+            <div className="absolute left-3 top-3 z-10 flex items-center gap-2 rounded-full border border-[#D4A017]/35 bg-[#061a3a]/95 px-3 py-2 shadow-lg sm:left-5 sm:top-5">
+              <img src="https://assets.getphame.app/getphame-logo-mark.webp" alt="" className="h-6 w-6 object-contain" aria-hidden="true" />
+              <span className="font-['Syne'] text-xs font-black tracking-[0.14em] text-white sm:text-sm">
+                GET <span className="text-[#D4A017]">PHAME</span> PRO
+              </span>
+            </div>
+            <img
+              src={UPGRADE_IMG}
+              alt={t("header.heroImageAlt", { defaultValue: "Hand-drawn roadmap showing GetPhame turning customer follow-ups into reviews, trust, and business growth" })}
+              className="aspect-[16/9] w-full object-cover object-center lg:min-h-[320px]"
+              loading="eager"
+              decoding="async"
+            />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#061a3a]/20 to-transparent" />
           </div>
         </div>
       </div>
 
-      <div className="px-4 flex flex-col gap-4">
+      <div className="px-4 flex flex-col gap-4 max-w-6xl mx-auto">
         {/* Plan selector tabs */}
         <div
           className="flex rounded-2xl p-1 gap-1 rr-bg-navy-mid"

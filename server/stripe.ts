@@ -42,6 +42,257 @@ export const STRIPE_PRICE_IDS = {
 
 export type StripePlan = keyof typeof STRIPE_PRICE_IDS;
 
+export const MONEY_BACK_GUARANTEE_DAYS = 7;
+const MONEY_BACK_GUARANTEE_MS = MONEY_BACK_GUARANTEE_DAYS * 24 * 60 * 60 * 1000;
+
+export type MoneyBackGuaranteeReason =
+  | "eligible"
+  | "already_refunded"
+  | "expired"
+  | "lifetime"
+  | "no_subscription"
+  | "unsupported_payment";
+
+export type MoneyBackGuaranteeStatus = {
+  eligible: boolean;
+  reason: MoneyBackGuaranteeReason;
+  purchasedAt: number | null;
+  deadlineAt: number | null;
+  amount: number | null;
+  currency: string | null;
+  alreadyRefunded: boolean;
+};
+
+type SubscriptionPaymentDetails = {
+  subscriptionId: string;
+  subscriptionStatus: string;
+  chargeId: string;
+  paymentIntentId: string | null;
+  purchasedAt: number;
+  amount: number;
+  amountRefunded: number;
+  currency: string;
+};
+
+function stripeResourceId(resource: unknown): string | null {
+  if (typeof resource === "string") return resource;
+  if (resource && typeof resource === "object" && "id" in resource && typeof resource.id === "string") {
+    return resource.id;
+  }
+  return null;
+}
+
+async function getOwnedSubscriptionPayment(
+  stripeCustomerId: string,
+  stripeSubscriptionId: string,
+): Promise<SubscriptionPaymentDetails | null> {
+  if (stripeSubscriptionId.startsWith("lifetime_")) return null;
+
+  const subscription = await stripe.subscriptions.retrieve(stripeSubscriptionId, {
+    expand: ["latest_invoice.payment_intent.latest_charge"],
+  });
+  const subscriptionCustomerId = stripeResourceId(subscription.customer);
+  if (!subscriptionCustomerId || subscriptionCustomerId !== stripeCustomerId) {
+    throw new Error("The Stripe subscription does not belong to this account.");
+  }
+
+  const rawSubscription = subscription as unknown as {
+    id: string;
+    status: string;
+    created: number;
+    latest_invoice?: string | {
+      payment_intent?: string | {
+        id: string;
+        latest_charge?: string | Stripe.Charge | null;
+      } | null;
+    } | null;
+  };
+  let invoice = rawSubscription.latest_invoice;
+  if (typeof invoice === "string") {
+    invoice = await stripe.invoices.retrieve(invoice, {
+      expand: ["payment_intent.latest_charge"],
+    }) as unknown as typeof invoice;
+  }
+
+  const paymentIntent = typeof invoice === "object" && invoice ? invoice.payment_intent : null;
+  const paymentIntentId = stripeResourceId(paymentIntent);
+  let chargeId =
+    typeof paymentIntent === "object" && paymentIntent
+      ? stripeResourceId(paymentIntent.latest_charge)
+      : null;
+
+  if (!chargeId && paymentIntentId) {
+    const charges = await stripe.charges.list({ payment_intent: paymentIntentId, limit: 10 });
+    chargeId = charges.data.find((charge) => charge.paid && !charge.failure_code)?.id ?? null;
+  }
+  if (!chargeId) return null;
+
+  const charge = await stripe.charges.retrieve(chargeId);
+  const chargeCustomerId = stripeResourceId(charge.customer);
+  if (!chargeCustomerId || chargeCustomerId !== stripeCustomerId) {
+    throw new Error("The Stripe payment does not belong to this account.");
+  }
+
+  return {
+    subscriptionId: rawSubscription.id,
+    subscriptionStatus: rawSubscription.status,
+    chargeId: charge.id,
+    paymentIntentId,
+    purchasedAt: rawSubscription.created * 1000,
+    amount: charge.amount,
+    amountRefunded: charge.amount_refunded,
+    currency: charge.currency,
+  };
+}
+
+export async function getMoneyBackGuaranteeStatus({
+  stripeCustomerId,
+  stripeSubscriptionId,
+  now = Date.now(),
+}: {
+  stripeCustomerId: string | null;
+  stripeSubscriptionId: string | null;
+  now?: number;
+}): Promise<MoneyBackGuaranteeStatus> {
+  if (!stripeCustomerId || !stripeSubscriptionId) {
+    return {
+      eligible: false,
+      reason: "no_subscription",
+      purchasedAt: null,
+      deadlineAt: null,
+      amount: null,
+      currency: null,
+      alreadyRefunded: false,
+    };
+  }
+  if (stripeSubscriptionId.startsWith("lifetime_")) {
+    return {
+      eligible: false,
+      reason: "lifetime",
+      purchasedAt: null,
+      deadlineAt: null,
+      amount: null,
+      currency: null,
+      alreadyRefunded: false,
+    };
+  }
+
+  const payment = await getOwnedSubscriptionPayment(stripeCustomerId, stripeSubscriptionId);
+  if (!payment) {
+    return {
+      eligible: false,
+      reason: "unsupported_payment",
+      purchasedAt: null,
+      deadlineAt: null,
+      amount: null,
+      currency: null,
+      alreadyRefunded: false,
+    };
+  }
+
+  const deadlineAt = payment.purchasedAt + MONEY_BACK_GUARANTEE_MS;
+  const alreadyRefunded = payment.amountRefunded >= payment.amount;
+  const eligible = !alreadyRefunded && now <= deadlineAt;
+  return {
+    eligible,
+    reason: alreadyRefunded ? "already_refunded" : eligible ? "eligible" : "expired",
+    purchasedAt: payment.purchasedAt,
+    deadlineAt,
+    amount: payment.amount,
+    currency: payment.currency,
+    alreadyRefunded,
+  };
+}
+
+export async function claimMoneyBackGuarantee({
+  userId,
+  stripeCustomerId,
+  stripeSubscriptionId,
+  now = Date.now(),
+}: {
+  userId: number;
+  stripeCustomerId: string;
+  stripeSubscriptionId: string;
+  now?: number;
+}) {
+  if (stripeSubscriptionId.startsWith("lifetime_")) {
+    throw new Error("Lifetime purchases are not subscriptions and cannot use subscription cancellation.");
+  }
+
+  const payment = await getOwnedSubscriptionPayment(stripeCustomerId, stripeSubscriptionId);
+  if (!payment) throw new Error("No refundable Stripe payment was found for this subscription.");
+  const deadlineAt = payment.purchasedAt + MONEY_BACK_GUARANTEE_MS;
+  if (payment.amountRefunded >= payment.amount) {
+    const needsCancellation = payment.subscriptionStatus !== "canceled";
+    if (needsCancellation) await stripe.subscriptions.cancel(stripeSubscriptionId);
+    return {
+      refunded: true,
+      alreadyRefunded: true,
+      canceled: needsCancellation,
+      amount: payment.amount,
+      currency: payment.currency,
+      deadlineAt,
+    };
+  }
+  if (now > deadlineAt) {
+    throw new Error("The seven-day money-back guarantee has expired.");
+  }
+
+  const refund = await stripe.refunds.create(
+    {
+      charge: payment.chargeId,
+      reason: "requested_by_customer",
+      metadata: {
+        user_id: String(userId),
+        subscription_id: stripeSubscriptionId,
+        guarantee: "seven_day_money_back",
+      },
+    },
+    { idempotencyKey: `getphame-guarantee-${stripeSubscriptionId}-${payment.chargeId}` },
+  );
+
+  // Money moves first. The subscription is canceled only after Stripe accepts the refund.
+  await stripe.subscriptions.cancel(stripeSubscriptionId);
+  console.info("[StripeGuarantee] Full refund claimed", {
+    userId,
+    subscriptionId: stripeSubscriptionId,
+    refundId: refund.id,
+  });
+  return {
+    refunded: true,
+    alreadyRefunded: false,
+    canceled: true,
+    amount: payment.amount,
+    currency: payment.currency,
+    deadlineAt,
+  };
+}
+
+export async function cancelSubscriptionRenewal(
+  stripeCustomerId: string,
+  stripeSubscriptionId: string,
+) {
+  if (stripeSubscriptionId.startsWith("lifetime_")) {
+    throw new Error("Lifetime access does not renew and cannot be canceled as a subscription.");
+  }
+  const subscription = await stripe.subscriptions.retrieve(stripeSubscriptionId);
+  if (stripeResourceId(subscription.customer) !== stripeCustomerId) {
+    throw new Error("The Stripe subscription does not belong to this account.");
+  }
+  const updated = await stripe.subscriptions.update(stripeSubscriptionId, {
+    cancel_at_period_end: true,
+  });
+  const raw = updated as unknown as {
+    current_period_end?: number;
+    items?: { data?: Array<{ current_period_end?: number }> };
+  };
+  const periodEnd = raw.current_period_end ?? raw.items?.data?.[0]?.current_period_end ?? null;
+  return {
+    canceledAtPeriodEnd: true,
+    currentPeriodEnd: periodEnd ? periodEnd * 1000 : null,
+  };
+}
+
 /** Create a Stripe Checkout Session for the selected plan */
 export async function createCheckoutSession({
   userId,

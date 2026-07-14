@@ -165,11 +165,11 @@ i18n
     lng: initialLang,
     fallbackLng: "en",
     supportedLngs: [...SUPPORTED_LANGS],
-    ns: ["landing", "translation"],
+    ns: ["landing", "translation", "cancellation"],
     defaultNS: "landing",
     fallbackNS: "translation",
     backend: {
-      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame7",
+      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame8",
     },
     interpolation: {
       escapeValue: false,

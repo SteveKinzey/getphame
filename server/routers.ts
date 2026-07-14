@@ -32,7 +32,15 @@ import {
 import { sendMailViaSmtp } from "./smtp";
 import { buildReviewRequestEmail, buildReviewRequestText } from "./emailTemplates";
 import { checkSendRateLimit } from "./rateLimiter";
-import { createCheckoutSession, createPortalSession, createThbCheckoutSession, getSubscriptionSnapshot } from "./stripe";
+import {
+  cancelSubscriptionRenewal,
+  claimMoneyBackGuarantee,
+  createCheckoutSession,
+  createPortalSession,
+  createThbCheckoutSession,
+  getMoneyBackGuaranteeStatus,
+  getSubscriptionSnapshot,
+} from "./stripe";
 import { sendLeadGuideEmail } from "./leadGuideEmail";
 import {
   getWooCredentials,
@@ -518,6 +526,92 @@ export const appRouter = router({
         };
       }
     }),
+
+    /** Server-authoritative seven-day refund eligibility for the signed-in Stripe customer. */
+    guaranteeStatus: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+      const profile = await getBusinessProfile(ctx.user.id);
+      const rows = await db
+        .select()
+        .from(stripeSubscriptions)
+        .where(eq(stripeSubscriptions.userId, ctx.user.id))
+        .limit(1);
+      return getMoneyBackGuaranteeStatus({
+        stripeCustomerId: profile?.stripeCustomerId ?? null,
+        stripeSubscriptionId: rows[0]?.stripeSubscriptionId ?? null,
+      });
+    }),
+
+    /** Issue a full Stripe refund, then end the subscription. */
+    claimGuarantee: protectedProcedure
+      .input(z.object({ confirmation: z.literal("REFUND_AND_CANCEL") }))
+      .mutation(async ({ ctx }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+        const profile = await getBusinessProfile(ctx.user.id);
+        const rows = await db
+          .select()
+          .from(stripeSubscriptions)
+          .where(eq(stripeSubscriptions.userId, ctx.user.id))
+          .limit(1);
+        const stripeCustomerId = profile?.stripeCustomerId;
+        const stripeSubscriptionId = rows[0]?.stripeSubscriptionId;
+        if (!stripeCustomerId || !stripeSubscriptionId) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "No Stripe subscription was found for this account." });
+        }
+
+        try {
+          const result = await claimMoneyBackGuarantee({
+            userId: ctx.user.id,
+            stripeCustomerId,
+            stripeSubscriptionId,
+          });
+          await Promise.all([
+            db
+              .update(businessProfiles)
+              .set({ tier: "free", planExpiresAt: null, updatedAt: new Date() })
+              .where(eq(businessProfiles.userId, ctx.user.id)),
+            db
+              .update(stripeSubscriptions)
+              .set({ status: "canceled", updatedAt: new Date() })
+              .where(eq(stripeSubscriptions.userId, ctx.user.id)),
+          ]);
+          return result;
+        } catch (error) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: error instanceof Error ? error.message : "The refund could not be completed.",
+          });
+        }
+      }),
+
+    /** Stop the next renewal without refunding the current paid period. */
+    cancelRenewal: protectedProcedure
+      .input(z.object({ confirmation: z.literal("CANCEL_RENEWAL") }))
+      .mutation(async ({ ctx }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+        const profile = await getBusinessProfile(ctx.user.id);
+        const rows = await db
+          .select()
+          .from(stripeSubscriptions)
+          .where(eq(stripeSubscriptions.userId, ctx.user.id))
+          .limit(1);
+        const stripeCustomerId = profile?.stripeCustomerId;
+        const stripeSubscriptionId = rows[0]?.stripeSubscriptionId;
+        if (!stripeCustomerId || !stripeSubscriptionId) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "No Stripe subscription was found for this account." });
+        }
+        try {
+          return await cancelSubscriptionRenewal(stripeCustomerId, stripeSubscriptionId);
+        } catch (error) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: error instanceof Error ? error.message : "The subscription could not be canceled.",
+          });
+        }
+      }),
   }),
 
   woo: router({

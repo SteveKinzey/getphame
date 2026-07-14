@@ -131,3 +131,13 @@
 - [x] Run TypeScript, the full Vitest suite, and the production build; publish the repair and hard-refresh the existing production account to confirm the guide stays closed.
 - [x] Treat historical sent-request activity as established-account evidence so a later SMTP credential failure cannot reclassify a returning customer as a first-login account.
 - [x] Add regression coverage for an established account with sent-request history and a currently false strict `allDone` status, then republish and repeat the production hard-refresh verification.
+- [x] Restore the premium responsive GetPhame Pro upgrade illustration using the approved logo mark and CSS wordmark after the sandbox reset.
+- [x] Make every setup wizard screen dismiss immediately through the X button, Escape key, backdrop click, and always-visible skip action without waiting for server persistence.
+- [x] Implement server-authoritative seven-day Stripe guarantee eligibility with customer or checkout ownership verification and lifetime-plan exclusion.
+- [x] Implement an idempotent full-refund claim that detects existing refunds, issues the refund before subscription termination, and preserves a separate cancel-renewal path.
+- [x] Add protected tRPC procedures for guarantee eligibility, refund claims, and non-refund renewal cancellation.
+- [x] Rebuild the localized cancellation page with eligibility, amount and deadline context, explicit confirmation, success and error states, and the separate out-of-window cancellation path.
+- [x] Add the cancellation translation namespace to EN, ES, FR, IT, TH, zh-CN, and zh-TW, then bump the locale cache version.
+- [x] Add focused refund-boundary, ownership, idempotency, lifetime exclusion, and refund-before-cancel tests plus upgrade and setup regressions.
+- [x] Run TypeScript, focused Vitest, full Vitest, production audit, and production build validation.
+- [x] Verify Upgrade and cancellation pages at desktop and phone sizes, then save the auto-published production checkpoint.

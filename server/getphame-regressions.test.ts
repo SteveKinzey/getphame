@@ -278,4 +278,60 @@ describe("Get Phame regression contracts", () => {
       expect(messages.account.administratorAccount).toBeTruthy();
     }
   });
+
+  it("uses the approved GetPhame mark and a responsive professional growth visual on Upgrade", () => {
+    const upgrade = readProjectFile("../client/src/pages/Upgrade.tsx");
+    expect(upgrade).toContain("/manus-storage/getphame-pro-whiteboard-growth_3e9448fc.png");
+    expect(upgrade).toContain("https://assets.getphame.app/getphame-logo-mark.webp");
+    expect(upgrade).toContain("GET <span");
+    expect(upgrade).toContain("PHAME</span> PRO");
+    expect(upgrade).toContain("lg:grid-cols-[0.78fr_1.22fr]");
+    expect(upgrade).toContain("max-w-6xl mx-auto");
+    expect(upgrade).not.toContain("rr-upgrade-hero.webp");
+  });
+
+  it("lets customers close setup immediately from the X, Escape key, backdrop, and every skip route", () => {
+    const wizard = readProjectFile("../client/src/components/OnboardingWizard.tsx");
+    expect(wizard).toContain("const handleDismiss = useCallback(() => {");
+    expect(wizard).toContain("onDismiss();");
+    expect(wizard).toContain("dismissMutation.mutate(undefined");
+    expect(wizard).toContain('event.key === "Escape"');
+    expect(wizard).toContain("event.target === event.currentTarget");
+    expect(wizard).toContain('aria-modal="true"');
+    expect(wizard).toContain("onClick={handleDismiss}");
+    expect(wizard).toContain("<Step4Connector onDismiss={handleDismiss} />");
+  });
+
+  it("keeps the cancellation screen localized and wired to distinct refund and renewal actions", () => {
+    const churn = readProjectFile("../client/src/pages/ChurnSurvey.tsx");
+    const i18n = readProjectFile("../client/src/lib/i18n.ts");
+    const routers = readProjectFile("./routers.ts");
+    const locales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"];
+
+    expect(churn).toContain('useTranslation("cancellation")');
+    expect(churn).toContain("trpc.stripe.guaranteeStatus.useQuery");
+    expect(churn).toContain("trpc.stripe.claimGuarantee.useMutation");
+    expect(churn).toContain("trpc.stripe.cancelRenewal.useMutation");
+    expect(churn).toContain('t("confirmRefundCheckbox")');
+    expect(churn).toContain('t("confirmRenewalCheckbox")');
+    expect(churn).toContain('guarantee.data?.reason === "already_refunded"');
+    expect(churn).toContain('guarantee.data?.reason === "expired"');
+    expect(i18n).toContain('["landing", "translation", "cancellation"]');
+    expect(i18n).toContain("v=phame8");
+    expect(routers).toContain("guaranteeStatus: protectedProcedure");
+    expect(routers).toContain("claimGuarantee: protectedProcedure");
+    expect(routers).toContain("cancelRenewal: protectedProcedure");
+
+    for (const locale of locales) {
+      const messages = JSON.parse(
+        readProjectFile(`../client/public/locales/${locale}/cancellation.json`),
+      ) as Record<string, string>;
+      expect(Object.keys(messages)).toHaveLength(53);
+      expect(messages.refundButton).toBeTruthy();
+      expect(messages.cancelRenewalButton).toBeTruthy();
+      expect(messages.stripeVerified).toBeTruthy();
+      expect(messages.eligibleText).toContain("{{amount}}");
+      expect(messages.eligibleText).toContain("{{deadline}}");
+    }
+  });
 });
