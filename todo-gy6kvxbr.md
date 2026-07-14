@@ -51,7 +51,7 @@
 - [x] Validate a Free account’s transition from 10 initial requests to the recurring 5-per-rolling-30-days allowance without corrupting production customer data.
 - [x] Review the live `/admin/users` workflow end to end, including search, status visibility, role controls, Life controls, pagination, and self-demotion safeguards.
 - [ ] Run one live Stripe checkout with the 99% promo code, obtain confirmation immediately before any charge submission, and verify the in-app success return plus paid entitlement.
-- [ ] Run TypeScript, focused regressions, the full test suite, and production build, then publish the verified repair checkpoint.
+- [x] Run TypeScript, focused regressions, the full test suite, and production build, then publish the verified repair checkpoint.
 - [x] Superseded by the explicit Italian landing deferral: restore public landing-page sections to i18next for EN, TH, ES, FR, zh-CN, and zh-TW while keeping the existing Italian application locale intact.
 - [x] Add seven-locale landing regression coverage that rejects hardcoded-English rendering and verifies selector persistence plus content changes for each supported language.
 - [x] Replace the already-merged English `landing` block in the Spanish locale with a complete, validated Spanish translation.
@@ -128,6 +128,6 @@
 - [ ] Publish the verified returning-user routing repair and confirm a fresh existing-account magic link bypasses setup.
 - [x] Make the authenticated application shell wait for server onboarding status before deciding whether to auto-open the six-screen setup guide, suppress it for dismissed or completed returning accounts, and preserve setup for genuinely incomplete accounts.
 - [x] Add focused regression coverage for dismissed, completed, incomplete, and loading onboarding-status states without changing production customer data.
-- [ ] Run TypeScript, the full Vitest suite, and the production build; publish the repair and hard-refresh the existing production account to confirm the guide stays closed.
+- [x] Run TypeScript, the full Vitest suite, and the production build; publish the repair and hard-refresh the existing production account to confirm the guide stays closed.
 - [x] Treat historical sent-request activity as established-account evidence so a later SMTP credential failure cannot reclassify a returning customer as a first-login account.
-- [ ] Add regression coverage for an established account with sent-request history and a currently false strict `allDone` status, then republish and repeat the production hard-refresh verification.
+- [x] Add regression coverage for an established account with sent-request history and a currently false strict `allDone` status, then republish and repeat the production hard-refresh verification.
