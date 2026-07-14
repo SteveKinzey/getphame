@@ -1,5 +1,21 @@
 {
   "landing": {
+    "purpose": {
+      "eyebrow": "关于此应用",
+      "title": "Get Phame 的用途",
+      "description": "Get Phame 帮助本地商家通过自己连接的电子邮箱发送个性化评价邀请。它适用于企业主、摄影师、咖啡馆和餐厅、家居服务团队、诊所和沙龙、代理机构以及 WooCommerce 商店，让他们可以更轻松地向真实客户征求反馈。",
+      "stepLabel": "第 {{number}} 步",
+      "steps": {
+        "customers": "添加您选择的客户",
+        "send": "通过您的邮箱发送个性化邀请",
+        "reviews": "将客户引导至您选择的评价平台"
+      },
+      "googleEyebrow": "Google 登录信息说明",
+      "googleTitle": "Google 登录的使用方式",
+      "googleDescription": "Google 登录仅用于创建和识别您的 Get Phame 账户。在获得您的许可后，Get Phame 会接收您的姓名和电子邮箱地址。我们不会请求访问您的 Gmail 邮件、联系人、Google 云端硬盘文件或 Google 日历。",
+      "googleSendingNote": "评价邀请的发送功能需在应用内单独配置，并使用您选择连接的电子邮箱账户。",
+      "privacyLink": "阅读我们的隐私政策"
+    },
     "comparison": {
       "getPhamePrice": "$29/mo",
       "birdeyePrice": "$299/mo",
@@ -87,6 +103,7 @@
       "howItWorks": "查看如何运作",
       "setupTime": "两分钟内完成设置",
       "emailCompatibility": "兼容 Gmail、Outlook、SMTP",
+      "googleDisclosureLabel": "Google 登录数据的使用方式",
       "googleSignInDisclaimer": "使用 Google 登录以创建账号。我们仅访问你的姓名和邮箱地址——不会获取其他信息。",
       "privacyPolicy": "隐私政策",
       "dashboardMockupAlt": "GetPhame 应用主界面，显示评论请求统计、发送按钮和面向本地商家的免费计划使用情况"

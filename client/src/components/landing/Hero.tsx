@@ -95,7 +95,7 @@ export default function Hero() {
               {...fadeUp(0.32)}
               className="text-lg md:text-xl text-white leading-relaxed mb-8 max-w-lg font-medium"
             >
-              {t("landing.hero.description", { defaultValue: "Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender." })}
+              {t("landing.hero.description", { defaultValue: "Get Phame helps local businesses send personalized review requests from their own email account. Customers see each request come from the business they already know — not a generic sender." })}
             </motion.p>
 
             <motion.div {...fadeUp(0.44)} className="flex flex-col sm:flex-row gap-4 mb-8">
@@ -131,13 +131,16 @@ export default function Hero() {
               </span>
             </motion.div>
 
-            <motion.p
+            <motion.div
               {...fadeUp(0.62)}
-              className="text-xs text-slate-400 mt-2 leading-relaxed"
+              role="note"
+              aria-label={t("landing.hero.googleDisclosureLabel", { defaultValue: "Google sign-in data use" })}
+              className="mt-4 max-w-lg rounded-xl border border-white/15 bg-white/[0.07] px-4 py-3 text-sm font-medium leading-relaxed text-slate-200"
             >
-              {t("landing.hero.googleSignInDisclaimer", { defaultValue: "Sign in with Google to create your account. We only access your name and email address — nothing else." })}{" "}
+              <span className="font-extrabold text-white">{t("landing.hero.googleDisclosureLabel", { defaultValue: "Google sign-in data use" })}: </span>
+              {t("landing.hero.googleSignInDisclaimer", { defaultValue: "Google sign-in only provides your name and email address to create and identify your Get Phame account. We do not request access to Gmail messages, contacts, Drive files, or Calendar." })}{" "}
               <a href="/privacy-policy" className="text-primary/80 hover:text-primary underline underline-offset-2">{t("landing.hero.privacyPolicy", { defaultValue: "Privacy Policy" })}</a>
-            </motion.p>
+            </motion.div>
           </div>
 
           {/* Right Column — dashboard mockup slides in from right */}

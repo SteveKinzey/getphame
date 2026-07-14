@@ -1,5 +1,21 @@
 {
   "landing": {
+    "purpose": {
+      "eyebrow": "Acerca de esta aplicación",
+      "title": "Qué hace Get Phame",
+      "description": "Get Phame ayuda a negocios locales a enviar solicitudes de reseñas personalizadas desde su propia cuenta de correo conectada. Está diseñado para propietarios de negocios, fotógrafos, cafés y restaurantes, servicios para el hogar, clínicas y salones, agencias y tiendas WooCommerce que desean una forma más sencilla de pedir opiniones a clientes reales.",
+      "stepLabel": "Paso {{number}}",
+      "steps": {
+        "customers": "Añade los clientes que elijas",
+        "send": "Envía una solicitud personal desde tu correo",
+        "reviews": "Dirige a los clientes a la plataforma de reseñas seleccionada"
+      },
+      "googleEyebrow": "Información sobre el acceso con Google",
+      "googleTitle": "Cómo se utiliza el acceso con Google",
+      "googleDescription": "El acceso con Google se utiliza únicamente para crear e identificar tu cuenta de Get Phame. Con tu permiso, Get Phame recibe tu nombre y dirección de correo electrónico. No solicitamos acceso a tus mensajes de Gmail, contactos, archivos de Google Drive ni Google Calendar.",
+      "googleSendingNote": "El envío de solicitudes de reseñas se configura por separado dentro de la aplicación mediante una cuenta de correo que tú decides conectar.",
+      "privacyLink": "Leer nuestra Política de Privacidad"
+    },
     "comparison": {
       "getPhamePrice": "$29/mo",
       "birdeyePrice": "$299/mo",
@@ -87,6 +103,7 @@
       "howItWorks": "Ver cómo funciona",
       "setupTime": "Configura en menos de 2 minutos",
       "emailCompatibility": "Funciona con Gmail, Outlook y SMTP",
+      "googleDisclosureLabel": "Uso de datos del acceso con Google",
       "googleSignInDisclaimer": "Inicia sesión con Google para crear tu cuenta. Solo accedemos a tu nombre y correo — nada más.",
       "privacyPolicy": "Política de privacidad",
       "dashboardMockupAlt": "Pantalla de inicio de la app Get Phame con estadísticas de solicitudes de reseña, botón de envío y uso del plan gratuito para negocios locales"

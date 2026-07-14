@@ -39,6 +39,17 @@ function landingStrings(locale: string): Map<string, string> {
 
 describe("landing locale coverage", () => {
   const english = landingStrings("en");
+  const requiredPurposeKeys = [
+    "purpose.title",
+    "purpose.description",
+    "purpose.steps.customers",
+    "purpose.steps.send",
+    "purpose.steps.reviews",
+    "purpose.googleTitle",
+    "purpose.googleDescription",
+    "purpose.googleSendingNote",
+    "purpose.privacyLink",
+  ] as const;
 
   for (const locale of authoredLandingLocales) {
     it(`${locale} contains every landing string`, () => {
@@ -49,7 +60,26 @@ describe("landing locale coverage", () => {
         expect(value.trim().length, `${locale}:${key}`).toBeGreaterThan(0);
       }
     });
+
+    it(`${locale} explains the app purpose and Google sign-in data use`, () => {
+      const localized = landingStrings(locale);
+
+      for (const key of requiredPurposeKeys) {
+        expect(localized.get(key)?.trim().length, `${locale}:${key}`).toBeGreaterThan(0);
+      }
+    });
   }
+
+  it("English disclosure names the Google data received and excluded services", () => {
+    const disclosure = english.get("purpose.googleDescription") ?? "";
+    const sendingNote = english.get("purpose.googleSendingNote") ?? "";
+
+    expect(disclosure).toContain("name and email address");
+    expect(disclosure).toContain("Gmail messages");
+    expect(disclosure).toContain("Google Drive files");
+    expect(disclosure).toContain("Google Calendar");
+    expect(sendingNote).toContain("configured separately");
+  });
 
   for (const locale of ["es", "zh-CN", "zh-TW"] as const) {
     it(`${locale} uses localized hero and rolling allowance copy`, () => {
@@ -65,15 +95,35 @@ describe("landing locale coverage", () => {
     });
   }
 
-  it("keeps Italian application translations while intentionally using English landing fallback", () => {
+  it("keeps Italian application translations with a localized purpose disclosure and English fallback for other landing copy", () => {
     expect(fs.existsSync(path.join(localeRoot, "it", "translation.json"))).toBe(true);
-    expect(fs.existsSync(path.join(localeRoot, "it", "landing.json"))).toBe(false);
+    expect(fs.existsSync(path.join(localeRoot, "it", "landing.json"))).toBe(true);
+
+    const italian = landingStrings("it");
+    for (const key of requiredPurposeKeys) {
+      expect(italian.get(key)?.trim().length, `it:${key}`).toBeGreaterThan(0);
+    }
+    expect(italian.has("hero.headlinePart1")).toBe(false);
 
     const i18nSource = fs.readFileSync(
       path.resolve(localeRoot, "../../src/lib/i18n.ts"),
       "utf8",
     );
     expect(i18nSource).toContain('fallbackLng: "en"');
+  });
+
+  it("renders the purpose disclosure directly after the public hero", () => {
+    const landingPageSource = fs.readFileSync(
+      path.resolve(localeRoot, "../../src/pages/LandingPage.tsx"),
+      "utf8",
+    );
+
+    expect(landingPageSource).toContain(
+      'import AppPurpose from "@/components/landing/AppPurpose"',
+    );
+    expect(landingPageSource.indexOf("<AppPurpose />")).toBeGreaterThan(
+      landingPageSource.indexOf("<Hero />"),
+    );
   });
 
   it("uses the configured landing namespace in every translated landing component", () => {
@@ -90,7 +140,7 @@ describe("landing locale coverage", () => {
         .map(match => match[1]);
       expect(
         explicitNamespaces.every(namespace => namespace === "landing"),
-        `${file} requests an unconfigured landing namespace: ${explicitNamespaces.join(", ")}`
+        `${file} requests an unconfigured landing namespace: ${explicitNamespaces.join(", ")}`,
       ).toBe(true);
     }
   });

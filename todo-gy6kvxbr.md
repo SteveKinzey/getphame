@@ -50,7 +50,7 @@
 - [x] Add regression coverage proving the landing page renders translated Thai content—not only a Thai selector label—and verify desktop plus mobile.
 - [x] Validate a Free account’s transition from 10 initial requests to the recurring 5-per-rolling-30-days allowance without corrupting production customer data.
 - [x] Review the live `/admin/users` workflow end to end, including search, status visibility, role controls, Life controls, pagination, and self-demotion safeguards.
-- [ ] Run one live Stripe checkout with the 99% promo code, obtain confirmation immediately before any charge submission, and verify the in-app success return plus paid entitlement.
+- [x] User-reported production validation: Steve independently completed the live checkout and confirmed that it worked; no payment was submitted or directly observed by the agent.
 - [x] Run TypeScript, focused regressions, the full test suite, and production build, then publish the verified repair checkpoint.
 - [x] Superseded by the explicit Italian landing deferral: restore public landing-page sections to i18next for EN, TH, ES, FR, zh-CN, and zh-TW while keeping the existing Italian application locale intact.
 - [x] Add seven-locale landing regression coverage that rejects hardcoded-English rendering and verifies selector persistence plus content changes for each supported language.
@@ -147,3 +147,6 @@
 - [x] Audit shared and page-specific form controls for light/dark text, placeholder, background, border, autofill, disabled, and read-only contrast inconsistencies across the authenticated site.
 - [x] Implement globally consistent, readable form-field colors in both light and dark modes without weakening existing GetPhame branding or interaction states.
 - [x] Add regression coverage, run complete release gates, verify representative forms in both themes, and publish the validated accessibility repair.
+- [ ] Verify the authenticated alternate non-admin production account on a phone-sized viewport and close the older mobile-account validation gate.
+- [x] Update the public homepage so Google reviewers can immediately identify GetPhame’s purpose, intended users, core review-request workflow, and relevant Google service/data use before signing in.
+- [x] Add homepage-purpose regression coverage, run complete release gates, verify public desktop and mobile layouts, and publish the Google-verification remediation.

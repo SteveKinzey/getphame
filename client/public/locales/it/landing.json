@@ -1,0 +1,20 @@
+{
+  "landing": {
+    "purpose": {
+      "eyebrow": "Informazioni su questa app",
+      "title": "Cosa fa Get Phame",
+      "description": "Get Phame aiuta le attività locali a inviare richieste di recensione personalizzate dal proprio account e-mail collegato. È pensato per titolari di attività, fotografi, bar e ristoranti, servizi per la casa, cliniche e saloni, agenzie e negozi WooCommerce che desiderano un modo più semplice per chiedere un feedback a clienti reali.",
+      "stepLabel": "Passaggio {{number}}",
+      "steps": {
+        "customers": "Aggiungi i clienti che scegli",
+        "send": "Invia una richiesta personale dalla tua e-mail",
+        "reviews": "Indirizza i clienti alla piattaforma di recensioni selezionata"
+      },
+      "googleEyebrow": "Informativa sull'accesso con Google",
+      "googleTitle": "Come viene utilizzato l'accesso con Google",
+      "googleDescription": "L'accesso con Google viene utilizzato esclusivamente per creare e identificare il tuo account Get Phame. Con la tua autorizzazione, Get Phame riceve il tuo nome e indirizzo e-mail. Non richiediamo l'accesso ai messaggi Gmail, ai contatti, ai file di Google Drive o a Google Calendar.",
+      "googleSendingNote": "L'invio delle richieste di recensione viene configurato separatamente nell'app tramite un account e-mail che scegli di collegare.",
+      "privacyLink": "Leggi la nostra Informativa sulla privacy"
+    }
+  }
+}

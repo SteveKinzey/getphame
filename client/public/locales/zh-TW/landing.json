@@ -1,5 +1,21 @@
 {
   "landing": {
+    "purpose": {
+      "eyebrow": "關於此應用程式",
+      "title": "Get Phame 的用途",
+      "description": "Get Phame 協助在地商家透過自己連結的電子郵件帳戶發送個人化評論邀請。它適合企業主、攝影師、咖啡館與餐廳、居家服務團隊、診所與沙龍、代理商及 WooCommerce 商店，讓他們能更輕鬆地向真實客戶徵求意見。",
+      "stepLabel": "第 {{number}} 步",
+      "steps": {
+        "customers": "新增您選擇的客戶",
+        "send": "透過您的電子郵件發送個人化邀請",
+        "reviews": "將客戶引導至您選擇的評論平台"
+      },
+      "googleEyebrow": "Google 登入資訊說明",
+      "googleTitle": "Google 登入的使用方式",
+      "googleDescription": "Google 登入僅用於建立和識別您的 Get Phame 帳戶。經您同意後，Get Phame 會取得您的姓名和電子郵件地址。我們不會要求存取您的 Gmail 郵件、聯絡人、Google 雲端硬碟檔案或 Google 日曆。",
+      "googleSendingNote": "評論邀請的發送功能需在應用程式內另外設定，並使用您選擇連結的電子郵件帳戶。",
+      "privacyLink": "閱讀我們的隱私權政策"
+    },
     "comparison": {
       "getPhamePrice": "$29/mo",
       "birdeyePrice": "$299/mo",
@@ -87,6 +103,7 @@
       "howItWorks": "了解如何運作",
       "setupTime": "兩分鐘內完成設定",
       "emailCompatibility": "支援 Gmail、Outlook、SMTP",
+      "googleDisclosureLabel": "Google 登入資料的使用方式",
       "googleSignInDisclaimer": "以 Google 登入建立帳號。我們僅存取你的姓名與電子郵件地址 — 不會取用其他資訊。",
       "privacyPolicy": "隱私權政策",
       "dashboardMockupAlt": "Get Phame 應用程式主畫面，顯示邀請評論統計、發送按鈕與在地商家免費方案使用情況"

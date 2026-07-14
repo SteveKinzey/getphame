@@ -1,5 +1,21 @@
 {
   "landing": {
+    "purpose": {
+      "eyebrow": "À propos de cette application",
+      "title": "Ce que fait Get Phame",
+      "description": "Get Phame aide les entreprises locales à envoyer des demandes d'avis personnalisées depuis leur propre compte e-mail connecté. L'application s'adresse aux propriétaires d'entreprises, photographes, cafés et restaurants, services à domicile, cliniques et salons, agences et boutiques WooCommerce qui souhaitent demander plus simplement l'avis de vrais clients.",
+      "stepLabel": "Étape {{number}}",
+      "steps": {
+        "customers": "Ajoutez les clients de votre choix",
+        "send": "Envoyez une demande personnelle depuis votre e-mail",
+        "reviews": "Dirigez les clients vers la plateforme d'avis sélectionnée"
+      },
+      "googleEyebrow": "Information sur la connexion Google",
+      "googleTitle": "Comment la connexion Google est utilisée",
+      "googleDescription": "La connexion Google sert uniquement à créer et identifier votre compte Get Phame. Avec votre autorisation, Get Phame reçoit votre nom et votre adresse e-mail. Nous ne demandons pas l'accès à vos messages Gmail, contacts, fichiers Google Drive ou Google Agenda.",
+      "googleSendingNote": "L'envoi des demandes d'avis est configuré séparément dans l'application avec le compte e-mail que vous choisissez de connecter.",
+      "privacyLink": "Lire notre Politique de confidentialité"
+    },
     "comparison": {
       "getPhamePrice": "$29/mo",
       "birdeyePrice": "$299/mo",
@@ -87,6 +103,7 @@
       "howItWorks": "Voir comment ça marche",
       "setupTime": "Configuration en moins de 2 minutes",
       "emailCompatibility": "Fonctionne avec Gmail, Outlook, SMTP",
+      "googleDisclosureLabel": "Utilisation des données de connexion Google",
       "googleSignInDisclaimer": "Connectez‑vous avec Google pour créer votre compte. Nous accédons uniquement à votre nom et à votre adresse email — rien d'autre.",
       "privacyPolicy": "Politique de confidentialité",
       "dashboardMockupAlt": "Écran d'accueil de l'application GetPhame montrant les statistiques de demandes d'avis, le bouton d'envoi et l'utilisation du plan gratuit pour les entreprises locales"
