@@ -13,6 +13,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
+import PlanSwitchDialog from "@/components/PlanSwitchDialog";
 
 // ── THB dual-currency display ─────────────────────────────────────────────────
 // Fixed rate — update manually when USD/THB shifts significantly
@@ -87,6 +88,7 @@ export default function UpgradePage() {
   const utils = trpc.useUtils();
   const [selectedPlan, setSelectedPlan] = useState<Plan>("annual");
   const [accessCode, setAccessCode] = useState("");
+  const [planSwitchOpen, setPlanSwitchOpen] = useState(false);
   // Show PromptPay if Thai locale detected, or user manually reveals it
   const isThai = typeof navigator !== "undefined" && navigator.language.toLowerCase().startsWith("th");
   const [showPromptPay, setShowPromptPay] = useState(isThai);
@@ -240,7 +242,7 @@ export default function UpgradePage() {
               <CreditCard size={24} className="rr-text-gold" />
             </div>
             <button
-              onClick={() => createPortal.mutate({ origin: window.location.origin })}
+              onClick={() => setPlanSwitchOpen(true)}
               disabled={createPortal.isPending}
               className="w-full py-3 px-5 rounded-xl font-black text-sm flex items-center justify-center gap-2 rr-bg-gold rr-text-navy disabled:opacity-60"
             >
@@ -259,6 +261,13 @@ export default function UpgradePage() {
             <p className="text-xs text-white/60 text-center mt-3">
               {t("paidUser.endExplanation", { defaultValue: "Ending your subscription returns the account to Free at the end of the paid period." })}
             </p>
+            <PlanSwitchDialog
+              open={planSwitchOpen}
+              onOpenChange={setPlanSwitchOpen}
+              currentPlan={effectivePlan as "monthly" | "annual"}
+              onConfirm={() => createPortal.mutate({ origin: window.location.origin })}
+              isPending={createPortal.isPending}
+            />
           </div>
         )}
         <button

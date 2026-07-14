@@ -32,3 +32,9 @@
 - [x] Audit applicable Get Phame task sources for other unfinished work without modifying other sessions’ task ledgers
 - [x] Add or update Vitest coverage for branding, language controls, plan status, admin Life entitlement, subscription management, and Settings loading
 - [x] Verify desktop and mobile UI, run TypeScript and the full Vitest suite, then publish the completed update
+- [x] Finalize and validate the reusable Get Phame regression-restoration skill through the approved skill-creator workflow
+- [x] Update the dashboard usage card to show Life Plan instead of Free Plan for users with effective Life entitlements
+- [x] Add a confirmation modal summarizing the change before Monthly and Annual subscribers switch plans
+- [x] Add a clear sidebar badge that identifies administrator accounts without exposing admin-only actions
+- [x] Add or update Vitest coverage for the Life usage label, plan-switch confirmation modal, and admin badge
+- [x] Verify the four improvements on desktop and mobile, run TypeScript and the full Vitest suite, then publish the checkpoint

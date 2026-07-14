@@ -1782,7 +1782,21 @@
     "switchMonthly": "Passa al mensile o gestisci la fatturazione",
     "changePlan": "Cambia piano o gestisci la fatturazione",
     "endSubscription": "Termina abbonamento",
-    "endExplanation": "Terminando l’abbonamento, l’account tornerà al piano gratuito alla fine del periodo pagato."
+    "endExplanation": "Terminando l’abbonamento, l’account tornerà al piano gratuito alla fine del periodo pagato.",
+    "switchConfirm": {
+      "title": "Passare da {{current}} a {{target}}?",
+      "description": "Controlla il cambio del ciclo di fatturazione prima di continuare su Stripe.",
+      "currentPlan": "Piano attuale",
+      "newPlan": "Nuovo piano",
+      "savings": "La fatturazione annuale consente di risparmiare $58 all’anno rispetto a quella mensile.",
+      "timing": "Stripe mostrerà la data effettiva esatta e qualsiasi addebito o credito proporzionale prima dell’approvazione.",
+      "cancel": "Mantieni {{plan}}",
+      "continue": "Continua su Stripe"
+    }
+  },
+  "account": {
+    "administrator": "Amministratore",
+    "administratorAccount": "Account amministratore"
   },
   "columnLabels": {
     "name": "Nome",

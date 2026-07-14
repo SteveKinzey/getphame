@@ -3,7 +3,7 @@
 // Tablet (768–1023px): icon-only sidebar (64px) + content
 // Desktop (1024px+): full sidebar (220px) with labels + content
 import { useLocation } from "wouter";
-import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown } from "lucide-react";
+import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown, ShieldCheck } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
@@ -138,6 +138,23 @@ export default function AppLayout({ children }: AppLayoutProps) {
           className="px-2 pb-4 flex flex-col gap-1.5 border-t pt-3"
           style={{ borderColor: "oklch(0.28 0.08 260)" }}
         >
+          {user?.role === "admin" && (
+            <div
+              data-testid="admin-sidebar-badge"
+              className="flex items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2 rounded-xl"
+              title={t("account.administratorAccount", { defaultValue: "Administrator account" })}
+              style={{
+                background: "oklch(0.30 0.08 260)",
+                border: "1px solid oklch(0.80 0.18 80 / 0.42)",
+              }}
+            >
+              <ShieldCheck size={14} className="flex-shrink-0" style={{ color: "oklch(0.80 0.18 80)" }} />
+              <span className="app-sidebar-label text-xs font-black hidden text-white">
+                {t("account.administrator", { defaultValue: "Administrator" })}
+              </span>
+            </div>
+          )}
+
           {/* Account status is always visible; Life is terminal and has no upgrade action. */}
           <div
             className="flex items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2 rounded-xl"

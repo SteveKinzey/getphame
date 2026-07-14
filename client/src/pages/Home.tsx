@@ -12,6 +12,7 @@ import LanguageFlyout from "@/components/LanguageFlyout";
 import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
+import { getEffectivePlan } from "@shared/plans";
 
 const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
 const HERO_IMG = "https://assets.getphame.app/getphame-logo-mark.webp";
@@ -405,11 +406,12 @@ export default function HomePage() {
     ? Math.ceil((profile.planExpiresAt - Date.now()) / (24 * 60 * 60 * 1000))
     : null;
 
-  // Tier label
+  // Plan label must use effective entitlements so administrators display Life, not Free.
+  const effectivePlan = getEffectivePlan(profile?.tier, user?.role);
   const tierLabel =
-    profile?.tier === "pro" ? t("homePage.monthlyPro", { defaultValue: "Monthly Pro" }) :
-    profile?.tier === "annual" ? t("homePage.annualPro", { defaultValue: "Annual Pro" }) :
-    profile?.tier === "lifetime" ? t("homePage.lifetime", { defaultValue: "Lifetime" }) :
+    effectivePlan === "monthly" ? t("homePage.monthlyPro", { defaultValue: "Monthly Pro" }) :
+    effectivePlan === "annual" ? t("homePage.annualPro", { defaultValue: "Annual Pro" }) :
+    effectivePlan === "life" ? t("homePage.lifePlan", { defaultValue: "Life Plan" }) :
     t("homePage.freePlan", { defaultValue: "Free Plan" });
 
   return (
@@ -486,7 +488,7 @@ export default function HomePage() {
             { label: t("homePage.allTime", { defaultValue: "All Time" }), value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
             {
               label: tierLabel,
-              value: profile?.tier === "free" || !profile?.tier ? `${Math.max(0, 10 - (profile?.totalSent ?? 0))}/10` : "✓",
+              value: effectivePlan === "free" ? `${Math.max(0, 10 - (profile?.totalSent ?? 0))}/10` : "✓",
               icon: <img src={LOGO_URL} alt="GetPhame" style={{ width: 16, height: 16, objectFit: 'contain' }} />
             },
           ].map((s, i) => (

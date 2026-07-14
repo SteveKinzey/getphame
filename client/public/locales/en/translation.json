@@ -919,7 +919,21 @@
     "switchMonthly": "Switch to Monthly or manage billing",
     "changePlan": "Change plan or manage billing",
     "endSubscription": "End subscription",
-    "endExplanation": "Ending your subscription returns the account to Free at the end of the paid period."
+    "endExplanation": "Ending your subscription returns the account to Free at the end of the paid period.",
+    "switchConfirm": {
+      "title": "Switch from {{current}} to {{target}}?",
+      "description": "Review the billing-cycle change before continuing to Stripe.",
+      "currentPlan": "Current plan",
+      "newPlan": "New plan",
+      "savings": "Annual billing saves $58 per year compared with Monthly.",
+      "timing": "Stripe will show the exact effective date and any prorated charge or credit before you approve the change.",
+      "cancel": "Keep {{plan}}",
+      "continue": "Continue to Stripe"
+    }
+  },
+  "account": {
+    "administrator": "Administrator",
+    "administratorAccount": "Administrator account"
   },
   "columnLabels": {
     "fullName": "Full Name",

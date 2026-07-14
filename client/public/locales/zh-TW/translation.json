@@ -909,7 +909,21 @@
     "switchMonthly": "切換為月繳或管理付款",
     "changePlan": "變更方案或管理付款",
     "endSubscription": "結束訂閱",
-    "endExplanation": "結束訂閱後，帳戶會在已付費期間結束時回到免費方案。"
+    "endExplanation": "結束訂閱後，帳戶會在已付費期間結束時回到免費方案。",
+    "switchConfirm": {
+      "title": "要從 {{current}} 切換至 {{target}} 嗎？",
+      "description": "前往 Stripe 前，請先確認計費週期變更。",
+      "currentPlan": "目前方案",
+      "newPlan": "新方案",
+      "savings": "年繳相較於月繳每年可節省 58 美元。",
+      "timing": "Stripe 會在您核准變更前，顯示確切生效日期及任何按比例計算的費用或抵扣。",
+      "cancel": "保留 {{plan}}",
+      "continue": "前往 Stripe"
+    }
+  },
+  "account": {
+    "administrator": "管理員",
+    "administratorAccount": "管理員帳戶"
   },
   "columnLabels": {
     "fullName": "全名",

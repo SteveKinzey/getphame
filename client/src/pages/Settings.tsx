@@ -65,6 +65,7 @@ import LanguageFlyout from "@/components/LanguageFlyout";
 import BrandLockup from "@/components/BrandLockup";
 import { IntegrationGuide } from "@/components/IntegrationGuide";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
+import PlanSwitchDialog from "@/components/PlanSwitchDialog";
 
 // ── Share & Earn Card ────────────────────────────────────────────────────────
 function ShareAndEarnCard({ profile }: { profile: ProfileData | null | undefined }) {
@@ -440,6 +441,7 @@ type ProfileData = {
 function BillingSection({ profile }: { profile: ProfileData | null | undefined }) {
   const [, navigate] = useLocation();
   const [showRetention, setShowRetention] = useState(false);
+  const [planSwitchOpen, setPlanSwitchOpen] = useState(false);
   const createPortal = trpc.stripe.createPortal.useMutation({
     onSuccess: ({ url }) => window.open(url, '_blank'),
     onError: (err) => toast.error(err.message),
@@ -559,13 +561,20 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
             ) : (
               <div className="flex flex-col gap-2">
                 <button
-                  onClick={() => createPortal.mutate({ origin: window.location.origin })}
+                  onClick={() => setPlanSwitchOpen(true)}
                   disabled={createPortal.isPending}
                   className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-navy text-white disabled:opacity-60"
                 >
                   {createPortal.isPending ? <Loader2 size={16} className="animate-spin" /> : <ExternalLink size={16} />}
                   {effectivePlan === 'annual' ? 'Switch to Monthly or Manage Billing' : 'Change Plan or Manage Billing'}
                 </button>
+                <PlanSwitchDialog
+                  open={planSwitchOpen}
+                  onOpenChange={setPlanSwitchOpen}
+                  currentPlan={effectivePlan as 'monthly' | 'annual'}
+                  onConfirm={() => createPortal.mutate({ origin: window.location.origin })}
+                  isPending={createPortal.isPending}
+                />
                 <button
                   onClick={() => setShowRetention(true)}
                   className="text-xs text-center py-2 rr-text-navy-muted"

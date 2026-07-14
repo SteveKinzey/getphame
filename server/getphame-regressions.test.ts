@@ -49,4 +49,56 @@ describe("Get Phame regression contracts", () => {
     expect(settings).toContain("<BrandLockup");
     expect(settings).toContain("profileLoading");
   });
+
+  it("shows Life entitlements on the dashboard usage card instead of the Free label or quota", () => {
+    const home = readProjectFile("../client/src/pages/Home.tsx");
+
+    expect(home).toContain("getEffectivePlan(profile?.tier, user?.role)");
+    expect(home).toContain('effectivePlan === "life" ? t("homePage.lifePlan"');
+    expect(home).toContain('effectivePlan === "free" ? `${Math.max(0, 10 - (profile?.totalSent ?? 0))}/10` : "✓"');
+  });
+
+  it("renders a distinct localized administrator badge in the sidebar", () => {
+    const layout = readProjectFile("../client/src/components/AppLayout.tsx");
+
+    expect(layout).toContain('user?.role === "admin"');
+    expect(layout).toContain('data-testid="admin-sidebar-badge"');
+    expect(layout).toContain('t("account.administrator"');
+    expect(layout).toContain("<ShieldCheck");
+  });
+
+  it("requires a clear plan-switch confirmation before handing Monthly or Annual users to Stripe", () => {
+    const dialog = readProjectFile("../client/src/components/PlanSwitchDialog.tsx");
+    const upgrade = readProjectFile("../client/src/pages/Upgrade.tsx");
+    const settings = readProjectFile("../client/src/pages/Settings.tsx");
+
+    expect(dialog).toContain('currentPlan === "monthly" ? "annual" : "monthly"');
+    expect(dialog).toContain('t("paidUser.switchConfirm.currentPlan"');
+    expect(dialog).toContain('t("paidUser.switchConfirm.newPlan"');
+    expect(dialog).toContain('t("paidUser.switchConfirm.timing"');
+    expect(dialog).toContain("onConfirm();");
+    expect(upgrade).toContain("setPlanSwitchOpen(true)");
+    expect(settings).toContain("setPlanSwitchOpen(true)");
+    expect(upgrade).toContain("<PlanSwitchDialog");
+    expect(settings).toContain("<PlanSwitchDialog");
+  });
+
+  it("localizes the plan-switch modal and administrator badge in every supported locale", () => {
+    const locales = ["en", "es", "fr", "it", "th", "zh-TW"];
+
+    for (const locale of locales) {
+      const messages = JSON.parse(
+        readProjectFile(`../client/public/locales/${locale}/translation.json`),
+      );
+
+      expect(messages.paidUser.switchConfirm.title).toBeTruthy();
+      expect(messages.paidUser.switchConfirm.currentPlan).toBeTruthy();
+      expect(messages.paidUser.switchConfirm.newPlan).toBeTruthy();
+      expect(messages.paidUser.switchConfirm.timing).toBeTruthy();
+      expect(messages.paidUser.switchConfirm.cancel).toBeTruthy();
+      expect(messages.paidUser.switchConfirm.continue).toBeTruthy();
+      expect(messages.account.administrator).toBeTruthy();
+      expect(messages.account.administratorAccount).toBeTruthy();
+    }
+  });
 });

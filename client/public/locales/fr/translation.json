@@ -1281,7 +1281,21 @@
     "switchMonthly": "Passer au mensuel ou gérer la facturation",
     "changePlan": "Changer de formule ou gérer la facturation",
     "endSubscription": "Mettre fin à l’abonnement",
-    "endExplanation": "La fin de votre abonnement ramène le compte à l’offre gratuite à la fin de la période payée."
+    "endExplanation": "La fin de votre abonnement ramène le compte à l’offre gratuite à la fin de la période payée.",
+    "switchConfirm": {
+      "title": "Passer de {{current}} à {{target}} ?",
+      "description": "Vérifiez le changement de cycle de facturation avant de continuer vers Stripe.",
+      "currentPlan": "Formule actuelle",
+      "newPlan": "Nouvelle formule",
+      "savings": "La facturation annuelle permet d’économiser 58 $ par an par rapport à la formule mensuelle.",
+      "timing": "Stripe affichera la date d’effet exacte et tout débit ou crédit au prorata avant votre approbation.",
+      "cancel": "Conserver {{plan}}",
+      "continue": "Continuer vers Stripe"
+    }
+  },
+  "account": {
+    "administrator": "Administrateur",
+    "administratorAccount": "Compte administrateur"
   },
   "columnLabels": {
     "fullName": "Nom complet",
