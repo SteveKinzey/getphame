@@ -292,6 +292,7 @@ describe("Get Phame regression contracts", () => {
 
   it("lets customers close setup immediately from the X, Escape key, backdrop, and every skip route", () => {
     const wizard = readProjectFile("../client/src/components/OnboardingWizard.tsx");
+    const app = readProjectFile("../client/src/App.tsx");
     expect(wizard).toContain("const handleDismiss = useCallback(() => {");
     expect(wizard).toContain("onDismiss();");
     expect(wizard).toContain("dismissMutation.mutate(undefined");
@@ -300,6 +301,10 @@ describe("Get Phame regression contracts", () => {
     expect(wizard).toContain('aria-modal="true"');
     expect(wizard).toContain("onClick={handleDismiss}");
     expect(wizard).toContain("<Step4Connector onDismiss={handleDismiss} />");
+    expect(app).toContain("const onboardingDismissedUserIds = new Set<string>();");
+    expect(app).toContain("onboardingDismissedUserIds.add(userId)");
+    expect(app).toContain("onboardingDismissedUserIds.has(userId)");
+    expect(app).toContain("<OnboardingWizard onDismiss={dismissOnboardingForSession} />");
   });
 
   it("keeps the cancellation screen localized and wired to distinct refund and renewal actions", () => {

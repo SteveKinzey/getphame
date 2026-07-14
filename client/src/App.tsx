@@ -26,6 +26,11 @@ import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
 import { useHapticEvents } from "./hooks/useHapticEvents";
 
+// Keep a same-tab dismissal guard outside the component lifecycle. This prevents
+// auth/session refreshes or error-boundary remounts from reopening the setup
+// wizard while the server-side dismissal preference is still being persisted.
+const onboardingDismissedUserIds = new Set<string>();
+
 // ── Lazy-loaded (public pages + heavy/rarely-visited pages) ─────────────────
 const LandingPage       = lazy(() => import("./pages/LandingPage"));
 const OnboardingPage    = lazy(() => import("./pages/Onboarding"));
@@ -86,7 +91,10 @@ function PageTransition({ children }: { children: React.ReactNode }) {
 function AppShell() {
   const { user, loading, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
-  const [onboardingDismissed, setOnboardingDismissed] = useState(false);
+  const userId = user?.id == null ? null : String(user.id);
+  const [onboardingDismissed, setOnboardingDismissed] = useState(
+    () => !!userId && onboardingDismissedUserIds.has(userId),
+  );
   const { data: onboardingStatus } = trpc.onboarding.status.useQuery(undefined, {
     enabled: !!user,
     refetchInterval: 5000,
@@ -135,8 +143,13 @@ function AppShell() {
   }, [loading, navigate, user]);
 
   useEffect(() => {
-    setOnboardingDismissed(false);
-  }, [user?.id]);
+    setOnboardingDismissed(!!userId && onboardingDismissedUserIds.has(userId));
+  }, [userId]);
+
+  const dismissOnboardingForSession = () => {
+    if (userId) onboardingDismissedUserIds.add(userId);
+    setOnboardingDismissed(true);
+  };
 
   const showWizard =
     !!user &&
@@ -149,7 +162,7 @@ function AppShell() {
 
   const closeGuideForSession = () => {
     handleGuideClose();
-    setOnboardingDismissed(true);
+    dismissOnboardingForSession();
   };
 
   if (loading) {
@@ -232,14 +245,14 @@ function AppShell() {
       <a href="#main-content" className="skip-to-content">Skip to main content</a>
 
       {showWizard && (
-        <OnboardingWizard onDismiss={() => setOnboardingDismissed(true)} />
+        <OnboardingWizard onDismiss={dismissOnboardingForSession} />
       )}
       <OnboardingGuide
         open={guideOpen}
         onClose={closeGuideForSession}
         onNavigate={(path) => handoffGuideNavigation({
           path,
-          dismissWizard: () => setOnboardingDismissed(true),
+          dismissWizard: dismissOnboardingForSession,
           closeGuide: closeGuideForSession,
           navigate,
         })}

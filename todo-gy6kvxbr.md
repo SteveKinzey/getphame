@@ -141,3 +141,4 @@
 - [x] Add focused refund-boundary, ownership, idempotency, lifetime exclusion, and refund-before-cancel tests plus upgrade and setup regressions.
 - [x] Run TypeScript, focused Vitest, full Vitest, production audit, and production build validation.
 - [x] Verify Upgrade and cancellation pages at desktop and phone sizes, then save the auto-published production checkpoint.
+- [x] Fix the live setup wizard reopening or remaining visible after its top-right X is clicked, then add a regression for the parent-state interaction and republish.
