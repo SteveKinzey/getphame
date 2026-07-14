@@ -60,7 +60,7 @@
 - [x] Preserve and review the nested Mac clone's four untracked icon files before any future duplicate-directory cleanup; no nested clone was present in this sandbox, and no external Mac directory was altered.
 - [x] Superseded by user: make the bottom sidebar account identity block clickable and reveal an accessible Log out action without disrupting Administrator, Life status, or theme controls.
 - [x] Superseded by user: add Vitest regression coverage for opening, keyboard-operating, and logging out through the sidebar account menu on desktop and mobile layouts.
-- [ ] Add a direct, translated Log out link below the Dark theme control and above the unchanged name/email profile block; implementation and regression coverage pass, with live desktop/tablet logout execution pending after publish.
+- [x] Add a direct, translated Log out link below the Dark theme control and above the unchanged name/email profile block; implementation, regression coverage, and live desktop logout execution verified in production.
 - [x] Add Vitest regression coverage that locks the sidebar logout link's placement, translated label, and shared authentication action.
 - [x] Fix custom-domain email magic-link verification so a valid `getphame.app` link establishes the session and reaches the authenticated app instead of returning to generic onboarding.
 - [x] Add the translated Log out action to the mobile navigation using the existing authentication behavior, without changing the desktop profile block.
@@ -118,14 +118,14 @@
 - [x] Reproduce and trace the July 14 production magic-link failure for the existing Steve account without logging or exposing the token.
 - [x] Repair the magic-link verification, account resolution, session cookie, or redirect failure while preserving existing Apple, Google, and email authentication behavior.
 - [x] Add focused regression coverage for the exact failure and rerun TypeScript, the full Vitest suite, and the production build.
-- [ ] Publish the verified repair and confirm a newly requested custom-domain magic link reaches the authenticated dashboard.
+- [x] Publish the verified repair and confirm a newly requested custom-domain magic link reaches the authenticated dashboard.
 - [x] Determine whether the blocked `static.cloudflareinsights.com` beacon is an authentication dependency or an isolated optional-analytics CSP warning.
-- [ ] Inspect the fresh post-`71c480aa` production magic-link lifecycle and confirm whether the issued session now passes JWT verification.
+- [x] Inspect the fresh post-`71c480aa` production magic-link lifecycle and confirm whether the issued session now passes JWT verification.
 - [x] Change CSP or authentication code only if evidence shows a remaining functional failure, then rerun focused and complete release gates.
 - [x] Trace the latest successful production magic-link login to the resolved existing account and the exact setup-guide completion decision.
 - [x] Correct returning-user account resolution or onboarding eligibility so completed existing accounts reach their dashboard while genuinely incomplete accounts still receive setup.
 - [x] Add regression coverage for duplicate historical identities and completed-versus-incomplete returning-user routing, then rerun focused and complete release gates.
-- [ ] Publish the verified returning-user routing repair and confirm a fresh existing-account magic link bypasses setup.
+- [x] Publish the verified returning-user routing repair and confirm a fresh existing-account magic link bypasses setup.
 - [x] Make the authenticated application shell wait for server onboarding status before deciding whether to auto-open the six-screen setup guide, suppress it for dismissed or completed returning accounts, and preserve setup for genuinely incomplete accounts.
 - [x] Add focused regression coverage for dismissed, completed, incomplete, and loading onboarding-status states without changing production customer data.
 - [x] Run TypeScript, the full Vitest suite, and the production build; publish the repair and hard-refresh the existing production account to confirm the guide stays closed.
