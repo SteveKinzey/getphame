@@ -102,6 +102,23 @@ describe("Home dashboard Free quota page wiring", () => {
 
   const renderHome = () => renderToStaticMarkup(React.createElement(HomePage));
 
+  it("keeps the mobile brand lockup above the Share, Guide, and language controls", () => {
+    const html = renderHome();
+
+    expect(html).toContain('data-testid="home-header-layout"');
+    expect(html).toContain('flex flex-col items-stretch gap-3 mb-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2');
+    expect(html).toContain('data-testid="home-header-actions"');
+    expect(html).toContain('justify-end gap-2 flex-wrap sm:flex-nowrap');
+
+    const brandIndex = html.indexOf('aria-label="Get Phame"');
+    const actionsIndex = html.indexOf('data-testid="home-header-actions"');
+    expect(brandIndex).toBeGreaterThan(-1);
+    expect(actionsIndex).toBeGreaterThan(brandIndex);
+    expect(html).toContain("Share");
+    expect(html).toContain("Guide");
+    expect(html).toContain('data-testid="language-flyout"');
+  });
+
   it("renders the initial 10-request state from profile.freeQuota", () => {
     const html = renderHome();
     expect(html).toContain('data-phase="initial"');

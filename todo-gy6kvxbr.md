@@ -150,3 +150,5 @@
 - [ ] Verify the authenticated alternate non-admin production account on a phone-sized viewport and close the older mobile-account validation gate.
 - [x] Update the public homepage so Google reviewers can immediately identify GetPhame’s purpose, intended users, core review-request workflow, and relevant Google service/data use before signing in.
 - [x] Add homepage-purpose regression coverage, run complete release gates, verify public desktop and mobile layouts, and publish the Google-verification remediation.
+- [x] Fix the authenticated mobile header so the GetPhame logo mark and plain-text GET PHAME wordmark occupy the first row, with Share, Guide, and language controls on a second row without clipping or overlap; preserve the existing desktop header.
+- [ ] Add regression coverage, verify the repaired header on mobile and desktop, publish it, and complete the alternate non-admin production mobile validation.

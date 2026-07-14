@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 import { getEffectivePlan } from "@shared/plans";
+import BrandLockup from "@/components/BrandLockup";
 
 const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
 const HERO_IMG = "https://assets.getphame.app/getphame-logo-mark.webp";
@@ -432,22 +433,23 @@ export default function HomePage() {
         className="relative px-5 pt-8 pb-6 overflow-hidden animate-scale-in"
         style={{ background: "var(--navy)" }}
       >
-                {/* Header top row */}
+        {/* Header top row */}
         <div className="relative z-10 mb-6">
-          {/* Row 1: Language selector */}
-          <div className="flex justify-end mb-2">
-          </div>
-          {/* Row 2: Brand label (left) + Share / Guide buttons (right) */}
-          <div className="flex items-center justify-between gap-2 mb-1">
-            <div className="flex items-center">
-              <div className="flex items-center gap-2">
-                <img src={LOGO_URL} alt="GetPhame logo" className="w-7 h-7" loading="lazy" decoding="async" />
-                <span className="font-display font-extrabold text-xl tracking-tight">
-                  <span className="text-white">GET&nbsp;</span><span style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
+          {/* Mobile: brand occupies row 1 and actions occupy row 2. Desktop: one row. */}
+          <div
+            className="flex flex-col items-stretch gap-3 mb-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2"
+            data-testid="home-header-layout"
+          >
+            <BrandLockup
+              className="justify-start"
+              iconClassName="w-7 h-7"
+              textClassName="text-xl"
+              tone="split"
+            />
+            <div
+              className="flex items-center justify-end gap-2 flex-wrap sm:flex-nowrap"
+              data-testid="home-header-actions"
+            >
               <button
                 onClick={handleShare}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
@@ -467,7 +469,7 @@ export default function HomePage() {
               <LanguageFlyout />
             </div>
           </div>
-          {/* Row 3: Greeting h1 */}
+          {/* Greeting */}
           <h1 className="text-2xl leading-tight rr-fw-black" style={{ paddingTop: '10px', color: '#f9ae00' }}>
             {(() => {
               const firstName = user?.name ? user.name.split(" ")[0] : null;
@@ -476,7 +478,7 @@ export default function HomePage() {
                 : t("homePage.welcomeBack");
             })()}
           </h1>
-          {/* Row 3: Company name (businessName from profile), fallback to email */}
+          {/* Company name (businessName from profile), fallback to email */}
           <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
             {profile?.businessName ?? user?.email ?? ""}
           </p>
