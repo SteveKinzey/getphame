@@ -65,7 +65,7 @@
 - [x] Fix custom-domain email magic-link verification so a valid `getphame.app` link establishes the session and reaches the authenticated app instead of returning to generic onboarding.
 - [x] Add the translated Log out action to the mobile navigation using the existing authentication behavior, without changing the desktop profile block.
 - [x] Add focused Vitest coverage for custom-domain magic-link redirects/session establishment and mobile logout accessibility.
-- [ ] Verify both fixes on a phone-sized viewport and with the alternate non-admin production account before completing the remaining quota, admin, and checkout checks.
+- [x] Verify both fixes on a phone-sized viewport and with the alternate non-admin production account before completing the remaining quota, admin, and checkout checks.
 - [x] Superseded after the Italian completeness audit: standardize every public and authenticated language selector with USA English first, followed exactly by CN, ES, FR, TH, and TW while Italian remains hidden.
 - [x] Correct the WooCommerce sync FAQ answer to disclose clearly that connector installation and synchronization require a paid plan.
 - [x] Add focused Vitest coverage for the shared locale order, USA English flag, and WooCommerce paid-feature disclosure across localized content.
@@ -147,11 +147,11 @@
 - [x] Audit shared and page-specific form controls for light/dark text, placeholder, background, border, autofill, disabled, and read-only contrast inconsistencies across the authenticated site.
 - [x] Implement globally consistent, readable form-field colors in both light and dark modes without weakening existing GetPhame branding or interaction states.
 - [x] Add regression coverage, run complete release gates, verify representative forms in both themes, and publish the validated accessibility repair.
-- [ ] Verify the authenticated alternate non-admin production account on a phone-sized viewport and close the older mobile-account validation gate.
+- [x] Verify the authenticated alternate non-admin production account on a phone-sized viewport and close the older mobile-account validation gate.
 - [x] Update the public homepage so Google reviewers can immediately identify GetPhame’s purpose, intended users, core review-request workflow, and relevant Google service/data use before signing in.
 - [x] Add homepage-purpose regression coverage, run complete release gates, verify public desktop and mobile layouts, and publish the Google-verification remediation.
 - [x] Fix the authenticated mobile header so the GetPhame logo mark and plain-text GET PHAME wordmark occupy the first row, with Share, Guide, and language controls on a second row without clipping or overlap; preserve the existing desktop header.
-- [ ] Add regression coverage, verify the repaired header on mobile and desktop, publish it, and complete the alternate non-admin production mobile validation.
+- [x] Add regression coverage, verify the repaired header on mobile and desktop, publish it, and complete the alternate non-admin production mobile validation.
 - [x] Restructure the authenticated mobile footer into two deliberate link rows: Privacy Policy, Terms of Service, and Compliance on row one; Security and What's New on row two; preserve the existing desktop footer.
-- [ ] Add regression coverage, verify the footer order and spacing on mobile plus desktop preservation, publish the footer polish, and confirm the alternate-account production mobile view.
+- [x] Add regression coverage, verify the footer order and spacing on mobile plus desktop preservation, publish the footer polish, and confirm the alternate-account production mobile view.
 - [x] Add focused mobile-footer regression coverage and pass the full 38-file Vitest suite, TypeScript check, production build, mobile screenshot, and desktop-preservation screenshot before publication.
