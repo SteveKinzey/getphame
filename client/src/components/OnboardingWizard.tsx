@@ -11,6 +11,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { dismissAndNavigateToSend, getOnboardingFlow } from "@/lib/onboardingFlow";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -113,6 +114,20 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const { data: apiKeyList } = trpc.apiKey.list.useQuery();
+  const downloadConnector = trpc.connector.download.useMutation({
+    onSuccess: ({ url, fileName }) => {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success(t("step4Connector.step1.downloadStarted", "Plugin download started."));
+    },
+    onError: (err) => toast.error(err.message),
+  });
   const generateKey = trpc.apiKey.generate.useMutation({
     onSuccess: () => trpc.useUtils().apiKey.list.invalidate(),
     onError: (err) => toast.error(err.message),
@@ -142,10 +157,10 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
             {t("step4Connector.intro.heading", "Using WordPress + WooCommerce?")}
           </p>
           <p className="text-sm font-bold" style={{ color: "oklch(0.95 0.02 260)" }}>
-            {t(
-              "step4Connector.intro.body",
-              "Install the free Get Phame Connector plugin to automatically sync every customer's first name, last name, and email to Phame every 6 hours — no CSV exports, no manual work."
-            )}
+              {t(
+                "step4Connector.intro.body",
+                "Install the Get Phame Connector plugin to automatically sync every customer's first name, last name, and email to Phame every 6 hours — no CSV exports, no manual work."
+              )}
           </p>
         </div>
       </div>
@@ -167,19 +182,24 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
             <p className="text-sm font-bold mb-2" style={{ color: "oklch(0.92 0.02 260)" }}>
               {t(
                 "step4Connector.step1.body",
-                "Download the Get Phame Connector .zip file from GitHub and upload it to your WordPress site."
+                "Download the private Get Phame Connector .zip file and upload it to your WordPress site."
               )}
             </p>
-            <a
-              href="https://github.com/SteveKinzey/get-phame-connector/releases/latest"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              type="button"
+              onClick={() => downloadConnector.mutate()}
+              disabled={downloadConnector.isPending}
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-black transition-transform active:scale-95"
-              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+              style={{
+                background: downloadConnector.isPending ? "oklch(0.35 0.05 260)" : "oklch(0.80 0.18 80)",
+                color: downloadConnector.isPending ? "oklch(0.60 0.03 260)" : "oklch(0.15 0.05 260)",
+              }}
             >
-              <Download size={14} />
-              {t("step4Connector.step1.downloadBtn", "Download Plugin (.zip)")}
-            </a>
+              {downloadConnector.isPending ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+              {downloadConnector.isPending
+                ? t("step4Connector.step1.downloadingBtn", "Preparing download…")
+                : t("step4Connector.step1.downloadBtn", "Download Plugin (.zip)")}
+            </button>
           </div>
         </div>
 
@@ -739,20 +759,21 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
 
 // ── Step 3: Send First Request ─────────────────────────────────────────────────
 
-function Step3Send({ onDismiss }: { onDismiss: () => void }) {
+function Step3Send({
+  onDismiss,
+  onOpenConnector,
+}: {
+  onDismiss: () => void;
+  onOpenConnector?: () => void;
+}) {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
   const dismissMutation = trpc.onboarding.dismiss.useMutation();
 
   function handleGoSend() {
-    // Dismiss the wizard first, then navigate to /send.
-    // The wizard will also auto-hide once hasSentRequest becomes true
-    // (the onboarding.status query polls every 5s and checks customer_requests count).
-    dismissMutation.mutate(undefined, {
-      onSettled: () => {
-        onDismiss();
-        navigate("/send");
-      },
+    dismissAndNavigateToSend({
+      onDismiss,
+      navigate,
     });
   }
 
@@ -780,6 +801,16 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
         <Star size={18} />
         {t("step3Send.sendFirstRequestButton")}
       </button>
+      {onOpenConnector && (
+        <button
+          type="button"
+          onClick={onOpenConnector}
+          className="text-sm font-bold px-4 py-2 rounded-xl transition-transform active:scale-95"
+          style={{ color: "oklch(0.85 0.12 250)" }}
+        >
+          {t("step3Send.optionalConnectorButton", "Set up WordPress connector instead (optional)")}
+        </button>
+      )}
     </div>
   );
 }
@@ -796,8 +827,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
     onSuccess: onDismiss,
   });
 
-  // Derive minimum step from server state (can't go back below what's done)
-  const minStep = !status?.smtpConnected ? 1 : !status?.hasPlatform ? 2 : !status?.hasSentRequest ? 3 : 4;
+  const { canAccessConnector, maxStep, minStep } = getOnboardingFlow(status);
   const [viewStep, setViewStep] = useState<number | null>(null);
   // Auto-advance viewStep when server confirms a step is done
   const currentStep = viewStep ?? minStep;
@@ -805,14 +835,16 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
     { id: 1, label: t("onboardingWizard.steps.connectEmail"), icon: Mail, done: !!status?.smtpConnected },
     { id: 2, label: t("onboardingWizard.steps.reviewPlatform"), icon: Globe, done: !!status?.hasPlatform },
     { id: 3, label: t("onboardingWizard.steps.sendRequest"), icon: Star, done: !!status?.hasSentRequest },
-    { id: 4, label: t("onboardingWizard.steps.wpConnector", "WP Plugin"), icon: Plug2, done: false },
+    ...(canAccessConnector
+      ? [{ id: 4, label: t("onboardingWizard.steps.wpConnector", "WP Plugin"), icon: Plug2, done: false }]
+      : []),
   ];
   function handleStepDone() {
     // Auto-advance to next step when server confirms completion
-    setViewStep((prev) => Math.min((prev ?? minStep) + 1, 4));
+    setViewStep((prev) => Math.min((prev ?? minStep) + 1, maxStep));
   }
   function handleNext() {
-    setViewStep((prev) => Math.min((prev ?? currentStep) + 1, 4));
+    setViewStep((prev) => Math.min((prev ?? currentStep) + 1, maxStep));
   }
   function handlePrev() {
     setViewStep((prev) => Math.max((prev ?? currentStep) - 1, 1));
@@ -919,14 +951,21 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
               {currentStep === 1 && t("onboardingWizard.stepContent.step1.description")}
               {currentStep === 2 && t("onboardingWizard.stepContent.step2.description")}
               {currentStep === 3 && t("onboardingWizard.stepContent.step3.description")}
-              {currentStep === 4 && t("onboardingWizard.stepContent.step4.description", "Install the free connector plugin on your WordPress site to auto-sync customers.")}
+              {currentStep === 4 && t("onboardingWizard.stepContent.step4.description", "Install the connector plugin on your WordPress site to auto-sync customers.")}
             </p>
           </div>
 
           {currentStep === 1 && <Step1Email onDone={handleStepDone} />}
           {currentStep === 2 && <Step2Platform onDone={handleStepDone} />}
-          {currentStep === 3 && <Step3Send onDismiss={() => setViewStep(4)} />}
-          {currentStep === 4 && <Step4Connector onDismiss={onDismiss} />}
+          {currentStep === 3 && (
+            <Step3Send
+              onDismiss={onDismiss}
+              onOpenConnector={canAccessConnector ? () => setViewStep(4) : undefined}
+            />
+          )}
+          {currentStep === 4 && canAccessConnector && (
+            <Step4Connector onDismiss={() => dismissMutation.mutate()} />
+          )}
 
           {/* Prev / Next navigation */}
           <div className="flex items-center gap-3 mt-6">
@@ -939,7 +978,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
                 {t("onboardingWizard.navigation.previous")}
               </button>
             )}
-            {currentStep < 4 && currentStep !== 3 && (
+            {currentStep < maxStep && currentStep !== 3 && (
               <button
                 onClick={handleNext}
                 className="flex-1 flex items-center justify-center gap-1 px-4 py-3 rounded-2xl font-bold text-sm transition-transform active:scale-95"
@@ -956,7 +995,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
             )}
           </div>
           {/* Skip link */}
-          {currentStep < 4 && currentStep !== 3 && (
+          {currentStep < maxStep && currentStep !== 3 && (
             <button
               onClick={() => dismissMutation.mutate()}
               className="w-full text-center text-xs mt-3"

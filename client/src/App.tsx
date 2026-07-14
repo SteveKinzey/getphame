@@ -21,6 +21,7 @@ import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, { useOnboardingGuide } from "./components/OnboardingGuide";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
 import PageLoader from "./components/PageLoader";
+import { handoffGuideNavigation } from "./lib/onboardingFlow";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
 import { useHapticEvents } from "./hooks/useHapticEvents";
@@ -83,6 +84,8 @@ function PageTransition({ children }: { children: React.ReactNode }) {
 
 function AppShell() {
   const { user, loading, isAuthenticated } = useAuth();
+  const [, navigate] = useLocation();
+  const [onboardingDismissed, setOnboardingDismissed] = useState(false);
   const { open: guideOpen, setOpen: setGuideOpen, handleClose: handleGuideClose } = useOnboardingGuide(isAuthenticated);
   useHapticEvents(isAuthenticated);
 
@@ -118,9 +121,15 @@ function AppShell() {
     refetchInterval: 5000,
   });
 
+  useEffect(() => {
+    setOnboardingDismissed(false);
+  }, [user?.id]);
+
   const showWizard =
     !!user &&
     !!onboardingStatus &&
+    !guideOpen &&
+    !onboardingDismissed &&
     !onboardingStatus.dismissed &&
     !onboardingStatus.allDone;
 
@@ -204,9 +213,18 @@ function AppShell() {
       <a href="#main-content" className="skip-to-content">Skip to main content</a>
 
       {showWizard && (
-        <OnboardingWizard onDismiss={() => { /* refetches automatically */ }} />
+        <OnboardingWizard onDismiss={() => setOnboardingDismissed(true)} />
       )}
-      <OnboardingGuide open={guideOpen} onClose={handleGuideClose} />
+      <OnboardingGuide
+        open={guideOpen}
+        onClose={handleGuideClose}
+        onNavigate={(path) => handoffGuideNavigation({
+          path,
+          dismissWizard: () => setOnboardingDismissed(true),
+          closeGuide: handleGuideClose,
+          navigate,
+        })}
+      />
 
       {/* AppLayout provides the sidebar on tablet/desktop */}
       <AppLayout>

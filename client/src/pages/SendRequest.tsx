@@ -13,6 +13,7 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
 import LanguageFlyout from "@/components/LanguageFlyout";
+import { completeSuccessfulRequest } from "@/lib/onboardingFlow";
 
 const SUCCESS_IMG =
   "https://assets.getphame.app/rr-send-success.webp";
@@ -40,6 +41,10 @@ export default function SendRequestPage() {
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
   const [reminderScheduled, setReminderScheduled] = useState(false);
   const [lastRequestId, setLastRequestId] = useState<number | null>(null);
+  const trpcUtils = trpc.useUtils();
+  const dismissOnboarding = trpc.onboarding.dismiss.useMutation({
+    onSuccess: () => trpcUtils.onboarding.status.invalidate(),
+  });
   const { data: reminderSettings } = trpc.reminders.getSettings.useQuery();
   const scheduleFollowUpNow = trpc.reminders.scheduleFollowUp.useMutation({
     onSuccess: () => {
@@ -69,9 +74,13 @@ export default function SendRequestPage() {
 
   const sendRequest = trpc.requests.send.useMutation({
     onSuccess: (data) => {
-      setSending(false);
-      setSent(true);
-      setLastRequestId(data.requestId ?? null);
+      completeSuccessfulRequest({
+        requestId: data.requestId,
+        setSending,
+        setSent,
+        setLastRequestId,
+        persistDismiss: () => dismissOnboarding.mutate(),
+      });
       track("send_request", { platform: activePlatform?.platform ?? "unknown" });
       toast.success(t("toasts.reviewRequestSent", { defaultValue: "Review request sent!" }));
     },

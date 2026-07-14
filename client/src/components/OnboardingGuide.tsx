@@ -891,10 +891,11 @@ function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void;
 interface OnboardingGuideProps {
   open: boolean;
   onClose: () => void;
+  onNavigate?: (path: string) => void;
   stepsDone?: StepsDone;
 }
 
-export default function OnboardingGuide({ open, onClose, stepsDone }: OnboardingGuideProps) {
+export default function OnboardingGuide({ open, onClose, onNavigate, stepsDone }: OnboardingGuideProps) {
   const [step, setStep] = useState(0);
   const [slideDir, setSlideDir] = useState<'left' | 'right' | null>(null);
   const [animKey, setAnimKey] = useState(0);
@@ -943,6 +944,10 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
   const { t } = useTranslation();
   if (!open) return null;
   const handleNavigate = (path: string) => {
+    if (onNavigate) {
+      onNavigate(path);
+      return;
+    }
     onClose();
     navigate(path);
   };

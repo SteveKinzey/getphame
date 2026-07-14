@@ -5,6 +5,7 @@ import type { TrpcContext } from "./context";
 import { getDb } from "../db";
 import { businessProfiles } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
+import { hasPaidOrAdminAccess } from "../entitlements";
 
 const t = initTRPC.context<TrpcContext>().create({
   transformer: superjson,
@@ -48,23 +49,11 @@ export const paidProcedure = t.procedure.use(
       where: eq(businessProfiles.userId, ctx.user.id),
     });
 
-    const tier = profile?.tier ?? "free";
-
-    // Admin (owner) always bypasses the paywall — full product access regardless of tier
-    if (ctx.user.role === "admin") {
-      return next({ ctx: { ...ctx, user: ctx.user } });
-    }
-
-    const isPaid = tier === "pro" || tier === "annual" || tier === "lifetime";
-
-    // For monthly/annual: also check expiry
-    if (isPaid && tier !== "lifetime" && profile?.planExpiresAt) {
-      if (Date.now() > profile.planExpiresAt) {
-        throw new TRPCError({ code: "FORBIDDEN", message: UNPAID_ERR_MSG });
-      }
-    }
-
-    if (!isPaid) {
+    if (!hasPaidOrAdminAccess({
+      role: ctx.user.role,
+      tier: profile?.tier ?? "free",
+      planExpiresAt: profile?.planExpiresAt,
+    })) {
       throw new TRPCError({ code: "FORBIDDEN", message: UNPAID_ERR_MSG });
     }
 
