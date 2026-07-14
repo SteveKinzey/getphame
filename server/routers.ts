@@ -2,7 +2,14 @@ import { z } from "zod";
 import { COOKIE_NAME, FREE_LIMIT, FREE_LIMIT_ERR_MSG } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
+import {
+  paidProcedure,
+  protectedProcedure,
+  publicProcedure,
+  router,
+  userHasPaidAccess,
+} from "./_core/trpc";
+import { readFile } from "node:fs/promises";
 import { TRPCError } from "@trpc/server";
 import {
   getBusinessProfile,
@@ -1978,8 +1985,17 @@ export const appRouter = router({
       const hasContacts = (contactRow?.cnt ?? 0) > 0;
       const dismissed = profile?.onboardingDismissed === 1;
       const allDone = smtpConnected && hasPlatform && hasContacts && hasSentRequest;
+      const canAccessConnector = await userHasPaidAccess(ctx.user);
 
-      return { smtpConnected, hasPlatform, hasSentRequest, hasContacts, allDone, dismissed };
+      return {
+        smtpConnected,
+        hasPlatform,
+        hasSentRequest,
+        hasContacts,
+        allDone,
+        dismissed,
+        canAccessConnector,
+      };
     }),
 
     /** Permanently dismisses the onboarding wizard for this user. */
@@ -2509,6 +2525,21 @@ export const appRouter = router({
         });
         return { ok: true, offerValidUntil };
       }),
+  }),
+
+  /** Paid/admin-only distribution of the private WordPress connector plugin. */
+  connector: router({
+    download: paidProcedure.mutation(async () => {
+      const archive = await readFile(
+        new URL("./assets/get-phame-connector.zip", import.meta.url),
+      );
+
+      return {
+        fileName: "get-phame-connector.zip",
+        mimeType: "application/zip",
+        base64: archive.toString("base64"),
+      };
+    }),
   }),
 
   /** Per-user API keys for the public REST API (contacts import, etc.) */

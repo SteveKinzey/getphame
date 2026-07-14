@@ -120,10 +120,16 @@ function AppShell() {
     enabled: !!user,
     refetchInterval: 5000,
   });
+  const [wizardDismissedLocally, setWizardDismissedLocally] = useState(false);
+
+  useEffect(() => {
+    setWizardDismissedLocally(false);
+  }, [user?.id]);
 
   const showWizard =
     !!user &&
     !!onboardingStatus &&
+    !wizardDismissedLocally &&
     !onboardingStatus.dismissed &&
     !onboardingStatus.allDone;
 
@@ -207,7 +213,7 @@ function AppShell() {
       <a href="#main-content" className="skip-to-content">Skip to main content</a>
 
       {showWizard && (
-        <OnboardingWizard onDismiss={() => { /* refetches automatically */ }} />
+        <OnboardingWizard onDismiss={() => setWizardDismissedLocally(true)} />
       )}
       <OnboardingGuide open={guideOpen} onClose={handleGuideClose} />
 
