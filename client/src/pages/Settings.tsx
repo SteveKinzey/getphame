@@ -1801,10 +1801,10 @@ export default function SettingsPage() {
               {/* Last health check timestamp */}
               {smtpStatus?.lastHealthCheck && (
                 <p className="text-xs rr-text-navy-faint">
-                  Last auto-check: {new Date(smtpStatus.lastHealthCheck).toLocaleString()}
+                  {t("smtp.lastAutoCheck", { defaultValue: "Last auto-check: {{date}}", date: new Date(smtpStatus.lastHealthCheck).toLocaleString() })}
                   {" · "}
                   <span style={{ color: smtpStatus.lastHealthStatus === "ok" ? "oklch(0.50 0.18 145)" : "oklch(0.50 0.18 27)", fontWeight: 600 }}>
-                    {smtpStatus.lastHealthStatus === "ok" ? "✓ Healthy" : "✗ Failed"}
+                    {smtpStatus.lastHealthStatus === "ok" ? t("smtp.healthy", { defaultValue: "✓ Healthy" }) : t("smtp.failed", { defaultValue: "✗ Failed" })}
                   </span>
                 </p>
               )}
@@ -1821,14 +1821,14 @@ export default function SettingsPage() {
                     style={{ background: "oklch(0.70 0.02 260)" }}
                   />
                   <p className="text-xs rr-text-navy-mid">
-                    No email connected. Enter your details below to start sending review requests.
+                    {t("smtp.notConnectedDescription", { defaultValue: "No email connected. Enter your details below to start sending review requests." })}
                   </p>
                 </div>
               )}
 
               {/* Email field */}
               <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Your Email Address *</label>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("smtp.emailAddressLabel", { defaultValue: "Your Email Address *" })}</label>
                 <input
                   type="email"
                   value={smtpEmail}
@@ -1857,37 +1857,50 @@ export default function SettingsPage() {
 
                 // Smart label
                 const passwordLabel = isGmail
-                  ? 'Gmail App Password *'
+                  ? t("smtp.passwordLabels.gmail", { defaultValue: "Gmail App Password *" })
                   : isGoogleWorkspace
-                  ? 'Google Workspace App Password *'
+                  ? t("smtp.passwordLabels.workspace", { defaultValue: "Google Workspace App Password *" })
                   : isOutlook
-                  ? 'Microsoft App Password *'
+                  ? t("smtp.passwordLabels.microsoft", { defaultValue: "Microsoft App Password *" })
                   : isYahoo
-                  ? 'Yahoo App Password *'
+                  ? t("smtp.passwordLabels.yahoo", { defaultValue: "Yahoo App Password *" })
                   : isZoho
-                  ? 'Zoho Mail Password *'
+                  ? t("smtp.passwordLabels.zoho", { defaultValue: "Zoho Mail Password *" })
                   : isIcloud
-                  ? 'Apple App-Specific Password *'
+                  ? t("smtp.passwordLabels.icloud", { defaultValue: "Apple App-Specific Password *" })
                   : isAol
-                  ? 'AOL App Password *'
+                  ? t("smtp.passwordLabels.aol", { defaultValue: "AOL App Password *" })
                   : isProtonMail
-                  ? 'ProtonMail SMTP Password *'
+                  ? t("smtp.passwordLabels.proton", { defaultValue: "ProtonMail SMTP Password *" })
                   : isFastmail
-                  ? 'Fastmail App Password *'
-                  : 'Email Password *';
+                  ? t("smtp.passwordLabels.fastmail", { defaultValue: "Fastmail App Password *" })
+                  : t("smtp.passwordLabels.email", { defaultValue: "Email Password *" });
 
                 // Smart placeholder
                 const passwordPlaceholder = smtpStatus?.connected
-                  ? 'Enter new password to update'
+                  ? t("smtp.passwordPlaceholders.update", { defaultValue: "Enter new password to update" })
                   : isGmail || isGoogleWorkspace
-                  ? '16-character App Password (no spaces)'
+                  ? t("smtp.passwordPlaceholders.google", { defaultValue: "16-character App Password (no spaces)" })
                   : isIcloud
                   ? 'xxxx-xxxx-xxxx-xxxx'
-                  : 'Your email password';
+                  : t("smtp.passwordPlaceholders.default", { defaultValue: "Your email password" });
 
                 const showGuide = showPasswordGuide;
                 const setShowGuide = setShowPasswordGuide;
                 const hasGuide = isGmail || isGoogleWorkspace || isOutlook || isYahoo || isZoho || isIcloud || isAol || isProtonMail || isFastmail;
+                const guideProvider = isGmail ? "gmail" : isGoogleWorkspace ? "workspace" : isOutlook ? "microsoft" : isYahoo ? "yahoo" : isZoho ? "zoho" : isIcloud ? "icloud" : isAol ? "aol" : isProtonMail ? "proton" : "fastmail";
+                const guideDefaults: Record<string, { title: string; steps: string[]; tip: string }> = {
+                  gmail: { title: "Gmail App Password — 4 steps", steps: ["Go to myaccount.google.com, then Security.", "Turn on 2-Step Verification if it is not already on.", "Go to myaccount.google.com/apppasswords, name it Get Phame, then click Create.", "Copy the 16-character code and paste it here without spaces."], tip: "Tip: use a dedicated reviews@gmail.com account to keep your main inbox separate." },
+                  workspace: { title: "Google Workspace App Password — 4 steps", steps: ["Ask your Workspace administrator to enable 2-Step Verification in admin.google.com.", "Sign in to myaccount.google.com with your work account, then open Security.", "Go to myaccount.google.com/apppasswords, name it Get Phame, then click Create.", "Copy the 16-character code and paste it here without spaces."], tip: "Your Workspace administrator may need to allow app passwords." },
+                  microsoft: { title: "Microsoft App Password — 4 steps", steps: ["Go to account.microsoft.com, then Security.", "Open Advanced security options.", "Under App passwords, create a new app password.", "Copy and paste the generated password here."], tip: "Microsoft 365 work accounts may require your IT administrator to allow SMTP AUTH." },
+                  yahoo: { title: "Yahoo App Password — 4 steps", steps: ["Go to account.yahoo.com, then Security.", "Choose Generate app password.", "Select Other app and name it Get Phame.", "Copy and paste the generated password here."], tip: "Use the generated app password, not your regular Yahoo password." },
+                  zoho: { title: "Zoho Mail — Enable SMTP Access", steps: ["Sign in at mail.zoho.com.", "Open Settings, then Mail Accounts.", "Choose your email address and scroll to SMTP.", "Turn on Allow SMTP Access, then use your regular Zoho password here."], tip: "No app password is needed after SMTP access is enabled." },
+                  aol: { title: "AOL Mail App Password — 4 steps", steps: ["Go to account.aol.com, then Security.", "Choose Generate app password.", "Select Other app and name it Get Phame.", "Copy and paste the generated password here, not your regular AOL password."], tip: "AOL requires two-step verification before you can generate an app password." },
+                  proton: { title: "ProtonMail — SMTP Bridge Password", steps: ["Download Proton Mail Bridge from proton.me/mail/bridge.", "Sign in to Bridge with your Proton account.", "Open your account in Bridge and copy the SMTP password shown.", "Paste that SMTP password here, not your regular Proton password."], tip: "Proton Mail Bridge must be running for SMTP to work." },
+                  fastmail: { title: "Fastmail App Password — 4 steps", steps: ["Go to app.fastmail.com, then Settings, Privacy & Security.", "Under Third-party apps, choose New app password.", "Name it Get Phame and allow Mail (SMTP) access.", "Copy and paste the generated password here."], tip: "Use the provider-specific app password, not your regular Fastmail password." },
+                  icloud: { title: "Apple iCloud — App-Specific Password", steps: ["Go to appleid.apple.com, then Sign-In and Security.", "Open App-Specific Passwords and generate a new password.", "Name it Get Phame and choose Create.", "Copy the generated password and paste it here."], tip: "Two-factor authentication must be enabled on your Apple ID." },
+                };
+                const activeGuide = guideDefaults[guideProvider];
 
                 return (
                   <div>
@@ -1901,13 +1914,13 @@ export default function SettingsPage() {
                           style={{ color: 'oklch(0.45 0.18 260)' }}
                         >
                           <span className="inline-flex items-center justify-center w-4 h-4 rounded-full text-white text-[10px] font-black" style={{ background: 'oklch(0.45 0.18 260)' }}>?</span>
-                          How to get it
+                          {t("smtp.howToGetIt", { defaultValue: "How to get it" })}
                         </button>
                       )}
                     </div>
 
                     {/* Gmail guide */}
-                    {showGuide && isGmail && (
+                    {false && showGuide && isGmail && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">Gmail App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -1922,7 +1935,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* Google Workspace guide */}
-                    {showGuide && isGoogleWorkspace && (
+                    {false && showGuide && isGoogleWorkspace && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">Google Workspace App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -1936,7 +1949,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* Microsoft / Outlook guide */}
-                    {showGuide && isOutlook && (
+                    {false && showGuide && isOutlook && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">Microsoft App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -1951,7 +1964,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* Yahoo guide */}
-                    {showGuide && isYahoo && (
+                    {false && showGuide && isYahoo && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">Yahoo App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -1965,7 +1978,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* Zoho guide */}
-                    {showGuide && isZoho && (
+                    {false && showGuide && isZoho && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">Zoho Mail — Enable SMTP Access</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -1980,7 +1993,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* AOL guide */}
-                    {showGuide && isAol && (
+                    {false && showGuide && isAol && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">AOL Mail App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -1995,7 +2008,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* ProtonMail guide */}
-                    {showGuide && isProtonMail && (
+                    {false && showGuide && isProtonMail && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">ProtonMail — SMTP Bridge Password</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -2010,7 +2023,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* Fastmail guide */}
-                    {showGuide && isFastmail && (
+                    {false && showGuide && isFastmail && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">Fastmail App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -2025,7 +2038,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* iCloud guide */}
-                    {showGuide && isIcloud && (
+                    {false && showGuide && isIcloud && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">Apple iCloud — App-Specific Password</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -2036,6 +2049,19 @@ export default function SettingsPage() {
                         </ol>
                         <p className="text-[10px] mt-1 rr-text-navy-faint">Requires two-factor authentication to be enabled on your Apple ID.</p>
                         <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
+                      </div>
+                    )}
+
+                    {showGuide && hasGuide && activeGuide && (
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
+                        <p className="font-black text-sm rr-text-gold">{t(`smtp.providerGuides.${guideProvider}.title`, { defaultValue: activeGuide.title })}</p>
+                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: "decimal" }}>
+                          {activeGuide.steps.map((step, index) => (
+                            <li key={index}>{t(`smtp.providerGuides.${guideProvider}.step${index + 1}`, { defaultValue: step })}</li>
+                          ))}
+                        </ol>
+                        <p className="text-[10px] mt-1 rr-text-navy-faint">{t(`smtp.providerGuides.${guideProvider}.tip`, { defaultValue: activeGuide.tip })}</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">{t("common.gotIt", { defaultValue: "Got it ✓" })}</button>
                       </div>
                     )}
 
@@ -2053,46 +2079,46 @@ export default function SettingsPage() {
                         onClick={() => setShowSmtpPassword((v) => !v)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold rr-text-navy-mid"
                       >
-                        {showSmtpPassword ? 'Hide' : 'Show'}
+                        {showSmtpPassword ? t("common.hide", { defaultValue: "Hide" }) : t("common.show", { defaultValue: "Show" })}
                       </button>
                     </div>
 
                     {/* Inline hint for known providers that need app passwords */}
                     {(isGmail || isGoogleWorkspace) && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        Not your regular Gmail password — use an <span className="font-bold">App Password</span>. Tap <span className="font-bold">? How to get it</span> above.
+                        {t("smtp.inlineHints.google", { defaultValue: "Not your regular Gmail password — use an App Password. Tap How to get it above." })}
                       </p>
                     )}
                     {isIcloud && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        Use an <span className="font-bold">App-Specific Password</span>, not your Apple ID password. Tap <span className="font-bold">? How to get it</span> above.
+                        {t("smtp.inlineHints.icloud", { defaultValue: "Use an App-Specific Password, not your Apple ID password. Tap How to get it above." })}
                       </p>
                     )}
                     {isZoho && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        Enable SMTP access in Zoho first, then use your regular Zoho password. Tap <span className="font-bold">? How to get it</span> above.
+                        {t("smtp.inlineHints.zoho", { defaultValue: "Enable SMTP access in Zoho first, then use your regular Zoho password. Tap How to get it above." })}
                       </p>
                     )}
                     {isAol && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        Not your regular AOL password — use an <span className="font-bold">App Password</span>. Tap <span className="font-bold">? How to get it</span> above.
+                        {t("smtp.inlineHints.aol", { defaultValue: "Not your regular AOL password — use an App Password. Tap How to get it above." })}
                       </p>
                     )}
                     {isProtonMail && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        ProtonMail requires the <span className="font-bold">Proton Bridge</span> app — use its SMTP password, not your Proton login. Tap <span className="font-bold">? How to get it</span> above.
+                        {t("smtp.inlineHints.proton", { defaultValue: "ProtonMail requires the Proton Bridge app — use its SMTP password, not your Proton login. Tap How to get it above." })}
                       </p>
                     )}
                     {isFastmail && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        Not your regular Fastmail password — use an <span className="font-bold">App Password</span>. Tap <span className="font-bold">? How to get it</span> above.
+                        {t("smtp.inlineHints.fastmail", { defaultValue: "Not your regular Fastmail password — use an App Password. Tap How to get it above." })}
                       </p>
                     )}
 
                     {/* Custom SMTP notice */}
                     {isCustom && !smtpStatus?.connected && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        Custom domain detected — SMTP settings auto-filled below. Check <span className="font-bold">Advanced settings</span> to verify or adjust host/port.
+                        {t("smtp.inlineHints.custom", { defaultValue: "Custom domain detected — SMTP settings auto-filled below. Check Advanced settings to verify or adjust host and port." })}
                       </p>
                     )}
 
@@ -2108,16 +2134,16 @@ export default function SettingsPage() {
 
               {/* Display name */}
               <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Display Name (optional)</label>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("smtp.displayNameLabel", { defaultValue: "Display Name (optional)" })}</label>
                 <input
                   type="text"
                   value={smtpFromName}
                   onChange={(e) => setSmtpFromName(e.target.value)}
-                  placeholder="e.g. Steve at Acme Plumbing"
+                  placeholder={t("smtp.displayNamePlaceholder", { defaultValue: "e.g. Steve at Acme Plumbing" })}
                   className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
                   style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                 />
-                <p className="text-xs mt-1 rr-text-navy-muted">Shown as the sender name in your customer's inbox.</p>
+                <p className="text-xs mt-1 rr-text-navy-muted">{t("smtp.displayNameHelp", { defaultValue: "Shown as the sender name in your customer's inbox." })}</p>
               </div>
 
               {/* ── Deliverability guidance callout ───────────────────────────────────────── */}
@@ -2127,17 +2153,17 @@ export default function SettingsPage() {
               >
                 <AlertCircle size={15} className="shrink-0 mt-0.5" style={{ color: "oklch(0.50 0.12 260)" }} />
                 <div className="rr-text-navy-mid">
-                  <p className="font-bold mb-1">Sending limits by provider</p>
+                  <p className="font-bold mb-1">{t("smtp.sendingLimits.title", { defaultValue: "Sending limits by provider" })}</p>
                   <ul className="flex flex-col gap-0.5" style={{ listStyle: "disc", paddingLeft: "1rem" }}>
-                    <li><span className="font-semibold">Gmail / Google Workspace</span> — 500 emails/day (free), 2,000/day (Workspace)</li>
-                    <li><span className="font-semibold">Outlook / Microsoft 365</span> — 300 emails/day</li>
-                    <li><span className="font-semibold">Yahoo Mail</span> — 500 emails/day</li>
-                    <li><span className="font-semibold">Zoho Mail</span> — 500 emails/day (free), 1,000/day (paid)</li>
-                    <li><span className="font-semibold">AOL Mail</span> — 500 emails/day</li>
-                    <li><span className="font-semibold">Fastmail</span> — 1,000 emails/day</li>
-                    <li><span className="font-semibold">ProtonMail</span> — 150 emails/day (free), 1,000/day (paid) via Bridge</li>
+                    <li>{t("smtp.sendingLimits.gmail", { defaultValue: "Gmail / Google Workspace — 500 emails/day (free), 2,000/day (Workspace)" })}</li>
+                    <li>{t("smtp.sendingLimits.microsoft", { defaultValue: "Outlook / Microsoft 365 — 300 emails/day" })}</li>
+                    <li>{t("smtp.sendingLimits.yahoo", { defaultValue: "Yahoo Mail — 500 emails/day" })}</li>
+                    <li>{t("smtp.sendingLimits.zoho", { defaultValue: "Zoho Mail — 500 emails/day (free), 1,000/day (paid)" })}</li>
+                    <li>{t("smtp.sendingLimits.aol", { defaultValue: "AOL Mail — 500 emails/day" })}</li>
+                    <li>{t("smtp.sendingLimits.fastmail", { defaultValue: "Fastmail — 1,000 emails/day" })}</li>
+                    <li>{t("smtp.sendingLimits.proton", { defaultValue: "ProtonMail — 150 emails/day (free), 1,000/day (paid) via Bridge" })}</li>
                   </ul>
-                  <p className="mt-1.5">For high-volume sending, use a dedicated <span className="font-semibold">reviews@yourdomain.com</span> address to keep your main inbox clean and avoid hitting personal limits.</p>
+                  <p className="mt-1.5">{t("smtp.sendingLimits.tip", { defaultValue: "For high-volume sending, use a dedicated reviews@yourdomain.com address to keep your main inbox clean and avoid hitting personal limits." })}</p>
                 </div>
               </div>
 

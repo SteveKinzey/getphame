@@ -10,3 +10,8 @@
 - [x] Verify the mobile onboarding UI and publish the production checkpoint
 - [x] Add regression coverage proving persisted onboarding dismissal is triggered by confirmed request success
 - [x] Prevent the six-screen setup guide from revealing the underlying onboarding wizard when navigating to Send Request
+- [x] Reconstruct the Settings review-platform and SMTP localization edits lost during sandbox restore
+- [x] Preserve the reconstructed implementation in an immediate work-in-progress checkpoint
+- [ ] Add the new Settings keys to English and every supported non-English locale
+- [ ] Bump the locale cache version and verify locale parity
+- [ ] Run full TypeScript, Vitest, and representative mobile language validation
