@@ -87,7 +87,19 @@ function AppShell() {
   const { user, loading, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
   const [onboardingDismissed, setOnboardingDismissed] = useState(false);
-  const { open: guideOpen, setOpen: setGuideOpen, handleClose: handleGuideClose } = useOnboardingGuide(isAuthenticated);
+  const { data: onboardingStatus } = trpc.onboarding.status.useQuery(undefined, {
+    enabled: !!user,
+    refetchInterval: 5000,
+  });
+  const {
+    open: guideOpen,
+    handleClose: handleGuideClose,
+    autoShowEligible: guideAutoShowEligible,
+  } = useOnboardingGuide({
+    isAuthenticated,
+    userId: user?.id,
+    onboardingStatus,
+  });
   useHapticEvents(isAuthenticated);
 
   const claimReferral = trpc.referral.claimReferral.useMutation();
@@ -117,11 +129,6 @@ function AppShell() {
     }
   }, []);
 
-  const { data: onboardingStatus } = trpc.onboarding.status.useQuery(undefined, {
-    enabled: !!user,
-    refetchInterval: 5000,
-  });
-
   useEffect(() => {
     if (loading || !user || window.location.pathname !== "/onboarding") return;
     navigate("/", { replace: true });
@@ -135,9 +142,15 @@ function AppShell() {
     !!user &&
     !!onboardingStatus &&
     !guideOpen &&
+    !guideAutoShowEligible &&
     !onboardingDismissed &&
     !onboardingStatus.dismissed &&
     !onboardingStatus.allDone;
+
+  const closeGuideForSession = () => {
+    handleGuideClose();
+    setOnboardingDismissed(true);
+  };
 
   if (loading) {
     return (
@@ -223,11 +236,11 @@ function AppShell() {
       )}
       <OnboardingGuide
         open={guideOpen}
-        onClose={handleGuideClose}
+        onClose={closeGuideForSession}
         onNavigate={(path) => handoffGuideNavigation({
           path,
           dismissWizard: () => setOnboardingDismissed(true),
-          closeGuide: handleGuideClose,
+          closeGuide: closeGuideForSession,
           navigate,
         })}
       />

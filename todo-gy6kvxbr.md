@@ -122,3 +122,10 @@
 - [x] Determine whether the blocked `static.cloudflareinsights.com` beacon is an authentication dependency or an isolated optional-analytics CSP warning.
 - [ ] Inspect the fresh post-`71c480aa` production magic-link lifecycle and confirm whether the issued session now passes JWT verification.
 - [x] Change CSP or authentication code only if evidence shows a remaining functional failure, then rerun focused and complete release gates.
+- [x] Trace the latest successful production magic-link login to the resolved existing account and the exact setup-guide completion decision.
+- [x] Correct returning-user account resolution or onboarding eligibility so completed existing accounts reach their dashboard while genuinely incomplete accounts still receive setup.
+- [x] Add regression coverage for duplicate historical identities and completed-versus-incomplete returning-user routing, then rerun focused and complete release gates.
+- [ ] Publish the verified returning-user routing repair and confirm a fresh existing-account magic link bypasses setup.
+- [x] Make the authenticated application shell wait for server onboarding status before deciding whether to auto-open the six-screen setup guide, suppress it for dismissed or completed returning accounts, and preserve setup for genuinely incomplete accounts.
+- [x] Add focused regression coverage for dismissed, completed, incomplete, and loading onboarding-status states without changing production customer data.
+- [ ] Run TypeScript, the full Vitest suite, and the production build; publish the repair and hard-refresh the existing production account to confirm the guide stays closed.

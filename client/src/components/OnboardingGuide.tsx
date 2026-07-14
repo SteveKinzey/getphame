@@ -9,7 +9,8 @@
  *   5. Send a Review Request
  *   6. You're All Set
  *
- * Auto-shows on first login (localStorage flag "rl_guide_seen").
+ * Auto-shows only for authenticated accounts whose server onboarding status is
+ * still incomplete and not dismissed. The browser flag is scoped per account.
  * Re-openable via the "Setup Guide" button on Home and Settings.
  */
 
@@ -21,8 +22,11 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import BrandLockup from "@/components/BrandLockup";
-
-const GUIDE_SEEN_KEY = "rl_guide_seen";
+import {
+  getOnboardingGuideSeenKey,
+  shouldAutoShowOnboardingGuide,
+  type OnboardingGuideEligibility,
+} from "@/lib/onboardingGuideEligibility";
 
 // ── Step definitions ──────────────────────────────────────────────────────────
 
@@ -1148,27 +1152,38 @@ export default function OnboardingGuide({ open, onClose, onNavigate, stepsDone }
 // ── Auto-show hook ────────────────────────────────────────────────────────────
 
 /**
- * Returns [open, setOpen] with auto-show logic.
- * Shows the guide once per browser (localStorage flag).
- * Pass `isAuthenticated` so it only fires after login.
+ * Auto-opens only after the authenticated account's onboarding status loads.
+ * Completed or dismissed accounts are suppressed before the guide can flash.
  */
-export function useOnboardingGuide(isAuthenticated: boolean) {
+export function useOnboardingGuide(eligibility: OnboardingGuideEligibility) {
   const [open, setOpen] = useState(false);
+  const { isAuthenticated, userId, onboardingStatus } = eligibility;
+  const seenKey = userId == null ? null : getOnboardingGuideSeenKey(userId);
+  const autoShowEligible = shouldAutoShowOnboardingGuide(eligibility, localStorage);
 
   useEffect(() => {
-    if (!isAuthenticated) return;
-    const seen = localStorage.getItem(GUIDE_SEEN_KEY);
-    if (!seen) {
-      // Small delay so the app renders first
-      const t = setTimeout(() => setOpen(true), 800);
-      return () => clearTimeout(t);
+    if (!isAuthenticated || !seenKey || !onboardingStatus) {
+      setOpen(false);
+      return;
     }
-  }, [isAuthenticated]);
 
-  const handleClose = () => {
-    localStorage.setItem(GUIDE_SEEN_KEY, "1");
+    if (onboardingStatus.dismissed || onboardingStatus.allDone) {
+      localStorage.setItem(seenKey, "1");
+      setOpen(false);
+      return;
+    }
+
+    if (!autoShowEligible) return;
+
+    // Small delay so the authenticated shell can settle before the guide opens.
+    const timer = setTimeout(() => setOpen(true), 800);
+    return () => clearTimeout(timer);
+  }, [autoShowEligible, isAuthenticated, onboardingStatus, seenKey]);
+
+  const handleClose = useCallback(() => {
+    if (seenKey) localStorage.setItem(seenKey, "1");
     setOpen(false);
-  };
+  }, [seenKey]);
 
-  return { open, setOpen, handleClose };
+  return { open, setOpen, handleClose, autoShowEligible };
 }
