@@ -111,3 +111,7 @@
 - [x] Request and verify Apple’s signed `id_token` directly in the form-post callback using a signed state nonce, while retaining the authorization-code exchange as a backward-compatible fallback.
 - [x] Log only safe Apple token-exchange error metadata so any remaining provider/configuration error is visible without exposing codes, tokens, email, or identity data.
 - [x] Add regression coverage for signed Apple state/nonce validation and direct callback identity-token login, then run the complete release gate and publish.
+- [x] Hide Apple and Google sign-in controls on every live Get Phame domain while keeping email magic-link login available.
+- [x] Preserve the Apple and Google OAuth implementations behind a reversible preview/staging-only gate instead of deleting server routes.
+- [x] Add regression coverage proving production hostnames hide social login and preview/localhost hostnames expose it for continued testing.
+- [ ] Publish the validated staging-gated release, then verify `getphame.app/login` hides Apple and Google while the preview host preserves both test controls.

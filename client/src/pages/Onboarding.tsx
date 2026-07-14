@@ -1,11 +1,12 @@
 // Phame — Onboarding / Login screen
 // Full-width responsive layout: two-column on desktop (left: branding/proof, right: auth card)
-// Preserves all auth methods: Google, Apple, and email magic link.
+// Production uses email magic link; social OAuth remains preview-only.
 import { Star, Mail, Loader2, CheckCircle2, Shield, Lock, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import SEOHead from "@/components/landing/SEOHead";
+import { isStagingSocialLoginHost } from "@/lib/socialLoginAvailability";
 
 const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
 
@@ -13,6 +14,7 @@ type MagicLinkState = "idle" | "loading" | "sent" | "error";
 
 export default function OnboardingPage() {
   const { t } = useTranslation();
+  const socialLoginEnabled = isStagingSocialLoginHost(window.location.hostname);
   const [email, setEmail] = useState("");
   const [magicState, setMagicState] = useState<MagicLinkState>("idle");
   const [magicError, setMagicError] = useState("");
@@ -192,37 +194,38 @@ export default function OnboardingPage() {
 
                 {/* Auth buttons */}
                 <div className="flex flex-col gap-3">
-                  {/* Google */}
-                  <button
-                    onClick={handleGoogleSignIn}
-                    className="flex items-center justify-center gap-3 w-full px-6 py-4 bg-white text-gray-900 font-semibold text-base rounded-xl hover:bg-gray-50 transition-all duration-200 active:scale-[0.98] shadow-lg"
-                  >
-                    <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                    </svg>
-                    {t("onboarding.googleBtn") || "Continue with Google"}
-                  </button>
+                  {socialLoginEnabled && (
+                    <div className="flex flex-col gap-3" data-testid="staging-social-login">
+                      <button
+                        onClick={handleGoogleSignIn}
+                        className="flex items-center justify-center gap-3 w-full px-6 py-4 bg-white text-gray-900 font-semibold text-base rounded-xl hover:bg-gray-50 transition-all duration-200 active:scale-[0.98] shadow-lg"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                        </svg>
+                        {t("onboarding.googleBtn") || "Continue with Google"}
+                      </button>
 
-                  {/* Apple */}
-                  <button
-                    onClick={handleAppleSignIn}
-                    className="flex items-center justify-center gap-3 w-full px-6 py-4 bg-black text-white font-semibold text-base rounded-xl hover:bg-gray-900 transition-all duration-200 active:scale-[0.98] shadow-lg border border-white/10"
-                  >
-                    <svg width="18" height="22" viewBox="0 0 814 1000" xmlns="http://www.w3.org/2000/svg" fill="white">
-                      <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 376.7 0 248.1 0 125.8 0 56.3 25.6 0 75.4 0c52.1 0 84.1 34.1 116.6 34.1 31.1 0 79.3-36.3 134.2-36.3 26.5 0 98.1 2.6 150.2 76.2zm-220-176.4c28.3-35.1 49.3-84.4 49.3-133.7 0-6.5-.6-13-1.9-18.1-46.9 1.9-101.9 31.4-135.3 71.9-26.5 29.9-50.6 79.2-50.6 129.2 0 7.1 1.3 14.3 1.9 16.5 3.2.6 8.4 1.3 13.6 1.3 42.2 0 95.2-28.3 123-66.1z"/>
-                    </svg>
-                    {t("onboarding.appleBtn") || "Continue with Apple"}
-                  </button>
+                      <button
+                        onClick={handleAppleSignIn}
+                        className="flex items-center justify-center gap-3 w-full px-6 py-4 bg-black text-white font-semibold text-base rounded-xl hover:bg-gray-900 transition-all duration-200 active:scale-[0.98] shadow-lg border border-white/10"
+                      >
+                        <svg width="18" height="22" viewBox="0 0 814 1000" xmlns="http://www.w3.org/2000/svg" fill="white">
+                          <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105-57.8-155.5-127.4C46 376.7 0 248.1 0 125.8 0 56.3 25.6 0 75.4 0c52.1 0 84.1 34.1 116.6 34.1 31.1 0 79.3-36.3 134.2-36.3 26.5 0 98.1 2.6 150.2 76.2zm-220-176.4c28.3-35.1 49.3-84.4 49.3-133.7 0-6.5-.6-13-1.9-18.1-46.9 1.9-101.9 31.4-135.3 71.9-26.5 29.9-50.6 79.2-50.6 129.2 0 7.1 1.3 14.3 1.9 16.5 3.2.6 8.4 1.3 13.6 1.3 42.2 0 95.2-28.3 123-66.1z"/>
+                        </svg>
+                        {t("onboarding.appleBtn") || "Continue with Apple"}
+                      </button>
 
-                  {/* Divider */}
-                  <div className="flex items-center gap-3 my-1">
-                    <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.12)" }} />
-                    <span className="text-sm font-black text-white/60">or</span>
-                    <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.12)" }} />
-                  </div>
+                      <div className="flex items-center gap-3 my-1">
+                        <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.12)" }} />
+                        <span className="text-sm font-black text-white/60">or</span>
+                        <div className="flex-1 h-px" style={{ background: "rgba(255,255,255,0.12)" }} />
+                      </div>
+                    </div>
+                  )}
 
                   {/* Email Magic Link */}
                   {!showEmailForm ? (

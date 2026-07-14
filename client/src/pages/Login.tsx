@@ -1,14 +1,13 @@
 /**
  * Login.tsx — GetPhame authentication page (Magic Link)
  *
- * Displays three auth options:
- *   1. Continue with Google  (hidden if GOOGLE_CLIENT_ID not configured)
- *   2. Continue with Apple
- *   3. Email magic link — enter email, receive login link
+ * Production displays email magic-link authentication only. Apple and Google
+ * remain available on localhost and Manus preview hosts for staged testing.
  *
  * Design: navy (#0F1B2D) + gold (#C9A84C) theme, mobile-first, responsive.
  */
 import React, { useState, useEffect, useCallback } from "react";
+import { isStagingSocialLoginHost } from "@/lib/socialLoginAvailability";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -103,6 +102,7 @@ const OrDivider = () => (
 // ---------------------------------------------------------------------------
 
 export default function Login() {
+  const socialLoginEnabled = isStagingSocialLoginHost(window.location.hostname);
   const [googleEnabled, setGoogleEnabled] = useState<boolean | null>(null);
 
   // Form state
@@ -113,11 +113,16 @@ export default function Login() {
 
   // Check if Google OAuth is configured on the server
   useEffect(() => {
+    if (!socialLoginEnabled) {
+      setGoogleEnabled(false);
+      return;
+    }
+
     fetch("/api/auth/google/status")
       .then((r) => r.json() as Promise<GoogleStatusResponse>)
       .then((data) => setGoogleEnabled(data.enabled))
       .catch(() => setGoogleEnabled(false));
-  }, []);
+  }, [socialLoginEnabled]);
 
   // Check for auth errors in the URL (e.g. /login?auth_error=link_expired)
   useEffect(() => {
@@ -202,35 +207,38 @@ export default function Login() {
 
       {/* Card */}
       <div className="w-full max-w-sm">
-        {/* ── OAuth Buttons ─────────────────────────────────────────────── */}
-        <div className="space-y-3">
-          {/* Google — only rendered when configured */}
-          {googleEnabled === true && (
-            <a
-              href="/api/auth/google"
-              className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-800 font-semibold text-sm transition-colors duration-150 shadow-sm"
-            >
-              <GoogleIcon />
-              Continue with Google
-            </a>
-          )}
+        {socialLoginEnabled && (
+          <>
+            {/* ── Staging-only OAuth Buttons ────────────────────────────── */}
+            <div className="space-y-3" data-testid="staging-social-login">
+              {/* Google — only rendered when configured */}
+              {googleEnabled === true && (
+                <a
+                  href="/api/auth/google"
+                  className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-800 font-semibold text-sm transition-colors duration-150 shadow-sm"
+                >
+                  <GoogleIcon />
+                  Continue with Google
+                </a>
+              )}
 
-          {/* Google placeholder while loading */}
-          {googleEnabled === null && (
-            <div className="h-12 w-full rounded-xl bg-white/5 animate-pulse" />
-          )}
+              {/* Google placeholder while loading */}
+              {googleEnabled === null && (
+                <div className="h-12 w-full rounded-xl bg-white/5 animate-pulse" />
+              )}
 
-          {/* Apple */}
-          <a
-            href="/api/auth/apple"
-            className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
-          >
-            <AppleIcon />
-            Continue with Apple
-          </a>
-        </div>
+              <a
+                href="/api/auth/apple"
+                className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
+              >
+                <AppleIcon />
+                Continue with Apple
+              </a>
+            </div>
 
-        <OrDivider />
+            <OrDivider />
+          </>
+        )}
 
         {/* ── Magic Link Form ──────────────────────────────────────────── */}
         {sentTo ? (
