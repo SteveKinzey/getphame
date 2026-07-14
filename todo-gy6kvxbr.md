@@ -49,7 +49,7 @@
 - [x] Reproduce and fix the public landing page remaining in English when Thai is selected, restoring full Thai content and persisted language behavior.
 - [x] Add regression coverage proving the landing page renders translated Thai content—not only a Thai selector label—and verify desktop plus mobile.
 - [x] Validate a Free account’s transition from 10 initial requests to the recurring 5-per-rolling-30-days allowance without corrupting production customer data.
-- [ ] Review the live `/admin/users` workflow end to end, including search, status visibility, role controls, Life controls, pagination, and self-demotion safeguards.
+- [x] Review the live `/admin/users` workflow end to end, including search, status visibility, role controls, Life controls, pagination, and self-demotion safeguards.
 - [ ] Run one live Stripe checkout with the 99% promo code, obtain confirmation immediately before any charge submission, and verify the in-app success return plus paid entitlement.
 - [ ] Run TypeScript, focused regressions, the full test suite, and production build, then publish the verified repair checkpoint.
 - [x] Superseded by the explicit Italian landing deferral: restore public landing-page sections to i18next for EN, TH, ES, FR, zh-CN, and zh-TW while keeping the existing Italian application locale intact.
@@ -57,7 +57,7 @@
 - [x] Replace the already-merged English `landing` block in the Spanish locale with a complete, validated Spanish translation.
 - [x] Add the complete Traditional Chinese `landing` namespace and reconcile active Simplified Chinese support with the seven-language requirement.
 - [x] Keep Italian application translations intact while explicitly deferring only the new Italian landing namespace until the dedicated translation pass.
-- [ ] Preserve and review the nested Mac clone's four untracked icon files before any future duplicate-directory cleanup; do not alter either Mac directory during this repair.
+- [x] Preserve and review the nested Mac clone's four untracked icon files before any future duplicate-directory cleanup; no nested clone was present in this sandbox, and no external Mac directory was altered.
 - [x] Superseded by user: make the bottom sidebar account identity block clickable and reveal an accessible Log out action without disrupting Administrator, Life status, or theme controls.
 - [x] Superseded by user: add Vitest regression coverage for opening, keyboard-operating, and logging out through the sidebar account menu on desktop and mobile layouts.
 - [ ] Add a direct, translated Log out link below the Dark theme control and above the unchanged name/email profile block; implementation and regression coverage pass, with live desktop/tablet logout execution pending after publish.
@@ -83,8 +83,8 @@
 - [x] Add rendered dashboard coverage for the initial, rolling, and blocked Free-plan quota states.
 - [x] Add runtime tests proving tRPC and public API send boundaries return matching quota-block messages and the public API returns HTTP 429.
 - [x] Add a page-level rendered Home dashboard test that feeds real profile.freeQuota variants through the actual page data path and verifies initial, rolling, and blocked messaging.
-- [ ] Validate `/admin/users` pagination in the authenticated live session, or document that pagination is unreachable because the current 11-account directory is below the 25-account page size while retaining executable pagination coverage.
-- [ ] Verify the live role and Life control boundaries non-destructively through rendered disabled states and runtime mutation coverage, without submitting account changes.
+- [x] Validate `/admin/users` pagination in the authenticated live session, or document that pagination is unreachable because the current 11-account directory is below the 25-account page size while retaining executable pagination coverage.
+- [x] Verify the live role and Life control boundaries non-destructively through rendered disabled states and runtime mutation coverage, without submitting account changes.
 - [x] Add a clear Log in entry on the public landing page that lets returning users request a secure email magic link.
 - [x] Ensure magic-link requests use the current browser origin so custom-domain users return to getphame.app safely.
 - [x] Detect completed existing accounts after magic-link verification and route them directly to the authenticated dashboard instead of onboarding.
@@ -96,3 +96,7 @@
 - [x] Transfer source-account business records, contacts, requests, reminder history, analytics, settings, and other owned data to the target account without duplicating unique rows or weakening the target role/plan.
 - [x] Preserve the target login identity and entitlement state, validate the transfer transactionally, and delete the source user only after all linked ownership updates succeed.
 - [x] Add authorization, self-delete, last-admin, merge-direction, conflict-handling, and data-preservation regression tests without modifying live Steve Kinzey or Michael records.
+- [x] Reproduce and correlate the production Apple Sign In callback failure reported after successful Apple authorization.
+- [x] Repair Apple callback validation, identity resolution, session creation, or redirect handling without creating another duplicate user or losing existing account data.
+- [x] Add regression coverage for a successful Apple callback, an existing-email Apple login, and safe callback failure handling.
+- [ ] Verify Apple Sign In on the published custom domain, run complete quality gates, and publish the repair before resuming checkout validation.

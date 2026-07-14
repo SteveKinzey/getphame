@@ -3,7 +3,7 @@
  *
  * Routes:
  *   GET  /api/auth/apple          → redirects to Apple consent screen
- *   POST /api/auth/apple/callback → Apple POSTs back here with code + id_token
+ *   POST /api/auth/apple/callback → Apple POSTs a code; server exchanges it for tokens
  *
  * Apple Developer Console setup required (see README / delivery message):
  *   - App ID with "Sign in with Apple" capability enabled
@@ -72,34 +72,42 @@ export function registerAppleAuthRoutes(app: Express) {
     res.redirect(302, authUrl);
   });
 
-  // Step 2: Apple POSTs back here with code + id_token (+ optional user JSON on first login)
+  // Step 2: Apple POSTs back here with a short-lived authorization code.
+  // The identity token is returned by Apple's server-to-server token exchange;
+  // it is not guaranteed to be present in the browser callback payload.
   app.post("/api/auth/apple/callback", async (req: Request, res: Response) => {
-    const { code, id_token, state, user: userJson } = req.body as {
+    const { code, user: userJson, error, error_description: errorDescription } = req.body as {
       code?: string;
-      id_token?: string;
-      state?: string;
       user?: string;
+      error?: string;
+      error_description?: string;
     };
 
-    if (!code || !id_token) {
-      console.warn("[AppleAuth] Missing code or id_token");
-      return res.redirect(302, "/?auth_error=apple_missing_token");
+    if (error) {
+      console.warn(`[AppleAuth] Authorization declined or failed: ${error}`, errorDescription ?? "");
+      return res.redirect(302, "/?auth_error=apple_authorization_failed");
+    }
+
+    if (!code) {
+      console.warn("[AppleAuth] Missing authorization code");
+      return res.redirect(302, "/?auth_error=apple_missing_code");
     }
 
     try {
-      // Decode state to get the redirectUri used in step 1
-      let redirectUri = buildRedirectUri(req);
-      if (state) {
-        try {
-          const decoded = JSON.parse(Buffer.from(state, "base64url").toString("utf8"));
-          if (decoded.redirectUri) redirectUri = decoded.redirectUri;
-        } catch {
-          // ignore malformed state
-        }
+      const redirectUri = buildRedirectUri(req);
+      const tokenResponse = await appleSignin.getAuthorizationToken(code, {
+        clientID: ENV.appleClientId,
+        redirectUri,
+        clientSecret: buildClientSecret(),
+      });
+
+      if (!tokenResponse.id_token) {
+        console.warn("[AppleAuth] Token exchange returned no identity token");
+        return res.redirect(302, "/?auth_error=apple_missing_token");
       }
 
       // Verify the id_token with Apple's public keys
-      const appleUser = await appleSignin.verifyIdToken(id_token, {
+      const appleUser = await appleSignin.verifyIdToken(tokenResponse.id_token, {
         audience: ENV.appleClientId,
         ignoreExpiration: false,
       });
@@ -121,13 +129,17 @@ export function registerAppleAuthRoutes(app: Express) {
           const firstName = parsedUser?.name?.firstName ?? "";
           const lastName = parsedUser?.name?.lastName ?? "";
           name = [firstName, lastName].filter(Boolean).join(" ") || null;
+          email = email ?? parsedUser?.email ?? null;
         } catch {
           // ignore
         }
       }
 
-      // Check if new user before upsert
-      const existingUser = await db.getUserByOpenId(openId);
+      const existingIdentityUser = await db.getUserByOpenId(openId);
+      const existingEmailUser = !existingIdentityUser && email
+        ? await db.getUserByEmail(email)
+        : undefined;
+      const existingUser = existingIdentityUser ?? existingEmailUser;
       const isNewUser = !existingUser;
 
       // If returning user, preserve their stored name
@@ -135,13 +147,22 @@ export function registerAppleAuthRoutes(app: Express) {
         name = existingUser?.name ?? null;
       }
 
-      await db.upsertUser({
-        openId,
-        name,
-        email,
-        loginMethod: "apple",
-        lastSignedIn: new Date(),
-      });
+      if (existingEmailUser) {
+        await db.linkUserIdentity({
+          userId: existingEmailUser.id,
+          openId,
+          loginMethod: "apple",
+          lastSignedIn: new Date(),
+        });
+      } else {
+        await db.upsertUser({
+          openId,
+          name,
+          email,
+          loginMethod: "apple",
+          lastSignedIn: new Date(),
+        });
+      }
 
       // Send welcome email to new users (fire-and-forget)
       if (isNewUser && email) {

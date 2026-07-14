@@ -104,6 +104,57 @@ export async function getUserByOpenId(openId: string) {
   return aliased.length > 0 ? aliased[0].user : undefined;
 }
 
+/**
+ * Attach an additional OAuth identity to an existing user without replacing the
+ * account's primary login identity or business ownership. Used when a customer
+ * signs in with Apple using the same verified email as an established account.
+ */
+export async function linkUserIdentity(input: {
+  userId: number;
+  openId: string;
+  loginMethod: string;
+  lastSignedIn?: Date;
+}): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db.transaction(async (tx) => {
+    const [directIdentity] = await tx
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.openId, input.openId))
+      .limit(1);
+    if (directIdentity && directIdentity.id !== input.userId) {
+      throw new Error("OAuth identity already belongs to another account");
+    }
+
+    const [existingAlias] = await tx
+      .select({ userId: userIdentityAliases.userId })
+      .from(userIdentityAliases)
+      .where(eq(userIdentityAliases.openId, input.openId))
+      .limit(1);
+    if (existingAlias && existingAlias.userId !== input.userId) {
+      throw new Error("OAuth identity alias already belongs to another account");
+    }
+
+    if (!directIdentity && !existingAlias) {
+      await tx.insert(userIdentityAliases).values({
+        userId: input.userId,
+        openId: input.openId,
+        loginMethod: input.loginMethod,
+      });
+    }
+
+    await tx
+      .update(users)
+      .set({
+        lastSignedIn: input.lastSignedIn ?? new Date(),
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, input.userId));
+  });
+}
+
 export async function getUserByEmail(email: string) {
   const db = await getDb();
   if (!db) { console.warn("[Database] Cannot get user by email: database not available"); return undefined; }
