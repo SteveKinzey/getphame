@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const mocks = vi.hoisted(() => ({
   getDb: vi.fn(),
+  getUserByEmail: vi.fn(),
   getUserByOpenId: vi.fn(),
   upsertUser: vi.fn(),
   createSessionToken: vi.fn(),
@@ -14,6 +15,7 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("./db", () => ({
   getDb: mocks.getDb,
+  getUserByEmail: mocks.getUserByEmail,
   getUserByOpenId: mocks.getUserByOpenId,
   upsertUser: mocks.upsertUser,
 }));
@@ -118,5 +120,56 @@ describe("email magic-link verification", () => {
         token: record.token,
       }),
     );
+  });
+
+  it("reuses an existing account found by normalized email and redirects the returning user home", async () => {
+    const record = {
+      id: 88,
+      email: "steve@example.test",
+      token: "existing-account-token",
+      expiresAt: new Date(Date.now() + 60_000),
+      usedAt: null,
+      createdAt: new Date(),
+    };
+    const database = {
+      select: vi.fn(() => ({
+        from: vi.fn(() => ({
+          where: vi.fn(() => ({ limit: vi.fn().mockResolvedValue([record]) })),
+        })),
+      })),
+      update: vi.fn(() => ({
+        set: vi.fn(() => ({ where: vi.fn().mockResolvedValue(undefined) })),
+      })),
+    };
+    const existingAccount = {
+      id: 42,
+      openId: "google-existing-steve",
+      email: record.email,
+      name: "Steve Existing",
+      role: "user",
+    };
+
+    mocks.getDb.mockResolvedValue(database);
+    mocks.getUserByOpenId.mockResolvedValue(undefined);
+    mocks.getUserByEmail.mockResolvedValue(existingAccount);
+    mocks.upsertUser.mockResolvedValue(undefined);
+    mocks.createSessionToken.mockResolvedValue("existing-account-session");
+
+    const app = express();
+    app.use(express.json());
+    registerEmailAuthRoutes(app);
+
+    const response = await request(app)
+      .get("/api/auth/magic-link/verify")
+      .query({ token: record.token });
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/");
+    expect(mocks.upsertUser).toHaveBeenCalledWith(expect.objectContaining({
+      openId: existingAccount.openId,
+      email: record.email,
+    }));
+    expect(mocks.createSessionToken).toHaveBeenCalledWith(existingAccount.openId, expect.any(Object));
+    expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
   });
 });

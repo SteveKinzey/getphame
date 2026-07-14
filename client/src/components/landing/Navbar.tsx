@@ -59,7 +59,7 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-4">
           <LanguageFlyout />
           <a
-            href="/onboarding"
+            href="/login"
             className="text-base font-semibold text-slate-200 hover:text-white transition-colors"
           >
             {t("landing.navbar.signIn", { defaultValue: "Sign In" })}
@@ -101,7 +101,7 @@ export default function Navbar() {
             ))}
             <hr className="border-[#1e3050] my-2" />
             <a
-              href="/onboarding"
+              href="/login"
               className="text-lg font-bold text-white py-2.5"
             >
               {t("landing.navbar.signIn", { defaultValue: "Sign In" })}

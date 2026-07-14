@@ -6,6 +6,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, paidProcedure, protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { hasPaidOrAdminAccess } from "./entitlements";
+import { evaluateFreeQuotaAccess, formatFreeQuotaBlockedMessage } from "./quotaEnforcement";
 import { storageGet } from "./storage";
 import {
   getBusinessProfile,
@@ -108,6 +109,7 @@ import {
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
 import { bulkSenderRouter } from "./bulkSender";
 import { authDiagnosticsRouter } from "./routers/authDiagnostics";
+import { combineAccountsAsAdmin, deleteAccountAsAdmin } from "./accountManagement";
 import crypto from "crypto";
 
 // ── Unsubscribe token helpers ────────────────────────────────────────────────
@@ -146,22 +148,12 @@ export function buildUnsubUrl(contactType: "contact" | "woo", id: number, userId
 
 /** Enforce 10 initial sends, then 5 sends per rolling 30-day window. */
 async function enforceFreeLimit(userId: number, tier: string) {
-  if (tier !== "free") return; // paid users have no limit
-  const db = await getDb();
-  if (db) {
-    const [account] = await db
-      .select({ role: users.role })
-      .from(users)
-      .where(eq(users.id, userId))
-      .limit(1);
-    if (account?.role === "admin") return;
-  }
-  const quota = await getFreeQuotaSummary(userId);
-  if (quota.blocked) {
-    const resetMessage = quota.nextAvailableAt
-      ? ` Next send available ${new Date(quota.nextAvailableAt).toISOString()}.`
-      : "";
-    throw new TRPCError({ code: "FORBIDDEN", message: `${FREE_LIMIT_ERR_MSG}${resetMessage}` });
+  const decision = await evaluateFreeQuotaAccess(userId, tier);
+  if (!decision.allowed) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: formatFreeQuotaBlockedMessage(decision.quota, FREE_LIMIT_ERR_MSG),
+    });
   }
 }
 
@@ -2312,6 +2304,29 @@ export const appRouter = router({
           });
         console.log(`[Admin] User ${input.userId} Life access ${input.enabled ? "enabled" : "disabled"} by admin ${ctx.user.id}`);
         return { ok: true };
+      }),
+
+    deleteUser: adminProcedure
+      .input(z.object({
+        userId: z.number().int().positive(),
+        confirmation: z.literal("DELETE"),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const deleted = await deleteAccountAsAdmin(ctx.user.id, input.userId);
+        console.log(`[Admin] Account ${deleted.id} deleted by admin ${ctx.user.id}`);
+        return { ok: true, deleted };
+      }),
+
+    combineAccounts: adminProcedure
+      .input(z.object({
+        sourceUserId: z.number().int().positive(),
+        targetUserId: z.number().int().positive(),
+        confirmation: z.literal("COMBINE"),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const result = await combineAccountsAsAdmin(ctx.user.id, input.sourceUserId, input.targetUserId);
+        console.log(`[Admin] Account ${input.sourceUserId} combined into ${input.targetUserId} by admin ${ctx.user.id}`);
+        return { ok: true, ...result };
       }),
 
     /** Manually override a user's tier — admin only */

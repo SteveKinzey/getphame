@@ -51,6 +51,20 @@ export const users = pgTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
+/** Additional OAuth identities retained when duplicate user accounts are combined. */
+export const userIdentityAliases = pgTable("user_identity_aliases", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  openId: varchar("openId", { length: 64 }).notNull().unique(),
+  loginMethod: varchar("loginMethod", { length: 64 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => [
+  index("user_identity_alias_user_idx").on(table.userId),
+]);
+
+export type UserIdentityAlias = typeof userIdentityAliases.$inferSelect;
+export type InsertUserIdentityAlias = typeof userIdentityAliases.$inferInsert;
+
 /** Magic link tokens for passwordless email login */
 export const magicLinks = pgTable("magic_links", {
   id: serial("id").primaryKey(),

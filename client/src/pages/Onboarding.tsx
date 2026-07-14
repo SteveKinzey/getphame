@@ -33,7 +33,10 @@ export default function OnboardingPage() {
       const res = await fetch("/api/auth/magic-link", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim().toLowerCase() }),
+        body: JSON.stringify({
+          email: email.trim().toLowerCase(),
+          origin: window.location.origin,
+        }),
       });
       const data = await res.json() as { ok?: boolean; error?: string };
       if (!res.ok || !data.ok) {
@@ -302,6 +305,12 @@ export default function OnboardingPage() {
                 {/* Fine print */}
                 <p className="text-center text-sm font-bold text-white/80">
                   {t("onboarding.finePrint") || "Start free — 10 review requests included. No credit card required."}
+                </p>
+                <p className="mt-4 text-center text-sm font-bold text-white/70">
+                  Already have an account?{" "}
+                  <a href="/login" className="underline underline-offset-4 transition-colors hover:text-white" style={{ color: "oklch(0.78 0.15 75)" }}>
+                    Sign in
+                  </a>
                 </p>
               </div>
             </div>

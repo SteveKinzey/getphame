@@ -114,11 +114,53 @@ describe("Get Phame regression contracts", () => {
 
   it("shows Life entitlements on the dashboard usage card instead of the Free label or quota", () => {
     const home = readProjectFile("../client/src/pages/Home.tsx");
+    const quotaStatus = readProjectFile("../client/src/components/FreeQuotaStatus.tsx");
 
     expect(home).toContain("getEffectivePlan(profile?.tier, user?.role)");
     expect(home).toContain('effectivePlan === "life" ? t("homePage.lifePlan"');
-    expect(home).toContain('`${profile?.freeQuota?.remaining ?? 10}/${profile?.freeQuota?.limit ?? 10}`');
-    expect(home).toContain('profile?.freeQuota?.phase === "rolling"');
+    expect(home).toContain("<FreeQuotaStatus");
+    expect(quotaStatus).toContain('data-testid="free-quota-status"');
+    expect(quotaStatus).toContain('quota?.phase === "rolling"');
+  });
+
+  it("wires the isolated 10-to-5 Free quota transition into the production database path", () => {
+    const database = readProjectFile("./db.ts");
+    const quota = readProjectFile("../shared/quota.ts");
+    const constants = readProjectFile("../shared/const.ts");
+
+    expect(database).toContain("offset(FREE_INITIAL_REQUESTS - 1)");
+    expect(database).toContain("const postInitial = or(");
+    expect(database).toContain("gte(customerRequests.sentAt, cutoff), postInitial");
+    expect(database).toContain("return buildFreeQuotaSummary({");
+    expect(quota).toContain("FREE_INITIAL_REQUESTS ? \"initial\" : \"rolling\"");
+    expect(constants).toContain("FREE_INITIAL_REQUESTS = 10");
+    expect(constants).toContain("FREE_ROLLING_REQUESTS = 5");
+    expect(constants).toContain("FREE_ROLLING_WINDOW_DAYS = 30");
+  });
+
+  it("uses one Free quota decision service for in-app and public API sends", () => {
+    const routers = readProjectFile("./routers.ts");
+    const publicApi = readProjectFile("./publicApi.ts");
+    const enforcement = readProjectFile("./quotaEnforcement.ts");
+
+    expect(routers).toContain("evaluateFreeQuotaAccess(userId, tier)");
+    expect(publicApi).toContain("evaluateFreeQuotaAccess(userId, profile.tier)");
+    expect(publicApi).not.toContain("total >= FREE_LIMIT");
+    expect(enforcement).toContain('tier !== "free"');
+    expect(enforcement).toContain('=== "admin"');
+    expect(enforcement).toContain("allowed: !quota.blocked");
+  });
+
+  it("renders initial, rolling, and blocked Free quota states in the dashboard", () => {
+    const home = readProjectFile("../client/src/pages/Home.tsx");
+    const quotaStatus = readProjectFile("../client/src/components/FreeQuotaStatus.tsx");
+
+    expect(home).toContain("<FreeQuotaStatus");
+    expect(quotaStatus).toContain('quota?.phase === "rolling"');
+    expect(quotaStatus).toContain('t("homePage.freeAllowanceMonthly"');
+    expect(quotaStatus).toContain('t("homePage.freeAllowanceInitial"');
+    expect(quotaStatus).toContain("quota?.blocked && quota.nextAvailableAt");
+    expect(quotaStatus).toContain('t("homePage.nextFreeRequest"');
   });
 
   it("renders a distinct localized administrator badge in the sidebar", () => {

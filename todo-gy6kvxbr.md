@@ -48,7 +48,7 @@
 
 - [x] Reproduce and fix the public landing page remaining in English when Thai is selected, restoring full Thai content and persisted language behavior.
 - [x] Add regression coverage proving the landing page renders translated Thai content—not only a Thai selector label—and verify desktop plus mobile.
-- [ ] Validate a Free account’s transition from 10 initial requests to the recurring 5-per-rolling-30-days allowance without corrupting production customer data.
+- [x] Validate a Free account’s transition from 10 initial requests to the recurring 5-per-rolling-30-days allowance without corrupting production customer data.
 - [ ] Review the live `/admin/users` workflow end to end, including search, status visibility, role controls, Life controls, pagination, and self-demotion safeguards.
 - [ ] Run one live Stripe checkout with the 99% promo code, obtain confirmation immediately before any charge submission, and verify the in-app success return plus paid entitlement.
 - [ ] Run TypeScript, focused regressions, the full test suite, and production build, then publish the verified repair checkpoint.
@@ -69,8 +69,30 @@
 - [x] Superseded after the Italian completeness audit: standardize every public and authenticated language selector with USA English first, followed exactly by CN, ES, FR, TH, and TW while Italian remains hidden.
 - [x] Correct the WooCommerce sync FAQ answer to disclose clearly that connector installation and synchronization require a paid plan.
 - [x] Add focused Vitest coverage for the shared locale order, USA English flag, and WooCommerce paid-feature disclosure across localized content.
-- [ ] Verify the updated selectors and FAQ on desktop and phone-sized viewports, run TypeScript, the full Vitest suite, and the production build, then publish the release.
+- [x] Verify the updated selectors and FAQ on desktop and phone-sized viewports, run TypeScript, the full Vitest suite, and the production build, then publish the release.
 - [x] Audit Italian public landing and authenticated-app translation coverage against the other supported locales before keeping IT visible in selectors.
 - [x] If Italian is incomplete, remove IT only from the shared selector options while preserving every existing Italian translation file and all progress for later completion.
 - [x] Add regression coverage proving selector visibility follows Italian readiness and that no Italian translation assets are deleted.
 - [x] Fix the screenshot-confirmed legacy selector sequence and UK flag so every rendered selector uses USA EN first, followed by CN, ES, FR, TH, and TW, with incomplete IT hidden.
+- [x] Add a non-production seeded integration path that exercises persisted-style request rows through the production quota calculation and send-enforcement boundary.
+- [x] Prove in integration coverage that the 10th request remains available, the 11th enters the rolling allowance, the 16th is blocked, and capacity returns after the oldest rolling request expires.
+- [x] Verify user-visible initial, rolling, and blocked quota states without changing production account data.
+- [x] Replace the public API's obsolete lifetime ten-request cutoff with the same 10-initial-plus-5-per-rolling-30-days quota summary and administrator exemption used by in-app sends.
+- [x] Add regression coverage proving public API and in-app sends share the same Free-plan allowance and blocked response semantics.
+- [x] Add a DB-backed quota integration test that seeds isolated customer-request rows and executes the real getFreeQuotaSummary plus enforcement path without touching production data.
+- [x] Add rendered dashboard coverage for the initial, rolling, and blocked Free-plan quota states.
+- [x] Add runtime tests proving tRPC and public API send boundaries return matching quota-block messages and the public API returns HTTP 429.
+- [x] Add a page-level rendered Home dashboard test that feeds real profile.freeQuota variants through the actual page data path and verifies initial, rolling, and blocked messaging.
+- [ ] Validate `/admin/users` pagination in the authenticated live session, or document that pagination is unreachable because the current 11-account directory is below the 25-account page size while retaining executable pagination coverage.
+- [ ] Verify the live role and Life control boundaries non-destructively through rendered disabled states and runtime mutation coverage, without submitting account changes.
+- [x] Add a clear Log in entry on the public landing page that lets returning users request a secure email magic link.
+- [x] Ensure magic-link requests use the current browser origin so custom-domain users return to getphame.app safely.
+- [x] Detect completed existing accounts after magic-link verification and route them directly to the authenticated dashboard instead of onboarding.
+- [x] Keep onboarding limited to genuinely new or incomplete accounts while preserving existing request history, plan status, SMTP state, and review-platform setup.
+- [x] Add regression coverage for landing login visibility, known-email magic-link delivery, completed-account dashboard routing, and incomplete-account onboarding behavior.
+- [x] Verify returning-user login and onboarding bypass on desktop and phone-sized viewports, run full quality gates, and publish the authentication repair.
+- [x] Add an admin-only Delete account workflow with confirmation, self-delete protection, and last-administrator protection.
+- [x] Add an admin-only Combine accounts workflow that selects a source duplicate and target survivor, previews the merge direction, and requires explicit confirmation.
+- [x] Transfer source-account business records, contacts, requests, reminder history, analytics, settings, and other owned data to the target account without duplicating unique rows or weakening the target role/plan.
+- [x] Preserve the target login identity and entitlement state, validate the transfer transactionally, and delete the source user only after all linked ownership updates succeed.
+- [x] Add authorization, self-delete, last-admin, merge-direction, conflict-handling, and data-preservation regression tests without modifying live Steve Kinzey or Michael records.

@@ -10,6 +10,7 @@ import {
   authHealthChecks,
   businessProfiles,
   customerRequests,
+  userIdentityAliases,
   users,
   webhookConfigs,
   type InsertAuthDiagnosticEvent,
@@ -41,6 +42,21 @@ export async function upsertUser(user: InsertUser): Promise<void> {
   if (!user.openId) throw new Error("User openId is required for upsert");
   const db = await getDb();
   if (!db) { console.warn("[Database] Cannot upsert user: database not available"); return; }
+
+  const [identityAlias] = await db
+    .select({ userId: userIdentityAliases.userId })
+    .from(userIdentityAliases)
+    .where(eq(userIdentityAliases.openId, user.openId))
+    .limit(1);
+  if (identityAlias) {
+    const aliasUpdates: Record<string, unknown> = { updatedAt: new Date() };
+    if (user.name !== undefined) aliasUpdates.name = user.name ?? null;
+    if (user.email !== undefined) aliasUpdates.email = user.email?.trim().toLowerCase() ?? null;
+    if (user.loginMethod !== undefined) aliasUpdates.loginMethod = user.loginMethod ?? null;
+    if (user.lastSignedIn !== undefined) aliasUpdates.lastSignedIn = user.lastSignedIn;
+    await db.update(users).set(aliasUpdates).where(eq(users.id, identityAlias.userId));
+    return;
+  }
 
   const values: InsertUser = { openId: user.openId };
   const updateSet: Record<string, unknown> = {};
@@ -78,14 +94,52 @@ export async function getUserByOpenId(openId: string) {
   const db = await getDb();
   if (!db) { console.warn("[Database] Cannot get user: database not available"); return undefined; }
   const result = await db.select().from(users).where(eq(users.openId, openId)).limit(1);
-  return result.length > 0 ? result[0] : undefined;
+  if (result.length > 0) return result[0];
+  const aliased = await db
+    .select({ user: users })
+    .from(userIdentityAliases)
+    .innerJoin(users, eq(users.id, userIdentityAliases.userId))
+    .where(eq(userIdentityAliases.openId, openId))
+    .limit(1);
+  return aliased.length > 0 ? aliased[0].user : undefined;
 }
 
 export async function getUserByEmail(email: string) {
   const db = await getDb();
   if (!db) { console.warn("[Database] Cannot get user by email: database not available"); return undefined; }
-  const result = await db.select().from(users).where(eq(users.email, email.toLowerCase())).limit(1);
-  return result.length > 0 ? result[0] : undefined;
+  const normalizedEmail = email.trim().toLowerCase();
+  const candidates = await db
+    .select({
+      user: users,
+      tier: businessProfiles.tier,
+      onboardingDismissed: businessProfiles.onboardingDismissed,
+      monthlyCount: businessProfiles.monthlyCount,
+    })
+    .from(users)
+    .leftJoin(businessProfiles, eq(users.id, businessProfiles.userId))
+    .where(eq(users.email, normalizedEmail));
+
+  if (candidates.length === 0) return undefined;
+
+  // Older releases could create more than one account for the same email when a
+  // user switched sign-in methods. Prefer the account that already owns access
+  // and onboarding data; use the oldest account only as a deterministic tie-break.
+  const tierWeight = { free: 0, pro: 200, annual: 300, lifetime: 400 } as const;
+  const normalizedTier = (tier: string | null): keyof typeof tierWeight =>
+    tier && tier in tierWeight ? tier as keyof typeof tierWeight : "free";
+  candidates.sort((a, b) => {
+    const score = (candidate: typeof a) =>
+      (candidate.user.role === "admin" ? 1_000 : 0) +
+      (candidate.onboardingDismissed === 1 ? 500 : 0) +
+      tierWeight[normalizedTier(candidate.tier)] +
+      (candidate.monthlyCount && candidate.monthlyCount > 0 ? 50 : 0) +
+      (candidate.tier ? 10 : 0);
+    const scoreDelta = score(b) - score(a);
+    if (scoreDelta !== 0) return scoreDelta;
+    return a.user.createdAt.getTime() - b.user.createdAt.getTime();
+  });
+
+  return candidates[0].user;
 }
 
 export async function updateUserLastSignedIn(openId: string, timestamp: Date) {
@@ -418,7 +472,25 @@ export async function getFreeQuotaSummary(userId: number) {
   const db = await getDb();
   if (!db) return buildFreeQuotaSummary({ totalSent: 0, rollingUsed: 0 });
 
-  const totalSent = await getTotalRequestCount(userId);
+  return getFreeQuotaSummaryFromDb(userId, db);
+}
+
+/**
+ * Execute the production Free-plan quota query against an explicit database.
+ * Production passes the application database; integration tests pass a temporary,
+ * isolated schema so the real persisted-row path is covered without customer data.
+ */
+export async function getFreeQuotaSummaryFromDb(
+  userId: number,
+  db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
+  nowMs = Date.now(),
+) {
+  const countRows = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(customerRequests)
+    .where(eq(customerRequests.userId, userId));
+  const totalSent = Number(countRows[0]?.count ?? 0);
+
   if (totalSent < FREE_INITIAL_REQUESTS) {
     return buildFreeQuotaSummary({ totalSent, rollingUsed: 0 });
   }
@@ -435,7 +507,7 @@ export async function getFreeQuotaSummary(userId: number) {
     return buildFreeQuotaSummary({ totalSent, rollingUsed: 0 });
   }
 
-  const cutoff = new Date(Date.now() - FREE_ROLLING_WINDOW_DAYS * 24 * 60 * 60 * 1000);
+  const cutoff = new Date(nowMs - FREE_ROLLING_WINDOW_DAYS * 24 * 60 * 60 * 1000);
   const postInitial = or(
     gt(customerRequests.sentAt, tenthRequest.sentAt),
     and(eq(customerRequests.sentAt, tenthRequest.sentAt), gt(customerRequests.id, tenthRequest.id)),

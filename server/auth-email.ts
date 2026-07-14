@@ -348,18 +348,23 @@ export function registerEmailAuthRoutes(app: Express) {
 
       const email = record.email;
       verificationEmail = email;
-      const openId = `email_${email}`;
+      const emailOpenId = `email_${email}`;
 
-      // Check if user exists
-      const existingUser = await db.getUserByOpenId(openId);
+      // Resolve both direct email-login accounts and accounts originally created
+      // through Google, Apple, or another provider. This prevents a returning
+      // customer from receiving a second empty account when using a magic link.
+      const existingUser =
+        (await db.getUserByOpenId(emailOpenId)) ??
+        (await db.getUserByEmail(email));
       const isNewUser = !existingUser;
+      const sessionOpenId = existingUser?.openId ?? emailOpenId;
 
       // Upsert user — creates account if new, updates lastSignedIn if existing
       await db.upsertUser({
-        openId,
-        name: null,
+        openId: sessionOpenId,
+        name: existingUser?.name ?? null,
         email,
-        loginMethod: "email",
+        loginMethod: existingUser?.loginMethod ?? "email",
         lastSignedIn: new Date(),
       });
 
@@ -378,7 +383,7 @@ export function registerEmailAuthRoutes(app: Express) {
       }
 
       // Issue session JWT cookie
-      const sessionToken = await sdk.createSessionToken(openId, {
+      const sessionToken = await sdk.createSessionToken(sessionOpenId, {
         name: "",
         expiresInMs: ONE_YEAR_MS,
       });
