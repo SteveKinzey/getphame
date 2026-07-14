@@ -19,7 +19,7 @@ describe("onboarding guide eligibility", () => {
     expect(shouldAutoShowOnboardingGuide({
       isAuthenticated: false,
       userId: 42,
-      onboardingStatus: { dismissed: false, allDone: false },
+      onboardingStatus: { dismissed: false, allDone: false, hasSentRequest: false },
     }, storage)).toBe(false);
     expect(shouldAutoShowOnboardingGuide({
       isAuthenticated: true,
@@ -35,12 +35,23 @@ describe("onboarding guide eligibility", () => {
     expect(shouldAutoShowOnboardingGuide({
       isAuthenticated: true,
       userId: 42,
-      onboardingStatus: { dismissed: true, allDone: false },
+      onboardingStatus: { dismissed: true, allDone: false, hasSentRequest: false },
     }, storage)).toBe(false);
     expect(shouldAutoShowOnboardingGuide({
       isAuthenticated: true,
       userId: 42,
-      onboardingStatus: { dismissed: false, allDone: true },
+      onboardingStatus: { dismissed: false, allDone: true, hasSentRequest: false },
+    }, storage)).toBe(false);
+    expect(storage.getItem).not.toHaveBeenCalled();
+  });
+
+  it("suppresses an established account with request history even when current setup is no longer strictly complete", () => {
+    const storage = createStorage();
+
+    expect(shouldAutoShowOnboardingGuide({
+      isAuthenticated: true,
+      userId: 42,
+      onboardingStatus: { dismissed: false, allDone: false, hasSentRequest: true },
     }, storage)).toBe(false);
     expect(storage.getItem).not.toHaveBeenCalled();
   });
@@ -51,7 +62,7 @@ describe("onboarding guide eligibility", () => {
     expect(shouldAutoShowOnboardingGuide({
       isAuthenticated: true,
       userId: 42,
-      onboardingStatus: { dismissed: false, allDone: false },
+      onboardingStatus: { dismissed: false, allDone: false, hasSentRequest: false },
     }, storage)).toBe(true);
     expect(storage.getItem).toHaveBeenCalledWith("rl_guide_seen:42");
   });
@@ -63,7 +74,7 @@ describe("onboarding guide eligibility", () => {
     expect(shouldAutoShowOnboardingGuide({
       isAuthenticated: true,
       userId: 42,
-      onboardingStatus: { dismissed: false, allDone: false },
+      onboardingStatus: { dismissed: false, allDone: false, hasSentRequest: false },
     }, storage)).toBe(false);
   });
 
@@ -73,7 +84,7 @@ describe("onboarding guide eligibility", () => {
     expect(shouldAutoShowOnboardingGuide({
       isAuthenticated: true,
       userId: 42,
-      onboardingStatus: { dismissed: false, allDone: false },
+      onboardingStatus: { dismissed: false, allDone: false, hasSentRequest: false },
     }, storage)).toBe(true);
   });
 

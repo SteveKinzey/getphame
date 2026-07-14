@@ -3,6 +3,7 @@ export const GUIDE_SEEN_KEY = "rl_guide_seen";
 export type OnboardingGuideStatus = {
   dismissed: boolean;
   allDone: boolean;
+  hasSentRequest: boolean;
 };
 
 export type OnboardingGuideEligibility = {
@@ -20,6 +21,10 @@ export function shouldAutoShowOnboardingGuide(
   storage: Pick<Storage, "getItem">,
 ) {
   if (!isAuthenticated || userId == null || !onboardingStatus) return false;
-  if (onboardingStatus.dismissed || onboardingStatus.allDone) return false;
+  if (
+    onboardingStatus.dismissed ||
+    onboardingStatus.allDone ||
+    onboardingStatus.hasSentRequest
+  ) return false;
   return !storage.getItem(getOnboardingGuideSeenKey(userId));
 }

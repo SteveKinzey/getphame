@@ -129,3 +129,5 @@
 - [x] Make the authenticated application shell wait for server onboarding status before deciding whether to auto-open the six-screen setup guide, suppress it for dismissed or completed returning accounts, and preserve setup for genuinely incomplete accounts.
 - [x] Add focused regression coverage for dismissed, completed, incomplete, and loading onboarding-status states without changing production customer data.
 - [ ] Run TypeScript, the full Vitest suite, and the production build; publish the repair and hard-refresh the existing production account to confirm the guide stays closed.
+- [x] Treat historical sent-request activity as established-account evidence so a later SMTP credential failure cannot reclassify a returning customer as a first-login account.
+- [ ] Add regression coverage for an established account with sent-request history and a currently false strict `allDone` status, then republish and repeat the production hard-refresh verification.

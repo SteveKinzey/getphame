@@ -1167,7 +1167,11 @@ export function useOnboardingGuide(eligibility: OnboardingGuideEligibility) {
       return;
     }
 
-    if (onboardingStatus.dismissed || onboardingStatus.allDone) {
+    if (
+      onboardingStatus.dismissed ||
+      onboardingStatus.allDone ||
+      onboardingStatus.hasSentRequest
+    ) {
       localStorage.setItem(seenKey, "1");
       setOpen(false);
       return;
