@@ -495,6 +495,11 @@
     "cancelButton": "Annuler",
     "successToast": "Compte supprimé. Au revoir !"
   },
+  "common": {
+    "gotIt": "Compris ✓",
+    "hide": "Masquer",
+    "show": "Afficher"
+  },
   "profile": {
     "title": "Profil d'entreprise",
     "description": "Parlez-nous de votre entreprise. Ces informations sont utilisées pour personnaliser les e-mails.",
@@ -576,6 +581,51 @@
     "noUrl": "Aucune URL définie"
   },
   "smtp": {
+    "emailConnected": "E-mail connecté",
+    "lastAutoCheck": "Dernière vérification automatique : {{date}}",
+    "healthy": "✓ Opérationnel",
+    "failed": "✗ Échec",
+    "notConnectedDescription": "Aucun e-mail connecté. Saisissez vos informations ci-dessous pour commencer à envoyer des demandes d'avis.",
+    "emailAddressLabel": "Votre adresse e-mail *",
+    "displayNameLabel": "Nom d'affichage (facultatif)",
+    "displayNameHelp": "Affiché comme nom d'expéditeur dans la boîte de réception de votre client.",
+    "passwordLabels": {
+      "gmail": "Mot de passe d'application Gmail *",
+      "workspace": "Mot de passe d'application Google Workspace *",
+      "microsoft": "Mot de passe d'application Microsoft *",
+      "yahoo": "Mot de passe d'application Yahoo *",
+      "zoho": "Mot de passe Zoho Mail *",
+      "icloud": "Mot de passe spécifique à l'app Apple *",
+      "aol": "Mot de passe d'application AOL *",
+      "proton": "Mot de passe SMTP ProtonMail *",
+      "fastmail": "Mot de passe d'application Fastmail *",
+      "email": "Mot de passe e-mail *"
+    },
+    "passwordPlaceholders": {
+      "update": "Saisissez un nouveau mot de passe pour mettre à jour",
+      "google": "Mot de passe d'application à 16 caractères (sans espaces)",
+      "default": "Votre mot de passe e-mail"
+    },
+    "inlineHints": {
+      "google": "N'utilisez pas votre mot de passe Gmail habituel : utilisez un mot de passe d'application. Appuyez sur « Comment l'obtenir » ci-dessus.",
+      "icloud": "Utilisez un mot de passe spécifique à l'app, pas votre mot de passe Apple ID. Appuyez sur « Comment l'obtenir » ci-dessus.",
+      "zoho": "Activez d'abord l'accès SMTP dans Zoho, puis utilisez votre mot de passe Zoho habituel. Appuyez sur « Comment l'obtenir » ci-dessus.",
+      "aol": "N'utilisez pas votre mot de passe AOL habituel : utilisez un mot de passe d'application. Appuyez sur « Comment l'obtenir » ci-dessus.",
+      "proton": "ProtonMail nécessite l'application Proton Bridge : utilisez son mot de passe SMTP, pas votre identifiant Proton. Appuyez sur « Comment l'obtenir » ci-dessus.",
+      "fastmail": "N'utilisez pas votre mot de passe Fastmail habituel : utilisez un mot de passe d'application. Appuyez sur « Comment l'obtenir » ci-dessus.",
+      "custom": "Domaine personnalisé détecté : les paramètres SMTP ci-dessous ont été remplis automatiquement. Vérifiez ou ajustez l'hôte et le port dans les paramètres avancés."
+    },
+    "sendingLimits": {
+      "title": "Limites d'envoi par fournisseur",
+      "gmail": "Gmail / Google Workspace — 500 e-mails/jour (gratuit), 2 000/jour (Workspace)",
+      "microsoft": "Outlook / Microsoft 365 — 300 e-mails/jour",
+      "yahoo": "Yahoo Mail — 500 e-mails/jour",
+      "zoho": "Zoho Mail — 500 e-mails/jour (gratuit), 1 000/jour (payant)",
+      "aol": "AOL Mail — 500 e-mails/jour",
+      "fastmail": "Fastmail — 1 000 e-mails/jour",
+      "proton": "ProtonMail — 150 e-mails/jour (gratuit), 1 000/jour (payant) via Bridge",
+      "tip": "Pour les envois volumineux, utilisez une adresse dédiée comme reviews@yourdomain.com afin de garder votre boîte principale propre et d'éviter les limites personnelles."
+    },
     "title": "Connecter votre e-mail",
     "description": "Connectez votre compte e-mail pour envoyer des demandes d'avis depuis votre propre adresse.",
     "testConnection": "Test Connecterion",

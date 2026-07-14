@@ -12,9 +12,9 @@
 - [x] Prevent the six-screen setup guide from revealing the underlying onboarding wizard when navigating to Send Request
 - [x] Reconstruct the Settings review-platform and SMTP localization edits lost during sandbox restore
 - [x] Preserve the reconstructed implementation in an immediate work-in-progress checkpoint
-- [ ] Add the new Settings keys to English and every supported non-English locale
-- [ ] Bump the locale cache version and verify locale parity
-- [ ] Run full TypeScript, Vitest, and representative mobile language validation
+- [x] Add the new Settings keys to English and every supported non-English locale
+- [x] Bump the locale cache version and verify locale parity
+- [x] Run full TypeScript, Vitest, and representative mobile language validation
 - [x] Reproduce and trace the Settings tRPC query and mutation responses that return HTML instead of JSON
 - [x] Fix the client/server routing or runtime condition causing Settings API calls to hit the HTML fallback
 - [x] Add regression coverage for the corrected tRPC endpoint behavior

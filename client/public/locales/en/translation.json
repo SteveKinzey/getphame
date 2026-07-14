@@ -372,6 +372,11 @@
     "cancelButton": "Cancel",
     "successToast": "Account deleted. Goodbye!"
   },
+  "common": {
+    "gotIt": "Got it ✓",
+    "hide": "Hide",
+    "show": "Show"
+  },
   "profile": {
     "title": "Business Profile",
     "description": "Tell us about your business. This info is used for email personalization and branding.",
@@ -419,6 +424,52 @@
     "removeFailed": "Could not remove platform: {{message}}"
   },
   "smtp": {
+    "emailConnected": "Email Connected",
+    "lastAutoCheck": "Last auto-check: {{date}}",
+    "healthy": "✓ Healthy",
+    "failed": "✗ Failed",
+    "notConnectedDescription": "No email connected. Enter your details below to start sending review requests.",
+    "emailAddressLabel": "Your Email Address *",
+    "displayNameLabel": "Display Name (optional)",
+    "displayNamePlaceholder": "e.g. Steve at Acme Plumbing",
+    "displayNameHelp": "Shown as the sender name in your customer's inbox.",
+    "passwordLabels": {
+      "gmail": "Gmail App Password *",
+      "workspace": "Google Workspace App Password *",
+      "microsoft": "Microsoft App Password *",
+      "yahoo": "Yahoo App Password *",
+      "zoho": "Zoho Mail Password *",
+      "icloud": "Apple App-Specific Password *",
+      "aol": "AOL App Password *",
+      "proton": "ProtonMail SMTP Password *",
+      "fastmail": "Fastmail App Password *",
+      "email": "Email Password *"
+    },
+    "passwordPlaceholders": {
+      "update": "Enter new password to update",
+      "google": "16-character App Password (no spaces)",
+      "default": "Your email password"
+    },
+    "inlineHints": {
+      "google": "Not your regular Gmail password — use an App Password. Tap How to get it above.",
+      "icloud": "Use an App-Specific Password, not your Apple ID password. Tap How to get it above.",
+      "zoho": "Enable SMTP access in Zoho first, then use your regular Zoho password. Tap How to get it above.",
+      "aol": "Not your regular AOL password — use an App Password. Tap How to get it above.",
+      "proton": "ProtonMail requires the Proton Bridge app — use its SMTP password, not your Proton login. Tap How to get it above.",
+      "fastmail": "Not your regular Fastmail password — use an App Password. Tap How to get it above.",
+      "custom": "Custom domain detected — SMTP settings auto-filled below. Check Advanced settings to verify or adjust host and port."
+    },
+    "sendingLimits": {
+      "title": "Sending limits by provider",
+      "gmail": "Gmail / Google Workspace — 500 emails/day (free), 2,000/day (Workspace)",
+      "microsoft": "Outlook / Microsoft 365 — 300 emails/day",
+      "yahoo": "Yahoo Mail — 500 emails/day",
+      "zoho": "Zoho Mail — 500 emails/day (free), 1,000/day (paid)",
+      "aol": "AOL Mail — 500 emails/day",
+      "fastmail": "Fastmail — 1,000 emails/day",
+      "proton": "ProtonMail — 150 emails/day (free), 1,000/day (paid) via Bridge",
+      "tip": "For high-volume sending, use a dedicated reviews@yourdomain.com address to keep your main inbox clean and avoid hitting personal limits."
+    },
     "title": "Email Connection (SMTP)",
     "description": "Connect your own email account to send review requests. We encrypt your password and never share it.",
     "testConnection": "Test Connection",

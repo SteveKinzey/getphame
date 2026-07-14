@@ -495,6 +495,11 @@
     "cancelButton": "Cancelar",
     "successToast": "Cuenta eliminada. ¡Adiós!"
   },
+  "common": {
+    "gotIt": "Entendido ✓",
+    "hide": "Ocultar",
+    "show": "Mostrar"
+  },
   "profile": {
     "title": "Perfil de empresa",
     "description": "Cuéntanos sobre tu empresa. Esta información se usa para personalizar los correos.",
@@ -576,6 +581,51 @@
     "noUrl": "Sin URL definida"
   },
   "smtp": {
+    "emailConnected": "Correo conectado",
+    "lastAutoCheck": "Última comprobación automática: {{date}}",
+    "healthy": "✓ Correcto",
+    "failed": "✗ Falló",
+    "notConnectedDescription": "No hay ningún correo conectado. Ingresa tus datos para empezar a enviar solicitudes de reseña.",
+    "emailAddressLabel": "Tu dirección de correo *",
+    "displayNameLabel": "Nombre para mostrar (opcional)",
+    "displayNameHelp": "Se muestra como nombre del remitente en la bandeja de entrada del cliente.",
+    "passwordLabels": {
+      "gmail": "Contraseña de aplicación de Gmail *",
+      "workspace": "Contraseña de aplicación de Google Workspace *",
+      "microsoft": "Contraseña de aplicación de Microsoft *",
+      "yahoo": "Contraseña de aplicación de Yahoo *",
+      "zoho": "Contraseña de Zoho Mail *",
+      "icloud": "Contraseña específica de Apple *",
+      "aol": "Contraseña de aplicación de AOL *",
+      "proton": "Contraseña SMTP de ProtonMail *",
+      "fastmail": "Contraseña de aplicación de Fastmail *",
+      "email": "Contraseña del correo *"
+    },
+    "passwordPlaceholders": {
+      "update": "Ingresa una nueva contraseña para actualizar",
+      "google": "Contraseña de aplicación de 16 caracteres (sin espacios)",
+      "default": "La contraseña de tu correo"
+    },
+    "inlineHints": {
+      "google": "No uses tu contraseña habitual de Gmail; usa una contraseña de aplicación. Pulsa «Cómo obtenerla» arriba.",
+      "icloud": "Usa una contraseña específica de la app, no la contraseña de tu Apple ID. Pulsa «Cómo obtenerla» arriba.",
+      "zoho": "Primero activa el acceso SMTP en Zoho y luego usa tu contraseña habitual de Zoho. Pulsa «Cómo obtenerla» arriba.",
+      "aol": "No uses tu contraseña habitual de AOL; usa una contraseña de aplicación. Pulsa «Cómo obtenerla» arriba.",
+      "proton": "ProtonMail requiere la aplicación Proton Bridge; usa su contraseña SMTP, no tu acceso de Proton. Pulsa «Cómo obtenerla» arriba.",
+      "fastmail": "No uses tu contraseña habitual de Fastmail; usa una contraseña de aplicación. Pulsa «Cómo obtenerla» arriba.",
+      "custom": "Se detectó un dominio personalizado y los ajustes SMTP se completaron automáticamente. Revisa o ajusta el host y el puerto en la configuración avanzada."
+    },
+    "sendingLimits": {
+      "title": "Límites de envío por proveedor",
+      "gmail": "Gmail / Google Workspace — 500 correos/día (gratis), 2.000/día (Workspace)",
+      "microsoft": "Outlook / Microsoft 365 — 300 correos/día",
+      "yahoo": "Yahoo Mail — 500 correos/día",
+      "zoho": "Zoho Mail — 500 correos/día (gratis), 1.000/día (de pago)",
+      "aol": "AOL Mail — 500 correos/día",
+      "fastmail": "Fastmail — 1.000 correos/día",
+      "proton": "ProtonMail — 150 correos/día (gratis), 1.000/día (de pago) mediante Bridge",
+      "tip": "Para envíos de gran volumen, usa una dirección exclusiva como reviews@yourdomain.com para mantener limpia tu bandeja principal y evitar límites personales."
+    },
     "title": "Conecta tu correo electrónico",
     "description": "Conecta tu cuenta de correo para enviar solicitudes de reseñas desde tu propia dirección.",
     "testConnection": "Test Conectarion",

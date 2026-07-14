@@ -559,6 +559,7 @@
   },
   "reviewPlatforms": {
     "title": "Piattaforme di Recensioni",
+    "add": "Aggiungi",
     "subtitle": "Aggiungi i tuoi link di recensione. I clienti verranno indirizzati a queste piattaforme.",
     "addPlatform": "Aggiungi Piattaforma",
     "editPlatform": "Modifica Piattaforma",
@@ -1363,6 +1364,7 @@
     "breadcrumb": "Invia Richiesta"
   },
   "tabs": {
+    "account": "Account",
     "overview": "Panoramica",
     "requests": "Richieste",
     "analytics": "Analisi",
@@ -1416,8 +1418,21 @@
     "cancel": "Annulla",
     "warning": "Tutti i tuoi dati, contatti, modelli e cronologia verranno eliminati permanentemente."
   },
+  "common": {
+    "gotIt": "Ho capito ✓",
+    "hide": "Nascondi",
+    "show": "Mostra"
+  },
   "profile": {
     "title": "Profilo Aziendale",
+    "emailSenderSettings": "Impostazioni mittente e-mail",
+    "fromName": "Nome mittente",
+    "fromNameDescription": "Il nome visualizzato nella posta in arrivo del cliente. Per impostazione predefinita viene usato il nome dell'azienda.",
+    "replyToEmail": "E-mail di risposta",
+    "replyToEmailDescription": "Le risposte dei clienti arriveranno qui. Lascia vuoto per usare l'indirizzo e-mail collegato.",
+    "reviewLink": "Link principale per le recensioni Google",
+    "reviewLinkDescription": "Il link principale a cui verranno inviati i clienti. Puoi aggiungere altri link qui sotto.",
+    "saveProfile": "Salva profilo",
     "businessName": "Nome Azienda",
     "businessNamePlaceholder": "es. Il Mio Negozio",
     "ownerName": "Nome Proprietario",
@@ -1435,6 +1450,59 @@
     "cancel": "Annulla"
   },
   "smtp": {
+    "description": "Collega il tuo account e-mail per inviare richieste di recensione. La password viene crittografata e non viene mai condivisa.",
+    "testConnection": "Verifica connessione",
+    "previewEmail": "Anteprima e-mail",
+    "resendVerification": "Invia di nuovo la verifica",
+    "update": "Modifica",
+    "emailConnected": "E-mail collegata",
+    "emailNotConnectedTitle": "E-mail non collegata",
+    "lastAutoCheck": "Ultimo controllo automatico: {{date}}",
+    "healthy": "✓ Operativa",
+    "failed": "✗ Non riuscita",
+    "notConnectedDescription": "Nessuna e-mail collegata. Inserisci i dati qui sotto per iniziare a inviare richieste di recensione.",
+    "emailAddressLabel": "Il tuo indirizzo e-mail *",
+    "displayNameLabel": "Nome visualizzato (facoltativo)",
+    "displayNamePlaceholder": "es. Steve di Acme Plumbing",
+    "displayNameHelp": "Viene mostrato come nome del mittente nella posta in arrivo del cliente.",
+    "howToGetIt": "Come ottenerla",
+    "passwordLabels": {
+      "gmail": "Password per app Gmail *",
+      "workspace": "Password per app Google Workspace *",
+      "microsoft": "Password per app Microsoft *",
+      "yahoo": "Password per app Yahoo *",
+      "zoho": "Password Zoho Mail *",
+      "icloud": "Password specifica per app Apple *",
+      "aol": "Password per app AOL *",
+      "proton": "Password SMTP ProtonMail *",
+      "fastmail": "Password per app Fastmail *",
+      "email": "Password e-mail *"
+    },
+    "passwordPlaceholders": {
+      "update": "Inserisci una nuova password per aggiornare",
+      "google": "Password per app di 16 caratteri (senza spazi)",
+      "default": "La password della tua e-mail"
+    },
+    "inlineHints": {
+      "google": "Non usare la normale password Gmail: usa una password per app. Tocca «Come ottenerla» qui sopra.",
+      "icloud": "Usa una password specifica per app, non la password dell'Apple ID. Tocca «Come ottenerla» qui sopra.",
+      "zoho": "Prima abilita l'accesso SMTP in Zoho, poi usa la normale password Zoho. Tocca «Come ottenerla» qui sopra.",
+      "aol": "Non usare la normale password AOL: usa una password per app. Tocca «Come ottenerla» qui sopra.",
+      "proton": "ProtonMail richiede Proton Bridge: usa la password SMTP di Bridge, non l'accesso Proton. Tocca «Come ottenerla» qui sopra.",
+      "fastmail": "Non usare la normale password Fastmail: usa una password per app. Tocca «Come ottenerla» qui sopra.",
+      "custom": "Rilevato un dominio personalizzato: le impostazioni SMTP sono state compilate automaticamente. Verifica o modifica host e porta nelle impostazioni avanzate."
+    },
+    "sendingLimits": {
+      "title": "Limiti di invio per provider",
+      "gmail": "Gmail / Google Workspace — 500 e-mail/giorno (gratis), 2.000/giorno (Workspace)",
+      "microsoft": "Outlook / Microsoft 365 — 300 e-mail/giorno",
+      "yahoo": "Yahoo Mail — 500 e-mail/giorno",
+      "zoho": "Zoho Mail — 500 e-mail/giorno (gratis), 1.000/giorno (a pagamento)",
+      "aol": "AOL Mail — 500 e-mail/giorno",
+      "fastmail": "Fastmail — 1.000 e-mail/giorno",
+      "proton": "ProtonMail — 150 e-mail/giorno (gratis), 1.000/giorno (a pagamento) tramite Bridge",
+      "tip": "Per invii ad alto volume, usa un indirizzo dedicato come reviews@yourdomain.com per mantenere pulita la posta principale ed evitare i limiti personali."
+    },
     "title": "Impostazioni Email (SMTP)",
     "subtitle": "Collega il tuo account email per inviare richieste di recensioni.",
     "emailLabel": "Indirizzo Email",
@@ -1471,6 +1539,10 @@
   },
   "wooCommerce": {
     "title": "Integrazione WooCommerce",
+    "description": "Collega il tuo negozio per importare i clienti dagli ordini completati.",
+    "storeConnected": "Negozio collegato",
+    "viewCustomers": "Visualizza clienti",
+    "updateCredentials": "Aggiorna credenziali",
     "subtitle": "Sincronizza i clienti dal tuo negozio WooCommerce.",
     "storeUrl": "URL Negozio",
     "storeUrlPlaceholder": "https://tuonegozio.com",
@@ -1513,6 +1585,8 @@
   },
   "theme": {
     "title": "Tema",
+    "switchToLight": "Passa alla modalità chiara",
+    "switchToDark": "Passa alla modalità scura",
     "light": "Chiaro",
     "dark": "Scuro",
     "system": "Sistema",

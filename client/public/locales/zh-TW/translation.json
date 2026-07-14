@@ -372,6 +372,11 @@
     "cancelButton": "取消",
     "successToast": "賬戶已刪除。再見！"
   },
+  "common": {
+    "gotIt": "知道了 ✓",
+    "hide": "隱藏",
+    "show": "顯示"
+  },
   "profile": {
     "title": "商家資料",
     "description": "告訴我們您的業務。此資訊用於郵件個性化和品牌推廣。",
@@ -419,6 +424,52 @@
     "removeFailed": "無法移除平臺：{{message}}"
   },
   "smtp": {
+    "emailConnected": "郵箱已連線",
+    "lastAutoCheck": "上次自動檢查：{{date}}",
+    "healthy": "✓ 正常",
+    "failed": "✗ 失敗",
+    "notConnectedDescription": "尚未連線郵箱。請在下方輸入資料以開始傳送評價邀請。",
+    "emailAddressLabel": "您的郵箱地址 *",
+    "displayNameLabel": "顯示名稱（選填）",
+    "displayNamePlaceholder": "例如：Acme Plumbing 的 Steve",
+    "displayNameHelp": "此名稱會顯示為客戶收件匣中的寄件者名稱。",
+    "passwordLabels": {
+      "gmail": "Gmail 應用程式密碼 *",
+      "workspace": "Google Workspace 應用程式密碼 *",
+      "microsoft": "Microsoft 應用程式密碼 *",
+      "yahoo": "Yahoo 應用程式密碼 *",
+      "zoho": "Zoho Mail 密碼 *",
+      "icloud": "Apple App 專用密碼 *",
+      "aol": "AOL 應用程式密碼 *",
+      "proton": "ProtonMail SMTP 密碼 *",
+      "fastmail": "Fastmail 應用程式密碼 *",
+      "email": "郵箱密碼 *"
+    },
+    "passwordPlaceholders": {
+      "update": "輸入新密碼以更新",
+      "google": "16 位應用程式密碼（不含空格）",
+      "default": "您的郵箱密碼"
+    },
+    "inlineHints": {
+      "google": "請勿使用一般 Gmail 密碼，請使用應用程式密碼。點選上方的「如何獲取」。",
+      "icloud": "請使用 App 專用密碼，而非 Apple ID 密碼。點選上方的「如何獲取」。",
+      "zoho": "請先在 Zoho 啟用 SMTP 存取，再使用一般 Zoho 密碼。點選上方的「如何獲取」。",
+      "aol": "請勿使用一般 AOL 密碼，請使用應用程式密碼。點選上方的「如何獲取」。",
+      "proton": "ProtonMail 需要 Proton Bridge 應用程式；請使用 Bridge 的 SMTP 密碼，而非 Proton 登入密碼。點選上方的「如何獲取」。",
+      "fastmail": "請勿使用一般 Fastmail 密碼，請使用應用程式密碼。點選上方的「如何獲取」。",
+      "custom": "已偵測到自訂網域，系統已自動填入下方 SMTP 設定。請在進階設定中確認或調整主機與連接埠。"
+    },
+    "sendingLimits": {
+      "title": "各服務商的傳送限制",
+      "gmail": "Gmail / Google Workspace — 500 封/日（免費），2,000 封/日（Workspace）",
+      "microsoft": "Outlook / Microsoft 365 — 300 封/日",
+      "yahoo": "Yahoo Mail — 500 封/日",
+      "zoho": "Zoho Mail — 500 封/日（免費），1,000 封/日（付費）",
+      "aol": "AOL Mail — 500 封/日",
+      "fastmail": "Fastmail — 1,000 封/日",
+      "proton": "ProtonMail — 150 封/日（免費），1,000 封/日（付費），透過 Bridge",
+      "tip": "若需大量傳送，請使用 reviews@yourdomain.com 等專用地址，保持主要收件匣整潔並避免超出個人限制。"
+    },
     "title": "郵件連線 (SMTP)",
     "description": "連線您自己的郵件賬戶以傳送評論請求。我們對您的密碼進行加密，絕不共享。",
     "testConnection": "測試連線",
