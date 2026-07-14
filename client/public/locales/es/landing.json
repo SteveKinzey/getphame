@@ -38,7 +38,7 @@
       "q10": "¿Qué plataformas de reseñas soporta?",
       "a10": "Cualquier plataforma con un enlace de reseña: Google, Yelp, TripAdvisor, Facebook, Bing Places, Trustpilot, G2, Capterra y más. Solo pega tu enlace de reseña y lo incluiremos en cada solicitud. Puedes cambiar de plataforma en cualquier momento.",
       "q11": "¿Cómo funciona la sincronización con WooCommerce?",
-      "a11": "Instala nuestro plugin gratuito de WooCommerce, ingresa tu clave API y los nuevos clientes se importan automáticamente después de cada pedido completado. Puedes establecer un retraso (por ejemplo, 7 días después de la compra) antes de que aparezcan en la cola de envío.",
+      "a11": "El conector de WooCommerce está disponible solo en los planes de pago. Los usuarios de pago instalan el plugin de WooCommerce de Get Phame, introducen su clave API y los nuevos clientes se importan automáticamente después de cada pedido completado. Puedes establecer un retraso (por ejemplo, 7 días después de la compra) antes de que aparezcan en la cola de envío.",
       "q12": "¿Qué significa ilimitado en el plan Pro?",
       "a12": "Ilimitado significa sin límite en la cantidad de solicitudes de reseña que puedes enviar por mes. Envía 50 o 5,000 — sin cargos adicionales. El único límite es el propio del proveedor de correo (por ejemplo, Gmail permite ~500/día para cuentas personales, 2,000/día para Workspace).",
       "sectionTitle": "Preguntas frecuentes",

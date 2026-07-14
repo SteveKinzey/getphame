@@ -10,29 +10,27 @@ const STORAGE_KEY = "rr-lang";
  */
 const USER_CHOSEN_KEY = "rr-lang-chosen";
 
-// Supported language codes (i18next format)
-export const SUPPORTED_LANGS = ["en", "th", "zh-TW", "zh-CN", "fr", "es", "it"] as const;
+// Supported language codes (i18next format), ordered exactly as displayed in selectors.
+export const SUPPORTED_LANGS = ["en", "zh-CN", "es", "fr", "th", "zh-TW"] as const;
 export type SupportedLang = (typeof SUPPORTED_LANGS)[number];
 
 // Human-readable labels for the flyout
 export const LANG_LABELS: Record<SupportedLang, string> = {
   en: "EN",
+  "zh-CN": "CN",
+  es: "ES",
+  fr: "FR",
   th: "TH",
   "zh-TW": "TW",
-  "zh-CN": "CN",
-  fr: "FR",
-  es: "ES",
-  it: "IT",
 };
 
 export const LANG_NAMES: Record<SupportedLang, string> = {
   en: "English",
+  "zh-CN": "简体中文",
+  es: "Español",
+  fr: "Français",
   th: "ภาษาไทย",
   "zh-TW": "繁體中文",
-  "zh-CN": "简体中文",
-  fr: "Français",
-  es: "Español",
-  it: "Italiano",
 };
 
 /** Read persisted language from localStorage. Returns null if not set yet. */
@@ -44,7 +42,6 @@ export function getSavedLang(): SupportedLang | null {
     if (saved === "zh-CN") return "zh-CN";
     if (saved === "fr") return "fr";
     if (saved === "es") return "es";
-    if (saved === "it") return "it";
     if (saved === "en") return "en";
   } catch {
     // ignore
@@ -110,7 +107,6 @@ function detectLangFromBrowser(): SupportedLang {
     if (browserLang.startsWith("zh")) return "zh-TW";
     if (browserLang.startsWith("fr")) return "fr";
     if (browserLang.startsWith("es")) return "es";
-    if (browserLang.startsWith("it")) return "it";
   } catch {
     // ignore
   }
@@ -125,7 +121,7 @@ async function detectLangFromIP(): Promise<SupportedLang> {
     const data = await res.json() as { lang?: string };
     const lang = data.lang;
     if (lang === "zh-CN" || lang === "zh-TW") return lang;
-    if (lang === "th" || lang === "fr" || lang === "es" || lang === "it") {
+    if (lang === "th" || lang === "fr" || lang === "es") {
       return lang as SupportedLang;
     }
   } catch {
@@ -173,7 +169,7 @@ i18n
     defaultNS: "landing",
     fallbackNS: "translation",
     backend: {
-      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame6",
+      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame7",
     },
     interpolation: {
       escapeValue: false,

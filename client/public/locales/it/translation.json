@@ -116,7 +116,7 @@
     "q10": "Which review platforms does it support?",
     "a10": "Google, Yelp, TripAdvisor, Facebook, Bing, and any custom URL. You can add multiple platforms and choose which one to include in each send.",
     "q11": "How does WooCommerce sync work?",
-    "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
+    "a11": "Il connettore WooCommerce è disponibile solo con i piani a pagamento. Gli utenti a pagamento installano il plugin WooCommerce di Get Phame, inseriscono la chiave API e i nuovi clienti vengono importati automaticamente dopo ogni ordine completato. Puoi impostare un ritardo, ad esempio 7 giorni dopo l'acquisto, prima che appaiano nella coda di invio.",
     "q12": "What does unlimited mean on the Pro plan?",
     "a12": "Illimitato significa nessun limite mensile alle richieste. Il piano Gratuito include 10 richieste iniziali, poi 5 ogni 30 giorni mobili. Pro rimuove questo limite del prodotto."
   },

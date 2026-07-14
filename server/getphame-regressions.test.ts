@@ -19,6 +19,68 @@ describe("Get Phame regression contracts", () => {
     expect(lockup).not.toContain("phame-wordmark-transparent-clean.png");
   });
 
+  it("orders the shared language selector as EN, CN, ES, FR, TH, TW, uses the USA flag, and preserves hidden Italian work", () => {
+    const flyout = readProjectFile("../client/src/components/LanguageFlyout.tsx");
+    const i18n = readProjectFile("../client/src/lib/i18n.ts");
+    const preservedItalian = readProjectFile("../client/public/locales/it/translation.json");
+    const localeOrder = [
+      '{ code: "en"',
+      '{ code: "zh-CN"',
+      '{ code: "es"',
+      '{ code: "fr"',
+      '{ code: "th"',
+      '{ code: "zh-TW"',
+    ];
+
+    let previousIndex = -1;
+    for (const locale of localeOrder) {
+      const currentIndex = flyout.indexOf(locale);
+      expect(currentIndex).toBeGreaterThan(previousIndex);
+      previousIndex = currentIndex;
+    }
+
+    expect(flyout).toContain('flag: "🇺🇸"');
+    expect(flyout).not.toContain('flag: "🇬🇧"');
+    expect(flyout).not.toContain('{ code: "it"');
+    expect(i18n).toContain(
+      'export const SUPPORTED_LANGS = ["en", "zh-CN", "es", "fr", "th", "zh-TW"] as const;',
+    );
+    expect(preservedItalian).toContain('"account"');
+  });
+
+  it("discloses that WooCommerce synchronization requires a paid plan in every supported language", () => {
+    const faq = readProjectFile("../client/src/components/landing/FAQ.tsx");
+    const paidPlanPhrases: Record<string, string> = {
+      en: "paid plans",
+      es: "planes de pago",
+      fr: "formules payantes",
+      it: "piani a pagamento",
+      th: "แผนแบบชำระเงิน",
+      "zh-CN": "付费方案",
+      "zh-TW": "付費方案",
+    };
+
+    expect(faq).toContain("The WooCommerce connector is available only on paid plans.");
+    expect(faq).not.toContain("Install our free WooCommerce plugin");
+
+    for (const [locale, paidPlanPhrase] of Object.entries(paidPlanPhrases)) {
+      const bundle = JSON.parse(
+        readProjectFile(
+          locale === "it"
+            ? "../client/public/locales/it/translation.json"
+            : `../client/public/locales/${locale}/landing.json`,
+        ),
+      ) as {
+        faq?: { a11: string };
+        landing?: { faq: { a11: string } };
+      };
+      const localizedFaq = bundle.landing?.faq ?? bundle.faq;
+
+      expect(localizedFaq?.a11).toContain(paidPlanPhrase);
+      expect(localizedFaq?.a11.toLowerCase()).not.toContain("free woocommerce");
+    }
+  });
+
   it("uses the approved lockup throughout both onboarding experiences", () => {
     const guide = readProjectFile("../client/src/components/OnboardingGuide.tsx");
     const wizard = readProjectFile("../client/src/components/OnboardingWizard.tsx");

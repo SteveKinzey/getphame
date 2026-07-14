@@ -2,7 +2,8 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-const SUPPORTED_LOCALES = ["en", "th", "zh-TW", "zh-CN", "fr", "es", "it"] as const;
+const SUPPORTED_LOCALES = ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"] as const;
+const SELECTABLE_LOCALES = ["en", "zh-CN", "es", "fr", "th", "zh-TW"] as const;
 
 function readProjectFile(relativePath: string): string {
   return readFileSync(fileURLToPath(new URL(relativePath, import.meta.url)), "utf8");
@@ -45,22 +46,25 @@ describe("Settings locale coverage", () => {
     const languageFlyoutSource = readProjectFile("../client/src/components/LanguageFlyout.tsx");
 
     expect(i18nSource).toContain(
-      'export const SUPPORTED_LANGS = ["en", "th", "zh-TW", "zh-CN", "fr", "es", "it"] as const;'
+      'export const SUPPORTED_LANGS = ["en", "zh-CN", "es", "fr", "th", "zh-TW"] as const;'
     );
     expect(i18nSource).toContain(
       'supportedLngs: [...SUPPORTED_LANGS]'
     );
     expect(i18nSource).toContain(
-      'loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame6"'
+      'loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame7"'
     );
     expect(i18nSource).toContain('ns: ["landing", "translation"]');
     expect(i18nSource).toContain('fallbackNS: "translation"');
 
-    for (const locale of SUPPORTED_LOCALES) {
+    for (const locale of SELECTABLE_LOCALES) {
       expect(
         languageFlyoutSource.includes(`code: "${locale}"`),
         `LanguageFlyout is missing supported locale: ${locale}`
       ).toBe(true);
     }
+
+    expect(languageFlyoutSource).not.toContain('code: "it"');
+    expect(readProjectFile("../client/public/locales/it/translation.json")).toContain('"account"');
   });
 });

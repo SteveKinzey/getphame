@@ -38,7 +38,7 @@
       "q10": "Quelles plateformes d'avis sont prises en charge ?",
       "a10": "Toute plateforme qui propose un lien d'avis : Google, Yelp, TripAdvisor, Facebook, Bing Places, Trustpilot, G2, Capterra, et plus encore. Collez votre lien d'avis et nous l'incluons dans chaque demande. Vous pouvez changer de plateforme à tout moment.",
       "q11": "Comment fonctionne la synchronisation WooCommerce ?",
-      "a11": "Installez notre plugin WooCommerce gratuit, saisissez votre clé API et les nouveaux clients sont importés automatiquement après chaque commande complétée. Vous pouvez définir un délai (par ex. 7 jours après l'achat) avant qu'ils n'apparaissent dans la file d'envoi.",
+      "a11": "Le connecteur WooCommerce est disponible uniquement avec les formules payantes. Les utilisateurs payants installent le plugin WooCommerce Get Phame, saisissent leur clé API et les nouveaux clients sont importés automatiquement après chaque commande terminée. Vous pouvez définir un délai (par ex. 7 jours après l'achat) avant qu'ils n'apparaissent dans la file d'envoi.",
       "q12": "Que signifie « illimité » sur le plan Pro ?",
       "a12": "Illimité signifie sans plafond sur le nombre de demandes d'avis que vous pouvez envoyer par mois. Envoyez 50 ou 5 000 — sans frais supplémentaires. La seule limite est celle imposée par votre fournisseur d'email (par exemple, Gmail autorise ~500/jour pour les comptes personnels, 2 000/jour pour Workspace).",
       "sectionTitle": "FAQ",

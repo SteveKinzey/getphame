@@ -66,3 +66,11 @@
 - [x] Add the translated Log out action to the mobile navigation using the existing authentication behavior, without changing the desktop profile block.
 - [x] Add focused Vitest coverage for custom-domain magic-link redirects/session establishment and mobile logout accessibility.
 - [ ] Verify both fixes on a phone-sized viewport and with the alternate non-admin production account before completing the remaining quota, admin, and checkout checks.
+- [x] Superseded after the Italian completeness audit: standardize every public and authenticated language selector with USA English first, followed exactly by CN, ES, FR, TH, and TW while Italian remains hidden.
+- [x] Correct the WooCommerce sync FAQ answer to disclose clearly that connector installation and synchronization require a paid plan.
+- [x] Add focused Vitest coverage for the shared locale order, USA English flag, and WooCommerce paid-feature disclosure across localized content.
+- [ ] Verify the updated selectors and FAQ on desktop and phone-sized viewports, run TypeScript, the full Vitest suite, and the production build, then publish the release.
+- [x] Audit Italian public landing and authenticated-app translation coverage against the other supported locales before keeping IT visible in selectors.
+- [x] If Italian is incomplete, remove IT only from the shared selector options while preserving every existing Italian translation file and all progress for later completion.
+- [x] Add regression coverage proving selector visibility follows Italian readiness and that no Italian translation assets are deleted.
+- [x] Fix the screenshot-confirmed legacy selector sequence and UK flag so every rendered selector uses USA EN first, followed by CN, ES, FR, TH, and TW, with incomplete IT hidden.

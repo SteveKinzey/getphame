@@ -38,7 +38,7 @@
       "q10": "Which review platforms does it support?",
       "a10": "Any platform with a review link: Google, Yelp, TripAdvisor, Facebook, Bing Places, Trustpilot, G2, Capterra, and more. Just paste your review link and we'll include it in every request. You can change platforms anytime.",
       "q11": "How does WooCommerce sync work?",
-      "a11": "Install our free WooCommerce plugin, enter your API key, and new customers are automatically imported after each completed order. You can set a delay (e.g., 7 days after purchase) before they appear in your send queue.",
+      "a11": "The WooCommerce connector is available only on paid plans. Paid users install the Get Phame WooCommerce plugin, enter their API key, and new customers are automatically imported after each completed order. You can set a delay (e.g., 7 days after purchase) before they appear in your send queue.",
       "q12": "What does unlimited mean on the Pro plan?",
       "a12": "Unlimited means no cap on the number of review requests you can send per month. Send 50 or 5,000 — no extra charges. The only limit is your email provider's own sending limits (e.g., Gmail allows ~500/day for personal accounts, 2,000/day for Workspace).",
       "sectionTitle": "FAQ",
