@@ -21,7 +21,9 @@
     "complianceViewGuide": "— view guide",
     "howItWorks": "How It Works",
     "pricing": "Pricing",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "manageUsers": "Manage users",
+    "admin": "Admin"
   },
   "hero": {
     "tagline": "Free to start — No credit card required",
@@ -89,7 +91,7 @@
     "providersQuestion": "What email providers work?",
     "providersAnswer": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to Get Phame.",
     "freeQuestion": "Is it really free?",
-    "freeAnswer": "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap (Gmail allows ~500/day, most others are similar). There are no hidden fees and no credit card required to get started.",
+    "freeAnswer": "Yes. The Free plan includes 10 initial review requests, then 5 requests every rolling 30 days. No credit card is required. Your email provider's daily sending cap also applies.",
     "importQuestion": "Can I import my customer list?",
     "importAnswer": "Yes. You can upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store. Once imported, you can bulk-select contacts and send personalised review requests in a single click.",
     "q1": "Will it look like spam?",
@@ -97,7 +99,7 @@
     "q2": "What email providers work?",
     "a2": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server.",
     "q3": "Is it really free?",
-    "a3": "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap.",
+    "a3": "Yes. You receive 10 initial review requests, then 5 requests every rolling 30 days. No credit card is required.",
     "q4": "Can I import my customer list?",
     "a4": "Yes. Upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store.",
     "q5": "Does Get Phame store my email password?",
@@ -115,7 +117,7 @@
     "q11": "How does WooCommerce sync work?",
     "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
     "q12": "What does unlimited mean on the Pro plan?",
-    "a12": "Unlimited means no cap on review requests sent per month. The Free plan includes 10 requests to get you started. Pro removes that limit entirely."
+    "a12": "Unlimited means no monthly cap on review requests. The Free plan includes 10 initial requests, then 5 requests every rolling 30 days. Pro removes that product limit."
   },
   "bottomCta": {
     "headline": "Start collecting reviews today",
@@ -244,7 +246,10 @@
     "toGo": "to go",
     "reviewsPerMonth": "reviews / month",
     "ofMonthlyGoal": "of monthly goal",
-    "requestsByPlatform": "Requests by Platform"
+    "requestsByPlatform": "Requests by Platform",
+    "freeAllowanceInitial": "Free plan: 10 initial requests, then 5 every rolling 30 days",
+    "freeAllowanceMonthly": "Free plan: 5 requests every rolling 30 days",
+    "nextFreeRequest": "Next request available {{date}}"
   },
   "notifications": {
     "followUpReminderScheduled": "Follow-up reminder scheduled!",
@@ -325,7 +330,11 @@
     "upgradeToPro": "Upgrade to Pro →",
     "upgrade": "Upgrade",
     "imported": "Imported",
-    "importedMultiple": "Imported {{count}} contacts - sending to first contact. Use Bulk Send for multiple."
+    "importedMultiple": "Imported {{count}} contacts - sending to first contact. Use Bulk Send for multiple.",
+    "freeInitialRemaining": "Free plan: {{remaining}} of 10 initial requests remaining — then 5 every rolling 30 days",
+    "freeRollingRemaining": "Free plan: {{remaining}} of 5 requests remaining in your rolling 30-day allowance",
+    "freeInitialLimitReachedDesc": "You've used your 10 initial requests. Your recurring allowance is 5 requests every rolling 30 days, or upgrade for unlimited requests.",
+    "freeRollingLimitReachedDesc": "You've used all 5 requests in your current rolling 30-day allowance. Your next request becomes available on {{date}}, or upgrade to keep sending now."
   },
   "tabs": {
     "account": "Account",
@@ -900,7 +909,9 @@
     "prioritySupport": "Priority support",
     "futureUpdates": "Future updates",
     "price": "Price",
-    "freeTrialNote": "All plans include a 10-request free trial. No credit card required to start."
+    "freeTrialNote": "All plans include a 10-request free trial. No credit card required to start.",
+    "reviewRequests": "Review requests",
+    "freeRequestAllowance": "10 first, then 5 / rolling 30 days"
   },
   "paidUser": {
     "adminAccess": "Admin Access",
@@ -929,11 +940,15 @@
       "timing": "Stripe will show the exact effective date and any prorated charge or credit before you approve the change.",
       "cancel": "Keep {{plan}}",
       "continue": "Continue to Stripe"
-    }
+    },
+    "renewsOn": "Renews on {{date}}",
+    "accessUntil": "Access until {{date}}"
   },
   "account": {
     "administrator": "Administrator",
-    "administratorAccount": "Administrator account"
+    "administratorAccount": "Administrator account",
+    "renewsOn": "Renews {{date}}",
+    "accessUntil": "Access until {{date}}"
   },
   "columnLabels": {
     "fullName": "Full Name",
@@ -1574,5 +1589,36 @@
     "gifCaption": "The 3-step send flow",
     "emailAlt": "Example review request email on iPhone",
     "emailCaption": "What your customer receives"
+  },
+  "paymentSuccess": {
+    "confirmed": "Payment confirmed.",
+    "confirmedToast": "Payment confirmed. Your Get Phame access is active.",
+    "upgraded": "Your account has been upgraded instantly."
+  },
+  "adminUsers": {
+    "roleUpdated": "Administrator access updated.",
+    "lifeGranted": "Life access granted.",
+    "lifeRemoved": "Life access removed.",
+    "back": "Admin Dashboard",
+    "eyebrow": "User Management",
+    "title": "Manage users",
+    "subtitle": "Search every account and control administrator or Life access.",
+    "searchLabel": "Search users",
+    "searchPlaceholder": "Name or email",
+    "accountCount": "{{count}} accounts",
+    "loading": "Loading accounts…",
+    "unnamed": "Unnamed user",
+    "admin": "Admin",
+    "life": "Life",
+    "noEmail": "No email",
+    "accountMeta": "Joined {{date}} · Stored plan: {{tier}}",
+    "removeAdmin": "Remove admin",
+    "makeAdmin": "Make admin",
+    "removeLife": "Remove Life",
+    "grantLife": "Grant Life",
+    "empty": "No users match that search.",
+    "previous": "Previous",
+    "page": "Page {{page}} of {{count}}",
+    "next": "Next"
   }
 }

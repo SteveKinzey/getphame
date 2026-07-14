@@ -3,7 +3,7 @@
 // Tablet (768–1023px): icon-only sidebar (64px) + content
 // Desktop (1024px+): full sidebar (220px) with labels + content
 import { useLocation } from "wouter";
-import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown, ShieldCheck } from "lucide-react";
+import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown, ShieldCheck, Users } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
@@ -24,6 +24,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const { buttonPressHaptic } = useHaptics();
   const { user } = useAuth();
   const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: !!user });
+  const { data: subscription } = trpc.stripe.subscriptionStatus.useQuery(undefined, {
+    enabled: !!user && profile?.tier !== "free" && profile?.tier !== "lifetime",
+  });
   const isDark = theme === "dark";
 
   const NAV_ITEMS = [
@@ -31,12 +34,16 @@ export default function AppLayout({ children }: AppLayoutProps) {
     { path: "/send", label: t("nav.send"), Icon: Send },
     { path: "/dashboard", label: t("nav.dashboard"), Icon: BarChart2 },
     { path: "/settings", label: t("nav.settings"), Icon: Settings },
+    ...(user?.role === "admin" ? [{ path: "/admin/users", label: t("nav.manageUsers", { defaultValue: "Manage users" }), Icon: Users }] : []),
   ];
 
   const effectivePlan = getEffectivePlan(profile?.tier, user?.role);
   const planLabel = PLAN_LABELS[effectivePlan];
   const isLife = effectivePlan === "life";
   const manageSubscription = canManageSubscription(effectivePlan);
+  const renewalDate = subscription?.currentPeriodEnd
+    ? new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(new Date(subscription.currentPeriodEnd))
+    : null;
 
   return (
     <>
@@ -167,6 +174,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
             <Crown size={14} className="flex-shrink-0" style={{ color: "oklch(0.80 0.18 80)" }} />
             <span className="app-sidebar-label text-xs font-bold hidden" style={{ color: "oklch(0.80 0.18 80)" }}>
               {t("account.status", { defaultValue: "Status" })}: {planLabel}
+              {renewalDate && !isLife && (
+                <span className="block mt-0.5 text-[10px] font-semibold text-white/70">
+                  {subscription?.cancelAtPeriodEnd
+                    ? t("account.accessUntil", { defaultValue: "Access until {{date}}", date: renewalDate })
+                    : t("account.renewsOn", { defaultValue: "Renews {{date}}", date: renewalDate })}
+                </span>
+              )}
             </span>
           </div>
 

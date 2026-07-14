@@ -50,7 +50,7 @@ describe("Settings locale coverage", () => {
       'supportedLngs: ["en", "th", "zh-TW", "fr", "es", "it"]'
     );
     expect(i18nSource).toContain(
-      'loadPath: "/locales/{{lng}}/translation.json?v=phame3"'
+      'loadPath: "/locales/{{lng}}/translation.json?v=phame4"'
     );
   });
 });

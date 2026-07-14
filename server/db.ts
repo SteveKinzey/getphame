@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, isNull, lt, sql, type SQL } from "drizzle-orm";
+import { and, asc, desc, eq, gt, gte, isNull, lt, or, sql, type SQL } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import * as schema from "../drizzle/schema";
 import { createHash, randomBytes } from "crypto";
@@ -18,6 +18,8 @@ import {
   type InsertCustomerRequest,
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
+import { FREE_INITIAL_REQUESTS, FREE_ROLLING_WINDOW_DAYS } from "@shared/const";
+import { buildFreeQuotaSummary } from "@shared/quota";
 
 let _db: ReturnType<typeof drizzle<typeof schema>> | null = null;
 
@@ -405,6 +407,50 @@ export async function getTotalRequestCount(userId: number): Promise<number> {
     .from(customerRequests)
     .where(eq(customerRequests.userId, userId));
   return Number(rows[0]?.count ?? 0);
+}
+
+/**
+ * Free accounts receive 10 onboarding sends once, followed by 5 sends in each
+ * rolling 30-day window. The first 10 rows are permanently excluded from the
+ * rolling phase so they never consume the recurring allowance.
+ */
+export async function getFreeQuotaSummary(userId: number) {
+  const db = await getDb();
+  if (!db) return buildFreeQuotaSummary({ totalSent: 0, rollingUsed: 0 });
+
+  const totalSent = await getTotalRequestCount(userId);
+  if (totalSent < FREE_INITIAL_REQUESTS) {
+    return buildFreeQuotaSummary({ totalSent, rollingUsed: 0 });
+  }
+
+  const [tenthRequest] = await db
+    .select({ id: customerRequests.id, sentAt: customerRequests.sentAt })
+    .from(customerRequests)
+    .where(eq(customerRequests.userId, userId))
+    .orderBy(asc(customerRequests.sentAt), asc(customerRequests.id))
+    .limit(1)
+    .offset(FREE_INITIAL_REQUESTS - 1);
+
+  if (!tenthRequest) {
+    return buildFreeQuotaSummary({ totalSent, rollingUsed: 0 });
+  }
+
+  const cutoff = new Date(Date.now() - FREE_ROLLING_WINDOW_DAYS * 24 * 60 * 60 * 1000);
+  const postInitial = or(
+    gt(customerRequests.sentAt, tenthRequest.sentAt),
+    and(eq(customerRequests.sentAt, tenthRequest.sentAt), gt(customerRequests.id, tenthRequest.id)),
+  );
+  const rollingRows = await db
+    .select({ sentAt: customerRequests.sentAt })
+    .from(customerRequests)
+    .where(and(eq(customerRequests.userId, userId), gte(customerRequests.sentAt, cutoff), postInitial))
+    .orderBy(asc(customerRequests.sentAt), asc(customerRequests.id));
+
+  return buildFreeQuotaSummary({
+    totalSent,
+    rollingUsed: rollingRows.length,
+    oldestRollingSentAt: rollingRows[0]?.sentAt ?? null,
+  });
 }
 
 // ─── API Key helpers ─────────────────────────────────────────────────────────────────────────────────

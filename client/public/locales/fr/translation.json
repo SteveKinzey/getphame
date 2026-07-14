@@ -26,7 +26,9 @@
     "upgrade": "Passer à Pro",
     "howItWorks": "How It Works",
     "pricing": "Pricing",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "manageUsers": "Gérer les utilisateurs",
+    "admin": "Admin"
   },
   "hero": {
     "tagline": "Gratuit pour commencer — Aucune carte bancaire requise",
@@ -135,7 +137,7 @@
     "providersQuestion": "Quels fournisseurs d'e-mail fonctionnent ?",
     "providersAnswer": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to Get Phame.",
     "freeQuestion": "Est-ce vraiment gratuit ?",
-    "freeAnswer": "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap (Gmail allows ~500/day, most others are similar). There are no hidden fees and no credit card required to get started.",
+    "freeAnswer": "Oui. Le forfait Gratuit comprend 10 demandes d’avis initiales, puis 5 demandes tous les 30 jours glissants. Aucune carte bancaire n’est requise. La limite quotidienne de votre fournisseur d’e-mail s’applique aussi.",
     "importQuestion": "Puis-je importer ma liste de clients ?",
     "importAnswer": "Yes. You can upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store. Once imported, you can bulk-select contacts and send personalised review requests in a single click.",
     "q1": "Est-ce que ça ressemblera à du spam ?",
@@ -143,7 +145,7 @@
     "q2": "Quels fournisseurs d'e-mail fonctionnent ?",
     "a2": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server.",
     "q3": "Est-ce vraiment gratuit ?",
-    "a3": "Oui — gratuit sans limites d'envoi artificielles. Vous connectez votre propre compte e-mail.",
+    "a3": "Oui. Vous recevez 10 demandes d’avis initiales, puis 5 demandes tous les 30 jours glissants. Aucune carte bancaire n’est requise.",
     "q4": "Puis-je importer ma liste de clients ?",
     "a4": "Yes. Upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store.",
     "q5": "Does Get Phame store my email password?",
@@ -161,7 +163,7 @@
     "q11": "How does WooCommerce sync work?",
     "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
     "q12": "What does unlimited mean on the Pro plan?",
-    "a12": "Unlimited means no cap on review requests sent per month. The Free plan includes 10 requests to get you started. Pro removes that limit entirely."
+    "a12": "Illimité signifie aucune limite mensuelle de demandes. Le forfait Gratuit comprend 10 demandes initiales, puis 5 tous les 30 jours glissants. Pro supprime cette limite produit."
   },
   "bottomCta": {
     "headline": "Commencez à collecter des avis aujourd'hui",
@@ -338,7 +340,10 @@
     "step3": "Envoyer votre première demande",
     "daysAgo": "il y a {{count}} jour(s)",
     "hoursAgo": "il y a {{count}} heure(s)",
-    "minutesAgo": "il y a {{count}} minute(s)"
+    "minutesAgo": "il y a {{count}} minute(s)",
+    "freeAllowanceInitial": "Forfait gratuit : 10 demandes initiales, puis 5 tous les 30 jours glissants",
+    "freeAllowanceMonthly": "Forfait gratuit : 5 demandes tous les 30 jours glissants",
+    "nextFreeRequest": "Prochaine demande disponible le {{date}}"
   },
   "notifications": {
     "followUpReminderScheduled": "Rappel de suivi programmé !",
@@ -446,7 +451,11 @@
     "savedContacts": "Contacts enregistrés",
     "templates": "Modèles",
     "reminders": "Rappels",
-    "changelog": "Journal des modifications"
+    "changelog": "Journal des modifications",
+    "freeInitialRemaining": "Forfait gratuit : {{remaining}} demandes restantes sur les 10 initiales, puis 5 tous les 30 jours glissants",
+    "freeRollingRemaining": "Forfait gratuit : {{remaining}} demandes restantes sur 5 pour votre période glissante de 30 jours",
+    "freeInitialLimitReachedDesc": "Vous avez utilisé vos 10 demandes initiales. Votre quota récurrent est de 5 demandes tous les 30 jours glissants, ou passez à Pro pour des demandes illimitées.",
+    "freeRollingLimitReachedDesc": "Vous avez utilisé les 5 demandes de votre quota glissant actuel. La prochaine sera disponible le {{date}}, ou passez à Pro pour continuer maintenant."
   },
   "tabs": {
     "account": "Compte",
@@ -1257,7 +1266,9 @@
     "futureUpdates": "Mises à jour futures",
     "price": "Price",
     "freeTrialNote": "Tous les forfaits incluent un essai gratuit de 10 demandes. Aucune carte bancaire requise pour commencer.",
-    "annual": "Annuel"
+    "annual": "Annuel",
+    "reviewRequests": "Demandes d’avis",
+    "freeRequestAllowance": "10 d’abord, puis 5 / 30 jours glissants"
   },
   "paidUser": {
     "adminAccess": "Accès administrateur",
@@ -1291,11 +1302,14 @@
       "timing": "Stripe affichera la date d’effet exacte et tout débit ou crédit au prorata avant votre approbation.",
       "cancel": "Conserver {{plan}}",
       "continue": "Continuer vers Stripe"
-    }
+    },
+    "accessUntil": "Accès jusqu’au {{date}}"
   },
   "account": {
     "administrator": "Administrateur",
-    "administratorAccount": "Compte administrateur"
+    "administratorAccount": "Compte administrateur",
+    "renewsOn": "Renouvellement le {{date}}",
+    "accessUntil": "Accès jusqu’au {{date}}"
   },
   "columnLabels": {
     "fullName": "Nom complet",
@@ -1945,5 +1959,36 @@
     "a5": "Le plan à vie couvre une entreprise/un emplacement. Si vous gérez plusieurs emplacements, vous aurez besoin d'un compte séparé pour chacun. Contactez-nous pour les tarifs agence ou multi-emplacements.",
     "q6": "Quels modes de paiement sont acceptés?",
     "a6": "Toutes les principales cartes de crédit et de débit via Stripe. Les utilisateurs thaïlandais peuvent également payer via PromptPay — appuyez sur l'option PromptPay sous le bouton de paiement principal."
+  },
+  "paymentSuccess": {
+    "confirmed": "Paiement confirmé.",
+    "confirmedToast": "Paiement confirmé. Votre accès à Get Phame est actif.",
+    "upgraded": "Votre compte a été mis à niveau immédiatement."
+  },
+  "adminUsers": {
+    "roleUpdated": "Accès administrateur mis à jour.",
+    "lifeGranted": "Accès Life accordé.",
+    "lifeRemoved": "Accès Life retiré.",
+    "back": "Tableau de bord admin",
+    "eyebrow": "Gestion des utilisateurs",
+    "title": "Gérer les utilisateurs",
+    "subtitle": "Recherchez tous les comptes et gérez les accès administrateur ou Life.",
+    "searchLabel": "Rechercher des utilisateurs",
+    "searchPlaceholder": "Nom ou e-mail",
+    "accountCount": "{{count}} comptes",
+    "loading": "Chargement des comptes…",
+    "unnamed": "Utilisateur sans nom",
+    "admin": "Admin",
+    "life": "Life",
+    "noEmail": "Aucun e-mail",
+    "accountMeta": "Inscrit le {{date}} · Forfait enregistré : {{tier}}",
+    "removeAdmin": "Retirer admin",
+    "makeAdmin": "Nommer admin",
+    "removeLife": "Retirer Life",
+    "grantLife": "Accorder Life",
+    "empty": "Aucun utilisateur ne correspond à cette recherche.",
+    "previous": "Précédent",
+    "page": "Page {{page}} sur {{count}}",
+    "next": "Suivant"
   }
 }

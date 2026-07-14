@@ -55,7 +55,8 @@ describe("Get Phame regression contracts", () => {
 
     expect(home).toContain("getEffectivePlan(profile?.tier, user?.role)");
     expect(home).toContain('effectivePlan === "life" ? t("homePage.lifePlan"');
-    expect(home).toContain('effectivePlan === "free" ? `${Math.max(0, 10 - (profile?.totalSent ?? 0))}/10` : "✓"');
+    expect(home).toContain('`${profile?.freeQuota?.remaining ?? 10}/${profile?.freeQuota?.limit ?? 10}`');
+    expect(home).toContain('profile?.freeQuota?.phase === "rolling"');
   });
 
   it("renders a distinct localized administrator badge in the sidebar", () => {
@@ -81,6 +82,38 @@ describe("Get Phame regression contracts", () => {
     expect(settings).toContain("setPlanSwitchOpen(true)");
     expect(upgrade).toContain("<PlanSwitchDialog");
     expect(settings).toContain("<PlanSwitchDialog");
+  });
+
+  it("keeps user management administrator-only and exposes explicit role plus Life controls", () => {
+    const routers = readProjectFile("./routers.ts");
+    const adminUsers = readProjectFile("../client/src/pages/AdminUsers.tsx");
+
+    expect(routers).toContain("listUsers: adminProcedure");
+    expect(routers).toContain("setUserRole: adminProcedure");
+    expect(routers).toContain("setLifeAccess: adminProcedure");
+    expect(routers).toContain("You cannot remove your own administrator access");
+    expect(adminUsers).toContain("trpc.admin.listUsers.useQuery");
+    expect(adminUsers).toContain("trpc.admin.setUserRole.useMutation");
+    expect(adminUsers).toContain("trpc.admin.setLifeAccess.useMutation");
+    expect(adminUsers).toContain('id="admin-user-search"');
+    expect(adminUsers).toContain('account.role === "admin"');
+    expect(adminUsers).toContain("account.lifeAccess");
+    expect(adminUsers).toContain("Stored plan: {{tier}}");
+  });
+
+  it("shows recurring renewal context and confirms successful Stripe returns in app", () => {
+    const routers = readProjectFile("./routers.ts");
+    const stripe = readProjectFile("./stripe.ts");
+    const layout = readProjectFile("../client/src/components/AppLayout.tsx");
+    const upgrade = readProjectFile("../client/src/pages/Upgrade.tsx");
+    const paymentSuccess = readProjectFile("../client/src/pages/PaymentSuccess.tsx");
+
+    expect(routers).toContain("currentPeriodEnd: snapshot.currentPeriodEnd");
+    expect(stripe).toContain("/payment-success?stripe=1&plan=${plan}");
+    expect(layout).toContain("subscription?.currentPeriodEnd");
+    expect(upgrade).toContain("subscriptionStatus?.currentPeriodEnd");
+    expect(paymentSuccess).toContain('t("paymentSuccess.confirmed"');
+    expect(paymentSuccess).toContain('params.get("stripe") !== "1"');
   });
 
   it("localizes the plan-switch modal and administrator badge in every supported locale", () => {

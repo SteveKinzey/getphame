@@ -38,3 +38,10 @@
 - [x] Add a clear sidebar badge that identifies administrator accounts without exposing admin-only actions
 - [x] Add or update Vitest coverage for the Life usage label, plan-switch confirmation modal, and admin badge
 - [x] Verify the four improvements on desktop and mobile, run TypeScript and the full Vitest suite, then publish the checkpoint
+- [x] Restore clear free-plan messaging that states 10 initial requests followed by 5 requests every rolling 30 days
+- [x] Build an admin-only user-management screen with search, user status visibility, and controlled admin plus Life access management
+- [x] Add the subscription renewal date next to Monthly and Annual plan status wherever account status is shown
+- [x] Show an in-app success confirmation immediately after users return from a completed Stripe checkout or billing change
+- [x] Update and validate the reusable Get Phame regression-restoration skill with the new quota, admin, renewal, and Stripe-return safeguards
+- [x] Add or update Vitest coverage for quota messaging, admin authorization and management, renewal dates, and Stripe-return confirmation
+- [x] Verify desktop and mobile behavior, run TypeScript and the full Vitest suite, then publish the completed checkpoint

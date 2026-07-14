@@ -51,6 +51,7 @@ const CompliancePage      = lazy(() => import("./pages/Compliance"));
 const ClientReviewsPage   = lazy(() => import("./pages/ClientReviews"));
 
 const AdminDashboardPage  = lazy(() => import("./pages/AdminDashboard"));
+const AdminUsersPage      = lazy(() => import("./pages/AdminUsers"));
 const AdminCodesPage      = lazy(() => import("./pages/AdminCodes"));
 const AdminSmtpStatsPage  = lazy(() => import("./pages/AdminSmtpStats"));
 const AdminAuthDiagnosticsPage = lazy(() => import("./pages/AdminAuthDiagnostics"));
@@ -247,6 +248,7 @@ function AppShell() {
                 <Route path="/upgrade" component={UpgradePage} />
                 <Route path="/cancel" component={ChurnSurveyPage} />
                 <Route path="/admin" component={AdminDashboardPage} />
+                <Route path="/admin/users" component={AdminUsersPage} />
                 <Route path="/admin/codes" component={AdminCodesPage} />
                 <Route path="/admin/smtp-stats" component={AdminSmtpStatsPage} />
                 <Route path="/admin/auth-diagnostics" component={AdminAuthDiagnosticsPage} />

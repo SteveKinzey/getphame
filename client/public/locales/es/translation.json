@@ -26,7 +26,9 @@
     "upgrade": "Actualizar a Pro",
     "howItWorks": "How It Works",
     "pricing": "Pricing",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "manageUsers": "Gestionar usuarios",
+    "admin": "Admin"
   },
   "hero": {
     "tagline": "Gratis para empezar — Sin tarjeta de crédito requerida",
@@ -135,7 +137,7 @@
     "providersQuestion": "¿Qué proveedores de correo funcionan?",
     "providersAnswer": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to Get Phame.",
     "freeQuestion": "¿Es realmente gratis?",
-    "freeAnswer": "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap (Gmail allows ~500/day, most others are similar). There are no hidden fees and no credit card required to get started.",
+    "freeAnswer": "Sí. El plan Gratis incluye 10 solicitudes de reseña iniciales y después 5 solicitudes cada 30 días móviles. No necesitas tarjeta de crédito. También se aplica el límite diario de tu proveedor de correo.",
     "importQuestion": "¿Puedo importar mi lista de clientes?",
     "importAnswer": "Yes. You can upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store. Once imported, you can bulk-select contacts and send personalised review requests in a single click.",
     "q1": "¿Parecerá spam?",
@@ -143,7 +145,7 @@
     "q2": "¿Qué proveedores de correo funcionan?",
     "a2": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server.",
     "q3": "¿Es realmente gratis?",
-    "a3": "Sí — gratis sin límites de envío artificiales. Conectas tu propia cuenta de correo.",
+    "a3": "Sí. Recibes 10 solicitudes de reseña iniciales y después 5 solicitudes cada 30 días móviles. No necesitas tarjeta de crédito.",
     "q4": "¿Puedo importar mi lista de clientes?",
     "a4": "Yes. Upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store.",
     "q5": "Does Get Phame store my email password?",
@@ -161,7 +163,7 @@
     "q11": "How does WooCommerce sync work?",
     "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
     "q12": "What does unlimited mean on the Pro plan?",
-    "a12": "Unlimited means no cap on review requests sent per month. The Free plan includes 10 requests to get you started. Pro removes that limit entirely."
+    "a12": "Ilimitado significa que no hay límite mensual de solicitudes. El plan Gratis incluye 10 solicitudes iniciales y después 5 cada 30 días móviles. Pro elimina ese límite del producto."
   },
   "bottomCta": {
     "headline": "Empieza a recopilar reseñas hoy",
@@ -338,7 +340,10 @@
     "step3": "Enviar tu primera solicitud",
     "daysAgo": "hace {{count}} día(s)",
     "hoursAgo": "hace {{count}} hora(s)",
-    "minutesAgo": "hace {{count}} minuto(s)"
+    "minutesAgo": "hace {{count}} minuto(s)",
+    "freeAllowanceInitial": "Plan gratis: 10 solicitudes iniciales y luego 5 cada 30 días móviles",
+    "freeAllowanceMonthly": "Plan gratis: 5 solicitudes cada 30 días móviles",
+    "nextFreeRequest": "Próxima solicitud disponible el {{date}}"
   },
   "notifications": {
     "followUpReminderScheduled": "¡Recordatorio de seguimiento programado!",
@@ -446,7 +451,11 @@
     "savedContacts": "Contactos guardados",
     "templates": "Plantillas",
     "reminders": "Recordatorios",
-    "changelog": "Registro de cambios"
+    "changelog": "Registro de cambios",
+    "freeInitialRemaining": "Plan gratis: quedan {{remaining}} de 10 solicitudes iniciales; después, 5 cada 30 días móviles",
+    "freeRollingRemaining": "Plan gratis: quedan {{remaining}} de 5 solicitudes en tu periodo móvil de 30 días",
+    "freeInitialLimitReachedDesc": "Has usado tus 10 solicitudes iniciales. Tu asignación recurrente es de 5 solicitudes cada 30 días móviles, o mejora para obtener solicitudes ilimitadas.",
+    "freeRollingLimitReachedDesc": "Has usado las 5 solicitudes de tu asignación móvil actual de 30 días. La siguiente estará disponible el {{date}}, o mejora para seguir enviando ahora."
   },
   "tabs": {
     "account": "Cuenta",
@@ -1257,7 +1266,9 @@
     "futureUpdates": "Actualizaciones futuras",
     "price": "Price",
     "freeTrialNote": "Todos los planes incluyen una prueba gratuita de 10 solicitudes. No se requiere tarjeta de crédito para comenzar.",
-    "annual": "Anual"
+    "annual": "Anual",
+    "reviewRequests": "Solicitudes de reseña",
+    "freeRequestAllowance": "10 primero y luego 5 / 30 días móviles"
   },
   "paidUser": {
     "adminAccess": "Acceso de administrador",
@@ -1291,11 +1302,14 @@
       "timing": "Stripe mostrará la fecha efectiva exacta y cualquier cargo o crédito prorrateado antes de aprobar el cambio.",
       "cancel": "Mantener {{plan}}",
       "continue": "Continuar a Stripe"
-    }
+    },
+    "accessUntil": "Acceso hasta el {{date}}"
   },
   "account": {
     "administrator": "Administrador",
-    "administratorAccount": "Cuenta de administrador"
+    "administratorAccount": "Cuenta de administrador",
+    "renewsOn": "Se renueva el {{date}}",
+    "accessUntil": "Acceso hasta el {{date}}"
   },
   "columnLabels": {
     "fullName": "Nombre completo",
@@ -1945,5 +1959,36 @@
     "a5": "El plan de por vida cubre un negocio/ubicación. Si gestionas múltiples ubicaciones, necesitarás una cuenta separada para cada una. Contáctanos para precios de agencia o múltiples ubicaciones.",
     "q6": "¿Qué métodos de pago se aceptan?",
     "a6": "Todas las tarjetas de crédito y débito principales a través de Stripe. Los usuarios tailandeses también pueden pagar mediante PromptPay — toca la opción PromptPay debajo del botón de pago principal."
+  },
+  "paymentSuccess": {
+    "confirmed": "Pago confirmado.",
+    "confirmedToast": "Pago confirmado. Tu acceso a Get Phame está activo.",
+    "upgraded": "Tu cuenta se ha actualizado al instante."
+  },
+  "adminUsers": {
+    "roleUpdated": "Acceso de administrador actualizado.",
+    "lifeGranted": "Acceso Life concedido.",
+    "lifeRemoved": "Acceso Life eliminado.",
+    "back": "Panel de administración",
+    "eyebrow": "Gestión de usuarios",
+    "title": "Gestionar usuarios",
+    "subtitle": "Busca cualquier cuenta y controla el acceso de administrador o Life.",
+    "searchLabel": "Buscar usuarios",
+    "searchPlaceholder": "Nombre o correo",
+    "accountCount": "{{count}} cuentas",
+    "loading": "Cargando cuentas…",
+    "unnamed": "Usuario sin nombre",
+    "admin": "Admin",
+    "life": "Life",
+    "noEmail": "Sin correo",
+    "accountMeta": "Se unió el {{date}} · Plan guardado: {{tier}}",
+    "removeAdmin": "Quitar admin",
+    "makeAdmin": "Hacer admin",
+    "removeLife": "Quitar Life",
+    "grantLife": "Conceder Life",
+    "empty": "Ningún usuario coincide con la búsqueda.",
+    "previous": "Anterior",
+    "page": "Página {{page}} de {{count}}",
+    "next": "Siguiente"
   }
 }

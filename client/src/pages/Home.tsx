@@ -488,7 +488,9 @@ export default function HomePage() {
             { label: t("homePage.allTime", { defaultValue: "All Time" }), value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
             {
               label: tierLabel,
-              value: effectivePlan === "free" ? `${Math.max(0, 10 - (profile?.totalSent ?? 0))}/10` : "✓",
+              value: effectivePlan === "free"
+                ? `${profile?.freeQuota?.remaining ?? 10}/${profile?.freeQuota?.limit ?? 10}`
+                : "✓",
               icon: <img src={LOGO_URL} alt="GetPhame" style={{ width: 16, height: 16, objectFit: 'contain' }} />
             },
           ].map((s, i) => (
@@ -513,6 +515,24 @@ export default function HomePage() {
             </div>
           ))}
         </div>
+
+        {effectivePlan === "free" && (
+          <div className="relative z-10 mt-3 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-center">
+            <p className="text-xs font-black text-white">
+              {profile?.freeQuota?.phase === "rolling"
+                ? t("homePage.freeAllowanceMonthly", { defaultValue: "Free plan: 5 requests every rolling 30 days" })
+                : t("homePage.freeAllowanceInitial", { defaultValue: "Free plan: 10 initial requests, then 5 every rolling 30 days" })}
+            </p>
+            {profile?.freeQuota?.blocked && profile.freeQuota.nextAvailableAt && (
+              <p className="mt-1 text-[11px] font-semibold text-white/70">
+                {t("homePage.nextFreeRequest", {
+                  defaultValue: "Next request available {{date}}",
+                  date: new Date(profile.freeQuota.nextAvailableAt).toLocaleDateString(),
+                })}
+              </p>
+            )}
+          </div>
+        )}
 
         {/* Compliance badge */}
         <button

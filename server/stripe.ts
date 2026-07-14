@@ -78,7 +78,7 @@ export async function createCheckoutSession({
         quantity: 1,
       },
     ],
-    success_url: `${origin}/payment-success`,
+    success_url: `${origin}/payment-success?stripe=1&plan=${plan}`,
     cancel_url: `${origin}/upgrade`,
     ...(stripeCustomerId
       ? { customer: stripeCustomerId }
@@ -144,7 +144,7 @@ export async function createThbCheckoutSession({
       customer_name: userName ?? "",
     },
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${origin}/payment-success`,
+    success_url: `${origin}/payment-success?stripe=1&plan=${plan}`,
     cancel_url: `${origin}/upgrade`,
     ...(stripeCustomerId
       ? { customer: stripeCustomerId }
@@ -167,4 +167,24 @@ export async function createPortalSession(
     return_url: `${origin}/settings`,
   });
   return session.url;
+}
+
+/** Fetch current billing state directly from Stripe for account-status UI. */
+export async function getSubscriptionSnapshot(subscriptionId: string) {
+  if (subscriptionId.startsWith("lifetime_")) {
+    return { status: "lifetime", currentPeriodEnd: null, cancelAtPeriodEnd: false };
+  }
+  const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+  const raw = subscription as unknown as {
+    status: string;
+    current_period_end?: number;
+    cancel_at_period_end?: boolean;
+    items?: { data?: Array<{ current_period_end?: number }> };
+  };
+  const periodEnd = raw.current_period_end ?? raw.items?.data?.[0]?.current_period_end ?? null;
+  return {
+    status: raw.status,
+    currentPeriodEnd: periodEnd ? periodEnd * 1000 : null,
+    cancelAtPeriodEnd: Boolean(raw.cancel_at_period_end),
+  };
 }

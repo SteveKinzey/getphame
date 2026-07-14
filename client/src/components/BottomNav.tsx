@@ -4,16 +4,18 @@
 //             hover scale + gold glow on icon container, label colour lift
 
 import { useLocation } from 'wouter';
-import { Home, Send, BarChart2, Settings, Moon, Sun } from 'lucide-react';
+import { Home, Send, BarChart2, Settings, Moon, Sun, ShieldCheck } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { useHaptics } from '@/hooks/useHaptics';
+import { useAuth } from '@/_core/hooks/useAuth';
 
 export default function BottomNav() {
   const [location, navigate] = useLocation();
   const { theme, toggleTheme } = useTheme();
   const { t } = useTranslation();
   const { buttonPressHaptic } = useHaptics();
+  const { user } = useAuth();
   const isDark = theme === 'dark';
 
   const NAV_ITEMS = [
@@ -21,6 +23,7 @@ export default function BottomNav() {
     { path: '/send', label: t('nav.send'), Icon: Send },
     { path: '/dashboard', label: t('nav.dashboard'), Icon: BarChart2 },
     { path: '/settings', label: t('nav.settings'), Icon: Settings },
+    ...(user?.role === 'admin' ? [{ path: '/admin/users', label: t('nav.admin', { defaultValue: 'Admin' }), Icon: ShieldCheck }] : []),
   ];
 
   return (
@@ -28,8 +31,8 @@ export default function BottomNav() {
       className="md:hidden fixed bottom-0 left-0 right-0 z-50 bottom-nav rr-bg-navy"
       style={{ borderTop: "1px solid oklch(0.30 0.08 260)" }}
     >
-      {/* Nav items row — 5 equal columns (4 nav + 1 theme toggle) */}
-      <div className="grid gap-0" style={{ gridTemplateColumns: 'repeat(5, 1fr)' }}>
+      {/* Equal-width app tabs plus theme toggle; admins receive one extra tab. */}
+      <div className="grid gap-0" style={{ gridTemplateColumns: `repeat(${NAV_ITEMS.length + 1}, 1fr)` }}>
         {NAV_ITEMS.map(({ path, label, Icon }) => {
           const isActive = location === path || (path !== '/' && location.startsWith(path));
           return (

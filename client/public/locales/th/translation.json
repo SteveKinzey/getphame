@@ -21,7 +21,9 @@
     "complianceViewGuide": "— ดูคู่มือ",
     "howItWorks": "How It Works",
     "pricing": "Pricing",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "manageUsers": "จัดการผู้ใช้",
+    "admin": "ผู้ดูแล"
   },
   "hero": {
     "tagline": "เริ่มต้นฟรี — ไม่ต้องใช้บัตรเครดิต",
@@ -89,7 +91,7 @@
     "providersQuestion": "ผู้ให้บริการอีเมลใดบ้างที่ใช้งานได้?",
     "providersAnswer": "ผู้ให้บริการใดๆ ที่รองรับ SMTP ใช้งานได้: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, อีเมลธุรกิจ cPanel/Zoho และเซิร์ฟเวอร์เมลของผู้ให้บริการโฮสติ้งเกือบทุกราย หากคุณสามารถตั้งค่าแอปอีเมลบนโทรศัพท์ของคุณได้ คุณก็สามารถเชื่อมต่อกับ Get Phame ได้",
     "freeQuestion": "ฟรีจริงหรือ?",
-    "freeAnswer": "ใช่ — ฟรีโดยไม่มีข้อจำกัดการส่งเทียม คุณเชื่อมต่อบัญชีอีเมลของคุณเอง ดังนั้นข้อจำกัดเดียวคือขีดจำกัดการส่งรายวันของผู้ให้บริการอีเมลของคุณ (Gmail อนุญาตประมาณ 500 ฉบับต่อวัน ส่วนใหญ่ก็คล้ายกัน) ไม่มีค่าธรรมเนียมแอบแฝงและไม่ต้องใช้บัตรเครดิตในการเริ่มต้น",
+    "freeAnswer": "ใช่ แผนฟรีมีคำขอรีวิว 10 ครั้งแรก จากนั้น 5 ครั้งทุกช่วง 30 วัน ไม่ต้องใช้บัตรเครดิต และยังเป็นไปตามขีดจำกัดการส่งรายวันของผู้ให้บริการอีเมล",
     "importQuestion": "ฉันสามารถนำเข้ารายชื่อลูกค้าของฉันได้หรือไม่?",
     "importAnswer": "ได้ คุณสามารถอัปโหลดไฟล์ CSV ที่มีชื่อและที่อยู่อีเมลของลูกค้าของคุณ หรือซิงค์โดยตรงจาก WooCommerce หากคุณมีร้านค้าออนไลน์ เมื่อนำเข้าแล้ว คุณสามารถเลือกผู้ติดต่อจำนวนมากและส่งคำขอรีวิวส่วนตัวได้ในคลิกเดียว",
     "q1": "อีเมลจะดูเหมือนสแปมไหม?",
@@ -97,7 +99,7 @@
     "q2": "ใช้ผู้ให้บริการอีเมลอะไรได้บ้าง?",
     "a2": "ผู้ให้บริการที่รองรับ SMTP ทุกราย: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail และอื่นๆ",
     "q3": "ฟรีจริงๆ ไหม?",
-    "a3": "ใช่ — ฟรีโดยไม่มีข้อจำกัดการส่งเทียม คุณเชื่อมต่อบัญชีอีเมลของคุณเอง",
+    "a3": "ใช่ คุณได้รับคำขอรีวิว 10 ครั้งแรก จากนั้น 5 ครั้งทุกช่วง 30 วัน โดยไม่ต้องใช้บัตรเครดิต",
     "q4": "นำเข้ารายชื่อลูกค้าได้ไหม?",
     "a4": "ได้ อัปโหลดไฟล์ CSV หรือซิงค์จาก WooCommerce โดยตรง",
     "q5": "Does Get Phame store my email password?",
@@ -115,7 +117,7 @@
     "q11": "How does WooCommerce sync work?",
     "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
     "q12": "What does unlimited mean on the Pro plan?",
-    "a12": "Unlimited means no cap on review requests sent per month. The Free plan includes 10 requests to get you started. Pro removes that limit entirely."
+    "a12": "ไม่จำกัดหมายถึงไม่มีเพดานคำขอรายเดือน แผนฟรีมี 10 ครั้งแรก จากนั้น 5 ครั้งทุกช่วง 30 วัน ส่วน Pro จะยกเลิกขีดจำกัดของผลิตภัณฑ์นี้"
   },
   "bottomCta": {
     "headline": "เริ่มเก็บรีวิวได้แล้ววันนี้",
@@ -244,7 +246,10 @@
     "toGo": "อีกนิด",
     "reviewsPerMonth": "รีวิว / เดือน",
     "ofMonthlyGoal": "ของเป้าหมายรายเดือน",
-    "requestsByPlatform": "คำขอตามแพลตฟอร์ม"
+    "requestsByPlatform": "คำขอตามแพลตฟอร์ม",
+    "freeAllowanceInitial": "แผนฟรี: 10 คำขอแรก จากนั้น 5 คำขอทุกช่วง 30 วัน",
+    "freeAllowanceMonthly": "แผนฟรี: 5 คำขอทุกช่วง 30 วัน",
+    "nextFreeRequest": "ส่งคำขอถัดไปได้ในวันที่ {{date}}"
   },
   "notifications": {
     "followUpReminderScheduled": "กำหนดการแจ้งเตือนติดตามผลแล้ว!",
@@ -325,7 +330,11 @@
     "upgradeToPro": "อัปเกรดเป็น Pro →",
     "upgrade": "อัปเกรด",
     "imported": "นำเข้าแล้ว",
-    "importedMultiple": "นำเข้า {{count}} รายชื่อ — ส่งให้รายชื่อแรกก่อน ใช้ Bulk Send สำหรับหลายรายชื่อ"
+    "importedMultiple": "นำเข้า {{count}} รายชื่อ — ส่งให้รายชื่อแรกก่อน ใช้ Bulk Send สำหรับหลายรายชื่อ",
+    "freeInitialRemaining": "แผนฟรี: เหลือ {{remaining}} จาก 10 คำขอแรก จากนั้น 5 คำขอทุกช่วง 30 วัน",
+    "freeRollingRemaining": "แผนฟรี: เหลือ {{remaining}} จาก 5 คำขอในช่วง 30 วันปัจจุบัน",
+    "freeInitialLimitReachedDesc": "คุณใช้ครบ 10 คำขอแรกแล้ว โควตาต่อเนื่องคือ 5 คำขอทุกช่วง 30 วัน หรืออัปเกรดเพื่อส่งได้ไม่จำกัด",
+    "freeRollingLimitReachedDesc": "คุณใช้ครบ 5 คำขอในช่วง 30 วันปัจจุบันแล้ว คำขอถัดไปจะพร้อมในวันที่ {{date}} หรืออัปเกรดเพื่อส่งต่อทันที"
   },
   "tabs": {
     "account": "บัญชี",
@@ -901,7 +910,9 @@
     "prioritySupport": "การสนับสนุนแบบจัดลำดับความสำคัญ",
     "futureUpdates": "การอัปเดตในอนาคต",
     "price": "ราคา",
-    "freeTrialNote": "ทุกแผนมีทดลองใช้ฟรี 10 คำขอ ไม่ต้องใช้บัตรเครดิตเพื่อเริ่มต้น"
+    "freeTrialNote": "ทุกแผนมีทดลองใช้ฟรี 10 คำขอ ไม่ต้องใช้บัตรเครดิตเพื่อเริ่มต้น",
+    "reviewRequests": "คำขอรีวิว",
+    "freeRequestAllowance": "10 คำขอแรก แล้ว 5 คำขอ / ทุกช่วง 30 วัน"
   },
   "paidUser": {
     "adminAccess": "การเข้าถึงผู้ดูแลระบบ",
@@ -930,11 +941,15 @@
       "timing": "Stripe จะแสดงวันที่มีผลที่แน่นอนและค่าบริการหรือเครดิตตามสัดส่วนก่อนที่คุณจะอนุมัติการเปลี่ยนแปลง",
       "cancel": "ใช้ {{plan}} ต่อไป",
       "continue": "ดำเนินการต่อไปยัง Stripe"
-    }
+    },
+    "renewsOn": "ต่ออายุวันที่ {{date}}",
+    "accessUntil": "ใช้งานได้ถึง {{date}}"
   },
   "account": {
     "administrator": "ผู้ดูแลระบบ",
-    "administratorAccount": "บัญชีผู้ดูแลระบบ"
+    "administratorAccount": "บัญชีผู้ดูแลระบบ",
+    "renewsOn": "ต่ออายุวันที่ {{date}}",
+    "accessUntil": "ใช้งานได้ถึง {{date}}"
   },
   "columnLabels": {
     "fullName": "ชื่อเต็ม",
@@ -1560,5 +1575,36 @@
     "a5": "แพ็กเกจตลอดชีพครอบคลุมหนึ่งธุรกิจ/สาขา หากคุณดูแลหลายสาขา คุณจะต้องมีบัญชีแยกสำหรับแต่ละสาขา ติดต่อเราสำหรับราคาแบบเอเจนซี่หรือหลายสาขา",
     "q6": "รับชำระเงินด้วยวิธีใดบ้าง?",
     "a6": "บัตรเครดิตและเดบิตหลักทุกประเภทผ่าน Stripe ผู้ใช้ในไทยสามารถชำระผ่าน PromptPay ได้ด้วย — แตะตัวเลือก PromptPay ใต้ปุ่มชำระเงินหลัก"
+  },
+  "paymentSuccess": {
+    "confirmed": "ยืนยันการชำระเงินแล้ว",
+    "confirmedToast": "ยืนยันการชำระเงินแล้ว สิทธิ์ใช้งาน Get Phame ของคุณเปิดใช้งานแล้ว",
+    "upgraded": "บัญชีของคุณได้รับการอัปเกรดทันที"
+  },
+  "adminUsers": {
+    "roleUpdated": "อัปเดตสิทธิ์ผู้ดูแลแล้ว",
+    "lifeGranted": "มอบสิทธิ์ Life แล้ว",
+    "lifeRemoved": "นำสิทธิ์ Life ออกแล้ว",
+    "back": "แดชบอร์ดผู้ดูแล",
+    "eyebrow": "การจัดการผู้ใช้",
+    "title": "จัดการผู้ใช้",
+    "subtitle": "ค้นหาบัญชีและควบคุมสิทธิ์ผู้ดูแลหรือ Life",
+    "searchLabel": "ค้นหาผู้ใช้",
+    "searchPlaceholder": "ชื่อหรืออีเมล",
+    "accountCount": "{{count}} บัญชี",
+    "loading": "กำลังโหลดบัญชี…",
+    "unnamed": "ผู้ใช้ไม่มีชื่อ",
+    "admin": "ผู้ดูแล",
+    "life": "Life",
+    "noEmail": "ไม่มีอีเมล",
+    "accountMeta": "เข้าร่วม {{date}} · แผนที่บันทึก: {{tier}}",
+    "removeAdmin": "ยกเลิกผู้ดูแล",
+    "makeAdmin": "แต่งตั้งผู้ดูแล",
+    "removeLife": "นำ Life ออก",
+    "grantLife": "มอบ Life",
+    "empty": "ไม่พบผู้ใช้ที่ตรงกับการค้นหา",
+    "previous": "ก่อนหน้า",
+    "page": "หน้า {{page}} จาก {{count}}",
+    "next": "ถัดไป"
   }
 }

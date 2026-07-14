@@ -30,7 +30,7 @@ const UPGRADE_IMG =
 
 // ── Feature comparison table ─────────────────────────────────────────────────
 const COMPARISON_ROWS: { feature: string; free: string | boolean; pro: string | boolean; lifetime: string | boolean }[] = [
-  { feature: "Review requests (total)",   free: "10",        pro: "Unlimited",  lifetime: "Unlimited" },
+  { feature: "Review requests",           free: "__FREE_ALLOWANCE__", pro: "Unlimited", lifetime: "Unlimited" },
   { feature: "Follow-up reminders",        free: true,       pro: true,         lifetime: true },
   { feature: "Saved contacts",             free: true,       pro: true,         lifetime: true },
   { feature: "CSV import",                 free: true,       pro: true,         lifetime: true },
@@ -85,6 +85,9 @@ export default function UpgradePage() {
   const [, navigate] = useLocation();
   const { user } = useAuth();
   const { data: profile } = trpc.profile.get.useQuery();
+  const { data: subscriptionStatus } = trpc.stripe.subscriptionStatus.useQuery(undefined, {
+    enabled: profile?.tier === "pro" || profile?.tier === "annual",
+  });
   const utils = trpc.useUtils();
   const [selectedPlan, setSelectedPlan] = useState<Plan>("annual");
   const [accessCode, setAccessCode] = useState("");
@@ -214,6 +217,9 @@ export default function UpgradePage() {
   const tierLabel = PLAN_LABELS[effectivePlan];
   const isLife = effectivePlan === "life";
   const canManage = canManageSubscription(effectivePlan);
+  const renewalDate = subscriptionStatus?.currentPeriodEnd
+    ? new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric", year: "numeric" }).format(new Date(subscriptionStatus.currentPeriodEnd))
+    : null;
   if (effectivePlan !== "free") {
     return (
       <div
@@ -238,6 +244,13 @@ export default function UpgradePage() {
                   {t("paidUser.subscription", { defaultValue: "Subscription" })}
                 </p>
                 <p className="text-lg font-black text-white">{tierLabel}</p>
+                {renewalDate && (
+                  <p className="mt-1 text-xs font-bold text-white/70" data-testid="subscription-renewal-date">
+                    {subscriptionStatus?.cancelAtPeriodEnd
+                      ? t("paidUser.accessUntil", { defaultValue: "Access until {{date}}", date: renewalDate })
+                      : t("paidUser.renewsOn", { defaultValue: "Renews on {{date}}", date: renewalDate })}
+                  </p>
+                )}
               </div>
               <CreditCard size={24} className="rr-text-gold" />
             </div>
@@ -626,6 +639,9 @@ export default function UpgradePage() {
             const renderCell = (val: string | boolean) => {
               if (val === true) return <Check size={14} style={{ color: "oklch(0.65 0.18 145)" }} className="mx-auto" />;
               if (val === false) return <span style={{ color: "var(--text-on-dark-disabled)" }}>—</span>;
+              if (val === "__FREE_ALLOWANCE__") {
+                return <span>{t("comparisonTable.freeRequestAllowance", { defaultValue: "10 first, then 5 / rolling 30 days" })}</span>;
+              }
               return <span>{val}</span>;
             };
             return (
@@ -645,7 +661,9 @@ export default function UpgradePage() {
                 }}
               >
                 <div className="text-left pl-2" style={{ color: isLast ? "oklch(0.80 0.18 80)" : "var(--text-on-dark-secondary)", fontWeight: isLast ? 800 : 500 }}>
-                  {row.feature}
+                  {row.feature === "Review requests"
+                    ? t("comparisonTable.reviewRequests", { defaultValue: "Review requests" })
+                    : row.feature}
                 </div>
                 <div>{renderCell(row.free)}</div>
                 <div>{renderCell(row.pro)}</div>
@@ -673,7 +691,7 @@ export default function UpgradePage() {
             },
             {
               q: t("upgradeFaq.q2", "What happens if I cancel a monthly or annual plan?"),
-              a: t("upgradeFaq.a2", "You keep access until the end of your current billing period. After that your account reverts to the free tier (10 requests). Your contacts and history are never deleted."),
+              a: t("upgradeFaq.a2", "You keep access until the end of your current billing period. After that your account returns to Free: 10 initial requests, then 5 every rolling 30 days. Your contacts and history are never deleted."),
             },
             {
               q: t("upgradeFaq.q3", "Can I switch from monthly to annual later?"),

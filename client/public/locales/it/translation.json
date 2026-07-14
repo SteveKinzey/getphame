@@ -21,7 +21,9 @@
     "complianceViewGuide": "— visualizza la guida",
     "howItWorks": "How It Works",
     "pricing": "Pricing",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "manageUsers": "Gestisci utenti",
+    "admin": "Admin"
   },
   "hero": {
     "tagline": "Gratuito per iniziare — Nessuna carta di credito richiesta",
@@ -89,7 +91,7 @@
     "providersQuestion": "Quali provider email funzionano?",
     "providersAnswer": "Qualsiasi provider che supporta SMTP funziona: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email e praticamente qualsiasi server di posta di un hosting provider. Se riesci a configurare un'app email sul telefono, puoi collegarla a Get Phame.",
     "freeQuestion": "È davvero gratuito?",
-    "freeAnswer": "Sì — gratuito senza limiti di invio artificiali. Colleghi il tuo account email, quindi l'unico limite è il limite di invio giornaliero del tuo provider (Gmail consente ~500/giorno, la maggior parte degli altri è simile). Nessuna commissione nascosta e nessuna carta di credito richiesta per iniziare.",
+    "freeAnswer": "Sì. Il piano Gratuito include 10 richieste di recensione iniziali, poi 5 richieste ogni 30 giorni mobili. Non serve una carta di credito. Si applica anche il limite giornaliero del tuo provider email.",
     "importQuestion": "Posso importare la mia lista clienti?",
     "importAnswer": "Sì. Puoi caricare un file CSV con i nomi e gli indirizzi email dei tuoi clienti, o sincronizzare direttamente da WooCommerce se gestisci un negozio online. Una volta importati, puoi selezionare in massa i contatti e inviare richieste di recensioni personalizzate con un solo clic.",
     "q1": "Sembrerà spam?",
@@ -97,7 +99,7 @@
     "q2": "Quali provider email funzionano?",
     "a2": "Qualsiasi provider che supporta SMTP funziona: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email e praticamente qualsiasi server di posta di un hosting provider.",
     "q3": "È davvero gratuito?",
-    "a3": "Sì — gratuito senza limiti di invio artificiali. Colleghi il tuo account email, quindi l'unico limite è il limite di invio giornaliero del tuo provider.",
+    "a3": "Sì. Ricevi 10 richieste di recensione iniziali, poi 5 richieste ogni 30 giorni mobili. Non serve una carta di credito.",
     "q4": "Posso importare la mia lista clienti?",
     "a4": "Sì. Carica un file CSV con i nomi e gli indirizzi email dei tuoi clienti, o sincronizza direttamente da WooCommerce se gestisci un negozio online.",
     "q5": "Does Get Phame store my email password?",
@@ -115,7 +117,7 @@
     "q11": "How does WooCommerce sync work?",
     "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
     "q12": "What does unlimited mean on the Pro plan?",
-    "a12": "Unlimited means no cap on review requests sent per month. The Free plan includes 10 requests to get you started. Pro removes that limit entirely."
+    "a12": "Illimitato significa nessun limite mensile alle richieste. Il piano Gratuito include 10 richieste iniziali, poi 5 ogni 30 giorni mobili. Pro rimuove questo limite del prodotto."
   },
   "bottomCta": {
     "headline": "Inizia a raccogliere recensioni oggi",
@@ -278,7 +280,10 @@
     "beta": "Beta",
     "new": "Nuovo",
     "free": "Gratuito",
-    "pro": "Pro"
+    "pro": "Pro",
+    "freeAllowanceInitial": "Piano gratuito: 10 richieste iniziali, poi 5 ogni 30 giorni mobili",
+    "freeAllowanceMonthly": "Piano gratuito: 5 richieste ogni 30 giorni mobili",
+    "nextFreeRequest": "Prossima richiesta disponibile il {{date}}"
   },
   "sendRequest": {
     "pageTitle": "Invia Richiesta di Recensione",
@@ -1361,7 +1366,11 @@
   "page": {
     "title": "Invia Richiesta",
     "subtitle": "Invia una richiesta di recensione personalizzata a un cliente.",
-    "breadcrumb": "Invia Richiesta"
+    "breadcrumb": "Invia Richiesta",
+    "freeInitialRemaining": "Piano gratuito: restano {{remaining}} delle 10 richieste iniziali, poi 5 ogni 30 giorni mobili",
+    "freeRollingRemaining": "Piano gratuito: restano {{remaining}} di 5 richieste nel periodo mobile di 30 giorni",
+    "freeInitialLimitReachedDesc": "Hai usato le 10 richieste iniziali. La quota ricorrente è di 5 richieste ogni 30 giorni mobili, oppure passa a Pro per richieste illimitate.",
+    "freeRollingLimitReachedDesc": "Hai usato tutte le 5 richieste della quota mobile corrente. La prossima sarà disponibile il {{date}}, oppure passa a Pro per continuare subito."
   },
   "tabs": {
     "account": "Account",
@@ -1766,7 +1775,9 @@
     "prioritySupport": "Supporto Prioritario",
     "customDomain": "Dominio Personalizzato",
     "apiAccess": "Accesso API",
-    "whiteLabel": "White Label"
+    "whiteLabel": "White Label",
+    "reviewRequests": "Richieste di recensione",
+    "freeRequestAllowance": "Prima 10, poi 5 / 30 giorni mobili"
   },
   "paidUser": {
     "title": "Sei un utente Pro!",
@@ -1792,11 +1803,15 @@
       "timing": "Stripe mostrerà la data effettiva esatta e qualsiasi addebito o credito proporzionale prima dell’approvazione.",
       "cancel": "Mantieni {{plan}}",
       "continue": "Continua su Stripe"
-    }
+    },
+    "renewsOn": "Rinnovo il {{date}}",
+    "accessUntil": "Accesso fino al {{date}}"
   },
   "account": {
     "administrator": "Amministratore",
-    "administratorAccount": "Account amministratore"
+    "administratorAccount": "Account amministratore",
+    "renewsOn": "Rinnovo il {{date}}",
+    "accessUntil": "Accesso fino al {{date}}"
   },
   "columnLabels": {
     "name": "Nome",
@@ -2113,5 +2128,36 @@
     "gifCaption": "The 3-step send flow",
     "emailAlt": "Example review request email on iPhone",
     "emailCaption": "What your customer receives"
+  },
+  "paymentSuccess": {
+    "confirmed": "Pagamento confermato.",
+    "confirmedToast": "Pagamento confermato. Il tuo accesso a Get Phame è attivo.",
+    "upgraded": "Il tuo account è stato aggiornato immediatamente."
+  },
+  "adminUsers": {
+    "roleUpdated": "Accesso amministratore aggiornato.",
+    "lifeGranted": "Accesso Life concesso.",
+    "lifeRemoved": "Accesso Life rimosso.",
+    "back": "Dashboard amministratore",
+    "eyebrow": "Gestione utenti",
+    "title": "Gestisci utenti",
+    "subtitle": "Cerca qualsiasi account e controlla l’accesso amministratore o Life.",
+    "searchLabel": "Cerca utenti",
+    "searchPlaceholder": "Nome o email",
+    "accountCount": "{{count}} account",
+    "loading": "Caricamento account…",
+    "unnamed": "Utente senza nome",
+    "admin": "Admin",
+    "life": "Life",
+    "noEmail": "Nessuna email",
+    "accountMeta": "Iscritto il {{date}} · Piano salvato: {{tier}}",
+    "removeAdmin": "Rimuovi admin",
+    "makeAdmin": "Rendi admin",
+    "removeLife": "Rimuovi Life",
+    "grantLife": "Concedi Life",
+    "empty": "Nessun utente corrisponde alla ricerca.",
+    "previous": "Precedente",
+    "page": "Pagina {{page}} di {{count}}",
+    "next": "Avanti"
   }
 }

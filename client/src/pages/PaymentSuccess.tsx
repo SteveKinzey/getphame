@@ -15,6 +15,8 @@ import {
   Bell,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 const PERKS_BY_TIER: Record<string, { icon: React.ReactNode; text: string }[]> = {
   pro: [
@@ -65,12 +67,19 @@ const CARD_TITLE_BY_TIER: Record<string, string> = {
 };
 
 export default function PaymentSuccessPage() {
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const utils = trpc.useUtils();
 
   // Read tier from profile (invalidated on mount so it reflects the new state)
   const { data: profile } = trpc.profile.get.useQuery();
-  const tier = (profile?.tier ?? "pro") as "pro" | "annual" | "lifetime";
+  const stripeReturnTier = useMemo(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("stripe") !== "1") return null;
+    const plan = params.get("plan");
+    return plan === "annual" || plan === "lifetime" ? plan : "pro";
+  }, []);
+  const tier = (stripeReturnTier ?? profile?.tier ?? "pro") as "pro" | "annual" | "lifetime";
 
   // Stable random star positions — computed once per mount
   const stars = useMemo(
@@ -92,6 +101,13 @@ export default function PaymentSuccessPage() {
     utils.profile.get.invalidate();
     utils.stripe.subscriptionStatus.invalidate();
   }, [utils]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("stripe") !== "1") return;
+    toast.success(t("paymentSuccess.confirmedToast", { defaultValue: "Payment confirmed. Your Get Phame access is active." }));
+    window.history.replaceState({}, "", "/payment-success");
+  }, [t]);
 
   // PayPal: capture the order when returning from PayPal approval
   // PayPal redirects to /payment-success?paypal=1&token=ORDER_ID
@@ -174,11 +190,11 @@ export default function PaymentSuccessPage() {
         {heading.top}{" "}
         <span className="rr-text-gold">{heading.highlight}</span>
       </h1>
-      <p className="text-center text-xl font-black mb-1 text-white">
-        Payment confirmed. {heading.sub}
+      <p className="text-center text-xl font-black mb-1 text-white" role="status" data-testid="stripe-success-confirmation">
+        {t("paymentSuccess.confirmed", { defaultValue: "Payment confirmed." })} {heading.sub}
       </p>
       <p className="text-center text-lg font-bold mb-8 text-white/90">
-        Your account has been upgraded instantly.
+        {t("paymentSuccess.upgraded", { defaultValue: "Your account has been upgraded instantly." })}
       </p>
 
       {/* Perks card */}

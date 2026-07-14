@@ -21,7 +21,9 @@
     "complianceViewGuide": "— 檢視指南",
     "howItWorks": "How It Works",
     "pricing": "Pricing",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "manageUsers": "管理使用者",
+    "admin": "管理員"
   },
   "hero": {
     "tagline": "免費開始 — 無需信用卡",
@@ -89,7 +91,7 @@
     "providersQuestion": "支援哪些電子郵件提供商？",
     "providersAnswer": "任何支援 SMTP 的提供商都適用：Gmail、Outlook、Yahoo Mail、Apple iCloud Mail、cPanel/Zoho 商業電子郵件，以及幾乎所有託管服務提供商的郵件伺服器。如果您可以在手機上設定電子郵件應用，您就可以將其連線到 Get Phame。",
     "freeQuestion": "它真的是免費的嗎？",
-    "freeAnswer": "是的 — 免費且沒有人為的傳送限制。您連線的是您自己的電子郵件賬戶，因此唯一的限制是您的電子郵件提供商的每日傳送上限（Gmail 每天允許傳送約500封，大多數其他提供商也類似）。沒有隱藏費用，也無需信用卡即可開始使用。",
+    "freeAnswer": "是的。免費方案先提供 10 次評論請求，之後每滾動 30 天提供 5 次。無需信用卡，同時仍受電子郵件服務商每日傳送上限約束。",
     "importQuestion": "我可以匯入我的客戶列表嗎？",
     "importAnswer": "是的。您可以上傳包含客戶姓名和電子郵件地址的 CSV 檔案，或者如果您經營線上商店，可以直接從 WooCommerce 同步。匯入後，您可以批次選擇聯絡人，並一鍵傳送個性化評論請求。",
     "q1": "郵件會被當作垃圾郵件嗎？",
@@ -97,7 +99,7 @@
     "q2": "支援哪些郵件服務商？",
     "a2": "支援所有SMTP郵件服務商：Gmail、Outlook、Yahoo Mail、Apple iCloud Mail等。",
     "q3": "真的免費嗎？",
-    "a3": "是的——免費且無人為傳送限制。您連線自己的郵箱賬戶，唯一的限制是您的郵件服務商的每日傳送上限。",
+    "a3": "是的。您先獲得 10 次評論請求，之後每滾動 30 天獲得 5 次。無需信用卡。",
     "q4": "可以匯入客戶名單嗎？",
     "a4": "可以。上傳包含客戶姓名和郵箱地址的CSV檔案，或直接從WooCommerce同步。",
     "q5": "Does Get Phame store my email password?",
@@ -115,7 +117,7 @@
     "q11": "How does WooCommerce sync work?",
     "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
     "q12": "What does unlimited mean on the Pro plan?",
-    "a12": "Unlimited means no cap on review requests sent per month. The Free plan includes 10 requests to get you started. Pro removes that limit entirely."
+    "a12": "無限表示評論請求沒有每月上限。免費方案先提供 10 次，之後每滾動 30 天提供 5 次。Pro 會取消此產品限制。"
   },
   "bottomCta": {
     "headline": "立即開始收集評論",
@@ -244,7 +246,10 @@
     "toGo": "還差",
     "reviewsPerMonth": "條評價 / 月",
     "ofMonthlyGoal": "月度目標完成率",
-    "requestsByPlatform": "按平臺統計請求"
+    "requestsByPlatform": "按平臺統計請求",
+    "freeAllowanceInitial": "免費方案：首次 10 次請求，之後每滾動 30 天 5 次",
+    "freeAllowanceMonthly": "免費方案：每滾動 30 天 5 次請求",
+    "nextFreeRequest": "下次可傳送請求日期：{{date}}"
   },
   "notifications": {
     "followUpReminderScheduled": "已安排跟進提醒！",
@@ -325,7 +330,11 @@
     "upgradeToPro": "升級到專業版 →",
     "upgrade": "升級",
     "imported": "已匯入",
-    "importedMultiple": "已匯入 {{count}} 個聯絡人 — 正在傳送給第一個。如需批次傳送，請使用批次傳送功能。"
+    "importedMultiple": "已匯入 {{count}} 個聯絡人 — 正在傳送給第一個。如需批次傳送，請使用批次傳送功能。",
+    "freeInitialRemaining": "免費方案：10 次初始請求還剩 {{remaining}} 次，之後每滾動 30 天 5 次",
+    "freeRollingRemaining": "免費方案：目前滾動 30 天額度的 5 次請求還剩 {{remaining}} 次",
+    "freeInitialLimitReachedDesc": "您已用完 10 次初始請求。之後每滾動 30 天可傳送 5 次，或升級以獲得無限請求。",
+    "freeRollingLimitReachedDesc": "您已用完目前滾動 30 天額度的 5 次請求。下次請求將於 {{date}} 可用，或立即升級繼續傳送。"
   },
   "tabs": {
     "account": "賬戶",
@@ -890,7 +899,9 @@
     "prioritySupport": "優先支援",
     "futureUpdates": "未來更新",
     "price": "價格",
-    "freeTrialNote": "所有計劃均包含 10 次請求的免費試用。無需信用卡即可開始。"
+    "freeTrialNote": "所有計劃均包含 10 次請求的免費試用。無需信用卡即可開始。",
+    "reviewRequests": "評論請求",
+    "freeRequestAllowance": "首次 10 次，之後每滾動 30 天 5 次"
   },
   "paidUser": {
     "adminAccess": "管理員許可權",
@@ -919,11 +930,15 @@
       "timing": "Stripe 會在您核准變更前，顯示確切生效日期及任何按比例計算的費用或抵扣。",
       "cancel": "保留 {{plan}}",
       "continue": "前往 Stripe"
-    }
+    },
+    "renewsOn": "將於 {{date}} 續訂",
+    "accessUntil": "可使用至 {{date}}"
   },
   "account": {
     "administrator": "管理員",
-    "administratorAccount": "管理員帳戶"
+    "administratorAccount": "管理員帳戶",
+    "renewsOn": "將於 {{date}} 續訂",
+    "accessUntil": "可使用至 {{date}}"
   },
   "columnLabels": {
     "fullName": "全名",
@@ -1428,5 +1443,36 @@
     "a5": "終身套餐涵蓋一個商家/門店。如果您管理多個門店，每個門店需要單獨的賬戶。如需代理或多門店定價，請聯絡我們。",
     "q6": "接受哪些支付方式？",
     "a6": "透過 Stripe 接受所有主要信用卡和簽帳金融卡。泰國使用者也可以透過 PromptPay 付款——點選主要結賬按鈕下方的 PromptPay 選項。"
+  },
+  "paymentSuccess": {
+    "confirmed": "付款已確認。",
+    "confirmedToast": "付款已確認。您的 Get Phame 權限已啟用。",
+    "upgraded": "您的帳戶已立即升級。"
+  },
+  "adminUsers": {
+    "roleUpdated": "管理員權限已更新。",
+    "lifeGranted": "已授予 Life 權限。",
+    "lifeRemoved": "已移除 Life 權限。",
+    "back": "管理員面板",
+    "eyebrow": "使用者管理",
+    "title": "管理使用者",
+    "subtitle": "搜尋所有帳戶並管理管理員或 Life 權限。",
+    "searchLabel": "搜尋使用者",
+    "searchPlaceholder": "姓名或電子郵件",
+    "accountCount": "{{count}} 個帳戶",
+    "loading": "正在載入帳戶…",
+    "unnamed": "未命名使用者",
+    "admin": "管理員",
+    "life": "Life",
+    "noEmail": "無電子郵件",
+    "accountMeta": "加入日期 {{date}} · 已儲存方案：{{tier}}",
+    "removeAdmin": "移除管理員",
+    "makeAdmin": "設為管理員",
+    "removeLife": "移除 Life",
+    "grantLife": "授予 Life",
+    "empty": "沒有符合搜尋的使用者。",
+    "previous": "上一頁",
+    "page": "第 {{page}} 頁，共 {{count}} 頁",
+    "next": "下一頁"
   }
 }

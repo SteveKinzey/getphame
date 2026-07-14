@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { COOKIE_NAME, FREE_LIMIT, FREE_LIMIT_ERR_MSG } from "@shared/const";
+import { COOKIE_NAME, FREE_LIMIT_ERR_MSG } from "@shared/const";
 import { getEffectiveTier } from "@shared/plans";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { paidProcedure, protectedProcedure, publicProcedure, router } from "./_core/trpc";
+import { adminProcedure, paidProcedure, protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { hasPaidOrAdminAccess } from "./entitlements";
 import { storageGet } from "./storage";
@@ -14,6 +14,7 @@ import {
   getCustomerRequests,
   getMonthlyRequestCount,
   getTotalRequestCount,
+  getFreeQuotaSummary,
   getTodaySentCount,
   generateApiKey,
   listApiKeys,
@@ -30,7 +31,7 @@ import {
 import { sendMailViaSmtp } from "./smtp";
 import { buildReviewRequestEmail, buildReviewRequestText } from "./emailTemplates";
 import { checkSendRateLimit } from "./rateLimiter";
-import { createCheckoutSession, createPortalSession, createThbCheckoutSession } from "./stripe";
+import { createCheckoutSession, createPortalSession, createThbCheckoutSession, getSubscriptionSnapshot } from "./stripe";
 import { sendLeadGuideEmail } from "./leadGuideEmail";
 import {
   getWooCredentials,
@@ -46,7 +47,7 @@ import {
 import { getDb } from "./db";
 import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
-import { eq, like, or, inArray, desc, isNotNull, isNull, and } from "drizzle-orm";
+import { eq, like, or, inArray, desc, isNotNull, isNull, and, sql } from "drizzle-orm";
 import {
   listSavedContacts,
   createSavedContact,
@@ -143,10 +144,7 @@ export function buildUnsubUrl(contactType: "contact" | "woo", id: number, userId
   return `${base}/unsubscribe?token=${token}`;
 }
 
-/**
- * Enforce the 10-request free-tier limit.
- * Throws a FORBIDDEN TRPCError if the user is on the free tier and has already sent FREE_LIMIT requests.
- */
+/** Enforce 10 initial sends, then 5 sends per rolling 30-day window. */
 async function enforceFreeLimit(userId: number, tier: string) {
   if (tier !== "free") return; // paid users have no limit
   const db = await getDb();
@@ -158,9 +156,12 @@ async function enforceFreeLimit(userId: number, tier: string) {
       .limit(1);
     if (account?.role === "admin") return;
   }
-  const total = await getTotalRequestCount(userId);
-  if (total >= FREE_LIMIT) {
-    throw new TRPCError({ code: "FORBIDDEN", message: FREE_LIMIT_ERR_MSG });
+  const quota = await getFreeQuotaSummary(userId);
+  if (quota.blocked) {
+    const resetMessage = quota.nextAvailableAt
+      ? ` Next send available ${new Date(quota.nextAvailableAt).toISOString()}.`
+      : "";
+    throw new TRPCError({ code: "FORBIDDEN", message: `${FREE_LIMIT_ERR_MSG}${resetMessage}` });
   }
 }
 
@@ -371,11 +372,12 @@ export const appRouter = router({
     get: protectedProcedure.query(async ({ ctx }) => {
       const profile = await getBusinessProfile(ctx.user.id);
       if (!profile) return null;
-      const totalSent = await getTotalRequestCount(ctx.user.id);
+      const freeQuota = await getFreeQuotaSummary(ctx.user.id);
       return {
         ...profile,
         tier: getEffectiveTier(profile.tier, ctx.user.role),
-        totalSent,
+        totalSent: freeQuota.totalSent,
+        freeQuota,
       };
     }),
 
@@ -495,19 +497,34 @@ export const appRouter = router({
     /** Get current subscription status for the user */
     subscriptionStatus: protectedProcedure.query(async ({ ctx }) => {
       const db = await getDb();
-      if (!db) return { active: false, status: null };
+      if (!db) return { active: false, status: null, currentPeriodEnd: null, cancelAtPeriodEnd: false };
       const rows = await db
         .select()
         .from(stripeSubscriptions)
         .where(eq(stripeSubscriptions.userId, ctx.user.id))
         .limit(1);
-      if (rows.length === 0) return { active: false, status: null };
+      if (rows.length === 0) return { active: false, status: null, currentPeriodEnd: null, cancelAtPeriodEnd: false };
       const sub = rows[0];
-      return {
-        active: sub.status === "active",
-        status: sub.status,
-        subscriptionId: sub.stripeSubscriptionId,
-      };
+      try {
+        const snapshot = await getSubscriptionSnapshot(sub.stripeSubscriptionId);
+        return {
+          active: snapshot.status === "active" || snapshot.status === "trialing" || snapshot.status === "lifetime",
+          status: snapshot.status,
+          subscriptionId: sub.stripeSubscriptionId,
+          currentPeriodEnd: snapshot.currentPeriodEnd,
+          cancelAtPeriodEnd: snapshot.cancelAtPeriodEnd,
+        };
+      } catch (error) {
+        console.warn("[Stripe] Failed to refresh subscription status; using stored status", error);
+        const profile = await getBusinessProfile(ctx.user.id);
+        return {
+          active: sub.status === "active" || sub.status === "lifetime",
+          status: sub.status,
+          subscriptionId: sub.stripeSubscriptionId,
+          currentPeriodEnd: profile?.planExpiresAt ?? null,
+          cancelAtPeriodEnd: false,
+        };
+      }
     }),
   }),
 
@@ -2197,6 +2214,104 @@ export const appRouter = router({
           }
         }
         return rows.map(r => ({ ...r, churnReason: churnMap[r.id] ?? null }));
+      }),
+
+    /** Paginated user directory with account role and effective Life access. */
+    listUsers: adminProcedure
+      .input(z.object({
+        query: z.string().trim().max(100).default(""),
+        page: z.number().int().min(1).default(1),
+        pageSize: z.number().int().min(10).max(100).default(25),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const search = input.query ? `%${input.query}%` : null;
+        const whereClause = search ? or(like(users.name, search), like(users.email, search)) : undefined;
+        const [countRow] = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(users)
+          .where(whereClause);
+        const total = Number(countRow?.count ?? 0);
+        const rows = await db
+          .select({
+            id: users.id,
+            name: users.name,
+            email: users.email,
+            role: users.role,
+            createdAt: users.createdAt,
+            lastSignedIn: users.lastSignedIn,
+            tier: businessProfiles.tier,
+          })
+          .from(users)
+          .leftJoin(businessProfiles, eq(users.id, businessProfiles.userId))
+          .where(whereClause)
+          .orderBy(desc(users.createdAt))
+          .limit(input.pageSize)
+          .offset((input.page - 1) * input.pageSize);
+
+        return {
+          users: rows.map((row) => ({
+            ...row,
+            tier: row.tier ?? "free",
+            lifeAccess: row.role === "admin" || row.tier === "lifetime",
+          })),
+          page: input.page,
+          pageSize: input.pageSize,
+          total,
+          pageCount: Math.max(1, Math.ceil(total / input.pageSize)),
+        };
+      }),
+
+    setUserRole: adminProcedure
+      .input(z.object({ userId: z.number().int().positive(), role: z.enum(["user", "admin"]) }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.id === input.userId && input.role !== "admin") {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "You cannot remove your own administrator access." });
+        }
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        await db.update(users).set({ role: input.role, updatedAt: new Date() }).where(eq(users.id, input.userId));
+        console.log(`[Admin] User ${input.userId} role set to ${input.role} by admin ${ctx.user.id}`);
+        return { ok: true };
+      }),
+
+    setLifeAccess: adminProcedure
+      .input(z.object({ userId: z.number().int().positive(), enabled: z.boolean() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const [target] = await db
+          .select({ name: users.name, email: users.email, role: users.role, tier: businessProfiles.tier })
+          .from(users)
+          .leftJoin(businessProfiles, eq(users.id, businessProfiles.userId))
+          .where(eq(users.id, input.userId))
+          .limit(1);
+        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
+        if (!input.enabled && target.role === "admin") {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Administrators always have Life access. Change the role first." });
+        }
+        const yearMonth = new Date().toISOString().slice(0, 7);
+        await db
+          .insert(businessProfiles)
+          .values({
+            userId: input.userId,
+            businessName: target.name?.trim() || target.email?.trim() || "Get Phame User",
+            reviewLink: "",
+            tier: input.enabled ? "lifetime" : "free",
+            monthlyCount: 0,
+            monthlyResetDate: yearMonth,
+            planExpiresAt: null,
+          })
+          .onDuplicateKeyUpdate({
+            set: {
+              tier: input.enabled ? "lifetime" : target.tier === "lifetime" ? "free" : target.tier ?? "free",
+              planExpiresAt: null,
+              updatedAt: new Date(),
+            },
+          });
+        console.log(`[Admin] User ${input.userId} Life access ${input.enabled ? "enabled" : "disabled"} by admin ${ctx.user.id}`);
+        return { ok: true };
       }),
 
     /** Manually override a user's tier — admin only */
