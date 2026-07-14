@@ -106,6 +106,10 @@ describe("email magic-link verification", () => {
     expect(successfulRetry.headers.location).toBe("/");
     expect(database.update).toHaveBeenCalledTimes(1);
     expect(successfulRetry.headers["set-cookie"]?.[0]).toContain("signed-session-token");
+    expect(mocks.createSessionToken).toHaveBeenLastCalledWith(
+      `email_${record.email}`,
+      expect.objectContaining({ name: record.email }),
+    );
     expect(mocks.recordAuthLifecycleEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         eventType: "verification_failed",
@@ -169,7 +173,60 @@ describe("email magic-link verification", () => {
       openId: existingAccount.openId,
       email: record.email,
     }));
-    expect(mocks.createSessionToken).toHaveBeenCalledWith(existingAccount.openId, expect.any(Object));
+    expect(mocks.createSessionToken).toHaveBeenCalledWith(
+      existingAccount.openId,
+      expect.objectContaining({ name: existingAccount.name }),
+    );
     expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
+  });
+
+  it("falls back to the normalized email when an existing account has no usable display name", async () => {
+    const record = {
+      id: 99,
+      email: "steve@sk-america.com",
+      token: "missing-name-token",
+      expiresAt: new Date(Date.now() + 60_000),
+      usedAt: null,
+      createdAt: new Date(),
+    };
+    const database = {
+      select: vi.fn(() => ({
+        from: vi.fn(() => ({
+          where: vi.fn(() => ({ limit: vi.fn().mockResolvedValue([record]) })),
+        })),
+      })),
+      update: vi.fn(() => ({
+        set: vi.fn(() => ({ where: vi.fn().mockResolvedValue(undefined) })),
+      })),
+    };
+    const existingAccount = {
+      id: 12,
+      openId: "apple-existing-steve",
+      email: record.email,
+      name: "   ",
+      role: "admin",
+    };
+
+    mocks.getDb.mockResolvedValue(database);
+    mocks.getUserByOpenId.mockResolvedValue(undefined);
+    mocks.getUserByEmail.mockResolvedValue(existingAccount);
+    mocks.upsertUser.mockResolvedValue(undefined);
+    mocks.createSessionToken.mockResolvedValue("valid-named-session");
+
+    const app = express();
+    app.use(express.json());
+    registerEmailAuthRoutes(app);
+
+    const response = await request(app)
+      .get("/api/auth/magic-link/verify")
+      .query({ token: record.token });
+
+    expect(response.status).toBe(302);
+    expect(response.headers.location).toBe("/");
+    expect(mocks.createSessionToken).toHaveBeenCalledWith(
+      existingAccount.openId,
+      expect.objectContaining({ name: record.email }),
+    );
+    expect(response.headers["set-cookie"]?.[0]).toContain("valid-named-session");
   });
 });

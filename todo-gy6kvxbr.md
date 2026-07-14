@@ -115,3 +115,7 @@
 - [x] Preserve the Apple and Google OAuth implementations behind a reversible preview/staging-only gate instead of deleting server routes.
 - [x] Add regression coverage proving production hostnames hide social login and preview/localhost hostnames expose it for continued testing.
 - [x] Publish the validated staging-gated release, then verify `getphame.app/login` hides Apple and Google while the preview host preserves both test controls.
+- [x] Reproduce and trace the July 14 production magic-link failure for the existing Steve account without logging or exposing the token.
+- [x] Repair the magic-link verification, account resolution, session cookie, or redirect failure while preserving existing Apple, Google, and email authentication behavior.
+- [x] Add focused regression coverage for the exact failure and rerun TypeScript, the full Vitest suite, and the production build.
+- [ ] Publish the verified repair and confirm a newly requested custom-domain magic link reaches the authenticated dashboard.

@@ -358,6 +358,10 @@ export function registerEmailAuthRoutes(app: Express) {
         (await db.getUserByEmail(email));
       const isNewUser = !existingUser;
       const sessionOpenId = existingUser?.openId ?? emailOpenId;
+      // Session verification requires a non-empty name. The previous empty
+      // string produced a signed cookie that was immediately rejected as
+      // "Session payload missing required fields" on the next request.
+      const sessionName = existingUser?.name?.trim() || email;
 
       // Upsert user — creates account if new, updates lastSignedIn if existing
       await db.upsertUser({
@@ -384,7 +388,7 @@ export function registerEmailAuthRoutes(app: Express) {
 
       // Issue session JWT cookie
       const sessionToken = await sdk.createSessionToken(sessionOpenId, {
-        name: "",
+        name: sessionName,
         expiresInMs: ONE_YEAR_MS,
       });
 
