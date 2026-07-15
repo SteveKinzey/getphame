@@ -71,12 +71,16 @@ export async function getSystemHealthTrend(hours = 24) {
   };
 }
 
-export async function getOperationsAlertState(reminderRows: ReminderTimingPerformanceRow[]) {
-  const db = await getDb();
-  const latestSmtpRows = db
-    ? await db.select().from(smtpHealthSnapshots).orderBy(desc(smtpHealthSnapshots.checkedAt)).limit(1)
-    : [];
-  const latestSmtp = latestSmtpRows[0] ?? null;
+type SmtpAlertObservation = {
+  checkedAt: number;
+  totalAccounts: number;
+  healthyAccounts: number;
+};
+
+export function evaluateOperationsAlertState(
+  latestSmtp: SmtpAlertObservation | null,
+  reminderRows: ReminderTimingPerformanceRow[]
+) {
   const smtpSuccessRate = latestSmtp && latestSmtp.totalAccounts > 0
     ? Math.round((latestSmtp.healthyAccounts / latestSmtp.totalAccounts) * 1000) / 10
     : null;
@@ -108,4 +112,13 @@ export async function getOperationsAlertState(reminderRows: ReminderTimingPerfor
       hasData: reminderSent > 0,
     },
   } as const;
+}
+
+export async function getOperationsAlertState(reminderRows: ReminderTimingPerformanceRow[]) {
+  const db = await getDb();
+  const latestSmtpRows = db
+    ? await db.select().from(smtpHealthSnapshots).orderBy(desc(smtpHealthSnapshots.checkedAt)).limit(1)
+    : [];
+  const latestSmtp = latestSmtpRows[0] ?? null;
+  return evaluateOperationsAlertState(latestSmtp, reminderRows);
 }

@@ -4,7 +4,7 @@
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { useLocation, useSearch } from "wouter";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Users,
   Send,
@@ -24,7 +24,18 @@ import {
   Gift,
   KeyRound,
   AlertTriangle,
+  Activity,
+  Download,
 } from "lucide-react";
+import {
+  CartesianGrid,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import { useDebounce } from "use-debounce";
 import { toast } from "sonner";
@@ -48,6 +59,39 @@ export default function AdminDashboard() {
     enabled: user?.role === "admin",
     refetchInterval: 30_000,
   });
+
+  const { data: systemHealthTrend, isLoading: systemHealthLoading } = trpc.admin.systemHealthTrend.useQuery(
+    { hours: 24 },
+    { enabled: user?.role === "admin", refetchInterval: 5 * 60_000 }
+  );
+
+  const { data: operationsAlerts } = trpc.admin.operationsAlerts.useQuery(undefined, {
+    enabled: user?.role === "admin",
+    refetchInterval: 5 * 60_000,
+  });
+
+  const operationsExport = trpc.admin.operationsAnalyticsExport.useQuery(undefined, { enabled: false });
+
+  const healthTrendData = useMemo(() => {
+    if (!systemHealthTrend) return [];
+    return [
+      ...systemHealthTrend.smtp.map((point) => ({
+        timestamp: point.checkedAt,
+        smtp: point.successRate,
+        authentication: null as number | null,
+      })),
+      ...systemHealthTrend.authentication.map((point) => ({
+        timestamp: point.checkedAt,
+        smtp: null as number | null,
+        authentication: point.successRate,
+      })),
+    ]
+      .sort((a, b) => a.timestamp - b.timestamp)
+      .map((point) => ({
+        ...point,
+        time: new Date(point.timestamp).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" }),
+      }));
+  }, [systemHealthTrend]);
 
   // Pre-fill search from ?search= URL param (e.g., deep-link from /admin/churn)
   const searchString = useSearch();
@@ -84,6 +128,25 @@ export default function AdminDashboard() {
       toast.error(error.message || "SMTP re-test failed.");
     },
   });
+
+  const downloadOperationsAnalytics = async () => {
+    try {
+      const result = await operationsExport.refetch();
+      if (!result.data) throw new Error("The analytics export could not be generated.");
+      const blob = new Blob([result.data.csv], { type: result.data.mimeType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = result.data.filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      toast.success(`Downloaded ${result.data.rowCount} analytics rows.`);
+    } catch (exportError) {
+      toast.error(exportError instanceof Error ? exportError.message : "Analytics export failed.");
+    }
+  };
 
   // Redirect non-admins
   useEffect(() => {
@@ -151,12 +214,24 @@ export default function AdminDashboard() {
         {stats && (
           <>
             <section data-testid="admin-operations-hub" aria-labelledby="admin-operations-title">
-              <div className="mb-3 flex items-end justify-between gap-3">
+              <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Operations</p>
                   <h2 id="admin-operations-title" className="mt-1 text-xl font-semibold rr-text-navy">System control center</h2>
                 </div>
-                <span className="hidden text-xs font-normal rr-text-navy-muted sm:block">Live summaries refresh automatically</span>
+                <div className="flex flex-col items-stretch gap-2 sm:items-end">
+                  <span className="hidden text-xs font-normal rr-text-navy-muted sm:block">Live summaries refresh automatically</span>
+                  <button
+                    type="button"
+                    data-testid="admin-operations-csv-export"
+                    onClick={downloadOperationsAnalytics}
+                    disabled={operationsExport.isFetching}
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl rr-bg-navy px-4 text-sm font-black text-white transition active:scale-[0.97] disabled:cursor-wait disabled:opacity-60 sm:w-auto"
+                  >
+                    {operationsExport.isFetching ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+                    {operationsExport.isFetching ? "Preparing CSV…" : "Export analytics CSV"}
+                  </button>
+                </div>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
                 {[
@@ -183,6 +258,33 @@ export default function AdminDashboard() {
                     </span>
                   </button>
                 ))}
+              </div>
+            </section>
+
+            <section aria-labelledby="operations-alerts-title">
+              <div className="mb-3">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Alert thresholds</p>
+                <h2 id="operations-alerts-title" className="mt-1 text-xl font-semibold rr-text-navy">Performance guardrails</h2>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <AlertMetricCard
+                  testId="smtp-alert-metric"
+                  label="SMTP fleet health"
+                  value={operationsAlerts?.smtp.value == null ? "No data" : `${operationsAlerts.smtp.value.toFixed(1)}%`}
+                  threshold={`Acceptable: ${operationsAlerts?.smtp.threshold ?? 95}% or higher`}
+                  isAlert={operationsAlerts?.smtp.status === "alert"}
+                  hasData={operationsAlerts?.smtp.hasData ?? false}
+                  detail={operationsAlerts?.smtp.checkedAt ? `Checked ${new Date(operationsAlerts.smtp.checkedAt).toLocaleString()}` : "Waiting for the first managed fleet check"}
+                />
+                <AlertMetricCard
+                  testId="reminder-alert-metric"
+                  label="Reminder performance"
+                  value={operationsAlerts?.reminders.value == null ? "No data" : `${operationsAlerts.reminders.value.toFixed(1)}%`}
+                  threshold={`Acceptable: ${operationsAlerts?.reminders.threshold ?? 20}% or higher`}
+                  isAlert={operationsAlerts?.reminders.status === "alert"}
+                  hasData={operationsAlerts?.reminders.hasData ?? false}
+                  detail={operationsAlerts ? `${operationsAlerts.reminders.sampleSize} attributed sends · alerting starts at ${operationsAlerts.reminders.minimumSample}` : "Loading attributed reminder outcomes"}
+                />
               </div>
             </section>
 
@@ -328,6 +430,50 @@ export default function AdminDashboard() {
               >
                 Review SMTP accounts →
               </button>
+            </section>
+
+            <section
+              data-testid="system-health-trend-chart"
+              className="rounded-2xl bg-white p-4 shadow-sm"
+              aria-labelledby="system-health-trend-title"
+            >
+              <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flex min-w-0 items-start gap-3">
+                  <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white"><Activity size={21} /></span>
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">System health</p>
+                    <h2 id="system-health-trend-title" className="mt-0.5 text-xl font-black rr-text-navy">24-hour health trend</h2>
+                    <p className="mt-1 text-sm font-semibold rr-text-navy-muted">Managed SMTP fleet checks and authentication diagnostics. Missing observations are not inferred.</p>
+                  </div>
+                </div>
+                <div className="flex gap-3 text-xs font-black rr-text-navy-muted sm:justify-end">
+                  <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-blue-700" />SMTP</span>
+                  <span className="inline-flex items-center gap-1.5"><span className="size-2.5 rounded-full bg-emerald-600" />Authentication</span>
+                </div>
+              </div>
+              {systemHealthLoading ? (
+                <div className="flex h-64 items-center justify-center"><Loader2 size={24} className="animate-spin rr-text-navy" /></div>
+              ) : healthTrendData.length === 0 ? (
+                <div className="mt-4 flex min-h-52 items-center justify-center rounded-xl bg-slate-50 px-5 text-center">
+                  <div>
+                    <p className="text-sm font-black rr-text-navy">Monitoring data unavailable</p>
+                    <p className="mt-1 text-sm font-semibold rr-text-navy-muted">No health status is being inferred from missing data. The chart will populate after managed checks run.</p>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-4 h-64 w-full" aria-label="SMTP and authentication success rates over the last 24 hours">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={healthTrendData} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#dbe3ef" vertical={false} />
+                      <XAxis dataKey="time" tick={{ fontSize: 11, fill: "#53627a" }} minTickGap={28} axisLine={false} tickLine={false} />
+                      <YAxis domain={[0, 100]} ticks={[0, 50, 95, 100]} tickFormatter={(value) => `${value}%`} tick={{ fontSize: 11, fill: "#53627a" }} axisLine={false} tickLine={false} />
+                      <Tooltip formatter={(value, name) => [`${Number(value).toFixed(1)}%`, name === "smtp" ? "SMTP" : "Authentication"]} labelFormatter={(label) => `Observed at ${label}`} contentStyle={{ borderRadius: 12, border: "1px solid #dbe3ef", boxShadow: "0 8px 24px rgba(15, 23, 42, 0.10)" }} />
+                      <Line type="monotone" dataKey="smtp" stroke="#1d4ed8" strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 5 }} connectNulls />
+                      <Line type="monotone" dataKey="authentication" stroke="#059669" strokeWidth={3} dot={{ r: 3 }} activeDot={{ r: 5 }} connectNulls />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
             </section>
 
             {/* Top KPI row */}
@@ -647,6 +793,45 @@ function KpiCard({
       <p className="text-sm font-bold rr-text-navy-mid">
         {label}
       </p>
+    </div>
+  );
+}
+
+function AlertMetricCard({
+  testId,
+  label,
+  value,
+  threshold,
+  isAlert,
+  hasData,
+  detail,
+}: {
+  testId: string;
+  label: string;
+  value: string;
+  threshold: string;
+  isAlert: boolean;
+  hasData: boolean;
+  detail: string;
+}) {
+  const tone = isAlert
+    ? "border-red-400 bg-red-50"
+    : hasData
+      ? "border-emerald-200 bg-emerald-50"
+      : "border-slate-200 bg-white";
+  return (
+    <div data-testid={testId} role={isAlert ? "alert" : undefined} className={`rounded-2xl border-2 p-4 shadow-sm ${tone}`}>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className={`text-xs font-black uppercase tracking-[0.14em] ${isAlert ? "text-red-700" : "rr-text-navy-muted"}`}>{label}</p>
+          <p className={`mt-1 text-3xl font-black ${isAlert ? "text-red-700" : "rr-text-navy"}`}>{value}</p>
+        </div>
+        <span className={`rounded-full px-2.5 py-1 text-xs font-black ${isAlert ? "bg-red-700 text-white" : hasData ? "bg-emerald-700 text-white" : "bg-slate-200 text-slate-700"}`}>
+          {isAlert ? "Below threshold" : hasData ? "Healthy" : "No data"}
+        </span>
+      </div>
+      <p className={`mt-2 text-sm font-black ${isAlert ? "text-red-700" : "rr-text-navy"}`}>{threshold}</p>
+      <p className="mt-1 text-xs font-semibold rr-text-navy-muted">{detail}</p>
     </div>
   );
 }

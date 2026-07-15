@@ -86,6 +86,7 @@ import {
 } from "./reminders";
 import { getReminderTimingPerformance } from "./reminderPerformance";
 import { getOperationsAlertState, getSystemHealthTrend } from "./systemHealth";
+import { buildAdminOperationsAnalyticsExport } from "./adminOperationsExport";
 import {
   createAccessCode,
   listAccessCodes,
@@ -2258,6 +2259,11 @@ export const appRouter = router({
     operationsAlerts: adminProcedure.query(async () => {
       const reminderRows = await getReminderTimingPerformance();
       return getOperationsAlertState(reminderRows);
+    }),
+
+    /** Privacy-safe CSV combining platform revenue, churn, and reminder analytics. */
+    operationsAnalyticsExport: adminProcedure.query(async () => {
+      return buildAdminOperationsAnalyticsExport();
     }),
 
     /** SMTP provider failure stats — breakdown by host across all users */
