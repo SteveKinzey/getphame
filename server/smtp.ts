@@ -11,6 +11,7 @@ import { createCipheriv, createDecipheriv, randomBytes, createHash } from "crypt
 import { getDb } from "./db";
 import { smtpCredentials } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
+import { notifySmtpFailureTransition } from "./smtpHealthAlerts";
 
 // ── Encryption helpers ────────────────────────────────────────────────────────
 
@@ -384,17 +385,26 @@ export async function runSmtpHealthChecks(): Promise<void> {
         pass,
       });
       if (result.ok) {
+        const checkedAt = Date.now();
         await db
           .update(smtpCredentials)
-          .set({ lastHealthCheck: Date.now(), lastHealthStatus: "ok", lastHealthError: null })
+          .set({ lastHealthCheck: checkedAt, lastHealthStatus: "ok", lastHealthError: null })
           .where(eq(smtpCredentials.userId, creds.userId));
         console.log(`[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} → ✓ ok`);
       } else {
         const errMsg = result.error ?? "Unknown error";
+        const checkedAt = Date.now();
         await db
           .update(smtpCredentials)
-          .set({ lastHealthCheck: Date.now(), lastHealthStatus: "fail", lastHealthError: errMsg.slice(0, 500) })
+          .set({ lastHealthCheck: checkedAt, lastHealthStatus: "fail", lastHealthError: errMsg.slice(0, 500) })
           .where(eq(smtpCredentials.userId, creds.userId));
+        await notifySmtpFailureTransition({
+          previousStatus: creds.lastHealthStatus as "ok" | "fail" | null,
+          accountEmail: creds.user,
+          host: creds.host,
+          checkedAt,
+          error: errMsg,
+        });
         console.warn(`[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} → ✗ fail: ${errMsg}`);
         // Aggregate by provider host
         if (!providerFailures[creds.host]) providerFailures[creds.host] = { count: 0, errors: [] };
@@ -404,11 +414,19 @@ export async function runSmtpHealthChecks(): Promise<void> {
     } catch (err) {
       // Don't let one failure abort the whole batch
       const errMsg = err instanceof Error ? err.message : String(err);
+      const checkedAt = Date.now();
       console.error(`[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} threw:`, errMsg);
       await db
         .update(smtpCredentials)
-        .set({ lastHealthCheck: Date.now(), lastHealthStatus: "fail", lastHealthError: errMsg.slice(0, 500) })
+        .set({ lastHealthCheck: checkedAt, lastHealthStatus: "fail", lastHealthError: errMsg.slice(0, 500) })
         .where(eq(smtpCredentials.userId, creds.userId));
+      await notifySmtpFailureTransition({
+        previousStatus: creds.lastHealthStatus as "ok" | "fail" | null,
+        accountEmail: creds.user,
+        host: creds.host,
+        checkedAt,
+        error: errMsg,
+      });
       if (!providerFailures[creds.host]) providerFailures[creds.host] = { count: 0, errors: [] };
       providerFailures[creds.host].count++;
       if (providerFailures[creds.host].errors.length < 3) providerFailures[creds.host].errors.push(errMsg);

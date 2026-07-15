@@ -119,7 +119,18 @@ import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracki
 import { bulkSenderRouter } from "./bulkSender";
 import { authDiagnosticsRouter } from "./routers/authDiagnostics";
 import { combineAccountsAsAdmin, deleteAccountAsAdmin } from "./accountManagement";
+import { buildSmtpAuditCsv, buildSmtpAuditCsvFilename, buildSmtpAuditWhere } from "./smtpAdminAudit";
 import crypto from "crypto";
+
+const smtpAuditFilterShape = {
+  dateFrom: z.number().int().nonnegative().optional(),
+  dateTo: z.number().int().nonnegative().optional(),
+  adminId: z.number().int().positive().optional(),
+  outcome: z.enum(["all", "removed"]).default("all"),
+};
+
+const validateSmtpAuditDateRange = (value: { dateFrom?: number; dateTo?: number }) =>
+  value.dateFrom === undefined || value.dateTo === undefined || value.dateFrom <= value.dateTo;
 
 // ── Unsubscribe token helpers ────────────────────────────────────────────────
 const UNSUB_SECRET = process.env.JWT_SECRET ?? "phame-unsub-secret";
@@ -2382,6 +2393,7 @@ export const appRouter = router({
             secure: smtpCredentials.secure,
             user: smtpCredentials.user,
             encryptedPass: smtpCredentials.encryptedPass,
+            lastHealthStatus: smtpCredentials.lastHealthStatus,
           })
           .from(smtpCredentials)
           .where(eq(smtpCredentials.userId, input.userId))
@@ -2402,6 +2414,7 @@ export const appRouter = router({
         }
 
         const checkedAt = Date.now();
+        const recovered = credential.lastHealthStatus === "fail" && result.ok;
         const errorMessage = result.ok ? null : (result.error ?? "SMTP verification failed.").slice(0, 500);
         await db.update(smtpCredentials).set({
           verified: result.ok ? 1 : 0,
@@ -2411,7 +2424,7 @@ export const appRouter = router({
           updatedAt: new Date(),
         }).where(eq(smtpCredentials.userId, input.userId));
         console.log(`[Admin] SMTP credentials for user ${input.userId} re-tested by admin ${ctx.user.id}: ${result.ok ? "ok" : "fail"}`);
-        return { ok: result.ok, checkedAt, error: errorMessage };
+        return { ok: result.ok, checkedAt, error: errorMessage, recovered };
       }),
 
     /** Durable, newest-first administrator SMTP removal history. */
@@ -2419,24 +2432,15 @@ export const appRouter = router({
       .input(z.object({
         page: z.number().int().min(1).default(1),
         pageSize: z.number().int().min(1).max(100).default(25),
-        dateFrom: z.number().int().nonnegative().optional(),
-        dateTo: z.number().int().nonnegative().optional(),
-        adminId: z.number().int().positive().optional(),
-        outcome: z.enum(["all", "removed"]).default("all"),
+        ...smtpAuditFilterShape,
       }).refine(
-        (value) => value.dateFrom === undefined || value.dateTo === undefined || value.dateFrom <= value.dateTo,
+        validateSmtpAuditDateRange,
         { message: "The audit start date must be before the end date.", path: ["dateFrom"] }
       ))
       .query(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-        const clauses = [
-          input.dateFrom === undefined ? undefined : gte(smtpAdminAuditLogs.occurredAt, input.dateFrom),
-          input.dateTo === undefined ? undefined : lte(smtpAdminAuditLogs.occurredAt, input.dateTo),
-          input.adminId === undefined ? undefined : eq(smtpAdminAuditLogs.actorUserId, input.adminId),
-          input.outcome === "all" ? undefined : eq(smtpAdminAuditLogs.outcome, input.outcome),
-        ].filter((clause): clause is NonNullable<typeof clause> => clause !== undefined);
-        const whereClause = clauses.length ? and(...clauses) : undefined;
+        const whereClause = buildSmtpAuditWhere(input);
         const [totalRow] = await db
           .select({ value: count() })
           .from(smtpAdminAuditLogs)
@@ -2452,6 +2456,36 @@ export const appRouter = router({
           .limit(input.pageSize)
           .offset((page - 1) * input.pageSize);
         return { entries, page, pageSize: input.pageSize, total, pageCount };
+      }),
+
+    /** Complete server-generated CSV for every audit row matching the active filters. */
+    exportSmtpAuditLogs: adminProcedure
+      .input(z.object(smtpAuditFilterShape).refine(
+        validateSmtpAuditDateRange,
+        { message: "The audit start date must be before the end date.", path: ["dateFrom"] }
+      ))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const entries = await db
+          .select({
+            occurredAt: smtpAdminAuditLogs.occurredAt,
+            outcome: smtpAdminAuditLogs.outcome,
+            action: smtpAdminAuditLogs.action,
+            actorName: smtpAdminAuditLogs.actorName,
+            actorEmail: smtpAdminAuditLogs.actorEmail,
+            targetName: smtpAdminAuditLogs.targetName,
+            targetEmail: smtpAdminAuditLogs.targetEmail,
+            smtpUser: smtpAdminAuditLogs.smtpUser,
+          })
+          .from(smtpAdminAuditLogs)
+          .where(buildSmtpAuditWhere(input))
+          .orderBy(desc(smtpAdminAuditLogs.occurredAt));
+        return {
+          csv: buildSmtpAuditCsv(entries),
+          filename: buildSmtpAuditCsvFilename(),
+          total: entries.length,
+        };
       }),
 
     /** Distinct administrators represented in the durable SMTP audit trail. */

@@ -86,7 +86,21 @@ function createDb(options?: { targetRole?: "admin" | "user"; targetTier?: "free"
         return { from: () => listChain };
       }
       if ("encryptedPass" in selection) {
-        return { from: () => ({ where: () => ({ limit: async () => [{ host: "smtp.example.test", port: 587, secure: 0, user: "smtp-target@example.test", encryptedPass: "encrypted" }] }) }) };
+        return { from: () => ({ where: () => ({ limit: async () => [{ host: "smtp.example.test", port: 587, secure: 0, user: "smtp-target@example.test", encryptedPass: "encrypted", lastHealthStatus: "fail" }] }) }) };
+      }
+      if ("occurredAt" in selection) {
+        const exportRows = [{
+          occurredAt: 1_752_537_600_000,
+          outcome: "removed",
+          action: "smtp_credentials_removed",
+          actorName: "Owner Admin",
+          actorEmail: "owner@example.test",
+          targetName: "Target User",
+          targetEmail: "target@example.test",
+          smtpUser: "smtp-target@example.test",
+        }];
+        const exportChain = { where: () => exportChain, orderBy: async () => exportRows };
+        return { from: () => exportChain };
       }
       if ("id" in selection && "user" in selection) {
         return { from: () => ({ where: () => ({ limit: async () => [{ id: 202, user: "smtp-target@example.test" }] }) }) };
@@ -217,6 +231,12 @@ vi.mock("@/lib/trpc", () => ({
           error: null,
         }),
       },
+      listSmtpAuditActors: {
+        useQuery: () => ({ data: [], isLoading: false, error: null }),
+      },
+      exportSmtpAuditLogs: {
+        useQuery: () => ({ data: undefined, isFetching: false, refetch: vi.fn() }),
+      },
     },
   },
 }));
@@ -263,6 +283,7 @@ describe("administrator user-management runtime", () => {
     await expect(caller.admin.removeUserSmtp({ userId: 2, confirmationEmail: "target@example.test" })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.retestUserSmtp({ userId: 2 })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.listSmtpAuditLogs({ page: 1, pageSize: 25 })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(caller.admin.exportSmtpAuditLogs({ outcome: "all" })).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 
   it("returns searched, paginated accounts with effective administrator and Life access", async () => {
@@ -282,7 +303,7 @@ describe("administrator user-management runtime", () => {
     expect(routerSource).toContain("pass: decryptPassword(credential.encryptedPass)");
     expect(routerSource).toContain("result = await testSmtpConnection({");
     expect(mocks.updateWhere).toHaveBeenCalledTimes(1);
-    expect(result).toMatchObject({ ok: true, error: null });
+    expect(result).toMatchObject({ ok: true, error: null, recovered: true });
     expect(result).not.toHaveProperty("pass");
     expect(result).not.toHaveProperty("encryptedPass");
   });
@@ -292,7 +313,7 @@ describe("administrator user-management runtime", () => {
     mocks.testSmtpConnection.mockResolvedValueOnce({ ok: false, error: "Authentication rejected" });
     const result = await appRouter.createCaller(context("admin")).admin.retestUserSmtp({ userId: 2 });
     expect(mocks.updateWhere).toHaveBeenCalledTimes(1);
-    expect(result).toMatchObject({ ok: false, error: "Authentication rejected" });
+    expect(result).toMatchObject({ ok: false, error: "Authentication rejected", recovered: false });
     expect(result.checkedAt).toEqual(expect.any(Number));
     expect(result).not.toHaveProperty("pass");
     expect(result).not.toHaveProperty("encryptedPass");
@@ -305,6 +326,16 @@ describe("administrator user-management runtime", () => {
     expect(result.entries).toEqual([
       expect.objectContaining({ actorEmail: "owner@example.test", targetEmail: "target@example.test", smtpUser: "smtp-target@example.test", outcome: "removed" }),
     ]);
+  });
+
+  it("exports every matching SMTP audit row from the server without credential identifiers", async () => {
+    mocks.getDb.mockResolvedValue(createDb());
+    const result = await appRouter.createCaller(context("admin")).admin.exportSmtpAuditLogs({ outcome: "removed" });
+    expect(result).toMatchObject({ total: 1, filename: expect.stringMatching(/^getphame-smtp-removal-audit-\d{4}-\d{2}-\d{2}\.csv$/) });
+    expect(result.csv).toContain("owner@example.test");
+    expect(result.csv).toContain("target@example.test");
+    expect(result.csv).not.toContain("encryptedPass");
+    expect(result.csv).not.toContain("credentialId");
   });
 
   it("prevents an administrator from removing their own administrator access", async () => {
@@ -404,8 +435,12 @@ describe("administrator user-management rendered workflow", () => {
     expect(html).toContain("All SMTP statuses");
     expect(html).toContain("Re-test SMTP");
     expect(html).toContain('data-testid={`retest-smtp-${account.id}`}');
+    expect(html).toContain('data-testid={`smtp-recovery-${account.id}`}');
+    expect(html).toContain("SMTP connection recovered and verified.");
     expect(html).toContain("SMTP removal audit log");
     expect(html).toContain('data-testid="smtp-audit-log"');
+    expect(html).toContain("exportSmtpAuditLogs.useQuery");
+    expect(html).toContain("Exported {{count}} matching audit records.");
     expect(html).toContain("removed SMTP credentials for");
     expect(html).toContain('data-testid={`smtp-status-${account.id}`}');
     expect(html).toContain("Delete");

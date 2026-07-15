@@ -39,35 +39,6 @@ export function parseAdminUserDirectoryParams(searchString: string): {
   };
 }
 
-export function buildSmtpAuditCsv(entries: Array<{
-  occurredAt: number;
-  outcome: string;
-  action: string;
-  actorUserId: number;
-  actorName: string | null;
-  actorEmail: string | null;
-  targetUserId: number;
-  targetName: string | null;
-  targetEmail: string | null;
-  smtpUser: string;
-}>) {
-  const escape = (value: string | number | null) => `"${String(value ?? "").replaceAll('"', '""')}"`;
-  const header = ["Date", "Outcome", "Action", "Administrator ID", "Administrator", "Administrator Email", "Target User ID", "Target User", "Target Email", "SMTP User"];
-  const rows = entries.map((entry) => [
-    new Date(entry.occurredAt).toISOString(),
-    entry.outcome,
-    entry.action,
-    entry.actorUserId,
-    entry.actorName,
-    entry.actorEmail,
-    entry.targetUserId,
-    entry.targetName,
-    entry.targetEmail,
-    entry.smtpUser,
-  ]);
-  return [header, ...rows].map((row) => row.map(escape).join(",")).join("\r\n");
-}
-
 export default function AdminUsersPage() {
   const { user } = useAuth();
   const { t } = useTranslation();
@@ -82,6 +53,7 @@ export default function AdminUsersPage() {
   const [auditAdminId, setAuditAdminId] = useState("all");
   const [auditOutcome, setAuditOutcome] = useState<SmtpAuditOutcomeFilter>("all");
   const [auditPage, setAuditPage] = useState(1);
+  const [smtpRecovery, setSmtpRecovery] = useState<{ userId: number; checkedAt: number } | null>(null);
   const auditPageSize = 25;
   const [page, setPage] = useState(1);
   const pageSize = 25;
@@ -111,12 +83,22 @@ export default function AdminUsersPage() {
     adminId: auditAdminId === "all" ? undefined : Number(auditAdminId),
     outcome: auditOutcome,
   }), [auditAdminId, auditDateFrom, auditDateTo, auditOutcome, auditPage]);
+  const auditExportInput = useMemo(() => ({
+    dateFrom: auditQueryInput.dateFrom,
+    dateTo: auditQueryInput.dateTo,
+    adminId: auditQueryInput.adminId,
+    outcome: auditQueryInput.outcome,
+  }), [auditQueryInput.dateFrom, auditQueryInput.dateTo, auditQueryInput.adminId, auditQueryInput.outcome]);
   const smtpAuditLogs = trpc.admin.listSmtpAuditLogs.useQuery(
     auditQueryInput,
     { enabled: user?.role === "admin" }
   );
   const smtpAuditActors = trpc.admin.listSmtpAuditActors.useQuery(undefined, {
     enabled: user?.role === "admin",
+  });
+  const smtpAuditExport = trpc.admin.exportSmtpAuditLogs.useQuery(auditExportInput, {
+    enabled: false,
+    retry: false,
   });
   type DirectoryAccount = NonNullable<typeof directory.data>["users"][number];
 
@@ -183,10 +165,17 @@ export default function AdminUsersPage() {
     onError: (error) => toast.error(error.message),
   });
   const retestUserSmtp = trpc.admin.retestUserSmtp.useMutation({
-    onSuccess: (data) => {
+    onSuccess: (data, variables) => {
       if (data.ok) {
-        toast.success(t("adminUsers.smtpRetestPassed", { defaultValue: "SMTP verification passed." }));
+        if (data.recovered) {
+          setSmtpRecovery({ userId: variables.userId, checkedAt: data.checkedAt });
+          toast.success(t("adminUsers.smtpRecovered", { defaultValue: "SMTP connection recovered and verified." }));
+        } else {
+          setSmtpRecovery((current) => current?.userId === variables.userId ? null : current);
+          toast.success(t("adminUsers.smtpRetestPassed", { defaultValue: "SMTP verification passed." }));
+        }
       } else {
+        setSmtpRecovery((current) => current?.userId === variables.userId ? null : current);
         toast.error(data.error || t("adminUsers.smtpRetestFailed", { defaultValue: "SMTP verification failed." }));
       }
       void refresh();
@@ -194,21 +183,29 @@ export default function AdminUsersPage() {
     onError: (error) => toast.error(error.message),
   });
 
-  const exportAuditCsv = () => {
-    const entries = smtpAuditLogs.data?.entries ?? [];
-    if (!entries.length) {
+  const exportAuditCsv = async () => {
+    const result = await smtpAuditExport.refetch();
+    if (result.error) {
+      toast.error(result.error.message);
+      return;
+    }
+    if (!result.data?.total) {
       toast.error(t("adminUsers.smtpAuditNoExportRows", { defaultValue: "No audit records match the current filters." }));
       return;
     }
-    const blob = new Blob([buildSmtpAuditCsv(entries)], { type: "text/csv;charset=utf-8" });
+    const blob = new Blob([result.data.csv], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `getphame-smtp-removal-audit-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.download = result.data.filename;
     document.body.appendChild(link);
     link.click();
     link.remove();
     URL.revokeObjectURL(url);
+    toast.success(t("adminUsers.smtpAuditExported", {
+      defaultValue: "Exported {{count}} matching audit records.",
+      count: result.data.total,
+    }));
   };
 
   if (!user || user.role !== "admin") return null;
@@ -316,6 +313,15 @@ export default function AdminUsersPage() {
                         )}
                         {account.smtpFromEmail && <span className="truncate text-xs font-semibold rr-text-navy-muted">{account.smtpFromEmail}</span>}
                       </div>
+                      {smtpRecovery?.userId === account.id && (
+                        <p data-testid={`smtp-recovery-${account.id}`} className="mt-2 inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-2.5 py-1.5 text-xs font-black text-emerald-800">
+                          <MailCheck size={14} />
+                          {t("adminUsers.smtpRecoveryConfirmed", {
+                            defaultValue: "Recovery confirmed {{time}}",
+                            time: new Date(smtpRecovery.checkedAt).toLocaleString(),
+                          })}
+                        </p>
+                      )}
                       <p className="mt-1 text-xs rr-text-navy-muted">
                         {t("adminUsers.accountMeta", {
                           defaultValue: "Joined {{date}} · Stored plan: {{tier}}",
@@ -428,11 +434,12 @@ export default function AdminUsersPage() {
             <button
               type="button"
               data-testid="smtp-audit-export"
-              disabled={!smtpAuditLogs.data?.entries.length}
+              disabled={!smtpAuditLogs.data?.total || smtpAuditExport.isFetching}
               onClick={exportAuditCsv}
               className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45 rr-bg-gold rr-text-navy"
             >
-              <Download size={16} /> {t("adminUsers.smtpAuditExport", { defaultValue: "Export filtered CSV" })}
+              {smtpAuditExport.isFetching ? <Loader2 className="animate-spin" size={16} /> : <Download size={16} />}
+              {t("adminUsers.smtpAuditExport", { defaultValue: "Export filtered CSV" })}
             </button>
           </div>
 
