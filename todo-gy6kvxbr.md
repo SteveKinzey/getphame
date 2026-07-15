@@ -280,3 +280,27 @@
 - [x] Add focused regressions for social metadata, launch assets, manifest completeness, service-worker scope, and installability requirements.
 - [x] Validate Add to Home Screen readiness with iPhone and Android mobile emulation, production asset checks, TypeScript, full Vitest, and production build.
 - [x] Publish the validated social-share and PWA launch release checkpoint.
+
+- [x] Audit the current Add to Home Screen guide, native sharing surfaces, existing analytics contracts, and prior PWA/social asset workflow.
+- [x] Trace why Gmail shows the legacy personal avatar for messages from no-reply@getphame.app, including Google account identity, SMTP sender profile, BIMI/DNS, and message-template sources.
+- [x] Configure the authoritative no-reply@getphame.app sender identity to use the approved deployed Get Phame site icon without generating or substituting a different logo.
+- [x] Verify the updated sender avatar in a newly delivered Gmail message and document any provider-side cache delay or account-owner step that cannot be automated safely.
+- [ ] Define privacy-light first-party events for prompt shown, install action attempted, native install accepted/dismissed where detectable, and share action completed/cancelled where detectable.
+- [ ] Persist and expose prompt-to-install conversion analytics without collecting customer content or unsupported device identifiers.
+- [ ] Add a native web share action with clipboard fallback that shares the canonical Get Phame URL and triggers the updated Open Graph previews.
+- [ ] Add a subtle GPU-friendly install-guide attention animation that respects prefers-reduced-motion and does not obstruct dismissal or installation controls.
+- [ ] Create a reusable Get Phame social-share and PWA launch optimization skill using the approved skill-creator workflow and deterministic asset resources.
+- [ ] Add focused regressions for analytics event semantics, privacy boundaries, native share fallback, animation accessibility, and reusable skill contracts.
+- [ ] Validate the enhanced guide and sharing flow on iPhone and Android emulation, run TypeScript, full Vitest, security audit, and production build.
+- [ ] Publish the validated install-conversion release and deliver the reusable skill package.
+- [x] Superseded by Steve’s attached PNG master: use the exact user-supplied gold P-star artwork as the authoritative sender/contact avatar; do not generate, redraw, or substitute another logo.
+- [x] Inspect Google Workspace to confirm `no-reply@getphame.app` is an alias, determine the dedicated send-only user and licensing path, and preserve existing mail routing.
+- [x] Create and brand a dedicated send-only Google Workspace identity for `no-reply@getphame.app` with the exact supplied P-star logo.
+- [x] Generate secure SMTP credentials for the dedicated sender and update Get Phame production secrets without exposing credentials.
+- [x] Verify a fresh production Get Phame email shows the P-star sender avatar and passes SPF, DKIM, and DMARC alignment checks.
+- [x] Reassign `no-reply@getphame.app` from Steve’s alternate email to the newly created Get Phame user instead of creating another paid Workspace user.
+- [x] Resolve the new `no-reply@getphame.app` account’s 2-Step Verification enrollment block without weakening the organization-wide security policy.
+- [x] Keep `no-reply@getphame.app` isolated from Steve’s inbox and use `hello@getphame.app` as SMTP Reply-To only after confirming it is a valid monitored Workspace address.
+- [x] Replace the previously sourced avatar asset with Steve’s attached `/home/ubuntu/upload/getphame-logo.png` as the sole authoritative logo master.
+- [x] Recreate exact 200×200, 512×512, and 1024×1024 PNG and WebP variants without redrawing or changing the P-star artwork.
+- [x] Apply a corrected PNG derivative to the dedicated Google Workspace sender profile and verify the visible avatar.
