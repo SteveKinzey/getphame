@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import SEOHead from "@/components/landing/SEOHead";
 import { isStagingSocialLoginHost } from "@/lib/socialLoginAvailability";
 
-const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
+const LOGO_URL = "https://assets.getphame.app/getphame-logo.svg";
 
 type MagicLinkState = "idle" | "loading" | "sent" | "error";
 

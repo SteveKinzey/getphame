@@ -265,3 +265,10 @@
 - [x] Apply any required database migration, run focused and complete Vitest suites, TypeScript and production builds, and verify Settings plus account menus on phone and desktop.
 - [x] Create and validate a reusable skill covering the full authenticated profile, avatar, account-menu, Google status, and email-branding implementation workflow.
 - [x] Publish the validated release and deliver the updated Get Phame project checkpoint.
+
+- [x] Audit every current logo, favicon, Apple touch icon, manifest icon, and structured metadata branding reference.
+- [x] Prepare deployment-safe favicon and PWA icon variants from the supplied approved P-star artwork without altering the logo design.
+- [x] Replace application logo-mark references with the supplied artwork while preserving GET PHAME as live text in full lockups.
+- [x] Update browser favicon, Apple touch icon, PWA manifest icons, and applicable metadata to use the approved artwork.
+- [x] Add focused branding regressions and run TypeScript, complete Vitest, and production build validation.
+- [ ] Verify the updated logo and favicon behavior on phone and desktop, then publish the validated release checkpoint.

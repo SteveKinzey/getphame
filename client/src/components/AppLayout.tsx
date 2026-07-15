@@ -264,7 +264,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 >
                   <div className="h-7 w-7 flex-shrink-0 overflow-hidden rounded-full" style={{ background: "oklch(0.80 0.18 80)" }}>
                     <img
-                      src={accountProfile?.avatarUrl || "https://assets.getphame.app/getphame-logo-mark.webp"}
+                      src={accountProfile?.avatarUrl || "https://assets.getphame.app/getphame-logo.svg"}
                       alt=""
                       className="h-full w-full object-cover"
                     />

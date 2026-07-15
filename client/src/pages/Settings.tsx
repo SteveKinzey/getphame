@@ -951,7 +951,7 @@ function AccountProfileCard() {
     return <div className="h-52 animate-pulse rounded-2xl bg-white" aria-label={t("settings.accountProfile.loading", { defaultValue: "Loading account profile" })} />;
   }
 
-  const avatarSrc = previewUrl || account?.avatarUrl || "https://assets.getphame.app/getphame-logo-mark.webp";
+  const avatarSrc = previewUrl || account?.avatarUrl || "https://assets.getphame.app/getphame-logo.svg";
   const nameChanged = name.trim() !== (account?.name ?? "") && name.trim().length >= 2;
 
   return (

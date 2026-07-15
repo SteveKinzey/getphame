@@ -135,7 +135,7 @@ export default function ChurnSurveyPage() {
               <span className="hidden sm:inline">{t("backToSettings")}</span>
             </button>
             <div className="flex items-center gap-2">
-              <img src="https://assets.getphame.app/getphame-logo-mark.webp" alt="" className="h-7 w-7 object-contain" aria-hidden="true" />
+              <img src="https://assets.getphame.app/getphame-logo.svg" alt="" className="h-7 w-7 object-contain" aria-hidden="true" />
               <span className="font-['Syne'] text-sm font-black tracking-[0.14em] text-white">GET <span className="text-[#D4A017]">PHAME</span></span>
             </div>
             <button

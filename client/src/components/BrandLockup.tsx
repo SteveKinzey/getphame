@@ -6,7 +6,7 @@ interface BrandLockupProps {
   showText?: boolean;
 }
 
-const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
+const LOGO_URL = "https://assets.getphame.app/getphame-logo.svg";
 
 export default function BrandLockup({
   className = "",

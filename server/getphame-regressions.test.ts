@@ -13,10 +13,34 @@ describe("Get Phame regression contracts", () => {
 
     expect(navbar).toContain("<BrandLockup");
     expect(navbar).toContain("<LanguageFlyout");
-    expect(lockup).toContain("https://assets.getphame.app/getphame-logo-mark.webp");
+    expect(lockup).toContain("https://assets.getphame.app/getphame-logo.svg");
     expect(lockup).toContain("Get&nbsp;");
     expect(lockup).toContain(">Phame</span>");
     expect(lockup).not.toContain("phame-wordmark-transparent-clean.png");
+  });
+
+  it("uses the supplied P-star artwork for browser, PWA, metadata, and in-app branding", () => {
+    const html = readProjectFile("../client/index.html");
+    const manifest = readProjectFile("../client/public/manifest.json");
+    const appLayout = readProjectFile("../client/src/components/AppLayout.tsx");
+    const bottomNav = readProjectFile("../client/src/components/BottomNav.tsx");
+    const home = readProjectFile("../client/src/pages/Home.tsx");
+
+    expect(html).toContain('href="https://assets.getphame.app/getphame-logo.svg"');
+    expect(html).toContain('href="/favicon.ico"');
+    expect(html).toContain('href="/favicon-32x32.png"');
+    expect(html).toContain('href="/favicon-16x16.png"');
+    expect(html).toContain('href="/apple-touch-icon.png"');
+    expect(html).toContain('"logo": "https://assets.getphame.app/getphame-logo-512.png"');
+    expect(manifest).toContain('"src": "/icons/icon-192.png"');
+    expect(manifest).toContain('"src": "/icons/icon-512.png"');
+    expect(manifest).toContain('"src": "/icons/icon-maskable-192.png"');
+    expect(manifest).toContain('"src": "/icons/icon-maskable-512.png"');
+    expect(manifest).toContain('"purpose": "maskable"');
+
+    for (const source of [html, manifest, appLayout, bottomNav, home]) {
+      expect(source).not.toContain("getphame-logo-mark.webp");
+    }
   });
 
   it("uses the official mark alone at constrained authenticated widths and restores the full lockup when space permits", () => {
@@ -382,7 +406,7 @@ describe("Get Phame regression contracts", () => {
   it("uses the approved GetPhame mark and a responsive professional growth visual on Upgrade", () => {
     const upgrade = readProjectFile("../client/src/pages/Upgrade.tsx");
     expect(upgrade).toContain("/manus-storage/getphame-pro-whiteboard-growth_3e9448fc.png");
-    expect(upgrade).toContain("https://assets.getphame.app/getphame-logo-mark.webp");
+    expect(upgrade).toContain("https://assets.getphame.app/getphame-logo.svg");
     expect(upgrade).toContain("GET <span");
     expect(upgrade).toContain("PHAME</span> PRO");
     expect(upgrade).toContain("lg:grid-cols-[0.78fr_1.22fr]");

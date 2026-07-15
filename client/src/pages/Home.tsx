@@ -16,8 +16,8 @@ import { useTranslation } from "react-i18next";
 import { getEffectivePlan } from "@shared/plans";
 import BrandLockup from "@/components/BrandLockup";
 
-const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
-const HERO_IMG = "https://assets.getphame.app/getphame-logo-mark.webp";
+const LOGO_URL = "https://assets.getphame.app/getphame-logo.svg";
+const HERO_IMG = "https://assets.getphame.app/getphame-logo.svg";
 
 function ReferralRewardsCard() {
   const { data: referralStats, isLoading } = trpc.referral.getStats.useQuery();

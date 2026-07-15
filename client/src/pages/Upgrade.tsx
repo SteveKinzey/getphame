@@ -328,7 +328,7 @@ export default function UpgradePage() {
           </div>
           <div className="relative overflow-hidden rounded-[1.75rem] border border-[#D4A017]/70 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
             <div className="absolute left-3 top-3 z-10 flex items-center gap-2 rounded-full border border-[#D4A017]/35 bg-[#061a3a]/95 px-3 py-2 shadow-lg sm:left-5 sm:top-5">
-              <img src="https://assets.getphame.app/getphame-logo-mark.webp" alt="" className="h-6 w-6 object-contain" aria-hidden="true" />
+              <img src="https://assets.getphame.app/getphame-logo.svg" alt="" className="h-6 w-6 object-contain" aria-hidden="true" />
               <span className="font-['Syne'] text-xs font-black tracking-[0.14em] text-white sm:text-sm">
                 GET <span className="text-[#D4A017]">PHAME</span> PRO
               </span>
