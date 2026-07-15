@@ -184,3 +184,18 @@
 - [x] Re-run focused and complete validation, checkpoint the release, and verify production.
 - [x] Replace the full GET PHAME wordmark with the official gold P-star logo mark whenever constrained authenticated header or sidebar widths would crowd adjacent controls.
 - [x] Add responsive branding regression coverage, pass the complete release gate, and verify logo-only plus full-lockup states at tablet, desktop, and mobile breakpoints.
+- [x] Create and validate a reusable administrator SMTP remediation skill through the approved skill-creator workflow.
+- [ ] Add administrator SMTP audit-log date and outcome-status filters while preserving pagination and responsive behavior.
+- [ ] Add CSV export for the currently selected SMTP audit-log filters with safe escaping and an administrator-only data contract.
+- [ ] Notify administrators immediately when an SMTP account transitions from a healthy state to failed without repeatedly alerting for unchanged failures.
+- [ ] Return and display immediate recovery confirmation when corrected SMTP credentials successfully verify after a prior failure.
+- [ ] Add regression coverage, run TypeScript and the full Vitest suite, build production, verify the mobile-first UI and live notification-safe behavior, then publish the completed release.
+- [x] Write a concise Get Phame email architecture summary covering Resend platform email, Google Workspace administration, and customer SMTP delivery.
+- [x] Create and verify a diagram showing magic-link and administrator SMTP-failure alert flows.
+- [x] Draft a ready-to-send email to Resend support describing the current architecture and requesting SMTP failure-alert best practices.
+- [x] Package the architecture brief, diagram source/image, and support email as downloadable deliverables.
+- [x] Reproduce the `/?from_webdev=1` tRPC API failure and identify the exact failing query, response status, and server-side cause.
+- [x] Repair the landing-route API failure with the smallest reliable routing, runtime, or upstream-handling change.
+- [x] Add focused Vitest coverage for the corrected tRPC request and a user-safe temporary-unavailability path.
+- [x] Run TypeScript, focused tests, the full Vitest suite, and the production build.
+- [x] Verify the repaired landing route at desktop and phone widths, then publish the validated checkpoint.

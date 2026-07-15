@@ -4,6 +4,11 @@ import express from "express";
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
 import { apiFetch } from "../client/src/lib/apiFetch";
+import {
+  getQueryRetryLimit,
+  queryRetryDelay,
+  shouldRetryQuery,
+} from "../client/src/lib/queryRetry";
 import { apiNotFoundHandler } from "./_core/apiFallback";
 
 describe("API transport JSON guarantees", () => {
@@ -65,5 +70,39 @@ describe("API transport JSON guarantees", () => {
     expect(trpcIndex).toBeGreaterThan(-1);
     expect(fallbackIndex).toBeGreaterThan(trpcIndex);
     expect(viteIndex).toBeGreaterThan(fallbackIndex);
+  });
+});
+
+describe("API query retry policy", () => {
+  it("allows a longer bounded recovery window for temporary 503 responses", () => {
+    const error = Object.assign(new Error("The API is temporarily unavailable. Please try again."), {
+      data: { code: "INTERNAL_SERVER_ERROR", httpStatus: 503 },
+    });
+
+    expect(getQueryRetryLimit(error)).toBe(6);
+    expect(shouldRetryQuery(5, error)).toBe(true);
+    expect(shouldRetryQuery(6, error)).toBe(false);
+  });
+
+  it("does not retry terminal authorization and validation failures", () => {
+    const forbidden = Object.assign(new Error("Forbidden"), {
+      data: { code: "FORBIDDEN", httpStatus: 403 },
+    });
+    const badRequest = Object.assign(new Error("Invalid input"), {
+      data: { code: "BAD_REQUEST", httpStatus: 400 },
+    });
+
+    expect(getQueryRetryLimit(forbidden)).toBe(0);
+    expect(getQueryRetryLimit(badRequest)).toBe(0);
+  });
+
+  it("uses capped exponential backoff for repeated transport failures", () => {
+    vi.spyOn(Math, "random").mockReturnValue(0);
+
+    expect(queryRetryDelay(0)).toBe(800);
+    expect(queryRetryDelay(1)).toBe(1_600);
+    expect(queryRetryDelay(4)).toBe(8_000);
+
+    vi.restoreAllMocks();
   });
 });
