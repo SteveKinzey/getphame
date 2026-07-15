@@ -55,7 +55,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
 import { eq, like, or, inArray, desc, isNotNull, isNull, and, sql } from "drizzle-orm";
 import {
@@ -2286,6 +2286,7 @@ export const appRouter = router({
     listUsers: adminProcedure
       .input(z.object({
         query: z.string().trim().max(100).default(""),
+        smtpStatus: z.enum(["all", "verified", "unverified", "unconnected"]).default("all"),
         page: z.number().int().min(1).default(1),
         pageSize: z.number().int().min(10).max(100).default(25),
       }))
@@ -2293,10 +2294,21 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
         const search = input.query ? `%${input.query}%` : null;
-        const whereClause = search ? or(like(users.name, search), like(users.email, search)) : undefined;
+        const searchClause = search ? or(like(users.name, search), like(users.email, search)) : undefined;
+        const smtpClause = input.smtpStatus === "verified"
+          ? and(isNotNull(smtpCredentials.id), eq(smtpCredentials.verified, 1))
+          : input.smtpStatus === "unverified"
+            ? and(isNotNull(smtpCredentials.id), eq(smtpCredentials.verified, 0))
+            : input.smtpStatus === "unconnected"
+              ? isNull(smtpCredentials.id)
+              : undefined;
+        const whereClause = searchClause && smtpClause
+          ? and(searchClause, smtpClause)
+          : searchClause ?? smtpClause;
         const [countRow] = await db
           .select({ count: sql<number>`count(*)` })
           .from(users)
+          .leftJoin(smtpCredentials, eq(users.id, smtpCredentials.userId))
           .where(whereClause);
         const total = Number(countRow?.count ?? 0);
         const rows = await db
@@ -2333,6 +2345,64 @@ export const appRouter = router({
           total,
           pageCount: Math.max(1, Math.ceil(total / input.pageSize)),
         };
+      }),
+
+    /** Re-test one user's stored SMTP credentials without exposing the password. */
+    retestUserSmtp: adminProcedure
+      .input(z.object({ userId: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const [credential] = await db
+          .select({
+            host: smtpCredentials.host,
+            port: smtpCredentials.port,
+            secure: smtpCredentials.secure,
+            user: smtpCredentials.user,
+            encryptedPass: smtpCredentials.encryptedPass,
+          })
+          .from(smtpCredentials)
+          .where(eq(smtpCredentials.userId, input.userId))
+          .limit(1);
+        if (!credential) throw new TRPCError({ code: "NOT_FOUND", message: "No SMTP credentials are connected for this user." });
+
+        let result: { ok: boolean; error?: string };
+        try {
+          result = await testSmtpConnection({
+            host: credential.host,
+            port: credential.port,
+            secure: credential.secure === 1,
+            user: credential.user,
+            pass: decryptPassword(credential.encryptedPass),
+          });
+        } catch (error) {
+          result = { ok: false, error: error instanceof Error ? error.message : "Unable to decrypt or test the stored credentials." };
+        }
+
+        const checkedAt = Date.now();
+        const errorMessage = result.ok ? null : (result.error ?? "SMTP verification failed.").slice(0, 500);
+        await db.update(smtpCredentials).set({
+          verified: result.ok ? 1 : 0,
+          lastHealthCheck: checkedAt,
+          lastHealthStatus: result.ok ? "ok" : "fail",
+          lastHealthError: errorMessage,
+          updatedAt: new Date(),
+        }).where(eq(smtpCredentials.userId, input.userId));
+        console.log(`[Admin] SMTP credentials for user ${input.userId} re-tested by admin ${ctx.user.id}: ${result.ok ? "ok" : "fail"}`);
+        return { ok: result.ok, checkedAt, error: errorMessage };
+      }),
+
+    /** Durable, newest-first administrator SMTP removal history. */
+    listSmtpAuditLogs: adminProcedure
+      .input(z.object({ limit: z.number().int().min(1).max(100).default(25) }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        return db
+          .select()
+          .from(smtpAdminAuditLogs)
+          .orderBy(desc(smtpAdminAuditLogs.occurredAt))
+          .limit(input.limit);
       }),
 
     setUserRole: adminProcedure
@@ -2394,17 +2464,39 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-        const [target] = await db
-          .select({ id: users.id, email: users.email })
-          .from(users)
-          .where(eq(users.id, input.userId))
-          .limit(1);
-        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
-        if (!target.email || input.confirmationEmail.toLowerCase() !== target.email.trim().toLowerCase()) {
-          throw new TRPCError({ code: "BAD_REQUEST", message: "Type the user's exact email address to remove SMTP credentials." });
-        }
-        const result = await db.delete(smtpCredentials).where(eq(smtpCredentials.userId, input.userId));
-        const removed = Number((result as { rowsAffected?: number })?.rowsAffected ?? 0) > 0;
+        const removed = await db.transaction(async (tx) => {
+          const [target] = await tx
+            .select({ id: users.id, name: users.name, email: users.email })
+            .from(users)
+            .where(eq(users.id, input.userId))
+            .limit(1);
+          if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
+          if (!target.email || input.confirmationEmail.toLowerCase() !== target.email.trim().toLowerCase()) {
+            throw new TRPCError({ code: "BAD_REQUEST", message: "Type the user's exact email address to remove SMTP credentials." });
+          }
+          const [credential] = await tx
+            .select({ id: smtpCredentials.id, user: smtpCredentials.user })
+            .from(smtpCredentials)
+            .where(eq(smtpCredentials.userId, input.userId))
+            .limit(1);
+          if (!credential) return false;
+
+          const occurredAt = Date.now();
+          await tx.delete(smtpCredentials).where(eq(smtpCredentials.id, credential.id));
+          await tx.insert(smtpAdminAuditLogs).values({
+            actorUserId: ctx.user.id,
+            actorName: ctx.user.name,
+            actorEmail: ctx.user.email,
+            targetUserId: target.id,
+            targetName: target.name,
+            targetEmail: target.email,
+            smtpUser: credential.user,
+            action: "smtp_credentials_removed",
+            outcome: "removed",
+            occurredAt,
+          });
+          return true;
+        });
         console.log(`[Admin] SMTP credentials for user ${input.userId} ${removed ? "removed" : "were already absent"} by admin ${ctx.user.id}`);
         return { ok: true, removed };
       }),

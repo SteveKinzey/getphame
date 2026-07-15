@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { useDebounce } from "use-debounce";
-import { AlertTriangle, ArrowDown, ArrowLeft, ChevronLeft, ChevronRight, Crown, Loader2, MailCheck, MailWarning, Merge, Search, ShieldCheck, Trash2, Unplug, Users } from "lucide-react";
+import { AlertTriangle, ArrowDown, ArrowLeft, ChevronLeft, ChevronRight, ClipboardList, Crown, Filter, Loader2, MailCheck, MailWarning, Merge, RefreshCw, Search, ShieldCheck, Trash2, Unplug, Users } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -20,12 +20,15 @@ export function matchesTypedEmail(confirmation: string, email: string | null | u
   return Boolean(email) && confirmation.trim().toLowerCase() === email!.trim().toLowerCase();
 }
 
+export type SmtpStatusFilter = "all" | "verified" | "unverified" | "unconnected";
+
 export default function AdminUsersPage() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [, navigate] = useLocation();
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 300);
+  const [smtpStatus, setSmtpStatus] = useState<SmtpStatusFilter>("all");
   const [page, setPage] = useState(1);
   const pageSize = 25;
   const utils = trpc.useUtils();
@@ -34,10 +37,14 @@ export default function AdminUsersPage() {
     if (user && user.role !== "admin") navigate("/");
   }, [user, navigate]);
 
-  useEffect(() => setPage(1), [debouncedSearch]);
+  useEffect(() => setPage(1), [debouncedSearch, smtpStatus]);
 
   const directory = trpc.admin.listUsers.useQuery(
-    { query: debouncedSearch, page, pageSize },
+    { query: debouncedSearch, smtpStatus, page, pageSize },
+    { enabled: user?.role === "admin" }
+  );
+  const smtpAuditLogs = trpc.admin.listSmtpAuditLogs.useQuery(
+    { limit: 25 },
     { enabled: user?.role === "admin" }
   );
   type DirectoryAccount = NonNullable<typeof directory.data>["users"][number];
@@ -51,7 +58,7 @@ export default function AdminUsersPage() {
   const [smtpConfirmation, setSmtpConfirmation] = useState("");
 
   const mergeCandidates = trpc.admin.listUsers.useQuery(
-    { query: "", page: 1, pageSize: 100 },
+    { query: "", smtpStatus: "all", page: 1, pageSize: 100 },
     { enabled: user?.role === "admin" && Boolean(combineSource) }
   );
 
@@ -100,6 +107,18 @@ export default function AdminUsersPage() {
       setSmtpAccount(null);
       setSmtpConfirmation("");
       void refresh();
+      void utils.admin.listSmtpAuditLogs.invalidate();
+    },
+    onError: (error) => toast.error(error.message),
+  });
+  const retestUserSmtp = trpc.admin.retestUserSmtp.useMutation({
+    onSuccess: (data) => {
+      if (data.ok) {
+        toast.success(t("adminUsers.smtpRetestPassed", { defaultValue: "SMTP verification passed." }));
+      } else {
+        toast.error(data.error || t("adminUsers.smtpRetestFailed", { defaultValue: "SMTP verification failed." }));
+      }
+      void refresh();
     },
     onError: (error) => toast.error(error.message),
   });
@@ -108,6 +127,7 @@ export default function AdminUsersPage() {
 
   const busyUserId = setRole.variables?.userId
     ?? setLifeAccess.variables?.userId
+    ?? retestUserSmtp.variables?.userId
     ?? removeUserSmtp.variables?.userId
     ?? deleteUser.variables?.userId
     ?? combineAccounts.variables?.sourceUserId
@@ -131,15 +151,33 @@ export default function AdminUsersPage() {
       <main className="max-w-5xl mx-auto px-4 py-5">
         <div className="bg-white rounded-2xl p-4 shadow-sm mb-4">
           <label htmlFor="admin-user-search" className="text-sm font-black rr-text-navy">{t("adminUsers.searchLabel", { defaultValue: "Search users" })}</label>
-          <div className="relative mt-2">
-            <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 rr-text-navy-muted" />
-            <input
-              id="admin-user-search"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-              placeholder={t("adminUsers.searchPlaceholder", { defaultValue: "Name or email" })}
-              className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-base rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
-            />
+          <div className="mt-2 grid gap-3 sm:grid-cols-[minmax(0,1fr)_220px]">
+            <div className="relative">
+              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 rr-text-navy-muted" />
+              <input
+                id="admin-user-search"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder={t("adminUsers.searchPlaceholder", { defaultValue: "Name or email" })}
+                className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-4 text-base rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
+              />
+            </div>
+            <div className="relative">
+              <Filter size={17} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 rr-text-navy-muted" />
+              <label htmlFor="smtp-status-filter" className="sr-only">{t("adminUsers.smtpFilterLabel", { defaultValue: "Filter by SMTP status" })}</label>
+              <select
+                id="smtp-status-filter"
+                data-testid="smtp-status-filter"
+                value={smtpStatus}
+                onChange={(event) => setSmtpStatus(event.target.value as SmtpStatusFilter)}
+                className="min-h-12 w-full appearance-none rounded-xl border border-slate-200 bg-white pl-10 pr-8 text-sm font-black rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
+              >
+                <option value="all">{t("adminUsers.smtpFilterAll", { defaultValue: "All SMTP statuses" })}</option>
+                <option value="verified">{t("adminUsers.smtpFilterVerified", { defaultValue: "SMTP verified" })}</option>
+                <option value="unverified">{t("adminUsers.smtpFilterUnverified", { defaultValue: "SMTP unverified" })}</option>
+                <option value="unconnected">{t("adminUsers.smtpFilterUnconnected", { defaultValue: "No SMTP connected" })}</option>
+              </select>
+            </div>
           </div>
           <p className="mt-2 text-xs font-semibold rr-text-navy-muted">
             {directory.data
@@ -156,7 +194,7 @@ export default function AdminUsersPage() {
           <div className="flex flex-col gap-3">
             {directory.data?.users.map((account) => {
               const isSelf = account.id === user.id;
-              const isBusy = busyUserId === account.id && (setRole.isPending || setLifeAccess.isPending || removeUserSmtp.isPending || deleteUser.isPending || combineAccounts.isPending);
+              const isBusy = busyUserId === account.id && (setRole.isPending || setLifeAccess.isPending || retestUserSmtp.isPending || removeUserSmtp.isPending || deleteUser.isPending || combineAccounts.isPending);
               return (
                 <article key={account.id} className="rounded-2xl bg-white p-4 shadow-sm" data-testid={`admin-user-${account.id}`}>
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -233,6 +271,18 @@ export default function AdminUsersPage() {
                       </button>
                       <button
                         type="button"
+                        data-testid={`retest-smtp-${account.id}`}
+                        disabled={isBusy || !account.smtpConnected}
+                        onClick={() => retestUserSmtp.mutate({ userId: account.id })}
+                        className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-emerald-200 bg-emerald-50 px-3 text-sm font-black text-emerald-800 transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45"
+                      >
+                        {retestUserSmtp.isPending && retestUserSmtp.variables?.userId === account.id
+                          ? <Loader2 className="animate-spin" size={15} />
+                          : <RefreshCw size={15} />}
+                        {t("adminUsers.retestSmtp", { defaultValue: "Re-test SMTP" })}
+                      </button>
+                      <button
+                        type="button"
                         disabled={isBusy || !account.smtpConnected || !account.email}
                         onClick={() => {
                           setSmtpAccount(account);
@@ -276,6 +326,44 @@ export default function AdminUsersPage() {
             </button>
           </div>
         )}
+
+        <section className="mt-7 rounded-2xl bg-white p-4 shadow-sm" aria-labelledby="smtp-audit-title">
+          <div className="flex items-start gap-3 border-b border-slate-100 pb-4">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl rr-bg-navy rr-text-gold"><ClipboardList size={19} /></div>
+            <div>
+              <h2 id="smtp-audit-title" className="text-lg font-black rr-text-navy">{t("adminUsers.smtpAuditTitle", { defaultValue: "SMTP removal audit log" })}</h2>
+              <p className="text-sm font-semibold rr-text-navy-muted">{t("adminUsers.smtpAuditSubtitle", { defaultValue: "A durable record of who permanently removed user SMTP credentials and when." })}</p>
+            </div>
+          </div>
+
+          {smtpAuditLogs.isLoading ? (
+            <div className="flex justify-center py-10"><Loader2 className="animate-spin rr-text-navy" size={26} /></div>
+          ) : smtpAuditLogs.error ? (
+            <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm font-bold text-red-700">{smtpAuditLogs.error.message}</p>
+          ) : smtpAuditLogs.data?.length ? (
+            <div className="mt-3 divide-y divide-slate-100" data-testid="smtp-audit-log">
+              {smtpAuditLogs.data.map((entry) => (
+                <article key={entry.id} className="grid gap-2 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+                  <div className="min-w-0">
+                    <p className="text-sm font-black rr-text-navy">
+                      {entry.actorName || entry.actorEmail || `Admin #${entry.actorUserId}`}
+                      <span className="font-semibold rr-text-navy-muted"> {t("adminUsers.smtpAuditRemoved", { defaultValue: "removed SMTP credentials for" })} </span>
+                      {entry.targetName || entry.targetEmail || `User #${entry.targetUserId}`}
+                    </p>
+                    <p className="mt-1 break-all text-xs font-semibold rr-text-navy-muted">
+                      {entry.actorEmail || `Admin #${entry.actorUserId}`} → {entry.targetEmail || `User #${entry.targetUserId}`} · {entry.smtpUser}
+                    </p>
+                  </div>
+                  <time className="text-xs font-black rr-text-navy-mid" dateTime={new Date(entry.occurredAt).toISOString()}>
+                    {new Date(entry.occurredAt).toLocaleString()}
+                  </time>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <p className="py-8 text-center text-sm font-semibold rr-text-navy-muted">{t("adminUsers.smtpAuditEmpty", { defaultValue: "No SMTP credential removals have been recorded." })}</p>
+          )}
+        </section>
       </main>
 
       <AlertDialog open={Boolean(deleteAccount)} onOpenChange={(open) => {

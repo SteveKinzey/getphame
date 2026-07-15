@@ -164,3 +164,12 @@
 - [x] Add a Remove SMTP action with a typed email-address confirmation gate before permanent credential deletion.
 - [x] Add authorization, exact-email confirmation, SMTP-only deletion, status rendering, and UI interaction regression coverage.
 - [x] Run focused tests, the full Vitest suite, TypeScript validation, production build, visual verification, and publish the admin SMTP controls.
+- [x] Add an SMTP-status filter to Manage Users for all, verified, unverified, and unconnected accounts while preserving search and pagination.
+- [x] Add an admin-only one-click SMTP re-test procedure and per-user action that updates verification and health status without exposing credentials.
+- [x] Add a durable administrator SMTP audit-log table recording remover identity, target identity, outcome, and removal timestamp.
+- [x] Write the SMTP removal audit event transactionally with credential deletion and expose an admin-only audit-log query.
+- [x] Add a responsive administrator audit-log section to Manage Users with clear actor, target, outcome, and timestamp details.
+- [x] Package the administrator SMTP status, re-test, removal, filtering, auditing, safeguards, and regression workflow as a reusable skill.
+- [x] Add focused authorization, filtering, re-test, audit persistence, audit rendering, and failure-path Vitest coverage.
+- [x] Apply and verify the database migration, run TypeScript, focused tests, the full Vitest suite, production build, and responsive visual checks.
+- [ ] Validate the reusable skill, save the auto-published application checkpoint, and deliver the skill package.

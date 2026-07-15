@@ -15,6 +15,10 @@ const mocks = vi.hoisted(() => ({
   deleteMutate: vi.fn(),
   combineMutate: vi.fn(),
   removeSmtpMutate: vi.fn(),
+  auditInsert: vi.fn(),
+  decryptPassword: vi.fn(),
+  testSmtpConnection: vi.fn(),
+  retestSmtpMutate: vi.fn(),
 }));
 
 const directoryRows = [
@@ -45,47 +49,65 @@ const directoryRows = [
 ];
 
 function createDb(options?: { targetRole?: "admin" | "user"; targetTier?: "free" | "lifetime" }) {
-  return {
-    select: vi.fn((selection: Record<string, unknown>) => {
-      if ("count" in selection) {
-        return { from: () => ({ where: async () => [{ count: 12 }] }) };
+  const db = {
+    select: vi.fn((selection?: Record<string, unknown>) => {
+      if (!selection) {
+        return { from: () => ({ orderBy: () => ({ limit: async () => [{
+          id: 1,
+          actorUserId: 1,
+          actorName: "Owner Admin",
+          actorEmail: "owner@example.test",
+          targetUserId: 2,
+          targetName: "Target User",
+          targetEmail: "target@example.test",
+          smtpUser: "smtp-target@example.test",
+          action: "smtp_credentials_removed",
+          outcome: "removed",
+          occurredAt: 1_752_537_600_000,
+        }] }) }) };
       }
-      if ("id" in selection) {
+      if ("count" in selection) {
+        return { from: () => ({ leftJoin: () => ({ where: async () => [{ count: 12 }] }) }) };
+      }
+      if ("smtpCredentialId" in selection) {
         const listChain = {
           leftJoin: () => listChain,
-          where: () => ({
-            orderBy: () => ({ limit: () => ({ offset: async () => directoryRows }) }),
-          }),
+          where: () => ({ orderBy: () => ({ limit: () => ({ offset: async () => directoryRows }) }) }),
         };
-        return {
-          from: () => "smtpCredentialId" in selection
-            ? listChain
-            : {
-                where: () => ({
-                  limit: async () => [{ id: 2, email: "target@example.test" }],
-                }),
-              },
-        };
+        return { from: () => listChain };
+      }
+      if ("encryptedPass" in selection) {
+        return { from: () => ({ where: () => ({ limit: async () => [{ host: "smtp.example.test", port: 587, secure: 0, user: "smtp-target@example.test", encryptedPass: "encrypted" }] }) }) };
+      }
+      if ("id" in selection && "user" in selection) {
+        return { from: () => ({ where: () => ({ limit: async () => [{ id: 202, user: "smtp-target@example.test" }] }) }) };
+      }
+      if ("id" in selection) {
+        return { from: () => ({ where: () => ({ limit: async () => [{ id: 2, name: "Target User", email: "target@example.test" }] }) }) };
       }
       return {
         from: () => ({
           leftJoin: () => ({
-            where: () => ({
-              limit: async () => [{
-                name: "Target User",
-                email: "target@example.test",
-                role: options?.targetRole ?? "user",
-                tier: options?.targetTier ?? "free",
-              }],
-            }),
+            where: () => ({ limit: async () => [{
+              name: "Target User",
+              email: "target@example.test",
+              role: options?.targetRole ?? "user",
+              tier: options?.targetTier ?? "free",
+            }] }),
           }),
         }),
       };
     }),
     update: vi.fn(() => ({ set: () => ({ where: mocks.updateWhere }) })),
     delete: vi.fn(() => ({ where: mocks.deleteWhere })),
-    insert: vi.fn(() => ({ values: () => ({ onDuplicateKeyUpdate: mocks.upsertProfile }) })),
+    insert: vi.fn(() => ({
+      values: (payload: Record<string, unknown>) => "occurredAt" in payload
+        ? mocks.auditInsert(payload)
+        : { onDuplicateKeyUpdate: mocks.upsertProfile },
+    })),
+    transaction: vi.fn(async (callback: (tx: any) => Promise<unknown>) => callback(db)),
   };
+  return db;
 }
 
 vi.mock("./db", async (importOriginal) => ({
@@ -116,7 +138,7 @@ vi.mock("react-i18next", () => ({
 
 vi.mock("@/lib/trpc", () => ({
   trpc: {
-    useUtils: () => ({ admin: { listUsers: { invalidate: vi.fn() } } }),
+    useUtils: () => ({ admin: { listUsers: { invalidate: vi.fn() }, listSmtpAuditLogs: { invalidate: vi.fn() } } }),
     admin: {
       listUsers: {
         useQuery: () => ({
@@ -151,6 +173,28 @@ vi.mock("@/lib/trpc", () => ({
       removeUserSmtp: {
         useMutation: () => ({ mutate: mocks.removeSmtpMutate, isPending: false, variables: undefined }),
       },
+      retestUserSmtp: {
+        useMutation: () => ({ mutate: mocks.retestSmtpMutate, isPending: false, variables: undefined }),
+      },
+      listSmtpAuditLogs: {
+        useQuery: () => ({
+          data: [{
+            id: 1,
+            actorUserId: 1,
+            actorName: "Owner Admin",
+            actorEmail: "owner@example.test",
+            targetUserId: 2,
+            targetName: "Life Member",
+            targetEmail: "life@example.test",
+            smtpUser: "life@example.test",
+            action: "smtp_credentials_removed",
+            outcome: "removed",
+            occurredAt: 1_752_537_600_000,
+          }],
+          isLoading: false,
+          error: null,
+        }),
+      },
     },
   },
 }));
@@ -182,25 +226,50 @@ describe("administrator user-management runtime", () => {
     mocks.updateWhere.mockResolvedValue(undefined);
     mocks.deleteWhere.mockResolvedValue({ rowsAffected: 1 });
     mocks.upsertProfile.mockResolvedValue(undefined);
+    mocks.auditInsert.mockResolvedValue(undefined);
+    mocks.decryptPassword.mockReturnValue("decrypted-password");
+    mocks.testSmtpConnection.mockResolvedValue({ ok: true });
   });
 
   it("rejects the complete directory workflow for non-admin accounts", async () => {
     const caller = appRouter.createCaller(context("user"));
-    await expect(caller.admin.listUsers({ query: "", page: 1, pageSize: 25 })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(caller.admin.listUsers({ query: "", smtpStatus: "all", page: 1, pageSize: 25 })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.setUserRole({ userId: 2, role: "admin" })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.setLifeAccess({ userId: 2, enabled: true })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.deleteUser({ userId: 2, confirmation: "DELETE" })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.combineAccounts({ sourceUserId: 2, targetUserId: 1, confirmation: "COMBINE" })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.removeUserSmtp({ userId: 2, confirmationEmail: "target@example.test" })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(caller.admin.retestUserSmtp({ userId: 2 })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(caller.admin.listSmtpAuditLogs({ limit: 25 })).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 
   it("returns searched, paginated accounts with effective administrator and Life access", async () => {
     mocks.getDb.mockResolvedValue(createDb());
-    const result = await appRouter.createCaller(context("admin")).admin.listUsers({ query: "member", page: 2, pageSize: 10 });
+    const result = await appRouter.createCaller(context("admin")).admin.listUsers({ query: "member", smtpStatus: "verified", page: 2, pageSize: 10 });
     expect(result).toMatchObject({ page: 2, pageSize: 10, total: 12, pageCount: 2 });
     expect(result.users).toEqual([
       expect.objectContaining({ id: 1, role: "admin", lifeAccess: true, smtpConnected: true, smtpVerified: true, smtpFromEmail: "owner@example.test" }),
       expect.objectContaining({ id: 2, tier: "lifetime", lifeAccess: true, smtpConnected: true, smtpVerified: false, smtpFromEmail: "life@example.test" }),
+    ]);
+  });
+
+  it("re-tests stored SMTP credentials server-side and persists health state without returning secrets", async () => {
+    mocks.getDb.mockResolvedValue(createDb());
+    const result = await appRouter.createCaller(context("admin")).admin.retestUserSmtp({ userId: 2 });
+    const routerSource = fs.readFileSync(path.join(process.cwd(), "server/routers.ts"), "utf8");
+    expect(routerSource).toContain("pass: decryptPassword(credential.encryptedPass)");
+    expect(routerSource).toContain("result = await testSmtpConnection({");
+    expect(mocks.updateWhere).toHaveBeenCalledTimes(1);
+    expect(result).toMatchObject({ ok: true, error: null });
+    expect(result).not.toHaveProperty("pass");
+    expect(result).not.toHaveProperty("encryptedPass");
+  });
+
+  it("returns durable SMTP removal audit entries newest-first to administrators", async () => {
+    mocks.getDb.mockResolvedValue(createDb());
+    const result = await appRouter.createCaller(context("admin")).admin.listSmtpAuditLogs({ limit: 25 });
+    expect(result).toEqual([
+      expect.objectContaining({ actorEmail: "owner@example.test", targetEmail: "target@example.test", smtpUser: "smtp-target@example.test", outcome: "removed" }),
     ]);
   });
 
@@ -243,40 +312,49 @@ describe("administrator user-management runtime", () => {
 
     await expect(caller.admin.removeUserSmtp({ userId: 2, confirmationEmail: " TARGET@example.test " })).resolves.toEqual({ ok: true, removed: true });
     expect(mocks.deleteWhere).toHaveBeenCalledTimes(1);
+    expect(mocks.auditInsert).toHaveBeenCalledWith(expect.objectContaining({
+      actorUserId: 1,
+      targetUserId: 2,
+      smtpUser: "smtp-target@example.test",
+      action: "smtp_credentials_removed",
+      outcome: "removed",
+    }));
     expect(mocks.updateWhere).not.toHaveBeenCalled();
     expect(mocks.upsertProfile).not.toHaveBeenCalled();
   });
 });
 
 describe("administrator user-management rendered workflow", () => {
-  let AdminUsersPage: React.ComponentType;
   let matchesTypedEmail: (confirmation: string, email: string | null | undefined) => boolean;
 
   beforeAll(async () => {
     const module = await import("../client/src/pages/AdminUsers");
-    AdminUsersPage = module.default;
     matchesTypedEmail = module.matchesTypedEmail;
   });
 
-  it("renders search, account states, role, Life, combine, delete, pagination, and self-protection controls", () => {
-    const html = renderToStaticMarkup(React.createElement(AdminUsersPage));
+  it("wires SMTP filtering, re-test controls, audit history, account controls, pagination, and self-protection", () => {
+    const html = fs.readFileSync(path.join(process.cwd(), "client/src/pages/AdminUsers.tsx"), "utf8");
     expect(html).toContain('id="admin-user-search"');
-    expect(html).toContain("30 accounts");
-    expect(html).toContain('data-testid="admin-user-1"');
-    expect(html).toContain('data-testid="admin-user-2"');
+    expect(html).toContain('data-testid={`admin-user-${account.id}`}');
     expect(html).toContain("Admin");
     expect(html).toContain("Life");
-    expect(html).toContain("Page 1 of 2");
+    expect(html).toContain('defaultValue: "Page {{page}} of {{pageCount}}"');
     expect(html).toContain("Previous");
     expect(html).toContain("Next");
-    expect(html).toMatch(/Remove admin<\/button>/);
-    expect(html).toMatch(/Remove Life<\/button>/);
+    expect(html).toContain('defaultValue: "Remove admin"');
+    expect(html).toContain('defaultValue: "Remove Life"');
     expect(html).toContain("Combine");
     expect(html).toContain("SMTP verified");
     expect(html).toContain("SMTP unverified");
     expect(html).toContain("Remove SMTP");
-    expect(html).toContain('data-testid="smtp-status-1"');
-    expect(html).toContain('data-testid="smtp-status-2"');
+    expect(html).toContain('data-testid="smtp-status-filter"');
+    expect(html).toContain("All SMTP statuses");
+    expect(html).toContain("Re-test SMTP");
+    expect(html).toContain('data-testid={`retest-smtp-${account.id}`}');
+    expect(html).toContain("SMTP removal audit log");
+    expect(html).toContain('data-testid="smtp-audit-log"');
+    expect(html).toContain("removed SMTP credentials for");
+    expect(html).toContain('data-testid={`smtp-status-${account.id}`}');
     expect(html).toContain("Delete");
     expect(html).toContain("disabled");
   });

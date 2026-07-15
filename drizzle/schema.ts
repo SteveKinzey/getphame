@@ -399,6 +399,31 @@ export type SmtpCredential = typeof smtpCredentials.$inferSelect;
 export type InsertSmtpCredential = typeof smtpCredentials.$inferInsert;
 
 /**
+ * Durable snapshots of administrator-initiated SMTP removals. Identity fields
+ * are intentionally denormalized so the audit trail survives account deletion.
+ */
+export const smtpAdminAuditLogs = pgTable("smtp_admin_audit_logs", {
+  id: serial("id").primaryKey(),
+  actorUserId: integer("actor_user_id").notNull(),
+  actorName: varchar("actor_name", { length: 255 }),
+  actorEmail: varchar("actor_email", { length: 320 }),
+  targetUserId: integer("target_user_id").notNull(),
+  targetName: varchar("target_name", { length: 255 }),
+  targetEmail: varchar("target_email", { length: 320 }),
+  smtpUser: varchar("smtp_user", { length: 320 }).notNull(),
+  action: varchar("action", { length: 64 }).notNull(),
+  outcome: varchar("outcome", { length: 32 }).notNull(),
+  occurredAt: bigint("occurred_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("smtp_admin_audit_occurred_idx").on(table.occurredAt),
+  index("smtp_admin_audit_actor_idx").on(table.actorUserId),
+  index("smtp_admin_audit_target_idx").on(table.targetUserId),
+]);
+
+export type SmtpAdminAuditLog = typeof smtpAdminAuditLogs.$inferSelect;
+export type InsertSmtpAdminAuditLog = typeof smtpAdminAuditLogs.$inferInsert;
+
+/**
  * Tracks email open and click events for review request emails.
  * Each row represents one open (pixel load) or one click (redirect through tracking link).
  * requestId links back to customer_requests; templateId is nullable (null = no template used).
