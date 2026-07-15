@@ -85,6 +85,7 @@ import {
   syncPendingReminderStages,
 } from "./reminders";
 import { getReminderTimingPerformance } from "./reminderPerformance";
+import { getOperationsAlertState, getSystemHealthTrend } from "./systemHealth";
 import {
   createAccessCode,
   listAccessCodes,
@@ -2246,6 +2247,17 @@ export const appRouter = router({
     /** Platform-wide reminder timing attribution for administrator operations. */
     reminderPerformance: adminProcedure.query(async () => {
       return getReminderTimingPerformance();
+    }),
+
+    /** Durable 24-hour SMTP and authentication health observations. */
+    systemHealthTrend: adminProcedure
+      .input(z.object({ hours: z.number().int().min(1).max(168).default(24) }).default({ hours: 24 }))
+      .query(async ({ input }) => getSystemHealthTrend(input.hours)),
+
+    /** Centralized alert thresholds for administration hub metric emphasis. */
+    operationsAlerts: adminProcedure.query(async () => {
+      const reminderRows = await getReminderTimingPerformance();
+      return getOperationsAlertState(reminderRows);
     }),
 
     /** SMTP provider failure stats — breakdown by host across all users */

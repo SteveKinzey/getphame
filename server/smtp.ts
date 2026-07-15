@@ -365,14 +365,24 @@ export async function updateSmtpFromName(userId: number, fromName: string | null
  * Updates lastHealthCheck (Unix ms) and lastHealthStatus ('ok'|'fail') on each row.
  * Called once per day from the server cron job.
  */
-export async function runSmtpHealthChecks(): Promise<void> {
+export type SmtpFleetHealthSummary = {
+  totalAccounts: number;
+  healthyAccounts: number;
+  failedAccounts: number;
+  durationMs: number;
+  checkedAt: number;
+};
+
+export async function runSmtpHealthChecks(): Promise<SmtpFleetHealthSummary> {
+  const startedAt = Date.now();
   const db = await getDb();
-  if (!db) return;
+  if (!db) throw new Error("Database not available");
   const allCreds = await db.select().from(smtpCredentials);
   console.log(`[SmtpHealthCheck] Running checks for ${allCreds.length} connected account(s)...`);
 
   // Track failures by provider host for aggregate reporting
   const providerFailures: Record<string, { count: number; errors: string[] }> = {};
+  let healthyAccounts = 0;
 
   for (const creds of allCreds) {
     try {
@@ -385,6 +395,7 @@ export async function runSmtpHealthChecks(): Promise<void> {
         pass,
       });
       if (result.ok) {
+        healthyAccounts++;
         const checkedAt = Date.now();
         await db
           .update(smtpCredentials)
@@ -442,7 +453,17 @@ export async function runSmtpHealthChecks(): Promise<void> {
       console.warn(`  ${host}: ${count} failure(s) — ${errors.join(" | ")}`);
     }
   }
-  console.log(`[SmtpHealthCheck] Done. ${allCreds.length} checked, ${failingHosts.reduce((t, h) => t + providerFailures[h].count, 0)} failed.`);
+  const failedAccounts = failingHosts.reduce((total, host) => total + providerFailures[host].count, 0);
+  const checkedAt = Date.now();
+  const durationMs = checkedAt - startedAt;
+  console.log(`[SmtpHealthCheck] Done. ${allCreds.length} checked, ${failedAccounts} failed.`);
+  return {
+    totalAccounts: allCreds.length,
+    healthyAccounts,
+    failedAccounts,
+    durationMs,
+    checkedAt,
+  };
 }
 
 // ── Transactional emails (sent from owner's SMTP to app users) ────────────────

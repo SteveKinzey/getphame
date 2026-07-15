@@ -129,6 +129,24 @@ export const authHealthChecks = pgTable("auth_health_checks", {
 export type AuthHealthCheck = typeof authHealthChecks.$inferSelect;
 export type InsertAuthHealthCheck = typeof authHealthChecks.$inferInsert;
 
+/** Privacy-safe fleet SMTP health aggregates captured by the managed scheduler. */
+export const smtpHealthSnapshots = pgTable("smtp_health_snapshot", {
+  id: serial("id").primaryKey(),
+  triggerSource: authHealthTriggerEnum("trigger_source").notNull(),
+  scheduleCronTaskUid: varchar("schedule_cron_task_uid", { length: 65 }),
+  totalAccounts: integer("total_accounts").notNull(),
+  healthyAccounts: integer("healthy_accounts").notNull(),
+  failedAccounts: integer("failed_accounts").notNull(),
+  durationMs: integer("duration_ms").notNull(),
+  checkedAt: bigint("checked_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("smtp_health_checked_idx").on(table.checkedAt),
+  index("smtp_health_task_uid_idx").on(table.scheduleCronTaskUid),
+]);
+
+export type SmtpHealthSnapshot = typeof smtpHealthSnapshots.$inferSelect;
+export type InsertSmtpHealthSnapshot = typeof smtpHealthSnapshots.$inferInsert;
+
 /** Stores Gmail OAuth tokens for each business owner */
 export const gmailTokens = pgTable("gmail_tokens", {
   id: serial("id").primaryKey(),

@@ -227,3 +227,17 @@
 - [x] Surface concise real operational summaries on the admin hub only where trustworthy live data already exists, with clear unavailable and empty states.
 - [x] Add authorization, navigation, responsive layout, and source-contract regressions proving non-admin users cannot access or see the administration hub.
 - [x] Verify the Administrator link and administration hub on phone and desktop as part of the combined release validation.
+
+- [x] Audit the existing revenue, churn, reminder-performance, SMTP-health, and authentication-diagnostics data contracts plus current periodic health checks.
+- [x] Define a secure consolidated CSV export contract for revenue, churn, and reminder-performance analytics with safe escaping and explicit section labels.
+- [x] Add durable 24-hour SMTP and authentication health-history persistence using the approved periodic-work architecture and real system observations only.
+- [ ] Add admin-only APIs for health trends, CSV export data, and alert-threshold evaluation without exposing customer credentials or fabricated metrics.
+- [ ] Add a responsive CSV export button to the administration hub for revenue, churn, and reminder-performance analytics.
+- [ ] Add a responsive 24-hour system-health trend chart for SMTP health and authentication diagnostics with clear empty and unavailable states.
+- [ ] Add visual red alert states in the administration hub when SMTP health or reminder performance falls below documented acceptable thresholds.
+- [ ] Create and validate a reusable admin-operations analytics skill through the approved skill-creator workflow.
+- [ ] Add focused schema, scheduler, export, authorization, trend, threshold, chart, and responsive UI regressions.
+- [ ] Apply and verify migrations, run TypeScript, the full Vitest suite, security gate, and production build, then validate phone and desktop layouts.
+- [ ] Publish the validated release and deliver the reusable skill package.
+- [ ] Update the public Get Phame homepage so Google OAuth reviewers can immediately understand the app’s purpose, user workflow, and Google-related functionality from plain-language visible content.
+- [ ] Add focused homepage compliance coverage and verify the final public custom-domain content on phone and desktop before requesting Google branding re-verification.

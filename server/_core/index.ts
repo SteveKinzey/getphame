@@ -19,7 +19,6 @@ import { businessProfiles, stripeSubscriptions, users } from "../../drizzle/sche
 import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
 import { reminderHeartbeatHandler } from "../scheduledReminders";
-import { startSmtpHealthCheckScheduler } from "../smtpHealthCheck";
 import { startSmtpWeeklyDigestScheduler } from "../smtpWeeklyDigest";
 import { startReEngagementScheduler } from "../reEngagementScheduler";
 import { startInactiveUserScheduler } from "../inactiveUserScheduler";
@@ -32,6 +31,7 @@ import { sendUpgradeReceiptEmail, sendChurnRecoveryEmail, sendPaymentFailedEmail
 import { registerPublicApiRoutes } from "../publicApi";
 import { registerMobileAuthRoutes } from "../mobileAuth";
 import { authHealthHandler } from "../authHealthRoutes";
+import { smtpHealthHandler } from "../smtpHealthRoutes";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 import { apiNotFoundHandler } from "./apiFallback";
 
@@ -398,6 +398,7 @@ async function startServer() {
   registerAppleAuthRoutes(app);
   registerMobileAuthRoutes(app);
   app.post("/api/scheduled/auth-health", authHealthHandler);
+  app.post("/api/scheduled/smtp-health", smtpHealthHandler);
   app.post("/api/scheduled/process-reminders", reminderHeartbeatHandler);
 
   // IP-based language detection — returns 'en' | 'th' | 'zh-TW' based on client IP
@@ -524,7 +525,6 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
-    startSmtpHealthCheckScheduler();
     startSmtpWeeklyDigestScheduler();
     startReEngagementScheduler();
     startInactiveUserScheduler();
