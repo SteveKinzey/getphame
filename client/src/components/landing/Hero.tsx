@@ -31,7 +31,7 @@ function getOrAssignVariant(): CTAVariant {
 const ease: [number, number, number, number] = [0.23, 1, 0.32, 1];
 
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 28 },
+  initial: false as const,
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.6, delay, ease },
 });
@@ -158,7 +158,7 @@ export default function Hero() {
           {/* Right Column — dashboard mockup slides in from right */}
           <motion.div
             className="relative hidden lg:block"
-            initial={{ opacity: 0, x: 48 }}
+            initial={false}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, delay: 0.3, ease }}
           >

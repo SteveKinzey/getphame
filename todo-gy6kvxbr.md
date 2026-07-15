@@ -241,3 +241,4 @@
 - [ ] Publish the validated release and deliver the reusable skill package.
 - [x] Update the public Get Phame homepage so Google OAuth reviewers can immediately understand the app’s purpose, user workflow, and Google-related functionality from plain-language visible content.
 - [ ] Add focused homepage compliance coverage and verify the final public custom-domain content on phone and desktop before requesting Google branding re-verification.
+- [ ] Fix the live anonymous homepage hero so reviewer-critical purpose, workflow, and Google data-use content remains visible even when entrance animations or viewport observers do not execute.
