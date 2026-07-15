@@ -26,6 +26,7 @@ import { getDb } from "./db";
 import { magicLinks } from "../drizzle/schema";
 import { eq, and, gt, isNull } from "drizzle-orm";
 import { sendUserWelcomeEmail } from "./smtp";
+import { renderGetPhameEmailHeader } from "./platformEmailBrand";
 import {
   classifyAuthDiagnosticError,
   findAuthRequestByToken,
@@ -90,13 +91,7 @@ function buildMagicLinkEmailHtml(magicLinkUrl: string): string {
     <tr>
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
-          <tr>
-            <td style="background:#0F1B2D;padding:32px 40px;text-align:center;">
-              <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">
-                Get<span style="color:#C9A84C;">Phame</span>
-              </h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader("Your secure sign-in link")}
           <tr>
             <td style="padding:36px 40px;text-align:center;">
               <p style="margin:0 0 20px;font-size:16px;color:#333;line-height:1.6;">

@@ -508,7 +508,8 @@
   "common": {
     "gotIt": "Compris ✓",
     "hide": "Masquer",
-    "show": "Afficher"
+    "show": "Afficher",
+    "cancel": "Annuler"
   },
   "profile": {
     "title": "Profil d'entreprise",
@@ -1318,13 +1319,18 @@
       "googleMissingCode": "Google n’a pas fourni les informations nécessaires à la connexion. Veuillez réessayer.",
       "googleStateMismatch": "La vérification de sécurité de la connexion Google a échoué. Veuillez réessayer.",
       "googleNoId": "La connexion Google n’a pas pu vérifier votre compte. Veuillez réessayer."
-    }
+    },
+    "preparingGoogle": "Préparation de la connexion Google…",
+    "redirectingGoogle": "Redirection sécurisée vers Google…"
   },
   "profileMenu": {
     "account": "Compte",
     "accountDetails": "Détails du compte",
     "open": "Ouvrir le menu du compte",
-    "signedInAs": "Connecté en tant que"
+    "signedInAs": "Connecté en tant que",
+    "dashboard": "Tableau de bord",
+    "darkMode": "Mode sombre",
+    "lightMode": "Mode clair"
   },
   "account": {
     "administrator": "Administrateur",
@@ -2011,5 +2017,26 @@
     "previous": "Précédent",
     "page": "Page {{page}} sur {{count}}",
     "next": "Suivant"
+  },
+  "settings": {
+    "accountProfile": {
+      "title": "Profil du compte",
+      "description": "Gérez l’identité affichée dans votre compte Get Phame.",
+      "loading": "Chargement du profil du compte",
+      "saved": "Profil mis à jour.",
+      "avatarSaved": "Photo de profil mise à jour.",
+      "avatarRemoved": "Photo de profil supprimée.",
+      "avatarInvalid": "Choisissez une image JPG, PNG ou WebP de 3 Mo maximum.",
+      "avatarReadError": "Impossible de lire cette image. Essayez un autre fichier.",
+      "avatarAlt": "Photo de profil du compte",
+      "chooseAvatar": "Choisir une photo de profil",
+      "avatarHelp": "JPG, PNG ou WebP · 3 Mo max.",
+      "displayName": "Nom affiché",
+      "email": "Adresse e-mail",
+      "emailHelp": "Votre adresse de connexion est gérée par votre fournisseur d’authentification.",
+      "save": "Enregistrer le profil",
+      "uploadAvatar": "Importer une photo",
+      "removeAvatar": "Supprimer la photo"
+    }
   }
 }

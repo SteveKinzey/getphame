@@ -385,7 +385,8 @@
   "common": {
     "gotIt": "Got it ✓",
     "hide": "Hide",
-    "show": "Show"
+    "show": "Show",
+    "cancel": "Cancel"
   },
   "profile": {
     "title": "Business Profile",
@@ -957,13 +958,18 @@
       "googleMissingCode": "Google did not return the information needed to sign you in. Please try again.",
       "googleStateMismatch": "Google sign-in security check failed. Please try again.",
       "googleNoId": "Google sign-in could not verify your account. Please try again."
-    }
+    },
+    "preparingGoogle": "Preparing Google sign-in…",
+    "redirectingGoogle": "Redirecting securely to Google…"
   },
   "profileMenu": {
     "account": "Account",
     "accountDetails": "Account details",
     "open": "Open account menu",
-    "signedInAs": "Signed in as"
+    "signedInAs": "Signed in as",
+    "dashboard": "Dashboard",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode"
   },
   "account": {
     "administrator": "Administrator",
@@ -1938,6 +1944,27 @@
     "modal": {
       "closeButtonAriaLabel": "Close video",
       "iframeTitle": "GetPhame product walkthrough"
+    }
+  },
+  "settings": {
+    "accountProfile": {
+      "title": "Account profile",
+      "description": "Manage the identity shown in your Get Phame account.",
+      "loading": "Loading account profile",
+      "saved": "Profile updated.",
+      "avatarSaved": "Profile photo updated.",
+      "avatarRemoved": "Profile photo removed.",
+      "avatarInvalid": "Choose a JPG, PNG, or WebP image up to 3 MB.",
+      "avatarReadError": "We could not read that image. Try another file.",
+      "avatarAlt": "Account profile photo",
+      "chooseAvatar": "Choose profile photo",
+      "avatarHelp": "JPG, PNG, or WebP · 3 MB max",
+      "displayName": "Display name",
+      "email": "Email address",
+      "emailHelp": "Your sign-in email is managed by your authentication provider.",
+      "save": "Save profile",
+      "uploadAvatar": "Upload photo",
+      "removeAvatar": "Remove photo"
     }
   }
 }

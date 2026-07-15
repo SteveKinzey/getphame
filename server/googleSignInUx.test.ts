@@ -20,9 +20,13 @@ describe("Google sign-in interaction feedback", () => {
     expect(login).toContain('import { flushSync } from "react-dom"');
     expect(login).toContain("flushSync(() => {");
     expect(login).toContain("setIsGoogleSubmitting(true)");
-    expect(login).toContain("GOOGLE_REDIRECT_FEEDBACK_MS = 180");
+    expect(login).toContain("GOOGLE_REDIRECT_FEEDBACK_MS = 420");
+    expect(login).toContain("GOOGLE_REDIRECT_STATUS_MS = 140");
     expect(login).toContain("window.setTimeout(() => {");
     expect(login).toContain("isGoogleSubmitting ? <Spinner /> : <GoogleIcon />");
+    expect(login).toContain('t("authFeedback.preparingGoogle"');
+    expect(login).toContain('t("authFeedback.redirectingGoogle"');
+    expect(login).toContain('role="status" aria-live="polite"');
     expect(login).toContain('t("authFeedback.connectingGoogle"');
     expect(login).toContain('t("authFeedback.continueWithGoogle"');
     expect(login).toContain('window.location.assign("/api/auth/google")');
@@ -76,6 +80,8 @@ describe("Google sign-in interaction feedback", () => {
     const requiredPaths = [
       "authFeedback.openingGoogle",
       "authFeedback.connectingGoogle",
+      "authFeedback.preparingGoogle",
+      "authFeedback.redirectingGoogle",
       "authFeedback.continueWithGoogle",
       "authFeedback.googleOpenFailed",
       "authFeedback.googleSuccess",
@@ -86,6 +92,9 @@ describe("Google sign-in interaction feedback", () => {
       "authFeedback.errors.googleNoId",
       "profileMenu.account",
       "profileMenu.accountDetails",
+      "profileMenu.dashboard",
+      "profileMenu.darkMode",
+      "profileMenu.lightMode",
       "profileMenu.open",
       "profileMenu.signedInAs",
     ];

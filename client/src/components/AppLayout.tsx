@@ -32,6 +32,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const { buttonPressHaptic } = useHaptics();
   const { user, logout, loading: authLoading } = useAuth();
   const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: !!user });
+  const { data: accountProfile } = trpc.accountProfile.get.useQuery(undefined, { enabled: !!user });
   const { data: subscription } = trpc.stripe.subscriptionStatus.useQuery(undefined, {
     enabled: !!user && profile?.tier !== "free" && profile?.tier !== "lifetime",
   });
@@ -261,14 +262,12 @@ export default function AppLayout({ children }: AppLayoutProps) {
                   className="flex w-full items-center justify-center lg:justify-start gap-2.5 px-2 lg:px-3 py-2 rounded-xl text-left transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
                   style={{ background: "oklch(0.18 0.06 260)" }}
                 >
-                  <div
-                    className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-xs"
-                    style={{
-                      background: "oklch(0.80 0.18 80)",
-                      color: "oklch(0.15 0.06 260)",
-                    }}
-                  >
-                    {(user.name || user.email || "U")[0].toUpperCase()}
+                  <div className="h-7 w-7 flex-shrink-0 overflow-hidden rounded-full" style={{ background: "oklch(0.80 0.18 80)" }}>
+                    <img
+                      src={accountProfile?.avatarUrl || "https://assets.getphame.app/getphame-logo-mark.webp"}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
                   </div>
                   <div className="app-sidebar-label flex-1 min-w-0 hidden">
                     <p className="text-xs font-semibold text-white truncate">
@@ -295,6 +294,17 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-white/15" />
                 <DropdownMenuItem
+                  data-testid="sidebar-dashboard-link"
+                  onSelect={() => {
+                    buttonPressHaptic();
+                    navigate("/dashboard");
+                  }}
+                  className="min-h-11 cursor-pointer gap-3 rounded-lg text-sm font-semibold focus:bg-white/10 focus:text-white"
+                >
+                  <BarChart2 size={18} className="rr-text-gold" />
+                  {t("profileMenu.dashboard", { defaultValue: "Dashboard" })}
+                </DropdownMenuItem>
+                <DropdownMenuItem
                   data-testid="sidebar-account-details"
                   onSelect={() => {
                     buttonPressHaptic();
@@ -305,6 +315,26 @@ export default function AppLayout({ children }: AppLayoutProps) {
                   <UserRound size={18} className="rr-text-gold" />
                   {t("profileMenu.accountDetails", { defaultValue: "Account details" })}
                 </DropdownMenuItem>
+                <DropdownMenuItem
+                  data-testid="sidebar-theme-toggle"
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    buttonPressHaptic();
+                    toggleTheme?.();
+                  }}
+                  className="min-h-11 cursor-pointer gap-3 rounded-lg text-sm font-semibold focus:bg-white/10 focus:text-white"
+                >
+                  {isDark ? <Sun size={18} className="rr-text-gold" /> : <Moon size={18} className="rr-text-gold" />}
+                  <span className="flex-1">
+                    {isDark
+                      ? t("profileMenu.lightMode", { defaultValue: "Light mode" })
+                      : t("profileMenu.darkMode", { defaultValue: "Dark mode" })}
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-wide text-white/45">
+                    {isDark ? t("common.on", { defaultValue: "On" }) : t("common.off", { defaultValue: "Off" })}
+                  </span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-white/15" />
                 <DropdownMenuItem
                   data-testid="sidebar-logout"
                   disabled={authLoading}

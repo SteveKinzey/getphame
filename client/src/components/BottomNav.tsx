@@ -9,6 +9,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { useHaptics } from '@/hooks/useHaptics';
 import { useAuth } from '@/_core/hooks/useAuth';
+import { trpc } from '@/lib/trpc';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,6 +25,7 @@ export default function BottomNav() {
   const { t } = useTranslation();
   const { buttonPressHaptic } = useHaptics();
   const { user, logout, loading: authLoading } = useAuth();
+  const { data: accountProfile } = trpc.accountProfile.get.useQuery(undefined, { enabled: !!user });
   const isDark = theme === 'dark';
 
   const NAV_ITEMS = [
@@ -116,11 +118,10 @@ export default function BottomNav() {
                 className="flex items-center justify-center rounded-full transition-all duration-200 ease-out bg-transparent group-hover:scale-110 group-active:scale-95"
                 style={{ width: '40px', height: '32px' }}
               >
-                <UserRound
-                  size={22}
-                  strokeWidth={1.8}
-                  className="transition-all duration-200 group-hover:drop-shadow-[0_0_6px_oklch(0.80_0.18_80/0.5)]"
-                  style={{ color: 'oklch(0.85 0.02 260)' }}
+                <img
+                  src={accountProfile?.avatarUrl || 'https://assets.getphame.app/getphame-logo-mark.webp'}
+                  alt=""
+                  className="h-7 w-7 rounded-full object-cover transition-all duration-200 group-hover:drop-shadow-[0_0_6px_oklch(0.80_0.18_80/0.5)]"
                 />
               </div>
               <span
@@ -152,6 +153,17 @@ export default function BottomNav() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-white/15" />
                 <DropdownMenuItem
+                  data-testid="mobile-dashboard-link"
+                  onSelect={() => {
+                    buttonPressHaptic();
+                    navigate('/dashboard');
+                  }}
+                  className="min-h-12 cursor-pointer gap-3 rounded-lg text-sm font-semibold focus:bg-white/10 focus:text-white"
+                >
+                  <BarChart2 size={18} className="rr-text-gold" />
+                  {t('profileMenu.dashboard', { defaultValue: 'Dashboard' })}
+                </DropdownMenuItem>
+                <DropdownMenuItem
                   data-testid="mobile-account-details"
                   onSelect={() => {
                     buttonPressHaptic();
@@ -166,6 +178,7 @@ export default function BottomNav() {
               </>
             )}
             <DropdownMenuItem
+              data-testid="mobile-theme-toggle"
               onSelect={() => {
                 buttonPressHaptic();
                 toggleTheme?.();

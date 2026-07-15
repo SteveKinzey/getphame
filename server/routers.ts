@@ -7,7 +7,7 @@ import { adminProcedure, paidProcedure, protectedProcedure, publicProcedure, rou
 import { TRPCError } from "@trpc/server";
 import { hasPaidOrAdminAccess } from "./entitlements";
 import { evaluateFreeQuotaAccess, formatFreeQuotaBlockedMessage } from "./quotaEnforcement";
-import { storageGet } from "./storage";
+import { storageGet, storagePut } from "./storage";
 import {
   getBusinessProfile,
   upsertBusinessProfile,
@@ -27,6 +27,8 @@ import {
   getWebhookDeliveryLogs,
   getNotificationPrefs,
   updateNotificationPrefs,
+  getAccountProfile,
+  updateAccountProfile,
 } from "./db";
 
 import { sendMailViaSmtp } from "./smtp";
@@ -181,6 +183,19 @@ async function enforceFreeLimit(userId: number, tier: string) {
   }
 }
 
+const avatarMimeTypes = ["image/jpeg", "image/png", "image/webp"] as const;
+const avatarExtensions: Record<(typeof avatarMimeTypes)[number], string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+};
+
+function isValidAvatarSignature(data: Buffer, mimeType: (typeof avatarMimeTypes)[number]) {
+  if (mimeType === "image/jpeg") return data.length >= 3 && data[0] === 0xff && data[1] === 0xd8 && data[2] === 0xff;
+  if (mimeType === "image/png") return data.length >= 8 && data.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+  return data.length >= 12 && data.subarray(0, 4).toString("ascii") === "RIFF" && data.subarray(8, 12).toString("ascii") === "WEBP";
+}
+
 export const appRouter = router({
   system: systemRouter,
   authDiagnostics: authDiagnosticsRouter,
@@ -191,6 +206,57 @@ export const appRouter = router({
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
+    }),
+  }),
+
+  accountProfile: router({
+    get: protectedProcedure.query(async ({ ctx }) => {
+      const profile = await getAccountProfile(ctx.user.id);
+      if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Account profile not found" });
+      const avatar = profile.avatarKey ? await storageGet(profile.avatarKey) : null;
+      return {
+        name: profile.name,
+        email: profile.email,
+        avatarUrl: avatar?.url ?? null,
+        avatarMimeType: profile.avatarMimeType,
+        avatarUpdatedAt: profile.avatarUpdatedAt,
+      };
+    }),
+    update: protectedProcedure
+      .input(z.object({ name: z.string().trim().min(2).max(80) }))
+      .mutation(async ({ ctx, input }) => {
+        await updateAccountProfile(ctx.user.id, { name: input.name });
+        return { success: true as const };
+      }),
+    uploadAvatar: protectedProcedure
+      .input(z.object({
+        mimeType: z.enum(avatarMimeTypes),
+        dataBase64: z.string().min(4).max(4_200_000),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const data = Buffer.from(input.dataBase64, "base64");
+        if (data.length === 0 || data.length > 3 * 1024 * 1024 || !isValidAvatarSignature(data, input.mimeType)) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Upload a valid JPG, PNG, or WebP image up to 3 MB." });
+        }
+        const extension = avatarExtensions[input.mimeType];
+        const key = `avatars/${ctx.user.id}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
+        await storagePut(key, data, input.mimeType);
+        const updatedAt = new Date();
+        await updateAccountProfile(ctx.user.id, {
+          avatarKey: key,
+          avatarMimeType: input.mimeType,
+          avatarUpdatedAt: updatedAt,
+        });
+        const avatar = await storageGet(key);
+        return { success: true as const, avatarUrl: avatar.url, avatarUpdatedAt: updatedAt };
+      }),
+    removeAvatar: protectedProcedure.mutation(async ({ ctx }) => {
+      await updateAccountProfile(ctx.user.id, {
+        avatarKey: null,
+        avatarMimeType: null,
+        avatarUpdatedAt: null,
+      });
+      return { success: true as const };
     }),
   }),
 

@@ -2,7 +2,8 @@
   "common": {
     "gotIt": "知道了",
     "hide": "隐藏",
-    "show": "显示"
+    "show": "显示",
+    "cancel": "取消"
   },
   "seo": {
     "title": "Get Phame — 获得更多五星好评",
@@ -1431,13 +1432,18 @@
       "googleMissingCode": "Google 未返回登录所需的信息。请重试。",
       "googleStateMismatch": "Google 登录安全检查失败。请重试。",
       "googleNoId": "Google 登录无法验证您的账户。请重试。"
-    }
+    },
+    "preparingGoogle": "正在准备 Google 登录…",
+    "redirectingGoogle": "正在安全跳转至 Google…"
   },
   "profileMenu": {
     "account": "账户",
     "accountDetails": "账户详情",
     "open": "打开账户菜单",
-    "signedInAs": "当前登录账户"
+    "signedInAs": "当前登录账户",
+    "dashboard": "控制面板",
+    "darkMode": "深色模式",
+    "lightMode": "浅色模式"
   },
   "account": {
     "renewsOn": "将于 {{date}} 续订",
@@ -1473,5 +1479,26 @@
     "previous": "上一页",
     "page": "第 {{page}} 页，共 {{count}} 页",
     "next": "下一页"
+  },
+  "settings": {
+    "accountProfile": {
+      "title": "账户资料",
+      "description": "管理您的 Get Phame 账户中显示的身份信息。",
+      "loading": "正在加载账户资料",
+      "saved": "资料已更新。",
+      "avatarSaved": "头像已更新。",
+      "avatarRemoved": "头像已移除。",
+      "avatarInvalid": "请选择不超过 3 MB 的 JPG、PNG 或 WebP 图片。",
+      "avatarReadError": "无法读取该图片，请尝试其他文件。",
+      "avatarAlt": "账户头像",
+      "chooseAvatar": "选择头像",
+      "avatarHelp": "JPG、PNG 或 WebP · 最大 3 MB",
+      "displayName": "显示名称",
+      "email": "电子邮箱",
+      "emailHelp": "您的登录邮箱由身份验证提供商管理。",
+      "save": "保存资料",
+      "uploadAvatar": "上传头像",
+      "removeAvatar": "移除头像"
+    }
   }
 }

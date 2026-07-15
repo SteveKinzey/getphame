@@ -49,6 +49,10 @@ import {
   Gift,
   Users,
   TrendingUp,
+  Camera,
+  UserRound,
+  Upload,
+  ImageOff,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
 import PlatformIcon from "@/components/PlatformIcon";
@@ -863,6 +867,197 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
   );
 }
 
+function AccountProfileCard() {
+  const { t } = useTranslation();
+  const utils = trpc.useUtils();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { data: account, isLoading } = trpc.accountProfile.get.useQuery();
+  const [name, setName] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (account?.name) setName(account.name);
+  }, [account?.name]);
+
+  useEffect(() => () => {
+    if (previewUrl?.startsWith("blob:")) URL.revokeObjectURL(previewUrl);
+  }, [previewUrl]);
+
+  const refreshIdentity = async () => {
+    await Promise.all([
+      utils.accountProfile.get.invalidate(),
+      utils.auth.me.invalidate(),
+    ]);
+  };
+
+  const updateProfile = trpc.accountProfile.update.useMutation({
+    onSuccess: async () => {
+      await refreshIdentity();
+      toast.success(t("settings.accountProfile.saved", { defaultValue: "Profile updated." }));
+    },
+    onError: (error) => toast.error(error.message),
+  });
+
+  const uploadAvatar = trpc.accountProfile.uploadAvatar.useMutation({
+    onSuccess: async () => {
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      await refreshIdentity();
+      toast.success(t("settings.accountProfile.avatarSaved", { defaultValue: "Profile photo updated." }));
+    },
+    onError: (error) => toast.error(error.message),
+  });
+
+  const removeAvatar = trpc.accountProfile.removeAvatar.useMutation({
+    onSuccess: async () => {
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      await refreshIdentity();
+      toast.success(t("settings.accountProfile.avatarRemoved", { defaultValue: "Profile photo removed." }));
+    },
+    onError: (error) => toast.error(error.message),
+  });
+
+  const chooseAvatar = (file?: File) => {
+    if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 3 * 1024 * 1024) {
+      toast.error(t("settings.accountProfile.avatarInvalid", { defaultValue: "Choose a JPG, PNG, or WebP image up to 3 MB." }));
+      return;
+    }
+    if (previewUrl?.startsWith("blob:")) URL.revokeObjectURL(previewUrl);
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const submitAvatar = () => {
+    if (!selectedFile) return;
+    const reader = new FileReader();
+    reader.onerror = () => toast.error(t("settings.accountProfile.avatarReadError", { defaultValue: "We could not read that image. Try another file." }));
+    reader.onload = () => {
+      const result = String(reader.result ?? "");
+      const dataBase64 = result.includes(",") ? result.split(",")[1] : "";
+      uploadAvatar.mutate({
+        mimeType: selectedFile.type as "image/jpeg" | "image/png" | "image/webp",
+        dataBase64,
+      });
+    };
+    reader.readAsDataURL(selectedFile);
+  };
+
+  if (isLoading) {
+    return <div className="h-52 animate-pulse rounded-2xl bg-white" aria-label={t("settings.accountProfile.loading", { defaultValue: "Loading account profile" })} />;
+  }
+
+  const avatarSrc = previewUrl || account?.avatarUrl || "https://assets.getphame.app/getphame-logo-mark.webp";
+  const nameChanged = name.trim() !== (account?.name ?? "") && name.trim().length >= 2;
+
+  return (
+    <section className="rounded-2xl bg-white p-5 shadow-sm" aria-labelledby="account-profile-title">
+      <div className="mb-5 flex items-center gap-2">
+        <UserRound size={18} className="rr-text-navy" aria-hidden="true" />
+        <div>
+          <h2 id="account-profile-title" className="text-base font-black rr-text-navy">
+            {t("settings.accountProfile.title", { defaultValue: "Account profile" })}
+          </h2>
+          <p className="text-xs rr-text-navy-muted">
+            {t("settings.accountProfile.description", { defaultValue: "Manage the identity shown in your Get Phame account." })}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-5 sm:grid-cols-[132px_1fr] sm:items-start">
+        <div className="flex flex-col items-center gap-3">
+          <div className="relative h-28 w-28 overflow-hidden rounded-3xl border-4 border-white shadow-md" style={{ background: "oklch(0.22 0.09 260)" }}>
+            <img src={avatarSrc} alt={t("settings.accountProfile.avatarAlt", { defaultValue: "Account profile photo" })} className="h-full w-full object-cover" />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute bottom-1.5 right-1.5 flex h-9 w-9 items-center justify-center rounded-full rr-bg-gold rr-text-navy shadow-md"
+              aria-label={t("settings.accountProfile.chooseAvatar", { defaultValue: "Choose profile photo" })}
+            >
+              <Camera size={16} aria-hidden="true" />
+            </button>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="sr-only"
+            onChange={(event) => chooseAvatar(event.target.files?.[0])}
+          />
+          <p className="text-center text-[11px] font-semibold rr-text-navy-muted">
+            {t("settings.accountProfile.avatarHelp", { defaultValue: "JPG, PNG, or WebP · 3 MB max" })}
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="account-display-name" className="mb-1.5 block text-xs font-bold rr-text-navy-mid">
+              {t("settings.accountProfile.displayName", { defaultValue: "Display name" })}
+            </label>
+            <input
+              id="account-display-name"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              maxLength={80}
+              autoComplete="name"
+              className="w-full rounded-xl px-4 py-3 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+              style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
+            />
+          </div>
+          <div>
+            <label htmlFor="account-email" className="mb-1.5 block text-xs font-bold rr-text-navy-mid">
+              {t("settings.accountProfile.email", { defaultValue: "Email address" })}
+            </label>
+            <input id="account-email" value={account?.email ?? ""} readOnly className="w-full cursor-not-allowed rounded-xl px-4 py-3 text-sm font-semibold opacity-70 rr-bg-surface-darker rr-text-navy" />
+            <p className="mt-1 text-[11px] rr-text-navy-muted">
+              {t("settings.accountProfile.emailHelp", { defaultValue: "Your sign-in email is managed by your authentication provider." })}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2" aria-live="polite">
+            <button
+              type="button"
+              onClick={() => updateProfile.mutate({ name: name.trim() })}
+              disabled={!nameChanged || updateProfile.isPending}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50 rr-bg-navy"
+            >
+              {updateProfile.isPending ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+              {t("settings.accountProfile.save", { defaultValue: "Save profile" })}
+            </button>
+            {selectedFile && (
+              <button
+                type="button"
+                onClick={submitAvatar}
+                disabled={uploadAvatar.isPending}
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black rr-bg-gold rr-text-navy disabled:opacity-50"
+              >
+                {uploadAvatar.isPending ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+                {t("settings.accountProfile.uploadAvatar", { defaultValue: "Upload photo" })}
+              </button>
+            )}
+            {(account?.avatarUrl || selectedFile) && (
+              <button
+                type="button"
+                onClick={() => selectedFile ? (setSelectedFile(null), setPreviewUrl(null)) : removeAvatar.mutate()}
+                disabled={removeAvatar.isPending}
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black rr-text-navy"
+                style={{ border: "1.5px solid oklch(0.84 0.05 260)" }}
+              >
+                {removeAvatar.isPending ? <Loader2 size={16} className="animate-spin" /> : <ImageOff size={16} />}
+                {selectedFile ? t("common.cancel", { defaultValue: "Cancel" }) : t("settings.accountProfile.removeAvatar", { defaultValue: "Remove photo" })}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function SettingsSkeleton({ title }: { title: string }) {
   return (
     <div className="min-h-screen pb-40 rr-bg-cream-warm" aria-busy="true" aria-label="Loading settings">
@@ -1410,6 +1605,7 @@ export default function SettingsPage() {
 
       <div className="px-4 py-4 lg:px-8 lg:py-6">
       <div className="max-w-3xl mx-auto flex flex-col gap-4">
+        <AccountProfileCard />
         {/* ── Business Profile ──────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">

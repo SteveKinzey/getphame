@@ -254,3 +254,14 @@
 - [x] Add focused regressions for localized feedback, callback outcomes, profile-menu keyboard behavior, account navigation, logout, and existing authentication guards.
 - [x] Verify the full experience on phone and desktop, run TypeScript and relevant Vitest coverage, then publish the validated release.
 - [x] Update, validate, and deliver the reusable Google reviewer and sign-in UX skill with localization, flow simulation, and profile-menu contracts.
+
+- [x] Add secure authenticated profile editing in Settings for the user’s display name and supported editable account fields with localized validation and feedback.
+- [x] Add validated avatar upload, replacement, preview, persistence, and removal using application file storage rather than database file bytes.
+- [x] Render the saved avatar consistently in desktop and mobile account menus with a branded fallback when no avatar is stored.
+- [x] Add dashboard navigation and a quick dark-mode toggle to the accessible desktop and mobile account menus without removing Settings or secure logout.
+- [x] Strengthen the staged Google sign-in handoff with a loading spinner and clear localized initiation, redirect, success, cancellation, and provider-error status messages while preserving production OAuth visibility rules.
+- [x] Standardize Get Phame platform-email branding so emails sent from getphame.app use the supplied approved P-star logo image without changing customer SMTP identity.
+- [x] Add schema, authorization, storage, profile, avatar, account-menu, authentication-status, localization, and email-rendering regression coverage.
+- [x] Apply any required database migration, run focused and complete Vitest suites, TypeScript and production builds, and verify Settings plus account menus on phone and desktop.
+- [x] Create and validate a reusable skill covering the full authenticated profile, avatar, account-menu, Google status, and email-branding implementation workflow.
+- [ ] Publish the validated release and deliver the updated Get Phame project checkpoint.

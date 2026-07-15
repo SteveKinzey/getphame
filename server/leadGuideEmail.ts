@@ -8,6 +8,7 @@
  */
 
 import nodemailer from "nodemailer";
+import { renderGetPhameEmailHeader } from "./platformEmailBrand";
 
 const GUIDE_PDF_URL = "https://assets.getphame.app/getphame-guide.pdf";
 
@@ -53,12 +54,7 @@ function buildGuideEmailHtml(): string {
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
           <!-- Header -->
-          <tr>
-            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">PHAME</p>
-              <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.3;">Your Free Guide Is Here 🎉</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader("Your free guide is here")}
           <!-- Body -->
           <tr>
             <td style="padding:36px 40px;">

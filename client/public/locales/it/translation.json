@@ -518,7 +518,26 @@
     "deleteAllData": "Elimina Tutti i Dati",
     "deleteAllDataConfirm": "Sei assolutamente sicuro? Tutti i tuoi dati verranno eliminati permanentemente.",
     "deleteAllDataSuccess": "Tutti i dati eliminati.",
-    "deleteAllDataError": "Eliminazione dati non riuscita."
+    "deleteAllDataError": "Eliminazione dati non riuscita.",
+    "accountProfile": {
+      "title": "Profilo account",
+      "description": "Gestisci l’identità mostrata nel tuo account Get Phame.",
+      "loading": "Caricamento del profilo account",
+      "saved": "Profilo aggiornato.",
+      "avatarSaved": "Foto del profilo aggiornata.",
+      "avatarRemoved": "Foto del profilo rimossa.",
+      "avatarInvalid": "Scegli un’immagine JPG, PNG o WebP fino a 3 MB.",
+      "avatarReadError": "Impossibile leggere l’immagine. Prova un altro file.",
+      "avatarAlt": "Foto del profilo account",
+      "chooseAvatar": "Scegli la foto del profilo",
+      "avatarHelp": "JPG, PNG o WebP · massimo 3 MB",
+      "displayName": "Nome visualizzato",
+      "email": "Indirizzo email",
+      "emailHelp": "L’email di accesso è gestita dal tuo provider di autenticazione.",
+      "save": "Salva profilo",
+      "uploadAvatar": "Carica foto",
+      "removeAvatar": "Rimuovi foto"
+    }
   },
   "emailConnect": {
     "title": "Connetti il tuo Account Email",
@@ -1431,7 +1450,8 @@
   "common": {
     "gotIt": "Ho capito ✓",
     "hide": "Nascondi",
-    "show": "Mostra"
+    "show": "Mostra",
+    "cancel": "Annulla"
   },
   "profile": {
     "title": "Profilo Aziendale",
@@ -1820,13 +1840,18 @@
       "googleMissingCode": "Google non ha restituito le informazioni necessarie per accedere. Riprova.",
       "googleStateMismatch": "Il controllo di sicurezza dell’accesso con Google non è riuscito. Riprova.",
       "googleNoId": "Non è stato possibile verificare il tuo account Google. Riprova."
-    }
+    },
+    "preparingGoogle": "Preparazione dell’accesso con Google…",
+    "redirectingGoogle": "Reindirizzamento sicuro a Google…"
   },
   "profileMenu": {
     "account": "Account",
     "accountDetails": "Dettagli account",
     "open": "Apri menu account",
-    "signedInAs": "Accesso effettuato come"
+    "signedInAs": "Accesso effettuato come",
+    "dashboard": "Dashboard",
+    "darkMode": "Modalità scura",
+    "lightMode": "Modalità chiara"
   },
   "account": {
     "administrator": "Amministratore",

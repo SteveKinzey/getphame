@@ -385,7 +385,8 @@
   "common": {
     "gotIt": "เข้าใจแล้ว ✓",
     "hide": "ซ่อน",
-    "show": "แสดง"
+    "show": "แสดง",
+    "cancel": "ยกเลิก"
   },
   "profile": {
     "title": "โปรไฟล์ธุรกิจ",
@@ -958,13 +959,18 @@
       "googleMissingCode": "Google ไม่ได้ส่งข้อมูลที่จำเป็นสำหรับการลงชื่อเข้าใช้ โปรดลองอีกครั้ง",
       "googleStateMismatch": "การตรวจสอบความปลอดภัยของการลงชื่อเข้าใช้ด้วย Google ล้มเหลว โปรดลองอีกครั้ง",
       "googleNoId": "ไม่สามารถยืนยันบัญชี Google ของคุณได้ โปรดลองอีกครั้ง"
-    }
+    },
+    "preparingGoogle": "กำลังเตรียมการเข้าสู่ระบบด้วย Google…",
+    "redirectingGoogle": "กำลังเปลี่ยนเส้นทางไปยัง Google อย่างปลอดภัย…"
   },
   "profileMenu": {
     "account": "บัญชี",
     "accountDetails": "รายละเอียดบัญชี",
     "open": "เปิดเมนูบัญชี",
-    "signedInAs": "ลงชื่อเข้าใช้ในชื่อ"
+    "signedInAs": "ลงชื่อเข้าใช้ในชื่อ",
+    "dashboard": "แดชบอร์ด",
+    "darkMode": "โหมดมืด",
+    "lightMode": "โหมดสว่าง"
   },
   "account": {
     "administrator": "ผู้ดูแลระบบ",
@@ -1627,5 +1633,26 @@
     "previous": "ก่อนหน้า",
     "page": "หน้า {{page}} จาก {{count}}",
     "next": "ถัดไป"
+  },
+  "settings": {
+    "accountProfile": {
+      "title": "โปรไฟล์บัญชี",
+      "description": "จัดการข้อมูลประจำตัวที่แสดงในบัญชี Get Phame ของคุณ",
+      "loading": "กำลังโหลดโปรไฟล์บัญชี",
+      "saved": "อัปเดตโปรไฟล์แล้ว",
+      "avatarSaved": "อัปเดตรูปโปรไฟล์แล้ว",
+      "avatarRemoved": "ลบรูปโปรไฟล์แล้ว",
+      "avatarInvalid": "เลือกรูป JPG, PNG หรือ WebP ขนาดไม่เกิน 3 MB",
+      "avatarReadError": "ไม่สามารถอ่านรูปนี้ได้ โปรดลองไฟล์อื่น",
+      "avatarAlt": "รูปโปรไฟล์บัญชี",
+      "chooseAvatar": "เลือกรูปโปรไฟล์",
+      "avatarHelp": "JPG, PNG หรือ WebP · สูงสุด 3 MB",
+      "displayName": "ชื่อที่แสดง",
+      "email": "ที่อยู่อีเมล",
+      "emailHelp": "อีเมลสำหรับเข้าสู่ระบบได้รับการจัดการโดยผู้ให้บริการยืนยันตัวตนของคุณ",
+      "save": "บันทึกโปรไฟล์",
+      "uploadAvatar": "อัปโหลดรูป",
+      "removeAvatar": "ลบรูป"
+    }
   }
 }

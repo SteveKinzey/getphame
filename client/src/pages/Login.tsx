@@ -32,7 +32,8 @@ interface MagicLinkResponse {
   email?: string;
 }
 
-const GOOGLE_REDIRECT_FEEDBACK_MS = 180;
+const GOOGLE_REDIRECT_FEEDBACK_MS = 420;
+const GOOGLE_REDIRECT_STATUS_MS = 140;
 
 // ---------------------------------------------------------------------------
 // SVG Icons (inline — no extra icon package needed)
@@ -121,6 +122,7 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
+  const [googleStatus, setGoogleStatus] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [sentTo, setSentTo] = useState<string | null>(null); // shows success state
 
@@ -157,6 +159,7 @@ export default function Login() {
     flushSync(() => {
       setFormError(null);
       setIsGoogleSubmitting(true);
+      setGoogleStatus(t("authFeedback.preparingGoogle", { defaultValue: "Preparing a secure Google sign-in…" }));
     });
     rememberGoogleSignInPending();
     toast.loading(t("authFeedback.openingGoogle", { defaultValue: "Opening Google sign-in…" }), {
@@ -165,11 +168,15 @@ export default function Login() {
 
     try {
       window.setTimeout(() => {
+        setGoogleStatus(t("authFeedback.redirectingGoogle", { defaultValue: "Redirecting to Google. Keep this tab open." }));
+      }, GOOGLE_REDIRECT_STATUS_MS);
+      window.setTimeout(() => {
         window.location.assign("/api/auth/google");
       }, GOOGLE_REDIRECT_FEEDBACK_MS);
     } catch {
       clearGoogleSignInPending();
       setIsGoogleSubmitting(false);
+      setGoogleStatus(null);
       toast.error(t("authFeedback.googleOpenFailed", { defaultValue: "Google sign-in could not be opened. Please try again." }), {
         id: GOOGLE_SIGN_IN_TOAST_ID,
       });
@@ -241,18 +248,26 @@ export default function Login() {
             <div className="space-y-3" data-testid="staging-social-login">
               {/* Google — only rendered when configured */}
               {googleEnabled === true && (
-                <button
-                  type="button"
-                  onClick={handleGoogleSignIn}
-                  disabled={isGoogleSubmitting}
-                  aria-busy={isGoogleSubmitting}
-                  className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-50 active:bg-gray-100 disabled:cursor-wait disabled:bg-gray-100 disabled:text-gray-500 text-gray-800 font-semibold text-sm transition-[background-color,color,transform] duration-150 shadow-sm active:scale-[0.98]"
-                >
-                  {isGoogleSubmitting ? <Spinner /> : <GoogleIcon />}
-                  {isGoogleSubmitting
-                    ? t("authFeedback.connectingGoogle", { defaultValue: "Connecting to Google…" })
-                    : t("authFeedback.continueWithGoogle", { defaultValue: "Continue with Google" })}
-                </button>
+                <div>
+                  <button
+                    type="button"
+                    onClick={handleGoogleSignIn}
+                    disabled={isGoogleSubmitting}
+                    aria-busy={isGoogleSubmitting}
+                    aria-describedby={isGoogleSubmitting ? "google-auth-status" : undefined}
+                    className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-50 active:bg-gray-100 disabled:cursor-wait disabled:bg-gray-100 disabled:text-gray-500 text-gray-800 font-semibold text-sm transition-[background-color,color,transform] duration-150 shadow-sm active:scale-[0.98]"
+                  >
+                    {isGoogleSubmitting ? <Spinner /> : <GoogleIcon />}
+                    {isGoogleSubmitting
+                      ? t("authFeedback.connectingGoogle", { defaultValue: "Connecting to Google…" })
+                      : t("authFeedback.continueWithGoogle", { defaultValue: "Continue with Google" })}
+                  </button>
+                  {isGoogleSubmitting && googleStatus && (
+                    <p id="google-auth-status" role="status" aria-live="polite" className="mt-2 text-center text-xs font-semibold text-white/70">
+                      {googleStatus}
+                    </p>
+                  )}
+                </div>
               )}
 
               {/* Google placeholder while loading */}

@@ -199,6 +199,41 @@ export async function updateUserLastSignedIn(openId: string, timestamp: Date) {
   await db.update(users).set({ lastSignedIn: timestamp, updatedAt: new Date() }).where(eq(users.openId, openId));
 }
 
+export async function getAccountProfile(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const [profile] = await db
+    .select({
+      id: users.id,
+      name: users.name,
+      email: users.email,
+      avatarKey: users.avatarKey,
+      avatarMimeType: users.avatarMimeType,
+      avatarUpdatedAt: users.avatarUpdatedAt,
+    })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
+  return profile ?? null;
+}
+
+export async function updateAccountProfile(
+  userId: number,
+  updates: {
+    name?: string;
+    avatarKey?: string | null;
+    avatarMimeType?: string | null;
+    avatarUpdatedAt?: Date | null;
+  },
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db
+    .update(users)
+    .set({ ...updates, updatedAt: new Date() })
+    .where(eq(users.id, userId));
+}
+
 // ─── Authentication diagnostics ───────────────────────────────────────────────
 
 export async function createAuthDiagnosticEvent(event: InsertAuthDiagnosticEvent) {

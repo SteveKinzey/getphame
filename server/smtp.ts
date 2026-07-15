@@ -8,6 +8,7 @@
 
 import nodemailer from "nodemailer";
 import { createCipheriv, createDecipheriv, randomBytes, createHash } from "crypto";
+import { renderGetPhameEmailHeader } from "./platformEmailBrand";
 import { getDb } from "./db";
 import { smtpCredentials } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
@@ -265,12 +266,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
 
           <!-- Header -->
-          <tr>
-            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
-              <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">Your email is connected! 🚀</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader("Your email is connected")}
 
           <!-- Body -->
           <tr>
@@ -495,12 +491,7 @@ export async function sendUserWelcomeEmail(opts: {
     <tr>
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
-          <tr>
-            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
-              <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">Welcome aboard! 🚀</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader("Welcome aboard")}
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
@@ -606,12 +597,7 @@ export async function sendUpgradeReceiptEmail(opts: {
     <tr>
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
-          <tr>
-            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
-              <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">You're on ${tierLabel}! 🎉</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader(`You're on ${tierLabel}!`)}
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
@@ -690,12 +676,7 @@ export async function sendChurnRecoveryEmail(opts: {
     <tr>
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
-          <tr>
-            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
-              <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">We're sorry to see you go</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader("We're sorry to see you go")}
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
@@ -787,12 +768,7 @@ export async function sendReEngagementEmail(opts: {
     <tr>
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
-          <tr>
-            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
-              <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">Here's what you're missing</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader("Here's what you're missing")}
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
@@ -921,12 +897,7 @@ export async function sendPaymentFailedEmail(opts: {
     <tr>
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
-          <tr>
-            <td style="background:#b91c1c;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fca5a5;">Get Phame</p>
-              <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">Payment failed — action required</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader("Payment failed — action required")}
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
@@ -1002,12 +973,7 @@ export async function sendInactiveUserEmail(opts: {
     <tr>
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
-          <tr>
-            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
-              <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">Your first review request is waiting</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader("Your first review request is waiting")}
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
