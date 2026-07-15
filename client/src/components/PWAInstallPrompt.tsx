@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Check, Copy, Download, MoreVertical, Plus, Share, Share2, X } from "lucide-react";
 import { trpc } from "@/lib/trpc";
+import { registerPwaInstallRequest, updatePwaInstallSnapshot } from "@/lib/pwaInstall";
 
 const STORAGE_KEY = "rl-pwa-prompt-dismissed";
 const CANONICAL_URL = "https://getphame.app/";
@@ -62,33 +63,41 @@ export default function PWAInstallPrompt() {
   const trackPwaEvent = trpc.analytics.trackPwaEvent.useMutation();
 
   useEffect(() => {
-    if (isStandalone()) return;
-    if (localStorage.getItem(STORAGE_KEY)) return;
-
+    const installed = isStandalone();
     const detectedPlatform = detectPlatform();
-    if (detectedPlatform === "other") return;
+    updatePwaInstallSnapshot({
+      eligible: !installed && detectedPlatform !== "other",
+      installed,
+      platform: detectedPlatform,
+      promptAvailable: false,
+    });
+    if (installed) return;
     setPlatform(detectedPlatform);
 
     const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
       setInstallPrompt(event as BeforeInstallPromptEvent);
+      updatePwaInstallSnapshot({ eligible: true, promptAvailable: true });
     };
     const handleInstalled = () => {
       setVisible(false);
       setInstallPrompt(null);
       localStorage.setItem(STORAGE_KEY, "1");
+      updatePwaInstallSnapshot({ eligible: false, installed: true, promptAvailable: false });
       trackPwaEvent.mutate({ event: "app_installed", platform: analyticsPlatform(detectedPlatform) });
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     window.addEventListener("appinstalled", handleInstalled);
-    const timer = window.setTimeout(() => {
-      setVisible(true);
-      trackPwaEvent.mutate({ event: "install_guide_viewed", platform: analyticsPlatform(detectedPlatform) });
-    }, 3000);
+    const timer = detectedPlatform === "other" || localStorage.getItem(STORAGE_KEY)
+      ? undefined
+      : window.setTimeout(() => {
+          setVisible(true);
+          trackPwaEvent.mutate({ event: "install_guide_viewed", platform: analyticsPlatform(detectedPlatform) });
+        }, 3000);
 
     return () => {
-      window.clearTimeout(timer);
+      if (timer) window.clearTimeout(timer);
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
       window.removeEventListener("appinstalled", handleInstalled);
     };
@@ -114,6 +123,7 @@ export default function PWAInstallPrompt() {
       await installPrompt.prompt();
       const choice = await installPrompt.userChoice;
       setInstallPrompt(null);
+      updatePwaInstallSnapshot({ promptAvailable: false });
       if (choice.outcome === "accepted") {
         record("install_accepted");
         setVisible(false);
@@ -125,6 +135,15 @@ export default function PWAInstallPrompt() {
       setInstalling(false);
     }
   };
+
+  useEffect(() => registerPwaInstallRequest(async () => {
+    if (installPrompt) {
+      await install();
+      return;
+    }
+    setVisible(true);
+    record("install_guide_viewed");
+  }));
 
   const shareGetPhame = async () => {
     setSharing(true);

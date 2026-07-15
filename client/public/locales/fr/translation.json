@@ -2038,6 +2038,15 @@
     "page": "Page {{page}} sur {{count}}",
     "next": "Suivant"
   },
+  "pwaInstallBanner": {
+    "title": "Installez Get Phame",
+    "description": "Ouvrez votre tableau de bord d’avis plus vite et utilisez Get Phame comme une app.",
+    "cta": "Installer l’app",
+    "iosCta": "Voir les étapes pour iPhone",
+    "opening": "Ouverture…",
+    "openingStatus": "Ouverture des options d’installation de Get Phame.",
+    "dismiss": "Masquer la bannière d’installation"
+  },
   "settings": {
     "accountProfile": {
       "title": "Profil du compte",

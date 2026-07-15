@@ -1,12 +1,13 @@
 // Get Phame Service Worker v5 — Fixed cross-origin fetch handling
 // Cache version bump forces old caches to be cleared on update
-const CACHE_NAME = 'getphame-v6';
+const CACHE_NAME = 'getphame-v7';
 
 // Pre-cache all locale files at install so language switching is instant
 // and works completely offline after the app is installed on the device.
 const STATIC_ASSETS = [
   '/',
   '/index.html',
+  '/offline.html',
   '/manifest.json',
   '/apple-touch-icon.png',
   '/icons/icon-192.png',
@@ -111,13 +112,13 @@ self.addEventListener('fetch', (event) => {
         return response;
       })
       .catch(() => {
-        // Offline fallback: serve from cache
+        // Document navigations use the branded offline page instead of a broken app shell.
+        if (event.request.destination === 'document') {
+          return caches.match('/offline.html');
+        }
+        // Other same-origin requests fall back to their cached response.
         return caches.match(event.request).then((cached) => {
           if (cached) return cached;
-          // For navigation requests, serve the app shell
-          if (event.request.destination === 'document') {
-            return caches.match('/');
-          }
           // For favicon/icon requests that fail, return a 204 no-content
           if (
             url.pathname.includes('favicon') ||

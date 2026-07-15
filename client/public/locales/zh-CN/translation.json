@@ -1500,6 +1500,15 @@
     "page": "第 {{page}} 页，共 {{count}} 页",
     "next": "下一页"
   },
+  "pwaInstallBanner": {
+    "title": "安装 Get Phame",
+    "description": "更快打开您的评价仪表盘，像使用应用一样使用 Get Phame。",
+    "cta": "安装应用",
+    "iosCta": "查看 iPhone 安装步骤",
+    "opening": "正在打开…",
+    "openingStatus": "正在打开 Get Phame 安装选项。",
+    "dismiss": "关闭安装横幅"
+  },
   "settings": {
     "accountProfile": {
       "title": "账户资料",

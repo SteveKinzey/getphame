@@ -15,6 +15,7 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 import { getEffectivePlan } from "@shared/plans";
 import BrandLockup from "@/components/BrandLockup";
+import HomeInstallBanner from "@/components/HomeInstallBanner";
 
 const LOGO_URL = "https://assets.getphame.app/getphame-logo.svg";
 const HERO_IMG = "https://assets.getphame.app/getphame-logo.svg";
@@ -542,6 +543,9 @@ export default function HomePage() {
       </div>
 
       <div className="px-4 py-4 lg:px-8 lg:py-6 animate-fade-up" style={{ animationDelay: '120ms' }}>
+      <div className="mb-4">
+        <HomeInstallBanner />
+      </div>
       {/* Responsive grid: single column on mobile, 2-col on lg (main + sidebar) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
       {/* ── Left column (main content) — spans 2 cols on desktop ── */}

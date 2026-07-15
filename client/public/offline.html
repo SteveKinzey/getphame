@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#101b3f" />
+    <title>You’re offline — Get Phame</title>
+    <style>
+      :root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+      * { box-sizing: border-box; }
+      body { margin: 0; min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: max(24px, env(safe-area-inset-top)) 20px max(24px, env(safe-area-inset-bottom)); color: #101b3f; background: radial-gradient(circle at 50% -10%, #fff8d8 0, #fffdf6 28%, #f4f7ff 70%); }
+      main { width: min(100%, 480px); text-align: center; }
+      .wordmark { display: inline-flex; align-items: center; justify-content: center; min-height: 42px; padding: 0 18px; border-radius: 999px; color: #fff; background: #101b3f; font-weight: 900; letter-spacing: .12em; }
+      .signal { position: relative; width: 96px; height: 72px; margin: 34px auto 24px; }
+      .signal span { position: absolute; left: 50%; bottom: 0; translate: -50% 0; border: 7px solid #d4a017; border-bottom: 0; border-left-color: transparent; border-right-color: transparent; border-radius: 100% 100% 0 0; }
+      .signal span:nth-child(1) { width: 88px; height: 54px; }
+      .signal span:nth-child(2) { width: 58px; height: 36px; }
+      .signal span:nth-child(3) { width: 28px; height: 18px; }
+      .dot { width: 11px; height: 11px; margin: 0 auto; border-radius: 50%; background: #d4a017; }
+      h1 { margin: 0; font-size: clamp(2rem, 9vw, 3rem); line-height: 1; letter-spacing: -.045em; }
+      p { max-width: 38ch; margin: 18px auto 0; color: #4a5678; font-size: 1rem; line-height: 1.65; }
+      button { min-height: 48px; margin-top: 28px; padding: 0 24px; border: 0; border-radius: 14px; color: #101b3f; background: #d4a017; font: inherit; font-weight: 900; cursor: pointer; box-shadow: 0 10px 26px rgb(16 27 63 / .14); transition: transform 160ms cubic-bezier(.23,1,.32,1); }
+      button:active { transform: scale(.97); }
+      button:focus-visible { outline: 3px solid #101b3f; outline-offset: 4px; }
+      .hint { margin-top: 14px; font-size: .82rem; color: #6c7692; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div class="wordmark" aria-label="Get Phame">GET PHAME</div>
+      <div class="signal" aria-hidden="true"><span></span><span></span><span></span></div>
+      <div class="dot" aria-hidden="true"></div>
+      <h1>You’re offline</h1>
+      <p>Get Phame can’t reach the internet right now. Check your connection, then try again to return to your review dashboard.</p>
+      <button type="button" onclick="window.location.reload()">Try again</button>
+      <div class="hint" role="status">Your account data has not been changed.</div>
+    </main>
+  </body>
+</html>

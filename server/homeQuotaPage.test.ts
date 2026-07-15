@@ -50,6 +50,9 @@ vi.mock("@/lib/trpc", () => ({
         useQuery: () => query({ uniqueOpens: 0, uniqueClicks: 0, totalSent: 0 }, { isLoading: false }),
       },
     },
+    analytics: {
+      trackPwaEvent: { useMutation: () => ({ mutate: vi.fn(), isPending: false }) },
+    },
     useUtils: () => ({ profile: { get: { invalidate: vi.fn() } } }),
   },
 }));

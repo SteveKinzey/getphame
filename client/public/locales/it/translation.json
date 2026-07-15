@@ -2205,5 +2205,14 @@
     "previous": "Precedente",
     "page": "Pagina {{page}} di {{count}}",
     "next": "Avanti"
+  },
+  "pwaInstallBanner": {
+    "title": "Installa Get Phame",
+    "description": "Apri più velocemente la dashboard delle recensioni e usa Get Phame come un’app.",
+    "cta": "Installa app",
+    "iosCta": "Vedi i passaggi per iPhone",
+    "opening": "Apertura…",
+    "openingStatus": "Apertura delle opzioni di installazione di Get Phame.",
+    "dismiss": "Nascondi banner di installazione"
   }
 }

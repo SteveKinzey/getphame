@@ -310,3 +310,11 @@
 - [x] Refine the skill with reusable implementation, localization, analytics, accessibility, responsive-validation, and release-checkpoint contracts.
 - [x] Validate the completed skill using the approved skill-creator validator.
 - [x] Deliver the installable skill package to Steve.
+
+- [x] Audit the existing homepage install prompt, native sharing metadata, service worker, offline behavior, locales, and regression tests.
+- [x] Add a responsive homepage Install App banner that only appears for eligible users who have not installed the PWA and triggers the supported install flow.
+- [x] Add localized install-banner copy, dismissal behavior, accessibility feedback, and privacy-light install analytics.
+- [x] Enhance shared-link social previews with a branded preview image, canonical description, Open Graph metadata, and X card metadata.
+- [x] Implement a branded custom offline fallback page and integrate it with the PWA service worker navigation strategy.
+- [x] Add regression coverage and validate mobile install behavior, social metadata, offline fallback, TypeScript, security audit, full tests, and production build.
+- [x] Publish the validated PWA enhancement release and report the live version.

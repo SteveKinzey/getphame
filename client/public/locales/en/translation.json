@@ -1955,6 +1955,15 @@
       "iframeTitle": "GetPhame product walkthrough"
     }
   },
+  "pwaInstallBanner": {
+    "title": "Install Get Phame",
+    "description": "Open your review dashboard faster and use Get Phame like an app.",
+    "cta": "Install App",
+    "iosCta": "Show iPhone steps",
+    "opening": "Opening…",
+    "openingStatus": "Opening the Get Phame installation options.",
+    "dismiss": "Dismiss install banner"
+  },
   "settings": {
     "accountProfile": {
       "title": "Account profile",

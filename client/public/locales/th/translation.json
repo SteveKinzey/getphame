@@ -1643,6 +1643,15 @@
     "page": "หน้า {{page}} จาก {{count}}",
     "next": "ถัดไป"
   },
+  "pwaInstallBanner": {
+    "title": "ติดตั้ง Get Phame",
+    "description": "เปิดแดชบอร์ดรีวิวได้เร็วขึ้น และใช้งาน Get Phame ได้เหมือนแอป",
+    "cta": "ติดตั้งแอป",
+    "iosCta": "ดูขั้นตอนสำหรับ iPhone",
+    "opening": "กำลังเปิด…",
+    "openingStatus": "กำลังเปิดตัวเลือกการติดตั้ง Get Phame",
+    "dismiss": "ซ่อนแบนเนอร์ติดตั้ง"
+  },
   "settings": {
     "accountProfile": {
       "title": "โปรไฟล์บัญชี",

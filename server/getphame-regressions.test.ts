@@ -57,13 +57,23 @@ describe("Get Phame regression contracts", () => {
       launch_handler: { client_mode: string[] };
     };
     const serviceWorker = readProjectFile("../client/public/sw.js");
+    const offlinePage = readProjectFile("../client/public/offline.html");
     const installPrompt = readProjectFile("../client/src/components/PWAInstallPrompt.tsx");
+    const installBanner = readProjectFile("../client/src/components/HomeInstallBanner.tsx");
+    const home = readProjectFile("../client/src/pages/Home.tsx");
+    const pwaAnalytics = readProjectFile("./pwaAnalytics.ts");
     const app = readProjectFile("../client/src/App.tsx");
 
     expect(html).toContain('content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover"');
     expect(html).toContain('<meta name="apple-mobile-web-app-title" content="Get Phame"');
-    expect(html).toContain('property="og:image" content="https://assets.getphame.app/getphame-og-image.png?v=3"');
-    expect(html).toContain('name="twitter:image" content="https://assets.getphame.app/getphame-og-image.png?v=3"');
+    expect(html).toContain('property="og:image" content="https://assets.getphame.app/getphame-og-image.png?v=4"');
+    expect(html).toContain('property="og:image:width" content="1200"');
+    expect(html).toContain('property="og:image:height" content="630"');
+    expect(html).toContain('property="og:image:alt"');
+    expect(html).toContain('name="twitter:card" content="summary_large_image"');
+    expect(html).toContain('name="twitter:image" content="https://assets.getphame.app/getphame-og-image.png?v=4"');
+    expect(html).toContain('name="twitter:description"');
+    expect(html).toContain('"image": "https://assets.getphame.app/getphame-og-image.png?v=4"');
     expect(html).toContain('property="og:image:type" content="image/png"');
     expect(html.match(/rel="apple-touch-startup-image"/g)).toHaveLength(30);
     expect(html).toContain("launch-iphone-390x844@3x-portrait.png");
@@ -80,16 +90,44 @@ describe("Get Phame regression contracts", () => {
     expect(manifest.icons.some((icon) => icon.sizes === "512x512" && icon.purpose === "maskable")).toBe(true);
     expect(manifest.launch_handler.client_mode).toContain("navigate-existing");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v6'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v7'");
     expect(serviceWorker).toContain("self.addEventListener('install'");
     expect(serviceWorker).toContain("self.addEventListener('fetch'");
+    expect(serviceWorker).toContain("'/offline.html'");
+    expect(serviceWorker).toContain("return caches.match('/offline.html')");
     expect(serviceWorker).toContain("return self.clients.claim()");
+    expect(offlinePage).toContain("You’re offline");
+    expect(offlinePage).toContain("GET PHAME");
+    expect(offlinePage).toContain('onclick="window.location.reload()"');
     expect(installPrompt).toContain('window.addEventListener("beforeinstallprompt"');
     expect(installPrompt).toContain('window.addEventListener("appinstalled"');
+    expect(installPrompt).toContain("registerPwaInstallRequest");
     expect(installPrompt).toContain("Install Get Phame");
     expect(installPrompt).toContain("Get Phame will appear on your home screen");
+    expect(installBanner).toContain('data-testid="home-install-banner"');
+    expect(installBanner).toContain("requestPwaInstall");
+    expect(installBanner).toContain("installState.eligible && !installState.installed && !dismissed");
+    expect(installBanner).toContain('event: "install_banner_viewed"');
+    expect(installBanner).toContain('event: "install_banner_clicked"');
+    expect(installBanner).toContain('event: "install_banner_dismissed"');
+    expect(installBanner).toContain('typeof window === "undefined"');
+    expect(home).toContain("<HomeInstallBanner />");
+    expect(pwaAnalytics).toContain('"install_banner_viewed"');
+    expect(pwaAnalytics).toContain('"install_banner_clicked"');
+    expect(pwaAnalytics).toContain('"install_banner_dismissed"');
     expect(app).toMatch(/<AppShell \/>[\s\S]*?<PWAInstallPrompt \/>/);
     expect(app.match(/<PWAInstallPrompt \/>/g)).toHaveLength(1);
+
+    const installCopyKeys = ["title", "description", "cta", "iosCta", "opening", "openingStatus", "dismiss"];
+    for (const locale of ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"]) {
+      const translations = JSON.parse(
+        readProjectFile(`../client/public/locales/${locale}/translation.json`),
+      ) as { pwaInstallBanner?: Record<string, unknown> };
+
+      for (const key of installCopyKeys) {
+        expect(translations.pwaInstallBanner?.[key], `${locale}.${key}`).toEqual(expect.any(String));
+      }
+    }
   });
 
   it("uses the official mark alone at constrained authenticated widths and restores the full lockup when space permits", () => {
