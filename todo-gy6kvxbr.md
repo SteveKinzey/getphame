@@ -305,3 +305,8 @@
 - [x] Replace the previously sourced avatar asset with Steve’s attached `/home/ubuntu/upload/getphame-logo.png` as the sole authoritative logo master.
 - [x] Recreate exact 200×200, 512×512, and 1024×1024 PNG and WebP variants without redrawing or changing the P-star artwork.
 - [x] Apply a corrected PNG derivative to the dedicated Google Workspace sender profile and verify the visible avatar.
+
+- [x] Audit the existing Get Phame social/PWA skill against the completed onboarding install-and-share workflow.
+- [x] Refine the skill with reusable implementation, localization, analytics, accessibility, responsive-validation, and release-checkpoint contracts.
+- [x] Validate the completed skill using the approved skill-creator validator.
+- [x] Deliver the installable skill package to Steve.
