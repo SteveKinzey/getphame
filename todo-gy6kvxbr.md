@@ -199,3 +199,8 @@
 - [x] Add focused Vitest coverage for the corrected tRPC request and a user-safe temporary-unavailability path.
 - [x] Run TypeScript, focused tests, the full Vitest suite, and the production build.
 - [x] Verify the repaired landing route at desktop and phone widths, then publish the validated checkpoint.
+- [x] Reproduce why the Automatic Follow-ups first-delay value cannot be edited and trace its UI, API, and persistence path.
+- [x] Make the first follow-up delay editable with safe numeric limits while keeping the second follow-up exactly seven days later.
+- [x] Add focused reminder-delay regression coverage and run TypeScript, the full Vitest suite, and the production build.
+- [x] Verify the repaired reminder control on phone and desktop viewports, then publish the validated checkpoint.
+- [x] Diagnose and repair the Vite reload failures for Settings.tsx and index.css caused by the interrupted reminder-control edit, then confirm /templates loads cleanly.

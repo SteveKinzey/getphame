@@ -66,6 +66,11 @@ import BrandLockup from "@/components/BrandLockup";
 import { IntegrationGuide } from "@/components/IntegrationGuide";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
 import PlanSwitchDialog from "@/components/PlanSwitchDialog";
+import {
+  DEFAULT_FOLLOW_UP_DELAY_DAYS,
+  isValidFollowUpDelayDays,
+  normalizeFollowUpDelayDays,
+} from "@/lib/reminderSettings";
 
 // ── Share & Earn Card ────────────────────────────────────────────────────────
 function ShareAndEarnCard({ profile }: { profile: ProfileData | null | undefined }) {
@@ -906,10 +911,27 @@ export default function SettingsPage() {
 
   // Reminder settings state
   const { data: reminderSettings } = trpc.reminders.getSettings.useQuery();
+  const [followUpDelayInput, setFollowUpDelayInput] = useState(String(DEFAULT_FOLLOW_UP_DELAY_DAYS));
+  const utils = trpc.useUtils();
   const updateReminderSettings = trpc.reminders.updateSettings.useMutation({
-    onSuccess: () => { toast.success("Follow-up reminder settings saved!"); },
+    onSuccess: async (_data, variables) => {
+      setFollowUpDelayInput(String(variables.followUpDelayDays));
+      await utils.reminders.getSettings.invalidate();
+      toast.success("Follow-up reminder settings saved!");
+    },
     onError: (err) => toast.error(err.message),
   });
+
+  useEffect(() => {
+    if (reminderSettings?.followUpDelayDays != null) {
+      setFollowUpDelayInput(String(reminderSettings.followUpDelayDays));
+    }
+  }, [reminderSettings?.followUpDelayDays]);
+
+  const followUpDelayIsValid = isValidFollowUpDelayDays(followUpDelayInput);
+  const savedFollowUpDelayDays = reminderSettings?.followUpDelayDays ?? DEFAULT_FOLLOW_UP_DELAY_DAYS;
+  const editedFollowUpDelayDays = normalizeFollowUpDelayDays(followUpDelayInput, savedFollowUpDelayDays);
+  const followUpDelayHasChanges = followUpDelayIsValid && editedFollowUpDelayDays !== savedFollowUpDelayDays;
 
   const { data: reEngagementSettings } = trpc.profile.getReEngagementSettings.useQuery();
   const updateReEngagementSettings = trpc.profile.updateReEngagementSettings.useMutation({
@@ -928,7 +950,6 @@ export default function SettingsPage() {
     }
   }, [profile?.id]);
 
-  const utils = trpc.useUtils();
   const upsertProfile = trpc.profile.upsert.useMutation({
     onSuccess: () => {
       utils.profile.get.invalidate();
@@ -2260,27 +2281,48 @@ export default function SettingsPage() {
                     checked={(reminderSettings?.followUpEnabled ?? 1) === 1}
                     onCheckedChange={(v) => updateReminderSettings.mutate({
                       followUpEnabled: v ? 1 : 0,
-                      followUpDelayDays: reminderSettings?.followUpDelayDays ?? 3,
+                      followUpDelayDays: editedFollowUpDelayDays,
                     })}
+                    disabled={updateReminderSettings.isPending}
                   />
                 </div>
-                <p className="text-xs mb-3 rr-text-navy-muted">Automatically send day-3 and day-10 follow-up emails to customers who haven&apos;t clicked your review link.</p>
+                <p className="text-xs mb-3 rr-text-navy-muted">Automatically send two follow-up emails to customers who haven&apos;t clicked your review link. The second follow-up is always seven days after the first.</p>
                 {(reminderSettings?.followUpEnabled ?? 1) === 1 && (
-                  <div className="flex items-center gap-2">
-                    <label className="text-xs font-bold rr-text-navy-mid">First follow-up after</label>
-                    <input
-                      type="number"
-                      min={1}
-                      max={14}
-                      value={reminderSettings?.followUpDelayDays ?? 3}
-                      onChange={(e) => updateReminderSettings.mutate({
-                        followUpEnabled: reminderSettings?.followUpEnabled ?? 1,
-                        followUpDelayDays: Math.min(14, Math.max(1, Number(e.target.value))),
-                      })}
-                      className="w-16 px-2 py-1.5 rounded-lg text-sm outline-none text-center"
-                      style={{ border: "2px solid oklch(0.88 0.02 260)", fontSize: "16px" }}
-                    />
-                    <span className="text-sm font-semibold rr-text-navy-mid">days (second follow-up 7 days later)</span>
+                  <div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <label htmlFor="follow-up-delay-days" className="text-xs font-bold rr-text-navy-mid">First follow-up after</label>
+                      <input
+                        id="follow-up-delay-days"
+                        type="number"
+                        inputMode="numeric"
+                        min={1}
+                        max={14}
+                        step={1}
+                        value={followUpDelayInput}
+                        onChange={(e) => setFollowUpDelayInput(e.target.value)}
+                        aria-invalid={!followUpDelayIsValid}
+                        aria-describedby="follow-up-delay-help"
+                        className="w-16 px-2 py-1.5 rounded-lg text-sm outline-none text-center"
+                        style={{ border: `2px solid ${followUpDelayIsValid ? "oklch(0.88 0.02 260)" : "oklch(0.58 0.19 25)"}`, fontSize: "16px" }}
+                      />
+                      <span className="text-sm font-semibold rr-text-navy-mid">days</span>
+                      <button
+                        type="button"
+                        onClick={() => updateReminderSettings.mutate({
+                          followUpEnabled: reminderSettings?.followUpEnabled ?? 1,
+                          followUpDelayDays: editedFollowUpDelayDays,
+                        })}
+                        disabled={updateReminderSettings.isPending || !followUpDelayHasChanges}
+                        className="ml-auto min-h-9 px-3 py-1.5 rounded-lg text-xs font-bold transition-opacity disabled:opacity-40 rr-bg-navy rr-text-gold"
+                      >
+                        {updateReminderSettings.isPending ? "Saving…" : "Save"}
+                      </button>
+                    </div>
+                    <p id="follow-up-delay-help" className="text-xs mt-2 rr-text-navy-muted">
+                      {followUpDelayIsValid
+                        ? `The second follow-up will send on day ${editedFollowUpDelayDays + 7}. Choose 1–14 days.`
+                        : "Enter a whole number from 1 to 14 days."}
+                    </p>
                   </div>
                 )}
               </div>

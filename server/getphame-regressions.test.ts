@@ -129,6 +129,18 @@ describe("Get Phame regression contracts", () => {
     expect(settings).toContain("profileLoading");
   });
 
+  it("keeps the automatic follow-up delay locally editable before an explicit validated save", () => {
+    const settings = readProjectFile("../client/src/pages/Settings.tsx");
+    const reminders = readProjectFile("./reminders.ts");
+
+    expect(settings).toContain("value={followUpDelayInput}");
+    expect(settings).toContain("onChange={(e) => setFollowUpDelayInput(e.target.value)}");
+    expect(settings).toContain("!followUpDelayHasChanges");
+    expect(settings).toContain("utils.reminders.getSettings.invalidate()");
+    expect(settings).toContain("editedFollowUpDelayDays + 7");
+    expect(reminders).toContain("const step2DelayMs = step1DelayMs + 7 * 24 * 60 * 60 * 1000");
+  });
+
   it("keeps form values, placeholders, autofill, disabled, and read-only content readable in both themes", () => {
     const styles = readProjectFile("../client/src/index.css");
     const input = readProjectFile("../client/src/components/ui/input.tsx");

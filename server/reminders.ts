@@ -1,7 +1,7 @@
 /**
  * Follow-up Reminders — two-step sequence per review request:
- *   Step 1 — day 4 after initial send  ("Just checking in…")
- *   Step 2 — day 11 after initial send ("Last chance to share your thoughts…")
+ *   Step 1 — the user's configured delay after the initial send
+ *   Step 2 — seven days after step 1
  *
  * The scheduler runs every hour via setInterval on server start.
  */
@@ -13,13 +13,10 @@ import { getDefaultReviewPlatform } from "./reviewPlatforms";
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
 import { buildReviewRequestEmail } from "./emailTemplates";
 
-const FOUR_DAYS_MS   = 4  * 24 * 60 * 60 * 1000; // day 4  — first follow-up
-const ELEVEN_DAYS_MS = 11 * 24 * 60 * 60 * 1000; // day 11 — second follow-up
-
 /**
  * Schedule both follow-up reminders for a sent review request:
- *   Step 1 — 4 days after initial send
- *   Step 2 — 11 days after initial send (7 days after step 1)
+ *   Step 1 — configured delay after initial send (default: 3 days)
+ *   Step 2 — 7 days after step 1
  */
 export async function scheduleFollowUp(
   userId: number,
@@ -37,7 +34,7 @@ export async function scheduleFollowUp(
     .where(eq(businessProfiles.userId, userId));
   if (profile && profile.followUpEnabled === 0) return;
 
-  const step1DelayMs = ((profile?.followUpDelayDays ?? 4)) * 24 * 60 * 60 * 1000;
+  const step1DelayMs = (profile?.followUpDelayDays ?? 3) * 24 * 60 * 60 * 1000;
   const step2DelayMs = step1DelayMs + 7 * 24 * 60 * 60 * 1000; // step 2 always 7 days after step 1
 
   const now = Date.now();
