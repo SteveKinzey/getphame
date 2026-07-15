@@ -115,6 +115,12 @@ vi.mock("./db", async (importOriginal) => ({
   getDb: mocks.getDb,
 }));
 
+vi.mock("./smtp", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./smtp")>()),
+  decryptPassword: mocks.decryptPassword,
+  testSmtpConnection: mocks.testSmtpConnection,
+}));
+
 vi.mock("@/_core/hooks/useAuth", () => ({
   useAuth: () => ({
     user: { id: 1, name: "Owner Admin", email: "owner@example.test", role: "admin" },
@@ -338,7 +344,7 @@ describe("administrator user-management rendered workflow", () => {
     expect(html).toContain('data-testid={`admin-user-${account.id}`}');
     expect(html).toContain("Admin");
     expect(html).toContain("Life");
-    expect(html).toContain('defaultValue: "Page {{page}} of {{pageCount}}"');
+    expect(html).toContain('defaultValue: "Page {{page}} of {{count}}"');
     expect(html).toContain("Previous");
     expect(html).toContain("Next");
     expect(html).toContain('defaultValue: "Remove admin"');

@@ -173,5 +173,6 @@
 - [x] Add focused authorization, filtering, re-test, audit persistence, audit rendering, and failure-path Vitest coverage.
 - [x] Apply and verify the database migration, run TypeScript, focused tests, the full Vitest suite, production build, and responsive visual checks.
 - [x] Validate the reusable skill, save the auto-published application checkpoint, and deliver the skill package.
-- [ ] Replace the retired npm audit endpoint dependency in the production build gate with a reliable vulnerability check that still blocks verified production-security findings.
-- [ ] Re-run the full production build, save a new checkpoint, and confirm deployment succeeds.
+- [x] Replace the retired npm audit endpoint dependency in the production build gate with a reliable vulnerability check that still blocks verified production-security findings.
+- [x] Re-run the full production build, save a new checkpoint, and confirm deployment succeeds.
+- [ ] Correct the stale administrator SMTP test contract used by the production builder, rerun the complete release gate, and republish successfully.
