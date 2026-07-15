@@ -210,3 +210,20 @@
 - [x] Create and validate a reusable reminder-timing settings skill using the approved skill-creator workflow.
 - [x] Add focused schema, API, scheduler, UI, preset, toast, and independent-delay regressions; run TypeScript, the full Vitest suite, and the production build.
 - [x] Verify reminder settings on phone and desktop, publish the validated release, and deliver the reusable skill package.
+
+- [x] Inspect the current scheduler, reminder-event data, analytics paths, periodic-work constraints, and reusable reminder skill before designing the extension.
+- [x] Add durable independent enable/disable settings for the first and second follow-up stages while preserving current enabled defaults.
+- [x] Update reminder scheduling so disabled stages are skipped safely and the remaining enabled stage uses correct timing semantics without duplicate sends.
+- [x] Add a responsive projected send-date preview that updates dynamically for both stages and clearly identifies disabled reminders.
+- [x] Add a lightweight real-data performance reporting contract grouped by reminder timing configuration without fabricated reviews, ratings, or outcomes.
+- [x] Build a responsive reminder performance section showing configuration volume and success rate with clear empty and low-sample states.
+- [x] Update and validate the reusable reminder-timing skill with stage toggles, projected dates, analytics semantics, migrations, and regression gates.
+- [x] Add focused schema, scheduler, API, preview, toggle, analytics, and UI regressions; run TypeScript, the full Vitest suite, and production build.
+- [x] Verify the reminder controls, preview, and performance reporting on phone and desktop, then publish the validated release and deliver the updated skill.
+
+- [x] Audit all existing admin-only pages, health diagnostics, operational analytics, and route guards to define the administration hub inventory.
+- [x] Turn the bottom-left Administrator control into an accessible link to a centralized admin-only hub while preserving its current visual status treatment.
+- [x] Build a responsive administration hub that links to user management, authentication health, reminder performance, system operations, and other existing high-value admin pages.
+- [x] Surface concise real operational summaries on the admin hub only where trustworthy live data already exists, with clear unavailable and empty states.
+- [x] Add authorization, navigation, responsive layout, and source-contract regressions proving non-admin users cannot access or see the administration hub.
+- [x] Verify the Administrator link and administration hub on phone and desktop as part of the combined release validation.

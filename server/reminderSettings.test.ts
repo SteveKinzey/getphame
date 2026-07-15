@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS,
   FOLLOW_UP_DELAY_PRESETS,
+  getProjectedFollowUpDates,
   isValidFollowUpDelayDays,
   normalizeFollowUpDelayDays,
 } from "../client/src/lib/reminderSettings";
@@ -26,5 +27,13 @@ describe("follow-up delay settings", () => {
     expect(isValidFollowUpDelayDays("0")).toBe(false);
     expect(isValidFollowUpDelayDays("15")).toBe(false);
     expect(normalizeFollowUpDelayDays("", 6)).toBe(6);
+  });
+
+  it("projects the second follow-up cumulatively from the original send time", () => {
+    const originalSentAt = Date.UTC(2026, 6, 15, 12, 0, 0);
+    const projected = getProjectedFollowUpDates(originalSentAt, 3, 7);
+
+    expect(projected.first.getTime()).toBe(originalSentAt + 3 * 24 * 60 * 60 * 1000);
+    expect(projected.second.getTime()).toBe(originalSentAt + 10 * 24 * 60 * 60 * 1000);
   });
 });

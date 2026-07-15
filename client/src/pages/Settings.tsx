@@ -70,6 +70,7 @@ import {
   DEFAULT_FOLLOW_UP_DELAY_DAYS,
   DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS,
   FOLLOW_UP_DELAY_PRESETS,
+  getProjectedFollowUpDates,
   isValidFollowUpDelayDays,
   normalizeFollowUpDelayDays,
 } from "@/lib/reminderSettings";
@@ -913,15 +914,21 @@ export default function SettingsPage() {
 
   // Reminder settings state
   const { data: reminderSettings } = trpc.reminders.getSettings.useQuery();
+  const { data: reminderPerformance, isLoading: reminderPerformanceLoading } = trpc.reminders.timingPerformance.useQuery();
   const [followUpDelayInput, setFollowUpDelayInput] = useState(String(DEFAULT_FOLLOW_UP_DELAY_DAYS));
   const [followUpSecondDelayInput, setFollowUpSecondDelayInput] = useState(String(DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS));
+  const [followUpFirstEnabled, setFollowUpFirstEnabled] = useState(true);
+  const [followUpSecondEnabled, setFollowUpSecondEnabled] = useState(true);
+  const [projectionAnchor] = useState(() => Date.now());
   const utils = trpc.useUtils();
   const updateReminderSettings = trpc.reminders.updateSettings.useMutation({
     onSuccess: async (_data, variables) => {
       setFollowUpDelayInput(String(variables.followUpDelayDays));
       setFollowUpSecondDelayInput(String(variables.followUpSecondDelayDays));
+      setFollowUpFirstEnabled(variables.followUpFirstEnabled === 1);
+      setFollowUpSecondEnabled(variables.followUpSecondEnabled === 1);
       await utils.reminders.getSettings.invalidate();
-      toast.success("Follow-up timing saved!");
+      toast.success("Follow-up settings saved!");
     },
     onError: (err) => toast.error(err.message),
   });
@@ -933,19 +940,46 @@ export default function SettingsPage() {
     if (reminderSettings?.followUpSecondDelayDays != null) {
       setFollowUpSecondDelayInput(String(reminderSettings.followUpSecondDelayDays));
     }
-  }, [reminderSettings?.followUpDelayDays, reminderSettings?.followUpSecondDelayDays]);
+    if (reminderSettings?.followUpFirstEnabled != null) {
+      setFollowUpFirstEnabled(reminderSettings.followUpFirstEnabled === 1);
+    }
+    if (reminderSettings?.followUpSecondEnabled != null) {
+      setFollowUpSecondEnabled(reminderSettings.followUpSecondEnabled === 1);
+    }
+  }, [
+    reminderSettings?.followUpDelayDays,
+    reminderSettings?.followUpSecondDelayDays,
+    reminderSettings?.followUpFirstEnabled,
+    reminderSettings?.followUpSecondEnabled,
+  ]);
 
   const followUpDelayIsValid = isValidFollowUpDelayDays(followUpDelayInput);
   const followUpSecondDelayIsValid = isValidFollowUpDelayDays(followUpSecondDelayInput);
   const savedFollowUpDelayDays = reminderSettings?.followUpDelayDays ?? DEFAULT_FOLLOW_UP_DELAY_DAYS;
   const savedFollowUpSecondDelayDays = reminderSettings?.followUpSecondDelayDays ?? DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS;
+  const savedFollowUpFirstEnabled = (reminderSettings?.followUpFirstEnabled ?? 1) === 1;
+  const savedFollowUpSecondEnabled = (reminderSettings?.followUpSecondEnabled ?? 1) === 1;
   const editedFollowUpDelayDays = normalizeFollowUpDelayDays(followUpDelayInput, savedFollowUpDelayDays);
   const editedFollowUpSecondDelayDays = normalizeFollowUpDelayDays(followUpSecondDelayInput, savedFollowUpSecondDelayDays);
   const followUpTimingIsValid = followUpDelayIsValid && followUpSecondDelayIsValid;
   const followUpTimingHasChanges = followUpTimingIsValid && (
     editedFollowUpDelayDays !== savedFollowUpDelayDays ||
-    editedFollowUpSecondDelayDays !== savedFollowUpSecondDelayDays
+    editedFollowUpSecondDelayDays !== savedFollowUpSecondDelayDays ||
+    followUpFirstEnabled !== savedFollowUpFirstEnabled ||
+    followUpSecondEnabled !== savedFollowUpSecondEnabled
   );
+  const projectedFollowUpDates = getProjectedFollowUpDates(
+    projectionAnchor,
+    editedFollowUpDelayDays,
+    editedFollowUpSecondDelayDays,
+  );
+  const formatProjectedDate = (date: Date) => date.toLocaleString(undefined, {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
 
   const { data: reEngagementSettings } = trpc.profile.getReEngagementSettings.useQuery();
   const updateReEngagementSettings = trpc.profile.updateReEngagementSettings.useMutation({
@@ -2295,18 +2329,28 @@ export default function SettingsPage() {
                     checked={(reminderSettings?.followUpEnabled ?? 1) === 1}
                     onCheckedChange={(v) => updateReminderSettings.mutate({
                       followUpEnabled: v ? 1 : 0,
+                      followUpFirstEnabled: followUpFirstEnabled ? 1 : 0,
+                      followUpSecondEnabled: followUpSecondEnabled ? 1 : 0,
                       followUpDelayDays: editedFollowUpDelayDays,
                       followUpSecondDelayDays: editedFollowUpSecondDelayDays,
                     })}
                     disabled={updateReminderSettings.isPending}
                   />
                 </div>
-                <p className="text-xs mb-3 rr-text-navy-muted">Automatically send two follow-up emails to customers who haven&apos;t clicked your review link. Set each interval independently.</p>
+                <p className="text-xs mb-3 rr-text-navy-muted">Automatically send up to two follow-up emails to customers who haven&apos;t clicked your review link. Configure or skip each stage independently.</p>
                 {(reminderSettings?.followUpEnabled ?? 1) === 1 && (
                   <div className="space-y-3">
                     <div className="grid gap-3 sm:grid-cols-2">
                       <div className="rounded-xl p-3" style={{ border: "1px solid oklch(0.90 0.02 260)" }}>
-                        <label htmlFor="follow-up-delay-days" className="block text-xs font-bold rr-text-navy-mid">First follow-up</label>
+                        <div className="flex items-center justify-between gap-3">
+                          <label htmlFor="follow-up-delay-days" className="block text-xs font-bold rr-text-navy-mid">First follow-up</label>
+                          <Switch
+                            checked={followUpFirstEnabled}
+                            onCheckedChange={setFollowUpFirstEnabled}
+                            aria-label="Enable first follow-up"
+                            disabled={updateReminderSettings.isPending}
+                          />
+                        </div>
                         <div className="mt-2 flex items-center gap-2">
                           <input
                             id="follow-up-delay-days"
@@ -2317,6 +2361,7 @@ export default function SettingsPage() {
                             step={1}
                             value={followUpDelayInput}
                             onChange={(e) => setFollowUpDelayInput(e.target.value)}
+                            disabled={!followUpFirstEnabled}
                             aria-invalid={!followUpDelayIsValid}
                             aria-describedby="follow-up-delay-help"
                             className="w-16 px-2 py-2 rounded-lg text-sm outline-none text-center"
@@ -2330,6 +2375,7 @@ export default function SettingsPage() {
                               key={`first-${days}`}
                               type="button"
                               onClick={() => setFollowUpDelayInput(String(days))}
+                              disabled={!followUpFirstEnabled}
                               aria-pressed={editedFollowUpDelayDays === days}
                               className="min-h-9 min-w-11 rounded-lg px-3 text-xs font-bold transition-colors"
                               style={editedFollowUpDelayDays === days
@@ -2340,10 +2386,27 @@ export default function SettingsPage() {
                             </button>
                           ))}
                         </div>
+                        <div className="mt-3 rounded-lg p-2.5" style={{ background: "oklch(0.97 0.02 260)" }}>
+                          <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide rr-text-navy-muted">
+                            <Clock size={12} /> Projected send
+                          </p>
+                          <p className="mt-1 text-xs font-black rr-text-navy">
+                            {followUpFirstEnabled ? formatProjectedDate(projectedFollowUpDates.first) : "Skipped — stage disabled"}
+                          </p>
+                          <p className="mt-0.5 text-[11px] rr-text-navy-muted">If the original request were sent now</p>
+                        </div>
                       </div>
 
                       <div className="rounded-xl p-3" style={{ border: "1px solid oklch(0.90 0.02 260)" }}>
-                        <label htmlFor="follow-up-second-delay-days" className="block text-xs font-bold rr-text-navy-mid">Second follow-up</label>
+                        <div className="flex items-center justify-between gap-3">
+                          <label htmlFor="follow-up-second-delay-days" className="block text-xs font-bold rr-text-navy-mid">Second follow-up</label>
+                          <Switch
+                            checked={followUpSecondEnabled}
+                            onCheckedChange={setFollowUpSecondEnabled}
+                            aria-label="Enable second follow-up"
+                            disabled={updateReminderSettings.isPending}
+                          />
+                        </div>
                         <div className="mt-2 flex items-center gap-2">
                           <input
                             id="follow-up-second-delay-days"
@@ -2354,6 +2417,7 @@ export default function SettingsPage() {
                             step={1}
                             value={followUpSecondDelayInput}
                             onChange={(e) => setFollowUpSecondDelayInput(e.target.value)}
+                            disabled={!followUpSecondEnabled}
                             aria-invalid={!followUpSecondDelayIsValid}
                             aria-describedby="follow-up-delay-help"
                             className="w-16 px-2 py-2 rounded-lg text-sm outline-none text-center"
@@ -2367,6 +2431,7 @@ export default function SettingsPage() {
                               key={`second-${days}`}
                               type="button"
                               onClick={() => setFollowUpSecondDelayInput(String(days))}
+                              disabled={!followUpSecondEnabled}
                               aria-pressed={editedFollowUpSecondDelayDays === days}
                               className="min-h-9 min-w-11 rounded-lg px-3 text-xs font-bold transition-colors"
                               style={editedFollowUpSecondDelayDays === days
@@ -2376,6 +2441,15 @@ export default function SettingsPage() {
                               {days}d
                             </button>
                           ))}
+                        </div>
+                        <div className="mt-3 rounded-lg p-2.5" style={{ background: "oklch(0.97 0.02 260)" }}>
+                          <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide rr-text-navy-muted">
+                            <Clock size={12} /> Projected send
+                          </p>
+                          <p className="mt-1 text-xs font-black rr-text-navy">
+                            {followUpSecondEnabled ? formatProjectedDate(projectedFollowUpDates.second) : "Skipped — stage disabled"}
+                          </p>
+                          <p className="mt-0.5 text-[11px] rr-text-navy-muted">Cumulative from the original request</p>
                         </div>
                       </div>
                     </div>
@@ -2390,14 +2464,60 @@ export default function SettingsPage() {
                         type="button"
                         onClick={() => updateReminderSettings.mutate({
                           followUpEnabled: reminderSettings?.followUpEnabled ?? 1,
+                          followUpFirstEnabled: followUpFirstEnabled ? 1 : 0,
+                          followUpSecondEnabled: followUpSecondEnabled ? 1 : 0,
                           followUpDelayDays: editedFollowUpDelayDays,
                           followUpSecondDelayDays: editedFollowUpSecondDelayDays,
                         })}
                         disabled={updateReminderSettings.isPending || !followUpTimingHasChanges}
                         className="min-h-10 w-full rounded-lg px-4 py-2 text-xs font-bold transition-opacity disabled:opacity-40 rr-bg-navy rr-text-gold sm:w-auto"
                       >
-                        {updateReminderSettings.isPending ? "Saving…" : "Save timing"}
+                        {updateReminderSettings.isPending ? "Saving…" : "Save follow-ups"}
                       </button>
+                    </div>
+
+                    <div className="border-t pt-3" style={{ borderColor: "oklch(0.91 0.02 260)" }}>
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="flex items-center gap-1.5 text-xs font-black rr-text-navy">
+                            <TrendingUp size={14} className="rr-text-gold" /> Timing performance
+                          </p>
+                          <p className="mt-1 text-[11px] rr-text-navy-muted">Last-touch success after a reminder was sent, grouped by its saved timing configuration.</p>
+                        </div>
+                      </div>
+
+                      {reminderPerformanceLoading ? (
+                        <div className="mt-3 rounded-xl p-4 text-xs font-semibold rr-text-navy-muted" style={{ background: "oklch(0.97 0.01 260)" }}>Loading reminder performance…</div>
+                      ) : reminderPerformance && reminderPerformance.length > 0 ? (
+                        <div className="mt-3 grid gap-2">
+                          {reminderPerformance.slice(0, 6).map((row, index) => {
+                            const totalDay = row.stage === 1 ? row.firstDelayDays : row.firstDelayDays + row.secondDelayDays;
+                            return (
+                              <div key={`${row.stage}-${row.firstDelayDays}-${row.secondDelayDays}-${row.firstStageEnabled}-${row.secondStageEnabled}-${index}`} className="flex flex-col gap-2 rounded-xl p-3 sm:flex-row sm:items-center sm:justify-between" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.91 0.02 260)" }}>
+                                <div>
+                                  <p className="text-xs font-black rr-text-navy">Stage {row.stage} · day {totalDay}</p>
+                                  <p className="mt-0.5 text-[11px] rr-text-navy-muted">
+                                    {row.stage === 2 ? `${row.firstDelayDays}d + ${row.secondDelayDays}d cumulative · ` : ""}
+                                    {row.sentCount} sent · {row.successCount} successful
+                                  </p>
+                                </div>
+                                <div className="flex items-center gap-2 sm:justify-end">
+                                  {row.isLowSample && (
+                                    <span className="rounded-full px-2 py-1 text-[10px] font-bold rr-text-navy-mid" style={{ background: "oklch(0.92 0.04 80)" }}>Low sample</span>
+                                  )}
+                                  <span className="text-lg font-black rr-text-navy">{row.successRate == null ? "—" : `${row.successRate}%`}</span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="mt-3 rounded-xl p-4" style={{ background: "oklch(0.97 0.01 260)", border: "1px dashed oklch(0.85 0.03 260)" }}>
+                          <p className="text-xs font-bold rr-text-navy">No timing data yet</p>
+                          <p className="mt-1 text-[11px] rr-text-navy-muted">Reporting starts after reminders with saved timing snapshots are sent. Legacy reminders are not guessed.</p>
+                        </div>
+                      )}
+                      <p className="mt-2 text-[10px] leading-relaxed rr-text-navy-muted">Success means the linked request was marked responded after this reminder was sent. This is directional last-touch attribution, not proof that timing caused the result.</p>
                     </div>
                   </div>
                 )}

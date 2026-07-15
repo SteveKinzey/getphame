@@ -82,7 +82,9 @@ import {
   cancelRemindersByRequestId,
   scheduleFollowUp,
   sendReminderNow,
+  syncPendingReminderStages,
 } from "./reminders";
+import { getReminderTimingPerformance } from "./reminderPerformance";
 import {
   createAccessCode,
   listAccessCodes,
@@ -1331,6 +1333,8 @@ export const appRouter = router({
       const [profile] = await db
         .select({
           followUpEnabled: businessProfiles.followUpEnabled,
+          followUpFirstEnabled: businessProfiles.followUpFirstEnabled,
+          followUpSecondEnabled: businessProfiles.followUpSecondEnabled,
           followUpDelayDays: businessProfiles.followUpDelayDays,
           followUpSecondDelayDays: businessProfiles.followUpSecondDelayDays,
         })
@@ -1338,6 +1342,8 @@ export const appRouter = router({
         .where(eqR(businessProfiles.userId, ctx.user.id));
       return {
         followUpEnabled: profile?.followUpEnabled ?? 1,
+        followUpFirstEnabled: profile?.followUpFirstEnabled ?? 1,
+        followUpSecondEnabled: profile?.followUpSecondEnabled ?? 1,
         followUpDelayDays: profile?.followUpDelayDays ?? 3,
         followUpSecondDelayDays: profile?.followUpSecondDelayDays ?? 7,
       };
@@ -1346,6 +1352,8 @@ export const appRouter = router({
     updateSettings: protectedProcedure
       .input(z.object({
         followUpEnabled: z.number().int().min(0).max(1),
+        followUpFirstEnabled: z.number().int().min(0).max(1),
+        followUpSecondEnabled: z.number().int().min(0).max(1),
         followUpDelayDays: z.number().int().min(1).max(14),
         followUpSecondDelayDays: z.number().int().min(1).max(14),
       }))
@@ -1357,12 +1365,19 @@ export const appRouter = router({
           .update(businessProfiles)
           .set({
             followUpEnabled: input.followUpEnabled,
+            followUpFirstEnabled: input.followUpFirstEnabled,
+            followUpSecondEnabled: input.followUpSecondEnabled,
             followUpDelayDays: input.followUpDelayDays,
             followUpSecondDelayDays: input.followUpSecondDelayDays,
           })
           .where(eqR(businessProfiles.userId, ctx.user.id));
+        await syncPendingReminderStages(ctx.user.id, input);
         return { ok: true };
       }),
+
+    timingPerformance: protectedProcedure.query(async ({ ctx }) => {
+      return getReminderTimingPerformance(ctx.user.id);
+    }),
 
     /** List reminders for a specific customer request */
     listForRequest: protectedProcedure
@@ -2170,8 +2185,7 @@ export const appRouter = router({
   /** Admin-only analytics and diagnostics */
   admin: router({
     /** Overall platform stats — user count, tier breakdown, recent signups, recent sends */
-    stats: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+    stats: adminProcedure.query(async () => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
 
@@ -2204,6 +2218,13 @@ export const appRouter = router({
       const smtpRows = await db.select().from(smtpCredentials);
       const activeSmtp = smtpRows.filter(r => r.lastHealthStatus === "ok").length;
 
+      const [reminderQueue] = await db
+        .select({
+          pendingReminders: sql<number>`SUM(CASE WHEN ${followUpReminders.status} = 'pending' THEN 1 ELSE 0 END)`,
+          dueReminders: sql<number>`SUM(CASE WHEN ${followUpReminders.status} = 'pending' AND ${followUpReminders.scheduledAt} <= NOW() THEN 1 ELSE 0 END)`,
+        })
+        .from(followUpReminders);
+
       return {
         totalUsers: allProfiles.length,
         tierCounts,
@@ -2217,7 +2238,14 @@ export const appRouter = router({
         sendsLast30,
         activeSmtp,
         totalSmtp: smtpRows.length,
+        pendingReminders: Number(reminderQueue?.pendingReminders ?? 0),
+        dueReminders: Number(reminderQueue?.dueReminders ?? 0),
       };
+    }),
+
+    /** Platform-wide reminder timing attribution for administrator operations. */
+    reminderPerformance: adminProcedure.query(async () => {
+      return getReminderTimingPerformance();
     }),
 
     /** SMTP provider failure stats — breakdown by host across all users */

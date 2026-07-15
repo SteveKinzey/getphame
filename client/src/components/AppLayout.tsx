@@ -34,7 +34,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     { path: "/send", label: t("nav.send"), Icon: Send },
     { path: "/dashboard", label: t("nav.dashboard"), Icon: BarChart2 },
     { path: "/settings", label: t("nav.settings"), Icon: Settings },
-    ...(user?.role === "admin" ? [{ path: "/admin/users", label: t("nav.manageUsers", { defaultValue: "Manage users" }), Icon: Users }] : []),
+    ...(user?.role === "admin" ? [{ path: "/admin", label: t("nav.admin", { defaultValue: "Administration" }), Icon: Users }] : []),
   ];
 
   const effectivePlan = getEffectivePlan(profile?.tier, user?.role);
@@ -147,10 +147,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
           style={{ borderColor: "oklch(0.28 0.08 260)" }}
         >
           {user?.role === "admin" && (
-            <div
+            <button
+              type="button"
               data-testid="admin-sidebar-badge"
-              className="flex items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2 rounded-xl"
+              onClick={() => { buttonPressHaptic(); navigate("/admin"); }}
+              className="flex w-full items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2 rounded-xl transition active:scale-[0.97]"
               title={t("account.administratorAccount", { defaultValue: "Administrator account" })}
+              aria-label={t("nav.admin", { defaultValue: "Open administration hub" })}
               style={{
                 background: "oklch(0.30 0.08 260)",
                 border: "1px solid oklch(0.80 0.18 80 / 0.42)",
@@ -160,7 +163,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
               <span className="app-sidebar-label text-xs font-black hidden text-white">
                 {t("account.administrator", { defaultValue: "Administrator" })}
               </span>
-            </div>
+            </button>
           )}
 
           {/* Account status is always visible; Life is terminal and has no upgrade action. */}

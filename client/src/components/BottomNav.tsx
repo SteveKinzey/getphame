@@ -30,7 +30,7 @@ export default function BottomNav() {
     { path: '/send', label: t('nav.send'), Icon: Send },
     { path: '/dashboard', label: t('nav.dashboard'), Icon: BarChart2 },
     { path: '/settings', label: t('nav.settings'), Icon: Settings },
-    ...(user?.role === 'admin' ? [{ path: '/admin/users', label: t('nav.admin', { defaultValue: 'Admin' }), Icon: ShieldCheck }] : []),
+    ...(user?.role === 'admin' ? [{ path: '/admin', label: t('nav.admin', { defaultValue: 'Admin' }), Icon: ShieldCheck }] : []),
   ];
 
   return (

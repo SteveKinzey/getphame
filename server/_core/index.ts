@@ -18,7 +18,7 @@ import { ENV } from "./env";
 import { businessProfiles, stripeSubscriptions, users } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
-import { startReminderScheduler } from "../reminders";
+import { reminderHeartbeatHandler } from "../scheduledReminders";
 import { startSmtpHealthCheckScheduler } from "../smtpHealthCheck";
 import { startSmtpWeeklyDigestScheduler } from "../smtpWeeklyDigest";
 import { startReEngagementScheduler } from "../reEngagementScheduler";
@@ -398,6 +398,7 @@ async function startServer() {
   registerAppleAuthRoutes(app);
   registerMobileAuthRoutes(app);
   app.post("/api/scheduled/auth-health", authHealthHandler);
+  app.post("/api/scheduled/process-reminders", reminderHeartbeatHandler);
 
   // IP-based language detection — returns 'en' | 'th' | 'zh-TW' based on client IP
   // Note: Mainland China (CN) is excluded from zh-TW detection since YouTube is blocked there.
@@ -523,7 +524,6 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
-    startReminderScheduler();
     startSmtpHealthCheckScheduler();
     startSmtpWeeklyDigestScheduler();
     startReEngagementScheduler();

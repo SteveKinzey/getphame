@@ -85,6 +85,7 @@ const AdminAuthDiagnosticsPage = lazy(() => import("./pages/AdminAuthDiagnostics
 const AdminChurnPage      = lazy(() => import("./pages/AdminChurn"));
 const AdminRevenuePage    = lazy(() => import("./pages/AdminRevenue"));
 const AdminReferralRewardsPage = lazy(() => import("./pages/AdminReferralRewards"));
+const AdminReminderPerformancePage = lazy(() => import("./pages/AdminReminderPerformance"));
 
 const ReferralLandingPage = lazy(() => import("./pages/ReferralLanding"));
 
@@ -308,6 +309,7 @@ function AppShell() {
                 <Route path="/admin/churn" component={AdminChurnPage} />
                 <Route path="/admin/revenue" component={AdminRevenuePage} />
                 <Route path="/admin/referral-rewards" component={AdminReferralRewardsPage} />
+                <Route path="/admin/reminder-performance" component={AdminReminderPerformancePage} />
                 <Route path="/changelog" component={ChangelogPage} />
                 <Route path="/compliance" component={CompliancePage} />
                 <Route path="/security" component={SecurityPolicyPage} />

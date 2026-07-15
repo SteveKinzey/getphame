@@ -129,10 +129,12 @@ describe("Get Phame regression contracts", () => {
     expect(settings).toContain("profileLoading");
   });
 
-  it("keeps both automatic follow-up intervals independently editable before one validated save", () => {
+  it("keeps both follow-up stages independently configurable with projected dates and honest timing performance", () => {
     const settings = readProjectFile("../client/src/pages/Settings.tsx");
     const reminders = readProjectFile("./reminders.ts");
     const router = readProjectFile("./routers.ts");
+    const scheduledReminders = readProjectFile("./scheduledReminders.ts");
+    const serverIndex = readProjectFile("./_core/index.ts");
 
     expect(settings).toContain("value={followUpDelayInput}");
     expect(settings).toContain("onChange={(e) => setFollowUpDelayInput(e.target.value)}");
@@ -141,11 +143,26 @@ describe("Get Phame regression contracts", () => {
     expect(settings).toContain("FOLLOW_UP_DELAY_PRESETS.map");
     expect(settings).toContain("!followUpTimingHasChanges");
     expect(settings).toContain("utils.reminders.getSettings.invalidate()");
-    expect(settings).toContain('toast.success("Follow-up timing saved!")');
+    expect(settings).toContain('toast.success("Follow-up settings saved!")');
     expect(settings).toContain("editedFollowUpDelayDays + editedFollowUpSecondDelayDays");
+    expect(settings).toContain('aria-label="Enable first follow-up"');
+    expect(settings).toContain('aria-label="Enable second follow-up"');
+    expect(settings).toContain("getProjectedFollowUpDates");
+    expect(settings).toContain("Timing performance");
+    expect(settings).toContain("directional last-touch attribution");
+    expect(settings).toContain("reminderPerformance.slice(0, 6)");
     expect(router).toContain("followUpSecondDelayDays: z.number().int().min(1).max(14)");
     expect(router).toContain("followUpSecondDelayDays: input.followUpSecondDelayDays");
+    expect(router).toContain("followUpFirstEnabled: z.number().int().min(0).max(1)");
+    expect(router).toContain("followUpSecondEnabled: z.number().int().min(0).max(1)");
+    expect(router).toContain("timingPerformance: protectedProcedure.query");
     expect(reminders).toContain("profile?.followUpSecondDelayDays ?? 7");
+    expect(reminders).toContain("firstStageEnabledSnapshot");
+    expect(reminders).toContain("secondStageEnabledSnapshot");
+    expect(reminders).toContain("getAffectedRows(claimResult) !== 1");
+    expect(scheduledReminders).toContain("reminderHeartbeatHandler");
+    expect(serverIndex).toContain('app.post("/api/scheduled/process-reminders", reminderHeartbeatHandler)');
+    expect(serverIndex).not.toContain("startReminderScheduler");
   });
 
   it("keeps form values, placeholders, autofill, disabled, and read-only content readable in both themes", () => {
@@ -297,6 +314,34 @@ describe("Get Phame regression contracts", () => {
     expect(adminUsers).toContain('account.role === "admin"');
     expect(adminUsers).toContain("account.lifeAccess");
     expect(adminUsers).toContain("Stored plan: {{tier}}");
+  });
+
+  it("routes every administrator control to a centralized secured operations hub", () => {
+    const layout = readProjectFile("../client/src/components/AppLayout.tsx");
+    const bottomNav = readProjectFile("../client/src/components/BottomNav.tsx");
+    const dashboard = readProjectFile("../client/src/pages/AdminDashboard.tsx");
+    const reminderPerformance = readProjectFile("../client/src/pages/AdminReminderPerformance.tsx");
+    const app = readProjectFile("../client/src/App.tsx");
+    const routers = readProjectFile("./routers.ts");
+
+    expect(layout).toContain('user?.role === "admin"');
+    expect(layout).toContain('navigate("/admin")');
+    expect(layout).toContain('data-testid="admin-sidebar-badge"');
+    expect(bottomNav).toContain("user?.role === 'admin'");
+    expect(bottomNav).toContain("path: '/admin'");
+    expect(dashboard).toContain('data-testid="admin-operations-hub"');
+    expect(dashboard).toContain('path: "/admin/users"');
+    expect(dashboard).toContain('path: "/admin/auth-diagnostics"');
+    expect(dashboard).toContain('path: "/admin/reminder-performance"');
+    expect(dashboard).toContain('path: "/admin/smtp-stats"');
+    expect(dashboard).toContain('path: "/admin/revenue"');
+    expect(app).toContain('path="/admin/reminder-performance"');
+    expect(routers).toContain("stats: adminProcedure");
+    expect(routers).toContain("reminderPerformance: adminProcedure");
+    expect(routers).toContain("pendingReminders");
+    expect(routers).toContain("dueReminders");
+    expect(reminderPerformance).toContain('user?.role !== "admin"');
+    expect(reminderPerformance).toContain("trpc.admin.reminderPerformance.useQuery");
   });
 
   it("shows recurring renewal context and confirms successful Stripe returns in app", () => {

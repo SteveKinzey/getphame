@@ -170,6 +170,9 @@ export const businessProfiles = pgTable("business_profiles", {
   dailySendLimit: integer("dailySendLimit").default(50).notNull(),
   // Follow-up reminder settings — 1 = enabled (default), 0 = disabled
   followUpEnabled: integer("followUpEnabled").default(1).notNull(),
+  // Stage-specific follow-up switches — enabled by default for backward compatibility
+  followUpFirstEnabled: integer("followUpFirstEnabled").default(1).notNull(),
+  followUpSecondEnabled: integer("followUpSecondEnabled").default(1).notNull(),
   // Days after initial send before step-1 follow-up (default 3, range 1-14)
   followUpDelayDays: integer("followUpDelayDays").default(3).notNull(),
   // Days after step-1 before the step-2 follow-up (default 7, range 1-14)
@@ -312,7 +315,7 @@ export const emailTemplates = pgTable("email_templates", {
 export type EmailTemplate = typeof emailTemplates.$inferSelect;
 export type InsertEmailTemplate = typeof emailTemplates.$inferInsert;
 
-/** Follow-up reminders — scheduled 3-day and 10-day follow-ups for sent review requests */
+/** Follow-up reminders — scheduled follow-ups with immutable timing snapshots for reporting */
 export const followUpReminders = pgTable("follow_up_reminders", {
   id: serial("id").primaryKey(),
   userId: integer("userId").notNull(),
@@ -322,8 +325,13 @@ export const followUpReminders = pgTable("follow_up_reminders", {
   scheduledAt: bigint("scheduledAt", { mode: "number" }).notNull(), // Unix ms when to send
   sentAt: bigint("sentAt", { mode: "number" }), // null = not yet sent
   status: reminderStatusEnum("status").default("pending").notNull(),
-  /** 1 = first follow-up (day 3), 2 = second follow-up (day 10) */
+  /** 1 = first follow-up, 2 = second follow-up */
   sequenceStep: integer("sequenceStep").default(1).notNull(),
+  // Immutable configuration snapshot. Null identifies legacy rows excluded from timing reports.
+  firstDelayDaysSnapshot: integer("firstDelayDaysSnapshot"),
+  secondDelayDaysSnapshot: integer("secondDelayDaysSnapshot"),
+  firstStageEnabledSnapshot: integer("firstStageEnabledSnapshot"),
+  secondStageEnabledSnapshot: integer("secondStageEnabledSnapshot"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 

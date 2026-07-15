@@ -3,6 +3,7 @@ export const MAX_FOLLOW_UP_DELAY_DAYS = 14;
 export const DEFAULT_FOLLOW_UP_DELAY_DAYS = 3;
 export const DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS = 7;
 export const FOLLOW_UP_DELAY_PRESETS = [3, 5, 7] as const;
+const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 export function isValidFollowUpDelayDays(value: string | number): boolean {
   if (value === "") return false;
@@ -26,4 +27,15 @@ export function normalizeFollowUpDelayDays(
   }
 
   return Number(value);
+}
+
+export function getProjectedFollowUpDates(
+  originalSentAt: number,
+  firstDelayDays: number,
+  secondDelayDays: number,
+): { first: Date; second: Date } {
+  return {
+    first: new Date(originalSentAt + firstDelayDays * DAY_IN_MS),
+    second: new Date(originalSentAt + (firstDelayDays + secondDelayDays) * DAY_IN_MS),
+  };
 }

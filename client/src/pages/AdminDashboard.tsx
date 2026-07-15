@@ -124,13 +124,11 @@ export default function AdminDashboard() {
             Get Phame
           </span>
         </div>
-        <h1
-          className="text-2xl text-white rr-fw-black"
-        >
-          Admin Dashboard
+        <h1 className="text-2xl font-semibold text-white sm:text-3xl">
+          Administration hub
         </h1>
-        <p className="text-base font-bold mt-1 text-white/90">
-          Platform-wide stats
+        <p className="mt-1 text-base font-normal text-white/90">
+          Platform operations, account controls, diagnostics, and business analytics
         </p>
       </div>
 
@@ -152,6 +150,42 @@ export default function AdminDashboard() {
 
         {stats && (
           <>
+            <section data-testid="admin-operations-hub" aria-labelledby="admin-operations-title">
+              <div className="mb-3 flex items-end justify-between gap-3">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Operations</p>
+                  <h2 id="admin-operations-title" className="mt-1 text-xl font-semibold rr-text-navy">System control center</h2>
+                </div>
+                <span className="hidden text-xs font-normal rr-text-navy-muted sm:block">Live summaries refresh automatically</span>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                {[
+                  { path: "/admin/users", label: "User management", detail: `${stats.totalUsers} accounts`, Icon: Users },
+                  { path: "/admin/auth-diagnostics", label: "Authentication health", detail: "24-hour checks and magic links", Icon: ShieldAlert },
+                  { path: "/admin/reminder-performance", label: "Reminder operations", detail: `${stats.pendingReminders} pending · ${stats.dueReminders} due`, Icon: TrendingUp },
+                  { path: "/admin/smtp-stats", label: "SMTP health", detail: `${failingSmtpUsers?.length ?? 0} failing · ${stats.activeSmtp}/${stats.totalSmtp} healthy`, Icon: Wifi },
+                  { path: "/admin/codes", label: "System access codes", detail: "Create, review, and revoke codes", Icon: KeyRound },
+                  { path: "/admin/revenue", label: "Revenue analytics", detail: "MRR, ARR, conversion, and growth", Icon: DollarSign },
+                  { path: "/admin/churn", label: "Churn analytics", detail: "Cancellation reasons and retention signals", Icon: AlertTriangle },
+                  { path: "/admin/referral-rewards", label: "Referral operations", detail: "Review deferred rewards", Icon: Gift },
+                ].map(({ path, label, detail, Icon }) => (
+                  <button
+                    key={path}
+                    type="button"
+                    onClick={() => navigate(path)}
+                    className="group flex min-h-28 items-start gap-3 rounded-2xl bg-white p-4 text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md active:scale-[0.98]"
+                  >
+                    <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white"><Icon size={21} strokeWidth={2} /></span>
+                    <span className="min-w-0">
+                      <span className="block text-base font-semibold rr-text-navy">{label}</span>
+                      <span className="mt-1 block text-sm font-normal leading-5 rr-text-navy-muted">{detail}</span>
+                      <span className="mt-2 block text-xs font-medium rr-text-gold">Open operations →</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </section>
+
             {/* MRR highlight card */}
             {(() => {
               const MONTHLY_PRICE = 29;
