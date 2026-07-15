@@ -20,7 +20,7 @@ export function matchesTypedEmail(confirmation: string, email: string | null | u
   return Boolean(email) && confirmation.trim().toLowerCase() === email!.trim().toLowerCase();
 }
 
-export type SmtpStatusFilter = "all" | "verified" | "unverified" | "unconnected";
+export type SmtpStatusFilter = "all" | "verified" | "unverified" | "failing" | "unconnected";
 export type SmtpAuditOutcomeFilter = "all" | "removed";
 
 export function parseAdminUserDirectoryParams(searchString: string): {
@@ -29,7 +29,7 @@ export function parseAdminUserDirectoryParams(searchString: string): {
 } {
   const params = new URLSearchParams(searchString);
   const requestedStatus = params.get("smtpStatus");
-  const smtpStatus = requestedStatus === "verified" || requestedStatus === "unverified" || requestedStatus === "unconnected"
+  const smtpStatus = requestedStatus === "verified" || requestedStatus === "unverified" || requestedStatus === "failing" || requestedStatus === "unconnected"
     ? requestedStatus
     : "all";
 
@@ -259,6 +259,7 @@ export default function AdminUsersPage() {
                 <option value="all">{t("adminUsers.smtpFilterAll", { defaultValue: "All SMTP statuses" })}</option>
                 <option value="verified">{t("adminUsers.smtpFilterVerified", { defaultValue: "SMTP verified" })}</option>
                 <option value="unverified">{t("adminUsers.smtpFilterUnverified", { defaultValue: "SMTP unverified" })}</option>
+                <option value="failing">{t("adminUsers.smtpFilterFailing", { defaultValue: "SMTP health check failed" })}</option>
                 <option value="unconnected">{t("adminUsers.smtpFilterUnconnected", { defaultValue: "No SMTP connected" })}</option>
               </select>
             </div>
