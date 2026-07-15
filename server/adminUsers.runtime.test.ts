@@ -52,7 +52,7 @@ function createDb(options?: { targetRole?: "admin" | "user"; targetTier?: "free"
   const db = {
     select: vi.fn((selection?: Record<string, unknown>) => {
       if (!selection) {
-        return { from: () => ({ orderBy: () => ({ limit: async () => [{
+        const auditRows = [{
           id: 1,
           actorUserId: 1,
           actorName: "Owner Admin",
@@ -64,7 +64,12 @@ function createDb(options?: { targetRole?: "admin" | "user"; targetTier?: "free"
           action: "smtp_credentials_removed",
           outcome: "removed",
           occurredAt: 1_752_537_600_000,
-        }] }) }) };
+        }];
+        const auditChain = {
+          where: () => auditChain,
+          orderBy: () => ({ limit: async () => auditRows }),
+        };
+        return { from: () => auditChain };
       }
       if ("count" in selection) {
         return { from: () => ({ leftJoin: () => ({ where: async () => [{ count: 12 }] }) }) };
