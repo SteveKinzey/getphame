@@ -23,6 +23,22 @@ export function matchesTypedEmail(confirmation: string, email: string | null | u
 export type SmtpStatusFilter = "all" | "verified" | "unverified" | "unconnected";
 export type SmtpAuditOutcomeFilter = "all" | "removed";
 
+export function parseAdminUserDirectoryParams(searchString: string): {
+  search: string;
+  smtpStatus: SmtpStatusFilter;
+} {
+  const params = new URLSearchParams(searchString);
+  const requestedStatus = params.get("smtpStatus");
+  const smtpStatus = requestedStatus === "verified" || requestedStatus === "unverified" || requestedStatus === "unconnected"
+    ? requestedStatus
+    : "all";
+
+  return {
+    search: params.get("search")?.trim() ?? "",
+    smtpStatus,
+  };
+}
+
 export function buildSmtpAuditCsv(entries: Array<{
   occurredAt: number;
   outcome: string;
@@ -57,12 +73,10 @@ export default function AdminUsersPage() {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
   const searchString = useSearch();
-  const [search, setSearch] = useState("");
+  const directoryParams = useMemo(() => parseAdminUserDirectoryParams(searchString), [searchString]);
+  const [search, setSearch] = useState(directoryParams.search);
   const [debouncedSearch] = useDebounce(search, 300);
-  const [smtpStatus, setSmtpStatus] = useState<SmtpStatusFilter>(() => {
-    const requested = new URLSearchParams(searchString).get("smtpStatus");
-    return requested === "verified" || requested === "unverified" || requested === "unconnected" ? requested : "all";
-  });
+  const [smtpStatus, setSmtpStatus] = useState<SmtpStatusFilter>(directoryParams.smtpStatus);
   const [auditDateFrom, setAuditDateFrom] = useState("");
   const [auditDateTo, setAuditDateTo] = useState("");
   const [auditAdminId, setAuditAdminId] = useState("all");
@@ -74,6 +88,11 @@ export default function AdminUsersPage() {
   useEffect(() => {
     if (user && user.role !== "admin") navigate("/");
   }, [user, navigate]);
+
+  useEffect(() => {
+    setSearch(directoryParams.search);
+    setSmtpStatus(directoryParams.smtpStatus);
+  }, [directoryParams.search, directoryParams.smtpStatus]);
 
   useEffect(() => setPage(1), [debouncedSearch, smtpStatus]);
 

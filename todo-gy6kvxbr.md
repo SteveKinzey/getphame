@@ -182,3 +182,5 @@
 - [ ] Restore focused regressions for dashboard re-testing, audit pagination, and health-check visibility.
 - [ ] Enforce single-copy React resolution in Vite and add a deterministic invalid-hook-call regression guard.
 - [ ] Re-run focused and complete validation, checkpoint the release, and verify production.
+- [x] Replace the full GET PHAME wordmark with the official gold P-star logo mark whenever constrained authenticated header or sidebar widths would crowd adjacent controls.
+- [x] Add responsive branding regression coverage, pass the complete release gate, and verify logo-only plus full-lockup states at tablet, desktop, and mobile breakpoints.

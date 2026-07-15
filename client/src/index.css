@@ -748,6 +748,14 @@
   .app-main { margin-left: 220px; }
 }
 
+/* Home: use the official mark when the authenticated header is constrained. */
+.home-brand-full { display: block; }
+.home-brand-mark { display: none; }
+@media (min-width: 640px) and (max-width: 1279px) {
+  .home-brand-full { display: none; }
+  .home-brand-mark { display: block; }
+}
+
 /* LanguageFlyout: slide-down animation */
 @keyframes lfSlideDown {
   from { opacity: 0; transform: translateY(-6px); }

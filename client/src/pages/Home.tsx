@@ -440,12 +440,17 @@ export default function HomePage() {
             className="flex flex-col items-stretch gap-3 mb-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2"
             data-testid="home-header-layout"
           >
-            <BrandLockup
-              className="justify-start"
-              iconClassName="w-7 h-7"
-              textClassName="text-xl"
-              tone="split"
-            />
+            <div className="home-brand-full">
+              <BrandLockup
+                className="justify-start"
+                iconClassName="w-7 h-7"
+                textClassName="text-xl"
+                tone="split"
+              />
+            </div>
+            <div className="home-brand-mark shrink-0">
+              <BrandLockup showText={false} iconClassName="w-7 h-7" tone="split" />
+            </div>
             <div
               className="flex items-center justify-end gap-2 flex-wrap sm:flex-nowrap"
               data-testid="home-header-actions"

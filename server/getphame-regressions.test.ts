@@ -19,6 +19,23 @@ describe("Get Phame regression contracts", () => {
     expect(lockup).not.toContain("phame-wordmark-transparent-clean.png");
   });
 
+  it("uses the official mark alone at constrained authenticated widths and restores the full lockup when space permits", () => {
+    const appLayout = readProjectFile("../client/src/components/AppLayout.tsx");
+    const home = readProjectFile("../client/src/pages/Home.tsx");
+    const styles = readProjectFile("../client/src/index.css");
+
+    expect(appLayout).toContain('className="flex justify-center lg:hidden"');
+    expect(appLayout).toContain('className="hidden lg:block"');
+    expect(appLayout).toContain("showText={false}");
+    expect(appLayout).not.toContain('textClassName="app-sidebar-brand-text text-lg hidden"');
+    expect(home).toContain('className="home-brand-full"');
+    expect(home).toContain('className="home-brand-mark shrink-0"');
+    expect(home).toMatch(/home-brand-mark shrink-0[\s\S]*?showText=\{false\}/);
+    expect(styles).toContain("@media (min-width: 640px) and (max-width: 1279px)");
+    expect(styles).toContain(".home-brand-full { display: none; }");
+    expect(styles).toContain(".home-brand-mark { display: block; }");
+  });
+
   it("orders the shared language selector as EN, CN, ES, FR, TH, TW, uses the USA flag, and preserves hidden Italian work", () => {
     const flyout = readProjectFile("../client/src/components/LanguageFlyout.tsx");
     const i18n = readProjectFile("../client/src/lib/i18n.ts");

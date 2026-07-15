@@ -219,9 +219,22 @@ export default function AdminDashboard() {
                 <div className="mt-4 space-y-2">
                   {failingSmtpUsers.slice(0, 4).map((credential) => (
                     <div key={credential.userId} className="rounded-xl bg-white/80 p-3">
-                      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                        <p className="truncate text-sm font-black rr-text-navy">{credential.userName || credential.userEmail || `User #${credential.userId}`}</p>
-                        <p className="truncate text-xs font-bold text-red-700">{credential.host}</p>
+                      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-black rr-text-navy">{credential.userName || credential.userEmail || `User #${credential.userId}`}</p>
+                          <p className="truncate text-xs font-bold text-red-700">{credential.host}</p>
+                        </div>
+                        <button
+                          type="button"
+                          data-testid={`manage-failing-smtp-${credential.userId}`}
+                          onClick={() => {
+                            const accountQuery = credential.userEmail || credential.smtpUser || credential.userName || String(credential.userId);
+                            navigate(`/admin/users?smtpStatus=unverified&search=${encodeURIComponent(accountQuery)}`);
+                          }}
+                          className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-red-700 px-3 text-xs font-black text-white transition active:scale-[0.97]"
+                        >
+                          Manage user →
+                        </button>
                       </div>
                       <p className="mt-1 truncate text-xs font-semibold rr-text-navy-muted">{credential.userEmail || credential.smtpUser}</p>
                       {credential.lastHealthError && <p className="mt-1 line-clamp-2 text-xs font-bold text-red-700">{credential.lastHealthError}</p>}

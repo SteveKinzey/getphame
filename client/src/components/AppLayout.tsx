@@ -63,11 +63,12 @@ export default function AppLayout({ children }: AppLayoutProps) {
           className="flex items-center justify-center lg:justify-start gap-2.5 px-3 lg:px-4 py-4 border-b"
           style={{ borderColor: "oklch(0.28 0.08 260)", minHeight: "64px" }}
         >
-          <BrandLockup
-            className="justify-center lg:justify-start"
-            iconClassName="w-8 h-8"
-            textClassName="app-sidebar-brand-text text-lg hidden"
-          />
+          <div className="flex justify-center lg:hidden">
+            <BrandLockup showText={false} iconClassName="w-8 h-8" />
+          </div>
+          <div className="hidden lg:block">
+            <BrandLockup iconClassName="w-8 h-8" textClassName="text-lg" />
+          </div>
         </div>
 
         {/* Nav items */}

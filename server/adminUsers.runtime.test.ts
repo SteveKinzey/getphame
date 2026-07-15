@@ -337,10 +337,24 @@ describe("administrator user-management runtime", () => {
 
 describe("administrator user-management rendered workflow", () => {
   let matchesTypedEmail: (confirmation: string, email: string | null | undefined) => boolean;
+  let parseAdminUserDirectoryParams: (searchString: string) => { search: string; smtpStatus: string };
 
   beforeAll(async () => {
     const module = await import("../client/src/pages/AdminUsers");
     matchesTypedEmail = module.matchesTypedEmail;
+    parseAdminUserDirectoryParams = module.parseAdminUserDirectoryParams;
+  });
+
+  it("hydrates the user directory from a failing-SMTP remediation deep link", () => {
+    expect(parseAdminUserDirectoryParams("?smtpStatus=unverified&search=owner%40example.test")).toEqual({
+      search: "owner@example.test",
+      smtpStatus: "unverified",
+    });
+    expect(parseAdminUserDirectoryParams("?smtpStatus=invalid")).toEqual({ search: "", smtpStatus: "all" });
+
+    const dashboard = fs.readFileSync(path.join(process.cwd(), "client/src/pages/AdminDashboard.tsx"), "utf8");
+    expect(dashboard).toContain('data-testid={`manage-failing-smtp-${credential.userId}`}');
+    expect(dashboard).toContain("/admin/users?smtpStatus=unverified&search=");
   });
 
   it("wires SMTP filtering, re-test controls, audit history, account controls, pagination, and self-protection", () => {
