@@ -271,4 +271,4 @@
 - [x] Replace application logo-mark references with the supplied artwork while preserving GET PHAME as live text in full lockups.
 - [x] Update browser favicon, Apple touch icon, PWA manifest icons, and applicable metadata to use the approved artwork.
 - [x] Add focused branding regressions and run TypeScript, complete Vitest, and production build validation.
-- [ ] Verify the updated logo and favicon behavior on phone and desktop, then publish the validated release checkpoint.
+- [x] Verify the updated logo and favicon behavior on phone and desktop, then publish the validated release checkpoint.
