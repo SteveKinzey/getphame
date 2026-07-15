@@ -292,7 +292,7 @@
 - [x] Create a reusable Get Phame social-share and PWA launch optimization skill using the approved skill-creator workflow and deterministic asset resources.
 - [x] Add focused regressions for analytics event semantics, privacy boundaries, native share fallback, animation accessibility, and reusable skill contracts.
 - [x] Validate the enhanced guide and sharing flow on iPhone and Android emulation, run TypeScript, full Vitest, security audit, and production build.
-- [ ] Publish the validated install-conversion release and deliver the reusable skill package.
+- [x] Publish the validated install-conversion release and deliver the reusable skill package.
 - [x] Add explicit iPhone/iPad and Android installation instructions plus native share-with-a-friend fallback to the onboarding guide’s final step.
 - [x] Superseded by Steve’s attached PNG master: use the exact user-supplied gold P-star artwork as the authoritative sender/contact avatar; do not generate, redraw, or substitute another logo.
 - [x] Inspect Google Workspace to confirm `no-reply@getphame.app` is an alias, determine the dedicated send-only user and licensing path, and preserve existing mail routing.
