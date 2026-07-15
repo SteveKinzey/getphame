@@ -57,7 +57,7 @@ import {
 import { getDb } from "./db";
 import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
-import { eq, like, or, inArray, desc, isNotNull, isNull, and, sql, gte, lte } from "drizzle-orm";
+import { eq, like, or, inArray, desc, isNotNull, isNull, and, sql, gte, lte, count } from "drizzle-orm";
 import {
   listSavedContacts,
   createSavedContact,
@@ -2306,7 +2306,7 @@ export const appRouter = router({
     listUsers: adminProcedure
       .input(z.object({
         query: z.string().trim().max(100).default(""),
-        smtpStatus: z.enum(["all", "verified", "unverified", "unconnected"]).default("all"),
+        smtpStatus: z.enum(["all", "verified", "unverified", "failing", "unconnected"]).default("all"),
         page: z.number().int().min(1).default(1),
         pageSize: z.number().int().min(10).max(100).default(25),
       }))
@@ -2319,9 +2319,11 @@ export const appRouter = router({
           ? and(isNotNull(smtpCredentials.id), eq(smtpCredentials.verified, 1))
           : input.smtpStatus === "unverified"
             ? and(isNotNull(smtpCredentials.id), eq(smtpCredentials.verified, 0))
-            : input.smtpStatus === "unconnected"
-              ? isNull(smtpCredentials.id)
-              : undefined;
+            : input.smtpStatus === "failing"
+              ? and(isNotNull(smtpCredentials.id), eq(smtpCredentials.lastHealthStatus, "fail"))
+              : input.smtpStatus === "unconnected"
+                ? isNull(smtpCredentials.id)
+                : undefined;
         const whereClause = searchClause && smtpClause
           ? and(searchClause, smtpClause)
           : searchClause ?? smtpClause;
@@ -2415,7 +2417,8 @@ export const appRouter = router({
     /** Durable, newest-first administrator SMTP removal history. */
     listSmtpAuditLogs: adminProcedure
       .input(z.object({
-        limit: z.number().int().min(1).max(500).default(100),
+        page: z.number().int().min(1).default(1),
+        pageSize: z.number().int().min(1).max(100).default(25),
         dateFrom: z.number().int().nonnegative().optional(),
         dateTo: z.number().int().nonnegative().optional(),
         adminId: z.number().int().positive().optional(),
@@ -2433,12 +2436,22 @@ export const appRouter = router({
           input.adminId === undefined ? undefined : eq(smtpAdminAuditLogs.actorUserId, input.adminId),
           input.outcome === "all" ? undefined : eq(smtpAdminAuditLogs.outcome, input.outcome),
         ].filter((clause): clause is NonNullable<typeof clause> => clause !== undefined);
-        return db
+        const whereClause = clauses.length ? and(...clauses) : undefined;
+        const [totalRow] = await db
+          .select({ value: count() })
+          .from(smtpAdminAuditLogs)
+          .where(whereClause);
+        const total = Number(totalRow?.value ?? 0);
+        const pageCount = Math.max(1, Math.ceil(total / input.pageSize));
+        const page = Math.min(input.page, pageCount);
+        const entries = await db
           .select()
           .from(smtpAdminAuditLogs)
-          .where(clauses.length ? and(...clauses) : undefined)
+          .where(whereClause)
           .orderBy(desc(smtpAdminAuditLogs.occurredAt))
-          .limit(input.limit);
+          .limit(input.pageSize)
+          .offset((page - 1) * input.pageSize);
+        return { entries, page, pageSize: input.pageSize, total, pageCount };
       }),
 
     /** Distinct administrators represented in the durable SMTP audit trail. */

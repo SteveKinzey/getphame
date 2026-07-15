@@ -67,12 +67,16 @@ function createDb(options?: { targetRole?: "admin" | "user"; targetTier?: "free"
         }];
         const auditChain = {
           where: () => auditChain,
-          orderBy: () => ({ limit: async () => auditRows }),
+          orderBy: () => ({ limit: () => ({ offset: async () => auditRows }) }),
         };
         return { from: () => auditChain };
       }
-      if ("count" in selection) {
-        return { from: () => ({ leftJoin: () => ({ where: async () => [{ count: 12 }] }) }) };
+      if ("count" in selection || "value" in selection) {
+        const countChain = {
+          leftJoin: () => countChain,
+          where: async () => ["value" in selection ? { value: 12 } : { count: 12 }],
+        };
+        return { from: () => countChain };
       }
       if ("smtpCredentialId" in selection) {
         const listChain = {
@@ -189,20 +193,27 @@ vi.mock("@/lib/trpc", () => ({
       },
       listSmtpAuditLogs: {
         useQuery: () => ({
-          data: [{
-            id: 1,
-            actorUserId: 1,
-            actorName: "Owner Admin",
-            actorEmail: "owner@example.test",
-            targetUserId: 2,
-            targetName: "Life Member",
-            targetEmail: "life@example.test",
-            smtpUser: "life@example.test",
-            action: "smtp_credentials_removed",
-            outcome: "removed",
-            occurredAt: 1_752_537_600_000,
-          }],
+          data: {
+            entries: [{
+              id: 1,
+              actorUserId: 1,
+              actorName: "Owner Admin",
+              actorEmail: "owner@example.test",
+              targetUserId: 2,
+              targetName: "Life Member",
+              targetEmail: "life@example.test",
+              smtpUser: "life@example.test",
+              action: "smtp_credentials_removed",
+              outcome: "removed",
+              occurredAt: 1_752_537_600_000,
+            }],
+            page: 1,
+            pageSize: 25,
+            total: 30,
+            pageCount: 2,
+          },
           isLoading: false,
+          isFetching: false,
           error: null,
         }),
       },
@@ -251,7 +262,7 @@ describe("administrator user-management runtime", () => {
     await expect(caller.admin.combineAccounts({ sourceUserId: 2, targetUserId: 1, confirmation: "COMBINE" })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.removeUserSmtp({ userId: 2, confirmationEmail: "target@example.test" })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(caller.admin.retestUserSmtp({ userId: 2 })).rejects.toMatchObject({ code: "FORBIDDEN" });
-    await expect(caller.admin.listSmtpAuditLogs({ limit: 25 })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(caller.admin.listSmtpAuditLogs({ page: 1, pageSize: 25 })).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 
   it("returns searched, paginated accounts with effective administrator and Life access", async () => {
@@ -276,10 +287,22 @@ describe("administrator user-management runtime", () => {
     expect(result).not.toHaveProperty("encryptedPass");
   });
 
+  it("returns a safe failure result when stored SMTP credentials fail verification", async () => {
+    mocks.getDb.mockResolvedValue(createDb());
+    mocks.testSmtpConnection.mockResolvedValueOnce({ ok: false, error: "Authentication rejected" });
+    const result = await appRouter.createCaller(context("admin")).admin.retestUserSmtp({ userId: 2 });
+    expect(mocks.updateWhere).toHaveBeenCalledTimes(1);
+    expect(result).toMatchObject({ ok: false, error: "Authentication rejected" });
+    expect(result.checkedAt).toEqual(expect.any(Number));
+    expect(result).not.toHaveProperty("pass");
+    expect(result).not.toHaveProperty("encryptedPass");
+  });
+
   it("returns durable SMTP removal audit entries newest-first to administrators", async () => {
     mocks.getDb.mockResolvedValue(createDb());
-    const result = await appRouter.createCaller(context("admin")).admin.listSmtpAuditLogs({ limit: 25 });
-    expect(result).toEqual([
+    const result = await appRouter.createCaller(context("admin")).admin.listSmtpAuditLogs({ page: 1, pageSize: 25 });
+    expect(result).toMatchObject({ page: 1, pageSize: 25, total: 12, pageCount: 1 });
+    expect(result.entries).toEqual([
       expect.objectContaining({ actorEmail: "owner@example.test", targetEmail: "target@example.test", smtpUser: "smtp-target@example.test", outcome: "removed" }),
     ]);
   });
@@ -346,15 +369,18 @@ describe("administrator user-management rendered workflow", () => {
   });
 
   it("hydrates the user directory from a failing-SMTP remediation deep link", () => {
-    expect(parseAdminUserDirectoryParams("?smtpStatus=unverified&search=owner%40example.test")).toEqual({
+    expect(parseAdminUserDirectoryParams("?smtpStatus=failing&search=owner%40example.test")).toEqual({
       search: "owner@example.test",
-      smtpStatus: "unverified",
+      smtpStatus: "failing",
     });
     expect(parseAdminUserDirectoryParams("?smtpStatus=invalid")).toEqual({ search: "", smtpStatus: "all" });
 
     const dashboard = fs.readFileSync(path.join(process.cwd(), "client/src/pages/AdminDashboard.tsx"), "utf8");
     expect(dashboard).toContain('data-testid={`manage-failing-smtp-${credential.userId}`}');
-    expect(dashboard).toContain("/admin/users?smtpStatus=unverified&search=");
+    expect(dashboard).toContain("/admin/users?smtpStatus=failing&search=");
+    expect(dashboard).toContain('data-testid={`retest-failing-smtp-${credential.userId}`}');
+    expect(dashboard).toContain("Latest health: failed");
+    expect(dashboard).toContain("retestUserSmtp.useMutation");
   });
 
   it("wires SMTP filtering, re-test controls, audit history, account controls, pagination, and self-protection", () => {
@@ -364,6 +390,8 @@ describe("administrator user-management rendered workflow", () => {
     expect(html).toContain("Admin");
     expect(html).toContain("Life");
     expect(html).toContain('defaultValue: "Page {{page}} of {{count}}"');
+    expect(html).toContain('data-testid="smtp-audit-pagination"');
+    expect(html).toContain("smtpAuditLogs.data.pageCount > 1");
     expect(html).toContain("Previous");
     expect(html).toContain("Next");
     expect(html).toContain('defaultValue: "Remove admin"');

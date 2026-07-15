@@ -32,6 +32,7 @@ import { toast } from "sonner";
 export default function AdminDashboard() {
   const { user, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
+  const [smtpRetestResults, setSmtpRetestResults] = useState<Record<number, { ok: boolean; checkedAt: number; error: string | null }>>({});
 
   const { data: stats, isLoading, error } = trpc.admin.stats.useQuery(undefined, {
     enabled: !!user,
@@ -65,6 +66,23 @@ export default function AdminDashboard() {
       utils.admin.searchUsers.invalidate();
     },
     onError: (err) => toast.error(err.message || "Failed to update tier"),
+  });
+
+  const retestSmtp = trpc.admin.retestUserSmtp.useMutation({
+    onSuccess: (result, variables) => {
+      setSmtpRetestResults((current) => ({ ...current, [variables.userId]: result }));
+      result.ok
+        ? toast.success("SMTP connection passed its re-test.")
+        : toast.error(result.error || "SMTP connection failed its re-test.");
+      utils.admin.failingSmtpUsers.invalidate();
+    },
+    onError: (error, variables) => {
+      setSmtpRetestResults((current) => ({
+        ...current,
+        [variables.userId]: { ok: false, checkedAt: Date.now(), error: error.message || "SMTP re-test failed." },
+      }));
+      toast.error(error.message || "SMTP re-test failed.");
+    },
   });
 
   // Redirect non-admins
@@ -224,20 +242,43 @@ export default function AdminDashboard() {
                           <p className="truncate text-sm font-black rr-text-navy">{credential.userName || credential.userEmail || `User #${credential.userId}`}</p>
                           <p className="truncate text-xs font-bold text-red-700">{credential.host}</p>
                         </div>
-                        <button
-                          type="button"
-                          data-testid={`manage-failing-smtp-${credential.userId}`}
-                          onClick={() => {
-                            const accountQuery = credential.userEmail || credential.smtpUser || credential.userName || String(credential.userId);
-                            navigate(`/admin/users?smtpStatus=unverified&search=${encodeURIComponent(accountQuery)}`);
-                          }}
-                          className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-red-700 px-3 text-xs font-black text-white transition active:scale-[0.97]"
-                        >
-                          Manage user →
-                        </button>
+                        <div className="flex flex-col gap-2 sm:flex-row">
+                          <button
+                            type="button"
+                            data-testid={`retest-failing-smtp-${credential.userId}`}
+                            disabled={retestSmtp.isPending && retestSmtp.variables?.userId === credential.userId}
+                            onClick={() => retestSmtp.mutate({ userId: credential.userId })}
+                            className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-emerald-700 px-3 text-xs font-black text-white transition active:scale-[0.97] disabled:cursor-wait disabled:opacity-60"
+                          >
+                            {retestSmtp.isPending && retestSmtp.variables?.userId === credential.userId ? "Re-testing…" : "Re-test SMTP"}
+                          </button>
+                          <button
+                            type="button"
+                            data-testid={`manage-failing-smtp-${credential.userId}`}
+                            onClick={() => {
+                              const accountQuery = credential.userEmail || credential.smtpUser || credential.userName || String(credential.userId);
+                              navigate(`/admin/users?smtpStatus=failing&search=${encodeURIComponent(accountQuery)}`);
+                            }}
+                            className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-red-700 px-3 text-xs font-black text-white transition active:scale-[0.97]"
+                          >
+                            Manage user →
+                          </button>
+                        </div>
                       </div>
                       <p className="mt-1 truncate text-xs font-semibold rr-text-navy-muted">{credential.userEmail || credential.smtpUser}</p>
+                      <p data-testid={`smtp-health-${credential.userId}`} className="mt-1 text-xs font-bold rr-text-navy-muted">
+                        Latest health: failed{credential.lastHealthCheck ? ` · ${new Date(credential.lastHealthCheck).toLocaleString()}` : " · not yet timestamped"}
+                      </p>
                       {credential.lastHealthError && <p className="mt-1 line-clamp-2 text-xs font-bold text-red-700">{credential.lastHealthError}</p>}
+                      {smtpRetestResults[credential.userId] && (
+                        <p
+                          data-testid={`smtp-retest-result-${credential.userId}`}
+                          className={`mt-2 rounded-lg px-2 py-1.5 text-xs font-black ${smtpRetestResults[credential.userId].ok ? "bg-emerald-100 text-emerald-800" : "bg-red-100 text-red-800"}`}
+                        >
+                          {smtpRetestResults[credential.userId].ok ? "Re-test passed" : `Re-test failed: ${smtpRetestResults[credential.userId].error || "Connection rejected"}`}
+                          {` · ${new Date(smtpRetestResults[credential.userId].checkedAt).toLocaleString()}`}
+                        </p>
+                      )}
                     </div>
                   ))}
                   {failingSmtpUsers.length > 4 && (
@@ -248,7 +289,7 @@ export default function AdminDashboard() {
 
               <button
                 type="button"
-                onClick={() => navigate("/admin/users?smtpStatus=unverified")}
+                onClick={() => navigate("/admin/users?smtpStatus=failing")}
                 className={`mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl px-4 text-sm font-black text-white transition active:scale-[0.97] sm:w-auto ${failingSmtpUsers?.length ? "bg-red-700" : "rr-bg-navy"}`}
               >
                 Review SMTP accounts →

@@ -175,12 +175,12 @@
 - [x] Validate the reusable skill, save the auto-published application checkpoint, and deliver the skill package.
 - [x] Replace the retired npm audit endpoint dependency in the production build gate with a reliable vulnerability check that still blocks verified production-security findings.
 - [x] Re-run the full production build, save a new checkpoint, and confirm deployment succeeds.
-- [ ] Correct the stale administrator SMTP test contract used by the production builder, rerun the complete release gate, and republish successfully.
-- [ ] Add a one-click administrator credential re-test action directly to the failing-SMTP dashboard warning widget, with loading and result feedback.
-- [ ] Add server-backed pagination and responsive navigation controls to the SMTP credential-removal audit log for high-volume accounts.
-- [ ] Add a dashboard indicator showing the latest SMTP health-check status and timestamp.
-- [ ] Restore focused regressions for dashboard re-testing, audit pagination, and health-check visibility.
-- [ ] Enforce single-copy React resolution in Vite and add a deterministic invalid-hook-call regression guard.
+- [x] Correct the stale administrator SMTP test contract used by the production builder, rerun the complete release gate, and republish successfully.
+- [x] Add a one-click administrator credential re-test action directly to the failing-SMTP dashboard warning widget, with loading and result feedback.
+- [x] Add server-backed pagination and responsive navigation controls to the SMTP credential-removal audit log for high-volume accounts.
+- [x] Add a dashboard indicator showing the latest SMTP health-check status and timestamp.
+- [x] Restore focused regressions for dashboard re-testing, audit pagination, and health-check visibility.
+- [x] Enforce single-copy React resolution in Vite and add a deterministic invalid-hook-call regression guard.
 - [ ] Re-run focused and complete validation, checkpoint the release, and verify production.
 - [x] Replace the full GET PHAME wordmark with the official gold P-star logo mark whenever constrained authenticated header or sidebar widths would crowd adjacent controls.
 - [x] Add responsive branding regression coverage, pass the complete release gate, and verify logo-only plus full-lockup states at tablet, desktop, and mobile breakpoints.

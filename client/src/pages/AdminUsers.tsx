@@ -81,6 +81,8 @@ export default function AdminUsersPage() {
   const [auditDateTo, setAuditDateTo] = useState("");
   const [auditAdminId, setAuditAdminId] = useState("all");
   const [auditOutcome, setAuditOutcome] = useState<SmtpAuditOutcomeFilter>("all");
+  const [auditPage, setAuditPage] = useState(1);
+  const auditPageSize = 25;
   const [page, setPage] = useState(1);
   const pageSize = 25;
   const utils = trpc.useUtils();
@@ -95,18 +97,20 @@ export default function AdminUsersPage() {
   }, [directoryParams.search, directoryParams.smtpStatus]);
 
   useEffect(() => setPage(1), [debouncedSearch, smtpStatus]);
+  useEffect(() => setAuditPage(1), [auditAdminId, auditDateFrom, auditDateTo, auditOutcome]);
 
   const directory = trpc.admin.listUsers.useQuery(
     { query: debouncedSearch, smtpStatus, page, pageSize },
     { enabled: user?.role === "admin" }
   );
   const auditQueryInput = useMemo(() => ({
-    limit: 500,
+    page: auditPage,
+    pageSize: auditPageSize,
     dateFrom: auditDateFrom ? new Date(`${auditDateFrom}T00:00:00.000`).getTime() : undefined,
     dateTo: auditDateTo ? new Date(`${auditDateTo}T23:59:59.999`).getTime() : undefined,
     adminId: auditAdminId === "all" ? undefined : Number(auditAdminId),
     outcome: auditOutcome,
-  }), [auditAdminId, auditDateFrom, auditDateTo, auditOutcome]);
+  }), [auditAdminId, auditDateFrom, auditDateTo, auditOutcome, auditPage]);
   const smtpAuditLogs = trpc.admin.listSmtpAuditLogs.useQuery(
     auditQueryInput,
     { enabled: user?.role === "admin" }
@@ -191,7 +195,7 @@ export default function AdminUsersPage() {
   });
 
   const exportAuditCsv = () => {
-    const entries = smtpAuditLogs.data ?? [];
+    const entries = smtpAuditLogs.data?.entries ?? [];
     if (!entries.length) {
       toast.error(t("adminUsers.smtpAuditNoExportRows", { defaultValue: "No audit records match the current filters." }));
       return;
@@ -424,7 +428,7 @@ export default function AdminUsersPage() {
             <button
               type="button"
               data-testid="smtp-audit-export"
-              disabled={!smtpAuditLogs.data?.length}
+              disabled={!smtpAuditLogs.data?.entries.length}
               onClick={exportAuditCsv}
               className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45 rr-bg-gold rr-text-navy"
             >
@@ -497,9 +501,9 @@ export default function AdminUsersPage() {
             <div className="flex justify-center py-10"><Loader2 className="animate-spin rr-text-navy" size={26} /></div>
           ) : smtpAuditLogs.error ? (
             <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm font-bold text-red-700">{smtpAuditLogs.error.message}</p>
-          ) : smtpAuditLogs.data?.length ? (
+          ) : smtpAuditLogs.data?.entries.length ? (
             <div className="mt-3 divide-y divide-slate-100" data-testid="smtp-audit-log">
-              {smtpAuditLogs.data.map((entry) => (
+              {smtpAuditLogs.data.entries.map((entry) => (
                 <article key={entry.id} className="grid gap-2 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
                   <div className="min-w-0">
                     <p className="text-sm font-black rr-text-navy">
@@ -519,6 +523,17 @@ export default function AdminUsersPage() {
             </div>
           ) : (
             <p className="py-8 text-center text-sm font-semibold rr-text-navy-muted">{t("adminUsers.smtpAuditEmpty", { defaultValue: "No SMTP credential removals have been recorded." })}</p>
+          )}
+          {smtpAuditLogs.data && smtpAuditLogs.data.pageCount > 1 && (
+            <nav className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-row sm:items-center sm:justify-between" aria-label={t("adminUsers.smtpAuditPagination", { defaultValue: "SMTP audit pages" })} data-testid="smtp-audit-pagination">
+              <button type="button" disabled={smtpAuditLogs.data.page <= 1} onClick={() => setAuditPage((value) => Math.max(1, value - 1))} className="inline-flex min-h-11 items-center justify-center gap-1 rounded-xl px-4 font-black rr-text-navy transition active:scale-[0.97] disabled:opacity-40">
+                <ChevronLeft size={18} /> {t("adminUsers.previous", { defaultValue: "Previous" })}
+              </button>
+              <span className="text-center text-sm font-black rr-text-navy">{t("adminUsers.page", { defaultValue: "Page {{page}} of {{count}}", page: smtpAuditLogs.data.page, count: smtpAuditLogs.data.pageCount })}</span>
+              <button type="button" disabled={smtpAuditLogs.data.page >= smtpAuditLogs.data.pageCount} onClick={() => setAuditPage((value) => Math.min(smtpAuditLogs.data?.pageCount ?? value, value + 1))} className="inline-flex min-h-11 items-center justify-center gap-1 rounded-xl px-4 font-black rr-text-navy transition active:scale-[0.97] disabled:opacity-40">
+                {t("adminUsers.next", { defaultValue: "Next" })} <ChevronRight size={18} />
+              </button>
+            </nav>
           )}
         </section>
       </main>
