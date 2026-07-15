@@ -204,3 +204,9 @@
 - [x] Add focused reminder-delay regression coverage and run TypeScript, the full Vitest suite, and the production build.
 - [x] Verify the repaired reminder control on phone and desktop viewports, then publish the validated checkpoint.
 - [x] Diagnose and repair the Vite reload failures for Settings.tsx and index.css caused by the interrupted reminder-control edit, then confirm /templates loads cleanly.
+- [x] Add durable independent persistence and scheduling semantics for the second follow-up delay without changing existing customer defaults unexpectedly.
+- [x] Add responsive 3-, 5-, and 7-day preset buttons for both follow-up timing controls with safe 1–14 day validation.
+- [x] Show a clear success toast after reminder timing settings save and preserve useful error feedback.
+- [x] Create and validate a reusable reminder-timing settings skill using the approved skill-creator workflow.
+- [x] Add focused schema, API, scheduler, UI, preset, toast, and independent-delay regressions; run TypeScript, the full Vitest suite, and the production build.
+- [x] Verify reminder settings on phone and desktop, publish the validated release, and deliver the reusable skill package.

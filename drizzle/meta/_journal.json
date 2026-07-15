@@ -29,6 +29,13 @@
       "when": 1784073729074,
       "tag": "0003_mighty_squadron_sinister",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1784098322781,
+      "tag": "0004_burly_spirit",
+      "breakpoints": true
     }
   ]
 }

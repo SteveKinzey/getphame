@@ -129,16 +129,23 @@ describe("Get Phame regression contracts", () => {
     expect(settings).toContain("profileLoading");
   });
 
-  it("keeps the automatic follow-up delay locally editable before an explicit validated save", () => {
+  it("keeps both automatic follow-up intervals independently editable before one validated save", () => {
     const settings = readProjectFile("../client/src/pages/Settings.tsx");
     const reminders = readProjectFile("./reminders.ts");
+    const router = readProjectFile("./routers.ts");
 
     expect(settings).toContain("value={followUpDelayInput}");
     expect(settings).toContain("onChange={(e) => setFollowUpDelayInput(e.target.value)}");
-    expect(settings).toContain("!followUpDelayHasChanges");
+    expect(settings).toContain("value={followUpSecondDelayInput}");
+    expect(settings).toContain("onChange={(e) => setFollowUpSecondDelayInput(e.target.value)}");
+    expect(settings).toContain("FOLLOW_UP_DELAY_PRESETS.map");
+    expect(settings).toContain("!followUpTimingHasChanges");
     expect(settings).toContain("utils.reminders.getSettings.invalidate()");
-    expect(settings).toContain("editedFollowUpDelayDays + 7");
-    expect(reminders).toContain("const step2DelayMs = step1DelayMs + 7 * 24 * 60 * 60 * 1000");
+    expect(settings).toContain('toast.success("Follow-up timing saved!")');
+    expect(settings).toContain("editedFollowUpDelayDays + editedFollowUpSecondDelayDays");
+    expect(router).toContain("followUpSecondDelayDays: z.number().int().min(1).max(14)");
+    expect(router).toContain("followUpSecondDelayDays: input.followUpSecondDelayDays");
+    expect(reminders).toContain("profile?.followUpSecondDelayDays ?? 7");
   });
 
   it("keeps form values, placeholders, autofill, disabled, and read-only content readable in both themes", () => {

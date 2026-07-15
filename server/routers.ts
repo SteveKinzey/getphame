@@ -1329,16 +1329,25 @@ export const appRouter = router({
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
       const { eq: eqR } = await import("drizzle-orm");
       const [profile] = await db
-        .select({ followUpEnabled: businessProfiles.followUpEnabled, followUpDelayDays: businessProfiles.followUpDelayDays })
+        .select({
+          followUpEnabled: businessProfiles.followUpEnabled,
+          followUpDelayDays: businessProfiles.followUpDelayDays,
+          followUpSecondDelayDays: businessProfiles.followUpSecondDelayDays,
+        })
         .from(businessProfiles)
         .where(eqR(businessProfiles.userId, ctx.user.id));
-      return { followUpEnabled: profile?.followUpEnabled ?? 1, followUpDelayDays: profile?.followUpDelayDays ?? 3 };
+      return {
+        followUpEnabled: profile?.followUpEnabled ?? 1,
+        followUpDelayDays: profile?.followUpDelayDays ?? 3,
+        followUpSecondDelayDays: profile?.followUpSecondDelayDays ?? 7,
+      };
     }),
 
     updateSettings: protectedProcedure
       .input(z.object({
         followUpEnabled: z.number().int().min(0).max(1),
         followUpDelayDays: z.number().int().min(1).max(14),
+        followUpSecondDelayDays: z.number().int().min(1).max(14),
       }))
       .mutation(async ({ ctx, input }) => {
         const db = await getDb();
@@ -1346,7 +1355,11 @@ export const appRouter = router({
         const { eq: eqR } = await import("drizzle-orm");
         await db
           .update(businessProfiles)
-          .set({ followUpEnabled: input.followUpEnabled, followUpDelayDays: input.followUpDelayDays })
+          .set({
+            followUpEnabled: input.followUpEnabled,
+            followUpDelayDays: input.followUpDelayDays,
+            followUpSecondDelayDays: input.followUpSecondDelayDays,
+          })
           .where(eqR(businessProfiles.userId, ctx.user.id));
         return { ok: true };
       }),

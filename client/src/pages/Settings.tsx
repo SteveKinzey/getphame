@@ -68,6 +68,8 @@ import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/pl
 import PlanSwitchDialog from "@/components/PlanSwitchDialog";
 import {
   DEFAULT_FOLLOW_UP_DELAY_DAYS,
+  DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS,
+  FOLLOW_UP_DELAY_PRESETS,
   isValidFollowUpDelayDays,
   normalizeFollowUpDelayDays,
 } from "@/lib/reminderSettings";
@@ -912,12 +914,14 @@ export default function SettingsPage() {
   // Reminder settings state
   const { data: reminderSettings } = trpc.reminders.getSettings.useQuery();
   const [followUpDelayInput, setFollowUpDelayInput] = useState(String(DEFAULT_FOLLOW_UP_DELAY_DAYS));
+  const [followUpSecondDelayInput, setFollowUpSecondDelayInput] = useState(String(DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS));
   const utils = trpc.useUtils();
   const updateReminderSettings = trpc.reminders.updateSettings.useMutation({
     onSuccess: async (_data, variables) => {
       setFollowUpDelayInput(String(variables.followUpDelayDays));
+      setFollowUpSecondDelayInput(String(variables.followUpSecondDelayDays));
       await utils.reminders.getSettings.invalidate();
-      toast.success("Follow-up reminder settings saved!");
+      toast.success("Follow-up timing saved!");
     },
     onError: (err) => toast.error(err.message),
   });
@@ -926,12 +930,22 @@ export default function SettingsPage() {
     if (reminderSettings?.followUpDelayDays != null) {
       setFollowUpDelayInput(String(reminderSettings.followUpDelayDays));
     }
-  }, [reminderSettings?.followUpDelayDays]);
+    if (reminderSettings?.followUpSecondDelayDays != null) {
+      setFollowUpSecondDelayInput(String(reminderSettings.followUpSecondDelayDays));
+    }
+  }, [reminderSettings?.followUpDelayDays, reminderSettings?.followUpSecondDelayDays]);
 
   const followUpDelayIsValid = isValidFollowUpDelayDays(followUpDelayInput);
+  const followUpSecondDelayIsValid = isValidFollowUpDelayDays(followUpSecondDelayInput);
   const savedFollowUpDelayDays = reminderSettings?.followUpDelayDays ?? DEFAULT_FOLLOW_UP_DELAY_DAYS;
+  const savedFollowUpSecondDelayDays = reminderSettings?.followUpSecondDelayDays ?? DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS;
   const editedFollowUpDelayDays = normalizeFollowUpDelayDays(followUpDelayInput, savedFollowUpDelayDays);
-  const followUpDelayHasChanges = followUpDelayIsValid && editedFollowUpDelayDays !== savedFollowUpDelayDays;
+  const editedFollowUpSecondDelayDays = normalizeFollowUpDelayDays(followUpSecondDelayInput, savedFollowUpSecondDelayDays);
+  const followUpTimingIsValid = followUpDelayIsValid && followUpSecondDelayIsValid;
+  const followUpTimingHasChanges = followUpTimingIsValid && (
+    editedFollowUpDelayDays !== savedFollowUpDelayDays ||
+    editedFollowUpSecondDelayDays !== savedFollowUpSecondDelayDays
+  );
 
   const { data: reEngagementSettings } = trpc.profile.getReEngagementSettings.useQuery();
   const updateReEngagementSettings = trpc.profile.updateReEngagementSettings.useMutation({
@@ -2282,47 +2296,109 @@ export default function SettingsPage() {
                     onCheckedChange={(v) => updateReminderSettings.mutate({
                       followUpEnabled: v ? 1 : 0,
                       followUpDelayDays: editedFollowUpDelayDays,
+                      followUpSecondDelayDays: editedFollowUpSecondDelayDays,
                     })}
                     disabled={updateReminderSettings.isPending}
                   />
                 </div>
-                <p className="text-xs mb-3 rr-text-navy-muted">Automatically send two follow-up emails to customers who haven&apos;t clicked your review link. The second follow-up is always seven days after the first.</p>
+                <p className="text-xs mb-3 rr-text-navy-muted">Automatically send two follow-up emails to customers who haven&apos;t clicked your review link. Set each interval independently.</p>
                 {(reminderSettings?.followUpEnabled ?? 1) === 1 && (
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <label htmlFor="follow-up-delay-days" className="text-xs font-bold rr-text-navy-mid">First follow-up after</label>
-                      <input
-                        id="follow-up-delay-days"
-                        type="number"
-                        inputMode="numeric"
-                        min={1}
-                        max={14}
-                        step={1}
-                        value={followUpDelayInput}
-                        onChange={(e) => setFollowUpDelayInput(e.target.value)}
-                        aria-invalid={!followUpDelayIsValid}
-                        aria-describedby="follow-up-delay-help"
-                        className="w-16 px-2 py-1.5 rounded-lg text-sm outline-none text-center"
-                        style={{ border: `2px solid ${followUpDelayIsValid ? "oklch(0.88 0.02 260)" : "oklch(0.58 0.19 25)"}`, fontSize: "16px" }}
-                      />
-                      <span className="text-sm font-semibold rr-text-navy-mid">days</span>
+                  <div className="space-y-3">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-xl p-3" style={{ border: "1px solid oklch(0.90 0.02 260)" }}>
+                        <label htmlFor="follow-up-delay-days" className="block text-xs font-bold rr-text-navy-mid">First follow-up</label>
+                        <div className="mt-2 flex items-center gap-2">
+                          <input
+                            id="follow-up-delay-days"
+                            type="number"
+                            inputMode="numeric"
+                            min={1}
+                            max={14}
+                            step={1}
+                            value={followUpDelayInput}
+                            onChange={(e) => setFollowUpDelayInput(e.target.value)}
+                            aria-invalid={!followUpDelayIsValid}
+                            aria-describedby="follow-up-delay-help"
+                            className="w-16 px-2 py-2 rounded-lg text-sm outline-none text-center"
+                            style={{ border: `2px solid ${followUpDelayIsValid ? "oklch(0.88 0.02 260)" : "oklch(0.58 0.19 25)"}`, fontSize: "16px" }}
+                          />
+                          <span className="text-xs font-semibold rr-text-navy-mid">days after original send</span>
+                        </div>
+                        <div className="mt-2 flex flex-wrap gap-2" aria-label="First follow-up quick presets">
+                          {FOLLOW_UP_DELAY_PRESETS.map((days) => (
+                            <button
+                              key={`first-${days}`}
+                              type="button"
+                              onClick={() => setFollowUpDelayInput(String(days))}
+                              aria-pressed={editedFollowUpDelayDays === days}
+                              className="min-h-9 min-w-11 rounded-lg px-3 text-xs font-bold transition-colors"
+                              style={editedFollowUpDelayDays === days
+                                ? { background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }
+                                : { background: "oklch(0.96 0.02 260)", color: "oklch(0.34 0.06 260)" }}
+                            >
+                              {days}d
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="rounded-xl p-3" style={{ border: "1px solid oklch(0.90 0.02 260)" }}>
+                        <label htmlFor="follow-up-second-delay-days" className="block text-xs font-bold rr-text-navy-mid">Second follow-up</label>
+                        <div className="mt-2 flex items-center gap-2">
+                          <input
+                            id="follow-up-second-delay-days"
+                            type="number"
+                            inputMode="numeric"
+                            min={1}
+                            max={14}
+                            step={1}
+                            value={followUpSecondDelayInput}
+                            onChange={(e) => setFollowUpSecondDelayInput(e.target.value)}
+                            aria-invalid={!followUpSecondDelayIsValid}
+                            aria-describedby="follow-up-delay-help"
+                            className="w-16 px-2 py-2 rounded-lg text-sm outline-none text-center"
+                            style={{ border: `2px solid ${followUpSecondDelayIsValid ? "oklch(0.88 0.02 260)" : "oklch(0.58 0.19 25)"}`, fontSize: "16px" }}
+                          />
+                          <span className="text-xs font-semibold rr-text-navy-mid">days after first follow-up</span>
+                        </div>
+                        <div className="mt-2 flex flex-wrap gap-2" aria-label="Second follow-up quick presets">
+                          {FOLLOW_UP_DELAY_PRESETS.map((days) => (
+                            <button
+                              key={`second-${days}`}
+                              type="button"
+                              onClick={() => setFollowUpSecondDelayInput(String(days))}
+                              aria-pressed={editedFollowUpSecondDelayDays === days}
+                              className="min-h-9 min-w-11 rounded-lg px-3 text-xs font-bold transition-colors"
+                              style={editedFollowUpSecondDelayDays === days
+                                ? { background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }
+                                : { background: "oklch(0.96 0.02 260)", color: "oklch(0.34 0.06 260)" }}
+                            >
+                              {days}d
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <p id="follow-up-delay-help" className="text-xs rr-text-navy-muted">
+                        {followUpTimingIsValid
+                          ? `Schedule: day ${editedFollowUpDelayDays}, then day ${editedFollowUpDelayDays + editedFollowUpSecondDelayDays} after the original request.`
+                          : "Enter a whole number from 1 to 14 days for both follow-ups."}
+                      </p>
                       <button
                         type="button"
                         onClick={() => updateReminderSettings.mutate({
                           followUpEnabled: reminderSettings?.followUpEnabled ?? 1,
                           followUpDelayDays: editedFollowUpDelayDays,
+                          followUpSecondDelayDays: editedFollowUpSecondDelayDays,
                         })}
-                        disabled={updateReminderSettings.isPending || !followUpDelayHasChanges}
-                        className="ml-auto min-h-9 px-3 py-1.5 rounded-lg text-xs font-bold transition-opacity disabled:opacity-40 rr-bg-navy rr-text-gold"
+                        disabled={updateReminderSettings.isPending || !followUpTimingHasChanges}
+                        className="min-h-10 w-full rounded-lg px-4 py-2 text-xs font-bold transition-opacity disabled:opacity-40 rr-bg-navy rr-text-gold sm:w-auto"
                       >
-                        {updateReminderSettings.isPending ? "Saving…" : "Save"}
+                        {updateReminderSettings.isPending ? "Saving…" : "Save timing"}
                       </button>
                     </div>
-                    <p id="follow-up-delay-help" className="text-xs mt-2 rr-text-navy-muted">
-                      {followUpDelayIsValid
-                        ? `The second follow-up will send on day ${editedFollowUpDelayDays + 7}. Choose 1–14 days.`
-                        : "Enter a whole number from 1 to 14 days."}
-                    </p>
                   </div>
                 )}
               </div>

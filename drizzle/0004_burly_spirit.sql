@@ -1,0 +1,1 @@
+ALTER TABLE `business_profiles` ADD `followUpSecondDelayDays` int DEFAULT 7 NOT NULL;

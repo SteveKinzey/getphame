@@ -172,6 +172,8 @@ export const businessProfiles = pgTable("business_profiles", {
   followUpEnabled: integer("followUpEnabled").default(1).notNull(),
   // Days after initial send before step-1 follow-up (default 3, range 1-14)
   followUpDelayDays: integer("followUpDelayDays").default(3).notNull(),
+  // Days after step-1 before the step-2 follow-up (default 7, range 1-14)
+  followUpSecondDelayDays: integer("followUpSecondDelayDays").default(7).notNull(),
   // Re-engagement email — 1 = enabled (default), 0 = disabled
   reEngagementEnabled: integer("reEngagementEnabled").default(1).notNull(),
   // Referral code — unique 8-char code used to generate share links (getphame.app?ref=CODE)

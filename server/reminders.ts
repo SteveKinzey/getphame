@@ -1,7 +1,7 @@
 /**
  * Follow-up Reminders — two-step sequence per review request:
  *   Step 1 — the user's configured delay after the initial send
- *   Step 2 — seven days after step 1
+ *   Step 2 — the user's configured delay after step 1
  *
  * The scheduler runs every hour via setInterval on server start.
  */
@@ -16,7 +16,7 @@ import { buildReviewRequestEmail } from "./emailTemplates";
 /**
  * Schedule both follow-up reminders for a sent review request:
  *   Step 1 — configured delay after initial send (default: 3 days)
- *   Step 2 — 7 days after step 1
+ *   Step 2 — configured delay after step 1 (default: 7 days)
  */
 export async function scheduleFollowUp(
   userId: number,
@@ -29,13 +29,17 @@ export async function scheduleFollowUp(
 
   // Respect per-user follow-up toggle — skip if disabled
   const [profile] = await db
-    .select({ followUpEnabled: businessProfiles.followUpEnabled, followUpDelayDays: businessProfiles.followUpDelayDays })
+    .select({
+      followUpEnabled: businessProfiles.followUpEnabled,
+      followUpDelayDays: businessProfiles.followUpDelayDays,
+      followUpSecondDelayDays: businessProfiles.followUpSecondDelayDays,
+    })
     .from(businessProfiles)
     .where(eq(businessProfiles.userId, userId));
   if (profile && profile.followUpEnabled === 0) return;
 
   const step1DelayMs = (profile?.followUpDelayDays ?? 3) * 24 * 60 * 60 * 1000;
-  const step2DelayMs = step1DelayMs + 7 * 24 * 60 * 60 * 1000; // step 2 always 7 days after step 1
+  const step2DelayMs = step1DelayMs + (profile?.followUpSecondDelayDays ?? 7) * 24 * 60 * 60 * 1000;
 
   const now = Date.now();
   await db.insert(followUpReminders).values([
