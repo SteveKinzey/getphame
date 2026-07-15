@@ -7,7 +7,15 @@
  * Design: navy (#0F1B2D) + gold (#C9A84C) theme, mobile-first, responsive.
  */
 import React, { useState, useEffect, useCallback } from "react";
+import { flushSync } from "react-dom";
 import { isStagingSocialLoginHost } from "@/lib/socialLoginAvailability";
+import { toast } from "sonner";
+import {
+  GOOGLE_SIGN_IN_TOAST_ID,
+  clearGoogleSignInPending,
+  getAuthErrorMessage,
+  rememberGoogleSignInPending,
+} from "@/lib/authFeedback";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -22,6 +30,8 @@ interface MagicLinkResponse {
   error?: string;
   email?: string;
 }
+
+const GOOGLE_REDIRECT_FEEDBACK_MS = 180;
 
 // ---------------------------------------------------------------------------
 // SVG Icons (inline — no extra icon package needed)
@@ -108,6 +118,7 @@ export default function Login() {
   // Form state
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [sentTo, setSentTo] = useState<string | null>(null); // shows success state
 
@@ -129,24 +140,37 @@ export default function Login() {
     const params = new URLSearchParams(window.location.search);
     const authError = params.get("auth_error");
     if (authError) {
-      const messages: Record<string, string> = {
-        google_denied: "Google sign-in was cancelled.",
-        google_failed: "Google sign-in failed. Please try again.",
-        google_state_mismatch: "Security check failed. Please try again.",
-        apple_failed: "Apple sign-in failed. Please try again.",
-        apple_missing_token: "Apple sign-in failed. Please try again.",
-        apple_token_exchange_failed: "Apple sign-in could not be completed. Please try again.",
-        apple_state_mismatch: "Apple sign-in security check failed. Please try again.",
-        invalid_link: "Invalid login link. Please request a new one.",
-        link_expired: "This login link has expired. Please request a new one.",
-        service_unavailable: "Service temporarily unavailable. Please try again.",
-        verification_failed: "Verification failed. Please request a new link.",
-      };
-      setFormError(messages[authError] ?? "Sign-in failed. Please try again.");
+      const message = getAuthErrorMessage(authError);
+      clearGoogleSignInPending();
+      setFormError(message);
+      toast.error(message, { id: GOOGLE_SIGN_IN_TOAST_ID });
       // Clean the URL
       window.history.replaceState({}, "", window.location.pathname);
     }
   }, []);
+
+  const handleGoogleSignIn = useCallback(() => {
+    if (isGoogleSubmitting) return;
+
+    flushSync(() => {
+      setFormError(null);
+      setIsGoogleSubmitting(true);
+    });
+    rememberGoogleSignInPending();
+    toast.loading("Opening Google sign-in…", { id: GOOGLE_SIGN_IN_TOAST_ID });
+
+    try {
+      window.setTimeout(() => {
+        window.location.assign("/api/auth/google");
+      }, GOOGLE_REDIRECT_FEEDBACK_MS);
+    } catch {
+      clearGoogleSignInPending();
+      setIsGoogleSubmitting(false);
+      toast.error("Google sign-in could not be opened. Please try again.", {
+        id: GOOGLE_SIGN_IN_TOAST_ID,
+      });
+    }
+  }, [isGoogleSubmitting]);
 
   const handleMagicLinkSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -213,13 +237,16 @@ export default function Login() {
             <div className="space-y-3" data-testid="staging-social-login">
               {/* Google — only rendered when configured */}
               {googleEnabled === true && (
-                <a
-                  href="/api/auth/google"
-                  className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-800 font-semibold text-sm transition-colors duration-150 shadow-sm"
+                <button
+                  type="button"
+                  onClick={handleGoogleSignIn}
+                  disabled={isGoogleSubmitting}
+                  aria-busy={isGoogleSubmitting}
+                  className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-50 active:bg-gray-100 disabled:cursor-wait disabled:bg-gray-100 disabled:text-gray-500 text-gray-800 font-semibold text-sm transition-[background-color,color,transform] duration-150 shadow-sm active:scale-[0.98]"
                 >
-                  <GoogleIcon />
-                  Continue with Google
-                </a>
+                  {isGoogleSubmitting ? <Spinner /> : <GoogleIcon />}
+                  {isGoogleSubmitting ? "Connecting to Google…" : "Continue with Google"}
+                </button>
               )}
 
               {/* Google placeholder while loading */}

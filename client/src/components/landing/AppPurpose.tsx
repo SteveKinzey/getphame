@@ -40,9 +40,18 @@ export default function AppPurpose() {
 
             <div className="mt-7 grid gap-3 sm:grid-cols-3">
               {workflow.map(({ key, icon: Icon }, index) => (
-                <div key={key} className="rounded-2xl border border-slate-200 bg-white p-4">
-                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-[#0a1628] text-primary">
-                    <Icon size={18} aria-hidden="true" />
+                <div
+                  key={key}
+                  tabIndex={0}
+                  className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-sm outline-none transition-[transform,box-shadow,border-color] duration-200 ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:border-primary/55 motion-safe:hover:shadow-[0_14px_34px_rgba(10,22,40,0.12)] motion-safe:focus-visible:-translate-y-1 focus-visible:border-primary focus-visible:ring-2 focus-visible:ring-primary/35 motion-reduce:transform-none motion-reduce:transition-none"
+                >
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1 origin-left scale-x-0 bg-primary transition-transform duration-200 ease-out motion-safe:group-hover:scale-x-100 motion-safe:group-focus-visible:scale-x-100 motion-reduce:hidden" />
+                  <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-[#0a1628] text-primary transition-[transform,background-color,color] duration-200 ease-out motion-safe:group-hover:scale-110 motion-safe:group-hover:bg-primary motion-safe:group-hover:text-[#0a1628] motion-safe:group-focus-visible:scale-110 motion-safe:group-focus-visible:bg-primary motion-safe:group-focus-visible:text-[#0a1628] motion-reduce:transform-none motion-reduce:transition-none">
+                    <Icon
+                      size={18}
+                      aria-hidden="true"
+                      className="transition-transform duration-200 ease-out motion-safe:group-hover:rotate-[-6deg] motion-safe:group-focus-visible:rotate-[-6deg] motion-reduce:transform-none motion-reduce:transition-none"
+                    />
                   </div>
                   <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[#806000]">
                     {t("landing.purpose.stepLabel", { defaultValue: "Step {{number}}", number: index + 1 })}

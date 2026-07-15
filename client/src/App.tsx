@@ -25,6 +25,12 @@ import { handoffGuideNavigation } from "./lib/onboardingFlow";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
 import { useHapticEvents } from "./hooks/useHapticEvents";
+import {
+  GOOGLE_SIGN_IN_TOAST_ID,
+  clearGoogleSignInPending,
+  getAuthErrorMessage,
+  hasGoogleSignInPending,
+} from "./lib/authFeedback";
 
 // Keep both a same-tab guard and a per-user browser preference. The in-memory
 // guard closes the modal synchronously; localStorage prevents a full reload from
@@ -143,22 +149,26 @@ function AppShell() {
   }, [isAuthenticated]);
 
   useEffect(() => {
+    if (window.location.pathname === "/login") return;
+
     const params = new URLSearchParams(window.location.search);
     const authError = params.get('auth_error');
     if (authError) {
-      if (authError === 'denied') {
-        toast.error('Sign-in cancelled. Please try again.');
-      } else if (authError === 'magic_link_expired') {
-        toast.error('That sign-in link has expired. Please request a new one.');
-      } else if (authError === 'invalid_magic_link') {
-        toast.error('Invalid or already-used sign-in link. Please request a new one.');
-      } else {
-        toast.error('Sign-in failed. Please try again or contact support.');
-      }
+      clearGoogleSignInPending();
+      toast.error(getAuthErrorMessage(authError), { id: GOOGLE_SIGN_IN_TOAST_ID });
       const cleanUrl = window.location.pathname;
       window.history.replaceState({}, '', cleanUrl);
     }
   }, []);
+
+  useEffect(() => {
+    if (loading || !user || !hasGoogleSignInPending()) return;
+
+    clearGoogleSignInPending();
+    toast.success("Google sign-in successful. Welcome to Get Phame.", {
+      id: GOOGLE_SIGN_IN_TOAST_ID,
+    });
+  }, [loading, user]);
 
   useEffect(() => {
     if (loading || !user || window.location.pathname !== "/onboarding") return;

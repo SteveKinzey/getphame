@@ -242,3 +242,9 @@
 - [x] Update the public Get Phame homepage so Google OAuth reviewers can immediately understand the app’s purpose, user workflow, and Google-related functionality from plain-language visible content.
 - [x] Add focused homepage compliance coverage and verify the final public custom-domain content on phone and desktop before requesting Google branding re-verification.
 - [x] Fix the live anonymous homepage hero so reviewer-critical purpose, workflow, and Google data-use content remains visible even when entrance animations or viewport observers do not execute.
+- [x] Add an immediate loading spinner and disabled state to the public Google sign-in control without changing OAuth scopes or redirect behavior.
+- [x] Add clear success and error toast feedback for Google sign-in initiation and callback failures using the existing application notification system where available.
+- [x] Enhance the public three-step workflow cards with subtle accessible hover/focus motion and interactive icons while respecting reduced-motion preferences.
+- [x] Add focused regressions for sign-in pending state, duplicate-click prevention, toast feedback, workflow interactions, and reduced-motion safeguards.
+- [x] Verify the updated public experience on phone and desktop, run TypeScript and the relevant Vitest suite, then publish the validated checkpoint.
+- [x] Create, validate, and deliver a reusable skill for the Get Phame Google reviewer homepage and sign-in UX workflow.
