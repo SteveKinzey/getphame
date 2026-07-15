@@ -110,7 +110,18 @@ export default function Hero() {
               <span>{t("landing.purpose.steps.reviews", { defaultValue: "Direct customers to your selected review platform" })}</span>
             </motion.div>
 
-            <motion.div {...fadeUp(0.5)} className="flex flex-col sm:flex-row gap-4 mb-8">
+            <motion.div
+              {...fadeUp(0.5)}
+              role="note"
+              aria-label={t("landing.hero.googleDisclosureLabel", { defaultValue: "Google sign-in data use" })}
+              className="mb-6 max-w-lg rounded-xl border border-white/15 bg-white/[0.07] px-4 py-3 text-sm font-medium leading-relaxed text-slate-200"
+            >
+              <span className="font-extrabold text-white">{t("landing.hero.googleDisclosureLabel", { defaultValue: "Google sign-in data use" })}: </span>
+              {t("landing.hero.googleSignInDisclaimer", { defaultValue: "Google sign-in only provides your name and email address to create and identify your Get Phame account. We do not request access to Gmail messages, contacts, Drive files, or Calendar." })}{" "}
+              <a href="/privacy-policy" className="text-primary/80 hover:text-primary underline underline-offset-2">{t("landing.hero.privacyPolicy", { defaultValue: "Privacy Policy" })}</a>
+            </motion.div>
+
+            <motion.div {...fadeUp(0.56)} className="flex flex-col sm:flex-row gap-4 mb-8">
               <a
                 href={loginUrl}
                 className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-primary text-primary-foreground font-bold text-base rounded-xl hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_30px_oklch(0.78_0.15_75/0.3)]"
@@ -130,7 +141,7 @@ export default function Hero() {
             </motion.div>
 
             <motion.div
-              {...fadeUp(0.54)}
+              {...fadeUp(0.6)}
               className="flex flex-col sm:flex-row gap-4 text-sm text-slate-200 font-medium"
             >
               <span className="flex items-center gap-2">
@@ -141,17 +152,6 @@ export default function Hero() {
                 <Mail size={14} className="text-emerald-400" />
                 {t("landing.hero.emailCompatibility", { defaultValue: "Works with Gmail, Outlook, SMTP" })}
               </span>
-            </motion.div>
-
-            <motion.div
-              {...fadeUp(0.62)}
-              role="note"
-              aria-label={t("landing.hero.googleDisclosureLabel", { defaultValue: "Google sign-in data use" })}
-              className="mt-4 max-w-lg rounded-xl border border-white/15 bg-white/[0.07] px-4 py-3 text-sm font-medium leading-relaxed text-slate-200"
-            >
-              <span className="font-extrabold text-white">{t("landing.hero.googleDisclosureLabel", { defaultValue: "Google sign-in data use" })}: </span>
-              {t("landing.hero.googleSignInDisclaimer", { defaultValue: "Google sign-in only provides your name and email address to create and identify your Get Phame account. We do not request access to Gmail messages, contacts, Drive files, or Calendar." })}{" "}
-              <a href="/privacy-policy" className="text-primary/80 hover:text-primary underline underline-offset-2">{t("landing.hero.privacyPolicy", { defaultValue: "Privacy Policy" })}</a>
             </motion.div>
           </div>
 

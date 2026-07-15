@@ -15,6 +15,7 @@ describe("Google OAuth branding-verification homepage", () => {
     expect(hero).toContain("landing.purpose.steps.reviews");
     expect(hero).toContain("initial: false as const");
     expect(hero).not.toContain("initial: { opacity: 0");
+    expect(hero.indexOf('role="note"')).toBeLessThan(hero.indexOf("href={loginUrl}"));
   });
 
   it("keeps the explicit app-purpose and limited Google sign-in disclosure on the public homepage", () => {
