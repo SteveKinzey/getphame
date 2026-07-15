@@ -238,7 +238,7 @@
 - [x] Create and validate a reusable admin-operations analytics skill through the approved skill-creator workflow.
 - [x] Add focused schema, scheduler, export, authorization, trend, threshold, chart, and responsive UI regressions.
 - [x] Apply and verify migrations, run TypeScript, the full Vitest suite, security gate, and production build, then validate phone and desktop layouts.
-- [ ] Publish the validated release and deliver the reusable skill package.
+- [x] Publish the validated release and deliver the reusable skill package.
 - [x] Update the public Get Phame homepage so Google OAuth reviewers can immediately understand the app’s purpose, user workflow, and Google-related functionality from plain-language visible content.
-- [ ] Add focused homepage compliance coverage and verify the final public custom-domain content on phone and desktop before requesting Google branding re-verification.
-- [ ] Fix the live anonymous homepage hero so reviewer-critical purpose, workflow, and Google data-use content remains visible even when entrance animations or viewport observers do not execute.
+- [x] Add focused homepage compliance coverage and verify the final public custom-domain content on phone and desktop before requesting Google branding re-verification.
+- [x] Fix the live anonymous homepage hero so reviewer-critical purpose, workflow, and Google data-use content remains visible even when entrance animations or viewport observers do not execute.
