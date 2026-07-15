@@ -25,6 +25,7 @@ describe("privacy-light PWA analytics", () => {
       "install_banner_viewed",
       "install_banner_clicked",
       "install_banner_dismissed",
+      "install_banner_remind_later",
       "share_completed",
       "share_cancelled",
       "share_copied",
@@ -76,6 +77,8 @@ describe("privacy-light PWA analytics", () => {
 describe("Get Phame install and sharing contracts", () => {
   it("uses native sharing, canonical clipboard fallback, accessible status, and detectable cancellation", () => {
     const prompt = projectFile("../client/src/components/PWAInstallPrompt.tsx");
+    const home = projectFile("../client/src/pages/Home.tsx");
+    const shareHelper = projectFile("../client/src/lib/pwaShare.ts");
     expect(prompt).toContain('const CANONICAL_URL = "https://getphame.app/"');
     expect(prompt).toContain("navigator.share(shareData)");
     expect(prompt).toContain("navigator.clipboard.writeText(CANONICAL_URL)");
@@ -83,6 +86,14 @@ describe("Get Phame install and sharing contracts", () => {
     expect(prompt).toContain('aria-live="polite"');
     expect(prompt).toContain('record("share_completed")');
     expect(prompt).toContain('record("share_copied")');
+    expect(home).toContain("shareGetPhame()");
+    expect(home).toContain('event: "share_completed"');
+    expect(home).toContain('event: "share_copied"');
+    expect(home).toContain('event: "share_cancelled"');
+    expect(home).toContain('role="status" aria-live="polite"');
+    expect(shareHelper).toContain("navigator.share(GET_PHAME_SHARE_DATA)");
+    expect(shareHelper).toContain("navigator.clipboard.writeText(GET_PHAME_SHARE_DATA.url");
+    expect(shareHelper).toContain('error.name === "AbortError"');
   });
 
   it("keeps install attention motion non-obstructive and disabled for reduced motion", () => {

@@ -2213,6 +2213,11 @@
     "iosCta": "Vedi i passaggi per iPhone",
     "opening": "Apertura…",
     "openingStatus": "Apertura delle opzioni di installazione di Get Phame.",
-    "dismiss": "Nascondi banner di installazione"
+    "dismiss": "Nascondi banner di installazione",
+    "remindLater": "Ricordamelo più tardi",
+    "shareSuccess": "Get Phame è stato condiviso.",
+    "shareCopied": "Link di Get Phame copiato negli appunti.",
+    "shareCancelled": "Condivisione annullata.",
+    "shareError": "Impossibile condividere Get Phame. Riprova."
   }
 }

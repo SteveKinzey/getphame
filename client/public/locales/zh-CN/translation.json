@@ -1507,7 +1507,12 @@
     "iosCta": "查看 iPhone 安装步骤",
     "opening": "正在打开…",
     "openingStatus": "正在打开 Get Phame 安装选项。",
-    "dismiss": "关闭安装横幅"
+    "dismiss": "关闭安装横幅",
+    "remindLater": "稍后提醒我",
+    "shareSuccess": "Get Phame 已成功分享。",
+    "shareCopied": "Get Phame 链接已复制。",
+    "shareCancelled": "已取消分享。",
+    "shareError": "目前无法分享 Get Phame。"
   },
   "settings": {
     "accountProfile": {

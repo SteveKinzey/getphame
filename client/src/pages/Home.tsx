@@ -16,6 +16,7 @@ import { useTranslation } from "react-i18next";
 import { getEffectivePlan } from "@shared/plans";
 import BrandLockup from "@/components/BrandLockup";
 import HomeInstallBanner from "@/components/HomeInstallBanner";
+import { getPwaPlatform, shareGetPhame } from "@/lib/pwaShare";
 
 const LOGO_URL = "https://assets.getphame.app/getphame-logo.svg";
 const HERO_IMG = "https://assets.getphame.app/getphame-logo.svg";
@@ -328,6 +329,7 @@ export default function HomePage() {
   const { user } = useAuth();
   const [, navigate] = useLocation();
   const [guideOpen, setGuideOpen] = useState(false);
+  const [shareStatus, setShareStatus] = useState("");
 
   const { data: profile } = trpc.profile.get.useQuery();
   const { data: smtpStatus } = trpc.smtp.status.useQuery();
@@ -335,6 +337,7 @@ export default function HomePage() {
   const { data: onboardingStatus } = trpc.onboarding.status.useQuery();
   const { data: referralData } = trpc.referral.getCode.useQuery();
   const utils = trpc.useUtils();
+  const pwaAnalytics = trpc.analytics.trackPwaEvent.useMutation();
 
   // Goal tracker state
   const [editingGoal, setEditingGoal] = useState(false);
@@ -353,18 +356,30 @@ export default function HomePage() {
     : 0;
 
   const handleShare = async () => {
-    const shareUrl = referralData?.shareUrl ?? "https://getphame.app";
-    const shareText = t("shareReferralCard.shareText") + " " + shareUrl;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: "Get Phame", text: shareText, url: shareUrl });
-      } catch {
-        // user cancelled — no action needed
-      }
-    } else {
-      await navigator.clipboard.writeText(shareText);
-      toast.success(t("homePage.shareSuccessToast"));
+    const outcome = await shareGetPhame();
+    const platform = getPwaPlatform();
+
+    if (outcome === "shared") {
+      pwaAnalytics.mutate({ event: "share_completed", platform });
+      setShareStatus(t("pwaInstallBanner.shareSuccess", { defaultValue: "Get Phame shared successfully." }));
+      return;
     }
+    if (outcome === "copied") {
+      pwaAnalytics.mutate({ event: "share_copied", platform });
+      const message = t("pwaInstallBanner.shareCopied", { defaultValue: "Get Phame link copied." });
+      setShareStatus(message);
+      toast.success(message);
+      return;
+    }
+    if (outcome === "cancelled") {
+      pwaAnalytics.mutate({ event: "share_cancelled", platform });
+      setShareStatus(t("pwaInstallBanner.shareCancelled", { defaultValue: "Sharing cancelled." }));
+      return;
+    }
+
+    const message = t("pwaInstallBanner.shareError", { defaultValue: "Unable to share Get Phame right now." });
+    setShareStatus(message);
+    toast.error(message);
   };
 
   // SEO: dynamic page title with keywords
@@ -473,6 +488,7 @@ export default function HomePage() {
                 <span>{t("nav.guide", { defaultValue: "Guide" })}</span>
               </button>
               <LanguageFlyout />
+              <span className="sr-only" role="status" aria-live="polite">{shareStatus}</span>
             </div>
           </div>
           {/* Greeting */}

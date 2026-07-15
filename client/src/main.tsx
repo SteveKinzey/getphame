@@ -1,5 +1,5 @@
 import { trpc } from "@/lib/trpc";
-import "@/lib/i18n"; // Initialize i18next before app renders
+import i18n from "@/lib/i18n"; // Initialize i18next before app renders
 import { UNAUTHED_ERR_MSG } from '@shared/const';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
@@ -73,9 +73,22 @@ const trpcClient = trpc.createClient({
 });
 
 // ── Service worker ────────────────────────────────────────────────────────────
+function syncLanguageToServiceWorker(registration: ServiceWorkerRegistration, language: string) {
+  const worker = registration.active ?? registration.waiting ?? registration.installing;
+  worker?.postMessage({ type: "SET_LANGUAGE", language });
+}
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(console.error);
+    navigator.serviceWorker.register('/sw.js').then((registration) => {
+      const syncCurrentLanguage = (language = i18n.resolvedLanguage ?? i18n.language ?? "en") => {
+        syncLanguageToServiceWorker(registration, language);
+      };
+
+      syncCurrentLanguage();
+      i18n.on("languageChanged", syncCurrentLanguage);
+      navigator.serviceWorker.addEventListener("controllerchange", () => syncCurrentLanguage());
+    }).catch(console.error);
   });
 }
 

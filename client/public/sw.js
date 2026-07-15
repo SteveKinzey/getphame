@@ -1,6 +1,16 @@
 // Get Phame Service Worker v5 — Fixed cross-origin fetch handling
 // Cache version bump forces old caches to be cleared on update
-const CACHE_NAME = 'getphame-v7';
+const CACHE_NAME = 'getphame-v9';
+const LANGUAGE_CACHE_KEY = '/__getphame_offline_language__';
+const OFFLINE_PAGES = {
+  en: '/offline.en.html',
+  es: '/offline.es.html',
+  fr: '/offline.fr.html',
+  it: '/offline.it.html',
+  th: '/offline.th.html',
+  'zh-CN': '/offline.zh-CN.html',
+  'zh-TW': '/offline.zh-TW.html',
+};
 
 // Pre-cache all locale files at install so language switching is instant
 // and works completely offline after the app is installed on the device.
@@ -8,18 +18,44 @@ const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/offline.html',
+  '/offline.css',
+  ...Object.values(OFFLINE_PAGES),
   '/manifest.json',
   '/apple-touch-icon.png',
   '/icons/icon-192.png',
   '/icons/icon-512.png',
-  // All 6 language locale files — cached at install time
+  // All 7 supported language locale files — cached at install time
   '/locales/en/translation.json',
-  '/locales/th/translation.json',
-  '/locales/zh-TW/translation.json',
-  '/locales/fr/translation.json',
   '/locales/es/translation.json',
+  '/locales/fr/translation.json',
   '/locales/it/translation.json',
+  '/locales/th/translation.json',
+  '/locales/zh-CN/translation.json',
+  '/locales/zh-TW/translation.json',
 ];
+
+function normalizeOfflineLanguage(language) {
+  const normalized = String(language || '').toLowerCase();
+  if (normalized.startsWith('zh-tw') || normalized.startsWith('zh-hk') || normalized.includes('hant')) return 'zh-TW';
+  if (normalized.startsWith('zh')) return 'zh-CN';
+  if (normalized.startsWith('es')) return 'es';
+  if (normalized.startsWith('fr')) return 'fr';
+  if (normalized.startsWith('it')) return 'it';
+  if (normalized.startsWith('th')) return 'th';
+  return 'en';
+}
+
+async function rememberOfflineLanguage(language) {
+  const cache = await caches.open(CACHE_NAME);
+  await cache.put(LANGUAGE_CACHE_KEY, new Response(normalizeOfflineLanguage(language)));
+}
+
+async function getOfflinePage() {
+  const cache = await caches.open(CACHE_NAME);
+  const response = await cache.match(LANGUAGE_CACHE_KEY);
+  const language = normalizeOfflineLanguage(response ? await response.text() : 'en');
+  return cache.match(OFFLINE_PAGES[language]) || cache.match('/offline.html');
+}
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -111,10 +147,10 @@ self.addEventListener('fetch', (event) => {
         }
         return response;
       })
-      .catch(() => {
+      .catch(async () => {
         // Document navigations use the branded offline page instead of a broken app shell.
         if (event.request.destination === 'document') {
-          return caches.match('/offline.html');
+          return getOfflinePage();
         }
         // Other same-origin requests fall back to their cached response.
         return caches.match(event.request).then((cached) => {
@@ -137,6 +173,10 @@ self.addEventListener('fetch', (event) => {
 
 // Handle follow-up reminder scheduling via background sync
 self.addEventListener('message', (event) => {
+  if (event.data && event.data.type === 'SET_LANGUAGE') {
+    event.waitUntil(rememberOfflineLanguage(event.data.language));
+    return;
+  }
   if (event.data && event.data.type === 'SCHEDULE_REMINDER') {
     const { customerId, businessName, reviewLink, sendAt } = event.data;
     console.log('[SW] Reminder scheduled for:', customerId, 'at', sendAt);

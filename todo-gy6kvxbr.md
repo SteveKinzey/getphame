@@ -318,3 +318,13 @@
 - [x] Implement a branded custom offline fallback page and integrate it with the PWA service worker navigation strategy.
 - [x] Add regression coverage and validate mobile install behavior, social metadata, offline fallback, TypeScript, security audit, full tests, and production build.
 - [x] Publish the validated PWA enhancement release and report the live version.
+
+- [x] Audit the current install banner, share helpers, language persistence, offline service-worker flow, localization catalogs, and existing Get Phame PWA skill.
+- [x] Add a smooth transform-and-opacity slide-in animation to the homepage Install App banner with reduced-motion support.
+- [x] Add a localized Remind me later action that hides the install banner for seven days, remains SSR-safe, and preserves install eligibility rules.
+- [x] Add a localized native Share button to the homepage using the canonical Get Phame Web Share payload with clipboard fallback, accessible outcome feedback, and privacy-light analytics.
+- [x] Create localized branded offline recovery content for every supported locale and make the service worker select the user’s persisted language safely.
+- [x] Create or update a reusable skill covering the complete install-banner, weekly reminder, localized offline, native sharing, testing, and checkpoint workflow.
+- [x] Add focused regressions for weekly reminder persistence, motion accessibility, native sharing, locale parity, offline language selection, and service-worker fallback behavior.
+- [x] Run TypeScript, focused and full Vitest, production security audit, production build, and phone-sized visual verification.
+- [x] Publish the validated PWA workflow release and deliver the reusable skill package.

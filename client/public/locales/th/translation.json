@@ -1650,7 +1650,12 @@
     "iosCta": "ดูขั้นตอนสำหรับ iPhone",
     "opening": "กำลังเปิด…",
     "openingStatus": "กำลังเปิดตัวเลือกการติดตั้ง Get Phame",
-    "dismiss": "ซ่อนแบนเนอร์ติดตั้ง"
+    "dismiss": "ซ่อนแบนเนอร์ติดตั้ง",
+    "remindLater": "เตือนฉันภายหลัง",
+    "shareSuccess": "แชร์ Get Phame สำเร็จแล้ว",
+    "shareCopied": "คัดลอกลิงก์ Get Phame แล้ว",
+    "shareCancelled": "ยกเลิกการแชร์แล้ว",
+    "shareError": "ไม่สามารถแชร์ Get Phame ได้ในขณะนี้"
   },
   "settings": {
     "accountProfile": {

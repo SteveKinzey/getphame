@@ -2045,7 +2045,12 @@
     "iosCta": "Voir les étapes pour iPhone",
     "opening": "Ouverture…",
     "openingStatus": "Ouverture des options d’installation de Get Phame.",
-    "dismiss": "Masquer la bannière d’installation"
+    "dismiss": "Masquer la bannière d’installation",
+    "remindLater": "Me le rappeler plus tard",
+    "shareSuccess": "Get Phame a bien été partagé.",
+    "shareCopied": "Lien Get Phame copié.",
+    "shareCancelled": "Partage annulé.",
+    "shareError": "Impossible de partager Get Phame pour le moment."
   },
   "settings": {
     "accountProfile": {

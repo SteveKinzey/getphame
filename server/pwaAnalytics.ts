@@ -8,6 +8,7 @@ export const PWA_EVENT_NAMES = [
   "install_banner_viewed",
   "install_banner_clicked",
   "install_banner_dismissed",
+  "install_banner_remind_later",
   "share_completed",
   "share_cancelled",
   "share_copied",

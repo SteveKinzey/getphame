@@ -60,6 +60,9 @@ describe("Get Phame regression contracts", () => {
     const offlinePage = readProjectFile("../client/public/offline.html");
     const installPrompt = readProjectFile("../client/src/components/PWAInstallPrompt.tsx");
     const installBanner = readProjectFile("../client/src/components/HomeInstallBanner.tsx");
+    const shareHelper = readProjectFile("../client/src/lib/pwaShare.ts");
+    const main = readProjectFile("../client/src/main.tsx");
+    const styles = readProjectFile("../client/src/index.css");
     const home = readProjectFile("../client/src/pages/Home.tsx");
     const pwaAnalytics = readProjectFile("./pwaAnalytics.ts");
     const app = readProjectFile("../client/src/App.tsx");
@@ -90,11 +93,16 @@ describe("Get Phame regression contracts", () => {
     expect(manifest.icons.some((icon) => icon.sizes === "512x512" && icon.purpose === "maskable")).toBe(true);
     expect(manifest.launch_handler.client_mode).toContain("navigate-existing");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v7'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v9'");
     expect(serviceWorker).toContain("self.addEventListener('install'");
     expect(serviceWorker).toContain("self.addEventListener('fetch'");
+    expect(serviceWorker).toContain("const OFFLINE_PAGES = {");
+    expect(serviceWorker).toContain("it: '/offline.it.html'");
+    expect(serviceWorker).toContain("'zh-CN': '/offline.zh-CN.html'");
+    expect(serviceWorker).toContain("event.data.type === 'SET_LANGUAGE'");
+    expect(serviceWorker).toContain("return getOfflinePage()");
     expect(serviceWorker).toContain("'/offline.html'");
-    expect(serviceWorker).toContain("return caches.match('/offline.html')");
+    expect(serviceWorker).toContain("cache.match('/offline.html')");
     expect(serviceWorker).toContain("return self.clients.claim()");
     expect(offlinePage).toContain("You’re offline");
     expect(offlinePage).toContain("GET PHAME");
@@ -110,15 +118,48 @@ describe("Get Phame regression contracts", () => {
     expect(installBanner).toContain('event: "install_banner_viewed"');
     expect(installBanner).toContain('event: "install_banner_clicked"');
     expect(installBanner).toContain('event: "install_banner_dismissed"');
+    expect(installBanner).toContain('event: "install_banner_remind_later"');
+    expect(installBanner).toContain("ONE_WEEK_MS = 7 * 24 * 60 * 60 * 1000");
+    expect(installBanner).toContain("window.localStorage.setItem(REMIND_UNTIL_KEY");
+    expect(installBanner).toContain('t("pwaInstallBanner.remindLater"');
+    expect(installBanner).toContain("home-install-banner-enter");
     expect(installBanner).toContain('typeof window === "undefined"');
     expect(home).toContain("<HomeInstallBanner />");
+    expect(home).toContain("shareGetPhame()");
+    expect(home).toContain('event: "share_completed"');
+    expect(home).toContain('event: "share_copied"');
+    expect(home).toContain('event: "share_cancelled"');
+    expect(home).toContain('role="status" aria-live="polite"');
+    expect(shareHelper).toContain('title: "Get Phame — Turn Happy Customers into 5-Star Reviews"');
+    expect(shareHelper).toContain('url: "https://getphame.app/"');
+    expect(shareHelper).toContain("navigator.share(GET_PHAME_SHARE_DATA)");
+    expect(shareHelper).toContain("navigator.clipboard.writeText(GET_PHAME_SHARE_DATA.url");
+    expect(main).toContain('postMessage({ type: "SET_LANGUAGE", language })');
+    expect(main).toContain('i18n.on("languageChanged", syncCurrentLanguage)');
+    expect(styles).toContain("@keyframes homeInstallBannerEnter");
+    expect(styles).toContain(".home-install-banner-enter");
+    expect(styles).toMatch(/prefers-reduced-motion: reduce[\s\S]*?\.home-install-banner-enter/);
     expect(pwaAnalytics).toContain('"install_banner_viewed"');
     expect(pwaAnalytics).toContain('"install_banner_clicked"');
     expect(pwaAnalytics).toContain('"install_banner_dismissed"');
+    expect(pwaAnalytics).toContain('"install_banner_remind_later"');
     expect(app).toMatch(/<AppShell \/>[\s\S]*?<PWAInstallPrompt \/>/);
     expect(app.match(/<PWAInstallPrompt \/>/g)).toHaveLength(1);
 
-    const installCopyKeys = ["title", "description", "cta", "iosCta", "opening", "openingStatus", "dismiss"];
+    const installCopyKeys = [
+      "title",
+      "description",
+      "cta",
+      "iosCta",
+      "opening",
+      "openingStatus",
+      "dismiss",
+      "remindLater",
+      "shareSuccess",
+      "shareCopied",
+      "shareCancelled",
+      "shareError",
+    ];
     for (const locale of ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"]) {
       const translations = JSON.parse(
         readProjectFile(`../client/public/locales/${locale}/translation.json`),
@@ -127,6 +168,10 @@ describe("Get Phame regression contracts", () => {
       for (const key of installCopyKeys) {
         expect(translations.pwaInstallBanner?.[key], `${locale}.${key}`).toEqual(expect.any(String));
       }
+
+      const localizedOffline = readProjectFile(`../client/public/offline.${locale}.html`);
+      expect(localizedOffline).toContain("GET PHAME");
+      expect(localizedOffline).toContain('onclick="window.location.reload()"');
     }
   });
 

@@ -1962,7 +1962,12 @@
     "iosCta": "Show iPhone steps",
     "opening": "Opening…",
     "openingStatus": "Opening the Get Phame installation options.",
-    "dismiss": "Dismiss install banner"
+    "dismiss": "Dismiss install banner",
+    "remindLater": "Remind me later",
+    "shareSuccess": "Get Phame shared successfully.",
+    "shareCopied": "Get Phame link copied.",
+    "shareCancelled": "Sharing cancelled.",
+    "shareError": "Unable to share Get Phame right now."
   },
   "settings": {
     "accountProfile": {
