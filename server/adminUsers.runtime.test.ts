@@ -52,23 +52,19 @@ function createDb(options?: { targetRole?: "admin" | "user"; targetTier?: "free"
   const db = {
     select: vi.fn((selection?: Record<string, unknown>) => {
       if (!selection) {
-        const auditChain = {
-          where: () => auditChain,
-          orderBy: () => ({ limit: async () => [{
-            id: 1,
-            actorUserId: 1,
-            actorName: "Owner Admin",
-            actorEmail: "owner@example.test",
-            targetUserId: 2,
-            targetName: "Target User",
-            targetEmail: "target@example.test",
-            smtpUser: "smtp-target@example.test",
-            action: "smtp_credentials_removed",
-            outcome: "removed",
-            occurredAt: 1_752_537_600_000,
-          }] }),
-        };
-        return { from: () => auditChain };
+        return { from: () => ({ orderBy: () => ({ limit: async () => [{
+          id: 1,
+          actorUserId: 1,
+          actorName: "Owner Admin",
+          actorEmail: "owner@example.test",
+          targetUserId: 2,
+          targetName: "Target User",
+          targetEmail: "target@example.test",
+          smtpUser: "smtp-target@example.test",
+          action: "smtp_credentials_removed",
+          outcome: "removed",
+          occurredAt: 1_752_537_600_000,
+        }] }) }) };
       }
       if ("count" in selection) {
         return { from: () => ({ leftJoin: () => ({ where: async () => [{ count: 12 }] }) }) };
