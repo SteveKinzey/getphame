@@ -264,4 +264,4 @@
 - [x] Add schema, authorization, storage, profile, avatar, account-menu, authentication-status, localization, and email-rendering regression coverage.
 - [x] Apply any required database migration, run focused and complete Vitest suites, TypeScript and production builds, and verify Settings plus account menus on phone and desktop.
 - [x] Create and validate a reusable skill covering the full authenticated profile, avatar, account-menu, Google status, and email-branding implementation workflow.
-- [ ] Publish the validated release and deliver the updated Get Phame project checkpoint.
+- [x] Publish the validated release and deliver the updated Get Phame project checkpoint.
