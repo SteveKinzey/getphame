@@ -285,14 +285,15 @@
 - [x] Trace why Gmail shows the legacy personal avatar for messages from no-reply@getphame.app, including Google account identity, SMTP sender profile, BIMI/DNS, and message-template sources.
 - [x] Configure the authoritative no-reply@getphame.app sender identity to use the approved deployed Get Phame site icon without generating or substituting a different logo.
 - [x] Verify the updated sender avatar in a newly delivered Gmail message and document any provider-side cache delay or account-owner step that cannot be automated safely.
-- [ ] Define privacy-light first-party events for prompt shown, install action attempted, native install accepted/dismissed where detectable, and share action completed/cancelled where detectable.
-- [ ] Persist and expose prompt-to-install conversion analytics without collecting customer content or unsupported device identifiers.
-- [ ] Add a native web share action with clipboard fallback that shares the canonical Get Phame URL and triggers the updated Open Graph previews.
-- [ ] Add a subtle GPU-friendly install-guide attention animation that respects prefers-reduced-motion and does not obstruct dismissal or installation controls.
-- [ ] Create a reusable Get Phame social-share and PWA launch optimization skill using the approved skill-creator workflow and deterministic asset resources.
-- [ ] Add focused regressions for analytics event semantics, privacy boundaries, native share fallback, animation accessibility, and reusable skill contracts.
-- [ ] Validate the enhanced guide and sharing flow on iPhone and Android emulation, run TypeScript, full Vitest, security audit, and production build.
+- [x] Define privacy-light first-party events for prompt shown, install action attempted, native install accepted/dismissed where detectable, and share action completed/cancelled where detectable.
+- [x] Persist and expose prompt-to-install conversion analytics without collecting customer content or unsupported device identifiers.
+- [x] Add a native web share action with clipboard fallback that shares the canonical Get Phame URL and triggers the updated Open Graph previews.
+- [x] Add a subtle GPU-friendly install-guide attention animation that respects prefers-reduced-motion and does not obstruct dismissal or installation controls.
+- [x] Create a reusable Get Phame social-share and PWA launch optimization skill using the approved skill-creator workflow and deterministic asset resources.
+- [x] Add focused regressions for analytics event semantics, privacy boundaries, native share fallback, animation accessibility, and reusable skill contracts.
+- [x] Validate the enhanced guide and sharing flow on iPhone and Android emulation, run TypeScript, full Vitest, security audit, and production build.
 - [ ] Publish the validated install-conversion release and deliver the reusable skill package.
+- [x] Add explicit iPhone/iPad and Android installation instructions plus native share-with-a-friend fallback to the onboarding guide’s final step.
 - [x] Superseded by Steve’s attached PNG master: use the exact user-supplied gold P-star artwork as the authoritative sender/contact avatar; do not generate, redraw, or substitute another logo.
 - [x] Inspect Google Workspace to confirm `no-reply@getphame.app` is an alias, determine the dedicated send-only user and licensing path, and preserve existing mail routing.
 - [x] Create and brand a dedicated send-only Google Workspace identity for `no-reply@getphame.app` with the exact supplied P-star logo.

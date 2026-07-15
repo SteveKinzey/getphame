@@ -26,7 +26,11 @@ import {
   AlertTriangle,
   Activity,
   Download,
+  Smartphone,
+  Share2,
+  MousePointerClick,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import {
   CartesianGrid,
   Line,
@@ -52,6 +56,11 @@ export default function AdminDashboard() {
 
   const { data: upsellStats } = trpc.admin.upsellStats.useQuery(undefined, {
     enabled: !!user,
+    refetchInterval: 60_000,
+  });
+
+  const { data: pwaConversionStats } = trpc.admin.pwaConversionStats.useQuery(undefined, {
+    enabled: user?.role === "admin",
     refetchInterval: 60_000,
   });
 
@@ -258,6 +267,37 @@ export default function AdminDashboard() {
                     </span>
                   </button>
                 ))}
+              </div>
+            </section>
+
+            <section data-testid="admin-pwa-conversion" aria-labelledby="admin-pwa-conversion-title">
+              <div className="mb-3">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Install conversion</p>
+                <h2 id="admin-pwa-conversion-title" className="mt-1 text-xl font-semibold rr-text-navy">PWA guide and sharing funnel</h2>
+                <p className="mt-1 text-sm rr-text-navy-muted">Aggregate first-party events only. No raw device or visitor records are shown.</p>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <ConversionMetricCard
+                  testId="pwa-guide-views"
+                  label="Guide views"
+                  value={pwaConversionStats?.allTime.install_guide_viewed ?? 0}
+                  detail={`${pwaConversionStats?.last30Days.install_guide_viewed ?? 0} in the last 30 days`}
+                  Icon={MousePointerClick}
+                />
+                <ConversionMetricCard
+                  testId="pwa-installs"
+                  label="Completed installs"
+                  value={pwaConversionStats?.allTime.app_installed ?? 0}
+                  detail={`${pwaConversionStats?.rates.installCompletion ?? 0}% of guide views`}
+                  Icon={Smartphone}
+                />
+                <ConversionMetricCard
+                  testId="pwa-shares"
+                  label="Successful shares"
+                  value={(pwaConversionStats?.allTime.share_completed ?? 0) + (pwaConversionStats?.allTime.share_copied ?? 0)}
+                  detail={`${pwaConversionStats?.rates.shareConversion ?? 0}% of guide views`}
+                  Icon={Share2}
+                />
               </div>
             </section>
 
@@ -793,6 +833,35 @@ function KpiCard({
       <p className="text-sm font-bold rr-text-navy-mid">
         {label}
       </p>
+    </div>
+  );
+}
+
+function ConversionMetricCard({
+  testId,
+  label,
+  value,
+  detail,
+  Icon,
+}: {
+  testId: string;
+  label: string;
+  value: number;
+  detail: string;
+  Icon: LucideIcon;
+}) {
+  return (
+    <div data-testid={testId} className="rounded-2xl bg-white p-4 shadow-sm">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-[0.14em] rr-text-navy-muted">{label}</p>
+          <p className="mt-1 text-3xl font-black rr-text-navy">{value.toLocaleString()}</p>
+        </div>
+        <span className="flex size-10 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white">
+          <Icon size={19} strokeWidth={2} aria-hidden="true" />
+        </span>
+      </div>
+      <p className="mt-2 text-sm font-medium rr-text-navy-muted">{detail}</p>
     </div>
   );
 }

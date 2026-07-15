@@ -59,6 +59,7 @@ import {
 import { getDb } from "./db";
 import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
+import { PWA_EVENT_NAMES, PWA_EVENT_SOURCE, summarizePwaEvents, toPwaEventPage } from "./pwaAnalytics";
 import { eq, like, or, inArray, desc, isNotNull, isNull, and, sql, gte, lte, count } from "drizzle-orm";
 import {
   listSavedContacts,
@@ -2778,6 +2779,22 @@ export const appRouter = router({
       return { total: rows.length, last30 };
     }),
 
+    /** Privacy-light install/share funnel totals; no raw user or device records leave the server. */
+    pwaConversionStats: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      const rows = await db
+        .select({
+          page: pageEvents.page,
+          utmMedium: pageEvents.utmMedium,
+          createdAt: pageEvents.createdAt,
+        })
+        .from(pageEvents)
+        .where(eq(pageEvents.utmSource, PWA_EVENT_SOURCE));
+      return summarizePwaEvents(rows);
+    }),
+
     /** Churn survey responses — admin only */
     churnSurveys: protectedProcedure.query(async ({ ctx }) => {
       if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
@@ -3278,6 +3295,25 @@ export const appRouter = router({
 
   /** Analytics / page event tracking */
   analytics: router({
+    trackPwaEvent: publicProcedure
+      .input(z.object({
+        event: z.enum(PWA_EVENT_NAMES),
+        platform: z.enum(["ios", "android", "desktop", "unknown"]),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return { ok: true };
+        await db.insert(pageEvents).values({
+          userId: null,
+          page: toPwaEventPage(input.event),
+          utmSource: PWA_EVENT_SOURCE,
+          utmMedium: input.platform,
+          utmCampaign: "install_conversion",
+          referrer: null,
+          userAgent: null,
+        });
+        return { ok: true };
+      }),
     trackPageView: publicProcedure
       .input(z.object({
         page: z.string().max(255),

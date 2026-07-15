@@ -15,7 +15,7 @@
  */
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, ChevronRight, ChevronLeft, Mail, Star, Users, Send, CheckCircle2, Globe, Upload, CreditCard, ShoppingCart, BookOpen, Loader2 } from "lucide-react";
+import { X, ChevronRight, ChevronLeft, Mail, Star, Users, Send, CheckCircle2, Globe, Upload, CreditCard, ShoppingCart, BookOpen, Loader2, Share2, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
@@ -838,6 +838,75 @@ function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void })
 
 function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void; onClose: () => void }) {
   const { t } = useTranslation();
+  const trackPwaEvent = trpc.analytics.trackPwaEvent.useMutation();
+  const [shareStatus, setShareStatus] = useState("");
+
+  const getPlatform = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    if (/iphone|ipad|ipod/.test(userAgent)) return "ios" as const;
+    if (/android/.test(userAgent)) return "android" as const;
+    return "desktop" as const;
+  };
+
+  const copyCanonicalUrl = async () => {
+    const url = "https://getphame.app/";
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(url);
+      return;
+    }
+
+    const textarea = document.createElement("textarea");
+    textarea.value = url;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  };
+
+  const handleShare = async () => {
+    const platform = getPlatform();
+    let completionEvent: "share_completed" | "share_copied" = "share_copied";
+    const shareData = {
+      title: "Get Phame",
+      text: t("onboardingGuide.allSet.shareText", { defaultValue: "Collect more customer reviews with Get Phame." }),
+      url: "https://getphame.app/",
+    };
+
+    setShareStatus("");
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        completionEvent = "share_completed";
+        setShareStatus(t("onboardingGuide.allSet.shareSuccess", { defaultValue: "Shared successfully." }));
+      } else {
+        await copyCanonicalUrl();
+        setShareStatus(t("onboardingGuide.allSet.copySuccess", { defaultValue: "Get Phame link copied." }));
+      }
+      trackPwaEvent.mutate({
+        event: completionEvent,
+        platform,
+      });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        setShareStatus(t("onboardingGuide.allSet.shareCancelled", { defaultValue: "Sharing cancelled." }));
+        trackPwaEvent.mutate({ event: "share_cancelled", platform });
+        return;
+      }
+
+      try {
+        await copyCanonicalUrl();
+        setShareStatus(t("onboardingGuide.allSet.copySuccess", { defaultValue: "Get Phame link copied." }));
+        trackPwaEvent.mutate({ event: "share_copied", platform });
+      } catch {
+        setShareStatus(t("onboardingGuide.allSet.shareError", { defaultValue: "Unable to share right now." }));
+      }
+    }
+  };
+
   return (
     <div className="space-y-5">
       <div className="text-center py-4">
@@ -872,6 +941,46 @@ function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void;
             <ChevronRight size={14} className="rr-text-navy-faint" />
           </button>
         ))}
+      </div>
+
+      <div className="space-y-2">
+        <p className="text-xs font-bold uppercase tracking-wide rr-text-navy-muted">
+          {t("onboardingGuide.allSet.installTitle", { defaultValue: "Keep Get Phame on your phone" })}
+        </p>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <div className="rounded-xl bg-white px-4 py-3" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
+            <div className="mb-2 flex items-center gap-2 rr-text-navy">
+              <Smartphone size={16} aria-hidden="true" />
+              <p className="text-sm font-bold">iPhone / iPad</p>
+            </div>
+            <p className="text-xs leading-5 rr-text-navy-mid">
+              {t("onboardingGuide.allSet.iosInstall", { defaultValue: "Open getphame.app in Safari. Tap Share, choose Add to Home Screen, then tap Add." })}
+            </p>
+          </div>
+          <div className="rounded-xl bg-white px-4 py-3" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
+            <div className="mb-2 flex items-center gap-2 rr-text-navy">
+              <Smartphone size={16} aria-hidden="true" />
+              <p className="text-sm font-bold">Android</p>
+            </div>
+            <p className="text-xs leading-5 rr-text-navy-mid">
+              {t("onboardingGuide.allSet.androidInstall", { defaultValue: "Open getphame.app in Chrome. Tap the three-dot menu, choose Install app or Add to Home screen, then confirm." })}
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={handleShare}
+          className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-[transform,opacity] active:scale-[0.97] rr-bg-navy text-white"
+        >
+          <Share2 size={17} aria-hidden="true" />
+          <span className="flex-1 text-sm font-bold">
+            {t("onboardingGuide.allSet.shareButton", { defaultValue: "Share Get Phame with a friend" })}
+          </span>
+          <ChevronRight size={15} aria-hidden="true" />
+        </button>
+        <p className="min-h-4 text-center text-xs rr-text-navy-mid" role="status" aria-live="polite">
+          {shareStatus}
+        </p>
       </div>
 
       <div

@@ -1342,15 +1342,24 @@
       "goToSendButton": "Go to Send Request",
       "goToContactsButton": "Go to Saved Contacts"
     },
-    "allSet": {
-      "title": "You're all set!",
-      "subtitle": "Get Phame is ready to start collecting reviews for your business.",
-      "quickLinksTitle": "Quick links",
-      "link1": "Send a review request now",
-      "link2": "View saved contacts",
-      "link3": "Check your dashboard",
-      "link4": "Manage settings",
-      "revisitTitle": "Need to revisit this guide?",
+      "allSet": {
+        "title": "You're all set!",
+        "subtitle": "Get Phame is ready to start collecting reviews for your business.",
+        "quickLinksTitle": "Quick links",
+        "link1": "Send a review request now",
+        "link2": "View saved contacts",
+        "link3": "Check your dashboard",
+        "link4": "Manage settings",
+        "installTitle": "Keep Get Phame on your phone",
+        "iosInstall": "Open getphame.app in Safari. Tap Share, choose Add to Home Screen, then tap Add.",
+        "androidInstall": "Open getphame.app in Chrome. Tap the three-dot menu, choose Install app or Add to Home screen, then confirm.",
+        "shareButton": "Share Get Phame with a friend",
+        "shareText": "Collect more customer reviews with Get Phame.",
+        "shareSuccess": "Shared successfully.",
+        "copySuccess": "Get Phame link copied.",
+        "shareCancelled": "Sharing cancelled.",
+        "shareError": "Unable to share right now.",
+        "revisitTitle": "Need to revisit this guide?",
       "revisitDesc": "Tap the \"Setup Guide\" button on the Home screen or in Settings any time to reopen these instructions.",
       "startButton": "Start Using Get Phame"
     }

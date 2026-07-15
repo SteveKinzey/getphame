@@ -773,6 +773,25 @@
 .animate-slide-up {
   animation: slideUp 0.3s ease forwards;
 }
+.pwa-install-sheet {
+  animation: slideUp 0.3s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+@keyframes pwaInstallAttention {
+  0%, 72%, 100% { transform: translateY(0) scale(1); }
+  80% { transform: translateY(-2px) scale(1.06); }
+  88% { transform: translateY(0) scale(1); }
+}
+.pwa-install-attention {
+  animation: pwaInstallAttention 2.8s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pwa-install-sheet,
+  .pwa-install-attention {
+    animation: none !important;
+  }
+}
 
 /* PageLoader: phame pulse animation */
 @keyframes phame-pulse {
