@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
-import { getAuthErrorMessage } from "../client/src/lib/authFeedback";
+import { vi } from "vitest";
+import {
+  getAuthErrorMessage,
+  getLocalizedAuthErrorMessage,
+} from "../client/src/lib/authFeedback";
 
 const root = process.cwd();
 const read = (relativePath: string) => fs.readFileSync(path.join(root, relativePath), "utf8");
@@ -19,7 +23,8 @@ describe("Google sign-in interaction feedback", () => {
     expect(login).toContain("GOOGLE_REDIRECT_FEEDBACK_MS = 180");
     expect(login).toContain("window.setTimeout(() => {");
     expect(login).toContain("isGoogleSubmitting ? <Spinner /> : <GoogleIcon />");
-    expect(login).toContain("Connecting to Google…");
+    expect(login).toContain('t("authFeedback.connectingGoogle"');
+    expect(login).toContain('t("authFeedback.continueWithGoogle"');
     expect(login).toContain('window.location.assign("/api/auth/google")');
   });
 
@@ -30,10 +35,10 @@ describe("Google sign-in interaction feedback", () => {
     const googleAuth = read("server/googleAuth.ts");
 
     expect(login).toContain("rememberGoogleSignInPending()");
-    expect(login).toContain('toast.loading("Opening Google sign-in…"');
+    expect(login).toContain('toast.loading(t("authFeedback.openingGoogle"');
     expect(app).toContain("hasGoogleSignInPending()");
-    expect(app).toContain("Google sign-in successful. Welcome to Get Phame.");
-    expect(app).toContain("toast.error(getAuthErrorMessage(authError)");
+    expect(app).toContain('t("authFeedback.googleSuccess"');
+    expect(app).toContain("toast.error(getLocalizedAuthErrorMessage(authError, t)");
     expect(feedback).toContain("google_missing_code");
     expect(feedback).toContain("google_state_mismatch");
     expect(feedback).toContain("google_no_id");
@@ -49,6 +54,85 @@ describe("Google sign-in interaction feedback", () => {
     expect(getAuthErrorMessage("google_failed")).toBe("Google sign-in failed. Please try again.");
     expect(getAuthErrorMessage("google_state_mismatch")).toContain("security check failed");
     expect(getAuthErrorMessage("unknown_code")).toContain("contact support");
+  });
+
+  it("maps known Google callback failures through stable localization keys while retaining safe fallbacks", () => {
+    const translate = vi.fn((key: string, options: { defaultValue: string }) => `${key}|${options.defaultValue}`);
+
+    expect(getLocalizedAuthErrorMessage("google_denied", translate)).toContain(
+      "authFeedback.errors.googleDenied|Google sign-in was cancelled.",
+    );
+    expect(getLocalizedAuthErrorMessage("google_state_mismatch", translate)).toContain(
+      "authFeedback.errors.googleStateMismatch|Google sign-in security check failed.",
+    );
+    expect(getLocalizedAuthErrorMessage("unknown_code", translate)).toBe(
+      "Sign-in failed. Please try again or contact support.",
+    );
+    expect(translate).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps the Google feedback and account-menu catalog contract in every supported locale", () => {
+    const locales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"];
+    const requiredPaths = [
+      "authFeedback.openingGoogle",
+      "authFeedback.connectingGoogle",
+      "authFeedback.continueWithGoogle",
+      "authFeedback.googleOpenFailed",
+      "authFeedback.googleSuccess",
+      "authFeedback.errors.googleDenied",
+      "authFeedback.errors.googleFailed",
+      "authFeedback.errors.googleMissingCode",
+      "authFeedback.errors.googleStateMismatch",
+      "authFeedback.errors.googleNoId",
+      "profileMenu.account",
+      "profileMenu.accountDetails",
+      "profileMenu.open",
+      "profileMenu.signedInAs",
+    ];
+
+    for (const locale of locales) {
+      const catalog = JSON.parse(read(`client/public/locales/${locale}/translation.json`));
+
+      for (const keyPath of requiredPaths) {
+        const value = keyPath.split(".").reduce<unknown>((current, key) => {
+          if (!current || typeof current !== "object") return undefined;
+          return (current as Record<string, unknown>)[key];
+        }, catalog);
+
+        expect(value, `${locale}:${keyPath}`).toEqual(expect.any(String));
+        expect((value as string).trim(), `${locale}:${keyPath}`).not.toBe("");
+      }
+    }
+  });
+});
+
+describe("authenticated account menus", () => {
+  it("provides a keyboard-accessible desktop account menu with identity, account details, and logout", () => {
+    const layout = read("client/src/components/AppLayout.tsx");
+
+    expect(layout).toContain('data-testid="sidebar-account-menu-trigger"');
+    expect(layout).toContain('aria-label={t("profileMenu.open"');
+    expect(layout).toContain("<DropdownMenuTrigger asChild>");
+    expect(layout).toContain("<DropdownMenuLabel");
+    expect(layout).toContain("profileMenu.signedInAs");
+    expect(layout).toContain('data-testid="sidebar-account-details"');
+    expect(layout).toContain('navigate("/settings")');
+    expect(layout).toContain('data-testid="sidebar-logout"');
+    expect(layout).toContain("void logout().then(() => navigate(\"/\"))");
+    expect(layout).toContain("focus-visible:ring-2");
+  });
+
+  it("provides a touch-sized mobile account menu with identity, account details, and logout", () => {
+    const bottomNav = read("client/src/components/BottomNav.tsx");
+
+    expect(bottomNav).toContain('data-testid="mobile-account-menu-trigger"');
+    expect(bottomNav).toContain("profileMenu.account");
+    expect(bottomNav).toContain("profileMenu.signedInAs");
+    expect(bottomNav).toContain('data-testid="mobile-account-details"');
+    expect(bottomNav).toContain("navigate('/settings')");
+    expect(bottomNav).toContain("min-h-12");
+    expect(bottomNav).toContain('data-testid="mobile-logout"');
+    expect(bottomNav).toContain("void logout().then(() => navigate('/'))");
   });
 });
 

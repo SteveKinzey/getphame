@@ -1306,6 +1306,26 @@
     },
     "accessUntil": "Accès jusqu’au {{date}}"
   },
+  "authFeedback": {
+    "openingGoogle": "Ouverture de la connexion Google…",
+    "connectingGoogle": "Connexion à Google…",
+    "continueWithGoogle": "Continuer avec Google",
+    "googleOpenFailed": "Impossible d’ouvrir la connexion Google. Veuillez réessayer.",
+    "googleSuccess": "Connexion Google réussie. Bienvenue sur Get Phame.",
+    "errors": {
+      "googleDenied": "La connexion Google a été annulée.",
+      "googleFailed": "La connexion Google a échoué. Veuillez réessayer.",
+      "googleMissingCode": "Google n’a pas fourni les informations nécessaires à la connexion. Veuillez réessayer.",
+      "googleStateMismatch": "La vérification de sécurité de la connexion Google a échoué. Veuillez réessayer.",
+      "googleNoId": "La connexion Google n’a pas pu vérifier votre compte. Veuillez réessayer."
+    }
+  },
+  "profileMenu": {
+    "account": "Compte",
+    "accountDetails": "Détails du compte",
+    "open": "Ouvrir le menu du compte",
+    "signedInAs": "Connecté en tant que"
+  },
   "account": {
     "administrator": "Administrateur",
     "administratorAccount": "Compte administrateur",

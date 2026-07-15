@@ -243,15 +243,16 @@ describe("Get Phame regression contracts", () => {
     expect(layout).toContain("<ShieldCheck");
   });
 
-  it("places a translated logout action between the theme control and unchanged profile block", () => {
+  it("keeps translated logout inside the account menu after the theme control", () => {
     const layout = readProjectFile("../client/src/components/AppLayout.tsx");
     const themeIndex = layout.indexOf("{/* Theme toggle */}");
+    const accountMenuIndex = layout.indexOf("data-testid=\"sidebar-account-menu-trigger\"");
     const logoutIndex = layout.indexOf("data-testid=\"sidebar-logout\"");
-    const profileIndex = layout.indexOf("{/* User avatar */}");
 
     expect(themeIndex).toBeGreaterThan(-1);
-    expect(logoutIndex).toBeGreaterThan(themeIndex);
-    expect(profileIndex).toBeGreaterThan(logoutIndex);
+    expect(accountMenuIndex).toBeGreaterThan(themeIndex);
+    expect(logoutIndex).toBeGreaterThan(accountMenuIndex);
+    expect(layout).toContain('aria-label={t("profileMenu.open"');
     expect(layout).toContain('t("logout.button", { defaultValue: "Log Out" })');
     expect(layout).toContain('void logout().then(() => navigate("/"))');
     expect(layout).toContain("<LogOut");
@@ -439,7 +440,7 @@ describe("Get Phame regression contracts", () => {
     expect(churn).toContain('guarantee.data?.reason === "already_refunded"');
     expect(churn).toContain('guarantee.data?.reason === "expired"');
     expect(i18n).toContain('["landing", "translation", "cancellation"]');
-    expect(i18n).toContain("v=phame9");
+    expect(i18n).toContain("v=phame10");
     expect(routers).toContain("guaranteeStatus: protectedProcedure");
     expect(routers).toContain("claimGuarantee: protectedProcedure");
     expect(routers).toContain("cancelRenewal: protectedProcedure");

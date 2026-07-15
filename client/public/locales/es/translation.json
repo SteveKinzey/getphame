@@ -1306,6 +1306,26 @@
     },
     "accessUntil": "Acceso hasta el {{date}}"
   },
+  "authFeedback": {
+    "openingGoogle": "Abriendo el inicio de sesión con Google…",
+    "connectingGoogle": "Conectando con Google…",
+    "continueWithGoogle": "Continuar con Google",
+    "googleOpenFailed": "No se pudo abrir el inicio de sesión con Google. Inténtalo de nuevo.",
+    "googleSuccess": "Inicio de sesión con Google completado. Te damos la bienvenida a Get Phame.",
+    "errors": {
+      "googleDenied": "Se canceló el inicio de sesión con Google.",
+      "googleFailed": "El inicio de sesión con Google falló. Inténtalo de nuevo.",
+      "googleMissingCode": "Google no devolvió la información necesaria para iniciar sesión. Inténtalo de nuevo.",
+      "googleStateMismatch": "Falló la comprobación de seguridad del inicio de sesión con Google. Inténtalo de nuevo.",
+      "googleNoId": "No se pudo verificar tu cuenta con Google. Inténtalo de nuevo."
+    }
+  },
+  "profileMenu": {
+    "account": "Cuenta",
+    "accountDetails": "Detalles de la cuenta",
+    "open": "Abrir menú de la cuenta",
+    "signedInAs": "Sesión iniciada como"
+  },
   "account": {
     "administrator": "Administrador",
     "administratorAccount": "Cuenta de administrador",

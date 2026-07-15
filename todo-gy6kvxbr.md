@@ -248,3 +248,9 @@
 - [x] Add focused regressions for sign-in pending state, duplicate-click prevention, toast feedback, workflow interactions, and reduced-motion safeguards.
 - [x] Verify the updated public experience on phone and desktop, run TypeScript and the relevant Vitest suite, then publish the validated checkpoint.
 - [x] Create, validate, and deliver a reusable skill for the Get Phame Google reviewer homepage and sign-in UX workflow.
+- [x] Simulate complete staged Google OAuth success, cancellation, and provider-error flows while verifying the spinner, duplicate-click protection, and toast outcomes without changing production OAuth visibility.
+- [x] Localize all new Google sign-in pending, success, and error feedback across every supported visible language and preserve URL cleanup after callback feedback.
+- [x] Add an accessible authenticated profile dropdown after successful sign-in with account-details navigation and the existing secure logout action on desktop and mobile.
+- [x] Add focused regressions for localized feedback, callback outcomes, profile-menu keyboard behavior, account navigation, logout, and existing authentication guards.
+- [x] Verify the full experience on phone and desktop, run TypeScript and relevant Vitest coverage, then publish the validated release.
+- [x] Update, validate, and deliver the reusable Google reviewer and sign-in UX skill with localization, flow simulation, and profile-menu contracts.

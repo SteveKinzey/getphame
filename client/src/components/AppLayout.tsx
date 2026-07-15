@@ -3,7 +3,7 @@
 // Tablet (768–1023px): icon-only sidebar (64px) + content
 // Desktop (1024px+): full sidebar (220px) with labels + content
 import { useLocation } from "wouter";
-import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown, ShieldCheck, Users, LogOut } from "lucide-react";
+import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown, ShieldCheck, Users, LogOut, UserRound } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
@@ -12,6 +12,14 @@ import { trpc } from "@/lib/trpc";
 import { ReactNode } from "react";
 import BrandLockup from "@/components/BrandLockup";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -242,52 +250,75 @@ export default function AppLayout({ children }: AppLayoutProps) {
             </span>
           </button>
 
-          {/* Direct logout action — intentionally placed between theme and profile. */}
-          <button
-            data-testid="sidebar-logout"
-            type="button"
-            disabled={authLoading}
-            onClick={() => {
-              buttonPressHaptic();
-              void logout().then(() => navigate("/"));
-            }}
-            title={t("logout.button", { defaultValue: "Log Out" })}
-            aria-label={t("logout.button", { defaultValue: "Log Out" })}
-            className="flex items-center justify-center lg:justify-start gap-3 px-2 lg:px-3 py-2.5 rounded-xl transition-all duration-200 hover:bg-white/5 disabled:cursor-wait disabled:opacity-60 w-full text-white"
-          >
-            <LogOut size={18} className="flex-shrink-0 text-white" />
-            <span className="app-sidebar-label text-sm font-medium hidden text-white">
-              {t("logout.button", { defaultValue: "Log Out" })}
-            </span>
-          </button>
-
-          {/* User avatar */}
+          {/* Accessible account menu — avatar-only on tablet, full identity on desktop. */}
           {user && (
-            <div
-              className="flex items-center justify-center lg:justify-start gap-2.5 px-2 lg:px-3 py-2 rounded-xl"
-              style={{ background: "oklch(0.18 0.06 260)" }}
-            >
-              <div
-                className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-xs"
-                style={{
-                  background: "oklch(0.80 0.18 80)",
-                  color: "oklch(0.15 0.06 260)",
-                }}
-              >
-                {(user.name || user.email || "U")[0].toUpperCase()}
-              </div>
-              <div className="app-sidebar-label flex-1 min-w-0 hidden">
-                <p className="text-xs font-semibold text-white truncate">
-                  {user.name || "User"}
-                </p>
-                <p
-                  className="text-xs truncate"
-                  style={{ color: "oklch(0.55 0.04 260)" }}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  data-testid="sidebar-account-menu-trigger"
+                  aria-label={t("profileMenu.open", { defaultValue: "Open account menu" })}
+                  className="flex w-full items-center justify-center lg:justify-start gap-2.5 px-2 lg:px-3 py-2 rounded-xl text-left transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
+                  style={{ background: "oklch(0.18 0.06 260)" }}
                 >
-                  {user.email}
-                </p>
-              </div>
-            </div>
+                  <div
+                    className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-xs"
+                    style={{
+                      background: "oklch(0.80 0.18 80)",
+                      color: "oklch(0.15 0.06 260)",
+                    }}
+                  >
+                    {(user.name || user.email || "U")[0].toUpperCase()}
+                  </div>
+                  <div className="app-sidebar-label flex-1 min-w-0 hidden">
+                    <p className="text-xs font-semibold text-white truncate">
+                      {user.name || "User"}
+                    </p>
+                    <p className="text-xs truncate" style={{ color: "oklch(0.55 0.04 260)" }}>
+                      {user.email}
+                    </p>
+                  </div>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="right"
+                align="end"
+                sideOffset={10}
+                className="w-64 border-white/15 bg-[#08172b] p-2 text-white shadow-2xl"
+              >
+                <DropdownMenuLabel className="px-3 py-2 font-normal">
+                  <span className="block text-[11px] font-semibold uppercase tracking-wide text-white/50">
+                    {t("profileMenu.signedInAs", { defaultValue: "Signed in as" })}
+                  </span>
+                  <span className="mt-1 block truncate text-sm font-bold text-white">{user.name || "User"}</span>
+                  <span className="block truncate text-xs text-white/60">{user.email}</span>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-white/15" />
+                <DropdownMenuItem
+                  data-testid="sidebar-account-details"
+                  onSelect={() => {
+                    buttonPressHaptic();
+                    navigate("/settings");
+                  }}
+                  className="min-h-11 cursor-pointer gap-3 rounded-lg text-sm font-semibold focus:bg-white/10 focus:text-white"
+                >
+                  <UserRound size={18} className="rr-text-gold" />
+                  {t("profileMenu.accountDetails", { defaultValue: "Account details" })}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  data-testid="sidebar-logout"
+                  disabled={authLoading}
+                  onSelect={() => {
+                    buttonPressHaptic();
+                    void logout().then(() => navigate("/"));
+                  }}
+                  className="min-h-11 cursor-pointer gap-3 rounded-lg text-sm font-semibold text-white focus:bg-white/10 focus:text-white disabled:cursor-wait"
+                >
+                  <LogOut size={18} className="text-white" />
+                  {t("logout.button", { defaultValue: "Log Out" })}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
       </aside>

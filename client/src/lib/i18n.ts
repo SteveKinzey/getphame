@@ -169,7 +169,7 @@ i18n
     defaultNS: "landing",
     fallbackNS: "translation",
     backend: {
-      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame9",
+      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame10",
     },
     interpolation: {
       escapeValue: false,

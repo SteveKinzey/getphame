@@ -1,6 +1,14 @@
 export const GOOGLE_SIGN_IN_PENDING_KEY = "getphame:google-sign-in-pending";
 export const GOOGLE_SIGN_IN_TOAST_ID = "getphame-google-sign-in";
 
+const GOOGLE_AUTH_ERROR_TRANSLATION_KEYS: Record<string, string> = {
+  google_denied: "authFeedback.errors.googleDenied",
+  google_failed: "authFeedback.errors.googleFailed",
+  google_missing_code: "authFeedback.errors.googleMissingCode",
+  google_state_mismatch: "authFeedback.errors.googleStateMismatch",
+  google_no_id: "authFeedback.errors.googleNoId",
+};
+
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
   denied: "Sign-in was cancelled. Please try again.",
   google_denied: "Google sign-in was cancelled.",
@@ -24,6 +32,18 @@ const AUTH_ERROR_MESSAGES: Record<string, string> = {
 
 export function getAuthErrorMessage(code: string): string {
   return AUTH_ERROR_MESSAGES[code] ?? "Sign-in failed. Please try again or contact support.";
+}
+
+export function getLocalizedAuthErrorMessage(
+  code: string,
+  translate: (key: string, options: { defaultValue: string }) => unknown,
+): string {
+  const fallback = getAuthErrorMessage(code);
+  const translationKey = GOOGLE_AUTH_ERROR_TRANSLATION_KEYS[code];
+
+  return translationKey
+    ? String(translate(translationKey, { defaultValue: fallback }))
+    : fallback;
 }
 
 export function rememberGoogleSignInPending(): void {

@@ -1808,6 +1808,26 @@
     "renewsOn": "Rinnovo il {{date}}",
     "accessUntil": "Accesso fino al {{date}}"
   },
+  "authFeedback": {
+    "openingGoogle": "Apertura dell’accesso con Google…",
+    "connectingGoogle": "Connessione a Google…",
+    "continueWithGoogle": "Continua con Google",
+    "googleOpenFailed": "Impossibile aprire l’accesso con Google. Riprova.",
+    "googleSuccess": "Accesso con Google riuscito. Benvenuto su Get Phame.",
+    "errors": {
+      "googleDenied": "L’accesso con Google è stato annullato.",
+      "googleFailed": "Accesso con Google non riuscito. Riprova.",
+      "googleMissingCode": "Google non ha restituito le informazioni necessarie per accedere. Riprova.",
+      "googleStateMismatch": "Il controllo di sicurezza dell’accesso con Google non è riuscito. Riprova.",
+      "googleNoId": "Non è stato possibile verificare il tuo account Google. Riprova."
+    }
+  },
+  "profileMenu": {
+    "account": "Account",
+    "accountDetails": "Dettagli account",
+    "open": "Apri menu account",
+    "signedInAs": "Accesso effettuato come"
+  },
   "account": {
     "administrator": "Amministratore",
     "administratorAccount": "Account amministratore",

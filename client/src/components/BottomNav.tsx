@@ -4,7 +4,7 @@
 //             hover scale + gold glow on icon container, label colour lift
 
 import { useLocation } from 'wouter';
-import { Home, Send, BarChart2, Settings, Moon, Sun, ShieldCheck, MoreHorizontal, LogOut } from 'lucide-react';
+import { Home, Send, BarChart2, Settings, Moon, Sun, ShieldCheck, UserRound, LogOut } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { useHaptics } from '@/hooks/useHaptics';
@@ -13,6 +13,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -106,15 +107,16 @@ export default function BottomNav() {
           <DropdownMenuTrigger asChild>
             <button
               type="button"
+              data-testid="mobile-account-menu-trigger"
               className="flex flex-col items-center justify-center py-3 gap-1 group"
               style={{ minHeight: '60px' }}
-              aria-label={t('nav.more', { defaultValue: 'More' })}
+              aria-label={t('profileMenu.open', { defaultValue: 'Open account menu' })}
             >
               <div
                 className="flex items-center justify-center rounded-full transition-all duration-200 ease-out bg-transparent group-hover:scale-110 group-active:scale-95"
                 style={{ width: '40px', height: '32px' }}
               >
-                <MoreHorizontal
+                <UserRound
                   size={22}
                   strokeWidth={1.8}
                   className="transition-all duration-200 group-hover:drop-shadow-[0_0_6px_oklch(0.80_0.18_80/0.5)]"
@@ -129,7 +131,7 @@ export default function BottomNav() {
                   fontSize: '12px',
                 }}
               >
-                {t('nav.more', { defaultValue: 'More' })}
+                {t('profileMenu.account', { defaultValue: 'Account' })}
               </span>
             </button>
           </DropdownMenuTrigger>
@@ -139,6 +141,30 @@ export default function BottomNav() {
             sideOffset={8}
             className="w-56 border-white/15 bg-[#08172b] p-2 text-white shadow-2xl"
           >
+            {user && (
+              <>
+                <DropdownMenuLabel className="px-3 py-2 font-normal">
+                  <span className="block text-[11px] font-semibold uppercase tracking-wide text-white/50">
+                    {t('profileMenu.signedInAs', { defaultValue: 'Signed in as' })}
+                  </span>
+                  <span className="mt-1 block truncate text-sm font-bold text-white">{user.name || 'User'}</span>
+                  <span className="block truncate text-xs text-white/60">{user.email}</span>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-white/15" />
+                <DropdownMenuItem
+                  data-testid="mobile-account-details"
+                  onSelect={() => {
+                    buttonPressHaptic();
+                    navigate('/settings');
+                  }}
+                  className="min-h-12 cursor-pointer gap-3 rounded-lg text-sm font-semibold focus:bg-white/10 focus:text-white"
+                >
+                  <UserRound size={18} className="rr-text-gold" />
+                  {t('profileMenu.accountDetails', { defaultValue: 'Account details' })}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-white/15" />
+              </>
+            )}
             <DropdownMenuItem
               onSelect={() => {
                 buttonPressHaptic();

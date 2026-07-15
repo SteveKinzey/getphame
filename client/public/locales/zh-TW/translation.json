@@ -935,6 +935,26 @@
     "renewsOn": "將於 {{date}} 續訂",
     "accessUntil": "可使用至 {{date}}"
   },
+  "authFeedback": {
+    "openingGoogle": "正在開啟 Google 登入…",
+    "connectingGoogle": "正在連線至 Google…",
+    "continueWithGoogle": "使用 Google 繼續",
+    "googleOpenFailed": "無法開啟 Google 登入。請再試一次。",
+    "googleSuccess": "Google 登入成功。歡迎使用 Get Phame。",
+    "errors": {
+      "googleDenied": "已取消 Google 登入。",
+      "googleFailed": "Google 登入失敗。請再試一次。",
+      "googleMissingCode": "Google 未傳回登入所需的資訊。請再試一次。",
+      "googleStateMismatch": "Google 登入安全檢查失敗。請再試一次。",
+      "googleNoId": "Google 登入無法驗證您的帳戶。請再試一次。"
+    }
+  },
+  "profileMenu": {
+    "account": "帳戶",
+    "accountDetails": "帳戶詳細資料",
+    "open": "開啟帳戶選單",
+    "signedInAs": "登入身分"
+  },
   "account": {
     "administrator": "管理員",
     "administratorAccount": "管理員帳戶",

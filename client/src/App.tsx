@@ -25,10 +25,11 @@ import { handoffGuideNavigation } from "./lib/onboardingFlow";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
 import { useHapticEvents } from "./hooks/useHapticEvents";
+import { useTranslation } from "react-i18next";
 import {
   GOOGLE_SIGN_IN_TOAST_ID,
   clearGoogleSignInPending,
-  getAuthErrorMessage,
+  getLocalizedAuthErrorMessage,
   hasGoogleSignInPending,
 } from "./lib/authFeedback";
 
@@ -118,6 +119,7 @@ function PageTransition({ children }: { children: React.ReactNode }) {
 }
 
 function AppShell() {
+  const { t } = useTranslation("translation");
   const { user, loading, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
   const userId = user?.id == null ? null : String(user.id);
@@ -155,20 +157,20 @@ function AppShell() {
     const authError = params.get('auth_error');
     if (authError) {
       clearGoogleSignInPending();
-      toast.error(getAuthErrorMessage(authError), { id: GOOGLE_SIGN_IN_TOAST_ID });
+      toast.error(getLocalizedAuthErrorMessage(authError, t), { id: GOOGLE_SIGN_IN_TOAST_ID });
       const cleanUrl = window.location.pathname;
       window.history.replaceState({}, '', cleanUrl);
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     if (loading || !user || !hasGoogleSignInPending()) return;
 
     clearGoogleSignInPending();
-    toast.success("Google sign-in successful. Welcome to Get Phame.", {
+    toast.success(t("authFeedback.googleSuccess", { defaultValue: "Google sign-in successful. Welcome to Get Phame." }), {
       id: GOOGLE_SIGN_IN_TOAST_ID,
     });
-  }, [loading, user]);
+  }, [loading, t, user]);
 
   useEffect(() => {
     if (loading || !user || window.location.pathname !== "/onboarding") return;

@@ -10,10 +10,11 @@ import React, { useState, useEffect, useCallback } from "react";
 import { flushSync } from "react-dom";
 import { isStagingSocialLoginHost } from "@/lib/socialLoginAvailability";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 import {
   GOOGLE_SIGN_IN_TOAST_ID,
   clearGoogleSignInPending,
-  getAuthErrorMessage,
+  getLocalizedAuthErrorMessage,
   rememberGoogleSignInPending,
 } from "@/lib/authFeedback";
 
@@ -112,6 +113,7 @@ const OrDivider = () => (
 // ---------------------------------------------------------------------------
 
 export default function Login() {
+  const { t } = useTranslation("translation");
   const socialLoginEnabled = isStagingSocialLoginHost(window.location.hostname);
   const [googleEnabled, setGoogleEnabled] = useState<boolean | null>(null);
 
@@ -140,14 +142,14 @@ export default function Login() {
     const params = new URLSearchParams(window.location.search);
     const authError = params.get("auth_error");
     if (authError) {
-      const message = getAuthErrorMessage(authError);
+      const message = getLocalizedAuthErrorMessage(authError, t);
       clearGoogleSignInPending();
       setFormError(message);
       toast.error(message, { id: GOOGLE_SIGN_IN_TOAST_ID });
       // Clean the URL
       window.history.replaceState({}, "", window.location.pathname);
     }
-  }, []);
+  }, [t]);
 
   const handleGoogleSignIn = useCallback(() => {
     if (isGoogleSubmitting) return;
@@ -157,7 +159,9 @@ export default function Login() {
       setIsGoogleSubmitting(true);
     });
     rememberGoogleSignInPending();
-    toast.loading("Opening Google sign-in…", { id: GOOGLE_SIGN_IN_TOAST_ID });
+    toast.loading(t("authFeedback.openingGoogle", { defaultValue: "Opening Google sign-in…" }), {
+      id: GOOGLE_SIGN_IN_TOAST_ID,
+    });
 
     try {
       window.setTimeout(() => {
@@ -166,11 +170,11 @@ export default function Login() {
     } catch {
       clearGoogleSignInPending();
       setIsGoogleSubmitting(false);
-      toast.error("Google sign-in could not be opened. Please try again.", {
+      toast.error(t("authFeedback.googleOpenFailed", { defaultValue: "Google sign-in could not be opened. Please try again." }), {
         id: GOOGLE_SIGN_IN_TOAST_ID,
       });
     }
-  }, [isGoogleSubmitting]);
+  }, [isGoogleSubmitting, t]);
 
   const handleMagicLinkSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -245,7 +249,9 @@ export default function Login() {
                   className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-50 active:bg-gray-100 disabled:cursor-wait disabled:bg-gray-100 disabled:text-gray-500 text-gray-800 font-semibold text-sm transition-[background-color,color,transform] duration-150 shadow-sm active:scale-[0.98]"
                 >
                   {isGoogleSubmitting ? <Spinner /> : <GoogleIcon />}
-                  {isGoogleSubmitting ? "Connecting to Google…" : "Continue with Google"}
+                  {isGoogleSubmitting
+                    ? t("authFeedback.connectingGoogle", { defaultValue: "Connecting to Google…" })
+                    : t("authFeedback.continueWithGoogle", { defaultValue: "Continue with Google" })}
                 </button>
               )}
 

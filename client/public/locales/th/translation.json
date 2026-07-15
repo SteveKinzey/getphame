@@ -946,6 +946,26 @@
     "renewsOn": "ต่ออายุวันที่ {{date}}",
     "accessUntil": "ใช้งานได้ถึง {{date}}"
   },
+  "authFeedback": {
+    "openingGoogle": "กำลังเปิดการลงชื่อเข้าใช้ด้วย Google…",
+    "connectingGoogle": "กำลังเชื่อมต่อกับ Google…",
+    "continueWithGoogle": "ดำเนินการต่อด้วย Google",
+    "googleOpenFailed": "ไม่สามารถเปิดการลงชื่อเข้าใช้ด้วย Google ได้ โปรดลองอีกครั้ง",
+    "googleSuccess": "ลงชื่อเข้าใช้ด้วย Google สำเร็จ ยินดีต้อนรับสู่ Get Phame",
+    "errors": {
+      "googleDenied": "ยกเลิกการลงชื่อเข้าใช้ด้วย Google แล้ว",
+      "googleFailed": "การลงชื่อเข้าใช้ด้วย Google ล้มเหลว โปรดลองอีกครั้ง",
+      "googleMissingCode": "Google ไม่ได้ส่งข้อมูลที่จำเป็นสำหรับการลงชื่อเข้าใช้ โปรดลองอีกครั้ง",
+      "googleStateMismatch": "การตรวจสอบความปลอดภัยของการลงชื่อเข้าใช้ด้วย Google ล้มเหลว โปรดลองอีกครั้ง",
+      "googleNoId": "ไม่สามารถยืนยันบัญชี Google ของคุณได้ โปรดลองอีกครั้ง"
+    }
+  },
+  "profileMenu": {
+    "account": "บัญชี",
+    "accountDetails": "รายละเอียดบัญชี",
+    "open": "เปิดเมนูบัญชี",
+    "signedInAs": "ลงชื่อเข้าใช้ในชื่อ"
+  },
   "account": {
     "administrator": "ผู้ดูแลระบบ",
     "administratorAccount": "บัญชีผู้ดูแลระบบ",

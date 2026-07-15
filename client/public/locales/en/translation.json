@@ -945,6 +945,26 @@
     "renewsOn": "Renews on {{date}}",
     "accessUntil": "Access until {{date}}"
   },
+  "authFeedback": {
+    "openingGoogle": "Opening Google sign-in…",
+    "connectingGoogle": "Connecting to Google…",
+    "continueWithGoogle": "Continue with Google",
+    "googleOpenFailed": "Google sign-in could not be opened. Please try again.",
+    "googleSuccess": "Google sign-in successful. Welcome to Get Phame.",
+    "errors": {
+      "googleDenied": "Google sign-in was cancelled.",
+      "googleFailed": "Google sign-in failed. Please try again.",
+      "googleMissingCode": "Google did not return the information needed to sign you in. Please try again.",
+      "googleStateMismatch": "Google sign-in security check failed. Please try again.",
+      "googleNoId": "Google sign-in could not verify your account. Please try again."
+    }
+  },
+  "profileMenu": {
+    "account": "Account",
+    "accountDetails": "Account details",
+    "open": "Open account menu",
+    "signedInAs": "Signed in as"
+  },
   "account": {
     "administrator": "Administrator",
     "administratorAccount": "Administrator account",

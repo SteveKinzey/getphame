@@ -1419,6 +1419,26 @@
     "q6": "接受哪些支付方式？",
     "a6": "通过 Stripe 接受所有主要信用卡和借记卡。泰国用户也可以通过 PromptPay 付款——点击主要结账按钮下方的 PromptPay 选项。"
   },
+  "authFeedback": {
+    "openingGoogle": "正在打开 Google 登录…",
+    "connectingGoogle": "正在连接 Google…",
+    "continueWithGoogle": "使用 Google 继续",
+    "googleOpenFailed": "无法打开 Google 登录。请重试。",
+    "googleSuccess": "Google 登录成功。欢迎使用 Get Phame。",
+    "errors": {
+      "googleDenied": "已取消 Google 登录。",
+      "googleFailed": "Google 登录失败。请重试。",
+      "googleMissingCode": "Google 未返回登录所需的信息。请重试。",
+      "googleStateMismatch": "Google 登录安全检查失败。请重试。",
+      "googleNoId": "Google 登录无法验证您的账户。请重试。"
+    }
+  },
+  "profileMenu": {
+    "account": "账户",
+    "accountDetails": "账户详情",
+    "open": "打开账户菜单",
+    "signedInAs": "当前登录账户"
+  },
   "account": {
     "renewsOn": "将于 {{date}} 续订",
     "accessUntil": "可使用至 {{date}}"
