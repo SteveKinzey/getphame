@@ -1,6 +1,6 @@
 // Get Phame Service Worker v5 — Fixed cross-origin fetch handling
 // Cache version bump forces old caches to be cleared on update
-const CACHE_NAME = 'getphame-v5';
+const CACHE_NAME = 'getphame-v6';
 
 // Pre-cache all locale files at install so language switching is instant
 // and works completely offline after the app is installed on the device.
@@ -8,6 +8,9 @@ const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/apple-touch-icon.png',
+  '/icons/icon-192.png',
+  '/icons/icon-512.png',
   // All 6 language locale files — cached at install time
   '/locales/en/translation.json',
   '/locales/th/translation.json',

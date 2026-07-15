@@ -6,6 +6,10 @@
   "id": "getphame-pwa",
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui", "browser"],
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
+  "handle_links": "preferred",
   "background_color": "#0F1F4B",
   "theme_color": "#0F1F4B",
   "orientation": "portrait-primary",

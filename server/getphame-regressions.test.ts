@@ -43,6 +43,55 @@ describe("Get Phame regression contracts", () => {
     }
   });
 
+  it("publishes complete social-share and mobile PWA launch contracts", () => {
+    const html = readProjectFile("../client/index.html");
+    const manifest = JSON.parse(readProjectFile("../client/public/manifest.json")) as {
+      name: string;
+      short_name: string;
+      start_url: string;
+      scope: string;
+      display: string;
+      background_color: string;
+      theme_color: string;
+      icons: Array<{ sizes: string; purpose: string }>;
+      launch_handler: { client_mode: string[] };
+    };
+    const serviceWorker = readProjectFile("../client/public/sw.js");
+    const installPrompt = readProjectFile("../client/src/components/PWAInstallPrompt.tsx");
+    const app = readProjectFile("../client/src/App.tsx");
+
+    expect(html).toContain('content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover"');
+    expect(html).toContain('<meta name="apple-mobile-web-app-title" content="Get Phame"');
+    expect(html).toContain('property="og:image" content="https://assets.getphame.app/getphame-og-image.png?v=3"');
+    expect(html).toContain('name="twitter:image" content="https://assets.getphame.app/getphame-og-image.png?v=3"');
+    expect(html).toContain('property="og:image:type" content="image/png"');
+    expect(html.match(/rel="apple-touch-startup-image"/g)).toHaveLength(30);
+    expect(html).toContain("launch-iphone-390x844@3x-portrait.png");
+    expect(html).toContain("launch-ipad-1024x1366@2x-landscape.png");
+
+    expect(manifest.name).toContain("Get Phame");
+    expect(manifest.short_name).toBe("Get Phame");
+    expect(manifest.start_url).toBe("/?source=pwa");
+    expect(manifest.scope).toBe("/");
+    expect(manifest.display).toBe("standalone");
+    expect(manifest.background_color).toBe("#0F1F4B");
+    expect(manifest.theme_color).toBe("#0F1F4B");
+    expect(manifest.icons.some((icon) => icon.sizes === "192x192" && icon.purpose === "any")).toBe(true);
+    expect(manifest.icons.some((icon) => icon.sizes === "512x512" && icon.purpose === "maskable")).toBe(true);
+    expect(manifest.launch_handler.client_mode).toContain("navigate-existing");
+
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v6'");
+    expect(serviceWorker).toContain("self.addEventListener('install'");
+    expect(serviceWorker).toContain("self.addEventListener('fetch'");
+    expect(serviceWorker).toContain("return self.clients.claim()");
+    expect(installPrompt).toContain('window.addEventListener("beforeinstallprompt"');
+    expect(installPrompt).toContain('window.addEventListener("appinstalled"');
+    expect(installPrompt).toContain("Install Get Phame");
+    expect(installPrompt).toContain("Get Phame will appear on your home screen");
+    expect(app).toMatch(/<AppShell \/>[\s\S]*?<PWAInstallPrompt \/>/);
+    expect(app.match(/<PWAInstallPrompt \/>/g)).toHaveLength(1);
+  });
+
   it("uses the official mark alone at constrained authenticated widths and restores the full lockup when space permits", () => {
     const appLayout = readProjectFile("../client/src/components/AppLayout.tsx");
     const home = readProjectFile("../client/src/pages/Home.tsx");

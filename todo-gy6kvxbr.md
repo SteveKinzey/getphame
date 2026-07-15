@@ -272,3 +272,11 @@
 - [x] Update browser favicon, Apple touch icon, PWA manifest icons, and applicable metadata to use the approved artwork.
 - [x] Add focused branding regressions and run TypeScript, complete Vitest, and production build validation.
 - [x] Verify the updated logo and favicon behavior on phone and desktop, then publish the validated release checkpoint.
+
+- [x] Audit current Open Graph, Twitter/X card, manifest, service-worker, iOS launch-image, and Android installability configuration.
+- [x] Create deployment-safe social-share artwork using the approved supplied P-star mark and live-designed Get Phame wordmark treatment.
+- [x] Create responsive branded PWA launch assets for supported iPhone and iPad viewport families without altering the approved logo mark.
+- [x] Update Open Graph, Twitter/X card, structured metadata, iOS startup-image links, theme colors, and PWA launch behavior.
+- [x] Add focused regressions for social metadata, launch assets, manifest completeness, service-worker scope, and installability requirements.
+- [x] Validate Add to Home Screen readiness with iPhone and Android mobile emulation, production asset checks, TypeScript, full Vitest, and production build.
+- [x] Publish the validated social-share and PWA launch release checkpoint.

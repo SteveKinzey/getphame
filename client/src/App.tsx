@@ -336,7 +336,6 @@ function AppShell() {
 
       {/* BottomNav — mobile only (hidden on md+) */}
       <BottomNav />
-      <PWAInstallPrompt />
     </>
   );
 }
@@ -348,6 +347,7 @@ function App() {
         <TooltipProvider>
           <Toaster position="top-center" richColors />
           <AppShell />
+          <PWAInstallPrompt />
         </TooltipProvider>
       </ThemeProvider>
     </ErrorBoundary>
