@@ -57,7 +57,7 @@ import {
 import { getDb } from "./db";
 import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
-import { eq, like, or, inArray, desc, isNotNull, isNull, and, sql } from "drizzle-orm";
+import { eq, like, or, inArray, desc, isNotNull, isNull, and, sql, gte, lte } from "drizzle-orm";
 import {
   listSavedContacts,
   createSavedContact,
@@ -2236,6 +2236,26 @@ export const appRouter = router({
       return { summary, totals };
     }),
 
+    /** Failing SMTP credentials with account context for immediate admin action. */
+    failingSmtpUsers: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      return db
+        .select({
+          userId: users.id,
+          userName: users.name,
+          userEmail: users.email,
+          host: smtpCredentials.host,
+          smtpUser: smtpCredentials.user,
+          lastHealthError: smtpCredentials.lastHealthError,
+          lastHealthCheck: smtpCredentials.lastHealthCheck,
+        })
+        .from(smtpCredentials)
+        .innerJoin(users, eq(smtpCredentials.userId, users.id))
+        .where(eq(smtpCredentials.lastHealthStatus, "fail"))
+        .orderBy(desc(smtpCredentials.lastHealthCheck));
+    }),
+
     /** Trigger SMTP health check on demand (admin only) */
     runHealthCheck: protectedProcedure.mutation(async ({ ctx }) => {
       if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
@@ -2394,16 +2414,46 @@ export const appRouter = router({
 
     /** Durable, newest-first administrator SMTP removal history. */
     listSmtpAuditLogs: adminProcedure
-      .input(z.object({ limit: z.number().int().min(1).max(100).default(25) }))
+      .input(z.object({
+        limit: z.number().int().min(1).max(500).default(100),
+        dateFrom: z.number().int().nonnegative().optional(),
+        dateTo: z.number().int().nonnegative().optional(),
+        adminId: z.number().int().positive().optional(),
+        outcome: z.enum(["all", "removed"]).default("all"),
+      }).refine(
+        (value) => value.dateFrom === undefined || value.dateTo === undefined || value.dateFrom <= value.dateTo,
+        { message: "The audit start date must be before the end date.", path: ["dateFrom"] }
+      ))
       .query(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const clauses = [
+          input.dateFrom === undefined ? undefined : gte(smtpAdminAuditLogs.occurredAt, input.dateFrom),
+          input.dateTo === undefined ? undefined : lte(smtpAdminAuditLogs.occurredAt, input.dateTo),
+          input.adminId === undefined ? undefined : eq(smtpAdminAuditLogs.actorUserId, input.adminId),
+          input.outcome === "all" ? undefined : eq(smtpAdminAuditLogs.outcome, input.outcome),
+        ].filter((clause): clause is NonNullable<typeof clause> => clause !== undefined);
         return db
           .select()
           .from(smtpAdminAuditLogs)
+          .where(clauses.length ? and(...clauses) : undefined)
           .orderBy(desc(smtpAdminAuditLogs.occurredAt))
           .limit(input.limit);
       }),
+
+    /** Distinct administrators represented in the durable SMTP audit trail. */
+    listSmtpAuditActors: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      return db
+        .selectDistinct({
+          id: smtpAdminAuditLogs.actorUserId,
+          name: smtpAdminAuditLogs.actorName,
+          email: smtpAdminAuditLogs.actorEmail,
+        })
+        .from(smtpAdminAuditLogs)
+        .orderBy(smtpAdminAuditLogs.actorName, smtpAdminAuditLogs.actorEmail);
+    }),
 
     setUserRole: adminProcedure
       .input(z.object({ userId: z.number().int().positive(), role: z.enum(["user", "admin"]) }))

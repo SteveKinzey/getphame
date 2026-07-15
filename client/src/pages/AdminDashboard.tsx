@@ -23,6 +23,7 @@ import {
   DollarSign,
   Gift,
   KeyRound,
+  AlertTriangle,
 } from "lucide-react";
 
 import { useDebounce } from "use-debounce";
@@ -40,6 +41,11 @@ export default function AdminDashboard() {
   const { data: upsellStats } = trpc.admin.upsellStats.useQuery(undefined, {
     enabled: !!user,
     refetchInterval: 60_000,
+  });
+
+  const { data: failingSmtpUsers, isLoading: failingSmtpLoading } = trpc.admin.failingSmtpUsers.useQuery(undefined, {
+    enabled: user?.role === "admin",
+    refetchInterval: 30_000,
   });
 
   // Pre-fill search from ?search= URL param (e.g., deep-link from /admin/churn)
@@ -173,6 +179,68 @@ export default function AdminDashboard() {
                 </div>
               );
             })()}
+
+            {/* Immediate SMTP remediation widget */}
+            <section
+              data-testid="failing-smtp-widget"
+              className={`rounded-2xl border-2 p-4 shadow-sm ${
+                failingSmtpUsers?.length
+                  ? "border-red-300 bg-red-50"
+                  : "border-emerald-200 bg-emerald-50"
+              }`}
+              aria-labelledby="failing-smtp-title"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex min-w-0 items-start gap-3">
+                  <div className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${failingSmtpUsers?.length ? "bg-red-700 text-white" : "bg-emerald-700 text-white"}`}>
+                    <AlertTriangle size={22} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className={`text-xs font-black uppercase tracking-[0.14em] ${failingSmtpUsers?.length ? "text-red-700" : "text-emerald-800"}`}>
+                      SMTP credential health
+                    </p>
+                    <h2 id="failing-smtp-title" className="mt-0.5 text-xl font-black rr-text-navy">
+                      {failingSmtpLoading
+                        ? "Checking failures…"
+                        : failingSmtpUsers?.length
+                          ? `${failingSmtpUsers.length} failing SMTP ${failingSmtpUsers.length === 1 ? "credential" : "credentials"}`
+                          : "No failing SMTP credentials"}
+                    </h2>
+                    <p className="mt-1 text-sm font-semibold rr-text-navy-muted">
+                      {failingSmtpUsers?.length
+                        ? "These accounts cannot currently send review requests. Re-test or remove the stored credentials."
+                        : "All checked SMTP connections are currently healthy."}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {failingSmtpUsers && failingSmtpUsers.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  {failingSmtpUsers.slice(0, 4).map((credential) => (
+                    <div key={credential.userId} className="rounded-xl bg-white/80 p-3">
+                      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+                        <p className="truncate text-sm font-black rr-text-navy">{credential.userName || credential.userEmail || `User #${credential.userId}`}</p>
+                        <p className="truncate text-xs font-bold text-red-700">{credential.host}</p>
+                      </div>
+                      <p className="mt-1 truncate text-xs font-semibold rr-text-navy-muted">{credential.userEmail || credential.smtpUser}</p>
+                      {credential.lastHealthError && <p className="mt-1 line-clamp-2 text-xs font-bold text-red-700">{credential.lastHealthError}</p>}
+                    </div>
+                  ))}
+                  {failingSmtpUsers.length > 4 && (
+                    <p className="text-xs font-black text-red-700">+{failingSmtpUsers.length - 4} more failing connections</p>
+                  )}
+                </div>
+              )}
+
+              <button
+                type="button"
+                onClick={() => navigate("/admin/users?smtpStatus=unverified")}
+                className={`mt-4 inline-flex min-h-11 w-full items-center justify-center rounded-xl px-4 text-sm font-black text-white transition active:scale-[0.97] sm:w-auto ${failingSmtpUsers?.length ? "bg-red-700" : "rr-bg-navy"}`}
+              >
+                Review SMTP accounts →
+              </button>
+            </section>
 
             {/* Top KPI row */}
             <div className="grid grid-cols-2 gap-3">

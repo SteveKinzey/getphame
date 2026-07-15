@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { useLocation } from "wouter";
+import { useEffect, useMemo, useState } from "react";
+import { useLocation, useSearch } from "wouter";
 import { useDebounce } from "use-debounce";
-import { AlertTriangle, ArrowDown, ArrowLeft, ChevronLeft, ChevronRight, ClipboardList, Crown, Filter, Loader2, MailCheck, MailWarning, Merge, RefreshCw, Search, ShieldCheck, Trash2, Unplug, Users } from "lucide-react";
+import { AlertTriangle, ArrowDown, ArrowLeft, ChevronLeft, ChevronRight, ClipboardList, Crown, Download, Filter, Loader2, MailCheck, MailWarning, Merge, RefreshCw, Search, ShieldCheck, Trash2, Unplug, Users } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -21,14 +21,52 @@ export function matchesTypedEmail(confirmation: string, email: string | null | u
 }
 
 export type SmtpStatusFilter = "all" | "verified" | "unverified" | "unconnected";
+export type SmtpAuditOutcomeFilter = "all" | "removed";
+
+export function buildSmtpAuditCsv(entries: Array<{
+  occurredAt: number;
+  outcome: string;
+  action: string;
+  actorUserId: number;
+  actorName: string | null;
+  actorEmail: string | null;
+  targetUserId: number;
+  targetName: string | null;
+  targetEmail: string | null;
+  smtpUser: string;
+}>) {
+  const escape = (value: string | number | null) => `"${String(value ?? "").replaceAll('"', '""')}"`;
+  const header = ["Date", "Outcome", "Action", "Administrator ID", "Administrator", "Administrator Email", "Target User ID", "Target User", "Target Email", "SMTP User"];
+  const rows = entries.map((entry) => [
+    new Date(entry.occurredAt).toISOString(),
+    entry.outcome,
+    entry.action,
+    entry.actorUserId,
+    entry.actorName,
+    entry.actorEmail,
+    entry.targetUserId,
+    entry.targetName,
+    entry.targetEmail,
+    entry.smtpUser,
+  ]);
+  return [header, ...rows].map((row) => row.map(escape).join(",")).join("\r\n");
+}
 
 export default function AdminUsersPage() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [, navigate] = useLocation();
+  const searchString = useSearch();
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 300);
-  const [smtpStatus, setSmtpStatus] = useState<SmtpStatusFilter>("all");
+  const [smtpStatus, setSmtpStatus] = useState<SmtpStatusFilter>(() => {
+    const requested = new URLSearchParams(searchString).get("smtpStatus");
+    return requested === "verified" || requested === "unverified" || requested === "unconnected" ? requested : "all";
+  });
+  const [auditDateFrom, setAuditDateFrom] = useState("");
+  const [auditDateTo, setAuditDateTo] = useState("");
+  const [auditAdminId, setAuditAdminId] = useState("all");
+  const [auditOutcome, setAuditOutcome] = useState<SmtpAuditOutcomeFilter>("all");
   const [page, setPage] = useState(1);
   const pageSize = 25;
   const utils = trpc.useUtils();
@@ -43,10 +81,20 @@ export default function AdminUsersPage() {
     { query: debouncedSearch, smtpStatus, page, pageSize },
     { enabled: user?.role === "admin" }
   );
+  const auditQueryInput = useMemo(() => ({
+    limit: 500,
+    dateFrom: auditDateFrom ? new Date(`${auditDateFrom}T00:00:00.000`).getTime() : undefined,
+    dateTo: auditDateTo ? new Date(`${auditDateTo}T23:59:59.999`).getTime() : undefined,
+    adminId: auditAdminId === "all" ? undefined : Number(auditAdminId),
+    outcome: auditOutcome,
+  }), [auditAdminId, auditDateFrom, auditDateTo, auditOutcome]);
   const smtpAuditLogs = trpc.admin.listSmtpAuditLogs.useQuery(
-    { limit: 25 },
+    auditQueryInput,
     { enabled: user?.role === "admin" }
   );
+  const smtpAuditActors = trpc.admin.listSmtpAuditActors.useQuery(undefined, {
+    enabled: user?.role === "admin",
+  });
   type DirectoryAccount = NonNullable<typeof directory.data>["users"][number];
 
   const [deleteAccount, setDeleteAccount] = useState<DirectoryAccount | null>(null);
@@ -122,6 +170,23 @@ export default function AdminUsersPage() {
     },
     onError: (error) => toast.error(error.message),
   });
+
+  const exportAuditCsv = () => {
+    const entries = smtpAuditLogs.data ?? [];
+    if (!entries.length) {
+      toast.error(t("adminUsers.smtpAuditNoExportRows", { defaultValue: "No audit records match the current filters." }));
+      return;
+    }
+    const blob = new Blob([buildSmtpAuditCsv(entries)], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `getphame-smtp-removal-audit-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
 
   if (!user || user.role !== "admin") return null;
 
@@ -328,13 +393,85 @@ export default function AdminUsersPage() {
         )}
 
         <section className="mt-7 rounded-2xl bg-white p-4 shadow-sm" aria-labelledby="smtp-audit-title">
-          <div className="flex items-start gap-3 border-b border-slate-100 pb-4">
+          <div className="flex flex-col gap-3 border-b border-slate-100 pb-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="flex items-start gap-3">
             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl rr-bg-navy rr-text-gold"><ClipboardList size={19} /></div>
             <div>
               <h2 id="smtp-audit-title" className="text-lg font-black rr-text-navy">{t("adminUsers.smtpAuditTitle", { defaultValue: "SMTP removal audit log" })}</h2>
               <p className="text-sm font-semibold rr-text-navy-muted">{t("adminUsers.smtpAuditSubtitle", { defaultValue: "A durable record of who permanently removed user SMTP credentials and when." })}</p>
             </div>
+            </div>
+            <button
+              type="button"
+              data-testid="smtp-audit-export"
+              disabled={!smtpAuditLogs.data?.length}
+              onClick={exportAuditCsv}
+              className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45 rr-bg-gold rr-text-navy"
+            >
+              <Download size={16} /> {t("adminUsers.smtpAuditExport", { defaultValue: "Export filtered CSV" })}
+            </button>
           </div>
+
+          <div className="mt-4 grid gap-3 rounded-2xl bg-slate-50 p-3 sm:grid-cols-2 lg:grid-cols-4" data-testid="smtp-audit-filters">
+            <label className="text-xs font-black uppercase tracking-wide rr-text-navy-muted">
+              {t("adminUsers.smtpAuditFrom", { defaultValue: "From date" })}
+              <input
+                type="date"
+                value={auditDateFrom}
+                max={auditDateTo || undefined}
+                onChange={(event) => setAuditDateFrom(event.target.value)}
+                className="mt-1 min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold normal-case tracking-normal rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
+              />
+            </label>
+            <label className="text-xs font-black uppercase tracking-wide rr-text-navy-muted">
+              {t("adminUsers.smtpAuditTo", { defaultValue: "To date" })}
+              <input
+                type="date"
+                value={auditDateTo}
+                min={auditDateFrom || undefined}
+                onChange={(event) => setAuditDateTo(event.target.value)}
+                className="mt-1 min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold normal-case tracking-normal rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
+              />
+            </label>
+            <label className="text-xs font-black uppercase tracking-wide rr-text-navy-muted">
+              {t("adminUsers.smtpAuditAdministrator", { defaultValue: "Administrator" })}
+              <select
+                value={auditAdminId}
+                onChange={(event) => setAuditAdminId(event.target.value)}
+                className="mt-1 min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold normal-case tracking-normal rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
+              >
+                <option value="all">{t("adminUsers.smtpAuditAllAdministrators", { defaultValue: "All administrators" })}</option>
+                {smtpAuditActors.data?.map((actor) => (
+                  <option key={actor.id} value={String(actor.id)}>{actor.name || actor.email || `Admin #${actor.id}`}</option>
+                ))}
+              </select>
+            </label>
+            <label className="text-xs font-black uppercase tracking-wide rr-text-navy-muted">
+              {t("adminUsers.smtpAuditOutcome", { defaultValue: "Outcome" })}
+              <select
+                value={auditOutcome}
+                onChange={(event) => setAuditOutcome(event.target.value as SmtpAuditOutcomeFilter)}
+                className="mt-1 min-h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold normal-case tracking-normal rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
+              >
+                <option value="all">{t("adminUsers.smtpAuditAllOutcomes", { defaultValue: "All outcomes" })}</option>
+                <option value="removed">{t("adminUsers.smtpAuditOutcomeRemoved", { defaultValue: "Removed" })}</option>
+              </select>
+            </label>
+          </div>
+          {(auditDateFrom || auditDateTo || auditAdminId !== "all" || auditOutcome !== "all") && (
+            <button
+              type="button"
+              onClick={() => {
+                setAuditDateFrom("");
+                setAuditDateTo("");
+                setAuditAdminId("all");
+                setAuditOutcome("all");
+              }}
+              className="mt-3 text-sm font-black rr-text-navy underline decoration-amber-400 decoration-2 underline-offset-4"
+            >
+              {t("adminUsers.smtpAuditClearFilters", { defaultValue: "Clear audit filters" })}
+            </button>
+          )}
 
           {smtpAuditLogs.isLoading ? (
             <div className="flex justify-center py-10"><Loader2 className="animate-spin rr-text-navy" size={26} /></div>
