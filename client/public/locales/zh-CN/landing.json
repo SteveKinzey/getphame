@@ -95,9 +95,10 @@
     },
     "hero": {
       "freeToStart": "免费开始 — 无需信用卡",
+      "categoryLabel": "面向本地商家的评价邀请邮件软件",
       "headlinePart1": "获取更多五星好评",
       "headlinePart2": "无需尴尬索要",
-      "description": "通过你自己的邮箱发送个性化评论请求。客户看到的是发自你的邮件——而不是通用发件人。",
+      "description": "Get Phame 是面向本地商家的评价邀请邮件软件。您可以添加客户，通过您连接的电子邮件账户发送个性化邀请，跟踪打开和点击情况，并将客户引导至您选择的评价平台。",
       "ctaVariantA": "免费开始 — 发送 10 条请求",
       "ctaVariantB": "免费获取首10条评论",
       "howItWorks": "查看如何运作",

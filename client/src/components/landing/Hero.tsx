@@ -78,7 +78,7 @@ export default function Hero() {
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6">
                 <Star size={14} className="text-primary fill-primary" />
                 <span className="text-sm font-medium text-primary">
-                  {t("landing.hero.freeToStart", { defaultValue: "Free to start — No credit card required" })}
+                  {t("landing.hero.categoryLabel", { defaultValue: "Review-request email software for local businesses" })}
                 </span>
               </div>
             </motion.div>
@@ -95,10 +95,22 @@ export default function Hero() {
               {...fadeUp(0.32)}
               className="text-lg md:text-xl text-white leading-relaxed mb-8 max-w-lg font-medium"
             >
-              {t("landing.hero.description", { defaultValue: "Get Phame helps local businesses send personalized review requests from their own email account. Customers see each request come from the business they already know — not a generic sender." })}
+              {t("landing.hero.description", { defaultValue: "Get Phame is review-request email software for local businesses. Add customers, send personalized requests from an email account you connect, track opens and clicks, and direct customers to the review platform you choose." })}
             </motion.p>
 
-            <motion.div {...fadeUp(0.44)} className="flex flex-col sm:flex-row gap-4 mb-8">
+            <motion.div
+              {...fadeUp(0.38)}
+              aria-label={t("landing.purpose.title", { defaultValue: "What Get Phame does" })}
+              className="mb-8 flex max-w-xl flex-col items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.07] px-4 py-3 text-center text-xs font-semibold text-slate-100 sm:flex-row sm:gap-3 sm:text-left"
+            >
+              <span>{t("landing.purpose.steps.customers", { defaultValue: "Add the customers you choose" })}</span>
+              <ArrowRight className="h-3.5 w-3.5 shrink-0 rotate-90 text-primary sm:rotate-0" aria-hidden="true" />
+              <span>{t("landing.purpose.steps.send", { defaultValue: "Send a personal request from your email" })}</span>
+              <ArrowRight className="h-3.5 w-3.5 shrink-0 rotate-90 text-primary sm:rotate-0" aria-hidden="true" />
+              <span>{t("landing.purpose.steps.reviews", { defaultValue: "Direct customers to your selected review platform" })}</span>
+            </motion.div>
+
+            <motion.div {...fadeUp(0.5)} className="flex flex-col sm:flex-row gap-4 mb-8">
               <a
                 href={loginUrl}
                 className="inline-flex items-center justify-center gap-2 px-7 py-4 bg-primary text-primary-foreground font-bold text-base rounded-xl hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_30px_oklch(0.78_0.15_75/0.3)]"

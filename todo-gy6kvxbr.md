@@ -235,9 +235,9 @@
 - [x] Add a responsive CSV export button to the administration hub for revenue, churn, and reminder-performance analytics.
 - [x] Add a responsive 24-hour system-health trend chart for SMTP health and authentication diagnostics with clear empty and unavailable states.
 - [x] Add visual red alert states in the administration hub when SMTP health or reminder performance falls below documented acceptable thresholds.
-- [ ] Create and validate a reusable admin-operations analytics skill through the approved skill-creator workflow.
+- [x] Create and validate a reusable admin-operations analytics skill through the approved skill-creator workflow.
 - [x] Add focused schema, scheduler, export, authorization, trend, threshold, chart, and responsive UI regressions.
 - [ ] Apply and verify migrations, run TypeScript, the full Vitest suite, security gate, and production build, then validate phone and desktop layouts.
 - [ ] Publish the validated release and deliver the reusable skill package.
-- [ ] Update the public Get Phame homepage so Google OAuth reviewers can immediately understand the app’s purpose, user workflow, and Google-related functionality from plain-language visible content.
+- [x] Update the public Get Phame homepage so Google OAuth reviewers can immediately understand the app’s purpose, user workflow, and Google-related functionality from plain-language visible content.
 - [ ] Add focused homepage compliance coverage and verify the final public custom-domain content on phone and desktop before requesting Google branding re-verification.

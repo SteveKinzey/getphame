@@ -95,9 +95,10 @@
     },
     "hero": {
       "freeToStart": "Gratis para comenzar — No se requiere tarjeta",
+      "categoryLabel": "Software de solicitudes de reseñas por correo para negocios locales",
       "headlinePart1": "Consigue más reseñas de 5 estrellas",
       "headlinePart2": "sin el pedido incómodo",
-      "description": "Envía solicitudes de reseña personalizadas desde tu propia cuenta de correo. Tus clientes ven que viene de ti — no de un remitente genérico.",
+      "description": "Get Phame es un software de solicitudes de reseñas por correo para negocios locales. Añade clientes, envía solicitudes personalizadas desde una cuenta de correo que conectes, controla aperturas y clics, y dirige a los clientes a la plataforma de reseñas que elijas.",
       "ctaVariantA": "Comenzar gratis — Enviar 10 solicitudes",
       "ctaVariantB": "Obtén tus primeras 10 reseñas gratis",
       "howItWorks": "Ver cómo funciona",

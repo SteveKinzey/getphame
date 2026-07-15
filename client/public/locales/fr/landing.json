@@ -95,9 +95,10 @@
     },
     "hero": {
       "freeToStart": "Démarrage gratuit — aucune carte de crédit requise",
+      "categoryLabel": "Logiciel d’e-mails de demande d’avis pour les entreprises locales",
       "headlinePart1": "Obtenez plus d'avis 5 étoiles",
       "headlinePart2": "sans la demande gênante",
-      "description": "Envoyez des demandes d'avis personnalisées depuis votre propre compte email. Vos clients voient que ça vient de vous — pas d'un expéditeur générique.",
+      "description": "Get Phame est un logiciel de demande d’avis par e-mail destiné aux entreprises locales. Ajoutez des clients, envoyez des demandes personnalisées depuis un compte e-mail connecté, suivez les ouvertures et les clics, puis dirigez les clients vers la plateforme d’avis de votre choix.",
       "ctaVariantA": "Commencer gratuitement — Envoyer 10 demandes",
       "ctaVariantB": "Obtenez vos 10 premiers avis gratuits",
       "howItWorks": "Voir comment ça marche",

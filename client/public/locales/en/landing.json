@@ -95,9 +95,10 @@
     },
     "hero": {
       "freeToStart": "Free to start — No credit card required",
+      "categoryLabel": "Review-request email software for local businesses",
       "headlinePart1": "Get more 5-star reviews",
       "headlinePart2": "without the awkward ask",
-      "description": "Get Phame helps local businesses send personalized review requests from their own email account. Customers see each request come from the business they already know — not a generic sender.",
+      "description": "Get Phame is review-request email software for local businesses. Add customers, send personalized requests from an email account you connect, track opens and clicks, and direct customers to the review platform you choose.",
       "ctaVariantA": "Start Free — Send 10 Requests",
       "ctaVariantB": "Get Your First 10 Reviews Free",
       "howItWorks": "See how it works",
