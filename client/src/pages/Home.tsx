@@ -14,7 +14,7 @@ import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 import { getEffectivePlan } from "@shared/plans";
-import BrandLockup from "@/components/BrandLockup";
+import LandingBrandLink from "@/components/LandingBrandLink";
 import HomeInstallBanner from "@/components/HomeInstallBanner";
 import { getPwaPlatform, shareGetPhame } from "@/lib/pwaShare";
 
@@ -457,16 +457,15 @@ export default function HomePage() {
             data-testid="home-header-layout"
           >
             <div className="home-brand-full">
-              <BrandLockup
+              <LandingBrandLink
                 className="justify-start"
                 iconClassName="w-7 h-7"
                 textClassName="text-xl"
                 tone="split"
-                iconHref="/landing"
               />
             </div>
             <div className="home-brand-mark shrink-0">
-              <BrandLockup showText={false} iconClassName="w-7 h-7" tone="split" iconHref="/landing" />
+              <LandingBrandLink showText={false} iconClassName="w-7 h-7" tone="split" />
             </div>
             <div
               className="flex items-center justify-end gap-2 flex-wrap sm:flex-nowrap"

@@ -339,6 +339,7 @@ describe("Koalendar admin recovery and authenticated landing navigation", () => 
   const pageSource = readFileSync(new URL("../client/src/pages/AdminKoalendarRetry.tsx", import.meta.url), "utf8");
   const appSource = readFileSync(new URL("../client/src/App.tsx", import.meta.url), "utf8");
   const brandSource = readFileSync(new URL("../client/src/components/BrandLockup.tsx", import.meta.url), "utf8");
+  const landingBrandLinkSource = readFileSync(new URL("../client/src/components/LandingBrandLink.tsx", import.meta.url), "utf8");
   const smtpSource = readFileSync(new URL("./smtp.ts", import.meta.url), "utf8");
 
   it("keeps failure listing and manual retry behind admin procedures", () => {
@@ -355,9 +356,10 @@ describe("Koalendar admin recovery and authenticated landing navigation", () => 
 
   it("gives authenticated P icons an accessible public landing destination", () => {
     expect(appSource).toContain('if (path === "/landing")');
-    expect(brandSource).toContain('iconHref?: string');
-    expect(brandSource).toContain('href={iconHref}');
-    expect(brandSource).toContain('View the Get Phame landing page');
+    expect(brandSource).toContain('https://assets.getphame.app/getphame-logo.svg');
+    expect(brandSource).not.toContain('iconHref');
+    expect(landingBrandLinkSource).toContain('href="/landing"');
+    expect(landingBrandLinkSource).toContain('View the Get Phame landing page');
   });
 
   it("keeps Workspace avatars outside application SMTP sender fields", () => {

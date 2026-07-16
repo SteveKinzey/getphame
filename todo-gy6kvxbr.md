@@ -380,3 +380,12 @@
 - [x] Publish the validated Koalendar retry dashboard through an auto-published checkpoint and verify production behavior safely.
 - [x] Create and validate a reusable skill covering the admin Koalendar retry dashboard, authenticated P-icon landing-page navigation, sender-avatar boundaries, validation, and release delivery.
 - [x] Deliver the published checkpoint, implementation summary, and reusable skill package.
+
+- [x] Identify the exact project checkpoint from approximately 12–16 hours before the reported landing-page regression.
+- [x] Compare the complete historical and current landing-page file sets, assets, layout, logo, responsive behavior, language control, and footer.
+- [x] Restore the entire historical landing page exactly without redesigning, reinterpreting, or modifying its established content and structure.
+- [x] Restore the exact historical shared logo implementation used by that landing page and authenticated navigation.
+- [x] Preserve the Koalendar admin recovery dashboard, retry APIs, and unrelated newer application functionality during the landing restoration.
+- [x] Add or update regression coverage that locks the restored landing structure, logo asset, major sections, responsive navigation, language control, and footer.
+- [x] Run focused and full tests, TypeScript, production build/security gates, runtime-log review, and desktop plus phone visual comparison.
+- [x] Publish the validated corrective checkpoint and report the exact restored version.

@@ -21,7 +21,7 @@ import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import BrandLockup from "@/components/BrandLockup";
+import LandingBrandLink from "@/components/LandingBrandLink";
 import {
   getOnboardingGuideSeenKey,
   shouldAutoShowOnboardingGuide,
@@ -60,12 +60,11 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
       <div
         className="rounded-2xl p-5 text-center rr-bg-navy-mid"
       >
-        <BrandLockup
+        <LandingBrandLink
           className="justify-center mb-4"
           iconClassName="w-16 h-16"
           textClassName="text-xl"
           tone="split"
-          iconHref="/landing"
         />
         <p className="text-white font-black text-xl leading-snug" style={{ fontFamily: "'Poppins', sans-serif" }}>
           {t("onboardingGuide.welcome.heroText")}
@@ -1074,7 +1073,7 @@ export default function OnboardingGuide({ open, onClose, onNavigate, stepsDone }
   const STEPS: Step[] = [
     {
       id: 0,
-      icon: <BrandLockup showText={false} iconClassName="w-6 h-6" iconHref="/landing" />,
+      icon: <LandingBrandLink showText={false} iconClassName="w-6 h-6" />,
       title: t("onboardingGuide.steps.welcome.title"),
       subtitle: t("onboardingGuide.steps.welcome.subtitle"),
       content: <StepWelcome onNavigate={handleNavigate} stepsDone={stepsDone} />,

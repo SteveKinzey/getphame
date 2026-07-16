@@ -3,7 +3,6 @@ import { useEffect } from "react";
 interface SEOHeadProps {
   title: string;
   description: string;
-  keywords?: string[];
   canonical?: string;
   noindex?: boolean;
 }
@@ -13,9 +12,7 @@ interface SEOHeadProps {
  * In a static SPA, this helps with social sharing previews
  * when crawlers render JS and with browser tab titles.
  */
-export default function SEOHead({ title, description, keywords = [], canonical, noindex }: SEOHeadProps) {
-  const keywordsContent = keywords.join(", ");
-
+export default function SEOHead({ title, description, canonical, noindex }: SEOHeadProps) {
   useEffect(() => {
     // Set title
     document.title = title;
@@ -29,19 +26,6 @@ export default function SEOHead({ title, description, keywords = [], canonical, 
       metaDesc.setAttribute("name", "description");
       metaDesc.setAttribute("content", description);
       document.head.appendChild(metaDesc);
-    }
-
-    // Set focused page keywords for SEO tools that still audit this metadata.
-    if (keywordsContent) {
-      let metaKeywords = document.querySelector('meta[name="keywords"]');
-      if (metaKeywords) {
-        metaKeywords.setAttribute("content", keywordsContent);
-      } else {
-        metaKeywords = document.createElement("meta");
-        metaKeywords.setAttribute("name", "keywords");
-        metaKeywords.setAttribute("content", keywordsContent);
-        document.head.appendChild(metaKeywords);
-      }
     }
 
     // Set canonical
@@ -104,7 +88,7 @@ export default function SEOHead({ title, description, keywords = [], canonical, 
 
     setTwitter("twitter:title", title);
     setTwitter("twitter:description", description);
-  }, [title, description, keywordsContent, canonical, noindex]);
+  }, [title, description, canonical, noindex]);
 
   return null;
 }

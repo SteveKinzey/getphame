@@ -24,15 +24,8 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#0a1628] text-gray-100 overflow-x-hidden">
       <SEOHead
-        title="Get Phame | Automated Review Request Software for SMBs"
-        description="Get more Google reviews with personalized email requests, automated follow-ups, engagement tracking, and simple reputation management from Get Phame."
-        keywords={[
-          "review request software",
-          "Google review automation",
-          "reputation management",
-          "customer review emails",
-          "automated follow-ups",
-        ]}
+        title="Get Phame — Review Request Email Software for Local Businesses"
+        description="Get Phame is review-request email software for local businesses. Add customers, send personalized emails from an account you connect, track engagement, and guide customers to your selected review platform."
         canonical="https://getphame.app/"
       />
       <Navbar />

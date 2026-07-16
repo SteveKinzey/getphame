@@ -31,7 +31,7 @@ import {
   ExternalLink,
   Download,
 } from "lucide-react";
-import BrandLockup from "@/components/BrandLockup";
+import LandingBrandLink from "@/components/LandingBrandLink";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -780,12 +780,11 @@ function Step3Send({
 
   return (
     <div className="flex flex-col items-center gap-6 text-center py-4">
-      <BrandLockup
-        className="justify-center"
+      <LandingBrandLink
+        className="justify-center mb-4"
         iconClassName="w-16 h-16"
         textClassName="text-xl"
         tone="split"
-        iconHref="/landing"
       />
       <div>
         <h3

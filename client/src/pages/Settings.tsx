@@ -66,7 +66,7 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
 import LanguageFlyout from "@/components/LanguageFlyout";
-import BrandLockup from "@/components/BrandLockup";
+import LandingBrandLink from "@/components/LandingBrandLink";
 import { IntegrationGuide } from "@/components/IntegrationGuide";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
 import PlanSwitchDialog from "@/components/PlanSwitchDialog";
@@ -1064,7 +1064,7 @@ function SettingsSkeleton({ title }: { title: string }) {
     <div className="min-h-screen pb-40 rr-bg-cream-warm" aria-busy="true" aria-label="Loading settings">
       <div className="px-5 pt-12 pb-5 rr-bg-navy">
         <div className="flex items-center justify-between mb-4">
-          <BrandLockup iconClassName="w-8 h-8" textClassName="text-lg" iconHref="/landing" />
+          <LandingBrandLink iconClassName="w-8 h-8" textClassName="text-lg" />
           <LanguageFlyout />
         </div>
         <h1 className="text-2xl text-white rr-fw-black">{title}</h1>

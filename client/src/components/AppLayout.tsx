@@ -10,7 +10,7 @@ import { useHaptics } from "@/hooks/useHaptics";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { ReactNode } from "react";
-import BrandLockup from "@/components/BrandLockup";
+import LandingBrandLink from "@/components/LandingBrandLink";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
 import {
   DropdownMenu,
@@ -73,10 +73,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
           style={{ borderColor: "oklch(0.28 0.08 260)", minHeight: "64px" }}
         >
           <div className="flex justify-center lg:hidden">
-            <BrandLockup showText={false} iconClassName="w-8 h-8" iconHref="/landing" />
+            <LandingBrandLink showText={false} iconClassName="w-8 h-8" />
           </div>
           <div className="hidden lg:block">
-            <BrandLockup iconClassName="w-8 h-8" textClassName="text-lg" iconHref="/landing" />
+            <LandingBrandLink iconClassName="w-8 h-8" textClassName="text-lg" />
           </div>
         </div>
 

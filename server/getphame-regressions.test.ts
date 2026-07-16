@@ -13,10 +13,47 @@ describe("Get Phame regression contracts", () => {
 
     expect(navbar).toContain("<BrandLockup");
     expect(navbar).toContain("<LanguageFlyout");
-    expect(lockup).toContain("https://assets.getphame.app/getphame-logo-mark.webp");
+    expect(lockup).toContain("https://assets.getphame.app/getphame-logo.svg");
     expect(lockup).toContain("Get&nbsp;");
     expect(lockup).toContain(">Phame</span>");
     expect(lockup).not.toContain("phame-wordmark-transparent-clean.png");
+    expect(lockup).not.toContain("iconHref");
+  });
+
+  it("locks the restored public landing composition, metadata, language control, and footer", () => {
+    const landing = readProjectFile("../client/src/pages/LandingPage.tsx");
+    const navbar = readProjectFile("../client/src/components/landing/Navbar.tsx");
+    const footer = readProjectFile("../client/src/components/landing/Footer.tsx");
+    const html = readProjectFile("../client/index.html");
+
+    for (const section of [
+      "<Hero />",
+      "<AppPurpose />",
+      "<SocialProofBar />",
+      "<TrustBar />",
+      "<VideoDemo />",
+      "<Features />",
+      "<HowItWorks />",
+      "<ProductShowcase />",
+      "<Stats />",
+      "<Testimonials />",
+      "<Pricing />",
+      "<Comparison />",
+      "<FAQ />",
+      "<LeadCapture />",
+      "<FinalCTA />",
+      "<Footer />",
+    ]) {
+      expect(landing).toContain(section);
+    }
+
+    expect(landing).toContain("Get Phame — Review Request Email Software for Local Businesses");
+    expect(navbar).toContain("<LanguageFlyout");
+    expect(footer).toContain('href="/privacy-policy"');
+    expect(footer).toContain('href="/terms-of-service"');
+    expect(html).toContain("Get Phame — Earn It, Automatically.");
+    expect(html).toContain("Turn happy customers into 5-star reviews.");
+    expect(html).not.toContain('name="keywords"');
   });
 
   it("uses the supplied P-star artwork for browser, PWA, metadata, and in-app branding", () => {
@@ -258,9 +295,9 @@ describe("Get Phame regression contracts", () => {
     const guide = readProjectFile("../client/src/components/OnboardingGuide.tsx");
     const wizard = readProjectFile("../client/src/components/OnboardingWizard.tsx");
 
-    expect(guide).toContain("<BrandLockup");
-    expect(guide).toContain('id: 0,\n      icon: <BrandLockup showText={false}');
-    expect(wizard).toContain("<BrandLockup");
+    expect(guide).toContain("<LandingBrandLink");
+    expect(guide).toContain('id: 0,\n      icon: <LandingBrandLink showText={false}');
+    expect(wizard).toContain("<LandingBrandLink");
     expect(guide).not.toContain("app-icon-192.png");
     expect(wizard).not.toContain("app-icon-192.png");
   });
@@ -281,7 +318,7 @@ describe("Get Phame regression contracts", () => {
 
     expect(settings).toContain("function SettingsSkeleton");
     expect(settings).toContain("<LanguageFlyout");
-    expect(settings).toContain("<BrandLockup");
+    expect(settings).toContain("<LandingBrandLink");
     expect(settings).toContain("profileLoading");
   });
 
@@ -622,24 +659,15 @@ describe("Get Phame regression contracts", () => {
 
     const title = html.match(/<title>([^<]+)<\/title>/)?.[1] ?? "";
     const description = html.match(/<meta name="description" content="([^"]+)"/i)?.[1] ?? "";
-    const keywordsContent = html.match(/<meta name="keywords" content="([^"]+)"/i)?.[1] ?? "";
-    const keywords = keywordsContent.split(",").map((keyword) => keyword.trim()).filter(Boolean);
-
-    expect(title.length).toBeGreaterThanOrEqual(30);
-    expect(title.length).toBeLessThanOrEqual(60);
-    expect(description.length).toBeGreaterThanOrEqual(50);
-    expect(description.length).toBeLessThanOrEqual(160);
-    expect(keywords.length).toBeGreaterThanOrEqual(3);
-    expect(keywords.length).toBeLessThanOrEqual(8);
-    expect(new Set(keywords).size).toBe(keywords.length);
-
-    expect(landingPage).toContain(`title="${title}"`);
-    expect(landingPage).toContain(`description="${description}"`);
-    for (const keyword of keywords) expect(landingPage).toContain(`"${keyword}"`);
+    expect(title).toBe("Get Phame — Earn It, Automatically.");
+    expect(description).toBe("Turn happy customers into 5-star reviews. Send personalised review requests in seconds, automate follow-ups, and watch your reputation grow. Free to start.");
+    expect(landingPage).toContain('title="Get Phame — Review Request Email Software for Local Businesses"');
+    expect(landingPage).toContain('description="Get Phame is review-request email software for local businesses.');
+    expect(html).not.toContain('meta name="keywords"');
 
     expect(seoHead).toContain("document.title = title");
-    expect(seoHead).toContain("keywords.join");
-    expect(seoHead).toContain('meta[name="keywords"]');
+    expect(seoHead).not.toContain("keywords.join");
+    expect(seoHead).not.toContain('meta[name="keywords"]');
     expect(appLayout).not.toContain('alt=""');
     expect(appLayout).toContain('profile photo`');
     expect(appLayout).toContain('"Get Phame account profile"');
