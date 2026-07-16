@@ -2796,7 +2796,12 @@ export const appRouter = router({
       .input(z.object({ email: z.string().email() }))
       .mutation(async ({ input }) => {
         const db = await getDb();
-        if (!db) return { ok: true, sent: false };
+        if (!db) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "This is embarrassing, but our servers are so busy we cannot process your request at the moment. Please try again.",
+          });
+        }
         // Upsert — don't error if email already exists
         await db
           .insert(leads)
@@ -2814,7 +2819,14 @@ export const appRouter = router({
             .where(eq(leads.email, input.email));
         }
 
-        return { ok: true, sent };
+        if (!sent) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "This is embarrassing, but our servers are so busy we cannot process your request at the moment. Please try again.",
+          });
+        }
+
+        return { ok: true, sent: true };
       }),
   }),
 });
