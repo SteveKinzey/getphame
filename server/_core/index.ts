@@ -25,6 +25,7 @@ import { startSmtpWeeklyDigestScheduler } from "../smtpWeeklyDigest";
 import { startReEngagementScheduler } from "../reEngagementScheduler";
 import { startInactiveUserScheduler } from "../inactiveUserScheduler";
 import { startWooAutoImportScheduler } from "../wooImportScheduler";
+import { registerKoalendarRoutes, startKoalendarScheduler } from "../koalendar";
 import { registerSitemapRoutes } from "../sitemap";
 import { exchangeGmailCode, getGmailRedirectUri } from "../gmail";
 
@@ -457,6 +458,9 @@ async function startServer() {
   // Public REST API — API key authenticated (contacts import, etc.)
   registerPublicApiRoutes(app as any);
 
+  // Koalendar inbound booking lifecycle webhook — authenticated by an unguessable per-user URL token.
+  registerKoalendarRoutes(app);
+
   // One-click unsubscribe for re-engagement emails
   app.get("/api/reengagement/unsubscribe/:token", async (req, res) => {
     const { token } = req.params;
@@ -505,6 +509,7 @@ async function startServer() {
     startReEngagementScheduler();
     startInactiveUserScheduler();
     startWooAutoImportScheduler();
+    startKoalendarScheduler();
   });
 }
 

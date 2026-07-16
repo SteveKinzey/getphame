@@ -170,7 +170,15 @@ export async function setContactTags(userId: number, contactId: number, tags: st
  */
 export async function upsertApiContact(
   userId: number,
-  data: { name: string; email: string; phone?: string; notes?: string; tags?: string[] }
+  data: {
+    name: string;
+    email: string;
+    phone?: string;
+    notes?: string;
+    tags?: string[];
+    source?: "manual" | "woocommerce" | "stripe" | "koalendar";
+    externalId?: string;
+  }
 ): Promise<{ id: number; created: boolean }> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -203,8 +211,8 @@ export async function upsertApiContact(
     notes: data.notes ?? null,
     tags: data.tags ? JSON.stringify(data.tags) : null,
     totalSent: 0,
-    source: "manual",
-    externalId: null,
+    source: data.source ?? "manual",
+    externalId: data.externalId ?? null,
   }).returning({ id: savedContacts.id });
   return { id: result.id, created: true };
 }

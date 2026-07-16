@@ -37,6 +37,12 @@ import { checkSendRateLimit } from "./rateLimiter";
 import { createCheckoutSession, createPortalSession, createThbCheckoutSession } from "./stripe";
 import { sendLeadGuideEmail } from "./leadGuideEmail";
 import {
+  connectKoalendar,
+  disconnectKoalendar,
+  getKoalendarConnectionStatus,
+  rotateKoalendarWebhook,
+} from "./koalendar";
+import {
   getWooCredentials,
   upsertWooCredentials,
   syncWooOrders,
@@ -2640,6 +2646,22 @@ export const appRouter = router({
         return retryWebhookDelivery(cfg.id, ctx.user.id, cfg.url, cfg.secret ?? null, log.event ?? "contact.created", null);
       }),
   }),
+  /** Paid Koalendar booking-to-contact integration. */
+  koalendar: router({
+    status: paidProcedure.query(async ({ ctx }) => {
+      return getKoalendarConnectionStatus(ctx.user.id);
+    }),
+    connect: paidProcedure.mutation(async ({ ctx }) => {
+      return connectKoalendar(ctx.user.id);
+    }),
+    rotateWebhook: paidProcedure.mutation(async ({ ctx }) => {
+      return rotateKoalendarWebhook(ctx.user.id);
+    }),
+    disconnect: paidProcedure.mutation(async ({ ctx }) => {
+      return disconnectKoalendar(ctx.user.id);
+    }),
+  }),
+
   /** User notification preferences */
   notificationPrefs: router({
     get: protectedProcedure.query(async ({ ctx }) => {

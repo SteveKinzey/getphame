@@ -1,11 +1,11 @@
-import { bigint, boolean, integer, pgEnum, pgTable, serial, text, timestamp, varchar } from "drizzle-orm/pg-core";
+import { bigint, boolean, integer, pgEnum, pgTable, serial, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 export const roleEnum = pgEnum("role", ["user", "admin"]);
 export const tierEnum = pgEnum("tier", ["free", "pro", "annual", "lifetime"]);
 export const methodEnum = pgEnum("method", ["email", "sms", "both"]);
 export const requestStatusEnum = pgEnum("request_status", ["sent", "pending", "followed_up"]);
-export const contactSourceEnum = pgEnum("contact_source", ["manual", "woocommerce", "stripe"]);
+export const contactSourceEnum = pgEnum("contact_source", ["manual", "woocommerce", "stripe", "koalendar"]);
 export const reminderStatusEnum = pgEnum("reminder_status", ["pending", "sent", "cancelled"]);
 export const platformEnum = pgEnum("platform", ["google", "yelp", "tripadvisor", "bing", "facebook", "apple", "other"]);
 export const emailEventTypeEnum = pgEnum("email_event_type", ["open", "click"]);
@@ -406,6 +406,53 @@ export const apiImportEvents = pgTable("api_import_events", {
 });
 export type ApiImportEvent = typeof apiImportEvents.$inferSelect;
 export type InsertApiImportEvent = typeof apiImportEvents.$inferInsert;
+
+/**
+ * Koalendar connection — one unguessable webhook endpoint per paid Get Phame account.
+ * The raw token is intentionally stored because it must be shown again in Settings.
+ */
+export const koalendarConnections = pgTable("koalendar_connections", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull().unique(),
+  webhookToken: varchar("webhookToken", { length: 64 }).notNull().unique(),
+  enabled: boolean("enabled").notNull().default(true),
+  lastEventAt: bigint("lastEventAt", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+});
+export type KoalendarConnection = typeof koalendarConnections.$inferSelect;
+export type InsertKoalendarConnection = typeof koalendarConnections.$inferInsert;
+
+/**
+ * Koalendar booking queue — receives booking lifecycle events immediately and imports
+ * the invitee only after the latest scheduled end time has passed.
+ */
+export const koalendarBookings = pgTable("koalendar_bookings", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  connectionId: integer("connectionId").notNull(),
+  externalBookingId: varchar("externalBookingId", { length: 512 }).notNull(),
+  eventType: varchar("eventType", { length: 64 }).notNull(),
+  status: varchar("status", { length: 32 }).notNull().default("pending"),
+  inviteeName: varchar("inviteeName", { length: 255 }).notNull(),
+  inviteeEmail: varchar("inviteeEmail", { length: 320 }).notNull(),
+  bookingPageId: varchar("bookingPageId", { length: 128 }),
+  bookingPageName: varchar("bookingPageName", { length: 255 }),
+  startsAt: bigint("startsAt", { mode: "number" }).notNull(),
+  endsAt: bigint("endsAt", { mode: "number" }).notNull(),
+  canceledAt: bigint("canceledAt", { mode: "number" }),
+  importedAt: bigint("importedAt", { mode: "number" }),
+  contactId: integer("contactId"),
+  attempts: integer("attempts").notNull().default(0),
+  nextAttemptAt: bigint("nextAttemptAt", { mode: "number" }).notNull(),
+  lastError: text("lastError"),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+}, (table) => ({
+  userBookingUnique: uniqueIndex("koalendar_bookings_user_external_unique").on(table.userId, table.externalBookingId),
+}));
+export type KoalendarBooking = typeof koalendarBookings.$inferSelect;
+export type InsertKoalendarBooking = typeof koalendarBookings.$inferInsert;
 
 /**
  * Outbound webhook configurations — per-user webhook URLs fired on contact events.

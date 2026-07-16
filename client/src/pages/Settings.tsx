@@ -49,6 +49,7 @@ import {
   Gift,
   Users,
   TrendingUp,
+  CalendarDays,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
 import PlatformIcon from "@/components/PlatformIcon";
@@ -423,6 +424,231 @@ function DeleteAccountSection() {
           Delete Forever
         </button>
       </div>
+    </div>
+  );
+}
+
+// ── Koalendar Integration ───────────────────────────────────────────────────
+function KoalendarIntegrationCard({
+  profile,
+  isAdmin,
+}: {
+  profile: ProfileData | null | undefined;
+  isAdmin: boolean;
+}) {
+  const [, navigate] = useLocation();
+  const utils = trpc.useUtils();
+  const [copied, setCopied] = useState(false);
+  const tier = profile?.tier ?? "free";
+  const isPaid = isAdmin || ["pro", "annual", "lifetime"].includes(tier);
+  const { data: status, isLoading } = trpc.koalendar.status.useQuery(undefined, {
+    enabled: isPaid,
+    retry: false,
+  });
+
+  const connect = trpc.koalendar.connect.useMutation({
+    onSuccess: () => {
+      utils.koalendar.status.invalidate();
+      toast.success("Koalendar connection created. Add the webhook URL to each booking page.");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+  const rotateWebhook = trpc.koalendar.rotateWebhook.useMutation({
+    onSuccess: () => {
+      utils.koalendar.status.invalidate();
+      setCopied(false);
+      toast.success("Webhook URL replaced. Update every Koalendar booking page with the new URL.");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+  const disconnect = trpc.koalendar.disconnect.useMutation({
+    onSuccess: () => {
+      utils.koalendar.status.invalidate();
+      toast.success("Koalendar imports paused. Existing contacts were not changed.");
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const copyWebhook = async () => {
+    if (!status?.webhookUrl) return;
+    await navigator.clipboard.writeText(status.webhookUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+    toast.success("Koalendar webhook URL copied.");
+  };
+
+  const busy = connect.isPending || rotateWebhook.isPending || disconnect.isPending;
+
+  if (!isPaid) {
+    return (
+      <div className="bg-white rounded-2xl p-5 shadow-sm" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
+        <div className="flex items-start justify-between gap-3 mb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center rr-bg-navy">
+              <CalendarDays size={18} className="rr-text-gold" />
+            </div>
+            <div>
+              <h2 className="text-base font-black rr-text-navy">Koalendar Auto-Import</h2>
+              <p className="text-xs rr-text-navy-muted">Turn completed meetings into Get Phame contacts</p>
+            </div>
+          </div>
+          <span className="shrink-0 flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-black rr-bg-gold rr-text-navy">
+            <Crown size={11} /> PRO
+          </span>
+        </div>
+        <p className="text-sm mb-4 rr-text-navy-mid">
+          Paid subscribers can automatically import each non-canceled invitee after the meeting’s scheduled end time.
+        </p>
+        <button
+          onClick={() => navigate("/upgrade")}
+          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-gold rr-text-navy"
+        >
+          <Crown size={16} /> Upgrade to Connect Koalendar
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="bg-white rounded-2xl p-5 shadow-sm" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
+      <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="flex items-center gap-2">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center rr-bg-navy">
+            <CalendarDays size={18} className="rr-text-gold" />
+          </div>
+          <div>
+            <h2 className="text-base font-black rr-text-navy">Koalendar Auto-Import</h2>
+            <p className="text-xs rr-text-navy-muted">Import invitees after meetings end</p>
+          </div>
+        </div>
+        <span
+          className="shrink-0 flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-black"
+          style={status?.enabled
+            ? { background: "oklch(0.92 0.07 145)", color: "oklch(0.32 0.12 145)" }
+            : { background: "oklch(0.94 0.01 260)", color: "oklch(0.45 0.04 260)" }}
+        >
+          {status?.enabled ? <CheckCircle2 size={11} /> : <Clock size={11} />}
+          {status?.enabled ? "ACTIVE" : "NOT CONNECTED"}
+        </span>
+      </div>
+
+      {isLoading ? (
+        <div className="flex justify-center py-6"><Loader2 size={20} className="animate-spin rr-text-navy-muted" /></div>
+      ) : !status?.connected ? (
+        <div className="flex flex-col gap-3">
+          <p className="text-sm rr-text-navy-mid">
+            Get Phame will queue each booking, ignore cancellations, and create or update the contact after the scheduled end time.
+          </p>
+          <button
+            onClick={() => connect.mutate()}
+            disabled={busy}
+            className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 disabled:opacity-60 rr-bg-gold rr-text-navy"
+          >
+            {connect.isPending ? <Loader2 size={16} className="animate-spin" /> : <Link2 size={16} />}
+            Create Koalendar Connection
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-4">
+          <div className="rounded-xl p-3" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.03 260)" }}>
+            <p className="text-xs font-black uppercase tracking-wide mb-2 rr-text-navy-muted">Your private webhook URL</p>
+            <div className="flex items-center gap-2">
+              <code className="flex-1 min-w-0 truncate text-xs rr-text-navy">{status.webhookUrl}</code>
+              <button
+                onClick={copyWebhook}
+                className="shrink-0 flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-black rr-bg-navy rr-text-gold"
+              >
+                {copied ? <CheckCircle size={12} /> : <Copy size={12} />}
+                {copied ? "Copied" : "Copy"}
+              </button>
+            </div>
+          </div>
+
+          <div className="rounded-xl p-4" style={{ background: "oklch(0.98 0.025 80)", border: "1px solid oklch(0.90 0.08 80)" }}>
+            <p className="text-sm font-black mb-2 rr-text-navy">Add it to every Koalendar booking page</p>
+            <ol className="space-y-1.5 text-xs rr-text-navy-mid list-decimal pl-4">
+              <li>Open a booking page in Koalendar and choose <strong>Edit</strong>.</li>
+              <li>Open <strong>After booking</strong>, enable <strong>Webhook</strong>, and paste this URL.</li>
+              <li>Save, then repeat for every booking page that should feed Get Phame.</li>
+            </ol>
+            <p className="text-xs mt-3 font-bold rr-text-navy">Use the same URL on all of your booking pages.</p>
+          </div>
+
+          {status.lastEventAt && (
+            <p className="text-xs flex items-center gap-1.5 rr-text-navy-muted">
+              <RefreshCw size={11} /> Last Koalendar event received {new Date(status.lastEventAt).toLocaleString()}
+            </p>
+          )}
+
+          {status.recentBookings.length > 0 && (
+            <div>
+              <p className="text-xs font-black uppercase tracking-wide mb-2 rr-text-navy-muted">Recent meeting imports</p>
+              <div className="flex flex-col gap-2">
+                {status.recentBookings.slice(0, 5).map((booking) => {
+                  const statusStyles: Record<string, { label: string; bg: string; color: string }> = {
+                    pending: { label: "Waiting for meeting to end", bg: "oklch(0.96 0.04 80)", color: "oklch(0.42 0.10 80)" },
+                    processing: { label: "Importing", bg: "oklch(0.94 0.04 250)", color: "oklch(0.40 0.12 250)" },
+                    imported: { label: "Imported", bg: "oklch(0.92 0.07 145)", color: "oklch(0.32 0.12 145)" },
+                    canceled: { label: "Canceled — excluded", bg: "oklch(0.94 0.01 260)", color: "oklch(0.48 0.04 260)" },
+                    blocked: { label: "Paid plan required", bg: "oklch(0.96 0.04 30)", color: "oklch(0.46 0.15 30)" },
+                    failed: { label: "Needs attention", bg: "oklch(0.96 0.04 30)", color: "oklch(0.46 0.15 30)" },
+                  };
+                  const badge = statusStyles[booking.status] ?? statusStyles.pending;
+                  return (
+                    <div key={booking.id} className="flex items-center gap-3 rounded-xl px-3 py-2.5" style={{ border: "1px solid oklch(0.92 0.02 260)" }}>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-bold truncate rr-text-navy">{booking.inviteeName}</p>
+                        <p className="text-xs truncate rr-text-navy-muted">{booking.inviteeEmail}</p>
+                      </div>
+                      <span className="shrink-0 rounded-full px-2 py-1 text-xs font-bold" style={{ background: badge.bg, color: badge.color }}>
+                        {badge.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              onClick={() => {
+                if (window.confirm("Replace this webhook URL? You will need to update every Koalendar booking page.")) {
+                  rotateWebhook.mutate();
+                }
+              }}
+              disabled={busy}
+              className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold disabled:opacity-60 rr-text-navy-mid"
+              style={{ background: "oklch(0.94 0.01 260)" }}
+            >
+              <RotateCcw size={13} /> Replace URL
+            </button>
+            {status.enabled ? (
+              <button
+                onClick={() => {
+                  if (window.confirm("Pause all new Koalendar imports? Existing contacts will remain in Get Phame.")) {
+                    disconnect.mutate();
+                  }
+                }}
+                disabled={busy}
+                className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold disabled:opacity-50"
+                style={{ background: "oklch(0.97 0.03 30)", color: "oklch(0.46 0.15 30)" }}
+              >
+                <X size={13} /> Pause Imports
+              </button>
+            ) : (
+              <button
+                onClick={() => connect.mutate()}
+                disabled={busy}
+                className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-black disabled:opacity-60 rr-bg-gold rr-text-navy"
+              >
+                {connect.isPending ? <Loader2 size={13} className="animate-spin" /> : <RefreshCw size={13} />}
+                Resume Imports
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -2367,6 +2593,9 @@ export default function SettingsPage() {
 
         {/* ── Bulk Sender ──────────────────────────────────────────────────── */}
         <BulkSenderSection profile={profile} />
+
+        {/* ── Koalendar paid integration ───────────────────────────────────── */}
+        <KoalendarIntegrationCard profile={profile} isAdmin={user?.role === "admin"} />
 
         {/* ── WooCommerce ──────────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
