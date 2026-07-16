@@ -19,6 +19,8 @@ import { businessProfiles, stripeSubscriptions, users } from "../../drizzle/sche
 import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
 import { reminderHeartbeatHandler } from "../scheduledReminders";
+import { koalendarHeartbeatHandler } from "../koalendarHeartbeat";
+import { registerKoalendarRoutes } from "../koalendar";
 import { startSmtpWeeklyDigestScheduler } from "../smtpWeeklyDigest";
 import { startReEngagementScheduler } from "../reEngagementScheduler";
 import { startInactiveUserScheduler } from "../inactiveUserScheduler";
@@ -397,9 +399,11 @@ async function startServer() {
   registerEmailAuthRoutes(app);
   registerAppleAuthRoutes(app);
   registerMobileAuthRoutes(app);
+  registerKoalendarRoutes(app);
   app.post("/api/scheduled/auth-health", authHealthHandler);
   app.post("/api/scheduled/smtp-health", smtpHealthHandler);
   app.post("/api/scheduled/process-reminders", reminderHeartbeatHandler);
+  app.post("/api/scheduled/process-koalendar", koalendarHeartbeatHandler);
 
   // IP-based language detection — returns 'en' | 'th' | 'zh-TW' based on client IP
   // Note: Mainland China (CN) is excluded from zh-TW detection since YouTube is blocked there.

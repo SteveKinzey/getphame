@@ -337,3 +337,15 @@
 - [x] Add regression checks enforcing the exact title, description, keyword-count, and image-alt requirements.
 - [x] Run focused and full tests, TypeScript, production build, and mobile root-page visual verification.
 - [x] Publish the validated root-page SEO correction and report exact title, description, and keyword counts.
+
+- [x] Inspect GitHub PR #2 and merge commit 6a6a017d8240a95d680f7c6b1058860a2cf7fcfa, including its exact Koalendar file and migration diff.
+- [x] Review the current workspace scheduling, paid-entitlement, webhook, contact-deduplication, Settings, and database architecture before porting.
+- [x] Isolate and apply only the Koalendar feature diff without reverting or overwriting newer workspace changes.
+- [x] Add paid-subscriber-only per-user Koalendar webhook URL management without changing existing secrets or integrations.
+- [x] Store only invitee name, invitee email, and required scheduling/import state for Koalendar bookings.
+- [x] Exclude canceled bookings, update reschedules, defer imports until scheduled end time, and deduplicate contacts by normalized email.
+- [x] Retry transient Koalendar processing failures using the project’s supported scheduling infrastructure.
+- [x] Add the Koalendar Settings UI while preserving all existing Settings controls and localization behavior.
+- [x] Apply and verify the included Drizzle migration through the managed database workflow.
+- [x] Run TypeScript, focused Koalendar tests, the full Vitest suite, production security/build gates, and representative UI verification.
+- [x] Publish the validated Koalendar release to www.getphame.app through a new checkpoint and report the exact version.

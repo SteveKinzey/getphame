@@ -70,6 +70,7 @@ import BrandLockup from "@/components/BrandLockup";
 import { IntegrationGuide } from "@/components/IntegrationGuide";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
 import PlanSwitchDialog from "@/components/PlanSwitchDialog";
+import KoalendarSettingsCard from "@/components/KoalendarSettingsCard";
 import {
   DEFAULT_FOLLOW_UP_DELAY_DAYS,
   DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS,
@@ -3082,6 +3083,11 @@ export default function SettingsPage() {
             </div>
           )}
         </div>
+
+        {/* ── Koalendar ───────────────────────────────────────────────────── */}
+        <KoalendarSettingsCard
+          hasPaidAccess={user?.role === "admin" || ["pro", "annual", "lifetime"].includes(profile?.tier ?? "free")}
+        />
 
         {/* ── Tools ──────────────────────────────────────────────────────────────────────── */}
         <div className="rounded-2xl p-4 shadow-sm bg-white" style={{ border: "1px solid oklch(0.92 0.02 260)" }}>

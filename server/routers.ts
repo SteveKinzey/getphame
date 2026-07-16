@@ -57,7 +57,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads, koalendarBookings, koalendarConnections } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
 import { PWA_EVENT_NAMES, PWA_EVENT_SOURCE, summarizePwaEvents, toPwaEventPage } from "./pwaAnalytics";
 import { eq, like, or, inArray, desc, isNotNull, isNull, and, sql, gte, lte, count } from "drizzle-orm";
@@ -127,6 +127,7 @@ import { bulkSenderRouter } from "./bulkSender";
 import { authDiagnosticsRouter } from "./routers/authDiagnostics";
 import { combineAccountsAsAdmin, deleteAccountAsAdmin } from "./accountManagement";
 import { buildSmtpAuditCsv, buildSmtpAuditCsvFilename, buildSmtpAuditWhere } from "./smtpAdminAudit";
+import { connectKoalendar, disconnectKoalendar, getKoalendarConnectionStatus, rotateKoalendarWebhook } from "./koalendar";
 import crypto from "crypto";
 
 const smtpAuditFilterShape = {
@@ -200,6 +201,14 @@ function isValidAvatarSignature(data: Buffer, mimeType: (typeof avatarMimeTypes)
 export const appRouter = router({
   system: systemRouter,
   authDiagnostics: authDiagnosticsRouter,
+
+  /** Paid Koalendar booking-to-contact integration. */
+  koalendar: router({
+    status: paidProcedure.query(async ({ ctx }) => getKoalendarConnectionStatus(ctx.user.id)),
+    connect: paidProcedure.mutation(async ({ ctx }) => connectKoalendar(ctx.user.id)),
+    rotateWebhook: paidProcedure.mutation(async ({ ctx }) => rotateKoalendarWebhook(ctx.user.id)),
+    disconnect: paidProcedure.mutation(async ({ ctx }) => disconnectKoalendar(ctx.user.id)),
+  }),
 
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
@@ -2221,6 +2230,8 @@ export const appRouter = router({
       const uid = ctx.user.id;
       // Delete all user data in dependency order (children before parents)
       await db.delete(emailEvents).where(eq(emailEvents.userId, uid));
+      await db.delete(koalendarBookings).where(eq(koalendarBookings.userId, uid));
+      await db.delete(koalendarConnections).where(eq(koalendarConnections.userId, uid));
       await db.delete(followUpReminders).where(eq(followUpReminders.userId, uid));
       await db.delete(customerRequests).where(eq(customerRequests.userId, uid));
       await db.delete(savedContacts).where(eq(savedContacts.userId, uid));

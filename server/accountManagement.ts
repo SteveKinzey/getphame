@@ -16,6 +16,8 @@ import {
   leads,
   magicLinks,
   magicLinkTokens,
+  koalendarBookings,
+  koalendarConnections,
   notificationPrefs,
   pageEvents,
   referrals,
@@ -113,6 +115,8 @@ async function deleteOwnedData(tx: any, userId: number, email: string | null) {
   await tx.delete(webhookDeliveryLogs).where(eq(webhookDeliveryLogs.userId, userId));
   await tx.delete(apiImportEvents).where(eq(apiImportEvents.userId, userId));
   await tx.delete(emailEvents).where(eq(emailEvents.userId, userId));
+  await tx.delete(koalendarBookings).where(eq(koalendarBookings.userId, userId));
+  await tx.delete(koalendarConnections).where(eq(koalendarConnections.userId, userId));
   await tx.delete(followUpReminders).where(eq(followUpReminders.userId, userId));
   await tx.delete(clientReviews).where(eq(clientReviews.userId, userId));
   await tx.delete(customerRequests).where(eq(customerRequests.userId, userId));
@@ -222,6 +226,7 @@ export async function combineAccountsAsAdmin(actorId: number, sourceUserId: numb
     await assertNoSingletonConflict(tx, gmailTokens, sourceUserId, targetUserId, "Gmail connections");
     await resolveSmtpConflict(tx, sourceUserId, targetUserId);
     await assertNoSingletonConflict(tx, wooCredentials, sourceUserId, targetUserId, "WooCommerce connections");
+    await assertNoSingletonConflict(tx, koalendarConnections, sourceUserId, targetUserId, "Koalendar connections");
     await assertNoSingletonConflict(tx, bulkSenderCredentials, sourceUserId, targetUserId, "bulk-sender connections");
     await assertNoSingletonConflict(tx, stripeSubscriptions, sourceUserId, targetUserId, "active Stripe subscriptions");
 
@@ -266,12 +271,14 @@ export async function combineAccountsAsAdmin(actorId: number, sourceUserId: numb
     await tx.update(clientReviews).set({ userId: targetUserId }).where(eq(clientReviews.userId, sourceUserId));
     await tx.update(churnSurveys).set({ userId: targetUserId }).where(eq(churnSurveys.userId, sourceUserId));
     await tx.update(pageEvents).set({ userId: targetUserId }).where(eq(pageEvents.userId, sourceUserId));
+    await tx.update(koalendarBookings).set({ userId: targetUserId }).where(eq(koalendarBookings.userId, sourceUserId));
 
     // Move singleton records after conflict checks. Non-sensitive preference and
     // redemption duplicates keep the survivor's record.
     await tx.update(gmailTokens).set({ userId: targetUserId }).where(eq(gmailTokens.userId, sourceUserId));
     await tx.update(smtpCredentials).set({ userId: targetUserId }).where(eq(smtpCredentials.userId, sourceUserId));
     await tx.update(wooCredentials).set({ userId: targetUserId }).where(eq(wooCredentials.userId, sourceUserId));
+    await tx.update(koalendarConnections).set({ userId: targetUserId }).where(eq(koalendarConnections.userId, sourceUserId));
     await tx.update(bulkSenderCredentials).set({ userId: targetUserId }).where(eq(bulkSenderCredentials.userId, sourceUserId));
     await tx.update(stripeSubscriptions).set({ userId: targetUserId }).where(eq(stripeSubscriptions.userId, sourceUserId));
 
