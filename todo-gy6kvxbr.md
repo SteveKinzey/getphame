@@ -349,3 +349,16 @@
 - [x] Apply and verify the included Drizzle migration through the managed database workflow.
 - [x] Run TypeScript, focused Koalendar tests, the full Vitest suite, production security/build gates, and representative UI verification.
 - [x] Publish the validated Koalendar release to www.getphame.app through a new checkpoint and report the exact version.
+
+- [x] Audit the current Koalendar Settings mutation states, toast framework, production test-account options, and reusable release workflow.
+- [x] Add a disabled loading state with clear progress copy while creating or updating the Koalendar webhook URL.
+- [x] Add a success toast after the Koalendar webhook URL is saved or updated, without duplicating the requested behavior.
+- [x] Add focused UI regression coverage for Koalendar save/update loading and success feedback.
+- [x] Create a reusable skill for isolating a GitHub feature diff, reconciling newer WebDev architecture, applying migrations, configuring Heartbeat, validating, publishing, and smoke testing Koalendar.
+- [x] Validate the reusable Koalendar skill and deliver it as an installable skill package.
+- [x] Connect an isolated paid test account to its per-user Koalendar webhook without changing existing secrets or third-party integrations.
+- [x] Run a complete booking, reschedule, and cancel smoke test using identifiable disposable invitee data.
+- [x] Verify post-end import, reschedule update, cancellation exclusion, normalized-email deduplication, transient-retry behavior, and production Heartbeat execution.
+- [x] Remove or clearly document all smoke-test records and confirm no unrelated production data changed.
+- [x] Run focused Koalendar tests, the full Vitest suite, TypeScript, production security/build gates, and phone-sized Settings verification.
+- [x] Publish the validated Settings feedback release and report the checkpoint plus smoke-test outcome.

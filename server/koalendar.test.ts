@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { readFileSync } from "node:fs";
 
 const mocks = vi.hoisted(() => ({
   getDb: vi.fn(),
@@ -275,5 +276,21 @@ describe("Koalendar delayed contact import", () => {
       status: "blocked",
       lastError: "A paid Get Phame plan is required at import time.",
     });
+  });
+});
+
+describe("Koalendar Settings feedback", () => {
+  const source = readFileSync(new URL("../client/src/components/KoalendarSettingsCard.tsx", import.meta.url), "utf8");
+
+  it("shows an accessible loading state and success toast while saving the webhook URL", () => {
+    expect(source).toContain('aria-busy={connect.isPending}');
+    expect(source).toContain('connect.isPending ? "Saving webhook URL…" : "Connect Koalendar"');
+    expect(source).toContain('toast.success("Koalendar webhook URL saved successfully.")');
+  });
+
+  it("shows an accessible loading state and success toast while updating the webhook URL", () => {
+    expect(source).toContain('aria-busy={rotate.isPending}');
+    expect(source).toContain('rotate.isPending ? "Updating URL…" : "Rotate URL"');
+    expect(source).toContain('toast.success("Koalendar webhook URL updated successfully.")');
   });
 });

@@ -36,11 +36,11 @@ export default function KoalendarSettingsCard({ hasPaidAccess }: KoalendarSettin
 
   const refresh = () => utils.koalendar.status.invalidate();
   const connect = trpc.koalendar.connect.useMutation({
-    onSuccess: () => { refresh(); toast.success("Koalendar webhook created."); },
+    onSuccess: () => { void refresh(); toast.success("Koalendar webhook URL saved successfully."); },
     onError: (error) => toast.error(error.message),
   });
   const rotate = trpc.koalendar.rotateWebhook.useMutation({
-    onSuccess: () => { refresh(); toast.success("Koalendar webhook URL rotated."); },
+    onSuccess: () => { void refresh(); toast.success("Koalendar webhook URL updated successfully."); },
     onError: (error) => toast.error(error.message),
   });
   const disconnect = trpc.koalendar.disconnect.useMutation({
@@ -115,10 +115,11 @@ export default function KoalendarSettingsCard({ hasPaidAccess }: KoalendarSettin
             type="button"
             disabled={connect.isPending}
             onClick={() => connect.mutate()}
+            aria-busy={connect.isPending}
             className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-black rr-bg-navy text-white disabled:opacity-60 active:scale-[0.97] transition-transform"
           >
-            {connect.isPending ? <Loader2 size={15} className="animate-spin" /> : <CalendarDays size={15} />}
-            Connect Koalendar
+            {connect.isPending ? <Loader2 size={15} className="animate-spin" aria-hidden="true" /> : <CalendarDays size={15} aria-hidden="true" />}
+            <span>{connect.isPending ? "Saving webhook URL…" : "Connect Koalendar"}</span>
           </button>
         </div>
       ) : (
@@ -153,10 +154,11 @@ export default function KoalendarSettingsCard({ hasPaidAccess }: KoalendarSettin
                 type="button"
                 disabled={busy}
                 onClick={() => rotate.mutate()}
+                aria-busy={rotate.isPending}
                 className="flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-bold rr-text-navy rr-bg-surface disabled:opacity-60"
               >
-                {rotate.isPending ? <Loader2 size={13} className="animate-spin" /> : <RefreshCw size={13} />}
-                Rotate URL
+                {rotate.isPending ? <Loader2 size={13} className="animate-spin" aria-hidden="true" /> : <RefreshCw size={13} aria-hidden="true" />}
+                <span>{rotate.isPending ? "Updating URL…" : "Rotate URL"}</span>
               </button>
               <button
                 type="button"
