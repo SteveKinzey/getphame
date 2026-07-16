@@ -613,4 +613,35 @@ describe("Get Phame regression contracts", () => {
       expect(messages.eligibleText).toContain("{{deadline}}");
     }
   });
+
+  it("keeps root-page SEO metadata and image alternatives within the required audit limits", () => {
+    const html = readProjectFile("../client/index.html");
+    const landingPage = readProjectFile("../client/src/pages/LandingPage.tsx");
+    const seoHead = readProjectFile("../client/src/components/landing/SEOHead.tsx");
+    const appLayout = readProjectFile("../client/src/components/AppLayout.tsx");
+
+    const title = html.match(/<title>([^<]+)<\/title>/)?.[1] ?? "";
+    const description = html.match(/<meta name="description" content="([^"]+)"/i)?.[1] ?? "";
+    const keywordsContent = html.match(/<meta name="keywords" content="([^"]+)"/i)?.[1] ?? "";
+    const keywords = keywordsContent.split(",").map((keyword) => keyword.trim()).filter(Boolean);
+
+    expect(title.length).toBeGreaterThanOrEqual(30);
+    expect(title.length).toBeLessThanOrEqual(60);
+    expect(description.length).toBeGreaterThanOrEqual(50);
+    expect(description.length).toBeLessThanOrEqual(160);
+    expect(keywords.length).toBeGreaterThanOrEqual(3);
+    expect(keywords.length).toBeLessThanOrEqual(8);
+    expect(new Set(keywords).size).toBe(keywords.length);
+
+    expect(landingPage).toContain(`title="${title}"`);
+    expect(landingPage).toContain(`description="${description}"`);
+    for (const keyword of keywords) expect(landingPage).toContain(`"${keyword}"`);
+
+    expect(seoHead).toContain("document.title = title");
+    expect(seoHead).toContain("keywords.join");
+    expect(seoHead).toContain('meta[name="keywords"]');
+    expect(appLayout).not.toContain('alt=""');
+    expect(appLayout).toContain('profile photo`');
+    expect(appLayout).toContain('"Get Phame account profile"');
+  });
 });

@@ -328,3 +328,12 @@
 - [x] Add focused regressions for weekly reminder persistence, motion accessibility, native sharing, locale parity, offline language selection, and service-worker fallback behavior.
 - [x] Run TypeScript, focused and full Vitest, production security audit, production build, and phone-sized visual verification.
 - [x] Publish the validated PWA workflow release and deliver the reusable skill package.
+
+- [x] Audit the `/` route title source, meta description, keyword metadata, runtime `document.title` behavior, and all rendered image alt attributes.
+- [x] Set the root-page title with `document.title` to 30–60 characters, targeting approximately 55 characters.
+- [x] Set the root-page meta description to 50–160 characters, targeting approximately 150 characters.
+- [x] Add one meta keywords tag containing 3–8 focused Get Phame keywords.
+- [x] Add meaningful alt text to the single root-page image currently missing it without changing decorative-image semantics.
+- [x] Add regression checks enforcing the exact title, description, keyword-count, and image-alt requirements.
+- [x] Run focused and full tests, TypeScript, production build, and mobile root-page visual verification.
+- [x] Publish the validated root-page SEO correction and report exact title, description, and keyword counts.
