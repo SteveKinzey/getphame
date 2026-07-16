@@ -3417,10 +3417,11 @@ export const appRouter = router({
   /** Landing page lead capture — stores email and sends the free guide PDF */
   leadCapture: router({
     submit: publicProcedure
-      .input(z.object({ email: z.string().email() }))
+      .input(z.object({ email: z.string().trim().toLowerCase().email() }))
       .mutation(async ({ input }) => {
         const db = await getDb();
         const now = Date.now();
+        const normalizedEmail = input.email;
         let stored = false;
 
         if (db) {
@@ -3428,8 +3429,8 @@ export const appRouter = router({
             // Upsert without coupling guide access to app signup or duplicate rows.
             await db
               .insert(leads)
-              .values({ email: input.email, createdAt: now })
-              .onDuplicateKeyUpdate({ set: { email: input.email } });
+              .values({ email: normalizedEmail, createdAt: now })
+              .onDuplicateKeyUpdate({ set: { email: normalizedEmail } });
             stored = true;
           } catch (error) {
             // A persistence outage must not block access to the promised guide.
@@ -3438,17 +3439,26 @@ export const appRouter = router({
         }
 
         // Attempt to send the guide email
-        const { sent } = await sendLeadGuideEmail(input.email);
+        const { sent } = await sendLeadGuideEmail(normalizedEmail);
 
         // Mark guideSentAt if email was sent successfully
         if (sent && db && stored) {
           await db
             .update(leads)
             .set({ guideSentAt: Date.now() })
-            .where(eq(leads.email, input.email));
+            .where(eq(leads.email, normalizedEmail));
         }
 
-        return { ok: true, sent, stored, downloadUrl: GUIDE_PDF_URL };
+        return {
+          ok: true,
+          sent,
+          providerAccepted: sent,
+          stored,
+          downloadUrl: GUIDE_PDF_URL,
+          message: sent
+            ? "Your email provider accepted the guide for delivery."
+            : "Email delivery is unavailable, but your guide is ready to download.",
+        };
       }),
   }),
 });

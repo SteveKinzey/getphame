@@ -409,3 +409,15 @@
 - [x] Repair the PDF lead-capture procedure so it works independently of app signup, returns a clear success state, and preserves existing consent and deduplication rules.
 - [x] Verify the promised PDF delivery path or download response works end to end and provides an actionable error when delivery cannot complete.
 - [x] Add focused authorization, validation, deduplication, success, failure, and UI regression coverage for the PDF capture flow and admin P-icon navigation.
+
+- [x] Reproduce and document the user-reported guide non-delivery without exposing the submitted address; distinguish provider acceptance from the final Gmail bounce.
+- [x] Replace the temporary guide source with `https://assets.getphame.app/getphame-30-day-review-playbook.pdf` throughout server delivery, email content, UI, and regression contracts.
+- [x] Normalize and validate guide email addresses in real time with accessible inline feedback, server validation, invalid-submit blocking, and a visible address-confirmation cue.
+- [x] Report email-provider acceptance honestly, retain direct R2 download fallback, and provide edit/retry controls without claiming inbox delivery.
+- [x] Add branded X/Twitter and LinkedIn buttons that share the public guide experience without including captured visitor data.
+- [x] Add focused normalization, share-URL, provider-acceptance, fallback, accessibility, privacy, consent, deduplication, and R2 regression coverage.
+- [x] Rebuild the eight-page guide with the exact user-supplied transparent P on every logo occurrence and GET PHAME retained as styled text.
+- [x] Replace the established R2 PDF object only after page-count, checksum, content-type, and full-document visual verification.
+- [x] Create and validate the reusable `lead-magnet-pdf-delivery` skill through the approved skill-creator workflow.
+- [x] Run focused and full Vitest, TypeScript, production security/build gates, production-log review, and desktop plus phone visual verification.
+- [x] Publish the validated release and deliver the checkpoint, corrected guide, and reusable skill package.

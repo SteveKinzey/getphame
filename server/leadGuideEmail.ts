@@ -10,7 +10,14 @@
 import nodemailer from "nodemailer";
 import { renderGetPhameEmailHeader } from "./platformEmailBrand";
 
-export const GUIDE_PDF_URL = "https://getphame.app/manus-storage/getphame-30-day-review-playbook_92da01d4.pdf";
+export const GUIDE_PDF_URL = "https://assets.getphame.app/getphame-30-day-review-playbook.pdf";
+
+export interface LeadGuideDeliveryResult {
+  sent: boolean;
+  providerMessageId?: string;
+  responseCode?: number;
+  error?: string;
+}
 
 interface SystemSmtpConfig {
   host: string;
@@ -137,7 +144,7 @@ No spam — we respect your inbox.`;
  * Send the lead guide email. Returns { sent: true } on success, { sent: false } if
  * system SMTP is not configured or the send fails.
  */
-export async function sendLeadGuideEmail(toEmail: string): Promise<{ sent: boolean; error?: string }> {
+export async function sendLeadGuideEmail(toEmail: string): Promise<LeadGuideDeliveryResult> {
   const config = getSystemSmtpConfig();
   if (!config) {
     console.warn("[LeadGuide] System SMTP not configured (SYSTEM_SMTP_HOST/USER/PASS/FROM_EMAIL). Lead stored but guide email not sent.");
@@ -153,7 +160,7 @@ export async function sendLeadGuideEmail(toEmail: string): Promise<{ sent: boole
       tls: { rejectUnauthorized: false },
     });
 
-    await transporter.sendMail({
+    const result = await transporter.sendMail({
       from: `"Phame" <${config.fromEmail}>`,
       to: toEmail,
       subject: "Your Free Guide: How to 3× Your Google Reviews in 30 Days",
@@ -161,10 +168,40 @@ export async function sendLeadGuideEmail(toEmail: string): Promise<{ sent: boole
       text: buildGuideEmailText(),
     });
 
-    return { sent: true };
+    const acceptedCount = Array.isArray(result.accepted) ? result.accepted.length : 0;
+    const rejectedCount = Array.isArray(result.rejected) ? result.rejected.length : 0;
+    const sent = acceptedCount > 0;
+    const responseCodeMatch = typeof result.response === "string" ? result.response.match(/^(\d{3})/) : null;
+    const responseCode = responseCodeMatch ? Number(responseCodeMatch[1]) : undefined;
+
+    console.info("[LeadGuide] Provider response", {
+      accepted: sent,
+      acceptedCount,
+      rejectedCount,
+      providerMessageId: result.messageId || undefined,
+      responseCode,
+    });
+
+    if (!sent) {
+      return {
+        sent: false,
+        providerMessageId: result.messageId || undefined,
+        responseCode,
+        error: "Email provider did not accept the recipient",
+      };
+    }
+
+    return {
+      sent: true,
+      providerMessageId: result.messageId || undefined,
+      responseCode,
+    };
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
-    console.error("[LeadGuide] Failed to send guide email:", message);
+    console.error("[LeadGuide] Failed to submit guide email to provider", {
+      errorName: err instanceof Error ? err.name : "UnknownError",
+      message,
+    });
     return { sent: false, error: message };
   }
 }

@@ -748,6 +748,7 @@ describe("Get Phame regression contracts", () => {
     const router = readProjectFile("./routers.ts");
     const guideEmail = readProjectFile("./leadGuideEmail.ts");
     const leadCapture = readProjectFile("../client/src/components/landing/LeadCapture.tsx");
+    const leadCaptureHelpers = readProjectFile("../client/src/lib/leadCapture.ts");
 
     expect(schema).toContain('createdAt: bigint("createdAt", { mode: "number" })');
     expect(schema).toContain('guideSentAt: bigint("guideSentAt", { mode: "number" })');
@@ -755,8 +756,25 @@ describe("Get Phame regression contracts", () => {
     expect(router).toContain("guideSentAt: Date.now()");
     expect(router).toContain("downloadUrl: GUIDE_PDF_URL");
     expect(router).toContain("A persistence outage must not block access to the promised guide");
-    expect(guideEmail).toContain("getphame-30-day-review-playbook_92da01d4.pdf");
+    expect(router).toContain("z.string().trim().toLowerCase().email()");
+    expect(router).toContain("providerAccepted: sent");
+    expect(guideEmail).toContain("https://assets.getphame.app/getphame-30-day-review-playbook.pdf");
+    expect(guideEmail).not.toContain("/manus-storage/");
+    expect(guideEmail).toContain("Provider response");
+    expect(guideEmail).toContain("providerMessageId");
+    expect(guideEmail).not.toContain("recipientEmail: toEmail");
     expect(leadCapture).toContain("result.downloadUrl");
     expect(leadCapture).toContain("Download the PDF guide");
+    expect(leadCapture).toContain('id="guide"');
+    expect(leadCapture).toContain("validateLeadEmail");
+    expect(leadCapture).toContain('aria-invalid={showEmailError}');
+    expect(leadCapture).toContain('aria-live="polite"');
+    expect(leadCapture).toContain("Provider acceptance does not guarantee inbox placement");
+    expect(leadCapture).toContain("Edit email");
+    expect(leadCapture).toContain("Try email again");
+    expect(leadCaptureHelpers).toContain("twitter.com/intent/tweet");
+    expect(leadCaptureHelpers).toContain("linkedin.com/sharing/share-offsite");
+    expect(leadCaptureHelpers).toContain("https://getphame.app/landing#guide");
+    expect(leadCapture).not.toContain("Check your inbox — guide is on the way!");
   });
 });
