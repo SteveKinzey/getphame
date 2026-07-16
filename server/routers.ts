@@ -127,7 +127,14 @@ import { bulkSenderRouter } from "./bulkSender";
 import { authDiagnosticsRouter } from "./routers/authDiagnostics";
 import { combineAccountsAsAdmin, deleteAccountAsAdmin } from "./accountManagement";
 import { buildSmtpAuditCsv, buildSmtpAuditCsvFilename, buildSmtpAuditWhere } from "./smtpAdminAudit";
-import { connectKoalendar, disconnectKoalendar, getKoalendarConnectionStatus, rotateKoalendarWebhook } from "./koalendar";
+import {
+  connectKoalendar,
+  disconnectKoalendar,
+  getKoalendarConnectionStatus,
+  listFailedKoalendarBookings,
+  retryFailedKoalendarBooking,
+  rotateKoalendarWebhook,
+} from "./koalendar";
 import crypto from "crypto";
 
 const smtpAuditFilterShape = {
@@ -2744,6 +2751,29 @@ export const appRouter = router({
         const deleted = await deleteAccountAsAdmin(ctx.user.id, input.userId);
         console.log(`[Admin] Account ${deleted.id} deleted by admin ${ctx.user.id}`);
         return { ok: true, deleted };
+      }),
+
+    listKoalendarFailures: adminProcedure
+      .input(z.object({
+        page: z.number().int().min(1).default(1),
+        pageSize: z.number().int().min(10).max(50).default(20),
+      }))
+      .query(async ({ input }) => listFailedKoalendarBookings(input.page, input.pageSize)),
+
+    retryKoalendarImport: adminProcedure
+      .input(z.object({ bookingId: z.number().int().positive() }))
+      .mutation(async ({ input }) => {
+        const result = await retryFailedKoalendarBooking(input.bookingId);
+        if (result.outcome === "not_found") {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Koalendar import was not found." });
+        }
+        if (result.outcome === "not_eligible") {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "This Koalendar import is no longer eligible for a manual retry. Refresh the queue to see its current state.",
+          });
+        }
+        return result;
       }),
 
     combineAccounts: adminProcedure

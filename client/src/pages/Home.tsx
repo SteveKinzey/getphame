@@ -462,10 +462,11 @@ export default function HomePage() {
                 iconClassName="w-7 h-7"
                 textClassName="text-xl"
                 tone="split"
+                iconHref="/landing"
               />
             </div>
             <div className="home-brand-mark shrink-0">
-              <BrandLockup showText={false} iconClassName="w-7 h-7" tone="split" />
+              <BrandLockup showText={false} iconClassName="w-7 h-7" tone="split" iconHref="/landing" />
             </div>
             <div
               className="flex items-center justify-end gap-2 flex-wrap sm:flex-nowrap"

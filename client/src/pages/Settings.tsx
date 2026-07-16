@@ -1064,7 +1064,7 @@ function SettingsSkeleton({ title }: { title: string }) {
     <div className="min-h-screen pb-40 rr-bg-cream-warm" aria-busy="true" aria-label="Loading settings">
       <div className="px-5 pt-12 pb-5 rr-bg-navy">
         <div className="flex items-center justify-between mb-4">
-          <BrandLockup iconClassName="w-8 h-8" textClassName="text-lg" />
+          <BrandLockup iconClassName="w-8 h-8" textClassName="text-lg" iconHref="/landing" />
           <LanguageFlyout />
         </div>
         <h1 className="text-2xl text-white rr-fw-black">{title}</h1>

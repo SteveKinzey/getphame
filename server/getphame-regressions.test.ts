@@ -13,7 +13,7 @@ describe("Get Phame regression contracts", () => {
 
     expect(navbar).toContain("<BrandLockup");
     expect(navbar).toContain("<LanguageFlyout");
-    expect(lockup).toContain("https://assets.getphame.app/getphame-logo.svg");
+    expect(lockup).toContain("https://assets.getphame.app/getphame-logo-mark.webp");
     expect(lockup).toContain("Get&nbsp;");
     expect(lockup).toContain(">Phame</span>");
     expect(lockup).not.toContain("phame-wordmark-transparent-clean.png");

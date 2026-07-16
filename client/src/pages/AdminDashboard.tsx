@@ -29,6 +29,7 @@ import {
   Smartphone,
   Share2,
   MousePointerClick,
+  RotateCcw,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -252,6 +253,7 @@ export default function AdminDashboard() {
                   { path: "/admin/revenue", label: "Revenue analytics", detail: "MRR, ARR, conversion, and growth", Icon: DollarSign },
                   { path: "/admin/churn", label: "Churn analytics", detail: "Cancellation reasons and retention signals", Icon: AlertTriangle },
                   { path: "/admin/referral-rewards", label: "Referral operations", detail: "Review deferred rewards", Icon: Gift },
+                  { path: "/admin/koalendar-retry", label: "Koalendar recovery", detail: "Inspect and retry failed contact imports", Icon: RotateCcw },
                 ].map(({ path, label, detail, Icon }) => (
                   <button
                     key={path}

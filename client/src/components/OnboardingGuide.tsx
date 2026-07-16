@@ -65,6 +65,7 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
           iconClassName="w-16 h-16"
           textClassName="text-xl"
           tone="split"
+          iconHref="/landing"
         />
         <p className="text-white font-black text-xl leading-snug" style={{ fontFamily: "'Poppins', sans-serif" }}>
           {t("onboardingGuide.welcome.heroText")}
@@ -1073,7 +1074,7 @@ export default function OnboardingGuide({ open, onClose, onNavigate, stepsDone }
   const STEPS: Step[] = [
     {
       id: 0,
-      icon: <BrandLockup showText={false} iconClassName="w-6 h-6" />,
+      icon: <BrandLockup showText={false} iconClassName="w-6 h-6" iconHref="/landing" />,
       title: t("onboardingGuide.steps.welcome.title"),
       subtitle: t("onboardingGuide.steps.welcome.subtitle"),
       content: <StepWelcome onNavigate={handleNavigate} stepsDone={stepsDone} />,

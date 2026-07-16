@@ -73,10 +73,10 @@ export default function AppLayout({ children }: AppLayoutProps) {
           style={{ borderColor: "oklch(0.28 0.08 260)", minHeight: "64px" }}
         >
           <div className="flex justify-center lg:hidden">
-            <BrandLockup showText={false} iconClassName="w-8 h-8" />
+            <BrandLockup showText={false} iconClassName="w-8 h-8" iconHref="/landing" />
           </div>
           <div className="hidden lg:block">
-            <BrandLockup iconClassName="w-8 h-8" textClassName="text-lg" />
+            <BrandLockup iconClassName="w-8 h-8" textClassName="text-lg" iconHref="/landing" />
           </div>
         </div>
 

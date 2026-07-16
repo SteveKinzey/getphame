@@ -13,7 +13,7 @@ vi.mock("./contacts", () => ({ upsertApiContact: mocks.upsertApiContact }));
 vi.mock("./webhookHelpers", () => ({ fireWebhooks: mocks.fireWebhooks }));
 vi.mock("./entitlements", () => ({ hasPaidOrAdminAccess: mocks.hasPaidOrAdminAccess }));
 
-import { ingestKoalendarPayload, processDueKoalendarBookings } from "./koalendar";
+import { ingestKoalendarPayload, processDueKoalendarBookings, retryFailedKoalendarBooking } from "./koalendar";
 import { koalendarBookings, koalendarConnections, users } from "../drizzle/schema";
 
 const TOKEN = "a".repeat(48);
@@ -86,7 +86,7 @@ function createDb(state: TestState) {
         }
         if (table === koalendarBookings) {
           const target = patch.status === "processing"
-            ? state.bookings.find((booking) => booking.status === "pending")
+            ? state.bookings.find((booking) => booking.status === "pending" || booking.status === "failed")
             : state.bookings[0];
           if (target) {
             Object.assign(target, patch);
@@ -277,6 +277,45 @@ describe("Koalendar delayed contact import", () => {
       lastError: "A paid Get Phame plan is required at import time.",
     });
   });
+
+  it("atomically retries one failed import and cannot import it twice", async () => {
+    vi.setSystemTime(START - 60_000);
+    const state = setupState();
+    await ingestKoalendarPayload(TOKEN, payload());
+    Object.assign(state.bookings[0], { status: "failed", attempts: 3, lastError: "temporary failure" });
+    vi.setSystemTime(END + 1);
+
+    await expect(retryFailedKoalendarBooking(state.bookings[0].id)).resolves.toMatchObject({
+      outcome: "imported",
+      bookingId: state.bookings[0].id,
+      contactId: 99,
+    });
+    await expect(retryFailedKoalendarBooking(state.bookings[0].id)).resolves.toMatchObject({
+      outcome: "not_eligible",
+      status: "imported",
+    });
+    expect(mocks.upsertApiContact).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns a failed manual retry to the recovery queue with the latest error", async () => {
+    vi.setSystemTime(START - 60_000);
+    const state = setupState();
+    await ingestKoalendarPayload(TOKEN, payload());
+    Object.assign(state.bookings[0], { status: "failed", attempts: 2, lastError: "earlier failure" });
+    mocks.upsertApiContact.mockRejectedValueOnce(new Error("provider still unavailable"));
+    vi.setSystemTime(END + 1);
+
+    await expect(retryFailedKoalendarBooking(state.bookings[0].id)).resolves.toMatchObject({
+      outcome: "failed",
+      attempts: 3,
+      error: "provider still unavailable",
+    });
+    expect(state.bookings[0]).toMatchObject({
+      status: "failed",
+      attempts: 3,
+      lastError: "provider still unavailable",
+    });
+  });
 });
 
 describe("Koalendar Settings feedback", () => {
@@ -292,5 +331,38 @@ describe("Koalendar Settings feedback", () => {
     expect(source).toContain('aria-busy={rotate.isPending}');
     expect(source).toContain('rotate.isPending ? "Updating URL…" : "Rotate URL"');
     expect(source).toContain('toast.success("Koalendar webhook URL updated successfully.")');
+  });
+});
+
+describe("Koalendar admin recovery and authenticated landing navigation", () => {
+  const routerSource = readFileSync(new URL("./routers.ts", import.meta.url), "utf8");
+  const pageSource = readFileSync(new URL("../client/src/pages/AdminKoalendarRetry.tsx", import.meta.url), "utf8");
+  const appSource = readFileSync(new URL("../client/src/App.tsx", import.meta.url), "utf8");
+  const brandSource = readFileSync(new URL("../client/src/components/BrandLockup.tsx", import.meta.url), "utf8");
+  const smtpSource = readFileSync(new URL("./smtp.ts", import.meta.url), "utf8");
+
+  it("keeps failure listing and manual retry behind admin procedures", () => {
+    expect(routerSource).toMatch(/listKoalendarFailures:\s*adminProcedure/);
+    expect(routerSource).toMatch(/retryKoalendarImport:\s*adminProcedure/);
+  });
+
+  it("renders confirmation-gated per-event retry controls and mobile-safe cards", () => {
+    expect(pageSource).toContain('data-testid={`retry-koalendar-${failure.id}`}');
+    expect(pageSource).toContain('data-testid="confirm-koalendar-retry"');
+    expect(pageSource).toContain('className="flex flex-col gap-4 lg:flex-row');
+    expect(pageSource).toContain('It will not send a review request.');
+  });
+
+  it("gives authenticated P icons an accessible public landing destination", () => {
+    expect(appSource).toContain('if (path === "/landing")');
+    expect(brandSource).toContain('iconHref?: string');
+    expect(brandSource).toContain('href={iconHref}');
+    expect(brandSource).toContain('View the Get Phame landing page');
+  });
+
+  it("keeps Workspace avatars outside application SMTP sender fields", () => {
+    expect(smtpSource).toContain('const from = `"${fromName}" <${creds.user}>`;');
+    expect(smtpSource).toContain('const replyTo = creds.replyTo ?? creds.user;');
+    expect(smtpSource).not.toMatch(/avatarUrl|senderAvatar|profileImage/);
   });
 });

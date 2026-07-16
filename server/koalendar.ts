@@ -1,9 +1,9 @@
 import type { Express, Request, Response } from "express";
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
-import { and, desc, eq, lte } from "drizzle-orm";
+import { and, count, desc, eq, lte } from "drizzle-orm";
 import { getDb } from "./db";
-import { businessProfiles, koalendarBookings, koalendarConnections, users } from "../drizzle/schema";
+import { businessProfiles, koalendarBookings, koalendarConnections, users, type KoalendarBooking } from "../drizzle/schema";
 import { hasPaidOrAdminAccess } from "./entitlements";
 import { upsertApiContact } from "./contacts";
 import { fireWebhooks } from "./webhookHelpers";
@@ -98,6 +98,59 @@ export async function getKoalendarConnectionStatus(userId: number) {
     webhookUrl: connection ? buildKoalendarWebhookUrl(connection.webhookToken) : null,
     lastEventAt: connection?.lastEventAt ?? null,
     recentBookings,
+  };
+}
+
+function maskEmail(email: string): string {
+  const [local = "", domain = ""] = email.split("@");
+  if (!domain) return "Hidden";
+  return `${local.slice(0, 1) || "*"}***@${domain}`;
+}
+
+export async function listFailedKoalendarBookings(page = 1, pageSize = 20) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const safePage = Math.max(1, Math.trunc(page));
+  const safePageSize = Math.min(50, Math.max(10, Math.trunc(pageSize)));
+  const [totalRow] = await db
+    .select({ value: count() })
+    .from(koalendarBookings)
+    .where(eq(koalendarBookings.status, "failed"));
+  const total = Number(totalRow?.value ?? 0);
+  const rows = await db
+    .select({
+      id: koalendarBookings.id,
+      userId: koalendarBookings.userId,
+      accountName: users.name,
+      accountEmail: users.email,
+      inviteeName: koalendarBookings.inviteeName,
+      inviteeEmail: koalendarBookings.inviteeEmail,
+      externalBookingId: koalendarBookings.externalBookingId,
+      eventType: koalendarBookings.eventType,
+      endsAt: koalendarBookings.endsAt,
+      attempts: koalendarBookings.attempts,
+      nextAttemptAt: koalendarBookings.nextAttemptAt,
+      lastError: koalendarBookings.lastError,
+      updatedAt: koalendarBookings.updatedAt,
+    })
+    .from(koalendarBookings)
+    .innerJoin(users, eq(koalendarBookings.userId, users.id))
+    .where(eq(koalendarBookings.status, "failed"))
+    .orderBy(desc(koalendarBookings.updatedAt))
+    .limit(safePageSize)
+    .offset((safePage - 1) * safePageSize);
+
+  return {
+    bookings: rows.map(({ externalBookingId, inviteeEmail, lastError, ...row }) => ({
+      ...row,
+      inviteeEmail: maskEmail(inviteeEmail),
+      bookingReference: externalBookingId.slice(0, 64),
+      lastError: lastError?.slice(0, 500) ?? null,
+    })),
+    page: safePage,
+    pageSize: safePageSize,
+    total,
+    pageCount: Math.max(1, Math.ceil(total / safePageSize)),
   };
 }
 
@@ -196,6 +249,74 @@ export async function ingestKoalendarPayload(token: string, rawPayload: unknown)
   return { accepted: true as const, ignored: false, status };
 }
 
+type KoalendarDb = NonNullable<Awaited<ReturnType<typeof getDb>>>;
+
+async function importClaimedKoalendarBooking(db: KoalendarDb, booking: KoalendarBooking) {
+  if (booking.canceledAt) {
+    await db.update(koalendarBookings).set({ status: "canceled", lastError: null, updatedAt: Date.now() })
+      .where(eq(koalendarBookings.id, booking.id));
+    return { outcome: "canceled" as const, contactId: null, created: false };
+  }
+  if (!(await userHasPaidKoalendarAccess(booking.userId))) {
+    await db.update(koalendarBookings).set({ status: "blocked", lastError: "A paid Get Phame plan is required at import time.", updatedAt: Date.now() })
+      .where(eq(koalendarBookings.id, booking.id));
+    return { outcome: "blocked" as const, contactId: null, created: false };
+  }
+  const result = await upsertApiContact(booking.userId, {
+    name: booking.inviteeName,
+    email: booking.inviteeEmail,
+    source: "koalendar",
+    externalId: booking.externalBookingId,
+  });
+  await db.update(koalendarBookings).set({ status: "imported", contactId: result.id, importedAt: Date.now(), lastError: null, updatedAt: Date.now() })
+    .where(eq(koalendarBookings.id, booking.id));
+  if (result.created) {
+    fireWebhooks(booking.userId, "contact.created", {
+      contactId: result.id,
+      email: booking.inviteeEmail,
+      name: booking.inviteeName,
+      source: "koalendar",
+    }).catch(() => {});
+  }
+  return { outcome: "imported" as const, contactId: result.id, created: result.created };
+}
+
+export async function retryFailedKoalendarBooking(bookingId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  const now = Date.now();
+  const [booking] = await db.select().from(koalendarBookings)
+    .where(eq(koalendarBookings.id, bookingId)).limit(1);
+  if (!booking) return { outcome: "not_found" as const, bookingId };
+  if (booking.status !== "failed" || booking.endsAt > now || booking.canceledAt) {
+    return { outcome: "not_eligible" as const, bookingId, status: booking.status };
+  }
+
+  const [claim] = await db.update(koalendarBookings).set({ status: "processing", updatedAt: now })
+    .where(and(eq(koalendarBookings.id, bookingId), eq(koalendarBookings.status, "failed"), lte(koalendarBookings.endsAt, now)));
+  if (claim.affectedRows === 0) {
+    const [current] = await db.select({ status: koalendarBookings.status }).from(koalendarBookings)
+      .where(eq(koalendarBookings.id, bookingId)).limit(1);
+    return { outcome: "not_eligible" as const, bookingId, status: current?.status ?? "missing" };
+  }
+
+  try {
+    const result = await importClaimedKoalendarBooking(db, booking);
+    return { ...result, bookingId };
+  } catch (error) {
+    const attempts = booking.attempts + 1;
+    const errorMessage = error instanceof Error ? error.message.slice(0, 2000) : "Unknown import error";
+    await db.update(koalendarBookings).set({
+      status: "failed",
+      attempts,
+      nextAttemptAt: now,
+      lastError: errorMessage,
+      updatedAt: Date.now(),
+    }).where(eq(koalendarBookings.id, booking.id));
+    return { outcome: "failed" as const, bookingId, attempts, error: errorMessage };
+  }
+}
+
 export async function processDueKoalendarBookings(limit = 100): Promise<number> {
   const db = await getDb();
   if (!db) return 0;
@@ -208,28 +329,7 @@ export async function processDueKoalendarBookings(limit = 100): Promise<number> 
       .where(and(eq(koalendarBookings.id, booking.id), eq(koalendarBookings.status, "pending")));
     if (claim.affectedRows === 0) continue;
     try {
-      if (!(await userHasPaidKoalendarAccess(booking.userId))) {
-        await db.update(koalendarBookings).set({ status: "blocked", lastError: "A paid Get Phame plan is required at import time.", updatedAt: Date.now() })
-          .where(eq(koalendarBookings.id, booking.id));
-        processed += 1;
-        continue;
-      }
-      const result = await upsertApiContact(booking.userId, {
-        name: booking.inviteeName,
-        email: booking.inviteeEmail,
-        source: "koalendar",
-        externalId: booking.externalBookingId,
-      });
-      await db.update(koalendarBookings).set({ status: "imported", contactId: result.id, importedAt: Date.now(), lastError: null, updatedAt: Date.now() })
-        .where(eq(koalendarBookings.id, booking.id));
-      if (result.created) {
-        fireWebhooks(booking.userId, "contact.created", {
-          contactId: result.id,
-          email: booking.inviteeEmail,
-          name: booking.inviteeName,
-          source: "koalendar",
-        }).catch(() => {});
-      }
+      await importClaimedKoalendarBooking(db, booking);
       processed += 1;
     } catch (error) {
       const attempts = booking.attempts + 1;

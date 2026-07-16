@@ -362,3 +362,21 @@
 - [x] Remove or clearly document all smoke-test records and confirm no unrelated production data changed.
 - [x] Run focused Koalendar tests, the full Vitest suite, TypeScript, production security/build gates, and phone-sized Settings verification.
 - [x] Publish the validated Settings feedback release and report the checkpoint plus smoke-test outcome.
+
+- [x] Superseded by user: explore the specified YouTube channel thoroughly in My Browser and inventory the available videos without changing the account.
+- [x] Superseded by user: analyze the strongest candidate videos and recommend the top three with concise reasons and direct links.
+- [x] Audit Koalendar failed-import persistence, retry rules, admin routes, existing admin navigation, and production scheduling constraints.
+- [x] Add an admin-only failed Koalendar import query with safe pagination, status details, and no webhook-token or excess customer-data exposure.
+- [x] Add an admin-only manual retry mutation that safely re-attempts eligible failed imports, prevents concurrent duplicate processing, and returns clear outcomes.
+- [x] Build a responsive administrator Koalendar retry dashboard with per-event manual trigger buttons, loading states, confirmations, and success/error feedback.
+- [x] Add the retry dashboard to the existing administration hub without exposing it to non-admin users.
+- [x] Audit every authenticated header, sidebar, mobile-header, account-menu, and compact-brand P icon placement.
+- [x] Make every authenticated P icon an accessible link to the public landing page while preserving the existing logo artwork, surrounding controls, and standalone wordmark behavior.
+- [x] Add focused regression coverage proving mouse and keyboard users can return to the landing page from every authenticated P-icon placement.
+- [x] Superseded by clarified identity requirements: audit outbound email and sender-profile code to confirm Get Phame does not hardcode an email avatar or override separately managed Workspace profile images.
+- [x] Validate and document distinct sender-avatar boundaries: no-reply@getphame.app uses the official Get Phame P icon, while steve@sk-america.com keeps a separately chosen headshot or SK-America company icon; do not programmatically substitute either avatar.
+- [x] Add focused authorization, retry-state, idempotency, API, navigation, and responsive UI regression coverage.
+- [x] Run focused and full Vitest suites, TypeScript, production security/build gates, runtime-log review, and mobile-first visual verification.
+- [x] Publish the validated Koalendar retry dashboard through an auto-published checkpoint and verify production behavior safely.
+- [x] Create and validate a reusable skill covering the admin Koalendar retry dashboard, authenticated P-icon landing-page navigation, sender-avatar boundaries, validation, and release delivery.
+- [x] Deliver the published checkpoint, implementation summary, and reusable skill package.

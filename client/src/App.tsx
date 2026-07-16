@@ -93,6 +93,7 @@ const AdminChurnPage      = lazy(() => import("./pages/AdminChurn"));
 const AdminRevenuePage    = lazy(() => import("./pages/AdminRevenue"));
 const AdminReferralRewardsPage = lazy(() => import("./pages/AdminReferralRewards"));
 const AdminReminderPerformancePage = lazy(() => import("./pages/AdminReminderPerformance"));
+const AdminKoalendarRetryPage = lazy(() => import("./pages/AdminKoalendarRetry"));
 
 const ReferralLandingPage = lazy(() => import("./pages/ReferralLanding"));
 
@@ -211,6 +212,9 @@ function AppShell() {
   const path = window.location.pathname;
 
   // ── Public pages — always accessible, wrapped in PublicLayout ───────────
+  if (path === "/landing") return (
+    <Suspense fallback={<PageLoader />}><LandingPage /></Suspense>
+  );
   if (path === "/privacy-policy") return (
     <Suspense fallback={<PageLoader />}>
       <PublicLayout><PrivacyPolicyPage /></PublicLayout>
@@ -322,6 +326,7 @@ function AppShell() {
                 <Route path="/admin/revenue" component={AdminRevenuePage} />
                 <Route path="/admin/referral-rewards" component={AdminReferralRewardsPage} />
                 <Route path="/admin/reminder-performance" component={AdminReminderPerformancePage} />
+                <Route path="/admin/koalendar-retry" component={AdminKoalendarRetryPage} />
                 <Route path="/changelog" component={ChangelogPage} />
                 <Route path="/compliance" component={CompliancePage} />
                 <Route path="/security" component={SecurityPolicyPage} />

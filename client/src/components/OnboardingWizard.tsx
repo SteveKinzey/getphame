@@ -785,6 +785,7 @@ function Step3Send({
         iconClassName="w-16 h-16"
         textClassName="text-xl"
         tone="split"
+        iconHref="/landing"
       />
       <div>
         <h3
