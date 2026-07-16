@@ -1,14 +1,14 @@
 # Phame — Get More Reviews on Autopilot
 
-**Phame** helps local businesses collect more Google, Yelp, and TripAdvisor reviews by sending personalised review-request emails directly from your own email account. Customers receive a message that looks like it came from you — not a bulk mailer — which means higher open rates and more genuine reviews.
+**Phame** helps local businesses collect more Google, Yelp, and TripAdvisor reviews by sending personalized review-request emails directly from your own email account. Customers receive a message that appears to come from you — not a bulk mailer — which means higher open rates and more genuine reviews.
 
-🌐 **Live app:** [phame.app](https://phame.app)
+🌐 **Live app:** [getphame.app](https://getphame.app)
 
 ---
 
 ## What Phame Does
 
-Phame connects to your existing email account (Gmail, Outlook, Yahoo, or any business email) and sends personalised review-request emails to your customers. You control the message, the timing, and which review platform you want to direct customers to. The app tracks who opened the email and who clicked the review link, and automatically sends up to two follow-up reminders to customers who haven't responded yet.
+Phame connects to your existing email account (Gmail, Outlook, Yahoo, or any business email) and sends personalized review-request emails to your customers. You control the message, the timing, and the review platform you direct customers to. The app tracks who opened the email and who clicked the review link, and automatically sends up to two follow-up reminders to customers who haven't responded yet.
 
 ---
 
@@ -16,7 +16,7 @@ Phame connects to your existing email account (Gmail, Outlook, Yahoo, or any bus
 
 ### Step 1 — Create your account
 
-Go to [phame.app](https://phame.app) and tap **Get Started Free**. Sign in with your Google or Apple account. No credit card required.
+Go to [getphame.app](https://getphame.app) and tap **Get Started Free**. Sign in with your Google or Apple account. No credit card required.
 
 ### Step 2 — Connect your email
 
@@ -50,7 +50,7 @@ You have four ways to add contacts:
 
 **Manual entry** — Tap **Send** and enter a name and email address to send a one-off request immediately.
 
-**CSV import** — Go to **Saved Contacts → Import CSV**. Your file needs at minimum a `first_name` and `email` column. Optional columns: `last_name`, `phone`, `notes`.
+**CSV import** — Go to **Saved Contacts → Import CSV**. Your file needs at a minimum a `first_name` and `email` column. Optional columns: `last_name`, `phone`, `notes`.
 
 **WooCommerce sync** — Go to **Settings → WooCommerce**, enter your store URL and API keys (see the setup guide in the app), then tap **Sync Orders**. Synced orders are held as pending imports — review and confirm them before they appear in your contacts list. Any pending imports older than 7 days are automatically imported every Monday at 03:00 GMT.
 
@@ -69,7 +69,7 @@ Phame sends up to two follow-up emails per customer automatically:
 - **Day 3** — a gentle reminder if the customer hasn't clicked the review link yet
 - **Day 10** — a final nudge if still no click
 
-Customers who click **Unsubscribe** in any email are permanently opted out and will never receive another message.
+Customers who click **Unsubscribe** in any email are permanently opted out and will not receive any further messages.
 
 ---
 
@@ -83,10 +83,10 @@ The **Dashboard** shows your recent send activity, open rates, click rates, and 
 
 | Plan | Price | Requests |
 |---|---|---|
-| Free | $0 | 10 review requests (total) |
+| Free | $0 | 10 review requests (total) | Then 5 per 30 days, thereafter.
 | Pro Monthly | $29 / month | Unlimited |
 | Pro Annual | $290 / year | Unlimited (save $58) |
-| Lifetime | $1,247 once | Unlimited, forever |
+| Lifetime | $349 once | Unlimited, forever |
 
 Upgrade at any time from **Settings → Upgrade Plan**. Stripe handles all payments securely.
 
@@ -96,7 +96,7 @@ Upgrade at any time from **Settings → Upgrade Plan**. Stripe handles all payme
 
 ### WooCommerce
 
-Connect your WooCommerce store to automatically pull in customers from completed orders. Go to **Settings → WooCommerce** and follow the in-app setup guide. Only orders with status **Completed** are synced.
+Connect your WooCommerce store to pull in customers from completed orders automatically. Go to **Settings → WooCommerce** and follow the in-app setup guide. Only orders with status **Completed** are synced.
 
 ### API — Import contacts from any form
 
@@ -151,8 +151,8 @@ Phame does not share your customer data with third parties. Your SMTP credential
 
 Phame is a Progressive Web App (PWA) — you can install it on your home screen for a native app experience.
 
-- **iPhone / iPad** — Open [phame.app](https://phame.app) in Safari, tap the Share button, and select **Add to Home Screen**.
-- **Android** — Open [phame.app](https://phame.app) in Chrome, tap the three-dot menu, and select **Add to Home Screen** (or **Install App** if prompted automatically).
+- **iPhone / iPad** — Open [getphame.app](https://getphame.app) in Safari, tap the Share button, and select **Add to Home Screen**.
+- **Android** — Open [getphame.app](https://getphame.app) in Chrome, tap the three-dot menu, and select **Add to Home Screen** (or **Install App** if prompted automatically).
 - **From the app** — Go to **Settings** and tap **Install App on Your Phone** to re-trigger the install prompt.
 
 ---
@@ -162,16 +162,16 @@ Phame is a Progressive Web App (PWA) — you can install it on your home screen 
 **Will my customers know I'm using Phame?**
 No. Emails are sent from your own email address using your own SMTP credentials. The only branding is a small "Powered by Phame" footer link, which can be removed on the Pro plan.
 
-**What happens if a customer already left a review?**
-Phame tracks whether a customer clicked the review link. If they clicked, no further reminders are sent. If they left a review without clicking the link (e.g. found you directly on Google), you can manually mark them as reviewed in Saved Contacts.
+**What happens if a customer has already left a review?**
+Phame tracks whether a customer clicked the review link. If they clicked, no further reminders are sent. If they left a review without clicking the link (e.g., found you directly on Google), you can manually mark them as reviewed in Saved Contacts.
 
-**Can I customise the email template?**
+**Can I customize the email template?**
 Yes. Go to **Settings → Email Templates** to edit the subject line, body text, and call-to-action button. You can use `{{first_name}}`, `{{business_name}}`, and `{{review_link}}` as merge tags.
 
 **How do I cancel?**
 Go to **Settings → Upgrade Plan → Manage Subscription**. You can cancel at any time. Your account reverts to the Free plan at the end of your billing period — your data and contacts are preserved.
 
-**I'm getting a "connection refused" error when connecting my email.**
+**I'm getting a "connection refused" error when trying to connect to my email.**
 Double-check that you're using an App Password (not your regular login password) and that the SMTP host and port match your provider's settings. Gmail uses `smtp.gmail.com` on port 587. See the in-app setup guide for provider-specific instructions.
 
 ---
