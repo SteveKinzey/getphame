@@ -389,3 +389,23 @@
 - [x] Add or update regression coverage that locks the restored landing structure, logo asset, major sections, responsive navigation, language control, and footer.
 - [x] Run focused and full tests, TypeScript, production build/security gates, runtime-log review, and desktop plus phone visual comparison.
 - [x] Publish the validated corrective checkpoint and report the exact restored version.
+
+- [x] Inspect the live preview header at desktop and phone widths and compare it with the correct historical rendered design, not only source-file diffs.
+- [x] Identify and correct the exact footer copyright wording, year, punctuation, and responsive presentation.
+- [x] Inventory every applicable public route and identify pages that do not render the established shared public footer.
+- [x] Restore the correct public header without changing the established logo, language selector, login action, responsive menu behavior, or authenticated navigation.
+- [x] Add the established full-width shared footer to every applicable public page while preserving each page’s content and route-specific behavior.
+- [x] Add regression coverage for header composition, copyright text, footer route coverage, full-width footer styling, and mobile behavior.
+- [x] Run focused and full tests, TypeScript, production build/security gates, runtime-log review, and desktop plus phone screenshots for every affected public route.
+- [x] Publish the validated public-header and site-wide-footer corrective checkpoint and report the exact version.
+- [x] Locate the exact landing-page asset that renders the Import Customers mockup shown by the user and identify every component and route that uses it.
+- [x] Replace the mockup’s incorrect P-plus-separate-star mark with the approved Get Phame P mark while preserving all other artwork, text, dimensions, and responsive behavior.
+- [x] Audit every public landing-page image and mockup for the same incorrect embedded logo and correct any additional occurrences.
+- [x] Upload corrected static artwork through permanent web project storage and update only the affected public image references.
+- [x] Add regression coverage that locks affected landing artwork to corrected asset URLs and prevents reintroduction of the P-plus-separate-star mark.
+- [x] Reproduce the live `/admin` P-icon click in My Browser and confirm the exact current click target, route, and authentication behavior.
+- [x] Fix the `/admin` P icon so authenticated administrators return to the public landing/home page without logging out or breaking other admin navigation.
+- [x] Reproduce the landing-page PDF email-capture error with a disposable address and capture the exact client, API, and server failure without subscribing a real user.
+- [x] Repair the PDF lead-capture procedure so it works independently of app signup, returns a clear success state, and preserves existing consent and deduplication rules.
+- [x] Verify the promised PDF delivery path or download response works end to end and provides an actionable error when delivery cannot complete.
+- [x] Add focused authorization, validation, deduplication, success, failure, and UI regression coverage for the PDF capture flow and admin P-icon navigation.

@@ -672,4 +672,91 @@ describe("Get Phame regression contracts", () => {
     expect(appLayout).toContain('profile photo`');
     expect(appLayout).toContain('"Get Phame account profile"');
   });
+
+  it("keeps the public header readable and anchored to the landing document for signed-in visitors", () => {
+    const navbar = readProjectFile("../client/src/components/landing/Navbar.tsx");
+
+    expect(navbar).toContain('["/", "/landing"].includes(window.location.pathname)');
+    expect(navbar).toContain('href="/landing"');
+    expect(navbar).toContain('`/landing${link.href}`');
+    expect(navbar).toContain('className="hidden lg:flex items-center');
+    expect(navbar).toContain('className="hidden lg:flex shrink-0');
+    expect(navbar).toContain('className="lg:hidden flex items-center');
+    expect(navbar).not.toContain('className="hidden md:flex items-center gap-8"');
+  });
+
+  it("uses the shared full-width public footer and one complete copyright statement", () => {
+    const layout = readProjectFile("../client/src/components/PublicLayout.tsx");
+    const footer = readProjectFile("../client/src/components/landing/Footer.tsx");
+    const app = readProjectFile("../client/src/App.tsx");
+
+    expect(layout).toContain("<Navbar />");
+    expect(layout).toContain("<Footer />");
+    expect(footer).toContain('className="w-full border-t');
+    expect(footer).toContain('defaultValue: "© {{year}} Get Phame. All rights reserved."');
+    expect(footer).toContain('href="/privacy-policy"');
+    expect(footer).toContain('href="/terms-of-service"');
+    expect(footer).toContain("https://assets.getphame.app/getphame-logo-mark.webp");
+
+    const authGateIndex = app.indexOf("if (!user)");
+    for (const publicRoute of [
+      'if (path === "/privacy-policy")',
+      'if (path === "/terms-of-service")',
+      'if (path === "/data-usage")',
+      'if (path === "/payment-success")',
+      'if (path === "/unsubscribe")',
+      'if (path === "/login")',
+      'if (path === "/changelog")',
+      'if (path === "/security")',
+    ]) {
+      expect(app.indexOf(publicRoute)).toBeGreaterThan(-1);
+      expect(app.indexOf(publicRoute)).toBeLessThan(authGateIndex);
+    }
+    expect(app).toContain("<PublicLayout><PrivacyPolicyPage /></PublicLayout>");
+    expect(app).toContain("<PublicLayout><TermsOfServicePage /></PublicLayout>");
+    expect(app).toContain("<PublicLayout><DataUsagePage /></PublicLayout>");
+    expect(app).toContain("<PublicLayout><PaymentSuccessPage /></PublicLayout>");
+    expect(app).toContain("<PublicLayout><UnsubscribePage /></PublicLayout>");
+    expect(app).toContain("<PublicLayout><LoginPage /></PublicLayout>");
+    expect(app).toContain("<PublicLayout><ChangelogPage /></PublicLayout>");
+    expect(app).toContain("<PublicLayout><SecurityPolicyPage /></PublicLayout>");
+    expect(app).not.toContain('<Route path="/changelog" component={ChangelogPage} />');
+    expect(app).not.toContain('<Route path="/security" component={SecurityPolicyPage} />');
+  });
+
+  it("uses corrected permanent mockups without the obsolete embedded P-plus-star artwork", () => {
+    const showcase = readProjectFile("../client/src/components/landing/ProductShowcase.tsx");
+
+    expect(showcase).toContain("phame-customer-import-corrected-exact_4614c4e8.webp");
+    expect(showcase).toContain("phame-customer-import-corrected-exact_cded24ee.png");
+    expect(showcase).toContain("phame-review-tracking-corrected-exact_d01e52cf.webp");
+    expect(showcase).toContain("phame-review-tracking-corrected-exact_82109c9c.png");
+    expect(showcase).not.toContain('"https://assets.getphame.app/phame-customer-import.webp"');
+    expect(showcase).not.toContain('"https://assets.getphame.app/phame-review-tracking.webp"');
+  });
+
+  it("forces authenticated P icons to the public landing alias", () => {
+    const landingLink = readProjectFile("../client/src/components/LandingBrandLink.tsx");
+
+    expect(landingLink).toContain('href="/landing"');
+    expect(landingLink).toContain('window.location.assign("/landing")');
+    expect(landingLink).toContain("event.preventDefault()");
+  });
+
+  it("keeps PDF guide access independent from app signup and resilient to persistence or email failures", () => {
+    const schema = readProjectFile("../drizzle/schema.ts");
+    const router = readProjectFile("./routers.ts");
+    const guideEmail = readProjectFile("./leadGuideEmail.ts");
+    const leadCapture = readProjectFile("../client/src/components/landing/LeadCapture.tsx");
+
+    expect(schema).toContain('createdAt: bigint("createdAt", { mode: "number" })');
+    expect(schema).toContain('guideSentAt: bigint("guideSentAt", { mode: "number" })');
+    expect(router).toContain("createdAt: now");
+    expect(router).toContain("guideSentAt: Date.now()");
+    expect(router).toContain("downloadUrl: GUIDE_PDF_URL");
+    expect(router).toContain("A persistence outage must not block access to the promised guide");
+    expect(guideEmail).toContain("getphame-30-day-review-playbook_92da01d4.pdf");
+    expect(leadCapture).toContain("result.downloadUrl");
+    expect(leadCapture).toContain("Download the PDF guide");
+  });
 });

@@ -10,7 +10,7 @@
 import nodemailer from "nodemailer";
 import { renderGetPhameEmailHeader } from "./platformEmailBrand";
 
-const GUIDE_PDF_URL = "https://assets.getphame.app/getphame-guide.pdf";
+export const GUIDE_PDF_URL = "https://getphame.app/manus-storage/getphame-30-day-review-playbook_92da01d4.pdf";
 
 interface SystemSmtpConfig {
   host: string;

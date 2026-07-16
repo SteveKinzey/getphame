@@ -12,6 +12,10 @@ export default function LandingBrandLink({
   return (
     <a
       href="/landing"
+      onClick={(event) => {
+        event.preventDefault();
+        window.location.assign("/landing");
+      }}
       aria-label={ariaLabel}
       className="inline-flex rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017] focus-visible:ring-offset-2 focus-visible:ring-offset-[#08172b]"
     >

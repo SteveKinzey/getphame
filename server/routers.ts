@@ -43,7 +43,7 @@ import {
   getMoneyBackGuaranteeStatus,
   getSubscriptionSnapshot,
 } from "./stripe";
-import { sendLeadGuideEmail } from "./leadGuideEmail";
+import { GUIDE_PDF_URL, sendLeadGuideEmail } from "./leadGuideEmail";
 import { buildDailyTrend } from "./dailyTrend";
 import {
   getWooCredentials,
@@ -3420,25 +3420,35 @@ export const appRouter = router({
       .input(z.object({ email: z.string().email() }))
       .mutation(async ({ input }) => {
         const db = await getDb();
-        if (!db) return { ok: true, sent: false };
-        // Upsert — don't error if email already exists
-        await db
-          .insert(leads)
-          .values({ email: input.email })
-          .onDuplicateKeyUpdate({ set: { email: input.email } });
+        const now = Date.now();
+        let stored = false;
+
+        if (db) {
+          try {
+            // Upsert without coupling guide access to app signup or duplicate rows.
+            await db
+              .insert(leads)
+              .values({ email: input.email, createdAt: now })
+              .onDuplicateKeyUpdate({ set: { email: input.email } });
+            stored = true;
+          } catch (error) {
+            // A persistence outage must not block access to the promised guide.
+            console.error("[LeadCapture] Failed to store lead:", error);
+          }
+        }
 
         // Attempt to send the guide email
         const { sent } = await sendLeadGuideEmail(input.email);
 
         // Mark guideSentAt if email was sent successfully
-        if (sent) {
+        if (sent && db && stored) {
           await db
             .update(leads)
-            .set({ guideSentAt: new Date() })
+            .set({ guideSentAt: Date.now() })
             .where(eq(leads.email, input.email));
         }
 
-        return { ok: true, sent };
+        return { ok: true, sent, stored, downloadUrl: GUIDE_PDF_URL };
       }),
   }),
 });

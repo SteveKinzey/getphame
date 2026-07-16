@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Mail, ArrowRight, Check, Loader2 } from "lucide-react";
+import { Mail, ArrowRight, Check, Download, Loader2 } from "lucide-react";
 import FadeUp from "./FadeUp";
 import { trpc } from "@/lib/trpc";
 
@@ -9,10 +9,12 @@ export default function LeadCapture() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [delivery, setDelivery] = useState<{ sent: boolean; downloadUrl: string } | null>(null);
 
   const submitLead = trpc.leadCapture.submit.useMutation({
-    onSuccess: () => {
+    onSuccess: (result) => {
       setSubmitted(true);
+      setDelivery({ sent: result.sent, downloadUrl: result.downloadUrl });
       setError(null);
     },
     onError: (err) => {
@@ -81,9 +83,26 @@ export default function LeadCapture() {
                   )}
                 </>
               ) : (
-                <div className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                  <Check size={18} className="text-emerald-400" />
-                  <span className="text-emerald-400 font-medium">{t("landing.leadCapture.successMessage", { defaultValue: "Check your inbox — guide is on the way!" })}</span>
+                <div className="flex flex-col items-center gap-4">
+                  <div className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                    <Check size={18} className="text-emerald-400" />
+                    <span className="text-emerald-400 font-medium">
+                      {delivery?.sent
+                        ? t("landing.leadCapture.successMessage", { defaultValue: "Check your inbox — guide is on the way!" })
+                        : t("landing.leadCapture.downloadReadyMessage", { defaultValue: "Your guide is ready to download." })}
+                    </span>
+                  </div>
+                  {delivery?.downloadUrl && (
+                    <a
+                      href={delivery.downloadUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground shadow-[0_0_20px_oklch(0.78_0.15_75/0.2)] transition-all duration-200 hover:brightness-110 active:scale-[0.97]"
+                    >
+                      <Download size={16} />
+                      {t("landing.leadCapture.downloadGuideButton", { defaultValue: "Download the PDF guide" })}
+                    </a>
+                  )}
                 </div>
               )}
 

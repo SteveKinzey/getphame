@@ -734,8 +734,8 @@ export type InsertMagicLinkToken = typeof magicLinkTokens.$inferInsert;
 export const leads = pgTable("leads", {
   id: serial("id").primaryKey(),
   email: varchar("email", { length: 320 }).notNull().unique(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  guideSentAt: timestamp("guideSentAt"),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+  guideSentAt: bigint("guideSentAt", { mode: "number" }),
 });
 export type Lead = typeof leads.$inferSelect;
 export type InsertLead = typeof leads.$inferInsert;

@@ -22,8 +22,11 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Determine if we're on the home page (for anchor links)
-  const isHomePage = typeof window !== "undefined" && (window.location.pathname === "/" || window.location.pathname === "");
+  // Both the anonymous root and authenticated-safe /landing alias render this page.
+  // Keep section links on the landing document instead of sending signed-in users
+  // back through the authenticated root dashboard.
+  const isLandingPage = typeof window !== "undefined"
+    && ["/", "/landing"].includes(window.location.pathname);
 
   return (
     <header
@@ -33,9 +36,9 @@ export default function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <nav className="container flex items-center justify-between h-16 md:h-[4.5rem]">
+      <nav className="container flex items-center justify-between gap-4 h-16 md:h-[4.5rem]">
         {/* Logo — prominent brand mark */}
-        <a href="/" className="flex items-center gap-2.5 group">
+        <a href="/landing" className="flex shrink-0 items-center gap-2.5 group" aria-label="View the Get Phame landing page">
           <BrandLockup
             iconClassName="w-9 h-9 md:w-10 md:h-10 transition-transform duration-200 group-hover:scale-105"
             textClassName="text-xl md:text-[1.4rem]"
@@ -43,11 +46,11 @@ export default function Navbar() {
         </a>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-5 xl:gap-8">
           {navLinks.map((link) => (
             <a
               key={link.href}
-              href={isHomePage ? link.href : `/${link.href}`}
+              href={isLandingPage ? link.href : `/landing${link.href}`}
               className="text-sm font-medium text-slate-200 hover:text-white transition-colors duration-200 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all after:duration-200 hover:after:w-full"
             >
               {link.label}
@@ -56,7 +59,7 @@ export default function Navbar() {
         </div>
 
         {/* Desktop CTA */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden lg:flex shrink-0 items-center gap-3 xl:gap-4">
           <LanguageFlyout />
           <a
             href="/login"
@@ -73,7 +76,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu Button */}
-        <div className="md:hidden flex items-center gap-2">
+        <div className="lg:hidden flex items-center gap-2">
           <LanguageFlyout />
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -87,12 +90,12 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-[oklch(0.12_0.03_250/0.98)] backdrop-blur-xl border-t border-[#1e3050]">
+        <div className="lg:hidden bg-[oklch(0.12_0.03_250/0.98)] backdrop-blur-xl border-t border-[#1e3050]">
           <div className="container py-4 flex flex-col gap-3">
             {navLinks.map((link) => (
               <a
                 key={link.href}
-                href={isHomePage ? link.href : `/${link.href}`}
+                href={isLandingPage ? link.href : `/landing${link.href}`}
                 onClick={() => setMobileOpen(false)}
                 className="text-lg font-bold text-white py-2.5 transition-colors"
               >

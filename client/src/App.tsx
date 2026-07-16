@@ -240,6 +240,21 @@ function AppShell() {
       <PublicLayout><UnsubscribePage /></PublicLayout>
     </Suspense>
   );
+  if (path === "/login") return (
+    <Suspense fallback={<PageLoader />}>
+      <PublicLayout><LoginPage /></PublicLayout>
+    </Suspense>
+  );
+  if (path === "/changelog") return (
+    <Suspense fallback={<PageLoader />}>
+      <PublicLayout><ChangelogPage /></PublicLayout>
+    </Suspense>
+  );
+  if (path === "/security") return (
+    <Suspense fallback={<PageLoader />}>
+      <PublicLayout><SecurityPolicyPage /></PublicLayout>
+    </Suspense>
+  );
   if (path === "/auth/apple/landing") return (
     <Suspense fallback={<PageLoader />}>
       <div className="min-h-screen rr-bg-navy flex items-center justify-center">
@@ -257,21 +272,6 @@ function AppShell() {
         <div className="min-h-screen rr-bg-navy">
           <OnboardingPage />
         </div>
-      </Suspense>
-    );
-    if (path === "/login") return (
-      <Suspense fallback={<PageLoader />}>
-        <PublicLayout><LoginPage /></PublicLayout>
-      </Suspense>
-    );
-    if (path === "/changelog") return (
-      <Suspense fallback={<PageLoader />}>
-        <PublicLayout><ChangelogPage /></PublicLayout>
-      </Suspense>
-    );
-    if (path === "/security") return (
-      <Suspense fallback={<PageLoader />}>
-        <PublicLayout><SecurityPolicyPage /></PublicLayout>
       </Suspense>
     );
     return <Suspense fallback={<PageLoader />}><LandingPage /></Suspense>;
@@ -327,9 +327,7 @@ function AppShell() {
                 <Route path="/admin/referral-rewards" component={AdminReferralRewardsPage} />
                 <Route path="/admin/reminder-performance" component={AdminReminderPerformancePage} />
                 <Route path="/admin/koalendar-retry" component={AdminKoalendarRetryPage} />
-                <Route path="/changelog" component={ChangelogPage} />
                 <Route path="/compliance" component={CompliancePage} />
-                <Route path="/security" component={SecurityPolicyPage} />
                 <Route path="/reviews" component={ClientReviewsPage} />
                 <Route path="/ref/:code" component={ReferralLandingPage} />
                 <Route component={HomePage} />
