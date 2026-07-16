@@ -150,7 +150,8 @@
       "dompurify": "^3.4.0",
       "follow-redirects": "^1.15.11",
       "mdast-util-to-hast": "^13.2.0",
-      "rollup": "^4.52.5"
+      "rollup": "^4.52.5",
+      "esbuild": "^0.25.0"
     }
   }
 }
