@@ -547,6 +547,8 @@ describe("Get Phame regression contracts", () => {
 
     expect(routers).toContain("currentPeriodEnd: snapshot.currentPeriodEnd");
     expect(stripe).toContain("/payment-success?stripe=1&plan=${plan}");
+    expect(stripe).toContain('const CANONICAL_STRIPE_RETURN_ORIGIN = "https://getphame.app"');
+    expect(stripe).toContain("getStripeReturnOrigin(origin)");
     expect(layout).toContain("subscription?.currentPeriodEnd");
     expect(upgrade).toContain("subscriptionStatus?.currentPeriodEnd");
     expect(paymentSuccess).toContain('t("paymentSuccess.confirmed"');

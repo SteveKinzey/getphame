@@ -42,6 +42,33 @@ export const STRIPE_PRICE_IDS = {
 
 export type StripePlan = keyof typeof STRIPE_PRICE_IDS;
 
+const CANONICAL_STRIPE_RETURN_ORIGIN = "https://getphame.app";
+const CANONICAL_STRIPE_RETURN_HOSTS = new Set(["getphame.app", "www.getphame.app"]);
+
+/**
+ * Checkout and Billing Portal redirect URLs must remain on the branded public
+ * domain. Browser-supplied origins can be stale preview or legacy hosts, so
+ * they are deliberately treated as hints rather than trusted redirect values.
+ */
+export function getStripeReturnOrigin(origin?: string): string {
+  const candidates = [process.env.APP_BASE_URL, origin].filter(
+    (candidate): candidate is string => Boolean(candidate?.trim()),
+  );
+
+  for (const candidate of candidates) {
+    try {
+      const url = new URL(candidate);
+      if (url.protocol === "https:" && CANONICAL_STRIPE_RETURN_HOSTS.has(url.hostname.toLowerCase())) {
+        return CANONICAL_STRIPE_RETURN_ORIGIN;
+      }
+    } catch {
+      // Ignore malformed configuration or browser origins and use the canonical fallback.
+    }
+  }
+
+  return CANONICAL_STRIPE_RETURN_ORIGIN;
+}
+
 export const MONEY_BACK_GUARANTEE_DAYS = 7;
 const MONEY_BACK_GUARANTEE_MS = MONEY_BACK_GUARANTEE_DAYS * 24 * 60 * 60 * 1000;
 
@@ -311,6 +338,7 @@ export async function createCheckoutSession({
 }): Promise<string> {
   const priceId = STRIPE_PRICE_IDS[plan];
   const isLifetime = plan === "lifetime";
+  const returnOrigin = getStripeReturnOrigin(origin);
 
   const params: Parameters<typeof stripe.checkout.sessions.create>[0] = {
     // Lifetime is a one-time payment; monthly/annual are subscriptions
@@ -329,8 +357,8 @@ export async function createCheckoutSession({
         quantity: 1,
       },
     ],
-    success_url: `${origin}/payment-success?stripe=1&plan=${plan}`,
-    cancel_url: `${origin}/upgrade`,
+    success_url: `${returnOrigin}/payment-success?stripe=1&plan=${plan}`,
+    cancel_url: `${returnOrigin}/upgrade`,
     ...(stripeCustomerId
       ? { customer: stripeCustomerId }
       : userEmail
@@ -381,6 +409,7 @@ export async function createThbCheckoutSession({
     throw new Error(`THB price ID not configured for plan: ${plan}. Set STRIPE_PRICE_ID_THB_${plan.toUpperCase()} env var.`);
   }
   const isLifetime = plan === "lifetime";
+  const returnOrigin = getStripeReturnOrigin(origin);
 
   const params: Parameters<typeof stripe.checkout.sessions.create>[0] = {
     mode: isLifetime ? "payment" : "subscription",
@@ -395,8 +424,8 @@ export async function createThbCheckoutSession({
       customer_name: userName ?? "",
     },
     line_items: [{ price: priceId, quantity: 1 }],
-    success_url: `${origin}/payment-success?stripe=1&plan=${plan}`,
-    cancel_url: `${origin}/upgrade`,
+    success_url: `${returnOrigin}/payment-success?stripe=1&plan=${plan}`,
+    cancel_url: `${returnOrigin}/upgrade`,
     ...(stripeCustomerId
       ? { customer: stripeCustomerId }
       : userEmail
@@ -413,9 +442,10 @@ export async function createPortalSession(
   stripeCustomerId: string,
   origin: string
 ): Promise<string> {
+  const returnOrigin = getStripeReturnOrigin(origin);
   const session = await stripe.billingPortal.sessions.create({
     customer: stripeCustomerId,
-    return_url: `${origin}/settings`,
+    return_url: `${returnOrigin}/settings`,
   });
   return session.url;
 }

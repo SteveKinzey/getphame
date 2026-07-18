@@ -421,3 +421,7 @@
 - [x] Create and validate the reusable `lead-magnet-pdf-delivery` skill through the approved skill-creator workflow.
 - [x] Run focused and full Vitest, TypeScript, production security/build gates, production-log review, and desktop plus phone visual verification.
 - [x] Publish the validated release and deliver the checkpoint, corrected guide, and reusable skill package.
+
+- [x] Audit Stripe Checkout return URLs and active test webhook records for stale legacy or temporary domains; keep the customer-facing application origin at `https://getphame.app`.
+- [x] Force future standard Checkout, THB Checkout, and Billing Portal return URLs to the canonical Get Phame origin with regression coverage.
+- [x] Verify `https://getphame.app/api/stripe/webhook` reaches the deployed signed handler, then replace the temporary active Stripe test webhook URL only after user confirmation.
