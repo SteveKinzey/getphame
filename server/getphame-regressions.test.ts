@@ -752,6 +752,35 @@ describe("Get Phame regression contracts", () => {
     expect(privacy).not.toContain("rr-text-navy");
   });
 
+  it("keeps routed support submissions, safe screenshots, and the admin inbox connected", () => {
+    const supportDialog = readProjectFile("../client/src/components/landing/SupportDialog.tsx");
+    const supportIntake = readProjectFile("./supportIntake.ts");
+    const supportRouter = readProjectFile("./routers.ts");
+    const schema = readProjectFile("../drizzle/schema.ts");
+    const inbox = readProjectFile("../client/src/pages/AdminSupportInbox.tsx");
+    const app = readProjectFile("../client/src/App.tsx");
+    const adminDashboard = readProjectFile("../client/src/pages/AdminDashboard.tsx");
+
+    expect(supportDialog).toContain('topic: "billing" | "onboarding" | "technical"');
+    expect(supportDialog).toContain("trpc.support.uploadScreenshot.useMutation");
+    expect(supportDialog).toContain('accept="image/jpeg,image/png,image/webp"');
+    expect(supportIntake).toContain('SUPPORT_ATTACHMENT_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"]');
+    expect(supportIntake).toContain("MAX_SUPPORT_ATTACHMENT_BYTES = 8 * 1024 * 1024");
+    expect(supportIntake).toContain("isValidSupportScreenshot");
+    expect(schema).toContain("export const supportSubmissions");
+    expect(supportRouter).toContain("uploadScreenshot: publicProcedure");
+    expect(supportRouter).toContain("supportSubmissions");
+    expect(supportRouter).toContain("adminList: adminProcedure");
+    expect(supportRouter).toContain("updateStatus: adminProcedure");
+    expect(supportRouter).toContain("storageGet(row.attachmentKey)");
+    expect(inbox).toContain("trpc.support.adminList.useQuery");
+    expect(inbox).toContain("trpc.support.updateStatus.useMutation");
+    expect(inbox).toContain("Open screenshot");
+    expect(app).toContain('const AdminSupportInboxPage = lazy(() => import("./pages/AdminSupportInbox"))');
+    expect(app).toContain('<Route path="/admin/support" component={AdminSupportInboxPage} />');
+    expect(adminDashboard).toContain('{ path: "/admin/support", label: "Support inbox"');
+  });
+
   it("uses corrected permanent mockups without the obsolete embedded P-plus-star artwork", () => {
     const showcase = readProjectFile("../client/src/components/landing/ProductShowcase.tsx");
 

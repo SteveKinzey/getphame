@@ -29,6 +29,8 @@ export const authDiagnosticEventTypeEnum = pgEnum("auth_diagnostic_event_type", 
   "verification_failed",
 ]);
 export const authHealthTriggerEnum = pgEnum("auth_health_trigger", ["scheduled", "manual"]);
+export const supportTopicEnum = pgEnum("support_topic", ["billing", "onboarding", "technical"]);
+export const supportSubmissionStatusEnum = pgEnum("support_submission_status", ["open", "in_progress", "resolved"]);
 
 // ─── Tables ───────────────────────────────────────────────────────────────────
 
@@ -473,6 +475,34 @@ export const emailEvents = pgTable("email_events", {
 
 export type EmailEvent = typeof emailEvents.$inferSelect;
 export type InsertEmailEvent = typeof emailEvents.$inferInsert;
+
+/**
+ * Public product-support submissions. Attachment bytes remain in object storage;
+ * this table stores only the metadata necessary for durable support operations.
+ */
+export const supportSubmissions = pgTable("support_submissions", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 120 }),
+  email: varchar("email", { length: 320 }).notNull(),
+  topic: supportTopicEnum("topic").notNull(),
+  subject: varchar("subject", { length: 120 }).notNull(),
+  message: text("message").notNull(),
+  status: supportSubmissionStatusEnum("status").notNull().default("open"),
+  attachmentKey: varchar("attachment_key", { length: 512 }),
+  attachmentFilename: varchar("attachment_filename", { length: 255 }),
+  attachmentMimeType: varchar("attachment_mime_type", { length: 64 }),
+  attachmentSize: integer("attachment_size"),
+  notificationSentAt: timestamp("notification_sent_at"),
+  resolvedAt: timestamp("resolved_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
+}, (table) => [
+  index("support_submissions_status_created_idx").on(table.status, table.createdAt),
+  index("support_submissions_topic_created_idx").on(table.topic, table.createdAt),
+]);
+
+export type SupportSubmission = typeof supportSubmissions.$inferSelect;
+export type InsertSupportSubmission = typeof supportSubmissions.$inferInsert;
 
 /**
  * Churn survey responses — one row per cancellation.

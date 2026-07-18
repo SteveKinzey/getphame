@@ -40,18 +40,27 @@ describe("support message delivery", () => {
     await expect(sendSupportMessage({
       name: "Ava <script>",
       email: "ava@example.com",
+      topic: "technical",
       subject: "Cannot import customers",
       message: "The import stops at 80%.\nCan you help?",
+      submissionId: 42,
+      attachment: {
+        filename: "screen shot.png",
+        url: "/manus-storage/support/42/screen-shot.png",
+      },
     })).resolves.toEqual({ sent: true });
 
     expect(sendMail).toHaveBeenCalledWith(expect.objectContaining({
       from: `"Get Phame Support" <${SUPPORT_FROM_EMAIL}>`,
       to: SUPPORT_TO_EMAIL,
       replyTo: "ava@example.com",
-      subject: "Support request: Cannot import customers",
+      subject: "[Technical issue] Support request: Cannot import customers",
       text: expect.stringContaining("The import stops at 80%"),
       html: expect.stringContaining("&lt;script&gt;"),
     }));
+    expect(sendMail.mock.calls[0]?.[0]?.text).toContain("Topic: Technical issue");
+    expect(sendMail.mock.calls[0]?.[0]?.text).toContain("Screenshot: screen shot.png");
+    expect(sendMail.mock.calls[0]?.[0]?.html).toContain("Reference #42");
   });
 
   it("does not claim delivery when the provider rejects the support inbox", async () => {
@@ -59,6 +68,7 @@ describe("support message delivery", () => {
 
     await expect(sendSupportMessage({
       email: "ava@example.com",
+      topic: "technical",
       subject: "Help",
       message: "I need help with a setting.",
     })).resolves.toEqual({ sent: false });

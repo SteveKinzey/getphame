@@ -45,7 +45,16 @@ import {
 } from "./stripe";
 import { GUIDE_PDF_URL, sendLeadGuideEmail } from "./leadGuideEmail";
 import { sendSupportMessage } from "./supportEmail";
-import { checkSupportSubmissionRateLimit } from "./supportRateLimit";
+import { checkSupportAttachmentRateLimit, checkSupportSubmissionRateLimit } from "./supportRateLimit";
+import {
+  getSupportAttachmentExtension,
+  isValidSupportScreenshot,
+  MAX_SUPPORT_ATTACHMENT_BYTES,
+  sanitizeSupportAttachmentFilename,
+  SUPPORT_ATTACHMENT_MIME_TYPES,
+  SUPPORT_SUBMISSION_STATUSES,
+  SUPPORT_TOPICS,
+} from "./supportIntake";
 import { buildDailyTrend } from "./dailyTrend";
 import {
   getWooCredentials,
@@ -59,7 +68,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads, koalendarBookings, koalendarConnections } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads, koalendarBookings, koalendarConnections, supportSubmissions } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
 import { PWA_EVENT_NAMES, PWA_EVENT_SOURCE, summarizePwaEvents, toPwaEventPage } from "./pwaAnalytics";
 import { eq, like, or, inArray, desc, isNotNull, isNull, and, sql, gte, lte, count } from "drizzle-orm";
@@ -3418,12 +3427,56 @@ export const appRouter = router({
 
   /** Anonymous landing-footer support form with a deliberately inert honeypot. */
   support: router({
+    uploadScreenshot: publicProcedure
+      .input(z.object({
+        filename: z.string().trim().min(1).max(255),
+        mimeType: z.enum(SUPPORT_ATTACHMENT_MIME_TYPES),
+        dataBase64: z.string().min(4).max(11_200_000),
+        website: z.string().max(250).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        // Keep honeypot responses deliberately uninformative and avoid storage writes.
+        if (input.website) return { ok: true as const, attachment: null };
+
+        const forwarded = ctx.req.headers["x-forwarded-for"];
+        const requestKey = (Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(",")[0])?.trim() || ctx.req.ip || "anonymous";
+        checkSupportAttachmentRateLimit(requestKey);
+
+        const data = Buffer.from(input.dataBase64, "base64");
+        if (data.length === 0 || data.length > MAX_SUPPORT_ATTACHMENT_BYTES || !isValidSupportScreenshot(data, input.mimeType)) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Upload a valid JPG, PNG, or WebP screenshot up to 8 MB.",
+          });
+        }
+
+        const extension = getSupportAttachmentExtension(input.mimeType);
+        const key = `support-screenshots/${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${extension}`;
+        await storagePut(key, data, input.mimeType);
+
+        return {
+          ok: true as const,
+          attachment: {
+            key,
+            filename: sanitizeSupportAttachmentFilename(input.filename),
+            mimeType: input.mimeType,
+            size: data.length,
+          },
+        };
+      }),
     submit: publicProcedure
       .input(z.object({
         name: z.string().trim().max(80).optional(),
         email: z.string().trim().toLowerCase().email().max(254),
+        topic: z.enum(SUPPORT_TOPICS),
         subject: z.string().trim().min(3).max(120).refine((value) => !/[\r\n]/.test(value), "Invalid subject"),
         message: z.string().trim().min(10).max(4000),
+        attachment: z.object({
+          key: z.string().startsWith("support-screenshots/").max(512),
+          filename: z.string().trim().min(1).max(255),
+          mimeType: z.enum(SUPPORT_ATTACHMENT_MIME_TYPES),
+          size: z.number().int().positive().max(MAX_SUPPORT_ATTACHMENT_BYTES),
+        }).optional(),
         website: z.string().max(250).optional(),
       }))
       .mutation(async ({ ctx, input }) => {
@@ -3434,7 +3487,48 @@ export const appRouter = router({
         const requestKey = (Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(",")[0])?.trim() || ctx.req.ip || "anonymous";
         checkSupportSubmissionRateLimit(requestKey);
 
-        const result = await sendSupportMessage(input);
+        const db = await getDb();
+        if (!db) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "We could not save your message right now. Please try again shortly.",
+          });
+        }
+
+        const [insertResult] = await db.insert(supportSubmissions).values({
+          name: input.name || null,
+          email: input.email,
+          topic: input.topic,
+          subject: input.subject,
+          message: input.message,
+          attachmentKey: input.attachment?.key ?? null,
+          attachmentFilename: input.attachment?.filename ?? null,
+          attachmentMimeType: input.attachment?.mimeType ?? null,
+          attachmentSize: input.attachment?.size ?? null,
+        });
+        const submissionId = Number((insertResult as { insertId?: number }).insertId ?? 0);
+        if (!submissionId) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "We could not save your message right now. Please try again shortly.",
+          });
+        }
+
+        const attachment = input.attachment
+          ? {
+              filename: input.attachment.filename,
+              url: (await storageGet(input.attachment.key)).url,
+            }
+          : undefined;
+        const result = await sendSupportMessage({
+          name: input.name,
+          email: input.email,
+          topic: input.topic,
+          subject: input.subject,
+          message: input.message,
+          submissionId,
+          attachment,
+        });
         if (!result.sent) {
           throw new TRPCError({
             code: "INTERNAL_SERVER_ERROR",
@@ -3442,7 +3536,53 @@ export const appRouter = router({
           });
         }
 
-        return { ok: true, sent: true };
+        await db.update(supportSubmissions)
+          .set({ notificationSentAt: new Date() })
+          .where(eq(supportSubmissions.id, submissionId));
+
+        return { ok: true, sent: true, submissionId };
+      }),
+    adminList: adminProcedure
+      .input(z.object({
+        status: z.enum(SUPPORT_SUBMISSION_STATUSES).optional(),
+        topic: z.enum(SUPPORT_TOPICS).optional(),
+      }).optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        const rows = await db.select()
+          .from(supportSubmissions)
+          .where(and(
+            input?.status ? eq(supportSubmissions.status, input.status) : sql`1 = 1`,
+            input?.topic ? eq(supportSubmissions.topic, input.topic) : sql`1 = 1`,
+          ))
+          .orderBy(desc(supportSubmissions.createdAt))
+          .limit(250);
+
+        return Promise.all(rows.map(async (row) => ({
+          ...row,
+          attachmentUrl: row.attachmentKey
+            ? await storageGet(row.attachmentKey).then((attachment) => attachment.url).catch(() => null)
+            : null,
+        })));
+      }),
+    updateStatus: adminProcedure
+      .input(z.object({
+        id: z.number().int().positive(),
+        status: z.enum(SUPPORT_SUBMISSION_STATUSES),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        await db.update(supportSubmissions)
+          .set({
+            status: input.status,
+            resolvedAt: input.status === "resolved" ? new Date() : null,
+          })
+          .where(eq(supportSubmissions.id, input.id));
+        return { ok: true as const };
       }),
   }),
 

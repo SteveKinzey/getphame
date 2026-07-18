@@ -431,3 +431,10 @@
 - [x] Remediate all Privacy Policy contrast, heading, link, focus, and semantic accessibility violations evidenced by the supplied screenshot while preserving readable responsive layout.
 - [x] Add focused regression coverage and run desktop/mobile accessibility validation for the support flow and Privacy Policy.
 - [x] Deliver support-form submissions from `hello@getphame.app` to the confirmed recipient `support@getphame.app` through the existing Resend-backed system sender.
+
+- [x] Create and validate a reusable skill that captures the accessible, Resend-backed, abuse-resistant support-intake pattern used by Get Phame.
+- [x] Add an accessible support-topic selector with Billing, Onboarding, and Technical Issue options and include the chosen topic in stored and emailed submissions.
+- [x] Persist support submissions with secure screenshot-attachment metadata and lifecycle status in the database without storing file bytes in database columns.
+- [x] Add secure client-to-storage screenshot uploads with type/size validation, clear attachment feedback, and protected admin access to attachment links.
+- [x] Build an admin-only support inbox with topic, sender, status, timestamp, message, and attachment visibility.
+- [x] Add schema-aware tests and user/admin workflow validation, then publish the expanded support system.
