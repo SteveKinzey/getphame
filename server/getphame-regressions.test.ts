@@ -698,6 +698,8 @@ describe("Get Phame regression contracts", () => {
     expect(footer).toContain('defaultValue: "© {{year}} Get Phame. All rights reserved."');
     expect(footer).toContain('href="/privacy-policy"');
     expect(footer).toContain('href="/terms-of-service"');
+    expect(footer).toContain("<SupportDialog />");
+    expect(footer).not.toContain('mailto:support@getphame.app');
     expect(footer).toContain("https://assets.getphame.app/getphame-logo-mark.webp");
 
     const authGateIndex = app.indexOf("if (!user)");
@@ -724,6 +726,30 @@ describe("Get Phame regression contracts", () => {
     expect(app).toContain("<PublicLayout><SecurityPolicyPage /></PublicLayout>");
     expect(app).not.toContain('<Route path="/changelog" component={ChangelogPage} />');
     expect(app).not.toContain('<Route path="/security" component={SecurityPolicyPage} />');
+  });
+
+  it("uses an accessible Resend-backed support form and high-contrast Privacy Policy content", () => {
+    const supportDialog = readProjectFile("../client/src/components/landing/SupportDialog.tsx");
+    const supportEmail = readProjectFile("./supportEmail.ts");
+    const supportRouter = readProjectFile("./routers.ts");
+    const privacy = readProjectFile("../client/src/pages/PrivacyPolicy.tsx");
+
+    expect(supportDialog).toContain("trpc.support.submit.useMutation");
+    expect(supportDialog).toContain('aria-invalid={Boolean(fieldError("email"))}');
+    expect(supportDialog).toContain('role="status"');
+    expect(supportDialog).toContain('role="alert"');
+    expect(supportDialog).toContain("Do not include passwords or card information.");
+    expect(supportEmail).toContain('SUPPORT_FROM_EMAIL = "hello@getphame.app"');
+    expect(supportEmail).toContain('SUPPORT_TO_EMAIL = "support@getphame.app"');
+    expect(supportEmail).toContain("replyTo: safeEmail");
+    expect(supportRouter).toContain("checkSupportSubmissionRateLimit(requestKey)");
+    expect(supportRouter).toContain("website: z.string().max(250).optional()");
+    expect(privacy).toContain("text-slate-100");
+    expect(privacy).toContain("text-slate-300");
+    expect(privacy).toContain("[&_a:focus-visible]:ring-2");
+    expect(privacy).toContain('<time dateTime="2026-04-13">');
+    expect(privacy).toContain("border-primary pl-3 text-slate-100");
+    expect(privacy).not.toContain("rr-text-navy");
   });
 
   it("uses corrected permanent mockups without the obsolete embedded P-plus-star artwork", () => {

@@ -425,3 +425,9 @@
 - [x] Audit Stripe Checkout return URLs and active test webhook records for stale legacy or temporary domains; keep the customer-facing application origin at `https://getphame.app`.
 - [x] Force future standard Checkout, THB Checkout, and Billing Portal return URLs to the canonical Get Phame origin with regression coverage.
 - [x] Verify `https://getphame.app/api/stripe/webhook` reaches the deployed signed handler, then replace the temporary active Stripe test webhook URL only after user confirmation.
+
+- [x] Confirm the intended support recipient address, then replace the landing-footer mail link with an accessible support form delivered through Resend from `hello@getphame.app`.
+- [x] Implement server-side support-message validation, rate-abuse safeguards, and an accessible form success/error experience without exposing email-provider credentials to the client.
+- [x] Remediate all Privacy Policy contrast, heading, link, focus, and semantic accessibility violations evidenced by the supplied screenshot while preserving readable responsive layout.
+- [x] Add focused regression coverage and run desktop/mobile accessibility validation for the support flow and Privacy Policy.
+- [x] Deliver support-form submissions from `hello@getphame.app` to the confirmed recipient `support@getphame.app` through the existing Resend-backed system sender.

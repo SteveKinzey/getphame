@@ -44,6 +44,8 @@ import {
   getSubscriptionSnapshot,
 } from "./stripe";
 import { GUIDE_PDF_URL, sendLeadGuideEmail } from "./leadGuideEmail";
+import { sendSupportMessage } from "./supportEmail";
+import { checkSupportSubmissionRateLimit } from "./supportRateLimit";
 import { buildDailyTrend } from "./dailyTrend";
 import {
   getWooCredentials,
@@ -3411,6 +3413,36 @@ export const appRouter = router({
         if (!referrerUserId || referrerUserId === ctx.user.id) return { ok: false };
         await recordReferral(referrerUserId, ctx.user.id, input.code);
         return { ok: true };
+      }),
+  }),
+
+  /** Anonymous landing-footer support form with a deliberately inert honeypot. */
+  support: router({
+    submit: publicProcedure
+      .input(z.object({
+        name: z.string().trim().max(80).optional(),
+        email: z.string().trim().toLowerCase().email().max(254),
+        subject: z.string().trim().min(3).max(120).refine((value) => !/[\r\n]/.test(value), "Invalid subject"),
+        message: z.string().trim().min(10).max(4000),
+        website: z.string().max(250).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        // Accept honeypot submissions without sending an email so bots receive no useful signal.
+        if (input.website) return { ok: true, sent: true };
+
+        const forwarded = ctx.req.headers["x-forwarded-for"];
+        const requestKey = (Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(",")[0])?.trim() || ctx.req.ip || "anonymous";
+        checkSupportSubmissionRateLimit(requestKey);
+
+        const result = await sendSupportMessage(input);
+        if (!result.sent) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "We could not send your message right now. Please try again shortly.",
+          });
+        }
+
+        return { ok: true, sent: true };
       }),
   }),
 

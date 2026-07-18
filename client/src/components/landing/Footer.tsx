@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import SupportDialog from "./SupportDialog";
 
 const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
 
@@ -34,12 +35,7 @@ export default function Footer() {
             >
 {t("landing.footer.security", { defaultValue: "Security" })}
             </a>
-            <a
-              href="mailto:support@getphame.app"
-              className="text-slate-200 hover:text-white transition-colors font-medium"
-            >
-{t("landing.footer.support", { defaultValue: "Support" })}
-            </a>
+            <SupportDialog />
           </div>
 
         </div>
