@@ -78,6 +78,13 @@
       "when": 1784416826991,
       "tag": "0010_secret_fenris",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "5",
+      "when": 1784417747989,
+      "tag": "0011_shocking_vulcan",
+      "breakpoints": true
     }
   ]
 }

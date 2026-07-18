@@ -52,6 +52,7 @@ import {
   MAX_SUPPORT_ATTACHMENT_BYTES,
   sanitizeSupportAttachmentFilename,
   SUPPORT_ATTACHMENT_MIME_TYPES,
+  SUPPORT_PRIORITIES,
   SUPPORT_SUBMISSION_STATUSES,
   SUPPORT_TOPICS,
 } from "./supportIntake";
@@ -3546,16 +3547,45 @@ export const appRouter = router({
       .input(z.object({
         status: z.enum(SUPPORT_SUBMISSION_STATUSES).optional(),
         topic: z.enum(SUPPORT_TOPICS).optional(),
+        priority: z.enum(SUPPORT_PRIORITIES).optional(),
+        assigneeUserId: z.union([z.literal("unassigned"), z.number().int().positive()]).optional(),
       }).optional())
       .query(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
 
-        const rows = await db.select()
+        const rows = await db.select({
+          id: supportSubmissions.id,
+          name: supportSubmissions.name,
+          email: supportSubmissions.email,
+          topic: supportSubmissions.topic,
+          subject: supportSubmissions.subject,
+          message: supportSubmissions.message,
+          status: supportSubmissions.status,
+          priority: supportSubmissions.priority,
+          assigneeUserId: supportSubmissions.assigneeUserId,
+          assigneeName: users.name,
+          assigneeEmail: users.email,
+          attachmentKey: supportSubmissions.attachmentKey,
+          attachmentFilename: supportSubmissions.attachmentFilename,
+          attachmentMimeType: supportSubmissions.attachmentMimeType,
+          attachmentSize: supportSubmissions.attachmentSize,
+          notificationSentAt: supportSubmissions.notificationSentAt,
+          resolvedAt: supportSubmissions.resolvedAt,
+          createdAt: supportSubmissions.createdAt,
+          updatedAt: supportSubmissions.updatedAt,
+        })
           .from(supportSubmissions)
+          .leftJoin(users, eq(supportSubmissions.assigneeUserId, users.id))
           .where(and(
             input?.status ? eq(supportSubmissions.status, input.status) : sql`1 = 1`,
             input?.topic ? eq(supportSubmissions.topic, input.topic) : sql`1 = 1`,
+            input?.priority ? eq(supportSubmissions.priority, input.priority) : sql`1 = 1`,
+            input?.assigneeUserId === "unassigned"
+              ? isNull(supportSubmissions.assigneeUserId)
+              : typeof input?.assigneeUserId === "number"
+                ? eq(supportSubmissions.assigneeUserId, input.assigneeUserId)
+                : sql`1 = 1`,
           ))
           .orderBy(desc(supportSubmissions.createdAt))
           .limit(250);
@@ -3567,6 +3597,20 @@ export const appRouter = router({
             : null,
         })));
       }),
+    /** Eligible support operators are sourced from the authoritative admin user directory. */
+    adminAssignees: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+      return db.select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+      })
+        .from(users)
+        .where(eq(users.role, "admin"))
+        .orderBy(users.name, users.email);
+    }),
     updateStatus: adminProcedure
       .input(z.object({
         id: z.number().int().positive(),
@@ -3581,6 +3625,59 @@ export const appRouter = router({
             status: input.status,
             resolvedAt: input.status === "resolved" ? new Date() : null,
           })
+          .where(eq(supportSubmissions.id, input.id));
+        return { ok: true as const };
+      }),
+    updatePriority: adminProcedure
+      .input(z.object({
+        id: z.number().int().positive(),
+        priority: z.enum(SUPPORT_PRIORITIES),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        const [ticket] = await db.select({ id: supportSubmissions.id })
+          .from(supportSubmissions)
+          .where(eq(supportSubmissions.id, input.id))
+          .limit(1);
+        if (!ticket) throw new TRPCError({ code: "NOT_FOUND", message: "Support ticket not found." });
+
+        await db.update(supportSubmissions)
+          .set({ priority: input.priority })
+          .where(eq(supportSubmissions.id, input.id));
+        return { ok: true as const };
+      }),
+    updateAssignee: adminProcedure
+      .input(z.object({
+        id: z.number().int().positive(),
+        assigneeUserId: z.number().int().positive().nullable(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        const [ticket] = await db.select({ id: supportSubmissions.id })
+          .from(supportSubmissions)
+          .where(eq(supportSubmissions.id, input.id))
+          .limit(1);
+        if (!ticket) throw new TRPCError({ code: "NOT_FOUND", message: "Support ticket not found." });
+
+        if (input.assigneeUserId !== null) {
+          const [assignee] = await db.select({ id: users.id })
+            .from(users)
+            .where(and(eq(users.id, input.assigneeUserId), eq(users.role, "admin")))
+            .limit(1);
+          if (!assignee) {
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+              message: "Choose an active administrator as the support ticket assignee.",
+            });
+          }
+        }
+
+        await db.update(supportSubmissions)
+          .set({ assigneeUserId: input.assigneeUserId })
           .where(eq(supportSubmissions.id, input.id));
         return { ok: true as const };
       }),

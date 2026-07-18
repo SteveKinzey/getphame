@@ -438,3 +438,9 @@
 - [x] Add secure client-to-storage screenshot uploads with type/size validation, clear attachment feedback, and protected admin access to attachment links.
 - [x] Build an admin-only support inbox with topic, sender, status, timestamp, message, and attachment visibility.
 - [x] Add schema-aware tests and user/admin workflow validation, then publish the expanded support system.
+
+- [x] Update and validate the reusable support-intake skill with priority and assignee management patterns.
+- [x] Add durable support-ticket priority and assignee fields with an indexed, schema-first migration that preserves existing submissions.
+- [x] Add protected administrative ticket-management APIs for priority and ownership updates with clear assignment eligibility.
+- [x] Enhance the responsive admin support inbox with priority and assignee controls, filters, and clear unassigned states.
+- [x] Add focused priority/assignment authorization, persistence, API, and UI regression coverage; validate desktop and mobile, then publish.

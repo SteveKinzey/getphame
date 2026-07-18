@@ -4,6 +4,9 @@ export type SupportTopic = (typeof SUPPORT_TOPICS)[number];
 export const SUPPORT_SUBMISSION_STATUSES = ["open", "in_progress", "resolved"] as const;
 export type SupportSubmissionStatus = (typeof SUPPORT_SUBMISSION_STATUSES)[number];
 
+export const SUPPORT_PRIORITIES = ["low", "normal", "high", "urgent"] as const;
+export type SupportPriority = (typeof SUPPORT_PRIORITIES)[number];
+
 export const SUPPORT_ATTACHMENT_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 export type SupportAttachmentMimeType = (typeof SUPPORT_ATTACHMENT_MIME_TYPES)[number];
 

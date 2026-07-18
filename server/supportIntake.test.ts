@@ -4,6 +4,7 @@ import {
   isValidSupportScreenshot,
   MAX_SUPPORT_ATTACHMENT_BYTES,
   sanitizeSupportAttachmentFilename,
+  SUPPORT_PRIORITIES,
 } from "./supportIntake";
 
 describe("support screenshot intake", () => {
@@ -22,5 +23,9 @@ describe("support screenshot intake", () => {
     expect(getSupportAttachmentExtension("image/png")).toBe("png");
     expect(getSupportAttachmentExtension("image/webp")).toBe("webp");
     expect(MAX_SUPPORT_ATTACHMENT_BYTES).toBe(8 * 1024 * 1024);
+  });
+
+  it("uses a finite and ordered internal priority scale for support triage", () => {
+    expect(SUPPORT_PRIORITIES).toEqual(["low", "normal", "high", "urgent"]);
   });
 });

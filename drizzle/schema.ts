@@ -31,6 +31,7 @@ export const authDiagnosticEventTypeEnum = pgEnum("auth_diagnostic_event_type", 
 export const authHealthTriggerEnum = pgEnum("auth_health_trigger", ["scheduled", "manual"]);
 export const supportTopicEnum = pgEnum("support_topic", ["billing", "onboarding", "technical"]);
 export const supportSubmissionStatusEnum = pgEnum("support_submission_status", ["open", "in_progress", "resolved"]);
+export const supportPriorityEnum = pgEnum("support_priority", ["low", "normal", "high", "urgent"]);
 
 // ─── Tables ───────────────────────────────────────────────────────────────────
 
@@ -488,6 +489,10 @@ export const supportSubmissions = pgTable("support_submissions", {
   subject: varchar("subject", { length: 120 }).notNull(),
   message: text("message").notNull(),
   status: supportSubmissionStatusEnum("status").notNull().default("open"),
+  // New and existing tickets start at Normal; only internal administrators can alter priority.
+  priority: supportPriorityEnum("priority").notNull().default("normal"),
+  // Nullable explicitly represents an unassigned ticket; eligibility is enforced by admin mutations.
+  assigneeUserId: integer("assignee_user_id"),
   attachmentKey: varchar("attachment_key", { length: 512 }),
   attachmentFilename: varchar("attachment_filename", { length: 255 }),
   attachmentMimeType: varchar("attachment_mime_type", { length: 64 }),
@@ -499,6 +504,8 @@ export const supportSubmissions = pgTable("support_submissions", {
 }, (table) => [
   index("support_submissions_status_created_idx").on(table.status, table.createdAt),
   index("support_submissions_topic_created_idx").on(table.topic, table.createdAt),
+  index("support_submissions_priority_status_created_idx").on(table.priority, table.status, table.createdAt),
+  index("support_submissions_assignee_status_created_idx").on(table.assigneeUserId, table.status, table.createdAt),
 ]);
 
 export type SupportSubmission = typeof supportSubmissions.$inferSelect;
