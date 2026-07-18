@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
-import { ArrowLeft, ExternalLink, Flag, Inbox, Loader2, MessageSquareText, Paperclip, RefreshCw, UserRoundCheck } from "lucide-react";
+import { AlertTriangle, ArrowLeft, CalendarClock, CheckCircle2, Clock3, ExternalLink, Flag, Inbox, Loader2, MessageSquareText, Paperclip, RefreshCw, SendHorizontal, StickyNote, UserRoundCheck, X } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -66,6 +66,208 @@ function formatAssignee(name: string | null, email: string | null) {
   return name?.trim() || email || "Assigned administrator";
 }
 
+function toDateTimeLocalValue(value: Date | string | null | undefined) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
+  return local.toISOString().slice(0, 16);
+}
+
+function formatDateTime(value: Date | string | null | undefined) {
+  if (!value) return "Not set";
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "Not set" : date.toLocaleString();
+}
+
+function formatDuration(milliseconds: number) {
+  const totalMinutes = Math.max(1, Math.ceil(milliseconds / 60_000));
+  const days = Math.floor(totalMinutes / 1_440);
+  const hours = Math.floor((totalMinutes % 1_440) / 60);
+  const minutes = totalMinutes % 60;
+  if (days > 0) return `${days}d ${hours}h`;
+  if (hours > 0) return `${hours}h ${minutes}m`;
+  return `${minutes}m`;
+}
+
+function getSlaState(status: SupportStatus, targetAt: Date | string | null | undefined) {
+  if (status === "resolved") {
+    return { label: "SLA closed with ticket", tone: "bg-emerald-50 text-emerald-800", icon: CheckCircle2 };
+  }
+  if (!targetAt) {
+    return { label: "SLA target pending", tone: "bg-slate-100 text-slate-700", icon: Clock3 };
+  }
+
+  const delta = new Date(targetAt).getTime() - Date.now();
+  if (delta <= 0) {
+    return { label: `SLA overdue by ${formatDuration(Math.abs(delta))}`, tone: "bg-red-50 text-red-800", icon: AlertTriangle };
+  }
+  if (delta <= 4 * 60 * 60 * 1000) {
+    return { label: `SLA due in ${formatDuration(delta)}`, tone: "bg-amber-50 text-amber-900", icon: AlertTriangle };
+  }
+  return { label: `SLA due in ${formatDuration(delta)}`, tone: "bg-blue-50 text-blue-900", icon: Clock3 };
+}
+
+function TicketDeadlineControls({
+  ticketId,
+  status,
+  dueAt,
+  slaTargetAt,
+}: {
+  ticketId: number;
+  status: SupportStatus;
+  dueAt: Date | string | null | undefined;
+  slaTargetAt: Date | string | null | undefined;
+}) {
+  const [dueValue, setDueValue] = useState(() => toDateTimeLocalValue(dueAt));
+  const utils = trpc.useUtils();
+  const updateDueAt = trpc.support.updateDueAt.useMutation({
+    onSuccess: () => {
+      toast.success("Ticket due date updated.");
+      void utils.support.adminList.invalidate();
+    },
+    onError: (error) => toast.error(error.message || "Unable to update the due date."),
+  });
+  const sla = getSlaState(status, slaTargetAt);
+  const SlaIcon = sla.icon;
+
+  useEffect(() => {
+    setDueValue(toDateTimeLocalValue(dueAt));
+  }, [dueAt]);
+
+  const saveDueDate = () => {
+    if (!dueValue) {
+      updateDueAt.mutate({ id: ticketId, dueAt: null });
+      return;
+    }
+
+    const dueAtDate = new Date(dueValue);
+    if (Number.isNaN(dueAtDate.getTime())) {
+      toast.error("Choose a valid due date and time.");
+      return;
+    }
+    updateDueAt.mutate({ id: ticketId, dueAt: dueAtDate.toISOString() });
+  };
+
+  return (
+    <section className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3" aria-label="Ticket deadlines">
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <div>
+          <p className="text-xs font-black uppercase tracking-wide rr-text-navy-muted">SLA timer</p>
+          <div className={`mt-1 inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-black ${sla.tone}`}>
+            <SlaIcon size={14} aria-hidden="true" />
+            {sla.label}
+          </div>
+          <p className="mt-1 text-xs font-medium rr-text-navy-muted">Target: {formatDateTime(slaTargetAt)}</p>
+        </div>
+        <div className="min-w-[13rem] flex-1 sm:max-w-xs">
+          <label htmlFor={`support-due-${ticketId}`} className="flex items-center gap-1 text-xs font-black uppercase tracking-wide rr-text-navy-muted">
+            <CalendarClock size={13} aria-hidden="true" /> Manual due date
+          </label>
+          <input
+            id={`support-due-${ticketId}`}
+            type="datetime-local"
+            value={dueValue}
+            onChange={(event) => setDueValue(event.target.value)}
+            disabled={updateDueAt.isPending}
+            className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400 disabled:cursor-wait disabled:opacity-60"
+          />
+          <div className="mt-2 flex gap-2">
+            <button
+              type="button"
+              onClick={saveDueDate}
+              disabled={updateDueAt.isPending}
+              className="inline-flex min-h-9 flex-1 items-center justify-center rounded-lg rr-bg-navy px-3 text-xs font-black text-white transition active:scale-[0.97] disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2"
+            >
+              Save deadline
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setDueValue("");
+                updateDueAt.mutate({ id: ticketId, dueAt: null });
+              }}
+              disabled={!dueAt || updateDueAt.isPending}
+              className="inline-flex min-h-9 items-center justify-center rounded-lg border border-slate-300 bg-white px-3 text-xs font-black rr-text-navy transition hover:border-amber-400 disabled:cursor-not-allowed disabled:opacity-45 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2"
+            >
+              <X size={14} aria-hidden="true" /> <span className="sr-only">Clear deadline</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function TicketInternalNotes({ ticketId }: { ticketId: number }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [draft, setDraft] = useState("");
+  const utils = trpc.useUtils();
+  const notes = trpc.support.internalNotes.useQuery({ id: ticketId }, { enabled: isOpen });
+  const addNote = trpc.support.addInternalNote.useMutation({
+    onSuccess: () => {
+      setDraft("");
+      toast.success("Internal note added.");
+      void utils.support.internalNotes.invalidate({ id: ticketId });
+    },
+    onError: (error) => toast.error(error.message || "Unable to add the internal note."),
+  });
+
+  return (
+    <section className="mt-4 rounded-xl border border-slate-200 bg-white" aria-labelledby={`support-notes-heading-${ticketId}`}>
+      <button
+        type="button"
+        onClick={() => setIsOpen((open) => !open)}
+        aria-expanded={isOpen}
+        className="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-left transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-inset"
+      >
+        <span id={`support-notes-heading-${ticketId}`} className="inline-flex items-center gap-2 text-sm font-black rr-text-navy"><StickyNote size={16} aria-hidden="true" /> Internal resolution notes</span>
+        <span className="text-xs font-bold rr-text-navy-muted">{isOpen ? "Hide" : "Collaborate"}</span>
+      </button>
+      {isOpen && (
+        <div className="border-t border-slate-200 p-3">
+          <p className="mb-3 text-xs font-semibold rr-text-navy-muted">Private to administrators. Notes are never included in customer messages.</p>
+          <div className="max-h-64 space-y-2 overflow-y-auto pr-1">
+            {notes.isLoading ? (
+              <div className="flex justify-center py-4"><Loader2 className="animate-spin rr-text-navy" size={20} /></div>
+            ) : notes.data?.length ? notes.data.map((note) => (
+              <article key={note.id} className="rounded-lg bg-slate-50 p-3">
+                <div className="flex flex-wrap justify-between gap-2 text-xs">
+                  <strong className="rr-text-navy">{formatAssignee(note.authorName, note.authorEmail)}</strong>
+                  <time className="rr-text-navy-muted" dateTime={new Date(note.createdAt).toISOString()}>{formatDateTime(note.createdAt)}</time>
+                </div>
+                <p className="mt-1 whitespace-pre-wrap text-sm leading-6 rr-text-navy">{note.body}</p>
+              </article>
+            )) : (
+              <p className="py-2 text-sm font-semibold rr-text-navy-muted">No internal notes yet.</p>
+            )}
+          </div>
+          <label htmlFor={`support-note-${ticketId}`} className="sr-only">Add an internal resolution note</label>
+          <textarea
+            id={`support-note-${ticketId}`}
+            value={draft}
+            maxLength={4000}
+            onChange={(event) => setDraft(event.target.value)}
+            placeholder="Share an internal update, reproduction step, or resolution detail…"
+            className="mt-3 min-h-24 w-full resize-y rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
+          />
+          <div className="mt-2 flex items-center justify-between gap-3">
+            <span className="text-xs font-semibold rr-text-navy-muted">{draft.length}/4,000</span>
+            <button
+              type="button"
+              onClick={() => addNote.mutate({ id: ticketId, body: draft.trim() })}
+              disabled={draft.trim().length === 0 || addNote.isPending}
+              className="inline-flex min-h-10 items-center gap-2 rounded-lg rr-bg-navy px-3 text-sm font-black text-white transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2"
+            >
+              <SendHorizontal size={14} aria-hidden="true" /> Add internal note
+            </button>
+          </div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 export default function AdminSupportInboxPage() {
   const { user } = useAuth();
   const [, navigate] = useLocation();
@@ -88,6 +290,8 @@ export default function AdminSupportInboxPage() {
 
   const submissions = trpc.support.adminList.useQuery(queryInput, {
     enabled: user?.role === "admin",
+    refetchInterval: 60_000,
+    refetchIntervalInBackground: false,
   });
   const assignees = trpc.support.adminAssignees.useQuery(undefined, {
     enabled: user?.role === "admin",
@@ -133,7 +337,7 @@ export default function AdminSupportInboxPage() {
         </div>
         <h1 className="text-3xl font-black text-white">Support inbox</h1>
         <p className="mt-1 max-w-2xl text-sm font-semibold text-white/85">
-          Triage customer messages by topic, priority, ownership, screenshot attachment, and resolution status.
+          Triage customer messages by topic, priority, ownership, SLA deadline, screenshot attachment, and resolution status.
         </p>
       </header>
 
@@ -236,6 +440,13 @@ export default function AdminSupportInboxPage() {
                           <Paperclip size={15} /> Open screenshot <ExternalLink size={14} aria-hidden="true" />
                         </a>
                       )}
+                      <TicketDeadlineControls
+                        ticketId={submission.id}
+                        status={currentStatus}
+                        dueAt={submission.dueAt}
+                        slaTargetAt={submission.slaTargetAt}
+                      />
+                      <TicketInternalNotes ticketId={submission.id} />
                     </div>
                     <div className="grid w-full shrink-0 gap-3 sm:grid-cols-3 lg:max-w-[34rem]">
                       <div>

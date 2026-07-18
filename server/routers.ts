@@ -48,13 +48,20 @@ import { sendSupportMessage } from "./supportEmail";
 import { checkSupportAttachmentRateLimit, checkSupportSubmissionRateLimit } from "./supportRateLimit";
 import {
   getSupportAttachmentExtension,
+  getSupportSlaTargetAt,
+  isSupportEscalation,
+  MAX_SUPPORT_DUE_DATE_FUTURE_DAYS,
+  MAX_SUPPORT_INTERNAL_NOTE_CHARS,
   isValidSupportScreenshot,
   MAX_SUPPORT_ATTACHMENT_BYTES,
   sanitizeSupportAttachmentFilename,
   SUPPORT_ATTACHMENT_MIME_TYPES,
   SUPPORT_PRIORITIES,
   SUPPORT_SUBMISSION_STATUSES,
+  SUPPORT_TICKET_ALERT_DEDUP_WINDOW_MS,
+  SUPPORT_TICKET_ALERT_TYPES,
   SUPPORT_TOPICS,
+  type SupportPriority,
 } from "./supportIntake";
 import { buildDailyTrend } from "./dailyTrend";
 import {
@@ -69,7 +76,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads, koalendarBookings, koalendarConnections, supportSubmissions } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads, koalendarBookings, koalendarConnections, supportInternalNotes, supportSubmissions, supportTicketAlerts } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
 import { PWA_EVENT_NAMES, PWA_EVENT_SOURCE, summarizePwaEvents, toPwaEventPage } from "./pwaAnalytics";
 import { eq, like, or, inArray, desc, isNotNull, isNull, and, sql, gte, lte, count } from "drizzle-orm";
@@ -215,6 +222,53 @@ function isValidAvatarSignature(data: Buffer, mimeType: (typeof avatarMimeTypes)
   if (mimeType === "image/jpeg") return data.length >= 3 && data[0] === 0xff && data[1] === 0xd8 && data[2] === 0xff;
   if (mimeType === "image/png") return data.length >= 8 && data.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
   return data.length >= 12 && data.subarray(0, 4).toString("ascii") === "RIFF" && data.subarray(8, 12).toString("ascii") === "WEBP";
+}
+
+type SupportTicketAlertInput = {
+  ticketId: number;
+  recipientUserIds: number[];
+  actorUserId: number;
+  type: (typeof SUPPORT_TICKET_ALERT_TYPES)[number];
+};
+
+/**
+ * Persist only recipient-scoped operational events. This never copies customer
+ * message, attachment, or email data into an alert record.
+ */
+async function queueSupportTicketAlerts(
+  db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
+  input: SupportTicketAlertInput,
+) {
+  const recipientUserIds = Array.from(new Set(input.recipientUserIds)).filter((id) => Number.isInteger(id) && id > 0);
+  if (recipientUserIds.length === 0) return;
+
+  const createdAfter = new Date(Date.now() - SUPPORT_TICKET_ALERT_DEDUP_WINDOW_MS);
+  const recipientsWithoutRecentUnreadAlert: number[] = [];
+
+  for (const recipientUserId of recipientUserIds) {
+    const [existingAlert] = await db.select({ id: supportTicketAlerts.id })
+      .from(supportTicketAlerts)
+      .where(and(
+        eq(supportTicketAlerts.ticketId, input.ticketId),
+        eq(supportTicketAlerts.recipientUserId, recipientUserId),
+        eq(supportTicketAlerts.type, input.type),
+        isNull(supportTicketAlerts.readAt),
+        gte(supportTicketAlerts.createdAt, createdAfter),
+      ))
+      .limit(1);
+    if (!existingAlert) recipientsWithoutRecentUnreadAlert.push(recipientUserId);
+  }
+
+  if (recipientsWithoutRecentUnreadAlert.length === 0) return;
+
+  await db.insert(supportTicketAlerts).values(
+    recipientsWithoutRecentUnreadAlert.map((recipientUserId) => ({
+      ticketId: input.ticketId,
+      recipientUserId,
+      actorUserId: input.actorUserId,
+      type: input.type,
+    })),
+  );
 }
 
 export const appRouter = router({
@@ -3502,6 +3556,8 @@ export const appRouter = router({
           topic: input.topic,
           subject: input.subject,
           message: input.message,
+          priority: "normal",
+          slaTargetAt: getSupportSlaTargetAt("normal"),
           attachmentKey: input.attachment?.key ?? null,
           attachmentFilename: input.attachment?.filename ?? null,
           attachmentMimeType: input.attachment?.mimeType ?? null,
@@ -3564,6 +3620,8 @@ export const appRouter = router({
           status: supportSubmissions.status,
           priority: supportSubmissions.priority,
           assigneeUserId: supportSubmissions.assigneeUserId,
+          dueAt: supportSubmissions.dueAt,
+          slaTargetAt: supportSubmissions.slaTargetAt,
           assigneeName: users.name,
           assigneeEmail: users.email,
           attachmentKey: supportSubmissions.attachmentKey,
@@ -3633,19 +3691,42 @@ export const appRouter = router({
         id: z.number().int().positive(),
         priority: z.enum(SUPPORT_PRIORITIES),
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ ctx, input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
 
-        const [ticket] = await db.select({ id: supportSubmissions.id })
+        const [ticket] = await db.select({
+          id: supportSubmissions.id,
+          status: supportSubmissions.status,
+          priority: supportSubmissions.priority,
+          assigneeUserId: supportSubmissions.assigneeUserId,
+        })
           .from(supportSubmissions)
           .where(eq(supportSubmissions.id, input.id))
           .limit(1);
         if (!ticket) throw new TRPCError({ code: "NOT_FOUND", message: "Support ticket not found." });
 
+        const escalated = isSupportEscalation(ticket.priority as SupportPriority, input.priority);
         await db.update(supportSubmissions)
-          .set({ priority: input.priority })
+          .set({
+            priority: input.priority,
+            // Re-arm the persisted target only when urgency increases. Lowering
+            // priority must not quietly relax a previously committed target.
+            ...(escalated ? { slaTargetAt: getSupportSlaTargetAt(input.priority) } : {}),
+          })
           .where(eq(supportSubmissions.id, input.id));
+
+        if (escalated && ticket.status !== "resolved") {
+          const recipientUserIds = ticket.assigneeUserId
+            ? [ticket.assigneeUserId]
+            : (await db.select({ id: users.id }).from(users).where(eq(users.role, "admin"))).map((admin) => admin.id);
+          await queueSupportTicketAlerts(db, {
+            ticketId: ticket.id,
+            recipientUserIds,
+            actorUserId: ctx.user.id,
+            type: "escalation",
+          });
+        }
         return { ok: true as const };
       }),
     updateAssignee: adminProcedure
@@ -3653,11 +3734,11 @@ export const appRouter = router({
         id: z.number().int().positive(),
         assigneeUserId: z.number().int().positive().nullable(),
       }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ ctx, input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
 
-        const [ticket] = await db.select({ id: supportSubmissions.id })
+        const [ticket] = await db.select({ id: supportSubmissions.id, assigneeUserId: supportSubmissions.assigneeUserId })
           .from(supportSubmissions)
           .where(eq(supportSubmissions.id, input.id))
           .limit(1);
@@ -3679,6 +3760,122 @@ export const appRouter = router({
         await db.update(supportSubmissions)
           .set({ assigneeUserId: input.assigneeUserId })
           .where(eq(supportSubmissions.id, input.id));
+
+        if (input.assigneeUserId !== null && input.assigneeUserId !== ticket.assigneeUserId) {
+          await queueSupportTicketAlerts(db, {
+            ticketId: ticket.id,
+            recipientUserIds: [input.assigneeUserId],
+            actorUserId: ctx.user.id,
+            type: "assignment",
+          });
+        }
+        return { ok: true as const };
+      }),
+    updateDueAt: adminProcedure
+      .input(z.object({
+        id: z.number().int().positive(),
+        dueAt: z.string().datetime({ offset: true }).nullable(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        const [ticket] = await db.select({ id: supportSubmissions.id })
+          .from(supportSubmissions)
+          .where(eq(supportSubmissions.id, input.id))
+          .limit(1);
+        if (!ticket) throw new TRPCError({ code: "NOT_FOUND", message: "Support ticket not found." });
+
+        const dueAt = input.dueAt ? new Date(input.dueAt) : null;
+        if (dueAt && dueAt.getTime() > Date.now() + MAX_SUPPORT_DUE_DATE_FUTURE_DAYS * 24 * 60 * 60 * 1000) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: `Set a due date within the next ${MAX_SUPPORT_DUE_DATE_FUTURE_DAYS} days.`,
+          });
+        }
+
+        await db.update(supportSubmissions)
+          .set({ dueAt })
+          .where(eq(supportSubmissions.id, input.id));
+        return { ok: true as const };
+      }),
+    internalNotes: adminProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        return db.select({
+          id: supportInternalNotes.id,
+          body: supportInternalNotes.body,
+          createdAt: supportInternalNotes.createdAt,
+          authorUserId: supportInternalNotes.authorUserId,
+          authorName: users.name,
+          authorEmail: users.email,
+        })
+          .from(supportInternalNotes)
+          .leftJoin(users, eq(supportInternalNotes.authorUserId, users.id))
+          .where(eq(supportInternalNotes.ticketId, input.id))
+          .orderBy(desc(supportInternalNotes.createdAt));
+      }),
+    addInternalNote: adminProcedure
+      .input(z.object({
+        id: z.number().int().positive(),
+        body: z.string().trim().min(1).max(MAX_SUPPORT_INTERNAL_NOTE_CHARS),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        const [ticket] = await db.select({ id: supportSubmissions.id })
+          .from(supportSubmissions)
+          .where(eq(supportSubmissions.id, input.id))
+          .limit(1);
+        if (!ticket) throw new TRPCError({ code: "NOT_FOUND", message: "Support ticket not found." });
+
+        await db.insert(supportInternalNotes).values({
+          ticketId: ticket.id,
+          authorUserId: ctx.user.id,
+          body: input.body,
+        });
+        return { ok: true as const };
+      }),
+    myTicketAlerts: adminProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support alerts are unavailable." });
+
+      return db.select({
+        id: supportTicketAlerts.id,
+        ticketId: supportTicketAlerts.ticketId,
+        type: supportTicketAlerts.type,
+        createdAt: supportTicketAlerts.createdAt,
+        subject: supportSubmissions.subject,
+        priority: supportSubmissions.priority,
+        actorName: users.name,
+      })
+        .from(supportTicketAlerts)
+        .leftJoin(supportSubmissions, eq(supportTicketAlerts.ticketId, supportSubmissions.id))
+        .leftJoin(users, eq(supportTicketAlerts.actorUserId, users.id))
+        .where(and(
+          eq(supportTicketAlerts.recipientUserId, ctx.user.id),
+          isNull(supportTicketAlerts.readAt),
+        ))
+        .orderBy(desc(supportTicketAlerts.createdAt))
+        .limit(20);
+    }),
+    markTicketAlertsRead: adminProcedure
+      .input(z.object({ ids: z.array(z.number().int().positive()).min(1).max(20) }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support alerts are unavailable." });
+
+        await db.update(supportTicketAlerts)
+          .set({ readAt: new Date() })
+          .where(and(
+            eq(supportTicketAlerts.recipientUserId, ctx.user.id),
+            inArray(supportTicketAlerts.id, input.ids),
+            isNull(supportTicketAlerts.readAt),
+          ));
         return { ok: true as const };
       }),
   }),

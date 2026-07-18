@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import { useAuth } from "./_core/hooks/useAuth";
 import BottomNav from "./components/BottomNav";
 import AppLayout from "./components/AppLayout";
+import SupportTicketAlerts from "./components/SupportTicketAlerts";
 import PublicLayout from "./components/PublicLayout";
 import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -297,6 +298,7 @@ function AppShell() {
           navigate,
         })}
       />
+      <SupportTicketAlerts />
 
       {/* AppLayout provides the sidebar on tablet/desktop */}
       <AppLayout>

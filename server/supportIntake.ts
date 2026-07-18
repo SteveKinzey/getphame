@@ -7,10 +7,32 @@ export type SupportSubmissionStatus = (typeof SUPPORT_SUBMISSION_STATUSES)[numbe
 export const SUPPORT_PRIORITIES = ["low", "normal", "high", "urgent"] as const;
 export type SupportPriority = (typeof SUPPORT_PRIORITIES)[number];
 
+export const SUPPORT_TICKET_ALERT_TYPES = ["assignment", "escalation"] as const;
+export type SupportTicketAlertType = (typeof SUPPORT_TICKET_ALERT_TYPES)[number];
+
+export const SUPPORT_SLA_DURATION_MS: Record<SupportPriority, number> = {
+  low: 72 * 60 * 60 * 1000,
+  normal: 24 * 60 * 60 * 1000,
+  high: 8 * 60 * 60 * 1000,
+  urgent: 2 * 60 * 60 * 1000,
+};
+
+export const MAX_SUPPORT_INTERNAL_NOTE_CHARS = 4_000;
+export const MAX_SUPPORT_DUE_DATE_FUTURE_DAYS = 365;
+export const SUPPORT_TICKET_ALERT_DEDUP_WINDOW_MS = 5 * 60 * 1000;
+
 export const SUPPORT_ATTACHMENT_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 export type SupportAttachmentMimeType = (typeof SUPPORT_ATTACHMENT_MIME_TYPES)[number];
 
 export const MAX_SUPPORT_ATTACHMENT_BYTES = 8 * 1024 * 1024;
+
+export function getSupportSlaTargetAt(priority: SupportPriority, startedAt = new Date()): Date {
+  return new Date(startedAt.getTime() + SUPPORT_SLA_DURATION_MS[priority]);
+}
+
+export function isSupportEscalation(previous: SupportPriority, next: SupportPriority): boolean {
+  return SUPPORT_PRIORITIES.indexOf(next) > SUPPORT_PRIORITIES.indexOf(previous);
+}
 
 const attachmentExtensions: Record<SupportAttachmentMimeType, string> = {
   "image/jpeg": "jpg",

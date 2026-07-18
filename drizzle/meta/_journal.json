@@ -85,6 +85,13 @@
       "when": 1784417747989,
       "tag": "0011_shocking_vulcan",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "5",
+      "when": 1784418599585,
+      "tag": "0012_warm_stick",
+      "breakpoints": true
     }
   ]
 }

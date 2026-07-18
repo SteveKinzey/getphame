@@ -32,6 +32,7 @@ export const authHealthTriggerEnum = pgEnum("auth_health_trigger", ["scheduled",
 export const supportTopicEnum = pgEnum("support_topic", ["billing", "onboarding", "technical"]);
 export const supportSubmissionStatusEnum = pgEnum("support_submission_status", ["open", "in_progress", "resolved"]);
 export const supportPriorityEnum = pgEnum("support_priority", ["low", "normal", "high", "urgent"]);
+export const supportTicketAlertTypeEnum = pgEnum("support_ticket_alert_type", ["assignment", "escalation"]);
 
 // ─── Tables ───────────────────────────────────────────────────────────────────
 
@@ -493,6 +494,9 @@ export const supportSubmissions = pgTable("support_submissions", {
   priority: supportPriorityEnum("priority").notNull().default("normal"),
   // Nullable explicitly represents an unassigned ticket; eligibility is enforced by admin mutations.
   assigneeUserId: integer("assignee_user_id"),
+  // A manual operator-set business deadline remains distinct from the server-derived SLA target.
+  dueAt: timestamp("due_at"),
+  slaTargetAt: timestamp("sla_target_at"),
   attachmentKey: varchar("attachment_key", { length: 512 }),
   attachmentFilename: varchar("attachment_filename", { length: 255 }),
   attachmentMimeType: varchar("attachment_mime_type", { length: 64 }),
@@ -506,10 +510,49 @@ export const supportSubmissions = pgTable("support_submissions", {
   index("support_submissions_topic_created_idx").on(table.topic, table.createdAt),
   index("support_submissions_priority_status_created_idx").on(table.priority, table.status, table.createdAt),
   index("support_submissions_assignee_status_created_idx").on(table.assigneeUserId, table.status, table.createdAt),
+  index("support_submissions_sla_status_idx").on(table.slaTargetAt, table.status),
+  index("support_submissions_due_status_idx").on(table.dueAt, table.status),
 ]);
 
 export type SupportSubmission = typeof supportSubmissions.$inferSelect;
 export type InsertSupportSubmission = typeof supportSubmissions.$inferInsert;
+
+/**
+ * Private operator collaboration. Notes are never returned to public support routes.
+ */
+export const supportInternalNotes = pgTable("support_internal_notes", {
+  id: serial("id").primaryKey(),
+  ticketId: integer("ticket_id").notNull(),
+  authorUserId: integer("author_user_id").notNull(),
+  body: text("body").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  index("support_internal_notes_ticket_created_idx").on(table.ticketId, table.createdAt),
+  index("support_internal_notes_author_created_idx").on(table.authorUserId, table.createdAt),
+]);
+
+export type SupportInternalNote = typeof supportInternalNotes.$inferSelect;
+export type InsertSupportInternalNote = typeof supportInternalNotes.$inferInsert;
+
+/**
+ * Recipient-scoped in-app events for ticket ownership and escalation only.
+ * Customer content stays in the ticket, never in the notification payload.
+ */
+export const supportTicketAlerts = pgTable("support_ticket_alerts", {
+  id: serial("id").primaryKey(),
+  ticketId: integer("ticket_id").notNull(),
+  recipientUserId: integer("recipient_user_id").notNull(),
+  actorUserId: integer("actor_user_id").notNull(),
+  type: supportTicketAlertTypeEnum("type").notNull(),
+  readAt: timestamp("read_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  index("support_ticket_alerts_recipient_read_created_idx").on(table.recipientUserId, table.readAt, table.createdAt),
+  index("support_ticket_alerts_ticket_type_created_idx").on(table.ticketId, table.type, table.createdAt),
+]);
+
+export type SupportTicketAlert = typeof supportTicketAlerts.$inferSelect;
+export type InsertSupportTicketAlert = typeof supportTicketAlerts.$inferInsert;
 
 /**
  * Churn survey responses — one row per cancellation.

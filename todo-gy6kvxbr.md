@@ -444,3 +444,10 @@
 - [x] Add protected administrative ticket-management APIs for priority and ownership updates with clear assignment eligibility.
 - [x] Enhance the responsive admin support inbox with priority and assignee controls, filters, and clear unassigned states.
 - [x] Add focused priority/assignment authorization, persistence, API, and UI regression coverage; validate desktop and mobile, then publish.
+
+- [x] Update and validate the reusable support-management skill with SLA deadlines, internal notes, and assignment/escalation notification patterns.
+- [x] Add durable due-date, SLA timer, and administrator-only internal resolution-note persistence with safe ownership and timeline indexes.
+- [x] Add protected ticket deadline, SLA, internal-note, escalation, and notification APIs with explicit admin authorization and no customer-data leakage.
+- [x] Enhance the responsive support inbox with due-date controls, SLA status/timers, a collaborative internal-note timeline, and clear escalation actions.
+- [x] Add immediate visual notifications for the newly assigned administrator and escalated tickets, with safe in-app delivery and duplicate-suppression behavior.
+- [x] Add focused persistence, authorization, timing, notification, and UI regressions; validate desktop/mobile workflows and publish.
