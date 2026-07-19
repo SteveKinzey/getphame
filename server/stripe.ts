@@ -44,6 +44,19 @@ export type StripePlan = keyof typeof STRIPE_PRICE_IDS;
 
 const CANONICAL_STRIPE_RETURN_ORIGIN = "https://getphame.app";
 const CANONICAL_STRIPE_RETURN_HOSTS = new Set(["getphame.app", "www.getphame.app"]);
+const GETPHAME_CHECKOUT_ICON_URL =
+  "https://getphame.app/manus-storage/getphame-stripe-checkout-icon_5e83b738.png";
+const GETPHAME_CHECKOUT_BRANDING = {
+  display_name: "Get Phame",
+  icon: {
+    type: "url" as const,
+    url: GETPHAME_CHECKOUT_ICON_URL,
+  },
+  background_color: "#061A43",
+  button_color: "#D4A017",
+  font_family: "inter" as const,
+  border_style: "rounded" as const,
+};
 
 /**
  * Checkout and Billing Portal redirect URLs must remain on the branded public
@@ -344,6 +357,7 @@ export async function createCheckoutSession({
     // Lifetime is a one-time payment; monthly/annual are subscriptions
     mode: isLifetime ? "payment" : "subscription",
     allow_promotion_codes: true,
+    branding_settings: GETPHAME_CHECKOUT_BRANDING,
     client_reference_id: String(userId),
     metadata: {
       user_id: String(userId),
@@ -416,6 +430,7 @@ export async function createThbCheckoutSession({
     currency: "thb",
     payment_method_types: ["card", "promptpay"],
     allow_promotion_codes: true,
+    branding_settings: GETPHAME_CHECKOUT_BRANDING,
     client_reference_id: String(userId),
     metadata: {
       user_id: String(userId),

@@ -38,6 +38,13 @@ describe("Stripe redirect domains", () => {
       expect.objectContaining({
         success_url: "https://getphame.app/payment-success?stripe=1&plan=monthly",
         cancel_url: "https://getphame.app/upgrade",
+        branding_settings: expect.objectContaining({
+          display_name: "Get Phame",
+          icon: expect.objectContaining({
+            type: "url",
+            url: "https://getphame.app/manus-storage/getphame-stripe-checkout-icon_5e83b738.png",
+          }),
+        }),
       }),
     );
   });
@@ -52,6 +59,13 @@ describe("Stripe redirect domains", () => {
       expect.objectContaining({
         success_url: "https://getphame.app/payment-success?stripe=1&plan=monthly",
         cancel_url: "https://getphame.app/upgrade",
+        branding_settings: expect.objectContaining({
+          display_name: "Get Phame",
+          icon: expect.objectContaining({
+            type: "url",
+            url: "https://getphame.app/manus-storage/getphame-stripe-checkout-icon_5e83b738.png",
+          }),
+        }),
       }),
     );
   });

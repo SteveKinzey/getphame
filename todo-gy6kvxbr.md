@@ -479,3 +479,8 @@
 - [x] Inspect the current Get Phame navigation and configuration surfaces to locate the actual Stripe administration route.
 - [x] Identify a safe live-payment verification path and document any missing payment administration controls.
 - [x] Deliver corrected Stripe navigation and verification guidance without requesting payment credentials in chat.
+
+- [x] Audit the live Stripe Checkout product, account branding, statement descriptor, and app-side legacy Review Link references against Get Phame brand rules.
+- [x] Correct application-controlled Stripe Checkout branding and update any legacy Review Link name or star-mark references.
+- [ ] Validate the live checkout title, logo, authorization descriptor, line item, and promotion-code behavior; document any remaining Stripe Dashboard action.
+- [ ] Add focused branding regression coverage, publish the correction, and report the verified outcome.
