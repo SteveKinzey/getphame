@@ -93,7 +93,9 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-void Promise.all([i18nReady, loadStaticLocalizationSupplement()]).finally(() => {
+// The initial locale is known only after i18n initializes. Await the matching
+// compact catalog before mount so legacy literals cannot briefly flash English.
+void i18nReady.then(() => loadStaticLocalizationSupplement()).finally(() => {
   createRoot(document.getElementById("root")!).render(
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>

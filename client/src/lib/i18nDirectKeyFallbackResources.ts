@@ -3,10 +3,18 @@ import type { ResourceRecord } from "./i18nFallback";
 const directKeyFallbackResources: Record<string, ResourceRecord> = {
   en: {
     adminUsers: { smtpAuditAllOutcomes: "All outcomes" },
+    nav: { mobileSettings: "Settings", mobileDashboard: "Stats", mobileAdmin: "Admin" },
     onboardingWizard: {
       dismissError: "Setup was closed, but we couldn't save that preference. You can resume it later from Settings.",
       stepContent: { step4: { title: "Connect WordPress", description: "Install the connector plugin on your WordPress site to auto-sync customers." } },
       steps: { wpConnector: "WP Plugin" },
+      tooltips: {
+        smtpPassword: { label: "Help with your email password", text: "Most email providers require an app password, not your regular sign-in password. Create one in your email account's security settings." },
+        testConnection: { label: "Why test the connection?", text: "Test first to confirm your provider accepts these details. Nothing is saved or sent until you connect." },
+        reviewPlatform: { label: "Help choosing a review platform", text: "Choose the place where customers should leave their reviews. You can add more platforms later in Settings." },
+        reviewUrl: { label: "Help finding your review link", text: "Paste the direct review link—not your public profile page—so customers land on the write-a-review screen." },
+        firstRequest: { label: "Why send a first request?", text: "Send one request to yourself first. It lets you review the customer experience before using it with clients." },
+      },
     },
     settings: {
       fromNameDescription: "Customers will see this as the sender name in their inbox.",
@@ -21,10 +29,18 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
   },
   es: {
     adminUsers: { smtpAuditAllOutcomes: "Todos los resultados" },
+    nav: { mobileSettings: "Ajustes", mobileDashboard: "Panel", mobileAdmin: "Admin" },
     onboardingWizard: {
       dismissError: "La configuración se cerró, pero no pudimos guardar esa preferencia. Puedes retomarla más tarde desde Configuración.",
       stepContent: { step4: { title: "Conectar WordPress", description: "Instala el plugin conector en tu sitio WordPress para sincronizar clientes automáticamente." } },
       steps: { wpConnector: "Plugin de WP" },
+      tooltips: {
+        smtpPassword: { label: "Ayuda con la contraseña de correo", text: "La mayoría de proveedores de correo requieren una contraseña de aplicación, no la contraseña habitual de inicio de sesión. Créala en la configuración de seguridad de tu cuenta de correo." },
+        testConnection: { label: "¿Por qué probar la conexión?", text: "Haz una prueba primero para confirmar que tu proveedor acepta estos datos. No se guarda ni se envía nada hasta que te conectes." },
+        reviewPlatform: { label: "Ayuda para elegir una plataforma de reseñas", text: "Elige el lugar donde los clientes deben dejar sus reseñas. Puedes añadir más plataformas después en Configuración." },
+        reviewUrl: { label: "Ayuda para encontrar tu enlace de reseña", text: "Pega el enlace directo para dejar una reseña, no la página pública de tu perfil, para que los clientes lleguen a la pantalla de escribir una reseña." },
+        firstRequest: { label: "¿Por qué enviar una primera solicitud?", text: "Envíate primero una solicitud a ti mismo. Así podrás revisar la experiencia del cliente antes de usarla con tus clientes." },
+      },
     },
     settings: {
       fromNameDescription: "Los clientes verán esto como el nombre del remitente en su bandeja de entrada.",
@@ -39,10 +55,18 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
   },
   fr: {
     adminUsers: { smtpAuditAllOutcomes: "Tous les résultats" },
+    nav: { mobileSettings: "Réglages", mobileDashboard: "Stats", mobileAdmin: "Admin" },
     onboardingWizard: {
       dismissError: "La configuration a été fermée, mais nous n'avons pas pu enregistrer cette préférence. Vous pouvez la reprendre plus tard depuis Paramètres.",
       stepContent: { step4: { title: "Connecter WordPress", description: "Installez le plugin connecteur sur votre site WordPress pour synchroniser automatiquement les clients." } },
       steps: { wpConnector: "Plugin WP" },
+      tooltips: {
+        smtpPassword: { label: "Aide pour le mot de passe de messagerie", text: "La plupart des fournisseurs de messagerie exigent un mot de passe d'application, et non votre mot de passe de connexion habituel. Créez-en un dans les paramètres de sécurité de votre compte." },
+        testConnection: { label: "Pourquoi tester la connexion ?", text: "Testez d'abord pour confirmer que votre fournisseur accepte ces informations. Rien n'est enregistré ni envoyé avant la connexion." },
+        reviewPlatform: { label: "Aide pour choisir une plateforme d'avis", text: "Choisissez l'endroit où les clients doivent laisser leurs avis. Vous pourrez ajouter d'autres plateformes plus tard dans les Paramètres." },
+        reviewUrl: { label: "Aide pour trouver votre lien d'avis", text: "Collez le lien direct pour laisser un avis, et non votre page de profil publique, afin que les clients arrivent sur l'écran de rédaction d'un avis." },
+        firstRequest: { label: "Pourquoi envoyer une première demande ?", text: "Envoyez-vous d'abord une demande. Vous pourrez ainsi vérifier l'expérience client avant de l'utiliser avec vos clients." },
+      },
     },
     settings: {
       fromNameDescription: "Les clients verront ceci comme nom de l'expéditeur dans leur boîte de réception.",
@@ -57,10 +81,18 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
   },
   it: {
     adminUsers: { smtpAuditAllOutcomes: "Tutti i risultati" },
+    nav: { mobileSettings: "Impostaz.", mobileDashboard: "Dati", mobileAdmin: "Admin" },
     onboardingWizard: {
       dismissError: "La configurazione è stata chiusa, ma non abbiamo potuto salvare quella preferenza. Puoi riprenderla più tardi da Impostazioni.",
       stepContent: { step4: { title: "Connetti WordPress", description: "Installa il plugin connettore sul tuo sito WordPress per sincronizzare automaticamente i clienti." } },
       steps: { wpConnector: "Plugin WP" },
+      tooltips: {
+        smtpPassword: { label: "Aiuto per la password email", text: "La maggior parte dei provider email richiede una password per l'app, non la normale password di accesso. Creala nelle impostazioni di sicurezza del tuo account email." },
+        testConnection: { label: "Perché testare la connessione?", text: "Esegui prima un test per confermare che il tuo provider accetti questi dati. Nulla viene salvato o inviato fino alla connessione." },
+        reviewPlatform: { label: "Aiuto nella scelta della piattaforma di recensioni", text: "Scegli dove i clienti devono lasciare le recensioni. Potrai aggiungere altre piattaforme in seguito dalle Impostazioni." },
+        reviewUrl: { label: "Aiuto per trovare il link delle recensioni", text: "Incolla il link diretto per lasciare una recensione, non la pagina pubblica del profilo, così i clienti arrivano alla schermata per scrivere una recensione." },
+        firstRequest: { label: "Perché inviare una prima richiesta?", text: "Invia prima una richiesta a te stesso. Potrai controllare l'esperienza del cliente prima di usarla con i tuoi clienti." },
+      },
     },
     settings: {
       fromNameDescription: "I clienti vedranno questo come nome del mittente nella loro casella di posta.",
@@ -91,10 +123,18 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
   },
   th: {
     adminUsers: { smtpAuditAllOutcomes: "ผลลัพธ์ทั้งหมด" },
+    nav: { mobileSettings: "ตั้งค่า", mobileDashboard: "สถิติ", mobileAdmin: "แอดมิน" },
     onboardingWizard: {
       dismissError: "การตั้งค่าถูกปิด แต่เราไม่สามารถบันทึกการตั้งค่านั้นได้ คุณสามารถกลับมาดำเนินการต่อได้ภายหลังจากการตั้งค่า",
       stepContent: { step4: { title: "เชื่อมต่อ WordPress", description: "ติดตั้งปลั๊กอินตัวเชื่อมบนเว็บไซต์ WordPress ของคุณเพื่อซิงค์ลูกค้าโดยอัตโนมัติ" } },
       steps: { wpConnector: "ปลั๊กอิน WP" },
+      tooltips: {
+        smtpPassword: { label: "ความช่วยเหลือเกี่ยวกับรหัสผ่านอีเมล", text: "ผู้ให้บริการอีเมลส่วนใหญ่ต้องใช้รหัสผ่านสำหรับแอป ไม่ใช่รหัสผ่านเข้าสู่ระบบปกติของคุณ สร้างรหัสผ่านได้จากการตั้งค่าความปลอดภัยของบัญชีอีเมล" },
+        testConnection: { label: "เหตุใดจึงต้องทดสอบการเชื่อมต่อ", text: "ทดสอบก่อนเพื่อยืนยันว่าผู้ให้บริการของคุณยอมรับข้อมูลนี้ จะไม่มีการบันทึกหรือส่งข้อมูลจนกว่าคุณจะเชื่อมต่อ" },
+        reviewPlatform: { label: "ความช่วยเหลือในการเลือกแพลตฟอร์มรีวิว", text: "เลือกสถานที่ที่ต้องการให้ลูกค้าเขียนรีวิว คุณสามารถเพิ่มแพลตฟอร์มอื่นได้ภายหลังในการตั้งค่า" },
+        reviewUrl: { label: "ความช่วยเหลือในการค้นหาลิงก์รีวิว", text: "วางลิงก์สำหรับเขียนรีวิวโดยตรง ไม่ใช่หน้าสาธารณะของโปรไฟล์ เพื่อให้ลูกค้าไปถึงหน้าที่เขียนรีวิวได้" },
+        firstRequest: { label: "เหตุใดจึงต้องส่งคำขอแรก", text: "ส่งคำขอให้ตัวเองก่อน เพื่อให้คุณตรวจสอบประสบการณ์ของลูกค้าก่อนนำไปใช้กับลูกค้าจริง" },
+      },
     },
     settings: {
       fromNameDescription: "ลูกค้าจะเห็นสิ่งนี้เป็นชื่อผู้ส่งในกล่องจดหมายของพวกเขา",
@@ -109,10 +149,18 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
   },
   "zh-CN": {
     adminUsers: { smtpAuditAllOutcomes: "所有结果" },
+    nav: { mobileSettings: "设置", mobileDashboard: "数据", mobileAdmin: "管理" },
     onboardingWizard: {
       dismissError: "已关闭设置，但我们无法保存该首选项。您可以稍后在设置中恢复。",
       stepContent: { step4: { title: "连接 WordPress", description: "在您的 WordPress 网站上安装连接插件，以自动同步客户。" } },
       steps: { wpConnector: "WP 插件" },
+      tooltips: {
+        smtpPassword: { label: "电子邮件密码帮助", text: "大多数邮件服务商要求使用应用专用密码，而不是您通常的登录密码。请在邮箱账户的安全设置中创建应用专用密码。" },
+        testConnection: { label: "为什么要测试连接？", text: "请先测试以确认您的服务商接受这些信息。在您连接之前，不会保存或发送任何内容。" },
+        reviewPlatform: { label: "选择评论平台的帮助", text: "请选择您希望客户留下评论的平台。之后您可以在“设置”中添加更多平台。" },
+        reviewUrl: { label: "查找评论链接的帮助", text: "请粘贴直接撰写评论的链接，而不是公开个人资料页，以便客户直接进入写评论页面。" },
+        firstRequest: { label: "为什么要发送第一条请求？", text: "请先向自己发送一条请求。这样您可以在向客户使用前检查客户体验。" },
+      },
     },
     settings: {
       fromNameDescription: "客户在收件箱中会看到此项作为发件人名称。",
@@ -127,10 +175,18 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
   },
   "zh-TW": {
     adminUsers: { smtpAuditAllOutcomes: "所有結果" },
+    nav: { mobileSettings: "設定", mobileDashboard: "數據", mobileAdmin: "管理" },
     onboardingWizard: {
       dismissError: "設定已關閉，但我們無法儲存該偏好。您可以稍後從設定恢復。",
       stepContent: { step4: { title: "連接 WordPress", description: "在您的 WordPress 網站上安裝連接外掛，以自動同步客戶。" } },
       steps: { wpConnector: "WP 外掛" },
+      tooltips: {
+        smtpPassword: { label: "電子郵件密碼說明", text: "大多數電子郵件服務商需要使用應用程式密碼，而非一般登入密碼。請在電子郵件帳戶的安全性設定中建立應用程式密碼。" },
+        testConnection: { label: "為何要測試連線？", text: "請先測試以確認您的服務商接受這些資料。在您連線之前，不會儲存或傳送任何內容。" },
+        reviewPlatform: { label: "選擇評論平台說明", text: "請選擇您希望客戶留下評論的平台。您稍後可在設定中新增更多平台。" },
+        reviewUrl: { label: "尋找評論連結說明", text: "請貼上可直接撰寫評論的連結，而非公開個人資料頁，讓客戶直接進入寫評論畫面。" },
+        firstRequest: { label: "為何要發送第一則邀請？", text: "請先發送一則邀請給自己。如此您可在提供給客戶前檢查客戶體驗。" },
+      },
     },
     settings: {
       fromNameDescription: "客戶在收件匣中會看到此項作為寄件人名稱。",

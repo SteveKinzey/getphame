@@ -529,3 +529,8 @@
 - [x] Resolve the Spanish-only `referralRewards.*` key-resolution regression exposed during six-language mobile dashboard verification and add a runtime merge regression for it.
 - [x] Add, translate, and verify the 136 deduplicated customer-facing literals identified by the static source audit, including 20 non-DOM share payloads that require explicit runtime localization.
 - [x] Make the static-localization supplement regression independent of sandbox-only files, validate the full production build, and publish the deployment repair.
+- [x] Split the static-copy localization supplement into independently cached locale-specific bundles and load only the active locale before app mount.
+- [x] Add accessible, localized contextual tooltips that guide new users through the initial onboarding setup steps without blocking progress.
+- [x] Optimize the mobile footer layout for compact, standard, and large phone widths while preserving its existing navigation structure and full-width background treatment.
+- [x] Add concise localized Dashboard and Admin labels for the compact mobile navigation so all primary tabs remain intentional and legible at 320 px widths.
+- [x] Add regression coverage, performance verification, and desktop/mobile visual checks for the locale bundles, onboarding tooltips, and responsive footer before publishing.

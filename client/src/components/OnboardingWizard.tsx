@@ -30,8 +30,10 @@ import {
   Plug2,
   ExternalLink,
   Download,
+  CircleHelp,
 } from "lucide-react";
 import LandingBrandLink from "@/components/LandingBrandLink";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -107,6 +109,25 @@ function getHintKey(email: string, host?: string): string | null {
   if (domain === "yahoo.com") return "step1Email.hints.yahooAppPassword";
   if (domain === "zoho.com" || domain === "zohomail.com") return "step1Email.hints.zohoSmtpAccess";
   return null;
+}
+
+function OnboardingHelpTip({ label, text }: { label: string; text: string }) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          aria-label={label}
+          className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[#D4A017] transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
+        >
+          <CircleHelp size={14} aria-hidden="true" />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="top" sideOffset={8} className="max-w-[19rem] rounded-xl border border-[#D4A017]/45 px-3 py-2 text-left text-xs leading-relaxed shadow-xl">
+        {text}
+      </TooltipContent>
+    </Tooltip>
+  );
 }
 
 // ── Step 4: WordPress Connector Plugin ───────────────────────────────────────
@@ -440,8 +461,12 @@ function Step1Email({ onDone }: { onDone: () => void }) {
       </div>
 
       <div>
-        <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          {t("step1Email.passwordLabel")} {hint ? t("step1Email.appPasswordRequiredSuffix") : ""}
+        <label className="flex items-center gap-1 text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+          <span>{t("step1Email.passwordLabel")} {hint ? t("step1Email.appPasswordRequiredSuffix") : ""}</span>
+          <OnboardingHelpTip
+            label={t("onboardingWizard.tooltips.smtpPassword.label")}
+            text={t("onboardingWizard.tooltips.smtpPassword.text")}
+          />
         </label>
         <div className="relative">
           <input
@@ -613,6 +638,12 @@ function Step1Email({ onDone }: { onDone: () => void }) {
         </div>
       )}
 
+      <div className="flex items-center justify-end">
+        <OnboardingHelpTip
+          label={t("onboardingWizard.tooltips.testConnection.label")}
+          text={t("onboardingWizard.tooltips.testConnection.text")}
+        />
+      </div>
       <div className="flex gap-2">
         {/* Test Connection — verify before committing */}
         <button
@@ -694,8 +725,12 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          {t("step2Platform.reviewPlatformLabel")}
+        <label className="flex items-center gap-1 text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+          <span>{t("step2Platform.reviewPlatformLabel")}</span>
+          <OnboardingHelpTip
+            label={t("onboardingWizard.tooltips.reviewPlatform.label")}
+            text={t("onboardingWizard.tooltips.reviewPlatform.text")}
+          />
         </label>
         <select
           value={platform}
@@ -711,8 +746,12 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
       </div>
 
       <div>
-        <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          {t("step2Platform.reviewPageUrlLabel")}
+        <label className="flex items-center gap-1 text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+          <span>{t("step2Platform.reviewPageUrlLabel")}</span>
+          <OnboardingHelpTip
+            label={t("onboardingWizard.tooltips.reviewUrl.label")}
+            text={t("onboardingWizard.tooltips.reviewUrl.text")}
+          />
         </label>
         <input
           type="url"
@@ -787,11 +826,15 @@ function Step3Send({
         tone="split"
       />
       <div>
-        <h3
-          className="text-xl font-black mb-2 text-white"
-        >
-          {t("step3Send.allSetTitle")}
-        </h3>
+        <div className="flex items-center justify-center gap-1.5 mb-2">
+          <h3 className="text-xl font-black text-white">
+            {t("step3Send.allSetTitle")}
+          </h3>
+          <OnboardingHelpTip
+            label={t("onboardingWizard.tooltips.firstRequest.label")}
+            text={t("onboardingWizard.tooltips.firstRequest.text")}
+          />
+        </div>
         <p className="text-sm" style={{ color: "oklch(0.85 0.02 260)" }}>
           {t("step3Send.allSetDescription")}
         </p>

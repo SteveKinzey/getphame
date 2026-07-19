@@ -15,3 +15,21 @@ Representative Spanish onboarding and Thai settings/form routes were also checke
 ## 2026-07-19 desktop cross-language check
 
 At a 1280×720 desktop viewport, Spanish, French, Italian, Thai, Simplified Chinese, and Traditional Chinese dashboard variants rendered their cards, navigation actions, referral surfaces, and translated marketing copy without raw keys, layout collisions, or unexpected English fallback. The public Spanish login route also rendered its navigation, form, consent, footer, and primary actions in Spanish. The localized desktop views preserved only intentional names, addresses, URLs, review-platform names, and the Get Phame product name.
+
+## 2026-07-19 performance and mobile-footer check
+
+At 375×812, the Spanish dashboard preserved translated first-render content after active-locale static-copy loading. The authenticated gold footer kept its legal links, secondary links, copyright, touch targets, and safe-area space visible without horizontal overflow. One compact-width refinement remains before release: the longer Spanish Settings label wraps at an awkward character boundary in the primary navigation, so narrow-screen labels need an abbreviation strategy.
+
+## 2026-07-19 compact navigation follow-up
+
+The 375×812 Spanish authenticated dashboard was rechecked after adding locale-aware compact labels. The Settings navigation item now reads “Ajustes” on compact phones, remains semantically labelled as Settings for assistive technology, and no longer breaks mid-word. The gold footer and all visible navigation controls remained aligned without clipping or horizontal overflow.
+
+## 2026-07-19 320 px compact-width check
+
+At 320×700 in French, the authenticated footer retained its full-width gold ribbon, safe-area spacing, ordered link grids, and tappable controls without horizontal overflow. The one remaining polish item is to provide compact alternatives for the longer Dashboard and Admin navigation labels; truncation is safe but less legible than intentional short labels at this extreme width.
+
+## 2026-07-19 compact-label completion
+
+The short Dashboard label loaded as intended, while the Admin label was being rewritten from its runtime-localized value by the legacy static-text bridge. The primary-navigation label container now opts out of that bridge because all of its copy is already supplied by i18n. This preserves concise localized Dashboard, Settings, and Admin labels at 320 px while retaining full accessible names and the full labels at wider breakpoints.
+
+The final 320×700 French capture showed intentional short labels (“Stats” and “Admin”), no clipping or horizontal scrolling, stable gold-ribbon footer spacing, and full primary-tab touch targets.

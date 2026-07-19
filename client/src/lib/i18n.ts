@@ -74,6 +74,12 @@ export function saveLang(lang: SupportedLang): void {
   }
 }
 
+/** Preload legacy static-copy translations before changing the rendered locale. */
+async function prepareStaticCopyLocale(lang: SupportedLang): Promise<void> {
+  const { loadStaticLocalizationSupplement } = await import("./autoText");
+  await loadStaticLocalizationSupplement(lang);
+}
+
 /**
  * Switch language, persist, and update i18n.
  * Pre-loads the locale file before switching to avoid Suspense failures.
@@ -87,8 +93,9 @@ export function setLanguage(lang: SupportedLang): void {
   } catch {
     // ignore
   }
-  // Pre-load the locale file, then switch — avoids Suspense/silent-fail issues
-  i18n.loadLanguages(lang).then(() => {
+  // Pre-load both i18n and the selected static-copy bundle, then switch. This
+  // prevents a mixed-language frame during a user-initiated language change.
+  void Promise.all([i18n.loadLanguages(lang), prepareStaticCopyLocale(lang)]).then(() => {
     i18n.changeLanguage(lang);
   }).catch(() => {
     // Fallback: try switching anyway
@@ -257,7 +264,7 @@ if (!queryLang && !userChosen && browserLang === "en") {
   detectLangFromIP().then((ipLang) => {
     if (ipLang !== "en") {
       saveLang(ipLang);
-      i18n.changeLanguage(ipLang);
+      void prepareStaticCopyLocale(ipLang).finally(() => i18n.changeLanguage(ipLang));
     }
   });
 }

@@ -31,9 +31,24 @@ export default function BottomNav() {
   const NAV_ITEMS = [
     { path: '/', label: t('nav.home'), Icon: Home },
     { path: '/send', label: t('nav.send'), Icon: Send },
-    { path: '/dashboard', label: t('nav.dashboard'), Icon: BarChart2 },
-    { path: '/settings', label: t('nav.settings'), Icon: Settings },
-    ...(user?.role === 'admin' ? [{ path: '/admin', label: t('nav.admin', { defaultValue: 'Admin' }), Icon: ShieldCheck }] : []),
+    {
+      path: '/dashboard',
+      label: t('nav.dashboard'),
+      compactLabel: t('nav.mobileDashboard', { defaultValue: t('nav.dashboard') }),
+      Icon: BarChart2,
+    },
+    {
+      path: '/settings',
+      label: t('nav.settings'),
+      compactLabel: t('nav.mobileSettings', { defaultValue: t('nav.settings') }),
+      Icon: Settings,
+    },
+    ...(user?.role === 'admin' ? [{
+      path: '/admin',
+      label: t('nav.admin', { defaultValue: 'Admin' }),
+      compactLabel: t('nav.mobileAdmin', { defaultValue: t('nav.admin', { defaultValue: 'Admin' }) }),
+      Icon: ShieldCheck,
+    }] : []),
   ];
 
   return (
@@ -42,8 +57,8 @@ export default function BottomNav() {
       style={{ borderTop: "1px solid oklch(0.30 0.08 260)" }}
     >
       {/* Equal-width app tabs plus account menu; admins receive one extra tab. */}
-      <div className="grid gap-0" style={{ gridTemplateColumns: `repeat(${NAV_ITEMS.length + 1}, 1fr)` }}>
-        {NAV_ITEMS.map(({ path, label, Icon }) => {
+      <div className="grid gap-0" style={{ gridTemplateColumns: `repeat(${NAV_ITEMS.length + 1}, minmax(0, 1fr))` }}>
+        {NAV_ITEMS.map(({ path, label, compactLabel, Icon }) => {
           const isActive = location === path || (path !== '/' && location.startsWith(path));
           return (
             <button
@@ -52,7 +67,7 @@ export default function BottomNav() {
                 buttonPressHaptic();
                 navigate(path);
               }}
-              className="nav-item flex flex-col items-center justify-center py-3 gap-1 relative overflow-hidden group"
+              className="nav-item group relative flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-hidden px-0.5 py-2"
               style={{ minHeight: '60px' }}
               aria-label={label}
               aria-current={isActive ? 'page' : undefined}
@@ -91,15 +106,20 @@ export default function BottomNav() {
 
               {/* Label — lifts to gold on hover */}
               <span
-                className="text-xs font-semibold tracking-wide transition-all duration-200 group-hover:opacity-100"
+                data-auto-localize="off"
+                className="block w-full truncate px-0.5 text-center text-[9px] font-semibold leading-[1.1] tracking-wide transition-all duration-200 group-hover:opacity-100 sm:whitespace-normal sm:text-xs"
                 style={{
                   fontFamily: "'Nunito', sans-serif",
                   color: isActive ? 'oklch(0.80 0.18 80)' : 'oklch(0.80 0.02 260)',
-                  fontSize: '12px',
                   fontWeight: isActive ? 700 : 600,
                 }}
               >
-                {label}
+                {compactLabel ? (
+                  <>
+                    <span className="sm:hidden">{compactLabel}</span>
+                    <span className="hidden sm:inline">{label}</span>
+                  </>
+                ) : label}
               </span>
             </button>
           );
@@ -110,7 +130,7 @@ export default function BottomNav() {
             <button
               type="button"
               data-testid="mobile-account-menu-trigger"
-              className="flex flex-col items-center justify-center py-3 gap-1 group"
+              className="group flex min-w-0 flex-col items-center justify-center gap-0.5 px-0.5 py-2"
               style={{ minHeight: '60px' }}
               aria-label={t('profileMenu.open', { defaultValue: 'Open account menu' })}
             >
@@ -125,11 +145,10 @@ export default function BottomNav() {
                 />
               </div>
               <span
-                className="text-xs font-semibold tracking-wide transition-colors duration-200"
+                className="line-clamp-2 max-w-full break-words text-center text-[10px] font-semibold leading-[1.1] tracking-wide transition-colors duration-200 sm:text-xs"
                 style={{
                   fontFamily: "'Nunito', sans-serif",
                   color: 'oklch(0.80 0.02 260)',
-                  fontSize: '12px',
                 }}
               >
                 {t('profileMenu.account', { defaultValue: 'Account' })}
@@ -206,42 +225,39 @@ export default function BottomNav() {
       </div>
 
       {/* ── Gold ribbon footer ─────────────────────────────────────────── */}
-      <div className="rr-bg-gold px-4 pt-2 pb-1">
+      <div className="rr-bg-gold px-4 pt-2 pb-1 pb-[calc(0.25rem+env(safe-area-inset-bottom))] sm:px-5">
         {/* Mobile legal links — deliberate two-row order for readability. */}
-        <div data-testid="mobile-footer-primary-links" className="flex items-center justify-center gap-2">
+        <div data-testid="mobile-footer-primary-links" className="grid grid-cols-3 gap-1">
           <button
             onClick={() => navigate('/privacy-policy')}
-            className="text-sm font-bold leading-tight hover:underline transition-colors rr-text-navy"
+            className="min-h-9 min-w-0 rounded-md px-1 py-1 text-[11px] font-bold leading-[1.1] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0b1d4d] rr-text-navy sm:text-xs"
           >
             {t('footer.privacyPolicy')}
           </button>
-          <span aria-hidden="true" style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
           <button
             onClick={() => navigate('/terms-of-service')}
-            className="text-sm font-bold leading-tight hover:underline transition-colors rr-text-navy"
+            className="min-h-9 min-w-0 rounded-md px-1 py-1 text-[11px] font-bold leading-[1.1] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0b1d4d] rr-text-navy sm:text-xs"
           >
             {t('footer.termsOfService')}
           </button>
-          <span aria-hidden="true" style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
           <button
             onClick={() => navigate('/compliance')}
-            className="text-sm font-bold leading-tight hover:underline transition-colors rr-text-navy"
+            className="min-h-9 min-w-0 rounded-md px-1 py-1 text-[11px] font-bold leading-[1.1] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0b1d4d] rr-text-navy sm:text-xs"
           >
             {t('footer.compliance')}
           </button>
         </div>
 
-        <div data-testid="mobile-footer-secondary-links" className="mt-1 flex items-center justify-center gap-2">
+        <div data-testid="mobile-footer-secondary-links" className="mx-auto mt-1 grid max-w-56 grid-cols-2 gap-1">
           <button
             onClick={() => navigate('/security')}
-            className="text-sm font-bold leading-tight hover:underline transition-colors rr-text-navy"
+            className="min-h-9 min-w-0 rounded-md px-1 py-1 text-[11px] font-bold leading-[1.1] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0b1d4d] rr-text-navy sm:text-xs"
           >
             Security
           </button>
-          <span aria-hidden="true" style={{ color: 'oklch(0.35 0.08 260)', fontSize: '10px' }}>·</span>
           <button
             onClick={() => navigate('/changelog')}
-            className="text-sm font-bold leading-tight hover:underline transition-colors rr-text-navy"
+            className="min-h-9 min-w-0 rounded-md px-1 py-1 text-[11px] font-bold leading-[1.1] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0b1d4d] rr-text-navy sm:text-xs"
           >
             {t('footer.whatsNew')}
           </button>
@@ -249,13 +265,12 @@ export default function BottomNav() {
 
         {/* Copyright notice */}
         <p
-          className="text-center mt-0.5 pb-0.5"
+          className="mt-0.5 max-w-full text-center text-[10px] leading-tight sm:text-[11px]"
           style={{
-            fontSize: '11px',
             color: '#000a29',
             fontFamily: "'Nunito', sans-serif",
             letterSpacing: '0.02em',
-            paddingTop: '8px',
+            paddingTop: '6px',
           }}
         >
           Copyright &copy; 2026 SK America

@@ -6,24 +6,28 @@ function readProjectFile(relativePath: string): string {
   return readFileSync(fileURLToPath(new URL(relativePath, import.meta.url)), "utf8");
 }
 
-describe("versioned static-copy localization supplement", () => {
+describe("locale-specific static-copy localization supplements", () => {
   const helperSource = readProjectFile("../client/src/lib/autoText.ts");
   const bootstrapSource = readProjectFile("../client/src/main.tsx");
+  const i18nSource = readProjectFile("../client/src/lib/i18n.ts");
 
-  it("uses the versioned deployed supplement instead of a sandbox-only artifact", () => {
-    expect(helperSource).toContain(
-      'const STATIC_COPY_SUPPLEMENT_URL = "/manus-storage/getphame-static-localization-phame17_b0611502.json"',
-    );
-    expect(helperSource).toContain("fetch(STATIC_COPY_SUPPLEMENT_URL)");
+  it("loads only a selected non-English locale from independently cacheable deployed assets", () => {
+    for (const locale of ["es", "fr", "it", "th", "zh-CN", "zh-TW"]) {
+      expect(helperSource).toContain(`getphame-static-copy-${locale}-phame18-static-copy_`);
+    }
+    expect(helperSource).toContain("const STATIC_COPY_SUPPLEMENT_URLS");
+    expect(helperSource).toContain('if (locale === "en") return Promise.resolve();');
+    expect(helperSource).toContain("new Map<SupportedLang, Promise<void>>()");
+    expect(helperSource).not.toContain("autoTextManifest.json");
+    expect(helperSource).not.toContain("autoTextTranslations.json");
     expect(helperSource).not.toContain("/home/ubuntu");
-    expect(helperSource).not.toContain("localization-gap-classification.json");
   });
 
-  it("validates and installs the deployed catalog before the React application mounts", () => {
-    expect(helperSource).toContain("function mergeStaticCopySupplement");
-    expect(helperSource).toContain("Static localization supplement is malformed.");
-    expect(helperSource).toContain("Object.assign(translationCatalogs[locale] ??= {}, catalog)");
-    expect(bootstrapSource).toContain("loadStaticLocalizationSupplement");
-    expect(bootstrapSource).toContain("Promise.all([i18nReady, loadStaticLocalizationSupplement()])");
+  it("installs the initial active catalog before mount and preloads static copy before language changes", () => {
+    expect(helperSource).toContain("Static localization supplement locale mismatch");
+    expect(helperSource).toContain("mergeStaticCopySupplement");
+    expect(bootstrapSource).toContain("i18nReady.then(() => loadStaticLocalizationSupplement())");
+    expect(i18nSource).toContain("prepareStaticCopyLocale");
+    expect(i18nSource).toContain("Promise.all([i18n.loadLanguages(lang), prepareStaticCopyLocale(lang)])");
   });
 });

@@ -1,21 +1,29 @@
-import i18n, { type SupportedLang } from "./i18n";
-import manifest from "./autoTextManifest.json";
-import translations from "./autoTextTranslations.json";
+import i18n, { SUPPORTED_LANGS, type SupportedLang } from "./i18n";
 
 type Interpolation = Record<string, string | number | undefined | null>;
 
 type StaticCopySupplement = {
+  version?: string;
+  locale?: SupportedLang;
   manifest: Array<{ key: string; source: string }>;
-  translations: Record<string, Record<string, string>>;
+  translations: Record<string, string>;
 };
 
-const STATIC_COPY_SUPPLEMENT_URL = "/manus-storage/getphame-static-localization-phame17_b0611502.json";
-let staticCopySupplementReady: Promise<void> | undefined;
+// Each non-English locale receives only its own static-copy catalog. This
+// removes the previous all-language JSON imports from the initial JavaScript
+// bundle and avoids downloading unrelated languages.
+const STATIC_COPY_SUPPLEMENT_URLS: Partial<Record<SupportedLang, string>> = {
+  es: "/manus-storage/getphame-static-copy-es-phame18-static-copy_07cd913a.json",
+  fr: "/manus-storage/getphame-static-copy-fr-phame18-static-copy_d57de8e1.json",
+  it: "/manus-storage/getphame-static-copy-it-phame18-static-copy_856fbb25.json",
+  th: "/manus-storage/getphame-static-copy-th-phame18-static-copy_ccba1b66.json",
+  "zh-CN": "/manus-storage/getphame-static-copy-zh-CN-phame18-static-copy_76d42e6a.json",
+  "zh-TW": "/manus-storage/getphame-static-copy-zh-TW-phame18-static-copy_1e6a96ae.json",
+};
 
-const sourceToKey = new Map(
-  manifest.map((entry) => [entry.source, entry.key]),
-);
-const translationCatalogs = translations as Record<string, Record<string, string>>;
+const sourceToKey = new Map<string, string>();
+const translationCatalogs: Record<string, Record<string, string>> = {};
+const loadedStaticCopyLocales = new Map<SupportedLang, Promise<void>>();
 
 function decodeEntities(value: string) {
   const entities: Record<string, string> = {
@@ -30,13 +38,24 @@ function decodeEntities(value: string) {
   return value.replace(/&(amp|apos|gt|lt|nbsp|quot);/g, (_, entity: string) => entities[entity] ?? _);
 }
 
-for (const entry of manifest) {
-  sourceToKey.set(decodeEntities(entry.source), entry.key);
+function getActiveLocale(): SupportedLang {
+  const candidate = i18n.resolvedLanguage ?? i18n.language;
+  return SUPPORTED_LANGS.includes(candidate as SupportedLang)
+    ? (candidate as SupportedLang)
+    : "en";
 }
 
-function mergeStaticCopySupplement(supplement: StaticCopySupplement) {
+export function getStaticLocalizationSupplementUrl(locale: SupportedLang) {
+  return STATIC_COPY_SUPPLEMENT_URLS[locale];
+}
+
+function mergeStaticCopySupplement(supplement: StaticCopySupplement, locale: SupportedLang) {
   if (!Array.isArray(supplement.manifest) || !supplement.translations) {
     throw new Error("Static localization supplement is malformed.");
+  }
+
+  if (supplement.locale && supplement.locale !== locale) {
+    throw new Error(`Static localization supplement locale mismatch: expected ${locale}.`);
   }
 
   for (const entry of supplement.manifest) {
@@ -45,30 +64,37 @@ function mergeStaticCopySupplement(supplement: StaticCopySupplement) {
     sourceToKey.set(decodeEntities(entry.source), entry.key);
   }
 
-  for (const [locale, catalog] of Object.entries(supplement.translations)) {
-    if (!catalog || typeof catalog !== "object") continue;
-    Object.assign(translationCatalogs[locale] ??= {}, catalog);
-  }
+  Object.assign(translationCatalogs[locale] ??= {}, supplement.translations);
 }
 
 /**
- * Loads the versioned static-copy supplement before React mounts. The network
- * resource keeps the sizeable cross-application catalog outside the source
- * tree while preserving a deterministic English fallback if it is unavailable.
+ * Loads only the active locale's versioned static-copy catalog. English does
+ * not need a catalog because its audited source text is the canonical fallback.
+ * A per-locale promise cache prevents duplicate fetches while allowing a
+ * language switch to preload its own copy before the UI changes language.
  */
-export function loadStaticLocalizationSupplement() {
-  if (staticCopySupplementReady) return staticCopySupplementReady;
+export function loadStaticLocalizationSupplement(requestedLocale?: SupportedLang) {
+  const locale = requestedLocale ?? getActiveLocale();
+  if (locale === "en") return Promise.resolve();
 
-  staticCopySupplementReady = fetch(STATIC_COPY_SUPPLEMENT_URL)
+  const existing = loadedStaticCopyLocales.get(locale);
+  if (existing) return existing;
+
+  const url = getStaticLocalizationSupplementUrl(locale);
+  if (!url) return Promise.resolve();
+
+  const ready = fetch(url)
     .then(async (response) => {
       if (!response.ok) throw new Error(`Static localization supplement request failed (${response.status}).`);
-      mergeStaticCopySupplement(await response.json() as StaticCopySupplement);
+      mergeStaticCopySupplement(await response.json() as StaticCopySupplement, locale);
     })
     .catch((error) => {
-      console.error("[i18n] Static localization supplement unavailable; using English static-copy fallback.", error);
+      loadedStaticCopyLocales.delete(locale);
+      console.error(`[i18n] ${locale} static-copy supplement unavailable; using English static-copy fallback.`, error);
     });
 
-  return staticCopySupplementReady;
+  loadedStaticCopyLocales.set(locale, ready);
+  return ready;
 }
 
 function interpolate(value: string, variables?: Interpolation) {
@@ -97,15 +123,12 @@ function localizeEmbeddedDates(value: string, locale: string) {
 }
 
 /**
- * Localizes static customer-facing copy that was identified by the full-app
- * source audit. Existing `t()` calls remain the preferred pattern for new
- * feature work; this helper safely covers legacy literals while preserving a
- * deterministic English fallback.
+ * Localizes audited legacy literals while preserving their English source as a
+ * deterministic fallback until the selected locale bundle is available.
  */
 export function at(source: string, variables?: Interpolation) {
   const key = sourceToKey.get(source);
-  const language = i18n.resolvedLanguage ?? i18n.language;
-  const locale = language as SupportedLang;
+  const locale = getActiveLocale();
   const localized = locale !== "en" && key
     ? translationCatalogs[locale]?.[key] ?? source
     : source;

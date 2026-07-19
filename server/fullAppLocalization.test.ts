@@ -84,7 +84,7 @@ describe("Full application localization coverage", () => {
     expect((homeSource.match(/useTranslation\("translation"\)/g) ?? []).length).toBeGreaterThanOrEqual(3);
     expect(i18nSource).toContain("export const i18nReady");
     expect(bootstrapSource).toContain("loadStaticLocalizationSupplement");
-    expect(bootstrapSource).toContain("Promise.all([i18nReady, loadStaticLocalizationSupplement()])");
+    expect(bootstrapSource).toContain("i18nReady.then(() => loadStaticLocalizationSupplement())");
     expect(homeSource).toContain('t("referralRewards.title")');
     expect(homeSource).toContain('t("referralRewards.shareMessage", { url: shareUrl })');
     expect(homeSource).not.toContain(">Referral Rewards<");
@@ -128,13 +128,23 @@ describe("Full application localization coverage", () => {
 
   it("loads the static-copy supplement before render and localizes native-share payloads outside the DOM bridge", () => {
     const helperSource = readProjectFile("../client/src/lib/autoText.ts");
+    const i18nSource = readProjectFile("../client/src/lib/i18n.ts");
+    const onboardingSource = readProjectFile("../client/src/components/OnboardingWizard.tsx");
     const paymentSuccessSource = readProjectFile("../client/src/pages/PaymentSuccess.tsx");
     const pwaPromptSource = readProjectFile("../client/src/components/PWAInstallPrompt.tsx");
     const pwaShareSource = readProjectFile("../client/src/lib/pwaShare.ts");
 
-    expect(helperSource).toContain("getphame-static-localization-phame17_b0611502.json");
+    for (const locale of SUPPORTED_NON_ENGLISH_LOCALES) {
+      expect(helperSource).toContain(`getphame-static-copy-${locale}-phame18-static-copy`);
+    }
     expect(helperSource).toContain("export function loadStaticLocalizationSupplement");
     expect(helperSource).toContain("mergeStaticCopySupplement");
+    expect(helperSource).toContain("loadedStaticCopyLocales");
+    expect(i18nSource).toContain("Promise.all([i18n.loadLanguages(lang), prepareStaticCopyLocale(lang)])");
+    expect(onboardingSource).toContain('from "@/components/ui/tooltip"');
+    expect(onboardingSource).toContain("onboardingWizard.tooltips.smtpPassword.text");
+    expect(onboardingSource).toContain("onboardingWizard.tooltips.reviewUrl.text");
+    expect(onboardingSource).toContain("onboardingWizard.tooltips.firstRequest.text");
     expect(paymentSuccessSource).toContain("const PERKS_BY_TIER");
     expect(pwaPromptSource).toContain('const { at } = await import("@/lib/autoText")');
     expect(pwaPromptSource).toContain("localizedShareText = at(localizedShareText)");
