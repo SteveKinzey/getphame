@@ -475,3 +475,7 @@
 - [x] Audit the existing support-management skill against the completed shared-view, custom-range export, escalation-policy, validation, and release workflow.
 - [x] Refine the reusable skill and checklist with any missing implementation safeguards discovered from the completed release.
 - [x] Validate and package the reusable support-management skill for delivery.
+
+- [x] Inspect the current Get Phame navigation and configuration surfaces to locate the actual Stripe administration route.
+- [x] Identify a safe live-payment verification path and document any missing payment administration controls.
+- [x] Deliver corrected Stripe navigation and verification guidance without requesting payment credentials in chat.
