@@ -482,20 +482,20 @@
 
 - [x] Audit the live Stripe Checkout product, account branding, statement descriptor, and app-side legacy Review Link references against Get Phame brand rules.
 - [x] Correct application-controlled Stripe Checkout branding and update any legacy Review Link name or star-mark references.
-- [ ] Validate the live checkout title, logo, authorization descriptor, line item, and promotion-code behavior; document any remaining Stripe Dashboard action.
-- [ ] Add focused branding regression coverage, publish the correction, and report the verified outcome.
+- [x] Validate the live checkout title, logo, authorization descriptor, line item, and promotion-code behavior; document any remaining Stripe Dashboard action.
+- [x] Add focused branding regression coverage, publish the correction, and report the verified outcome.
 
 - [x] Audit the current deployed Get Phame P-mark source and confirm Stripe-compatible icon and logo variants.
 - [x] Prepare exact user-approved SVG-derived, square high-resolution P-mark PNG files for Stripe icon and logo uploads.
 - [x] Verify the final image dimensions and source fidelity, then deliver the Stripe-ready assets.
 
 - [x] Replace the obsolete P-mark source with the user-approved Get Phame SVG and regenerate Stripe icon and logo variants.
-- [ ] Update the Checkout branding override to reference the user-approved P-with-star asset and validate the published result.
+- [x] Update the Checkout branding override to reference the user-approved P-with-star asset and validate the published result.
 
 - [x] Verify whether the rejected `LIVE-VERIFY-JULY` value is a live Stripe coupon or a customer-enterable promotion code and confirm checkout eligibility.
 - [x] Confirm the minimum Stripe Dashboard correction while preserving the intended one-time discount and Get Phame Checkout configuration.
 - [x] Deliver precise live-mode promotion-code creation and retest steps without requesting payment credentials in chat.
 - [x] Audit the active Stripe account, `LIVE-VERIFY-JULY` promotion-code object, underlying coupon, and Get Phame Checkout price linkage using read-only live metadata.
 - [x] Identify and apply the minimum correction without rotating working Stripe keys or exposing payment credentials.
-- [ ] Verify fresh Checkout eligibility and report the exact customer-safe next step.
+- [x] Verify fresh Checkout eligibility through the user-confirmed successful live payment, and report the exact customer-safe next step.
 - [x] Add focused Vitest coverage confirming Checkout enables customer-entered promotion codes for the verified Get Phame price mapping.
