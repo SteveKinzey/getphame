@@ -42,7 +42,7 @@ describe("Stripe redirect domains", () => {
           display_name: "Get Phame",
           icon: expect.objectContaining({
             type: "url",
-            url: "https://getphame.app/manus-storage/getphame-stripe-checkout-icon_5e83b738.png",
+            url: "https://getphame.app/manus-storage/getphame-stripe-icon-approved-512_5068915e.png",
           }),
         }),
       }),
@@ -63,7 +63,7 @@ describe("Stripe redirect domains", () => {
           display_name: "Get Phame",
           icon: expect.objectContaining({
             type: "url",
-            url: "https://getphame.app/manus-storage/getphame-stripe-checkout-icon_5e83b738.png",
+            url: "https://getphame.app/manus-storage/getphame-stripe-icon-approved-512_5068915e.png",
           }),
         }),
       }),

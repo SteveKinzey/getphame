@@ -45,7 +45,7 @@ export type StripePlan = keyof typeof STRIPE_PRICE_IDS;
 const CANONICAL_STRIPE_RETURN_ORIGIN = "https://getphame.app";
 const CANONICAL_STRIPE_RETURN_HOSTS = new Set(["getphame.app", "www.getphame.app"]);
 const GETPHAME_CHECKOUT_ICON_URL =
-  "https://getphame.app/manus-storage/getphame-stripe-checkout-icon_5e83b738.png";
+  "https://getphame.app/manus-storage/getphame-stripe-icon-approved-512_5068915e.png";
 const GETPHAME_CHECKOUT_BRANDING = {
   display_name: "Get Phame",
   icon: {

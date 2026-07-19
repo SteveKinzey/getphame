@@ -484,3 +484,10 @@
 - [x] Correct application-controlled Stripe Checkout branding and update any legacy Review Link name or star-mark references.
 - [ ] Validate the live checkout title, logo, authorization descriptor, line item, and promotion-code behavior; document any remaining Stripe Dashboard action.
 - [ ] Add focused branding regression coverage, publish the correction, and report the verified outcome.
+
+- [x] Audit the current deployed Get Phame P-mark source and confirm Stripe-compatible icon and logo variants.
+- [x] Prepare exact user-approved SVG-derived, square high-resolution P-mark PNG files for Stripe icon and logo uploads.
+- [x] Verify the final image dimensions and source fidelity, then deliver the Stripe-ready assets.
+
+- [x] Replace the obsolete P-mark source with the user-approved Get Phame SVG and regenerate Stripe icon and logo variants.
+- [ ] Update the Checkout branding override to reference the user-approved P-with-star asset and validate the published result.
