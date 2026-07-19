@@ -36,6 +36,7 @@ export const supportTicketAlertTypeEnum = pgEnum("support_ticket_alert_type", ["
 export const supportQueueAssigneeScopeEnum = pgEnum("support_queue_assignee_scope", ["any", "unassigned", "specific"]);
 export const supportQueueSlaWindowEnum = pgEnum("support_queue_sla_window", ["overdue", "next_4_hours", "next_24_hours"]);
 export const supportQueueSortEnum = pgEnum("support_queue_sort", ["newest", "oldest", "priority", "assignee", "sla_soonest", "due_soonest"]);
+export const supportQueueViewVisibilityEnum = pgEnum("support_queue_view_visibility", ["private", "team"]);
 
 // ─── Tables ───────────────────────────────────────────────────────────────────
 
@@ -589,6 +590,8 @@ export const supportSavedQueueViews = pgTable("support_saved_queue_views", {
   ownerUserId: integer("owner_user_id").notNull(),
   name: varchar("name", { length: 80 }).notNull(),
   normalizedName: varchar("normalized_name", { length: 80 }).notNull(),
+  // Private views stay owner-only; team views are discoverable by other support administrators.
+  visibility: supportQueueViewVisibilityEnum("visibility").notNull().default("private"),
   status: supportSubmissionStatusEnum("status"),
   topic: supportTopicEnum("topic"),
   priority: supportPriorityEnum("priority"),
@@ -601,10 +604,42 @@ export const supportSavedQueueViews = pgTable("support_saved_queue_views", {
 }, (table) => [
   uniqueIndex("support_saved_queue_views_owner_name_unique").on(table.ownerUserId, table.normalizedName),
   index("support_saved_queue_views_owner_updated_idx").on(table.ownerUserId, table.updatedAt),
+  index("support_saved_queue_views_visibility_updated_idx").on(table.visibility, table.updatedAt),
 ]);
 
 export type SupportSavedQueueView = typeof supportSavedQueueViews.$inferSelect;
 export type InsertSupportSavedQueueView = typeof supportSavedQueueViews.$inferInsert;
+
+/**
+ * Singleton configuration for private, recipient-scoped urgent SLA escalation.
+ * Ticket/customer data is intentionally not copied into the policy tables.
+ */
+export const supportEscalationPolicies = pgTable("support_escalation_policies", {
+  id: serial("id").primaryKey(),
+  policyKey: varchar("policy_key", { length: 64 }).notNull().unique(),
+  breachThresholdMinutes: integer("breach_threshold_minutes").notNull().default(0),
+  includeAssignee: boolean("include_assignee").notNull().default(true),
+  includeAllAdminsWhenUnassigned: boolean("include_all_admins_when_unassigned").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export type SupportEscalationPolicy = typeof supportEscalationPolicies.$inferSelect;
+export type InsertSupportEscalationPolicy = typeof supportEscalationPolicies.$inferInsert;
+
+/** Explicit administrators who receive an urgent SLA-breach alert under the singleton policy. */
+export const supportEscalationPolicyRecipients = pgTable("support_escalation_policy_recipients", {
+  id: serial("id").primaryKey(),
+  policyId: integer("policy_id").notNull(),
+  recipientUserId: integer("recipient_user_id").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("support_escalation_policy_recipients_policy_user_unique").on(table.policyId, table.recipientUserId),
+  index("support_escalation_policy_recipients_recipient_idx").on(table.recipientUserId),
+]);
+
+export type SupportEscalationPolicyRecipient = typeof supportEscalationPolicyRecipients.$inferSelect;
+export type InsertSupportEscalationPolicyRecipient = typeof supportEscalationPolicyRecipients.$inferInsert;
 
 /**
  * Churn survey responses — one row per cancellation.

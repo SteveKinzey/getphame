@@ -8,13 +8,17 @@ function readProjectFile(relativePath: string) {
 }
 
 describe("support operations saved views, SLA exports, and breach alerts", () => {
-  it("keeps saved queue views admin-owned, bounded, normalized, and restricted to supported filters", () => {
+  it("keeps saved queue views owner-controlled while safely exposing explicit team-visible views", () => {
     const router = readProjectFile("./routers.ts");
     const savedViewsBlock = router.slice(router.indexOf("savedViews: adminProcedure"), router.indexOf("deleteView: adminProcedure"));
+    const deleteViewBlock = router.slice(router.indexOf("deleteView: adminProcedure"), router.indexOf("checkSlaBreach: adminProcedure"));
 
     expect(savedViewsBlock).toContain("savedViews: adminProcedure");
     expect(savedViewsBlock).toContain("saveView: adminProcedure");
     expect(savedViewsBlock).toContain("eq(supportSavedQueueViews.ownerUserId, ctx.user.id)");
+    expect(savedViewsBlock).toContain('eq(supportSavedQueueViews.visibility, "team")');
+    expect(savedViewsBlock).toContain("SUPPORT_QUEUE_VIEW_VISIBILITIES");
+    expect(savedViewsBlock).toContain("visibility: input.visibility");
     expect(savedViewsBlock).toContain("normalizeSupportQueueViewName(name)");
     expect(savedViewsBlock).toContain("MAX_SUPPORT_SAVED_QUEUE_VIEWS");
     expect(savedViewsBlock).toContain("MAX_SUPPORT_SAVED_QUEUE_VIEW_NAME_CHARS");
@@ -23,9 +27,10 @@ describe("support operations saved views, SLA exports, and breach alerts", () =>
     expect(savedViewsBlock).toContain("SUPPORT_QUEUE_SORTS");
     expect(savedViewsBlock).toContain('value.assigneeScope === "specific" && value.assigneeUserId === null');
     expect(savedViewsBlock).toContain('eq(users.role, "admin")');
+    expect(deleteViewBlock).toContain("eq(supportSavedQueueViews.ownerUserId, ctx.user.id)");
   });
 
-  it("exports only aggregate SLA metrics in a spreadsheet-safe CSV artifact", () => {
+  it("exports only aggregate SLA metrics in a spreadsheet-safe CSV artifact across presets or validated custom ranges", () => {
     const router = readProjectFile("./routers.ts");
     const exportBlock = router.slice(router.indexOf("exportMetricsCsv: adminProcedure"), router.indexOf("savedViews: adminProcedure"));
     const csv = serializeAdminOperationsCsv([
@@ -34,6 +39,10 @@ describe("support operations saved views, SLA exports, and breach alerts", () =>
     ]);
 
     expect(exportBlock).toContain("exportMetricsCsv: adminProcedure");
+    expect(router).toContain("const supportMetricsInputSchema");
+    expect(router).toContain("MAX_SUPPORT_EXPORT_RANGE_DAYS");
+    expect(router).toContain("Choose either a preset period or a custom date range.");
+    expect(router).toContain("Choose a range of ${MAX_SUPPORT_EXPORT_RANGE_DAYS} days or fewer.");
     expect(exportBlock).toContain("getSupportMetricsSnapshot");
     expect(exportBlock).toContain('section: "support_sla"');
     expect(exportBlock).toContain("serializeAdminOperationsCsv(rows)");
@@ -45,17 +54,32 @@ describe("support operations saved views, SLA exports, and breach alerts", () =>
     expect(csv).not.toContain("customer@example.com");
   });
 
-  it("creates recipient-scoped urgent breach alerts from persisted SLA timestamps and suppresses repeats per target window", () => {
+  it("creates policy-routed urgent breach alerts from persisted SLA timestamps and suppresses repeats per target window", () => {
     const router = readProjectFile("./routers.ts");
     const breachBlock = router.slice(router.indexOf("checkSlaBreach: adminProcedure"), router.indexOf("adminAssignees: adminProcedure"));
 
     expect(breachBlock).toContain("checkSlaBreach: adminProcedure");
     expect(breachBlock).toContain('eq(supportSubmissions.priority, "urgent")');
     expect(breachBlock).toContain('ne(supportSubmissions.status, "resolved")');
-    expect(breachBlock).toContain("lte(supportSubmissions.slaTargetAt, now)");
-    expect(breachBlock).toContain("ticket.assigneeUserId ? [ticket.assigneeUserId] : admins.map((admin) => admin.id)");
+    expect(breachBlock).toContain("getSupportEscalationPolicySettings(db)");
+    expect(breachBlock).toContain("breachCutoff");
+    expect(breachBlock).toContain("lte(supportSubmissions.slaTargetAt, breachCutoff)");
+    expect(breachBlock).toContain("policy.recipientUserIds");
+    expect(breachBlock).toContain("policy.includeAssignee");
+    expect(breachBlock).toContain("policy.includeAllAdminsWhenUnassigned");
     expect(breachBlock).toContain('type: "sla_breach"');
     expect(breachBlock).toContain("dedupSince: ticket.slaTargetAt ?? now");
+  });
+
+  it("protects escalation-policy updates with bounded thresholds, valid administrators, and a required recipient route", () => {
+    const router = readProjectFile("./routers.ts");
+    const policyBlock = router.slice(router.indexOf("updateEscalationPolicy: adminProcedure"), router.indexOf("adminAssignees: adminProcedure"));
+
+    expect(policyBlock).toContain("MAX_SUPPORT_ESCALATION_THRESHOLD_MINUTES");
+    expect(policyBlock).toContain("Keep at least one escalation recipient route enabled.");
+    expect(policyBlock).toContain('eq(users.role, "admin")');
+    expect(policyBlock).toContain("SUPPORT_ESCALATION_POLICY_KEY");
+    expect(policyBlock).toContain("supportEscalationPolicyRecipients");
   });
 
   it("keeps saved views, SLA export, and urgent breach emphasis visible in responsive administrator interfaces", () => {
@@ -66,12 +90,19 @@ describe("support operations saved views, SLA exports, and breach alerts", () =>
     expect(inbox).toContain("trpc.support.savedViews.useQuery");
     expect(inbox).toContain("trpc.support.saveView.useMutation");
     expect(inbox).toContain("trpc.support.deleteView.useMutation");
+    expect(inbox).toContain("savedViewVisibility");
+    expect(inbox).toContain("Urgent SLA escalation policy");
+    expect(inbox).toContain("support-breach-threshold-minutes");
+    expect(inbox).toContain("trpc.support.updateEscalationPolicy.useMutation");
     expect(inbox).toContain("Saved queue views");
     expect(inbox).toContain('data-sla-breached={hasUrgentSlaBreach ? "true" : "false"}');
     expect(inbox).toContain("Urgent SLA breach");
     expect(inbox).toContain('<option value="next_4_hours">Due within 4 hours</option>');
     expect(inbox).toContain('<option value="assignee">Assignee</option>');
     expect(dashboard).toContain("trpc.support.exportMetricsCsv.useQuery");
+    expect(dashboard).toContain("supportReportStartDate");
+    expect(dashboard).toContain("supportReportEndDate");
+    expect(dashboard).toContain("Custom SLA reporting date range");
     expect(dashboard).toContain('data-testid="admin-support-sla-csv-export"');
     expect(dashboard).toContain("Export SLA CSV");
     expect(alerts).toContain('alert.type === "sla_breach"');

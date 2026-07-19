@@ -19,8 +19,14 @@ export type SupportQueueSlaWindow = (typeof SUPPORT_QUEUE_SLA_WINDOWS)[number];
 export const SUPPORT_QUEUE_SORTS = ["newest", "oldest", "priority", "assignee", "sla_soonest", "due_soonest"] as const;
 export type SupportQueueSort = (typeof SUPPORT_QUEUE_SORTS)[number];
 
+export const SUPPORT_QUEUE_VIEW_VISIBILITIES = ["private", "team"] as const;
+export type SupportQueueViewVisibility = (typeof SUPPORT_QUEUE_VIEW_VISIBILITIES)[number];
+
 export const MAX_SUPPORT_SAVED_QUEUE_VIEWS = 20;
 export const MAX_SUPPORT_SAVED_QUEUE_VIEW_NAME_CHARS = 80;
+export const MAX_SUPPORT_EXPORT_RANGE_DAYS = 366;
+export const MAX_SUPPORT_ESCALATION_THRESHOLD_MINUTES = 7 * 24 * 60;
+export const SUPPORT_ESCALATION_POLICY_KEY = "urgent_sla_breach";
 
 export function normalizeSupportQueueViewName(value: string): string {
   return value.trim().replace(/\s+/g, " ").toLocaleLowerCase();

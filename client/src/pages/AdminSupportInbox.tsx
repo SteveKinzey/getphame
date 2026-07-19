@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
-import { AlertTriangle, ArrowLeft, Bold, CalendarClock, CheckCircle2, Clock3, Code2, ExternalLink, Flag, Inbox, Italic, List, Loader2, MessageSquareText, Paperclip, RefreshCw, SendHorizontal, StickyNote, Strikethrough, UserRoundCheck, X } from "lucide-react";
+import { AlertTriangle, ArrowLeft, BellRing, Bold, CalendarClock, CheckCircle2, Clock3, Code2, ExternalLink, Flag, Inbox, Italic, List, Loader2, MessageSquareText, Paperclip, RefreshCw, SendHorizontal, Settings2, Share2, StickyNote, Strikethrough, UserRoundCheck, X } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -25,7 +25,10 @@ type AdminListInput = {
 
 type SavedQueueView = {
   id: number;
+  ownerUserId: number;
+  ownerName: string | null;
   name: string;
+  visibility: "private" | "team";
   status: SupportStatus | null;
   topic: Exclude<TopicFilter, "all"> | null;
   priority: SupportPriority | null;
@@ -105,6 +108,14 @@ function formatDuration(milliseconds: number) {
   if (days > 0) return `${days}d ${hours}h`;
   if (hours > 0) return `${hours}h ${minutes}m`;
   return `${minutes}m`;
+}
+
+function formatEscalationThreshold(minutes: number) {
+  if (minutes === 0) return "immediately when overdue";
+  if (minutes < 60) return `${minutes} minute${minutes === 1 ? "" : "s"} after overdue`;
+  const hours = Math.floor(minutes / 60);
+  const remainingMinutes = minutes % 60;
+  return `${hours}h${remainingMinutes ? ` ${remainingMinutes}m` : ""} after overdue`;
 }
 
 function getSlaState(status: SupportStatus, targetAt: Date | string | null | undefined) {
@@ -361,7 +372,13 @@ export default function AdminSupportInboxPage() {
   const [slaDeadline, setSlaDeadline] = useState<SlaDeadlineFilter>("all");
   const [sort, setSort] = useState<TicketSort>("newest");
   const [savedViewName, setSavedViewName] = useState("");
+  const [savedViewVisibility, setSavedViewVisibility] = useState<"private" | "team">("private");
   const [activeSavedViewId, setActiveSavedViewId] = useState<number | null>(null);
+  const [policyOpen, setPolicyOpen] = useState(false);
+  const [breachThresholdMinutes, setBreachThresholdMinutes] = useState("0");
+  const [includeAssignee, setIncludeAssignee] = useState(true);
+  const [includeAllAdminsWhenUnassigned, setIncludeAllAdminsWhenUnassigned] = useState(true);
+  const [escalationRecipientIds, setEscalationRecipientIds] = useState<number[]>([]);
   const utils = trpc.useUtils();
 
   useEffect(() => {
@@ -387,6 +404,9 @@ export default function AdminSupportInboxPage() {
     enabled: user?.role === "admin",
   });
   const savedViews = trpc.support.savedViews.useQuery(undefined, {
+    enabled: user?.role === "admin",
+  });
+  const escalationPolicy = trpc.support.escalationPolicy.useQuery(undefined, {
     enabled: user?.role === "admin",
   });
   const invalidateInbox = () => void utils.support.adminList.invalidate();
@@ -431,6 +451,13 @@ export default function AdminSupportInboxPage() {
   const checkSlaBreach = trpc.support.checkSlaBreach.useMutation({
     onError: (error) => toast.error(error.message || "Unable to check urgent SLA deadlines."),
   });
+  const updateEscalationPolicy = trpc.support.updateEscalationPolicy.useMutation({
+    onSuccess: () => {
+      toast.success("Escalation policy saved.");
+      void utils.support.escalationPolicy.invalidate();
+    },
+    onError: (error) => toast.error(error.message || "Unable to save the escalation policy."),
+  });
 
   useEffect(() => {
     if (user?.role === "admin") checkSlaBreach.mutate();
@@ -438,6 +465,14 @@ export default function AdminSupportInboxPage() {
     // centralized in SupportTicketAlerts so each recipient sees only their own alerts.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.role]);
+
+  useEffect(() => {
+    if (!escalationPolicy.data) return;
+    setBreachThresholdMinutes(String(escalationPolicy.data.breachThresholdMinutes));
+    setIncludeAssignee(escalationPolicy.data.includeAssignee);
+    setIncludeAllAdminsWhenUnassigned(escalationPolicy.data.includeAllAdminsWhenUnassigned);
+    setEscalationRecipientIds(escalationPolicy.data.recipientUserIds);
+  }, [escalationPolicy.data]);
 
   const applySavedView = (view: SavedQueueView) => {
     setStatus(view.status ?? "all");
@@ -469,7 +504,28 @@ export default function AdminSupportInboxPage() {
       assigneeUserId: assignee !== "all" && assignee !== "unassigned" ? Number(assignee) : null,
       slaWindow: slaDeadline === "all" ? null : slaDeadline,
       sort,
+      visibility: savedViewVisibility,
     });
+  };
+
+  const saveEscalationPolicy = () => {
+    const threshold = Number(breachThresholdMinutes);
+    if (!Number.isInteger(threshold) || threshold < 0 || threshold > 10_080) {
+      toast.error("Use a whole-number escalation delay between 0 and 10,080 minutes.");
+      return;
+    }
+    updateEscalationPolicy.mutate({
+      breachThresholdMinutes: threshold,
+      includeAssignee,
+      includeAllAdminsWhenUnassigned,
+      recipientUserIds: escalationRecipientIds,
+    });
+  };
+
+  const toggleEscalationRecipient = (recipientUserId: number) => {
+    setEscalationRecipientIds((current) => current.includes(recipientUserId)
+      ? current.filter((id) => id !== recipientUserId)
+      : [...current, recipientUserId]);
   };
 
   if (!user || user.role !== "admin") return null;
@@ -514,7 +570,7 @@ export default function AdminSupportInboxPage() {
             <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
               <div>
                 <h3 id="support-saved-views-title" className="text-sm font-black rr-text-navy">Saved queue views</h3>
-                <p className="mt-1 text-xs font-medium rr-text-navy-muted">Save filter and sort combinations for quick triage. Views are private to your administrator account.</p>
+                <p className="mt-1 text-xs font-medium rr-text-navy-muted">Save filter and sort combinations for quick triage. Choose Private for yourself or Team for every support administrator.</p>
               </div>
               <div className="flex w-full flex-col gap-2 sm:flex-row lg:max-w-lg">
                 <label htmlFor="support-saved-view-name" className="sr-only">New queue view name</label>
@@ -532,6 +588,16 @@ export default function AdminSupportInboxPage() {
                   placeholder="Name this view, e.g. Urgent unassigned"
                   className="min-h-10 flex-1 rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
                 />
+                <label htmlFor="support-saved-view-visibility" className="sr-only">Queue view visibility</label>
+                <select
+                  id="support-saved-view-visibility"
+                  value={savedViewVisibility}
+                  onChange={(event) => setSavedViewVisibility(event.target.value as "private" | "team")}
+                  className="min-h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-black rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
+                >
+                  <option value="private">Private</option>
+                  <option value="team">Team</option>
+                </select>
                 <button
                   type="button"
                   onClick={saveCurrentView}
@@ -554,23 +620,103 @@ export default function AdminSupportInboxPage() {
                       aria-pressed={activeSavedViewId === view.id}
                       className="min-h-10 truncate px-3 text-sm font-black rr-text-navy transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-inset"
                     >
-                      {view.name}
+                      <span className="inline-flex items-center gap-1.5">
+                        {view.visibility === "team" && <Share2 size={13} aria-hidden="true" />}
+                        {view.name}
+                        {view.visibility === "team" && <span className="rounded-full bg-blue-100 px-1.5 py-0.5 text-[10px] font-black uppercase tracking-wide text-blue-800">Team</span>}
+                      </span>
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => deleteView.mutate({ id: view.id })}
-                      disabled={deleteView.isPending}
-                      className="inline-flex min-h-10 shrink-0 items-center justify-center border-l border-inherit px-2 text-slate-600 transition hover:bg-red-50 hover:text-red-800 disabled:cursor-wait disabled:opacity-55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-inset"
-                      aria-label={`Delete saved queue view ${view.name}`}
-                    >
-                      <X size={15} aria-hidden="true" />
-                    </button>
+                    {Number(view.ownerUserId) === Number(user.id) ? (
+                      <button
+                        type="button"
+                        onClick={() => deleteView.mutate({ id: view.id })}
+                        disabled={deleteView.isPending}
+                        className="inline-flex min-h-10 shrink-0 items-center justify-center border-l border-inherit px-2 text-slate-600 transition hover:bg-red-50 hover:text-red-800 disabled:cursor-wait disabled:opacity-55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-inset"
+                        aria-label={`Delete saved queue view ${view.name}`}
+                      >
+                        <X size={15} aria-hidden="true" />
+                      </button>
+                    ) : null}
                   </div>
                 ))}
               </div>
             ) : (
               <p className="mt-3 text-xs font-semibold rr-text-navy-muted">No saved views yet. Save the filters below to create one.</p>
             )}
+          </div>
+          <div className="mt-4 rounded-xl border border-slate-200 bg-white p-3" aria-labelledby="support-escalation-policy-title">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <BellRing size={16} className="rr-text-gold" aria-hidden="true" />
+                  <h3 id="support-escalation-policy-title" className="text-sm font-black rr-text-navy">Urgent SLA escalation policy</h3>
+                </div>
+                <p className="mt-1 text-xs font-medium rr-text-navy-muted">
+                  Urgent tickets alert recipients {formatEscalationThreshold(Number(escalationPolicy.data?.breachThresholdMinutes ?? 0))}. Alerts contain ticket context only, not customer message content.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setPolicyOpen((current) => !current)}
+                className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white px-3 text-sm font-black rr-text-navy transition hover:bg-slate-50 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+                aria-expanded={policyOpen}
+                aria-controls="support-escalation-policy-editor"
+              >
+                <Settings2 size={15} aria-hidden="true" /> {policyOpen ? "Close policy" : "Edit policy"}
+              </button>
+            </div>
+            {policyOpen ? (
+              <div id="support-escalation-policy-editor" className="mt-4 grid gap-4 border-t border-slate-200 pt-4 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+                <div>
+                  <label htmlFor="support-breach-threshold-minutes" className="text-sm font-black rr-text-navy">Alert delay after SLA breach</label>
+                  <div className="mt-1 flex items-center gap-2">
+                    <input
+                      id="support-breach-threshold-minutes"
+                      type="number"
+                      min="0"
+                      max="10080"
+                      step="1"
+                      inputMode="numeric"
+                      value={breachThresholdMinutes}
+                      onChange={(event) => setBreachThresholdMinutes(event.target.value)}
+                      className="min-h-11 w-28 rounded-xl border border-slate-300 bg-white px-3 text-sm font-black rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
+                    />
+                    <span className="text-sm font-semibold rr-text-navy-muted">minutes (0–10,080)</span>
+                  </div>
+                  <p className="mt-2 text-xs font-medium rr-text-navy-muted">Use 0 for the first inbox check after an urgent ticket is overdue. The current policy resolves to {formatEscalationThreshold(Number(breachThresholdMinutes) || 0)}.</p>
+                  <div className="mt-4 space-y-3">
+                    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm rr-text-navy">
+                      <input type="checkbox" checked={includeAssignee} onChange={(event) => setIncludeAssignee(event.target.checked)} className="mt-0.5 size-4 rounded border-slate-300 text-amber-500 focus:ring-amber-400" />
+                      <span><strong>Notify the assigned administrator</strong><span className="mt-0.5 block text-xs font-medium rr-text-navy-muted">Adds the current ticket owner when one is assigned.</span></span>
+                    </label>
+                    <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm rr-text-navy">
+                      <input type="checkbox" checked={includeAllAdminsWhenUnassigned} onChange={(event) => setIncludeAllAdminsWhenUnassigned(event.target.checked)} className="mt-0.5 size-4 rounded border-slate-300 text-amber-500 focus:ring-amber-400" />
+                      <span><strong>Notify all administrators when unassigned</strong><span className="mt-0.5 block text-xs font-medium rr-text-navy-muted">Keeps unowned urgent tickets visible to the team.</span></span>
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-black rr-text-navy">Always notify selected administrators</p>
+                  <p className="mt-1 text-xs font-medium rr-text-navy-muted">Select named recipients in addition to the dynamic assignment routes above.</p>
+                  <div className="mt-3 max-h-52 space-y-2 overflow-y-auto rounded-xl border border-slate-200 bg-slate-50 p-2">
+                    {assignees.isLoading ? <p className="px-2 py-3 text-xs font-semibold rr-text-navy-muted">Loading administrators…</p> : assignees.data?.map((admin) => (
+                      <label key={admin.id} className="flex cursor-pointer items-center gap-3 rounded-lg bg-white px-3 py-2 text-sm rr-text-navy shadow-sm">
+                        <input type="checkbox" checked={escalationRecipientIds.includes(admin.id)} onChange={() => toggleEscalationRecipient(admin.id)} className="size-4 rounded border-slate-300 text-amber-500 focus:ring-amber-400" />
+                        <span className="min-w-0"><strong className="block truncate">{admin.name || "Administrator"}</strong><span className="block truncate text-xs font-medium rr-text-navy-muted">{admin.email}</span></span>
+                      </label>
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={saveEscalationPolicy}
+                    disabled={updateEscalationPolicy.isPending || escalationPolicy.isLoading}
+                    className="mt-4 inline-flex min-h-10 items-center justify-center gap-2 rounded-xl rr-bg-navy px-3 text-sm font-black text-white transition active:scale-[0.97] disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2"
+                  >
+                    {updateEscalationPolicy.isPending && <Loader2 size={15} className="animate-spin" aria-hidden="true" />} Save escalation policy
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             <div>

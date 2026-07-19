@@ -52,6 +52,14 @@ export default function AdminDashboard() {
   const [, navigate] = useLocation();
   const [smtpRetestResults, setSmtpRetestResults] = useState<Record<number, { ok: boolean; checkedAt: number; error: string | null }>>({});
   const [supportReportingPeriod, setSupportReportingPeriod] = useState<"7" | "30" | "90">("30");
+  const [supportReportStartDate, setSupportReportStartDate] = useState("");
+  const [supportReportEndDate, setSupportReportEndDate] = useState("");
+  const supportMetricsInput = useMemo(
+    () => supportReportStartDate && supportReportEndDate
+      ? { startDate: supportReportStartDate, endDate: supportReportEndDate }
+      : { periodDays: supportReportingPeriod },
+    [supportReportEndDate, supportReportStartDate, supportReportingPeriod],
+  );
 
   const { data: stats, isLoading, error } = trpc.admin.stats.useQuery(undefined, {
     enabled: !!user,
@@ -84,13 +92,13 @@ export default function AdminDashboard() {
   });
 
   const { data: supportMetrics, isLoading: supportMetricsLoading } = trpc.support.adminMetrics.useQuery(
-    { periodDays: supportReportingPeriod },
+    supportMetricsInput,
     { enabled: user?.role === "admin", refetchInterval: 60_000 },
   );
 
   const operationsExport = trpc.admin.operationsAnalyticsExport.useQuery(undefined, { enabled: false });
   const supportMetricsExport = trpc.support.exportMetricsCsv.useQuery(
-    { periodDays: supportReportingPeriod },
+    supportMetricsInput,
     { enabled: false },
   );
 
@@ -171,6 +179,14 @@ export default function AdminDashboard() {
   };
 
   const downloadSupportMetricsCsv = async () => {
+    if ((supportReportStartDate || supportReportEndDate) && (!supportReportStartDate || !supportReportEndDate)) {
+      toast.error("Choose both a start and end date for a custom SLA export.");
+      return;
+    }
+    if (supportReportStartDate && supportReportEndDate && supportReportEndDate < supportReportStartDate) {
+      toast.error("The SLA report end date must be on or after the start date.");
+      return;
+    }
     try {
       const result = await supportMetricsExport.refetch();
       if (!result.data) throw new Error("The support SLA export could not be generated.");
@@ -560,12 +576,35 @@ export default function AdminDashboard() {
                 <div className="flex flex-col gap-2 sm:items-end">
                   <label className="flex items-center gap-2 text-sm font-black rr-text-navy">
                     <span className="sr-only">Reporting period</span>
-                    <select value={supportReportingPeriod} onChange={(event) => setSupportReportingPeriod(event.target.value as "7" | "30" | "90")} className="min-h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-black rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
+                    <select value={supportReportingPeriod} onChange={(event) => { setSupportReportingPeriod(event.target.value as "7" | "30" | "90"); setSupportReportStartDate(""); setSupportReportEndDate(""); }} className="min-h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-black rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
                       <option value="7">Last 7 days</option>
                       <option value="30">Last 30 days</option>
                       <option value="90">Last 90 days</option>
                     </select>
                   </label>
+                  <div className="grid grid-cols-2 gap-2" aria-label="Custom SLA reporting date range">
+                    <label className="text-xs font-black rr-text-navy">
+                      <span className="mb-1 block">From</span>
+                      <input
+                        type="date"
+                        value={supportReportStartDate}
+                        max={supportReportEndDate || undefined}
+                        onChange={(event) => setSupportReportStartDate(event.target.value)}
+                        className="min-h-10 w-full rounded-xl border border-slate-300 bg-white px-2 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
+                      />
+                    </label>
+                    <label className="text-xs font-black rr-text-navy">
+                      <span className="mb-1 block">To</span>
+                      <input
+                        type="date"
+                        value={supportReportEndDate}
+                        min={supportReportStartDate || undefined}
+                        onChange={(event) => setSupportReportEndDate(event.target.value)}
+                        className="min-h-10 w-full rounded-xl border border-slate-300 bg-white px-2 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
+                      />
+                    </label>
+                  </div>
+                  <p className="max-w-xs text-xs font-medium rr-text-navy-muted">Optional custom range: up to 366 days. Choosing a preset clears custom dates.</p>
                   <button
                     type="button"
                     data-testid="admin-support-sla-csv-export"

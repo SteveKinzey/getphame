@@ -464,3 +464,10 @@
 - [x] Add protected saved-view CRUD, SLA performance CSV export, and recipient-scoped urgent-breach alert APIs without leaking private support data.
 - [x] Enhance the responsive ticket inbox and reporting dashboard with saved queue actions, CSV download, and accessible urgent SLA-breach highlights.
 - [x] Add focused saved-view, export, urgent-breach, authorization, alert-suppression, and responsive UI regressions; validate and publish.
+
+- [x] Extend the reusable support-management skill with team-shared queue views, custom SLA export ranges, escalation-policy configuration, and release safeguards.
+- [x] Add durable team-shared queue view visibility controls with safe owner/admin permissions and reusable canonical filters.
+- [x] Add validated custom start/end date ranges to the aggregate SLA CSV reporting contract while preserving preset ranges.
+- [x] Add persistent escalation-policy recipients and configurable breach thresholds without exposing private customer data.
+- [x] Build responsive admin interfaces for shared views, custom CSV dates, and escalation-policy editing.
+- [x] Add focused authorization, range-validation, policy, shared-view, export, and responsive UI regressions; validate and publish.

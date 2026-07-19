@@ -8,6 +8,8 @@ import {
   MAX_SUPPORT_ATTACHMENT_BYTES,
   MAX_SUPPORT_INTERNAL_NOTE_CHARS,
   MAX_SUPPORT_INTERNAL_NOTE_MENTIONS,
+  MAX_SUPPORT_ESCALATION_THRESHOLD_MINUTES,
+  MAX_SUPPORT_EXPORT_RANGE_DAYS,
   MAX_SUPPORT_SAVED_QUEUE_VIEW_NAME_CHARS,
   MAX_SUPPORT_SAVED_QUEUE_VIEWS,
   normalizeSupportQueueViewName,
@@ -16,6 +18,7 @@ import {
   SUPPORT_QUEUE_ASSIGNEE_SCOPES,
   SUPPORT_QUEUE_SLA_WINDOWS,
   SUPPORT_QUEUE_SORTS,
+  SUPPORT_QUEUE_VIEW_VISIBILITIES,
   SUPPORT_SLA_DURATION_MS,
   SUPPORT_TICKET_ALERT_TYPES,
   SUPPORT_PRIORITIES,
@@ -68,9 +71,15 @@ describe("support screenshot intake", () => {
     expect(SUPPORT_QUEUE_ASSIGNEE_SCOPES).toEqual(["any", "unassigned", "specific"]);
     expect(SUPPORT_QUEUE_SLA_WINDOWS).toEqual(["overdue", "next_4_hours", "next_24_hours"]);
     expect(SUPPORT_QUEUE_SORTS).toEqual(["newest", "oldest", "priority", "assignee", "sla_soonest", "due_soonest"]);
+    expect(SUPPORT_QUEUE_VIEW_VISIBILITIES).toEqual(["private", "team"]);
     expect(MAX_SUPPORT_SAVED_QUEUE_VIEWS).toBe(20);
     expect(MAX_SUPPORT_SAVED_QUEUE_VIEW_NAME_CHARS).toBe(80);
     expect(normalizeSupportQueueViewName("  Urgent   Unassigned  ")).toBe("urgent unassigned");
+  });
+
+  it("centralizes bounded custom-reporting and SLA-escalation policy limits", () => {
+    expect(MAX_SUPPORT_EXPORT_RANGE_DAYS).toBe(366);
+    expect(MAX_SUPPORT_ESCALATION_THRESHOLD_MINUTES).toBe(7 * 24 * 60);
   });
 
   it("renders a deliberately small rich-note subset without accepting executable markup", () => {

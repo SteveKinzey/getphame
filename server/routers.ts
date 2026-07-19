@@ -53,6 +53,8 @@ import {
   MAX_SUPPORT_DUE_DATE_FUTURE_DAYS,
   MAX_SUPPORT_INTERNAL_NOTE_CHARS,
   MAX_SUPPORT_INTERNAL_NOTE_MENTIONS,
+  MAX_SUPPORT_ESCALATION_THRESHOLD_MINUTES,
+  MAX_SUPPORT_EXPORT_RANGE_DAYS,
   MAX_SUPPORT_SAVED_QUEUE_VIEW_NAME_CHARS,
   MAX_SUPPORT_SAVED_QUEUE_VIEWS,
   isValidSupportScreenshot,
@@ -62,10 +64,12 @@ import {
   normalizeSupportQueueViewName,
   sanitizeSupportAttachmentFilename,
   SUPPORT_ATTACHMENT_MIME_TYPES,
+  SUPPORT_ESCALATION_POLICY_KEY,
   SUPPORT_PRIORITIES,
   SUPPORT_QUEUE_ASSIGNEE_SCOPES,
   SUPPORT_QUEUE_SLA_WINDOWS,
   SUPPORT_QUEUE_SORTS,
+  SUPPORT_QUEUE_VIEW_VISIBILITIES,
   SUPPORT_SUBMISSION_STATUSES,
   SUPPORT_TICKET_ALERT_DEDUP_WINDOW_MS,
   SUPPORT_TICKET_ALERT_TYPES,
@@ -85,7 +89,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads, koalendarBookings, koalendarConnections, supportInternalNoteMentions, supportInternalNotes, supportSavedQueueViews, supportSubmissions, supportTicketAlerts } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads, koalendarBookings, koalendarConnections, supportEscalationPolicies, supportEscalationPolicyRecipients, supportInternalNoteMentions, supportInternalNotes, supportSavedQueueViews, supportSubmissions, supportTicketAlerts } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
 import { PWA_EVENT_NAMES, PWA_EVENT_SOURCE, summarizePwaEvents, toPwaEventPage } from "./pwaAnalytics";
 import { eq, like, or, inArray, desc, asc, isNotNull, isNull, and, sql, gte, lte, ne, count } from "drizzle-orm";
@@ -303,9 +307,17 @@ async function recordSupportFirstResponse(
 }
 
 type SupportMetricsPeriod = "7" | "30" | "90";
+type SupportMetricsInput = {
+  periodDays?: SupportMetricsPeriod;
+  startDate?: string;
+  endDate?: string;
+};
 type SupportMetricsSnapshot = {
   periodDays: number;
   periodStart: Date;
+  periodEnd: Date;
+  periodLabel: string;
+  isCustomRange: boolean;
   generatedAt: Date;
   ticketsCreated: number;
   resolvedTickets: number;
@@ -316,13 +328,67 @@ type SupportMetricsSnapshot = {
   overdueTickets: number;
 };
 
+const supportMetricsInputSchema = z.object({
+  periodDays: z.enum(["7", "30", "90"]).optional(),
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use a valid start date.").optional(),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use a valid end date.").optional(),
+}).superRefine((value, issueContext) => {
+  const hasCustomRange = Boolean(value.startDate || value.endDate);
+  if (hasCustomRange && (!value.startDate || !value.endDate)) {
+    issueContext.addIssue({ code: z.ZodIssueCode.custom, path: ["startDate"], message: "Choose both a start and end date for a custom report." });
+  }
+  if (hasCustomRange && value.periodDays) {
+    issueContext.addIssue({ code: z.ZodIssueCode.custom, path: ["periodDays"], message: "Choose either a preset period or a custom date range." });
+  }
+});
+
+function parseSupportReportDay(value: string, field: "start" | "end"): Date {
+  const [year, month, day] = value.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day, field === "end" ? 23 : 0, field === "end" ? 59 : 0, field === "end" ? 59 : 0, field === "end" ? 999 : 0));
+  if (parsed.getUTCFullYear() !== year || parsed.getUTCMonth() !== month - 1 || parsed.getUTCDate() !== day) {
+    throw new TRPCError({ code: "BAD_REQUEST", message: `Choose a valid ${field} date for the support report.` });
+  }
+  return parsed;
+}
+
+function resolveSupportMetricsRange(input?: SupportMetricsInput) {
+  const generatedAt = new Date();
+  if (input?.startDate && input.endDate) {
+    const periodStart = parseSupportReportDay(input.startDate, "start");
+    const periodEnd = parseSupportReportDay(input.endDate, "end");
+    if (periodEnd.getTime() < periodStart.getTime()) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "The report end date must be on or after its start date." });
+    }
+    const periodDays = Math.floor((periodEnd.getTime() - periodStart.getTime()) / (24 * 60 * 60 * 1000)) + 1;
+    if (periodDays > MAX_SUPPORT_EXPORT_RANGE_DAYS) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: `Choose a range of ${MAX_SUPPORT_EXPORT_RANGE_DAYS} days or fewer.` });
+    }
+    return {
+      generatedAt,
+      periodStart,
+      periodEnd,
+      periodDays,
+      periodLabel: `${input.startDate}_to_${input.endDate}`,
+      isCustomRange: true,
+    };
+  }
+
+  const periodDays = Number(input?.periodDays ?? "30");
+  return {
+    generatedAt,
+    periodStart: new Date(generatedAt.getTime() - periodDays * 24 * 60 * 60 * 1000),
+    periodEnd: generatedAt,
+    periodDays,
+    periodLabel: `last_${periodDays}_days`,
+    isCustomRange: false,
+  };
+}
+
 async function getSupportMetricsSnapshot(
   db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
-  period: SupportMetricsPeriod = "30",
+  input?: SupportMetricsInput,
 ): Promise<SupportMetricsSnapshot> {
-  const periodDays = Number(period);
-  const generatedAt = new Date();
-  const periodStart = new Date(generatedAt.getTime() - periodDays * 24 * 60 * 60 * 1000);
+  const { generatedAt, periodStart, periodEnd, periodDays, periodLabel, isCustomRange } = resolveSupportMetricsRange(input);
   const [metrics] = await db.select({
     ticketsCreated: count(supportSubmissions.id),
     resolvedTickets: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.resolvedAt} IS NOT NULL THEN 1 ELSE 0 END), 0)`,
@@ -333,13 +399,16 @@ async function getSupportMetricsSnapshot(
     overdueTickets: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.status} <> 'resolved' AND ${supportSubmissions.slaTargetAt} IS NOT NULL AND ${supportSubmissions.slaTargetAt} < ${generatedAt} THEN 1 ELSE 0 END), 0)`,
   })
     .from(supportSubmissions)
-    .where(gte(supportSubmissions.createdAt, periodStart));
+    .where(and(gte(supportSubmissions.createdAt, periodStart), lte(supportSubmissions.createdAt, periodEnd)));
 
   const asCount = (value: unknown) => Number(value ?? 0);
   const asDuration = (value: unknown) => value === null || value === undefined ? null : Math.round(Number(value));
   return {
     periodDays,
     periodStart,
+    periodEnd,
+    periodLabel,
+    isCustomRange,
     generatedAt,
     ticketsCreated: asCount(metrics?.ticketsCreated),
     resolvedTickets: asCount(metrics?.resolvedTickets),
@@ -348,6 +417,45 @@ async function getSupportMetricsSnapshot(
     avgFirstResponseMs: asDuration(metrics?.avgFirstResponseMs),
     avgResolutionMs: asDuration(metrics?.avgResolutionMs),
     overdueTickets: asCount(metrics?.overdueTickets),
+  };
+}
+
+type SupportEscalationPolicySettings = {
+  breachThresholdMinutes: number;
+  includeAssignee: boolean;
+  includeAllAdminsWhenUnassigned: boolean;
+  recipientUserIds: number[];
+};
+
+const defaultSupportEscalationPolicy: SupportEscalationPolicySettings = {
+  breachThresholdMinutes: 0,
+  includeAssignee: true,
+  includeAllAdminsWhenUnassigned: true,
+  recipientUserIds: [],
+};
+
+async function getSupportEscalationPolicySettings(
+  db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
+): Promise<SupportEscalationPolicySettings> {
+  const [policy] = await db.select({
+    id: supportEscalationPolicies.id,
+    breachThresholdMinutes: supportEscalationPolicies.breachThresholdMinutes,
+    includeAssignee: supportEscalationPolicies.includeAssignee,
+    includeAllAdminsWhenUnassigned: supportEscalationPolicies.includeAllAdminsWhenUnassigned,
+  })
+    .from(supportEscalationPolicies)
+    .where(eq(supportEscalationPolicies.policyKey, SUPPORT_ESCALATION_POLICY_KEY))
+    .limit(1);
+  if (!policy) return defaultSupportEscalationPolicy;
+
+  const recipients = await db.select({ recipientUserId: supportEscalationPolicyRecipients.recipientUserId })
+    .from(supportEscalationPolicyRecipients)
+    .where(eq(supportEscalationPolicyRecipients.policyId, policy.id));
+  return {
+    breachThresholdMinutes: policy.breachThresholdMinutes,
+    includeAssignee: policy.includeAssignee,
+    includeAllAdminsWhenUnassigned: policy.includeAllAdminsWhenUnassigned,
+    recipientUserIds: recipients.map((recipient) => recipient.recipientUserId),
   };
 }
 
@@ -3786,21 +3894,21 @@ export const appRouter = router({
         }))); 
       }),
     adminMetrics: adminProcedure
-      .input(z.object({ periodDays: z.enum(["7", "30", "90"]).optional() }).optional())
+      .input(supportMetricsInputSchema.optional())
       .query(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support reporting is unavailable." });
 
-        return getSupportMetricsSnapshot(db, input?.periodDays ?? "30");
+        return getSupportMetricsSnapshot(db, input);
       }),
     exportMetricsCsv: adminProcedure
-      .input(z.object({ periodDays: z.enum(["7", "30", "90"]).optional() }).optional())
+      .input(supportMetricsInputSchema.optional())
       .query(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support reporting is unavailable." });
 
-        const metrics = await getSupportMetricsSnapshot(db, input?.periodDays ?? "30");
-        const period = `last_${metrics.periodDays}_days`;
+        const metrics = await getSupportMetricsSnapshot(db, input);
+        const period = metrics.periodLabel;
         const rows = [
           { section: "metadata", metric: "generated_at", period, value: metrics.generatedAt.toISOString(), unit: "iso_8601", details: "Get Phame support SLA performance export" },
           { section: "support_sla", metric: "tickets_created", period, value: metrics.ticketsCreated, unit: "tickets", details: "Tickets created during the selected period" },
@@ -3813,7 +3921,7 @@ export const appRouter = router({
         ];
         const dateStamp = metrics.generatedAt.toISOString().slice(0, 10);
         return {
-          filename: `getphame-support-sla-${metrics.periodDays}d-${dateStamp}.csv`,
+          filename: `getphame-support-sla-${period}-${dateStamp}.csv`,
           csv: serializeAdminOperationsCsv(rows),
           mimeType: "text/csv;charset=utf-8",
           generatedAt: metrics.generatedAt,
@@ -3826,7 +3934,10 @@ export const appRouter = router({
 
       return db.select({
         id: supportSavedQueueViews.id,
+        ownerUserId: supportSavedQueueViews.ownerUserId,
+        ownerName: users.name,
         name: supportSavedQueueViews.name,
+        visibility: supportSavedQueueViews.visibility,
         status: supportSavedQueueViews.status,
         topic: supportSavedQueueViews.topic,
         priority: supportSavedQueueViews.priority,
@@ -3838,9 +3949,13 @@ export const appRouter = router({
         updatedAt: supportSavedQueueViews.updatedAt,
       })
         .from(supportSavedQueueViews)
-        .where(eq(supportSavedQueueViews.ownerUserId, ctx.user.id))
+        .leftJoin(users, eq(supportSavedQueueViews.ownerUserId, users.id))
+        .where(or(
+          eq(supportSavedQueueViews.ownerUserId, ctx.user.id),
+          eq(supportSavedQueueViews.visibility, "team"),
+        ))
         .orderBy(desc(supportSavedQueueViews.updatedAt), desc(supportSavedQueueViews.id))
-        .limit(MAX_SUPPORT_SAVED_QUEUE_VIEWS);
+        .limit(MAX_SUPPORT_SAVED_QUEUE_VIEWS * 5);
     }),
     saveView: adminProcedure
       .input(z.object({
@@ -3852,6 +3967,7 @@ export const appRouter = router({
         assigneeUserId: z.number().int().positive().nullable().optional(),
         slaWindow: z.enum(SUPPORT_QUEUE_SLA_WINDOWS).nullable().optional(),
         sort: z.enum(SUPPORT_QUEUE_SORTS).default("newest"),
+        visibility: z.enum(SUPPORT_QUEUE_VIEW_VISIBILITIES).default("private"),
       }).superRefine((value, issueContext) => {
         if (value.assigneeScope === "specific" && value.assigneeUserId === null) {
           issueContext.addIssue({ code: z.ZodIssueCode.custom, path: ["assigneeUserId"], message: "Choose an administrator for a specific-assignee view." });
@@ -3891,6 +4007,7 @@ export const appRouter = router({
           assigneeUserId,
           slaWindow: input.slaWindow ?? null,
           sort: input.sort,
+          visibility: input.visibility,
           updatedAt: new Date(),
         };
         if (existing) {
@@ -3929,6 +4046,8 @@ export const appRouter = router({
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support alerts are unavailable." });
 
       const now = new Date();
+      const policy = await getSupportEscalationPolicySettings(db);
+      const breachCutoff = new Date(now.getTime() - policy.breachThresholdMinutes * 60 * 1000);
       const breachedTickets = await db.select({
         id: supportSubmissions.id,
         assigneeUserId: supportSubmissions.assigneeUserId,
@@ -3939,12 +4058,18 @@ export const appRouter = router({
           eq(supportSubmissions.priority, "urgent"),
           ne(supportSubmissions.status, "resolved"),
           isNotNull(supportSubmissions.slaTargetAt),
-          lte(supportSubmissions.slaTargetAt, now),
+          lte(supportSubmissions.slaTargetAt, breachCutoff),
         ));
-      const admins = await db.select({ id: users.id }).from(users).where(eq(users.role, "admin"));
+      const admins = policy.includeAllAdminsWhenUnassigned
+        ? await db.select({ id: users.id }).from(users).where(eq(users.role, "admin"))
+        : [];
       let alertedTicketCount = 0;
       for (const ticket of breachedTickets) {
-        const recipientUserIds = ticket.assigneeUserId ? [ticket.assigneeUserId] : admins.map((admin) => admin.id);
+        const recipientUserIds = Array.from(new Set([
+          ...policy.recipientUserIds,
+          ...(policy.includeAssignee && ticket.assigneeUserId ? [ticket.assigneeUserId] : []),
+          ...(!ticket.assigneeUserId && policy.includeAllAdminsWhenUnassigned ? admins.map((admin) => admin.id) : []),
+        ]));
         await queueSupportTicketAlerts(db, {
           ticketId: ticket.id,
           recipientUserIds,
@@ -3954,8 +4079,69 @@ export const appRouter = router({
         });
         alertedTicketCount += 1;
       }
-      return { checkedTicketCount: breachedTickets.length, alertedTicketCount };
+      return { checkedTicketCount: breachedTickets.length, alertedTicketCount, breachThresholdMinutes: policy.breachThresholdMinutes };
     }),
+    escalationPolicy: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support escalation policy is unavailable." });
+
+      return getSupportEscalationPolicySettings(db);
+    }),
+    updateEscalationPolicy: adminProcedure
+      .input(z.object({
+        breachThresholdMinutes: z.number().int().min(0).max(MAX_SUPPORT_ESCALATION_THRESHOLD_MINUTES),
+        includeAssignee: z.boolean(),
+        includeAllAdminsWhenUnassigned: z.boolean(),
+        recipientUserIds: z.array(z.number().int().positive()).max(25),
+      }).superRefine((value, issueContext) => {
+        if (!value.includeAssignee && !value.includeAllAdminsWhenUnassigned && value.recipientUserIds.length === 0) {
+          issueContext.addIssue({ code: z.ZodIssueCode.custom, path: ["recipientUserIds"], message: "Keep at least one escalation recipient route enabled." });
+        }
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support escalation policy is unavailable." });
+
+        const recipientUserIds = Array.from(new Set(input.recipientUserIds));
+        if (recipientUserIds.length > 0) {
+          const validAdmins = await db.select({ id: users.id })
+            .from(users)
+            .where(and(eq(users.role, "admin"), inArray(users.id, recipientUserIds)));
+          if (validAdmins.length !== recipientUserIds.length) {
+            throw new TRPCError({ code: "BAD_REQUEST", message: "Choose only active administrators as escalation recipients." });
+          }
+        }
+
+        const updatedAt = new Date();
+        await db.insert(supportEscalationPolicies).values({
+          policyKey: SUPPORT_ESCALATION_POLICY_KEY,
+          breachThresholdMinutes: input.breachThresholdMinutes,
+          includeAssignee: input.includeAssignee,
+          includeAllAdminsWhenUnassigned: input.includeAllAdminsWhenUnassigned,
+          updatedAt,
+        }).onDuplicateKeyUpdate({ set: {
+          breachThresholdMinutes: input.breachThresholdMinutes,
+          includeAssignee: input.includeAssignee,
+          includeAllAdminsWhenUnassigned: input.includeAllAdminsWhenUnassigned,
+          updatedAt,
+        } });
+
+        const [policy] = await db.select({ id: supportEscalationPolicies.id })
+          .from(supportEscalationPolicies)
+          .where(eq(supportEscalationPolicies.policyKey, SUPPORT_ESCALATION_POLICY_KEY))
+          .limit(1);
+        if (!policy) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Could not save the support escalation policy." });
+
+        await db.delete(supportEscalationPolicyRecipients)
+          .where(eq(supportEscalationPolicyRecipients.policyId, policy.id));
+        if (recipientUserIds.length > 0) {
+          await db.insert(supportEscalationPolicyRecipients).values(recipientUserIds.map((recipientUserId) => ({
+            policyId: policy.id,
+            recipientUserId,
+          })));
+        }
+        return getSupportEscalationPolicySettings(db);
+      }),
     /** Eligible support operators are sourced from the authoritative admin user directory. */
     adminAssignees: adminProcedure.query(async () => {
       const db = await getDb();
