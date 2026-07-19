@@ -49,6 +49,24 @@ describe("Stripe redirect domains", () => {
     );
   });
 
+  it("allows customer-entered promotion codes for the verified Get Phame monthly Checkout price", async () => {
+    const { createCheckoutSession, STRIPE_PRICE_IDS } = await import("./stripe");
+
+    await createCheckoutSession({
+      ...BASE_PARAMS,
+      origin: "https://getphame.app",
+      plan: "monthly",
+    });
+
+    expect(mockCheckoutCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        mode: "subscription",
+        allow_promotion_codes: true,
+        line_items: [{ price: STRIPE_PRICE_IDS.monthly, quantity: 1 }],
+      }),
+    );
+  });
+
   it("uses the canonical Get Phame origin for PromptPay Checkout returns", async () => {
     process.env.STRIPE_PRICE_ID_THB_MONTHLY = "price_thb_monthly";
     const { createThbCheckoutSession } = await import("./stripe");

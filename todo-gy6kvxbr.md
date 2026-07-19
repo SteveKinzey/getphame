@@ -491,3 +491,11 @@
 
 - [x] Replace the obsolete P-mark source with the user-approved Get Phame SVG and regenerate Stripe icon and logo variants.
 - [ ] Update the Checkout branding override to reference the user-approved P-with-star asset and validate the published result.
+
+- [x] Verify whether the rejected `LIVE-VERIFY-JULY` value is a live Stripe coupon or a customer-enterable promotion code and confirm checkout eligibility.
+- [x] Confirm the minimum Stripe Dashboard correction while preserving the intended one-time discount and Get Phame Checkout configuration.
+- [x] Deliver precise live-mode promotion-code creation and retest steps without requesting payment credentials in chat.
+- [x] Audit the active Stripe account, `LIVE-VERIFY-JULY` promotion-code object, underlying coupon, and Get Phame Checkout price linkage using read-only live metadata.
+- [x] Identify and apply the minimum correction without rotating working Stripe keys or exposing payment credentials.
+- [ ] Verify fresh Checkout eligibility and report the exact customer-safe next step.
+- [x] Add focused Vitest coverage confirming Checkout enables customer-entered promotion codes for the verified Get Phame price mapping.
