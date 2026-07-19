@@ -1,8 +1,12 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
 import HttpBackend from "i18next-http-backend";
+import generatedFallbackResources from "./i18nCompleteFallbackResources.json";
+import directKeyFallbackResources from "./i18nDirectKeyFallbackResources";
+import { mergeLocaleFallback, type ResourceRecord } from "./i18nFallback";
 
 const STORAGE_KEY = "rr-lang";
+
 /**
  * A second key that marks the language as USER-CHOSEN (vs auto-detected).
  * When this key is set, we NEVER override the language — the user explicitly picked it.
@@ -181,7 +185,41 @@ if (queryLang) {
   saveLang(browserLang);
 }
 
-i18n
+// A deterministic, generated safety net for legacy literal defaults and direct
+// `t(key)` calls uncovered by the full-app audit. Keep existing remote
+// dictionaries authoritative: these values only fill absent translation keys
+// and never overwrite a maintained locale entry.
+function installGeneratedFallbacks(language: string): void {
+  if (!SUPPORTED_LANGS.includes(language as SupportedLang)) return;
+  const generatedBundle = generatedFallbackResources[language as SupportedLang] as ResourceRecord;
+  const directKeyBundle = directKeyFallbackResources[language] ?? {};
+  const bundle = mergeLocaleFallback(generatedBundle, directKeyBundle);
+  // Legacy components use a mixture of implicit, landing, and cancellation
+  // namespaces. Rebuild each namespace with maintained values prioritized so
+  // every `t("key")` lookup stays localized even when an old catalog has a
+  // scalar at a path now used as a nested object.
+  for (const namespace of ["translation", "landing", "cancellation"]) {
+    const maintained = i18n.getResourceBundle(language, namespace) as ResourceRecord | undefined;
+    const completedBundle = mergeLocaleFallback(bundle, maintained);
+    i18n.addResourceBundle(language, namespace, completedBundle, true, true);
+  }
+}
+
+// The HTTP backend resolves locale namespaces asynchronously and may replace a
+// namespace after the first synchronous fallback install. Re-merge the
+// generated safety net after each locale load so missing maintained keys never
+// regress to raw IDs such as `mainForm.pageTitle` in authenticated workflows.
+i18n.on("loaded", (loaded) => {
+  Object.keys(loaded).forEach(installGeneratedFallbacks);
+});
+
+/**
+ * Resolves only after the initial locale dictionaries and generated fallback
+ * resources are installed. The app bootstrap awaits this promise before React
+ * mounts, so customer-facing surfaces never paint raw identifiers while i18n
+ * is still loading over the network.
+ */
+export const i18nReady = i18n
   .use(HttpBackend)
   .use(initReactI18next)
   .init({
@@ -189,10 +227,14 @@ i18n
     fallbackLng: "en",
     supportedLngs: [...SUPPORTED_LANGS],
     ns: ["landing", "translation", "cancellation"],
-    defaultNS: "landing",
-    fallbackNS: "translation",
+    // The authenticated product, forms, settings, and shared app shell use
+    // `translation` as their canonical namespace. Making it the default keeps
+    // legacy `useTranslation()` calls locale-aware instead of resolving keys
+    // such as `mainForm.pageTitle` against the landing namespace first.
+    defaultNS: "translation",
+    fallbackNS: "landing",
     backend: {
-      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame13",
+      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame16",
     },
     interpolation: {
       escapeValue: false,
@@ -202,6 +244,11 @@ i18n
       // language switches to silently fail when the new locale file is loading.
       useSuspense: false,
     },
+  })
+  .then(() => {
+    for (const language of SUPPORTED_LANGS) {
+      installGeneratedFallbacks(language);
+    }
   });
 
 // If no user-chosen preference, optionally refine with IP detection

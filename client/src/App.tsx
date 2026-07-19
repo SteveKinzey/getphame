@@ -27,6 +27,7 @@ import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
 import { useHapticEvents } from "./hooks/useHapticEvents";
 import { useTranslation } from "react-i18next";
+import AutoTextLocalizer from "./components/AutoTextLocalizer";
 import {
   GOOGLE_SIGN_IN_TOAST_ID,
   clearGoogleSignInPending,
@@ -354,6 +355,7 @@ function App() {
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light" switchable={true}>
         <TooltipProvider>
+          <AutoTextLocalizer />
           <Toaster position="top-center" richColors />
           <AppShell />
           <PWAInstallPrompt />

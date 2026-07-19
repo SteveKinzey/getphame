@@ -1,0 +1,148 @@
+import type { ResourceRecord } from "./i18nFallback";
+
+const directKeyFallbackResources: Record<string, ResourceRecord> = {
+  en: {
+    adminUsers: { smtpAuditAllOutcomes: "All outcomes" },
+    onboardingWizard: {
+      dismissError: "Setup was closed, but we couldn't save that preference. You can resume it later from Settings.",
+      stepContent: { step4: { title: "Connect WordPress", description: "Install the connector plugin on your WordPress site to auto-sync customers." } },
+      steps: { wpConnector: "WP Plugin" },
+    },
+    settings: {
+      fromNameDescription: "Customers will see this as the sender name in their inbox.",
+      fromNameHint: "shown as sender",
+      googleWorkspaceDescription: "We couldn't auto-detect your SMTP settings. Select your email provider below or enter settings manually.",
+      googleWorkspaceTitle: "Using Google Workspace or a custom domain?",
+      optional: "optional",
+      replyToDescription: "Where customer replies will go. Leave blank to use your sending address.",
+      smtpAutoDetected: "SMTP settings auto-detected for {{domain}}",
+    },
+    step3Send: { optionalConnectorButton: "Set up WordPress connector instead (optional)" },
+  },
+  es: {
+    adminUsers: { smtpAuditAllOutcomes: "Todos los resultados" },
+    onboardingWizard: {
+      dismissError: "La configuración se cerró, pero no pudimos guardar esa preferencia. Puedes retomarla más tarde desde Configuración.",
+      stepContent: { step4: { title: "Conectar WordPress", description: "Instala el plugin conector en tu sitio WordPress para sincronizar clientes automáticamente." } },
+      steps: { wpConnector: "Plugin de WP" },
+    },
+    settings: {
+      fromNameDescription: "Los clientes verán esto como el nombre del remitente en su bandeja de entrada.",
+      fromNameHint: "mostrado como remitente",
+      googleWorkspaceDescription: "No pudimos detectar automáticamente tu configuración SMTP. Selecciona tu proveedor de correo abajo o introduce la configuración manualmente.",
+      googleWorkspaceTitle: "¿Usas Google Workspace o un dominio personalizado?",
+      optional: "opcional",
+      replyToDescription: "A dónde se enviarán las respuestas de los clientes. Déjalo en blanco para usar tu dirección de envío.",
+      smtpAutoDetected: "Configuración SMTP detectada automáticamente para {{domain}}",
+    },
+    step3Send: { optionalConnectorButton: "Configurar conector de WordPress en su lugar (opcional)" },
+  },
+  fr: {
+    adminUsers: { smtpAuditAllOutcomes: "Tous les résultats" },
+    onboardingWizard: {
+      dismissError: "La configuration a été fermée, mais nous n'avons pas pu enregistrer cette préférence. Vous pouvez la reprendre plus tard depuis Paramètres.",
+      stepContent: { step4: { title: "Connecter WordPress", description: "Installez le plugin connecteur sur votre site WordPress pour synchroniser automatiquement les clients." } },
+      steps: { wpConnector: "Plugin WP" },
+    },
+    settings: {
+      fromNameDescription: "Les clients verront ceci comme nom de l'expéditeur dans leur boîte de réception.",
+      fromNameHint: "affiché comme expéditeur",
+      googleWorkspaceDescription: "Nous n'avons pas pu détecter automatiquement vos paramètres SMTP. Sélectionnez votre fournisseur de messagerie ci-dessous ou saisissez les paramètres manuellement.",
+      googleWorkspaceTitle: "Utilisez-vous Google Workspace ou un domaine personnalisé ?",
+      optional: "facultatif",
+      replyToDescription: "Où les réponses des clients seront envoyées. Laissez vide pour utiliser votre adresse d'envoi.",
+      smtpAutoDetected: "Paramètres SMTP détectés automatiquement pour {{domain}}",
+    },
+    step3Send: { optionalConnectorButton: "Configurer le connecteur WordPress à la place (facultatif)" },
+  },
+  it: {
+    adminUsers: { smtpAuditAllOutcomes: "Tutti i risultati" },
+    onboardingWizard: {
+      dismissError: "La configurazione è stata chiusa, ma non abbiamo potuto salvare quella preferenza. Puoi riprenderla più tardi da Impostazioni.",
+      stepContent: { step4: { title: "Connetti WordPress", description: "Installa il plugin connettore sul tuo sito WordPress per sincronizzare automaticamente i clienti." } },
+      steps: { wpConnector: "Plugin WP" },
+    },
+    settings: {
+      fromNameDescription: "I clienti vedranno questo come nome del mittente nella loro casella di posta.",
+      fromNameHint: "visualizzato come mittente",
+      googleWorkspaceDescription: "Non siamo riusciti a rilevare automaticamente le impostazioni SMTP. Seleziona il tuo provider email qui sotto o inserisci le impostazioni manualmente.",
+      googleWorkspaceTitle: "Usi Google Workspace o un dominio personalizzato?",
+      optional: "opzionale",
+      replyToDescription: "Dove arriveranno le risposte dei clienti. Lascia vuoto per usare il tuo indirizzo di invio.",
+      smtpAutoDetected: "Impostazioni SMTP rilevate automaticamente per {{domain}}",
+    },
+    step3Send: { optionalConnectorButton: "Configura invece il connettore WordPress (opzionale)" },
+    pricingCard: { guarantee: "Garanzia di rimborso entro 7 giorni" },
+    upgradeFaq: {
+      title: "Domande frequenti",
+      q1: "L'offerta a vita prevede davvero un solo pagamento?",
+      a1: "Sì — paghi $497 una sola volta e Get Phame è tuo per sempre. Nessuna tariffa mensile, nessun rinnovo, nessuna sorpresa. Sono inoltre inclusi tutti gli aggiornamenti futuri.",
+      q2: "Cosa succede se annullo un piano mensile o annuale?",
+      a2: "Mantieni l'accesso fino alla fine del periodo di fatturazione in corso. Successivamente il tuo account tornerà al piano Free: 10 richieste iniziali, poi 5 ogni 30 giorni a rotazione. I tuoi contatti e la cronologia non vengono mai cancellati.",
+      q3: "Posso passare da un piano mensile a uno annuale in seguito?",
+      a3: "Sì. Puoi eseguire l'upgrade da mensile ad annuale o a vita in qualsiasi momento dalle Impostazioni. La parte non utilizzata del piano corrente non viene rimborsata, ma il nuovo piano parte immediatamente.",
+      q4: "Esiste una politica di rimborso?",
+      a4: "Offriamo un rimborso entro 7 giorni su tutti i piani, senza domande. Contatta support@getphame.app entro 7 giorni dall'acquisto e provvederemo al rimborso entro 24 ore.",
+      q5: "Il piano a vita copre più sedi?",
+      a5: "Il piano a vita copre una sola attività/sede. Se gestisci più sedi, avrai bisogno di un account separato per ciascuna. Contattaci per tariffe dedicate ad agenzie o multi-sede.",
+      q6: "Quali metodi di pagamento sono accettati?",
+      a6: "Tutte le principali carte di credito e debito tramite Stripe. Gli utenti thailandesi possono anche pagare tramite PromptPay — seleziona l'opzione PromptPay sotto il pulsante principale di checkout.",
+    },
+  },
+  th: {
+    adminUsers: { smtpAuditAllOutcomes: "ผลลัพธ์ทั้งหมด" },
+    onboardingWizard: {
+      dismissError: "การตั้งค่าถูกปิด แต่เราไม่สามารถบันทึกการตั้งค่านั้นได้ คุณสามารถกลับมาดำเนินการต่อได้ภายหลังจากการตั้งค่า",
+      stepContent: { step4: { title: "เชื่อมต่อ WordPress", description: "ติดตั้งปลั๊กอินตัวเชื่อมบนเว็บไซต์ WordPress ของคุณเพื่อซิงค์ลูกค้าโดยอัตโนมัติ" } },
+      steps: { wpConnector: "ปลั๊กอิน WP" },
+    },
+    settings: {
+      fromNameDescription: "ลูกค้าจะเห็นสิ่งนี้เป็นชื่อผู้ส่งในกล่องจดหมายของพวกเขา",
+      fromNameHint: "แสดงเป็นผู้ส่ง",
+      googleWorkspaceDescription: "เราไม่สามารถตรวจหาการตั้งค่า SMTP ของคุณโดยอัตโนมัติได้ เลือกผู้ให้บริการอีเมลด้านล่างหรือกรอกการตั้งค่าด้วยตนเอง",
+      googleWorkspaceTitle: "ใช้ Google Workspace หรือโดเมนที่กำหนดเองหรือไม่?",
+      optional: "ไม่บังคับ",
+      replyToDescription: "ที่อยู่สำหรับส่งการตอบกลับจากลูกค้า หากปล่อยว่างจะใช้ที่อยู่ส่งของคุณ",
+      smtpAutoDetected: "พบการตั้งค่า SMTP อัตโนมัติสำหรับ {{domain}}",
+    },
+    step3Send: { optionalConnectorButton: "ตั้งค่าตัวเชื่อม WordPress แทน (ไม่บังคับ)" },
+  },
+  "zh-CN": {
+    adminUsers: { smtpAuditAllOutcomes: "所有结果" },
+    onboardingWizard: {
+      dismissError: "已关闭设置，但我们无法保存该首选项。您可以稍后在设置中恢复。",
+      stepContent: { step4: { title: "连接 WordPress", description: "在您的 WordPress 网站上安装连接插件，以自动同步客户。" } },
+      steps: { wpConnector: "WP 插件" },
+    },
+    settings: {
+      fromNameDescription: "客户在收件箱中会看到此项作为发件人名称。",
+      fromNameHint: "显示为发件人",
+      googleWorkspaceDescription: "我们无法自动检测到您的 SMTP 设置。请选择下面的邮件提供商或手动输入设置。",
+      googleWorkspaceTitle: "使用 Google Workspace 或自定义域？",
+      optional: "可选",
+      replyToDescription: "客户回复将发送到哪里。留空以使用您的发送地址。",
+      smtpAutoDetected: "已自动检测到 {{domain}} 的 SMTP 设置",
+    },
+    step3Send: { optionalConnectorButton: "改为设置 WordPress 连接器（可选）" },
+  },
+  "zh-TW": {
+    adminUsers: { smtpAuditAllOutcomes: "所有結果" },
+    onboardingWizard: {
+      dismissError: "設定已關閉，但我們無法儲存該偏好。您可以稍後從設定恢復。",
+      stepContent: { step4: { title: "連接 WordPress", description: "在您的 WordPress 網站上安裝連接外掛，以自動同步客戶。" } },
+      steps: { wpConnector: "WP 外掛" },
+    },
+    settings: {
+      fromNameDescription: "客戶在收件匣中會看到此項作為寄件人名稱。",
+      fromNameHint: "顯示為寄件人",
+      googleWorkspaceDescription: "我們無法自動偵測到您的 SMTP 設定。請在下方選擇您的電子郵件提供者或手動輸入設定。",
+      googleWorkspaceTitle: "使用 Google Workspace 或自訂網域？",
+      optional: "可選",
+      replyToDescription: "客戶的回覆將寄到哪裡。若留空則使用您的發信地址。",
+      smtpAutoDetected: "已自動偵測到 {{domain}} 的 SMTP 設定",
+    },
+    step3Send: { optionalConnectorButton: "改為設定 WordPress 連接器（可選）" },
+  },
+};
+
+export default directKeyFallbackResources;

@@ -519,3 +519,12 @@
 - [x] Translate every Compliance Guide heading, explanatory section, checklist item, link label, and action control across all supported locales.
 - [x] Add locale-parity regression coverage and validate the translated Compliance Guide at desktop and mobile breakpoints before publishing.
 - [x] Refresh the locale-dictionary cache version so visitors receive the newly translated Compliance Guide catalogs.
+- [x] Audit every public page, authenticated page, shared component, form, dialog, toast, validation message, empty state, and legal/support flow for untranslated or non-locale-aware customer-facing content.
+- [x] Translate and wire every identified customer-facing localization gap across English, Spanish, French, Italian, Thai, Simplified Chinese, and Traditional Chinese without altering business logic.
+- [x] Add automated full-app locale parity and hardcoded-copy coverage, verify representative desktop and mobile flows for every language, and refresh translation caching before publishing.
+- [x] Correct residual untranslated workflow headings, filter chips, form labels, email-preview metadata, template body content, and empty states revealed by authenticated-route visual verification.
+- [x] Repair legacy scalar-versus-object locale schema collisions so active nested i18n keys resolve after asynchronous catalog loading in every supported language.
+- [x] Restore translated dashboard homepage cards, request actions, tracking summaries, and referral prompts currently rendering raw identifiers in authenticated non-English views.
+- [x] Replace the remaining English or mixed-language dashboard explanatory, tracking, referral-reward, and share-card copy in every non-English locale with complete native-language values.
+- [x] Resolve the Spanish-only `referralRewards.*` key-resolution regression exposed during six-language mobile dashboard verification and add a runtime merge regression for it.
+- [x] Add, translate, and verify the 136 deduplicated customer-facing literals identified by the static source audit, including 20 non-DOM share payloads that require explicit runtime localization.

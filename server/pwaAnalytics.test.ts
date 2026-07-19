@@ -91,7 +91,7 @@ describe("Get Phame install and sharing contracts", () => {
     expect(home).toContain('event: "share_copied"');
     expect(home).toContain('event: "share_cancelled"');
     expect(home).toContain('role="status" aria-live="polite"');
-    expect(shareHelper).toContain("navigator.share(GET_PHAME_SHARE_DATA)");
+    expect(shareHelper).toContain("navigator.share(await getLocalizedGetPhameShareData())");
     expect(shareHelper).toContain("navigator.clipboard.writeText(GET_PHAME_SHARE_DATA.url");
     expect(shareHelper).toContain('error.name === "AbortError"');
   });

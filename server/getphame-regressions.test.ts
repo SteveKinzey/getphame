@@ -169,7 +169,8 @@ describe("Get Phame regression contracts", () => {
     expect(home).toContain('role="status" aria-live="polite"');
     expect(shareHelper).toContain('title: "Get Phame — Turn Happy Customers into 5-Star Reviews"');
     expect(shareHelper).toContain('url: "https://getphame.app/"');
-    expect(shareHelper).toContain("navigator.share(GET_PHAME_SHARE_DATA)");
+    expect(shareHelper).toContain("getLocalizedGetPhameShareData");
+    expect(shareHelper).toContain("navigator.share(await getLocalizedGetPhameShareData())");
     expect(shareHelper).toContain("navigator.clipboard.writeText(GET_PHAME_SHARE_DATA.url");
     expect(main).toContain('postMessage({ type: "SET_LANGUAGE", language })');
     expect(main).toContain('i18n.on("languageChanged", syncCurrentLanguage)');
@@ -636,7 +637,7 @@ describe("Get Phame regression contracts", () => {
     expect(churn).toContain('guarantee.data?.reason === "already_refunded"');
     expect(churn).toContain('guarantee.data?.reason === "expired"');
     expect(i18n).toContain('["landing", "translation", "cancellation"]');
-    expect(i18n).toContain("v=phame13");
+    expect(i18n).toContain("v=phame16");
     expect(routers).toContain("guaranteeStatus: protectedProcedure");
     expect(routers).toContain("claimGuarantee: protectedProcedure");
     expect(routers).toContain("cancelRenewal: protectedProcedure");

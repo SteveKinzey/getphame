@@ -148,9 +148,16 @@ export default function PWAInstallPrompt() {
   const shareGetPhame = async () => {
     setSharing(true);
     setShareStatus("idle");
+    let localizedShareText = "Turn happy customers into more trusted reviews with Get Phame.";
+    try {
+      const { at } = await import("@/lib/autoText");
+      localizedShareText = at(localizedShareText);
+    } catch {
+      // Preserve a usable English share sheet if the optional supplement cannot load.
+    }
     const shareData = {
       title: "Get Phame",
-      text: "Turn happy customers into more trusted reviews with Get Phame.",
+      text: localizedShareText,
       url: CANONICAL_URL,
     };
 

@@ -1,5 +1,5 @@
 import { trpc } from "@/lib/trpc";
-import i18n from "@/lib/i18n"; // Initialize i18next before app renders
+import i18n, { i18nReady } from "@/lib/i18n"; // Initialize i18next before app renders
 import { UNAUTHED_ERR_MSG } from '@shared/const';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink, TRPCClientError } from "@trpc/client";
@@ -9,6 +9,7 @@ import App from "./App";
 import { getLoginUrl } from "./const";
 import { apiFetch } from "./lib/apiFetch";
 import { queryRetryDelay, shouldRetryQuery } from "./lib/queryRetry";
+import { loadStaticLocalizationSupplement } from "./lib/autoText";
 import "./index.css";
 
 // ── Retry helper ──────────────────────────────────────────────────────────────
@@ -92,10 +93,12 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-createRoot(document.getElementById("root")!).render(
-  <trpc.Provider client={trpcClient} queryClient={queryClient}>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
-  </trpc.Provider>
-);
+void Promise.all([i18nReady, loadStaticLocalizationSupplement()]).finally(() => {
+  createRoot(document.getElementById("root")!).render(
+    <trpc.Provider client={trpcClient} queryClient={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </trpc.Provider>,
+  );
+});

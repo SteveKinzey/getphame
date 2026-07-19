@@ -4,6 +4,19 @@ export const GET_PHAME_SHARE_DATA: ShareData = {
   url: "https://getphame.app/",
 };
 
+export async function getLocalizedGetPhameShareData(): Promise<ShareData> {
+  try {
+    const { at } = await import("./autoText");
+    return {
+      ...GET_PHAME_SHARE_DATA,
+      title: at(GET_PHAME_SHARE_DATA.title ?? ""),
+      text: at(GET_PHAME_SHARE_DATA.text ?? ""),
+    };
+  } catch {
+    return GET_PHAME_SHARE_DATA;
+  }
+}
+
 export type GetPhameShareOutcome = "shared" | "copied" | "cancelled" | "failed";
 
 export function getPwaPlatform(): "ios" | "android" | "desktop" {
@@ -19,7 +32,7 @@ export async function shareGetPhame(): Promise<GetPhameShareOutcome> {
 
   if (typeof navigator.share === "function") {
     try {
-      await navigator.share(GET_PHAME_SHARE_DATA);
+      await navigator.share(await getLocalizedGetPhameShareData());
       return "shared";
     } catch (error) {
       if (error instanceof DOMException && error.name === "AbortError") {

@@ -147,6 +147,25 @@
     "copiedToClipboard": "Copied to clipboard!",
     "sharePhame": "Share Get Phame"
   },
+  "referralRewards": {
+    "title": "Referral Rewards",
+    "subtitle": "Earn 1 free month per paid referral",
+    "monthsShort": "{{count}} mo",
+    "joined": "Joined",
+    "converted": "Converted",
+    "freeMonths": "Free Months",
+    "whatsApp": "WhatsApp",
+    "message": "Message",
+    "copyLink": "Copy Link",
+    "copied": "Copied!",
+    "copySuccessToast": "Referral link copied!",
+    "copyErrorToast": "Could not copy link.",
+    "shareMessage": "Get more 5-star reviews with Get Phame — {{url}}",
+    "noReferralsHint": "Share your link below to start earning free months",
+    "pendingReferralsHint": "{{count}} friend joined — waiting for them to upgrade",
+    "pendingReferralsHint_plural": "{{count}} friends joined — waiting for them to upgrade",
+    "rewardProcessingHint": "Reward processing — your free month will be applied shortly"
+  },
   "relativeTime": {
     "justNow": "just now",
     "minutesAgo": "{{diffMins}}m ago",
