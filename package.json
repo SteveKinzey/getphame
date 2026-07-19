@@ -1,5 +1,6 @@
 {
-  "name": "review-link",
+  "name": "get-phame",
+  "displayName": "Get Phame",
   "version": "1.0.0",
   "type": "module",
   "license": "MIT",

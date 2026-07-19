@@ -506,3 +506,5 @@
 - [x] Allow campaign URLs to pass a validated promotion code into Checkout for automatic application without trusting arbitrary discounts.
 - [x] Add focused Vitest coverage, validate desktop and mobile flows, run quality checks, and publish the completed Checkout upgrade.
 - [x] Replace stale ReviewLink URLs in Stripe redirect test fixtures with neutral legacy-host values while retaining canonical Get Phame redirect assertions.
+- [x] Replace the remaining legacy `review-link` package identifier with the approved Get Phame package name and validate the production build.
+- [x] Align the package-manager-safe identifier and human-readable metadata explicitly to the canonical Get Phame name.
