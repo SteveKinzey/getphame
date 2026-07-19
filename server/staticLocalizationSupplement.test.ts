@@ -1,42 +1,29 @@
 import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-const SUPPLEMENT_PATH = "/home/ubuntu/webdev-static-assets/getphame-static-localization-phame17.json";
-const AUDIT_PATH = "/home/ubuntu/localization-gap-classification.json";
-const SUPPORTED_NON_ENGLISH_LOCALES = ["es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
-
-type AuditItem = { needsTranslation: boolean; value: string };
-type Supplement = {
-  version: string;
-  manifest: Array<{ key: string; source: string }>;
-  translations: Record<string, Record<string, string>>;
-};
+function readProjectFile(relativePath: string): string {
+  return readFileSync(fileURLToPath(new URL(relativePath, import.meta.url)), "utf8");
+}
 
 describe("versioned static-copy localization supplement", () => {
-  const audit = JSON.parse(readFileSync(AUDIT_PATH, "utf8")) as { results: AuditItem[] };
-  const supplement = JSON.parse(readFileSync(SUPPLEMENT_PATH, "utf8")) as Supplement;
+  const helperSource = readProjectFile("../client/src/lib/autoText.ts");
+  const bootstrapSource = readProjectFile("../client/src/main.tsx");
 
-  it("covers every unique customer-facing literal identified by the final static source audit", () => {
-    const auditedSources = new Set(
-      audit.results.filter((item) => item.needsTranslation).map((item) => item.value),
+  it("uses the versioned deployed supplement instead of a sandbox-only artifact", () => {
+    expect(helperSource).toContain(
+      'const STATIC_COPY_SUPPLEMENT_URL = "/manus-storage/getphame-static-localization-phame17_b0611502.json"',
     );
-    const supplementedSources = new Set(supplement.manifest.map((entry) => entry.source));
-
-    expect(supplement.version).toBe("phame17-static-copy");
-    expect(supplement.manifest).toHaveLength(136);
-    expect(supplementedSources).toEqual(auditedSources);
+    expect(helperSource).toContain("fetch(STATIC_COPY_SUPPLEMENT_URL)");
+    expect(helperSource).not.toContain("/home/ubuntu");
+    expect(helperSource).not.toContain("localization-gap-classification.json");
   });
 
-  it("provides complete non-English values for every supplemented source", () => {
-    const keys = supplement.manifest.map((entry) => entry.key).sort();
-
-    for (const locale of SUPPORTED_NON_ENGLISH_LOCALES) {
-      const catalog = supplement.translations[locale];
-      expect(catalog, `${locale} supplement is missing`).toBeTruthy();
-      expect(Object.keys(catalog).sort(), `${locale} supplement key parity`).toEqual(keys);
-      for (const key of keys) {
-        expect(catalog[key]?.trim(), `${locale} lacks a value for ${key}`).toBeTruthy();
-      }
-    }
+  it("validates and installs the deployed catalog before the React application mounts", () => {
+    expect(helperSource).toContain("function mergeStaticCopySupplement");
+    expect(helperSource).toContain("Static localization supplement is malformed.");
+    expect(helperSource).toContain("Object.assign(translationCatalogs[locale] ??= {}, catalog)");
+    expect(bootstrapSource).toContain("loadStaticLocalizationSupplement");
+    expect(bootstrapSource).toContain("Promise.all([i18nReady, loadStaticLocalizationSupplement()])");
   });
 });

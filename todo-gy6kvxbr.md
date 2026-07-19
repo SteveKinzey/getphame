@@ -528,3 +528,4 @@
 - [x] Replace the remaining English or mixed-language dashboard explanatory, tracking, referral-reward, and share-card copy in every non-English locale with complete native-language values.
 - [x] Resolve the Spanish-only `referralRewards.*` key-resolution regression exposed during six-language mobile dashboard verification and add a runtime merge regression for it.
 - [x] Add, translate, and verify the 136 deduplicated customer-facing literals identified by the static source audit, including 20 non-DOM share payloads that require explicit runtime localization.
+- [x] Make the static-localization supplement regression independent of sandbox-only files, validate the full production build, and publish the deployment repair.
