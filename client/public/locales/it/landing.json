@@ -15,6 +15,58 @@
       "googleDescription": "L'accesso con Google viene utilizzato esclusivamente per creare e identificare il tuo account Get Phame. Con la tua autorizzazione, Get Phame riceve il tuo nome e indirizzo e-mail. Non richiediamo l'accesso ai messaggi Gmail, ai contatti, ai file di Google Drive o a Google Calendar.",
       "googleSendingNote": "L'invio delle richieste di recensione viene configurato separatamente nell'app tramite un account e-mail che scegli di collegare.",
       "privacyLink": "Leggi la nostra Informativa sulla privacy"
+    },
+    "footer": {
+      "privacy": "Privacy",
+      "terms": "Termini",
+      "security": "Sicurezza",
+      "support": "Assistenza",
+      "copyright": "© {{year}} Get Phame. Tutti i diritti riservati."
+    },
+    "navbar": {
+      "howItWorks": "Come funziona",
+      "product": "Prodotto",
+      "pricing": "Prezzi",
+      "faq": "Domande frequenti",
+      "signIn": "Accedi",
+      "getStartedFree": "Inizia gratis",
+      "toggleMenu": "Apri o chiudi il menu"
+    },
+    "support": {
+      "title": "Come possiamo aiutarti?",
+      "description": "Invia un messaggio al nostro team e risponderemo all’indirizzo email che fornisci.",
+      "successTitle": "La tua richiesta di supporto è stata inviata.",
+      "successDescription": "Risponderemo appena possibile all’indirizzo email che hai fornito.",
+      "sendAnother": "Invia un altro messaggio",
+      "name": "Nome",
+      "optional": "facoltativo",
+      "email": "Email",
+      "topic": "Come possiamo aiutarti?",
+      "topicBilling": "Fatturazione",
+      "topicOnboarding": "Onboarding",
+      "topicTechnical": "Problema tecnico",
+      "subject": "Oggetto",
+      "message": "Messaggio",
+      "messageHint": "Non includere password o informazioni della carta.",
+      "attachment": "Schermata",
+      "attachmentHint": "Solo JPG, PNG o WebP. Massimo 8 MB.",
+      "removeAttachment": "Rimuovi schermata",
+      "attachmentType": "Allega una schermata JPG, PNG o WebP.",
+      "attachmentSize": "Mantieni le schermate a 8 MB o meno.",
+      "uploading": "Caricamento della schermata…",
+      "sending": "Invio in corso…",
+      "submit": "Invia richiesta di supporto",
+      "error": "Non è stato possibile inviare il messaggio. Riprova tra poco.",
+      "fileReadError": "Non è stato possibile leggere quella schermata.",
+      "website": "Sito web",
+      "validation": {
+        "email": "Inserisci un indirizzo email valido.",
+        "subjectMin": "Inserisci un oggetto di almeno 3 caratteri.",
+        "subjectMax": "Mantieni l’oggetto entro 120 caratteri.",
+        "messageMin": "Fornisci qualche dettaglio in più per consentirci di aiutarti.",
+        "messageMax": "Mantieni il messaggio entro 4.000 caratteri.",
+        "nameMax": "Mantieni il nome entro 80 caratteri."
+      }
     }
   }
 }

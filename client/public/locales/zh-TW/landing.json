@@ -313,7 +313,76 @@
     },
     "modal": {
       "closeButtonAriaLabel": "關閉影片",
-      "iframeTitle": "Get Phame 產品示範"
+      "iframeTitle": "GetPhame 產品導覽"
+    },
+    "support": {
+      "title": "我們如何協助您？",
+      "description": "向我們的團隊傳送訊息，我們會回覆到您提供的電子郵件地址。",
+      "successTitle": "您的支援請求已送出。",
+      "successDescription": "我們會盡快回覆到您提供的電子郵件地址。",
+      "sendAnother": "傳送另一則訊息",
+      "name": "姓名",
+      "optional": "選填",
+      "email": "電子郵件",
+      "topic": "我們可以如何協助您？",
+      "topicBilling": "帳單",
+      "topicOnboarding": "入門導覽",
+      "topicTechnical": "技術問題",
+      "subject": "主旨",
+      "message": "訊息",
+      "messageHint": "請勿包含密碼或信用卡資訊。",
+      "attachment": "螢幕截圖",
+      "attachmentHint": "僅限 JPG、PNG 或 WebP。最大 8 MB。",
+      "removeAttachment": "移除螢幕截圖",
+      "attachmentType": "請附加 JPG、PNG 或 WebP 螢幕截圖。",
+      "attachmentSize": "請將螢幕截圖維持在 8 MB 或以下。",
+      "uploading": "正在上傳螢幕截圖…",
+      "sending": "正在傳送…",
+      "submit": "傳送支援請求",
+      "error": "無法傳送您的訊息。請稍後再試。",
+      "fileReadError": "無法讀取該螢幕截圖。",
+      "website": "網站",
+      "validation": {
+        "email": "請輸入有效的電子郵件地址。",
+        "subjectMin": "請輸入至少包含 3 個字元的主旨。",
+        "subjectMax": "主旨請維持在 120 個字元以內。",
+        "messageMin": "請提供更多資訊，以便我們協助您。",
+        "messageMax": "訊息請維持在 4,000 個字元以內。",
+        "nameMax": "姓名請維持在 80 個字元以內。"
+      }
+    }
+  },
+  "support": {
+    "trigger": "支援",
+    "title": "聯絡支援團隊",
+    "description": "告訴我們您需要什麼，我們的團隊會盡快回覆您。",
+    "topicLabel": "主題",
+    "topicPlaceholder": "請選擇主題",
+    "topicTechnical": "技術問題",
+    "topicBilling": "帳單與訂閱",
+    "topicAccount": "帳戶與存取權限",
+    "topicFeature": "功能需求",
+    "topicOther": "其他",
+    "messageLabel": "我們如何協助您？",
+    "messagePlaceholder": "請描述問題或您的疑問…",
+    "attachmentLabel": "附加螢幕截圖（選填）",
+    "uploadLabel": "上傳螢幕截圖",
+    "uploadHelp": "PNG、JPG 或 WEBP，最大 5 MB",
+    "removeAttachment": "移除附件",
+    "contactEmailLabel": "您的電子郵件",
+    "contactEmailPlaceholder": "you@company.com",
+    "submit": "提交請求",
+    "submitting": "正在提交…",
+    "successTitle": "請求已提交",
+    "successDescription": "謝謝。我們的團隊將盡快回覆您。",
+    "newRequest": "提交另一個請求",
+    "close": "關閉",
+    "errors": {
+      "requiredFields": "請選擇主題，並說明我們如何協助您。",
+      "invalidEmail": "請輸入有效的電子郵件地址。",
+      "fileTooLarge": "檔案過大。最大限制為 5 MB。",
+      "fileReadFailed": "無法讀取所選檔案。請再試一次。",
+      "submitFailed": "無法提交您的請求。請再試一次。"
     }
   }
 }

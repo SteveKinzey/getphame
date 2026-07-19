@@ -313,7 +313,76 @@
     },
     "modal": {
       "closeButtonAriaLabel": "Fermer la vidéo",
-      "iframeTitle": "Démonstration produit GetPhame"
+      "iframeTitle": "Visite guidée du produit GetPhame"
+    },
+    "support": {
+      "title": "Comment pouvons-nous vous aider ?",
+      "description": "Envoyez un message à notre équipe et nous répondrons à l’adresse e-mail indiquée.",
+      "successTitle": "Votre demande d’assistance a été envoyée.",
+      "successDescription": "Nous répondrons dès que possible à l’adresse e-mail indiquée.",
+      "sendAnother": "Envoyer un autre message",
+      "name": "Nom",
+      "optional": "facultatif",
+      "email": "E-mail",
+      "topic": "Comment pouvons-nous vous aider ?",
+      "topicBilling": "Facturation",
+      "topicOnboarding": "Prise en main",
+      "topicTechnical": "Problème technique",
+      "subject": "Objet",
+      "message": "Message",
+      "messageHint": "N’indiquez pas de mots de passe ni d’informations de carte.",
+      "attachment": "Capture d’écran",
+      "attachmentHint": "JPG, PNG ou WebP uniquement. 8 Mo maximum.",
+      "removeAttachment": "Supprimer la capture d’écran",
+      "attachmentType": "Joignez une capture d’écran JPG, PNG ou WebP.",
+      "attachmentSize": "Les captures d’écran doivent faire 8 Mo ou moins.",
+      "uploading": "Téléversement de la capture d’écran…",
+      "sending": "Envoi en cours…",
+      "submit": "Envoyer la demande d’assistance",
+      "error": "Nous n’avons pas pu envoyer votre message. Réessayez dans quelques instants.",
+      "fileReadError": "Nous n’avons pas pu lire cette capture d’écran.",
+      "website": "Site web",
+      "validation": {
+        "email": "Saisissez une adresse e-mail valide.",
+        "subjectMin": "Saisissez un objet d’au moins 3 caractères.",
+        "subjectMax": "L’objet doit contenir 120 caractères ou moins.",
+        "messageMin": "Donnez-nous un peu plus de détails pour que nous puissions vous aider.",
+        "messageMax": "Le message doit contenir 4 000 caractères ou moins.",
+        "nameMax": "Le nom doit contenir 80 caractères ou moins."
+      }
+    }
+  },
+  "support": {
+    "trigger": "Assistance",
+    "title": "Contacter l’assistance",
+    "description": "Dites-nous ce dont vous avez besoin et notre équipe vous répondra.",
+    "topicLabel": "Sujet",
+    "topicPlaceholder": "Sélectionnez un sujet",
+    "topicTechnical": "Problème technique",
+    "topicBilling": "Facturation et abonnement",
+    "topicAccount": "Compte et accès",
+    "topicFeature": "Demande de fonctionnalité",
+    "topicOther": "Autre",
+    "messageLabel": "Comment pouvons-nous vous aider ?",
+    "messagePlaceholder": "Décrivez le problème ou votre question…",
+    "attachmentLabel": "Joindre une capture d’écran (facultatif)",
+    "uploadLabel": "Téléverser une capture",
+    "uploadHelp": "PNG, JPG ou WEBP jusqu’à 5 Mo",
+    "removeAttachment": "Supprimer la pièce jointe",
+    "contactEmailLabel": "Votre adresse e-mail",
+    "contactEmailPlaceholder": "vous@entreprise.com",
+    "submit": "Envoyer la demande",
+    "submitting": "Envoi en cours…",
+    "successTitle": "Demande envoyée",
+    "successDescription": "Merci. Notre équipe vous répondra prochainement.",
+    "newRequest": "Envoyer une autre demande",
+    "close": "Fermer",
+    "errors": {
+      "requiredFields": "Sélectionnez un sujet et décrivez comment nous pouvons vous aider.",
+      "invalidEmail": "Saisissez une adresse e-mail valide.",
+      "fileTooLarge": "Le fichier est trop volumineux. La limite est de 5 Mo.",
+      "fileReadFailed": "Le fichier sélectionné n’a pas pu être lu. Réessayez.",
+      "submitFailed": "Votre demande n’a pas pu être envoyée. Réessayez."
     }
   }
 }

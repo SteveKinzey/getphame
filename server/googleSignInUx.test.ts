@@ -28,7 +28,7 @@ describe("Google sign-in interaction feedback", () => {
     expect(login).toContain('t("authFeedback.redirectingGoogle"');
     expect(login).toContain('role="status" aria-live="polite"');
     expect(login).toContain('t("authFeedback.connectingGoogle"');
-    expect(login).toContain('t("authFeedback.continueWithGoogle"');
+    expect(login).toContain('t("login.continueWithGoogle"');
     expect(login).toContain('window.location.assign("/api/auth/google")');
   });
 
@@ -97,6 +97,56 @@ describe("Google sign-in interaction feedback", () => {
       "profileMenu.lightMode",
       "profileMenu.open",
       "profileMenu.signedInAs",
+    ];
+
+    for (const locale of locales) {
+      const catalog = JSON.parse(read(`client/public/locales/${locale}/translation.json`));
+
+      for (const keyPath of requiredPaths) {
+        const value = keyPath.split(".").reduce<unknown>((current, key) => {
+          if (!current || typeof current !== "object") return undefined;
+          return (current as Record<string, unknown>)[key];
+        }, catalog);
+
+        expect(value, `${locale}:${keyPath}`).toEqual(expect.any(String));
+        expect((value as string).trim(), `${locale}:${keyPath}`).not.toBe("");
+      }
+    }
+  });
+
+  it("keeps every visible login state localized in every supported locale", () => {
+    const locales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"];
+    const requiredPaths = [
+      "login.title",
+      "login.subtitle",
+      "login.continueWithGoogle",
+      "login.continueWithApple",
+      "login.or",
+      "login.emailLabel",
+      "login.emailPlaceholder",
+      "login.emailRequired",
+      "login.invalidEmail",
+      "login.sendingMagicLink",
+      "login.sendMagicLink",
+      "login.noPassword",
+      "login.checkInbox",
+      "login.sentTo",
+      "login.expiresNotice",
+      "login.useDifferentEmail",
+      "login.magicLinkFailed",
+      "login.networkError",
+      "login.rateLimited",
+      "login.serviceUnavailable",
+      "login.termsPrefix",
+      "login.terms",
+      "login.consentAnd",
+      "login.privacy",
+      "login.signInCancelled",
+      "login.appleSignInFailed",
+      "login.invalidMagicLink",
+      "login.magicLinkExpired",
+      "login.verificationFailed",
+      "login.signInFailed",
     ];
 
     for (const locale of locales) {

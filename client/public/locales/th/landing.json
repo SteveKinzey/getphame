@@ -313,7 +313,76 @@
     },
     "modal": {
       "closeButtonAriaLabel": "ปิดวิดีโอ",
-      "iframeTitle": "วิดีโอสาธิตผลิตภัณฑ์ GetPhame"
+      "iframeTitle": "วิดีโอแนะนำ GetPhame"
+    },
+    "support": {
+      "title": "เราช่วยคุณได้อย่างไร?",
+      "description": "ส่งข้อความถึงทีมของเรา แล้วเราจะตอบกลับไปยังอีเมลที่คุณระบุ",
+      "successTitle": "ส่งคำขอความช่วยเหลือของคุณแล้ว",
+      "successDescription": "เราจะตอบกลับไปยังอีเมลที่คุณระบุโดยเร็วที่สุด",
+      "sendAnother": "ส่งข้อความอีกครั้ง",
+      "name": "ชื่อ",
+      "optional": "ไม่บังคับ",
+      "email": "อีเมล",
+      "topic": "เราช่วยคุณเรื่องใดได้บ้าง?",
+      "topicBilling": "การเรียกเก็บเงิน",
+      "topicOnboarding": "การเริ่มต้นใช้งาน",
+      "topicTechnical": "ปัญหาทางเทคนิค",
+      "subject": "หัวข้อ",
+      "message": "ข้อความ",
+      "messageHint": "อย่าระบุรหัสผ่านหรือข้อมูลบัตร",
+      "attachment": "ภาพหน้าจอ",
+      "attachmentHint": "รองรับเฉพาะ JPG, PNG หรือ WebP ขนาดสูงสุด 8 MB",
+      "removeAttachment": "ลบภาพหน้าจอ",
+      "attachmentType": "แนบภาพหน้าจอ JPG, PNG หรือ WebP",
+      "attachmentSize": "โปรดให้ภาพหน้าจอมีขนาดไม่เกิน 8 MB",
+      "uploading": "กำลังอัปโหลดภาพหน้าจอ…",
+      "sending": "กำลังส่ง…",
+      "submit": "ส่งคำขอความช่วยเหลือ",
+      "error": "ไม่สามารถส่งข้อความของคุณได้ โปรดลองอีกครั้งในอีกสักครู่",
+      "fileReadError": "ไม่สามารถอ่านภาพหน้าจอนั้นได้",
+      "website": "เว็บไซต์",
+      "validation": {
+        "email": "กรุณากรอกอีเมลที่ถูกต้อง",
+        "subjectMin": "กรุณากรอกหัวข้ออย่างน้อย 3 ตัวอักษร",
+        "subjectMax": "หัวข้อต้องมีไม่เกิน 120 ตัวอักษร",
+        "messageMin": "โปรดบอกรายละเอียดเพิ่มเติมเพื่อให้เราช่วยคุณได้",
+        "messageMax": "ข้อความต้องมีไม่เกิน 4,000 ตัวอักษร",
+        "nameMax": "ชื่อต้องมีไม่เกิน 80 ตัวอักษร"
+      }
+    }
+  },
+  "support": {
+    "trigger": "ฝ่ายช่วยเหลือ",
+    "title": "ติดต่อฝ่ายช่วยเหลือ",
+    "description": "บอกสิ่งที่คุณต้องการ แล้วทีมของเราจะติดต่อกลับโดยเร็ว",
+    "topicLabel": "หัวข้อ",
+    "topicPlaceholder": "เลือกหัวข้อ",
+    "topicTechnical": "ปัญหาทางเทคนิค",
+    "topicBilling": "การเรียกเก็บเงินและการสมัครใช้บริการ",
+    "topicAccount": "บัญชีและการเข้าถึง",
+    "topicFeature": "ขอฟีเจอร์ใหม่",
+    "topicOther": "อื่น ๆ",
+    "messageLabel": "เราช่วยคุณได้อย่างไร?",
+    "messagePlaceholder": "อธิบายปัญหาหรือคำถามของคุณ…",
+    "attachmentLabel": "แนบภาพหน้าจอ (ไม่บังคับ)",
+    "uploadLabel": "อัปโหลดภาพหน้าจอ",
+    "uploadHelp": "PNG, JPG หรือ WEBP ขนาดไม่เกิน 5 MB",
+    "removeAttachment": "ลบไฟล์แนบ",
+    "contactEmailLabel": "อีเมลของคุณ",
+    "contactEmailPlaceholder": "you@company.com",
+    "submit": "ส่งคำขอ",
+    "submitting": "กำลังส่ง…",
+    "successTitle": "ส่งคำขอแล้ว",
+    "successDescription": "ขอบคุณ ทีมของเราจะตอบกลับในเร็ว ๆ นี้",
+    "newRequest": "ส่งคำขออีกครั้ง",
+    "close": "ปิด",
+    "errors": {
+      "requiredFields": "เลือกหัวข้อและอธิบายว่าเราช่วยคุณได้อย่างไร",
+      "invalidEmail": "กรุณากรอกอีเมลที่ถูกต้อง",
+      "fileTooLarge": "ไฟล์มีขนาดใหญ่เกินไป จำกัดที่ 5 MB",
+      "fileReadFailed": "ไม่สามารถอ่านไฟล์ที่เลือกได้ โปรดลองอีกครั้ง",
+      "submitFailed": "ไม่สามารถส่งคำขอของคุณได้ โปรดลองอีกครั้ง"
     }
   }
 }

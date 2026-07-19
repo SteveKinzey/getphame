@@ -229,7 +229,7 @@ describe("Get Phame regression contracts", () => {
     expect(styles).toContain(".home-brand-mark { display: block; }");
   });
 
-  it("orders the shared language selector as EN, CN, ES, FR, TH, TW, uses the USA flag, and preserves hidden Italian work", () => {
+  it("orders the shared language selector as EN, CN, ES, FR, IT, TH, TW and uses the USA flag", () => {
     const flyout = readProjectFile("../client/src/components/LanguageFlyout.tsx");
     const i18n = readProjectFile("../client/src/lib/i18n.ts");
     const preservedItalian = readProjectFile("../client/public/locales/it/translation.json");
@@ -238,6 +238,7 @@ describe("Get Phame regression contracts", () => {
       '{ code: "zh-CN"',
       '{ code: "es"',
       '{ code: "fr"',
+      '{ code: "it"',
       '{ code: "th"',
       '{ code: "zh-TW"',
     ];
@@ -251,9 +252,9 @@ describe("Get Phame regression contracts", () => {
 
     expect(flyout).toContain('flag: "🇺🇸"');
     expect(flyout).not.toContain('flag: "🇬🇧"');
-    expect(flyout).not.toContain('{ code: "it"');
+    expect(flyout).toContain('{ code: "it"');
     expect(i18n).toContain(
-      'export const SUPPORTED_LANGS = ["en", "zh-CN", "es", "fr", "th", "zh-TW"] as const;',
+      'export const SUPPORTED_LANGS = ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"] as const;',
     );
     expect(preservedItalian).toContain('"account"');
   });
@@ -635,7 +636,7 @@ describe("Get Phame regression contracts", () => {
     expect(churn).toContain('guarantee.data?.reason === "already_refunded"');
     expect(churn).toContain('guarantee.data?.reason === "expired"');
     expect(i18n).toContain('["landing", "translation", "cancellation"]');
-    expect(i18n).toContain("v=phame10");
+    expect(i18n).toContain("v=phame12");
     expect(routers).toContain("guaranteeStatus: protectedProcedure");
     expect(routers).toContain("claimGuarantee: protectedProcedure");
     expect(routers).toContain("cancelRenewal: protectedProcedure");

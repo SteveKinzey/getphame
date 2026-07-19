@@ -34,6 +34,7 @@ interface MagicLinkResponse {
 
 const GOOGLE_REDIRECT_FEEDBACK_MS = 420;
 const GOOGLE_REDIRECT_STATUS_MS = 140;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // ---------------------------------------------------------------------------
 // SVG Icons (inline — no extra icon package needed)
@@ -98,13 +99,13 @@ const Spinner = () => (
 // Divider
 // ---------------------------------------------------------------------------
 
-const OrDivider = () => (
+const OrDivider = ({ label }: { label: string }) => (
   <div className="relative my-6">
     <div className="absolute inset-0 flex items-center">
       <div className="w-full border-t border-white/10" />
     </div>
     <div className="relative flex justify-center text-sm">
-      <span className="px-3 bg-[#0F1B2D] text-white/40 font-medium tracking-wide">or</span>
+      <span className="px-3 bg-[#0F1B2D] text-white/40 font-medium tracking-wide">{label}</span>
     </div>
   </div>
 );
@@ -188,9 +189,15 @@ export default function Login() {
       e.preventDefault();
       setFormError(null);
       setSentTo(null);
+      const normalizedEmail = email.trim();
 
-      if (!email.trim()) {
-        setFormError("Email is required.");
+      if (!normalizedEmail) {
+        setFormError(t("login.emailRequired", { defaultValue: "Email is required." }));
+        return;
+      }
+
+      if (!EMAIL_PATTERN.test(normalizedEmail)) {
+        setFormError(t("login.invalidEmail", { defaultValue: "Enter a valid email address." }));
         return;
       }
 
@@ -201,7 +208,7 @@ export default function Login() {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            email: email.trim(),
+            email: normalizedEmail,
             origin: window.location.origin,
           }),
         });
@@ -209,19 +216,26 @@ export default function Login() {
         const data = (await res.json()) as MagicLinkResponse;
 
         if (!res.ok) {
-          setFormError(data.error ?? "Something went wrong. Please try again.");
+          const fallback = res.status === 429
+            ? t("login.rateLimited", { defaultValue: "Too many attempts. Please wait a few minutes and try again." })
+            : res.status === 503
+              ? t("login.serviceUnavailable", { defaultValue: "Service is temporarily unavailable. Please try again." })
+              : res.status === 400
+                ? t("login.invalidEmail", { defaultValue: "Enter a valid email address." })
+                : t("login.magicLinkFailed", { defaultValue: "We could not send your magic link. Please try again." });
+          setFormError(fallback);
           return;
         }
 
         // Success — show confirmation
-        setSentTo(data.email ?? email.trim());
+        setSentTo(data.email ?? normalizedEmail);
       } catch {
-        setFormError("Network error. Please check your connection and try again.");
+        setFormError(t("login.networkError", { defaultValue: "Network error. Please check your connection and try again." }));
       } finally {
         setIsSubmitting(false);
       }
     },
-    [email]
+    [email, t]
   );
 
   // ---------------------------------------------------------------------------
@@ -236,7 +250,7 @@ export default function Login() {
           Get<span className="text-[#C9A84C]">Phame</span>
         </h1>
         <p className="mt-2 text-sm text-white/50">
-          Sign in to your account
+          {t("login.subtitle", { defaultValue: "Sign in to your account" })}
         </p>
       </div>
 
@@ -260,7 +274,7 @@ export default function Login() {
                     {isGoogleSubmitting ? <Spinner /> : <GoogleIcon />}
                     {isGoogleSubmitting
                       ? t("authFeedback.connectingGoogle", { defaultValue: "Connecting to Google…" })
-                      : t("authFeedback.continueWithGoogle", { defaultValue: "Continue with Google" })}
+                      : t("login.continueWithGoogle", { defaultValue: "Continue with Google" })}
                   </button>
                   {isGoogleSubmitting && googleStatus && (
                     <p id="google-auth-status" role="status" aria-live="polite" className="mt-2 text-center text-xs font-semibold text-white/70">
@@ -280,11 +294,11 @@ export default function Login() {
                 className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
               >
                 <AppleIcon />
-                Continue with Apple
+                {t("login.continueWithApple", { defaultValue: "Continue with Apple" })}
               </a>
             </div>
 
-            <OrDivider />
+            <OrDivider label={t("login.or", { defaultValue: "or" })} />
           </>
         )}
 
@@ -295,20 +309,24 @@ export default function Login() {
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#C9A84C]/10 mb-4">
               <MailIcon />
             </div>
-            <h2 className="text-lg font-semibold text-white mb-2">Check your inbox</h2>
+            <h2 className="text-lg font-semibold text-white mb-2">
+              {t("login.checkInbox", { defaultValue: "Check your inbox" })}
+            </h2>
             <p className="text-sm text-white/50 mb-4">
-              We sent a login link to
+              {t("login.sentTo", { defaultValue: "We sent a login link to" })}
             </p>
             <p className="text-sm font-medium text-[#C9A84C] mb-6">{sentTo}</p>
             <p className="text-xs text-white/30 mb-4">
-              The link expires in 15 minutes. Check your spam folder if you don't see it.
+              {t("login.expiresNotice", {
+                defaultValue: "The link expires in 15 minutes. Check your spam folder if you don't see it.",
+              })}
             </p>
             <button
               type="button"
               onClick={() => { setSentTo(null); setEmail(""); }}
               className="text-sm text-white/40 hover:text-white/60 underline transition-colors"
             >
-              Use a different email
+              {t("login.useDifferentEmail", { defaultValue: "Use a different email" })}
             </button>
           </div>
         ) : (
@@ -316,7 +334,7 @@ export default function Login() {
           <form onSubmit={handleMagicLinkSubmit} noValidate className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-xs font-medium text-white/60 mb-1.5">
-                Email address
+                {t("login.emailLabel", { defaultValue: "Email address" })}
               </label>
               <input
                 id="email"
@@ -324,7 +342,7 @@ export default function Login() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={t("login.emailPlaceholder", { defaultValue: "you@example.com" })}
                 required
                 className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/25 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/60 focus:border-[#C9A84C]/60 transition"
               />
@@ -350,30 +368,30 @@ export default function Login() {
               {isSubmitting ? (
                 <>
                   <Spinner />
-                  Sending link…
+                  {t("login.sendingMagicLink", { defaultValue: "Sending link…" })}
                 </>
               ) : (
-                "Send Magic Link"
+                t("login.sendMagicLink", { defaultValue: "Send Magic Link" })
               )}
             </button>
 
             <p className="text-center text-xs text-white/30">
-              No password needed — we'll email you a secure login link.
+              {t("login.noPassword", { defaultValue: "No password needed — we'll email you a secure login link." })}
             </p>
           </form>
         )}
 
         {/* ── Legal ─────────────────────────────────────────────────────── */}
         <p className="mt-8 text-center text-xs text-white/25 leading-relaxed">
-          By continuing, you agree to our{" "}
+          {t("login.termsPrefix", { defaultValue: "By continuing, you agree to our" })}{" "}
           <a href="/terms-of-service" className="underline hover:text-white/50 transition-colors">
-            Terms of Service
+            {t("login.terms", { defaultValue: "Terms of Service" })}
           </a>{" "}
-          and{" "}
+          {t("login.consentAnd", { defaultValue: "and" })}{" "}
           <a href="/privacy-policy" className="underline hover:text-white/50 transition-colors">
-            Privacy Policy
+            {t("login.privacy", { defaultValue: "Privacy Policy" })}
           </a>
-          .
+          {t("login.consentSuffix", { defaultValue: "." })}
         </p>
       </div>
     </div>

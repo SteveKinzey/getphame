@@ -508,3 +508,11 @@
 - [x] Replace stale ReviewLink URLs in Stripe redirect test fixtures with neutral legacy-host values while retaining canonical Get Phame redirect assertions.
 - [x] Replace the remaining legacy `review-link` package identifier with the approved Get Phame package name and validate the production build.
 - [x] Align the package-manager-safe identifier and human-readable metadata explicitly to the canonical Get Phame name.
+- [x] Localize every login-page label, control, validation state, success/error message, and consent link across all supported locales.
+- [x] Add regression coverage and validate translated login rendering at desktop and mobile breakpoints before publishing.
+- [x] Support an explicit valid `?lang=` override so localized login routes can be verified and shared without changing a visitor’s saved language preference.
+- [x] Keep the language selector label and active option aligned with an explicit `?lang=` override on localized login routes.
+- [x] Register the existing Italian catalog in the supported language set and selector so Italian login URLs render Italian rather than falling back to English.
+- [x] Localize the shared desktop navigation and footer rendered around the login page in every supported locale.
+- [x] Localize the Login footer’s reachable support-dialog labels, validation messages, upload feedback, and error states in every supported locale.
+- [x] Refresh the locale-dictionary cache version so visitors receive the completed Login-page translations rather than stale fallback content.

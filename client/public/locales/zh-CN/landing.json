@@ -313,7 +313,76 @@
     },
     "modal": {
       "closeButtonAriaLabel": "关闭视频",
-      "iframeTitle": "GetPhame 产品演示"
+      "iframeTitle": "GetPhame 产品导览"
+    },
+    "support": {
+      "title": "我们如何帮助您？",
+      "description": "向我们的团队发送消息，我们会回复到您提供的电子邮件地址。",
+      "successTitle": "您的支持请求已发送。",
+      "successDescription": "我们会尽快回复到您提供的电子邮件地址。",
+      "sendAnother": "发送另一条消息",
+      "name": "姓名",
+      "optional": "可选",
+      "email": "电子邮件",
+      "topic": "我们可以如何帮助您？",
+      "topicBilling": "账单",
+      "topicOnboarding": "入门指导",
+      "topicTechnical": "技术问题",
+      "subject": "主题",
+      "message": "消息",
+      "messageHint": "请勿包含密码或银行卡信息。",
+      "attachment": "截图",
+      "attachmentHint": "仅限 JPG、PNG 或 WebP。最大 8 MB。",
+      "removeAttachment": "移除截图",
+      "attachmentType": "请附加 JPG、PNG 或 WebP 截图。",
+      "attachmentSize": "请将截图保持在 8 MB 或以下。",
+      "uploading": "正在上传截图…",
+      "sending": "正在发送…",
+      "submit": "发送支持请求",
+      "error": "无法发送您的消息。请稍后再试。",
+      "fileReadError": "无法读取该截图。",
+      "website": "网站",
+      "validation": {
+        "email": "请输入有效的电子邮件地址。",
+        "subjectMin": "请输入至少包含 3 个字符的主题。",
+        "subjectMax": "主题请保持在 120 个字符以内。",
+        "messageMin": "请提供更多信息，以便我们帮助您。",
+        "messageMax": "消息请保持在 4,000 个字符以内。",
+        "nameMax": "姓名请保持在 80 个字符以内。"
+      }
+    }
+  },
+  "support": {
+    "trigger": "支持",
+    "title": "联系支持团队",
+    "description": "告诉我们您需要什么，我们的团队会尽快回复您。",
+    "topicLabel": "主题",
+    "topicPlaceholder": "请选择主题",
+    "topicTechnical": "技术问题",
+    "topicBilling": "账单与订阅",
+    "topicAccount": "帐户与访问权限",
+    "topicFeature": "功能请求",
+    "topicOther": "其他",
+    "messageLabel": "我们如何帮助您？",
+    "messagePlaceholder": "请描述问题或您的疑问…",
+    "attachmentLabel": "附加截图（可选）",
+    "uploadLabel": "上传截图",
+    "uploadHelp": "PNG、JPG 或 WEBP，最大 5 MB",
+    "removeAttachment": "移除附件",
+    "contactEmailLabel": "您的电子邮件",
+    "contactEmailPlaceholder": "you@company.com",
+    "submit": "提交请求",
+    "submitting": "正在提交…",
+    "successTitle": "请求已提交",
+    "successDescription": "谢谢。我们的团队将尽快回复您。",
+    "newRequest": "提交另一请求",
+    "close": "关闭",
+    "errors": {
+      "requiredFields": "请选择主题，并说明我们如何帮助您。",
+      "invalidEmail": "请输入有效的电子邮件地址。",
+      "fileTooLarge": "文件过大。最大限制为 5 MB。",
+      "fileReadFailed": "无法读取所选文件。请重试。",
+      "submitFailed": "无法提交您的请求。请重试。"
     }
   }
 }

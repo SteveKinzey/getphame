@@ -39,13 +39,15 @@ const initialValues: FormValues = {
   website: "",
 };
 
-function readFileAsBase64(file: File): Promise<string> {
+type Translate = (key: string, options?: { defaultValue?: string }) => string;
+
+function readFileAsBase64(file: File, errorMessage: string): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onerror = () => reject(new Error("We could not read that screenshot."));
+    reader.onerror = () => reject(new Error(errorMessage));
     reader.onload = () => {
       if (typeof reader.result !== "string") {
-        reject(new Error("We could not read that screenshot."));
+        reject(new Error(errorMessage));
         return;
       }
       resolve(reader.result.split(",", 2)[1] || "");
@@ -54,14 +56,14 @@ function readFileAsBase64(file: File): Promise<string> {
   });
 }
 
-function validate(values: FormValues): Partial<Record<keyof FormValues, string>> {
+function validate(values: FormValues, t: Translate): Partial<Record<keyof FormValues, string>> {
   const errors: Partial<Record<keyof FormValues, string>> = {};
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) errors.email = "Enter a valid email address.";
-  if (values.subject.trim().length < 3) errors.subject = "Enter a subject with at least 3 characters.";
-  if (values.subject.trim().length > 120) errors.subject = "Keep the subject to 120 characters or fewer.";
-  if (values.message.trim().length < 10) errors.message = "Tell us a little more so we can help.";
-  if (values.message.trim().length > 4000) errors.message = "Keep the message to 4,000 characters or fewer.";
-  if (values.name.trim().length > 80) errors.name = "Keep your name to 80 characters or fewer.";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) errors.email = t("landing.support.validation.email", { defaultValue: "Enter a valid email address." });
+  if (values.subject.trim().length < 3) errors.subject = t("landing.support.validation.subjectMin", { defaultValue: "Enter a subject with at least 3 characters." });
+  if (values.subject.trim().length > 120) errors.subject = t("landing.support.validation.subjectMax", { defaultValue: "Keep the subject to 120 characters or fewer." });
+  if (values.message.trim().length < 10) errors.message = t("landing.support.validation.messageMin", { defaultValue: "Tell us a little more so we can help." });
+  if (values.message.trim().length > 4000) errors.message = t("landing.support.validation.messageMax", { defaultValue: "Keep the message to 4,000 characters or fewer." });
+  if (values.name.trim().length > 80) errors.name = t("landing.support.validation.nameMax", { defaultValue: "Keep your name to 80 characters or fewer." });
   return errors;
 }
 
@@ -78,15 +80,15 @@ export default function SupportDialog() {
   const nameRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const formId = useId();
-  const errors = validate(values);
+  const errors = validate(values, t);
 
   const submitSupport = trpc.support.submit.useMutation({
     onSuccess: () => {
       setSubmitted(true);
       setError(null);
     },
-    onError: (cause) => {
-      setError(cause.message || t("landing.support.error", { defaultValue: "We could not send your message. Please try again shortly." }));
+    onError: () => {
+      setError(t("landing.support.error", { defaultValue: "We could not send your message. Please try again shortly." }));
     },
   });
   const uploadScreenshot = trpc.support.uploadScreenshot.useMutation();
@@ -113,7 +115,10 @@ export default function SupportDialog() {
     try {
       let uploadedAttachment = attachment;
       if (selectedFile && !uploadedAttachment) {
-        const dataBase64 = await readFileAsBase64(selectedFile);
+        const dataBase64 = await readFileAsBase64(
+          selectedFile,
+          t("landing.support.fileReadError", { defaultValue: "We could not read that screenshot." }),
+        );
         const uploaded = await uploadScreenshot.mutateAsync({
           filename: selectedFile.name,
           mimeType: selectedFile.type as UploadedAttachment["mimeType"],
@@ -133,11 +138,8 @@ export default function SupportDialog() {
         attachment: uploadedAttachment ?? undefined,
         website: values.website,
       });
-    } catch (cause) {
-      const message = cause instanceof Error
-        ? cause.message
-        : t("landing.support.error", { defaultValue: "We could not send your message. Please try again shortly." });
-      setError(message);
+    } catch {
+      setError(t("landing.support.error", { defaultValue: "We could not send your message. Please try again shortly." }));
     }
   };
 
@@ -222,7 +224,7 @@ export default function SupportDialog() {
         ) : (
           <form onSubmit={handleSubmit} noValidate className="space-y-4">
             <div className="sr-only" aria-hidden="true">
-              <label htmlFor={`${formId}-website`}>Website</label>
+              <label htmlFor={`${formId}-website`}>{t("landing.support.website", { defaultValue: "Website" })}</label>
               <input id={`${formId}-website`} tabIndex={-1} autoComplete="off" value={values.website} onChange={(event) => update("website", event.target.value)} />
             </div>
             <div>

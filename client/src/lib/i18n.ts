@@ -11,7 +11,7 @@ const STORAGE_KEY = "rr-lang";
 const USER_CHOSEN_KEY = "rr-lang-chosen";
 
 // Supported language codes (i18next format), ordered exactly as displayed in selectors.
-export const SUPPORTED_LANGS = ["en", "zh-CN", "es", "fr", "th", "zh-TW"] as const;
+export const SUPPORTED_LANGS = ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"] as const;
 export type SupportedLang = (typeof SUPPORTED_LANGS)[number];
 
 // Human-readable labels for the flyout
@@ -20,6 +20,7 @@ export const LANG_LABELS: Record<SupportedLang, string> = {
   "zh-CN": "CN",
   es: "ES",
   fr: "FR",
+  it: "IT",
   th: "TH",
   "zh-TW": "TW",
 };
@@ -29,6 +30,7 @@ export const LANG_NAMES: Record<SupportedLang, string> = {
   "zh-CN": "简体中文",
   es: "Español",
   fr: "Français",
+  it: "Italiano",
   th: "ภาษาไทย",
   "zh-TW": "繁體中文",
 };
@@ -41,6 +43,7 @@ export function getSavedLang(): SupportedLang | null {
     if (saved === "zh-TW") return "zh-TW";
     if (saved === "zh-CN") return "zh-CN";
     if (saved === "fr") return "fr";
+    if (saved === "it") return "it";
     if (saved === "es") return "es";
     if (saved === "en") return "en";
   } catch {
@@ -106,11 +109,28 @@ function detectLangFromBrowser(): SupportedLang {
     ) return "zh-CN";
     if (browserLang.startsWith("zh")) return "zh-TW";
     if (browserLang.startsWith("fr")) return "fr";
+    if (browserLang.startsWith("it")) return "it";
     if (browserLang.startsWith("es")) return "es";
   } catch {
     // ignore
   }
   return "en";
+}
+
+/**
+ * Return a valid language explicitly requested in the URL without changing a
+ * visitor's saved preference. This supports shareable localized routes such as
+ * /login?lang=es and keeps QA checks isolated from normal language selection.
+ */
+function getLangFromQuery(): SupportedLang | null {
+  try {
+    const requested = new URLSearchParams(window.location.search).get("lang");
+    return SUPPORTED_LANGS.includes(requested as SupportedLang)
+      ? (requested as SupportedLang)
+      : null;
+  } catch {
+    return null;
+  }
 }
 
 /** Detect language from server IP geolocation (called only on first visit) */
@@ -121,7 +141,7 @@ async function detectLangFromIP(): Promise<SupportedLang> {
     const data = await res.json() as { lang?: string };
     const lang = data.lang;
     if (lang === "zh-CN" || lang === "zh-TW") return lang;
-    if (lang === "th" || lang === "fr" || lang === "es") {
+    if (lang === "th" || lang === "fr" || lang === "it" || lang === "es") {
       return lang as SupportedLang;
     }
   } catch {
@@ -145,10 +165,13 @@ async function detectLangFromIP(): Promise<SupportedLang> {
 const userChosen = isUserChosen();
 const savedLang = getSavedLang();
 const browserLang = detectLangFromBrowser();
+const queryLang = getLangFromQuery();
 
 let initialLang: SupportedLang;
 
-if (userChosen && savedLang) {
+if (queryLang) {
+  initialLang = queryLang;
+} else if (userChosen && savedLang) {
   // User explicitly picked — respect it unconditionally
   initialLang = savedLang;
 } else {
@@ -169,7 +192,7 @@ i18n
     defaultNS: "landing",
     fallbackNS: "translation",
     backend: {
-      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame10",
+      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame12",
     },
     interpolation: {
       escapeValue: false,
@@ -183,7 +206,7 @@ i18n
 
 // If no user-chosen preference, optionally refine with IP detection
 // (only if browser gave us English but IP might suggest another language)
-if (!userChosen && browserLang === "en") {
+if (!queryLang && !userChosen && browserLang === "en") {
   detectLangFromIP().then((ipLang) => {
     if (ipLang !== "en") {
       saveLang(ipLang);

@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 const SUPPORTED_LOCALES = ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"] as const;
-const SELECTABLE_LOCALES = ["en", "zh-CN", "es", "fr", "th", "zh-TW"] as const;
+const SELECTABLE_LOCALES = ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"] as const;
 
 function readProjectFile(relativePath: string): string {
   return readFileSync(fileURLToPath(new URL(relativePath, import.meta.url)), "utf8");
@@ -46,13 +46,13 @@ describe("Settings locale coverage", () => {
     const languageFlyoutSource = readProjectFile("../client/src/components/LanguageFlyout.tsx");
 
     expect(i18nSource).toContain(
-      'export const SUPPORTED_LANGS = ["en", "zh-CN", "es", "fr", "th", "zh-TW"] as const;'
+      'export const SUPPORTED_LANGS = ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"] as const;'
     );
     expect(i18nSource).toContain(
       'supportedLngs: [...SUPPORTED_LANGS]'
     );
     expect(i18nSource).toContain(
-      'loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame10"'
+      'loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame12"'
     );
     expect(i18nSource).toContain('ns: ["landing", "translation", "cancellation"]');
     expect(i18nSource).toContain('fallbackNS: "translation"');
@@ -64,7 +64,51 @@ describe("Settings locale coverage", () => {
       ).toBe(true);
     }
 
-    expect(languageFlyoutSource).not.toContain('code: "it"');
+    expect(languageFlyoutSource).toContain('code: "it"');
     expect(readProjectFile("../client/public/locales/it/translation.json")).toContain('"account"');
+  });
+
+  it("provides translated public navigation, footer, and support controls around Login", () => {
+    const sharedChromeSources = [
+      readProjectFile("../client/src/components/landing/Navbar.tsx"),
+      readProjectFile("../client/src/components/landing/Footer.tsx"),
+      readProjectFile("../client/src/components/landing/SupportDialog.tsx"),
+    ];
+    const sharedChromeKeys = Array.from(
+      new Set(
+        sharedChromeSources.flatMap((source) =>
+          Array.from(source.matchAll(/t\(\s*["'](landing\.(?:navbar|footer|support)\.[A-Za-z0-9_.-]+)["']/g), (match) => match[1])
+        )
+      )
+    );
+
+    expect(sharedChromeKeys.length).toBeGreaterThan(0);
+
+    for (const locale of SUPPORTED_LOCALES) {
+      const dictionary = JSON.parse(
+        readProjectFile(`../client/public/locales/${locale}/landing.json`)
+      ) as unknown;
+
+      for (const key of sharedChromeKeys) {
+        const translatedValue = getByPath(dictionary, key);
+        expect(
+          typeof translatedValue === "string" && translatedValue.trim().length > 0,
+          `${locale} is missing public login chrome translation key: ${key}`
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("allows a valid URL language override without replacing a visitor’s saved preference", () => {
+    const i18nSource = readProjectFile("../client/src/lib/i18n.ts");
+    const languageFlyoutSource = readProjectFile("../client/src/components/LanguageFlyout.tsx");
+
+    expect(i18nSource).toContain('function getLangFromQuery(): SupportedLang | null');
+    expect(i18nSource).toContain('new URLSearchParams(window.location.search).get("lang")');
+    expect(i18nSource).toContain("const queryLang = getLangFromQuery()");
+    expect(i18nSource).toContain("if (queryLang) {");
+    expect(i18nSource).toContain("if (!queryLang && !userChosen && browserLang === \"en\")");
+    expect(languageFlyoutSource).toContain("const active = i18n.resolvedLanguage ?? i18n.language");
+    expect(languageFlyoutSource).toContain("return active as SupportedLang");
   });
 });

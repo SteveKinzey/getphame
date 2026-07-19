@@ -1,12 +1,25 @@
 export const GOOGLE_SIGN_IN_PENDING_KEY = "getphame:google-sign-in-pending";
 export const GOOGLE_SIGN_IN_TOAST_ID = "getphame-google-sign-in";
 
-const GOOGLE_AUTH_ERROR_TRANSLATION_KEYS: Record<string, string> = {
+const AUTH_ERROR_TRANSLATION_KEYS: Record<string, string> = {
+  denied: "login.signInCancelled",
   google_denied: "authFeedback.errors.googleDenied",
   google_failed: "authFeedback.errors.googleFailed",
   google_missing_code: "authFeedback.errors.googleMissingCode",
   google_state_mismatch: "authFeedback.errors.googleStateMismatch",
   google_no_id: "authFeedback.errors.googleNoId",
+  apple_authorization_failed: "login.appleSignInFailed",
+  apple_failed: "login.appleSignInFailed",
+  apple_missing_code: "login.appleSignInFailed",
+  apple_missing_token: "login.appleSignInFailed",
+  apple_token_exchange_failed: "login.appleSignInFailed",
+  apple_state_mismatch: "login.appleSignInFailed",
+  invalid_link: "login.invalidMagicLink",
+  link_expired: "login.magicLinkExpired",
+  magic_link_expired: "login.magicLinkExpired",
+  invalid_magic_link: "login.invalidMagicLink",
+  service_unavailable: "login.serviceUnavailable",
+  verification_failed: "login.verificationFailed",
 };
 
 const AUTH_ERROR_MESSAGES: Record<string, string> = {
@@ -39,7 +52,7 @@ export function getLocalizedAuthErrorMessage(
   translate: (key: string, options: { defaultValue: string }) => unknown,
 ): string {
   const fallback = getAuthErrorMessage(code);
-  const translationKey = GOOGLE_AUTH_ERROR_TRANSLATION_KEYS[code];
+  const translationKey = AUTH_ERROR_TRANSLATION_KEYS[code];
 
   return translationKey
     ? String(translate(translationKey, { defaultValue: fallback }))

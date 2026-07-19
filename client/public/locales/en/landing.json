@@ -314,6 +314,42 @@
     "modal": {
       "closeButtonAriaLabel": "Close video",
       "iframeTitle": "GetPhame product walkthrough"
+    },
+    "support": {
+      "title": "How can we help?",
+      "description": "Send our team a message and we’ll reply to the email address you provide.",
+      "successTitle": "Your support request was sent.",
+      "successDescription": "We’ll reply to the email address you provided as soon as we can.",
+      "sendAnother": "Send another message",
+      "name": "Name",
+      "optional": "optional",
+      "email": "Email",
+      "topic": "What can we help with?",
+      "topicBilling": "Billing",
+      "topicOnboarding": "Onboarding",
+      "topicTechnical": "Technical issue",
+      "subject": "Subject",
+      "message": "Message",
+      "messageHint": "Do not include passwords or card information.",
+      "attachment": "Screenshot",
+      "attachmentHint": "JPG, PNG, or WebP only. Maximum 8 MB.",
+      "removeAttachment": "Remove screenshot",
+      "attachmentType": "Attach a JPG, PNG, or WebP screenshot.",
+      "attachmentSize": "Keep screenshots to 8 MB or less.",
+      "uploading": "Uploading screenshot…",
+      "sending": "Sending…",
+      "submit": "Send support request",
+      "error": "We could not send your message. Please try again shortly.",
+      "fileReadError": "We could not read that screenshot.",
+      "website": "Website",
+      "validation": {
+        "email": "Enter a valid email address.",
+        "subjectMin": "Enter a subject with at least 3 characters.",
+        "subjectMax": "Keep the subject to 120 characters or fewer.",
+        "messageMin": "Tell us a little more so we can help.",
+        "messageMax": "Keep the message to 4,000 characters or fewer.",
+        "nameMax": "Keep your name to 80 characters or fewer."
+      }
     }
   }
 }
