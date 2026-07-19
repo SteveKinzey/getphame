@@ -192,7 +192,7 @@ i18n
     defaultNS: "landing",
     fallbackNS: "translation",
     backend: {
-      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame12",
+      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame13",
     },
     interpolation: {
       escapeValue: false,

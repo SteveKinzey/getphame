@@ -2022,5 +2022,85 @@
       "uploadAvatar": "Upload photo",
       "removeAvatar": "Remove photo"
     }
+  },
+  "complianceGuide": {
+    "backToSettings": "Settings",
+    "title": "Compliance Guide",
+    "subtitle": "Stay safe, stay legal, and protect your reputation",
+    "risk": { "low": "Low Risk", "moderate": "Moderate Risk", "high": "High Risk" },
+    "safeZone": {
+      "title": "Where You're Safe",
+      "transaction": "Customer had a real transaction with you",
+      "noIncentives": "No incentives offered (money, discounts, gifts)",
+      "noPressure": "No scripted or pressured review wording",
+      "allCustomers": "Ask ALL customers — not just happy ones",
+      "allCustomersSub": "Review gating (filtering unhappy customers away) is where most businesses get burned."
+    },
+    "platformRisk": {
+      "title": "Platform Risk Levels",
+      "google": { "allowed": "Asking for reviews via email is allowed", "noIncentives": "No incentives, no review gating", "worstCase": "Worst case: reviews removed or profile flagged." },
+      "yelp": { "discourages": "Strongly discourages asking for reviews at all", "filters": "Algorithm actively filters 'solicited' reviews", "safer": "Safer: list your business name only — don't embed a direct Yelp link in bulk campaigns", "worstCase": "Worst case: reviews filtered (not shown publicly) + consumer alert badge on profile." },
+      "bing": { "title": "Bing / Microsoft", "similar": "Similar to Google in practice, less aggressive enforcement", "worstCase": "Generally safe to include a direct link." }
+    },
+    "legal": {
+      "title": "Legal Considerations (U.S.)",
+      "intro": "The FTC cares about fake reviews, undisclosed incentives, and misleading practices. If you only ask real customers, don't compensate, and don't manipulate — you're fine legally.",
+      "fakeReviews": "Fake reviews",
+      "undisclosedIncentives": "Undisclosed incentives",
+      "misleading": "Misleading or deceptive practices"
+    },
+    "accountRisks": {
+      "title": "What Kills Accounts",
+      "incentives": "Incentives",
+      "incentivesSub": "\"Leave a review, get 10% off\" — this is a direct violation.",
+      "gating": "Review gating funnels",
+      "gatingSub": "Filtering unhappy customers away from public platforms.",
+      "bulk": "Bulk blasts that look automated/spammy",
+      "bulkSub": "Sudden spikes of 50+ reviews in a day raise red flags.",
+      "writing": "Writing reviews for customers or coaching exact wording",
+      "yelpLinks": "Embedding a Yelp review link in bulk email campaigns"
+    },
+    "playbook": {
+      "title": "Best-Practice Playbook",
+      "neutral": "Send a simple, neutral request",
+      "neutralSub": "\"We'd appreciate your honest feedback\"",
+      "multiplePlatforms": "Give multiple platform options",
+      "multiplePlatformsSub": "Don't push one platform aggressively.",
+      "allCustomers": "Ask ALL customers — not just happy ones",
+      "noYelpLinks": "Avoid direct Yelp links in campaigns",
+      "noYelpLinksSub": "Safer to list your business name only.",
+      "throttle": "Throttle volume",
+      "throttleSub": "No sudden spikes. Spread sends over days/weeks.",
+      "realPerson": "Send from a real person",
+      "realPersonSub": "Not 'support@' — use a first name.",
+      "emailLength": "Keep emails under 100–120 words",
+      "urgency": "Add subtle urgency",
+      "urgencySub": "\"while it's still fresh\""
+    },
+    "wooTiming": {
+      "title": "WooCommerce Timing",
+      "product": "Product orders: send 3–5 days after order completion",
+      "productSub": "Gives customers time to receive and use the product.",
+      "service": "Service orders: send 1–2 days after completion",
+      "serviceSub": "While the experience is still fresh.",
+      "trigger": "Trigger: WooCommerce order status → Completed",
+      "rotate": "Rotate platforms across sends",
+      "rotateSub": "Don't send everyone to the same platform at once.",
+      "track": "Track conversion rate",
+      "trackSub": "Aim for reviews per 100 customers as your KPI."
+    },
+    "subjectLines": {
+      "title": "Subject Lines That Convert",
+      "quickFavor": "\"Quick favor?\"",
+      "quickFavorSub": "Direct, low-pressure, high open rate.",
+      "howDidWeDo": "\"How did we do?\"",
+      "howDidWeDoSub": "Conversational and curiosity-driven.",
+      "gotAMinute": "\"[First Name], got a minute?\"",
+      "gotAMinuteSub": "Personalisation boosts open rates.",
+      "thanksOrder": "\"Thanks for your order — got a minute?\"",
+      "thanksOrderSub": "Best for WooCommerce post-purchase flows."
+    },
+    "bottomLine": { "label": "Bottom Line", "googleBing": "Google + Bing → safe if done correctly.", "yelp": "Yelp → proceed carefully or avoid direct solicitation.", "legal": "Legal risk → low if you stay honest and don't incentivize." },
+    "settings": { "title": "Compliance Guide", "description": "Platform rules, legal notes & best practices" }
   }
 }

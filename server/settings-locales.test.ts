@@ -52,7 +52,7 @@ describe("Settings locale coverage", () => {
       'supportedLngs: [...SUPPORTED_LANGS]'
     );
     expect(i18nSource).toContain(
-      'loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame12"'
+      'loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame13"'
     );
     expect(i18nSource).toContain('ns: ["landing", "translation", "cancellation"]');
     expect(i18nSource).toContain('fallbackNS: "translation"');
@@ -95,6 +95,49 @@ describe("Settings locale coverage", () => {
           typeof translatedValue === "string" && translatedValue.trim().length > 0,
           `${locale} is missing public login chrome translation key: ${key}`
         ).toBe(true);
+      }
+    }
+  });
+
+  it("provides the complete translated Compliance Guide contract in every supported locale", () => {
+    const complianceSource = readProjectFile("../client/src/pages/Compliance.tsx");
+    const complianceKeys = Array.from(
+      new Set(
+        Array.from(
+          complianceSource.matchAll(/guide\(\s*["']([A-Za-z0-9_.-]+)["']/g),
+          (match) => `complianceGuide.${match[1]}`
+        )
+      )
+    );
+
+    expect(complianceKeys.length).toBeGreaterThan(40);
+
+    const englishDictionary = JSON.parse(
+      readProjectFile("../client/public/locales/en/translation.json")
+    ) as unknown;
+
+    for (const locale of SUPPORTED_LOCALES) {
+      const dictionary = JSON.parse(
+        readProjectFile(`../client/public/locales/${locale}/translation.json`)
+      ) as unknown;
+
+      for (const key of complianceKeys) {
+        const translatedValue = getByPath(dictionary, key);
+        expect(
+          typeof translatedValue === "string" && translatedValue.trim().length > 0,
+          `${locale} is missing Compliance Guide translation key: ${key}`
+        ).toBe(true);
+      }
+
+      if (locale !== "en") {
+        expect(
+          getByPath(dictionary, "complianceGuide.title"),
+          `${locale} Compliance Guide title must not fall back to English`
+        ).not.toBe(getByPath(englishDictionary, "complianceGuide.title"));
+        expect(
+          getByPath(dictionary, "complianceGuide.subtitle"),
+          `${locale} Compliance Guide subtitle must not fall back to English`
+        ).not.toBe(getByPath(englishDictionary, "complianceGuide.subtitle"));
       }
     }
   });

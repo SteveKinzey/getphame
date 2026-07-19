@@ -1593,5 +1593,20 @@
     "signInFailed": "無法登入。請再試一次。",
     "resetPassword": "重設密碼",
     "error": "錯誤"
+  },
+  "complianceGuide": {
+    "backToSettings": "返回設定",
+    "title": "合規指南",
+    "subtitle": "保持安全、合法，並保護您的聲譽",
+    "risk": { "low": "低風險", "moderate": "中等風險", "high": "高風險" },
+    "safeZone": { "title": "安全區域", "transaction": "客戶與您有真實交易", "noIncentives": "未提供任何獎勵（金錢、折扣、禮物）", "noPressure": "沒有預設或施壓的評論措辭", "allCustomers": "詢問所有客戶 — 不僅是滿意的客戶", "allCustomersSub": "評論篩選（將不滿意的客戶篩選掉）是大多數企業受損的原因。" },
+    "platformRisk": { "title": "平台風險等級", "google": { "allowed": "透過電子郵件請求評論是允許的", "noIncentives": "無獎勵，無評論篩選", "worstCase": "最壞情況：評論被移除或個人資料被標記。" }, "yelp": { "discourages": "強烈不鼓勵請求評論", "filters": "演算法會主動篩選「被請求的」評論", "safer": "更安全：只列出您的商家名稱 — 不要在批量活動中嵌入直接的 Yelp 連結", "worstCase": "最壞情況：評論被篩選（未公開顯示）+ 個人資料上出現消費者警示標誌。" }, "bing": { "title": "Bing / Microsoft", "similar": "在實踐中與 Google 相似，執法力度較不嚴格", "worstCase": "通常可以安全地包含直接連結。" } },
+    "legal": { "title": "法律考量（美國）", "intro": "FTC 關注虛假評論、未披露的獎勵和誤導性行為。如果您只詢問真實客戶，不提供補償，也不操縱 — 您在法律上是安全的。", "fakeReviews": "虛假評論", "undisclosedIncentives": "未披露的獎勵", "misleading": "誤導性或欺騙性行為" },
+    "accountRisks": { "title": "導致帳戶終止的行為", "incentives": "獎勵", "incentivesSub": "\"留下評論，獲得 9 折優惠\" — 這直接違反了規定。", "gating": "評論篩選漏斗", "gatingSub": "將不滿意的客戶從公共平台篩選掉。", "bulk": "看起來自動化或垃圾郵件的批量發送", "bulkSub": "一天內突然增加 50 多條評論會引起警報。", "writing": "為客戶撰寫評論或指導確切措辭", "yelpLinks": "在批量電子郵件活動中嵌入 Yelp 評論連結" },
+    "playbook": { "title": "最佳實踐手冊", "neutral": "發送一個簡單、中立的請求", "neutralSub": "\"我們將感謝您的誠實回饋\"", "multiplePlatforms": "提供多個平台選項", "multiplePlatformsSub": "不要積極推廣單一平台。", "allCustomers": "詢問所有客戶 — 不僅是滿意的客戶", "noYelpLinks": "在活動中避免直接的 Yelp 連結", "noYelpLinksSub": "更安全的是只列出您的商家名稱。", "throttle": "控制發送量", "throttleSub": "沒有突然的飆升。將發送分散到數天或數週。", "realPerson": "由真人發送", "realPersonSub": "不是「support@」 — 使用名字。", "emailLength": "將電子郵件保持在 100–120 字以下", "urgency": "增加微妙的緊迫感", "urgencySub": "\"趁記憶猶新\"" },
+    "wooTiming": { "title": "WooCommerce 時機", "product": "產品訂單：在訂單完成後 3–5 天發送", "productSub": "讓客戶有時間收到並使用產品。", "service": "服務訂單：在完成後 1–2 天發送", "serviceSub": "趁體驗記憶猶新。", "trigger": "觸發：WooCommerce 訂單狀態 → 已完成", "rotate": "在發送中輪換平台", "rotateSub": "不要同時將所有人發送到同一個平台。", "track": "追蹤轉換率", "trackSub": "以每 100 個客戶的評論數作為您的 KPI。" },
+    "subjectLines": { "title": "提高轉換率的主旨行", "quickFavor": "\"幫個小忙？\"", "quickFavorSub": "直接、低壓、高開啟率。", "howDidWeDo": "\"我們做得怎麼樣？\"", "howDidWeDoSub": "對話式且充滿好奇心。", "gotAMinute": "\"[名字]，有空嗎？\"", "gotAMinuteSub": "個人化提高開啟率。", "thanksOrder": "\"感謝您的訂單 — 有空嗎？\"", "thanksOrderSub": "最適合 WooCommerce 購買後流程。" },
+    "bottomLine": { "label": "總結", "googleBing": "Google + Bing → 如果操作得當，是安全的。", "yelp": "Yelp → 謹慎行事或避免直接請求。", "legal": "法律風險 → 如果您保持誠實且不提供獎勵，則風險較低。" },
+    "settings": { "title": "合規指南", "description": "平台規則、法律說明和最佳實踐" }
   }
 }

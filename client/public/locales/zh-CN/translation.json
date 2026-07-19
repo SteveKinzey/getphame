@@ -1571,5 +1571,20 @@
     "signInFailed": "无法登录。请重试。",
     "resetPassword": "重置密码",
     "error": "错误"
+  },
+  "complianceGuide": {
+    "backToSettings": "设置",
+    "title": "合规指南",
+    "subtitle": "保持安全，遵守法律，保护您的声誉",
+    "risk": { "low": "低风险", "moderate": "中等风险", "high": "高风险" },
+    "safeZone": { "title": "您的安全区", "transaction": "客户与您进行了真实的交易", "noIncentives": "未提供任何奖励（金钱、折扣、礼品）", "noPressure": "没有脚本化或有压力的评论措辞", "allCustomers": "询问所有客户 — 不仅仅是满意的客户", "allCustomersSub": "评论筛选（过滤掉不满意的客户）是大多数企业受损的地方。" },
+    "platformRisk": { "title": "平台风险级别", "google": { "allowed": "允许通过电子邮件请求评论", "noIncentives": "无奖励，无评论筛选", "worstCase": "最坏情况：评论被删除或个人资料被标记。" }, "yelp": { "discourages": "强烈不鼓励请求评论", "filters": "算法主动过滤“被请求的”评论", "safer": "更安全：只列出您的商家名称 — 不要在批量营销活动中嵌入直接的 Yelp 链接", "worstCase": "最坏情况：评论被过滤（不公开显示）+ 消费者警示徽章。" }, "bing": { "title": "Bing / Microsoft", "similar": "在实践中与 Google 类似，执法力度较弱", "worstCase": "通常可以安全地包含直接链接。" } },
+    "legal": { "title": "法律考量（美国）", "intro": "FTC 关注虚假评论、未披露的奖励和误导性做法。如果您只询问真实客户，不进行补偿，也不进行操纵 — 那么您在法律上是安全的。", "fakeReviews": "虚假评论", "undisclosedIncentives": "未披露的奖励", "misleading": "误导性或欺骗性做法" },
+    "accountRisks": { "title": "导致账户被封的原因", "incentives": "奖励", "incentivesSub": "\"留下评论，获得 10% 折扣\" — 这是直接违规。", "gating": "评论筛选漏斗", "gatingSub": "将不满意的客户从公共平台过滤掉。", "bulk": "看起来自动化或垃圾邮件式的批量发送", "bulkSub": "一天内突然增加 50 多条评论会引起警报。", "writing": "为客户撰写评论或指导确切措辞", "yelpLinks": "在批量电子邮件营销活动中嵌入 Yelp 评论链接" },
+    "playbook": { "title": "最佳实践手册", "neutral": "发送一个简单、中立的请求", "neutralSub": "\"我们感谢您的真诚反馈\"", "multiplePlatforms": "提供多个平台选项", "multiplePlatformsSub": "不要积极地推动一个平台。", "allCustomers": "询问所有客户 — 不仅仅是满意的客户", "noYelpLinks": "避免在营销活动中直接使用 Yelp 链接", "noYelpLinksSub": "更安全的方法是只列出您的商家名称。", "throttle": "限制发送量", "throttleSub": "没有突然的激增。将发送分散到几天或几周。", "realPerson": "由真人发送", "realPersonSub": "不是“support@” — 使用名字。", "emailLength": "将电子邮件控制在 100–120 字以内", "urgency": "增加微妙的紧迫感", "urgencySub": "\"趁热打铁\"" },
+    "wooTiming": { "title": "WooCommerce 时机", "product": "产品订单：在订单完成后 3–5 天发送", "productSub": "给客户时间接收和使用产品。", "service": "服务订单：在完成后 1–2 天发送", "serviceSub": "趁体验还新鲜。", "trigger": "触发器：WooCommerce 订单状态 → 已完成", "rotate": "在发送中轮换平台", "rotateSub": "不要一次性将所有人都发送到同一个平台。", "track": "跟踪转化率", "trackSub": "将每 100 个客户的评论数作为您的 KPI。" },
+    "subjectLines": { "title": "高转化率的主题行", "quickFavor": "\"帮个小忙？\"", "quickFavorSub": "直接、低压、高打开率。", "howDidWeDo": "\"我们做得怎么样？\"", "howDidWeDoSub": "对话式并由好奇心驱动。", "gotAMinute": "\"[名字]，有空吗？\"", "gotAMinuteSub": "个性化提高打开率。", "thanksOrder": "\"感谢您的订单 — 有空吗？\"", "thanksOrderSub": "最适合 WooCommerce 购买后流程。" },
+    "bottomLine": { "label": "总结", "googleBing": "Google + Bing → 如果操作正确，是安全的。", "yelp": "Yelp → 谨慎行事或避免直接请求。", "legal": "法律风险 → 如果您保持诚实且不提供奖励，则风险较低。" },
+    "settings": { "title": "合规指南", "description": "平台规则、法律说明和最佳实践" }
   }
 }

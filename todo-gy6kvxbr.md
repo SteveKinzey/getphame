@@ -516,3 +516,6 @@
 - [x] Localize the shared desktop navigation and footer rendered around the login page in every supported locale.
 - [x] Localize the Login footer’s reachable support-dialog labels, validation messages, upload feedback, and error states in every supported locale.
 - [x] Refresh the locale-dictionary cache version so visitors receive the completed Login-page translations rather than stale fallback content.
+- [x] Translate every Compliance Guide heading, explanatory section, checklist item, link label, and action control across all supported locales.
+- [x] Add locale-parity regression coverage and validate the translated Compliance Guide at desktop and mobile breakpoints before publishing.
+- [x] Refresh the locale-dictionary cache version so visitors receive the newly translated Compliance Guide catalogs.
