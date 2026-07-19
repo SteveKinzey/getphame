@@ -269,7 +269,25 @@
     "requestsByPlatform": "Requests by Platform",
     "freeAllowanceInitial": "Free plan: 10 initial requests, then 5 every rolling 30 days",
     "freeAllowanceMonthly": "Free plan: 5 requests every rolling 30 days",
-    "nextFreeRequest": "Next request available {{date}}"
+    "nextFreeRequest": "Next request available {{date}}",
+    "setupProgressEyebrow": "Get started",
+    "setupProgressDescription": "Complete these four steps to make your review requests ready to send.",
+    "setupProgressCount": "{{completed}} of {{total}} complete",
+    "setupStepEmail": "Connect your email",
+    "setupStepEmailDescription": "Add your SMTP sending account.",
+    "setupActionEmail": "Connect",
+    "setupStepPlatform": "Add a review platform",
+    "setupStepPlatformDescription": "Choose where customers will leave reviews.",
+    "setupActionPlatform": "Add platform",
+    "setupStepContacts": "Import contacts",
+    "setupStepContactsDescription": "Upload or add your first customers.",
+    "setupActionContacts": "Import",
+    "setupStepSend": "Send your first request",
+    "setupStepSendDescription": "Preview the customer experience with a first send.",
+    "setupActionSend": "Send",
+    "setupStepComplete": "Complete",
+    "setupStepNumber": "Step {{step}}",
+    "loadingAnalytics": "Loading analytics"
   },
   "notifications": {
     "followUpReminderScheduled": "Follow-up reminder scheduled!",
@@ -1235,6 +1253,13 @@
     "header": {
       "title": "Get Phame Setup",
       "skipSetupTooltip": "Skip setup"
+    },
+    "tour": {
+      "skip": "Skip Tour",
+      "show": "Show tips",
+      "skipTooltip": "Hide onboarding tips on this device",
+      "showTooltip": "Show onboarding tips again",
+      "skipSuccess": "Onboarding tips hidden. You can show them again at any time."
     },
     "steps": {
       "connectEmail": "Connect Email",

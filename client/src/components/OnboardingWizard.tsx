@@ -9,7 +9,7 @@
  * completed or dismissed onboarding. Dismissible at any time via the Skip button.
  */
 
-import { useState, useEffect, useCallback } from "react";
+import { createContext, useState, useEffect, useCallback, useContext } from "react";
 import { useTranslation } from "react-i18next";
 import { dismissAndNavigateToSend, getOnboardingFlow } from "@/lib/onboardingFlow";
 import { trpc } from "@/lib/trpc";
@@ -40,6 +40,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 interface OnboardingWizardProps {
   onDismiss: () => void;
 }
+
+const TOUR_SKIP_STORAGE_KEY = "rr_skip_tour";
+const OnboardingTourContext = createContext({ tipsHidden: false });
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -112,6 +115,9 @@ function getHintKey(email: string, host?: string): string | null {
 }
 
 function OnboardingHelpTip({ label, text }: { label: string; text: string }) {
+  const { tipsHidden } = useContext(OnboardingTourContext);
+  if (tipsHidden) return null;
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -869,6 +875,20 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
   });
 
   const dismissMutation = trpc.onboarding.dismiss.useMutation();
+  const [tipsHidden, setTipsHidden] = useState(
+    () => typeof window !== "undefined" && window.localStorage.getItem(TOUR_SKIP_STORAGE_KEY) === "1",
+  );
+
+  const skipTour = useCallback(() => {
+    window.localStorage.setItem(TOUR_SKIP_STORAGE_KEY, "1");
+    setTipsHidden(true);
+    toast.success(t("onboardingWizard.tour.skipSuccess"));
+  }, [t]);
+
+  const showTour = useCallback(() => {
+    window.localStorage.removeItem(TOUR_SKIP_STORAGE_KEY);
+    setTipsHidden(false);
+  }, []);
 
   const handleDismiss = useCallback(() => {
     onDismiss();
@@ -913,6 +933,7 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
   if (isLoading) return null;
 
   return (
+    <OnboardingTourContext.Provider value={{ tipsHidden }}>
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4"
       style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)", paddingBottom: "calc(5rem + env(safe-area-inset-bottom))", paddingTop: "1rem" }}
@@ -940,16 +961,27 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
                 {t("onboardingWizard.header.title")}
               </span>
             </div>
-            <button
-              type="button"
-              onClick={handleDismiss}
-              className="p-2 rounded-xl transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
-              style={{ color: "var(--text-on-dark-primary)" }}
-              title={t("onboardingWizard.header.skipSetupTooltip")}
-              aria-label={t("onboardingWizard.header.skipSetupTooltip")}
-            >
-              <X size={18} />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={tipsHidden ? showTour : skipTour}
+                className="rounded-lg px-2 py-1 text-xs font-bold transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
+                style={{ color: "var(--text-on-dark-secondary)" }}
+                title={tipsHidden ? t("onboardingWizard.tour.showTooltip") : t("onboardingWizard.tour.skipTooltip")}
+              >
+                {tipsHidden ? t("onboardingWizard.tour.show") : t("onboardingWizard.tour.skip")}
+              </button>
+              <button
+                type="button"
+                onClick={handleDismiss}
+                className="p-2 rounded-xl transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
+                style={{ color: "var(--text-on-dark-primary)" }}
+                title={t("onboardingWizard.header.skipSetupTooltip")}
+                aria-label={t("onboardingWizard.header.skipSetupTooltip")}
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
 
           {/* Tappable step bar */}
@@ -1074,5 +1106,6 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
         </div>
       </div>
     </div>
+    </OnboardingTourContext.Provider>
   );
 }

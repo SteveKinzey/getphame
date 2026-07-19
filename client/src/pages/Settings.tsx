@@ -456,7 +456,7 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
   const [showRetention, setShowRetention] = useState(false);
   const [planSwitchOpen, setPlanSwitchOpen] = useState(false);
   const createPortal = trpc.stripe.createPortal.useMutation({
-    onSuccess: ({ url }) => window.open(url, '_blank'),
+    onSuccess: ({ url }) => window.open(url, "_blank", "noopener,noreferrer"),
     onError: (err) => toast.error(err.message),
   });
 

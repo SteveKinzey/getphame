@@ -534,3 +534,8 @@
 - [x] Optimize the mobile footer layout for compact, standard, and large phone widths while preserving its existing navigation structure and full-width background treatment.
 - [x] Add concise localized Dashboard and Admin labels for the compact mobile navigation so all primary tabs remain intentional and legible at 320 px widths.
 - [x] Add regression coverage, performance verification, and desktop/mobile visual checks for the locale bundles, onboarding tooltips, and responsive footer before publishing.
+- [x] Add a localized dashboard setup-progress checklist that derives completion from the user’s existing setup state and links each unfinished step to its action.
+- [x] Defer non-critical dashboard chart code and data rendering until after the initial dashboard paint while preserving analytics behavior and accessible loading states.
+- [x] Add a persistent, accessible Skip Tour action that dismisses onboarding guidance for experienced users without blocking future onboarding completion.
+- [x] Audit the application’s security-sensitive code paths, remediate confirmed issues without weakening existing authorization or payment controls, and document the verification scope.
+- [x] Add regression, production-build, and responsive visual validation for the onboarding checklist, deferred charts, Skip Tour behavior, and security remediation before publishing.

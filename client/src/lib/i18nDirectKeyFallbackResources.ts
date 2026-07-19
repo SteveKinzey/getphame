@@ -15,7 +15,9 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
         reviewUrl: { label: "Help finding your review link", text: "Paste the direct review link—not your public profile page—so customers land on the write-a-review screen." },
         firstRequest: { label: "Why send a first request?", text: "Send one request to yourself first. It lets you review the customer experience before using it with clients." },
       },
+      tour: { skip: "Skip Tour", show: "Show tips", skipTooltip: "Hide onboarding tips on this device", showTooltip: "Show onboarding tips again", skipSuccess: "Onboarding tips hidden. You can show them again at any time." },
     },
+    homePage: { setupProgressEyebrow: "Get started", setupProgressDescription: "Complete these four steps to make your review requests ready to send.", setupProgressCount: "{{completed}} of {{total}} complete", setupStepEmail: "Connect your email", setupStepEmailDescription: "Add your SMTP sending account.", setupActionEmail: "Connect", setupStepPlatform: "Add a review platform", setupStepPlatformDescription: "Choose where customers will leave reviews.", setupActionPlatform: "Add platform", setupStepContacts: "Import contacts", setupStepContactsDescription: "Upload or add your first customers.", setupActionContacts: "Import", setupStepSend: "Send your first request", setupStepSendDescription: "Preview the customer experience with a first send.", setupActionSend: "Send", setupStepComplete: "Complete", setupStepNumber: "Step {{step}}", loadingAnalytics: "Loading analytics" },
     settings: {
       fromNameDescription: "Customers will see this as the sender name in their inbox.",
       fromNameHint: "shown as sender",
@@ -41,7 +43,9 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
         reviewUrl: { label: "Ayuda para encontrar tu enlace de reseña", text: "Pega el enlace directo para dejar una reseña, no la página pública de tu perfil, para que los clientes lleguen a la pantalla de escribir una reseña." },
         firstRequest: { label: "¿Por qué enviar una primera solicitud?", text: "Envíate primero una solicitud a ti mismo. Así podrás revisar la experiencia del cliente antes de usarla con tus clientes." },
       },
+      tour: { skip: "Omitir recorrido", show: "Mostrar consejos", skipTooltip: "Ocultar los consejos de configuración en este dispositivo", showTooltip: "Volver a mostrar los consejos de configuración", skipSuccess: "Los consejos de configuración se han ocultado. Puedes mostrarlos de nuevo cuando quieras." },
     },
+    homePage: { setupProgressEyebrow: "Primeros pasos", setupProgressDescription: "Completa estos cuatro pasos para dejar listas tus solicitudes de reseña.", setupProgressCount: "{{completed}} de {{total}} completados", setupStepEmail: "Conecta tu correo", setupStepEmailDescription: "Añade tu cuenta de envío SMTP.", setupActionEmail: "Conectar", setupStepPlatform: "Añade una plataforma de reseñas", setupStepPlatformDescription: "Elige dónde dejarán las reseñas tus clientes.", setupActionPlatform: "Añadir", setupStepContacts: "Importa contactos", setupStepContactsDescription: "Carga o añade tus primeros clientes.", setupActionContacts: "Importar", setupStepSend: "Envía tu primera solicitud", setupStepSendDescription: "Prueba la experiencia del cliente con un primer envío.", setupActionSend: "Enviar", setupStepComplete: "Completado", setupStepNumber: "Paso {{step}}", loadingAnalytics: "Cargando analíticas" },
     settings: {
       fromNameDescription: "Los clientes verán esto como el nombre del remitente en su bandeja de entrada.",
       fromNameHint: "mostrado como remitente",
@@ -67,7 +71,9 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
         reviewUrl: { label: "Aide pour trouver votre lien d'avis", text: "Collez le lien direct pour laisser un avis, et non votre page de profil publique, afin que les clients arrivent sur l'écran de rédaction d'un avis." },
         firstRequest: { label: "Pourquoi envoyer une première demande ?", text: "Envoyez-vous d'abord une demande. Vous pourrez ainsi vérifier l'expérience client avant de l'utiliser avec vos clients." },
       },
+      tour: { skip: "Ignorer la visite", show: "Afficher les conseils", skipTooltip: "Masquer les conseils de configuration sur cet appareil", showTooltip: "Afficher à nouveau les conseils de configuration", skipSuccess: "Les conseils de configuration sont masqués. Vous pouvez les afficher à nouveau à tout moment." },
     },
+    homePage: { setupProgressEyebrow: "Premiers pas", setupProgressDescription: "Terminez ces quatre étapes pour préparer vos demandes d’avis.", setupProgressCount: "{{completed}} sur {{total}} terminées", setupStepEmail: "Connectez votre messagerie", setupStepEmailDescription: "Ajoutez votre compte d’envoi SMTP.", setupActionEmail: "Connecter", setupStepPlatform: "Ajoutez une plateforme d’avis", setupStepPlatformDescription: "Choisissez où vos clients laisseront leurs avis.", setupActionPlatform: "Ajouter", setupStepContacts: "Importez des contacts", setupStepContactsDescription: "Importez ou ajoutez vos premiers clients.", setupActionContacts: "Importer", setupStepSend: "Envoyez votre première demande", setupStepSendDescription: "Prévisualisez l’expérience client avec un premier envoi.", setupActionSend: "Envoyer", setupStepComplete: "Terminé", setupStepNumber: "Étape {{step}}", loadingAnalytics: "Chargement des statistiques" },
     settings: {
       fromNameDescription: "Les clients verront ceci comme nom de l'expéditeur dans leur boîte de réception.",
       fromNameHint: "affiché comme expéditeur",
@@ -93,7 +99,9 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
         reviewUrl: { label: "Aiuto per trovare il link delle recensioni", text: "Incolla il link diretto per lasciare una recensione, non la pagina pubblica del profilo, così i clienti arrivano alla schermata per scrivere una recensione." },
         firstRequest: { label: "Perché inviare una prima richiesta?", text: "Invia prima una richiesta a te stesso. Potrai controllare l'esperienza del cliente prima di usarla con i tuoi clienti." },
       },
+      tour: { skip: "Salta il tour", show: "Mostra suggerimenti", skipTooltip: "Nascondi i suggerimenti di configurazione su questo dispositivo", showTooltip: "Mostra di nuovo i suggerimenti di configurazione", skipSuccess: "I suggerimenti di configurazione sono nascosti. Puoi mostrarli di nuovo in qualsiasi momento." },
     },
+    homePage: { setupProgressEyebrow: "Per iniziare", setupProgressDescription: "Completa questi quattro passaggi per preparare le richieste di recensione.", setupProgressCount: "{{completed}} di {{total}} completati", setupStepEmail: "Collega la tua email", setupStepEmailDescription: "Aggiungi il tuo account di invio SMTP.", setupActionEmail: "Collega", setupStepPlatform: "Aggiungi una piattaforma di recensioni", setupStepPlatformDescription: "Scegli dove i clienti lasceranno le recensioni.", setupActionPlatform: "Aggiungi", setupStepContacts: "Importa contatti", setupStepContactsDescription: "Carica o aggiungi i tuoi primi clienti.", setupActionContacts: "Importa", setupStepSend: "Invia la tua prima richiesta", setupStepSendDescription: "Controlla l’esperienza cliente con un primo invio.", setupActionSend: "Invia", setupStepComplete: "Completato", setupStepNumber: "Passaggio {{step}}", loadingAnalytics: "Caricamento delle analisi" },
     settings: {
       fromNameDescription: "I clienti vedranno questo come nome del mittente nella loro casella di posta.",
       fromNameHint: "visualizzato come mittente",
@@ -135,7 +143,9 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
         reviewUrl: { label: "ความช่วยเหลือในการค้นหาลิงก์รีวิว", text: "วางลิงก์สำหรับเขียนรีวิวโดยตรง ไม่ใช่หน้าสาธารณะของโปรไฟล์ เพื่อให้ลูกค้าไปถึงหน้าที่เขียนรีวิวได้" },
         firstRequest: { label: "เหตุใดจึงต้องส่งคำขอแรก", text: "ส่งคำขอให้ตัวเองก่อน เพื่อให้คุณตรวจสอบประสบการณ์ของลูกค้าก่อนนำไปใช้กับลูกค้าจริง" },
       },
+      tour: { skip: "ข้ามทัวร์", show: "แสดงคำแนะนำ", skipTooltip: "ซ่อนคำแนะนำการตั้งค่าบนอุปกรณ์นี้", showTooltip: "แสดงคำแนะนำการตั้งค่าอีกครั้ง", skipSuccess: "ซ่อนคำแนะนำการตั้งค่าแล้ว คุณสามารถแสดงอีกครั้งได้ทุกเมื่อ" },
     },
+    homePage: { setupProgressEyebrow: "เริ่มต้นใช้งาน", setupProgressDescription: "ทำ 4 ขั้นตอนนี้ให้เสร็จเพื่อเตรียมคำขอรีวิวให้พร้อมส่ง", setupProgressCount: "เสร็จแล้ว {{completed}} จาก {{total}}", setupStepEmail: "เชื่อมต่ออีเมลของคุณ", setupStepEmailDescription: "เพิ่มบัญชี SMTP สำหรับส่งอีเมล", setupActionEmail: "เชื่อมต่อ", setupStepPlatform: "เพิ่มแพลตฟอร์มรีวิว", setupStepPlatformDescription: "เลือกที่ที่ลูกค้าจะเขียนรีวิว", setupActionPlatform: "เพิ่ม", setupStepContacts: "นำเข้ารายชื่อติดต่อ", setupStepContactsDescription: "อัปโหลดหรือเพิ่มลูกค้ากลุ่มแรกของคุณ", setupActionContacts: "นำเข้า", setupStepSend: "ส่งคำขอแรกของคุณ", setupStepSendDescription: "ดูประสบการณ์ลูกค้าด้วยการส่งครั้งแรก", setupActionSend: "ส่ง", setupStepComplete: "เสร็จแล้ว", setupStepNumber: "ขั้นตอนที่ {{step}}", loadingAnalytics: "กำลังโหลดข้อมูลวิเคราะห์" },
     settings: {
       fromNameDescription: "ลูกค้าจะเห็นสิ่งนี้เป็นชื่อผู้ส่งในกล่องจดหมายของพวกเขา",
       fromNameHint: "แสดงเป็นผู้ส่ง",
@@ -161,7 +171,9 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
         reviewUrl: { label: "查找评论链接的帮助", text: "请粘贴直接撰写评论的链接，而不是公开个人资料页，以便客户直接进入写评论页面。" },
         firstRequest: { label: "为什么要发送第一条请求？", text: "请先向自己发送一条请求。这样您可以在向客户使用前检查客户体验。" },
       },
+      tour: { skip: "跳过导览", show: "显示提示", skipTooltip: "在此设备上隐藏设置提示", showTooltip: "再次显示设置提示", skipSuccess: "已隐藏设置提示。您可以随时再次显示它们。" },
     },
+    homePage: { setupProgressEyebrow: "开始使用", setupProgressDescription: "完成以下四步，即可准备发送评价请求。", setupProgressCount: "已完成 {{completed}} / {{total}}", setupStepEmail: "连接您的邮箱", setupStepEmailDescription: "添加您的 SMTP 发件账户。", setupActionEmail: "连接", setupStepPlatform: "添加评价平台", setupStepPlatformDescription: "选择客户将留下评价的位置。", setupActionPlatform: "添加", setupStepContacts: "导入联系人", setupStepContactsDescription: "上传或添加您的首批客户。", setupActionContacts: "导入", setupStepSend: "发送第一条请求", setupStepSendDescription: "通过首次发送预览客户体验。", setupActionSend: "发送", setupStepComplete: "已完成", setupStepNumber: "第 {{step}} 步", loadingAnalytics: "正在加载分析数据" },
     settings: {
       fromNameDescription: "客户在收件箱中会看到此项作为发件人名称。",
       fromNameHint: "显示为发件人",
@@ -187,7 +199,9 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
         reviewUrl: { label: "尋找評論連結說明", text: "請貼上可直接撰寫評論的連結，而非公開個人資料頁，讓客戶直接進入寫評論畫面。" },
         firstRequest: { label: "為何要發送第一則邀請？", text: "請先發送一則邀請給自己。如此您可在提供給客戶前檢查客戶體驗。" },
       },
+      tour: { skip: "略過導覽", show: "顯示提示", skipTooltip: "在此裝置隱藏設定提示", showTooltip: "再次顯示設定提示", skipSuccess: "已隱藏設定提示。您可隨時再次顯示。" },
     },
+    homePage: { setupProgressEyebrow: "開始使用", setupProgressDescription: "完成以下四個步驟，即可準備好發送評論邀請。", setupProgressCount: "已完成 {{completed}} / {{total}}", setupStepEmail: "連接您的電子郵件", setupStepEmailDescription: "新增您的 SMTP 寄件帳戶。", setupActionEmail: "連接", setupStepPlatform: "新增評論平台", setupStepPlatformDescription: "選擇客戶留下評論的位置。", setupActionPlatform: "新增", setupStepContacts: "匯入聯絡人", setupStepContactsDescription: "上傳或新增首批客戶。", setupActionContacts: "匯入", setupStepSend: "發送第一則邀請", setupStepSendDescription: "透過首次發送預覽客戶體驗。", setupActionSend: "發送", setupStepComplete: "已完成", setupStepNumber: "第 {{step}} 步", loadingAnalytics: "正在載入分析資料" },
     settings: {
       fromNameDescription: "客戶在收件匣中會看到此項作為寄件人名稱。",
       fromNameHint: "顯示為寄件人",

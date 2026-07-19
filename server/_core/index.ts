@@ -318,13 +318,11 @@ async function startServer() {
     res.json({ received: true });
   });
 
-  // www → apex 301 redirect (www.phame.app → phame.app)
+  // Redirect only the known www hostname. Never derive the redirect target or
+  // scheme from request headers because both can be attacker-controlled.
   app.use((req, res, next) => {
-    const host = req.headers.host || "";
-    if (host.startsWith("www.")) {
-      const apexHost = host.slice(4); // strip "www."
-      const proto = req.headers["x-forwarded-proto"] || req.protocol || "https";
-      return res.redirect(301, `${proto}://${apexHost}${req.originalUrl}`);
+    if (req.hostname.toLowerCase() === "www.getphame.app") {
+      return res.redirect(301, `https://getphame.app${req.originalUrl}`);
     }
     next();
   });

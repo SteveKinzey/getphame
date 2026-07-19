@@ -1,10 +1,10 @@
 // Phame — Home Dashboard
 // Shows stats, SMTP connection status, and quick-send CTA
 
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X, Eye, MousePointerClick, ShieldCheck, AlertTriangle, CreditCard, Gift, Users } from "lucide-react";
+import { Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X, ShieldCheck, AlertTriangle, CreditCard, Gift, Users } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import OnboardingGuide from "@/components/OnboardingGuide";
@@ -17,6 +17,11 @@ import { getEffectivePlan } from "@shared/plans";
 import LandingBrandLink from "@/components/LandingBrandLink";
 import HomeInstallBanner from "@/components/HomeInstallBanner";
 import { getPwaPlatform, shareGetPhame } from "@/lib/pwaShare";
+import DeferredDashboardSection from "@/components/dashboard/DeferredDashboardSection";
+import SetupProgressCard from "@/components/dashboard/SetupProgressCard";
+
+const TrackingSummaryCard = lazy(() => import("@/components/dashboard/TrackingSummaryCard"));
+const PlatformBreakdownChart = lazy(() => import("@/components/dashboard/PlatformBreakdownChart"));
 
 const LOGO_URL = "https://assets.getphame.app/getphame-logo.svg";
 const HERO_IMG = "https://assets.getphame.app/getphame-logo.svg";
@@ -92,7 +97,7 @@ function ReferralRewardsCard() {
           <button
             onClick={() => {
               const text = encodeURIComponent(t("referralRewards.shareMessage", { url: shareUrl }));
-              window.open(`https://wa.me/?text=${text}`, '_blank');
+              window.open(`https://wa.me/?text=${text}`, "_blank", "noopener,noreferrer");
             }}
             className="flex flex-col items-center gap-1 rounded-xl py-2.5 px-2 transition-opacity active:opacity-70"
             style={{ background: "oklch(0.93 0.08 145)" }}
@@ -106,7 +111,7 @@ function ReferralRewardsCard() {
           <button
             onClick={() => {
               const text = encodeURIComponent(t("referralRewards.shareMessage", { url: shareUrl }));
-              window.open(`sms:?&body=${text}`, '_blank');
+              window.location.assign(`sms:?&body=${text}`);
             }}
             className="flex flex-col items-center gap-1 rounded-xl py-2.5 px-2 transition-opacity active:opacity-70"
             style={{ background: "oklch(0.93 0.06 220)" }}
@@ -273,61 +278,6 @@ function formatRelativeTime(date: Date, t: (key: string, opts?: Record<string, u
   if (diffHours < 24) return t("relativeTime.hoursAgo", { diffHours });
   if (diffDays < 7) return t("relativeTime.daysAgo", { diffDays });
   return format(date, "MMM d");
-}
-
-function TrackingSummaryCard() {
-  const { t } = useTranslation("translation");
-  const { isAuthenticated } = useAuth();
-  const { data: overallStats, isLoading } = trpc.tracking.overallStats.useQuery(undefined, {
-    enabled: isAuthenticated,
-  });
-
-  // Don't render until we have data and there's at least one sent email
-  if (isLoading || !overallStats || overallStats.totalSent === 0) return null;
-
-  const { totalSent, uniqueOpens, uniqueClicks, openRate, clickRate } = overallStats;
-
-  return (
-    <div className="bg-white rounded-2xl p-4 shadow-sm">
-      <div className="flex items-center gap-2 mb-3">
-        <TrendingUp size={16} className="rr-text-navy" />
-        <h3
-          className="text-sm font-black rr-text-navy"
-        >
-          {t("trackingSummaryCard.title")}
-        </h3>
-      </div>
-      <div className="grid grid-cols-3 gap-3">
-        {/* Sent */}
-        <div className="flex flex-col items-center rounded-xl py-3 px-2 rr-bg-white-card">
-          <Send size={14} style={{ color: "oklch(0.50 0.10 260)", marginBottom: 4 }} />
-          <span className="text-xl font-black rr-text-navy">
-            {totalSent}
-          </span>
-          <span className="text-sm font-semibold rr-text-navy-mid">{t("trackingSummaryCard.sent")}</span>
-        </div>
-        {/* Open Rate */}
-        <div className="flex flex-col items-center rounded-xl py-3 px-2" style={{ background: "oklch(0.95 0.05 220)" }}>
-          <Eye size={14} style={{ color: "oklch(0.45 0.15 220)", marginBottom: 4 }} />
-          <span className="text-xl font-black rr-text-navy">
-            {openRate}%
-          </span>
-          <span className="text-xs" style={{ color: "oklch(0.50 0.08 220)" }}>{t("trackingSummaryCard.openRate")}</span>
-        </div>
-        {/* Click Rate */}
-        <div className="flex flex-col items-center rounded-xl py-3 px-2" style={{ background: "oklch(0.96 0.06 80)" }}>
-          <MousePointerClick size={14} style={{ color: "oklch(0.55 0.18 80)", marginBottom: 4 }} />
-          <span className="text-xl font-black rr-text-navy">
-            {clickRate}%
-          </span>
-          <span className="text-xs" style={{ color: "oklch(0.55 0.12 80)" }}>{t("trackingSummaryCard.clickRate")}</span>
-        </div>
-      </div>
-      <p className="text-xs mt-2.5 text-center rr-text-navy-faint">
-        {t("trackingSummaryCard.summary", { uniqueOpens, uniqueClicks, totalSent })}
-      </p>
-    </div>
-  );
 }
 
 export default function HomePage() {
@@ -661,50 +611,8 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* ── Setup nudges ─────────────────────────────────────────────────── */}
-        {(!smtpConnected || !profileComplete) && (
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <p
-              className="text-sm font-black mb-3 rr-text-navy"
-            >
-              {t("homePage.completeSetup", { defaultValue: "Complete your setup" })}
-            </p>
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center gap-3">
-                {profileComplete ? (
-                  <CheckCircle2 size={16} className="rr-text-green" />
-                ) : (
-                  <AlertCircle size={16} style={{ color: "oklch(0.65 0.18 80)" }} />
-                )}
-                <span className="text-sm" style={{ color: profileComplete ? "oklch(0.45 0.10 145)" : "oklch(0.40 0.04 260)" }}>
-                  {profileComplete
-                    ? t("homePage.profileComplete", { defaultValue: "Business profile complete" })
-                    : t("homePage.profileIncomplete", { defaultValue: "Business profile — add your business name & review link" })}
-                </span>
-              </div>
-              <div className="flex items-center gap-3">
-                {smtpConnected ? (
-                  <CheckCircle2 size={16} className="rr-text-green" />
-                ) : (
-                  <AlertCircle size={16} style={{ color: "oklch(0.65 0.18 80)" }} />
-                )}
-                <span className="text-sm" style={{ color: smtpConnected ? "oklch(0.45 0.10 145)" : "oklch(0.40 0.04 260)" }}>
-                  {smtpConnected
-                    ? t("homePage.emailConnected", { defaultValue: `Email connected (${smtpStatus?.email})`, email: smtpStatus?.email })
-                    : t("homePage.emailNotConnected", { defaultValue: "Email — connect your email account" })}
-                </span>
-              </div>
-            </div>
-            {(!smtpConnected || !profileComplete) && (
-              <button
-                onClick={() => navigate("/settings")}
-                className="mt-3 w-full py-2.5 rounded-xl text-sm font-black rr-bg-navy rr-text-gold"
-              >
-                {t("homePage.goToSettings", { defaultValue: "Go to Settings →" })}
-              </button>
-            )}
-          </div>
-        )}
+        {/* ── Setup progress ────────────────────────────────────────────────── */}
+        {!allDone && <SetupProgressCard status={onboardingStatus} onNavigate={navigate} />}
 
         {/* ── Quick Send CTA ───────────────────────────────────────────────── */}
         <button
@@ -906,53 +814,17 @@ export default function HomePage() {
 
         {/* Platform Breakdown */}
         {stats?.platformBreakdown && stats.platformBreakdown.filter((p) => p.platform !== "unknown").length > 0 && (
-          <div className="bg-white rounded-2xl p-4 shadow-sm">
-            <h3 className="text-sm font-black mb-3 rr-text-navy">
-              {t("homePage.requestsByPlatform", { defaultValue: "Requests by Platform" })}
-            </h3>
-            <div className="flex flex-col gap-2">
-              {stats.platformBreakdown
-                .filter((p) => p.platform !== "unknown")
-                .map((p) => {
-                  const total = stats.total || 1;
-                  const pct = Math.round((p.count / total) * 100);
-                  const platformLabel = p.label ?? p.platform.charAt(0).toUpperCase() + p.platform.slice(1);
-                  const colors: Record<string, string> = {
-                    google: "oklch(0.55 0.20 145)",
-                    yelp: "oklch(0.55 0.22 30)",
-                    tripadvisor: "oklch(0.50 0.18 155)",
-                    bing: "oklch(0.50 0.18 260)",
-                    facebook: "oklch(0.45 0.18 250)",
-                    other: "oklch(0.55 0.10 280)",
-                  };
-                  const barColor = colors[p.platform] ?? colors.other;
-                  return (
-                    <div key={p.platformId ?? p.platform}>
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs font-bold" style={{ color: "oklch(0.35 0.05 260)" }}>
-                          {platformLabel}
-                        </span>
-                        <span className="text-xs font-black rr-text-navy">
-                          {p.count} ({pct}%)
-                        </span>
-                      </div>
-                      <div className="w-full h-2 rounded-full" style={{ background: "oklch(0.94 0.01 260)" }}>
-                        <div
-                          className="h-2 rounded-full transition-all"
-                          style={{ width: `${pct}%`, background: barColor }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-            </div>
-          </div>
+          <DeferredDashboardSection loadingLabel={t("homePage.loadingAnalytics")} minHeightClassName="min-h-[184px]">
+            <PlatformBreakdownChart platformBreakdown={stats.platformBreakdown} total={stats.total} />
+          </DeferredDashboardSection>
         )}
       </div>{/* end left column */}
 
       {/* ── Right column (sidebar widgets) — stacks below on mobile ── */}
       <div className="flex flex-col gap-4">
-        <TrackingSummaryCard />
+        <DeferredDashboardSection loadingLabel={t("homePage.loadingAnalytics")}>
+          <TrackingSummaryCard />
+        </DeferredDashboardSection>
         <ReferralRewardsCard />
         <ShareReferralCard />
       </div>{/* end right column */}
