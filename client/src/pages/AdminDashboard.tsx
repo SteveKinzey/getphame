@@ -89,6 +89,10 @@ export default function AdminDashboard() {
   );
 
   const operationsExport = trpc.admin.operationsAnalyticsExport.useQuery(undefined, { enabled: false });
+  const supportMetricsExport = trpc.support.exportMetricsCsv.useQuery(
+    { periodDays: supportReportingPeriod },
+    { enabled: false },
+  );
 
   const healthTrendData = useMemo(() => {
     if (!systemHealthTrend) return [];
@@ -163,6 +167,25 @@ export default function AdminDashboard() {
       toast.success(`Downloaded ${result.data.rowCount} analytics rows.`);
     } catch (exportError) {
       toast.error(exportError instanceof Error ? exportError.message : "Analytics export failed.");
+    }
+  };
+
+  const downloadSupportMetricsCsv = async () => {
+    try {
+      const result = await supportMetricsExport.refetch();
+      if (!result.data) throw new Error("The support SLA export could not be generated.");
+      const blob = new Blob([result.data.csv], { type: result.data.mimeType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = result.data.filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      toast.success(`Downloaded ${result.data.rowCount} support SLA metrics.`);
+    } catch (exportError) {
+      toast.error(exportError instanceof Error ? exportError.message : "Support SLA export failed.");
     }
   };
 
@@ -534,14 +557,26 @@ export default function AdminDashboard() {
                   <h2 id="admin-support-reporting-title" className="mt-1 text-xl font-semibold rr-text-navy">Response and resolution reporting</h2>
                   <p className="mt-1 text-sm rr-text-navy-muted">First response begins at the first administrator update or private resolution note.</p>
                 </div>
-                <label className="flex items-center gap-2 text-sm font-black rr-text-navy">
-                  <span className="sr-only">Reporting period</span>
-                  <select value={supportReportingPeriod} onChange={(event) => setSupportReportingPeriod(event.target.value as "7" | "30" | "90")} className="min-h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-black rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
-                    <option value="7">Last 7 days</option>
-                    <option value="30">Last 30 days</option>
-                    <option value="90">Last 90 days</option>
-                  </select>
-                </label>
+                <div className="flex flex-col gap-2 sm:items-end">
+                  <label className="flex items-center gap-2 text-sm font-black rr-text-navy">
+                    <span className="sr-only">Reporting period</span>
+                    <select value={supportReportingPeriod} onChange={(event) => setSupportReportingPeriod(event.target.value as "7" | "30" | "90")} className="min-h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-black rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
+                      <option value="7">Last 7 days</option>
+                      <option value="30">Last 30 days</option>
+                      <option value="90">Last 90 days</option>
+                    </select>
+                  </label>
+                  <button
+                    type="button"
+                    data-testid="admin-support-sla-csv-export"
+                    onClick={downloadSupportMetricsCsv}
+                    disabled={supportMetricsExport.isFetching}
+                    className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl rr-bg-navy px-3 text-sm font-black text-white transition active:scale-[0.97] disabled:cursor-wait disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2"
+                  >
+                    {supportMetricsExport.isFetching ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
+                    {supportMetricsExport.isFetching ? "Preparing CSV…" : "Export SLA CSV"}
+                  </button>
+                </div>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 <SupportMetricCard

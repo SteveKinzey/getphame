@@ -8,8 +8,14 @@ import {
   MAX_SUPPORT_ATTACHMENT_BYTES,
   MAX_SUPPORT_INTERNAL_NOTE_CHARS,
   MAX_SUPPORT_INTERNAL_NOTE_MENTIONS,
+  MAX_SUPPORT_SAVED_QUEUE_VIEW_NAME_CHARS,
+  MAX_SUPPORT_SAVED_QUEUE_VIEWS,
+  normalizeSupportQueueViewName,
   renderSupportInternalNoteHtml,
   sanitizeSupportAttachmentFilename,
+  SUPPORT_QUEUE_ASSIGNEE_SCOPES,
+  SUPPORT_QUEUE_SLA_WINDOWS,
+  SUPPORT_QUEUE_SORTS,
   SUPPORT_SLA_DURATION_MS,
   SUPPORT_TICKET_ALERT_TYPES,
   SUPPORT_PRIORITIES,
@@ -55,7 +61,16 @@ describe("support screenshot intake", () => {
     expect(isSupportEscalation("high", "urgent")).toBe(true);
     expect(isSupportEscalation("urgent", "high")).toBe(false);
     expect(isSupportEscalation("normal", "normal")).toBe(false);
-    expect(SUPPORT_TICKET_ALERT_TYPES).toEqual(["assignment", "escalation", "mention"]);
+    expect(SUPPORT_TICKET_ALERT_TYPES).toEqual(["assignment", "escalation", "mention", "sla_breach"]);
+  });
+
+  it("limits saved queue views to canonical filters, sorting, and normalized owner-scoped names", () => {
+    expect(SUPPORT_QUEUE_ASSIGNEE_SCOPES).toEqual(["any", "unassigned", "specific"]);
+    expect(SUPPORT_QUEUE_SLA_WINDOWS).toEqual(["overdue", "next_4_hours", "next_24_hours"]);
+    expect(SUPPORT_QUEUE_SORTS).toEqual(["newest", "oldest", "priority", "assignee", "sla_soonest", "due_soonest"]);
+    expect(MAX_SUPPORT_SAVED_QUEUE_VIEWS).toBe(20);
+    expect(MAX_SUPPORT_SAVED_QUEUE_VIEW_NAME_CHARS).toBe(80);
+    expect(normalizeSupportQueueViewName("  Urgent   Unassigned  ")).toBe("urgent unassigned");
   });
 
   it("renders a deliberately small rich-note subset without accepting executable markup", () => {

@@ -458,3 +458,9 @@
 - [x] Add an administrator reporting contract and dashboard view for real average first-response time, resolution time, and ticket-volume metrics with explicit empty states.
 - [x] Enhance internal notes with accessible rich-text formatting and administrator mention suggestions, rendering only sanitized allowed markup.
 - [x] Add focused triage, timing-metric, rich-note, mention, reporting, authorization, and responsive UI regression coverage; validate and publish.
+
+- [x] Update and validate the reusable support-management skill with saved queue views, CSV reporting exports, and urgent SLA-breach alert patterns.
+- [x] Add durable administrator-owned saved queue views with validated filter and sorting contracts, safe uniqueness, and efficient listing indexes.
+- [x] Add protected saved-view CRUD, SLA performance CSV export, and recipient-scoped urgent-breach alert APIs without leaking private support data.
+- [x] Enhance the responsive ticket inbox and reporting dashboard with saved queue actions, CSV download, and accessible urgent SLA-breach highlights.
+- [x] Add focused saved-view, export, urgent-breach, authorization, alert-suppression, and responsive UI regressions; validate and publish.

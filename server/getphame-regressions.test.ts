@@ -832,6 +832,17 @@ describe("Get Phame regression contracts", () => {
     expect(adminDashboard).toContain("trpc.support.adminMetrics.useQuery");
     expect(adminDashboard).toContain("Average first response");
     expect(supportRouter).toContain("adminMetrics: adminProcedure");
+    expect(supportRouter).toContain("exportMetricsCsv: adminProcedure");
+    expect(supportRouter).toContain("savedViews: adminProcedure");
+    expect(supportRouter).toContain("saveView: adminProcedure");
+    expect(supportRouter).toContain("deleteView: adminProcedure");
+    expect(supportRouter).toContain("checkSlaBreach: adminProcedure");
+    expect(supportRouter).toContain('type: "sla_breach"');
+    expect(schema).toContain("supportSavedQueueViews");
+    expect(inbox).toContain("Saved queue views");
+    expect(inbox).toContain("data-sla-breached");
+    expect(ticketAlerts).toContain('alert.type === "sla_breach"');
+    expect(adminDashboard).toContain('data-testid="admin-support-sla-csv-export"');
     expect(supportRouter).toContain("firstRespondedAt");
     expect(supportRouter).toContain("mentionUserIds");
     expect(supportRouter).toContain("slaDeadline");

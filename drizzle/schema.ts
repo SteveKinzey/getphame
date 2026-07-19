@@ -32,7 +32,10 @@ export const authHealthTriggerEnum = pgEnum("auth_health_trigger", ["scheduled",
 export const supportTopicEnum = pgEnum("support_topic", ["billing", "onboarding", "technical"]);
 export const supportSubmissionStatusEnum = pgEnum("support_submission_status", ["open", "in_progress", "resolved"]);
 export const supportPriorityEnum = pgEnum("support_priority", ["low", "normal", "high", "urgent"]);
-export const supportTicketAlertTypeEnum = pgEnum("support_ticket_alert_type", ["assignment", "escalation", "mention"]);
+export const supportTicketAlertTypeEnum = pgEnum("support_ticket_alert_type", ["assignment", "escalation", "mention", "sla_breach"]);
+export const supportQueueAssigneeScopeEnum = pgEnum("support_queue_assignee_scope", ["any", "unassigned", "specific"]);
+export const supportQueueSlaWindowEnum = pgEnum("support_queue_sla_window", ["overdue", "next_4_hours", "next_24_hours"]);
+export const supportQueueSortEnum = pgEnum("support_queue_sort", ["newest", "oldest", "priority", "assignee", "sla_soonest", "due_soonest"]);
 
 // ─── Tables ───────────────────────────────────────────────────────────────────
 
@@ -576,6 +579,32 @@ export const supportTicketAlerts = pgTable("support_ticket_alerts", {
 
 export type SupportTicketAlert = typeof supportTicketAlerts.$inferSelect;
 export type InsertSupportTicketAlert = typeof supportTicketAlerts.$inferInsert;
+
+/**
+ * Administrator-owned saved support queue controls. Only validated filter and
+ * sort fields are persisted; customer or ticket content is never stored here.
+ */
+export const supportSavedQueueViews = pgTable("support_saved_queue_views", {
+  id: serial("id").primaryKey(),
+  ownerUserId: integer("owner_user_id").notNull(),
+  name: varchar("name", { length: 80 }).notNull(),
+  normalizedName: varchar("normalized_name", { length: 80 }).notNull(),
+  status: supportSubmissionStatusEnum("status"),
+  topic: supportTopicEnum("topic"),
+  priority: supportPriorityEnum("priority"),
+  assigneeScope: supportQueueAssigneeScopeEnum("assignee_scope").notNull().default("any"),
+  assigneeUserId: integer("assignee_user_id"),
+  slaWindow: supportQueueSlaWindowEnum("sla_window"),
+  sort: supportQueueSortEnum("sort").notNull().default("newest"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("support_saved_queue_views_owner_name_unique").on(table.ownerUserId, table.normalizedName),
+  index("support_saved_queue_views_owner_updated_idx").on(table.ownerUserId, table.updatedAt),
+]);
+
+export type SupportSavedQueueView = typeof supportSavedQueueViews.$inferSelect;
+export type InsertSupportSavedQueueView = typeof supportSavedQueueViews.$inferInsert;
 
 /**
  * Churn survey responses — one row per cancellation.

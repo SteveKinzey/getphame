@@ -7,8 +7,24 @@ export type SupportSubmissionStatus = (typeof SUPPORT_SUBMISSION_STATUSES)[numbe
 export const SUPPORT_PRIORITIES = ["low", "normal", "high", "urgent"] as const;
 export type SupportPriority = (typeof SUPPORT_PRIORITIES)[number];
 
-export const SUPPORT_TICKET_ALERT_TYPES = ["assignment", "escalation", "mention"] as const;
+export const SUPPORT_TICKET_ALERT_TYPES = ["assignment", "escalation", "mention", "sla_breach"] as const;
 export type SupportTicketAlertType = (typeof SUPPORT_TICKET_ALERT_TYPES)[number];
+
+export const SUPPORT_QUEUE_ASSIGNEE_SCOPES = ["any", "unassigned", "specific"] as const;
+export type SupportQueueAssigneeScope = (typeof SUPPORT_QUEUE_ASSIGNEE_SCOPES)[number];
+
+export const SUPPORT_QUEUE_SLA_WINDOWS = ["overdue", "next_4_hours", "next_24_hours"] as const;
+export type SupportQueueSlaWindow = (typeof SUPPORT_QUEUE_SLA_WINDOWS)[number];
+
+export const SUPPORT_QUEUE_SORTS = ["newest", "oldest", "priority", "assignee", "sla_soonest", "due_soonest"] as const;
+export type SupportQueueSort = (typeof SUPPORT_QUEUE_SORTS)[number];
+
+export const MAX_SUPPORT_SAVED_QUEUE_VIEWS = 20;
+export const MAX_SUPPORT_SAVED_QUEUE_VIEW_NAME_CHARS = 80;
+
+export function normalizeSupportQueueViewName(value: string): string {
+  return value.trim().replace(/\s+/g, " ").toLocaleLowerCase();
+}
 
 export const SUPPORT_SLA_DURATION_MS: Record<SupportPriority, number> = {
   low: 72 * 60 * 60 * 1000,

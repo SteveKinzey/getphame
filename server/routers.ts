@@ -53,13 +53,19 @@ import {
   MAX_SUPPORT_DUE_DATE_FUTURE_DAYS,
   MAX_SUPPORT_INTERNAL_NOTE_CHARS,
   MAX_SUPPORT_INTERNAL_NOTE_MENTIONS,
+  MAX_SUPPORT_SAVED_QUEUE_VIEW_NAME_CHARS,
+  MAX_SUPPORT_SAVED_QUEUE_VIEWS,
   isValidSupportScreenshot,
   MAX_SUPPORT_ATTACHMENT_BYTES,
   getSupportInternalNotePlainText,
   renderSupportInternalNoteHtml,
+  normalizeSupportQueueViewName,
   sanitizeSupportAttachmentFilename,
   SUPPORT_ATTACHMENT_MIME_TYPES,
   SUPPORT_PRIORITIES,
+  SUPPORT_QUEUE_ASSIGNEE_SCOPES,
+  SUPPORT_QUEUE_SLA_WINDOWS,
+  SUPPORT_QUEUE_SORTS,
   SUPPORT_SUBMISSION_STATUSES,
   SUPPORT_TICKET_ALERT_DEDUP_WINDOW_MS,
   SUPPORT_TICKET_ALERT_TYPES,
@@ -79,7 +85,7 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads, koalendarBookings, koalendarConnections, supportInternalNoteMentions, supportInternalNotes, supportSubmissions, supportTicketAlerts } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads, koalendarBookings, koalendarConnections, supportInternalNoteMentions, supportInternalNotes, supportSavedQueueViews, supportSubmissions, supportTicketAlerts } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
 import { PWA_EVENT_NAMES, PWA_EVENT_SOURCE, summarizePwaEvents, toPwaEventPage } from "./pwaAnalytics";
 import { eq, like, or, inArray, desc, asc, isNotNull, isNull, and, sql, gte, lte, ne, count } from "drizzle-orm";
@@ -111,7 +117,7 @@ import {
 } from "./reminders";
 import { getReminderTimingPerformance } from "./reminderPerformance";
 import { getOperationsAlertState, getSystemHealthTrend } from "./systemHealth";
-import { buildAdminOperationsAnalyticsExport } from "./adminOperationsExport";
+import { buildAdminOperationsAnalyticsExport, serializeAdminOperationsCsv } from "./adminOperationsExport";
 import {
   createAccessCode,
   listAccessCodes,
@@ -232,6 +238,8 @@ type SupportTicketAlertInput = {
   recipientUserIds: number[];
   actorUserId: number;
   type: (typeof SUPPORT_TICKET_ALERT_TYPES)[number];
+  /** For SLA breaches, keep one alert per recipient for the active target window. */
+  dedupSince?: Date;
 };
 
 /**
@@ -251,13 +259,20 @@ async function queueSupportTicketAlerts(
   for (const recipientUserId of recipientUserIds) {
     const [existingAlert] = await db.select({ id: supportTicketAlerts.id })
       .from(supportTicketAlerts)
-      .where(and(
-        eq(supportTicketAlerts.ticketId, input.ticketId),
-        eq(supportTicketAlerts.recipientUserId, recipientUserId),
-        eq(supportTicketAlerts.type, input.type),
-        isNull(supportTicketAlerts.readAt),
-        gte(supportTicketAlerts.createdAt, createdAfter),
-      ))
+      .where(input.type === "sla_breach"
+        ? and(
+          eq(supportTicketAlerts.ticketId, input.ticketId),
+          eq(supportTicketAlerts.recipientUserId, recipientUserId),
+          eq(supportTicketAlerts.type, input.type),
+          gte(supportTicketAlerts.createdAt, input.dedupSince ?? createdAfter),
+        )
+        : and(
+          eq(supportTicketAlerts.ticketId, input.ticketId),
+          eq(supportTicketAlerts.recipientUserId, recipientUserId),
+          eq(supportTicketAlerts.type, input.type),
+          isNull(supportTicketAlerts.readAt),
+          gte(supportTicketAlerts.createdAt, createdAfter),
+        ))
       .limit(1);
     if (!existingAlert) recipientsWithoutRecentUnreadAlert.push(recipientUserId);
   }
@@ -285,6 +300,55 @@ async function recordSupportFirstResponse(
       eq(supportSubmissions.id, ticketId),
       isNull(supportSubmissions.firstRespondedAt),
     ));
+}
+
+type SupportMetricsPeriod = "7" | "30" | "90";
+type SupportMetricsSnapshot = {
+  periodDays: number;
+  periodStart: Date;
+  generatedAt: Date;
+  ticketsCreated: number;
+  resolvedTickets: number;
+  openTickets: number;
+  firstResponseCount: number;
+  avgFirstResponseMs: number | null;
+  avgResolutionMs: number | null;
+  overdueTickets: number;
+};
+
+async function getSupportMetricsSnapshot(
+  db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
+  period: SupportMetricsPeriod = "30",
+): Promise<SupportMetricsSnapshot> {
+  const periodDays = Number(period);
+  const generatedAt = new Date();
+  const periodStart = new Date(generatedAt.getTime() - periodDays * 24 * 60 * 60 * 1000);
+  const [metrics] = await db.select({
+    ticketsCreated: count(supportSubmissions.id),
+    resolvedTickets: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.resolvedAt} IS NOT NULL THEN 1 ELSE 0 END), 0)`,
+    openTickets: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.status} <> 'resolved' THEN 1 ELSE 0 END), 0)`,
+    firstResponseCount: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.firstRespondedAt} IS NOT NULL THEN 1 ELSE 0 END), 0)`,
+    avgFirstResponseMs: sql<number | null>`AVG(CASE WHEN ${supportSubmissions.firstRespondedAt} IS NOT NULL THEN TIMESTAMPDIFF(SECOND, ${supportSubmissions.createdAt}, ${supportSubmissions.firstRespondedAt}) * 1000 ELSE NULL END)`,
+    avgResolutionMs: sql<number | null>`AVG(CASE WHEN ${supportSubmissions.resolvedAt} IS NOT NULL THEN TIMESTAMPDIFF(SECOND, ${supportSubmissions.createdAt}, ${supportSubmissions.resolvedAt}) * 1000 ELSE NULL END)`,
+    overdueTickets: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.status} <> 'resolved' AND ${supportSubmissions.slaTargetAt} IS NOT NULL AND ${supportSubmissions.slaTargetAt} < ${generatedAt} THEN 1 ELSE 0 END), 0)`,
+  })
+    .from(supportSubmissions)
+    .where(gte(supportSubmissions.createdAt, periodStart));
+
+  const asCount = (value: unknown) => Number(value ?? 0);
+  const asDuration = (value: unknown) => value === null || value === undefined ? null : Math.round(Number(value));
+  return {
+    periodDays,
+    periodStart,
+    generatedAt,
+    ticketsCreated: asCount(metrics?.ticketsCreated),
+    resolvedTickets: asCount(metrics?.resolvedTickets),
+    openTickets: asCount(metrics?.openTickets),
+    firstResponseCount: asCount(metrics?.firstResponseCount),
+    avgFirstResponseMs: asDuration(metrics?.avgFirstResponseMs),
+    avgResolutionMs: asDuration(metrics?.avgResolutionMs),
+    overdueTickets: asCount(metrics?.overdueTickets),
+  };
 }
 
 export const appRouter = router({
@@ -3620,21 +3684,34 @@ export const appRouter = router({
         status: z.enum(SUPPORT_SUBMISSION_STATUSES).optional(),
         topic: z.enum(SUPPORT_TOPICS).optional(),
         priority: z.enum(SUPPORT_PRIORITIES).optional(),
+        assigneeScope: z.enum(SUPPORT_QUEUE_ASSIGNEE_SCOPES).optional(),
         assigneeUserId: z.union([z.literal("unassigned"), z.number().int().positive()]).optional(),
+        slaWindow: z.enum(SUPPORT_QUEUE_SLA_WINDOWS).optional(),
+        // Retained while existing inbox clients migrate to the canonical slaWindow field.
         slaDeadline: z.enum(["overdue", "next_24h"]).optional(),
-        sort: z.enum(["newest", "oldest", "priority", "sla_soonest", "due_soonest"]).optional(),
+        sort: z.enum(SUPPORT_QUEUE_SORTS).optional(),
       }).optional())
       .query(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
 
         const now = new Date();
+        const next4Hours = new Date(now.getTime() + 4 * 60 * 60 * 1000);
         const next24Hours = new Date(now.getTime() + 24 * 60 * 60 * 1000);
         const selectedSort = input?.sort ?? "newest";
+        const selectedAssigneeScope = input?.assigneeScope
+          ?? (input?.assigneeUserId === "unassigned" ? "unassigned" : typeof input?.assigneeUserId === "number" ? "specific" : "any");
+        const selectedSlaWindow = input?.slaWindow
+          ?? (input?.slaDeadline === "overdue" ? "overdue" : input?.slaDeadline === "next_24h" ? "next_24_hours" : undefined);
+        if (selectedAssigneeScope === "specific" && typeof input?.assigneeUserId !== "number") {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Choose an administrator for a specific-assignee queue filter." });
+        }
         const orderBy = selectedSort === "oldest"
           ? [asc(supportSubmissions.createdAt), asc(supportSubmissions.id)]
           : selectedSort === "priority"
             ? [desc(sql`CASE ${supportSubmissions.priority} WHEN 'urgent' THEN 4 WHEN 'high' THEN 3 WHEN 'normal' THEN 2 ELSE 1 END`), desc(supportSubmissions.createdAt)]
+            : selectedSort === "assignee"
+              ? [asc(sql`CASE WHEN ${supportSubmissions.assigneeUserId} IS NULL THEN 1 ELSE 0 END`), asc(users.name), desc(supportSubmissions.createdAt)]
             : selectedSort === "sla_soonest"
               ? [asc(sql`CASE WHEN ${supportSubmissions.slaTargetAt} IS NULL THEN 1 ELSE 0 END`), asc(supportSubmissions.slaTargetAt), desc(supportSubmissions.createdAt)]
               : selectedSort === "due_soonest"
@@ -3671,18 +3748,25 @@ export const appRouter = router({
             input?.status ? eq(supportSubmissions.status, input.status) : sql`1 = 1`,
             input?.topic ? eq(supportSubmissions.topic, input.topic) : sql`1 = 1`,
             input?.priority ? eq(supportSubmissions.priority, input.priority) : sql`1 = 1`,
-            input?.assigneeUserId === "unassigned"
+            selectedAssigneeScope === "unassigned"
               ? isNull(supportSubmissions.assigneeUserId)
-              : typeof input?.assigneeUserId === "number"
+              : selectedAssigneeScope === "specific" && typeof input?.assigneeUserId === "number"
                 ? eq(supportSubmissions.assigneeUserId, input.assigneeUserId)
                 : sql`1 = 1`,
-            input?.slaDeadline === "overdue"
+            selectedSlaWindow === "overdue"
               ? and(
                 isNotNull(supportSubmissions.slaTargetAt),
                 lte(supportSubmissions.slaTargetAt, now),
                 ne(supportSubmissions.status, "resolved"),
               )
-              : input?.slaDeadline === "next_24h"
+              : selectedSlaWindow === "next_4_hours"
+                ? and(
+                  isNotNull(supportSubmissions.slaTargetAt),
+                  gte(supportSubmissions.slaTargetAt, now),
+                  lte(supportSubmissions.slaTargetAt, next4Hours),
+                  ne(supportSubmissions.status, "resolved"),
+                )
+                : selectedSlaWindow === "next_24_hours"
                 ? and(
                   isNotNull(supportSubmissions.slaTargetAt),
                   gte(supportSubmissions.slaTargetAt, now),
@@ -3707,36 +3791,171 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support reporting is unavailable." });
 
-        const periodDays = Number(input?.periodDays ?? "30");
-        const now = new Date();
-        const periodStart = new Date(now.getTime() - periodDays * 24 * 60 * 60 * 1000);
-        const [metrics] = await db.select({
-          ticketsCreated: count(supportSubmissions.id),
-          resolvedTickets: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.resolvedAt} IS NOT NULL THEN 1 ELSE 0 END), 0)`,
-          openTickets: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.status} <> 'resolved' THEN 1 ELSE 0 END), 0)`,
-          firstResponseCount: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.firstRespondedAt} IS NOT NULL THEN 1 ELSE 0 END), 0)`,
-          avgFirstResponseMs: sql<number | null>`AVG(CASE WHEN ${supportSubmissions.firstRespondedAt} IS NOT NULL THEN TIMESTAMPDIFF(SECOND, ${supportSubmissions.createdAt}, ${supportSubmissions.firstRespondedAt}) * 1000 ELSE NULL END)`,
-          avgResolutionMs: sql<number | null>`AVG(CASE WHEN ${supportSubmissions.resolvedAt} IS NOT NULL THEN TIMESTAMPDIFF(SECOND, ${supportSubmissions.createdAt}, ${supportSubmissions.resolvedAt}) * 1000 ELSE NULL END)`,
-          overdueTickets: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.status} <> 'resolved' AND ${supportSubmissions.slaTargetAt} IS NOT NULL AND ${supportSubmissions.slaTargetAt} < ${now} THEN 1 ELSE 0 END), 0)`,
-        })
-          .from(supportSubmissions)
-          .where(gte(supportSubmissions.createdAt, periodStart));
+        return getSupportMetricsSnapshot(db, input?.periodDays ?? "30");
+      }),
+    exportMetricsCsv: adminProcedure
+      .input(z.object({ periodDays: z.enum(["7", "30", "90"]).optional() }).optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support reporting is unavailable." });
 
-        const asCount = (value: unknown) => Number(value ?? 0);
-        const asDuration = (value: unknown) => value === null || value === undefined ? null : Math.round(Number(value));
+        const metrics = await getSupportMetricsSnapshot(db, input?.periodDays ?? "30");
+        const period = `last_${metrics.periodDays}_days`;
+        const rows = [
+          { section: "metadata", metric: "generated_at", period, value: metrics.generatedAt.toISOString(), unit: "iso_8601", details: "Get Phame support SLA performance export" },
+          { section: "support_sla", metric: "tickets_created", period, value: metrics.ticketsCreated, unit: "tickets", details: "Tickets created during the selected period" },
+          { section: "support_sla", metric: "tickets_resolved", period, value: metrics.resolvedTickets, unit: "tickets", details: "Tickets with a recorded resolution during the selected period" },
+          { section: "support_sla", metric: "tickets_open", period, value: metrics.openTickets, unit: "tickets", details: "Created-period tickets not currently resolved" },
+          { section: "support_sla", metric: "first_response_samples", period, value: metrics.firstResponseCount, unit: "tickets", details: "Tickets with a recorded first response" },
+          { section: "support_sla", metric: "average_first_response", period, value: metrics.avgFirstResponseMs ?? "unavailable", unit: "milliseconds", details: "Average elapsed time from creation to first response" },
+          { section: "support_sla", metric: "average_resolution", period, value: metrics.avgResolutionMs ?? "unavailable", unit: "milliseconds", details: "Average elapsed time from creation to resolution" },
+          { section: "support_sla", metric: "overdue_tickets", period, value: metrics.overdueTickets, unit: "tickets", details: "Open tickets with an SLA target before export generation" },
+        ];
+        const dateStamp = metrics.generatedAt.toISOString().slice(0, 10);
         return {
-          periodDays,
-          periodStart,
-          generatedAt: now,
-          ticketsCreated: asCount(metrics?.ticketsCreated),
-          resolvedTickets: asCount(metrics?.resolvedTickets),
-          openTickets: asCount(metrics?.openTickets),
-          firstResponseCount: asCount(metrics?.firstResponseCount),
-          avgFirstResponseMs: asDuration(metrics?.avgFirstResponseMs),
-          avgResolutionMs: asDuration(metrics?.avgResolutionMs),
-          overdueTickets: asCount(metrics?.overdueTickets),
+          filename: `getphame-support-sla-${metrics.periodDays}d-${dateStamp}.csv`,
+          csv: serializeAdminOperationsCsv(rows),
+          mimeType: "text/csv;charset=utf-8",
+          generatedAt: metrics.generatedAt,
+          rowCount: rows.length,
         };
       }),
+    savedViews: adminProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Saved support queue views are unavailable." });
+
+      return db.select({
+        id: supportSavedQueueViews.id,
+        name: supportSavedQueueViews.name,
+        status: supportSavedQueueViews.status,
+        topic: supportSavedQueueViews.topic,
+        priority: supportSavedQueueViews.priority,
+        assigneeScope: supportSavedQueueViews.assigneeScope,
+        assigneeUserId: supportSavedQueueViews.assigneeUserId,
+        slaWindow: supportSavedQueueViews.slaWindow,
+        sort: supportSavedQueueViews.sort,
+        createdAt: supportSavedQueueViews.createdAt,
+        updatedAt: supportSavedQueueViews.updatedAt,
+      })
+        .from(supportSavedQueueViews)
+        .where(eq(supportSavedQueueViews.ownerUserId, ctx.user.id))
+        .orderBy(desc(supportSavedQueueViews.updatedAt), desc(supportSavedQueueViews.id))
+        .limit(MAX_SUPPORT_SAVED_QUEUE_VIEWS);
+    }),
+    saveView: adminProcedure
+      .input(z.object({
+        name: z.string().trim().min(1).max(MAX_SUPPORT_SAVED_QUEUE_VIEW_NAME_CHARS),
+        status: z.enum(SUPPORT_SUBMISSION_STATUSES).nullable().optional(),
+        topic: z.enum(SUPPORT_TOPICS).nullable().optional(),
+        priority: z.enum(SUPPORT_PRIORITIES).nullable().optional(),
+        assigneeScope: z.enum(SUPPORT_QUEUE_ASSIGNEE_SCOPES).default("any"),
+        assigneeUserId: z.number().int().positive().nullable().optional(),
+        slaWindow: z.enum(SUPPORT_QUEUE_SLA_WINDOWS).nullable().optional(),
+        sort: z.enum(SUPPORT_QUEUE_SORTS).default("newest"),
+      }).superRefine((value, issueContext) => {
+        if (value.assigneeScope === "specific" && value.assigneeUserId === null) {
+          issueContext.addIssue({ code: z.ZodIssueCode.custom, path: ["assigneeUserId"], message: "Choose an administrator for a specific-assignee view." });
+        }
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Saved support queue views are unavailable." });
+
+        const name = input.name.replace(/\s+/g, " ").trim();
+        const normalizedName = normalizeSupportQueueViewName(name);
+        if (!normalizedName) throw new TRPCError({ code: "BAD_REQUEST", message: "Enter a name for this queue view." });
+
+        const assigneeUserId = input.assigneeScope === "specific" ? input.assigneeUserId ?? null : null;
+        if (assigneeUserId !== null) {
+          const [assignee] = await db.select({ id: users.id })
+            .from(users)
+            .where(and(eq(users.id, assigneeUserId), eq(users.role, "admin")))
+            .limit(1);
+          if (!assignee) throw new TRPCError({ code: "BAD_REQUEST", message: "Choose an active administrator for this queue view." });
+        }
+
+        const [existing] = await db.select({ id: supportSavedQueueViews.id })
+          .from(supportSavedQueueViews)
+          .where(and(
+            eq(supportSavedQueueViews.ownerUserId, ctx.user.id),
+            eq(supportSavedQueueViews.normalizedName, normalizedName),
+          ))
+          .limit(1);
+        const viewFields = {
+          name,
+          normalizedName,
+          status: input.status ?? null,
+          topic: input.topic ?? null,
+          priority: input.priority ?? null,
+          assigneeScope: input.assigneeScope,
+          assigneeUserId,
+          slaWindow: input.slaWindow ?? null,
+          sort: input.sort,
+          updatedAt: new Date(),
+        };
+        if (existing) {
+          await db.update(supportSavedQueueViews)
+            .set(viewFields)
+            .where(and(eq(supportSavedQueueViews.id, existing.id), eq(supportSavedQueueViews.ownerUserId, ctx.user.id)));
+          return { id: existing.id, created: false as const };
+        }
+
+        const [ownedCount] = await db.select({ value: count(supportSavedQueueViews.id) })
+          .from(supportSavedQueueViews)
+          .where(eq(supportSavedQueueViews.ownerUserId, ctx.user.id));
+        if (Number(ownedCount?.value ?? 0) >= MAX_SUPPORT_SAVED_QUEUE_VIEWS) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: `You can save up to ${MAX_SUPPORT_SAVED_QUEUE_VIEWS} support queue views.` });
+        }
+        const inserted = await db.insert(supportSavedQueueViews).values({
+          ownerUserId: ctx.user.id,
+          ...viewFields,
+        }).$returningId();
+        const id = inserted[0]?.id;
+        if (!id) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Could not save this queue view." });
+        return { id, created: true as const };
+      }),
+    deleteView: adminProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Saved support queue views are unavailable." });
+
+        await db.delete(supportSavedQueueViews)
+          .where(and(eq(supportSavedQueueViews.id, input.id), eq(supportSavedQueueViews.ownerUserId, ctx.user.id)));
+        return { ok: true as const };
+      }),
+    checkSlaBreach: adminProcedure.mutation(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support alerts are unavailable." });
+
+      const now = new Date();
+      const breachedTickets = await db.select({
+        id: supportSubmissions.id,
+        assigneeUserId: supportSubmissions.assigneeUserId,
+        slaTargetAt: supportSubmissions.slaTargetAt,
+      })
+        .from(supportSubmissions)
+        .where(and(
+          eq(supportSubmissions.priority, "urgent"),
+          ne(supportSubmissions.status, "resolved"),
+          isNotNull(supportSubmissions.slaTargetAt),
+          lte(supportSubmissions.slaTargetAt, now),
+        ));
+      const admins = await db.select({ id: users.id }).from(users).where(eq(users.role, "admin"));
+      let alertedTicketCount = 0;
+      for (const ticket of breachedTickets) {
+        const recipientUserIds = ticket.assigneeUserId ? [ticket.assigneeUserId] : admins.map((admin) => admin.id);
+        await queueSupportTicketAlerts(db, {
+          ticketId: ticket.id,
+          recipientUserIds,
+          actorUserId: ctx.user.id,
+          type: "sla_breach",
+          dedupSince: ticket.slaTargetAt ?? now,
+        });
+        alertedTicketCount += 1;
+      }
+      return { checkedTicketCount: breachedTickets.length, alertedTicketCount };
+    }),
     /** Eligible support operators are sourced from the authoritative admin user directory. */
     adminAssignees: adminProcedure.query(async () => {
       const db = await getDb();

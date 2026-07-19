@@ -11,15 +11,28 @@ type StatusFilter = SupportStatus | "all";
 type TopicFilter = "billing" | "onboarding" | "technical" | "all";
 type PriorityFilter = SupportPriority | "all";
 type AssigneeFilter = "all" | "unassigned" | `${number}`;
-type SlaDeadlineFilter = "all" | "overdue" | "next_24h";
-type TicketSort = "newest" | "oldest" | "priority" | "sla_soonest" | "due_soonest";
+type SlaDeadlineFilter = "all" | "overdue" | "next_4_hours" | "next_24_hours";
+type TicketSort = "newest" | "oldest" | "priority" | "assignee" | "sla_soonest" | "due_soonest";
 type AdminListInput = {
   status?: SupportStatus;
   topic?: Exclude<TopicFilter, "all">;
   priority?: SupportPriority;
+  assigneeScope?: "any" | "unassigned" | "specific";
   assigneeUserId?: "unassigned" | number;
-  slaDeadline?: Exclude<SlaDeadlineFilter, "all">;
+  slaWindow?: Exclude<SlaDeadlineFilter, "all">;
   sort?: TicketSort;
+};
+
+type SavedQueueView = {
+  id: number;
+  name: string;
+  status: SupportStatus | null;
+  topic: Exclude<TopicFilter, "all"> | null;
+  priority: SupportPriority | null;
+  assigneeScope: "any" | "unassigned" | "specific";
+  assigneeUserId: number | null;
+  slaWindow: Exclude<SlaDeadlineFilter, "all"> | null;
+  sort: TicketSort;
 };
 
 const statusLabel: Record<SupportStatus, string> = {
@@ -347,6 +360,8 @@ export default function AdminSupportInboxPage() {
   const [assignee, setAssignee] = useState<AssigneeFilter>("all");
   const [slaDeadline, setSlaDeadline] = useState<SlaDeadlineFilter>("all");
   const [sort, setSort] = useState<TicketSort>("newest");
+  const [savedViewName, setSavedViewName] = useState("");
+  const [activeSavedViewId, setActiveSavedViewId] = useState<number | null>(null);
   const utils = trpc.useUtils();
 
   useEffect(() => {
@@ -357,8 +372,9 @@ export default function AdminSupportInboxPage() {
     status: status === "all" ? undefined : status,
     topic: topic === "all" ? undefined : topic,
     priority: priority === "all" ? undefined : priority,
+    assigneeScope: assignee === "all" ? "any" : assignee === "unassigned" ? "unassigned" : "specific",
     assigneeUserId: assignee === "all" ? undefined : assignee === "unassigned" ? "unassigned" : Number(assignee),
-    slaDeadline: slaDeadline === "all" ? undefined : slaDeadline,
+    slaWindow: slaDeadline === "all" ? undefined : slaDeadline,
     sort,
   }), [assignee, priority, slaDeadline, sort, status, topic]);
 
@@ -370,7 +386,11 @@ export default function AdminSupportInboxPage() {
   const assignees = trpc.support.adminAssignees.useQuery(undefined, {
     enabled: user?.role === "admin",
   });
+  const savedViews = trpc.support.savedViews.useQuery(undefined, {
+    enabled: user?.role === "admin",
+  });
   const invalidateInbox = () => void utils.support.adminList.invalidate();
+  const invalidateSavedViews = () => void utils.support.savedViews.invalidate();
   const updateStatus = trpc.support.updateStatus.useMutation({
     onSuccess: () => {
       toast.success("Support status updated.");
@@ -392,6 +412,65 @@ export default function AdminSupportInboxPage() {
     },
     onError: (error) => toast.error(error.message || "Unable to update ticket assignee."),
   });
+  const saveView = trpc.support.saveView.useMutation({
+    onSuccess: (result) => {
+      toast.success(result.created ? "Queue view saved." : "Queue view updated.");
+      setSavedViewName("");
+      void invalidateSavedViews();
+    },
+    onError: (error) => toast.error(error.message || "Unable to save the queue view."),
+  });
+  const deleteView = trpc.support.deleteView.useMutation({
+    onSuccess: (_result, variables) => {
+      if (activeSavedViewId === variables.id) setActiveSavedViewId(null);
+      toast.success("Queue view deleted.");
+      void invalidateSavedViews();
+    },
+    onError: (error) => toast.error(error.message || "Unable to delete the queue view."),
+  });
+  const checkSlaBreach = trpc.support.checkSlaBreach.useMutation({
+    onError: (error) => toast.error(error.message || "Unable to check urgent SLA deadlines."),
+  });
+
+  useEffect(() => {
+    if (user?.role === "admin") checkSlaBreach.mutate();
+    // An inbox mount runs a single durable breach check. Toast delivery remains
+    // centralized in SupportTicketAlerts so each recipient sees only their own alerts.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.role]);
+
+  const applySavedView = (view: SavedQueueView) => {
+    setStatus(view.status ?? "all");
+    setTopic(view.topic ?? "all");
+    setPriority(view.priority ?? "all");
+    const savedAssignee: AssigneeFilter = view.assigneeScope === "unassigned"
+      ? "unassigned"
+      : view.assigneeScope === "specific" && view.assigneeUserId !== null
+        ? `${view.assigneeUserId}` as `${number}`
+        : "all";
+    setAssignee(savedAssignee);
+    setSlaDeadline(view.slaWindow ?? "all");
+    setSort(view.sort ?? "newest");
+    setActiveSavedViewId(view.id);
+  };
+
+  const saveCurrentView = () => {
+    const name = savedViewName.trim();
+    if (!name) {
+      toast.error("Name this queue view before saving it.");
+      return;
+    }
+    saveView.mutate({
+      name,
+      status: status === "all" ? null : status,
+      topic: topic === "all" ? null : topic,
+      priority: priority === "all" ? null : priority,
+      assigneeScope: assignee === "all" ? "any" : assignee === "unassigned" ? "unassigned" : "specific",
+      assigneeUserId: assignee !== "all" && assignee !== "unassigned" ? Number(assignee) : null,
+      slaWindow: slaDeadline === "all" ? null : slaDeadline,
+      sort,
+    });
+  };
 
   if (!user || user.role !== "admin") return null;
 
@@ -431,31 +510,93 @@ export default function AdminSupportInboxPage() {
               <RefreshCw size={16} className={submissions.isFetching ? "animate-spin" : ""} /> Refresh
             </button>
           </div>
+          <div className="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3" aria-labelledby="support-saved-views-title">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <h3 id="support-saved-views-title" className="text-sm font-black rr-text-navy">Saved queue views</h3>
+                <p className="mt-1 text-xs font-medium rr-text-navy-muted">Save filter and sort combinations for quick triage. Views are private to your administrator account.</p>
+              </div>
+              <div className="flex w-full flex-col gap-2 sm:flex-row lg:max-w-lg">
+                <label htmlFor="support-saved-view-name" className="sr-only">New queue view name</label>
+                <input
+                  id="support-saved-view-name"
+                  value={savedViewName}
+                  maxLength={80}
+                  onChange={(event) => setSavedViewName(event.target.value)}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") {
+                      event.preventDefault();
+                      saveCurrentView();
+                    }
+                  }}
+                  placeholder="Name this view, e.g. Urgent unassigned"
+                  className="min-h-10 flex-1 rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
+                />
+                <button
+                  type="button"
+                  onClick={saveCurrentView}
+                  disabled={saveView.isPending || savedViewName.trim().length === 0}
+                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-xl rr-bg-navy px-3 text-sm font-black text-white transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2"
+                >
+                  {saveView.isPending && <Loader2 size={15} className="animate-spin" aria-hidden="true" />} Save current
+                </button>
+              </div>
+            </div>
+            {savedViews.isLoading ? (
+              <div className="mt-3 flex items-center gap-2 text-xs font-semibold rr-text-navy-muted"><Loader2 size={14} className="animate-spin" aria-hidden="true" /> Loading saved views…</div>
+            ) : savedViews.data?.length ? (
+              <div className="mt-3 flex flex-wrap gap-2" aria-label="Saved support queue views">
+                {savedViews.data.map((view) => (
+                  <div key={view.id} className={`inline-flex max-w-full items-center overflow-hidden rounded-xl border ${activeSavedViewId === view.id ? "border-amber-400 bg-amber-50" : "border-slate-300 bg-white"}`}>
+                    <button
+                      type="button"
+                      onClick={() => applySavedView(view as SavedQueueView)}
+                      aria-pressed={activeSavedViewId === view.id}
+                      className="min-h-10 truncate px-3 text-sm font-black rr-text-navy transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-inset"
+                    >
+                      {view.name}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => deleteView.mutate({ id: view.id })}
+                      disabled={deleteView.isPending}
+                      className="inline-flex min-h-10 shrink-0 items-center justify-center border-l border-inherit px-2 text-slate-600 transition hover:bg-red-50 hover:text-red-800 disabled:cursor-wait disabled:opacity-55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-inset"
+                      aria-label={`Delete saved queue view ${view.name}`}
+                    >
+                      <X size={15} aria-hidden="true" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="mt-3 text-xs font-semibold rr-text-navy-muted">No saved views yet. Save the filters below to create one.</p>
+            )}
+          </div>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             <div>
               <label htmlFor="support-status-filter" className="text-sm font-black rr-text-navy">Status</label>
-              <select id="support-status-filter" value={status} onChange={(event) => setStatus(event.target.value as StatusFilter)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
+              <select id="support-status-filter" value={status} onChange={(event) => { setStatus(event.target.value as StatusFilter); setActiveSavedViewId(null); }} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
                 <option value="all">All statuses</option>
                 {Object.entries(statusLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
               </select>
             </div>
             <div>
               <label htmlFor="support-topic-filter" className="text-sm font-black rr-text-navy">Topic</label>
-              <select id="support-topic-filter" value={topic} onChange={(event) => setTopic(event.target.value as TopicFilter)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
+              <select id="support-topic-filter" value={topic} onChange={(event) => { setTopic(event.target.value as TopicFilter); setActiveSavedViewId(null); }} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
                 <option value="all">All topics</option>
                 {Object.entries(topicLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
               </select>
             </div>
             <div>
               <label htmlFor="support-priority-filter" className="text-sm font-black rr-text-navy">Priority</label>
-              <select id="support-priority-filter" value={priority} onChange={(event) => setPriority(event.target.value as PriorityFilter)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
+              <select id="support-priority-filter" value={priority} onChange={(event) => { setPriority(event.target.value as PriorityFilter); setActiveSavedViewId(null); }} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
                 <option value="all">All priorities</option>
                 {Object.entries(priorityLabel).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
               </select>
             </div>
             <div>
               <label htmlFor="support-assignee-filter" className="text-sm font-black rr-text-navy">Assignee</label>
-              <select id="support-assignee-filter" value={assignee} onChange={(event) => setAssignee(event.target.value as AssigneeFilter)} disabled={assignees.isLoading} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400 disabled:cursor-wait disabled:opacity-60">
+              <select id="support-assignee-filter" value={assignee} onChange={(event) => { setAssignee(event.target.value as AssigneeFilter); setActiveSavedViewId(null); }} disabled={assignees.isLoading} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400 disabled:cursor-wait disabled:opacity-60">
                 <option value="all">All assignees</option>
                 <option value="unassigned">Unassigned</option>
                 {assignees.data?.map((candidate) => <option key={candidate.id} value={candidate.id}>{formatAssignee(candidate.name, candidate.email)}</option>)}
@@ -463,18 +604,20 @@ export default function AdminSupportInboxPage() {
             </div>
             <div>
               <label htmlFor="support-sla-filter" className="text-sm font-black rr-text-navy">SLA deadline</label>
-              <select id="support-sla-filter" value={slaDeadline} onChange={(event) => setSlaDeadline(event.target.value as SlaDeadlineFilter)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
+              <select id="support-sla-filter" value={slaDeadline} onChange={(event) => { setSlaDeadline(event.target.value as SlaDeadlineFilter); setActiveSavedViewId(null); }} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
                 <option value="all">All SLA targets</option>
                 <option value="overdue">Overdue SLA</option>
-                <option value="next_24h">Due within 24 hours</option>
+                <option value="next_4_hours">Due within 4 hours</option>
+                <option value="next_24_hours">Due within 24 hours</option>
               </select>
             </div>
             <div>
               <label htmlFor="support-sort" className="text-sm font-black rr-text-navy">Sort by</label>
-              <select id="support-sort" value={sort} onChange={(event) => setSort(event.target.value as TicketSort)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
+              <select id="support-sort" value={sort} onChange={(event) => { setSort(event.target.value as TicketSort); setActiveSavedViewId(null); }} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
                 <option value="newest">Newest received</option>
                 <option value="oldest">Oldest received</option>
                 <option value="priority">Highest priority</option>
+                <option value="assignee">Assignee</option>
                 <option value="sla_soonest">SLA due soonest</option>
                 <option value="due_soonest">Manual deadline soonest</option>
               </select>
@@ -504,9 +647,19 @@ export default function AdminSupportInboxPage() {
               const assigneeValue = submission.assigneeUserId ? String(submission.assigneeUserId) : "unassigned";
               const showLegacyAssignee = Boolean(submission.assigneeUserId && assignees.data && !assignees.data.some((candidate) => candidate.id === submission.assigneeUserId));
               const assigneeDisplay = submission.assigneeUserId ? formatAssignee(submission.assigneeName, submission.assigneeEmail) : "Unassigned";
+              const slaTargetTime = submission.slaTargetAt ? new Date(submission.slaTargetAt).getTime() : null;
+              const hasUrgentSlaBreach = currentStatus !== "resolved"
+                && currentPriority === "urgent"
+                && slaTargetTime !== null
+                && slaTargetTime <= Date.now();
 
               return (
-                <article key={submission.id} className="rounded-2xl bg-white p-4 shadow-sm" data-testid={`support-submission-${submission.id}`}>
+                <article
+                  key={submission.id}
+                  className={`rounded-2xl bg-white p-4 shadow-sm ${hasUrgentSlaBreach ? "border-2 border-red-500 bg-red-50/40 shadow-red-100" : ""}`}
+                  data-testid={`support-submission-${submission.id}`}
+                  data-sla-breached={hasUrgentSlaBreach ? "true" : "false"}
+                >
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
@@ -514,6 +667,7 @@ export default function AdminSupportInboxPage() {
                         <span className={`rounded-full px-2 py-1 text-xs font-black ${statusStyle(currentStatus)}`}>{statusLabel[currentStatus]}</span>
                         <span className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-black ${priorityStyle(currentPriority)}`}><Flag size={12} aria-hidden="true" /> {priorityLabel[currentPriority]}</span>
                         <span className="rounded-full bg-slate-100 px-2 py-1 text-xs font-black rr-text-navy">{topicLabel[currentTopic]}</span>
+                        {hasUrgentSlaBreach && <span className="inline-flex items-center gap-1 rounded-full bg-red-700 px-2 py-1 text-xs font-black text-white"><AlertTriangle size={12} aria-hidden="true" /> Urgent SLA breach</span>}
                       </div>
                       <p className="mt-2 text-sm font-black rr-text-navy">{submission.subject}</p>
                       <a href={`mailto:${submission.email}`} className="mt-1 inline-block break-all text-sm font-semibold text-blue-800 underline decoration-blue-400 underline-offset-2 hover:text-blue-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2">
