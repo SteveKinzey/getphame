@@ -41,6 +41,7 @@ import {
   createPortalSession,
   createThbCheckoutSession,
   getMoneyBackGuaranteeStatus,
+  listStripePromotionCodes,
   getSubscriptionSnapshot,
 } from "./stripe";
 import { GUIDE_PDF_URL, sendLeadGuideEmail } from "./leadGuideEmail";
@@ -803,9 +804,26 @@ export const appRouter = router({
   }),
 
   stripe: router({
+    /** Live Stripe promotion-code metadata, available only to administrators. */
+    promotionMonitor: adminProcedure.query(async () => {
+      try {
+        return await listStripePromotionCodes();
+      } catch (error) {
+        console.error("[Stripe] Failed to load promotion-code monitor", error);
+        throw new TRPCError({
+          code: "BAD_GATEWAY",
+          message: "Stripe promotion data is temporarily unavailable. Please refresh in a moment.",
+        });
+      }
+    }),
+
     /** Create a Stripe Checkout Session for the selected plan */
     createCheckout: protectedProcedure
-      .input(z.object({ origin: z.string(), plan: z.enum(["monthly", "annual", "lifetime"]).default("monthly") }))
+      .input(z.object({
+        origin: z.string(),
+        plan: z.enum(["monthly", "annual", "lifetime"]).default("monthly"),
+        promotionCode: z.string().trim().max(64).optional(),
+      }))
       .mutation(async ({ ctx, input }) => {
         const profile = await getBusinessProfile(ctx.user.id);
         const url = await createCheckoutSession({
@@ -815,13 +833,18 @@ export const appRouter = router({
           stripeCustomerId: profile?.stripeCustomerId ?? null,
           origin: input.origin,
           plan: input.plan,
+          promotionCode: input.promotionCode ?? null,
         });
         return { url };
       }),
 
     /** Create a Stripe Checkout Session in THB with PromptPay enabled (Thailand users) */
     createThbCheckout: protectedProcedure
-      .input(z.object({ origin: z.string(), plan: z.enum(["monthly", "annual", "lifetime"]).default("monthly") }))
+      .input(z.object({
+        origin: z.string(),
+        plan: z.enum(["monthly", "annual", "lifetime"]).default("monthly"),
+        promotionCode: z.string().trim().max(64).optional(),
+      }))
       .mutation(async ({ ctx, input }) => {
         const profile = await getBusinessProfile(ctx.user.id);
         const url = await createThbCheckoutSession({
@@ -831,6 +854,7 @@ export const appRouter = router({
           stripeCustomerId: profile?.stripeCustomerId ?? null,
           origin: input.origin,
           plan: input.plan,
+          promotionCode: input.promotionCode ?? null,
         });
         return { url };
       }),

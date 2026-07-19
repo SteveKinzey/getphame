@@ -499,3 +499,10 @@
 - [x] Identify and apply the minimum correction without rotating working Stripe keys or exposing payment credentials.
 - [x] Verify fresh Checkout eligibility through the user-confirmed successful live payment, and report the exact customer-safe next step.
 - [x] Add focused Vitest coverage confirming Checkout enables customer-entered promotion codes for the verified Get Phame price mapping.
+- [x] Diagnose and restore the temporary API failure affecting the `/login` route without regressing authentication; the recovered server and browser verification show the error is no longer reproducible.
+- [x] Package the verified Get Phame Stripe recovery and promotion-code workflow as a reusable skill using the skill-creator process.
+- [x] Build an admin-only promotion-code monitor showing active status, redemptions, limits, expiry, discount, and applicable plans from Stripe.
+- [x] Add a custom, responsive post-payment success page with plan-aware next steps and clear paths into Get Phame setup.
+- [x] Allow campaign URLs to pass a validated promotion code into Checkout for automatic application without trusting arbitrary discounts.
+- [x] Add focused Vitest coverage, validate desktop and mobile flows, run quality checks, and publish the completed Checkout upgrade.
+- [x] Replace stale ReviewLink URLs in Stripe redirect test fixtures with neutral legacy-host values while retaining canonical Get Phame redirect assertions.

@@ -13,6 +13,9 @@ import {
   BarChart2,
   Shield,
   Bell,
+  Building2,
+  ClipboardList,
+  Send,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -65,6 +68,33 @@ const CARD_TITLE_BY_TIER: Record<string, string> = {
   annual: "Your Annual Perks",
   lifetime: "Your Lifetime Perks",
 };
+
+const NEXT_STEPS = [
+  {
+    number: "01",
+    icon: <Building2 size={17} />,
+    title: "Set up your business",
+    description: "Add your business name, sender details, and review destination.",
+    route: "/settings",
+    action: "Open settings",
+  },
+  {
+    number: "02",
+    icon: <ClipboardList size={17} />,
+    title: "Choose your request template",
+    description: "Start from a proven message, then personalize the follow-up experience.",
+    route: "/templates",
+    action: "View templates",
+  },
+  {
+    number: "03",
+    icon: <Send size={17} />,
+    title: "Send your first request",
+    description: "Invite a recent customer and turn the completed job into a review opportunity.",
+    route: "/send",
+    action: "Send a request",
+  },
+];
 
 export default function PaymentSuccessPage() {
   const { t } = useTranslation();
@@ -193,54 +223,78 @@ export default function PaymentSuccessPage() {
       <p className="text-center text-xl font-black mb-1 text-white" role="status" data-testid="stripe-success-confirmation">
         {t("paymentSuccess.confirmed", { defaultValue: "Payment confirmed." })} {heading.sub}
       </p>
-      <p className="text-center text-lg font-bold mb-8 text-white/90">
-        {t("paymentSuccess.upgraded", { defaultValue: "Your account has been upgraded instantly." })}
+      <p className="max-w-xl text-center text-base font-bold mb-8 text-white/85">
+        {t("paymentSuccess.thankYou", { defaultValue: "Thank you for investing in your reputation system. Your next three actions will turn that upgrade into visible customer trust." })}
       </p>
 
-      {/* Perks card */}
-      <div
-        className="w-full max-w-xs rounded-2xl p-5 mb-6 rr-bg-navy-mid"
-      >
-        <p
-          className="text-base font-black tracking-widest uppercase mb-4 rr-text-gold"
-        >
-          {cardTitle}
-        </p>
-        <div className="flex flex-col gap-3">
-          {perks.map((perk) => (
-            <div key={perk.text} className="flex items-center gap-3">
-              <div
-                className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 rr-bg-gold rr-text-navy"
-              >
-                {perk.icon}
+      <div className="w-full max-w-4xl grid gap-4 lg:grid-cols-[0.88fr_1.12fr] mb-6">
+        {/* Perks card */}
+        <section className="rounded-2xl p-5 rr-bg-navy-mid">
+          <p className="text-base font-black tracking-widest uppercase mb-4 rr-text-gold">{cardTitle}</p>
+          <div className="flex flex-col gap-3">
+            {perks.map((perk) => (
+              <div key={perk.text} className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 rr-bg-gold rr-text-navy">
+                  {perk.icon}
+                </div>
+                <span className="text-base font-bold text-white">{perk.text}</span>
               </div>
-              <span className="text-base font-bold text-white">
-                {perk.text}
-              </span>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-2xl p-5 rr-bg-navy-mid" style={{ border: "1px solid oklch(0.80 0.18 80 / 0.35)" }}>
+          <div className="flex items-center justify-between gap-3 mb-4">
+            <div>
+              <p className="text-base font-black text-white">Your next steps</p>
+              <p className="mt-1 text-sm leading-5 text-white/75">A clear path from activation to your first review request.</p>
             </div>
-          ))}
-        </div>
+            <ClipboardList size={21} className="shrink-0 rr-text-gold" />
+          </div>
+          <ol className="space-y-3">
+            {NEXT_STEPS.map((step) => (
+              <li key={step.number} className="flex gap-3 rounded-xl p-3" style={{ background: "oklch(0.22 0.09 260)" }}>
+                <span className="font-mono text-xs font-black rr-text-gold">{step.number}</span>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2 text-white"><span className="rr-text-gold">{step.icon}</span><p className="font-black text-sm">{step.title}</p></div>
+                  <p className="mt-1 text-xs leading-5 text-white/70">{step.description}</p>
+                  <button onClick={() => navigate(step.route)} className="mt-2 text-xs font-black rr-text-gold flex items-center gap-1">
+                    {step.action} <ArrowRight size={12} />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
       </div>
 
       {/* CTA buttons */}
-      <div className="w-full max-w-xs flex flex-col gap-3">
+      <div className="w-full max-w-4xl grid gap-3 sm:grid-cols-2">
         <button
-          onClick={() => navigate("/send")}
+          onClick={() => navigate("/settings")}
           className="w-full py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-2 transition-transform active:scale-95 rr-bg-gold rr-text-navy"
         >
-          <Star size={18} />
-          Send Your First Request
+          <Building2 size={18} />
+          Complete your setup
           <ArrowRight size={16} />
         </button>
-
         <button
-          onClick={() => navigate("/")}
-          className="w-full py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2"
-          style={{ color: "var(--text-on-dark-secondary)", border: "1px solid rgba(255,255,255,0.15)" }}
+          onClick={() => navigate("/send")}
+          className="w-full py-4 rounded-2xl font-black text-lg flex items-center justify-center gap-2 text-white transition-transform active:scale-95"
+          style={{ border: "1px solid rgba(255,255,255,0.22)", background: "oklch(0.28 0.07 260)" }}
         >
-          Go to Dashboard
+          <Send size={18} className="rr-text-gold" />
+          Send your first request
         </button>
       </div>
+
+      <button
+        onClick={() => navigate("/")}
+        className="mt-3 py-3 px-8 rounded-2xl font-bold text-sm flex items-center justify-center gap-2"
+        style={{ color: "var(--text-on-dark-secondary)", border: "1px solid rgba(255,255,255,0.15)" }}
+      >
+        Go to Dashboard
+      </button>
 
       {/* Stars */}
       <div className="flex justify-center gap-1 mt-8">
@@ -249,7 +303,7 @@ export default function PaymentSuccessPage() {
         ))}
       </div>
       <p className="text-center text-base font-bold mt-2 text-white/80">
-        Thank you for supporting Phame
+        {t("paymentSuccess.closingThankYou", { defaultValue: "Thank you for choosing Get Phame." })}
       </p>
     </div>
   );

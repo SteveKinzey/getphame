@@ -92,6 +92,11 @@ export default function UpgradePage() {
   const [selectedPlan, setSelectedPlan] = useState<Plan>("annual");
   const [accessCode, setAccessCode] = useState("");
   const [planSwitchOpen, setPlanSwitchOpen] = useState(false);
+  const [campaignPromotionCode] = useState(() => {
+    if (typeof window === "undefined") return null;
+    const rawCode = new URLSearchParams(window.location.search).get("promo")?.trim() ?? "";
+    return rawCode && rawCode.length <= 64 ? rawCode.toUpperCase() : null;
+  });
   // Show PromptPay if Thai locale detected, or user manually reveals it
   const isThai = typeof navigator !== "undefined" && navigator.language.toLowerCase().startsWith("th");
   const [showPromptPay, setShowPromptPay] = useState(isThai);
@@ -205,7 +210,11 @@ export default function UpgradePage() {
   }, []);
 
   function handleStripeCheckout() {
-    createCheckout.mutate({ origin: window.location.origin, plan: selectedPlan });
+    createCheckout.mutate({
+      origin: window.location.origin,
+      plan: selectedPlan,
+      ...(campaignPromotionCode ? { promotionCode: campaignPromotionCode } : {}),
+    });
   }
 
   function handleRedeemCode() {
@@ -381,6 +390,24 @@ export default function UpgradePage() {
         <div
           className="rounded-2xl p-6 rr-bg-navy-mid" style={{ border: "2px solid oklch(0.80 0.18 80)" }}
         >
+          {campaignPromotionCode && (
+            <div
+              className="mb-5 rounded-xl px-4 py-3 flex gap-3"
+              style={{ background: "oklch(0.28 0.08 260)", border: "1px solid oklch(0.80 0.18 80 / 0.45)" }}
+              role="status"
+            >
+              <Ticket size={17} className="mt-0.5 shrink-0 rr-text-gold" />
+              <div>
+                <p className="text-sm font-black text-white">
+                  {t("promotionLink.applied", { defaultValue: "Your campaign code will be applied at checkout" })}
+                </p>
+                <p className="mt-0.5 text-xs font-bold rr-text-gold">{campaignPromotionCode}</p>
+                <p className="mt-1 text-xs leading-5 text-white/70">
+                  {t("promotionLink.verified", { defaultValue: "Eligibility is verified securely before Stripe Checkout opens." })}
+                </p>
+              </div>
+            </div>
+          )}
           {/* Price display */}
           <div className="flex items-end gap-2 mb-1">
             <span
@@ -539,7 +566,11 @@ export default function UpgradePage() {
                 </div>
               </div>
               <button
-                onClick={() => createThbCheckout.mutate({ origin: window.location.origin, plan: selectedPlan })}
+                onClick={() => createThbCheckout.mutate({
+                  origin: window.location.origin,
+                  plan: selectedPlan,
+                  ...(campaignPromotionCode ? { promotionCode: campaignPromotionCode } : {}),
+                })}
                 disabled={createThbCheckout.isPending}
                 className="w-full py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-opacity disabled:opacity-50 text-white" style={{ background: "oklch(0.18 0.07 260)", border: "1px solid rgba(255,255,255,0.15)" }}
               >
