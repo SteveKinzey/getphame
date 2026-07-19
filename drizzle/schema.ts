@@ -32,7 +32,7 @@ export const authHealthTriggerEnum = pgEnum("auth_health_trigger", ["scheduled",
 export const supportTopicEnum = pgEnum("support_topic", ["billing", "onboarding", "technical"]);
 export const supportSubmissionStatusEnum = pgEnum("support_submission_status", ["open", "in_progress", "resolved"]);
 export const supportPriorityEnum = pgEnum("support_priority", ["low", "normal", "high", "urgent"]);
-export const supportTicketAlertTypeEnum = pgEnum("support_ticket_alert_type", ["assignment", "escalation"]);
+export const supportTicketAlertTypeEnum = pgEnum("support_ticket_alert_type", ["assignment", "escalation", "mention"]);
 
 // ─── Tables ───────────────────────────────────────────────────────────────────
 
@@ -497,6 +497,8 @@ export const supportSubmissions = pgTable("support_submissions", {
   // A manual operator-set business deadline remains distinct from the server-derived SLA target.
   dueAt: timestamp("due_at"),
   slaTargetAt: timestamp("sla_target_at"),
+  // The first recorded administrator action; used for honest first-response reporting.
+  firstRespondedAt: timestamp("first_responded_at"),
   attachmentKey: varchar("attachment_key", { length: 512 }),
   attachmentFilename: varchar("attachment_filename", { length: 255 }),
   attachmentMimeType: varchar("attachment_mime_type", { length: 64 }),
@@ -512,6 +514,7 @@ export const supportSubmissions = pgTable("support_submissions", {
   index("support_submissions_assignee_status_created_idx").on(table.assigneeUserId, table.status, table.createdAt),
   index("support_submissions_sla_status_idx").on(table.slaTargetAt, table.status),
   index("support_submissions_due_status_idx").on(table.dueAt, table.status),
+  index("support_submissions_first_response_idx").on(table.firstRespondedAt, table.createdAt),
 ]);
 
 export type SupportSubmission = typeof supportSubmissions.$inferSelect;
@@ -524,7 +527,10 @@ export const supportInternalNotes = pgTable("support_internal_notes", {
   id: serial("id").primaryKey(),
   ticketId: integer("ticket_id").notNull(),
   authorUserId: integer("author_user_id").notNull(),
+  // Stores sanitized, constrained rich HTML. Existing plain notes remain safe text.
   body: text("body").notNull(),
+  // Plain-text derivative for accessible fallbacks and future internal search/export.
+  bodyPlainText: text("body_plain_text"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 }, (table) => [
   index("support_internal_notes_ticket_created_idx").on(table.ticketId, table.createdAt),
@@ -533,6 +539,23 @@ export const supportInternalNotes = pgTable("support_internal_notes", {
 
 export type SupportInternalNote = typeof supportInternalNotes.$inferSelect;
 export type InsertSupportInternalNote = typeof supportInternalNotes.$inferInsert;
+
+/**
+ * Authorized internal recipients selected from the administrator directory.
+ * Mention relationships are intentionally separate from the note display text.
+ */
+export const supportInternalNoteMentions = pgTable("support_internal_note_mentions", {
+  id: serial("id").primaryKey(),
+  noteId: integer("note_id").notNull(),
+  mentionedUserId: integer("mentioned_user_id").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("support_note_mentions_note_user_unique").on(table.noteId, table.mentionedUserId),
+  index("support_note_mentions_recipient_created_idx").on(table.mentionedUserId, table.createdAt),
+]);
+
+export type SupportInternalNoteMention = typeof supportInternalNoteMentions.$inferSelect;
+export type InsertSupportInternalNoteMention = typeof supportInternalNoteMentions.$inferInsert;
 
 /**
  * Recipient-scoped in-app events for ticket ownership and escalation only.

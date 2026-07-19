@@ -791,8 +791,14 @@ describe("Get Phame regression contracts", () => {
     expect(schema).toContain("slaTargetAt");
     expect(schema).toContain("supportInternalNotes");
     expect(schema).toContain("supportTicketAlerts");
+    expect(schema).toContain("supportInternalNoteMentions");
+    expect(schema).toContain("firstRespondedAt");
+    expect(schema).toContain("bodyPlainText");
+    expect(schema).toContain("// Stores sanitized, constrained rich HTML.");
     expect(supportIntake).toContain("SUPPORT_SLA_DURATION_MS");
     expect(supportIntake).toContain("SUPPORT_TICKET_ALERT_DEDUP_WINDOW_MS");
+    expect(supportIntake).toContain("renderSupportInternalNoteHtml");
+    expect(supportIntake).toContain("MAX_SUPPORT_INTERNAL_NOTE_MENTIONS");
     expect(inbox).toContain("trpc.support.adminList.useQuery");
     expect(inbox).toContain("trpc.support.updateStatus.useMutation");
     expect(inbox).toContain("trpc.support.updatePriority.useMutation");
@@ -803,6 +809,12 @@ describe("Get Phame regression contracts", () => {
     expect(inbox).toContain("TicketInternalNotes");
     expect(inbox).toContain("trpc.support.updateDueAt.useMutation");
     expect(inbox).toContain("trpc.support.addInternalNote.useMutation");
+    expect(inbox).toContain('id="support-sla-filter"');
+    expect(inbox).toContain('id="support-sort"');
+    expect(inbox).toContain('<option value="sla_soonest">SLA due soonest</option>');
+    expect(inbox).toContain("Tag administrators");
+    expect(inbox).toContain("mentionUserIds");
+    expect(inbox).toContain("support-note-rich-text");
     expect(inbox).toContain("Internal resolution notes");
     expect(inbox).toContain("SLA timer");
     expect(inbox).toContain("Unassigned");
@@ -810,10 +822,20 @@ describe("Get Phame regression contracts", () => {
     expect(ticketAlerts).toContain("trpc.support.myTicketAlerts.useQuery");
     expect(ticketAlerts).toContain("trpc.support.markTicketAlertsRead.useMutation");
     expect(ticketAlerts).toContain("refetchInterval: 5_000");
+    expect(ticketAlerts).toContain('alert.type === "mention"');
+    expect(ticketAlerts).toContain("mentioned you in a private update");
     expect(app).toContain("<SupportTicketAlerts />");
     expect(app).toContain('const AdminSupportInboxPage = lazy(() => import("./pages/AdminSupportInbox"))');
     expect(app).toContain('<Route path="/admin/support" component={AdminSupportInboxPage} />');
     expect(adminDashboard).toContain('{ path: "/admin/support", label: "Support inbox"');
+    expect(adminDashboard).toContain('data-testid="admin-support-reporting"');
+    expect(adminDashboard).toContain("trpc.support.adminMetrics.useQuery");
+    expect(adminDashboard).toContain("Average first response");
+    expect(supportRouter).toContain("adminMetrics: adminProcedure");
+    expect(supportRouter).toContain("firstRespondedAt");
+    expect(supportRouter).toContain("mentionUserIds");
+    expect(supportRouter).toContain("slaDeadline");
+    expect(supportRouter).toContain("renderSupportInternalNoteHtml");
   });
 
   it("uses corrected permanent mockups without the obsolete embedded P-plus-star artwork", () => {

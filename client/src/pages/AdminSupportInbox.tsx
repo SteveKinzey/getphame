@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useLocation } from "wouter";
-import { AlertTriangle, ArrowLeft, CalendarClock, CheckCircle2, Clock3, ExternalLink, Flag, Inbox, Loader2, MessageSquareText, Paperclip, RefreshCw, SendHorizontal, StickyNote, UserRoundCheck, X } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Bold, CalendarClock, CheckCircle2, Clock3, Code2, ExternalLink, Flag, Inbox, Italic, List, Loader2, MessageSquareText, Paperclip, RefreshCw, SendHorizontal, StickyNote, Strikethrough, UserRoundCheck, X } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
@@ -11,11 +11,15 @@ type StatusFilter = SupportStatus | "all";
 type TopicFilter = "billing" | "onboarding" | "technical" | "all";
 type PriorityFilter = SupportPriority | "all";
 type AssigneeFilter = "all" | "unassigned" | `${number}`;
+type SlaDeadlineFilter = "all" | "overdue" | "next_24h";
+type TicketSort = "newest" | "oldest" | "priority" | "sla_soonest" | "due_soonest";
 type AdminListInput = {
   status?: SupportStatus;
   topic?: Exclude<TopicFilter, "all">;
   priority?: SupportPriority;
   assigneeUserId?: "unassigned" | number;
+  slaDeadline?: Exclude<SlaDeadlineFilter, "all">;
+  sort?: TicketSort;
 };
 
 const statusLabel: Record<SupportStatus, string> = {
@@ -199,19 +203,47 @@ function TicketDeadlineControls({
   );
 }
 
-function TicketInternalNotes({ ticketId }: { ticketId: number }) {
+function TicketInternalNotes({
+  ticketId,
+  administrators,
+}: {
+  ticketId: number;
+  administrators: Array<{ id: number; name: string | null; email: string | null }>;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [draft, setDraft] = useState("");
+  const [mentionUserIds, setMentionUserIds] = useState<number[]>([]);
   const utils = trpc.useUtils();
   const notes = trpc.support.internalNotes.useQuery({ id: ticketId }, { enabled: isOpen });
   const addNote = trpc.support.addInternalNote.useMutation({
     onSuccess: () => {
       setDraft("");
+      setMentionUserIds([]);
       toast.success("Internal note added.");
       void utils.support.internalNotes.invalidate({ id: ticketId });
     },
     onError: (error) => toast.error(error.message || "Unable to add the internal note."),
   });
+
+  const insertFormatting = (prefix: string, suffix = prefix, placeholder = "text") => {
+    const textarea = document.getElementById(`support-note-${ticketId}`) as HTMLTextAreaElement | null;
+    const start = textarea?.selectionStart ?? draft.length;
+    const end = textarea?.selectionEnd ?? draft.length;
+    const selected = draft.slice(start, end) || placeholder;
+    const nextValue = `${draft.slice(0, start)}${prefix}${selected}${suffix}${draft.slice(end)}`;
+    setDraft(nextValue);
+    window.requestAnimationFrame(() => {
+      textarea?.focus();
+      const cursorPosition = start + prefix.length + selected.length + suffix.length;
+      textarea?.setSelectionRange(cursorPosition, cursorPosition);
+    });
+  };
+
+  const addMention = (value: string) => {
+    const userId = Number(value);
+    if (!Number.isInteger(userId) || userId <= 0) return;
+    setMentionUserIds((current) => current.includes(userId) ? current : [...current, userId]);
+  };
 
   return (
     <section className="mt-4 rounded-xl border border-slate-200 bg-white" aria-labelledby={`support-notes-heading-${ticketId}`}>
@@ -236,12 +268,28 @@ function TicketInternalNotes({ ticketId }: { ticketId: number }) {
                   <strong className="rr-text-navy">{formatAssignee(note.authorName, note.authorEmail)}</strong>
                   <time className="rr-text-navy-muted" dateTime={new Date(note.createdAt).toISOString()}>{formatDateTime(note.createdAt)}</time>
                 </div>
-                <p className="mt-1 whitespace-pre-wrap text-sm leading-6 rr-text-navy">{note.body}</p>
+                <div className="support-note-rich-text mt-1 text-sm leading-6 rr-text-navy" dangerouslySetInnerHTML={{ __html: note.bodyHtml }} />
+                {note.mentions.length > 0 && (
+                  <div className="mt-2 flex flex-wrap gap-1.5" aria-label="Mentioned administrators">
+                    {note.mentions.map((mention) => (
+                      <span key={mention.userId} className="rounded-full bg-violet-100 px-2 py-1 text-xs font-black text-violet-900">@{formatAssignee(mention.name, mention.email)}</span>
+                    ))}
+                  </div>
+                )}
               </article>
             )) : (
               <p className="py-2 text-sm font-semibold rr-text-navy-muted">No internal notes yet.</p>
             )}
           </div>
+          <div className="mt-3 flex flex-wrap items-center gap-1.5" aria-label="Rich text formatting">
+            <span className="mr-1 text-xs font-black uppercase tracking-wide rr-text-navy-muted">Format</span>
+            <button type="button" onClick={() => insertFormatting("**", "**", "bold text")} className="inline-flex min-h-9 items-center gap-1 rounded-lg border border-slate-300 bg-white px-2 text-xs font-black rr-text-navy hover:border-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400" aria-label="Bold selected text"><Bold size={14} aria-hidden="true" /> Bold</button>
+            <button type="button" onClick={() => insertFormatting("_", "_", "italic text")} className="inline-flex min-h-9 items-center gap-1 rounded-lg border border-slate-300 bg-white px-2 text-xs font-black rr-text-navy hover:border-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400" aria-label="Italicize selected text"><Italic size={14} aria-hidden="true" /> Italic</button>
+            <button type="button" onClick={() => insertFormatting("`", "`", "code")} className="inline-flex min-h-9 items-center gap-1 rounded-lg border border-slate-300 bg-white px-2 text-xs font-black rr-text-navy hover:border-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400" aria-label="Format selected text as code"><Code2 size={14} aria-hidden="true" /> Code</button>
+            <button type="button" onClick={() => insertFormatting("~~", "~~", "struck text")} className="inline-flex min-h-9 items-center gap-1 rounded-lg border border-slate-300 bg-white px-2 text-xs font-black rr-text-navy hover:border-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400" aria-label="Strike through selected text"><Strikethrough size={14} aria-hidden="true" /> Strike</button>
+            <button type="button" onClick={() => insertFormatting("- ", "", "list item")} className="inline-flex min-h-9 items-center gap-1 rounded-lg border border-slate-300 bg-white px-2 text-xs font-black rr-text-navy hover:border-amber-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400" aria-label="Add a bullet list item"><List size={14} aria-hidden="true" /> List</button>
+          </div>
+          <p className="mt-2 text-xs font-semibold rr-text-navy-muted">Use the controls for safe rich-text notes. Tag teammates below to notify them privately.</p>
           <label htmlFor={`support-note-${ticketId}`} className="sr-only">Add an internal resolution note</label>
           <textarea
             id={`support-note-${ticketId}`}
@@ -251,11 +299,33 @@ function TicketInternalNotes({ ticketId }: { ticketId: number }) {
             placeholder="Share an internal update, reproduction step, or resolution detail…"
             className="mt-3 min-h-24 w-full resize-y rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm rr-text-navy outline-none focus:ring-2 focus:ring-amber-400"
           />
+          <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <label htmlFor={`support-mention-${ticketId}`} className="text-xs font-black uppercase tracking-wide rr-text-navy-muted">Tag administrators</label>
+            <select id={`support-mention-${ticketId}`} value="" onChange={(event) => addMention(event.target.value)} className="mt-1 min-h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
+              <option value="">Choose an administrator to mention…</option>
+              {administrators.filter((administrator) => !mentionUserIds.includes(administrator.id)).map((administrator) => (
+                <option key={administrator.id} value={administrator.id}>{formatAssignee(administrator.name, administrator.email)}</option>
+              ))}
+            </select>
+            {mentionUserIds.length > 0 && (
+              <div className="mt-2 flex flex-wrap gap-1.5" aria-label="Selected administrator mentions">
+                {mentionUserIds.map((userId) => {
+                  const administrator = administrators.find((candidate) => candidate.id === userId);
+                  if (!administrator) return null;
+                  return (
+                    <button key={userId} type="button" onClick={() => setMentionUserIds((current) => current.filter((id) => id !== userId))} className="inline-flex min-h-8 items-center gap-1 rounded-full bg-violet-100 px-2 text-xs font-black text-violet-900 hover:bg-violet-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400" aria-label={`Remove mention of ${formatAssignee(administrator.name, administrator.email)}`}>
+                      @{formatAssignee(administrator.name, administrator.email)} <X size={12} aria-hidden="true" />
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
           <div className="mt-2 flex items-center justify-between gap-3">
             <span className="text-xs font-semibold rr-text-navy-muted">{draft.length}/4,000</span>
             <button
               type="button"
-              onClick={() => addNote.mutate({ id: ticketId, body: draft.trim() })}
+              onClick={() => addNote.mutate({ id: ticketId, body: draft.trim(), mentionUserIds })}
               disabled={draft.trim().length === 0 || addNote.isPending}
               className="inline-flex min-h-10 items-center gap-2 rounded-lg rr-bg-navy px-3 text-sm font-black text-white transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2"
             >
@@ -275,6 +345,8 @@ export default function AdminSupportInboxPage() {
   const [topic, setTopic] = useState<TopicFilter>("all");
   const [priority, setPriority] = useState<PriorityFilter>("all");
   const [assignee, setAssignee] = useState<AssigneeFilter>("all");
+  const [slaDeadline, setSlaDeadline] = useState<SlaDeadlineFilter>("all");
+  const [sort, setSort] = useState<TicketSort>("newest");
   const utils = trpc.useUtils();
 
   useEffect(() => {
@@ -286,7 +358,9 @@ export default function AdminSupportInboxPage() {
     topic: topic === "all" ? undefined : topic,
     priority: priority === "all" ? undefined : priority,
     assigneeUserId: assignee === "all" ? undefined : assignee === "unassigned" ? "unassigned" : Number(assignee),
-  }), [assignee, priority, status, topic]);
+    slaDeadline: slaDeadline === "all" ? undefined : slaDeadline,
+    sort,
+  }), [assignee, priority, slaDeadline, sort, status, topic]);
 
   const submissions = trpc.support.adminList.useQuery(queryInput, {
     enabled: user?.role === "admin",
@@ -345,8 +419,8 @@ export default function AdminSupportInboxPage() {
         <section aria-labelledby="support-inbox-filters" className="mb-4 rounded-2xl bg-white p-4 shadow-sm">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 id="support-inbox-filters" className="text-base font-black rr-text-navy">Filter submissions</h2>
-              <p className="mt-1 text-sm rr-text-navy-muted">Newest messages appear first. Assignment and screenshot links are available only to administrators.</p>
+              <h2 id="support-inbox-filters" className="text-base font-black rr-text-navy">Filter and sort submissions</h2>
+              <p className="mt-1 text-sm rr-text-navy-muted">Organize the queue by ownership, priority, SLA urgency, or manual deadline. Assignment and screenshot links are available only to administrators.</p>
             </div>
             <button
               type="button"
@@ -357,7 +431,7 @@ export default function AdminSupportInboxPage() {
               <RefreshCw size={16} className={submissions.isFetching ? "animate-spin" : ""} /> Refresh
             </button>
           </div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             <div>
               <label htmlFor="support-status-filter" className="text-sm font-black rr-text-navy">Status</label>
               <select id="support-status-filter" value={status} onChange={(event) => setStatus(event.target.value as StatusFilter)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
@@ -385,6 +459,24 @@ export default function AdminSupportInboxPage() {
                 <option value="all">All assignees</option>
                 <option value="unassigned">Unassigned</option>
                 {assignees.data?.map((candidate) => <option key={candidate.id} value={candidate.id}>{formatAssignee(candidate.name, candidate.email)}</option>)}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="support-sla-filter" className="text-sm font-black rr-text-navy">SLA deadline</label>
+              <select id="support-sla-filter" value={slaDeadline} onChange={(event) => setSlaDeadline(event.target.value as SlaDeadlineFilter)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
+                <option value="all">All SLA targets</option>
+                <option value="overdue">Overdue SLA</option>
+                <option value="next_24h">Due within 24 hours</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="support-sort" className="text-sm font-black rr-text-navy">Sort by</label>
+              <select id="support-sort" value={sort} onChange={(event) => setSort(event.target.value as TicketSort)} className="mt-1 min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm font-semibold rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
+                <option value="newest">Newest received</option>
+                <option value="oldest">Oldest received</option>
+                <option value="priority">Highest priority</option>
+                <option value="sla_soonest">SLA due soonest</option>
+                <option value="due_soonest">Manual deadline soonest</option>
               </select>
             </div>
           </div>
@@ -446,7 +538,7 @@ export default function AdminSupportInboxPage() {
                         dueAt={submission.dueAt}
                         slaTargetAt={submission.slaTargetAt}
                       />
-                      <TicketInternalNotes ticketId={submission.id} />
+                      <TicketInternalNotes ticketId={submission.id} administrators={assignees.data ?? []} />
                     </div>
                     <div className="grid w-full shrink-0 gap-3 sm:grid-cols-3 lg:max-w-[34rem]">
                       <div>

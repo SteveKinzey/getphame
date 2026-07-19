@@ -52,8 +52,11 @@ import {
   isSupportEscalation,
   MAX_SUPPORT_DUE_DATE_FUTURE_DAYS,
   MAX_SUPPORT_INTERNAL_NOTE_CHARS,
+  MAX_SUPPORT_INTERNAL_NOTE_MENTIONS,
   isValidSupportScreenshot,
   MAX_SUPPORT_ATTACHMENT_BYTES,
+  getSupportInternalNotePlainText,
+  renderSupportInternalNoteHtml,
   sanitizeSupportAttachmentFilename,
   SUPPORT_ATTACHMENT_MIME_TYPES,
   SUPPORT_PRIORITIES,
@@ -76,10 +79,10 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads, koalendarBookings, koalendarConnections, supportInternalNotes, supportSubmissions, supportTicketAlerts } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads, koalendarBookings, koalendarConnections, supportInternalNoteMentions, supportInternalNotes, supportSubmissions, supportTicketAlerts } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
 import { PWA_EVENT_NAMES, PWA_EVENT_SOURCE, summarizePwaEvents, toPwaEventPage } from "./pwaAnalytics";
-import { eq, like, or, inArray, desc, isNotNull, isNull, and, sql, gte, lte, count } from "drizzle-orm";
+import { eq, like, or, inArray, desc, asc, isNotNull, isNull, and, sql, gte, lte, ne, count } from "drizzle-orm";
 import {
   listSavedContacts,
   createSavedContact,
@@ -269,6 +272,19 @@ async function queueSupportTicketAlerts(
       type: input.type,
     })),
   );
+}
+
+/** First response is the first confirmed administrator status transition or private note. */
+async function recordSupportFirstResponse(
+  db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
+  ticketId: number,
+) {
+  await db.update(supportSubmissions)
+    .set({ firstRespondedAt: new Date() })
+    .where(and(
+      eq(supportSubmissions.id, ticketId),
+      isNull(supportSubmissions.firstRespondedAt),
+    ));
 }
 
 export const appRouter = router({
@@ -3605,10 +3621,25 @@ export const appRouter = router({
         topic: z.enum(SUPPORT_TOPICS).optional(),
         priority: z.enum(SUPPORT_PRIORITIES).optional(),
         assigneeUserId: z.union([z.literal("unassigned"), z.number().int().positive()]).optional(),
+        slaDeadline: z.enum(["overdue", "next_24h"]).optional(),
+        sort: z.enum(["newest", "oldest", "priority", "sla_soonest", "due_soonest"]).optional(),
       }).optional())
       .query(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        const now = new Date();
+        const next24Hours = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+        const selectedSort = input?.sort ?? "newest";
+        const orderBy = selectedSort === "oldest"
+          ? [asc(supportSubmissions.createdAt), asc(supportSubmissions.id)]
+          : selectedSort === "priority"
+            ? [desc(sql`CASE ${supportSubmissions.priority} WHEN 'urgent' THEN 4 WHEN 'high' THEN 3 WHEN 'normal' THEN 2 ELSE 1 END`), desc(supportSubmissions.createdAt)]
+            : selectedSort === "sla_soonest"
+              ? [asc(sql`CASE WHEN ${supportSubmissions.slaTargetAt} IS NULL THEN 1 ELSE 0 END`), asc(supportSubmissions.slaTargetAt), desc(supportSubmissions.createdAt)]
+              : selectedSort === "due_soonest"
+                ? [asc(sql`CASE WHEN ${supportSubmissions.dueAt} IS NULL THEN 1 ELSE 0 END`), asc(supportSubmissions.dueAt), desc(supportSubmissions.createdAt)]
+                : [desc(supportSubmissions.createdAt), desc(supportSubmissions.id)];
 
         const rows = await db.select({
           id: supportSubmissions.id,
@@ -3622,6 +3653,7 @@ export const appRouter = router({
           assigneeUserId: supportSubmissions.assigneeUserId,
           dueAt: supportSubmissions.dueAt,
           slaTargetAt: supportSubmissions.slaTargetAt,
+          firstRespondedAt: supportSubmissions.firstRespondedAt,
           assigneeName: users.name,
           assigneeEmail: users.email,
           attachmentKey: supportSubmissions.attachmentKey,
@@ -3644,8 +3676,22 @@ export const appRouter = router({
               : typeof input?.assigneeUserId === "number"
                 ? eq(supportSubmissions.assigneeUserId, input.assigneeUserId)
                 : sql`1 = 1`,
+            input?.slaDeadline === "overdue"
+              ? and(
+                isNotNull(supportSubmissions.slaTargetAt),
+                lte(supportSubmissions.slaTargetAt, now),
+                ne(supportSubmissions.status, "resolved"),
+              )
+              : input?.slaDeadline === "next_24h"
+                ? and(
+                  isNotNull(supportSubmissions.slaTargetAt),
+                  gte(supportSubmissions.slaTargetAt, now),
+                  lte(supportSubmissions.slaTargetAt, next24Hours),
+                  ne(supportSubmissions.status, "resolved"),
+                )
+                : sql`1 = 1`,
           ))
-          .orderBy(desc(supportSubmissions.createdAt))
+          .orderBy(...orderBy)
           .limit(250);
 
         return Promise.all(rows.map(async (row) => ({
@@ -3653,7 +3699,43 @@ export const appRouter = router({
           attachmentUrl: row.attachmentKey
             ? await storageGet(row.attachmentKey).then((attachment) => attachment.url).catch(() => null)
             : null,
-        })));
+        }))); 
+      }),
+    adminMetrics: adminProcedure
+      .input(z.object({ periodDays: z.enum(["7", "30", "90"]).optional() }).optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support reporting is unavailable." });
+
+        const periodDays = Number(input?.periodDays ?? "30");
+        const now = new Date();
+        const periodStart = new Date(now.getTime() - periodDays * 24 * 60 * 60 * 1000);
+        const [metrics] = await db.select({
+          ticketsCreated: count(supportSubmissions.id),
+          resolvedTickets: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.resolvedAt} IS NOT NULL THEN 1 ELSE 0 END), 0)`,
+          openTickets: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.status} <> 'resolved' THEN 1 ELSE 0 END), 0)`,
+          firstResponseCount: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.firstRespondedAt} IS NOT NULL THEN 1 ELSE 0 END), 0)`,
+          avgFirstResponseMs: sql<number | null>`AVG(CASE WHEN ${supportSubmissions.firstRespondedAt} IS NOT NULL THEN TIMESTAMPDIFF(SECOND, ${supportSubmissions.createdAt}, ${supportSubmissions.firstRespondedAt}) * 1000 ELSE NULL END)`,
+          avgResolutionMs: sql<number | null>`AVG(CASE WHEN ${supportSubmissions.resolvedAt} IS NOT NULL THEN TIMESTAMPDIFF(SECOND, ${supportSubmissions.createdAt}, ${supportSubmissions.resolvedAt}) * 1000 ELSE NULL END)`,
+          overdueTickets: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.status} <> 'resolved' AND ${supportSubmissions.slaTargetAt} IS NOT NULL AND ${supportSubmissions.slaTargetAt} < ${now} THEN 1 ELSE 0 END), 0)`,
+        })
+          .from(supportSubmissions)
+          .where(gte(supportSubmissions.createdAt, periodStart));
+
+        const asCount = (value: unknown) => Number(value ?? 0);
+        const asDuration = (value: unknown) => value === null || value === undefined ? null : Math.round(Number(value));
+        return {
+          periodDays,
+          periodStart,
+          generatedAt: now,
+          ticketsCreated: asCount(metrics?.ticketsCreated),
+          resolvedTickets: asCount(metrics?.resolvedTickets),
+          openTickets: asCount(metrics?.openTickets),
+          firstResponseCount: asCount(metrics?.firstResponseCount),
+          avgFirstResponseMs: asDuration(metrics?.avgFirstResponseMs),
+          avgResolutionMs: asDuration(metrics?.avgResolutionMs),
+          overdueTickets: asCount(metrics?.overdueTickets),
+        };
       }),
     /** Eligible support operators are sourced from the authoritative admin user directory. */
     adminAssignees: adminProcedure.query(async () => {
@@ -3684,6 +3766,7 @@ export const appRouter = router({
             resolvedAt: input.status === "resolved" ? new Date() : null,
           })
           .where(eq(supportSubmissions.id, input.id));
+        if (input.status !== "open") await recordSupportFirstResponse(db, input.id);
         return { ok: true as const };
       }),
     updatePriority: adminProcedure
@@ -3805,9 +3888,10 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
 
-        return db.select({
+        const notes = await db.select({
           id: supportInternalNotes.id,
           body: supportInternalNotes.body,
+          bodyPlainText: supportInternalNotes.bodyPlainText,
           createdAt: supportInternalNotes.createdAt,
           authorUserId: supportInternalNotes.authorUserId,
           authorName: users.name,
@@ -3817,11 +3901,36 @@ export const appRouter = router({
           .leftJoin(users, eq(supportInternalNotes.authorUserId, users.id))
           .where(eq(supportInternalNotes.ticketId, input.id))
           .orderBy(desc(supportInternalNotes.createdAt));
+
+        const noteIds = notes.map((note) => note.id);
+        const mentions = noteIds.length === 0
+          ? []
+          : await db.select({
+            noteId: supportInternalNoteMentions.noteId,
+            userId: supportInternalNoteMentions.mentionedUserId,
+            name: users.name,
+            email: users.email,
+          })
+            .from(supportInternalNoteMentions)
+            .leftJoin(users, eq(supportInternalNoteMentions.mentionedUserId, users.id))
+            .where(inArray(supportInternalNoteMentions.noteId, noteIds));
+
+        return notes.map((note) => ({
+          ...note,
+          // New notes carry the authoritative plain-text derivative; legacy notes
+          // are escaped and rendered as safe text by the same constrained renderer.
+          bodyHtml: note.bodyPlainText !== null ? note.body : renderSupportInternalNoteHtml(note.body),
+          displayText: note.bodyPlainText ?? getSupportInternalNotePlainText(note.body),
+          mentions: mentions
+            .filter((mention) => mention.noteId === note.id)
+            .map(({ userId, name, email }) => ({ userId, name, email })),
+        }));
       }),
     addInternalNote: adminProcedure
       .input(z.object({
         id: z.number().int().positive(),
         body: z.string().trim().min(1).max(MAX_SUPPORT_INTERNAL_NOTE_CHARS),
+        mentionUserIds: z.array(z.number().int().positive()).max(MAX_SUPPORT_INTERNAL_NOTE_MENTIONS).default([]),
       }))
       .mutation(async ({ ctx, input }) => {
         const db = await getDb();
@@ -3833,11 +3942,39 @@ export const appRouter = router({
           .limit(1);
         if (!ticket) throw new TRPCError({ code: "NOT_FOUND", message: "Support ticket not found." });
 
-        await db.insert(supportInternalNotes).values({
+        const mentionUserIds = Array.from(new Set(input.mentionUserIds));
+        if (mentionUserIds.length > 0) {
+          const mentionableAdmins = await db.select({ id: users.id })
+            .from(users)
+            .where(and(inArray(users.id, mentionUserIds), eq(users.role, "admin")));
+          if (mentionableAdmins.length !== mentionUserIds.length) {
+            throw new TRPCError({ code: "BAD_REQUEST", message: "Mention only active administrators." });
+          }
+        }
+
+        const bodyHtml = renderSupportInternalNoteHtml(input.body);
+        const bodyPlainText = getSupportInternalNotePlainText(input.body);
+        const inserted = await db.insert(supportInternalNotes).values({
           ticketId: ticket.id,
           authorUserId: ctx.user.id,
-          body: input.body,
-        });
+          body: bodyHtml,
+          bodyPlainText,
+        }).$returningId();
+        const noteId = inserted[0]?.id;
+        if (!noteId) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Could not save internal note." });
+
+        if (mentionUserIds.length > 0) {
+          await db.insert(supportInternalNoteMentions).values(
+            mentionUserIds.map((mentionedUserId) => ({ noteId, mentionedUserId })),
+          );
+          await queueSupportTicketAlerts(db, {
+            ticketId: ticket.id,
+            recipientUserIds: mentionUserIds.filter((mentionedUserId) => mentionedUserId !== ctx.user.id),
+            actorUserId: ctx.user.id,
+            type: "mention",
+          });
+        }
+        await recordSupportFirstResponse(db, ticket.id);
         return { ok: true as const };
       }),
     myTicketAlerts: adminProcedure.query(async ({ ctx }) => {

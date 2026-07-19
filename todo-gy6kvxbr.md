@@ -451,3 +451,10 @@
 - [x] Enhance the responsive support inbox with due-date controls, SLA status/timers, a collaborative internal-note timeline, and clear escalation actions.
 - [x] Add immediate visual notifications for the newly assigned administrator and escalated tickets, with safe in-app delivery and duplicate-suppression behavior.
 - [x] Add focused persistence, authorization, timing, notification, and UI regressions; validate desktop/mobile workflows and publish.
+
+- [x] Update and validate the reusable support-management skill with SLA-aware queue filtering, operational reporting, rich notes, and administrator mentions.
+- [x] Add durable rich-note formatting and safe administrator mention persistence without exposing private note content to customers.
+- [x] Add protected ticket-list sorting/filtering by assignee, priority, and upcoming SLA deadlines with stable pagination semantics.
+- [x] Add an administrator reporting contract and dashboard view for real average first-response time, resolution time, and ticket-volume metrics with explicit empty states.
+- [x] Enhance internal notes with accessible rich-text formatting and administrator mention suggestions, rendering only sanitized allowed markup.
+- [x] Add focused triage, timing-metric, rich-note, mention, reporting, authorization, and responsive UI regression coverage; validate and publish.

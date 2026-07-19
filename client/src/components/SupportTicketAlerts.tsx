@@ -30,10 +30,14 @@ export default function SupportTicketAlerts() {
       const actor = alert.actorName?.trim() || "An administrator";
       const description = alert.type === "assignment"
         ? `${actor} assigned you “${ticketLabel}”.`
-        : `${actor} escalated “${ticketLabel}” to ${alert.priority ?? "higher"} priority.`;
+        : alert.type === "mention"
+          ? `${actor} mentioned you in a private update on “${ticketLabel}”.`
+          : `${actor} escalated “${ticketLabel}” to ${alert.priority ?? "higher"} priority.`;
 
       if (alert.type === "assignment") {
         toast.success("New ticket assigned", { description, id: `support-ticket-alert-${alert.id}` });
+      } else if (alert.type === "mention") {
+        toast.info("Mentioned in a ticket", { description, id: `support-ticket-alert-${alert.id}` });
       } else {
         toast.warning("Ticket escalated", { description, id: `support-ticket-alert-${alert.id}` });
       }

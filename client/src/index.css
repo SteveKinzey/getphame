@@ -733,6 +733,22 @@
   animation: fadeUp 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
+/* ── Support ticket rich-note rendering ───────────────────────────────────── */
+.support-note-rich-text p + p { margin-top: 0.5rem; }
+.support-note-rich-text ul,
+.support-note-rich-text ol { margin: 0.5rem 0 0.5rem 1.25rem; }
+.support-note-rich-text ul { list-style: disc; }
+.support-note-rich-text ol { list-style: decimal; }
+.support-note-rich-text li + li { margin-top: 0.25rem; }
+.support-note-rich-text code {
+  border-radius: 0.25rem;
+  background: oklch(0.94 0.01 260);
+  padding: 0.1rem 0.3rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875em;
+}
+.support-note-rich-text a { color: oklch(0.45 0.15 250); text-decoration: underline; }
+
 /* ── Extracted inline styles (moved from JSX to eliminate unsafe-inline CSP) ── */
 
 /* AppLayout: responsive sidebar widths */

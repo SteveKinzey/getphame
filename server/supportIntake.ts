@@ -7,7 +7,7 @@ export type SupportSubmissionStatus = (typeof SUPPORT_SUBMISSION_STATUSES)[numbe
 export const SUPPORT_PRIORITIES = ["low", "normal", "high", "urgent"] as const;
 export type SupportPriority = (typeof SUPPORT_PRIORITIES)[number];
 
-export const SUPPORT_TICKET_ALERT_TYPES = ["assignment", "escalation"] as const;
+export const SUPPORT_TICKET_ALERT_TYPES = ["assignment", "escalation", "mention"] as const;
 export type SupportTicketAlertType = (typeof SUPPORT_TICKET_ALERT_TYPES)[number];
 
 export const SUPPORT_SLA_DURATION_MS: Record<SupportPriority, number> = {
@@ -18,6 +18,7 @@ export const SUPPORT_SLA_DURATION_MS: Record<SupportPriority, number> = {
 };
 
 export const MAX_SUPPORT_INTERNAL_NOTE_CHARS = 4_000;
+export const MAX_SUPPORT_INTERNAL_NOTE_MENTIONS = 12;
 export const MAX_SUPPORT_DUE_DATE_FUTURE_DAYS = 365;
 export const SUPPORT_TICKET_ALERT_DEDUP_WINDOW_MS = 5 * 60 * 1000;
 
@@ -32,6 +33,71 @@ export function getSupportSlaTargetAt(priority: SupportPriority, startedAt = new
 
 export function isSupportEscalation(previous: SupportPriority, next: SupportPriority): boolean {
   return SUPPORT_PRIORITIES.indexOf(next) > SUPPORT_PRIORITIES.indexOf(previous);
+}
+
+function escapeSupportNoteHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function renderSupportNoteInline(value: string): string {
+  let rendered = escapeSupportNoteHtml(value);
+  // Only tags generated after escaping are rendered, so user-provided HTML never becomes executable markup.
+  rendered = rendered.replace(/`([^`\n]{1,500})`/g, "<code>$1</code>");
+  rendered = rendered.replace(/\*\*([^*\n]{1,1500})\*\*/g, "<strong>$1</strong>");
+  rendered = rendered.replace(/_([^_\n]{1,1500})_/g, "<em>$1</em>");
+  rendered = rendered.replace(/~~([^~\n]{1,1500})~~/g, "<s>$1</s>");
+  return rendered;
+}
+
+/**
+ * Converts a deliberately small Markdown subset into safe presentation HTML.
+ * The source is escaped before formatter tokens are applied; never accept arbitrary HTML for internal notes.
+ */
+export function renderSupportInternalNoteHtml(value: string): string {
+  const normalized = value.replace(/\r\n?/g, "\n").trim();
+  if (!normalized) return "";
+
+  const lines = normalized.split("\n");
+  const chunks: string[] = [];
+  let listItems: string[] = [];
+  const flushList = () => {
+    if (listItems.length > 0) {
+      chunks.push(`<ul>${listItems.join("")}</ul>`);
+      listItems = [];
+    }
+  };
+
+  for (const line of lines) {
+    const listMatch = line.match(/^\s*[-*]\s+(.+)$/);
+    if (listMatch) {
+      listItems.push(`<li>${renderSupportNoteInline(listMatch[1])}</li>`);
+      continue;
+    }
+
+    flushList();
+    if (!line.trim()) {
+      chunks.push("<br />");
+    } else {
+      chunks.push(`<p>${renderSupportNoteInline(line)}</p>`);
+    }
+  }
+  flushList();
+  return chunks.join("");
+}
+
+/** Plain-text derivative used for accessible fallbacks and internal reporting/search. */
+export function getSupportInternalNotePlainText(value: string): string {
+  return value
+    .replace(/\r\n?/g, "\n")
+    .replace(/^\s*[-*]\s+/gm, "")
+    .replace(/(\*\*|~~|`|_)/g, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 const attachmentExtensions: Record<SupportAttachmentMimeType, string> = {

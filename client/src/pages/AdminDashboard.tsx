@@ -31,6 +31,7 @@ import {
   MousePointerClick,
   RotateCcw,
   Inbox,
+  Clock3,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -50,6 +51,7 @@ export default function AdminDashboard() {
   const { user, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
   const [smtpRetestResults, setSmtpRetestResults] = useState<Record<number, { ok: boolean; checkedAt: number; error: string | null }>>({});
+  const [supportReportingPeriod, setSupportReportingPeriod] = useState<"7" | "30" | "90">("30");
 
   const { data: stats, isLoading, error } = trpc.admin.stats.useQuery(undefined, {
     enabled: !!user,
@@ -80,6 +82,11 @@ export default function AdminDashboard() {
     enabled: user?.role === "admin",
     refetchInterval: 5 * 60_000,
   });
+
+  const { data: supportMetrics, isLoading: supportMetricsLoading } = trpc.support.adminMetrics.useQuery(
+    { periodDays: supportReportingPeriod },
+    { enabled: user?.role === "admin", refetchInterval: 60_000 },
+  );
 
   const operationsExport = trpc.admin.operationsAnalyticsExport.useQuery(undefined, { enabled: false });
 
@@ -520,6 +527,51 @@ export default function AdminDashboard() {
               )}
             </section>
 
+            <section data-testid="admin-support-reporting" aria-labelledby="admin-support-reporting-title">
+              <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Support operations</p>
+                  <h2 id="admin-support-reporting-title" className="mt-1 text-xl font-semibold rr-text-navy">Response and resolution reporting</h2>
+                  <p className="mt-1 text-sm rr-text-navy-muted">First response begins at the first administrator update or private resolution note.</p>
+                </div>
+                <label className="flex items-center gap-2 text-sm font-black rr-text-navy">
+                  <span className="sr-only">Reporting period</span>
+                  <select value={supportReportingPeriod} onChange={(event) => setSupportReportingPeriod(event.target.value as "7" | "30" | "90")} className="min-h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm font-black rr-text-navy outline-none focus:ring-2 focus:ring-amber-400">
+                    <option value="7">Last 7 days</option>
+                    <option value="30">Last 30 days</option>
+                    <option value="90">Last 90 days</option>
+                  </select>
+                </label>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                <SupportMetricCard
+                  label="Average first response"
+                  value={supportMetricsLoading ? "Loading…" : formatSupportMetricDuration(supportMetrics?.avgFirstResponseMs)}
+                  detail={supportMetrics ? `${supportMetrics.firstResponseCount} ticket${supportMetrics.firstResponseCount === 1 ? "" : "s"} with a recorded first response` : "Waiting for support data"}
+                  Icon={Clock3}
+                />
+                <SupportMetricCard
+                  label="Average resolution"
+                  value={supportMetricsLoading ? "Loading…" : formatSupportMetricDuration(supportMetrics?.avgResolutionMs)}
+                  detail={supportMetrics ? `${supportMetrics.resolvedTickets} resolved ticket${supportMetrics.resolvedTickets === 1 ? "" : "s"}` : "Waiting for resolution data"}
+                  Icon={CheckCircle2}
+                />
+                <SupportMetricCard
+                  label="Tickets created"
+                  value={supportMetricsLoading ? "Loading…" : String(supportMetrics?.ticketsCreated ?? 0)}
+                  detail={supportMetrics ? `${supportMetrics.openTickets} currently open` : "Waiting for support data"}
+                  Icon={Inbox}
+                />
+                <SupportMetricCard
+                  label="SLA overdue"
+                  value={supportMetricsLoading ? "Loading…" : String(supportMetrics?.overdueTickets ?? 0)}
+                  detail={supportMetrics?.overdueTickets ? "Review the overdue-SLA queue" : "No unresolved overdue SLA targets"}
+                  Icon={AlertTriangle}
+                  alert={Boolean(supportMetrics?.overdueTickets)}
+                />
+              </div>
+            </section>
+
             {/* Top KPI row */}
             <div className="grid grid-cols-2 gap-3">
               <KpiCard
@@ -837,6 +889,46 @@ function KpiCard({
       <p className="text-sm font-bold rr-text-navy-mid">
         {label}
       </p>
+    </div>
+  );
+}
+
+function formatSupportMetricDuration(milliseconds: number | null | undefined) {
+  if (milliseconds === null || milliseconds === undefined) return "No data";
+  const totalMinutes = Math.max(1, Math.round(milliseconds / 60_000));
+  const days = Math.floor(totalMinutes / 1_440);
+  const hours = Math.floor((totalMinutes % 1_440) / 60);
+  const minutes = totalMinutes % 60;
+  if (days > 0) return `${days}d ${hours}h`;
+  if (hours > 0) return `${hours}h ${minutes}m`;
+  return `${minutes}m`;
+}
+
+function SupportMetricCard({
+  label,
+  value,
+  detail,
+  Icon,
+  alert = false,
+}: {
+  label: string;
+  value: string;
+  detail: string;
+  Icon: LucideIcon;
+  alert?: boolean;
+}) {
+  return (
+    <div className={`rounded-2xl p-4 shadow-sm ${alert ? "bg-red-50" : "bg-white"}`}>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-[0.14em] rr-text-navy-muted">{label}</p>
+          <p className="mt-1 text-3xl font-black rr-text-navy">{value}</p>
+        </div>
+        <span className={`flex size-10 shrink-0 items-center justify-center rounded-xl text-white ${alert ? "bg-red-700" : "rr-bg-navy"}`}>
+          <Icon size={19} strokeWidth={2} aria-hidden="true" />
+        </span>
+      </div>
+      <p className="mt-2 text-sm font-medium rr-text-navy-muted">{detail}</p>
     </div>
   );
 }

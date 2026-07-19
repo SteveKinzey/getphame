@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
   getSupportAttachmentExtension,
+  getSupportInternalNotePlainText,
   getSupportSlaTargetAt,
   isSupportEscalation,
   isValidSupportScreenshot,
   MAX_SUPPORT_ATTACHMENT_BYTES,
+  MAX_SUPPORT_INTERNAL_NOTE_CHARS,
+  MAX_SUPPORT_INTERNAL_NOTE_MENTIONS,
+  renderSupportInternalNoteHtml,
   sanitizeSupportAttachmentFilename,
   SUPPORT_SLA_DURATION_MS,
   SUPPORT_TICKET_ALERT_TYPES,
@@ -51,6 +55,21 @@ describe("support screenshot intake", () => {
     expect(isSupportEscalation("high", "urgent")).toBe(true);
     expect(isSupportEscalation("urgent", "high")).toBe(false);
     expect(isSupportEscalation("normal", "normal")).toBe(false);
-    expect(SUPPORT_TICKET_ALERT_TYPES).toEqual(["assignment", "escalation"]);
+    expect(SUPPORT_TICKET_ALERT_TYPES).toEqual(["assignment", "escalation", "mention"]);
+  });
+
+  it("renders a deliberately small rich-note subset without accepting executable markup", () => {
+    const source = "**Escalate** _today_ and `check logs`\n- Mention the owner\n<script>alert(\"no\")</script>";
+    const html = renderSupportInternalNoteHtml(source);
+
+    expect(html).toContain("<strong>Escalate</strong>");
+    expect(html).toContain("<em>today</em>");
+    expect(html).toContain("<code>check logs</code>");
+    expect(html).toContain("<ul><li>Mention the owner</li></ul>");
+    expect(html).toContain("&lt;script&gt;alert(&quot;no&quot;)&lt;/script&gt;");
+    expect(html).not.toContain("<script>");
+    expect(getSupportInternalNotePlainText(source)).toContain("Escalate today and check logs");
+    expect(MAX_SUPPORT_INTERNAL_NOTE_CHARS).toBe(4_000);
+    expect(MAX_SUPPORT_INTERNAL_NOTE_MENTIONS).toBe(12);
   });
 });
