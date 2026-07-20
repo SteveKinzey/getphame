@@ -1,12 +1,13 @@
 import "dotenv/config";
 import express from "express";
+import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
-import { registerGoogleAuthRoutes } from "../googleAuth";
+import { registerGoogleAuthRoutes } from "../auth-google";
 import { registerEmailAuthRoutes } from "../auth-email";
 import { registerAppleAuthRoutes } from "../appleAuth";
 import { appRouter } from "../routers";
@@ -20,11 +21,11 @@ import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
 import { reminderHeartbeatHandler } from "../scheduledReminders";
 import { koalendarHeartbeatHandler } from "../koalendarHeartbeat";
-import { registerKoalendarRoutes } from "../koalendar";
 import { startSmtpWeeklyDigestScheduler } from "../smtpWeeklyDigest";
 import { startReEngagementScheduler } from "../reEngagementScheduler";
 import { startInactiveUserScheduler } from "../inactiveUserScheduler";
 import { startWooAutoImportScheduler } from "../wooImportScheduler";
+import { registerKoalendarRoutes } from "../koalendar";
 import { registerSitemapRoutes } from "../sitemap";
 import { exchangeGmailCode, getGmailRedirectUri } from "../gmail";
 
@@ -389,6 +390,9 @@ async function startServer() {
   );
 
   // Body parser — 5 MB is sufficient for all current payloads
+  // Cookie parsing must run before the OAuth callback so the Google CSRF state
+  // cookie can be validated by the canonical auth-google route.
+  app.use(cookieParser());
   app.use(express.json({ limit: "5mb" }));
   app.use(express.urlencoded({ limit: "5mb", extended: true }));
   // OAuth callback under /api/oauth/callback
