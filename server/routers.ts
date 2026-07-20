@@ -33,7 +33,7 @@ import {
 
 import { sendMailViaSmtp } from "./smtp";
 import { buildReviewRequestEmail, buildReviewRequestText } from "./emailTemplates";
-import { checkSendRateLimit } from "./rateLimiter";
+import { checkOnboardingChecklistEventRateLimit, checkSendRateLimit } from "./rateLimiter";
 import {
   cancelSubscriptionRenewal,
   claimMoneyBackGuarantee,
@@ -123,7 +123,7 @@ import {
 } from "./reminders";
 import { getReminderTimingPerformance } from "./reminderPerformance";
 import { getOperationsAlertState, getSystemHealthTrend } from "./systemHealth";
-import { buildAdminOperationsAnalyticsExport, serializeAdminOperationsCsv } from "./adminOperationsExport";
+import { buildAdminOperationsAnalyticsExport, serializeAdminOperationsCsv, type AdminOperationsCsvRow } from "./adminOperationsExport";
 import {
   createAccessCode,
   listAccessCodes,
@@ -384,6 +384,77 @@ function resolveSupportMetricsRange(input?: SupportMetricsInput) {
     periodLabel: `last_${periodDays}_days`,
     isCustomRange: false,
   };
+}
+
+const MAX_ONBOARDING_FUNNEL_RANGE_DAYS = 366;
+type OnboardingChecklistFunnelInput = {
+  periodDays?: "7" | "30" | "90";
+  startDate?: string;
+  endDate?: string;
+};
+const onboardingChecklistFunnelInputSchema = z.object({
+  periodDays: z.enum(["7", "30", "90"]).optional(),
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use a valid start date.").optional(),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use a valid end date.").optional(),
+}).strict().superRefine((value, issueContext) => {
+  const hasCustomRange = Boolean(value.startDate || value.endDate);
+  if (hasCustomRange && (!value.startDate || !value.endDate)) {
+    issueContext.addIssue({ code: z.ZodIssueCode.custom, path: ["startDate"], message: "Choose both a start and end date for the onboarding report." });
+  }
+  if (hasCustomRange && value.periodDays) {
+    issueContext.addIssue({ code: z.ZodIssueCode.custom, path: ["periodDays"], message: "Choose either a preset period or a custom date range." });
+  }
+});
+
+function parseOnboardingFunnelDay(value: string, field: "start" | "end"): Date {
+  const [year, month, day] = value.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day, field === "end" ? 23 : 0, field === "end" ? 59 : 0, field === "end" ? 59 : 0, field === "end" ? 999 : 0));
+  if (parsed.getUTCFullYear() !== year || parsed.getUTCMonth() !== month - 1 || parsed.getUTCDate() !== day) {
+    throw new TRPCError({ code: "BAD_REQUEST", message: `Choose a valid ${field} date for the onboarding report.` });
+  }
+  return parsed;
+}
+
+function resolveOnboardingChecklistFunnelRange(input?: OnboardingChecklistFunnelInput) {
+  const generatedAt = new Date();
+  if (input?.startDate && input.endDate) {
+    const periodStart = parseOnboardingFunnelDay(input.startDate, "start");
+    const periodEnd = parseOnboardingFunnelDay(input.endDate, "end");
+    if (periodEnd.getTime() < periodStart.getTime()) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "The onboarding report end date must be on or after its start date." });
+    }
+    const periodDays = Math.floor((periodEnd.getTime() - periodStart.getTime()) / (24 * 60 * 60 * 1000)) + 1;
+    if (periodDays > MAX_ONBOARDING_FUNNEL_RANGE_DAYS) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: `Choose a range of ${MAX_ONBOARDING_FUNNEL_RANGE_DAYS} days or fewer.` });
+    }
+    return { generatedAt, periodStart, periodEnd, periodDays, periodLabel: `${input.startDate}_to_${input.endDate}`, isCustomRange: true };
+  }
+
+  const periodDays = Number(input?.periodDays ?? "30");
+  return {
+    generatedAt,
+    periodStart: new Date(generatedAt.getTime() - periodDays * 24 * 60 * 60 * 1000),
+    periodEnd: generatedAt,
+    periodDays,
+    periodLabel: `last_${periodDays}_days`,
+    isCustomRange: false,
+  };
+}
+
+async function getOnboardingChecklistFunnelSnapshot(
+  db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
+  input?: OnboardingChecklistFunnelInput,
+) {
+  const range = resolveOnboardingChecklistFunnelRange(input);
+  const rows = await db
+    .select({ page: pageEvents.page, userId: pageEvents.userId, createdAt: pageEvents.createdAt })
+    .from(pageEvents)
+    .where(and(
+      eq(pageEvents.utmSource, ONBOARDING_CHECKLIST_EVENT_SOURCE),
+      gte(pageEvents.createdAt, range.periodStart),
+      lte(pageEvents.createdAt, range.periodEnd),
+    ));
+  return { ...summarizeOnboardingChecklistEvents(rows, range.generatedAt.getTime()), range };
 }
 
 async function getSupportMetricsSnapshot(
@@ -3116,14 +3187,44 @@ export const appRouter = router({
     }),
 
     /** Aggregate checklist setup funnel. It intentionally returns no raw event or identity data. */
-    onboardingChecklistFunnel: adminProcedure.query(async () => {
+    onboardingChecklistFunnel: adminProcedure.input(onboardingChecklistFunnelInputSchema.optional()).query(async ({ input }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-      const rows = await db
-        .select({ page: pageEvents.page, userId: pageEvents.userId, createdAt: pageEvents.createdAt })
-        .from(pageEvents)
-        .where(eq(pageEvents.utmSource, ONBOARDING_CHECKLIST_EVENT_SOURCE));
-      return summarizeOnboardingChecklistEvents(rows);
+      return getOnboardingChecklistFunnelSnapshot(db, input);
+    }),
+
+    /** Admin-only aggregate export. It contains no raw event, identity, or customer data. */
+    onboardingChecklistFunnelExport: adminProcedure.input(onboardingChecklistFunnelInputSchema.optional()).query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      const funnel = await getOnboardingChecklistFunnelSnapshot(db, input);
+      const period = funnel.range.periodLabel;
+      const stepLabels = { email: "connect_email", platform: "add_platform", contacts: "import_contacts", send: "first_send" } as const;
+      const rows: AdminOperationsCsvRow[] = [
+        { section: "metadata", metric: "generated_at", period, value: funnel.range.generatedAt.toISOString(), unit: "iso_8601", details: "Get Phame aggregate onboarding funnel export" },
+        { section: "metadata", metric: "period_start", period, value: funnel.range.periodStart.toISOString(), unit: "iso_8601", details: "Inclusive UTC reporting boundary" },
+        { section: "metadata", metric: "period_end", period, value: funnel.range.periodEnd.toISOString(), unit: "iso_8601", details: "Inclusive UTC reporting boundary" },
+        { section: "onboarding_funnel", metric: "checklist_views", period, value: funnel.allTime.checklist_viewed, unit: "unique_accounts", details: "Unique accounts that viewed the setup checklist" },
+        { section: "onboarding_funnel", metric: "checklist_completed", period, value: funnel.allTime.checklist_completed, unit: "unique_accounts", details: "Unique accounts that completed all setup steps" },
+        { section: "onboarding_funnel", metric: "completion_rate", period, value: funnel.rates.completion, unit: "percent", details: "Completed accounts divided by checklist viewers" },
+        ...Object.entries(stepLabels).flatMap(([step, label]) => {
+          const metric = funnel.steps[step as keyof typeof funnel.steps];
+          return [
+            { section: "onboarding_funnel", metric: `${label}_shown`, period, value: metric.shown, unit: "unique_accounts", details: "Unique accounts that viewed this step" },
+            { section: "onboarding_funnel", metric: `${label}_continued`, period, value: metric.actioned, unit: "unique_accounts", details: "Unique accounts that used this step action" },
+            { section: "onboarding_funnel", metric: `${label}_drop_off`, period, value: metric.dropOff, unit: "unique_accounts", details: "Viewed this step without using its action" },
+            { section: "onboarding_funnel", metric: `${label}_continuation_rate`, period, value: metric.continuationRate, unit: "percent", details: "Accounts that continued after viewing this step" },
+          ] satisfies AdminOperationsCsvRow[];
+        }),
+      ];
+      const dateStamp = funnel.range.generatedAt.toISOString().slice(0, 10);
+      return {
+        filename: `getphame-onboarding-funnel-${period}-${dateStamp}.csv`,
+        csv: serializeAdminOperationsCsv(rows),
+        mimeType: "text/csv;charset=utf-8",
+        generatedAt: funnel.range.generatedAt,
+        rowCount: rows.length,
+      };
     }),
 
     /** Churn survey responses — admin only */
@@ -3631,6 +3732,7 @@ export const appRouter = router({
     trackOnboardingChecklistEvent: protectedProcedure
       .input(z.object({ event: z.enum(ONBOARDING_CHECKLIST_EVENT_NAMES) }))
       .mutation(async ({ ctx, input }) => {
+        checkOnboardingChecklistEventRateLimit(ctx.user.id);
         const db = await getDb();
         if (!db) return { ok: true };
         await db.insert(pageEvents).values({

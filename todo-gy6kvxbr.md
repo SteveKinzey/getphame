@@ -545,3 +545,9 @@
 - [x] Add a persistent Settings-level control to enable or disable onboarding tooltips and synchronize it with Skip Tour behavior.
 - [x] Package the implementation workflow as a validated reusable Skill using the skill-creator process.
 - [x] Add focused Vitest coverage, run release checks, verify mobile UI, and publish the completed onboarding optimization release.
+- [ ] Add validated date-range filtering to the administrator onboarding funnel metrics without exposing raw user events.
+- [ ] Add an administrator-only CSV export for the active filtered onboarding funnel aggregate with safe spreadsheet-cell values.
+- [ ] Add accessible fade-in motion and a localized remaining-tip progress indicator to onboarding tooltips while respecting reduced-motion preferences.
+- [ ] Update and validate the reusable onboarding optimization Skill with filtered reporting, safe CSV export, tooltip animation, and security-review guidance.
+- [ ] Perform a targeted code security review, correct confirmed vulnerabilities, and preserve existing authorization, privacy, and payment boundaries.
+- [ ] Add focused regression coverage, run the release gates, verify mobile UI, and publish the completed enhancement.

@@ -25,7 +25,7 @@ const SETUP_KEYS = [
   "setupStepNumber",
   "loadingAnalytics",
 ] as const;
-const TOUR_KEYS = ["skip", "show", "skipTooltip", "showTooltip", "skipSuccess", "saveError"] as const;
+const TOUR_KEYS = ["skip", "show", "skipTooltip", "showTooltip", "skipSuccess", "saveError", "tipsRemaining_one", "tipsRemaining_other"] as const;
 const ACTIVITY_TREND_KEYS = ["title", "rangeAria", "range", "loading", "empty", "sent", "opens", "clicks", "openRate", "clickRate", "thisWeek", "priorWeek", "allTime"] as const;
 const ONBOARDING_TIP_KEYS = ["title", "description", "enable", "disable"] as const;
 
@@ -144,18 +144,51 @@ describe("dashboard onboarding and security release", () => {
     const routers = readSource("../server/routers.ts");
     const setupProgress = readSource("../client/src/components/dashboard/SetupProgressCard.tsx");
     const admin = readSource("../client/src/pages/AdminDashboard.tsx");
+    const rateLimiter = readSource("../server/rateLimiter.ts");
 
     expect(routers).toContain("trackOnboardingChecklistEvent: protectedProcedure");
     expect(routers).toContain("z.enum(ONBOARDING_CHECKLIST_EVENT_NAMES)");
     expect(routers).toContain("utmSource: ONBOARDING_CHECKLIST_EVENT_SOURCE");
     expect(routers).toContain("referrer: null");
     expect(routers).toContain("userAgent: null");
-    expect(routers).toContain("onboardingChecklistFunnel: adminProcedure.query");
+    expect(routers).toContain("onboardingChecklistFunnel: adminProcedure.input");
+    expect(routers).toContain("checkOnboardingChecklistEventRateLimit(ctx.user.id)");
+    expect(rateLimiter).toContain("MAX_ONBOARDING_EVENTS_PER_WINDOW = 60");
+    expect(rateLimiter).toContain("checkOnboardingChecklistEventRateLimit");
     expect(setupProgress).toContain("trackChecklistEvent.mutate({ event: \"checklist_viewed\" })");
     expect(setupProgress).toContain("trackedSnapshots");
     expect(setupProgress).toContain("_step_actioned");
     expect(admin).toContain('data-testid="admin-setup-funnel"');
     expect(admin).toContain("Aggregate account-level events only");
+  });
+
+  it("bounds admin funnel date filters and exports aggregate-only CSV through the server-authorized contract", () => {
+    const routers = readSource("../server/routers.ts");
+    const admin = readSource("../client/src/pages/AdminDashboard.tsx");
+
+    expect(routers).toContain("MAX_ONBOARDING_FUNNEL_RANGE_DAYS = 366");
+    expect(routers).toContain("onboardingChecklistFunnelInputSchema");
+    expect(routers).toContain("Choose either a preset period or a custom date range.");
+    expect(routers).toContain("onboardingChecklistFunnelExport: adminProcedure");
+    expect(routers).toContain("serializeAdminOperationsCsv(rows)");
+    expect(routers).toContain("contains no raw event, identity, or customer data");
+    expect(admin).toContain("onboardingFunnelRangeValid");
+    expect(admin).toContain("onboardingChecklistFunnelExport.useQuery");
+    expect(admin).toContain("downloadOnboardingFunnelCsv");
+    expect(admin).toContain("URL.revokeObjectURL(url)");
+    expect(admin).toContain("data-testid=\"admin-setup-funnel\"");
+  });
+
+  it("animates visible onboarding tips accessibly and communicates the remaining localized tip count", () => {
+    const wizard = readSource("../client/src/components/OnboardingWizard.tsx");
+    const styles = readSource("../client/src/index.css");
+
+    expect(wizard).toContain("onboarding-tip-fade");
+    expect(wizard).toContain("remainingTipCount");
+    expect(wizard).toContain('t("onboardingWizard.tour.tipsRemaining"');
+    expect(wizard).toContain('aria-live="polite"');
+    expect(styles).toContain(".onboarding-tip-fade");
+    expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
   });
 
   it("localizes every chart label, axis date, tooltip rate, and empty state", () => {

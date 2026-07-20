@@ -826,3 +826,21 @@
 .animate-phame-pulse {
   animation: phame-pulse 1.4s ease-in-out infinite;
 }
+
+@keyframes onboardingTipFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.onboarding-tip-fade {
+  animation: onboardingTipFadeIn 180ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  will-change: transform, opacity;
+}
+.onboarding-step-fade {
+  animation: onboardingTipFadeIn 220ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .onboarding-tip-fade,
+  .onboarding-step-fade {
+    animation: none !important;
+  }
+}

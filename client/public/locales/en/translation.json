@@ -1274,7 +1274,9 @@
       "show": "Show tips",
       "skipTooltip": "Hide onboarding tips on this device",
       "showTooltip": "Show onboarding tips again",
-      "skipSuccess": "Onboarding tips hidden. You can show them again at any time."
+      "skipSuccess": "Onboarding tips hidden. You can show them again at any time.",
+      "tipsRemaining_one": "{{count}} tip remains in this setup",
+      "tipsRemaining_other": "{{count}} tips remain in this setup"
     },
     "steps": {
       "connectEmail": "Connect Email",

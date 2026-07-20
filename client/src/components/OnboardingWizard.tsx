@@ -130,7 +130,7 @@ function OnboardingHelpTip({ label, text }: { label: string; text: string }) {
           <CircleHelp size={14} aria-hidden="true" />
         </button>
       </TooltipTrigger>
-      <TooltipContent side="top" sideOffset={8} className="max-w-[19rem] rounded-xl border border-[#D4A017]/45 px-3 py-2 text-left text-xs leading-relaxed shadow-xl">
+      <TooltipContent side="top" sideOffset={8} className="onboarding-tip-fade max-w-[19rem] rounded-xl border border-[#D4A017]/45 px-3 py-2 text-left text-xs leading-relaxed shadow-xl">
         {text}
       </TooltipContent>
     </Tooltip>
@@ -959,6 +959,13 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
       ? [{ id: 4, label: t("onboardingWizard.steps.wpConnector", "WP Plugin"), icon: Plug2, done: false }]
       : []),
   ];
+  const remainingTipCount = tipsHidden
+    ? 0
+    : steps.reduce((total, step) => {
+      if (step.id < currentStep || step.done) return total;
+      const tipsForStep = step.id === 1 || step.id === 2 ? 2 : step.id === 3 ? 1 : 0;
+      return total + tipsForStep;
+    }, 0);
   function handleStepDone() {
     // Auto-advance to next step when server confirms completion
     setViewStep((prev) => Math.min((prev ?? minStep) + 1, maxStep));
@@ -1073,10 +1080,20 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
               );
             })}
           </div>
+          {!tipsHidden && remainingTipCount > 0 && (
+            <p className="mt-3 text-xs font-semibold" style={{ color: "oklch(0.83 0.10 80)" }} aria-live="polite">
+              {t("onboardingWizard.tour.tipsRemaining", {
+                count: remainingTipCount,
+                defaultValue: remainingTipCount === 1
+                  ? "1 tip remains in this setup"
+                  : `${remainingTipCount} tips remain in this setup`,
+              })}
+            </p>
+          )}
         </div>
 
         {/* Step content */}
-        <div className="px-6 py-6 overflow-y-auto flex-1">
+        <div key={currentStep} className="onboarding-step-fade px-6 py-6 overflow-y-auto flex-1">
           {/* Step title */}
           <div className="mb-5">
             <h2

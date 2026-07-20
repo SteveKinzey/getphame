@@ -54,12 +54,22 @@ export default function AdminDashboard() {
   const [supportReportingPeriod, setSupportReportingPeriod] = useState<"7" | "30" | "90">("30");
   const [supportReportStartDate, setSupportReportStartDate] = useState("");
   const [supportReportEndDate, setSupportReportEndDate] = useState("");
+  const [onboardingFunnelPeriod, setOnboardingFunnelPeriod] = useState<"7" | "30" | "90" | "custom">("30");
+  const [onboardingFunnelStartDate, setOnboardingFunnelStartDate] = useState("");
+  const [onboardingFunnelEndDate, setOnboardingFunnelEndDate] = useState("");
   const supportMetricsInput = useMemo(
     () => supportReportStartDate && supportReportEndDate
       ? { startDate: supportReportStartDate, endDate: supportReportEndDate }
       : { periodDays: supportReportingPeriod },
     [supportReportEndDate, supportReportStartDate, supportReportingPeriod],
   );
+  const onboardingFunnelInput = useMemo(() => {
+    if (onboardingFunnelPeriod !== "custom") return { periodDays: onboardingFunnelPeriod } as const;
+    if (!onboardingFunnelStartDate || !onboardingFunnelEndDate) return undefined;
+    return { startDate: onboardingFunnelStartDate, endDate: onboardingFunnelEndDate };
+  }, [onboardingFunnelEndDate, onboardingFunnelPeriod, onboardingFunnelStartDate]);
+  const onboardingFunnelRangeValid = onboardingFunnelPeriod !== "custom"
+    || (Boolean(onboardingFunnelStartDate) && Boolean(onboardingFunnelEndDate) && onboardingFunnelEndDate >= onboardingFunnelStartDate);
 
   const { data: stats, isLoading, error } = trpc.admin.stats.useQuery(undefined, {
     enabled: !!user,
@@ -76,8 +86,8 @@ export default function AdminDashboard() {
     refetchInterval: 60_000,
   });
 
-  const { data: onboardingChecklistFunnel } = trpc.admin.onboardingChecklistFunnel.useQuery(undefined, {
-    enabled: user?.role === "admin",
+  const { data: onboardingChecklistFunnel } = trpc.admin.onboardingChecklistFunnel.useQuery(onboardingFunnelInput, {
+    enabled: user?.role === "admin" && onboardingFunnelRangeValid && Boolean(onboardingFunnelInput),
     refetchInterval: 60_000,
   });
 
@@ -106,6 +116,7 @@ export default function AdminDashboard() {
     supportMetricsInput,
     { enabled: false },
   );
+  const onboardingFunnelExport = trpc.admin.onboardingChecklistFunnelExport.useQuery(onboardingFunnelInput, { enabled: false });
 
   const healthTrendData = useMemo(() => {
     if (!systemHealthTrend) return [];
@@ -207,6 +218,29 @@ export default function AdminDashboard() {
       toast.success(`Downloaded ${result.data.rowCount} support SLA metrics.`);
     } catch (exportError) {
       toast.error(exportError instanceof Error ? exportError.message : "Support SLA export failed.");
+    }
+  };
+
+  const downloadOnboardingFunnelCsv = async () => {
+    if (!onboardingFunnelRangeValid || !onboardingFunnelInput) {
+      toast.error("Choose a valid onboarding funnel date range before exporting.");
+      return;
+    }
+    try {
+      const result = await onboardingFunnelExport.refetch();
+      if (!result.data) throw new Error("The onboarding funnel export could not be generated.");
+      const blob = new Blob([result.data.csv], { type: result.data.mimeType });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = result.data.filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+      toast.success(`Downloaded ${result.data.rowCount} aggregate onboarding funnel metrics.`);
+    } catch (exportError) {
+      toast.error(exportError instanceof Error ? exportError.message : "Onboarding funnel export failed.");
     }
   };
 
@@ -357,10 +391,41 @@ export default function AdminDashboard() {
             </section>
 
             <section data-testid="admin-setup-funnel" aria-labelledby="admin-setup-funnel-title">
-              <div className="mb-3">
-                <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Onboarding analytics</p>
-                <h2 id="admin-setup-funnel-title" className="mt-1 text-xl font-semibold rr-text-navy">Setup checklist drop-off</h2>
-                <p className="mt-1 text-sm rr-text-navy-muted">Aggregate account-level events only. Each account is counted once per funnel step.</p>
+              <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div>
+                  <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Onboarding analytics</p>
+                  <h2 id="admin-setup-funnel-title" className="mt-1 text-xl font-semibold rr-text-navy">Setup checklist drop-off</h2>
+                  <p className="mt-1 text-sm rr-text-navy-muted">Aggregate account-level events only. Each account is counted once per funnel step.</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={downloadOnboardingFunnelCsv}
+                  disabled={!onboardingFunnelRangeValid || !onboardingFunnelInput || onboardingFunnelExport.isFetching}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl px-3 py-2 text-sm font-bold rr-bg-navy text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  {onboardingFunnelExport.isFetching ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
+                  Export CSV
+                </button>
+              </div>
+              <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-3">
+                <div className="flex flex-wrap gap-2" role="group" aria-label="Onboarding funnel date range">
+                  {(["7", "30", "90"] as const).map((period) => (
+                    <button key={period} type="button" onClick={() => setOnboardingFunnelPeriod(period)} className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${onboardingFunnelPeriod === period ? "rr-bg-gold text-slate-950" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>
+                      Last {period} days
+                    </button>
+                  ))}
+                  <button type="button" onClick={() => setOnboardingFunnelPeriod("custom")} className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${onboardingFunnelPeriod === "custom" ? "rr-bg-gold text-slate-950" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>
+                    Custom range
+                  </button>
+                </div>
+                {onboardingFunnelPeriod === "custom" && (
+                  <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                    <label className="text-xs font-semibold text-slate-700">Start date<input type="date" value={onboardingFunnelStartDate} onChange={(event) => setOnboardingFunnelStartDate(event.target.value)} className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm" /></label>
+                    <label className="text-xs font-semibold text-slate-700">End date<input type="date" value={onboardingFunnelEndDate} onChange={(event) => setOnboardingFunnelEndDate(event.target.value)} className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-2 py-1.5 text-sm" /></label>
+                    {!onboardingFunnelRangeValid && <p className="sm:col-span-2 text-xs font-semibold text-rose-700">Choose both dates, with an end date on or after the start date.</p>}
+                  </div>
+                )}
+                <p className="mt-2 text-xs text-slate-500">{onboardingChecklistFunnel ? `${onboardingChecklistFunnel.range.periodDays}-day reporting window · ${onboardingChecklistFunnel.range.isCustomRange ? "Custom range" : "Rolling period"}` : "Loading selected reporting window…"}</p>
               </div>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
                 {([
@@ -374,7 +439,7 @@ export default function AdminDashboard() {
                 })}
               </div>
               <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <ConversionMetricCard testId="setup-funnel-views" label="Checklist views" value={onboardingChecklistFunnel?.allTime.checklist_viewed ?? 0} detail={`${onboardingChecklistFunnel?.last30Days.checklist_viewed ?? 0} in the last 30 days`} Icon={Users} />
+                <ConversionMetricCard testId="setup-funnel-views" label="Checklist views" value={onboardingChecklistFunnel?.allTime.checklist_viewed ?? 0} detail={`Unique viewers in the selected ${onboardingChecklistFunnel?.range.periodDays ?? 30}-day window`} Icon={Users} />
                 <ConversionMetricCard testId="setup-funnel-completed" label="Checklist completion" value={onboardingChecklistFunnel?.allTime.checklist_completed ?? 0} detail={`${onboardingChecklistFunnel?.rates.completion ?? 0}% of checklist viewers completed all setup steps`} Icon={CheckCircle2} />
               </div>
             </section>
