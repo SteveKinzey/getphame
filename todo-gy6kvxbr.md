@@ -577,3 +577,8 @@
 - [x] Add regression coverage, verify desktop and mobile feature-page layouts, run release gates, and publish the enhancement.
 - [x] Commit and push the completed feature-page engagement enhancement to the configured GitHub remote.
 - [x] Integrate the GitHub-only main-branch changes without discarding local work, validate the combined repository, and push the synchronized main branch.
+- [x] Restart the unresponsive development server and verify the Get Phame preview is reachable.
+- [x] Review the current GitHub Dependabot findings, identify the high-severity dependency, and prioritize its remediation with evidence.
+- [x] Add a GitHub Actions workflow that runs pnpm check, tests, and production build on every push and pull request.
+- [x] Verify the deployed Get Phame Google sign-in flow end-to-end, documenting any credential, redirect-URI, or user-session blocker.
+- [ ] Validate, commit, push, and confirm the completed security and CI work on GitHub.
