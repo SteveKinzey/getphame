@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   ArrowRight,
   BarChart3,
@@ -31,6 +32,8 @@ export type FeaturePageConfig = {
   title: string;
   description: string;
   keywords: string[];
+  socialImage: string;
+  socialImageAlt: string;
   eyebrow: string;
   headline: string;
   introduction: string;
@@ -54,6 +57,8 @@ export const reviewRequestsFeature: FeaturePageConfig = {
     "customer feedback",
     "local business reviews",
   ],
+  socialImage: "/manus-storage/getphame-review-requests-og_54168ce9.png",
+  socialImageAlt: "Abstract email and destination-link workflow illustration for Get Phame Review Requests",
   eyebrow: "Review request software",
   headline: "Make every review request feel like a personal follow-up",
   introduction:
@@ -100,6 +105,8 @@ export const emailCampaignsFeature: FeaturePageConfig = {
     "customer email outreach",
     "email engagement tracking",
   ],
+  socialImage: "/manus-storage/getphame-email-campaigns-og_c52d741c.png",
+  socialImageAlt: "Abstract email campaign workflow illustration for Get Phame Email Campaigns",
   eyebrow: "Email campaigns",
   headline: "Turn one customer follow-up into a repeatable email campaign",
   introduction:
@@ -146,6 +153,8 @@ export const reputationManagementFeature: FeaturePageConfig = {
     "customer review outreach",
     "review management tools",
   ],
+  socialImage: "/manus-storage/getphame-reputation-management-og_02c63f3d.png",
+  socialImageAlt: "Abstract customer outreach operations illustration for Get Phame Reputation Management",
   eyebrow: "Reputation management",
   headline: "Build a steadier reputation workflow around real customer relationships",
   introduction:
@@ -187,8 +196,24 @@ const featureLinks = [
   { href: "/reputation-management", label: "Reputation Management" },
 ];
 
+export function getFeatureFaqJsonLd(feature: FeaturePageConfig) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: feature.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
+  };
+}
+
 export default function FeaturePage({ feature }: { feature: FeaturePageConfig }) {
   const Icon = feature.icon;
+  const faqJsonLd = useMemo(() => getFeatureFaqJsonLd(feature), [feature]);
 
   return (
     <div className="bg-[#0a1628] text-white">
@@ -197,6 +222,9 @@ export default function FeaturePage({ feature }: { feature: FeaturePageConfig })
         description={feature.description}
         canonical={`https://getphame.app/${feature.slug}`}
         keywords={feature.keywords}
+        socialImage={feature.socialImage}
+        socialImageAlt={feature.socialImageAlt}
+        jsonLd={faqJsonLd}
       />
 
       <section className="relative overflow-hidden border-b border-[#1e3050]">

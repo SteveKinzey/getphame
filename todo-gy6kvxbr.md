@@ -565,3 +565,8 @@
 - [x] Create search-focused, accessible feature pages for review requests, email campaigns, and reputation management with clear internal navigation.
 - [x] Package the validated Get Phame SEO visibility workflow as a reusable Skill using the skill-creator process.
 - [x] Add regression coverage, verify rendered metadata and feature-page routes at desktop and mobile sizes, run release gates, and publish the enhancement.
+- [ ] Create three distinct, brand-consistent Open Graph image variants for the review requests, email campaigns, and reputation management pages and publish them as web assets.
+- [ ] Add route-specific Open Graph and X/Twitter image metadata plus FAQ JSON-LD derived only from the visible FAQs on each public feature page.
+- [ ] Configure and verify prerendered HTML for public SEO routes without changing the behavior of authenticated app routes.
+- [ ] Package the validated public-route social-image, FAQ schema, and prerendering workflow as a reusable Skill using the skill-creator process.
+- [ ] Add regression coverage, verify generated assets, schema, prerendered metadata, responsive UI, release gates, and publish the enhancement.

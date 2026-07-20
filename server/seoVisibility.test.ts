@@ -23,7 +23,7 @@ describe("public SEO visibility", () => {
     expect(html).toContain('name="twitter:image:alt"');
   });
 
-  it("keeps feature page metadata, internal links, and public routes aligned", () => {
+  it("keeps feature page metadata, social images, visible-FAQ schema, internal links, and public routes aligned", () => {
     const app = readProjectFile("../client/src/App.tsx");
     const footer = readProjectFile("../client/src/components/landing/Footer.tsx");
     const seoHead = readProjectFile("../client/src/components/landing/SEOHead.tsx");
@@ -47,8 +47,17 @@ describe("public SEO visibility", () => {
     expect(featurePage).toContain("Email Campaigns for Review Requests");
     expect(featurePage).toContain("Reputation Management Software");
     expect(featurePage).toContain("<SEOHead");
+    expect(featurePage).toContain('socialImage: "/manus-storage/getphame-review-requests-og_54168ce9.png"');
+    expect(featurePage).toContain('socialImage: "/manus-storage/getphame-email-campaigns-og_c52d741c.png"');
+    expect(featurePage).toContain('socialImage: "/manus-storage/getphame-reputation-management-og_02c63f3d.png"');
+    expect(featurePage).toContain("getFeatureFaqJsonLd");
+    expect(featurePage).toContain('"@type": "FAQPage"');
+    expect(featurePage).toContain("mainEntity: feature.faq.map");
+    expect(featurePage).toContain("jsonLd={faqJsonLd}");
     expect(seoHead).toContain('setOG("og:image"');
     expect(seoHead).toContain('setTwitter("twitter:card"');
     expect(seoHead).toContain('meta[name="keywords"]');
+    expect(seoHead).toContain("data-seo-head-jsonld");
+    expect(seoHead).toContain("toAbsoluteUrl");
   });
 });

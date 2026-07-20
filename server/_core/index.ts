@@ -36,6 +36,7 @@ import { authHealthHandler } from "../authHealthRoutes";
 import { smtpHealthHandler } from "../smtpHealthRoutes";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 import { apiNotFoundHandler } from "./apiFallback";
+import { registerPublicFeaturePrerender } from "../publicFeaturePrerender";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -510,6 +511,11 @@ async function startServer() {
   // API requests must always return JSON. Do not let unmatched API paths fall
   // through to Vite's HTML app-shell fallback during restarts or route errors.
   app.use("/api", apiNotFoundHandler);
+
+  // Serve route-specific static HTML for public SEO feature pages before the
+  // Vite/static SPA fallback. React replaces this root with the full interactive
+  // feature page for JavaScript-capable visitors.
+  registerPublicFeaturePrerender(app);
 
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {

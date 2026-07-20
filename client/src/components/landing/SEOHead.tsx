@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 const DEFAULT_SOCIAL_IMAGE = "https://assets.getphame.app/getphame-og-image.png?v=4";
 const DEFAULT_SOCIAL_IMAGE_ALT = "Get Phame dashboard for sending review requests and tracking email engagement";
+const PUBLIC_SITE_ORIGIN = "https://getphame.app";
 
 interface SEOHeadProps {
   title: string;
@@ -11,6 +12,7 @@ interface SEOHeadProps {
   keywords?: string[];
   socialImage?: string;
   socialImageAlt?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 function upsertMeta(selector: string, attribute: "name" | "property", key: string, content: string) {
@@ -21,6 +23,28 @@ function upsertMeta(selector: string, attribute: "name" | "property", key: strin
     document.head.appendChild(element);
   }
   element.content = content;
+}
+
+function toAbsoluteUrl(url: string) {
+  if (/^https?:\/\//i.test(url)) return url;
+  return `${PUBLIC_SITE_ORIGIN}${url.startsWith("/") ? url : `/${url}`}`;
+}
+
+function upsertJsonLd(jsonLd?: Record<string, unknown> | Record<string, unknown>[]) {
+  const selector = 'script[data-seo-head-jsonld="true"]';
+  const existing = document.querySelector<HTMLScriptElement>(selector);
+
+  if (!jsonLd) {
+    existing?.remove();
+    return;
+  }
+
+  const script = existing ?? document.createElement("script");
+  script.type = "application/ld+json";
+  script.dataset.seoHeadJsonld = "true";
+  script.textContent = JSON.stringify(jsonLd);
+
+  if (!existing) document.head.appendChild(script);
 }
 
 /**
@@ -35,10 +59,14 @@ export default function SEOHead({
   keywords,
   socialImage = DEFAULT_SOCIAL_IMAGE,
   socialImageAlt = DEFAULT_SOCIAL_IMAGE_ALT,
+  jsonLd,
 }: SEOHeadProps) {
   useEffect(() => {
     document.title = title;
     upsertMeta('meta[name="description"]', "name", "description", description);
+    upsertJsonLd(jsonLd);
+
+    const socialImageUrl = toAbsoluteUrl(socialImage);
 
     if (keywords && keywords.length > 0) {
       upsertMeta('meta[name="keywords"]', "name", "keywords", keywords.join(", "));
@@ -77,8 +105,8 @@ export default function SEOHead({
     setOG("og:site_name", "Get Phame");
     setOG("og:title", title);
     setOG("og:description", description);
-    setOG("og:image", socialImage);
-    setOG("og:image:secure_url", socialImage);
+    setOG("og:image", socialImageUrl);
+    setOG("og:image:secure_url", socialImageUrl);
     setOG("og:image:type", "image/png");
     setOG("og:image:width", "1200");
     setOG("og:image:height", "630");
@@ -88,9 +116,9 @@ export default function SEOHead({
     setTwitter("twitter:card", "summary_large_image");
     setTwitter("twitter:title", title);
     setTwitter("twitter:description", description);
-    setTwitter("twitter:image", socialImage);
+    setTwitter("twitter:image", socialImageUrl);
     setTwitter("twitter:image:alt", socialImageAlt);
-  }, [canonical, description, keywords, noindex, socialImage, socialImageAlt, title]);
+  }, [canonical, description, jsonLd, keywords, noindex, socialImage, socialImageAlt, title]);
 
   return null;
 }
