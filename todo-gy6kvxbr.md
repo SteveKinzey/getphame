@@ -560,3 +560,8 @@
 - [x] Add accurate alternative text to the landing-page image currently missing it.
 - [x] Validate rendered SEO metadata, title and description counts, image alternative text, and publish the repair.
 - [x] Prevent duplicate setup-checklist telemetry across routine re-renders and remounts without weakening the server-side onboarding analytics rate limit.
+- [x] Add accurate SoftwareApplication and Organization JSON-LD to the public root page.
+- [x] Implement root-page Open Graph and Twitter Card metadata with canonical URLs, accurate copy, image URLs, and image alternative text.
+- [x] Create search-focused, accessible feature pages for review requests, email campaigns, and reputation management with clear internal navigation.
+- [x] Package the validated Get Phame SEO visibility workflow as a reusable Skill using the skill-creator process.
+- [x] Add regression coverage, verify rendered metadata and feature-page routes at desktop and mobile sizes, run release gates, and publish the enhancement.

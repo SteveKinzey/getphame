@@ -16,7 +16,25 @@ export default function Footer() {
             </span>
           </a>
 
-          <div className="grid grid-cols-2 items-center justify-center gap-x-3 gap-y-1 text-center text-sm sm:flex sm:flex-wrap sm:gap-x-6 sm:gap-y-3 md:justify-end">
+          <div aria-label="Get Phame links" className="grid grid-cols-2 items-center justify-center gap-x-3 gap-y-1 text-center text-sm sm:flex sm:flex-wrap sm:gap-x-6 sm:gap-y-3 md:justify-end">
+            <a
+              href="/review-requests"
+              className="inline-flex min-h-10 items-center justify-center rounded-md px-2 text-slate-200 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017] font-medium"
+            >
+              Review Requests
+            </a>
+            <a
+              href="/email-campaigns"
+              className="inline-flex min-h-10 items-center justify-center rounded-md px-2 text-slate-200 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017] font-medium"
+            >
+              Email Campaigns
+            </a>
+            <a
+              href="/reputation-management"
+              className="inline-flex min-h-10 items-center justify-center rounded-md px-2 text-slate-200 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017] font-medium"
+            >
+              Reputation Management
+            </a>
             <a
               href="/privacy-policy"
               className="inline-flex min-h-10 items-center justify-center rounded-md px-2 text-slate-200 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017] font-medium"

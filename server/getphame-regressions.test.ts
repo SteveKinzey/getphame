@@ -687,8 +687,8 @@ describe("Get Phame regression contracts", () => {
     expect(html).toContain('meta name="keywords"');
 
     expect(seoHead).toContain("document.title = title");
-    expect(seoHead).not.toContain("keywords.join");
-    expect(seoHead).not.toContain('meta[name="keywords"]');
+    expect(seoHead).toContain('keywords.join(", ")');
+    expect(seoHead).toContain('meta[name="keywords"]');
     expect(appLayout).not.toContain('alt=""');
     expect(appLayout).toContain('profile photo`');
     expect(appLayout).toContain('"Get Phame account profile"');

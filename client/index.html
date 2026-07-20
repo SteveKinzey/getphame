@@ -59,47 +59,61 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Get Phame" />
-    <meta property="og:title" content="Get Phame — Turn Happy Customers into 5-Star Reviews" />
-    <meta property="og:description" content="Send personalised review requests from your own email, automate follow-ups, and grow your reputation with Get Phame. Free to start." />
-    <meta property="og:url" content="https://getphame.app" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:title" content="Get Phame | Review Request Software for Local Businesses" />
+    <meta property="og:description" content="Send personalized review-request emails, track engagement, and help local businesses earn more customer feedback with Get Phame." />
+    <meta property="og:url" content="https://getphame.app/" />
     <meta property="og:image" content="https://assets.getphame.app/getphame-og-image.png?v=4" />
     <meta property="og:image:secure_url" content="https://assets.getphame.app/getphame-og-image.png?v=4" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Get Phame review request dashboard with the message: Turn happy customers into 5-star reviews" />
+    <meta property="og:image:alt" content="Get Phame dashboard for sending review requests and tracking email engagement" />
 
     <!-- Twitter / X Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@phameapp" />
-    <meta name="twitter:title" content="Get Phame — Turn Happy Customers into 5-Star Reviews" />
-    <meta name="twitter:description" content="Send personalised review requests from your own email, automate follow-ups, and grow your reputation. Free to start." />
+    <meta name="twitter:title" content="Get Phame | Review Request Software for Local Businesses" />
+    <meta name="twitter:description" content="Send personalized review-request emails, track engagement, and help local businesses earn more customer feedback with Get Phame." />
     <meta name="twitter:image" content="https://assets.getphame.app/getphame-og-image.png?v=4" />
-    <meta name="twitter:image:alt" content="Get Phame review request dashboard with the message: Turn happy customers into 5-star reviews" />
+    <meta name="twitter:image:alt" content="Get Phame dashboard for sending review requests and tracking email engagement" />
 
     <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json">
+    <script id="getphame-organization-jsonld" type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "@id": "https://getphame.app/#organization",
+      "name": "Get Phame",
+      "url": "https://getphame.app/",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://assets.getphame.app/getphame-logo-512.png"
+      },
+      "description": "Get Phame provides customer review request and email engagement tools for local businesses."
+    }
+    </script>
+    <script id="getphame-software-application-jsonld" type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
+      "@id": "https://getphame.app/#softwareapplication",
       "name": "Get Phame",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
-      "description": "Send personalized review requests from your own email account. Get more 5-star Google reviews without the awkward ask.",
-      "url": "https://getphame.app",
+      "description": "Send personalized review-request emails, track engagement, and organize customer review outreach from one workspace.",
+      "url": "https://getphame.app/",
       "logo": "https://assets.getphame.app/getphame-logo-512.png",
       "image": "https://assets.getphame.app/getphame-og-image.png?v=4",
-      "offers": [
-        { "@type": "Offer", "name": "Free Plan", "price": "0", "priceCurrency": "USD", "description": "10 review requests included" },
-        { "@type": "Offer", "name": "Pro Monthly", "price": "29", "priceCurrency": "USD", "description": "Unlimited review requests" },
-        { "@type": "Offer", "name": "Pro Annual", "price": "19", "priceCurrency": "USD", "description": "Billed annually at $228/year" },
-        { "@type": "Offer", "name": "Lifetime", "price": "349", "priceCurrency": "USD", "description": "One-time payment, lifetime access" }
+      "isAccessibleForFree": true,
+      "featureList": [
+        "Personalized review request emails",
+        "Review destination management",
+        "Email follow-up reminders",
+        "Campaign engagement tracking"
       ],
       "provider": {
-        "@type": "Organization",
-        "name": "Get Phame",
-        "url": "https://getphame.app",
-        "logo": "https://assets.getphame.app/getphame-logo-512.png"
+        "@id": "https://getphame.app/#organization"
       }
     }
     </script>

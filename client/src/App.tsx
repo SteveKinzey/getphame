@@ -66,6 +66,9 @@ function rememberOnboardingDismissal(userId: string) {
 const LandingPage       = lazy(() => import("./pages/LandingPage"));
 const OnboardingPage    = lazy(() => import("./pages/Onboarding"));
 const AppleAuthLanding  = lazy(() => import("./pages/AppleAuthLanding"));
+const ReviewRequestsPage = lazy(() => import("./pages/ReviewRequests"));
+const EmailCampaignsPage = lazy(() => import("./pages/EmailCampaigns"));
+const ReputationManagementPage = lazy(() => import("./pages/ReputationManagement"));
 
 const PrivacyPolicyPage  = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfServicePage = lazy(() => import("./pages/TermsOfService"));
@@ -218,6 +221,15 @@ function AppShell() {
   // ── Public pages — always accessible, wrapped in PublicLayout ───────────
   if (path === "/landing") return (
     <Suspense fallback={<PageLoader />}><LandingPage /></Suspense>
+  );
+  if (path === "/review-requests") return (
+    <Suspense fallback={<PageLoader />}><PublicLayout><ReviewRequestsPage /></PublicLayout></Suspense>
+  );
+  if (path === "/email-campaigns") return (
+    <Suspense fallback={<PageLoader />}><PublicLayout><EmailCampaignsPage /></PublicLayout></Suspense>
+  );
+  if (path === "/reputation-management") return (
+    <Suspense fallback={<PageLoader />}><PublicLayout><ReputationManagementPage /></PublicLayout></Suspense>
   );
   if (path === "/privacy-policy") return (
     <Suspense fallback={<PageLoader />}>
