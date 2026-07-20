@@ -48,8 +48,8 @@ describe("public SEO visibility", () => {
     expect(featurePage).toContain("Reputation Management Software");
     expect(featurePage).toContain("<SEOHead");
     expect(featurePage).toContain('socialImage: "/manus-storage/getphame-review-requests-og_54168ce9.png"');
-    expect(featurePage).toContain('socialImage: "/manus-storage/getphame-email-campaigns-og_c52d741c.png"');
-    expect(featurePage).toContain('socialImage: "/manus-storage/getphame-reputation-management-og_02c63f3d.png"');
+    expect(featurePage).toContain('socialImage: "/manus-storage/getphame-email-campaigns-og_2d195c27.png"');
+    expect(featurePage).toContain('socialImage: "/manus-storage/getphame-reputation-management-og_9f828275.png"');
     expect(featurePage).toContain("getFeatureFaqJsonLd");
     expect(featurePage).toContain('"@type": "FAQPage"');
     expect(featurePage).toContain("mainEntity: feature.faq.map");

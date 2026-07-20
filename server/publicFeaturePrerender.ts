@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 
 const PUBLIC_SITE_ORIGIN = "https://getphame.app";
+const CRAWLER_USER_AGENT = /googlebot|bingbot|yandexbot|baiduspider|duckduckbot|facebookexternalhit|twitterbot|linkedinbot|slackbot|discordbot|whatsapp|pinterestbot|applebot|semrushbot/i;
 
 export const PUBLIC_FEATURE_ROUTES = [
   "/review-requests",
@@ -45,7 +46,7 @@ const PUBLIC_FEATURES: Record<PublicFeatureRoute, PrerenderFeature> = {
     title: "Email Campaigns for Review Requests | Get Phame",
     description: "Build personalized email campaigns for review requests, schedule respectful follow-ups, and measure engagement without leaving your own workflow.",
     keywords: ["review request email campaigns", "review follow-up emails", "customer email outreach", "email engagement tracking"],
-    socialImage: "/manus-storage/getphame-email-campaigns-og_c52d741c.png",
+    socialImage: "/manus-storage/getphame-email-campaigns-og_2d195c27.png",
     socialImageAlt: "Abstract email campaign workflow illustration for Get Phame Email Campaigns",
     headline: "Turn one customer follow-up into a repeatable email campaign",
     introduction: "Plan a consistent review-request cadence while keeping the message personal, the sender familiar, and the next action easy for customers to understand.",
@@ -60,7 +61,7 @@ const PUBLIC_FEATURES: Record<PublicFeatureRoute, PrerenderFeature> = {
     title: "Reputation Management Software for Local Businesses | Get Phame",
     description: "Organize customer review outreach, maintain clear review links, and track email engagement in one reputation management workspace.",
     keywords: ["reputation management software", "local business reputation", "customer review outreach", "review management tools"],
-    socialImage: "/manus-storage/getphame-reputation-management-og_02c63f3d.png",
+    socialImage: "/manus-storage/getphame-reputation-management-og_9f828275.png",
     socialImageAlt: "Abstract customer outreach operations illustration for Get Phame Reputation Management",
     headline: "Build a steadier reputation workflow around real customer relationships",
     introduction: "Get Phame gives local teams a focused place to organize review outreach, keep destination links accurate, and measure how customers engage with requests.",
@@ -160,6 +161,10 @@ export function renderPublicFeatureHtml(template: string, feature: PrerenderFeat
     : html.replace("</body>", `${root}\n</body>`);
 }
 
+export function shouldPrerenderUserAgent(userAgent?: string) {
+  return CRAWLER_USER_AGENT.test(userAgent ?? "");
+}
+
 function getTemplatePath() {
   return process.env.NODE_ENV === "development"
     ? path.resolve(import.meta.dirname, "..", "client", "index.html")
@@ -174,6 +179,7 @@ export function registerPublicFeaturePrerender(app: Express) {
     const feature = PUBLIC_FEATURES[normalizedRoute];
 
     if (!feature) return next();
+    if (!shouldPrerenderUserAgent(req.get("user-agent"))) return next();
 
     try {
       const template = await fs.promises.readFile(getTemplatePath(), "utf8");

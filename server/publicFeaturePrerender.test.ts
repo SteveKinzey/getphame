@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { renderPublicFeatureHtml } from "./publicFeaturePrerender";
+import { renderPublicFeatureHtml, shouldPrerenderUserAgent } from "./publicFeaturePrerender";
 
 const feature = {
   route: "/review-requests" as const,
@@ -29,5 +29,12 @@ describe("public feature prerender", () => {
     expect(html).toContain("Can I use my own business email?");
     expect(html).toContain('data-prerendered-public-feature="true"');
     expect(html).toContain('data-feature-route="/review-requests"');
+  });
+
+  it("serves crawler-ready route HTML only to recognized social and search crawlers", () => {
+    expect(shouldPrerenderUserAgent("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)")).toBe(true);
+    expect(shouldPrerenderUserAgent("facebookexternalhit/1.1")).toBe(true);
+    expect(shouldPrerenderUserAgent("Twitterbot/1.0")).toBe(true);
+    expect(shouldPrerenderUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36")).toBe(false);
   });
 });
