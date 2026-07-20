@@ -15,6 +15,7 @@ type PublicFeatureRoute = (typeof PUBLIC_FEATURE_ROUTES)[number];
 
 type PrerenderFeature = {
   route: PublicFeatureRoute;
+  label: string;
   title: string;
   description: string;
   keywords: string[];
@@ -22,12 +23,18 @@ type PrerenderFeature = {
   socialImageAlt: string;
   headline: string;
   introduction: string;
+  comparisonRows: Array<{
+    consideration: string;
+    getPhame: string;
+    commonApproach: string;
+  }>;
   faq: Array<{ question: string; answer: string }>;
 };
 
 const PUBLIC_FEATURES: Record<PublicFeatureRoute, PrerenderFeature> = {
   "/review-requests": {
     route: "/review-requests",
+    label: "Review Requests",
     title: "Review Request Software for Local Businesses | Get Phame",
     description: "Create personalized review request emails, direct customers to the right review link, and track campaign engagement from one simple workspace.",
     keywords: ["review request software", "review request emails", "customer feedback", "local business reviews"],
@@ -35,6 +42,12 @@ const PUBLIC_FEATURES: Record<PublicFeatureRoute, PrerenderFeature> = {
     socialImageAlt: "Abstract email and destination-link workflow illustration for Get Phame Review Requests",
     headline: "Make every review request feel like a personal follow-up",
     introduction: "Get Phame helps local businesses send timely, branded review requests without turning a customer relationship into a bulk-email exercise.",
+    comparisonRows: [
+      { consideration: "Where you prepare requests", getPhame: "One dedicated review-request workspace", commonApproach: "Spreadsheets, inbox notes, or separate tools" },
+      { consideration: "Destination links", getPhame: "Organize and select a link for each campaign", commonApproach: "Maintain links manually across documents or bookmarks" },
+      { consideration: "Engagement visibility", getPhame: "Review sends, opens, and clicks", commonApproach: "Reconstruct activity from inboxes or a separate email platform" },
+      { consideration: "Follow-up approach", getPhame: "Templates and measured reminder sequences", commonApproach: "Create each follow-up manually or coordinate it across tools" },
+    ],
     faq: [
       { question: "Can I use my own business email?", answer: "Yes. Get Phame is designed to send through the email account your business already uses for customer communication." },
       { question: "Can I manage more than one review link?", answer: "Yes. Keep the destinations you use organized and choose the appropriate link for each campaign." },
@@ -43,6 +56,7 @@ const PUBLIC_FEATURES: Record<PublicFeatureRoute, PrerenderFeature> = {
   },
   "/email-campaigns": {
     route: "/email-campaigns",
+    label: "Email Campaigns",
     title: "Email Campaigns for Review Requests | Get Phame",
     description: "Build personalized email campaigns for review requests, schedule respectful follow-ups, and measure engagement without leaving your own workflow.",
     keywords: ["review request email campaigns", "review follow-up emails", "customer email outreach", "email engagement tracking"],
@@ -50,6 +64,12 @@ const PUBLIC_FEATURES: Record<PublicFeatureRoute, PrerenderFeature> = {
     socialImageAlt: "Abstract email campaign workflow illustration for Get Phame Email Campaigns",
     headline: "Turn one customer follow-up into a repeatable email campaign",
     introduction: "Plan a consistent review-request cadence while keeping the message personal, the sender familiar, and the next action easy for customers to understand.",
+    comparisonRows: [
+      { consideration: "Campaign starting point", getPhame: "Reusable review-request templates", commonApproach: "Start messages from scratch or copy prior emails" },
+      { consideration: "Sequence coordination", getPhame: "Set a measured reminder sequence", commonApproach: "Track reminders manually in inboxes or task lists" },
+      { consideration: "Message performance signals", getPhame: "Review send, open, and click activity", commonApproach: "Combine signals from an email provider and manual notes" },
+      { consideration: "Review destinations", getPhame: "Select the destination link tied to the campaign", commonApproach: "Paste and maintain links separately" },
+    ],
     faq: [
       { question: "Can I use templates for recurring campaigns?", answer: "Yes. Templates help teams stay consistent while leaving room to personalize messages for the customer relationship." },
       { question: "Can I follow up after the first email?", answer: "Yes. You can use a measured reminder sequence when it fits your customer communication policy." },
@@ -58,6 +78,7 @@ const PUBLIC_FEATURES: Record<PublicFeatureRoute, PrerenderFeature> = {
   },
   "/reputation-management": {
     route: "/reputation-management",
+    label: "Reputation Management",
     title: "Reputation Management Software for Local Businesses | Get Phame",
     description: "Organize customer review outreach, maintain clear review links, and track email engagement in one reputation management workspace.",
     keywords: ["reputation management software", "local business reputation", "customer review outreach", "review management tools"],
@@ -65,6 +86,12 @@ const PUBLIC_FEATURES: Record<PublicFeatureRoute, PrerenderFeature> = {
     socialImageAlt: "Abstract customer outreach operations illustration for Get Phame Reputation Management",
     headline: "Build a steadier reputation workflow around real customer relationships",
     introduction: "Get Phame gives local teams a focused place to organize review outreach, keep destination links accurate, and measure how customers engage with requests.",
+    comparisonRows: [
+      { consideration: "Day-to-day operating view", getPhame: "Keep outreach, destinations, and engagement in one workspace", commonApproach: "Coordinate across inboxes, spreadsheets, and separate tools" },
+      { consideration: "Review destination governance", getPhame: "Organize selectable destination links", commonApproach: "Maintain links manually across documents or bookmarks" },
+      { consideration: "Team repeatability", getPhame: "Use a shared campaign workflow and templates", commonApproach: "Rely on individual team habits and handoffs" },
+      { consideration: "Process visibility", getPhame: "Review campaign engagement to improve the workflow", commonApproach: "Reconstruct activity from multiple sources" },
+    ],
     faq: [
       { question: "Is this only for Google reviews?", answer: "No. You can organize the review destinations your business uses and select the appropriate one for an outreach campaign." },
       { question: "Can a team use the same workflow?", answer: "Yes. A shared workflow gives the team a more consistent way to prepare and send customer follow-up." },
@@ -109,6 +136,36 @@ function faqSchema(feature: PrerenderFeature) {
   };
 }
 
+function comparisonMarkup(feature: PrerenderFeature) {
+  const rows = feature.comparisonRows
+    .map((row) => `<tr><th scope="row">${escapeHtml(row.consideration)}</th><td>${escapeHtml(row.getPhame)}</td><td>${escapeHtml(row.commonApproach)}</td></tr>`)
+    .join("");
+
+  return `<section data-public-feature-comparison="true" aria-labelledby="${feature.route.slice(1)}-comparison-title">
+      <h2 id="${feature.route.slice(1)}-comparison-title">Compare the workflow, not the hype</h2>
+      <p>See how a dedicated review-outreach workspace differs from a fragmented, do-it-yourself process.</p>
+      <table>
+        <caption>A comparison between Get Phame and a common fragmented review-outreach approach.</caption>
+        <thead><tr><th scope="col">Workflow consideration</th><th scope="col">Get Phame</th><th scope="col">Common fragmented approach</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <p>This comparison describes Get Phame’s product workflow alongside common manual or disconnected approaches. Other products and operating processes vary, so confirm any third-party capabilities directly.</p>
+    </section>`;
+}
+
+function relatedFeatureMarkup(feature: PrerenderFeature) {
+  const links = Object.values(PUBLIC_FEATURES)
+    .filter((candidate) => candidate.route !== feature.route)
+    .map((candidate) => `<li><a href="${escapeHtml(candidate.route)}"><strong>${escapeHtml(candidate.label)}</strong><span>${escapeHtml(candidate.introduction)}</span></a></li>`)
+    .join("");
+
+  return `<section data-public-feature-related-features="true" aria-labelledby="${feature.route.slice(1)}-related-features-title">
+      <h2 id="${feature.route.slice(1)}-related-features-title">Continue building your customer outreach system</h2>
+      <p>Explore the connected workflows that help your team move from a single request to a steadier reputation process.</p>
+      <nav aria-label="Related Get Phame features"><ul>${links}</ul></nav>
+    </section>`;
+}
+
 function staticFeatureBody(feature: PrerenderFeature) {
   const faqMarkup = feature.faq
     .map((item) => `<details><summary>${escapeHtml(item.question)}</summary><p>${escapeHtml(item.answer)}</p></details>`)
@@ -124,6 +181,8 @@ function staticFeatureBody(feature: PrerenderFeature) {
       <h2 id="${feature.route.slice(1)}-faq-title">Useful details before you start</h2>
       ${faqMarkup}
     </section>
+    ${comparisonMarkup(feature)}
+    ${relatedFeatureMarkup(feature)}
   </article>
 </main>`;
 }

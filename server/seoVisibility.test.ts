@@ -54,6 +54,13 @@ describe("public SEO visibility", () => {
     expect(featurePage).toContain('"@type": "FAQPage"');
     expect(featurePage).toContain("mainEntity: feature.faq.map");
     expect(featurePage).toContain("jsonLd={faqJsonLd}");
+    expect(featurePage).toContain("comparisonRows:");
+    expect(featurePage).toContain('data-public-feature-comparison="true"');
+    expect(featurePage).toContain("Compare the workflow, not the hype");
+    expect(featurePage).toContain("Common fragmented approach");
+    expect(featurePage).toContain('data-public-feature-related-features="true"');
+    expect(featurePage).toContain("featureLinks.filter((link) => link.slug !== feature.slug)");
+    expect(featurePage).toContain('aria-label="Related Get Phame features"');
     expect(seoHead).toContain('setOG("og:image"');
     expect(seoHead).toContain('setTwitter("twitter:card"');
     expect(seoHead).toContain('meta[name="keywords"]');

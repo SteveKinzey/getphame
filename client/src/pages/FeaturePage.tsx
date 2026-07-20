@@ -10,6 +10,15 @@ import {
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import SEOHead from "@/components/landing/SEOHead";
 
 type WorkflowStep = {
@@ -25,6 +34,14 @@ type Benefit = {
 type FAQItem = {
   question: string;
   answer: string;
+};
+
+type ComparisonValue = boolean | string;
+
+type ComparisonRow = {
+  consideration: string;
+  getPhame: ComparisonValue;
+  commonApproach: ComparisonValue;
 };
 
 export type FeaturePageConfig = {
@@ -43,6 +60,7 @@ export type FeaturePageConfig = {
   benefits: Benefit[];
   workflowTitle: string;
   workflowSteps: WorkflowStep[];
+  comparisonRows: ComparisonRow[];
   faq: FAQItem[];
 };
 
@@ -86,6 +104,12 @@ export const reviewRequestsFeature: FeaturePageConfig = {
     { title: "Connect your sending email", description: "Use your existing business inbox so messages remain familiar and accountable." },
     { title: "Choose a review destination", description: "Add the review links you want customers to use and select the right one for the request." },
     { title: "Send and learn", description: "Deliver a considerate follow-up, then use engagement signals to refine future outreach." },
+  ],
+  comparisonRows: [
+    { consideration: "Where you prepare requests", getPhame: "One dedicated review-request workspace", commonApproach: "Spreadsheets, inbox notes, or separate tools" },
+    { consideration: "Destination links", getPhame: "Organize and select a link for each campaign", commonApproach: "Maintain links manually across documents or bookmarks" },
+    { consideration: "Engagement visibility", getPhame: "Review sends, opens, and clicks", commonApproach: "Reconstruct activity from inboxes or a separate email platform" },
+    { consideration: "Follow-up approach", getPhame: "Templates and measured reminder sequences", commonApproach: "Create each follow-up manually or coordinate it across tools" },
   ],
   faq: [
     { question: "Can I use my own business email?", answer: "Yes. Get Phame is designed to send through the email account your business already uses for customer communication." },
@@ -135,6 +159,12 @@ export const emailCampaignsFeature: FeaturePageConfig = {
     { title: "Add the right recipients", description: "Import or select the customers who should receive this specific follow-up." },
     { title: "Review campaign engagement", description: "Use visible engagement activity to improve timing, content, and future follow-up decisions." },
   ],
+  comparisonRows: [
+    { consideration: "Campaign starting point", getPhame: "Reusable review-request templates", commonApproach: "Start messages from scratch or copy prior emails" },
+    { consideration: "Sequence coordination", getPhame: "Set a measured reminder sequence", commonApproach: "Track reminders manually in inboxes or task lists" },
+    { consideration: "Message performance signals", getPhame: "Review send, open, and click activity", commonApproach: "Combine signals from an email provider and manual notes" },
+    { consideration: "Review destinations", getPhame: "Select the destination link tied to the campaign", commonApproach: "Paste and maintain links separately" },
+  ],
   faq: [
     { question: "Can I use templates for recurring campaigns?", answer: "Yes. Templates help teams stay consistent while leaving room to personalize messages for the customer relationship." },
     { question: "Can I follow up after the first email?", answer: "Yes. You can use a measured reminder sequence when it fits your customer communication policy." },
@@ -183,6 +213,12 @@ export const reputationManagementFeature: FeaturePageConfig = {
     { title: "Run consistent outreach", description: "Use a clear follow-up process after the customer experience is complete." },
     { title: "Review engagement patterns", description: "Use campaign reporting to keep your operating process clear and accountable." },
   ],
+  comparisonRows: [
+    { consideration: "Day-to-day operating view", getPhame: "Keep outreach, destinations, and engagement in one workspace", commonApproach: "Coordinate across inboxes, spreadsheets, and separate tools" },
+    { consideration: "Review destination governance", getPhame: "Organize selectable destination links", commonApproach: "Maintain links manually across documents or bookmarks" },
+    { consideration: "Team repeatability", getPhame: "Use a shared campaign workflow and templates", commonApproach: "Rely on individual team habits and handoffs" },
+    { consideration: "Process visibility", getPhame: "Review campaign engagement to improve the workflow", commonApproach: "Reconstruct activity from multiple sources" },
+  ],
   faq: [
     { question: "Is this only for Google reviews?", answer: "No. You can organize the review destinations your business uses and select the appropriate one for an outreach campaign." },
     { question: "Can a team use the same workflow?", answer: "Yes. A shared workflow gives the team a more consistent way to prepare and send customer follow-up." },
@@ -190,11 +226,56 @@ export const reputationManagementFeature: FeaturePageConfig = {
   ],
 };
 
-const featureLinks = [
-  { href: "/review-requests", label: "Review Requests" },
-  { href: "/email-campaigns", label: "Email Campaigns" },
-  { href: "/reputation-management", label: "Reputation Management" },
+const featureLinks: Array<{
+  slug: FeaturePageConfig["slug"];
+  href: string;
+  label: string;
+  eyebrow: string;
+  description: string;
+  icon: LucideIcon;
+}> = [
+  {
+    slug: "review-requests",
+    href: "/review-requests",
+    label: "Review Requests",
+    eyebrow: "Review request software",
+    description: "Make each customer follow-up feel organized, direct, and connected to the service you just delivered.",
+    icon: MessageSquareText,
+  },
+  {
+    slug: "email-campaigns",
+    href: "/email-campaigns",
+    label: "Email Campaigns",
+    eyebrow: "Email campaigns",
+    description: "Create repeatable review-request outreach with useful templates, measured reminders, and clear engagement activity.",
+    icon: Mail,
+  },
+  {
+    slug: "reputation-management",
+    href: "/reputation-management",
+    label: "Reputation Management",
+    eyebrow: "Reputation management",
+    description: "Bring review destinations, customer outreach, and campaign signals into a focused operating workflow for your team.",
+    icon: ShieldCheck,
+  },
 ];
+
+function ComparisonCellValue({ value }: { value: ComparisonValue }) {
+  if (value === true) {
+    return (
+      <span className="inline-flex items-center gap-2 font-semibold text-white">
+        <CheckCircle2 className="text-primary" size={18} aria-hidden="true" />
+        <span>Included</span>
+      </span>
+    );
+  }
+
+  if (value === false) {
+    return <span className="font-medium text-slate-400">Not included</span>;
+  }
+
+  return <span>{value}</span>;
+}
 
 export function getFeatureFaqJsonLd(feature: FeaturePageConfig) {
   return {
@@ -214,6 +295,7 @@ export function getFeatureFaqJsonLd(feature: FeaturePageConfig) {
 export default function FeaturePage({ feature }: { feature: FeaturePageConfig }) {
   const Icon = feature.icon;
   const faqJsonLd = useMemo(() => getFeatureFaqJsonLd(feature), [feature]);
+  const relatedFeatures = featureLinks.filter((link) => link.slug !== feature.slug);
 
   return (
     <div className="bg-[#0a1628] text-white">
@@ -318,21 +400,95 @@ export default function FeaturePage({ feature }: { feature: FeaturePageConfig })
         </div>
       </section>
 
-      <section className="py-16 md:py-20" aria-labelledby="related-solutions-title">
+      <section
+        data-public-feature-comparison="true"
+        className="border-b border-[#1e3050] py-16 md:py-24"
+        aria-labelledby={`${feature.slug}-comparison-title`}
+      >
         <div className="container">
-          <div className="flex flex-col gap-5 rounded-3xl border border-primary/25 bg-[#0f1d32] p-7 md:flex-row md:items-center md:justify-between md:p-10">
-            <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.16em] text-primary">Explore Get Phame</p>
-              <h2 id="related-solutions-title" className="mt-2 font-display text-2xl font-extrabold text-white">Related customer outreach solutions</h2>
-            </div>
-            <nav aria-label="Related Get Phame solutions" className="flex flex-col gap-2 sm:flex-row sm:flex-wrap">
-              {featureLinks.filter((link) => link.href !== `/${feature.slug}`).map((link) => (
-                <a key={link.href} href={link.href} className="inline-flex items-center gap-2 rounded-lg px-3 py-2 font-semibold text-slate-200 transition-colors hover:bg-[#1a2744] hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
-                  {link.label}<ArrowRight size={16} aria-hidden="true" />
-                </a>
-              ))}
-            </nav>
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-primary">A practical comparison</p>
+            <h2 id={`${feature.slug}-comparison-title`} className="mt-3 font-display text-3xl font-extrabold text-white md:text-4xl">Compare the workflow, not the hype</h2>
+            <p className="mt-5 text-lg font-medium leading-relaxed text-slate-200">See how a dedicated review-outreach workspace differs from a fragmented, do-it-yourself process.</p>
           </div>
+
+          <div className="mt-10 hidden overflow-hidden rounded-2xl border border-[#1e3050] bg-[#0f1d32] md:block">
+            <Table>
+              <TableCaption className="sr-only">A comparison between Get Phame and a common fragmented review-outreach approach.</TableCaption>
+              <TableHeader className="bg-[#1a2744]">
+                <TableRow className="border-[#2a3a5c] hover:bg-[#1a2744]">
+                  <TableHead scope="col" className="w-[30%] px-6 py-4 font-display text-sm font-bold text-white">Workflow consideration</TableHead>
+                  <TableHead scope="col" className="w-[35%] px-6 py-4 font-display text-sm font-bold text-primary">Get Phame</TableHead>
+                  <TableHead scope="col" className="w-[35%] px-6 py-4 font-display text-sm font-bold text-white">Common fragmented approach</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {feature.comparisonRows.map((row) => (
+                  <TableRow key={row.consideration} className="border-[#1e3050] hover:bg-[#13213a]">
+                    <TableHead scope="row" className="px-6 py-5 font-display text-base font-bold whitespace-normal text-white">{row.consideration}</TableHead>
+                    <TableCell className="px-6 py-5 leading-relaxed whitespace-normal text-slate-200"><ComparisonCellValue value={row.getPhame} /></TableCell>
+                    <TableCell className="px-6 py-5 leading-relaxed whitespace-normal text-slate-300"><ComparisonCellValue value={row.commonApproach} /></TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+
+          <div className="mt-8 grid gap-4 md:hidden">
+            {feature.comparisonRows.map((row) => (
+              <article key={row.consideration} className="rounded-2xl border border-[#1e3050] bg-[#0f1d32] p-5">
+                <h3 className="font-display text-lg font-bold text-white">{row.consideration}</h3>
+                <dl className="mt-5 space-y-4">
+                  <div className="border-l-2 border-primary pl-4">
+                    <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-primary">Get Phame</dt>
+                    <dd className="mt-2 leading-relaxed text-slate-200"><ComparisonCellValue value={row.getPhame} /></dd>
+                  </div>
+                  <div className="border-l-2 border-[#2a3a5c] pl-4">
+                    <dt className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-300">Common fragmented approach</dt>
+                    <dd className="mt-2 leading-relaxed text-slate-300"><ComparisonCellValue value={row.commonApproach} /></dd>
+                  </div>
+                </dl>
+              </article>
+            ))}
+          </div>
+
+          <p className="mx-auto mt-6 max-w-4xl text-center text-sm leading-relaxed text-slate-400">This comparison describes Get Phame’s product workflow alongside common manual or disconnected approaches. Other products and operating processes vary, so confirm any third-party capabilities directly.</p>
+        </div>
+      </section>
+
+      <section
+        data-public-feature-related-features="true"
+        className="py-16 md:py-20"
+        aria-labelledby={`${feature.slug}-related-features-title`}
+      >
+        <div className="container">
+          <div className="mx-auto max-w-3xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-[0.16em] text-primary">Explore Get Phame</p>
+            <h2 id={`${feature.slug}-related-features-title`} className="mt-3 font-display text-3xl font-extrabold text-white md:text-4xl">Continue building your customer outreach system</h2>
+            <p className="mt-5 text-lg font-medium leading-relaxed text-slate-200">Explore the connected workflows that help your team move from a single request to a steadier reputation process.</p>
+          </div>
+
+          <nav aria-label="Related Get Phame features" className="mt-10 grid gap-5 md:grid-cols-2">
+            {relatedFeatures.map((link) => {
+              const RelatedIcon = link.icon;
+
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="group rounded-2xl border border-[#1e3050] bg-[#0f1d32] p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/45 hover:bg-[#13213a] hover:shadow-[0_0_40px_oklch(0.78_0.15_75/0.08)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a1628]"
+                >
+                  <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/15 text-primary transition-colors duration-200 group-hover:bg-primary group-hover:text-primary-foreground">
+                    <RelatedIcon size={23} aria-hidden="true" />
+                  </span>
+                  <span className="mt-6 block text-sm font-semibold uppercase tracking-[0.14em] text-primary">{link.eyebrow}</span>
+                  <span className="mt-2 block font-display text-2xl font-bold text-white">{link.label}</span>
+                  <span className="mt-3 block leading-relaxed text-slate-300">{link.description}</span>
+                  <span className="mt-6 inline-flex items-center gap-2 font-semibold text-white transition-colors duration-200 group-hover:text-primary">Explore this feature <ArrowRight size={17} aria-hidden="true" /></span>
+                </a>
+              );
+            })}
+          </nav>
         </div>
       </section>
     </div>

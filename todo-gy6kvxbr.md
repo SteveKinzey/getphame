@@ -570,3 +570,8 @@
 - [x] Configure and verify prerendered HTML for public SEO routes without changing the behavior of authenticated app routes.
 - [x] Package the validated public-route social-image, FAQ schema, and prerendering workflow as a reusable Skill using the skill-creator process.
 - [x] Add regression coverage, verify generated assets, schema, prerendered metadata, responsive UI, release gates, and publish the enhancement.
+- [x] Add evidence-safe feature-page comparison tables that distinguish Get Phame capabilities from manual or generic-tool workflows without unverified competitor claims.
+- [x] Add dynamic related-feature sections that exclude the current page and create clear internal exploration paths across the three public feature pages.
+- [x] Verify the comparison matrix and related-feature cards on desktop and at a 375px mobile viewport across all three public feature pages; desktop tables and mobile stacked cards render without overflow.
+- [x] Package the validated comparison-table and related-feature workflow as a reusable Skill using the skill-creator process.
+- [x] Add regression coverage, verify desktop and mobile feature-page layouts, run release gates, and publish the enhancement.
