@@ -539,3 +539,9 @@
 - [x] Add a persistent, accessible Skip Tour action that dismisses onboarding guidance for experienced users without blocking future onboarding completion.
 - [x] Audit the application’s security-sensitive code paths, remediate confirmed issues without weakening existing authorization or payment controls, and document the verification scope.
 - [x] Add regression, production-build, and responsive visual validation for the onboarding checklist, deferred charts, Skip Tour behavior, and security remediation before publishing.
+- [ ] Instrument setup-checklist impressions and step-action clicks with privacy-conscious per-user onboarding funnel analytics.
+- [ ] Add an operator-visible onboarding completion and drop-off summary that does not fabricate or expose customer content.
+- [ ] Localize all remaining dedicated dashboard chart labels, time controls, legends, tooltips, summaries, and empty states across supported languages.
+- [ ] Add a persistent Settings-level control to enable or disable onboarding tooltips and synchronize it with Skip Tour behavior.
+- [ ] Package the implementation workflow as a validated reusable Skill using the skill-creator process.
+- [ ] Add focused Vitest coverage, run release checks, verify mobile UI, and publish the completed onboarding optimization release.

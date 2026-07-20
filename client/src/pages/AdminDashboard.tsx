@@ -76,6 +76,11 @@ export default function AdminDashboard() {
     refetchInterval: 60_000,
   });
 
+  const { data: onboardingChecklistFunnel } = trpc.admin.onboardingChecklistFunnel.useQuery(undefined, {
+    enabled: user?.role === "admin",
+    refetchInterval: 60_000,
+  });
+
   const { data: failingSmtpUsers, isLoading: failingSmtpLoading } = trpc.admin.failingSmtpUsers.useQuery(undefined, {
     enabled: user?.role === "admin",
     refetchInterval: 30_000,
@@ -348,6 +353,29 @@ export default function AdminDashboard() {
                   detail={`${pwaConversionStats?.rates.shareConversion ?? 0}% of guide views`}
                   Icon={Share2}
                 />
+              </div>
+            </section>
+
+            <section data-testid="admin-setup-funnel" aria-labelledby="admin-setup-funnel-title">
+              <div className="mb-3">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Onboarding analytics</p>
+                <h2 id="admin-setup-funnel-title" className="mt-1 text-xl font-semibold rr-text-navy">Setup checklist drop-off</h2>
+                <p className="mt-1 text-sm rr-text-navy-muted">Aggregate account-level events only. Each account is counted once per funnel step.</p>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                {([
+                  ["email", "Connect email"],
+                  ["platform", "Add platform"],
+                  ["contacts", "Import contacts"],
+                  ["send", "First send"],
+                ] as const).map(([step, label]) => {
+                  const metric = onboardingChecklistFunnel?.steps[step];
+                  return <ConversionMetricCard key={step} testId={`setup-funnel-${step}`} label={`${label} drop-off`} value={metric?.dropOff ?? 0} detail={metric ? `${metric.shown} saw step · ${metric.actioned} continued · ${metric.continuationRate}% continued` : "Waiting for setup activity"} Icon={MousePointerClick} />;
+                })}
+              </div>
+              <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <ConversionMetricCard testId="setup-funnel-views" label="Checklist views" value={onboardingChecklistFunnel?.allTime.checklist_viewed ?? 0} detail={`${onboardingChecklistFunnel?.last30Days.checklist_viewed ?? 0} in the last 30 days`} Icon={Users} />
+                <ConversionMetricCard testId="setup-funnel-completed" label="Checklist completion" value={onboardingChecklistFunnel?.allTime.checklist_completed ?? 0} detail={`${onboardingChecklistFunnel?.rates.completion ?? 0}% of checklist viewers completed all setup steps`} Icon={CheckCircle2} />
               </div>
             </section>
 

@@ -817,6 +817,7 @@ export const notificationPrefs = pgTable("notification_prefs", {
   userId: integer("userId").notNull().unique(),
   wooAutoImportNotify: boolean("wooAutoImportNotify").notNull().default(true),
   notifyOnEmailOpen: boolean("notifyOnEmailOpen").notNull().default(false),
+  onboardingTipsEnabled: boolean("onboardingTipsEnabled").notNull().default(true),
   updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
 });
 export type NotificationPref = typeof notificationPrefs.$inferSelect;

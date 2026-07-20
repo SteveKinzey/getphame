@@ -289,6 +289,21 @@
     "setupStepNumber": "Step {{step}}",
     "loadingAnalytics": "Loading analytics"
   },
+  "activityTrend": {
+    "title": "Activity Trend",
+    "rangeAria": "Show {{days}} day trend",
+    "range": "{{days}}d",
+    "loading": "Loading activity trend",
+    "empty": "No activity in the last {{days}} days. Send your first request to see trends here.",
+    "sent": "Sent",
+    "opens": "Opens",
+    "clicks": "Clicks",
+    "openRate": "Open rate",
+    "clickRate": "Click rate",
+    "thisWeek": "This Week",
+    "priorWeek": "Prior Week",
+    "allTime": "All Time"
+  },
   "notifications": {
     "followUpReminderScheduled": "Follow-up reminder scheduled!",
     "reviewRequestSent": "Review request sent!",
@@ -2065,6 +2080,12 @@
       "save": "Save profile",
       "uploadAvatar": "Upload photo",
       "removeAvatar": "Remove photo"
+    },
+    "onboardingTips": {
+      "title": "Onboarding tips",
+      "description": "Show contextual setup tips the next time you open onboarding. You can also change this inside the setup wizard.",
+      "enable": "Enable onboarding tips",
+      "disable": "Disable onboarding tips"
     }
   },
   "complianceGuide": {

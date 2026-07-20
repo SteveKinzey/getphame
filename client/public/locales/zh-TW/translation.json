@@ -1555,6 +1555,12 @@
       "save": "儲存資料",
       "uploadAvatar": "上傳照片",
       "removeAvatar": "移除照片"
+    },
+    "onboardingTips": {
+      "title": "設定提示",
+      "description": "下次開啟設定引導時顯示相關提示。您也可以在設定精靈中變更此選項。",
+      "enable": "啟用設定提示",
+      "disable": "停用設定提示"
     }
   },
   "login": {

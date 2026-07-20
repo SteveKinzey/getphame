@@ -1533,6 +1533,12 @@
       "save": "保存资料",
       "uploadAvatar": "上传头像",
       "removeAvatar": "移除头像"
+    },
+    "onboardingTips": {
+      "title": "设置提示",
+      "description": "下次打开设置引导时显示相关提示。您也可以在设置向导中更改此选项。",
+      "enable": "启用设置提示",
+      "disable": "停用设置提示"
     }
   },
   "login": {

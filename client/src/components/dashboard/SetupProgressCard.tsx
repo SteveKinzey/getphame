@@ -1,5 +1,7 @@
+import { useEffect, useMemo, useRef } from "react";
 import { CheckCircle2, ChevronRight, Mail, Send, Upload, Globe2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { trpc } from "@/lib/trpc";
 
 interface SetupStatus {
   smtpConnected: boolean;
@@ -15,7 +17,9 @@ interface SetupProgressCardProps {
 
 export default function SetupProgressCard({ status, onNavigate }: SetupProgressCardProps) {
   const { t } = useTranslation("translation");
-  const steps = [
+  const trackChecklistEvent = trpc.analytics.trackOnboardingChecklistEvent.useMutation();
+  const trackedSnapshots = useRef(new Set<string>());
+  const steps = useMemo(() => [
     {
       id: "email",
       complete: Boolean(status?.smtpConnected),
@@ -52,9 +56,24 @@ export default function SetupProgressCard({ status, onNavigate }: SetupProgressC
       action: t("homePage.setupActionSend"),
       path: "/send",
     },
-  ];
+  ], [status?.smtpConnected, status?.hasPlatform, status?.hasContacts, status?.hasSentRequest, t]);
   const completedCount = steps.filter((step) => step.complete).length;
   const progress = (completedCount / steps.length) * 100;
+  const incompleteStepIds = steps.filter((step) => !step.complete).map((step) => step.id).join(",");
+
+  useEffect(() => {
+    const snapshot = `${completedCount}:${incompleteStepIds}`;
+    if (trackedSnapshots.current.has(snapshot)) return;
+    trackedSnapshots.current.add(snapshot);
+    trackChecklistEvent.mutate({ event: "checklist_viewed" });
+    if (completedCount === steps.length) {
+      trackChecklistEvent.mutate({ event: "checklist_completed" });
+      return;
+    }
+    for (const stepId of incompleteStepIds.split(",").filter(Boolean)) {
+      trackChecklistEvent.mutate({ event: `${stepId}_step_viewed` as "email_step_viewed" | "platform_step_viewed" | "contacts_step_viewed" | "send_step_viewed" });
+    }
+  }, [completedCount, incompleteStepIds, steps.length, trackChecklistEvent]);
 
   return (
     <section className="rr-card p-4" aria-labelledby="setup-progress-title">
@@ -94,7 +113,10 @@ export default function SetupProgressCard({ status, onNavigate }: SetupProgressC
               {!step.complete && (
                 <button
                   type="button"
-                  onClick={() => onNavigate(step.path)}
+                  onClick={() => {
+                    trackChecklistEvent.mutate({ event: `${step.id}_step_actioned` as "email_step_actioned" | "platform_step_actioned" | "contacts_step_actioned" | "send_step_actioned" });
+                    onNavigate(step.path);
+                  }}
                   className="inline-flex shrink-0 items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-bold rr-text-navy transition-colors hover:rr-bg-gold-pale focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <span className="hidden sm:inline">{step.action}</span>

@@ -93,6 +93,7 @@ import { getDb } from "./db";
 import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads, koalendarBookings, koalendarConnections, supportEscalationPolicies, supportEscalationPolicyRecipients, supportInternalNoteMentions, supportInternalNotes, supportSavedQueueViews, supportSubmissions, supportTicketAlerts } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
 import { PWA_EVENT_NAMES, PWA_EVENT_SOURCE, summarizePwaEvents, toPwaEventPage } from "./pwaAnalytics";
+import { ONBOARDING_CHECKLIST_EVENT_NAMES, ONBOARDING_CHECKLIST_EVENT_SOURCE, summarizeOnboardingChecklistEvents, toOnboardingChecklistEventPage } from "./onboardingChecklistAnalytics";
 import { eq, like, or, inArray, desc, asc, isNotNull, isNull, and, sql, gte, lte, ne, count } from "drizzle-orm";
 import {
   listSavedContacts,
@@ -3114,6 +3115,17 @@ export const appRouter = router({
       return summarizePwaEvents(rows);
     }),
 
+    /** Aggregate checklist setup funnel. It intentionally returns no raw event or identity data. */
+    onboardingChecklistFunnel: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      const rows = await db
+        .select({ page: pageEvents.page, userId: pageEvents.userId, createdAt: pageEvents.createdAt })
+        .from(pageEvents)
+        .where(eq(pageEvents.utmSource, ONBOARDING_CHECKLIST_EVENT_SOURCE));
+      return summarizeOnboardingChecklistEvents(rows);
+    }),
+
     /** Churn survey responses — admin only */
     churnSurveys: protectedProcedure.query(async ({ ctx }) => {
       if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
@@ -3532,6 +3544,7 @@ export const appRouter = router({
       .input(z.object({
         wooAutoImportNotify: z.boolean().optional(),
         notifyOnEmailOpen: z.boolean().optional(),
+        onboardingTipsEnabled: z.boolean().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         await updateNotificationPrefs(ctx.user.id, input);
@@ -3614,6 +3627,23 @@ export const appRouter = router({
 
   /** Analytics / page event tracking */
   analytics: router({
+    /** Authenticated, allowlisted checklist telemetry. It captures no device, referrer, or customer content. */
+    trackOnboardingChecklistEvent: protectedProcedure
+      .input(z.object({ event: z.enum(ONBOARDING_CHECKLIST_EVENT_NAMES) }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) return { ok: true };
+        await db.insert(pageEvents).values({
+          userId: ctx.user.id,
+          page: toOnboardingChecklistEventPage(input.event),
+          utmSource: ONBOARDING_CHECKLIST_EVENT_SOURCE,
+          utmMedium: null,
+          utmCampaign: "setup_funnel",
+          referrer: null,
+          userAgent: null,
+        });
+        return { ok: true };
+      }),
     trackPwaEvent: publicProcedure
       .input(z.object({
         event: z.enum(PWA_EVENT_NAMES),

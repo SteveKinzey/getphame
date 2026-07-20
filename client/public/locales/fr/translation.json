@@ -2167,6 +2167,12 @@
       "save": "Enregistrer le profil",
       "uploadAvatar": "Importer une photo",
       "removeAvatar": "Supprimer la photo"
+    },
+    "onboardingTips": {
+      "title": "Conseils de configuration",
+      "description": "Affiche des conseils contextuels à la prochaine ouverture de la configuration. Vous pouvez aussi modifier ce réglage dans l’assistant.",
+      "enable": "Activer les conseils de configuration",
+      "disable": "Désactiver les conseils de configuration"
     }
   },
   "login": {

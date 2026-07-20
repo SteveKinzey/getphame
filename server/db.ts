@@ -805,7 +805,11 @@ export async function getNotificationPrefs(userId: number) {
 }
 
 /** Update notification prefs for a user. */
-export async function updateNotificationPrefs(userId: number, prefs: { wooAutoImportNotify?: boolean; notifyOnEmailOpen?: boolean }) {
+export async function updateNotificationPrefs(userId: number, prefs: {
+  wooAutoImportNotify?: boolean;
+  notifyOnEmailOpen?: boolean;
+  onboardingTipsEnabled?: boolean;
+}) {
   const db = await getDb();
   if (!db) return;
   await db

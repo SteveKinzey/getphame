@@ -1312,6 +1312,12 @@ export default function SettingsPage() {
     onSuccess: () => { utils.notificationPrefs.get.invalidate(); toast.success("Notification preference saved."); },
     onError: (err) => toast.error(err.message),
   });
+  const toggleOnboardingTips = () => {
+    const onboardingTipsEnabled = !(notifPrefs?.onboardingTipsEnabled ?? true);
+    updateNotifPrefs.mutate({ onboardingTipsEnabled }, {
+      onSuccess: () => window.dispatchEvent(new CustomEvent("rr:onboarding-tips-change", { detail: { tipsEnabled: onboardingTipsEnabled } })),
+    });
+  };
   const [expandedWebhookId, setExpandedWebhookId] = useState<number | null>(null);
   const { data: webhookLogs } = trpc.webhook.deliveryLogs.useQuery(
     { webhookId: expandedWebhookId ?? 0, limit: 5 },
@@ -3441,6 +3447,23 @@ export default function SettingsPage() {
               style={{ background: notifPrefs?.notifyOnEmailOpen ? "oklch(0.50 0.15 145)" : "oklch(0.80 0.02 260)" }}
             >
               <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform" style={{ left: notifPrefs?.notifyOnEmailOpen ? "calc(100% - 1.35rem)" : "0.1rem" }} />
+            </button>
+          </div>
+          <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 mt-2 rr-bg-white-card">
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold rr-text-navy">{t("settings.onboardingTips.title", { defaultValue: "Onboarding tips" })}</p>
+              <p className="text-xs mt-0.5 rr-text-navy-muted">{t("settings.onboardingTips.description", { defaultValue: "Show contextual setup tips the next time you open onboarding. You can also change this inside the setup wizard." })}</p>
+            </div>
+            <button
+              type="button"
+              onClick={toggleOnboardingTips}
+              disabled={updateNotifPrefs.isPending}
+              aria-pressed={notifPrefs?.onboardingTipsEnabled ?? true}
+              aria-label={(notifPrefs?.onboardingTipsEnabled ?? true) ? t("settings.onboardingTips.disable", { defaultValue: "Disable onboarding tips" }) : t("settings.onboardingTips.enable", { defaultValue: "Enable onboarding tips" })}
+              className="shrink-0 w-10 h-6 rounded-full transition-colors relative disabled:cursor-not-allowed disabled:opacity-60"
+              style={{ background: (notifPrefs?.onboardingTipsEnabled ?? true) ? "oklch(0.50 0.15 145)" : "oklch(0.80 0.02 260)" }}
+            >
+              <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform" style={{ left: (notifPrefs?.onboardingTipsEnabled ?? true) ? "calc(100% - 1.35rem)" : "0.1rem" }} />
             </button>
           </div>
           {/* ── Haptic Feedback toggle ────────────────────────────────── */}

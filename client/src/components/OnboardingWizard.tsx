@@ -42,6 +42,7 @@ interface OnboardingWizardProps {
 }
 
 const TOUR_SKIP_STORAGE_KEY = "rr_skip_tour";
+const ONBOARDING_TIPS_CHANGE_EVENT = "rr:onboarding-tips-change";
 const OnboardingTourContext = createContext({ tipsHidden: false });
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -875,20 +876,59 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
   });
 
   const dismissMutation = trpc.onboarding.dismiss.useMutation();
+  const { data: notificationPrefs } = trpc.notificationPrefs.get.useQuery();
+  const updateNotificationPrefs = trpc.notificationPrefs.update.useMutation();
   const [tipsHidden, setTipsHidden] = useState(
     () => typeof window !== "undefined" && window.localStorage.getItem(TOUR_SKIP_STORAGE_KEY) === "1",
   );
 
+  useEffect(() => {
+    if (typeof notificationPrefs?.onboardingTipsEnabled !== "boolean") return;
+    const nextTipsHidden = !notificationPrefs.onboardingTipsEnabled;
+    if (nextTipsHidden) window.localStorage.setItem(TOUR_SKIP_STORAGE_KEY, "1");
+    else window.localStorage.removeItem(TOUR_SKIP_STORAGE_KEY);
+    setTipsHidden(nextTipsHidden);
+  }, [notificationPrefs?.onboardingTipsEnabled]);
+
+  const applyTourPreference = useCallback((tipsEnabled: boolean) => {
+    if (tipsEnabled) window.localStorage.removeItem(TOUR_SKIP_STORAGE_KEY);
+    else window.localStorage.setItem(TOUR_SKIP_STORAGE_KEY, "1");
+    setTipsHidden(!tipsEnabled);
+    window.dispatchEvent(new CustomEvent(ONBOARDING_TIPS_CHANGE_EVENT, { detail: { tipsEnabled } }));
+  }, []);
+
+  useEffect(() => {
+    const handleTourPreferenceChange = (event: Event) => {
+      const { tipsEnabled } = (event as CustomEvent<{ tipsEnabled?: unknown }>).detail ?? {};
+      if (typeof tipsEnabled !== "boolean") return;
+      if (tipsEnabled) window.localStorage.removeItem(TOUR_SKIP_STORAGE_KEY);
+      else window.localStorage.setItem(TOUR_SKIP_STORAGE_KEY, "1");
+      setTipsHidden(!tipsEnabled);
+    };
+    window.addEventListener(ONBOARDING_TIPS_CHANGE_EVENT, handleTourPreferenceChange);
+    return () => window.removeEventListener(ONBOARDING_TIPS_CHANGE_EVENT, handleTourPreferenceChange);
+  }, []);
+
   const skipTour = useCallback(() => {
-    window.localStorage.setItem(TOUR_SKIP_STORAGE_KEY, "1");
-    setTipsHidden(true);
+    applyTourPreference(false);
+    updateNotificationPrefs.mutate({ onboardingTipsEnabled: false }, {
+      onError: () => {
+        applyTourPreference(true);
+        toast.error(t("onboardingWizard.tour.saveError", "We couldn't save your onboarding tips preference."));
+      },
+    });
     toast.success(t("onboardingWizard.tour.skipSuccess"));
-  }, [t]);
+  }, [applyTourPreference, t, updateNotificationPrefs]);
 
   const showTour = useCallback(() => {
-    window.localStorage.removeItem(TOUR_SKIP_STORAGE_KEY);
-    setTipsHidden(false);
-  }, []);
+    applyTourPreference(true);
+    updateNotificationPrefs.mutate({ onboardingTipsEnabled: true }, {
+      onError: () => {
+        applyTourPreference(false);
+        toast.error(t("onboardingWizard.tour.saveError", "We couldn't save your onboarding tips preference."));
+      },
+    });
+  }, [applyTourPreference, t, updateNotificationPrefs]);
 
   const handleDismiss = useCallback(() => {
     onDismiss();

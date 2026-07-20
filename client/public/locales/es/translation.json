@@ -2167,6 +2167,12 @@
       "save": "Guardar perfil",
       "uploadAvatar": "Subir foto",
       "removeAvatar": "Eliminar foto"
+    },
+    "onboardingTips": {
+      "title": "Consejos de configuración",
+      "description": "Muestra consejos contextuales la próxima vez que abras la configuración. También puedes cambiarlo dentro del asistente.",
+      "enable": "Activar consejos de configuración",
+      "disable": "Desactivar consejos de configuración"
     }
   },
   "login": {
