@@ -555,5 +555,5 @@
 - [x] Add an aggregate current-versus-previous-period onboarding drop-off trend visualization to the administrator funnel card.
 - [x] Add a grounded AI-generated onboarding insight summary that uses only the aggregate funnel data, identifies the highest drop-off step, and falls back safely when unavailable.
 - [x] Update and validate the reusable onboarding analytics Skill with date presets, comparative trends, grounded AI insights, and AI-specific security guardrails.
-- [ ] Add focused regression coverage, run release gates, verify mobile UI, and publish the completed onboarding analytics enhancement.
+- [x] Add focused regression coverage, run release gates, verify mobile UI, and publish the completed onboarding analytics enhancement.
 - [x] Prevent duplicate setup-checklist telemetry across routine re-renders and remounts without weakening the server-side onboarding analytics rate limit.
