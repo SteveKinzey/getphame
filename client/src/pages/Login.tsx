@@ -1,14 +1,22 @@
 /**
  * Login.tsx — GetPhame authentication page (Magic Link)
  *
- * Displays three auth options:
- *   1. Continue with Google  (hidden if GOOGLE_CLIENT_ID not configured)
- *   2. Continue with Apple
- *   3. Email magic link — enter email, receive login link
+ * Production displays email magic-link authentication only. Apple and Google
+ * remain available on localhost and Manus preview hosts for staged testing.
  *
  * Design: navy (#0F1B2D) + gold (#C9A84C) theme, mobile-first, responsive.
  */
 import React, { useState, useEffect, useCallback } from "react";
+import { flushSync } from "react-dom";
+import { isStagingSocialLoginHost } from "@/lib/socialLoginAvailability";
+import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import {
+  GOOGLE_SIGN_IN_TOAST_ID,
+  clearGoogleSignInPending,
+  getLocalizedAuthErrorMessage,
+  rememberGoogleSignInPending,
+} from "@/lib/authFeedback";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -23,6 +31,10 @@ interface MagicLinkResponse {
   error?: string;
   email?: string;
 }
+
+const GOOGLE_REDIRECT_FEEDBACK_MS = 420;
+const GOOGLE_REDIRECT_STATUS_MS = 140;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // ---------------------------------------------------------------------------
 // SVG Icons (inline — no extra icon package needed)
@@ -87,13 +99,13 @@ const Spinner = () => (
 // Divider
 // ---------------------------------------------------------------------------
 
-const OrDivider = () => (
+const OrDivider = ({ label }: { label: string }) => (
   <div className="relative my-6">
     <div className="absolute inset-0 flex items-center">
       <div className="w-full border-t border-white/10" />
     </div>
     <div className="relative flex justify-center text-sm">
-      <span className="px-3 bg-[#0F1B2D] text-white/40 font-medium tracking-wide">or</span>
+      <span className="px-3 bg-[#0F1B2D] text-white/40 font-medium tracking-wide">{label}</span>
     </div>
   </div>
 );
@@ -103,52 +115,89 @@ const OrDivider = () => (
 // ---------------------------------------------------------------------------
 
 export default function Login() {
+  const { t } = useTranslation("translation");
+  const socialLoginEnabled = isStagingSocialLoginHost(window.location.hostname);
   const [googleEnabled, setGoogleEnabled] = useState<boolean | null>(null);
 
   // Form state
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
+  const [googleStatus, setGoogleStatus] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [sentTo, setSentTo] = useState<string | null>(null); // shows success state
 
   // Check if Google OAuth is configured on the server
   useEffect(() => {
+    if (!socialLoginEnabled) {
+      setGoogleEnabled(false);
+      return;
+    }
+
     fetch("/api/auth/google/status")
       .then((r) => r.json() as Promise<GoogleStatusResponse>)
       .then((data) => setGoogleEnabled(data.enabled))
       .catch(() => setGoogleEnabled(false));
-  }, []);
+  }, [socialLoginEnabled]);
 
   // Check for auth errors in the URL (e.g. /login?auth_error=link_expired)
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const authError = params.get("auth_error");
     if (authError) {
-      const messages: Record<string, string> = {
-        google_denied: "Google sign-in was cancelled.",
-        google_failed: "Google sign-in failed. Please try again.",
-        google_state_mismatch: "Security check failed. Please try again.",
-        apple_failed: "Apple sign-in failed. Please try again.",
-        apple_missing_token: "Apple sign-in failed. Please try again.",
-        invalid_link: "Invalid login link. Please request a new one.",
-        link_expired: "This login link has expired. Please request a new one.",
-        service_unavailable: "Service temporarily unavailable. Please try again.",
-        verification_failed: "Verification failed. Please request a new link.",
-      };
-      setFormError(messages[authError] ?? "Sign-in failed. Please try again.");
+      const message = getLocalizedAuthErrorMessage(authError, t);
+      clearGoogleSignInPending();
+      setFormError(message);
+      toast.error(message, { id: GOOGLE_SIGN_IN_TOAST_ID });
       // Clean the URL
       window.history.replaceState({}, "", window.location.pathname);
     }
-  }, []);
+  }, [t]);
+
+  const handleGoogleSignIn = useCallback(() => {
+    if (isGoogleSubmitting) return;
+
+    flushSync(() => {
+      setFormError(null);
+      setIsGoogleSubmitting(true);
+      setGoogleStatus(t("authFeedback.preparingGoogle", { defaultValue: "Preparing a secure Google sign-in…" }));
+    });
+    rememberGoogleSignInPending();
+    toast.loading(t("authFeedback.openingGoogle", { defaultValue: "Opening Google sign-in…" }), {
+      id: GOOGLE_SIGN_IN_TOAST_ID,
+    });
+
+    try {
+      window.setTimeout(() => {
+        setGoogleStatus(t("authFeedback.redirectingGoogle", { defaultValue: "Redirecting to Google. Keep this tab open." }));
+      }, GOOGLE_REDIRECT_STATUS_MS);
+      window.setTimeout(() => {
+        window.location.assign("/api/auth/google");
+      }, GOOGLE_REDIRECT_FEEDBACK_MS);
+    } catch {
+      clearGoogleSignInPending();
+      setIsGoogleSubmitting(false);
+      setGoogleStatus(null);
+      toast.error(t("authFeedback.googleOpenFailed", { defaultValue: "Google sign-in could not be opened. Please try again." }), {
+        id: GOOGLE_SIGN_IN_TOAST_ID,
+      });
+    }
+  }, [isGoogleSubmitting, t]);
 
   const handleMagicLinkSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
       setFormError(null);
       setSentTo(null);
+      const normalizedEmail = email.trim();
 
-      if (!email.trim()) {
-        setFormError("Email is required.");
+      if (!normalizedEmail) {
+        setFormError(t("login.emailRequired", { defaultValue: "Email is required." }));
+        return;
+      }
+
+      if (!EMAIL_PATTERN.test(normalizedEmail)) {
+        setFormError(t("login.invalidEmail", { defaultValue: "Enter a valid email address." }));
         return;
       }
 
@@ -158,25 +207,35 @@ export default function Login() {
         const res = await fetch("/api/auth/magic-link", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email: email.trim() }),
+          body: JSON.stringify({
+            email: normalizedEmail,
+            origin: window.location.origin,
+          }),
         });
 
         const data = (await res.json()) as MagicLinkResponse;
 
         if (!res.ok) {
-          setFormError(data.error ?? "Something went wrong. Please try again.");
+          const fallback = res.status === 429
+            ? t("login.rateLimited", { defaultValue: "Too many attempts. Please wait a few minutes and try again." })
+            : res.status === 503
+              ? t("login.serviceUnavailable", { defaultValue: "Service is temporarily unavailable. Please try again." })
+              : res.status === 400
+                ? t("login.invalidEmail", { defaultValue: "Enter a valid email address." })
+                : t("login.magicLinkFailed", { defaultValue: "We could not send your magic link. Please try again." });
+          setFormError(fallback);
           return;
         }
 
         // Success — show confirmation
-        setSentTo(data.email ?? email.trim());
+        setSentTo(data.email ?? normalizedEmail);
       } catch {
-        setFormError("Network error. Please check your connection and try again.");
+        setFormError(t("login.networkError", { defaultValue: "Network error. Please check your connection and try again." }));
       } finally {
         setIsSubmitting(false);
       }
     },
-    [email]
+    [email, t]
   );
 
   // ---------------------------------------------------------------------------
@@ -191,41 +250,57 @@ export default function Login() {
           Get<span className="text-[#C9A84C]">Phame</span>
         </h1>
         <p className="mt-2 text-sm text-white/50">
-          Sign in to your account
+          {t("login.subtitle", { defaultValue: "Sign in to your account" })}
         </p>
       </div>
 
       {/* Card */}
       <div className="w-full max-w-sm">
-        {/* ── OAuth Buttons ─────────────────────────────────────────────── */}
-        <div className="space-y-3">
-          {/* Google — only rendered when configured */}
-          {googleEnabled === true && (
-            <a
-              href="/api/auth/google"
-              className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-50 active:bg-gray-100 text-gray-800 font-semibold text-sm transition-colors duration-150 shadow-sm"
-            >
-              <GoogleIcon />
-              Continue with Google
-            </a>
-          )}
+        {socialLoginEnabled && (
+          <>
+            {/* ── Staging-only OAuth Buttons ────────────────────────────── */}
+            <div className="space-y-3" data-testid="staging-social-login">
+              {/* Google — only rendered when configured */}
+              {googleEnabled === true && (
+                <div>
+                  <button
+                    type="button"
+                    onClick={handleGoogleSignIn}
+                    disabled={isGoogleSubmitting}
+                    aria-busy={isGoogleSubmitting}
+                    aria-describedby={isGoogleSubmitting ? "google-auth-status" : undefined}
+                    className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-50 active:bg-gray-100 disabled:cursor-wait disabled:bg-gray-100 disabled:text-gray-500 text-gray-800 font-semibold text-sm transition-[background-color,color,transform] duration-150 shadow-sm active:scale-[0.98]"
+                  >
+                    {isGoogleSubmitting ? <Spinner /> : <GoogleIcon />}
+                    {isGoogleSubmitting
+                      ? t("authFeedback.connectingGoogle", { defaultValue: "Connecting to Google…" })
+                      : t("login.continueWithGoogle", { defaultValue: "Continue with Google" })}
+                  </button>
+                  {isGoogleSubmitting && googleStatus && (
+                    <p id="google-auth-status" role="status" aria-live="polite" className="mt-2 text-center text-xs font-semibold text-white/70">
+                      {googleStatus}
+                    </p>
+                  )}
+                </div>
+              )}
 
-          {/* Google placeholder while loading */}
-          {googleEnabled === null && (
-            <div className="h-12 w-full rounded-xl bg-white/5 animate-pulse" />
-          )}
+              {/* Google placeholder while loading */}
+              {googleEnabled === null && (
+                <div className="h-12 w-full rounded-xl bg-white/5 animate-pulse" />
+              )}
 
-          {/* Apple */}
-          <a
-            href="/api/auth/apple"
-            className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
-          >
-            <AppleIcon />
-            Continue with Apple
-          </a>
-        </div>
+              <a
+                href="/api/auth/apple"
+                className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
+              >
+                <AppleIcon />
+                {t("login.continueWithApple", { defaultValue: "Continue with Apple" })}
+              </a>
+            </div>
 
-        <OrDivider />
+            <OrDivider label={t("login.or", { defaultValue: "or" })} />
+          </>
+        )}
 
         {/* ── Magic Link Form ──────────────────────────────────────────── */}
         {sentTo ? (
@@ -234,20 +309,24 @@ export default function Login() {
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#C9A84C]/10 mb-4">
               <MailIcon />
             </div>
-            <h2 className="text-lg font-semibold text-white mb-2">Check your inbox</h2>
+            <h2 className="text-lg font-semibold text-white mb-2">
+              {t("login.checkInbox", { defaultValue: "Check your inbox" })}
+            </h2>
             <p className="text-sm text-white/50 mb-4">
-              We sent a login link to
+              {t("login.sentTo", { defaultValue: "We sent a login link to" })}
             </p>
             <p className="text-sm font-medium text-[#C9A84C] mb-6">{sentTo}</p>
             <p className="text-xs text-white/30 mb-4">
-              The link expires in 15 minutes. Check your spam folder if you don't see it.
+              {t("login.expiresNotice", {
+                defaultValue: "The link expires in 15 minutes. Check your spam folder if you don't see it.",
+              })}
             </p>
             <button
               type="button"
               onClick={() => { setSentTo(null); setEmail(""); }}
               className="text-sm text-white/40 hover:text-white/60 underline transition-colors"
             >
-              Use a different email
+              {t("login.useDifferentEmail", { defaultValue: "Use a different email" })}
             </button>
           </div>
         ) : (
@@ -255,7 +334,7 @@ export default function Login() {
           <form onSubmit={handleMagicLinkSubmit} noValidate className="space-y-4">
             <div>
               <label htmlFor="email" className="block text-xs font-medium text-white/60 mb-1.5">
-                Email address
+                {t("login.emailLabel", { defaultValue: "Email address" })}
               </label>
               <input
                 id="email"
@@ -263,7 +342,7 @@ export default function Login() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
+                placeholder={t("login.emailPlaceholder", { defaultValue: "you@example.com" })}
                 required
                 className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/25 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/60 focus:border-[#C9A84C]/60 transition"
               />
@@ -289,30 +368,30 @@ export default function Login() {
               {isSubmitting ? (
                 <>
                   <Spinner />
-                  Sending link…
+                  {t("login.sendingMagicLink", { defaultValue: "Sending link…" })}
                 </>
               ) : (
-                "Send Magic Link"
+                t("login.sendMagicLink", { defaultValue: "Send Magic Link" })
               )}
             </button>
 
             <p className="text-center text-xs text-white/30">
-              No password needed — we'll email you a secure login link.
+              {t("login.noPassword", { defaultValue: "No password needed — we'll email you a secure login link." })}
             </p>
           </form>
         )}
 
         {/* ── Legal ─────────────────────────────────────────────────────── */}
         <p className="mt-8 text-center text-xs text-white/25 leading-relaxed">
-          By continuing, you agree to our{" "}
+          {t("login.termsPrefix", { defaultValue: "By continuing, you agree to our" })}{" "}
           <a href="/terms-of-service" className="underline hover:text-white/50 transition-colors">
-            Terms of Service
+            {t("login.terms", { defaultValue: "Terms of Service" })}
           </a>{" "}
-          and{" "}
+          {t("login.consentAnd", { defaultValue: "and" })}{" "}
           <a href="/privacy-policy" className="underline hover:text-white/50 transition-colors">
-            Privacy Policy
+            {t("login.privacy", { defaultValue: "Privacy Policy" })}
           </a>
-          .
+          {t("login.consentSuffix", { defaultValue: "." })}
         </p>
       </div>
     </div>

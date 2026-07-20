@@ -1,0 +1,584 @@
+# Project TODO
+
+- [x] Restore and validate shared paid-or-admin entitlement enforcement for the private WordPress connector download
+- [x] Keep the WordPress connector onboarding step optional and hidden from free users
+- [x] Replace the broken public GitHub connector link with an authorized private download action
+- [x] Allow Send Request immediately after SMTP and review-platform setup without requiring the connector step
+- [x] Dismiss the onboarding modal immediately on navigation but persist dismissal only after a successful Send Request
+- [x] Add or update Vitest regression coverage for paid/admin connector access and onboarding behavior
+- [x] Run TypeScript checks and the Vitest suite
+- [x] Verify the mobile onboarding UI and publish the production checkpoint
+- [x] Add regression coverage proving persisted onboarding dismissal is triggered by confirmed request success
+- [x] Prevent the six-screen setup guide from revealing the underlying onboarding wizard when navigating to Send Request
+- [x] Reconstruct the Settings review-platform and SMTP localization edits lost during sandbox restore
+- [x] Preserve the reconstructed implementation in an immediate work-in-progress checkpoint
+- [x] Add the new Settings keys to English and every supported non-English locale
+- [x] Bump the locale cache version and verify locale parity
+- [x] Run full TypeScript, Vitest, and representative mobile language validation
+- [x] Reproduce and trace the Settings tRPC query and mutation responses that return HTML instead of JSON
+- [x] Fix the client/server routing or runtime condition causing Settings API calls to hit the HTML fallback
+- [x] Add regression coverage for the corrected tRPC endpoint behavior
+- [x] Validate Settings queries and mutations in the browser, then run focused TypeScript and Vitest checks
+- [x] Restore the public landing-page language selector with all six supported languages and persistent selection
+- [x] Replace obsolete image-based or legacy branding with the approved gold P mark plus CSS-rendered Get Phame wordmark
+- [x] Display each authenticated user’s Free, Monthly, Annual, or Life status in the requested sidebar position
+- [x] Guarantee admin users, including steve@sk-america.com, receive actual Life entitlements and never see an upgrade prompt
+- [x] Replace the generic Upgrade action with plan-aware subscription management for upgrades, annual-to-monthly changes, and cancellation
+- [x] Hide subscription management for Life users while preserving their Life status display
+- [x] Review remaining legacy English UI labels and translate the applicable operational strings across all supported locales
+- [x] Confirm a user-friendly language selector is available within Settings
+- [x] Add a Settings-page skeleton loading state while account data is fetched
+- [x] Package the Get Phame restoration and regression workflow as a reusable project skill
+- [x] Audit applicable Get Phame task sources for other unfinished work without modifying other sessions’ task ledgers
+- [x] Add or update Vitest coverage for branding, language controls, plan status, admin Life entitlement, subscription management, and Settings loading
+- [x] Verify desktop and mobile UI, run TypeScript and the full Vitest suite, then publish the completed update
+- [x] Finalize and validate the reusable Get Phame regression-restoration skill through the approved skill-creator workflow
+- [x] Update the dashboard usage card to show Life Plan instead of Free Plan for users with effective Life entitlements
+- [x] Add a confirmation modal summarizing the change before Monthly and Annual subscribers switch plans
+- [x] Add a clear sidebar badge that identifies administrator accounts without exposing admin-only actions
+- [x] Add or update Vitest coverage for the Life usage label, plan-switch confirmation modal, and admin badge
+- [x] Verify the four improvements on desktop and mobile, run TypeScript and the full Vitest suite, then publish the checkpoint
+- [x] Restore clear free-plan messaging that states 10 initial requests followed by 5 requests every rolling 30 days
+- [x] Build an admin-only user-management screen with search, user status visibility, and controlled admin plus Life access management
+- [x] Add the subscription renewal date next to Monthly and Annual plan status wherever account status is shown
+- [x] Show an in-app success confirmation immediately after users return from a completed Stripe checkout or billing change
+- [x] Update and validate the reusable Get Phame regression-restoration skill with the new quota, admin, renewal, and Stripe-return safeguards
+- [x] Add or update Vitest coverage for quota messaging, admin authorization and management, renewal dates, and Stripe-return confirmation
+- [x] Verify desktop and mobile behavior, run TypeScript and the full Vitest suite, then publish the completed checkpoint
+
+- [x] Reproduce and fix the public landing page remaining in English when Thai is selected, restoring full Thai content and persisted language behavior.
+- [x] Add regression coverage proving the landing page renders translated Thai content—not only a Thai selector label—and verify desktop plus mobile.
+- [x] Validate a Free account’s transition from 10 initial requests to the recurring 5-per-rolling-30-days allowance without corrupting production customer data.
+- [x] Review the live `/admin/users` workflow end to end, including search, status visibility, role controls, Life controls, pagination, and self-demotion safeguards.
+- [x] User-reported production validation: Steve independently completed the live checkout and confirmed that it worked; no payment was submitted or directly observed by the agent.
+- [x] Run TypeScript, focused regressions, the full test suite, and production build, then publish the verified repair checkpoint.
+- [x] Superseded by the explicit Italian landing deferral: restore public landing-page sections to i18next for EN, TH, ES, FR, zh-CN, and zh-TW while keeping the existing Italian application locale intact.
+- [x] Add seven-locale landing regression coverage that rejects hardcoded-English rendering and verifies selector persistence plus content changes for each supported language.
+- [x] Replace the already-merged English `landing` block in the Spanish locale with a complete, validated Spanish translation.
+- [x] Add the complete Traditional Chinese `landing` namespace and reconcile active Simplified Chinese support with the seven-language requirement.
+- [x] Keep Italian application translations intact while explicitly deferring only the new Italian landing namespace until the dedicated translation pass.
+- [x] Preserve and review the nested Mac clone's four untracked icon files before any future duplicate-directory cleanup; no nested clone was present in this sandbox, and no external Mac directory was altered.
+- [x] Superseded by user: make the bottom sidebar account identity block clickable and reveal an accessible Log out action without disrupting Administrator, Life status, or theme controls.
+- [x] Superseded by user: add Vitest regression coverage for opening, keyboard-operating, and logging out through the sidebar account menu on desktop and mobile layouts.
+- [x] Add a direct, translated Log out link below the Dark theme control and above the unchanged name/email profile block; implementation, regression coverage, and live desktop logout execution verified in production.
+- [x] Add Vitest regression coverage that locks the sidebar logout link's placement, translated label, and shared authentication action.
+- [x] Fix custom-domain email magic-link verification so a valid `getphame.app` link establishes the session and reaches the authenticated app instead of returning to generic onboarding.
+- [x] Add the translated Log out action to the mobile navigation using the existing authentication behavior, without changing the desktop profile block.
+- [x] Add focused Vitest coverage for custom-domain magic-link redirects/session establishment and mobile logout accessibility.
+- [x] Verify both fixes on a phone-sized viewport and with the alternate non-admin production account before completing the remaining quota, admin, and checkout checks.
+- [x] Superseded after the Italian completeness audit: standardize every public and authenticated language selector with USA English first, followed exactly by CN, ES, FR, TH, and TW while Italian remains hidden.
+- [x] Correct the WooCommerce sync FAQ answer to disclose clearly that connector installation and synchronization require a paid plan.
+- [x] Add focused Vitest coverage for the shared locale order, USA English flag, and WooCommerce paid-feature disclosure across localized content.
+- [x] Verify the updated selectors and FAQ on desktop and phone-sized viewports, run TypeScript, the full Vitest suite, and the production build, then publish the release.
+- [x] Audit Italian public landing and authenticated-app translation coverage against the other supported locales before keeping IT visible in selectors.
+- [x] If Italian is incomplete, remove IT only from the shared selector options while preserving every existing Italian translation file and all progress for later completion.
+- [x] Add regression coverage proving selector visibility follows Italian readiness and that no Italian translation assets are deleted.
+- [x] Fix the screenshot-confirmed legacy selector sequence and UK flag so every rendered selector uses USA EN first, followed by CN, ES, FR, TH, and TW, with incomplete IT hidden.
+- [x] Add a non-production seeded integration path that exercises persisted-style request rows through the production quota calculation and send-enforcement boundary.
+- [x] Prove in integration coverage that the 10th request remains available, the 11th enters the rolling allowance, the 16th is blocked, and capacity returns after the oldest rolling request expires.
+- [x] Verify user-visible initial, rolling, and blocked quota states without changing production account data.
+- [x] Replace the public API's obsolete lifetime ten-request cutoff with the same 10-initial-plus-5-per-rolling-30-days quota summary and administrator exemption used by in-app sends.
+- [x] Add regression coverage proving public API and in-app sends share the same Free-plan allowance and blocked response semantics.
+- [x] Add a DB-backed quota integration test that seeds isolated customer-request rows and executes the real getFreeQuotaSummary plus enforcement path without touching production data.
+- [x] Add rendered dashboard coverage for the initial, rolling, and blocked Free-plan quota states.
+- [x] Add runtime tests proving tRPC and public API send boundaries return matching quota-block messages and the public API returns HTTP 429.
+- [x] Add a page-level rendered Home dashboard test that feeds real profile.freeQuota variants through the actual page data path and verifies initial, rolling, and blocked messaging.
+- [x] Validate `/admin/users` pagination in the authenticated live session, or document that pagination is unreachable because the current 11-account directory is below the 25-account page size while retaining executable pagination coverage.
+- [x] Verify the live role and Life control boundaries non-destructively through rendered disabled states and runtime mutation coverage, without submitting account changes.
+- [x] Add a clear Log in entry on the public landing page that lets returning users request a secure email magic link.
+- [x] Ensure magic-link requests use the current browser origin so custom-domain users return to getphame.app safely.
+- [x] Detect completed existing accounts after magic-link verification and route them directly to the authenticated dashboard instead of onboarding.
+- [x] Keep onboarding limited to genuinely new or incomplete accounts while preserving existing request history, plan status, SMTP state, and review-platform setup.
+- [x] Add regression coverage for landing login visibility, known-email magic-link delivery, completed-account dashboard routing, and incomplete-account onboarding behavior.
+- [x] Verify returning-user login and onboarding bypass on desktop and phone-sized viewports, run full quality gates, and publish the authentication repair.
+- [x] Add an admin-only Delete account workflow with confirmation, self-delete protection, and last-administrator protection.
+- [x] Add an admin-only Combine accounts workflow that selects a source duplicate and target survivor, previews the merge direction, and requires explicit confirmation.
+- [x] Transfer source-account business records, contacts, requests, reminder history, analytics, settings, and other owned data to the target account without duplicating unique rows or weakening the target role/plan.
+- [x] Preserve the target login identity and entitlement state, validate the transfer transactionally, and delete the source user only after all linked ownership updates succeed.
+- [x] Add authorization, self-delete, last-admin, merge-direction, conflict-handling, and data-preservation regression tests without modifying live Steve Kinzey or Michael records.
+- [x] Reproduce and correlate the production Apple Sign In callback failure reported after successful Apple authorization.
+- [x] Repair Apple callback validation, identity resolution, session creation, or redirect handling without creating another duplicate user or losing existing account data.
+- [x] Add regression coverage for a successful Apple callback, an existing-email Apple login, and safe callback failure handling.
+- [x] Verify Apple Sign In on the published custom domain, run complete quality gates, and publish the repair before resuming checkout validation.
+- [x] Capture the second failed Apple callback after the authorization-code exchange release and identify its distinct production error signature.
+- [x] Repair the newly identified Apple token-exchange, client-secret, token-verification, identity-linking, or session failure without creating another account.
+- [x] Add regression coverage for the exact second-stage Apple callback failure and publish the corrected release.
+- [x] Verify session JWT identities resolve through `login_identity_alias` before OAuth fallback; the shared user lookup already enforces this safeguard.
+- [x] Create existing-email Apple sessions with the canonical account identity and add privacy-safe callback-stage logging so the repaired production flow is both race-resistant and diagnosable.
+- [x] Open the current preview at the login entry and verify the authentication controls are reachable for a clean-state test.
+- [x] Determine whether a stale service worker, cached app shell, or persisted browser storage can preserve the reported Apple error after deployment; a clean preview-origin authorization produced a fresh production failure, ruling out a cached error page as the cause.
+- [x] Compare the latest production Apple callback diagnostics with the user’s repeated failure and identify the definitive failing stage: Apple accepts authorization but its server token exchange returns no `id_token`.
+- [x] Request and verify Apple’s signed `id_token` directly in the form-post callback using a signed state nonce, while retaining the authorization-code exchange as a backward-compatible fallback.
+- [x] Log only safe Apple token-exchange error metadata so any remaining provider/configuration error is visible without exposing codes, tokens, email, or identity data.
+- [x] Add regression coverage for signed Apple state/nonce validation and direct callback identity-token login, then run the complete release gate and publish.
+- [x] Hide Apple and Google sign-in controls on every live Get Phame domain while keeping email magic-link login available.
+- [x] Preserve the Apple and Google OAuth implementations behind a reversible preview/staging-only gate instead of deleting server routes.
+- [x] Add regression coverage proving production hostnames hide social login and preview/localhost hostnames expose it for continued testing.
+- [x] Publish the validated staging-gated release, then verify `getphame.app/login` hides Apple and Google while the preview host preserves both test controls.
+- [x] Reproduce and trace the July 14 production magic-link failure for the existing Steve account without logging or exposing the token.
+- [x] Repair the magic-link verification, account resolution, session cookie, or redirect failure while preserving existing Apple, Google, and email authentication behavior.
+- [x] Add focused regression coverage for the exact failure and rerun TypeScript, the full Vitest suite, and the production build.
+- [x] Publish the verified repair and confirm a newly requested custom-domain magic link reaches the authenticated dashboard.
+- [x] Determine whether the blocked `static.cloudflareinsights.com` beacon is an authentication dependency or an isolated optional-analytics CSP warning.
+- [x] Inspect the fresh post-`71c480aa` production magic-link lifecycle and confirm whether the issued session now passes JWT verification.
+- [x] Change CSP or authentication code only if evidence shows a remaining functional failure, then rerun focused and complete release gates.
+- [x] Trace the latest successful production magic-link login to the resolved existing account and the exact setup-guide completion decision.
+- [x] Correct returning-user account resolution or onboarding eligibility so completed existing accounts reach their dashboard while genuinely incomplete accounts still receive setup.
+- [x] Add regression coverage for duplicate historical identities and completed-versus-incomplete returning-user routing, then rerun focused and complete release gates.
+- [x] Publish the verified returning-user routing repair and confirm a fresh existing-account magic link bypasses setup.
+- [x] Make the authenticated application shell wait for server onboarding status before deciding whether to auto-open the six-screen setup guide, suppress it for dismissed or completed returning accounts, and preserve setup for genuinely incomplete accounts.
+- [x] Add focused regression coverage for dismissed, completed, incomplete, and loading onboarding-status states without changing production customer data.
+- [x] Run TypeScript, the full Vitest suite, and the production build; publish the repair and hard-refresh the existing production account to confirm the guide stays closed.
+- [x] Treat historical sent-request activity as established-account evidence so a later SMTP credential failure cannot reclassify a returning customer as a first-login account.
+- [x] Add regression coverage for an established account with sent-request history and a currently false strict `allDone` status, then republish and repeat the production hard-refresh verification.
+- [x] Restore the premium responsive GetPhame Pro upgrade illustration using the approved logo mark and CSS wordmark after the sandbox reset.
+- [x] Make every setup wizard screen dismiss immediately through the X button, Escape key, backdrop click, and always-visible skip action without waiting for server persistence.
+- [x] Implement server-authoritative seven-day Stripe guarantee eligibility with customer or checkout ownership verification and lifetime-plan exclusion.
+- [x] Implement an idempotent full-refund claim that detects existing refunds, issues the refund before subscription termination, and preserves a separate cancel-renewal path.
+- [x] Add protected tRPC procedures for guarantee eligibility, refund claims, and non-refund renewal cancellation.
+- [x] Rebuild the localized cancellation page with eligibility, amount and deadline context, explicit confirmation, success and error states, and the separate out-of-window cancellation path.
+- [x] Add the cancellation translation namespace to EN, ES, FR, IT, TH, zh-CN, and zh-TW, then bump the locale cache version.
+- [x] Add focused refund-boundary, ownership, idempotency, lifetime exclusion, and refund-before-cancel tests plus upgrade and setup regressions.
+- [x] Run TypeScript, focused Vitest, full Vitest, production audit, and production build validation.
+- [x] Verify Upgrade and cancellation pages at desktop and phone sizes, then save the auto-published production checkpoint.
+- [x] Fix the live setup wizard reopening or remaining visible after its top-right X is clicked, then add a regression for the parent-state interaction and republish.
+- [x] Persist manual setup dismissal per authenticated user across full browser reloads while preserving the explicit Guide reopen action, then validate and republish.
+- [x] Fix the `/admin/users` customer-request activity query so MySQL date grouping uses a schema-qualified expression and compatible UTC cutoff parameter, then add an admin analytics regression and republish.
+- [x] Audit shared and page-specific form controls for light/dark text, placeholder, background, border, autofill, disabled, and read-only contrast inconsistencies across the authenticated site.
+- [x] Implement globally consistent, readable form-field colors in both light and dark modes without weakening existing GetPhame branding or interaction states.
+- [x] Add regression coverage, run complete release gates, verify representative forms in both themes, and publish the validated accessibility repair.
+- [x] Verify the authenticated alternate non-admin production account on a phone-sized viewport and close the older mobile-account validation gate.
+- [x] Update the public homepage so Google reviewers can immediately identify GetPhame’s purpose, intended users, core review-request workflow, and relevant Google service/data use before signing in.
+- [x] Add homepage-purpose regression coverage, run complete release gates, verify public desktop and mobile layouts, and publish the Google-verification remediation.
+- [x] Fix the authenticated mobile header so the GetPhame logo mark and plain-text GET PHAME wordmark occupy the first row, with Share, Guide, and language controls on a second row without clipping or overlap; preserve the existing desktop header.
+- [x] Add regression coverage, verify the repaired header on mobile and desktop, publish it, and complete the alternate non-admin production mobile validation.
+- [x] Restructure the authenticated mobile footer into two deliberate link rows: Privacy Policy, Terms of Service, and Compliance on row one; Security and What's New on row two; preserve the existing desktop footer.
+- [x] Add regression coverage, verify the footer order and spacing on mobile plus desktop preservation, publish the footer polish, and confirm the alternate-account production mobile view.
+- [x] Add focused mobile-footer regression coverage and pass the full 38-file Vitest suite, TypeScript check, production build, mobile screenshot, and desktop-preservation screenshot before publication.
+- [x] Change account combining so a verified SMTP connection automatically replaces an unverified duplicate while preserving safe conflict handling for ambiguous SMTP states.
+- [x] Add regression coverage for source-verified, target-verified, both-verified, and both-unverified SMTP merge outcomes.
+- [x] Run TypeScript, focused tests, the full Vitest suite, and the production build, then publish the verified SMTP merge update.
+- [x] Document the exact administrator workflow for removing an invalid SMTP connection from a duplicate account before combining it.
+- [x] Expose each user’s SMTP connection and verification status in the admin user-management data contract and Manage Users interface.
+- [x] Add an admin-only SMTP credential removal procedure that deletes only the selected user’s SMTP record and preserves all other account data.
+- [x] Add a Remove SMTP action with a typed email-address confirmation gate before permanent credential deletion.
+- [x] Add authorization, exact-email confirmation, SMTP-only deletion, status rendering, and UI interaction regression coverage.
+- [x] Run focused tests, the full Vitest suite, TypeScript validation, production build, visual verification, and publish the admin SMTP controls.
+- [x] Add an SMTP-status filter to Manage Users for all, verified, unverified, and unconnected accounts while preserving search and pagination.
+- [x] Add an admin-only one-click SMTP re-test procedure and per-user action that updates verification and health status without exposing credentials.
+- [x] Add a durable administrator SMTP audit-log table recording remover identity, target identity, outcome, and removal timestamp.
+- [x] Write the SMTP removal audit event transactionally with credential deletion and expose an admin-only audit-log query.
+- [x] Add a responsive administrator audit-log section to Manage Users with clear actor, target, outcome, and timestamp details.
+- [x] Package the administrator SMTP status, re-test, removal, filtering, auditing, safeguards, and regression workflow as a reusable skill.
+- [x] Add focused authorization, filtering, re-test, audit persistence, audit rendering, and failure-path Vitest coverage.
+- [x] Apply and verify the database migration, run TypeScript, focused tests, the full Vitest suite, production build, and responsive visual checks.
+- [x] Validate the reusable skill, save the auto-published application checkpoint, and deliver the skill package.
+- [x] Replace the retired npm audit endpoint dependency in the production build gate with a reliable vulnerability check that still blocks verified production-security findings.
+- [x] Re-run the full production build, save a new checkpoint, and confirm deployment succeeds.
+- [x] Correct the stale administrator SMTP test contract used by the production builder, rerun the complete release gate, and republish successfully.
+- [x] Add a one-click administrator credential re-test action directly to the failing-SMTP dashboard warning widget, with loading and result feedback.
+- [x] Add server-backed pagination and responsive navigation controls to the SMTP credential-removal audit log for high-volume accounts.
+- [x] Add a dashboard indicator showing the latest SMTP health-check status and timestamp.
+- [x] Restore focused regressions for dashboard re-testing, audit pagination, and health-check visibility.
+- [x] Enforce single-copy React resolution in Vite and add a deterministic invalid-hook-call regression guard.
+- [x] Re-run focused and complete validation, checkpoint the release, and verify production.
+- [x] Replace the full GET PHAME wordmark with the official gold P-star logo mark whenever constrained authenticated header or sidebar widths would crowd adjacent controls.
+- [x] Add responsive branding regression coverage, pass the complete release gate, and verify logo-only plus full-lockup states at tablet, desktop, and mobile breakpoints.
+- [x] Create and validate a reusable administrator SMTP remediation skill through the approved skill-creator workflow.
+- [x] Add administrator SMTP audit-log date and outcome-status filters while preserving pagination and responsive behavior.
+- [x] Add CSV export for the currently selected SMTP audit-log filters with safe escaping and an administrator-only data contract.
+- [x] Notify administrators immediately when an SMTP account transitions from a healthy state to failed without repeatedly alerting for unchanged failures.
+- [x] Return and display immediate recovery confirmation when corrected SMTP credentials successfully verify after a prior failure.
+- [x] Add regression coverage, run TypeScript and the full Vitest suite, build production, verify the mobile-first UI and live notification-safe behavior, then publish the completed release.
+- [x] Write a concise Get Phame email architecture summary covering Resend platform email, Google Workspace administration, and customer SMTP delivery.
+- [x] Create and verify a diagram showing magic-link and administrator SMTP-failure alert flows.
+- [x] Draft a ready-to-send email to Resend support describing the current architecture and requesting SMTP failure-alert best practices.
+- [x] Package the architecture brief, diagram source/image, and support email as downloadable deliverables.
+- [x] Reproduce the `/?from_webdev=1` tRPC API failure and identify the exact failing query, response status, and server-side cause.
+- [x] Repair the landing-route API failure with the smallest reliable routing, runtime, or upstream-handling change.
+- [x] Add focused Vitest coverage for the corrected tRPC request and a user-safe temporary-unavailability path.
+- [x] Run TypeScript, focused tests, the full Vitest suite, and the production build.
+- [x] Verify the repaired landing route at desktop and phone widths, then publish the validated checkpoint.
+- [x] Reproduce why the Automatic Follow-ups first-delay value cannot be edited and trace its UI, API, and persistence path.
+- [x] Make the first follow-up delay editable with safe numeric limits while keeping the second follow-up exactly seven days later.
+- [x] Add focused reminder-delay regression coverage and run TypeScript, the full Vitest suite, and the production build.
+- [x] Verify the repaired reminder control on phone and desktop viewports, then publish the validated checkpoint.
+- [x] Diagnose and repair the Vite reload failures for Settings.tsx and index.css caused by the interrupted reminder-control edit, then confirm /templates loads cleanly.
+- [x] Add durable independent persistence and scheduling semantics for the second follow-up delay without changing existing customer defaults unexpectedly.
+- [x] Add responsive 3-, 5-, and 7-day preset buttons for both follow-up timing controls with safe 1–14 day validation.
+- [x] Show a clear success toast after reminder timing settings save and preserve useful error feedback.
+- [x] Create and validate a reusable reminder-timing settings skill using the approved skill-creator workflow.
+- [x] Add focused schema, API, scheduler, UI, preset, toast, and independent-delay regressions; run TypeScript, the full Vitest suite, and the production build.
+- [x] Verify reminder settings on phone and desktop, publish the validated release, and deliver the reusable skill package.
+
+- [x] Inspect the current scheduler, reminder-event data, analytics paths, periodic-work constraints, and reusable reminder skill before designing the extension.
+- [x] Add durable independent enable/disable settings for the first and second follow-up stages while preserving current enabled defaults.
+- [x] Update reminder scheduling so disabled stages are skipped safely and the remaining enabled stage uses correct timing semantics without duplicate sends.
+- [x] Add a responsive projected send-date preview that updates dynamically for both stages and clearly identifies disabled reminders.
+- [x] Add a lightweight real-data performance reporting contract grouped by reminder timing configuration without fabricated reviews, ratings, or outcomes.
+- [x] Build a responsive reminder performance section showing configuration volume and success rate with clear empty and low-sample states.
+- [x] Update and validate the reusable reminder-timing skill with stage toggles, projected dates, analytics semantics, migrations, and regression gates.
+- [x] Add focused schema, scheduler, API, preview, toggle, analytics, and UI regressions; run TypeScript, the full Vitest suite, and production build.
+- [x] Verify the reminder controls, preview, and performance reporting on phone and desktop, then publish the validated release and deliver the updated skill.
+
+- [x] Audit all existing admin-only pages, health diagnostics, operational analytics, and route guards to define the administration hub inventory.
+- [x] Turn the bottom-left Administrator control into an accessible link to a centralized admin-only hub while preserving its current visual status treatment.
+- [x] Build a responsive administration hub that links to user management, authentication health, reminder performance, system operations, and other existing high-value admin pages.
+- [x] Surface concise real operational summaries on the admin hub only where trustworthy live data already exists, with clear unavailable and empty states.
+- [x] Add authorization, navigation, responsive layout, and source-contract regressions proving non-admin users cannot access or see the administration hub.
+- [x] Verify the Administrator link and administration hub on phone and desktop as part of the combined release validation.
+
+- [x] Audit the existing revenue, churn, reminder-performance, SMTP-health, and authentication-diagnostics data contracts plus current periodic health checks.
+- [x] Define a secure consolidated CSV export contract for revenue, churn, and reminder-performance analytics with safe escaping and explicit section labels.
+- [x] Add durable 24-hour SMTP and authentication health-history persistence using the approved periodic-work architecture and real system observations only.
+- [x] Add admin-only APIs for health trends, CSV export data, and alert-threshold evaluation without exposing customer credentials or fabricated metrics.
+- [x] Add a responsive CSV export button to the administration hub for revenue, churn, and reminder-performance analytics.
+- [x] Add a responsive 24-hour system-health trend chart for SMTP health and authentication diagnostics with clear empty and unavailable states.
+- [x] Add visual red alert states in the administration hub when SMTP health or reminder performance falls below documented acceptable thresholds.
+- [x] Create and validate a reusable admin-operations analytics skill through the approved skill-creator workflow.
+- [x] Add focused schema, scheduler, export, authorization, trend, threshold, chart, and responsive UI regressions.
+- [x] Apply and verify migrations, run TypeScript, the full Vitest suite, security gate, and production build, then validate phone and desktop layouts.
+- [x] Publish the validated release and deliver the reusable skill package.
+- [x] Update the public Get Phame homepage so Google OAuth reviewers can immediately understand the app’s purpose, user workflow, and Google-related functionality from plain-language visible content.
+- [x] Add focused homepage compliance coverage and verify the final public custom-domain content on phone and desktop before requesting Google branding re-verification.
+- [x] Fix the live anonymous homepage hero so reviewer-critical purpose, workflow, and Google data-use content remains visible even when entrance animations or viewport observers do not execute.
+- [x] Add an immediate loading spinner and disabled state to the public Google sign-in control without changing OAuth scopes or redirect behavior.
+- [x] Add clear success and error toast feedback for Google sign-in initiation and callback failures using the existing application notification system where available.
+- [x] Enhance the public three-step workflow cards with subtle accessible hover/focus motion and interactive icons while respecting reduced-motion preferences.
+- [x] Add focused regressions for sign-in pending state, duplicate-click prevention, toast feedback, workflow interactions, and reduced-motion safeguards.
+- [x] Verify the updated public experience on phone and desktop, run TypeScript and the relevant Vitest suite, then publish the validated checkpoint.
+- [x] Create, validate, and deliver a reusable skill for the Get Phame Google reviewer homepage and sign-in UX workflow.
+- [x] Simulate complete staged Google OAuth success, cancellation, and provider-error flows while verifying the spinner, duplicate-click protection, and toast outcomes without changing production OAuth visibility.
+- [x] Localize all new Google sign-in pending, success, and error feedback across every supported visible language and preserve URL cleanup after callback feedback.
+- [x] Add an accessible authenticated profile dropdown after successful sign-in with account-details navigation and the existing secure logout action on desktop and mobile.
+- [x] Add focused regressions for localized feedback, callback outcomes, profile-menu keyboard behavior, account navigation, logout, and existing authentication guards.
+- [x] Verify the full experience on phone and desktop, run TypeScript and relevant Vitest coverage, then publish the validated release.
+- [x] Update, validate, and deliver the reusable Google reviewer and sign-in UX skill with localization, flow simulation, and profile-menu contracts.
+
+- [x] Add secure authenticated profile editing in Settings for the user’s display name and supported editable account fields with localized validation and feedback.
+- [x] Add validated avatar upload, replacement, preview, persistence, and removal using application file storage rather than database file bytes.
+- [x] Render the saved avatar consistently in desktop and mobile account menus with a branded fallback when no avatar is stored.
+- [x] Add dashboard navigation and a quick dark-mode toggle to the accessible desktop and mobile account menus without removing Settings or secure logout.
+- [x] Strengthen the staged Google sign-in handoff with a loading spinner and clear localized initiation, redirect, success, cancellation, and provider-error status messages while preserving production OAuth visibility rules.
+- [x] Standardize Get Phame platform-email branding so emails sent from getphame.app use the supplied approved P-star logo image without changing customer SMTP identity.
+- [x] Add schema, authorization, storage, profile, avatar, account-menu, authentication-status, localization, and email-rendering regression coverage.
+- [x] Apply any required database migration, run focused and complete Vitest suites, TypeScript and production builds, and verify Settings plus account menus on phone and desktop.
+- [x] Create and validate a reusable skill covering the full authenticated profile, avatar, account-menu, Google status, and email-branding implementation workflow.
+- [x] Publish the validated release and deliver the updated Get Phame project checkpoint.
+
+- [x] Audit every current logo, favicon, Apple touch icon, manifest icon, and structured metadata branding reference.
+- [x] Prepare deployment-safe favicon and PWA icon variants from the supplied approved P-star artwork without altering the logo design.
+- [x] Replace application logo-mark references with the supplied artwork while preserving GET PHAME as live text in full lockups.
+- [x] Update browser favicon, Apple touch icon, PWA manifest icons, and applicable metadata to use the approved artwork.
+- [x] Add focused branding regressions and run TypeScript, complete Vitest, and production build validation.
+- [x] Verify the updated logo and favicon behavior on phone and desktop, then publish the validated release checkpoint.
+
+- [x] Audit current Open Graph, Twitter/X card, manifest, service-worker, iOS launch-image, and Android installability configuration.
+- [x] Create deployment-safe social-share artwork using the approved supplied P-star mark and live-designed Get Phame wordmark treatment.
+- [x] Create responsive branded PWA launch assets for supported iPhone and iPad viewport families without altering the approved logo mark.
+- [x] Update Open Graph, Twitter/X card, structured metadata, iOS startup-image links, theme colors, and PWA launch behavior.
+- [x] Add focused regressions for social metadata, launch assets, manifest completeness, service-worker scope, and installability requirements.
+- [x] Validate Add to Home Screen readiness with iPhone and Android mobile emulation, production asset checks, TypeScript, full Vitest, and production build.
+- [x] Publish the validated social-share and PWA launch release checkpoint.
+
+- [x] Audit the current Add to Home Screen guide, native sharing surfaces, existing analytics contracts, and prior PWA/social asset workflow.
+- [x] Trace why Gmail shows the legacy personal avatar for messages from no-reply@getphame.app, including Google account identity, SMTP sender profile, BIMI/DNS, and message-template sources.
+- [x] Configure the authoritative no-reply@getphame.app sender identity to use the approved deployed Get Phame site icon without generating or substituting a different logo.
+- [x] Verify the updated sender avatar in a newly delivered Gmail message and document any provider-side cache delay or account-owner step that cannot be automated safely.
+- [x] Define privacy-light first-party events for prompt shown, install action attempted, native install accepted/dismissed where detectable, and share action completed/cancelled where detectable.
+- [x] Persist and expose prompt-to-install conversion analytics without collecting customer content or unsupported device identifiers.
+- [x] Add a native web share action with clipboard fallback that shares the canonical Get Phame URL and triggers the updated Open Graph previews.
+- [x] Add a subtle GPU-friendly install-guide attention animation that respects prefers-reduced-motion and does not obstruct dismissal or installation controls.
+- [x] Create a reusable Get Phame social-share and PWA launch optimization skill using the approved skill-creator workflow and deterministic asset resources.
+- [x] Add focused regressions for analytics event semantics, privacy boundaries, native share fallback, animation accessibility, and reusable skill contracts.
+- [x] Validate the enhanced guide and sharing flow on iPhone and Android emulation, run TypeScript, full Vitest, security audit, and production build.
+- [x] Publish the validated install-conversion release and deliver the reusable skill package.
+- [x] Add explicit iPhone/iPad and Android installation instructions plus native share-with-a-friend fallback to the onboarding guide’s final step.
+- [x] Superseded by Steve’s attached PNG master: use the exact user-supplied gold P-star artwork as the authoritative sender/contact avatar; do not generate, redraw, or substitute another logo.
+- [x] Inspect Google Workspace to confirm `no-reply@getphame.app` is an alias, determine the dedicated send-only user and licensing path, and preserve existing mail routing.
+- [x] Create and brand a dedicated send-only Google Workspace identity for `no-reply@getphame.app` with the exact supplied P-star logo.
+- [x] Generate secure SMTP credentials for the dedicated sender and update Get Phame production secrets without exposing credentials.
+- [x] Verify a fresh production Get Phame email shows the P-star sender avatar and passes SPF, DKIM, and DMARC alignment checks.
+- [x] Reassign `no-reply@getphame.app` from Steve’s alternate email to the newly created Get Phame user instead of creating another paid Workspace user.
+- [x] Resolve the new `no-reply@getphame.app` account’s 2-Step Verification enrollment block without weakening the organization-wide security policy.
+- [x] Keep `no-reply@getphame.app` isolated from Steve’s inbox and use `hello@getphame.app` as SMTP Reply-To only after confirming it is a valid monitored Workspace address.
+- [x] Replace the previously sourced avatar asset with Steve’s attached `/home/ubuntu/upload/getphame-logo.png` as the sole authoritative logo master.
+- [x] Recreate exact 200×200, 512×512, and 1024×1024 PNG and WebP variants without redrawing or changing the P-star artwork.
+- [x] Apply a corrected PNG derivative to the dedicated Google Workspace sender profile and verify the visible avatar.
+
+- [x] Audit the existing Get Phame social/PWA skill against the completed onboarding install-and-share workflow.
+- [x] Refine the skill with reusable implementation, localization, analytics, accessibility, responsive-validation, and release-checkpoint contracts.
+- [x] Validate the completed skill using the approved skill-creator validator.
+- [x] Deliver the installable skill package to Steve.
+
+- [x] Audit the existing homepage install prompt, native sharing metadata, service worker, offline behavior, locales, and regression tests.
+- [x] Add a responsive homepage Install App banner that only appears for eligible users who have not installed the PWA and triggers the supported install flow.
+- [x] Add localized install-banner copy, dismissal behavior, accessibility feedback, and privacy-light install analytics.
+- [x] Enhance shared-link social previews with a branded preview image, canonical description, Open Graph metadata, and X card metadata.
+- [x] Implement a branded custom offline fallback page and integrate it with the PWA service worker navigation strategy.
+- [x] Add regression coverage and validate mobile install behavior, social metadata, offline fallback, TypeScript, security audit, full tests, and production build.
+- [x] Publish the validated PWA enhancement release and report the live version.
+
+- [x] Audit the current install banner, share helpers, language persistence, offline service-worker flow, localization catalogs, and existing Get Phame PWA skill.
+- [x] Add a smooth transform-and-opacity slide-in animation to the homepage Install App banner with reduced-motion support.
+- [x] Add a localized Remind me later action that hides the install banner for seven days, remains SSR-safe, and preserves install eligibility rules.
+- [x] Add a localized native Share button to the homepage using the canonical Get Phame Web Share payload with clipboard fallback, accessible outcome feedback, and privacy-light analytics.
+- [x] Create localized branded offline recovery content for every supported locale and make the service worker select the user’s persisted language safely.
+- [x] Create or update a reusable skill covering the complete install-banner, weekly reminder, localized offline, native sharing, testing, and checkpoint workflow.
+- [x] Add focused regressions for weekly reminder persistence, motion accessibility, native sharing, locale parity, offline language selection, and service-worker fallback behavior.
+- [x] Run TypeScript, focused and full Vitest, production security audit, production build, and phone-sized visual verification.
+- [x] Publish the validated PWA workflow release and deliver the reusable skill package.
+
+- [x] Audit the `/` route title source, meta description, keyword metadata, runtime `document.title` behavior, and all rendered image alt attributes.
+- [x] Set the root-page title with `document.title` to 30–60 characters, targeting approximately 55 characters.
+- [x] Set the root-page meta description to 50–160 characters, targeting approximately 150 characters.
+- [x] Add one meta keywords tag containing 3–8 focused Get Phame keywords.
+- [x] Add meaningful alt text to the single root-page image currently missing it without changing decorative-image semantics.
+- [x] Add regression checks enforcing the exact title, description, keyword-count, and image-alt requirements.
+- [x] Run focused and full tests, TypeScript, production build, and mobile root-page visual verification.
+- [x] Publish the validated root-page SEO correction and report exact title, description, and keyword counts.
+
+- [x] Inspect GitHub PR #2 and merge commit 6a6a017d8240a95d680f7c6b1058860a2cf7fcfa, including its exact Koalendar file and migration diff.
+- [x] Review the current workspace scheduling, paid-entitlement, webhook, contact-deduplication, Settings, and database architecture before porting.
+- [x] Isolate and apply only the Koalendar feature diff without reverting or overwriting newer workspace changes.
+- [x] Add paid-subscriber-only per-user Koalendar webhook URL management without changing existing secrets or integrations.
+- [x] Store only invitee name, invitee email, and required scheduling/import state for Koalendar bookings.
+- [x] Exclude canceled bookings, update reschedules, defer imports until scheduled end time, and deduplicate contacts by normalized email.
+- [x] Retry transient Koalendar processing failures using the project’s supported scheduling infrastructure.
+- [x] Add the Koalendar Settings UI while preserving all existing Settings controls and localization behavior.
+- [x] Apply and verify the included Drizzle migration through the managed database workflow.
+- [x] Run TypeScript, focused Koalendar tests, the full Vitest suite, production security/build gates, and representative UI verification.
+- [x] Publish the validated Koalendar release to www.getphame.app through a new checkpoint and report the exact version.
+
+- [x] Audit the current Koalendar Settings mutation states, toast framework, production test-account options, and reusable release workflow.
+- [x] Add a disabled loading state with clear progress copy while creating or updating the Koalendar webhook URL.
+- [x] Add a success toast after the Koalendar webhook URL is saved or updated, without duplicating the requested behavior.
+- [x] Add focused UI regression coverage for Koalendar save/update loading and success feedback.
+- [x] Create a reusable skill for isolating a GitHub feature diff, reconciling newer WebDev architecture, applying migrations, configuring Heartbeat, validating, publishing, and smoke testing Koalendar.
+- [x] Validate the reusable Koalendar skill and deliver it as an installable skill package.
+- [x] Connect an isolated paid test account to its per-user Koalendar webhook without changing existing secrets or third-party integrations.
+- [x] Run a complete booking, reschedule, and cancel smoke test using identifiable disposable invitee data.
+- [x] Verify post-end import, reschedule update, cancellation exclusion, normalized-email deduplication, transient-retry behavior, and production Heartbeat execution.
+- [x] Remove or clearly document all smoke-test records and confirm no unrelated production data changed.
+- [x] Run focused Koalendar tests, the full Vitest suite, TypeScript, production security/build gates, and phone-sized Settings verification.
+- [x] Publish the validated Settings feedback release and report the checkpoint plus smoke-test outcome.
+
+- [x] Superseded by user: explore the specified YouTube channel thoroughly in My Browser and inventory the available videos without changing the account.
+- [x] Superseded by user: analyze the strongest candidate videos and recommend the top three with concise reasons and direct links.
+- [x] Audit Koalendar failed-import persistence, retry rules, admin routes, existing admin navigation, and production scheduling constraints.
+- [x] Add an admin-only failed Koalendar import query with safe pagination, status details, and no webhook-token or excess customer-data exposure.
+- [x] Add an admin-only manual retry mutation that safely re-attempts eligible failed imports, prevents concurrent duplicate processing, and returns clear outcomes.
+- [x] Build a responsive administrator Koalendar retry dashboard with per-event manual trigger buttons, loading states, confirmations, and success/error feedback.
+- [x] Add the retry dashboard to the existing administration hub without exposing it to non-admin users.
+- [x] Audit every authenticated header, sidebar, mobile-header, account-menu, and compact-brand P icon placement.
+- [x] Make every authenticated P icon an accessible link to the public landing page while preserving the existing logo artwork, surrounding controls, and standalone wordmark behavior.
+- [x] Add focused regression coverage proving mouse and keyboard users can return to the landing page from every authenticated P-icon placement.
+- [x] Superseded by clarified identity requirements: audit outbound email and sender-profile code to confirm Get Phame does not hardcode an email avatar or override separately managed Workspace profile images.
+- [x] Validate and document distinct sender-avatar boundaries: no-reply@getphame.app uses the official Get Phame P icon, while steve@sk-america.com keeps a separately chosen headshot or SK-America company icon; do not programmatically substitute either avatar.
+- [x] Add focused authorization, retry-state, idempotency, API, navigation, and responsive UI regression coverage.
+- [x] Run focused and full Vitest suites, TypeScript, production security/build gates, runtime-log review, and mobile-first visual verification.
+- [x] Publish the validated Koalendar retry dashboard through an auto-published checkpoint and verify production behavior safely.
+- [x] Create and validate a reusable skill covering the admin Koalendar retry dashboard, authenticated P-icon landing-page navigation, sender-avatar boundaries, validation, and release delivery.
+- [x] Deliver the published checkpoint, implementation summary, and reusable skill package.
+
+- [x] Identify the exact project checkpoint from approximately 12–16 hours before the reported landing-page regression.
+- [x] Compare the complete historical and current landing-page file sets, assets, layout, logo, responsive behavior, language control, and footer.
+- [x] Restore the entire historical landing page exactly without redesigning, reinterpreting, or modifying its established content and structure.
+- [x] Restore the exact historical shared logo implementation used by that landing page and authenticated navigation.
+- [x] Preserve the Koalendar admin recovery dashboard, retry APIs, and unrelated newer application functionality during the landing restoration.
+- [x] Add or update regression coverage that locks the restored landing structure, logo asset, major sections, responsive navigation, language control, and footer.
+- [x] Run focused and full tests, TypeScript, production build/security gates, runtime-log review, and desktop plus phone visual comparison.
+- [x] Publish the validated corrective checkpoint and report the exact restored version.
+
+- [x] Inspect the live preview header at desktop and phone widths and compare it with the correct historical rendered design, not only source-file diffs.
+- [x] Identify and correct the exact footer copyright wording, year, punctuation, and responsive presentation.
+- [x] Inventory every applicable public route and identify pages that do not render the established shared public footer.
+- [x] Restore the correct public header without changing the established logo, language selector, login action, responsive menu behavior, or authenticated navigation.
+- [x] Add the established full-width shared footer to every applicable public page while preserving each page’s content and route-specific behavior.
+- [x] Add regression coverage for header composition, copyright text, footer route coverage, full-width footer styling, and mobile behavior.
+- [x] Run focused and full tests, TypeScript, production build/security gates, runtime-log review, and desktop plus phone screenshots for every affected public route.
+- [x] Publish the validated public-header and site-wide-footer corrective checkpoint and report the exact version.
+- [x] Locate the exact landing-page asset that renders the Import Customers mockup shown by the user and identify every component and route that uses it.
+- [x] Replace the mockup’s incorrect P-plus-separate-star mark with the approved Get Phame P mark while preserving all other artwork, text, dimensions, and responsive behavior.
+- [x] Audit every public landing-page image and mockup for the same incorrect embedded logo and correct any additional occurrences.
+- [x] Upload corrected static artwork through permanent web project storage and update only the affected public image references.
+- [x] Add regression coverage that locks affected landing artwork to corrected asset URLs and prevents reintroduction of the P-plus-separate-star mark.
+- [x] Reproduce the live `/admin` P-icon click in My Browser and confirm the exact current click target, route, and authentication behavior.
+- [x] Fix the `/admin` P icon so authenticated administrators return to the public landing/home page without logging out or breaking other admin navigation.
+- [x] Reproduce the landing-page PDF email-capture error with a disposable address and capture the exact client, API, and server failure without subscribing a real user.
+- [x] Repair the PDF lead-capture procedure so it works independently of app signup, returns a clear success state, and preserves existing consent and deduplication rules.
+- [x] Verify the promised PDF delivery path or download response works end to end and provides an actionable error when delivery cannot complete.
+- [x] Add focused authorization, validation, deduplication, success, failure, and UI regression coverage for the PDF capture flow and admin P-icon navigation.
+
+- [x] Reproduce and document the user-reported guide non-delivery without exposing the submitted address; distinguish provider acceptance from the final Gmail bounce.
+- [x] Replace the temporary guide source with `https://assets.getphame.app/getphame-30-day-review-playbook.pdf` throughout server delivery, email content, UI, and regression contracts.
+- [x] Normalize and validate guide email addresses in real time with accessible inline feedback, server validation, invalid-submit blocking, and a visible address-confirmation cue.
+- [x] Report email-provider acceptance honestly, retain direct R2 download fallback, and provide edit/retry controls without claiming inbox delivery.
+- [x] Add branded X/Twitter and LinkedIn buttons that share the public guide experience without including captured visitor data.
+- [x] Add focused normalization, share-URL, provider-acceptance, fallback, accessibility, privacy, consent, deduplication, and R2 regression coverage.
+- [x] Rebuild the eight-page guide with the exact user-supplied transparent P on every logo occurrence and GET PHAME retained as styled text.
+- [x] Replace the established R2 PDF object only after page-count, checksum, content-type, and full-document visual verification.
+- [x] Create and validate the reusable `lead-magnet-pdf-delivery` skill through the approved skill-creator workflow.
+- [x] Run focused and full Vitest, TypeScript, production security/build gates, production-log review, and desktop plus phone visual verification.
+- [x] Publish the validated release and deliver the checkpoint, corrected guide, and reusable skill package.
+
+- [x] Audit Stripe Checkout return URLs and active test webhook records for stale legacy or temporary domains; keep the customer-facing application origin at `https://getphame.app`.
+- [x] Force future standard Checkout, THB Checkout, and Billing Portal return URLs to the canonical Get Phame origin with regression coverage.
+- [x] Verify `https://getphame.app/api/stripe/webhook` reaches the deployed signed handler, then replace the temporary active Stripe test webhook URL only after user confirmation.
+
+- [x] Confirm the intended support recipient address, then replace the landing-footer mail link with an accessible support form delivered through Resend from `hello@getphame.app`.
+- [x] Implement server-side support-message validation, rate-abuse safeguards, and an accessible form success/error experience without exposing email-provider credentials to the client.
+- [x] Remediate all Privacy Policy contrast, heading, link, focus, and semantic accessibility violations evidenced by the supplied screenshot while preserving readable responsive layout.
+- [x] Add focused regression coverage and run desktop/mobile accessibility validation for the support flow and Privacy Policy.
+- [x] Deliver support-form submissions from `hello@getphame.app` to the confirmed recipient `support@getphame.app` through the existing Resend-backed system sender.
+
+- [x] Create and validate a reusable skill that captures the accessible, Resend-backed, abuse-resistant support-intake pattern used by Get Phame.
+- [x] Add an accessible support-topic selector with Billing, Onboarding, and Technical Issue options and include the chosen topic in stored and emailed submissions.
+- [x] Persist support submissions with secure screenshot-attachment metadata and lifecycle status in the database without storing file bytes in database columns.
+- [x] Add secure client-to-storage screenshot uploads with type/size validation, clear attachment feedback, and protected admin access to attachment links.
+- [x] Build an admin-only support inbox with topic, sender, status, timestamp, message, and attachment visibility.
+- [x] Add schema-aware tests and user/admin workflow validation, then publish the expanded support system.
+
+- [x] Update and validate the reusable support-intake skill with priority and assignee management patterns.
+- [x] Add durable support-ticket priority and assignee fields with an indexed, schema-first migration that preserves existing submissions.
+- [x] Add protected administrative ticket-management APIs for priority and ownership updates with clear assignment eligibility.
+- [x] Enhance the responsive admin support inbox with priority and assignee controls, filters, and clear unassigned states.
+- [x] Add focused priority/assignment authorization, persistence, API, and UI regression coverage; validate desktop and mobile, then publish.
+
+- [x] Update and validate the reusable support-management skill with SLA deadlines, internal notes, and assignment/escalation notification patterns.
+- [x] Add durable due-date, SLA timer, and administrator-only internal resolution-note persistence with safe ownership and timeline indexes.
+- [x] Add protected ticket deadline, SLA, internal-note, escalation, and notification APIs with explicit admin authorization and no customer-data leakage.
+- [x] Enhance the responsive support inbox with due-date controls, SLA status/timers, a collaborative internal-note timeline, and clear escalation actions.
+- [x] Add immediate visual notifications for the newly assigned administrator and escalated tickets, with safe in-app delivery and duplicate-suppression behavior.
+- [x] Add focused persistence, authorization, timing, notification, and UI regressions; validate desktop/mobile workflows and publish.
+
+- [x] Update and validate the reusable support-management skill with SLA-aware queue filtering, operational reporting, rich notes, and administrator mentions.
+- [x] Add durable rich-note formatting and safe administrator mention persistence without exposing private note content to customers.
+- [x] Add protected ticket-list sorting/filtering by assignee, priority, and upcoming SLA deadlines with stable pagination semantics.
+- [x] Add an administrator reporting contract and dashboard view for real average first-response time, resolution time, and ticket-volume metrics with explicit empty states.
+- [x] Enhance internal notes with accessible rich-text formatting and administrator mention suggestions, rendering only sanitized allowed markup.
+- [x] Add focused triage, timing-metric, rich-note, mention, reporting, authorization, and responsive UI regression coverage; validate and publish.
+
+- [x] Update and validate the reusable support-management skill with saved queue views, CSV reporting exports, and urgent SLA-breach alert patterns.
+- [x] Add durable administrator-owned saved queue views with validated filter and sorting contracts, safe uniqueness, and efficient listing indexes.
+- [x] Add protected saved-view CRUD, SLA performance CSV export, and recipient-scoped urgent-breach alert APIs without leaking private support data.
+- [x] Enhance the responsive ticket inbox and reporting dashboard with saved queue actions, CSV download, and accessible urgent SLA-breach highlights.
+- [x] Add focused saved-view, export, urgent-breach, authorization, alert-suppression, and responsive UI regressions; validate and publish.
+
+- [x] Extend the reusable support-management skill with team-shared queue views, custom SLA export ranges, escalation-policy configuration, and release safeguards.
+- [x] Add durable team-shared queue view visibility controls with safe owner/admin permissions and reusable canonical filters.
+- [x] Add validated custom start/end date ranges to the aggregate SLA CSV reporting contract while preserving preset ranges.
+- [x] Add persistent escalation-policy recipients and configurable breach thresholds without exposing private customer data.
+- [x] Build responsive admin interfaces for shared views, custom CSV dates, and escalation-policy editing.
+- [x] Add focused authorization, range-validation, policy, shared-view, export, and responsive UI regressions; validate and publish.
+
+- [x] Audit the existing support-management skill against the completed shared-view, custom-range export, escalation-policy, validation, and release workflow.
+- [x] Refine the reusable skill and checklist with any missing implementation safeguards discovered from the completed release.
+- [x] Validate and package the reusable support-management skill for delivery.
+
+- [x] Inspect the current Get Phame navigation and configuration surfaces to locate the actual Stripe administration route.
+- [x] Identify a safe live-payment verification path and document any missing payment administration controls.
+- [x] Deliver corrected Stripe navigation and verification guidance without requesting payment credentials in chat.
+
+- [x] Audit the live Stripe Checkout product, account branding, statement descriptor, and app-side legacy Review Link references against Get Phame brand rules.
+- [x] Correct application-controlled Stripe Checkout branding and update any legacy Review Link name or star-mark references.
+- [x] Validate the live checkout title, logo, authorization descriptor, line item, and promotion-code behavior; document any remaining Stripe Dashboard action.
+- [x] Add focused branding regression coverage, publish the correction, and report the verified outcome.
+
+- [x] Audit the current deployed Get Phame P-mark source and confirm Stripe-compatible icon and logo variants.
+- [x] Prepare exact user-approved SVG-derived, square high-resolution P-mark PNG files for Stripe icon and logo uploads.
+- [x] Verify the final image dimensions and source fidelity, then deliver the Stripe-ready assets.
+
+- [x] Replace the obsolete P-mark source with the user-approved Get Phame SVG and regenerate Stripe icon and logo variants.
+- [x] Update the Checkout branding override to reference the user-approved P-with-star asset and validate the published result.
+
+- [x] Verify whether the rejected `LIVE-VERIFY-JULY` value is a live Stripe coupon or a customer-enterable promotion code and confirm checkout eligibility.
+- [x] Confirm the minimum Stripe Dashboard correction while preserving the intended one-time discount and Get Phame Checkout configuration.
+- [x] Deliver precise live-mode promotion-code creation and retest steps without requesting payment credentials in chat.
+- [x] Audit the active Stripe account, `LIVE-VERIFY-JULY` promotion-code object, underlying coupon, and Get Phame Checkout price linkage using read-only live metadata.
+- [x] Identify and apply the minimum correction without rotating working Stripe keys or exposing payment credentials.
+- [x] Verify fresh Checkout eligibility through the user-confirmed successful live payment, and report the exact customer-safe next step.
+- [x] Add focused Vitest coverage confirming Checkout enables customer-entered promotion codes for the verified Get Phame price mapping.
+- [x] Diagnose and restore the temporary API failure affecting the `/login` route without regressing authentication; the recovered server and browser verification show the error is no longer reproducible.
+- [x] Package the verified Get Phame Stripe recovery and promotion-code workflow as a reusable skill using the skill-creator process.
+- [x] Build an admin-only promotion-code monitor showing active status, redemptions, limits, expiry, discount, and applicable plans from Stripe.
+- [x] Add a custom, responsive post-payment success page with plan-aware next steps and clear paths into Get Phame setup.
+- [x] Allow campaign URLs to pass a validated promotion code into Checkout for automatic application without trusting arbitrary discounts.
+- [x] Add focused Vitest coverage, validate desktop and mobile flows, run quality checks, and publish the completed Checkout upgrade.
+- [x] Replace stale ReviewLink URLs in Stripe redirect test fixtures with neutral legacy-host values while retaining canonical Get Phame redirect assertions.
+- [x] Replace the remaining legacy `review-link` package identifier with the approved Get Phame package name and validate the production build.
+- [x] Align the package-manager-safe identifier and human-readable metadata explicitly to the canonical Get Phame name.
+- [x] Localize every login-page label, control, validation state, success/error message, and consent link across all supported locales.
+- [x] Add regression coverage and validate translated login rendering at desktop and mobile breakpoints before publishing.
+- [x] Support an explicit valid `?lang=` override so localized login routes can be verified and shared without changing a visitor’s saved language preference.
+- [x] Keep the language selector label and active option aligned with an explicit `?lang=` override on localized login routes.
+- [x] Register the existing Italian catalog in the supported language set and selector so Italian login URLs render Italian rather than falling back to English.
+- [x] Localize the shared desktop navigation and footer rendered around the login page in every supported locale.
+- [x] Localize the Login footer’s reachable support-dialog labels, validation messages, upload feedback, and error states in every supported locale.
+- [x] Refresh the locale-dictionary cache version so visitors receive the completed Login-page translations rather than stale fallback content.
+- [x] Translate every Compliance Guide heading, explanatory section, checklist item, link label, and action control across all supported locales.
+- [x] Add locale-parity regression coverage and validate the translated Compliance Guide at desktop and mobile breakpoints before publishing.
+- [x] Refresh the locale-dictionary cache version so visitors receive the newly translated Compliance Guide catalogs.
+- [x] Audit every public page, authenticated page, shared component, form, dialog, toast, validation message, empty state, and legal/support flow for untranslated or non-locale-aware customer-facing content.
+- [x] Translate and wire every identified customer-facing localization gap across English, Spanish, French, Italian, Thai, Simplified Chinese, and Traditional Chinese without altering business logic.
+- [x] Add automated full-app locale parity and hardcoded-copy coverage, verify representative desktop and mobile flows for every language, and refresh translation caching before publishing.
+- [x] Correct residual untranslated workflow headings, filter chips, form labels, email-preview metadata, template body content, and empty states revealed by authenticated-route visual verification.
+- [x] Repair legacy scalar-versus-object locale schema collisions so active nested i18n keys resolve after asynchronous catalog loading in every supported language.
+- [x] Restore translated dashboard homepage cards, request actions, tracking summaries, and referral prompts currently rendering raw identifiers in authenticated non-English views.
+- [x] Replace the remaining English or mixed-language dashboard explanatory, tracking, referral-reward, and share-card copy in every non-English locale with complete native-language values.
+- [x] Resolve the Spanish-only `referralRewards.*` key-resolution regression exposed during six-language mobile dashboard verification and add a runtime merge regression for it.
+- [x] Add, translate, and verify the 136 deduplicated customer-facing literals identified by the static source audit, including 20 non-DOM share payloads that require explicit runtime localization.
+- [x] Make the static-localization supplement regression independent of sandbox-only files, validate the full production build, and publish the deployment repair.
+- [x] Split the static-copy localization supplement into independently cached locale-specific bundles and load only the active locale before app mount.
+- [x] Add accessible, localized contextual tooltips that guide new users through the initial onboarding setup steps without blocking progress.
+- [x] Optimize the mobile footer layout for compact, standard, and large phone widths while preserving its existing navigation structure and full-width background treatment.
+- [x] Add concise localized Dashboard and Admin labels for the compact mobile navigation so all primary tabs remain intentional and legible at 320 px widths.
+- [x] Add regression coverage, performance verification, and desktop/mobile visual checks for the locale bundles, onboarding tooltips, and responsive footer before publishing.
+- [x] Add a localized dashboard setup-progress checklist that derives completion from the user’s existing setup state and links each unfinished step to its action.
+- [x] Defer non-critical dashboard chart code and data rendering until after the initial dashboard paint while preserving analytics behavior and accessible loading states.
+- [x] Add a persistent, accessible Skip Tour action that dismisses onboarding guidance for experienced users without blocking future onboarding completion.
+- [x] Audit the application’s security-sensitive code paths, remediate confirmed issues without weakening existing authorization or payment controls, and document the verification scope.
+- [x] Add regression, production-build, and responsive visual validation for the onboarding checklist, deferred charts, Skip Tour behavior, and security remediation before publishing.
+- [x] Instrument setup-checklist impressions and step-action clicks with privacy-conscious per-user onboarding funnel analytics.
+- [x] Add an operator-visible onboarding completion and drop-off summary that does not fabricate or expose customer content.
+- [x] Localize all remaining dedicated dashboard chart labels, time controls, legends, tooltips, summaries, and empty states across supported languages.
+- [x] Add a persistent Settings-level control to enable or disable onboarding tooltips and synchronize it with Skip Tour behavior.
+- [x] Package the implementation workflow as a validated reusable Skill using the skill-creator process.
+- [x] Add focused Vitest coverage, run release checks, verify mobile UI, and publish the completed onboarding optimization release.
+- [x] Add validated date-range filtering to the administrator onboarding funnel metrics without exposing raw user events.
+- [x] Add an administrator-only CSV export for the active filtered onboarding funnel aggregate with safe spreadsheet-cell values.
+- [x] Add accessible fade-in motion and a localized remaining-tip progress indicator to onboarding tooltips while respecting reduced-motion preferences.
+- [x] Update and validate the reusable onboarding optimization Skill with filtered reporting, safe CSV export, tooltip animation, and security-review guidance.
+- [x] Perform a targeted code security review, correct confirmed vulnerabilities, and preserve existing authorization, privacy, and payment boundaries.
+- [x] Add focused regression coverage, run the release gates, verify mobile UI, and publish the completed enhancement.
+- [x] Add reusable Last 7 Days and Last 30 Days presets to the administrator onboarding funnel date filter without bypassing server-side bounds.
+- [x] Add an aggregate current-versus-previous-period onboarding drop-off trend visualization to the administrator funnel card.
+- [x] Add a grounded AI-generated onboarding insight summary that uses only the aggregate funnel data, identifies the highest drop-off step, and falls back safely when unavailable.
+- [x] Update and validate the reusable onboarding analytics Skill with date presets, comparative trends, grounded AI insights, and AI-specific security guardrails.
+- [x] Add focused regression coverage, run release gates, verify mobile UI, and publish the completed onboarding analytics enhancement.
+- [x] Add 3–8 focused meta keywords and rewrite the public landing title and description within the required character limits.
+- [x] Add accurate alternative text to the landing-page image currently missing it.
+- [x] Validate rendered SEO metadata, title and description counts, image alternative text, and publish the repair.
+- [x] Prevent duplicate setup-checklist telemetry across routine re-renders and remounts without weakening the server-side onboarding analytics rate limit.
+- [x] Add accurate SoftwareApplication and Organization JSON-LD to the public root page.
+- [x] Implement root-page Open Graph and Twitter Card metadata with canonical URLs, accurate copy, image URLs, and image alternative text.
+- [x] Create search-focused, accessible feature pages for review requests, email campaigns, and reputation management with clear internal navigation.
+- [x] Package the validated Get Phame SEO visibility workflow as a reusable Skill using the skill-creator process.
+- [x] Add regression coverage, verify rendered metadata and feature-page routes at desktop and mobile sizes, run release gates, and publish the enhancement.
+- [x] Create three distinct, brand-consistent Open Graph image variants for the review requests, email campaigns, and reputation management pages and publish them as web assets.
+- [x] Add route-specific Open Graph and X/Twitter image metadata plus FAQ JSON-LD derived only from the visible FAQs on each public feature page.
+- [x] Configure and verify prerendered HTML for public SEO routes without changing the behavior of authenticated app routes.
+- [x] Package the validated public-route social-image, FAQ schema, and prerendering workflow as a reusable Skill using the skill-creator process.
+- [x] Add regression coverage, verify generated assets, schema, prerendered metadata, responsive UI, release gates, and publish the enhancement.
+- [x] Add evidence-safe feature-page comparison tables that distinguish Get Phame capabilities from manual or generic-tool workflows without unverified competitor claims.
+- [x] Add dynamic related-feature sections that exclude the current page and create clear internal exploration paths across the three public feature pages.
+- [x] Verify the comparison matrix and related-feature cards on desktop and at a 375px mobile viewport across all three public feature pages; desktop tables and mobile stacked cards render without overflow.
+- [x] Package the validated comparison-table and related-feature workflow as a reusable Skill using the skill-creator process.
+- [x] Add regression coverage, verify desktop and mobile feature-page layouts, run release gates, and publish the enhancement.
+- [x] Commit and push the completed feature-page engagement enhancement to the configured GitHub remote.
+- [x] Integrate the GitHub-only main-branch changes without discarding local work, validate the combined repository, and push the synchronized main branch.
+- [x] Restart the unresponsive development server and verify the Get Phame preview is reachable.
+- [x] Review the current GitHub Dependabot findings, identify the high-severity dependency, and prioritize its remediation with evidence.
+- [x] Add a GitHub Actions workflow that runs pnpm check, tests, and production build on every push and pull request.
+- [x] Verify the deployed Get Phame Google sign-in flow end-to-end, documenting any credential, redirect-URI, or user-session blocker.
+- [ ] Validate, commit, push, and confirm the completed security and CI work on GitHub.

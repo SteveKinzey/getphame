@@ -1,5 +1,3 @@
-import { useLocation } from "wouter";
-import { ArrowLeft } from "lucide-react";
 import { useState, useEffect } from "react";
 
 function TH_ADDRESS({ email, linkStyle }: { email: string; linkStyle: React.CSSProperties }) {
@@ -31,13 +29,12 @@ function US_ADDRESS({ email, linkStyle }: { email: string; linkStyle: React.CSSP
   );
 }
 
-const SECTION_HEADING = "text-base font-bold mb-3";
-const SECTION_HEADING_STYLE = { fontFamily: "'Poppins', sans-serif", color: "oklch(0.90 0.02 260)" };
-const BODY_STYLE = { color: "oklch(0.78 0.02 260)" };
-const LINK_STYLE = { color: "oklch(0.80 0.18 80)" };
+const SECTION_HEADING = "mb-3 text-lg font-bold text-slate-100";
+const SECTION_HEADING_STYLE = { fontFamily: "'Poppins', sans-serif" };
+const BODY_STYLE = { color: "oklch(0.91 0.014 260)" };
+const LINK_STYLE = { color: "oklch(0.84 0.17 80)" };
 
 export default function PrivacyPolicy() {
-  const [, navigate] = useLocation();
   const [isThai, setIsThai] = useState(false);
   useEffect(() => {
     setIsThai(localStorage.getItem('rr-lang') === 'th');
@@ -47,14 +44,6 @@ export default function PrivacyPolicy() {
     ? <TH_ADDRESS email={CONTACT_EMAIL} linkStyle={LINK_STYLE} />
     : <US_ADDRESS email={CONTACT_EMAIL} linkStyle={LINK_STYLE} />;
 
-  const handleBack = () => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      navigate("/");
-    }
-  };
-
   return (
     <div>
       {/* Page header */}
@@ -62,13 +51,13 @@ export default function PrivacyPolicy() {
         <h1 className="text-3xl md:text-4xl font-display font-extrabold text-white mb-2">
           Privacy Policy
         </h1>
-        <p className="text-sm" style={{ color: "oklch(0.55 0.04 260)" }}>
-          Last updated: April 13, 2026
+        <p className="text-sm font-medium text-slate-300">
+          Last updated: <time dateTime="2026-04-13">April 13, 2026</time>
         </p>
       </div>
 
       {/* Content */}
-      <div className="container pb-16 max-w-3xl space-y-7 text-sm leading-relaxed" style={BODY_STYLE}>
+      <div className="container max-w-3xl space-y-8 pb-16 text-[0.9375rem] leading-7 [&_a]:break-all [&_a]:font-semibold [&_a]:underline [&_a]:decoration-primary/80 [&_a]:underline-offset-4 [&_a:focus-visible]:rounded-sm [&_a:focus-visible]:outline-none [&_a:focus-visible]:ring-2 [&_a:focus-visible]:ring-primary [&_a:focus-visible]:ring-offset-2 [&_a:focus-visible]:ring-offset-[#0b1830]" style={BODY_STYLE}>
 
         {/* Intro */}
         <section>
@@ -87,7 +76,7 @@ export default function PrivacyPolicy() {
           <p className="mb-3">
             Get Phame is operated as a software-as-a-service product. For all privacy-related inquiries, data deletion requests, or concerns about this policy, you may contact us at:
           </p>
-          <address className="not-italic leading-relaxed pl-3 border-l-2" style={{ borderColor: "oklch(0.80 0.18 80)" }}>
+          <address className="border-l-2 border-primary pl-3 text-slate-100 not-italic leading-relaxed">
             <span translate="no">
               Get Phame<br />
               {ADDR}
@@ -103,7 +92,7 @@ export default function PrivacyPolicy() {
           <h2 className={SECTION_HEADING} style={SECTION_HEADING_STYLE}>3. Information We Collect</h2>
           <p className="mb-3">We collect information in three ways: information you provide directly, information generated automatically when you use the Service, and information about your customers that you upload to the Service.</p>
 
-          <h3 className="font-bold mb-1.5 mt-3 rr-text-navy">3.1 Information You Provide</h3>
+          <h3 className="mb-1.5 mt-4 text-base font-bold text-slate-100">3.1 Information You Provide</h3>
           <p className="mb-2">
             <strong>Account information.</strong> When you sign in via Google OAuth, we receive your name and email address from Google. We do not receive or store your Google account password.
           </p>
@@ -117,7 +106,7 @@ export default function PrivacyPolicy() {
             <strong>Customer contact data.</strong> You may manually enter, import via CSV, or sync from WooCommerce or Stripe the names and email addresses of your customers. This data is stored in your account and used exclusively to send review request emails that you initiate. We do not use your customers' contact information for any other purpose.
           </p>
 
-          <h3 className="font-bold mb-1.5 mt-4 rr-text-navy">3.2 Information Generated Automatically</h3>
+          <h3 className="mb-1.5 mt-5 text-base font-bold text-slate-100">3.2 Information Generated Automatically</h3>
           <p className="mb-2">
             <strong>Email tracking events.</strong> Each review request email contains a 1×1 tracking pixel and a click-tracking redirect link. When a recipient opens the email or clicks the review link, we record the event timestamp, the approximate IP address (used only to determine country-level geography), and the email client's user agent string. This data is associated with the specific review request in your account and displayed to you as open and click analytics. We do not use this data to build profiles of your customers or share it with third parties.
           </p>
@@ -128,7 +117,7 @@ export default function PrivacyPolicy() {
             <strong>Usage data.</strong> We record the number of review requests sent per month per account for operational purposes (rate limiting, capacity planning). We do not sell or share this data.
           </p>
 
-          <h3 className="font-bold mb-1.5 mt-4 rr-text-navy">3.3 Information We Do Not Collect</h3>
+          <h3 className="mb-1.5 mt-5 text-base font-bold text-slate-100">3.3 Information We Do Not Collect</h3>
           <p>
             We do not read, index, or store the contents of your existing emails, your inbox, your sent folder, or any other mailbox data. Your SMTP credentials are used exclusively to send outbound emails you explicitly initiate through the Service. We have no access to your email history.
           </p>
@@ -327,7 +316,7 @@ export default function PrivacyPolicy() {
           <p className="mb-3">
             If you have any questions, concerns, or requests relating to this Privacy Policy or our data practices, please contact our privacy team:
           </p>
-          <address className="not-italic leading-relaxed pl-3 border-l-2" style={{ borderColor: "oklch(0.80 0.18 80)" }}>
+          <address className="border-l-2 border-primary pl-3 text-slate-100 not-italic leading-relaxed">
             <span translate="no">
               Get Phame — Privacy Team<br />
               {ADDR}

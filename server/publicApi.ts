@@ -10,11 +10,12 @@
  */
 
 import { Router, Request, Response } from "express";
-import { getUserByApiKey, logApiImport, getBusinessProfile, createCustomerRequest, upsertBusinessProfile, getTotalRequestCount } from "./db";
+import { getUserByApiKey, logApiImport, getBusinessProfile, createCustomerRequest, upsertBusinessProfile } from "./db";
 import { getDefaultReviewPlatform, listReviewPlatforms, PLATFORM_LABELS } from "./reviewPlatforms";
 import { getDefaultTemplate, listTemplates } from "./templates";
 import { checkSendRateLimit } from "./rateLimiter";
-import { FREE_LIMIT, FREE_LIMIT_ERR_MSG } from "@shared/const";
+import { FREE_LIMIT_ERR_MSG } from "@shared/const";
+import { evaluateFreeQuotaAccess, formatFreeQuotaBlockedMessage } from "./quotaEnforcement";
 import { upsertApiContact } from "./contacts";
 import { listApiKeys, getDb } from "./db";
 import { fireWebhooks } from "./webhookHelpers";
@@ -216,9 +217,11 @@ export function registerPublicApiRoutes(app: Router) {
       }
       // Free-tier limit
       if (profile.tier === 'free') {
-        const total = await getTotalRequestCount(userId);
-        if (total >= FREE_LIMIT) {
-          return res.status(429).json({ error: FREE_LIMIT_ERR_MSG });
+        const decision = await evaluateFreeQuotaAccess(userId, profile.tier);
+        if (!decision.allowed) {
+          return res.status(429).json({
+            error: formatFreeQuotaBlockedMessage(decision.quota, FREE_LIMIT_ERR_MSG),
+          });
         }
       }
       // Monthly reset

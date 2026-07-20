@@ -9,19 +9,24 @@
  *   5. Send a Review Request
  *   6. You're All Set
  *
- * Auto-shows on first login (localStorage flag "rl_guide_seen").
+ * Auto-shows only for authenticated accounts whose server onboarding status is
+ * still incomplete and not dismissed. The browser flag is scoped per account.
  * Re-openable via the "Setup Guide" button on Home and Settings.
  */
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, ChevronRight, ChevronLeft, Mail, Star, Users, Send, CheckCircle2, Globe, Upload, CreditCard, ShoppingCart, BookOpen, Loader2 } from "lucide-react";
+import { X, ChevronRight, ChevronLeft, Mail, Star, Users, Send, CheckCircle2, Globe, Upload, CreditCard, ShoppingCart, BookOpen, Loader2, Share2, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-
-const GUIDE_SEEN_KEY = "rl_guide_seen";
+import LandingBrandLink from "@/components/LandingBrandLink";
+import {
+  getOnboardingGuideSeenKey,
+  shouldAutoShowOnboardingGuide,
+  type OnboardingGuideEligibility,
+} from "@/lib/onboardingGuideEligibility";
 
 // ── Step definitions ──────────────────────────────────────────────────────────
 
@@ -55,7 +60,12 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
       <div
         className="rounded-2xl p-5 text-center rr-bg-navy-mid"
       >
-        <img src="https://assets.getphame.app/phame-app-icon-new.png" alt="Phame" className="w-20 h-20 rounded-2xl object-contain mx-auto mb-3" />
+        <LandingBrandLink
+          className="justify-center mb-4"
+          iconClassName="w-16 h-16"
+          textClassName="text-xl"
+          tone="split"
+        />
         <p className="text-white font-black text-xl leading-snug" style={{ fontFamily: "'Poppins', sans-serif" }}>
           {t("onboardingGuide.welcome.heroText")}
         </p>
@@ -828,6 +838,75 @@ function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void })
 
 function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void; onClose: () => void }) {
   const { t } = useTranslation();
+  const trackPwaEvent = trpc.analytics.trackPwaEvent.useMutation();
+  const [shareStatus, setShareStatus] = useState("");
+
+  const getPlatform = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    if (/iphone|ipad|ipod/.test(userAgent)) return "ios" as const;
+    if (/android/.test(userAgent)) return "android" as const;
+    return "desktop" as const;
+  };
+
+  const copyCanonicalUrl = async () => {
+    const url = "https://getphame.app/";
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(url);
+      return;
+    }
+
+    const textarea = document.createElement("textarea");
+    textarea.value = url;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  };
+
+  const handleShare = async () => {
+    const platform = getPlatform();
+    let completionEvent: "share_completed" | "share_copied" = "share_copied";
+    const shareData = {
+      title: "Get Phame",
+      text: t("onboardingGuide.allSet.shareText", { defaultValue: "Collect more customer reviews with Get Phame." }),
+      url: "https://getphame.app/",
+    };
+
+    setShareStatus("");
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        completionEvent = "share_completed";
+        setShareStatus(t("onboardingGuide.allSet.shareSuccess", { defaultValue: "Shared successfully." }));
+      } else {
+        await copyCanonicalUrl();
+        setShareStatus(t("onboardingGuide.allSet.copySuccess", { defaultValue: "Get Phame link copied." }));
+      }
+      trackPwaEvent.mutate({
+        event: completionEvent,
+        platform,
+      });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        setShareStatus(t("onboardingGuide.allSet.shareCancelled", { defaultValue: "Sharing cancelled." }));
+        trackPwaEvent.mutate({ event: "share_cancelled", platform });
+        return;
+      }
+
+      try {
+        await copyCanonicalUrl();
+        setShareStatus(t("onboardingGuide.allSet.copySuccess", { defaultValue: "Get Phame link copied." }));
+        trackPwaEvent.mutate({ event: "share_copied", platform });
+      } catch {
+        setShareStatus(t("onboardingGuide.allSet.shareError", { defaultValue: "Unable to share right now." }));
+      }
+    }
+  };
+
   return (
     <div className="space-y-5">
       <div className="text-center py-4">
@@ -864,6 +943,46 @@ function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void;
         ))}
       </div>
 
+      <div className="space-y-2">
+        <p className="text-xs font-bold uppercase tracking-wide rr-text-navy-muted">
+          {t("onboardingGuide.allSet.installTitle", { defaultValue: "Keep Get Phame on your phone" })}
+        </p>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <div className="rounded-xl bg-white px-4 py-3" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
+            <div className="mb-2 flex items-center gap-2 rr-text-navy">
+              <Smartphone size={16} aria-hidden="true" />
+              <p className="text-sm font-bold">iPhone / iPad</p>
+            </div>
+            <p className="text-xs leading-5 rr-text-navy-mid">
+              {t("onboardingGuide.allSet.iosInstall", { defaultValue: "Open getphame.app in Safari. Tap Share, choose Add to Home Screen, then tap Add." })}
+            </p>
+          </div>
+          <div className="rounded-xl bg-white px-4 py-3" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
+            <div className="mb-2 flex items-center gap-2 rr-text-navy">
+              <Smartphone size={16} aria-hidden="true" />
+              <p className="text-sm font-bold">Android</p>
+            </div>
+            <p className="text-xs leading-5 rr-text-navy-mid">
+              {t("onboardingGuide.allSet.androidInstall", { defaultValue: "Open getphame.app in Chrome. Tap the three-dot menu, choose Install app or Add to Home screen, then confirm." })}
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={handleShare}
+          className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-[transform,opacity] active:scale-[0.97] rr-bg-navy text-white"
+        >
+          <Share2 size={17} aria-hidden="true" />
+          <span className="flex-1 text-sm font-bold">
+            {t("onboardingGuide.allSet.shareButton", { defaultValue: "Share Get Phame with a friend" })}
+          </span>
+          <ChevronRight size={15} aria-hidden="true" />
+        </button>
+        <p className="min-h-4 text-center text-xs rr-text-navy-mid" role="status" aria-live="polite">
+          {shareStatus}
+        </p>
+      </div>
+
       <div
         className="rounded-xl px-4 py-3"
         style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
@@ -891,10 +1010,11 @@ function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void;
 interface OnboardingGuideProps {
   open: boolean;
   onClose: () => void;
+  onNavigate?: (path: string) => void;
   stepsDone?: StepsDone;
 }
 
-export default function OnboardingGuide({ open, onClose, stepsDone }: OnboardingGuideProps) {
+export default function OnboardingGuide({ open, onClose, onNavigate, stepsDone }: OnboardingGuideProps) {
   const [step, setStep] = useState(0);
   const [slideDir, setSlideDir] = useState<'left' | 'right' | null>(null);
   const [animKey, setAnimKey] = useState(0);
@@ -943,13 +1063,17 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
   const { t } = useTranslation();
   if (!open) return null;
   const handleNavigate = (path: string) => {
+    if (onNavigate) {
+      onNavigate(path);
+      return;
+    }
     onClose();
     navigate(path);
   };
   const STEPS: Step[] = [
     {
       id: 0,
-      icon: <Star size={20} />,
+      icon: <LandingBrandLink showText={false} iconClassName="w-6 h-6" />,
       title: t("onboardingGuide.steps.welcome.title"),
       subtitle: t("onboardingGuide.steps.welcome.subtitle"),
       content: <StepWelcome onNavigate={handleNavigate} stepsDone={stepsDone} />,
@@ -1137,27 +1261,42 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
 // ── Auto-show hook ────────────────────────────────────────────────────────────
 
 /**
- * Returns [open, setOpen] with auto-show logic.
- * Shows the guide once per browser (localStorage flag).
- * Pass `isAuthenticated` so it only fires after login.
+ * Auto-opens only after the authenticated account's onboarding status loads.
+ * Completed or dismissed accounts are suppressed before the guide can flash.
  */
-export function useOnboardingGuide(isAuthenticated: boolean) {
+export function useOnboardingGuide(eligibility: OnboardingGuideEligibility) {
   const [open, setOpen] = useState(false);
+  const { isAuthenticated, userId, onboardingStatus } = eligibility;
+  const seenKey = userId == null ? null : getOnboardingGuideSeenKey(userId);
+  const autoShowEligible = shouldAutoShowOnboardingGuide(eligibility, localStorage);
 
   useEffect(() => {
-    if (!isAuthenticated) return;
-    const seen = localStorage.getItem(GUIDE_SEEN_KEY);
-    if (!seen) {
-      // Small delay so the app renders first
-      const t = setTimeout(() => setOpen(true), 800);
-      return () => clearTimeout(t);
+    if (!isAuthenticated || !seenKey || !onboardingStatus) {
+      setOpen(false);
+      return;
     }
-  }, [isAuthenticated]);
 
-  const handleClose = () => {
-    localStorage.setItem(GUIDE_SEEN_KEY, "1");
+    if (
+      onboardingStatus.dismissed ||
+      onboardingStatus.allDone ||
+      onboardingStatus.hasSentRequest
+    ) {
+      localStorage.setItem(seenKey, "1");
+      setOpen(false);
+      return;
+    }
+
+    if (!autoShowEligible) return;
+
+    // Small delay so the authenticated shell can settle before the guide opens.
+    const timer = setTimeout(() => setOpen(true), 800);
+    return () => clearTimeout(timer);
+  }, [autoShowEligible, isAuthenticated, onboardingStatus, seenKey]);
+
+  const handleClose = useCallback(() => {
+    if (seenKey) localStorage.setItem(seenKey, "1");
     setOpen(false);
-  };
+  }, [seenKey]);
 
-  return { open, setOpen, handleClose };
+  return { open, setOpen, handleClose, autoShowEligible };
 }

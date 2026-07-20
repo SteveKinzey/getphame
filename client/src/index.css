@@ -442,6 +442,34 @@
     border-radius: 4px;
   }
 
+  /* Keep native form content readable even when a page uses raw controls. */
+  :where(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]),
+    textarea,
+    select
+  ) {
+    color: var(--foreground);
+    caret-color: var(--foreground);
+  }
+
+  :where(input, textarea)::placeholder {
+    color: var(--muted-foreground);
+    opacity: 1;
+  }
+
+  :where(input, textarea, select):disabled,
+  :where(input, textarea, select)[readonly] {
+    color: var(--muted-foreground);
+    -webkit-text-fill-color: var(--muted-foreground);
+    opacity: 0.75;
+  }
+
+  /* Legacy raw white fields must not remain white-on-white in dark mode. */
+  .dark :is(input, textarea, select).bg-white:not(.text-white):not(.text-black):not(.text-foreground):not(.rr-text-navy):not(.rr-text-white) {
+    background-color: var(--card);
+    color: var(--card-foreground);
+  }
+
   /* ── Scroll-reveal animation ────────────────────────────────────────── */
   @keyframes revealUp {
     from { opacity: 0; transform: translateY(24px); }
@@ -509,6 +537,32 @@
   .rr-text-gold-dim    { color: oklch(0.40 0.10 80); }
   .rr-text-white       { color: oklch(1 0 0); }
   .rr-text-white-soft  { color: oklch(0.90 0.02 260); }
+
+  /* Semantic field surface shared by native and shadcn form controls. */
+  .rr-form-field {
+    background-color: var(--card);
+    color: var(--card-foreground);
+    border-color: var(--input);
+    caret-color: var(--card-foreground);
+  }
+  .rr-form-field::placeholder {
+    color: var(--muted-foreground);
+    opacity: 1;
+  }
+  .rr-form-field:disabled,
+  .rr-form-field[readonly] {
+    background-color: var(--muted);
+    color: var(--muted-foreground);
+    -webkit-text-fill-color: var(--muted-foreground);
+    opacity: 0.75;
+  }
+  .rr-form-field:-webkit-autofill,
+  .rr-form-field:-webkit-autofill:hover,
+  .rr-form-field:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--card-foreground);
+    box-shadow: 0 0 0 1000px var(--card) inset;
+    caret-color: var(--card-foreground);
+  }
   .rr-text-green       { color: oklch(0.55 0.18 145); }
   .rr-text-red         { color: oklch(0.55 0.18 20); }
   .rr-text-mono        { font-family: monospace; }
@@ -626,7 +680,6 @@
   --border:      oklch(0.28 0.04 260);
   --input:       oklch(0.28 0.04 260);
 }
-test
 
 /* ── Micro-animation keyframes ──────────────────────────────────────────────── */
 
@@ -678,4 +731,116 @@ test
 
 .page-enter {
   animation: fadeUp 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ── Support ticket rich-note rendering ───────────────────────────────────── */
+.support-note-rich-text p + p { margin-top: 0.5rem; }
+.support-note-rich-text ul,
+.support-note-rich-text ol { margin: 0.5rem 0 0.5rem 1.25rem; }
+.support-note-rich-text ul { list-style: disc; }
+.support-note-rich-text ol { list-style: decimal; }
+.support-note-rich-text li + li { margin-top: 0.25rem; }
+.support-note-rich-text code {
+  border-radius: 0.25rem;
+  background: oklch(0.94 0.01 260);
+  padding: 0.1rem 0.3rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875em;
+}
+.support-note-rich-text a { color: oklch(0.45 0.15 250); text-decoration: underline; }
+
+/* ── Extracted inline styles (moved from JSX to eliminate unsafe-inline CSP) ── */
+
+/* AppLayout: responsive sidebar widths */
+@media (min-width: 1024px) {
+  .app-sidebar { width: 220px !important; }
+  .app-sidebar-label { display: block !important; }
+  .app-sidebar-brand-text { display: flex !important; }
+}
+@media (min-width: 768px) {
+  .app-main { margin-left: 64px; }
+}
+@media (min-width: 1024px) {
+  .app-main { margin-left: 220px; }
+}
+
+/* Home: use the official mark when the authenticated header is constrained. */
+.home-brand-full { display: block; }
+.home-brand-mark { display: none; }
+@media (min-width: 640px) and (max-width: 1279px) {
+  .home-brand-full { display: none; }
+  .home-brand-mark { display: block; }
+}
+
+/* LanguageFlyout: slide-down animation */
+@keyframes lfSlideDown {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.lf-slide-down {
+  animation: lfSlideDown 0.18s ease forwards;
+}
+
+/* PWAInstallPrompt: slide-up animation */
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+.animate-slide-up {
+  animation: slideUp 0.3s ease forwards;
+}
+.pwa-install-sheet {
+  animation: slideUp 0.3s cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+@keyframes pwaInstallAttention {
+  0%, 72%, 100% { transform: translateY(0) scale(1); }
+  80% { transform: translateY(-2px) scale(1.06); }
+  88% { transform: translateY(0) scale(1); }
+}
+.pwa-install-attention {
+  animation: pwaInstallAttention 2.8s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+  transform-origin: center;
+  will-change: transform;
+}
+@keyframes homeInstallBannerEnter {
+  from { opacity: 0; transform: translateY(-18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.home-install-banner-enter {
+  animation: homeInstallBannerEnter 300ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  will-change: transform, opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pwa-install-sheet,
+  .pwa-install-attention,
+  .home-install-banner-enter {
+    animation: none !important;
+  }
+}
+
+/* PageLoader: phame pulse animation */
+@keyframes phame-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.12); opacity: 0.85; }
+}
+.animate-phame-pulse {
+  animation: phame-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes onboardingTipFadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.onboarding-tip-fade {
+  animation: onboardingTipFadeIn 180ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  will-change: transform, opacity;
+}
+.onboarding-step-fade {
+  animation: onboardingTipFadeIn 220ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .onboarding-tip-fade,
+  .onboarding-step-fade {
+    animation: none !important;
+  }
 }

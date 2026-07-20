@@ -1,56 +1,36 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { Monitor, Upload, TrendingUp, Maximize2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import FadeUp from "./FadeUp";
 
 const EMAIL_PREVIEW_WEBP = "https://assets.getphame.app/phame-email-preview.webp";
 const EMAIL_PREVIEW_PNG = "https://assets.getphame.app/phame-email-preview.png";
-const CUSTOMER_IMPORT_WEBP = "https://assets.getphame.app/phame-customer-import.webp";
-const CUSTOMER_IMPORT_PNG = "https://assets.getphame.app/phame-customer-import.png";
-const REVIEW_TRACKING_WEBP = "https://assets.getphame.app/phame-review-tracking.webp";
-const REVIEW_TRACKING_PNG = "https://assets.getphame.app/phame-review-tracking.png";
-
-const tabs = [
-  {
-    id: "email",
-    label: "Email Preview",
-    icon: Monitor,
-    title: "Emails that feel handwritten",
-    description: "Each review request arrives from your actual email address with your name, your signature, and a personal tone. Customers trust it because it looks real — because it is.",
-    webp: EMAIL_PREVIEW_WEBP,
-    png: EMAIL_PREVIEW_PNG,
-    alt: "GetPhame personalized review request email preview showing customer name, business signature, and Google review link",
-  },
-  {
-    id: "import",
-    label: "Customer Import",
-    icon: Upload,
-    title: "Your entire list in seconds",
-    description: "Drag and drop a CSV or sync directly from WooCommerce. We validate emails, remove duplicates, and flag bounces — so every send counts.",
-    webp: CUSTOMER_IMPORT_WEBP,
-    png: CUSTOMER_IMPORT_PNG,
-    alt: "GetPhame customer import screen showing CSV drag-and-drop upload with email validation and duplicate removal",
-  },
-  {
-    id: "tracking",
-    label: "Review Tracking",
-    icon: TrendingUp,
-    title: "Watch the reviews roll in",
-    description: "Track every email sent, opened, and clicked. See your review count climb week over week with real-time analytics and growth charts.",
-    webp: REVIEW_TRACKING_WEBP,
-    png: REVIEW_TRACKING_PNG,
-    alt: "GetPhame review tracking dashboard showing email open rates, click-through rates, and weekly review count growth chart",
-  },
-];
+const CUSTOMER_IMPORT_WEBP = "/manus-storage/phame-customer-import-corrected-exact_4614c4e8.webp";
+const CUSTOMER_IMPORT_PNG = "/manus-storage/phame-customer-import-corrected-exact_cded24ee.png";
+const REVIEW_TRACKING_WEBP = "/manus-storage/phame-review-tracking-corrected-exact_d01e52cf.webp";
+const REVIEW_TRACKING_PNG = "/manus-storage/phame-review-tracking-corrected-exact_82109c9c.png";
 
 // ── Lightbox ──────────────────────────────────────────────────────────────────
 
+interface TabItem {
+  id: string;
+  label: string;
+  icon: any;
+  title: string;
+  description: string;
+  webp: string;
+  png: string;
+  alt: string;
+}
+
 interface LightboxProps {
-  item: (typeof tabs)[number];
+  item: TabItem;
   onClose: () => void;
 }
 
 function Lightbox({ item, onClose }: LightboxProps) {
+  const { t } = useTranslation();
   // Close on Escape key
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -78,7 +58,7 @@ function Lightbox({ item, onClose }: LightboxProps) {
       <div
         className="absolute inset-0 bg-black/85 backdrop-blur-sm cursor-pointer"
         onClick={onClose}
-        aria-label="Close lightbox"
+        aria-label={t("landing.lightbox.closeLightboxAriaLabel", { defaultValue: "Close lightbox" })}
       />
 
       {/* Image container */}
@@ -93,9 +73,9 @@ function Lightbox({ item, onClose }: LightboxProps) {
         <button
           onClick={onClose}
           className="absolute -top-12 right-0 flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
-          aria-label="Close"
+          aria-label={t("landing.lightbox.closeButtonAriaLabel", { defaultValue: "Close" })}
         >
-          <span>Close</span>
+          <span>{t("landing.lightbox.closeButtonLabel", { defaultValue: "Close" })}</span>
           <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
             <X size={16} />
           </div>
@@ -125,8 +105,43 @@ function Lightbox({ item, onClose }: LightboxProps) {
 // ── Main component ────────────────────────────────────────────────────────────
 
 export default function ProductShowcase() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("email");
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  
+
+  const tabs = [
+    {
+      id: "email",
+      label: t("landing.productShowcase.tabEmailLabel", { defaultValue: "Email Preview" }),
+      icon: Monitor,
+      title: t("landing.productShowcase.tabEmailTitle", { defaultValue: "Emails that feel handwritten" }),
+      description: t("landing.productShowcase.tabEmailDescription", { defaultValue: "Each review request arrives from your actual email address with your name, your signature, and a personal tone. Customers trust it because it looks real — because it is." }),
+      webp: EMAIL_PREVIEW_WEBP,
+      png: EMAIL_PREVIEW_PNG,
+      alt: t("landing.productShowcase.tabEmailAlt", { defaultValue: "GetPhame personalized review request email preview showing customer name, business signature, and Google review link" }),
+    },
+    {
+      id: "import",
+      label: t("landing.productShowcase.tabImportLabel", { defaultValue: "Customer Import" }),
+      icon: Upload,
+      title: t("landing.productShowcase.tabImportTitle", { defaultValue: "Your entire list in seconds" }),
+      description: t("landing.productShowcase.tabImportDescription", { defaultValue: "Drag and drop a CSV or sync directly from WooCommerce. We validate emails, remove duplicates, and flag bounces — so every send counts." }),
+      webp: CUSTOMER_IMPORT_WEBP,
+      png: CUSTOMER_IMPORT_PNG,
+      alt: t("landing.productShowcase.tabImportAlt", { defaultValue: "GetPhame customer import screen showing CSV drag-and-drop upload with email validation and duplicate removal" }),
+    },
+    {
+      id: "tracking",
+      label: t("landing.productShowcase.tabTrackingLabel", { defaultValue: "Review Tracking" }),
+      icon: TrendingUp,
+      title: t("landing.productShowcase.tabTrackingTitle", { defaultValue: "Watch the reviews roll in" }),
+      description: t("landing.productShowcase.tabTrackingDescription", { defaultValue: "Track every email sent, opened, and clicked. See your review count climb week over week with real-time analytics and growth charts." }),
+      webp: REVIEW_TRACKING_WEBP,
+      png: REVIEW_TRACKING_PNG,
+      alt: t("landing.productShowcase.tabTrackingAlt", { defaultValue: "GetPhame review tracking dashboard showing email open rates, click-through rates, and weekly review count growth chart" }),
+    },
+  ];
   const activeItem = tabs.find((t) => t.id === activeTab)!;
 
   const openLightbox = useCallback(() => setLightboxOpen(true), []);
@@ -137,12 +152,12 @@ export default function ProductShowcase() {
       <section id="product" className="py-20 md:py-28 bg-[oklch(0.12_0.025_250)]">
         <div className="container">
           <FadeUp className="max-w-2xl mb-12">
-            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">The product</p>
+            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">{t("landing.productShowcase.sectionSubtitle", { defaultValue: "The product" })}</p>
             <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
-              Built to make review requests effortless
+              {t("landing.productShowcase.sectionTitle", { defaultValue: "Built to make review requests effortless" })}
             </h2>
             <p className="text-lg text-slate-200 font-medium">
-              One simple tool. Three powerful views. Everything you need to grow your reputation.
+              {t("landing.productShowcase.sectionDescription", { defaultValue: "One simple tool. Three powerful views. Everything you need to grow your reputation." })}
             </p>
           </FadeUp>
 
@@ -183,7 +198,7 @@ export default function ProductShowcase() {
                   className="inline-flex items-center gap-2 mt-5 text-sm text-primary/70 hover:text-primary transition-colors font-medium"
                 >
                   <Maximize2 size={14} />
-                  View full size
+                  {t("landing.productShowcase.viewFullSizeButton", { defaultValue: "View full size" })}
                 </button>
               </motion.div>
             </AnimatePresence>
@@ -204,7 +219,7 @@ export default function ProductShowcase() {
                   onClick={openLightbox}
                   role="button"
                   tabIndex={0}
-                  aria-label={`View ${activeItem.title} in full size`}
+                  aria-label={t("landing.productShowcase.viewFullSizeAriaLabel", { defaultValue: "View {{title}} in full size", replace: { title: activeItem.title } })}
                   onKeyDown={(e) => e.key === "Enter" && openLightbox()}
                 >
                   {/* Glow */}

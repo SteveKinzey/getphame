@@ -3,8 +3,10 @@
 // This is shown to unauthenticated visitors at the root URL (/).
 import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
+import AppPurpose from "@/components/landing/AppPurpose";
 import SEOHead from "@/components/landing/SEOHead";
 import TrustBar from "@/components/landing/TrustBar";
+import SocialProofBar from "@/components/landing/SocialProofBar";
 import VideoDemo from "@/components/landing/VideoDemo";
 import Features from "@/components/landing/Features";
 import HowItWorks from "@/components/landing/HowItWorks";
@@ -22,12 +24,14 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#0a1628] text-gray-100 overflow-x-hidden">
       <SEOHead
-        title="Get Phame — Get More 5-Star Reviews Without the Awkward Ask"
-        description="Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender. Free to start with 10 requests."
+        title="Get Phame | Review Request Software for Local Businesses"
+        description="Send personalized review-request emails, track engagement, and help local businesses earn more customer feedback with Get Phame."
         canonical="https://getphame.app/"
       />
       <Navbar />
       <Hero />
+      <AppPurpose />
+      <SocialProofBar />
       <TrustBar />
       <VideoDemo />
       <Features />

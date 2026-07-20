@@ -49,7 +49,10 @@ import {
   Gift,
   Users,
   TrendingUp,
-  CalendarDays,
+  Camera,
+  UserRound,
+  Upload,
+  ImageOff,
 } from "lucide-react";
 import OnboardingGuide from "@/components/OnboardingGuide";
 import PlatformIcon from "@/components/PlatformIcon";
@@ -63,7 +66,19 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
 import LanguageFlyout from "@/components/LanguageFlyout";
+import LandingBrandLink from "@/components/LandingBrandLink";
 import { IntegrationGuide } from "@/components/IntegrationGuide";
+import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
+import PlanSwitchDialog from "@/components/PlanSwitchDialog";
+import KoalendarSettingsCard from "@/components/KoalendarSettingsCard";
+import {
+  DEFAULT_FOLLOW_UP_DELAY_DAYS,
+  DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS,
+  FOLLOW_UP_DELAY_PRESETS,
+  getProjectedFollowUpDates,
+  isValidFollowUpDelayDays,
+  normalizeFollowUpDelayDays,
+} from "@/lib/reminderSettings";
 
 // ── Share & Earn Card ────────────────────────────────────────────────────────
 function ShareAndEarnCard({ profile }: { profile: ProfileData | null | undefined }) {
@@ -428,231 +443,6 @@ function DeleteAccountSection() {
   );
 }
 
-// ── Koalendar Integration ───────────────────────────────────────────────────
-function KoalendarIntegrationCard({
-  profile,
-  isAdmin,
-}: {
-  profile: ProfileData | null | undefined;
-  isAdmin: boolean;
-}) {
-  const [, navigate] = useLocation();
-  const utils = trpc.useUtils();
-  const [copied, setCopied] = useState(false);
-  const tier = profile?.tier ?? "free";
-  const isPaid = isAdmin || ["pro", "annual", "lifetime"].includes(tier);
-  const { data: status, isLoading } = trpc.koalendar.status.useQuery(undefined, {
-    enabled: isPaid,
-    retry: false,
-  });
-
-  const connect = trpc.koalendar.connect.useMutation({
-    onSuccess: () => {
-      utils.koalendar.status.invalidate();
-      toast.success("Koalendar connection created. Add the webhook URL to each booking page.");
-    },
-    onError: (err) => toast.error(err.message),
-  });
-  const rotateWebhook = trpc.koalendar.rotateWebhook.useMutation({
-    onSuccess: () => {
-      utils.koalendar.status.invalidate();
-      setCopied(false);
-      toast.success("Webhook URL replaced. Update every Koalendar booking page with the new URL.");
-    },
-    onError: (err) => toast.error(err.message),
-  });
-  const disconnect = trpc.koalendar.disconnect.useMutation({
-    onSuccess: () => {
-      utils.koalendar.status.invalidate();
-      toast.success("Koalendar imports paused. Existing contacts were not changed.");
-    },
-    onError: (err) => toast.error(err.message),
-  });
-
-  const copyWebhook = async () => {
-    if (!status?.webhookUrl) return;
-    await navigator.clipboard.writeText(status.webhookUrl);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-    toast.success("Koalendar webhook URL copied.");
-  };
-
-  const busy = connect.isPending || rotateWebhook.isPending || disconnect.isPending;
-
-  if (!isPaid) {
-    return (
-      <div className="bg-white rounded-2xl p-5 shadow-sm" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
-        <div className="flex items-start justify-between gap-3 mb-3">
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center rr-bg-navy">
-              <CalendarDays size={18} className="rr-text-gold" />
-            </div>
-            <div>
-              <h2 className="text-base font-black rr-text-navy">Koalendar Auto-Import</h2>
-              <p className="text-xs rr-text-navy-muted">Turn completed meetings into Get Phame contacts</p>
-            </div>
-          </div>
-          <span className="shrink-0 flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-black rr-bg-gold rr-text-navy">
-            <Crown size={11} /> PRO
-          </span>
-        </div>
-        <p className="text-sm mb-4 rr-text-navy-mid">
-          Paid subscribers can automatically import each non-canceled invitee after the meeting’s scheduled end time.
-        </p>
-        <button
-          onClick={() => navigate("/upgrade")}
-          className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-gold rr-text-navy"
-        >
-          <Crown size={16} /> Upgrade to Connect Koalendar
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="bg-white rounded-2xl p-5 shadow-sm" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center rr-bg-navy">
-            <CalendarDays size={18} className="rr-text-gold" />
-          </div>
-          <div>
-            <h2 className="text-base font-black rr-text-navy">Koalendar Auto-Import</h2>
-            <p className="text-xs rr-text-navy-muted">Import invitees after meetings end</p>
-          </div>
-        </div>
-        <span
-          className="shrink-0 flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-black"
-          style={status?.enabled
-            ? { background: "oklch(0.92 0.07 145)", color: "oklch(0.32 0.12 145)" }
-            : { background: "oklch(0.94 0.01 260)", color: "oklch(0.45 0.04 260)" }}
-        >
-          {status?.enabled ? <CheckCircle2 size={11} /> : <Clock size={11} />}
-          {status?.enabled ? "ACTIVE" : "NOT CONNECTED"}
-        </span>
-      </div>
-
-      {isLoading ? (
-        <div className="flex justify-center py-6"><Loader2 size={20} className="animate-spin rr-text-navy-muted" /></div>
-      ) : !status?.connected ? (
-        <div className="flex flex-col gap-3">
-          <p className="text-sm rr-text-navy-mid">
-            Get Phame will queue each booking, ignore cancellations, and create or update the contact after the scheduled end time.
-          </p>
-          <button
-            onClick={() => connect.mutate()}
-            disabled={busy}
-            className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 disabled:opacity-60 rr-bg-gold rr-text-navy"
-          >
-            {connect.isPending ? <Loader2 size={16} className="animate-spin" /> : <Link2 size={16} />}
-            Create Koalendar Connection
-          </button>
-        </div>
-      ) : (
-        <div className="flex flex-col gap-4">
-          <div className="rounded-xl p-3" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.03 260)" }}>
-            <p className="text-xs font-black uppercase tracking-wide mb-2 rr-text-navy-muted">Your private webhook URL</p>
-            <div className="flex items-center gap-2">
-              <code className="flex-1 min-w-0 truncate text-xs rr-text-navy">{status.webhookUrl}</code>
-              <button
-                onClick={copyWebhook}
-                className="shrink-0 flex items-center gap-1 px-3 py-2 rounded-lg text-xs font-black rr-bg-navy rr-text-gold"
-              >
-                {copied ? <CheckCircle size={12} /> : <Copy size={12} />}
-                {copied ? "Copied" : "Copy"}
-              </button>
-            </div>
-          </div>
-
-          <div className="rounded-xl p-4" style={{ background: "oklch(0.98 0.025 80)", border: "1px solid oklch(0.90 0.08 80)" }}>
-            <p className="text-sm font-black mb-2 rr-text-navy">Add it to every Koalendar booking page</p>
-            <ol className="space-y-1.5 text-xs rr-text-navy-mid list-decimal pl-4">
-              <li>Open a booking page in Koalendar and choose <strong>Edit</strong>.</li>
-              <li>Open <strong>After booking</strong>, enable <strong>Webhook</strong>, and paste this URL.</li>
-              <li>Save, then repeat for every booking page that should feed Get Phame.</li>
-            </ol>
-            <p className="text-xs mt-3 font-bold rr-text-navy">Use the same URL on all of your booking pages.</p>
-          </div>
-
-          {status.lastEventAt && (
-            <p className="text-xs flex items-center gap-1.5 rr-text-navy-muted">
-              <RefreshCw size={11} /> Last Koalendar event received {new Date(status.lastEventAt).toLocaleString()}
-            </p>
-          )}
-
-          {status.recentBookings.length > 0 && (
-            <div>
-              <p className="text-xs font-black uppercase tracking-wide mb-2 rr-text-navy-muted">Recent meeting imports</p>
-              <div className="flex flex-col gap-2">
-                {status.recentBookings.slice(0, 5).map((booking) => {
-                  const statusStyles: Record<string, { label: string; bg: string; color: string }> = {
-                    pending: { label: "Waiting for meeting to end", bg: "oklch(0.96 0.04 80)", color: "oklch(0.42 0.10 80)" },
-                    processing: { label: "Importing", bg: "oklch(0.94 0.04 250)", color: "oklch(0.40 0.12 250)" },
-                    imported: { label: "Imported", bg: "oklch(0.92 0.07 145)", color: "oklch(0.32 0.12 145)" },
-                    canceled: { label: "Canceled — excluded", bg: "oklch(0.94 0.01 260)", color: "oklch(0.48 0.04 260)" },
-                    blocked: { label: "Paid plan required", bg: "oklch(0.96 0.04 30)", color: "oklch(0.46 0.15 30)" },
-                    failed: { label: "Needs attention", bg: "oklch(0.96 0.04 30)", color: "oklch(0.46 0.15 30)" },
-                  };
-                  const badge = statusStyles[booking.status] ?? statusStyles.pending;
-                  return (
-                    <div key={booking.id} className="flex items-center gap-3 rounded-xl px-3 py-2.5" style={{ border: "1px solid oklch(0.92 0.02 260)" }}>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-bold truncate rr-text-navy">{booking.inviteeName}</p>
-                        <p className="text-xs truncate rr-text-navy-muted">{booking.inviteeEmail}</p>
-                      </div>
-                      <span className="shrink-0 rounded-full px-2 py-1 text-xs font-bold" style={{ background: badge.bg, color: badge.color }}>
-                        {badge.label}
-                      </span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              onClick={() => {
-                if (window.confirm("Replace this webhook URL? You will need to update every Koalendar booking page.")) {
-                  rotateWebhook.mutate();
-                }
-              }}
-              disabled={busy}
-              className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold disabled:opacity-60 rr-text-navy-mid"
-              style={{ background: "oklch(0.94 0.01 260)" }}
-            >
-              <RotateCcw size={13} /> Replace URL
-            </button>
-            {status.enabled ? (
-              <button
-                onClick={() => {
-                  if (window.confirm("Pause all new Koalendar imports? Existing contacts will remain in Get Phame.")) {
-                    disconnect.mutate();
-                  }
-                }}
-                disabled={busy}
-                className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold disabled:opacity-50"
-                style={{ background: "oklch(0.97 0.03 30)", color: "oklch(0.46 0.15 30)" }}
-              >
-                <X size={13} /> Pause Imports
-              </button>
-            ) : (
-              <button
-                onClick={() => connect.mutate()}
-                disabled={busy}
-                className="flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-black disabled:opacity-60 rr-bg-gold rr-text-navy"
-              >
-                {connect.isPending ? <Loader2 size={13} className="animate-spin" /> : <RefreshCw size={13} />}
-                Resume Imports
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 // ── Billing Section ─────────────────────────────────────────────────────────
 type ProfileData = {
   tier: string;
@@ -664,21 +454,19 @@ type ProfileData = {
 function BillingSection({ profile }: { profile: ProfileData | null | undefined }) {
   const [, navigate] = useLocation();
   const [showRetention, setShowRetention] = useState(false);
+  const [planSwitchOpen, setPlanSwitchOpen] = useState(false);
   const createPortal = trpc.stripe.createPortal.useMutation({
-    onSuccess: ({ url }) => window.open(url, '_blank'),
+    onSuccess: ({ url }) => window.open(url, "_blank", "noopener,noreferrer"),
     onError: (err) => toast.error(err.message),
   });
 
   const tier = profile?.tier ?? 'free';
+  const effectivePlan = getEffectivePlan(tier);
+  const isLife = effectivePlan === 'life';
+  const canManage = canManageSubscription(effectivePlan);
   const planExpiresAt = profile?.planExpiresAt;
   const hasStripe = !!profile?.stripeCustomerId;
 
-  const TIER_LABELS: Record<string, string> = {
-    free: 'Free',
-    pro: 'Pro Monthly',
-    annual: 'Pro Annual',
-    lifetime: 'Lifetime',
-  };
   const TIER_COLORS: Record<string, { bg: string; text: string }> = {
     free:     { bg: 'oklch(0.94 0.01 260)', text: 'oklch(0.45 0.04 260)' },
     pro:      { bg: 'oklch(0.80 0.18 80)', text: 'oklch(0.22 0.09 260)' },
@@ -712,7 +500,7 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
           className="text-xs font-bold px-2.5 py-1 rounded-full"
           style={{ background: colors.bg, color: colors.text }}
         >
-          {TIER_LABELS[tier] ?? tier.toUpperCase()}
+          {PLAN_LABELS[effectivePlan]}
         </span>
       </div>
 
@@ -723,7 +511,7 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
         </p>
       )}
 
-      {tier === 'free' ? (
+      {effectivePlan === 'free' ? (
         <div className="flex flex-col gap-2">
           <p className="text-sm font-semibold rr-text-navy-mid">
             Upgrade to Pro for unlimited sends, follow-up reminders, and priority support.
@@ -736,9 +524,13 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
             Upgrade to Pro
           </button>
         </div>
+      ) : isLife ? (
+        <p className="text-sm font-semibold rr-text-navy-mid">
+          Life access is active. There are no renewals and no upgrade or cancellation actions.
+        </p>
       ) : (
         <div className="flex flex-col gap-2">
-          {hasStripe ? (
+          {hasStripe && canManage ? (
             showRetention ? (
               /* ── Retention prompt ─────────────────────────────────────── */
               <div
@@ -780,20 +572,36 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
                 </div>
               </div>
             ) : (
-              <button
-                onClick={() => setShowRetention(true)}
-                className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-navy text-white"
-              >
-                <ExternalLink size={16} />
-                Manage Billing
-              </button>
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={() => setPlanSwitchOpen(true)}
+                  disabled={createPortal.isPending}
+                  className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-navy text-white disabled:opacity-60"
+                >
+                  {createPortal.isPending ? <Loader2 size={16} className="animate-spin" /> : <ExternalLink size={16} />}
+                  {effectivePlan === 'annual' ? 'Switch to Monthly or Manage Billing' : 'Change Plan or Manage Billing'}
+                </button>
+                <PlanSwitchDialog
+                  open={planSwitchOpen}
+                  onOpenChange={setPlanSwitchOpen}
+                  currentPlan={effectivePlan as 'monthly' | 'annual'}
+                  onConfirm={() => createPortal.mutate({ origin: window.location.origin })}
+                  isPending={createPortal.isPending}
+                />
+                <button
+                  onClick={() => setShowRetention(true)}
+                  className="text-xs text-center py-2 rr-text-navy-muted"
+                >
+                  End subscription
+                </button>
+              </div>
             )
           ) : (
             <p className="text-sm font-semibold rr-text-navy-mid">
               Your plan is active. Contact support to manage billing.
             </p>
           )}
-          {tier !== 'lifetime' && (
+          {!isLife && (
             <button
               onClick={() => navigate('/upgrade')}
               className="text-xs text-center py-1.5 rr-text-navy-muted"
@@ -1060,6 +868,228 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
   );
 }
 
+function AccountProfileCard() {
+  const { t } = useTranslation();
+  const utils = trpc.useUtils();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { data: account, isLoading } = trpc.accountProfile.get.useQuery();
+  const [name, setName] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (account?.name) setName(account.name);
+  }, [account?.name]);
+
+  useEffect(() => () => {
+    if (previewUrl?.startsWith("blob:")) URL.revokeObjectURL(previewUrl);
+  }, [previewUrl]);
+
+  const refreshIdentity = async () => {
+    await Promise.all([
+      utils.accountProfile.get.invalidate(),
+      utils.auth.me.invalidate(),
+    ]);
+  };
+
+  const updateProfile = trpc.accountProfile.update.useMutation({
+    onSuccess: async () => {
+      await refreshIdentity();
+      toast.success(t("settings.accountProfile.saved", { defaultValue: "Profile updated." }));
+    },
+    onError: (error) => toast.error(error.message),
+  });
+
+  const uploadAvatar = trpc.accountProfile.uploadAvatar.useMutation({
+    onSuccess: async () => {
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      await refreshIdentity();
+      toast.success(t("settings.accountProfile.avatarSaved", { defaultValue: "Profile photo updated." }));
+    },
+    onError: (error) => toast.error(error.message),
+  });
+
+  const removeAvatar = trpc.accountProfile.removeAvatar.useMutation({
+    onSuccess: async () => {
+      setSelectedFile(null);
+      setPreviewUrl(null);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      await refreshIdentity();
+      toast.success(t("settings.accountProfile.avatarRemoved", { defaultValue: "Profile photo removed." }));
+    },
+    onError: (error) => toast.error(error.message),
+  });
+
+  const chooseAvatar = (file?: File) => {
+    if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 3 * 1024 * 1024) {
+      toast.error(t("settings.accountProfile.avatarInvalid", { defaultValue: "Choose a JPG, PNG, or WebP image up to 3 MB." }));
+      return;
+    }
+    if (previewUrl?.startsWith("blob:")) URL.revokeObjectURL(previewUrl);
+    setSelectedFile(file);
+    setPreviewUrl(URL.createObjectURL(file));
+  };
+
+  const submitAvatar = () => {
+    if (!selectedFile) return;
+    const reader = new FileReader();
+    reader.onerror = () => toast.error(t("settings.accountProfile.avatarReadError", { defaultValue: "We could not read that image. Try another file." }));
+    reader.onload = () => {
+      const result = String(reader.result ?? "");
+      const dataBase64 = result.includes(",") ? result.split(",")[1] : "";
+      uploadAvatar.mutate({
+        mimeType: selectedFile.type as "image/jpeg" | "image/png" | "image/webp",
+        dataBase64,
+      });
+    };
+    reader.readAsDataURL(selectedFile);
+  };
+
+  if (isLoading) {
+    return <div className="h-52 animate-pulse rounded-2xl bg-white" aria-label={t("settings.accountProfile.loading", { defaultValue: "Loading account profile" })} />;
+  }
+
+  const avatarSrc = previewUrl || account?.avatarUrl || "https://assets.getphame.app/getphame-logo.svg";
+  const nameChanged = name.trim() !== (account?.name ?? "") && name.trim().length >= 2;
+
+  return (
+    <section className="rounded-2xl bg-white p-5 shadow-sm" aria-labelledby="account-profile-title">
+      <div className="mb-5 flex items-center gap-2">
+        <UserRound size={18} className="rr-text-navy" aria-hidden="true" />
+        <div>
+          <h2 id="account-profile-title" className="text-base font-black rr-text-navy">
+            {t("settings.accountProfile.title", { defaultValue: "Account profile" })}
+          </h2>
+          <p className="text-xs rr-text-navy-muted">
+            {t("settings.accountProfile.description", { defaultValue: "Manage the identity shown in your Get Phame account." })}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-5 sm:grid-cols-[132px_1fr] sm:items-start">
+        <div className="flex flex-col items-center gap-3">
+          <div className="relative h-28 w-28 overflow-hidden rounded-3xl border-4 border-white shadow-md" style={{ background: "oklch(0.22 0.09 260)" }}>
+            <img src={avatarSrc} alt={t("settings.accountProfile.avatarAlt", { defaultValue: "Account profile photo" })} className="h-full w-full object-cover" />
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute bottom-1.5 right-1.5 flex h-9 w-9 items-center justify-center rounded-full rr-bg-gold rr-text-navy shadow-md"
+              aria-label={t("settings.accountProfile.chooseAvatar", { defaultValue: "Choose profile photo" })}
+            >
+              <Camera size={16} aria-hidden="true" />
+            </button>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="sr-only"
+            onChange={(event) => chooseAvatar(event.target.files?.[0])}
+          />
+          <p className="text-center text-[11px] font-semibold rr-text-navy-muted">
+            {t("settings.accountProfile.avatarHelp", { defaultValue: "JPG, PNG, or WebP · 3 MB max" })}
+          </p>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label htmlFor="account-display-name" className="mb-1.5 block text-xs font-bold rr-text-navy-mid">
+              {t("settings.accountProfile.displayName", { defaultValue: "Display name" })}
+            </label>
+            <input
+              id="account-display-name"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              maxLength={80}
+              autoComplete="name"
+              className="w-full rounded-xl px-4 py-3 text-sm font-semibold outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+              style={{ border: "1.5px solid oklch(0.88 0.04 260)" }}
+            />
+          </div>
+          <div>
+            <label htmlFor="account-email" className="mb-1.5 block text-xs font-bold rr-text-navy-mid">
+              {t("settings.accountProfile.email", { defaultValue: "Email address" })}
+            </label>
+            <input id="account-email" value={account?.email ?? ""} readOnly className="w-full cursor-not-allowed rounded-xl px-4 py-3 text-sm font-semibold opacity-70 rr-bg-surface-darker rr-text-navy" />
+            <p className="mt-1 text-[11px] rr-text-navy-muted">
+              {t("settings.accountProfile.emailHelp", { defaultValue: "Your sign-in email is managed by your authentication provider." })}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-2" aria-live="polite">
+            <button
+              type="button"
+              onClick={() => updateProfile.mutate({ name: name.trim() })}
+              disabled={!nameChanged || updateProfile.isPending}
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50 rr-bg-navy"
+            >
+              {updateProfile.isPending ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+              {t("settings.accountProfile.save", { defaultValue: "Save profile" })}
+            </button>
+            {selectedFile && (
+              <button
+                type="button"
+                onClick={submitAvatar}
+                disabled={uploadAvatar.isPending}
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black rr-bg-gold rr-text-navy disabled:opacity-50"
+              >
+                {uploadAvatar.isPending ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+                {t("settings.accountProfile.uploadAvatar", { defaultValue: "Upload photo" })}
+              </button>
+            )}
+            {(account?.avatarUrl || selectedFile) && (
+              <button
+                type="button"
+                onClick={() => selectedFile ? (setSelectedFile(null), setPreviewUrl(null)) : removeAvatar.mutate()}
+                disabled={removeAvatar.isPending}
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black rr-text-navy"
+                style={{ border: "1.5px solid oklch(0.84 0.05 260)" }}
+              >
+                {removeAvatar.isPending ? <Loader2 size={16} className="animate-spin" /> : <ImageOff size={16} />}
+                {selectedFile ? t("common.cancel", { defaultValue: "Cancel" }) : t("settings.accountProfile.removeAvatar", { defaultValue: "Remove photo" })}
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SettingsSkeleton({ title }: { title: string }) {
+  return (
+    <div className="min-h-screen pb-40 rr-bg-cream-warm" aria-busy="true" aria-label="Loading settings">
+      <div className="px-5 pt-12 pb-5 rr-bg-navy">
+        <div className="flex items-center justify-between mb-4">
+          <LandingBrandLink iconClassName="w-8 h-8" textClassName="text-lg" />
+          <LanguageFlyout />
+        </div>
+        <h1 className="text-2xl text-white rr-fw-black">{title}</h1>
+        <div className="h-4 w-40 rounded-lg bg-white/15 animate-pulse mt-2" />
+      </div>
+      <div className="px-4 py-5 space-y-4 max-w-3xl mx-auto">
+        {[0, 1, 2].map((section) => (
+          <div key={section} className="bg-white rounded-2xl p-5 shadow-sm animate-pulse">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-9 h-9 rounded-xl rr-bg-surface-darker" />
+              <div className="h-5 w-36 rounded-lg rr-bg-surface-darker" />
+            </div>
+            <div className="space-y-3">
+              <div className="h-4 w-24 rounded rr-bg-surface-darker" />
+              <div className="h-11 w-full rounded-xl rr-bg-surface-darker" />
+              <div className="h-4 w-32 rounded rr-bg-surface-darker" />
+              <div className="h-11 w-full rounded-xl rr-bg-surface-darker" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function SettingsPage() {
   const { t } = useTranslation();
   const { user, logout } = useAuth();
@@ -1080,9 +1110,71 @@ export default function SettingsPage() {
 
   // Reminder settings state
   const { data: reminderSettings } = trpc.reminders.getSettings.useQuery();
+  const { data: reminderPerformance, isLoading: reminderPerformanceLoading } = trpc.reminders.timingPerformance.useQuery();
+  const [followUpDelayInput, setFollowUpDelayInput] = useState(String(DEFAULT_FOLLOW_UP_DELAY_DAYS));
+  const [followUpSecondDelayInput, setFollowUpSecondDelayInput] = useState(String(DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS));
+  const [followUpFirstEnabled, setFollowUpFirstEnabled] = useState(true);
+  const [followUpSecondEnabled, setFollowUpSecondEnabled] = useState(true);
+  const [projectionAnchor] = useState(() => Date.now());
+  const utils = trpc.useUtils();
   const updateReminderSettings = trpc.reminders.updateSettings.useMutation({
-    onSuccess: () => { toast.success("Follow-up reminder settings saved!"); },
+    onSuccess: async (_data, variables) => {
+      setFollowUpDelayInput(String(variables.followUpDelayDays));
+      setFollowUpSecondDelayInput(String(variables.followUpSecondDelayDays));
+      setFollowUpFirstEnabled(variables.followUpFirstEnabled === 1);
+      setFollowUpSecondEnabled(variables.followUpSecondEnabled === 1);
+      await utils.reminders.getSettings.invalidate();
+      toast.success("Follow-up settings saved!");
+    },
     onError: (err) => toast.error(err.message),
+  });
+
+  useEffect(() => {
+    if (reminderSettings?.followUpDelayDays != null) {
+      setFollowUpDelayInput(String(reminderSettings.followUpDelayDays));
+    }
+    if (reminderSettings?.followUpSecondDelayDays != null) {
+      setFollowUpSecondDelayInput(String(reminderSettings.followUpSecondDelayDays));
+    }
+    if (reminderSettings?.followUpFirstEnabled != null) {
+      setFollowUpFirstEnabled(reminderSettings.followUpFirstEnabled === 1);
+    }
+    if (reminderSettings?.followUpSecondEnabled != null) {
+      setFollowUpSecondEnabled(reminderSettings.followUpSecondEnabled === 1);
+    }
+  }, [
+    reminderSettings?.followUpDelayDays,
+    reminderSettings?.followUpSecondDelayDays,
+    reminderSettings?.followUpFirstEnabled,
+    reminderSettings?.followUpSecondEnabled,
+  ]);
+
+  const followUpDelayIsValid = isValidFollowUpDelayDays(followUpDelayInput);
+  const followUpSecondDelayIsValid = isValidFollowUpDelayDays(followUpSecondDelayInput);
+  const savedFollowUpDelayDays = reminderSettings?.followUpDelayDays ?? DEFAULT_FOLLOW_UP_DELAY_DAYS;
+  const savedFollowUpSecondDelayDays = reminderSettings?.followUpSecondDelayDays ?? DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS;
+  const savedFollowUpFirstEnabled = (reminderSettings?.followUpFirstEnabled ?? 1) === 1;
+  const savedFollowUpSecondEnabled = (reminderSettings?.followUpSecondEnabled ?? 1) === 1;
+  const editedFollowUpDelayDays = normalizeFollowUpDelayDays(followUpDelayInput, savedFollowUpDelayDays);
+  const editedFollowUpSecondDelayDays = normalizeFollowUpDelayDays(followUpSecondDelayInput, savedFollowUpSecondDelayDays);
+  const followUpTimingIsValid = followUpDelayIsValid && followUpSecondDelayIsValid;
+  const followUpTimingHasChanges = followUpTimingIsValid && (
+    editedFollowUpDelayDays !== savedFollowUpDelayDays ||
+    editedFollowUpSecondDelayDays !== savedFollowUpSecondDelayDays ||
+    followUpFirstEnabled !== savedFollowUpFirstEnabled ||
+    followUpSecondEnabled !== savedFollowUpSecondEnabled
+  );
+  const projectedFollowUpDates = getProjectedFollowUpDates(
+    projectionAnchor,
+    editedFollowUpDelayDays,
+    editedFollowUpSecondDelayDays,
+  );
+  const formatProjectedDate = (date: Date) => date.toLocaleString(undefined, {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
   });
 
   const { data: reEngagementSettings } = trpc.profile.getReEngagementSettings.useQuery();
@@ -1102,7 +1194,6 @@ export default function SettingsPage() {
     }
   }, [profile?.id]);
 
-  const utils = trpc.useUtils();
   const upsertProfile = trpc.profile.upsert.useMutation({
     onSuccess: () => {
       utils.profile.get.invalidate();
@@ -1221,6 +1312,12 @@ export default function SettingsPage() {
     onSuccess: () => { utils.notificationPrefs.get.invalidate(); toast.success("Notification preference saved."); },
     onError: (err) => toast.error(err.message),
   });
+  const toggleOnboardingTips = () => {
+    const onboardingTipsEnabled = !(notifPrefs?.onboardingTipsEnabled ?? true);
+    updateNotifPrefs.mutate({ onboardingTipsEnabled }, {
+      onSuccess: () => window.dispatchEvent(new CustomEvent("rr:onboarding-tips-change", { detail: { tipsEnabled: onboardingTipsEnabled } })),
+    });
+  };
   const [expandedWebhookId, setExpandedWebhookId] = useState<number | null>(null);
   const { data: webhookLogs } = trpc.webhook.deliveryLogs.useQuery(
     { webhookId: expandedWebhookId ?? 0, limit: 5 },
@@ -1451,6 +1548,10 @@ export default function SettingsPage() {
     });
   }
 
+  if (profileLoading) {
+    return <SettingsSkeleton title={t('tabs.account', { defaultValue: 'Account & Profile' })} />;
+  }
+
   return (
     <>
     <div className="min-h-screen pb-40 rr-bg-cream-warm">
@@ -1511,6 +1612,7 @@ export default function SettingsPage() {
 
       <div className="px-4 py-4 lg:px-8 lg:py-6">
       <div className="max-w-3xl mx-auto flex flex-col gap-4">
+        <AccountProfileCard />
         {/* ── Business Profile ──────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
@@ -1537,7 +1639,7 @@ export default function SettingsPage() {
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
                   placeholder="e.g. Maria's Hair Salon"
-                  className="w-full px-3 py-3 rounded-xl text-sm outline-none border-2 transition-all"
+                  className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none border-2 transition-all"
                   style={{
                     border: "2px solid oklch(0.90 0.02 260)",
                     fontFamily: "'Nunito', sans-serif",
@@ -1556,7 +1658,7 @@ export default function SettingsPage() {
                   value={reviewLink}
                   onChange={(e) => setPhame(e.target.value)}
                   placeholder="https://g.page/r/your-business/review"
-                  className="w-full px-3 py-3 rounded-xl text-sm outline-none"
+                  className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none"
                   style={{
                     border: "2px solid oklch(0.90 0.02 260)",
                     fontFamily: "'Nunito', sans-serif",
@@ -1585,7 +1687,7 @@ export default function SettingsPage() {
                       value={fromName}
                       onChange={(e) => setFromName(e.target.value)}
                       placeholder={businessName || "e.g. Maria's Hair Salon"}
-                      className="w-full px-3 py-3 rounded-xl text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                      className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                     />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {t('profile.fromNameDescription')}
@@ -1600,7 +1702,7 @@ export default function SettingsPage() {
                       value={replyTo}
                       onChange={(e) => setReplyTo(e.target.value)}
                       placeholder="e.g. steve@sk-america.com"
-                      className="w-full px-3 py-3 rounded-xl text-sm outline-none bg-white" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+                      className="rr-form-field w-full px-3 py-3 rounded-xl text-sm outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                     />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {t('profile.replyToEmailDescription')}
@@ -2027,10 +2129,10 @@ export default function SettingsPage() {
               {/* Last health check timestamp */}
               {smtpStatus?.lastHealthCheck && (
                 <p className="text-xs rr-text-navy-faint">
-                  Last auto-check: {new Date(smtpStatus.lastHealthCheck).toLocaleString()}
+                  {t("smtp.lastAutoCheck", { defaultValue: "Last auto-check: {{date}}", date: new Date(smtpStatus.lastHealthCheck).toLocaleString() })}
                   {" · "}
                   <span style={{ color: smtpStatus.lastHealthStatus === "ok" ? "oklch(0.50 0.18 145)" : "oklch(0.50 0.18 27)", fontWeight: 600 }}>
-                    {smtpStatus.lastHealthStatus === "ok" ? "✓ Healthy" : "✗ Failed"}
+                    {smtpStatus.lastHealthStatus === "ok" ? t("smtp.healthy", { defaultValue: "✓ Healthy" }) : t("smtp.failed", { defaultValue: "✗ Failed" })}
                   </span>
                 </p>
               )}
@@ -2047,14 +2149,14 @@ export default function SettingsPage() {
                     style={{ background: "oklch(0.70 0.02 260)" }}
                   />
                   <p className="text-xs rr-text-navy-mid">
-                    No email connected. Enter your details below to start sending review requests.
+                    {t("smtp.notConnectedDescription", { defaultValue: "No email connected. Enter your details below to start sending review requests." })}
                   </p>
                 </div>
               )}
 
               {/* Email field */}
               <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Your Email Address *</label>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("smtp.emailAddressLabel", { defaultValue: "Your Email Address *" })}</label>
                 <input
                   type="email"
                   value={smtpEmail}
@@ -2083,37 +2185,50 @@ export default function SettingsPage() {
 
                 // Smart label
                 const passwordLabel = isGmail
-                  ? 'Gmail App Password *'
+                  ? t("smtp.passwordLabels.gmail", { defaultValue: "Gmail App Password *" })
                   : isGoogleWorkspace
-                  ? 'Google Workspace App Password *'
+                  ? t("smtp.passwordLabels.workspace", { defaultValue: "Google Workspace App Password *" })
                   : isOutlook
-                  ? 'Microsoft App Password *'
+                  ? t("smtp.passwordLabels.microsoft", { defaultValue: "Microsoft App Password *" })
                   : isYahoo
-                  ? 'Yahoo App Password *'
+                  ? t("smtp.passwordLabels.yahoo", { defaultValue: "Yahoo App Password *" })
                   : isZoho
-                  ? 'Zoho Mail Password *'
+                  ? t("smtp.passwordLabels.zoho", { defaultValue: "Zoho Mail Password *" })
                   : isIcloud
-                  ? 'Apple App-Specific Password *'
+                  ? t("smtp.passwordLabels.icloud", { defaultValue: "Apple App-Specific Password *" })
                   : isAol
-                  ? 'AOL App Password *'
+                  ? t("smtp.passwordLabels.aol", { defaultValue: "AOL App Password *" })
                   : isProtonMail
-                  ? 'ProtonMail SMTP Password *'
+                  ? t("smtp.passwordLabels.proton", { defaultValue: "ProtonMail SMTP Password *" })
                   : isFastmail
-                  ? 'Fastmail App Password *'
-                  : 'Email Password *';
+                  ? t("smtp.passwordLabels.fastmail", { defaultValue: "Fastmail App Password *" })
+                  : t("smtp.passwordLabels.email", { defaultValue: "Email Password *" });
 
                 // Smart placeholder
                 const passwordPlaceholder = smtpStatus?.connected
-                  ? 'Enter new password to update'
+                  ? t("smtp.passwordPlaceholders.update", { defaultValue: "Enter new password to update" })
                   : isGmail || isGoogleWorkspace
-                  ? '16-character App Password (no spaces)'
+                  ? t("smtp.passwordPlaceholders.google", { defaultValue: "16-character App Password (no spaces)" })
                   : isIcloud
                   ? 'xxxx-xxxx-xxxx-xxxx'
-                  : 'Your email password';
+                  : t("smtp.passwordPlaceholders.default", { defaultValue: "Your email password" });
 
                 const showGuide = showPasswordGuide;
                 const setShowGuide = setShowPasswordGuide;
                 const hasGuide = isGmail || isGoogleWorkspace || isOutlook || isYahoo || isZoho || isIcloud || isAol || isProtonMail || isFastmail;
+                const guideProvider = isGmail ? "gmail" : isGoogleWorkspace ? "workspace" : isOutlook ? "microsoft" : isYahoo ? "yahoo" : isZoho ? "zoho" : isIcloud ? "icloud" : isAol ? "aol" : isProtonMail ? "proton" : "fastmail";
+                const guideDefaults: Record<string, { title: string; steps: string[]; tip: string }> = {
+                  gmail: { title: "Gmail App Password — 4 steps", steps: ["Go to myaccount.google.com, then Security.", "Turn on 2-Step Verification if it is not already on.", "Go to myaccount.google.com/apppasswords, name it Get Phame, then click Create.", "Copy the 16-character code and paste it here without spaces."], tip: "Tip: use a dedicated reviews@gmail.com account to keep your main inbox separate." },
+                  workspace: { title: "Google Workspace App Password — 4 steps", steps: ["Ask your Workspace administrator to enable 2-Step Verification in admin.google.com.", "Sign in to myaccount.google.com with your work account, then open Security.", "Go to myaccount.google.com/apppasswords, name it Get Phame, then click Create.", "Copy the 16-character code and paste it here without spaces."], tip: "Your Workspace administrator may need to allow app passwords." },
+                  microsoft: { title: "Microsoft App Password — 4 steps", steps: ["Go to account.microsoft.com, then Security.", "Open Advanced security options.", "Under App passwords, create a new app password.", "Copy and paste the generated password here."], tip: "Microsoft 365 work accounts may require your IT administrator to allow SMTP AUTH." },
+                  yahoo: { title: "Yahoo App Password — 4 steps", steps: ["Go to account.yahoo.com, then Security.", "Choose Generate app password.", "Select Other app and name it Get Phame.", "Copy and paste the generated password here."], tip: "Use the generated app password, not your regular Yahoo password." },
+                  zoho: { title: "Zoho Mail — Enable SMTP Access", steps: ["Sign in at mail.zoho.com.", "Open Settings, then Mail Accounts.", "Choose your email address and scroll to SMTP.", "Turn on Allow SMTP Access, then use your regular Zoho password here."], tip: "No app password is needed after SMTP access is enabled." },
+                  aol: { title: "AOL Mail App Password — 4 steps", steps: ["Go to account.aol.com, then Security.", "Choose Generate app password.", "Select Other app and name it Get Phame.", "Copy and paste the generated password here, not your regular AOL password."], tip: "AOL requires two-step verification before you can generate an app password." },
+                  proton: { title: "ProtonMail — SMTP Bridge Password", steps: ["Download Proton Mail Bridge from proton.me/mail/bridge.", "Sign in to Bridge with your Proton account.", "Open your account in Bridge and copy the SMTP password shown.", "Paste that SMTP password here, not your regular Proton password."], tip: "Proton Mail Bridge must be running for SMTP to work." },
+                  fastmail: { title: "Fastmail App Password — 4 steps", steps: ["Go to app.fastmail.com, then Settings, Privacy & Security.", "Under Third-party apps, choose New app password.", "Name it Get Phame and allow Mail (SMTP) access.", "Copy and paste the generated password here."], tip: "Use the provider-specific app password, not your regular Fastmail password." },
+                  icloud: { title: "Apple iCloud — App-Specific Password", steps: ["Go to appleid.apple.com, then Sign-In and Security.", "Open App-Specific Passwords and generate a new password.", "Name it Get Phame and choose Create.", "Copy the generated password and paste it here."], tip: "Two-factor authentication must be enabled on your Apple ID." },
+                };
+                const activeGuide = guideDefaults[guideProvider];
 
                 return (
                   <div>
@@ -2127,13 +2242,13 @@ export default function SettingsPage() {
                           style={{ color: 'oklch(0.45 0.18 260)' }}
                         >
                           <span className="inline-flex items-center justify-center w-4 h-4 rounded-full text-white text-[10px] font-black" style={{ background: 'oklch(0.45 0.18 260)' }}>?</span>
-                          How to get it
+                          {t("smtp.howToGetIt", { defaultValue: "How to get it" })}
                         </button>
                       )}
                     </div>
 
                     {/* Gmail guide */}
-                    {showGuide && isGmail && (
+                    {false && showGuide && isGmail && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">Gmail App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -2148,7 +2263,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* Google Workspace guide */}
-                    {showGuide && isGoogleWorkspace && (
+                    {false && showGuide && isGoogleWorkspace && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">Google Workspace App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -2162,7 +2277,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* Microsoft / Outlook guide */}
-                    {showGuide && isOutlook && (
+                    {false && showGuide && isOutlook && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">Microsoft App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -2177,7 +2292,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* Yahoo guide */}
-                    {showGuide && isYahoo && (
+                    {false && showGuide && isYahoo && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">Yahoo App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -2191,7 +2306,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* Zoho guide */}
-                    {showGuide && isZoho && (
+                    {false && showGuide && isZoho && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">Zoho Mail — Enable SMTP Access</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -2206,7 +2321,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* AOL guide */}
-                    {showGuide && isAol && (
+                    {false && showGuide && isAol && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">AOL Mail App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -2221,7 +2336,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* ProtonMail guide */}
-                    {showGuide && isProtonMail && (
+                    {false && showGuide && isProtonMail && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">ProtonMail — SMTP Bridge Password</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -2236,7 +2351,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* Fastmail guide */}
-                    {showGuide && isFastmail && (
+                    {false && showGuide && isFastmail && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">Fastmail App Password — 4 steps</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -2251,7 +2366,7 @@ export default function SettingsPage() {
                     )}
 
                     {/* iCloud guide */}
-                    {showGuide && isIcloud && (
+                    {false && showGuide && isIcloud && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">Apple iCloud — App-Specific Password</p>
                         <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
@@ -2262,6 +2377,19 @@ export default function SettingsPage() {
                         </ol>
                         <p className="text-[10px] mt-1 rr-text-navy-faint">Requires two-factor authentication to be enabled on your Apple ID.</p>
                         <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
+                      </div>
+                    )}
+
+                    {showGuide && hasGuide && activeGuide && (
+                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
+                        <p className="font-black text-sm rr-text-gold">{t(`smtp.providerGuides.${guideProvider}.title`, { defaultValue: activeGuide.title })}</p>
+                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: "decimal" }}>
+                          {activeGuide.steps.map((step, index) => (
+                            <li key={index}>{t(`smtp.providerGuides.${guideProvider}.step${index + 1}`, { defaultValue: step })}</li>
+                          ))}
+                        </ol>
+                        <p className="text-[10px] mt-1 rr-text-navy-faint">{t(`smtp.providerGuides.${guideProvider}.tip`, { defaultValue: activeGuide.tip })}</p>
+                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">{t("common.gotIt", { defaultValue: "Got it ✓" })}</button>
                       </div>
                     )}
 
@@ -2279,46 +2407,46 @@ export default function SettingsPage() {
                         onClick={() => setShowSmtpPassword((v) => !v)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold rr-text-navy-mid"
                       >
-                        {showSmtpPassword ? 'Hide' : 'Show'}
+                        {showSmtpPassword ? t("common.hide", { defaultValue: "Hide" }) : t("common.show", { defaultValue: "Show" })}
                       </button>
                     </div>
 
                     {/* Inline hint for known providers that need app passwords */}
                     {(isGmail || isGoogleWorkspace) && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        Not your regular Gmail password — use an <span className="font-bold">App Password</span>. Tap <span className="font-bold">? How to get it</span> above.
+                        {t("smtp.inlineHints.google", { defaultValue: "Not your regular Gmail password — use an App Password. Tap How to get it above." })}
                       </p>
                     )}
                     {isIcloud && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        Use an <span className="font-bold">App-Specific Password</span>, not your Apple ID password. Tap <span className="font-bold">? How to get it</span> above.
+                        {t("smtp.inlineHints.icloud", { defaultValue: "Use an App-Specific Password, not your Apple ID password. Tap How to get it above." })}
                       </p>
                     )}
                     {isZoho && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        Enable SMTP access in Zoho first, then use your regular Zoho password. Tap <span className="font-bold">? How to get it</span> above.
+                        {t("smtp.inlineHints.zoho", { defaultValue: "Enable SMTP access in Zoho first, then use your regular Zoho password. Tap How to get it above." })}
                       </p>
                     )}
                     {isAol && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        Not your regular AOL password — use an <span className="font-bold">App Password</span>. Tap <span className="font-bold">? How to get it</span> above.
+                        {t("smtp.inlineHints.aol", { defaultValue: "Not your regular AOL password — use an App Password. Tap How to get it above." })}
                       </p>
                     )}
                     {isProtonMail && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        ProtonMail requires the <span className="font-bold">Proton Bridge</span> app — use its SMTP password, not your Proton login. Tap <span className="font-bold">? How to get it</span> above.
+                        {t("smtp.inlineHints.proton", { defaultValue: "ProtonMail requires the Proton Bridge app — use its SMTP password, not your Proton login. Tap How to get it above." })}
                       </p>
                     )}
                     {isFastmail && !smtpStatus?.connected && !showGuide && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        Not your regular Fastmail password — use an <span className="font-bold">App Password</span>. Tap <span className="font-bold">? How to get it</span> above.
+                        {t("smtp.inlineHints.fastmail", { defaultValue: "Not your regular Fastmail password — use an App Password. Tap How to get it above." })}
                       </p>
                     )}
 
                     {/* Custom SMTP notice */}
                     {isCustom && !smtpStatus?.connected && (
                       <p className="text-xs mt-1.5" style={{ color: 'oklch(0.55 0.10 260)' }}>
-                        Custom domain detected — SMTP settings auto-filled below. Check <span className="font-bold">Advanced settings</span> to verify or adjust host/port.
+                        {t("smtp.inlineHints.custom", { defaultValue: "Custom domain detected — SMTP settings auto-filled below. Check Advanced settings to verify or adjust host and port." })}
                       </p>
                     )}
 
@@ -2334,16 +2462,16 @@ export default function SettingsPage() {
 
               {/* Display name */}
               <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Display Name (optional)</label>
+                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("smtp.displayNameLabel", { defaultValue: "Display Name (optional)" })}</label>
                 <input
                   type="text"
                   value={smtpFromName}
                   onChange={(e) => setSmtpFromName(e.target.value)}
-                  placeholder="e.g. Steve at Acme Plumbing"
+                  placeholder={t("smtp.displayNamePlaceholder", { defaultValue: "e.g. Steve at Acme Plumbing" })}
                   className="w-full px-3 py-2.5 rounded-xl text-sm outline-none"
                   style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                 />
-                <p className="text-xs mt-1 rr-text-navy-muted">Shown as the sender name in your customer's inbox.</p>
+                <p className="text-xs mt-1 rr-text-navy-muted">{t("smtp.displayNameHelp", { defaultValue: "Shown as the sender name in your customer's inbox." })}</p>
               </div>
 
               {/* ── Deliverability guidance callout ───────────────────────────────────────── */}
@@ -2353,17 +2481,17 @@ export default function SettingsPage() {
               >
                 <AlertCircle size={15} className="shrink-0 mt-0.5" style={{ color: "oklch(0.50 0.12 260)" }} />
                 <div className="rr-text-navy-mid">
-                  <p className="font-bold mb-1">Sending limits by provider</p>
+                  <p className="font-bold mb-1">{t("smtp.sendingLimits.title", { defaultValue: "Sending limits by provider" })}</p>
                   <ul className="flex flex-col gap-0.5" style={{ listStyle: "disc", paddingLeft: "1rem" }}>
-                    <li><span className="font-semibold">Gmail / Google Workspace</span> — 500 emails/day (free), 2,000/day (Workspace)</li>
-                    <li><span className="font-semibold">Outlook / Microsoft 365</span> — 300 emails/day</li>
-                    <li><span className="font-semibold">Yahoo Mail</span> — 500 emails/day</li>
-                    <li><span className="font-semibold">Zoho Mail</span> — 500 emails/day (free), 1,000/day (paid)</li>
-                    <li><span className="font-semibold">AOL Mail</span> — 500 emails/day</li>
-                    <li><span className="font-semibold">Fastmail</span> — 1,000 emails/day</li>
-                    <li><span className="font-semibold">ProtonMail</span> — 150 emails/day (free), 1,000/day (paid) via Bridge</li>
+                    <li>{t("smtp.sendingLimits.gmail", { defaultValue: "Gmail / Google Workspace — 500 emails/day (free), 2,000/day (Workspace)" })}</li>
+                    <li>{t("smtp.sendingLimits.microsoft", { defaultValue: "Outlook / Microsoft 365 — 300 emails/day" })}</li>
+                    <li>{t("smtp.sendingLimits.yahoo", { defaultValue: "Yahoo Mail — 500 emails/day" })}</li>
+                    <li>{t("smtp.sendingLimits.zoho", { defaultValue: "Zoho Mail — 500 emails/day (free), 1,000/day (paid)" })}</li>
+                    <li>{t("smtp.sendingLimits.aol", { defaultValue: "AOL Mail — 500 emails/day" })}</li>
+                    <li>{t("smtp.sendingLimits.fastmail", { defaultValue: "Fastmail — 1,000 emails/day" })}</li>
+                    <li>{t("smtp.sendingLimits.proton", { defaultValue: "ProtonMail — 150 emails/day (free), 1,000/day (paid) via Bridge" })}</li>
                   </ul>
-                  <p className="mt-1.5">For high-volume sending, use a dedicated <span className="font-semibold">reviews@yourdomain.com</span> address to keep your main inbox clean and avoid hitting personal limits.</p>
+                  <p className="mt-1.5">{t("smtp.sendingLimits.tip", { defaultValue: "For high-volume sending, use a dedicated reviews@yourdomain.com address to keep your main inbox clean and avoid hitting personal limits." })}</p>
                 </div>
               </div>
 
@@ -2404,27 +2532,196 @@ export default function SettingsPage() {
                     checked={(reminderSettings?.followUpEnabled ?? 1) === 1}
                     onCheckedChange={(v) => updateReminderSettings.mutate({
                       followUpEnabled: v ? 1 : 0,
-                      followUpDelayDays: reminderSettings?.followUpDelayDays ?? 3,
+                      followUpFirstEnabled: followUpFirstEnabled ? 1 : 0,
+                      followUpSecondEnabled: followUpSecondEnabled ? 1 : 0,
+                      followUpDelayDays: editedFollowUpDelayDays,
+                      followUpSecondDelayDays: editedFollowUpSecondDelayDays,
                     })}
+                    disabled={updateReminderSettings.isPending}
                   />
                 </div>
-                <p className="text-xs mb-3 rr-text-navy-muted">Automatically send day-3 and day-10 follow-up emails to customers who haven&apos;t clicked your review link.</p>
+                <p className="text-xs mb-3 rr-text-navy-muted">Automatically send up to two follow-up emails to customers who haven&apos;t clicked your review link. Configure or skip each stage independently.</p>
                 {(reminderSettings?.followUpEnabled ?? 1) === 1 && (
-                  <div className="flex items-center gap-2">
-                    <label className="text-xs font-bold rr-text-navy-mid">First follow-up after</label>
-                    <input
-                      type="number"
-                      min={1}
-                      max={14}
-                      value={reminderSettings?.followUpDelayDays ?? 3}
-                      onChange={(e) => updateReminderSettings.mutate({
-                        followUpEnabled: reminderSettings?.followUpEnabled ?? 1,
-                        followUpDelayDays: Math.min(14, Math.max(1, Number(e.target.value))),
-                      })}
-                      className="w-16 px-2 py-1.5 rounded-lg text-sm outline-none text-center"
-                      style={{ border: "2px solid oklch(0.88 0.02 260)", fontSize: "16px" }}
-                    />
-                    <span className="text-sm font-semibold rr-text-navy-mid">days (second follow-up 7 days later)</span>
+                  <div className="space-y-3">
+                    <div className="grid gap-3 sm:grid-cols-2">
+                      <div className="rounded-xl p-3" style={{ border: "1px solid oklch(0.90 0.02 260)" }}>
+                        <div className="flex items-center justify-between gap-3">
+                          <label htmlFor="follow-up-delay-days" className="block text-xs font-bold rr-text-navy-mid">First follow-up</label>
+                          <Switch
+                            checked={followUpFirstEnabled}
+                            onCheckedChange={setFollowUpFirstEnabled}
+                            aria-label="Enable first follow-up"
+                            disabled={updateReminderSettings.isPending}
+                          />
+                        </div>
+                        <div className="mt-2 flex items-center gap-2">
+                          <input
+                            id="follow-up-delay-days"
+                            type="number"
+                            inputMode="numeric"
+                            min={1}
+                            max={14}
+                            step={1}
+                            value={followUpDelayInput}
+                            onChange={(e) => setFollowUpDelayInput(e.target.value)}
+                            disabled={!followUpFirstEnabled}
+                            aria-invalid={!followUpDelayIsValid}
+                            aria-describedby="follow-up-delay-help"
+                            className="w-16 px-2 py-2 rounded-lg text-sm outline-none text-center"
+                            style={{ border: `2px solid ${followUpDelayIsValid ? "oklch(0.88 0.02 260)" : "oklch(0.58 0.19 25)"}`, fontSize: "16px" }}
+                          />
+                          <span className="text-xs font-semibold rr-text-navy-mid">days after original send</span>
+                        </div>
+                        <div className="mt-2 flex flex-wrap gap-2" aria-label="First follow-up quick presets">
+                          {FOLLOW_UP_DELAY_PRESETS.map((days) => (
+                            <button
+                              key={`first-${days}`}
+                              type="button"
+                              onClick={() => setFollowUpDelayInput(String(days))}
+                              disabled={!followUpFirstEnabled}
+                              aria-pressed={editedFollowUpDelayDays === days}
+                              className="min-h-9 min-w-11 rounded-lg px-3 text-xs font-bold transition-colors"
+                              style={editedFollowUpDelayDays === days
+                                ? { background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }
+                                : { background: "oklch(0.96 0.02 260)", color: "oklch(0.34 0.06 260)" }}
+                            >
+                              {days}d
+                            </button>
+                          ))}
+                        </div>
+                        <div className="mt-3 rounded-lg p-2.5" style={{ background: "oklch(0.97 0.02 260)" }}>
+                          <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide rr-text-navy-muted">
+                            <Clock size={12} /> Projected send
+                          </p>
+                          <p className="mt-1 text-xs font-black rr-text-navy">
+                            {followUpFirstEnabled ? formatProjectedDate(projectedFollowUpDates.first) : "Skipped — stage disabled"}
+                          </p>
+                          <p className="mt-0.5 text-[11px] rr-text-navy-muted">If the original request were sent now</p>
+                        </div>
+                      </div>
+
+                      <div className="rounded-xl p-3" style={{ border: "1px solid oklch(0.90 0.02 260)" }}>
+                        <div className="flex items-center justify-between gap-3">
+                          <label htmlFor="follow-up-second-delay-days" className="block text-xs font-bold rr-text-navy-mid">Second follow-up</label>
+                          <Switch
+                            checked={followUpSecondEnabled}
+                            onCheckedChange={setFollowUpSecondEnabled}
+                            aria-label="Enable second follow-up"
+                            disabled={updateReminderSettings.isPending}
+                          />
+                        </div>
+                        <div className="mt-2 flex items-center gap-2">
+                          <input
+                            id="follow-up-second-delay-days"
+                            type="number"
+                            inputMode="numeric"
+                            min={1}
+                            max={14}
+                            step={1}
+                            value={followUpSecondDelayInput}
+                            onChange={(e) => setFollowUpSecondDelayInput(e.target.value)}
+                            disabled={!followUpSecondEnabled}
+                            aria-invalid={!followUpSecondDelayIsValid}
+                            aria-describedby="follow-up-delay-help"
+                            className="w-16 px-2 py-2 rounded-lg text-sm outline-none text-center"
+                            style={{ border: `2px solid ${followUpSecondDelayIsValid ? "oklch(0.88 0.02 260)" : "oklch(0.58 0.19 25)"}`, fontSize: "16px" }}
+                          />
+                          <span className="text-xs font-semibold rr-text-navy-mid">days after first follow-up</span>
+                        </div>
+                        <div className="mt-2 flex flex-wrap gap-2" aria-label="Second follow-up quick presets">
+                          {FOLLOW_UP_DELAY_PRESETS.map((days) => (
+                            <button
+                              key={`second-${days}`}
+                              type="button"
+                              onClick={() => setFollowUpSecondDelayInput(String(days))}
+                              disabled={!followUpSecondEnabled}
+                              aria-pressed={editedFollowUpSecondDelayDays === days}
+                              className="min-h-9 min-w-11 rounded-lg px-3 text-xs font-bold transition-colors"
+                              style={editedFollowUpSecondDelayDays === days
+                                ? { background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }
+                                : { background: "oklch(0.96 0.02 260)", color: "oklch(0.34 0.06 260)" }}
+                            >
+                              {days}d
+                            </button>
+                          ))}
+                        </div>
+                        <div className="mt-3 rounded-lg p-2.5" style={{ background: "oklch(0.97 0.02 260)" }}>
+                          <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide rr-text-navy-muted">
+                            <Clock size={12} /> Projected send
+                          </p>
+                          <p className="mt-1 text-xs font-black rr-text-navy">
+                            {followUpSecondEnabled ? formatProjectedDate(projectedFollowUpDates.second) : "Skipped — stage disabled"}
+                          </p>
+                          <p className="mt-0.5 text-[11px] rr-text-navy-muted">Cumulative from the original request</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <p id="follow-up-delay-help" className="text-xs rr-text-navy-muted">
+                        {followUpTimingIsValid
+                          ? `Schedule: day ${editedFollowUpDelayDays}, then day ${editedFollowUpDelayDays + editedFollowUpSecondDelayDays} after the original request.`
+                          : "Enter a whole number from 1 to 14 days for both follow-ups."}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => updateReminderSettings.mutate({
+                          followUpEnabled: reminderSettings?.followUpEnabled ?? 1,
+                          followUpFirstEnabled: followUpFirstEnabled ? 1 : 0,
+                          followUpSecondEnabled: followUpSecondEnabled ? 1 : 0,
+                          followUpDelayDays: editedFollowUpDelayDays,
+                          followUpSecondDelayDays: editedFollowUpSecondDelayDays,
+                        })}
+                        disabled={updateReminderSettings.isPending || !followUpTimingHasChanges}
+                        className="min-h-10 w-full rounded-lg px-4 py-2 text-xs font-bold transition-opacity disabled:opacity-40 rr-bg-navy rr-text-gold sm:w-auto"
+                      >
+                        {updateReminderSettings.isPending ? "Saving…" : "Save follow-ups"}
+                      </button>
+                    </div>
+
+                    <div className="border-t pt-3" style={{ borderColor: "oklch(0.91 0.02 260)" }}>
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="flex items-center gap-1.5 text-xs font-black rr-text-navy">
+                            <TrendingUp size={14} className="rr-text-gold" /> Timing performance
+                          </p>
+                          <p className="mt-1 text-[11px] rr-text-navy-muted">Last-touch success after a reminder was sent, grouped by its saved timing configuration.</p>
+                        </div>
+                      </div>
+
+                      {reminderPerformanceLoading ? (
+                        <div className="mt-3 rounded-xl p-4 text-xs font-semibold rr-text-navy-muted" style={{ background: "oklch(0.97 0.01 260)" }}>Loading reminder performance…</div>
+                      ) : reminderPerformance && reminderPerformance.length > 0 ? (
+                        <div className="mt-3 grid gap-2">
+                          {reminderPerformance.slice(0, 6).map((row, index) => {
+                            const totalDay = row.stage === 1 ? row.firstDelayDays : row.firstDelayDays + row.secondDelayDays;
+                            return (
+                              <div key={`${row.stage}-${row.firstDelayDays}-${row.secondDelayDays}-${row.firstStageEnabled}-${row.secondStageEnabled}-${index}`} className="flex flex-col gap-2 rounded-xl p-3 sm:flex-row sm:items-center sm:justify-between" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.91 0.02 260)" }}>
+                                <div>
+                                  <p className="text-xs font-black rr-text-navy">Stage {row.stage} · day {totalDay}</p>
+                                  <p className="mt-0.5 text-[11px] rr-text-navy-muted">
+                                    {row.stage === 2 ? `${row.firstDelayDays}d + ${row.secondDelayDays}d cumulative · ` : ""}
+                                    {row.sentCount} sent · {row.successCount} successful
+                                  </p>
+                                </div>
+                                <div className="flex items-center gap-2 sm:justify-end">
+                                  {row.isLowSample && (
+                                    <span className="rounded-full px-2 py-1 text-[10px] font-bold rr-text-navy-mid" style={{ background: "oklch(0.92 0.04 80)" }}>Low sample</span>
+                                  )}
+                                  <span className="text-lg font-black rr-text-navy">{row.successRate == null ? "—" : `${row.successRate}%`}</span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="mt-3 rounded-xl p-4" style={{ background: "oklch(0.97 0.01 260)", border: "1px dashed oklch(0.85 0.03 260)" }}>
+                          <p className="text-xs font-bold rr-text-navy">No timing data yet</p>
+                          <p className="mt-1 text-[11px] rr-text-navy-muted">Reporting starts after reminders with saved timing snapshots are sent. Legacy reminders are not guessed.</p>
+                        </div>
+                      )}
+                      <p className="mt-2 text-[10px] leading-relaxed rr-text-navy-muted">Success means the linked request was marked responded after this reminder was sent. This is directional last-touch attribution, not proof that timing caused the result.</p>
+                    </div>
                   </div>
                 )}
               </div>
@@ -2593,9 +2890,6 @@ export default function SettingsPage() {
 
         {/* ── Bulk Sender ──────────────────────────────────────────────────── */}
         <BulkSenderSection profile={profile} />
-
-        {/* ── Koalendar paid integration ───────────────────────────────────── */}
-        <KoalendarIntegrationCard profile={profile} isAdmin={user?.role === "admin"} />
 
         {/* ── WooCommerce ──────────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
@@ -2795,6 +3089,11 @@ export default function SettingsPage() {
             </div>
           )}
         </div>
+
+        {/* ── Koalendar ───────────────────────────────────────────────────── */}
+        <KoalendarSettingsCard
+          hasPaidAccess={user?.role === "admin" || ["pro", "annual", "lifetime"].includes(profile?.tier ?? "free")}
+        />
 
         {/* ── Tools ──────────────────────────────────────────────────────────────────────── */}
         <div className="rounded-2xl p-4 shadow-sm bg-white" style={{ border: "1px solid oklch(0.92 0.02 260)" }}>
@@ -3148,6 +3447,23 @@ export default function SettingsPage() {
               style={{ background: notifPrefs?.notifyOnEmailOpen ? "oklch(0.50 0.15 145)" : "oklch(0.80 0.02 260)" }}
             >
               <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform" style={{ left: notifPrefs?.notifyOnEmailOpen ? "calc(100% - 1.35rem)" : "0.1rem" }} />
+            </button>
+          </div>
+          <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 mt-2 rr-bg-white-card">
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold rr-text-navy">{t("settings.onboardingTips.title", { defaultValue: "Onboarding tips" })}</p>
+              <p className="text-xs mt-0.5 rr-text-navy-muted">{t("settings.onboardingTips.description", { defaultValue: "Show contextual setup tips the next time you open onboarding. You can also change this inside the setup wizard." })}</p>
+            </div>
+            <button
+              type="button"
+              onClick={toggleOnboardingTips}
+              disabled={updateNotifPrefs.isPending}
+              aria-pressed={notifPrefs?.onboardingTipsEnabled ?? true}
+              aria-label={(notifPrefs?.onboardingTipsEnabled ?? true) ? t("settings.onboardingTips.disable", { defaultValue: "Disable onboarding tips" }) : t("settings.onboardingTips.enable", { defaultValue: "Enable onboarding tips" })}
+              className="shrink-0 w-10 h-6 rounded-full transition-colors relative disabled:cursor-not-allowed disabled:opacity-60"
+              style={{ background: (notifPrefs?.onboardingTipsEnabled ?? true) ? "oklch(0.50 0.15 145)" : "oklch(0.80 0.02 260)" }}
+            >
+              <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform" style={{ left: (notifPrefs?.onboardingTipsEnabled ?? true) ? "calc(100% - 1.35rem)" : "0.1rem" }} />
             </button>
           </div>
           {/* ── Haptic Feedback toggle ────────────────────────────────── */}

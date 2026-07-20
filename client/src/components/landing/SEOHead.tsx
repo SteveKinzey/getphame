@@ -1,94 +1,124 @@
 import { useEffect } from "react";
 
+const DEFAULT_SOCIAL_IMAGE = "https://assets.getphame.app/getphame-og-image.png?v=4";
+const DEFAULT_SOCIAL_IMAGE_ALT = "Get Phame dashboard for sending review requests and tracking email engagement";
+const PUBLIC_SITE_ORIGIN = "https://getphame.app";
+
 interface SEOHeadProps {
   title: string;
   description: string;
   canonical?: string;
   noindex?: boolean;
+  keywords?: string[];
+  socialImage?: string;
+  socialImageAlt?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+function upsertMeta(selector: string, attribute: "name" | "property", key: string, content: string) {
+  let element = document.querySelector<HTMLMetaElement>(selector);
+  if (!element) {
+    element = document.createElement("meta");
+    element.setAttribute(attribute, key);
+    document.head.appendChild(element);
+  }
+  element.content = content;
+}
+
+function toAbsoluteUrl(url: string) {
+  if (/^https?:\/\//i.test(url)) return url;
+  return `${PUBLIC_SITE_ORIGIN}${url.startsWith("/") ? url : `/${url}`}`;
+}
+
+function upsertJsonLd(jsonLd?: Record<string, unknown> | Record<string, unknown>[]) {
+  const selector = 'script[data-seo-head-jsonld="true"]';
+  const existing = document.querySelector<HTMLScriptElement>(selector);
+
+  if (!jsonLd) {
+    existing?.remove();
+    return;
+  }
+
+  const script = existing ?? document.createElement("script");
+  script.type = "application/ld+json";
+  script.dataset.seoHeadJsonld = "true";
+  script.textContent = JSON.stringify(jsonLd);
+
+  if (!existing) document.head.appendChild(script);
 }
 
 /**
- * Sets document title and meta description for each page.
- * In a static SPA, this helps with social sharing previews
- * when crawlers render JS and with browser tab titles.
+ * Synchronizes document, canonical, social-card, and keyword metadata for the
+ * public SPA routes after they render in the browser.
  */
-export default function SEOHead({ title, description, canonical, noindex }: SEOHeadProps) {
+export default function SEOHead({
+  title,
+  description,
+  canonical,
+  noindex,
+  keywords,
+  socialImage = DEFAULT_SOCIAL_IMAGE,
+  socialImageAlt = DEFAULT_SOCIAL_IMAGE_ALT,
+  jsonLd,
+}: SEOHeadProps) {
   useEffect(() => {
-    // Set title
     document.title = title;
+    upsertMeta('meta[name="description"]', "name", "description", description);
+    upsertJsonLd(jsonLd);
 
-    // Set meta description
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (metaDesc) {
-      metaDesc.setAttribute("content", description);
-    } else {
-      metaDesc = document.createElement("meta");
-      metaDesc.setAttribute("name", "description");
-      metaDesc.setAttribute("content", description);
-      document.head.appendChild(metaDesc);
+    const socialImageUrl = toAbsoluteUrl(socialImage);
+
+    if (keywords && keywords.length > 0) {
+      upsertMeta('meta[name="keywords"]', "name", "keywords", keywords.join(", "));
     }
 
-    // Set canonical
-    let canonicalEl = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    let canonicalElement = document.querySelector<HTMLLinkElement>('link[rel="canonical"]');
     if (canonical) {
-      if (canonicalEl) {
-        canonicalEl.href = canonical;
-      } else {
-        canonicalEl = document.createElement("link");
-        canonicalEl.rel = "canonical";
-        canonicalEl.href = canonical;
-        document.head.appendChild(canonicalEl);
+      if (!canonicalElement) {
+        canonicalElement = document.createElement("link");
+        canonicalElement.rel = "canonical";
+        document.head.appendChild(canonicalElement);
       }
+      canonicalElement.href = canonical;
     }
 
-    // Set robots
-    let robotsMeta = document.querySelector('meta[name="robots"]');
+    let robotsMeta = document.querySelector<HTMLMetaElement>('meta[name="robots"]');
     if (noindex) {
-      if (robotsMeta) {
-        robotsMeta.setAttribute("content", "noindex, nofollow");
-      } else {
+      if (!robotsMeta) {
         robotsMeta = document.createElement("meta");
-        robotsMeta.setAttribute("name", "robots");
-        robotsMeta.setAttribute("content", "noindex, nofollow");
+        robotsMeta.name = "robots";
         document.head.appendChild(robotsMeta);
       }
+      robotsMeta.content = "noindex, nofollow";
     } else if (robotsMeta) {
-      robotsMeta.setAttribute("content", "index, follow");
+      robotsMeta.content = "index, follow";
     }
 
-    // Set OG tags
     const setOG = (property: string, content: string) => {
-      let el = document.querySelector(`meta[property="${property}"]`);
-      if (el) {
-        el.setAttribute("content", content);
-      } else {
-        el = document.createElement("meta");
-        el.setAttribute("property", property);
-        el.setAttribute("content", content);
-        document.head.appendChild(el);
-      }
+      upsertMeta(`meta[property="${property}"]`, "property", property, content);
+    };
+    const setTwitter = (name: string, content: string) => {
+      upsertMeta(`meta[name="${name}"]`, "name", name, content);
     };
 
+    setOG("og:type", "website");
+    setOG("og:site_name", "Get Phame");
     setOG("og:title", title);
     setOG("og:description", description);
+    setOG("og:image", socialImageUrl);
+    setOG("og:image:secure_url", socialImageUrl);
+    setOG("og:image:type", "image/png");
+    setOG("og:image:width", "1200");
+    setOG("og:image:height", "630");
+    setOG("og:image:alt", socialImageAlt);
     if (canonical) setOG("og:url", canonical);
 
-    // Set Twitter tags
-    const setTwitter = (name: string, content: string) => {
-      let el = document.querySelector(`meta[name="${name}"]`);
-      if (el) {
-        el.setAttribute("content", content);
-      } else {
-        el = document.createElement("meta");
-        el.setAttribute("name", name);
-        el.setAttribute("content", content);
-        document.head.appendChild(el);
-      }
-    };
-
+    setTwitter("twitter:card", "summary_large_image");
     setTwitter("twitter:title", title);
     setTwitter("twitter:description", description);
-  }, [title, description, canonical, noindex]);
+    setTwitter("twitter:image", socialImageUrl);
+    setTwitter("twitter:image:alt", socialImageAlt);
+  }, [canonical, description, jsonLd, keywords, noindex, socialImage, socialImageAlt, title]);
 
   return null;
 }

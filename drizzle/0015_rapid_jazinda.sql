@@ -1,0 +1,1 @@
+ALTER TABLE `support_saved_queue_views` MODIFY COLUMN `sort` enum('newest','oldest','priority','assignee','sla_soonest','due_soonest') NOT NULL DEFAULT 'newest';

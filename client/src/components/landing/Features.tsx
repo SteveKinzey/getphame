@@ -1,46 +1,54 @@
 import { Mail, Users, Globe } from "lucide-react";
 import FadeUp, { StaggerChildren } from "./FadeUp";
-
-const features = [
-  {
-    icon: Mail,
-    title: "Your name. Your inbox. Their trust.",
-    description:
-      "Every review request arrives from your actual email address. Customers recognize the sender, so they open it — and they respond.",
-    stat: "45–60%",
-    statLabel: "avg. open rate",
-  },
-  {
-    icon: Users,
-    title: "One click sends to hundreds",
-    description:
-      "Import your customer list via CSV or WooCommerce sync, select all, and send personalized requests in seconds. No copy-pasting. No manual work.",
-    stat: "500+",
-    statLabel: "sends per batch",
-  },
-  {
-    icon: Globe,
-    title: "Every platform. Your choice.",
-    description:
-      "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, and more. Paste your link, switch platforms anytime. One tool for all your review destinations.",
-    stat: "10+",
-    statLabel: "platforms supported",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export default function Features() {
+  const { t } = useTranslation();
+
+  const features = [
+    {
+      icon: Mail,
+      title: t("landing.feature1.title", { defaultValue: "Your name. Your inbox. Their trust." }),
+      description: t("landing.feature1.description", {
+        defaultValue: "Every review request arrives from your actual email address. Customers recognize the sender, so they open it — and they respond.",
+      }),
+      stat: "45–60%",
+      statLabel: t("landing.feature1.statLabel", { defaultValue: "avg. open rate" }),
+    },
+    {
+      icon: Users,
+      title: t("landing.feature2.title", { defaultValue: "One click sends to hundreds" }),
+      description: t("landing.feature2.description", {
+        defaultValue: "Import your customer list via CSV or WooCommerce sync, select all, and send personalized requests in seconds. No copy-pasting. No manual work.",
+      }),
+      stat: "500+",
+      statLabel: t("landing.feature2.statLabel", { defaultValue: "sends per batch" }),
+    },
+    {
+      icon: Globe,
+      title: t("landing.feature3.title", { defaultValue: "Every platform. Your choice." }),
+      description: t("landing.feature3.description", {
+        defaultValue: "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, and more. Paste your link, switch platforms anytime. One tool for all your review destinations.",
+      }),
+      stat: "10+",
+      statLabel: t("landing.feature3.statLabel", { defaultValue: "platforms supported" }),
+    },
+  ];
+
   return (
     <section className="py-20 md:py-28">
       <div className="container">
         <FadeUp className="max-w-2xl mb-14">
           <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
-            Why it works
+            {t("landing.whyItWorks", { defaultValue: "Why it works" })}
           </p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
-            From your inbox to their review
+            {t("landing.headline", { defaultValue: "From your inbox to their review" })}
           </h2>
           <p className="text-lg text-slate-200 font-medium">
-            The simplest way to turn happy customers into 5-star reviews — without expensive tools or awkward conversations.
+            {t("landing.subHeadline", {
+              defaultValue: "The simplest way to turn happy customers into 5-star reviews — without expensive tools or awkward conversations.",
+            })}
           </p>
         </FadeUp>
 

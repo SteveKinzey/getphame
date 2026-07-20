@@ -1,5 +1,6 @@
 import "dotenv/config";
 import express from "express";
+import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import { createServer } from "http";
 import net from "net";
@@ -8,7 +9,6 @@ import { registerOAuthRoutes } from "./oauth";
 import { registerStorageProxy } from "./storageProxy";
 import { registerGoogleAuthRoutes } from "../auth-google";
 import { registerEmailAuthRoutes } from "../auth-email";
-import cookieParser from "cookie-parser";
 import { registerAppleAuthRoutes } from "../appleAuth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
@@ -19,13 +19,13 @@ import { ENV } from "./env";
 import { businessProfiles, stripeSubscriptions, users } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { sdk } from "./sdk";
-import { startReminderScheduler } from "../reminders";
-import { startSmtpHealthCheckScheduler } from "../smtpHealthCheck";
+import { reminderHeartbeatHandler } from "../scheduledReminders";
+import { koalendarHeartbeatHandler } from "../koalendarHeartbeat";
 import { startSmtpWeeklyDigestScheduler } from "../smtpWeeklyDigest";
 import { startReEngagementScheduler } from "../reEngagementScheduler";
 import { startInactiveUserScheduler } from "../inactiveUserScheduler";
 import { startWooAutoImportScheduler } from "../wooImportScheduler";
-import { registerKoalendarRoutes, startKoalendarScheduler } from "../koalendar";
+import { registerKoalendarRoutes } from "../koalendar";
 import { registerSitemapRoutes } from "../sitemap";
 import { exchangeGmailCode, getGmailRedirectUri } from "../gmail";
 
@@ -33,7 +33,11 @@ import { handleOpenPixel, handleClickRedirect } from "../emailTracking";
 import { sendUpgradeReceiptEmail, sendChurnRecoveryEmail, sendPaymentFailedEmail } from "../smtp";
 import { registerPublicApiRoutes } from "../publicApi";
 import { registerMobileAuthRoutes } from "../mobileAuth";
+import { authHealthHandler } from "../authHealthRoutes";
+import { smtpHealthHandler } from "../smtpHealthRoutes";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
+import { apiNotFoundHandler } from "./apiFallback";
+import { registerPublicFeaturePrerender } from "../publicFeaturePrerender";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -56,6 +60,10 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
 
 async function startServer() {
   const app = express();
+  // The managed runtime terminates HTTPS before forwarding to Express.
+  // Trust only the first proxy so req.protocol and secure cookies reflect the
+  // public getphame.app request rather than the internal HTTP hop.
+  app.set("trust proxy", 1);
   const server = createServer(app);
 
   // ⚠️ Stripe webhook MUST use raw body — register BEFORE express.json()
@@ -118,7 +126,7 @@ async function startServer() {
             await db
               .insert(stripeSubscriptions)
               .values({ userId, stripeSubscriptionId: subscriptionId, status: "active" })
-              .onConflictDoUpdate({ target: stripeSubscriptions.stripeSubscriptionId, set: { stripeSubscriptionId: subscriptionId, status: "active" } });
+              .onDuplicateKeyUpdate({ set: { stripeSubscriptionId: subscriptionId, status: "active" } });
           }
 
           // For Lifetime (one-time payment), store a sentinel subscription record
@@ -129,7 +137,7 @@ async function startServer() {
               await db
                 .insert(stripeSubscriptions)
                 .values({ userId, stripeSubscriptionId: `lifetime_${paymentIntentId}`, status: "lifetime" })
-                .onConflictDoUpdate({ target: stripeSubscriptions.stripeSubscriptionId, set: { status: "lifetime" } });
+                .onDuplicateKeyUpdate({ set: { status: "lifetime" } });
             }
           }
 
@@ -312,13 +320,11 @@ async function startServer() {
     res.json({ received: true });
   });
 
-  // www → apex 301 redirect (www.phame.app → phame.app)
+  // Redirect only the known www hostname. Never derive the redirect target or
+  // scheme from request headers because both can be attacker-controlled.
   app.use((req, res, next) => {
-    const host = req.headers.host || "";
-    if (host.startsWith("www.")) {
-      const apexHost = host.slice(4); // strip "www."
-      const proto = req.headers["x-forwarded-proto"] || req.protocol || "https";
-      return res.redirect(301, `${proto}://${apexHost}${req.originalUrl}`);
+    if (req.hostname.toLowerCase() === "www.getphame.app") {
+      return res.redirect(301, `https://getphame.app${req.originalUrl}`);
     }
     next();
   });
@@ -351,7 +357,7 @@ async function startServer() {
             "https://www.youtube.com",
             "https://youtube.com",
           ],
-          // Allow outbound API calls: IP detection, analytics, font CDNs
+          // Allow outbound API calls: IP detection, analytics, font CDNs, and public manuscdn CDN (used for app logo preload)
           connectSrc: [
             "'self'",
             "http://ip-api.com",
@@ -360,11 +366,21 @@ async function startServer() {
             "https://fonts.gstatic.com",
             "https://vitals.vercel-insights.com",
             "https://files.manuscdn.com",
+            // Manus analytics (Umami) beacon endpoint
             "https://manus-analytics.com",
           ],
           objectSrc: ["'none'"],
+          // Allow the Manus analytics script (Umami) injected by the platform at deploy time.
+          // 'unsafe-inline' is required because the Manus platform injects an inline <script>
+          // into the served HTML at deploy time (line 146) that cannot be removed or hashed.
           scriptSrc: ["'self'", "'unsafe-inline'", "https://manus-analytics.com"],
           scriptSrcAttr: ["'none'"],
+          // 'unsafe-inline' is required for:
+          // 1. The Manus platform injects an inline script at line 146 of the served HTML
+          // 2. The shadcn/ui chart component injects dynamic <style> tags with CSS custom properties
+          // Removing it causes the app to break entirely (white screen).
+          // The Cloudflare warning is advisory — the actual XSS risk is low given the app has no
+          // user-generated HTML injection vectors. Revisit with a nonce-based approach later.
           styleSrc: ["'self'", "https:", "'unsafe-inline'"],
           upgradeInsecureRequests: [],
         },
@@ -373,9 +389,10 @@ async function startServer() {
     })
   );
 
-  // Cookie parser — needed for CSRF state cookie in Google OAuth
-  app.use(cookieParser());
   // Body parser — 5 MB is sufficient for all current payloads
+  // Cookie parsing must run before the OAuth callback so the Google CSRF state
+  // cookie can be validated by the canonical auth-google route.
+  app.use(cookieParser());
   app.use(express.json({ limit: "5mb" }));
   app.use(express.urlencoded({ limit: "5mb", extended: true }));
   // OAuth callback under /api/oauth/callback
@@ -385,8 +402,15 @@ async function startServer() {
   registerEmailAuthRoutes(app);
   registerAppleAuthRoutes(app);
   registerMobileAuthRoutes(app);
+  registerKoalendarRoutes(app);
+  app.post("/api/scheduled/auth-health", authHealthHandler);
+  app.post("/api/scheduled/smtp-health", smtpHealthHandler);
+  app.post("/api/scheduled/process-reminders", reminderHeartbeatHandler);
+  app.post("/api/scheduled/process-koalendar", koalendarHeartbeatHandler);
 
-  // IP-based language detection — returns 'en' | 'th' | 'zh-CN' based on client IP
+  // IP-based language detection — returns 'en' | 'th' | 'zh-TW' based on client IP
+  // Note: Mainland China (CN) is excluded from zh-TW detection since YouTube is blocked there.
+  // Traditional Chinese (zh-TW) targets Taiwan, Hong Kong, Macau, and overseas Chinese communities.
   app.get("/api/detect-language", async (req, res) => {
     try {
       const ip =
@@ -401,9 +425,13 @@ async function startServer() {
       const data = await response.json() as { countryCode?: string };
       const country = data.countryCode ?? "";
       // Map country codes to supported languages
+      // TW=Taiwan, HK=Hong Kong, MO=Macau, SG=Singapore — all use Traditional Chinese
+      // CN (mainland China) intentionally excluded: YouTube is banned there
       let lang = "en";
       if (country === "TH") lang = "th";
-      else if (["CN", "TW", "HK", "MO", "SG"].includes(country)) lang = "zh-CN";
+      else if (["TW", "HK", "MO", "SG"].includes(country)) lang = "zh-TW";
+      else if (["FR", "BE", "CH", "LU", "MC"].includes(country)) lang = "fr"; // French-speaking countries
+      else if (["ES", "MX", "AR", "CO", "CL", "PE", "VE", "EC", "BO", "PY", "UY", "CR", "PA", "DO", "CU", "GT", "HN", "SV", "NI"].includes(country)) lang = "es"; // Spanish-speaking countries
       else if (["IT", "SM", "VA"].includes(country)) lang = "it"; // Italy, San Marino, Vatican
       return res.json({ lang });
     } catch {
@@ -458,9 +486,6 @@ async function startServer() {
   // Public REST API — API key authenticated (contacts import, etc.)
   registerPublicApiRoutes(app as any);
 
-  // Koalendar inbound booking lifecycle webhook — authenticated by an unguessable per-user URL token.
-  registerKoalendarRoutes(app);
-
   // One-click unsubscribe for re-engagement emails
   app.get("/api/reengagement/unsubscribe/:token", async (req, res) => {
     const { token } = req.params;
@@ -487,6 +512,15 @@ async function startServer() {
       createContext,
     })
   );
+  // API requests must always return JSON. Do not let unmatched API paths fall
+  // through to Vite's HTML app-shell fallback during restarts or route errors.
+  app.use("/api", apiNotFoundHandler);
+
+  // Serve route-specific static HTML for public SEO feature pages before the
+  // Vite/static SPA fallback. React replaces this root with the full interactive
+  // feature page for JavaScript-capable visitors.
+  registerPublicFeaturePrerender(app);
+
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
@@ -503,13 +537,10 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
-    startReminderScheduler();
-    startSmtpHealthCheckScheduler();
     startSmtpWeeklyDigestScheduler();
     startReEngagementScheduler();
     startInactiveUserScheduler();
     startWooAutoImportScheduler();
-    startKoalendarScheduler();
   });
 }
 

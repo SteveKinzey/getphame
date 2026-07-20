@@ -1,62 +1,90 @@
 import { Check, ArrowRight, Sparkles } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import FadeUp, { StaggerChildren } from "./FadeUp";
 
-const plans = [
-  {
-    name: "Free",
-    price: "$0",
-    period: "",
-    description: "Try Phame with 10 review requests — no credit card required.",
-    features: ["10 review requests", "Connect 1 email account", "Any review platform", "Email open tracking", "CSV import"],
-    cta: "Start Free",
-    popular: false,
-    highlight: false,
-  },
-  {
-    name: "Pro Monthly",
-    price: "$29",
-    period: "/mo",
-    description: "Best for active businesses that send review requests weekly.",
-    features: ["Unlimited review requests", "Bulk send in one click", "Follow-up reminders", "WooCommerce sync", "Priority support", "Advanced analytics"],
-    cta: "Start Pro Monthly",
-    popular: true,
-    highlight: true,
-  },
-  {
-    name: "Pro Annual",
-    price: "$19",
-    period: "/mo",
-    description: "Best value for businesses committed to reputation growth.",
-    features: ["Everything in Pro Monthly", "Billed annually ($228/yr)", "Save 34% vs monthly", "Priority support", "Early access to new features"],
-    cta: "Start Pro Annual",
-    popular: false,
-    highlight: false,
-    badge: "Save 34%",
-  },
-  {
-    name: "Lifetime",
-    price: "$349",
-    period: " once",
-    description: "One payment, lifetime access. No renewals, no surprises.",
-    features: ["Everything in Pro", "Pay once, use forever", "All future updates included", "Priority support for life", "Perfect for agencies & operators"],
-    cta: "Get Lifetime Access",
-    popular: false,
-    highlight: false,
-    badge: "Best Deal",
-  },
-];
-
 export default function Pricing() {
+  const { t } = useTranslation();
+
+  const plans = [
+    {
+      name: t("landing.pricing.free.name", { defaultValue: "Free" }),
+      price: "$0",
+      period: "",
+      description: t("landing.pricing.free.description", { defaultValue: "Start with 10 review requests, then get 5 more every rolling 30 days — no credit card required." }),
+      features: [
+        t("landing.pricing.free.features.requests", { defaultValue: "10 initial requests + 5 every rolling 30 days" }),
+        t("landing.pricing.free.features.email", { defaultValue: "Connect 1 email account" }),
+        t("landing.pricing.free.features.platform", { defaultValue: "Any review platform" }),
+        t("landing.pricing.free.features.tracking", { defaultValue: "Email open tracking" }),
+        t("landing.pricing.free.features.import", { defaultValue: "CSV import" }),
+      ],
+      cta: t("landing.pricing.free.cta", { defaultValue: "Start Free" }),
+      popular: false,
+      highlight: false,
+    },
+    {
+      name: t("landing.pricing.proMonthly.name", { defaultValue: "Pro Monthly" }),
+      price: "$29",
+      period: "/mo",
+      description: t("landing.pricing.proMonthly.description", { defaultValue: "Best for active businesses that send review requests weekly." }),
+      features: [
+        t("landing.pricing.proMonthly.features.requests", { defaultValue: "Unlimited review requests" }),
+        t("landing.pricing.proMonthly.features.bulk", { defaultValue: "Bulk send in one click" }),
+        t("landing.pricing.proMonthly.features.reminders", { defaultValue: "Follow-up reminders" }),
+        t("landing.pricing.proMonthly.features.woocommerce", { defaultValue: "WooCommerce sync" }),
+        t("landing.pricing.proMonthly.features.support", { defaultValue: "Priority support" }),
+        t("landing.pricing.proMonthly.features.analytics", { defaultValue: "Advanced analytics" }),
+      ],
+      cta: t("landing.pricing.proMonthly.cta", { defaultValue: "Start Pro Monthly" }),
+      popular: true,
+      highlight: true,
+    },
+    {
+      name: t("landing.pricing.proAnnual.name", { defaultValue: "Pro Annual" }),
+      price: "$19",
+      period: "/mo",
+      description: t("landing.pricing.proAnnual.description", { defaultValue: "Best value for businesses committed to reputation growth." }),
+      features: [
+        t("landing.pricing.proAnnual.features.everything", { defaultValue: "Everything in Pro Monthly" }),
+        t("landing.pricing.proAnnual.features.billed", { defaultValue: "Billed annually ($228/yr)" }),
+        t("landing.pricing.proAnnual.features.save", { defaultValue: "Save 34% vs monthly" }),
+        t("landing.pricing.proAnnual.features.support", { defaultValue: "Priority support" }),
+        t("landing.pricing.proAnnual.features.earlyAccess", { defaultValue: "Early access to new features" }),
+      ],
+      cta: t("landing.pricing.proAnnual.cta", { defaultValue: "Start Pro Annual" }),
+      popular: false,
+      highlight: false,
+      badge: t("landing.pricing.proAnnual.badge", { defaultValue: "Save 34%" }),
+    },
+    {
+      name: t("landing.pricing.lifetime.name", { defaultValue: "Lifetime" }),
+      price: "$349",
+      period: t("landing.pricing.lifetime.period", { defaultValue: " once" }),
+      description: t("landing.pricing.lifetime.description", { defaultValue: "One payment, lifetime access. No renewals, no surprises." }),
+      features: [
+        t("landing.pricing.lifetime.features.everything", { defaultValue: "Everything in Pro" }),
+        t("landing.pricing.lifetime.features.payOnce", { defaultValue: "Pay once, use forever" }),
+        t("landing.pricing.lifetime.features.updates", { defaultValue: "All future updates included" }),
+        t("landing.pricing.lifetime.features.support", { defaultValue: "Priority support for life" }),
+        t("landing.pricing.lifetime.features.agencies", { defaultValue: "Perfect for agencies & operators" }),
+      ],
+      cta: t("landing.pricing.lifetime.cta", { defaultValue: "Get Lifetime Access" }),
+      popular: false,
+      highlight: false,
+      badge: t("landing.pricing.lifetime.badge", { defaultValue: "Best Deal" }),
+    },
+  ];
+
   return (
     <section id="pricing" className="py-20 md:py-28 bg-[oklch(0.12_0.025_250)]">
       <div className="container">
         <FadeUp className="text-center mb-14">
-          <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">Pricing</p>
+          <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">{t("landing.pricing.sectionTitle", { defaultValue: "Pricing" })}</p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
-            Honest pricing. No surprises.
+            {t("landing.pricing.headline", { defaultValue: "Honest pricing. No surprises." })}
           </h2>
           <p className="text-lg text-slate-200 font-medium max-w-2xl mx-auto">
-            Start free. Upgrade when you're ready. Cancel anytime. No hidden fees.
+            {t("landing.pricing.subtitle", { defaultValue: "Start free. Upgrade when you're ready. Cancel anytime. No hidden fees." })}
           </p>
         </FadeUp>
 
@@ -74,7 +102,7 @@ export default function Pricing() {
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full shadow-[0_0_15px_oklch(0.78_0.15_75/0.4)]">
                     <Sparkles size={11} />
-                    Most Popular
+                    {t("landing.pricing.mostPopular", { defaultValue: "Most Popular" })}
                   </span>
                 </div>
               )}

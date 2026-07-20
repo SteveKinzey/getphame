@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { Menu, X } from "lucide-react";
-
-const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/FK9bk5QsyQ42fQPrngzafd/phame-logo-mark-LWuqsnXvZV3htEC4hfkanS.webp";
-
-const navLinks = [
-  { label: "How It Works", href: "#how-it-works" },
-  { label: "Product", href: "#product" },
-  { label: "Pricing", href: "#pricing" },
-  { label: "FAQ", href: "#faq" },
-];
+import BrandLockup from "@/components/BrandLockup";
+import LanguageFlyout from "@/components/LanguageFlyout";
 
 export default function Navbar() {
+  const { t } = useTranslation();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navLinks = [
+    { label: t("landing.navbar.howItWorks", { defaultValue: "How It Works" }), href: "#how-it-works" },
+    { label: t("landing.navbar.product", { defaultValue: "Product" }), href: "#product" },
+    { label: t("landing.navbar.pricing", { defaultValue: "Pricing" }), href: "#pricing" },
+    { label: t("landing.navbar.faq", { defaultValue: "FAQ" }), href: "#faq" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -20,8 +22,11 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Determine if we're on the home page (for anchor links)
-  const isHomePage = typeof window !== "undefined" && (window.location.pathname === "/" || window.location.pathname === "");
+  // Both the anonymous root and authenticated-safe /landing alias render this page.
+  // Keep section links on the landing document instead of sending signed-in users
+  // back through the authenticated root dashboard.
+  const isLandingPage = typeof window !== "undefined"
+    && ["/", "/landing"].includes(window.location.pathname);
 
   return (
     <header
@@ -31,26 +36,21 @@ export default function Navbar() {
           : "bg-transparent"
       }`}
     >
-      <nav className="container flex items-center justify-between h-16 md:h-[4.5rem]">
+      <nav className="container flex items-center justify-between gap-4 h-16 md:h-[4.5rem]">
         {/* Logo — prominent brand mark */}
-        <a href="/" className="flex items-center gap-2.5 group">
-          <img src={LOGO_URL} alt="Get Phame" className="w-9 h-9 md:w-10 md:h-10 transition-transform duration-200 group-hover:scale-105" />
-          <div className="flex items-baseline gap-1">
-            <span className="font-display font-extrabold text-xl md:text-[1.4rem] tracking-tight text-white">
-              GET
-            </span>
-            <span className="font-display font-extrabold text-xl md:text-[1.4rem] tracking-[0.08em] text-primary">
-              PHAME
-            </span>
-          </div>
+        <a href="/landing" className="flex shrink-0 items-center gap-2.5 group" aria-label="View the Get Phame landing page">
+          <BrandLockup
+            iconClassName="w-9 h-9 md:w-10 md:h-10 transition-transform duration-200 group-hover:scale-105"
+            textClassName="text-xl md:text-[1.4rem]"
+          />
         </a>
 
         {/* Desktop Nav */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden lg:flex items-center gap-5 xl:gap-8">
           {navLinks.map((link) => (
             <a
               key={link.href}
-              href={isHomePage ? link.href : `/${link.href}`}
+              href={isLandingPage ? link.href : `/landing${link.href}`}
               className="text-sm font-medium text-slate-200 hover:text-white transition-colors duration-200 relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all after:duration-200 hover:after:w-full"
             >
               {link.label}
@@ -59,39 +59,43 @@ export default function Navbar() {
         </div>
 
         {/* Desktop CTA */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden lg:flex shrink-0 items-center gap-3 xl:gap-4">
+          <LanguageFlyout />
           <a
-            href="/onboarding"
+            href="/login"
             className="text-base font-semibold text-slate-200 hover:text-white transition-colors"
           >
-            Sign In
+            {t("landing.navbar.signIn", { defaultValue: "Sign In" })}
           </a>
           <a
             href="/onboarding"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-semibold text-sm rounded-lg hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_15px_oklch(0.78_0.15_75/0.2)]"
           >
-            Get Started Free
+            {t("landing.navbar.getStartedFree", { defaultValue: "Get Started Free" })}
           </a>
         </div>
 
         {/* Mobile Menu Button */}
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="md:hidden p-2 text-white"
-          aria-label="Toggle menu"
-        >
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="lg:hidden flex items-center gap-2">
+          <LanguageFlyout />
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="p-2 text-white"
+            aria-label={t("landing.navbar.toggleMenu", { defaultValue: "Toggle menu" })}
+          >
+            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </nav>
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-[oklch(0.12_0.03_250/0.98)] backdrop-blur-xl border-t border-[#1e3050]">
+        <div className="lg:hidden bg-[oklch(0.12_0.03_250/0.98)] backdrop-blur-xl border-t border-[#1e3050]">
           <div className="container py-4 flex flex-col gap-3">
             {navLinks.map((link) => (
               <a
                 key={link.href}
-                href={isHomePage ? link.href : `/${link.href}`}
+                href={isLandingPage ? link.href : `/landing${link.href}`}
                 onClick={() => setMobileOpen(false)}
                 className="text-lg font-bold text-white py-2.5 transition-colors"
               >
@@ -100,16 +104,16 @@ export default function Navbar() {
             ))}
             <hr className="border-[#1e3050] my-2" />
             <a
-              href="/onboarding"
+              href="/login"
               className="text-lg font-bold text-white py-2.5"
             >
-              Sign In
+              {t("landing.navbar.signIn", { defaultValue: "Sign In" })}
             </a>
             <a
               href="/onboarding"
               className="inline-flex items-center justify-center gap-2 px-5 py-3.5 bg-primary text-primary-foreground font-semibold text-base rounded-xl mt-2"
             >
-              Get Started Free
+              {t("landing.navbar.getStartedFree", { defaultValue: "Get Started Free" })}
             </a>
           </div>
         </div>

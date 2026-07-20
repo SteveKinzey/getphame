@@ -12,6 +12,8 @@ import { toast } from "sonner";
 import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
+import PlanSwitchDialog from "@/components/PlanSwitchDialog";
 
 // ── THB dual-currency display ─────────────────────────────────────────────────
 // Fixed rate — update manually when USD/THB shifts significantly
@@ -24,11 +26,11 @@ function toThb(usdAmount: number): string {
 }
 
 const UPGRADE_IMG =
-  "https://assets.getphame.app/rr-upgrade-hero.webp";
+  "/manus-storage/getphame-pro-whiteboard-growth_3e9448fc.png";
 
 // ── Feature comparison table ─────────────────────────────────────────────────
 const COMPARISON_ROWS: { feature: string; free: string | boolean; pro: string | boolean; lifetime: string | boolean }[] = [
-  { feature: "Review requests (total)",   free: "10",        pro: "Unlimited",  lifetime: "Unlimited" },
+  { feature: "Review requests",           free: "__FREE_ALLOWANCE__", pro: "Unlimited", lifetime: "Unlimited" },
   { feature: "Follow-up reminders",        free: true,       pro: true,         lifetime: true },
   { feature: "Saved contacts",             free: true,       pro: true,         lifetime: true },
   { feature: "CSV import",                 free: true,       pro: true,         lifetime: true },
@@ -83,9 +85,18 @@ export default function UpgradePage() {
   const [, navigate] = useLocation();
   const { user } = useAuth();
   const { data: profile } = trpc.profile.get.useQuery();
+  const { data: subscriptionStatus } = trpc.stripe.subscriptionStatus.useQuery(undefined, {
+    enabled: profile?.tier === "pro" || profile?.tier === "annual",
+  });
   const utils = trpc.useUtils();
   const [selectedPlan, setSelectedPlan] = useState<Plan>("annual");
   const [accessCode, setAccessCode] = useState("");
+  const [planSwitchOpen, setPlanSwitchOpen] = useState(false);
+  const [campaignPromotionCode] = useState(() => {
+    if (typeof window === "undefined") return null;
+    const rawCode = new URLSearchParams(window.location.search).get("promo")?.trim() ?? "";
+    return rawCode && rawCode.length <= 64 ? rawCode.toUpperCase() : null;
+  });
   // Show PromptPay if Thai locale detected, or user manually reveals it
   const isThai = typeof navigator !== "undefined" && navigator.language.toLowerCase().startsWith("th");
   const [showPromptPay, setShowPromptPay] = useState(isThai);
@@ -176,6 +187,14 @@ export default function UpgradePage() {
     },
   });
 
+  const createPortal = trpc.stripe.createPortal.useMutation({
+    onSuccess: ({ url }) => {
+      window.open(url, "_blank", "noopener,noreferrer");
+      toast.success(t("paidUser.portalOpened", { defaultValue: "Secure billing opened in a new tab." }));
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
   // Track page view with UTM params on mount
   const trackPageView = trpc.analytics.trackPageView.useMutation();
   useEffect(() => {
@@ -191,7 +210,11 @@ export default function UpgradePage() {
   }, []);
 
   function handleStripeCheckout() {
-    createCheckout.mutate({ origin: window.location.origin, plan: selectedPlan });
+    createCheckout.mutate({
+      origin: window.location.origin,
+      plan: selectedPlan,
+      ...(campaignPromotionCode ? { promotionCode: campaignPromotionCode } : {}),
+    });
   }
 
   function handleRedeemCode() {
@@ -199,11 +222,14 @@ export default function UpgradePage() {
     redeemCode.mutate({ code: accessCode.trim() });
   }
 
-  const tier = profile?.tier;
-  const isAdmin = user?.role === "admin";
-  const isPaid = isAdmin || tier === "pro" || tier === "annual" || tier === "lifetime";
-  if (isPaid) {
-    const tierLabel = isAdmin && !tier ? t("paidUser.adminAccess") : tier === "lifetime" ? t("paidUser.lifetimeLicense") : tier === "annual" ? t("paidUser.annualPro") : t("paidUser.monthlyPro");
+  const effectivePlan = getEffectivePlan(profile?.tier, user?.role);
+  const tierLabel = PLAN_LABELS[effectivePlan];
+  const isLife = effectivePlan === "life";
+  const canManage = canManageSubscription(effectivePlan);
+  const renewalDate = subscriptionStatus?.currentPeriodEnd
+    ? new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric", year: "numeric" }).format(new Date(subscriptionStatus.currentPeriodEnd))
+    : null;
+  if (effectivePlan !== "free") {
     return (
       <div
         className="min-h-screen flex flex-col items-center justify-center px-6 pb-40 rr-bg-navy"
@@ -212,11 +238,60 @@ export default function UpgradePage() {
         <h2
           className="text-3xl font-black text-center mb-2 text-white"
         >
-          {t("paidUser.onPro", { tierLabel })}
+          {t("paidUser.currentStatus", { defaultValue: "Your status: {{tierLabel}}", tierLabel })}
         </h2>
         <p className="text-center mb-8 text-white font-bold text-lg">
-          {t("paidUser.enjoyFeatures")}
+          {isLife
+            ? t("paidUser.lifeMessage", { defaultValue: "Life access is active. There is nothing to upgrade or renew." })
+            : t("paidUser.manageMessage", { defaultValue: "Change your billing cycle or end your subscription below." })}
         </p>
+        {canManage && (
+          <div className="w-full max-w-md rounded-2xl p-5 mb-6 rr-bg-navy-mid" style={{ border: "1px solid oklch(0.80 0.18 80 / 0.35)" }}>
+            <div className="flex items-center justify-between gap-4 mb-4">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest rr-text-gold">
+                  {t("paidUser.subscription", { defaultValue: "Subscription" })}
+                </p>
+                <p className="text-lg font-black text-white">{tierLabel}</p>
+                {renewalDate && (
+                  <p className="mt-1 text-xs font-bold text-white/70" data-testid="subscription-renewal-date">
+                    {subscriptionStatus?.cancelAtPeriodEnd
+                      ? t("paidUser.accessUntil", { defaultValue: "Access until {{date}}", date: renewalDate })
+                      : t("paidUser.renewsOn", { defaultValue: "Renews on {{date}}", date: renewalDate })}
+                  </p>
+                )}
+              </div>
+              <CreditCard size={24} className="rr-text-gold" />
+            </div>
+            <button
+              onClick={() => setPlanSwitchOpen(true)}
+              disabled={createPortal.isPending}
+              className="w-full py-3 px-5 rounded-xl font-black text-sm flex items-center justify-center gap-2 rr-bg-gold rr-text-navy disabled:opacity-60"
+            >
+              {createPortal.isPending ? <Loader2 size={16} className="animate-spin" /> : <CreditCard size={16} />}
+              {effectivePlan === "annual"
+                ? t("paidUser.switchMonthly", { defaultValue: "Switch to Monthly or manage billing" })
+                : t("paidUser.changePlan", { defaultValue: "Change plan or manage billing" })}
+            </button>
+            <button
+              onClick={() => navigate("/cancel")}
+              className="w-full mt-3 py-2.5 px-5 rounded-xl text-sm font-bold text-white/80 hover:text-white"
+              style={{ border: "1px solid rgba(255,255,255,0.18)" }}
+            >
+              {t("paidUser.endSubscription", { defaultValue: "End subscription" })}
+            </button>
+            <p className="text-xs text-white/60 text-center mt-3">
+              {t("paidUser.endExplanation", { defaultValue: "Ending your subscription returns the account to Free at the end of the paid period." })}
+            </p>
+            <PlanSwitchDialog
+              open={planSwitchOpen}
+              onOpenChange={setPlanSwitchOpen}
+              currentPlan={effectivePlan as "monthly" | "annual"}
+              onConfirm={() => createPortal.mutate({ origin: window.location.origin })}
+              isPending={createPortal.isPending}
+            />
+          </div>
+        )}
         <button
           onClick={() => navigate("/")}
           className="py-3 px-8 rounded-2xl font-bold text-base flex items-center justify-center gap-2"
@@ -224,15 +299,6 @@ export default function UpgradePage() {
         >
           {t("paidUser.backToDashboard", "Back to Dashboard")}
         </button>
-        {!isAdmin && (tier === "pro" || tier === "annual") && (
-          <button
-            onClick={() => navigate("/cancel")}
-            className="mt-4 text-xs"
-            style={{ color: "var(--text-on-dark-muted)" }}
-          >
-            {t("paidUser.cancelPlan", "Cancel plan")}
-          </button>
-        )}
       </div>
     );
   }
@@ -240,7 +306,7 @@ export default function UpgradePage() {
   return (
     <div className="min-h-screen pb-40 rr-bg-navy">
       {/* Header */}
-      <div className="px-5 pt-14 pb-4">
+      <div className="px-5 pt-14 pb-5 max-w-6xl mx-auto">
         <button
           onClick={() => navigate("/")}
           className="flex items-center gap-1 text-base font-bold mb-4 text-white"
@@ -248,8 +314,8 @@ export default function UpgradePage() {
           <ChevronLeft size={16} />
           {t("header.back")}
         </button>
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex-1">
+        <div className="grid gap-6 lg:grid-cols-[0.78fr_1.22fr] lg:items-center">
+          <div>
             <div className="flex items-center gap-2 mb-2">
               <Crown size={16} className="rr-text-gold" />
               <span
@@ -259,21 +325,36 @@ export default function UpgradePage() {
               </span>
             </div>
             <h1
-              className="text-3xl leading-tight text-white rr-fw-black"
+              className="text-4xl sm:text-5xl lg:text-6xl leading-[0.95] text-white rr-fw-black"
             >
               {t("header.title")}
               <br />
               <span className="rr-text-gold">{t("header.noLimits")}</span>
             </h1>
+            <p className="mt-4 max-w-lg text-sm sm:text-base leading-relaxed text-white/75">
+              {t("header.proGrowthMessage", { defaultValue: "Turn every completed job into a repeatable reputation and revenue system." })}
+            </p>
           </div>
-          {/* Hero image — aligned with text, uncropped */}
-          <div className="shrink-0" style={{ width: 100, height: 100 }}>
-            <img src={UPGRADE_IMG} alt={t("header.heroImageAlt")} className="w-full h-full object-contain" loading="lazy" decoding="async" />
+          <div className="relative overflow-hidden rounded-[1.75rem] border border-[#D4A017]/70 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
+            <div className="absolute left-3 top-3 z-10 flex items-center gap-2 rounded-full border border-[#D4A017]/35 bg-[#061a3a]/95 px-3 py-2 shadow-lg sm:left-5 sm:top-5">
+              <img src="https://assets.getphame.app/getphame-logo.svg" alt="" className="h-6 w-6 object-contain" aria-hidden="true" />
+              <span className="font-['Syne'] text-xs font-black tracking-[0.14em] text-white sm:text-sm">
+                GET <span className="text-[#D4A017]">PHAME</span> PRO
+              </span>
+            </div>
+            <img
+              src={UPGRADE_IMG}
+              alt={t("header.heroImageAlt", { defaultValue: "Hand-drawn roadmap showing GetPhame turning customer follow-ups into reviews, trust, and business growth" })}
+              className="aspect-[16/9] w-full object-cover object-center lg:min-h-[320px]"
+              loading="eager"
+              decoding="async"
+            />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#061a3a]/20 to-transparent" />
           </div>
         </div>
       </div>
 
-      <div className="px-4 flex flex-col gap-4">
+      <div className="px-4 flex flex-col gap-4 max-w-6xl mx-auto">
         {/* Plan selector tabs */}
         <div
           className="flex rounded-2xl p-1 gap-1 rr-bg-navy-mid"
@@ -309,6 +390,24 @@ export default function UpgradePage() {
         <div
           className="rounded-2xl p-6 rr-bg-navy-mid" style={{ border: "2px solid oklch(0.80 0.18 80)" }}
         >
+          {campaignPromotionCode && (
+            <div
+              className="mb-5 rounded-xl px-4 py-3 flex gap-3"
+              style={{ background: "oklch(0.28 0.08 260)", border: "1px solid oklch(0.80 0.18 80 / 0.45)" }}
+              role="status"
+            >
+              <Ticket size={17} className="mt-0.5 shrink-0 rr-text-gold" />
+              <div>
+                <p className="text-sm font-black text-white">
+                  {t("promotionLink.applied", { defaultValue: "Your campaign code will be applied at checkout" })}
+                </p>
+                <p className="mt-0.5 text-xs font-bold rr-text-gold">{campaignPromotionCode}</p>
+                <p className="mt-1 text-xs leading-5 text-white/70">
+                  {t("promotionLink.verified", { defaultValue: "Eligibility is verified securely before Stripe Checkout opens." })}
+                </p>
+              </div>
+            </div>
+          )}
           {/* Price display */}
           <div className="flex items-end gap-2 mb-1">
             <span
@@ -467,7 +566,11 @@ export default function UpgradePage() {
                 </div>
               </div>
               <button
-                onClick={() => createThbCheckout.mutate({ origin: window.location.origin, plan: selectedPlan })}
+                onClick={() => createThbCheckout.mutate({
+                  origin: window.location.origin,
+                  plan: selectedPlan,
+                  ...(campaignPromotionCode ? { promotionCode: campaignPromotionCode } : {}),
+                })}
                 disabled={createThbCheckout.isPending}
                 className="w-full py-3 rounded-2xl font-bold text-sm flex items-center justify-center gap-2 transition-opacity disabled:opacity-50 text-white" style={{ background: "oklch(0.18 0.07 260)", border: "1px solid rgba(255,255,255,0.15)" }}
               >
@@ -582,6 +685,9 @@ export default function UpgradePage() {
             const renderCell = (val: string | boolean) => {
               if (val === true) return <Check size={14} style={{ color: "oklch(0.65 0.18 145)" }} className="mx-auto" />;
               if (val === false) return <span style={{ color: "var(--text-on-dark-disabled)" }}>—</span>;
+              if (val === "__FREE_ALLOWANCE__") {
+                return <span>{t("comparisonTable.freeRequestAllowance", { defaultValue: "10 first, then 5 / rolling 30 days" })}</span>;
+              }
               return <span>{val}</span>;
             };
             return (
@@ -601,7 +707,9 @@ export default function UpgradePage() {
                 }}
               >
                 <div className="text-left pl-2" style={{ color: isLast ? "oklch(0.80 0.18 80)" : "var(--text-on-dark-secondary)", fontWeight: isLast ? 800 : 500 }}>
-                  {row.feature}
+                  {row.feature === "Review requests"
+                    ? t("comparisonTable.reviewRequests", { defaultValue: "Review requests" })
+                    : row.feature}
                 </div>
                 <div>{renderCell(row.free)}</div>
                 <div>{renderCell(row.pro)}</div>
@@ -629,7 +737,7 @@ export default function UpgradePage() {
             },
             {
               q: t("upgradeFaq.q2", "What happens if I cancel a monthly or annual plan?"),
-              a: t("upgradeFaq.a2", "You keep access until the end of your current billing period. After that your account reverts to the free tier (10 requests). Your contacts and history are never deleted."),
+              a: t("upgradeFaq.a2", "You keep access until the end of your current billing period. After that your account returns to Free: 10 initial requests, then 5 every rolling 30 days. Your contacts and history are never deleted."),
             },
             {
               q: t("upgradeFaq.q3", "Can I switch from monthly to annual later?"),

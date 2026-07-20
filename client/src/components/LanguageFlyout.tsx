@@ -13,12 +13,13 @@ import { setLanguage, getSavedLang, type SupportedLang } from "@/lib/i18n";
 import i18n from "@/lib/i18n";
 
 const LANGS: { code: SupportedLang; label: string; native: string; flag: string }[] = [
-  { code: "en",    label: "EN", native: "English",   flag: "🇬🇧" },
-  { code: "th",    label: "TH", native: "ภาษาไทย",   flag: "🇹🇭" },
-  { code: "zh-CN", label: "CN", native: "中文",       flag: "🇨🇳" },
-  { code: "fr",    label: "FR", native: "Français",  flag: "🇫🇷" },
+  { code: "en",    label: "EN", native: "English",   flag: "🇺🇸" },
+  { code: "zh-CN", label: "CN", native: "简体中文",   flag: "🇨🇳" },
   { code: "es",    label: "ES", native: "Español",   flag: "🇪🇸" },
+  { code: "fr",    label: "FR", native: "Français",  flag: "🇫🇷" },
   { code: "it",    label: "IT", native: "Italiano",  flag: "🇮🇹" },
+  { code: "th",    label: "TH", native: "ภาษาไทย",   flag: "🇹🇭" },
+  { code: "zh-TW", label: "TW", native: "繁體中文",   flag: "🇹🇼" },
 ];
 
 interface LanguageFlyoutProps {
@@ -28,6 +29,10 @@ interface LanguageFlyoutProps {
 export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) {
   const [open, setOpen] = useState(false);
   const [activeLang, setActiveLang] = useState<SupportedLang>(() => {
+    const active = i18n.resolvedLanguage ?? i18n.language;
+    if (LANGS.some((language) => language.code === active)) {
+      return active as SupportedLang;
+    }
     const saved = getSavedLang();
     return saved ?? "en";
   });
@@ -151,12 +156,6 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
           </button>
         );
       })}
-      <style>{`
-        @keyframes lfSlideDown {
-          from { opacity: 0; transform: translateY(-6px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </div>,
     document.body
   ) : null;

@@ -1,0 +1,3 @@
+# GitHub CI publication status — 2026-07-20
+
+The GitHub Actions quality-gate workflow was validated locally and the repository owner completed GitHub sudo verification for a browser-based publication. The direct CLI push was blocked only because the configured GitHub App token lacks permission to create or update workflow files. The workflow has been opened in GitHub’s editor for a normal authorized commit to `main`, and the exact validated YAML is now present in that editor. The authorized direct-to-main commit submission has been sent; confirmation of the completed GitHub write remains pending.

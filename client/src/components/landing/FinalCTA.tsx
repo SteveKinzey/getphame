@@ -1,7 +1,10 @@
 import { ArrowRight, Star } from "lucide-react";
 import FadeUp from "./FadeUp";
+import { useTranslation } from "react-i18next";
 
 export default function FinalCTA() {
+  const { t } = useTranslation();
+
   return (
     <section className="py-20 md:py-28 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.12_0.025_250)] via-[#0a1628] to-[#0a1628]" />
@@ -15,21 +18,21 @@ export default function FinalCTA() {
             ))}
           </div>
           <h2 className="font-display font-extrabold text-3xl md:text-4xl lg:text-5xl text-white mb-5 max-w-3xl mx-auto leading-tight">
-            Your inbox. Your reputation.{" "}
-            <span className="text-primary">Your growth.</span>
+            {t("landing.finalCta.headlinePart1", { defaultValue: "Your inbox. Your reputation." })}{" "}
+            <span className="text-primary">{t("landing.finalCta.headlinePart2", { defaultValue: "Your growth." })}</span>
           </h2>
           <p className="text-lg md:text-xl text-slate-200 font-medium max-w-xl mx-auto mb-8">
-            Free forever on the starter plan. No credit card. Set up in under 2 minutes. Start collecting 5-star reviews today.
+            {t("landing.finalCta.description", { defaultValue: "Free forever: 10 initial requests, then 5 more every rolling 30 days. No credit card. Set up in under 2 minutes." })}
           </p>
           <a
             href="/onboarding"
             className="inline-flex items-center gap-2 px-8 py-4 bg-primary text-primary-foreground font-bold text-lg rounded-xl hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_50px_oklch(0.78_0.15_75/0.3)]"
           >
-            Get Started Free
+            {t("landing.finalCta.getStartedButton", { defaultValue: "Get Started Free" })}
             <ArrowRight size={20} />
           </a>
           <p className="text-sm text-slate-300 font-medium mt-5">
-            Join hundreds of businesses already growing their reputation with Get Phame.
+            {t("landing.finalCta.joinBusinesses", { defaultValue: "Join hundreds of businesses already growing their reputation with Get Phame." })}
           </p>
         </FadeUp>
       </div>

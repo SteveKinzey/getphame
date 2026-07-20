@@ -280,20 +280,19 @@ export function registerPayPalRoutes(app: Express) {
         .where(eq(businessProfiles.userId, userId));
 
       // Store a subscription record (same table as Stripe for unified status queries)
-      await db
-        .insert(stripeSubscriptions)
-        .values({
-          userId,
-          stripeSubscriptionId: `paypal_${captureId}`,
-          status: newTier === "lifetime" ? "lifetime" : "active",
-        })
-        .onConflictDoUpdate({
-          target: stripeSubscriptions.userId,
-          set: {
+        await db
+          .insert(stripeSubscriptions)
+          .values({
+            userId,
             stripeSubscriptionId: `paypal_${captureId}`,
             status: newTier === "lifetime" ? "lifetime" : "active",
-          },
-        });
+          })
+          .onDuplicateKeyUpdate({
+            set: {
+              stripeSubscriptionId: `paypal_${captureId}`,
+              status: newTier === "lifetime" ? "lifetime" : "active",
+            },
+          });
 
       console.log(`[PayPal] User ${userId} upgraded to ${newTier} (plan: ${plan}, capture: ${captureId})`);
 

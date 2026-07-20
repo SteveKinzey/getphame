@@ -1,0 +1,1 @@
+ALTER TABLE `notification_prefs` ADD `onboardingTipsEnabled` boolean DEFAULT true NOT NULL;

@@ -207,12 +207,12 @@ export const bulkSenderRouter = router({
     if (!creds) throw new TRPCError({ code: "NOT_FOUND", message: "No bulk sender configured" });
     const apiKey = decryptPassword(creds.apiKey);
     const result = await testBulkSenderConnection(
-      creds.provider,
+      creds.provider as BulkSenderProvider,
       apiKey,
       creds.fromEmail,
       creds.fromName ?? null,
       creds.mailgunDomain,
-      creds.mailgunRegion
+      creds.mailgunRegion as "us" | "eu" | null
     );
     return result;
   }),

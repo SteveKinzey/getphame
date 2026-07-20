@@ -12,6 +12,7 @@
     "send": "Send",
     "dashboard": "Dashboard",
     "settings": "Settings",
+    "more": "More",
     "shareHint": "Share Get Phame with a friend",
     "share": "Share",
     "guideHint": "Open setup guide",
@@ -21,7 +22,9 @@
     "complianceViewGuide": "— view guide",
     "howItWorks": "How It Works",
     "pricing": "Pricing",
-    "faq": "FAQ"
+    "faq": "FAQ",
+    "manageUsers": "Manage users",
+    "admin": "Admin"
   },
   "hero": {
     "tagline": "Free to start — No credit card required",
@@ -89,7 +92,7 @@
     "providersQuestion": "What email providers work?",
     "providersAnswer": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to Get Phame.",
     "freeQuestion": "Is it really free?",
-    "freeAnswer": "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap (Gmail allows ~500/day, most others are similar). There are no hidden fees and no credit card required to get started.",
+    "freeAnswer": "Yes. The Free plan includes 10 initial review requests, then 5 requests every rolling 30 days. No credit card is required. Your email provider's daily sending cap also applies.",
     "importQuestion": "Can I import my customer list?",
     "importAnswer": "Yes. You can upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store. Once imported, you can bulk-select contacts and send personalised review requests in a single click.",
     "q1": "Will it look like spam?",
@@ -97,7 +100,7 @@
     "q2": "What email providers work?",
     "a2": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server.",
     "q3": "Is it really free?",
-    "a3": "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap.",
+    "a3": "Yes. You receive 10 initial review requests, then 5 requests every rolling 30 days. No credit card is required.",
     "q4": "Can I import my customer list?",
     "a4": "Yes. Upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store.",
     "q5": "Does Get Phame store my email password?",
@@ -115,7 +118,7 @@
     "q11": "How does WooCommerce sync work?",
     "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
     "q12": "What does unlimited mean on the Pro plan?",
-    "a12": "Unlimited means no cap on review requests sent per month. The Free plan includes 10 requests to get you started. Pro removes that limit entirely."
+    "a12": "Unlimited means no monthly cap on review requests. The Free plan includes 10 initial requests, then 5 requests every rolling 30 days. Pro removes that product limit."
   },
   "bottomCta": {
     "headline": "Start collecting reviews today",
@@ -143,6 +146,25 @@
     "subHeader": "Help them get more reviews — it's free.",
     "copiedToClipboard": "Copied to clipboard!",
     "sharePhame": "Share Get Phame"
+  },
+  "referralRewards": {
+    "title": "Referral Rewards",
+    "subtitle": "Earn 1 free month per paid referral",
+    "monthsShort": "{{count}} mo",
+    "joined": "Joined",
+    "converted": "Converted",
+    "freeMonths": "Free Months",
+    "whatsApp": "WhatsApp",
+    "message": "Message",
+    "copyLink": "Copy Link",
+    "copied": "Copied!",
+    "copySuccessToast": "Referral link copied!",
+    "copyErrorToast": "Could not copy link.",
+    "shareMessage": "Get more 5-star reviews with Get Phame — {{url}}",
+    "noReferralsHint": "Share your link below to start earning free months",
+    "pendingReferralsHint": "{{count}} friend joined — waiting for them to upgrade",
+    "pendingReferralsHint_plural": "{{count}} friends joined — waiting for them to upgrade",
+    "rewardProcessingHint": "Reward processing — your free month will be applied shortly"
   },
   "relativeTime": {
     "justNow": "just now",
@@ -244,7 +266,43 @@
     "toGo": "to go",
     "reviewsPerMonth": "reviews / month",
     "ofMonthlyGoal": "of monthly goal",
-    "requestsByPlatform": "Requests by Platform"
+    "requestsByPlatform": "Requests by Platform",
+    "freeAllowanceInitial": "Free plan: 10 initial requests, then 5 every rolling 30 days",
+    "freeAllowanceMonthly": "Free plan: 5 requests every rolling 30 days",
+    "nextFreeRequest": "Next request available {{date}}",
+    "setupProgressEyebrow": "Get started",
+    "setupProgressDescription": "Complete these four steps to make your review requests ready to send.",
+    "setupProgressCount": "{{completed}} of {{total}} complete",
+    "setupStepEmail": "Connect your email",
+    "setupStepEmailDescription": "Add your SMTP sending account.",
+    "setupActionEmail": "Connect",
+    "setupStepPlatform": "Add a review platform",
+    "setupStepPlatformDescription": "Choose where customers will leave reviews.",
+    "setupActionPlatform": "Add platform",
+    "setupStepContacts": "Import contacts",
+    "setupStepContactsDescription": "Upload or add your first customers.",
+    "setupActionContacts": "Import",
+    "setupStepSend": "Send your first request",
+    "setupStepSendDescription": "Preview the customer experience with a first send.",
+    "setupActionSend": "Send",
+    "setupStepComplete": "Complete",
+    "setupStepNumber": "Step {{step}}",
+    "loadingAnalytics": "Loading analytics"
+  },
+  "activityTrend": {
+    "title": "Activity Trend",
+    "rangeAria": "Show {{days}} day trend",
+    "range": "{{days}}d",
+    "loading": "Loading activity trend",
+    "empty": "No activity in the last {{days}} days. Send your first request to see trends here.",
+    "sent": "Sent",
+    "opens": "Opens",
+    "clicks": "Clicks",
+    "openRate": "Open rate",
+    "clickRate": "Click rate",
+    "thisWeek": "This Week",
+    "priorWeek": "Prior Week",
+    "allTime": "All Time"
   },
   "notifications": {
     "followUpReminderScheduled": "Follow-up reminder scheduled!",
@@ -325,7 +383,11 @@
     "upgradeToPro": "Upgrade to Pro →",
     "upgrade": "Upgrade",
     "imported": "Imported",
-    "importedMultiple": "Imported {{count}} contacts - sending to first contact. Use Bulk Send for multiple."
+    "importedMultiple": "Imported {{count}} contacts - sending to first contact. Use Bulk Send for multiple.",
+    "freeInitialRemaining": "Free plan: {{remaining}} of 10 initial requests remaining — then 5 every rolling 30 days",
+    "freeRollingRemaining": "Free plan: {{remaining}} of 5 requests remaining in your rolling 30-day allowance",
+    "freeInitialLimitReachedDesc": "You've used your 10 initial requests. Your recurring allowance is 5 requests every rolling 30 days, or upgrade for unlimited requests.",
+    "freeRollingLimitReachedDesc": "You've used all 5 requests in your current rolling 30-day allowance. Your next request becomes available on {{date}}, or upgrade to keep sending now."
   },
   "tabs": {
     "account": "Account",
@@ -371,6 +433,12 @@
     "confirmButton": "Delete My Account Permanently",
     "cancelButton": "Cancel",
     "successToast": "Account deleted. Goodbye!"
+  },
+  "common": {
+    "gotIt": "Got it ✓",
+    "hide": "Hide",
+    "show": "Show",
+    "cancel": "Cancel"
   },
   "profile": {
     "title": "Business Profile",
@@ -419,6 +487,52 @@
     "removeFailed": "Could not remove platform: {{message}}"
   },
   "smtp": {
+    "emailConnected": "Email Connected",
+    "lastAutoCheck": "Last auto-check: {{date}}",
+    "healthy": "✓ Healthy",
+    "failed": "✗ Failed",
+    "notConnectedDescription": "No email connected. Enter your details below to start sending review requests.",
+    "emailAddressLabel": "Your Email Address *",
+    "displayNameLabel": "Display Name (optional)",
+    "displayNamePlaceholder": "e.g. Steve at Acme Plumbing",
+    "displayNameHelp": "Shown as the sender name in your customer's inbox.",
+    "passwordLabels": {
+      "gmail": "Gmail App Password *",
+      "workspace": "Google Workspace App Password *",
+      "microsoft": "Microsoft App Password *",
+      "yahoo": "Yahoo App Password *",
+      "zoho": "Zoho Mail Password *",
+      "icloud": "Apple App-Specific Password *",
+      "aol": "AOL App Password *",
+      "proton": "ProtonMail SMTP Password *",
+      "fastmail": "Fastmail App Password *",
+      "email": "Email Password *"
+    },
+    "passwordPlaceholders": {
+      "update": "Enter new password to update",
+      "google": "16-character App Password (no spaces)",
+      "default": "Your email password"
+    },
+    "inlineHints": {
+      "google": "Not your regular Gmail password — use an App Password. Tap How to get it above.",
+      "icloud": "Use an App-Specific Password, not your Apple ID password. Tap How to get it above.",
+      "zoho": "Enable SMTP access in Zoho first, then use your regular Zoho password. Tap How to get it above.",
+      "aol": "Not your regular AOL password — use an App Password. Tap How to get it above.",
+      "proton": "ProtonMail requires the Proton Bridge app — use its SMTP password, not your Proton login. Tap How to get it above.",
+      "fastmail": "Not your regular Fastmail password — use an App Password. Tap How to get it above.",
+      "custom": "Custom domain detected — SMTP settings auto-filled below. Check Advanced settings to verify or adjust host and port."
+    },
+    "sendingLimits": {
+      "title": "Sending limits by provider",
+      "gmail": "Gmail / Google Workspace — 500 emails/day (free), 2,000/day (Workspace)",
+      "microsoft": "Outlook / Microsoft 365 — 300 emails/day",
+      "yahoo": "Yahoo Mail — 500 emails/day",
+      "zoho": "Zoho Mail — 500 emails/day (free), 1,000/day (paid)",
+      "aol": "AOL Mail — 500 emails/day",
+      "fastmail": "Fastmail — 1,000 emails/day",
+      "proton": "ProtonMail — 150 emails/day (free), 1,000/day (paid) via Bridge",
+      "tip": "For high-volume sending, use a dedicated reviews@yourdomain.com address to keep your main inbox clean and avoid hitting personal limits."
+    },
     "title": "Email Connection (SMTP)",
     "description": "Connect your own email account to send review requests. We encrypt your password and never share it.",
     "testConnection": "Test Connection",
@@ -849,7 +963,9 @@
     "prioritySupport": "Priority support",
     "futureUpdates": "Future updates",
     "price": "Price",
-    "freeTrialNote": "All plans include a 10-request free trial. No credit card required to start."
+    "freeTrialNote": "All plans include a 10-request free trial. No credit card required to start.",
+    "reviewRequests": "Review requests",
+    "freeRequestAllowance": "10 first, then 5 / rolling 30 days"
   },
   "paidUser": {
     "adminAccess": "Admin Access",
@@ -859,7 +975,92 @@
     "onPro": "You're on {{tierLabel}}!",
     "enjoyFeatures": "Enjoy unlimited review requests and all Pro features.",
     "backToDashboard": "Back to Dashboard",
-    "cancelPlan": "Cancel plan"
+    "cancelPlan": "Cancel plan",
+    "portalOpened": "Secure billing opened in a new tab.",
+    "currentStatus": "Your status: {{tierLabel}}",
+    "lifeMessage": "Life access is active. There is nothing to upgrade or renew.",
+    "manageMessage": "Change your billing cycle or end your subscription below.",
+    "subscription": "Subscription",
+    "switchMonthly": "Switch to Monthly or manage billing",
+    "changePlan": "Change plan or manage billing",
+    "endSubscription": "End subscription",
+    "endExplanation": "Ending your subscription returns the account to Free at the end of the paid period.",
+    "switchConfirm": {
+      "title": "Switch from {{current}} to {{target}}?",
+      "description": "Review the billing-cycle change before continuing to Stripe.",
+      "currentPlan": "Current plan",
+      "newPlan": "New plan",
+      "savings": "Annual billing saves $58 per year compared with Monthly.",
+      "timing": "Stripe will show the exact effective date and any prorated charge or credit before you approve the change.",
+      "cancel": "Keep {{plan}}",
+      "continue": "Continue to Stripe"
+    },
+    "renewsOn": "Renews on {{date}}",
+    "accessUntil": "Access until {{date}}"
+  },
+  "login": {
+    "title": "Get Phame",
+    "subtitle": "Sign in to your account",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithApple": "Continue with Apple",
+    "or": "or",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "emailRequired": "Email is required.",
+    "invalidEmail": "Enter a valid email address.",
+    "sendingMagicLink": "Sending link…",
+    "sendMagicLink": "Send Magic Link",
+    "noPassword": "No password needed — we'll email you a secure login link.",
+    "checkInbox": "Check your inbox",
+    "sentTo": "We sent a login link to",
+    "expiresNotice": "The link expires in 15 minutes. Check your spam folder if you don't see it.",
+    "useDifferentEmail": "Use a different email",
+    "magicLinkFailed": "We could not send your magic link. Please try again.",
+    "networkError": "Network error. Please check your connection and try again.",
+    "rateLimited": "Too many attempts. Please wait a few minutes and try again.",
+    "serviceUnavailable": "Service is temporarily unavailable. Please try again.",
+    "termsPrefix": "By continuing, you agree to our",
+    "terms": "Terms of Service",
+    "consentAnd": "and",
+    "privacy": "Privacy Policy",
+    "consentSuffix": ".",
+    "signInCancelled": "Sign-in was cancelled. Please try again.",
+    "appleSignInFailed": "Apple sign-in could not be completed. Please try again.",
+    "invalidMagicLink": "Invalid or already-used sign-in link. Please request a new one.",
+    "magicLinkExpired": "That sign-in link has expired. Please request a new one.",
+    "verificationFailed": "Verification failed. Please request a new link.",
+    "signInFailed": "Sign-in failed. Please try again or contact support."
+  },
+  "authFeedback": {
+    "openingGoogle": "Opening Google sign-in…",
+    "connectingGoogle": "Connecting to Google…",
+    "continueWithGoogle": "Continue with Google",
+    "googleOpenFailed": "Google sign-in could not be opened. Please try again.",
+    "googleSuccess": "Google sign-in successful. Welcome to Get Phame.",
+    "errors": {
+      "googleDenied": "Google sign-in was cancelled.",
+      "googleFailed": "Google sign-in failed. Please try again.",
+      "googleMissingCode": "Google did not return the information needed to sign you in. Please try again.",
+      "googleStateMismatch": "Google sign-in security check failed. Please try again.",
+      "googleNoId": "Google sign-in could not verify your account. Please try again."
+    },
+    "preparingGoogle": "Preparing Google sign-in…",
+    "redirectingGoogle": "Redirecting securely to Google…"
+  },
+  "profileMenu": {
+    "account": "Account",
+    "accountDetails": "Account details",
+    "open": "Open account menu",
+    "signedInAs": "Signed in as",
+    "dashboard": "Dashboard",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode"
+  },
+  "account": {
+    "administrator": "Administrator",
+    "administratorAccount": "Administrator account",
+    "renewsOn": "Renews {{date}}",
+    "accessUntil": "Access until {{date}}"
   },
   "columnLabels": {
     "fullName": "Full Name",
@@ -1068,6 +1269,15 @@
       "title": "Get Phame Setup",
       "skipSetupTooltip": "Skip setup"
     },
+    "tour": {
+      "skip": "Skip Tour",
+      "show": "Show tips",
+      "skipTooltip": "Hide onboarding tips on this device",
+      "showTooltip": "Show onboarding tips again",
+      "skipSuccess": "Onboarding tips hidden. You can show them again at any time.",
+      "tipsRemaining_one": "{{count}} tip remains in this setup",
+      "tipsRemaining_other": "{{count}} tips remain in this setup"
+    },
     "steps": {
       "connectEmail": "Connect Email",
       "reviewPlatform": "Review Platform",
@@ -1226,15 +1436,24 @@
       "goToSendButton": "Go to Send Request",
       "goToContactsButton": "Go to Saved Contacts"
     },
-    "allSet": {
-      "title": "You're all set!",
-      "subtitle": "Get Phame is ready to start collecting reviews for your business.",
-      "quickLinksTitle": "Quick links",
-      "link1": "Send a review request now",
-      "link2": "View saved contacts",
-      "link3": "Check your dashboard",
-      "link4": "Manage settings",
-      "revisitTitle": "Need to revisit this guide?",
+      "allSet": {
+        "title": "You're all set!",
+        "subtitle": "Get Phame is ready to start collecting reviews for your business.",
+        "quickLinksTitle": "Quick links",
+        "link1": "Send a review request now",
+        "link2": "View saved contacts",
+        "link3": "Check your dashboard",
+        "link4": "Manage settings",
+        "installTitle": "Keep Get Phame on your phone",
+        "iosInstall": "Open getphame.app in Safari. Tap Share, choose Add to Home Screen, then tap Add.",
+        "androidInstall": "Open getphame.app in Chrome. Tap the three-dot menu, choose Install app or Add to Home screen, then confirm.",
+        "shareButton": "Share Get Phame with a friend",
+        "shareText": "Collect more customer reviews with Get Phame.",
+        "shareSuccess": "Shared successfully.",
+        "copySuccess": "Get Phame link copied.",
+        "shareCancelled": "Sharing cancelled.",
+        "shareError": "Unable to share right now.",
+        "revisitTitle": "Need to revisit this guide?",
       "revisitDesc": "Tap the \"Setup Guide\" button on the Home screen or in Settings any time to reopen these instructions.",
       "startButton": "Start Using Get Phame"
     }
@@ -1500,5 +1719,455 @@
     "gifCaption": "The 3-step send flow",
     "emailAlt": "Example review request email on iPhone",
     "emailCaption": "What your customer receives"
+  },
+  "paymentSuccess": {
+    "confirmed": "Payment confirmed.",
+    "confirmedToast": "Payment confirmed. Your Get Phame access is active.",
+    "upgraded": "Your account has been upgraded instantly."
+  },
+  "adminUsers": {
+    "roleUpdated": "Administrator access updated.",
+    "lifeGranted": "Life access granted.",
+    "lifeRemoved": "Life access removed.",
+    "back": "Admin Dashboard",
+    "eyebrow": "User Management",
+    "title": "Manage users",
+    "subtitle": "Search every account and control administrator or Life access.",
+    "searchLabel": "Search users",
+    "searchPlaceholder": "Name or email",
+    "accountCount": "{{count}} accounts",
+    "loading": "Loading accounts…",
+    "unnamed": "Unnamed user",
+    "admin": "Admin",
+    "life": "Life",
+    "noEmail": "No email",
+    "accountMeta": "Joined {{date}} · Stored plan: {{tier}}",
+    "removeAdmin": "Remove admin",
+    "makeAdmin": "Make admin",
+    "removeLife": "Remove Life",
+    "grantLife": "Grant Life",
+    "empty": "No users match that search.",
+    "previous": "Previous",
+    "page": "Page {{page}} of {{count}}",
+    "next": "Next"
+  },
+  "landing": {
+    "comparison": {
+      "getPhamePrice": "$29/mo",
+      "birdeyePrice": "$299/mo",
+      "podiumPrice": "$249/mo",
+      "niceJobPrice": "$75/mo",
+      "gradeUsPrice": "$110/mo",
+      "reviewTrackersPrice": "$89/mo",
+      "compare": "Compare",
+      "enterpriseFeaturesStartupPrice": "Enterprise features. Startup price.",
+      "description": "The big players charge $250–$300/month for review request tools. Get Phame gives you the same core capability at a fraction of the cost. Plus a lifetime option they'll never offer.",
+      "cheaperThanAlternatives": "cheaper than enterprise alternatives",
+      "platformHeader": "Platform",
+      "startingPriceHeader": "Starting Price",
+      "lifetimeHeader": "Lifetime",
+      "pricingDisclaimer": "Prices based on publicly listed entry-tier plans as of April 2026. Subject to change."
+    },
+    "faq": {
+      "q1": "Will it look like spam?",
+      "a1": "No. Every email is sent directly from your own email address — not from a third-party server. Your customers see your name, your address, and your signature. It looks exactly like you sat down and typed it yourself. Open rates average 45–60% because recipients recognize the sender.",
+      "q2": "What email providers work?",
+      "a2": "Get Phame works with any email provider that supports SMTP: Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud, and any custom SMTP server. If you can send email from it, you can connect it to Get Phame.",
+      "q3": "Is it really free?",
+      "a3": "Yes. The free plan gives you 10 initial review requests, then 5 more every rolling 30 days — with no credit card required and no time limit. If you want unlimited requests, bulk send, follow-up reminders, and WooCommerce sync, upgrade to Pro.",
+      "q4": "Can I import my customer list?",
+      "a4": "Absolutely. Upload a CSV file with customer names and email addresses, or sync directly from WooCommerce. We validate emails automatically, remove duplicates, and flag any invalid addresses before you send.",
+      "q5": "Does Get Phame store my email password?",
+      "a5": "Your SMTP credentials are encrypted at rest using AES-256 encryption. We never store plain-text passwords. Your credentials are only used to send emails on your behalf — we cannot read your inbox or access any other email data.",
+      "q6": "Will my emails land in spam?",
+      "a6": "Because emails are sent from your own email account (not a bulk-sending server), they have the same deliverability as any email you'd send manually. Your domain reputation, SPF, and DKIM records all apply normally. This is a key advantage over third-party senders.",
+      "q7": "What happens to my customer list?",
+      "a7": "Your customer data is stored securely and is never shared, sold, or used for any purpose other than sending your review requests. You can export or delete your entire customer list at any time. We comply with GDPR and CAN-SPAM requirements.",
+      "q8": "Can customers opt out?",
+      "a8": "Yes. Every email includes an unsubscribe link. When a customer opts out, they're automatically removed from future sends. This keeps you compliant and protects your sender reputation.",
+      "q9": "Do I need technical skills to connect my email?",
+      "a9": "No. For Gmail and Outlook, we provide step-by-step guides with screenshots. Most users connect in under 60 seconds. For custom SMTP, you'll need your server address, port, and credentials — your hosting provider can supply these.",
+      "q10": "Which review platforms does it support?",
+      "a10": "Any platform with a review link: Google, Yelp, TripAdvisor, Facebook, Bing Places, Trustpilot, G2, Capterra, and more. Just paste your review link and we'll include it in every request. You can change platforms anytime.",
+      "q11": "How does WooCommerce sync work?",
+      "a11": "Install our free WooCommerce plugin, enter your API key, and new customers are automatically imported after each completed order. You can set a delay (e.g., 7 days after purchase) before they appear in your send queue.",
+      "q12": "What does unlimited mean on the Pro plan?",
+      "a12": "Unlimited means no cap on the number of review requests you can send per month. Send 50 or 5,000 — no extra charges. The only limit is your email provider's own sending limits (e.g., Gmail allows ~500/day for personal accounts, 2,000/day for Workspace).",
+      "sectionTitle": "FAQ",
+      "headline": "Questions about email safety, privacy & setup",
+      "description": "Everything you need to know before connecting your email and sending your first review request."
+    },
+    "feature1": {
+      "title": "Your name. Your inbox. Their trust.",
+      "description": "Every review request arrives from your actual email address. Customers recognize the sender, so they open it — and they respond.",
+      "statLabel": "avg. open rate"
+    },
+    "feature2": {
+      "title": "One click sends to hundreds",
+      "description": "Import your customer list via CSV or WooCommerce sync, select all, and send personalized requests in seconds. No copy-pasting. No manual work.",
+      "statLabel": "sends per batch"
+    },
+    "feature3": {
+      "title": "Every platform. Your choice.",
+      "description": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, and more. Paste your link, switch platforms anytime. One tool for all your review destinations.",
+      "statLabel": "platforms supported"
+    },
+    "whyItWorks": "Why it works",
+    "headline": "From your inbox to their review",
+    "subHeadline": "The simplest way to turn happy customers into 5-star reviews — without expensive tools or awkward conversations.",
+    "finalCta": {
+      "headlinePart1": "Your inbox. Your reputation.",
+      "headlinePart2": "Your growth.",
+      "description": "Free forever: 10 initial requests, then 5 more every rolling 30 days. No credit card. Set up in under 2 minutes.",
+      "getStartedButton": "Get Started Free",
+      "joinBusinesses": "Join hundreds of businesses already growing their reputation with Get Phame."
+    },
+    "footer": {
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "security": "Security",
+      "support": "Support",
+      "copyright": "© {{year}} Get Phame. All rights reserved."
+    },
+    "hero": {
+      "freeToStart": "Free to start — No credit card required",
+      "headlinePart1": "Get more 5-star reviews",
+      "headlinePart2": "without the awkward ask",
+      "description": "Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender.",
+      "howItWorks": "See how it works",
+      "setupTime": "Set up in under 2 minutes",
+      "emailCompatibility": "Works with Gmail, Outlook, SMTP",
+      "googleSignInDisclaimer": "Sign in with Google to create your account. We only access your name and email address — nothing else.",
+      "privacyPolicy": "Privacy Policy",
+      "dashboardMockupAlt": "GetPhame app home screen showing review request stats, send button, and free plan usage for local businesses",
+      "ctaVariantA": "Start Free — Send 10 Requests",
+      "ctaVariantB": "Get Your First 10 Reviews Free"
+    },
+    "howItWorks": {
+      "setupSteps": {
+        "step1": {
+          "title": "Connect your email",
+          "description": "Link your Gmail, Outlook, or any SMTP email in 60 seconds. Credentials encrypted with AES-256."
+        },
+        "step2": {
+          "title": "Add your review link",
+          "description": "Paste your Google, Yelp, TripAdvisor, or any review platform link. Switch platforms anytime."
+        },
+        "step3": {
+          "title": "Import your customers",
+          "description": "Upload a CSV, sync from WooCommerce, or add contacts manually. We validate emails automatically."
+        },
+        "step4": {
+          "title": "Send & track results",
+          "description": "Hit send. Each customer gets a personal email from you. Track opens, clicks, and new reviews live."
+        }
+      },
+      "setupInSteps": "Setup in 4 steps",
+      "headline": "Two minutes to your first review request",
+      "subtitle": "No technical skills needed. No onboarding calls. Just connect, import, and send.",
+      "getStartedButton": "Get Started Free",
+      "setupTime": "Takes less than 2 minutes to set up"
+    },
+    "leadCapture": {
+      "errorMessage": "Something went wrong. Please try again.",
+      "heading": "Not ready to commit?",
+      "description": "Get a free guide on how to 3× your Google reviews in 30 days — plus early access to new features and reputation tips.",
+      "emailPlaceholder": "Enter your email",
+      "sending": "Sending...",
+      "sendGuideButton": "Send Guide",
+      "successMessage": "Check your inbox — guide is on the way!",
+      "noSpamMessage": "No spam. Unsubscribe anytime. We respect your inbox."
+    },
+    "navbar": {
+      "howItWorks": "How It Works",
+      "product": "Product",
+      "pricing": "Pricing",
+      "faq": "FAQ",
+      "signIn": "Sign In",
+      "getStartedFree": "Get Started Free",
+      "toggleMenu": "Toggle menu"
+    },
+    "pricing": {
+      "free": {
+        "name": "Free",
+        "description": "Start with 10 review requests, then get 5 more every rolling 30 days — no credit card required.",
+        "features": {
+          "requests": "10 initial requests + 5 every rolling 30 days",
+          "email": "Connect 1 email account",
+          "platform": "Any review platform",
+          "tracking": "Email open tracking",
+          "import": "CSV import"
+        },
+        "cta": "Start Free"
+      },
+      "proMonthly": {
+        "name": "Pro Monthly",
+        "description": "Best for active businesses that send review requests weekly.",
+        "features": {
+          "requests": "Unlimited review requests",
+          "bulk": "Bulk send in one click",
+          "reminders": "Follow-up reminders",
+          "woocommerce": "WooCommerce sync",
+          "support": "Priority support",
+          "analytics": "Advanced analytics"
+        },
+        "cta": "Start Pro Monthly"
+      },
+      "proAnnual": {
+        "name": "Pro Annual",
+        "description": "Best value for businesses committed to reputation growth.",
+        "features": {
+          "everything": "Everything in Pro Monthly",
+          "billed": "Billed annually ($228/yr)",
+          "save": "Save 34% vs monthly",
+          "support": "Priority support",
+          "earlyAccess": "Early access to new features"
+        },
+        "cta": "Start Pro Annual",
+        "badge": "Save 34%"
+      },
+      "lifetime": {
+        "name": "Lifetime",
+        "period": " once",
+        "description": "One payment, lifetime access. No renewals, no surprises.",
+        "features": {
+          "everything": "Everything in Pro",
+          "payOnce": "Pay once, use forever",
+          "updates": "All future updates included",
+          "support": "Priority support for life",
+          "agencies": "Perfect for agencies & operators"
+        },
+        "cta": "Get Lifetime Access",
+        "badge": "Best Deal"
+      },
+      "sectionTitle": "Pricing",
+      "headline": "Honest pricing. No surprises.",
+      "subtitle": "Start free. Upgrade when you're ready. Cancel anytime. No hidden fees.",
+      "mostPopular": "Most Popular"
+    },
+    "lightbox": {
+      "closeLightboxAriaLabel": "Close lightbox",
+      "closeButtonAriaLabel": "Close",
+      "closeButtonLabel": "Close"
+    },
+    "productShowcase": {
+      "tabEmailLabel": "Email Preview",
+      "tabEmailTitle": "Emails that feel handwritten",
+      "tabEmailDescription": "Each review request arrives from your actual email address with your name, your signature, and a personal tone. Customers trust it because it looks real — because it is.",
+      "tabEmailAlt": "GetPhame personalized review request email preview showing customer name, business signature, and Google review link",
+      "tabImportLabel": "Customer Import",
+      "tabImportTitle": "Your entire list in seconds",
+      "tabImportDescription": "Drag and drop a CSV or sync directly from WooCommerce. We validate emails, remove duplicates, and flag bounces — so every send counts.",
+      "tabImportAlt": "GetPhame customer import screen showing CSV drag-and-drop upload with email validation and duplicate removal",
+      "tabTrackingLabel": "Review Tracking",
+      "tabTrackingTitle": "Watch the reviews roll in",
+      "tabTrackingDescription": "Track every email sent, opened, and clicked. See your review count climb week over week with real-time analytics and growth charts.",
+      "tabTrackingAlt": "GetPhame review tracking dashboard showing email open rates, click-through rates, and weekly review count growth chart",
+      "sectionSubtitle": "The product",
+      "sectionTitle": "Built to make review requests effortless",
+      "sectionDescription": "One simple tool. Three powerful views. Everything you need to grow your reputation.",
+      "viewFullSizeButton": "View full size",
+      "viewFullSizeAriaLabel": "View {{title}} in full size"
+    },
+    "socialProofBar": {
+      "reviews": {
+        "sarah": {
+          "quote": "Went from 12 to 47 Google reviews in 6 weeks. Customers actually respond because it comes from my real email.",
+          "role": "Freelance Photographer"
+        },
+        "tom": {
+          "quote": "I import Friday's regulars, hit send, and wake up Monday to 8–10 new reviews. It's part of our weekly routine now.",
+          "role": "The Corner Café"
+        },
+        "david": {
+          "quote": "Managing 12 client locations from one account. The lifetime deal paid for itself in the first month.",
+          "role": "Marketing Agency Owner"
+        },
+        "lisa": {
+          "quote": "Set it up in under 2 minutes. My open rate is 68% — way better than any review platform I've tried.",
+          "role": "Yoga Studio Owner"
+        }
+      },
+      "trustedBy": "Trusted by local business owners"
+    },
+    "stats": {
+      "moreReviewsLabel": "more reviews vs. asking in person",
+      "averageSetupTimeLabel": "average setup time",
+      "emailsSentLabel": "emails sent from your own address",
+      "averageResponseRateLabel": "average response rate",
+      "industryPhotographers": "Photographers",
+      "industryCafesRestaurants": "Cafés & Restaurants",
+      "industryHomeServices": "Home Services",
+      "industryClinicsSalons": "Clinics & Salons",
+      "industryAgencies": "Agencies",
+      "industryWooCommerceStores": "WooCommerce Stores",
+      "heading": "Built for businesses that run on reputation"
+    },
+    "testimonials": {
+      "sarah": {
+        "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. Get Phame sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks.",
+        "role": "Freelance Photographer",
+        "result": "12 → 47 reviews in 6 weeks"
+      },
+      "tom": {
+        "quote": "We serve about 80 customers a day. I import the week's regulars from a CSV on Friday, hit send, and by Monday morning we've usually picked up 8–10 new reviews. It's become part of our weekly routine.",
+        "role": "Owner, The Corner Café",
+        "result": "8–10 new reviews per week"
+      },
+      "david": {
+        "quote": "As an agency managing 12 client locations, the lifetime deal was a no-brainer. Each client gets their own review link and I send requests on their behalf. The ROI paid for itself in the first month.",
+        "role": "Digital Marketing Agency Owner",
+        "result": "12 locations managed from one account"
+      },
+      "realResults": "Real results",
+      "headline": "They asked. Customers answered.",
+      "subtitle": "Real businesses using Get Phame to grow their reputation every week.",
+      "getStartedFree": "Get Started Free"
+    },
+    "trustBar": {
+      "passwordEncrypted": "Password encrypted at rest",
+      "customerListPrivate": "Your customer list stays private",
+      "worksWithEmailProviders": "Works with Gmail, Outlook, Yahoo & more",
+      "unsubscribeLink": "Unsubscribe link in every email"
+    },
+    "section": {
+      "tagline": "See it in action",
+      "title": "See How It Works",
+      "description": "Watch a quick walkthrough — set up in under 2 minutes"
+    },
+    "thumbnail": {
+      "playButtonAriaLabel": "Play product walkthrough video",
+      "altText": "GetPhame product walkthrough video thumbnail"
+    },
+    "bottomBar": {
+      "title": "GetPhame — Full Product Walkthrough",
+      "description": "Connect email · Import customers · Send requests · Track results",
+      "watchNow": "Watch now →"
+    },
+    "modal": {
+      "closeButtonAriaLabel": "Close video",
+      "iframeTitle": "GetPhame product walkthrough"
+    }
+  },
+  "pwaInstallBanner": {
+    "title": "Install Get Phame",
+    "description": "Open your review dashboard faster and use Get Phame like an app.",
+    "cta": "Install App",
+    "iosCta": "Show iPhone steps",
+    "opening": "Opening…",
+    "openingStatus": "Opening the Get Phame installation options.",
+    "dismiss": "Dismiss install banner",
+    "remindLater": "Remind me later",
+    "shareSuccess": "Get Phame shared successfully.",
+    "shareCopied": "Get Phame link copied.",
+    "shareCancelled": "Sharing cancelled.",
+    "shareError": "Unable to share Get Phame right now."
+  },
+  "settings": {
+    "accountProfile": {
+      "title": "Account profile",
+      "description": "Manage the identity shown in your Get Phame account.",
+      "loading": "Loading account profile",
+      "saved": "Profile updated.",
+      "avatarSaved": "Profile photo updated.",
+      "avatarRemoved": "Profile photo removed.",
+      "avatarInvalid": "Choose a JPG, PNG, or WebP image up to 3 MB.",
+      "avatarReadError": "We could not read that image. Try another file.",
+      "avatarAlt": "Account profile photo",
+      "chooseAvatar": "Choose profile photo",
+      "avatarHelp": "JPG, PNG, or WebP · 3 MB max",
+      "displayName": "Display name",
+      "email": "Email address",
+      "emailHelp": "Your sign-in email is managed by your authentication provider.",
+      "save": "Save profile",
+      "uploadAvatar": "Upload photo",
+      "removeAvatar": "Remove photo"
+    },
+    "onboardingTips": {
+      "title": "Onboarding tips",
+      "description": "Show contextual setup tips the next time you open onboarding. You can also change this inside the setup wizard.",
+      "enable": "Enable onboarding tips",
+      "disable": "Disable onboarding tips"
+    }
+  },
+  "complianceGuide": {
+    "backToSettings": "Settings",
+    "title": "Compliance Guide",
+    "subtitle": "Stay safe, stay legal, and protect your reputation",
+    "risk": { "low": "Low Risk", "moderate": "Moderate Risk", "high": "High Risk" },
+    "safeZone": {
+      "title": "Where You're Safe",
+      "transaction": "Customer had a real transaction with you",
+      "noIncentives": "No incentives offered (money, discounts, gifts)",
+      "noPressure": "No scripted or pressured review wording",
+      "allCustomers": "Ask ALL customers — not just happy ones",
+      "allCustomersSub": "Review gating (filtering unhappy customers away) is where most businesses get burned."
+    },
+    "platformRisk": {
+      "title": "Platform Risk Levels",
+      "google": { "allowed": "Asking for reviews via email is allowed", "noIncentives": "No incentives, no review gating", "worstCase": "Worst case: reviews removed or profile flagged." },
+      "yelp": { "discourages": "Strongly discourages asking for reviews at all", "filters": "Algorithm actively filters 'solicited' reviews", "safer": "Safer: list your business name only — don't embed a direct Yelp link in bulk campaigns", "worstCase": "Worst case: reviews filtered (not shown publicly) + consumer alert badge on profile." },
+      "bing": { "title": "Bing / Microsoft", "similar": "Similar to Google in practice, less aggressive enforcement", "worstCase": "Generally safe to include a direct link." }
+    },
+    "legal": {
+      "title": "Legal Considerations (U.S.)",
+      "intro": "The FTC cares about fake reviews, undisclosed incentives, and misleading practices. If you only ask real customers, don't compensate, and don't manipulate — you're fine legally.",
+      "fakeReviews": "Fake reviews",
+      "undisclosedIncentives": "Undisclosed incentives",
+      "misleading": "Misleading or deceptive practices"
+    },
+    "accountRisks": {
+      "title": "What Kills Accounts",
+      "incentives": "Incentives",
+      "incentivesSub": "\"Leave a review, get 10% off\" — this is a direct violation.",
+      "gating": "Review gating funnels",
+      "gatingSub": "Filtering unhappy customers away from public platforms.",
+      "bulk": "Bulk blasts that look automated/spammy",
+      "bulkSub": "Sudden spikes of 50+ reviews in a day raise red flags.",
+      "writing": "Writing reviews for customers or coaching exact wording",
+      "yelpLinks": "Embedding a Yelp review link in bulk email campaigns"
+    },
+    "playbook": {
+      "title": "Best-Practice Playbook",
+      "neutral": "Send a simple, neutral request",
+      "neutralSub": "\"We'd appreciate your honest feedback\"",
+      "multiplePlatforms": "Give multiple platform options",
+      "multiplePlatformsSub": "Don't push one platform aggressively.",
+      "allCustomers": "Ask ALL customers — not just happy ones",
+      "noYelpLinks": "Avoid direct Yelp links in campaigns",
+      "noYelpLinksSub": "Safer to list your business name only.",
+      "throttle": "Throttle volume",
+      "throttleSub": "No sudden spikes. Spread sends over days/weeks.",
+      "realPerson": "Send from a real person",
+      "realPersonSub": "Not 'support@' — use a first name.",
+      "emailLength": "Keep emails under 100–120 words",
+      "urgency": "Add subtle urgency",
+      "urgencySub": "\"while it's still fresh\""
+    },
+    "wooTiming": {
+      "title": "WooCommerce Timing",
+      "product": "Product orders: send 3–5 days after order completion",
+      "productSub": "Gives customers time to receive and use the product.",
+      "service": "Service orders: send 1–2 days after completion",
+      "serviceSub": "While the experience is still fresh.",
+      "trigger": "Trigger: WooCommerce order status → Completed",
+      "rotate": "Rotate platforms across sends",
+      "rotateSub": "Don't send everyone to the same platform at once.",
+      "track": "Track conversion rate",
+      "trackSub": "Aim for reviews per 100 customers as your KPI."
+    },
+    "subjectLines": {
+      "title": "Subject Lines That Convert",
+      "quickFavor": "\"Quick favor?\"",
+      "quickFavorSub": "Direct, low-pressure, high open rate.",
+      "howDidWeDo": "\"How did we do?\"",
+      "howDidWeDoSub": "Conversational and curiosity-driven.",
+      "gotAMinute": "\"[First Name], got a minute?\"",
+      "gotAMinuteSub": "Personalisation boosts open rates.",
+      "thanksOrder": "\"Thanks for your order — got a minute?\"",
+      "thanksOrderSub": "Best for WooCommerce post-purchase flows."
+    },
+    "bottomLine": { "label": "Bottom Line", "googleBing": "Google + Bing → safe if done correctly.", "yelp": "Yelp → proceed carefully or avoid direct solicitation.", "legal": "Legal risk → low if you stay honest and don't incentivize." },
+    "settings": { "title": "Compliance Guide", "description": "Platform rules, legal notes & best practices" }
   }
 }

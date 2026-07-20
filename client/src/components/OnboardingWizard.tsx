@@ -9,8 +9,9 @@
  * completed or dismissed onboarding. Dismissible at any time via the Skip button.
  */
 
-import { useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback, useContext } from "react";
 import { useTranslation } from "react-i18next";
+import { dismissAndNavigateToSend, getOnboardingFlow } from "@/lib/onboardingFlow";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -29,13 +30,20 @@ import {
   Plug2,
   ExternalLink,
   Download,
+  CircleHelp,
 } from "lucide-react";
+import LandingBrandLink from "@/components/LandingBrandLink";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 interface OnboardingWizardProps {
   onDismiss: () => void;
 }
+
+const TOUR_SKIP_STORAGE_KEY = "rr_skip_tour";
+const ONBOARDING_TIPS_CHANGE_EVENT = "rr:onboarding-tips-change";
+const OnboardingTourContext = createContext({ tipsHidden: false });
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -107,6 +115,28 @@ function getHintKey(email: string, host?: string): string | null {
   return null;
 }
 
+function OnboardingHelpTip({ label, text }: { label: string; text: string }) {
+  const { tipsHidden } = useContext(OnboardingTourContext);
+  if (tipsHidden) return null;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          type="button"
+          aria-label={label}
+          className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[#D4A017] transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
+        >
+          <CircleHelp size={14} aria-hidden="true" />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent side="top" sideOffset={8} className="onboarding-tip-fade max-w-[19rem] rounded-xl border border-[#D4A017]/45 px-3 py-2 text-left text-xs leading-relaxed shadow-xl">
+        {text}
+      </TooltipContent>
+    </Tooltip>
+  );
+}
+
 // ── Step 4: WordPress Connector Plugin ───────────────────────────────────────
 
 function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
@@ -114,19 +144,16 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
   const [copied, setCopied] = useState(false);
   const { data: apiKeyList } = trpc.apiKey.list.useQuery();
   const downloadConnector = trpc.connector.download.useMutation({
-    onSuccess: ({ base64, fileName, mimeType }) => {
-      const bytes = Uint8Array.from(atob(base64), (character) =>
-        character.charCodeAt(0),
-      );
-      const url = URL.createObjectURL(new Blob([bytes], { type: mimeType }));
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = fileName;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-      URL.revokeObjectURL(url);
-      toast.success(t("step4Connector.toast.downloadStarted", "Plugin download started"));
+    onSuccess: ({ url, fileName }) => {
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      toast.success(t("step4Connector.step1.downloadStarted", "Plugin download started."));
     },
     onError: (err) => toast.error(err.message),
   });
@@ -159,10 +186,10 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
             {t("step4Connector.intro.heading", "Using WordPress + WooCommerce?")}
           </p>
           <p className="text-sm font-bold" style={{ color: "oklch(0.95 0.02 260)" }}>
-            {t(
-              "step4Connector.intro.body",
-              "Install the free Get Phame Connector plugin to automatically sync every customer's first name, last name, and email to Phame every 6 hours — no CSV exports, no manual work."
-            )}
+              {t(
+                "step4Connector.intro.body",
+                "Install the Get Phame Connector plugin to automatically sync every customer's first name, last name, and email to Phame every 6 hours — no CSV exports, no manual work."
+              )}
           </p>
         </div>
       </div>
@@ -184,22 +211,23 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
             <p className="text-sm font-bold mb-2" style={{ color: "oklch(0.92 0.02 260)" }}>
               {t(
                 "step4Connector.step1.body",
-                "Download the Get Phame Connector .zip file and upload it to your WordPress site."
+                "Download the private Get Phame Connector .zip file and upload it to your WordPress site."
               )}
             </p>
             <button
               type="button"
               onClick={() => downloadConnector.mutate()}
               disabled={downloadConnector.isPending}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-black transition-transform active:scale-95 disabled:opacity-60"
-              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.15 0.05 260)" }}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-black transition-transform active:scale-95"
+              style={{
+                background: downloadConnector.isPending ? "oklch(0.35 0.05 260)" : "oklch(0.80 0.18 80)",
+                color: downloadConnector.isPending ? "oklch(0.60 0.03 260)" : "oklch(0.15 0.05 260)",
+              }}
             >
-              {downloadConnector.isPending ? (
-                <Loader2 size={14} className="animate-spin" />
-              ) : (
-                <Download size={14} />
-              )}
-              {t("step4Connector.step1.downloadBtn", "Download Plugin (.zip)")}
+              {downloadConnector.isPending ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
+              {downloadConnector.isPending
+                ? t("step4Connector.step1.downloadingBtn", "Preparing download…")
+                : t("step4Connector.step1.downloadBtn", "Download Plugin (.zip)")}
             </button>
           </div>
         </div>
@@ -440,8 +468,12 @@ function Step1Email({ onDone }: { onDone: () => void }) {
       </div>
 
       <div>
-        <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          {t("step1Email.passwordLabel")} {hint ? t("step1Email.appPasswordRequiredSuffix") : ""}
+        <label className="flex items-center gap-1 text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+          <span>{t("step1Email.passwordLabel")} {hint ? t("step1Email.appPasswordRequiredSuffix") : ""}</span>
+          <OnboardingHelpTip
+            label={t("onboardingWizard.tooltips.smtpPassword.label")}
+            text={t("onboardingWizard.tooltips.smtpPassword.text")}
+          />
         </label>
         <div className="relative">
           <input
@@ -613,6 +645,12 @@ function Step1Email({ onDone }: { onDone: () => void }) {
         </div>
       )}
 
+      <div className="flex items-center justify-end">
+        <OnboardingHelpTip
+          label={t("onboardingWizard.tooltips.testConnection.label")}
+          text={t("onboardingWizard.tooltips.testConnection.text")}
+        />
+      </div>
       <div className="flex gap-2">
         {/* Test Connection — verify before committing */}
         <button
@@ -694,8 +732,12 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
   return (
     <div className="flex flex-col gap-5">
       <div>
-        <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          {t("step2Platform.reviewPlatformLabel")}
+        <label className="flex items-center gap-1 text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+          <span>{t("step2Platform.reviewPlatformLabel")}</span>
+          <OnboardingHelpTip
+            label={t("onboardingWizard.tooltips.reviewPlatform.label")}
+            text={t("onboardingWizard.tooltips.reviewPlatform.text")}
+          />
         </label>
         <select
           value={platform}
@@ -711,8 +753,12 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
       </div>
 
       <div>
-        <label className="block text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
-          {t("step2Platform.reviewPageUrlLabel")}
+        <label className="flex items-center gap-1 text-xs font-bold mb-1" style={{ color: "oklch(0.70 0.04 260)" }}>
+          <span>{t("step2Platform.reviewPageUrlLabel")}</span>
+          <OnboardingHelpTip
+            label={t("onboardingWizard.tooltips.reviewUrl.label")}
+            text={t("onboardingWizard.tooltips.reviewUrl.text")}
+          />
         </label>
         <input
           type="url"
@@ -760,36 +806,42 @@ function Step2Platform({ onDone }: { onDone: () => void }) {
 
 // ── Step 3: Send First Request ─────────────────────────────────────────────────
 
-function Step3Send({ onDismiss }: { onDismiss: () => void }) {
+function Step3Send({
+  onDismiss,
+  onOpenConnector,
+}: {
+  onDismiss: () => void;
+  onOpenConnector?: () => void;
+}) {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
   const dismissMutation = trpc.onboarding.dismiss.useMutation();
 
   function handleGoSend() {
-    // Dismiss the wizard first, then navigate to /send.
-    // The wizard will also auto-hide once hasSentRequest becomes true
-    // (the onboarding.status query polls every 5s and checks customer_requests count).
-    dismissMutation.mutate(undefined, {
-      onSettled: () => {
-        onDismiss();
-        navigate("/send");
-      },
+    dismissAndNavigateToSend({
+      onDismiss,
+      navigate,
     });
   }
 
   return (
     <div className="flex flex-col items-center gap-6 text-center py-4">
-      <div
-        className="w-24 h-24 rounded-full flex items-center justify-center rr-bg-navy overflow-hidden"
-      >
-        <img src="https://assets.getphame.app/phame-app-icon-new.png" alt="Phame" className="w-20 h-20 object-contain" />
-      </div>
+      <LandingBrandLink
+        className="justify-center mb-4"
+        iconClassName="w-16 h-16"
+        textClassName="text-xl"
+        tone="split"
+      />
       <div>
-        <h3
-          className="text-xl font-black mb-2 text-white"
-        >
-          {t("step3Send.allSetTitle")}
-        </h3>
+        <div className="flex items-center justify-center gap-1.5 mb-2">
+          <h3 className="text-xl font-black text-white">
+            {t("step3Send.allSetTitle")}
+          </h3>
+          <OnboardingHelpTip
+            label={t("onboardingWizard.tooltips.firstRequest.label")}
+            text={t("onboardingWizard.tooltips.firstRequest.text")}
+          />
+        </div>
         <p className="text-sm" style={{ color: "oklch(0.85 0.02 260)" }}>
           {t("step3Send.allSetDescription")}
         </p>
@@ -801,6 +853,16 @@ function Step3Send({ onDismiss }: { onDismiss: () => void }) {
         <Star size={18} />
         {t("step3Send.sendFirstRequestButton")}
       </button>
+      {onOpenConnector && (
+        <button
+          type="button"
+          onClick={onOpenConnector}
+          className="text-sm font-bold px-4 py-2 rounded-xl transition-transform active:scale-95"
+          style={{ color: "oklch(0.85 0.12 250)" }}
+        >
+          {t("step3Send.optionalConnectorButton", "Set up WordPress connector instead (optional)")}
+        </button>
+      )}
     </div>
   );
 }
@@ -813,17 +875,82 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
     refetchInterval: 3000, // poll so steps auto-advance when completed elsewhere
   });
 
-  const dismissMutation = trpc.onboarding.dismiss.useMutation({
-    onSuccess: onDismiss,
-  });
+  const dismissMutation = trpc.onboarding.dismiss.useMutation();
+  const { data: notificationPrefs } = trpc.notificationPrefs.get.useQuery();
+  const updateNotificationPrefs = trpc.notificationPrefs.update.useMutation();
+  const [tipsHidden, setTipsHidden] = useState(
+    () => typeof window !== "undefined" && window.localStorage.getItem(TOUR_SKIP_STORAGE_KEY) === "1",
+  );
 
-  const canAccessConnector = !!status?.canAccessConnector;
-  const maxStep = canAccessConnector ? 4 : 3;
-  // Derive minimum step from server state (can't go back below what's done).
-  const minStep = !status?.smtpConnected ? 1 : !status?.hasPlatform ? 2 : 3;
+  useEffect(() => {
+    if (typeof notificationPrefs?.onboardingTipsEnabled !== "boolean") return;
+    const nextTipsHidden = !notificationPrefs.onboardingTipsEnabled;
+    if (nextTipsHidden) window.localStorage.setItem(TOUR_SKIP_STORAGE_KEY, "1");
+    else window.localStorage.removeItem(TOUR_SKIP_STORAGE_KEY);
+    setTipsHidden(nextTipsHidden);
+  }, [notificationPrefs?.onboardingTipsEnabled]);
+
+  const applyTourPreference = useCallback((tipsEnabled: boolean) => {
+    if (tipsEnabled) window.localStorage.removeItem(TOUR_SKIP_STORAGE_KEY);
+    else window.localStorage.setItem(TOUR_SKIP_STORAGE_KEY, "1");
+    setTipsHidden(!tipsEnabled);
+    window.dispatchEvent(new CustomEvent(ONBOARDING_TIPS_CHANGE_EVENT, { detail: { tipsEnabled } }));
+  }, []);
+
+  useEffect(() => {
+    const handleTourPreferenceChange = (event: Event) => {
+      const { tipsEnabled } = (event as CustomEvent<{ tipsEnabled?: unknown }>).detail ?? {};
+      if (typeof tipsEnabled !== "boolean") return;
+      if (tipsEnabled) window.localStorage.removeItem(TOUR_SKIP_STORAGE_KEY);
+      else window.localStorage.setItem(TOUR_SKIP_STORAGE_KEY, "1");
+      setTipsHidden(!tipsEnabled);
+    };
+    window.addEventListener(ONBOARDING_TIPS_CHANGE_EVENT, handleTourPreferenceChange);
+    return () => window.removeEventListener(ONBOARDING_TIPS_CHANGE_EVENT, handleTourPreferenceChange);
+  }, []);
+
+  const skipTour = useCallback(() => {
+    applyTourPreference(false);
+    updateNotificationPrefs.mutate({ onboardingTipsEnabled: false }, {
+      onError: () => {
+        applyTourPreference(true);
+        toast.error(t("onboardingWizard.tour.saveError", "We couldn't save your onboarding tips preference."));
+      },
+    });
+    toast.success(t("onboardingWizard.tour.skipSuccess"));
+  }, [applyTourPreference, t, updateNotificationPrefs]);
+
+  const showTour = useCallback(() => {
+    applyTourPreference(true);
+    updateNotificationPrefs.mutate({ onboardingTipsEnabled: true }, {
+      onError: () => {
+        applyTourPreference(false);
+        toast.error(t("onboardingWizard.tour.saveError", "We couldn't save your onboarding tips preference."));
+      },
+    });
+  }, [applyTourPreference, t, updateNotificationPrefs]);
+
+  const handleDismiss = useCallback(() => {
+    onDismiss();
+    dismissMutation.mutate(undefined, {
+      onError: () => {
+        toast.error(t("onboardingWizard.dismissError", "Setup was closed, but we couldn't save that preference. You can resume it later from Settings."));
+      },
+    });
+  }, [dismissMutation, onDismiss, t]);
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") handleDismiss();
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleDismiss]);
+
+  const { canAccessConnector, maxStep, minStep } = getOnboardingFlow(status);
   const [viewStep, setViewStep] = useState<number | null>(null);
-  // Auto-advance viewStep when server confirms a step is done.
-  const currentStep = Math.min(viewStep ?? minStep, maxStep);
+  // Auto-advance viewStep when server confirms a step is done
+  const currentStep = viewStep ?? minStep;
   const steps = [
     { id: 1, label: t("onboardingWizard.steps.connectEmail"), icon: Mail, done: !!status?.smtpConnected },
     { id: 2, label: t("onboardingWizard.steps.reviewPlatform"), icon: Globe, done: !!status?.hasPlatform },
@@ -832,8 +959,15 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
       ? [{ id: 4, label: t("onboardingWizard.steps.wpConnector", "WP Plugin"), icon: Plug2, done: false }]
       : []),
   ];
+  const remainingTipCount = tipsHidden
+    ? 0
+    : steps.reduce((total, step) => {
+      if (step.id < currentStep || step.done) return total;
+      const tipsForStep = step.id === 1 || step.id === 2 ? 2 : step.id === 3 ? 1 : 0;
+      return total + tipsForStep;
+    }, 0);
   function handleStepDone() {
-    // Auto-advance to the next available step when the server confirms completion.
+    // Auto-advance to next step when server confirms completion
     setViewStep((prev) => Math.min((prev ?? minStep) + 1, maxStep));
   }
   function handleNext() {
@@ -846,9 +980,16 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
   if (isLoading) return null;
 
   return (
+    <OnboardingTourContext.Provider value={{ tipsHidden }}>
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4"
       style={{ background: "rgba(0,0,0,0.75)", backdropFilter: "blur(4px)", paddingBottom: "calc(5rem + env(safe-area-inset-bottom))", paddingTop: "1rem" }}
+      role="dialog"
+      aria-modal="true"
+      aria-label={t("onboardingWizard.header.title")}
+      onClick={(event) => {
+        if (event.target === event.currentTarget) handleDismiss();
+      }}
     >
       <div
         className="w-full max-w-md rounded-3xl flex flex-col"
@@ -867,14 +1008,27 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
                 {t("onboardingWizard.header.title")}
               </span>
             </div>
-            <button
-              onClick={() => dismissMutation.mutate()}
-              className="p-1 rounded-lg transition-colors"
-              style={{ color: "var(--text-on-dark-primary)" }}
-              title={t("onboardingWizard.header.skipSetupTooltip")}
-            >
-              <X size={18} />
-            </button>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={tipsHidden ? showTour : skipTour}
+                className="rounded-lg px-2 py-1 text-xs font-bold transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
+                style={{ color: "var(--text-on-dark-secondary)" }}
+                title={tipsHidden ? t("onboardingWizard.tour.showTooltip") : t("onboardingWizard.tour.skipTooltip")}
+              >
+                {tipsHidden ? t("onboardingWizard.tour.show") : t("onboardingWizard.tour.skip")}
+              </button>
+              <button
+                type="button"
+                onClick={handleDismiss}
+                className="p-2 rounded-xl transition-colors hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
+                style={{ color: "var(--text-on-dark-primary)" }}
+                title={t("onboardingWizard.header.skipSetupTooltip")}
+                aria-label={t("onboardingWizard.header.skipSetupTooltip")}
+              >
+                <X size={18} />
+              </button>
+            </div>
           </div>
 
           {/* Tappable step bar */}
@@ -926,10 +1080,20 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
               );
             })}
           </div>
+          {!tipsHidden && remainingTipCount > 0 && (
+            <p className="mt-3 text-xs font-semibold" style={{ color: "oklch(0.83 0.10 80)" }} aria-live="polite">
+              {t("onboardingWizard.tour.tipsRemaining", {
+                count: remainingTipCount,
+                defaultValue: remainingTipCount === 1
+                  ? "1 tip remains in this setup"
+                  : `${remainingTipCount} tips remain in this setup`,
+              })}
+            </p>
+          )}
         </div>
 
         {/* Step content */}
-        <div className="px-6 py-6 overflow-y-auto flex-1">
+        <div key={currentStep} className="onboarding-step-fade px-6 py-6 overflow-y-auto flex-1">
           {/* Step title */}
           <div className="mb-5">
             <h2
@@ -944,15 +1108,20 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
               {currentStep === 1 && t("onboardingWizard.stepContent.step1.description")}
               {currentStep === 2 && t("onboardingWizard.stepContent.step2.description")}
               {currentStep === 3 && t("onboardingWizard.stepContent.step3.description")}
-              {currentStep === 4 && t("onboardingWizard.stepContent.step4.description", "Install the free connector plugin on your WordPress site to auto-sync customers.")}
+              {currentStep === 4 && t("onboardingWizard.stepContent.step4.description", "Install the connector plugin on your WordPress site to auto-sync customers.")}
             </p>
           </div>
 
           {currentStep === 1 && <Step1Email onDone={handleStepDone} />}
           {currentStep === 2 && <Step2Platform onDone={handleStepDone} />}
-          {currentStep === 3 && <Step3Send onDismiss={onDismiss} />}
+          {currentStep === 3 && (
+            <Step3Send
+              onDismiss={handleDismiss}
+              onOpenConnector={canAccessConnector ? () => setViewStep(4) : undefined}
+            />
+          )}
           {currentStep === 4 && canAccessConnector && (
-            <Step4Connector onDismiss={onDismiss} />
+            <Step4Connector onDismiss={handleDismiss} />
           )}
 
           {/* Prev / Next navigation */}
@@ -983,17 +1152,17 @@ export default function OnboardingWizard({ onDismiss }: OnboardingWizardProps) {
             )}
           </div>
           {/* Skip link */}
-          {currentStep < maxStep && currentStep !== 3 && (
-            <button
-              onClick={() => dismissMutation.mutate()}
-              className="w-full text-center text-xs mt-3"
-              style={{ color: "oklch(0.70 0.03 260)" }}
-            >
-              {t("onboardingWizard.navigation.skipSetupLater")}
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={handleDismiss}
+            className="w-full text-center text-xs mt-3 rounded-lg py-2 font-semibold transition-colors hover:bg-white/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
+            style={{ color: "oklch(0.78 0.03 260)" }}
+          >
+            {t("onboardingWizard.navigation.skipSetupLater")}
+          </button>
         </div>
       </div>
     </div>
+    </OnboardingTourContext.Provider>
   );
 }

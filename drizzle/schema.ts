@@ -1,4 +1,11 @@
-import { bigint, boolean, integer, pgEnum, pgTable, serial, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/pg-core";
+import { bigint, boolean, index, int, mysqlEnum, mysqlTable, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+
+// Keep the existing schema declarations readable while targeting the managed TiDB/MySQL database.
+const integer = int;
+const serial = (name: string) => int(name).autoincrement();
+const pgTable = mysqlTable;
+const pgEnum = <T extends [string, ...string[]]>(_typeName: string, values: T) =>
+  (columnName: string) => mysqlEnum(columnName, values);
 
 // ─── Enums ────────────────────────────────────────────────────────────────────
 export const roleEnum = pgEnum("role", ["user", "admin"]);
@@ -13,6 +20,23 @@ export const churnReasonEnum = pgEnum("churn_reason", ["too_expensive", "not_usi
 export const healthStatusEnum = pgEnum("health_status", ["ok", "fail"]);
 export const bulkProviderEnum = pgEnum("bulk_provider", ["sendgrid", "mailgun", "postmark"]);
 export const mailgunRegionEnum = pgEnum("mailgun_region", ["us", "eu"]);
+export const authDiagnosticEventTypeEnum = pgEnum("auth_diagnostic_event_type", [
+  "request_received",
+  "token_created",
+  "provider_accepted",
+  "provider_failed",
+  "verification_succeeded",
+  "verification_failed",
+]);
+export const authHealthTriggerEnum = pgEnum("auth_health_trigger", ["scheduled", "manual"]);
+export const supportTopicEnum = pgEnum("support_topic", ["billing", "onboarding", "technical"]);
+export const supportSubmissionStatusEnum = pgEnum("support_submission_status", ["open", "in_progress", "resolved"]);
+export const supportPriorityEnum = pgEnum("support_priority", ["low", "normal", "high", "urgent"]);
+export const supportTicketAlertTypeEnum = pgEnum("support_ticket_alert_type", ["assignment", "escalation", "mention", "sla_breach"]);
+export const supportQueueAssigneeScopeEnum = pgEnum("support_queue_assignee_scope", ["any", "unassigned", "specific"]);
+export const supportQueueSlaWindowEnum = pgEnum("support_queue_sla_window", ["overdue", "next_4_hours", "next_24_hours"]);
+export const supportQueueSortEnum = pgEnum("support_queue_sort", ["newest", "oldest", "priority", "assignee", "sla_soonest", "due_soonest"]);
+export const supportQueueViewVisibilityEnum = pgEnum("support_queue_view_visibility", ["private", "team"]);
 
 // ─── Tables ───────────────────────────────────────────────────────────────────
 
@@ -27,6 +51,9 @@ export const users = pgTable("users", {
   passwordHash: text("password_hash"),
   defaultFromEmail: text("default_from_email"),
   defaultFromName: text("default_from_name"),
+  avatarKey: text("avatar_key"),
+  avatarMimeType: varchar("avatar_mime_type", { length: 64 }),
+  avatarUpdatedAt: timestamp("avatar_updated_at"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
@@ -34,6 +61,20 @@ export const users = pgTable("users", {
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
+
+/** Additional OAuth identities retained when duplicate user accounts are combined. */
+export const userIdentityAliases = pgTable("user_identity_aliases", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  openId: varchar("openId", { length: 64 }).notNull().unique(),
+  loginMethod: varchar("loginMethod", { length: 64 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+}, (table) => [
+  index("user_identity_alias_user_idx").on(table.userId),
+]);
+
+export type UserIdentityAlias = typeof userIdentityAliases.$inferSelect;
+export type InsertUserIdentityAlias = typeof userIdentityAliases.$inferInsert;
 
 /** Magic link tokens for passwordless email login */
 export const magicLinks = pgTable("magic_links", {
@@ -47,6 +88,75 @@ export const magicLinks = pgTable("magic_links", {
 
 export type MagicLink = typeof magicLinks.$inferSelect;
 export type InsertMagicLink = typeof magicLinks.$inferInsert;
+
+/**
+ * Privacy-bounded magic-link lifecycle diagnostics. Full recipients and raw
+ * tokens are deliberately excluded; fingerprints are one-way HMAC values.
+ */
+export const authDiagnosticEvents = pgTable("auth_diagnostic_events", {
+  id: serial("id").primaryKey(),
+  requestId: varchar("request_id", { length: 64 }).notNull(),
+  eventType: authDiagnosticEventTypeEnum("event_type").notNull(),
+  outcome: healthStatusEnum("outcome").notNull(),
+  emailFingerprint: varchar("email_fingerprint", { length: 64 }),
+  emailMasked: varchar("email_masked", { length: 320 }),
+  tokenFingerprint: varchar("token_fingerprint", { length: 64 }),
+  providerMessageId: varchar("provider_message_id", { length: 128 }),
+  detailCode: varchar("detail_code", { length: 64 }),
+  detailMessage: varchar("detail_message", { length: 500 }),
+  durationMs: integer("duration_ms"),
+  occurredAt: bigint("occurred_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("auth_diag_request_idx").on(table.requestId),
+  index("auth_diag_email_idx").on(table.emailFingerprint),
+  index("auth_diag_occurred_idx").on(table.occurredAt),
+]);
+
+export type AuthDiagnosticEvent = typeof authDiagnosticEvents.$inferSelect;
+export type InsertAuthDiagnosticEvent = typeof authDiagnosticEvents.$inferInsert;
+
+/** Results from deterministic, non-destructive production authentication checks. */
+export const authHealthChecks = pgTable("auth_health_checks", {
+  id: serial("id").primaryKey(),
+  triggerSource: authHealthTriggerEnum("trigger_source").notNull(),
+  scheduleCronTaskUid: varchar("schedule_cron_task_uid", { length: 65 }),
+  overallStatus: healthStatusEnum("overall_status").notNull(),
+  configStatus: healthStatusEnum("config_status").notNull(),
+  databaseStatus: healthStatusEnum("database_status").notNull(),
+  userSchemaStatus: healthStatusEnum("user_schema_status").notNull(),
+  magicLinkSchemaStatus: healthStatusEnum("magic_link_schema_status").notNull(),
+  sessionStatus: healthStatusEnum("session_status").notNull(),
+  emailProviderStatus: healthStatusEnum("email_provider_status").notNull(),
+  providerName: varchar("provider_name", { length: 64 }),
+  failureCode: varchar("failure_code", { length: 64 }),
+  failureDetail: varchar("failure_detail", { length: 500 }),
+  durationMs: integer("duration_ms").notNull(),
+  checkedAt: bigint("checked_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("auth_health_checked_idx").on(table.checkedAt),
+  index("auth_health_task_uid_idx").on(table.scheduleCronTaskUid),
+]);
+
+export type AuthHealthCheck = typeof authHealthChecks.$inferSelect;
+export type InsertAuthHealthCheck = typeof authHealthChecks.$inferInsert;
+
+/** Privacy-safe fleet SMTP health aggregates captured by the managed scheduler. */
+export const smtpHealthSnapshots = pgTable("smtp_health_snapshot", {
+  id: serial("id").primaryKey(),
+  triggerSource: authHealthTriggerEnum("trigger_source").notNull(),
+  scheduleCronTaskUid: varchar("schedule_cron_task_uid", { length: 65 }),
+  totalAccounts: integer("total_accounts").notNull(),
+  healthyAccounts: integer("healthy_accounts").notNull(),
+  failedAccounts: integer("failed_accounts").notNull(),
+  durationMs: integer("duration_ms").notNull(),
+  checkedAt: bigint("checked_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("smtp_health_checked_idx").on(table.checkedAt),
+  index("smtp_health_task_uid_idx").on(table.scheduleCronTaskUid),
+]);
+
+export type SmtpHealthSnapshot = typeof smtpHealthSnapshots.$inferSelect;
+export type InsertSmtpHealthSnapshot = typeof smtpHealthSnapshots.$inferInsert;
 
 /** Stores Gmail OAuth tokens for each business owner */
 export const gmailTokens = pgTable("gmail_tokens", {
@@ -89,8 +199,13 @@ export const businessProfiles = pgTable("business_profiles", {
   dailySendLimit: integer("dailySendLimit").default(50).notNull(),
   // Follow-up reminder settings — 1 = enabled (default), 0 = disabled
   followUpEnabled: integer("followUpEnabled").default(1).notNull(),
+  // Stage-specific follow-up switches — enabled by default for backward compatibility
+  followUpFirstEnabled: integer("followUpFirstEnabled").default(1).notNull(),
+  followUpSecondEnabled: integer("followUpSecondEnabled").default(1).notNull(),
   // Days after initial send before step-1 follow-up (default 3, range 1-14)
   followUpDelayDays: integer("followUpDelayDays").default(3).notNull(),
+  // Days after step-1 before the step-2 follow-up (default 7, range 1-14)
+  followUpSecondDelayDays: integer("followUpSecondDelayDays").default(7).notNull(),
   // Re-engagement email — 1 = enabled (default), 0 = disabled
   reEngagementEnabled: integer("reEngagementEnabled").default(1).notNull(),
   // Referral code — unique 8-char code used to generate share links (getphame.app?ref=CODE)
@@ -229,7 +344,7 @@ export const emailTemplates = pgTable("email_templates", {
 export type EmailTemplate = typeof emailTemplates.$inferSelect;
 export type InsertEmailTemplate = typeof emailTemplates.$inferInsert;
 
-/** Follow-up reminders — scheduled 3-day and 10-day follow-ups for sent review requests */
+/** Follow-up reminders — scheduled follow-ups with immutable timing snapshots for reporting */
 export const followUpReminders = pgTable("follow_up_reminders", {
   id: serial("id").primaryKey(),
   userId: integer("userId").notNull(),
@@ -239,8 +354,13 @@ export const followUpReminders = pgTable("follow_up_reminders", {
   scheduledAt: bigint("scheduledAt", { mode: "number" }).notNull(), // Unix ms when to send
   sentAt: bigint("sentAt", { mode: "number" }), // null = not yet sent
   status: reminderStatusEnum("status").default("pending").notNull(),
-  /** 1 = first follow-up (day 3), 2 = second follow-up (day 10) */
+  /** 1 = first follow-up, 2 = second follow-up */
   sequenceStep: integer("sequenceStep").default(1).notNull(),
+  // Immutable configuration snapshot. Null identifies legacy rows excluded from timing reports.
+  firstDelayDaysSnapshot: integer("firstDelayDaysSnapshot"),
+  secondDelayDaysSnapshot: integer("secondDelayDaysSnapshot"),
+  firstStageEnabledSnapshot: integer("firstStageEnabledSnapshot"),
+  secondStageEnabledSnapshot: integer("secondStageEnabledSnapshot"),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
@@ -318,6 +438,31 @@ export type SmtpCredential = typeof smtpCredentials.$inferSelect;
 export type InsertSmtpCredential = typeof smtpCredentials.$inferInsert;
 
 /**
+ * Durable snapshots of administrator-initiated SMTP removals. Identity fields
+ * are intentionally denormalized so the audit trail survives account deletion.
+ */
+export const smtpAdminAuditLogs = pgTable("smtp_admin_audit_logs", {
+  id: serial("id").primaryKey(),
+  actorUserId: integer("actor_user_id").notNull(),
+  actorName: varchar("actor_name", { length: 255 }),
+  actorEmail: varchar("actor_email", { length: 320 }),
+  targetUserId: integer("target_user_id").notNull(),
+  targetName: varchar("target_name", { length: 255 }),
+  targetEmail: varchar("target_email", { length: 320 }),
+  smtpUser: varchar("smtp_user", { length: 320 }).notNull(),
+  action: varchar("action", { length: 64 }).notNull(),
+  outcome: varchar("outcome", { length: 32 }).notNull(),
+  occurredAt: bigint("occurred_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("smtp_admin_audit_occurred_idx").on(table.occurredAt),
+  index("smtp_admin_audit_actor_idx").on(table.actorUserId),
+  index("smtp_admin_audit_target_idx").on(table.targetUserId),
+]);
+
+export type SmtpAdminAuditLog = typeof smtpAdminAuditLogs.$inferSelect;
+export type InsertSmtpAdminAuditLog = typeof smtpAdminAuditLogs.$inferInsert;
+
+/**
  * Tracks email open and click events for review request emails.
  * Each row represents one open (pixel load) or one click (redirect through tracking link).
  * requestId links back to customer_requests; templateId is nullable (null = no template used).
@@ -336,6 +481,165 @@ export const emailEvents = pgTable("email_events", {
 
 export type EmailEvent = typeof emailEvents.$inferSelect;
 export type InsertEmailEvent = typeof emailEvents.$inferInsert;
+
+/**
+ * Public product-support submissions. Attachment bytes remain in object storage;
+ * this table stores only the metadata necessary for durable support operations.
+ */
+export const supportSubmissions = pgTable("support_submissions", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 120 }),
+  email: varchar("email", { length: 320 }).notNull(),
+  topic: supportTopicEnum("topic").notNull(),
+  subject: varchar("subject", { length: 120 }).notNull(),
+  message: text("message").notNull(),
+  status: supportSubmissionStatusEnum("status").notNull().default("open"),
+  // New and existing tickets start at Normal; only internal administrators can alter priority.
+  priority: supportPriorityEnum("priority").notNull().default("normal"),
+  // Nullable explicitly represents an unassigned ticket; eligibility is enforced by admin mutations.
+  assigneeUserId: integer("assignee_user_id"),
+  // A manual operator-set business deadline remains distinct from the server-derived SLA target.
+  dueAt: timestamp("due_at"),
+  slaTargetAt: timestamp("sla_target_at"),
+  // The first recorded administrator action; used for honest first-response reporting.
+  firstRespondedAt: timestamp("first_responded_at"),
+  attachmentKey: varchar("attachment_key", { length: 512 }),
+  attachmentFilename: varchar("attachment_filename", { length: 255 }),
+  attachmentMimeType: varchar("attachment_mime_type", { length: 64 }),
+  attachmentSize: integer("attachment_size"),
+  notificationSentAt: timestamp("notification_sent_at"),
+  resolvedAt: timestamp("resolved_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow().onUpdateNow(),
+}, (table) => [
+  index("support_submissions_status_created_idx").on(table.status, table.createdAt),
+  index("support_submissions_topic_created_idx").on(table.topic, table.createdAt),
+  index("support_submissions_priority_status_created_idx").on(table.priority, table.status, table.createdAt),
+  index("support_submissions_assignee_status_created_idx").on(table.assigneeUserId, table.status, table.createdAt),
+  index("support_submissions_sla_status_idx").on(table.slaTargetAt, table.status),
+  index("support_submissions_due_status_idx").on(table.dueAt, table.status),
+  index("support_submissions_first_response_idx").on(table.firstRespondedAt, table.createdAt),
+]);
+
+export type SupportSubmission = typeof supportSubmissions.$inferSelect;
+export type InsertSupportSubmission = typeof supportSubmissions.$inferInsert;
+
+/**
+ * Private operator collaboration. Notes are never returned to public support routes.
+ */
+export const supportInternalNotes = pgTable("support_internal_notes", {
+  id: serial("id").primaryKey(),
+  ticketId: integer("ticket_id").notNull(),
+  authorUserId: integer("author_user_id").notNull(),
+  // Stores sanitized, constrained rich HTML. Existing plain notes remain safe text.
+  body: text("body").notNull(),
+  // Plain-text derivative for accessible fallbacks and future internal search/export.
+  bodyPlainText: text("body_plain_text"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  index("support_internal_notes_ticket_created_idx").on(table.ticketId, table.createdAt),
+  index("support_internal_notes_author_created_idx").on(table.authorUserId, table.createdAt),
+]);
+
+export type SupportInternalNote = typeof supportInternalNotes.$inferSelect;
+export type InsertSupportInternalNote = typeof supportInternalNotes.$inferInsert;
+
+/**
+ * Authorized internal recipients selected from the administrator directory.
+ * Mention relationships are intentionally separate from the note display text.
+ */
+export const supportInternalNoteMentions = pgTable("support_internal_note_mentions", {
+  id: serial("id").primaryKey(),
+  noteId: integer("note_id").notNull(),
+  mentionedUserId: integer("mentioned_user_id").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("support_note_mentions_note_user_unique").on(table.noteId, table.mentionedUserId),
+  index("support_note_mentions_recipient_created_idx").on(table.mentionedUserId, table.createdAt),
+]);
+
+export type SupportInternalNoteMention = typeof supportInternalNoteMentions.$inferSelect;
+export type InsertSupportInternalNoteMention = typeof supportInternalNoteMentions.$inferInsert;
+
+/**
+ * Recipient-scoped in-app events for ticket ownership and escalation only.
+ * Customer content stays in the ticket, never in the notification payload.
+ */
+export const supportTicketAlerts = pgTable("support_ticket_alerts", {
+  id: serial("id").primaryKey(),
+  ticketId: integer("ticket_id").notNull(),
+  recipientUserId: integer("recipient_user_id").notNull(),
+  actorUserId: integer("actor_user_id").notNull(),
+  type: supportTicketAlertTypeEnum("type").notNull(),
+  readAt: timestamp("read_at"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  index("support_ticket_alerts_recipient_read_created_idx").on(table.recipientUserId, table.readAt, table.createdAt),
+  index("support_ticket_alerts_ticket_type_created_idx").on(table.ticketId, table.type, table.createdAt),
+]);
+
+export type SupportTicketAlert = typeof supportTicketAlerts.$inferSelect;
+export type InsertSupportTicketAlert = typeof supportTicketAlerts.$inferInsert;
+
+/**
+ * Administrator-owned saved support queue controls. Only validated filter and
+ * sort fields are persisted; customer or ticket content is never stored here.
+ */
+export const supportSavedQueueViews = pgTable("support_saved_queue_views", {
+  id: serial("id").primaryKey(),
+  ownerUserId: integer("owner_user_id").notNull(),
+  name: varchar("name", { length: 80 }).notNull(),
+  normalizedName: varchar("normalized_name", { length: 80 }).notNull(),
+  // Private views stay owner-only; team views are discoverable by other support administrators.
+  visibility: supportQueueViewVisibilityEnum("visibility").notNull().default("private"),
+  status: supportSubmissionStatusEnum("status"),
+  topic: supportTopicEnum("topic"),
+  priority: supportPriorityEnum("priority"),
+  assigneeScope: supportQueueAssigneeScopeEnum("assignee_scope").notNull().default("any"),
+  assigneeUserId: integer("assignee_user_id"),
+  slaWindow: supportQueueSlaWindowEnum("sla_window"),
+  sort: supportQueueSortEnum("sort").notNull().default("newest"),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("support_saved_queue_views_owner_name_unique").on(table.ownerUserId, table.normalizedName),
+  index("support_saved_queue_views_owner_updated_idx").on(table.ownerUserId, table.updatedAt),
+  index("support_saved_queue_views_visibility_updated_idx").on(table.visibility, table.updatedAt),
+]);
+
+export type SupportSavedQueueView = typeof supportSavedQueueViews.$inferSelect;
+export type InsertSupportSavedQueueView = typeof supportSavedQueueViews.$inferInsert;
+
+/**
+ * Singleton configuration for private, recipient-scoped urgent SLA escalation.
+ * Ticket/customer data is intentionally not copied into the policy tables.
+ */
+export const supportEscalationPolicies = pgTable("support_escalation_policies", {
+  id: serial("id").primaryKey(),
+  policyKey: varchar("policy_key", { length: 64 }).notNull().unique(),
+  breachThresholdMinutes: integer("breach_threshold_minutes").notNull().default(0),
+  includeAssignee: boolean("include_assignee").notNull().default(true),
+  includeAllAdminsWhenUnassigned: boolean("include_all_admins_when_unassigned").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export type SupportEscalationPolicy = typeof supportEscalationPolicies.$inferSelect;
+export type InsertSupportEscalationPolicy = typeof supportEscalationPolicies.$inferInsert;
+
+/** Explicit administrators who receive an urgent SLA-breach alert under the singleton policy. */
+export const supportEscalationPolicyRecipients = pgTable("support_escalation_policy_recipients", {
+  id: serial("id").primaryKey(),
+  policyId: integer("policy_id").notNull(),
+  recipientUserId: integer("recipient_user_id").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("support_escalation_policy_recipients_policy_user_unique").on(table.policyId, table.recipientUserId),
+  index("support_escalation_policy_recipients_recipient_idx").on(table.recipientUserId),
+]);
+
+export type SupportEscalationPolicyRecipient = typeof supportEscalationPolicyRecipients.$inferSelect;
+export type InsertSupportEscalationPolicyRecipient = typeof supportEscalationPolicyRecipients.$inferInsert;
 
 /**
  * Churn survey responses — one row per cancellation.
@@ -407,10 +711,7 @@ export const apiImportEvents = pgTable("api_import_events", {
 export type ApiImportEvent = typeof apiImportEvents.$inferSelect;
 export type InsertApiImportEvent = typeof apiImportEvents.$inferInsert;
 
-/**
- * Koalendar connection — one unguessable webhook endpoint per paid Get Phame account.
- * The raw token is intentionally stored because it must be shown again in Settings.
- */
+/** One private Koalendar webhook endpoint per Get Phame account. */
 export const koalendarConnections = pgTable("koalendar_connections", {
   id: serial("id").primaryKey(),
   userId: integer("userId").notNull().unique(),
@@ -424,8 +725,8 @@ export type KoalendarConnection = typeof koalendarConnections.$inferSelect;
 export type InsertKoalendarConnection = typeof koalendarConnections.$inferInsert;
 
 /**
- * Koalendar booking queue — receives booking lifecycle events immediately and imports
- * the invitee only after the latest scheduled end time has passed.
+ * Koalendar booking state. Only the invitee identity and fields required to
+ * schedule, cancel, reschedule, deduplicate, and retry the eventual import are retained.
  */
 export const koalendarBookings = pgTable("koalendar_bookings", {
   id: serial("id").primaryKey(),
@@ -436,8 +737,6 @@ export const koalendarBookings = pgTable("koalendar_bookings", {
   status: varchar("status", { length: 32 }).notNull().default("pending"),
   inviteeName: varchar("inviteeName", { length: 255 }).notNull(),
   inviteeEmail: varchar("inviteeEmail", { length: 320 }).notNull(),
-  bookingPageId: varchar("bookingPageId", { length: 128 }),
-  bookingPageName: varchar("bookingPageName", { length: 255 }),
   startsAt: bigint("startsAt", { mode: "number" }).notNull(),
   endsAt: bigint("endsAt", { mode: "number" }).notNull(),
   canceledAt: bigint("canceledAt", { mode: "number" }),
@@ -448,9 +747,10 @@ export const koalendarBookings = pgTable("koalendar_bookings", {
   lastError: text("lastError"),
   createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
   updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
-}, (table) => ({
-  userBookingUnique: uniqueIndex("koalendar_bookings_user_external_unique").on(table.userId, table.externalBookingId),
-}));
+}, (table) => [
+  uniqueIndex("koalendar_bookings_user_external_unique").on(table.userId, table.externalBookingId),
+  index("koalendar_bookings_due_idx").on(table.status, table.nextAttemptAt),
+]);
 export type KoalendarBooking = typeof koalendarBookings.$inferSelect;
 export type InsertKoalendarBooking = typeof koalendarBookings.$inferInsert;
 
@@ -517,6 +817,7 @@ export const notificationPrefs = pgTable("notification_prefs", {
   userId: integer("userId").notNull().unique(),
   wooAutoImportNotify: boolean("wooAutoImportNotify").notNull().default(true),
   notifyOnEmailOpen: boolean("notifyOnEmailOpen").notNull().default(false),
+  onboardingTipsEnabled: boolean("onboardingTipsEnabled").notNull().default(true),
   updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
 });
 export type NotificationPref = typeof notificationPrefs.$inferSelect;
@@ -601,8 +902,8 @@ export type InsertMagicLinkToken = typeof magicLinkTokens.$inferInsert;
 export const leads = pgTable("leads", {
   id: serial("id").primaryKey(),
   email: varchar("email", { length: 320 }).notNull().unique(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  guideSentAt: timestamp("guideSentAt"),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+  guideSentAt: bigint("guideSentAt", { mode: "number" }),
 });
 export type Lead = typeof leads.$inferSelect;
 export type InsertLead = typeof leads.$inferInsert;

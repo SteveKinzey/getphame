@@ -6,13 +6,13 @@ import { trpc } from "@/lib/trpc";
 import { Send, Star, Mail, User, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser, Bell, BellOff, CheckCircle2 } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
 import ContactPickerModal from "@/components/ContactPickerModal";
-import { FREE_LIMIT } from "@shared/const";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
 import LanguageFlyout from "@/components/LanguageFlyout";
+import { completeSuccessfulRequest } from "@/lib/onboardingFlow";
 
 const SUCCESS_IMG =
   "https://assets.getphame.app/rr-send-success.webp";
@@ -40,6 +40,10 @@ export default function SendRequestPage() {
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
   const [reminderScheduled, setReminderScheduled] = useState(false);
   const [lastRequestId, setLastRequestId] = useState<number | null>(null);
+  const trpcUtils = trpc.useUtils();
+  const dismissOnboarding = trpc.onboarding.dismiss.useMutation({
+    onSuccess: () => trpcUtils.onboarding.status.invalidate(),
+  });
   const { data: reminderSettings } = trpc.reminders.getSettings.useQuery();
   const scheduleFollowUpNow = trpc.reminders.scheduleFollowUp.useMutation({
     onSuccess: () => {
@@ -69,9 +73,13 @@ export default function SendRequestPage() {
 
   const sendRequest = trpc.requests.send.useMutation({
     onSuccess: (data) => {
-      setSending(false);
-      setSent(true);
-      setLastRequestId(data.requestId ?? null);
+      completeSuccessfulRequest({
+        requestId: data.requestId,
+        setSending,
+        setSent,
+        setLastRequestId,
+        persistDismiss: () => dismissOnboarding.mutate(),
+      });
       track("send_request", { platform: activePlatform?.platform ?? "unknown" });
       toast.success(t("toasts.reviewRequestSent", { defaultValue: "Review request sent!" }));
     },
@@ -400,10 +408,8 @@ export default function SendRequestPage() {
 
         {/* ── Free-tier usage counter ─────────────────────────────────────── */}
         {profile && profile.tier === 'free' && (() => {
-          const totalSent = (profile as any).totalSent ?? 0;
-          const remaining = Math.max(0, FREE_LIMIT - totalSent);
-          const atLimit = totalSent >= FREE_LIMIT;
-          if (atLimit) {
+          const quota = profile.freeQuota;
+          if (quota.blocked) {
             return (
               <div
                 className="flex items-start gap-3 px-4 py-4 rounded-2xl"
@@ -415,7 +421,14 @@ export default function SendRequestPage() {
                     {t("page.freeLimitReached", { defaultValue: "Free limit reached" })}
                   </p>
                   <p className="text-xs mb-2" style={{ color: 'oklch(0.45 0.05 260)' }}>
-                    {t("page.freeLimitReachedDesc", { defaultValue: `You've used all ${FREE_LIMIT} free review requests. Upgrade to Pro to keep sending.`, FREE_LIMIT })}
+                    {quota.nextAvailableAt
+                      ? t("page.freeRollingLimitReachedDesc", {
+                          defaultValue: "You've used all 5 requests in your current rolling 30-day allowance. Your next request becomes available on {{date}}, or upgrade to keep sending now.",
+                          date: new Date(quota.nextAvailableAt).toLocaleDateString(),
+                        })
+                      : t("page.freeInitialLimitReachedDesc", {
+                          defaultValue: "You've used your 10 initial requests. Your recurring allowance is 5 requests every rolling 30 days, or upgrade for unlimited requests.",
+                        })}
                   </p>
                   <button
                     onClick={() => navigate('/upgrade')}
@@ -437,7 +450,15 @@ export default function SendRequestPage() {
               <div className="flex items-center gap-2">
                 <Zap size={16} style={{ color: 'oklch(0.55 0.18 260)' }} />
                 <span className="text-xs font-semibold" style={{ color: 'oklch(0.35 0.06 260)' }}>
-                  {t("page.freePlanRemaining", { defaultValue: `Free plan: ${remaining} of ${FREE_LIMIT} sends remaining`, remaining, FREE_LIMIT })}
+                  {quota.phase === "initial"
+                    ? t("page.freeInitialRemaining", {
+                        defaultValue: "Free plan: {{remaining}} of 10 initial requests remaining — then 5 every rolling 30 days",
+                        remaining: quota.remaining,
+                      })
+                    : t("page.freeRollingRemaining", {
+                        defaultValue: "Free plan: {{remaining}} of 5 requests remaining in your rolling 30-day allowance",
+                        remaining: quota.remaining,
+                      })}
                 </span>
               </div>
               <button

@@ -1,30 +1,33 @@
 import { ArrowRight } from "lucide-react";
 import FadeUp, { StaggerChildren } from "./FadeUp";
-
-const steps = [
-  {
-    number: "1",
-    title: "Connect your email",
-    description: "Link your Gmail, Outlook, or any SMTP email in 60 seconds. Credentials encrypted with AES-256.",
-  },
-  {
-    number: "2",
-    title: "Add your review link",
-    description: "Paste your Google, Yelp, TripAdvisor, or any review platform link. Switch platforms anytime.",
-  },
-  {
-    number: "3",
-    title: "Import your customers",
-    description: "Upload a CSV, sync from WooCommerce, or add contacts manually. We validate emails automatically.",
-  },
-  {
-    number: "4",
-    title: "Send & track results",
-    description: "Hit send. Each customer gets a personal email from you. Track opens, clicks, and new reviews live.",
-  },
-];
+import { useTranslation } from "react-i18next";
 
 export default function HowItWorks() {
+  const { t } = useTranslation();
+
+  const steps = [
+    {
+      number: "1",
+      title: t("landing.howItWorks.setupSteps.step1.title", { defaultValue: "Connect your email" }),
+      description: t("landing.howItWorks.setupSteps.step1.description", { defaultValue: "Link your Gmail, Outlook, or any SMTP email in 60 seconds. Credentials encrypted with AES-256." }),
+    },
+    {
+      number: "2",
+      title: t("landing.howItWorks.setupSteps.step2.title", { defaultValue: "Add your review link" }),
+      description: t("landing.howItWorks.setupSteps.step2.description", { defaultValue: "Paste your Google, Yelp, TripAdvisor, or any review platform link. Switch platforms anytime." }),
+    },
+    {
+      number: "3",
+      title: t("landing.howItWorks.setupSteps.step3.title", { defaultValue: "Import your customers" }),
+      description: t("landing.howItWorks.setupSteps.step3.description", { defaultValue: "Upload a CSV, sync from WooCommerce, or add contacts manually. We validate emails automatically." }),
+    },
+    {
+      number: "4",
+      title: t("landing.howItWorks.setupSteps.step4.title", { defaultValue: "Send & track results" }),
+      description: t("landing.howItWorks.setupSteps.step4.description", { defaultValue: "Hit send. Each customer gets a personal email from you. Track opens, clicks, and new reviews live." }),
+    },
+  ];
+
   return (
     <section id="how-it-works" className="py-20 md:py-28 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[oklch(0.12_0.025_250)] via-[#0a1628] to-[#0a1628]" />
@@ -34,23 +37,23 @@ export default function HowItWorks() {
           {/* Left — sticky headline */}
           <FadeUp className="lg:col-span-2 lg:sticky lg:top-28">
             <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
-              Setup in 4 steps
+              {t("landing.howItWorks.setupInSteps", { defaultValue: "Setup in 4 steps" })}
             </p>
             <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
-              Two minutes to your first review request
+              {t("landing.howItWorks.headline", { defaultValue: "Two minutes to your first review request" })}
             </h2>
             <p className="text-lg text-slate-200 font-medium mb-8">
-              No technical skills needed. No onboarding calls. Just connect, import, and send.
+              {t("landing.howItWorks.subtitle", { defaultValue: "No technical skills needed. No onboarding calls. Just connect, import, and send." })}
             </p>
             <a
               href="/onboarding"
               className="inline-flex items-center gap-2 px-7 py-4 bg-primary text-primary-foreground font-bold text-base rounded-xl hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_30px_oklch(0.78_0.15_75/0.2)]"
             >
-              Get Started Free
+              {t("landing.howItWorks.getStartedButton", { defaultValue: "Get Started Free" })}
               <ArrowRight size={18} />
             </a>
             <p className="text-sm text-slate-300 font-medium mt-3">
-              Takes less than 2 minutes to set up
+              {t("landing.howItWorks.setupTime", { defaultValue: "Takes less than 2 minutes to set up" })}
             </p>
           </FadeUp>
 

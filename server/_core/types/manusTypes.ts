@@ -66,4 +66,6 @@ export interface GetUserInfoWithJwtResponse {
   email?: string | null;
   platform?: string | null;
   loginMethod?: string | null;
+  /** Cron-only task identity populated for platform Heartbeat callbacks. */
+  taskUid?: string | null;
 }

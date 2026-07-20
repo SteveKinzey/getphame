@@ -1,17 +1,25 @@
 import FadeUp, { StaggerChildren } from "./FadeUp";
-
-const stats = [
-  { value: "10×", label: "more reviews vs. asking in person" },
-  { value: "< 2 min", label: "average setup time" },
-  { value: "Your inbox", label: "emails sent from your own address" },
-  { value: "42%", label: "average response rate" },
-];
-
-const industries = [
-  "Photographers", "Cafés & Restaurants", "Home Services", "Clinics & Salons", "Agencies", "WooCommerce Stores"
-];
+import { useTranslation } from "react-i18next";
 
 export default function Stats() {
+  const { t } = useTranslation();
+
+  const stats = [
+    { value: "10×", label: t("landing.stats.moreReviewsLabel", { defaultValue: "more reviews vs. asking in person" }) },
+    { value: "< 2 min", label: t("landing.stats.averageSetupTimeLabel", { defaultValue: "average setup time" }) },
+    { value: t("landing.stats.emailsSentValue", { defaultValue: "Your inbox" }), label: t("landing.stats.emailsSentLabel", { defaultValue: "emails sent from your own address" }) },
+    { value: "42%", label: t("landing.stats.averageResponseRateLabel", { defaultValue: "average response rate" }) },
+  ];
+
+  const industries = [
+    t("landing.stats.industryPhotographers", { defaultValue: "Photographers" }),
+    t("landing.stats.industryCafesRestaurants", { defaultValue: "Cafés & Restaurants" }),
+    t("landing.stats.industryHomeServices", { defaultValue: "Home Services" }),
+    t("landing.stats.industryClinicsSalons", { defaultValue: "Clinics & Salons" }),
+    t("landing.stats.industryAgencies", { defaultValue: "Agencies" }),
+    t("landing.stats.industryWooCommerceStores", { defaultValue: "WooCommerce Stores" }),
+  ];
+
   return (
     <section className="py-16 md:py-24 relative overflow-hidden">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary/3 rounded-full blur-[100px]" />
@@ -19,7 +27,7 @@ export default function Stats() {
       <div className="container relative z-10">
         <FadeUp className="text-center mb-10">
           <h2 className="font-display font-bold text-2xl md:text-3xl text-white mb-3">
-            Built for businesses that run on reputation
+            {t("landing.stats.heading", { defaultValue: "Built for businesses that run on reputation" })}
           </h2>
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-slate-200 font-bold">
             {industries.map((ind, i) => (

@@ -1,0 +1,81 @@
+# Project TODO
+
+- [x] Inspect the active email magic-link client and server routes
+- [x] Register the canonical `/api/auth/magic-link` endpoint in the production server
+- [x] Align every public email-login form with the canonical endpoint
+- [x] Add or update regression tests for route registration and client endpoint alignment
+- [x] Run focused tests, TypeScript checks, and a production build
+- [x] Verify the repaired endpoint in the live preview
+- [x] Save a publishable checkpoint for the authentication repair
+- [x] Confirm the repaired magic-link endpoint is live on both GetPhame production domains
+- [x] Test the deployed magic-link request endpoint with a real deliverable email address
+- [x] Complete a real magic-link sign-in on the deployed domain
+- [x] Diagnose the database SSL failures affecting background schedulers
+- [x] Restore the managed TiDB/MySQL database dialect for scheduler and authentication queries
+- [x] Add regression coverage that prevents a PostgreSQL driver/configuration mismatch
+- [x] Run focused tests, all 57 project tests, TypeScript checks, production build, and local scheduler log verification
+- [x] Save a publishable checkpoint for the scheduler database SSL repair
+- [x] Trace the deployed `EMAIL_NOT_CONFIGURED` response to the exact missing mail transport configuration
+- [x] Restore a single administrator-managed transport for magic-link authentication emails
+- [x] Add regression coverage for magic-link delivery configuration and structured error handling
+- [x] Run focused tests, TypeScript checks, production build, and local delivery-path verification
+- [x] Save a publishable checkpoint for the magic-link email-delivery repair
+- [x] Close the Google Workspace SMTP transport branch as superseded by the verified Resend transport
+- [x] Close the `no-reply@getphame.com` SMTP sender branch as superseded by `no-reply@getphame.app`
+- [x] Remove the obsolete Google App Password dependency from the selected delivery architecture
+- [x] Close Google App Password validation as unnecessary for the Resend-backed flow
+- [x] Verify magic-link delivery and sign-in end to end on the deployed GetPhame domain
+- [x] Close the Cloudflare-native sending implementation branch after selecting the verified Resend API path
+- [x] Close the broader Cloudflare Email Routing and Workers comparison as superseded by the working Resend implementation
+- [x] Select Resend as the lowest-maintenance production sender architecture
+- [x] Evaluate Cloudflare Access email OTP as an alternative authentication layer
+- [x] Retain native GetPhame magic-link user creation and application session issuance
+- [x] Close the Cloudflare Access bypass-prevention branch as not applicable because Cloudflare Access was not selected or enabled
+- [x] Preserve public signup for any valid customer email through GetPhame’s native magic-link flow
+- [x] Reject Cloudflare Access OTP as the primary public SaaS authentication layer
+- [x] Select the branded `no-reply@getphame.app` Resend sender without Steve’s Google password
+- [x] Close the `getphame.com` nameserver lookup branch after retaining its current DNS provider
+- [x] Close the `getphame.com` Namecheap DNS audit branch as unnecessary
+- [x] Close the `getphame.com` Cloudflare record-copy branch as unnecessary
+- [x] Cancel the `getphame.com` nameserver migration before making changes
+- [x] Close nameserver propagation checks because the migration was cancelled
+- [x] Complete Resend DKIM, SPF, and return-path verification on the existing `getphame.app` Cloudflare zone instead
+- [x] Run an end-to-end deployed GetPhame magic-link delivery and sign-in test
+- [x] Stop the unnecessary `getphame.com` nameserver migration and leave that domain unchanged
+- [x] Create and verify `getphame.app` as the Resend transactional sender domain
+- [x] Publish the Resend DKIM, SPF, and return-path records in the existing `getphame.app` Cloudflare zone
+- [x] Change the branded system sender to `GetPhame <no-reply@getphame.app>`
+- [x] Update sender-domain regression coverage for `getphame.app`
+- [x] Verify manual production magic-link delivery and sign-in for `steve@sk-america.com` from `no-reply@getphame.app`
+- [x] Verify current-build magic-link delivery to `steve@sk-america.com` from `no-reply@getphame.app`
+- [x] Publish the checkpoint containing the Resend-backed magic-link route
+- [x] Verify the live `getphame.app` endpoint returns JSON and complete the magic-link sign-in
+- [x] Bind the existing `getphame.app` hostname to the current published Manus deployment in Settings → Domains
+- [x] Confirm `getphame.app` routes to the same live build as `getphame.manus.space` before sending the final magic link
+- [x] Capture the failed live magic-link verification redirect and corresponding production error
+- [x] Diagnose whether token lookup, user upsert, session signing, cookie scope, or redirect logic caused the failed sign-in
+- [x] Add regression coverage for the identified verification/session failure
+- [x] Repair, test, checkpoint, publish, and revalidate successful sign-in on `getphame.app`
+- [x] Reconcile the restored shared branch after the sandbox reset removed uncheckpointed auth-monitoring work
+- [x] Define a production-safe auth health contract that checks configuration, database connectivity, required auth schema access, session-signing configuration, and email-provider reachability without creating users, consuming tokens, issuing sessions, or sending email
+- [x] Add privacy-bounded magic-link diagnostic and auth health-check schema with additive migration and retention helpers
+- [x] Instrument magic-link request, provider acceptance/failure, and verification outcomes without storing full recipients or raw tokens
+- [x] Add an authenticated scheduled callback for deterministic production auth checks and bounded retention cleanup
+- [x] Add strict admin-only diagnostics procedures with secure exact-email fingerprint filtering and manual health-check execution
+- [x] Add a responsive GetPhame admin diagnostics page and dashboard navigation entry
+- [x] Add Vitest coverage for redaction, masking, authorization, instrumentation, callback behavior, and retention
+- [x] Run the full test suite, TypeScript checks, production build, preview verification, and database migration validation
+- [x] Save a deployable checkpoint and request publication before creating the production heartbeat
+- [x] Create and verify the platform heartbeat only after the callback is published
+- [x] Test deployed onboarding with a second non-owner account and record delivery, verification, account creation, and onboarding evidence
+- [x] Capture production Heartbeat evidence showing task UID `cLZ7gshNvQQx7dXJxnkaNQ`, enabled state, `/api/scheduled/auth-health` callback, permanent 15-minute cadence, and next execution time
+- [x] Verify a real scheduled Heartbeat execution returned HTTP 200 and persisted an all-OK `auth_health_checks` row tied to task UID `cLZ7gshNvQQx7dXJxnkaNQ`
+- [x] Verify second-account diagnostics contain one four-event correlated lifecycle with masked recipient, fingerprint-only token references, and no raw email in diagnostic details
+- [x] Define a production-safe auth-health failure-alert policy with deduplication and recovery behavior
+- [x] Implement owner failure alerts for scheduled auth-health degradation without exposing sensitive authentication data
+- [x] Add a durable 24-hour auth-health uptime summary query with run counts, success rate, latest status, and component health
+- [x] Add a responsive admin uptime summary card backed by the production health-check data
+- [x] Add regression coverage for alert authorization, deduplication, recovery, uptime calculations, and admin summary rendering
+- [x] Run the full test suite, TypeScript checks, production build, and responsive preview verification
+- [x] Save a deployable checkpoint and begin the first 24-hour production observation window after publication
+- [x] Add explicit admin diagnostics query-error handling so unavailable uptime data never appears healthy
