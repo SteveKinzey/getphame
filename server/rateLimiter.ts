@@ -15,6 +15,7 @@ import { TRPCError } from "@trpc/server";
 const WINDOW_MS = 60 * 60 * 1000; // 1 hour
 const MAX_SENDS_PER_WINDOW = 200;
 const MAX_ONBOARDING_EVENTS_PER_WINDOW = 60;
+const MAX_ONBOARDING_INSIGHTS_PER_WINDOW = 12;
 
 interface WindowEntry {
   count: number;
@@ -24,6 +25,7 @@ interface WindowEntry {
 // userId → sliding window entry
 const sendWindows = new Map<number, WindowEntry>();
 const onboardingEventWindows = new Map<number, WindowEntry>();
+const onboardingInsightWindows = new Map<number, WindowEntry>();
 
 /**
  * Check and increment the send rate limit for a user.
@@ -78,6 +80,26 @@ export function checkOnboardingChecklistEventRateLimit(userId: number): void {
   entry.count += 1;
 }
 
+/** Limits costly administrator AI insight requests without weakening RBAC. */
+export function checkOnboardingFunnelInsightRateLimit(userId: number): void {
+  const now = Date.now();
+  const entry = onboardingInsightWindows.get(userId);
+
+  if (!entry || now - entry.windowStart >= WINDOW_MS) {
+    onboardingInsightWindows.set(userId, { count: 1, windowStart: now });
+    return;
+  }
+
+  if (entry.count >= MAX_ONBOARDING_INSIGHTS_PER_WINDOW) {
+    throw new TRPCError({
+      code: "TOO_MANY_REQUESTS",
+      message: "Too many onboarding insight requests. Please try again later.",
+    });
+  }
+
+  entry.count += 1;
+}
+
 /**
  * Returns the remaining send quota for a user in the current window.
  * Useful for surfacing quota info in the UI.
@@ -100,6 +122,11 @@ setInterval(() => {
   for (const [userId, entry] of Array.from(onboardingEventWindows.entries())) {
     if (now - entry.windowStart >= WINDOW_MS) {
       onboardingEventWindows.delete(userId);
+    }
+  }
+  for (const [userId, entry] of Array.from(onboardingInsightWindows.entries())) {
+    if (now - entry.windowStart >= WINDOW_MS) {
+      onboardingInsightWindows.delete(userId);
     }
   }
 }, WINDOW_MS);

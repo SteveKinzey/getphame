@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import directKeyFallbackResources from "../client/src/lib/i18nDirectKeyFallbackResources";
 import { summarizeOnboardingChecklistEvents, toOnboardingChecklistEventPage } from "./onboardingChecklistAnalytics";
+import { buildOnboardingFunnelInsightFallback } from "./onboardingFunnelInsight";
 
 const LOCALES = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
 const SETUP_KEYS = [
@@ -177,6 +178,70 @@ describe("dashboard onboarding and security release", () => {
     expect(admin).toContain("downloadOnboardingFunnelCsv");
     expect(admin).toContain("URL.revokeObjectURL(url)");
     expect(admin).toContain("data-testid=\"admin-setup-funnel\"");
+  });
+
+  it("offers reusable presets and compares adjacent aggregate periods without exposing event rows", () => {
+    const routers = readSource("../server/routers.ts");
+    const admin = readSource("../client/src/pages/AdminDashboard.tsx");
+
+    expect(routers).toContain("comparison: {");
+    expect(routers).toContain("previousPeriodStart");
+    expect(routers).toContain("previousPeriodEnd");
+    expect(admin).toContain("Last 7 Days");
+    expect(admin).toContain("Last 30 Days");
+    expect(admin).toContain('data-testid={`setup-funnel-preset-${period}`}');
+    expect(admin).toContain('data-testid="setup-funnel-comparison-chart"');
+    expect(admin).toContain("Current period vs. previous period");
+  });
+
+  it("builds a deterministic aggregate-only fallback insight around the highest drop-off step", () => {
+    const step = (shown: number, actioned: number) => ({
+      shown,
+      actioned,
+      dropOff: Math.max(shown - actioned, 0),
+      continuationRate: shown ? Math.round((actioned / shown) * 1000) / 10 : 0,
+    });
+    const fallback = buildOnboardingFunnelInsightFallback({
+      currentWindowDays: 30,
+      current: {
+        email: step(20, 16),
+        platform: step(18, 9),
+        contacts: step(12, 10),
+        send: step(8, 7),
+      },
+      previous: {
+        email: step(20, 18),
+        platform: step(18, 12),
+        contacts: step(12, 11),
+        send: step(8, 7),
+      },
+    });
+
+    expect(fallback.source).toBe("fallback");
+    expect(fallback.highestDropOff).toMatchObject({ step: "platform", label: "Add platform", rate: 50, delta: 16.7 });
+    expect(fallback.observation).toContain("Add platform");
+    expect(fallback.recommendation).toMatch(/potential improvement/i);
+    expect(fallback).not.toHaveProperty("userId");
+    expect(fallback).not.toHaveProperty("events");
+  });
+
+  it("keeps AI insight generation aggregate-only, admin-authorized, structured, rate-limited, and safely cached", () => {
+    const routers = readSource("../server/routers.ts");
+    const admin = readSource("../client/src/pages/AdminDashboard.tsx");
+    const insight = readSource("../server/onboardingFunnelInsight.ts");
+    const rateLimiter = readSource("../server/rateLimiter.ts");
+
+    expect(routers).toContain("onboardingChecklistFunnelInsight: adminProcedure");
+    expect(routers).toContain("checkOnboardingFunnelInsightRateLimit(ctx.user.id)");
+    expect(routers).toContain("generateOnboardingFunnelInsight");
+    expect(admin).toContain('data-testid="setup-funnel-ai-insight"');
+    expect(admin).toContain("staleTime: 5 * 60_000");
+    expect(admin).toContain("refetchOnWindowFocus: false");
+    expect(insight).toContain("Use only the aggregate numbers supplied by the user.");
+    expect(insight).toContain("Do not infer causation");
+    expect(insight).toContain("buildOnboardingFunnelInsightFallback");
+    expect(rateLimiter).toContain("MAX_ONBOARDING_INSIGHTS_PER_WINDOW = 12");
+    expect(rateLimiter).toContain("checkOnboardingFunnelInsightRateLimit");
   });
 
   it("animates visible onboarding tips accessibly and communicates the remaining localized tip count", () => {

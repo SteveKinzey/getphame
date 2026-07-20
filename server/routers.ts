@@ -33,7 +33,7 @@ import {
 
 import { sendMailViaSmtp } from "./smtp";
 import { buildReviewRequestEmail, buildReviewRequestText } from "./emailTemplates";
-import { checkOnboardingChecklistEventRateLimit, checkSendRateLimit } from "./rateLimiter";
+import { checkOnboardingChecklistEventRateLimit, checkOnboardingFunnelInsightRateLimit, checkSendRateLimit } from "./rateLimiter";
 import {
   cancelSubscriptionRenewal,
   claimMoneyBackGuarantee,
@@ -94,6 +94,7 @@ import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditL
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
 import { PWA_EVENT_NAMES, PWA_EVENT_SOURCE, summarizePwaEvents, toPwaEventPage } from "./pwaAnalytics";
 import { ONBOARDING_CHECKLIST_EVENT_NAMES, ONBOARDING_CHECKLIST_EVENT_SOURCE, summarizeOnboardingChecklistEvents, toOnboardingChecklistEventPage } from "./onboardingChecklistAnalytics";
+import { generateOnboardingFunnelInsight } from "./onboardingFunnelInsight";
 import { eq, like, or, inArray, desc, asc, isNotNull, isNull, and, sql, gte, lte, ne, count } from "drizzle-orm";
 import {
   listSavedContacts,
@@ -455,6 +456,50 @@ async function getOnboardingChecklistFunnelSnapshot(
       lte(pageEvents.createdAt, range.periodEnd),
     ));
   return { ...summarizeOnboardingChecklistEvents(rows, range.generatedAt.getTime()), range };
+}
+
+/**
+ * Builds adjacent aggregate-only windows for a trustworthy period comparison.
+ * No individual account activity leaves this helper or the admin procedure.
+ */
+async function getOnboardingChecklistFunnelComparison(
+  db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
+  input?: OnboardingChecklistFunnelInput,
+) {
+  const range = resolveOnboardingChecklistFunnelRange(input);
+  const periodDurationMs = range.periodEnd.getTime() - range.periodStart.getTime() + 1;
+  const previousPeriodEnd = new Date(range.periodStart.getTime() - 1);
+  const previousPeriodStart = new Date(previousPeriodEnd.getTime() - periodDurationMs + 1);
+  const rows = await db
+    .select({ page: pageEvents.page, userId: pageEvents.userId, createdAt: pageEvents.createdAt })
+    .from(pageEvents)
+    .where(and(
+      eq(pageEvents.utmSource, ONBOARDING_CHECKLIST_EVENT_SOURCE),
+      gte(pageEvents.createdAt, previousPeriodStart),
+      lte(pageEvents.createdAt, range.periodEnd),
+    ));
+
+  const currentRows = rows.filter((row) => row.createdAt.getTime() >= range.periodStart.getTime());
+  const previousRows = rows.filter((row) => row.createdAt.getTime() <= previousPeriodEnd.getTime());
+  const current = summarizeOnboardingChecklistEvents(currentRows, range.generatedAt.getTime());
+  const previous = summarizeOnboardingChecklistEvents(previousRows, previousPeriodEnd.getTime());
+
+  return {
+    ...current,
+    range,
+    comparison: {
+      previous: {
+        ...previous,
+        range: {
+          periodStart: previousPeriodStart,
+          periodEnd: previousPeriodEnd,
+          periodDays: range.periodDays,
+          periodLabel: `previous_${range.periodLabel}`,
+          isCustomRange: range.isCustomRange,
+        },
+      },
+    },
+  };
 }
 
 async function getSupportMetricsSnapshot(
@@ -3190,7 +3235,20 @@ export const appRouter = router({
     onboardingChecklistFunnel: adminProcedure.input(onboardingChecklistFunnelInputSchema.optional()).query(async ({ input }) => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-      return getOnboardingChecklistFunnelSnapshot(db, input);
+      return getOnboardingChecklistFunnelComparison(db, input);
+    }),
+
+    /** Bounded administrator insight generated from aggregate funnel metrics only. */
+    onboardingChecklistFunnelInsight: adminProcedure.input(onboardingChecklistFunnelInputSchema.optional()).query(async ({ ctx, input }) => {
+      checkOnboardingFunnelInsightRateLimit(ctx.user.id);
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      const funnel = await getOnboardingChecklistFunnelComparison(db, input);
+      return generateOnboardingFunnelInsight({
+        currentWindowDays: funnel.range.periodDays,
+        current: funnel.steps,
+        previous: funnel.comparison.previous.steps,
+      });
     }),
 
     /** Admin-only aggregate export. It contains no raw event, identity, or customer data. */

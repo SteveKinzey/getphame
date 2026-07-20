@@ -26,6 +26,7 @@ import {
   AlertTriangle,
   Activity,
   Download,
+  Sparkles,
   Smartphone,
   Share2,
   MousePointerClick,
@@ -36,6 +37,9 @@ import {
 import type { LucideIcon } from "lucide-react";
 import {
   CartesianGrid,
+  Bar,
+  BarChart,
+  Legend,
   Line,
   LineChart,
   ResponsiveContainer,
@@ -117,6 +121,25 @@ export default function AdminDashboard() {
     { enabled: false },
   );
   const onboardingFunnelExport = trpc.admin.onboardingChecklistFunnelExport.useQuery(onboardingFunnelInput, { enabled: false });
+  const { data: onboardingFunnelInsight, isFetching: onboardingFunnelInsightLoading } = trpc.admin.onboardingChecklistFunnelInsight.useQuery(onboardingFunnelInput, {
+    enabled: user?.role === "admin" && onboardingFunnelRangeValid && Boolean(onboardingFunnelInput),
+    staleTime: 5 * 60_000,
+    refetchOnWindowFocus: false,
+  });
+
+  const onboardingFunnelComparisonData = useMemo(() => {
+    const steps = [
+      ["email", "Email"],
+      ["platform", "Platform"],
+      ["contacts", "Contacts"],
+      ["send", "First send"],
+    ] as const;
+    return steps.map(([step, label]) => {
+      const currentRate = Math.max(0, 100 - (onboardingChecklistFunnel?.steps[step]?.continuationRate ?? 0));
+      const previousRate = Math.max(0, 100 - (onboardingChecklistFunnel?.comparison.previous.steps[step]?.continuationRate ?? 0));
+      return { label, currentRate, previousRate };
+    });
+  }, [onboardingChecklistFunnel]);
 
   const healthTrendData = useMemo(() => {
     if (!systemHealthTrend) return [];
@@ -409,9 +432,13 @@ export default function AdminDashboard() {
               </div>
               <div className="mb-4 rounded-2xl border border-slate-200 bg-white p-3">
                 <div className="flex flex-wrap gap-2" role="group" aria-label="Onboarding funnel date range">
-                  {(["7", "30", "90"] as const).map((period) => (
-                    <button key={period} type="button" onClick={() => setOnboardingFunnelPeriod(period)} className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${onboardingFunnelPeriod === period ? "rr-bg-gold text-slate-950" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>
-                      Last {period} days
+                  {([
+                    ["7", "Last 7 Days"],
+                    ["30", "Last 30 Days"],
+                    ["90", "Last 90 Days"],
+                  ] as const).map(([period, label]) => (
+                    <button key={period} type="button" data-testid={`setup-funnel-preset-${period}`} onClick={() => { setOnboardingFunnelPeriod(period); setOnboardingFunnelStartDate(""); setOnboardingFunnelEndDate(""); }} className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${onboardingFunnelPeriod === period ? "rr-bg-gold text-slate-950" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>
+                      {label}
                     </button>
                   ))}
                   <button type="button" onClick={() => setOnboardingFunnelPeriod("custom")} className={`rounded-lg px-3 py-1.5 text-xs font-bold transition-colors ${onboardingFunnelPeriod === "custom" ? "rr-bg-gold text-slate-950" : "bg-slate-100 text-slate-700 hover:bg-slate-200"}`}>
@@ -441,6 +468,48 @@ export default function AdminDashboard() {
               <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <ConversionMetricCard testId="setup-funnel-views" label="Checklist views" value={onboardingChecklistFunnel?.allTime.checklist_viewed ?? 0} detail={`Unique viewers in the selected ${onboardingChecklistFunnel?.range.periodDays ?? 30}-day window`} Icon={Users} />
                 <ConversionMetricCard testId="setup-funnel-completed" label="Checklist completion" value={onboardingChecklistFunnel?.allTime.checklist_completed ?? 0} detail={`${onboardingChecklistFunnel?.rates.completion ?? 0}% of checklist viewers completed all setup steps`} Icon={CheckCircle2} />
+              </div>
+              <div className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-3" data-testid="setup-funnel-comparison-chart">
+                <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-navy-muted">Drop-off trend</p>
+                    <h3 className="mt-0.5 text-sm font-black rr-text-navy">Current period vs. previous period</h3>
+                  </div>
+                  <p className="text-xs font-semibold rr-text-navy-muted">Percentage points of accounts that viewed a step but did not continue.</p>
+                </div>
+                <div className="mt-3 h-48" aria-label="Current and previous onboarding step drop-off rate comparison">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={onboardingFunnelComparisonData} margin={{ top: 4, right: 4, left: -16, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#dbe3ef" vertical={false} />
+                      <XAxis dataKey="label" tick={{ fontSize: 11, fill: "#53627a" }} axisLine={false} tickLine={false} />
+                      <YAxis domain={[0, 100]} tickFormatter={(value) => `${value}%`} tick={{ fontSize: 11, fill: "#53627a" }} axisLine={false} tickLine={false} />
+                      <Tooltip formatter={(value, name) => [`${Number(value).toFixed(1)}%`, name === "currentRate" ? "Current period" : "Previous period"]} contentStyle={{ borderRadius: 12, border: "1px solid #dbe3ef", boxShadow: "0 8px 24px rgba(15, 23, 42, 0.10)" }} />
+                      <Legend formatter={(value) => value === "currentRate" ? "Current period" : "Previous period"} wrapperStyle={{ fontSize: 12, fontWeight: 700 }} />
+                      <Bar dataKey="currentRate" fill="#d4a017" radius={[5, 5, 0, 0]} />
+                      <Bar dataKey="previousRate" fill="#94a3b8" radius={[5, 5, 0, 0]} />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+              <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 p-3" data-testid="setup-funnel-ai-insight" aria-live="polite">
+                <div className="flex items-start gap-3">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-xl rr-bg-navy text-white"><Sparkles size={17} /></span>
+                  <div className="min-w-0">
+                    <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-navy-muted">AI insight</p>
+                    {onboardingFunnelInsightLoading ? (
+                      <div className="mt-1 flex items-center gap-2 text-sm font-semibold rr-text-navy-muted"><Loader2 size={14} className="animate-spin" /> Reviewing aggregate funnel data…</div>
+                    ) : onboardingFunnelInsight ? (
+                      <>
+                        <h3 className="mt-0.5 text-sm font-black rr-text-navy">Highest drop-off: {onboardingFunnelInsight.highestDropOff.label} ({onboardingFunnelInsight.highestDropOff.rate}%)</h3>
+                        <p className="mt-1 text-sm font-semibold rr-text-navy-muted">{onboardingFunnelInsight.observation}</p>
+                        <p className="mt-2 text-sm font-bold rr-text-navy"><span className="rr-text-gold">Potential improvement:</span> {onboardingFunnelInsight.recommendation}</p>
+                        <p className="mt-2 text-xs font-semibold rr-text-navy-muted">{onboardingFunnelInsight.source === "ai" ? "AI phrasing grounded in the aggregate metrics shown above." : "Aggregate-data fallback shown while AI phrasing is unavailable."}</p>
+                      </>
+                    ) : (
+                      <p className="mt-1 text-sm font-semibold rr-text-navy-muted">A data-grounded setup insight will appear when the selected funnel range is available.</p>
+                    )}
+                  </div>
+                </div>
               </div>
             </section>
 

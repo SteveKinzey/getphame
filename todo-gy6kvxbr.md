@@ -551,3 +551,8 @@
 - [x] Update and validate the reusable onboarding optimization Skill with filtered reporting, safe CSV export, tooltip animation, and security-review guidance.
 - [x] Perform a targeted code security review, correct confirmed vulnerabilities, and preserve existing authorization, privacy, and payment boundaries.
 - [x] Add focused regression coverage, run the release gates, verify mobile UI, and publish the completed enhancement.
+- [ ] Add reusable Last 7 Days and Last 30 Days presets to the administrator onboarding funnel date filter without bypassing server-side bounds.
+- [ ] Add an aggregate current-versus-previous-period onboarding drop-off trend visualization to the administrator funnel card.
+- [ ] Add a grounded AI-generated onboarding insight summary that uses only the aggregate funnel data, identifies the highest drop-off step, and falls back safely when unavailable.
+- [ ] Update and validate the reusable onboarding analytics Skill with date presets, comparative trends, grounded AI insights, and AI-specific security guardrails.
+- [ ] Add focused regression coverage, run release gates, verify mobile UI, and publish the completed onboarding analytics enhancement.
