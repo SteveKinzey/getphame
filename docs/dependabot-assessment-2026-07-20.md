@@ -16,3 +16,7 @@ The same alert list also showed one moderate `node-tar` alert and two moderate `
 ## Immediate recommendation
 
 Treat the direct high-severity Nodemailer alert as the **first runtime-relevant remediation** after confirming the active lockfile. The current pnpm manifest already requests `nodemailer` `^9.0.3`, which is above the vulnerable range; the outstanding alert is therefore tied to the legacy npm lockfile. Treat the critical and related `tar` alerts as the **first repository hygiene remediation**: either remove an obsolete `package-lock.json` after confirming pnpm is the only supported package manager, or update the npm lockfile and its affected transitive dependencies.
+
+## CI publishing note
+
+The repository now has a reviewed quality-gate workflow locally, but the configured GitHub App credential was rejected when it attempted to push `.github/workflows/quality.yml` because it lacks the `workflows` permission. Publishing this file requires either a user-authorized GitHub web commit or a credential that includes that permission; no force-push or permission bypass is appropriate.
