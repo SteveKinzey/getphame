@@ -612,7 +612,7 @@ export default function HomePage() {
         )}
 
         {/* ── Setup progress ────────────────────────────────────────────────── */}
-        {!allDone && <SetupProgressCard status={onboardingStatus} onNavigate={navigate} />}
+        {!allDone && <SetupProgressCard status={onboardingStatus} userId={user?.id} onNavigate={navigate} />}
 
         {/* ── Quick Send CTA ───────────────────────────────────────────────── */}
         <button

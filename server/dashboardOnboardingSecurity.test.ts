@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import directKeyFallbackResources from "../client/src/lib/i18nDirectKeyFallbackResources";
 import { summarizeOnboardingChecklistEvents, toOnboardingChecklistEventPage } from "./onboardingChecklistAnalytics";
 import { buildOnboardingFunnelInsightFallback } from "./onboardingFunnelInsight";
+import { claimOnboardingChecklistTelemetryEvent } from "../client/src/lib/onboardingChecklistTelemetry";
 
 const LOCALES = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
 const SETUP_KEYS = [
@@ -82,7 +83,7 @@ describe("dashboard onboarding and security release", () => {
 
     expect(home).toContain('const TrackingSummaryCard = lazy(() => import("@/components/dashboard/TrackingSummaryCard"))');
     expect(home).toContain('const PlatformBreakdownChart = lazy(() => import("@/components/dashboard/PlatformBreakdownChart"))');
-    expect(home).toContain("<SetupProgressCard status={onboardingStatus} onNavigate={navigate} />");
+    expect(home).toContain("<SetupProgressCard status={onboardingStatus} userId={user?.id} onNavigate={navigate} />");
     expect(home).toContain("<DeferredDashboardSection loadingLabel={t(\"homePage.loadingAnalytics\")}");
     expect(home).not.toContain("trpc.tracking.overallStats.useQuery");
     expect(dashboard).toContain('const ActivityTrendCard = lazy(() => import("@/components/dashboard/ActivityTrendCard"))');
@@ -156,11 +157,26 @@ describe("dashboard onboarding and security release", () => {
     expect(routers).toContain("checkOnboardingChecklistEventRateLimit(ctx.user.id)");
     expect(rateLimiter).toContain("MAX_ONBOARDING_EVENTS_PER_WINDOW = 60");
     expect(rateLimiter).toContain("checkOnboardingChecklistEventRateLimit");
-    expect(setupProgress).toContain("trackChecklistEvent.mutate({ event: \"checklist_viewed\" })");
-    expect(setupProgress).toContain("trackedSnapshots");
+    expect(setupProgress).toContain("claimOnboardingChecklistTelemetryEvent");
+    expect(setupProgress).toContain("trackedEvents");
     expect(setupProgress).toContain("_step_actioned");
     expect(admin).toContain('data-testid="admin-setup-funnel"');
     expect(admin).toContain("Aggregate account-level events only");
+  });
+
+  it("claims each checklist telemetry event once per account across routine component remounts", () => {
+    const values = new Map<string, string>();
+    const storage = {
+      getItem: (key: string) => values.get(key) ?? null,
+      setItem: (key: string, value: string) => values.set(key, value),
+    };
+    const firstMountEvents = new Set<string>();
+    const remountedEvents = new Set<string>();
+
+    expect(claimOnboardingChecklistTelemetryEvent(1_987_654_321, "checklist_viewed", firstMountEvents, storage)).toBe(true);
+    expect(claimOnboardingChecklistTelemetryEvent(1_987_654_321, "checklist_viewed", firstMountEvents, storage)).toBe(false);
+    expect(claimOnboardingChecklistTelemetryEvent(1_987_654_321, "checklist_viewed", remountedEvents, storage)).toBe(false);
+    expect(claimOnboardingChecklistTelemetryEvent(1_987_654_322, "checklist_viewed", remountedEvents, storage)).toBe(true);
   });
 
   it("bounds admin funnel date filters and exports aggregate-only CSV through the server-authorized contract", () => {

@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { CheckCircle2, ChevronRight, Mail, Send, Upload, Globe2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { trpc } from "@/lib/trpc";
+import { claimOnboardingChecklistTelemetryEvent, type OnboardingChecklistTelemetryEvent } from "@/lib/onboardingChecklistTelemetry";
 
 interface SetupStatus {
   smtpConnected: boolean;
@@ -12,13 +13,14 @@ interface SetupStatus {
 
 interface SetupProgressCardProps {
   status?: Partial<SetupStatus>;
+  userId?: number | null;
   onNavigate: (path: string) => void;
 }
 
-export default function SetupProgressCard({ status, onNavigate }: SetupProgressCardProps) {
+export default function SetupProgressCard({ status, userId, onNavigate }: SetupProgressCardProps) {
   const { t } = useTranslation("translation");
-  const trackChecklistEvent = trpc.analytics.trackOnboardingChecklistEvent.useMutation();
-  const trackedSnapshots = useRef(new Set<string>());
+  const { mutate: submitChecklistEvent } = trpc.analytics.trackOnboardingChecklistEvent.useMutation();
+  const trackedEvents = useRef(new Set<string>());
   const steps = useMemo(() => [
     {
       id: "email",
@@ -61,19 +63,21 @@ export default function SetupProgressCard({ status, onNavigate }: SetupProgressC
   const progress = (completedCount / steps.length) * 100;
   const incompleteStepIds = steps.filter((step) => !step.complete).map((step) => step.id).join(",");
 
+  const trackChecklistEvent = useCallback((event: OnboardingChecklistTelemetryEvent) => {
+    if (!claimOnboardingChecklistTelemetryEvent(userId, event, trackedEvents.current)) return;
+    submitChecklistEvent({ event });
+  }, [submitChecklistEvent, userId]);
+
   useEffect(() => {
-    const snapshot = `${completedCount}:${incompleteStepIds}`;
-    if (trackedSnapshots.current.has(snapshot)) return;
-    trackedSnapshots.current.add(snapshot);
-    trackChecklistEvent.mutate({ event: "checklist_viewed" });
+    trackChecklistEvent("checklist_viewed");
     if (completedCount === steps.length) {
-      trackChecklistEvent.mutate({ event: "checklist_completed" });
+      trackChecklistEvent("checklist_completed");
       return;
     }
     for (const stepId of incompleteStepIds.split(",").filter(Boolean)) {
-      trackChecklistEvent.mutate({ event: `${stepId}_step_viewed` as "email_step_viewed" | "platform_step_viewed" | "contacts_step_viewed" | "send_step_viewed" });
+      trackChecklistEvent(`${stepId}_step_viewed` as OnboardingChecklistTelemetryEvent);
     }
-  }, [completedCount, incompleteStepIds, steps.length, trackChecklistEvent]);
+  }, [completedCount, incompleteStepIds, trackChecklistEvent]);
 
   return (
     <section className="rr-card p-4" aria-labelledby="setup-progress-title">
@@ -114,7 +118,7 @@ export default function SetupProgressCard({ status, onNavigate }: SetupProgressC
                 <button
                   type="button"
                   onClick={() => {
-                    trackChecklistEvent.mutate({ event: `${step.id}_step_actioned` as "email_step_actioned" | "platform_step_actioned" | "contacts_step_actioned" | "send_step_actioned" });
+                    trackChecklistEvent(`${step.id}_step_actioned` as OnboardingChecklistTelemetryEvent);
                     onNavigate(step.path);
                   }}
                   className="inline-flex shrink-0 items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-bold rr-text-navy transition-colors hover:rr-bg-gold-pale focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
