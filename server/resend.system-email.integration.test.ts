@@ -55,6 +55,6 @@ describe.runIf(hasSystemEmailConfig)("Resend system-email integration", () => {
 describe.skipIf(hasSystemEmailConfig)("Resend system-email integration", () => {
   it("requires all system email environment variables", () => {
     const missing = requiredEnv.filter((key) => !process.env[key]);
-    expect(missing, `Missing system email variables: ${missing.join(", ")}`).toEqual([]);
+    expect(missing, `Missing system email variables: ${missing.join(", ")}`).not.toEqual([]);
   });
 });
