@@ -22,8 +22,7 @@ export default function BrandLockup({
     <span className={`inline-flex items-center gap-2.5 ${className}`} aria-label="Get Phame">
       <img
         src={LOGO_URL}
-        alt=""
-        aria-hidden="true"
+        alt="Get Phame logo"
         className={`${iconClassName} rounded-lg flex-shrink-0 object-contain`}
         loading="eager"
       />

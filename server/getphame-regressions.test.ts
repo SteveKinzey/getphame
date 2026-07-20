@@ -47,13 +47,13 @@ describe("Get Phame regression contracts", () => {
       expect(landing).toContain(section);
     }
 
-    expect(landing).toContain("Get Phame — Review Request Email Software for Local Businesses");
+    expect(landing).toContain("Get Phame | Review Request Software for Local Businesses");
     expect(navbar).toContain("<LanguageFlyout");
     expect(footer).toContain('href="/privacy-policy"');
     expect(footer).toContain('href="/terms-of-service"');
-    expect(html).toContain("Get Phame — Earn It, Automatically.");
-    expect(html).toContain("Turn happy customers into 5-star reviews.");
-    expect(html).not.toContain('name="keywords"');
+    expect(html).toContain("Get Phame | Review Request Software for Local Businesses");
+    expect(html).toContain("Send personalized review-request emails, track engagement, and help local businesses earn more customer feedback with Get Phame.");
+    expect(html).toContain('name="keywords"');
   });
 
   it("uses the supplied P-star artwork for browser, PWA, metadata, and in-app branding", () => {
@@ -663,11 +663,28 @@ describe("Get Phame regression contracts", () => {
 
     const title = html.match(/<title>([^<]+)<\/title>/)?.[1] ?? "";
     const description = html.match(/<meta name="description" content="([^"]+)"/i)?.[1] ?? "";
-    expect(title).toBe("Get Phame — Earn It, Automatically.");
-    expect(description).toBe("Turn happy customers into 5-star reviews. Send personalised review requests in seconds, automate follow-ups, and watch your reputation grow. Free to start.");
-    expect(landingPage).toContain('title="Get Phame — Review Request Email Software for Local Businesses"');
-    expect(landingPage).toContain('description="Get Phame is review-request email software for local businesses.');
-    expect(html).not.toContain('meta name="keywords"');
+    const keywords = html.match(/<meta name="keywords" content="([^"]+)"/i)?.[1].split(", ") ?? [];
+    expect(title).toBe("Get Phame | Review Request Software for Local Businesses");
+    expect(title).toHaveLength(56);
+    expect(title.length).toBeGreaterThanOrEqual(30);
+    expect(title.length).toBeLessThanOrEqual(60);
+    expect(description).toBe("Send personalized review-request emails, track engagement, and help local businesses earn more customer feedback with Get Phame.");
+    expect(description).toHaveLength(128);
+    expect(description.length).toBeGreaterThanOrEqual(50);
+    expect(description.length).toBeLessThanOrEqual(160);
+    expect(keywords).toEqual([
+      "review request software",
+      "review request emails",
+      "customer review management",
+      "local business reputation",
+      "Google review requests",
+      "email review campaigns",
+    ]);
+    expect(keywords.length).toBeGreaterThanOrEqual(3);
+    expect(keywords.length).toBeLessThanOrEqual(8);
+    expect(landingPage).toContain('title="Get Phame | Review Request Software for Local Businesses"');
+    expect(landingPage).toContain('description="Send personalized review-request emails, track engagement, and help local businesses earn more customer feedback with Get Phame."');
+    expect(html).toContain('meta name="keywords"');
 
     expect(seoHead).toContain("document.title = title");
     expect(seoHead).not.toContain("keywords.join");

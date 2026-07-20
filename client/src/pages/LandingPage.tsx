@@ -24,8 +24,8 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#0a1628] text-gray-100 overflow-x-hidden">
       <SEOHead
-        title="Get Phame — Review Request Email Software for Local Businesses"
-        description="Get Phame is review-request email software for local businesses. Add customers, send personalized emails from an account you connect, track engagement, and guide customers to your selected review platform."
+        title="Get Phame | Review Request Software for Local Businesses"
+        description="Send personalized review-request emails, track engagement, and help local businesses earn more customer feedback with Get Phame."
         canonical="https://getphame.app/"
       />
       <Navbar />

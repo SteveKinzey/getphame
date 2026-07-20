@@ -556,4 +556,7 @@
 - [x] Add a grounded AI-generated onboarding insight summary that uses only the aggregate funnel data, identifies the highest drop-off step, and falls back safely when unavailable.
 - [x] Update and validate the reusable onboarding analytics Skill with date presets, comparative trends, grounded AI insights, and AI-specific security guardrails.
 - [x] Add focused regression coverage, run release gates, verify mobile UI, and publish the completed onboarding analytics enhancement.
+- [x] Add 3–8 focused meta keywords and rewrite the public landing title and description within the required character limits.
+- [x] Add accurate alternative text to the landing-page image currently missing it.
+- [x] Validate rendered SEO metadata, title and description counts, image alternative text, and publish the repair.
 - [x] Prevent duplicate setup-checklist telemetry across routine re-renders and remounts without weakening the server-side onboarding analytics rate limit.

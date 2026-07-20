@@ -42,4 +42,35 @@ describe("Google OAuth branding-verification homepage", () => {
     const i18n = read("client/src/lib/i18n.ts");
     expect(i18n).toContain("{{ns}}.json?v=phame16");
   });
+
+  it("keeps root SEO metadata and navigation-logo alternative text within the required limits", () => {
+    const indexHtml = read("client/index.html");
+    const landingPage = read("client/src/pages/LandingPage.tsx");
+    const brandLockup = read("client/src/components/BrandLockup.tsx");
+    const title = "Get Phame | Review Request Software for Local Businesses";
+    const description = "Send personalized review-request emails, track engagement, and help local businesses earn more customer feedback with Get Phame.";
+    const keywords = [
+      "review request software",
+      "review request emails",
+      "customer review management",
+      "local business reputation",
+      "Google review requests",
+      "email review campaigns",
+    ];
+
+    expect(title).toHaveLength(56);
+    expect(title.length).toBeGreaterThanOrEqual(30);
+    expect(title.length).toBeLessThanOrEqual(60);
+    expect(description).toHaveLength(128);
+    expect(description.length).toBeGreaterThanOrEqual(50);
+    expect(description.length).toBeLessThanOrEqual(160);
+    expect(keywords).toHaveLength(6);
+    expect(indexHtml).toContain(`<title>${title}</title>`);
+    expect(indexHtml).toContain(`name="description" content="${description}"`);
+    expect(indexHtml).toContain(`name="keywords" content="${keywords.join(", ")}"`);
+    expect(landingPage).toContain(`title="${title}"`);
+    expect(landingPage).toContain(`description="${description}"`);
+    expect(brandLockup).toContain('alt="Get Phame logo"');
+    expect(brandLockup).not.toContain('alt=""');
+  });
 });
