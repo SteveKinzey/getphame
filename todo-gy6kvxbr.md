@@ -575,3 +575,5 @@
 - [x] Verify the comparison matrix and related-feature cards on desktop and at a 375px mobile viewport across all three public feature pages; desktop tables and mobile stacked cards render without overflow.
 - [x] Package the validated comparison-table and related-feature workflow as a reusable Skill using the skill-creator process.
 - [x] Add regression coverage, verify desktop and mobile feature-page layouts, run release gates, and publish the enhancement.
+- [ ] Commit and push the completed feature-page engagement enhancement to the configured GitHub remote.
+- [ ] Integrate the GitHub-only main-branch changes without discarding local work, validate the combined repository, and push the synchronized main branch.
