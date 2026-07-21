@@ -92,4 +92,6 @@
 - [x] Add regression coverage for the protected manual-run flow and historical log contracts
 - [x] Extend the reusable production-auth-health-monitoring skill with the new diagnostics control pattern
 - [x] Run tests, TypeScript checks, build, visual verification, and reusable-skill validation
-- [ ] Save the publishable checkpoint and confirm the automatic production publication
+- [x] Save the publishable checkpoint and confirm the automatic production publication
+- [x] Verify checkpoint 0a68fa56 is live on the production GetPhame domain before closing publication confirmation
+- [x] Confirm the live production bundle includes the unique immediate-check and historical-log labels from checkpoint 0a68fa56
