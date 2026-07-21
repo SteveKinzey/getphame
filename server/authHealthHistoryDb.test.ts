@@ -59,16 +59,37 @@ describe("auth health history data helpers", () => {
     expect(normalizeAuthHealthHistoryQuery({
       status: "fail",
       triggerSource: "manual",
+      fromMs: 100.9,
+      toMs: 999.9,
       page: -8,
       pageSize: 500,
       limit: 50_000,
     })).toEqual({
       status: "fail",
       triggerSource: "manual",
+      fromMs: 100,
+      toMs: 999,
       page: 1,
       pageSize: 50,
       limit: 10_000,
     });
+  });
+
+  it("applies inclusive date boundaries to both page and export queries", async () => {
+    const rows = [healthRow(8, 500)];
+    const pageQuery = pageDatabase(1, rows);
+    await listAuthHealthChecksPage(
+      { fromMs: 100, toMs: 999, page: 1, pageSize: 20 },
+      pageQuery.db as never,
+    );
+    expect(collectPrimitiveValues(pageQuery.countWhere.mock.calls[0][0])).toEqual(expect.arrayContaining(["100", "999"]));
+
+    const exportQuery = pageDatabase(1, rows);
+    await listAuthHealthChecksForExportWithDb(
+      { fromMs: 100, toMs: 999, limit: 250 },
+      exportQuery.db as never,
+    );
+    expect(collectPrimitiveValues(exportQuery.countWhere.mock.calls[0][0])).toEqual(expect.arrayContaining(["100", "999"]));
   });
 
   it("returns bounded page metadata and uses stable checked-at plus id ordering", async () => {

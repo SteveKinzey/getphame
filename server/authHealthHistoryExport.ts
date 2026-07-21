@@ -51,6 +51,8 @@ export function buildAuthHealthHistoryCsvExport(input: {
   truncated: boolean;
   status?: "ok" | "fail";
   triggerSource?: "scheduled" | "manual";
+  fromMs?: number;
+  toMs?: number;
   generatedAt?: number;
 }) {
   const generatedAt = input.generatedAt ?? Date.now();
@@ -66,6 +68,8 @@ export function buildAuthHealthHistoryCsvExport(input: {
     filters: {
       status: input.status ?? "all",
       triggerSource: input.triggerSource ?? "all",
+      fromMs: input.fromMs ?? null,
+      toMs: input.toMs ?? null,
     },
   };
 }

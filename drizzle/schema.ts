@@ -140,6 +140,29 @@ export const authHealthChecks = pgTable("auth_health_checks", {
 export type AuthHealthCheck = typeof authHealthChecks.$inferSelect;
 export type InsertAuthHealthCheck = typeof authHealthChecks.$inferInsert;
 
+/**
+ * Administrator-owned auth-health history filter presets. Only validated filter
+ * values are persisted; health-check rows and failure details are never copied.
+ */
+export const authHealthHistoryPresets = pgTable("auth_health_history_presets", {
+  id: serial("id").primaryKey(),
+  ownerUserId: integer("owner_user_id").notNull(),
+  name: varchar("name", { length: 80 }).notNull(),
+  normalizedName: varchar("normalized_name", { length: 80 }).notNull(),
+  status: healthStatusEnum("status"),
+  triggerSource: authHealthTriggerEnum("trigger_source"),
+  fromMs: bigint("from_ms", { mode: "number" }),
+  toMs: bigint("to_ms", { mode: "number" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+}, (table) => [
+  uniqueIndex("auth_health_history_presets_owner_name_unique").on(table.ownerUserId, table.normalizedName),
+  index("auth_health_history_presets_owner_updated_idx").on(table.ownerUserId, table.updatedAt),
+]);
+
+export type AuthHealthHistoryPreset = typeof authHealthHistoryPresets.$inferSelect;
+export type InsertAuthHealthHistoryPreset = typeof authHealthHistoryPresets.$inferInsert;
+
 /** Privacy-safe fleet SMTP health aggregates captured by the managed scheduler. */
 export const smtpHealthSnapshots = pgTable("smtp_health_snapshot", {
   id: serial("id").primaryKey(),

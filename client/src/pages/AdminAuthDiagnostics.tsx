@@ -3,7 +3,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { Activity, AlertCircle, ArrowLeft, BellRing, CheckCircle2, ChevronLeft, ChevronRight, Clock3, Download, Filter, Gauge, KeyRound, Loader2, MailCheck, RefreshCw, Search, ShieldCheck } from "lucide-react";
+import { Activity, AlertCircle, ArrowLeft, BellRing, Bookmark, CheckCircle2, ChevronLeft, ChevronRight, Clock3, Download, Filter, Gauge, KeyRound, Loader2, MailCheck, Pencil, RefreshCw, Save, Search, ShieldCheck, Trash2 } from "lucide-react";
 
 type HealthValue = "ok" | "fail";
 
@@ -29,6 +29,24 @@ function formatDate(value: number | Date | null | undefined) {
   return value ? new Date(value).toLocaleString() : "—";
 }
 
+function localDateStartMs(value: string) {
+  if (!value) return undefined;
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day, 0, 0, 0, 0).getTime();
+}
+
+function localDateEndMs(value: string) {
+  if (!value) return undefined;
+  const [year, month, day] = value.split("-").map(Number);
+  return new Date(year, month - 1, day, 23, 59, 59, 999).getTime();
+}
+
+function msToLocalDateInput(value: number | null | undefined) {
+  if (value === null || value === undefined) return "";
+  const date = new Date(value);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+}
+
 export default function AdminAuthDiagnosticsPage() {
   const { user, loading } = useAuth();
   const [, navigate] = useLocation();
@@ -46,8 +64,23 @@ export default function AdminAuthDiagnosticsPage() {
   const [manualHealthError, setManualHealthError] = useState<string | null>(null);
   const [historyStatus, setHistoryStatus] = useState<"all" | "ok" | "fail">("all");
   const [historyTriggerSource, setHistoryTriggerSource] = useState<"all" | "scheduled" | "manual">("all");
+  const [historyFromDate, setHistoryFromDate] = useState("");
+  const [historyToDate, setHistoryToDate] = useState("");
   const [historyPage, setHistoryPage] = useState(1);
   const [historyPageSize, setHistoryPageSize] = useState<10 | 20 | 50>(20);
+  const [presetName, setPresetName] = useState("");
+  const [editingPresetId, setEditingPresetId] = useState<number | null>(null);
+  const trpcUtils = trpc.useUtils();
+
+  const historyFromMs = useMemo(() => localDateStartMs(historyFromDate), [historyFromDate]);
+  const historyToMs = useMemo(() => localDateEndMs(historyToDate), [historyToDate]);
+  const historyDateError = historyFromMs !== undefined && historyToMs !== undefined
+    ? historyFromMs > historyToMs
+      ? "The end date must not be before the start date."
+      : historyToMs - historyFromMs > 366 * 24 * 60 * 60 * 1000
+        ? "Choose a date range of 366 days or less."
+        : null
+    : null;
 
   useEffect(() => {
     if (!loading && user?.role !== "admin") navigate("/");
@@ -68,13 +101,25 @@ export default function AdminAuthDiagnosticsPage() {
   const historyQueryInput = useMemo(() => ({
     status: historyStatus === "all" ? undefined : historyStatus,
     triggerSource: historyTriggerSource === "all" ? undefined : historyTriggerSource,
+    fromMs: historyFromMs,
+    toMs: historyToMs,
     page: historyPage,
     pageSize: historyPageSize,
-  }), [historyStatus, historyTriggerSource, historyPage, historyPageSize]);
+  }), [historyStatus, historyTriggerSource, historyFromMs, historyToMs, historyPage, historyPageSize]);
 
   const healthHistoryQuery = trpc.authDiagnostics.healthHistory.useQuery(historyQueryInput, {
+    enabled: user?.role === "admin" && !historyDateError,
+  });
+
+  const presetsQuery = trpc.authDiagnostics.healthHistoryPresets.useQuery(undefined, {
     enabled: user?.role === "admin",
   });
+
+  useEffect(() => {
+    if (loading || isLoading || user?.role !== "admin" || window.location.hash !== "#health-history") return;
+    const frame = window.requestAnimationFrame(() => document.getElementById("health-history")?.scrollIntoView({ block: "start" }));
+    return () => window.cancelAnimationFrame(frame);
+  }, [loading, isLoading, user?.role]);
 
   useEffect(() => {
     if (healthHistoryQuery.data && healthHistoryQuery.data.page !== historyPage) {
@@ -96,6 +141,28 @@ export default function AdminAuthDiagnosticsPage() {
       toast.success(`Downloaded ${result.rowCount} sanitized health record${result.rowCount === 1 ? "" : "s"}.${result.truncated ? ` Export limited to the newest ${result.rowCount} matches.` : ""}`);
     },
     onError: (exportError) => toast.error(exportError.message || "Health history could not be exported."),
+  });
+
+  const saveHealthHistoryPreset = trpc.authDiagnostics.saveHealthHistoryPreset.useMutation({
+    onSuccess: async (result) => {
+      await trpcUtils.authDiagnostics.healthHistoryPresets.invalidate();
+      toast.success(result.created ? "Filter preset saved." : editingPresetId ? "Filter preset renamed." : "Filter preset updated.");
+      setPresetName("");
+      setEditingPresetId(null);
+    },
+    onError: (saveError) => toast.error(saveError.message || "Filter preset could not be saved."),
+  });
+
+  const deleteHealthHistoryPreset = trpc.authDiagnostics.deleteHealthHistoryPreset.useMutation({
+    onSuccess: async (_result, input) => {
+      await trpcUtils.authDiagnostics.healthHistoryPresets.invalidate();
+      if (editingPresetId === input.id) {
+        setEditingPresetId(null);
+        setPresetName("");
+      }
+      toast.success("Filter preset deleted.");
+    },
+    onError: (deleteError) => toast.error(deleteError.message || "Filter preset could not be deleted."),
   });
 
   const runHealthCheck = trpc.authDiagnostics.runHealthCheck.useMutation({
@@ -136,6 +203,36 @@ export default function AdminAuthDiagnosticsPage() {
   const displayedHistoryPage = healthHistoryQuery.data?.page ?? historyPage;
   const historyStart = historyTotal === 0 ? 0 : (displayedHistoryPage - 1) * historyPageSize + 1;
   const historyEnd = Math.min(displayedHistoryPage * historyPageSize, historyTotal);
+  const historyPresets = presetsQuery.data ?? [];
+  const editingPreset = historyPresets.find((preset) => preset.id === editingPresetId);
+  const hasActiveHistoryFilters = historyStatus !== "all" || historyTriggerSource !== "all" || Boolean(historyFromDate) || Boolean(historyToDate);
+  const applyHistoryPreset = (preset: typeof historyPresets[number]) => {
+    setHistoryStatus(preset.status === "ok" || preset.status === "fail" ? preset.status : "all");
+    setHistoryTriggerSource(preset.triggerSource === "scheduled" || preset.triggerSource === "manual" ? preset.triggerSource : "all");
+    setHistoryFromDate(msToLocalDateInput(preset.fromMs));
+    setHistoryToDate(msToLocalDateInput(preset.toMs));
+    setHistoryPage(1);
+    toast.success(`Applied “${preset.name}”.`);
+  };
+  const savePreset = () => {
+    const name = presetName.trim();
+    if (!name) return toast.error("Enter a name for this filter preset.");
+    if (historyDateError) return toast.error(historyDateError);
+    saveHealthHistoryPreset.mutate(editingPreset ? {
+      id: editingPreset.id,
+      name,
+      status: editingPreset.status === "ok" || editingPreset.status === "fail" ? editingPreset.status : null,
+      triggerSource: editingPreset.triggerSource === "scheduled" || editingPreset.triggerSource === "manual" ? editingPreset.triggerSource : null,
+      fromMs: editingPreset.fromMs,
+      toMs: editingPreset.toMs,
+    } : {
+      name,
+      status: historyStatus === "all" ? null : historyStatus,
+      triggerSource: historyTriggerSource === "all" ? null : historyTriggerSource,
+      fromMs: historyFromMs ?? null,
+      toMs: historyToMs ?? null,
+    });
+  };
   const totalFor = (eventType: string, eventOutcome?: string) => summary
     .filter((row) => row.eventType === eventType && (!eventOutcome || row.outcome === eventOutcome))
     .reduce((total, row) => total + Number(row.total ?? 0), 0);
@@ -256,18 +353,28 @@ export default function AdminAuthDiagnosticsPage() {
           )}
         </section>
 
-        <section className="rounded-2xl bg-white p-4 shadow-sm sm:p-5">
+        <section id="health-history" className="scroll-mt-4 rounded-2xl bg-white p-4 shadow-sm sm:p-5">
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div><h2 className="text-base rr-fw-black rr-text-navy">Health check history &amp; failure events</h2><p className="text-sm font-bold rr-text-navy-muted">Every persisted scheduled or manual check, with sanitized failure detail when a dependency fails.</p></div>
             <div className="flex flex-wrap items-center gap-2"><div className="inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold rr-bg-surface rr-text-navy-muted"><Activity size={13} />{historyTotal} matching record{historyTotal === 1 ? "" : "s"}</div><div className="inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold" style={{ background: failedHealthChecks.length ? "oklch(0.97 0.03 27)" : "oklch(0.94 0.05 145)", color: failedHealthChecks.length ? "oklch(0.48 0.17 27)" : "oklch(0.40 0.14 145)" }}><AlertCircle size={13} />{failedHealthChecks.length} failure{failedHealthChecks.length === 1 ? "" : "s"} on this page</div></div>
           </div>
-          <div className="mb-4 grid gap-3 rounded-xl p-3 rr-bg-surface sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_150px_auto]">
+          <div className="mb-3 grid gap-3 rounded-xl p-3 rr-bg-surface sm:grid-cols-2 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_150px_150px_130px_auto]">
             <label className="flex flex-col gap-1.5 text-xs font-bold rr-text-navy-muted"><span>Status</span><select aria-label="Filter health history by status" value={historyStatus} onChange={(event) => { setHistoryStatus(event.target.value as "all" | "ok" | "fail"); setHistoryPage(1); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }}><option value="all">All statuses</option><option value="ok">Healthy only</option><option value="fail">Failures only</option></select></label>
             <label className="flex flex-col gap-1.5 text-xs font-bold rr-text-navy-muted"><span>Trigger source</span><select aria-label="Filter health history by trigger source" value={historyTriggerSource} onChange={(event) => { setHistoryTriggerSource(event.target.value as "all" | "scheduled" | "manual"); setHistoryPage(1); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }}><option value="all">All trigger sources</option><option value="scheduled">Scheduled Heartbeat</option><option value="manual">Administrator-triggered</option></select></label>
+            <label className="flex flex-col gap-1.5 text-xs font-bold rr-text-navy-muted"><span>From date</span><input type="date" aria-label="Filter health history from date" value={historyFromDate} onChange={(event) => { setHistoryFromDate(event.target.value); setHistoryPage(1); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }} /></label>
+            <label className="flex flex-col gap-1.5 text-xs font-bold rr-text-navy-muted"><span>To date</span><input type="date" aria-label="Filter health history to date" value={historyToDate} onChange={(event) => { setHistoryToDate(event.target.value); setHistoryPage(1); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: historyDateError ? "oklch(0.62 0.18 27)" : "oklch(0.88 0.03 260)" }} /></label>
             <label className="flex flex-col gap-1.5 text-xs font-bold rr-text-navy-muted"><span>Rows per page</span><select aria-label="Health history rows per page" value={historyPageSize} onChange={(event) => { setHistoryPageSize(Number(event.target.value) as 10 | 20 | 50); setHistoryPage(1); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }}><option value={10}>10 rows</option><option value={20}>20 rows</option><option value={50}>50 rows</option></select></label>
-            <button type="button" onClick={() => exportHealthHistory.mutate({ status: historyStatus === "all" ? undefined : historyStatus, triggerSource: historyTriggerSource === "all" ? undefined : historyTriggerSource })} disabled={exportHealthHistory.isPending || historyTotal === 0} className="flex h-10 items-center justify-center gap-2 self-end rounded-lg px-4 text-sm font-bold rr-bg-navy text-white disabled:cursor-not-allowed disabled:opacity-50" title="Download a sanitized CSV for the active status and trigger-source filters">{exportHealthHistory.isPending ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}{exportHealthHistory.isPending ? "Preparing CSV…" : "Export filtered CSV"}</button>
+            <button type="button" onClick={() => exportHealthHistory.mutate({ status: historyStatus === "all" ? undefined : historyStatus, triggerSource: historyTriggerSource === "all" ? undefined : historyTriggerSource, fromMs: historyFromMs, toMs: historyToMs })} disabled={exportHealthHistory.isPending || historyTotal === 0 || Boolean(historyDateError)} className="flex h-10 items-center justify-center gap-2 self-end rounded-lg px-4 text-sm font-bold rr-bg-navy text-white disabled:cursor-not-allowed disabled:opacity-50" title="Download a sanitized CSV for all active history filters">{exportHealthHistory.isPending ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}{exportHealthHistory.isPending ? "Preparing CSV…" : "Export filtered CSV"}</button>
           </div>
-          <div aria-live="polite" className="mb-3 flex min-h-5 items-center justify-between gap-3 text-xs font-bold rr-text-navy-faint"><span>{healthHistoryQuery.isFetching ? "Loading filtered health history…" : `Showing ${historyStart}–${historyEnd} of ${historyTotal} matching records`}</span>{(historyStatus !== "all" || historyTriggerSource !== "all") && <button type="button" onClick={() => { setHistoryStatus("all"); setHistoryTriggerSource("all"); setHistoryPage(1); }} className="rr-text-gold">Clear history filters</button>}</div>
+          {historyDateError && <div role="alert" className="mb-3 rounded-xl px-4 py-3 text-sm font-bold" style={{ background: "oklch(0.97 0.03 27)", color: "oklch(0.46 0.12 27)" }}>{historyDateError}</div>}
+          <div className="mb-4 rounded-xl border bg-white p-3" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+              <div className="min-w-0 flex-1"><p className="flex items-center gap-2 text-sm rr-fw-black rr-text-navy"><Bookmark size={15} /> Quick filter presets</p><p className="mt-1 text-xs font-bold rr-text-navy-faint">Presets are private to your administrator account and store only validated filter values.</p><div className="mt-3 flex flex-wrap gap-2">{historyPresets.map((preset) => <div key={preset.id} className="inline-flex max-w-full items-center overflow-hidden rounded-full border bg-white" style={{ borderColor: "oklch(0.86 0.04 260)" }}><button type="button" onClick={() => applyHistoryPreset(preset)} className="truncate px-3 py-2 text-xs font-bold rr-text-navy" title={`Apply ${preset.name}`}>{preset.name}</button><button type="button" onClick={() => { setEditingPresetId(preset.id); setPresetName(preset.name); }} className="border-l px-2 py-2 rr-text-navy-muted" style={{ borderColor: "oklch(0.90 0.02 260)" }} aria-label={`Rename ${preset.name}`}><Pencil size={12} /></button><button type="button" onClick={() => deleteHealthHistoryPreset.mutate({ id: preset.id })} disabled={deleteHealthHistoryPreset.isPending} className="border-l px-2 py-2 disabled:opacity-50" style={{ borderColor: "oklch(0.90 0.02 260)", color: "oklch(0.48 0.17 27)" }} aria-label={`Delete ${preset.name}`}><Trash2 size={12} /></button></div>)}{!historyPresets.length && !presetsQuery.isLoading && <span className="text-xs font-bold rr-text-navy-faint">No presets saved yet.</span>}</div></div>
+              <div className="flex w-full flex-col gap-2 sm:flex-row lg:w-auto"><label className="flex min-w-0 flex-1 flex-col gap-1.5 text-xs font-bold rr-text-navy-muted lg:w-56"><span>{editingPreset ? "Rename preset" : "Preset name"}</span><input value={presetName} maxLength={80} onChange={(event) => setPresetName(event.target.value)} placeholder={editingPreset ? editingPreset.name : "e.g. Manual failures"} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }} /></label><div className="flex items-end gap-2"><button type="button" onClick={savePreset} disabled={saveHealthHistoryPreset.isPending || Boolean(historyDateError)} className="flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-bold rr-bg-gold rr-text-navy disabled:opacity-50">{saveHealthHistoryPreset.isPending ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}{editingPreset ? "Rename" : "Save current"}</button>{editingPreset && <button type="button" onClick={() => { setEditingPresetId(null); setPresetName(""); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }}>Cancel</button>}</div></div>
+            </div>
+            {presetsQuery.error && <p role="alert" className="mt-2 text-xs font-bold" style={{ color: "oklch(0.48 0.17 27)" }}>Saved presets could not be loaded. {presetsQuery.error.message}</p>}
+          </div>
+          <div aria-live="polite" className="mb-3 flex min-h-5 items-center justify-between gap-3 text-xs font-bold rr-text-navy-faint"><span>{healthHistoryQuery.isFetching ? "Loading filtered health history…" : `Showing ${historyStart}–${historyEnd} of ${historyTotal} matching records`}</span>{hasActiveHistoryFilters && <button type="button" onClick={() => { setHistoryStatus("all"); setHistoryTriggerSource("all"); setHistoryFromDate(""); setHistoryToDate(""); setHistoryPage(1); }} className="rr-text-gold">Clear history filters</button>}</div>
           {healthHistoryQuery.error && <div role="alert" className="mb-3 rounded-xl px-4 py-3 text-sm font-bold" style={{ background: "oklch(0.97 0.03 27)", color: "oklch(0.46 0.12 27)" }}>Health history could not be loaded. {healthHistoryQuery.error.message}</div>}
           <div className="flex flex-col gap-3">
             {healthHistory.map((row) => <article key={row.id} className="rounded-xl border p-3 rr-bg-surface sm:p-4" style={{ borderColor: row.overallStatus === "fail" ? "oklch(0.84 0.08 27)" : "oklch(0.88 0.03 260)" }}>

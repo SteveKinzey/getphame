@@ -107,3 +107,11 @@
 - [x] Extend the reusable production-auth-health-monitoring skill with filtered pagination and export patterns
 - [x] Run focused and full tests, TypeScript checks, production build, and authenticated desktop/mobile preview verification
 - [x] Save the publishable checkpoint and confirm the live production diagnostics bundle contains the new filter, export, and pagination release labels
+- [x] Add bounded administrator date-range filters to paginated history and filtered CSV export contracts
+- [x] Add per-administrator saved filter preset persistence with ownership-aware CRUD procedures
+- [x] Add schema and migration coverage for reusable health-history filter presets
+- [x] Add responsive date controls and quick-access preset save, apply, rename, and delete interactions
+- [x] Add direct regression coverage for date boundaries, preset ownership, authorization, validation, and export filter reuse
+- [x] Extend the reusable production-auth-health-monitoring skill with date-range and saved-preset patterns
+- [x] Run focused and full tests, TypeScript checks, production build, and desktop/mobile administrator verification
+- [ ] Save the publishable checkpoint and confirm the live production bundle contains the date-range and private quick-preset release labels

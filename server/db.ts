@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gt, gte, isNull, lt, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, desc, eq, gt, gte, isNull, lt, lte, or, sql, type SQL } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import * as schema from "../drizzle/schema";
 import { createHash, randomBytes } from "crypto";
@@ -311,6 +311,8 @@ export async function listAuthHealthChecks(limit = 30) {
 export type AuthHealthHistoryFilters = {
   status?: "ok" | "fail";
   triggerSource?: "scheduled" | "manual";
+  fromMs?: number;
+  toMs?: number;
 };
 
 export function normalizeAuthHealthHistoryQuery(input: AuthHealthHistoryFilters & {
@@ -321,6 +323,8 @@ export function normalizeAuthHealthHistoryQuery(input: AuthHealthHistoryFilters 
   return {
     status: input.status,
     triggerSource: input.triggerSource,
+    fromMs: Number.isFinite(input.fromMs) ? Math.max(0, Math.trunc(input.fromMs!)) : undefined,
+    toMs: Number.isFinite(input.toMs) ? Math.max(0, Math.trunc(input.toMs!)) : undefined,
     page: Math.max(1, Math.trunc(input.page ?? 1)),
     pageSize: Math.min(50, Math.max(10, Math.trunc(input.pageSize ?? 20))),
     limit: Math.min(10_000, Math.max(1, Math.trunc(input.limit ?? 10_000))),
@@ -328,9 +332,12 @@ export function normalizeAuthHealthHistoryQuery(input: AuthHealthHistoryFilters 
 }
 
 function buildAuthHealthHistoryWhere(filters: AuthHealthHistoryFilters) {
+  const normalized = normalizeAuthHealthHistoryQuery(filters);
   const conditions: SQL[] = [];
-  if (filters.status) conditions.push(eq(authHealthChecks.overallStatus, filters.status));
-  if (filters.triggerSource) conditions.push(eq(authHealthChecks.triggerSource, filters.triggerSource));
+  if (normalized.status) conditions.push(eq(authHealthChecks.overallStatus, normalized.status));
+  if (normalized.triggerSource) conditions.push(eq(authHealthChecks.triggerSource, normalized.triggerSource));
+  if (normalized.fromMs !== undefined) conditions.push(gte(authHealthChecks.checkedAt, normalized.fromMs));
+  if (normalized.toMs !== undefined) conditions.push(lte(authHealthChecks.checkedAt, normalized.toMs));
   return conditions.length ? and(...conditions) : undefined;
 }
 
