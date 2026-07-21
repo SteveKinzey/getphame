@@ -1,0 +1,136 @@
+name: API Recovery Browser Check
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/api-recovery-e2e.yml"
+      - "client/src/**"
+      - "client/public/locales/**"
+      - "e2e/api-recovery-reconnection.spec.ts"
+      - "playwright.config.ts"
+      - "playwright.recovery.config.ts"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "server/**"
+  pull_request:
+    paths:
+      - ".github/workflows/api-recovery-e2e.yml"
+      - "client/src/**"
+      - "client/public/locales/**"
+      - "e2e/api-recovery-reconnection.spec.ts"
+      - "playwright.config.ts"
+      - "playwright.recovery.config.ts"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "server/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: api-recovery-e2e-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  recovery-check:
+    name: Verify offline-to-online recovery
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+
+      - name: Install locked dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Chromium only
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Start development server
+        run: |
+          setsid pnpm dev > /tmp/getphame-dev.log 2>&1 &
+          echo $! > /tmp/getphame-dev.pid
+
+      - name: Wait for recovery harness
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:3000
+        run: |
+          for attempt in {1..30}; do
+            if curl --fail --silent --show-error --max-time 2 \
+              "$PLAYWRIGHT_BASE_URL/__test/api-recovery?from_webdev=1" > /dev/null; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Recovery harness did not become ready within the bounded startup window."
+          exit 1
+
+      - name: Verify mock-only privacy contract
+        run: |
+          spec="e2e/api-recovery-reconnection.spec.ts"
+          grep -Fq "page.route(" "$spec"
+          grep -Fq "route.fulfill" "$spec"
+          grep -Fq "/__test/api-recovery?from_webdev=1" "$spec"
+          for forbidden in storageState addCookies authorization cookie customer /api/trpc login sign-in "sign in" email; do
+            if grep -Fqi "$forbidden" "$spec"; then
+              echo "Recovery spec violates the mock-only privacy contract: $forbidden"
+              exit 1
+            fi
+          done
+
+      - name: Run bounded recovery scenario
+        env:
+          PLAYWRIGHT_BASE_URL: http://127.0.0.1:3000
+        run: |
+          set +e
+          pnpm exec playwright test e2e/api-recovery-reconnection.spec.ts \
+            --config=playwright.recovery.config.ts \
+            --project=chromium \
+            --workers=1 \
+            --retries=1 \
+            --timeout=30000 > /tmp/api-recovery-playwright.log 2>&1
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then
+            mkdir -p ci-artifacts
+            sed -E \
+              -e 's#https?://[^[:space:]]+#<url-redacted>#g' \
+              -e 's#[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}#<email-redacted>#g' \
+              -e 's#([Aa]uthorization|[Cc]ookie|[Tt]oken|[Ss]ecret|[Ee]mail|[Cc]ustomer)[=:][^[:space:]]+#\1=<redacted>#g' \
+              /tmp/api-recovery-playwright.log > ci-artifacts/api-recovery-playwright.log
+            cat ci-artifacts/api-recovery-playwright.log
+            exit "$status"
+          fi
+          echo "Recovery browser scenario passed."
+
+      - name: Upload sanitized failure diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-recovery-playwright-${{ github.run_attempt }}
+          path: ci-artifacts/api-recovery-playwright.log
+          if-no-files-found: ignore
+          retention-days: 3
+
+      - name: Stop development server
+        if: always()
+        run: |
+          if [ -f /tmp/getphame-dev.pid ]; then
+            kill -TERM -- "-$(cat /tmp/getphame-dev.pid)" 2>/dev/null || true
+          fi
