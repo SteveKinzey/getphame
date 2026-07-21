@@ -1,0 +1,101 @@
+name: API health monitor
+on:
+  schedule:
+    # Offset from the top of the hour to reduce scheduled-workflow delay risk.
+    - cron: "3-58/5 * * * *"
+  workflow_dispatch:
+permissions:
+  contents: read
+  issues: write
+concurrency:
+  group: getphame-api-health-monitor
+  cancel-in-progress: false
+jobs:
+  probe:
+    name: Probe deployed API health
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      HEALTH_URL: https://revrocket-j5ynazte.manus.space/api/health
+      STATE_LABEL: monitor:api-health-state
+      INCIDENT_LABEL: monitor:api-health-incident
+      FAILURE_THRESHOLD: "2"
+
+    steps:
+      - name: Probe health contract and manage incident state
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          ensure_label() {
+            gh label create "$1" --color "$2" --description "$3" 2>/dev/null || true
+          }
+
+          ensure_label "$STATE_LABEL" "6E7781" "Internal state for the Get Phame API health monitor"
+          ensure_label "$INCIDENT_LABEL" "B42318" "External API health incident managed by GitHub Actions"
+
+          now="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
+          state_json="$(gh issue list --state all --label "$STATE_LABEL" --limit 1 --json number,body)"
+          state_number="$(printf '%s' "$state_json" | jq -r '.[0].number // empty')"
+          state_body="$(printf '%s' "$state_json" | jq -r '.[0].body // empty')"
+          previous_failures="$(printf '%s\n' "$state_body" | sed -n 's/.*failures=\([0-9][0-9]*\).*/\1/p' | head -n 1)"
+          previous_failures="${previous_failures:-0}"
+
+          if [ -z "$state_number" ]; then
+            state_url="$(gh issue create \
+              --title "Get Phame API Health Monitor State" \
+              --label "$STATE_LABEL" \
+              --body "Internal health-monitor state. Do not reopen or remove this label.\n\n<!-- getphame-api-health-state failures=0 updated=$now -->")"
+            state_number="$(gh issue view "$state_url" --json number --jq '.number')"
+            gh issue close "$state_number" --reason completed
+          fi
+
+          response_file="$(mktemp)"
+          set +e
+          http_code="$(curl --silent --show-error --location --connect-timeout 7 --max-time 15 --output "$response_file" --write-out "%{http_code}" "$HEALTH_URL")"
+          curl_exit=$?
+          set -e
+
+          healthy=false
+          if [ "$curl_exit" -eq 0 ] && [ "$http_code" = "200" ] && jq -e '.ok == true and .status == "ready"' "$response_file" >/dev/null 2>&1; then
+            healthy=true
+          fi
+          rm -f "$response_file"
+
+          incident_json="$(gh issue list --state open --label "$INCIDENT_LABEL" --limit 1 --json number)"
+          incident_number="$(printf '%s' "$incident_json" | jq -r '.[0].number // empty')"
+
+          if [ "$healthy" = true ]; then
+            gh issue edit "$state_number" --body "Internal health-monitor state. Do not reopen or remove this label.\n\n<!-- getphame-api-health-state failures=0 updated=$now -->"
+
+            if [ -n "$incident_number" ]; then
+              gh issue comment "$incident_number" --body "Recovered at $now. The deployed endpoint returned the expected ready contract."
+              gh issue close "$incident_number" --reason completed
+            fi
+
+            echo "Health probe passed. Consecutive failure count reset to zero."
+            exit 0
+          fi
+
+          failure_count=$((previous_failures + 1))
+          gh issue edit "$state_number" --body "Internal health-monitor state. Do not reopen or remove this label.\n\n<!-- getphame-api-health-state failures=$failure_count updated=$now -->"
+
+          echo "Health probe failed (curl exit=$curl_exit, HTTP ${http_code:-unavailable}); consecutive failures=$failure_count."
+
+          if [ "$failure_count" -lt "$FAILURE_THRESHOLD" ]; then
+            echo "Threshold not reached; no incident notification created."
+            exit 0
+          fi
+
+          if [ -z "$incident_number" ]; then
+            gh issue create \
+              --title "Incident: Get Phame API health check is failing" \
+              --label "$INCIDENT_LABEL" \
+              --body "## External health check failure\n\nThe independently scheduled monitor reached **$failure_count consecutive failures** at $now.\n\n| Field | Value |\n| --- | --- |\n| Endpoint | \`$HEALTH_URL\` |\n| HTTP status | \`${http_code:-unavailable}\` |\n| Curl exit code | \`$curl_exit\` |\n| Threshold | \`$FAILURE_THRESHOLD\` consecutive failures |\n\nNo response body is recorded by this monitor. Investigate the deployed service and close only after a verified recovery."
+            echo "Incident issue created after the configured failure threshold."
+            exit 1
+          fi
+
+          echo "An incident issue is already open; leaving it deduplicated."
