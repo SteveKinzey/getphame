@@ -123,4 +123,4 @@
 - [x] Add functional regression tests for individual active-filter chip removal, clear-all behavior, and page reset
 - [x] Add functional preset-duplication tests for owner scoping, preset-cap enforcement, copied values, and deterministic naming
 - [x] Extend the reusable production-auth-health-monitoring skill with relative ranges, duplication, and active-chip patterns
-- [ ] Run focused and full tests, TypeScript checks, production build, desktop/mobile admin verification, checkpoint, and live-bundle confirmation
+- [x] Run focused and full tests, TypeScript checks, production build, desktop/mobile admin verification, checkpoint, and live-bundle confirmation
