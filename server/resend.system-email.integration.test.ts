@@ -10,6 +10,8 @@ const requiredEnv = [
 ] as const;
 
 const hasSystemEmailConfig = requiredEnv.every((key) => Boolean(process.env[key]));
+const shouldVerifySystemEmailIntegration =
+  process.env.RUN_SYSTEM_EMAIL_INTEGRATION === "true";
 
 describe.runIf(hasSystemEmailConfig)("Resend system-email integration", () => {
   it("authenticates the supplied API key and verifies the SMTP transport", async () => {
@@ -52,9 +54,12 @@ describe.runIf(hasSystemEmailConfig)("Resend system-email integration", () => {
   }, 20_000);
 });
 
-describe.skipIf(hasSystemEmailConfig)("Resend system-email integration", () => {
-  it("requires all system email environment variables", () => {
+describe("Resend system-email integration configuration", () => {
+  it.skipIf(!shouldVerifySystemEmailIntegration)(
+    "requires all system email environment variables when verification is explicitly requested",
+    () => {
     const missing = requiredEnv.filter((key) => !process.env[key]);
     expect(missing, `Missing system email variables: ${missing.join(", ")}`).toEqual([]);
-  });
+    },
+  );
 });

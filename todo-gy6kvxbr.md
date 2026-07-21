@@ -583,5 +583,6 @@
 - [x] Verify the deployed Get Phame Google sign-in flow end-to-end, documenting any credential, redirect-URI, or user-session blocker.
 - [ ] Validate, commit, push, and confirm the completed security and CI work on GitHub.
 - [ ] Run pnpm install --no-frozen-lockfile, inspect the pnpm-lock.yaml delta, and push the reviewed lockfile update.
-- [ ] Fix the GitHub Actions TypeScript out-of-memory failure with a scoped, validated workflow memory setting.
+- [x] Fix the GitHub Actions TypeScript out-of-memory failure with a scoped, validated workflow memory setting.
 - [x] Remediate the production body-parser advisory that currently blocks the build’s dependency audit.
+- [x] Make the external system-email integration test credential-aware so public CI skips it only when optional SMTP secrets are absent.
