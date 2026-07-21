@@ -53,12 +53,13 @@ export function buildAuthHealthHistoryCsvExport(input: {
   triggerSource?: "scheduled" | "manual";
   fromMs?: number;
   toMs?: number;
+  fromDate?: string;
+  toDate?: string;
   generatedAt?: number;
 }) {
   const generatedAt = input.generatedAt ?? Date.now();
-  const dateStamp = new Date(generatedAt).toISOString().slice(0, 10);
   return {
-    filename: `getphame-auth-health-history-${dateStamp}.csv`,
+    filename: buildAuthHealthHistoryCsvFilename(input, generatedAt),
     mimeType: "text/csv;charset=utf-8",
     csv: serializeAuthHealthHistoryCsv(input.rows),
     generatedAt,
@@ -72,4 +73,24 @@ export function buildAuthHealthHistoryCsvExport(input: {
       toMs: input.toMs ?? null,
     },
   };
+}
+
+function normalizeCsvDateLabel(value?: string) {
+  if (!value || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return undefined;
+  const [year, month, day] = value.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+  if (parsed.getUTCFullYear() !== year || parsed.getUTCMonth() !== month - 1 || parsed.getUTCDate() !== day) return undefined;
+  return value;
+}
+
+export function buildAuthHealthHistoryCsvFilename(
+  input: { fromDate?: string; toDate?: string },
+  generatedAt = Date.now(),
+) {
+  const fromDate = normalizeCsvDateLabel(input.fromDate);
+  const toDate = normalizeCsvDateLabel(input.toDate);
+  if (fromDate && toDate) return `getphame-auth-health-history-${fromDate}-to-${toDate}.csv`;
+  if (fromDate) return `getphame-auth-health-history-from-${fromDate}.csv`;
+  if (toDate) return `getphame-auth-health-history-through-${toDate}.csv`;
+  return `getphame-auth-health-history-${new Date(generatedAt).toISOString().slice(0, 10)}.csv`;
 }

@@ -38,13 +38,13 @@ describe("duplicate auth health history preset", () => {
   const sourcePreset = { id: 5, ownerUserId: 42, name: "Manual failures", normalizedName: "manual failures", status: "fail", triggerSource: "manual", fromMs: 100, toMs: 999 };
 
   it("scopes the source to its owner and copies only validated filter values", async () => {
-    const harness = duplicateDb([sourcePreset], [{ name: "Manual failures" }, { name: "Manual failures copy" }]);
+    const harness = duplicateDb([sourcePreset], [{ name: "Manual failures", sortOrder: 4 }, { name: "Manual failures copy", sortOrder: 5 }]);
     const result = await duplicateAuthHealthHistoryPreset(42, 5, harness.db as never);
 
     expect(collectPrimitives(harness.source.where.mock.calls[0][0])).toEqual(expect.arrayContaining([42, 5]));
     expect(collectPrimitives(harness.existing.where.mock.calls[0][0])).toContain(42);
-    expect(harness.getInsertedValues()).toMatchObject({ ownerUserId: 42, name: "Manual failures copy 2", normalizedName: "manual failures copy 2", status: "fail", triggerSource: "manual", fromMs: 100, toMs: 999 });
-    expect(result).toMatchObject({ outcome: "duplicated", preset: { id: 88, name: "Manual failures copy 2", status: "fail", triggerSource: "manual", fromMs: 100, toMs: 999 } });
+    expect(harness.getInsertedValues()).toMatchObject({ ownerUserId: 42, name: "Manual failures copy 2", normalizedName: "manual failures copy 2", status: "fail", triggerSource: "manual", fromMs: 100, toMs: 999, sortOrder: 6 });
+    expect(result).toMatchObject({ outcome: "duplicated", preset: { id: 88, name: "Manual failures copy 2", status: "fail", triggerSource: "manual", fromMs: 100, toMs: 999, sortOrder: 6 } });
   });
 
   it("does not duplicate a preset outside the requesting owner's scope", async () => {

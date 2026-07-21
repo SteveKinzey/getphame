@@ -21,6 +21,7 @@ import {
   listAuthHealthHistoryPresets,
   MAX_AUTH_HEALTH_HISTORY_PRESET_NAME_CHARS,
   MAX_AUTH_HEALTH_HISTORY_PRESETS,
+  reorderAuthHealthHistoryPresets,
   saveAuthHealthHistoryPreset,
 } from "../authHealthHistoryPresets";
 
@@ -49,6 +50,12 @@ const filtersSchema = z.object({
 });
 
 const healthHistoryFiltersSchema = z.object(healthHistoryFilterFields).superRefine(validateHealthHistoryRange);
+
+const healthHistoryExportSchema = z.object({
+  ...healthHistoryFilterFields,
+  fromDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  toDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+}).superRefine(validateHealthHistoryRange);
 
 const healthHistoryPageSchema = z.object({
   ...healthHistoryFilterFields,
@@ -101,11 +108,12 @@ export const authDiagnosticsRouter = router({
     }),
 
   exportHealthHistoryCsv: adminProcedure
-    .input(healthHistoryFiltersSchema.optional())
+    .input(healthHistoryExportSchema.optional())
     .mutation(async ({ input }) => {
-      const filters = healthHistoryFiltersSchema.parse(input ?? {});
+      const parsed = healthHistoryExportSchema.parse(input ?? {});
+      const { fromDate, toDate, ...filters } = parsed;
       const history = await listAuthHealthChecksForExport(filters);
-      return buildAuthHealthHistoryCsvExport({ ...history, ...filters });
+      return buildAuthHealthHistoryCsvExport({ ...history, ...filters, fromDate, toDate });
     }),
 
   healthHistoryPresets: adminProcedure.query(async ({ ctx }) => {
@@ -137,6 +145,16 @@ export const authDiagnosticsRouter = router({
       const result = await duplicateAuthHealthHistoryPreset(ctx.user.id, input.id);
       if (result.outcome === "not_found") throw new TRPCError({ code: "NOT_FOUND", message: "This saved filter preset no longer exists." });
       if (result.outcome === "limit_reached") throw new TRPCError({ code: "BAD_REQUEST", message: `You can save up to ${MAX_AUTH_HEALTH_HISTORY_PRESETS} filter presets.` });
+      if (result.outcome === "unavailable") throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Saved filter presets are unavailable." });
+      return result;
+    }),
+
+  reorderHealthHistoryPresets: adminProcedure
+    .input(z.object({ orderedIds: z.array(z.number().int().positive()).min(1).max(MAX_AUTH_HEALTH_HISTORY_PRESETS) }))
+    .mutation(async ({ ctx, input }) => {
+      const result = await reorderAuthHealthHistoryPresets(ctx.user.id, input);
+      if (result.outcome === "invalid_order") throw new TRPCError({ code: "BAD_REQUEST", message: "Preset order must contain unique preset IDs." });
+      if (result.outcome === "membership_mismatch") throw new TRPCError({ code: "BAD_REQUEST", message: "Preset order must include every saved preset owned by this administrator." });
       if (result.outcome === "unavailable") throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Saved filter presets are unavailable." });
       return result;
     }),

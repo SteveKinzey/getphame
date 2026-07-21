@@ -153,11 +153,13 @@ export const authHealthHistoryPresets = pgTable("auth_health_history_presets", {
   triggerSource: authHealthTriggerEnum("trigger_source"),
   fromMs: bigint("from_ms", { mode: "number" }),
   toMs: bigint("to_ms", { mode: "number" }),
+  sortOrder: integer("sort_order").notNull().default(0),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 }, (table) => [
   uniqueIndex("auth_health_history_presets_owner_name_unique").on(table.ownerUserId, table.normalizedName),
   index("auth_health_history_presets_owner_updated_idx").on(table.ownerUserId, table.updatedAt),
+  index("auth_health_history_presets_owner_sort_idx").on(table.ownerUserId, table.sortOrder, table.id),
 ]);
 
 export type AuthHealthHistoryPreset = typeof authHealthHistoryPresets.$inferSelect;

@@ -13,6 +13,7 @@ const mocks = vi.hoisted(() => ({
   saveAuthHealthHistoryPreset: vi.fn(),
   deleteAuthHealthHistoryPreset: vi.fn(),
   duplicateAuthHealthHistoryPreset: vi.fn(),
+  reorderAuthHealthHistoryPresets: vi.fn(),
 }));
 
 vi.mock("./db", async (importOriginal) => ({
@@ -36,6 +37,7 @@ vi.mock("./authHealthHistoryPresets", async (importOriginal) => ({
   saveAuthHealthHistoryPreset: mocks.saveAuthHealthHistoryPreset,
   deleteAuthHealthHistoryPreset: mocks.deleteAuthHealthHistoryPreset,
   duplicateAuthHealthHistoryPreset: mocks.duplicateAuthHealthHistoryPreset,
+  reorderAuthHealthHistoryPresets: mocks.reorderAuthHealthHistoryPresets,
 }));
 
 import { appRouter } from "./routers";
@@ -72,6 +74,7 @@ describe("admin authentication diagnostics", () => {
     mocks.saveAuthHealthHistoryPreset.mockResolvedValue({ outcome: "saved", id: 5, created: true });
     mocks.deleteAuthHealthHistoryPreset.mockResolvedValue(true);
     mocks.duplicateAuthHealthHistoryPreset.mockResolvedValue({ outcome: "duplicated", preset: { id: 6, name: "Manual failures copy", status: "fail", triggerSource: "manual", fromMs: 100, toMs: 999 } });
+    mocks.reorderAuthHealthHistoryPresets.mockResolvedValue({ outcome: "reordered", orderedIds: [6, 5] });
   });
 
   afterEach(() => vi.unstubAllEnvs());
@@ -151,9 +154,9 @@ describe("admin authentication diagnostics", () => {
     });
 
     const adminCaller = appRouter.createCaller(context("admin"));
-    const result = await adminCaller.authDiagnostics.exportHealthHistoryCsv({ status: "fail", triggerSource: "manual", fromMs: 100, toMs: 999 });
+    const result = await adminCaller.authDiagnostics.exportHealthHistoryCsv({ status: "fail", triggerSource: "manual", fromMs: 100, toMs: 999, fromDate: "2026-07-01", toDate: "2026-07-21" });
     expect(mocks.listAuthHealthChecksForExport).toHaveBeenCalledWith({ status: "fail", triggerSource: "manual", fromMs: 100, toMs: 999 });
-    expect(result.filename).toMatch(/^getphame-auth-health-history-\d{4}-\d{2}-\d{2}\.csv$/);
+    expect(result.filename).toBe("getphame-auth-health-history-2026-07-01-to-2026-07-21.csv");
     expect(result.csv).toContain("failure_detail_sanitized");
     expect(result.csv).toContain("'=SUM(1,2)");
     expect(result.csv).not.toContain("private-task-uid");
@@ -183,10 +186,14 @@ describe("admin authentication diagnostics", () => {
     await adminCaller.authDiagnostics.duplicateHealthHistoryPreset({ id: 5 });
     expect(mocks.duplicateAuthHealthHistoryPreset).toHaveBeenCalledWith(1, 5);
 
+    await adminCaller.authDiagnostics.reorderHealthHistoryPresets({ orderedIds: [6, 5] });
+    expect(mocks.reorderAuthHealthHistoryPresets).toHaveBeenCalledWith(1, { orderedIds: [6, 5] });
+
     const userCaller = appRouter.createCaller(context("user"));
     await expect(userCaller.authDiagnostics.healthHistoryPresets()).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(userCaller.authDiagnostics.saveHealthHistoryPreset({ name: "Denied" })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(userCaller.authDiagnostics.deleteHealthHistoryPreset({ id: 5 })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(userCaller.authDiagnostics.duplicateHealthHistoryPreset({ id: 5 })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(userCaller.authDiagnostics.reorderHealthHistoryPresets({ orderedIds: [6, 5] })).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 });

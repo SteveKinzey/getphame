@@ -1,5 +1,42 @@
 export const AUTH_HEALTH_HISTORY_RELATIVE_DAYS = [7, 30] as const;
 
+export const AUTH_HEALTH_HISTORY_CLEAR_SHORTCUT = "Alt+Shift+C";
+
+type ShortcutTarget = {
+  tagName?: string;
+  isContentEditable?: boolean;
+  closest?: (selector: string) => unknown;
+};
+
+export type AuthHealthHistoryShortcutEvent = {
+  key: string;
+  altKey: boolean;
+  shiftKey: boolean;
+  ctrlKey: boolean;
+  metaKey: boolean;
+  repeat: boolean;
+  target: EventTarget | null;
+};
+
+export function isEditableAuthHealthHistoryShortcutTarget(target: EventTarget | null) {
+  const candidate = target as ShortcutTarget | null;
+  if (!candidate) return false;
+  const tagName = candidate.tagName?.toUpperCase();
+  if (tagName === "INPUT" || tagName === "TEXTAREA" || tagName === "SELECT") return true;
+  if (candidate.isContentEditable) return true;
+  return Boolean(candidate.closest?.('[contenteditable="true"]'));
+}
+
+export function shouldClearAuthHealthHistoryFiltersFromShortcut(event: AuthHealthHistoryShortcutEvent) {
+  return event.key.toLowerCase() === "c"
+    && event.altKey
+    && event.shiftKey
+    && !event.ctrlKey
+    && !event.metaKey
+    && !event.repeat
+    && !isEditableAuthHealthHistoryShortcutTarget(event.target);
+}
+
 export type AuthHealthHistoryRelativeDays = typeof AUTH_HEALTH_HISTORY_RELATIVE_DAYS[number];
 
 export type AuthHealthHistoryFilterChipKey = "status" | "triggerSource" | "from" | "to";

@@ -124,3 +124,12 @@
 - [x] Add functional preset-duplication tests for owner scoping, preset-cap enforcement, copied values, and deterministic naming
 - [x] Extend the reusable production-auth-health-monitoring skill with relative ranges, duplication, and active-chip patterns
 - [x] Run focused and full tests, TypeScript checks, production build, desktop/mobile admin verification, checkpoint, and live-bundle confirmation
+- [x] Reconstruct the lost CSV date-range filename, Alt+Shift+C shortcut, persisted preset ordering, migration, tests, and dependency changes after the sandbox reset
+- [x] Reapply the reviewed schema, owner-scoped server procedures, client sortable controls, mobile history deep-link stabilization, and DOMPurify security override
+- [x] Restore and validate the reusable production-auth-health-monitoring skill updates for filenames, shortcuts, and preset ordering
+- [x] Reconfirm the already-applied production database migration matches the reconstructed Drizzle schema without rerunning destructive or duplicate SQL
+- [x] Run focused tests, all tests, TypeScript checks, dependency audit, production build, and authenticated responsive administrator verification on the recovered release
+- [ ] Save an immediate recovery checkpoint before any further production verification
+- [ ] Confirm the auto-published Get Phame bundle contains the recovered release labels and deliver the final version
+- [x] Reduce the authoritative account-level knowledge base from 100 granular entries to three verified enabled consolidated entries while retaining Get Phame rules in project-scoped guidance
+- [x] Confirm the final production-auth-health-monitoring `SKILL.md` directly covers date-aware CSV filenames, Alt+Shift+C clearing, and persisted preset ordering, update it if needed, and rerun the official validator

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { clearAllAuthHealthHistoryFilters, clearAuthHealthHistoryFilter, getActiveAuthHealthHistoryFilterChips, getRelativeAuthHealthHistoryDateInputs } from "../shared/authHealthHistoryRanges";
+import { AUTH_HEALTH_HISTORY_CLEAR_SHORTCUT, clearAllAuthHealthHistoryFilters, clearAuthHealthHistoryFilter, getActiveAuthHealthHistoryFilterChips, getRelativeAuthHealthHistoryDateInputs, shouldClearAuthHealthHistoryFiltersFromShortcut } from "../shared/authHealthHistoryRanges";
 
 describe("auth health history relative ranges", () => {
   it("returns inclusive local-calendar dates for the last 7 and 30 days", () => {
@@ -28,5 +28,15 @@ describe("auth health history relative ranges", () => {
 
   it("clears every active filter and returns to page one", () => {
     expect(clearAllAuthHealthHistoryFilters()).toEqual({ status: "all", triggerSource: "all", from: "", to: "", page: 1 });
+  });
+
+  it("matches Alt+Shift+C only outside editable targets and ignores repeats", () => {
+    expect(AUTH_HEALTH_HISTORY_CLEAR_SHORTCUT).toBe("Alt+Shift+C");
+    const base = { key: "c", altKey: true, shiftKey: true, ctrlKey: false, metaKey: false, repeat: false, target: null };
+    expect(shouldClearAuthHealthHistoryFiltersFromShortcut(base)).toBe(true);
+    expect(shouldClearAuthHealthHistoryFiltersFromShortcut({ ...base, repeat: true })).toBe(false);
+    expect(shouldClearAuthHealthHistoryFiltersFromShortcut({ ...base, altKey: false })).toBe(false);
+    expect(shouldClearAuthHealthHistoryFiltersFromShortcut({ ...base, target: { tagName: "INPUT" } })).toBe(false);
+    expect(shouldClearAuthHealthHistoryFiltersFromShortcut({ ...base, target: { tagName: "DIV", isContentEditable: true } })).toBe(false);
   });
 });
