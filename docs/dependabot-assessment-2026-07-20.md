@@ -26,3 +26,11 @@ The release build’s stricter OSV audit subsequently detected `body-parser@1.20
 ## CI publishing note
 
 The repository now has a reviewed quality-gate workflow locally, but the configured GitHub App credential was rejected when it attempted to push `.github/workflows/quality.yml` because it lacks the `workflows` permission. Publishing this file requires either a user-authorized GitHub web commit or a credential that includes that permission; no force-push or permission bypass is appropriate.
+
+## Remaining alert inventory — 2026-07-20
+
+The authenticated GitHub Dependabot view reports eight open alerts. The critical and high `tar` and `brace-expansion` findings, the direct high Nodemailer finding, and the low body-parser finding are all attributed to the legacy `package-lock.json`; the moderate esbuild finding is marked development-only. Because the application’s validated build and GitHub Actions workflow use `pnpm install --frozen-lockfile`, the next safe remediation decision is to verify that the npm lockfile is not an active delivery input before removing or regenerating it. The alert source must not be dismissed merely by deleting a lockfile without that review.
+
+## Accepted package-manager remediation
+
+The source review confirmed that the custom Dockerfile copies `package.json`, `pnpm-lock.yaml`, and `patches/` into both build stages, never copies `package-lock.json`, and never executes `npm ci` or `npm install`. The tracked `package-lock.json` is therefore an unsupported alternate resolution graph rather than a production delivery input. It is removed as part of this release, while Docker is tightened to use the `packageManager`-pinned pnpm version with `--frozen-lockfile` in both stages. The maintained dependency graph is now solely `pnpm-lock.yaml`; future vulnerability remediation must update it and preserve the production audit gate.

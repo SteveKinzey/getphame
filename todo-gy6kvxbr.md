@@ -586,3 +586,11 @@
 - [x] Fix the GitHub Actions TypeScript out-of-memory failure with a scoped, validated workflow memory setting.
 - [x] Remediate the production body-parser advisory that currently blocks the build’s dependency audit.
 - [x] Make the external system-email integration test credential-aware so public CI skips it only when optional SMTP secrets are absent.
+- [ ] Enable the Google OAuth production callback for getphame.app and verify the deployed authorization path without weakening CSRF or redirect validation.
+- [x] Display Google sign-in alongside the existing magic-link option on the production Get Phame login page and add regression coverage.
+- [ ] Review remaining Dependabot alerts, prioritize safe patch updates, and merge the applicable updates without overriding local security fixes.
+- [ ] Run complete validation, publish the OAuth and dependency updates, and verify the deployed login experience.
+- [x] Replace the shared staging-only social-login gate with explicit Google production-host eligibility while keeping Apple hidden until its own production readiness is confirmed.
+- [x] Preserve visible email magic-link authentication alongside Google on Login and Onboarding, and add focused host-policy/UI regression coverage.
+- [x] Retire the unconsumed legacy `package-lock.json`, align the custom Dockerfile with the locked pnpm install policy, and document the evidence-based remediation decision.
+- [ ] Run focused and complete quality gates, push the reviewed change set, confirm the GitHub Actions run, checkpoint the release, and verify the production Google entry point.

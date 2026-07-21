@@ -1,14 +1,14 @@
 /**
  * Login.tsx — GetPhame authentication page (Magic Link)
  *
- * Production displays email magic-link authentication only. Apple and Google
- * remain available on localhost and Manus preview hosts for staged testing.
+ * Production displays email magic-link authentication alongside Google on the
+ * approved Get Phame custom domains. Apple remains staged to preview hosts.
  *
  * Design: navy (#0F1B2D) + gold (#C9A84C) theme, mobile-first, responsive.
  */
 import React, { useState, useEffect, useCallback } from "react";
 import { flushSync } from "react-dom";
-import { isStagingSocialLoginHost } from "@/lib/socialLoginAvailability";
+import { isGoogleSignInHost, isStagingSocialLoginHost } from "@/lib/socialLoginAvailability";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import {
@@ -116,8 +116,10 @@ const OrDivider = ({ label }: { label: string }) => (
 
 export default function Login() {
   const { t } = useTranslation("translation");
-  const socialLoginEnabled = isStagingSocialLoginHost(window.location.hostname);
+  const googleLoginEnabled = isGoogleSignInHost(window.location.hostname);
+  const appleLoginEnabled = isStagingSocialLoginHost(window.location.hostname);
   const [googleEnabled, setGoogleEnabled] = useState<boolean | null>(null);
+  const shouldShowSocialSection = appleLoginEnabled || (googleLoginEnabled && googleEnabled !== false);
 
   // Form state
   const [email, setEmail] = useState("");
@@ -129,7 +131,7 @@ export default function Login() {
 
   // Check if Google OAuth is configured on the server
   useEffect(() => {
-    if (!socialLoginEnabled) {
+    if (!googleLoginEnabled) {
       setGoogleEnabled(false);
       return;
     }
@@ -138,7 +140,7 @@ export default function Login() {
       .then((r) => r.json() as Promise<GoogleStatusResponse>)
       .then((data) => setGoogleEnabled(data.enabled))
       .catch(() => setGoogleEnabled(false));
-  }, [socialLoginEnabled]);
+  }, [googleLoginEnabled]);
 
   // Check for auth errors in the URL (e.g. /login?auth_error=link_expired)
   useEffect(() => {
@@ -256,12 +258,12 @@ export default function Login() {
 
       {/* Card */}
       <div className="w-full max-w-sm">
-        {socialLoginEnabled && (
+        {shouldShowSocialSection && (
           <>
-            {/* ── Staging-only OAuth Buttons ────────────────────────────── */}
-            <div className="space-y-3" data-testid="staging-social-login">
-              {/* Google — only rendered when configured */}
-              {googleEnabled === true && (
+            {/* ── Google + staged Apple OAuth Buttons ───────────────────── */}
+            <div className="space-y-3" data-testid="social-login">
+              {/* Google — rendered only on an approved host when configured */}
+              {googleLoginEnabled && googleEnabled === true && (
                 <div>
                   <button
                     type="button"
@@ -285,17 +287,19 @@ export default function Login() {
               )}
 
               {/* Google placeholder while loading */}
-              {googleEnabled === null && (
+              {googleLoginEnabled && googleEnabled === null && (
                 <div className="h-12 w-full rounded-xl bg-white/5 animate-pulse" />
               )}
 
-              <a
-                href="/api/auth/apple"
-                className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
-              >
-                <AppleIcon />
-                {t("login.continueWithApple", { defaultValue: "Continue with Apple" })}
-              </a>
+              {appleLoginEnabled && (
+                <a
+                  href="/api/auth/apple"
+                  className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
+                >
+                  <AppleIcon />
+                  {t("login.continueWithApple", { defaultValue: "Continue with Apple" })}
+                </a>
+              )}
             </div>
 
             <OrDivider label={t("login.or", { defaultValue: "or" })} />

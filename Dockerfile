@@ -1,26 +1,26 @@
 # ─── Stage 1: Build ───────────────────────────────────────────────────────────
 FROM node:22-slim AS builder
 
-# Install pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Use the pnpm version pinned in package.json through Corepack.
+RUN npm install -g corepack@latest && corepack enable
 
 WORKDIR /app
 
 # Install dependencies
 COPY package.json pnpm-lock.yaml ./
 COPY patches/ ./patches/
-RUN pnpm install --no-frozen-lockfile
+RUN corepack pnpm install --frozen-lockfile
 
 # Copy source
 COPY . .
 
 # Build client (Vite) and server (esbuild)
-RUN pnpm run build
+RUN corepack pnpm run build
 
 # ─── Stage 2: Production ─────────────────────────────────────────────────────
 FROM node:22-slim AS runner
 
-RUN corepack enable && corepack prepare pnpm@latest --activate
+RUN npm install -g corepack@latest && corepack enable
 
 WORKDIR /app
 
@@ -31,7 +31,7 @@ COPY --from=builder /app/pnpm-lock.yaml ./
 COPY --from=builder /app/patches/ ./patches/
 
 # Install production dependencies only
-RUN pnpm install --no-frozen-lockfile --prod
+RUN corepack pnpm install --frozen-lockfile --prod
 
 # The app listens on PORT (default 3000)
 ENV NODE_ENV=production
