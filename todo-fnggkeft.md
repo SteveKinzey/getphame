@@ -106,4 +106,4 @@
 - [x] Assert the export query’s generated filter object explicitly contains the requested status/source values
 - [x] Extend the reusable production-auth-health-monitoring skill with filtered pagination and export patterns
 - [x] Run focused and full tests, TypeScript checks, production build, and authenticated desktop/mobile preview verification
-- [ ] Save the publishable checkpoint and confirm the live production diagnostics bundle contains the new filter, export, and pagination release labels
+- [x] Save the publishable checkpoint and confirm the live production diagnostics bundle contains the new filter, export, and pagination release labels
