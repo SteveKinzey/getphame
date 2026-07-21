@@ -870,7 +870,28 @@
     "hidePromptPay": "隱藏",
     "promptPayReveal": "在泰國？",
     "promptPayRevealLink": "使用 PromptPay 支付 (฿)",
-    "guarantee": "7 天退款保證"
+    "guarantee": "7 天退款保證",
+    "otherPaymentMethods": "其他付款方式",
+    "checkoutForPlan": "{{plan}} 的安全結帳"
+  },
+  "pricingGrid": {
+    "title": "選擇適合您業務成長的方案",
+    "savingsEyebrow": "節省計算器",
+    "savingsTitle": "查看每種方案承諾可節省多少",
+    "savingsBasis": "與按月付款相比",
+    "monthlyAnnualCost": "12 個月",
+    "annualSave": "節省 {{amount}}",
+    "annualSavingsDetail": "第一年支付 {{price}}，而非 {{monthly}}",
+    "lifetimeSave": "到第二年可節省 {{amount}}",
+    "lifetimePayback": "約 {{months}} 個月即可回本",
+    "heroSendRequests": "傳送請求",
+    "heroAutomateFollowUps": "自動追蹤",
+    "heroTrackGrowth": "追蹤成長",
+    "closeComparison": "關閉比較",
+    "includedLabel": "已包含",
+    "planFeaturesLabel": "{{plan}} 方案功能",
+    "approximateThb": "約 {{amount}} 泰銖",
+    "previousPrice": "原價 {{amount}}"
   },
   "accessCode": {
     "title": "有訪問碼嗎？",
@@ -951,6 +972,26 @@
     },
     "preparingGoogle": "正在準備 Google 登入…",
     "redirectingGoogle": "正在安全地重新導向至 Google…"
+  },
+  "apiRecovery": {
+    "preparing": "正在準備您的工作區…",
+    "preparingDescription": "服務就緒後，我們會自動重新連線。",
+    "reconnecting": "正在重新連線…",
+    "reconnected": "您已恢復連線。",
+    "reconnectedDescription": "Get Phame 已連線並可使用。",
+    "unavailableTitle": "我們正在重新連線 Get Phame。",
+    "unavailableDescription": "服務比預期需要更長時間。您的工作是安全的；準備好後請再試一次。",
+    "offlineTitle": "您目前處於離線狀態。",
+    "offlineDescription": "請檢查 Wi-Fi 或行動數據後再試一次。您的工作仍安全地保存在此裝置上。",
+    "offlineStepOne": "開啟 Wi-Fi 或行動數據。",
+    "offlineStepTwo": "回到這裡並點選「重試連線」。",
+    "retrying": "正在重試…",
+    "retry": "再試一次",
+    "retryNow": "立即重試",
+    "retryConnection": "重試連線",
+    "networkStatusLabel": "網路狀態",
+    "networkOnline": "在線",
+    "networkOffline": "離線"
   },
   "profileMenu": {
     "account": "帳戶",
@@ -1561,6 +1602,12 @@
       "description": "下次開啟設定引導時顯示相關提示。您也可以在設定精靈中變更此選項。",
       "enable": "啟用設定提示",
       "disable": "停用設定提示"
+    },
+    "hapticFeedback": {
+      "title": "觸覺回饋",
+      "description": "在支援的裝置上使用振動來回饋點按和重新連線成功。始終遵循「減少動態效果」設定。",
+      "enable": "啟用觸覺回饋",
+      "disable": "停用觸覺回饋"
     }
   },
   "login": {

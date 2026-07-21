@@ -564,6 +564,12 @@
       "description": "Mostra suggerimenti contestuali alla prossima apertura della configurazione. Puoi modificarli anche nell’assistente.",
       "enable": "Attiva suggerimenti di configurazione",
       "disable": "Disattiva suggerimenti di configurazione"
+    },
+    "hapticFeedback": {
+      "title": "Feedback aptico",
+      "description": "Usa la vibrazione dei dispositivi supportati per i tocchi e le conferme di riconnessione. L’impostazione per ridurre il movimento viene sempre rispettata.",
+      "enable": "Attiva il feedback aptico",
+      "disable": "Disattiva il feedback aptico"
     }
   },
   "emailConnect": {
@@ -1784,7 +1790,28 @@
     "currentPlan": "Piano Attuale",
     "upgradeNow": "Aggiorna Ora",
     "annualSavings": "Risparmia {{percent}}% rispetto al mensile",
-    "lifetimeSavings": "Accesso illimitato a vita"
+    "lifetimeSavings": "Accesso illimitato a vita",
+    "otherPaymentMethods": "Altri metodi di pagamento",
+    "checkoutForPlan": "Pagamento sicuro per {{plan}}"
+  },
+  "pricingGrid": {
+    "title": "Scegli il piano adatto alla tua crescita",
+    "savingsEyebrow": "Calcolatore di risparmio",
+    "savingsTitle": "Scopri quanto risparmi con ogni impegno",
+    "savingsBasis": "Rispetto al pagamento mensile",
+    "monthlyAnnualCost": "per 12 mesi",
+    "annualSave": "Risparmia {{amount}}",
+    "annualSavingsDetail": "{{price}} invece di {{monthly}} nel primo anno",
+    "lifetimeSave": "Risparmia {{amount}} entro il secondo anno",
+    "lifetimePayback": "Si ripaga in circa {{months}} mesi",
+    "heroSendRequests": "Invia richieste",
+    "heroAutomateFollowUps": "Automatizza i follow-up",
+    "heroTrackGrowth": "Monitora la crescita",
+    "closeComparison": "Chiudi il confronto",
+    "includedLabel": "Incluso",
+    "planFeaturesLabel": "Funzionalità del piano {{plan}}",
+    "approximateThb": "≈ {{amount}} THB",
+    "previousPrice": "Prima {{amount}}"
   },
   "accessCode": {
     "title": "Hai un codice di accesso?",
@@ -1870,6 +1897,26 @@
     },
     "preparingGoogle": "Preparazione dell’accesso con Google…",
     "redirectingGoogle": "Reindirizzamento sicuro a Google…"
+  },
+  "apiRecovery": {
+    "preparing": "Preparazione del tuo spazio di lavoro…",
+    "preparingDescription": "Ci ricollegheremo automaticamente quando il servizio sarà pronto.",
+    "reconnecting": "Riconnessione in corso…",
+    "reconnected": "Sei di nuovo online.",
+    "reconnectedDescription": "Get Phame è connesso e pronto all’uso.",
+    "unavailableTitle": "Stiamo riconnettendo Get Phame.",
+    "unavailableDescription": "Il servizio sta impiegando un po’ più del previsto. Il tuo lavoro è al sicuro; riprova quando vuoi.",
+    "offlineTitle": "Al momento sei offline.",
+    "offlineDescription": "Controlla il Wi-Fi o i dati mobili, quindi riprova. Il tuo lavoro resta al sicuro su questo dispositivo.",
+    "offlineStepOne": "Attiva il Wi-Fi o i dati mobili.",
+    "offlineStepTwo": "Torna qui e tocca Riprova connessione.",
+    "retrying": "Nuovo tentativo…",
+    "retry": "Riprova",
+    "retryNow": "Riprova ora",
+    "retryConnection": "Riprova connessione",
+    "networkStatusLabel": "Stato della rete",
+    "networkOnline": "Online",
+    "networkOffline": "Offline"
   },
   "profileMenu": {
     "account": "Account",

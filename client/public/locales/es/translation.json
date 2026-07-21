@@ -1233,7 +1233,28 @@
     "includes": "Incluye:",
     "everythingInFree": "Todo en Gratis, más:",
     "bestValue": "Mejor valor",
-    "guarantee": "Garantía de devolución de 7 días"
+    "guarantee": "Garantía de devolución de 7 días",
+    "otherPaymentMethods": "Otros métodos de pago",
+    "checkoutForPlan": "Pago seguro para {{plan}}"
+  },
+  "pricingGrid": {
+    "title": "Elige el plan que se adapta a tu crecimiento",
+    "savingsEyebrow": "Calculadora de ahorro",
+    "savingsTitle": "Mira cuánto ahorra cada compromiso",
+    "savingsBasis": "Comparado con pagar mensualmente",
+    "monthlyAnnualCost": "por 12 meses",
+    "annualSave": "Ahorra {{amount}}",
+    "annualSavingsDetail": "{{price}} en lugar de {{monthly}} el primer año",
+    "lifetimeSave": "Ahorra {{amount}} antes del segundo año",
+    "lifetimePayback": "Se amortiza en unos {{months}} meses",
+    "heroSendRequests": "Enviar solicitudes",
+    "heroAutomateFollowUps": "Automatizar seguimientos",
+    "heroTrackGrowth": "Seguir tu crecimiento",
+    "closeComparison": "Cerrar comparación",
+    "includedLabel": "Incluido",
+    "planFeaturesLabel": "Funciones del plan {{plan}}",
+    "approximateThb": "≈ {{amount}} THB",
+    "previousPrice": "Antes {{amount}}"
   },
   "accessCode": {
     "title": "Código de acceso",
@@ -1270,7 +1291,12 @@
     "freeTrialNote": "Todos los planes incluyen una prueba gratuita de 10 solicitudes. No se requiere tarjeta de crédito para comenzar.",
     "annual": "Anual",
     "reviewRequests": "Solicitudes de reseña",
-    "freeRequestAllowance": "10 primero y luego 5 / 30 días móviles"
+    "freeRequestAllowance": "10 primero y luego 5 / 30 días móviles",
+    "mobileEyebrow": "Comparación de funciones",
+    "mobileTitle": "Compara las funciones de los planes",
+    "mobileSubtitle": "Abre la comparación compacta de funciones",
+    "mobileDescription": "Compara Gratis, Pro y De por vida sin salir de la página de mejora.",
+    "mobileAction": "Comparar"
   },
   "paidUser": {
     "adminAccess": "Acceso de administrador",
@@ -1322,6 +1348,26 @@
     },
     "preparingGoogle": "Preparando el inicio de sesión con Google…",
     "redirectingGoogle": "Redirigiendo de forma segura a Google…"
+  },
+  "apiRecovery": {
+    "preparing": "Preparando tu espacio de trabajo…",
+    "preparingDescription": "Nos reconectaremos automáticamente cuando el servicio esté listo.",
+    "reconnecting": "Reconectando…",
+    "reconnected": "Ya estás de nuevo en línea.",
+    "reconnectedDescription": "Get Phame está conectado y listo para usar.",
+    "unavailableTitle": "Estamos reconectando Get Phame.",
+    "unavailableDescription": "El servicio está tardando un poco más de lo esperado. Tu trabajo está seguro; inténtalo de nuevo cuando quieras.",
+    "offlineTitle": "Ahora mismo no tienes conexión.",
+    "offlineDescription": "Revisa tu Wi-Fi o datos móviles y vuelve a intentarlo. Tu trabajo permanece seguro en este dispositivo.",
+    "offlineStepOne": "Activa el Wi-Fi o los datos móviles.",
+    "offlineStepTwo": "Vuelve aquí y toca Reintentar conexión.",
+    "retrying": "Intentándolo de nuevo…",
+    "retry": "Intentar de nuevo",
+    "retryNow": "Reintentar ahora",
+    "retryConnection": "Reintentar conexión",
+    "networkStatusLabel": "Estado de la red",
+    "networkOnline": "En línea",
+    "networkOffline": "Sin conexión"
   },
   "profileMenu": {
     "account": "Cuenta",
@@ -2173,6 +2219,12 @@
       "description": "Muestra consejos contextuales la próxima vez que abras la configuración. También puedes cambiarlo dentro del asistente.",
       "enable": "Activar consejos de configuración",
       "disable": "Desactivar consejos de configuración"
+    },
+    "hapticFeedback": {
+      "title": "Respuesta háptica",
+      "description": "Usa la vibración compatible del dispositivo para los toques y las confirmaciones de reconexión. Siempre se respeta la preferencia de movimiento reducido.",
+      "enable": "Activar la respuesta háptica",
+      "disable": "Desactivar la respuesta háptica"
     }
   },
   "login": {

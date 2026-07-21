@@ -26,3 +26,25 @@ The release build’s stricter OSV audit subsequently detected `body-parser@1.20
 ## CI publishing note
 
 The repository now has a reviewed quality-gate workflow locally, but the configured GitHub App credential was rejected when it attempted to push `.github/workflows/quality.yml` because it lacks the `workflows` permission. Publishing this file requires either a user-authorized GitHub web commit or a credential that includes that permission; no force-push or permission bypass is appropriate.
+
+## Remaining alert inventory — 2026-07-20
+
+The authenticated GitHub Dependabot view reports eight open alerts. The critical and high `tar` and `brace-expansion` findings, the direct high Nodemailer finding, and the low body-parser finding are all attributed to the legacy `package-lock.json`; the moderate esbuild finding is marked development-only. Because the application’s validated build and GitHub Actions workflow use `pnpm install --frozen-lockfile`, the next safe remediation decision is to verify that the npm lockfile is not an active delivery input before removing or regenerating it. The alert source must not be dismissed merely by deleting a lockfile without that review.
+
+## Accepted package-manager remediation
+
+The source review confirmed that the custom Dockerfile copies `package.json`, `pnpm-lock.yaml`, and `patches/` into both build stages, never copies `package-lock.json`, and never executes `npm ci` or `npm install`. The tracked `package-lock.json` is therefore an unsupported alternate resolution graph rather than a production delivery input. It is removed as part of this release, while Docker is tightened to use the `packageManager`-pinned pnpm version with `--frozen-lockfile` in both stages. The maintained dependency graph is now solely `pnpm-lock.yaml`; future vulnerability remediation must update it and preserve the production audit gate.
+
+## Post-remediation GitHub review — 2026-07-21
+
+The connected repository security view still reported **8 open Dependabot alerts** and **118 closed alerts**. Every open alert was detected in the obsolete `package-lock.json`: three `tar` findings (critical, high, and moderate), two `brace-expansion` findings (high), a direct `nodemailer` finding (high), `esbuild` (moderate and development-only), and `body-parser` (low).
+
+The maintained pnpm graph already carries the documented direct upgrade and transitive security overrides. The remaining alerts therefore require GitHub to observe the committed removal of the obsolete npm lockfile and refresh its dependency graph. There is no evidence for an additional safe dependency update or Dependabot pull request to merge in the active pnpm project.
+
+GitHub accepted a **Refresh Dependabot alerts** request after the main-branch raw-file check returned `404` for `package-lock.json`. The security UI reported that the refresh was queued and may take several minutes. Alert closure will be verified after GitHub completes that reprocessing step.
+
+After the refresh, alert #132 still referenced `package-lock.json` and displayed that GitHub was creating a security update for `tar`. A review of open pull requests found no Dependabot-authored or security-update pull request available to merge yet. No alert was dismissed and no unsupported dependency path was reintroduced.
+
+The repository Actions history shows **Quality Gate #15** completed successfully on `main` in 2 minutes and 1 second. It also shows **Dependabot Updates #62** queued for the retired npm dependency set; this run is the mechanism currently reprocessing the eight legacy-lockfile findings. The final alert status will be checked after that queued run completes.
+
+At the final review interval, Dependabot Updates #62 remained queued and no Dependabot pull request was available. Because GitHub’s dependency service is asynchronous and the obsolete lockfile is already absent from `main`, no alert was force-dismissed and no speculative dependency change was merged. The next GitHub-side result should either close the lockfile-only findings or present a concrete update for normal review.

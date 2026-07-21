@@ -1,0 +1,26 @@
+# Project TODO
+
+- [x] Reconstruct the audited unpublished recovery source state after the sandbox restart without overwriting concurrent managed-project changes or pushing GitHub.
+- [x] Restore the independent GitHub API health monitor with bounded polling, consecutive-failure thresholding, durable deduplicated incident state, and verified recovery closure.
+- [x] Remove all generated Playwright reports and traces from both release trees and add durable ignore coverage before any checkpoint or push.
+- [x] Resolve the reviewed upgrade localization defects across all seven served locales and bundled fallback resources.
+- [x] Persist and synchronize a localized native haptic-feedback preference for recovery confirmations while respecting reduced-motion and non-native fallback behavior.
+- [x] Replace offline retry copy with a localized, accessible Retry Connection control that proactively rechecks readiness and browser network state.
+- [x] Add a persistent, localized desktop and mobile navigation network-status badge that responds to online and offline browser events.
+- [x] Add focused regression coverage for recovery controls, network status, haptic preference, localization parity, and responsive accessibility.
+- [x] Configure bounded Playwright CI with explicit browser, worker, retry, timeout, and artifact-retention limits.
+- [x] Validate the reusable API recovery monitoring skill through the skill-creator workflow and reconcile monitoring, privacy, CI, and app-store guidance.
+- [x] Enforce a stub-only recovery harness and privacy-safe Playwright failure diagnostics in the workflow contract.
+- [x] Fix stale i18n cache-version contracts and complete localized pricing-savings copy found by the full test suite.
+- [x] Remove legacy tracked Playwright trace artifacts and verify future browser diagnostics remain outside the repository.
+- [x] Run focused and complete Vitest, TypeScript, production build, dependency audit, workflow validation, and bounded Playwright quality gates.
+- [ ] Review both complete release diffs, create the managed checkpoint, synchronize and push only approved GitHub commits, verify Actions, and confirm the live readiness endpoint.
+- [x] Capture post-restart Git status and log evidence proving the local GitHub tree contains the intended unpublished recovery stack and remains unpushed.
+- [x] Validate the restored API health workflow’s bounded probe, consecutive-failure state, deduplicated incident, and recovery-closure branches from the actual current file.
+- [x] Validate haptic preference persistence, cross-component synchronization, recovery-success application, reduced-motion behavior, and non-native safe fallback with focused evidence.
+- [x] Verify the desktop status badge and explicit online/offline event transitions in addition to the completed mobile visual check.
+- [x] Reconcile current GitHub main with the validated managed checkpoint while preserving newer security, CI, documentation, and credential-aware integration-test changes.
+- [x] Bring the GitHub source tree fully up to date, including the complete recovery stack, monitoring workflows, localization, app-store documentation, and removal of obsolete npm and Playwright artifacts.
+- [x] Run TypeScript, full Vitest, production audit/build, workflow contracts, formatting/whitespace, and bounded Chromium recovery gates from the reconciled GitHub tree.
+- [x] Verify the GitHub repository remains private, source access is limited to explicitly authorized repository users, and no public Pages or source release is enabled.
+- [ ] Commit and push the reconciled GitHub release, verify all triggered Actions, and confirm the deployed public readiness endpoint.

@@ -869,7 +869,28 @@
     "hidePromptPay": "隐藏",
     "promptPayReveal": "在泰国？",
     "promptPayRevealLink": "使用 PromptPay 支付 (฿)",
-    "guarantee": "7 天退款保证"
+    "guarantee": "7 天退款保证",
+    "otherPaymentMethods": "其他付款方式",
+    "checkoutForPlan": "{{plan}} 的安全结账"
+  },
+  "pricingGrid": {
+    "title": "选择适合您业务增长的方案",
+    "savingsEyebrow": "节省计算器",
+    "savingsTitle": "查看每种承诺方案能节省多少",
+    "savingsBasis": "与按月付款相比",
+    "monthlyAnnualCost": "12 个月",
+    "annualSave": "节省 {{amount}}",
+    "annualSavingsDetail": "首年支付 {{price}}，而不是 {{monthly}}",
+    "lifetimeSave": "到第二年可节省 {{amount}}",
+    "lifetimePayback": "约 {{months}} 个月即可回本",
+    "heroSendRequests": "发送请求",
+    "heroAutomateFollowUps": "自动跟进",
+    "heroTrackGrowth": "跟踪增长",
+    "closeComparison": "关闭对比",
+    "includedLabel": "已包含",
+    "planFeaturesLabel": "{{plan}} 方案功能",
+    "approximateThb": "约 {{amount}} 泰铢",
+    "previousPrice": "原价 {{amount}}"
   },
   "accessCode": {
     "title": "有访问码吗？",
@@ -1456,6 +1477,26 @@
     "preparingGoogle": "正在准备 Google 登录…",
     "redirectingGoogle": "正在安全跳转至 Google…"
   },
+  "apiRecovery": {
+    "preparing": "正在准备您的工作区…",
+    "preparingDescription": "服务就绪后，我们会自动重新连接。",
+    "reconnecting": "正在重新连接…",
+    "reconnected": "您已恢复在线。",
+    "reconnectedDescription": "Get Phame 已连接并可使用。",
+    "unavailableTitle": "我们正在重新连接 Get Phame。",
+    "unavailableDescription": "服务比预期需要更长时间。您的工作是安全的；准备好后请再试一次。",
+    "offlineTitle": "您当前处于离线状态。",
+    "offlineDescription": "请检查 Wi-Fi 或移动数据后再试一次。您的工作仍安全地保存在此设备上。",
+    "offlineStepOne": "打开 Wi-Fi 或移动数据。",
+    "offlineStepTwo": "返回此处并点击“重试连接”。",
+    "retrying": "正在重试…",
+    "retry": "再试一次",
+    "retryNow": "立即重试",
+    "retryConnection": "重试连接",
+    "networkStatusLabel": "网络状态",
+    "networkOnline": "在线",
+    "networkOffline": "离线"
+  },
   "profileMenu": {
     "account": "账户",
     "accountDetails": "账户详情",
@@ -1539,6 +1580,12 @@
       "description": "下次打开设置引导时显示相关提示。您也可以在设置向导中更改此选项。",
       "enable": "启用设置提示",
       "disable": "停用设置提示"
+    },
+    "hapticFeedback": {
+      "title": "触觉反馈",
+      "description": "在支持的设备上使用振动来反馈点击和重新连接成功。始终遵循“减少动态效果”设置。",
+      "enable": "启用触觉反馈",
+      "disable": "停用触觉反馈"
     }
   },
   "login": {

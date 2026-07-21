@@ -1,15 +1,32 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { isStagingSocialLoginHost } from "../client/src/lib/socialLoginAvailability";
+import { isGoogleSignInHost, isStagingSocialLoginHost } from "../client/src/lib/socialLoginAvailability";
 
-describe("social login staging gate", () => {
+describe("social login host policy", () => {
+  it.each([
+    "getphame.app",
+    "www.getphame.app",
+    "localhost",
+    "127.0.0.1",
+    "3000-example.us1.manus.computer",
+  ])("enables Google sign-in on approved hostname %s", (hostname) => {
+    expect(isGoogleSignInHost(hostname)).toBe(true);
+  });
+
+  it.each([
+    "getphame.manus.space",
+    "revrocket-j5ynazte.manus.space",
+  ])("keeps Google sign-in hidden on unapproved published hostname %s", (hostname) => {
+    expect(isGoogleSignInHost(hostname)).toBe(false);
+  });
+
   it.each([
     "getphame.app",
     "www.getphame.app",
     "getphame.manus.space",
     "revrocket-j5ynazte.manus.space",
-  ])("hides social login on live hostname %s", (hostname) => {
+  ])("keeps Apple sign-in hidden on published hostname %s", (hostname) => {
     expect(isStagingSocialLoginHost(hostname)).toBe(false);
   });
 
@@ -17,7 +34,7 @@ describe("social login staging gate", () => {
     "localhost",
     "127.0.0.1",
     "3000-example.us1.manus.computer",
-  ])("enables social login on preview hostname %s", (hostname) => {
+  ])("keeps Apple sign-in available on local and preview hostname %s", (hostname) => {
     expect(isStagingSocialLoginHost(hostname)).toBe(true);
   });
 
@@ -27,10 +44,14 @@ describe("social login staging gate", () => {
     const loginSource = readFileSync(loginPath, "utf8");
     const onboardingSource = readFileSync(onboardingPath, "utf8");
 
+    expect(loginSource).toContain("isGoogleSignInHost(window.location.hostname)");
+    expect(onboardingSource).toContain("isGoogleSignInHost(window.location.hostname)");
     expect(loginSource).toContain("isStagingSocialLoginHost(window.location.hostname)");
     expect(onboardingSource).toContain("isStagingSocialLoginHost(window.location.hostname)");
-    expect(loginSource).toContain("data-testid=\"staging-social-login\"");
-    expect(onboardingSource).toContain("data-testid=\"staging-social-login\"");
+    expect(loginSource).toContain("data-testid=\"social-login\"");
+    expect(onboardingSource).toContain("data-testid=\"social-login\"");
+    expect(loginSource).toContain("Continue with Google");
+    expect(onboardingSource).toContain("Continue with Google");
     expect(loginSource).toContain("Send Magic Link");
     expect(onboardingSource).toContain("Continue with Email");
   });

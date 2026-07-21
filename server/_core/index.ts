@@ -395,6 +395,15 @@ async function startServer() {
   app.use(cookieParser());
   app.use(express.json({ limit: "5mb" }));
   app.use(express.urlencoded({ limit: "5mb", extended: true }));
+
+  // Public, non-sensitive readiness signal for the authenticated dashboard
+  // shell. It must remain before tRPC and the SPA fallback so restart windows
+  // receive JSON rather than the HTML app shell.
+  app.get("/api/health", (_req, res) => {
+    res.set("Cache-Control", "no-store");
+    return res.status(200).json({ ok: true, status: "ready" });
+  });
+
   // OAuth callback under /api/oauth/callback
   registerStorageProxy(app);
   registerOAuthRoutes(app);

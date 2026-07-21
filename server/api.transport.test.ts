@@ -71,6 +71,19 @@ describe("API transport JSON guarantees", () => {
     expect(fallbackIndex).toBeGreaterThan(trpcIndex);
     expect(viteIndex).toBeGreaterThan(fallbackIndex);
   });
+
+  it("exposes a cache-bypassing readiness endpoint before tRPC and the SPA fallback", () => {
+    const entrypointPath = fileURLToPath(new URL("./_core/index.ts", import.meta.url));
+    const source = readFileSync(entrypointPath, "utf8");
+    const healthIndex = source.indexOf('app.get("/api/health"');
+    const trpcIndex = source.indexOf('"/api/trpc"');
+    const fallbackIndex = source.indexOf('app.use("/api", apiNotFoundHandler)');
+
+    expect(healthIndex).toBeGreaterThan(-1);
+    expect(source).toContain('res.set("Cache-Control", "no-store")');
+    expect(healthIndex).toBeLessThan(trpcIndex);
+    expect(healthIndex).toBeLessThan(fallbackIndex);
+  });
 });
 
 describe("API query retry policy", () => {
@@ -79,9 +92,9 @@ describe("API query retry policy", () => {
       data: { code: "INTERNAL_SERVER_ERROR", httpStatus: 503 },
     });
 
-    expect(getQueryRetryLimit(error)).toBe(6);
-    expect(shouldRetryQuery(5, error)).toBe(true);
-    expect(shouldRetryQuery(6, error)).toBe(false);
+    expect(getQueryRetryLimit(error)).toBe(8);
+    expect(shouldRetryQuery(7, error)).toBe(true);
+    expect(shouldRetryQuery(8, error)).toBe(false);
   });
 
   it("does not retry terminal authorization and validation failures", () => {

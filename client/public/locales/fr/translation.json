@@ -1233,7 +1233,28 @@
     "includes": "Inclut :",
     "everythingInFree": "Tout ce qui est dans Gratuit, plus :",
     "bestValue": "Meilleure valeur",
-    "guarantee": "Garantie de remboursement de 7 jours"
+    "guarantee": "Garantie de remboursement de 7 jours",
+    "otherPaymentMethods": "Autres moyens de paiement",
+    "checkoutForPlan": "Paiement sécurisé pour {{plan}}"
+  },
+  "pricingGrid": {
+    "title": "Choisissez le plan adapté à votre croissance",
+    "savingsEyebrow": "Calculateur d’économies",
+    "savingsTitle": "Découvrez les économies de chaque engagement",
+    "savingsBasis": "Par rapport au paiement mensuel",
+    "monthlyAnnualCost": "pour 12 mois",
+    "annualSave": "Économisez {{amount}}",
+    "annualSavingsDetail": "{{price}} au lieu de {{monthly}} la première année",
+    "lifetimeSave": "Économisez {{amount}} d’ici la deuxième année",
+    "lifetimePayback": "Rentabilisé en environ {{months}} mois",
+    "heroSendRequests": "Envoyer des demandes",
+    "heroAutomateFollowUps": "Automatiser les relances",
+    "heroTrackGrowth": "Suivre votre croissance",
+    "closeComparison": "Fermer la comparaison",
+    "includedLabel": "Inclus",
+    "planFeaturesLabel": "Fonctionnalités du forfait {{plan}}",
+    "approximateThb": "≈ {{amount}} THB",
+    "previousPrice": "Auparavant {{amount}}"
   },
   "accessCode": {
     "title": "Code d'accès",
@@ -1322,6 +1343,26 @@
     },
     "preparingGoogle": "Préparation de la connexion Google…",
     "redirectingGoogle": "Redirection sécurisée vers Google…"
+  },
+  "apiRecovery": {
+    "preparing": "Préparation de votre espace de travail…",
+    "preparingDescription": "Nous nous reconnecterons automatiquement lorsque le service sera prêt.",
+    "reconnecting": "Reconnexion…",
+    "reconnected": "Vous êtes de nouveau en ligne.",
+    "reconnectedDescription": "Get Phame est connecté et prêt à être utilisé.",
+    "unavailableTitle": "Nous reconnectons Get Phame.",
+    "unavailableDescription": "Le service prend un peu plus de temps que prévu. Votre travail est en sécurité ; réessayez quand vous êtes prêt.",
+    "offlineTitle": "Vous êtes actuellement hors ligne.",
+    "offlineDescription": "Vérifiez votre Wi-Fi ou vos données mobiles, puis réessayez. Votre travail reste en sécurité sur cet appareil.",
+    "offlineStepOne": "Activez le Wi-Fi ou les données mobiles.",
+    "offlineStepTwo": "Revenez ici et appuyez sur Réessayer la connexion.",
+    "retrying": "Nouvelle tentative…",
+    "retry": "Réessayer",
+    "retryNow": "Réessayer maintenant",
+    "retryConnection": "Réessayer la connexion",
+    "networkStatusLabel": "État du réseau",
+    "networkOnline": "En ligne",
+    "networkOffline": "Hors ligne"
   },
   "profileMenu": {
     "account": "Compte",
@@ -2173,6 +2214,12 @@
       "description": "Affiche des conseils contextuels à la prochaine ouverture de la configuration. Vous pouvez aussi modifier ce réglage dans l’assistant.",
       "enable": "Activer les conseils de configuration",
       "disable": "Désactiver les conseils de configuration"
+    },
+    "hapticFeedback": {
+      "title": "Retour haptique",
+      "description": "Utilisez la vibration des appareils compatibles pour les interactions et les confirmations de reconnexion. Le réglage de réduction des animations est toujours respecté.",
+      "enable": "Activer le retour haptique",
+      "disable": "Désactiver le retour haptique"
     }
   },
   "login": {

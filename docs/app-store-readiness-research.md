@@ -1,0 +1,5 @@
+# Get Phame mobile recovery readiness research
+
+This recovery work follows current first-party quality guidance. Apple requires apps to be complete, reliable, and reviewer-accessible under its [App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/). Google’s [Core app quality guidelines](https://developer.android.com/docs/quality-guidelines/core-app-quality) emphasize stable, responsive behavior, clear error recovery, and accessibility across form factors. Optional haptic confirmation follows the [Capacitor Haptics API](https://capacitorjs.com/docs/apis/haptics), which uses platform-native feedback only when a native Capacitor runtime is present.
+
+The implemented experience keeps recovery controls visible and keyboard reachable, keeps haptics opt-in and reduced-motion-aware, uses no additional sensitive permissions, and does not depend on a browser-only API for its critical retry path. Store acceptance still requires the release-specific checklist in `docs/mobile-store-submission-checklist.md`, a signed release build, and real-device validation.

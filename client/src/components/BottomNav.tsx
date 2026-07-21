@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { useHaptics } from '@/hooks/useHaptics';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { trpc } from '@/lib/trpc';
+import NetworkStatusBadge from '@/components/NetworkStatusBadge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -56,6 +57,8 @@ export default function BottomNav() {
       className="md:hidden fixed bottom-0 left-0 right-0 z-50 bottom-nav rr-bg-navy"
       style={{ borderTop: "1px solid oklch(0.30 0.08 260)" }}
     >
+      <NetworkStatusBadge variant="mobile" />
+
       {/* Equal-width app tabs plus account menu; admins receive one extra tab. */}
       <div className="grid gap-0" style={{ gridTemplateColumns: `repeat(${NAV_ITEMS.length + 1}, minmax(0, 1fr))` }}>
         {NAV_ITEMS.map(({ path, label, compactLabel, Icon }) => {
