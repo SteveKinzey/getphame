@@ -79,3 +79,9 @@
 - [x] Run the full test suite, TypeScript checks, production build, and responsive preview verification
 - [x] Save a deployable checkpoint and begin the first 24-hour production observation window after publication
 - [x] Add explicit admin diagnostics query-error handling so unavailable uptime data never appears healthy
+- [x] Audit the deployed admin-only boundary for auth diagnostics, manual checks, and scheduled callback access
+- [x] Confirm the monitoring scheduler is active and run a safe activation verification
+- [x] Restore and update the reusable production-auth-health-monitoring skill with explicit admin-only access guidance
+- [x] Refresh the implementation-pattern explainer and whiteboard presentation script for the activated admin-only model
+- [x] Restore and update the standalone production-auth-health-monitoring webpage with the access-control model
+- [x] Validate the skill, verify the webpage, package the deliverables, and save a publishable checkpoint if app code changes
