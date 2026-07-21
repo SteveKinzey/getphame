@@ -8,7 +8,10 @@ type QueryErrorLike = Error & {
 };
 
 export const DEFAULT_QUERY_RETRY_LIMIT = 3;
-export const TRANSIENT_QUERY_RETRY_LIMIT = 6;
+// Preview and managed service restarts can return the SPA shell for roughly
+// half a minute before the tRPC handler is ready. Eight retries preserve a
+// bounded recovery window without retrying terminal 4xx responses or writes.
+export const TRANSIENT_QUERY_RETRY_LIMIT = 8;
 
 const TERMINAL_TRPC_CODES = new Set([
   "BAD_REQUEST",

@@ -79,9 +79,9 @@ describe("API query retry policy", () => {
       data: { code: "INTERNAL_SERVER_ERROR", httpStatus: 503 },
     });
 
-    expect(getQueryRetryLimit(error)).toBe(6);
-    expect(shouldRetryQuery(5, error)).toBe(true);
-    expect(shouldRetryQuery(6, error)).toBe(false);
+    expect(getQueryRetryLimit(error)).toBe(8);
+    expect(shouldRetryQuery(7, error)).toBe(true);
+    expect(shouldRetryQuery(8, error)).toBe(false);
   });
 
   it("does not retry terminal authorization and validation failures", () => {

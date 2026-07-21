@@ -606,3 +606,7 @@
 - [x] Add a compact, localized mobile comparison drawer that makes subscription feature differences easy to inspect without horizontal overflow.
 - [x] Add regression coverage and validate the pricing enhancements on desktop, tablet, and mobile.
 - [x] Package this verified upgrade-page optimization workflow as a reusable skill and validate it with the skill-creator workflow.
+
+- [x] Diagnose the `/?from_webdev=1` tRPC API-unavailable error using server, browser, routing, and query-path evidence.
+- [x] Repair the underlying home-page API availability condition without weakening authentication, error handling, or existing tRPC contracts.
+- [x] Add regression coverage, verify the home-page query in the preview, run release gates, and publish the recovery.
