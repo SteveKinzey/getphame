@@ -634,4 +634,6 @@
 - [x] Harden the recovery flow for native mobile submission, including safe haptic capability detection, reachable controls, clear offline status, and non-web-only test boundaries.
 - [x] Add and run app-store readiness checks for Capacitor configuration, release build compatibility, privacy-safe behavior, and mobile recovery regression coverage.
 - [x] Update and validate the reusable API recovery UX skill with browser-test, manual-retry, toast-animation, haptic-feedback, and app-store-readiness guidance.
-- [ ] Run focused and complete release validation, verify the recovery controls responsively, and publish the enhancement.
+- [x] Run focused and complete release validation, verify the recovery controls responsively, and publish the enhancement.
+
+- [x] Align stale locale-cache regression expectations with the current translation-resource cache version and republish the failed deployment.
