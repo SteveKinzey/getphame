@@ -115,3 +115,12 @@
 - [x] Extend the reusable production-auth-health-monitoring skill with date-range and saved-preset patterns
 - [x] Run focused and full tests, TypeScript checks, production build, and desktop/mobile administrator verification
 - [x] Save the publishable checkpoint and confirm the live production bundle contains the date-range and private quick-preset release labels
+- [x] Add one-click relative date ranges for Last 7 days and Last 30 days with local-day boundaries
+- [x] Add owner-scoped saved-preset duplication with deterministic copy naming and the existing preset cap
+- [x] Add removable active-filter chips for status, trigger source, from date, and to date above health-history results
+- [x] Add responsive relative-range controls, duplicate actions, and clear-all chip behavior to the administrator interface
+- [x] Add regressions for relative-day calculations, preset duplication ownership/caps/naming, chip removal, and authorization
+- [x] Add functional regression tests for individual active-filter chip removal, clear-all behavior, and page reset
+- [x] Add functional preset-duplication tests for owner scoping, preset-cap enforcement, copied values, and deterministic naming
+- [x] Extend the reusable production-auth-health-monitoring skill with relative ranges, duplication, and active-chip patterns
+- [ ] Run focused and full tests, TypeScript checks, production build, desktop/mobile admin verification, checkpoint, and live-bundle confirmation

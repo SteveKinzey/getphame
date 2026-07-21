@@ -17,6 +17,7 @@ import {
 import { buildAuthHealthHistoryCsvExport } from "../authHealthHistoryExport";
 import {
   deleteAuthHealthHistoryPreset,
+  duplicateAuthHealthHistoryPreset,
   listAuthHealthHistoryPresets,
   MAX_AUTH_HEALTH_HISTORY_PRESET_NAME_CHARS,
   MAX_AUTH_HEALTH_HISTORY_PRESETS,
@@ -128,5 +129,15 @@ export const authDiagnosticsRouter = router({
       const deleted = await deleteAuthHealthHistoryPreset(ctx.user.id, input.id);
       if (!deleted) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Saved filter presets are unavailable." });
       return { ok: true as const };
+    }),
+
+  duplicateHealthHistoryPreset: adminProcedure
+    .input(z.object({ id: z.number().int().positive() }))
+    .mutation(async ({ ctx, input }) => {
+      const result = await duplicateAuthHealthHistoryPreset(ctx.user.id, input.id);
+      if (result.outcome === "not_found") throw new TRPCError({ code: "NOT_FOUND", message: "This saved filter preset no longer exists." });
+      if (result.outcome === "limit_reached") throw new TRPCError({ code: "BAD_REQUEST", message: `You can save up to ${MAX_AUTH_HEALTH_HISTORY_PRESETS} filter presets.` });
+      if (result.outcome === "unavailable") throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Saved filter presets are unavailable." });
+      return result;
     }),
 });

@@ -3,6 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import {
   MAX_AUTH_HEALTH_HISTORY_PRESETS,
+  buildDuplicateAuthHealthHistoryPresetName,
   normalizeAuthHealthHistoryPresetName,
 } from "./authHealthHistoryPresets";
 
@@ -12,6 +13,12 @@ describe("auth health history preset persistence", () => {
     expect(MAX_AUTH_HEALTH_HISTORY_PRESETS).toBe(20);
   });
 
+  it("generates deterministic copy names without colliding with the owner's presets", () => {
+    expect(buildDuplicateAuthHealthHistoryPresetName("Manual failures", ["Manual failures"])).toBe("Manual failures copy");
+    expect(buildDuplicateAuthHealthHistoryPresetName("Manual failures", ["Manual failures", "Manual failures copy", "Manual failures copy 2"])).toBe("Manual failures copy 3");
+    expect(buildDuplicateAuthHealthHistoryPresetName("X".repeat(80), [])).toHaveLength(80);
+  });
+
   it("keeps every preset read, update, and delete operation owner-scoped", () => {
     const source = fs.readFileSync(path.join(process.cwd(), "server/authHealthHistoryPresets.ts"), "utf8");
     expect(source).toContain("eq(authHealthHistoryPresets.ownerUserId, ownerUserId)");
@@ -19,6 +26,8 @@ describe("auth health history preset persistence", () => {
     expect(source).toContain("sameName.id !== input.id");
     expect(source).toContain('outcome: "name_conflict"');
     expect(source).toContain('outcome: "limit_reached"');
+    expect(source).toContain("duplicateAuthHealthHistoryPreset");
+    expect(source).toContain("existing.length >= MAX_AUTH_HEALTH_HISTORY_PRESETS");
   });
 
   it("defines an additive owner/name unique migration without storing health rows or failure details", () => {

@@ -12,6 +12,7 @@ const mocks = vi.hoisted(() => ({
   listAuthHealthHistoryPresets: vi.fn(),
   saveAuthHealthHistoryPreset: vi.fn(),
   deleteAuthHealthHistoryPreset: vi.fn(),
+  duplicateAuthHealthHistoryPreset: vi.fn(),
 }));
 
 vi.mock("./db", async (importOriginal) => ({
@@ -34,6 +35,7 @@ vi.mock("./authHealthHistoryPresets", async (importOriginal) => ({
   listAuthHealthHistoryPresets: mocks.listAuthHealthHistoryPresets,
   saveAuthHealthHistoryPreset: mocks.saveAuthHealthHistoryPreset,
   deleteAuthHealthHistoryPreset: mocks.deleteAuthHealthHistoryPreset,
+  duplicateAuthHealthHistoryPreset: mocks.duplicateAuthHealthHistoryPreset,
 }));
 
 import { appRouter } from "./routers";
@@ -69,6 +71,7 @@ describe("admin authentication diagnostics", () => {
     mocks.listAuthHealthHistoryPresets.mockResolvedValue([]);
     mocks.saveAuthHealthHistoryPreset.mockResolvedValue({ outcome: "saved", id: 5, created: true });
     mocks.deleteAuthHealthHistoryPreset.mockResolvedValue(true);
+    mocks.duplicateAuthHealthHistoryPreset.mockResolvedValue({ outcome: "duplicated", preset: { id: 6, name: "Manual failures copy", status: "fail", triggerSource: "manual", fromMs: 100, toMs: 999 } });
   });
 
   afterEach(() => vi.unstubAllEnvs());
@@ -177,9 +180,13 @@ describe("admin authentication diagnostics", () => {
     await adminCaller.authDiagnostics.deleteHealthHistoryPreset({ id: 5 });
     expect(mocks.deleteAuthHealthHistoryPreset).toHaveBeenCalledWith(1, 5);
 
+    await adminCaller.authDiagnostics.duplicateHealthHistoryPreset({ id: 5 });
+    expect(mocks.duplicateAuthHealthHistoryPreset).toHaveBeenCalledWith(1, 5);
+
     const userCaller = appRouter.createCaller(context("user"));
     await expect(userCaller.authDiagnostics.healthHistoryPresets()).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(userCaller.authDiagnostics.saveHealthHistoryPreset({ name: "Denied" })).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(userCaller.authDiagnostics.deleteHealthHistoryPreset({ id: 5 })).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(userCaller.authDiagnostics.duplicateHealthHistoryPreset({ id: 5 })).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 });

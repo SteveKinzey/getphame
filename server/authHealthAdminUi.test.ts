@@ -47,6 +47,12 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("localDateEndMs");
     expect(page).toContain("Choose a date range of 366 days or less.");
     expect(page).toContain("Quick filter presets");
+    expect(page).toContain("Relative date ranges");
+    expect(page).toContain("Last {relativeDays} days");
+    expect(page).toContain("Duplicate preset");
+    expect(page).toContain("Active filters");
+    expect(page).toContain("Remove ${chip.label} filter");
+    expect(page).toContain("Clear all filters");
     expect(page).toContain('id="health-history"');
     expect(page).toContain('window.location.hash !== "#health-history"');
     expect(page).toContain("Presets are private to your administrator account");
