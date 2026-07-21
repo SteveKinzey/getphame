@@ -17,7 +17,10 @@ describe("GitHub Actions quality gate", () => {
     expect(workflow).toContain("actions/setup-node@v4");
     expect(workflow).toContain("node-version: 22");
     expect(workflow).toContain("pnpm install --frozen-lockfile");
-    expect(workflow).toContain("pnpm check");
+    expect(workflow).toContain(`- name: Type-check
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: pnpm check`);
     expect(workflow).toContain("pnpm test");
     expect(workflow).toContain("pnpm build");
   });
