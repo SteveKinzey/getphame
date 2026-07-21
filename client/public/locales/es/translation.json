@@ -1238,7 +1238,15 @@
     "checkoutForPlan": "Pago seguro para {{plan}}"
   },
   "pricingGrid": {
-    "title": "Elige el plan que se adapta a tu crecimiento"
+    "title": "Elige el plan que se adapta a tu crecimiento",
+    "savingsEyebrow": "Calculadora de ahorro",
+    "savingsTitle": "Mira cuánto ahorra cada compromiso",
+    "savingsBasis": "Comparado con pagar mensualmente",
+    "monthlyAnnualCost": "por 12 meses",
+    "annualSave": "Ahorra {{amount}}",
+    "annualSavingsDetail": "{{price}} en lugar de {{monthly}} el primer año",
+    "lifetimeSave": "Ahorra {{amount}} antes del segundo año",
+    "lifetimePayback": "Se amortiza en unos {{months}} meses"
   },
   "accessCode": {
     "title": "Código de acceso",
@@ -1275,7 +1283,12 @@
     "freeTrialNote": "Todos los planes incluyen una prueba gratuita de 10 solicitudes. No se requiere tarjeta de crédito para comenzar.",
     "annual": "Anual",
     "reviewRequests": "Solicitudes de reseña",
-    "freeRequestAllowance": "10 primero y luego 5 / 30 días móviles"
+    "freeRequestAllowance": "10 primero y luego 5 / 30 días móviles",
+    "mobileEyebrow": "Comparación de funciones",
+    "mobileTitle": "Compara las funciones de los planes",
+    "mobileSubtitle": "Abre la comparación compacta de funciones",
+    "mobileDescription": "Compara Gratis, Pro y De por vida sin salir de la página de mejora.",
+    "mobileAction": "Comparar"
   },
   "paidUser": {
     "adminAccess": "Acceso de administrador",

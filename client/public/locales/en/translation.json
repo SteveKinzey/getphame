@@ -937,7 +937,15 @@
     "checkoutForPlan": "Secure checkout for {{plan}}"
   },
   "pricingGrid": {
-    "title": "Choose the plan that fits your growth"
+    "title": "Choose the plan that fits your growth",
+    "savingsEyebrow": "Savings calculator",
+    "savingsTitle": "See what each commitment saves",
+    "savingsBasis": "Compared with paying monthly",
+    "monthlyAnnualCost": "for 12 months",
+    "annualSave": "Save {{amount}}",
+    "annualSavingsDetail": "{{price}} instead of {{monthly}} for year one",
+    "lifetimeSave": "Save {{amount}} by year two",
+    "lifetimePayback": "Pays for itself in about {{months}} months"
   },
   "accessCode": {
     "title": "Have an access code?",

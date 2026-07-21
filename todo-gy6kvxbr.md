@@ -600,3 +600,9 @@
 - [x] Repair the broken or empty visual region on the `/upgrade` page without replacing the approved Get Phame brand mark or wordmark.
 - [x] Render Monthly, Annual, and Lifetime subscription plans as three equal, usable cards across desktop, with intentional tablet and mobile reflow.
 - [x] Add focused pricing-layout regression coverage, verify desktop/tablet/mobile visual behavior, run release checks, and publish the corrected upgrade page.
+
+- [x] Add localized savings guidance above the subscription cards that quantifies Annual and Lifetime value against Monthly billing.
+- [x] Strengthen Annual plan conversion emphasis with a persistent Most Popular badge and restrained, accessible visual highlight across breakpoints.
+- [x] Add a compact, localized mobile comparison drawer that makes subscription feature differences easy to inspect without horizontal overflow.
+- [x] Add regression coverage and validate the pricing enhancements on desktop, tablet, and mobile.
+- [x] Package this verified upgrade-page optimization workflow as a reusable skill and validate it with the skill-creator workflow.

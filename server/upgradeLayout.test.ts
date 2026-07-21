@@ -30,4 +30,21 @@ describe("upgrade pricing layout", () => {
     expect(source).toContain("onCheckout={handleStripeCheckout}");
     expect(source).toContain("onClick={() => onCheckout(plan)}");
   });
+
+  it("explains annual and lifetime savings using calculated, plan-derived values", () => {
+    expect(source).toContain("const ANNUAL_SAVINGS_USD = MONTHLY_PRICE_USD * 12 - ANNUAL_PRICE_USD;");
+    expect(source).toContain("const LIFETIME_SAVINGS_BY_YEAR_TWO_USD = MONTHLY_PRICE_USD * 24 - LIFETIME_PRICE_USD;");
+    expect(source).toContain('data-testid="pricing-savings-calculator"');
+    expect(source).toContain('t("pricingGrid.annualSave"');
+    expect(source).toContain('t("pricingGrid.lifetimeSave"');
+  });
+
+  it("keeps the Annual plan visibly featured and exposes a compact mobile comparison drawer", () => {
+    expect(source).toContain('data-testid="annual-most-popular-badge"');
+    expect(source).toContain("lg:-translate-y-2");
+    expect(source).toContain('data-testid="mobile-plan-comparison-drawer"');
+    expect(source).toContain('data-testid="mobile-comparison-trigger"');
+    expect(source).toContain("<MobilePlanComparisonDrawer />");
+    expect(source).toContain('className="hidden overflow-hidden rounded-2xl md:block"');
+  });
 });

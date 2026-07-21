@@ -30,6 +30,8 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
       onboardingTips: { title: "Onboarding tips", description: "Show contextual setup tips the next time you open onboarding. You can also change this inside the setup wizard.", enable: "Enable onboarding tips", disable: "Disable onboarding tips" },
     },
     step3Send: { optionalConnectorButton: "Set up WordPress connector instead (optional)" },
+    pricingGrid: { title: "Choose the plan that fits your growth", savingsEyebrow: "Savings calculator", savingsTitle: "See what each commitment saves", savingsBasis: "Compared with paying monthly", monthlyAnnualCost: "for 12 months", annualSave: "Save {{amount}}", annualSavingsDetail: "{{price}} instead of {{monthly}} for year one", lifetimeSave: "Save {{amount}} by year two", lifetimePayback: "Pays for itself in about {{months}} months" },
+    comparisonTable: { mobileTitle: "Compare plan features", mobileSubtitle: "Open the compact feature comparison", mobileAction: "Compare", mobileEyebrow: "Feature comparison", mobileDescription: "Compare Free, Pro, and Lifetime without leaving the upgrade page." },
   },
   es: {
     adminUsers: { smtpAuditAllOutcomes: "Todos los resultados" },
@@ -60,6 +62,8 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
       onboardingTips: { title: "Consejos de configuración", description: "Muestra consejos contextuales la próxima vez que abras la configuración. También puedes cambiarlo dentro del asistente.", enable: "Activar consejos de configuración", disable: "Desactivar consejos de configuración" },
     },
     step3Send: { optionalConnectorButton: "Configurar conector de WordPress en su lugar (opcional)" },
+    pricingGrid: { title: "Elige el plan que se adapta a tu crecimiento", savingsEyebrow: "Calculadora de ahorro", savingsTitle: "Mira cuánto ahorra cada compromiso", savingsBasis: "Comparado con pagar mensualmente", monthlyAnnualCost: "por 12 meses", annualSave: "Ahorra {{amount}}", annualSavingsDetail: "{{price}} en lugar de {{monthly}} el primer año", lifetimeSave: "Ahorra {{amount}} para el segundo año", lifetimePayback: "Se amortiza en unos {{months}} meses" },
+    comparisonTable: { mobileTitle: "Compara las funciones de los planes", mobileSubtitle: "Abre la comparación compacta de funciones", mobileAction: "Comparar", mobileEyebrow: "Comparación de funciones", mobileDescription: "Compara Gratis, Pro y De por vida sin salir de la página de mejora." },
   },
   fr: {
     adminUsers: { smtpAuditAllOutcomes: "Tous les résultats" },
@@ -90,6 +94,8 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
       onboardingTips: { title: "Conseils de configuration", description: "Affiche des conseils contextuels à la prochaine ouverture de la configuration. Vous pouvez aussi modifier ce réglage dans l’assistant.", enable: "Activer les conseils de configuration", disable: "Désactiver les conseils de configuration" },
     },
     step3Send: { optionalConnectorButton: "Configurer le connecteur WordPress à la place (facultatif)" },
+    pricingGrid: { title: "Choisissez le plan adapté à votre croissance", savingsEyebrow: "Calculateur d’économies", savingsTitle: "Découvrez ce que chaque engagement vous fait économiser", savingsBasis: "Par rapport à un paiement mensuel", monthlyAnnualCost: "pour 12 mois", annualSave: "Économisez {{amount}}", annualSavingsDetail: "{{price}} au lieu de {{monthly}} la première année", lifetimeSave: "Économisez {{amount}} d’ici la deuxième année", lifetimePayback: "Rentabilisé en environ {{months}} mois" },
+    comparisonTable: { mobileTitle: "Comparez les fonctionnalités des plans", mobileSubtitle: "Ouvrez la comparaison compacte des fonctionnalités", mobileAction: "Comparer", mobileEyebrow: "Comparaison des fonctionnalités", mobileDescription: "Comparez Gratuit, Pro et À vie sans quitter la page de mise à niveau." },
   },
   it: {
     adminUsers: { smtpAuditAllOutcomes: "Tutti i risultati" },
@@ -120,6 +126,8 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
       onboardingTips: { title: "Suggerimenti di configurazione", description: "Mostra suggerimenti contestuali alla prossima apertura della configurazione. Puoi modificarli anche nell’assistente.", enable: "Attiva suggerimenti di configurazione", disable: "Disattiva suggerimenti di configurazione" },
     },
     step3Send: { optionalConnectorButton: "Configura invece il connettore WordPress (opzionale)" },
+    pricingGrid: { title: "Scegli il piano adatto alla tua crescita", savingsEyebrow: "Calcolatore di risparmio", savingsTitle: "Scopri quanto risparmia ogni impegno", savingsBasis: "Rispetto al pagamento mensile", monthlyAnnualCost: "per 12 mesi", annualSave: "Risparmia {{amount}}", annualSavingsDetail: "{{price}} invece di {{monthly}} per il primo anno", lifetimeSave: "Risparmia {{amount}} entro il secondo anno", lifetimePayback: "Si ripaga in circa {{months}} mesi" },
+    comparisonTable: { mobileTitle: "Confronta le funzionalità dei piani", mobileSubtitle: "Apri il confronto compatto delle funzionalità", mobileAction: "Confronta", mobileEyebrow: "Confronto delle funzionalità", mobileDescription: "Confronta Gratis, Pro e A vita senza lasciare la pagina di upgrade." },
     pricingCard: { guarantee: "Garanzia di rimborso entro 7 giorni" },
     upgradeFaq: {
       title: "Domande frequenti",
@@ -166,6 +174,8 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
       onboardingTips: { title: "คำแนะนำการเริ่มต้นใช้งาน", description: "แสดงคำแนะนำตามบริบทเมื่อคุณเปิดการเริ่มต้นใช้งานครั้งถัดไป คุณยังเปลี่ยนได้ในตัวช่วยตั้งค่า", enable: "เปิดใช้คำแนะนำการเริ่มต้นใช้งาน", disable: "ปิดใช้คำแนะนำการเริ่มต้นใช้งาน" },
     },
     step3Send: { optionalConnectorButton: "ตั้งค่าตัวเชื่อม WordPress แทน (ไม่บังคับ)" },
+    pricingGrid: { title: "เลือกแผนที่เหมาะกับการเติบโตของคุณ", savingsEyebrow: "เครื่องคำนวณการประหยัด", savingsTitle: "ดูว่าแต่ละแผนช่วยประหยัดได้เท่าไร", savingsBasis: "เทียบกับการจ่ายรายเดือน", monthlyAnnualCost: "สำหรับ 12 เดือน", annualSave: "ประหยัด {{amount}}", annualSavingsDetail: "{{price}} แทนที่จะเป็น {{monthly}} ในปีแรก", lifetimeSave: "ประหยัด {{amount}} ภายในปีที่สอง", lifetimePayback: "คุ้มทุนในประมาณ {{months}} เดือน" },
+    comparisonTable: { mobileTitle: "เปรียบเทียบฟีเจอร์ของแผน", mobileSubtitle: "เปิดการเปรียบเทียบฟีเจอร์แบบกระชับ", mobileAction: "เปรียบเทียบ", mobileEyebrow: "เปรียบเทียบฟีเจอร์", mobileDescription: "เปรียบเทียบแผนฟรี Pro และตลอดชีพโดยไม่ต้องออกจากหน้าอัปเกรด" },
   },
   "zh-CN": {
     adminUsers: { smtpAuditAllOutcomes: "所有结果" },
@@ -196,6 +206,8 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
       onboardingTips: { title: "设置提示", description: "下次打开设置引导时显示相关提示。您也可以在设置向导中更改此选项。", enable: "启用设置提示", disable: "停用设置提示" },
     },
     step3Send: { optionalConnectorButton: "改为设置 WordPress 连接器（可选）" },
+    pricingGrid: { title: "选择适合您业务增长的套餐", savingsEyebrow: "节省计算器", savingsTitle: "查看每种承诺可节省多少", savingsBasis: "与按月付费相比", monthlyAnnualCost: "12 个月费用", annualSave: "节省 {{amount}}", annualSavingsDetail: "首年支付 {{price}}，而非 {{monthly}}", lifetimeSave: "到第二年节省 {{amount}}", lifetimePayback: "约 {{months}} 个月即可回本" },
+    comparisonTable: { mobileTitle: "比较套餐功能", mobileSubtitle: "打开精简功能比较", mobileAction: "比较", mobileEyebrow: "功能比较", mobileDescription: "无需离开升级页面即可比较免费版、Pro 和终身版。" },
   },
   "zh-TW": {
     adminUsers: { smtpAuditAllOutcomes: "所有結果" },
@@ -226,6 +238,8 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
       onboardingTips: { title: "設定提示", description: "下次開啟設定引導時顯示相關提示。您也可以在設定精靈中變更此選項。", enable: "啟用設定提示", disable: "停用設定提示" },
     },
     step3Send: { optionalConnectorButton: "改為設定 WordPress 連接器（可選）" },
+    pricingGrid: { title: "選擇適合您業務成長的方案", savingsEyebrow: "節省計算器", savingsTitle: "查看每種承諾可節省多少", savingsBasis: "與按月付費相比", monthlyAnnualCost: "12 個月費用", annualSave: "節省 {{amount}}", annualSavingsDetail: "首年支付 {{price}}，而非 {{monthly}}", lifetimeSave: "到第二年節省 {{amount}}", lifetimePayback: "約 {{months}} 個月即可回本" },
+    comparisonTable: { mobileTitle: "比較方案功能", mobileSubtitle: "開啟精簡功能比較", mobileAction: "比較", mobileEyebrow: "功能比較", mobileDescription: "無需離開升級頁面即可比較免費版、Pro 和終身版。" },
   },
 };
 

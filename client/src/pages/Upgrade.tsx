@@ -14,6 +14,16 @@ import { useTranslation } from "react-i18next";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
 import PlanSwitchDialog from "@/components/PlanSwitchDialog";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 // ── THB dual-currency display ─────────────────────────────────────────────────
 // Fixed rate — update manually when USD/THB shifts significantly
@@ -23,6 +33,21 @@ function toThb(usdAmount: number): string {
   // Round up to nearest 50 baht for clean pricing
   const rounded = Math.ceil(raw / 50) * 50;
   return `฿${rounded.toLocaleString()}`;
+}
+
+const MONTHLY_PRICE_USD = 29;
+const ANNUAL_PRICE_USD = 290;
+const LIFETIME_PRICE_USD = 497;
+const ANNUAL_SAVINGS_USD = MONTHLY_PRICE_USD * 12 - ANNUAL_PRICE_USD;
+const LIFETIME_SAVINGS_BY_YEAR_TWO_USD = MONTHLY_PRICE_USD * 24 - LIFETIME_PRICE_USD;
+const LIFETIME_PAYBACK_MONTHS = Math.ceil(LIFETIME_PRICE_USD / MONTHLY_PRICE_USD);
+
+function formatUsd(usdAmount: number, locale: string): string {
+  return new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  }).format(usdAmount);
 }
 
 const UPGRADE_IMG = "https://assets.getphame.app/phame-app-screenshot.png";
@@ -709,9 +734,11 @@ export default function UpgradePage() {
           {t("socialProof.trustedByBusinesses")}
         </p>
 
+        <MobilePlanComparisonDrawer />
+
         {/* ── Plan comparison table ────────────────────────────────────────────── */}
         <div
-          className="rounded-2xl overflow-hidden"
+          className="hidden overflow-hidden rounded-2xl md:block"
           style={{ border: "1px solid rgba(255,255,255,0.12)" }}
         >
           {/* Table header */}
@@ -848,7 +875,7 @@ function PricingPlanGrid({
   onSelectPlan,
   onCheckout,
 }: PricingPlanGridProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   return (
     <section aria-labelledby="upgrade-plan-grid-heading">
@@ -858,6 +885,8 @@ function PricingPlanGrid({
           {t("pricingGrid.title", { defaultValue: "Choose the plan that fits your growth" })}
         </h2>
       </div>
+
+      <SavingsCalculator locale={i18n.language} />
 
       {campaignPromotionCode && (
         <div
@@ -890,6 +919,11 @@ function PricingPlanGrid({
             : isAnnual
               ? t("pricingCard.annualDescription", { defaultValue: "Billed once per year. Equivalent to $24.17/mo." })
               : t("pricingCard.lifetimeDescription", { defaultValue: "One-time payment. No renewals, ever." });
+          const cardTreatment = isAnnual
+            ? `border-[oklch(0.80_0.18_80/0.78)] bg-[linear-gradient(180deg,oklch(0.30_0.10_260),oklch(0.22_0.07_260))] shadow-[0_22px_60px_oklch(0.80_0.18_80/0.20)] lg:-translate-y-2 ${isSelected ? "ring-2 ring-[oklch(0.80_0.18_80/0.45)]" : ""}`
+            : isSelected
+              ? "border-[oklch(0.80_0.18_80)] bg-[oklch(0.25_0.09_260)] shadow-[0_22px_56px_rgba(212,160,23,0.16)]"
+              : "border-white/12 rr-bg-navy-mid hover:-translate-y-0.5 hover:border-[oklch(0.80_0.18_80/0.62)]";
 
           return (
             <article
@@ -897,18 +931,22 @@ function PricingPlanGrid({
               data-testid={`upgrade-plan-card-${plan}`}
               className={`relative flex min-w-0 flex-col rounded-[1.5rem] border p-5 shadow-[0_18px_45px_rgba(0,0,0,0.22)] transition-[transform,border-color,box-shadow] duration-200 sm:p-6 ${
                 isLifetime ? "sm:col-span-2 lg:col-span-1" : ""
-              } ${
-                isSelected
-                  ? "border-[oklch(0.80_0.18_80)] bg-[oklch(0.25_0.09_260)] shadow-[0_22px_56px_rgba(212,160,23,0.16)]"
-                  : "border-white/12 rr-bg-navy-mid hover:-translate-y-0.5 hover:border-[oklch(0.80_0.18_80/0.62)]"
-              }`}
+              } ${cardTreatment}`}
             >
+              {isAnnual && (
+                <span
+                  data-testid="annual-most-popular-badge"
+                  className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 rounded-full border border-[oklch(0.88_0.15_80/0.85)] px-3 py-1 text-[10px] font-black uppercase tracking-[0.12em] rr-bg-gold rr-text-navy shadow-[0_0_18px_oklch(0.80_0.18_80/0.45)]"
+                >
+                  {t("planSelector.mostPopularBadge", { defaultValue: "Most Popular" })}
+                </span>
+              )}
               <div className="mb-4 flex min-h-7 items-start justify-between gap-3">
                 <div>
                   <p className="text-lg font-black text-white">{planTitle}</p>
                   <p className="mt-1 text-xs font-bold text-white/60">{planDescription}</p>
                 </div>
-                {planConfig.badge && (
+                {!isAnnual && planConfig.badge && (
                   <span className="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wide rr-bg-gold rr-text-navy">
                     {isAnnual ? t("planSelector.mostPopularBadge") : t("planSelector.bestValueBadge")}
                   </span>
@@ -972,6 +1010,144 @@ function PricingPlanGrid({
         })}
       </div>
     </section>
+  );
+}
+
+function SavingsCalculator({ locale }: { locale: string }) {
+  const { t } = useTranslation();
+
+  return (
+    <section
+      data-testid="pricing-savings-calculator"
+      aria-labelledby="upgrade-savings-heading"
+      className="mb-5 overflow-hidden rounded-2xl border border-[oklch(0.80_0.18_80/0.28)] bg-[linear-gradient(120deg,oklch(0.29_0.10_260),oklch(0.19_0.07_260))] p-4 sm:p-5"
+    >
+      <div className="flex flex-col gap-1 text-left sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.16em] rr-text-gold">
+            {t("pricingGrid.savingsEyebrow", { defaultValue: "Savings calculator" })}
+          </p>
+          <h3 id="upgrade-savings-heading" className="mt-1 text-lg font-black text-white">
+            {t("pricingGrid.savingsTitle", { defaultValue: "See what each commitment saves" })}
+          </h3>
+        </div>
+        <p className="text-xs font-semibold text-white/60">
+          {t("pricingGrid.savingsBasis", { defaultValue: "Compared with paying monthly" })}
+        </p>
+      </div>
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        <div className="rounded-xl border border-white/10 bg-[#061a3a]/55 p-3">
+          <p className="text-[10px] font-black uppercase tracking-[0.12em] text-white/55">
+            {t("planSelector.monthly", { defaultValue: "Monthly" })}
+          </p>
+          <p className="mt-1 text-lg font-black text-white">{formatUsd(MONTHLY_PRICE_USD * 12, locale)}</p>
+          <p className="mt-1 text-xs font-semibold text-white/60">
+            {t("pricingGrid.monthlyAnnualCost", { defaultValue: "for 12 months" })}
+          </p>
+        </div>
+        <div className="rounded-xl border border-[oklch(0.80_0.18_80/0.58)] bg-[oklch(0.25_0.09_260)] p-3 shadow-[0_0_20px_oklch(0.80_0.18_80/0.12)]">
+          <p className="text-[10px] font-black uppercase tracking-[0.12em] rr-text-gold">
+            {t("planSelector.annual", { defaultValue: "Annual" })}
+          </p>
+          <p className="mt-1 text-lg font-black rr-text-gold">
+            {t("pricingGrid.annualSave", { defaultValue: "Save {{amount}}", amount: formatUsd(ANNUAL_SAVINGS_USD, locale) })}
+          </p>
+          <p className="mt-1 text-xs font-semibold text-white/70">
+            {t("pricingGrid.annualSavingsDetail", { defaultValue: "{{price}} instead of {{monthly}} for year one", price: formatUsd(ANNUAL_PRICE_USD, locale), monthly: formatUsd(MONTHLY_PRICE_USD * 12, locale) })}
+          </p>
+        </div>
+        <div className="rounded-xl border border-white/10 bg-[#061a3a]/55 p-3">
+          <p className="text-[10px] font-black uppercase tracking-[0.12em] text-white/55">
+            {t("planSelector.lifetime", { defaultValue: "Lifetime" })}
+          </p>
+          <p className="mt-1 text-lg font-black text-[oklch(0.72_0.18_145)]">
+            {t("pricingGrid.lifetimeSave", { defaultValue: "Save {{amount}} by year two", amount: formatUsd(LIFETIME_SAVINGS_BY_YEAR_TWO_USD, locale) })}
+          </p>
+          <p className="mt-1 text-xs font-semibold text-white/60">
+            {t("pricingGrid.lifetimePayback", { defaultValue: "Pays for itself in about {{months}} months", months: LIFETIME_PAYBACK_MONTHS })}
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MobilePlanComparisonDrawer() {
+  const { t } = useTranslation();
+  const renderCell = (value: string | boolean) => {
+    if (value === true) return <Check size={13} className="mx-auto text-[oklch(0.72_0.18_145)]" aria-label="Included" />;
+    if (value === false) return <span className="text-white/35">—</span>;
+    if (value === "__FREE_ALLOWANCE__") return <span>{t("comparisonTable.freeRequestAllowance", { defaultValue: "10 + 5 / 30d" })}</span>;
+    return <span>{value}</span>;
+  };
+
+  return (
+    <div data-testid="mobile-plan-comparison-drawer" className="mb-5 md:hidden">
+      <Drawer>
+        <DrawerTrigger asChild>
+          <button
+            type="button"
+            data-testid="mobile-comparison-trigger"
+            className="flex w-full items-center justify-between rounded-2xl border border-white/12 bg-[oklch(0.24_0.08_260)] px-4 py-3 text-left transition-colors hover:border-[oklch(0.80_0.18_80/0.62)]"
+          >
+            <span>
+              <span className="block text-sm font-black text-white">
+                {t("comparisonTable.mobileTitle", { defaultValue: "Compare plan features" })}
+              </span>
+              <span className="mt-0.5 block text-xs font-semibold text-white/60">
+                {t("comparisonTable.mobileSubtitle", { defaultValue: "Open the compact feature comparison" })}
+              </span>
+            </span>
+            <span className="rounded-full px-3 py-1 text-xs font-black rr-bg-gold rr-text-navy">
+              {t("comparisonTable.mobileAction", { defaultValue: "Compare" })}
+            </span>
+          </button>
+        </DrawerTrigger>
+        <DrawerContent className="max-h-[82vh] overflow-y-auto border-white/15 rr-bg-navy text-white">
+          <DrawerHeader className="text-left">
+            <p className="text-[10px] font-black uppercase tracking-[0.14em] rr-text-gold">
+              {t("comparisonTable.mobileEyebrow", { defaultValue: "Feature comparison" })}
+            </p>
+            <DrawerTitle className="text-xl font-black text-white">
+              {t("comparisonTable.mobileTitle", { defaultValue: "Compare plan features" })}
+            </DrawerTitle>
+            <DrawerDescription className="text-white/65">
+              {t("comparisonTable.mobileDescription", { defaultValue: "Compare Free, Pro, and Lifetime without leaving the upgrade page." })}
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="overflow-hidden rounded-2xl border border-white/10 bg-[oklch(0.20_0.07_260)] mx-4">
+            <div className="grid grid-cols-[minmax(0,1.42fr)_repeat(3,minmax(0,0.78fr))] border-b border-white/10 bg-[#061a3a] px-2 py-2 text-center text-[10px] font-black">
+              <div className="text-left text-white/55">{t("comparisonTable.feature", { defaultValue: "Feature" })}</div>
+              <div className="text-white/55">{t("comparisonTable.free", { defaultValue: "Free" })}</div>
+              <div className="rr-text-gold">{t("comparisonTable.pro", { defaultValue: "Pro" })}</div>
+              <div className="text-[oklch(0.90_0.14_80)]">{t("comparisonTable.lifetime", { defaultValue: "Lifetime" })}</div>
+            </div>
+            {COMPARISON_ROWS.map((row, index) => (
+              <div
+                key={row.feature}
+                className="grid grid-cols-[minmax(0,1.42fr)_repeat(3,minmax(0,0.78fr))] items-center px-2 py-2 text-center text-[10px] font-semibold text-white/75"
+                style={{ background: index % 2 === 0 ? "oklch(0.25 0.08 260)" : "oklch(0.22 0.07 260)" }}
+              >
+                <div className="pr-1 text-left font-bold text-white/85">
+                  {row.feature === "Review requests" ? t("comparisonTable.reviewRequests", { defaultValue: "Review requests" }) : row.feature}
+                </div>
+                <div>{renderCell(row.free)}</div>
+                <div>{renderCell(row.pro)}</div>
+                <div>{renderCell(row.lifetime)}</div>
+              </div>
+            ))}
+          </div>
+          <DrawerFooter>
+            <DrawerClose asChild>
+              <button type="button" className="w-full rounded-xl border border-white/15 py-3 text-sm font-black text-white">
+                Close comparison
+              </button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
+    </div>
   );
 }
 
