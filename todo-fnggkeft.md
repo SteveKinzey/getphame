@@ -114,4 +114,4 @@
 - [x] Add direct regression coverage for date boundaries, preset ownership, authorization, validation, and export filter reuse
 - [x] Extend the reusable production-auth-health-monitoring skill with date-range and saved-preset patterns
 - [x] Run focused and full tests, TypeScript checks, production build, and desktop/mobile administrator verification
-- [ ] Save the publishable checkpoint and confirm the live production bundle contains the date-range and private quick-preset release labels
+- [x] Save the publishable checkpoint and confirm the live production bundle contains the date-range and private quick-preset release labels
