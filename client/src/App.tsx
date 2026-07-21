@@ -22,6 +22,7 @@ import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, { useOnboardingGuide } from "./components/OnboardingGuide";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
 import PageLoader from "./components/PageLoader";
+import { ApiReconnectingIndicator, DashboardReadinessGate, useDashboardReadiness } from "./components/ApiRecoveryExperience";
 import { handoffGuideNavigation } from "./lib/onboardingFlow";
 import { trpc } from "./lib/trpc";
 import { useLocation } from "wouter";
@@ -129,13 +130,14 @@ function PageTransition({ children }: { children: React.ReactNode }) {
 function AppShell() {
   const { t } = useTranslation("translation");
   const { user, loading, isAuthenticated } = useAuth();
+  const dashboardReadiness = useDashboardReadiness(Boolean(user));
   const [, navigate] = useLocation();
   const userId = user?.id == null ? null : String(user.id);
   const [onboardingDismissed, setOnboardingDismissed] = useState(
     () => wasOnboardingDismissed(userId),
   );
   const { data: onboardingStatus } = trpc.onboarding.status.useQuery(undefined, {
-    enabled: !!user,
+    enabled: !!user && dashboardReadiness.data?.ok === true,
     refetchInterval: 5000,
   });
   const {
@@ -296,6 +298,8 @@ function AppShell() {
   // ── Authenticated app shell ──────────────────────────────────────────────
   return (
     <>
+      <ApiReconnectingIndicator />
+      <DashboardReadinessGate readiness={dashboardReadiness}>
       {/* Skip to main content — screen reader accessibility */}
       <a href="#main-content" className="skip-to-content">Skip to main content</a>
 
@@ -358,6 +362,7 @@ function AppShell() {
 
       {/* BottomNav — mobile only (hidden on md+) */}
       <BottomNav />
+      </DashboardReadinessGate>
     </>
   );
 }

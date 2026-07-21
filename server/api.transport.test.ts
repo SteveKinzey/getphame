@@ -71,6 +71,19 @@ describe("API transport JSON guarantees", () => {
     expect(fallbackIndex).toBeGreaterThan(trpcIndex);
     expect(viteIndex).toBeGreaterThan(fallbackIndex);
   });
+
+  it("exposes a cache-bypassing readiness endpoint before tRPC and the SPA fallback", () => {
+    const entrypointPath = fileURLToPath(new URL("./_core/index.ts", import.meta.url));
+    const source = readFileSync(entrypointPath, "utf8");
+    const healthIndex = source.indexOf('app.get("/api/health"');
+    const trpcIndex = source.indexOf('"/api/trpc"');
+    const fallbackIndex = source.indexOf('app.use("/api", apiNotFoundHandler)');
+
+    expect(healthIndex).toBeGreaterThan(-1);
+    expect(source).toContain('res.set("Cache-Control", "no-store")');
+    expect(healthIndex).toBeLessThan(trpcIndex);
+    expect(healthIndex).toBeLessThan(fallbackIndex);
+  });
 });
 
 describe("API query retry policy", () => {

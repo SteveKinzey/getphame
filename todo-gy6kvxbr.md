@@ -610,3 +610,9 @@
 - [x] Diagnose the `/?from_webdev=1` tRPC API-unavailable error using server, browser, routing, and query-path evidence.
 - [x] Repair the underlying home-page API availability condition without weakening authentication, error handling, or existing tRPC contracts.
 - [x] Add regression coverage, verify the home-page query in the preview, run release gates, and publish the recovery.
+
+- [x] Add a lightweight, non-sensitive `/api/health` readiness probe and use it to prevent the dashboard shell from treating a restart window as a terminal app failure.
+- [x] Show a quiet, accessible Reconnecting indicator only while transient API retries are active.
+- [x] Add a localized API error boundary with a manual retry control for exhausted automatic retry recovery.
+- [x] Add regression coverage and validate readiness, reconnecting, manual retry, desktop/mobile behavior, and release gates.
+- [x] Package and validate the resulting tRPC recovery UX workflow as a reusable skill using the skill-creator process.
