@@ -14,8 +14,13 @@
 - [x] Fix stale i18n cache-version contracts and complete localized pricing-savings copy found by the full test suite.
 - [x] Remove legacy tracked Playwright trace artifacts and verify future browser diagnostics remain outside the repository.
 - [x] Run focused and complete Vitest, TypeScript, production build, dependency audit, workflow validation, and bounded Playwright quality gates.
-- [ ] Review both complete release diffs, create the managed checkpoint, synchronize and push only approved GitHub commits, verify Actions, and confirm the live readiness endpoint.
+- [x] Review both complete release diffs, create the managed checkpoint, synchronize and push only approved GitHub commits, verify Actions, and confirm the live readiness endpoint.
 - [x] Capture post-restart Git status and log evidence proving the local GitHub tree contains the intended unpublished recovery stack and remains unpushed.
 - [x] Validate the restored API health workflow’s bounded probe, consecutive-failure state, deduplicated incident, and recovery-closure branches from the actual current file.
 - [x] Validate haptic preference persistence, cross-component synchronization, recovery-success application, reduced-motion behavior, and non-native safe fallback with focused evidence.
 - [x] Verify the desktop status badge and explicit online/offline event transitions in addition to the completed mobile visual check.
+- [x] Reconcile current GitHub main with the validated managed checkpoint while preserving newer security, CI, documentation, and credential-aware integration-test changes.
+- [x] Bring the GitHub source tree fully up to date, including the complete recovery stack, monitoring workflows, localization, app-store documentation, and removal of obsolete npm and Playwright artifacts.
+- [x] Run TypeScript, full Vitest, production audit/build, workflow contracts, formatting/whitespace, and bounded Chromium recovery gates from the reconciled GitHub tree.
+- [x] Verify the GitHub repository remains private, source access is limited to explicitly authorized repository users, and no public Pages or source release is enabled.
+- [x] Commit and push the reconciled GitHub release, verify all triggered Actions, and confirm the deployed public readiness endpoint.
