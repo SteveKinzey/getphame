@@ -1,15 +1,19 @@
 name: API health monitor
+
 on:
   schedule:
     # Offset from the top of the hour to reduce scheduled-workflow delay risk.
     - cron: "3-58/5 * * * *"
   workflow_dispatch:
+
 permissions:
   contents: read
   issues: write
+
 concurrency:
   group: getphame-api-health-monitor
   cancel-in-progress: false
+
 jobs:
   probe:
     name: Probe deployed API health
