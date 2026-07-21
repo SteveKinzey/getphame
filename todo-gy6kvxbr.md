@@ -594,3 +594,5 @@
 - [x] Preserve visible email magic-link authentication alongside Google on Login and Onboarding, and add focused host-policy/UI regression coverage.
 - [x] Retire the unconsumed legacy `package-lock.json`, align the custom Dockerfile with the locked pnpm install policy, and document the evidence-based remediation decision.
 - [ ] Run focused and complete quality gates, push the reviewed change set, confirm the GitHub Actions run, checkpoint the release, and verify the production Google entry point.
+- [ ] Diagnose and correct the published login bundle mismatch: production reports Google OAuth configured but still renders magic-link-only authentication.
+- [ ] Resolve the managed Docker build failure caused by a frozen pnpm lockfile override mismatch, then republish the verified release.
