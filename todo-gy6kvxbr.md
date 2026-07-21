@@ -616,3 +616,13 @@
 - [x] Add a localized API error boundary with a manual retry control for exhausted automatic retry recovery.
 - [x] Add regression coverage and validate readiness, reconnecting, manual retry, desktop/mobile behavior, and release gates.
 - [x] Package and validate the resulting tRPC recovery UX workflow as a reusable skill using the skill-creator process.
+
+- [x] Eliminate render-phase state updates from the transient-query retry subscription that trigger React warnings in the dashboard shell.
+- [x] Add regression coverage proving reconnecting-state subscriptions do not schedule component updates during another component’s render.
+- [x] Verify the authenticated dashboard is warning-free in the browser, run focused release checks, and publish the repair.
+
+- [x] Add restrained, reduced-motion-safe CSS loading motion to the Reconnecting indicator.
+- [x] Add an approachable offline recovery illustration and clear, actionable offline troubleshooting guidance to the exhausted recovery state.
+- [x] Show a localized success toast when a previously unavailable dashboard API reconnects successfully.
+- [x] Extend and validate the reusable API recovery UX skill with the render-safe subscription, offline guidance, animation, and reconnection-toast workflow.
+- [x] Add focused regression coverage for recovery motion, offline guidance, reconnection confirmation, and translations across supported locales.

@@ -1876,6 +1876,21 @@
     "preparingGoogle": "Preparazione dell’accesso con Google…",
     "redirectingGoogle": "Reindirizzamento sicuro a Google…"
   },
+  "apiRecovery": {
+    "preparing": "Preparazione del tuo spazio di lavoro…",
+    "preparingDescription": "Ci ricollegheremo automaticamente quando il servizio sarà pronto.",
+    "reconnecting": "Riconnessione in corso…",
+    "reconnected": "Sei di nuovo online.",
+    "reconnectedDescription": "Get Phame è connesso e pronto all’uso.",
+    "unavailableTitle": "Stiamo riconnettendo Get Phame.",
+    "unavailableDescription": "Il servizio sta impiegando un po’ più del previsto. Il tuo lavoro è al sicuro; riprova quando vuoi.",
+    "offlineTitle": "Al momento sei offline.",
+    "offlineDescription": "Controlla il Wi-Fi o i dati mobili, quindi riprova. Il tuo lavoro resta al sicuro su questo dispositivo.",
+    "offlineStepOne": "Attiva il Wi-Fi o i dati mobili.",
+    "offlineStepTwo": "Torna qui e tocca Riprova.",
+    "retrying": "Nuovo tentativo…",
+    "retry": "Riprova"
+  },
   "profileMenu": {
     "account": "Account",
     "accountDetails": "Dettagli account",

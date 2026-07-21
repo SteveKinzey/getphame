@@ -1060,6 +1060,21 @@
     "preparingGoogle": "Preparing Google sign-in…",
     "redirectingGoogle": "Redirecting securely to Google…"
   },
+  "apiRecovery": {
+    "preparing": "Preparing your workspace…",
+    "preparingDescription": "We’ll reconnect automatically when the service is ready.",
+    "reconnecting": "Reconnecting…",
+    "reconnected": "You’re back online.",
+    "reconnectedDescription": "Get Phame is connected and ready to use.",
+    "unavailableTitle": "We’re reconnecting Get Phame.",
+    "unavailableDescription": "The service is taking a little longer than expected. Your work is safe; try again when you’re ready.",
+    "offlineTitle": "You’re offline right now.",
+    "offlineDescription": "Check your Wi-Fi or mobile data, then try again. Your work stays safe on this device.",
+    "offlineStepOne": "Turn on Wi-Fi or mobile data.",
+    "offlineStepTwo": "Return here and tap Try again.",
+    "retrying": "Trying again…",
+    "retry": "Try again"
+  },
   "profileMenu": {
     "account": "Account",
     "accountDetails": "Account details",

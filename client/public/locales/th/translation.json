@@ -968,6 +968,21 @@
     "preparingGoogle": "กำลังเตรียมการเข้าสู่ระบบด้วย Google…",
     "redirectingGoogle": "กำลังเปลี่ยนเส้นทางไปยัง Google อย่างปลอดภัย…"
   },
+  "apiRecovery": {
+    "preparing": "กำลังเตรียมพื้นที่ทำงานของคุณ…",
+    "preparingDescription": "เราจะเชื่อมต่อใหม่โดยอัตโนมัติเมื่อบริการพร้อมใช้งาน",
+    "reconnecting": "กำลังเชื่อมต่อใหม่…",
+    "reconnected": "คุณกลับมาออนไลน์แล้ว",
+    "reconnectedDescription": "Get Phame เชื่อมต่อแล้วและพร้อมใช้งาน",
+    "unavailableTitle": "เรากำลังเชื่อมต่อ Get Phame ใหม่",
+    "unavailableDescription": "บริการใช้เวลานานกว่าที่คาดไว้เล็กน้อย งานของคุณยังปลอดภัย ลองอีกครั้งเมื่อคุณพร้อม",
+    "offlineTitle": "ขณะนี้คุณออฟไลน์อยู่",
+    "offlineDescription": "ตรวจสอบ Wi-Fi หรือข้อมูลมือถือ แล้วลองอีกครั้ง งานของคุณยังปลอดภัยบนอุปกรณ์นี้",
+    "offlineStepOne": "เปิด Wi-Fi หรือข้อมูลมือถือ",
+    "offlineStepTwo": "กลับมาที่นี่แล้วแตะ ลองอีกครั้ง",
+    "retrying": "กำลังลองอีกครั้ง…",
+    "retry": "ลองอีกครั้ง"
+  },
   "profileMenu": {
     "account": "บัญชี",
     "accountDetails": "รายละเอียดบัญชี",

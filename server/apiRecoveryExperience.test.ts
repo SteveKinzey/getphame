@@ -1,10 +1,17 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
+import directKeyFallbackResources from "../client/src/lib/i18nDirectKeyFallbackResources";
 
 const recoveryExperiencePath = fileURLToPath(new URL("../client/src/components/ApiRecoveryExperience.tsx", import.meta.url));
 const appPath = fileURLToPath(new URL("../client/src/App.tsx", import.meta.url));
 const errorBoundaryPath = fileURLToPath(new URL("../client/src/components/ErrorBoundary.tsx", import.meta.url));
+const retrySubscriptionHookPath = fileURLToPath(
+  new URL("../client/src/hooks/useActiveTransientQueryRetries.ts", import.meta.url),
+);
+const stylePath = fileURLToPath(new URL("../client/src/index.css", import.meta.url));
+const translationPath = (locale: string) =>
+  fileURLToPath(new URL(`../client/public/locales/${locale}/translation.json`, import.meta.url));
 
 describe("API recovery experience", () => {
   it("shows a quiet reconnecting indicator only while active transient retries exist", () => {
@@ -12,7 +19,51 @@ describe("API recovery experience", () => {
 
     expect(source).toContain("useActiveTransientQueryRetries");
     expect(source).toContain('data-testid="api-reconnecting-indicator"');
-    expect(source).toContain("Reconnecting…");
+    expect(source).toContain("api-recovery-signal");
+    expect(source).toContain('apiRecovery.reconnecting');
+  });
+
+  it("gives offline users practical recovery guidance and confirms a recovered connection with a success toast", () => {
+    const source = readFileSync(recoveryExperiencePath, "utf8");
+
+    expect(source).toContain("useNetworkStatus");
+    expect(source).toContain('data-testid="api-recovery-offline-illustration"');
+    expect(source).toContain('data-testid="api-recovery-offline-guidance"');
+    expect(source).toContain("refetchOnReconnect: true");
+    expect(source).toContain("toast.success");
+    expect(source).toContain("apiRecovery.reconnected");
+  });
+
+  it("keeps reconnecting motion subtle, reduced-motion-safe, and translated in every supported locale", () => {
+    const styles = readFileSync(stylePath, "utf8");
+
+    expect(styles).toContain("@keyframes api-recovery-signal");
+    expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
+
+    for (const locale of ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"]) {
+      const recoveryCopy = directKeyFallbackResources[locale]?.apiRecovery as Record<string, string> | undefined;
+      const shippedRecoveryCopy = JSON.parse(readFileSync(translationPath(locale), "utf8")).apiRecovery as
+        | Record<string, string>
+        | undefined;
+
+      expect(recoveryCopy?.reconnecting).toBeTruthy();
+      expect(recoveryCopy?.offlineTitle).toBeTruthy();
+      expect(recoveryCopy?.reconnected).toBeTruthy();
+      expect(shippedRecoveryCopy?.reconnecting).toBeTruthy();
+      expect(shippedRecoveryCopy?.offlineTitle).toBeTruthy();
+      expect(shippedRecoveryCopy?.reconnected).toBeTruthy();
+    }
+  });
+
+  it("subscribes to retry-state changes through React's render-safe external-store API", () => {
+    const source = readFileSync(retrySubscriptionHookPath, "utf8");
+
+    expect(source).toContain("useSyncExternalStore");
+    expect(source).toContain("queryClient.getQueryCache().subscribe(onStoreChange)");
+    expect(source).toContain("return useSyncExternalStore(subscribe, getSnapshot, getSnapshot)");
+    expect(source).not.toContain("useState");
+    expect(source).not.toContain("setRetryCount");
+    expect(source).not.toContain("update();");
   });
 
   it("gates the authenticated dashboard with a manual retry after readiness retries exhaust", () => {

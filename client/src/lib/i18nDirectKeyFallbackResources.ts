@@ -3,6 +3,7 @@ import type { ResourceRecord } from "./i18nFallback";
 const directKeyFallbackResources: Record<string, ResourceRecord> = {
   en: {
     adminUsers: { smtpAuditAllOutcomes: "All outcomes" },
+    apiRecovery: { reconnecting: "Reconnecting…", preparing: "Preparing your workspace…", preparingDescription: "We’ll reconnect automatically when the service is ready.", unavailableTitle: "We’re reconnecting Get Phame.", unavailableDescription: "The service is taking a little longer than expected. Your work is safe; try again when you’re ready.", offlineTitle: "You’re offline right now.", offlineDescription: "Check your Wi-Fi or mobile data, then try again. Your work stays safe on this device.", offlineStepOne: "Turn on Wi-Fi or mobile data.", offlineStepTwo: "Return here and tap Try again.", retry: "Try again", retrying: "Trying again…", reconnected: "You’re back online.", reconnectedDescription: "Get Phame is connected and ready to use." },
     nav: { mobileSettings: "Settings", mobileDashboard: "Stats", mobileAdmin: "Admin" },
     onboardingWizard: {
       dismissError: "Setup was closed, but we couldn't save that preference. You can resume it later from Settings.",
@@ -35,6 +36,7 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
   },
   es: {
     adminUsers: { smtpAuditAllOutcomes: "Todos los resultados" },
+    apiRecovery: { reconnecting: "Reconectando…", preparing: "Preparando tu espacio de trabajo…", preparingDescription: "Nos reconectaremos automáticamente cuando el servicio esté listo.", unavailableTitle: "Estamos reconectando Get Phame.", unavailableDescription: "El servicio está tardando un poco más de lo esperado. Tu trabajo está seguro; inténtalo de nuevo cuando estés listo.", offlineTitle: "Ahora no tienes conexión.", offlineDescription: "Comprueba tu Wi-Fi o datos móviles y vuelve a intentarlo. Tu trabajo sigue seguro en este dispositivo.", offlineStepOne: "Activa Wi‑Fi o los datos móviles.", offlineStepTwo: "Vuelve aquí y toca Intentar de nuevo.", retry: "Intentar de nuevo", retrying: "Intentando de nuevo…", reconnected: "Ya estás de nuevo en línea.", reconnectedDescription: "Get Phame está conectado y listo para usar." },
     nav: { mobileSettings: "Ajustes", mobileDashboard: "Panel", mobileAdmin: "Admin" },
     onboardingWizard: {
       dismissError: "La configuración se cerró, pero no pudimos guardar esa preferencia. Puedes retomarla más tarde desde Configuración.",
@@ -67,6 +69,7 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
   },
   fr: {
     adminUsers: { smtpAuditAllOutcomes: "Tous les résultats" },
+    apiRecovery: { reconnecting: "Reconnexion…", preparing: "Préparation de votre espace de travail…", preparingDescription: "Nous nous reconnecterons automatiquement lorsque le service sera prêt.", unavailableTitle: "Nous reconnectons Get Phame.", unavailableDescription: "Le service prend un peu plus de temps que prévu. Votre travail est en sécurité ; réessayez lorsque vous êtes prêt.", offlineTitle: "Vous êtes actuellement hors ligne.", offlineDescription: "Vérifiez votre Wi-Fi ou vos données mobiles, puis réessayez. Votre travail reste en sécurité sur cet appareil.", offlineStepOne: "Activez le Wi-Fi ou les données mobiles.", offlineStepTwo: "Revenez ici et appuyez sur Réessayer.", retry: "Réessayer", retrying: "Nouvelle tentative…", reconnected: "Vous êtes de nouveau en ligne.", reconnectedDescription: "Get Phame est connecté et prêt à l’emploi." },
     nav: { mobileSettings: "Réglages", mobileDashboard: "Stats", mobileAdmin: "Admin" },
     onboardingWizard: {
       dismissError: "La configuration a été fermée, mais nous n'avons pas pu enregistrer cette préférence. Vous pouvez la reprendre plus tard depuis Paramètres.",
@@ -99,6 +102,7 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
   },
   it: {
     adminUsers: { smtpAuditAllOutcomes: "Tutti i risultati" },
+    apiRecovery: { reconnecting: "Riconnessione in corso…", preparing: "Preparazione del tuo spazio di lavoro…", preparingDescription: "Ci ricollegheremo automaticamente quando il servizio sarà pronto.", unavailableTitle: "Stiamo riconnettendo Get Phame.", unavailableDescription: "Il servizio sta impiegando un po' più del previsto. Il tuo lavoro è al sicuro; riprova quando vuoi.", offlineTitle: "Al momento sei offline.", offlineDescription: "Controlla il Wi-Fi o i dati mobili, poi riprova. Il tuo lavoro resta al sicuro su questo dispositivo.", offlineStepOne: "Attiva il Wi-Fi o i dati mobili.", offlineStepTwo: "Torna qui e tocca Riprova.", retry: "Riprova", retrying: "Nuovo tentativo…", reconnected: "Sei di nuovo online.", reconnectedDescription: "Get Phame è connesso e pronto all'uso." },
     nav: { mobileSettings: "Impostaz.", mobileDashboard: "Dati", mobileAdmin: "Admin" },
     onboardingWizard: {
       dismissError: "La configurazione è stata chiusa, ma non abbiamo potuto salvare quella preferenza. Puoi riprenderla più tardi da Impostazioni.",
@@ -147,6 +151,7 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
   },
   th: {
     adminUsers: { smtpAuditAllOutcomes: "ผลลัพธ์ทั้งหมด" },
+    apiRecovery: { reconnecting: "กำลังเชื่อมต่อใหม่…", preparing: "กำลังเตรียมพื้นที่ทำงานของคุณ…", preparingDescription: "เราจะเชื่อมต่อใหม่โดยอัตโนมัติเมื่อบริการพร้อมใช้งาน", unavailableTitle: "เรากำลังเชื่อมต่อ Get Phame ใหม่", unavailableDescription: "บริการใช้เวลานานกว่าที่คาดไว้เล็กน้อย งานของคุณปลอดภัย ลองอีกครั้งเมื่อพร้อม", offlineTitle: "ขณะนี้คุณออฟไลน์อยู่", offlineDescription: "ตรวจสอบ Wi-Fi หรือข้อมูลมือถือ แล้วลองอีกครั้ง งานของคุณยังปลอดภัยบนอุปกรณ์นี้", offlineStepOne: "เปิด Wi-Fi หรือข้อมูลมือถือ", offlineStepTwo: "กลับมาที่นี่แล้วแตะ ลองอีกครั้ง", retry: "ลองอีกครั้ง", retrying: "กำลังลองอีกครั้ง…", reconnected: "คุณกลับมาออนไลน์แล้ว", reconnectedDescription: "Get Phame เชื่อมต่อแล้วและพร้อมใช้งาน" },
     nav: { mobileSettings: "ตั้งค่า", mobileDashboard: "สถิติ", mobileAdmin: "แอดมิน" },
     onboardingWizard: {
       dismissError: "การตั้งค่าถูกปิด แต่เราไม่สามารถบันทึกการตั้งค่านั้นได้ คุณสามารถกลับมาดำเนินการต่อได้ภายหลังจากการตั้งค่า",
@@ -179,6 +184,7 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
   },
   "zh-CN": {
     adminUsers: { smtpAuditAllOutcomes: "所有结果" },
+    apiRecovery: { reconnecting: "正在重新连接…", preparing: "正在准备您的工作区…", preparingDescription: "服务就绪后，我们会自动重新连接。", unavailableTitle: "我们正在重新连接 Get Phame。", unavailableDescription: "服务所需时间比预期稍长。您的工作是安全的；准备好后请再试一次。", offlineTitle: "您目前处于离线状态。", offlineDescription: "请检查 Wi-Fi 或移动数据，然后重试。您的工作会安全地保留在此设备上。", offlineStepOne: "打开 Wi-Fi 或移动数据。", offlineStepTwo: "返回此处并点击“重试”。", retry: "重试", retrying: "正在重试…", reconnected: "您已恢复在线。", reconnectedDescription: "Get Phame 已连接，可以使用。" },
     nav: { mobileSettings: "设置", mobileDashboard: "数据", mobileAdmin: "管理" },
     onboardingWizard: {
       dismissError: "已关闭设置，但我们无法保存该首选项。您可以稍后在设置中恢复。",
@@ -211,6 +217,7 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
   },
   "zh-TW": {
     adminUsers: { smtpAuditAllOutcomes: "所有結果" },
+    apiRecovery: { reconnecting: "正在重新連線…", preparing: "正在準備您的工作區…", preparingDescription: "服務準備就緒後，我們會自動重新連線。", unavailableTitle: "我們正在重新連線 Get Phame。", unavailableDescription: "服務所需時間比預期稍長。您的工作很安全；準備好後請再試一次。", offlineTitle: "您目前處於離線狀態。", offlineDescription: "請檢查 Wi-Fi 或行動數據，然後重試。您的工作會安全保留在此裝置上。", offlineStepOne: "開啟 Wi-Fi 或行動數據。", offlineStepTwo: "回到這裡並點選「重試」。", retry: "重試", retrying: "正在重試…", reconnected: "您已恢復連線。", reconnectedDescription: "Get Phame 已連線，可以使用。" },
     nav: { mobileSettings: "設定", mobileDashboard: "數據", mobileAdmin: "管理" },
     onboardingWizard: {
       dismissError: "設定已關閉，但我們無法儲存該偏好。您可以稍後從設定恢復。",

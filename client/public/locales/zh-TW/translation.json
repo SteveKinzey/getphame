@@ -957,6 +957,21 @@
     "preparingGoogle": "正在準備 Google 登入…",
     "redirectingGoogle": "正在安全地重新導向至 Google…"
   },
+  "apiRecovery": {
+    "preparing": "正在準備您的工作區…",
+    "preparingDescription": "服務就緒後，我們會自動重新連線。",
+    "reconnecting": "正在重新連線…",
+    "reconnected": "您已恢復連線。",
+    "reconnectedDescription": "Get Phame 已連線並可使用。",
+    "unavailableTitle": "我們正在重新連線 Get Phame。",
+    "unavailableDescription": "服務比預期需要更長時間。您的工作是安全的；準備好後請再試一次。",
+    "offlineTitle": "您目前處於離線狀態。",
+    "offlineDescription": "請檢查 Wi-Fi 或行動數據後再試一次。您的工作仍安全地保存在此裝置上。",
+    "offlineStepOne": "開啟 Wi-Fi 或行動數據。",
+    "offlineStepTwo": "回到這裡並點選「再試一次」。",
+    "retrying": "正在重試…",
+    "retry": "再試一次"
+  },
   "profileMenu": {
     "account": "帳戶",
     "accountDetails": "帳戶詳細資料",

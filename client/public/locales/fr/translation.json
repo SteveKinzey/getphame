@@ -1328,6 +1328,21 @@
     "preparingGoogle": "Préparation de la connexion Google…",
     "redirectingGoogle": "Redirection sécurisée vers Google…"
   },
+  "apiRecovery": {
+    "preparing": "Préparation de votre espace de travail…",
+    "preparingDescription": "Nous nous reconnecterons automatiquement lorsque le service sera prêt.",
+    "reconnecting": "Reconnexion…",
+    "reconnected": "Vous êtes de nouveau en ligne.",
+    "reconnectedDescription": "Get Phame est connecté et prêt à être utilisé.",
+    "unavailableTitle": "Nous reconnectons Get Phame.",
+    "unavailableDescription": "Le service prend un peu plus de temps que prévu. Votre travail est en sécurité ; réessayez quand vous êtes prêt.",
+    "offlineTitle": "Vous êtes actuellement hors ligne.",
+    "offlineDescription": "Vérifiez votre Wi-Fi ou vos données mobiles, puis réessayez. Votre travail reste en sécurité sur cet appareil.",
+    "offlineStepOne": "Activez le Wi-Fi ou les données mobiles.",
+    "offlineStepTwo": "Revenez ici et appuyez sur Réessayer.",
+    "retrying": "Nouvelle tentative…",
+    "retry": "Réessayer"
+  },
   "profileMenu": {
     "account": "Compte",
     "accountDetails": "Détails du compte",
