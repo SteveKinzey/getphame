@@ -869,7 +869,12 @@
     "hidePromptPay": "隐藏",
     "promptPayReveal": "在泰国？",
     "promptPayRevealLink": "使用 PromptPay 支付 (฿)",
-    "guarantee": "7 天退款保证"
+    "guarantee": "7 天退款保证",
+    "otherPaymentMethods": "其他付款方式",
+    "checkoutForPlan": "{{plan}} 的安全结账"
+  },
+  "pricingGrid": {
+    "title": "选择适合您业务增长的方案"
   },
   "accessCode": {
     "title": "有访问码吗？",

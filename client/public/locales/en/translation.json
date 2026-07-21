@@ -932,7 +932,12 @@
     "promptPayNote": "Thailand only · QR code payment · Charged in THB",
     "hidePromptPay": "Hide",
     "promptPayReveal": "Based in Thailand?",
-    "promptPayRevealLink": "Pay with PromptPay (฿)"
+    "promptPayRevealLink": "Pay with PromptPay (฿)",
+    "otherPaymentMethods": "Other payment methods",
+    "checkoutForPlan": "Secure checkout for {{plan}}"
+  },
+  "pricingGrid": {
+    "title": "Choose the plan that fits your growth"
   },
   "accessCode": {
     "title": "Have an access code?",

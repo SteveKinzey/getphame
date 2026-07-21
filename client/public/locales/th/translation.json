@@ -881,7 +881,12 @@
     "hidePromptPay": "ซ่อน",
     "promptPayReveal": "อยู่ในประเทศไทยใช่หรือไม่?",
     "promptPayRevealLink": "ชำระด้วย PromptPay (฿)",
-    "guarantee": "รับประกันคืนเงินภายใน 7 วัน"
+    "guarantee": "รับประกันคืนเงินภายใน 7 วัน",
+    "otherPaymentMethods": "วิธีชำระเงินอื่น ๆ",
+    "checkoutForPlan": "ชำระเงินอย่างปลอดภัยสำหรับ {{plan}}"
+  },
+  "pricingGrid": {
+    "title": "เลือกแพ็กเกจที่เหมาะกับการเติบโตของคุณ"
   },
   "accessCode": {
     "title": "มีรหัสเข้าใช้งานหรือไม่?",

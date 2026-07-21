@@ -576,14 +576,18 @@ describe("Get Phame regression contracts", () => {
     }
   });
 
-  it("uses the approved GetPhame mark and a responsive professional growth visual on Upgrade", () => {
+  it("uses the approved GetPhame mark, public product visual, and responsive pricing cards on Upgrade", () => {
     const upgrade = readProjectFile("../client/src/pages/Upgrade.tsx");
-    expect(upgrade).toContain("/manus-storage/getphame-pro-whiteboard-growth_3e9448fc.png");
-    expect(upgrade).toContain("https://assets.getphame.app/getphame-logo.svg");
+    expect(upgrade).toContain("https://assets.getphame.app/phame-app-screenshot.png");
+    expect(upgrade).toContain("https://assets.getphame.app/getphame-logo-mark.webp");
     expect(upgrade).toContain("GET <span");
     expect(upgrade).toContain("PHAME</span> PRO");
     expect(upgrade).toContain("lg:grid-cols-[0.78fr_1.22fr]");
-    expect(upgrade).toContain("max-w-6xl mx-auto");
+    expect(upgrade).toContain('data-testid="upgrade-plan-grid"');
+    expect(upgrade).toContain("sm:grid-cols-2 lg:grid-cols-3");
+    expect(upgrade).toContain("sm:col-span-2 lg:col-span-1");
+    expect(upgrade).toContain("onError={() => setUpgradeImageFailed(true)}");
+    expect(upgrade).not.toContain("/manus-storage/getphame-pro-whiteboard-growth_3e9448fc.png");
     expect(upgrade).not.toContain("rr-upgrade-hero.webp");
   });
 
@@ -637,7 +641,7 @@ describe("Get Phame regression contracts", () => {
     expect(churn).toContain('guarantee.data?.reason === "already_refunded"');
     expect(churn).toContain('guarantee.data?.reason === "expired"');
     expect(i18n).toContain('["landing", "translation", "cancellation"]');
-    expect(i18n).toContain("v=phame16");
+    expect(i18n).toContain("v=phame17");
     expect(routers).toContain("guaranteeStatus: protectedProcedure");
     expect(routers).toContain("claimGuarantee: protectedProcedure");
     expect(routers).toContain("cancelRenewal: protectedProcedure");

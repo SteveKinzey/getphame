@@ -1784,7 +1784,12 @@
     "currentPlan": "Piano Attuale",
     "upgradeNow": "Aggiorna Ora",
     "annualSavings": "Risparmia {{percent}}% rispetto al mensile",
-    "lifetimeSavings": "Accesso illimitato a vita"
+    "lifetimeSavings": "Accesso illimitato a vita",
+    "otherPaymentMethods": "Altri metodi di pagamento",
+    "checkoutForPlan": "Pagamento sicuro per {{plan}}"
+  },
+  "pricingGrid": {
+    "title": "Scegli il piano adatto alla tua crescita"
   },
   "accessCode": {
     "title": "Hai un codice di accesso?",

@@ -25,8 +25,7 @@ function toThb(usdAmount: number): string {
   return `฿${rounded.toLocaleString()}`;
 }
 
-const UPGRADE_IMG =
-  "/manus-storage/getphame-pro-whiteboard-growth_3e9448fc.png";
+const UPGRADE_IMG = "https://assets.getphame.app/phame-app-screenshot.png";
 
 // ── Feature comparison table ─────────────────────────────────────────────────
 const COMPARISON_ROWS: { feature: string; free: string | boolean; pro: string | boolean; lifetime: string | boolean }[] = [
@@ -54,6 +53,8 @@ const PRO_FEATURES = [
 ];
 
 type Plan = "monthly" | "annual" | "lifetime";
+
+const PLAN_ORDER: Plan[] = ["monthly", "annual", "lifetime"];
 
 const PLANS: Record<Plan, { label: string; price: string; thb: string; sub: string; badge?: string; savings?: string }> = {
   monthly: {
@@ -100,6 +101,7 @@ export default function UpgradePage() {
   // Show PromptPay if Thai locale detected, or user manually reveals it
   const isThai = typeof navigator !== "undefined" && navigator.language.toLowerCase().startsWith("th");
   const [showPromptPay, setShowPromptPay] = useState(isThai);
+  const [upgradeImageFailed, setUpgradeImageFailed] = useState(false);
 
   // PayPal — check if configured on server
   const [paypalClientId, setPaypalClientId] = useState<string | null>(null);
@@ -209,10 +211,11 @@ export default function UpgradePage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function handleStripeCheckout() {
+  function handleStripeCheckout(plan: Plan = selectedPlan) {
+    setSelectedPlan(plan);
     createCheckout.mutate({
       origin: window.location.origin,
-      plan: selectedPlan,
+      plan,
       ...(campaignPromotionCode ? { promotionCode: campaignPromotionCode } : {}),
     });
   }
@@ -335,26 +338,33 @@ export default function UpgradePage() {
               {t("header.proGrowthMessage", { defaultValue: "Turn every completed job into a repeatable reputation and revenue system." })}
             </p>
           </div>
-          <div className="relative overflow-hidden rounded-[1.75rem] border border-[#D4A017]/70 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
+          <div className="relative overflow-hidden rounded-[1.75rem] border border-[oklch(0.80_0.18_80/0.7)] bg-[oklch(0.12_0.03_250)] shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
             <div className="absolute left-3 top-3 z-10 flex items-center gap-2 rounded-full border border-[#D4A017]/35 bg-[#061a3a]/95 px-3 py-2 shadow-lg sm:left-5 sm:top-5">
-              <img src="https://assets.getphame.app/getphame-logo.svg" alt="" className="h-6 w-6 object-contain" aria-hidden="true" />
+              <img src="https://assets.getphame.app/getphame-logo-mark.webp" alt="" className="h-6 w-6 object-contain" aria-hidden="true" />
               <span className="font-['Syne'] text-xs font-black tracking-[0.14em] text-white sm:text-sm">
                 GET <span className="text-[#D4A017]">PHAME</span> PRO
               </span>
             </div>
-            <img
-              src={UPGRADE_IMG}
-              alt={t("header.heroImageAlt", { defaultValue: "Hand-drawn roadmap showing GetPhame turning customer follow-ups into reviews, trust, and business growth" })}
-              className="aspect-[16/9] w-full object-cover object-center lg:min-h-[320px]"
-              loading="eager"
-              decoding="async"
-            />
+            {upgradeImageFailed ? (
+              <UpgradeVisualFallback />
+            ) : (
+              <img
+                src={UPGRADE_IMG}
+                alt={t("header.heroImageAlt", { defaultValue: "Get Phame dashboard preview" })}
+                className="aspect-[16/9] w-full object-cover object-top lg:min-h-[320px]"
+                loading="eager"
+                decoding="async"
+                onError={() => setUpgradeImageFailed(true)}
+              />
+            )}
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#061a3a]/20 to-transparent" />
           </div>
         </div>
       </div>
 
-      <div className="px-4 flex flex-col gap-4 max-w-6xl mx-auto">
+      <div className="px-4 flex flex-col gap-6 max-w-7xl mx-auto">
+        {false && (
+          <>
         {/* Plan selector tabs */}
         <div
           className="flex rounded-2xl p-1 gap-1 rr-bg-navy-mid"
@@ -494,7 +504,7 @@ export default function UpgradePage() {
           </div>
           {/* Primary CTA — Stripe Checkout */}
           <button
-            onClick={handleStripeCheckout}
+            onClick={() => handleStripeCheckout()}
             disabled={createCheckout.isPending}
             className="w-full py-4 rounded-2xl font-black text-lg transition-transform active:scale-95 flex items-center justify-center gap-2 disabled:opacity-70 rr-bg-gold rr-text-navy"
           >
@@ -527,7 +537,7 @@ export default function UpgradePage() {
               ) : (
                 <PayPalScriptProvider
                   options={{
-                    clientId: paypalClientId,
+                    clientId: paypalClientId!,
                     currency: "USD",
                     intent: "capture",
                   }}
@@ -617,6 +627,42 @@ export default function UpgradePage() {
           )}
 
         </div>
+          </>
+        )}
+
+        <PricingPlanGrid
+          selectedPlan={selectedPlan}
+          campaignPromotionCode={campaignPromotionCode}
+          isCheckoutPending={createCheckout.isPending}
+          onSelectPlan={setSelectedPlan}
+          onCheckout={handleStripeCheckout}
+        />
+
+        <AlternativePaymentOptions
+          selectedPlan={selectedPlan}
+          onSelectPlan={setSelectedPlan}
+          paypalClientId={paypalClientId}
+          paypalLoading={paypalLoading}
+          onPayPalCreateOrder={handlePayPalCreateOrder}
+          onPayPalApprove={handlePayPalApprove}
+          showPromptPay={showPromptPay}
+          isThai={isThai}
+          isPromptPayPending={createThbCheckout.isPending}
+          onPromptPayCheckout={() => createThbCheckout.mutate({
+            origin: window.location.origin,
+            plan: selectedPlan,
+            ...(campaignPromotionCode ? { promotionCode: campaignPromotionCode } : {}),
+          })}
+          onRevealPromptPay={() => {
+            setShowPromptPay(true);
+            trackPageView.mutate({
+              page: "/upgrade/promptpay-reveal",
+              utmSource: new URLSearchParams(window.location.search).get("utm_source") ?? undefined,
+              utmCampaign: `plan:${selectedPlan}`,
+            });
+          }}
+          onHidePromptPay={() => setShowPromptPay(false)}
+        />
 
         {/* Access Code Redeem */}
         <div
@@ -761,6 +807,285 @@ export default function UpgradePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function UpgradeVisualFallback() {
+  return (
+    <div
+      className="relative grid aspect-[16/9] min-h-[220px] place-items-center overflow-hidden bg-[radial-gradient(circle_at_20%_20%,oklch(0.3_0.12_255),transparent_35%),linear-gradient(135deg,oklch(0.13_0.05_258),oklch(0.21_0.08_260))] px-6 lg:min-h-[320px]"
+      data-testid="upgrade-hero-fallback"
+    >
+      <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.06)_50%,transparent_100%)]" />
+      <div className="relative grid w-full max-w-sm gap-3">
+        {[
+          ["Send requests", <Zap key="zap" size={16} />],
+          ["Automate follow-ups", <Check key="check" size={16} />],
+          ["Track your growth", <BarChart2 key="chart" size={16} />],
+        ].map(([label, icon]) => (
+          <div key={label as string} className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#061a3a]/80 px-4 py-3 shadow-lg backdrop-blur-sm">
+            <span className="text-sm font-black text-white">{label}</span>
+            <span className="grid h-8 w-8 place-items-center rounded-full rr-bg-gold rr-text-navy">{icon}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+type PricingPlanGridProps = {
+  selectedPlan: Plan;
+  campaignPromotionCode: string | null;
+  isCheckoutPending: boolean;
+  onSelectPlan: (plan: Plan) => void;
+  onCheckout: (plan: Plan) => void;
+};
+
+function PricingPlanGrid({
+  selectedPlan,
+  campaignPromotionCode,
+  isCheckoutPending,
+  onSelectPlan,
+  onCheckout,
+}: PricingPlanGridProps) {
+  const { t } = useTranslation();
+
+  return (
+    <section aria-labelledby="upgrade-plan-grid-heading">
+      <div className="mb-5 flex flex-col gap-2 text-center">
+        <p className="text-xs font-black uppercase tracking-[0.16em] rr-text-gold">{t("header.upgrade")}</p>
+        <h2 id="upgrade-plan-grid-heading" className="text-2xl font-black text-white sm:text-3xl">
+          {t("pricingGrid.title", { defaultValue: "Choose the plan that fits your growth" })}
+        </h2>
+      </div>
+
+      {campaignPromotionCode && (
+        <div
+          className="mb-5 flex gap-3 rounded-2xl border border-[oklch(0.80_0.18_80/0.45)] bg-[oklch(0.28_0.08_260)] px-4 py-3"
+          role="status"
+        >
+          <Ticket size={17} className="mt-0.5 shrink-0 rr-text-gold" />
+          <div className="text-left">
+            <p className="text-sm font-black text-white">
+              {t("promotionLink.applied", { defaultValue: "Your campaign code will be applied at checkout" })}
+            </p>
+            <p className="mt-0.5 text-xs font-bold rr-text-gold">{campaignPromotionCode}</p>
+          </div>
+        </div>
+      )}
+
+      <div data-testid="upgrade-plan-grid" className="grid grid-cols-1 items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {PLAN_ORDER.map((plan) => {
+          const planConfig = PLANS[plan];
+          const isAnnual = plan === "annual";
+          const isLifetime = plan === "lifetime";
+          const isSelected = selectedPlan === plan;
+          const planTitle = plan === "monthly"
+            ? t("planSelector.monthly")
+            : isAnnual
+              ? t("planSelector.annual")
+              : t("planSelector.lifetime");
+          const planDescription = plan === "monthly"
+            ? t("pricingCard.monthlyDescription", { defaultValue: "Cancel anytime. No contracts." })
+            : isAnnual
+              ? t("pricingCard.annualDescription", { defaultValue: "Billed once per year. Equivalent to $24.17/mo." })
+              : t("pricingCard.lifetimeDescription", { defaultValue: "One-time payment. No renewals, ever." });
+
+          return (
+            <article
+              key={plan}
+              data-testid={`upgrade-plan-card-${plan}`}
+              className={`relative flex min-w-0 flex-col rounded-[1.5rem] border p-5 shadow-[0_18px_45px_rgba(0,0,0,0.22)] transition-[transform,border-color,box-shadow] duration-200 sm:p-6 ${
+                isLifetime ? "sm:col-span-2 lg:col-span-1" : ""
+              } ${
+                isSelected
+                  ? "border-[oklch(0.80_0.18_80)] bg-[oklch(0.25_0.09_260)] shadow-[0_22px_56px_rgba(212,160,23,0.16)]"
+                  : "border-white/12 rr-bg-navy-mid hover:-translate-y-0.5 hover:border-[oklch(0.80_0.18_80/0.62)]"
+              }`}
+            >
+              <div className="mb-4 flex min-h-7 items-start justify-between gap-3">
+                <div>
+                  <p className="text-lg font-black text-white">{planTitle}</p>
+                  <p className="mt-1 text-xs font-bold text-white/60">{planDescription}</p>
+                </div>
+                {planConfig.badge && (
+                  <span className="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wide rr-bg-gold rr-text-navy">
+                    {isAnnual ? t("planSelector.mostPopularBadge") : t("planSelector.bestValueBadge")}
+                  </span>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => onSelectPlan(plan)}
+                className="mb-4 w-full rounded-xl border border-white/10 bg-[#061a3a]/45 px-3 py-3 text-left transition-colors hover:border-[oklch(0.80_0.18_80/0.5)]"
+                aria-pressed={isSelected}
+              >
+                <div className="flex items-end gap-2">
+                  <span className="text-4xl font-black rr-text-gold">{planConfig.price}</span>
+                  <span className="mb-1 text-sm font-bold text-white">{planConfig.sub}</span>
+                </div>
+                <p className="mt-1 text-xs font-bold text-white/60">≈ {planConfig.thb} THB</p>
+                {isLifetime && (
+                  <p className="mt-2 text-xs font-bold text-[oklch(0.72_0.18_145)]">
+                    <span className="mr-1 text-white/50 line-through">Was $1,247</span>
+                    — Save $750
+                  </p>
+                )}
+              </button>
+
+              {planConfig.savings && (
+                <div className="mb-4 inline-flex items-center gap-1 rounded-full bg-[#061a3a] px-2.5 py-1 text-xs font-bold rr-text-gold">
+                  {isAnnual ? <Calendar size={11} /> : <Shield size={11} />}
+                  {isAnnual ? t("pricingCard.annualSavings") : t("pricingCard.lifetimeSavings")}
+                </div>
+              )}
+
+              <ul className="mb-6 flex flex-1 flex-col gap-2.5" aria-label={`${planTitle} plan features`}>
+                {PRO_FEATURES.map((feature) => (
+                  <li key={feature.text} className="flex items-start gap-2.5 text-sm font-semibold text-white">
+                    <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full rr-bg-gold rr-text-navy">{feature.icon}</span>
+                    <span>{feature.text}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="mb-3 flex items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-[#061a3a] px-3 py-2">
+                <Shield size={13} className="shrink-0 rr-text-gold" />
+                <span className="text-xs font-bold rr-text-gold">{t("pricingCard.guarantee", "7-day money-back guarantee")}</span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => onCheckout(plan)}
+                disabled={isCheckoutPending}
+                className="flex w-full items-center justify-center gap-2 rounded-2xl py-3.5 text-base font-black transition-transform active:scale-[0.97] disabled:opacity-70 rr-bg-gold rr-text-navy"
+              >
+                {isCheckoutPending ? <Loader2 size={17} className="animate-spin" /> : <CreditCard size={17} />}
+                {isCheckoutPending
+                  ? t("pricingCard.redirectingToCheckout")
+                  : t("pricingCard.payByCard", { price: planConfig.price })}
+              </button>
+              <p className="mt-2 text-center text-xs font-bold text-white/55">{t("pricingCard.secureCheckoutNote")}</p>
+            </article>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
+
+type AlternativePaymentOptionsProps = {
+  selectedPlan: Plan;
+  onSelectPlan: (plan: Plan) => void;
+  paypalClientId: string | null;
+  paypalLoading: boolean;
+  onPayPalCreateOrder: () => Promise<string>;
+  onPayPalApprove: (data: { orderID: string }) => Promise<void>;
+  showPromptPay: boolean;
+  isThai: boolean;
+  isPromptPayPending: boolean;
+  onPromptPayCheckout: () => void;
+  onRevealPromptPay: () => void;
+  onHidePromptPay: () => void;
+};
+
+function AlternativePaymentOptions({
+  selectedPlan,
+  onSelectPlan,
+  paypalClientId,
+  paypalLoading,
+  onPayPalCreateOrder,
+  onPayPalApprove,
+  showPromptPay,
+  isThai,
+  isPromptPayPending,
+  onPromptPayCheckout,
+  onRevealPromptPay,
+  onHidePromptPay,
+}: AlternativePaymentOptionsProps) {
+  const { t } = useTranslation();
+
+  if (!paypalClientId && !showPromptPay && isThai) return null;
+
+  return (
+    <section className="rounded-2xl border border-white/10 rr-bg-navy-mid" aria-labelledby="alternative-payment-heading">
+      <div className="border-b border-white/10 px-5 py-4">
+        <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">{t("pricingCard.otherPaymentMethods", { defaultValue: "Other payment methods" })}</p>
+        <h2 id="alternative-payment-heading" className="mt-1 text-lg font-black text-white">
+          {t("pricingCard.checkoutForPlan", { defaultValue: "Checkout for {{plan}}", plan: PLANS[selectedPlan].label })}
+        </h2>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {PLAN_ORDER.map((plan) => (
+            <button
+              key={plan}
+              type="button"
+              onClick={() => onSelectPlan(plan)}
+              aria-pressed={selectedPlan === plan}
+              className={`rounded-full px-3 py-1.5 text-xs font-black transition-colors ${
+                selectedPlan === plan ? "rr-bg-gold rr-text-navy" : "border border-white/15 text-white/75 hover:border-[oklch(0.80_0.18_80/0.55)]"
+              }`}
+            >
+              {PLANS[plan].label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid gap-4 p-5 sm:grid-cols-2">
+        {paypalClientId && (
+          <div className="rounded-xl border border-white/10 bg-[#061a3a]/50 p-4">
+            <p className="mb-3 text-sm font-black text-white">PayPal</p>
+            {paypalLoading ? (
+              <div className="flex h-11 items-center justify-center"><Loader2 size={18} className="animate-spin text-white/60" /></div>
+            ) : (
+              <PayPalScriptProvider options={{ clientId: paypalClientId!, currency: "USD", intent: "capture" }}>
+                <PayPalButtons
+                  style={{ layout: "horizontal", color: "gold", shape: "rect", label: "pay", height: 44 }}
+                  createOrder={onPayPalCreateOrder}
+                  onApprove={onPayPalApprove}
+                  onError={(err) => {
+                    console.error("[PayPal]", err);
+                    toast.error("PayPal encountered an error. Please try again.");
+                  }}
+                  onCancel={() => toast("PayPal payment cancelled.")}
+                />
+              </PayPalScriptProvider>
+            )}
+          </div>
+        )}
+
+        {showPromptPay ? (
+          <div className="rounded-xl border border-white/10 bg-[#061a3a]/50 p-4">
+            <p className="mb-3 text-sm font-black text-white">PromptPay</p>
+            <button
+              type="button"
+              onClick={onPromptPayCheckout}
+              disabled={isPromptPayPending}
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-[oklch(0.18_0.07_260)] py-3 text-sm font-bold text-white transition-opacity disabled:opacity-50"
+            >
+              {isPromptPayPending ? <Loader2 size={14} className="animate-spin" /> : <span className="text-base">฿</span>}
+              {isPromptPayPending
+                ? t("pricingCard.promptPayRedirecting")
+                : t("pricingCard.payWithPromptPay", { thb: PLANS[selectedPlan].thb })}
+            </button>
+            {!isThai && (
+              <button type="button" onClick={onHidePromptPay} className="mt-2 text-xs font-bold text-white/60 underline">
+                {t("pricingCard.hidePromptPay")}
+              </button>
+            )}
+          </div>
+        ) : (
+          <div className="rounded-xl border border-white/10 bg-[#061a3a]/50 p-4">
+            <p className="text-sm font-black text-white">PromptPay</p>
+            <p className="mt-1 text-xs leading-5 text-white/60">{t("pricingCard.promptPayReveal")}</p>
+            <button type="button" onClick={onRevealPromptPay} className="mt-3 text-xs font-black underline rr-text-gold">
+              {t("pricingCard.promptPayRevealLink")}
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
   );
 }
 

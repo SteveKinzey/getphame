@@ -596,3 +596,7 @@
 - [x] Run focused and complete quality gates, push the reviewed change set, confirm the GitHub Actions run, checkpoint the release, and verify the production Google entry point.
 - [x] Diagnose and correct the published login bundle mismatch: production reports Google OAuth configured but still renders magic-link-only authentication.
 - [x] Resolve the managed Docker build failure caused by a frozen pnpm lockfile override mismatch, then republish the verified release.
+
+- [x] Repair the broken or empty visual region on the `/upgrade` page without replacing the approved Get Phame brand mark or wordmark.
+- [x] Render Monthly, Annual, and Lifetime subscription plans as three equal, usable cards across desktop, with intentional tablet and mobile reflow.
+- [x] Add focused pricing-layout regression coverage, verify desktop/tablet/mobile visual behavior, run release checks, and publish the corrected upgrade page.

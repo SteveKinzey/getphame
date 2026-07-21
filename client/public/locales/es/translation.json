@@ -1233,7 +1233,12 @@
     "includes": "Incluye:",
     "everythingInFree": "Todo en Gratis, más:",
     "bestValue": "Mejor valor",
-    "guarantee": "Garantía de devolución de 7 días"
+    "guarantee": "Garantía de devolución de 7 días",
+    "otherPaymentMethods": "Otros métodos de pago",
+    "checkoutForPlan": "Pago seguro para {{plan}}"
+  },
+  "pricingGrid": {
+    "title": "Elige el plan que se adapta a tu crecimiento"
   },
   "accessCode": {
     "title": "Código de acceso",
