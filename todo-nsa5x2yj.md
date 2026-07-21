@@ -30,3 +30,10 @@
 - [x] Prepare a citation-backed Get Phame presentation storyline and approved brand assets in a premium black-and-blue marker whiteboard style.
 - [x] Generate and visually verify the zero-trust presentation with stick figures, arrows, flowcharts, handwritten annotations, and the correct P+star brand mark.
 - [x] Deliver the implementation plan, comparison, citations, and finished presentation to the user.
+- [x] Define and inventory the reusable Get Phame zero-trust planning skill scope against the current authentication, authorization, session, and tenant model.
+- [x] Evaluate maintained WebAuthn libraries for React 19, Express 4, tRPC 11, TypeScript, and the existing Manus OAuth session architecture, then recommend one with migration guidance.
+- [x] Draft an approval-ready Get Phame role-permission matrix covering tenant scope, sensitive actions, step-up requirements, delegation, support access, and deny-by-default behavior.
+- [x] Create a step-by-step owner recovery-drill runbook with prerequisites, evidence, stop conditions, rollback, proposed dates, and recurring cadence.
+- [x] Build the reusable zero-trust implementation skill with concise workflow guidance, reference material, and reusable document templates.
+- [x] Validate the skill package and representative role-matrix, WebAuthn, and recovery-drill scenarios through the skill-creator workflow.
+- [x] Deliver the packaged skill and the three review-ready Get Phame security documents.
