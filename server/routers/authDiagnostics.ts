@@ -5,12 +5,15 @@ import {
   getAuthHealthUptimeSummary,
   listAuthDiagnosticEvents,
   listAuthHealthChecks,
+  listAuthHealthChecksForExport,
+  listAuthHealthChecksPage,
 } from "../db";
 import {
   fingerprintAuthValue,
   normalizeDiagnosticEmail,
   runAuthHealthCheck,
 } from "../authOperations";
+import { buildAuthHealthHistoryCsvExport } from "../authHealthHistoryExport";
 
 const filtersSchema = z.object({
   email: z.string().trim().email().optional(),
@@ -18,6 +21,16 @@ const filtersSchema = z.object({
   requestId: z.string().trim().min(1).max(64).optional(),
   days: z.number().int().min(1).max(30).default(7),
   limit: z.number().int().min(1).max(100).default(50),
+});
+
+const healthHistoryFiltersSchema = z.object({
+  status: z.enum(["ok", "fail"]).optional(),
+  triggerSource: z.enum(["scheduled", "manual"]).optional(),
+});
+
+const healthHistoryPageSchema = healthHistoryFiltersSchema.extend({
+  page: z.number().int().min(1).default(1),
+  pageSize: z.number().int().min(10).max(50).default(20),
 });
 
 export const authDiagnosticsRouter = router({
@@ -47,4 +60,19 @@ export const authDiagnosticsRouter = router({
   runHealthCheck: adminProcedure.mutation(async () => {
     return runAuthHealthCheck({ triggerSource: "manual" });
   }),
+
+  healthHistory: adminProcedure
+    .input(healthHistoryPageSchema.optional())
+    .query(async ({ input }) => {
+      const filters = healthHistoryPageSchema.parse(input ?? {});
+      return listAuthHealthChecksPage(filters);
+    }),
+
+  exportHealthHistoryCsv: adminProcedure
+    .input(healthHistoryFiltersSchema.optional())
+    .mutation(async ({ input }) => {
+      const filters = healthHistoryFiltersSchema.parse(input ?? {});
+      const history = await listAuthHealthChecksForExport(filters);
+      return buildAuthHealthHistoryCsvExport({ ...history, ...filters });
+    }),
 });

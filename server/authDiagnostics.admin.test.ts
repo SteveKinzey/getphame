@@ -5,6 +5,8 @@ const mocks = vi.hoisted(() => ({
   listAuthDiagnosticEvents: vi.fn(),
   getAuthDiagnosticSummary: vi.fn(),
   listAuthHealthChecks: vi.fn(),
+  listAuthHealthChecksPage: vi.fn(),
+  listAuthHealthChecksForExport: vi.fn(),
   getAuthHealthUptimeSummary: vi.fn(),
   runAuthHealthCheck: vi.fn(),
 }));
@@ -14,6 +16,8 @@ vi.mock("./db", async (importOriginal) => ({
   listAuthDiagnosticEvents: mocks.listAuthDiagnosticEvents,
   getAuthDiagnosticSummary: mocks.getAuthDiagnosticSummary,
   listAuthHealthChecks: mocks.listAuthHealthChecks,
+  listAuthHealthChecksPage: mocks.listAuthHealthChecksPage,
+  listAuthHealthChecksForExport: mocks.listAuthHealthChecksForExport,
   getAuthHealthUptimeSummary: mocks.getAuthHealthUptimeSummary,
 }));
 
@@ -49,6 +53,8 @@ describe("admin authentication diagnostics", () => {
     mocks.listAuthDiagnosticEvents.mockResolvedValue([]);
     mocks.getAuthDiagnosticSummary.mockResolvedValue({ total: 0, ok: 0, fail: 0 });
     mocks.listAuthHealthChecks.mockResolvedValue([]);
+    mocks.listAuthHealthChecksPage.mockResolvedValue({ rows: [], page: 1, pageSize: 20, total: 0, pageCount: 1 });
+    mocks.listAuthHealthChecksForExport.mockResolvedValue({ rows: [], total: 0, truncated: false });
     mocks.getAuthHealthUptimeSummary.mockResolvedValue({ runCount: 0, uptimePercent: null });
   });
 
@@ -80,5 +86,55 @@ describe("admin authentication diagnostics", () => {
 
     const userCaller = appRouter.createCaller(context("user"));
     await expect(userCaller.authDiagnostics.runHealthCheck()).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("passes bounded status, source, and page filters to the protected health-history query", async () => {
+    const adminCaller = appRouter.createCaller(context("admin"));
+    await adminCaller.authDiagnostics.healthHistory({ status: "fail", triggerSource: "manual", page: 3, pageSize: 20 });
+    expect(mocks.listAuthHealthChecksPage).toHaveBeenCalledWith({
+      status: "fail",
+      triggerSource: "manual",
+      page: 3,
+      pageSize: 20,
+    });
+
+    const userCaller = appRouter.createCaller(context("user"));
+    await expect(userCaller.authDiagnostics.healthHistory()).rejects.toMatchObject({ code: "FORBIDDEN" });
+  });
+
+  it("exports only administrators' sanitized filtered health history", async () => {
+    mocks.listAuthHealthChecksForExport.mockResolvedValue({
+      rows: [{
+        id: 7,
+        triggerSource: "manual",
+        scheduleCronTaskUid: "private-task-uid",
+        overallStatus: "fail",
+        configStatus: "ok",
+        databaseStatus: "ok",
+        userSchemaStatus: "ok",
+        magicLinkSchemaStatus: "ok",
+        sessionStatus: "ok",
+        emailProviderStatus: "fail",
+        providerName: "Resend",
+        failureCode: "provider_unavailable",
+        failureDetail: "=SUM(1,2)",
+        durationMs: 45,
+        checkedAt: Date.UTC(2026, 6, 21, 12, 0, 0),
+      }],
+      total: 1,
+      truncated: false,
+    });
+
+    const adminCaller = appRouter.createCaller(context("admin"));
+    const result = await adminCaller.authDiagnostics.exportHealthHistoryCsv({ status: "fail", triggerSource: "manual" });
+    expect(mocks.listAuthHealthChecksForExport).toHaveBeenCalledWith({ status: "fail", triggerSource: "manual" });
+    expect(result.filename).toMatch(/^getphame-auth-health-history-\d{4}-\d{2}-\d{2}\.csv$/);
+    expect(result.csv).toContain("failure_detail_sanitized");
+    expect(result.csv).toContain("'=SUM(1,2)");
+    expect(result.csv).not.toContain("private-task-uid");
+    expect(result.filters).toEqual({ status: "fail", triggerSource: "manual" });
+
+    const userCaller = appRouter.createCaller(context("user"));
+    await expect(userCaller.authDiagnostics.exportHealthHistoryCsv()).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 });

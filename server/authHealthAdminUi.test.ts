@@ -35,5 +35,13 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("Health check history &amp; failure events");
     expect(page).toContain("Sanitized failure detail");
     expect(page).toContain("Administrator-triggered");
+    expect(page).toContain("Filter health history by status");
+    expect(page).toContain("Filter health history by trigger source");
+    expect(page).toContain("Rows per page");
+    expect(page).toContain("Export filtered CSV");
+    expect(page).toContain("matching records");
+    expect(page).toContain("Clear history filters");
+    expect(page).toContain("Previous");
+    expect(page).toContain("Next");
   });
 });

@@ -3,7 +3,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { Activity, AlertCircle, ArrowLeft, BellRing, CheckCircle2, Clock3, Filter, Gauge, KeyRound, Loader2, MailCheck, RefreshCw, Search, ShieldCheck } from "lucide-react";
+import { Activity, AlertCircle, ArrowLeft, BellRing, CheckCircle2, ChevronLeft, ChevronRight, Clock3, Download, Filter, Gauge, KeyRound, Loader2, MailCheck, RefreshCw, Search, ShieldCheck } from "lucide-react";
 
 type HealthValue = "ok" | "fail";
 
@@ -44,6 +44,10 @@ export default function AdminAuthDiagnosticsPage() {
     failureDetail?: string | null;
   } | null>(null);
   const [manualHealthError, setManualHealthError] = useState<string | null>(null);
+  const [historyStatus, setHistoryStatus] = useState<"all" | "ok" | "fail">("all");
+  const [historyTriggerSource, setHistoryTriggerSource] = useState<"all" | "scheduled" | "manual">("all");
+  const [historyPage, setHistoryPage] = useState(1);
+  const [historyPageSize, setHistoryPageSize] = useState<10 | 20 | 50>(20);
 
   useEffect(() => {
     if (!loading && user?.role !== "admin") navigate("/");
@@ -56,9 +60,42 @@ export default function AdminAuthDiagnosticsPage() {
     limit: 75,
   }), [emailFilter, outcome, days]);
 
-  const { data, error, isLoading, isFetching, refetch } = trpc.authDiagnostics.dashboard.useQuery(queryInput, {
+  const { data, error, isLoading, isFetching, refetch: refetchDashboard } = trpc.authDiagnostics.dashboard.useQuery(queryInput, {
     enabled: user?.role === "admin",
     refetchInterval: 60_000,
+  });
+
+  const historyQueryInput = useMemo(() => ({
+    status: historyStatus === "all" ? undefined : historyStatus,
+    triggerSource: historyTriggerSource === "all" ? undefined : historyTriggerSource,
+    page: historyPage,
+    pageSize: historyPageSize,
+  }), [historyStatus, historyTriggerSource, historyPage, historyPageSize]);
+
+  const healthHistoryQuery = trpc.authDiagnostics.healthHistory.useQuery(historyQueryInput, {
+    enabled: user?.role === "admin",
+  });
+
+  useEffect(() => {
+    if (healthHistoryQuery.data && healthHistoryQuery.data.page !== historyPage) {
+      setHistoryPage(healthHistoryQuery.data.page);
+    }
+  }, [healthHistoryQuery.data?.page, historyPage]);
+
+  const exportHealthHistory = trpc.authDiagnostics.exportHealthHistoryCsv.useMutation({
+    onSuccess: (result) => {
+      const blob = new Blob([result.csv], { type: result.mimeType });
+      const url = URL.createObjectURL(blob);
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = result.filename;
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(url);
+      toast.success(`Downloaded ${result.rowCount} sanitized health record${result.rowCount === 1 ? "" : "s"}.${result.truncated ? ` Export limited to the newest ${result.rowCount} matches.` : ""}`);
+    },
+    onError: (exportError) => toast.error(exportError.message || "Health history could not be exported."),
   });
 
   const runHealthCheck = trpc.authDiagnostics.runHealthCheck.useMutation({
@@ -70,7 +107,8 @@ export default function AdminAuthDiagnosticsPage() {
       setManualHealthResult(result);
       const message = result.overallStatus === "ok" ? "Production auth health check passed." : `Auth health check failed: ${result.failureCode ?? "unknown failure"}`;
       if (result.overallStatus === "ok") toast.success(message); else toast.error(message);
-      refetch();
+      refetchDashboard();
+      healthHistoryQuery.refetch();
     },
     onError: (error) => {
       const message = error.message || "Health check could not run.";
@@ -84,15 +122,20 @@ export default function AdminAuthDiagnosticsPage() {
   }
   if (user?.role !== "admin") return null;
   if (error) {
-    return <div className="min-h-screen flex items-center justify-center px-4 rr-bg-cream-warm"><div role="alert" className="w-full max-w-lg rounded-2xl bg-white p-6 text-center shadow-sm"><div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full" style={{ background: "oklch(0.96 0.04 27)", color: "oklch(0.48 0.17 27)" }}><AlertCircle size={22} /></div><h1 className="text-xl rr-fw-black rr-text-navy">Monitoring data unavailable</h1><p className="mt-2 text-sm font-bold rr-text-navy-muted">Authentication diagnostics could not be loaded. No health status is being inferred from missing data.</p><p className="mt-2 text-xs font-bold rr-text-navy-faint">{error.message}</p><div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-center"><button onClick={() => refetch()} className="flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold rr-bg-gold rr-text-navy"><RefreshCw size={14} /> Try again</button><button onClick={() => navigate("/admin")} className="flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold rr-bg-navy text-white"><ArrowLeft size={14} /> Admin dashboard</button></div></div></div>;
+    return <div className="min-h-screen flex items-center justify-center px-4 rr-bg-cream-warm"><div role="alert" className="w-full max-w-lg rounded-2xl bg-white p-6 text-center shadow-sm"><div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-full" style={{ background: "oklch(0.96 0.04 27)", color: "oklch(0.48 0.17 27)" }}><AlertCircle size={22} /></div><h1 className="text-xl rr-fw-black rr-text-navy">Monitoring data unavailable</h1><p className="mt-2 text-sm font-bold rr-text-navy-muted">Authentication diagnostics could not be loaded. No health status is being inferred from missing data.</p><p className="mt-2 text-xs font-bold rr-text-navy-faint">{error.message}</p><div className="mt-5 flex flex-col gap-2 sm:flex-row sm:justify-center"><button onClick={() => refetchDashboard()} className="flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold rr-bg-gold rr-text-navy"><RefreshCw size={14} /> Try again</button><button onClick={() => navigate("/admin")} className="flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold rr-bg-navy text-white"><ArrowLeft size={14} /> Admin dashboard</button></div></div></div>;
   }
 
   const latestHealth = data?.healthChecks?.[0];
   const uptime = data?.uptime;
   const summary = data?.summary ?? [];
   const events = data?.events ?? [];
-  const healthHistory = data?.healthChecks ?? [];
+  const healthHistory = healthHistoryQuery.data?.rows ?? [];
   const failedHealthChecks = healthHistory.filter((row) => row.overallStatus === "fail");
+  const historyTotal = healthHistoryQuery.data?.total ?? 0;
+  const historyPageCount = healthHistoryQuery.data?.pageCount ?? 1;
+  const displayedHistoryPage = healthHistoryQuery.data?.page ?? historyPage;
+  const historyStart = historyTotal === 0 ? 0 : (displayedHistoryPage - 1) * historyPageSize + 1;
+  const historyEnd = Math.min(displayedHistoryPage * historyPageSize, historyTotal);
   const totalFor = (eventType: string, eventOutcome?: string) => summary
     .filter((row) => row.eventType === eventType && (!eventOutcome || row.outcome === eventOutcome))
     .reduce((total, row) => total + Number(row.total ?? 0), 0);
@@ -119,7 +162,7 @@ export default function AdminAuthDiagnosticsPage() {
             <button onClick={() => runHealthCheck.mutate()} disabled={runHealthCheck.isPending} className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold rr-bg-gold rr-text-navy disabled:opacity-60" title="Run a non-destructive production authentication health check now">
               {runHealthCheck.isPending ? <Loader2 size={13} className="animate-spin" /> : <ShieldCheck size={13} />} {runHealthCheck.isPending ? "Checking auth dependencies…" : "Run immediate health check"}
             </button>
-            <button onClick={() => { refetch(); toast.success("Diagnostics refreshed."); }} disabled={isFetching} className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-white disabled:opacity-60" style={{ background: "oklch(0.30 0.07 260)" }}>
+            <button onClick={() => { refetchDashboard(); healthHistoryQuery.refetch(); toast.success("Diagnostics refreshed."); }} disabled={isFetching || healthHistoryQuery.isFetching} className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-white disabled:opacity-60" style={{ background: "oklch(0.30 0.07 260)" }}>
               {isFetching ? <Loader2 size={13} className="animate-spin" /> : <RefreshCw size={13} />} Refresh
             </button>
           </div>
@@ -216,16 +259,25 @@ export default function AdminAuthDiagnosticsPage() {
         <section className="rounded-2xl bg-white p-4 shadow-sm sm:p-5">
           <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div><h2 className="text-base rr-fw-black rr-text-navy">Health check history &amp; failure events</h2><p className="text-sm font-bold rr-text-navy-muted">Every persisted scheduled or manual check, with sanitized failure detail when a dependency fails.</p></div>
-            <div className="inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold" style={{ background: failedHealthChecks.length ? "oklch(0.97 0.03 27)" : "oklch(0.94 0.05 145)", color: failedHealthChecks.length ? "oklch(0.48 0.17 27)" : "oklch(0.40 0.14 145)" }}><AlertCircle size={13} />{failedHealthChecks.length} failure event{failedHealthChecks.length === 1 ? "" : "s"}</div>
+            <div className="flex flex-wrap items-center gap-2"><div className="inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold rr-bg-surface rr-text-navy-muted"><Activity size={13} />{historyTotal} matching record{historyTotal === 1 ? "" : "s"}</div><div className="inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold" style={{ background: failedHealthChecks.length ? "oklch(0.97 0.03 27)" : "oklch(0.94 0.05 145)", color: failedHealthChecks.length ? "oklch(0.48 0.17 27)" : "oklch(0.40 0.14 145)" }}><AlertCircle size={13} />{failedHealthChecks.length} failure{failedHealthChecks.length === 1 ? "" : "s"} on this page</div></div>
           </div>
+          <div className="mb-4 grid gap-3 rounded-xl p-3 rr-bg-surface sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_150px_auto]">
+            <label className="flex flex-col gap-1.5 text-xs font-bold rr-text-navy-muted"><span>Status</span><select aria-label="Filter health history by status" value={historyStatus} onChange={(event) => { setHistoryStatus(event.target.value as "all" | "ok" | "fail"); setHistoryPage(1); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }}><option value="all">All statuses</option><option value="ok">Healthy only</option><option value="fail">Failures only</option></select></label>
+            <label className="flex flex-col gap-1.5 text-xs font-bold rr-text-navy-muted"><span>Trigger source</span><select aria-label="Filter health history by trigger source" value={historyTriggerSource} onChange={(event) => { setHistoryTriggerSource(event.target.value as "all" | "scheduled" | "manual"); setHistoryPage(1); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }}><option value="all">All trigger sources</option><option value="scheduled">Scheduled Heartbeat</option><option value="manual">Administrator-triggered</option></select></label>
+            <label className="flex flex-col gap-1.5 text-xs font-bold rr-text-navy-muted"><span>Rows per page</span><select aria-label="Health history rows per page" value={historyPageSize} onChange={(event) => { setHistoryPageSize(Number(event.target.value) as 10 | 20 | 50); setHistoryPage(1); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }}><option value={10}>10 rows</option><option value={20}>20 rows</option><option value={50}>50 rows</option></select></label>
+            <button type="button" onClick={() => exportHealthHistory.mutate({ status: historyStatus === "all" ? undefined : historyStatus, triggerSource: historyTriggerSource === "all" ? undefined : historyTriggerSource })} disabled={exportHealthHistory.isPending || historyTotal === 0} className="flex h-10 items-center justify-center gap-2 self-end rounded-lg px-4 text-sm font-bold rr-bg-navy text-white disabled:cursor-not-allowed disabled:opacity-50" title="Download a sanitized CSV for the active status and trigger-source filters">{exportHealthHistory.isPending ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}{exportHealthHistory.isPending ? "Preparing CSV…" : "Export filtered CSV"}</button>
+          </div>
+          <div aria-live="polite" className="mb-3 flex min-h-5 items-center justify-between gap-3 text-xs font-bold rr-text-navy-faint"><span>{healthHistoryQuery.isFetching ? "Loading filtered health history…" : `Showing ${historyStart}–${historyEnd} of ${historyTotal} matching records`}</span>{(historyStatus !== "all" || historyTriggerSource !== "all") && <button type="button" onClick={() => { setHistoryStatus("all"); setHistoryTriggerSource("all"); setHistoryPage(1); }} className="rr-text-gold">Clear history filters</button>}</div>
+          {healthHistoryQuery.error && <div role="alert" className="mb-3 rounded-xl px-4 py-3 text-sm font-bold" style={{ background: "oklch(0.97 0.03 27)", color: "oklch(0.46 0.12 27)" }}>Health history could not be loaded. {healthHistoryQuery.error.message}</div>}
           <div className="flex flex-col gap-3">
-            {healthHistory.slice(0, 20).map((row) => <article key={row.id} className="rounded-xl border p-3 rr-bg-surface sm:p-4" style={{ borderColor: row.overallStatus === "fail" ? "oklch(0.84 0.08 27)" : "oklch(0.88 0.03 260)" }}>
+            {healthHistory.map((row) => <article key={row.id} className="rounded-xl border p-3 rr-bg-surface sm:p-4" style={{ borderColor: row.overallStatus === "fail" ? "oklch(0.84 0.08 27)" : "oklch(0.88 0.03 260)" }}>
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><p className="text-sm rr-fw-black rr-text-navy">{formatDate(row.checkedAt)}</p><p className="mt-1 text-xs font-bold rr-text-navy-faint">{row.triggerSource === "manual" ? "Administrator-triggered" : "Scheduled Heartbeat"} · {row.durationMs} ms{row.providerName ? ` · ${row.providerName}` : ""}</p></div><StatusPill value={row.overallStatus} /></div>
               <div className="mt-3 grid grid-cols-2 gap-2 text-[11px] font-bold sm:grid-cols-3 lg:grid-cols-6"><HealthComponent label="Config" value={row.configStatus} /><HealthComponent label="Database" value={row.databaseStatus} /><HealthComponent label="User schema" value={row.userSchemaStatus} /><HealthComponent label="Magic links" value={row.magicLinkSchemaStatus} /><HealthComponent label="Sessions" value={row.sessionStatus} /><HealthComponent label="Email" value={row.emailProviderStatus} /></div>
               {row.overallStatus === "fail" && <div className="mt-3 rounded-lg px-3 py-2" style={{ background: "oklch(0.97 0.03 27)", color: "oklch(0.46 0.12 27)" }}><p className="text-xs font-black">{row.failureCode ?? "health_check_failed"}</p><p className="mt-1 text-xs font-bold">Sanitized failure detail: {row.failureDetail ?? "No additional detail was recorded."}</p></div>}
             </article>)}
-            {!healthHistory.length && <p className="rounded-xl p-4 text-sm font-bold rr-bg-surface rr-text-navy-muted">No health-check history yet. Use the administrator-only immediate check to establish a baseline.</p>}
+            {!healthHistory.length && !healthHistoryQuery.isFetching && <p className="rounded-xl p-4 text-sm font-bold rr-bg-surface rr-text-navy-muted">No health-check history matches the active filters. Clear the filters or run an administrator-only immediate check to establish a baseline.</p>}
           </div>
+          <div className="mt-4 flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between" style={{ borderColor: "oklch(0.91 0.02 260)" }}><p className="text-xs font-bold rr-text-navy-faint">Page {displayedHistoryPage} of {historyPageCount}</p><div className="flex items-center gap-2"><button type="button" onClick={() => setHistoryPage(Math.max(1, displayedHistoryPage - 1))} disabled={displayedHistoryPage <= 1 || healthHistoryQuery.isFetching} className="flex h-10 items-center gap-1.5 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy disabled:opacity-40" style={{ borderColor: "oklch(0.88 0.03 260)" }}><ChevronLeft size={15} /> Previous</button><button type="button" onClick={() => setHistoryPage(Math.min(historyPageCount, displayedHistoryPage + 1))} disabled={displayedHistoryPage >= historyPageCount || healthHistoryQuery.isFetching} className="flex h-10 items-center gap-1.5 rounded-lg px-3 text-sm font-bold rr-bg-gold rr-text-navy disabled:opacity-40">Next <ChevronRight size={15} /></button></div></div>
         </section>
       </main>
     </div>

@@ -95,3 +95,15 @@
 - [x] Save the publishable checkpoint and confirm the automatic production publication
 - [x] Verify checkpoint 0a68fa56 is live on the production GetPhame domain before closing publication confirmation
 - [x] Confirm the live production bundle includes the unique immediate-check and historical-log labels from checkpoint 0a68fa56
+- [x] Add administrator-only health-history filtering by overall status and trigger source
+- [x] Add bounded server-side pagination with stable newest-first ordering and total counts
+- [x] Add a sanitized administrator-only CSV export for the current history filters
+- [x] Add responsive filter, pagination, result-count, and CSV-download controls to the diagnostics page
+- [x] Add regression coverage for filtering, pagination, CSV escaping, sanitization, and authorization
+- [x] Add direct regression coverage for filtered `listAuthHealthChecksPage` counts, page bounds, and stable ordering
+- [x] Add direct regression coverage proving filtered export row selection uses the requested status/source combination
+- [x] Assert the paginated query’s generated filter object explicitly contains `status=fail` and `triggerSource=manual`
+- [x] Assert the export query’s generated filter object explicitly contains the requested status/source values
+- [x] Extend the reusable production-auth-health-monitoring skill with filtered pagination and export patterns
+- [x] Run focused and full tests, TypeScript checks, production build, and authenticated desktop/mobile preview verification
+- [ ] Save the publishable checkpoint and confirm the live production diagnostics bundle contains the new filter, export, and pagination release labels
