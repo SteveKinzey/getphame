@@ -85,3 +85,11 @@
 - [x] Refresh the implementation-pattern explainer and whiteboard presentation script for the activated admin-only model
 - [x] Restore and update the standalone production-auth-health-monitoring webpage with the access-control model
 - [x] Validate the skill, verify the webpage, package the deliverables, and save a publishable checkpoint if app code changes
+- [x] Confirm the restarted development server exposes a working preview URL before checkpointing
+- [x] Add an administrator-only immediate health-check trigger with safe loading, success, and error states
+- [x] Add a live visual status indicator and loading animation for manual health-check execution
+- [x] Add a historical health-check and failure-event log to the admin diagnostics page
+- [x] Add regression coverage for the protected manual-run flow and historical log contracts
+- [x] Extend the reusable production-auth-health-monitoring skill with the new diagnostics control pattern
+- [x] Run tests, TypeScript checks, build, visual verification, and reusable-skill validation
+- [ ] Save the publishable checkpoint and confirm the automatic production publication

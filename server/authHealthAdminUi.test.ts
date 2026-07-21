@@ -30,5 +30,10 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("No health status is being inferred from missing data.");
     expect(page).toContain("Monitoring unavailable");
     expect(page).toContain('role="alert"');
+    expect(page).toContain("Run immediate health check");
+    expect(page).toContain("Checking auth dependencies");
+    expect(page).toContain("Health check history &amp; failure events");
+    expect(page).toContain("Sanitized failure detail");
+    expect(page).toContain("Administrator-triggered");
   });
 });

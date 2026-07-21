@@ -5,6 +5,7 @@ const mocks = vi.hoisted(() => ({
   listAuthDiagnosticEvents: vi.fn(),
   getAuthDiagnosticSummary: vi.fn(),
   listAuthHealthChecks: vi.fn(),
+  getAuthHealthUptimeSummary: vi.fn(),
   runAuthHealthCheck: vi.fn(),
 }));
 
@@ -13,6 +14,7 @@ vi.mock("./db", async (importOriginal) => ({
   listAuthDiagnosticEvents: mocks.listAuthDiagnosticEvents,
   getAuthDiagnosticSummary: mocks.getAuthDiagnosticSummary,
   listAuthHealthChecks: mocks.listAuthHealthChecks,
+  getAuthHealthUptimeSummary: mocks.getAuthHealthUptimeSummary,
 }));
 
 vi.mock("./authOperations", async (importOriginal) => ({
@@ -47,6 +49,7 @@ describe("admin authentication diagnostics", () => {
     mocks.listAuthDiagnosticEvents.mockResolvedValue([]);
     mocks.getAuthDiagnosticSummary.mockResolvedValue({ total: 0, ok: 0, fail: 0 });
     mocks.listAuthHealthChecks.mockResolvedValue([]);
+    mocks.getAuthHealthUptimeSummary.mockResolvedValue({ runCount: 0, uptimePercent: null });
   });
 
   afterEach(() => vi.unstubAllEnvs());
@@ -66,5 +69,16 @@ describe("admin authentication diagnostics", () => {
       }),
     );
     expect(JSON.stringify(mocks.listAuthDiagnosticEvents.mock.calls[0]?.[0])).not.toContain("person@example.com");
+  });
+
+  it("allows only administrators to trigger an immediate non-destructive health check", async () => {
+    mocks.runAuthHealthCheck.mockResolvedValue({ overallStatus: "ok", checkedAt: 1, durationMs: 12 });
+
+    const adminCaller = appRouter.createCaller(context("admin"));
+    await adminCaller.authDiagnostics.runHealthCheck();
+    expect(mocks.runAuthHealthCheck).toHaveBeenCalledWith({ triggerSource: "manual" });
+
+    const userCaller = appRouter.createCaller(context("user"));
+    await expect(userCaller.authDiagnostics.runHealthCheck()).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 });

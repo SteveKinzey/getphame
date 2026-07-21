@@ -36,6 +36,14 @@ export default function AdminAuthDiagnosticsPage() {
   const [emailFilter, setEmailFilter] = useState("");
   const [outcome, setOutcome] = useState<"all" | "ok" | "fail">("all");
   const [days, setDays] = useState(7);
+  const [manualHealthResult, setManualHealthResult] = useState<{
+    overallStatus: string;
+    checkedAt: number;
+    durationMs: number;
+    failureCode?: string | null;
+    failureDetail?: string | null;
+  } | null>(null);
+  const [manualHealthError, setManualHealthError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && user?.role !== "admin") navigate("/");
@@ -54,12 +62,21 @@ export default function AdminAuthDiagnosticsPage() {
   });
 
   const runHealthCheck = trpc.authDiagnostics.runHealthCheck.useMutation({
+    onMutate: () => {
+      setManualHealthResult(null);
+      setManualHealthError(null);
+    },
     onSuccess: (result) => {
+      setManualHealthResult(result);
       const message = result.overallStatus === "ok" ? "Production auth health check passed." : `Auth health check failed: ${result.failureCode ?? "unknown failure"}`;
       if (result.overallStatus === "ok") toast.success(message); else toast.error(message);
       refetch();
     },
-    onError: (error) => toast.error(error.message || "Health check could not run."),
+    onError: (error) => {
+      const message = error.message || "Health check could not run.";
+      setManualHealthError(message);
+      toast.error(message);
+    },
   });
 
   if (loading || isLoading) {
@@ -74,6 +91,8 @@ export default function AdminAuthDiagnosticsPage() {
   const uptime = data?.uptime;
   const summary = data?.summary ?? [];
   const events = data?.events ?? [];
+  const healthHistory = data?.healthChecks ?? [];
+  const failedHealthChecks = healthHistory.filter((row) => row.overallStatus === "fail");
   const totalFor = (eventType: string, eventOutcome?: string) => summary
     .filter((row) => row.eventType === eventType && (!eventOutcome || row.outcome === eventOutcome))
     .reduce((total, row) => total + Number(row.total ?? 0), 0);
@@ -97,8 +116,8 @@ export default function AdminAuthDiagnosticsPage() {
             <p className="mt-1 max-w-2xl text-sm font-bold text-white/90">Monitor production readiness, email-provider acceptance, and magic-link verification without exposing full recipients or tokens.</p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button onClick={() => runHealthCheck.mutate()} disabled={runHealthCheck.isPending} className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold rr-bg-gold rr-text-navy disabled:opacity-60">
-              {runHealthCheck.isPending ? <Loader2 size={13} className="animate-spin" /> : <ShieldCheck size={13} />} Run check
+            <button onClick={() => runHealthCheck.mutate()} disabled={runHealthCheck.isPending} className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold rr-bg-gold rr-text-navy disabled:opacity-60" title="Run a non-destructive production authentication health check now">
+              {runHealthCheck.isPending ? <Loader2 size={13} className="animate-spin" /> : <ShieldCheck size={13} />} {runHealthCheck.isPending ? "Checking auth dependencies…" : "Run immediate health check"}
             </button>
             <button onClick={() => { refetch(); toast.success("Diagnostics refreshed."); }} disabled={isFetching} className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-white disabled:opacity-60" style={{ background: "oklch(0.30 0.07 260)" }}>
               {isFetching ? <Loader2 size={13} className="animate-spin" /> : <RefreshCw size={13} />} Refresh
@@ -108,6 +127,21 @@ export default function AdminAuthDiagnosticsPage() {
       </header>
 
       <main className="mx-auto flex max-w-6xl flex-col gap-5 px-4 pt-5 sm:px-5">
+        {(runHealthCheck.isPending || manualHealthResult || manualHealthError) && <section aria-live="polite" role={manualHealthError ? "alert" : "status"} className="overflow-hidden rounded-2xl border bg-white shadow-sm" style={{ borderColor: runHealthCheck.isPending ? "oklch(0.80 0.18 80)" : manualHealthError || manualHealthResult?.overallStatus === "fail" ? "oklch(0.72 0.15 27)" : "oklch(0.61 0.15 145)" }}>
+          <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between sm:p-5">
+            <div className="flex min-w-0 items-start gap-3">
+              <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-full" style={{ background: runHealthCheck.isPending ? "oklch(0.96 0.04 80)" : manualHealthError || manualHealthResult?.overallStatus === "fail" ? "oklch(0.97 0.03 27)" : "oklch(0.94 0.05 145)", color: runHealthCheck.isPending ? "oklch(0.46 0.12 80)" : manualHealthError || manualHealthResult?.overallStatus === "fail" ? "oklch(0.48 0.17 27)" : "oklch(0.40 0.14 145)" }}>
+                {runHealthCheck.isPending ? <Loader2 size={20} className="animate-spin" /> : manualHealthError || manualHealthResult?.overallStatus === "fail" ? <AlertCircle size={20} /> : <CheckCircle2 size={20} />}
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm rr-fw-black rr-text-navy">{runHealthCheck.isPending ? "Checking auth dependencies" : manualHealthError ? "Immediate health check unavailable" : manualHealthResult?.overallStatus === "ok" ? "Immediate health check passed" : "Immediate health check found an issue"}</p>
+                <p className="mt-1 text-xs font-bold rr-text-navy-muted">{runHealthCheck.isPending ? "Testing configuration, database, schema, session signing, and email-provider reachability. No user, token, session, or email is created." : manualHealthError ?? (manualHealthResult?.overallStatus === "ok" ? `Completed ${formatDate(manualHealthResult.checkedAt)} in ${manualHealthResult.durationMs} ms.` : `${manualHealthResult?.failureCode ?? "health_check_failed"}: ${manualHealthResult?.failureDetail ?? "Review the detailed failure event below."}`)}</p>
+              </div>
+            </div>
+            {runHealthCheck.isPending && <div className="flex items-center gap-1.5 self-start sm:self-auto" aria-label="Health check in progress"><span className="h-2 w-2 animate-pulse rounded-full rr-bg-gold" /><span className="h-2 w-2 animate-pulse rounded-full rr-bg-gold [animation-delay:150ms]" /><span className="h-2 w-2 animate-pulse rounded-full rr-bg-gold [animation-delay:300ms]" /></div>}
+          </div>
+        </section>}
+
         <section className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <Metric title="Latest health" icon={<ShieldCheck size={15} />}><div>{latestHealth ? <StatusPill value={latestHealth.overallStatus} /> : <span className="text-sm font-bold rr-text-navy-faint">No run yet</span>}</div><p className="mt-2 text-xs font-bold rr-text-navy-faint">{formatDate(latestHealth?.checkedAt)}</p></Metric>
           <Metric title="Provider accepted" icon={<MailCheck size={15} />} value={totalFor("provider_accepted", "ok")} note={`Last ${days} days`} />
@@ -179,7 +213,20 @@ export default function AdminAuthDiagnosticsPage() {
           )}
         </section>
 
-        <section className="rounded-2xl bg-white p-4 shadow-sm sm:p-5"><h2 className="mb-3 text-base rr-fw-black rr-text-navy">Recent health-check history</h2><div className="flex flex-col gap-2">{(data?.healthChecks ?? []).slice(0, 10).map((row) => <div key={row.id} className="flex flex-col gap-2 rounded-xl p-3 rr-bg-surface sm:flex-row sm:items-center sm:justify-between"><div><p className="text-sm font-black rr-text-navy">{formatDate(row.checkedAt)}</p><p className="text-xs font-bold rr-text-navy-faint">{row.triggerSource} · {row.durationMs} ms</p></div><StatusPill value={row.overallStatus} /></div>)}{!data?.healthChecks?.length && <p className="text-sm font-bold rr-text-navy-muted">No health-check history yet.</p>}</div></section>
+        <section className="rounded-2xl bg-white p-4 shadow-sm sm:p-5">
+          <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div><h2 className="text-base rr-fw-black rr-text-navy">Health check history &amp; failure events</h2><p className="text-sm font-bold rr-text-navy-muted">Every persisted scheduled or manual check, with sanitized failure detail when a dependency fails.</p></div>
+            <div className="inline-flex w-fit items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold" style={{ background: failedHealthChecks.length ? "oklch(0.97 0.03 27)" : "oklch(0.94 0.05 145)", color: failedHealthChecks.length ? "oklch(0.48 0.17 27)" : "oklch(0.40 0.14 145)" }}><AlertCircle size={13} />{failedHealthChecks.length} failure event{failedHealthChecks.length === 1 ? "" : "s"}</div>
+          </div>
+          <div className="flex flex-col gap-3">
+            {healthHistory.slice(0, 20).map((row) => <article key={row.id} className="rounded-xl border p-3 rr-bg-surface sm:p-4" style={{ borderColor: row.overallStatus === "fail" ? "oklch(0.84 0.08 27)" : "oklch(0.88 0.03 260)" }}>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between"><div><p className="text-sm rr-fw-black rr-text-navy">{formatDate(row.checkedAt)}</p><p className="mt-1 text-xs font-bold rr-text-navy-faint">{row.triggerSource === "manual" ? "Administrator-triggered" : "Scheduled Heartbeat"} · {row.durationMs} ms{row.providerName ? ` · ${row.providerName}` : ""}</p></div><StatusPill value={row.overallStatus} /></div>
+              <div className="mt-3 grid grid-cols-2 gap-2 text-[11px] font-bold sm:grid-cols-3 lg:grid-cols-6"><HealthComponent label="Config" value={row.configStatus} /><HealthComponent label="Database" value={row.databaseStatus} /><HealthComponent label="User schema" value={row.userSchemaStatus} /><HealthComponent label="Magic links" value={row.magicLinkSchemaStatus} /><HealthComponent label="Sessions" value={row.sessionStatus} /><HealthComponent label="Email" value={row.emailProviderStatus} /></div>
+              {row.overallStatus === "fail" && <div className="mt-3 rounded-lg px-3 py-2" style={{ background: "oklch(0.97 0.03 27)", color: "oklch(0.46 0.12 27)" }}><p className="text-xs font-black">{row.failureCode ?? "health_check_failed"}</p><p className="mt-1 text-xs font-bold">Sanitized failure detail: {row.failureDetail ?? "No additional detail was recorded."}</p></div>}
+            </article>)}
+            {!healthHistory.length && <p className="rounded-xl p-4 text-sm font-bold rr-bg-surface rr-text-navy-muted">No health-check history yet. Use the administrator-only immediate check to establish a baseline.</p>}
+          </div>
+        </section>
       </main>
     </div>
   );
@@ -191,4 +238,9 @@ function Metric({ title, icon, value, note, danger, children }: { title: string;
 
 function UptimeMetric({ label, value, icon, danger = false }: { label: string; value: string; icon: React.ReactNode; danger?: boolean }) {
   return <div><p className="mb-1 flex items-center gap-1.5 text-xs font-bold rr-text-navy-muted">{icon}{label}</p><p className="text-xl rr-fw-black" style={{ color: danger ? "oklch(0.50 0.18 27)" : "oklch(0.22 0.09 260)" }}>{value}</p></div>;
+}
+
+function HealthComponent({ label, value }: { label: string; value: HealthValue | string }) {
+  const ok = value === "ok";
+  return <div className="rounded-lg bg-white px-2.5 py-2"><p className="truncate rr-text-navy-faint">{label}</p><p className="mt-0.5" style={{ color: ok ? "oklch(0.40 0.14 145)" : "oklch(0.48 0.17 27)" }}>{ok ? "Healthy" : "Failed"}</p></div>;
 }
