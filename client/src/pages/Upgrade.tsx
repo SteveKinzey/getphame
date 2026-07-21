@@ -69,12 +69,12 @@ const COMPARISON_ROWS: { feature: string; free: string | boolean; pro: string | 
 ];
 
 const PRO_FEATURES = [
-  { icon: <Infinity size={14} />, text: "Unlimited review requests" },
-  { icon: <Zap size={14} />, text: "Priority sending & follow-ups" },
-  { icon: <BarChart2 size={14} />, text: "Advanced analytics" },
-  { icon: <Star size={14} />, text: "Custom email templates" },
-  { icon: <Crown size={14} />, text: "WooCommerce sync" },
-  { icon: <Shield size={14} />, text: "Priority support" },
+  { icon: <Infinity size={14} />, key: "pricingCard.unlimitedReviewRequests", fallback: "Unlimited review requests" },
+  { icon: <Zap size={14} />, key: "pricingCard.prioritySending", fallback: "Priority sending & follow-ups" },
+  { icon: <BarChart2 size={14} />, key: "pricingCard.advancedAnalytics", fallback: "Advanced analytics" },
+  { icon: <Star size={14} />, key: "pricingCard.customEmailTemplates", fallback: "Custom email templates" },
+  { icon: <Crown size={14} />, key: "pricingCard.woocommerceSync", fallback: "WooCommerce sync" },
+  { icon: <Shield size={14} />, key: "pricingCard.prioritySupport", fallback: "Priority support" },
 ];
 
 type Plan = "monthly" | "annual" | "lifetime";
@@ -456,13 +456,20 @@ export default function UpgradePage() {
           </div>
           {/* THB equivalent — display only, USD is the charge currency */}
           <p className="text-sm mb-2 text-white/80 font-bold">
-            ≈ {PLANS[selectedPlan].thb} THB
+            {t("pricingGrid.approximateThb", {
+              defaultValue: "≈ {{amount}} THB",
+              amount: PLANS[selectedPlan].thb,
+            })}
           </p>
           {/* Strikethrough anchor — lifetime only */}
           {selectedPlan === "lifetime" && (
             <p className="text-xs mb-2">
-              <span className="line-through" style={{ color: "var(--text-on-dark-muted)" }}>Was $1,247</span>
-              <span className="ml-2 font-bold" style={{ color: "oklch(0.72 0.18 145)" }}>— Save $750</span>
+              <span className="line-through" style={{ color: "var(--text-on-dark-muted)" }}>
+                {t("pricingGrid.previousPrice", { defaultValue: "Was {{amount}}", amount: "$1,247" })}
+              </span>
+              <span className="ml-2 font-bold" style={{ color: "oklch(0.72 0.18 145)" }}>
+                — {t("pricingGrid.annualSave", { defaultValue: "Save {{amount}}", amount: "$750" })}
+              </span>
             </p>
           )}
 
@@ -509,14 +516,14 @@ export default function UpgradePage() {
           {/* Features */}
           <div className="flex flex-col gap-3 mb-6">
             {PRO_FEATURES.map((f) => (
-              <div key={f.text} className="flex items-center gap-3">
+              <div key={f.key} className="flex items-center gap-3">
                 <div
                   className="w-6 h-6 rounded-full flex items-center justify-center shrink-0 rr-bg-gold rr-text-navy"
                 >
                   {f.icon}
                 </div>
                 <span className="text-sm font-semibold text-white">
-                  {f.text}
+                  {t(f.key, { defaultValue: f.fallback })}
                 </span>
               </div>
             ))}
@@ -838,6 +845,8 @@ export default function UpgradePage() {
 }
 
 function UpgradeVisualFallback() {
+  const { t } = useTranslation();
+
   return (
     <div
       className="relative grid aspect-[16/9] min-h-[220px] place-items-center overflow-hidden bg-[radial-gradient(circle_at_20%_20%,oklch(0.3_0.12_255),transparent_35%),linear-gradient(135deg,oklch(0.13_0.05_258),oklch(0.21_0.08_260))] px-6 lg:min-h-[320px]"
@@ -846,9 +855,9 @@ function UpgradeVisualFallback() {
       <div className="absolute inset-0 bg-[linear-gradient(120deg,transparent_0%,rgba(255,255,255,0.06)_50%,transparent_100%)]" />
       <div className="relative grid w-full max-w-sm gap-3">
         {[
-          ["Send requests", <Zap key="zap" size={16} />],
-          ["Automate follow-ups", <Check key="check" size={16} />],
-          ["Track your growth", <BarChart2 key="chart" size={16} />],
+          [t("pricingGrid.heroSendRequests", { defaultValue: "Send requests" }), <Zap key="zap" size={16} />],
+          [t("pricingGrid.heroAutomateFollowUps", { defaultValue: "Automate follow-ups" }), <Check key="check" size={16} />],
+          [t("pricingGrid.heroTrackGrowth", { defaultValue: "Track your growth" }), <BarChart2 key="chart" size={16} />],
         ].map(([label, icon]) => (
           <div key={label as string} className="flex items-center justify-between rounded-2xl border border-white/10 bg-[#061a3a]/80 px-4 py-3 shadow-lg backdrop-blur-sm">
             <span className="text-sm font-black text-white">{label}</span>
@@ -963,11 +972,18 @@ function PricingPlanGrid({
                   <span className="text-4xl font-black rr-text-gold">{planConfig.price}</span>
                   <span className="mb-1 text-sm font-bold text-white">{planConfig.sub}</span>
                 </div>
-                <p className="mt-1 text-xs font-bold text-white/60">≈ {planConfig.thb} THB</p>
+                <p className="mt-1 text-xs font-bold text-white/60">
+                  {t("pricingGrid.approximateThb", {
+                    defaultValue: "≈ {{amount}} THB",
+                    amount: planConfig.thb,
+                  })}
+                </p>
                 {isLifetime && (
                   <p className="mt-2 text-xs font-bold text-[oklch(0.72_0.18_145)]">
-                    <span className="mr-1 text-white/50 line-through">Was $1,247</span>
-                    — Save $750
+                    <span className="mr-1 text-white/50 line-through">
+                      {t("pricingGrid.previousPrice", { defaultValue: "Was {{amount}}", amount: "$1,247" })}
+                    </span>
+                    — {t("pricingGrid.annualSave", { defaultValue: "Save {{amount}}", amount: "$750" })}
                   </p>
                 )}
               </button>
@@ -979,11 +995,17 @@ function PricingPlanGrid({
                 </div>
               )}
 
-              <ul className="mb-6 flex flex-1 flex-col gap-2.5" aria-label={`${planTitle} plan features`}>
+              <ul
+                className="mb-6 flex flex-1 flex-col gap-2.5"
+                aria-label={t("pricingGrid.planFeaturesLabel", {
+                  defaultValue: "{{plan}} plan features",
+                  plan: planTitle,
+                })}
+              >
                 {PRO_FEATURES.map((feature) => (
-                  <li key={feature.text} className="flex items-start gap-2.5 text-sm font-semibold text-white">
+                  <li key={feature.key} className="flex items-start gap-2.5 text-sm font-semibold text-white">
                     <span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full rr-bg-gold rr-text-navy">{feature.icon}</span>
-                    <span>{feature.text}</span>
+                    <span>{t(feature.key, { defaultValue: feature.fallback })}</span>
                   </li>
                 ))}
               </ul>
@@ -1076,7 +1098,13 @@ function SavingsCalculator({ locale }: { locale: string }) {
 function MobilePlanComparisonDrawer() {
   const { t } = useTranslation();
   const renderCell = (value: string | boolean) => {
-    if (value === true) return <Check size={13} className="mx-auto text-[oklch(0.72_0.18_145)]" aria-label="Included" />;
+    if (value === true) return (
+      <Check
+        size={13}
+        className="mx-auto text-[oklch(0.72_0.18_145)]"
+        aria-label={t("pricingGrid.includedLabel", { defaultValue: "Included" })}
+      />
+    );
     if (value === false) return <span className="text-white/35">—</span>;
     if (value === "__FREE_ALLOWANCE__") return <span>{t("comparisonTable.freeRequestAllowance", { defaultValue: "10 + 5 / 30d" })}</span>;
     return <span>{value}</span>;
@@ -1141,7 +1169,7 @@ function MobilePlanComparisonDrawer() {
           <DrawerFooter>
             <DrawerClose asChild>
               <button type="button" className="w-full rounded-xl border border-white/15 py-3 text-sm font-black text-white">
-                Close comparison
+                {t("pricingGrid.closeComparison", { defaultValue: "Close comparison" })}
               </button>
             </DrawerClose>
           </DrawerFooter>

@@ -11,6 +11,7 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { ReactNode } from "react";
 import LandingBrandLink from "@/components/LandingBrandLink";
+import NetworkStatusBadge from "@/components/NetworkStatusBadge";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
 import {
   DropdownMenu,
@@ -155,6 +156,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
           className="px-2 pb-4 flex flex-col gap-1.5 border-t pt-3"
           style={{ borderColor: "oklch(0.28 0.08 260)" }}
         >
+          <NetworkStatusBadge variant="sidebar" />
+
           {user?.role === "admin" && (
             <button
               type="button"

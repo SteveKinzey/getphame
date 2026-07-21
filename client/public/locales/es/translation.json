@@ -1246,7 +1246,15 @@
     "annualSave": "Ahorra {{amount}}",
     "annualSavingsDetail": "{{price}} en lugar de {{monthly}} el primer año",
     "lifetimeSave": "Ahorra {{amount}} antes del segundo año",
-    "lifetimePayback": "Se amortiza en unos {{months}} meses"
+    "lifetimePayback": "Se amortiza en unos {{months}} meses",
+    "heroSendRequests": "Enviar solicitudes",
+    "heroAutomateFollowUps": "Automatizar seguimientos",
+    "heroTrackGrowth": "Seguir tu crecimiento",
+    "closeComparison": "Cerrar comparación",
+    "includedLabel": "Incluido",
+    "planFeaturesLabel": "Funciones del plan {{plan}}",
+    "approximateThb": "≈ {{amount}} THB",
+    "previousPrice": "Antes {{amount}}"
   },
   "accessCode": {
     "title": "Código de acceso",
@@ -1352,10 +1360,14 @@
     "offlineTitle": "Ahora mismo no tienes conexión.",
     "offlineDescription": "Revisa tu Wi-Fi o datos móviles y vuelve a intentarlo. Tu trabajo permanece seguro en este dispositivo.",
     "offlineStepOne": "Activa el Wi-Fi o los datos móviles.",
-    "offlineStepTwo": "Vuelve aquí y toca Intentar de nuevo.",
+    "offlineStepTwo": "Vuelve aquí y toca Reintentar conexión.",
     "retrying": "Intentándolo de nuevo…",
     "retry": "Intentar de nuevo",
-    "retryNow": "Reintentar ahora"
+    "retryNow": "Reintentar ahora",
+    "retryConnection": "Reintentar conexión",
+    "networkStatusLabel": "Estado de la red",
+    "networkOnline": "En línea",
+    "networkOffline": "Sin conexión"
   },
   "profileMenu": {
     "account": "Cuenta",
@@ -2207,6 +2219,12 @@
       "description": "Muestra consejos contextuales la próxima vez que abras la configuración. También puedes cambiarlo dentro del asistente.",
       "enable": "Activar consejos de configuración",
       "disable": "Desactivar consejos de configuración"
+    },
+    "hapticFeedback": {
+      "title": "Respuesta háptica",
+      "description": "Usa la vibración compatible del dispositivo para los toques y las confirmaciones de reconexión. Siempre se respeta la preferencia de movimiento reducido.",
+      "enable": "Activar la respuesta háptica",
+      "disable": "Desactivar la respuesta háptica"
     }
   },
   "login": {

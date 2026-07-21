@@ -3,20 +3,61 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import directKeyFallbackResources from "../client/src/lib/i18nDirectKeyFallbackResources";
 
-const recoveryExperiencePath = fileURLToPath(new URL("../client/src/components/ApiRecoveryExperience.tsx", import.meta.url));
-const appPath = fileURLToPath(new URL("../client/src/App.tsx", import.meta.url));
-const errorBoundaryPath = fileURLToPath(new URL("../client/src/components/ErrorBoundary.tsx", import.meta.url));
-const retrySubscriptionHookPath = fileURLToPath(
-  new URL("../client/src/hooks/useActiveTransientQueryRetries.ts", import.meta.url),
+const recoveryExperiencePath = fileURLToPath(
+  new URL("../client/src/components/ApiRecoveryExperience.tsx", import.meta.url)
 );
-const stylePath = fileURLToPath(new URL("../client/src/index.css", import.meta.url));
-const hapticsPath = fileURLToPath(new URL("../client/src/hooks/useHaptics.ts", import.meta.url));
-const e2ePath = fileURLToPath(new URL("../e2e/api-recovery-reconnection.spec.ts", import.meta.url));
-const iosInfoPath = fileURLToPath(new URL("../ios/App/App/Info.plist", import.meta.url));
-const androidStringsPath = fileURLToPath(new URL("../android/app/src/main/res/values/strings.xml", import.meta.url));
-const submissionChecklistPath = fileURLToPath(new URL("../docs/mobile-store-submission-checklist.md", import.meta.url));
+const appPath = fileURLToPath(
+  new URL("../client/src/App.tsx", import.meta.url)
+);
+const errorBoundaryPath = fileURLToPath(
+  new URL("../client/src/components/ErrorBoundary.tsx", import.meta.url)
+);
+const retrySubscriptionHookPath = fileURLToPath(
+  new URL(
+    "../client/src/hooks/useActiveTransientQueryRetries.ts",
+    import.meta.url
+  )
+);
+const stylePath = fileURLToPath(
+  new URL("../client/src/index.css", import.meta.url)
+);
+const hapticsPath = fileURLToPath(
+  new URL("../client/src/hooks/useHaptics.ts", import.meta.url)
+);
+const networkStatusHookPath = fileURLToPath(
+  new URL("../client/src/hooks/useNetworkStatus.ts", import.meta.url)
+);
+const networkStatusBadgePath = fileURLToPath(
+  new URL("../client/src/components/NetworkStatusBadge.tsx", import.meta.url)
+);
+const appLayoutPath = fileURLToPath(
+  new URL("../client/src/components/AppLayout.tsx", import.meta.url)
+);
+const bottomNavPath = fileURLToPath(
+  new URL("../client/src/components/BottomNav.tsx", import.meta.url)
+);
+const settingsPath = fileURLToPath(
+  new URL("../client/src/pages/Settings.tsx", import.meta.url)
+);
+const e2ePath = fileURLToPath(
+  new URL("../e2e/api-recovery-reconnection.spec.ts", import.meta.url)
+);
+const iosInfoPath = fileURLToPath(
+  new URL("../ios/App/App/Info.plist", import.meta.url)
+);
+const androidStringsPath = fileURLToPath(
+  new URL("../android/app/src/main/res/values/strings.xml", import.meta.url)
+);
+const submissionChecklistPath = fileURLToPath(
+  new URL("../docs/mobile-store-submission-checklist.md", import.meta.url)
+);
 const translationPath = (locale: string) =>
-  fileURLToPath(new URL(`../client/public/locales/${locale}/translation.json`, import.meta.url));
+  fileURLToPath(
+    new URL(
+      `../client/public/locales/${locale}/translation.json`,
+      import.meta.url
+    )
+  );
 
 describe("API recovery experience", () => {
   it("shows a quiet reconnecting indicator only while active transient retries exist", () => {
@@ -25,7 +66,7 @@ describe("API recovery experience", () => {
     expect(source).toContain("useActiveTransientQueryRetries");
     expect(source).toContain('data-testid="api-reconnecting-indicator"');
     expect(source).toContain("api-recovery-signal");
-    expect(source).toContain('apiRecovery.reconnecting');
+    expect(source).toContain("apiRecovery.reconnecting");
   });
 
   it("gives offline users practical recovery guidance and confirms a recovered connection with a success toast", () => {
@@ -46,19 +87,42 @@ describe("API recovery experience", () => {
     expect(styles).toContain("@media (prefers-reduced-motion: reduce)");
 
     for (const locale of ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"]) {
-      const recoveryCopy = directKeyFallbackResources[locale]?.apiRecovery as Record<string, string> | undefined;
-      const shippedRecoveryCopy = JSON.parse(readFileSync(translationPath(locale), "utf8")).apiRecovery as
+      const recoveryCopy = directKeyFallbackResources[locale]?.apiRecovery as
         | Record<string, string>
         | undefined;
+      const shippedRecoveryCopy = JSON.parse(
+        readFileSync(translationPath(locale), "utf8")
+      ).apiRecovery as Record<string, string> | undefined;
 
       expect(recoveryCopy?.reconnecting).toBeTruthy();
       expect(recoveryCopy?.offlineTitle).toBeTruthy();
       expect(recoveryCopy?.reconnected).toBeTruthy();
-      expect(recoveryCopy?.retryNow).toBeTruthy();
+      expect(recoveryCopy?.retryConnection).toBeTruthy();
+      expect(recoveryCopy?.networkStatusLabel).toBeTruthy();
+      expect(recoveryCopy?.networkOnline).toBeTruthy();
+      expect(recoveryCopy?.networkOffline).toBeTruthy();
       expect(shippedRecoveryCopy?.reconnecting).toBeTruthy();
       expect(shippedRecoveryCopy?.offlineTitle).toBeTruthy();
       expect(shippedRecoveryCopy?.reconnected).toBeTruthy();
-      expect(shippedRecoveryCopy?.retryNow).toBeTruthy();
+      expect(shippedRecoveryCopy?.retryConnection).toBeTruthy();
+      expect(shippedRecoveryCopy?.networkStatusLabel).toBeTruthy();
+      expect(shippedRecoveryCopy?.networkOnline).toBeTruthy();
+      expect(shippedRecoveryCopy?.networkOffline).toBeTruthy();
+
+      const settingsCopy = directKeyFallbackResources[locale]?.settings as
+        | { hapticFeedback?: Record<string, string> }
+        | undefined;
+      const shippedSettingsCopy = JSON.parse(
+        readFileSync(translationPath(locale), "utf8")
+      ).settings as { hapticFeedback?: Record<string, string> } | undefined;
+      expect(settingsCopy?.hapticFeedback?.title).toBeTruthy();
+      expect(settingsCopy?.hapticFeedback?.description).toBeTruthy();
+      expect(settingsCopy?.hapticFeedback?.enable).toBeTruthy();
+      expect(settingsCopy?.hapticFeedback?.disable).toBeTruthy();
+      expect(shippedSettingsCopy?.hapticFeedback?.title).toBeTruthy();
+      expect(shippedSettingsCopy?.hapticFeedback?.description).toBeTruthy();
+      expect(shippedSettingsCopy?.hapticFeedback?.enable).toBeTruthy();
+      expect(shippedSettingsCopy?.hapticFeedback?.disable).toBeTruthy();
     }
   });
 
@@ -66,8 +130,12 @@ describe("API recovery experience", () => {
     const source = readFileSync(retrySubscriptionHookPath, "utf8");
 
     expect(source).toContain("useSyncExternalStore");
-    expect(source).toContain("queryClient.getQueryCache().subscribe(onStoreChange)");
-    expect(source).toContain("return useSyncExternalStore(subscribe, getSnapshot, getSnapshot)");
+    expect(source).toContain(
+      "queryClient.getQueryCache().subscribe(onStoreChange)"
+    );
+    expect(source).toContain(
+      "return useSyncExternalStore(subscribe, getSnapshot, getSnapshot)"
+    );
     expect(source).not.toContain("useState");
     expect(source).not.toContain("setRetryCount");
     expect(source).not.toContain("update();");
@@ -81,8 +149,12 @@ describe("API recovery experience", () => {
     expect(source).toContain("retry: options.retry ?? shouldRetryQuery");
     expect(source).toContain('data-testid="api-recovery-retry"');
     expect(source).toContain("readiness.refetch({ cancelRefetch: false })");
-    expect(appSource).toContain("<DashboardReadinessGate readiness={dashboardReadiness}>");
-    expect(appSource).toContain("enabled: !!user && dashboardReadiness.data?.ok === true");
+    expect(appSource).toContain(
+      "<DashboardReadinessGate readiness={dashboardReadiness}>"
+    );
+    expect(appSource).toContain(
+      "enabled: !!user && dashboardReadiness.data?.ok === true"
+    );
   });
 
   it("keeps the root boundary user-facing and retryable without rendering stack traces", () => {
@@ -99,13 +171,71 @@ describe("API recovery experience", () => {
     const styles = readFileSync(stylePath, "utf8");
 
     expect(source).toContain('data-testid="api-recovery-retry-now"');
-    expect(source).toContain('aria-describedby="api-recovery-offline-guidance"');
+    expect(source).toContain(
+      'aria-describedby="api-recovery-offline-guidance"'
+    );
+    expect(source).toContain("apiRecovery.retryConnection");
+    expect(source).toContain("recheckNetworkStatus()");
     expect(source).toContain('networkMode: "always"');
     expect(source).toContain("recoverySuccessHaptic()");
+    expect(source).toContain("const { recoverySuccessHaptic } = useHaptics()");
     expect(styles).toContain("@keyframes api-recovery-toast-enter");
     expect(styles).toContain(".api-recovery-reconnect-toast");
     expect(haptics).toContain("Capacitor.isNativePlatform()");
+    expect(haptics).toContain(
+      "Haptics.notification({ type: NotificationType.Success })"
+    );
     expect(haptics).toContain("NotificationType.Success");
+    expect(haptics).toContain(".catch(");
+    expect(haptics).toContain('vibrate("success")');
+    expect(haptics).toContain("getphame:haptic-preference-change");
+  });
+
+  it("keeps a localized network status visible in desktop and mobile navigation", () => {
+    const hook = readFileSync(networkStatusHookPath, "utf8");
+    const badge = readFileSync(networkStatusBadgePath, "utf8");
+    const appLayout = readFileSync(appLayoutPath, "utf8");
+    const bottomNav = readFileSync(bottomNavPath, "utf8");
+
+    expect(hook).toContain("useSyncExternalStore");
+    expect(hook).toContain('window.addEventListener("online"');
+    expect(hook).toContain('window.addEventListener("offline"');
+    expect(hook).toContain('window.removeEventListener("online"');
+    expect(hook).toContain('window.removeEventListener("offline"');
+    expect(hook).toContain("navigator.onLine");
+    expect(hook).toContain(
+      "window.dispatchEvent(new Event(NETWORK_STATUS_RECHECK_EVENT))"
+    );
+    expect(hook).toContain("recheckNetworkStatus");
+    expect(badge).toContain("apiRecovery.networkStatusLabel");
+    expect(badge).toContain('role="status"');
+    expect(badge).toContain('aria-live="polite"');
+    expect(appLayout).toContain('<NetworkStatusBadge variant="sidebar" />');
+    expect(bottomNav).toContain('<NetworkStatusBadge variant="mobile" />');
+  });
+
+  it("exposes a localized persisted haptic preference for recovery confirmation", () => {
+    const settings = readFileSync(settingsPath, "utf8");
+    const haptics = readFileSync(hapticsPath, "utf8");
+
+    expect(settings).toContain("settings.hapticFeedback.title");
+    expect(settings).toContain("settings.hapticFeedback.description");
+    expect(settings).toContain("settings.hapticFeedback.disable");
+    expect(settings).toContain("settings.hapticFeedback.enable");
+    expect(settings).toContain("aria-pressed={hapticEnabled}");
+    expect(haptics).toContain('const STORAGE_KEY = "rr_haptics_enabled"');
+    expect(haptics).toContain(
+      "localStorage.setItem(STORAGE_KEY, String(enabled))"
+    );
+    expect(haptics).toContain(
+      "window.dispatchEvent(new Event(HAPTIC_PREFERENCE_EVENT))"
+    );
+    expect(haptics).toContain('window.addEventListener("storage"');
+    expect(haptics).toContain(
+      "window.addEventListener(HAPTIC_PREFERENCE_EVENT"
+    );
+    expect(haptics).toContain("prefers-reduced-motion: reduce");
+    expect(haptics).toContain("Capacitor.isNativePlatform()");
   });
 
   it("ships browser coverage and reviewer-facing native metadata for the recovery experience", () => {
@@ -117,7 +247,9 @@ describe("API recovery experience", () => {
     expect(browserTest).toContain(".api-recovery-reconnect-toast");
     expect(browserTest).toContain("api-recovery-retry-now");
     expect(iosInfo).toContain("<string>Get Phame</string>");
-    expect(androidStrings).toContain("<string name=\"app_name\">Get Phame</string>");
+    expect(androidStrings).toContain(
+      '<string name="app_name">Get Phame</string>'
+    );
     expect(checklist).toContain("App Store Connect");
     expect(checklist).toContain("Play Console");
   });

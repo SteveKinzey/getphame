@@ -14,6 +14,7 @@ import { Haptics, NotificationType } from "@capacitor/haptics";
 import { useCallback, useEffect, useState } from "react";
 
 const STORAGE_KEY = "rr_haptics_enabled";
+const HAPTIC_PREFERENCE_EVENT = "getphame:haptic-preference-change";
 
 // ── Vibration patterns (ms) ──────────────────────────────────────────────────
 // Format: [vibrate, pause, vibrate, pause, ...]
@@ -64,17 +65,26 @@ export function useHaptics() {
       // ignore storage errors in private mode
     }
     setHapticEnabledState(enabled);
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new Event(HAPTIC_PREFERENCE_EVENT));
+    }
   }, []);
 
-  // Keep state in sync if another tab changes the preference
+  // Keep state in sync across hook instances in this tab and across other tabs.
   useEffect(() => {
-    const handler = (e: StorageEvent) => {
+    const storageHandler = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY && e.newValue !== null) {
         setHapticEnabledState(e.newValue === "true");
       }
     };
-    window.addEventListener("storage", handler);
-    return () => window.removeEventListener("storage", handler);
+    const preferenceHandler = () => setHapticEnabledState(readPref());
+
+    window.addEventListener("storage", storageHandler);
+    window.addEventListener(HAPTIC_PREFERENCE_EVENT, preferenceHandler);
+    return () => {
+      window.removeEventListener("storage", storageHandler);
+      window.removeEventListener(HAPTIC_PREFERENCE_EVENT, preferenceHandler);
+    };
   }, []);
 
   const vibrate = useCallback(
@@ -94,7 +104,9 @@ export function useHaptics() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     if (canUseNativeHaptics()) {
-      void Haptics.notification({ type: NotificationType.Success }).catch(() => undefined);
+      void Haptics.notification({ type: NotificationType.Success }).catch(
+        () => undefined
+      );
       return;
     }
 

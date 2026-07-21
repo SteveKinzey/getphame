@@ -3469,14 +3469,24 @@ export default function SettingsPage() {
           {/* ── Haptic Feedback toggle ────────────────────────────────── */}
           <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 mt-2 rr-bg-white-card">
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold rr-text-navy">Haptic Feedback</p>
-              <p className="text-xs mt-0.5 rr-text-navy-muted">Vibrate on key presses, button taps, and when a customer opens your email or posts a review. Requires a device with vibration support.</p>
+              <p className="text-sm font-bold rr-text-navy">
+                {t("settings.hapticFeedback.title", { defaultValue: "Haptic feedback" })}
+              </p>
+              <p className="text-xs mt-0.5 rr-text-navy-muted">
+                {t("settings.hapticFeedback.description", {
+                  defaultValue: "Use vibration on supported devices for taps and reconnection confirmations. Reduced-motion preferences are always respected.",
+                })}
+              </p>
             </div>
             <button
+              type="button"
               onClick={() => setHapticEnabled(!hapticEnabled)}
               className="shrink-0 w-10 h-6 rounded-full transition-colors relative"
               style={{ background: hapticEnabled ? "oklch(0.50 0.15 145)" : "oklch(0.80 0.02 260)" }}
-              aria-label={hapticEnabled ? "Disable haptic feedback" : "Enable haptic feedback"}
+              aria-pressed={hapticEnabled}
+              aria-label={hapticEnabled
+                ? t("settings.hapticFeedback.disable", { defaultValue: "Disable haptic feedback" })
+                : t("settings.hapticFeedback.enable", { defaultValue: "Enable haptic feedback" })}
             >
               <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform" style={{ left: hapticEnabled ? "calc(100% - 1.35rem)" : "0.1rem" }} />
             </button>

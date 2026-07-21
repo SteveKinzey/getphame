@@ -10,6 +10,10 @@ build/
 # Generated files
 *.tsbuildinfo
 coverage/
+test-results/
+playwright-report/
+blob-report/
+ci-artifacts/
 
 # Package files
 pnpm-lock.yaml

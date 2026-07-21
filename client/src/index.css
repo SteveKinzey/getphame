@@ -781,6 +781,9 @@
 /* ── Extracted inline styles (moved from JSX to eliminate unsafe-inline CSP) ── */
 
 /* AppLayout: responsive sidebar widths */
+@media (max-width: 767px) {
+  .app-main { padding-bottom: 1.75rem; }
+}
 @media (min-width: 1024px) {
   .app-sidebar { width: 220px !important; }
   .app-sidebar-label { display: block !important; }

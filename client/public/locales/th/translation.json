@@ -886,7 +886,23 @@
     "checkoutForPlan": "ชำระเงินอย่างปลอดภัยสำหรับ {{plan}}"
   },
   "pricingGrid": {
-    "title": "เลือกแพ็กเกจที่เหมาะกับการเติบโตของคุณ"
+    "title": "เลือกแพ็กเกจที่เหมาะกับการเติบโตของคุณ",
+    "savingsEyebrow": "เครื่องคำนวณการประหยัด",
+    "savingsTitle": "ดูว่าแต่ละแผนช่วยประหยัดได้เท่าไร",
+    "savingsBasis": "เทียบกับการชำระรายเดือน",
+    "monthlyAnnualCost": "สำหรับ 12 เดือน",
+    "annualSave": "ประหยัด {{amount}}",
+    "annualSavingsDetail": "{{price}} แทน {{monthly}} ในปีแรก",
+    "lifetimeSave": "ประหยัด {{amount}} ภายในปีที่สอง",
+    "lifetimePayback": "คุ้มทุนในประมาณ {{months}} เดือน",
+    "heroSendRequests": "ส่งคำขอ",
+    "heroAutomateFollowUps": "ตั้งค่าการติดตามผลอัตโนมัติ",
+    "heroTrackGrowth": "ติดตามการเติบโต",
+    "closeComparison": "ปิดการเปรียบเทียบ",
+    "includedLabel": "รวมอยู่แล้ว",
+    "planFeaturesLabel": "คุณสมบัติของแผน {{plan}}",
+    "approximateThb": "≈ {{amount}} บาท",
+    "previousPrice": "เดิม {{amount}}"
   },
   "accessCode": {
     "title": "มีรหัสเข้าใช้งานหรือไม่?",
@@ -979,10 +995,14 @@
     "offlineTitle": "ขณะนี้คุณออฟไลน์อยู่",
     "offlineDescription": "ตรวจสอบ Wi-Fi หรือข้อมูลมือถือ แล้วลองอีกครั้ง งานของคุณยังปลอดภัยบนอุปกรณ์นี้",
     "offlineStepOne": "เปิด Wi-Fi หรือข้อมูลมือถือ",
-    "offlineStepTwo": "กลับมาที่นี่แล้วแตะ ลองอีกครั้ง",
+    "offlineStepTwo": "กลับมาที่นี่แล้วแตะ ลองเชื่อมต่ออีกครั้ง",
     "retrying": "กำลังลองอีกครั้ง…",
     "retry": "ลองอีกครั้ง",
-    "retryNow": "ลองอีกครั้งตอนนี้"
+    "retryNow": "ลองอีกครั้งตอนนี้",
+    "retryConnection": "ลองเชื่อมต่ออีกครั้ง",
+    "networkStatusLabel": "สถานะเครือข่าย",
+    "networkOnline": "ออนไลน์",
+    "networkOffline": "ออฟไลน์"
   },
   "profileMenu": {
     "account": "บัญชี",
@@ -1703,6 +1723,12 @@
       "description": "แสดงคำแนะนำตามบริบทเมื่อคุณเปิดการเริ่มต้นใช้งานครั้งถัดไป คุณยังเปลี่ยนได้ในตัวช่วยตั้งค่า",
       "enable": "เปิดใช้คำแนะนำการเริ่มต้นใช้งาน",
       "disable": "ปิดใช้คำแนะนำการเริ่มต้นใช้งาน"
+    },
+    "hapticFeedback": {
+      "title": "การตอบสนองแบบสั่น",
+      "description": "ใช้การสั่นของอุปกรณ์ที่รองรับสำหรับการแตะและการยืนยันเมื่อเชื่อมต่อกลับสำเร็จ โดยจะเคารพการตั้งค่าลดการเคลื่อนไหวเสมอ",
+      "enable": "เปิดการตอบสนองแบบสั่น",
+      "disable": "ปิดการตอบสนองแบบสั่น"
     }
   },
   "login": {

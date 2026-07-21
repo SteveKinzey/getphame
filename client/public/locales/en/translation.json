@@ -945,7 +945,15 @@
     "annualSave": "Save {{amount}}",
     "annualSavingsDetail": "{{price}} instead of {{monthly}} for year one",
     "lifetimeSave": "Save {{amount}} by year two",
-    "lifetimePayback": "Pays for itself in about {{months}} months"
+    "lifetimePayback": "Pays for itself in about {{months}} months",
+    "heroSendRequests": "Send requests",
+    "heroAutomateFollowUps": "Automate follow-ups",
+    "heroTrackGrowth": "Track your growth",
+    "closeComparison": "Close comparison",
+    "includedLabel": "Included",
+    "planFeaturesLabel": "{{plan}} plan features",
+    "approximateThb": "≈ {{amount}} THB",
+    "previousPrice": "Was {{amount}}"
   },
   "accessCode": {
     "title": "Have an access code?",
@@ -1071,10 +1079,14 @@
     "offlineTitle": "You’re offline right now.",
     "offlineDescription": "Check your Wi-Fi or mobile data, then try again. Your work stays safe on this device.",
     "offlineStepOne": "Turn on Wi-Fi or mobile data.",
-    "offlineStepTwo": "Return here and tap Try again.",
+    "offlineStepTwo": "Return here and tap Retry Connection.",
     "retrying": "Trying again…",
     "retry": "Try again",
-    "retryNow": "Retry now"
+    "retryNow": "Retry now",
+    "retryConnection": "Retry Connection",
+    "networkStatusLabel": "Network status",
+    "networkOnline": "Online",
+    "networkOffline": "Offline"
   },
   "profileMenu": {
     "account": "Account",
@@ -1465,24 +1477,24 @@
       "goToSendButton": "Go to Send Request",
       "goToContactsButton": "Go to Saved Contacts"
     },
-      "allSet": {
-        "title": "You're all set!",
-        "subtitle": "Get Phame is ready to start collecting reviews for your business.",
-        "quickLinksTitle": "Quick links",
-        "link1": "Send a review request now",
-        "link2": "View saved contacts",
-        "link3": "Check your dashboard",
-        "link4": "Manage settings",
-        "installTitle": "Keep Get Phame on your phone",
-        "iosInstall": "Open getphame.app in Safari. Tap Share, choose Add to Home Screen, then tap Add.",
-        "androidInstall": "Open getphame.app in Chrome. Tap the three-dot menu, choose Install app or Add to Home screen, then confirm.",
-        "shareButton": "Share Get Phame with a friend",
-        "shareText": "Collect more customer reviews with Get Phame.",
-        "shareSuccess": "Shared successfully.",
-        "copySuccess": "Get Phame link copied.",
-        "shareCancelled": "Sharing cancelled.",
-        "shareError": "Unable to share right now.",
-        "revisitTitle": "Need to revisit this guide?",
+    "allSet": {
+      "title": "You're all set!",
+      "subtitle": "Get Phame is ready to start collecting reviews for your business.",
+      "quickLinksTitle": "Quick links",
+      "link1": "Send a review request now",
+      "link2": "View saved contacts",
+      "link3": "Check your dashboard",
+      "link4": "Manage settings",
+      "installTitle": "Keep Get Phame on your phone",
+      "iosInstall": "Open getphame.app in Safari. Tap Share, choose Add to Home Screen, then tap Add.",
+      "androidInstall": "Open getphame.app in Chrome. Tap the three-dot menu, choose Install app or Add to Home screen, then confirm.",
+      "shareButton": "Share Get Phame with a friend",
+      "shareText": "Collect more customer reviews with Get Phame.",
+      "shareSuccess": "Shared successfully.",
+      "copySuccess": "Get Phame link copied.",
+      "shareCancelled": "Sharing cancelled.",
+      "shareError": "Unable to share right now.",
+      "revisitTitle": "Need to revisit this guide?",
       "revisitDesc": "Tap the \"Setup Guide\" button on the Home screen or in Settings any time to reopen these instructions.",
       "startButton": "Start Using Get Phame"
     }
@@ -2117,13 +2129,23 @@
       "description": "Show contextual setup tips the next time you open onboarding. You can also change this inside the setup wizard.",
       "enable": "Enable onboarding tips",
       "disable": "Disable onboarding tips"
+    },
+    "hapticFeedback": {
+      "title": "Haptic Feedback",
+      "description": "Use supported device vibration for taps and recovery confirmations. Reduced-motion settings are always respected.",
+      "enable": "Enable haptic feedback",
+      "disable": "Disable haptic feedback"
     }
   },
   "complianceGuide": {
     "backToSettings": "Settings",
     "title": "Compliance Guide",
     "subtitle": "Stay safe, stay legal, and protect your reputation",
-    "risk": { "low": "Low Risk", "moderate": "Moderate Risk", "high": "High Risk" },
+    "risk": {
+      "low": "Low Risk",
+      "moderate": "Moderate Risk",
+      "high": "High Risk"
+    },
     "safeZone": {
       "title": "Where You're Safe",
       "transaction": "Customer had a real transaction with you",
@@ -2134,9 +2156,22 @@
     },
     "platformRisk": {
       "title": "Platform Risk Levels",
-      "google": { "allowed": "Asking for reviews via email is allowed", "noIncentives": "No incentives, no review gating", "worstCase": "Worst case: reviews removed or profile flagged." },
-      "yelp": { "discourages": "Strongly discourages asking for reviews at all", "filters": "Algorithm actively filters 'solicited' reviews", "safer": "Safer: list your business name only — don't embed a direct Yelp link in bulk campaigns", "worstCase": "Worst case: reviews filtered (not shown publicly) + consumer alert badge on profile." },
-      "bing": { "title": "Bing / Microsoft", "similar": "Similar to Google in practice, less aggressive enforcement", "worstCase": "Generally safe to include a direct link." }
+      "google": {
+        "allowed": "Asking for reviews via email is allowed",
+        "noIncentives": "No incentives, no review gating",
+        "worstCase": "Worst case: reviews removed or profile flagged."
+      },
+      "yelp": {
+        "discourages": "Strongly discourages asking for reviews at all",
+        "filters": "Algorithm actively filters 'solicited' reviews",
+        "safer": "Safer: list your business name only — don't embed a direct Yelp link in bulk campaigns",
+        "worstCase": "Worst case: reviews filtered (not shown publicly) + consumer alert badge on profile."
+      },
+      "bing": {
+        "title": "Bing / Microsoft",
+        "similar": "Similar to Google in practice, less aggressive enforcement",
+        "worstCase": "Generally safe to include a direct link."
+      }
     },
     "legal": {
       "title": "Legal Considerations (U.S.)",
@@ -2196,7 +2231,15 @@
       "thanksOrder": "\"Thanks for your order — got a minute?\"",
       "thanksOrderSub": "Best for WooCommerce post-purchase flows."
     },
-    "bottomLine": { "label": "Bottom Line", "googleBing": "Google + Bing → safe if done correctly.", "yelp": "Yelp → proceed carefully or avoid direct solicitation.", "legal": "Legal risk → low if you stay honest and don't incentivize." },
-    "settings": { "title": "Compliance Guide", "description": "Platform rules, legal notes & best practices" }
+    "bottomLine": {
+      "label": "Bottom Line",
+      "googleBing": "Google + Bing → safe if done correctly.",
+      "yelp": "Yelp → proceed carefully or avoid direct solicitation.",
+      "legal": "Legal risk → low if you stay honest and don't incentivize."
+    },
+    "settings": {
+      "title": "Compliance Guide",
+      "description": "Platform rules, legal notes & best practices"
+    }
   }
 }

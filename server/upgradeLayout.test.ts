@@ -1,10 +1,28 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
+import directKeyFallbackResources from "../client/src/lib/i18nDirectKeyFallbackResources";
 
 const source = readFileSync(
   new URL("../client/src/pages/Upgrade.tsx", import.meta.url),
   "utf8",
 );
+
+const locales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
+const reviewedPricingKeys = [
+  "heroSendRequests",
+  "heroAutomateFollowUps",
+  "heroTrackGrowth",
+  "closeComparison",
+  "includedLabel",
+  "planFeaturesLabel",
+  "approximateThb",
+  "previousPrice",
+] as const;
+
+const fallbackResources = directKeyFallbackResources as unknown as Record<
+  string,
+  { pricingGrid: Record<string, string> }
+>;
 
 describe("upgrade pricing layout", () => {
   it("uses the approved public product screenshot instead of the retired private asset", () => {
@@ -46,5 +64,32 @@ describe("upgrade pricing layout", () => {
     expect(source).toContain('data-testid="mobile-comparison-trigger"');
     expect(source).toContain("<MobilePlanComparisonDrawer />");
     expect(source).toContain('className="hidden overflow-hidden rounded-2xl md:block"');
+  });
+
+  it("localizes fallback artwork, pricing labels, plan-feature accessibility, and comparison controls", () => {
+    for (const key of reviewedPricingKeys) {
+      expect(source).toContain(`pricingGrid.${key}`);
+    }
+
+    expect(source).toContain('t(feature.key, { defaultValue: feature.fallback })');
+    expect(source).toContain('aria-label={t("pricingGrid.planFeaturesLabel"');
+    expect(source).toContain('aria-label={t("pricingGrid.includedLabel"');
+  });
+
+  it("keeps every reviewed upgrade label in parity across catalogs and direct fallbacks", () => {
+    for (const locale of locales) {
+      const resource = JSON.parse(
+        readFileSync(
+          new URL(`../client/public/locales/${locale}/translation.json`, import.meta.url),
+          "utf8",
+        ),
+      ) as { pricingGrid: Record<string, string> };
+
+      for (const key of reviewedPricingKeys) {
+        expect(resource.pricingGrid[key], `${locale}.pricingGrid.${key}`).toBeTypeOf("string");
+        expect(resource.pricingGrid[key]?.trim(), `${locale}.pricingGrid.${key}`).not.toBe("");
+        expect(fallbackResources[locale]?.pricingGrid[key]).toBe(resource.pricingGrid[key]);
+      }
+    }
   });
 });

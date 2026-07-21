@@ -1,4 +1,4 @@
-import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import type { UseQueryResult } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, RefreshCw, WifiOff } from "lucide-react";
@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { useActiveTransientQueryRetries } from "@/hooks/useActiveTransientQueryRetries";
 import { useHaptics } from "@/hooks/useHaptics";
+import { recheckNetworkStatus, useNetworkStatus } from "@/hooks/useNetworkStatus";
 import { queryRetryDelay, shouldRetryQuery } from "@/lib/queryRetry";
 
 const API_READINESS_QUERY_KEY = ["system", "api-readiness"] as const;
@@ -54,25 +55,6 @@ async function fetchApiReadiness(): Promise<ApiReadiness> {
   }
 
   return payload as ApiReadiness;
-}
-
-function getNetworkSnapshot(): boolean {
-  return typeof navigator === "undefined" ? true : navigator.onLine;
-}
-
-function subscribeToNetworkStatus(onStoreChange: () => void): () => void {
-  if (typeof window === "undefined") return () => undefined;
-
-  window.addEventListener("online", onStoreChange);
-  window.addEventListener("offline", onStoreChange);
-  return () => {
-    window.removeEventListener("online", onStoreChange);
-    window.removeEventListener("offline", onStoreChange);
-  };
-}
-
-function useNetworkStatus(): boolean {
-  return useSyncExternalStore(subscribeToNetworkStatus, getNetworkSnapshot, () => true);
 }
 
 type ReadinessOptions = {
@@ -186,6 +168,7 @@ export function DashboardReadinessGate({ readiness, children }: DashboardReadine
   const wasOnline = useRef(isOnline);
   const recoveryToast = <RecoveryToast readiness={readiness} />;
   const retryNow = () => {
+    recheckNetworkStatus();
     void readiness.refetch({ cancelRefetch: false });
   };
 
@@ -243,7 +226,7 @@ export function DashboardReadinessGate({ readiness, children }: DashboardReadine
               <>
                 <ol id="api-recovery-offline-guidance" data-testid="api-recovery-offline-guidance" className="mt-5 space-y-2 text-left text-xs leading-5 text-white/75">
                   <li className="flex gap-2"><span className="font-black text-[#D4A017]">1.</span>{t("apiRecovery.offlineStepOne", { defaultValue: "Turn on Wi-Fi or mobile data." })}</li>
-                  <li className="flex gap-2"><span className="font-black text-[#D4A017]">2.</span>{t("apiRecovery.offlineStepTwo", { defaultValue: "Return here and tap Try again." })}</li>
+                  <li className="flex gap-2"><span className="font-black text-[#D4A017]">2.</span>{t("apiRecovery.offlineStepTwo", { defaultValue: "Return here and tap Retry Connection." })}</li>
                 </ol>
                 <button
                   type="button"
@@ -256,7 +239,7 @@ export function DashboardReadinessGate({ readiness, children }: DashboardReadine
                   {readiness.isFetching ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <RefreshCw size={16} aria-hidden="true" />}
                   {readiness.isFetching
                     ? t("apiRecovery.retrying", { defaultValue: "Trying again…" })
-                    : t("apiRecovery.retryNow", { defaultValue: "Retry now" })}
+                    : t("apiRecovery.retryConnection", { defaultValue: "Retry Connection" })}
                 </button>
               </>
             )}
