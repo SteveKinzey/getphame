@@ -873,3 +873,19 @@
     animation: none !important;
   }
 }
+
+@keyframes api-recovery-toast-enter {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.api-recovery-reconnect-toast {
+  animation: api-recovery-toast-enter 220ms cubic-bezier(0.23, 1, 0.32, 1) both;
+  will-change: transform, opacity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .api-recovery-reconnect-toast {
+    animation: none !important;
+  }
+}

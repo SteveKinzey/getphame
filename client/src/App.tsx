@@ -367,7 +367,28 @@ function AppShell() {
   );
 }
 
+function ApiRecoveryTestHarness() {
+  const readiness = useDashboardReadiness(true, { retry: false });
+
+  return (
+    <DashboardReadinessGate readiness={readiness}>
+      <div data-testid="api-recovery-test-ready">Ready</div>
+    </DashboardReadinessGate>
+  );
+}
+
 function App() {
+  if (import.meta.env.DEV && window.location.pathname === "/__test/api-recovery") {
+    return (
+      <ThemeProvider defaultTheme="light" switchable={true}>
+        <TooltipProvider>
+          <Toaster position="top-center" richColors />
+          <ApiRecoveryTestHarness />
+        </TooltipProvider>
+      </ThemeProvider>
+    );
+  }
+
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light" switchable={true}>

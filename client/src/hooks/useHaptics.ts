@@ -9,6 +9,8 @@
  *  - Exposes `hapticEnabled` boolean and `setHapticEnabled(bool)` for the Settings toggle
  */
 
+import { Capacitor } from "@capacitor/core";
+import { Haptics, NotificationType } from "@capacitor/haptics";
 import { useCallback, useEffect, useState } from "react";
 
 const STORAGE_KEY = "rr_haptics_enabled";
@@ -36,6 +38,10 @@ function canVibrate(): boolean {
     "vibrate" in navigator &&
     !window.matchMedia("(prefers-reduced-motion: reduce)").matches
   );
+}
+
+function canUseNativeHaptics(): boolean {
+  return typeof window !== "undefined" && Capacitor.isNativePlatform();
 }
 
 function readPref(): boolean {
@@ -83,6 +89,18 @@ export function useHaptics() {
     [hapticEnabled]
   );
 
+  const recoverySuccessHaptic = useCallback(() => {
+    if (!hapticEnabled || typeof window === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    if (canUseNativeHaptics()) {
+      void Haptics.notification({ type: NotificationType.Success }).catch(() => undefined);
+      return;
+    }
+
+    vibrate("success");
+  }, [hapticEnabled, vibrate]);
+
   return {
     hapticEnabled,
     setHapticEnabled,
@@ -93,5 +111,6 @@ export function useHaptics() {
     successHaptic: () => vibrate("success"),
     emailOpenedHaptic: () => vibrate("emailOpened"),
     reviewPostedHaptic: () => vibrate("reviewPosted"),
+    recoverySuccessHaptic,
   };
 }

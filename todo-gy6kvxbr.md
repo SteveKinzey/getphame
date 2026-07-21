@@ -626,3 +626,12 @@
 - [x] Show a localized success toast when a previously unavailable dashboard API reconnects successfully.
 - [x] Extend and validate the reusable API recovery UX skill with the render-safe subscription, offline guidance, animation, and reconnection-toast workflow.
 - [x] Add focused regression coverage for recovery motion, offline guidance, reconnection confirmation, and translations across supported locales.
+
+- [x] Add an automated end-to-end browser test that exercises offline-to-online recovery and verifies the reconnect success toast.
+- [x] Add a localized, accessible Retry Now control below offline troubleshooting that forces an immediate readiness check without weakening retry safeguards.
+- [x] Add a subtle, reduced-motion-safe entrance animation and optional mobile haptic feedback to the reconnection success toast.
+- [x] Audit the recovery experience against current Apple App Review and Google Play quality, offline, permission, and accessibility expectations relevant to this native-capable app.
+- [x] Harden the recovery flow for native mobile submission, including safe haptic capability detection, reachable controls, clear offline status, and non-web-only test boundaries.
+- [x] Add and run app-store readiness checks for Capacitor configuration, release build compatibility, privacy-safe behavior, and mobile recovery regression coverage.
+- [x] Update and validate the reusable API recovery UX skill with browser-test, manual-retry, toast-animation, haptic-feedback, and app-store-readiness guidance.
+- [ ] Run focused and complete release validation, verify the recovery controls responsively, and publish the enhancement.

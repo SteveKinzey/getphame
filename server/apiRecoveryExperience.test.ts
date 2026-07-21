@@ -10,6 +10,11 @@ const retrySubscriptionHookPath = fileURLToPath(
   new URL("../client/src/hooks/useActiveTransientQueryRetries.ts", import.meta.url),
 );
 const stylePath = fileURLToPath(new URL("../client/src/index.css", import.meta.url));
+const hapticsPath = fileURLToPath(new URL("../client/src/hooks/useHaptics.ts", import.meta.url));
+const e2ePath = fileURLToPath(new URL("../e2e/api-recovery-reconnection.spec.ts", import.meta.url));
+const iosInfoPath = fileURLToPath(new URL("../ios/App/App/Info.plist", import.meta.url));
+const androidStringsPath = fileURLToPath(new URL("../android/app/src/main/res/values/strings.xml", import.meta.url));
+const submissionChecklistPath = fileURLToPath(new URL("../docs/mobile-store-submission-checklist.md", import.meta.url));
 const translationPath = (locale: string) =>
   fileURLToPath(new URL(`../client/public/locales/${locale}/translation.json`, import.meta.url));
 
@@ -49,9 +54,11 @@ describe("API recovery experience", () => {
       expect(recoveryCopy?.reconnecting).toBeTruthy();
       expect(recoveryCopy?.offlineTitle).toBeTruthy();
       expect(recoveryCopy?.reconnected).toBeTruthy();
+      expect(recoveryCopy?.retryNow).toBeTruthy();
       expect(shippedRecoveryCopy?.reconnecting).toBeTruthy();
       expect(shippedRecoveryCopy?.offlineTitle).toBeTruthy();
       expect(shippedRecoveryCopy?.reconnected).toBeTruthy();
+      expect(shippedRecoveryCopy?.retryNow).toBeTruthy();
     }
   });
 
@@ -71,9 +78,9 @@ describe("API recovery experience", () => {
     const appSource = readFileSync(appPath, "utf8");
 
     expect(source).toContain('fetch("/api/health"');
-    expect(source).toContain("retry: shouldRetryQuery");
+    expect(source).toContain("retry: options.retry ?? shouldRetryQuery");
     expect(source).toContain('data-testid="api-recovery-retry"');
-    expect(source).toContain("readiness.refetch()");
+    expect(source).toContain("readiness.refetch({ cancelRefetch: false })");
     expect(appSource).toContain("<DashboardReadinessGate readiness={dashboardReadiness}>");
     expect(appSource).toContain("enabled: !!user && dashboardReadiness.data?.ok === true");
   });
@@ -84,5 +91,34 @@ describe("API recovery experience", () => {
     expect(source).toContain('data-testid="app-error-boundary-retry"');
     expect(source).toContain("Try again");
     expect(source).not.toContain("this.state.error?.stack");
+  });
+
+  it("offers offline users an immediate, accessible readiness check and native-safe recovery confirmation", () => {
+    const source = readFileSync(recoveryExperiencePath, "utf8");
+    const haptics = readFileSync(hapticsPath, "utf8");
+    const styles = readFileSync(stylePath, "utf8");
+
+    expect(source).toContain('data-testid="api-recovery-retry-now"');
+    expect(source).toContain('aria-describedby="api-recovery-offline-guidance"');
+    expect(source).toContain('networkMode: "always"');
+    expect(source).toContain("recoverySuccessHaptic()");
+    expect(styles).toContain("@keyframes api-recovery-toast-enter");
+    expect(styles).toContain(".api-recovery-reconnect-toast");
+    expect(haptics).toContain("Capacitor.isNativePlatform()");
+    expect(haptics).toContain("NotificationType.Success");
+  });
+
+  it("ships browser coverage and reviewer-facing native metadata for the recovery experience", () => {
+    const browserTest = readFileSync(e2ePath, "utf8");
+    const iosInfo = readFileSync(iosInfoPath, "utf8");
+    const androidStrings = readFileSync(androidStringsPath, "utf8");
+    const checklist = readFileSync(submissionChecklistPath, "utf8");
+
+    expect(browserTest).toContain(".api-recovery-reconnect-toast");
+    expect(browserTest).toContain("api-recovery-retry-now");
+    expect(iosInfo).toContain("<string>Get Phame</string>");
+    expect(androidStrings).toContain("<string name=\"app_name\">Get Phame</string>");
+    expect(checklist).toContain("App Store Connect");
+    expect(checklist).toContain("Play Console");
   });
 });
