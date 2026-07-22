@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gt, gte, isNull, lt, or, sql, type SQL } from "drizzle-orm";
+import { and, asc, desc, eq, gt, gte, isNull, lt, lte, or, sql, type SQL } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
 import * as schema from "../drizzle/schema";
 import { createHash, randomBytes } from "crypto";
@@ -304,8 +304,98 @@ export async function listAuthHealthChecks(limit = 30) {
   return db
     .select()
     .from(authHealthChecks)
-    .orderBy(desc(authHealthChecks.checkedAt))
+    .orderBy(desc(authHealthChecks.checkedAt), desc(authHealthChecks.id))
     .limit(Math.min(Math.max(limit, 1), 100));
+}
+
+export type AuthHealthHistoryFilters = {
+  status?: "ok" | "fail";
+  triggerSource?: "scheduled" | "manual";
+  fromMs?: number;
+  toMs?: number;
+};
+
+export function normalizeAuthHealthHistoryQuery(input: AuthHealthHistoryFilters & {
+  page?: number;
+  pageSize?: number;
+  limit?: number;
+}) {
+  return {
+    status: input.status,
+    triggerSource: input.triggerSource,
+    fromMs: Number.isFinite(input.fromMs) ? Math.max(0, Math.trunc(input.fromMs!)) : undefined,
+    toMs: Number.isFinite(input.toMs) ? Math.max(0, Math.trunc(input.toMs!)) : undefined,
+    page: Math.max(1, Math.trunc(input.page ?? 1)),
+    pageSize: Math.min(50, Math.max(10, Math.trunc(input.pageSize ?? 20))),
+    limit: Math.min(10_000, Math.max(1, Math.trunc(input.limit ?? 10_000))),
+  };
+}
+
+function buildAuthHealthHistoryWhere(filters: AuthHealthHistoryFilters) {
+  const normalized = normalizeAuthHealthHistoryQuery(filters);
+  const conditions: SQL[] = [];
+  if (normalized.status) conditions.push(eq(authHealthChecks.overallStatus, normalized.status));
+  if (normalized.triggerSource) conditions.push(eq(authHealthChecks.triggerSource, normalized.triggerSource));
+  if (normalized.fromMs !== undefined) conditions.push(gte(authHealthChecks.checkedAt, normalized.fromMs));
+  if (normalized.toMs !== undefined) conditions.push(lte(authHealthChecks.checkedAt, normalized.toMs));
+  return conditions.length ? and(...conditions) : undefined;
+}
+
+export async function listAuthHealthChecksPage(input: AuthHealthHistoryFilters & {
+  page?: number;
+  pageSize?: number;
+}, database?: Awaited<ReturnType<typeof getDb>>) {
+  const normalized = normalizeAuthHealthHistoryQuery(input);
+  const safePage = normalized.page;
+  const safePageSize = normalized.pageSize;
+  const db = database ?? await getDb();
+  if (!db) return { rows: [], page: safePage, pageSize: safePageSize, total: 0, pageCount: 1 };
+
+  const where = buildAuthHealthHistoryWhere(input);
+  const [totalRow] = await db
+    .select({ value: sql<number>`count(*)` })
+    .from(authHealthChecks)
+    .where(where);
+  const total = Number(totalRow?.value ?? 0);
+  const pageCount = Math.max(1, Math.ceil(total / safePageSize));
+  const boundedPage = Math.min(safePage, pageCount);
+  const rows = await db
+    .select()
+    .from(authHealthChecks)
+    .where(where)
+    .orderBy(desc(authHealthChecks.checkedAt), desc(authHealthChecks.id))
+    .limit(safePageSize)
+    .offset((boundedPage - 1) * safePageSize);
+
+  return { rows, page: boundedPage, pageSize: safePageSize, total, pageCount };
+}
+
+export async function listAuthHealthChecksForExport(input: AuthHealthHistoryFilters & { limit?: number }) {
+  return listAuthHealthChecksForExportWithDb(input);
+}
+
+export async function listAuthHealthChecksForExportWithDb(
+  input: AuthHealthHistoryFilters & { limit?: number },
+  database?: Awaited<ReturnType<typeof getDb>>,
+) {
+  const safeLimit = normalizeAuthHealthHistoryQuery(input).limit;
+  const db = database ?? await getDb();
+  if (!db) return { rows: [], total: 0, truncated: false };
+
+  const where = buildAuthHealthHistoryWhere(input);
+  const [totalRow] = await db
+    .select({ value: sql<number>`count(*)` })
+    .from(authHealthChecks)
+    .where(where);
+  const total = Number(totalRow?.value ?? 0);
+  const rows = await db
+    .select()
+    .from(authHealthChecks)
+    .where(where)
+    .orderBy(desc(authHealthChecks.checkedAt), desc(authHealthChecks.id))
+    .limit(safeLimit);
+
+  return { rows, total, truncated: total > rows.length };
 }
 
 export async function getRecentAuthHealthCheckByTaskUid(taskUid: string, sinceMs: number) {
