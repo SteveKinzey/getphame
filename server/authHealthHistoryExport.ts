@@ -24,6 +24,9 @@ export const AUTH_HEALTH_HISTORY_EXPORT_COLUMNS = [
 export type AuthHealthHistoryExportColumnKey = (typeof AUTH_HEALTH_HISTORY_EXPORT_COLUMNS)[number]["key"];
 export type AuthHealthHistoryExportRow = Record<AuthHealthHistoryExportColumnKey, string>;
 
+export const AUTH_HEALTH_HISTORY_EXPORT_COLUMN_KEYS = AUTH_HEALTH_HISTORY_EXPORT_COLUMNS
+  .map((column) => column.key) as [AuthHealthHistoryExportColumnKey, ...AuthHealthHistoryExportColumnKey[]];
+
 function safeText(value: string | null | undefined, maxLength: number) {
   if (!value) return "";
   return redactAuthDiagnosticDetail(value).slice(0, maxLength);
@@ -53,12 +56,23 @@ export function buildAuthHealthHistoryExportRows(rows: AuthHealthCheck[]): AuthH
   }));
 }
 
-function serializeAuthHealthHistoryExportRows(rows: AuthHealthHistoryExportRow[]) {
-  const body = rows.map((row) => AUTH_HEALTH_HISTORY_EXPORT_COLUMNS
+function getAuthHealthHistoryExportColumns(selectedColumns?: readonly AuthHealthHistoryExportColumnKey[]) {
+  if (!selectedColumns) return AUTH_HEALTH_HISTORY_EXPORT_COLUMNS;
+  const selected = new Set(selectedColumns);
+  return AUTH_HEALTH_HISTORY_EXPORT_COLUMNS.filter((column) => selected.has(column.key));
+}
+
+function serializeAuthHealthHistoryExportRows(
+  rows: AuthHealthHistoryExportRow[],
+  selectedColumns?: readonly AuthHealthHistoryExportColumnKey[],
+  includeBom = true,
+) {
+  const columns = getAuthHealthHistoryExportColumns(selectedColumns);
+  const body = rows.map((row) => columns
     .map((column) => escapeAdminOperationsCsvCell(row[column.key]))
     .join(","));
 
-  return `\uFEFF${AUTH_HEALTH_HISTORY_EXPORT_COLUMNS.map((column) => column.csvHeader).join(",")}\r\n${body.join("\r\n")}\r\n`;
+  return `${includeBom ? "\uFEFF" : ""}${columns.map((column) => column.csvHeader).join(",")}\r\n${body.join("\r\n")}\r\n`;
 }
 
 export function serializeAuthHealthHistoryCsv(rows: AuthHealthCheck[]) {
@@ -75,21 +89,28 @@ export function buildAuthHealthHistoryCsvExport(input: {
   toMs?: number;
   fromDate?: string;
   toDate?: string;
+  selectedColumns?: readonly AuthHealthHistoryExportColumnKey[];
+  snapshotToMs?: number;
   generatedAt?: number;
 }) {
   const generatedAt = input.generatedAt ?? Date.now();
   const exportRows = buildAuthHealthHistoryExportRows(input.rows);
   const previewRows = exportRows.slice(0, AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT);
+  const selectedColumns = getAuthHealthHistoryExportColumns(input.selectedColumns);
+  const selectedColumnKeys = selectedColumns.map((column) => column.key);
   return {
     filename: buildAuthHealthHistoryCsvFilename(input, generatedAt),
     mimeType: "text/csv;charset=utf-8",
-    csv: serializeAuthHealthHistoryExportRows(exportRows),
+    csv: serializeAuthHealthHistoryExportRows(exportRows, selectedColumnKeys),
+    clipboardText: serializeAuthHealthHistoryExportRows(exportRows, selectedColumnKeys, false),
     generatedAt,
+    snapshotToMs: input.snapshotToMs ?? generatedAt,
     rowCount: input.rows.length,
     totalMatching: input.total,
     truncated: input.truncated,
+    availableColumns: AUTH_HEALTH_HISTORY_EXPORT_COLUMNS.map(({ key, csvHeader }) => ({ key, csvHeader })),
     preview: {
-      columns: AUTH_HEALTH_HISTORY_EXPORT_COLUMNS.map(({ key, csvHeader }) => ({ key, csvHeader })),
+      columns: selectedColumns.map(({ key, csvHeader }) => ({ key, csvHeader })),
       rows: previewRows,
       rowCount: previewRows.length,
       limit: AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT,

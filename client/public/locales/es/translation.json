@@ -2291,7 +2291,12 @@
       "cleared": "Se borraron los filtros del historial."
     },
     "presets": {
-      "orderSavedDetail": "{{name}} se guardó en la posición {{position}} de {{total}}."
+      "orderSavedDetail": "{{name}} se guardó en la posición {{position}} de {{total}}.",
+      "orderRestored": "Se restauró el orden anterior de los ajustes preestablecidos.",
+      "undo": "Deshacer",
+      "undoing": "Deshaciendo…",
+      "undoError": "No se pudo restaurar el orden anterior de los ajustes preestablecidos.",
+      "undoSucceeded": "Orden de ajustes preestablecidos restaurado."
     },
     "csvPreview": {
       "preparing": "Preparando vista previa…",
@@ -2311,7 +2316,18 @@
       "exportLimited": "El límite de seguridad incluye los {{exported}} registros más recientes de {{matched}} coincidencias.",
       "close": "Cerrar",
       "download": "Descargar CSV",
-      "downloaded": "Se descargaron {{count}} registros de estado sanitizados."
+      "downloaded": "Se descargaron {{count}} registros de estado sanitizados.",
+      "columnsTitle": "Columnas que se incluirán",
+      "columnsHelp": "Selecciona al menos una columna. La vista previa, la copia y la descarga se mantienen sincronizadas.",
+      "columnsSelected": "{{selected}} de {{total}} seleccionadas",
+      "selectAllColumns": "Seleccionar todas",
+      "updatingColumns": "Actualizando las columnas seleccionadas…",
+      "copy": "Copiar al portapapeles",
+      "copying": "Copiando…",
+      "copySucceeded": "Copiado",
+      "copyFailed": "Error al copiar — reintentar",
+      "copied": "Se copiaron {{count}} registros de estado sanitizados.",
+      "copyError": "No se pudieron copiar los datos CSV. Intenta descargarlos."
     }
   }
 }

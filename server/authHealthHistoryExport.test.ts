@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT,
+  AUTH_HEALTH_HISTORY_EXPORT_COLUMN_KEYS,
   buildAuthHealthHistoryCsvExport,
   buildAuthHealthHistoryCsvFilename,
   buildAuthHealthHistoryExportRows,
@@ -101,5 +102,49 @@ describe("auth health history CSV", () => {
       fromMs: Date.UTC(2026, 6, 1),
       toMs: Date.UTC(2026, 6, 22),
     });
+  });
+
+  it("projects allowlisted columns in canonical order across preview, clipboard, and download", () => {
+    const rows = [{
+      id: 9,
+      triggerSource: "manual" as const,
+      scheduleCronTaskUid: "private-schedule",
+      overallStatus: "fail" as const,
+      configStatus: "ok" as const,
+      databaseStatus: "ok" as const,
+      userSchemaStatus: "ok" as const,
+      magicLinkSchemaStatus: "ok" as const,
+      sessionStatus: "ok" as const,
+      emailProviderStatus: "fail" as const,
+      providerName: "+Provider",
+      failureCode: "@provider_failed",
+      failureDetail: "user@example.com token=abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef",
+      durationMs: 17,
+      checkedAt: Date.UTC(2026, 6, 21, 13, 0, 0),
+    }];
+
+    const snapshot = buildAuthHealthHistoryCsvExport({
+      rows,
+      total: 1,
+      truncated: false,
+      selectedColumns: ["failureCode", "recordId", "providerName", "recordId"],
+      snapshotToMs: Date.UTC(2026, 6, 21, 13, 5, 0),
+      generatedAt: Date.UTC(2026, 6, 21, 13, 6, 0),
+    });
+
+    expect(snapshot.availableColumns.map((column) => column.key)).toEqual(AUTH_HEALTH_HISTORY_EXPORT_COLUMN_KEYS);
+    expect(snapshot.preview.columns).toEqual([
+      { key: "recordId", csvHeader: "record_id" },
+      { key: "providerName", csvHeader: "provider_name" },
+      { key: "failureCode", csvHeader: "failure_code" },
+    ]);
+    expect(snapshot.csv).toBe("\uFEFFrecord_id,provider_name,failure_code\r\n9,'+Provider,'@provider_failed\r\n");
+    expect(snapshot.clipboardText).toBe("record_id,provider_name,failure_code\r\n9,'+Provider,'@provider_failed\r\n");
+    expect(snapshot.csv.slice(1)).toBe(snapshot.clipboardText);
+    expect(snapshot.preview.rows[0].failureDetailSanitized).toContain("[redacted-email]");
+    expect(snapshot.preview.rows[0].failureDetailSanitized).toContain("[redacted-token]");
+    expect(snapshot.snapshotToMs).toBe(Date.UTC(2026, 6, 21, 13, 5, 0));
+    expect(snapshot.csv).not.toContain("private-schedule");
+    expect(snapshot.csv).not.toContain("user@example.com");
   });
 });

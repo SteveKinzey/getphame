@@ -47,7 +47,8 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("Filter health history by trigger source");
     expect(page).toContain("Rows per page");
     expect(page).toContain("Preview filtered CSV");
-    expect(page).toContain("prepareHealthHistoryExport.mutate(historyExportInput)");
+    expect(page).toContain("prepareHealthHistoryExport.mutate(request)");
+    expect(page).toContain("prepareHealthHistoryExport.mutate({ ...csvPreviewRequest, columns, snapshotGeneratedAt: csvPreview.generatedAt })");
     expect(page).toContain("fromDate: historyFromDate || undefined");
     expect(page).toContain("toDate: historyToDate || undefined");
     expect(page).toContain("matching records");
@@ -81,6 +82,13 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("SortableContext");
     expect(page).toContain("Reorder ${preset.name}");
     expect(page).toContain("reorderHealthHistoryPresets.mutate");
+    expect(page).toContain("undoHealthHistoryPresetReorder.mutate");
+    expect(page).toContain("feedback.previousOrderedIds");
+    expect(page).toContain("const previousOrderedIds = historyPresets.map");
+    expect(page).toContain("8_000");
+    expect(page).toContain("Previous preset order restored.");
+    expect(page).toContain("Undoing…");
+    expect(page).toContain('defaultValue: "Undo"');
     expect(page).toContain("presetReorderFeedback?.presetId === preset.id");
     expect(page).toContain("reorderSucceeded={presetReorderFeedback?.presetId === preset.id}");
     expect(page).toContain("ring-2 ring-emerald-500/30");
@@ -114,7 +122,20 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("The export safety cap includes the newest {{exported}}");
     expect(page).toContain("onClick={downloadHealthHistoryCsv}");
     expect(page).toContain("new Blob([csvPreview.csv], { type: csvPreview.mimeType })");
-    expect(page).toContain("disabled={!csvPreview || csvPreview.rowCount === 0}");
+    expect(page).toContain("selectedCsvColumns");
+    expect(page).toContain("snapshotGeneratedAt: csvPreview.generatedAt");
+    expect(page).toContain("columns, snapshotGeneratedAt: csvPreview.generatedAt");
+    expect(page).toContain("selectedCsvColumns.length === 1");
+    expect(page).toContain("Choose at least one column. Preview, copy, and download stay in sync.");
+    expect(page).toContain("csvPreview.availableColumns.map");
+    expect(page).toContain("updatingColumns");
+    expect(page).toContain("writeTextToClipboard");
+    expect(page).toContain("navigator.clipboard.writeText(text)");
+    expect(page).toContain('document.execCommand("copy")');
+    expect(page).toContain("csvPreview.clipboardText");
+    expect(page).toContain("Copy to Clipboard");
+    expect(page).toContain("Copy failed — retry");
+    expect(page).toContain("disabled={!csvPreview || csvPreview.rowCount === 0 || prepareHealthHistoryExport.isPending || selectedCsvColumns.length === 0}");
   });
 
   it("localizes every new administrator shortcut, reorder, and CSV preview message", () => {
@@ -124,6 +145,11 @@ describe("admin authentication uptime summary", () => {
       "adminAuthDiagnostics.clearFilters.touchHelp",
       "adminAuthDiagnostics.clearFilters.cleared",
       "adminAuthDiagnostics.presets.orderSavedDetail",
+      "adminAuthDiagnostics.presets.orderRestored",
+      "adminAuthDiagnostics.presets.undo",
+      "adminAuthDiagnostics.presets.undoing",
+      "adminAuthDiagnostics.presets.undoError",
+      "adminAuthDiagnostics.presets.undoSucceeded",
       "adminAuthDiagnostics.csvPreview.preparing",
       "adminAuthDiagnostics.csvPreview.openButton",
       "adminAuthDiagnostics.csvPreview.title",
@@ -142,6 +168,17 @@ describe("admin authentication uptime summary", () => {
       "adminAuthDiagnostics.csvPreview.close",
       "adminAuthDiagnostics.csvPreview.download",
       "adminAuthDiagnostics.csvPreview.downloaded",
+      "adminAuthDiagnostics.csvPreview.columnsTitle",
+      "adminAuthDiagnostics.csvPreview.columnsHelp",
+      "adminAuthDiagnostics.csvPreview.columnsSelected",
+      "adminAuthDiagnostics.csvPreview.selectAllColumns",
+      "adminAuthDiagnostics.csvPreview.updatingColumns",
+      "adminAuthDiagnostics.csvPreview.copy",
+      "adminAuthDiagnostics.csvPreview.copying",
+      "adminAuthDiagnostics.csvPreview.copySucceeded",
+      "adminAuthDiagnostics.csvPreview.copyFailed",
+      "adminAuthDiagnostics.csvPreview.copied",
+      "adminAuthDiagnostics.csvPreview.copyError",
     ];
 
     for (const locale of SUPPORTED_LOCALES) {

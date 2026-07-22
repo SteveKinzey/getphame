@@ -2250,7 +2250,12 @@
       "cleared": "History filters cleared."
     },
     "presets": {
-      "orderSavedDetail": "{{name}} saved in position {{position}} of {{total}}."
+      "orderSavedDetail": "{{name}} saved in position {{position}} of {{total}}.",
+      "orderRestored": "Previous preset order restored.",
+      "undo": "Undo",
+      "undoing": "Undoing…",
+      "undoError": "The previous preset order could not be restored.",
+      "undoSucceeded": "Preset order restored."
     },
     "csvPreview": {
       "preparing": "Preparing preview…",
@@ -2270,7 +2275,18 @@
       "exportLimited": "The export safety cap includes the newest {{exported}} of {{matched}} matching records.",
       "close": "Close",
       "download": "Download CSV",
-      "downloaded": "Downloaded {{count}} sanitized health records."
+      "downloaded": "Downloaded {{count}} sanitized health records.",
+      "columnsTitle": "Columns to include",
+      "columnsHelp": "Choose at least one column. Preview, copy, and download stay in sync.",
+      "columnsSelected": "{{selected}} of {{total}} selected",
+      "selectAllColumns": "Select all",
+      "updatingColumns": "Updating selected columns…",
+      "copy": "Copy to Clipboard",
+      "copying": "Copying…",
+      "copySucceeded": "Copied",
+      "copyFailed": "Copy failed — retry",
+      "copied": "Copied {{count}} sanitized health records.",
+      "copyError": "The CSV data could not be copied. Try downloading it instead."
     }
   }
 }

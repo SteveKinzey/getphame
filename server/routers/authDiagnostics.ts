@@ -14,7 +14,11 @@ import {
   normalizeDiagnosticEmail,
   runAuthHealthCheck,
 } from "../authOperations";
-import { buildAuthHealthHistoryCsvExport } from "../authHealthHistoryExport";
+import {
+  AUTH_HEALTH_HISTORY_EXPORT_COLUMNS,
+  AUTH_HEALTH_HISTORY_EXPORT_COLUMN_KEYS,
+  buildAuthHealthHistoryCsvExport,
+} from "../authHealthHistoryExport";
 import {
   deleteAuthHealthHistoryPreset,
   duplicateAuthHealthHistoryPreset,
@@ -55,6 +59,12 @@ const healthHistoryExportSchema = z.object({
   ...healthHistoryFilterFields,
   fromDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   toDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  columns: z.array(z.enum(AUTH_HEALTH_HISTORY_EXPORT_COLUMN_KEYS))
+    .min(1)
+    .max(AUTH_HEALTH_HISTORY_EXPORT_COLUMNS.length)
+    .refine((columns) => new Set(columns).size === columns.length, "Export columns must be unique.")
+    .optional(),
+  snapshotGeneratedAt: z.number().int().nonnegative().optional(),
 }).superRefine(validateHealthHistoryRange);
 
 const healthHistoryPageSchema = z.object({
@@ -111,9 +121,12 @@ export const authDiagnosticsRouter = router({
     .input(healthHistoryExportSchema.optional())
     .mutation(async ({ input }) => {
       const parsed = healthHistoryExportSchema.parse(input ?? {});
-      const { fromDate, toDate, ...filters } = parsed;
-      const history = await listAuthHealthChecksForExport(filters);
-      return buildAuthHealthHistoryCsvExport({ ...history, ...filters, fromDate, toDate });
+      const { fromDate, toDate, columns, snapshotGeneratedAt, ...filters } = parsed;
+      const now = Date.now();
+      const generatedAt = Math.min(snapshotGeneratedAt ?? now, now);
+      const snapshotToMs = Math.min(filters.toMs ?? generatedAt, generatedAt);
+      const history = await listAuthHealthChecksForExport({ ...filters, toMs: snapshotToMs });
+      return buildAuthHealthHistoryCsvExport({ ...history, ...filters, fromDate, toDate, selectedColumns: columns, generatedAt, snapshotToMs });
     }),
 
   healthHistoryPresets: adminProcedure.query(async ({ ctx }) => {

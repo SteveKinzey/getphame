@@ -141,6 +141,15 @@
 - [x] Add backend, authorization, UI-contract, interaction-state, sanitization, export-parity, and accessibility regression coverage for the new workflows
 - [x] Extend the reusable production-auth-health-monitoring skill through the skill-creator workflow and pass the official skill validator
 - [x] Run focused tests, the full suite, TypeScript checks, dependency security audit, production build, and authenticated desktop/mobile responsive verification
-- [ ] Save and auto-publish a release checkpoint, verify the live Get Phame bundle contains the new workflow labels, and deliver the reusable skill
+- [x] Save and auto-publish a release checkpoint, verify the live Get Phame bundle contains the new workflow labels, and deliver the reusable skill
 - [x] Add and verify an explicit touch-friendly shortcut-help affordance alongside the clear-filters tooltip, with localized copy and regression coverage
 - [x] Capture readable authenticated desktop and mobile evidence that the protected diagnostics page renders shortcut help, preset ordering controls, and the CSV preview entry point
+- [x] Extend the sanitized same-snapshot CSV helper with an allowlisted column-projection serializer that preserves row bounds, ordering, redaction, formula protection, and filename behavior
+- [x] Add an accessible Copy to Clipboard action that copies all prepared export rows for the selected columns, with secure-context support, fallback behavior, and visible plus screen-reader feedback
+- [x] Add responsive column inclusion controls inside the preview modal with all columns selected by default, at least one column enforced, and preview, copy, and download kept in exact projection parity
+- [x] Add a time-bounded Undo action to the server-confirmed preset reorder notification that restores the prior owner-scoped order through the existing validated mutation and reports success or failure accessibly
+- [x] Localize every new clipboard, column-selection, and reorder-undo label and state across all seven supported Get Phame locales and bump the locale cache key
+- [x] Add helper, authorization, UI-contract, interaction-state, clipboard, selected-column parity, undo, localization, and accessibility regression coverage
+- [x] Extend the reusable production-auth-health-monitoring skill through the skill-creator workflow with column projection, clipboard copy, and reorder undo patterns, then pass the official validator
+- [x] Run focused tests, the full suite, TypeScript checks, dependency security audit, production build, and authenticated desktop/mobile responsive verification
+- [ ] Save and auto-publish a release checkpoint, verify the live Get Phame bundle contains the new workflow markers, and deliver the updated reusable skill

@@ -2463,7 +2463,12 @@
       "cleared": "I filtri della cronologia sono stati cancellati."
     },
     "presets": {
-      "orderSavedDetail": "{{name}} salvato nella posizione {{position}} di {{total}}."
+      "orderSavedDetail": "{{name}} salvato nella posizione {{position}} di {{total}}.",
+      "orderRestored": "L’ordine precedente delle preimpostazioni è stato ripristinato.",
+      "undo": "Annulla",
+      "undoing": "Annullamento…",
+      "undoError": "Impossibile ripristinare l’ordine precedente delle preimpostazioni.",
+      "undoSucceeded": "Ordine delle preimpostazioni ripristinato."
     },
     "csvPreview": {
       "preparing": "Preparazione anteprima…",
@@ -2483,7 +2488,18 @@
       "exportLimited": "Il limite di sicurezza include i {{exported}} record più recenti su {{matched}} corrispondenze.",
       "close": "Chiudi",
       "download": "Scarica CSV",
-      "downloaded": "Scaricati {{count}} record di stato sanitizzati."
+      "downloaded": "Scaricati {{count}} record di stato sanitizzati.",
+      "columnsTitle": "Colonne da includere",
+      "columnsHelp": "Seleziona almeno una colonna. Anteprima, copia e download restano sincronizzati.",
+      "columnsSelected": "{{selected}} di {{total}} selezionate",
+      "selectAllColumns": "Seleziona tutte",
+      "updatingColumns": "Aggiornamento delle colonne selezionate…",
+      "copy": "Copia negli appunti",
+      "copying": "Copia in corso…",
+      "copySucceeded": "Copiato",
+      "copyFailed": "Copia non riuscita — riprova",
+      "copied": "Copiati {{count}} record di stato sanitizzati.",
+      "copyError": "Impossibile copiare i dati CSV. Prova a scaricarli."
     }
   }
 }

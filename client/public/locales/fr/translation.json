@@ -2286,7 +2286,12 @@
       "cleared": "Les filtres de l’historique ont été effacés."
     },
     "presets": {
-      "orderSavedDetail": "{{name}} enregistré en position {{position}} sur {{total}}."
+      "orderSavedDetail": "{{name}} enregistré en position {{position}} sur {{total}}.",
+      "orderRestored": "L’ordre précédent des préréglages a été restauré.",
+      "undo": "Annuler",
+      "undoing": "Annulation…",
+      "undoError": "Impossible de restaurer l’ordre précédent des préréglages.",
+      "undoSucceeded": "Ordre des préréglages restauré."
     },
     "csvPreview": {
       "preparing": "Préparation de l’aperçu…",
@@ -2306,7 +2311,18 @@
       "exportLimited": "La limite de sécurité inclut les {{exported}} enregistrements les plus récents sur {{matched}} correspondances.",
       "close": "Fermer",
       "download": "Télécharger le CSV",
-      "downloaded": "{{count}} enregistrements d’état assainis ont été téléchargés."
+      "downloaded": "{{count}} enregistrements d’état assainis ont été téléchargés.",
+      "columnsTitle": "Colonnes à inclure",
+      "columnsHelp": "Sélectionnez au moins une colonne. L’aperçu, la copie et le téléchargement restent synchronisés.",
+      "columnsSelected": "{{selected}} sur {{total}} sélectionnées",
+      "selectAllColumns": "Tout sélectionner",
+      "updatingColumns": "Mise à jour des colonnes sélectionnées…",
+      "copy": "Copier dans le presse-papiers",
+      "copying": "Copie…",
+      "copySucceeded": "Copié",
+      "copyFailed": "Échec de la copie — réessayer",
+      "copied": "{{count}} enregistrements d’état assainis ont été copiés.",
+      "copyError": "Impossible de copier les données CSV. Essayez de les télécharger."
     }
   }
 }

@@ -154,15 +154,28 @@ describe("admin authentication diagnostics", () => {
     });
 
     const adminCaller = appRouter.createCaller(context("admin"));
-    const result = await adminCaller.authDiagnostics.exportHealthHistoryCsv({ status: "fail", triggerSource: "manual", fromMs: 100, toMs: 999, fromDate: "2026-07-01", toDate: "2026-07-21" });
-    expect(mocks.listAuthHealthChecksForExport).toHaveBeenCalledWith({ status: "fail", triggerSource: "manual", fromMs: 100, toMs: 999 });
+    const result = await adminCaller.authDiagnostics.exportHealthHistoryCsv({
+      status: "fail",
+      triggerSource: "manual",
+      fromMs: 100,
+      toMs: 999,
+      fromDate: "2026-07-01",
+      toDate: "2026-07-21",
+      columns: ["recordId", "providerName", "failureDetailSanitized"],
+      snapshotGeneratedAt: 900,
+    });
+    expect(mocks.listAuthHealthChecksForExport).toHaveBeenCalledWith({ status: "fail", triggerSource: "manual", fromMs: 100, toMs: 900 });
     expect(result.filename).toBe("getphame-auth-health-history-2026-07-01-to-2026-07-21.csv");
-    expect(result.csv).toContain("failure_detail_sanitized");
+    expect(result.csv).toContain("record_id,provider_name,failure_detail_sanitized");
+    expect(result.csv).not.toContain("overall_status");
     expect(result.csv).toContain("'=SUM(1,2)");
     expect(result.csv).not.toContain("private-task-uid");
     expect(result.rowCount).toBe(1);
     expect(result.totalMatching).toBe(1);
     expect(result.truncated).toBe(false);
+    expect(result.snapshotToMs).toBe(900);
+    expect(result.clipboardText).toBe(result.csv.slice(1));
+    expect(result.availableColumns).toHaveLength(14);
     expect(result.preview).toMatchObject({
       rowCount: 1,
       limit: 25,
@@ -174,26 +187,16 @@ describe("admin authentication diagnostics", () => {
         failureDetailSanitized: "'=SUM(1,2)",
       }],
     });
-    expect(result.preview.columns.map((column) => column.csvHeader)).toEqual([
-      "record_id",
-      "checked_at_utc",
-      "trigger_source",
-      "overall_status",
-      "config_status",
-      "database_status",
-      "user_schema_status",
-      "magic_link_schema_status",
-      "session_status",
-      "email_provider_status",
-      "provider_name",
-      "failure_code",
-      "failure_detail_sanitized",
-      "duration_ms",
-    ]);
+    expect(result.preview.columns.map((column) => column.csvHeader)).toEqual(["record_id", "provider_name", "failure_detail_sanitized"]);
     expect(result.filters).toEqual({ status: "fail", triggerSource: "manual", fromMs: 100, toMs: 999 });
 
     const userCaller = appRouter.createCaller(context("user"));
-    await expect(userCaller.authDiagnostics.exportHealthHistoryCsv()).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(userCaller.authDiagnostics.exportHealthHistoryCsv({ columns: ["recordId"] })).rejects.toMatchObject({ code: "FORBIDDEN" });
+
+    mocks.listAuthHealthChecksForExport.mockClear();
+    await expect(adminCaller.authDiagnostics.exportHealthHistoryCsv({ columns: [] })).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    await expect(adminCaller.authDiagnostics.exportHealthHistoryCsv({ columns: ["recordId", "privateColumn"] } as never)).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    expect(mocks.listAuthHealthChecksForExport).not.toHaveBeenCalled();
   });
 
   it("keeps saved health-history presets administrator-only and owner-scoped", async () => {
@@ -218,6 +221,9 @@ describe("admin authentication diagnostics", () => {
 
     await adminCaller.authDiagnostics.reorderHealthHistoryPresets({ orderedIds: [6, 5] });
     expect(mocks.reorderAuthHealthHistoryPresets).toHaveBeenCalledWith(1, { orderedIds: [6, 5] });
+
+    await adminCaller.authDiagnostics.reorderHealthHistoryPresets({ orderedIds: [5, 6] });
+    expect(mocks.reorderAuthHealthHistoryPresets).toHaveBeenLastCalledWith(1, { orderedIds: [5, 6] });
 
     const userCaller = appRouter.createCaller(context("user"));
     await expect(userCaller.authDiagnostics.healthHistoryPresets()).rejects.toMatchObject({ code: "FORBIDDEN" });

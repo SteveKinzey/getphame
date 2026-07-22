@@ -1779,7 +1779,12 @@
       "cleared": "歷史記錄篩選條件已清除。"
     },
     "presets": {
-      "orderSavedDetail": "{{name}} 已儲存至第 {{position}} 位，共 {{total}} 位。"
+      "orderSavedDetail": "{{name}} 已儲存至第 {{position}} 位，共 {{total}} 位。",
+      "orderRestored": "已還原先前的預設順序。",
+      "undo": "復原",
+      "undoing": "正在復原…",
+      "undoError": "無法還原先前的預設順序。",
+      "undoSucceeded": "預設順序已還原。"
     },
     "csvPreview": {
       "preparing": "正在準備預覽…",
@@ -1799,7 +1804,18 @@
       "exportLimited": "匯出安全上限包含 {{matched}} 個符合記錄中最新的 {{exported}} 個。",
       "close": "關閉",
       "download": "下載 CSV",
-      "downloaded": "已下載 {{count}} 筆清理後的健康狀態記錄。"
+      "downloaded": "已下載 {{count}} 筆清理後的健康狀態記錄。",
+      "columnsTitle": "要包含的欄位",
+      "columnsHelp": "請至少選擇一個欄位。預覽、複製及下載內容將保持一致。",
+      "columnsSelected": "已選擇 {{selected}} 個，共 {{total}} 個",
+      "selectAllColumns": "全選",
+      "updatingColumns": "正在更新所選欄位…",
+      "copy": "複製到剪貼簿",
+      "copying": "正在複製…",
+      "copySucceeded": "已複製",
+      "copyFailed": "複製失敗 — 重試",
+      "copied": "已複製 {{count}} 筆清理後的健康狀態記錄。",
+      "copyError": "無法複製 CSV 資料。請嘗試下載。"
     }
   }
 }

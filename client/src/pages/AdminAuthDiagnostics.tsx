@@ -9,7 +9,7 @@ import { trpc } from "@/lib/trpc";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { Activity, AlertCircle, ArrowLeft, BellRing, Bookmark, CheckCircle2, ChevronLeft, ChevronRight, Clock3, Copy, Download, FileSearch, Filter, Gauge, GripVertical, KeyRound, Loader2, MailCheck, Pencil, RefreshCw, Save, Search, ShieldCheck, Trash2, X } from "lucide-react";
+import { Activity, AlertCircle, ArrowLeft, BellRing, Bookmark, CheckCircle2, ChevronLeft, ChevronRight, Clock3, Columns3, Copy, Download, FileSearch, Filter, Gauge, GripVertical, KeyRound, Loader2, MailCheck, Pencil, RefreshCw, Save, Search, ShieldCheck, Trash2, Undo2, X } from "lucide-react";
 import { AUTH_HEALTH_HISTORY_CLEAR_SHORTCUT, AUTH_HEALTH_HISTORY_RELATIVE_DAYS, clearAllAuthHealthHistoryFilters, clearAuthHealthHistoryFilter, getActiveAuthHealthHistoryFilterChips, getRelativeAuthHealthHistoryDateInputs, shouldClearAuthHealthHistoryFiltersFromShortcut } from "../../../shared/authHealthHistoryRanges";
 
 type HealthValue = "ok" | "fail";
@@ -54,18 +54,63 @@ function msToLocalDateInput(value: number | null | undefined) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 }
 
+async function writeTextToClipboard(text: string) {
+  if (window.isSecureContext && navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  document.body.appendChild(textarea);
+  textarea.select();
+  const copied = document.execCommand("copy");
+  textarea.remove();
+  if (!copied) throw new Error("Clipboard copy was not available.");
+}
+
 type SortableHistoryPreset = { id: number; name: string };
+
+type AuthHealthHistoryExportColumnKey =
+  | "recordId"
+  | "checkedAtUtc"
+  | "triggerSource"
+  | "overallStatus"
+  | "configStatus"
+  | "databaseStatus"
+  | "userSchemaStatus"
+  | "magicLinkSchemaStatus"
+  | "sessionStatus"
+  | "emailProviderStatus"
+  | "providerName"
+  | "failureCode"
+  | "failureDetailSanitized"
+  | "durationMs";
+
+type AuthHealthHistoryCsvRequest = {
+  status?: "ok" | "fail";
+  triggerSource?: "scheduled" | "manual";
+  fromMs?: number;
+  toMs?: number;
+  fromDate?: string;
+  toDate?: string;
+};
 
 type AuthHealthHistoryCsvPreview = {
   filename: string;
   mimeType: string;
   csv: string;
+  clipboardText: string;
   generatedAt: number;
+  snapshotToMs: number;
   rowCount: number;
   totalMatching: number;
   truncated: boolean;
+  availableColumns: Array<{ key: AuthHealthHistoryExportColumnKey; csvHeader: string }>;
   preview: {
-    columns: Array<{ key: string; csvHeader: string }>;
+    columns: Array<{ key: AuthHealthHistoryExportColumnKey; csvHeader: string }>;
     rows: Array<Record<string, string>>;
     rowCount: number;
     limit: number;
@@ -74,10 +119,12 @@ type AuthHealthHistoryCsvPreview = {
 };
 
 type PresetReorderFeedback = {
+  kind: "saved" | "undone";
   presetId: number;
   presetName: string;
   position: number;
   total: number;
+  previousOrderedIds: number[];
 };
 
 function SortablePresetControl({ preset, disabled, reorderSucceeded, onApply, onRename, onDuplicate, onDelete }: {
@@ -141,7 +188,11 @@ export default function AdminAuthDiagnosticsPage() {
   const [presetReorderFeedback, setPresetReorderFeedback] = useState<PresetReorderFeedback | null>(null);
   const [csvPreviewOpen, setCsvPreviewOpen] = useState(false);
   const [csvPreview, setCsvPreview] = useState<AuthHealthHistoryCsvPreview | null>(null);
+  const [csvPreviewRequest, setCsvPreviewRequest] = useState<AuthHealthHistoryCsvRequest | null>(null);
+  const [selectedCsvColumns, setSelectedCsvColumns] = useState<AuthHealthHistoryExportColumnKey[]>([]);
+  const [csvCopyStatus, setCsvCopyStatus] = useState<"idle" | "copying" | "copied" | "error">("idle");
   const presetReorderFeedbackTimerRef = useRef<number | null>(null);
+  const csvCopyFeedbackTimerRef = useRef<number | null>(null);
   const trpcUtils = trpc.useUtils();
 
   const historyFromMs = useMemo(() => localDateStartMs(historyFromDate), [historyFromDate]);
@@ -249,6 +300,7 @@ export default function AdminAuthDiagnosticsPage() {
 
   useEffect(() => () => {
     if (presetReorderFeedbackTimerRef.current) window.clearTimeout(presetReorderFeedbackTimerRef.current);
+    if (csvCopyFeedbackTimerRef.current) window.clearTimeout(csvCopyFeedbackTimerRef.current);
   }, []);
 
   useEffect(() => {
@@ -260,14 +312,57 @@ export default function AdminAuthDiagnosticsPage() {
   const prepareHealthHistoryExport = trpc.authDiagnostics.exportHealthHistoryCsv.useMutation({
     onSuccess: (result) => {
       setCsvPreview(result);
+      setSelectedCsvColumns(result.preview.columns.map((column) => column.key));
+      setCsvCopyStatus("idle");
+    },
+    onError: () => {
+      setSelectedCsvColumns(csvPreview?.preview.columns.map((column) => column.key) ?? []);
     },
   });
 
   const openHealthHistoryCsvPreview = () => {
+    const request = { ...historyExportInput };
     setCsvPreviewOpen(true);
     setCsvPreview(null);
+    setCsvPreviewRequest(request);
+    setSelectedCsvColumns([]);
+    setCsvCopyStatus("idle");
     prepareHealthHistoryExport.reset();
-    prepareHealthHistoryExport.mutate(historyExportInput);
+    prepareHealthHistoryExport.mutate(request);
+  };
+
+  const updateCsvColumnSelection = (columns: AuthHealthHistoryExportColumnKey[]) => {
+    if (!csvPreview || !csvPreviewRequest || columns.length === 0 || prepareHealthHistoryExport.isPending) return;
+    setSelectedCsvColumns(columns);
+    setCsvCopyStatus("idle");
+    prepareHealthHistoryExport.reset();
+    prepareHealthHistoryExport.mutate({ ...csvPreviewRequest, columns, snapshotGeneratedAt: csvPreview.generatedAt });
+  };
+
+  const toggleCsvColumn = (column: AuthHealthHistoryExportColumnKey) => {
+    const selected = selectedCsvColumns.includes(column);
+    if (selected && selectedCsvColumns.length === 1) return;
+    updateCsvColumnSelection(selected
+      ? selectedCsvColumns.filter((key) => key !== column)
+      : [...selectedCsvColumns, column]);
+  };
+
+  const copyHealthHistoryCsv = async () => {
+    if (!csvPreview || csvPreview.rowCount === 0 || prepareHealthHistoryExport.isPending) return;
+    if (csvCopyFeedbackTimerRef.current) window.clearTimeout(csvCopyFeedbackTimerRef.current);
+    setCsvCopyStatus("copying");
+    try {
+      await writeTextToClipboard(csvPreview.clipboardText);
+      setCsvCopyStatus("copied");
+      toast.success(t("adminAuthDiagnostics.csvPreview.copied", {
+        defaultValue: "Copied {{count}} sanitized health records.",
+        count: csvPreview.rowCount,
+      }));
+      csvCopyFeedbackTimerRef.current = window.setTimeout(() => setCsvCopyStatus("idle"), 3_200);
+    } catch {
+      setCsvCopyStatus("error");
+      toast.error(t("adminAuthDiagnostics.csvPreview.copyError", { defaultValue: "The CSV data could not be copied. Try downloading it instead." }));
+    }
   };
 
   const downloadHealthHistoryCsv = () => {
@@ -287,6 +382,9 @@ export default function AdminAuthDiagnosticsPage() {
     }));
     setCsvPreviewOpen(false);
     setCsvPreview(null);
+    setCsvPreviewRequest(null);
+    setSelectedCsvColumns([]);
+    setCsvCopyStatus("idle");
     prepareHealthHistoryExport.reset();
   };
 
@@ -346,6 +444,39 @@ export default function AdminAuthDiagnosticsPage() {
     onSettled: () => trpcUtils.authDiagnostics.healthHistoryPresets.invalidate(),
   });
 
+  const undoHealthHistoryPresetReorder = trpc.authDiagnostics.reorderHealthHistoryPresets.useMutation({
+    onMutate: async ({ orderedIds }) => {
+      await trpcUtils.authDiagnostics.healthHistoryPresets.cancel();
+      const previous = trpcUtils.authDiagnostics.healthHistoryPresets.getData();
+      if (previous) {
+        const byId = new Map(previous.map((preset) => [preset.id, preset]));
+        trpcUtils.authDiagnostics.healthHistoryPresets.setData(undefined, orderedIds.map((id) => byId.get(id)).filter((preset): preset is NonNullable<typeof preset> => Boolean(preset)));
+      }
+      return { previous };
+    },
+    onError: (undoError, _input, context) => {
+      if (context?.previous) trpcUtils.authDiagnostics.healthHistoryPresets.setData(undefined, context.previous);
+      toast.error(t("adminAuthDiagnostics.presets.undoError", { defaultValue: "The previous preset order could not be restored." }));
+    },
+    onSettled: () => trpcUtils.authDiagnostics.healthHistoryPresets.invalidate(),
+  });
+
+  const handleUndoPresetReorder = () => {
+    const feedback = presetReorderFeedback;
+    if (!feedback || feedback.kind !== "saved" || undoHealthHistoryPresetReorder.isPending) return;
+    if (presetReorderFeedbackTimerRef.current) window.clearTimeout(presetReorderFeedbackTimerRef.current);
+    undoHealthHistoryPresetReorder.mutate({ orderedIds: feedback.previousOrderedIds }, {
+      onSuccess: () => {
+        setPresetReorderFeedback({ ...feedback, kind: "undone", previousOrderedIds: [] });
+        toast.success(t("adminAuthDiagnostics.presets.undoSucceeded", { defaultValue: "Preset order restored." }));
+        presetReorderFeedbackTimerRef.current = window.setTimeout(() => setPresetReorderFeedback(null), 3_200);
+      },
+      onError: () => {
+        presetReorderFeedbackTimerRef.current = window.setTimeout(() => setPresetReorderFeedback(null), 8_000);
+      },
+    });
+  };
+
   const handlePresetDragEnd = useCallback((event: DragEndEvent) => {
     const activeId = Number(event.active.id);
     const overId = event.over ? Number(event.over.id) : activeId;
@@ -354,12 +485,14 @@ export default function AdminAuthDiagnosticsPage() {
     const newIndex = historyPresets.findIndex((preset) => preset.id === overId);
     if (oldIndex < 0 || newIndex < 0) return;
     const movedPreset = historyPresets[oldIndex];
+    const previousOrderedIds = historyPresets.map((preset) => preset.id);
     const orderedPresets = arrayMove(historyPresets, oldIndex, newIndex);
+    if (presetReorderFeedbackTimerRef.current) window.clearTimeout(presetReorderFeedbackTimerRef.current);
+    setPresetReorderFeedback(null);
     reorderHealthHistoryPresets.mutate({ orderedIds: orderedPresets.map((preset) => preset.id) }, {
       onSuccess: () => {
-        if (presetReorderFeedbackTimerRef.current) window.clearTimeout(presetReorderFeedbackTimerRef.current);
-        setPresetReorderFeedback({ presetId: movedPreset.id, presetName: movedPreset.name, position: newIndex + 1, total: orderedPresets.length });
-        presetReorderFeedbackTimerRef.current = window.setTimeout(() => setPresetReorderFeedback(null), 3_200);
+        setPresetReorderFeedback({ kind: "saved", presetId: movedPreset.id, presetName: movedPreset.name, position: newIndex + 1, total: orderedPresets.length, previousOrderedIds });
+        presetReorderFeedbackTimerRef.current = window.setTimeout(() => setPresetReorderFeedback(null), 8_000);
       },
     });
   }, [historyPresets, reorderHealthHistoryPresets]);
@@ -592,7 +725,7 @@ export default function AdminAuthDiagnosticsPage() {
           {historyDateError && <div role="alert" className="mb-3 rounded-xl px-4 py-3 text-sm font-bold" style={{ background: "oklch(0.97 0.03 27)", color: "oklch(0.46 0.12 27)" }}>{historyDateError}</div>}
           <div className="mb-4 rounded-xl border bg-white p-3" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
             <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-              <div className="min-w-0 flex-1"><p className="flex items-center gap-2 text-sm rr-fw-black rr-text-navy"><Bookmark size={15} /> Quick filter presets</p><p className="mt-1 text-xs font-bold rr-text-navy-faint">Private to your administrator account. Drag the handle, or focus it and press Space then an arrow key, to save your preferred order.</p><DndContext sensors={presetSensors} collisionDetection={closestCenter} onDragEnd={handlePresetDragEnd}><SortableContext items={historyPresets.map((preset) => preset.id)} strategy={rectSortingStrategy}><div className="mt-3 flex flex-wrap gap-2">{historyPresets.map((preset) => <SortablePresetControl key={preset.id} preset={preset} reorderSucceeded={presetReorderFeedback?.presetId === preset.id} disabled={duplicateHealthHistoryPreset.isPending || deleteHealthHistoryPreset.isPending || reorderHealthHistoryPresets.isPending} onApply={() => applyHistoryPreset(preset)} onRename={() => { setEditingPresetId(preset.id); setPresetName(preset.name); }} onDuplicate={() => duplicateHealthHistoryPreset.mutate({ id: preset.id })} onDelete={() => deleteHealthHistoryPreset.mutate({ id: preset.id })} />)}{!historyPresets.length && !presetsQuery.isLoading && <span className="text-xs font-bold rr-text-navy-faint">No presets saved yet.</span>}</div></SortableContext></DndContext><div role="status" aria-live="polite" className="mt-2 min-h-5">{presetReorderFeedback && <p className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 motion-safe:transition-[opacity,transform] motion-safe:duration-200"><CheckCircle2 size={13} aria-hidden="true" />{t("adminAuthDiagnostics.presets.orderSavedDetail", { defaultValue: "{{name}} saved in position {{position}} of {{total}}.", name: presetReorderFeedback.presetName, position: presetReorderFeedback.position, total: presetReorderFeedback.total })}</p>}</div></div>
+              <div className="min-w-0 flex-1"><p className="flex items-center gap-2 text-sm rr-fw-black rr-text-navy"><Bookmark size={15} /> Quick filter presets</p><p className="mt-1 text-xs font-bold rr-text-navy-faint">Private to your administrator account. Drag the handle, or focus it and press Space then an arrow key, to save your preferred order.</p><DndContext sensors={presetSensors} collisionDetection={closestCenter} onDragEnd={handlePresetDragEnd}><SortableContext items={historyPresets.map((preset) => preset.id)} strategy={rectSortingStrategy}><div className="mt-3 flex flex-wrap gap-2">{historyPresets.map((preset) => <SortablePresetControl key={preset.id} preset={preset} reorderSucceeded={presetReorderFeedback?.presetId === preset.id} disabled={duplicateHealthHistoryPreset.isPending || deleteHealthHistoryPreset.isPending || reorderHealthHistoryPresets.isPending || undoHealthHistoryPresetReorder.isPending} onApply={() => applyHistoryPreset(preset)} onRename={() => { setEditingPresetId(preset.id); setPresetName(preset.name); }} onDuplicate={() => duplicateHealthHistoryPreset.mutate({ id: preset.id })} onDelete={() => deleteHealthHistoryPreset.mutate({ id: preset.id })} />)}{!historyPresets.length && !presetsQuery.isLoading && <span className="text-xs font-bold rr-text-navy-faint">No presets saved yet.</span>}</div></SortableContext></DndContext><div role="status" aria-live="polite" className="mt-2 min-h-7">{presetReorderFeedback && <div className="inline-flex flex-wrap items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-xs font-bold text-emerald-800 motion-safe:transition-[opacity,transform] motion-safe:duration-200"><CheckCircle2 size={13} aria-hidden="true" /><span>{presetReorderFeedback.kind === "saved" ? t("adminAuthDiagnostics.presets.orderSavedDetail", { defaultValue: "{{name}} saved in position {{position}} of {{total}}.", name: presetReorderFeedback.presetName, position: presetReorderFeedback.position, total: presetReorderFeedback.total }) : t("adminAuthDiagnostics.presets.orderRestored", { defaultValue: "Previous preset order restored." })}</span>{presetReorderFeedback.kind === "saved" && <button type="button" onClick={handleUndoPresetReorder} disabled={undoHealthHistoryPresetReorder.isPending} className="inline-flex min-h-7 items-center gap-1 rounded-md border border-emerald-300 bg-white px-2 font-black text-emerald-800 disabled:opacity-60"><Undo2 size={12} aria-hidden="true" />{undoHealthHistoryPresetReorder.isPending ? t("adminAuthDiagnostics.presets.undoing", { defaultValue: "Undoing…" }) : t("adminAuthDiagnostics.presets.undo", { defaultValue: "Undo" })}</button>}</div>}</div></div>
               <div className="flex w-full flex-col gap-2 sm:flex-row lg:w-auto"><label className="flex min-w-0 flex-1 flex-col gap-1.5 text-xs font-bold rr-text-navy-muted lg:w-56"><span>{editingPreset ? "Rename preset" : "Preset name"}</span><input value={presetName} maxLength={80} onChange={(event) => setPresetName(event.target.value)} placeholder={editingPreset ? editingPreset.name : "e.g. Manual failures"} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }} /></label><div className="flex items-end gap-2"><button type="button" onClick={savePreset} disabled={saveHealthHistoryPreset.isPending || Boolean(historyDateError)} className="flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-bold rr-bg-gold rr-text-navy disabled:opacity-50">{saveHealthHistoryPreset.isPending ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}{editingPreset ? "Rename" : "Save current"}</button>{editingPreset && <button type="button" onClick={() => { setEditingPresetId(null); setPresetName(""); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }}>Cancel</button>}</div></div>
             </div>
             {presetsQuery.error && <p role="alert" className="mt-2 text-xs font-bold" style={{ color: "oklch(0.48 0.17 27)" }}>Saved presets could not be loaded. {presetsQuery.error.message}</p>}
@@ -616,6 +749,9 @@ export default function AdminAuthDiagnosticsPage() {
         setCsvPreviewOpen(open);
         if (!open) {
           setCsvPreview(null);
+          setCsvPreviewRequest(null);
+          setSelectedCsvColumns([]);
+          setCsvCopyStatus("idle");
           prepareHealthHistoryExport.reset();
         }
       }}>
@@ -626,7 +762,7 @@ export default function AdminAuthDiagnosticsPage() {
           </DialogHeader>
 
           <div className="min-h-64 overflow-y-auto px-5 py-4 sm:px-6">
-            {prepareHealthHistoryExport.isPending && <div role="status" aria-live="polite" className="flex min-h-56 flex-col items-center justify-center gap-3 text-center"><Loader2 size={28} className="animate-spin rr-text-gold" aria-hidden="true" /><p className="text-sm font-bold rr-text-navy-muted">{t("adminAuthDiagnostics.csvPreview.loading", { defaultValue: "Preparing the sanitized preview…" })}</p></div>}
+            {prepareHealthHistoryExport.isPending && !csvPreview && <div role="status" aria-live="polite" className="flex min-h-56 flex-col items-center justify-center gap-3 text-center"><Loader2 size={28} className="animate-spin rr-text-gold" aria-hidden="true" /><p className="text-sm font-bold rr-text-navy-muted">{t("adminAuthDiagnostics.csvPreview.loading", { defaultValue: "Preparing the sanitized preview…" })}</p></div>}
 
             {prepareHealthHistoryExport.error && <div role="alert" className="flex min-h-56 flex-col items-center justify-center gap-3 rounded-xl px-5 text-center" style={{ background: "oklch(0.97 0.03 27)", color: "oklch(0.46 0.12 27)" }}><AlertCircle size={28} aria-hidden="true" /><div><p className="text-sm font-black">{t("adminAuthDiagnostics.csvPreview.errorTitle", { defaultValue: "Preview unavailable" })}</p><p className="mt-1 text-xs font-bold">{prepareHealthHistoryExport.error.message || t("adminAuthDiagnostics.csvPreview.errorDescription", { defaultValue: "The filtered export could not be prepared." })}</p></div></div>}
 
@@ -638,8 +774,17 @@ export default function AdminAuthDiagnosticsPage() {
                 <p className="sm:text-right">{t("adminAuthDiagnostics.csvPreview.summary", { defaultValue: "Previewing {{previewed}} of {{exported}} export rows · {{matched}} matched", previewed: csvPreview.preview.rowCount, exported: csvPreview.rowCount, matched: csvPreview.totalMatching })}</p>
               </div>
               <p className="text-xs font-bold rr-text-navy-faint">{t("adminAuthDiagnostics.csvPreview.sanitizedNotice", { defaultValue: "The preview and download share the same whitelisted columns, redaction, formula protection, filters, row cap, and newest-first ordering." })}</p>
+              <fieldset aria-describedby="csv-column-selection-help" disabled={prepareHealthHistoryExport.isPending} className="rounded-xl border bg-white p-3" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
+                <legend className="flex items-center gap-2 text-sm rr-fw-black rr-text-navy"><Columns3 size={15} className="rr-text-gold" aria-hidden="true" />{t("adminAuthDiagnostics.csvPreview.columnsTitle", { defaultValue: "Columns to include" })}</legend>
+                <div className="mt-1 flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                  <p id="csv-column-selection-help" className="text-xs font-bold rr-text-navy-faint">{t("adminAuthDiagnostics.csvPreview.columnsHelp", { defaultValue: "Choose at least one column. Preview, copy, and download stay in sync." })}</p>
+                  <div className="flex items-center gap-2"><span className="text-xs font-bold rr-text-navy-muted">{t("adminAuthDiagnostics.csvPreview.columnsSelected", { defaultValue: "{{selected}} of {{total}} selected", selected: selectedCsvColumns.length, total: csvPreview.availableColumns.length })}</span><button type="button" onClick={() => updateCsvColumnSelection(csvPreview.availableColumns.map((column) => column.key))} disabled={selectedCsvColumns.length === csvPreview.availableColumns.length || prepareHealthHistoryExport.isPending} className="min-h-8 rounded-md border bg-white px-2.5 text-xs font-black rr-text-navy disabled:opacity-50" style={{ borderColor: "oklch(0.86 0.04 260)" }}>{t("adminAuthDiagnostics.csvPreview.selectAllColumns", { defaultValue: "Select all" })}</button></div>
+                </div>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{csvPreview.availableColumns.map((column) => { const checked = selectedCsvColumns.includes(column.key); return <label key={column.key} className="flex min-h-10 items-center gap-2 rounded-lg border px-3 py-2 text-xs font-bold rr-text-navy" style={{ borderColor: checked ? "oklch(0.80 0.18 80)" : "oklch(0.90 0.02 260)", background: checked ? "oklch(0.98 0.03 80)" : "white" }}><input type="checkbox" checked={checked} disabled={prepareHealthHistoryExport.isPending || (checked && selectedCsvColumns.length === 1)} onChange={() => toggleCsvColumn(column.key)} className="h-4 w-4 accent-[oklch(0.80_0.18_80)]" /><span className="break-all">{column.csvHeader}</span></label>; })}</div>
+                {prepareHealthHistoryExport.isPending && <p role="status" aria-live="polite" className="mt-2 flex items-center gap-2 text-xs font-bold rr-text-navy-muted"><Loader2 size={13} className="animate-spin rr-text-gold" aria-hidden="true" />{t("adminAuthDiagnostics.csvPreview.updatingColumns", { defaultValue: "Updating selected columns…" })}</p>}
+              </fieldset>
               <div className="max-h-[48dvh] overflow-auto rounded-xl border" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
-                <table className="min-w-[1420px] border-collapse text-left text-xs" aria-label={t("adminAuthDiagnostics.csvPreview.tableLabel", { defaultValue: "Sanitized CSV data preview" })}>
+                <table className="w-max min-w-full border-collapse text-left text-xs" aria-label={t("adminAuthDiagnostics.csvPreview.tableLabel", { defaultValue: "Sanitized CSV data preview" })}>
                   <thead className="sticky top-0 z-10 rr-bg-navy text-white"><tr>{csvPreview.preview.columns.map((column) => <th key={column.key} scope="col" className="whitespace-nowrap border-r border-white/10 px-3 py-2.5 font-black last:border-r-0">{column.csvHeader}</th>)}</tr></thead>
                   <tbody className="divide-y" style={{ borderColor: "oklch(0.91 0.02 260)" }}>{csvPreview.preview.rows.map((row, rowIndex) => <tr key={`${row.recordId ?? "row"}-${rowIndex}`} className="odd:bg-white even:rr-bg-surface">{csvPreview.preview.columns.map((column) => <td key={column.key} className={`max-w-80 border-r px-3 py-2 align-top font-bold rr-text-navy-muted last:border-r-0 ${column.key === "failureDetailSanitized" ? "whitespace-pre-wrap" : "whitespace-nowrap"}`} style={{ borderColor: "oklch(0.93 0.01 260)" }} title={row[column.key] || undefined}>{row[column.key] || "—"}</td>)}</tr>)}</tbody>
                 </table>
@@ -651,7 +796,8 @@ export default function AdminAuthDiagnosticsPage() {
 
           <DialogFooter className="border-t px-5 py-4 sm:px-6" style={{ borderColor: "oklch(0.90 0.02 260)" }}>
             <DialogClose asChild><button type="button" className="min-h-10 rounded-lg border bg-white px-4 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.86 0.04 260)" }}>{t("adminAuthDiagnostics.csvPreview.close", { defaultValue: "Close" })}</button></DialogClose>
-            <button type="button" onClick={downloadHealthHistoryCsv} disabled={!csvPreview || csvPreview.rowCount === 0} className="flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-bold rr-bg-gold rr-text-navy disabled:cursor-not-allowed disabled:opacity-50"><Download size={15} aria-hidden="true" />{t("adminAuthDiagnostics.csvPreview.download", { defaultValue: "Download CSV" })}</button>
+            <button type="button" onClick={copyHealthHistoryCsv} disabled={!csvPreview || csvPreview.rowCount === 0 || prepareHealthHistoryExport.isPending || csvCopyStatus === "copying"} className="flex min-h-10 items-center justify-center gap-2 rounded-lg border bg-white px-4 text-sm font-bold rr-text-navy disabled:cursor-not-allowed disabled:opacity-50" style={{ borderColor: csvCopyStatus === "copied" ? "oklch(0.61 0.15 145)" : "oklch(0.86 0.04 260)", color: csvCopyStatus === "copied" ? "oklch(0.40 0.14 145)" : undefined }}>{csvCopyStatus === "copying" ? <Loader2 size={15} className="animate-spin" aria-hidden="true" /> : csvCopyStatus === "copied" ? <CheckCircle2 size={15} aria-hidden="true" /> : <Copy size={15} aria-hidden="true" />}{csvCopyStatus === "copying" ? t("adminAuthDiagnostics.csvPreview.copying", { defaultValue: "Copying…" }) : csvCopyStatus === "copied" ? t("adminAuthDiagnostics.csvPreview.copySucceeded", { defaultValue: "Copied" }) : csvCopyStatus === "error" ? t("adminAuthDiagnostics.csvPreview.copyFailed", { defaultValue: "Copy failed — retry" }) : t("adminAuthDiagnostics.csvPreview.copy", { defaultValue: "Copy to Clipboard" })}</button>
+            <button type="button" onClick={downloadHealthHistoryCsv} disabled={!csvPreview || csvPreview.rowCount === 0 || prepareHealthHistoryExport.isPending || selectedCsvColumns.length === 0} className="flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-bold rr-bg-gold rr-text-navy disabled:cursor-not-allowed disabled:opacity-50"><Download size={15} aria-hidden="true" />{t("adminAuthDiagnostics.csvPreview.download", { defaultValue: "Download CSV" })}</button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

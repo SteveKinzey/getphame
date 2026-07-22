@@ -1757,7 +1757,12 @@
       "cleared": "历史记录筛选条件已清除。"
     },
     "presets": {
-      "orderSavedDetail": "{{name}} 已保存到第 {{position}} 位，共 {{total}} 位。"
+      "orderSavedDetail": "{{name}} 已保存到第 {{position}} 位，共 {{total}} 位。",
+      "orderRestored": "已恢复之前的预设顺序。",
+      "undo": "撤销",
+      "undoing": "正在撤销…",
+      "undoError": "无法恢复之前的预设顺序。",
+      "undoSucceeded": "预设顺序已恢复。"
     },
     "csvPreview": {
       "preparing": "正在准备预览…",
@@ -1777,7 +1782,18 @@
       "exportLimited": "导出安全上限包含 {{matched}} 个匹配记录中最新的 {{exported}} 个。",
       "close": "关闭",
       "download": "下载 CSV",
-      "downloaded": "已下载 {{count}} 条清理后的健康状态记录。"
+      "downloaded": "已下载 {{count}} 条清理后的健康状态记录。",
+      "columnsTitle": "要包含的列",
+      "columnsHelp": "请至少选择一列。预览、复制和下载内容将保持一致。",
+      "columnsSelected": "已选择 {{selected}} 列，共 {{total}} 列",
+      "selectAllColumns": "全选",
+      "updatingColumns": "正在更新所选列…",
+      "copy": "复制到剪贴板",
+      "copying": "正在复制…",
+      "copySucceeded": "已复制",
+      "copyFailed": "复制失败 — 重试",
+      "copied": "已复制 {{count}} 条清理后的健康状态记录。",
+      "copyError": "无法复制 CSV 数据。请尝试下载。"
     }
   }
 }
