@@ -2281,5 +2281,31 @@
       "requests": "密钥使用"
     },
     "title": "开发者集成"
+  },
+  "adaptiveSending": {
+    "title": "自适应发送保护",
+    "notConfiguredTitle": "请先连接发件账户",
+    "notConfiguredBody": "发送评价邀请前，请先在设置中连接您的邮箱账户。",
+    "connectEmail": "连接邮箱",
+    "remaining": "可发送 {{count}} 封",
+    "thisHour": "本小时",
+    "today": "今天",
+    "nextReset": "下次容量恢复：{{time}}",
+    "automaticRamp": "连接逐步预热后，限额会自动提高",
+    "approachingTitle": "您正在接近安全限额",
+    "approachingBody": "系统会自动管理容量。建议先发送最重要的评价邀请。",
+    "highTitle": "发送容量即将用尽",
+    "highBody": "请先完成优先发送。Get Phame 会在服务商风险升高前自动暂停。",
+    "blockedTitle": "已达到安全限额",
+    "blockedBody": "发送会自动暂停，直到当前安全窗口重置。",
+    "upgradePlan": "升级以使用 Bulk Sender",
+    "connectBulkSender": "连接 Bulk Sender",
+    "safetyNote": "系统始终执行按服务商调整的限额和独立的账户安全上限。更换服务商无法绕过保护。",
+    "stage": {
+      "new": "新连接",
+      "warming": "正在预热",
+      "building": "正在建立信誉",
+      "established": "稳定连接"
+    }
   }
 }

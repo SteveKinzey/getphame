@@ -23,6 +23,7 @@ const mocks = vi.hoisted(() => ({
   authenticateDeveloperApiKeyWithStatus: vi.fn(),
   checkDeveloperApiAbuse: vi.fn(),
   checkDeveloperApiRateLimit: vi.fn(),
+  getAdaptiveSendStatus: vi.fn(),
 }));
 
 vi.mock("./quotaEnforcement", async (importOriginal) => ({
@@ -50,6 +51,11 @@ vi.mock("./developerApiAbuse", async (importOriginal) => ({
 vi.mock("./developerApiImports", async (importOriginal) => ({
   ...(await importOriginal<typeof import("./developerApiImports")>()),
   checkDeveloperApiRateLimit: mocks.checkDeveloperApiRateLimit,
+}));
+
+vi.mock("./adaptiveSendLimits", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./adaptiveSendLimits")>()),
+  getAdaptiveSendStatus: mocks.getAdaptiveSendStatus,
 }));
 
 import { appRouter } from "./routers";
@@ -96,6 +102,7 @@ describe("runtime Free-plan quota parity", () => {
       remaining: 59,
       retryAfterSeconds: 0,
     });
+    mocks.getAdaptiveSendStatus.mockResolvedValue({ configured: true });
     mocks.getDb.mockResolvedValue({
       select: () => ({
         from: () => ({

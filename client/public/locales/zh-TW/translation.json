@@ -2303,5 +2303,31 @@
       },
       "website": "網站"
     }
+  },
+  "adaptiveSending": {
+    "title": "自適應傳送保護",
+    "notConfiguredTitle": "請先連接寄件帳戶",
+    "notConfiguredBody": "傳送評論邀請前，請先在設定中連接您的電子郵件帳戶。",
+    "connectEmail": "連接電子郵件",
+    "remaining": "可傳送 {{count}} 封",
+    "thisHour": "本小時",
+    "today": "今天",
+    "nextReset": "下次容量恢復：{{time}}",
+    "automaticRamp": "連線逐步預熱後，限額會自動提高",
+    "approachingTitle": "您正在接近安全限額",
+    "approachingBody": "系統會自動管理容量。建議先傳送最重要的評論邀請。",
+    "highTitle": "傳送容量即將用盡",
+    "highBody": "請先完成優先傳送。Get Phame 會在服務供應商風險升高前自動暫停。",
+    "blockedTitle": "已達到安全限額",
+    "blockedBody": "傳送會自動暫停，直到目前的安全時段重設。",
+    "upgradePlan": "升級以使用 Bulk Sender",
+    "connectBulkSender": "連接 Bulk Sender",
+    "safetyNote": "系統始終執行依服務供應商調整的限額和獨立的帳戶安全上限。更換服務供應商無法略過保護。",
+    "stage": {
+      "new": "新連線",
+      "warming": "正在預熱",
+      "building": "正在建立信譽",
+      "established": "穩定連線"
+    }
   }
 }

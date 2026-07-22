@@ -2810,5 +2810,31 @@
       },
       "website": "Site web"
     }
+  },
+  "adaptiveSending": {
+    "title": "Protection d’envoi adaptative",
+    "notConfiguredTitle": "Connectez d’abord un expéditeur",
+    "notConfiguredBody": "Connectez votre compte e-mail dans les paramètres avant d’envoyer des demandes d’avis.",
+    "connectEmail": "Connecter l’e-mail",
+    "remaining": "{{count}} disponibles",
+    "thisHour": "Cette heure",
+    "today": "Aujourd’hui",
+    "nextReset": "Prochain renouvellement de capacité : {{time}}",
+    "automaticRamp": "Les limites augmentent automatiquement pendant la montée en puissance de la connexion",
+    "approachingTitle": "Vous approchez de la limite de sécurité",
+    "approachingBody": "La capacité est gérée automatiquement. Envoyez d’abord les demandes les plus importantes.",
+    "highTitle": "La capacité d’envoi est presque utilisée",
+    "highBody": "Terminez d’abord les envois prioritaires. Get Phame mettra automatiquement en pause avant que le risque fournisseur n’augmente.",
+    "blockedTitle": "Limite de sécurité atteinte",
+    "blockedBody": "Les envois sont automatiquement suspendus jusqu’à la réinitialisation de la fenêtre de sécurité actuelle.",
+    "upgradePlan": "Mettre à niveau pour Bulk Sender",
+    "connectBulkSender": "Connecter Bulk Sender",
+    "safetyNote": "Des limites adaptées au fournisseur et un plafond de sécurité distinct par compte s’appliquent toujours. Changer de fournisseur ne contourne pas la protection.",
+    "stage": {
+      "new": "Nouvelle connexion",
+      "warming": "Montée en puissance",
+      "building": "Réputation en cours",
+      "established": "Établie"
+    }
   }
 }

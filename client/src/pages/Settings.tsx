@@ -71,6 +71,7 @@ import { IntegrationGuide } from "@/components/IntegrationGuide";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
 import PlanSwitchDialog from "@/components/PlanSwitchDialog";
 import KoalendarSettingsCard from "@/components/KoalendarSettingsCard";
+import AdaptiveSendLimitStatus from "@/components/AdaptiveSendLimitStatus";
 import {
   BULK_SENDER_PRESETS,
   BULK_SENDER_PROVIDER_IDS,
@@ -717,7 +718,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
   };
 
   return (
-    <div className="bg-white rounded-2xl p-4 shadow-sm sm:p-5" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
+    <div id="bulk-sender" className="scroll-mt-24 bg-white rounded-2xl p-4 shadow-sm sm:p-5" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
           <Zap size={18} className="rr-text-gold" />
@@ -1184,12 +1185,11 @@ export default function SettingsPage() {
 
   // ── Profile form state ─────────────────────────────────────────────────────
   const { data: profile, isLoading: profileLoading } = trpc.profile.get.useQuery();
+  const { data: adaptiveSendStatus } = trpc.contacts.getDailyStatus.useQuery();
   const [businessName, setBusinessName] = useState("");
   const [reviewLink, setPhame] = useState("");
   const [fromName, setFromName] = useState("");
   const [replyTo, setReplyTo] = useState("");
-
-  const [dailySendLimit, setDailySendLimit] = useState(50);
 
   // Reminder settings state
   const { data: reminderSettings } = trpc.reminders.getSettings.useQuery();
@@ -1273,7 +1273,6 @@ export default function SettingsPage() {
       setPhame(profile.reviewLink);
       setFromName(profile.fromName ?? "");
       setReplyTo(profile.replyTo ?? "");
-      setDailySendLimit(profile.dailySendLimit ?? 50);
     }
   }, [profile?.id]);
 
@@ -1281,14 +1280,6 @@ export default function SettingsPage() {
     onSuccess: () => {
       utils.profile.get.invalidate();
       toast.success("Business profile saved!");
-    },
-    onError: (err) => toast.error(err.message),
-  });
-
-  const setDailySendLimitMutation = trpc.profile.setDailySendLimit.useMutation({
-    onSuccess: () => {
-      utils.profile.get.invalidate();
-      toast.success("Daily send limit saved!");
     },
     onError: (err) => toast.error(err.message),
   });
@@ -2442,30 +2433,8 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              {/* ── Daily send limit ───────────────────────────────────────────────────── */}
-              <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Daily Send Limit</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    min={1}
-                    max={500}
-                    value={dailySendLimit}
-                    onChange={(e) => setDailySendLimit(Math.min(500, Math.max(1, Number(e.target.value))))}
-                    className="w-24 px-3 py-2.5 rounded-xl text-sm outline-none"
-                    style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                  />
-                  <span className="text-sm font-semibold rr-text-navy-mid">emails per day (max 500)</span>
-                  <button
-                    type="button"
-                    onClick={() => setDailySendLimitMutation.mutate({ limit: dailySendLimit })}
-                    disabled={setDailySendLimitMutation.isPending || dailySendLimit === (profile?.dailySendLimit ?? 50)}
-                    className="ml-auto px-3 py-1.5 rounded-lg text-xs font-bold transition-opacity disabled:opacity-40 rr-bg-navy rr-text-gold"
-                  >
-                    {setDailySendLimitMutation.isPending ? "Saving…" : "Save"}
-                  </button>
-                </div>
-                <p className="text-xs mt-1 rr-text-navy-muted">Bulk sends will stop after this many emails per day. Resets at midnight UTC. Default: 50.</p>
+              <div id="email-connection" className="scroll-mt-24">
+                <AdaptiveSendLimitStatus status={adaptiveSendStatus} />
               </div>
 
               {/* ── Follow-up Reminder Settings ────────────────────────────────────────── */}

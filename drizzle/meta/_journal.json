@@ -169,6 +169,13 @@
       "when": 1784757569048,
       "tag": "0023_faithful_darkhawk",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "5",
+      "when": 1784761425631,
+      "tag": "0024_harsh_kabuki",
+      "breakpoints": true
     }
   ]
 }

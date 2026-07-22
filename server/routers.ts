@@ -16,7 +16,6 @@ import {
   getMonthlyRequestCount,
   getTotalRequestCount,
   getFreeQuotaSummary,
-  getTodaySentCount,
   getRecentApiImports,
   getWebhookConfigs,
   createWebhookConfig,
@@ -37,7 +36,8 @@ import {
 
 import { sendMailViaSmtp } from "./smtp";
 import { buildReviewRequestEmail, buildReviewRequestText } from "./emailTemplates";
-import { checkOnboardingChecklistEventRateLimit, checkOnboardingFunnelInsightRateLimit, checkSendRateLimit } from "./rateLimiter";
+import { checkOnboardingChecklistEventRateLimit, checkOnboardingFunnelInsightRateLimit } from "./rateLimiter";
+import { AdaptiveSendLimitError, getAdaptiveSendStatus } from "./adaptiveSendLimits";
 import {
   cancelSubscriptionRenewal,
   claimMoneyBackGuarantee,
@@ -1306,9 +1306,14 @@ export const appRouter = router({
             )
           );
 
-        // Filter out opted-out customers
-        const toSend = customers.filter((c) => !c.optedOut);
-        if (toSend.length === 0) throw new Error("No eligible customers found (all may have unsubscribed).");
+        // Filter out opted-out customers, then cap the batch at the adaptive provider/account allowance.
+        const eligibleCustomers = customers.filter((c) => !c.optedOut);
+        if (eligibleCustomers.length === 0) throw new Error("No eligible customers found (all may have unsubscribed).");
+        const initialSendStatus = await getAdaptiveSendStatus(ctx.user.id);
+        if (!initialSendStatus.configured) throw new Error("Connect an email account in Settings before sending review requests.");
+        const toSend = eligibleCustomers.slice(0, initialSendStatus.remaining);
+        const skippedDueToLimit = eligibleCustomers.length - toSend.length;
+        if (toSend.length === 0) throw new AdaptiveSendLimitError(initialSendStatus);
 
         // Resolve review URL: use selected platform → default platform → legacy reviewLink
         let wooReviewUrl = profile.reviewLink ?? "";
@@ -1363,7 +1368,13 @@ export const appRouter = router({
           });
         }
 
-        return { sent: sentIds.length, errors, sentRequests };
+        return {
+          sent: sentIds.length,
+          errors,
+          sentRequests,
+          skippedDueToLimit,
+          sendLimitStatus: await getAdaptiveSendStatus(ctx.user.id),
+        };
       }),
 
     /** Count pending WooCommerce imports waiting for user action */
@@ -1426,11 +1437,7 @@ export const appRouter = router({
     }),
 
     getDailyStatus: protectedProcedure.query(async ({ ctx }) => {
-      const profile = await getBusinessProfile(ctx.user.id);
-      const dailyLimit = profile?.dailySendLimit ?? 50;
-      const todayCount = await getTodaySentCount(ctx.user.id);
-      const remaining = Math.max(0, dailyLimit - todayCount);
-      return { todayCount, dailyLimit, remaining };
+      return getAdaptiveSendStatus(ctx.user.id);
     }),
 
     create: protectedProcedure
@@ -1505,9 +1512,6 @@ export const appRouter = router({
           profile.monthlyCount = 0;
           profile.monthlyResetDate = yearMonth;
         }
-        // Hourly rate limit: check upfront for the whole batch
-        checkSendRateLimit(ctx.user.id, input.contactIds.length);
-
         // Resolve review URL: use selected platform, else default platform, else profile.reviewLink
         let reviewUrl = profile.reviewLink ?? "";
         let isYelpPlatform = false;
@@ -1528,14 +1532,13 @@ export const appRouter = router({
           .filter((c): c is NonNullable<typeof c> => Boolean(c))
           .filter((c) => !c.optedOut)) as typeof allContacts;
 
-        // Daily send limit: cap the batch to the user's configured daily limit
-        const dailyLimit = profile.dailySendLimit ?? 50;
-        const todaySent = await getTodaySentCount(ctx.user.id);
-        const remaining = Math.max(0, dailyLimit - todaySent);
-        const toSend = targets.slice(0, remaining);
+        // Adaptive provider-aware safety limit, with an account ceiling that provider changes cannot bypass.
+        const initialSendStatus = await getAdaptiveSendStatus(ctx.user.id);
+        if (!initialSendStatus.configured) throw new Error("Connect an email account in Settings before sending review requests.");
+        const toSend = targets.slice(0, initialSendStatus.remaining);
         const skippedDueToLimit = targets.length - toSend.length;
         if (toSend.length === 0) {
-          throw new Error(`Daily send limit reached (${dailyLimit}/day). Remaining sends reset at midnight UTC.`);
+          throw new AdaptiveSendLimitError(initialSendStatus);
         }
 
         // Resolve template
@@ -1644,7 +1647,14 @@ export const appRouter = router({
         // Update monthly count
         await upsertBusinessProfile({ ...profile, monthlyCount: profile.monthlyCount + sent });
 
-        return { sent, failed, skippedDueToLimit, errors, sentRequests };
+        return {
+          sent,
+          failed,
+          skippedDueToLimit,
+          errors,
+          sentRequests,
+          sendLimitStatus: await getAdaptiveSendStatus(ctx.user.id),
+        };
       }),
 
     /**
@@ -1976,9 +1986,6 @@ export const appRouter = router({
           profile.monthlyCount = 0;
           profile.monthlyResetDate = yearMonth;
         }
-        // Hourly rate limit: max 200 sends per user per rolling hour
-        checkSendRateLimit(ctx.user.id, 1);
-
         // Resolve review URL: use selected platform, else fall back to profile.reviewLink
         let reviewUrl = profile.reviewLink ?? "";
         let isYelpSingle = false;
@@ -2061,7 +2068,7 @@ export const appRouter = router({
                 .replace(/<\/div>\s*$/, `${openPixel}</div>`);
             })();
 
-        await sendMailViaSmtp({ userId: ctx.user.id, to: input.customerEmail, subject, html: trackedHtmlBody });
+        const sendLimitStatus = await sendMailViaSmtp({ userId: ctx.user.id, to: input.customerEmail, subject, html: trackedHtmlBody });
 
         // Increment template usage counter
         if (resolvedTemplate) {
@@ -2078,7 +2085,7 @@ export const appRouter = router({
           monthlyCount: profile.monthlyCount + 1,
         });
 
-        return { success: true, requestId: newRequestId };
+        return { success: true, requestId: newRequestId, sendLimitStatus };
       }),
 
     getById: protectedProcedure

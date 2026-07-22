@@ -15,7 +15,6 @@ import { z } from "zod";
 import { getBusinessProfile, createCustomerRequest, upsertBusinessProfile, getDb } from "./db";
 import { getDefaultReviewPlatform, listReviewPlatforms, PLATFORM_LABELS } from "./reviewPlatforms";
 import { getDefaultTemplate, listTemplates } from "./templates";
-import { checkSendRateLimit } from "./rateLimiter";
 import { FREE_LIMIT_ERR_MSG } from "@shared/const";
 import { evaluateFreeQuotaAccess, formatFreeQuotaBlockedMessage } from "./quotaEnforcement";
 import { upsertApiContact } from "./contacts";
@@ -23,8 +22,9 @@ import { fireWebhooks } from "./webhookHelpers";
 import { sendMailViaSmtp } from "./smtp";
 import { buildReviewRequestEmail } from "./emailTemplates";
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
-import { smtpCredentials, emailTemplates as emailTemplatesTable } from "../drizzle/schema";
+import { emailTemplates as emailTemplatesTable } from "../drizzle/schema";
 import { eq, sql as sqlOp } from "drizzle-orm";
+import { AdaptiveSendLimitError, getAdaptiveSendStatus } from "./adaptiveSendLimits";
 import {
   authenticateDeveloperApiKeyWithStatus,
   developerApiKeyHasScope,
@@ -445,11 +445,11 @@ export function registerPublicApiRoutes(app: Router) {
       if (!profile) {
         return res.status(400).json({ error: "Business profile not configured. Please complete setup in Get Phame." });
       }
-      // Check SMTP configured
+      // Check that either a personal sender or a paid verified Bulk Sender relay is active.
       const db = await getDb();
       if (!db) return res.status(503).json({ error: "Database unavailable" });
-      const [smtpRow] = await db.select({ id: smtpCredentials.id }).from(smtpCredentials).where(eq(smtpCredentials.userId, userId)).limit(1);
-      if (!smtpRow) {
+      const initialSendStatus = await getAdaptiveSendStatus(userId);
+      if (!initialSendStatus.configured) {
         return res.status(400).json({ error: "SMTP not configured. Connect your email account in Get Phame Settings." });
       }
       // Free-tier limit
@@ -468,8 +468,6 @@ export function registerPublicApiRoutes(app: Router) {
         await upsertBusinessProfile({ ...profile, monthlyCount: 0, monthlyResetDate: yearMonth });
         profile.monthlyCount = 0;
       }
-      // Rate limit
-      checkSendRateLimit(userId, 1);
       // Resolve review URL
       const defaultPlatform = await getDefaultReviewPlatform(userId);
       const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
@@ -516,7 +514,7 @@ export function registerPublicApiRoutes(app: Router) {
       const trackedHtmlBody = htmlBody
         .replace(new RegExp(reviewUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), trackedReviewUrl)
         .replace(/<\/div>\s*$/, `${openPixel}</div>`);
-      await sendMailViaSmtp({ userId, to: email, subject, html: trackedHtmlBody });
+      const sendLimitStatus = await sendMailViaSmtp({ userId, to: email, subject, html: trackedHtmlBody });
       // Increment template usage
       if (resolvedTemplate) {
         await db.update(emailTemplatesTable).set({ usageCount: sqlOp`${emailTemplatesTable.usageCount} + 1` }).where(eq(emailTemplatesTable.id, resolvedTemplate.id));
@@ -534,9 +532,27 @@ export function registerPublicApiRoutes(app: Router) {
         created: true,
       }).catch(() => undefined);
       await recordDeveloperApiKeySuccessfulUse(auth.principal);
-      return res.json({ success: true, requestId: newRequestId });
+      return res.json({
+        success: true,
+        requestId: newRequestId,
+        sendLimit: sendLimitStatus ? {
+          warningLevel: sendLimitStatus.warningLevel,
+          remaining: sendLimitStatus.remaining,
+          hourlyRemaining: sendLimitStatus.hourlyRemaining,
+          dailyRemaining: sendLimitStatus.dailyRemaining,
+        } : null,
+      });
     } catch (err: any) {
       const msg = err instanceof Error ? err.message : "Internal error";
+      if (err instanceof AdaptiveSendLimitError) {
+        res.setHeader("Retry-After", String(err.retryAfterSeconds));
+        return res.status(429).json({
+          error: msg,
+          code: err.code,
+          retryAfterSeconds: err.retryAfterSeconds,
+          sendLimit: err.status,
+        });
+      }
       const isUserError = msg.includes("limit") || msg.includes("SMTP") || msg.includes("profile") || msg.includes("subscription");
       return res.status(isUserError ? 400 : 500).json({ error: msg });
     }

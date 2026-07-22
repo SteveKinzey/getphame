@@ -868,6 +868,34 @@ export const apiAbuseLimitWindows = pgTable("api_abuse_limit_windows", {
 export type ApiAbuseLimitWindow = typeof apiAbuseLimitWindows.$inferSelect;
 export type InsertApiAbuseLimitWindow = typeof apiAbuseLimitWindows.$inferInsert;
 
+/**
+ * Durable counters for adaptive review-request sending limits. Account scopes
+ * enforce the non-bypassable ceiling even when a user changes delivery provider;
+ * channel scopes apply the provider-aware warm-up policy.
+ */
+export const outboundSendLimitWindows = pgTable("outbound_send_limit_windows", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  scopeKey: varchar("scopeKey", { length: 96 }).notNull(),
+  windowType: varchar("windowType", { length: 8 }).notNull(),
+  windowStartedAt: bigint("windowStartedAt", { mode: "number" }).notNull(),
+  sendCount: integer("sendCount").notNull().default(0),
+  expiresAt: bigint("expiresAt", { mode: "number" }).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+}, (table) => [
+  uniqueIndex("outbound_send_limit_scope_window_unique").on(
+    table.userId,
+    table.scopeKey,
+    table.windowType,
+    table.windowStartedAt,
+  ),
+  index("outbound_send_limit_user_expiry_idx").on(table.userId, table.expiresAt),
+  index("outbound_send_limit_expiry_idx").on(table.expiresAt),
+]);
+export type OutboundSendLimitWindow = typeof outboundSendLimitWindows.$inferSelect;
+export type InsertOutboundSendLimitWindow = typeof outboundSendLimitWindows.$inferInsert;
+
 /** One private Koalendar webhook endpoint per Get Phame account. */
 export const koalendarConnections = pgTable("koalendar_connections", {
   id: serial("id").primaryKey(),

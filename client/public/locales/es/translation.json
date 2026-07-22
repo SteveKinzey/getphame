@@ -2810,5 +2810,31 @@
       },
       "website": "Sitio web"
     }
+  },
+  "adaptiveSending": {
+    "title": "Protección de envío adaptativa",
+    "notConfiguredTitle": "Conecta primero un remitente",
+    "notConfiguredBody": "Conecta tu cuenta de correo en Configuración antes de enviar solicitudes de reseña.",
+    "connectEmail": "Conectar correo",
+    "remaining": "{{count}} disponibles",
+    "thisHour": "Esta hora",
+    "today": "Hoy",
+    "nextReset": "Próxima renovación de capacidad: {{time}}",
+    "automaticRamp": "Los límites aumentan automáticamente mientras la conexión se prepara",
+    "approachingTitle": "Te acercas al límite de seguridad",
+    "approachingBody": "La capacidad se gestiona automáticamente. Envía primero las solicitudes más importantes.",
+    "highTitle": "La capacidad de envío está casi agotada",
+    "highBody": "Completa primero los envíos prioritarios. Get Phame pausará automáticamente antes de que aumente el riesgo con el proveedor.",
+    "blockedTitle": "Límite de seguridad alcanzado",
+    "blockedBody": "Los envíos se pausan automáticamente hasta que se reinicie la ventana de seguridad actual.",
+    "upgradePlan": "Mejorar para usar Bulk Sender",
+    "connectBulkSender": "Conectar Bulk Sender",
+    "safetyNote": "Siempre se aplican límites según el proveedor y un límite de seguridad independiente por cuenta. Cambiar de proveedor no evita la protección.",
+    "stage": {
+      "new": "Conexión nueva",
+      "warming": "Preparándose",
+      "building": "Generando reputación",
+      "established": "Establecida"
+    }
   }
 }

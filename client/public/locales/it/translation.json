@@ -3004,5 +3004,31 @@
       },
       "website": "Sito web"
     }
+  },
+  "adaptiveSending": {
+    "title": "Protezione adattiva degli invii",
+    "notConfiguredTitle": "Collega prima un mittente",
+    "notConfiguredBody": "Collega il tuo account email nelle Impostazioni prima di inviare richieste di recensione.",
+    "connectEmail": "Collega email",
+    "remaining": "{{count}} disponibili",
+    "thisHour": "Quest’ora",
+    "today": "Oggi",
+    "nextReset": "Prossimo rinnovo della capacità: {{time}}",
+    "automaticRamp": "I limiti aumentano automaticamente durante il riscaldamento della connessione",
+    "approachingTitle": "Ti stai avvicinando al limite di sicurezza",
+    "approachingBody": "La capacità viene gestita automaticamente. Invia prima le richieste più importanti.",
+    "highTitle": "La capacità di invio è quasi esaurita",
+    "highBody": "Completa prima gli invii prioritari. Get Phame metterà automaticamente in pausa prima che aumenti il rischio per il provider.",
+    "blockedTitle": "Limite di sicurezza raggiunto",
+    "blockedBody": "Gli invii vengono sospesi automaticamente finché la finestra di sicurezza corrente non si reimposta.",
+    "upgradePlan": "Passa a Bulk Sender",
+    "connectBulkSender": "Collega Bulk Sender",
+    "safetyNote": "Si applicano sempre limiti basati sul provider e un tetto di sicurezza separato per l’account. Cambiare provider non aggira la protezione.",
+    "stage": {
+      "new": "Nuova connessione",
+      "warming": "Riscaldamento",
+      "building": "Reputazione in crescita",
+      "established": "Stabilita"
+    }
   }
 }

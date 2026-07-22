@@ -2763,6 +2763,32 @@
     "disclaimer": "Answers use approved Get Phame guidance and may need human review.",
     "supportLink": "Human support"
   },
+  "adaptiveSending": {
+    "title": "Adaptive sending protection",
+    "notConfiguredTitle": "Connect a sender first",
+    "notConfiguredBody": "Connect your email account in Settings before sending review requests.",
+    "connectEmail": "Connect email",
+    "remaining": "{{count}} ready",
+    "thisHour": "This hour",
+    "today": "Today",
+    "nextReset": "Next capacity refresh: {{time}}",
+    "automaticRamp": "Limits grow automatically as the connection warms up",
+    "approachingTitle": "You’re approaching the safety limit",
+    "approachingBody": "Capacity is managed automatically. Consider sending the most important requests first.",
+    "highTitle": "Sending capacity is nearly used",
+    "highBody": "Finish priority sends first. Get Phame will pause automatically before provider risk increases.",
+    "blockedTitle": "Safety limit reached",
+    "blockedBody": "Sending pauses automatically until the current safety window resets.",
+    "upgradePlan": "Upgrade for Bulk Sender",
+    "connectBulkSender": "Connect Bulk Sender",
+    "safetyNote": "Provider-aware limits and a separate account safety ceiling always apply. Changing providers cannot bypass protection.",
+    "stage": {
+      "new": "New connection",
+      "warming": "Warming up",
+      "building": "Building reputation",
+      "established": "Established"
+    }
+  },
   "promotionLink": {
     "applied": "Your campaign code will be applied at checkout",
     "verified": "Eligibility is verified securely before Stripe Checkout opens."
