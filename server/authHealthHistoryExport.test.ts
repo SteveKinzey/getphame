@@ -87,6 +87,8 @@ describe("auth health history CSV", () => {
     expect(snapshot.preview.limit).toBe(AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT);
     expect(snapshot.preview.truncated).toBe(true);
     expect(snapshot.preview.rows).toEqual(sanitizedRows.slice(0, AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT));
+    expect(snapshot.searchRows).toEqual(sanitizedRows);
+    expect(snapshot.searchRows).toHaveLength(rows.length);
     expect(snapshot.csv).toBe(serializeAuthHealthHistoryCsv(rows));
     expect(snapshot.preview.rows[0]).toMatchObject({
       providerName: "'+Provider",
@@ -143,6 +145,7 @@ describe("auth health history CSV", () => {
     expect(snapshot.csv.slice(1)).toBe(snapshot.clipboardText);
     expect(snapshot.preview.rows[0].failureDetailSanitized).toContain("[redacted-email]");
     expect(snapshot.preview.rows[0].failureDetailSanitized).toContain("[redacted-token]");
+    expect(snapshot.searchRows[0]).toEqual(snapshot.preview.rows[0]);
     expect(snapshot.snapshotToMs).toBe(Date.UTC(2026, 6, 21, 13, 5, 0));
     expect(snapshot.csv).not.toContain("private-schedule");
     expect(snapshot.csv).not.toContain("user@example.com");

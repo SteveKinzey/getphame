@@ -2296,7 +2296,8 @@
       "undo": "Deshacer",
       "undoing": "Deshaciendo…",
       "undoError": "No se pudo restaurar el orden anterior de los ajustes preestablecidos.",
-      "undoSucceeded": "Orden de ajustes preestablecidos restaurado."
+      "undoSucceeded": "Orden de ajustes preestablecidos restaurado.",
+      "undoShortcutHint": "Teclado: Ctrl/Cmd + Z"
     },
     "csvPreview": {
       "preparing": "Preparando vista previa…",
@@ -2327,7 +2328,18 @@
       "copySucceeded": "Copiado",
       "copyFailed": "Error al copiar — reintentar",
       "copied": "Se copiaron {{count}} registros de estado sanitizados.",
-      "copyError": "No se pudieron copiar los datos CSV. Intenta descargarlos."
+      "copyError": "No se pudieron copiar los datos CSV. Intenta descargarlos.",
+      "columnsRemembered": "Las columnas elegidas se guardaron para tu próxima exportación en este dispositivo.",
+      "columnsStorageUnavailable": "Las columnas funcionan en esta exportación, pero este navegador no pudo recordarlas.",
+      "searchTitle": "Buscar en las filas preparadas",
+      "searchPlaceholder": "Buscar en cualquier columna seleccionada",
+      "clearSearch": "Borrar la búsqueda de filas de la vista previa",
+      "searchResults": "Mostrando {{shown}} de {{matched}} filas coincidentes entre {{total}} filas preparadas.",
+      "searchScope": "Busca en las {{total}} filas saneadas de esta instantánea preparada.",
+      "searchExportNotice": "La búsqueda solo cambia esta vista previa; copiar y descargar siguen incluyendo todas las filas preparadas.",
+      "noSearchResults": "Ninguna fila preparada coincide con esta búsqueda",
+      "noSearchResultsHelp": "Prueba otro término o borra la búsqueda. La exportación preparada no cambia.",
+      "searchLimited": "Se muestran las primeras {{count}} de {{matched}} coincidencias para mantener ágil la vista previa."
     }
   }
 }

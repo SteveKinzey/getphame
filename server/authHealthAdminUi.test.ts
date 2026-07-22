@@ -115,7 +115,7 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("Preview unavailable");
     expect(page).toContain("No rows to preview");
     expect(page).toContain("csvPreview.preview.columns.map");
-    expect(page).toContain("csvPreview.preview.rows.map");
+    expect(page).toContain("visibleCsvRows.map");
     expect(page).toContain("Sanitized CSV data preview");
     expect(page).toContain("The preview and download share the same whitelisted columns");
     expect(page).toContain("The modal shows the first {{count}} rows");
@@ -136,6 +136,26 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("Copy to Clipboard");
     expect(page).toContain("Copy failed — retry");
     expect(page).toContain("disabled={!csvPreview || csvPreview.rowCount === 0 || prepareHealthHistoryExport.isPending || selectedCsvColumns.length === 0}");
+    expect(page).toContain("getAuthHealthHistoryCsvColumnsStorageKey(userId)");
+    expect(page).toContain("parseStoredAuthHealthHistoryCsvColumns(");
+    expect(page).toContain("serializeStoredAuthHealthHistoryCsvColumns(");
+    expect(page).toContain("window.localStorage.getItem");
+    expect(page).toContain("window.localStorage.setItem");
+    expect(page).toContain('csvColumnPreferenceStatus === "saved"');
+    expect(page).toContain("Column choices saved for your next export on this device.");
+    expect(page).toContain("Column choices work for this export, but this browser could not remember them.");
+    expect(page).toContain("csvPreview.searchRows");
+    expect(page).toContain("normalizedCsvRowSearch");
+    expect(page).toContain("matchingCsvRows");
+    expect(page).toContain("visibleCsvRows");
+    expect(page).toContain("Search prepared rows");
+    expect(page).toContain("Search all {{total}} sanitized rows in this prepared snapshot.");
+    expect(page).toContain("Search changes this preview only; copy and download still include every prepared row.");
+    expect(page).toContain("No prepared rows match this search");
+    expect(page).toContain("shouldUndoAuthHealthHistoryPresetReorderFromShortcut(event, canUndo)");
+    expect(page).toContain('window.addEventListener("keydown", handleShortcut)');
+    expect(page).toContain("aria-keyshortcuts={AUTH_HEALTH_HISTORY_REORDER_UNDO_SHORTCUT}");
+    expect(page).toContain("Keyboard: Ctrl/Cmd + Z");
   });
 
   it("localizes every new administrator shortcut, reorder, and CSV preview message", () => {
@@ -150,6 +170,7 @@ describe("admin authentication uptime summary", () => {
       "adminAuthDiagnostics.presets.undoing",
       "adminAuthDiagnostics.presets.undoError",
       "adminAuthDiagnostics.presets.undoSucceeded",
+      "adminAuthDiagnostics.presets.undoShortcutHint",
       "adminAuthDiagnostics.csvPreview.preparing",
       "adminAuthDiagnostics.csvPreview.openButton",
       "adminAuthDiagnostics.csvPreview.title",
@@ -179,6 +200,17 @@ describe("admin authentication uptime summary", () => {
       "adminAuthDiagnostics.csvPreview.copyFailed",
       "adminAuthDiagnostics.csvPreview.copied",
       "adminAuthDiagnostics.csvPreview.copyError",
+      "adminAuthDiagnostics.csvPreview.columnsRemembered",
+      "adminAuthDiagnostics.csvPreview.columnsStorageUnavailable",
+      "adminAuthDiagnostics.csvPreview.searchTitle",
+      "adminAuthDiagnostics.csvPreview.searchPlaceholder",
+      "adminAuthDiagnostics.csvPreview.clearSearch",
+      "adminAuthDiagnostics.csvPreview.searchResults",
+      "adminAuthDiagnostics.csvPreview.searchScope",
+      "adminAuthDiagnostics.csvPreview.searchExportNotice",
+      "adminAuthDiagnostics.csvPreview.noSearchResults",
+      "adminAuthDiagnostics.csvPreview.noSearchResultsHelp",
+      "adminAuthDiagnostics.csvPreview.searchLimited",
     ];
 
     for (const locale of SUPPORTED_LOCALES) {

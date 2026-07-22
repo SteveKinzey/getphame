@@ -1,5 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { AUTH_HEALTH_HISTORY_CLEAR_SHORTCUT, clearAllAuthHealthHistoryFilters, clearAuthHealthHistoryFilter, getActiveAuthHealthHistoryFilterChips, getRelativeAuthHealthHistoryDateInputs, shouldClearAuthHealthHistoryFiltersFromShortcut } from "../shared/authHealthHistoryRanges";
+import {
+  AUTH_HEALTH_HISTORY_CLEAR_SHORTCUT,
+  AUTH_HEALTH_HISTORY_REORDER_UNDO_SHORTCUT,
+  clearAllAuthHealthHistoryFilters,
+  clearAuthHealthHistoryFilter,
+  getActiveAuthHealthHistoryFilterChips,
+  getAuthHealthHistoryCsvColumnsStorageKey,
+  getRelativeAuthHealthHistoryDateInputs,
+  parseStoredAuthHealthHistoryCsvColumns,
+  serializeStoredAuthHealthHistoryCsvColumns,
+  shouldClearAuthHealthHistoryFiltersFromShortcut,
+  shouldUndoAuthHealthHistoryPresetReorderFromShortcut,
+} from "../shared/authHealthHistoryRanges";
 
 describe("auth health history relative ranges", () => {
   it("returns inclusive local-calendar dates for the last 7 and 30 days", () => {
@@ -38,5 +50,32 @@ describe("auth health history relative ranges", () => {
     expect(shouldClearAuthHealthHistoryFiltersFromShortcut({ ...base, altKey: false })).toBe(false);
     expect(shouldClearAuthHealthHistoryFiltersFromShortcut({ ...base, target: { tagName: "INPUT" } })).toBe(false);
     expect(shouldClearAuthHealthHistoryFiltersFromShortcut({ ...base, target: { tagName: "DIV", isContentEditable: true } })).toBe(false);
+  });
+
+  it("matches Ctrl/Cmd+Z only while reorder Undo is available and never steals editing history", () => {
+    expect(AUTH_HEALTH_HISTORY_REORDER_UNDO_SHORTCUT).toBe("Control+Z Meta+Z");
+    const base = { key: "z", altKey: false, shiftKey: false, ctrlKey: true, metaKey: false, repeat: false, target: null };
+    expect(shouldUndoAuthHealthHistoryPresetReorderFromShortcut(base, true)).toBe(true);
+    expect(shouldUndoAuthHealthHistoryPresetReorderFromShortcut({ ...base, ctrlKey: false, metaKey: true }, true)).toBe(true);
+    expect(shouldUndoAuthHealthHistoryPresetReorderFromShortcut(base, false)).toBe(false);
+    expect(shouldUndoAuthHealthHistoryPresetReorderFromShortcut({ ...base, repeat: true }, true)).toBe(false);
+    expect(shouldUndoAuthHealthHistoryPresetReorderFromShortcut({ ...base, shiftKey: true }, true)).toBe(false);
+    expect(shouldUndoAuthHealthHistoryPresetReorderFromShortcut({ ...base, ctrlKey: true, metaKey: true }, true)).toBe(false);
+    expect(shouldUndoAuthHealthHistoryPresetReorderFromShortcut({ ...base, target: { tagName: "TEXTAREA" } }, true)).toBe(false);
+    expect(shouldUndoAuthHealthHistoryPresetReorderFromShortcut({ ...base, target: { tagName: "DIV", isContentEditable: true } }, true)).toBe(false);
+  });
+
+  it("keeps stored CSV columns owner-scoped, versioned, allowlisted, and in server order", () => {
+    const available = ["ranAt", "status", "triggerSource"];
+    expect(getAuthHealthHistoryCsvColumnsStorageKey(42)).toBe("getphame:admin-auth-health-history-csv-columns:v1:42");
+    expect(parseStoredAuthHealthHistoryCsvColumns(null, available)).toEqual(available);
+    expect(parseStoredAuthHealthHistoryCsvColumns("not-json", available)).toEqual(available);
+    expect(parseStoredAuthHealthHistoryCsvColumns(JSON.stringify({ version: 0, columns: ["status"] }), available)).toEqual(available);
+    expect(parseStoredAuthHealthHistoryCsvColumns(JSON.stringify({ version: 1, columns: ["unknown", "status", "ranAt"] }), available)).toEqual(["ranAt", "status"]);
+    expect(parseStoredAuthHealthHistoryCsvColumns(JSON.stringify({ version: 1, columns: ["unknown"] }), available)).toEqual(available);
+    expect(JSON.parse(serializeStoredAuthHealthHistoryCsvColumns(["triggerSource", "ranAt"], available))).toEqual({
+      version: 1,
+      columns: ["ranAt", "triggerSource"],
+    });
   });
 });

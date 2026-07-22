@@ -1762,7 +1762,8 @@
       "undo": "撤销",
       "undoing": "正在撤销…",
       "undoError": "无法恢复之前的预设顺序。",
-      "undoSucceeded": "预设顺序已恢复。"
+      "undoSucceeded": "预设顺序已恢复。",
+      "undoShortcutHint": "键盘：Ctrl/Cmd + Z"
     },
     "csvPreview": {
       "preparing": "正在准备预览…",
@@ -1793,7 +1794,18 @@
       "copySucceeded": "已复制",
       "copyFailed": "复制失败 — 重试",
       "copied": "已复制 {{count}} 条清理后的健康状态记录。",
-      "copyError": "无法复制 CSV 数据。请尝试下载。"
+      "copyError": "无法复制 CSV 数据。请尝试下载。",
+      "columnsRemembered": "已在此设备上保存列选择，供下次导出使用。",
+      "columnsStorageUnavailable": "列选择仍适用于本次导出，但此浏览器无法记住它们。",
+      "searchTitle": "搜索已准备的行",
+      "searchPlaceholder": "搜索任意已选列",
+      "clearSearch": "清除预览行搜索",
+      "searchResults": "在 {{total}} 个已准备行中，显示 {{matched}} 个匹配项中的 {{shown}} 个。",
+      "searchScope": "搜索此已准备快照中的全部 {{total}} 个已清理行。",
+      "searchExportNotice": "搜索只改变此预览；复制和下载仍包含所有已准备行。",
+      "noSearchResults": "没有已准备行与此搜索匹配",
+      "noSearchResultsHelp": "请尝试其他关键词或清除搜索。已准备的导出不会改变。",
+      "searchLimited": "为保持预览流畅，仅显示 {{matched}} 个搜索匹配项中的前 {{count}} 个。"
     }
   }
 }

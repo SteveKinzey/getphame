@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { Activity, AlertCircle, ArrowLeft, BellRing, Bookmark, CheckCircle2, ChevronLeft, ChevronRight, Clock3, Columns3, Copy, Download, FileSearch, Filter, Gauge, GripVertical, KeyRound, Loader2, MailCheck, Pencil, RefreshCw, Save, Search, ShieldCheck, Trash2, Undo2, X } from "lucide-react";
-import { AUTH_HEALTH_HISTORY_CLEAR_SHORTCUT, AUTH_HEALTH_HISTORY_RELATIVE_DAYS, clearAllAuthHealthHistoryFilters, clearAuthHealthHistoryFilter, getActiveAuthHealthHistoryFilterChips, getRelativeAuthHealthHistoryDateInputs, shouldClearAuthHealthHistoryFiltersFromShortcut } from "../../../shared/authHealthHistoryRanges";
+import { AUTH_HEALTH_HISTORY_CLEAR_SHORTCUT, AUTH_HEALTH_HISTORY_RELATIVE_DAYS, AUTH_HEALTH_HISTORY_REORDER_UNDO_SHORTCUT, clearAllAuthHealthHistoryFilters, clearAuthHealthHistoryFilter, getActiveAuthHealthHistoryFilterChips, getAuthHealthHistoryCsvColumnsStorageKey, getRelativeAuthHealthHistoryDateInputs, parseStoredAuthHealthHistoryCsvColumns, serializeStoredAuthHealthHistoryCsvColumns, shouldClearAuthHealthHistoryFiltersFromShortcut, shouldUndoAuthHealthHistoryPresetReorderFromShortcut } from "../../../shared/authHealthHistoryRanges";
 
 type HealthValue = "ok" | "fail";
 
@@ -109,6 +109,7 @@ type AuthHealthHistoryCsvPreview = {
   totalMatching: number;
   truncated: boolean;
   availableColumns: Array<{ key: AuthHealthHistoryExportColumnKey; csvHeader: string }>;
+  searchRows: Array<Record<AuthHealthHistoryExportColumnKey, string>>;
   preview: {
     columns: Array<{ key: AuthHealthHistoryExportColumnKey; csvHeader: string }>;
     rows: Array<Record<string, string>>;
@@ -117,6 +118,35 @@ type AuthHealthHistoryCsvPreview = {
     truncated: boolean;
   };
 };
+
+function readStoredCsvColumns(userId: string | number | null | undefined, availableColumns: AuthHealthHistoryExportColumnKey[]) {
+  if (userId === null || userId === undefined) return [...availableColumns];
+  try {
+    return parseStoredAuthHealthHistoryCsvColumns(
+      window.localStorage.getItem(getAuthHealthHistoryCsvColumnsStorageKey(userId)),
+      availableColumns,
+    ) as AuthHealthHistoryExportColumnKey[];
+  } catch {
+    return [...availableColumns];
+  }
+}
+
+function rememberCsvColumns(
+  userId: string | number | null | undefined,
+  selectedColumns: AuthHealthHistoryExportColumnKey[],
+  availableColumns: AuthHealthHistoryExportColumnKey[],
+) {
+  if (userId === null || userId === undefined) return false;
+  try {
+    window.localStorage.setItem(
+      getAuthHealthHistoryCsvColumnsStorageKey(userId),
+      serializeStoredAuthHealthHistoryCsvColumns(selectedColumns, availableColumns),
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 type PresetReorderFeedback = {
   kind: "saved" | "undone";
@@ -190,10 +220,23 @@ export default function AdminAuthDiagnosticsPage() {
   const [csvPreview, setCsvPreview] = useState<AuthHealthHistoryCsvPreview | null>(null);
   const [csvPreviewRequest, setCsvPreviewRequest] = useState<AuthHealthHistoryCsvRequest | null>(null);
   const [selectedCsvColumns, setSelectedCsvColumns] = useState<AuthHealthHistoryExportColumnKey[]>([]);
+  const [csvRowSearch, setCsvRowSearch] = useState("");
+  const [csvColumnPreferenceStatus, setCsvColumnPreferenceStatus] = useState<"idle" | "saved" | "unavailable">("idle");
   const [csvCopyStatus, setCsvCopyStatus] = useState<"idle" | "copying" | "copied" | "error">("idle");
   const presetReorderFeedbackTimerRef = useRef<number | null>(null);
   const csvCopyFeedbackTimerRef = useRef<number | null>(null);
+  const csvInitialPreferenceAppliedRef = useRef(false);
   const trpcUtils = trpc.useUtils();
+
+  const normalizedCsvRowSearch = csvRowSearch.trim().toLocaleLowerCase();
+  const matchingCsvRows = useMemo(() => {
+    if (!csvPreview) return [];
+    if (!normalizedCsvRowSearch) return csvPreview.searchRows;
+    return csvPreview.searchRows.filter((row) => csvPreview.preview.columns.some((column) =>
+      row[column.key].toLocaleLowerCase().includes(normalizedCsvRowSearch),
+    ));
+  }, [csvPreview, normalizedCsvRowSearch]);
+  const visibleCsvRows = matchingCsvRows.slice(0, csvPreview?.preview.limit ?? 25);
 
   const historyFromMs = useMemo(() => localDateStartMs(historyFromDate), [historyFromDate]);
   const historyToMs = useMemo(() => localDateEndMs(historyToDate), [historyToDate]);
@@ -312,7 +355,11 @@ export default function AdminAuthDiagnosticsPage() {
   const prepareHealthHistoryExport = trpc.authDiagnostics.exportHealthHistoryCsv.useMutation({
     onSuccess: (result) => {
       setCsvPreview(result);
-      setSelectedCsvColumns(result.preview.columns.map((column) => column.key));
+      const selectedColumns = result.preview.columns.map((column) => column.key);
+      setSelectedCsvColumns(selectedColumns);
+      if (csvInitialPreferenceAppliedRef.current) {
+        setCsvColumnPreferenceStatus(rememberCsvColumns(user?.id, selectedColumns, result.availableColumns.map((column) => column.key)) ? "saved" : "unavailable");
+      }
       setCsvCopyStatus("idle");
     },
     onError: () => {
@@ -320,13 +367,36 @@ export default function AdminAuthDiagnosticsPage() {
     },
   });
 
+  useEffect(() => {
+    if (!csvPreview || !csvPreviewRequest || csvInitialPreferenceAppliedRef.current || prepareHealthHistoryExport.isPending) return;
+    csvInitialPreferenceAppliedRef.current = true;
+    const availableColumns = csvPreview.availableColumns.map((column) => column.key);
+    const preferredColumns = readStoredCsvColumns(user?.id, availableColumns);
+    const currentColumns = csvPreview.preview.columns.map((column) => column.key);
+    if (preferredColumns.length === currentColumns.length && preferredColumns.every((column, index) => column === currentColumns[index])) {
+      setCsvColumnPreferenceStatus(rememberCsvColumns(user?.id, preferredColumns, availableColumns) ? "saved" : "unavailable");
+      return;
+    }
+    setSelectedCsvColumns(preferredColumns);
+    setCsvCopyStatus("idle");
+    prepareHealthHistoryExport.reset();
+    prepareHealthHistoryExport.mutate({
+      ...csvPreviewRequest,
+      columns: preferredColumns,
+      snapshotGeneratedAt: csvPreview.generatedAt,
+    });
+  }, [csvPreview, csvPreviewRequest, prepareHealthHistoryExport.isPending, user?.id]);
+
   const openHealthHistoryCsvPreview = () => {
     const request = { ...historyExportInput };
     setCsvPreviewOpen(true);
     setCsvPreview(null);
     setCsvPreviewRequest(request);
     setSelectedCsvColumns([]);
+    setCsvRowSearch("");
+    setCsvColumnPreferenceStatus("idle");
     setCsvCopyStatus("idle");
+    csvInitialPreferenceAppliedRef.current = false;
     prepareHealthHistoryExport.reset();
     prepareHealthHistoryExport.mutate(request);
   };
@@ -384,7 +454,10 @@ export default function AdminAuthDiagnosticsPage() {
     setCsvPreview(null);
     setCsvPreviewRequest(null);
     setSelectedCsvColumns([]);
+    setCsvRowSearch("");
+    setCsvColumnPreferenceStatus("idle");
     setCsvCopyStatus("idle");
+    csvInitialPreferenceAppliedRef.current = false;
     prepareHealthHistoryExport.reset();
   };
 
@@ -476,6 +549,17 @@ export default function AdminAuthDiagnosticsPage() {
       },
     });
   };
+
+  useEffect(() => {
+    const handleShortcut = (event: KeyboardEvent) => {
+      const canUndo = presetReorderFeedback?.kind === "saved" && !undoHealthHistoryPresetReorder.isPending;
+      if (!shouldUndoAuthHealthHistoryPresetReorderFromShortcut(event, canUndo)) return;
+      event.preventDefault();
+      handleUndoPresetReorder();
+    };
+    window.addEventListener("keydown", handleShortcut);
+    return () => window.removeEventListener("keydown", handleShortcut);
+  }, [presetReorderFeedback, undoHealthHistoryPresetReorder.isPending]);
 
   const handlePresetDragEnd = useCallback((event: DragEndEvent) => {
     const activeId = Number(event.active.id);
@@ -725,7 +809,7 @@ export default function AdminAuthDiagnosticsPage() {
           {historyDateError && <div role="alert" className="mb-3 rounded-xl px-4 py-3 text-sm font-bold" style={{ background: "oklch(0.97 0.03 27)", color: "oklch(0.46 0.12 27)" }}>{historyDateError}</div>}
           <div className="mb-4 rounded-xl border bg-white p-3" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
             <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-              <div className="min-w-0 flex-1"><p className="flex items-center gap-2 text-sm rr-fw-black rr-text-navy"><Bookmark size={15} /> Quick filter presets</p><p className="mt-1 text-xs font-bold rr-text-navy-faint">Private to your administrator account. Drag the handle, or focus it and press Space then an arrow key, to save your preferred order.</p><DndContext sensors={presetSensors} collisionDetection={closestCenter} onDragEnd={handlePresetDragEnd}><SortableContext items={historyPresets.map((preset) => preset.id)} strategy={rectSortingStrategy}><div className="mt-3 flex flex-wrap gap-2">{historyPresets.map((preset) => <SortablePresetControl key={preset.id} preset={preset} reorderSucceeded={presetReorderFeedback?.presetId === preset.id} disabled={duplicateHealthHistoryPreset.isPending || deleteHealthHistoryPreset.isPending || reorderHealthHistoryPresets.isPending || undoHealthHistoryPresetReorder.isPending} onApply={() => applyHistoryPreset(preset)} onRename={() => { setEditingPresetId(preset.id); setPresetName(preset.name); }} onDuplicate={() => duplicateHealthHistoryPreset.mutate({ id: preset.id })} onDelete={() => deleteHealthHistoryPreset.mutate({ id: preset.id })} />)}{!historyPresets.length && !presetsQuery.isLoading && <span className="text-xs font-bold rr-text-navy-faint">No presets saved yet.</span>}</div></SortableContext></DndContext><div role="status" aria-live="polite" className="mt-2 min-h-7">{presetReorderFeedback && <div className="inline-flex flex-wrap items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-xs font-bold text-emerald-800 motion-safe:transition-[opacity,transform] motion-safe:duration-200"><CheckCircle2 size={13} aria-hidden="true" /><span>{presetReorderFeedback.kind === "saved" ? t("adminAuthDiagnostics.presets.orderSavedDetail", { defaultValue: "{{name}} saved in position {{position}} of {{total}}.", name: presetReorderFeedback.presetName, position: presetReorderFeedback.position, total: presetReorderFeedback.total }) : t("adminAuthDiagnostics.presets.orderRestored", { defaultValue: "Previous preset order restored." })}</span>{presetReorderFeedback.kind === "saved" && <button type="button" onClick={handleUndoPresetReorder} disabled={undoHealthHistoryPresetReorder.isPending} className="inline-flex min-h-7 items-center gap-1 rounded-md border border-emerald-300 bg-white px-2 font-black text-emerald-800 disabled:opacity-60"><Undo2 size={12} aria-hidden="true" />{undoHealthHistoryPresetReorder.isPending ? t("adminAuthDiagnostics.presets.undoing", { defaultValue: "Undoing…" }) : t("adminAuthDiagnostics.presets.undo", { defaultValue: "Undo" })}</button>}</div>}</div></div>
+              <div className="min-w-0 flex-1"><p className="flex items-center gap-2 text-sm rr-fw-black rr-text-navy"><Bookmark size={15} /> Quick filter presets</p><p className="mt-1 text-xs font-bold rr-text-navy-faint">Private to your administrator account. Drag the handle, or focus it and press Space then an arrow key, to save your preferred order.</p><DndContext sensors={presetSensors} collisionDetection={closestCenter} onDragEnd={handlePresetDragEnd}><SortableContext items={historyPresets.map((preset) => preset.id)} strategy={rectSortingStrategy}><div className="mt-3 flex flex-wrap gap-2">{historyPresets.map((preset) => <SortablePresetControl key={preset.id} preset={preset} reorderSucceeded={presetReorderFeedback?.presetId === preset.id} disabled={duplicateHealthHistoryPreset.isPending || deleteHealthHistoryPreset.isPending || reorderHealthHistoryPresets.isPending || undoHealthHistoryPresetReorder.isPending} onApply={() => applyHistoryPreset(preset)} onRename={() => { setEditingPresetId(preset.id); setPresetName(preset.name); }} onDuplicate={() => duplicateHealthHistoryPreset.mutate({ id: preset.id })} onDelete={() => deleteHealthHistoryPreset.mutate({ id: preset.id })} />)}{!historyPresets.length && !presetsQuery.isLoading && <span className="text-xs font-bold rr-text-navy-faint">No presets saved yet.</span>}</div></SortableContext></DndContext><div role="status" aria-live="polite" className="mt-2 min-h-7">{presetReorderFeedback && <div className="inline-flex flex-wrap items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-xs font-bold text-emerald-800 motion-safe:transition-[opacity,transform] motion-safe:duration-200"><CheckCircle2 size={13} aria-hidden="true" /><span>{presetReorderFeedback.kind === "saved" ? t("adminAuthDiagnostics.presets.orderSavedDetail", { defaultValue: "{{name}} saved in position {{position}} of {{total}}.", name: presetReorderFeedback.presetName, position: presetReorderFeedback.position, total: presetReorderFeedback.total }) : t("adminAuthDiagnostics.presets.orderRestored", { defaultValue: "Previous preset order restored." })}</span>{presetReorderFeedback.kind === "saved" && <><button type="button" onClick={handleUndoPresetReorder} disabled={undoHealthHistoryPresetReorder.isPending} aria-keyshortcuts={AUTH_HEALTH_HISTORY_REORDER_UNDO_SHORTCUT} className="inline-flex min-h-7 items-center gap-1 rounded-md border border-emerald-300 bg-white px-2 font-black text-emerald-800 disabled:opacity-60"><Undo2 size={12} aria-hidden="true" />{undoHealthHistoryPresetReorder.isPending ? t("adminAuthDiagnostics.presets.undoing", { defaultValue: "Undoing…" }) : t("adminAuthDiagnostics.presets.undo", { defaultValue: "Undo" })}</button><span className="rounded-md bg-white/70 px-1.5 py-1 text-[11px] font-black text-emerald-700">{t("adminAuthDiagnostics.presets.undoShortcutHint", { defaultValue: "Keyboard: Ctrl/Cmd + Z" })}</span></>}</div>}</div></div>
               <div className="flex w-full flex-col gap-2 sm:flex-row lg:w-auto"><label className="flex min-w-0 flex-1 flex-col gap-1.5 text-xs font-bold rr-text-navy-muted lg:w-56"><span>{editingPreset ? "Rename preset" : "Preset name"}</span><input value={presetName} maxLength={80} onChange={(event) => setPresetName(event.target.value)} placeholder={editingPreset ? editingPreset.name : "e.g. Manual failures"} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }} /></label><div className="flex items-end gap-2"><button type="button" onClick={savePreset} disabled={saveHealthHistoryPreset.isPending || Boolean(historyDateError)} className="flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-bold rr-bg-gold rr-text-navy disabled:opacity-50">{saveHealthHistoryPreset.isPending ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}{editingPreset ? "Rename" : "Save current"}</button>{editingPreset && <button type="button" onClick={() => { setEditingPresetId(null); setPresetName(""); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }}>Cancel</button>}</div></div>
             </div>
             {presetsQuery.error && <p role="alert" className="mt-2 text-xs font-bold" style={{ color: "oklch(0.48 0.17 27)" }}>Saved presets could not be loaded. {presetsQuery.error.message}</p>}
@@ -751,7 +835,10 @@ export default function AdminAuthDiagnosticsPage() {
           setCsvPreview(null);
           setCsvPreviewRequest(null);
           setSelectedCsvColumns([]);
+          setCsvRowSearch("");
+          setCsvColumnPreferenceStatus("idle");
           setCsvCopyStatus("idle");
+          csvInitialPreferenceAppliedRef.current = false;
           prepareHealthHistoryExport.reset();
         }
       }}>
@@ -782,14 +869,21 @@ export default function AdminAuthDiagnosticsPage() {
                 </div>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">{csvPreview.availableColumns.map((column) => { const checked = selectedCsvColumns.includes(column.key); return <label key={column.key} className="flex min-h-10 items-center gap-2 rounded-lg border px-3 py-2 text-xs font-bold rr-text-navy" style={{ borderColor: checked ? "oklch(0.80 0.18 80)" : "oklch(0.90 0.02 260)", background: checked ? "oklch(0.98 0.03 80)" : "white" }}><input type="checkbox" checked={checked} disabled={prepareHealthHistoryExport.isPending || (checked && selectedCsvColumns.length === 1)} onChange={() => toggleCsvColumn(column.key)} className="h-4 w-4 accent-[oklch(0.80_0.18_80)]" /><span className="break-all">{column.csvHeader}</span></label>; })}</div>
                 {prepareHealthHistoryExport.isPending && <p role="status" aria-live="polite" className="mt-2 flex items-center gap-2 text-xs font-bold rr-text-navy-muted"><Loader2 size={13} className="animate-spin rr-text-gold" aria-hidden="true" />{t("adminAuthDiagnostics.csvPreview.updatingColumns", { defaultValue: "Updating selected columns…" })}</p>}
+                {csvColumnPreferenceStatus !== "idle" && <p role="status" aria-live="polite" className="mt-2 text-xs font-bold" style={{ color: csvColumnPreferenceStatus === "saved" ? "oklch(0.40 0.14 145)" : "oklch(0.46 0.12 80)" }}>{csvColumnPreferenceStatus === "saved" ? t("adminAuthDiagnostics.csvPreview.columnsRemembered", { defaultValue: "Column choices saved for your next export on this device." }) : t("adminAuthDiagnostics.csvPreview.columnsStorageUnavailable", { defaultValue: "Column choices work for this export, but this browser could not remember them." })}</p>}
               </fieldset>
-              <div className="max-h-[48dvh] overflow-auto rounded-xl border" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
+              <div className="rounded-xl border bg-white p-3" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
+                <label htmlFor="csv-row-search" className="text-sm rr-fw-black rr-text-navy">{t("adminAuthDiagnostics.csvPreview.searchTitle", { defaultValue: "Search prepared rows" })}</label>
+                <div className="relative mt-2"><Search size={15} className="pointer-events-none absolute left-3 top-3 rr-text-navy-faint" aria-hidden="true" /><input id="csv-row-search" type="search" value={csvRowSearch} onChange={(event) => setCsvRowSearch(event.target.value)} placeholder={t("adminAuthDiagnostics.csvPreview.searchPlaceholder", { defaultValue: "Search any selected column" })} className="h-10 w-full rounded-lg border bg-white pl-9 pr-10 text-sm font-bold rr-text-navy outline-none focus:ring-2" style={{ borderColor: "oklch(0.86 0.04 260)" }} />{csvRowSearch && <button type="button" onClick={() => setCsvRowSearch("")} aria-label={t("adminAuthDiagnostics.csvPreview.clearSearch", { defaultValue: "Clear preview row search" })} className="absolute right-1 top-1 flex h-8 w-8 items-center justify-center rounded-md rr-text-navy-muted"><X size={14} aria-hidden="true" /></button>}</div>
+                <div aria-live="polite" className="mt-2 flex flex-col gap-1 text-xs font-bold rr-text-navy-faint sm:flex-row sm:items-center sm:justify-between"><span>{normalizedCsvRowSearch ? t("adminAuthDiagnostics.csvPreview.searchResults", { defaultValue: "Showing {{shown}} of {{matched}} matching rows from {{total}} prepared rows.", shown: visibleCsvRows.length, matched: matchingCsvRows.length, total: csvPreview.rowCount }) : t("adminAuthDiagnostics.csvPreview.searchScope", { defaultValue: "Search all {{total}} sanitized rows in this prepared snapshot.", total: csvPreview.rowCount })}</span><span>{t("adminAuthDiagnostics.csvPreview.searchExportNotice", { defaultValue: "Search changes this preview only; copy and download still include every prepared row." })}</span></div>
+              </div>
+              {matchingCsvRows.length > 0 ? <div className="max-h-[48dvh] overflow-auto rounded-xl border" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
                 <table className="w-max min-w-full border-collapse text-left text-xs" aria-label={t("adminAuthDiagnostics.csvPreview.tableLabel", { defaultValue: "Sanitized CSV data preview" })}>
                   <thead className="sticky top-0 z-10 rr-bg-navy text-white"><tr>{csvPreview.preview.columns.map((column) => <th key={column.key} scope="col" className="whitespace-nowrap border-r border-white/10 px-3 py-2.5 font-black last:border-r-0">{column.csvHeader}</th>)}</tr></thead>
-                  <tbody className="divide-y" style={{ borderColor: "oklch(0.91 0.02 260)" }}>{csvPreview.preview.rows.map((row, rowIndex) => <tr key={`${row.recordId ?? "row"}-${rowIndex}`} className="odd:bg-white even:rr-bg-surface">{csvPreview.preview.columns.map((column) => <td key={column.key} className={`max-w-80 border-r px-3 py-2 align-top font-bold rr-text-navy-muted last:border-r-0 ${column.key === "failureDetailSanitized" ? "whitespace-pre-wrap" : "whitespace-nowrap"}`} style={{ borderColor: "oklch(0.93 0.01 260)" }} title={row[column.key] || undefined}>{row[column.key] || "—"}</td>)}</tr>)}</tbody>
+                  <tbody className="divide-y" style={{ borderColor: "oklch(0.91 0.02 260)" }}>{visibleCsvRows.map((row, rowIndex) => <tr key={`${row.recordId ?? "row"}-${rowIndex}`} className="odd:bg-white even:rr-bg-surface">{csvPreview.preview.columns.map((column) => <td key={column.key} className={`max-w-80 border-r px-3 py-2 align-top font-bold rr-text-navy-muted last:border-r-0 ${column.key === "failureDetailSanitized" ? "whitespace-pre-wrap" : "whitespace-nowrap"}`} style={{ borderColor: "oklch(0.93 0.01 260)" }} title={row[column.key] || undefined}>{row[column.key] || "—"}</td>)}</tr>)}</tbody>
                 </table>
-              </div>
-              {csvPreview.preview.truncated && <p className="text-xs font-bold rr-text-navy-muted">{t("adminAuthDiagnostics.csvPreview.previewLimited", { defaultValue: "The modal shows the first {{count}} rows. The download contains all {{total}} rows in this prepared export.", count: csvPreview.preview.limit, total: csvPreview.rowCount })}</p>}
+              </div> : <div role="status" className="rounded-xl rr-bg-surface px-4 py-8 text-center"><Search size={24} className="mx-auto rr-text-navy-faint" aria-hidden="true" /><p className="mt-2 text-sm rr-fw-black rr-text-navy">{t("adminAuthDiagnostics.csvPreview.noSearchResults", { defaultValue: "No prepared rows match this search" })}</p><p className="mt-1 text-xs font-bold rr-text-navy-muted">{t("adminAuthDiagnostics.csvPreview.noSearchResultsHelp", { defaultValue: "Try another term or clear the preview search. Your prepared export is unchanged." })}</p></div>}
+              {normalizedCsvRowSearch && matchingCsvRows.length > visibleCsvRows.length && <p className="text-xs font-bold rr-text-navy-muted">{t("adminAuthDiagnostics.csvPreview.searchLimited", { defaultValue: "Showing the first {{count}} of {{matched}} search matches to keep the preview responsive.", count: visibleCsvRows.length, matched: matchingCsvRows.length })}</p>}
+              {!normalizedCsvRowSearch && csvPreview.preview.truncated && <p className="text-xs font-bold rr-text-navy-muted">{t("adminAuthDiagnostics.csvPreview.previewLimited", { defaultValue: "The modal shows the first {{count}} rows. The download contains all {{total}} rows in this prepared export.", count: csvPreview.preview.limit, total: csvPreview.rowCount })}</p>}
               {csvPreview.truncated && <p role="status" className="rounded-lg px-3 py-2 text-xs font-bold" style={{ background: "oklch(0.96 0.04 80)", color: "oklch(0.42 0.12 80)" }}>{t("adminAuthDiagnostics.csvPreview.exportLimited", { defaultValue: "The export safety cap includes the newest {{exported}} of {{matched}} matching records.", exported: csvPreview.rowCount, matched: csvPreview.totalMatching })}</p>}
             </div>}
           </div>

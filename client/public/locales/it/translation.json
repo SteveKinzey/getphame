@@ -2468,7 +2468,8 @@
       "undo": "Annulla",
       "undoing": "Annullamento…",
       "undoError": "Impossibile ripristinare l’ordine precedente delle preimpostazioni.",
-      "undoSucceeded": "Ordine delle preimpostazioni ripristinato."
+      "undoSucceeded": "Ordine delle preimpostazioni ripristinato.",
+      "undoShortcutHint": "Tastiera: Ctrl/Cmd + Z"
     },
     "csvPreview": {
       "preparing": "Preparazione anteprima…",
@@ -2499,7 +2500,18 @@
       "copySucceeded": "Copiato",
       "copyFailed": "Copia non riuscita — riprova",
       "copied": "Copiati {{count}} record di stato sanitizzati.",
-      "copyError": "Impossibile copiare i dati CSV. Prova a scaricarli."
+      "copyError": "Impossibile copiare i dati CSV. Prova a scaricarli.",
+      "columnsRemembered": "Le colonne scelte sono state salvate per la prossima esportazione su questo dispositivo.",
+      "columnsStorageUnavailable": "Le colonne funzionano per questa esportazione, ma il browser non ha potuto ricordarle.",
+      "searchTitle": "Cerca nelle righe preparate",
+      "searchPlaceholder": "Cerca in qualsiasi colonna selezionata",
+      "clearSearch": "Cancella la ricerca delle righe nell’anteprima",
+      "searchResults": "Visualizzate {{shown}} di {{matched}} righe corrispondenti su {{total}} righe preparate.",
+      "searchScope": "Cerca in tutte le {{total}} righe sanificate di questa istantanea preparata.",
+      "searchExportNotice": "La ricerca modifica solo questa anteprima; copia e download includono comunque tutte le righe preparate.",
+      "noSearchResults": "Nessuna riga preparata corrisponde alla ricerca",
+      "noSearchResultsHelp": "Prova un altro termine o cancella la ricerca. L’esportazione preparata non cambia.",
+      "searchLimited": "Sono mostrate le prime {{count}} di {{matched}} corrispondenze per mantenere reattiva l’anteprima."
     }
   }
 }

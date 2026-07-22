@@ -1,6 +1,8 @@
 export const AUTH_HEALTH_HISTORY_RELATIVE_DAYS = [7, 30] as const;
 
 export const AUTH_HEALTH_HISTORY_CLEAR_SHORTCUT = "Alt+Shift+C";
+export const AUTH_HEALTH_HISTORY_REORDER_UNDO_SHORTCUT = "Control+Z Meta+Z";
+export const AUTH_HEALTH_HISTORY_CSV_COLUMNS_STORAGE_VERSION = 1;
 
 type ShortcutTarget = {
   tagName?: string;
@@ -35,6 +37,62 @@ export function shouldClearAuthHealthHistoryFiltersFromShortcut(event: AuthHealt
     && !event.metaKey
     && !event.repeat
     && !isEditableAuthHealthHistoryShortcutTarget(event.target);
+}
+
+export function shouldUndoAuthHealthHistoryPresetReorderFromShortcut(
+  event: AuthHealthHistoryShortcutEvent,
+  canUndo: boolean,
+) {
+  return canUndo
+    && event.key.toLowerCase() === "z"
+    && (event.ctrlKey || event.metaKey)
+    && !(event.ctrlKey && event.metaKey)
+    && !event.altKey
+    && !event.shiftKey
+    && !event.repeat
+    && !isEditableAuthHealthHistoryShortcutTarget(event.target);
+}
+
+export function getAuthHealthHistoryCsvColumnsStorageKey(userId: string | number) {
+  return `getphame:admin-auth-health-history-csv-columns:v${AUTH_HEALTH_HISTORY_CSV_COLUMNS_STORAGE_VERSION}:${String(userId)}`;
+}
+
+export function reconcileAuthHealthHistoryCsvColumns(
+  selectedColumns: readonly string[],
+  availableColumns: readonly string[],
+) {
+  const selected = new Set(selectedColumns);
+  const reconciled = availableColumns.filter((column) => selected.has(column));
+  return reconciled.length > 0 ? reconciled : [...availableColumns];
+}
+
+export function parseStoredAuthHealthHistoryCsvColumns(
+  rawValue: string | null,
+  availableColumns: readonly string[],
+) {
+  if (!rawValue) return [...availableColumns];
+  try {
+    const parsed = JSON.parse(rawValue) as { version?: unknown; columns?: unknown };
+    if (parsed.version !== AUTH_HEALTH_HISTORY_CSV_COLUMNS_STORAGE_VERSION || !Array.isArray(parsed.columns)) {
+      return [...availableColumns];
+    }
+    return reconcileAuthHealthHistoryCsvColumns(
+      parsed.columns.filter((column): column is string => typeof column === "string"),
+      availableColumns,
+    );
+  } catch {
+    return [...availableColumns];
+  }
+}
+
+export function serializeStoredAuthHealthHistoryCsvColumns(
+  selectedColumns: readonly string[],
+  availableColumns: readonly string[],
+) {
+  return JSON.stringify({
+    version: AUTH_HEALTH_HISTORY_CSV_COLUMNS_STORAGE_VERSION,
+    columns: reconcileAuthHealthHistoryCsvColumns(selectedColumns, availableColumns),
+  });
 }
 
 export type AuthHealthHistoryRelativeDays = typeof AUTH_HEALTH_HISTORY_RELATIVE_DAYS[number];

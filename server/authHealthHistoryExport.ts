@@ -109,6 +109,7 @@ export function buildAuthHealthHistoryCsvExport(input: {
     totalMatching: input.total,
     truncated: input.truncated,
     availableColumns: AUTH_HEALTH_HISTORY_EXPORT_COLUMNS.map(({ key, csvHeader }) => ({ key, csvHeader })),
+    searchRows: exportRows,
     preview: {
       columns: selectedColumns.map(({ key, csvHeader }) => ({ key, csvHeader })),
       rows: previewRows,

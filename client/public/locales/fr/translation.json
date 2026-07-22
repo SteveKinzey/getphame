@@ -2291,7 +2291,8 @@
       "undo": "Annuler",
       "undoing": "Annulation…",
       "undoError": "Impossible de restaurer l’ordre précédent des préréglages.",
-      "undoSucceeded": "Ordre des préréglages restauré."
+      "undoSucceeded": "Ordre des préréglages restauré.",
+      "undoShortcutHint": "Clavier : Ctrl/Cmd + Z"
     },
     "csvPreview": {
       "preparing": "Préparation de l’aperçu…",
@@ -2322,7 +2323,18 @@
       "copySucceeded": "Copié",
       "copyFailed": "Échec de la copie — réessayer",
       "copied": "{{count}} enregistrements d’état assainis ont été copiés.",
-      "copyError": "Impossible de copier les données CSV. Essayez de les télécharger."
+      "copyError": "Impossible de copier les données CSV. Essayez de les télécharger.",
+      "columnsRemembered": "Les colonnes choisies sont enregistrées pour votre prochaine exportation sur cet appareil.",
+      "columnsStorageUnavailable": "Les colonnes s’appliquent à cette exportation, mais ce navigateur n’a pas pu les mémoriser.",
+      "searchTitle": "Rechercher dans les lignes préparées",
+      "searchPlaceholder": "Rechercher dans toute colonne sélectionnée",
+      "clearSearch": "Effacer la recherche de lignes de l’aperçu",
+      "searchResults": "Affichage de {{shown}} lignes sur {{matched}} correspondances parmi {{total}} lignes préparées.",
+      "searchScope": "Recherchez dans les {{total}} lignes assainies de cet instantané préparé.",
+      "searchExportNotice": "La recherche ne modifie que cet aperçu ; la copie et le téléchargement conservent toutes les lignes préparées.",
+      "noSearchResults": "Aucune ligne préparée ne correspond à cette recherche",
+      "noSearchResultsHelp": "Essayez un autre terme ou effacez la recherche. L’exportation préparée reste inchangée.",
+      "searchLimited": "Affichage des {{count}} premières correspondances sur {{matched}} pour préserver la réactivité de l’aperçu."
     }
   }
 }

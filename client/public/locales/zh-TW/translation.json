@@ -1784,7 +1784,8 @@
       "undo": "復原",
       "undoing": "正在復原…",
       "undoError": "無法還原先前的預設順序。",
-      "undoSucceeded": "預設順序已還原。"
+      "undoSucceeded": "預設順序已還原。",
+      "undoShortcutHint": "鍵盤：Ctrl/Cmd + Z"
     },
     "csvPreview": {
       "preparing": "正在準備預覽…",
@@ -1815,7 +1816,18 @@
       "copySucceeded": "已複製",
       "copyFailed": "複製失敗 — 重試",
       "copied": "已複製 {{count}} 筆清理後的健康狀態記錄。",
-      "copyError": "無法複製 CSV 資料。請嘗試下載。"
+      "copyError": "無法複製 CSV 資料。請嘗試下載。",
+      "columnsRemembered": "已在此裝置儲存欄位選擇，供下次匯出使用。",
+      "columnsStorageUnavailable": "欄位選擇仍適用於本次匯出，但此瀏覽器無法記住它們。",
+      "searchTitle": "搜尋已準備的資料列",
+      "searchPlaceholder": "搜尋任一已選欄位",
+      "clearSearch": "清除預覽資料列搜尋",
+      "searchResults": "在 {{total}} 個已準備資料列中，顯示 {{matched}} 個相符項目中的 {{shown}} 個。",
+      "searchScope": "搜尋此已準備快照中的全部 {{total}} 個已清理資料列。",
+      "searchExportNotice": "搜尋只會變更此預覽；複製與下載仍包含所有已準備資料列。",
+      "noSearchResults": "沒有已準備資料列符合此搜尋",
+      "noSearchResultsHelp": "請嘗試其他關鍵字或清除搜尋。已準備的匯出不會變更。",
+      "searchLimited": "為保持預覽流暢，只顯示 {{matched}} 個搜尋結果中的前 {{count}} 個。"
     }
   }
 }

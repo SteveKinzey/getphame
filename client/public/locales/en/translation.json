@@ -2255,7 +2255,8 @@
       "undo": "Undo",
       "undoing": "Undoing…",
       "undoError": "The previous preset order could not be restored.",
-      "undoSucceeded": "Preset order restored."
+      "undoSucceeded": "Preset order restored.",
+      "undoShortcutHint": "Keyboard: Ctrl/Cmd + Z"
     },
     "csvPreview": {
       "preparing": "Preparing preview…",
@@ -2286,7 +2287,18 @@
       "copySucceeded": "Copied",
       "copyFailed": "Copy failed — retry",
       "copied": "Copied {{count}} sanitized health records.",
-      "copyError": "The CSV data could not be copied. Try downloading it instead."
+      "copyError": "The CSV data could not be copied. Try downloading it instead.",
+      "columnsRemembered": "Column choices saved for your next export on this device.",
+      "columnsStorageUnavailable": "Column choices work for this export, but this browser could not remember them.",
+      "searchTitle": "Search prepared rows",
+      "searchPlaceholder": "Search any selected column",
+      "clearSearch": "Clear preview row search",
+      "searchResults": "Showing {{shown}} of {{matched}} matching rows from {{total}} prepared rows.",
+      "searchScope": "Search all {{total}} sanitized rows in this prepared snapshot.",
+      "searchExportNotice": "Search changes this preview only; copy and download still include every prepared row.",
+      "noSearchResults": "No prepared rows match this search",
+      "noSearchResultsHelp": "Try another term or clear the preview search. Your prepared export is unchanged.",
+      "searchLimited": "Showing the first {{count}} of {{matched}} search matches to keep the preview responsive."
     }
   }
 }

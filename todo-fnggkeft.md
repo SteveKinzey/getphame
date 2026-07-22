@@ -152,4 +152,16 @@
 - [x] Add helper, authorization, UI-contract, interaction-state, clipboard, selected-column parity, undo, localization, and accessibility regression coverage
 - [x] Extend the reusable production-auth-health-monitoring skill through the skill-creator workflow with column projection, clipboard copy, and reorder undo patterns, then pass the official validator
 - [x] Run focused tests, the full suite, TypeScript checks, dependency security audit, production build, and authenticated desktop/mobile responsive verification
-- [ ] Save and auto-publish a release checkpoint, verify the live Get Phame bundle contains the new workflow markers, and deliver the updated reusable skill
+- [x] Save and auto-publish a release checkpoint, verify the live Get Phame bundle contains the new workflow markers, and deliver the updated reusable skill
+- [x] Persist administrator CSV column preferences in versioned local storage, reconcile stored keys against the server allowlist, and recover safely from malformed or stale values
+- [x] Add an accessible row-search field inside the CSV preview modal that searches the complete sanitized prepared snapshot, reports match counts, caps rendered matches, and clearly preserves full copy/download output
+- [x] Add a context-safe Ctrl+Z or Cmd+Z shortcut that invokes the visible preset-reorder Undo action, ignores editable fields and repeats, and exposes discoverable accessible shortcut metadata
+- [x] Localize every new preference, row-search, and keyboard-undo label and state across all seven supported Get Phame locales and bump the locale cache key
+- [x] Add helper, storage-recovery, complete-snapshot search, preview/export semantics, shortcut, localization, and accessibility regression coverage
+- [x] Extend the reusable production-auth-health-monitoring skill through the skill-creator workflow with persisted allowlisted columns, full-snapshot preview search, and contextual keyboard undo, then pass the official validator
+- [x] Audit the actual product and pricing implementation, determine MVP readiness, and provide a candid monthly, annual, and lifetime pricing assessment with evidence-backed recommendations
+- [x] Inventory the accessible Get Phame project and parent-folder hierarchy, perform only safe non-destructive cleanup, and identify any user-device folder that requires binding or confirmation
+- [x] Establish `/home/ubuntu/getphame` as the safe Get Phame workspace name without breaking the managed project path, publishing metadata, checkpoints, or rollback history
+- [x] Inventory the bound `/Users/skinzey/code/getphame` workspace, compare it with the managed source of truth, and apply only a confirmed Git-safe cleanup structure
+- [x] Run focused tests, the full suite, TypeScript checks, dependency security audit, production build, and authenticated desktop/mobile responsive verification
+- [ ] Save and auto-publish a release checkpoint, verify the live Get Phame bundle contains the new workflow markers, and deliver the updated reusable skill plus product assessment
