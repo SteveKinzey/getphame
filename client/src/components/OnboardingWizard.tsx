@@ -141,7 +141,9 @@ function OnboardingHelpTip({ label, text }: { label: string; text: string }) {
 
 function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
   const { t } = useTranslation();
+  const utils = trpc.useUtils();
   const [copied, setCopied] = useState(false);
+  const [revealedSecret, setRevealedSecret] = useState<string | null>(null);
   const { data: apiKeyList } = trpc.apiKey.list.useQuery();
   const downloadConnector = trpc.connector.download.useMutation({
     onSuccess: ({ url, fileName }) => {
@@ -158,7 +160,11 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
     onError: (err) => toast.error(err.message),
   });
   const generateKey = trpc.apiKey.generate.useMutation({
-    onSuccess: () => trpc.useUtils().apiKey.list.invalidate(),
+    onSuccess: async (data) => {
+      setRevealedSecret(data.rawKey);
+      await utils.apiKey.list.invalidate();
+      toast.success(t("developerIntegrations.keys.created", { defaultValue: "API key created. Copy it before closing this step." }));
+    },
     onError: (err) => toast.error(err.message),
   });
 
@@ -166,11 +172,13 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
   const firstKey = apiKeyList?.[0];
 
   function handleCopy() {
-    if (!firstKey) return;
-    navigator.clipboard.writeText(firstKey.label ?? "").then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    });
+    if (!revealedSecret) return;
+    navigator.clipboard.writeText(revealedSecret)
+      .then(() => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      })
+      .catch(() => toast.error(t("developerIntegrations.copyFailed", { defaultValue: "Could not copy automatically. Select and copy the value manually." })));
   }
 
   return (
@@ -281,21 +289,33 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
                 "In WordPress, go to Settings → Get Phame and paste your API key below. Then click Test Connection."
               )}
             </p>
-            {apiKeyList && apiKeyList.length > 0 ? (
+            {revealedSecret || firstKey ? (
               <div
                 className="flex items-center gap-2 px-3 py-2 rounded-xl"
                 style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
               >
                 <code className="text-sm font-black flex-1 text-white truncate" style={{ fontFamily: "monospace" }}>
-                  {firstKey ? `rl_${firstKey.keyHash.slice(0, 8)}...` : "rl_..."}
+                  {revealedSecret ?? firstKey?.keyHint}
                 </code>
-                <button
-                  onClick={handleCopy}
-                  className="text-sm font-black px-2 py-1 rounded-lg transition-colors"
-                  style={{ background: copied ? "oklch(0.55 0.18 145)" : "oklch(0.28 0.08 260)", color: copied ? "oklch(0.15 0.05 260)" : "oklch(0.75 0.04 260)" }}
-                >
-                  {copied ? "✓ Copied" : "Copy"}
-                </button>
+                {revealedSecret ? (
+                  <button
+                    onClick={handleCopy}
+                    className="text-sm font-black px-2 py-1 rounded-lg transition-colors"
+                    style={{ background: copied ? "oklch(0.55 0.18 145)" : "oklch(0.28 0.08 260)", color: copied ? "oklch(0.15 0.05 260)" : "oklch(0.75 0.04 260)" }}
+                  >
+                    {copied
+                      ? t("referralRewards.copied", { defaultValue: "Copied!" })
+                      : t("common.copy", { defaultValue: "Copy" })}
+                  </button>
+                ) : (
+                  <a
+                    href="/developer-integrations"
+                    className="text-sm font-black px-2 py-1 rounded-lg transition-colors"
+                    style={{ background: "oklch(0.28 0.08 260)", color: "oklch(0.75 0.04 260)" }}
+                  >
+                    {t("developerIntegrations.open", { defaultValue: "Open developer workspace" })}
+                  </a>
+                )}
               </div>
             ) : (
               <button

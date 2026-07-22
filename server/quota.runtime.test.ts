@@ -20,6 +20,9 @@ const mocks = vi.hoisted(() => ({
   getBusinessProfile: vi.fn(),
   getUserByApiKey: vi.fn(),
   getDb: vi.fn(),
+  authenticateDeveloperApiKeyWithStatus: vi.fn(),
+  checkDeveloperApiAbuse: vi.fn(),
+  checkDeveloperApiRateLimit: vi.fn(),
 }));
 
 vi.mock("./quotaEnforcement", async (importOriginal) => ({
@@ -32,6 +35,21 @@ vi.mock("./db", async (importOriginal) => ({
   getBusinessProfile: mocks.getBusinessProfile,
   getUserByApiKey: mocks.getUserByApiKey,
   getDb: mocks.getDb,
+}));
+
+vi.mock("./developerApiKeys", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./developerApiKeys")>()),
+  authenticateDeveloperApiKeyWithStatus: mocks.authenticateDeveloperApiKeyWithStatus,
+}));
+
+vi.mock("./developerApiAbuse", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./developerApiAbuse")>()),
+  checkDeveloperApiAbuse: mocks.checkDeveloperApiAbuse,
+}));
+
+vi.mock("./developerApiImports", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./developerApiImports")>()),
+  checkDeveloperApiRateLimit: mocks.checkDeveloperApiRateLimit,
 }));
 
 import { appRouter } from "./routers";
@@ -61,6 +79,23 @@ describe("runtime Free-plan quota parity", () => {
     mocks.evaluateFreeQuotaAccess.mockResolvedValue({ allowed: false, quota, isAdmin: false });
     mocks.getBusinessProfile.mockResolvedValue({ tier: "free", monthlyCount: 0, monthlyResetDate: "2026-07" });
     mocks.getUserByApiKey.mockResolvedValue(42);
+    mocks.authenticateDeveloperApiKeyWithStatus.mockResolvedValue({
+      kind: "ok",
+      principal: {
+        apiKeyId: 1,
+        userId: 42,
+        label: "Quota runtime test",
+        scopes: ["review_requests:send"],
+        expiresAt: null,
+        inactivityExpiresAt: Date.now() + 365 * 24 * 60 * 60 * 1000,
+      },
+    });
+    mocks.checkDeveloperApiAbuse.mockResolvedValue({ allowed: true });
+    mocks.checkDeveloperApiRateLimit.mockResolvedValue({
+      allowed: true,
+      remaining: 59,
+      retryAfterSeconds: 0,
+    });
     mocks.getDb.mockResolvedValue({
       select: () => ({
         from: () => ({

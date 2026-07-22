@@ -67,9 +67,16 @@ function validate(values: FormValues, t: Translate): Partial<Record<keyof FormVa
   return errors;
 }
 
-export default function SupportDialog() {
+type SupportDialogProps = {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  hideTrigger?: boolean;
+};
+
+export default function SupportDialog({ open: controlledOpen, onOpenChange, hideTrigger = false }: SupportDialogProps = {}) {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = controlledOpen ?? internalOpen;
   const [values, setValues] = useState<FormValues>(initialValues);
   const [touched, setTouched] = useState<Partial<Record<keyof FormValues, boolean>>>({});
   const [submitted, setSubmitted] = useState(false);
@@ -175,7 +182,8 @@ export default function SupportDialog() {
   };
 
   const updateOpen = (nextOpen: boolean) => {
-    setOpen(nextOpen);
+    if (controlledOpen === undefined) setInternalOpen(nextOpen);
+    onOpenChange?.(nextOpen);
     if (!nextOpen) window.setTimeout(reset, 150);
   };
 
@@ -183,14 +191,16 @@ export default function SupportDialog() {
 
   return (
     <Dialog open={open} onOpenChange={updateOpen}>
-      <DialogTrigger asChild>
-        <button
-          type="button"
-          className="text-slate-200 font-medium transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#071121]"
-        >
-          {t("landing.footer.support", { defaultValue: "Support" })}
-        </button>
-      </DialogTrigger>
+      {!hideTrigger && (
+        <DialogTrigger asChild>
+          <button
+            type="button"
+            className="text-slate-200 font-medium transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#071121]"
+          >
+            {t("landing.footer.support", { defaultValue: "Support" })}
+          </button>
+        </DialogTrigger>
+      )}
       <DialogContent
         className="max-h-[calc(100dvh-2rem)] overflow-y-auto border-[#34496d] bg-[#0b1830] text-white sm:max-w-xl"
         onOpenAutoFocus={(event) => event.preventDefault()}

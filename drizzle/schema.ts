@@ -12,13 +12,26 @@ export const roleEnum = pgEnum("role", ["user", "admin"]);
 export const tierEnum = pgEnum("tier", ["free", "pro", "annual", "lifetime"]);
 export const methodEnum = pgEnum("method", ["email", "sms", "both"]);
 export const requestStatusEnum = pgEnum("request_status", ["sent", "pending", "followed_up"]);
-export const contactSourceEnum = pgEnum("contact_source", ["manual", "woocommerce", "stripe", "koalendar"]);
+export const contactSourceEnum = pgEnum("contact_source", ["manual", "woocommerce", "stripe", "koalendar", "api"]);
 export const reminderStatusEnum = pgEnum("reminder_status", ["pending", "sent", "cancelled"]);
 export const platformEnum = pgEnum("platform", ["google", "yelp", "tripadvisor", "bing", "facebook", "apple", "other"]);
 export const emailEventTypeEnum = pgEnum("email_event_type", ["open", "click"]);
 export const churnReasonEnum = pgEnum("churn_reason", ["too_expensive", "not_using", "switching_tools", "missing_feature", "other"]);
 export const healthStatusEnum = pgEnum("health_status", ["ok", "fail"]);
-export const bulkProviderEnum = pgEnum("bulk_provider", ["sendgrid", "mailgun", "postmark"]);
+export const bulkProviderEnum = pgEnum("bulk_provider", [
+  "sendgrid",
+  "amazon_ses",
+  "mailgun",
+  "mailersend",
+  "smtp2go",
+  "brevo",
+  "postmark",
+  "sparkpost",
+  "elastic_email",
+  "zoho_zeptomail",
+  "socketlabs",
+  "custom_smtp",
+]);
 export const mailgunRegionEnum = pgEnum("mailgun_region", ["us", "eu"]);
 export const authDiagnosticEventTypeEnum = pgEnum("auth_diagnostic_event_type", [
   "request_received",
@@ -37,6 +50,7 @@ export const supportQueueAssigneeScopeEnum = pgEnum("support_queue_assignee_scop
 export const supportQueueSlaWindowEnum = pgEnum("support_queue_sla_window", ["overdue", "next_4_hours", "next_24_hours"]);
 export const supportQueueSortEnum = pgEnum("support_queue_sort", ["newest", "oldest", "priority", "assignee", "sla_soonest", "due_soonest"]);
 export const supportQueueViewVisibilityEnum = pgEnum("support_queue_view_visibility", ["private", "team"]);
+export const complimentaryAccessDurationUnitEnum = pgEnum("complimentary_access_duration_unit", ["day", "month", "year"]);
 
 // ─── Tables ───────────────────────────────────────────────────────────────────
 
@@ -281,6 +295,35 @@ export const stripeSubscriptions = pgTable("stripe_subscriptions", {
 export type StripeSubscription = typeof stripeSubscriptions.$inferSelect;
 export type InsertStripeSubscription = typeof stripeSubscriptions.$inferInsert;
 
+/**
+ * Administrator-issued paid-access grants for registered or future users.
+ * Plaintext recipient email addresses are deliberately excluded: lookups use a
+ * one-way HMAC fingerprint and administrator views receive only the mask.
+ */
+export const complimentaryAccessGrants = pgTable("complimentary_access_grants", {
+  id: serial("id").primaryKey(),
+  emailFingerprint: varchar("email_fingerprint", { length: 64 }).notNull(),
+  emailMasked: varchar("email_masked", { length: 320 }).notNull(),
+  userId: integer("user_id"),
+  durationValue: integer("duration_value").notNull(),
+  durationUnit: complimentaryAccessDurationUnitEnum("duration_unit").notNull(),
+  startsAt: bigint("starts_at", { mode: "number" }).notNull(),
+  expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
+  createdByUserId: integer("created_by_user_id").notNull(),
+  note: varchar("note", { length: 500 }),
+  revokedAt: bigint("revoked_at", { mode: "number" }),
+  revokedByUserId: integer("revoked_by_user_id"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => [
+  index("complimentary_access_email_expiry_idx").on(table.emailFingerprint, table.expiresAt),
+  index("complimentary_access_user_expiry_idx").on(table.userId, table.expiresAt),
+  index("complimentary_access_created_idx").on(table.createdAt),
+]);
+
+export type ComplimentaryAccessGrant = typeof complimentaryAccessGrants.$inferSelect;
+export type InsertComplimentaryAccessGrant = typeof complimentaryAccessGrants.$inferInsert;
+
 /** WooCommerce store credentials per user */
 export const wooCredentials = pgTable("woo_credentials", {
   id: serial("id").primaryKey(),
@@ -343,6 +386,11 @@ export const savedContacts = pgTable("saved_contacts", {
   // Source tracking — where this contact came from
   source: contactSourceEnum("source").default("manual").notNull(),
   externalId: varchar("externalId", { length: 128 }), // Stripe customer ID or WooCommerce order ID for dedup
+  sourceApp: varchar("sourceApp", { length: 64 }),
+  importedViaApiKeyId: integer("importedViaApiKeyId"),
+  consentBasis: varchar("consentBasis", { length: 32 }),
+  consentCapturedAt: bigint("consentCapturedAt", { mode: "number" }),
+  consentSource: varchar("consentSource", { length: 255 }),
   // Opt-out / unsubscribe tracking
   optedOut: integer("optedOut").default(0).notNull(), // 1 = unsubscribed, suppress future sends
   optedOutAt: bigint("optedOutAt", { mode: "number" }), // Unix ms when opted out
@@ -712,10 +760,22 @@ export const apiKeys = pgTable("api_keys", {
   userId: integer("userId").notNull(),
   keyHash: varchar("keyHash", { length: 64 }).notNull().unique(), // SHA-256 hex of the raw key
   label: varchar("label", { length: 100 }).notNull().default("My API Key"),
+  keyHint: varchar("keyHint", { length: 24 }).notNull().default("rl_••••"),
+  scopes: text("scopes").notNull(),
+  expiresAt: bigint("expiresAt", { mode: "number" }),
+  rotatedFromId: integer("rotatedFromId"),
+  usageCount: integer("usageCount").notNull().default(0),
   lastUsedAt: bigint("lastUsedAt", { mode: "number" }), // Unix ms
+  suspendedAt: bigint("suspendedAt", { mode: "number" }), // Unix ms — temporary abuse suspension
+  suspensionExpiresAt: bigint("suspensionExpiresAt", { mode: "number" }),
+  suspensionReason: varchar("suspensionReason", { length: 64 }),
   revokedAt: bigint("revokedAt", { mode: "number" }), // Unix ms — null = active
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
+}, (table) => [
+  index("api_keys_user_created_idx").on(table.userId, table.createdAt),
+  index("api_keys_expiry_idx").on(table.expiresAt),
+  index("api_keys_suspension_idx").on(table.suspensionExpiresAt),
+]);
 export type ApiKey = typeof apiKeys.$inferSelect;
 export type InsertApiKey = typeof apiKeys.$inferInsert;
 
@@ -728,13 +788,85 @@ export const apiImportEvents = pgTable("api_import_events", {
   userId: integer("userId").notNull(),
   apiKeyId: integer("apiKeyId"), // null if key was deleted
   keyLabel: varchar("keyLabel", { length: 100 }).notNull().default("API Key"),
+  eventType: varchar("eventType", { length: 32 }).notNull().default("contact_import"),
   contactId: integer("contactId"), // null if contact was deleted
   email: varchar("email", { length: 320 }).notNull(),
+  emailMasked: varchar("emailMasked", { length: 320 }),
+  emailFingerprint: varchar("emailFingerprint", { length: 64 }),
+  sourceApp: varchar("sourceApp", { length: 64 }),
+  externalId: varchar("externalId", { length: 128 }),
+  consentBasis: varchar("consentBasis", { length: 32 }),
+  outcome: varchar("outcome", { length: 32 }).notNull().default("created"),
+  errorCode: varchar("errorCode", { length: 64 }),
+  idempotencyHash: varchar("idempotencyHash", { length: 64 }),
   created: boolean("created").notNull().default(true), // true = new contact, false = updated
   createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
-});
+}, (table) => [
+  index("api_import_events_user_created_idx").on(table.userId, table.createdAt),
+  index("api_import_events_key_created_idx").on(table.apiKeyId, table.createdAt),
+]);
 export type ApiImportEvent = typeof apiImportEvents.$inferSelect;
 export type InsertApiImportEvent = typeof apiImportEvents.$inferInsert;
+
+/** Request-level idempotency records; only hashes and bounded response metadata are retained. */
+export const apiIdempotencyRecords = pgTable("api_idempotency_records", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  apiKeyId: integer("apiKeyId").notNull(),
+  idempotencyHash: varchar("idempotencyHash", { length: 64 }).notNull(),
+  payloadHash: varchar("payloadHash", { length: 64 }).notNull(),
+  contactId: integer("contactId"),
+  created: boolean("created").notNull().default(true),
+  responseJson: text("responseJson").notNull(),
+  expiresAt: bigint("expiresAt", { mode: "number" }).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+}, (table) => [
+  uniqueIndex("api_idempotency_key_hash_unique").on(table.apiKeyId, table.idempotencyHash),
+  index("api_idempotency_expiry_idx").on(table.expiresAt),
+]);
+export type ApiIdempotencyRecord = typeof apiIdempotencyRecords.$inferSelect;
+export type InsertApiIdempotencyRecord = typeof apiIdempotencyRecords.$inferInsert;
+
+/** Per-key rolling request windows used for deterministic API rate limiting. */
+export const apiRateLimitWindows = pgTable("api_rate_limit_windows", {
+  id: serial("id").primaryKey(),
+  apiKeyId: integer("apiKeyId").notNull(),
+  windowStartedAt: bigint("windowStartedAt", { mode: "number" }).notNull(),
+  requestCount: integer("requestCount").notNull().default(0),
+  expiresAt: bigint("expiresAt", { mode: "number" }).notNull(),
+}, (table) => [
+  uniqueIndex("api_rate_limit_key_window_unique").on(table.apiKeyId, table.windowStartedAt),
+  index("api_rate_limit_expiry_idx").on(table.expiresAt),
+]);
+export type ApiRateLimitWindow = typeof apiRateLimitWindows.$inferSelect;
+export type InsertApiRateLimitWindow = typeof apiRateLimitWindows.$inferInsert;
+
+/**
+ * Persistent abuse windows for public API side effects. Dimensions are stored
+ * only as keyed hashes, never raw IP addresses or recipient email addresses.
+ */
+export const apiAbuseLimitWindows = pgTable("api_abuse_limit_windows", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  apiKeyId: integer("apiKeyId"),
+  action: varchar("action", { length: 32 }).notNull(),
+  dimension: varchar("dimension", { length: 24 }).notNull(),
+  dimensionHash: varchar("dimensionHash", { length: 64 }).notNull(),
+  windowStartedAt: bigint("windowStartedAt", { mode: "number" }).notNull(),
+  requestCount: integer("requestCount").notNull().default(0),
+  expiresAt: bigint("expiresAt", { mode: "number" }).notNull(),
+}, (table) => [
+  uniqueIndex("api_abuse_dimension_window_unique").on(
+    table.action,
+    table.dimensionHash,
+    table.windowStartedAt,
+  ),
+  index("api_abuse_user_action_idx").on(table.userId, table.action, table.expiresAt),
+  index("api_abuse_key_action_idx").on(table.apiKeyId, table.action, table.expiresAt),
+  index("api_abuse_expiry_idx").on(table.expiresAt),
+]);
+export type ApiAbuseLimitWindow = typeof apiAbuseLimitWindows.$inferSelect;
+export type InsertApiAbuseLimitWindow = typeof apiAbuseLimitWindows.$inferInsert;
 
 /** One private Koalendar webhook endpoint per Get Phame account. */
 export const koalendarConnections = pgTable("koalendar_connections", {
@@ -867,7 +999,7 @@ export const clientReviews = pgTable("client_reviews", {
 export type ClientReview = typeof clientReviews.$inferSelect;
 export type InsertClientReview = typeof clientReviews.$inferInsert;
 
-/** Bulk sender API credentials — Pro-only feature for high-volume sending via SendGrid/Mailgun/Postmark */
+/** Bulk sender credentials — Pro-only feature for high-volume sending through verified SMTP relays. */
 export const bulkSenderCredentials = pgTable("bulk_sender_credentials", {
   id: serial("id").primaryKey(),
   userId: integer("userId").notNull().unique(),
@@ -879,6 +1011,12 @@ export const bulkSenderCredentials = pgTable("bulk_sender_credentials", {
   mailgunDomain: varchar("mailgunDomain", { length: 255 }),
   // Mailgun-specific: EU region flag
   mailgunRegion: mailgunRegionEnum("mailgunRegion").default("us"),
+  // Additive SMTP metadata. apiKey remains the encrypted secret column for backward compatibility.
+  smtpHost: varchar("smtpHost", { length: 255 }),
+  smtpPort: integer("smtpPort"),
+  smtpSecure: integer("smtpSecure").default(0), // 0 = STARTTLS, 1 = implicit TLS
+  smtpUsername: varchar("smtpUsername", { length: 320 }),
+  providerRegion: varchar("providerRegion", { length: 64 }),
   connected: integer("connected").default(1).notNull(), // 1 = active
   createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
   updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),

@@ -17,9 +17,6 @@ import {
   getTotalRequestCount,
   getFreeQuotaSummary,
   getTodaySentCount,
-  generateApiKey,
-  listApiKeys,
-  revokeApiKey,
   getRecentApiImports,
   getWebhookConfigs,
   createWebhookConfig,
@@ -30,6 +27,13 @@ import {
   getAccountProfile,
   updateAccountProfile,
 } from "./db";
+import {
+  createDeveloperApiKey,
+  DEVELOPER_API_SCOPES,
+  listDeveloperApiKeys,
+  revokeDeveloperApiKey,
+  rotateDeveloperApiKey,
+} from "./developerApiKeys";
 
 import { sendMailViaSmtp } from "./smtp";
 import { buildReviewRequestEmail, buildReviewRequestText } from "./emailTemplates";
@@ -39,6 +43,7 @@ import {
   claimMoneyBackGuarantee,
   createCheckoutSession,
   createPortalSession,
+  createStripePromotionCode,
   createThbCheckoutSession,
   getMoneyBackGuaranteeStatus,
   listStripePromotionCodes,
@@ -47,6 +52,7 @@ import {
 import { GUIDE_PDF_URL, sendLeadGuideEmail } from "./leadGuideEmail";
 import { sendSupportMessage } from "./supportEmail";
 import { checkSupportAttachmentRateLimit, checkSupportSubmissionRateLimit } from "./supportRateLimit";
+import { helpAssistantRouter } from "./helpAssistant";
 import {
   getSupportAttachmentExtension,
   getSupportSlaTargetAt,
@@ -161,6 +167,16 @@ import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracki
 import { bulkSenderRouter } from "./bulkSender";
 import { authDiagnosticsRouter } from "./routers/authDiagnostics";
 import { combineAccountsAsAdmin, deleteAccountAsAdmin } from "./accountManagement";
+import {
+  COMPLIMENTARY_ACCESS_LIMITS,
+  ComplimentaryAccessConflictError,
+  ComplimentaryAccessNotFoundError,
+  createComplimentaryAccessGrant,
+  findActiveComplimentaryAccess,
+  listComplimentaryAccessGrants,
+  lookupComplimentaryAccessByEmail,
+  revokeComplimentaryAccessGrant,
+} from "./complimentaryAccess";
 import { buildSmtpAuditCsv, buildSmtpAuditCsvFilename, buildSmtpAuditWhere } from "./smtpAdminAudit";
 import {
   connectKoalendar,
@@ -580,6 +596,7 @@ async function getSupportEscalationPolicySettings(
 export const appRouter = router({
   system: systemRouter,
   authDiagnostics: authDiagnosticsRouter,
+  helpAssistant: helpAssistantRouter,
 
   /** Paid Koalendar booking-to-contact integration. */
   koalendar: router({
@@ -844,9 +861,20 @@ export const appRouter = router({
       const profile = await getBusinessProfile(ctx.user.id);
       if (!profile) return null;
       const freeQuota = await getFreeQuotaSummary(ctx.user.id);
+      const complimentaryAccess = ctx.user.role === "admin"
+        ? null
+        : await findActiveComplimentaryAccess({ userId: ctx.user.id, email: ctx.user.email });
+      const tier = getEffectiveTier(profile.tier, ctx.user.role);
       return {
         ...profile,
-        tier: getEffectiveTier(profile.tier, ctx.user.role),
+        tier,
+        hasPaidAccess: hasPaidOrAdminAccess({
+          role: ctx.user.role,
+          tier,
+          planExpiresAt: profile.planExpiresAt,
+          complimentaryAccessExpiresAt: complimentaryAccess?.expiresAt,
+        }),
+        complimentaryAccessExpiresAt: complimentaryAccess?.expiresAt ?? null,
         totalSent: freeQuota.totalSent,
         freeQuota,
       };
@@ -933,6 +961,44 @@ export const appRouter = router({
         });
       }
     }),
+
+    /** Create a real Stripe coupon and customer-facing promotion code without storing a local mirror. */
+    createPromotionCode: adminProcedure
+      .input(z.object({
+        code: z.string().trim().min(3).max(64).regex(/^[A-Za-z0-9][A-Za-z0-9-]*$/),
+        percentOff: z.number().positive().max(100),
+        applicablePlans: z.array(z.enum(["monthly", "annual", "lifetime"])).min(1).max(3),
+        firstTimeTransaction: z.boolean().default(false),
+        expiresAt: z.number().int().positive().nullable().optional(),
+        maxRedemptions: z.number().int().min(1).max(100_000).nullable().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await createStripePromotionCode({ ...input, createdByUserId: ctx.user.id });
+        } catch (error) {
+          const message = error instanceof Error ? error.message : "";
+          const safeInputError = [
+            "Promotion codes must",
+            "Percentage off must",
+            "Select at least one",
+            "Maximum redemptions must",
+            "Expiration must",
+            "A Stripe promotion code with this code already exists",
+            "A selected Stripe plan is not linked",
+          ].some((prefix) => message.startsWith(prefix));
+          if (safeInputError) {
+            throw new TRPCError({
+              code: message.includes("already exists") ? "CONFLICT" : "BAD_REQUEST",
+              message,
+            });
+          }
+          console.error("[Stripe] Administrator promotion-code creation failed", error);
+          throw new TRPCError({
+            code: "BAD_GATEWAY",
+            message: "Stripe could not create this promotion code. Please retry or review Stripe configuration.",
+          });
+        }
+      }),
 
     /** Create a Stripe Checkout Session for the selected plan */
     createCheckout: protectedProcedure
@@ -2666,6 +2732,67 @@ export const appRouter = router({
 
   /** Admin-only analytics and diagnostics */
   admin: router({
+    complimentaryAccess: adminProcedure
+      .input(z.object({
+        status: z.enum(["all", "active", "expired", "revoked"]).default("all"),
+      }).optional())
+      .query(({ input }) => listComplimentaryAccessGrants({ status: input?.status ?? "all" })),
+
+    complimentaryAccessLookup: adminProcedure
+      .input(z.object({ email: z.string().trim().email().max(320) }))
+      .query(({ input }) => lookupComplimentaryAccessByEmail({ email: input.email })),
+
+    grantComplimentaryAccess: adminProcedure
+      .input(z.object({
+        email: z.string().trim().email().max(320),
+        durationValue: z.number().int().positive(),
+        durationUnit: z.enum(["day", "month", "year"]),
+        note: z.string().trim().max(500).nullable().optional(),
+      }).superRefine((value, issueContext) => {
+        const maximum = COMPLIMENTARY_ACCESS_LIMITS[value.durationUnit];
+        if (value.durationValue > maximum) {
+          issueContext.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["durationValue"],
+            message: `Duration cannot exceed ${maximum} ${value.durationUnit}(s).`,
+          });
+        }
+      }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await createComplimentaryAccessGrant({ ...input, createdByUserId: ctx.user.id });
+        } catch (error) {
+          if (error instanceof ComplimentaryAccessConflictError) {
+            throw new TRPCError({ code: "CONFLICT", message: error.message });
+          }
+          console.error("[Admin] Complimentary-access grant failed", error);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Complimentary access could not be granted. Please retry.",
+          });
+        }
+      }),
+
+    revokeComplimentaryAccess: adminProcedure
+      .input(z.object({ grantId: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await revokeComplimentaryAccessGrant({
+            grantId: input.grantId,
+            revokedByUserId: ctx.user.id,
+          });
+        } catch (error) {
+          if (error instanceof ComplimentaryAccessNotFoundError) {
+            throw new TRPCError({ code: "NOT_FOUND", message: error.message });
+          }
+          console.error("[Admin] Complimentary-access revocation failed", error);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Complimentary access could not be revoked. Please retry.",
+          });
+        }
+      }),
+
     /** Overall platform stats — user count, tier breakdown, recent signups, recent sends */
     stats: adminProcedure.query(async () => {
       const db = await getDb();
@@ -3598,26 +3725,51 @@ export const appRouter = router({
 
   /** Per-user API keys for the public REST API (contacts import, etc.) */
   apiKey: router({
-    /** List all active (non-revoked) API keys for the current user */
+    /** List safe API-key metadata; raw secrets are never persisted or returned. */
     list: protectedProcedure.query(async ({ ctx }) => {
-      return listApiKeys(ctx.user.id);
+      return listDeveloperApiKeys(ctx.user.id);
     }),
-    /** Generate a new API key — returns the raw key ONCE */
+    /** Generate a scoped API key — returns the raw secret exactly once. */
     generate: protectedProcedure
-      .input(z.object({ label: z.string().min(1).max(100).default("My API Key") }))
+      .input(z.object({
+        label: z.string().trim().min(1).max(100).default("My API Key"),
+        scopes: z.array(z.enum(DEVELOPER_API_SCOPES)).min(1).max(DEVELOPER_API_SCOPES.length).default(["contacts:write"]),
+        expiresInDays: z.number().int().min(1).max(3650).nullable().default(null),
+      }))
       .mutation(async ({ ctx, input }) => {
-        // Limit to 5 active keys per user
-        const existing = await listApiKeys(ctx.user.id);
-        if (existing.length >= 5) {
-          throw new TRPCError({ code: "BAD_REQUEST", message: "Maximum 5 active API keys allowed. Revoke one to create a new key." });
+        try {
+          return await createDeveloperApiKey({
+            userId: ctx.user.id,
+            label: input.label,
+            scopes: input.scopes,
+            expiresAt: input.expiresInDays ? Date.now() + input.expiresInDays * 24 * 60 * 60 * 1000 : null,
+          });
+        } catch (error) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: error instanceof Error ? error.message : "Unable to create API key.",
+          });
         }
-        return generateApiKey(ctx.user.id, input.label);
       }),
-    /** Revoke (soft-delete) an API key */
+    /** Rotate an active key and reveal the replacement secret exactly once. */
+    rotate: protectedProcedure
+      .input(z.object({ id: z.number().int().positive(), label: z.string().trim().min(1).max(100).optional() }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await rotateDeveloperApiKey({ userId: ctx.user.id, keyId: input.id, label: input.label });
+        } catch (error) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: error instanceof Error ? error.message : "Unable to rotate API key.",
+          });
+        }
+      }),
+    /** Revoke (soft-delete) an API key. */
     revoke: protectedProcedure
       .input(z.object({ id: z.number().int().positive() }))
       .mutation(async ({ ctx, input }) => {
-        await revokeApiKey(ctx.user.id, input.id);
+        const revoked = await revokeDeveloperApiKey(ctx.user.id, input.id);
+        if (!revoked) throw new TRPCError({ code: "NOT_FOUND", message: "Active API key not found." });
         return { success: true };
       }),
     /** Get recent API import events */

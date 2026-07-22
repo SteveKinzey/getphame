@@ -42,7 +42,7 @@ describe("auth health history preset persistence", () => {
   });
 
   it("defines an additive owner/name unique migration without storing health rows or failure details", () => {
-    const migration = fs.readFileSync(path.join(process.cwd(), "drizzle/0002_flimsy_vertigo.sql"), "utf8");
+    const migration = fs.readFileSync(path.join(process.cwd(), "drizzle/0018_flimsy_vertigo.sql"), "utf8");
     expect(migration).toContain("CREATE TABLE `auth_health_history_presets`");
     expect(migration).toContain("auth_health_history_presets_owner_name_unique");
     expect(migration).toContain("auth_health_history_presets_owner_updated_idx");
@@ -51,7 +51,7 @@ describe("auth health history preset persistence", () => {
   });
 
   it("adds preset ordering without recreating or dropping the existing table", () => {
-    const migration = fs.readFileSync(path.join(process.cwd(), "drizzle/0003_overconfident_meteorite.sql"), "utf8");
+    const migration = fs.readFileSync(path.join(process.cwd(), "drizzle/0019_overconfident_meteorite.sql"), "utf8");
     expect(migration).toContain("ALTER TABLE `auth_health_history_presets` ADD `sort_order`");
     expect(migration).toContain("auth_health_history_presets_owner_sort_idx");
     expect(migration).not.toContain("CREATE TABLE");

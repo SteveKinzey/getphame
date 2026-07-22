@@ -138,10 +138,10 @@ export default function AdminCodesPage() {
           </div>
           <div className="shrink-0 flex flex-col gap-2 mt-1">
             <button
-              onClick={() => navigate("/admin/promotions")}
+              onClick={() => navigate("/admin/revenue-controls")}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold rr-text-gold" style={{ background: "oklch(0.30 0.07 260)", border: "1px solid rgba(255,255,255,0.12)" }}
             >
-              Stripe promos
+              Revenue controls
             </button>
             <button
               onClick={() => navigate("/admin/smtp-stats")}

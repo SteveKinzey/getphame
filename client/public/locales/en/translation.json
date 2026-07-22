@@ -24,7 +24,8 @@
     "pricing": "Pricing",
     "faq": "FAQ",
     "manageUsers": "Manage users",
-    "admin": "Admin"
+    "admin": "Admin",
+    "developer": "Developer"
   },
   "hero": {
     "tagline": "Free to start — No credit card required",
@@ -287,7 +288,8 @@
     "setupActionSend": "Send",
     "setupStepComplete": "Complete",
     "setupStepNumber": "Step {{step}}",
-    "loadingAnalytics": "Loading analytics"
+    "loadingAnalytics": "Loading analytics",
+    "lifePlan": "Life Plan"
   },
   "activityTrend": {
     "title": "Activity Trend",
@@ -438,7 +440,11 @@
     "gotIt": "Got it ✓",
     "hide": "Hide",
     "show": "Show",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "on": "On",
+    "off": "Off",
+    "copy": "Copy",
+    "optional": "optional"
   },
   "profile": {
     "title": "Business Profile",
@@ -483,6 +489,22 @@
     "platformLabelDescription": "Shows in the email if you select \"Other\".",
     "addPlatform": "Add Platform",
     "urlRequired": "URL is required",
+    "platformUrlRequired": "Review Page URL *",
+    "yelpSearchInstruction": "Yelp Search Instruction *",
+    "whyNoLinkTitle": "Why no link?",
+    "yelpNoLinkEdit": "Yelp's Terms of Service prohibit directly soliciting reviews via a link. A plain-text search instruction keeps your emails compliant — customers find your listing themselves.",
+    "yelpEditHelp": "Enter a plain-text search instruction. This text appears in the email — no link is generated, keeping you Yelp-compliant.",
+    "yelpNoLinkAdd": "Yelp's Terms of Service prohibit directly soliciting reviews via a link. Entering a plain-text search instruction keeps your emails compliant — customers find your listing themselves.",
+    "yelpSearchHelp": "Enter a plain-text search instruction (for example: Search for [Your Business] on Yelp in [City, State]). This text appears in the email body — no link is created, keeping you Yelp-compliant.",
+    "reviewUrlHelp": "Paste the public URL customers use to leave a review on this platform.",
+    "customLabel": "Custom Label",
+    "customLabelExample": "e.g. Houzz, Angi, Thumbtack",
+    "searchInstructionRequired": "Search instruction is required",
+    "addingPlatform": "Adding platform...",
+    "addSuccess": "Review platform added!",
+    "addError": "Failed to add platform",
+    "remove": "Remove",
+    "cancel": "Cancel",
     "restoreFailed": "Restore failed: {{message}}",
     "removeFailed": "Could not remove platform: {{message}}"
   },
@@ -827,7 +849,8 @@
     "emailTemplates": "Email Templates",
     "customizeMessages": "Customise your review request messages",
     "new": "New",
-    "logoText": "Get Phame"
+    "logoText": "Get Phame",
+    "proGrowthMessage": "Turn every completed job into a repeatable reputation and revenue system."
   },
   "infoBanner": {
     "howItWorks": "How it works:",
@@ -986,7 +1009,12 @@
     "price": "Price",
     "freeTrialNote": "All plans include a 10-request free trial. No credit card required to start.",
     "reviewRequests": "Review requests",
-    "freeRequestAllowance": "10 first, then 5 / rolling 30 days"
+    "freeRequestAllowance": "10 first, then 5 / rolling 30 days",
+    "mobileTitle": "Compare plan features",
+    "mobileSubtitle": "Open the compact feature comparison",
+    "mobileAction": "Compare",
+    "mobileEyebrow": "Feature comparison",
+    "mobileDescription": "Compare Free, Pro, and Lifetime without leaving the upgrade page."
   },
   "paidUser": {
     "adminAccess": "Admin Access",
@@ -1101,7 +1129,10 @@
     "administrator": "Administrator",
     "administratorAccount": "Administrator account",
     "renewsOn": "Renews {{date}}",
-    "accessUntil": "Access until {{date}}"
+    "accessUntil": "Access until {{date}}",
+    "status": "Status",
+    "managePlan": "Manage plan",
+    "upgrade": "Upgrade"
   },
   "columnLabels": {
     "fullName": "Full Name",
@@ -1764,7 +1795,9 @@
   "paymentSuccess": {
     "confirmed": "Payment confirmed.",
     "confirmedToast": "Payment confirmed. Your Get Phame access is active.",
-    "upgraded": "Your account has been upgraded instantly."
+    "upgraded": "Your account has been upgraded instantly.",
+    "thankYou": "Thank you for investing in your reputation system. Your next three actions will turn that upgrade into visible customer trust.",
+    "closingThankYou": "Thank you for choosing Get Phame."
   },
   "adminUsers": {
     "roleUpdated": "Administrator access updated.",
@@ -1790,7 +1823,64 @@
     "empty": "No users match that search.",
     "previous": "Previous",
     "page": "Page {{page}} of {{count}}",
-    "next": "Next"
+    "next": "Next",
+    "deleted": "Account deleted.",
+    "combined": "Accounts combined. {{name}} is now the surviving account.",
+    "smtpRemoved": "SMTP credentials removed.",
+    "smtpAlreadyAbsent": "No SMTP credentials were connected.",
+    "smtpRecovered": "SMTP connection recovered and verified.",
+    "smtpRetestPassed": "SMTP verification passed.",
+    "smtpRetestFailed": "SMTP verification failed.",
+    "smtpAuditNoExportRows": "No audit records match the current filters.",
+    "smtpAuditExported": "Exported {{count}} matching audit records.",
+    "smtpFilterLabel": "Filter by SMTP status",
+    "smtpFilterAll": "All SMTP statuses",
+    "smtpFilterVerified": "SMTP verified",
+    "smtpFilterUnverified": "SMTP unverified",
+    "smtpFilterFailing": "SMTP health check failed",
+    "smtpFilterUnconnected": "No SMTP connected",
+    "smtpVerified": "SMTP verified",
+    "smtpUnverified": "SMTP unverified",
+    "smtpNotConnected": "No SMTP",
+    "smtpRecoveryConfirmed": "Recovery confirmed {{time}}",
+    "combine": "Combine",
+    "retestSmtp": "Re-test SMTP",
+    "removeSmtp": "Remove SMTP",
+    "delete": "Delete",
+    "smtpAuditTitle": "SMTP removal audit log",
+    "smtpAuditSubtitle": "A durable record of who permanently removed user SMTP credentials and when.",
+    "smtpAuditExport": "Export filtered CSV",
+    "smtpAuditFrom": "From date",
+    "smtpAuditTo": "To date",
+    "smtpAuditAdministrator": "Administrator",
+    "smtpAuditAllAdministrators": "All administrators",
+    "smtpAuditOutcome": "Outcome",
+    "smtpAuditAllOutcomes": "All outcomes",
+    "smtpAuditOutcomeRemoved": "Removed",
+    "smtpAuditClearFilters": "Clear audit filters",
+    "smtpAuditRemoved": "removed SMTP credentials for",
+    "smtpAuditEmpty": "No SMTP credential removals have been recorded.",
+    "smtpAuditPagination": "SMTP audit pages",
+    "deleteTitle": "Delete this account?",
+    "deleteDescription": "This permanently deletes {{name}} and all linked contacts, requests, integrations, settings, analytics, and history.",
+    "deleteIrreversible": "This cannot be undone. Combine duplicate accounts instead if data should be preserved.",
+    "typeDelete": "Type DELETE to confirm",
+    "deleteForever": "Delete permanently",
+    "removeSmtpTitle": "Remove SMTP credentials?",
+    "removeSmtpDescription": "This permanently removes the SMTP host, username, encrypted password, sender details, and verification state for {{email}}.",
+    "removeSmtpPreservesAccount": "The user account, contacts, requests, plan, and history are not deleted.",
+    "typeEmailToRemoveSmtp": "Type {{email}} to confirm",
+    "removeSmtpPermanently": "Remove SMTP permanently",
+    "combineTitle": "Combine duplicate accounts",
+    "combineDescription": "Everything owned by {{source}} will move to the surviving account. The source account is deleted after the transfer succeeds.",
+    "sourceDeleted": "Source account — deleted",
+    "chooseSurvivor": "Surviving account",
+    "mergeDirection": "Merge direction",
+    "deletedAfterMerge": "deleted",
+    "survivesMerge": "survives",
+    "combineRules": "The survivor keeps its login identity and strongest role/plan. Contacts, requests, templates, platforms, analytics, and history move over. When one SMTP connection is verified and the other is not, the verified connection is kept automatically. The merge still stops if both SMTP connections share the same verification state or if another billing or email-service conflict needs your choice.",
+    "typeCombine": "Type COMBINE to confirm",
+    "combineNow": "Combine accounts"
   },
   "landing": {
     "comparison": {
@@ -1882,7 +1972,9 @@
       "privacyPolicy": "Privacy Policy",
       "dashboardMockupAlt": "GetPhame app home screen showing review request stats, send button, and free plan usage for local businesses",
       "ctaVariantA": "Start Free — Send 10 Requests",
-      "ctaVariantB": "Get Your First 10 Reviews Free"
+      "ctaVariantB": "Get Your First 10 Reviews Free",
+      "categoryLabel": "Review-request email software for local businesses",
+      "googleDisclosureLabel": "Google sign-in data use"
     },
     "howItWorks": {
       "setupSteps": {
@@ -1917,7 +2009,18 @@
       "sending": "Sending...",
       "sendGuideButton": "Send Guide",
       "successMessage": "Check your inbox — guide is on the way!",
-      "noSpamMessage": "No spam. Unsubscribe anytime. We respect your inbox."
+      "noSpamMessage": "No spam. Unsubscribe anytime. We respect your inbox.",
+      "emailRequired": "Enter your email address.",
+      "emailInvalid": "Enter a correctly formatted email, such as name@example.com.",
+      "emailConfirmationHint": "We’ll show the address again before you leave so you can catch a typo.",
+      "providerAcceptedMessage": "Your email provider accepted the guide for delivery.",
+      "downloadReadyMessage": "Your guide is ready to download.",
+      "addressConfirmation": "We sent it to {{email}}. Confirm the spelling and check spam if it does not arrive. Provider acceptance does not guarantee inbox placement.",
+      "deliveryFallback": "Email delivery was unavailable for {{email}}. Confirm the spelling, retry, or download the guide now.",
+      "downloadGuideButton": "Download the PDF guide",
+      "editEmail": "Edit email",
+      "tryAgain": "Try email again",
+      "sharePrompt": "Know someone who needs more reviews? Share the free playbook."
     },
     "navbar": {
       "howItWorks": "How It Works",
@@ -2042,7 +2145,8 @@
       "industryClinicsSalons": "Clinics & Salons",
       "industryAgencies": "Agencies",
       "industryWooCommerceStores": "WooCommerce Stores",
-      "heading": "Built for businesses that run on reputation"
+      "heading": "Built for businesses that run on reputation",
+      "emailsSentValue": "Your inbox"
     },
     "testimonials": {
       "sarah": {
@@ -2088,6 +2192,58 @@
     "modal": {
       "closeButtonAriaLabel": "Close video",
       "iframeTitle": "GetPhame product walkthrough"
+    },
+    "purpose": {
+      "eyebrow": "About this app",
+      "title": "What Get Phame does",
+      "description": "Get Phame helps local businesses send personalized review-request emails from their own connected email account. It is built for business owners, photographers, cafés and restaurants, home-service teams, clinics and salons, agencies, and WooCommerce stores that want a simpler way to ask real customers for feedback.",
+      "stepLabel": "Step {{number}}",
+      "googleEyebrow": "Google sign-in disclosure",
+      "googleTitle": "How Google sign-in is used",
+      "googleDescription": "Google sign-in is used only to create and identify your Get Phame account. With your permission, Get Phame receives your name and email address. We do not request access to your Gmail messages, contacts, Google Drive files, or Google Calendar.",
+      "googleSendingNote": "Review-request sending is configured separately inside the app using an email account you choose to connect.",
+      "privacyLink": "Read our Privacy Policy",
+      "steps": {
+        "customers": "Add the customers you choose",
+        "send": "Send a personal request from your email",
+        "reviews": "Direct customers to your selected review platform"
+      }
+    },
+    "support": {
+      "validation": {
+        "email": "Enter a valid email address.",
+        "subjectMin": "Enter a subject with at least 3 characters.",
+        "subjectMax": "Keep the subject to 120 characters or fewer.",
+        "messageMin": "Tell us a little more so we can help.",
+        "messageMax": "Keep the message to 4,000 characters or fewer.",
+        "nameMax": "Keep your name to 80 characters or fewer."
+      },
+      "error": "We could not send your message. Please try again shortly.",
+      "fileReadError": "We could not read that screenshot.",
+      "attachmentType": "Attach a JPG, PNG, or WebP screenshot.",
+      "attachmentSize": "Keep screenshots to 8 MB or less.",
+      "title": "How can we help?",
+      "description": "Send our team a message and we’ll reply to the email address you provide.",
+      "successTitle": "Your support request was sent.",
+      "successDescription": "We’ll reply to the email address you provided as soon as we can.",
+      "sendAnother": "Send another message",
+      "website": "Website",
+      "name": "Name",
+      "optional": "optional",
+      "email": "Email",
+      "topic": "What can we help with?",
+      "topicBilling": "Billing",
+      "topicOnboarding": "Onboarding",
+      "topicTechnical": "Technical issue",
+      "subject": "Subject",
+      "message": "Message",
+      "messageHint": "Do not include passwords or card information.",
+      "attachment": "Screenshot",
+      "attachmentHint": "JPG, PNG, or WebP only. Maximum 8 MB.",
+      "removeAttachment": "Remove screenshot",
+      "uploading": "Uploading screenshot…",
+      "sending": "Sending…",
+      "submit": "Send support request"
     }
   },
   "pwaInstallBanner": {
@@ -2135,6 +2291,36 @@
       "description": "Use supported device vibration for taps and recovery confirmations. Reduced-motion settings are always respected.",
       "enable": "Enable haptic feedback",
       "disable": "Disable haptic feedback"
+    },
+    "bulkSender": {
+      "connectedToast": "Bulk Sender connected.",
+      "disconnectedToast": "Bulk Sender disconnected.",
+      "healthyToast": "Connection healthy.",
+      "testFailed": "Connection test failed.",
+      "update": "Update",
+      "description": "Connect a verified transactional SMTP relay for higher-volume sending. Credentials are tested without sending a message.",
+      "proTitle": "Pro feature",
+      "proBody": "Upgrade to Pro to connect a transactional email service for higher-volume delivery.",
+      "connected": "connected",
+      "legacyNotice": "This existing connection uses the legacy API mode. Update it when convenient to use the guided SMTP preset.",
+      "testConnection": "Test connection",
+      "disconnect": "Disconnect",
+      "provider": "Provider",
+      "region": "Region",
+      "smtpHost": "SMTP host",
+      "smtpPort": "Port",
+      "security": "Security",
+      "presetEndpoint": "Preset endpoint",
+      "secretUsedForUsername": "Your secret is used securely for both SMTP fields.",
+      "setupHelp": "Setup help",
+      "hideSecret": "Hide secret",
+      "showSecret": "Show secret",
+      "fromEmail": "From email",
+      "fromEmailHelp": "This sender must already be verified with your provider.",
+      "fromName": "From name",
+      "compliance": "Only send to people who have consented to receive this outreach. Get Phame preserves unsubscribe handling and compliance safeguards.",
+      "connecting": "Connecting…",
+      "connectAndTest": "Connect and test"
     }
   },
   "complianceGuide": {
@@ -2304,5 +2490,281 @@
       "noSearchResultsHelp": "Try another term or clear the preview search. Your prepared export is unchanged.",
       "searchLimited": "Showing the first {{count}} of {{matched}} search matches to keep the preview responsive."
     }
+  },
+  "adminRevenueControls": {
+    "promotion": {
+      "created": "Promotion code {{code}} was created in Stripe.",
+      "createError": "Promotion code could not be created.",
+      "copied": "Promotion code copied.",
+      "copyError": "Promotion code could not be copied.",
+      "title": "Stripe promotion codes",
+      "description": "Each code applies to one checkout invoice or transaction. Select the eligible plans and optional redemption limits.",
+      "code": "Code",
+      "percentOff": "Percentage off",
+      "maxRedemptions": "Maximum redemptions",
+      "expiresAt": "Expires at",
+      "eligiblePlans": "Eligible plans",
+      "firstTimeOnly": "First transaction only",
+      "oneTimeNote": "The discount duration is fixed to one invoice or transaction. Stripe remains the source of truth.",
+      "creating": "Creating…",
+      "create": "Create promotion",
+      "liveCodes": "Live Stripe codes",
+      "empty": "No Stripe promotion codes yet.",
+      "copyCode": "Copy promotion code",
+      "redemptions": "Redemptions",
+      "firstTimeBadge": "First transaction"
+    },
+    "grants": {
+      "created": "Complimentary access was granted.",
+      "createError": "Complimentary access could not be granted.",
+      "revoked": "Revoked",
+      "revokeError": "Complimentary access could not be revoked.",
+      "confirmRevoke": "Revoke this complimentary-access grant now? This immediately removes paid-feature and quota access.",
+      "title": "Complimentary access",
+      "description": "Grant temporary paid-feature and request-quota access by email. Access starts immediately, expires automatically, and never renews.",
+      "email": "Customer email",
+      "privacy": "Stored as a one-way fingerprint plus a masked display value.",
+      "duration": "Duration",
+      "unit": "Unit",
+      "units": {
+        "day": "Day(s)",
+        "month": "Month(s)",
+        "year": "Year(s)"
+      },
+      "note": "Internal note",
+      "notePlaceholder": "Partner, support, or launch reason",
+      "expiryNote": "No renewal or background job: access ends at the stored UTC expiry.",
+      "granting": "Granting…",
+      "grant": "Grant access",
+      "lookup": "Exact-email lookup",
+      "lookupPlaceholder": "customer@example.com",
+      "search": "Search",
+      "filter": "Status filter",
+      "status": {
+        "all": "All grants",
+        "active": "Active",
+        "expired": "Expired",
+        "revoked": "Revoked"
+      },
+      "lookupResults": "Lookup results",
+      "noLookupResults": "No complimentary-access history was found for that exact email.",
+      "lookupCount": "{{count}} matching grant record(s).",
+      "history": "Grant history",
+      "empty": "No grants match this filter.",
+      "accountLinked": "Account linked",
+      "expires": "Expires",
+      "revoke": "Revoke",
+      "ended": "Ended"
+    },
+    "accessRequired": "Administrator access required",
+    "goHome": "Go home",
+    "back": "Back to administration",
+    "eyebrow": "Revenue operations",
+    "title": "Revenue controls",
+    "description": "Create scoped Stripe promotion codes and grant temporary complimentary access without changing billing plans.",
+    "summary": {
+      "activePromotions": "Active promotions",
+      "activeGrants": "Active grants"
+    },
+    "refresh": "Refresh",
+    "unlimited": "Unlimited",
+    "noExpiry": "No expiry",
+    "clear": "Clear"
+  },
+  "developerIntegrations": {
+    "guides": {
+      "copied": "Example copied.",
+      "copyExample": "Copy example",
+      "wsform": {
+        "summary": "Use the Webhook action with JSON field, custom, and header mappings.",
+        "step1": "Edit the form, open Actions, add an action, and select Webhook.",
+        "step2": "Set URL of Endpoint to the v1 contact endpoint, Request Method to POST, and Content Type to JSON.",
+        "step3": "Use Field Mapping for name and email. Use Custom Mapping for the static source and consent values shown below.",
+        "step4": "Use Header Mapping for Authorization and Idempotency-Key. Select the form submission identifier for the idempotency value.",
+        "step5": "Keep SSL Verify enabled, save the action, and submit one permitted test record."
+      },
+      "map": {
+        "name": "Your customer name field",
+        "email": "Your customer email field",
+        "consentSource": "A short description of where consent was captured",
+        "entryId": "The Gravity Forms entry ID merge tag",
+        "submissionId": "A stable server-side submission identifier"
+      },
+      "gravity": {
+        "summary": "Create a Webhooks Add-On feed with a JSON request and custom headers.",
+        "step1": "Install and activate the Gravity Forms Webhooks Add-On, then open Form Settings → Webhooks → Add New.",
+        "step2": "Set Request URL to the v1 contact endpoint, Request Method to POST, and Request Format to JSON.",
+        "step3": "Choose Select Fields and map the fields and static consent values shown below.",
+        "step4": "Add the Authorization header and use the entry ID merge tag as Idempotency-Key.",
+        "step5": "Save the feed and submit one permitted test record. Gravity Forms sets application/json automatically for JSON POST feeds."
+      },
+      "fluent": {
+        "summary": "Create a Pro Webhook feed with POST, JSON, headers, and a mapped request body.",
+        "step1": "Enable the Webhooks integration module, then open the form’s Settings & Integrations → WebHook → Add New.",
+        "step2": "Set Request URL to the v1 contact endpoint, Request Method to POST, and Request Format to JSON.",
+        "step3": "Enable Request Header and add Authorization plus Idempotency-Key using a stable submission identifier.",
+        "step4": "Enable Request Body and map the fields and static consent values shown below.",
+        "step5": "Save the feed and submit one permitted test record."
+      },
+      "elementor": {
+        "summary": "Use a server-side custom form action or trusted webhook bridge that can add protected headers.",
+        "step1": "Create the Elementor Pro Form with stable IDs for the customer name, email, and any consent checkbox.",
+        "step2": "Use a server-side custom form action or trusted webhook bridge that supports custom Authorization and Idempotency-Key headers.",
+        "step3": "Configure POST, the v1 contact endpoint, JSON, and the field map shown below.",
+        "step4": "Store the key only in a protected WordPress setting or server-side connector. Never paste it into page HTML or browser JavaScript.",
+        "step5": "Submit one permitted test record and confirm it appears in Recent API imports.",
+        "caution": "Elementor’s built-in Webhook action may not expose every protected-header control required by your setup. Do not work around that by placing the API key in the URL or page source."
+      },
+      "generic": {
+        "label": "Generic webhook",
+        "summary": "Configure any server-side automation tool that supports POST, JSON, and protected headers.",
+        "step1": "Create a new outbound HTTP or webhook action that runs once after an eligible customer form submission.",
+        "step2": "Set method to POST, URL to the v1 contact endpoint, and content type to application/json.",
+        "step3": "Add the Authorization header and a stable per-submission Idempotency-Key.",
+        "step4": "Send the canonical nested JSON payload shown below.",
+        "step5": "Treat HTTP 200 as success. Retry temporary failures with the same idempotency key."
+      },
+      "curl": {
+        "summary": "Run one server-side command to validate your endpoint, key, scope, payload, and consent mapping.",
+        "step1": "Copy the example into a secure terminal on a machine you control.",
+        "step2": "Replace only the API-key placeholder and sample customer values. Do not paste a real key into shared chat, logs, or screenshots.",
+        "step3": "Run the command once and confirm a success response and a privacy-safe Recent API imports row.",
+        "step4": "Run it again with the same idempotency key to confirm a safe replay rather than a duplicate contact."
+      },
+      "header": "Form and webhook integration",
+      "headerDescription": "Every guide imports a contact only. It never sends a review request automatically.",
+      "hide": "Hide guides",
+      "show": "Show guides",
+      "consentTitle": "Consent rule:",
+      "consentRule": "Set consentConfirmed to true only when this workflow represents an existing customer relationship or an explicit opt-in. For general lead forms, add an unchecked consent box and run the webhook only after it is selected.",
+      "builderTabs": "Integration type",
+      "officialDocs": "Official docs",
+      "apiField": "API field",
+      "mapTo": "Map to",
+      "safeExample": "Safe placeholder example",
+      "placeholderNote": "Examples use a placeholder key by design. Get Phame never inserts an existing raw key into these copyable instructions.",
+      "requestExample": "Request example",
+      "responseExample": "Response reference",
+      "testChecklist": "Test checklist",
+      "check1": "The API key has contacts:write permission.",
+      "check2": "The key is stored server-side, never in the page source or URL.",
+      "check3": "The webhook runs only after permitted customer action or opt-in.",
+      "check4": "The same submission keeps the same Idempotency-Key when retried.",
+      "check5": "A successful import appears with a masked email in Recent API imports.",
+      "check6": "The imported contact is not emailed automatically.",
+      "title": "Form-builder setup guides",
+      "description": "Choose your builder for endpoint, authorization, field mapping, consent, and testing instructions."
+    },
+    "copyFailed": "Could not copy automatically. Select and copy the value manually.",
+    "contract": {
+      "endpointCopied": "Endpoint copied.",
+      "copyEndpoint": "Copy endpoint",
+      "title": "Import API contract",
+      "description": "Use one request per customer action. The canonical endpoint requires a bearer key with contacts:write permission and an affirmative consent attestation.",
+      "openGuide": "Open setup guides"
+    },
+    "title": "Developer integrations",
+    "settingsCard": "Create scoped API keys, connect website forms, and review privacy-safe import history in one workspace.",
+    "open": "Open developer workspace",
+    "keys": {
+      "created": "API key created. Copy it before closing the dialog.",
+      "rotated": "API key rotated. Replace the old key in your integration now.",
+      "revoked": "API key revoked.",
+      "labelRequired": "Enter a key label.",
+      "scopeRequired": "Select at least one permission.",
+      "createTitle": "Create a scoped API key",
+      "createDescription": "Name the integration, grant only required permissions, and set an optional earlier expiry. Every key also expires after 12 months without a successful use. The secret is shown once.",
+      "label": "Key label",
+      "labelPlaceholder": "Website contact form",
+      "expiry": "Expiry",
+      "neverExpires": "No earlier expiry",
+      "days30": "30 days",
+      "days90": "90 days",
+      "days365": "1 year",
+      "permissions": "Permissions",
+      "securityNote": "Store the secret in your website’s secure server-side settings. Never place it in browser JavaScript, public repositories, screenshots, or support messages.",
+      "creating": "Creating…",
+      "create": "Create API key",
+      "listTitle": "API keys",
+      "listDescription": "Rotate compromised or aging keys. Abuse protection can temporarily suspend a key, while revoked and expired keys remain visible for audit context.",
+      "inactivityWarning": "One or more keys will expire soon because they have not completed a successful request recently. Run the integration or rotate the key before the displayed inactivity date.",
+      "empty": "No API keys yet. Create one above to connect your first integration.",
+      "expiresWithinWeek": "Expires within 7 days",
+      "expiresWithinMonth": "Expires within 30 days",
+      "inactiveExpired": "Expired after 12 months without a successful API request. Rotate it to create a replacement.",
+      "suspendedHelp": "Temporarily suspended by abuse protection. Review integration traffic and wait until the protection window ends.",
+      "lastUsed": "Last successful use",
+      "inactivityExpiry": "Inactive-key expiry",
+      "configuredExpiry": "Configured expiry",
+      "suspensionEnds": "Protection ends",
+      "usage": "Successful uses",
+      "rotate": "Rotate",
+      "revoke": "Revoke"
+    },
+    "imports": {
+      "empty": "No API imports to export.",
+      "title": "Recent API imports",
+      "description": "A privacy-safe operational record. Customer emails are masked and idempotency secrets are never displayed.",
+      "export": "Export CSV",
+      "noRows": "No API imports have been recorded yet.",
+      "date": "Date",
+      "customer": "Masked email",
+      "key": "Key",
+      "source": "Source",
+      "outcome": "Outcome"
+    },
+    "back": "Back to settings",
+    "eyebrow": "Developer workspace",
+    "description": "Connect website forms to Get Phame with scoped keys, consent-aware imports, and privacy-safe activity history.",
+    "summary": {
+      "activeKeys": "Active keys",
+      "requests": "Key uses",
+      "imports": "Recent imports"
+    },
+    "refresh": "Refresh",
+    "loading": "Loading imports",
+    "secret": {
+      "title": "Copy this API key now",
+      "description": "For security, Get Phame stores only a hash. This secret cannot be shown again after you close this dialog.",
+      "copied": "API key copied.",
+      "copy": "Copy key",
+      "done": "I saved it"
+    },
+    "confirm": {
+      "rotateTitle": "Rotate this API key?",
+      "revokeTitle": "Revoke this API key?",
+      "rotateDescription": "The current key will stop working immediately. You must replace it wherever the integration is configured.",
+      "revokeDescription": "This immediately disables the key and cannot be undone."
+    }
+  },
+  "helpAssistant": {
+    "quick": {
+      "connectEmail": "How do I connect my sending email?",
+      "googleLink": "Where do I add my Google review link?",
+      "yelp": "What should I know before using Yelp?"
+    },
+    "unknown": "I could not find a reliable answer in the approved Get Phame help sources. Please open a support request so a person can review the details.",
+    "unavailable": "The help assistant is unavailable right now. Open a support request and our team can help.",
+    "open": "Open Get Phame help",
+    "trigger": "Help",
+    "title": "Get Phame Help",
+    "description": "Grounded answers from approved product guidance",
+    "conversation": "Help conversation",
+    "privateTitle": "Keep private data out of chat",
+    "privateBody": "Do not enter passwords, API keys, card details, customer lists, or private review content. Questions are not saved as a durable chat transcript.",
+    "tryQuestion": "Try a common question",
+    "redacted": "A possible private value was removed before your question was processed.",
+    "sourcesLabel": "Approved sources",
+    "humanSupport": "Open a support request",
+    "thinking": "Checking approved guidance…",
+    "questionLabel": "Ask a Get Phame question",
+    "placeholder": "Ask how something works…",
+    "send": "Send help question",
+    "disclaimer": "Answers use approved Get Phame guidance and may need human review.",
+    "supportLink": "Human support"
+  },
+  "promotionLink": {
+    "applied": "Your campaign code will be applied at checkout",
+    "verified": "Eligibility is verified securely before Stripe Checkout opens."
   }
 }

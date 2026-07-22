@@ -33,6 +33,7 @@ import {
   RotateCcw,
   Inbox,
   Clock3,
+  BadgePercent,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import {
@@ -360,6 +361,7 @@ export default function AdminDashboard() {
                   { path: "/admin/smtp-stats", label: "SMTP health", detail: `${failingSmtpUsers?.length ?? 0} failing · ${stats.activeSmtp}/${stats.totalSmtp} healthy`, Icon: Wifi },
                   { path: "/admin/codes", label: "System access codes", detail: "Create, review, and revoke codes", Icon: KeyRound },
                   { path: "/admin/support", label: "Support inbox", detail: "Prioritize, assign, and resolve customer tickets", Icon: Inbox },
+                  { path: "/admin/revenue-controls", label: "Revenue controls", detail: "Create Stripe promotions and temporary access grants", Icon: BadgePercent },
                   { path: "/admin/revenue", label: "Revenue analytics", detail: "MRR, ARR, conversion, and growth", Icon: DollarSign },
                   { path: "/admin/churn", label: "Churn analytics", detail: "Cancellation reasons and retention signals", Icon: AlertTriangle },
                   { path: "/admin/referral-rewards", label: "Referral operations", detail: "Review deferred rewards", Icon: Gift },
