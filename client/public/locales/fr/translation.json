@@ -2277,5 +2277,36 @@
     "pendingReferralsHint": "{{count}} ami a rejoint — en attente de son abonnement",
     "pendingReferralsHint_plural": "{{count}} amis ont rejoint — en attente de leur abonnement",
     "rewardProcessingHint": "Traitement de la récompense — votre mois gratuit sera appliqué sous peu"
+  },
+  "adminAuthDiagnostics": {
+    "clearFilters": {
+      "button": "Effacer maintenant",
+      "tooltip": "Effacez l’état, la source, les dates et la pagination. Raccourci clavier : Alt+Maj+C.",
+      "touchHelp": "Aide sur le raccourci",
+      "cleared": "Les filtres de l’historique ont été effacés."
+    },
+    "presets": {
+      "orderSavedDetail": "{{name}} enregistré en position {{position}} sur {{total}}."
+    },
+    "csvPreview": {
+      "preparing": "Préparation de l’aperçu…",
+      "openButton": "Aperçu du CSV filtré",
+      "title": "Aperçu du CSV assaini",
+      "description": "Vérifiez l’instantané exact, filtré et assaini avant de le télécharger.",
+      "loading": "Préparation de l’aperçu assaini…",
+      "errorTitle": "Aperçu indisponible",
+      "errorDescription": "L’export filtré n’a pas pu être préparé.",
+      "emptyTitle": "Aucune ligne à prévisualiser",
+      "emptyDescription": "Aucun enregistrement d’état ne correspond aux filtres actifs.",
+      "fileLabel": "Fichier :",
+      "summary": "Aperçu de {{previewed}} lignes sur {{exported}} exportées · {{matched}} correspondances",
+      "sanitizedNotice": "L’aperçu et le téléchargement utilisent les mêmes colonnes autorisées, la même rédaction, la même protection contre les formules, les mêmes filtres, la même limite de lignes et le même ordre du plus récent au plus ancien.",
+      "tableLabel": "Aperçu des données CSV assainies",
+      "previewLimited": "La fenêtre affiche les {{count}} premières lignes. Le téléchargement contient les {{total}} lignes de cet export préparé.",
+      "exportLimited": "La limite de sécurité inclut les {{exported}} enregistrements les plus récents sur {{matched}} correspondances.",
+      "close": "Fermer",
+      "download": "Télécharger le CSV",
+      "downloaded": "{{count}} enregistrements d’état assainis ont été téléchargés."
+    }
   }
 }

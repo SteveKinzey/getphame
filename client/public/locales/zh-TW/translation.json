@@ -1770,5 +1770,36 @@
     "pendingReferralsHint": "{{count}} 位朋友已加入 — 正在等待他們升級",
     "pendingReferralsHint_plural": "{{count}} 位朋友已加入 — 正在等待他們升級",
     "rewardProcessingHint": "獎勵處理中 — 您的免費月數即將生效"
+  },
+  "adminAuthDiagnostics": {
+    "clearFilters": {
+      "button": "立即清除",
+      "tooltip": "清除狀態、來源、日期及分頁。鍵盤快捷鍵：Alt+Shift+C。",
+      "touchHelp": "快速鍵說明",
+      "cleared": "歷史記錄篩選條件已清除。"
+    },
+    "presets": {
+      "orderSavedDetail": "{{name}} 已儲存至第 {{position}} 位，共 {{total}} 位。"
+    },
+    "csvPreview": {
+      "preparing": "正在準備預覽…",
+      "openButton": "預覽篩選後的 CSV",
+      "title": "預覽已清理的 CSV",
+      "description": "下載前檢查完全一致、已篩選並已清理的資料快照。",
+      "loading": "正在準備已清理的資料預覽…",
+      "errorTitle": "無法提供預覽",
+      "errorDescription": "無法準備篩選後的匯出資料。",
+      "emptyTitle": "沒有可預覽的資料列",
+      "emptyDescription": "沒有健康狀態記錄符合目前的篩選條件。",
+      "fileLabel": "檔案：",
+      "summary": "正在預覽 {{exported}} 個匯出列中的 {{previewed}} 個 · 共符合 {{matched}} 個",
+      "sanitizedNotice": "預覽與下載使用相同的許可欄位、資訊遮蔽、公式防護、篩選條件、列數上限及由新至舊排序。",
+      "tableLabel": "已清理的 CSV 資料預覽",
+      "previewLimited": "視窗顯示前 {{count}} 列。下載檔案包含本次已準備匯出的全部 {{total}} 列。",
+      "exportLimited": "匯出安全上限包含 {{matched}} 個符合記錄中最新的 {{exported}} 個。",
+      "close": "關閉",
+      "download": "下載 CSV",
+      "downloaded": "已下載 {{count}} 筆清理後的健康狀態記錄。"
+    }
   }
 }

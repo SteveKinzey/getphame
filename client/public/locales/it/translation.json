@@ -2454,5 +2454,36 @@
     "pendingReferralsHint": "{{count}} amico si è unito — in attesa che passi al piano a pagamento",
     "pendingReferralsHint_plural": "{{count}} amici si sono uniti — in attesa che passino al piano a pagamento",
     "rewardProcessingHint": "Elaborazione della ricompensa — il mese gratuito verrà applicato a breve"
+  },
+  "adminAuthDiagnostics": {
+    "clearFilters": {
+      "button": "Cancella ora",
+      "tooltip": "Cancella stato, origine, date e paginazione. Scorciatoia da tastiera: Alt+Maiusc+C.",
+      "touchHelp": "Aiuto scorciatoia",
+      "cleared": "I filtri della cronologia sono stati cancellati."
+    },
+    "presets": {
+      "orderSavedDetail": "{{name}} salvato nella posizione {{position}} di {{total}}."
+    },
+    "csvPreview": {
+      "preparing": "Preparazione anteprima…",
+      "openButton": "Anteprima CSV filtrato",
+      "title": "Anteprima CSV sanitizzato",
+      "description": "Controlla l’istantanea esatta, filtrata e sanitizzata prima di scaricarla.",
+      "loading": "Preparazione dell’anteprima sanitizzata…",
+      "errorTitle": "Anteprima non disponibile",
+      "errorDescription": "Impossibile preparare l’esportazione filtrata.",
+      "emptyTitle": "Nessuna riga da visualizzare",
+      "emptyDescription": "Nessun record di stato corrisponde ai filtri attivi.",
+      "fileLabel": "File:",
+      "summary": "Anteprima di {{previewed}} righe su {{exported}} esportate · {{matched}} corrispondenze",
+      "sanitizedNotice": "L’anteprima e il download condividono le stesse colonne consentite, la stessa redazione, protezione dalle formule, filtri, limite di righe e ordinamento dal più recente.",
+      "tableLabel": "Anteprima dei dati CSV sanitizzati",
+      "previewLimited": "La finestra mostra le prime {{count}} righe. Il download contiene tutte le {{total}} righe dell’esportazione preparata.",
+      "exportLimited": "Il limite di sicurezza include i {{exported}} record più recenti su {{matched}} corrispondenze.",
+      "close": "Chiudi",
+      "download": "Scarica CSV",
+      "downloaded": "Scaricati {{count}} record di stato sanitizzati."
+    }
   }
 }

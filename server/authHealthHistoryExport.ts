@@ -2,47 +2,67 @@ import type { AuthHealthCheck } from "../drizzle/schema";
 import { escapeAdminOperationsCsvCell } from "./adminOperationsExport";
 import { redactAuthDiagnosticDetail } from "./authOperations";
 
-const headers = [
-  "record_id",
-  "checked_at_utc",
-  "trigger_source",
-  "overall_status",
-  "config_status",
-  "database_status",
-  "user_schema_status",
-  "magic_link_schema_status",
-  "session_status",
-  "email_provider_status",
-  "provider_name",
-  "failure_code",
-  "failure_detail_sanitized",
-  "duration_ms",
-];
+export const AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT = 25;
+
+export const AUTH_HEALTH_HISTORY_EXPORT_COLUMNS = [
+  { key: "recordId", csvHeader: "record_id" },
+  { key: "checkedAtUtc", csvHeader: "checked_at_utc" },
+  { key: "triggerSource", csvHeader: "trigger_source" },
+  { key: "overallStatus", csvHeader: "overall_status" },
+  { key: "configStatus", csvHeader: "config_status" },
+  { key: "databaseStatus", csvHeader: "database_status" },
+  { key: "userSchemaStatus", csvHeader: "user_schema_status" },
+  { key: "magicLinkSchemaStatus", csvHeader: "magic_link_schema_status" },
+  { key: "sessionStatus", csvHeader: "session_status" },
+  { key: "emailProviderStatus", csvHeader: "email_provider_status" },
+  { key: "providerName", csvHeader: "provider_name" },
+  { key: "failureCode", csvHeader: "failure_code" },
+  { key: "failureDetailSanitized", csvHeader: "failure_detail_sanitized" },
+  { key: "durationMs", csvHeader: "duration_ms" },
+] as const;
+
+export type AuthHealthHistoryExportColumnKey = (typeof AUTH_HEALTH_HISTORY_EXPORT_COLUMNS)[number]["key"];
+export type AuthHealthHistoryExportRow = Record<AuthHealthHistoryExportColumnKey, string>;
 
 function safeText(value: string | null | undefined, maxLength: number) {
   if (!value) return "";
   return redactAuthDiagnosticDetail(value).slice(0, maxLength);
 }
 
-export function serializeAuthHealthHistoryCsv(rows: AuthHealthCheck[]) {
-  const body = rows.map((row) => [
-    row.id,
-    new Date(row.checkedAt).toISOString(),
-    row.triggerSource,
-    row.overallStatus,
-    row.configStatus,
-    row.databaseStatus,
-    row.userSchemaStatus,
-    row.magicLinkSchemaStatus,
-    row.sessionStatus,
-    row.emailProviderStatus,
-    safeText(row.providerName, 64),
-    safeText(row.failureCode, 64),
-    safeText(row.failureDetail, 500),
-    row.durationMs,
-  ].map(escapeAdminOperationsCsvCell).join(","));
+function formulaSafeCell(value: string | number) {
+  const raw = String(value ?? "");
+  return /^[=+\-@]/.test(raw.trimStart()) ? `'${raw}` : raw;
+}
 
-  return `\uFEFF${headers.join(",")}\r\n${body.join("\r\n")}\r\n`;
+export function buildAuthHealthHistoryExportRows(rows: AuthHealthCheck[]): AuthHealthHistoryExportRow[] {
+  return rows.map((row) => ({
+    recordId: formulaSafeCell(row.id),
+    checkedAtUtc: formulaSafeCell(new Date(row.checkedAt).toISOString()),
+    triggerSource: formulaSafeCell(row.triggerSource),
+    overallStatus: formulaSafeCell(row.overallStatus),
+    configStatus: formulaSafeCell(row.configStatus),
+    databaseStatus: formulaSafeCell(row.databaseStatus),
+    userSchemaStatus: formulaSafeCell(row.userSchemaStatus),
+    magicLinkSchemaStatus: formulaSafeCell(row.magicLinkSchemaStatus),
+    sessionStatus: formulaSafeCell(row.sessionStatus),
+    emailProviderStatus: formulaSafeCell(row.emailProviderStatus),
+    providerName: formulaSafeCell(safeText(row.providerName, 64)),
+    failureCode: formulaSafeCell(safeText(row.failureCode, 64)),
+    failureDetailSanitized: formulaSafeCell(safeText(row.failureDetail, 500)),
+    durationMs: formulaSafeCell(row.durationMs),
+  }));
+}
+
+function serializeAuthHealthHistoryExportRows(rows: AuthHealthHistoryExportRow[]) {
+  const body = rows.map((row) => AUTH_HEALTH_HISTORY_EXPORT_COLUMNS
+    .map((column) => escapeAdminOperationsCsvCell(row[column.key]))
+    .join(","));
+
+  return `\uFEFF${AUTH_HEALTH_HISTORY_EXPORT_COLUMNS.map((column) => column.csvHeader).join(",")}\r\n${body.join("\r\n")}\r\n`;
+}
+
+export function serializeAuthHealthHistoryCsv(rows: AuthHealthCheck[]) {
+  return serializeAuthHealthHistoryExportRows(buildAuthHealthHistoryExportRows(rows));
 }
 
 export function buildAuthHealthHistoryCsvExport(input: {
@@ -58,14 +78,23 @@ export function buildAuthHealthHistoryCsvExport(input: {
   generatedAt?: number;
 }) {
   const generatedAt = input.generatedAt ?? Date.now();
+  const exportRows = buildAuthHealthHistoryExportRows(input.rows);
+  const previewRows = exportRows.slice(0, AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT);
   return {
     filename: buildAuthHealthHistoryCsvFilename(input, generatedAt),
     mimeType: "text/csv;charset=utf-8",
-    csv: serializeAuthHealthHistoryCsv(input.rows),
+    csv: serializeAuthHealthHistoryExportRows(exportRows),
     generatedAt,
     rowCount: input.rows.length,
     totalMatching: input.total,
     truncated: input.truncated,
+    preview: {
+      columns: AUTH_HEALTH_HISTORY_EXPORT_COLUMNS.map(({ key, csvHeader }) => ({ key, csvHeader })),
+      rows: previewRows,
+      rowCount: previewRows.length,
+      limit: AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT,
+      truncated: exportRows.length > previewRows.length,
+    },
     filters: {
       status: input.status ?? "all",
       triggerSource: input.triggerSource ?? "all",

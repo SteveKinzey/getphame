@@ -160,6 +160,36 @@ describe("admin authentication diagnostics", () => {
     expect(result.csv).toContain("failure_detail_sanitized");
     expect(result.csv).toContain("'=SUM(1,2)");
     expect(result.csv).not.toContain("private-task-uid");
+    expect(result.rowCount).toBe(1);
+    expect(result.totalMatching).toBe(1);
+    expect(result.truncated).toBe(false);
+    expect(result.preview).toMatchObject({
+      rowCount: 1,
+      limit: 25,
+      truncated: false,
+      rows: [{
+        recordId: "7",
+        triggerSource: "manual",
+        overallStatus: "fail",
+        failureDetailSanitized: "'=SUM(1,2)",
+      }],
+    });
+    expect(result.preview.columns.map((column) => column.csvHeader)).toEqual([
+      "record_id",
+      "checked_at_utc",
+      "trigger_source",
+      "overall_status",
+      "config_status",
+      "database_status",
+      "user_schema_status",
+      "magic_link_schema_status",
+      "session_status",
+      "email_provider_status",
+      "provider_name",
+      "failure_code",
+      "failure_detail_sanitized",
+      "duration_ms",
+    ]);
     expect(result.filters).toEqual({ status: "fail", triggerSource: "manual", fromMs: 100, toMs: 999 });
 
     const userCaller = appRouter.createCaller(context("user"));

@@ -2241,5 +2241,36 @@
       "title": "Compliance Guide",
       "description": "Platform rules, legal notes & best practices"
     }
+  },
+  "adminAuthDiagnostics": {
+    "clearFilters": {
+      "button": "Clear now",
+      "tooltip": "Clear status, source, dates, and pagination. Keyboard shortcut: Alt+Shift+C.",
+      "touchHelp": "Shortcut help",
+      "cleared": "History filters cleared."
+    },
+    "presets": {
+      "orderSavedDetail": "{{name}} saved in position {{position}} of {{total}}."
+    },
+    "csvPreview": {
+      "preparing": "Preparing preview…",
+      "openButton": "Preview filtered CSV",
+      "title": "Preview sanitized CSV",
+      "description": "Review the exact filtered, sanitized snapshot before downloading it.",
+      "loading": "Preparing the sanitized preview…",
+      "errorTitle": "Preview unavailable",
+      "errorDescription": "The filtered export could not be prepared.",
+      "emptyTitle": "No rows to preview",
+      "emptyDescription": "No health records match the active filters.",
+      "fileLabel": "File:",
+      "summary": "Previewing {{previewed}} of {{exported}} export rows · {{matched}} matched",
+      "sanitizedNotice": "The preview and download share the same whitelisted columns, redaction, formula protection, filters, row cap, and newest-first ordering.",
+      "tableLabel": "Sanitized CSV data preview",
+      "previewLimited": "The modal shows the first {{count}} rows. The download contains all {{total}} rows in this prepared export.",
+      "exportLimited": "The export safety cap includes the newest {{exported}} of {{matched}} matching records.",
+      "close": "Close",
+      "download": "Download CSV",
+      "downloaded": "Downloaded {{count}} sanitized health records."
+    }
   }
 }

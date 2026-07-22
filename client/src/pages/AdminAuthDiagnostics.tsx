@@ -1,12 +1,15 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DndContext, KeyboardSensor, PointerSensor, closestCenter, type DragEndEvent, useSensor, useSensors } from "@dnd-kit/core";
 import { SortableContext, arrayMove, rectSortingStrategy, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
+import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import { toast } from "sonner";
-import { Activity, AlertCircle, ArrowLeft, BellRing, Bookmark, CheckCircle2, ChevronLeft, ChevronRight, Clock3, Copy, Download, Filter, Gauge, GripVertical, KeyRound, Loader2, MailCheck, Pencil, RefreshCw, Save, Search, ShieldCheck, Trash2, X } from "lucide-react";
+import { Activity, AlertCircle, ArrowLeft, BellRing, Bookmark, CheckCircle2, ChevronLeft, ChevronRight, Clock3, Copy, Download, FileSearch, Filter, Gauge, GripVertical, KeyRound, Loader2, MailCheck, Pencil, RefreshCw, Save, Search, ShieldCheck, Trash2, X } from "lucide-react";
 import { AUTH_HEALTH_HISTORY_CLEAR_SHORTCUT, AUTH_HEALTH_HISTORY_RELATIVE_DAYS, clearAllAuthHealthHistoryFilters, clearAuthHealthHistoryFilter, getActiveAuthHealthHistoryFilterChips, getRelativeAuthHealthHistoryDateInputs, shouldClearAuthHealthHistoryFiltersFromShortcut } from "../../../shared/authHealthHistoryRanges";
 
 type HealthValue = "ok" | "fail";
@@ -53,9 +56,34 @@ function msToLocalDateInput(value: number | null | undefined) {
 
 type SortableHistoryPreset = { id: number; name: string };
 
-function SortablePresetControl({ preset, disabled, onApply, onRename, onDuplicate, onDelete }: {
+type AuthHealthHistoryCsvPreview = {
+  filename: string;
+  mimeType: string;
+  csv: string;
+  generatedAt: number;
+  rowCount: number;
+  totalMatching: number;
+  truncated: boolean;
+  preview: {
+    columns: Array<{ key: string; csvHeader: string }>;
+    rows: Array<Record<string, string>>;
+    rowCount: number;
+    limit: number;
+    truncated: boolean;
+  };
+};
+
+type PresetReorderFeedback = {
+  presetId: number;
+  presetName: string;
+  position: number;
+  total: number;
+};
+
+function SortablePresetControl({ preset, disabled, reorderSucceeded, onApply, onRename, onDuplicate, onDelete }: {
   preset: SortableHistoryPreset;
   disabled: boolean;
+  reorderSucceeded: boolean;
   onApply: () => void;
   onRename: () => void;
   onDuplicate: () => void;
@@ -65,9 +93,10 @@ function SortablePresetControl({ preset, disabled, onApply, onRename, onDuplicat
   return (
     <div
       ref={setNodeRef}
-      className="inline-flex max-w-full items-center overflow-hidden rounded-full border bg-white shadow-sm"
+      className={`relative inline-flex max-w-full items-center rounded-full border bg-white shadow-sm ${reorderSucceeded ? "ring-2 ring-emerald-500/30" : ""}`}
       style={{ borderColor: isDragging ? "oklch(0.80 0.18 80)" : "oklch(0.86 0.04 260)", transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.72 : 1, zIndex: isDragging ? 10 : undefined }}
     >
+      <span aria-hidden="true" className={`pointer-events-none absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-emerald-600 text-white shadow-sm motion-safe:transition-[opacity,transform] motion-safe:duration-200 ${reorderSucceeded ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}><CheckCircle2 size={12} /></span>
       <button
         type="button"
         className="flex min-h-10 min-w-10 touch-none items-center justify-center border-r rr-text-navy-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset"
@@ -86,6 +115,7 @@ function SortablePresetControl({ preset, disabled, onApply, onRename, onDuplicat
 }
 
 export default function AdminAuthDiagnosticsPage() {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
   const [, navigate] = useLocation();
   const [emailInput, setEmailInput] = useState("");
@@ -108,6 +138,10 @@ export default function AdminAuthDiagnosticsPage() {
   const [historyPageSize, setHistoryPageSize] = useState<10 | 20 | 50>(20);
   const [presetName, setPresetName] = useState("");
   const [editingPresetId, setEditingPresetId] = useState<number | null>(null);
+  const [presetReorderFeedback, setPresetReorderFeedback] = useState<PresetReorderFeedback | null>(null);
+  const [csvPreviewOpen, setCsvPreviewOpen] = useState(false);
+  const [csvPreview, setCsvPreview] = useState<AuthHealthHistoryCsvPreview | null>(null);
+  const presetReorderFeedbackTimerRef = useRef<number | null>(null);
   const trpcUtils = trpc.useUtils();
 
   const historyFromMs = useMemo(() => localDateStartMs(historyFromDate), [historyFromDate]);
@@ -157,6 +191,15 @@ export default function AdminAuthDiagnosticsPage() {
     pageSize: historyPageSize,
   }), [historyStatus, historyTriggerSource, historyFromMs, historyToMs, historyPage, historyPageSize]);
 
+  const historyExportInput = useMemo(() => ({
+    status: historyStatus === "all" ? undefined : historyStatus,
+    triggerSource: historyTriggerSource === "all" ? undefined : historyTriggerSource,
+    fromMs: historyFromMs,
+    toMs: historyToMs,
+    fromDate: historyFromDate || undefined,
+    toDate: historyToDate || undefined,
+  }), [historyStatus, historyTriggerSource, historyFromMs, historyToMs, historyFromDate, historyToDate]);
+
   const healthHistoryQuery = trpc.authDiagnostics.healthHistory.useQuery(historyQueryInput, {
     enabled: user?.role === "admin" && !historyDateError,
   });
@@ -198,11 +241,15 @@ export default function AdminAuthDiagnosticsPage() {
       if (!shouldClearAuthHealthHistoryFiltersFromShortcut(event)) return;
       event.preventDefault();
       clearAllHistoryFilters();
-      toast.success("History filters cleared.");
+      toast.success(t("adminAuthDiagnostics.clearFilters.cleared", { defaultValue: "History filters cleared." }));
     };
     window.addEventListener("keydown", handleShortcut);
     return () => window.removeEventListener("keydown", handleShortcut);
-  }, [clearAllHistoryFilters]);
+  }, [clearAllHistoryFilters, t]);
+
+  useEffect(() => () => {
+    if (presetReorderFeedbackTimerRef.current) window.clearTimeout(presetReorderFeedbackTimerRef.current);
+  }, []);
 
   useEffect(() => {
     if (healthHistoryQuery.data && healthHistoryQuery.data.page !== historyPage) {
@@ -210,21 +257,38 @@ export default function AdminAuthDiagnosticsPage() {
     }
   }, [healthHistoryQuery.data?.page, historyPage]);
 
-  const exportHealthHistory = trpc.authDiagnostics.exportHealthHistoryCsv.useMutation({
+  const prepareHealthHistoryExport = trpc.authDiagnostics.exportHealthHistoryCsv.useMutation({
     onSuccess: (result) => {
-      const blob = new Blob([result.csv], { type: result.mimeType });
-      const url = URL.createObjectURL(blob);
-      const anchor = document.createElement("a");
-      anchor.href = url;
-      anchor.download = result.filename;
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
-      URL.revokeObjectURL(url);
-      toast.success(`Downloaded ${result.rowCount} sanitized health record${result.rowCount === 1 ? "" : "s"}.${result.truncated ? ` Export limited to the newest ${result.rowCount} matches.` : ""}`);
+      setCsvPreview(result);
     },
-    onError: (exportError) => toast.error(exportError.message || "Health history could not be exported."),
   });
+
+  const openHealthHistoryCsvPreview = () => {
+    setCsvPreviewOpen(true);
+    setCsvPreview(null);
+    prepareHealthHistoryExport.reset();
+    prepareHealthHistoryExport.mutate(historyExportInput);
+  };
+
+  const downloadHealthHistoryCsv = () => {
+    if (!csvPreview) return;
+    const blob = new Blob([csvPreview.csv], { type: csvPreview.mimeType });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = csvPreview.filename;
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    URL.revokeObjectURL(url);
+    toast.success(t("adminAuthDiagnostics.csvPreview.downloaded", {
+      defaultValue: "Downloaded {{count}} sanitized health records.",
+      count: csvPreview.rowCount,
+    }));
+    setCsvPreviewOpen(false);
+    setCsvPreview(null);
+    prepareHealthHistoryExport.reset();
+  };
 
   const saveHealthHistoryPreset = trpc.authDiagnostics.saveHealthHistoryPreset.useMutation({
     onSuccess: async (result) => {
@@ -276,9 +340,9 @@ export default function AdminAuthDiagnosticsPage() {
     },
     onError: (reorderError, _input, context) => {
       if (context?.previous) trpcUtils.authDiagnostics.healthHistoryPresets.setData(undefined, context.previous);
+      setPresetReorderFeedback(null);
       toast.error(reorderError.message || "Preset order could not be saved.");
     },
-    onSuccess: () => toast.success("Preset order saved."),
     onSettled: () => trpcUtils.authDiagnostics.healthHistoryPresets.invalidate(),
   });
 
@@ -289,7 +353,15 @@ export default function AdminAuthDiagnosticsPage() {
     const oldIndex = historyPresets.findIndex((preset) => preset.id === activeId);
     const newIndex = historyPresets.findIndex((preset) => preset.id === overId);
     if (oldIndex < 0 || newIndex < 0) return;
-    reorderHealthHistoryPresets.mutate({ orderedIds: arrayMove(historyPresets, oldIndex, newIndex).map((preset) => preset.id) });
+    const movedPreset = historyPresets[oldIndex];
+    const orderedPresets = arrayMove(historyPresets, oldIndex, newIndex);
+    reorderHealthHistoryPresets.mutate({ orderedIds: orderedPresets.map((preset) => preset.id) }, {
+      onSuccess: () => {
+        if (presetReorderFeedbackTimerRef.current) window.clearTimeout(presetReorderFeedbackTimerRef.current);
+        setPresetReorderFeedback({ presetId: movedPreset.id, presetName: movedPreset.name, position: newIndex + 1, total: orderedPresets.length });
+        presetReorderFeedbackTimerRef.current = window.setTimeout(() => setPresetReorderFeedback(null), 3_200);
+      },
+    });
   }, [historyPresets, reorderHealthHistoryPresets]);
 
   const runHealthCheck = trpc.authDiagnostics.runHealthCheck.useMutation({
@@ -501,7 +573,7 @@ export default function AdminAuthDiagnosticsPage() {
             <label className="flex flex-col gap-1.5 text-xs font-bold rr-text-navy-muted"><span>From date</span><input type="date" aria-label="Filter health history from date" value={historyFromDate} onChange={(event) => { setHistoryFromDate(event.target.value); setHistoryPage(1); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }} /></label>
             <label className="flex flex-col gap-1.5 text-xs font-bold rr-text-navy-muted"><span>To date</span><input type="date" aria-label="Filter health history to date" value={historyToDate} onChange={(event) => { setHistoryToDate(event.target.value); setHistoryPage(1); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: historyDateError ? "oklch(0.62 0.18 27)" : "oklch(0.88 0.03 260)" }} /></label>
             <label className="flex flex-col gap-1.5 text-xs font-bold rr-text-navy-muted"><span>Rows per page</span><select aria-label="Health history rows per page" value={historyPageSize} onChange={(event) => { setHistoryPageSize(Number(event.target.value) as 10 | 20 | 50); setHistoryPage(1); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }}><option value={10}>10 rows</option><option value={20}>20 rows</option><option value={50}>50 rows</option></select></label>
-            <button type="button" onClick={() => exportHealthHistory.mutate({ status: historyStatus === "all" ? undefined : historyStatus, triggerSource: historyTriggerSource === "all" ? undefined : historyTriggerSource, fromMs: historyFromMs, toMs: historyToMs, fromDate: historyFromDate || undefined, toDate: historyToDate || undefined })} disabled={exportHealthHistory.isPending || historyTotal === 0 || Boolean(historyDateError)} className="flex h-10 items-center justify-center gap-2 self-end rounded-lg px-4 text-sm font-bold rr-bg-navy text-white disabled:cursor-not-allowed disabled:opacity-50" title="Download a sanitized CSV for all active history filters">{exportHealthHistory.isPending ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}{exportHealthHistory.isPending ? "Preparing CSV…" : "Export filtered CSV"}</button>
+            <button type="button" onClick={openHealthHistoryCsvPreview} disabled={prepareHealthHistoryExport.isPending || historyTotal === 0 || Boolean(historyDateError)} className="flex h-10 items-center justify-center gap-2 self-end rounded-lg px-4 text-sm font-bold rr-bg-navy text-white disabled:cursor-not-allowed disabled:opacity-50">{prepareHealthHistoryExport.isPending ? <Loader2 size={14} className="animate-spin" /> : <FileSearch size={14} />}{prepareHealthHistoryExport.isPending ? t("adminAuthDiagnostics.csvPreview.preparing", { defaultValue: "Preparing preview…" }) : t("adminAuthDiagnostics.csvPreview.openButton", { defaultValue: "Preview filtered CSV" })}</button>
           </div>
           <div className="mb-3 flex flex-col gap-2 rounded-xl border bg-white px-3 py-3 sm:flex-row sm:items-center sm:justify-between" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
             <div><p className="text-xs rr-fw-black rr-text-navy">Relative date ranges</p><p className="text-xs font-bold rr-text-navy-faint">Inclusive local-calendar days ending today.</p></div>
@@ -509,12 +581,18 @@ export default function AdminAuthDiagnosticsPage() {
           </div>
           <div className="mb-3 flex flex-col gap-2 rounded-xl border px-3 py-3 sm:flex-row sm:items-center sm:justify-between" style={{ borderColor: "oklch(0.88 0.03 260)", background: "oklch(0.98 0.02 80)" }}>
             <div><p className="text-xs rr-fw-black rr-text-navy">Clear all filters</p><p className="text-xs font-bold rr-text-navy-faint">Power users can reset status, source, dates, and pagination from anywhere outside an editable field.</p></div>
-            <div className="flex items-center gap-2"><kbd className="rounded-md border bg-white px-2 py-1 text-xs font-black rr-text-navy" style={{ borderColor: "oklch(0.84 0.08 80)" }}>Alt + Shift + C</kbd><button type="button" onClick={clearAllHistoryFilters} disabled={!hasActiveHistoryFilters} aria-keyshortcuts={AUTH_HEALTH_HISTORY_CLEAR_SHORTCUT} className="h-9 rounded-lg px-3 text-xs font-bold rr-bg-gold rr-text-navy disabled:cursor-not-allowed disabled:opacity-50">Clear now</button></div>
+            <div className="flex flex-col gap-2 sm:items-end">
+              <div className="flex items-center gap-2"><kbd className="rounded-md border bg-white px-2 py-1 text-xs font-black rr-text-navy" style={{ borderColor: "oklch(0.84 0.08 80)" }}>Alt + Shift + C</kbd><Tooltip><TooltipTrigger asChild><button type="button" onClick={() => { if (hasActiveHistoryFilters) clearAllHistoryFilters(); }} aria-disabled={!hasActiveHistoryFilters} aria-keyshortcuts={AUTH_HEALTH_HISTORY_CLEAR_SHORTCUT} className={`h-9 rounded-lg px-3 text-xs font-bold rr-bg-gold rr-text-navy ${hasActiveHistoryFilters ? "" : "cursor-not-allowed opacity-50"}`}>{t("adminAuthDiagnostics.clearFilters.button", { defaultValue: "Clear now" })}</button></TooltipTrigger><TooltipContent side="top" sideOffset={8} className="max-w-[19rem] rounded-xl px-3 py-2 text-left text-xs leading-relaxed shadow-xl">{t("adminAuthDiagnostics.clearFilters.tooltip", { defaultValue: "Clear status, source, dates, and pagination. Keyboard shortcut: Alt+Shift+C." })}</TooltipContent></Tooltip></div>
+              <details className="w-full sm:w-auto">
+                <summary className="flex min-h-9 cursor-pointer list-none items-center justify-center rounded-lg border bg-white px-3 text-xs font-bold rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 [&::-webkit-details-marker]:hidden" style={{ borderColor: "oklch(0.86 0.04 260)" }}>{t("adminAuthDiagnostics.clearFilters.touchHelp", { defaultValue: "Shortcut help" })}</summary>
+                <p className="mt-2 max-w-[19rem] rounded-lg border bg-white px-3 py-2 text-xs font-bold leading-relaxed rr-text-navy-muted shadow-sm sm:max-w-72" style={{ borderColor: "oklch(0.88 0.03 260)" }}>{t("adminAuthDiagnostics.clearFilters.tooltip", { defaultValue: "Clear status, source, dates, and pagination. Keyboard shortcut: Alt+Shift+C." })}</p>
+              </details>
+            </div>
           </div>
           {historyDateError && <div role="alert" className="mb-3 rounded-xl px-4 py-3 text-sm font-bold" style={{ background: "oklch(0.97 0.03 27)", color: "oklch(0.46 0.12 27)" }}>{historyDateError}</div>}
           <div className="mb-4 rounded-xl border bg-white p-3" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
             <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-              <div className="min-w-0 flex-1"><p className="flex items-center gap-2 text-sm rr-fw-black rr-text-navy"><Bookmark size={15} /> Quick filter presets</p><p className="mt-1 text-xs font-bold rr-text-navy-faint">Private to your administrator account. Drag the handle, or focus it and press Space then an arrow key, to save your preferred order.</p><DndContext sensors={presetSensors} collisionDetection={closestCenter} onDragEnd={handlePresetDragEnd}><SortableContext items={historyPresets.map((preset) => preset.id)} strategy={rectSortingStrategy}><div className="mt-3 flex flex-wrap gap-2">{historyPresets.map((preset) => <SortablePresetControl key={preset.id} preset={preset} disabled={duplicateHealthHistoryPreset.isPending || deleteHealthHistoryPreset.isPending || reorderHealthHistoryPresets.isPending} onApply={() => applyHistoryPreset(preset)} onRename={() => { setEditingPresetId(preset.id); setPresetName(preset.name); }} onDuplicate={() => duplicateHealthHistoryPreset.mutate({ id: preset.id })} onDelete={() => deleteHealthHistoryPreset.mutate({ id: preset.id })} />)}{!historyPresets.length && !presetsQuery.isLoading && <span className="text-xs font-bold rr-text-navy-faint">No presets saved yet.</span>}</div></SortableContext></DndContext></div>
+              <div className="min-w-0 flex-1"><p className="flex items-center gap-2 text-sm rr-fw-black rr-text-navy"><Bookmark size={15} /> Quick filter presets</p><p className="mt-1 text-xs font-bold rr-text-navy-faint">Private to your administrator account. Drag the handle, or focus it and press Space then an arrow key, to save your preferred order.</p><DndContext sensors={presetSensors} collisionDetection={closestCenter} onDragEnd={handlePresetDragEnd}><SortableContext items={historyPresets.map((preset) => preset.id)} strategy={rectSortingStrategy}><div className="mt-3 flex flex-wrap gap-2">{historyPresets.map((preset) => <SortablePresetControl key={preset.id} preset={preset} reorderSucceeded={presetReorderFeedback?.presetId === preset.id} disabled={duplicateHealthHistoryPreset.isPending || deleteHealthHistoryPreset.isPending || reorderHealthHistoryPresets.isPending} onApply={() => applyHistoryPreset(preset)} onRename={() => { setEditingPresetId(preset.id); setPresetName(preset.name); }} onDuplicate={() => duplicateHealthHistoryPreset.mutate({ id: preset.id })} onDelete={() => deleteHealthHistoryPreset.mutate({ id: preset.id })} />)}{!historyPresets.length && !presetsQuery.isLoading && <span className="text-xs font-bold rr-text-navy-faint">No presets saved yet.</span>}</div></SortableContext></DndContext><div role="status" aria-live="polite" className="mt-2 min-h-5">{presetReorderFeedback && <p className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 motion-safe:transition-[opacity,transform] motion-safe:duration-200"><CheckCircle2 size={13} aria-hidden="true" />{t("adminAuthDiagnostics.presets.orderSavedDetail", { defaultValue: "{{name}} saved in position {{position}} of {{total}}.", name: presetReorderFeedback.presetName, position: presetReorderFeedback.position, total: presetReorderFeedback.total })}</p>}</div></div>
               <div className="flex w-full flex-col gap-2 sm:flex-row lg:w-auto"><label className="flex min-w-0 flex-1 flex-col gap-1.5 text-xs font-bold rr-text-navy-muted lg:w-56"><span>{editingPreset ? "Rename preset" : "Preset name"}</span><input value={presetName} maxLength={80} onChange={(event) => setPresetName(event.target.value)} placeholder={editingPreset ? editingPreset.name : "e.g. Manual failures"} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }} /></label><div className="flex items-end gap-2"><button type="button" onClick={savePreset} disabled={saveHealthHistoryPreset.isPending || Boolean(historyDateError)} className="flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-bold rr-bg-gold rr-text-navy disabled:opacity-50">{saveHealthHistoryPreset.isPending ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}{editingPreset ? "Rename" : "Save current"}</button>{editingPreset && <button type="button" onClick={() => { setEditingPresetId(null); setPresetName(""); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }}>Cancel</button>}</div></div>
             </div>
             {presetsQuery.error && <p role="alert" className="mt-2 text-xs font-bold" style={{ color: "oklch(0.48 0.17 27)" }}>Saved presets could not be loaded. {presetsQuery.error.message}</p>}
@@ -533,6 +611,50 @@ export default function AdminAuthDiagnosticsPage() {
           <div className="mt-4 flex flex-col gap-3 border-t pt-4 sm:flex-row sm:items-center sm:justify-between" style={{ borderColor: "oklch(0.91 0.02 260)" }}><p className="text-xs font-bold rr-text-navy-faint">Page {displayedHistoryPage} of {historyPageCount}</p><div className="flex items-center gap-2"><button type="button" onClick={() => setHistoryPage(Math.max(1, displayedHistoryPage - 1))} disabled={displayedHistoryPage <= 1 || healthHistoryQuery.isFetching} className="flex h-10 items-center gap-1.5 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy disabled:opacity-40" style={{ borderColor: "oklch(0.88 0.03 260)" }}><ChevronLeft size={15} /> Previous</button><button type="button" onClick={() => setHistoryPage(Math.min(historyPageCount, displayedHistoryPage + 1))} disabled={displayedHistoryPage >= historyPageCount || healthHistoryQuery.isFetching} className="flex h-10 items-center gap-1.5 rounded-lg px-3 text-sm font-bold rr-bg-gold rr-text-navy disabled:opacity-40">Next <ChevronRight size={15} /></button></div></div>
         </section>
       </main>
+
+      <Dialog open={csvPreviewOpen} onOpenChange={(open) => {
+        setCsvPreviewOpen(open);
+        if (!open) {
+          setCsvPreview(null);
+          prepareHealthHistoryExport.reset();
+        }
+      }}>
+        <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-hidden p-0 sm:max-w-6xl">
+          <DialogHeader className="border-b px-5 pb-4 pt-5 pr-12 text-left sm:px-6 sm:pt-6" style={{ borderColor: "oklch(0.90 0.02 260)" }}>
+            <DialogTitle className="flex items-center gap-2 rr-text-navy"><FileSearch size={19} className="rr-text-gold" aria-hidden="true" />{t("adminAuthDiagnostics.csvPreview.title", { defaultValue: "Preview sanitized CSV" })}</DialogTitle>
+            <DialogDescription className="font-bold rr-text-navy-muted">{t("adminAuthDiagnostics.csvPreview.description", { defaultValue: "Review the exact filtered, sanitized snapshot before downloading it." })}</DialogDescription>
+          </DialogHeader>
+
+          <div className="min-h-64 overflow-y-auto px-5 py-4 sm:px-6">
+            {prepareHealthHistoryExport.isPending && <div role="status" aria-live="polite" className="flex min-h-56 flex-col items-center justify-center gap-3 text-center"><Loader2 size={28} className="animate-spin rr-text-gold" aria-hidden="true" /><p className="text-sm font-bold rr-text-navy-muted">{t("adminAuthDiagnostics.csvPreview.loading", { defaultValue: "Preparing the sanitized preview…" })}</p></div>}
+
+            {prepareHealthHistoryExport.error && <div role="alert" className="flex min-h-56 flex-col items-center justify-center gap-3 rounded-xl px-5 text-center" style={{ background: "oklch(0.97 0.03 27)", color: "oklch(0.46 0.12 27)" }}><AlertCircle size={28} aria-hidden="true" /><div><p className="text-sm font-black">{t("adminAuthDiagnostics.csvPreview.errorTitle", { defaultValue: "Preview unavailable" })}</p><p className="mt-1 text-xs font-bold">{prepareHealthHistoryExport.error.message || t("adminAuthDiagnostics.csvPreview.errorDescription", { defaultValue: "The filtered export could not be prepared." })}</p></div></div>}
+
+            {csvPreview && csvPreview.rowCount === 0 && <div role="status" className="flex min-h-56 flex-col items-center justify-center gap-3 rounded-xl rr-bg-surface px-5 text-center"><FileSearch size={28} className="rr-text-navy-faint" aria-hidden="true" /><div><p className="text-sm rr-fw-black rr-text-navy">{t("adminAuthDiagnostics.csvPreview.emptyTitle", { defaultValue: "No rows to preview" })}</p><p className="mt-1 text-xs font-bold rr-text-navy-muted">{t("adminAuthDiagnostics.csvPreview.emptyDescription", { defaultValue: "No health records match the active filters." })}</p></div></div>}
+
+            {csvPreview && csvPreview.rowCount > 0 && <div className="space-y-3">
+              <div className="grid gap-2 rounded-xl rr-bg-surface p-3 text-xs font-bold rr-text-navy-muted sm:grid-cols-2">
+                <p><span className="rr-text-navy">{t("adminAuthDiagnostics.csvPreview.fileLabel", { defaultValue: "File:" })}</span> <span className="break-all">{csvPreview.filename}</span></p>
+                <p className="sm:text-right">{t("adminAuthDiagnostics.csvPreview.summary", { defaultValue: "Previewing {{previewed}} of {{exported}} export rows · {{matched}} matched", previewed: csvPreview.preview.rowCount, exported: csvPreview.rowCount, matched: csvPreview.totalMatching })}</p>
+              </div>
+              <p className="text-xs font-bold rr-text-navy-faint">{t("adminAuthDiagnostics.csvPreview.sanitizedNotice", { defaultValue: "The preview and download share the same whitelisted columns, redaction, formula protection, filters, row cap, and newest-first ordering." })}</p>
+              <div className="max-h-[48dvh] overflow-auto rounded-xl border" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
+                <table className="min-w-[1420px] border-collapse text-left text-xs" aria-label={t("adminAuthDiagnostics.csvPreview.tableLabel", { defaultValue: "Sanitized CSV data preview" })}>
+                  <thead className="sticky top-0 z-10 rr-bg-navy text-white"><tr>{csvPreview.preview.columns.map((column) => <th key={column.key} scope="col" className="whitespace-nowrap border-r border-white/10 px-3 py-2.5 font-black last:border-r-0">{column.csvHeader}</th>)}</tr></thead>
+                  <tbody className="divide-y" style={{ borderColor: "oklch(0.91 0.02 260)" }}>{csvPreview.preview.rows.map((row, rowIndex) => <tr key={`${row.recordId ?? "row"}-${rowIndex}`} className="odd:bg-white even:rr-bg-surface">{csvPreview.preview.columns.map((column) => <td key={column.key} className={`max-w-80 border-r px-3 py-2 align-top font-bold rr-text-navy-muted last:border-r-0 ${column.key === "failureDetailSanitized" ? "whitespace-pre-wrap" : "whitespace-nowrap"}`} style={{ borderColor: "oklch(0.93 0.01 260)" }} title={row[column.key] || undefined}>{row[column.key] || "—"}</td>)}</tr>)}</tbody>
+                </table>
+              </div>
+              {csvPreview.preview.truncated && <p className="text-xs font-bold rr-text-navy-muted">{t("adminAuthDiagnostics.csvPreview.previewLimited", { defaultValue: "The modal shows the first {{count}} rows. The download contains all {{total}} rows in this prepared export.", count: csvPreview.preview.limit, total: csvPreview.rowCount })}</p>}
+              {csvPreview.truncated && <p role="status" className="rounded-lg px-3 py-2 text-xs font-bold" style={{ background: "oklch(0.96 0.04 80)", color: "oklch(0.42 0.12 80)" }}>{t("adminAuthDiagnostics.csvPreview.exportLimited", { defaultValue: "The export safety cap includes the newest {{exported}} of {{matched}} matching records.", exported: csvPreview.rowCount, matched: csvPreview.totalMatching })}</p>}
+            </div>}
+          </div>
+
+          <DialogFooter className="border-t px-5 py-4 sm:px-6" style={{ borderColor: "oklch(0.90 0.02 260)" }}>
+            <DialogClose asChild><button type="button" className="min-h-10 rounded-lg border bg-white px-4 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.86 0.04 260)" }}>{t("adminAuthDiagnostics.csvPreview.close", { defaultValue: "Close" })}</button></DialogClose>
+            <button type="button" onClick={downloadHealthHistoryCsv} disabled={!csvPreview || csvPreview.rowCount === 0} className="flex min-h-10 items-center justify-center gap-2 rounded-lg px-4 text-sm font-bold rr-bg-gold rr-text-navy disabled:cursor-not-allowed disabled:opacity-50"><Download size={15} aria-hidden="true" />{t("adminAuthDiagnostics.csvPreview.download", { defaultValue: "Download CSV" })}</button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

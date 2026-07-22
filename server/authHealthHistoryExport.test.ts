@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { buildAuthHealthHistoryCsvFilename, serializeAuthHealthHistoryCsv } from "./authHealthHistoryExport";
+import {
+  AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT,
+  buildAuthHealthHistoryCsvExport,
+  buildAuthHealthHistoryCsvFilename,
+  buildAuthHealthHistoryExportRows,
+  serializeAuthHealthHistoryCsv,
+} from "./authHealthHistoryExport";
 
 describe("auth health history CSV", () => {
   it("whitelists sanitized columns, blocks formula injection, and excludes scheduler identifiers", () => {
@@ -35,5 +41,65 @@ describe("auth health history CSV", () => {
     expect(buildAuthHealthHistoryCsvFilename({ toDate: "2026-07-21" })).toBe("getphame-auth-health-history-through-2026-07-21.csv");
     expect(buildAuthHealthHistoryCsvFilename({}, new Date("2026-07-21T23:59:00Z"))).toBe("getphame-auth-health-history-2026-07-21.csv");
     expect(buildAuthHealthHistoryCsvFilename({ fromDate: "../../bad", toDate: "2026-07-21" }, new Date("2026-07-22T00:00:00Z"))).toBe("getphame-auth-health-history-through-2026-07-21.csv");
+  });
+
+  it("builds preview rows and the download from the same bounded sanitized snapshot", () => {
+    const rows = Array.from({ length: AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT + 1 }, (_, index) => ({
+      id: index + 1,
+      triggerSource: "manual" as const,
+      scheduleCronTaskUid: `private-schedule-${index + 1}`,
+      overallStatus: "fail" as const,
+      configStatus: "ok" as const,
+      databaseStatus: "ok" as const,
+      userSchemaStatus: "ok" as const,
+      magicLinkSchemaStatus: "ok" as const,
+      sessionStatus: "ok" as const,
+      emailProviderStatus: "fail" as const,
+      providerName: index === 0 ? "+Provider" : "Provider",
+      failureCode: index === 0 ? "@provider_failed" : "provider_failed",
+      failureDetail: index === 0
+        ? "=HYPERLINK(\"https://example.com\") user@example.com token=abcdefabcdefabcdefabcdefabcdefabcdefabcdefabcdef"
+        : "Provider unavailable",
+      durationMs: 20 + index,
+      checkedAt: Date.UTC(2026, 6, 21, 13, 0, index),
+    }));
+
+    const snapshot = buildAuthHealthHistoryCsvExport({
+      rows,
+      total: 80,
+      truncated: true,
+      status: "fail",
+      triggerSource: "manual",
+      fromMs: Date.UTC(2026, 6, 1),
+      toMs: Date.UTC(2026, 6, 22),
+      fromDate: "2026-07-01",
+      toDate: "2026-07-21",
+      generatedAt: Date.UTC(2026, 6, 21, 14, 0, 0),
+    });
+    const sanitizedRows = buildAuthHealthHistoryExportRows(rows);
+
+    expect(snapshot.filename).toBe("getphame-auth-health-history-2026-07-01-to-2026-07-21.csv");
+    expect(snapshot.rowCount).toBe(rows.length);
+    expect(snapshot.totalMatching).toBe(80);
+    expect(snapshot.truncated).toBe(true);
+    expect(snapshot.preview.rowCount).toBe(AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT);
+    expect(snapshot.preview.limit).toBe(AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT);
+    expect(snapshot.preview.truncated).toBe(true);
+    expect(snapshot.preview.rows).toEqual(sanitizedRows.slice(0, AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT));
+    expect(snapshot.csv).toBe(serializeAuthHealthHistoryCsv(rows));
+    expect(snapshot.preview.rows[0]).toMatchObject({
+      providerName: "'+Provider",
+      failureCode: "'@provider_failed",
+    });
+    expect(snapshot.preview.rows[0].failureDetailSanitized).toContain("[redacted-email]");
+    expect(snapshot.preview.rows[0].failureDetailSanitized).toContain("[redacted-token]");
+    expect(snapshot.csv).not.toContain("private-schedule-");
+    expect(snapshot.csv).not.toContain("user@example.com");
+    expect(snapshot.filters).toEqual({
+      status: "fail",
+      triggerSource: "manual",
+      fromMs: Date.UTC(2026, 6, 1),
+      toMs: Date.UTC(2026, 6, 22),
+    });
   });
 });

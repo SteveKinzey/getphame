@@ -129,7 +129,18 @@
 - [x] Restore and validate the reusable production-auth-health-monitoring skill updates for filenames, shortcuts, and preset ordering
 - [x] Reconfirm the already-applied production database migration matches the reconstructed Drizzle schema without rerunning destructive or duplicate SQL
 - [x] Run focused tests, all tests, TypeScript checks, dependency audit, production build, and authenticated responsive administrator verification on the recovered release
-- [ ] Save an immediate recovery checkpoint before any further production verification
-- [ ] Confirm the auto-published Get Phame bundle contains the recovered release labels and deliver the final version
+- [x] Save an immediate recovery checkpoint before any further production verification
+- [x] Confirm the auto-published Get Phame bundle contains the recovered release labels and deliver the final version
 - [x] Reduce the authoritative account-level knowledge base from 100 granular entries to three verified enabled consolidated entries while retaining Get Phame rules in project-scoped guidance
 - [x] Confirm the final production-auth-health-monitoring `SKILL.md` directly covers date-aware CSV filenames, Alt+Shift+C clearing, and persisted preset ordering, update it if needed, and rerun the official validator
+- [x] Add an accessible tooltip to the always-visible clear-filters button that teaches the Alt+Shift+C shortcut across pointer, keyboard, and touch interactions
+- [x] Add subtle reduced-motion-safe success animation, persistent visual confirmation, and screen-reader feedback after a saved preset order is successfully persisted
+- [x] Add an administrator-only bounded and sanitized CSV preview contract that reuses the exact export filters, ordering, fields, and row cap
+- [x] Add a responsive keyboard-accessible CSV preview modal with loading, error, empty, row-count, truncation, close, and confirmed-download states
+- [x] Localize every new tooltip, reorder-feedback, and CSV-preview string without exposing internal product names
+- [x] Add backend, authorization, UI-contract, interaction-state, sanitization, export-parity, and accessibility regression coverage for the new workflows
+- [x] Extend the reusable production-auth-health-monitoring skill through the skill-creator workflow and pass the official skill validator
+- [x] Run focused tests, the full suite, TypeScript checks, dependency security audit, production build, and authenticated desktop/mobile responsive verification
+- [ ] Save and auto-publish a release checkpoint, verify the live Get Phame bundle contains the new workflow labels, and deliver the reusable skill
+- [x] Add and verify an explicit touch-friendly shortcut-help affordance alongside the clear-filters tooltip, with localized copy and regression coverage
+- [x] Capture readable authenticated desktop and mobile evidence that the protected diagnostics page renders shortcut help, preset ordering controls, and the CSV preview entry point

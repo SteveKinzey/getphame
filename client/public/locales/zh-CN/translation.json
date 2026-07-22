@@ -1748,5 +1748,36 @@
     "pendingReferralsHint": "{{count}} 位好友已加入 — 等待他们升级为付费",
     "pendingReferralsHint_plural": "{{count}} 位好友已加入 — 等待他们升级为付费",
     "rewardProcessingHint": "奖励处理中 — 您的免费月份将很快生效"
+  },
+  "adminAuthDiagnostics": {
+    "clearFilters": {
+      "button": "立即清除",
+      "tooltip": "清除状态、来源、日期和分页。键盘快捷键：Alt+Shift+C。",
+      "touchHelp": "快捷键帮助",
+      "cleared": "历史记录筛选条件已清除。"
+    },
+    "presets": {
+      "orderSavedDetail": "{{name}} 已保存到第 {{position}} 位，共 {{total}} 位。"
+    },
+    "csvPreview": {
+      "preparing": "正在准备预览…",
+      "openButton": "预览筛选后的 CSV",
+      "title": "预览已清理的 CSV",
+      "description": "下载前检查完全一致、已筛选并已清理的数据快照。",
+      "loading": "正在准备已清理的数据预览…",
+      "errorTitle": "无法提供预览",
+      "errorDescription": "无法准备筛选后的导出数据。",
+      "emptyTitle": "没有可预览的行",
+      "emptyDescription": "没有健康状态记录与当前筛选条件匹配。",
+      "fileLabel": "文件：",
+      "summary": "正在预览 {{exported}} 个导出行中的 {{previewed}} 个 · 共匹配 {{matched}} 个",
+      "sanitizedNotice": "预览和下载使用相同的许可列、信息遮盖、公式防护、筛选条件、行数上限以及从新到旧的排序。",
+      "tableLabel": "已清理的 CSV 数据预览",
+      "previewLimited": "窗口显示前 {{count}} 行。下载文件包含本次已准备导出的全部 {{total}} 行。",
+      "exportLimited": "导出安全上限包含 {{matched}} 个匹配记录中最新的 {{exported}} 个。",
+      "close": "关闭",
+      "download": "下载 CSV",
+      "downloaded": "已下载 {{count}} 条清理后的健康状态记录。"
+    }
   }
 }

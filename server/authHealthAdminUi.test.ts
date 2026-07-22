@@ -2,6 +2,14 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
+const SUPPORTED_LOCALES = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
+
+function getTranslation(catalog: Record<string, unknown>, path: string) {
+  return path.split(".").reduce<unknown>((value, segment) => (
+    value && typeof value === "object" ? (value as Record<string, unknown>)[segment] : undefined
+  ), catalog);
+}
+
 describe("admin authentication uptime summary", () => {
   it("keeps the rolling uptime aggregate behind the admin diagnostics router", () => {
     const routerPath = fileURLToPath(new URL("./routers/authDiagnostics.ts", import.meta.url));
@@ -38,7 +46,8 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("Filter health history by status");
     expect(page).toContain("Filter health history by trigger source");
     expect(page).toContain("Rows per page");
-    expect(page).toContain("Export filtered CSV");
+    expect(page).toContain("Preview filtered CSV");
+    expect(page).toContain("prepareHealthHistoryExport.mutate(historyExportInput)");
     expect(page).toContain("fromDate: historyFromDate || undefined");
     expect(page).toContain("toDate: historyToDate || undefined");
     expect(page).toContain("matching records");
@@ -58,6 +67,12 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("Alt + Shift + C");
     expect(page).toContain("aria-keyshortcuts={AUTH_HEALTH_HISTORY_CLEAR_SHORTCUT}");
     expect(page).toContain("shouldClearAuthHealthHistoryFiltersFromShortcut(event)");
+    expect(page).toContain("<TooltipTrigger asChild>");
+    expect(page).toContain("Keyboard shortcut: Alt+Shift+C.");
+    expect(page).toContain('side="top"');
+    expect(page).toContain('<details className="w-full sm:w-auto">');
+    expect(page).toContain("adminAuthDiagnostics.clearFilters.touchHelp");
+    expect(page).toContain("Shortcut help");
     expect(page).toContain('id="health-history"');
     expect(page).toContain('window.location.hash === "#health-history"');
     expect(page).toContain('new URLSearchParams(window.location.search).get("section") === "health-history"');
@@ -66,6 +81,13 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("SortableContext");
     expect(page).toContain("Reorder ${preset.name}");
     expect(page).toContain("reorderHealthHistoryPresets.mutate");
+    expect(page).toContain("presetReorderFeedback?.presetId === preset.id");
+    expect(page).toContain("reorderSucceeded={presetReorderFeedback?.presetId === preset.id}");
+    expect(page).toContain("ring-2 ring-emerald-500/30");
+    expect(page).toContain("motion-safe:transition-[opacity,transform]");
+    expect(page).toContain('reorderSucceeded ? "scale-100 opacity-100" : "scale-95 opacity-0"');
+    expect(page).toContain('role="status" aria-live="polite"');
+    expect(page).toContain("{{name}} saved in position {{position}} of {{total}}.");
     expect(page).toContain("window.setTimeout(scrollToHistory, delay)");
     expect(page).toContain("1_200");
     expect(page).toContain("new ResizeObserver(scrollToHistory)");
@@ -78,5 +100,58 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("toMs: historyToMs");
     expect(page).toContain("Previous");
     expect(page).toContain("Next");
+    expect(page).toContain("Preview sanitized CSV");
+    expect(page).toContain("Review the exact filtered, sanitized snapshot before downloading it.");
+    expect(page).toContain('max-h-[calc(100dvh-2rem)]');
+    expect(page).toContain("Preparing the sanitized preview…");
+    expect(page).toContain("Preview unavailable");
+    expect(page).toContain("No rows to preview");
+    expect(page).toContain("csvPreview.preview.columns.map");
+    expect(page).toContain("csvPreview.preview.rows.map");
+    expect(page).toContain("Sanitized CSV data preview");
+    expect(page).toContain("The preview and download share the same whitelisted columns");
+    expect(page).toContain("The modal shows the first {{count}} rows");
+    expect(page).toContain("The export safety cap includes the newest {{exported}}");
+    expect(page).toContain("onClick={downloadHealthHistoryCsv}");
+    expect(page).toContain("new Blob([csvPreview.csv], { type: csvPreview.mimeType })");
+    expect(page).toContain("disabled={!csvPreview || csvPreview.rowCount === 0}");
+  });
+
+  it("localizes every new administrator shortcut, reorder, and CSV preview message", () => {
+    const requiredPaths = [
+      "adminAuthDiagnostics.clearFilters.button",
+      "adminAuthDiagnostics.clearFilters.tooltip",
+      "adminAuthDiagnostics.clearFilters.touchHelp",
+      "adminAuthDiagnostics.clearFilters.cleared",
+      "adminAuthDiagnostics.presets.orderSavedDetail",
+      "adminAuthDiagnostics.csvPreview.preparing",
+      "adminAuthDiagnostics.csvPreview.openButton",
+      "adminAuthDiagnostics.csvPreview.title",
+      "adminAuthDiagnostics.csvPreview.description",
+      "adminAuthDiagnostics.csvPreview.loading",
+      "adminAuthDiagnostics.csvPreview.errorTitle",
+      "adminAuthDiagnostics.csvPreview.errorDescription",
+      "adminAuthDiagnostics.csvPreview.emptyTitle",
+      "adminAuthDiagnostics.csvPreview.emptyDescription",
+      "adminAuthDiagnostics.csvPreview.fileLabel",
+      "adminAuthDiagnostics.csvPreview.summary",
+      "adminAuthDiagnostics.csvPreview.sanitizedNotice",
+      "adminAuthDiagnostics.csvPreview.tableLabel",
+      "adminAuthDiagnostics.csvPreview.previewLimited",
+      "adminAuthDiagnostics.csvPreview.exportLimited",
+      "adminAuthDiagnostics.csvPreview.close",
+      "adminAuthDiagnostics.csvPreview.download",
+      "adminAuthDiagnostics.csvPreview.downloaded",
+    ];
+
+    for (const locale of SUPPORTED_LOCALES) {
+      const catalogPath = fileURLToPath(new URL(`../client/public/locales/${locale}/translation.json`, import.meta.url));
+      const catalog = JSON.parse(readFileSync(catalogPath, "utf8")) as Record<string, unknown>;
+      for (const path of requiredPaths) {
+        const value = getTranslation(catalog, path);
+        expect(value, `${locale}:${path}`).toBeTypeOf("string");
+        expect((value as string).trim(), `${locale}:${path}`).not.toBe("");
+      }
+    }
   });
 });
