@@ -586,3 +586,54 @@
 - [x] Fix the GitHub Actions TypeScript out-of-memory failure with a scoped, validated workflow memory setting.
 - [x] Remediate the production body-parser advisory that currently blocks the build’s dependency audit.
 - [x] Make the external system-email integration test credential-aware so public CI skips it only when optional SMTP secrets are absent.
+- [x] Enable the Google OAuth production callback for getphame.app and verify the deployed authorization path without weakening CSRF or redirect validation.
+- [x] Display Google sign-in alongside the existing magic-link option on the production Get Phame login page and add regression coverage.
+- [x] Review remaining Dependabot alerts, prioritize safe patch updates, and merge the applicable updates without overriding local security fixes; no safe Dependabot PR was available after the required refresh.
+- [x] Run complete validation, publish the OAuth and dependency updates, and verify the deployed login experience.
+- [x] Replace the shared staging-only social-login gate with explicit Google production-host eligibility while keeping Apple hidden until its own production readiness is confirmed.
+- [x] Preserve visible email magic-link authentication alongside Google on Login and Onboarding, and add focused host-policy/UI regression coverage.
+- [x] Retire the unconsumed legacy `package-lock.json`, align the custom Dockerfile with the locked pnpm install policy, and document the evidence-based remediation decision.
+- [x] Run focused and complete quality gates, push the reviewed change set, confirm the GitHub Actions run, checkpoint the release, and verify the production Google entry point.
+- [x] Diagnose and correct the published login bundle mismatch: production reports Google OAuth configured but still renders magic-link-only authentication.
+- [x] Resolve the managed Docker build failure caused by a frozen pnpm lockfile override mismatch, then republish the verified release.
+
+- [x] Repair the broken or empty visual region on the `/upgrade` page without replacing the approved Get Phame brand mark or wordmark.
+- [x] Render Monthly, Annual, and Lifetime subscription plans as three equal, usable cards across desktop, with intentional tablet and mobile reflow.
+- [x] Add focused pricing-layout regression coverage, verify desktop/tablet/mobile visual behavior, run release checks, and publish the corrected upgrade page.
+
+- [x] Add localized savings guidance above the subscription cards that quantifies Annual and Lifetime value against Monthly billing.
+- [x] Strengthen Annual plan conversion emphasis with a persistent Most Popular badge and restrained, accessible visual highlight across breakpoints.
+- [x] Add a compact, localized mobile comparison drawer that makes subscription feature differences easy to inspect without horizontal overflow.
+- [x] Add regression coverage and validate the pricing enhancements on desktop, tablet, and mobile.
+- [x] Package this verified upgrade-page optimization workflow as a reusable skill and validate it with the skill-creator workflow.
+
+- [x] Diagnose the `/?from_webdev=1` tRPC API-unavailable error using server, browser, routing, and query-path evidence.
+- [x] Repair the underlying home-page API availability condition without weakening authentication, error handling, or existing tRPC contracts.
+- [x] Add regression coverage, verify the home-page query in the preview, run release gates, and publish the recovery.
+
+- [x] Add a lightweight, non-sensitive `/api/health` readiness probe and use it to prevent the dashboard shell from treating a restart window as a terminal app failure.
+- [x] Show a quiet, accessible Reconnecting indicator only while transient API retries are active.
+- [x] Add a localized API error boundary with a manual retry control for exhausted automatic retry recovery.
+- [x] Add regression coverage and validate readiness, reconnecting, manual retry, desktop/mobile behavior, and release gates.
+- [x] Package and validate the resulting tRPC recovery UX workflow as a reusable skill using the skill-creator process.
+
+- [x] Eliminate render-phase state updates from the transient-query retry subscription that trigger React warnings in the dashboard shell.
+- [x] Add regression coverage proving reconnecting-state subscriptions do not schedule component updates during another component’s render.
+- [x] Verify the authenticated dashboard is warning-free in the browser, run focused release checks, and publish the repair.
+
+- [x] Add restrained, reduced-motion-safe CSS loading motion to the Reconnecting indicator.
+- [x] Add an approachable offline recovery illustration and clear, actionable offline troubleshooting guidance to the exhausted recovery state.
+- [x] Show a localized success toast when a previously unavailable dashboard API reconnects successfully.
+- [x] Extend and validate the reusable API recovery UX skill with the render-safe subscription, offline guidance, animation, and reconnection-toast workflow.
+- [x] Add focused regression coverage for recovery motion, offline guidance, reconnection confirmation, and translations across supported locales.
+
+- [x] Add an automated end-to-end browser test that exercises offline-to-online recovery and verifies the reconnect success toast.
+- [x] Add a localized, accessible Retry Now control below offline troubleshooting that forces an immediate readiness check without weakening retry safeguards.
+- [x] Add a subtle, reduced-motion-safe entrance animation and optional mobile haptic feedback to the reconnection success toast.
+- [x] Audit the recovery experience against current Apple App Review and Google Play quality, offline, permission, and accessibility expectations relevant to this native-capable app.
+- [x] Harden the recovery flow for native mobile submission, including safe haptic capability detection, reachable controls, clear offline status, and non-web-only test boundaries.
+- [x] Add and run app-store readiness checks for Capacitor configuration, release build compatibility, privacy-safe behavior, and mobile recovery regression coverage.
+- [x] Update and validate the reusable API recovery UX skill with browser-test, manual-retry, toast-animation, haptic-feedback, and app-store-readiness guidance.
+- [x] Run focused and complete release validation, verify the recovery controls responsively, and publish the enhancement.
+
+- [x] Align stale locale-cache regression expectations with the current translation-resource cache version and republish the failed deployment.

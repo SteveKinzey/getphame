@@ -14,7 +14,7 @@
 - [x] Fix stale i18n cache-version contracts and complete localized pricing-savings copy found by the full test suite.
 - [x] Remove legacy tracked Playwright trace artifacts and verify future browser diagnostics remain outside the repository.
 - [x] Run focused and complete Vitest, TypeScript, production build, dependency audit, workflow validation, and bounded Playwright quality gates.
-- [ ] Review both complete release diffs, create the managed checkpoint, synchronize and push only approved GitHub commits, verify Actions, and confirm the live readiness endpoint.
+- [x] Review both complete release diffs, create the managed checkpoint, synchronize and push only approved GitHub commits, verify Actions, and confirm the live readiness endpoint.
 - [x] Capture post-restart Git status and log evidence proving the local GitHub tree contains the intended unpublished recovery stack and remains unpushed.
 - [x] Validate the restored API health workflow’s bounded probe, consecutive-failure state, deduplicated incident, and recovery-closure branches from the actual current file.
 - [x] Validate haptic preference persistence, cross-component synchronization, recovery-success application, reduced-motion behavior, and non-native safe fallback with focused evidence.
@@ -23,4 +23,17 @@
 - [x] Bring the GitHub source tree fully up to date, including the complete recovery stack, monitoring workflows, localization, app-store documentation, and removal of obsolete npm and Playwright artifacts.
 - [x] Run TypeScript, full Vitest, production audit/build, workflow contracts, formatting/whitespace, and bounded Chromium recovery gates from the reconciled GitHub tree.
 - [x] Verify the GitHub repository remains private, source access is limited to explicitly authorized repository users, and no public Pages or source release is enabled.
-- [ ] Commit and push the reconciled GitHub release, verify all triggered Actions, and confirm the deployed public readiness endpoint.
+- [x] Commit and push the reconciled GitHub release, verify all triggered Actions, and confirm the deployed public readiness endpoint.
+- [x] Research authoritative zero-trust, passkey, MFA, least-privilege, and recovery guidance for Get Phame.
+- [x] Write a detailed phased implementation plan covering identities, roles, enrollment, recovery, operations, testing, rollout, and measurable acceptance gates.
+- [x] Summarize the key differences and complementary roles of end-to-end encryption and zero trust.
+- [x] Prepare a citation-backed Get Phame presentation storyline and approved brand assets in a premium black-and-blue marker whiteboard style.
+- [x] Generate and visually verify the zero-trust presentation with stick figures, arrows, flowcharts, handwritten annotations, and the correct P+star brand mark.
+- [x] Deliver the implementation plan, comparison, citations, and finished presentation to the user.
+- [x] Define and inventory the reusable Get Phame zero-trust planning skill scope against the current authentication, authorization, session, and tenant model.
+- [x] Evaluate maintained WebAuthn libraries for React 19, Express 4, tRPC 11, TypeScript, and the existing Manus OAuth session architecture, then recommend one with migration guidance.
+- [x] Draft an approval-ready Get Phame role-permission matrix covering tenant scope, sensitive actions, step-up requirements, delegation, support access, and deny-by-default behavior.
+- [x] Create a step-by-step owner recovery-drill runbook with prerequisites, evidence, stop conditions, rollback, proposed dates, and recurring cadence.
+- [x] Build the reusable zero-trust implementation skill with concise workflow guidance, reference material, and reusable document templates.
+- [x] Validate the skill package and representative role-matrix, WebAuthn, and recovery-drill scenarios through the skill-creator workflow.
+- [x] Deliver the packaged skill and the three review-ready Get Phame security documents.

@@ -79,3 +79,89 @@
 - [x] Run the full test suite, TypeScript checks, production build, and responsive preview verification
 - [x] Save a deployable checkpoint and begin the first 24-hour production observation window after publication
 - [x] Add explicit admin diagnostics query-error handling so unavailable uptime data never appears healthy
+- [x] Audit the deployed admin-only boundary for auth diagnostics, manual checks, and scheduled callback access
+- [x] Confirm the monitoring scheduler is active and run a safe activation verification
+- [x] Restore and update the reusable production-auth-health-monitoring skill with explicit admin-only access guidance
+- [x] Refresh the implementation-pattern explainer and whiteboard presentation script for the activated admin-only model
+- [x] Restore and update the standalone production-auth-health-monitoring webpage with the access-control model
+- [x] Validate the skill, verify the webpage, package the deliverables, and save a publishable checkpoint if app code changes
+- [x] Confirm the restarted development server exposes a working preview URL before checkpointing
+- [x] Add an administrator-only immediate health-check trigger with safe loading, success, and error states
+- [x] Add a live visual status indicator and loading animation for manual health-check execution
+- [x] Add a historical health-check and failure-event log to the admin diagnostics page
+- [x] Add regression coverage for the protected manual-run flow and historical log contracts
+- [x] Extend the reusable production-auth-health-monitoring skill with the new diagnostics control pattern
+- [x] Run tests, TypeScript checks, build, visual verification, and reusable-skill validation
+- [x] Save the publishable checkpoint and confirm the automatic production publication
+- [x] Verify checkpoint 0a68fa56 is live on the production GetPhame domain before closing publication confirmation
+- [x] Confirm the live production bundle includes the unique immediate-check and historical-log labels from checkpoint 0a68fa56
+- [x] Add administrator-only health-history filtering by overall status and trigger source
+- [x] Add bounded server-side pagination with stable newest-first ordering and total counts
+- [x] Add a sanitized administrator-only CSV export for the current history filters
+- [x] Add responsive filter, pagination, result-count, and CSV-download controls to the diagnostics page
+- [x] Add regression coverage for filtering, pagination, CSV escaping, sanitization, and authorization
+- [x] Add direct regression coverage for filtered `listAuthHealthChecksPage` counts, page bounds, and stable ordering
+- [x] Add direct regression coverage proving filtered export row selection uses the requested status/source combination
+- [x] Assert the paginated query’s generated filter object explicitly contains `status=fail` and `triggerSource=manual`
+- [x] Assert the export query’s generated filter object explicitly contains the requested status/source values
+- [x] Extend the reusable production-auth-health-monitoring skill with filtered pagination and export patterns
+- [x] Run focused and full tests, TypeScript checks, production build, and authenticated desktop/mobile preview verification
+- [x] Save the publishable checkpoint and confirm the live production diagnostics bundle contains the new filter, export, and pagination release labels
+- [x] Add bounded administrator date-range filters to paginated history and filtered CSV export contracts
+- [x] Add per-administrator saved filter preset persistence with ownership-aware CRUD procedures
+- [x] Add schema and migration coverage for reusable health-history filter presets
+- [x] Add responsive date controls and quick-access preset save, apply, rename, and delete interactions
+- [x] Add direct regression coverage for date boundaries, preset ownership, authorization, validation, and export filter reuse
+- [x] Extend the reusable production-auth-health-monitoring skill with date-range and saved-preset patterns
+- [x] Run focused and full tests, TypeScript checks, production build, and desktop/mobile administrator verification
+- [x] Save the publishable checkpoint and confirm the live production bundle contains the date-range and private quick-preset release labels
+- [x] Add one-click relative date ranges for Last 7 days and Last 30 days with local-day boundaries
+- [x] Add owner-scoped saved-preset duplication with deterministic copy naming and the existing preset cap
+- [x] Add removable active-filter chips for status, trigger source, from date, and to date above health-history results
+- [x] Add responsive relative-range controls, duplicate actions, and clear-all chip behavior to the administrator interface
+- [x] Add regressions for relative-day calculations, preset duplication ownership/caps/naming, chip removal, and authorization
+- [x] Add functional regression tests for individual active-filter chip removal, clear-all behavior, and page reset
+- [x] Add functional preset-duplication tests for owner scoping, preset-cap enforcement, copied values, and deterministic naming
+- [x] Extend the reusable production-auth-health-monitoring skill with relative ranges, duplication, and active-chip patterns
+- [x] Run focused and full tests, TypeScript checks, production build, desktop/mobile admin verification, checkpoint, and live-bundle confirmation
+- [x] Reconstruct the lost CSV date-range filename, Alt+Shift+C shortcut, persisted preset ordering, migration, tests, and dependency changes after the sandbox reset
+- [x] Reapply the reviewed schema, owner-scoped server procedures, client sortable controls, mobile history deep-link stabilization, and DOMPurify security override
+- [x] Restore and validate the reusable production-auth-health-monitoring skill updates for filenames, shortcuts, and preset ordering
+- [x] Reconfirm the already-applied production database migration matches the reconstructed Drizzle schema without rerunning destructive or duplicate SQL
+- [x] Run focused tests, all tests, TypeScript checks, dependency audit, production build, and authenticated responsive administrator verification on the recovered release
+- [x] Save an immediate recovery checkpoint before any further production verification
+- [x] Confirm the auto-published Get Phame bundle contains the recovered release labels and deliver the final version
+- [x] Reduce the authoritative account-level knowledge base from 100 granular entries to three verified enabled consolidated entries while retaining Get Phame rules in project-scoped guidance
+- [x] Confirm the final production-auth-health-monitoring `SKILL.md` directly covers date-aware CSV filenames, Alt+Shift+C clearing, and persisted preset ordering, update it if needed, and rerun the official validator
+- [x] Add an accessible tooltip to the always-visible clear-filters button that teaches the Alt+Shift+C shortcut across pointer, keyboard, and touch interactions
+- [x] Add subtle reduced-motion-safe success animation, persistent visual confirmation, and screen-reader feedback after a saved preset order is successfully persisted
+- [x] Add an administrator-only bounded and sanitized CSV preview contract that reuses the exact export filters, ordering, fields, and row cap
+- [x] Add a responsive keyboard-accessible CSV preview modal with loading, error, empty, row-count, truncation, close, and confirmed-download states
+- [x] Localize every new tooltip, reorder-feedback, and CSV-preview string without exposing internal product names
+- [x] Add backend, authorization, UI-contract, interaction-state, sanitization, export-parity, and accessibility regression coverage for the new workflows
+- [x] Extend the reusable production-auth-health-monitoring skill through the skill-creator workflow and pass the official skill validator
+- [x] Run focused tests, the full suite, TypeScript checks, dependency security audit, production build, and authenticated desktop/mobile responsive verification
+- [x] Save and auto-publish a release checkpoint, verify the live Get Phame bundle contains the new workflow labels, and deliver the reusable skill
+- [x] Add and verify an explicit touch-friendly shortcut-help affordance alongside the clear-filters tooltip, with localized copy and regression coverage
+- [x] Capture readable authenticated desktop and mobile evidence that the protected diagnostics page renders shortcut help, preset ordering controls, and the CSV preview entry point
+- [x] Extend the sanitized same-snapshot CSV helper with an allowlisted column-projection serializer that preserves row bounds, ordering, redaction, formula protection, and filename behavior
+- [x] Add an accessible Copy to Clipboard action that copies all prepared export rows for the selected columns, with secure-context support, fallback behavior, and visible plus screen-reader feedback
+- [x] Add responsive column inclusion controls inside the preview modal with all columns selected by default, at least one column enforced, and preview, copy, and download kept in exact projection parity
+- [x] Add a time-bounded Undo action to the server-confirmed preset reorder notification that restores the prior owner-scoped order through the existing validated mutation and reports success or failure accessibly
+- [x] Localize every new clipboard, column-selection, and reorder-undo label and state across all seven supported Get Phame locales and bump the locale cache key
+- [x] Add helper, authorization, UI-contract, interaction-state, clipboard, selected-column parity, undo, localization, and accessibility regression coverage
+- [x] Extend the reusable production-auth-health-monitoring skill through the skill-creator workflow with column projection, clipboard copy, and reorder undo patterns, then pass the official validator
+- [x] Run focused tests, the full suite, TypeScript checks, dependency security audit, production build, and authenticated desktop/mobile responsive verification
+- [x] Save and auto-publish a release checkpoint, verify the live Get Phame bundle contains the new workflow markers, and deliver the updated reusable skill
+- [x] Persist administrator CSV column preferences in versioned local storage, reconcile stored keys against the server allowlist, and recover safely from malformed or stale values
+- [x] Add an accessible row-search field inside the CSV preview modal that searches the complete sanitized prepared snapshot, reports match counts, caps rendered matches, and clearly preserves full copy/download output
+- [x] Add a context-safe Ctrl+Z or Cmd+Z shortcut that invokes the visible preset-reorder Undo action, ignores editable fields and repeats, and exposes discoverable accessible shortcut metadata
+- [x] Localize every new preference, row-search, and keyboard-undo label and state across all seven supported Get Phame locales and bump the locale cache key
+- [x] Add helper, storage-recovery, complete-snapshot search, preview/export semantics, shortcut, localization, and accessibility regression coverage
+- [x] Extend the reusable production-auth-health-monitoring skill through the skill-creator workflow with persisted allowlisted columns, full-snapshot preview search, and contextual keyboard undo, then pass the official validator
+- [x] Audit the actual product and pricing implementation, determine MVP readiness, and provide a candid monthly, annual, and lifetime pricing assessment with evidence-backed recommendations
+- [x] Inventory the accessible Get Phame project and parent-folder hierarchy, perform only safe non-destructive cleanup, and identify any user-device folder that requires binding or confirmation
+- [x] Establish `/home/ubuntu/getphame` as the safe Get Phame workspace name without breaking the managed project path, publishing metadata, checkpoints, or rollback history
+- [x] Inventory the bound `/Users/skinzey/code/getphame` workspace, compare it with the managed source of truth, and apply only a confirmed Git-safe cleanup structure
+- [x] Run focused tests, the full suite, TypeScript checks, dependency security audit, production build, and authenticated desktop/mobile responsive verification
+- [ ] Save and auto-publish a release checkpoint, verify the live Get Phame bundle contains the new workflow markers, and deliver the updated reusable skill plus product assessment
