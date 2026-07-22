@@ -2297,6 +2297,8 @@
       "undoing": "Deshaciendo…",
       "undoError": "No se pudo restaurar el orden anterior de los ajustes preestablecidos.",
       "undoSucceeded": "Orden de ajustes preestablecidos restaurado.",
+      "undoShortcutSucceeded": "Deshacer con teclado completado",
+      "undoShortcutSucceededDescription": "El orden anterior de los ajustes preestablecidos se restauró con Ctrl/Cmd+Z.",
       "undoShortcutHint": "Teclado: Ctrl/Cmd + Z"
     },
     "csvPreview": {
@@ -2336,7 +2338,9 @@
       "clearSearch": "Borrar la búsqueda de filas de la vista previa",
       "searchResults": "Mostrando {{shown}} de {{matched}} filas coincidentes entre {{total}} filas preparadas.",
       "searchScope": "Busca en las {{total}} filas saneadas de esta instantánea preparada.",
-      "searchExportNotice": "La búsqueda solo cambia esta vista previa; copiar y descargar siguen incluyendo todas las filas preparadas.",
+      "searchExportNotice": "La búsqueda filtra esta vista previa y el CSV de resultados coincidentes; copiar y la descarga principal siguen incluyendo todas las filas preparadas.",
+      "downloadSearchResults": "Descargar coincidencias en CSV",
+      "searchResultsDownloaded": "Se descargaron {{count}} registros sanitizados coincidentes.",
       "noSearchResults": "Ninguna fila preparada coincide con esta búsqueda",
       "noSearchResultsHelp": "Prueba otro término o borra la búsqueda. La exportación preparada no cambia.",
       "searchLimited": "Se muestran las primeras {{count}} de {{matched}} coincidencias para mantener ágil la vista previa."

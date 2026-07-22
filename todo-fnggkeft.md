@@ -164,4 +164,18 @@
 - [x] Establish `/home/ubuntu/getphame` as the safe Get Phame workspace name without breaking the managed project path, publishing metadata, checkpoints, or rollback history
 - [x] Inventory the bound `/Users/skinzey/code/getphame` workspace, compare it with the managed source of truth, and apply only a confirmed Git-safe cleanup structure
 - [x] Run focused tests, the full suite, TypeScript checks, dependency security audit, production build, and authenticated desktop/mobile responsive verification
-- [ ] Save and auto-publish a release checkpoint, verify the live Get Phame bundle contains the new workflow markers, and deliver the updated reusable skill plus product assessment
+- [x] Save and auto-publish a release checkpoint, verify the live Get Phame bundle contains the new workflow markers, and deliver the updated reusable skill plus product assessment
+- [x] Confirm the Get Phame GitHub remote, branch, working-tree state, and default branch without overwriting concurrent work
+- [x] Commit and push the validated release changes to a dedicated GitHub branch
+- [x] Open or update the release pull request, merge it into the default branch after checks, and verify the merged commit
+- [x] Audit the current administrator CSV preview, contextual keyboard Undo, toast system, localization, tests, and reusable-skill boundaries before editing
+- [x] Add an accessible visual success toast after a Ctrl/Cmd+Z preset-reorder Undo is confirmed, without duplicating button-triggered feedback or firing for ignored shortcuts
+- [x] Add a new CSV download action that exports every complete-snapshot row-search match using the active selected columns, sanitized values, stable ordering, and a distinct search-results filename
+- [x] Localize the new toast and search-result export labels and states across all seven Get Phame locales and bump the locale cache key
+- [x] Add focused helper, interaction, accessibility, filename, search-parity, export-scope, localization, and regression coverage for both workflows
+- [x] Create a dedicated reusable administrator CSV preview workflow skill through the skill-creator process and pass the official validator
+- [x] Run focused tests, the full suite, TypeScript checks, dependency audit, production build, and authenticated desktop/mobile responsive verification
+- [ ] Save and auto-publish the release checkpoint, verify the live bundle markers, and deliver the new skill plus a direct lifetime-offer rationale and alternatives
+- [x] Diagnose why the deployment build receives an unusable Apple private key in the credential-generation test without reading, logging, or exposing the secret
+- [x] Harden the Apple credential test and build gate so placeholder or unavailable build-time credentials do not falsely block deployment while valid credentials and runtime Sign in with Apple behavior remain protected
+- [x] Re-run the focused Apple authentication test and production build before resuming the full release gate

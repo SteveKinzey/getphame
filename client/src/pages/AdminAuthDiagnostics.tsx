@@ -11,6 +11,7 @@ import { useLocation } from "wouter";
 import { toast } from "sonner";
 import { Activity, AlertCircle, ArrowLeft, BellRing, Bookmark, CheckCircle2, ChevronLeft, ChevronRight, Clock3, Columns3, Copy, Download, FileSearch, Filter, Gauge, GripVertical, KeyRound, Loader2, MailCheck, Pencil, RefreshCw, Save, Search, ShieldCheck, Trash2, Undo2, X } from "lucide-react";
 import { AUTH_HEALTH_HISTORY_CLEAR_SHORTCUT, AUTH_HEALTH_HISTORY_RELATIVE_DAYS, AUTH_HEALTH_HISTORY_REORDER_UNDO_SHORTCUT, clearAllAuthHealthHistoryFilters, clearAuthHealthHistoryFilter, getActiveAuthHealthHistoryFilterChips, getAuthHealthHistoryCsvColumnsStorageKey, getRelativeAuthHealthHistoryDateInputs, parseStoredAuthHealthHistoryCsvColumns, serializeStoredAuthHealthHistoryCsvColumns, shouldClearAuthHealthHistoryFiltersFromShortcut, shouldUndoAuthHealthHistoryPresetReorderFromShortcut } from "../../../shared/authHealthHistoryRanges";
+import { buildAuthHealthHistorySearchResultsCsvFilename, filterPreparedCsvRows, normalizePreparedCsvSearchQuery, serializePreparedCsvRows } from "../../../shared/authHealthHistoryCsv";
 
 type HealthValue = "ok" | "fail";
 
@@ -69,6 +70,18 @@ async function writeTextToClipboard(text: string) {
   const copied = document.execCommand("copy");
   textarea.remove();
   if (!copied) throw new Error("Clipboard copy was not available.");
+}
+
+function downloadCsvFile(csv: string, mimeType: string, filename: string) {
+  const blob = new Blob([csv], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  URL.revokeObjectURL(url);
 }
 
 type SortableHistoryPreset = { id: number; name: string };
@@ -157,6 +170,8 @@ type PresetReorderFeedback = {
   previousOrderedIds: number[];
 };
 
+type PresetReorderUndoTrigger = "button" | "keyboard";
+
 function SortablePresetControl({ preset, disabled, reorderSucceeded, onApply, onRename, onDuplicate, onDelete }: {
   preset: SortableHistoryPreset;
   disabled: boolean;
@@ -228,14 +243,11 @@ export default function AdminAuthDiagnosticsPage() {
   const csvInitialPreferenceAppliedRef = useRef(false);
   const trpcUtils = trpc.useUtils();
 
-  const normalizedCsvRowSearch = csvRowSearch.trim().toLocaleLowerCase();
+  const normalizedCsvRowSearch = normalizePreparedCsvSearchQuery(csvRowSearch);
   const matchingCsvRows = useMemo(() => {
     if (!csvPreview) return [];
-    if (!normalizedCsvRowSearch) return csvPreview.searchRows;
-    return csvPreview.searchRows.filter((row) => csvPreview.preview.columns.some((column) =>
-      row[column.key].toLocaleLowerCase().includes(normalizedCsvRowSearch),
-    ));
-  }, [csvPreview, normalizedCsvRowSearch]);
+    return filterPreparedCsvRows(csvPreview.searchRows, csvPreview.preview.columns, csvRowSearch);
+  }, [csvPreview, csvRowSearch]);
   const visibleCsvRows = matchingCsvRows.slice(0, csvPreview?.preview.limit ?? 25);
 
   const historyFromMs = useMemo(() => localDateStartMs(historyFromDate), [historyFromDate]);
@@ -437,15 +449,7 @@ export default function AdminAuthDiagnosticsPage() {
 
   const downloadHealthHistoryCsv = () => {
     if (!csvPreview) return;
-    const blob = new Blob([csvPreview.csv], { type: csvPreview.mimeType });
-    const url = URL.createObjectURL(blob);
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = csvPreview.filename;
-    document.body.appendChild(anchor);
-    anchor.click();
-    anchor.remove();
-    URL.revokeObjectURL(url);
+    downloadCsvFile(csvPreview.csv, csvPreview.mimeType, csvPreview.filename);
     toast.success(t("adminAuthDiagnostics.csvPreview.downloaded", {
       defaultValue: "Downloaded {{count}} sanitized health records.",
       count: csvPreview.rowCount,
@@ -459,6 +463,17 @@ export default function AdminAuthDiagnosticsPage() {
     setCsvCopyStatus("idle");
     csvInitialPreferenceAppliedRef.current = false;
     prepareHealthHistoryExport.reset();
+  };
+
+  const downloadMatchingHealthHistoryCsv = () => {
+    if (!csvPreview || !normalizedCsvRowSearch || matchingCsvRows.length === 0 || prepareHealthHistoryExport.isPending) return;
+    const csv = serializePreparedCsvRows<AuthHealthHistoryExportColumnKey>(matchingCsvRows, csvPreview.preview.columns);
+    const filename = buildAuthHealthHistorySearchResultsCsvFilename(csvPreview.filename);
+    downloadCsvFile(csv, csvPreview.mimeType, filename);
+    toast.success(t("adminAuthDiagnostics.csvPreview.searchResultsDownloaded", {
+      defaultValue: "Downloaded {{count}} matching sanitized health records.",
+      count: matchingCsvRows.length,
+    }));
   };
 
   const saveHealthHistoryPreset = trpc.authDiagnostics.saveHealthHistoryPreset.useMutation({
@@ -534,14 +549,22 @@ export default function AdminAuthDiagnosticsPage() {
     onSettled: () => trpcUtils.authDiagnostics.healthHistoryPresets.invalidate(),
   });
 
-  const handleUndoPresetReorder = () => {
+  const handleUndoPresetReorder = (trigger: PresetReorderUndoTrigger) => {
     const feedback = presetReorderFeedback;
     if (!feedback || feedback.kind !== "saved" || undoHealthHistoryPresetReorder.isPending) return;
     if (presetReorderFeedbackTimerRef.current) window.clearTimeout(presetReorderFeedbackTimerRef.current);
     undoHealthHistoryPresetReorder.mutate({ orderedIds: feedback.previousOrderedIds }, {
       onSuccess: () => {
         setPresetReorderFeedback({ ...feedback, kind: "undone", previousOrderedIds: [] });
-        toast.success(t("adminAuthDiagnostics.presets.undoSucceeded", { defaultValue: "Preset order restored." }));
+        if (trigger === "keyboard") {
+          toast.success(t("adminAuthDiagnostics.presets.undoShortcutSucceeded", { defaultValue: "Keyboard Undo complete" }), {
+            id: "auth-history-preset-keyboard-undo",
+            description: t("adminAuthDiagnostics.presets.undoShortcutSucceededDescription", { defaultValue: "The previous preset order was restored with Ctrl/Cmd+Z." }),
+            duration: 3_200,
+          });
+        } else {
+          toast.success(t("adminAuthDiagnostics.presets.undoSucceeded", { defaultValue: "Preset order restored." }));
+        }
         presetReorderFeedbackTimerRef.current = window.setTimeout(() => setPresetReorderFeedback(null), 3_200);
       },
       onError: () => {
@@ -555,7 +578,7 @@ export default function AdminAuthDiagnosticsPage() {
       const canUndo = presetReorderFeedback?.kind === "saved" && !undoHealthHistoryPresetReorder.isPending;
       if (!shouldUndoAuthHealthHistoryPresetReorderFromShortcut(event, canUndo)) return;
       event.preventDefault();
-      handleUndoPresetReorder();
+      handleUndoPresetReorder("keyboard");
     };
     window.addEventListener("keydown", handleShortcut);
     return () => window.removeEventListener("keydown", handleShortcut);
@@ -809,7 +832,7 @@ export default function AdminAuthDiagnosticsPage() {
           {historyDateError && <div role="alert" className="mb-3 rounded-xl px-4 py-3 text-sm font-bold" style={{ background: "oklch(0.97 0.03 27)", color: "oklch(0.46 0.12 27)" }}>{historyDateError}</div>}
           <div className="mb-4 rounded-xl border bg-white p-3" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
             <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-              <div className="min-w-0 flex-1"><p className="flex items-center gap-2 text-sm rr-fw-black rr-text-navy"><Bookmark size={15} /> Quick filter presets</p><p className="mt-1 text-xs font-bold rr-text-navy-faint">Private to your administrator account. Drag the handle, or focus it and press Space then an arrow key, to save your preferred order.</p><DndContext sensors={presetSensors} collisionDetection={closestCenter} onDragEnd={handlePresetDragEnd}><SortableContext items={historyPresets.map((preset) => preset.id)} strategy={rectSortingStrategy}><div className="mt-3 flex flex-wrap gap-2">{historyPresets.map((preset) => <SortablePresetControl key={preset.id} preset={preset} reorderSucceeded={presetReorderFeedback?.presetId === preset.id} disabled={duplicateHealthHistoryPreset.isPending || deleteHealthHistoryPreset.isPending || reorderHealthHistoryPresets.isPending || undoHealthHistoryPresetReorder.isPending} onApply={() => applyHistoryPreset(preset)} onRename={() => { setEditingPresetId(preset.id); setPresetName(preset.name); }} onDuplicate={() => duplicateHealthHistoryPreset.mutate({ id: preset.id })} onDelete={() => deleteHealthHistoryPreset.mutate({ id: preset.id })} />)}{!historyPresets.length && !presetsQuery.isLoading && <span className="text-xs font-bold rr-text-navy-faint">No presets saved yet.</span>}</div></SortableContext></DndContext><div role="status" aria-live="polite" className="mt-2 min-h-7">{presetReorderFeedback && <div className="inline-flex flex-wrap items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-xs font-bold text-emerald-800 motion-safe:transition-[opacity,transform] motion-safe:duration-200"><CheckCircle2 size={13} aria-hidden="true" /><span>{presetReorderFeedback.kind === "saved" ? t("adminAuthDiagnostics.presets.orderSavedDetail", { defaultValue: "{{name}} saved in position {{position}} of {{total}}.", name: presetReorderFeedback.presetName, position: presetReorderFeedback.position, total: presetReorderFeedback.total }) : t("adminAuthDiagnostics.presets.orderRestored", { defaultValue: "Previous preset order restored." })}</span>{presetReorderFeedback.kind === "saved" && <><button type="button" onClick={handleUndoPresetReorder} disabled={undoHealthHistoryPresetReorder.isPending} aria-keyshortcuts={AUTH_HEALTH_HISTORY_REORDER_UNDO_SHORTCUT} className="inline-flex min-h-7 items-center gap-1 rounded-md border border-emerald-300 bg-white px-2 font-black text-emerald-800 disabled:opacity-60"><Undo2 size={12} aria-hidden="true" />{undoHealthHistoryPresetReorder.isPending ? t("adminAuthDiagnostics.presets.undoing", { defaultValue: "Undoing…" }) : t("adminAuthDiagnostics.presets.undo", { defaultValue: "Undo" })}</button><span className="rounded-md bg-white/70 px-1.5 py-1 text-[11px] font-black text-emerald-700">{t("adminAuthDiagnostics.presets.undoShortcutHint", { defaultValue: "Keyboard: Ctrl/Cmd + Z" })}</span></>}</div>}</div></div>
+              <div className="min-w-0 flex-1"><p className="flex items-center gap-2 text-sm rr-fw-black rr-text-navy"><Bookmark size={15} /> Quick filter presets</p><p className="mt-1 text-xs font-bold rr-text-navy-faint">Private to your administrator account. Drag the handle, or focus it and press Space then an arrow key, to save your preferred order.</p><DndContext sensors={presetSensors} collisionDetection={closestCenter} onDragEnd={handlePresetDragEnd}><SortableContext items={historyPresets.map((preset) => preset.id)} strategy={rectSortingStrategy}><div className="mt-3 flex flex-wrap gap-2">{historyPresets.map((preset) => <SortablePresetControl key={preset.id} preset={preset} reorderSucceeded={presetReorderFeedback?.presetId === preset.id} disabled={duplicateHealthHistoryPreset.isPending || deleteHealthHistoryPreset.isPending || reorderHealthHistoryPresets.isPending || undoHealthHistoryPresetReorder.isPending} onApply={() => applyHistoryPreset(preset)} onRename={() => { setEditingPresetId(preset.id); setPresetName(preset.name); }} onDuplicate={() => duplicateHealthHistoryPreset.mutate({ id: preset.id })} onDelete={() => deleteHealthHistoryPreset.mutate({ id: preset.id })} />)}{!historyPresets.length && !presetsQuery.isLoading && <span className="text-xs font-bold rr-text-navy-faint">No presets saved yet.</span>}</div></SortableContext></DndContext><div role="status" aria-live="polite" className="mt-2 min-h-7">{presetReorderFeedback && <div className="inline-flex flex-wrap items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-xs font-bold text-emerald-800 motion-safe:transition-[opacity,transform] motion-safe:duration-200"><CheckCircle2 size={13} aria-hidden="true" /><span>{presetReorderFeedback.kind === "saved" ? t("adminAuthDiagnostics.presets.orderSavedDetail", { defaultValue: "{{name}} saved in position {{position}} of {{total}}.", name: presetReorderFeedback.presetName, position: presetReorderFeedback.position, total: presetReorderFeedback.total }) : t("adminAuthDiagnostics.presets.orderRestored", { defaultValue: "Previous preset order restored." })}</span>{presetReorderFeedback.kind === "saved" && <><button type="button" onClick={() => handleUndoPresetReorder("button")} disabled={undoHealthHistoryPresetReorder.isPending} aria-keyshortcuts={AUTH_HEALTH_HISTORY_REORDER_UNDO_SHORTCUT} className="inline-flex min-h-7 items-center gap-1 rounded-md border border-emerald-300 bg-white px-2 font-black text-emerald-800 disabled:opacity-60"><Undo2 size={12} aria-hidden="true" />{undoHealthHistoryPresetReorder.isPending ? t("adminAuthDiagnostics.presets.undoing", { defaultValue: "Undoing…" }) : t("adminAuthDiagnostics.presets.undo", { defaultValue: "Undo" })}</button><span className="rounded-md bg-white/70 px-1.5 py-1 text-[11px] font-black text-emerald-700">{t("adminAuthDiagnostics.presets.undoShortcutHint", { defaultValue: "Keyboard: Ctrl/Cmd + Z" })}</span></>}</div>}</div></div>
               <div className="flex w-full flex-col gap-2 sm:flex-row lg:w-auto"><label className="flex min-w-0 flex-1 flex-col gap-1.5 text-xs font-bold rr-text-navy-muted lg:w-56"><span>{editingPreset ? "Rename preset" : "Preset name"}</span><input value={presetName} maxLength={80} onChange={(event) => setPresetName(event.target.value)} placeholder={editingPreset ? editingPreset.name : "e.g. Manual failures"} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }} /></label><div className="flex items-end gap-2"><button type="button" onClick={savePreset} disabled={saveHealthHistoryPreset.isPending || Boolean(historyDateError)} className="flex h-10 items-center gap-2 rounded-lg px-3 text-sm font-bold rr-bg-gold rr-text-navy disabled:opacity-50">{saveHealthHistoryPreset.isPending ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}{editingPreset ? "Rename" : "Save current"}</button>{editingPreset && <button type="button" onClick={() => { setEditingPresetId(null); setPresetName(""); }} className="h-10 rounded-lg border bg-white px-3 text-sm font-bold rr-text-navy" style={{ borderColor: "oklch(0.88 0.03 260)" }}>Cancel</button>}</div></div>
             </div>
             {presetsQuery.error && <p role="alert" className="mt-2 text-xs font-bold" style={{ color: "oklch(0.48 0.17 27)" }}>Saved presets could not be loaded. {presetsQuery.error.message}</p>}
@@ -874,7 +897,8 @@ export default function AdminAuthDiagnosticsPage() {
               <div className="rounded-xl border bg-white p-3" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
                 <label htmlFor="csv-row-search" className="text-sm rr-fw-black rr-text-navy">{t("adminAuthDiagnostics.csvPreview.searchTitle", { defaultValue: "Search prepared rows" })}</label>
                 <div className="relative mt-2"><Search size={15} className="pointer-events-none absolute left-3 top-3 rr-text-navy-faint" aria-hidden="true" /><input id="csv-row-search" type="search" value={csvRowSearch} onChange={(event) => setCsvRowSearch(event.target.value)} placeholder={t("adminAuthDiagnostics.csvPreview.searchPlaceholder", { defaultValue: "Search any selected column" })} className="h-10 w-full rounded-lg border bg-white pl-9 pr-10 text-sm font-bold rr-text-navy outline-none focus:ring-2" style={{ borderColor: "oklch(0.86 0.04 260)" }} />{csvRowSearch && <button type="button" onClick={() => setCsvRowSearch("")} aria-label={t("adminAuthDiagnostics.csvPreview.clearSearch", { defaultValue: "Clear preview row search" })} className="absolute right-1 top-1 flex h-8 w-8 items-center justify-center rounded-md rr-text-navy-muted"><X size={14} aria-hidden="true" /></button>}</div>
-                <div aria-live="polite" className="mt-2 flex flex-col gap-1 text-xs font-bold rr-text-navy-faint sm:flex-row sm:items-center sm:justify-between"><span>{normalizedCsvRowSearch ? t("adminAuthDiagnostics.csvPreview.searchResults", { defaultValue: "Showing {{shown}} of {{matched}} matching rows from {{total}} prepared rows.", shown: visibleCsvRows.length, matched: matchingCsvRows.length, total: csvPreview.rowCount }) : t("adminAuthDiagnostics.csvPreview.searchScope", { defaultValue: "Search all {{total}} sanitized rows in this prepared snapshot.", total: csvPreview.rowCount })}</span><span>{t("adminAuthDiagnostics.csvPreview.searchExportNotice", { defaultValue: "Search changes this preview only; copy and download still include every prepared row." })}</span></div>
+                <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between"><span id="csv-row-search-results-summary" aria-live="polite" className="text-xs font-bold rr-text-navy-faint">{normalizedCsvRowSearch ? t("adminAuthDiagnostics.csvPreview.searchResults", { defaultValue: "Showing {{shown}} of {{matched}} matching rows from {{total}} prepared rows.", shown: visibleCsvRows.length, matched: matchingCsvRows.length, total: csvPreview.rowCount }) : t("adminAuthDiagnostics.csvPreview.searchScope", { defaultValue: "Search all {{total}} sanitized rows in this prepared snapshot.", total: csvPreview.rowCount })}</span><button type="button" onClick={downloadMatchingHealthHistoryCsv} disabled={!normalizedCsvRowSearch || matchingCsvRows.length === 0 || prepareHealthHistoryExport.isPending} aria-describedby="csv-row-search-results-summary" className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-lg border bg-white px-3 text-xs font-black rr-text-navy disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto" style={{ borderColor: "oklch(0.80 0.18 80)" }}><Download size={14} aria-hidden="true" />{t("adminAuthDiagnostics.csvPreview.downloadSearchResults", { defaultValue: "Download matches CSV" })}</button></div>
+                <p className="mt-2 text-xs font-bold rr-text-navy-faint">{t("adminAuthDiagnostics.csvPreview.searchExportNotice", { defaultValue: "Search filters this preview and the matching-results CSV; copy and the main download still include every prepared row." })}</p>
               </div>
               {matchingCsvRows.length > 0 ? <div className="max-h-[48dvh] overflow-auto rounded-xl border" style={{ borderColor: "oklch(0.88 0.03 260)" }}>
                 <table className="w-max min-w-full border-collapse text-left text-xs" aria-label={t("adminAuthDiagnostics.csvPreview.tableLabel", { defaultValue: "Sanitized CSV data preview" })}>

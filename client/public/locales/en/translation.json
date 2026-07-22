@@ -2256,6 +2256,8 @@
       "undoing": "Undoing…",
       "undoError": "The previous preset order could not be restored.",
       "undoSucceeded": "Preset order restored.",
+      "undoShortcutSucceeded": "Keyboard Undo complete",
+      "undoShortcutSucceededDescription": "The previous preset order was restored with Ctrl/Cmd+Z.",
       "undoShortcutHint": "Keyboard: Ctrl/Cmd + Z"
     },
     "csvPreview": {
@@ -2295,7 +2297,9 @@
       "clearSearch": "Clear preview row search",
       "searchResults": "Showing {{shown}} of {{matched}} matching rows from {{total}} prepared rows.",
       "searchScope": "Search all {{total}} sanitized rows in this prepared snapshot.",
-      "searchExportNotice": "Search changes this preview only; copy and download still include every prepared row.",
+      "searchExportNotice": "Search filters this preview and the matching-results CSV; copy and the main download still include every prepared row.",
+      "downloadSearchResults": "Download matches CSV",
+      "searchResultsDownloaded": "Downloaded {{count}} matching sanitized health records.",
       "noSearchResults": "No prepared rows match this search",
       "noSearchResultsHelp": "Try another term or clear the preview search. Your prepared export is unchanged.",
       "searchLimited": "Showing the first {{count}} of {{matched}} search matches to keep the preview responsive."

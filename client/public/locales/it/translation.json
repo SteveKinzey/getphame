@@ -2469,6 +2469,8 @@
       "undoing": "Annullamento…",
       "undoError": "Impossibile ripristinare l’ordine precedente delle preimpostazioni.",
       "undoSucceeded": "Ordine delle preimpostazioni ripristinato.",
+      "undoShortcutSucceeded": "Annullamento da tastiera completato",
+      "undoShortcutSucceededDescription": "L’ordine precedente delle preimpostazioni è stato ripristinato con Ctrl/Cmd+Z.",
       "undoShortcutHint": "Tastiera: Ctrl/Cmd + Z"
     },
     "csvPreview": {
@@ -2508,7 +2510,9 @@
       "clearSearch": "Cancella la ricerca delle righe nell’anteprima",
       "searchResults": "Visualizzate {{shown}} di {{matched}} righe corrispondenti su {{total}} righe preparate.",
       "searchScope": "Cerca in tutte le {{total}} righe sanificate di questa istantanea preparata.",
-      "searchExportNotice": "La ricerca modifica solo questa anteprima; copia e download includono comunque tutte le righe preparate.",
+      "searchExportNotice": "La ricerca filtra questa anteprima e il CSV dei risultati corrispondenti; la copia e il download principale includono ancora tutte le righe preparate.",
+      "downloadSearchResults": "Scarica corrispondenze CSV",
+      "searchResultsDownloaded": "Scaricati {{count}} record di integrità sanificati corrispondenti.",
       "noSearchResults": "Nessuna riga preparata corrisponde alla ricerca",
       "noSearchResultsHelp": "Prova un altro termine o cancella la ricerca. L’esportazione preparata non cambia.",
       "searchLimited": "Sono mostrate le prime {{count}} di {{matched}} corrispondenze per mantenere reattiva l’anteprima."

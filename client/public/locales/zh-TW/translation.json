@@ -1785,6 +1785,8 @@
       "undoing": "正在復原…",
       "undoError": "無法還原先前的預設順序。",
       "undoSucceeded": "預設順序已還原。",
+      "undoShortcutSucceeded": "鍵盤復原完成",
+      "undoShortcutSucceededDescription": "已使用 Ctrl/Cmd+Z 還原先前的預設順序。",
       "undoShortcutHint": "鍵盤：Ctrl/Cmd + Z"
     },
     "csvPreview": {
@@ -1824,7 +1826,9 @@
       "clearSearch": "清除預覽資料列搜尋",
       "searchResults": "在 {{total}} 個已準備資料列中，顯示 {{matched}} 個相符項目中的 {{shown}} 個。",
       "searchScope": "搜尋此已準備快照中的全部 {{total}} 個已清理資料列。",
-      "searchExportNotice": "搜尋只會變更此預覽；複製與下載仍包含所有已準備資料列。",
+      "searchExportNotice": "搜尋會篩選此預覽與相符結果 CSV；複製與主要下載仍包含所有已準備資料列。",
+      "downloadSearchResults": "下載相符結果 CSV",
+      "searchResultsDownloaded": "已下載 {{count}} 筆相符且已清理的健康記錄。",
       "noSearchResults": "沒有已準備資料列符合此搜尋",
       "noSearchResultsHelp": "請嘗試其他關鍵字或清除搜尋。已準備的匯出不會變更。",
       "searchLimited": "為保持預覽流暢，只顯示 {{matched}} 個搜尋結果中的前 {{count}} 個。"

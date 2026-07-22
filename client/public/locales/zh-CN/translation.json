@@ -1763,6 +1763,8 @@
       "undoing": "正在撤销…",
       "undoError": "无法恢复之前的预设顺序。",
       "undoSucceeded": "预设顺序已恢复。",
+      "undoShortcutSucceeded": "键盘撤销完成",
+      "undoShortcutSucceededDescription": "已使用 Ctrl/Cmd+Z 恢复之前的预设顺序。",
       "undoShortcutHint": "键盘：Ctrl/Cmd + Z"
     },
     "csvPreview": {
@@ -1802,7 +1804,9 @@
       "clearSearch": "清除预览行搜索",
       "searchResults": "在 {{total}} 个已准备行中，显示 {{matched}} 个匹配项中的 {{shown}} 个。",
       "searchScope": "搜索此已准备快照中的全部 {{total}} 个已清理行。",
-      "searchExportNotice": "搜索只改变此预览；复制和下载仍包含所有已准备行。",
+      "searchExportNotice": "搜索会筛选此预览和匹配结果 CSV；复制和主下载仍包含所有已准备行。",
+      "downloadSearchResults": "下载匹配结果 CSV",
+      "searchResultsDownloaded": "已下载 {{count}} 条匹配的已清理健康记录。",
       "noSearchResults": "没有已准备行与此搜索匹配",
       "noSearchResultsHelp": "请尝试其他关键词或清除搜索。已准备的导出不会改变。",
       "searchLimited": "为保持预览流畅，仅显示 {{matched}} 个搜索匹配项中的前 {{count}} 个。"
