@@ -780,6 +780,36 @@ export type ApiKey = typeof apiKeys.$inferSelect;
 export type InsertApiKey = typeof apiKeys.$inferInsert;
 
 /**
+ * Developer API enrollment — one privacy-minimized record per authenticated account.
+ * Records versioned API Terms/AUP acceptance and the business-use review required
+ * before the higher-risk review-request sending scope can be issued or exercised.
+ */
+export const developerApiEnrollments = pgTable("developer_api_enrollments", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull().unique(),
+  termsVersion: varchar("termsVersion", { length: 32 }),
+  acceptableUseVersion: varchar("acceptableUseVersion", { length: 32 }),
+  termsAcceptedAt: bigint("termsAcceptedAt", { mode: "number" }),
+  acceptanceFingerprint: varchar("acceptanceFingerprint", { length: 64 }),
+  businessName: varchar("businessName", { length: 160 }),
+  websiteUrl: varchar("websiteUrl", { length: 512 }),
+  useCase: text("useCase"),
+  expectedMonthlySendVolume: integer("expectedMonthlySendVolume"),
+  consentProcess: text("consentProcess"),
+  sendScopeStatus: varchar("sendScopeStatus", { length: 32 }).notNull().default("not_requested"),
+  sendScopeRequestedAt: bigint("sendScopeRequestedAt", { mode: "number" }),
+  sendScopeReviewedAt: bigint("sendScopeReviewedAt", { mode: "number" }),
+  sendScopeReviewedByUserId: integer("sendScopeReviewedByUserId"),
+  sendScopeReviewNote: varchar("sendScopeReviewNote", { length: 500 }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+}, (table) => [
+  index("developer_api_enrollment_status_idx").on(table.sendScopeStatus, table.sendScopeRequestedAt),
+]);
+export type DeveloperApiEnrollment = typeof developerApiEnrollments.$inferSelect;
+export type InsertDeveloperApiEnrollment = typeof developerApiEnrollments.$inferInsert;
+
+/**
  * API import events — log of each contact pushed via the public REST API.
  * Used to show the "Recent Imports" feed in the API Keys settings card.
  */

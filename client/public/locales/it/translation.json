@@ -3030,5 +3030,49 @@
       "building": "Reputazione in crescita",
       "established": "Stabilita"
     }
+  },
+  "developerEnrollment": {
+    "loading": "Caricamento della registrazione sviluppatore",
+    "title": "Registrazione sviluppatore",
+    "description": "Accetta una volta le regole API, inizia con importazioni sicure dei contatti e fornisci dati aziendali solo se l’integrazione deve inviare richieste di recensione individuali.",
+    "terms": {
+      "title": "1. Accetta i Termini API",
+      "description": "Le chiavi possono essere usate solo da integrazioni server sicure per clienti con un rapporto commerciale reale e un consenso appropriato.",
+      "current": "Termini API e Politica di uso accettabile attuali accettati",
+      "termsLabel": "Accetto i Termini API presenti nei Termini di servizio di Get Phame.",
+      "readTerms": "Leggi i termini",
+      "aupLabel": "Accetto la Politica di uso accettabile: niente spam, liste acquistate o estratte, chiavi esposte nel browser, aggiramento dei limiti o automazione ingannevole.",
+      "readGuide": "Leggi la guida alla conformità",
+      "accept": "Accetta e attiva le chiavi di importazione",
+      "acceptedToast": "Termini API accettati. Ora puoi creare chiavi solo di importazione.",
+      "requiredForKey": "Accetta i Termini API prima di creare una chiave.",
+      "onboardingTitle": "Accetta le regole API per creare la tua chiave di importazione"
+    },
+    "send": {
+      "title": "2. Accesso di invio facoltativo",
+      "description": "L’importazione dei contatti non invia mai nulla automaticamente. Completa questo breve controllo aziendale solo se l’integrazione deve inviare una richiesta di recensione dopo un’azione approvata del cliente.",
+      "approvedToast": "Accesso di invio approvato. Ora puoi aggiungere review_requests:send a una chiave.",
+      "pendingToast": "Richiesta inviata per la revisione. L’accesso solo di importazione resta disponibile.",
+      "acceptFirst": "Accetta prima i Termini API. L’accesso solo di importazione verrà attivato immediatamente.",
+      "approved": "Approvato per l’invio di richieste di recensione individuali",
+      "pending": "Richiesta ad alto volume in attesa di revisione",
+      "pendingDetail": "Le tue chiavi solo di importazione continuano a funzionare. Get Phame non aggiungerà il permesso di invio finché la revisione non sarà approvata.",
+      "businessName": "Nome dell’azienda",
+      "website": "Sito web (facoltativo)",
+      "useCase": "Come userà l’integrazione l’accesso di invio?",
+      "useCasePlaceholder": "Esempio: dopo un appuntamento completato, il nostro server importa il cliente e invia una richiesta di recensione.",
+      "monthlyVolume": "Invii previsti al mese",
+      "reviewThreshold": "Fino a {{count}} invii previsti al mese possono essere attivati immediatamente. I volumi maggiori richiedono una revisione manuale e non aggirano mai i limiti di sicurezza adattivi.",
+      "consentProcess": "Come confermi il rapporto con il cliente e il consenso?",
+      "consentPlaceholder": "Descrivi l’acquisto, l’appuntamento o il servizio e come vengono rispettate le disiscrizioni.",
+      "confirmCustomers": "Invierò solo a clienti con un rapporto commerciale reale.",
+      "confirmLists": "Non userò liste acquistate, noleggiate, estratte o di terze parti.",
+      "confirmActions": "Ogni invio API seguirà un’azione individuale approvata del cliente; rispetterò disiscrizioni e limiti adattivi.",
+      "resubmit": "Invia di nuovo i dati aziendali",
+      "request": "Attiva l’accesso di invio",
+      "completeRequired": "Completa tutti i campi e le conferme aziendali.",
+      "requiredForScope": "Completa la registrazione per uso aziendale prima di aggiungere il permesso di invio.",
+      "scopeLocked": "Registrazione per uso aziendale richiesta"
+    }
   }
 }

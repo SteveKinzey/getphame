@@ -144,7 +144,10 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
   const utils = trpc.useUtils();
   const [copied, setCopied] = useState(false);
   const [revealedSecret, setRevealedSecret] = useState<string | null>(null);
+  const [apiTermsAccepted, setApiTermsAccepted] = useState(false);
+  const [apiAcceptableUseAccepted, setApiAcceptableUseAccepted] = useState(false);
   const { data: apiKeyList } = trpc.apiKey.list.useQuery();
+  const { data: enrollment, isLoading: enrollmentLoading } = trpc.apiKey.enrollment.useQuery();
   const downloadConnector = trpc.connector.download.useMutation({
     onSuccess: ({ url, fileName }) => {
       const link = document.createElement("a");
@@ -167,6 +170,14 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
     },
     onError: (err) => toast.error(err.message),
   });
+  const acceptApiTerms = trpc.apiKey.acceptTerms.useMutation({
+    onSuccess: async () => {
+      await utils.apiKey.enrollment.invalidate();
+      setApiTermsAccepted(false);
+      setApiAcceptableUseAccepted(false);
+    },
+    onError: (err) => toast.error(err.message),
+  });
 
   // Use the first available key or prompt to generate one
   const firstKey = apiKeyList?.[0];
@@ -179,6 +190,21 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
         setTimeout(() => setCopied(false), 2000);
       })
       .catch(() => toast.error(t("developerIntegrations.copyFailed", { defaultValue: "Could not copy automatically. Select and copy the value manually." })));
+  }
+
+  async function handleGenerateConnectorKey() {
+    if (!enrollment?.termsAccepted) {
+      if (!apiTermsAccepted || !apiAcceptableUseAccepted) {
+        toast.error(t("developerEnrollment.terms.requiredForKey", { defaultValue: "Accept the API Terms before creating a key." }));
+        return;
+      }
+      try {
+        await acceptApiTerms.mutateAsync({ termsAccepted: true, acceptableUseAccepted: true });
+      } catch {
+        return;
+      }
+    }
+    generateKey.mutate({ label: "WordPress Connector", scopes: ["contacts:write"] });
   }
 
   return (
@@ -318,15 +344,30 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
                 )}
               </div>
             ) : (
-              <button
-                onClick={() => generateKey.mutate({ label: "WordPress Connector" })}
-                disabled={generateKey.isPending}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-black transition-transform active:scale-95"
-                style={{ background: "oklch(0.26 0.07 260)", color: "oklch(0.75 0.04 260)", border: "1px solid oklch(0.38 0.06 260)" }}
-              >
-                {generateKey.isPending ? <Loader2 size={13} className="animate-spin" /> : <Plug2 size={13} />}
-                {t("step4Connector.step3.generateKeyBtn", "Generate API Key")}
-              </button>
+              <div className="space-y-3">
+                {!enrollmentLoading && !enrollment?.termsAccepted && (
+                  <div className="space-y-2 rounded-xl p-3" style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.38 0.06 260)" }}>
+                    <p className="text-xs font-black text-white">{t("developerEnrollment.terms.onboardingTitle", { defaultValue: "Accept the API rules to create your import key" })}</p>
+                    <label className="flex cursor-pointer items-start gap-2 text-xs font-bold leading-5" style={{ color: "oklch(0.92 0.02 260)" }}>
+                      <input type="checkbox" checked={apiTermsAccepted} onChange={(event) => setApiTermsAccepted(event.target.checked)} className="mt-1 size-4 accent-[oklch(0.80_0.18_80)]" />
+                      <span>{t("developerEnrollment.terms.termsLabel", { defaultValue: "I accept the API Terms in the Get Phame Terms of Service." })} <a href="/terms-of-service" target="_blank" rel="noopener noreferrer" className="underline rr-text-gold">{t("developerEnrollment.terms.readTerms", { defaultValue: "Read Terms" })}</a></span>
+                    </label>
+                    <label className="flex cursor-pointer items-start gap-2 text-xs font-bold leading-5" style={{ color: "oklch(0.92 0.02 260)" }}>
+                      <input type="checkbox" checked={apiAcceptableUseAccepted} onChange={(event) => setApiAcceptableUseAccepted(event.target.checked)} className="mt-1 size-4 accent-[oklch(0.80_0.18_80)]" />
+                      <span>{t("developerEnrollment.terms.aupLabel", { defaultValue: "I accept the Acceptable Use Policy: no spam, purchased or scraped lists, browser-exposed keys, rate-limit bypassing, or deceptive automation." })} <a href="/compliance" target="_blank" rel="noopener noreferrer" className="underline rr-text-gold">{t("developerEnrollment.terms.readGuide", { defaultValue: "Read Compliance Guide" })}</a></span>
+                    </label>
+                  </div>
+                )}
+                <button
+                  onClick={handleGenerateConnectorKey}
+                  disabled={generateKey.isPending || acceptApiTerms.isPending || enrollmentLoading}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-black transition-transform active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
+                  style={{ background: "oklch(0.26 0.07 260)", color: "oklch(0.75 0.04 260)", border: "1px solid oklch(0.38 0.06 260)" }}
+                >
+                  {generateKey.isPending || acceptApiTerms.isPending ? <Loader2 size={13} className="animate-spin" /> : <Plug2 size={13} />}
+                  {t("step4Connector.step3.generateKeyBtn", "Generate API Key")}
+                </button>
+              </div>
             )}
           </div>
         </div>

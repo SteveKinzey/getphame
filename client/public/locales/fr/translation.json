@@ -2836,5 +2836,49 @@
       "building": "Réputation en cours",
       "established": "Établie"
     }
+  },
+  "developerEnrollment": {
+    "loading": "Chargement de l’inscription développeur",
+    "title": "Inscription développeur",
+    "description": "Acceptez les règles de l’API une fois, commencez par des importations de contacts sûres et fournissez des informations professionnelles uniquement si votre intégration doit envoyer des demandes d’avis individuelles.",
+    "terms": {
+      "title": "1. Accepter les conditions de l’API",
+      "description": "Les clés ne peuvent être utilisées que depuis des intégrations serveur sécurisées pour des clients ayant une véritable relation commerciale et un consentement approprié.",
+      "current": "Conditions de l’API et Politique d’utilisation acceptable en vigueur acceptées",
+      "termsLabel": "J’accepte les Conditions de l’API figurant dans les Conditions d’utilisation de Get Phame.",
+      "readTerms": "Lire les conditions",
+      "aupLabel": "J’accepte la Politique d’utilisation acceptable : aucun spam, aucune liste achetée ou extraite, aucune clé exposée dans le navigateur, aucun contournement des limites ni automatisation trompeuse.",
+      "readGuide": "Lire le guide de conformité",
+      "accept": "Accepter et activer les clés d’importation",
+      "acceptedToast": "Conditions de l’API acceptées. Vous pouvez maintenant créer des clés d’importation uniquement.",
+      "requiredForKey": "Acceptez les Conditions de l’API avant de créer une clé.",
+      "onboardingTitle": "Acceptez les règles de l’API pour créer votre clé d’importation"
+    },
+    "send": {
+      "title": "2. Accès d’envoi facultatif",
+      "description": "L’importation de contacts n’envoie jamais rien automatiquement. Effectuez ce bref contrôle professionnel uniquement si votre intégration doit envoyer une demande d’avis après une action client approuvée.",
+      "approvedToast": "Accès d’envoi approuvé. Vous pouvez maintenant ajouter review_requests:send à une clé.",
+      "pendingToast": "Demande soumise pour examen. L’accès d’importation uniquement reste disponible.",
+      "acceptFirst": "Acceptez d’abord les Conditions de l’API. L’accès d’importation uniquement sera activé immédiatement.",
+      "approved": "Approuvé pour l’envoi de demandes d’avis individuelles",
+      "pending": "Demande à volume élevé en attente d’examen",
+      "pendingDetail": "Vos clés d’importation uniquement continuent de fonctionner. Get Phame n’ajoutera pas l’autorisation d’envoi avant l’approbation de cet examen.",
+      "businessName": "Nom de l’entreprise",
+      "website": "Site web (facultatif)",
+      "useCase": "Comment l’intégration utilisera-t-elle l’accès d’envoi ?",
+      "useCasePlaceholder": "Exemple : après un rendez-vous terminé, notre serveur importe le client et envoie une demande d’avis.",
+      "monthlyVolume": "Envois prévus par mois",
+      "reviewThreshold": "Jusqu’à {{count}} envois prévus par mois peuvent être activés immédiatement. Les volumes supérieurs nécessitent un examen manuel et ne contournent jamais les limites de sécurité adaptatives.",
+      "consentProcess": "Comment confirmez-vous la relation client et le consentement ?",
+      "consentPlaceholder": "Décrivez l’achat, le rendez-vous ou le service et la manière dont les désinscriptions sont respectées.",
+      "confirmCustomers": "J’enverrai uniquement aux clients ayant une véritable relation commerciale.",
+      "confirmLists": "Je n’utiliserai pas de listes achetées, louées, extraites ou de tiers.",
+      "confirmActions": "Chaque envoi API suivra une action individuelle approuvée du client ; je respecterai les désinscriptions et les limites adaptatives.",
+      "resubmit": "Soumettre à nouveau les informations professionnelles",
+      "request": "Activer l’accès d’envoi",
+      "completeRequired": "Remplissez tous les champs et confirmations professionnels.",
+      "requiredForScope": "Terminez l’inscription à l’usage professionnel avant d’ajouter l’autorisation d’envoi.",
+      "scopeLocked": "Inscription à l’usage professionnel requise"
+    }
   }
 }

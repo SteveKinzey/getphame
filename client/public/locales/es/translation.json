@@ -2836,5 +2836,49 @@
       "building": "Generando reputación",
       "established": "Establecida"
     }
+  },
+  "developerEnrollment": {
+    "loading": "Cargando registro de desarrollador",
+    "title": "Registro de desarrollador",
+    "description": "Acepta las reglas de la API una vez, empieza con importaciones seguras de contactos y proporciona datos comerciales solo si tu integración necesita enviar solicitudes de reseña individuales.",
+    "terms": {
+      "title": "1. Aceptar las condiciones de la API",
+      "description": "Las claves solo pueden utilizarse desde integraciones seguras del servidor para clientes con una relación comercial real y el consentimiento adecuado.",
+      "current": "Condiciones de la API y Política de uso aceptable vigentes aceptadas",
+      "termsLabel": "Acepto las Condiciones de la API incluidas en los Términos de servicio de Get Phame.",
+      "readTerms": "Leer los términos",
+      "aupLabel": "Acepto la Política de uso aceptable: sin spam, listas compradas o extraídas, claves expuestas en el navegador, evasión de límites ni automatización engañosa.",
+      "readGuide": "Leer la guía de cumplimiento",
+      "accept": "Aceptar y activar claves de importación",
+      "acceptedToast": "Condiciones de la API aceptadas. Ya puedes crear claves solo de importación.",
+      "requiredForKey": "Acepta las Condiciones de la API antes de crear una clave.",
+      "onboardingTitle": "Acepta las reglas de la API para crear tu clave de importación"
+    },
+    "send": {
+      "title": "2. Acceso de envío opcional",
+      "description": "Importar contactos nunca envía nada automáticamente. Completa esta breve comprobación comercial solo si tu integración debe enviar una solicitud de reseña tras una acción aprobada del cliente.",
+      "approvedToast": "Acceso de envío aprobado. Ya puedes añadir review_requests:send a una clave.",
+      "pendingToast": "Solicitud enviada para revisión. El acceso solo de importación sigue disponible.",
+      "acceptFirst": "Acepta primero las Condiciones de la API. El acceso solo de importación se activará de inmediato.",
+      "approved": "Aprobado para enviar solicitudes de reseña individuales",
+      "pending": "Solicitud de alto volumen pendiente de revisión",
+      "pendingDetail": "Tus claves solo de importación siguen funcionando. Get Phame no añadirá permiso de envío hasta que se apruebe esta revisión.",
+      "businessName": "Nombre de la empresa",
+      "website": "Sitio web (opcional)",
+      "useCase": "¿Cómo utilizará la integración el acceso de envío?",
+      "useCasePlaceholder": "Ejemplo: tras una cita completada, nuestro servidor importa al cliente y envía una solicitud de reseña.",
+      "monthlyVolume": "Envíos previstos al mes",
+      "reviewThreshold": "Hasta {{count}} envíos previstos al mes pueden activarse de inmediato. Los volúmenes superiores requieren revisión manual y nunca evitan los límites de seguridad adaptativos.",
+      "consentProcess": "¿Cómo confirmas la relación con el cliente y su consentimiento?",
+      "consentPlaceholder": "Describe la compra, cita o servicio y cómo se respetan las bajas.",
+      "confirmCustomers": "Solo enviaré a clientes con una relación comercial real.",
+      "confirmLists": "No utilizaré listas compradas, alquiladas, extraídas ni de terceros.",
+      "confirmActions": "Cada envío por API seguirá una acción individual aprobada del cliente; respetaré las bajas y los límites adaptativos.",
+      "resubmit": "Volver a enviar los datos comerciales",
+      "request": "Activar acceso de envío",
+      "completeRequired": "Completa todos los campos y confirmaciones comerciales.",
+      "requiredForScope": "Completa el registro de uso comercial antes de añadir permiso de envío.",
+      "scopeLocked": "Se requiere registro de uso comercial"
+    }
   }
 }

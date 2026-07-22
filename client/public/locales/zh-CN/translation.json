@@ -2307,5 +2307,49 @@
       "building": "正在建立信誉",
       "established": "稳定连接"
     }
+  },
+  "developerEnrollment": {
+    "loading": "正在加载开发者注册",
+    "title": "开发者注册",
+    "description": "只需接受一次 API 规则，即可从安全的联系人导入开始；仅当集成需要发送单独的评价邀请时，才需提供业务资料。",
+    "terms": {
+      "title": "1. 接受 API 条款",
+      "description": "密钥只能用于安全的服务器端集成，且客户必须与您存在真实业务关系并给予适当同意。",
+      "current": "已接受当前 API 条款和可接受使用政策",
+      "termsLabel": "我接受 Get Phame 服务条款中的 API 条款。",
+      "readTerms": "阅读条款",
+      "aupLabel": "我接受可接受使用政策：禁止垃圾信息、购买或抓取的名单、在浏览器中暴露密钥、绕过速率限制或欺骗性自动化。",
+      "readGuide": "阅读合规指南",
+      "accept": "接受并启用导入密钥",
+      "acceptedToast": "已接受 API 条款。现在可以创建仅导入密钥。",
+      "requiredForKey": "创建密钥前请先接受 API 条款。",
+      "onboardingTitle": "接受 API 规则以创建导入密钥"
+    },
+    "send": {
+      "title": "2. 可选发送权限",
+      "description": "导入联系人绝不会自动发送消息。仅当集成必须在经批准的客户操作后发送一条评价邀请时，才需完成此简短业务用途检查。",
+      "approvedToast": "发送权限已获批准。现在可以将 review_requests:send 添加到密钥。",
+      "pendingToast": "申请已提交审核。仅导入权限仍可使用。",
+      "acceptFirst": "请先接受 API 条款。仅导入权限将立即启用。",
+      "approved": "已获准发送单独的评价邀请",
+      "pending": "高用量申请正在审核",
+      "pendingDetail": "您的仅导入密钥会继续工作。Get Phame 在审核通过前不会添加发送权限。",
+      "businessName": "企业名称",
+      "website": "网站（可选）",
+      "useCase": "集成将如何使用发送权限？",
+      "useCasePlaceholder": "例如：预约完成后，我们的服务器导入客户并发送一条评价邀请。",
+      "monthlyVolume": "预计每月发送量",
+      "reviewThreshold": "每月预计不超过 {{count}} 次发送可立即启用。更高用量需要人工审核，且绝不会绕过自适应安全限制。",
+      "consentProcess": "您如何确认客户关系和同意？",
+      "consentPlaceholder": "描述购买、预约或服务事件，以及如何处理退订请求。",
+      "confirmCustomers": "我只会向与我们存在真实业务关系的客户发送。",
+      "confirmLists": "我不会使用购买、租用、抓取或第三方名单。",
+      "confirmActions": "每次 API 发送都将由经批准的单独客户操作触发；我会遵守退订要求和自适应限制。",
+      "resubmit": "重新提交业务用途资料",
+      "request": "启用发送权限",
+      "completeRequired": "请完成所有业务用途字段和确认项。",
+      "requiredForScope": "添加发送权限前，请完成业务用途注册。",
+      "scopeLocked": "需要完成业务用途注册"
+    }
   }
 }

@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { IntegrationGuide } from "@/components/IntegrationGuide";
+import { DeveloperApiEnrollmentPanel } from "@/components/DeveloperApiEnrollmentPanel";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -86,6 +87,7 @@ export default function DeveloperIntegrationsPage() {
 
   const keyQuery = trpc.apiKey.list.useQuery();
   const importQuery = trpc.apiKey.recentImports.useQuery({ limit: 25 });
+  const enrollmentQuery = trpc.apiKey.enrollment.useQuery();
 
   const createKey = trpc.apiKey.generate.useMutation({
     onSuccess: async (data) => {
@@ -126,6 +128,10 @@ export default function DeveloperIntegrationsPage() {
   const endpoint = `${typeof window === "undefined" ? "https://getphame.app" : window.location.origin}/api/v1/contacts`;
 
   const toggleScope = (scope: DeveloperScope) => {
+    if (scope === "review_requests:send" && !enrollmentQuery.data?.sendScopeApproved) {
+      document.getElementById("developer-send-enrollment")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return toast.error(t("developerEnrollment.send.requiredForScope", { defaultValue: "Complete business-use enrollment before adding sending permission." }));
+    }
     setScopes((current) => current.includes(scope)
       ? current.filter((item) => item !== scope)
       : [...current, scope]);
@@ -136,6 +142,10 @@ export default function DeveloperIntegrationsPage() {
     const trimmedLabel = label.trim();
     if (!trimmedLabel) return toast.error(t("developerIntegrations.keys.labelRequired", { defaultValue: "Enter a key label." }));
     if (scopes.length === 0) return toast.error(t("developerIntegrations.keys.scopeRequired", { defaultValue: "Select at least one permission." }));
+    if (!enrollmentQuery.data?.termsAccepted) {
+      document.getElementById("developer-enrollment")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      return toast.error(t("developerEnrollment.terms.requiredForKey", { defaultValue: "Accept the API Terms before creating a key." }));
+    }
     const days = expiryDays === "never" ? null : Number(expiryDays);
     createKey.mutate({
       label: trimmedLabel,
@@ -251,6 +261,8 @@ export default function DeveloperIntegrationsPage() {
           </div>
         </section>
 
+        <DeveloperApiEnrollmentPanel />
+
         <section aria-labelledby="create-key-title" className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
           <div className="flex items-start gap-3">
             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy rr-text-gold"><KeyRound size={20} aria-hidden="true" /></span>
@@ -279,10 +291,11 @@ export default function DeveloperIntegrationsPage() {
               <div className="grid gap-2 md:grid-cols-2">
                 {SCOPE_OPTIONS.map((option) => {
                   const selected = scopes.includes(option.value);
+                  const requiresEnrollment = option.value === "review_requests:send" && !enrollmentQuery.data?.sendScopeApproved;
                   return (
-                    <button key={option.value} type="button" onClick={() => toggleScope(option.value)} aria-pressed={selected} className={`flex min-h-16 items-start gap-3 rounded-xl border p-3 text-left transition active:scale-[0.99] ${selected ? "border-[oklch(0.66_0.16_80)] bg-[oklch(0.96_0.04_80)]" : "border-slate-200 bg-white"}`}>
+                    <button key={option.value} type="button" onClick={() => toggleScope(option.value)} aria-pressed={selected} aria-describedby={requiresEnrollment ? "send-scope-enrollment-note" : undefined} className={`flex min-h-16 items-start gap-3 rounded-xl border p-3 text-left transition active:scale-[0.99] ${selected ? "border-[oklch(0.66_0.16_80)] bg-[oklch(0.96_0.04_80)]" : "border-slate-200 bg-white"} ${requiresEnrollment ? "opacity-70" : ""}`}>
                       <span className={`mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border ${selected ? "border-[oklch(0.60_0.16_80)] rr-bg-gold rr-text-navy" : "border-slate-300"}`}>{selected && <Check size={13} aria-hidden="true" />}</span>
-                      <span><span className="block text-sm font-bold rr-text-navy">{t(`developerIntegrations.scopes.${option.value}.label`, { defaultValue: option.label })}</span><span className="mt-0.5 block text-xs leading-5 text-slate-500">{t(`developerIntegrations.scopes.${option.value}.detail`, { defaultValue: option.detail })}</span><code className="mt-1 block text-[11px] text-slate-500">{option.value}</code></span>
+                      <span><span className="block text-sm font-bold rr-text-navy">{t(`developerIntegrations.scopes.${option.value}.label`, { defaultValue: option.label })}</span><span className="mt-0.5 block text-xs leading-5 text-slate-500">{t(`developerIntegrations.scopes.${option.value}.detail`, { defaultValue: option.detail })}</span>{requiresEnrollment && <span id="send-scope-enrollment-note" className="mt-1 block text-[11px] font-bold text-amber-800">{t("developerEnrollment.send.scopeLocked", { defaultValue: "Business-use enrollment required" })}</span>}<code className="mt-1 block text-[11px] text-slate-500">{option.value}</code></span>
                     </button>
                   );
                 })}
@@ -290,7 +303,7 @@ export default function DeveloperIntegrationsPage() {
             </fieldset>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between lg:col-span-12">
               <p className="max-w-2xl text-xs leading-5 text-slate-500">{t("developerIntegrations.keys.securityNote", { defaultValue: "Store the secret in your website’s secure server-side settings. Never place it in browser JavaScript, public repositories, screenshots, or support messages." })}</p>
-              <button type="submit" disabled={createKey.isPending || scopes.length === 0} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-black rr-bg-gold rr-text-navy transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60">
+              <button type="submit" disabled={createKey.isPending || scopes.length === 0 || !enrollmentQuery.data?.termsAccepted} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-5 text-sm font-black rr-bg-gold rr-text-navy transition active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60">
                 {createKey.isPending ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <Plus size={16} aria-hidden="true" />}
                 {createKey.isPending ? t("developerIntegrations.keys.creating", { defaultValue: "Creating…" }) : t("developerIntegrations.keys.create", { defaultValue: "Create API key" })}
               </button>

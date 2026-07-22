@@ -2789,6 +2789,50 @@
       "established": "Established"
     }
   },
+  "developerEnrollment": {
+    "loading": "Loading developer enrollment",
+    "title": "Developer enrollment",
+    "description": "Accept the API rules once, start with safe contact imports, and provide business details only if your integration needs to send individual review requests.",
+    "terms": {
+      "title": "1. Accept API Terms",
+      "description": "Keys may be used only from secure server-side integrations for customers with a genuine business relationship and appropriate consent.",
+      "current": "Current API Terms and Acceptable Use Policy accepted",
+      "termsLabel": "I accept the API Terms in the Get Phame Terms of Service.",
+      "readTerms": "Read Terms",
+      "aupLabel": "I accept the Acceptable Use Policy: no spam, purchased or scraped lists, browser-exposed keys, rate-limit bypassing, or deceptive automation.",
+      "readGuide": "Read Compliance Guide",
+      "accept": "Accept and enable import keys",
+      "acceptedToast": "API Terms accepted. You can now create import-only keys.",
+      "requiredForKey": "Accept the API Terms before creating a key.",
+      "onboardingTitle": "Accept the API rules to create your import key"
+    },
+    "send": {
+      "title": "2. Optional sending access",
+      "description": "Importing contacts never sends automatically. Complete this short business-use check only if your integration must send one review request after an approved customer action.",
+      "approvedToast": "Sending access approved. You can now add review_requests:send to a key.",
+      "pendingToast": "Request submitted for review. Import-only access remains available.",
+      "acceptFirst": "Accept the API Terms first. Import-only access will be enabled immediately.",
+      "approved": "Approved for individual review-request sending",
+      "pending": "High-volume request pending review",
+      "pendingDetail": "Your import-only keys continue to work. Get Phame will not add sending permission until this review is approved.",
+      "businessName": "Business name",
+      "website": "Website (optional)",
+      "useCase": "How will the integration use sending access?",
+      "useCasePlaceholder": "Example: After a completed appointment, our server imports the customer and sends one review request.",
+      "monthlyVolume": "Expected sends per month",
+      "reviewThreshold": "Up to {{count}} expected sends per month can be enabled immediately. Higher-volume requests require manual review and never bypass adaptive safety limits.",
+      "consentProcess": "How do you confirm the customer relationship and consent?",
+      "consentPlaceholder": "Describe the purchase, appointment, or service event and how opt-outs are respected.",
+      "confirmCustomers": "I will send only to customers with a genuine business relationship.",
+      "confirmLists": "I will not use purchased, rented, scraped, or third-party lists.",
+      "confirmActions": "Each API send will follow an approved individual customer action; I will respect opt-outs and adaptive limits.",
+      "resubmit": "Resubmit business-use details",
+      "request": "Enable sending access",
+      "completeRequired": "Complete every business-use field and confirmation.",
+      "requiredForScope": "Complete business-use enrollment before adding sending permission.",
+      "scopeLocked": "Business-use enrollment required"
+    }
+  },
   "promotionLink": {
     "applied": "Your campaign code will be applied at checkout",
     "verified": "Eligibility is verified securely before Stripe Checkout opens."

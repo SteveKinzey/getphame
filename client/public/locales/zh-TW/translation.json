@@ -2329,5 +2329,49 @@
       "building": "正在建立信譽",
       "established": "穩定連線"
     }
+  },
+  "developerEnrollment": {
+    "loading": "正在載入開發者註冊",
+    "title": "開發者註冊",
+    "description": "只需接受一次 API 規則，即可從安全的聯絡人匯入開始；僅當整合需要傳送個別評論邀請時，才需提供業務資料。",
+    "terms": {
+      "title": "1. 接受 API 條款",
+      "description": "金鑰只能用於安全的伺服器端整合，且客戶必須與您存在真實業務關係並給予適當同意。",
+      "current": "已接受目前 API 條款和可接受使用政策",
+      "termsLabel": "我接受 Get Phame 服務條款中的 API 條款。",
+      "readTerms": "閱讀條款",
+      "aupLabel": "我接受可接受使用政策：禁止垃圾訊息、購買或擷取的名單、在瀏覽器中暴露金鑰、繞過速率限制或欺騙性自動化。",
+      "readGuide": "閱讀合規指南",
+      "accept": "接受並啟用匯入金鑰",
+      "acceptedToast": "已接受 API 條款。現在可以建立僅匯入金鑰。",
+      "requiredForKey": "建立金鑰前請先接受 API 條款。",
+      "onboardingTitle": "接受 API 規則以建立匯入金鑰"
+    },
+    "send": {
+      "title": "2. 選用傳送權限",
+      "description": "匯入聯絡人絕不會自動傳送訊息。僅當整合必須在經核准的客戶操作後傳送一則評論邀請時，才需完成此簡短業務用途檢查。",
+      "approvedToast": "傳送權限已獲核准。現在可以將 review_requests:send 加入金鑰。",
+      "pendingToast": "申請已提交審核。僅匯入權限仍可使用。",
+      "acceptFirst": "請先接受 API 條款。僅匯入權限將立即啟用。",
+      "approved": "已獲准傳送個別評論邀請",
+      "pending": "高用量申請正在審核",
+      "pendingDetail": "您的僅匯入金鑰會繼續運作。Get Phame 在審核通過前不會加入傳送權限。",
+      "businessName": "企業名稱",
+      "website": "網站（選填）",
+      "useCase": "整合將如何使用傳送權限？",
+      "useCasePlaceholder": "例如：預約完成後，我們的伺服器匯入客戶並傳送一則評論邀請。",
+      "monthlyVolume": "預計每月傳送量",
+      "reviewThreshold": "每月預計不超過 {{count}} 次傳送可立即啟用。更高用量需要人工審核，且絕不會繞過自適應安全限制。",
+      "consentProcess": "您如何確認客戶關係和同意？",
+      "consentPlaceholder": "描述購買、預約或服務事件，以及如何處理取消訂閱要求。",
+      "confirmCustomers": "我只會向與我們存在真實業務關係的客戶傳送。",
+      "confirmLists": "我不會使用購買、租用、擷取或第三方名單。",
+      "confirmActions": "每次 API 傳送都將由經核准的個別客戶操作觸發；我會遵守取消訂閱要求和自適應限制。",
+      "resubmit": "重新提交業務用途資料",
+      "request": "啟用傳送權限",
+      "completeRequired": "請完成所有業務用途欄位和確認項目。",
+      "requiredForScope": "加入傳送權限前，請完成業務用途註冊。",
+      "scopeLocked": "需要完成業務用途註冊"
+    }
   }
 }

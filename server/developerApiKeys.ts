@@ -2,6 +2,10 @@ import { createHash, randomBytes } from "node:crypto";
 import { and, desc, eq, isNull, sql } from "drizzle-orm";
 import { apiKeys } from "../drizzle/schema";
 import { getDb } from "./db";
+import {
+  assertDeveloperApiKeyScopesAllowed,
+  removeUnapprovedDeveloperSendScope,
+} from "./developerApiEnrollment";
 
 export const DEVELOPER_API_SCOPES = ["contacts:write", "review_requests:send"] as const;
 export type DeveloperApiScope = (typeof DEVELOPER_API_SCOPES)[number];
@@ -141,6 +145,7 @@ export async function createDeveloperApiKey(params: {
 
   const scopes = normalizeScopes(params.scopes);
   if (scopes.length === 0) throw new Error("At least one API scope is required.");
+  await assertDeveloperApiKeyScopesAllowed(params.userId, scopes);
 
   if (!params.rotatedFromId) {
     const activeRows = await db
@@ -259,11 +264,12 @@ export async function authenticateDeveloperApiKeyWithStatus(rawKey: string): Pro
     };
   }
 
+  const scopes = await removeUnapprovedDeveloperSendScope(row.userId, parseDeveloperApiScopes(row.scopes));
   return { kind: "ok", principal: {
     apiKeyId: row.id,
     userId: row.userId,
     label: row.label,
-    scopes: parseDeveloperApiScopes(row.scopes),
+    scopes,
     expiresAt: row.expiresAt,
     inactivityExpiresAt: lifecycle.inactivityExpiresAt,
   } };

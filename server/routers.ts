@@ -33,6 +33,13 @@ import {
   revokeDeveloperApiKey,
   rotateDeveloperApiKey,
 } from "./developerApiKeys";
+import {
+  acceptDeveloperApiTerms,
+  getDeveloperApiEnrollmentStatus,
+  requestDeveloperSendScope,
+  reviewDeveloperSendScope,
+} from "./developerApiEnrollment";
+import { fingerprintAuthValue } from "./authOperations";
 
 import { sendMailViaSmtp } from "./smtp";
 import { buildReviewRequestEmail, buildReviewRequestText } from "./emailTemplates";
@@ -3732,6 +3739,79 @@ export const appRouter = router({
 
   /** Per-user API keys for the public REST API (contacts import, etc.) */
   apiKey: router({
+    /** Versioned API Terms/AUP acceptance and higher-risk send-scope status for this authenticated account. */
+    enrollment: protectedProcedure.query(async ({ ctx }) => {
+      return getDeveloperApiEnrollmentStatus(ctx.user.id);
+    }),
+    /** Record affirmative acceptance without retaining a raw IP address or user-agent string. */
+    acceptTerms: protectedProcedure
+      .input(z.object({
+        termsAccepted: z.literal(true),
+        acceptableUseAccepted: z.literal(true),
+      }))
+      .mutation(async ({ ctx }) => {
+        const forwarded = ctx.req.headers["x-forwarded-for"];
+        const clientIp = (Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(",")[0]?.trim())
+          || ctx.req.ip
+          || ctx.req.socket.remoteAddress
+          || "unknown";
+        const userAgent = String(ctx.req.headers["user-agent"] || "unknown").slice(0, 256);
+        return acceptDeveloperApiTerms({
+          userId: ctx.user.id,
+          acceptanceFingerprint: fingerprintAuthValue(`developer-api-enrollment:${clientIp}:${userAgent}`),
+        });
+      }),
+    /** Collect business-use and consent details before enabling the higher-risk send scope. */
+    requestSendScope: protectedProcedure
+      .input(z.object({
+        businessName: z.string().trim().min(2).max(160),
+        websiteUrl: z.union([z.literal(""), z.string().trim().url().max(512)]).default(""),
+        useCase: z.string().trim().min(20).max(1500),
+        expectedMonthlySendVolume: z.number().int().min(1).max(1_000_000),
+        consentProcess: z.string().trim().min(20).max(1500),
+        confirmsExistingCustomersOnly: z.literal(true),
+        confirmsNoPurchasedOrScrapedLists: z.literal(true),
+        confirmsIndividualCustomerActions: z.literal(true),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await requestDeveloperSendScope({
+            userId: ctx.user.id,
+            businessName: input.businessName,
+            websiteUrl: input.websiteUrl || null,
+            useCase: input.useCase,
+            expectedMonthlySendVolume: input.expectedMonthlySendVolume,
+            consentProcess: input.consentProcess,
+          });
+        } catch (error) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: error instanceof Error ? error.message : "Unable to request sending access.",
+          });
+        }
+      }),
+    /** Administrator decision for high-volume send-scope requests; standard-volume requests are approved automatically. */
+    reviewSendScope: adminProcedure
+      .input(z.object({
+        userId: z.number().int().positive(),
+        status: z.enum(["approved", "denied"]),
+        note: z.string().trim().max(500).nullable().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await reviewDeveloperSendScope({
+            userId: input.userId,
+            reviewerUserId: ctx.user.id,
+            status: input.status,
+            note: input.note,
+          });
+        } catch (error) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: error instanceof Error ? error.message : "Unable to review sending access.",
+          });
+        }
+      }),
     /** List safe API-key metadata; raw secrets are never persisted or returned. */
     list: protectedProcedure.query(async ({ ctx }) => {
       return listDeveloperApiKeys(ctx.user.id);
