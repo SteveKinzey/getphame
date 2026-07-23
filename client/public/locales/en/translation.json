@@ -2833,6 +2833,55 @@
       "scopeLocked": "Business-use enrollment required"
     }
   },
+  "passkeys": {
+    "signIn": {
+      "title": "Sign in with a passkey",
+      "description": "Use the fingerprint, face recognition, or screen lock already set up on your device.",
+      "emailLabel": "Account email",
+      "emailPlaceholder": "you@example.com",
+      "button": "Continue with passkey",
+      "inProgress": "Checking passkey…",
+      "preparing": "Preparing your secure passkey prompt…",
+      "verifying": "Verifying your passkey…",
+      "invalidEmail": "Enter a valid email address.",
+      "unsupported": "Passkeys are not available in this browser. You can still sign in with a secure email link.",
+      "unavailable": "Passkey sign-in could not be completed. Use your email link below or try again."
+    },
+    "security": {
+      "title": "Passkeys",
+      "description": "Add a phishing-resistant sign-in method using your device biometrics or screen lock. Email sign-in remains available as a fallback.",
+      "unsupported": "This browser cannot create passkeys. Try a current version of Chrome, Safari, Edge, or Firefox.",
+      "newNameLabel": "Passkey name",
+      "newNameHelp": "Choose a name that helps you recognize this device.",
+      "namePlaceholder": "Example: Work laptop",
+      "create": "Create passkey",
+      "creating": "Creating…",
+      "preparing": "Preparing your secure device prompt…",
+      "verifying": "Verifying your new passkey…",
+      "defaultName": "My passkey",
+      "createSuccess": "Passkey created. You can now use it to sign in.",
+      "createError": "Passkey setup could not be completed. Please try again.",
+      "savedTitle": "Saved passkeys",
+      "loading": "Loading passkeys…",
+      "loadError": "Passkeys could not be loaded.",
+      "empty": "No passkeys yet. Create one above to enable faster, phishing-resistant sign-in.",
+      "nameLabel": "Passkey name",
+      "saveName": "Save passkey name",
+      "cancelRename": "Cancel rename",
+      "rename": "Rename {{name}}",
+      "renameSuccess": "Passkey renamed.",
+      "renameError": "Passkey could not be renamed.",
+      "created": "Created {{date}}",
+      "lastUsed": "Last used {{date}}",
+      "synced": "Synced by your device provider",
+      "remove": "Remove",
+      "removeConfirm": "Remove this passkey? You will not be able to use it to sign in.",
+      "confirmRemove": "Remove passkey",
+      "cancel": "Cancel",
+      "removeSuccess": "Passkey removed.",
+      "removeError": "Passkey could not be removed."
+    }
+  },
   "promotionLink": {
     "applied": "Your campaign code will be applied at checkout",
     "verified": "Eligibility is verified securely before Stripe Checkout opens."

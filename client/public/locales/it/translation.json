@@ -3074,5 +3074,54 @@
       "requiredForScope": "Completa la registrazione per uso aziendale prima di aggiungere il permesso di invio.",
       "scopeLocked": "Registrazione per uso aziendale richiesta"
     }
+  },
+  "passkeys": {
+    "signIn": {
+      "title": "Accedi con una passkey",
+      "description": "Usa l’impronta, il riconoscimento facciale o il blocco schermo già configurato sul tuo dispositivo.",
+      "emailLabel": "Email dell’account",
+      "emailPlaceholder": "tu@esempio.com",
+      "button": "Continua con una passkey",
+      "inProgress": "Verifica della passkey…",
+      "preparing": "Preparazione della richiesta sicura…",
+      "verifying": "Verifica della passkey…",
+      "invalidEmail": "Inserisci un indirizzo email valido.",
+      "unsupported": "Le passkey non sono disponibili in questo browser. Puoi comunque accedere con un link sicuro inviato via email.",
+      "unavailable": "Non è stato possibile completare l’accesso con passkey. Usa il link email qui sotto o riprova."
+    },
+    "security": {
+      "title": "Passkey",
+      "description": "Aggiungi un metodo di accesso resistente al phishing usando la biometria o il blocco schermo del dispositivo. L’accesso via email resterà disponibile.",
+      "unsupported": "Questo browser non può creare passkey. Prova una versione recente di Chrome, Safari, Edge o Firefox.",
+      "newNameLabel": "Nome della passkey",
+      "newNameHelp": "Scegli un nome che ti aiuti a riconoscere questo dispositivo.",
+      "namePlaceholder": "Esempio: Portatile di lavoro",
+      "create": "Crea passkey",
+      "creating": "Creazione…",
+      "preparing": "Preparazione della richiesta sicura del dispositivo…",
+      "verifying": "Verifica della nuova passkey…",
+      "defaultName": "La mia passkey",
+      "createSuccess": "Passkey creata. Ora puoi usarla per accedere.",
+      "createError": "Non è stato possibile completare la configurazione della passkey. Riprova.",
+      "savedTitle": "Passkey salvate",
+      "loading": "Caricamento delle passkey…",
+      "loadError": "Impossibile caricare le passkey.",
+      "empty": "Non hai ancora passkey. Creane una sopra per un accesso più rapido e resistente al phishing.",
+      "nameLabel": "Nome della passkey",
+      "saveName": "Salva nome della passkey",
+      "cancelRename": "Annulla modifica nome",
+      "rename": "Rinomina {{name}}",
+      "renameSuccess": "Passkey rinominata.",
+      "renameError": "Impossibile rinominare la passkey.",
+      "created": "Creata il {{date}}",
+      "lastUsed": "Ultimo utilizzo: {{date}}",
+      "synced": "Sincronizzata dal provider del dispositivo",
+      "remove": "Rimuovi",
+      "removeConfirm": "Rimuovere questa passkey? Non potrai più usarla per accedere.",
+      "confirmRemove": "Rimuovi passkey",
+      "cancel": "Annulla",
+      "removeSuccess": "Passkey rimossa.",
+      "removeError": "Impossibile rimuovere la passkey."
+    }
   }
 }

@@ -2373,5 +2373,54 @@
       "requiredForScope": "加入傳送權限前，請完成業務用途註冊。",
       "scopeLocked": "需要完成業務用途註冊"
     }
+  },
+  "passkeys": {
+    "signIn": {
+      "title": "使用通行密鑰登入",
+      "description": "使用裝置上已設定的指紋、臉部辨識或螢幕鎖定。",
+      "emailLabel": "帳戶電子郵件",
+      "emailPlaceholder": "you@example.com",
+      "button": "使用通行密鑰繼續",
+      "inProgress": "正在驗證通行密鑰…",
+      "preparing": "正在準備安全的通行密鑰要求…",
+      "verifying": "正在確認您的通行密鑰…",
+      "invalidEmail": "請輸入有效的電子郵件地址。",
+      "unsupported": "此瀏覽器不支援通行密鑰。您仍可使用安全電子郵件連結登入。",
+      "unavailable": "無法使用通行密鑰登入。請使用下方的電子郵件連結或重試。"
+    },
+    "security": {
+      "title": "通行密鑰",
+      "description": "使用裝置生物辨識或螢幕鎖定新增抗網路釣魚的登入方式。電子郵件登入仍可作為備用方式。",
+      "unsupported": "此瀏覽器無法建立通行密鑰。請嘗試目前版本的 Chrome、Safari、Edge 或 Firefox。",
+      "newNameLabel": "通行密鑰名稱",
+      "newNameHelp": "使用一個便於識別此裝置的名稱。",
+      "namePlaceholder": "例如：工作筆記型電腦",
+      "create": "建立通行密鑰",
+      "creating": "正在建立…",
+      "preparing": "正在準備安全的裝置要求…",
+      "verifying": "正在驗證您的新通行密鑰…",
+      "defaultName": "我的通行密鑰",
+      "createSuccess": "通行密鑰已建立。現在可以使用它登入。",
+      "createError": "無法設定通行密鑰。請重試。",
+      "savedTitle": "已儲存的通行密鑰",
+      "loading": "正在載入通行密鑰…",
+      "loadError": "無法載入您的通行密鑰。",
+      "empty": "尚無通行密鑰。請在上方建立一個，以獲得更快速且抗網路釣魚的登入體驗。",
+      "nameLabel": "通行密鑰名稱",
+      "saveName": "儲存通行密鑰名稱",
+      "cancelRename": "取消重新命名",
+      "rename": "重新命名 {{name}}",
+      "renameSuccess": "通行密鑰已重新命名。",
+      "renameError": "無法重新命名通行密鑰。",
+      "created": "建立於 {{date}}",
+      "lastUsed": "上次使用於 {{date}}",
+      "synced": "由您的裝置供應商同步",
+      "remove": "移除",
+      "removeConfirm": "移除此通行密鑰？之後將無法再用它登入。",
+      "confirmRemove": "移除通行密鑰",
+      "cancel": "取消",
+      "removeSuccess": "通行密鑰已移除。",
+      "removeError": "無法移除通行密鑰。"
+    }
   }
 }

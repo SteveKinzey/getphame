@@ -2880,5 +2880,54 @@
       "requiredForScope": "Completa el registro de uso comercial antes de añadir permiso de envío.",
       "scopeLocked": "Se requiere registro de uso comercial"
     }
+  },
+  "passkeys": {
+    "signIn": {
+      "title": "Iniciar sesión con una clave de acceso",
+      "description": "Usa la huella, el reconocimiento facial o el bloqueo de pantalla configurado en tu dispositivo.",
+      "emailLabel": "Correo de la cuenta",
+      "emailPlaceholder": "tu@ejemplo.com",
+      "button": "Continuar con una clave de acceso",
+      "inProgress": "Comprobando la clave de acceso…",
+      "preparing": "Preparando el aviso seguro de tu clave de acceso…",
+      "verifying": "Verificando tu clave de acceso…",
+      "invalidEmail": "Introduce una dirección de correo válida.",
+      "unsupported": "Las claves de acceso no están disponibles en este navegador. Aún puedes iniciar sesión con un enlace seguro por correo.",
+      "unavailable": "No se pudo completar el inicio con clave de acceso. Usa el enlace de correo de abajo o inténtalo de nuevo."
+    },
+    "security": {
+      "title": "Claves de acceso",
+      "description": "Añade un método resistente al phishing con la biometría o el bloqueo de pantalla de tu dispositivo. El acceso por correo seguirá disponible.",
+      "unsupported": "Este navegador no puede crear claves de acceso. Prueba una versión reciente de Chrome, Safari, Edge o Firefox.",
+      "newNameLabel": "Nombre de la clave de acceso",
+      "newNameHelp": "Elige un nombre que te ayude a reconocer este dispositivo.",
+      "namePlaceholder": "Ejemplo: Portátil del trabajo",
+      "create": "Crear clave de acceso",
+      "creating": "Creando…",
+      "preparing": "Preparando el aviso seguro del dispositivo…",
+      "verifying": "Verificando tu nueva clave de acceso…",
+      "defaultName": "Mi clave de acceso",
+      "createSuccess": "Clave de acceso creada. Ya puedes usarla para iniciar sesión.",
+      "createError": "No se pudo completar la configuración. Inténtalo de nuevo.",
+      "savedTitle": "Claves de acceso guardadas",
+      "loading": "Cargando claves de acceso…",
+      "loadError": "No se pudieron cargar las claves de acceso.",
+      "empty": "Aún no tienes claves de acceso. Crea una arriba para iniciar sesión de forma más rápida y resistente al phishing.",
+      "nameLabel": "Nombre de la clave de acceso",
+      "saveName": "Guardar nombre de la clave",
+      "cancelRename": "Cancelar cambio de nombre",
+      "rename": "Cambiar nombre de {{name}}",
+      "renameSuccess": "Nombre de la clave actualizado.",
+      "renameError": "No se pudo cambiar el nombre de la clave.",
+      "created": "Creada el {{date}}",
+      "lastUsed": "Último uso: {{date}}",
+      "synced": "Sincronizada por el proveedor de tu dispositivo",
+      "remove": "Eliminar",
+      "removeConfirm": "¿Eliminar esta clave de acceso? Ya no podrás usarla para iniciar sesión.",
+      "confirmRemove": "Eliminar clave de acceso",
+      "cancel": "Cancelar",
+      "removeSuccess": "Clave de acceso eliminada.",
+      "removeError": "No se pudo eliminar la clave de acceso."
+    }
   }
 }

@@ -72,6 +72,7 @@ import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/pl
 import PlanSwitchDialog from "@/components/PlanSwitchDialog";
 import KoalendarSettingsCard from "@/components/KoalendarSettingsCard";
 import AdaptiveSendLimitStatus from "@/components/AdaptiveSendLimitStatus";
+import PasskeySecurityCard from "@/components/security/PasskeySecurityCard";
 import {
   BULK_SENDER_PRESETS,
   BULK_SENDER_PROVIDER_IDS,
@@ -1652,6 +1653,7 @@ export default function SettingsPage() {
       <div className="px-4 py-4 lg:px-8 lg:py-6">
       <div className="max-w-3xl mx-auto flex flex-col gap-4">
         <AccountProfileCard />
+        <PasskeySecurityCard />
         {/* ── Business Profile ──────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">

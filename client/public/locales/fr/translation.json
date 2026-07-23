@@ -2880,5 +2880,54 @@
       "requiredForScope": "Terminez l’inscription à l’usage professionnel avant d’ajouter l’autorisation d’envoi.",
       "scopeLocked": "Inscription à l’usage professionnel requise"
     }
+  },
+  "passkeys": {
+    "signIn": {
+      "title": "Se connecter avec une clé d’accès",
+      "description": "Utilisez l’empreinte, la reconnaissance faciale ou le verrouillage d’écran déjà configuré sur votre appareil.",
+      "emailLabel": "E-mail du compte",
+      "emailPlaceholder": "vous@exemple.com",
+      "button": "Continuer avec une clé d’accès",
+      "inProgress": "Vérification de la clé d’accès…",
+      "preparing": "Préparation de l’invite sécurisée…",
+      "verifying": "Vérification de votre clé d’accès…",
+      "invalidEmail": "Saisissez une adresse e-mail valide.",
+      "unsupported": "Les clés d’accès ne sont pas disponibles dans ce navigateur. Vous pouvez toujours utiliser un lien sécurisé envoyé par e-mail.",
+      "unavailable": "La connexion avec la clé d’accès n’a pas abouti. Utilisez le lien e-mail ci-dessous ou réessayez."
+    },
+    "security": {
+      "title": "Clés d’accès",
+      "description": "Ajoutez une méthode résistante au hameçonnage avec la biométrie ou le verrouillage d’écran de votre appareil. La connexion par e-mail reste disponible.",
+      "unsupported": "Ce navigateur ne peut pas créer de clés d’accès. Essayez une version récente de Chrome, Safari, Edge ou Firefox.",
+      "newNameLabel": "Nom de la clé d’accès",
+      "newNameHelp": "Choisissez un nom qui vous aide à reconnaître cet appareil.",
+      "namePlaceholder": "Exemple : Ordinateur professionnel",
+      "create": "Créer une clé d’accès",
+      "creating": "Création…",
+      "preparing": "Préparation de l’invite sécurisée de l’appareil…",
+      "verifying": "Vérification de votre nouvelle clé d’accès…",
+      "defaultName": "Ma clé d’accès",
+      "createSuccess": "Clé d’accès créée. Vous pouvez maintenant l’utiliser pour vous connecter.",
+      "createError": "La configuration de la clé d’accès n’a pas abouti. Réessayez.",
+      "savedTitle": "Clés d’accès enregistrées",
+      "loading": "Chargement des clés d’accès…",
+      "loadError": "Impossible de charger les clés d’accès.",
+      "empty": "Aucune clé d’accès pour le moment. Créez-en une ci-dessus pour une connexion plus rapide et résistante au hameçonnage.",
+      "nameLabel": "Nom de la clé d’accès",
+      "saveName": "Enregistrer le nom de la clé",
+      "cancelRename": "Annuler le changement de nom",
+      "rename": "Renommer {{name}}",
+      "renameSuccess": "Clé d’accès renommée.",
+      "renameError": "Impossible de renommer la clé d’accès.",
+      "created": "Créée le {{date}}",
+      "lastUsed": "Dernière utilisation le {{date}}",
+      "synced": "Synchronisée par le fournisseur de votre appareil",
+      "remove": "Supprimer",
+      "removeConfirm": "Supprimer cette clé d’accès ? Vous ne pourrez plus l’utiliser pour vous connecter.",
+      "confirmRemove": "Supprimer la clé d’accès",
+      "cancel": "Annuler",
+      "removeSuccess": "Clé d’accès supprimée.",
+      "removeError": "Impossible de supprimer la clé d’accès."
+    }
   }
 }

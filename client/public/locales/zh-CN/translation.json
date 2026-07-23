@@ -2351,5 +2351,54 @@
       "requiredForScope": "添加发送权限前，请完成业务用途注册。",
       "scopeLocked": "需要完成业务用途注册"
     }
+  },
+  "passkeys": {
+    "signIn": {
+      "title": "使用通行密钥登录",
+      "description": "使用设备上已设置的指纹、人脸识别或屏幕锁定。",
+      "emailLabel": "账户电子邮件",
+      "emailPlaceholder": "you@example.com",
+      "button": "使用通行密钥继续",
+      "inProgress": "正在验证通行密钥…",
+      "preparing": "正在准备安全的通行密钥请求…",
+      "verifying": "正在确认您的通行密钥…",
+      "invalidEmail": "请输入有效的电子邮件地址。",
+      "unsupported": "此浏览器不支持通行密钥。您仍可使用安全电子邮件链接登录。",
+      "unavailable": "无法使用通行密钥登录。请使用下方的电子邮件链接或重试。"
+    },
+    "security": {
+      "title": "通行密钥",
+      "description": "使用设备生物识别或屏幕锁定添加抗网络钓鱼的登录方式。电子邮件登录仍可作为备用方式。",
+      "unsupported": "此浏览器无法创建通行密钥。请尝试当前版本的 Chrome、Safari、Edge 或 Firefox。",
+      "newNameLabel": "通行密钥名称",
+      "newNameHelp": "使用一个便于识别此设备的名称。",
+      "namePlaceholder": "例如：工作笔记本电脑",
+      "create": "创建通行密钥",
+      "creating": "正在创建…",
+      "preparing": "正在准备安全的设备请求…",
+      "verifying": "正在验证您的新通行密钥…",
+      "defaultName": "我的通行密钥",
+      "createSuccess": "通行密钥已创建。现在可以使用它登录。",
+      "createError": "无法设置通行密钥。请重试。",
+      "savedTitle": "已保存的通行密钥",
+      "loading": "正在加载通行密钥…",
+      "loadError": "无法加载您的通行密钥。",
+      "empty": "尚无通行密钥。请在上方创建一个，以获得更快且抗网络钓鱼的登录体验。",
+      "nameLabel": "通行密钥名称",
+      "saveName": "保存通行密钥名称",
+      "cancelRename": "取消重命名",
+      "rename": "重命名 {{name}}",
+      "renameSuccess": "通行密钥已重命名。",
+      "renameError": "无法重命名通行密钥。",
+      "created": "创建于 {{date}}",
+      "lastUsed": "上次使用于 {{date}}",
+      "synced": "由您的设备提供商同步",
+      "remove": "移除",
+      "removeConfirm": "移除此通行密钥？之后将无法再用它登录。",
+      "confirmRemove": "移除通行密钥",
+      "cancel": "取消",
+      "removeSuccess": "通行密钥已移除。",
+      "removeError": "无法移除通行密钥。"
+    }
   }
 }
