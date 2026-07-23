@@ -174,6 +174,7 @@ import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracki
 import { bulkSenderRouter } from "./bulkSender";
 import { authDiagnosticsRouter } from "./routers/authDiagnostics";
 import { passkeysRouter } from "./routers/passkeys";
+import { recoveryDrillsRouter } from "./routers/recoveryDrills";
 import { revokePasskeySessionFromRequest } from "./security/passkeySessions";
 import { combineAccountsAsAdmin, deleteAccountAsAdmin } from "./accountManagement";
 import {
@@ -606,6 +607,7 @@ export const appRouter = router({
   system: systemRouter,
   authDiagnostics: authDiagnosticsRouter,
   passkeys: passkeysRouter,
+  recoveryDrills: recoveryDrillsRouter,
   helpAssistant: helpAssistantRouter,
 
   /** Paid Koalendar booking-to-contact integration. */
