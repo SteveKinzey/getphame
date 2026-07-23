@@ -1,5 +1,5 @@
 /**
- * Stripe integration for Phame Pro subscriptions.
+ * Stripe integration for Get Phame Pro subscriptions.
  *
  * Flow:
  * 1. User clicks "Upgrade to Pro" → frontend calls stripe.createCheckout
@@ -20,7 +20,7 @@ function getStripe(): Stripe {
       throw new Error("STRIPE_SECRET_KEY is not configured");
     }
     _stripe = new Stripe(key, {
-      apiVersion: "2025-01-27.acacia",
+      apiVersion: "2026-06-24.dahlia",
     });
   }
   return _stripe;
@@ -246,10 +246,13 @@ export async function createStripePromotionCode(
       },
     }) as PromotionCoupon;
 
-    // This project intentionally pins Stripe's 2025-01-27 Acacia API, whose
-    // promotion-code request uses the legacy top-level coupon parameter.
+    // Dahlia requires promotion codes to reference their underlying coupon
+    // through the typed promotion object instead of the legacy top-level field.
     const createParams = {
-      coupon: coupon.id,
+      promotion: {
+        type: "coupon" as const,
+        coupon: coupon.id,
+      },
       code,
       active: true,
       ...(input.expiresAt != null ? { expires_at: Math.floor(input.expiresAt / 1000) } : {}),
@@ -260,7 +263,7 @@ export async function createStripePromotionCode(
         created_by_user_id: String(input.createdByUserId),
         applicable_plans: applicablePlans.join(","),
       },
-    } as unknown as Stripe.PromotionCodeCreateParams;
+    } satisfies Stripe.PromotionCodeCreateParams;
     const created = await stripe.promotionCodes.create(createParams) as unknown as PromotionCodeDetails;
 
     return {

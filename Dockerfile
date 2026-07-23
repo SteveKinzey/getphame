@@ -1,5 +1,5 @@
 # ─── Stage 1: Build ───────────────────────────────────────────────────────────
-FROM node:22-slim AS builder
+FROM node:24-slim AS builder
 
 # Use the pnpm version pinned in package.json through Corepack.
 RUN npm install -g corepack@latest && corepack enable
@@ -19,7 +19,7 @@ COPY . .
 RUN corepack pnpm run build
 
 # ─── Stage 2: Production ─────────────────────────────────────────────────────
-FROM node:22-slim AS runner
+FROM node:24-slim AS runner
 
 RUN npm install -g corepack@latest && corepack enable
 
