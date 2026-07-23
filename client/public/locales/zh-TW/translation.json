@@ -2423,5 +2423,102 @@
       "removeSuccess": "通行密鑰已移除。",
       "removeError": "無法移除通行密鑰。"
     }
+  },
+  "recoveryDrill": {
+    "defaults": {
+      "title": "擁有者帳戶復原演練"
+    },
+    "toast": {
+      "prepared": "暫存復原演練已準備完成。",
+      "approved": "復原演練已核准。",
+      "rejected": "復原演練已拒絕並結案。",
+      "started": "復原演練已開始。",
+      "evidence": "已記錄去敏證據。",
+      "contained": "復原演練已遏止。",
+      "completed": "復原演練已完成，臨時存取權已撤銷。",
+      "aborted": "復原演練已中止，臨時存取權已撤銷。"
+    },
+    "loading": "正在檢查暫存復原存取權…",
+    "title": "暫存復原演練",
+    "stagingOnly": "僅限暫存環境",
+    "description": "在分離職責、近期 passkey 驗證、去敏證據與自動撤銷的情況下，演練擁有者帳戶復原。",
+    "environment": "環境",
+    "available": "允許的暫存主機",
+    "unavailable": "此主機不可用",
+    "yourRole": "你的角色",
+    "statusLabel": "狀態",
+    "hostGate": "除非已啟用暫存模式並設定精確的非生產主機允許清單，否則此控制項保持鎖定。",
+    "passkeyRequired": "敏感演練操作需要在過去 15 分鐘內以 passkey 驗證的會話。請用 passkey 登入，然後返回此處。",
+    "prepareTitle": "準備分離職責演練",
+    "prepareHelp": "Steve 是復原管理人。指派另一位已擁有有效 Get Phame 帳戶和 passkey 的主導工程師。",
+    "drillTitle": "演練標題",
+    "approverEmail": "主導工程師電子郵件",
+    "scheduledAt": "排定時間",
+    "notes": "去敏的操作人員備註（選填）",
+    "preparing": "準備中…",
+    "prepare": "準備暫存演練",
+    "scheduledFor": "排定於 {{date}}",
+    "approvalTitle": "獨立核准",
+    "approvalHelp": "檢閱暫存範圍並確認你不是復原管理人。核准會隨著你的窄範圍臨時存取權一併到期。",
+    "decisionNote": "決策備註",
+    "decisionPlaceholder": "記錄去敏的核准理由",
+    "approve": "核准",
+    "reject": "拒絕",
+    "start": "開始核准的演練",
+    "evidenceTitle": "記錄去敏證據",
+    "evidenceHelp": "僅使用 event IDs、ticket IDs、時間戳記或已脫敏的物件參考。切勿輸入 tokens、cookies、credentials 或客戶資料。",
+    "evidenceType": "證據類型",
+    "outcome": "結果",
+    "evidenceReference": "已脫敏的證據參考",
+    "evidencePlaceholder": "範例：audit-event:evt_123 at 14:05 UTC",
+    "recordEvidence": "記錄證據",
+    "evidenceLog": "證據記錄",
+    "containmentReason": "遏止原因",
+    "containmentPlaceholder": "停止條件或遏止原因",
+    "contain": "遏止演練",
+    "complete": "完成並撤銷存取權",
+    "abortReason": "中止原因",
+    "abortPlaceholder": "已脫敏的中止原因",
+    "abort": "中止演練",
+    "status": {
+      "notPrepared": "未準備",
+      "draft": "草稿",
+      "ready": "已就緒",
+      "in_progress": "進行中",
+      "paused": "已遏止",
+      "completed": "已完成",
+      "aborted": "已中止"
+    },
+    "roles": {
+      "none": "無復原角色",
+      "platform_owner": "平台擁有者",
+      "recovery_custodian": "復原管理人",
+      "independent_approver": "獨立核准者",
+      "observer": "觀察者"
+    },
+    "decision": {
+      "approved": "已核准",
+      "rejected": "已拒絕"
+    },
+    "evidence": {
+      "preflight": "預檢查",
+      "revoked_session_denial": "撤銷會話拒絕",
+      "revoked_credential_denial": "撤銷憑證拒絕",
+      "tenant_isolation": "租戶隔離",
+      "replacement_enrollment": "替換 passkey 註冊",
+      "step_up_verification": "提升驗證",
+      "audit_verification": "稽核驗證",
+      "rollback": "回滾驗證",
+      "stop_condition": "停止條件",
+      "containment": "遏止",
+      "after_action": "事後檢討"
+    },
+    "outcomes": {
+      "passed": "通過",
+      "failed": "失敗",
+      "blocked": "被阻擋",
+      "contained": "已遏止",
+      "not_applicable": "不適用"
+    }
   }
 }

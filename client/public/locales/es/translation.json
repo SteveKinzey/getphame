@@ -2930,5 +2930,102 @@
       "removeSuccess": "Clave de acceso eliminada.",
       "removeError": "No se pudo eliminar la clave de acceso."
     }
+  },
+  "recoveryDrill": {
+    "defaults": {
+      "title": "Simulacro de recuperación de cuenta del propietario"
+    },
+    "toast": {
+      "prepared": "Simulacro de recuperación en staging preparado.",
+      "approved": "Simulacro de recuperación aprobado.",
+      "rejected": "Simulacro de recuperación rechazado y cerrado.",
+      "started": "Simulacro de recuperación iniciado.",
+      "evidence": "Evidencia redactada registrada.",
+      "contained": "Simulacro de recuperación contenido.",
+      "completed": "Simulacro de recuperación completado y acceso temporal revocado.",
+      "aborted": "Simulacro de recuperación abortado y acceso temporal revocado."
+    },
+    "loading": "Comprobando el acceso de recuperación en staging…",
+    "title": "Simulacro de recuperación en staging",
+    "stagingOnly": "Solo en staging",
+    "description": "Practique la recuperación de la cuenta del propietario con separación de funciones, verificación reciente por passkey, evidencia redactada y revocación automática.",
+    "environment": "Entorno",
+    "available": "Host de staging permitido",
+    "unavailable": "No disponible en este host",
+    "yourRole": "Su rol",
+    "statusLabel": "Estado",
+    "hostGate": "Este control seguirá bloqueado a menos que se habilite el modo staging y se configure una allowlist exacta de hosts no productivos.",
+    "passkeyRequired": "Las acciones sensibles del simulacro requieren una sesión verificada por passkey de los últimos 15 minutos. Inicie sesión con un passkey y vuelva aquí.",
+    "prepareTitle": "Preparar simulacro con separación de funciones",
+    "prepareHelp": "Steve es el Custodio de recuperación. Asigne a un ingeniero líder distinto que ya tenga una cuenta activa de Get Phame y un passkey.",
+    "drillTitle": "Título del simulacro",
+    "approverEmail": "Correo electrónico del ingeniero líder",
+    "scheduledAt": "Hora programada",
+    "notes": "Notas del operador redactadas (opcional)",
+    "preparing": "Preparando…",
+    "prepare": "Preparar simulacro en staging",
+    "scheduledFor": "Programado para {{date}}",
+    "approvalTitle": "Aprobación independiente",
+    "approvalHelp": "Revise el alcance en staging y confirme que no es el Custodio de recuperación. La aprobación expira con su acceso temporal limitado.",
+    "decisionNote": "Nota de decisión",
+    "decisionPlaceholder": "Registre una justificación de aprobación redactada",
+    "approve": "Aprobar",
+    "reject": "Rechazar",
+    "start": "Iniciar simulacro aprobado",
+    "evidenceTitle": "Registrar evidencia redactada",
+    "evidenceHelp": "Use únicamente event IDs, ticket IDs, timestamps o referencias de objetos saneadas. Nunca ingrese tokens, cookies, credenciales ni datos de clientes.",
+    "evidenceType": "Tipo de evidencia",
+    "outcome": "Resultado",
+    "evidenceReference": "Referencia de evidencia saneada",
+    "evidencePlaceholder": "Ejemplo: audit-event:evt_123 a las 14:05 UTC",
+    "recordEvidence": "Registrar evidencia",
+    "evidenceLog": "Registro de evidencia",
+    "containmentReason": "Motivo de contención",
+    "containmentPlaceholder": "Condición de parada o motivo de contención",
+    "contain": "Contener simulacro",
+    "complete": "Completar y revocar acceso",
+    "abortReason": "Motivo para abortar",
+    "abortPlaceholder": "Motivo de aborto saneado",
+    "abort": "Abortar simulacro",
+    "status": {
+      "notPrepared": "No preparado",
+      "draft": "Borrador",
+      "ready": "Listo",
+      "in_progress": "En progreso",
+      "paused": "Contenido",
+      "completed": "Completado",
+      "aborted": "Abortado"
+    },
+    "roles": {
+      "none": "Sin rol de recuperación",
+      "platform_owner": "Propietario de la plataforma",
+      "recovery_custodian": "Custodio de recuperación",
+      "independent_approver": "Aprobador independiente",
+      "observer": "Observador"
+    },
+    "decision": {
+      "approved": "Aprobado",
+      "rejected": "Rechazado"
+    },
+    "evidence": {
+      "preflight": "Comprobaciones previas",
+      "revoked_session_denial": "Denegación por sesión revocada",
+      "revoked_credential_denial": "Denegación por credencial revocada",
+      "tenant_isolation": "Aislamiento de tenant",
+      "replacement_enrollment": "Registro de passkey de reemplazo",
+      "step_up_verification": "Verificación adicional",
+      "audit_verification": "Verificación de auditoría",
+      "rollback": "Validación de reversión",
+      "stop_condition": "Condición de parada",
+      "containment": "Contención",
+      "after_action": "Revisión posterior a la acción"
+    },
+    "outcomes": {
+      "passed": "Aprobado",
+      "failed": "Fallido",
+      "blocked": "Bloqueado",
+      "contained": "Contenido",
+      "not_applicable": "No aplicable"
+    }
   }
 }

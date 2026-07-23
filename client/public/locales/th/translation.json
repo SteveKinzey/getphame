@@ -2544,5 +2544,102 @@
       "removeSuccess": "นำพาสคีย์ออกแล้ว",
       "removeError": "นำพาสคีย์ออกไม่ได้"
     }
+  },
+  "recoveryDrill": {
+    "defaults": {
+      "title": "การฝึกกู้คืนบัญชีเจ้าของ"
+    },
+    "toast": {
+      "prepared": "เตรียมการฝึกกู้คืนสเตจเรียบร้อยแล้ว",
+      "approved": "การฝึกกู้คืนได้รับการอนุมัติ",
+      "rejected": "การฝึกกู้คืนถูกปฏิเสธและปิด",
+      "started": "เริ่มการฝึกกู้คืนแล้ว",
+      "evidence": "บันทึกหลักฐานที่ถูกปิดบังแล้ว",
+      "contained": "การฝึกกู้คืนถูกกักกันแล้ว",
+      "completed": "การฝึกกู้คืนเสร็จสิ้นและเพิกถอนการเข้าถึงชั่วคราวแล้ว",
+      "aborted": "การฝึกกู้คืนถูกยกเลิกและเพิกถอนการเข้าถึงชั่วคราวแล้ว"
+    },
+    "loading": "กำลังตรวจสอบการเข้าถึงสเตจ…",
+    "title": "การฝึกกู้คืนสเตจ",
+    "stagingOnly": "สำหรับสเตจเท่านั้น",
+    "description": "ฝึกการกู้คืนบัญชีเจ้าของด้วยการแยกหน้าที่, การยืนยัน passkey ล่าสุด, การปิดบังหลักฐาน และการเพิกถอนอัตโนมัติ",
+    "environment": "สภาพแวดล้อม",
+    "available": "โฮสต์สเตจที่ได้รับอนุญาต",
+    "unavailable": "ไม่สามารถใช้งานบนโฮสต์นี้",
+    "yourRole": "บทบาทของคุณ",
+    "statusLabel": "สถานะ",
+    "hostGate": "การควบคุมนี้จะยังคงถูกล็อกจนกว่าจะเปิดโหมดสเตจและกำหนดรายการอนุญาตโฮสต์ที่ไม่ใช่โปรดักชันอย่างชัดเจน",
+    "passkeyRequired": "การกระทำการฝึกที่มีความอ่อนไหวต้องใช้ session ที่ยืนยันด้วย passkey ภายใน 15 นาทีที่ผ่านมา ลงชื่อเข้าใช้ด้วย passkey แล้วกลับมาที่หน้านี้",
+    "prepareTitle": "เตรียมการฝึกโดยแยกหน้าที่",
+    "prepareHelp": "Steve เป็น Recovery Custodian มอบหมายวิศวกรหัวหน้าคนอื่นที่มีบัญชี Get Phame ที่ใช้งานอยู่และมี passkey",
+    "drillTitle": "ชื่อการฝึกซ้อม",
+    "approverEmail": "อีเมลของวิศวกรหัวหน้า",
+    "scheduledAt": "เวลาที่กำหนด",
+    "notes": "บันทึกผู้ปฏิบัติที่ปิดบังข้อมูล (ไม่บังคับ)",
+    "preparing": "กำลังเตรียม…",
+    "prepare": "เตรียมการฝึกสเตจ",
+    "scheduledFor": "กำหนดไว้สำหรับ {{date}}",
+    "approvalTitle": "การอนุมัติอิสระ",
+    "approvalHelp": "ทบทวนขอบเขตการสเตจและยืนยันว่าคุณไม่ได้เป็น Recovery Custodian การอนุมัติจะหมดอายุพร้อมกับสิทธิ์ชั่วคราวที่จำกัดของคุณ",
+    "decisionNote": "บันทึกการตัดสินใจ",
+    "decisionPlaceholder": "บันทึกเหตุผลการอนุมัติ (ปิดบังข้อมูล)",
+    "approve": "อนุมัติ",
+    "reject": "ปฏิเสธ",
+    "start": "เริ่มการฝึกที่ได้รับอนุมัติ",
+    "evidenceTitle": "บันทึกหลักฐานที่ปิดบังข้อมูล",
+    "evidenceHelp": "ให้ใช้เฉพาะ event IDs, ticket IDs, timestamps หรือ sanitized object references เท่านั้น ห้ามป้อน tokens, cookies, credentials หรือข้อมูลลูกค้า",
+    "evidenceType": "ประเภทหลักฐาน",
+    "outcome": "ผลลัพธ์",
+    "evidenceReference": "การอ้างอิงหลักฐานที่ผ่านการทำความสะอาด",
+    "evidencePlaceholder": "Example: audit-event:evt_123 at 14:05 UTC",
+    "recordEvidence": "บันทึกหลักฐาน",
+    "evidenceLog": "บันทึกหลักฐาน",
+    "containmentReason": "เหตุผลในการกักกัน",
+    "containmentPlaceholder": "เงื่อนไขหยุดหรือเหตุผลในการกักกัน",
+    "contain": "กักกันการฝึก",
+    "complete": "เสร็จสิ้นและเพิกถอนการเข้าถึง",
+    "abortReason": "เหตุผลในการยกเลิก",
+    "abortPlaceholder": "เหตุผลการยกเลิกที่ผ่านการทำความสะอาด",
+    "abort": "ยกเลิกการฝึก",
+    "status": {
+      "notPrepared": "ยังไม่เตรียม",
+      "draft": "ร่าง",
+      "ready": "พร้อม",
+      "in_progress": "กำลังดำเนินการ",
+      "paused": "ถูกกักกัน",
+      "completed": "เสร็จสิ้น",
+      "aborted": "ยกเลิก"
+    },
+    "roles": {
+      "none": "ไม่มีบทบาทการกู้คืน",
+      "platform_owner": "เจ้าของแพลตฟอร์ม",
+      "recovery_custodian": "ผู้ดูแลการกู้คืน",
+      "independent_approver": "ผู้อนุมัติอิสระ",
+      "observer": "ผู้สังเกตการณ์"
+    },
+    "decision": {
+      "approved": "อนุมัติ",
+      "rejected": "ปฏิเสธ"
+    },
+    "evidence": {
+      "preflight": "การตรวจสอบก่อนเริ่ม",
+      "revoked_session_denial": "การปฏิเสธ session ที่ถูกเพิกถอน",
+      "revoked_credential_denial": "การปฏิเสธ credential ที่ถูกเพิกถอน",
+      "tenant_isolation": "การแยก tenant",
+      "replacement_enrollment": "การลงทะเบียน passkey ใหม่",
+      "step_up_verification": "การยืนยันขั้นสูง",
+      "audit_verification": "การยืนยันการตรวจสอบ",
+      "rollback": "การตรวจสอบการคืนสถานะ",
+      "stop_condition": "เงื่อนไขหยุด",
+      "containment": "การกักกัน",
+      "after_action": "การทบทวนหลังปฏิบัติการ"
+    },
+    "outcomes": {
+      "passed": "ผ่าน",
+      "failed": "ล้มเหลว",
+      "blocked": "ถูกบล็อก",
+      "contained": "ถูกกักกัน",
+      "not_applicable": "ไม่เกี่ยวข้อง"
+    }
   }
 }

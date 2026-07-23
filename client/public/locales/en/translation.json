@@ -2886,5 +2886,102 @@
   "promotionLink": {
     "applied": "Your campaign code will be applied at checkout",
     "verified": "Eligibility is verified securely before Stripe Checkout opens."
+  },
+  "recoveryDrill": {
+    "defaults": {
+      "title": "Owner account recovery drill"
+    },
+    "toast": {
+      "prepared": "Staging recovery drill prepared.",
+      "approved": "Recovery drill approved.",
+      "rejected": "Recovery drill rejected and closed.",
+      "started": "Recovery drill started.",
+      "evidence": "Redacted evidence recorded.",
+      "contained": "Recovery drill contained.",
+      "completed": "Recovery drill completed and temporary access revoked.",
+      "aborted": "Recovery drill aborted and temporary access revoked."
+    },
+    "loading": "Checking staging recovery access…",
+    "title": "Staging recovery drill",
+    "stagingOnly": "Staging only",
+    "description": "Practice owner-account recovery with separated duties, recent passkey verification, redacted evidence, and automatic revocation.",
+    "environment": "Environment",
+    "available": "Allowed staging host",
+    "unavailable": "Unavailable on this host",
+    "yourRole": "Your role",
+    "statusLabel": "Status",
+    "hostGate": "This control remains locked unless staging mode and an exact non-production host allowlist are configured.",
+    "passkeyRequired": "Sensitive drill actions require a passkey-verified session from the last 15 minutes. Sign in with a passkey, then return here.",
+    "prepareTitle": "Prepare separated-duty drill",
+    "prepareHelp": "Steve is the Recovery Custodian. Assign a different lead engineer who already has an active Get Phame account and passkey.",
+    "drillTitle": "Drill title",
+    "approverEmail": "Lead engineer email",
+    "scheduledAt": "Scheduled time",
+    "notes": "Redacted operator notes (optional)",
+    "preparing": "Preparing…",
+    "prepare": "Prepare staging drill",
+    "scheduledFor": "Scheduled for {{date}}",
+    "approvalTitle": "Independent approval",
+    "approvalHelp": "Review the staging scope and confirm that you are not the Recovery Custodian. Approval expires with your narrow temporary access.",
+    "decisionNote": "Decision note",
+    "decisionPlaceholder": "Record a redacted approval rationale",
+    "approve": "Approve",
+    "reject": "Reject",
+    "start": "Start approved drill",
+    "evidenceTitle": "Record redacted evidence",
+    "evidenceHelp": "Use event IDs, ticket IDs, timestamps, or sanitized object references only. Never enter tokens, cookies, credentials, or customer data.",
+    "evidenceType": "Evidence type",
+    "outcome": "Outcome",
+    "evidenceReference": "Sanitized evidence reference",
+    "evidencePlaceholder": "Example: audit-event:evt_123 at 14:05 UTC",
+    "recordEvidence": "Record evidence",
+    "evidenceLog": "Evidence log",
+    "containmentReason": "Containment reason",
+    "containmentPlaceholder": "Stop condition or containment reason",
+    "contain": "Contain drill",
+    "complete": "Complete and revoke access",
+    "abortReason": "Abort reason",
+    "abortPlaceholder": "Sanitized abort reason",
+    "abort": "Abort drill",
+    "status": {
+      "notPrepared": "Not prepared",
+      "draft": "Draft",
+      "ready": "Ready",
+      "in_progress": "In progress",
+      "paused": "Contained",
+      "completed": "Completed",
+      "aborted": "Aborted"
+    },
+    "roles": {
+      "none": "No recovery role",
+      "platform_owner": "Platform owner",
+      "recovery_custodian": "Recovery Custodian",
+      "independent_approver": "Independent Approver",
+      "observer": "Observer"
+    },
+    "decision": {
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "evidence": {
+      "preflight": "Preflight checks",
+      "revoked_session_denial": "Revoked-session denial",
+      "revoked_credential_denial": "Revoked-credential denial",
+      "tenant_isolation": "Tenant isolation",
+      "replacement_enrollment": "Replacement passkey enrollment",
+      "step_up_verification": "Step-up verification",
+      "audit_verification": "Audit verification",
+      "rollback": "Rollback validation",
+      "stop_condition": "Stop condition",
+      "containment": "Containment",
+      "after_action": "After-action review"
+    },
+    "outcomes": {
+      "passed": "Passed",
+      "failed": "Failed",
+      "blocked": "Blocked",
+      "contained": "Contained",
+      "not_applicable": "Not applicable"
+    }
   }
 }

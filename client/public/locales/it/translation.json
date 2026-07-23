@@ -3124,5 +3124,102 @@
       "removeSuccess": "Passkey rimossa.",
       "removeError": "Impossibile rimuovere la passkey."
     }
+  },
+  "recoveryDrill": {
+    "defaults": {
+      "title": "Esercitazione recupero account proprietario"
+    },
+    "toast": {
+      "prepared": "Esercitazione di recupero in staging preparata.",
+      "approved": "Esercitazione di recupero approvata.",
+      "rejected": "Esercitazione di recupero rifiutata e chiusa.",
+      "started": "Esercitazione di recupero avviata.",
+      "evidence": "Prove oscurate registrate.",
+      "contained": "Esercitazione di recupero contenuta.",
+      "completed": "Esercitazione di recupero completata e accesso temporaneo revocato.",
+      "aborted": "Esercitazione di recupero annullata e accesso temporaneo revocato."
+    },
+    "loading": "Verifica dell'accesso di staging per il recupero…",
+    "title": "Esercitazione di recupero in staging",
+    "stagingOnly": "Solo in staging",
+    "description": "Esercita il recupero dell'account proprietario con separazione dei compiti, verifica recente tramite passkey, prove oscurate e revoca automatica.",
+    "environment": "Ambiente",
+    "available": "Host di staging autorizzato",
+    "unavailable": "Non disponibile su questo host",
+    "yourRole": "Il tuo ruolo",
+    "statusLabel": "Stato",
+    "hostGate": "Questo controllo resta bloccato a meno che non siano configurati la modalità staging e una allowlist esatta di host non di produzione.",
+    "passkeyRequired": "Le azioni sensibili dell'esercitazione richiedono una sessione verificata con passkey negli ultimi 15 minuti. Effettua l'accesso con una passkey, poi torna qui.",
+    "prepareTitle": "Prepara esercitazione con separazione dei compiti",
+    "prepareHelp": "Steve è il Responsabile del recupero. Assegna un diverso lead engineer che abbia già un account Get Phame attivo e una passkey.",
+    "drillTitle": "Titolo dell'esercitazione",
+    "approverEmail": "Email del lead engineer",
+    "scheduledAt": "Orario programmato",
+    "notes": "Note dell'operatore redatte (opzionale)",
+    "preparing": "Preparazione…",
+    "prepare": "Prepara esercitazione in staging",
+    "scheduledFor": "Programmato per {{date}}",
+    "approvalTitle": "Approvazione indipendente",
+    "approvalHelp": "Rivedi l'ambito dello staging e conferma di non essere il Responsabile del recupero. L'approvazione scade con il tuo accesso temporaneo ristretto.",
+    "decisionNote": "Nota decisionale",
+    "decisionPlaceholder": "Registra una motivazione di approvazione redatta",
+    "approve": "Approva",
+    "reject": "Rifiuta",
+    "start": "Avvia esercitazione approvata",
+    "evidenceTitle": "Registra prove redatte",
+    "evidenceHelp": "Usa solo event IDs, ticket IDs, timestamps o riferimenti a oggetti sanitizzati. Non inserire mai token, cookie, credenziali o dati dei clienti.",
+    "evidenceType": "Tipo di prova",
+    "outcome": "Risultato",
+    "evidenceReference": "Riferimento prova sanitizzato",
+    "evidencePlaceholder": "Esempio: audit-event:evt_123 alle 14:05 UTC",
+    "recordEvidence": "Registra prove",
+    "evidenceLog": "Registro delle prove",
+    "containmentReason": "Motivo del contenimento",
+    "containmentPlaceholder": "Condizione di arresto o motivo del contenimento",
+    "contain": "Contieni esercitazione",
+    "complete": "Completa e revoca accesso",
+    "abortReason": "Motivo dell'annullamento",
+    "abortPlaceholder": "Motivo dell'annullamento sanitizzato",
+    "abort": "Annulla esercitazione",
+    "status": {
+      "notPrepared": "Non preparato",
+      "draft": "Bozza",
+      "ready": "Pronto",
+      "in_progress": "In corso",
+      "paused": "Contenuto",
+      "completed": "Completato",
+      "aborted": "Annullato"
+    },
+    "roles": {
+      "none": "Nessun ruolo di recupero",
+      "platform_owner": "Proprietario della piattaforma",
+      "recovery_custodian": "Responsabile del recupero",
+      "independent_approver": "Approvatore indipendente",
+      "observer": "Osservatore"
+    },
+    "decision": {
+      "approved": "Approvato",
+      "rejected": "Rifiutato"
+    },
+    "evidence": {
+      "preflight": "Controlli preliminari",
+      "revoked_session_denial": "Negazione per sessione revocata",
+      "revoked_credential_denial": "Negazione per credenziale revocata",
+      "tenant_isolation": "Isolamento del tenant",
+      "replacement_enrollment": "Registrazione passkey sostitutiva",
+      "step_up_verification": "Verifica step-up",
+      "audit_verification": "Verifica di audit",
+      "rollback": "Validazione rollback",
+      "stop_condition": "Condizione di arresto",
+      "containment": "Contenimento",
+      "after_action": "Revisione post-azione"
+    },
+    "outcomes": {
+      "passed": "Superato",
+      "failed": "Fallito",
+      "blocked": "Bloccato",
+      "contained": "Contenuto",
+      "not_applicable": "Non applicabile"
+    }
   }
 }

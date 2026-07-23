@@ -2930,5 +2930,102 @@
       "removeSuccess": "Clé d’accès supprimée.",
       "removeError": "Impossible de supprimer la clé d’accès."
     }
+  },
+  "recoveryDrill": {
+    "defaults": {
+      "title": "Exercice de récupération du compte propriétaire"
+    },
+    "toast": {
+      "prepared": "Exercice de récupération en pré-production préparé.",
+      "approved": "Exercice de récupération approuvé.",
+      "rejected": "Exercice de récupération rejeté et clôturé.",
+      "started": "Exercice de récupération démarré.",
+      "evidence": "Preuves masquées enregistrées.",
+      "contained": "Exercice de récupération contenu.",
+      "completed": "Exercice de récupération terminé et accès temporaire révoqué.",
+      "aborted": "Exercice de récupération avorté et accès temporaire révoqué."
+    },
+    "loading": "Vérification de l'accès de récupération en pré-production…",
+    "title": "Exercice de récupération en pré-production",
+    "stagingOnly": "Uniquement en pré-production",
+    "description": "Exercez la récupération du compte propriétaire avec séparation des tâches, vérification récente par passkey, preuves masquées et révocation automatique.",
+    "environment": "Environnement",
+    "available": "Hôte de pré-production autorisé",
+    "unavailable": "Indisponible sur cet hôte",
+    "yourRole": "Votre rôle",
+    "statusLabel": "Statut",
+    "hostGate": "Ce contrôle reste verrouillé sauf si le mode pré-production et une liste blanche d'hôtes non‑production exacte sont configurés.",
+    "passkeyRequired": "Les actions sensibles de l'exercice nécessitent une session vérifiée par passkey datant des 15 dernières minutes. Connectez‑vous avec une passkey, puis revenez ici.",
+    "prepareTitle": "Préparer un exercice avec séparation des responsabilités",
+    "prepareHelp": "Steve est le Recovery Custodian. Désignez un autre ingénieur principal qui possède déjà un compte Get Phame actif et une passkey.",
+    "drillTitle": "Titre de l'exercice",
+    "approverEmail": "Email de l'ingénieur principal",
+    "scheduledAt": "Heure prévue",
+    "notes": "Notes de l'opérateur masquées (optionnel)",
+    "preparing": "Préparation…",
+    "prepare": "Préparer l'exercice en pré-production",
+    "scheduledFor": "Programmé pour le {{date}}",
+    "approvalTitle": "Approbation indépendante",
+    "approvalHelp": "Examinez la portée en pré-production et confirmez que vous n'êtes pas le Recovery Custodian. L'approbation expire avec votre accès temporaire restreint.",
+    "decisionNote": "Note de décision",
+    "decisionPlaceholder": "Enregistrez une justification d'approbation masquée",
+    "approve": "Approuver",
+    "reject": "Rejeter",
+    "start": "Démarrer l'exercice approuvé",
+    "evidenceTitle": "Enregistrer des preuves masquées",
+    "evidenceHelp": "N'utilisez que des event IDs, des numéros de ticket, des horodatages ou des références d'objet assainies. N'entrez jamais de tokens, de cookies, d'identifiants ou de données client.",
+    "evidenceType": "Type de preuve",
+    "outcome": "Résultat",
+    "evidenceReference": "Référence de preuve assainie",
+    "evidencePlaceholder": "Exemple : audit-event:evt_123 à 14:05 UTC",
+    "recordEvidence": "Enregistrer la preuve",
+    "evidenceLog": "Journal des preuves",
+    "containmentReason": "Motif de confinement",
+    "containmentPlaceholder": "Condition d'arrêt ou motif de confinement",
+    "contain": "Contenir l'exercice",
+    "complete": "Terminer et révoquer l'accès",
+    "abortReason": "Motif d'abandon",
+    "abortPlaceholder": "Motif d'abandon assaini",
+    "abort": "Annuler l'exercice",
+    "status": {
+      "notPrepared": "Non préparé",
+      "draft": "Brouillon",
+      "ready": "Prêt",
+      "in_progress": "En cours",
+      "paused": "Confiné",
+      "completed": "Terminé",
+      "aborted": "Avorté"
+    },
+    "roles": {
+      "none": "No recovery role",
+      "platform_owner": "Platform owner",
+      "recovery_custodian": "Recovery Custodian",
+      "independent_approver": "Independent Approver",
+      "observer": "Observer"
+    },
+    "decision": {
+      "approved": "Approuvé",
+      "rejected": "Rejeté"
+    },
+    "evidence": {
+      "preflight": "Vérifications préalables",
+      "revoked_session_denial": "Refus — session révoquée",
+      "revoked_credential_denial": "Refus — identifiants révoqués",
+      "tenant_isolation": "Isolation des locataires",
+      "replacement_enrollment": "Enrôlement d'une passkey de remplacement",
+      "step_up_verification": "Vérification renforcée",
+      "audit_verification": "Vérification d'audit",
+      "rollback": "Validation de restauration",
+      "stop_condition": "Condition d'arrêt",
+      "containment": "Confinement",
+      "after_action": "Revue post-action"
+    },
+    "outcomes": {
+      "passed": "Réussi",
+      "failed": "Échoué",
+      "blocked": "Bloqué",
+      "contained": "Confiné",
+      "not_applicable": "Non applicable"
+    }
   }
 }

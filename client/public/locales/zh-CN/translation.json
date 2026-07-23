@@ -2401,5 +2401,102 @@
       "removeSuccess": "通行密钥已移除。",
       "removeError": "无法移除通行密钥。"
     }
+  },
+  "recoveryDrill": {
+    "defaults": {
+      "title": "所有者账户恢复演练"
+    },
+    "toast": {
+      "prepared": "暂存恢复演练已准备完毕。",
+      "approved": "恢复演练已批准。",
+      "rejected": "恢复演练已被拒绝并已关闭。",
+      "started": "恢复演练已启动。",
+      "evidence": "已记录已脱敏的证据。",
+      "contained": "恢复演练已被遏制。",
+      "completed": "恢复演练已完成，并已撤销临时访问权限。",
+      "aborted": "恢复演练已中止，并已撤销临时访问权限。"
+    },
+    "loading": "正在检查暂存恢复访问权限…",
+    "title": "暂存恢复演练",
+    "stagingOnly": "仅限暂存",
+    "description": "演练所有者账户恢复流程，包含职责分离、最近的 passkey 验证、已脱敏证据和自动撤销。",
+    "environment": "环境",
+    "available": "允许的暂存主机",
+    "unavailable": "在此主机上不可用",
+    "yourRole": "您的角色",
+    "statusLabel": "状态",
+    "hostGate": "除非已配置暂存模式并为非生产主机配置了精确的允许列表，否则此控制保持锁定。",
+    "passkeyRequired": "敏感演练操作需要在最近 15 分钟内通过 passkey 验证的会话。请使用 passkey 登录，然后返回此处。",
+    "prepareTitle": "准备职责分离演练",
+    "prepareHelp": "Steve 是恢复保管人。指派另一位已拥有 Get Phame 帐户和 passkey 的首席工程师。",
+    "drillTitle": "演练标题",
+    "approverEmail": "首席工程师邮箱",
+    "scheduledAt": "计划时间",
+    "notes": "已脱敏的操作员备注（可选）",
+    "preparing": "准备中…",
+    "prepare": "准备暂存演练",
+    "scheduledFor": "计划于 {{date}}",
+    "approvalTitle": "独立审批",
+    "approvalHelp": "审核暂存范围并确认您不是恢复保管人。批准将在您有限的临时访问权限结束时失效。",
+    "decisionNote": "决定备注",
+    "decisionPlaceholder": "记录已脱敏的批准理由",
+    "approve": "批准",
+    "reject": "拒绝",
+    "start": "启动已批准演练",
+    "evidenceTitle": "记录已脱敏证据",
+    "evidenceHelp": "仅填写事件 ID、工单 ID、时间戳或已脱敏的对象引用。切勿输入令牌、Cookie、凭证或客户数据。",
+    "evidenceType": "证据类型",
+    "outcome": "结果",
+    "evidenceReference": "已脱敏证据引用",
+    "evidencePlaceholder": "示例：audit-event:evt_123 at 14:05 UTC",
+    "recordEvidence": "记录证据",
+    "evidenceLog": "证据日志",
+    "containmentReason": "遏制原因",
+    "containmentPlaceholder": "停止条件或遏制原因",
+    "contain": "遏制演练",
+    "complete": "完成并撤销访问权限",
+    "abortReason": "中止原因",
+    "abortPlaceholder": "已脱敏的中止原因",
+    "abort": "中止演练",
+    "status": {
+      "notPrepared": "未准备",
+      "draft": "草稿",
+      "ready": "已就绪",
+      "in_progress": "进行中",
+      "paused": "已遏制",
+      "completed": "已完成",
+      "aborted": "已中止"
+    },
+    "roles": {
+      "none": "无恢复角色",
+      "platform_owner": "平台所有者",
+      "recovery_custodian": "恢复保管人",
+      "independent_approver": "独立审批人",
+      "observer": "观察员"
+    },
+    "decision": {
+      "approved": "已批准",
+      "rejected": "已拒绝"
+    },
+    "evidence": {
+      "preflight": "预检",
+      "revoked_session_denial": "撤销会话拒绝",
+      "revoked_credential_denial": "撤销凭证拒绝",
+      "tenant_isolation": "租户隔离",
+      "replacement_enrollment": "替换 passkey 注册",
+      "step_up_verification": "提升验证",
+      "audit_verification": "审计验证",
+      "rollback": "回滚验证",
+      "stop_condition": "停止条件",
+      "containment": "遏制",
+      "after_action": "事后审查"
+    },
+    "outcomes": {
+      "passed": "通过",
+      "failed": "失败",
+      "blocked": "已阻止",
+      "contained": "已遏制",
+      "not_applicable": "不适用"
+    }
   }
 }
