@@ -37,3 +37,11 @@
 - [x] Build the reusable zero-trust implementation skill with concise workflow guidance, reference material, and reusable document templates.
 - [x] Validate the skill package and representative role-matrix, WebAuthn, and recovery-drill scenarios through the skill-creator workflow.
 - [x] Deliver the packaged skill and the three review-ready Get Phame security documents.
+- [x] Restore and checkpoint the additive zero-trust schema plus deny-by-default authorization foundation in observe mode.
+- [ ] Restore and checkpoint the deterministic role backfill and focused authorization regression tests.
+- [ ] Restore and checkpoint SimpleWebAuthn registration, login, revocable sessions, credential lifecycle, and legacy-auth coexistence.
+- [ ] Restore and checkpoint accessible mobile-first passkey interfaces across all seven supported locales.
+- [ ] Implement and checkpoint the staging-only recovery drill with Steve as Recovery Custodian and a distinct lead-engineer Independent Approver.
+- [ ] Run focused and full tests, bounded TypeScript validation, migration checks, dependency audit, production build, and responsive verification.
+- [ ] Verify the staged managed deployment and synchronize only validated source to the selected private GitHub repository.
+- [ ] Deliver passkey activation, approver assignment, and staging recovery-drill execution instructions.

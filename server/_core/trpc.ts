@@ -7,6 +7,8 @@ import { businessProfiles } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { hasPaidOrAdminAccess } from "../entitlements";
 import { findActiveComplimentaryAccess } from "../complimentaryAccess";
+import { authorizeRequest, type AuthorizationRequestOptions } from "../security/authorization";
+import type { SecurityPermission } from "../security/policy";
 
 const t = initTRPC.context<TrpcContext>().create({
   transformer: superjson,
@@ -31,6 +33,21 @@ const requireUser = t.middleware(async opts => {
 });
 
 export const protectedProcedure = t.procedure.use(requireUser);
+
+/**
+ * Server-side zero-trust procedure factory. Observe mode is the safe default;
+ * enforcement activates only when ZERO_TRUST_ROLLOUT_MODE=enforce.
+ */
+export const securityProcedure = (
+  permission: SecurityPermission,
+  resolveOptions?: (input: unknown, ctx: TrpcContext) => AuthorizationRequestOptions,
+) => protectedProcedure.use(t.middleware(async ({ ctx, input, next }) => {
+  const result = await authorizeRequest(ctx, permission, resolveOptions?.(input, ctx) ?? {});
+  if (result.mode === "enforce" && !result.decision.allowed) {
+    throw new TRPCError({ code: "FORBIDDEN", message: `Access denied (${result.decision.reasonCode})` });
+  }
+  return next({ ctx });
+}));
 
 /**
  * paidProcedure — requires an active paid subscription (pro, annual, or lifetime).

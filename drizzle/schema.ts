@@ -51,6 +51,24 @@ export const supportQueueSlaWindowEnum = pgEnum("support_queue_sla_window", ["ov
 export const supportQueueSortEnum = pgEnum("support_queue_sort", ["newest", "oldest", "priority", "assignee", "sla_soonest", "due_soonest"]);
 export const supportQueueViewVisibilityEnum = pgEnum("support_queue_view_visibility", ["private", "team"]);
 export const complimentaryAccessDurationUnitEnum = pgEnum("complimentary_access_duration_unit", ["day", "month", "year"]);
+export const securityRoleEnum = pgEnum("security_role", [
+  "platform_owner",
+  "security_administrator",
+  "platform_operations_administrator",
+  "billing_administrator",
+  "support_manager",
+  "support_agent",
+  "organization_owner",
+  "organization_administrator",
+  "campaign_operator",
+]);
+export const securityScopeEnum = pgEnum("security_scope", ["platform", "organization"]);
+export const securityPermissionEffectEnum = pgEnum("security_permission_effect", ["allow", "deny"]);
+export const securityActorTypeEnum = pgEnum("security_actor_type", ["human", "service"]);
+export const securityDecisionEnum = pgEnum("security_decision", ["allow", "deny"]);
+export const securityApprovalStatusEnum = pgEnum("security_approval_status", ["pending", "approved", "rejected", "expired", "executed"]);
+export const securitySessionAuthMethodEnum = pgEnum("security_session_auth_method", ["oauth", "magic_link", "passkey"]);
+export const securityAssuranceEnum = pgEnum("security_assurance", ["a1", "a2"]);
 
 // ─── Tables ───────────────────────────────────────────────────────────────────
 
@@ -1128,3 +1146,121 @@ export const leads = pgTable("leads", {
 });
 export type Lead = typeof leads.$inferSelect;
 export type InsertLead = typeof leads.$inferInsert;
+
+/**
+ * Opaque, revocable security sessions used by passkeys and future step-up paths.
+ * Existing OAuth and magic-link JWT sessions remain valid during observe-mode rollout.
+ */
+export const authSessions = pgTable("auth_sessions", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  userId: integer("user_id").notNull(),
+  tokenHash: varchar("token_hash", { length: 64 }).notNull().unique(),
+  authMethod: securitySessionAuthMethodEnum("auth_method").notNull(),
+  assurance: securityAssuranceEnum("assurance").notNull().default("a1"),
+  authenticatedAt: bigint("authenticated_at", { mode: "number" }).notNull(),
+  lastStepUpAt: bigint("last_step_up_at", { mode: "number" }),
+  expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
+  lastSeenAt: bigint("last_seen_at", { mode: "number" }).notNull(),
+  revokedAt: bigint("revoked_at", { mode: "number" }),
+  revocationReason: varchar("revocation_reason", { length: 255 }),
+  ipHash: varchar("ip_hash", { length: 64 }),
+  userAgentHash: varchar("user_agent_hash", { length: 64 }),
+  createdAt: bigint("created_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("auth_sessions_user_idx").on(table.userId),
+  index("auth_sessions_expiry_idx").on(table.expiresAt, table.revokedAt),
+]);
+export type AuthSession = typeof authSessions.$inferSelect;
+export type InsertAuthSession = typeof authSessions.$inferInsert;
+
+/** Server-enforced platform or organization role grants. */
+export const securityRoleGrants = pgTable("security_role_grants", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  role: securityRoleEnum("role").notNull(),
+  scopeType: securityScopeEnum("scope_type").notNull(),
+  organizationId: integer("organization_id"),
+  grantedByUserId: integer("granted_by_user_id").notNull(),
+  reason: varchar("reason", { length: 500 }).notNull(),
+  grantedAt: bigint("granted_at", { mode: "number" }).notNull(),
+  expiresAt: bigint("expires_at", { mode: "number" }),
+  revokedAt: bigint("revoked_at", { mode: "number" }),
+  revokedByUserId: integer("revoked_by_user_id"),
+  revokeReason: varchar("revoke_reason", { length: 500 }),
+}, (table) => [
+  index("security_role_grants_user_idx").on(table.userId),
+  index("security_role_grants_scope_idx").on(table.scopeType, table.organizationId),
+  index("security_role_grants_active_idx").on(table.userId, table.revokedAt, table.expiresAt),
+]);
+export type SecurityRoleGrant = typeof securityRoleGrants.$inferSelect;
+export type InsertSecurityRoleGrant = typeof securityRoleGrants.$inferInsert;
+
+/** Time-bounded explicit permission grants or denials; deny always wins. */
+export const securityPermissionOverrides = pgTable("security_permission_overrides", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  permission: varchar("permission", { length: 128 }).notNull(),
+  effect: securityPermissionEffectEnum("effect").notNull(),
+  scopeType: securityScopeEnum("scope_type").notNull(),
+  organizationId: integer("organization_id"),
+  reason: varchar("reason", { length: 500 }).notNull(),
+  grantedByUserId: integer("granted_by_user_id").notNull(),
+  grantedAt: bigint("granted_at", { mode: "number" }).notNull(),
+  expiresAt: bigint("expires_at", { mode: "number" }),
+  revokedAt: bigint("revoked_at", { mode: "number" }),
+  revokedByUserId: integer("revoked_by_user_id"),
+}, (table) => [
+  index("security_permission_overrides_user_idx").on(table.userId),
+  index("security_permission_overrides_permission_idx").on(table.permission),
+]);
+export type SecurityPermissionOverride = typeof securityPermissionOverrides.$inferSelect;
+export type InsertSecurityPermissionOverride = typeof securityPermissionOverrides.$inferInsert;
+
+/** Immutable authorization and sensitive-action evidence without secrets or raw tokens. */
+export const securityAuditEvents = pgTable("security_audit_events", {
+  id: serial("id").primaryKey(),
+  eventType: varchar("event_type", { length: 128 }).notNull(),
+  actorType: securityActorTypeEnum("actor_type").notNull(),
+  actorUserId: integer("actor_user_id"),
+  serviceIdentityId: varchar("service_identity_id", { length: 36 }),
+  sessionId: varchar("session_id", { length: 36 }),
+  organizationId: integer("organization_id"),
+  permission: varchar("permission", { length: 128 }),
+  decision: securityDecisionEnum("decision"),
+  reasonCode: varchar("reason_code", { length: 80 }).notNull(),
+  actionKey: varchar("action_key", { length: 128 }),
+  resourceType: varchar("resource_type", { length: 80 }),
+  resourceId: varchar("resource_id", { length: 128 }),
+  metadataJson: text("metadata_json"),
+  ipHash: varchar("ip_hash", { length: 64 }),
+  userAgentHash: varchar("user_agent_hash", { length: 64 }),
+  occurredAt: bigint("occurred_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("security_audit_events_type_idx").on(table.eventType, table.occurredAt),
+  index("security_audit_events_actor_idx").on(table.actorUserId, table.occurredAt),
+  index("security_audit_events_org_idx").on(table.organizationId, table.occurredAt),
+]);
+export type SecurityAuditEvent = typeof securityAuditEvents.$inferSelect;
+export type InsertSecurityAuditEvent = typeof securityAuditEvents.$inferInsert;
+
+/** Dual-control evidence for owner, export, billing, and recovery-sensitive actions. */
+export const securityActionApprovals = pgTable("security_action_approvals", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  actionKey: varchar("action_key", { length: 128 }).notNull(),
+  requesterUserId: integer("requester_user_id").notNull(),
+  approverUserId: integer("approver_user_id"),
+  organizationId: integer("organization_id"),
+  resourceType: varchar("resource_type", { length: 80 }),
+  resourceId: varchar("resource_id", { length: 128 }),
+  status: securityApprovalStatusEnum("status").notNull().default("pending"),
+  evidenceReference: varchar("evidence_reference", { length: 500 }),
+  requestedAt: bigint("requested_at", { mode: "number" }).notNull(),
+  expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
+  decidedAt: bigint("decided_at", { mode: "number" }),
+  executedAt: bigint("executed_at", { mode: "number" }),
+}, (table) => [
+  index("security_action_approvals_action_idx").on(table.actionKey, table.status),
+  index("security_action_approvals_requester_idx").on(table.requesterUserId),
+]);
+export type SecurityActionApproval = typeof securityActionApprovals.$inferSelect;
+export type InsertSecurityActionApproval = typeof securityActionApprovals.$inferInsert;

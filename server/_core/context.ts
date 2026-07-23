@@ -2,10 +2,18 @@ import type { CreateExpressContextOptions } from "@trpc/server/adapters/express"
 import type { User } from "../../drizzle/schema";
 import { sdk } from "./sdk";
 
+export type SecuritySessionContext = {
+  id: string;
+  method: "passkey" | "magic_link" | "oauth";
+  assurance: "a0" | "a1" | "a2";
+  recentAuthenticationAt: number | null;
+};
+
 export type TrpcContext = {
   req: CreateExpressContextOptions["req"];
   res: CreateExpressContextOptions["res"];
   user: User | null;
+  securitySession: SecuritySessionContext | null;
 };
 
 export async function createContext(
@@ -24,5 +32,6 @@ export async function createContext(
     req: opts.req,
     res: opts.res,
     user,
+    securitySession: null,
   };
 }
