@@ -4,6 +4,7 @@ import type { TrpcContext } from "./_core/context";
 const mocks = vi.hoisted(() => ({
   getDb: vi.fn(),
   findProfile: vi.fn(),
+  findActiveComplimentaryAccess: vi.fn(),
   storageGet: vi.fn(),
 }));
 
@@ -15,6 +16,11 @@ vi.mock("./db", async (importOriginal) => ({
 vi.mock("./storage", async (importOriginal) => ({
   ...(await importOriginal<typeof import("./storage")>()),
   storageGet: mocks.storageGet,
+}));
+
+vi.mock("./complimentaryAccess", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("./complimentaryAccess")>()),
+  findActiveComplimentaryAccess: mocks.findActiveComplimentaryAccess,
 }));
 
 import { appRouter } from "./routers";
@@ -43,6 +49,7 @@ describe("private connector download", () => {
     mocks.getDb.mockResolvedValue({
       query: { businessProfiles: { findFirst: mocks.findProfile } },
     });
+    mocks.findActiveComplimentaryAccess.mockResolvedValue(null);
     mocks.storageGet.mockResolvedValue({
       key: "connectors/get-phame-connector.zip",
       url: "https://signed.example.com/get-phame-connector.zip",

@@ -89,6 +89,7 @@ const ImportContactsPage  = lazy(() => import("./pages/ImportContacts"));
 const UpgradePage         = lazy(() => import("./pages/Upgrade"));
 const CompliancePage      = lazy(() => import("./pages/Compliance"));
 const ClientReviewsPage   = lazy(() => import("./pages/ClientReviews"));
+const DeveloperIntegrationsPage = lazy(() => import("./pages/DeveloperIntegrations"));
 
 const AdminDashboardPage  = lazy(() => import("./pages/AdminDashboard"));
 const AdminUsersPage      = lazy(() => import("./pages/AdminUsers"));
@@ -99,6 +100,7 @@ const AdminSmtpStatsPage  = lazy(() => import("./pages/AdminSmtpStats"));
 const AdminAuthDiagnosticsPage = lazy(() => import("./pages/AdminAuthDiagnostics"));
 const AdminChurnPage      = lazy(() => import("./pages/AdminChurn"));
 const AdminRevenuePage    = lazy(() => import("./pages/AdminRevenue"));
+const AdminRevenueControlsPage = lazy(() => import("./pages/AdminRevenueControls"));
 const AdminReferralRewardsPage = lazy(() => import("./pages/AdminReferralRewards"));
 const AdminReminderPerformancePage = lazy(() => import("./pages/AdminReminderPerformance"));
 const AdminKoalendarRetryPage = lazy(() => import("./pages/AdminKoalendarRetry"));
@@ -327,6 +329,7 @@ function AppShell() {
                 <Route path="/" component={HomePage} />
                 <Route path="/send" component={SendRequestPage} />
                 <Route path="/dashboard" component={DashboardPage} />
+                <Route path="/developer" component={DeveloperIntegrationsPage} />
                 <Route path="/settings" component={SettingsPage} />
                 <Route path="/payment-success" component={PaymentSuccessPage} />
                 <Route path="/privacy-policy" component={PrivacyPolicyPage} />
@@ -347,6 +350,7 @@ function AppShell() {
                 <Route path="/admin/auth-diagnostics" component={AdminAuthDiagnosticsPage} />
                 <Route path="/admin/churn" component={AdminChurnPage} />
                 <Route path="/admin/revenue" component={AdminRevenuePage} />
+                <Route path="/admin/revenue-controls" component={AdminRevenueControlsPage} />
                 <Route path="/admin/referral-rewards" component={AdminReferralRewardsPage} />
                 <Route path="/admin/reminder-performance" component={AdminReminderPerformancePage} />
                 <Route path="/admin/koalendar-retry" component={AdminKoalendarRetryPage} />

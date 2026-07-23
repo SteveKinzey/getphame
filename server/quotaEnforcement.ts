@@ -2,10 +2,12 @@ import { eq } from "drizzle-orm";
 import type { FreeQuotaSummary } from "../shared/quota";
 import { users } from "../drizzle/schema";
 import { getDb, getFreeQuotaSummary } from "./db";
+import { findActiveComplimentaryAccess } from "./complimentaryAccess";
 
 export type FreeQuotaDataSource = {
   getUserRole(userId: number): Promise<string | null>;
   getQuota(userId: number): Promise<FreeQuotaSummary>;
+  hasComplimentaryAccess?(userId: number): Promise<boolean>;
 };
 
 export type FreeQuotaAccessDecision = {
@@ -25,6 +27,17 @@ const productionQuotaDataSource: FreeQuotaDataSource = {
       .limit(1);
     return account?.role ?? null;
   },
+  async hasComplimentaryAccess(userId) {
+    const db = await getDb();
+    if (!db) return false;
+    const [account] = await db
+      .select({ email: users.email })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+    if (!account) return false;
+    return Boolean(await findActiveComplimentaryAccess({ userId, email: account.email }));
+  },
   getQuota: getFreeQuotaSummary,
 };
 
@@ -43,6 +56,10 @@ export async function evaluateFreeQuotaAccess(
   }
 
   if ((await dataSource.getUserRole(userId)) === "admin") {
+    return { allowed: true, bypassed: true, quota: null };
+  }
+
+  if (dataSource.hasComplimentaryAccess && await dataSource.hasComplimentaryAccess(userId)) {
     return { allowed: true, bypassed: true, quota: null };
   }
 

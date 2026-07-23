@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS `complimentary_access_grants` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`email_fingerprint` varchar(64) NOT NULL,
+	`email_masked` varchar(320) NOT NULL,
+	`user_id` int,
+	`duration_value` int NOT NULL,
+	`duration_unit` enum('day','month','year') NOT NULL,
+	`starts_at` bigint NOT NULL,
+	`expires_at` bigint NOT NULL,
+	`created_by_user_id` int NOT NULL,
+	`note` varchar(500),
+	`revoked_at` bigint,
+	`revoked_by_user_id` int,
+	`created_at` timestamp NOT NULL DEFAULT (now()),
+	`updated_at` timestamp NOT NULL DEFAULT (now()),
+	CONSTRAINT `complimentary_access_grants_id` PRIMARY KEY(`id`),
+	KEY `complimentary_access_email_expiry_idx` (`email_fingerprint`,`expires_at`),
+	KEY `complimentary_access_user_expiry_idx` (`user_id`,`expires_at`),
+	KEY `complimentary_access_created_idx` (`created_at`)
+);

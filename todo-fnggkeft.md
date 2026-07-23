@@ -164,4 +164,76 @@
 - [x] Establish `/home/ubuntu/getphame` as the safe Get Phame workspace name without breaking the managed project path, publishing metadata, checkpoints, or rollback history
 - [x] Inventory the bound `/Users/skinzey/code/getphame` workspace, compare it with the managed source of truth, and apply only a confirmed Git-safe cleanup structure
 - [x] Run focused tests, the full suite, TypeScript checks, dependency security audit, production build, and authenticated desktop/mobile responsive verification
-- [ ] Save and auto-publish a release checkpoint, verify the live Get Phame bundle contains the new workflow markers, and deliver the updated reusable skill plus product assessment
+- [x] Save and auto-publish a release checkpoint, verify the live Get Phame bundle contains the new workflow markers, and deliver the updated reusable skill plus product assessment
+- [x] Confirm the Get Phame GitHub remote, branch, working-tree state, and default branch without overwriting concurrent work
+- [x] Commit and push the validated release changes to a dedicated GitHub branch
+- [x] Open or update the release pull request, merge it into the default branch after checks, and verify the merged commit
+- [x] Audit the current administrator CSV preview, contextual keyboard Undo, toast system, localization, tests, and reusable-skill boundaries before editing
+- [x] Add an accessible visual success toast after a Ctrl/Cmd+Z preset-reorder Undo is confirmed, without duplicating button-triggered feedback or firing for ignored shortcuts
+- [x] Add a new CSV download action that exports every complete-snapshot row-search match using the active selected columns, sanitized values, stable ordering, and a distinct search-results filename
+- [x] Localize the new toast and search-result export labels and states across all seven Get Phame locales and bump the locale cache key
+- [x] Add focused helper, interaction, accessibility, filename, search-parity, export-scope, localization, and regression coverage for both workflows
+- [x] Create a dedicated reusable administrator CSV preview workflow skill through the skill-creator process and pass the official validator
+- [x] Run focused tests, the full suite, TypeScript checks, dependency audit, production build, and authenticated desktop/mobile responsive verification
+- [ ] Save and auto-publish the release checkpoint, verify the live bundle markers, and deliver the new skill plus a direct lifetime-offer rationale and alternatives
+- [x] Diagnose why the deployment build receives an unusable Apple private key in the credential-generation test without reading, logging, or exposing the secret
+- [x] Harden the Apple credential test and build gate so placeholder or unavailable build-time credentials do not falsely block deployment while valid credentials and runtime Sign in with Apple behavior remain protected
+- [x] Re-run the focused Apple authentication test and production build before resuming the full release gate
+- [x] Correlate the recurring `/settings` API failures with server, browser, network, process, and memory evidence — a sandbox-only `tsc --noEmit --watch` process was consuming about 2.4 GB, not a Settings application defect
+- [x] Stop the runaway development TypeScript watch chain and recover more than 2 GB of available memory so otherwise healthy Settings API batches can respond normally
+- [x] Verify post-intervention API, network, and resource health; no production regression test or code change is warranted for the isolated workspace-process failure
+- [x] Correlate the recurring `/settings` API failures at 2026-07-22 19:09:09 and 19:09:34 America/Los_Angeles with development server, browser-console, network, process, and memory evidence
+- [x] Close the suspected failing-Settings-procedure branch after confirming the application API responds normally once workspace memory pressure is removed
+- [x] Confirm root and `auth.me` return HTTP 200 in under 10 ms locally, later tRPC batches return HTTP 200, available memory recovered above 2 GB, and authenticated visual verification is deferred only because the restored preview hostname has no session cookie
+- [x] Reconstruct the audited Stripe, entitlement, quota, identity, administrator navigation, and localization requirements after the sandbox restart
+- [x] Restore and verify the additive complimentary-access grant schema and migration with exact-email fingerprint matching, masked display, UTC validity, creator audit fields, notes, and revocation
+- [x] Add administrator-only Stripe coupon and promotion-code creation with validated percent or fixed discounts, Stripe-native duration and redemption controls, and no duplicated payment data
+- [x] Add administrator-only complimentary access creation, listing, exact-email lookup, calendar-aware days/months/years, stacking, revocation, and automatic access for registered or future users
+- [x] Apply active complimentary access consistently to protected paid-feature, quota, and paid-route decisions without weakening authentication, role, or Stripe subscription checks
+- [ ] Add a responsive, keyboard-accessible, seven-locale administrator revenue controls page and focused authorization, Stripe-mock, duration, privacy, future-user, stacking, revocation, UI, and localization regressions
+- [ ] Restore and revalidate the dedicated administrator CSV preview workflow skill recovered after the sandbox restart
+- [ ] Run the full suite, TypeScript checks, dependency audit, production build, responsive verification, checkpoint publication, and live-bundle confirmation for the expanded release
+- [ ] Deliver the Settings fix, expanded revenue-controls release, reusable CSV skill, deployment-fix explanation, and direct lifetime-offer rationale with cash-flow-preserving alternatives
+- [x] Analyze the current Get Phame file tree and summarize the live frontend, server, database, integration, and shared-module architecture without changing implementation code
+- [x] Map the review-routing flow, Google integration boundaries, dashboard state/query dependencies, monolithic components, nested logic, and third-party hook bottlenecks file by file
+- [x] Deliver a modular sequential refactoring blueprint with module boundaries, state-management changes, API-route changes, verification gates, and explicit approval checkpoints; then pause before implementation
+- [x] Recreate `/home/ubuntu/getphame` as a safe alias to the active managed project at `/home/ubuntu/review-rocket` and verify both paths resolve to the same working tree
+- [x] Audit existing Get Phame help, compliance, support, Google URL guidance, Yelp policy guidance, localization, and AI integration surfaces without changing product code
+- [x] Design a grounded Get Phame help assistant with approved-source retrieval, citations, compliance guardrails, privacy controls, unknown-answer handling, and human-support escalation
+- [x] Add the help assistant as a separate approval-gated module in the architecture blueprint and pause before implementation
+- [x] Audit the current Get Phame email connection, provider detection, credential guidance, connection testing, onboarding progression, and failure recovery without changing product code
+- [x] Design a low-friction in-app email connection flow that requires no hosting-panel or mail-server login, prefers provider authorization, auto-detects configuration, minimizes credentials, and verifies success before continuing
+- [x] Add email onboarding as a separate conversion-critical approval gate in the architecture blueprint, including provider-specific fallbacks, analytics, accessibility, localization, and behavior-preserving migration steps
+- [x] Audit major consumer and business email providers against official documentation, including SMTP host, port, TLS mode, authentication method, app-password or administrator requirements, OAuth availability, and cloud-SaaS compatibility
+- [x] Produce a source-cited provider matrix that identifies safe automatic presets, guided fallbacks, unsupported configurations, and custom-domain discovery rules without storing or requesting unnecessary credentials
+- [x] Audit the current bulk-sender connection contract and verify official SendGrid SMTP server, ports, TLS, username, API-key-as-password, and sender-verification requirements
+- [x] Extend the provider matrix and architecture blueprint with an explicit bulk-sender form for server, port, security mode, username, and password/API key plus a safe SendGrid preset
+- [x] Audit and source-verify first-class Bulk Sender SMTP presets for Mailgun, Postmark, Amazon SES, Brevo, Mailjet, SMTP2GO, MailerSend, SparkPost, Resend, Mailchimp Transactional, Elastic Email, and ZeptoMail
+- [x] Normalize each bulk provider’s host, ports, TLS mode, username, secret type, regional differences, sender/domain verification, test behavior, and safe Get Phame treatment
+- [x] Extend the provider matrix and approval-gated architecture blueprint so every supported bulk sender receives the same guided preset, security, validation, and Custom SMTP fallback treatment as SendGrid
+- [x] Reconcile every unchecked session item against the latest shared branch and classify each as implemented, superseded, blocked, or still required
+- [ ] Complete and verify the unfinished administrator revenue-controls, complimentary-entitlement, localization, and release work already present in the working tree
+- [x] Define a privacy-safe developer API contract for importing consented customer names and email addresses from external form applications
+- [x] Add additive schema and migration support for scoped developer API keys, hashed key secrets, import idempotency, consent metadata, and bounded audit records
+- [x] Implement authenticated API-key creation, one-time secret display, listing, rotation, revocation, scope enforcement, rate limits, and last-used metadata
+- [x] Implement a versioned public customer-import endpoint with payload validation, idempotency, deduplication, consent enforcement, safe errors, and audit logging
+- [x] Build a responsive, localized Developer Integrations page for API-key management, endpoint details, field mapping, examples, and revocation
+- [x] Add integration guidance for WS Form, Gravity Forms, Fluent Forms, Elementor Forms, generic webhooks, and curl without exposing credentials
+- [x] Complete any still-required help-assistant, low-friction email onboarding, and multi-provider Bulk Sender implementation gaps confirmed by the checklist reconciliation
+- [x] Add layered abuse safeguards for API-triggered outreach, including per-key, account, and IP limits; destination velocity checks; automatic suspension; privacy-safe audit events; and actionable safe errors
+- [x] Expire developer API keys after 12 months without successful use, preserve audit history, expose the expiration reason and rotation path, and provide advance in-app warnings
+- [x] Add adaptive provider-aware daily and hourly sending limits with reputation ramping, 70% and 85% warnings, a hard safety ceiling, and a clear Bulk Sender upgrade path that cannot bypass anti-abuse protections; persist atomic autoscale-safe windows, enforce capacity at the mail boundary and public API, expose localized status across Settings and customer workflows, pass 495 tests with 6 intentional skips, bounded TypeScript validation, production audit/build, and responsive mobile verification
+- [x] Require a registered authenticated Get Phame account for API-key issuance, record versioned API Terms and acceptable-use acceptance with privacy-safe evidence, default new keys to import-only access, and gate higher-risk sending scope behind business-use details, automated risk classification, and administrator review; localize all enrollment states across seven locales, pass 502 tests with 6 intentional skips, bounded TypeScript validation, production audit/build, and multilingual mobile verification
+- [ ] Build an easy Sources workflow to import customer name, email, consent, and source from Jotform, Facebook Lead Ads, Google Forms, Airtable, and similar apps through secure OAuth, webhook, or guided no-code connections with deduplication and no automatic sending by default
+- [ ] Add focused server, authorization, security, idempotency, deduplication, compliance, UI, localization, and integration regression tests
+- [ ] Run the full suite, TypeScript checks, dependency audit, production build, authenticated responsive verification, checkpoint publication, and live-bundle confirmation
+- [x] Complete Phase 12 localization for all newly delivered customer workflows across EN, ES, FR, IT, TH, ZH-CN, and ZH-TW; validate 320 tracked keys plus review-platform additions, remove unreachable legacy English SMTP markup, refresh the phame27 cache key, verify Spanish, Thai, and Traditional Chinese mobile layouts including the open Help Assistant, secure onboarding API-key reveal/copy behavior, pass all 482 tests with 6 intentional skips, pass bounded TypeScript validation, and complete the production audit/build
+- [x] Inventory every GitHub repository and remote branch that belongs to the Get Phame app, including default branches, open pull requests, merge ancestry, releases, runtime versions, and dependency baselines
+- [x] Compare every non-default branch against the canonical branch and document all unique commits, features, migrations, tests, configuration changes, assets, and conflicting product directions before merging
+- [x] Create a lossless integration sequence that preserves all compatible functionality, resolves schema and migration ordering safely, and avoids overwriting concurrent canonical-branch changes
+- [ ] Merge all compatible Get Phame branch functionality into the canonical GitHub branch through a reviewable integration branch and pull request, with no force pushes or destructive history rewrites
+- [ ] Update the app runtime, package manager metadata, direct dependencies, and safe transitive dependencies to currently supported compatible releases, documenting any intentionally deferred breaking major upgrades
+- [ ] Repair all compatibility, security-audit, type, build, localization, migration, and functional regressions introduced by branch consolidation or dependency modernization
+- [ ] Run focused regressions, the complete test suite, bounded TypeScript checks, dependency and security audits, production build, migration review, and authenticated responsive verification on the consolidated app
+- [ ] Merge and verify the canonical GitHub branch, synchronize the managed Get Phame project without losing live functionality, save an auto-published checkpoint, and confirm the production bundle reflects the consolidated release
+- [ ] Remove the hardcoded landing-page testimonials, ratings, customer quotes, and review-count claims discovered during branch consolidation; replace them with truthful product proof that does not imply unverified customer results, update all seven locales, and add a regression guard against fabricated social proof

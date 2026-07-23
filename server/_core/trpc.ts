@@ -6,6 +6,7 @@ import { getDb } from "../db";
 import { businessProfiles } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { hasPaidOrAdminAccess } from "../entitlements";
+import { findActiveComplimentaryAccess } from "../complimentaryAccess";
 
 const t = initTRPC.context<TrpcContext>().create({
   transformer: superjson,
@@ -48,11 +49,15 @@ export const paidProcedure = t.procedure.use(
     const profile = await db.query.businessProfiles.findFirst({
       where: eq(businessProfiles.userId, ctx.user.id),
     });
+    const complimentaryAccess = ctx.user.role === "admin"
+      ? null
+      : await findActiveComplimentaryAccess({ userId: ctx.user.id, email: ctx.user.email });
 
     if (!hasPaidOrAdminAccess({
       role: ctx.user.role,
       tier: profile?.tier ?? "free",
       planExpiresAt: profile?.planExpiresAt,
+      complimentaryAccessExpiresAt: complimentaryAccess?.expiresAt,
     })) {
       throw new TRPCError({ code: "FORBIDDEN", message: UNPAID_ERR_MSG });
     }

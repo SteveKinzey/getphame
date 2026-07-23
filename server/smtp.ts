@@ -13,6 +13,8 @@ import { getDb } from "./db";
 import { smtpCredentials } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
 import { notifySmtpFailureTransition } from "./smtpHealthAlerts";
+import { reserveAdaptiveSendCapacity, type AdaptiveSendStatus } from "./adaptiveSendLimits";
+import { resolveOutboundDeliveryChannel } from "./outboundDeliveryChannel";
 
 // ── Encryption helpers ────────────────────────────────────────────────────────
 
@@ -188,9 +190,33 @@ export interface SendMailOptions {
   subject: string;
   html: string;
   text?: string;
+  safetyMode?: "review_request" | "system";
 }
 
-export async function sendMailViaSmtp(opts: SendMailOptions): Promise<void> {
+export async function sendMailViaSmtp(opts: SendMailOptions): Promise<AdaptiveSendStatus | null> {
+  if (opts.safetyMode !== "system") {
+    const channel = await resolveOutboundDeliveryChannel(opts.userId);
+    if (!channel) throw new Error("No email account connected. Please connect your email in Settings.");
+    const sendStatus = await reserveAdaptiveSendCapacity(opts.userId, 1);
+    const pass = decryptPassword(channel.encryptedSecret);
+    const transporter = createTransporter({
+      host: channel.host,
+      port: channel.port,
+      secure: channel.secure,
+      user: channel.username,
+      pass,
+    });
+    await transporter.sendMail({
+      from: `"${channel.fromName}" <${channel.fromEmail}>`,
+      replyTo: channel.replyTo,
+      to: opts.to,
+      subject: opts.subject,
+      html: opts.html,
+      text: opts.text,
+    });
+    return sendStatus;
+  }
+
   const creds = await getSmtpCredentials(opts.userId);
   if (!creds) throw new Error("No email account connected. Please connect your email in Settings.");
 
@@ -215,6 +241,7 @@ export async function sendMailViaSmtp(opts: SendMailOptions): Promise<void> {
     html: opts.html,
     text: opts.text,
   });
+  return null;
 }
 
 // ── Test connection ───────────────────────────────────────────────────────────
@@ -335,6 +362,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
       subject: "You're connected to Get Phame! 🚀",
       html,
       text,
+      safetyMode: "system",
     });
 
     return { ok: true };

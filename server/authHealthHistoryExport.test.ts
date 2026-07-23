@@ -7,6 +7,12 @@ import {
   buildAuthHealthHistoryExportRows,
   serializeAuthHealthHistoryCsv,
 } from "./authHealthHistoryExport";
+import {
+  buildAuthHealthHistorySearchResultsCsvFilename,
+  filterPreparedCsvRows,
+  normalizePreparedCsvSearchQuery,
+  serializePreparedCsvRows,
+} from "../shared/authHealthHistoryCsv";
 
 describe("auth health history CSV", () => {
   it("whitelists sanitized columns, blocks formula injection, and excludes scheduler identifiers", () => {
@@ -149,5 +155,34 @@ describe("auth health history CSV", () => {
     expect(snapshot.snapshotToMs).toBe(Date.UTC(2026, 6, 21, 13, 5, 0));
     expect(snapshot.csv).not.toContain("private-schedule");
     expect(snapshot.csv).not.toContain("user@example.com");
+  });
+
+  it("exports every complete-snapshot search match using selected columns and a distinct filename", () => {
+    const columns = [
+      { key: "recordId", csvHeader: "record_id" },
+      { key: "failureCode", csvHeader: "failure_code" },
+    ] as const;
+    const rows = Array.from({ length: AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT + 3 }, (_, index) => ({
+      recordId: String(index + 1),
+      failureCode: index % 2 === 1 ? (index === 27 ? "=NEEDLE" : "Needle match") : "healthy",
+      providerName: index === 0 ? "needle appears only in an excluded column" : "Provider",
+    }));
+
+    expect(normalizePreparedCsvSearchQuery("  NeEdLe  ")).toBe("needle");
+    const matchingRows = filterPreparedCsvRows(rows, columns, "  NeEdLe  ");
+    expect(matchingRows).toHaveLength(14);
+    expect(matchingRows[0]?.recordId).toBe("2");
+    expect(matchingRows.at(-1)?.recordId).toBe("28");
+    expect(matchingRows.some((row) => row.recordId === "1")).toBe(false);
+
+    const csv = serializePreparedCsvRows(matchingRows, columns);
+    expect(csv.split("\r\n").filter(Boolean)).toHaveLength(matchingRows.length + 1);
+    expect(csv).toContain("28,'=NEEDLE");
+    expect(csv).not.toContain("providerName");
+    expect(csv).not.toContain("excluded column");
+    expect(buildAuthHealthHistorySearchResultsCsvFilename("getphame-auth-health-history-2026-07-22.csv"))
+      .toBe("getphame-auth-health-history-2026-07-22-search-results.csv");
+    expect(buildAuthHealthHistorySearchResultsCsvFilename("  "))
+      .toBe("getphame-auth-health-history-search-results.csv");
   });
 });

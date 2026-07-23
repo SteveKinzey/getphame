@@ -5,6 +5,7 @@ import { and, count, desc, eq, lte } from "drizzle-orm";
 import { getDb } from "./db";
 import { businessProfiles, koalendarBookings, koalendarConnections, users, type KoalendarBooking } from "../drizzle/schema";
 import { hasPaidOrAdminAccess } from "./entitlements";
+import { findActiveComplimentaryAccess } from "./complimentaryAccess";
 import { upsertApiContact } from "./contacts";
 import { fireWebhooks } from "./webhookHelpers";
 
@@ -56,16 +57,21 @@ async function userHasPaidKoalendarAccess(userId: number): Promise<boolean> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   const [row] = await db
-    .select({ role: users.role, tier: businessProfiles.tier, planExpiresAt: businessProfiles.planExpiresAt })
+    .select({ role: users.role, email: users.email, tier: businessProfiles.tier, planExpiresAt: businessProfiles.planExpiresAt })
     .from(users)
     .leftJoin(businessProfiles, eq(businessProfiles.userId, users.id))
     .where(eq(users.id, userId))
     .limit(1);
-  return Boolean(row && hasPaidOrAdminAccess({
+  if (!row) return false;
+  const complimentaryAccess = row.role === "admin"
+    ? null
+    : await findActiveComplimentaryAccess({ userId, email: row.email });
+  return hasPaidOrAdminAccess({
     role: row.role,
     tier: row.tier ?? "free",
     planExpiresAt: row.planExpiresAt,
-  }));
+    complimentaryAccessExpiresAt: complimentaryAccess?.expiresAt,
+  });
 }
 
 export function buildKoalendarWebhookUrl(token: string): string {

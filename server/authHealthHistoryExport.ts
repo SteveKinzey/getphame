@@ -1,6 +1,6 @@
 import type { AuthHealthCheck } from "../drizzle/schema";
-import { escapeAdminOperationsCsvCell } from "./adminOperationsExport";
 import { redactAuthDiagnosticDetail } from "./authOperations";
+import { serializePreparedCsvRows } from "../shared/authHealthHistoryCsv";
 
 export const AUTH_HEALTH_HISTORY_CSV_PREVIEW_LIMIT = 25;
 
@@ -68,11 +68,7 @@ function serializeAuthHealthHistoryExportRows(
   includeBom = true,
 ) {
   const columns = getAuthHealthHistoryExportColumns(selectedColumns);
-  const body = rows.map((row) => columns
-    .map((column) => escapeAdminOperationsCsvCell(row[column.key]))
-    .join(","));
-
-  return `${includeBom ? "\uFEFF" : ""}${columns.map((column) => column.csvHeader).join(",")}\r\n${body.join("\r\n")}\r\n`;
+  return serializePreparedCsvRows<AuthHealthHistoryExportColumnKey>(rows, columns, includeBom);
 }
 
 export function serializeAuthHealthHistoryCsv(rows: AuthHealthCheck[]) {
