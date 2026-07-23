@@ -173,6 +173,7 @@ import {
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
 import { bulkSenderRouter } from "./bulkSender";
 import { authDiagnosticsRouter } from "./routers/authDiagnostics";
+import { sourcesRouter } from "./routers/sources";
 import { combineAccountsAsAdmin, deleteAccountAsAdmin } from "./accountManagement";
 import {
   COMPLIMENTARY_ACCESS_LIMITS,
@@ -603,6 +604,7 @@ async function getSupportEscalationPolicySettings(
 export const appRouter = router({
   system: systemRouter,
   authDiagnostics: authDiagnosticsRouter,
+  sources: sourcesRouter,
   helpAssistant: helpAssistantRouter,
 
   /** Paid Koalendar booking-to-contact integration. */
@@ -1389,11 +1391,21 @@ export const appRouter = router({
       const { getPendingWooImportCount } = await import("./wooImportScheduler");
       return { count: await getPendingWooImportCount(ctx.user.id) };
     }),
-    /** Import all pending WooCommerce orders now */
-    importPending: protectedProcedure.mutation(async ({ ctx }) => {
+    /** Import reviewed WooCommerce contacts only after an explicit consent attestation. */
+    importPending: protectedProcedure
+      .input(z.object({
+        consentBasis: z.enum(["express", "contract", "legitimate_interest", "other"]),
+        consentSource: z.string().trim().min(3).max(255),
+        attested: z.literal(true),
+      }))
+      .mutation(async ({ ctx, input }) => {
       const { importPendingWooOrders } = await import("./wooImportScheduler");
-      return importPendingWooOrders(ctx.user.id);
-    }),
+      return importPendingWooOrders(ctx.user.id, {
+        basis: input.consentBasis,
+        source: input.consentSource,
+        capturedAt: Date.now(),
+      });
+      }),
     /** Dismiss all pending WooCommerce orders without importing */
     dismissPending: protectedProcedure.mutation(async ({ ctx }) => {
       const { dismissPendingWooOrders } = await import("./wooImportScheduler");

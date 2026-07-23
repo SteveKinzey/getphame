@@ -13,6 +13,9 @@ export const tierEnum = pgEnum("tier", ["free", "pro", "annual", "lifetime"]);
 export const methodEnum = pgEnum("method", ["email", "sms", "both"]);
 export const requestStatusEnum = pgEnum("request_status", ["sent", "pending", "followed_up"]);
 export const contactSourceEnum = pgEnum("contact_source", ["manual", "woocommerce", "stripe", "koalendar", "api"]);
+export const sourceTypeEnum = pgEnum("source_type", ["csv", "woocommerce", "api", "shopify", "square", "hubspot", "pipedrive", "stripe", "koalendar"]);
+export const sourceConnectionStatusEnum = pgEnum("source_connection_status", ["connected", "disconnected", "setup_required", "error"]);
+export const sourceImportStatusEnum = pgEnum("source_import_status", ["previewed", "committed", "dismissed", "failed"]);
 export const reminderStatusEnum = pgEnum("reminder_status", ["pending", "sent", "cancelled"]);
 export const platformEnum = pgEnum("platform", ["google", "yelp", "tripadvisor", "bing", "facebook", "apple", "other"]);
 export const emailEventTypeEnum = pgEnum("email_event_type", ["open", "click"]);
@@ -400,6 +403,75 @@ export const savedContacts = pgTable("saved_contacts", {
 
 export type SavedContact = typeof savedContacts.$inferSelect;
 export type InsertSavedContact = typeof savedContacts.$inferInsert;
+
+/** Owner-scoped external contact-source connections. Secrets are AES-256-GCM encrypted. */
+export const sourceConnections = pgTable("source_connections", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  sourceType: sourceTypeEnum("sourceType").notNull(),
+  displayName: varchar("displayName", { length: 160 }).notNull(),
+  status: sourceConnectionStatusEnum("status").default("setup_required").notNull(),
+  encryptedSecrets: text("encryptedSecrets"),
+  settingsJson: text("settingsJson"),
+  lastTestedAt: bigint("lastTestedAt", { mode: "number" }),
+  lastImportedAt: bigint("lastImportedAt", { mode: "number" }),
+  lastError: varchar("lastError", { length: 500 }),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex("source_connections_user_type_unique").on(table.userId, table.sourceType),
+  index("source_connections_user_status_idx").on(table.userId, table.status),
+]);
+
+export type SourceConnection = typeof sourceConnections.$inferSelect;
+export type InsertSourceConnection = typeof sourceConnections.$inferInsert;
+
+/** Privacy-safe import record. Contact PII stays in saved_contacts, never in this audit row. */
+export const sourceImports = pgTable("source_imports", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  sourceConnectionId: integer("sourceConnectionId"),
+  sourceType: sourceTypeEnum("sourceType").notNull(),
+  idempotencyKeyHash: varchar("idempotencyKeyHash", { length: 64 }).notNull(),
+  payloadHash: varchar("payloadHash", { length: 64 }).notNull(),
+  status: sourceImportStatusEnum("status").default("previewed").notNull(),
+  requestedRowCount: integer("requestedRowCount").default(0).notNull(),
+  validRowCount: integer("validRowCount").default(0).notNull(),
+  duplicateRowCount: integer("duplicateRowCount").default(0).notNull(),
+  rejectedRowCount: integer("rejectedRowCount").default(0).notNull(),
+  importedCount: integer("importedCount").default(0).notNull(),
+  skippedCount: integer("skippedCount").default(0).notNull(),
+  consentBasis: varchar("consentBasis", { length: 32 }).notNull(),
+  consentSource: varchar("consentSource", { length: 255 }).notNull(),
+  consentAttestedAt: bigint("consentAttestedAt", { mode: "number" }).notNull(),
+  metadataJson: text("metadataJson"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex("source_imports_user_type_idempotency_unique").on(table.userId, table.sourceType, table.idempotencyKeyHash),
+  index("source_imports_user_created_idx").on(table.userId, table.createdAt),
+  index("source_imports_connection_created_idx").on(table.sourceConnectionId, table.createdAt),
+]);
+
+export type SourceImport = typeof sourceImports.$inferSelect;
+export type InsertSourceImport = typeof sourceImports.$inferInsert;
+
+/** Non-PII audit trail for source connection and import lifecycle events. */
+export const sourceImportEvents = pgTable("source_import_events", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  sourceImportId: integer("sourceImportId").notNull(),
+  eventType: varchar("eventType", { length: 64 }).notNull(),
+  actorType: varchar("actorType", { length: 32 }).default("user").notNull(),
+  detailJson: text("detailJson"),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+}, (table) => [
+  index("source_import_events_import_created_idx").on(table.sourceImportId, table.createdAt),
+  index("source_import_events_user_created_idx").on(table.userId, table.createdAt),
+]);
+
+export type SourceImportEvent = typeof sourceImportEvents.$inferSelect;
+export type InsertSourceImportEvent = typeof sourceImportEvents.$inferInsert;
 
 /** Custom email templates per user */
 export const emailTemplates = pgTable("email_templates", {

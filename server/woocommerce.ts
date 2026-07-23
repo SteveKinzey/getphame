@@ -11,6 +11,7 @@ import { getDb } from "./db";
 import { wooCredentials, wooCustomers } from "../drizzle/schema";
 import type { InsertWooCredentials, InsertWooCustomer } from "../drizzle/schema";
 import { upsertContactsFromSource } from "./contacts";
+import { decryptSourceSecrets, encryptSourceSecrets, isEncryptedSourceSecret } from "./sourceSecrets";
 
 // ─── Credentials helpers ──────────────────────────────────────────────────────
 
@@ -22,17 +23,44 @@ export async function getWooCredentials(userId: number) {
     .from(wooCredentials)
     .where(eq(wooCredentials.userId, userId))
     .limit(1);
-  return rows[0] ?? null;
+  const row = rows[0];
+  if (!row) return null;
+  const keyEncrypted = isEncryptedSourceSecret(row.consumerKey);
+  const secretEncrypted = isEncryptedSourceSecret(row.consumerSecret);
+  const consumerKey = keyEncrypted ? decryptSourceSecrets(row.consumerKey).value : row.consumerKey;
+  const consumerSecret = secretEncrypted ? decryptSourceSecrets(row.consumerSecret).value : row.consumerSecret;
+
+  // Transparently migrate legacy plaintext credentials when they are next used.
+  if (!keyEncrypted || !secretEncrypted) {
+    await db.update(wooCredentials).set({
+      consumerKey: encryptSourceSecrets({ value: consumerKey }),
+      consumerSecret: encryptSourceSecrets({ value: consumerSecret }),
+      updatedAt: new Date(),
+    }).where(eq(wooCredentials.userId, userId));
+  }
+
+  return { ...row, consumerKey, consumerSecret };
 }
 
 export async function upsertWooCredentials(creds: InsertWooCredentials) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
-  const { userId, ...rest } = creds;
+  const encryptedCreds = {
+    ...creds,
+    consumerKey: encryptSourceSecrets({ value: creds.consumerKey }),
+    consumerSecret: encryptSourceSecrets({ value: creds.consumerSecret }),
+  };
+  const { userId, ...rest } = encryptedCreds;
   await db
     .insert(wooCredentials)
-    .values(creds)
+    .values(encryptedCreds)
     .onDuplicateKeyUpdate({ set: rest });
+}
+
+export async function deleteWooCredentials(userId: number) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  await db.delete(wooCredentials).where(eq(wooCredentials.userId, userId));
 }
 
 // ─── WooCommerce API fetch ────────────────────────────────────────────────────
@@ -77,6 +105,7 @@ export async function fetchWooOrders(
       Authorization: `Basic ${credentials}`,
       "Content-Type": "application/json",
     },
+    redirect: "error",
   });
 
   if (!res.ok) {

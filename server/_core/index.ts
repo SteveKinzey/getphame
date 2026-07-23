@@ -24,7 +24,6 @@ import { koalendarHeartbeatHandler } from "../koalendarHeartbeat";
 import { startSmtpWeeklyDigestScheduler } from "../smtpWeeklyDigest";
 import { startReEngagementScheduler } from "../reEngagementScheduler";
 import { startInactiveUserScheduler } from "../inactiveUserScheduler";
-import { startWooAutoImportScheduler } from "../wooImportScheduler";
 import { registerKoalendarRoutes } from "../koalendar";
 import { registerSitemapRoutes } from "../sitemap";
 import { exchangeGmailCode, getGmailRedirectUri } from "../gmail";
@@ -549,7 +548,6 @@ async function startServer() {
     startSmtpWeeklyDigestScheduler();
     startReEngagementScheduler();
     startInactiveUserScheduler();
-    startWooAutoImportScheduler();
   });
 }
 

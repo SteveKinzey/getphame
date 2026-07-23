@@ -1,20 +1,16 @@
 /**
- * WooCommerce Pending Import Scheduler
+ * WooCommerce Pending Import Queue
  *
  * Logic:
  * - When WooCommerce orders are synced, new orders go to `woo_pending_imports` first.
  * - Users see a "Pending imports" count in Settings with "Import Now" / "Dismiss" buttons.
- * - Auto-import: every Monday at 03:00 GMT, any pending records older than 7 days are
- *   automatically imported into woo_customers and saved_contacts.
+ * - Imports occur only after the user reviews the queue and explicitly attests consent.
  */
 
-import { getDb, getNotificationPrefs } from "./db";
+import { getDb } from "./db";
 import { wooPendingImports, wooCustomers, savedContacts } from "../drizzle/schema";
-import { eq, lt, and, inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { upsertContactsFromSource } from "./contacts";
-import { notifyOwner } from "./_core/notification";
-
-const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
 /**
  * Fetch new WooCommerce orders and stage them in woo_pending_imports instead of
@@ -73,16 +69,19 @@ export async function stageWooOrders(
  * Import all pending records for a user into woo_customers and saved_contacts.
  * Clears the pending queue after import.
  */
-export async function importPendingWooOrders(userId: number): Promise<{ imported: number }> {
+export async function importPendingWooOrders(
+  userId: number,
+  consent: { basis: string; source: string; capturedAt: number }
+): Promise<{ imported: number; skipped: number }> {
   const db = await getDb();
-  if (!db) return { imported: 0 };
+  if (!db) return { imported: 0, skipped: 0 };
 
   const pending = await db
     .select()
     .from(wooPendingImports)
     .where(eq(wooPendingImports.userId, userId));
 
-  if (pending.length === 0) return { imported: 0 };
+  if (pending.length === 0) return { imported: 0, skipped: 0 };
 
   // Insert into woo_customers (skip duplicates by orderId)
   const existingOrderIds = await db
@@ -114,6 +113,10 @@ export async function importPendingWooOrders(userId: number): Promise<{ imported
         email: p.email,
         source: "woocommerce" as const,
         externalId: p.orderId ?? undefined,
+        sourceApp: "woocommerce",
+        consentBasis: consent.basis,
+        consentCapturedAt: consent.capturedAt,
+        consentSource: consent.source,
       }))
     ).catch((err) => console.warn("[WooImport] Failed to upsert contacts:", err));
   }
@@ -121,7 +124,13 @@ export async function importPendingWooOrders(userId: number): Promise<{ imported
   // Clear the pending queue for this user
   await db.delete(wooPendingImports).where(eq(wooPendingImports.userId, userId));
 
-  return { imported: toInsert.length };
+  return { imported: toInsert.length, skipped: pending.length - toInsert.length };
+}
+
+export async function listPendingWooImports(userId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return db.select().from(wooPendingImports).where(eq(wooPendingImports.userId, userId));
 }
 
 /**
@@ -144,76 +153,4 @@ export async function dismissPendingWooOrders(userId: number): Promise<void> {
   const db = await getDb();
   if (!db) return;
   await db.delete(wooPendingImports).where(eq(wooPendingImports.userId, userId));
-}
-
-/**
- * Auto-import scheduler: runs every Monday at 03:00 GMT.
- * Imports any pending records older than 7 days for all users.
- */
-export function startWooAutoImportScheduler(): void {
-  console.log("[WooAutoImport] Scheduler started — checks every Monday at 03:00 GMT.");
-
-  const scheduleNextRun = () => {
-    const now = new Date();
-    // Find next Monday 03:00 UTC
-    const next = new Date(now);
-    next.setUTCHours(3, 0, 0, 0);
-    // Day of week: 0=Sun, 1=Mon ... 6=Sat
-    const daysUntilMonday = (8 - next.getUTCDay()) % 7 || 7; // always at least 1 day ahead
-    // If today is Monday and it's before 03:00 UTC, run today; otherwise next Monday
-    if (next.getUTCDay() === 1 && now < next) {
-      // today is Monday and we haven't hit 03:00 yet — run today
-    } else {
-      next.setUTCDate(next.getUTCDate() + daysUntilMonday);
-    }
-    const msUntilNext = next.getTime() - now.getTime();
-    console.log(
-      `[WooAutoImport] Next auto-import scheduled for ${next.toUTCString()} (in ${Math.round(msUntilNext / 3600000)}h)`
-    );
-
-    setTimeout(async () => {
-      await runAutoImport();
-      scheduleNextRun(); // reschedule for next Monday
-    }, msUntilNext);
-  };
-
-  scheduleNextRun();
-}
-
-async function runAutoImport(): Promise<void> {
-  console.log("[WooAutoImport] Running Monday auto-import...");
-  const db = await getDb();
-  if (!db) return;
-
-  const cutoff = Date.now() - SEVEN_DAYS_MS;
-
-  // Get all user IDs with pending imports older than 7 days
-  const stale = await db
-    .select({ userId: wooPendingImports.userId })
-    .from(wooPendingImports)
-    .where(lt(wooPendingImports.fetchedAt, cutoff));
-
-  const userIds = Array.from(new Set(stale.map((r) => r.userId)));
-  console.log(`[WooAutoImport] Found ${userIds.length} user(s) with stale pending imports.`);
-
-  for (const userId of userIds) {
-    try {
-      const result = await importPendingWooOrders(userId);
-      console.log(`[WooAutoImport] User ${userId}: imported ${result.imported} contacts.`);
-      // Notify the user if they have the notify-on-import preference enabled
-      try {
-        const prefs = await getNotificationPrefs(userId);
-        if (prefs?.wooAutoImportNotify) {
-          await notifyOwner({
-            title: "WooCommerce Auto-Import Complete",
-            content: `Phame automatically imported ${result.imported} WooCommerce contact${result.imported !== 1 ? "s" : ""} into your contacts list. These customers are now ready to receive review requests.`,
-          });
-        }
-      } catch (notifyErr) {
-        console.warn(`[WooAutoImport] Notify failed for user ${userId}:`, notifyErr);
-      }
-    } catch (err) {
-      console.error(`[WooAutoImport] User ${userId} failed:`, err);
-    }
-  }
 }

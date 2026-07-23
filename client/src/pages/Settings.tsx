@@ -1334,14 +1334,6 @@ export default function SettingsPage() {
 
   // ── WooCommerce pending imports ────────────────────────────────────────────
   const { data: wooPending } = trpc.woo.pendingCount.useQuery(undefined, { enabled: !!wooCreds });
-  const importPending = trpc.woo.importPending.useMutation({
-    onSuccess: (result) => {
-      utils.woo.pendingCount.invalidate();
-      utils.woo.listPending.invalidate();
-      toast.success(`Imported ${result.imported} customer${result.imported !== 1 ? "s" : ""} from WooCommerce.`);
-    },
-    onError: (err) => toast.error(err.message),
-  });
   const dismissPending = trpc.woo.dismissPending.useMutation({
     onSuccess: () => {
       utils.woo.pendingCount.invalidate();
@@ -2871,16 +2863,15 @@ export default function SettingsPage() {
                     </p>
                   </div>
                   <p className="text-xs mb-3" style={{ color: "oklch(0.45 0.06 80)" }}>
-                    These WooCommerce orders are staged and waiting. Import them now, or they'll be auto-imported on Monday at 03:00 GMT if they're older than 7 days.
+                    These WooCommerce orders are staged and waiting. Review duplicates and confirm customer consent in Sources before adding them to Contacts.
                   </p>
                   <div className="flex gap-2">
                     <button
-                      onClick={() => importPending.mutate()}
-                      disabled={importPending.isPending}
+                      onClick={() => navigate("/sources")}
                       className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-black transition-opacity disabled:opacity-60 rr-bg-navy text-white"
                     >
-                      {importPending.isPending ? <Loader2 size={12} className="animate-spin" /> : <Download size={12} />}
-                      Import Now
+                      <Download size={12} />
+                      Review in Sources
                     </button>
                     <button
                       onClick={() => dismissPending.mutate()}

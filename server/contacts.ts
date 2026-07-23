@@ -117,7 +117,17 @@ export async function importContacts(
  */
 export async function upsertContactsFromSource(
   userId: number,
-  rows: { name: string; email: string; phone?: string; source: "stripe" | "woocommerce"; externalId?: string }[]
+  rows: {
+    name: string;
+    email: string;
+    phone?: string;
+    source: "manual" | "stripe" | "woocommerce" | "api" | "koalendar";
+    externalId?: string;
+    sourceApp?: string;
+    consentBasis?: string;
+    consentCapturedAt?: number;
+    consentSource?: string;
+  }[]
 ): Promise<{ inserted: number; skipped: number }> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -145,6 +155,10 @@ export async function upsertContactsFromSource(
           totalSent: 0,
           source: r.source,
           externalId: r.externalId ?? null,
+          sourceApp: r.sourceApp ?? null,
+          consentBasis: r.consentBasis ?? null,
+          consentCapturedAt: r.consentCapturedAt ?? null,
+          consentSource: r.consentSource ?? null,
         }))
       );
     }
