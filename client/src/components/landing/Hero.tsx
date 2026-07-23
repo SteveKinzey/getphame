@@ -208,7 +208,7 @@ export default function Hero() {
                       <source srcSet={DASHBOARD_MOCKUP_PNG} type="image/png" />
                       <img
                         src={DASHBOARD_MOCKUP_PNG}
-                        alt={t("landing.hero.dashboardMockupAlt", { defaultValue: "GetPhame app home screen showing review request stats, send button, and free plan usage for local businesses" })}
+                        alt={t("landing.hero.dashboardMockupAlt", { defaultValue: "Get Phame app home screen showing review-request activity, send controls, and free-plan usage for local businesses" })}
                         className="block"
                         style={{ width: '260px', height: 'auto', display: 'block' }}
                         width={400}

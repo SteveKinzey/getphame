@@ -9,22 +9,22 @@ export default function HowItWorks() {
     {
       number: "1",
       title: t("landing.howItWorks.setupSteps.step1.title", { defaultValue: "Connect your email" }),
-      description: t("landing.howItWorks.setupSteps.step1.description", { defaultValue: "Link your Gmail, Outlook, or any SMTP email in 60 seconds. Credentials encrypted with AES-256." }),
+      description: t("landing.howItWorks.setupSteps.step1.description", { defaultValue: "Connect Gmail, Outlook, or a supported SMTP account with provider-specific guidance. Credentials are encrypted at rest." }),
     },
     {
       number: "2",
-      title: t("landing.howItWorks.setupSteps.step2.title", { defaultValue: "Add your review link" }),
-      description: t("landing.howItWorks.setupSteps.step2.description", { defaultValue: "Paste your Google, Yelp, TripAdvisor, or any review platform link. Switch platforms anytime." }),
+      title: t("landing.howItWorks.setupSteps.step2.title", { defaultValue: "Choose your review destination" }),
+      description: t("landing.howItWorks.setupSteps.step2.description", { defaultValue: "Configure a supported review destination and follow the platform-aware guidance shown before sending. Yelp uses a compliance-safe instruction flow rather than a standard solicitation link." }),
     },
     {
       number: "3",
-      title: t("landing.howItWorks.setupSteps.step3.title", { defaultValue: "Import your customers" }),
-      description: t("landing.howItWorks.setupSteps.step3.description", { defaultValue: "Upload a CSV, sync from WooCommerce, or add contacts manually. We validate emails automatically." }),
+      title: t("landing.howItWorks.setupSteps.step3.title", { defaultValue: "Review consented contacts" }),
+      description: t("landing.howItWorks.setupSteps.step3.description", { defaultValue: "Upload a CSV, connect WooCommerce, or add contacts manually. Confirm your permission basis, review valid and duplicate rows, and import only the contacts you approve." }),
     },
     {
       number: "4",
-      title: t("landing.howItWorks.setupSteps.step4.title", { defaultValue: "Send & track results" }),
-      description: t("landing.howItWorks.setupSteps.step4.description", { defaultValue: "Hit send. Each customer gets a personal email from you. Track opens, clicks, and new reviews live." }),
+      title: t("landing.howItWorks.setupSteps.step4.title", { defaultValue: "Send and track activity" }),
+      description: t("landing.howItWorks.setupSteps.step4.description", { defaultValue: "Send an individual request to each customer you choose, then track sends, opens, clicks, reminders, and completion status." }),
     },
   ];
 
@@ -40,10 +40,10 @@ export default function HowItWorks() {
               {t("landing.howItWorks.setupInSteps", { defaultValue: "Setup in 4 steps" })}
             </p>
             <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
-              {t("landing.howItWorks.headline", { defaultValue: "Two minutes to your first review request" })}
+              {t("landing.howItWorks.headline", { defaultValue: "Four steps to your first review request" })}
             </h2>
             <p className="text-lg text-slate-200 font-medium mb-8">
-              {t("landing.howItWorks.subtitle", { defaultValue: "No technical skills needed. No onboarding calls. Just connect, import, and send." })}
+              {t("landing.howItWorks.subtitle", { defaultValue: "Connect your sender, review consented contacts, and choose each request before sending." })}
             </p>
             <a
               href="/onboarding"
@@ -53,7 +53,7 @@ export default function HowItWorks() {
               <ArrowRight size={18} />
             </a>
             <p className="text-sm text-slate-300 font-medium mt-3">
-              {t("landing.howItWorks.setupTime", { defaultValue: "Takes less than 2 minutes to set up" })}
+              {t("landing.howItWorks.setupTime", { defaultValue: "Guided setup for supported email providers" })}
             </p>
           </FadeUp>
 

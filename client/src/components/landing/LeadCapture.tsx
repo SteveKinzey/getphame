@@ -179,7 +179,7 @@ export default function LeadCapture() {
 
               <div className="mt-7 border-t border-[#2a3a5c] pt-6">
                 <p className="mb-3 text-sm font-semibold text-white">
-                  {t("landing.leadCapture.sharePrompt", { defaultValue: "Know someone who needs more reviews? Share the free playbook." })}
+                  {t("landing.leadCapture.sharePrompt", { defaultValue: "Know someone who sends review requests? Share the free playbook." })}
                 </p>
                 <div className="flex flex-wrap justify-center gap-3">
                   <a
@@ -206,7 +206,7 @@ export default function LeadCapture() {
               </div>
 
               <p className="text-sm text-slate-300 font-medium mt-4">
-                {t("landing.leadCapture.noSpamMessage", { defaultValue: "No spam. Unsubscribe anytime. We respect your inbox." })}
+                {t("landing.leadCapture.noSpamMessage", { defaultValue: "Occasional product emails. Unsubscribe anytime." })}
               </p>
             </div>
           </div>

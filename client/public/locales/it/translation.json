@@ -2888,11 +2888,35 @@
       "headlinePart2": "senza la richiesta imbarazzante",
       "ctaVariantA": "Inizia gratis — Invia 10 richieste",
       "ctaVariantB": "Crea la tua prima richiesta di recensione",
-      "setupTime": "Configurazione guidata"
+      "setupTime": "Configurazione guidata",
+      "categoryLabel": "Software di email per richieste di recensione per attività locali",
+      "description": "Get Phame è un software di email per richieste di recensioni per attività locali. Aggiungi clienti, invia richieste personalizzate da un account email che colleghi, monitora aperture e clic eindirizza i clienti alla piattaforma di recensioni che scegli.",
+      "googleDisclosureLabel": "Utilizzo dei dati dell'accesso Google",
+      "googleSignInDisclaimer": "L'accesso con Google fornisce solo il tuo nome e l'indirizzo email per creare e identificare il tuo account Get Phame. Non richiediamo l'accesso ai messaggi di Gmail, ai contatti, ai file di Drive o al Calendario.",
+      "privacyPolicy": "Informativa sulla privacy",
+      "howItWorks": "Scopri come funziona",
+      "emailCompatibility": "Funziona con Gmail, Outlook, SMTP",
+      "dashboardMockupAlt": "Schermata principale dell'app Get Phame che mostra l'attività delle richieste di recensione, i controlli di invio e l'utilizzo del piano gratuito per attività locali"
     },
     "leadCapture": {
       "description": "Ottieni una guida gratuita per costruire un processo di richiesta di recensione ripetibile e conforme—più aggiornamenti sul prodotto e consigli per la reputazione.",
-      "sharePrompt": "Conosci qualcuno che invia richieste di recensione? Condividi la guida gratuita."
+      "sharePrompt": "Conosci qualcuno che invia richieste di recensione? Condividi la guida gratuita.",
+      "errorMessage": "Qualcosa è andato storto. Per favore riprova.",
+      "emailRequired": "Inserisci il tuo indirizzo email.",
+      "emailInvalid": "Inserisci un indirizzo email formattato correttamente, ad esempio name@example.com.",
+      "heading": "Non sei ancora pronto a impegnarti?",
+      "emailPlaceholder": "Inserisci la tua email",
+      "sending": "Invio in corso...",
+      "sendGuideButton": "Invia guida",
+      "emailConfirmationHint": "Riporteremo l'indirizzo prima di lasciare la pagina in modo che tu possa controllare eventuali errori di battitura.",
+      "providerAcceptedMessage": "Il provider della tua email ha accettato la guida per la consegna.",
+      "downloadReadyMessage": "La tua guida è pronta per il download.",
+      "addressConfirmation": "L'abbiamo inviata a {{email}}. Conferma l'ortografia e controlla lo spam se non arriva. L'accettazione da parte del provider non garantisce l'inserimento nella casella di posta in arrivo.",
+      "deliveryFallback": "La consegna dell'email non era disponibile per {{email}}. Conferma l'ortografia, riprova o scarica ora la guida.",
+      "downloadGuideButton": "Scarica la guida PDF",
+      "editEmail": "Modifica email",
+      "tryAgain": "Riprova l'email",
+      "noSpamMessage": "Email occasionali sui prodotti. Puoi annullare l'iscrizione in qualsiasi momento."
     },
     "purpose": {
       "description": "Get Phame aiuta le attività locali a inviare email personalizzate per richiedere recensioni dal proprio account email connesso. È pensato per titolari di attività, fotografi, caffè e ristoranti, team di servizi a domicilio, cliniche e saloni, agenzie e negozi WooCommerce che desiderano un modo più semplice per chiedere feedback ai clienti reali.",
@@ -2919,7 +2943,13 @@
       "connectedEmailLabel": "invia da un account che colleghi",
       "reminderValue": "Automatico",
       "reminderLabel": "promemoria futuri si interrompono dopo il completamento",
-      "heading": "Controllo ad ogni passaggio"
+      "heading": "Controllo ad ogni passaggio",
+      "industryPhotographers": "Fotografi",
+      "industryCafesRestaurants": "Caffè e ristoranti",
+      "industryHomeServices": "Servizi per la casa",
+      "industryClinicsSalons": "Cliniche e saloni",
+      "industryAgencies": "Agenzie",
+      "industryWooCommerceStores": "Negozi WooCommerce"
     },
     "support": {
       "attachment": "Screenshot",
@@ -2994,17 +3024,40 @@
         "step4": {
           "title": "Invia e monitora l'attività",
           "description": "Invia una richiesta personale a ogni cliente che scegli, poi monitora invii, messaggi aperti, clic, promemoria e stato di completamento."
+        },
+        "step2": {
+          "title": "Scegli la destinazione della tua recensione",
+          "description": "Configura una destinazione di recensione supportata e segui le linee guida orientate alla piattaforma prima di inviare. Yelp utilizza un flusso di istruzioni conforme piuttosto che un normale link di sollecitazione."
+        },
+        "step3": {
+          "title": "Rivedi i contatti con consenso",
+          "description": "Carica un CSV, collega WooCommerce o aggiungi contatti manualmente. Conferma la base del tuo consenso, verifica righe valide e duplicate, e importa solo i contatti che approvi."
         }
       },
       "headline": "Quattro passaggi per la tua prima richiesta di recensione",
-      "setupTime": "Configurazione guidata per i provider di posta supportati"
+      "setupTime": "Configurazione guidata per i provider di posta supportati",
+      "setupInSteps": "Configurazione in 4 passaggi",
+      "subtitle": "Collega il tuo mittente, rivedi i contatti con consenso e scegli ogni richiesta prima di inviarla.",
+      "getStartedButton": "Inizia gratis"
     },
     "productShowcase": {
       "tabEmailDescription": "Ogni richiesta di recensione utilizza l'indirizzo email, il nome del mittente, la firma e il messaggio che configuri prima di inviare.",
       "tabTrackingTitle": "Traccia l'attività delle richieste",
       "tabTrackingDescription": "Vedi ogni richiesta inviata, aperta, cliccata, promemoria e stato di completamento in un'unica vista attività.",
       "tabTrackingAlt": "Cruscotto di attività Get Phame che mostra invii di richieste di recensione, aperture, clic, promemoria e stato di completamento",
-      "sectionDescription": "Uno strumento mirato. Tre viste pratiche. Tutto ciò di cui hai bisogno per gestire la richiesta di recensioni."
+      "sectionDescription": "Uno strumento mirato. Tre viste pratiche. Tutto ciò di cui hai bisogno per gestire la richiesta di recensioni.",
+      "tabEmailLabel": "Anteprima dell'email",
+      "tabEmailTitle": "Anteprima di ogni richiesta prima dell'invio",
+      "tabEmailAlt": "Anteprima dell'email di richiesta di recensione Get Phame che mostra il nome del cliente, la firma dell'azienda e la destinazione di recensione configurata",
+      "tabImportLabel": "Fonti di recensione",
+      "tabImportTitle": "Rivedi i contatti prima dell'importazione",
+      "tabImportDescription": "Carica un CSV o collega WooCommerce, conferma il permesso e rivedi righe valide, duplicate e respinte. L'importazione dei contatti non invia mai alcun messaggio.",
+      "tabImportAlt": "Schermata Fonti Get Phame che mostra l'upload CSV, la conferma del consenso e la revisione dei duplicati",
+      "tabTrackingLabel": "Attività delle richieste",
+      "sectionSubtitle": "Il prodotto",
+      "sectionTitle": "Progettato per rendere semplici le richieste di recensione",
+      "viewFullSizeButton": "Visualizza a dimensione intera",
+      "viewFullSizeAriaLabel": "Visualizza {{title}} a dimensione intera"
     },
     "socialProofBar": {
       "heading": "Sicurezze integrate nel flusso di lavoro",
@@ -3049,12 +3102,38 @@
       "getStartedFree": "Esplora Get Phame Free"
     },
     "faq": {
-      "a1": "Ogni richiesta viene inviata tramite un account email che colleghi e utilizza il nome del mittente, l'indirizzo, la firma e il messaggio che configuri. Anteprima del messaggio prima dell'invio e segui le linee guida di deliverability del tuo provider.",
-      "a6": "I messaggi sono inviati dall'account email che colleghi, quindi i limiti di invio del provider, la reputazione del dominio, SPF, DKIM, contenuto e coinvolgimento dei destinatari possono influire sulla consegna. Nessun servizio può garantire la consegna in inbox.",
-      "a9": "No. Get Phame fornisce istruzioni di configurazione specifiche per Gmail, Outlook e altri servizi SMTP supportati. Connessioni SMTP personalizzate richiedono l'indirizzo del server, la porta e le credenziali fornite dal tuo provider."
+      "a1": "Ogni richiesta viene inviata tramite un account email che colleghi e utilizza il nome del mittente, l'indirizzo, la firma e il messaggio che configuri. Visualizza in anteprima il messaggio prima di inviarlo e segui le indicazioni del tuo provider sulla consegna.",
+      "a6": "I messaggi vengono inviati tramite l'account email che colleghi, quindi i limiti di invio del provider, la reputazione del dominio, SPF, DKIM, contenuto e coinvolgimento del destinatario possono influire sulla consegna. Nessun servizio può garantire la collocazione in casella di posta in arrivo.",
+      "a9": "No. Get Phame fornisce indicazioni di configurazione specifiche per Gmail, Outlook e altri servizi SMTP supportati. Le connessioni SMTP personalizzate richiedono l'indirizzo del server, la porta e le credenziali fornite dal tuo provider.",
+      "q1": "Sarà percepito come spam?",
+      "q2": "Quali provider di email funzionano?",
+      "a2": "Get Phame funziona con connessioni Gmail, Outlook e SMTP supportate, inclusi Google Workspace, Microsoft 365, Yahoo, Zoho, iCloud e fornitori SMTP personalizzati.",
+      "q3": "È davvero gratuito?",
+      "a3": "Sì. Il piano gratuito parte con 10 richieste di recensione, poi ne fornisce altre 5 ogni periodo mobile di 30 giorni, senza richiedere carta di credito. I piani a pagamento aggiungono funzionalità di flusso di lavoro per volumi più elevati.",
+      "q4": "Posso importare la mia lista clienti?",
+      "a4": "Sì. In Sources, carica un CSV o collega WooCommerce, conferma la base del consenso, controlla le righe valide e duplicate, e poi importa i contatti che approvi. Importare i contatti non invia mai alcun messaggio.",
+      "q5": "Le credenziali SMTP sono archiviate?",
+      "a5": "Le credenziali SMTP sono crittografate a riposo e sono usate solo per la connessione di invio che configuri. Get Phame non usa tali credenziali per leggere la tua casella di posta.",
+      "q6": "I miei messaggi finiranno nello spam?",
+      "q7": "Cosa succede alla mia lista di clienti?",
+      "a7": "I dettagli dei clienti vengono utilizzati per supportare i workflow delle richieste di recensione che scegli. Sources mantiene le importazioni vincolate al proprietario, registra i metadati del consenso senza duplicare PII di contatto nella cronologia di audit e ti permette di rivedere i contatti prima di qualsiasi invio.",
+      "q8": "I clienti possono disiscriversi?",
+      "a8": "Sì. Le richieste includono un'opzione di disiscrizione, e un contatto che si è disiscritto è escluso dalle comunicazioni future tramite Get Phame.",
+      "q9": "È necessario avere competenze tecniche per collegare la tua email?",
+      "q10": "Quali piattaforme di recensione supporta?",
+      "a10": "Get Phame supporta destinazioni di recensione configurabili e fornisce indicazioni specifiche per la piattaforma prima dell'invio. Alcune piattaforme, tra cui Yelp, richiedono un approccio di conformità diverso rispetto a un link di sollecitazione standard.",
+      "q11": "Come funziona l'importazione di WooCommerce?",
+      "a11": "Connetti WooCommerce in Sources, recupera i contatti degli ordini recenti completati in una coda di recensioni, conferma la tua base di consenso, anteprima di duplicati e righe rifiutate, e importa solo i contatti che approvi. Non c'è importazione in background e nessuna campagna automatica.",
+      "q12": "Cosa significa 'illimitato' nel piano Pro?",
+      "a12": "Il piano a pagamento non applica una quota mensile di richieste Get Phame. Ogni richiesta è ancora inviata individualmente tramite un account che colleghi, e i limiti del tuo provider di email, insieme al consenso applicabile e alle regole delle piattaforme, continuano ad applicarsi.",
+      "sectionTitle": "Domande frequenti",
+      "headline": "Domande sulla sicurezza delle email, sulla privacy e sull'impostazione",
+      "description": "Cosa sapere prima di collegare l'email, importare contatti con consenso e inviare la tua prima richiesta di recensione."
     },
     "section": {
-      "description": "Guarda una rapida panoramica su come connettere la posta elettronica, aggiungere clienti, inviare richieste e monitorare l'attività."
+      "description": "Guarda una rapida panoramica su come connettere la posta elettronica, aggiungere clienti, inviare richieste e monitorare l'attività.",
+      "tagline": "Vedi in azione",
+      "title": "Scopri come funziona"
     }
   },
   "adaptiveSending": {

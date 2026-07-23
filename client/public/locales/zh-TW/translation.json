@@ -2205,11 +2205,35 @@
       "headlinePart2": "避免尷尬的邀請",
       "ctaVariantA": "免費開始 — 寄出 10 則邀請",
       "ctaVariantB": "建立你的第一個評價邀請",
-      "setupTime": "引導式設定"
+      "setupTime": "引導式設定",
+      "categoryLabel": "供本地商家使用的評價請求郵件軟體",
+      "description": "Get Phame 是一款供本地商家使用的評價請求郵件軟體。新增客戶，從你連接的郵件帳戶寄出個人化請求，追蹤開信與點擊，並引導客戶至你選擇的評價平台。",
+      "googleDisclosureLabel": "Google 登入資料使用說明",
+      "googleSignInDisclaimer": "Google 登入僅提供您的姓名與電子郵件地址來建立與識別您的 Get Phame 帳戶。我們不會請求存取 Gmail 訊息、聯絡人、Drive 檔案或日曆。",
+      "privacyPolicy": "隱私政策",
+      "howItWorks": "如何運作",
+      "emailCompatibility": "支援 Gmail、Outlook、SMTP",
+      "dashboardMockupAlt": "顯示評價請求活動、發送控制，以及本地商家免費方案使用情況的 Get Phame 應用主畫面"
     },
     "leadCapture": {
       "description": "取得一份免費指南，教你建立可重複、具合規意識的評價邀請流程—外加產品更新與聲譽小貼士。",
-      "sharePrompt": "知道有人會寄送評價邀請嗎？分享這本免費指南。"
+      "sharePrompt": "知道有人會寄送評價邀請嗎？分享這本免費指南。",
+      "errorMessage": "發生錯誤。請再試一次。",
+      "emailRequired": "請輸入您的電子郵件地址。",
+      "emailInvalid": "請輸入正確格式的電子郵件，例如 name@example.com。",
+      "heading": "尚未準備好承諾？",
+      "emailPlaceholder": "輸入您的電子郵件",
+      "sending": "寄送中...",
+      "sendGuideButton": "寄送指南",
+      "emailConfirmationHint": "離開前我們會再次顯示該地址，方便您發現拼寫錯誤。",
+      "providerAcceptedMessage": "您的電子郵件提供商已接受寄送指南。",
+      "downloadReadyMessage": "指南已可下載。",
+      "addressConfirmation": "我們已寄送至 {{email}}。請確認拼寫，若未收到，請檢查垃圾郵件匣。提供商接受並不保證郵件能送達到收件匣。",
+      "deliveryFallback": "對 {{email}} 的郵件寄送無法完成。請確認拼寫，重試，或立即下載指南。",
+      "downloadGuideButton": "下載 PDF 指南",
+      "editEmail": "編輯郵件",
+      "tryAgain": "再試一次寄送郵件",
+      "noSpamMessage": "偶爾發送的產品相關郵件。隨時可取消訂閱。"
     },
     "purpose": {
       "description": "Get Phame 幫助在地商家使用其已連接的電子郵件帳號寄送個人化的評論邀請郵件。適用於商家老闆、攝影師、咖啡館與餐廳、到府服務團隊、診所與沙龍、代理商，以及想要更簡單方式向真實顧客徵求回饋的 WooCommerce 商店。",
@@ -2236,7 +2260,13 @@
       "connectedEmailLabel": "從你連接的帳戶寄送",
       "reminderValue": "自動",
       "reminderLabel": "完成後停止未來的提醒",
-      "heading": "每一步都可控"
+      "heading": "每一步都可控",
+      "industryPhotographers": "攝影師",
+      "industryCafesRestaurants": "咖啡館與餐廳",
+      "industryHomeServices": "居家服務",
+      "industryClinicsSalons": "診所與美髮沙龍",
+      "industryAgencies": "代理機構",
+      "industryWooCommerceStores": "WooCommerce 商店"
     },
     "support": {
       "attachment": "截圖",
@@ -2311,17 +2341,40 @@
         "step4": {
           "title": "寄送並追蹤活動",
           "description": "向你選擇的每位客戶寄送個人化請求，並追蹤寄出、開啟、點擊、提醒與完成狀態。"
+        },
+        "step2": {
+          "title": "選擇您的評價目的地",
+          "description": "配置受支援的評價目的地，並遵循寄送前所顯示的平臺相容指引。Yelp 使用符合規範的指示流程，而非一般的招募連結。"
+        },
+        "step3": {
+          "title": "審核已同意的聯繫人",
+          "description": "上傳 CSV、連接 WooCommerce，或手動新增聯繫人。確認您的授權來源、審核有效與重複的列，並僅匯入您核准的聯繫人。"
         }
       },
       "headline": "完成第一個評價邀請的四個步驟",
-      "setupTime": "支援的電子郵件提供商之引導設定"
+      "setupTime": "支援的電子郵件提供商之引導設定",
+      "setupInSteps": "4 步驟完成設定",
+      "subtitle": "連接寄件者、審核已同意的聯繫人，並在寄出前逐一選擇每個請求。",
+      "getStartedButton": "免費開始使用"
     },
     "productShowcase": {
       "tabEmailDescription": "每次評價邀請在寄出前會使用你配置的電子郵件地址、寄件人姓名、簽名與訊息。",
       "tabTrackingTitle": "追蹤請求活動",
       "tabTrackingDescription": "在一個工作區中查看寄出、開啟、點擊、提醒與完成狀態。",
       "tabTrackingAlt": "Get Phame 活動儀表板，顯示評價邀請的寄出、開啟、點擊、提醒與完成狀態",
-      "sectionDescription": "一個聚焦工具。三種實用檢視。管理評價邀請外展所需的一切。"
+      "sectionDescription": "一個聚焦工具。三種實用檢視。管理評價邀請外展所需的一切。",
+      "tabEmailLabel": "郵件預覽",
+      "tabEmailTitle": "寄出前預覽每個請求",
+      "tabEmailAlt": "Get Phame 評價請求郵件預覽，顯示客戶姓名、商家簽名，以及已設定的評價目的地",
+      "tabImportLabel": "來源審核",
+      "tabImportTitle": "匯入前審核聯繫人",
+      "tabImportDescription": "上傳一個 CSV，或連接 WooCommerce，確認權限，並審核有效、重複與被拒的列。匯入聯繫人絕不會寄送訊息。",
+      "tabImportAlt": "Get Phame 來源畫面，顯示 CSV 上傳、同意確認與重複項目審核",
+      "tabTrackingLabel": "請求活動",
+      "sectionSubtitle": "產品",
+      "sectionTitle": "打造讓評價請求更輕鬆的設計",
+      "viewFullSizeButton": "查看原尺寸",
+      "viewFullSizeAriaLabel": "以原尺寸查看 {{title}}"
     },
     "socialProofBar": {
       "heading": "內建工作流程保護機制",
@@ -2366,12 +2419,38 @@
       "getStartedFree": "探索 Get Phame 免費版"
     },
     "faq": {
-      "a1": "每次請求都會透過你所連接的電子郵件帳戶寄送，並使用你配置的寄件人姓名、地址、簽名與訊息。寄送前預覽訊息，並遵循你的提供商的到達性指引。",
-      "a6": "訊息是透過你連接的電子郵件帳戶寄出，因此你的提供商的寄送限制、網域聲譽、SPF、DKIM、內容與收件人互動可能影響投遞。不可能有任何服務能保證信箱落地率。",
-      "a9": "否。Get Phame 提供 Gmail、Outlook，以及其他支援的 SMTP 服務的提供商特定設定指引。自訂 SMTP 連線需要伺服器地址、埠號與提供商提供的憑證。"
+      "a1": "每次請求都會透過你連接的電子郵件帳戶發送，並使用你所配置的寄件者姓名、地址、簽名與訊息。發送前先預覽該訊息，並遵循提供者的可送達性指引。",
+      "a6": "訊息透過您所連接的電子郵件帳戶發送，因此您的提供者的寄送限制、網域信譽、SPF、DKIM、內容與收件人互動都可能影響送達。沒有服務可以保證進入收件箱。",
+      "a9": "不需要。Get Phame 提供 Gmail、Outlook 及其他受支援的 SMTP 服務的提供者特定設定指南。自訂 SMTP 連線需要提供者提供的伺服器位址、埠號和憑證。",
+      "q1": "看起來會像垃圾郵件嗎？",
+      "q2": "哪些電子郵件提供商可用？",
+      "a2": "Get Phame 可透過受支援的 Gmail、Outlook 與 SMTP 連線運作，包含 Google Workspace、Microsoft 365、Yahoo、Zoho、iCloud，以及自訂的 SMTP 提供商。",
+      "q3": "真的免費嗎？",
+      "a3": "是的。免費方案以 10 個評論請求開始，之後每 30 天循環增加 5 個，且不需要提供信用卡。付費方案則增加更高容量的工作流程功能。",
+      "q4": "我可以匯入我的客戶名單嗎？",
+      "a4": "可以。在 Sources 中，上傳 CSV 或連接 WooCommerce，確認您的同意依據，審核有效和重複的列，然後匯入您核准的聯絡人。匯入聯絡人絕不會發送訊息。",
+      "q5": "Get Phame 會儲存我的電子郵件密碼嗎？",
+      "a5": "SMTP 憑證在靜止時會被加密，僅用於您所配置的發送連線。Get Phame 不會使用這些憑證來讀取您的收件匣。",
+      "q6": "我的郵件會被送進垃圾郵件匣嗎？",
+      "q7": "我的客戶名單會怎麼處理？",
+      "a7": "客戶資料用於支援你所選擇的評論請求工作流程。來源將匯入限定在擁有者範圍，記錄同意的元資料，且在審計歷史中不會重複顯示聯絡人之 PII，同時讓你在任何寄送動作前審核聯絡人。",
+      "q8": "客戶可以選擇退出嗎？",
+      "a8": "可以。請求中包含取消訂閱的選項，且已選擇退出的聯絡人將不再透過 Get Phame 進行未來的聯繫。",
+      "q9": "我需要技術技能來連接我的電子郵件嗎？",
+      "q10": "它支援哪些評論平台？",
+      "a10": "Get Phame 支援可設定的評論目的地，並在發送前提供平台感知指引。某些平台（包括 Yelp）需要採用不同的合規方式，而非標準的徵求連結。",
+      "q11": "WooCommerce 匯入怎麼運作？",
+      "a11": "在 Sources 中連接 WooCommerce，將最近完成的訂單聯絡人抓取至評論佇列，確認您的同意依據，預覽重複與被拒絕的列，僅匯入您核准的聯絡人。沒有背景匯入，也沒有自動活動。",
+      "q12": "Pro 計畫中的 unlimited 指的是什麼？",
+      "a12": "付費方案不設定月度 Get Phame 請求配額。每個請求仍會透過您所連接的帳戶逐一發送，且仍適用您電子郵件提供者的限制，以及適用的同意與平台規則。",
+      "sectionTitle": "常見問答",
+      "headline": "有關電子郵件安全、隱私與設定的問題",
+      "description": "在連接電子郵件、匯入已同意的聯絡人，以及發送第一個評論請求之前需要知道的事項。"
     },
     "section": {
-      "description": "觀看快速導覽，瞭解如何連接電子郵件、添加客戶、寄送邀請與追蹤活動。"
+      "description": "觀看快速導覽，瞭解如何連接電子郵件、添加客戶、寄送邀請與追蹤活動。",
+      "tagline": "現場演示",
+      "title": "了解它如何運作"
     }
   },
   "adaptiveSending": {

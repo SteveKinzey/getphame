@@ -236,7 +236,31 @@
       "faq": {
         "a1": "Each request is sent through an email account you connect and uses the sender name, address, signature, and message you configure. Preview the message before sending and follow your provider's deliverability guidance.",
         "a6": "Messages are sent through the email account you connect, so your provider's sending limits, domain reputation, SPF, DKIM, content, and recipient engagement can affect delivery. No service can guarantee inbox placement.",
-        "a9": "No. Get Phame provides provider-specific setup guidance for Gmail, Outlook, and other supported SMTP services. Custom SMTP connections require the server address, port, and credentials supplied by your provider."
+        "a9": "No. Get Phame provides provider-specific setup guidance for Gmail, Outlook, and other supported SMTP services. Custom SMTP connections require the server address, port, and credentials supplied by your provider.",
+        "q1": "Will it look like spam?",
+        "q2": "What email providers work?",
+        "a2": "Get Phame works with supported Gmail, Outlook, and SMTP connections, including Google Workspace, Microsoft 365, Yahoo, Zoho, iCloud, and custom SMTP providers.",
+        "q3": "Is it really free?",
+        "a3": "Yes. The free plan starts with 10 review requests, then provides 5 more every rolling 30 days, with no credit card required. Paid plans add higher-volume workflow features.",
+        "q4": "Can I import my customer list?",
+        "a4": "Yes. In Sources, upload a CSV or connect WooCommerce, confirm your permission basis, review valid and duplicate rows, and then import the contacts you approve. Importing contacts never sends a message.",
+        "q5": "Does Get Phame store my email password?",
+        "a5": "SMTP credentials are encrypted at rest and are used only for the sending connection you configure. Get Phame does not use those credentials to read your inbox.",
+        "q6": "Will my emails land in spam?",
+        "q7": "What happens to my customer list?",
+        "a7": "Customer details are used to support the review-request workflows you choose. Sources keeps imports owner-scoped, records consent metadata without duplicating contact PII in its audit history, and lets you review contacts before any send action.",
+        "q8": "Can customers opt out?",
+        "a8": "Yes. Requests include an unsubscribe option, and an opted-out contact is excluded from future outreach through Get Phame.",
+        "q9": "Do I need technical skills to connect my email?",
+        "q10": "Which review platforms does it support?",
+        "a10": "Get Phame supports configurable review destinations and provides platform-aware guidance before sending. Some platforms, including Yelp, require a different compliance approach rather than a standard solicitation link.",
+        "q11": "How does WooCommerce import work?",
+        "a11": "Connect WooCommerce in Sources, fetch recent completed-order contacts into a review queue, confirm your permission basis, preview duplicates and rejected rows, and import only the contacts you approve. There is no background import and no automatic campaign.",
+        "q12": "What does unlimited mean on the Pro plan?",
+        "a12": "The paid plan does not apply a monthly Get Phame request quota. Each request is still sent individually through an account you connect, and your email provider's limits plus applicable consent and platform rules still apply.",
+        "sectionTitle": "FAQ",
+        "headline": "Questions about email safety, privacy and setup",
+        "description": "What to know before connecting email, importing consented contacts, and sending your first review request."
       },
       "howItWorks": {
         "setupSteps": {
@@ -247,10 +271,21 @@
           "step4": {
             "title": "Send and track activity",
             "description": "Send a personal request to each customer you choose, then track sends, opens, clicks, reminders, and completion status."
+          },
+          "step2": {
+            "title": "Choose your review destination",
+            "description": "Configure a supported review destination and follow the platform-aware guidance shown before sending. Yelp uses a compliance-safe instruction flow rather than a standard solicitation link."
+          },
+          "step3": {
+            "title": "Review consented contacts",
+            "description": "Upload a CSV, connect WooCommerce, or add contacts manually. Confirm your permission basis, review valid and duplicate rows, and import only the contacts you approve."
           }
         },
         "headline": "Four steps to your first review request",
-        "setupTime": "Guided setup for supported email providers"
+        "setupTime": "Guided setup for supported email providers",
+        "setupInSteps": "Setup in 4 steps",
+        "subtitle": "Connect your sender, review consented contacts, and choose each request before sending.",
+        "getStartedButton": "Get Started Free"
       },
       "stats": {
         "recipientControlValue": "You choose",
@@ -261,7 +296,13 @@
         "connectedEmailLabel": "send from an account you connect",
         "reminderValue": "Automatic",
         "reminderLabel": "future reminders stop after completion",
-        "heading": "Control at every step"
+        "heading": "Control at every step",
+        "industryPhotographers": "Photographers",
+        "industryCafesRestaurants": "Cafés & Restaurants",
+        "industryHomeServices": "Home Services",
+        "industryClinicsSalons": "Clinics & Salons",
+        "industryAgencies": "Agencies",
+        "industryWooCommerceStores": "WooCommerce Stores"
       },
       "support": {
         "attachmentType": "Attach a JPG, PNG, or WebP screenshot.",
@@ -309,7 +350,19 @@
         "tabTrackingTitle": "Track request activity",
         "tabTrackingDescription": "See every request sent, opened, clicked, reminded, and completed in one activity view.",
         "tabTrackingAlt": "Get Phame activity dashboard showing review-request sends, opens, clicks, reminders, and completion status",
-        "sectionDescription": "One focused tool. Three practical views. Everything you need to manage review-request outreach."
+        "sectionDescription": "One focused tool. Three practical views. Everything you need to manage review-request outreach.",
+        "tabEmailLabel": "Email preview",
+        "tabEmailTitle": "Preview each request before sending",
+        "tabEmailAlt": "Get Phame review-request email preview showing a customer name, business signature, and configured review destination",
+        "tabImportLabel": "Sources review",
+        "tabImportTitle": "Review contacts before import",
+        "tabImportDescription": "Upload a CSV or connect WooCommerce, confirm permission, and review valid, duplicate, and rejected rows. Importing contacts never sends a message.",
+        "tabImportAlt": "Get Phame Sources screen showing CSV upload, consent confirmation, and duplicate review",
+        "tabTrackingLabel": "Request activity",
+        "sectionSubtitle": "The product",
+        "sectionTitle": "Built to make review requests effortless",
+        "viewFullSizeButton": "View full size",
+        "viewFullSizeAriaLabel": "View {{title}} in full size"
       },
       "lightbox": {
         "closeButtonAriaLabel": "Close",
@@ -327,7 +380,23 @@
       },
       "leadCapture": {
         "description": "Get a free guide to building a repeatable, compliance-aware review-request process—plus product updates and reputation tips.",
-        "sharePrompt": "Know someone who sends review requests? Share the free playbook."
+        "sharePrompt": "Know someone who sends review requests? Share the free playbook.",
+        "errorMessage": "Something went wrong. Please try again.",
+        "emailRequired": "Enter your email address.",
+        "emailInvalid": "Enter a correctly formatted email, such as name@example.com.",
+        "heading": "Not ready to commit?",
+        "emailPlaceholder": "Enter your email",
+        "sending": "Sending...",
+        "sendGuideButton": "Send Guide",
+        "emailConfirmationHint": "We’ll show the address again before you leave so you can catch a typo.",
+        "providerAcceptedMessage": "Your email provider accepted the guide for delivery.",
+        "downloadReadyMessage": "Your guide is ready to download.",
+        "addressConfirmation": "We sent it to {{email}}. Confirm the spelling and check spam if it does not arrive. Provider acceptance does not guarantee inbox placement.",
+        "deliveryFallback": "Email delivery was unavailable for {{email}}. Confirm the spelling, retry, or download the guide now.",
+        "downloadGuideButton": "Download the PDF guide",
+        "editEmail": "Edit email",
+        "tryAgain": "Try email again",
+        "noSpamMessage": "Occasional product emails. Unsubscribe anytime."
       },
       "feature3": {
         "title": "Platform-aware destinations",
@@ -378,7 +447,15 @@
         "headlinePart2": "without the awkward ask",
         "ctaVariantA": "Start Free — Send 10 Requests",
         "ctaVariantB": "Build Your First Review Request",
-        "setupTime": "Guided setup"
+        "setupTime": "Guided setup",
+        "categoryLabel": "Review-request email software for local businesses",
+        "description": "Get Phame is review-request email software for local businesses. Add customers, send personalized requests from an email account you connect, track opens and clicks, and direct customers to the review platform you choose.",
+        "googleDisclosureLabel": "Google sign-in data use",
+        "googleSignInDisclaimer": "Google sign-in only provides your name and email address to create and identify your Get Phame account. We do not request access to Gmail messages, contacts, Drive files, or Calendar.",
+        "privacyPolicy": "Privacy Policy",
+        "howItWorks": "See how it works",
+        "emailCompatibility": "Works with Gmail, Outlook, SMTP",
+        "dashboardMockupAlt": "Get Phame app home screen showing review-request activity, send controls, and free-plan usage for local businesses"
       },
       "thumbnail": {
         "altText": "GetPhame product walkthrough video thumbnail",
@@ -397,7 +474,9 @@
         "customerListPrivate": "Your customer list stays private"
       },
       "section": {
-        "description": "Watch a quick walkthrough of connecting email, adding customers, sending requests, and tracking activity."
+        "description": "Watch a quick walkthrough of connecting email, adding customers, sending requests, and tracking activity.",
+        "tagline": "See it in action",
+        "title": "See How It Works"
       },
       "subHeadline": "A focused workflow for preparing, sending, and tracking individual review requests—without awkward conversations or automatic outreach.",
       "whyItWorks": "How it stays controlled"
@@ -1401,9 +1480,33 @@
         "title": "Qué hace Get Phame"
       },
       "faq": {
-        "a1": "Cada solicitud se envía a través de una cuenta de correo que conectas y utiliza el nombre del remitente, la dirección, la firma y el mensaje que configuras. Previsualiza el mensaje antes de enviar y sigue las indicaciones de entregabilidad de tu proveedor.",
-        "a6": "Los mensajes se envían a través de la cuenta de correo que conectas, por lo que los límites de envío de tu proveedor, la reputación del dominio, SPF, DKIM, contenido y el compromiso de los destinatarios pueden afectar la entrega. Ningún servicio puede garantizar la entrega en la bandeja de entrada.",
-        "a9": "No. Get Phame ofrece orientación de configuración específica del proveedor para Gmail, Outlook y otros servicios SMTP compatibles. Las conexiones SMTP personalizadas requieren la dirección del servidor, el puerto y las credenciales suministradas por tu proveedor."
+        "a1": "Cada solicitud se envía a través de una cuenta de correo electrónico que conectas y utiliza el nombre del remitente, la dirección, la firma y el mensaje que configuras. Previsualiza el mensaje antes de enviarlo y sigue las pautas de entregabilidad de tu proveedor.",
+        "a6": "Los mensajes se envían a través de la cuenta de correo que conectas, por lo que los límites de envío de tu proveedor, la reputación del dominio, SPF, DKIM, el contenido y la interacción del destinatario pueden afectar la entrega. Ningún servicio puede garantizar la llegada a la bandeja de entrada.",
+        "a9": "No. Get Phame ofrece guías de configuración específicas del proveedor para Gmail, Outlook y otros servicios SMTP compatibles. Las conexiones SMTP personalizadas requieren la dirección del servidor, el puerto y las credenciales proporcionadas por tu proveedor.",
+        "q1": "¿Se verá como spam?",
+        "q2": "¿Qué proveedores de correo electrónico funcionan?",
+        "a2": "Get Phame funciona con conexiones compatibles de Gmail, Outlook y SMTP, incluyendo Google Workspace, Microsoft 365, Yahoo, Zoho, iCloud y proveedores SMTP personalizados.",
+        "q3": "¿Es realmente gratis?",
+        "a3": "Sí. El plan gratuito comienza con 10 solicitudes de revisión y luego añade 5 más cada 30 días consecutivos, sin necesidad de tarjeta de crédito. Los planes de pago añaden funciones de flujo de trabajo de mayor volumen.",
+        "q4": "¿Puedo importar mi lista de clientes?",
+        "a4": "Sí. En Fuentes, sube un CSV o conecta WooCommerce, confirma tu base de consentimiento, revisa filas válidas y duplicadas, y luego importa los contactos que apruebas. Importar contactos nunca envía un mensaje.",
+        "q5": "¿Get Phame almacena la contraseña de mi correo electrónico?",
+        "a5": "Las credenciales SMTP están cifradas en reposo y se usan solo para la conexión de envío que configuras. Get Phame no utiliza esas credenciales para leer tu bandeja de entrada.",
+        "q6": "¿Mis correos terminarán en spam?",
+        "q7": "¿Qué pasa con mi lista de clientes?",
+        "a7": "Los datos de los clientes se utilizan para respaldar los flujos de trabajo de solicitud de revisión que elijas. Fuentes mantiene las importaciones con alcance del propietario, registra metadatos de consentimiento sin duplicar la PII de los contactos en su historial de auditoría, y te permite revisar contactos antes de cualquier acción de envío.",
+        "q8": "¿Los clientes pueden darse de baja?",
+        "a8": "Sí. Las solicitudes incluyen una opción de cancelación de suscripción, y un contacto que se haya dado de baja se excluye de futuros contactos a través de Get Phame.",
+        "q9": "¿Necesito habilidades técnicas para conectar mi correo electrónico?",
+        "q10": "¿Qué plataformas de reseñas admite?",
+        "a10": "Get Phame admite destinos de revisión configurables y proporciona orientación específica por plataforma antes de enviar. Algunas plataformas, incluido Yelp, requieren un enfoque de cumplimiento diferente en lugar de un enlace de solicitud estándar.",
+        "q11": "¿Cómo funciona la importación de WooCommerce?",
+        "a11": "Conecta WooCommerce en Fuentes, obtén los contactos de órdenes recientes completadas en una cola de revisión, confirma tu base de consentimiento, previsualiza duplicados y filas rechazadas, e importa solo los contactos que apruebas. No hay importación en segundo plano y no hay campaña automática.",
+        "q12": "¿Qué significa ilimitado en el plan Pro?",
+        "a12": "El plan de pago no aplica una cuota mensual de solicitudes de Get Phame. Cada solicitud se envía aún de forma individual a través de una cuenta que conectas, y los límites de tu proveedor de correo, junto con el consentimiento aplicable y las reglas de la plataforma, siguen aplicándose.",
+        "sectionTitle": "Preguntas frecuentes",
+        "headline": "Preguntas sobre la seguridad del correo, la privacidad y la configuración",
+        "description": "Qué saber antes de conectar el correo, importar contactos con consentimiento y enviar su primera solicitud de revisión."
       },
       "howItWorks": {
         "setupSteps": {
@@ -1414,10 +1517,21 @@
           "step4": {
             "title": "Enviar y rastrear la actividad",
             "description": "Envía una solicitud personal a cada cliente que elijas, luego rastrea envíos, aperturas, clics, recordatorios y estado de finalización."
+          },
+          "step2": {
+            "title": "Elige tu destino de reseña",
+            "description": "Configura un destino de reseña compatible y sigue las indicaciones adecuadas de la plataforma antes de enviar. Yelp utiliza un flujo de instrucciones compatible con el cumplimiento en lugar de un enlace de solicitud estándar."
+          },
+          "step3": {
+            "title": "Revisa contactos que han dado su consentimiento",
+            "description": "Carga un CSV, conecta WooCommerce o añade contactos manualmente. Confirma la base de consentimiento, revisa filas válidas y duplicadas y solo importa los contactos que apruebes."
           }
         },
         "headline": "Cuatro pasos para tu primera solicitud de revisión",
-        "setupTime": "Configuración guiada para proveedores de correo compatibles"
+        "setupTime": "Configuración guiada para proveedores de correo compatibles",
+        "setupInSteps": "Configuración en 4 pasos",
+        "subtitle": "Conecta tu remitente, revisa los contactos que dieron su consentimiento y elige cada solicitud antes de enviarla.",
+        "getStartedButton": "Comenzar gratis"
       },
       "stats": {
         "recipientControlValue": "Tú eliges",
@@ -1428,7 +1542,13 @@
         "connectedEmailLabel": "envía desde una cuenta que conectes",
         "reminderValue": "Automático",
         "reminderLabel": "Los recordatorios futuros se detienen cuando se completa la acción solicitada",
-        "heading": "Control en cada paso"
+        "heading": "Control en cada paso",
+        "industryPhotographers": "Fotógrafos",
+        "industryCafesRestaurants": "Cafés y restaurantes",
+        "industryHomeServices": "Servicios para el hogar",
+        "industryClinicsSalons": "Clínicas y salones",
+        "industryAgencies": "Agencias",
+        "industryWooCommerceStores": "Tiendas WooCommerce"
       },
       "support": {
         "attachmentType": "Adjunta una captura en JPG, PNG o WebP.",
@@ -1476,7 +1596,19 @@
         "tabTrackingTitle": "Rastrear la actividad de las solicitudes",
         "tabTrackingDescription": "Ver cada solicitud enviada, abierta, con clics, recordatorios y estado de finalización en una sola vista de actividad.",
         "tabTrackingAlt": "Panel de actividad de Get Phame que muestra envíos de solicitudes de revisión, aperturas, clics, recordatorios y estado de finalización",
-        "sectionDescription": "Una herramienta enfocada. Tres vistas prácticas. Todo lo que necesitas para gestionar el alcance de solicitudes de revisión."
+        "sectionDescription": "Una herramienta enfocada. Tres vistas prácticas. Todo lo que necesitas para gestionar el alcance de solicitudes de revisión.",
+        "tabEmailLabel": "Vista previa del correo",
+        "tabEmailTitle": "Previsualiza cada solicitud antes de enviarla",
+        "tabEmailAlt": "Vista previa del correo de solicitud de reseña de Get Phame que muestra un nombre de cliente, la firma del negocio y el destino de reseña configurado",
+        "tabImportLabel": "Fuentes de reseñas",
+        "tabImportTitle": "Revisa los contactos antes de la importación",
+        "tabImportDescription": "Carga un CSV o conecta WooCommerce, confirma el permiso y revisa filas válidas, duplicadas y rechazadas. Importar contactos nunca envía un mensaje.",
+        "tabImportAlt": "Pantalla de Fuentes de Get Phame que muestra subida de CSV, confirmación de consentimiento y revisión de duplicados",
+        "tabTrackingLabel": "Actividad de solicitudes",
+        "sectionSubtitle": "El producto",
+        "sectionTitle": "Diseñado para que las solicitudes de reseña sean fáciles",
+        "viewFullSizeButton": "Ver en tamaño completo",
+        "viewFullSizeAriaLabel": "Ver {{title}} en tamaño completo"
       },
       "lightbox": {
         "closeButtonAriaLabel": "Cerrar",
@@ -1494,7 +1626,23 @@
       },
       "leadCapture": {
         "description": "Obtén una guía gratuita para construir un proceso de solicitud de revisión repetible y con enfoque en cumplimiento, además de actualizaciones de producto y consejos de reputación.",
-        "sharePrompt": "¿Conoces a alguien que envía solicitudes de reseña? Comparte la guía gratuita."
+        "sharePrompt": "¿Conoces a alguien que envía solicitudes de reseña? Comparte la guía gratuita.",
+        "errorMessage": "Algo salió mal. Por favor, inténtalo de nuevo.",
+        "emailRequired": "Introduce tu dirección de correo electrónico.",
+        "emailInvalid": "Introduce un correo electrónico con formato correcto, por ejemplo name@example.com.",
+        "heading": "¿Aún no estás listo para comprometerte?",
+        "emailPlaceholder": "Introduce tu correo electrónico",
+        "sending": "Enviando...",
+        "sendGuideButton": "Enviar guía",
+        "emailConfirmationHint": "Mostraremos la dirección de nuevo antes de salir para que puedas corregir un error tipográfico.",
+        "providerAcceptedMessage": "Tu proveedor de correo aceptó la guía para su entrega.",
+        "downloadReadyMessage": "Tu guía está lista para descargar.",
+        "addressConfirmation": "La hemos enviado a {{email}}. Confirma la ortografía y revisa la carpeta de correo no deseado si no llega. La aceptación del proveedor no garantiza la colocación en la bandeja de entrada.",
+        "deliveryFallback": "La entrega de correo no estuvo disponible para {{email}}. Verifica la ortografía, inténtalo de nuevo o descarga la guía ahora.",
+        "downloadGuideButton": "Descargar la guía en PDF",
+        "editEmail": "Editar correo",
+        "tryAgain": "Volver a intentar con el correo",
+        "noSpamMessage": "Correos electrónicos de producto ocasionales. Puedes darte de baja en cualquier momento."
       },
       "feature3": {
         "title": "Destinos compatibles con la plataforma",
@@ -1545,7 +1693,15 @@
         "headlinePart2": "sin la solicitud incómoda",
         "ctaVariantA": "Comienza gratis — Envía 10 solicitudes",
         "ctaVariantB": "Crea tu primera solicitud de revisión",
-        "setupTime": "Configuración guiada"
+        "setupTime": "Configuración guiada",
+        "categoryLabel": "Software de solicitud de reseñas por correo para negocios locales",
+        "description": "Get Phame es software de correo para solicitudes de reseñas para negocios locales. Agrega clientes, envía solicitudes personalizadas desde una cuenta de correo que conectes, rastrea aperturas y clics, y dirige a los clientes a la plataforma de reseñas que elijas.",
+        "googleDisclosureLabel": "Uso de datos de inicio de sesión de Google",
+        "googleSignInDisclaimer": "El inicio de sesión con Google solo proporciona tu nombre y dirección de correo electrónico para crear e identificar tu cuenta de Get Phame. No solicitamos acceso a mensajes de Gmail, contactos, archivos de Drive o Calendar.",
+        "privacyPolicy": "Política de Privacidad",
+        "howItWorks": "Así funciona",
+        "emailCompatibility": "Funciona con Gmail, Outlook, SMTP",
+        "dashboardMockupAlt": "Pantalla de inicio de la app Get Phame que muestra la actividad de solicitud de reseñas, controles de envío y uso del plan gratuito para negocios locales"
       },
       "thumbnail": {
         "altText": "Miniatura del video del recorrido del producto GetPhame",
@@ -1564,7 +1720,9 @@
         "customerListPrivate": "Tu lista de clientes se mantiene privada"
       },
       "section": {
-        "description": "Mira un recorrido rápido de cómo conectar el correo, añadir clientes, enviar solicitudes y rastrear la actividad."
+        "description": "Mira un recorrido rápido de cómo conectar el correo, añadir clientes, enviar solicitudes y rastrear la actividad.",
+        "tagline": "Véalo en acción",
+        "title": "Ver cómo funciona"
       },
       "subHeadline": "Un flujo de trabajo enfocado para preparar, enviar y rastrear solicitudes de revisión individuales, sin conversaciones incómodas ni alcance automático.",
       "whyItWorks": "Cómo se mantiene bajo control"
@@ -2593,9 +2751,33 @@
         "title": "Ce que fait Get Phame"
       },
       "faq": {
-        "a1": "Chaque demande est envoyée via un compte e-mail que vous connectez et utilise le nom de l'expéditeur, l'adresse, la signature et le message que vous configurez. Prévisualisez le message avant l'envoi et suivez les directives de délivrabilité de votre fournisseur.",
-        "a6": "Les messages sont envoyés via le compte e-mail que vous connectez, de sorte que les limites d'envoi de votre fournisseur, la réputation du domaine, SPF, DKIM, le contenu et l'engagement des destinataires peuvent influencer la livraison. Aucun service ne peut garantir la délivrance dans la boîte de réception.",
-        "a9": "Non. Get Phame fournit des instructions de configuration spécifiques au fournisseur pour Gmail, Outlook et d'autres services SMTP pris en charge. Les connexions SMTP personnalisées nécessitent l'adresse du serveur, le port et les identifiants fournis par votre fournisseur."
+        "a1": "Chaque demande est envoyée via un compte e-mail que vous connectez et utilise le nom de l’expéditeur, l’adresse, la signature et le message que vous configurez. Prévisualisez le message avant l’envoi et respectez les conseils de délivrabilité de votre fournisseur.",
+        "a6": "Les messages sont envoyés via le compte e-mail que vous connectez, donc les limites d’envoi de votre fournisseur, la réputation du domaine, SPF, DKIM, le contenu et l’engagement des destinataires peuvent influencer la délivrabilité. Aucun service ne peut garantir le placement dans la boîte de réception.",
+        "a9": "Non. Get Phame fournit des instructions de configuration spécifiques au fournisseur pour Gmail, Outlook et autres services SMTP pris en charge. Les connexions SMTP personnalisées nécessitent l’adresse du serveur, le port et les identifiants fournis par votre fournisseur.",
+        "q1": "Cela ressemblera-t-il à du spam ?",
+        "q2": "Quels fournisseurs d’e-mails fonctionnent ?",
+        "a2": "Get Phame fonctionne avec des connexions Gmail, Outlook et SMTP prises en charge, y compris Google Workspace, Microsoft 365, Yahoo, Zoho, iCloud et des fournisseurs SMTP personnalisés.",
+        "q3": "Est-ce vraiment gratuit ?",
+        "a3": "Oui. Le plan gratuit commence par 10 demandes d’avis, puis en fournit 5 de plus tous les 30 jours glissants, sans carte de crédit requise. Les plans payants ajoutent des fonctionnalités de flux de travail à plus haut volume.",
+        "q4": "Puis-je importer ma liste de clients ?",
+        "a4": "Oui. Dans Sources, téléversez un CSV ou connectez WooCommerce, confirmez votre base d’autorisation, examinez les lignes valides et en double, puis importez les contacts que vous approuvez. L’importation des contacts n’envoie jamais de message.",
+        "q5": "Get Phame stocke-t-il mon mot de passe e-mail ?",
+        "a5": "Les identifiants SMTP sont chiffrés au repos et ne sont utilisés que pour la connexion d’envoi que vous configurez. Get Phame n’utilise pas ces identifiants pour lire votre boîte de réception.",
+        "q6": "Mes e-mails finiront-ils dans le spam ?",
+        "q7": "Que se passe-t-il avec ma liste de clients ?",
+        "a7": "Les détails des clients sont utilisés pour soutenir les flux de travail de demande d’avis que vous choisissez. Sources conserve les importations sous le cadre du propriétaire, enregistre les métadonnées de consentement sans dupliquer les PII des contacts dans son historique d’audit, et vous permet de vérifier les contacts avant toute action d’envoi.",
+        "q8": "Les clients peuvent-ils se désinscrire ?",
+        "a8": "Oui. Les requêtes incluent une option de désabonnement, et un contact ayant opté pour la désinscription est exclu des futures campagnes via Get Phame.",
+        "q9": "Ai-je besoin de compétences techniques pour connecter mon e-mail ?",
+        "q10": "Quelles plateformes d’avis prend-il en charge ?",
+        "a10": "Get Phame prend en charge des destinations d’avis configurables et fournit des conseils adaptés à chaque plateforme avant l’envoi. Certaines plateformes, notamment Yelp, nécessitent une approche de conformité différente plutôt qu’un lien de sollicitation standard.",
+        "q11": "Comment fonctionne l’import WooCommerce ?",
+        "a11": "Connectez WooCommerce dans Sources, récupérez les contacts des commandes récentes achevées dans une file d’attente d’avis, confirmez votre base de consentement, prévisualisez les doublons et les lignes rejetées, et importez uniquement les contacts que vous approuvez. Il n’y a pas d’import en arrière-plan et pas de campagne automatique.",
+        "q12": "Que signifie « illimité » sur le plan Pro ?",
+        "a12": "Le plan payant n’applique pas de quota mensuel de demandes Get Phame. Chaque demande est toujours envoyée individuellement via un compte que vous connectez, et les limites de votre fournisseur d’e-mail, ainsi que le consentement applicable et les règles de la plateforme, s’appliquent toujours.",
+        "sectionTitle": "FAQ",
+        "headline": "Questions sur la sécurité des e-mails, la confidentialité et la configuration",
+        "description": "Ce qu’il faut savoir avant de connecter l’e-mail, d’importer les contacts ayant donné leur consentement et d’envoyer votre première demande d’avis."
       },
       "howItWorks": {
         "setupSteps": {
@@ -2606,10 +2788,21 @@
           "step4": {
             "title": "Envoyer et suivre l'activité",
             "description": "Envoyez une demande personnelle à chaque client que vous choisissez, puis suivez les envois, les ouvertures, les clics, les rappels et le statut de finalisation."
+          },
+          "step2": {
+            "title": "Choisissez votre destination d'avis",
+            "description": "Configurez une destination d'avis prise en charge et suivez les conseils adaptés à la plateforme affichés avant l'envoi. Yelp utilise un flux d'instructions conformes et sûres plutôt qu'un lien de sollicitation standard."
+          },
+          "step3": {
+            "title": "Vérifier les contacts ayant consenti",
+            "description": "Téléchargez un CSV, connectez WooCommerce ou ajoutez des contacts manuellement. Vérifiez votre fondement d'autorisation, passez en revue les lignes valides et en double, et n'importez que les contacts que vous approuvez."
           }
         },
         "headline": "Quatre étapes vers votre première demande d'avis",
-        "setupTime": "Configuration guidée pour les fournisseurs d'e-mails pris en charge"
+        "setupTime": "Configuration guidée pour les fournisseurs d'e-mails pris en charge",
+        "setupInSteps": "Configuration en 4 étapes",
+        "subtitle": "Connectez votre expéditeur, vérifiez les contacts ayant consenti, et choisissez chaque demande avant l'envoi.",
+        "getStartedButton": "Commencer gratuitement"
       },
       "stats": {
         "recipientControlValue": "Vous choisissez",
@@ -2620,7 +2813,13 @@
         "connectedEmailLabel": "envoyer à partir d'un compte que vous connectez",
         "reminderValue": "Automatique",
         "reminderLabel": "Les rappels futurs s'arrêtent après l'achèvement",
-        "heading": "Contrôle à chaque étape"
+        "heading": "Contrôle à chaque étape",
+        "industryPhotographers": "Photographes",
+        "industryCafesRestaurants": "Cafés et Restaurants",
+        "industryHomeServices": "Services à domicile",
+        "industryClinicsSalons": "Cliniques et salons",
+        "industryAgencies": "Agences",
+        "industryWooCommerceStores": "Boutiques WooCommerce"
       },
       "support": {
         "attachmentType": "Joignez une capture d'écran au format JPG, PNG ou WebP.",
@@ -2668,7 +2867,19 @@
         "tabTrackingTitle": "Suivre l'activité des demandes",
         "tabTrackingDescription": "Voir chaque envoi de demande, chaque ouverture, clic, rappel et finalisation dans une seule vue d'activité.",
         "tabTrackingAlt": "Tableau de bord Get Phame affichant les envois de demandes d'avis, les ouvertures, les clics, les rappels et l'état d'achèvement",
-        "sectionDescription": "Un outil ciblé. Trois vues pratiques. Tout ce dont vous avez besoin pour gérer la prospection de demandes d'avis."
+        "sectionDescription": "Un outil ciblé. Trois vues pratiques. Tout ce dont vous avez besoin pour gérer la prospection de demandes d'avis.",
+        "tabEmailLabel": "Aperçu de l'e-mail",
+        "tabEmailTitle": "Aperçu de chaque demande avant l'envoi",
+        "tabEmailAlt": "Aperçu de l'e-mail de demande d'avis Get Phame affichant le nom du client, la signature de l'entreprise et la destination d'avis configurée",
+        "tabImportLabel": "Sources d'avis",
+        "tabImportTitle": "Examiner les contacts avant l'importation",
+        "tabImportDescription": "Téléchargez un CSV ou connectez WooCommerce, confirmez l'autorisation et passez en revue les lignes valides, en double et rejetées. L'importation des contacts n'envoie jamais de message.",
+        "tabImportAlt": "Écran Sources Get Phame montrant l'importation CSV, la confirmation du consentement et la vérification des doublons",
+        "tabTrackingLabel": "Activité des demandes",
+        "sectionSubtitle": "Le produit",
+        "sectionTitle": "Conçu pour rendre les demandes d'avis sans effort",
+        "viewFullSizeButton": "Voir en plein format",
+        "viewFullSizeAriaLabel": "Voir {{title}} en plein format"
       },
       "lightbox": {
         "closeButtonAriaLabel": "Fermer",
@@ -2686,7 +2897,23 @@
       },
       "leadCapture": {
         "description": "Obtenez un guide gratuit pour bâtir un processus de demande d'avis réutilisable et axé sur la conformité — plus des mises à jour du produit et des conseils sur la réputation.",
-        "sharePrompt": "Connaissez-vous quelqu'un qui envoie des demandes d'avis ? Partagez le guide gratuit."
+        "sharePrompt": "Connaissez-vous quelqu'un qui envoie des demandes d'avis ? Partagez le guide gratuit.",
+        "errorMessage": "Une erreur s'est produite. Veuillez réessayer.",
+        "emailRequired": "Saisissez votre adresse e-mail.",
+        "emailInvalid": "Saisissez une adresse e-mail correctement formatée, comme nom@example.com.",
+        "heading": "Pas encore prêt à vous engager ?",
+        "emailPlaceholder": "Saisissez votre e-mail",
+        "sending": "Envoi en cours...",
+        "sendGuideButton": "Envoyer le guide",
+        "emailConfirmationHint": "Nous afficherons de nouveau l'adresse avant de quitter afin que vous puissiez repérer une faute de frappe.",
+        "providerAcceptedMessage": "Votre fournisseur d'e-mail a accepté l'envoi du guide.",
+        "downloadReadyMessage": "Votre guide est prêt à être téléchargé.",
+        "addressConfirmation": "Nous l'avons envoyé à {{email}}. Confirmez l'orthographe et vérifiez le courrier indésirable s'il n'arrive pas. L'acceptation du fournisseur ne garantit pas la livraison dans la boîte de réception.",
+        "deliveryFallback": "La livraison de l'e-mail était indisponible pour {{email}}. Confirmez l'orthographe, réessayez ou téléchargez le guide maintenant.",
+        "downloadGuideButton": "Télécharger le guide PDF",
+        "editEmail": "Modifier l'e-mail",
+        "tryAgain": "Réessayer l'e-mail",
+        "noSpamMessage": "E-mails occasionnels sur les produits. Désabonnez-vous à tout moment."
       },
       "feature3": {
         "title": "Destinations adaptées à la plateforme",
@@ -2737,7 +2964,15 @@
         "headlinePart2": "sans la demande maladroite",
         "ctaVariantA": "Démarrer gratuitement — Envoyer 10 demandes",
         "ctaVariantB": "Construisez votre première demande d'avis",
-        "setupTime": "Configuration guidée"
+        "setupTime": "Configuration guidée",
+        "categoryLabel": "Logiciel d'e-mails de demande d'avis pour les entreprises locales",
+        "description": "Get Phame est un logiciel d'e-mails de demande d'avis pour les entreprises locales. Ajoutez des clients, envoyez des demandes personnalisées à partir d'un compte e-mail que vous connectez, suivez les ouvertures et les clics, et guidez les clients vers la plateforme d'avis que vous choisissez.",
+        "googleDisclosureLabel": "Utilisation des données de connexion Google",
+        "googleSignInDisclaimer": "La connexion Google ne fournit que votre nom et votre adresse électronique pour créer et identifier votre compte Get Phame. Nous ne demandons pas l'accès aux messages Gmail, aux contacts, aux fichiers Drive ou au Calendrier.",
+        "privacyPolicy": "Politique de confidentialité",
+        "howItWorks": "Découvrez comment cela fonctionne",
+        "emailCompatibility": "Fonctionne avec Gmail, Outlook, SMTP",
+        "dashboardMockupAlt": "Écran d'accueil de l'application Get Phame montrant l'activité de demande d'avis, les contrôles d'envoi et l'utilisation du plan gratuit pour les entreprises locales"
       },
       "thumbnail": {
         "altText": "Vignette vidéo de la présentation du produit GetPhame",
@@ -2756,7 +2991,9 @@
         "customerListPrivate": "Votre liste de clients reste privée"
       },
       "section": {
-        "description": "Regardez un bref aperçu de la connexion de votre e-mail, de l'ajout de clients, de l'envoi des demandes et du suivi de l'activité."
+        "description": "Regardez un bref aperçu de la connexion de votre e-mail, de l'ajout de clients, de l'envoi des demandes et du suivi de l'activité.",
+        "tagline": "Voir en action",
+        "title": "Découvrez comment cela fonctionne"
       },
       "subHeadline": "Un flux de travail ciblé pour préparer, envoyer et suivre les demandes d'avis individuelles — sans conversations maladroites ni envois automatiques.",
       "whyItWorks": "Comment cela reste sous contrôle"
@@ -3785,9 +4022,33 @@
         "title": "Cosa fa Get Phame"
       },
       "faq": {
-        "a1": "Ogni richiesta viene inviata tramite un account email che colleghi e utilizza il nome del mittente, l'indirizzo, la firma e il messaggio che configuri. Anteprima del messaggio prima dell'invio e segui le linee guida di deliverability del tuo provider.",
-        "a6": "I messaggi sono inviati dall'account email che colleghi, quindi i limiti di invio del provider, la reputazione del dominio, SPF, DKIM, contenuto e coinvolgimento dei destinatari possono influire sulla consegna. Nessun servizio può garantire la consegna in inbox.",
-        "a9": "No. Get Phame fornisce istruzioni di configurazione specifiche per Gmail, Outlook e altri servizi SMTP supportati. Connessioni SMTP personalizzate richiedono l'indirizzo del server, la porta e le credenziali fornite dal tuo provider."
+        "a1": "Ogni richiesta viene inviata tramite un account email che colleghi e utilizza il nome del mittente, l'indirizzo, la firma e il messaggio che configuri. Visualizza in anteprima il messaggio prima di inviarlo e segui le indicazioni del tuo provider sulla consegna.",
+        "a6": "I messaggi vengono inviati tramite l'account email che colleghi, quindi i limiti di invio del provider, la reputazione del dominio, SPF, DKIM, contenuto e coinvolgimento del destinatario possono influire sulla consegna. Nessun servizio può garantire la collocazione in casella di posta in arrivo.",
+        "a9": "No. Get Phame fornisce indicazioni di configurazione specifiche per Gmail, Outlook e altri servizi SMTP supportati. Le connessioni SMTP personalizzate richiedono l'indirizzo del server, la porta e le credenziali fornite dal tuo provider.",
+        "q1": "Sarà percepito come spam?",
+        "q2": "Quali provider di email funzionano?",
+        "a2": "Get Phame funziona con connessioni Gmail, Outlook e SMTP supportate, inclusi Google Workspace, Microsoft 365, Yahoo, Zoho, iCloud e fornitori SMTP personalizzati.",
+        "q3": "È davvero gratuito?",
+        "a3": "Sì. Il piano gratuito parte con 10 richieste di recensione, poi ne fornisce altre 5 ogni periodo mobile di 30 giorni, senza richiedere carta di credito. I piani a pagamento aggiungono funzionalità di flusso di lavoro per volumi più elevati.",
+        "q4": "Posso importare la mia lista clienti?",
+        "a4": "Sì. In Sources, carica un CSV o collega WooCommerce, conferma la base del consenso, controlla le righe valide e duplicate, e poi importa i contatti che approvi. Importare i contatti non invia mai alcun messaggio.",
+        "q5": "Le credenziali SMTP sono archiviate?",
+        "a5": "Le credenziali SMTP sono crittografate a riposo e sono usate solo per la connessione di invio che configuri. Get Phame non usa tali credenziali per leggere la tua casella di posta.",
+        "q6": "I miei messaggi finiranno nello spam?",
+        "q7": "Cosa succede alla mia lista di clienti?",
+        "a7": "I dettagli dei clienti vengono utilizzati per supportare i workflow delle richieste di recensione che scegli. Sources mantiene le importazioni vincolate al proprietario, registra i metadati del consenso senza duplicare PII di contatto nella cronologia di audit e ti permette di rivedere i contatti prima di qualsiasi invio.",
+        "q8": "I clienti possono disiscriversi?",
+        "a8": "Sì. Le richieste includono un'opzione di disiscrizione, e un contatto che si è disiscritto è escluso dalle comunicazioni future tramite Get Phame.",
+        "q9": "È necessario avere competenze tecniche per collegare la tua email?",
+        "q10": "Quali piattaforme di recensione supporta?",
+        "a10": "Get Phame supporta destinazioni di recensione configurabili e fornisce indicazioni specifiche per la piattaforma prima dell'invio. Alcune piattaforme, tra cui Yelp, richiedono un approccio di conformità diverso rispetto a un link di sollecitazione standard.",
+        "q11": "Come funziona l'importazione di WooCommerce?",
+        "a11": "Connetti WooCommerce in Sources, recupera i contatti degli ordini recenti completati in una coda di recensioni, conferma la tua base di consenso, anteprima di duplicati e righe rifiutate, e importa solo i contatti che approvi. Non c'è importazione in background e nessuna campagna automatica.",
+        "q12": "Cosa significa 'illimitato' nel piano Pro?",
+        "a12": "Il piano a pagamento non applica una quota mensile di richieste Get Phame. Ogni richiesta è ancora inviata individualmente tramite un account che colleghi, e i limiti del tuo provider di email, insieme al consenso applicabile e alle regole delle piattaforme, continuano ad applicarsi.",
+        "sectionTitle": "Domande frequenti",
+        "headline": "Domande sulla sicurezza delle email, sulla privacy e sull'impostazione",
+        "description": "Cosa sapere prima di collegare l'email, importare contatti con consenso e inviare la tua prima richiesta di recensione."
       },
       "howItWorks": {
         "setupSteps": {
@@ -3798,10 +4059,21 @@
           "step4": {
             "title": "Invia e monitora l'attività",
             "description": "Invia una richiesta personale a ogni cliente che scegli, poi monitora invii, messaggi aperti, clic, promemoria e stato di completamento."
+          },
+          "step2": {
+            "title": "Scegli la destinazione della tua recensione",
+            "description": "Configura una destinazione di recensione supportata e segui le linee guida orientate alla piattaforma prima di inviare. Yelp utilizza un flusso di istruzioni conforme piuttosto che un normale link di sollecitazione."
+          },
+          "step3": {
+            "title": "Rivedi i contatti con consenso",
+            "description": "Carica un CSV, collega WooCommerce o aggiungi contatti manualmente. Conferma la base del tuo consenso, verifica righe valide e duplicate, e importa solo i contatti che approvi."
           }
         },
         "headline": "Quattro passaggi per la tua prima richiesta di recensione",
-        "setupTime": "Configurazione guidata per i provider di posta supportati"
+        "setupTime": "Configurazione guidata per i provider di posta supportati",
+        "setupInSteps": "Configurazione in 4 passaggi",
+        "subtitle": "Collega il tuo mittente, rivedi i contatti con consenso e scegli ogni richiesta prima di inviarla.",
+        "getStartedButton": "Inizia gratis"
       },
       "stats": {
         "recipientControlValue": "Decidi tu",
@@ -3812,7 +4084,13 @@
         "connectedEmailLabel": "invia da un account che colleghi",
         "reminderValue": "Automatico",
         "reminderLabel": "promemoria futuri si interrompono dopo il completamento",
-        "heading": "Controllo ad ogni passaggio"
+        "heading": "Controllo ad ogni passaggio",
+        "industryPhotographers": "Fotografi",
+        "industryCafesRestaurants": "Caffè e ristoranti",
+        "industryHomeServices": "Servizi per la casa",
+        "industryClinicsSalons": "Cliniche e saloni",
+        "industryAgencies": "Agenzie",
+        "industryWooCommerceStores": "Negozi WooCommerce"
       },
       "support": {
         "attachmentType": "Allega uno screenshot JPG, PNG o WebP.",
@@ -3860,7 +4138,19 @@
         "tabTrackingTitle": "Traccia l'attività delle richieste",
         "tabTrackingDescription": "Vedi ogni richiesta inviata, aperta, cliccata, promemoria e stato di completamento in un'unica vista attività.",
         "tabTrackingAlt": "Cruscotto di attività Get Phame che mostra invii di richieste di recensione, aperture, clic, promemoria e stato di completamento",
-        "sectionDescription": "Uno strumento mirato. Tre viste pratiche. Tutto ciò di cui hai bisogno per gestire la richiesta di recensioni."
+        "sectionDescription": "Uno strumento mirato. Tre viste pratiche. Tutto ciò di cui hai bisogno per gestire la richiesta di recensioni.",
+        "tabEmailLabel": "Anteprima dell'email",
+        "tabEmailTitle": "Anteprima di ogni richiesta prima dell'invio",
+        "tabEmailAlt": "Anteprima dell'email di richiesta di recensione Get Phame che mostra il nome del cliente, la firma dell'azienda e la destinazione di recensione configurata",
+        "tabImportLabel": "Fonti di recensione",
+        "tabImportTitle": "Rivedi i contatti prima dell'importazione",
+        "tabImportDescription": "Carica un CSV o collega WooCommerce, conferma il permesso e rivedi righe valide, duplicate e respinte. L'importazione dei contatti non invia mai alcun messaggio.",
+        "tabImportAlt": "Schermata Fonti Get Phame che mostra l'upload CSV, la conferma del consenso e la revisione dei duplicati",
+        "tabTrackingLabel": "Attività delle richieste",
+        "sectionSubtitle": "Il prodotto",
+        "sectionTitle": "Progettato per rendere semplici le richieste di recensione",
+        "viewFullSizeButton": "Visualizza a dimensione intera",
+        "viewFullSizeAriaLabel": "Visualizza {{title}} a dimensione intera"
       },
       "lightbox": {
         "closeButtonAriaLabel": "Chiudi",
@@ -3878,7 +4168,23 @@
       },
       "leadCapture": {
         "description": "Ottieni una guida gratuita per costruire un processo di richiesta di recensione ripetibile e conforme—più aggiornamenti sul prodotto e consigli per la reputazione.",
-        "sharePrompt": "Conosci qualcuno che invia richieste di recensione? Condividi la guida gratuita."
+        "sharePrompt": "Conosci qualcuno che invia richieste di recensione? Condividi la guida gratuita.",
+        "errorMessage": "Qualcosa è andato storto. Per favore riprova.",
+        "emailRequired": "Inserisci il tuo indirizzo email.",
+        "emailInvalid": "Inserisci un indirizzo email formattato correttamente, ad esempio name@example.com.",
+        "heading": "Non sei ancora pronto a impegnarti?",
+        "emailPlaceholder": "Inserisci la tua email",
+        "sending": "Invio in corso...",
+        "sendGuideButton": "Invia guida",
+        "emailConfirmationHint": "Riporteremo l'indirizzo prima di lasciare la pagina in modo che tu possa controllare eventuali errori di battitura.",
+        "providerAcceptedMessage": "Il provider della tua email ha accettato la guida per la consegna.",
+        "downloadReadyMessage": "La tua guida è pronta per il download.",
+        "addressConfirmation": "L'abbiamo inviata a {{email}}. Conferma l'ortografia e controlla lo spam se non arriva. L'accettazione da parte del provider non garantisce l'inserimento nella casella di posta in arrivo.",
+        "deliveryFallback": "La consegna dell'email non era disponibile per {{email}}. Conferma l'ortografia, riprova o scarica ora la guida.",
+        "downloadGuideButton": "Scarica la guida PDF",
+        "editEmail": "Modifica email",
+        "tryAgain": "Riprova l'email",
+        "noSpamMessage": "Email occasionali sui prodotti. Puoi annullare l'iscrizione in qualsiasi momento."
       },
       "feature3": {
         "title": "Destinazioni compatibili con la piattaforma",
@@ -3929,7 +4235,15 @@
         "headlinePart2": "senza la richiesta imbarazzante",
         "ctaVariantA": "Inizia gratis — Invia 10 richieste",
         "ctaVariantB": "Crea la tua prima richiesta di recensione",
-        "setupTime": "Configurazione guidata"
+        "setupTime": "Configurazione guidata",
+        "categoryLabel": "Software di email per richieste di recensione per attività locali",
+        "description": "Get Phame è un software di email per richieste di recensioni per attività locali. Aggiungi clienti, invia richieste personalizzate da un account email che colleghi, monitora aperture e clic eindirizza i clienti alla piattaforma di recensioni che scegli.",
+        "googleDisclosureLabel": "Utilizzo dei dati dell'accesso Google",
+        "googleSignInDisclaimer": "L'accesso con Google fornisce solo il tuo nome e l'indirizzo email per creare e identificare il tuo account Get Phame. Non richiediamo l'accesso ai messaggi di Gmail, ai contatti, ai file di Drive o al Calendario.",
+        "privacyPolicy": "Informativa sulla privacy",
+        "howItWorks": "Scopri come funziona",
+        "emailCompatibility": "Funziona con Gmail, Outlook, SMTP",
+        "dashboardMockupAlt": "Schermata principale dell'app Get Phame che mostra l'attività delle richieste di recensione, i controlli di invio e l'utilizzo del piano gratuito per attività locali"
       },
       "thumbnail": {
         "altText": "Miniatura del video guida del prodotto GetPhame",
@@ -3948,7 +4262,9 @@
         "customerListPrivate": "La tua lista clienti rimane privata"
       },
       "section": {
-        "description": "Guarda una rapida panoramica su come connettere la posta elettronica, aggiungere clienti, inviare richieste e monitorare l'attività."
+        "description": "Guarda una rapida panoramica su come connettere la posta elettronica, aggiungere clienti, inviare richieste e monitorare l'attività.",
+        "tagline": "Vedi in azione",
+        "title": "Scopri come funziona"
       },
       "subHeadline": "Un flusso di lavoro mirato per preparare, inviare e monitorare richieste di recensione individuali—senza conversazioni imbarazzanti o contatti automatici.",
       "whyItWorks": "Come mantiene il controllo"
@@ -4977,9 +5293,33 @@
         "title": "สิ่งที่ Get Phame ทำ"
       },
       "faq": {
-        "a1": "คำขอแต่ละรายการถูกส่งผ่านบัญชีอีเมลที่คุณเชื่อมต่อ และใช้ชื่อผู้ส่ง ที่อยู่ ลายเซ็น และข้อความที่คุณกำหนด ตรวจสอบข้อความก่อนส่ง และปฏิบัติตามคำแนะนำการส่งถึงกล่องจดหมายของผู้ให้บริการของคุณ",
-        "a6": "ข้อความถูกส่งผ่านบัญชีอีเมลที่คุณเชื่อมต่อ ดังนั้นขีดจำกัดการส่ง เกณฑ์ชื่อโดเมน SPF, DKIM เนื้อหา และการมีส่วนร่วมของผู้รับอาจมีผลต่อการส่งถึงกล่องจดหมาย ไม่มีบริการใดสามารถรับประกันการส่งถึงกล่องจดหมาย",
-        "a9": "ไม่ Get Phame มีคำแนะนำการตั้งค่าตามผู้ให้บริการสำหรับ Gmail, Outlook และบริการ SMTP ที่รองรับอื่นๆ การเชื่อมต่อ SMTP แบบกำหนดเองต้องการที่อยู่เซิร์ฟเวอร์ พอร์ต และข้อมูลประจำตัวที่ผู้ให้บริการของคุณจัดให้"
+        "a1": "แต่ละคำขอจะถูกส่งผ่านบัญชีอีเมลที่คุณเชื่อมต่อ และใช้ชื่อผู้ส่ง ที่อยู่ ลายเซ็น และข้อความที่คุณกำหนดเอง ดูตัวอย่างข้อความก่อนส่ง และปฏิบัติตามแนวทางการส่งมอบของผู้ให้บริการของคุณ.",
+        "a6": "ข้อความจะถูกส่งผ่านบัญชีอีเมลที่คุณเชื่อมต่อ ดังนั้นขีดจำกัดการส่ง ความน่าเชื่อถือของโดเมน SPF, DKIM, เนื้อหา และการมีส่วนร่วมของผู้รับสามารถส่งผลต่อการส่งมอบ ไม่มีบริการใดรับประกันการวางในกล่องข้อความเข้า.",
+        "a9": "ไม่ จำเป็น Get Phame มีคำแนะนำการตั้งค่าที่กำหนดโดยผู้ให้บริการสำหรับ Gmail, Outlook และบริการ SMTP ที่รองรับอื่นๆ การเชื่อมต่อ SMTP แบบกำหนดเองต้องการที่อยู่เซิร์ฟเวอร์ พอร์ต และข้อมูลรับรองที่ผู้ให้บริการของคุณจัดให้.",
+        "q1": "มันจะดูเหมือนสแปมไหม?",
+        "q2": "ผู้ให้บริการอีเมลใดใช้งานได้บ้าง?",
+        "a2": "Get Phame ทำงานร่วมกับการเชื่อมต่อ Gmail, Outlook, และ SMTP ที่รองรับ รวมถึง Google Workspace, Microsoft 365, Yahoo, Zoho, iCloud และผู้ให้บริการ SMTP ที่กำหนดเอง.",
+        "q3": "มันฟรีจริงหรือไม่?",
+        "a3": "ใช่ แผนฟรีเริ่มต้นด้วย 10 คำขอรีวิว แล้วเพิ่มให้อีก 5 รายการทุกๆ 30 วัน โดยไม่ต้องมีบัตรเครดิต แผนที่ชำระเงินจะเพิ่มคุณสมบัติเวิร์กโฟลว์ที่มีปริมาณสูงขึ้น.",
+        "q4": "ฉันนำเข้ารายชื่อลูกค้าของฉันได้ไหม?",
+        "a4": "ใช่ ใน Sources ให้อัปโหลด CSV หรือเชื่อมต่อ WooCommerce ยืนยันหลักการอนุญาตของคุณ ตรวจสอบแถวที่ถูกต้องและซ้ำ และนำเข้าผู้ติดต่อที่คุณอนุมัติ การนำเข้าผู้ติดต่อจะไม่ส่งข้อความ.",
+        "q5": "Get Phame เก็บรหัสผ่านอีเมลของฉันไว้หรือไม่?",
+        "a5": "ข้อมูลรับรอง SMTP ถูกเข้ารหัสขณะพักอยู่ และใช้เฉพาะสำหรับการเชื่อมต่อการส่งที่คุณกำหนด Get Phame ไม่ใช้ข้อมูลรับรองเหล่านั้นเพื่ออ่านกล่องข้อความของคุณ.",
+        "q6": "อีเมลของฉันจะไปถึงกล่องสแปมหรือไม่?",
+        "q7": "รายชื่อลูกค้าของฉันจะเกิดอะไรขึ้น?",
+        "a7": "รายละเอียดลูกค้าถูกนำมาใช้งานเพื่อสนับสนุนเวิร์กโฟลว์คำขอรีวิวที่คุณเลือก Sources รักษาความเป็นเจ้าของของการนำเข้า บันทึกข้อมูลเมติต้องยินยอมโดยไม่ทำซ้ำ PII ของผู้ติดต่อในประวัติการตรวจสอบของมัน และให้คุณตรวจสอบรายชื่อติดต่อก่อนการส่งใดๆ.",
+        "q8": "ลูกค้าสามารถเลือกออกจากรายการรับข้อความได้ไหม?",
+        "a8": "ได้ คำขอรวมตัวเลือกการยกเลิกการรับ และผู้ติดต่อที่เลือกออกจะถูกยกเว้นจากการติดต่อในอนาคตผ่าน Get Phame.",
+        "q9": "ฉันจำเป็นต้องมีทักษะทางเทคนิคในการเชื่อมต่ออีเมลของฉันหรือไม่?",
+        "q10": "แพลตฟอร์มรีวิวใดบ้างที่รองรับ?",
+        "a10": "Get Phame รองรับปลายทางรีวิวที่ปรับได้ และให้คำแนะนำโดยคำนึงถึงแพลตฟอร์มก่อนการส่ง บางแพลตฟอร์ม รวมถึง Yelp ต้องการแนวทางการปฏิบัติตามข้อกำหนดที่แตกต่างจากลิงก์ขอรีวิวแบบมาตรฐาน.",
+        "q11": "การนำเข้า WooCommerce ทำงานอย่างไร?",
+        "a11": "เชื่อมต่อ WooCommerce ใน Sources ดึงข้อมูลผู้ติดต่อจากคำสั่งซื้อที่เสร็จสมบูรณ์ล่าสุดลงในคิวการรีวิว ยืนยันหลักการอนุญาตของคุณ ตรวจสอบรายการที่ซ้ำและที่ปฏิเสธก่อน และนำเข้านักติดต่อที่คุณอนุมัติเท่านั้น ไม่มีการนำเข้าแบบพื้นหลังและไม่มีแคมเปญอัตโนมัติ.",
+        "q12": "ไม่จำกัดหมายถึงอะไรบนแผน Pro?",
+        "a12": "แผนที่มีค่าบริการไม่กำหนดโควต์การขอ Get Phame รายเดือน คำขอแต่ละรายการยังคงถูกส่งผ่านบัญชีที่คุณเชื่อมต่อ และข้อจำกัดของผู้ให้บริการอีเมลของคุณ พร้อมกับความยินยอมที่เกี่ยวข้องและกฎแพลตฟอร์มที่เกี่ยวข้องยังคงมีผล.",
+        "sectionTitle": "FAQ",
+        "headline": "คำถามเกี่ยวกับความปลอดภัยของอีเมล ความเป็นส่วนตัว และการตั้งค่า",
+        "description": "สิ่งที่ควรรู้ก่อนเชื่อมต่ออีเมล นำเข้าผู้ติดต่อที่ได้รับอนุมัติ และส่งคำขอรีวิวครั้งแรกของคุณ"
       },
       "howItWorks": {
         "setupSteps": {
@@ -4990,10 +5330,21 @@
           "step4": {
             "title": "ส่งและติดตามกิจกรรม",
             "description": "ส่งคำขอส่วนตัวถึงลูกค้าทุกรายที่คุณเลือก จากนั้นติดตามการส่ง การเปิด การคลิก การเตือน และสถานะเสร็จสิ้น"
+          },
+          "step2": {
+            "title": "เลือกปลายทางรีวิวของคุณ",
+            "description": "กำหนดปลายทางรีวิวที่รองรับและปฏิบัติตามคำแนะนำที่แพลตฟอร์มระบุไว้ก่อนส่ง Yelp ใช้กระบวนการคำแนะนำที่ปลอดภัยต่อข้อบังคับแทนลิงก์ขอคำแนะนำมาตรฐาน"
+          },
+          "step3": {
+            "title": "ตรวจสอบผู้ติดต่อที่ให้ความยินยอม",
+            "description": "อัปโหลด CSV เชื่อมต่อ WooCommerce หรือเพิ่มผู้ติดต่อด้วยตนเอง ยืนยันพื้นฐานการอนุญาตของคุณ ตรวจสอบแถวที่ถูกต้องและซ้ำ และนำเข้าผู้ติดต่อเฉพาะที่คุณอนุมัติ"
           }
         },
         "headline": "สี่ขั้นตอนสู่คำขอรีวิวฉบับแรกของคุณ",
-        "setupTime": "การตั้งค่าที่มีแนวทางสำหรับผู้ให้บริการอีเมลที่รองรับ"
+        "setupTime": "การตั้งค่าที่มีแนวทางสำหรับผู้ให้บริการอีเมลที่รองรับ",
+        "setupInSteps": "ตั้งค่าใน 4 ขั้นตอน",
+        "subtitle": "เชื่อมต่อผู้ส่งของคุณ ตรวจสอบผู้ติดต่อที่ให้ความยินยอม และเลือกแต่ละคำขอก่อนส่ง",
+        "getStartedButton": "เริ่มใช้งานฟรี"
       },
       "stats": {
         "recipientControlValue": "คุณเลือก",
@@ -5004,7 +5355,13 @@
         "connectedEmailLabel": "ส่งจากบัญชีที่คุณเชื่อมต่อ",
         "reminderValue": "อัตโนมัติ",
         "reminderLabel": "การเตือนในอนาคตจะหยุดเมื่อการกระทำเสร็จสิ้น",
-        "heading": "ควบคุมทุกขั้นตอน"
+        "heading": "ควบคุมทุกขั้นตอน",
+        "industryPhotographers": "ช่างภาพ",
+        "industryCafesRestaurants": "คาเฟ่ & ร้านอาหาร",
+        "industryHomeServices": "บริการในบ้าน",
+        "industryClinicsSalons": "คลินิก & ร้านเสริมสวย",
+        "industryAgencies": "เอเจนซี่",
+        "industryWooCommerceStores": "ร้าน WooCommerce"
       },
       "support": {
         "attachmentType": "แนบสกรีนช็อตเป็น JPG, PNG หรือ WebP",
@@ -5052,7 +5409,19 @@
         "tabTrackingTitle": "ติดตามกิจกรรมคำขอ",
         "tabTrackingDescription": "ดูคำขอที่ส่ง เปิด คลิก เตือน และสถานะเสร็จสมบูรณ์ทั้งหมดในมุมมองกิจกรรมเดียว",
         "tabTrackingAlt": "แดชบอร์ดกิจกรรม Get Phame แสดงการส่ง review-request, การเปิด, คลิก, การเตือน, และสถานะการเสร็จสิ้น",
-        "sectionDescription": "เครื่องมือเดียวที่เน้นใช้งาน สามมุมมองที่ใช้งานได้จริง ทุกสิ่งที่คุณต้องเพื่อจัดการการส่งคำขอรีวิว"
+        "sectionDescription": "เครื่องมือเดียวที่เน้นใช้งาน สามมุมมองที่ใช้งานได้จริง ทุกสิ่งที่คุณต้องเพื่อจัดการการส่งคำขอรีวิว",
+        "tabEmailLabel": "ตัวอย่างอีเมล",
+        "tabEmailTitle": "ดูตัวอย่างคำขอก่อนส่งแต่ละรายการ",
+        "tabEmailAlt": "ตัวอย่างอีเมลขอรีวิวของ Get Phame แสดงชื่อลูกค้า ลายเซ็นธุรกิจ และปลายทางรีวิวที่ตั้งค่าไว้",
+        "tabImportLabel": "แหล่งที่มาของรีวิว",
+        "tabImportTitle": "ตรวจสอบผู้ติดต่อก่อนนำเข้า",
+        "tabImportDescription": "อัปโหลด CSV หรือเชื่อมต่อ WooCommerce ยืนยันการอนุญาต และตรวจสอบแถวที่ถูกต้อง แถวซ้ำ และแถวที่ถูกปฏิเสธ การนำเข้าผู้ติดต่อจะไม่ส่งข้อความ",
+        "tabImportAlt": "หน้าค้นหาที่มาของ Get Phame แสดงการอัปโหลด CSV การยืนยันความยินยอม และการตรวจทานซ้ำ",
+        "tabTrackingLabel": "กิจกรรมการร้องขอ",
+        "sectionSubtitle": "ผลิตภัณฑ์",
+        "sectionTitle": "สร้างขึ้นเพื่อให้การขอรีวิวง่ายดาย",
+        "viewFullSizeButton": "ดูขนาดเต็ม",
+        "viewFullSizeAriaLabel": "ดู {{title}} ขนาดเต็ม"
       },
       "lightbox": {
         "closeButtonAriaLabel": "ปิด",
@@ -5070,7 +5439,23 @@
       },
       "leadCapture": {
         "description": "รับคู่มือฟรีในการสร้างกระบวนการขอรีวิวที่ทำซ้ำได้และสอดคล้องกับข้อบังคับ พร้อมอัปเดตผลิตภัณฑ์และเคล็ดลับด้านชื่อเสียง",
-        "sharePrompt": "รู้จักใครที่ส่งคำขอรีวิวบ้างไหม? แบ่งปัน playbook ฟรี"
+        "sharePrompt": "รู้จักใครที่ส่งคำขอรีวิวบ้างไหม? แบ่งปัน playbook ฟรี",
+        "errorMessage": "เกิดข้อผิดพลาดขึ้น กรุณาลองใหม่อีกครั้ง",
+        "emailRequired": "กรอกที่อยู่อีเมลของคุณ",
+        "emailInvalid": "กรอกอีเมลที่มีรูปแบบถูกต้อง เช่น name@example.com",
+        "heading": "ยังไม่พร้อมที่จะยืนยัน?",
+        "emailPlaceholder": "กรอกอีเมลของคุณ",
+        "sending": "กำลังส่ง...",
+        "sendGuideButton": "ส่งคู่มือ",
+        "emailConfirmationHint": "เราจะโชว์ที่อยู่อีเมลนั้นอีกครั้งก่อนที่คุณออก เพื่อให้คุณตรวจจับการสะกดผิด",
+        "providerAcceptedMessage": "ผู้ให้บริการอีเมลของคุณรับคู่มือการส่งได้",
+        "downloadReadyMessage": "คู่มือของคุณพร้อมดาวน์โหลด",
+        "addressConfirmation": "เราได้ส่งไปที่ {{email}} ยืนยันการสะกดและตรวจดูสแปมหากไม่มาถึง การยอมรับโดยผู้ให้บริการไม่รับประกันการวางข้อความในกล่องขาเข้า",
+        "deliveryFallback": "การส่งอีเมลไม่พร้อมใช้งานสำหรับ {{email}} ยืนยันการสะกด ดูอีกครั้ง หรือดาวน์โหลดคู่มือทันที",
+        "downloadGuideButton": "ดาวน์โหลดคู่มือ PDF",
+        "editEmail": "แก้ไขอีเมล",
+        "tryAgain": "ลองส่งอีเมลอีกครั้ง",
+        "noSpamMessage": "อีเมลผลิตภัณฑ์เป็นระยะๆ สามารถยกเลิกการสมัครได้ทุกเมื่อ"
       },
       "feature3": {
         "title": "ปลายทางที่คำนึงถึงแพลตฟอร์ม",
@@ -5121,7 +5506,15 @@
         "headlinePart2": "โดยไม่ต้องขอที่น่าอึดอัด",
         "ctaVariantA": "เริ่มฟรี — ส่ง 10 คำขอ",
         "ctaVariantB": "สร้างคำขอรีวิวฉบับแรกของคุณ",
-        "setupTime": "การตั้งค่าที่มีแนวทาง"
+        "setupTime": "การตั้งค่าที่มีแนวทาง",
+        "categoryLabel": "ซอฟต์แวร์อีเมลขอรีวิวสำหรับธุรกิจท้องถิ่น",
+        "description": "Get Phame เป็นซอฟต์แวร์ขอรีวิวผ่านอีเมลสำหรับธุรกิจท้องถิ่น เพื่อเพิ่มลูกค้า ส่งคำขอที่ปรับแต่งได้จากบัญชีอีเมลที่คุณเชื่อมต่อ ติดตามการเปิดและคลิก และนำลูกค้าสู่แพลตฟอร์มรีวิวที่คุณเลือก",
+        "googleDisclosureLabel": "การใช้งานข้อมูล sign-in ของ Google",
+        "googleSignInDisclaimer": "การลงชื่อเข้าใช้ Google Sign-In ให้ชื่อและที่อยู่อีเมลของคุณเท่านั้นเพื่อสร้างและระบุตัวตนบัญชี Get Phame ของคุณ เราไม่ได้ขอเข้าถึงข้อความ Gmail รายชื่อ ไฟล์ Drive หรือปฏิทิน",
+        "privacyPolicy": "นโยบายความเป็นส่วนตัว",
+        "howItWorks": "ดูวิธีการทำงาน",
+        "emailCompatibility": "ใช้งานร่วมกับ Gmail, Outlook, SMTP",
+        "dashboardMockupAlt": "หน้าหลักของแอป Get Phame แสดงกิจกรรมขอรีวิว ตัวควบคุมการส่ง และการใช้งานแผนฟรีสำหรับธุรกิจท้องถิ่น"
       },
       "thumbnail": {
         "altText": "ภาพย่อวิดีโอแนะนำผลิตภัณฑ์ GetPhame",
@@ -5140,7 +5533,9 @@
         "customerListPrivate": "รายการลูกค้าของคุณยังคงเป็นส่วนตัว"
       },
       "section": {
-        "description": "ชมวิดีโอสั้นๆ แนะนำการเชื่อมต่ออีเมล การเพิ่มลูกค้า การส่งคำขอ และการติดตามกิจกรรม"
+        "description": "ชมวิดีโอสั้นๆ แนะนำการเชื่อมต่ออีเมล การเพิ่มลูกค้า การส่งคำขอ และการติดตามกิจกรรม",
+        "tagline": "ลองใช้งานจริง",
+        "title": "ดูวิธีการทำงาน"
       },
       "subHeadline": "เวิร์กโฟลว์ที่เน้นการเตรียม ส่ง และติดตามคำขอรีวิวแต่ละรายการ—โดยไม่ต้องสนทนาที่ยังไม่สะดวกหรือการติดต่ออัตโนมัติ",
       "whyItWorks": "เหตุผลที่ทำให้ควบคุมได้"
@@ -6169,9 +6564,33 @@
         "title": "Get Phame 的功能"
       },
       "faq": {
-        "a1": "每条请求都通过你连接的电子邮件账户发送，使用你配置的发件人姓名、地址、签名和信息。在发送前预览邮件并遵循提供商的送达指南。",
-        "a6": "消息通过你连接的电子邮件账户发送，因此提供商的发送限制、域名信誉、SPF、DKIM、内容以及收件人互动可能影响投递。没有服务能保证邮箱投递。",
-        "a9": "否。Get Phame 提供 Gmail、Outlook 以及其他受支持的 SMTP 服务的供应商特定设置指南。自定义 SMTP 连接需要你提供的服务器地址、端口和凭据。"
+        "a1": "每个请求都通过你连接的电子邮件账户发送，并使用你配置的发件人名称、地址、签名和信息。发送前预览邮件，并遵循服务商的送达性指南。",
+        "a6": "邮件通过你连接的邮箱账户发送，因此你的服务提供商的发送限制、域名信誉、SPF、DKIM、内容以及收件人互动情况都可能影响投递。没有任何服务能保证进入收件箱。",
+        "a9": "不需要。Get Phame 提供针对 Gmail、Outlook 以及其他受支持的 SMTP 服务的特定提供商设置指南。自定义 SMTP 连接需要服务器地址、端口和由你的提供商提供的凭据。",
+        "q1": "看起来像垃圾邮件吗？",
+        "q2": "哪些邮箱提供商可用？",
+        "a2": "Get Phame 支持与 Gmail、Outlook 和 SMTP 连接配合使用（包括 Google Workspace、Microsoft 365、Yahoo、Zoho、iCloud，以及自定义 SMTP 提供商）。",
+        "q3": "真的免费吗？",
+        "a3": "是的。免费计划从 10 条评价请求开始，然后在滚动的30天内再提供5条，且无需信用卡。付费计划提供更高容量的工作流功能。",
+        "q4": "我可以导入我的客户名单吗？",
+        "a4": "是的。在 Sources 中，上传 CSV 或连接 WooCommerce，确认你的权限依据，审核有效行和重复行，然后导入你批准的联系人。导入联系人从不发送消息。",
+        "q5": "Get Phame 会存储我的电子邮件密码吗？",
+        "a5": "SMTP 凭据在静态存储时会被加密，并且仅用于你配置的发送连接。Get Phame 不会使用这些凭据来读取你的收件箱。",
+        "q6": "我的邮件会落入垃圾邮件箱吗？",
+        "q7": "我的客户名单会怎样处理？",
+        "a7": "客户详情用于支持你选择的评价请求工作流。Sources 将导入限定为拥有者作用域，在审计历史中记录同意元数据，同时不重复记录 PII，并在发送操作之前让你审核联系人。",
+        "q8": "客户可以选择退出吗？",
+        "a8": "是的。请求中包含退订选项，选择退出的联系人将不再通过 Get Phame 进行后续联系。",
+        "q9": "连接我的电子邮件需要技术技能吗？",
+        "q10": "它支持哪些评价平台？",
+        "a10": "Get Phame 支持可配置的评价目标，并在发送前提供针对平台的指南。某些平台（包括 Yelp）需要不同的合规方式，而不是标准的请求链接。",
+        "q11": "WooCommerce 导入如何工作？",
+        "a11": "在 Sources 中连接 WooCommerce，将最近完成的订单中的联系信息导入到评价队列，确认你的权限依据，预览重复项和被拒绝的行，并仅导入你批准的联系人。没有后台导入，也没有自动营销活动。",
+        "q12": "专业版中的无限意味着什么？",
+        "a12": "付费计划不设定月度 Get Phame 请求配额。每个请求仍然通过你连接的账户逐一发送，且仍受你的邮件服务提供商的限制，以及适用的同意和平台规则约束。",
+        "sectionTitle": "常见问题解答",
+        "headline": "关于电子邮件安全、隐私和设置的问题",
+        "description": "在连接电子邮件、导入已同意的联系人以及发送第一条评价请求之前需要了解的内容。"
       },
       "howItWorks": {
         "setupSteps": {
@@ -6182,10 +6601,21 @@
           "step4": {
             "title": "发送并跟踪活动",
             "description": "向你选择的每位客户发送个性化请求，然后跟踪发送、打开、点击、提醒和完成状态。"
+          },
+          "step2": {
+            "title": "选择你的评价目的地",
+            "description": "配置受支持的评价目的地，并遵循发送前所示的按平台指引。Yelp 使用符合合规要求的指令流程，而不是标准的请求链接。"
+          },
+          "step3": {
+            "title": "核对已同意的联系人",
+            "description": "上传 CSV、连接 WooCommerce，或手动添加联系人。确认您的权限基础，检查有效行、重复行，然后仅导入您已批准的联系人。"
           }
         },
         "headline": "完成您的第一条评价请求的四个步骤",
-        "setupTime": "支持的邮件提供商的引导设置"
+        "setupTime": "支持的邮件提供商的引导设置",
+        "setupInSteps": "4 步设置",
+        "subtitle": "连接发件人、核对已同意的联系人，并在发送前逐一选择每条请求。",
+        "getStartedButton": "免费开始"
       },
       "stats": {
         "recipientControlValue": "你选择",
@@ -6196,7 +6626,13 @@
         "connectedEmailLabel": "从你连接的账户发送",
         "reminderValue": "自动",
         "reminderLabel": "完成后，未来的提醒将停止",
-        "heading": "每一步的控制"
+        "heading": "每一步的控制",
+        "industryPhotographers": "摄影师",
+        "industryCafesRestaurants": "咖啡馆与餐厅",
+        "industryHomeServices": "家庭服务",
+        "industryClinicsSalons": "诊所与美发/美容院",
+        "industryAgencies": "机构",
+        "industryWooCommerceStores": "WooCommerce 商店"
       },
       "support": {
         "attachmentType": "附上 JPG、PNG 或 WebP 格式的截图。",
@@ -6244,7 +6680,19 @@
         "tabTrackingTitle": "跟踪请求活动",
         "tabTrackingDescription": "在一个活动视图中查看所有发送、已打开、已点击、已提醒和已完成的请求。",
         "tabTrackingAlt": "Get Phame 活动仪表板，显示评价请求发送、打开、点击、提醒和完成状态",
-        "sectionDescription": "一个专注工具。三种实用视图。你所需的一切，用于管理评价请求的外联。"
+        "sectionDescription": "一个专注工具。三种实用视图。你所需的一切，用于管理评价请求的外联。",
+        "tabEmailLabel": "邮件预览",
+        "tabEmailTitle": "发送前逐条预览每条请求",
+        "tabEmailAlt": "Get Phame 评价请求邮件预览，显示客户姓名、企业签名，以及配置的评价目标",
+        "tabImportLabel": "来源审核",
+        "tabImportTitle": "导入前审核联系人",
+        "tabImportDescription": "上传 CSV 或连接 WooCommerce，确认权限，并审查有效、重复和被拒绝的行。导入联系人不会发送消息。",
+        "tabImportAlt": "Get Phame 来源屏幕，显示 CSV 上传、同意确认和重复审核",
+        "tabTrackingLabel": "请求活动",
+        "sectionSubtitle": "本产品",
+        "sectionTitle": "专为让评价请求更简单而设计",
+        "viewFullSizeButton": "查看原始大小",
+        "viewFullSizeAriaLabel": "在全尺寸中查看 {{title}}"
       },
       "lightbox": {
         "closeButtonAriaLabel": "关闭",
@@ -6262,7 +6710,23 @@
       },
       "leadCapture": {
         "description": "获取一份免费指南，帮助建立可重复、合规意识强的评价请求流程，并获取产品更新和声誉提示。",
-        "sharePrompt": "知道有人需要发送评价请求？请分享这本免费操作指南。"
+        "sharePrompt": "知道有人需要发送评价请求？请分享这本免费操作指南。",
+        "errorMessage": "出现错误。请重试。",
+        "emailRequired": "请输入您的电子邮箱地址。",
+        "emailInvalid": "请输入格式正确的邮箱，例如 name@example.com。",
+        "heading": "尚未准备就绪？",
+        "emailPlaceholder": "输入您的邮箱",
+        "sending": "发送中...",
+        "sendGuideButton": "发送指南",
+        "emailConfirmationHint": "离开前我们会再次显示该地址，供您核对是否有错字。",
+        "providerAcceptedMessage": "您的邮箱提供商已接受该指南的投递。",
+        "downloadReadyMessage": "指南已准备好可下载。",
+        "addressConfirmation": "我们已将其发送至 {{email}}。请确认拼写，并如未收到，请检查垃圾邮件。提供商接受并不保证投递到收件箱。",
+        "deliveryFallback": "无法向 {{email}} 发送邮件。请确认拼写、重试，或现在下载指南。",
+        "downloadGuideButton": "下载 PDF 指南",
+        "editEmail": "编辑邮箱",
+        "tryAgain": "重新尝试发送邮箱",
+        "noSpamMessage": "偶尔会收到产品相关邮件。可随时取消订阅。"
       },
       "feature3": {
         "title": "面向平台的评价去向",
@@ -6313,7 +6777,15 @@
         "headlinePart2": "避免尴尬的请求",
         "ctaVariantA": "免费开始 — 发送 10 条请求",
         "ctaVariantB": "创建您的第一条评价请求",
-        "setupTime": "引导设置"
+        "setupTime": "引导设置",
+        "categoryLabel": "本地企业的评价请求邮件软件",
+        "description": "Get Phame 是面向本地企业的评价请求邮件软件。添加客户、从你连接的邮箱账户发送个性化请求、跟踪打开与点击，并将客户导向你选择的评价平台。",
+        "googleDisclosureLabel": "Google 登录数据使用",
+        "googleSignInDisclaimer": "Google 登录仅提供您的姓名和邮箱地址用于创建和识别您的 Get Phame 账户。我们不请求访问 Gmail 邮件、联系人、Drive 文件或日历。",
+        "privacyPolicy": "隐私政策",
+        "howItWorks": "查看工作原理",
+        "emailCompatibility": "与 Gmail、Outlook、SMTP 兼容",
+        "dashboardMockupAlt": "Get Phame 应用主页屏幕，显示评价请求活动、发送控件以及本地企业的免费计划使用情况"
       },
       "thumbnail": {
         "altText": "GetPhame 产品演示视频缩略图",
@@ -6332,7 +6804,9 @@
         "customerListPrivate": "您的客户列表保持私密"
       },
       "section": {
-        "description": "观看一个简短的演练，了解连接邮箱、添加客户、发送请求和跟踪活动。"
+        "description": "观看一个简短的演练，了解连接邮箱、添加客户、发送请求和跟踪活动。",
+        "tagline": "现场演示",
+        "title": "了解工作原理"
       },
       "subHeadline": "一个专注的工作流，用于准备、发送和跟踪单个评价请求——无需尴尬对话或自动外联。",
       "whyItWorks": "保持受控的方式"
@@ -7361,9 +7835,33 @@
         "title": "Get Phame 能做什麼"
       },
       "faq": {
-        "a1": "每次請求都會透過你所連接的電子郵件帳戶寄送，並使用你配置的寄件人姓名、地址、簽名與訊息。寄送前預覽訊息，並遵循你的提供商的到達性指引。",
-        "a6": "訊息是透過你連接的電子郵件帳戶寄出，因此你的提供商的寄送限制、網域聲譽、SPF、DKIM、內容與收件人互動可能影響投遞。不可能有任何服務能保證信箱落地率。",
-        "a9": "否。Get Phame 提供 Gmail、Outlook，以及其他支援的 SMTP 服務的提供商特定設定指引。自訂 SMTP 連線需要伺服器地址、埠號與提供商提供的憑證。"
+        "a1": "每次請求都會透過你連接的電子郵件帳戶發送，並使用你所配置的寄件者姓名、地址、簽名與訊息。發送前先預覽該訊息，並遵循提供者的可送達性指引。",
+        "a6": "訊息透過您所連接的電子郵件帳戶發送，因此您的提供者的寄送限制、網域信譽、SPF、DKIM、內容與收件人互動都可能影響送達。沒有服務可以保證進入收件箱。",
+        "a9": "不需要。Get Phame 提供 Gmail、Outlook 及其他受支援的 SMTP 服務的提供者特定設定指南。自訂 SMTP 連線需要提供者提供的伺服器位址、埠號和憑證。",
+        "q1": "看起來會像垃圾郵件嗎？",
+        "q2": "哪些電子郵件提供商可用？",
+        "a2": "Get Phame 可透過受支援的 Gmail、Outlook 與 SMTP 連線運作，包含 Google Workspace、Microsoft 365、Yahoo、Zoho、iCloud，以及自訂的 SMTP 提供商。",
+        "q3": "真的免費嗎？",
+        "a3": "是的。免費方案以 10 個評論請求開始，之後每 30 天循環增加 5 個，且不需要提供信用卡。付費方案則增加更高容量的工作流程功能。",
+        "q4": "我可以匯入我的客戶名單嗎？",
+        "a4": "可以。在 Sources 中，上傳 CSV 或連接 WooCommerce，確認您的同意依據，審核有效和重複的列，然後匯入您核准的聯絡人。匯入聯絡人絕不會發送訊息。",
+        "q5": "Get Phame 會儲存我的電子郵件密碼嗎？",
+        "a5": "SMTP 憑證在靜止時會被加密，僅用於您所配置的發送連線。Get Phame 不會使用這些憑證來讀取您的收件匣。",
+        "q6": "我的郵件會被送進垃圾郵件匣嗎？",
+        "q7": "我的客戶名單會怎麼處理？",
+        "a7": "客戶資料用於支援你所選擇的評論請求工作流程。來源將匯入限定在擁有者範圍，記錄同意的元資料，且在審計歷史中不會重複顯示聯絡人之 PII，同時讓你在任何寄送動作前審核聯絡人。",
+        "q8": "客戶可以選擇退出嗎？",
+        "a8": "可以。請求中包含取消訂閱的選項，且已選擇退出的聯絡人將不再透過 Get Phame 進行未來的聯繫。",
+        "q9": "我需要技術技能來連接我的電子郵件嗎？",
+        "q10": "它支援哪些評論平台？",
+        "a10": "Get Phame 支援可設定的評論目的地，並在發送前提供平台感知指引。某些平台（包括 Yelp）需要採用不同的合規方式，而非標準的徵求連結。",
+        "q11": "WooCommerce 匯入怎麼運作？",
+        "a11": "在 Sources 中連接 WooCommerce，將最近完成的訂單聯絡人抓取至評論佇列，確認您的同意依據，預覽重複與被拒絕的列，僅匯入您核准的聯絡人。沒有背景匯入，也沒有自動活動。",
+        "q12": "Pro 計畫中的 unlimited 指的是什麼？",
+        "a12": "付費方案不設定月度 Get Phame 請求配額。每個請求仍會透過您所連接的帳戶逐一發送，且仍適用您電子郵件提供者的限制，以及適用的同意與平台規則。",
+        "sectionTitle": "常見問答",
+        "headline": "有關電子郵件安全、隱私與設定的問題",
+        "description": "在連接電子郵件、匯入已同意的聯絡人，以及發送第一個評論請求之前需要知道的事項。"
       },
       "howItWorks": {
         "setupSteps": {
@@ -7374,10 +7872,21 @@
           "step4": {
             "title": "寄送並追蹤活動",
             "description": "向你選擇的每位客戶寄送個人化請求，並追蹤寄出、開啟、點擊、提醒與完成狀態。"
+          },
+          "step2": {
+            "title": "選擇您的評價目的地",
+            "description": "配置受支援的評價目的地，並遵循寄送前所顯示的平臺相容指引。Yelp 使用符合規範的指示流程，而非一般的招募連結。"
+          },
+          "step3": {
+            "title": "審核已同意的聯繫人",
+            "description": "上傳 CSV、連接 WooCommerce，或手動新增聯繫人。確認您的授權來源、審核有效與重複的列，並僅匯入您核准的聯繫人。"
           }
         },
         "headline": "完成第一個評價邀請的四個步驟",
-        "setupTime": "支援的電子郵件提供商之引導設定"
+        "setupTime": "支援的電子郵件提供商之引導設定",
+        "setupInSteps": "4 步驟完成設定",
+        "subtitle": "連接寄件者、審核已同意的聯繫人，並在寄出前逐一選擇每個請求。",
+        "getStartedButton": "免費開始使用"
       },
       "stats": {
         "recipientControlValue": "由你決定",
@@ -7388,7 +7897,13 @@
         "connectedEmailLabel": "從你連接的帳戶寄送",
         "reminderValue": "自動",
         "reminderLabel": "完成後停止未來的提醒",
-        "heading": "每一步都可控"
+        "heading": "每一步都可控",
+        "industryPhotographers": "攝影師",
+        "industryCafesRestaurants": "咖啡館與餐廳",
+        "industryHomeServices": "居家服務",
+        "industryClinicsSalons": "診所與美髮沙龍",
+        "industryAgencies": "代理機構",
+        "industryWooCommerceStores": "WooCommerce 商店"
       },
       "support": {
         "attachmentType": "附加 JPG、PNG 或 WebP 截圖。",
@@ -7436,7 +7951,19 @@
         "tabTrackingTitle": "追蹤請求活動",
         "tabTrackingDescription": "在一個工作區中查看寄出、開啟、點擊、提醒與完成狀態。",
         "tabTrackingAlt": "Get Phame 活動儀表板，顯示評價邀請的寄出、開啟、點擊、提醒與完成狀態",
-        "sectionDescription": "一個聚焦工具。三種實用檢視。管理評價邀請外展所需的一切。"
+        "sectionDescription": "一個聚焦工具。三種實用檢視。管理評價邀請外展所需的一切。",
+        "tabEmailLabel": "郵件預覽",
+        "tabEmailTitle": "寄出前預覽每個請求",
+        "tabEmailAlt": "Get Phame 評價請求郵件預覽，顯示客戶姓名、商家簽名，以及已設定的評價目的地",
+        "tabImportLabel": "來源審核",
+        "tabImportTitle": "匯入前審核聯繫人",
+        "tabImportDescription": "上傳一個 CSV，或連接 WooCommerce，確認權限，並審核有效、重複與被拒的列。匯入聯繫人絕不會寄送訊息。",
+        "tabImportAlt": "Get Phame 來源畫面，顯示 CSV 上傳、同意確認與重複項目審核",
+        "tabTrackingLabel": "請求活動",
+        "sectionSubtitle": "產品",
+        "sectionTitle": "打造讓評價請求更輕鬆的設計",
+        "viewFullSizeButton": "查看原尺寸",
+        "viewFullSizeAriaLabel": "以原尺寸查看 {{title}}"
       },
       "lightbox": {
         "closeButtonAriaLabel": "關閉",
@@ -7454,7 +7981,23 @@
       },
       "leadCapture": {
         "description": "取得一份免費指南，教你建立可重複、具合規意識的評價邀請流程—外加產品更新與聲譽小貼士。",
-        "sharePrompt": "知道有人會寄送評價邀請嗎？分享這本免費指南。"
+        "sharePrompt": "知道有人會寄送評價邀請嗎？分享這本免費指南。",
+        "errorMessage": "發生錯誤。請再試一次。",
+        "emailRequired": "請輸入您的電子郵件地址。",
+        "emailInvalid": "請輸入正確格式的電子郵件，例如 name@example.com。",
+        "heading": "尚未準備好承諾？",
+        "emailPlaceholder": "輸入您的電子郵件",
+        "sending": "寄送中...",
+        "sendGuideButton": "寄送指南",
+        "emailConfirmationHint": "離開前我們會再次顯示該地址，方便您發現拼寫錯誤。",
+        "providerAcceptedMessage": "您的電子郵件提供商已接受寄送指南。",
+        "downloadReadyMessage": "指南已可下載。",
+        "addressConfirmation": "我們已寄送至 {{email}}。請確認拼寫，若未收到，請檢查垃圾郵件匣。提供商接受並不保證郵件能送達到收件匣。",
+        "deliveryFallback": "對 {{email}} 的郵件寄送無法完成。請確認拼寫，重試，或立即下載指南。",
+        "downloadGuideButton": "下載 PDF 指南",
+        "editEmail": "編輯郵件",
+        "tryAgain": "再試一次寄送郵件",
+        "noSpamMessage": "偶爾發送的產品相關郵件。隨時可取消訂閱。"
       },
       "feature3": {
         "title": "符合工作流程的支援評價目的地",
@@ -7505,7 +8048,15 @@
         "headlinePart2": "避免尷尬的邀請",
         "ctaVariantA": "免費開始 — 寄出 10 則邀請",
         "ctaVariantB": "建立你的第一個評價邀請",
-        "setupTime": "引導式設定"
+        "setupTime": "引導式設定",
+        "categoryLabel": "供本地商家使用的評價請求郵件軟體",
+        "description": "Get Phame 是一款供本地商家使用的評價請求郵件軟體。新增客戶，從你連接的郵件帳戶寄出個人化請求，追蹤開信與點擊，並引導客戶至你選擇的評價平台。",
+        "googleDisclosureLabel": "Google 登入資料使用說明",
+        "googleSignInDisclaimer": "Google 登入僅提供您的姓名與電子郵件地址來建立與識別您的 Get Phame 帳戶。我們不會請求存取 Gmail 訊息、聯絡人、Drive 檔案或日曆。",
+        "privacyPolicy": "隱私政策",
+        "howItWorks": "如何運作",
+        "emailCompatibility": "支援 Gmail、Outlook、SMTP",
+        "dashboardMockupAlt": "顯示評價請求活動、發送控制，以及本地商家免費方案使用情況的 Get Phame 應用主畫面"
       },
       "thumbnail": {
         "altText": "GetPhame 產品導覽影片縮圖",
@@ -7524,7 +8075,9 @@
         "customerListPrivate": "您的客戶名單保持私密"
       },
       "section": {
-        "description": "觀看快速導覽，瞭解如何連接電子郵件、添加客戶、寄送邀請與追蹤活動。"
+        "description": "觀看快速導覽，瞭解如何連接電子郵件、添加客戶、寄送邀請與追蹤活動。",
+        "tagline": "現場演示",
+        "title": "了解它如何運作"
       },
       "subHeadline": "專注於準備、寄送與追蹤個別評價邀請的工作流程—避免尷尬的邀請或自動外發。",
       "whyItWorks": "如何保持受控"

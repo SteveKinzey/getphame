@@ -2699,11 +2699,35 @@
       "headlinePart2": "sans la demande maladroite",
       "ctaVariantA": "Démarrer gratuitement — Envoyer 10 demandes",
       "ctaVariantB": "Construisez votre première demande d'avis",
-      "setupTime": "Configuration guidée"
+      "setupTime": "Configuration guidée",
+      "categoryLabel": "Logiciel d'e-mails de demande d'avis pour les entreprises locales",
+      "description": "Get Phame est un logiciel d'e-mails de demande d'avis pour les entreprises locales. Ajoutez des clients, envoyez des demandes personnalisées à partir d'un compte e-mail que vous connectez, suivez les ouvertures et les clics, et guidez les clients vers la plateforme d'avis que vous choisissez.",
+      "googleDisclosureLabel": "Utilisation des données de connexion Google",
+      "googleSignInDisclaimer": "La connexion Google ne fournit que votre nom et votre adresse électronique pour créer et identifier votre compte Get Phame. Nous ne demandons pas l'accès aux messages Gmail, aux contacts, aux fichiers Drive ou au Calendrier.",
+      "privacyPolicy": "Politique de confidentialité",
+      "howItWorks": "Découvrez comment cela fonctionne",
+      "emailCompatibility": "Fonctionne avec Gmail, Outlook, SMTP",
+      "dashboardMockupAlt": "Écran d'accueil de l'application Get Phame montrant l'activité de demande d'avis, les contrôles d'envoi et l'utilisation du plan gratuit pour les entreprises locales"
     },
     "leadCapture": {
       "description": "Obtenez un guide gratuit pour bâtir un processus de demande d'avis réutilisable et axé sur la conformité — plus des mises à jour du produit et des conseils sur la réputation.",
-      "sharePrompt": "Connaissez-vous quelqu'un qui envoie des demandes d'avis ? Partagez le guide gratuit."
+      "sharePrompt": "Connaissez-vous quelqu'un qui envoie des demandes d'avis ? Partagez le guide gratuit.",
+      "errorMessage": "Une erreur s'est produite. Veuillez réessayer.",
+      "emailRequired": "Saisissez votre adresse e-mail.",
+      "emailInvalid": "Saisissez une adresse e-mail correctement formatée, comme nom@example.com.",
+      "heading": "Pas encore prêt à vous engager ?",
+      "emailPlaceholder": "Saisissez votre e-mail",
+      "sending": "Envoi en cours...",
+      "sendGuideButton": "Envoyer le guide",
+      "emailConfirmationHint": "Nous afficherons de nouveau l'adresse avant de quitter afin que vous puissiez repérer une faute de frappe.",
+      "providerAcceptedMessage": "Votre fournisseur d'e-mail a accepté l'envoi du guide.",
+      "downloadReadyMessage": "Votre guide est prêt à être téléchargé.",
+      "addressConfirmation": "Nous l'avons envoyé à {{email}}. Confirmez l'orthographe et vérifiez le courrier indésirable s'il n'arrive pas. L'acceptation du fournisseur ne garantit pas la livraison dans la boîte de réception.",
+      "deliveryFallback": "La livraison de l'e-mail était indisponible pour {{email}}. Confirmez l'orthographe, réessayez ou téléchargez le guide maintenant.",
+      "downloadGuideButton": "Télécharger le guide PDF",
+      "editEmail": "Modifier l'e-mail",
+      "tryAgain": "Réessayer l'e-mail",
+      "noSpamMessage": "E-mails occasionnels sur les produits. Désabonnez-vous à tout moment."
     },
     "purpose": {
       "description": "Get Phame aide les commerces locaux à envoyer des e‑mails personnalisés de demande d'avis depuis leur propre compte e‑mail connecté. Il est conçu pour les propriétaires d'entreprise, les photographes, les cafés et restaurants, les équipes de services à domicile, les cliniques et salons, les agences et les boutiques WooCommerce qui souhaitent une façon plus simple de demander un retour à de vrais clients.",
@@ -2730,7 +2754,13 @@
       "connectedEmailLabel": "envoyer à partir d'un compte que vous connectez",
       "reminderValue": "Automatique",
       "reminderLabel": "Les rappels futurs s'arrêtent après l'achèvement",
-      "heading": "Contrôle à chaque étape"
+      "heading": "Contrôle à chaque étape",
+      "industryPhotographers": "Photographes",
+      "industryCafesRestaurants": "Cafés et Restaurants",
+      "industryHomeServices": "Services à domicile",
+      "industryClinicsSalons": "Cliniques et salons",
+      "industryAgencies": "Agences",
+      "industryWooCommerceStores": "Boutiques WooCommerce"
     },
     "support": {
       "attachment": "Capture d'écran",
@@ -2805,17 +2835,40 @@
         "step4": {
           "title": "Envoyer et suivre l'activité",
           "description": "Envoyez une demande personnelle à chaque client que vous choisissez, puis suivez les envois, les ouvertures, les clics, les rappels et le statut de finalisation."
+        },
+        "step2": {
+          "title": "Choisissez votre destination d'avis",
+          "description": "Configurez une destination d'avis prise en charge et suivez les conseils adaptés à la plateforme affichés avant l'envoi. Yelp utilise un flux d'instructions conformes et sûres plutôt qu'un lien de sollicitation standard."
+        },
+        "step3": {
+          "title": "Vérifier les contacts ayant consenti",
+          "description": "Téléchargez un CSV, connectez WooCommerce ou ajoutez des contacts manuellement. Vérifiez votre fondement d'autorisation, passez en revue les lignes valides et en double, et n'importez que les contacts que vous approuvez."
         }
       },
       "headline": "Quatre étapes vers votre première demande d'avis",
-      "setupTime": "Configuration guidée pour les fournisseurs d'e-mails pris en charge"
+      "setupTime": "Configuration guidée pour les fournisseurs d'e-mails pris en charge",
+      "setupInSteps": "Configuration en 4 étapes",
+      "subtitle": "Connectez votre expéditeur, vérifiez les contacts ayant consenti, et choisissez chaque demande avant l'envoi.",
+      "getStartedButton": "Commencer gratuitement"
     },
     "productShowcase": {
       "tabEmailDescription": "Chaque demande d'avis utilise l'adresse e-mail, le nom de l'expéditeur, la signature et le message que vous configurez avant l'envoi.",
       "tabTrackingTitle": "Suivre l'activité des demandes",
       "tabTrackingDescription": "Voir chaque envoi de demande, chaque ouverture, clic, rappel et finalisation dans une seule vue d'activité.",
       "tabTrackingAlt": "Tableau de bord Get Phame affichant les envois de demandes d'avis, les ouvertures, les clics, les rappels et l'état d'achèvement",
-      "sectionDescription": "Un outil ciblé. Trois vues pratiques. Tout ce dont vous avez besoin pour gérer la prospection de demandes d'avis."
+      "sectionDescription": "Un outil ciblé. Trois vues pratiques. Tout ce dont vous avez besoin pour gérer la prospection de demandes d'avis.",
+      "tabEmailLabel": "Aperçu de l'e-mail",
+      "tabEmailTitle": "Aperçu de chaque demande avant l'envoi",
+      "tabEmailAlt": "Aperçu de l'e-mail de demande d'avis Get Phame affichant le nom du client, la signature de l'entreprise et la destination d'avis configurée",
+      "tabImportLabel": "Sources d'avis",
+      "tabImportTitle": "Examiner les contacts avant l'importation",
+      "tabImportDescription": "Téléchargez un CSV ou connectez WooCommerce, confirmez l'autorisation et passez en revue les lignes valides, en double et rejetées. L'importation des contacts n'envoie jamais de message.",
+      "tabImportAlt": "Écran Sources Get Phame montrant l'importation CSV, la confirmation du consentement et la vérification des doublons",
+      "tabTrackingLabel": "Activité des demandes",
+      "sectionSubtitle": "Le produit",
+      "sectionTitle": "Conçu pour rendre les demandes d'avis sans effort",
+      "viewFullSizeButton": "Voir en plein format",
+      "viewFullSizeAriaLabel": "Voir {{title}} en plein format"
     },
     "socialProofBar": {
       "heading": "Garde-fous intégrés au flux de travail",
@@ -2860,12 +2913,38 @@
       "getStartedFree": "Découvrir Get Phame gratuit"
     },
     "faq": {
-      "a1": "Chaque demande est envoyée via un compte e-mail que vous connectez et utilise le nom de l'expéditeur, l'adresse, la signature et le message que vous configurez. Prévisualisez le message avant l'envoi et suivez les directives de délivrabilité de votre fournisseur.",
-      "a6": "Les messages sont envoyés via le compte e-mail que vous connectez, de sorte que les limites d'envoi de votre fournisseur, la réputation du domaine, SPF, DKIM, le contenu et l'engagement des destinataires peuvent influencer la livraison. Aucun service ne peut garantir la délivrance dans la boîte de réception.",
-      "a9": "Non. Get Phame fournit des instructions de configuration spécifiques au fournisseur pour Gmail, Outlook et d'autres services SMTP pris en charge. Les connexions SMTP personnalisées nécessitent l'adresse du serveur, le port et les identifiants fournis par votre fournisseur."
+      "a1": "Chaque demande est envoyée via un compte e-mail que vous connectez et utilise le nom de l’expéditeur, l’adresse, la signature et le message que vous configurez. Prévisualisez le message avant l’envoi et respectez les conseils de délivrabilité de votre fournisseur.",
+      "a6": "Les messages sont envoyés via le compte e-mail que vous connectez, donc les limites d’envoi de votre fournisseur, la réputation du domaine, SPF, DKIM, le contenu et l’engagement des destinataires peuvent influencer la délivrabilité. Aucun service ne peut garantir le placement dans la boîte de réception.",
+      "a9": "Non. Get Phame fournit des instructions de configuration spécifiques au fournisseur pour Gmail, Outlook et autres services SMTP pris en charge. Les connexions SMTP personnalisées nécessitent l’adresse du serveur, le port et les identifiants fournis par votre fournisseur.",
+      "q1": "Cela ressemblera-t-il à du spam ?",
+      "q2": "Quels fournisseurs d’e-mails fonctionnent ?",
+      "a2": "Get Phame fonctionne avec des connexions Gmail, Outlook et SMTP prises en charge, y compris Google Workspace, Microsoft 365, Yahoo, Zoho, iCloud et des fournisseurs SMTP personnalisés.",
+      "q3": "Est-ce vraiment gratuit ?",
+      "a3": "Oui. Le plan gratuit commence par 10 demandes d’avis, puis en fournit 5 de plus tous les 30 jours glissants, sans carte de crédit requise. Les plans payants ajoutent des fonctionnalités de flux de travail à plus haut volume.",
+      "q4": "Puis-je importer ma liste de clients ?",
+      "a4": "Oui. Dans Sources, téléversez un CSV ou connectez WooCommerce, confirmez votre base d’autorisation, examinez les lignes valides et en double, puis importez les contacts que vous approuvez. L’importation des contacts n’envoie jamais de message.",
+      "q5": "Get Phame stocke-t-il mon mot de passe e-mail ?",
+      "a5": "Les identifiants SMTP sont chiffrés au repos et ne sont utilisés que pour la connexion d’envoi que vous configurez. Get Phame n’utilise pas ces identifiants pour lire votre boîte de réception.",
+      "q6": "Mes e-mails finiront-ils dans le spam ?",
+      "q7": "Que se passe-t-il avec ma liste de clients ?",
+      "a7": "Les détails des clients sont utilisés pour soutenir les flux de travail de demande d’avis que vous choisissez. Sources conserve les importations sous le cadre du propriétaire, enregistre les métadonnées de consentement sans dupliquer les PII des contacts dans son historique d’audit, et vous permet de vérifier les contacts avant toute action d’envoi.",
+      "q8": "Les clients peuvent-ils se désinscrire ?",
+      "a8": "Oui. Les requêtes incluent une option de désabonnement, et un contact ayant opté pour la désinscription est exclu des futures campagnes via Get Phame.",
+      "q9": "Ai-je besoin de compétences techniques pour connecter mon e-mail ?",
+      "q10": "Quelles plateformes d’avis prend-il en charge ?",
+      "a10": "Get Phame prend en charge des destinations d’avis configurables et fournit des conseils adaptés à chaque plateforme avant l’envoi. Certaines plateformes, notamment Yelp, nécessitent une approche de conformité différente plutôt qu’un lien de sollicitation standard.",
+      "q11": "Comment fonctionne l’import WooCommerce ?",
+      "a11": "Connectez WooCommerce dans Sources, récupérez les contacts des commandes récentes achevées dans une file d’attente d’avis, confirmez votre base de consentement, prévisualisez les doublons et les lignes rejetées, et importez uniquement les contacts que vous approuvez. Il n’y a pas d’import en arrière-plan et pas de campagne automatique.",
+      "q12": "Que signifie « illimité » sur le plan Pro ?",
+      "a12": "Le plan payant n’applique pas de quota mensuel de demandes Get Phame. Chaque demande est toujours envoyée individuellement via un compte que vous connectez, et les limites de votre fournisseur d’e-mail, ainsi que le consentement applicable et les règles de la plateforme, s’appliquent toujours.",
+      "sectionTitle": "FAQ",
+      "headline": "Questions sur la sécurité des e-mails, la confidentialité et la configuration",
+      "description": "Ce qu’il faut savoir avant de connecter l’e-mail, d’importer les contacts ayant donné leur consentement et d’envoyer votre première demande d’avis."
     },
     "section": {
-      "description": "Regardez un bref aperçu de la connexion de votre e-mail, de l'ajout de clients, de l'envoi des demandes et du suivi de l'activité."
+      "description": "Regardez un bref aperçu de la connexion de votre e-mail, de l'ajout de clients, de l'envoi des demandes et du suivi de l'activité.",
+      "tagline": "Voir en action",
+      "title": "Découvrez comment cela fonctionne"
     }
   },
   "adaptiveSending": {

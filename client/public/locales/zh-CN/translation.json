@@ -2017,11 +2017,35 @@
       "headlinePart2": "避免尴尬的请求",
       "ctaVariantA": "免费开始 — 发送 10 条请求",
       "ctaVariantB": "创建您的第一条评价请求",
-      "setupTime": "引导设置"
+      "setupTime": "引导设置",
+      "categoryLabel": "本地企业的评价请求邮件软件",
+      "description": "Get Phame 是面向本地企业的评价请求邮件软件。添加客户、从你连接的邮箱账户发送个性化请求、跟踪打开与点击，并将客户导向你选择的评价平台。",
+      "googleDisclosureLabel": "Google 登录数据使用",
+      "googleSignInDisclaimer": "Google 登录仅提供您的姓名和邮箱地址用于创建和识别您的 Get Phame 账户。我们不请求访问 Gmail 邮件、联系人、Drive 文件或日历。",
+      "privacyPolicy": "隐私政策",
+      "howItWorks": "查看工作原理",
+      "emailCompatibility": "与 Gmail、Outlook、SMTP 兼容",
+      "dashboardMockupAlt": "Get Phame 应用主页屏幕，显示评价请求活动、发送控件以及本地企业的免费计划使用情况"
     },
     "leadCapture": {
       "description": "获取一份免费指南，帮助建立可重复、合规意识强的评价请求流程，并获取产品更新和声誉提示。",
-      "sharePrompt": "知道有人需要发送评价请求？请分享这本免费操作指南。"
+      "sharePrompt": "知道有人需要发送评价请求？请分享这本免费操作指南。",
+      "errorMessage": "出现错误。请重试。",
+      "emailRequired": "请输入您的电子邮箱地址。",
+      "emailInvalid": "请输入格式正确的邮箱，例如 name@example.com。",
+      "heading": "尚未准备就绪？",
+      "emailPlaceholder": "输入您的邮箱",
+      "sending": "发送中...",
+      "sendGuideButton": "发送指南",
+      "emailConfirmationHint": "离开前我们会再次显示该地址，供您核对是否有错字。",
+      "providerAcceptedMessage": "您的邮箱提供商已接受该指南的投递。",
+      "downloadReadyMessage": "指南已准备好可下载。",
+      "addressConfirmation": "我们已将其发送至 {{email}}。请确认拼写，并如未收到，请检查垃圾邮件。提供商接受并不保证投递到收件箱。",
+      "deliveryFallback": "无法向 {{email}} 发送邮件。请确认拼写、重试，或现在下载指南。",
+      "downloadGuideButton": "下载 PDF 指南",
+      "editEmail": "编辑邮箱",
+      "tryAgain": "重新尝试发送邮箱",
+      "noSpamMessage": "偶尔会收到产品相关邮件。可随时取消订阅。"
     },
     "purpose": {
       "description": "Get Phame 帮助本地商家使用其已连接的邮箱，从自有邮箱发送个性化的评价请求邮件。适用于希望更简便向真实客户征求反馈的商家、摄影师、咖啡馆与餐厅、家政与上门服务团队、诊所与沙龙、代理机构及 WooCommerce 商店。",
@@ -2048,7 +2072,13 @@
       "connectedEmailLabel": "从你连接的账户发送",
       "reminderValue": "自动",
       "reminderLabel": "完成后，未来的提醒将停止",
-      "heading": "每一步的控制"
+      "heading": "每一步的控制",
+      "industryPhotographers": "摄影师",
+      "industryCafesRestaurants": "咖啡馆与餐厅",
+      "industryHomeServices": "家庭服务",
+      "industryClinicsSalons": "诊所与美发/美容院",
+      "industryAgencies": "机构",
+      "industryWooCommerceStores": "WooCommerce 商店"
     },
     "support": {
       "attachment": "截图",
@@ -2123,17 +2153,40 @@
         "step4": {
           "title": "发送并跟踪活动",
           "description": "向你选择的每位客户发送个性化请求，然后跟踪发送、打开、点击、提醒和完成状态。"
+        },
+        "step2": {
+          "title": "选择你的评价目的地",
+          "description": "配置受支持的评价目的地，并遵循发送前所示的按平台指引。Yelp 使用符合合规要求的指令流程，而不是标准的请求链接。"
+        },
+        "step3": {
+          "title": "核对已同意的联系人",
+          "description": "上传 CSV、连接 WooCommerce，或手动添加联系人。确认您的权限基础，检查有效行、重复行，然后仅导入您已批准的联系人。"
         }
       },
       "headline": "完成您的第一条评价请求的四个步骤",
-      "setupTime": "支持的邮件提供商的引导设置"
+      "setupTime": "支持的邮件提供商的引导设置",
+      "setupInSteps": "4 步设置",
+      "subtitle": "连接发件人、核对已同意的联系人，并在发送前逐一选择每条请求。",
+      "getStartedButton": "免费开始"
     },
     "productShowcase": {
       "tabEmailDescription": "每条评价请求在发送前使用你配置的电子邮件地址、发件人姓名、签名和信息。",
       "tabTrackingTitle": "跟踪请求活动",
       "tabTrackingDescription": "在一个活动视图中查看所有发送、已打开、已点击、已提醒和已完成的请求。",
       "tabTrackingAlt": "Get Phame 活动仪表板，显示评价请求发送、打开、点击、提醒和完成状态",
-      "sectionDescription": "一个专注工具。三种实用视图。你所需的一切，用于管理评价请求的外联。"
+      "sectionDescription": "一个专注工具。三种实用视图。你所需的一切，用于管理评价请求的外联。",
+      "tabEmailLabel": "邮件预览",
+      "tabEmailTitle": "发送前逐条预览每条请求",
+      "tabEmailAlt": "Get Phame 评价请求邮件预览，显示客户姓名、企业签名，以及配置的评价目标",
+      "tabImportLabel": "来源审核",
+      "tabImportTitle": "导入前审核联系人",
+      "tabImportDescription": "上传 CSV 或连接 WooCommerce，确认权限，并审查有效、重复和被拒绝的行。导入联系人不会发送消息。",
+      "tabImportAlt": "Get Phame 来源屏幕，显示 CSV 上传、同意确认和重复审核",
+      "tabTrackingLabel": "请求活动",
+      "sectionSubtitle": "本产品",
+      "sectionTitle": "专为让评价请求更简单而设计",
+      "viewFullSizeButton": "查看原始大小",
+      "viewFullSizeAriaLabel": "在全尺寸中查看 {{title}}"
     },
     "socialProofBar": {
       "heading": "内置工作流安全措施",
@@ -2178,12 +2231,38 @@
       "getStartedFree": "探索 Get Phame 免费版本"
     },
     "faq": {
-      "a1": "每条请求都通过你连接的电子邮件账户发送，使用你配置的发件人姓名、地址、签名和信息。在发送前预览邮件并遵循提供商的送达指南。",
-      "a6": "消息通过你连接的电子邮件账户发送，因此提供商的发送限制、域名信誉、SPF、DKIM、内容以及收件人互动可能影响投递。没有服务能保证邮箱投递。",
-      "a9": "否。Get Phame 提供 Gmail、Outlook 以及其他受支持的 SMTP 服务的供应商特定设置指南。自定义 SMTP 连接需要你提供的服务器地址、端口和凭据。"
+      "a1": "每个请求都通过你连接的电子邮件账户发送，并使用你配置的发件人名称、地址、签名和信息。发送前预览邮件，并遵循服务商的送达性指南。",
+      "a6": "邮件通过你连接的邮箱账户发送，因此你的服务提供商的发送限制、域名信誉、SPF、DKIM、内容以及收件人互动情况都可能影响投递。没有任何服务能保证进入收件箱。",
+      "a9": "不需要。Get Phame 提供针对 Gmail、Outlook 以及其他受支持的 SMTP 服务的特定提供商设置指南。自定义 SMTP 连接需要服务器地址、端口和由你的提供商提供的凭据。",
+      "q1": "看起来像垃圾邮件吗？",
+      "q2": "哪些邮箱提供商可用？",
+      "a2": "Get Phame 支持与 Gmail、Outlook 和 SMTP 连接配合使用（包括 Google Workspace、Microsoft 365、Yahoo、Zoho、iCloud，以及自定义 SMTP 提供商）。",
+      "q3": "真的免费吗？",
+      "a3": "是的。免费计划从 10 条评价请求开始，然后在滚动的30天内再提供5条，且无需信用卡。付费计划提供更高容量的工作流功能。",
+      "q4": "我可以导入我的客户名单吗？",
+      "a4": "是的。在 Sources 中，上传 CSV 或连接 WooCommerce，确认你的权限依据，审核有效行和重复行，然后导入你批准的联系人。导入联系人从不发送消息。",
+      "q5": "Get Phame 会存储我的电子邮件密码吗？",
+      "a5": "SMTP 凭据在静态存储时会被加密，并且仅用于你配置的发送连接。Get Phame 不会使用这些凭据来读取你的收件箱。",
+      "q6": "我的邮件会落入垃圾邮件箱吗？",
+      "q7": "我的客户名单会怎样处理？",
+      "a7": "客户详情用于支持你选择的评价请求工作流。Sources 将导入限定为拥有者作用域，在审计历史中记录同意元数据，同时不重复记录 PII，并在发送操作之前让你审核联系人。",
+      "q8": "客户可以选择退出吗？",
+      "a8": "是的。请求中包含退订选项，选择退出的联系人将不再通过 Get Phame 进行后续联系。",
+      "q9": "连接我的电子邮件需要技术技能吗？",
+      "q10": "它支持哪些评价平台？",
+      "a10": "Get Phame 支持可配置的评价目标，并在发送前提供针对平台的指南。某些平台（包括 Yelp）需要不同的合规方式，而不是标准的请求链接。",
+      "q11": "WooCommerce 导入如何工作？",
+      "a11": "在 Sources 中连接 WooCommerce，将最近完成的订单中的联系信息导入到评价队列，确认你的权限依据，预览重复项和被拒绝的行，并仅导入你批准的联系人。没有后台导入，也没有自动营销活动。",
+      "q12": "专业版中的无限意味着什么？",
+      "a12": "付费计划不设定月度 Get Phame 请求配额。每个请求仍然通过你连接的账户逐一发送，且仍受你的邮件服务提供商的限制，以及适用的同意和平台规则约束。",
+      "sectionTitle": "常见问题解答",
+      "headline": "关于电子邮件安全、隐私和设置的问题",
+      "description": "在连接电子邮件、导入已同意的联系人以及发送第一条评价请求之前需要了解的内容。"
     },
     "section": {
-      "description": "观看一个简短的演练，了解连接邮箱、添加客户、发送请求和跟踪活动。"
+      "description": "观看一个简短的演练，了解连接邮箱、添加客户、发送请求和跟踪活动。",
+      "tagline": "现场演示",
+      "title": "了解工作原理"
     }
   },
   "developerIntegrations": {
