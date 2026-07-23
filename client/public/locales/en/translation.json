@@ -2284,6 +2284,18 @@
       "smtpPort": "Port",
       "security": "Security",
       "presetEndpoint": "Preset endpoint",
+      "providers": {
+        "mailjet": {
+          "label": "Mailjet",
+          "description": "Mailjet SMTP relay",
+          "usernameLabel": "Mailjet API key",
+          "usernamePlaceholder": "Public API key",
+          "secretLabel": "Mailjet Secret key",
+          "secretPlaceholder": "Secret key shown once by Mailjet",
+          "secretHelp": "Use the API Key as the username and the Secret Key as the password. Do not use your Mailjet account password.",
+          "fromEmailHelp": "This sender address or domain must already be validated in Mailjet."
+        }
+      },
       "secretUsedForUsername": "Your secret is used securely for both SMTP fields.",
       "setupHelp": "Setup help",
       "hideSecret": "Hide secret",

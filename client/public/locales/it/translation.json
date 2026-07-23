@@ -588,6 +588,18 @@
       "proBody": "Passa a Pro per collegare un servizio email transazionale e gestire invii ad alto volume.",
       "proTitle": "Funzionalità Pro",
       "provider": "Provider",
+      "providers": {
+        "mailjet": {
+          "label": "Mailjet",
+          "description": "Relay SMTP di Mailjet",
+          "usernameLabel": "Chiave API Mailjet",
+          "usernamePlaceholder": "Chiave API pubblica",
+          "secretLabel": "Chiave segreta Mailjet",
+          "secretPlaceholder": "Chiave segreta mostrata una sola volta da Mailjet",
+          "secretHelp": "Usa la chiave API come nome utente e la chiave segreta come password. Non usare la password del tuo account Mailjet.",
+          "fromEmailHelp": "Questo indirizzo o dominio mittente deve essere già convalidato in Mailjet."
+        }
+      },
       "region": "Regione",
       "secretUsedForUsername": "Il tuo segreto viene utilizzato in modo sicuro per entrambi i campi SMTP.",
       "security": "Sicurezza",

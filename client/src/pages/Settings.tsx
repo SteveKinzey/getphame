@@ -649,6 +649,11 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
   const resolvedHost = provider === "custom_smtp"
     ? smtpHost
     : resolveBulkSenderHost(provider, providerRegion || preset.defaultRegion);
+  const translatePresetField = (
+    providerId: BulkSenderProvider,
+    field: "label" | "description" | "usernameLabel" | "usernamePlaceholder" | "secretLabel" | "secretPlaceholder" | "secretHelp" | "fromEmailHelp",
+    fallback: string,
+  ) => t(`settings.bulkSender.providers.${providerId}.${field}`, { defaultValue: fallback });
 
   const applyProvider = (nextProvider: BulkSenderProvider) => {
     const nextPreset = getBulkSenderPreset(nextProvider);
@@ -755,7 +760,9 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
             <CheckCircle size={16} className="shrink-0" style={{ color: "oklch(0.45 0.15 150)" }} />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold rr-text-navy">
-                {isBulkSenderProvider(status.provider) ? BULK_SENDER_PRESETS[status.provider].label : status.provider} {t("settings.bulkSender.connected", { defaultValue: "connected" })}
+                {isBulkSenderProvider(status.provider)
+                  ? translatePresetField(status.provider, "label", BULK_SENDER_PRESETS[status.provider].label)
+                  : status.provider} {t("settings.bulkSender.connected", { defaultValue: "connected" })}
               </p>
               <p className="text-sm font-semibold rr-text-navy-mid truncate">{status.fromEmail}</p>
               {status.smtpHost && <p className="mt-0.5 truncate text-xs rr-text-navy-muted">{status.smtpHost}:{status.smtpPort}</p>}
@@ -800,10 +807,14 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
               style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
             >
               {BULK_SENDER_PROVIDER_IDS.map((providerId) => (
-                <option key={providerId} value={providerId}>{BULK_SENDER_PRESETS[providerId].label}</option>
+                <option key={providerId} value={providerId}>
+                  {translatePresetField(providerId, "label", BULK_SENDER_PRESETS[providerId].label)}
+                </option>
               ))}
             </select>
-            <p className="mt-1 text-xs rr-text-navy-muted">{preset.description}</p>
+            <p className="mt-1 text-xs rr-text-navy-muted">
+              {translatePresetField(provider, "description", preset.description)}
+            </p>
           </div>
 
           {preset.regions?.length ? (
@@ -851,19 +862,19 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
 
           {preset.usernameMode === "user" ? (
             <div>
-              <label htmlFor="bulk-sender-username" className="block text-xs font-bold mb-1 rr-text-navy-mid">{preset.usernameLabel}</label>
-              <input id="bulk-sender-username" type="text" value={smtpUsername} onChange={(event) => setSmtpUsername(event.target.value)} placeholder={preset.usernamePlaceholder} autoCapitalize="none" spellCheck={false} className="min-h-11 w-full rounded-xl px-3 py-2 outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }} />
+              <label htmlFor="bulk-sender-username" className="block text-xs font-bold mb-1 rr-text-navy-mid">{translatePresetField(provider, "usernameLabel", preset.usernameLabel)}</label>
+              <input id="bulk-sender-username" type="text" value={smtpUsername} onChange={(event) => setSmtpUsername(event.target.value)} placeholder={translatePresetField(provider, "usernamePlaceholder", preset.usernamePlaceholder)} autoCapitalize="none" spellCheck={false} className="min-h-11 w-full rounded-xl px-3 py-2 outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }} />
             </div>
           ) : (
             <div className="rounded-xl px-3 py-2.5" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}>
-              <p className="text-xs font-bold rr-text-navy">{preset.usernameLabel}</p>
+              <p className="text-xs font-bold rr-text-navy">{translatePresetField(provider, "usernameLabel", preset.usernameLabel)}</p>
               <p className="mt-0.5 text-xs rr-text-navy-muted">{preset.usernameMode === "fixed" ? preset.fixedUsername : t("settings.bulkSender.secretUsedForUsername", { defaultValue: "Your secret is used securely for both SMTP fields." })}</p>
             </div>
           )}
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label htmlFor="bulk-sender-secret" className="text-xs font-bold rr-text-navy-mid">{preset.secretLabel}</label>
+              <label htmlFor="bulk-sender-secret" className="text-xs font-bold rr-text-navy-mid">{translatePresetField(provider, "secretLabel", preset.secretLabel)}</label>
               <a href={preset.docsUrl} target="_blank" rel="noopener noreferrer" className="min-h-8 rounded-md px-1 text-xs flex items-center gap-0.5" style={{ color: "oklch(0.40 0.14 150)" }}>
                 {t("settings.bulkSender.setupHelp", { defaultValue: "Setup help" })} <ExternalLink size={10} />
               </a>
@@ -874,7 +885,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
                 type={showSecret ? "text" : "password"}
                 value={secret}
                 onChange={(event) => setSecret(event.target.value)}
-                placeholder={preset.secretPlaceholder}
+                placeholder={translatePresetField(provider, "secretPlaceholder", preset.secretPlaceholder)}
                 autoComplete="new-password"
                 className="min-h-11 w-full px-3 py-2 pr-11 rounded-xl outline-none"
                 style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
@@ -888,7 +899,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
                 {showSecret ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
-            <p className="mt-1 text-xs rr-text-navy-muted">{preset.secretHelp}</p>
+            <p className="mt-1 text-xs rr-text-navy-muted">{translatePresetField(provider, "secretHelp", preset.secretHelp)}</p>
           </div>
 
           <div>
@@ -903,7 +914,13 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
               className="min-h-11 w-full px-3 py-2 rounded-xl outline-none"
               style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
             />
-            <p className="text-xs mt-1 rr-text-navy-muted">{t("settings.bulkSender.fromEmailHelp", { defaultValue: "This sender must already be verified with your provider." })}</p>
+            <p className="text-xs mt-1 rr-text-navy-muted">
+              {translatePresetField(
+                provider,
+                "fromEmailHelp",
+                t("settings.bulkSender.fromEmailHelp", { defaultValue: "This sender must already be verified with your provider." }),
+              )}
+            </p>
           </div>
 
           <div>

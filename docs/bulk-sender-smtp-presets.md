@@ -1,12 +1,13 @@
 # Bulk Sender SMTP preset research
 
-Verified on 2026-07-22 against each provider's official documentation. This document records configuration facts only; it contains no credentials. Mailjet is intentionally omitted because its research row was incomplete and the user directed us to skip incomplete entries.
+Verified on 2026-07-22 against each provider's official documentation. This document records configuration facts only; it contains no credentials. Mailjet’s previously incomplete row was finished against its current official relay, credential, and sender-verification documentation.
 
 | Provider | SMTP host and region rule | Recommended port/security | Username rule | Secret rule | Official source |
 |---|---|---|---|---|---|
 | SendGrid | `smtp.sendgrid.net` | `587` + STARTTLS | Literal `apikey` | API key with Mail permission | [Twilio SendGrid SMTP API](https://www.twilio.com/docs/sendgrid/for-developers/sending-email/integrating-with-the-smtp-api) |
 | Amazon SES | `email-smtp.<aws-region>.amazonaws.com`; endpoint and credentials must use the same AWS region | `587` + STARTTLS | Region-specific SES SMTP username | IAM-derived SES SMTP password, not an AWS secret access key | [Amazon SES SMTP connection](https://docs.aws.amazon.com/ses/latest/dg/smtp-connect.html) |
 | Mailgun | US: `smtp.mailgun.org`; EU: `smtp.eu.mailgun.org` | `587` + STARTTLS | Domain-specific full SMTP login | Domain-specific SMTP password | [Mailgun SMTP sending](https://documentation.mailgun.com/docs/mailgun/user-manual/sending-messages/send-smtp) |
+| Mailjet | `in-v3.mailjet.com`; no regional SMTP endpoint selector is published | `587` + STARTTLS required by Get Phame | Mailjet API Key | Mailjet Secret Key, not the account password | [Mailjet SMTP configuration](https://dev.mailjet.com/smtp-relay/configuration/) and [sender validation](https://dev.mailjet.com/email/guides/senders-and-domains/) |
 | MailerSend | `smtp.mailersend.net` | `587` + STARTTLS | Generated SMTP username | Generated SMTP password | [MailerSend SMTP relay](https://www.mailersend.com/help/smtp-relay) |
 | SMTP2GO | Default: `mail.smtp2go.com`; US: `mail-us.smtp2go.com`; EU/UK: `mail-eu.smtp2go.com`; EU-only: `mail-eu2.smtp2go.com`; AU: `mail-au.smtp2go.com` | `2525` + STARTTLS | SMTP User username | SMTP User password | [SMTP2GO settings](https://support.smtp2go.com/hc/en-gb/articles/223087627-SMTP-Settings) |
 | Brevo | `smtp-relay.brevo.com` | `587` + STARTTLS | SMTP login email | SMTP key, not API key | [Brevo transactional SMTP](https://help.brevo.com/hc/en-us/articles/7924908994450-Send-transactional-emails-using-Brevo-SMTP) |
@@ -19,4 +20,4 @@ Verified on 2026-07-22 against each provider's official documentation. This docu
 
 ## Product rules
 
-Preset selection may fill host, port, security, and fixed username values, but users must always be able to review the resulting configuration before testing. Custom SMTP must never guess a hostname or credentials. Provider secrets remain encrypted at rest and are never returned to the client after connection. Connection testing authenticates without sending a message. Region-dependent providers must update their host when the region changes. Existing SendGrid, Mailgun, and Postmark records remain backward compatible during migration.
+Preset selection may fill host, port, security, and fixed username values, but users must always be able to review the resulting configuration before testing. Custom SMTP must never guess a hostname or credentials. Provider secrets remain encrypted at rest and are never returned to the client after connection. Connection testing authenticates without sending a message. Region-dependent providers must update their host when the region changes. Mailjet users must enter their API Key and Secret Key and validate the From address or domain in Mailjet before sending. Existing SendGrid, Mailgun, and Postmark records remain backward compatible during migration.

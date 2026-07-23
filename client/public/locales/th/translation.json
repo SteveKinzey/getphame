@@ -1808,6 +1808,18 @@
       "proBody": "อัปเกรดเป็นระดับ Pro เพื่อเชื่อมต่อบริการอีเมลเชิงธุรกรรมสำหรับการส่งปริมาณมากขึ้น.",
       "proTitle": "ฟีเจอร์ Pro",
       "provider": "ผู้ให้บริการ",
+      "providers": {
+        "mailjet": {
+          "label": "Mailjet",
+          "description": "รีเลย์ SMTP ของ Mailjet",
+          "usernameLabel": "คีย์ API ของ Mailjet",
+          "usernamePlaceholder": "คีย์ API สาธารณะ",
+          "secretLabel": "คีย์ลับของ Mailjet",
+          "secretPlaceholder": "คีย์ลับที่ Mailjet แสดงเพียงครั้งเดียว",
+          "secretHelp": "ใช้คีย์ API เป็นชื่อผู้ใช้และคีย์ลับเป็นรหัสผ่าน อย่าใช้รหัสผ่านบัญชี Mailjet ของคุณ",
+          "fromEmailHelp": "ที่อยู่อีเมลหรือโดเมนผู้ส่งนี้ต้องผ่านการยืนยันใน Mailjet แล้ว"
+        }
+      },
       "region": "ภูมิภาค",
       "secretUsedForUsername": "รหัสลับของคุณจะถูกใช้ด้วยความปลอดภัยสำหรับทั้งสองฟิลด์ SMTP.",
       "security": "ความปลอดภัย",

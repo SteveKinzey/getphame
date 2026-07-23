@@ -1687,6 +1687,18 @@
       "proBody": "升級至 Pro 以連接交易型電子郵件服務，支援更大量的寄送。",
       "proTitle": "Pro 功能",
       "provider": "供應商",
+      "providers": {
+        "mailjet": {
+          "label": "Mailjet",
+          "description": "Mailjet SMTP 中繼",
+          "usernameLabel": "Mailjet API 金鑰",
+          "usernamePlaceholder": "公開 API 金鑰",
+          "secretLabel": "Mailjet Secret Key（私密金鑰）",
+          "secretPlaceholder": "Mailjet 僅顯示一次的 Secret Key",
+          "secretHelp": "請使用 API Key 作為使用者名稱，並使用 Secret Key 作為密碼。請勿使用 Mailjet 帳戶密碼。",
+          "fromEmailHelp": "此寄件地址或網域必須已在 Mailjet 完成驗證。"
+        }
+      },
       "region": "區域",
       "secretUsedForUsername": "您的密鑰會安全地用於兩個 SMTP 欄位。",
       "security": "安全性",

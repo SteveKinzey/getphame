@@ -2286,6 +2286,18 @@
       "proBody": "Actualiza a Pro para conectar un servicio de correo transaccional para envíos de mayor volumen.",
       "proTitle": "Función Pro",
       "provider": "Proveedor",
+      "providers": {
+        "mailjet": {
+          "label": "Mailjet",
+          "description": "Relé SMTP de Mailjet",
+          "usernameLabel": "Clave API de Mailjet",
+          "usernamePlaceholder": "Clave API pública",
+          "secretLabel": "Clave secreta de Mailjet",
+          "secretPlaceholder": "Clave secreta mostrada una sola vez por Mailjet",
+          "secretHelp": "Usa la clave API como nombre de usuario y la clave secreta como contraseña. No uses la contraseña de tu cuenta de Mailjet.",
+          "fromEmailHelp": "Esta dirección o dominio remitente debe estar validado previamente en Mailjet."
+        }
+      },
       "region": "Región",
       "secretUsedForUsername": "Tu secreto se usa de forma segura para ambos campos SMTP.",
       "security": "Seguridad",

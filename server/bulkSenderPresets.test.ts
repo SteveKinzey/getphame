@@ -13,12 +13,14 @@ import { resolveSafeCustomSmtpHost } from "./bulkSender";
 const settingsSource = readFileSync(resolve(process.cwd(), "client/src/pages/Settings.tsx"), "utf8");
 const serverSource = readFileSync(resolve(process.cwd(), "server/bulkSender.ts"), "utf8");
 const schemaSource = readFileSync(resolve(process.cwd(), "drizzle/schema.ts"), "utf8");
+const presetDocsSource = readFileSync(resolve(process.cwd(), "docs/bulk-sender-smtp-presets.md"), "utf8");
+const mailjetResearchSource = readFileSync(resolve(process.cwd(), "docs/mailjet-smtp-research.md"), "utf8");
 
 describe("Bulk Sender provider presets", () => {
-  it("ships only the 12 source-backed providers and omits the incomplete Mailjet entry", () => {
-    expect(BULK_SENDER_PROVIDER_IDS).toHaveLength(12);
+  it("ships all 13 source-backed providers, including the completed Mailjet preset", () => {
+    expect(BULK_SENDER_PROVIDER_IDS).toHaveLength(13);
     expect(Object.keys(BULK_SENDER_PRESETS)).toEqual([...BULK_SENDER_PROVIDER_IDS]);
-    expect(BULK_SENDER_PROVIDER_IDS).not.toContain("mailjet");
+    expect(BULK_SENDER_PROVIDER_IDS).toContain("mailjet");
   });
 
   it("gives every provider safe credential guidance and an official HTTPS setup link", () => {
@@ -46,6 +48,21 @@ describe("Bulk Sender provider presets", () => {
     expect(resolveBulkSenderUsername("sparkpost", "ignored", "secret")).toBe("SMTP_Injection");
     expect(resolveBulkSenderUsername("postmark", "ignored", "server-token")).toBe("server-token");
     expect(resolveBulkSenderUsername("amazon_ses", " ses-user ", "secret")).toBe("ses-user");
+  });
+
+  it("uses Mailjet's documented relay, API-key username, Secret-key password, and sender-verification guidance", () => {
+    expect(BULK_SENDER_PRESETS.mailjet).toMatchObject({
+      defaultHost: "in-v3.mailjet.com",
+      defaultPort: 587,
+      defaultSecurity: "starttls",
+      usernameMode: "user",
+      usernameLabel: "Mailjet API key",
+      secretLabel: "Mailjet Secret key",
+    });
+    expect(resolveBulkSenderUsername("mailjet", " public-api-key ", "private-secret-key")).toBe("public-api-key");
+    expect(BULK_SENDER_PRESETS.mailjet.secretHelp).toContain("Do not use your Mailjet account password");
+    expect(presetDocsSource).toContain("Mailjet | `in-v3.mailjet.com`");
+    expect(mailjetResearchSource).toMatch(/validated sender address or domain/i);
   });
 });
 
@@ -90,8 +107,9 @@ describe("Bulk Sender Settings experience", () => {
     expect(settingsSource).toContain('id="bulk-sender-provider"');
     expect(settingsSource).toContain('id="bulk-sender-secret"');
     expect(settingsSource).toContain('id="bulk-sender-from-email"');
-    expect(settingsSource).toContain("Connect and test");
-    expect(settingsSource).toContain("Credentials are tested without sending a message");
+      expect(settingsSource).toContain("Connect and test");
+      expect(settingsSource).toContain("Credentials are tested without sending a message");
+      expect(settingsSource).toContain("settings.bulkSender.providers.${providerId}.${field}");
   });
 
   it("shows a legacy-mode migration notice without exposing stored credentials", () => {

@@ -1665,6 +1665,18 @@
       "proBody": "升级到专业版以连接事务性邮件服务，支持更高发送量。",
       "proTitle": "专业版功能",
       "provider": "提供商",
+      "providers": {
+        "mailjet": {
+          "label": "Mailjet",
+          "description": "Mailjet SMTP 中继",
+          "usernameLabel": "Mailjet API 密钥",
+          "usernamePlaceholder": "公共 API 密钥",
+          "secretLabel": "Mailjet Secret Key（私密密钥）",
+          "secretPlaceholder": "Mailjet 仅显示一次的 Secret Key",
+          "secretHelp": "使用 API Key 作为用户名，使用 Secret Key 作为密码。请勿使用 Mailjet 账户密码。",
+          "fromEmailHelp": "此发件人地址或域名必须已在 Mailjet 中完成验证。"
+        }
+      },
       "region": "区域",
       "secretUsedForUsername": "您的密钥会安全地用于两个 SMTP 字段。",
       "security": "安全",

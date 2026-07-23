@@ -2286,6 +2286,18 @@
       "proBody": "Passez à Pro pour connecter un service d'e-mail transactionnel et obtenir des livraisons à plus grand volume.",
       "proTitle": "Fonctionnalité Pro",
       "provider": "Fournisseur",
+      "providers": {
+        "mailjet": {
+          "label": "Mailjet",
+          "description": "Relais SMTP Mailjet",
+          "usernameLabel": "Clé API Mailjet",
+          "usernamePlaceholder": "Clé API publique",
+          "secretLabel": "Clé secrète Mailjet",
+          "secretPlaceholder": "Clé secrète affichée une seule fois par Mailjet",
+          "secretHelp": "Utilisez la clé API comme identifiant et la clé secrète comme mot de passe. N’utilisez pas le mot de passe de votre compte Mailjet.",
+          "fromEmailHelp": "Cette adresse ou ce domaine d’expéditeur doit déjà être validé dans Mailjet."
+        }
+      },
       "region": "Région",
       "secretUsedForUsername": "Votre secret est utilisé de façon sécurisée pour les deux champs SMTP.",
       "security": "Sécurité",

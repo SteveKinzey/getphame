@@ -15,9 +15,15 @@
 
 ## Current work in progress
 
-The Sources router now uses the shared `paidProcedure` for WooCommerce connection, preview, and commit operations. Disconnect remains authenticated rather than paid-gated so a downgraded account can remove stored credentials. The Sources interface now reads the authoritative `profile.hasPaidAccess` entitlement, presents a localized paid-plan state, and handles `UPGRADE_REQUIRED` responses. The public FAQ now states that WooCommerce is available only on paid plans and accurately describes manual, consent-first imports with no automatic sending. All seven maintained locale catalogs were updated, and the locale cache identifier moved to `phame30`.
+The Sources router now uses the shared `paidProcedure` for WooCommerce connection, preview, and commit operations. Disconnect remains authenticated rather than paid-gated so a downgraded account can remove stored credentials. The Sources interface now reads the authoritative `profile.hasPaidAccess` entitlement, presents a localized paid-plan state, and handles `UPGRADE_REQUIRED` responses. The public FAQ now states that WooCommerce is available only on paid plans and accurately describes manual, consent-first imports with no automatic sending. All seven maintained locale catalogs were updated, and the locale cache identifier is now `phame31`.
 
 The stale cache-version, landing-locale, and Sources procedure-count regressions found by the consolidated full suite were corrected. These corrections have **not yet been rerun** because the pause was requested immediately after the next TypeScript check identified one remaining compile blocker.
+
+## Resumed Mailjet research completed
+
+The previously omitted Mailjet row is now source-verified and implemented as the thirteenth first-class Bulk Sender preset. It uses `in-v3.mailjet.com`, port `587`, STARTTLS, the Mailjet API Key as the SMTP username, and the Mailjet Secret Key as the SMTP password. The UI explicitly warns users not to enter their normal Mailjet account password and requires the From address or domain to be validated in Mailjet. No regional selector, credentials, or account-password field was introduced.
+
+Mailjet-specific labels and setup guidance were added across all seven maintained locales, while the existing Custom SMTP fallback remains available. The provider matrix now cites Mailjet’s official relay, sender/domain, security, and pricing documentation; the detailed decision record is in `docs/mailjet-smtp-research.md`. Focused Mailjet and Settings tests pass, the complete suite passes with **522 tests passed and 6 skipped across 93 files**, and `pnpm audit --audit-level high` reports no known vulnerabilities. TypeScript and production build remain blocked only by the separate pre-existing `Sources.tsx` import described below.
 
 ## Newly queued global chatbot requirement
 
@@ -54,10 +60,12 @@ The consolidated branch does not contain that component. On resume, remove the u
 
 | Validation | Most recent result |
 |---|---|
-| Consolidated Vitest suite after paid-gate edits | **520 passed, 3 failed, 6 skipped** across 93 files |
-| Three failures | Stale assertions in `googleVerificationHomepage.test.ts`, `landing-locales.test.ts`, and `sourcesWorkspace.test.ts`; all three were edited afterward but not rerun |
-| TypeScript | One missing-module error for the unavailable `PaywallModal` import |
-| Production build and responsive verification | Not rerun after the latest Sources and localization edits |
+| Consolidated Vitest suite after Mailjet and paid-gate edits | **522 passed, 6 skipped** across 93 files |
+| Focused Mailjet and Settings regressions | **59 passed** across 4 files |
+| Dependency audit | `pnpm audit --audit-level high`: no known vulnerabilities |
+| TypeScript | One inherited missing-module error for the unavailable `PaywallModal` import; no Mailjet type error reported |
+| Production build | Client bundling is blocked by the same inherited `PaywallModal` import after all 522 tests pass |
+| Responsive verification | Not run because the consolidated branch is not buildable until the inherited Sources blocker is removed |
 | Release status | Do not merge or publish until the resume queue is complete |
 
 ## Resume queue
