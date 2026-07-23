@@ -399,5 +399,13 @@
       "fileReadFailed": "无法读取所选文件。请重试。",
       "submitFailed": "无法提交您的请求。请重试。"
     }
+  },
+  "sources": {
+    "preview": {
+      "rejectedSummary": "{{count}} 行无法导入。请在源中更正无效或缺失的邮箱地址，然后创建一个新的预览。"
+    },
+    "csv": {
+      "downloadSample": "下载示例 CSV"
+    }
   }
 }

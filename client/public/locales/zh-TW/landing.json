@@ -399,5 +399,13 @@
       "fileReadFailed": "無法讀取所選檔案。請再試一次。",
       "submitFailed": "無法提交您的請求。請再試一次。"
     }
+  },
+  "sources": {
+    "preview": {
+      "rejectedSummary": "{{count}} 行無法匯入。請在來源中更正無效或缺失的電子郵件地址，然後建立新的預覽。"
+    },
+    "csv": {
+      "downloadSample": "下載 CSV 範本"
+    }
   }
 }

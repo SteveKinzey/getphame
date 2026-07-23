@@ -3046,7 +3046,8 @@
       "email": "Correo electrónico",
       "phone": "Teléfono",
       "commit": "Importar contactos revisados",
-      "create": "Crear vista previa de revisión"
+      "create": "Crear vista previa de revisión",
+      "rejectedSummary": "{{count}} filas no se pudieron importar. Corrija las direcciones de correo electrónico inválidas o faltantes en la fuente, luego cree una nueva vista previa."
     },
     "woo": {
       "connectedToast": "WooCommerce conectado de forma segura.",
@@ -3080,7 +3081,8 @@
       "description": "Utilice una fila de encabezado con una columna de correo electrónico. Hasta 1,000 filas y 2 MB por importación revisada.",
       "choose": "Seleccionar archivo CSV",
       "rowsLoaded": "{{count}} filas cargadas",
-      "chooseHelp": "El correo electrónico es obligatorio; el nombre y el teléfono son opcionales"
+      "chooseHelp": "El correo electrónico es obligatorio; el nombre y el teléfono son opcionales",
+      "downloadSample": "Descargar muestra de CSV"
     },
     "eyebrow": "Ingesta de contactos",
     "title": "Fuentes",

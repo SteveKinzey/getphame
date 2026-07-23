@@ -2552,7 +2552,8 @@
       "email": "電子郵件",
       "phone": "電話",
       "commit": "匯入已審核的聯絡人",
-      "create": "建立審核預覽"
+      "create": "建立審核預覽",
+      "rejectedSummary": "{{count}} 行無法匯入。請在來源中更正無效或缺失的電子郵件地址，然後建立新的預覽。"
     },
     "woo": {
       "connectedToast": "WooCommerce 已安全連線。",
@@ -2586,7 +2587,8 @@
       "description": "使用包含電子郵件欄的標頭列。每次審核匯入至多 1,000 行、2 MB。",
       "choose": "選擇 CSV 檔案",
       "rowsLoaded": "{{count}} 行已載入",
-      "chooseHelp": "需要電子郵件；姓名與電話為選填"
+      "chooseHelp": "需要電子郵件；姓名與電話為選填",
+      "downloadSample": "下載 CSV 範本"
     },
     "eyebrow": "聯絡人進件",
     "title": "來源",

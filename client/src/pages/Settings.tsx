@@ -1296,59 +1296,6 @@ export default function SettingsPage() {
     onError: (err) => toast.error(err.message),
   });
 
-  // ── WooCommerce credentials ───────────────────────────────────────────────
-  const { data: wooCreds } = trpc.woo.getCredentials.useQuery();
-  const [wooUrl, setWooUrl] = useState("");
-  const [wooKey, setWooKey] = useState("");
-  const [wooSecret, setWooSecret] = useState("");
-  const [wooFormOpen, setWooFormOpen] = useState(false);
-
-  const saveWooCreds = trpc.woo.saveCredentials.useMutation({
-    onSuccess: () => {
-      utils.woo.getCredentials.invalidate();
-      toast.success("WooCommerce store connected!");
-      setWooFormOpen(false);
-      setWooKey("");
-      setWooSecret("");
-    },
-    onError: (err) => toast.error(err.message),
-  });
-
-  const { data: syncHistory } = trpc.woo.syncHistory.useQuery(undefined, { enabled: !!wooCreds });
-  const quickSync = trpc.woo.sync.useMutation({
-    onSuccess: (result) => {
-      utils.woo.getCredentials.invalidate();
-      utils.woo.listPending.invalidate();
-      utils.woo.pendingCount.invalidate();
-      if ((result.staged ?? result.added) > 0) {
-        toast.success(
-          `Synced — ${result.staged ?? result.added} order${(result.staged ?? result.added) !== 1 ? "s" : ""} staged for import. Review them in the Pending Imports banner below.`,
-          { duration: 6000 }
-        );
-      } else {
-        toast.success("Sync complete — no new orders found.");
-      }
-    },
-    onError: (err) => toast.error(`Sync failed: ${err.message}`),
-  });
-
-  // ── WooCommerce pending imports ────────────────────────────────────────────
-  const { data: wooPending } = trpc.woo.pendingCount.useQuery(undefined, { enabled: !!wooCreds });
-  const dismissPending = trpc.woo.dismissPending.useMutation({
-    onSuccess: () => {
-      utils.woo.pendingCount.invalidate();
-      toast.success("Pending imports dismissed.");
-    },
-    onError: (err) => toast.error(err.message),
-  });
-
-  function handleSaveWoo() {
-    if (!wooUrl.trim()) { toast.error("Store URL is required"); return; }
-    if (!wooKey.trim()) { toast.error("Consumer Key is required"); return; }
-    if (!wooSecret.trim()) { toast.error("Consumer Secret is required"); return; }
-    saveWooCreds.mutate({ storeUrl: wooUrl.trim(), consumerKey: wooKey.trim(), consumerSecret: wooSecret.trim() });
-  }
-
   // ── Webhooks ───────────────────────────────────────────────────────────────
   const { data: webhookList } = trpc.webhook.list.useQuery();
   const { data: notifPrefs } = trpc.notificationPrefs.get.useQuery();
@@ -2799,202 +2746,33 @@ export default function SettingsPage() {
         {/* ── Bulk Sender ──────────────────────────────────────────────────── */}
         <BulkSenderSection profile={profile} />
 
-        {/* ── WooCommerce ──────────────────────────────────────────────────── */}
+        {/* ── Sources ──────────────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-1">
             <ShoppingBag size={18} className="rr-text-navy" />
-            <h2
-              className="text-base font-black rr-text-navy"
-            >
-              {t('wooCommerce.title')}
-            </h2>
+            <h2 className="text-base font-black rr-text-navy">{t('sources.title')}</h2>
           </div>
           <p className="text-xs mb-4 rr-text-navy-muted">
-            {t('wooCommerce.description')}
+            {t('sources.subtitle')}
           </p>
-
-          {wooCreds ? (
-            <div className="flex flex-col gap-3">
-              <div
-                className="flex items-center gap-3 px-4 py-3 rounded-xl rr-bg-green-pale"
-              >
-                <CheckCircle2 size={18} className="rr-text-green" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-bold" style={{ color: "oklch(0.30 0.12 145)" }}>{t('wooCommerce.storeConnected')}</p>
-                  <p className="text-xs truncate" style={{ color: "oklch(0.45 0.10 145)" }}>{wooCreds.storeUrl}</p>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    {wooCreds.lastSyncedAt ? (
-                      <p className="text-xs flex items-center gap-1" style={{ color: "oklch(0.50 0.10 145)" }}>
-                        <Clock size={10} />
-                        Last synced {new Date(wooCreds.lastSyncedAt).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}
-                        {(wooCreds.lastSyncCount ?? 0) > 0 && (
-                          <span style={{ color: "oklch(0.40 0.12 145)" }}>· {wooCreds.lastSyncCount} staged</span>
-                        )}
-                      </p>
-                    ) : (
-                      <p className="text-xs" style={{ color: "oklch(0.55 0.08 80)" }}>Not yet synced</p>
-                    )}
-                    <button
-                      onClick={() => quickSync.mutate({ days: 30 })}
-                      disabled={quickSync.isPending}
-                      className="flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-full transition-opacity disabled:opacity-60"
-                      style={{ background: "oklch(0.88 0.06 145)", color: "oklch(0.30 0.12 145)" }}
-                    >
-                      {quickSync.isPending ? (
-                        <Loader2 size={9} className="animate-spin" />
-                      ) : (
-                        <RefreshCw size={9} />
-                      )}
-                      {quickSync.isPending ? t('wooCommerce.syncing') : t('wooCommerce.sync')}
-                    </button>
-                  </div>
-                </div>
-              </div>
-              {/* Pending Imports Banner */}
-              {wooPending && wooPending.count > 0 && (
-                <div
-                  className="rounded-xl px-4 py-3"
-                  style={{ background: "oklch(0.97 0.04 80)", border: "1px solid oklch(0.88 0.08 80)" }}
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <Clock size={14} style={{ color: "oklch(0.55 0.12 80)" }} />
-                    <p className="text-sm font-bold" style={{ color: "oklch(0.35 0.10 80)" }}>
-                      {wooPending.count} pending import{wooPending.count !== 1 ? "s" : ""}
-                    </p>
-                  </div>
-                  <p className="text-xs mb-3" style={{ color: "oklch(0.45 0.06 80)" }}>
-                    These WooCommerce orders are staged and waiting. Review duplicates and confirm customer consent in Sources before adding them to Contacts.
-                  </p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => navigate("/sources")}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-xs font-black transition-opacity disabled:opacity-60 rr-bg-navy text-white"
-                    >
-                      <Download size={12} />
-                      Review in Sources
-                    </button>
-                    <button
-                      onClick={() => dismissPending.mutate()}
-                      disabled={dismissPending.isPending}
-                      className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold transition-opacity disabled:opacity-60 rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}
-                    >
-                      {dismissPending.isPending ? <Loader2 size={12} className="animate-spin" /> : null}
-                      Dismiss
-                    </button>
-                  </div>
-                </div>
-              )}
-              {/* Sync History Chart */}
-              {syncHistory && syncHistory.length > 1 && (
-                <div className="rounded-xl px-4 py-3 rr-bg-white-card">
-                  <p className="text-xs font-bold mb-2 rr-text-navy-mid">Sync History (last {syncHistory.length} syncs)</p>
-                  <ResponsiveContainer width="100%" height={64}>
-                    <BarChart data={[...syncHistory].reverse().map((s, i) => ({ i, added: s.added, total: s.total }))} barSize={8}>
-                      <XAxis dataKey="i" hide />
-                      <RechartsTooltip
-                        formatter={(value, name) => [value, (name as string) === "added" ? "Staged" : "Fetched"]}
-                        labelFormatter={() => ""}
-                        contentStyle={{ fontSize: 11, padding: "4px 8px", borderRadius: 6 }}
-                      />
-                      <Bar dataKey="total" fill="oklch(0.85 0.04 260)" radius={[3, 3, 0, 0]} />
-                      <Bar dataKey="added" fill="oklch(0.50 0.15 145)" radius={[3, 3, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                  <div className="flex items-center gap-3 mt-1">
-                    <span className="flex items-center gap-1 text-xs rr-text-navy-mid">
-                      <span className="inline-block w-2 h-2 rounded-sm" style={{ background: "oklch(0.85 0.04 260)" }} /> Fetched
-                    </span>
-                    <span className="flex items-center gap-1 text-xs" style={{ color: "oklch(0.40 0.12 145)" }}>
-                      <span className="inline-block w-2 h-2 rounded-sm" style={{ background: "oklch(0.50 0.15 145)" }} /> Staged
-                    </span>
-                  </div>
-                </div>
-              )}
-              <button
-                onClick={() => navigate("/woo-customers")}
-                className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-navy text-white"
-              >
-                <ShoppingBag size={16} />
-                  {t('wooCommerce.viewCustomers')}
-                <ChevronRight size={14} />
-              </button>
-              <button
-                onClick={() => { setWooUrl(wooCreds.storeUrl); setWooFormOpen(true); }}
-                className="text-xs text-center py-2 rr-text-navy-muted"
-              >
-                {t('wooCommerce.updateCredentials')}
-              </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-4">
+            <div className="flex items-center gap-2 rounded-xl px-3 py-2 rr-bg-green-pale">
+              <CheckCircle2 size={14} className="rr-text-green" aria-hidden="true" />
+              <span className="text-xs font-bold rr-text-navy-mid">{t('sources.safeguards.reviewed')}</span>
             </div>
-          ) : (
-            <div className="flex flex-col gap-3">
-              {!wooFormOpen ? (
-                <button
-                  onClick={() => setWooFormOpen(true)}
-                  className="flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-gold rr-text-navy"
-                >
-                  <ShoppingBag size={16} />
-                  Connect WooCommerce Store
-                </button>
-              ) : null}
+            <div className="flex items-center gap-2 rounded-xl px-3 py-2 rr-bg-green-pale">
+              <CheckCircle2 size={14} className="rr-text-green" aria-hidden="true" />
+              <span className="text-xs font-bold rr-text-navy-mid">{t('sources.safeguards.noSend')}</span>
             </div>
-          )}
-
-          {wooFormOpen && (
-            <div className="flex flex-col gap-3 mt-3">
-              <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Store URL *</label>
-                <input
-                  type="url"
-                  value={wooUrl}
-                  onChange={(e) => setWooUrl(e.target.value)}
-                  placeholder="https://yourstore.com"
-                  className="w-full px-3 py-3 rounded-xl text-sm outline-none"
-                  style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Consumer Key *</label>
-                <input
-                  type="text"
-                  value={wooKey}
-                  onChange={(e) => setWooKey(e.target.value)}
-                  placeholder="ck_xxxxxxxxxxxxxxxx"
-                  className="w-full px-3 py-3 rounded-xl text-sm outline-none"
-                  style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Consumer Secret *</label>
-                <input
-                  type="password"
-                  value={wooSecret}
-                  onChange={(e) => setWooSecret(e.target.value)}
-                  placeholder="cs_xxxxxxxxxxxxxxxx"
-                  className="w-full px-3 py-3 rounded-xl text-sm outline-none"
-                  style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                />
-                <p className="text-xs mt-1 rr-text-navy-muted">
-                  WooCommerce → Settings → Advanced → REST API → Add key (Read permission)
-                </p>
-              </div>
-              <div className="flex gap-2">
-                <button
-                  onClick={handleSaveWoo}
-                  disabled={saveWooCreds.isPending}
-                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm rr-bg-navy text-white"
-                >
-                  {saveWooCreds.isPending ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
-                  Save
-                </button>
-                <button
-                  onClick={() => setWooFormOpen(false)}
-                  className="px-4 py-3 rounded-xl text-sm font-bold rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          )}
+          </div>
+          <button
+            onClick={() => navigate("/sources")}
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-black text-sm transition-transform active:scale-95 rr-bg-gold rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+          >
+            <ShoppingBag size={16} aria-hidden="true" />
+            {t('sources.nav.label')}
+            <ChevronRight size={14} aria-hidden="true" />
+          </button>
         </div>
 
         {/* ── Koalendar ───────────────────────────────────────────────────── */}
@@ -3210,20 +2988,6 @@ export default function SettingsPage() {
             <h2 className="text-base font-black rr-text-navy">{t('tabs.notifications', { defaultValue: 'Notification Preferences' })}</h2>
           </div>
           <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 rr-bg-white-card">
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold rr-text-navy">WooCommerce auto-import notification</p>
-              <p className="text-xs mt-0.5 rr-text-navy-muted">Receive an in-app notification when the Monday auto-import runs and contacts are added.</p>
-            </div>
-            <button
-              onClick={() => updateNotifPrefs.mutate({ wooAutoImportNotify: !notifPrefs?.wooAutoImportNotify })}
-              disabled={updateNotifPrefs.isPending}
-              className="shrink-0 w-10 h-6 rounded-full transition-colors relative"
-              style={{ background: notifPrefs?.wooAutoImportNotify ? "oklch(0.50 0.15 145)" : "oklch(0.80 0.02 260)" }}
-            >
-              <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform" style={{ left: notifPrefs?.wooAutoImportNotify ? "calc(100% - 1.35rem)" : "0.1rem" }} />
-            </button>
-          </div>
-          <div className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 mt-2 rr-bg-white-card">
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold rr-text-navy">Email open notifications</p>
               <p className="text-xs mt-0.5 rr-text-navy-muted">Receive an in-app notification each time a customer opens your review request email.</p>

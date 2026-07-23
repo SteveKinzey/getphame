@@ -399,5 +399,13 @@
       "fileReadFailed": "No se pudo leer el archivo seleccionado. Inténtalo de nuevo.",
       "submitFailed": "No se pudo enviar tu solicitud. Inténtalo de nuevo."
     }
+  },
+  "sources": {
+    "preview": {
+      "rejectedSummary": "{{count}} filas no se pudieron importar. Corrija las direcciones de correo electrónico inválidas o faltantes en la fuente, luego cree una nueva vista previa."
+    },
+    "csv": {
+      "downloadSample": "Descargar muestra de CSV"
+    }
   }
 }

@@ -208,6 +208,18 @@ function PreviewPanel({ preview, committing, onCommit }: { preview: ImportPrevie
         ))}
       </div>
 
+      {preview.stats.rejected > 0 && (
+        <div className="mt-4 flex items-start gap-3 rounded-xl border border-amber-300/60 bg-amber-50 p-3 text-amber-950 dark:border-amber-300/20 dark:bg-amber-300/5 dark:text-amber-100" role="status">
+          <AlertTriangle className="mt-0.5 h-4 w-4 flex-none" aria-hidden="true" />
+          <p className="rr-l2">
+            {t("sources.preview.rejectedSummary", {
+              defaultValue: "{{count}} rows could not be imported. Correct invalid or missing email addresses in the source, then create a new preview.",
+              count: preview.stats.rejected,
+            })}
+          </p>
+        </div>
+      )}
+
       <div className="mt-4 max-h-72 overflow-auto rounded-xl border border-border" tabIndex={0} aria-label={t("sources.preview.tableLabel", { defaultValue: "Contact import preview" })}>
         <table className="w-full min-w-[520px] text-left text-sm">
           <thead className="sticky top-0 bg-muted text-muted-foreground">
@@ -349,6 +361,16 @@ export default function SourcesPage() {
     }
   }
 
+  function downloadSampleCsv() {
+    const sample = "name,email,phone\nAlex Rivera,alex@example.com,+15555550123\n";
+    const url = URL.createObjectURL(new Blob([sample], { type: "text/csv;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "get-phame-contact-import-template.csv";
+    link.click();
+    URL.revokeObjectURL(url);
+  }
+
   const dateFormatter = useMemo(() => new Intl.DateTimeFormat(i18n.language, { dateStyle: "medium", timeStyle: "short" }), [i18n.language]);
 
   if (overview.isLoading) {
@@ -453,6 +475,10 @@ export default function SourcesPage() {
                 <span className="rr-l1 mt-2 text-foreground">{csvFilename || t("sources.csv.choose", { defaultValue: "Choose CSV file" })}</span>
                 <span className="rr-l2 mt-1 text-muted-foreground">{csvRows.length ? t("sources.csv.rowsLoaded", { defaultValue: "{{count}} rows loaded", count: csvRows.length }) : t("sources.csv.chooseHelp", { defaultValue: "Email is required; name and phone are optional" })}</span>
               </button>
+              <Button type="button" variant="outline" className="mt-3 min-h-11 w-full rounded-xl sm:w-auto" onClick={downloadSampleCsv}>
+                <CloudDownload className="h-4 w-4" aria-hidden="true" />
+                {t("sources.csv.downloadSample", { defaultValue: "Download sample CSV" })}
+              </Button>
             </section>
             <ConsentPanel basis={consentBasis} source={consentSource} attested={consentAttested} onBasisChange={setConsentBasis} onSourceChange={setConsentSource} onAttestedChange={setConsentAttested} />
             {!csvPreview ? (

@@ -54,9 +54,15 @@ describe("Sources workspace contract", () => {
 
     expect(page).toContain("ConsentPanel");
     expect(page).toContain("PreviewPanel");
+    expect(page).toContain("sources.preview.rejectedSummary");
+    expect(page).toContain("sources.csv.downloadSample");
     expect(page).toContain("Importing never sends messages");
     expect(page).not.toContain("trpc.woo.importPending.useMutation");
     expect(settings).not.toContain("trpc.woo.importPending.useMutation");
+    expect(settings).not.toContain("trpc.woo.saveCredentials.useMutation");
+    expect(settings).not.toContain("trpc.woo.sync.useMutation");
+    expect(settings).not.toContain("Monday auto-import");
+    expect(settings).toContain('navigate("/sources")');
     expect(core).not.toContain("startWooAutoImportScheduler");
     expect(router).not.toContain("publicProcedure");
     expect(router.match(/protectedProcedure/g)?.length ?? 0).toBeGreaterThanOrEqual(8);

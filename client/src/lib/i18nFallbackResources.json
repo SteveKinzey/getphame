@@ -771,7 +771,8 @@
         "email": "Email",
         "phone": "Phone",
         "commit": "Import reviewed contacts",
-        "create": "Create review preview"
+        "create": "Create review preview",
+        "rejectedSummary": "{{count}} rows could not be imported. Correct invalid or missing email addresses in the source, then create a new preview."
       },
       "woo": {
         "connectedToast": "WooCommerce connected securely.",
@@ -805,7 +806,8 @@
         "description": "Use a header row with an email column. Up to 1,000 rows and 2 MB per reviewed import.",
         "choose": "Choose CSV file",
         "rowsLoaded": "{{count}} rows loaded",
-        "chooseHelp": "Email is required; name and phone are optional"
+        "chooseHelp": "Email is required; name and phone are optional",
+        "downloadSample": "Download sample CSV"
       },
       "eyebrow": "Contact intake",
       "title": "Sources",
@@ -1660,7 +1662,8 @@
         "email": "Correo electrónico",
         "phone": "Teléfono",
         "commit": "Importar contactos revisados",
-        "create": "Crear vista previa de revisión"
+        "create": "Crear vista previa de revisión",
+        "rejectedSummary": "{{count}} filas no se pudieron importar. Corrija las direcciones de correo electrónico inválidas o faltantes en la fuente, luego cree una nueva vista previa."
       },
       "woo": {
         "connectedToast": "WooCommerce conectado de forma segura.",
@@ -1694,7 +1697,8 @@
         "description": "Utilice una fila de encabezado con una columna de correo electrónico. Hasta 1,000 filas y 2 MB por importación revisada.",
         "choose": "Seleccionar archivo CSV",
         "rowsLoaded": "{{count}} filas cargadas",
-        "chooseHelp": "El correo electrónico es obligatorio; el nombre y el teléfono son opcionales"
+        "chooseHelp": "El correo electrónico es obligatorio; el nombre y el teléfono son opcionales",
+        "downloadSample": "Descargar muestra de CSV"
       },
       "eyebrow": "Ingesta de contactos",
       "title": "Fuentes",
@@ -2549,7 +2553,8 @@
         "email": "E-mail",
         "phone": "Téléphone",
         "commit": "Importer les contacts examinés",
-        "create": "Créer un aperçu de révision"
+        "create": "Créer un aperçu de révision",
+        "rejectedSummary": "{{count}} lignes n'ont pas pu être importées. Corrigez les adresses e-mail invalides ou manquantes dans la source, puis créez un nouvel aperçu."
       },
       "woo": {
         "connectedToast": "WooCommerce connecté en toute sécurité.",
@@ -2583,7 +2588,8 @@
         "description": "Utilisez une ligne d'en-tête avec une colonne Email. Jusqu'à 1 000 lignes et 2 Mo par import révisé.",
         "choose": "Choisir fichier CSV",
         "rowsLoaded": "{{count}} lignes chargées",
-        "chooseHelp": "Email requis ; le nom et le téléphone sont facultatifs"
+        "chooseHelp": "Email requis ; le nom et le téléphone sont facultatifs",
+        "downloadSample": "Télécharger un échantillon CSV"
       },
       "eyebrow": "Réception des contacts",
       "title": "Sources",
@@ -3438,7 +3444,8 @@
         "email": "Email",
         "phone": "Telefono",
         "commit": "Importa contatti revisionati",
-        "create": "Crea anteprima di revisione"
+        "create": "Crea anteprima di revisione",
+        "rejectedSummary": "{{count}} righe non possono essere importate. Correggi gli indirizzi email non validi o mancanti nella fonte, quindi crea una nuova anteprima."
       },
       "woo": {
         "connectedToast": "WooCommerce connesso in modo sicuro.",
@@ -3472,7 +3479,8 @@
         "description": "Usa una riga di intestazione con una colonna email. Fino a 1.000 righe e 2 MB per importazione revisionata.",
         "choose": "Seleziona file CSV",
         "rowsLoaded": "{{count}} righe caricate",
-        "chooseHelp": "L'email è obbligatoria; nome e telefono sono facoltativi"
+        "chooseHelp": "L'email è obbligatoria; nome e telefono sono facoltativi",
+        "downloadSample": "Scarica CSV di esempio"
       },
       "eyebrow": "Acquisizione contatti",
       "title": "Fonti",
@@ -4327,7 +4335,8 @@
         "email": "อีเมล",
         "phone": "โทรศัพท์",
         "commit": "นำเข้าผู้ติดต่อที่ผ่านการตรวจสอบ",
-        "create": "สร้างตัวอย่างการตรวจสอบ"
+        "create": "สร้างตัวอย่างการตรวจสอบ",
+        "rejectedSummary": "{{count}} แถวไม่สามารถนำเข้าได้. แก้ไขที่อยู่อีเมลที่ไม่ถูกต้องหรือหายไปในแหล่งที่มา แล้วสร้างตัวอย่างใหม่."
       },
       "woo": {
         "connectedToast": "WooCommerce เชื่อมต่ออย่างปลอดภัย",
@@ -4361,7 +4370,8 @@
         "description": "ใช้แถวหัวเรื่องที่มีคอลัมน์อีเมล สูงสุด 1,000 แถว และ 2 MB ต่การนำเข้าที่ตรวจสอบแล้ว",
         "choose": "เลือกไฟล์ CSV",
         "rowsLoaded": "{{count}} แถวถูกโหลด",
-        "chooseHelp": "ต้องระบุอีเมล ชื่อและโทรศัพท์ไม่บังคับ"
+        "chooseHelp": "ต้องระบุอีเมล ชื่อและโทรศัพท์ไม่บังคับ",
+        "downloadSample": "ดาวน์โหลด CSV ตัวอย่าง"
       },
       "eyebrow": "รับข้อมูลผู้ติดต่อ",
       "title": "แหล่งข้อมูล",
@@ -5216,7 +5226,8 @@
         "email": "邮箱",
         "phone": "电话",
         "commit": "导入已审核的联系人",
-        "create": "创建审核预览"
+        "create": "创建审核预览",
+        "rejectedSummary": "{{count}} 行无法导入。请在源中更正无效或缺失的邮箱地址，然后创建一个新的预览。"
       },
       "woo": {
         "connectedToast": "WooCommerce 已安全连接。",
@@ -5250,7 +5261,8 @@
         "description": "使用包含邮箱列的标题行。每次审核导入最多 1,000 行，2 MB。",
         "choose": "选择 CSV 文件",
         "rowsLoaded": "{{count}} 行已加载",
-        "chooseHelp": "需要邮箱；姓名和电话为可选"
+        "chooseHelp": "需要邮箱；姓名和电话为可选",
+        "downloadSample": "下载示例 CSV"
       },
       "eyebrow": "联系人导入",
       "title": "数据源",
@@ -6105,7 +6117,8 @@
         "email": "電子郵件",
         "phone": "電話",
         "commit": "匯入已審核的聯絡人",
-        "create": "建立審核預覽"
+        "create": "建立審核預覽",
+        "rejectedSummary": "{{count}} 行無法匯入。請在來源中更正無效或缺失的電子郵件地址，然後建立新的預覽。"
       },
       "woo": {
         "connectedToast": "WooCommerce 已安全連線。",
@@ -6139,7 +6152,8 @@
         "description": "使用包含電子郵件欄的標頭列。每次審核匯入至多 1,000 行、2 MB。",
         "choose": "選擇 CSV 檔案",
         "rowsLoaded": "{{count}} 行已載入",
-        "chooseHelp": "需要電子郵件；姓名與電話為選填"
+        "chooseHelp": "需要電子郵件；姓名與電話為選填",
+        "downloadSample": "下載 CSV 範本"
       },
       "eyebrow": "聯絡人進件",
       "title": "來源",

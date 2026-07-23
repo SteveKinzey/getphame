@@ -366,5 +366,13 @@
         "nameMax": "Keep your name to 80 characters or fewer."
       }
     }
+  },
+  "sources": {
+    "preview": {
+      "rejectedSummary": "{{count}} rows could not be imported. Correct invalid or missing email addresses in the source, then create a new preview."
+    },
+    "csv": {
+      "downloadSample": "Download sample CSV"
+    }
   }
 }

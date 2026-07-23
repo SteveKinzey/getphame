@@ -89,31 +89,41 @@ export async function fetchWooOrders(
 ): Promise<WooOrder[]> {
   const base = storeUrl.replace(/\/$/, "");
   const after = new Date(Date.now() - days * 24 * 60 * 60 * 1000).toISOString();
-
-  const params = new URLSearchParams({
-    status: "completed",
-    after,
-    per_page: "100",
-    orderby: "date",
-    order: "desc",
-  });
-
   const credentials = Buffer.from(`${consumerKey}:${consumerSecret}`).toString("base64");
+  const orders: WooOrder[] = [];
+  const maximumPages = 50;
 
-  const res = await fetch(`${base}/wp-json/wc/v3/orders?${params}`, {
-    headers: {
-      Authorization: `Basic ${credentials}`,
-      "Content-Type": "application/json",
-    },
-    redirect: "error",
-  });
+  for (let page = 1; page <= maximumPages; page += 1) {
+    const params = new URLSearchParams({
+      status: "completed",
+      after,
+      per_page: "100",
+      page: String(page),
+      orderby: "date",
+      order: "desc",
+    });
+    const res = await fetch(`${base}/wp-json/wc/v3/orders?${params}`, {
+      headers: {
+        Authorization: `Basic ${credentials}`,
+        "Content-Type": "application/json",
+      },
+      redirect: "error",
+    });
 
-  if (!res.ok) {
-    const err = await res.text();
-    throw new Error(`WooCommerce API error (${res.status}): ${err}`);
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`WooCommerce API error (${res.status}): ${err}`);
+    }
+
+    const pageOrders = await res.json() as WooOrder[];
+    orders.push(...pageOrders);
+
+    const headerPages = Number.parseInt(res.headers.get("x-wp-totalpages") ?? "", 10);
+    const totalPages = Number.isFinite(headerPages) && headerPages > 0 ? Math.min(headerPages, maximumPages) : null;
+    if ((totalPages !== null && page >= totalPages) || (totalPages === null && pageOrders.length < 100)) break;
   }
 
-  return res.json() as Promise<WooOrder[]>;
+  return orders;
 }
 
 // ─── Sync logic ───────────────────────────────────────────────────────────────

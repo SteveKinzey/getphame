@@ -2530,7 +2530,8 @@
       "email": "邮箱",
       "phone": "电话",
       "commit": "导入已审核的联系人",
-      "create": "创建审核预览"
+      "create": "创建审核预览",
+      "rejectedSummary": "{{count}} 行无法导入。请在源中更正无效或缺失的邮箱地址，然后创建一个新的预览。"
     },
     "woo": {
       "connectedToast": "WooCommerce 已安全连接。",
@@ -2564,7 +2565,8 @@
       "description": "使用包含邮箱列的标题行。每次审核导入最多 1,000 行，2 MB。",
       "choose": "选择 CSV 文件",
       "rowsLoaded": "{{count}} 行已加载",
-      "chooseHelp": "需要邮箱；姓名和电话为可选"
+      "chooseHelp": "需要邮箱；姓名和电话为可选",
+      "downloadSample": "下载示例 CSV"
     },
     "eyebrow": "联系人导入",
     "title": "数据源",

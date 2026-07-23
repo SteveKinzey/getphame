@@ -2839,7 +2839,8 @@
       "email": "Email",
       "phone": "Phone",
       "commit": "Import reviewed contacts",
-      "create": "Create review preview"
+      "create": "Create review preview",
+      "rejectedSummary": "{{count}} rows could not be imported. Correct invalid or missing email addresses in the source, then create a new preview."
     },
     "woo": {
       "connectedToast": "WooCommerce connected securely.",
@@ -2873,7 +2874,8 @@
       "description": "Use a header row with an email column. Up to 1,000 rows and 2 MB per reviewed import.",
       "choose": "Choose CSV file",
       "rowsLoaded": "{{count}} rows loaded",
-      "chooseHelp": "Email is required; name and phone are optional"
+      "chooseHelp": "Email is required; name and phone are optional",
+      "downloadSample": "Download sample CSV"
     },
     "eyebrow": "Contact intake",
     "title": "Sources",

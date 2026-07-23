@@ -268,5 +268,13 @@
       "tagline": "Vedi in azione",
       "title": "Scopri come funziona"
     }
+  },
+  "sources": {
+    "preview": {
+      "rejectedSummary": "{{count}} righe non possono essere importate. Correggi gli indirizzi email non validi o mancanti nella fonte, quindi crea una nuova anteprima."
+    },
+    "csv": {
+      "downloadSample": "Scarica CSV di esempio"
+    }
   }
 }

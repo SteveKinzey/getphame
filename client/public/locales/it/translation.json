@@ -3235,7 +3235,8 @@
       "email": "Email",
       "phone": "Telefono",
       "commit": "Importa contatti revisionati",
-      "create": "Crea anteprima di revisione"
+      "create": "Crea anteprima di revisione",
+      "rejectedSummary": "{{count}} righe non possono essere importate. Correggi gli indirizzi email non validi o mancanti nella fonte, quindi crea una nuova anteprima."
     },
     "woo": {
       "connectedToast": "WooCommerce connesso in modo sicuro.",
@@ -3269,7 +3270,8 @@
       "description": "Usa una riga di intestazione con una colonna email. Fino a 1.000 righe e 2 MB per importazione revisionata.",
       "choose": "Seleziona file CSV",
       "rowsLoaded": "{{count}} righe caricate",
-      "chooseHelp": "L'email è obbligatoria; nome e telefono sono facoltativi"
+      "chooseHelp": "L'email è obbligatoria; nome e telefono sono facoltativi",
+      "downloadSample": "Scarica CSV di esempio"
     },
     "eyebrow": "Acquisizione contatti",
     "title": "Fonti",

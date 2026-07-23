@@ -3046,7 +3046,8 @@
       "email": "E-mail",
       "phone": "Téléphone",
       "commit": "Importer les contacts examinés",
-      "create": "Créer un aperçu de révision"
+      "create": "Créer un aperçu de révision",
+      "rejectedSummary": "{{count}} lignes n'ont pas pu être importées. Corrigez les adresses e-mail invalides ou manquantes dans la source, puis créez un nouvel aperçu."
     },
     "woo": {
       "connectedToast": "WooCommerce connecté en toute sécurité.",
@@ -3080,7 +3081,8 @@
       "description": "Utilisez une ligne d'en-tête avec une colonne Email. Jusqu'à 1 000 lignes et 2 Mo par import révisé.",
       "choose": "Choisir fichier CSV",
       "rowsLoaded": "{{count}} lignes chargées",
-      "chooseHelp": "Email requis ; le nom et le téléphone sont facultatifs"
+      "chooseHelp": "Email requis ; le nom et le téléphone sont facultatifs",
+      "downloadSample": "Télécharger un échantillon CSV"
     },
     "eyebrow": "Réception des contacts",
     "title": "Sources",
