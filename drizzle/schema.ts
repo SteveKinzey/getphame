@@ -69,6 +69,8 @@ export const securityDecisionEnum = pgEnum("security_decision", ["allow", "deny"
 export const securityApprovalStatusEnum = pgEnum("security_approval_status", ["pending", "approved", "rejected", "expired", "executed"]);
 export const securitySessionAuthMethodEnum = pgEnum("security_session_auth_method", ["oauth", "magic_link", "passkey"]);
 export const securityAssuranceEnum = pgEnum("security_assurance", ["a1", "a2"]);
+export const webauthnCeremonyTypeEnum = pgEnum("webauthn_ceremony_type", ["registration", "authentication"]);
+export const webauthnCredentialStatusEnum = pgEnum("webauthn_credential_status", ["active", "revoked"]);
 
 // ─── Tables ───────────────────────────────────────────────────────────────────
 
@@ -1172,6 +1174,48 @@ export const authSessions = pgTable("auth_sessions", {
 ]);
 export type AuthSession = typeof authSessions.$inferSelect;
 export type InsertAuthSession = typeof authSessions.$inferInsert;
+
+/** Registered passkey material. Private keys never leave the authenticator. */
+export const webauthnCredentials = pgTable("webauthn_credentials", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  credentialId: text("credential_id").notNull(),
+  credentialIdHash: varchar("credential_id_hash", { length: 64 }).notNull().unique(),
+  publicKey: text("public_key").notNull(),
+  counter: integer("counter").notNull().default(0),
+  transportsJson: text("transports_json"),
+  deviceType: varchar("device_type", { length: 32 }),
+  backedUp: boolean("backed_up").notNull().default(false),
+  aaguid: varchar("aaguid", { length: 64 }),
+  displayName: varchar("display_name", { length: 80 }).notNull().default("Passkey"),
+  status: webauthnCredentialStatusEnum("status").notNull().default("active"),
+  createdAt: bigint("created_at", { mode: "number" }).notNull(),
+  lastUsedAt: bigint("last_used_at", { mode: "number" }),
+  revokedAt: bigint("revoked_at", { mode: "number" }),
+  revokedByUserId: integer("revoked_by_user_id"),
+}, (table) => [
+  index("webauthn_credentials_user_idx").on(table.userId, table.status),
+]);
+export type WebauthnCredential = typeof webauthnCredentials.$inferSelect;
+export type InsertWebauthnCredential = typeof webauthnCredentials.$inferInsert;
+
+/** Short-lived, one-time WebAuthn challenge bindings; raw challenges are not persisted. */
+export const webauthnCeremonies = pgTable("webauthn_ceremonies", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  userId: integer("user_id").notNull(),
+  purpose: webauthnCeremonyTypeEnum("purpose").notNull(),
+  challengeHash: varchar("challenge_hash", { length: 64 }).notNull(),
+  rpId: varchar("rp_id", { length: 255 }).notNull(),
+  expectedOrigin: varchar("expected_origin", { length: 512 }).notNull(),
+  expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
+  consumedAt: bigint("consumed_at", { mode: "number" }),
+  createdAt: bigint("created_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("webauthn_ceremonies_expiry_idx").on(table.expiresAt, table.consumedAt),
+  index("webauthn_ceremonies_user_idx").on(table.userId, table.purpose),
+]);
+export type WebauthnCeremony = typeof webauthnCeremonies.$inferSelect;
+export type InsertWebauthnCeremony = typeof webauthnCeremonies.$inferInsert;
 
 /** Server-enforced platform or organization role grants. */
 export const securityRoleGrants = pgTable("security_role_grants", {

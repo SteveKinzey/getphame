@@ -173,6 +173,8 @@ import {
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
 import { bulkSenderRouter } from "./bulkSender";
 import { authDiagnosticsRouter } from "./routers/authDiagnostics";
+import { passkeysRouter } from "./routers/passkeys";
+import { revokePasskeySessionFromRequest } from "./security/passkeySessions";
 import { combineAccountsAsAdmin, deleteAccountAsAdmin } from "./accountManagement";
 import {
   COMPLIMENTARY_ACCESS_LIMITS,
@@ -603,6 +605,7 @@ async function getSupportEscalationPolicySettings(
 export const appRouter = router({
   system: systemRouter,
   authDiagnostics: authDiagnosticsRouter,
+  passkeys: passkeysRouter,
   helpAssistant: helpAssistantRouter,
 
   /** Paid Koalendar booking-to-contact integration. */
@@ -615,7 +618,8 @@ export const appRouter = router({
 
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
-    logout: publicProcedure.mutation(({ ctx }) => {
+    logout: publicProcedure.mutation(async ({ ctx }) => {
+      await revokePasskeySessionFromRequest(ctx.req);
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;

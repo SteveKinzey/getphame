@@ -39,7 +39,7 @@
 - [x] Deliver the packaged skill and the three review-ready Get Phame security documents.
 - [x] Restore and checkpoint the additive zero-trust schema plus deny-by-default authorization foundation in observe mode.
 - [x] Restore and checkpoint the deterministic role backfill and focused authorization regression tests.
-- [ ] Restore and checkpoint SimpleWebAuthn registration, login, revocable sessions, credential lifecycle, and legacy-auth coexistence.
+- [x] Restore and checkpoint SimpleWebAuthn registration, login, revocable sessions, credential lifecycle, and legacy-auth coexistence.
 - [ ] Restore and checkpoint accessible mobile-first passkey interfaces across all seven supported locales.
 - [ ] Implement and checkpoint the staging-only recovery drill with Steve as Recovery Custodian and a distinct lead-engineer Independent Approver.
 - [ ] Run focused and full tests, bounded TypeScript validation, migration checks, dependency audit, production build, and responsive verification.
