@@ -42,11 +42,14 @@ export const securityProcedure = (
   permission: SecurityPermission,
   resolveOptions?: (input: unknown, ctx: TrpcContext) => AuthorizationRequestOptions,
 ) => protectedProcedure.use(t.middleware(async ({ ctx, input, next }) => {
+  if (!ctx.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED", message: UNAUTHED_ERR_MSG });
+  }
   const result = await authorizeRequest(ctx, permission, resolveOptions?.(input, ctx) ?? {});
   if (result.mode === "enforce" && !result.decision.allowed) {
     throw new TRPCError({ code: "FORBIDDEN", message: `Access denied (${result.decision.reasonCode})` });
   }
-  return next({ ctx });
+  return next({ ctx: { ...ctx, user: ctx.user } });
 }));
 
 /**
