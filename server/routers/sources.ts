@@ -1,6 +1,6 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { protectedProcedure, router } from "../_core/trpc";
+import { paidProcedure, protectedProcedure, router } from "../_core/trpc";
 import { listSavedContacts, upsertContactsFromSource } from "../contacts";
 import {
   createSourceImportPreview,
@@ -114,7 +114,7 @@ export const sourcesRouter = router({
     };
   }),
 
-  connectWooCommerce: protectedProcedure.input(z.object({
+  connectWooCommerce: paidProcedure.input(z.object({
     storeUrl: z.string().trim().url().max(512),
     consumerKey: z.string().trim().min(8).max(255),
     consumerSecret: z.string().trim().min(8).max(255),
@@ -182,7 +182,7 @@ export const sourcesRouter = router({
     return { imported: result.inserted, skipped: result.skipped, reused: false as const };
   }),
 
-  previewWooPending: protectedProcedure.input(z.object({
+  previewWooPending: paidProcedure.input(z.object({
     idempotencyKey: z.string().trim().min(8).max(128),
     consent: consentSchema,
   })).mutation(async ({ ctx, input }) => {
@@ -199,7 +199,7 @@ export const sourcesRouter = router({
     });
   }),
 
-  commitWooPending: protectedProcedure.input(z.object({ importId: z.number().int().positive() })).mutation(async ({ ctx, input }) => {
+  commitWooPending: paidProcedure.input(z.object({ importId: z.number().int().positive() })).mutation(async ({ ctx, input }) => {
     const importRecord = await getSourceImport(ctx.user.id, input.importId);
     if (!importRecord || importRecord.sourceType !== "woocommerce") throw new TRPCError({ code: "NOT_FOUND", message: "WooCommerce import preview not found." });
     if (importRecord.status === "committed") return { imported: importRecord.importedCount, skipped: importRecord.skippedCount, reused: true as const };

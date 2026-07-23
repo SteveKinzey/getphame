@@ -122,7 +122,7 @@
     "q10": "Which review platforms does it support?",
     "a10": "Google, Yelp, TripAdvisor, Facebook, Bing, and any custom URL. You can add multiple platforms and choose which one to include in each send.",
     "q11": "How does WooCommerce sync work?",
-    "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
+    "a11": "WooCommerce 连接器仅适用于付费方案。在 Sources 中连接后，提取已完成订单的联系人进行审核，并仅导入你批准的联系人。不会后台导入，也不会自动发送营销活动。",
     "q12": "What does unlimited mean on the Pro plan?",
     "a12": "无限表示评价请求没有月度上限。免费计划先提供 10 次，之后每滚动 30 天提供 5 次。Pro 会取消此产品限制。"
   },
@@ -2252,7 +2252,7 @@
       "q10": "它支持哪些评价平台？",
       "a10": "Get Phame 支持可配置的评价目标，并在发送前提供针对平台的指南。某些平台（包括 Yelp）需要不同的合规方式，而不是标准的请求链接。",
       "q11": "WooCommerce 导入如何工作？",
-      "a11": "在 Sources 中连接 WooCommerce，将最近完成的订单中的联系信息导入到评价队列，确认你的权限依据，预览重复项和被拒绝的行，并仅导入你批准的联系人。没有后台导入，也没有自动营销活动。",
+      "a11": "WooCommerce 连接器仅适用于付费方案。在 Sources 中连接 WooCommerce，将最近完成的订单联系人提取到审核队列，确认你的同意依据，预览重复项和被拒绝的行，并仅导入你批准的联系人。不会后台导入，也不会自动发送营销活动。",
       "q12": "专业版中的无限意味着什么？",
       "a12": "付费计划不设定月度 Get Phame 请求配额。每个请求仍然通过你连接的账户逐一发送，且仍受你的邮件服务提供商的限制，以及适用的同意和平台规则约束。",
       "sectionTitle": "常见问题解答",
@@ -2534,6 +2534,12 @@
       "rejectedSummary": "{{count}} 行无法导入。请在源中更正无效或缺失的邮箱地址，然后创建一个新的预览。"
     },
     "woo": {
+      "paidBadge": "付费方案",
+      "viewPaidFeature": "查看付费功能",
+      "paidTitle": "WooCommerce 是付费方案连接器",
+      "paidDescription": "升级后即可连接 WooCommerce 商店、提取最近已完成订单的联系人，并在导入前逐一审核。导入绝不会自动发送消息。",
+      "upgrade": "查看付费方案",
+      "featureName": "WooCommerce 连接器",
       "connectedToast": "WooCommerce 已安全连接。",
       "disconnectedToast": "WooCommerce 已断开连接。",
       "stagedToast": "{{count}} 条联系人已放置待审核。",

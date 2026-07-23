@@ -113,7 +113,7 @@
     "q10": "Which review platforms does it support?",
     "a10": "Google, Yelp, TripAdvisor, Facebook, Bing, and any custom URL. You can add multiple platforms and choose which one to include in each send.",
     "q11": "How does WooCommerce sync work?",
-    "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
+    "a11": "The WooCommerce connector is available only on paid plans. Connect it in Sources, fetch recent completed-order contacts for review, and import only the contacts you approve. There is no background import and no automatic campaign.",
     "q12": "What does unlimited mean on the Pro plan?",
     "a12": "Unlimited means no monthly cap on review requests. The Free plan includes 10 initial requests, then 5 requests every rolling 30 days. Pro removes that product limit."
   },
@@ -1890,7 +1890,7 @@
       "q10": "Which review platforms does it support?",
       "a10": "Get Phame supports configurable review destinations and provides platform-aware guidance before sending. Some platforms, including Yelp, require a different compliance approach rather than a standard solicitation link.",
       "q11": "How does WooCommerce import work?",
-      "a11": "Connect WooCommerce in Sources, fetch recent completed-order contacts into a review queue, confirm your permission basis, preview duplicates and rejected rows, and import only the contacts you approve. There is no background import and no automatic campaign.",
+      "a11": "The WooCommerce connector is available only on paid plans. Connect WooCommerce in Sources, fetch recent completed-order contacts into a review queue, confirm your permission basis, preview duplicates and rejected rows, and import only the contacts you approve. There is no background import and no automatic campaign.",
       "q12": "What does unlimited mean on the Pro plan?",
       "a12": "The paid plan does not apply a monthly Get Phame request quota. Each request is still sent individually through an account you connect, and your email provider's limits plus applicable consent and platform rules still apply.",
       "sectionTitle": "FAQ",
@@ -2843,6 +2843,12 @@
       "rejectedSummary": "{{count}} rows could not be imported. Correct invalid or missing email addresses in the source, then create a new preview."
     },
     "woo": {
+      "paidBadge": "Paid plans",
+      "viewPaidFeature": "View paid feature",
+      "paidTitle": "WooCommerce is a paid-plan connector",
+      "paidDescription": "Upgrade to connect a WooCommerce store, fetch recent completed-order contacts, and review each person before importing. Imports never send messages automatically.",
+      "upgrade": "View paid plans",
+      "featureName": "WooCommerce connector",
       "connectedToast": "WooCommerce connected securely.",
       "disconnectedToast": "WooCommerce disconnected.",
       "stagedToast": "{{count}} contacts staged for review.",

@@ -256,7 +256,7 @@
       "q10": "Quali piattaforme di recensione supporta?",
       "a10": "Get Phame supporta destinazioni di recensione configurabili e fornisce indicazioni specifiche per la piattaforma prima dell'invio. Alcune piattaforme, tra cui Yelp, richiedono un approccio di conformità diverso rispetto a un link di sollecitazione standard.",
       "q11": "Come funziona l'importazione di WooCommerce?",
-      "a11": "Connetti WooCommerce in Sources, recupera i contatti degli ordini recenti completati in una coda di recensioni, conferma la tua base di consenso, anteprima di duplicati e righe rifiutate, e importa solo i contatti che approvi. Non c'è importazione in background e nessuna campagna automatica.",
+      "a11": "Il connettore WooCommerce è disponibile solo con i piani a pagamento. Connetti WooCommerce in Sources, recupera i contatti degli ordini completati recenti in una coda di revisione, conferma la base del consenso, controlla duplicati e righe rifiutate e importa solo i contatti approvati. Non sono previsti import in background o campagne automatiche.",
       "q12": "Cosa significa 'illimitato' nel piano Pro?",
       "a12": "Il piano a pagamento non applica una quota mensile di richieste Get Phame. Ogni richiesta è ancora inviata individualmente tramite un account che colleghi, e i limiti del tuo provider di email, insieme al consenso applicabile e alle regole delle piattaforme, continuano ad applicarsi.",
       "sectionTitle": "Domande frequenti",

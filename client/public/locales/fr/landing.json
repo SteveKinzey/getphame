@@ -54,7 +54,7 @@
       "q10": "Quelles plateformes d’avis prend-il en charge ?",
       "a10": "Get Phame prend en charge des destinations d’avis configurables et fournit des conseils adaptés à chaque plateforme avant l’envoi. Certaines plateformes, notamment Yelp, nécessitent une approche de conformité différente plutôt qu’un lien de sollicitation standard.",
       "q11": "Comment fonctionne l’import WooCommerce ?",
-      "a11": "Connectez WooCommerce dans Sources, récupérez les contacts des commandes récentes achevées dans une file d’attente d’avis, confirmez votre base de consentement, prévisualisez les doublons et les lignes rejetées, et importez uniquement les contacts que vous approuvez. Il n’y a pas d’import en arrière-plan et pas de campagne automatique.",
+      "a11": "Le connecteur WooCommerce est disponible uniquement avec les formules payantes. Connectez WooCommerce dans Sources, récupérez les contacts des commandes récentes achevées dans une file de révision, confirmez votre base de consentement, prévisualisez les doublons et les lignes rejetées, puis importez uniquement les contacts approuvés. Il n’y a ni import en arrière-plan ni campagne automatique.",
       "q12": "Que signifie « illimité » sur le plan Pro ?",
       "a12": "Le plan payant n’applique pas de quota mensuel de demandes Get Phame. Chaque demande est toujours envoyée individuellement via un compte que vous connectez, et les limites de votre fournisseur d’e-mail, ainsi que le consentement applicable et les règles de la plateforme, s’appliquent toujours.",
       "sectionTitle": "FAQ",

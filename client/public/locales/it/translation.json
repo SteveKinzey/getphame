@@ -113,7 +113,7 @@
     "q10": "Which review platforms does it support?",
     "a10": "Google, Yelp, TripAdvisor, Facebook, Bing, and any custom URL. You can add multiple platforms and choose which one to include in each send.",
     "q11": "How does WooCommerce sync work?",
-    "a11": "Il connettore WooCommerce è disponibile solo con i piani a pagamento. Gli utenti a pagamento installano il plugin WooCommerce di Get Phame, inseriscono la chiave API e i nuovi clienti vengono importati automaticamente dopo ogni ordine completato. Puoi impostare un ritardo, ad esempio 7 giorni dopo l'acquisto, prima che appaiano nella coda di invio.",
+    "a11": "Il connettore WooCommerce è disponibile solo con i piani a pagamento. Collegalo in Sources, recupera i contatti degli ordini completati per la revisione e importa solo quelli approvati. Non sono previsti import in background o campagne automatiche.",
     "q12": "What does unlimited mean on the Pro plan?",
     "a12": "Illimitato significa nessun limite mensile alle richieste. Il piano Gratuito include 10 richieste iniziali, poi 5 ogni 30 giorni mobili. Pro rimuove questo limite del prodotto."
   },
@@ -3123,7 +3123,7 @@
       "q10": "Quali piattaforme di recensione supporta?",
       "a10": "Get Phame supporta destinazioni di recensione configurabili e fornisce indicazioni specifiche per la piattaforma prima dell'invio. Alcune piattaforme, tra cui Yelp, richiedono un approccio di conformità diverso rispetto a un link di sollecitazione standard.",
       "q11": "Come funziona l'importazione di WooCommerce?",
-      "a11": "Connetti WooCommerce in Sources, recupera i contatti degli ordini recenti completati in una coda di recensioni, conferma la tua base di consenso, anteprima di duplicati e righe rifiutate, e importa solo i contatti che approvi. Non c'è importazione in background e nessuna campagna automatica.",
+      "a11": "Il connettore WooCommerce è disponibile solo con i piani a pagamento. Connetti WooCommerce in Sources, recupera i contatti degli ordini completati recenti in una coda di revisione, conferma la base del consenso, controlla duplicati e righe rifiutate e importa solo i contatti approvati. Non sono previsti import in background o campagne automatiche.",
       "q12": "Cosa significa 'illimitato' nel piano Pro?",
       "a12": "Il piano a pagamento non applica una quota mensile di richieste Get Phame. Ogni richiesta è ancora inviata individualmente tramite un account che colleghi, e i limiti del tuo provider di email, insieme al consenso applicabile e alle regole delle piattaforme, continuano ad applicarsi.",
       "sectionTitle": "Domande frequenti",
@@ -3239,6 +3239,12 @@
       "rejectedSummary": "{{count}} righe non possono essere importate. Correggi gli indirizzi email non validi o mancanti nella fonte, quindi crea una nuova anteprima."
     },
     "woo": {
+      "paidBadge": "Piani a pagamento",
+      "viewPaidFeature": "Visualizza funzione a pagamento",
+      "paidTitle": "WooCommerce è un connettore per piani a pagamento",
+      "paidDescription": "Passa a un piano a pagamento per collegare un negozio WooCommerce, recuperare i contatti degli ordini completati recenti e verificare ogni persona prima dell’importazione. Le importazioni non inviano mai messaggi automaticamente.",
+      "upgrade": "Visualizza piani a pagamento",
+      "featureName": "Connettore WooCommerce",
       "connectedToast": "WooCommerce connesso in modo sicuro.",
       "disconnectedToast": "WooCommerce scollegato.",
       "stagedToast": "{{count}} contatti in attesa di revisione",

@@ -54,7 +54,7 @@
       "q10": "Which review platforms does it support?",
       "a10": "Get Phame supports configurable review destinations and provides platform-aware guidance before sending. Some platforms, including Yelp, require a different compliance approach rather than a standard solicitation link.",
       "q11": "How does WooCommerce import work?",
-      "a11": "Connect WooCommerce in Sources, fetch recent completed-order contacts into a review queue, confirm your permission basis, preview duplicates and rejected rows, and import only the contacts you approve. There is no background import and no automatic campaign.",
+      "a11": "The WooCommerce connector is available only on paid plans. Connect WooCommerce in Sources, fetch recent completed-order contacts into a review queue, confirm your permission basis, preview duplicates and rejected rows, and import only the contacts you approve. There is no background import and no automatic campaign.",
       "q12": "What does unlimited mean on the Pro plan?",
       "a12": "The paid plan does not apply a monthly Get Phame request quota. Each request is still sent individually through an account you connect, and your email provider's limits plus applicable consent and platform rules still apply.",
       "sectionTitle": "FAQ",

@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Clock3,
   CloudDownload,
+  Crown,
   DatabaseZap,
   FileSpreadsheet,
   History,
@@ -26,6 +27,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import PaywallModal from "@/components/PaywallModal";
 
 type WorkspaceView = "overview" | "csv" | "woocommerce" | "history";
 type ConsentBasis = "express" | "contract" | "legitimate_interest" | "other";
@@ -265,13 +267,24 @@ export default function SourcesPage() {
   const [storeUrl, setStoreUrl] = useState("");
   const [consumerKey, setConsumerKey] = useState("");
   const [consumerSecret, setConsumerSecret] = useState("");
+  const [wooPaywallOpen, setWooPaywallOpen] = useState(false);
 
   const overview = trpc.sources.overview.useQuery();
+  const profile = trpc.profile.get.useQuery();
   const wooConnection = overview.data?.connections.find((connection) => connection.sourceType === "woocommerce");
   const wooSettings = useMemo(() => parseSettings(wooConnection?.settingsJson), [wooConnection?.settingsJson]);
+  const hasPaidAccess = profile.data?.hasPaidAccess === true;
 
   const canPreview = consentAttested && consentSource.trim().length >= 3;
   const consent = { basis: consentBasis, source: consentSource.trim(), attested: true as const };
+
+  function handleWooError(error: { message: string }) {
+    if (error.message.includes("UPGRADE_REQUIRED")) {
+      setWooPaywallOpen(true);
+      return;
+    }
+    toast.error(error.message);
+  }
 
   const connectWoo = trpc.sources.connectWooCommerce.useMutation({
     onSuccess: async () => {
@@ -280,7 +293,7 @@ export default function SourcesPage() {
       setConsumerSecret("");
       await overview.refetch();
     },
-    onError: (error) => toast.error(error.message),
+    onError: handleWooError,
   });
   const disconnectWoo = trpc.sources.disconnectWooCommerce.useMutation({
     onSuccess: async () => {
@@ -298,7 +311,7 @@ export default function SourcesPage() {
       setWooPreview(null);
       await Promise.all([overview.refetch(), utils.woo.pendingCount.invalidate()]);
     },
-    onError: (error) => toast.error(error.message),
+    onError: handleWooError,
   });
   const previewCsv = trpc.sources.previewCsv.useMutation({
     onSuccess: (result) => setCsvPreview(result as ImportPreview),
@@ -317,7 +330,7 @@ export default function SourcesPage() {
   });
   const previewWoo = trpc.sources.previewWooPending.useMutation({
     onSuccess: (result) => setWooPreview(result as ImportPreview),
-    onError: (error) => toast.error(error.message),
+    onError: handleWooError,
   });
   const commitWoo = trpc.sources.commitWooPending.useMutation({
     onSuccess: async (result) => {
@@ -325,7 +338,7 @@ export default function SourcesPage() {
       setWooPreview(null);
       await overview.refetch();
     },
-    onError: (error) => toast.error(error.message),
+    onError: handleWooError,
   });
 
   async function handleCsvFile(file: File | undefined) {
@@ -373,7 +386,7 @@ export default function SourcesPage() {
 
   const dateFormatter = useMemo(() => new Intl.DateTimeFormat(i18n.language, { dateStyle: "medium", timeStyle: "short" }), [i18n.language]);
 
-  if (overview.isLoading) {
+  if (overview.isLoading || profile.isLoading) {
     return <div className="flex min-h-[60vh] items-center justify-center"><Loader2 className="h-7 w-7 animate-spin rr-text-gold" /></div>;
   }
 
@@ -432,6 +445,7 @@ export default function SourcesPage() {
             <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3" aria-label={t("sources.cards.label", { defaultValue: "Available data sources" })}>
               {sourceCards.map(({ key, icon: Icon, available }) => {
                 const connected = key === "woocommerce" && Boolean(wooConnection);
+                const requiresPaid = key === "woocommerce" && !hasPaidAccess;
                 return (
                   <button
                     key={key}
@@ -442,13 +456,13 @@ export default function SourcesPage() {
                   >
                     <div className="flex items-start justify-between gap-3">
                       <span className="rounded-xl bg-[oklch(0.80_0.18_80/0.12)] p-2.5"><Icon className="h-5 w-5 rr-text-gold" /></span>
-                      <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${connected ? "bg-emerald-100 text-emerald-800" : available ? "bg-primary/15 text-foreground" : "bg-muted text-muted-foreground"}`}>
-                        {connected ? t("sources.status.connected", { defaultValue: "Connected" }) : available ? t("sources.status.available", { defaultValue: "Available" }) : t("sources.status.comingSoon", { defaultValue: "Coming soon" })}
+                      <span className={`rounded-full px-2.5 py-1 text-[11px] font-black ${connected ? "bg-emerald-100 text-emerald-800" : requiresPaid ? "bg-amber-100 text-amber-900" : available ? "bg-primary/15 text-foreground" : "bg-muted text-muted-foreground"}`}>
+                        {connected ? t("sources.status.connected", { defaultValue: "Connected" }) : requiresPaid ? t("sources.woo.paidBadge", { defaultValue: "Paid plans" }) : available ? t("sources.status.available", { defaultValue: "Available" }) : t("sources.status.comingSoon", { defaultValue: "Coming soon" })}
                       </span>
                     </div>
                     <h2 className="rr-h4 mt-4 text-foreground">{t(`sources.cards.${key}.title`, { defaultValue: key === "csv" ? "CSV file" : key[0].toUpperCase() + key.slice(1) })}</h2>
                     <p className="rr-l2 mt-1 text-muted-foreground">{t(`sources.cards.${key}.description`, { defaultValue: available ? "Review and add consented contacts." : "Planned connector." })}</p>
-                    {available && <span className="mt-3 inline-flex items-center gap-1 text-xs font-black rr-text-gold">{t("sources.cards.open", { defaultValue: "Open source" })}<ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span>}
+                    {available && <span className="mt-3 inline-flex items-center gap-1 text-xs font-black rr-text-gold">{requiresPaid && <Crown className="h-3.5 w-3.5" aria-hidden="true" />}{requiresPaid ? t("sources.woo.viewPaidFeature", { defaultValue: "View paid feature" }) : t("sources.cards.open", { defaultValue: "Open source" })}<ChevronRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" /></span>}
                   </button>
                 );
               })}
@@ -492,7 +506,22 @@ export default function SourcesPage() {
 
         {view === "woocommerce" && (
           <div className="space-y-5">
-            {!wooConnection ? (
+            {!hasPaidAccess ? (
+              <section className="rr-card p-5 sm:p-6" aria-labelledby="woo-paid-title">
+                <div className="flex items-start gap-3">
+                  <span className="rounded-2xl bg-amber-100 p-3 text-amber-900 dark:bg-amber-300/10 dark:text-amber-200"><Crown className="h-6 w-6" aria-hidden="true" /></span>
+                  <div>
+                    <p className="rr-h6 rr-text-gold">{t("sources.woo.paidBadge", { defaultValue: "Paid plans" })}</p>
+                    <h2 id="woo-paid-title" className="rr-h2 mt-1 text-foreground">{t("sources.woo.paidTitle", { defaultValue: "WooCommerce is a paid-plan connector" })}</h2>
+                    <p className="rr-b2 mt-2 max-w-2xl text-muted-foreground">{t("sources.woo.paidDescription", { defaultValue: "Upgrade to connect a WooCommerce store, fetch recent completed-order contacts, and review each person before importing. Imports never send messages automatically." })}</p>
+                  </div>
+                </div>
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                  <Button className="min-h-12 rounded-xl font-black" onClick={() => setWooPaywallOpen(true)}><Crown className="h-4 w-4" aria-hidden="true" />{t("sources.woo.upgrade", { defaultValue: "View paid plans" })}</Button>
+                  {wooConnection && <Button variant="outline" className="min-h-12 rounded-xl" disabled={disconnectWoo.isPending} onClick={() => disconnectWoo.mutate()}>{disconnectWoo.isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Unplug className="h-4 w-4" />}{t("sources.woo.disconnect", { defaultValue: "Disconnect" })}</Button>}
+                </div>
+              </section>
+            ) : !wooConnection ? (
               <section className="rr-card p-5 sm:p-6">
                 <p className="rr-h6 rr-text-gold">{t("sources.woo.eyebrow", { defaultValue: "Secure connection" })}</p>
                 <h2 className="rr-h2 mt-1 text-foreground">{t("sources.woo.connectTitle", { defaultValue: "Connect WooCommerce" })}</h2>
@@ -541,6 +570,7 @@ export default function SourcesPage() {
           </section>
         )}
       </div>
+      <PaywallModal open={wooPaywallOpen} onClose={() => setWooPaywallOpen(false)} feature={t("sources.woo.featureName", { defaultValue: "WooCommerce connector" })} />
     </div>
   );
 }

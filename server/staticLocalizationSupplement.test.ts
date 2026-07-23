@@ -13,7 +13,7 @@ describe("locale-specific static-copy localization supplements", () => {
 
   it("loads only a selected non-English locale from independently cacheable deployed assets", () => {
     for (const locale of ["es", "fr", "it", "th", "zh-CN", "zh-TW"]) {
-      expect(helperSource).toContain(`getphame-static-copy-${locale}-phame18-static-copy_`);
+      expect(helperSource).toContain(`getphame-static-copy-${locale}-phame29-static-copy_`);
     }
     expect(helperSource).toContain("const STATIC_COPY_SUPPLEMENT_URLS");
     expect(helperSource).toContain('if (locale === "en") return Promise.resolve();');

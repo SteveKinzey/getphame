@@ -95,15 +95,13 @@ describe("landing locale coverage", () => {
     });
   }
 
-  it("keeps Italian application translations with a localized purpose disclosure and English fallback for other landing copy", () => {
-    expect(fs.existsSync(path.join(localeRoot, "it", "translation.json"))).toBe(true);
-    expect(fs.existsSync(path.join(localeRoot, "it", "landing.json"))).toBe(true);
-
+  it("keeps substantial authored Italian landing copy with English fallback for missing keys", () => {
     const italian = landingStrings("it");
+    expect(italian.size).toBeGreaterThan(150);
+    expect(italian.get("hero.headlinePart1")?.trim().length).toBeGreaterThan(0);
     for (const key of requiredPurposeKeys) {
       expect(italian.get(key)?.trim().length, `it:${key}`).toBeGreaterThan(0);
     }
-    expect(italian.has("hero.headlinePart1")).toBe(false);
 
     const i18nSource = fs.readFileSync(
       path.resolve(localeRoot, "../../src/lib/i18n.ts"),

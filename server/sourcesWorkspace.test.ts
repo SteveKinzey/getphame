@@ -65,7 +65,10 @@ describe("Sources workspace contract", () => {
     expect(settings).toContain('navigate("/sources")');
     expect(core).not.toContain("startWooAutoImportScheduler");
     expect(router).not.toContain("publicProcedure");
-    expect(router.match(/protectedProcedure/g)?.length ?? 0).toBeGreaterThanOrEqual(8);
+    const authenticatedProcedures = (router.match(/protectedProcedure/g)?.length ?? 0)
+      + (router.match(/paidProcedure/g)?.length ?? 0);
+    expect(authenticatedProcedures).toBeGreaterThanOrEqual(8);
+    expect(router.match(/paidProcedure/g)?.length ?? 0).toBeGreaterThanOrEqual(4);
   });
 
   it("keeps the Sources migration additive and non-destructive", () => {
