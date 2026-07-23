@@ -1,4 +1,5 @@
-import { bigint, boolean, index, int, mysqlEnum, mysqlTable, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+import { sql } from "drizzle-orm";
+import { bigint, boolean, check, index, int, mysqlEnum, mysqlTable, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
 
 // Keep the existing schema declarations readable while targeting the managed TiDB/MySQL database.
 const integer = int;
@@ -71,6 +72,10 @@ export const securitySessionAuthMethodEnum = pgEnum("security_session_auth_metho
 export const securityAssuranceEnum = pgEnum("security_assurance", ["a1", "a2"]);
 export const webauthnCeremonyTypeEnum = pgEnum("webauthn_ceremony_type", ["registration", "authentication"]);
 export const webauthnCredentialStatusEnum = pgEnum("webauthn_credential_status", ["active", "revoked"]);
+export const recoveryEnvironmentEnum = pgEnum("recovery_environment", ["staging", "production"]);
+export const recoveryDrillStatusEnum = pgEnum("recovery_drill_status", ["draft", "ready", "in_progress", "paused", "completed", "aborted"]);
+export const recoveryDrillRoleEnum = pgEnum("recovery_drill_role", ["recovery_custodian", "independent_approver", "observer"]);
+export const recoveryApprovalDecisionEnum = pgEnum("recovery_approval_decision", ["approved", "rejected"]);
 
 // ─── Tables ───────────────────────────────────────────────────────────────────
 
@@ -1308,3 +1313,72 @@ export const securityActionApprovals = pgTable("security_action_approvals", {
 ]);
 export type SecurityActionApproval = typeof securityActionApprovals.$inferSelect;
 export type InsertSecurityActionApproval = typeof securityActionApprovals.$inferInsert;
+
+/** Staging-first owner recovery exercises. Production execution is not exposed by the application. */
+export const recoveryDrills = pgTable("recovery_drills", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  environment: recoveryEnvironmentEnum("environment").notNull(),
+  status: recoveryDrillStatusEnum("status").notNull().default("draft"),
+  title: varchar("title", { length: 160 }).notNull(),
+  scheduledAt: bigint("scheduled_at", { mode: "number" }).notNull(),
+  recoveryCustodianUserId: integer("recovery_custodian_user_id").notNull(),
+  independentApproverUserId: integer("independent_approver_user_id"),
+  observerUserId: integer("observer_user_id"),
+  evidenceKey: varchar("evidence_key", { length: 500 }),
+  notes: varchar("notes", { length: 1000 }),
+  createdByUserId: integer("created_by_user_id").notNull(),
+  createdAt: bigint("created_at", { mode: "number" }).notNull(),
+  startedAt: bigint("started_at", { mode: "number" }),
+  completedAt: bigint("completed_at", { mode: "number" }),
+}, (table) => [
+  index("recovery_drills_environment_idx").on(table.environment, table.status, table.scheduledAt),
+  check("recovery_drills_separated_duties", sql`${table.independentApproverUserId} is null or ${table.recoveryCustodianUserId} <> ${table.independentApproverUserId}`),
+]);
+export type RecoveryDrill = typeof recoveryDrills.$inferSelect;
+export type InsertRecoveryDrill = typeof recoveryDrills.$inferInsert;
+
+/** Named staging recovery responsibilities; revoked rows remain as evidence. */
+export const recoveryDrillAssignments = pgTable("recovery_drill_assignments", {
+  id: serial("id").primaryKey(),
+  environment: recoveryEnvironmentEnum("environment").notNull(),
+  role: recoveryDrillRoleEnum("role").notNull(),
+  userId: integer("user_id"),
+  displayLabel: varchar("display_label", { length: 120 }).notNull(),
+  assignedByUserId: integer("assigned_by_user_id").notNull(),
+  assignedAt: bigint("assigned_at", { mode: "number" }).notNull(),
+  revokedAt: bigint("revoked_at", { mode: "number" }),
+}, (table) => [
+  index("recovery_assignments_environment_idx").on(table.environment, table.role, table.revokedAt),
+]);
+export type RecoveryDrillAssignment = typeof recoveryDrillAssignments.$inferSelect;
+export type InsertRecoveryDrillAssignment = typeof recoveryDrillAssignments.$inferInsert;
+
+/** Independent approval evidence; an approver can decide a drill only once. */
+export const recoveryDrillApprovals = pgTable("recovery_drill_approvals", {
+  id: serial("id").primaryKey(),
+  drillId: varchar("drill_id", { length: 36 }).notNull(),
+  approverUserId: integer("approver_user_id").notNull(),
+  decision: recoveryApprovalDecisionEnum("decision").notNull(),
+  note: varchar("note", { length: 500 }).notNull(),
+  createdAt: bigint("created_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("recovery_drill_approvals_drill_idx").on(table.drillId),
+  uniqueIndex("recovery_drill_approver_unique").on(table.drillId, table.approverUserId),
+]);
+export type RecoveryDrillApproval = typeof recoveryDrillApprovals.$inferSelect;
+export type InsertRecoveryDrillApproval = typeof recoveryDrillApprovals.$inferInsert;
+
+/** Redacted references and outcomes only; credentials, tokens, customer data, and secrets are prohibited. */
+export const recoveryDrillEvidence = pgTable("recovery_drill_evidence", {
+  id: serial("id").primaryKey(),
+  drillId: varchar("drill_id", { length: 36 }).notNull(),
+  evidenceType: varchar("evidence_type", { length: 100 }).notNull(),
+  evidenceReference: varchar("evidence_reference", { length: 255 }).notNull(),
+  outcome: varchar("outcome", { length: 100 }).notNull(),
+  recordedByUserId: integer("recorded_by_user_id").notNull(),
+  createdAt: bigint("created_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("recovery_drill_evidence_drill_idx").on(table.drillId, table.createdAt),
+]);
+export type RecoveryDrillEvidence = typeof recoveryDrillEvidence.$inferSelect;
+export type InsertRecoveryDrillEvidence = typeof recoveryDrillEvidence.$inferInsert;
