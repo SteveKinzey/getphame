@@ -104,8 +104,9 @@ export function assertSeparatedRecoveryRoles(custodianUserId: number, approverUs
   }
 }
 
-export function assertRecoveryTransition(from: RecoveryDrillStatus, to: RecoveryDrillStatus): void {
-  if (!transitions[from].has(to)) {
+export function assertRecoveryTransition(from: RecoveryDrillStatus | string, to: RecoveryDrillStatus): void {
+  const allowedTransitions = transitions[from as RecoveryDrillStatus];
+  if (!allowedTransitions || !allowedTransitions.has(to)) {
     throw new RecoveryDrillError("INVALID_STATE", `Recovery drill cannot transition from ${from} to ${to}`);
   }
 }
