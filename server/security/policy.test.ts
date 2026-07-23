@@ -76,4 +76,24 @@ describe("evaluateAuthorization", () => {
       ticketGrantActive: true,
     })).toMatchObject({ allowed: true, reasonCode: "allowed" });
   });
+
+  it("allows the configured platform owner to perform a platform-scoped health check", () => {
+    expect(evaluateAuthorization("platform.health.view", baseEvidence({
+      organizationId: null,
+      roleGrants: [{ role: "platform_owner", scope: "platform", organizationId: null }],
+    }))).toMatchObject({ allowed: true, reasonCode: "allowed" });
+  });
+
+  it("honors a narrowly scoped explicit grant without widening organization scope", () => {
+    const grant = { permission: "contacts.view", effect: "allow" as const, scope: "organization" as const, organizationId: 42 };
+    expect(evaluateAuthorization("contacts.view", baseEvidence({ roleGrants: [], permissionOverrides: [grant] }))).toMatchObject({
+      allowed: true,
+      reasonCode: "allowed",
+    });
+    expect(evaluateAuthorization("contacts.view", baseEvidence({
+      organizationId: 99,
+      roleGrants: [],
+      permissionOverrides: [grant],
+    }))).toMatchObject({ allowed: false, reasonCode: "missing_permission" });
+  });
 });
