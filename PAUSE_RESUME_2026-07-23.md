@@ -11,6 +11,7 @@
 | Base commit before this WIP snapshot | `4f8c5b29e08ac21b9b5a3b6b825dc268c59d8e8c` |
 | Previous upstream | `origin/consolidation/branches-deps-2026-07-22` |
 | Session checklist | `todo-fnggkeft.md` |
+| Mailjet feature commit | `f0473c6` on `origin/consolidation/push-safe` |
 | Primary user request in progress | Make sure the Get Phame WooCommerce plugin and app connector work end to end |
 
 ## Current work in progress

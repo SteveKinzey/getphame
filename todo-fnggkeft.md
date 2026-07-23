@@ -260,6 +260,6 @@
 - [x] Correct the historical Bulk Sender provider audit by completing Mailjet’s previously omitted official-source research for SMTP host, supported ports, TLS modes, API-key username, secret-key password, sender/domain verification, regional behavior, account restrictions, and safe credential guidance
 - [x] Add Mailjet as a first-class Bulk Sender preset with localized labels and setup guidance, the existing Custom SMTP fallback, no embedded credentials, and source-cited provider documentation consistent with the other verified providers
 - [ ] Add focused Mailjet preset regressions, update the provider-count and omission assertions, then run TypeScript validation, the full Vitest suite, dependency audit, and production build without merging unrelated paused work
-- [ ] Commit and push the completed Mailjet work to the existing non-release `consolidation/push-safe` preservation branch with an updated resume handoff
+- [x] Commit and push the completed Mailjet work to the existing non-release `consolidation/push-safe` preservation branch with an updated resume handoff
 - [x] Pass the focused Mailjet/Settings regressions, the complete 93-file Vitest suite with 522 passing and 6 skipped tests, and the high-severity dependency audit with no known vulnerabilities
 - [ ] Restore the inherited Sources PaywallModal compile blocker before treating the Mailjet branch as release-valid; TypeScript and production build both remain blocked only by that missing unrelated component import
