@@ -2845,7 +2845,8 @@
       "verifying": "Verifying your passkey…",
       "invalidEmail": "Enter a valid email address.",
       "unsupported": "Passkeys are not available in this browser. You can still sign in with a secure email link.",
-      "unavailable": "Passkey sign-in could not be completed. Use your email link below or try again."
+      "unavailable": "Passkey sign-in could not be completed. Use your email link below or try again.",
+      "orAlternative": "or use another sign-in method"
     },
     "security": {
       "title": "Passkeys",

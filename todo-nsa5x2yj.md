@@ -45,3 +45,4 @@
 - [ ] Run focused and full tests, bounded TypeScript validation, migration checks, dependency audit, production build, and responsive verification.
 - [ ] Verify the staged managed deployment and synchronize only validated source to the selected private GitHub repository.
 - [ ] Deliver passkey activation, approver assignment, and staging recovery-drill execution instructions.
+- [x] Fix the production build failure by adding `passkeys.signIn.orAlternative` to every served locale and rerun the direct i18n coverage gate.

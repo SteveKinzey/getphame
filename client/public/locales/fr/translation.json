@@ -2893,7 +2893,8 @@
       "verifying": "Vérification de votre clé d’accès…",
       "invalidEmail": "Saisissez une adresse e-mail valide.",
       "unsupported": "Les clés d’accès ne sont pas disponibles dans ce navigateur. Vous pouvez toujours utiliser un lien sécurisé envoyé par e-mail.",
-      "unavailable": "La connexion avec la clé d’accès n’a pas abouti. Utilisez le lien e-mail ci-dessous ou réessayez."
+      "unavailable": "La connexion avec la clé d’accès n’a pas abouti. Utilisez le lien e-mail ci-dessous ou réessayez.",
+      "orAlternative": "ou utilisez une autre méthode de connexion"
     },
     "security": {
       "title": "Clés d’accès",

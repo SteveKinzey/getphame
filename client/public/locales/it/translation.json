@@ -3087,7 +3087,8 @@
       "verifying": "Verifica della passkey…",
       "invalidEmail": "Inserisci un indirizzo email valido.",
       "unsupported": "Le passkey non sono disponibili in questo browser. Puoi comunque accedere con un link sicuro inviato via email.",
-      "unavailable": "Non è stato possibile completare l’accesso con passkey. Usa il link email qui sotto o riprova."
+      "unavailable": "Non è stato possibile completare l’accesso con passkey. Usa il link email qui sotto o riprova.",
+      "orAlternative": "oppure usa un altro metodo di accesso"
     },
     "security": {
       "title": "Passkey",

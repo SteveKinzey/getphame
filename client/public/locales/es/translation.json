@@ -2893,7 +2893,8 @@
       "verifying": "Verificando tu clave de acceso…",
       "invalidEmail": "Introduce una dirección de correo válida.",
       "unsupported": "Las claves de acceso no están disponibles en este navegador. Aún puedes iniciar sesión con un enlace seguro por correo.",
-      "unavailable": "No se pudo completar el inicio con clave de acceso. Usa el enlace de correo de abajo o inténtalo de nuevo."
+      "unavailable": "No se pudo completar el inicio con clave de acceso. Usa el enlace de correo de abajo o inténtalo de nuevo.",
+      "orAlternative": "o usa otro método de inicio de sesión"
     },
     "security": {
       "title": "Claves de acceso",

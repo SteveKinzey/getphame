@@ -16,6 +16,7 @@ const requiredSignInKeys = [
   "invalidEmail",
   "unsupported",
   "unavailable",
+  "orAlternative",
 ] as const;
 
 const requiredSecurityKeys = [
