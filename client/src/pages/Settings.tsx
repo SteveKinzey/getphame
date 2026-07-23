@@ -73,6 +73,7 @@ import PlanSwitchDialog from "@/components/PlanSwitchDialog";
 import KoalendarSettingsCard from "@/components/KoalendarSettingsCard";
 import AdaptiveSendLimitStatus from "@/components/AdaptiveSendLimitStatus";
 import PasskeySecurityCard from "@/components/security/PasskeySecurityCard";
+import RecoveryDrillCard from "@/components/security/RecoveryDrillCard";
 import {
   BULK_SENDER_PRESETS,
   BULK_SENDER_PROVIDER_IDS,
@@ -1654,6 +1655,7 @@ export default function SettingsPage() {
       <div className="max-w-3xl mx-auto flex flex-col gap-4">
         <AccountProfileCard />
         <PasskeySecurityCard />
+        <RecoveryDrillCard />
         {/* ── Business Profile ──────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
