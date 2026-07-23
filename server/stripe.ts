@@ -183,6 +183,41 @@ export type CreateStripePromotionCodeInput = {
   createdByUserId: number;
 };
 
+export function buildStripePromotionCodeCreateParams({
+  couponId,
+  code,
+  expiresAt,
+  maxRedemptions,
+  firstTimeTransaction,
+  createdByUserId,
+  applicablePlans,
+}: {
+  couponId: string;
+  code: string;
+  expiresAt?: number | null;
+  maxRedemptions?: number | null;
+  firstTimeTransaction?: boolean;
+  createdByUserId: number;
+  applicablePlans: StripePlan[];
+}): Stripe.PromotionCodeCreateParams {
+  return {
+    promotion: {
+      type: "coupon",
+      coupon: couponId,
+    },
+    code,
+    active: true,
+    ...(expiresAt != null ? { expires_at: Math.floor(expiresAt / 1000) } : {}),
+    ...(maxRedemptions != null ? { max_redemptions: maxRedemptions } : {}),
+    ...(firstTimeTransaction ? { restrictions: { first_time_transaction: true } } : {}),
+    metadata: {
+      source: "get_phame_admin",
+      created_by_user_id: String(createdByUserId),
+      applicable_plans: applicablePlans.join(","),
+    },
+  };
+}
+
 /**
  * Create a one-invoice/transaction Stripe promotion code for selected Get Phame
  * products. Stripe remains the sole source of truth; no coupon mirror is stored.
@@ -248,22 +283,15 @@ export async function createStripePromotionCode(
 
     // Dahlia requires promotion codes to reference their underlying coupon
     // through the typed promotion object instead of the legacy top-level field.
-    const createParams = {
-      promotion: {
-        type: "coupon" as const,
-        coupon: coupon.id,
-      },
+    const createParams = buildStripePromotionCodeCreateParams({
+      couponId: coupon.id,
       code,
-      active: true,
-      ...(input.expiresAt != null ? { expires_at: Math.floor(input.expiresAt / 1000) } : {}),
-      ...(input.maxRedemptions != null ? { max_redemptions: input.maxRedemptions } : {}),
-      ...(input.firstTimeTransaction ? { restrictions: { first_time_transaction: true } } : {}),
-      metadata: {
-        source: "get_phame_admin",
-        created_by_user_id: String(input.createdByUserId),
-        applicable_plans: applicablePlans.join(","),
-      },
-    } satisfies Stripe.PromotionCodeCreateParams;
+      expiresAt: input.expiresAt,
+      maxRedemptions: input.maxRedemptions,
+      firstTimeTransaction: input.firstTimeTransaction,
+      createdByUserId: input.createdByUserId,
+      applicablePlans,
+    });
     const created = await stripe.promotionCodes.create(createParams) as unknown as PromotionCodeDetails;
 
     return {

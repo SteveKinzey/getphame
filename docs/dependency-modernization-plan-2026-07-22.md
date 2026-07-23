@@ -27,6 +27,8 @@ Node.js recommends that production applications use an Active LTS or Maintenance
 | 5 | Build and test tooling within current majors | Vite 8.x, Vitest 4.x, Playwright 1.x, PostCSS 8.x, Prettier 3.x, TSX 4.x | Complete suite, TypeScript, production bundle, CI workflow tests. |
 | 6 | Lockfile and security override reconciliation | Preserve or tighten patched transitive versions; remove only proven-obsolete overrides | Frozen install and zero-vulnerability production audit. |
 
+Stripe 22.3.2 pins the current `2026-06-24.dahlia` API. Stripe's official API reference requires a promotion code to identify its coupon through `promotion: { type: "coupon", coupon: "..." }`; the former top-level `coupon` create parameter is no longer the current request shape.[3] Get Phame therefore migrates both the SDK API version and promotion-code request builder together, with a regression test that rejects restoration of the legacy top-level field.
+
 ## Intentionally Deferred Breaking Upgrades
 
 | Package | Available major | Decision |
@@ -56,3 +58,4 @@ Each batch will produce a reviewable manifest and lockfile delta. A failing batc
 
 [1]: https://nodejs.org/en/about/previous-releases "Node.js Releases"
 [2]: https://nodejs.org/en/blog/release/v24.11.0 "Node.js 24.11.0 LTS announcement"
+[3]: https://docs.stripe.com/api/promotion_codes/create "Stripe API: Create a promotion code"
