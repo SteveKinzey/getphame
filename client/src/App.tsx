@@ -82,6 +82,7 @@ const ChurnSurveyPage    = lazy(() => import("./pages/ChurnSurvey"));
 const LoginPage          = lazy(() => import("./pages/Login"));
 
 const WooCustomersPage    = lazy(() => import("./pages/WooCustomers"));
+const SourcesPage         = lazy(() => import("./pages/Sources"));
 const SavedContactsPage   = lazy(() => import("./pages/SavedContacts"));
 const EmailTemplatesPage  = lazy(() => import("./pages/EmailTemplates"));
 const RemindersPage       = lazy(() => import("./pages/Reminders"));
@@ -335,6 +336,7 @@ function AppShell() {
                 <Route path="/privacy-policy" component={PrivacyPolicyPage} />
                 <Route path="/terms-of-service" component={TermsOfServicePage} />
                 <Route path="/woo-customers" component={WooCustomersPage} />
+                <Route path="/sources" component={SourcesPage} />
                 <Route path="/contacts" component={SavedContactsPage} />
                 <Route path="/templates" component={EmailTemplatesPage} />
                 <Route path="/reminders" component={RemindersPage} />

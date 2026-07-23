@@ -30,7 +30,8 @@
     "faq": "FAQ",
     "manageUsers": "Gestionar usuarios",
     "admin": "Admin",
-    "developer": "Desarrollador"
+    "developer": "Desarrollador",
+    "sources": "Fuentes"
   },
   "hero": {
     "tagline": "Gratis para empezar — Sin tarjeta de crédito requerida",
@@ -2935,6 +2936,151 @@
       "completeRequired": "Completa todos los campos y confirmaciones comerciales.",
       "requiredForScope": "Completa el registro de uso comercial antes de añadir permiso de envío.",
       "scopeLocked": "Se requiere registro de uso comercial"
+    }
+  },
+  "sources": {
+    "consent": {
+      "title": "Confirmar permiso antes de importar",
+      "description": "Solo importa a personas que hayan dado permiso a tu negocio para contactarlas. Importar nunca envía un mensaje.",
+      "basisLabel": "Base de permiso",
+      "basis": {
+        "express": "Permiso expreso",
+        "contract": "Relación con el cliente / contrato",
+        "legitimateInterest": "Interés legítimo documentado",
+        "other": "Otra base documentada"
+      },
+      "sourceLabel": "Dónde se registró el permiso",
+      "sourcePlaceholder": "Ejemplo: consentimiento al finalizar compra el 20 de julio de 2026",
+      "attestation": "Confirmo que estos contactos dieron permiso a mi negocio para contactarlos, y revisaré la vista previa antes de importar."
+    },
+    "preview": {
+      "requested": "Filas",
+      "valid": "Válido",
+      "duplicates": "Duplicados",
+      "rejected": "Rechazado",
+      "eyebrow": "Revisión requerida",
+      "title": "Vista previa de importación",
+      "description": "Los duplicados se omiten. No se envía nada al importar.",
+      "reused": "Vista previa existente reutilizada",
+      "tableLabel": "Vista previa de importación de contactos",
+      "name": "Nombre",
+      "email": "Correo electrónico",
+      "phone": "Teléfono",
+      "commit": "Importar contactos revisados",
+      "create": "Crear vista previa de revisión"
+    },
+    "woo": {
+      "connectedToast": "WooCommerce conectado de forma segura.",
+      "disconnectedToast": "WooCommerce desconectado.",
+      "stagedToast": "{{count}} contactos en espera de revisión",
+      "noNewToast": "No se encontraron nuevos contactos de WooCommerce.",
+      "eyebrow": "Conexión segura",
+      "connectTitle": "Conectar WooCommerce",
+      "connectDescription": "Utilice credenciales de la API REST de WooCommerce de solo lectura. Los secretos están cifrados y nunca se muestran después de guardarlos.",
+      "storeUrl": "URL de la tienda",
+      "consumerKey": "Clave de consumidor",
+      "consumerSecret": "Secreto de consumidor",
+      "connect": "Probar y conectar",
+      "connectedStore": "Tienda conectada",
+      "disconnect": "Desconectar",
+      "pending": "Contactos en espera de revisión",
+      "manualOnly": "Solo revisión manual",
+      "manualDescription": "Sin programaciones y sin campañas automáticas.",
+      "fetch": "Obtener pedidos recientes para revisión"
+    },
+    "import": {
+      "successToast": "Importados {{imported}} contactos; se omitieron {{skipped}} duplicados."
+    },
+    "csv": {
+      "tooLarge": "Elige un archivo CSV más pequeño que 2 MB.",
+      "emailMissing": "El CSV necesita una columna de correo electrónico.",
+      "loadedToast": "Cargadas {{count}} filas para revisión.",
+      "parseError": "No se pudo leer el CSV. Verifique su formato e inténtelo de nuevo.",
+      "eyebrow": "Importación única",
+      "title": "Subir un CSV",
+      "description": "Utilice una fila de encabezado con una columna de correo electrónico. Hasta 1,000 filas y 2 MB por importación revisada.",
+      "choose": "Seleccionar archivo CSV",
+      "rowsLoaded": "{{count}} filas cargadas",
+      "chooseHelp": "El correo electrónico es obligatorio; el nombre y el teléfono son opcionales"
+    },
+    "eyebrow": "Ingesta de contactos",
+    "title": "Fuentes",
+    "subtitle": "Conecta fuentes de datos aprobadas, revisa a cada persona y añade contactos con consentimiento sin iniciar una campaña.",
+    "safeguards": {
+      "encrypted": "Credenciales cifradas en reposo",
+      "reviewed": "Contactos revisados antes de la importación",
+      "noSend": "Importar nunca envía mensajes"
+    },
+    "nav": {
+      "label": "Espacio de fuentes",
+      "overview": "Resumen",
+      "csv": "CSV",
+      "woocommerce": "WooCommerce",
+      "history": "Historial"
+    },
+    "error": {
+      "title": "Las fuentes no pudieron cargarse."
+    },
+    "cards": {
+      "label": "Fuentes de datos disponibles",
+      "open": "Fuente abierta",
+      "csv": {
+        "title": "Archivo CSV",
+        "description": "Revisa y añade contactos con consentimiento desde un archivo CSV."
+      },
+      "woocommerce": {
+        "title": "WooCommerce",
+        "description": "Revisa y añade contactos con consentimiento a partir de pedidos recientes de la tienda."
+      },
+      "shopify": {
+        "title": "Shopify",
+        "description": "Conector planificado."
+      },
+      "square": {
+        "title": "Square",
+        "description": "Conector planificado."
+      },
+      "hubspot": {
+        "title": "HubSpot",
+        "description": "Conector planificado."
+      },
+      "pipedrive": {
+        "title": "Pipedrive",
+        "description": "Conector planificado."
+      }
+    },
+    "status": {
+      "connected": "Conectado",
+      "available": "Disponible",
+      "comingSoon": "Próximamente"
+    },
+    "activity": {
+      "eyebrow": "Actividad reciente",
+      "title": "Historial de importaciones",
+      "viewAll": "Ver todo",
+      "empty": "Aún no hay importaciones. Elige una fuente para empezar con una vista previa de solo revisión."
+    },
+    "history": {
+      "eyebrow": "Registro de auditoría",
+      "title": "Historial de importaciones",
+      "description": "Recuentos sin PII y metadatos de consentimiento para tus importaciones revisadas más recientes.",
+      "source": "Fuente",
+      "date": "Fecha",
+      "status": "Estado",
+      "valid": "Válido",
+      "imported": "Importado",
+      "skipped": "Omitido",
+      "emptyTitle": "Aún no hay historial de importaciones",
+      "emptyDescription": "Las importaciones revisadas aparecerán aquí con recuentos y estado."
+    },
+    "type": {
+      "csv": "CSV",
+      "woocommerce": "WooCommerce"
+    },
+    "importStatus": {
+      "previewed": "Previsualizado",
+      "committed": "Importado",
+      "failed": "Fallido"
     }
   }
 }

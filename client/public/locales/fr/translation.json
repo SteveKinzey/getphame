@@ -30,7 +30,8 @@
     "faq": "FAQ",
     "manageUsers": "Gérer les utilisateurs",
     "admin": "Admin",
-    "developer": "Développeur"
+    "developer": "Développeur",
+    "sources": "Sources"
   },
   "hero": {
     "tagline": "Gratuit pour commencer — Aucune carte bancaire requise",
@@ -2935,6 +2936,151 @@
       "completeRequired": "Remplissez tous les champs et confirmations professionnels.",
       "requiredForScope": "Terminez l’inscription à l’usage professionnel avant d’ajouter l’autorisation d’envoi.",
       "scopeLocked": "Inscription à l’usage professionnel requise"
+    }
+  },
+  "sources": {
+    "consent": {
+      "title": "Confirmer l'autorisation avant l'importation",
+      "description": "Importer uniquement les personnes qui ont donné à votre entreprise l'autorisation de les contacter. L'importation n'envoie jamais de message.",
+      "basisLabel": "Base d'autorisation",
+      "basis": {
+        "express": "Permission expresse",
+        "contract": "Relation client / contrat",
+        "legitimateInterest": "Intérêt légitime documenté",
+        "other": "Autre fondement documenté"
+      },
+      "sourceLabel": "Lieu d'enregistrement de l'autorisation",
+      "sourcePlaceholder": "Exemple : opt-in au checkout le 20 juillet 2026",
+      "attestation": "Je confirme que ces contacts ont donné à mon entreprise l'autorisation de les contacter, et je relèverai l'aperçu avant d'importer."
+    },
+    "preview": {
+      "requested": "Lignes",
+      "valid": "Valide",
+      "duplicates": "Doublons",
+      "rejected": "Rejetés",
+      "eyebrow": "Révision requise",
+      "title": "Aperçu d'import",
+      "description": "Les doublons sont ignorés. Rien n'est envoyé lors de l'import.",
+      "reused": "Aperçu existant réutilisé",
+      "tableLabel": "Aperçu d'import des contacts",
+      "name": "Nom",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "commit": "Importer les contacts examinés",
+      "create": "Créer un aperçu de révision"
+    },
+    "woo": {
+      "connectedToast": "WooCommerce connecté en toute sécurité.",
+      "disconnectedToast": "WooCommerce déconnecté.",
+      "stagedToast": "{{count}} contacts en attente de révision.",
+      "noNewToast": "Aucun nouveau contact WooCommerce trouvé.",
+      "eyebrow": "Connexion sécurisée",
+      "connectTitle": "Connecter WooCommerce",
+      "connectDescription": "Utilisez des identifiants REST API WooCommerce en lecture seule. Les secrets sont chiffrés et ne sont jamais affichés après l'enregistrement.",
+      "storeUrl": "URL de la boutique",
+      "consumerKey": "Clé consommateur",
+      "consumerSecret": "Secret consommateur",
+      "connect": "Tester et connecter",
+      "connectedStore": "Boutique connectée",
+      "disconnect": "Se déconnecter",
+      "pending": "Contacts en attente de révision",
+      "manualOnly": "Révision manuelle uniquement",
+      "manualDescription": "Pas de planning et pas de campagnes automatiques.",
+      "fetch": "Récupérer les commandes récentes pour révision"
+    },
+    "import": {
+      "successToast": "Importé {{imported}} contacts; {{skipped}} doublons ignorés."
+    },
+    "csv": {
+      "tooLarge": "Choisissez un fichier CSV de moins de 2 Mo.",
+      "emailMissing": "Le CSV doit contenir une colonne Email.",
+      "loadedToast": "Chargé {{count}} ligne(s) pour révision.",
+      "parseError": "Impossible de lire le fichier CSV. Vérifiez son format et réessayez.",
+      "eyebrow": "Import unique",
+      "title": "Importer un CSV",
+      "description": "Utilisez une ligne d'en-tête avec une colonne Email. Jusqu'à 1 000 lignes et 2 Mo par import révisé.",
+      "choose": "Choisir fichier CSV",
+      "rowsLoaded": "{{count}} lignes chargées",
+      "chooseHelp": "Email requis ; le nom et le téléphone sont facultatifs"
+    },
+    "eyebrow": "Réception des contacts",
+    "title": "Sources",
+    "subtitle": "Connectez les sources de données approuvées, examinez chaque personne et ajoutez les contacts ayant consenti sans lancer de campagne.",
+    "safeguards": {
+      "encrypted": "Identifiants chiffrés au repos",
+      "reviewed": "Contacts examinés avant l'importation",
+      "noSend": "L'importation n'envoie jamais de messages"
+    },
+    "nav": {
+      "label": "Espace Sources",
+      "overview": "Aperçu",
+      "csv": "CSV",
+      "woocommerce": "WooCommerce",
+      "history": "Historique"
+    },
+    "error": {
+      "title": "Les sources n'ont pas pu être chargées."
+    },
+    "cards": {
+      "label": "Sources de données disponibles",
+      "open": "Source ouverte",
+      "csv": {
+        "title": "Fichier CSV",
+        "description": "Examiner et ajouter des contacts ayant consenti à partir d'un fichier CSV."
+      },
+      "woocommerce": {
+        "title": "WooCommerce",
+        "description": "Examiner et ajouter des contacts ayant consenti à partir des commandes récentes de la boutique."
+      },
+      "shopify": {
+        "title": "Shopify",
+        "description": "Connecteur prévu."
+      },
+      "square": {
+        "title": "Square",
+        "description": "Connecteur prévu."
+      },
+      "hubspot": {
+        "title": "HubSpot",
+        "description": "Connecteur prévu."
+      },
+      "pipedrive": {
+        "title": "Pipedrive",
+        "description": "Connecteur prévu."
+      }
+    },
+    "status": {
+      "connected": "Connecté",
+      "available": "Disponible",
+      "comingSoon": "Bientôt disponible"
+    },
+    "activity": {
+      "eyebrow": "Activité récente",
+      "title": "Historique d'import",
+      "viewAll": "Voir tout",
+      "empty": "Aucun import pour le moment. Choisissez une source pour commencer avec un aperçu en révision uniquement."
+    },
+    "history": {
+      "eyebrow": "Traçabilité",
+      "title": "Historique d'import",
+      "description": "Comptes dépourvus de PII et métadonnées de consentement pour vos imports les plus récents examinés.",
+      "source": "Source",
+      "date": "Date",
+      "status": "État",
+      "valid": "Valide",
+      "imported": "Importé",
+      "skipped": "Ignorés",
+      "emptyTitle": "Aucun historique d'import pour le moment",
+      "emptyDescription": "Les imports examinés apparaîtront ici avec les comptes et le statut."
+    },
+    "type": {
+      "csv": "CSV",
+      "woocommerce": "WooCommerce"
+    },
+    "importStatus": {
+      "previewed": "Prévisualisé",
+      "committed": "Importé",
+      "failed": "Échoué"
     }
   }
 }

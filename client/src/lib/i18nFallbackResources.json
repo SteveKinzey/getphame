@@ -8,7 +8,8 @@
       "guideHint": "Open setup guide",
       "share": "Share",
       "shareHint": "Share Get Phame with a friend",
-      "complianceHint": "View Compliance Guide"
+      "complianceHint": "View Compliance Guide",
+      "sources": "Sources"
     },
     "login": {
       "consentSuffix": ".",
@@ -661,6 +662,151 @@
     },
     "socialProof": {
       "trustedByBusinesses": "Built-in workflow safeguards"
+    },
+    "sources": {
+      "consent": {
+        "title": "Confirm permission before importing",
+        "description": "Only import people who gave your business permission to contact them. Importing never sends a message.",
+        "basisLabel": "Permission basis",
+        "basis": {
+          "express": "Express permission",
+          "contract": "Customer relationship / contract",
+          "legitimateInterest": "Documented legitimate interest",
+          "other": "Other documented basis"
+        },
+        "sourceLabel": "Where permission was recorded",
+        "sourcePlaceholder": "Example: checkout opt-in on 20 July 2026",
+        "attestation": "I confirm these contacts gave my business permission to contact them, and I will review the preview before importing."
+      },
+      "preview": {
+        "requested": "Rows",
+        "valid": "Valid",
+        "duplicates": "Duplicates",
+        "rejected": "Rejected",
+        "eyebrow": "Review required",
+        "title": "Import preview",
+        "description": "Duplicates are skipped. Nothing is sent when you import.",
+        "reused": "Existing preview reused",
+        "tableLabel": "Contact import preview",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "commit": "Import reviewed contacts",
+        "create": "Create review preview"
+      },
+      "woo": {
+        "connectedToast": "WooCommerce connected securely.",
+        "disconnectedToast": "WooCommerce disconnected.",
+        "stagedToast": "{{count}} contacts staged for review.",
+        "noNewToast": "No new WooCommerce contacts were found.",
+        "eyebrow": "Secure connection",
+        "connectTitle": "Connect WooCommerce",
+        "connectDescription": "Use read-only WooCommerce REST API credentials. Secrets are encrypted and never displayed after saving.",
+        "storeUrl": "Store URL",
+        "consumerKey": "Consumer key",
+        "consumerSecret": "Consumer secret",
+        "connect": "Test and connect",
+        "connectedStore": "Connected store",
+        "disconnect": "Disconnect",
+        "pending": "Staged contacts awaiting review",
+        "manualOnly": "Manual review only",
+        "manualDescription": "No schedules and no automatic campaigns.",
+        "fetch": "Fetch recent orders for review"
+      },
+      "import": {
+        "successToast": "Imported {{imported}} contacts; skipped {{skipped}} duplicates."
+      },
+      "csv": {
+        "tooLarge": "Choose a CSV file smaller than 2 MB.",
+        "emailMissing": "The CSV needs an email column.",
+        "loadedToast": "Loaded {{count}} rows for review.",
+        "parseError": "The CSV could not be read. Check its formatting and try again.",
+        "eyebrow": "One-time import",
+        "title": "Upload a CSV",
+        "description": "Use a header row with an email column. Up to 1,000 rows and 2 MB per reviewed import.",
+        "choose": "Choose CSV file",
+        "rowsLoaded": "{{count}} rows loaded",
+        "chooseHelp": "Email is required; name and phone are optional"
+      },
+      "eyebrow": "Contact intake",
+      "title": "Sources",
+      "subtitle": "Connect approved data sources, review every person, and add consented contacts without starting a campaign.",
+      "safeguards": {
+        "encrypted": "Credentials encrypted at rest",
+        "reviewed": "Contacts reviewed before import",
+        "noSend": "Importing never sends messages"
+      },
+      "nav": {
+        "label": "Sources workspace",
+        "overview": "Overview",
+        "csv": "CSV",
+        "woocommerce": "WooCommerce",
+        "history": "History"
+      },
+      "error": {
+        "title": "Sources could not load"
+      },
+      "cards": {
+        "label": "Available data sources",
+        "open": "Open source",
+        "csv": {
+          "title": "CSV file",
+          "description": "Review and add consented contacts from a CSV file."
+        },
+        "woocommerce": {
+          "title": "WooCommerce",
+          "description": "Review and add consented contacts from recent store orders."
+        },
+        "shopify": {
+          "title": "Shopify",
+          "description": "Planned connector."
+        },
+        "square": {
+          "title": "Square",
+          "description": "Planned connector."
+        },
+        "hubspot": {
+          "title": "HubSpot",
+          "description": "Planned connector."
+        },
+        "pipedrive": {
+          "title": "Pipedrive",
+          "description": "Planned connector."
+        }
+      },
+      "status": {
+        "connected": "Connected",
+        "available": "Available",
+        "comingSoon": "Coming soon"
+      },
+      "activity": {
+        "eyebrow": "Recent activity",
+        "title": "Import history",
+        "viewAll": "View all",
+        "empty": "No imports yet. Choose a source to begin with a review-only preview."
+      },
+      "history": {
+        "eyebrow": "Audit trail",
+        "title": "Import history",
+        "description": "PII-free counts and consent metadata for your most recent reviewed imports.",
+        "source": "Source",
+        "date": "Date",
+        "status": "Status",
+        "valid": "Valid",
+        "imported": "Imported",
+        "skipped": "Skipped",
+        "emptyTitle": "No import history yet",
+        "emptyDescription": "Reviewed imports will appear here with counts and status."
+      },
+      "type": {
+        "csv": "CSV",
+        "woocommerce": "WooCommerce"
+      },
+      "importStatus": {
+        "previewed": "Previewed",
+        "committed": "Imported",
+        "failed": "Failed"
+      }
     }
   },
   "es": {
@@ -672,7 +818,8 @@
       "guideHint": "Abrir guía de configuración",
       "share": "Compartir",
       "shareHint": "Comparte Get Phame con un amigo",
-      "complianceHint": "Ver la Guía de Cumplimiento"
+      "complianceHint": "Ver la Guía de Cumplimiento",
+      "sources": "Fuentes"
     },
     "login": {
       "consentSuffix": ".",
@@ -1325,6 +1472,151 @@
     },
     "socialProof": {
       "trustedByBusinesses": "Salvaguardas integradas en el flujo de trabajo"
+    },
+    "sources": {
+      "consent": {
+        "title": "Confirmar permiso antes de importar",
+        "description": "Solo importa a personas que hayan dado permiso a tu negocio para contactarlas. Importar nunca envía un mensaje.",
+        "basisLabel": "Base de permiso",
+        "basis": {
+          "express": "Permiso expreso",
+          "contract": "Relación con el cliente / contrato",
+          "legitimateInterest": "Interés legítimo documentado",
+          "other": "Otra base documentada"
+        },
+        "sourceLabel": "Dónde se registró el permiso",
+        "sourcePlaceholder": "Ejemplo: consentimiento al finalizar compra el 20 de julio de 2026",
+        "attestation": "Confirmo que estos contactos dieron permiso a mi negocio para contactarlos, y revisaré la vista previa antes de importar."
+      },
+      "preview": {
+        "requested": "Filas",
+        "valid": "Válido",
+        "duplicates": "Duplicados",
+        "rejected": "Rechazado",
+        "eyebrow": "Revisión requerida",
+        "title": "Vista previa de importación",
+        "description": "Los duplicados se omiten. No se envía nada al importar.",
+        "reused": "Vista previa existente reutilizada",
+        "tableLabel": "Vista previa de importación de contactos",
+        "name": "Nombre",
+        "email": "Correo electrónico",
+        "phone": "Teléfono",
+        "commit": "Importar contactos revisados",
+        "create": "Crear vista previa de revisión"
+      },
+      "woo": {
+        "connectedToast": "WooCommerce conectado de forma segura.",
+        "disconnectedToast": "WooCommerce desconectado.",
+        "stagedToast": "{{count}} contactos en espera de revisión",
+        "noNewToast": "No se encontraron nuevos contactos de WooCommerce.",
+        "eyebrow": "Conexión segura",
+        "connectTitle": "Conectar WooCommerce",
+        "connectDescription": "Utilice credenciales de la API REST de WooCommerce de solo lectura. Los secretos están cifrados y nunca se muestran después de guardarlos.",
+        "storeUrl": "URL de la tienda",
+        "consumerKey": "Clave de consumidor",
+        "consumerSecret": "Secreto de consumidor",
+        "connect": "Probar y conectar",
+        "connectedStore": "Tienda conectada",
+        "disconnect": "Desconectar",
+        "pending": "Contactos en espera de revisión",
+        "manualOnly": "Solo revisión manual",
+        "manualDescription": "Sin programaciones y sin campañas automáticas.",
+        "fetch": "Obtener pedidos recientes para revisión"
+      },
+      "import": {
+        "successToast": "Importados {{imported}} contactos; se omitieron {{skipped}} duplicados."
+      },
+      "csv": {
+        "tooLarge": "Elige un archivo CSV más pequeño que 2 MB.",
+        "emailMissing": "El CSV necesita una columna de correo electrónico.",
+        "loadedToast": "Cargadas {{count}} filas para revisión.",
+        "parseError": "No se pudo leer el CSV. Verifique su formato e inténtelo de nuevo.",
+        "eyebrow": "Importación única",
+        "title": "Subir un CSV",
+        "description": "Utilice una fila de encabezado con una columna de correo electrónico. Hasta 1,000 filas y 2 MB por importación revisada.",
+        "choose": "Seleccionar archivo CSV",
+        "rowsLoaded": "{{count}} filas cargadas",
+        "chooseHelp": "El correo electrónico es obligatorio; el nombre y el teléfono son opcionales"
+      },
+      "eyebrow": "Ingesta de contactos",
+      "title": "Fuentes",
+      "subtitle": "Conecta fuentes de datos aprobadas, revisa a cada persona y añade contactos con consentimiento sin iniciar una campaña.",
+      "safeguards": {
+        "encrypted": "Credenciales cifradas en reposo",
+        "reviewed": "Contactos revisados antes de la importación",
+        "noSend": "Importar nunca envía mensajes"
+      },
+      "nav": {
+        "label": "Espacio de fuentes",
+        "overview": "Resumen",
+        "csv": "CSV",
+        "woocommerce": "WooCommerce",
+        "history": "Historial"
+      },
+      "error": {
+        "title": "Las fuentes no pudieron cargarse."
+      },
+      "cards": {
+        "label": "Fuentes de datos disponibles",
+        "open": "Fuente abierta",
+        "csv": {
+          "title": "Archivo CSV",
+          "description": "Revisa y añade contactos con consentimiento desde un archivo CSV."
+        },
+        "woocommerce": {
+          "title": "WooCommerce",
+          "description": "Revisa y añade contactos con consentimiento a partir de pedidos recientes de la tienda."
+        },
+        "shopify": {
+          "title": "Shopify",
+          "description": "Conector planificado."
+        },
+        "square": {
+          "title": "Square",
+          "description": "Conector planificado."
+        },
+        "hubspot": {
+          "title": "HubSpot",
+          "description": "Conector planificado."
+        },
+        "pipedrive": {
+          "title": "Pipedrive",
+          "description": "Conector planificado."
+        }
+      },
+      "status": {
+        "connected": "Conectado",
+        "available": "Disponible",
+        "comingSoon": "Próximamente"
+      },
+      "activity": {
+        "eyebrow": "Actividad reciente",
+        "title": "Historial de importaciones",
+        "viewAll": "Ver todo",
+        "empty": "Aún no hay importaciones. Elige una fuente para empezar con una vista previa de solo revisión."
+      },
+      "history": {
+        "eyebrow": "Registro de auditoría",
+        "title": "Historial de importaciones",
+        "description": "Recuentos sin PII y metadatos de consentimiento para tus importaciones revisadas más recientes.",
+        "source": "Fuente",
+        "date": "Fecha",
+        "status": "Estado",
+        "valid": "Válido",
+        "imported": "Importado",
+        "skipped": "Omitido",
+        "emptyTitle": "Aún no hay historial de importaciones",
+        "emptyDescription": "Las importaciones revisadas aparecerán aquí con recuentos y estado."
+      },
+      "type": {
+        "csv": "CSV",
+        "woocommerce": "WooCommerce"
+      },
+      "importStatus": {
+        "previewed": "Previsualizado",
+        "committed": "Importado",
+        "failed": "Fallido"
+      }
     }
   },
   "fr": {
@@ -1336,7 +1628,8 @@
       "guideHint": "Ouvrir le guide d'installation",
       "share": "Partager",
       "shareHint": "Partagez Get Phame avec un ami",
-      "complianceHint": "Voir le guide de conformité"
+      "complianceHint": "Voir le guide de conformité",
+      "sources": "Sources"
     },
     "login": {
       "consentSuffix": ".",
@@ -1989,6 +2282,151 @@
     },
     "socialProof": {
       "trustedByBusinesses": "Garde-fous intégrés au flux de travail"
+    },
+    "sources": {
+      "consent": {
+        "title": "Confirmer l'autorisation avant l'importation",
+        "description": "Importer uniquement les personnes qui ont donné à votre entreprise l'autorisation de les contacter. L'importation n'envoie jamais de message.",
+        "basisLabel": "Base d'autorisation",
+        "basis": {
+          "express": "Permission expresse",
+          "contract": "Relation client / contrat",
+          "legitimateInterest": "Intérêt légitime documenté",
+          "other": "Autre fondement documenté"
+        },
+        "sourceLabel": "Lieu d'enregistrement de l'autorisation",
+        "sourcePlaceholder": "Exemple : opt-in au checkout le 20 juillet 2026",
+        "attestation": "Je confirme que ces contacts ont donné à mon entreprise l'autorisation de les contacter, et je relèverai l'aperçu avant d'importer."
+      },
+      "preview": {
+        "requested": "Lignes",
+        "valid": "Valide",
+        "duplicates": "Doublons",
+        "rejected": "Rejetés",
+        "eyebrow": "Révision requise",
+        "title": "Aperçu d'import",
+        "description": "Les doublons sont ignorés. Rien n'est envoyé lors de l'import.",
+        "reused": "Aperçu existant réutilisé",
+        "tableLabel": "Aperçu d'import des contacts",
+        "name": "Nom",
+        "email": "E-mail",
+        "phone": "Téléphone",
+        "commit": "Importer les contacts examinés",
+        "create": "Créer un aperçu de révision"
+      },
+      "woo": {
+        "connectedToast": "WooCommerce connecté en toute sécurité.",
+        "disconnectedToast": "WooCommerce déconnecté.",
+        "stagedToast": "{{count}} contacts en attente de révision.",
+        "noNewToast": "Aucun nouveau contact WooCommerce trouvé.",
+        "eyebrow": "Connexion sécurisée",
+        "connectTitle": "Connecter WooCommerce",
+        "connectDescription": "Utilisez des identifiants REST API WooCommerce en lecture seule. Les secrets sont chiffrés et ne sont jamais affichés après l'enregistrement.",
+        "storeUrl": "URL de la boutique",
+        "consumerKey": "Clé consommateur",
+        "consumerSecret": "Secret consommateur",
+        "connect": "Tester et connecter",
+        "connectedStore": "Boutique connectée",
+        "disconnect": "Se déconnecter",
+        "pending": "Contacts en attente de révision",
+        "manualOnly": "Révision manuelle uniquement",
+        "manualDescription": "Pas de planning et pas de campagnes automatiques.",
+        "fetch": "Récupérer les commandes récentes pour révision"
+      },
+      "import": {
+        "successToast": "Importé {{imported}} contacts; {{skipped}} doublons ignorés."
+      },
+      "csv": {
+        "tooLarge": "Choisissez un fichier CSV de moins de 2 Mo.",
+        "emailMissing": "Le CSV doit contenir une colonne Email.",
+        "loadedToast": "Chargé {{count}} ligne(s) pour révision.",
+        "parseError": "Impossible de lire le fichier CSV. Vérifiez son format et réessayez.",
+        "eyebrow": "Import unique",
+        "title": "Importer un CSV",
+        "description": "Utilisez une ligne d'en-tête avec une colonne Email. Jusqu'à 1 000 lignes et 2 Mo par import révisé.",
+        "choose": "Choisir fichier CSV",
+        "rowsLoaded": "{{count}} lignes chargées",
+        "chooseHelp": "Email requis ; le nom et le téléphone sont facultatifs"
+      },
+      "eyebrow": "Réception des contacts",
+      "title": "Sources",
+      "subtitle": "Connectez les sources de données approuvées, examinez chaque personne et ajoutez les contacts ayant consenti sans lancer de campagne.",
+      "safeguards": {
+        "encrypted": "Identifiants chiffrés au repos",
+        "reviewed": "Contacts examinés avant l'importation",
+        "noSend": "L'importation n'envoie jamais de messages"
+      },
+      "nav": {
+        "label": "Espace Sources",
+        "overview": "Aperçu",
+        "csv": "CSV",
+        "woocommerce": "WooCommerce",
+        "history": "Historique"
+      },
+      "error": {
+        "title": "Les sources n'ont pas pu être chargées."
+      },
+      "cards": {
+        "label": "Sources de données disponibles",
+        "open": "Source ouverte",
+        "csv": {
+          "title": "Fichier CSV",
+          "description": "Examiner et ajouter des contacts ayant consenti à partir d'un fichier CSV."
+        },
+        "woocommerce": {
+          "title": "WooCommerce",
+          "description": "Examiner et ajouter des contacts ayant consenti à partir des commandes récentes de la boutique."
+        },
+        "shopify": {
+          "title": "Shopify",
+          "description": "Connecteur prévu."
+        },
+        "square": {
+          "title": "Square",
+          "description": "Connecteur prévu."
+        },
+        "hubspot": {
+          "title": "HubSpot",
+          "description": "Connecteur prévu."
+        },
+        "pipedrive": {
+          "title": "Pipedrive",
+          "description": "Connecteur prévu."
+        }
+      },
+      "status": {
+        "connected": "Connecté",
+        "available": "Disponible",
+        "comingSoon": "Bientôt disponible"
+      },
+      "activity": {
+        "eyebrow": "Activité récente",
+        "title": "Historique d'import",
+        "viewAll": "Voir tout",
+        "empty": "Aucun import pour le moment. Choisissez une source pour commencer avec un aperçu en révision uniquement."
+      },
+      "history": {
+        "eyebrow": "Traçabilité",
+        "title": "Historique d'import",
+        "description": "Comptes dépourvus de PII et métadonnées de consentement pour vos imports les plus récents examinés.",
+        "source": "Source",
+        "date": "Date",
+        "status": "État",
+        "valid": "Valide",
+        "imported": "Importé",
+        "skipped": "Ignorés",
+        "emptyTitle": "Aucun historique d'import pour le moment",
+        "emptyDescription": "Les imports examinés apparaîtront ici avec les comptes et le statut."
+      },
+      "type": {
+        "csv": "CSV",
+        "woocommerce": "WooCommerce"
+      },
+      "importStatus": {
+        "previewed": "Prévisualisé",
+        "committed": "Importé",
+        "failed": "Échoué"
+      }
     }
   },
   "it": {
@@ -2000,7 +2438,8 @@
       "guideHint": "Apri la guida alla configurazione",
       "share": "Condividi",
       "shareHint": "Condividi Get Phame con un amico",
-      "complianceHint": "Visualizza la Guida alla conformità"
+      "complianceHint": "Visualizza la Guida alla conformità",
+      "sources": "Fonti"
     },
     "login": {
       "consentSuffix": ".",
@@ -2653,6 +3092,151 @@
     },
     "socialProof": {
       "trustedByBusinesses": "Sicurezze integrate nel flusso di lavoro"
+    },
+    "sources": {
+      "consent": {
+        "title": "Conferma il consenso prima dell'importazione",
+        "description": "Importa solo persone che hanno dato al tuo business il permesso di contattarli. L'importazione non invia alcun messaggio.",
+        "basisLabel": "Base del consenso",
+        "basis": {
+          "express": "Permesso espresso",
+          "contract": "Relazione con il cliente / contratto",
+          "legitimateInterest": "Interesse legittimo documentato",
+          "other": "Altro fondamento documentato"
+        },
+        "sourceLabel": "Dove è stato registrato il consenso",
+        "sourcePlaceholder": "Esempio: opt-in al checkout il 20 luglio 2026",
+        "attestation": "Confermo che questi contatti hanno dato al mio business il permesso di contattarli, e rivedrò l'anteprima prima dell'importazione."
+      },
+      "preview": {
+        "requested": "Righe",
+        "valid": "Valide",
+        "duplicates": "Duplicati",
+        "rejected": "Rifiutate",
+        "eyebrow": "Revisione richiesta",
+        "title": "Anteprima importazione",
+        "description": "I duplicati vengono saltati. Durante l'importazione non viene inviato alcun messaggio.",
+        "reused": "Anteprima esistente riutilizzata",
+        "tableLabel": "Anteprima importazione contatti",
+        "name": "Nome",
+        "email": "Email",
+        "phone": "Telefono",
+        "commit": "Importa contatti revisionati",
+        "create": "Crea anteprima di revisione"
+      },
+      "woo": {
+        "connectedToast": "WooCommerce connesso in modo sicuro.",
+        "disconnectedToast": "WooCommerce scollegato.",
+        "stagedToast": "{{count}} contatti in attesa di revisione",
+        "noNewToast": "Nessun nuovo contatto WooCommerce trovato.",
+        "eyebrow": "Connessione sicura",
+        "connectTitle": "Collega WooCommerce",
+        "connectDescription": "Usa credenziali REST API in sola lettura per WooCommerce. Le chiavi sono criptate e non visualizzate dopo il salvataggio.",
+        "storeUrl": "URL negozio",
+        "consumerKey": "Chiave consumatore",
+        "consumerSecret": "Segreto consumatore",
+        "connect": "Testa e collega",
+        "connectedStore": "Negozio collegato",
+        "disconnect": "Disconnetti",
+        "pending": "Contatti in attesa di revisione",
+        "manualOnly": "Solo revisione manuale",
+        "manualDescription": "Nessuna pianificazione e nessuna campagna automatica.",
+        "fetch": "Recupera ordini recenti per revisione"
+      },
+      "import": {
+        "successToast": "Importato {{imported}} contatti; saltati {{skipped}} duplicati."
+      },
+      "csv": {
+        "tooLarge": "Scegli un file CSV di dimensioni inferiori a 2 MB.",
+        "emailMissing": "Il CSV deve contenere una colonna email.",
+        "loadedToast": "Caricate {{count}} righe per revisione.",
+        "parseError": "Impossibile leggere il CSV. Controlla la formattazione e riprova.",
+        "eyebrow": "Importazione unica",
+        "title": "Carica un file CSV",
+        "description": "Usa una riga di intestazione con una colonna email. Fino a 1.000 righe e 2 MB per importazione revisionata.",
+        "choose": "Seleziona file CSV",
+        "rowsLoaded": "{{count}} righe caricate",
+        "chooseHelp": "L'email è obbligatoria; nome e telefono sono facoltativi"
+      },
+      "eyebrow": "Acquisizione contatti",
+      "title": "Fonti",
+      "subtitle": "Collega fonti dati approvate, rivedi ogni contatto e aggiungi contatti con consenso senza avviare una campagna.",
+      "safeguards": {
+        "encrypted": "Credenziali criptate a riposo",
+        "reviewed": "Contatti revisionati prima dell'importazione",
+        "noSend": "L'importazione non invia mai messaggi"
+      },
+      "nav": {
+        "label": "Area fonti",
+        "overview": "Panoramica",
+        "csv": "CSV",
+        "woocommerce": "WooCommerce",
+        "history": "Cronologia"
+      },
+      "error": {
+        "title": "Impossibile caricare le fonti"
+      },
+      "cards": {
+        "label": "Fonti dati disponibili",
+        "open": "Fonte aperta",
+        "csv": {
+          "title": "File CSV",
+          "description": "Rivedi e aggiungi contatti con consenso da un file CSV."
+        },
+        "woocommerce": {
+          "title": "WooCommerce",
+          "description": "Rivedi e aggiungi contatti con consenso dagli ordini recenti del negozio."
+        },
+        "shopify": {
+          "title": "Shopify",
+          "description": "Collegamento pianificato."
+        },
+        "square": {
+          "title": "Square",
+          "description": "Collegamento pianificato."
+        },
+        "hubspot": {
+          "title": "HubSpot",
+          "description": "Collegamento pianificato."
+        },
+        "pipedrive": {
+          "title": "Pipedrive",
+          "description": "Collegamento pianificato."
+        }
+      },
+      "status": {
+        "connected": "Connesso",
+        "available": "Disponibile",
+        "comingSoon": "In arrivo"
+      },
+      "activity": {
+        "eyebrow": "Attività recente",
+        "title": "Storico importazioni",
+        "viewAll": "Visualizza tutto",
+        "empty": "Nessuna importazione finora. Scegli una fonte per iniziare con un'anteprima solo di revisione."
+      },
+      "history": {
+        "eyebrow": "Registro di controllo",
+        "title": "Storico importazioni",
+        "description": "Conteggi PII-free e metadati di consenso per le ultime importazioni revisionate.",
+        "source": "Origine",
+        "date": "Data",
+        "status": "Stato",
+        "valid": "Valide",
+        "imported": "Importato",
+        "skipped": "Saltato",
+        "emptyTitle": "Nessuna cronologia di importazione",
+        "emptyDescription": "Le importazioni revisionate appariranno qui con conteggi e stato."
+      },
+      "type": {
+        "csv": "CSV",
+        "woocommerce": "WooCommerce"
+      },
+      "importStatus": {
+        "previewed": "Anteprima effettuata",
+        "committed": "Importato",
+        "failed": "Fallito"
+      }
     }
   },
   "th": {
@@ -2664,7 +3248,8 @@
       "guideHint": "เปิดคู่มือการตั้งค่า",
       "share": "แชร์",
       "shareHint": "แชร์ Get Phame ให้เพื่อน",
-      "complianceHint": "ดูคู่มือการปฏิบัติตาม"
+      "complianceHint": "ดูคู่มือการปฏิบัติตาม",
+      "sources": "แหล่งข้อมูล"
     },
     "login": {
       "consentSuffix": ".",
@@ -3317,6 +3902,151 @@
     },
     "socialProof": {
       "trustedByBusinesses": "มาตรการความปลอดภัยของเวิร์กโฟลว์ในตัว"
+    },
+    "sources": {
+      "consent": {
+        "title": "ยืนยันการอนุญาตก่อนนำเข้า",
+        "description": "นำเข้าผู้คนที่บริษัทของคุณได้รับอนุญาตให้ติดต่อพวกเขาเท่านั้น การนำเข้าไม่ส่งข้อความใดๆ",
+        "basisLabel": "ฐานการอนุญาต",
+        "basis": {
+          "express": "อนุญาตอย่างชัดแจ้ง",
+          "contract": "ความสัมพันธ์กับลูกค้าส / สัญญา",
+          "legitimateInterest": "ความสนใจที่ชอบด้วยกฎหมายที่บันทึกไว้",
+          "other": "ฐานที่บันทึกไว้เพิ่มเติม"
+        },
+        "sourceLabel": "แหล่งที่บันทึกอนุญาต",
+        "sourcePlaceholder": "ตัวอย่าง: สมัครรับข้อมูลตอนชำระเงินเมื่อวันที่ 20 กรกฎาคม 2026",
+        "attestation": "ฉันยืนยันว่าผู้ติดต่อเหล่านี้ได้มอบสิทธิให้ธุรกิจของฉันติดต่อพวกเขา และฉันจะตรวจสอบตัวอย่างก่อนนำเข้า"
+      },
+      "preview": {
+        "requested": "แถว",
+        "valid": "ถูกต้อง",
+        "duplicates": "ซ้ำ",
+        "rejected": "ปฏิเสธ",
+        "eyebrow": "ต้องการการตรวจทาน",
+        "title": "ตัวอย่างการนำเข้า",
+        "description": "รายการซ้ำถูกข้ามไป ไม่ส่งข้อความใดๆ เมื่อคุณนำเข้า",
+        "reused": "ตัวอย่างก่อนหน้าถูกนำมาใช้อีกครั้ง",
+        "tableLabel": "ตัวอย่างการนำเข้าผู้ติดต่อ",
+        "name": "ชื่อ",
+        "email": "อีเมล",
+        "phone": "โทรศัพท์",
+        "commit": "นำเข้าผู้ติดต่อที่ผ่านการตรวจสอบ",
+        "create": "สร้างตัวอย่างการตรวจสอบ"
+      },
+      "woo": {
+        "connectedToast": "WooCommerce เชื่อมต่ออย่างปลอดภัย",
+        "disconnectedToast": "WooCommerce ตัดการเชื่อมต่อ",
+        "stagedToast": "{{count}} ติดต่อถูกเตรียมสำหรับการตรวจสอบ",
+        "noNewToast": "ไม่พบติดต่อ WooCommerce ใหม่",
+        "eyebrow": "การเชื่อมต่อที่ปลอดภัย",
+        "connectTitle": "เชื่อมต่อ WooCommerce",
+        "connectDescription": "ใช้ข้อมูลรับรอง REST API ของ WooCommerce แบบอ่านอย่างเดียว รหัสลับถูกเข้ารหัสและไม่แสดงหลังจากบันทึก",
+        "storeUrl": "URL ร้านค้า",
+        "consumerKey": "คีย์ผู้บริโภค",
+        "consumerSecret": "รหัสลับผู้บริโภค",
+        "connect": "ทดสอบและเชื่อมต่อ",
+        "connectedStore": "ร้านค้าที่เชื่อมต่อแล้ว",
+        "disconnect": "ตัดการเชื่อมต่อ",
+        "pending": "ติดต่อที่เตรียมไว้รอการตรวจสอบ",
+        "manualOnly": "ตรวจสอบด้วยตนเองเท่านั้น",
+        "manualDescription": "ไม่มีตารางเวลาและแคมเปญอัตโนมัติ",
+        "fetch": "ดึงคำสั่งซื้อล่าสุดสำหรับตรวจสอบ"
+      },
+      "import": {
+        "successToast": "นำเข้าผู้ติดต่อ {{imported}} รายการ; ข้ามรายการซ้ำ {{skipped}} รายการ"
+      },
+      "csv": {
+        "tooLarge": "เลือกไฟล์ CSV ที่มีขนาดน้อยกว่า 2 MB",
+        "emailMissing": "CSV ต้องมีคอลัมน์อีเมล",
+        "loadedToast": "โหลด {{count}} แถวสำหรับการตรวจสอบ",
+        "parseError": "ไม่สามารถอ่าน CSV ได้ โปรดตรวจสอบรูปแบบและลองใหม่",
+        "eyebrow": "นำเข้าแบบครั้งเดียว",
+        "title": "อัปโหลด CSV",
+        "description": "ใช้แถวหัวเรื่องที่มีคอลัมน์อีเมล สูงสุด 1,000 แถว และ 2 MB ต่การนำเข้าที่ตรวจสอบแล้ว",
+        "choose": "เลือกไฟล์ CSV",
+        "rowsLoaded": "{{count}} แถวถูกโหลด",
+        "chooseHelp": "ต้องระบุอีเมล ชื่อและโทรศัพท์ไม่บังคับ"
+      },
+      "eyebrow": "รับข้อมูลผู้ติดต่อ",
+      "title": "แหล่งข้อมูล",
+      "subtitle": "เชื่อมต่อแหล่งข้อมูลที่อนุมัติ ตรวจสอบบุคคลแต่ละคน และเพิ่มผู้ติดต่อที่ยินยอม โดยไม่เริ่มแคมเปญ",
+      "safeguards": {
+        "encrypted": "ข้อมูลรับรองถูกเข้ารหัสเมื่อเก็บไว้",
+        "reviewed": "ติดต่อที่ผ่านการตรวจสอบก่อนนำเข้า",
+        "noSend": "การนำเข้าไม่ส่งข้อความใดๆ"
+      },
+      "nav": {
+        "label": "พื้นที่ทำงานแหล่งข้อมูล",
+        "overview": "ภาพรวม",
+        "csv": "CSV",
+        "woocommerce": "WooCommerce",
+        "history": "ประวัติ"
+      },
+      "error": {
+        "title": "โหลดแหล่งข้อมูลไม่สำเร็จ"
+      },
+      "cards": {
+        "label": "แหล่งข้อมูลที่ใช้งานได้",
+        "open": "แหล่งข้อมูลเปิด",
+        "csv": {
+          "title": "ไฟล์ CSV",
+          "description": "ตรวจสอบและเพิ่มผู้ติดต่อที่ยินยอมจากไฟล์ CSV"
+        },
+        "woocommerce": {
+          "title": "WooCommerce",
+          "description": "ตรวจสอบและเพิ่มผู้ติดต่อที่ยินยอมจากคำสั่งซื้อในร้านล่าสุด"
+        },
+        "shopify": {
+          "title": "Shopify",
+          "description": "ตัวเชื่อมที่วางแผนไว้"
+        },
+        "square": {
+          "title": "Square",
+          "description": "ตัวเชื่อมที่วางแผนไว้"
+        },
+        "hubspot": {
+          "title": "HubSpot",
+          "description": "ตัวเชื่อมที่วางแผนไว้"
+        },
+        "pipedrive": {
+          "title": "Pipedrive",
+          "description": "ตัวเชื่อมที่วางแผนไว้"
+        }
+      },
+      "status": {
+        "connected": "เชื่อมต่อแล้ว",
+        "available": "พร้อมใช้งาน",
+        "comingSoon": "เร็วๆ นี้"
+      },
+      "activity": {
+        "eyebrow": "กิจกรรมล่าสุด",
+        "title": "ประวัติการนำเข้า",
+        "viewAll": "ดูทั้งหมด",
+        "empty": "ยังไม่มีการนำเข้า เลือกแหล่งข้อมูลเพื่อเริ่มต้นด้วยตัวอย่างการตรวจสอบเท่านั้น"
+      },
+      "history": {
+        "eyebrow": "บันทึกการตรวจสอบ",
+        "title": "ประวัติการนำเข้า",
+        "description": "จำนวนที่ไม่ระบุตัวบุคคล (PII-free) และ metadata ความยินยอมสำหรับการนำเข้าที่ผ่านการตรวจสอบล่าสุดของคุณ",
+        "source": "แหล่งที่มา",
+        "date": "วันที่",
+        "status": "สถานะ",
+        "valid": "ถูกต้อง",
+        "imported": "นำเข้าแล้ว",
+        "skipped": "ข้าม",
+        "emptyTitle": "ยังไม่มีประวัติการนำเข้า",
+        "emptyDescription": "การนำเข้าที่ผ่านการตรวจสอบจะปรากฏที่นี่พร้อมจำนวนและสถานะ"
+      },
+      "type": {
+        "csv": "CSV",
+        "woocommerce": "WooCommerce"
+      },
+      "importStatus": {
+        "previewed": "ดูตัวอย่างแล้ว",
+        "committed": "นำเข้าแล้ว",
+        "failed": "ล้มเหลว"
+      }
     }
   },
   "zh-CN": {
@@ -3328,7 +4058,8 @@
       "guideHint": "打开设置指南",
       "share": "分享",
       "shareHint": "与朋友分享 Get Phame",
-      "complianceHint": "查看合规指南"
+      "complianceHint": "查看合规指南",
+      "sources": "数据源"
     },
     "login": {
       "consentSuffix": ".",
@@ -3981,6 +4712,151 @@
     },
     "socialProof": {
       "trustedByBusinesses": "内置工作流安全措施"
+    },
+    "sources": {
+      "consent": {
+        "title": "在导入前确认许可",
+        "description": "仅导入已允许与你联系的人员。导入不会发送消息。",
+        "basisLabel": "许可依据",
+        "basis": {
+          "express": "显式许可",
+          "contract": "客户关系/合同",
+          "legitimateInterest": "有书面的正当利益",
+          "other": "其他书面依据"
+        },
+        "sourceLabel": "许可记录来源",
+        "sourcePlaceholder": "示例：在 2026 年 7 月 20 日的结账时勾选同意",
+        "attestation": "我确认这些联系人已授权与本商家联系，并且在导入前将审核预览。"
+      },
+      "preview": {
+        "requested": "行数",
+        "valid": "有效",
+        "duplicates": "重复项",
+        "rejected": "已拒绝",
+        "eyebrow": "需要审核",
+        "title": "导入预览",
+        "description": "重复项将被跳过。导入时不会发送消息。",
+        "reused": "现有预览已复用",
+        "tableLabel": "联系人导入预览",
+        "name": "姓名",
+        "email": "邮箱",
+        "phone": "电话",
+        "commit": "导入已审核的联系人",
+        "create": "创建审核预览"
+      },
+      "woo": {
+        "connectedToast": "WooCommerce 已安全连接。",
+        "disconnectedToast": "WooCommerce 已断开连接。",
+        "stagedToast": "{{count}} 条联系人已放置待审核。",
+        "noNewToast": "未发现新的 WooCommerce 联系人。",
+        "eyebrow": "安全连接",
+        "connectTitle": "连接 WooCommerce",
+        "connectDescription": "使用只读的 WooCommerce REST API 凭据。密钥在保存后将被加密并且永不显示。",
+        "storeUrl": "商店 URL",
+        "consumerKey": "消费者密钥",
+        "consumerSecret": "消费者密钥",
+        "connect": "测试并连接",
+        "connectedStore": "已连接的商店",
+        "disconnect": "断开连接",
+        "pending": "待审核的联系人",
+        "manualOnly": "仅人工审核",
+        "manualDescription": "无排程，亦无自动化活动。",
+        "fetch": "获取最近的订单以供审核"
+      },
+      "import": {
+        "successToast": "已导入 {{imported}} 条联系人；跳过 {{skipped}} 条重复项。"
+      },
+      "csv": {
+        "tooLarge": "请选择小于 2 MB 的 CSV 文件。",
+        "emailMissing": "CSV 需要一个邮箱列。",
+        "loadedToast": "已加载 {{count}} 行以供审核。",
+        "parseError": "无法读取 CSV。请检查格式并重试。",
+        "eyebrow": "一次性导入",
+        "title": "上传 CSV",
+        "description": "使用包含邮箱列的标题行。每次审核导入最多 1,000 行，2 MB。",
+        "choose": "选择 CSV 文件",
+        "rowsLoaded": "{{count}} 行已加载",
+        "chooseHelp": "需要邮箱；姓名和电话为可选"
+      },
+      "eyebrow": "联系人导入",
+      "title": "数据源",
+      "subtitle": "连接经批准的数据源，逐一审核每个人，并在不启动活动的情况下添加已同意的联系人。",
+      "safeguards": {
+        "encrypted": "凭据在存储时加密",
+        "reviewed": "导入前对联系人进行审核",
+        "noSend": "导入从不发送消息"
+      },
+      "nav": {
+        "label": "数据源工作区",
+        "overview": "概览",
+        "csv": "CSV",
+        "woocommerce": "WooCommerce",
+        "history": "历史"
+      },
+      "error": {
+        "title": "数据源加载失败"
+      },
+      "cards": {
+        "label": "可用数据源",
+        "open": "开放数据源",
+        "csv": {
+          "title": "CSV 文件",
+          "description": "从 CSV 文件中审核并添加已同意的联系人。"
+        },
+        "woocommerce": {
+          "title": "WooCommerce",
+          "description": "从最近的商店订单中审核并添加已同意的联系人。"
+        },
+        "shopify": {
+          "title": "Shopify",
+          "description": "计划中的连接器。"
+        },
+        "square": {
+          "title": "Square",
+          "description": "计划中的连接器。"
+        },
+        "hubspot": {
+          "title": "HubSpot",
+          "description": "计划中的连接器。"
+        },
+        "pipedrive": {
+          "title": "Pipedrive",
+          "description": "计划中的连接器。"
+        }
+      },
+      "status": {
+        "connected": "已连接",
+        "available": "可用",
+        "comingSoon": "即将推出"
+      },
+      "activity": {
+        "eyebrow": "最近活动",
+        "title": "导入历史",
+        "viewAll": "查看全部",
+        "empty": "尚无导入记录。请选择一个数据源以开始仅审核的预览。"
+      },
+      "history": {
+        "eyebrow": "审计轨迹",
+        "title": "导入历史",
+        "description": "最近审核导入的无 PII 的计数和同意元数据。",
+        "source": "来源",
+        "date": "日期",
+        "status": "状态",
+        "valid": "有效",
+        "imported": "已导入",
+        "skipped": "已跳过",
+        "emptyTitle": "尚无导入历史",
+        "emptyDescription": "经过审核的导入将显示在此处，包含计数和状态。"
+      },
+      "type": {
+        "csv": "CSV",
+        "woocommerce": "WooCommerce"
+      },
+      "importStatus": {
+        "previewed": "已预览",
+        "committed": "已导入",
+        "failed": "失败"
+      }
     }
   },
   "zh-TW": {
@@ -3992,7 +4868,8 @@
       "guideHint": "開啟設定指南",
       "share": "分享",
       "shareHint": "與朋友分享 Get Phame",
-      "complianceHint": "檢視合規指南"
+      "complianceHint": "檢視合規指南",
+      "sources": "來源"
     },
     "login": {
       "consentSuffix": ".",
@@ -4645,6 +5522,151 @@
     },
     "socialProof": {
       "trustedByBusinesses": "內建工作流程保護機制"
+    },
+    "sources": {
+      "consent": {
+        "title": "在匯入前確認授權",
+        "description": "僅匯入已授權與您聯繫的聯絡人。匯入不會寄送訊息。",
+        "basisLabel": "授權依據",
+        "basis": {
+          "express": "明確同意",
+          "contract": "客戶關係 / 契約",
+          "legitimateInterest": "有紀錄的正當利益",
+          "other": "其他有紀錄的依據"
+        },
+        "sourceLabel": "授權記錄來源",
+        "sourcePlaceholder": "範例：於 2026 年 7 月 20 日結帳時勾選同意",
+        "attestation": "我確認這些聯絡人已授權與本公司聯繫，我將在匯入前查看預覽。"
+      },
+      "preview": {
+        "requested": "列",
+        "valid": "有效",
+        "duplicates": "重複項",
+        "rejected": "已拒絕",
+        "eyebrow": "需要審核",
+        "title": "匯入預覽",
+        "description": "重複項會被略過。匯入時不會寄送任何訊息。",
+        "reused": "使用現有預覽",
+        "tableLabel": "聯絡人匯入預覽",
+        "name": "姓名",
+        "email": "電子郵件",
+        "phone": "電話",
+        "commit": "匯入已審核的聯絡人",
+        "create": "建立審核預覽"
+      },
+      "woo": {
+        "connectedToast": "WooCommerce 已安全連線。",
+        "disconnectedToast": "WooCommerce 已中斷連線。",
+        "stagedToast": "{{count}} 個聯絡人待審核",
+        "noNewToast": "未發現新的 WooCommerce 聯絡人。",
+        "eyebrow": "安全連線",
+        "connectTitle": "連接 WooCommerce",
+        "connectDescription": "使用唯讀 WooCommerce REST API 密鑰。秘密資料經加密，儲存後不會顯示。",
+        "storeUrl": "商店 URL",
+        "consumerKey": "消費者金鑰",
+        "consumerSecret": "消費者密鑰",
+        "connect": "測試並連線",
+        "connectedStore": "已連線的商店",
+        "disconnect": "中斷連線",
+        "pending": "待審核的暫存聯絡人",
+        "manualOnly": "僅手動審核",
+        "manualDescription": "無排程，且不執行自動行銷活動。",
+        "fetch": "抓取最近訂單以供審核"
+      },
+      "import": {
+        "successToast": "已匯入 {{imported}} 位聯絡人；跳過 {{skipped}} 個重複項。"
+      },
+      "csv": {
+        "tooLarge": "請選擇小於 2 MB 的 CSV 檔案。",
+        "emailMissing": "CSV 需要有電子郵件欄位。",
+        "loadedToast": "已載入 {{count}} 行以供審核。",
+        "parseError": "無法讀取 CSV。請檢查格式並再試一次。",
+        "eyebrow": "一次性匯入",
+        "title": "上傳 CSV",
+        "description": "使用包含電子郵件欄的標頭列。每次審核匯入至多 1,000 行、2 MB。",
+        "choose": "選擇 CSV 檔案",
+        "rowsLoaded": "{{count}} 行已載入",
+        "chooseHelp": "需要電子郵件；姓名與電話為選填"
+      },
+      "eyebrow": "聯絡人進件",
+      "title": "來源",
+      "subtitle": "連接已核准的資料來源，逐一審核每位聯絡人，新增經同意的聯絡人且不啟動行銷活動。",
+      "safeguards": {
+        "encrypted": "憑證在儲存時加密",
+        "reviewed": "匯入前已審核聯絡人",
+        "noSend": "匯入時不會寄送訊息"
+      },
+      "nav": {
+        "label": "來源工作區",
+        "overview": "概覽",
+        "csv": "CSV",
+        "woocommerce": "WooCommerce",
+        "history": "歷史"
+      },
+      "error": {
+        "title": "來源無法載入"
+      },
+      "cards": {
+        "label": "可用資料來源",
+        "open": "開放資料來源",
+        "csv": {
+          "title": "CSV 檔案",
+          "description": "從 CSV 檔案審核並新增經同意的聯絡人。"
+        },
+        "woocommerce": {
+          "title": "WooCommerce",
+          "description": "從最近的商店訂單審核並新增經同意的聯絡人。"
+        },
+        "shopify": {
+          "title": "Shopify",
+          "description": "尚在規畫中的連接器。"
+        },
+        "square": {
+          "title": "Square",
+          "description": "尚在規畫中的連接器。"
+        },
+        "hubspot": {
+          "title": "HubSpot",
+          "description": "尚在規畫中的連接器。"
+        },
+        "pipedrive": {
+          "title": "Pipedrive",
+          "description": "尚在規畫中的連接器。"
+        }
+      },
+      "status": {
+        "connected": "已連線",
+        "available": "可用",
+        "comingSoon": "即將推出"
+      },
+      "activity": {
+        "eyebrow": "最近活動",
+        "title": "匯入歷史",
+        "viewAll": "查看全部",
+        "empty": "尚無匯入。請先選擇來源以開始審核預覽。"
+      },
+      "history": {
+        "eyebrow": "稽核紀錄",
+        "title": "匯入歷史",
+        "description": "不含 PII 的計數與最近審核匯入的同意資料。",
+        "source": "來源",
+        "date": "日期",
+        "status": "狀態",
+        "valid": "有效",
+        "imported": "已匯入",
+        "skipped": "已略過",
+        "emptyTitle": "尚無匯入歷史",
+        "emptyDescription": "已審核的匯入將在此顯示計數與狀態。"
+      },
+      "type": {
+        "csv": "CSV",
+        "woocommerce": "WooCommerce"
+      },
+      "importStatus": {
+        "previewed": "已預覽",
+        "committed": "已匯入",
+        "failed": "失敗"
+      }
     }
   }
 }

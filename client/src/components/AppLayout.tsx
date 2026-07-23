@@ -3,7 +3,7 @@
 // Tablet (768–1023px): icon-only sidebar (64px) + content
 // Desktop (1024px+): full sidebar (220px) with labels + content
 import { useLocation } from "wouter";
-import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown, ShieldCheck, Users, LogOut, UserRound, Code2 } from "lucide-react";
+import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown, ShieldCheck, Users, LogOut, UserRound, Code2, DatabaseZap } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
@@ -44,6 +44,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     { path: "/", label: t("nav.home"), Icon: Home },
     { path: "/send", label: t("nav.send"), Icon: Send },
     { path: "/dashboard", label: t("nav.dashboard"), Icon: BarChart2 },
+    { path: "/sources", label: t("nav.sources", { defaultValue: "Sources" }), Icon: DatabaseZap },
     { path: "/developer", label: t("nav.developer", { defaultValue: "Developer" }), Icon: Code2 },
     { path: "/settings", label: t("nav.settings"), Icon: Settings },
     ...(user?.role === "admin" ? [{ path: "/admin", label: t("nav.admin", { defaultValue: "Administration" }), Icon: Users }] : []),

@@ -4,7 +4,7 @@
 //             hover scale + gold glow on icon container, label colour lift
 
 import { useLocation } from 'wouter';
-import { Home, Send, BarChart2, Settings, Moon, Sun, ShieldCheck, UserRound, LogOut } from 'lucide-react';
+import { Home, Send, BarChart2, Settings, Moon, Sun, ShieldCheck, UserRound, LogOut, DatabaseZap } from 'lucide-react';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { useHaptics } from '@/hooks/useHaptics';
@@ -184,6 +184,17 @@ export default function BottomNav() {
                 >
                   <BarChart2 size={18} className="rr-text-gold" />
                   {t('profileMenu.dashboard', { defaultValue: 'Dashboard' })}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  data-testid="mobile-sources-link"
+                  onSelect={() => {
+                    buttonPressHaptic();
+                    navigate('/sources');
+                  }}
+                  className="min-h-12 cursor-pointer gap-3 rounded-lg text-sm font-semibold focus:bg-white/10 focus:text-white"
+                >
+                  <DatabaseZap size={18} className="rr-text-gold" />
+                  {t('nav.sources', { defaultValue: 'Sources' })}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   data-testid="mobile-account-details"

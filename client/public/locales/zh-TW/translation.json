@@ -25,7 +25,8 @@
     "faq": "FAQ",
     "manageUsers": "管理使用者",
     "admin": "管理員",
-    "developer": "開發者"
+    "developer": "開發者",
+    "sources": "來源"
   },
   "hero": {
     "tagline": "免費開始 — 無需信用卡",
@@ -2441,6 +2442,151 @@
       "completeRequired": "請完成所有業務用途欄位和確認項目。",
       "requiredForScope": "加入傳送權限前，請完成業務用途註冊。",
       "scopeLocked": "需要完成業務用途註冊"
+    }
+  },
+  "sources": {
+    "consent": {
+      "title": "在匯入前確認授權",
+      "description": "僅匯入已授權與您聯繫的聯絡人。匯入不會寄送訊息。",
+      "basisLabel": "授權依據",
+      "basis": {
+        "express": "明確同意",
+        "contract": "客戶關係 / 契約",
+        "legitimateInterest": "有紀錄的正當利益",
+        "other": "其他有紀錄的依據"
+      },
+      "sourceLabel": "授權記錄來源",
+      "sourcePlaceholder": "範例：於 2026 年 7 月 20 日結帳時勾選同意",
+      "attestation": "我確認這些聯絡人已授權與本公司聯繫，我將在匯入前查看預覽。"
+    },
+    "preview": {
+      "requested": "列",
+      "valid": "有效",
+      "duplicates": "重複項",
+      "rejected": "已拒絕",
+      "eyebrow": "需要審核",
+      "title": "匯入預覽",
+      "description": "重複項會被略過。匯入時不會寄送任何訊息。",
+      "reused": "使用現有預覽",
+      "tableLabel": "聯絡人匯入預覽",
+      "name": "姓名",
+      "email": "電子郵件",
+      "phone": "電話",
+      "commit": "匯入已審核的聯絡人",
+      "create": "建立審核預覽"
+    },
+    "woo": {
+      "connectedToast": "WooCommerce 已安全連線。",
+      "disconnectedToast": "WooCommerce 已中斷連線。",
+      "stagedToast": "{{count}} 個聯絡人待審核",
+      "noNewToast": "未發現新的 WooCommerce 聯絡人。",
+      "eyebrow": "安全連線",
+      "connectTitle": "連接 WooCommerce",
+      "connectDescription": "使用唯讀 WooCommerce REST API 密鑰。秘密資料經加密，儲存後不會顯示。",
+      "storeUrl": "商店 URL",
+      "consumerKey": "消費者金鑰",
+      "consumerSecret": "消費者密鑰",
+      "connect": "測試並連線",
+      "connectedStore": "已連線的商店",
+      "disconnect": "中斷連線",
+      "pending": "待審核的暫存聯絡人",
+      "manualOnly": "僅手動審核",
+      "manualDescription": "無排程，且不執行自動行銷活動。",
+      "fetch": "抓取最近訂單以供審核"
+    },
+    "import": {
+      "successToast": "已匯入 {{imported}} 位聯絡人；跳過 {{skipped}} 個重複項。"
+    },
+    "csv": {
+      "tooLarge": "請選擇小於 2 MB 的 CSV 檔案。",
+      "emailMissing": "CSV 需要有電子郵件欄位。",
+      "loadedToast": "已載入 {{count}} 行以供審核。",
+      "parseError": "無法讀取 CSV。請檢查格式並再試一次。",
+      "eyebrow": "一次性匯入",
+      "title": "上傳 CSV",
+      "description": "使用包含電子郵件欄的標頭列。每次審核匯入至多 1,000 行、2 MB。",
+      "choose": "選擇 CSV 檔案",
+      "rowsLoaded": "{{count}} 行已載入",
+      "chooseHelp": "需要電子郵件；姓名與電話為選填"
+    },
+    "eyebrow": "聯絡人進件",
+    "title": "來源",
+    "subtitle": "連接已核准的資料來源，逐一審核每位聯絡人，新增經同意的聯絡人且不啟動行銷活動。",
+    "safeguards": {
+      "encrypted": "憑證在儲存時加密",
+      "reviewed": "匯入前已審核聯絡人",
+      "noSend": "匯入時不會寄送訊息"
+    },
+    "nav": {
+      "label": "來源工作區",
+      "overview": "概覽",
+      "csv": "CSV",
+      "woocommerce": "WooCommerce",
+      "history": "歷史"
+    },
+    "error": {
+      "title": "來源無法載入"
+    },
+    "cards": {
+      "label": "可用資料來源",
+      "open": "開放資料來源",
+      "csv": {
+        "title": "CSV 檔案",
+        "description": "從 CSV 檔案審核並新增經同意的聯絡人。"
+      },
+      "woocommerce": {
+        "title": "WooCommerce",
+        "description": "從最近的商店訂單審核並新增經同意的聯絡人。"
+      },
+      "shopify": {
+        "title": "Shopify",
+        "description": "尚在規畫中的連接器。"
+      },
+      "square": {
+        "title": "Square",
+        "description": "尚在規畫中的連接器。"
+      },
+      "hubspot": {
+        "title": "HubSpot",
+        "description": "尚在規畫中的連接器。"
+      },
+      "pipedrive": {
+        "title": "Pipedrive",
+        "description": "尚在規畫中的連接器。"
+      }
+    },
+    "status": {
+      "connected": "已連線",
+      "available": "可用",
+      "comingSoon": "即將推出"
+    },
+    "activity": {
+      "eyebrow": "最近活動",
+      "title": "匯入歷史",
+      "viewAll": "查看全部",
+      "empty": "尚無匯入。請先選擇來源以開始審核預覽。"
+    },
+    "history": {
+      "eyebrow": "稽核紀錄",
+      "title": "匯入歷史",
+      "description": "不含 PII 的計數與最近審核匯入的同意資料。",
+      "source": "來源",
+      "date": "日期",
+      "status": "狀態",
+      "valid": "有效",
+      "imported": "已匯入",
+      "skipped": "已略過",
+      "emptyTitle": "尚無匯入歷史",
+      "emptyDescription": "已審核的匯入將在此顯示計數與狀態。"
+    },
+    "type": {
+      "csv": "CSV",
+      "woocommerce": "WooCommerce"
+    },
+    "importStatus": {
+      "previewed": "已預覽",
+      "committed": "已匯入",
+      "failed": "失敗"
     }
   }
 }

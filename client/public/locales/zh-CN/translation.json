@@ -34,7 +34,8 @@
     "faq": "FAQ",
     "manageUsers": "管理用户",
     "admin": "管理员",
-    "developer": "开发者"
+    "developer": "开发者",
+    "sources": "数据源"
   },
   "hero": {
     "tagline": "免费开始 — 无需信用卡",
@@ -2419,6 +2420,151 @@
       "completeRequired": "请完成所有业务用途字段和确认项。",
       "requiredForScope": "添加发送权限前，请完成业务用途注册。",
       "scopeLocked": "需要完成业务用途注册"
+    }
+  },
+  "sources": {
+    "consent": {
+      "title": "在导入前确认许可",
+      "description": "仅导入已允许与你联系的人员。导入不会发送消息。",
+      "basisLabel": "许可依据",
+      "basis": {
+        "express": "显式许可",
+        "contract": "客户关系/合同",
+        "legitimateInterest": "有书面的正当利益",
+        "other": "其他书面依据"
+      },
+      "sourceLabel": "许可记录来源",
+      "sourcePlaceholder": "示例：在 2026 年 7 月 20 日的结账时勾选同意",
+      "attestation": "我确认这些联系人已授权与本商家联系，并且在导入前将审核预览。"
+    },
+    "preview": {
+      "requested": "行数",
+      "valid": "有效",
+      "duplicates": "重复项",
+      "rejected": "已拒绝",
+      "eyebrow": "需要审核",
+      "title": "导入预览",
+      "description": "重复项将被跳过。导入时不会发送消息。",
+      "reused": "现有预览已复用",
+      "tableLabel": "联系人导入预览",
+      "name": "姓名",
+      "email": "邮箱",
+      "phone": "电话",
+      "commit": "导入已审核的联系人",
+      "create": "创建审核预览"
+    },
+    "woo": {
+      "connectedToast": "WooCommerce 已安全连接。",
+      "disconnectedToast": "WooCommerce 已断开连接。",
+      "stagedToast": "{{count}} 条联系人已放置待审核。",
+      "noNewToast": "未发现新的 WooCommerce 联系人。",
+      "eyebrow": "安全连接",
+      "connectTitle": "连接 WooCommerce",
+      "connectDescription": "使用只读的 WooCommerce REST API 凭据。密钥在保存后将被加密并且永不显示。",
+      "storeUrl": "商店 URL",
+      "consumerKey": "消费者密钥",
+      "consumerSecret": "消费者密钥",
+      "connect": "测试并连接",
+      "connectedStore": "已连接的商店",
+      "disconnect": "断开连接",
+      "pending": "待审核的联系人",
+      "manualOnly": "仅人工审核",
+      "manualDescription": "无排程，亦无自动化活动。",
+      "fetch": "获取最近的订单以供审核"
+    },
+    "import": {
+      "successToast": "已导入 {{imported}} 条联系人；跳过 {{skipped}} 条重复项。"
+    },
+    "csv": {
+      "tooLarge": "请选择小于 2 MB 的 CSV 文件。",
+      "emailMissing": "CSV 需要一个邮箱列。",
+      "loadedToast": "已加载 {{count}} 行以供审核。",
+      "parseError": "无法读取 CSV。请检查格式并重试。",
+      "eyebrow": "一次性导入",
+      "title": "上传 CSV",
+      "description": "使用包含邮箱列的标题行。每次审核导入最多 1,000 行，2 MB。",
+      "choose": "选择 CSV 文件",
+      "rowsLoaded": "{{count}} 行已加载",
+      "chooseHelp": "需要邮箱；姓名和电话为可选"
+    },
+    "eyebrow": "联系人导入",
+    "title": "数据源",
+    "subtitle": "连接经批准的数据源，逐一审核每个人，并在不启动活动的情况下添加已同意的联系人。",
+    "safeguards": {
+      "encrypted": "凭据在存储时加密",
+      "reviewed": "导入前对联系人进行审核",
+      "noSend": "导入从不发送消息"
+    },
+    "nav": {
+      "label": "数据源工作区",
+      "overview": "概览",
+      "csv": "CSV",
+      "woocommerce": "WooCommerce",
+      "history": "历史"
+    },
+    "error": {
+      "title": "数据源加载失败"
+    },
+    "cards": {
+      "label": "可用数据源",
+      "open": "开放数据源",
+      "csv": {
+        "title": "CSV 文件",
+        "description": "从 CSV 文件中审核并添加已同意的联系人。"
+      },
+      "woocommerce": {
+        "title": "WooCommerce",
+        "description": "从最近的商店订单中审核并添加已同意的联系人。"
+      },
+      "shopify": {
+        "title": "Shopify",
+        "description": "计划中的连接器。"
+      },
+      "square": {
+        "title": "Square",
+        "description": "计划中的连接器。"
+      },
+      "hubspot": {
+        "title": "HubSpot",
+        "description": "计划中的连接器。"
+      },
+      "pipedrive": {
+        "title": "Pipedrive",
+        "description": "计划中的连接器。"
+      }
+    },
+    "status": {
+      "connected": "已连接",
+      "available": "可用",
+      "comingSoon": "即将推出"
+    },
+    "activity": {
+      "eyebrow": "最近活动",
+      "title": "导入历史",
+      "viewAll": "查看全部",
+      "empty": "尚无导入记录。请选择一个数据源以开始仅审核的预览。"
+    },
+    "history": {
+      "eyebrow": "审计轨迹",
+      "title": "导入历史",
+      "description": "最近审核导入的无 PII 的计数和同意元数据。",
+      "source": "来源",
+      "date": "日期",
+      "status": "状态",
+      "valid": "有效",
+      "imported": "已导入",
+      "skipped": "已跳过",
+      "emptyTitle": "尚无导入历史",
+      "emptyDescription": "经过审核的导入将显示在此处，包含计数和状态。"
+    },
+    "type": {
+      "csv": "CSV",
+      "woocommerce": "WooCommerce"
+    },
+    "importStatus": {
+      "previewed": "已预览",
+      "committed": "已导入",
+      "failed": "失败"
     }
   }
 }

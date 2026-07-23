@@ -25,7 +25,8 @@
     "faq": "FAQ",
     "manageUsers": "Manage users",
     "admin": "Admin",
-    "developer": "Developer"
+    "developer": "Developer",
+    "sources": "Sources"
   },
   "hero": {
     "tagline": "Free to start — No credit card required",
@@ -2729,5 +2730,150 @@
   "promotionLink": {
     "applied": "Your campaign code will be applied at checkout",
     "verified": "Eligibility is verified securely before Stripe Checkout opens."
+  },
+  "sources": {
+    "consent": {
+      "title": "Confirm permission before importing",
+      "description": "Only import people who gave your business permission to contact them. Importing never sends a message.",
+      "basisLabel": "Permission basis",
+      "basis": {
+        "express": "Express permission",
+        "contract": "Customer relationship / contract",
+        "legitimateInterest": "Documented legitimate interest",
+        "other": "Other documented basis"
+      },
+      "sourceLabel": "Where permission was recorded",
+      "sourcePlaceholder": "Example: checkout opt-in on 20 July 2026",
+      "attestation": "I confirm these contacts gave my business permission to contact them, and I will review the preview before importing."
+    },
+    "preview": {
+      "requested": "Rows",
+      "valid": "Valid",
+      "duplicates": "Duplicates",
+      "rejected": "Rejected",
+      "eyebrow": "Review required",
+      "title": "Import preview",
+      "description": "Duplicates are skipped. Nothing is sent when you import.",
+      "reused": "Existing preview reused",
+      "tableLabel": "Contact import preview",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "commit": "Import reviewed contacts",
+      "create": "Create review preview"
+    },
+    "woo": {
+      "connectedToast": "WooCommerce connected securely.",
+      "disconnectedToast": "WooCommerce disconnected.",
+      "stagedToast": "{{count}} contacts staged for review.",
+      "noNewToast": "No new WooCommerce contacts were found.",
+      "eyebrow": "Secure connection",
+      "connectTitle": "Connect WooCommerce",
+      "connectDescription": "Use read-only WooCommerce REST API credentials. Secrets are encrypted and never displayed after saving.",
+      "storeUrl": "Store URL",
+      "consumerKey": "Consumer key",
+      "consumerSecret": "Consumer secret",
+      "connect": "Test and connect",
+      "connectedStore": "Connected store",
+      "disconnect": "Disconnect",
+      "pending": "Staged contacts awaiting review",
+      "manualOnly": "Manual review only",
+      "manualDescription": "No schedules and no automatic campaigns.",
+      "fetch": "Fetch recent orders for review"
+    },
+    "import": {
+      "successToast": "Imported {{imported}} contacts; skipped {{skipped}} duplicates."
+    },
+    "csv": {
+      "tooLarge": "Choose a CSV file smaller than 2 MB.",
+      "emailMissing": "The CSV needs an email column.",
+      "loadedToast": "Loaded {{count}} rows for review.",
+      "parseError": "The CSV could not be read. Check its formatting and try again.",
+      "eyebrow": "One-time import",
+      "title": "Upload a CSV",
+      "description": "Use a header row with an email column. Up to 1,000 rows and 2 MB per reviewed import.",
+      "choose": "Choose CSV file",
+      "rowsLoaded": "{{count}} rows loaded",
+      "chooseHelp": "Email is required; name and phone are optional"
+    },
+    "eyebrow": "Contact intake",
+    "title": "Sources",
+    "subtitle": "Connect approved data sources, review every person, and add consented contacts without starting a campaign.",
+    "safeguards": {
+      "encrypted": "Credentials encrypted at rest",
+      "reviewed": "Contacts reviewed before import",
+      "noSend": "Importing never sends messages"
+    },
+    "nav": {
+      "label": "Sources workspace",
+      "overview": "Overview",
+      "csv": "CSV",
+      "woocommerce": "WooCommerce",
+      "history": "History"
+    },
+    "error": {
+      "title": "Sources could not load"
+    },
+    "cards": {
+      "label": "Available data sources",
+      "open": "Open source",
+      "csv": {
+        "title": "CSV file",
+        "description": "Review and add consented contacts from a CSV file."
+      },
+      "woocommerce": {
+        "title": "WooCommerce",
+        "description": "Review and add consented contacts from recent store orders."
+      },
+      "shopify": {
+        "title": "Shopify",
+        "description": "Planned connector."
+      },
+      "square": {
+        "title": "Square",
+        "description": "Planned connector."
+      },
+      "hubspot": {
+        "title": "HubSpot",
+        "description": "Planned connector."
+      },
+      "pipedrive": {
+        "title": "Pipedrive",
+        "description": "Planned connector."
+      }
+    },
+    "status": {
+      "connected": "Connected",
+      "available": "Available",
+      "comingSoon": "Coming soon"
+    },
+    "activity": {
+      "eyebrow": "Recent activity",
+      "title": "Import history",
+      "viewAll": "View all",
+      "empty": "No imports yet. Choose a source to begin with a review-only preview."
+    },
+    "history": {
+      "eyebrow": "Audit trail",
+      "title": "Import history",
+      "description": "PII-free counts and consent metadata for your most recent reviewed imports.",
+      "source": "Source",
+      "date": "Date",
+      "status": "Status",
+      "valid": "Valid",
+      "imported": "Imported",
+      "skipped": "Skipped",
+      "emptyTitle": "No import history yet",
+      "emptyDescription": "Reviewed imports will appear here with counts and status."
+    },
+    "type": {
+      "csv": "CSV",
+      "woocommerce": "WooCommerce"
+    },
+    "importStatus": {
+      "previewed": "Previewed",
+      "committed": "Imported",
+      "failed": "Failed"
+    }
   }
 }
