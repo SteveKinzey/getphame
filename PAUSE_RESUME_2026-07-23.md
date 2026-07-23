@@ -19,6 +19,27 @@ The Sources router now uses the shared `paidProcedure` for WooCommerce connectio
 
 The stale cache-version, landing-locale, and Sources procedure-count regressions found by the consolidated full suite were corrected. These corrections have **not yet been rerun** because the pause was requested immediately after the next TypeScript check identified one remaining compile blocker.
 
+## Newly queued global chatbot requirement
+
+The Help Assistant must be available on **every public and authenticated route**, including the public Home/landing page and authenticated Home page. The current implementation is mounted only in `AppLayout`, so logged-out visitors and standalone public routes do not receive it. On resume, mount `HelpAssistant` exactly once inside the top-level theme/translation/tRPC provider tree in `App.tsx`, adjacent to `AppShell`, and remove the existing `AppLayout` instance to prevent duplicate launchers.
+
+The current assistant backend is `protectedProcedure`, although the requested Home-page coverage includes logged-out visitors. Add a public-safe assistant contract that continues to use only curated Get Phame sources, redacts likely secrets, never infers account state, returns the existing structured confidence result, and applies bounded rate limiting by authenticated user when available or a privacy-safe request key for anonymous visitors. Do not expose account-specific data or privileged procedures through the public assistant.
+
+The minimized state must be an accessible compact launcher rather than the current generic `HelpCircle` plus “Help” pill. Use a text-rendered **stylized question mark** in Poppins 900 with the official Get Phame gold/navy tokens and a subtle four-point-star accent; do not substitute a generated logo or generic review-star icon. Provide localized screen-reader text and tooltip, a visible gold focus ring, a minimum 48×48 touch target, pressed feedback, reduced-motion support, and safe-area positioning that avoids the authenticated mobile bottom navigation. Persist the minimized preference per browser with a storage-safe fallback when local storage is unavailable.
+
+The assistant already detects insufficient sources, invalid model output, low confidence, and backend failure as escalation cases. In those cases, automatically present the existing durable `SupportDialog` with the last unanswered question prefilled as a technical support request. Extend `SupportDialog` with typed prefill values for subject, message, topic, name, and email where available, while preserving editable fields, validation, the honeypot, screenshot support, and explicit user confirmation. Do **not** silently email chat content. The existing public support procedure must remain the submission path: it rate-limits the request, stores a durable support record, and calls the server-side mailer whose authoritative recipient is `support@getphame.app` and whose `replyTo` is the requester’s email.
+
+| Acceptance area | Required result |
+|---|---|
+| Global presence | One assistant instance on Home, landing, public product/legal/auth routes, authenticated routes, admin routes, and fallback routes |
+| Minimize/restore | Keyboard- and touch-accessible minimize control; compact branded “?” launcher restores the panel without losing the in-memory conversation |
+| Public safety | Anonymous questions are rate-limited and grounded only in approved sources; no account data, secrets, or durable transcript leakage |
+| Escalation | Low-confidence/fallback answer opens a prefilled support request; the user confirms and supplies a reply email before submission |
+| Delivery | Support submission is stored, notification is sent server-side to `support@getphame.app`, and failure states remain retryable |
+| Localization | All new chatbot, launcher, consent, prefill, anonymous-limit, success, error, and offline copy exists in all seven maintained locales |
+| Responsive behavior | Launcher does not overlap mobile navigation, install prompts, forms, or dialog controls at mobile, tablet, and desktop widths |
+| Regression coverage | Tests prove single-instance global mounting, anonymous/authenticated boundaries, rate limits, fallback prefill, mailbox routing, accessibility, persistence, and locale coverage |
+
 ## Exact known blocker
 
 `pnpm check` currently reports one error:
@@ -43,15 +64,16 @@ The consolidated branch does not contain that component. On resume, remove the u
 
 1. Replace the missing Sources modal dependency with localized navigation to `/upgrade`, then run `pnpm check`.
 2. Run the complete Vitest suite and resolve any remaining failures without weakening the WooCommerce paid, consent, deduplication, and no-automatic-send contracts.
-3. Complete the send-request subject/body editor with preview, compliance checks, localization, and recipient rendering.
-4. Enforce administrator-only template deletion in the backend, hide deletion controls for non-administrators, and add authorization regressions.
-5. Add the Developer / API Keys enrollment flow, required identity and business details, scroll-to-review agreement, drawn signature, immutable agreement evidence, approval gates, least-privilege scopes, one-time secret reveal, expiry, revocation, and rotation.
-6. Finish all seven-locale coverage for the developer, agreement, API-key, and send-time editor experiences.
-7. Verify the Get Phame WooCommerce plugin and app connector end to end: enrollment, import-only key scope, authentication, credential security, pagination, consent/provenance, idempotency, deduplication, paid enforcement, and no automatic sending. Repair, version, test, and package the plugin if required.
-8. Run focused tests, the full suite, TypeScript checks, dependency/security audit, production build, migration review, authenticated responsive verification, pull-request review, canonical merge, managed-project synchronization, checkpoint publication, and live-bundle confirmation.
+3. Implement the global Help Assistant specification above: one all-route mount, public-safe assistant access, branded minimized “?” launcher, persisted minimize preference, typed support prefill, confirmed durable escalation, seven-locale coverage, and focused regressions.
+4. Complete the send-request subject/body editor with preview, compliance checks, localization, and recipient rendering.
+5. Enforce administrator-only template deletion in the backend, hide deletion controls for non-administrators, and add authorization regressions.
+6. Add the Developer / API Keys enrollment flow, required identity and business details, scroll-to-review agreement, drawn signature, immutable agreement evidence, approval gates, least-privilege scopes, one-time secret reveal, expiry, revocation, and rotation.
+7. Finish all seven-locale coverage for the developer, agreement, API-key, and send-time editor experiences.
+8. Verify the Get Phame WooCommerce plugin and app connector end to end: enrollment, import-only key scope, authentication, credential security, pagination, consent/provenance, idempotency, deduplication, paid enforcement, and no automatic sending. Repair, version, test, and package the plugin if required.
+9. Run focused tests, the full suite, TypeScript checks, dependency/security audit, production build, migration review, authenticated responsive verification, pull-request review, canonical merge, managed-project synchronization, checkpoint publication, and live-bundle confirmation.
 
 ## Resume instruction
 
 Use this prompt when returning:
 
-> Resume the Get Phame work from `PAUSE_RESUME_2026-07-23.md` on the saved `consolidation/push-safe` branch. Start with the missing Sources upgrade-navigation fix, then follow the resume queue in order. Do not merge or publish until every validation gate passes.
+> Resume the Get Phame work from `PAUSE_RESUME_2026-07-23.md` on the saved `consolidation/push-safe` branch. Start with the missing Sources upgrade-navigation fix and restore a green baseline, then implement the global all-page Help Assistant and follow the remaining resume queue in order. Do not merge or publish until every validation gate passes.
