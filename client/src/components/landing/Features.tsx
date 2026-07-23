@@ -8,30 +8,30 @@ export default function Features() {
   const features = [
     {
       icon: Mail,
-      title: t("landing.feature1.title", { defaultValue: "Your name. Your inbox. Their trust." }),
+      title: t("landing.feature1.title", { defaultValue: "Personal requests from a connected sender" }),
       description: t("landing.feature1.description", {
-        defaultValue: "Every review request arrives from your actual email address. Customers recognize the sender, so they open it — and they respond.",
+        defaultValue: "Each review request uses the sender details, business identity, and message you configure before sending.",
       }),
-      stat: "45–60%",
-      statLabel: t("landing.feature1.statLabel", { defaultValue: "avg. open rate" }),
+      stat: t("landing.feature1.stat", { defaultValue: "From you" }),
+      statLabel: t("landing.feature1.statLabel", { defaultValue: "connected sender identity" }),
     },
     {
       icon: Users,
-      title: t("landing.feature2.title", { defaultValue: "One click sends to hundreds" }),
+      title: t("landing.feature2.title", { defaultValue: "Import, review, then send" }),
       description: t("landing.feature2.description", {
-        defaultValue: "Import your customer list via CSV or WooCommerce sync, select all, and send personalized requests in seconds. No copy-pasting. No manual work.",
+        defaultValue: "Bring in contacts from CSV or WooCommerce, remove duplicates, review recipients, and choose each send deliberately.",
       }),
-      stat: "500+",
-      statLabel: t("landing.feature2.statLabel", { defaultValue: "sends per batch" }),
+      stat: t("landing.feature2.stat", { defaultValue: "CSV + Woo" }),
+      statLabel: t("landing.feature2.statLabel", { defaultValue: "supported contact sources" }),
     },
     {
       icon: Globe,
-      title: t("landing.feature3.title", { defaultValue: "Every platform. Your choice." }),
+      title: t("landing.feature3.title", { defaultValue: "Platform-aware destinations" }),
       description: t("landing.feature3.description", {
-        defaultValue: "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, and more. Paste your link, switch platforms anytime. One tool for all your review destinations.",
+        defaultValue: "Choose the supported review destination that fits each workflow, with compliance guidance for platforms such as Yelp.",
       }),
-      stat: "10+",
-      statLabel: t("landing.feature3.statLabel", { defaultValue: "platforms supported" }),
+      stat: t("landing.feature3.stat", { defaultValue: "Flexible" }),
+      statLabel: t("landing.feature3.statLabel", { defaultValue: "review destinations" }),
     },
   ];
 
@@ -40,14 +40,14 @@ export default function Features() {
       <div className="container">
         <FadeUp className="max-w-2xl mb-14">
           <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
-            {t("landing.whyItWorks", { defaultValue: "Why it works" })}
+            {t("landing.whyItWorks", { defaultValue: "How it stays controlled" })}
           </p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
-            {t("landing.headline", { defaultValue: "From your inbox to their review" })}
+            {t("landing.headline", { defaultValue: "From customer list to personal request" })}
           </h2>
           <p className="text-lg text-slate-200 font-medium">
             {t("landing.subHeadline", {
-              defaultValue: "The simplest way to turn happy customers into 5-star reviews — without expensive tools or awkward conversations.",
+              defaultValue: "A focused workflow for preparing, sending, and tracking individual review requests—without awkward conversations or automatic outreach.",
             })}
           </p>
         </FadeUp>

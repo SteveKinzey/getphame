@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { getLoginUrl } from "@/const";
-import { ArrowRight, Shield, Mail, Star } from "lucide-react";
+import { ArrowRight, Shield, Mail, MailCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 
@@ -12,7 +12,7 @@ const DASHBOARD_MOCKUP_PNG = "https://assets.getphame.app/phame-app-screenshot.p
 // A/B test variants
 const CTA_VARIANTS = [
   "Start Free — Send 10 Requests",
-  "Get Your First 10 Reviews Free",
+  "Build Your First Review Request",
 ] as const;
 
 type CTAVariant = (typeof CTA_VARIANTS)[number];
@@ -76,7 +76,7 @@ export default function Hero() {
           <div className="max-w-xl">
             <motion.div {...fadeUp(0.1)}>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6">
-                <Star size={14} className="text-primary fill-primary" />
+                <MailCheck size={14} className="text-primary" aria-hidden="true" />
                 <span className="text-sm font-medium text-primary">
                   {t("landing.hero.categoryLabel", { defaultValue: "Review-request email software for local businesses" })}
                 </span>
@@ -87,7 +87,7 @@ export default function Hero() {
               {...fadeUp(0.2)}
               className="font-display font-extrabold text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.1] text-white mb-6"
             >
-              {t("landing.hero.headlinePart1", { defaultValue: "Get more 5-star reviews" })}{" "}
+              {t("landing.hero.headlinePart1", { defaultValue: "Make review requests personal" })}{" "}
               <span className="text-primary">{t("landing.hero.headlinePart2", { defaultValue: "without the awkward ask" })}</span>
             </motion.h1>
 
@@ -128,7 +128,7 @@ export default function Hero() {
               >
                 {ctaVariant === CTA_VARIANTS[0]
                   ? t("landing.hero.ctaVariantA", { defaultValue: "Start Free — Send 10 Requests" })
-                  : t("landing.hero.ctaVariantB", { defaultValue: "Get Your First 10 Reviews Free" })}
+                  : t("landing.hero.ctaVariantB", { defaultValue: "Build Your First Review Request" })}
                 <ArrowRight size={18} />
               </a>
               <a
@@ -146,7 +146,7 @@ export default function Hero() {
             >
               <span className="flex items-center gap-2">
                 <Shield size={14} className="text-emerald-400" />
-                {t("landing.hero.setupTime", { defaultValue: "Set up in under 2 minutes" })}
+                {t("landing.hero.setupTime", { defaultValue: "Guided setup" })}
               </span>
               <span className="flex items-center gap-2">
                 <Mail size={14} className="text-emerald-400" />

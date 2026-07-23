@@ -71,7 +71,7 @@ export default function LeadCapture() {
                 {t("landing.leadCapture.heading", { defaultValue: "Not ready to commit?" })}
               </h2>
               <p className="text-slate-200 font-medium mb-8 max-w-md mx-auto">
-                {t("landing.leadCapture.description", { defaultValue: "Get a free guide on how to 3× your Google reviews in 30 days — plus early access to new features and reputation tips." })}
+                {t("landing.leadCapture.description", { defaultValue: "Get a free guide to building a repeatable, compliance-aware review-request process—plus product updates and reputation tips." })}
               </p>
 
               {!submitted ? (

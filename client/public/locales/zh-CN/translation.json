@@ -10,7 +10,7 @@
     "optional": "可选"
   },
   "seo": {
-    "title": "Get Phame — 获得更多五星好评",
+    "title": "Get Phame — 让评价请求更具个人化 避免尴尬的请求",
     "keywords": "评论请求, Google 评论, 获得更多评论, 评论自动化, 小型企业评论, 发送评论请求邮件, WooCommerce 评论, Stripe 评论",
     "ogDescription": "通过您自己的电子邮件账户发送个性化的评论请求邮件。支持 Google、Yelp、TripAdvisor 等。",
     "shortTitle": "Get Phame"
@@ -38,15 +38,15 @@
   },
   "hero": {
     "tagline": "免费开始 — 无需信用卡",
-    "headline": "无需尴尬请求，即可获得更多五星好评",
+    "headline": "让评价请求更具个人化 避免尴尬的请求",
     "description": "通过您自己的电子邮件账户发送个性化的评论请求。您的客户会看到邮件来自您本人 — 而非通用发件人。",
     "cta": "免费开始",
     "setupTime": "设置只需不到2分钟",
     "rocketIllustrationAlt": "Get Phame 火箭插图",
     "dashboardAlt": "Get Phame 仪表盘显示已发送请求和邮件表现统计数据",
     "dashboardStats": "您的仪表盘 — 实时统计数据",
-    "titlePart1": "获得更多五星",
-    "titlePart2": "Google 评论"
+    "titlePart1": "让评价请求更具个人化",
+    "titlePart2": "避免尴尬的请求"
   },
   "features": {
     "sectionTitle": "为什么企业选择 Get Phame",
@@ -61,11 +61,6 @@
     "platformFeature": {
       "title": "适用于任何评论平台",
       "description": "Google、Yelp、Trustpilot、TripAdvisor、Facebook — 添加任何评论链接。您的客户将直接跳转到您的评论页面。"
-    },
-    "customerQuote": {
-      "quote": "Get Phame 对我们的小型企业来说是一个颠覆性的改变。我们看到了积极评论的显著增长，而且它非常易于使用！",
-      "author": "Tom R.",
-      "authorTitle": "The Corner Café 店主"
     },
     "sendsFromYourEmail": "从您的邮箱发送",
     "oneTapRequests": "一键请求",
@@ -98,7 +93,7 @@
   "faq": {
     "sectionTitle": "常见问题",
     "spamQuestion": "它会看起来像垃圾邮件吗？",
-    "spamAnswer": "不会。每封邮件都通过 SMTP 直接从您自己的电子邮件账户发送 — 而非来自共享的批量发送服务器。您的客户会看到您的姓名、您的电子邮件地址以及以您的口吻撰写的信息。它会像个人便条一样送达收件箱，而不是营销群发邮件。",
+    "spamAnswer": "每条请求都通过你连接的电子邮件账户发送，使用你配置的发件人姓名、地址、签名和信息。在发送前预览邮件并遵循提供商的送达指南。",
     "providersQuestion": "支持哪些电子邮件提供商？",
     "providersAnswer": "任何支持 SMTP 的提供商都适用：Gmail、Outlook、Yahoo Mail、Apple iCloud Mail、cPanel/Zoho 商业电子邮件，以及几乎所有托管服务提供商的邮件服务器。如果您可以在手机上设置电子邮件应用，您就可以将其连接到 Get Phame。",
     "freeQuestion": "它真的是免费的吗？",
@@ -106,7 +101,7 @@
     "importQuestion": "我可以导入我的客户列表吗？",
     "importAnswer": "是的。您可以上传包含客户姓名和电子邮件地址的 CSV 文件，或者如果您经营在线商店，可以直接从 WooCommerce 同步。导入后，您可以批量选择联系人，并一键发送个性化评论请求。",
     "q1": "邮件会被当作垃圾邮件吗？",
-    "a1": "不会。每封邮件都直接从您自己的邮箱账户通过SMTP发送，客户会看到您的姓名和邮箱地址。",
+    "a1": "每条请求都通过你连接的电子邮件账户发送，使用你配置的发件人姓名、地址、签名和信息。在发送前预览邮件并遵循提供商的送达指南。",
     "q2": "支持哪些邮件服务商？",
     "a2": "支持所有SMTP邮件服务商：Gmail、Outlook、Yahoo Mail、Apple iCloud Mail等。",
     "q3": "真的免费吗？",
@@ -131,10 +126,10 @@
     "a12": "无限表示评价请求没有月度上限。免费计划先提供 10 次，之后每滚动 30 天提供 5 次。Pro 会取消此产品限制。"
   },
   "bottomCta": {
-    "headline": "立即开始收集评论",
+    "headline": "你的收件箱。你的客户。 你的控制。",
     "description": "永久免费。无需信用卡。2分钟内完成设置。",
     "cta": "免费开始",
-    "title": "准备好获取更多评价了吗？",
+    "title": "你的收件箱。你的客户。 你的控制。",
     "subtitle": "永久免费，无需信用卡，2分钟内完成设置。"
   },
   "footer": {
@@ -925,7 +920,7 @@
     "invalidCodeError": "无效代码。请重试。"
   },
   "socialProof": {
-    "trustedByBusinesses": "深受本地企业信赖，助您获得更多五星好评"
+    "trustedByBusinesses": "内置工作流安全措施"
   },
   "comparisonTable": {
     "feature": "功能",
@@ -1310,19 +1305,6 @@
     "colLifetime": "终身版选项",
     "priceDisclaimer": "价格基于2026年4月各平台官网公开的入门级方案。"
   },
-  "testimonials": {
-    "sectionTitle": "用户真实评价",
-    "sarah": {
-      "quote": "以前我很害怕向客户索取评价，感觉很尴尬。Phame用我自己的Gmail发送请求，看起来就像我亲自写的一样。六周内，我的Google评价从12条增加到了47条。",
-      "name": "Sarah M.",
-      "role": "自由摄影师"
-    },
-    "tom": {
-      "quote": "我们每天服务约80位顾客。每周五我从CSV导入本周常客名单，点击发送，周一早上通常就能收到8–10条新评价。这已经成为我们每周的固定流程。",
-      "name": "Tom R.",
-      "role": "The Corner Café 老板"
-    }
-  },
   "onboarding": {
     "googleBtn": "使用 Google 继续",
     "appleBtn": "使用 Apple 继续",
@@ -1451,20 +1433,6 @@
     "dataPrivacy": "Your customer list stays private",
     "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
     "unsubscribe": "Unsubscribe link in every email"
-  },
-  "proof": {
-    "sectionTitle": "Built for Businesses That Run on Reputation",
-    "sectionSubtitle": "Photographers, cafés, home services, clinics, agencies, and WooCommerce stores.",
-    "type1": "Cafés & Restaurants",
-    "type2": "Home Services",
-    "type3": "Photographers",
-    "type4": "Clinics & Salons",
-    "stat1Value": "10×",
-    "stat1Label": "more reviews vs. asking in person",
-    "stat2Value": "< 2 min",
-    "stat2Label": "average setup time",
-    "stat3Value": "Your inbox",
-    "stat3Label": "emails sent from your own address"
   },
   "demo": {
     "sectionTitle": "See It In Action",
@@ -1863,7 +1831,7 @@
     "copied": "已复制！",
     "copySuccessToast": "推荐链接已复制！",
     "copyErrorToast": "无法复制链接。",
-    "shareMessage": "通过 Get Phame 获得更多 5 星好评 — {{url}}",
+    "shareMessage": "让评价请求更具个人化 避免尴尬的请求: {{url}}",
     "noReferralsHint": "在下方分享链接，开始赚取免费月份",
     "pendingReferralsHint": "{{count}} 位好友已加入 — 等待他们升级为付费",
     "pendingReferralsHint_plural": "{{count}} 位好友已加入 — 等待他们升级为付费",
@@ -2044,21 +2012,15 @@
   },
   "landing": {
     "hero": {
-      "categoryLabel": "面向本地商家的评价请求邮件软件",
-      "googleDisclosureLabel": "Google 登录数据使用"
+      "headlinePart1": "让评价请求更具个人化",
+      "headlinePart2": "避免尴尬的请求",
+      "ctaVariantA": "免费开始 — 发送 10 条请求",
+      "ctaVariantB": "创建您的第一条评价请求",
+      "setupTime": "引导设置"
     },
     "leadCapture": {
-      "addressConfirmation": "我们已将其发送至 {{email}}。请确认拼写并在未收到时检查垃圾邮件。服务商接受并不保证投递到收件箱。",
-      "deliveryFallback": "无法向 {{email}} 发送邮件。请确认拼写、重试，或立即下载指南。",
-      "downloadGuideButton": "下载 PDF 指南",
-      "downloadReadyMessage": "指南已准备好，可供下载。",
-      "editEmail": "编辑邮箱",
-      "emailConfirmationHint": "我们会在您离开前再次显示该地址，以便您发现拼写错误。",
-      "emailInvalid": "请输入格式正确的电子邮件，例如 name@example.com。",
-      "emailRequired": "请输入您的电子邮件地址。",
-      "providerAcceptedMessage": "您的邮箱服务商已接受该指南以进行投递。",
-      "sharePrompt": "认识需要更多评价的人吗？分享这份免费指南。",
-      "tryAgain": "重试发送邮件"
+      "description": "获取一份免费指南，帮助建立可重复、合规意识强的评价请求流程，并获取产品更新和声誉提示。",
+      "sharePrompt": "知道有人需要发送评价请求？请分享这本免费操作指南。"
     },
     "purpose": {
       "description": "Get Phame 帮助本地商家使用其已连接的邮箱，从自有邮箱发送个性化的评价请求邮件。适用于希望更简便向真实客户征求反馈的商家、摄影师、咖啡馆与餐厅、家政与上门服务团队、诊所与沙龙、代理机构及 WooCommerce 商店。",
@@ -2077,7 +2039,15 @@
       "title": "Get Phame 能做什么"
     },
     "stats": {
-      "emailsSentValue": "您的收件箱"
+      "recipientControlValue": "你选择",
+      "recipientControlLabel": "每条请求的收件人",
+      "individualValue": "一对一",
+      "individualLabel": "单独的评价请求外联",
+      "connectedEmailValue": "你的收件箱",
+      "connectedEmailLabel": "从你连接的账户发送",
+      "reminderValue": "自动",
+      "reminderLabel": "完成后，未来的提醒将停止",
+      "heading": "每一步的控制"
     },
     "support": {
       "attachment": "截图",
@@ -2114,6 +2084,105 @@
         "subjectMin": "请输入至少 3 个字符的主题。"
       },
       "website": "网站"
+    },
+    "feature1": {
+      "title": "来自已连接发送者的个性化请求",
+      "description": "每条评价请求在发送前使用你配置的发件人信息、企业身份和消息。",
+      "stat": "来自你",
+      "statLabel": "已连接发件人身份"
+    },
+    "feature2": {
+      "title": "导入、审核，然后发送",
+      "description": "从 CSV 或 WooCommerce 导入联系人，去除重复项，审核收件人，并逐一谨慎地选择发送对象。",
+      "stat": "CSV + Woo",
+      "statLabel": "受支持的联系来源"
+    },
+    "feature3": {
+      "title": "面向平台的评价去向",
+      "description": "为每个工作流选择一个符合的评价去向，并提供 Yelp 等平台的合规指南。",
+      "stat": "灵活",
+      "statLabel": "评价去向"
+    },
+    "whyItWorks": "保持受控的方式",
+    "headline": "从客户名单到个性化请求",
+    "subHeadline": "一个专注的工作流，用于准备、发送和跟踪单个评价请求——无需尴尬对话或自动外联。",
+    "finalCta": {
+      "headlinePart1": "你的收件箱。你的客户。",
+      "headlinePart2": "你的控制。",
+      "description": "开始时发送 10 条评价请求，然后在每个滚动的 30 天内再获得 5 条。无需信用卡。发送前你可以选择每个收件人。",
+      "getStartedButton": "免费开始",
+      "joinBusinesses": "个体化、知情同意的外联，在发送流程中内置合规指南。"
+    },
+    "howItWorks": {
+      "setupSteps": {
+        "step1": {
+          "title": "连接您的邮件账户",
+          "description": "将 Gmail、Outlook 或 SMTP 账户链接，并提供供应商特定的分步说明。凭据在静态存储时被加密。"
+        },
+        "step4": {
+          "title": "发送并跟踪活动",
+          "description": "向你选择的每位客户发送个性化请求，然后跟踪发送、打开、点击、提醒和完成状态。"
+        }
+      },
+      "headline": "完成您的第一条评价请求的四个步骤",
+      "setupTime": "支持的邮件提供商的引导设置"
+    },
+    "productShowcase": {
+      "tabEmailDescription": "每条评价请求在发送前使用你配置的电子邮件地址、发件人姓名、签名和信息。",
+      "tabTrackingTitle": "跟踪请求活动",
+      "tabTrackingDescription": "在一个活动视图中查看所有发送、已打开、已点击、已提醒和已完成的请求。",
+      "tabTrackingAlt": "Get Phame 活动仪表板，显示评价请求发送、打开、点击、提醒和完成状态",
+      "sectionDescription": "一个专注工具。三种实用视图。你所需的一切，用于管理评价请求的外联。"
+    },
+    "socialProofBar": {
+      "heading": "内置工作流安全措施",
+      "safeguards": {
+        "privacy": {
+          "title": "隐私为先",
+          "description": "仅在发送工作流中使用你选择的请求所需的客户信息。"
+        },
+        "consent": {
+          "title": "知情同意",
+          "description": "不会自动添加联系人或发送信息。你控制谁会收到每条请求。"
+        },
+        "compliance": {
+          "title": "合规指南",
+          "description": "在发送单条评价请求前提供面向平台的指南。"
+        },
+        "reminders": {
+          "title": "提醒控制",
+          "description": "当客户完成所请求的动作后，未来的提醒将停止。"
+        }
+      }
+    },
+    "testimonials": {
+      "proofLabel": "产品证明",
+      "headline": "Get Phame 的设计目标",
+      "subtitle": "你可以在应用中验证的功能——不含未验证的客户主张或结果承诺。",
+      "email": {
+        "label": "已连接的电子邮件",
+        "title": "从你连接的账户发送",
+        "description": "使用你配置的企业身份、发件人信息和消息，创建个性化请求。"
+      },
+      "control": {
+        "label": "收件人控制",
+        "title": "你选择每位客户",
+        "description": "添加或导入联系人，逐一审核收件人，只有在你决定时才发送。Get Phame 不会自动向联系人发送消息。"
+      },
+      "activity": {
+        "label": "行动可见性",
+        "title": "跟踪请求活动",
+        "description": "在一个工作区中查看发送、打开、点击、提醒和完成状态，而不臆造客户结果。"
+      },
+      "getStartedFree": "探索 Get Phame 免费版本"
+    },
+    "faq": {
+      "a1": "每条请求都通过你连接的电子邮件账户发送，使用你配置的发件人姓名、地址、签名和信息。在发送前预览邮件并遵循提供商的送达指南。",
+      "a6": "消息通过你连接的电子邮件账户发送，因此提供商的发送限制、域名信誉、SPF、DKIM、内容以及收件人互动可能影响投递。没有服务能保证邮箱投递。",
+      "a9": "否。Get Phame 提供 Gmail、Outlook 以及其他受支持的 SMTP 服务的供应商特定设置指南。自定义 SMTP 连接需要你提供的服务器地址、端口和凭据。"
+    },
+    "section": {
+      "description": "观看一个简短的演练，了解连接邮箱、添加客户、发送请求和跟踪活动。"
     }
   },
   "developerIntegrations": {

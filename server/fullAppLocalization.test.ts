@@ -135,7 +135,7 @@ describe("Full application localization coverage", () => {
     const pwaShareSource = readProjectFile("../client/src/lib/pwaShare.ts");
 
     for (const locale of SUPPORTED_NON_ENGLISH_LOCALES) {
-      expect(helperSource).toContain(`getphame-static-copy-${locale}-phame18-static-copy`);
+      expect(helperSource).toContain(`getphame-static-copy-${locale}-phame29-static-copy`);
     }
     expect(helperSource).toContain("export function loadStaticLocalizationSupplement");
     expect(helperSource).toContain("mergeStaticCopySupplement");

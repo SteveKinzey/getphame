@@ -1,6 +1,6 @@
 {
   "seo": {
-    "title": "Get Phame — 獲得更多五星好評",
+    "title": "Get Phame — 讓評價邀請更具個人化 避免尷尬的邀請",
     "keywords": "評論請求, Google 評論, 獲得更多評論, 評論自動化, 小型企業評論, 傳送評論請求郵件, WooCommerce 評論, Stripe 評論",
     "ogDescription": "透過您自己的電子郵件賬戶傳送個性化的評論請求郵件。支援 Google、Yelp、TripAdvisor 等。",
     "shortTitle": "Get Phame"
@@ -29,15 +29,15 @@
   },
   "hero": {
     "tagline": "免費開始 — 無需信用卡",
-    "headline": "無需尷尬請求，即可獲得更多五星好評",
+    "headline": "讓評價邀請更具個人化 避免尷尬的邀請",
     "description": "透過您自己的電子郵件賬戶傳送個性化的評論請求。您的客戶會看到郵件來自您本人 — 而非通用發件人。",
     "cta": "免費開始",
     "setupTime": "設定只需不到2分鐘",
     "rocketIllustrationAlt": "Get Phame 火箭插圖",
     "dashboardAlt": "Get Phame 儀表盤顯示已傳送請求和郵件表現統計資料",
     "dashboardStats": "您的儀表盤 — 實時統計資料",
-    "titlePart1": "獲得更多五星",
-    "titlePart2": "Google 評論"
+    "titlePart1": "讓評價邀請更具個人化",
+    "titlePart2": "避免尷尬的邀請"
   },
   "features": {
     "sectionTitle": "為什麼企業選擇 Get Phame",
@@ -52,11 +52,6 @@
     "platformFeature": {
       "title": "適用於任何評論平臺",
       "description": "Google、Yelp、Trustpilot、TripAdvisor、Facebook — 新增任何評論連結。您的客戶將直接跳轉到您的評論頁面。"
-    },
-    "customerQuote": {
-      "quote": "Get Phame 對我們的小型企業來說是一個顛覆性的改變。我們看到了積極評論的顯著增長，而且它非常易於使用！",
-      "author": "Tom R.",
-      "authorTitle": "The Corner Café 店主"
     },
     "sendsFromYourEmail": "從您的郵箱傳送",
     "oneTapRequests": "一鍵請求",
@@ -89,7 +84,7 @@
   "faq": {
     "sectionTitle": "常見問題",
     "spamQuestion": "它會看起來像垃圾郵件嗎？",
-    "spamAnswer": "不會。每封郵件都透過 SMTP 直接從您自己的電子郵件賬戶傳送 — 而非來自共享的批次傳送伺服器。您的客戶會看到您的姓名、您的電子郵件地址以及以您的口吻撰寫的資訊。它會像個人便條一樣送達收件箱，而不是營銷群發郵件。",
+    "spamAnswer": "每次請求都會透過你所連接的電子郵件帳戶寄送，並使用你配置的寄件人姓名、地址、簽名與訊息。寄送前預覽訊息，並遵循你的提供商的到達性指引。",
     "providersQuestion": "支援哪些電子郵件提供商？",
     "providersAnswer": "任何支援 SMTP 的提供商都適用：Gmail、Outlook、Yahoo Mail、Apple iCloud Mail、cPanel/Zoho 商業電子郵件，以及幾乎所有託管服務提供商的郵件伺服器。如果您可以在手機上設定電子郵件應用，您就可以將其連線到 Get Phame。",
     "freeQuestion": "它真的是免費的嗎？",
@@ -97,7 +92,7 @@
     "importQuestion": "我可以匯入我的客戶列表嗎？",
     "importAnswer": "是的。您可以上傳包含客戶姓名和電子郵件地址的 CSV 檔案，或者如果您經營線上商店，可以直接從 WooCommerce 同步。匯入後，您可以批次選擇聯絡人，並一鍵傳送個性化評論請求。",
     "q1": "郵件會被當作垃圾郵件嗎？",
-    "a1": "不會。每封郵件都直接從您自己的郵箱賬戶透過SMTP傳送，客戶會看到您的姓名和郵箱地址。",
+    "a1": "每次請求都會透過你所連接的電子郵件帳戶寄送，並使用你配置的寄件人姓名、地址、簽名與訊息。寄送前預覽訊息，並遵循你的提供商的到達性指引。",
     "q2": "支援哪些郵件服務商？",
     "a2": "支援所有SMTP郵件服務商：Gmail、Outlook、Yahoo Mail、Apple iCloud Mail等。",
     "q3": "真的免費嗎？",
@@ -122,10 +117,10 @@
     "a12": "無限表示評論請求沒有每月上限。免費方案先提供 10 次，之後每滾動 30 天提供 5 次。Pro 會取消此產品限制。"
   },
   "bottomCta": {
-    "headline": "立即開始收集評論",
+    "headline": "你的收件箱。你的客戶。 你的控制。",
     "description": "永久免費。無需信用卡。2分鐘內完成設定。",
     "cta": "免費開始",
-    "title": "準備好獲取更多評價了嗎？",
+    "title": "你的收件箱。你的客戶。 你的控制。",
     "subtitle": "永久免費，無需信用卡，2分鐘內完成設定。"
   },
   "footer": {
@@ -926,7 +921,7 @@
     "invalidCodeError": "無效程式碼。請重試。"
   },
   "socialProof": {
-    "trustedByBusinesses": "深受本地企業信賴，助您獲得更多五星好評"
+    "trustedByBusinesses": "內建工作流程保護機制"
   },
   "comparisonTable": {
     "feature": "功能",
@@ -1384,19 +1379,6 @@
     "colLifetime": "終身版選項",
     "priceDisclaimer": "價格基於2026年4月各平臺官網公開的入門級方案。"
   },
-  "testimonials": {
-    "sectionTitle": "使用者真實評價",
-    "sarah": {
-      "quote": "以前我很害怕向客戶索取評價，感覺很尷尬。Phame用我自己的Gmail傳送請求，看起來就像我親自寫的一樣。六週內，我的Google評價從12條增加到了47條。",
-      "name": "Sarah M.",
-      "role": "自由攝影師"
-    },
-    "tom": {
-      "quote": "我們每天服務約80位顧客。每週五我從CSV匯入本週常客名單，點選傳送，週一早上通常就能收到8–10條新評價。這已經成為我們每週的固定流程。",
-      "name": "Tom R.",
-      "role": "The Corner Café 老闆"
-    }
-  },
   "onboarding": {
     "googleBtn": "使用 Google 繼續",
     "appleBtn": "使用 Apple 繼續",
@@ -1525,20 +1507,6 @@
     "dataPrivacy": "Your customer list stays private",
     "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
     "unsubscribe": "Unsubscribe link in every email"
-  },
-  "proof": {
-    "sectionTitle": "Built for Businesses That Run on Reputation",
-    "sectionSubtitle": "Photographers, cafés, home services, clinics, agencies, and WooCommerce stores.",
-    "type1": "Cafés & Restaurants",
-    "type2": "Home Services",
-    "type3": "Photographers",
-    "type4": "Clinics & Salons",
-    "stat1Value": "10×",
-    "stat1Label": "more reviews vs. asking in person",
-    "stat2Value": "< 2 min",
-    "stat2Label": "average setup time",
-    "stat3Value": "Your inbox",
-    "stat3Label": "emails sent from your own address"
   },
   "demo": {
     "sectionTitle": "See It In Action",
@@ -1885,7 +1853,7 @@
     "copied": "已複製！",
     "copySuccessToast": "推薦連結已複製！",
     "copyErrorToast": "無法複製連結。",
-    "shareMessage": "使用 Get Phame 獲得更多 5 星評價 — {{url}}",
+    "shareMessage": "讓評價邀請更具個人化 避免尷尬的邀請: {{url}}",
     "noReferralsHint": "分享下方連結以開始賺取免費月數",
     "pendingReferralsHint": "{{count}} 位朋友已加入 — 正在等待他們升級",
     "pendingReferralsHint_plural": "{{count}} 位朋友已加入 — 正在等待他們升級",
@@ -2232,21 +2200,15 @@
   },
   "landing": {
     "hero": {
-      "categoryLabel": "在地商家的評論邀請郵件軟體",
-      "googleDisclosureLabel": "Google 登入的資料使用說明"
+      "headlinePart1": "讓評價邀請更具個人化",
+      "headlinePart2": "避免尷尬的邀請",
+      "ctaVariantA": "免費開始 — 寄出 10 則邀請",
+      "ctaVariantB": "建立你的第一個評價邀請",
+      "setupTime": "引導式設定"
     },
     "leadCapture": {
-      "addressConfirmation": "我們已寄送至 {{email}}。請確認拼寫，若未收到請檢查垃圾郵件。供應商接受並不保證進入收件匣。",
-      "deliveryFallback": "無法傳遞電子郵件至 {{email}}。請確認拼寫、重試，或立即下載指南。",
-      "downloadGuideButton": "下載 PDF 指南",
-      "downloadReadyMessage": "您的指南已可下載。",
-      "editEmail": "編輯電子郵件",
-      "emailConfirmationHint": "離開前我們會再次顯示該地址，方便您檢查是否有打字錯誤。",
-      "emailInvalid": "請輸入格式正確的電子郵件，例如 name@example.com。",
-      "emailRequired": "請輸入您的電子郵件地址。",
-      "providerAcceptedMessage": "您的電子郵件供應商已接受該指南以進行投遞。",
-      "sharePrompt": "認識需要更多評論的人嗎？分享這份免費實用指南。",
-      "tryAgain": "重新傳送電子郵件"
+      "description": "取得一份免費指南，教你建立可重複、具合規意識的評價邀請流程—外加產品更新與聲譽小貼士。",
+      "sharePrompt": "知道有人會寄送評價邀請嗎？分享這本免費指南。"
     },
     "purpose": {
       "description": "Get Phame 幫助在地商家使用其已連接的電子郵件帳號寄送個人化的評論邀請郵件。適用於商家老闆、攝影師、咖啡館與餐廳、到府服務團隊、診所與沙龍、代理商，以及想要更簡單方式向真實顧客徵求回饋的 WooCommerce 商店。",
@@ -2265,7 +2227,15 @@
       "title": "Get Phame 的功能"
     },
     "stats": {
-      "emailsSentValue": "您的收件匣"
+      "recipientControlValue": "由你決定",
+      "recipientControlLabel": "每個請求的收件人",
+      "individualValue": "1-to-1",
+      "individualLabel": "個別評價邀請外展",
+      "connectedEmailValue": "你的收件箱",
+      "connectedEmailLabel": "從你連接的帳戶寄送",
+      "reminderValue": "自動",
+      "reminderLabel": "完成後停止未來的提醒",
+      "heading": "每一步都可控"
     },
     "support": {
       "attachment": "截圖",
@@ -2302,6 +2272,105 @@
         "subjectMin": "主旨至少 3 個字元。"
       },
       "website": "網站"
+    },
+    "feature1": {
+      "title": "來自已連接寄件人的個人化請求",
+      "description": "每次評價邀請在寄出前，會使用你所配置的寄件人資料、商家識別與訊息。",
+      "stat": "由你發出",
+      "statLabel": "連接的寄件人身分"
+    },
+    "feature2": {
+      "title": "匯入、審核，再寄出",
+      "description": "從 CSV 或 WooCommerce 匯入聯絡人、移除重複、審核收件人，並謹慎地逐一決定寄出。",
+      "stat": "CSV + Woo",
+      "statLabel": "支援的聯絡來源"
+    },
+    "feature3": {
+      "title": "符合工作流程的支援評價目的地",
+      "description": "選擇符合各工作流程的支援評價目的地，並提供像 Yelp 這樣的平台合規指引。",
+      "stat": "彈性",
+      "statLabel": "評價目的地"
+    },
+    "whyItWorks": "如何保持受控",
+    "headline": "從客戶名單到個人化請求",
+    "subHeadline": "專注於準備、寄送與追蹤個別評價邀請的工作流程—避免尷尬的邀請或自動外發。",
+    "finalCta": {
+      "headlinePart1": "你的收件箱。你的客戶。",
+      "headlinePart2": "你的控制。",
+      "description": "以 10 次評價邀請開始，然後在每個滾動的 30 天內再增加 5 次。無需信用卡。寄送前你可選擇每位收件人。",
+      "getStartedButton": "免費開始",
+      "joinBusinesses": "個別、知情同意的外展，在寄送流程中內建合規指引。"
+    },
+    "howItWorks": {
+      "setupSteps": {
+        "step1": {
+          "title": "連接您的電子郵件",
+          "description": "依提供商特定說明連接 Gmail、Outlook，或 SMTP 帳戶。憑證在靜態儲存時加密。"
+        },
+        "step4": {
+          "title": "寄送並追蹤活動",
+          "description": "向你選擇的每位客戶寄送個人化請求，並追蹤寄出、開啟、點擊、提醒與完成狀態。"
+        }
+      },
+      "headline": "完成第一個評價邀請的四個步驟",
+      "setupTime": "支援的電子郵件提供商之引導設定"
+    },
+    "productShowcase": {
+      "tabEmailDescription": "每次評價邀請在寄出前會使用你配置的電子郵件地址、寄件人姓名、簽名與訊息。",
+      "tabTrackingTitle": "追蹤請求活動",
+      "tabTrackingDescription": "在一個工作區中查看寄出、開啟、點擊、提醒與完成狀態。",
+      "tabTrackingAlt": "Get Phame 活動儀表板，顯示評價邀請的寄出、開啟、點擊、提醒與完成狀態",
+      "sectionDescription": "一個聚焦工具。三種實用檢視。管理評價邀請外展所需的一切。"
+    },
+    "socialProofBar": {
+      "heading": "內建工作流程保護機制",
+      "safeguards": {
+        "privacy": {
+          "title": "隱私至上",
+          "description": "僅在寄送流程中使用你所選取、該請求所需的客戶資料。"
+        },
+        "consent": {
+          "title": "知情同意",
+          "description": "不會自動新增或自動寄送訊息給聯絡人。你可控每個邀請的收件人。"
+        },
+        "compliance": {
+          "title": "合規指引",
+          "description": "在寄送個別評價邀請前，提供依平台的合規指引。"
+        },
+        "reminders": {
+          "title": "提醒控制",
+          "description": "在客戶完成所請求的動作後，未來的提醒將停止。"
+        }
+      }
+    },
+    "testimonials": {
+      "proofLabel": "產品證明",
+      "headline": "Get Phame 的功能定位",
+      "subtitle": "可在應用中驗證的功能與能力——不含未經證實的客戶聲稱或成效承諾。",
+      "email": {
+        "label": "已連接的電子郵件",
+        "title": "從你連接的帳戶寄出",
+        "description": "以商家識別、寄件人詳情與你設定的訊息，建立個別化的評價邀請。"
+      },
+      "control": {
+        "label": "收件人控制",
+        "title": "你選擇每位客戶",
+        "description": "新增或匯入聯絡人、審核每位收件人，僅在你決定時寄出。Get Phame 不會自動向聯絡人發送訊息。"
+      },
+      "activity": {
+        "label": "行動可見性",
+        "title": "追蹤請求活動",
+        "description": "在同一工作區中查看寄出、開啟、點擊、提醒與完成狀態，而不臆測客戶結果。"
+      },
+      "getStartedFree": "探索 Get Phame 免費版"
+    },
+    "faq": {
+      "a1": "每次請求都會透過你所連接的電子郵件帳戶寄送，並使用你配置的寄件人姓名、地址、簽名與訊息。寄送前預覽訊息，並遵循你的提供商的到達性指引。",
+      "a6": "訊息是透過你連接的電子郵件帳戶寄出，因此你的提供商的寄送限制、網域聲譽、SPF、DKIM、內容與收件人互動可能影響投遞。不可能有任何服務能保證信箱落地率。",
+      "a9": "否。Get Phame 提供 Gmail、Outlook，以及其他支援的 SMTP 服務的提供商特定設定指引。自訂 SMTP 連線需要伺服器地址、埠號與提供商提供的憑證。"
+    },
+    "section": {
+      "description": "觀看快速導覽，瞭解如何連接電子郵件、添加客戶、寄送邀請與追蹤活動。"
     }
   },
   "adaptiveSending": {

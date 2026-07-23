@@ -1,6 +1,6 @@
 {
   "seo": {
-    "title": "Get Phame — Get More 5-Star Google Reviews",
+    "title": "Get Phame — Make review requests personal without the awkward ask",
     "keywords": "review requests, Google reviews, get more reviews, review automation, small business reviews, send review request email, WooCommerce reviews, Stripe reviews",
     "ogDescription": "Send personalised review request emails from your own email account. Works with Google, Yelp, TripAdvisor and more.",
     "shortTitle": "Get Phame"
@@ -29,15 +29,15 @@
   },
   "hero": {
     "tagline": "Free to start — No credit card required",
-    "headline": "Get more 5-star reviews without the awkward ask",
+    "headline": "Make review requests personal without the awkward ask",
     "description": "Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender.",
     "cta": "Get Started Free",
     "setupTime": "Takes less than 2 minutes to set up",
     "rocketIllustrationAlt": "Get Phame rocket illustration",
     "dashboardAlt": "Get Phame dashboard showing sent requests and email performance stats",
     "dashboardStats": "Your dashboard — live stats",
-    "titlePart1": "Get More 5-Star",
-    "titlePart2": "Google Reviews"
+    "titlePart1": "Make review requests personal",
+    "titlePart2": "without the awkward ask"
   },
   "features": {
     "sectionTitle": "Why businesses choose Get Phame",
@@ -52,11 +52,6 @@
     "platformFeature": {
       "title": "Works with any review platform",
       "description": "Google, Yelp, Trustpilot, TripAdvisor, Facebook — add any review link. Your customers are taken straight to your review page."
-    },
-    "customerQuote": {
-      "quote": "Get Phame has been a game-changer for our small business. We've seen a significant increase in positive reviews, and it's so easy to use!",
-      "author": "Tom R.",
-      "authorTitle": "Owner, The Corner Café"
     },
     "sendsFromYourEmail": "Sends from your email",
     "oneTapRequests": "One-tap requests",
@@ -89,7 +84,7 @@
   "faq": {
     "sectionTitle": "Frequently asked questions",
     "spamQuestion": "Will it look like spam?",
-    "spamAnswer": "No. Every email is sent directly from your own email account via SMTP — not from a shared bulk-sending server. Your customer sees your name, your email address, and a message written in your voice. It lands in the inbox like a personal note, not a marketing blast.",
+    "spamAnswer": "Each request is sent through an email account you connect and uses the sender name, address, signature, and message you configure. Preview the message before sending and follow your provider's deliverability guidance.",
     "providersQuestion": "What email providers work?",
     "providersAnswer": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to Get Phame.",
     "freeQuestion": "Is it really free?",
@@ -97,7 +92,7 @@
     "importQuestion": "Can I import my customer list?",
     "importAnswer": "Yes. You can upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store. Once imported, you can bulk-select contacts and send personalised review requests in a single click.",
     "q1": "Will it look like spam?",
-    "a1": "No. Every email is sent directly from your own email account via SMTP — not from a shared bulk-sending server. Your customer sees your name, your email address, and a message written in your voice.",
+    "a1": "Each request is sent through an email account you connect and uses the sender name, address, signature, and message you configure. Preview the message before sending and follow your provider's deliverability guidance.",
     "q2": "What email providers work?",
     "a2": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server.",
     "q3": "Is it really free?",
@@ -122,10 +117,10 @@
     "a12": "Unlimited means no monthly cap on review requests. The Free plan includes 10 initial requests, then 5 requests every rolling 30 days. Pro removes that product limit."
   },
   "bottomCta": {
-    "headline": "Start collecting reviews today",
+    "headline": "Your inbox. Your customers. Your control.",
     "description": "Free forever. No credit card. Set up in under 2 minutes.",
     "cta": "Get Started Free",
-    "title": "Ready to get more reviews?",
+    "title": "Your inbox. Your customers. Your control.",
     "subtitle": "Free forever. No credit card. Set up in under 2 minutes."
   },
   "footer": {
@@ -161,7 +156,7 @@
     "copied": "Copied!",
     "copySuccessToast": "Referral link copied!",
     "copyErrorToast": "Could not copy link.",
-    "shareMessage": "Get more 5-star reviews with Get Phame — {{url}}",
+    "shareMessage": "Make review requests personal without the awkward ask: {{url}}",
     "noReferralsHint": "Share your link below to start earning free months",
     "pendingReferralsHint": "{{count}} friend joined — waiting for them to upgrade",
     "pendingReferralsHint_plural": "{{count}} friends joined — waiting for them to upgrade",
@@ -988,7 +983,7 @@
     "invalidCodeError": "Invalid code. Please try again."
   },
   "socialProof": {
-    "trustedByBusinesses": "Trusted by local businesses to get more 5-star reviews"
+    "trustedByBusinesses": "Built-in workflow safeguards"
   },
   "comparisonTable": {
     "feature": "Feature",
@@ -1634,19 +1629,6 @@
     "colLifetime": "Lifetime option",
     "priceDisclaimer": "Prices based on publicly listed entry-tier plans as of April 2026."
   },
-  "testimonials": {
-    "sectionTitle": "What our users say",
-    "sarah": {
-      "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. Get Phame sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks.",
-      "name": "Sarah M.",
-      "role": "Freelance Photographer"
-    },
-    "tom": {
-      "quote": "We serve about 80 customers a day. I import the week's regulars from a CSV on Friday, hit send, and by Monday morning we've usually picked up 8–10 new reviews. It's become part of our weekly routine.",
-      "name": "Tom R.",
-      "role": "Owner, The Corner Café"
-    }
-  },
   "onboarding": {
     "googleBtn": "Continue with Google",
     "appleBtn": "Continue with Apple",
@@ -1770,20 +1752,6 @@
     "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
     "unsubscribe": "Unsubscribe link in every email"
   },
-  "proof": {
-    "sectionTitle": "Built for Businesses That Run on Reputation",
-    "sectionSubtitle": "Photographers, cafés, home services, clinics, agencies, and WooCommerce stores.",
-    "type1": "Cafés & Restaurants",
-    "type2": "Home Services",
-    "type3": "Photographers",
-    "type4": "Clinics & Salons",
-    "stat1Value": "10×",
-    "stat1Label": "more reviews vs. asking in person",
-    "stat2Value": "< 2 min",
-    "stat2Label": "average setup time",
-    "stat3Value": "Your inbox",
-    "stat3Label": "emails sent from your own address"
-  },
   "demo": {
     "sectionTitle": "See It In Action",
     "sectionSubtitle": "Three steps. Under 60 seconds. Your customer gets a personal email from you.",
@@ -1900,58 +1868,37 @@
       "pricingDisclaimer": "Prices based on publicly listed entry-tier plans as of April 2026. Subject to change."
     },
     "faq": {
-      "q1": "Will it look like spam?",
-      "a1": "No. Every email is sent directly from your own email address — not from a third-party server. Your customers see your name, your address, and your signature. It looks exactly like you sat down and typed it yourself. Open rates average 45–60% because recipients recognize the sender.",
-      "q2": "What email providers work?",
-      "a2": "Get Phame works with any email provider that supports SMTP: Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud, and any custom SMTP server. If you can send email from it, you can connect it to Get Phame.",
-      "q3": "Is it really free?",
-      "a3": "Yes. The free plan gives you 10 initial review requests, then 5 more every rolling 30 days — with no credit card required and no time limit. If you want unlimited requests, bulk send, follow-up reminders, and WooCommerce sync, upgrade to Pro.",
-      "q4": "Can I import my customer list?",
-      "a4": "Absolutely. Upload a CSV file with customer names and email addresses, or sync directly from WooCommerce. We validate emails automatically, remove duplicates, and flag any invalid addresses before you send.",
-      "q5": "Does Get Phame store my email password?",
-      "a5": "Your SMTP credentials are encrypted at rest using AES-256 encryption. We never store plain-text passwords. Your credentials are only used to send emails on your behalf — we cannot read your inbox or access any other email data.",
-      "q6": "Will my emails land in spam?",
-      "a6": "Because emails are sent from your own email account (not a bulk-sending server), they have the same deliverability as any email you'd send manually. Your domain reputation, SPF, and DKIM records all apply normally. This is a key advantage over third-party senders.",
-      "q7": "What happens to my customer list?",
-      "a7": "Your customer data is stored securely and is never shared, sold, or used for any purpose other than sending your review requests. You can export or delete your entire customer list at any time. We comply with GDPR and CAN-SPAM requirements.",
-      "q8": "Can customers opt out?",
-      "a8": "Yes. Every email includes an unsubscribe link. When a customer opts out, they're automatically removed from future sends. This keeps you compliant and protects your sender reputation.",
-      "q9": "Do I need technical skills to connect my email?",
-      "a9": "No. For Gmail and Outlook, we provide step-by-step guides with screenshots. Most users connect in under 60 seconds. For custom SMTP, you'll need your server address, port, and credentials — your hosting provider can supply these.",
-      "q10": "Which review platforms does it support?",
-      "a10": "Any platform with a review link: Google, Yelp, TripAdvisor, Facebook, Bing Places, Trustpilot, G2, Capterra, and more. Just paste your review link and we'll include it in every request. You can change platforms anytime.",
-      "q11": "How does WooCommerce sync work?",
-      "a11": "Install our free WooCommerce plugin, enter your API key, and new customers are automatically imported after each completed order. You can set a delay (e.g., 7 days after purchase) before they appear in your send queue.",
-      "q12": "What does unlimited mean on the Pro plan?",
-      "a12": "Unlimited means no cap on the number of review requests you can send per month. Send 50 or 5,000 — no extra charges. The only limit is your email provider's own sending limits (e.g., Gmail allows ~500/day for personal accounts, 2,000/day for Workspace).",
-      "sectionTitle": "FAQ",
-      "headline": "Questions about email safety, privacy & setup",
-      "description": "Everything you need to know before connecting your email and sending your first review request."
+      "a1": "Each request is sent through an email account you connect and uses the sender name, address, signature, and message you configure. Preview the message before sending and follow your provider's deliverability guidance.",
+      "a6": "Messages are sent through the email account you connect, so your provider's sending limits, domain reputation, SPF, DKIM, content, and recipient engagement can affect delivery. No service can guarantee inbox placement.",
+      "a9": "No. Get Phame provides provider-specific setup guidance for Gmail, Outlook, and other supported SMTP services. Custom SMTP connections require the server address, port, and credentials supplied by your provider."
     },
     "feature1": {
-      "title": "Your name. Your inbox. Their trust.",
-      "description": "Every review request arrives from your actual email address. Customers recognize the sender, so they open it — and they respond.",
-      "statLabel": "avg. open rate"
+      "title": "Personal requests from a connected sender",
+      "description": "Each review request uses the sender details, business identity, and message you configure before sending.",
+      "stat": "From you",
+      "statLabel": "connected sender identity"
     },
     "feature2": {
-      "title": "One click sends to hundreds",
-      "description": "Import your customer list via CSV or WooCommerce sync, select all, and send personalized requests in seconds. No copy-pasting. No manual work.",
-      "statLabel": "sends per batch"
+      "title": "Import, review, then send",
+      "description": "Bring in contacts from CSV or WooCommerce, remove duplicates, review recipients, and choose each send deliberately.",
+      "stat": "CSV + Woo",
+      "statLabel": "supported contact sources"
     },
     "feature3": {
-      "title": "Every platform. Your choice.",
-      "description": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, and more. Paste your link, switch platforms anytime. One tool for all your review destinations.",
-      "statLabel": "platforms supported"
+      "title": "Platform-aware destinations",
+      "description": "Choose the supported review destination that fits each workflow, with compliance guidance for platforms such as Yelp.",
+      "stat": "Flexible",
+      "statLabel": "review destinations"
     },
-    "whyItWorks": "Why it works",
-    "headline": "From your inbox to their review",
-    "subHeadline": "The simplest way to turn happy customers into 5-star reviews — without expensive tools or awkward conversations.",
+    "whyItWorks": "How it stays controlled",
+    "headline": "From customer list to personal request",
+    "subHeadline": "A focused workflow for preparing, sending, and tracking individual review requests—without awkward conversations or automatic outreach.",
     "finalCta": {
-      "headlinePart1": "Your inbox. Your reputation.",
-      "headlinePart2": "Your growth.",
-      "description": "Free forever: 10 initial requests, then 5 more every rolling 30 days. No credit card. Set up in under 2 minutes.",
+      "headlinePart1": "Your inbox. Your customers.",
+      "headlinePart2": "Your control.",
+      "description": "Start with 10 review requests, then get 5 more every rolling 30 days. No credit card required. You choose every recipient before sending.",
       "getStartedButton": "Get Started Free",
-      "joinBusinesses": "Join hundreds of businesses already growing their reputation with Get Phame."
+      "joinBusinesses": "Individual, consent-aware outreach with compliance guidance built into the send flow."
     },
     "footer": {
       "privacy": "Privacy",
@@ -1961,66 +1908,29 @@
       "copyright": "© {{year}} Get Phame. All rights reserved."
     },
     "hero": {
-      "freeToStart": "Free to start — No credit card required",
-      "headlinePart1": "Get more 5-star reviews",
+      "headlinePart1": "Make review requests personal",
       "headlinePart2": "without the awkward ask",
-      "description": "Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender.",
-      "howItWorks": "See how it works",
-      "setupTime": "Set up in under 2 minutes",
-      "emailCompatibility": "Works with Gmail, Outlook, SMTP",
-      "googleSignInDisclaimer": "Sign in with Google to create your account. We only access your name and email address — nothing else.",
-      "privacyPolicy": "Privacy Policy",
-      "dashboardMockupAlt": "GetPhame app home screen showing review request stats, send button, and free plan usage for local businesses",
       "ctaVariantA": "Start Free — Send 10 Requests",
-      "ctaVariantB": "Get Your First 10 Reviews Free",
-      "categoryLabel": "Review-request email software for local businesses",
-      "googleDisclosureLabel": "Google sign-in data use"
+      "ctaVariantB": "Build Your First Review Request",
+      "setupTime": "Guided setup"
     },
     "howItWorks": {
       "setupSteps": {
         "step1": {
           "title": "Connect your email",
-          "description": "Link your Gmail, Outlook, or any SMTP email in 60 seconds. Credentials encrypted with AES-256."
-        },
-        "step2": {
-          "title": "Add your review link",
-          "description": "Paste your Google, Yelp, TripAdvisor, or any review platform link. Switch platforms anytime."
-        },
-        "step3": {
-          "title": "Import your customers",
-          "description": "Upload a CSV, sync from WooCommerce, or add contacts manually. We validate emails automatically."
+          "description": "Link Gmail, Outlook, or an SMTP account with guided provider-specific instructions. Credentials are encrypted at rest."
         },
         "step4": {
-          "title": "Send & track results",
-          "description": "Hit send. Each customer gets a personal email from you. Track opens, clicks, and new reviews live."
+          "title": "Send and track activity",
+          "description": "Send a personal request to each customer you choose, then track sends, opens, clicks, reminders, and completion status."
         }
       },
-      "setupInSteps": "Setup in 4 steps",
-      "headline": "Two minutes to your first review request",
-      "subtitle": "No technical skills needed. No onboarding calls. Just connect, import, and send.",
-      "getStartedButton": "Get Started Free",
-      "setupTime": "Takes less than 2 minutes to set up"
+      "headline": "Four steps to your first review request",
+      "setupTime": "Guided setup for supported email providers"
     },
     "leadCapture": {
-      "errorMessage": "Something went wrong. Please try again.",
-      "heading": "Not ready to commit?",
-      "description": "Get a free guide on how to 3× your Google reviews in 30 days — plus early access to new features and reputation tips.",
-      "emailPlaceholder": "Enter your email",
-      "sending": "Sending...",
-      "sendGuideButton": "Send Guide",
-      "successMessage": "Check your inbox — guide is on the way!",
-      "noSpamMessage": "No spam. Unsubscribe anytime. We respect your inbox.",
-      "emailRequired": "Enter your email address.",
-      "emailInvalid": "Enter a correctly formatted email, such as name@example.com.",
-      "emailConfirmationHint": "We’ll show the address again before you leave so you can catch a typo.",
-      "providerAcceptedMessage": "Your email provider accepted the guide for delivery.",
-      "downloadReadyMessage": "Your guide is ready to download.",
-      "addressConfirmation": "We sent it to {{email}}. Confirm the spelling and check spam if it does not arrive. Provider acceptance does not guarantee inbox placement.",
-      "deliveryFallback": "Email delivery was unavailable for {{email}}. Confirm the spelling, retry, or download the guide now.",
-      "downloadGuideButton": "Download the PDF guide",
-      "editEmail": "Edit email",
-      "tryAgain": "Try email again",
-      "sharePrompt": "Know someone who needs more reviews? Share the free playbook."
+      "description": "Get a free guide to building a repeatable, compliance-aware review-request process—plus product updates and reputation tips.",
+      "sharePrompt": "Know someone who sends review requests? Share the free playbook."
     },
     "navbar": {
       "howItWorks": "How It Works",
@@ -2095,79 +2005,64 @@
       "closeButtonLabel": "Close"
     },
     "productShowcase": {
-      "tabEmailLabel": "Email Preview",
-      "tabEmailTitle": "Emails that feel handwritten",
-      "tabEmailDescription": "Each review request arrives from your actual email address with your name, your signature, and a personal tone. Customers trust it because it looks real — because it is.",
-      "tabEmailAlt": "GetPhame personalized review request email preview showing customer name, business signature, and Google review link",
-      "tabImportLabel": "Customer Import",
-      "tabImportTitle": "Your entire list in seconds",
-      "tabImportDescription": "Drag and drop a CSV or sync directly from WooCommerce. We validate emails, remove duplicates, and flag bounces — so every send counts.",
-      "tabImportAlt": "GetPhame customer import screen showing CSV drag-and-drop upload with email validation and duplicate removal",
-      "tabTrackingLabel": "Review Tracking",
-      "tabTrackingTitle": "Watch the reviews roll in",
-      "tabTrackingDescription": "Track every email sent, opened, and clicked. See your review count climb week over week with real-time analytics and growth charts.",
-      "tabTrackingAlt": "GetPhame review tracking dashboard showing email open rates, click-through rates, and weekly review count growth chart",
-      "sectionSubtitle": "The product",
-      "sectionTitle": "Built to make review requests effortless",
-      "sectionDescription": "One simple tool. Three powerful views. Everything you need to grow your reputation.",
-      "viewFullSizeButton": "View full size",
-      "viewFullSizeAriaLabel": "View {{title}} in full size"
+      "tabEmailDescription": "Each review request uses the email address, sender name, signature, and message you configure before sending.",
+      "tabTrackingTitle": "Track request activity",
+      "tabTrackingDescription": "See every request sent, opened, clicked, reminded, and completed in one activity view.",
+      "tabTrackingAlt": "Get Phame activity dashboard showing review-request sends, opens, clicks, reminders, and completion status",
+      "sectionDescription": "One focused tool. Three practical views. Everything you need to manage review-request outreach."
     },
     "socialProofBar": {
-      "reviews": {
-        "sarah": {
-          "quote": "Went from 12 to 47 Google reviews in 6 weeks. Customers actually respond because it comes from my real email.",
-          "role": "Freelance Photographer"
+      "heading": "Built-in workflow safeguards",
+      "safeguards": {
+        "privacy": {
+          "title": "Privacy first",
+          "description": "Only the customer details needed for a request you choose are used in the send workflow."
         },
-        "tom": {
-          "quote": "I import Friday's regulars, hit send, and wake up Monday to 8–10 new reviews. It's part of our weekly routine now.",
-          "role": "The Corner Café"
+        "consent": {
+          "title": "Consent aware",
+          "description": "Contacts are not added or messaged automatically. You control who receives each request."
         },
-        "david": {
-          "quote": "Managing 12 client locations from one account. The lifetime deal paid for itself in the first month.",
-          "role": "Marketing Agency Owner"
+        "compliance": {
+          "title": "Compliance guidance",
+          "description": "Platform-aware guidance is available before sending individual review requests."
         },
-        "lisa": {
-          "quote": "Set it up in under 2 minutes. My open rate is 68% — way better than any review platform I've tried.",
-          "role": "Yoga Studio Owner"
+        "reminders": {
+          "title": "Reminder control",
+          "description": "Future reminders stop when the requested customer action is completed."
         }
-      },
-      "trustedBy": "Trusted by local business owners"
+      }
     },
     "stats": {
-      "moreReviewsLabel": "more reviews vs. asking in person",
-      "averageSetupTimeLabel": "average setup time",
-      "emailsSentLabel": "emails sent from your own address",
-      "averageResponseRateLabel": "average response rate",
-      "industryPhotographers": "Photographers",
-      "industryCafesRestaurants": "Cafés & Restaurants",
-      "industryHomeServices": "Home Services",
-      "industryClinicsSalons": "Clinics & Salons",
-      "industryAgencies": "Agencies",
-      "industryWooCommerceStores": "WooCommerce Stores",
-      "heading": "Built for businesses that run on reputation",
-      "emailsSentValue": "Your inbox"
+      "recipientControlValue": "You choose",
+      "recipientControlLabel": "every request recipient",
+      "individualValue": "1-to-1",
+      "individualLabel": "individual review-request outreach",
+      "connectedEmailValue": "Your inbox",
+      "connectedEmailLabel": "send from an account you connect",
+      "reminderValue": "Automatic",
+      "reminderLabel": "future reminders stop after completion",
+      "heading": "Control at every step"
     },
     "testimonials": {
-      "sarah": {
-        "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. Get Phame sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks.",
-        "role": "Freelance Photographer",
-        "result": "12 → 47 reviews in 6 weeks"
+      "proofLabel": "Product proof",
+      "headline": "What Get Phame is built to do",
+      "subtitle": "Capabilities you can verify in the app—without unverified customer claims or outcome promises.",
+      "email": {
+        "label": "Connected email",
+        "title": "Send from an account you connect",
+        "description": "Create individualized requests with the business identity, sender details, and message you configure."
       },
-      "tom": {
-        "quote": "We serve about 80 customers a day. I import the week's regulars from a CSV on Friday, hit send, and by Monday morning we've usually picked up 8–10 new reviews. It's become part of our weekly routine.",
-        "role": "Owner, The Corner Café",
-        "result": "8–10 new reviews per week"
+      "control": {
+        "label": "Recipient control",
+        "title": "You choose every customer",
+        "description": "Add or import contacts, review each recipient, and send only when you decide. Get Phame does not message contacts automatically."
       },
-      "david": {
-        "quote": "As an agency managing 12 client locations, the lifetime deal was a no-brainer. Each client gets their own review link and I send requests on their behalf. The ROI paid for itself in the first month.",
-        "role": "Digital Marketing Agency Owner",
-        "result": "12 locations managed from one account"
+      "activity": {
+        "label": "Action visibility",
+        "title": "Track request activity",
+        "description": "See send, open, click, reminder, and completion status in one workspace without inventing customer outcomes."
       },
-      "realResults": "Real results",
-      "headline": "They asked. Customers answered.",
-      "subtitle": "Real businesses using Get Phame to grow their reputation every week.",
-      "getStartedFree": "Get Started Free"
+      "getStartedFree": "Explore Get Phame Free"
     },
     "trustBar": {
       "passwordEncrypted": "Password encrypted at rest",
@@ -2176,9 +2071,7 @@
       "unsubscribeLink": "Unsubscribe link in every email"
     },
     "section": {
-      "tagline": "See it in action",
-      "title": "See How It Works",
-      "description": "Watch a quick walkthrough — set up in under 2 minutes"
+      "description": "Watch a quick walkthrough of connecting email, adding customers, sending requests, and tracking activity."
     },
     "thumbnail": {
       "playButtonAriaLabel": "Play product walkthrough video",

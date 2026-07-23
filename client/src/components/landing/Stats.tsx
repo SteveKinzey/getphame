@@ -5,10 +5,10 @@ export default function Stats() {
   const { t } = useTranslation();
 
   const stats = [
-    { value: "10×", label: t("landing.stats.moreReviewsLabel", { defaultValue: "more reviews vs. asking in person" }) },
-    { value: "< 2 min", label: t("landing.stats.averageSetupTimeLabel", { defaultValue: "average setup time" }) },
-    { value: t("landing.stats.emailsSentValue", { defaultValue: "Your inbox" }), label: t("landing.stats.emailsSentLabel", { defaultValue: "emails sent from your own address" }) },
-    { value: "42%", label: t("landing.stats.averageResponseRateLabel", { defaultValue: "average response rate" }) },
+    { value: t("landing.stats.recipientControlValue", { defaultValue: "You choose" }), label: t("landing.stats.recipientControlLabel", { defaultValue: "every request recipient" }) },
+    { value: t("landing.stats.individualValue", { defaultValue: "1-to-1" }), label: t("landing.stats.individualLabel", { defaultValue: "individual review-request outreach" }) },
+    { value: t("landing.stats.connectedEmailValue", { defaultValue: "Your inbox" }), label: t("landing.stats.connectedEmailLabel", { defaultValue: "send from an account you connect" }) },
+    { value: t("landing.stats.reminderValue", { defaultValue: "Automatic" }), label: t("landing.stats.reminderLabel", { defaultValue: "future reminders stop after completion" }) },
   ];
 
   const industries = [
@@ -27,7 +27,7 @@ export default function Stats() {
       <div className="container relative z-10">
         <FadeUp className="text-center mb-10">
           <h2 className="font-display font-bold text-2xl md:text-3xl text-white mb-3">
-            {t("landing.stats.heading", { defaultValue: "Built for businesses that run on reputation" })}
+            {t("landing.stats.heading", { defaultValue: "Control at every step" })}
           </h2>
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-slate-200 font-bold">
             {industries.map((ind, i) => (

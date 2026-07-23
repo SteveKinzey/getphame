@@ -1,6 +1,6 @@
 {
   "seo": {
-    "title": "Get Phame — Get More 5-Star Google Reviews",
+    "title": "Get Phame — Haz que las solicitudes de revisión sean personales sin la solicitud incómoda",
     "keywords": "review requests, Google reviews, get more reviews, review automation, small business reviews, send review request email, WooCommerce reviews, Stripe reviews",
     "ogDescription": "Enviar personalised review request emails from your own email account. Works with Google, Yelp, TripAdvisor and more.",
     "shortTitle": "Get Phame"
@@ -34,15 +34,15 @@
   },
   "hero": {
     "tagline": "Gratis para empezar — Sin tarjeta de crédito requerida",
-    "headline": "Obtén más reseñas de Google",
+    "headline": "Haz que las solicitudes de revisión sean personales sin la solicitud incómoda",
     "description": "Enviar personalized review requests from your own email account. Your customers see it come from you — not a generic sender.",
     "cta": "Comenzar gratis",
     "setupTime": "Configuración en menos de 2 minutos",
     "rocketIllustrationAlt": "Get Phame rocket illustration",
     "dashboardAlt": "Get Phame dashboard showing sent requests and email performance stats",
     "dashboardStats": "Tu panel — estadísticas en vivo",
-    "titlePart1": "Obtén más reseñas de",
-    "titlePart2": "5 estrellas",
+    "titlePart1": "Haz que las solicitudes de revisión sean personales",
+    "titlePart2": "sin la solicitud incómoda",
     "badge": "Herramienta de solicitud de reseñas #1",
     "ctaSubtext": "Gratis para siempre • Sin tarjeta de crédito",
     "subheadline": "Envía solicitudes de reseñas personalizadas desde tu propio correo. Los clientes responden porque viene de ti.",
@@ -68,13 +68,6 @@
     "platformFeature": {
       "title": "Funciona con cualquier plataforma de reseñas",
       "description": "Google, Yelp, TripAdvisor, Facebook, Bing y más."
-    },
-    "customerQuote": {
-      "quote": "Get Phame has been a game-changer for our small business. We've seen a significant increase in positive reviews, and it's so easy to use!",
-      "author": "Tom R.",
-      "authorTitle": "Dueño, El Café de la Esquina",
-      "text": "Get Phame me ayudó a obtener 47 nuevas reseñas de Google en un mes. A mis clientes les encanta recibir un correo personal.",
-      "role": "Dueño de restaurante"
     },
     "sendsFromYourEmail": "Enviars from your email",
     "oneTapRequests": "Solicitudes con un toque",
@@ -135,7 +128,7 @@
   "faq": {
     "sectionTitle": "Preguntas frecuentes",
     "spamQuestion": "¿Parecerá spam?",
-    "spamAnswer": "No. Every email is sent directly from your own email account via SMTP — not from a shared bulk-sending server. Your customer sees your name, your email address, and a message written in your voice. It lands in the inbox like a personal note, not a marketing blast.",
+    "spamAnswer": "Cada solicitud se envía a través de una cuenta de correo que conectas y utiliza el nombre del remitente, la dirección, la firma y el mensaje que configuras. Previsualiza el mensaje antes de enviar y sigue las indicaciones de entregabilidad de tu proveedor.",
     "providersQuestion": "¿Qué proveedores de correo funcionan?",
     "providersAnswer": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to Get Phame.",
     "freeQuestion": "¿Es realmente gratis?",
@@ -143,7 +136,7 @@
     "importQuestion": "¿Puedo importar mi lista de clientes?",
     "importAnswer": "Yes. You can upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store. Once imported, you can bulk-select contacts and send personalised review requests in a single click.",
     "q1": "¿Parecerá spam?",
-    "a1": "No. Every email is sent directly from your own email account via SMTP — not from a shared bulk-sending server. Your customer sees your name, your email address, and a message written in your voice.",
+    "a1": "Cada solicitud se envía a través de una cuenta de correo que conectas y utiliza el nombre del remitente, la dirección, la firma y el mensaje que configuras. Previsualiza el mensaje antes de enviar y sigue las indicaciones de entregabilidad de tu proveedor.",
     "q2": "¿Qué proveedores de correo funcionan?",
     "a2": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server.",
     "q3": "¿Es realmente gratis?",
@@ -168,10 +161,10 @@
     "a12": "Ilimitado significa que no hay límite mensual de solicitudes. El plan Gratis incluye 10 solicitudes iniciales y después 5 cada 30 días móviles. Pro elimina ese límite del producto."
   },
   "bottomCta": {
-    "headline": "Empieza a recopilar reseñas hoy",
+    "headline": "Tu bandeja de entrada. Tus clientes. Tu control.",
     "description": "Gratis para siempre. Sin tarjeta de crédito. Configurado en menos de 2 minutos.",
     "cta": "Comenzar gratis",
-    "title": "¿Listo para obtener más reseñas?",
+    "title": "Tu bandeja de entrada. Tus clientes. Tu control.",
     "subtitle": "Gratis para siempre. Sin tarjeta de crédito. Configurado en menos de 2 minutos."
   },
   "footer": {
@@ -1292,7 +1285,7 @@
     "success": "¡Acceso concedido!"
   },
   "socialProof": {
-    "trustedByBusinesses": "De confianza para negocios locales que quieren más reseñas de 5 estrellas"
+    "trustedByBusinesses": "Salvaguardas integradas en el flujo de trabajo"
   },
   "comparisonTable": {
     "feature": "Función",
@@ -1832,30 +1825,6 @@
     "colLifetime": "De por vida option",
     "priceDisclaimer": "Precios basados en planes de nivel de entrada listados públicamente en abril de 2026."
   },
-  "testimonials": {
-    "sectionTitle": "Lo que dicen nuestros usuarios",
-    "sarah": {
-      "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. Get Phame sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks.",
-      "name": "Sarah M.",
-      "role": "Fotógrafa independiente",
-      "text": "¡Get Phame me ayudó a obtener 23 nuevas reseñas en solo 2 semanas!"
-    },
-    "tom": {
-      "quote": "Atendemos a unos 80 clientes al día. Importo los pedidos de la semana regularmente y envío solicitudes en masa. Es increíblemente sencillo.",
-      "name": "Tom R.",
-      "role": "Dueño, El Café de la Esquina"
-    },
-    "james": {
-      "name": "James K.",
-      "role": "Dueño de restaurante",
-      "text": "A mis clientes les encanta recibir un correo personal. La tasa de respuesta es increíble."
-    },
-    "lisa": {
-      "name": "Lisa T.",
-      "role": "Salón de belleza",
-      "text": "Fácil de usar y realmente efectivo. Lo recomiendo a todos los dueños de pequeñas empresas."
-    }
-  },
   "onboarding": {
     "googleBtn": "Continuar with Google",
     "appleBtn": "Continuar with Apple",
@@ -2138,20 +2107,6 @@
     "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
     "unsubscribe": "Unsubscribe link in every email"
   },
-  "proof": {
-    "sectionTitle": "Built for Businesses That Run on Reputation",
-    "sectionSubtitle": "Photographers, cafés, home services, clinics, agencies, and WooCommerce stores.",
-    "type1": "Cafés & Restaurants",
-    "type2": "Home Services",
-    "type3": "Photographers",
-    "type4": "Clinics & Salons",
-    "stat1Value": "10×",
-    "stat1Label": "more reviews vs. asking in person",
-    "stat2Value": "< 2 min",
-    "stat2Label": "average setup time",
-    "stat3Value": "Your inbox",
-    "stat3Label": "emails sent from your own address"
-  },
   "demo": {
     "sectionTitle": "See It In Action",
     "sectionSubtitle": "Three steps. Under 60 seconds. Your customer gets a personal email from you.",
@@ -2392,7 +2347,7 @@
     "copied": "¡Copiado!",
     "copySuccessToast": "¡Enlace de referido copiado!",
     "copyErrorToast": "No se pudo copiar el enlace.",
-    "shareMessage": "Obtén más reseñas de 5 estrellas con Get Phame — {{url}}",
+    "shareMessage": "Haz que las solicitudes de revisión sean personales sin la solicitud incómoda: {{url}}",
     "noReferralsHint": "Comparte tu enlace abajo para empezar a ganar meses gratis",
     "pendingReferralsHint": "{{count}} amigo se unió — esperando a que actualice su plan",
     "pendingReferralsHint_plural": "{{count}} amigos se unieron — esperando a que actualicen su plan",
@@ -2739,21 +2694,15 @@
   },
   "landing": {
     "hero": {
-      "categoryLabel": "Software de correo para solicitar reseñas a negocios locales",
-      "googleDisclosureLabel": "Uso de datos del inicio de sesión con Google"
+      "headlinePart1": "Haz que las solicitudes de revisión sean personales",
+      "headlinePart2": "sin la solicitud incómoda",
+      "ctaVariantA": "Comienza gratis — Envía 10 solicitudes",
+      "ctaVariantB": "Crea tu primera solicitud de revisión",
+      "setupTime": "Configuración guiada"
     },
     "leadCapture": {
-      "addressConfirmation": "La enviamos a {{email}}. Confirma la ortografía y revisa la carpeta de spam si no llega. La aceptación por parte del proveedor no garantiza la entrega en la bandeja de entrada.",
-      "deliveryFallback": "La entrega por correo no estuvo disponible para {{email}}. Confirma la dirección, inténtalo de nuevo o descarga la guía ahora.",
-      "downloadGuideButton": "Descargar la guía en PDF",
-      "downloadReadyMessage": "Tu guía está lista para descargar.",
-      "editEmail": "Editar correo",
-      "emailConfirmationHint": "Mostraremos la dirección nuevamente antes de que salgas para que puedas corregir algún error.",
-      "emailInvalid": "Introduce un correo con formato correcto, por ejemplo name@example.com.",
-      "emailRequired": "Introduce tu dirección de correo electrónico.",
-      "providerAcceptedMessage": "Tu proveedor de correo aceptó la guía para su entrega.",
-      "sharePrompt": "¿Conoces a alguien que necesite más reseñas? Comparte la guía gratuita.",
-      "tryAgain": "Reintentar envío"
+      "description": "Obtén una guía gratuita para construir un proceso de solicitud de revisión repetible y con enfoque en cumplimiento, además de actualizaciones de producto y consejos de reputación.",
+      "sharePrompt": "¿Conoces a alguien que envía solicitudes de reseña? Comparte la guía gratuita."
     },
     "purpose": {
       "description": "Get Phame ayuda a negocios locales a enviar correos personalizados para solicitar reseñas desde su propia cuenta de correo conectada. Está diseñado para propietarios de negocios, fotógrafos, cafeterías y restaurantes, equipos de servicios a domicilio, clínicas y salones, agencias y tiendas WooCommerce que desean una manera más sencilla de pedir reseñas a clientes reales.",
@@ -2772,7 +2721,15 @@
       "title": "Qué hace Get Phame"
     },
     "stats": {
-      "emailsSentValue": "Tu bandeja de entrada"
+      "recipientControlValue": "Tú eliges",
+      "recipientControlLabel": "cada destinatario de la solicitud",
+      "individualValue": "1-to-1",
+      "individualLabel": "alcance individual de solicitud de revisión",
+      "connectedEmailValue": "Tu bandeja de entrada",
+      "connectedEmailLabel": "envía desde una cuenta que conectes",
+      "reminderValue": "Automático",
+      "reminderLabel": "Los recordatorios futuros se detienen cuando se completa la acción solicitada",
+      "heading": "Control en cada paso"
     },
     "support": {
       "attachment": "Captura de pantalla",
@@ -2809,6 +2766,105 @@
         "subjectMin": "Introduce un asunto de al menos 3 caracteres."
       },
       "website": "Sitio web"
+    },
+    "feature1": {
+      "title": "Solicitudes personales de un remitente conectado",
+      "description": "Cada solicitud de revisión utiliza los datos del remitente, la identidad de la empresa y el mensaje que configuras antes de enviar.",
+      "stat": "De ti",
+      "statLabel": "identidad de remitente conectada"
+    },
+    "feature2": {
+      "title": "Importar, revisar y luego enviar",
+      "description": "Trae contactos desde CSV o WooCommerce, elimina duplicados, revisa los destinatarios y elige cada envío de forma deliberada.",
+      "stat": "CSV + Woo",
+      "statLabel": "fuentes de contacto compatibles"
+    },
+    "feature3": {
+      "title": "Destinos compatibles con la plataforma",
+      "description": "Elige el destino de revisión compatible que se adapte a cada flujo de trabajo, con guía de cumplimiento para plataformas como Yelp.",
+      "stat": "Flexible",
+      "statLabel": "destinos de revisión"
+    },
+    "whyItWorks": "Cómo se mantiene bajo control",
+    "headline": "De la lista de clientes a la solicitud personal",
+    "subHeadline": "Un flujo de trabajo enfocado para preparar, enviar y rastrear solicitudes de revisión individuales, sin conversaciones incómodas ni alcance automático.",
+    "finalCta": {
+      "headlinePart1": "Tu bandeja de entrada. Tus clientes.",
+      "headlinePart2": "Tu control.",
+      "description": "Comienza con 10 solicitudes de revisión y luego añade 5 más cada 30 días de forma continua. No se requiere tarjeta de crédito. Eliges a cada destinatario antes de enviar.",
+      "getStartedButton": "Comienza gratis",
+      "joinBusinesses": "Alcance individual consciente del consentimiento con orientación de cumplimiento integrada en el flujo de envío."
+    },
+    "howItWorks": {
+      "setupSteps": {
+        "step1": {
+          "title": "Conecta tu correo",
+          "description": "Vincula Gmail, Outlook o una cuenta SMTP con instrucciones guiadas específicas del proveedor. Las credenciales están encriptadas en reposo."
+        },
+        "step4": {
+          "title": "Enviar y rastrear la actividad",
+          "description": "Envía una solicitud personal a cada cliente que elijas, luego rastrea envíos, aperturas, clics, recordatorios y estado de finalización."
+        }
+      },
+      "headline": "Cuatro pasos para tu primera solicitud de revisión",
+      "setupTime": "Configuración guiada para proveedores de correo compatibles"
+    },
+    "productShowcase": {
+      "tabEmailDescription": "Cada solicitud de revisión utiliza la dirección de correo electrónico, el nombre del remitente, la firma y el mensaje que configuras antes de enviar.",
+      "tabTrackingTitle": "Rastrear la actividad de las solicitudes",
+      "tabTrackingDescription": "Ver cada solicitud enviada, abierta, con clics, recordatorios y estado de finalización en una sola vista de actividad.",
+      "tabTrackingAlt": "Panel de actividad de Get Phame que muestra envíos de solicitudes de revisión, aperturas, clics, recordatorios y estado de finalización",
+      "sectionDescription": "Una herramienta enfocada. Tres vistas prácticas. Todo lo que necesitas para gestionar el alcance de solicitudes de revisión."
+    },
+    "socialProofBar": {
+      "heading": "Salvaguardas integradas en el flujo de trabajo",
+      "safeguards": {
+        "privacy": {
+          "title": "Privacidad primero",
+          "description": "Solo se usan los datos del cliente necesarios para la solicitud que elijas en el flujo de envío."
+        },
+        "consent": {
+          "title": "Con consentimiento consciente",
+          "description": "Los contactos no se añaden ni se envían mensajes automáticamente. Tú controlas a quién se envía cada solicitud."
+        },
+        "compliance": {
+          "title": "Guía de cumplimiento",
+          "description": "Guía específica para la plataforma está disponible antes de enviar solicitudes de revisión individuales."
+        },
+        "reminders": {
+          "title": "Control de recordatorios",
+          "description": "Los recordatorios futuros se detienen cuando se completa la acción solicitada."
+        }
+      }
+    },
+    "testimonials": {
+      "proofLabel": "Prueba de producto",
+      "headline": "Qué está diseñado para hacer Get Phame",
+      "subtitle": "Capacidades que puedes verificar en la app, sin afirmaciones de clientes no verificadas ni promesas de resultados.",
+      "email": {
+        "label": "Correo conectado",
+        "title": "Envía desde una cuenta que conectes",
+        "description": "Crea solicitudes individualizadas con la identidad de la empresa, los datos del remitente y el mensaje que configuras."
+      },
+      "control": {
+        "label": "Control de destinatarios",
+        "title": "Eliges a cada cliente",
+        "description": "Añade o importa contactos, revisa cada destinatario y envía solo cuando lo decidas. Get Phame no envía mensajes a los contactos automáticamente."
+      },
+      "activity": {
+        "label": "Visibilidad de acciones",
+        "title": "Rastrear la actividad de las solicitudes",
+        "description": "Ver envío, apertura, clic, recordatorio y estado de finalización en un solo espacio de trabajo sin inventar resultados para el cliente."
+      },
+      "getStartedFree": "Explora Get Phame Free"
+    },
+    "faq": {
+      "a1": "Cada solicitud se envía a través de una cuenta de correo que conectas y utiliza el nombre del remitente, la dirección, la firma y el mensaje que configuras. Previsualiza el mensaje antes de enviar y sigue las indicaciones de entregabilidad de tu proveedor.",
+      "a6": "Los mensajes se envían a través de la cuenta de correo que conectas, por lo que los límites de envío de tu proveedor, la reputación del dominio, SPF, DKIM, contenido y el compromiso de los destinatarios pueden afectar la entrega. Ningún servicio puede garantizar la entrega en la bandeja de entrada.",
+      "a9": "No. Get Phame ofrece orientación de configuración específica del proveedor para Gmail, Outlook y otros servicios SMTP compatibles. Las conexiones SMTP personalizadas requieren la dirección del servidor, el puerto y las credenciales suministradas por tu proveedor."
+    },
+    "section": {
+      "description": "Mira un recorrido rápido de cómo conectar el correo, añadir clientes, enviar solicitudes y rastrear la actividad."
     }
   },
   "adaptiveSending": {

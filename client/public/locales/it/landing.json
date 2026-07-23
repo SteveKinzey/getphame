@@ -67,6 +67,127 @@
         "messageMax": "Mantieni il messaggio entro 4.000 caratteri.",
         "nameMax": "Mantieni il nome entro 80 caratteri."
       }
+    },
+    "feature1": {
+      "title": "Richieste personali da un mittente collegato",
+      "description": "Ogni richiesta di recensione utilizza i dettagli del mittente, l'identità dell'azienda e il messaggio che configuri prima di inviare.",
+      "stat": "Da te",
+      "statLabel": "identità del mittente connesso"
+    },
+    "feature2": {
+      "title": "Importa, rivedi, poi invia",
+      "description": "Importa contatti da CSV o WooCommerce, rimuovi i duplicati, verifica i destinatari e scegli ogni invio con cura.",
+      "stat": "CSV + Woo",
+      "statLabel": "fonti di contatto supportate"
+    },
+    "feature3": {
+      "title": "Destinazioni compatibili con la piattaforma",
+      "description": "Scegli la destinazione di recensione supportata che si adatta a ogni flusso di lavoro, con linee guida sulla conformità per piattaforme come Yelp.",
+      "stat": "Flessibile",
+      "statLabel": "destinazioni di recensione"
+    },
+    "whyItWorks": "Come mantiene il controllo",
+    "headline": "Dalla lista dei clienti alla richiesta personale",
+    "subHeadline": "Un flusso di lavoro mirato per preparare, inviare e monitorare richieste di recensione individuali—senza conversazioni imbarazzanti o contatti automatici.",
+    "finalCta": {
+      "headlinePart1": "La tua casella di posta. I tuoi clienti.",
+      "headlinePart2": "Il tuo controllo.",
+      "description": "Inizia con 10 richieste di recensione, poi ottieni altre 5 ogni finestra mobile di 30 giorni. Nessuna carta di credito richiesta. Scegli ogni destinatario prima di inviare.",
+      "getStartedButton": "Inizia gratis",
+      "joinBusinesses": "Contatto individuale, consapevolezza del consenso e linee guida sulla conformità integrate nel flusso di invio."
+    },
+    "hero": {
+      "headlinePart1": "Rendi personali le richieste di recensione",
+      "headlinePart2": "senza la richiesta imbarazzante",
+      "ctaVariantA": "Inizia gratis — Invia 10 richieste",
+      "ctaVariantB": "Crea la tua prima richiesta di recensione",
+      "setupTime": "Configurazione guidata"
+    },
+    "howItWorks": {
+      "setupSteps": {
+        "step1": {
+          "title": "Collega la tua email",
+          "description": "Collega Gmail, Outlook o un account SMTP con istruzioni guidate specifiche per il provider. Le credenziali sono criptate a riposo."
+        },
+        "step4": {
+          "title": "Invia e monitora l'attività",
+          "description": "Invia una richiesta personale a ogni cliente che scegli, poi monitora invii, messaggi aperti, clic, promemoria e stato di completamento."
+        }
+      },
+      "headline": "Quattro passaggi per la tua prima richiesta di recensione",
+      "setupTime": "Configurazione guidata per i provider di posta supportati"
+    },
+    "leadCapture": {
+      "description": "Ottieni una guida gratuita per costruire un processo di richiesta di recensione ripetibile e conforme—più aggiornamenti sul prodotto e consigli per la reputazione.",
+      "sharePrompt": "Conosci qualcuno che invia richieste di recensione? Condividi la guida gratuita."
+    },
+    "productShowcase": {
+      "tabEmailDescription": "Ogni richiesta di recensione utilizza l'indirizzo email, il nome del mittente, la firma e il messaggio che configuri prima di inviare.",
+      "tabTrackingTitle": "Traccia l'attività delle richieste",
+      "tabTrackingDescription": "Vedi ogni richiesta inviata, aperta, cliccata, promemoria e stato di completamento in un'unica vista attività.",
+      "tabTrackingAlt": "Cruscotto di attività Get Phame che mostra invii di richieste di recensione, aperture, clic, promemoria e stato di completamento",
+      "sectionDescription": "Uno strumento mirato. Tre viste pratiche. Tutto ciò di cui hai bisogno per gestire la richiesta di recensioni."
+    },
+    "socialProofBar": {
+      "heading": "Sicurezze integrate nel flusso di lavoro",
+      "safeguards": {
+        "privacy": {
+          "title": "Privacy al primo posto",
+          "description": "Solo i dettagli del cliente necessari per una richiesta scelta vengono utilizzati nel flusso di invio."
+        },
+        "consent": {
+          "title": "Consenso consapevole",
+          "description": "I contatti non vengono aggiunti o contattati automaticamente. Controlli chi riceve ogni richiesta."
+        },
+        "compliance": {
+          "title": "Linee guida di conformità",
+          "description": "Linee guida adeguate alla piattaforma sono disponibili prima di inviare richieste di recensione individuali."
+        },
+        "reminders": {
+          "title": "Controllo dei promemoria",
+          "description": "I promemoria futuri si interrompono quando l'azione richiesta dal cliente è completata."
+        }
+      }
+    },
+    "stats": {
+      "recipientControlValue": "Decidi tu",
+      "recipientControlLabel": "ogni destinatario della richiesta",
+      "individualValue": "1-to-1",
+      "individualLabel": "richiesta di recensione individuale",
+      "connectedEmailValue": "La tua casella di posta",
+      "connectedEmailLabel": "invia da un account che colleghi",
+      "reminderValue": "Automatico",
+      "reminderLabel": "promemoria futuri si interrompono dopo il completamento",
+      "heading": "Controllo ad ogni passaggio"
+    },
+    "testimonials": {
+      "proofLabel": "Prova del prodotto",
+      "headline": "Cosa Get Phame è progettato per fare",
+      "subtitle": "Funzionalità verificabili nell'app—senza affermazioni non verificate dei clienti o promesse di risultati.",
+      "email": {
+        "label": "Email connessa",
+        "title": "Invia da un account che colleghi",
+        "description": "Crea richieste individualizzate con l'identità aziendale, i dettagli del mittente e il messaggio che configuri."
+      },
+      "control": {
+        "label": "Controllo del destinatario",
+        "title": "Scegli tu ogni cliente",
+        "description": "Aggiungi o importa contatti, verifica ogni destinatario e invia solo quando decidi. Get Phame non invia messaggi ai contatti automaticamente."
+      },
+      "activity": {
+        "label": "Visibilità delle azioni",
+        "title": "Monitora l'attività delle richieste",
+        "description": "Vedi invii, aperture, clic, promemoria e stato di completamento in un'unica area di lavoro senza inventare esiti dei clienti."
+      },
+      "getStartedFree": "Esplora Get Phame Free"
+    },
+    "faq": {
+      "a1": "Ogni richiesta viene inviata tramite un account email che colleghi e utilizza il nome del mittente, l'indirizzo, la firma e il messaggio che configuri. Anteprima del messaggio prima dell'invio e segui le linee guida di deliverability del tuo provider.",
+      "a6": "I messaggi sono inviati dall'account email che colleghi, quindi i limiti di invio del provider, la reputazione del dominio, SPF, DKIM, contenuto e coinvolgimento dei destinatari possono influire sulla consegna. Nessun servizio può garantire la consegna in inbox.",
+      "a9": "No. Get Phame fornisce istruzioni di configurazione specifiche per Gmail, Outlook e altri servizi SMTP supportati. Connessioni SMTP personalizzate richiedono l'indirizzo del server, la porta e le credenziali fornite dal tuo provider."
+    },
+    "section": {
+      "description": "Guarda una rapida panoramica su come connettere la posta elettronica, aggiungere clienti, inviare richieste e monitorare l'attività."
     }
   }
 }

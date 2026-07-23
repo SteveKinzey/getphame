@@ -135,8 +135,8 @@ export default function ProductShowcase() {
       id: "tracking",
       label: t("landing.productShowcase.tabTrackingLabel", { defaultValue: "Review Tracking" }),
       icon: TrendingUp,
-      title: t("landing.productShowcase.tabTrackingTitle", { defaultValue: "Watch the reviews roll in" }),
-      description: t("landing.productShowcase.tabTrackingDescription", { defaultValue: "Track every email sent, opened, and clicked. See your review count climb week over week with real-time analytics and growth charts." }),
+      title: t("landing.productShowcase.tabTrackingTitle", { defaultValue: "Track request activity" }),
+      description: t("landing.productShowcase.tabTrackingDescription", { defaultValue: "See every request sent, opened, clicked, reminded, and completed in one activity view." }),
       webp: REVIEW_TRACKING_WEBP,
       png: REVIEW_TRACKING_PNG,
       alt: t("landing.productShowcase.tabTrackingAlt", { defaultValue: "GetPhame review tracking dashboard showing email open rates, click-through rates, and weekly review count growth chart" }),
@@ -157,7 +157,7 @@ export default function ProductShowcase() {
               {t("landing.productShowcase.sectionTitle", { defaultValue: "Built to make review requests effortless" })}
             </h2>
             <p className="text-lg text-slate-200 font-medium">
-              {t("landing.productShowcase.sectionDescription", { defaultValue: "One simple tool. Three powerful views. Everything you need to grow your reputation." })}
+              {t("landing.productShowcase.sectionDescription", { defaultValue: "One focused tool. Three practical views. Everything you need to manage review-request outreach." })}
             </p>
           </FadeUp>
 

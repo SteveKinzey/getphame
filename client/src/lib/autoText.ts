@@ -13,12 +13,12 @@ type StaticCopySupplement = {
 // removes the previous all-language JSON imports from the initial JavaScript
 // bundle and avoids downloading unrelated languages.
 const STATIC_COPY_SUPPLEMENT_URLS: Partial<Record<SupportedLang, string>> = {
-  es: "/manus-storage/getphame-static-copy-es-phame18-static-copy_07cd913a.json",
-  fr: "/manus-storage/getphame-static-copy-fr-phame18-static-copy_d57de8e1.json",
-  it: "/manus-storage/getphame-static-copy-it-phame18-static-copy_856fbb25.json",
-  th: "/manus-storage/getphame-static-copy-th-phame18-static-copy_ccba1b66.json",
-  "zh-CN": "/manus-storage/getphame-static-copy-zh-CN-phame18-static-copy_76d42e6a.json",
-  "zh-TW": "/manus-storage/getphame-static-copy-zh-TW-phame18-static-copy_1e6a96ae.json",
+  es: "/manus-storage/getphame-static-copy-es-phame29-static-copy_f63cb5a6.json",
+  fr: "/manus-storage/getphame-static-copy-fr-phame29-static-copy_75212a1b.json",
+  it: "/manus-storage/getphame-static-copy-it-phame29-static-copy_e36babdb.json",
+  th: "/manus-storage/getphame-static-copy-th-phame29-static-copy_165df0ca.json",
+  "zh-CN": "/manus-storage/getphame-static-copy-zh-CN-phame29-static-copy_39d8ea06.json",
+  "zh-TW": "/manus-storage/getphame-static-copy-zh-TW-phame29-static-copy_b6dfca7f.json",
 };
 
 const sourceToKey = new Map<string, string>();
