@@ -5,6 +5,7 @@ import {
   recoveryDrillApprovals,
   recoveryDrillAssignments,
   recoveryDrillEvidence,
+  recoveryDrillParticipants,
   recoveryDrills,
   securityActionApprovals,
   securityAuditEvents,
@@ -92,10 +93,18 @@ async function getDrill(drillId: string): Promise<RecoveryDrill> {
   return drill;
 }
 
-function requireDrillRole(drill: RecoveryDrill, actorUserId: number, roles: Array<"custodian" | "approver">): void {
-  if (roles.includes("custodian") && drill.recoveryCustodianUserId === actorUserId) return;
-  if (roles.includes("approver") && drill.independentApproverUserId === actorUserId) return;
-  throw new RecoveryDrillError("FORBIDDEN", "This recovery role cannot perform the requested action");
+async function requireDrillRole(drillId: string, actorUserId: number, roles: Array<"custodian" | "approver">): Promise<void> {
+  const allowedRoles = roles.map(role => role === "custodian" ? "recovery_custodian" as const : "independent_approver" as const);
+  const db = await requireDb();
+  const [participant] = await db.select({ id: recoveryDrillParticipants.id })
+    .from(recoveryDrillParticipants)
+    .where(and(
+      eq(recoveryDrillParticipants.drillId, drillId),
+      eq(recoveryDrillParticipants.userId, actorUserId),
+      inArray(recoveryDrillParticipants.role, allowedRoles),
+    ))
+    .limit(1);
+  if (!participant) throw new RecoveryDrillError("FORBIDDEN", "This recovery role cannot perform the requested action");
 }
 
 async function revokeTemporaryAccess(executor: DbExecutor, actorUserId: number, now: number): Promise<void> {
@@ -141,10 +150,17 @@ export async function getRecoverySnapshot(actorUserId: number, req: Request, ses
     .where(eq(recoveryDrills.environment, "staging"))
     .orderBy(desc(recoveryDrills.createdAt))
     .limit(1);
+  const [participant] = drill ? await db.select({ role: recoveryDrillParticipants.role })
+    .from(recoveryDrillParticipants)
+    .where(and(
+      eq(recoveryDrillParticipants.drillId, drill.id),
+      eq(recoveryDrillParticipants.userId, actorUserId),
+    ))
+    .limit(1) : [];
   let actorRole: RecoveryDrillActorRole = platformOwner ? "platform_owner" : "none";
-  if (drill?.recoveryCustodianUserId === actorUserId) actorRole = "recovery_custodian";
-  else if (drill?.independentApproverUserId === actorUserId) actorRole = "independent_approver";
-  else if (drill?.observerUserId === actorUserId) actorRole = "observer";
+  if (participant?.role === "recovery_custodian" || participant?.role === "independent_approver" || participant?.role === "observer") {
+    actorRole = participant.role;
+  }
   const recentPasskeyA2 = hasRecentPasskeyA2(session);
   if (!platformOwner && actorRole === "none") {
     return { runtime, authorized: false, actorRole, recentPasskeyA2, drill: null, approval: null, evidence: [], actions: { canPrepare: false, canApprove: false, canStart: false, canRecordEvidence: false, canContain: false, canComplete: false, canAbort: false } };
@@ -201,6 +217,10 @@ export async function prepareRecoveryDrill(input: { actorUserId: number; session
       { environment: "staging", role: "independent_approver", userId: approver.id, displayLabel: approver.name?.trim() || "Lead Engineer — Independent Approver", assignedByUserId: input.actorUserId, assignedAt: now },
     ]);
     await tx.insert(recoveryDrills).values({ id: drillId, environment: "staging", status: "ready", title, scheduledAt: input.scheduledAt, recoveryCustodianUserId: input.actorUserId, independentApproverUserId: approver.id, notes, createdByUserId: input.actorUserId, createdAt: now });
+    await tx.insert(recoveryDrillParticipants).values([
+      { drillId, role: "recovery_custodian", userId: input.actorUserId, assignedByUserId: input.actorUserId, assignedAt: now },
+      { drillId, role: "independent_approver", userId: approver.id, assignedByUserId: input.actorUserId, assignedAt: now },
+    ]);
     await tx.insert(securityPermissionOverrides).values(RECOVERY_DRILL_APPROVER_PERMISSIONS.map(permission => ({ userId: approver.id, permission, effect: "allow" as const, scopeType: "platform" as const, reason: `staging_recovery_approver:${drillId}`, grantedByUserId: input.actorUserId, grantedAt: now, expiresAt })));
     await tx.insert(securityActionApprovals).values({ id: randomUUID(), actionKey: RECOVERY_DRILL_ACTION_KEY, requesterUserId: input.actorUserId, resourceType: "recovery_drill", resourceId: drillId, status: "pending", requestedAt: now, expiresAt });
   });
@@ -213,7 +233,7 @@ export async function decideRecoveryDrill(input: { actorUserId: number; session:
   assertRecentPasskeyA2(input.session);
   const drill = await getDrill(input.drillId);
   if (drill.status !== "ready") throw new RecoveryDrillError("INVALID_STATE", "Only a ready drill can be approved or rejected");
-  requireDrillRole(drill, input.actorUserId, ["approver"]);
+  await requireDrillRole(drill.id, input.actorUserId, ["approver"]);
   assertSeparatedRecoveryRoles(drill.recoveryCustodianUserId, input.actorUserId);
   const note = assertRedactedEvidenceText(input.note, "Approval note");
   const db = await requireDb();
@@ -238,7 +258,7 @@ export async function startRecoveryDrill(input: { actorUserId: number; session: 
   assertRecoveryRuntime(input.req);
   assertRecentPasskeyA2(input.session);
   const drill = await getDrill(input.drillId);
-  requireDrillRole(drill, input.actorUserId, ["custodian"]);
+  await requireDrillRole(drill.id, input.actorUserId, ["custodian"]);
   assertRecoveryTransition(drill.status, "in_progress");
   const db = await requireDb();
   const [approval] = await db.select({ decision: recoveryDrillApprovals.decision }).from(recoveryDrillApprovals).where(and(eq(recoveryDrillApprovals.drillId, drill.id), eq(recoveryDrillApprovals.decision, "approved"))).limit(1);
@@ -257,7 +277,7 @@ export async function recordRecoveryEvidence(input: { actorUserId: number; sessi
   assertRecoveryRuntime(input.req);
   assertRecentPasskeyA2(input.session);
   const drill = await getDrill(input.drillId);
-  requireDrillRole(drill, input.actorUserId, ["custodian"]);
+  await requireDrillRole(drill.id, input.actorUserId, ["custodian"]);
   if (drill.status !== "in_progress" && drill.status !== "paused") throw new RecoveryDrillError("INVALID_STATE", "Evidence can be recorded only during an active or contained drill");
   const evidenceReference = assertRedactedEvidenceText(input.evidenceReference, "Evidence reference");
   const db = await requireDb();
@@ -271,7 +291,7 @@ export async function containRecoveryDrill(input: { actorUserId: number; session
   assertRecoveryRuntime(input.req);
   assertRecentPasskeyA2(input.session);
   const drill = await getDrill(input.drillId);
-  requireDrillRole(drill, input.actorUserId, ["custodian"]);
+  await requireDrillRole(drill.id, input.actorUserId, ["custodian"]);
   assertRecoveryTransition(drill.status, "paused");
   const reason = assertRedactedEvidenceText(input.reason, "Containment reason");
   const db = await requireDb();
@@ -288,7 +308,7 @@ export async function completeRecoveryDrill(input: { actorUserId: number; sessio
   assertRecoveryRuntime(input.req);
   assertRecentPasskeyA2(input.session);
   const drill = await getDrill(input.drillId);
-  requireDrillRole(drill, input.actorUserId, ["custodian"]);
+  await requireDrillRole(drill.id, input.actorUserId, ["custodian"]);
   assertRecoveryTransition(drill.status, "completed");
   const db = await requireDb();
   const evidence = await db.select({ evidenceType: recoveryDrillEvidence.evidenceType, outcome: recoveryDrillEvidence.outcome }).from(recoveryDrillEvidence).where(eq(recoveryDrillEvidence.drillId, drill.id));
@@ -308,7 +328,7 @@ export async function abortRecoveryDrill(input: { actorUserId: number; session: 
   assertRecoveryRuntime(input.req);
   assertRecentPasskeyA2(input.session);
   const drill = await getDrill(input.drillId);
-  requireDrillRole(drill, input.actorUserId, ["custodian", "approver"]);
+  await requireDrillRole(drill.id, input.actorUserId, ["custodian", "approver"]);
   assertRecoveryTransition(drill.status, "aborted");
   const reason = assertRedactedEvidenceText(input.reason, "Abort reason");
   const db = await requireDb();

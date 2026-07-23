@@ -1337,6 +1337,26 @@ export const recoveryDrills = pgTable("recovery_drills", {
 export type RecoveryDrill = typeof recoveryDrills.$inferSelect;
 export type InsertRecoveryDrill = typeof recoveryDrills.$inferInsert;
 
+/**
+ * Drill-bound duty assignments. The two unique indexes enforce one actor per
+ * role and one role per actor without relying on CHECK constraints, which the
+ * managed TiDB dialect parses but does not retain.
+ */
+export const recoveryDrillParticipants = pgTable("recovery_drill_participants", {
+  id: serial("id").primaryKey(),
+  drillId: varchar("drill_id", { length: 36 }).notNull(),
+  role: recoveryDrillRoleEnum("role").notNull(),
+  userId: integer("user_id").notNull(),
+  assignedByUserId: integer("assigned_by_user_id").notNull(),
+  assignedAt: bigint("assigned_at", { mode: "number" }).notNull(),
+}, (table) => [
+  uniqueIndex("recovery_participants_drill_role_unique").on(table.drillId, table.role),
+  uniqueIndex("recovery_participants_drill_user_unique").on(table.drillId, table.userId),
+  index("recovery_participants_user_idx").on(table.userId, table.drillId),
+]);
+export type RecoveryDrillParticipant = typeof recoveryDrillParticipants.$inferSelect;
+export type InsertRecoveryDrillParticipant = typeof recoveryDrillParticipants.$inferInsert;
+
 /** Named staging recovery responsibilities; revoked rows remain as evidence. */
 export const recoveryDrillAssignments = pgTable("recovery_drill_assignments", {
   id: serial("id").primaryKey(),

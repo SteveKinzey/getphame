@@ -87,9 +87,10 @@ describe("staging recovery lifecycle and evidence", () => {
     expect(() => assertRedactedEvidenceText("sk_live_123456789", "Evidence reference")).toThrowError(RecoveryDrillError);
   });
 
-  it("ships a database constraint that forbids identical custodian and approver IDs", () => {
-    const migration = readFileSync(new URL("../../drizzle/0028_awesome_fat_cobra.sql", import.meta.url), "utf8");
-    expect(migration).toContain("CONSTRAINT `recovery_drills_separated_duties` CHECK");
-    expect(migration).toContain("`recovery_custodian_user_id` <> `recovery_drills`.`independent_approver_user_id`");
+  it("ships TiDB-enforced participant uniqueness for separated recovery duties", () => {
+    const migration = readFileSync(new URL("../../drizzle/0029_amazing_toad.sql", import.meta.url), "utf8");
+    expect(migration).toContain("CREATE TABLE `recovery_drill_participants`");
+    expect(migration).toContain("CONSTRAINT `recovery_participants_drill_role_unique` UNIQUE(`drill_id`,`role`)");
+    expect(migration).toContain("CONSTRAINT `recovery_participants_drill_user_unique` UNIQUE(`drill_id`,`user_id`)");
   });
 });
