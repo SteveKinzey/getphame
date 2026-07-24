@@ -130,7 +130,7 @@ describe("Get Phame regression contracts", () => {
     expect(manifest.icons.some((icon) => icon.sizes === "512x512" && icon.purpose === "maskable")).toBe(true);
     expect(manifest.launch_handler.client_mode).toContain("navigate-existing");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v9'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v10'");
     expect(serviceWorker).toContain("self.addEventListener('install'");
     expect(serviceWorker).toContain("self.addEventListener('fetch'");
     expect(serviceWorker).toContain("const OFFLINE_PAGES = {");

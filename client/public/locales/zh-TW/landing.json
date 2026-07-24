@@ -300,20 +300,23 @@
     "section": {
       "tagline": "實際操作看看",
       "title": "查看運作方式",
-      "description": "觀看快速示範 — 兩分鐘內完成設定"
+      "description": "觀看 63 秒平台導覽，提供英文旁白與清楚字幕"
     },
     "thumbnail": {
       "playButtonAriaLabel": "播放產品示範影片",
       "altText": "Get Phame 產品示範影片縮圖"
     },
     "bottomBar": {
-      "title": "Get Phame — 完整產品示範",
-      "description": "連接電子郵件 · 匯入客戶 · 發送邀請 · 追蹤結果",
+      "title": "Get Phame — 平台導覽",
+      "description": "逐一聯絡 · 已連接信箱 · 有限提醒 · 完成後自動停止",
       "watchNow": "立即觀看 →"
     },
     "modal": {
       "closeButtonAriaLabel": "關閉影片",
-      "iframeTitle": "GetPhame 產品導覽"
+      "videoTitle": "Get Phame 平台導覽",
+      "captionNotice": "英文旁白搭配清楚字幕。",
+      "captionTrackLabel": "英文字幕",
+      "videoFallback": "您的瀏覽器不支援 HTML 影片。"
     },
     "support": {
       "title": "我們如何協助您？",

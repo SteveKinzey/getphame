@@ -1,16 +1,59 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Play, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import FadeUp from "./FadeUp";
 
-const YOUTUBE_URL = "https://www.youtube.com/watch?v=EWHSE1oyJOk";
-const YOUTUBE_EMBED = "https://www.youtube.com/embed/EWHSE1oyJOk?autoplay=1&rel=0&modestbranding=1&origin=https://getphame.app";
-const YOUTUBE_THUMB = "https://img.youtube.com/vi/EWHSE1oyJOk/maxresdefault.jpg";
+export const WALKTHROUGH_VIDEO_URL = "/manus-storage/getphame-walkthrough-captioned_d6454fd4.mp4";
+export const WALKTHROUGH_CAPTIONS_URL = "/manus-storage/getphame-walkthrough-captioned_0abd96cb.vtt";
+export const WALKTHROUGH_POSTER_URL = "/manus-storage/getphame-walkthrough-poster_98943590.png";
 
 export default function VideoDemo() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const previouslyFocused = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    closeButtonRef.current?.focus();
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        return;
+      }
+
+      if (event.key === "Tab") {
+        const focusable = Array.from(
+          dialogRef.current?.querySelectorAll<HTMLElement>("button, video[controls]") ?? [],
+        ).filter((element) => !element.hasAttribute("disabled"));
+
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      previouslyFocused?.focus();
+    };
+  }, [open]);
 
   return (
     <>
@@ -24,7 +67,7 @@ export default function VideoDemo() {
 {t("landing.section.title", { defaultValue: "See How It Works" })}
             </h2>
             <p className="text-slate-300 font-medium">
-{t("landing.section.description", { defaultValue: "Watch a quick walkthrough — set up in under 2 minutes" })}
+{t("landing.section.description", { defaultValue: "Watch the 63-second platform walkthrough — English narration with visible captions" })}
             </p>
           </FadeUp>
 
@@ -39,14 +82,11 @@ export default function VideoDemo() {
                 {/* Thumbnail */}
                 <div className="relative aspect-video bg-[oklch(0.14_0.03_250)]">
                   <img
-                    src={YOUTUBE_THUMB}
-                    alt={t("landing.thumbnail.altText", { defaultValue: "GetPhame product walkthrough video thumbnail" })}
+                    src={WALKTHROUGH_POSTER_URL}
+                    alt={t("landing.thumbnail.altText", { defaultValue: "Get Phame platform walkthrough video thumbnail" })}
                     className="w-full h-full object-cover opacity-70 group-hover:opacity-85 transition-opacity duration-300"
-                    onError={(e) => {
-                      // Fallback to hqdefault if maxresdefault fails
-                      (e.target as HTMLImageElement).src =
-                        "https://img.youtube.com/vi/EWHSE1oyJOk/hqdefault.jpg";
-                    }}
+                    loading="lazy"
+                    decoding="async"
                   />
 
                   {/* Dark overlay gradient */}
@@ -66,7 +106,7 @@ export default function VideoDemo() {
 
                   {/* Duration badge */}
                   <div className="absolute bottom-4 right-4 px-2.5 py-1 rounded-md bg-black/70 backdrop-blur-sm">
-                    <span className="text-xs font-semibold text-white tracking-wide">2:14</span>
+                    <span className="text-xs font-semibold text-white tracking-wide">1:03</span>
                   </div>
                 </div>
 
@@ -76,8 +116,8 @@ export default function VideoDemo() {
                     <Play size={14} className="text-primary fill-primary ml-0.5" />
                   </div>
                   <div className="text-left">
-                    <p className="text-sm font-semibold text-white">{t("landing.bottomBar.title", { defaultValue: "GetPhame — Full Product Walkthrough" })}</p>
-                    <p className="text-xs text-slate-400 font-medium">{t("landing.bottomBar.description", { defaultValue: "Connect email · Import customers · Send requests · Track results" })}</p>
+                    <p className="text-sm font-semibold text-white">{t("landing.bottomBar.title", { defaultValue: "Get Phame — Platform Walkthrough" })}</p>
+                    <p className="text-xs text-slate-400 font-medium">{t("landing.bottomBar.description", { defaultValue: "Individual outreach · Connected inbox · Limited reminders · Stop on completion" })}</p>
                   </div>
                   <div className="ml-auto shrink-0 text-xs font-medium text-primary group-hover:underline">
 {t("landing.bottomBar.watchNow", { defaultValue: "Watch now →" })}
@@ -94,6 +134,10 @@ export default function VideoDemo() {
         {open && (
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="get-phame-video-title"
+            aria-describedby="get-phame-video-description"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -105,6 +149,7 @@ export default function VideoDemo() {
 
             {/* Modal content */}
             <motion.div
+              ref={dialogRef}
               className="relative w-full max-w-4xl"
               initial={{ opacity: 0, scale: 0.95, y: 16 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -114,6 +159,7 @@ export default function VideoDemo() {
             >
               {/* Close button */}
               <button
+                ref={closeButtonRef}
                 onClick={() => setOpen(false)}
                 aria-label={t("landing.modal.closeButtonAriaLabel", { defaultValue: "Close video" })}
                 className="absolute -top-10 right-0 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
@@ -121,16 +167,34 @@ export default function VideoDemo() {
                 <X size={16} className="text-white" />
               </button>
 
-              {/* iframe wrapper */}
-              <div className="relative aspect-video rounded-2xl overflow-hidden border border-[#1e3050] shadow-2xl shadow-black/60">
-                <iframe
-                  src={YOUTUBE_EMBED}
-                  title={t("landing.modal.iframeTitle", { defaultValue: "GetPhame product walkthrough" })}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                  referrerPolicy="strict-origin-when-cross-origin"
-                  className="absolute inset-0 w-full h-full"
-                />
+              <h3 id="get-phame-video-title" className="sr-only">
+                {t("landing.modal.videoTitle", { defaultValue: "Get Phame platform walkthrough" })}
+              </h3>
+              <p id="get-phame-video-description" className="sr-only">
+                {t("landing.modal.captionNotice", { defaultValue: "English narration with visible captions." })}
+              </p>
+
+              {/* Self-hosted video wrapper */}
+              <div className="relative aspect-video max-h-[calc(100dvh-5rem)] rounded-2xl overflow-hidden border border-[#1e3050] bg-[#06111f] shadow-2xl shadow-black/60">
+                <video
+                  src={WALKTHROUGH_VIDEO_URL}
+                  poster={WALKTHROUGH_POSTER_URL}
+                  controls
+                  autoPlay
+                  playsInline
+                  preload="metadata"
+                  crossOrigin="anonymous"
+                  aria-label={t("landing.modal.videoTitle", { defaultValue: "Get Phame platform walkthrough" })}
+                  className="absolute inset-0 w-full h-full object-contain"
+                >
+                  <track
+                    kind="captions"
+                    src={WALKTHROUGH_CAPTIONS_URL}
+                    srcLang="en"
+                    label={t("landing.modal.captionTrackLabel", { defaultValue: "English captions" })}
+                  />
+                  {t("landing.modal.videoFallback", { defaultValue: "Your browser does not support HTML video." })}
+                </video>
               </div>
             </motion.div>
           </motion.div>

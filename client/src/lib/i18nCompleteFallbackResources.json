@@ -366,11 +366,14 @@
       },
       "modal": {
         "closeButtonAriaLabel": "Close video",
-        "iframeTitle": "GetPhame product walkthrough"
+        "videoTitle": "Get Phame platform walkthrough",
+        "captionNotice": "English narration with visible captions.",
+        "captionTrackLabel": "English captions",
+        "videoFallback": "Your browser does not support HTML video."
       },
       "bottomBar": {
-        "description": "Connect email · Import customers · Send requests · Track results",
-        "title": "GetPhame — Full Product Walkthrough",
+        "description": "Individual outreach · Connected inbox · Limited reminders · Stop on completion",
+        "title": "Get Phame — Platform Walkthrough",
         "watchNow": "Watch now →"
       },
       "leadCapture": {
@@ -452,7 +455,7 @@
         "privacyPolicy": "Privacy Policy"
       },
       "thumbnail": {
-        "altText": "GetPhame product walkthrough video thumbnail",
+        "altText": "Get Phame platform walkthrough video thumbnail",
         "playButtonAriaLabel": "Play product walkthrough video"
       },
       "feature2": {
@@ -469,7 +472,7 @@
       "section": {
         "title": "See How It Works",
         "tagline": "See it in action",
-        "description": "Watch a quick walkthrough — set up in under 2 minutes"
+        "description": "Watch the 63-second platform walkthrough — English narration with visible captions"
       },
       "subHeadline": "The simplest way to turn happy customers into 5-star reviews — without expensive tools or awkward conversations.",
       "whyItWorks": "Why it works"
@@ -1441,11 +1444,14 @@
       },
       "modal": {
         "closeButtonAriaLabel": "Cerrar video",
-        "iframeTitle": "Recorrido del producto GetPhame"
+        "videoTitle": "Recorrido de la plataforma Get Phame",
+        "captionNotice": "Narración en inglés con subtítulos visibles.",
+        "captionTrackLabel": "Subtítulos en inglés",
+        "videoFallback": "Tu navegador no admite video HTML."
       },
       "bottomBar": {
-        "description": "Conectar correo · Importar clientes · Enviar solicitudes · Rastrear resultados",
-        "title": "GetPhame — recorrido completo del producto",
+        "description": "Alcance individual · Bandeja conectada · Recordatorios limitados · Se detienen al completar la acción",
+        "title": "Get Phame — Recorrido de la plataforma",
         "watchNow": "Ver ahora →"
       },
       "leadCapture": {
@@ -1527,7 +1533,7 @@
         "privacyPolicy": "Política de privacidad"
       },
       "thumbnail": {
-        "altText": "Miniatura del video del recorrido del producto GetPhame",
+        "altText": "Miniatura del recorrido de la plataforma Get Phame",
         "playButtonAriaLabel": "Ver video demostrativo del producto"
       },
       "feature2": {
@@ -1544,7 +1550,7 @@
       "section": {
         "title": "Ver cómo funciona",
         "tagline": "Verlo en acción",
-        "description": "Mira una guía rápida — configúralo en menos de 2 minutos"
+        "description": "Mira el recorrido de 63 segundos con narración en inglés y subtítulos visibles"
       },
       "subHeadline": "La forma más simple de convertir clientes satisfechos en reseñas de 5 estrellas — sin herramientas caras ni conversaciones incómodas.",
       "whyItWorks": "Por qué funciona"
@@ -2541,11 +2547,14 @@
       },
       "modal": {
         "closeButtonAriaLabel": "Fermer la vidéo",
-        "iframeTitle": "Présentation du produit GetPhame"
+        "videoTitle": "Présentation de la plateforme Get Phame",
+        "captionNotice": "Narration en anglais avec sous-titres visibles.",
+        "captionTrackLabel": "Sous-titres anglais",
+        "videoFallback": "Votre navigateur ne prend pas en charge la vidéo HTML."
       },
       "bottomBar": {
-        "description": "Connecter l'e-mail · Importer des clients · Envoyer des demandes · Suivre les résultats",
-        "title": "GetPhame — Présentation complète du produit",
+        "description": "Demandes individuelles · Boîte mail connectée · Rappels limités · Arrêt après l’action",
+        "title": "Get Phame — Présentation de la plateforme",
         "watchNow": "Regarder maintenant →"
       },
       "leadCapture": {
@@ -2627,7 +2636,7 @@
         "privacyPolicy": "Politique de confidentialité"
       },
       "thumbnail": {
-        "altText": "Vignette vidéo de la présentation du produit GetPhame",
+        "altText": "Vignette de la présentation de la plateforme Get Phame",
         "playButtonAriaLabel": "Lire la vidéo de présentation du produit"
       },
       "feature2": {
@@ -2644,7 +2653,7 @@
       "section": {
         "title": "Voir comment cela fonctionne",
         "tagline": "Voir en action",
-        "description": "Regardez une démonstration rapide — mise en place en moins de 2 minutes"
+        "description": "Regardez la présentation de 63 secondes avec narration en anglais et sous-titres visibles"
       },
       "subHeadline": "Le moyen le plus simple de transformer des clients satisfaits en avis 5 étoiles — sans outils coûteux ni conversations gênantes.",
       "whyItWorks": "Pourquoi cela fonctionne"
@@ -3641,11 +3650,14 @@
       },
       "modal": {
         "closeButtonAriaLabel": "Chiudi video",
-        "iframeTitle": "Guida al prodotto GetPhame"
+        "videoTitle": "Panoramica della piattaforma Get Phame",
+        "captionNotice": "Narrazione in inglese con sottotitoli visibili.",
+        "captionTrackLabel": "Sottotitoli in inglese",
+        "videoFallback": "Il browser non supporta i video HTML."
       },
       "bottomBar": {
-        "description": "Collega email · Importa clienti · Invia richieste · Monitora i risultati",
-        "title": "GetPhame — Panoramica completa del prodotto",
+        "description": "Contatto individuale · Casella collegata · Promemoria limitati · Stop al completamento",
+        "title": "Get Phame — Panoramica della piattaforma",
         "watchNow": "Guarda ora →"
       },
       "leadCapture": {
@@ -3727,8 +3739,8 @@
         "privacyPolicy": "Informativa sulla privacy"
       },
       "thumbnail": {
-        "altText": "Miniatura del video guida del prodotto GetPhame",
-        "playButtonAriaLabel": "Riproduci il video dimostrativo del prodotto"
+        "altText": "Miniatura della panoramica della piattaforma Get Phame",
+        "playButtonAriaLabel": "Riproduci la panoramica della piattaforma"
       },
       "feature2": {
         "description": "Importa la lista clienti tramite CSV o sincronizzazione WooCommerce, seleziona tutto e invia richieste personalizzate in pochi secondi. Niente copia e incolla. Nessun lavoro manuale.",
@@ -3744,7 +3756,7 @@
       "section": {
         "title": "Scopri come funziona",
         "tagline": "Vedi in azione",
-        "description": "Guarda una breve guida — configura in meno di 2 minuti"
+        "description": "Guarda la panoramica di 63 secondi con narrazione in inglese e sottotitoli visibili"
       },
       "subHeadline": "Il modo più semplice per trasformare clienti soddisfatti in recensioni a 5 stelle — senza strumenti costosi o conversazioni imbarazzanti.",
       "whyItWorks": "Perché funziona"
@@ -4741,11 +4753,14 @@
       },
       "modal": {
         "closeButtonAriaLabel": "ปิดวิดีโอ",
-        "iframeTitle": "การแนะนำผลิตภัณฑ์ GetPhame"
+        "videoTitle": "ภาพรวมแพลตฟอร์ม Get Phame",
+        "captionNotice": "เสียงบรรยายภาษาอังกฤษพร้อมคำบรรยายที่มองเห็นได้",
+        "captionTrackLabel": "คำบรรยายภาษาอังกฤษ",
+        "videoFallback": "เบราว์เซอร์ของคุณไม่รองรับวิดีโอ HTML"
       },
       "bottomBar": {
-        "description": "เชื่อมต่ออีเมล · นำเข้าลูกค้า · ส่งคำขอ · ติดตามผล",
-        "title": "GetPhame — ภาพรวมผลิตภัณฑ์แบบเต็ม",
+        "description": "การติดต่อแบบรายบุคคล · กล่องจดหมายที่เชื่อมต่อ · การเตือนแบบจำกัด · หยุดเมื่อดำเนินการเสร็จ",
+        "title": "Get Phame — ภาพรวมแพลตฟอร์ม",
         "watchNow": "ชมเลย →"
       },
       "leadCapture": {
@@ -4827,7 +4842,7 @@
         "privacyPolicy": "นโยบายความเป็นส่วนตัว"
       },
       "thumbnail": {
-        "altText": "ภาพย่อวิดีโอแนะนำผลิตภัณฑ์ GetPhame",
+        "altText": "ภาพย่อวิดีโอภาพรวมแพลตฟอร์ม Get Phame",
         "playButtonAriaLabel": "เล่นวิดีโอแนะนำผลิตภัณฑ์"
       },
       "feature2": {
@@ -4844,7 +4859,7 @@
       "section": {
         "title": "ดูวิธีการทำงาน",
         "tagline": "ดูการใช้งานจริง",
-        "description": "ชมวิดีโอแนะนำสั้นๆ — ตั้งค่าเสร็จภายใน 2 นาที"
+        "description": "ชมภาพรวมแพลตฟอร์ม 63 วินาที พร้อมเสียงบรรยายภาษาอังกฤษและคำบรรยายที่มองเห็นได้"
       },
       "subHeadline": "วิธีที่ง่ายที่สุดในการเปลี่ยนลูกค้าที่พอใจให้กลายเป็นรีวิว 5 ดาว — โดยไม่ต้องใช้เครื่องมือราคาแพงหรือบทสนทนาที่น่าอึดอัด.",
       "whyItWorks": "เหตุผลที่ได้ผล"
@@ -5841,11 +5856,14 @@
       },
       "modal": {
         "closeButtonAriaLabel": "关闭视频",
-        "iframeTitle": "GetPhame 产品演示"
+        "videoTitle": "Get Phame 平台导览",
+        "captionNotice": "英文旁白配有可见字幕。",
+        "captionTrackLabel": "英文字幕",
+        "videoFallback": "您的浏览器不支持 HTML 视频。"
       },
       "bottomBar": {
-        "description": "连接邮箱 · 导入客户 · 发送请求 · 跟踪结果",
-        "title": "GetPhame — 全产品演示",
+        "description": "逐一联系 · 已连接邮箱 · 有限提醒 · 完成后自动停止",
+        "title": "Get Phame — 平台导览",
         "watchNow": "立即观看 →"
       },
       "leadCapture": {
@@ -5927,7 +5945,7 @@
         "privacyPolicy": "隐私政策"
       },
       "thumbnail": {
-        "altText": "GetPhame 产品演示视频缩略图",
+        "altText": "Get Phame 平台导览视频缩略图",
         "playButtonAriaLabel": "播放产品演示视频"
       },
       "feature2": {
@@ -5944,7 +5962,7 @@
       "section": {
         "title": "查看它的工作原理",
         "tagline": "观看演示",
-        "description": "观看快速演示 — 在 2 分钟内完成设置"
+        "description": "观看 63 秒平台导览，配有英文旁白和可见字幕"
       },
       "subHeadline": "将满意客户转化为五星评价的最简单方式 — 无需昂贵工具或尴尬沟通。",
       "whyItWorks": "为什么有效"
@@ -6941,11 +6959,14 @@
       },
       "modal": {
         "closeButtonAriaLabel": "關閉影片",
-        "iframeTitle": "GetPhame 產品導覽"
+        "videoTitle": "Get Phame 平台導覽",
+        "captionNotice": "英文旁白搭配清楚字幕。",
+        "captionTrackLabel": "英文字幕",
+        "videoFallback": "您的瀏覽器不支援 HTML 影片。"
       },
       "bottomBar": {
-        "description": "連接郵件 · 匯入客戶 · 發送請求 · 追蹤結果",
-        "title": "GetPhame — 完整產品導覽",
+        "description": "逐一聯絡 · 已連接信箱 · 有限提醒 · 完成後自動停止",
+        "title": "Get Phame — 平台導覽",
         "watchNow": "立即觀看 →"
       },
       "leadCapture": {
@@ -7044,7 +7065,7 @@
       "section": {
         "title": "了解如何運作",
         "tagline": "實際示範",
-        "description": "觀看快速導覽 — 2 分鐘內完成設定"
+        "description": "觀看 63 秒平台導覽，提供英文旁白與清楚字幕"
       },
       "subHeadline": "將滿意顧客轉化為五星評價的最簡單方式 — 無需昂貴工具或尷尬對話。",
       "whyItWorks": "為何有效"

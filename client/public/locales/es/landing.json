@@ -300,20 +300,23 @@
     "section": {
       "tagline": "Véalo en acción",
       "title": "Ve cómo funciona",
-      "description": "Mira un recorrido rápido — configúralo en menos de 2 minutos"
+      "description": "Mira el recorrido de 63 segundos con narración en inglés y subtítulos visibles"
     },
     "thumbnail": {
       "playButtonAriaLabel": "Reproducir video walkthrough del producto",
-      "altText": "Miniatura del video walkthrough del producto GetPhame"
+      "altText": "Miniatura del recorrido de la plataforma Get Phame"
     },
     "bottomBar": {
-      "title": "GetPhame — Recorrido completo del producto",
-      "description": "Conecta correo · Importa clientes · Envía solicitudes · Rastrea resultados",
+      "title": "Get Phame — Recorrido de la plataforma",
+      "description": "Alcance individual · Bandeja conectada · Recordatorios limitados · Se detienen al completar la acción",
       "watchNow": "Ver ahora →"
     },
     "modal": {
       "closeButtonAriaLabel": "Cerrar video",
-      "iframeTitle": "Recorrido del producto GetPhame"
+      "videoTitle": "Recorrido de la plataforma Get Phame",
+      "captionNotice": "Narración en inglés con subtítulos visibles.",
+      "captionTrackLabel": "Subtítulos en inglés",
+      "videoFallback": "Tu navegador no admite video HTML."
     },
     "support": {
       "title": "¿Cómo podemos ayudarte?",

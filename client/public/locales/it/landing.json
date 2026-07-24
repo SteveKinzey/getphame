@@ -32,6 +32,27 @@
       "getStartedFree": "Inizia gratis",
       "toggleMenu": "Apri o chiudi il menu"
     },
+    "section": {
+      "tagline": "Guardalo in azione",
+      "title": "Scopri come funziona",
+      "description": "Guarda la panoramica di 63 secondi con narrazione in inglese e sottotitoli visibili"
+    },
+    "thumbnail": {
+      "playButtonAriaLabel": "Riproduci la panoramica della piattaforma",
+      "altText": "Miniatura della panoramica della piattaforma Get Phame"
+    },
+    "bottomBar": {
+      "title": "Get Phame — Panoramica della piattaforma",
+      "description": "Contatto individuale · Casella collegata · Promemoria limitati · Stop al completamento",
+      "watchNow": "Guarda ora →"
+    },
+    "modal": {
+      "closeButtonAriaLabel": "Chiudi video",
+      "videoTitle": "Panoramica della piattaforma Get Phame",
+      "captionNotice": "Narrazione in inglese con sottotitoli visibili.",
+      "captionTrackLabel": "Sottotitoli in inglese",
+      "videoFallback": "Il browser non supporta i video HTML."
+    },
     "support": {
       "title": "Come possiamo aiutarti?",
       "description": "Invia un messaggio al nostro team e risponderemo all’indirizzo email che fornisci.",

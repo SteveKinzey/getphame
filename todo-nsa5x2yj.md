@@ -48,3 +48,6 @@
 - [x] Fix the production build failure by adding `passkeys.signIn.orAlternative` to every served locale and rerun the direct i18n coverage gate.
 - [x] Remediate the newly reported `tar` production advisory and verify the private Quality Gate with ephemeral CI-only signing material.
 - [x] Close the remaining high-severity development-only PostCSS alert and reconfirm the private GitHub release gates.
+- [x] Locate the latest official Get Phame P/star mark, wordmark, and authoritative source for the affected marketing video scenes.
+- [x] Replace incorrect logo treatments and recompose screenshot scenes so closed captions never obscure product UI.
+- [x] Render and visually verify the corrected video on mobile, update linked marketing references if needed, and deliver the revised asset.

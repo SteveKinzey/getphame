@@ -300,20 +300,23 @@
     "section": {
       "tagline": "See it in action",
       "title": "See How It Works",
-      "description": "Watch a quick walkthrough — set up in under 2 minutes"
+      "description": "Watch the 63-second platform walkthrough — English narration with visible captions"
     },
     "thumbnail": {
       "playButtonAriaLabel": "Play product walkthrough video",
-      "altText": "GetPhame product walkthrough video thumbnail"
+      "altText": "Get Phame platform walkthrough video thumbnail"
     },
     "bottomBar": {
-      "title": "GetPhame — Full Product Walkthrough",
-      "description": "Connect email · Import customers · Send requests · Track results",
+      "title": "Get Phame — Platform Walkthrough",
+      "description": "Individual outreach · Connected inbox · Limited reminders · Stop on completion",
       "watchNow": "Watch now →"
     },
     "modal": {
       "closeButtonAriaLabel": "Close video",
-      "iframeTitle": "GetPhame product walkthrough"
+      "videoTitle": "Get Phame platform walkthrough",
+      "captionNotice": "English narration with visible captions.",
+      "captionTrackLabel": "English captions",
+      "videoFallback": "Your browser does not support HTML video."
     },
     "support": {
       "title": "How can we help?",

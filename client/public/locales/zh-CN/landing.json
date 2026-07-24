@@ -300,20 +300,23 @@
     "section": {
       "tagline": "查看演示",
       "title": "查看如何运作",
-      "description": "观看简短演示——两分钟内完成设置"
+      "description": "观看 63 秒平台导览，配有英文旁白和可见字幕"
     },
     "thumbnail": {
       "playButtonAriaLabel": "播放产品演示视频",
-      "altText": "GetPhame 产品演示视频缩略图"
+      "altText": "Get Phame 平台导览视频缩略图"
     },
     "bottomBar": {
-      "title": "GetPhame — 产品完整演示",
-      "description": "连接邮箱 · 导入客户 · 发送请求 · 追踪结果",
+      "title": "Get Phame — 平台导览",
+      "description": "逐一联系 · 已连接邮箱 · 有限提醒 · 完成后自动停止",
       "watchNow": "立即观看 →"
     },
     "modal": {
       "closeButtonAriaLabel": "关闭视频",
-      "iframeTitle": "GetPhame 产品导览"
+      "videoTitle": "Get Phame 平台导览",
+      "captionNotice": "英文旁白配有可见字幕。",
+      "captionTrackLabel": "英文字幕",
+      "videoFallback": "您的浏览器不支持 HTML 视频。"
     },
     "support": {
       "title": "我们如何帮助您？",

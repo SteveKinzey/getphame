@@ -300,20 +300,23 @@
     "section": {
       "tagline": "Voyez‑le en action",
       "title": "Voir comment ça marche",
-      "description": "Regardez une courte démonstration — configuration en moins de 2 minutes"
+      "description": "Regardez la présentation de 63 secondes avec narration en anglais et sous-titres visibles"
     },
     "thumbnail": {
       "playButtonAriaLabel": "Lire la vidéo de démonstration produit",
-      "altText": "Vignette vidéo de présentation du produit GetPhame"
+      "altText": "Vignette de la présentation de la plateforme Get Phame"
     },
     "bottomBar": {
-      "title": "GetPhame — Présentation complète du produit",
-      "description": "Connecter l'email · Importer les clients · Envoyer des demandes · Suivre les résultats",
+      "title": "Get Phame — Présentation de la plateforme",
+      "description": "Demandes individuelles · Boîte mail connectée · Rappels limités · Arrêt après l’action",
       "watchNow": "Regarder maintenant →"
     },
     "modal": {
       "closeButtonAriaLabel": "Fermer la vidéo",
-      "iframeTitle": "Visite guidée du produit GetPhame"
+      "videoTitle": "Présentation de la plateforme Get Phame",
+      "captionNotice": "Narration en anglais avec sous-titres visibles.",
+      "captionTrackLabel": "Sous-titres anglais",
+      "videoFallback": "Votre navigateur ne prend pas en charge la vidéo HTML."
     },
     "support": {
       "title": "Comment pouvons-nous vous aider ?",
