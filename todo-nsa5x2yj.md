@@ -44,7 +44,7 @@
 - [x] Implement and checkpoint the staging-only recovery drill with Steve as Recovery Custodian and a distinct lead-engineer Independent Approver.
 - [x] Run focused and full tests, bounded TypeScript validation, migration checks, dependency audit, production build, and responsive verification.
 - [x] Verify the staged managed deployment and synchronize only validated source to the selected private GitHub repository.
-- [ ] Deliver passkey activation, approver assignment, and staging recovery-drill execution instructions.
+- [x] Deliver passkey activation, approver assignment, and staging recovery-drill execution instructions.
 - [x] Fix the production build failure by adding `passkeys.signIn.orAlternative` to every served locale and rerun the direct i18n coverage gate.
 - [x] Remediate the newly reported `tar` production advisory and verify the private Quality Gate with ephemeral CI-only signing material.
 - [x] Close the remaining high-severity development-only PostCSS alert and reconfirm the private GitHub release gates.
