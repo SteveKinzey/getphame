@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "mysql",
-  "id": "02daa60d-b730-45d7-9962-923f17e66b05",
-  "prevId": "62682188-d0f2-42a8-966a-a238df7e0c1b",
+  "id": "4ac3526f-faa3-4149-98fa-a30219700299",
+  "prevId": "db34bd72-41fb-4021-b66b-899b3518231e",
   "tables": {
     "access_code_redemptions": {
       "name": "access_code_redemptions",
@@ -140,6 +140,110 @@
       },
       "checkConstraint": {}
     },
+    "api_idempotency_records": {
+      "name": "api_idempotency_records",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "userId": {
+          "name": "userId",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "apiKeyId": {
+          "name": "apiKeyId",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "idempotencyHash": {
+          "name": "idempotencyHash",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "payloadHash": {
+          "name": "payloadHash",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "contactId": {
+          "name": "contactId",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created": {
+          "name": "created",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "responseJson": {
+          "name": "responseJson",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expiresAt": {
+          "name": "expiresAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "api_idempotency_key_hash_unique": {
+          "name": "api_idempotency_key_hash_unique",
+          "columns": [
+            "apiKeyId",
+            "idempotencyHash"
+          ],
+          "isUnique": true
+        },
+        "api_idempotency_expiry_idx": {
+          "name": "api_idempotency_expiry_idx",
+          "columns": [
+            "expiresAt"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "api_idempotency_records_id": {
+          "name": "api_idempotency_records_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
     "api_import_events": {
       "name": "api_import_events",
       "columns": {
@@ -186,6 +290,63 @@
           "notNull": true,
           "autoincrement": false
         },
+        "emailMasked": {
+          "name": "emailMasked",
+          "type": "varchar(320)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "emailFingerprint": {
+          "name": "emailFingerprint",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "sourceApp": {
+          "name": "sourceApp",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "externalId": {
+          "name": "externalId",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "consentBasis": {
+          "name": "consentBasis",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "outcome": {
+          "name": "outcome",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'created'"
+        },
+        "errorCode": {
+          "name": "errorCode",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "idempotencyHash": {
+          "name": "idempotencyHash",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "created": {
           "name": "created",
           "type": "boolean",
@@ -202,7 +363,24 @@
           "autoincrement": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "api_import_events_user_created_idx": {
+          "name": "api_import_events_user_created_idx",
+          "columns": [
+            "userId",
+            "createdAt"
+          ],
+          "isUnique": false
+        },
+        "api_import_events_key_created_idx": {
+          "name": "api_import_events_key_created_idx",
+          "columns": [
+            "apiKeyId",
+            "createdAt"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "api_import_events_id": {
@@ -247,6 +425,43 @@
           "autoincrement": false,
           "default": "'My API Key'"
         },
+        "keyHint": {
+          "name": "keyHint",
+          "type": "varchar(24)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'rl_••••'"
+        },
+        "scopes": {
+          "name": "scopes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expiresAt": {
+          "name": "expiresAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "rotatedFromId": {
+          "name": "rotatedFromId",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "usageCount": {
+          "name": "usageCount",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
         "lastUsedAt": {
           "name": "lastUsedAt",
           "type": "bigint",
@@ -270,7 +485,23 @@
           "default": "(now())"
         }
       },
-      "indexes": {},
+      "indexes": {
+        "api_keys_user_created_idx": {
+          "name": "api_keys_user_created_idx",
+          "columns": [
+            "userId",
+            "createdAt"
+          ],
+          "isUnique": false
+        },
+        "api_keys_expiry_idx": {
+          "name": "api_keys_expiry_idx",
+          "columns": [
+            "expiresAt"
+          ],
+          "isUnique": false
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {
         "api_keys_id": {
@@ -288,6 +519,75 @@
           ]
         }
       },
+      "checkConstraint": {}
+    },
+    "api_rate_limit_windows": {
+      "name": "api_rate_limit_windows",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "apiKeyId": {
+          "name": "apiKeyId",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "windowStartedAt": {
+          "name": "windowStartedAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "requestCount": {
+          "name": "requestCount",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "expiresAt": {
+          "name": "expiresAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "api_rate_limit_key_window_unique": {
+          "name": "api_rate_limit_key_window_unique",
+          "columns": [
+            "apiKeyId",
+            "windowStartedAt"
+          ],
+          "isUnique": true
+        },
+        "api_rate_limit_expiry_idx": {
+          "name": "api_rate_limit_expiry_idx",
+          "columns": [
+            "expiresAt"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "api_rate_limit_windows_id": {
+          "name": "api_rate_limit_windows_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
       "checkConstraint": {}
     },
     "auth_diagnostic_events": {
@@ -692,7 +992,7 @@
         },
         "provider": {
           "name": "provider",
-          "type": "enum('sendgrid','mailgun','postmark')",
+          "type": "enum('sendgrid','amazon_ses','mailgun','mailersend','smtp2go','brevo','postmark','sparkpost','elastic_email','zoho_zeptomail','socketlabs','custom_smtp')",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
@@ -732,6 +1032,42 @@
           "notNull": false,
           "autoincrement": false,
           "default": "'us'"
+        },
+        "smtpHost": {
+          "name": "smtpHost",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "smtpPort": {
+          "name": "smtpPort",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "smtpSecure": {
+          "name": "smtpSecure",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 0
+        },
+        "smtpUsername": {
+          "name": "smtpUsername",
+          "type": "varchar(320)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "providerRegion": {
+          "name": "providerRegion",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
         },
         "connected": {
           "name": "connected",
@@ -1150,6 +1486,147 @@
       "compositePrimaryKeys": {
         "client_reviews_id": {
           "name": "client_reviews_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "complimentary_access_grants": {
+      "name": "complimentary_access_grants",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "email_fingerprint": {
+          "name": "email_fingerprint",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email_masked": {
+          "name": "email_masked",
+          "type": "varchar(320)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "duration_value": {
+          "name": "duration_value",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "duration_unit": {
+          "name": "duration_unit",
+          "type": "enum('day','month','year')",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "starts_at": {
+          "name": "starts_at",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_by_user_id": {
+          "name": "created_by_user_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "note": {
+          "name": "note",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "revoked_at": {
+          "name": "revoked_at",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "revoked_by_user_id": {
+          "name": "revoked_by_user_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {
+        "complimentary_access_email_expiry_idx": {
+          "name": "complimentary_access_email_expiry_idx",
+          "columns": [
+            "email_fingerprint",
+            "expires_at"
+          ],
+          "isUnique": false
+        },
+        "complimentary_access_user_expiry_idx": {
+          "name": "complimentary_access_user_expiry_idx",
+          "columns": [
+            "user_id",
+            "expires_at"
+          ],
+          "isUnique": false
+        },
+        "complimentary_access_created_idx": {
+          "name": "complimentary_access_created_idx",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "complimentary_access_grants_id": {
+          "name": "complimentary_access_grants_id",
           "columns": [
             "id"
           ]
@@ -2436,7 +2913,7 @@
         },
         "source": {
           "name": "source",
-          "type": "enum('manual','woocommerce','stripe','koalendar')",
+          "type": "enum('manual','woocommerce','stripe','koalendar','api')",
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false,
@@ -2445,6 +2922,41 @@
         "externalId": {
           "name": "externalId",
           "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "sourceApp": {
+          "name": "sourceApp",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "importedViaApiKeyId": {
+          "name": "importedViaApiKeyId",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "consentBasis": {
+          "name": "consentBasis",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "consentCapturedAt": {
+          "name": "consentCapturedAt",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "consentSource": {
+          "name": "consentSource",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": false,
           "autoincrement": false

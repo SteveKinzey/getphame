@@ -43,6 +43,9 @@ export const STRIPE_PRICE_IDS = {
 export type StripePlan = keyof typeof STRIPE_PRICE_IDS;
 
 const PROMOTION_CODE_PATTERN = /^[A-Z0-9][A-Z0-9_-]{2,63}$/;
+const PROMOTION_CODE_CREATE_PATTERN = /^[A-Z0-9][A-Z0-9-]{2,63}$/;
+export const STRIPE_PROMOTION_MAX_REDEMPTIONS = 100_000;
+export const STRIPE_PROMOTION_MAX_EXPIRY_MS = 5 * 365 * 24 * 60 * 60 * 1000;
 
 export type StripePromotionStatus = "active" | "inactive" | "expired" | "redeemed";
 
@@ -72,7 +75,8 @@ type PromotionCodeDetails = {
   id: string;
   code?: string | null;
   active: boolean;
-  coupon: PromotionCoupon | string;
+  coupon?: PromotionCoupon | string | null;
+  promotion?: { coupon?: PromotionCoupon | string | null } | null;
   times_redeemed: number;
   max_redemptions?: number | null;
   expires_at?: number | null;
@@ -92,8 +96,10 @@ export function normalizePromotionCode(value?: string | null): string | null {
 }
 
 async function getPromotionCoupon(promotionCode: PromotionCodeDetails): Promise<PromotionCoupon> {
-  if (typeof promotionCode.coupon !== "string") return promotionCode.coupon;
-  return stripe.coupons.retrieve(promotionCode.coupon) as Promise<PromotionCoupon>;
+  const couponReference = promotionCode.promotion?.coupon ?? promotionCode.coupon;
+  if (!couponReference) throw new Error("Stripe promotion code does not reference a coupon.");
+  if (typeof couponReference !== "string") return couponReference;
+  return stripe.coupons.retrieve(couponReference) as Promise<PromotionCoupon>;
 }
 
 function promotionDiscountLabel(coupon: PromotionCoupon): string {
@@ -165,6 +171,119 @@ export async function listStripePromotionCodes(): Promise<{
   );
 
   return { promotions, hasMore: result.has_more, refreshedAt: Date.now() };
+}
+
+export type CreateStripePromotionCodeInput = {
+  code: string;
+  percentOff: number;
+  applicablePlans: StripePlan[];
+  firstTimeTransaction?: boolean;
+  expiresAt?: number | null;
+  maxRedemptions?: number | null;
+  createdByUserId: number;
+};
+
+/**
+ * Create a one-invoice/transaction Stripe promotion code for selected Get Phame
+ * products. Stripe remains the sole source of truth; no coupon mirror is stored.
+ */
+export async function createStripePromotionCode(
+  input: CreateStripePromotionCodeInput,
+): Promise<StripePromotionSnapshot> {
+  const code = input.code.trim().toUpperCase();
+  if (!PROMOTION_CODE_CREATE_PATTERN.test(code)) {
+    throw new Error("Promotion codes must contain 3–64 letters, numbers, or dashes and begin with a letter or number.");
+  }
+  if (!Number.isFinite(input.percentOff) || input.percentOff <= 0 || input.percentOff > 100) {
+    throw new Error("Percentage off must be greater than 0 and no more than 100.");
+  }
+
+  const applicablePlans = Array.from(new Set(input.applicablePlans));
+  const validPlans = new Set<StripePlan>(Object.keys(STRIPE_PRICE_IDS) as StripePlan[]);
+  if (applicablePlans.length === 0 || applicablePlans.some((plan) => !validPlans.has(plan))) {
+    throw new Error("Select at least one valid Get Phame plan.");
+  }
+  if (input.maxRedemptions != null && (
+    !Number.isInteger(input.maxRedemptions)
+    || input.maxRedemptions < 1
+    || input.maxRedemptions > STRIPE_PROMOTION_MAX_REDEMPTIONS
+  )) {
+    throw new Error(`Maximum redemptions must be between 1 and ${STRIPE_PROMOTION_MAX_REDEMPTIONS}.`);
+  }
+
+  const now = Date.now();
+  if (input.expiresAt != null && (
+    !Number.isFinite(input.expiresAt)
+    || input.expiresAt < now + 5 * 60 * 1000
+    || input.expiresAt > now + STRIPE_PROMOTION_MAX_EXPIRY_MS
+  )) {
+    throw new Error("Expiration must be at least 5 minutes and no more than 5 years in the future.");
+  }
+
+  const duplicateCheck = await stripe.promotionCodes.list({ code, limit: 100 });
+  if (duplicateCheck.data.some((item) => item.code.toUpperCase() === code)) {
+    throw new Error("A Stripe promotion code with this code already exists.");
+  }
+
+  const planProductIds = await getPlanProductIds();
+  const productIds = applicablePlans.map((plan) => planProductIds[plan]);
+  if (productIds.some((productId) => !productId)) {
+    throw new Error("A selected Stripe plan is not linked to a valid product.");
+  }
+
+  let coupon: PromotionCoupon | null = null;
+  try {
+    coupon = await stripe.coupons.create({
+      percent_off: input.percentOff,
+      duration: "once",
+      applies_to: { products: productIds as string[] },
+      name: `Get Phame ${code}`,
+      metadata: {
+        source: "get_phame_admin",
+        created_by_user_id: String(input.createdByUserId),
+        applicable_plans: applicablePlans.join(","),
+        discount_duration: "once",
+      },
+    }) as PromotionCoupon;
+
+    // This project intentionally pins Stripe's 2025-01-27 Acacia API, whose
+    // promotion-code request uses the legacy top-level coupon parameter.
+    const createParams = {
+      coupon: coupon.id,
+      code,
+      active: true,
+      ...(input.expiresAt != null ? { expires_at: Math.floor(input.expiresAt / 1000) } : {}),
+      ...(input.maxRedemptions != null ? { max_redemptions: input.maxRedemptions } : {}),
+      ...(input.firstTimeTransaction ? { restrictions: { first_time_transaction: true } } : {}),
+      metadata: {
+        source: "get_phame_admin",
+        created_by_user_id: String(input.createdByUserId),
+        applicable_plans: applicablePlans.join(","),
+      },
+    } as unknown as Stripe.PromotionCodeCreateParams;
+    const created = await stripe.promotionCodes.create(createParams) as unknown as PromotionCodeDetails;
+
+    return {
+      id: created.id,
+      code: created.code ?? code,
+      status: promotionStatus(created),
+      discountLabel: promotionDiscountLabel(coupon),
+      timesRedeemed: created.times_redeemed,
+      maxRedemptions: created.max_redemptions ?? null,
+      expiresAt: created.expires_at ? created.expires_at * 1000 : null,
+      applicablePlans,
+      firstTimeTransaction: Boolean(created.restrictions?.first_time_transaction),
+      customerId: stripeResourceId(created.customer),
+      createdAt: created.created * 1000,
+    };
+  } catch (error) {
+    if (coupon) {
+      await stripe.coupons.del(coupon.id).catch(() => {
+        console.warn(`[Stripe] Could not clean up unused coupon ${coupon?.id}.`);
+      });
+    }
+    throw error;
+  }
 }
 
 /**

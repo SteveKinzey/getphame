@@ -17,6 +17,7 @@ import {
   getLocalizedAuthErrorMessage,
   rememberGoogleSignInPending,
 } from "@/lib/authFeedback";
+import PasskeySignIn from "@/components/security/PasskeySignIn";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -248,8 +249,8 @@ export default function Login() {
     <div className="min-h-screen bg-[#0F1B2D] flex flex-col items-center justify-center px-4 py-12">
       {/* Logo / Wordmark */}
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold tracking-tight text-white">
-          Get<span className="text-[#C9A84C]">Phame</span>
+        <h1 className="text-3xl font-black tracking-tight text-white" aria-label="Get Phame">
+          GET <span className="text-[#C9A84C]">PHAME</span>
         </h1>
         <p className="mt-2 text-sm text-white/50">
           {t("login.subtitle", { defaultValue: "Sign in to your account" })}
@@ -258,6 +259,8 @@ export default function Login() {
 
       {/* Card */}
       <div className="w-full max-w-sm">
+        <PasskeySignIn />
+        <OrDivider label={t("passkeys.signIn.orAlternative", { defaultValue: "or use another sign-in method" })} />
         {shouldShowSocialSection && (
           <>
             {/* ── Google + staged Apple OAuth Buttons ───────────────────── */}

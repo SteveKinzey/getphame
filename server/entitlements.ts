@@ -4,6 +4,7 @@ export type PaidEntitlementInput = {
   role: "user" | "admin" | string;
   tier: PaidTier;
   planExpiresAt?: number | null;
+  complimentaryAccessExpiresAt?: number | null;
 };
 
 /**
@@ -16,6 +17,7 @@ export function hasPaidOrAdminAccess(
 ): boolean {
   if (input.role === "admin") return true;
   if (input.tier === "lifetime") return true;
+  if (input.complimentaryAccessExpiresAt != null && input.complimentaryAccessExpiresAt > now) return true;
   if (input.tier !== "pro" && input.tier !== "annual") return false;
 
   return input.planExpiresAt == null || input.planExpiresAt >= now;

@@ -709,7 +709,14 @@ export async function generateApiKey(userId: number, label: string): Promise<{ r
   if (!db) throw new Error("Database unavailable");
   const raw = "rl_" + randomBytes(32).toString("hex");
   const keyHash = createHash("sha256").update(raw).digest("hex");
-  const [result] = await db.insert(apiKeys).values({ userId, keyHash, label });
+  const keyHint = `${raw.slice(0, 6)}…${raw.slice(-4)}`;
+  const [result] = await db.insert(apiKeys).values({
+    userId,
+    keyHash,
+    keyHint,
+    label,
+    scopes: JSON.stringify(["contacts:write", "review_requests:send"]),
+  });
   return { raw, id: Number((result as unknown as { insertId: number }).insertId) };
 }
 
@@ -778,12 +785,28 @@ export async function logApiImport(params: {
 export async function getRecentApiImports(userId: number, limit = 10) {
   const db = await getDb();
   if (!db) return [];
-  return db
-    .select()
+  const rows = await db
+    .select({
+      id: apiImportEvents.id,
+      apiKeyId: apiImportEvents.apiKeyId,
+      keyLabel: apiImportEvents.keyLabel,
+      contactId: apiImportEvents.contactId,
+      emailMasked: apiImportEvents.emailMasked,
+      sourceApp: apiImportEvents.sourceApp,
+      consentBasis: apiImportEvents.consentBasis,
+      outcome: apiImportEvents.outcome,
+      errorCode: apiImportEvents.errorCode,
+      created: apiImportEvents.created,
+      createdAt: apiImportEvents.createdAt,
+    })
     .from(apiImportEvents)
     .where(eq(apiImportEvents.userId, userId))
     .orderBy(desc(apiImportEvents.createdAt))
     .limit(limit);
+  return rows.map((row) => ({
+    ...row,
+    email: row.emailMasked ?? "Not available",
+  }));
 }
 
 // ── Webhook Configs ────────────────────────────────────────────────────────────

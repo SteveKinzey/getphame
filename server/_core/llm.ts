@@ -56,6 +56,7 @@ export type ToolChoice =
   | ToolChoiceExplicit;
 
 export type InvokeParams = {
+  model?: string;
   messages: Message[];
   tools?: Tool[];
   toolChoice?: ToolChoice;
@@ -66,6 +67,13 @@ export type InvokeParams = {
   output_schema?: OutputSchema;
   responseFormat?: ResponseFormat;
   response_format?: ResponseFormat;
+  maxCompletionTokens?: number;
+  reasoning?: {
+    effort?: "minimal" | "low" | "medium" | "high";
+  };
+  thinking?: {
+    budget_tokens: number;
+  };
 };
 
 export type ToolCall = {
@@ -269,6 +277,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
   assertApiKey();
 
   const {
+    model,
     messages,
     tools,
     toolChoice,
@@ -277,10 +286,15 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     output_schema,
     responseFormat,
     response_format,
+    maxCompletionTokens,
+    reasoning,
+    thinking,
+    maxTokens,
+    max_tokens,
   } = params;
 
   const payload: Record<string, unknown> = {
-    model: "gemini-2.5-flash",
+    model: model || "gemini-2.5-flash",
     messages: messages.map(normalizeMessage),
   };
 
@@ -296,9 +310,16 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     payload.tool_choice = normalizedToolChoice;
   }
 
-  payload.max_tokens = 32768
-  payload.thinking = {
-    "budget_tokens": 128
+  if (typeof maxCompletionTokens === "number") {
+    payload.max_completion_tokens = maxCompletionTokens;
+  } else {
+    payload.max_tokens = maxTokens ?? max_tokens ?? 32768;
+  }
+
+  if (reasoning) {
+    payload.reasoning = reasoning;
+  } else {
+    payload.thinking = thinking ?? { budget_tokens: 128 };
   }
 
   const normalizedResponseFormat = normalizeResponseFormat({

@@ -71,6 +71,17 @@ import { IntegrationGuide } from "@/components/IntegrationGuide";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
 import PlanSwitchDialog from "@/components/PlanSwitchDialog";
 import KoalendarSettingsCard from "@/components/KoalendarSettingsCard";
+import AdaptiveSendLimitStatus from "@/components/AdaptiveSendLimitStatus";
+import PasskeySecurityCard from "@/components/security/PasskeySecurityCard";
+import RecoveryDrillCard from "@/components/security/RecoveryDrillCard";
+import {
+  BULK_SENDER_PRESETS,
+  BULK_SENDER_PROVIDER_IDS,
+  getBulkSenderPreset,
+  resolveBulkSenderHost,
+  type BulkSenderProvider,
+  type BulkSenderSecurity,
+} from "@shared/bulkSenderPresets";
 import {
   DEFAULT_FOLLOW_UP_DELAY_DAYS,
   DEFAULT_SECOND_FOLLOW_UP_DELAY_DAYS,
@@ -616,53 +627,100 @@ function BillingSection({ profile }: { profile: ProfileData | null | undefined }
 }
 
 // ── Bulk Sender Section ──────────────────────────────────────────────────────
-const PROVIDER_LABELS: Record<string, string> = {
-  sendgrid: "SendGrid",
-  mailgun: "Mailgun",
-  postmark: "Postmark",
-};
-const PROVIDER_DOCS: Record<string, string> = {
-  sendgrid: "https://app.sendgrid.com/settings/api_keys",
-  mailgun: "https://app.mailgun.com/settings/api_security",
-  postmark: "https://account.postmarkapp.com/servers",
-};
+function isBulkSenderProvider(value: string | null | undefined): value is BulkSenderProvider {
+  return Boolean(value && BULK_SENDER_PROVIDER_IDS.includes(value as BulkSenderProvider));
+}
 
 function BulkSenderSection({ profile }: { profile: ProfileData | null | undefined }) {
+  const { t } = useTranslation();
   const tier = profile?.tier ?? "free";
   const isPro = tier !== "free";
   const { data: status, refetch } = trpc.bulkSender.status.useQuery();
-  const [provider, setProvider] = useState<"sendgrid" | "mailgun" | "postmark">("sendgrid");
-  const [apiKey, setApiKey] = useState("");
+  const [provider, setProvider] = useState<BulkSenderProvider>("sendgrid");
+  const [secret, setSecret] = useState("");
+  const [smtpUsername, setSmtpUsername] = useState("apikey");
+  const [smtpHost, setSmtpHost] = useState("smtp.sendgrid.net");
+  const [smtpPort, setSmtpPort] = useState(587);
+  const [smtpSecurity, setSmtpSecurity] = useState<BulkSenderSecurity>("starttls");
+  const [providerRegion, setProviderRegion] = useState("");
   const [fromEmail, setFromEmail] = useState("");
   const [fromName, setFromName] = useState("");
-  const [mailgunDomain, setMailgunDomain] = useState("");
-  const [mailgunRegion, setMailgunRegion] = useState<"us" | "eu">("us");
   const [showForm, setShowForm] = useState(false);
-  const [showKey, setShowKey] = useState(false);
+  const [showSecret, setShowSecret] = useState(false);
+  const preset = getBulkSenderPreset(provider);
+  const resolvedHost = provider === "custom_smtp"
+    ? smtpHost
+    : resolveBulkSenderHost(provider, providerRegion || preset.defaultRegion);
+
+  const applyProvider = (nextProvider: BulkSenderProvider) => {
+    const nextPreset = getBulkSenderPreset(nextProvider);
+    setProvider(nextProvider);
+    setProviderRegion(nextPreset.defaultRegion ?? "");
+    setSmtpHost(nextPreset.defaultHost);
+    setSmtpPort(nextPreset.defaultPort);
+    setSmtpSecurity(nextPreset.defaultSecurity);
+    setSmtpUsername(nextPreset.usernameMode === "fixed" ? nextPreset.fixedUsername ?? "" : "");
+    setSecret("");
+    setShowSecret(false);
+  };
+
+  const openUpdateForm = () => {
+    const nextProvider = isBulkSenderProvider(status?.provider) ? status.provider : "sendgrid";
+    const nextPreset = getBulkSenderPreset(nextProvider);
+    setProvider(nextProvider);
+    setProviderRegion(status?.providerRegion ?? nextPreset.defaultRegion ?? "");
+    setSmtpHost(status?.smtpHost ?? nextPreset.defaultHost);
+    setSmtpPort(status?.smtpPort ?? nextPreset.defaultPort);
+    setSmtpSecurity(status?.smtpSecurity ?? nextPreset.defaultSecurity);
+    setSmtpUsername(nextPreset.usernameMode === "fixed" ? nextPreset.fixedUsername ?? "" : "");
+    setFromEmail(status?.fromEmail ?? "");
+    setFromName(status?.fromName ?? "");
+    setSecret("");
+    setShowSecret(false);
+    setShowForm(true);
+  };
 
   const connectMutation = trpc.bulkSender.connect.useMutation({
     onSuccess: () => {
-      toast.success("Bulk sender connected!");
+      toast.success(t("settings.bulkSender.connectedToast", { defaultValue: "Bulk Sender connected." }));
       setShowForm(false);
-      setApiKey("");
+      setSecret("");
       refetch();
     },
     onError: (err) => toast.error(err.message),
   });
   const disconnectMutation = trpc.bulkSender.disconnect.useMutation({
-    onSuccess: () => { toast.success("Bulk sender disconnected."); refetch(); },
+    onSuccess: () => { toast.success(t("settings.bulkSender.disconnectedToast", { defaultValue: "Bulk Sender disconnected." })); refetch(); },
     onError: (err) => toast.error(err.message),
   });
   const testMutation = trpc.bulkSender.test.useMutation({
     onSuccess: (res) => {
-      if (res.ok) toast.success("Connection healthy ✓");
-      else toast.error(res.error ?? "Connection test failed");
+      if (res.ok) toast.success(t("settings.bulkSender.healthyToast", { defaultValue: "Connection healthy." }));
+      else toast.error(res.error ?? t("settings.bulkSender.testFailed", { defaultValue: "Connection test failed." }));
     },
     onError: (err) => toast.error(err.message),
   });
 
+  const usernameIsValid = preset.usernameMode !== "user" || smtpUsername.trim().length > 0;
+  const customHostIsValid = provider !== "custom_smtp" || smtpHost.trim().length > 0;
+  const canConnect = Boolean(secret && fromEmail && usernameIsValid && customHostIsValid);
+
+  const submitConnection = () => {
+    connectMutation.mutate({
+      provider,
+      secret,
+      smtpUsername: preset.usernameMode === "user" ? smtpUsername : undefined,
+      smtpHost: provider === "custom_smtp" ? smtpHost : undefined,
+      smtpPort: provider === "custom_smtp" ? smtpPort : undefined,
+      smtpSecurity: provider === "custom_smtp" ? smtpSecurity : undefined,
+      providerRegion: providerRegion || undefined,
+      fromEmail,
+      fromName: fromName || undefined,
+    });
+  };
+
   return (
-    <div className="bg-white rounded-2xl p-5 shadow-sm">
+    <div id="bulk-sender" className="scroll-mt-24 bg-white rounded-2xl p-4 shadow-sm sm:p-5" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
       <div className="flex items-center justify-between mb-1">
         <div className="flex items-center gap-2">
           <Zap size={18} className="rr-text-gold" />
@@ -673,23 +731,24 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
         </div>
         {isPro && status?.connected && !showForm && (
           <button
-            onClick={() => setShowForm(true)}
-            className="text-xs font-semibold rr-text-navy-mid hover:rr-text-navy"
+            type="button"
+            onClick={openUpdateForm}
+            className="min-h-10 rounded-lg px-3 text-xs font-bold rr-text-navy-mid hover:rr-text-navy"
           >
-            Update
+            {t("settings.bulkSender.update", { defaultValue: "Update" })}
           </button>
         )}
       </div>
       <p className="text-xs mb-4 rr-text-navy-muted">
-        Connect SendGrid, Mailgun, or Postmark to send at scale without hitting SMTP daily limits.
+        {t("settings.bulkSender.description", { defaultValue: "Connect a verified transactional SMTP relay for higher-volume sending. Credentials are tested without sending a message." })}
       </p>
 
       {!isPro ? (
         <div className="rounded-xl p-4 flex items-start gap-3" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.03 260)" }}>
           <Crown size={16} className="mt-0.5 shrink-0 rr-text-gold" />
           <div>
-            <p className="text-sm font-bold rr-text-navy mb-0.5">Pro feature</p>
-            <p className="text-sm font-semibold rr-text-navy-mid">Upgrade to Pro to connect a bulk email service and remove daily send limits.</p>
+            <p className="text-sm font-bold rr-text-navy mb-0.5">{t("settings.bulkSender.proTitle", { defaultValue: "Pro feature" })}</p>
+            <p className="text-sm font-semibold rr-text-navy-mid">{t("settings.bulkSender.proBody", { defaultValue: "Upgrade to Pro to connect a transactional email service for higher-volume delivery." })}</p>
           </div>
         </div>
       ) : status?.connected && !showForm ? (
@@ -697,169 +756,196 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
           <div className="rounded-xl p-3 flex items-center gap-3" style={{ background: "oklch(0.97 0.02 150)", border: "1px solid oklch(0.85 0.08 150)" }}>
             <CheckCircle size={16} className="shrink-0" style={{ color: "oklch(0.45 0.15 150)" }} />
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold rr-text-navy">{PROVIDER_LABELS[status.provider!]} connected</p>
+              <p className="text-sm font-bold rr-text-navy">
+                {isBulkSenderProvider(status.provider) ? BULK_SENDER_PRESETS[status.provider].label : status.provider} {t("settings.bulkSender.connected", { defaultValue: "connected" })}
+              </p>
               <p className="text-sm font-semibold rr-text-navy-mid truncate">{status.fromEmail}</p>
+              {status.smtpHost && <p className="mt-0.5 truncate text-xs rr-text-navy-muted">{status.smtpHost}:{status.smtpPort}</p>}
             </div>
           </div>
-          <div className="flex gap-2">
+          {status.connectionMode === "legacy_api" && (
+            <div className="rounded-xl px-3 py-2 text-xs font-semibold rr-text-navy-mid" style={{ background: "oklch(0.97 0.02 80)", border: "1px solid oklch(0.88 0.08 80)" }}>
+              {t("settings.bulkSender.legacyNotice", { defaultValue: "This existing connection uses the legacy API mode. Update it when convenient to use the guided SMTP preset." })}
+            </div>
+          )}
+          <div className="flex flex-col gap-2 sm:flex-row">
             <button
+              type="button"
               onClick={() => testMutation.mutate()}
               disabled={testMutation.isPending}
-              className="flex-1 py-2 rounded-xl text-xs font-bold border rr-text-navy-mid"
+              className="min-h-11 flex-1 py-2 rounded-xl text-xs font-bold border rr-text-navy-mid"
               style={{ border: "1.5px solid oklch(0.88 0.03 260)" }}
             >
               {testMutation.isPending ? <Loader2 size={12} className="animate-spin inline mr-1" /> : null}
-              Test Connection
+              {t("settings.bulkSender.testConnection", { defaultValue: "Test connection" })}
             </button>
             <button
+              type="button"
               onClick={() => disconnectMutation.mutate()}
               disabled={disconnectMutation.isPending}
-              className="flex-1 py-2 rounded-xl text-xs font-bold"
+              className="min-h-11 flex-1 py-2 rounded-xl text-xs font-bold"
               style={{ background: "oklch(0.97 0.02 30)", border: "1.5px solid oklch(0.85 0.08 30)", color: "oklch(0.50 0.15 30)" }}
             >
-              Disconnect
+              {t("settings.bulkSender.disconnect", { defaultValue: "Disconnect" })}
             </button>
           </div>
         </div>
       ) : (
         <div className="space-y-3">
-          {/* Provider selector */}
           <div>
-            <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Provider</label>
-            <div className="flex gap-2">
-              {(["sendgrid", "mailgun", "postmark"] as const).map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setProvider(p)}
-                  className="flex-1 py-2 rounded-xl text-xs font-bold transition-colors"
-                  style={{
-                    background: provider === p ? "oklch(0.22 0.09 260)" : "oklch(0.97 0.01 260)",
-                    color: provider === p ? "oklch(0.80 0.18 80)" : "oklch(0.45 0.04 260)",
-                    border: "1.5px solid",
-                    borderColor: provider === p ? "oklch(0.22 0.09 260)" : "oklch(0.88 0.03 260)",
-                  }}
-                >
-                  {PROVIDER_LABELS[p]}
-                </button>
+            <label htmlFor="bulk-sender-provider" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("settings.bulkSender.provider", { defaultValue: "Provider" })}</label>
+            <select
+              id="bulk-sender-provider"
+              value={provider}
+              onChange={(event) => applyProvider(event.target.value as BulkSenderProvider)}
+              className="min-h-11 w-full rounded-xl px-3 py-2 text-sm font-semibold outline-none rr-text-navy"
+              style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+            >
+              {BULK_SENDER_PROVIDER_IDS.map((providerId) => (
+                <option key={providerId} value={providerId}>{BULK_SENDER_PRESETS[providerId].label}</option>
               ))}
-            </div>
+            </select>
+            <p className="mt-1 text-xs rr-text-navy-muted">{preset.description}</p>
           </div>
 
-          {/* API Key */}
+          {preset.regions?.length ? (
+            <div>
+              <label htmlFor="bulk-sender-region" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("settings.bulkSender.region", { defaultValue: "Region" })}</label>
+              <select
+                id="bulk-sender-region"
+                value={providerRegion || preset.defaultRegion}
+                onChange={(event) => {
+                  setProviderRegion(event.target.value);
+                  setSmtpHost(resolveBulkSenderHost(provider, event.target.value));
+                }}
+                className="min-h-11 w-full rounded-xl px-3 py-2 text-sm font-semibold outline-none rr-text-navy"
+                style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
+              >
+                {preset.regions.map((region) => <option key={region.id} value={region.id}>{region.label}</option>)}
+              </select>
+            </div>
+          ) : null}
+
+          {provider === "custom_smtp" ? (
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="sm:col-span-2">
+                <label htmlFor="bulk-sender-host" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("settings.bulkSender.smtpHost", { defaultValue: "SMTP host" })}</label>
+                <input id="bulk-sender-host" type="text" value={smtpHost} onChange={(event) => setSmtpHost(event.target.value)} placeholder="smtp.provider.com" autoCapitalize="none" spellCheck={false} className="min-h-11 w-full rounded-xl px-3 py-2 outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }} />
+              </div>
+              <div>
+                <label htmlFor="bulk-sender-port" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("settings.bulkSender.smtpPort", { defaultValue: "Port" })}</label>
+                <input id="bulk-sender-port" type="number" min={1} max={65535} value={smtpPort} onChange={(event) => setSmtpPort(Number(event.target.value))} className="min-h-11 w-full rounded-xl px-3 py-2 outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }} />
+              </div>
+              <div>
+                <label htmlFor="bulk-sender-security" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("settings.bulkSender.security", { defaultValue: "Security" })}</label>
+                <select id="bulk-sender-security" value={smtpSecurity} onChange={(event) => setSmtpSecurity(event.target.value as BulkSenderSecurity)} className="min-h-11 w-full rounded-xl px-3 py-2 outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}>
+                  <option value="starttls">STARTTLS</option>
+                  <option value="tls">TLS / SSL</option>
+                </select>
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-xl px-3 py-2.5" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}>
+              <p className="text-xs font-bold rr-text-navy">{t("settings.bulkSender.presetEndpoint", { defaultValue: "Preset endpoint" })}</p>
+              <p className="mt-0.5 break-all text-xs rr-text-navy-muted">{resolvedHost}:{preset.defaultPort} · {preset.defaultSecurity === "tls" ? "TLS / SSL" : "STARTTLS"}</p>
+            </div>
+          )}
+
+          {preset.usernameMode === "user" ? (
+            <div>
+              <label htmlFor="bulk-sender-username" className="block text-xs font-bold mb-1 rr-text-navy-mid">{preset.usernameLabel}</label>
+              <input id="bulk-sender-username" type="text" value={smtpUsername} onChange={(event) => setSmtpUsername(event.target.value)} placeholder={preset.usernamePlaceholder} autoCapitalize="none" spellCheck={false} className="min-h-11 w-full rounded-xl px-3 py-2 outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }} />
+            </div>
+          ) : (
+            <div className="rounded-xl px-3 py-2.5" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}>
+              <p className="text-xs font-bold rr-text-navy">{preset.usernameLabel}</p>
+              <p className="mt-0.5 text-xs rr-text-navy-muted">{preset.usernameMode === "fixed" ? preset.fixedUsername : t("settings.bulkSender.secretUsedForUsername", { defaultValue: "Your secret is used securely for both SMTP fields." })}</p>
+            </div>
+          )}
+
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label className="text-xs font-bold rr-text-navy-mid">API Key</label>
-              <a href={PROVIDER_DOCS[provider]} target="_blank" rel="noopener noreferrer" className="text-xs flex items-center gap-0.5" style={{ color: "oklch(0.40 0.14 150)" }}>
-                Get key <ExternalLink size={10} />
+              <label htmlFor="bulk-sender-secret" className="text-xs font-bold rr-text-navy-mid">{preset.secretLabel}</label>
+              <a href={preset.docsUrl} target="_blank" rel="noopener noreferrer" className="min-h-8 rounded-md px-1 text-xs flex items-center gap-0.5" style={{ color: "oklch(0.40 0.14 150)" }}>
+                {t("settings.bulkSender.setupHelp", { defaultValue: "Setup help" })} <ExternalLink size={10} />
               </a>
             </div>
             <div className="relative">
               <input
-                type={showKey ? "text" : "password"}
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                placeholder={`Paste your ${PROVIDER_LABELS[provider]} API key`}
-                className="w-full px-3 py-2 pr-9 rounded-xl text-sm outline-none"
-                style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
+                id="bulk-sender-secret"
+                type={showSecret ? "text" : "password"}
+                value={secret}
+                onChange={(event) => setSecret(event.target.value)}
+                placeholder={preset.secretPlaceholder}
+                autoComplete="new-password"
+                className="min-h-11 w-full px-3 py-2 pr-11 rounded-xl outline-none"
+                style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
               />
               <button
                 type="button"
-                onClick={() => setShowKey((v) => !v)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 rr-text-navy-muted"
+                onClick={() => setShowSecret((value) => !value)}
+                aria-label={showSecret ? t("settings.bulkSender.hideSecret", { defaultValue: "Hide secret" }) : t("settings.bulkSender.showSecret", { defaultValue: "Show secret" })}
+                className="absolute right-1 top-1/2 flex min-h-10 min-w-10 -translate-y-1/2 items-center justify-center rounded-lg rr-text-navy-muted"
               >
-                {showKey ? <EyeOff size={14} /> : <Eye size={14} />}
+                {showSecret ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
+            <p className="mt-1 text-xs rr-text-navy-muted">{preset.secretHelp}</p>
           </div>
 
-          {/* From Email */}
           <div>
-            <label className="block text-xs font-bold mb-1 rr-text-navy-mid">From Email</label>
+            <label htmlFor="bulk-sender-from-email" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("settings.bulkSender.fromEmail", { defaultValue: "From email" })}</label>
             <input
+              id="bulk-sender-from-email"
               type="email"
               value={fromEmail}
               onChange={(e) => setFromEmail(e.target.value)}
               placeholder="noreply@yourdomain.com"
-              className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-              style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
+              autoCapitalize="none"
+              className="min-h-11 w-full px-3 py-2 rounded-xl outline-none"
+              style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
             />
-            <p className="text-xs mt-1 rr-text-navy-muted">Must be a verified sender in your {PROVIDER_LABELS[provider]} account.</p>
+            <p className="text-xs mt-1 rr-text-navy-muted">{t("settings.bulkSender.fromEmailHelp", { defaultValue: "This sender must already be verified with your provider." })}</p>
           </div>
 
-          {/* From Name (optional) */}
           <div>
-            <label className="block text-xs font-bold mb-1 rr-text-navy-mid">From Name <span className="font-normal">(optional)</span></label>
+            <label htmlFor="bulk-sender-from-name" className="block text-xs font-bold mb-1 rr-text-navy-mid">{t("settings.bulkSender.fromName", { defaultValue: "From name" })} <span className="font-normal">({t("common.optional", { defaultValue: "optional" })})</span></label>
             <input
+              id="bulk-sender-from-name"
               type="text"
               value={fromName}
               onChange={(e) => setFromName(e.target.value)}
               placeholder="Your Business Name"
-              className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-              style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
+              className="min-h-11 w-full px-3 py-2 rounded-xl outline-none"
+              style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
             />
           </div>
 
-          {/* Mailgun-specific fields */}
-          {provider === "mailgun" && (
-            <>
-              <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Mailgun Domain</label>
-                <input
-                  type="text"
-                  value={mailgunDomain}
-                  onChange={(e) => setMailgunDomain(e.target.value)}
-                  placeholder="mg.yourdomain.com"
-                  className="w-full px-3 py-2 rounded-xl text-sm outline-none"
-                  style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "14px" }}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Region</label>
-                <div className="flex gap-2">
-                  {(["us", "eu"] as const).map((r) => (
-                    <button
-                      key={r}
-                      onClick={() => setMailgunRegion(r)}
-                      className="flex-1 py-2 rounded-xl text-xs font-bold"
-                      style={{
-                        background: mailgunRegion === r ? "oklch(0.22 0.09 260)" : "oklch(0.97 0.01 260)",
-                        color: mailgunRegion === r ? "oklch(0.80 0.18 80)" : "oklch(0.45 0.04 260)",
-                        border: "1.5px solid",
-                        borderColor: mailgunRegion === r ? "oklch(0.22 0.09 260)" : "oklch(0.88 0.03 260)",
-                      }}
-                    >
-                      {r.toUpperCase()}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* Compliance note */}
           <div className="rounded-xl px-3 py-2 flex items-start gap-2" style={{ background: "oklch(0.97 0.02 80)", border: "1px solid oklch(0.88 0.08 80)" }}>
             <AlertTriangle size={12} className="mt-0.5 shrink-0" style={{ color: "oklch(0.55 0.18 80)" }} />
             <p className="text-xs" style={{ color: "oklch(0.45 0.10 80)" }}>
-              You are responsible for CAN-SPAM / GDPR compliance. Always include an unsubscribe link — Get Phame adds one automatically.
+              {t("settings.bulkSender.compliance", { defaultValue: "Only send to people who have consented to receive this outreach. Get Phame preserves unsubscribe handling and compliance safeguards." })}
             </p>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-col gap-2 sm:flex-row">
             {status?.connected && (
               <button
+                type="button"
                 onClick={() => setShowForm(false)}
-                className="flex-1 py-2.5 rounded-xl text-sm font-bold border rr-text-navy-mid"
+                className="min-h-11 flex-1 py-2.5 rounded-xl text-sm font-bold border rr-text-navy-mid"
                 style={{ border: "1.5px solid oklch(0.88 0.03 260)" }}
               >
-                Cancel
+                {t("common.cancel", { defaultValue: "Cancel" })}
               </button>
             )}
             <button
-              onClick={() => connectMutation.mutate({ provider, apiKey, fromEmail, fromName: fromName || undefined, mailgunDomain: mailgunDomain || undefined, mailgunRegion })}
-              disabled={connectMutation.isPending || !apiKey || !fromEmail}
-              className="flex-1 py-2.5 rounded-xl text-sm font-bold rr-bg-navy rr-text-gold"
+              type="button"
+              onClick={submitConnection}
+              disabled={connectMutation.isPending || !canConnect}
+              className="min-h-11 flex-1 py-2.5 rounded-xl text-sm font-bold rr-bg-navy rr-text-gold disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {connectMutation.isPending ? <><Loader2 size={14} className="animate-spin inline mr-1" />Connecting…</> : "Connect & Test"}
+              {connectMutation.isPending ? <><Loader2 size={14} className="animate-spin inline mr-1" />{t("settings.bulkSender.connecting", { defaultValue: "Connecting…" })}</> : t("settings.bulkSender.connectAndTest", { defaultValue: "Connect and test" })}
             </button>
           </div>
         </div>
@@ -1101,12 +1187,11 @@ export default function SettingsPage() {
 
   // ── Profile form state ─────────────────────────────────────────────────────
   const { data: profile, isLoading: profileLoading } = trpc.profile.get.useQuery();
+  const { data: adaptiveSendStatus } = trpc.contacts.getDailyStatus.useQuery();
   const [businessName, setBusinessName] = useState("");
   const [reviewLink, setPhame] = useState("");
   const [fromName, setFromName] = useState("");
   const [replyTo, setReplyTo] = useState("");
-
-  const [dailySendLimit, setDailySendLimit] = useState(50);
 
   // Reminder settings state
   const { data: reminderSettings } = trpc.reminders.getSettings.useQuery();
@@ -1190,7 +1275,6 @@ export default function SettingsPage() {
       setPhame(profile.reviewLink);
       setFromName(profile.fromName ?? "");
       setReplyTo(profile.replyTo ?? "");
-      setDailySendLimit(profile.dailySendLimit ?? 50);
     }
   }, [profile?.id]);
 
@@ -1198,14 +1282,6 @@ export default function SettingsPage() {
     onSuccess: () => {
       utils.profile.get.invalidate();
       toast.success("Business profile saved!");
-    },
-    onError: (err) => toast.error(err.message),
-  });
-
-  const setDailySendLimitMutation = trpc.profile.setDailySendLimit.useMutation({
-    onSuccess: () => {
-      utils.profile.get.invalidate();
-      toast.success("Daily send limit saved!");
     },
     onError: (err) => toast.error(err.message),
   });
@@ -1283,29 +1359,7 @@ export default function SettingsPage() {
     saveWooCreds.mutate({ storeUrl: wooUrl.trim(), consumerKey: wooKey.trim(), consumerSecret: wooSecret.trim() });
   }
 
-  // ── API Keys ──────────────────────────────────────────────────────────────
-  const { data: apiKeyList, isLoading: apiKeysLoading } = trpc.apiKey.list.useQuery();
-  const [newKeyLabel, setNewKeyLabel] = useState("My API Key");
-  const [revealedKey, setRevealedKey] = useState<string | null>(null);
-  const [showSnippet, setShowSnippet] = useState(false);
-  const generateKey = trpc.apiKey.generate.useMutation({
-    onSuccess: (data) => {
-      utils.apiKey.list.invalidate();
-      setRevealedKey(data.raw);
-      toast.success("API key generated! Copy it now — it won't be shown again.");
-    },
-    onError: (err) => toast.error(err.message),
-  });
-  const revokeKey = trpc.apiKey.revoke.useMutation({
-    onSuccess: () => {
-      utils.apiKey.list.invalidate();
-      toast.success("API key revoked.");
-    },
-    onError: (err) => toast.error(err.message),
-  });
-
-  // ── Recent API Imports & Webhooks ─────────────────────────────────────────
-  const { data: recentImports } = trpc.apiKey.recentImports.useQuery({ limit: 10 });
+  // ── Webhooks ───────────────────────────────────────────────────────────────
   const { data: webhookList } = trpc.webhook.list.useQuery();
   const { data: notifPrefs } = trpc.notificationPrefs.get.useQuery();
   const updateNotifPrefs = trpc.notificationPrefs.update.useMutation({
@@ -1323,19 +1377,6 @@ export default function SettingsPage() {
     { webhookId: expandedWebhookId ?? 0, limit: 5 },
     { enabled: expandedWebhookId !== null }
   );
-  const handleExportImportsCsv = () => {
-    if (!recentImports || recentImports.length === 0) { toast.error("No imports to export."); return; }
-    const header = "Date,Email,Key Label,Action";
-    const rows = recentImports.map((ev: any) =>
-      `"${new Date(ev.createdAt).toLocaleString()}","${ev.email}","${ev.keyLabel}","${ev.created ? 'Created' : 'Updated'}"`
-    );
-    const csv = [header, ...rows].join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url; a.download = `phame-api-imports-${Date.now()}.csv`; a.click();
-    URL.revokeObjectURL(url);
-  };
   const [showAddWebhook, setShowAddWebhook] = useState(false);
   const [newWebhookUrl, setNewWebhookUrl] = useState("");
   const [newWebhookLabel, setNewWebhookLabel] = useState("My Webhook");
@@ -1613,6 +1654,8 @@ export default function SettingsPage() {
       <div className="px-4 py-4 lg:px-8 lg:py-6">
       <div className="max-w-3xl mx-auto flex flex-col gap-4">
         <AccountProfileCard />
+        <PasskeySecurityCard />
+        <RecoveryDrillCard />
         {/* ── Business Profile ──────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-2 mb-4">
@@ -1779,10 +1822,13 @@ export default function SettingsPage() {
                               </span>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">
-                              <strong>Why no link?</strong> Yelp's Terms of Service prohibit directly soliciting reviews via a link. A plain-text search instruction keeps your emails compliant — customers find your listing themselves.
+                              <strong>{t("reviewPlatforms.whyNoLinkTitle", { defaultValue: "Why no link?" })}</strong>{" "}
+                              {t("reviewPlatforms.yelpNoLinkEdit", { defaultValue: "Yelp's Terms of Service prohibit directly soliciting reviews via a link. A plain-text search instruction keeps your emails compliant — customers find your listing themselves." })}
                             </TooltipContent>
                           </Tooltip>
-                          <p className="text-sm font-semibold rr-text-navy-mid">Enter a plain-text search instruction. This text appears in the email — no link is generated, keeping you Yelp-compliant.</p>
+                          <p className="text-sm font-semibold rr-text-navy-mid">
+                            {t("reviewPlatforms.yelpEditHelp", { defaultValue: "Enter a plain-text search instruction. This text appears in the email — no link is generated, keeping you Yelp-compliant." })}
+                          </p>
                         </div>
                       )}
                       <input
@@ -1798,7 +1844,7 @@ export default function SettingsPage() {
                           type="text"
                           defaultValue={p.label ?? ""}
                           id={`edit-label-${p.id}`}
-                          placeholder="Custom label (e.g. Houzz)"
+                          placeholder={t("reviewPlatforms.customLabelPlaceholder", { defaultValue: "Custom label (e.g. Houzz)" })}
                           className="w-full px-3 py-2 rounded-lg text-sm outline-none"
                           style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                         />
@@ -1808,22 +1854,29 @@ export default function SettingsPage() {
                           onClick={() => {
                             const urlEl = document.getElementById(`edit-url-${p.id}`) as HTMLInputElement | null;
                             const labelEl = document.getElementById(`edit-label-${p.id}`) as HTMLInputElement | null;
-                            if (!urlEl?.value?.trim()) { toast.error(p.platform === "yelp" ? "Search instruction is required" : "URL is required"); return; }
+                            if (!urlEl?.value?.trim()) {
+                              toast.error(p.platform === "yelp"
+                                ? t("reviewPlatforms.searchInstructionRequired", { defaultValue: "Search instruction is required" })
+                                : t("reviewPlatforms.urlRequired", { defaultValue: "URL is required" }));
+                              return;
+                            }
                             const promise = updatePlatform.mutateAsync({ id: p.id, url: urlEl.value.trim(), label: labelEl?.value?.trim() || undefined });
                             toast.promise(promise, {
-                              loading: "Saving...",
-                              success: "Platform updated!",
-                              error: (err) => err?.message ?? "Failed to update platform",
+                              loading: t("reviewPlatforms.saving", { defaultValue: "Saving..." }),
+                              success: t("reviewPlatforms.updateSuccess", { defaultValue: "Platform updated!" }),
+                              error: (err) => err?.message ?? t("reviewPlatforms.updateError", { defaultValue: "Failed to update platform" }),
                             });
                           }}
                           disabled={updatePlatform.isPending}
                           className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-bold rr-bg-navy text-white"
                         >
                           {updatePlatform.isPending ? <Loader2 size={12} className="animate-spin" /> : <Save size={12} />}
-                          Save
+                          {t("reviewPlatforms.save", { defaultValue: "Save" })}
                         </button>
                         <button
                           onClick={() => setEditingPlatformId(null)}
+                          aria-label={t("reviewPlatforms.cancel", { defaultValue: "Cancel" })}
+                          title={t("reviewPlatforms.cancel", { defaultValue: "Cancel" })}
                           className="px-3 py-2 rounded-lg text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}
                         >
                           <X size={12} />
@@ -1849,7 +1902,7 @@ export default function SettingsPage() {
                             <span
                               className="text-xs font-bold px-1.5 py-0.5 rounded-full rr-bg-gold rr-text-navy" style={{ fontSize: "9px" }}
                             >
-                              DEFAULT
+                              {t("reviewPlatforms.default", { defaultValue: "DEFAULT" })}
                             </span>
                           )}
                         </div>
@@ -1859,7 +1912,8 @@ export default function SettingsPage() {
                         {p.isDefault !== 1 && (
                           <button
                             onClick={() => setDefaultPlatform.mutate({ id: p.id })}
-                            title="Set as default"
+                            title={t("reviewPlatforms.setAsDefault", { defaultValue: "Set as default" })}
+                            aria-label={t("reviewPlatforms.setAsDefault", { defaultValue: "Set as default" })}
                             className="p-1.5 rounded-lg transition-colors hover:bg-yellow-50"
                             style={{ color: "oklch(0.65 0.18 80)" }}
                           >
@@ -1868,7 +1922,8 @@ export default function SettingsPage() {
                         )}
                         <button
                           onClick={() => setEditingPlatformId(p.id)}
-                          title="Edit URL"
+                          title={t("reviewPlatforms.editUrl", { defaultValue: "Edit URL" })}
+                          aria-label={t("reviewPlatforms.editUrl", { defaultValue: "Edit URL" })}
                           className="p-1.5 rounded-lg transition-colors hover:bg-gray-100 rr-text-navy-mid"
                         >
                           <Pencil size={13} />
@@ -1888,7 +1943,12 @@ export default function SettingsPage() {
                                   className="flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg rr-bg-navy text-white" style={{ minWidth: "260px" }}
                                 >
                                   <Trash2 size={14} style={{ opacity: 0.7, flexShrink: 0 }} />
-                                  <span className="text-sm flex-1">{PLATFORM_LABELS[snapshot.platform] ?? snapshot.platform} removed</span>
+                                  <span className="text-sm flex-1">
+                                    {t("reviewPlatforms.removedToast", {
+                                      defaultValue: "{{platform}} removed",
+                                      platform: PLATFORM_LABELS[snapshot.platform] ?? snapshot.platform,
+                                    })}
+                                  </span>
                                   <button
                                     onClick={() => {
                                       restorePlatform.mutate(snapshot);
@@ -1896,14 +1956,15 @@ export default function SettingsPage() {
                                     }}
                                     className="text-xs font-black px-2 py-1 rounded-lg shrink-0 rr-bg-gold rr-text-navy"
                                   >
-                                    Undo
+                                    {t("reviewPlatforms.undo", { defaultValue: "Undo" })}
                                   </button>
                                 </div>
                               ),
                               { duration: 5000 }
                             );
                           }}
-                          title="Remove"
+                          title={t("reviewPlatforms.remove", { defaultValue: "Remove" })}
+                          aria-label={t("reviewPlatforms.remove", { defaultValue: "Remove" })}
                           className="p-1.5 rounded-lg transition-colors hover:bg-red-50"
                           style={{ color: "oklch(0.55 0.22 27)" }}
                         >
@@ -1920,7 +1981,7 @@ export default function SettingsPage() {
                   className="text-center py-4 rounded-xl rr-bg-white-card" style={{ border: "1px dashed oklch(0.85 0.03 260)" }}
                 >
                   <p className="text-sm font-semibold rr-text-navy-mid">
-                    No review platforms added yet. Click <strong>Add</strong> to get started.
+                    {t("reviewPlatforms.emptyState", { defaultValue: "No review platforms added yet. Click Add to get started." })}
                   </p>
                 </div>
               )}
@@ -1932,7 +1993,9 @@ export default function SettingsPage() {
                   style={{ border: "2px solid oklch(0.80 0.18 80)", background: "oklch(0.98 0.01 80)" }}
                 >
                   <div>
-                    <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Platform</label>
+                    <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
+                      {t("reviewPlatforms.platformType", { defaultValue: "Platform" })}
+                    </label>
                     <select
                       value={newPlatformType}
                       onChange={(e) => setNewPlatformType(e.target.value)}
@@ -1945,7 +2008,9 @@ export default function SettingsPage() {
                   </div>
                   <div>
                     <label className="block text-xs font-bold mb-1 rr-text-navy-mid flex items-center gap-1">
-                      {newPlatformType === "yelp" ? "Yelp Search Instruction *" : "Review Page URL *"}
+                      {newPlatformType === "yelp"
+                        ? t("reviewPlatforms.yelpSearchInstruction", { defaultValue: "Yelp Search Instruction *" })
+                        : t("reviewPlatforms.platformUrlRequired", { defaultValue: "Review Page URL *" })}
                       {newPlatformType === "yelp" && (
                         <Tooltip>
                           <TooltipTrigger asChild>
@@ -1954,7 +2019,8 @@ export default function SettingsPage() {
                             </span>
                           </TooltipTrigger>
                           <TooltipContent side="top" className="max-w-xs text-xs leading-relaxed">
-                            <strong>Why no link?</strong> Yelp's Terms of Service prohibit directly soliciting reviews via a link. Entering a plain-text search instruction (e.g. "Search for SK America on Yelp in San Bernardino, CA") keeps your emails compliant — customers find your listing themselves.
+                            <strong>{t("reviewPlatforms.whyNoLinkTitle", { defaultValue: "Why no link?" })}</strong>{" "}
+                            {t("reviewPlatforms.yelpNoLinkAdd", { defaultValue: "Yelp's Terms of Service prohibit directly soliciting reviews via a link. Entering a plain-text search instruction keeps your emails compliant — customers find your listing themselves." })}
                           </TooltipContent>
                         </Tooltip>
                       )}
@@ -1969,18 +2035,20 @@ export default function SettingsPage() {
                     />
                     <p className="text-xs mt-1 rr-text-navy-muted">
                       {newPlatformType === "yelp"
-                        ? <>Enter a plain-text search instruction (e.g. <em>Search for [Your Business] on Yelp in [City, State]</em>). This text appears in the email body — no link is created, keeping you Yelp-compliant.</>
-                        : "Paste the public URL customers use to leave a review on this platform."}
+                        ? t("reviewPlatforms.yelpSearchHelp", { defaultValue: "Enter a plain-text search instruction (for example: Search for [Your Business] on Yelp in [City, State]). This text appears in the email body — no link is created, keeping you Yelp-compliant." })
+                        : t("reviewPlatforms.reviewUrlHelp", { defaultValue: "Paste the public URL customers use to leave a review on this platform." })}
                     </p>
                   </div>
                   {newPlatformType === "other" && (
                     <div>
-                      <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Custom Label</label>
+                      <label className="block text-xs font-bold mb-1 rr-text-navy-mid">
+                        {t("reviewPlatforms.customLabel", { defaultValue: "Custom Label" })}
+                      </label>
                       <input
                         type="text"
                         value={newPlatformLabel}
                         onChange={(e) => setNewPlatformLabel(e.target.value)}
-                        placeholder="e.g. Houzz, Angi, Thumbtack"
+                        placeholder={t("reviewPlatforms.customLabelExample", { defaultValue: "e.g. Houzz, Angi, Thumbtack" })}
                         className="w-full px-3 py-2 rounded-lg text-sm outline-none"
                         style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
                       />
@@ -1989,26 +2057,33 @@ export default function SettingsPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => {
-                        if (!newPlatformUrl.trim()) { toast.error(newPlatformType === "yelp" ? "Search instruction is required" : "URL is required"); return; }
+                        if (!newPlatformUrl.trim()) {
+                          toast.error(newPlatformType === "yelp"
+                            ? t("reviewPlatforms.searchInstructionRequired", { defaultValue: "Search instruction is required" })
+                            : t("reviewPlatforms.urlRequired", { defaultValue: "URL is required" }));
+                          return;
+                        }
                         const promise = addPlatform.mutateAsync({
                           platform: newPlatformType as "google" | "yelp" | "tripadvisor" | "bing" | "facebook" | "apple" | "other",
                           url: newPlatformUrl.trim(),
                           label: newPlatformLabel.trim() || undefined,
                         });
                         toast.promise(promise, {
-                          loading: "Adding platform...",
-                          success: "Review platform added!",
-                          error: (err) => err?.message ?? "Failed to add platform",
+                          loading: t("reviewPlatforms.addingPlatform", { defaultValue: "Adding platform..." }),
+                          success: t("reviewPlatforms.addSuccess", { defaultValue: "Review platform added!" }),
+                          error: (err) => err?.message ?? t("reviewPlatforms.addError", { defaultValue: "Failed to add platform" }),
                         });
                       }}
                       disabled={addPlatform.isPending}
                       className="flex-1 flex items-center justify-center gap-1 py-2 rounded-lg text-xs font-black rr-bg-navy text-white"
                     >
                       {addPlatform.isPending ? <Loader2 size={12} className="animate-spin" /> : <Plus size={12} />}
-                      Add Platform
+                      {t("reviewPlatforms.addPlatform", { defaultValue: "Add Platform" })}
                     </button>
                     <button
                       onClick={() => { setShowAddPlatform(false); setNewPlatformUrl(""); setNewPlatformLabel(""); }}
+                      aria-label={t("reviewPlatforms.cancel", { defaultValue: "Cancel" })}
+                      title={t("reviewPlatforms.cancel", { defaultValue: "Cancel" })}
                       className="px-3 py-2 rounded-lg text-xs font-bold rr-text-navy-mid" style={{ background: "oklch(0.93 0.02 260)" }}
                     >
                       <X size={12} />
@@ -2247,139 +2322,6 @@ export default function SettingsPage() {
                       )}
                     </div>
 
-                    {/* Gmail guide */}
-                    {false && showGuide && isGmail && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
-                        <p className="font-black text-sm rr-text-gold">Gmail App Password — 4 steps</p>
-                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Go to <span className="font-bold rr-text-gold">myaccount.google.com</span> → Security</li>
-                          <li>Turn on <span className="font-bold">2-Step Verification</span> if not already on</li>
-                          <li>Go to <span className="font-bold rr-text-gold">myaccount.google.com/apppasswords</span> → name it <span className="font-bold">Get Phame</span> → click Create</li>
-                          <li>Copy the <span className="font-bold">16-character code</span> and paste it here — <span className="font-bold">remove all spaces</span></li>
-                        </ol>
-                        <p className="text-[10px] mt-1 rr-text-navy-faint">Tip: use a dedicated <span className="font-bold">reviews@gmail.com</span> account to keep your main inbox separate.</p>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
-                      </div>
-                    )}
-
-                    {/* Google Workspace guide */}
-                    {false && showGuide && isGoogleWorkspace && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
-                        <p className="font-black text-sm rr-text-gold">Google Workspace App Password — 4 steps</p>
-                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Ask your Workspace admin to enable 2-Step Verification in <span className="font-bold rr-text-gold">admin.google.com</span></li>
-                          <li>Sign in to <span className="font-bold rr-text-gold">myaccount.google.com</span> with your work account → Security</li>
-                          <li>Go to <span className="font-bold rr-text-gold">myaccount.google.com/apppasswords</span> → name it <span className="font-bold">Get Phame</span> → click Create</li>
-                          <li>Copy the <span className="font-bold">16-character code</span> and paste it here — <span className="font-bold">remove all spaces</span></li>
-                        </ol>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
-                      </div>
-                    )}
-
-                    {/* Microsoft / Outlook guide */}
-                    {false && showGuide && isOutlook && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
-                        <p className="font-black text-sm rr-text-gold">Microsoft App Password — 4 steps</p>
-                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Go to <span className="font-bold rr-text-gold">account.microsoft.com</span> → Security</li>
-                          <li>Click <span className="font-bold">Advanced security options</span></li>
-                          <li>Under <span className="font-bold">App passwords</span>, click <span className="font-bold">Create a new app password</span></li>
-                          <li>Copy and paste the generated password here</li>
-                        </ol>
-                        <p className="text-[10px] mt-1 rr-text-navy-faint">Microsoft 365 (work accounts): contact your IT admin to allow SMTP AUTH for your mailbox.</p>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
-                      </div>
-                    )}
-
-                    {/* Yahoo guide */}
-                    {false && showGuide && isYahoo && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
-                        <p className="font-black text-sm rr-text-gold">Yahoo App Password — 4 steps</p>
-                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Go to <span className="font-bold rr-text-gold">account.yahoo.com</span> → Security</li>
-                          <li>Click <span className="font-bold">Generate app password</span></li>
-                          <li>Select <span className="font-bold">Other app</span>, name it <span className="font-bold">Get Phame</span></li>
-                          <li>Copy and paste the password here</li>
-                        </ol>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
-                      </div>
-                    )}
-
-                    {/* Zoho guide */}
-                    {false && showGuide && isZoho && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
-                        <p className="font-black text-sm rr-text-gold">Zoho Mail — Enable SMTP Access</p>
-                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Log in to <span className="font-bold rr-text-gold">mail.zoho.com</span></li>
-                          <li>Go to <span className="font-bold">Settings</span> → <span className="font-bold">Mail Accounts</span></li>
-                          <li>Click your email address → scroll to <span className="font-bold">SMTP</span></li>
-                          <li>Toggle <span className="font-bold">Allow SMTP Access</span> to ON, then use your <span className="font-bold">regular Zoho password</span> here</li>
-                        </ol>
-                        <p className="text-[10px] mt-1 rr-text-navy-faint">No app password needed — just enable SMTP and use your normal Zoho login password.</p>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
-                      </div>
-                    )}
-
-                    {/* AOL guide */}
-                    {false && showGuide && isAol && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
-                        <p className="font-black text-sm rr-text-gold">AOL Mail App Password — 4 steps</p>
-                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Go to <span className="font-bold rr-text-gold">account.aol.com</span> → Security</li>
-                          <li>Click <span className="font-bold">Generate app password</span></li>
-                          <li>Select <span className="font-bold">Other app</span>, name it <span className="font-bold">Get Phame</span></li>
-                          <li>Copy and paste the password here — do <span className="font-bold">not</span> use your regular AOL password</li>
-                        </ol>
-                        <p className="text-[10px] mt-1 rr-text-navy-faint">AOL requires 2-step verification to be enabled before generating app passwords.</p>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
-                      </div>
-                    )}
-
-                    {/* ProtonMail guide */}
-                    {false && showGuide && isProtonMail && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
-                        <p className="font-black text-sm rr-text-gold">ProtonMail — SMTP Bridge Password</p>
-                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Download and install <span className="font-bold rr-text-gold">Proton Mail Bridge</span> from proton.me/mail/bridge</li>
-                          <li>Sign in to Bridge with your Proton account</li>
-                          <li>In Bridge, click your account → copy the <span className="font-bold">SMTP password</span> shown</li>
-                          <li>Paste that SMTP password here — <span className="font-bold">not</span> your regular Proton login password</li>
-                        </ol>
-                        <p className="text-[10px] mt-1 rr-text-navy-faint">ProtonMail Bridge must be running on your computer for SMTP to work. Use port 1025 (localhost) or 587 via Bridge.</p>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
-                      </div>
-                    )}
-
-                    {/* Fastmail guide */}
-                    {false && showGuide && isFastmail && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
-                        <p className="font-black text-sm rr-text-gold">Fastmail App Password — 4 steps</p>
-                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Go to <span className="font-bold rr-text-gold">app.fastmail.com</span> → Settings → Privacy & Security</li>
-                          <li>Scroll to <span className="font-bold">Third-party apps</span> → click <span className="font-bold">New app password</span></li>
-                          <li>Name it <span className="font-bold">Get Phame</span>, set access to <span className="font-bold">Mail (SMTP)</span></li>
-                          <li>Copy and paste the generated password here</li>
-                        </ol>
-                        <p className="text-[10px] mt-1 rr-text-navy-faint">Fastmail app passwords are provider-specific — do not use your regular Fastmail login password.</p>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
-                      </div>
-                    )}
-
-                    {/* iCloud guide */}
-                    {false && showGuide && isIcloud && (
-                      <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
-                        <p className="font-black text-sm rr-text-gold">Apple iCloud — App-Specific Password</p>
-                        <ol className="flex flex-col gap-1.5 pl-4" style={{ listStyle: 'decimal' }}>
-                          <li>Go to <span className="font-bold rr-text-gold">appleid.apple.com</span> → Sign In & Security</li>
-                          <li>Click <span className="font-bold">App-Specific Passwords</span> → <span className="font-bold">Generate an App-Specific Password</span></li>
-                          <li>Name it <span className="font-bold">Get Phame</span> and click Create</li>
-                          <li>Copy the <span className="font-bold">xxxx-xxxx-xxxx-xxxx</span> password and paste it here</li>
-                        </ol>
-                        <p className="text-[10px] mt-1 rr-text-navy-faint">Requires two-factor authentication to be enabled on your Apple ID.</p>
-                        <button type="button" onClick={() => setShowPasswordGuide(false)} className="self-end text-xs font-bold mt-1 rr-text-gold">Got it ✓</button>
-                      </div>
-                    )}
-
                     {showGuide && hasGuide && activeGuide && (
                       <div className="mb-2 rounded-2xl p-4 text-xs flex flex-col gap-2 rr-bg-navy text-white">
                         <p className="font-black text-sm rr-text-gold">{t(`smtp.providerGuides.${guideProvider}.title`, { defaultValue: activeGuide.title })}</p>
@@ -2495,30 +2437,8 @@ export default function SettingsPage() {
                 </div>
               </div>
 
-              {/* ── Daily send limit ───────────────────────────────────────────────────── */}
-              <div>
-                <label className="block text-xs font-bold mb-1 rr-text-navy-mid">Daily Send Limit</label>
-                <div className="flex items-center gap-2">
-                  <input
-                    type="number"
-                    min={1}
-                    max={500}
-                    value={dailySendLimit}
-                    onChange={(e) => setDailySendLimit(Math.min(500, Math.max(1, Number(e.target.value))))}
-                    className="w-24 px-3 py-2.5 rounded-xl text-sm outline-none"
-                    style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
-                  />
-                  <span className="text-sm font-semibold rr-text-navy-mid">emails per day (max 500)</span>
-                  <button
-                    type="button"
-                    onClick={() => setDailySendLimitMutation.mutate({ limit: dailySendLimit })}
-                    disabled={setDailySendLimitMutation.isPending || dailySendLimit === (profile?.dailySendLimit ?? 50)}
-                    className="ml-auto px-3 py-1.5 rounded-lg text-xs font-bold transition-opacity disabled:opacity-40 rr-bg-navy rr-text-gold"
-                  >
-                    {setDailySendLimitMutation.isPending ? "Saving…" : "Save"}
-                  </button>
-                </div>
-                <p className="text-xs mt-1 rr-text-navy-muted">Bulk sends will stop after this many emails per day. Resets at midnight UTC. Default: 50.</p>
+              <div id="email-connection" className="scroll-mt-24">
+                <AdaptiveSendLimitStatus status={adaptiveSendStatus} />
               </div>
 
               {/* ── Follow-up Reminder Settings ────────────────────────────────────────── */}
@@ -3137,149 +3057,30 @@ export default function SettingsPage() {
           <Smartphone size={14} aria-hidden="true" />
           Install App on Your Phone
         </button>
-        {/* ── API Keys ───────────────────────────────────────────────────────────────── */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm">
-          <div className="flex items-center gap-2 mb-1">
-            <Key size={18} className="rr-text-navy" />
-            <h2 className="text-base font-black rr-text-navy">
-              {t('tools.title', { defaultValue: 'API Keys' })}
-            </h2>
+        {/* ── Developer integrations ─────────────────────────────────────────── */}
+        <div className="rounded-2xl bg-white p-5 shadow-sm">
+          <div className="flex items-start gap-3">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl rr-bg-navy rr-text-gold">
+              <Key size={18} aria-hidden="true" />
+            </span>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-base font-black rr-text-navy">
+                {t("developerIntegrations.title", { defaultValue: "Developer integrations" })}
+              </h2>
+              <p className="mt-1 text-xs leading-5 rr-text-navy-mid">
+                {t("developerIntegrations.settingsCard", { defaultValue: "Create scoped API keys, connect website forms, and review privacy-safe import history in one workspace." })}
+              </p>
+            </div>
           </div>
-          <p className="text-xs mb-4 leading-relaxed rr-text-navy-mid">
-            Use an API key to import contacts from your website forms.
-            Each key is shown <strong>once</strong> at creation — copy it immediately.
-          </p>
-
-          {/* Revealed key banner */}
-          {revealedKey && (
-            <div
-              className="rounded-xl p-3 mb-4 flex items-start gap-2"
-              style={{ background: "oklch(0.96 0.06 145)", border: "1.5px solid oklch(0.80 0.12 145)" }}
-            >
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.30 0.10 145)" }}>Your new API key — copy now!</p>
-                <code
-                  className="text-xs break-all select-all rr-text-navy rr-font-mono"
-                >
-                  {revealedKey}
-                </code>
-              </div>
-              <button
-                onClick={() => { navigator.clipboard.writeText(revealedKey); toast.success("Copied!"); }}
-                className="shrink-0 p-1.5 rounded-lg"
-                style={{ background: "oklch(0.80 0.12 145)" }}
-                title="Copy to clipboard"
-              >
-                <Copy size={14} className="rr-text-navy" />
-              </button>
-              <button
-                onClick={() => setRevealedKey(null)}
-                className="shrink-0 p-1.5 rounded-lg"
-                style={{ background: "oklch(0.80 0.12 145)" }}
-                title="Dismiss"
-              >
-                <X size={14} className="rr-text-navy" />
-              </button>
-            </div>
-          )}
-
-          {/* Existing keys list */}
-          {apiKeysLoading ? (
-            <div className="flex justify-center py-4">
-              <Loader2 size={20} className="animate-spin rr-text-navy-muted" />
-            </div>
-          ) : apiKeyList && apiKeyList.length > 0 ? (
-            <div className="space-y-2 mb-4">
-              {apiKeyList.map((k) => (
-                <div
-                  key={k.id}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 rr-bg-white-card" style={{ border: "1px solid oklch(0.90 0.02 260)" }}
-                >
-                  <Key size={14} className="rr-text-navy-muted" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold truncate rr-text-navy">{k.label}</p>
-                    <p className="text-xs" style={{ color: "oklch(0.60 0.04 260)" }}>
-                      Created {new Date(k.createdAt).toLocaleDateString()}
-                      {k.lastUsedAt ? ` · Last used ${new Date(k.lastUsedAt).toLocaleDateString()}` : " · Never used"}
-                    </p>
-                  </div>
-                  <button
-                    onClick={() => { if (confirm(`Revoke "${k.label}"? This cannot be undone.`)) revokeKey.mutate({ id: k.id }); }}
-                    className="shrink-0 p-1.5 rounded-lg rr-bg-surface"
-                    title="Revoke key"
-                  >
-                    <Trash2 size={14} style={{ color: "oklch(0.55 0.15 25)" }} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-xs mb-4" style={{ color: "oklch(0.35 0.04 260)" }}>No API keys yet.</p>
-          )}
-
-          {/* Generate new key */}
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={newKeyLabel}
-              onChange={(e) => setNewKeyLabel(e.target.value)}
-              placeholder="Key label (e.g. Website Form)"
-              maxLength={100}
-              className="flex-1 px-3 py-2 rounded-xl text-xs outline-none"
-              style={{ border: "1.5px solid oklch(0.88 0.04 260)", fontSize: "13px" }}
-            />
-            <button
-              disabled={generateKey.isPending || !newKeyLabel.trim()}
-              onClick={() => generateKey.mutate({ label: newKeyLabel.trim() })}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold shrink-0"
-              style={{
-                background: newKeyLabel.trim() ? "oklch(0.22 0.09 260)" : "oklch(0.80 0.04 260)",
-                color: newKeyLabel.trim() ? "oklch(0.80 0.18 80)" : "oklch(0.60 0.04 260)",
-              }}
-            >
-              {generateKey.isPending ? <Loader2 size={12} className="animate-spin" /> : <Plus size={12} />}
-              Generate
-            </button>
-          </div>
-
-          {/* Integration Guide */}
-          <IntegrationGuide showSnippet={showSnippet} setShowSnippet={setShowSnippet} />
+          <button
+            type="button"
+            onClick={() => navigate("/developer")}
+            className="mt-4 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl px-4 text-sm font-black rr-bg-navy rr-text-gold transition active:scale-[0.97]"
+          >
+            {t("developerIntegrations.open", { defaultValue: "Open developer workspace" })}
+            <ChevronRight size={15} aria-hidden="true" />
+          </button>
         </div>
-            {/* ── Recent API Imports ────────────────────────────────────────────────────────────────────────────── */}
-        {recentImports && recentImports.length > 0 && (
-          <div className="bg-white rounded-2xl p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <Clock size={18} className="rr-text-navy" />
-                <h2 className="text-base font-black rr-text-navy">
-                  Recent API Imports
-                </h2>
-              </div>
-              <button
-                onClick={handleExportImportsCsv}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold rr-bg-white-card" style={{ color: "oklch(0.40 0.08 260)", border: "1.5px solid oklch(0.88 0.04 260)" }}
-              >
-                <Download size={12} /> Export CSV
-              </button>
-            </div>
-            <div className="space-y-2">
-              {recentImports.map((ev) => (
-                <div key={ev.id} className="flex items-center justify-between gap-2 rounded-xl px-3 py-2 rr-bg-white-card">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-semibold truncate rr-text-navy">{ev.email}</p>
-                    <p className="text-sm font-semibold rr-text-navy-mid">
-                      via <span className="font-medium">{ev.keyLabel}</span> · {ev.created ? "✨ new contact" : "updated"}
-                    </p>
-                  </div>
-                  <span className="text-xs shrink-0" style={{ color: "oklch(0.35 0.04 260)" }}>
-                    {new Date(ev.createdAt).toLocaleString()}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* ── Outbound Webhooks ────────────────────────────────────────────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl p-5 shadow-sm">
           <div className="flex items-center justify-between mb-4">

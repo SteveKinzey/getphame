@@ -1,4 +1,5 @@
-import { bigint, boolean, index, int, mysqlEnum, mysqlTable, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
+import { sql } from "drizzle-orm";
+import { bigint, boolean, check, index, int, mysqlEnum, mysqlTable, text, timestamp, uniqueIndex, varchar } from "drizzle-orm/mysql-core";
 
 // Keep the existing schema declarations readable while targeting the managed TiDB/MySQL database.
 const integer = int;
@@ -12,13 +13,26 @@ export const roleEnum = pgEnum("role", ["user", "admin"]);
 export const tierEnum = pgEnum("tier", ["free", "pro", "annual", "lifetime"]);
 export const methodEnum = pgEnum("method", ["email", "sms", "both"]);
 export const requestStatusEnum = pgEnum("request_status", ["sent", "pending", "followed_up"]);
-export const contactSourceEnum = pgEnum("contact_source", ["manual", "woocommerce", "stripe", "koalendar"]);
+export const contactSourceEnum = pgEnum("contact_source", ["manual", "woocommerce", "stripe", "koalendar", "api"]);
 export const reminderStatusEnum = pgEnum("reminder_status", ["pending", "sent", "cancelled"]);
 export const platformEnum = pgEnum("platform", ["google", "yelp", "tripadvisor", "bing", "facebook", "apple", "other"]);
 export const emailEventTypeEnum = pgEnum("email_event_type", ["open", "click"]);
 export const churnReasonEnum = pgEnum("churn_reason", ["too_expensive", "not_using", "switching_tools", "missing_feature", "other"]);
 export const healthStatusEnum = pgEnum("health_status", ["ok", "fail"]);
-export const bulkProviderEnum = pgEnum("bulk_provider", ["sendgrid", "mailgun", "postmark"]);
+export const bulkProviderEnum = pgEnum("bulk_provider", [
+  "sendgrid",
+  "amazon_ses",
+  "mailgun",
+  "mailersend",
+  "smtp2go",
+  "brevo",
+  "postmark",
+  "sparkpost",
+  "elastic_email",
+  "zoho_zeptomail",
+  "socketlabs",
+  "custom_smtp",
+]);
 export const mailgunRegionEnum = pgEnum("mailgun_region", ["us", "eu"]);
 export const authDiagnosticEventTypeEnum = pgEnum("auth_diagnostic_event_type", [
   "request_received",
@@ -37,6 +51,31 @@ export const supportQueueAssigneeScopeEnum = pgEnum("support_queue_assignee_scop
 export const supportQueueSlaWindowEnum = pgEnum("support_queue_sla_window", ["overdue", "next_4_hours", "next_24_hours"]);
 export const supportQueueSortEnum = pgEnum("support_queue_sort", ["newest", "oldest", "priority", "assignee", "sla_soonest", "due_soonest"]);
 export const supportQueueViewVisibilityEnum = pgEnum("support_queue_view_visibility", ["private", "team"]);
+export const complimentaryAccessDurationUnitEnum = pgEnum("complimentary_access_duration_unit", ["day", "month", "year"]);
+export const securityRoleEnum = pgEnum("security_role", [
+  "platform_owner",
+  "security_administrator",
+  "platform_operations_administrator",
+  "billing_administrator",
+  "support_manager",
+  "support_agent",
+  "organization_owner",
+  "organization_administrator",
+  "campaign_operator",
+]);
+export const securityScopeEnum = pgEnum("security_scope", ["platform", "organization"]);
+export const securityPermissionEffectEnum = pgEnum("security_permission_effect", ["allow", "deny"]);
+export const securityActorTypeEnum = pgEnum("security_actor_type", ["human", "service"]);
+export const securityDecisionEnum = pgEnum("security_decision", ["allow", "deny"]);
+export const securityApprovalStatusEnum = pgEnum("security_approval_status", ["pending", "approved", "rejected", "expired", "executed"]);
+export const securitySessionAuthMethodEnum = pgEnum("security_session_auth_method", ["oauth", "magic_link", "passkey"]);
+export const securityAssuranceEnum = pgEnum("security_assurance", ["a1", "a2"]);
+export const webauthnCeremonyTypeEnum = pgEnum("webauthn_ceremony_type", ["registration", "authentication"]);
+export const webauthnCredentialStatusEnum = pgEnum("webauthn_credential_status", ["active", "revoked"]);
+export const recoveryEnvironmentEnum = pgEnum("recovery_environment", ["staging", "production"]);
+export const recoveryDrillStatusEnum = pgEnum("recovery_drill_status", ["draft", "ready", "in_progress", "paused", "completed", "aborted"]);
+export const recoveryDrillRoleEnum = pgEnum("recovery_drill_role", ["recovery_custodian", "independent_approver", "observer"]);
+export const recoveryApprovalDecisionEnum = pgEnum("recovery_approval_decision", ["approved", "rejected"]);
 
 // ─── Tables ───────────────────────────────────────────────────────────────────
 
@@ -281,6 +320,35 @@ export const stripeSubscriptions = pgTable("stripe_subscriptions", {
 export type StripeSubscription = typeof stripeSubscriptions.$inferSelect;
 export type InsertStripeSubscription = typeof stripeSubscriptions.$inferInsert;
 
+/**
+ * Administrator-issued paid-access grants for registered or future users.
+ * Plaintext recipient email addresses are deliberately excluded: lookups use a
+ * one-way HMAC fingerprint and administrator views receive only the mask.
+ */
+export const complimentaryAccessGrants = pgTable("complimentary_access_grants", {
+  id: serial("id").primaryKey(),
+  emailFingerprint: varchar("email_fingerprint", { length: 64 }).notNull(),
+  emailMasked: varchar("email_masked", { length: 320 }).notNull(),
+  userId: integer("user_id"),
+  durationValue: integer("duration_value").notNull(),
+  durationUnit: complimentaryAccessDurationUnitEnum("duration_unit").notNull(),
+  startsAt: bigint("starts_at", { mode: "number" }).notNull(),
+  expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
+  createdByUserId: integer("created_by_user_id").notNull(),
+  note: varchar("note", { length: 500 }),
+  revokedAt: bigint("revoked_at", { mode: "number" }),
+  revokedByUserId: integer("revoked_by_user_id"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => [
+  index("complimentary_access_email_expiry_idx").on(table.emailFingerprint, table.expiresAt),
+  index("complimentary_access_user_expiry_idx").on(table.userId, table.expiresAt),
+  index("complimentary_access_created_idx").on(table.createdAt),
+]);
+
+export type ComplimentaryAccessGrant = typeof complimentaryAccessGrants.$inferSelect;
+export type InsertComplimentaryAccessGrant = typeof complimentaryAccessGrants.$inferInsert;
+
 /** WooCommerce store credentials per user */
 export const wooCredentials = pgTable("woo_credentials", {
   id: serial("id").primaryKey(),
@@ -343,6 +411,11 @@ export const savedContacts = pgTable("saved_contacts", {
   // Source tracking — where this contact came from
   source: contactSourceEnum("source").default("manual").notNull(),
   externalId: varchar("externalId", { length: 128 }), // Stripe customer ID or WooCommerce order ID for dedup
+  sourceApp: varchar("sourceApp", { length: 64 }),
+  importedViaApiKeyId: integer("importedViaApiKeyId"),
+  consentBasis: varchar("consentBasis", { length: 32 }),
+  consentCapturedAt: bigint("consentCapturedAt", { mode: "number" }),
+  consentSource: varchar("consentSource", { length: 255 }),
   // Opt-out / unsubscribe tracking
   optedOut: integer("optedOut").default(0).notNull(), // 1 = unsubscribed, suppress future sends
   optedOutAt: bigint("optedOutAt", { mode: "number" }), // Unix ms when opted out
@@ -712,12 +785,54 @@ export const apiKeys = pgTable("api_keys", {
   userId: integer("userId").notNull(),
   keyHash: varchar("keyHash", { length: 64 }).notNull().unique(), // SHA-256 hex of the raw key
   label: varchar("label", { length: 100 }).notNull().default("My API Key"),
+  keyHint: varchar("keyHint", { length: 24 }).notNull().default("rl_••••"),
+  scopes: text("scopes").notNull(),
+  expiresAt: bigint("expiresAt", { mode: "number" }),
+  rotatedFromId: integer("rotatedFromId"),
+  usageCount: integer("usageCount").notNull().default(0),
   lastUsedAt: bigint("lastUsedAt", { mode: "number" }), // Unix ms
+  suspendedAt: bigint("suspendedAt", { mode: "number" }), // Unix ms — temporary abuse suspension
+  suspensionExpiresAt: bigint("suspensionExpiresAt", { mode: "number" }),
+  suspensionReason: varchar("suspensionReason", { length: 64 }),
   revokedAt: bigint("revokedAt", { mode: "number" }), // Unix ms — null = active
   createdAt: timestamp("createdAt").defaultNow().notNull(),
-});
+}, (table) => [
+  index("api_keys_user_created_idx").on(table.userId, table.createdAt),
+  index("api_keys_expiry_idx").on(table.expiresAt),
+  index("api_keys_suspension_idx").on(table.suspensionExpiresAt),
+]);
 export type ApiKey = typeof apiKeys.$inferSelect;
 export type InsertApiKey = typeof apiKeys.$inferInsert;
+
+/**
+ * Developer API enrollment — one privacy-minimized record per authenticated account.
+ * Records versioned API Terms/AUP acceptance and the business-use review required
+ * before the higher-risk review-request sending scope can be issued or exercised.
+ */
+export const developerApiEnrollments = pgTable("developer_api_enrollments", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull().unique(),
+  termsVersion: varchar("termsVersion", { length: 32 }),
+  acceptableUseVersion: varchar("acceptableUseVersion", { length: 32 }),
+  termsAcceptedAt: bigint("termsAcceptedAt", { mode: "number" }),
+  acceptanceFingerprint: varchar("acceptanceFingerprint", { length: 64 }),
+  businessName: varchar("businessName", { length: 160 }),
+  websiteUrl: varchar("websiteUrl", { length: 512 }),
+  useCase: text("useCase"),
+  expectedMonthlySendVolume: integer("expectedMonthlySendVolume"),
+  consentProcess: text("consentProcess"),
+  sendScopeStatus: varchar("sendScopeStatus", { length: 32 }).notNull().default("not_requested"),
+  sendScopeRequestedAt: bigint("sendScopeRequestedAt", { mode: "number" }),
+  sendScopeReviewedAt: bigint("sendScopeReviewedAt", { mode: "number" }),
+  sendScopeReviewedByUserId: integer("sendScopeReviewedByUserId"),
+  sendScopeReviewNote: varchar("sendScopeReviewNote", { length: 500 }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+}, (table) => [
+  index("developer_api_enrollment_status_idx").on(table.sendScopeStatus, table.sendScopeRequestedAt),
+]);
+export type DeveloperApiEnrollment = typeof developerApiEnrollments.$inferSelect;
+export type InsertDeveloperApiEnrollment = typeof developerApiEnrollments.$inferInsert;
 
 /**
  * API import events — log of each contact pushed via the public REST API.
@@ -728,13 +843,113 @@ export const apiImportEvents = pgTable("api_import_events", {
   userId: integer("userId").notNull(),
   apiKeyId: integer("apiKeyId"), // null if key was deleted
   keyLabel: varchar("keyLabel", { length: 100 }).notNull().default("API Key"),
+  eventType: varchar("eventType", { length: 32 }).notNull().default("contact_import"),
   contactId: integer("contactId"), // null if contact was deleted
   email: varchar("email", { length: 320 }).notNull(),
+  emailMasked: varchar("emailMasked", { length: 320 }),
+  emailFingerprint: varchar("emailFingerprint", { length: 64 }),
+  sourceApp: varchar("sourceApp", { length: 64 }),
+  externalId: varchar("externalId", { length: 128 }),
+  consentBasis: varchar("consentBasis", { length: 32 }),
+  outcome: varchar("outcome", { length: 32 }).notNull().default("created"),
+  errorCode: varchar("errorCode", { length: 64 }),
+  idempotencyHash: varchar("idempotencyHash", { length: 64 }),
   created: boolean("created").notNull().default(true), // true = new contact, false = updated
   createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
-});
+}, (table) => [
+  index("api_import_events_user_created_idx").on(table.userId, table.createdAt),
+  index("api_import_events_key_created_idx").on(table.apiKeyId, table.createdAt),
+]);
 export type ApiImportEvent = typeof apiImportEvents.$inferSelect;
 export type InsertApiImportEvent = typeof apiImportEvents.$inferInsert;
+
+/** Request-level idempotency records; only hashes and bounded response metadata are retained. */
+export const apiIdempotencyRecords = pgTable("api_idempotency_records", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  apiKeyId: integer("apiKeyId").notNull(),
+  idempotencyHash: varchar("idempotencyHash", { length: 64 }).notNull(),
+  payloadHash: varchar("payloadHash", { length: 64 }).notNull(),
+  contactId: integer("contactId"),
+  created: boolean("created").notNull().default(true),
+  responseJson: text("responseJson").notNull(),
+  expiresAt: bigint("expiresAt", { mode: "number" }).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+}, (table) => [
+  uniqueIndex("api_idempotency_key_hash_unique").on(table.apiKeyId, table.idempotencyHash),
+  index("api_idempotency_expiry_idx").on(table.expiresAt),
+]);
+export type ApiIdempotencyRecord = typeof apiIdempotencyRecords.$inferSelect;
+export type InsertApiIdempotencyRecord = typeof apiIdempotencyRecords.$inferInsert;
+
+/** Per-key rolling request windows used for deterministic API rate limiting. */
+export const apiRateLimitWindows = pgTable("api_rate_limit_windows", {
+  id: serial("id").primaryKey(),
+  apiKeyId: integer("apiKeyId").notNull(),
+  windowStartedAt: bigint("windowStartedAt", { mode: "number" }).notNull(),
+  requestCount: integer("requestCount").notNull().default(0),
+  expiresAt: bigint("expiresAt", { mode: "number" }).notNull(),
+}, (table) => [
+  uniqueIndex("api_rate_limit_key_window_unique").on(table.apiKeyId, table.windowStartedAt),
+  index("api_rate_limit_expiry_idx").on(table.expiresAt),
+]);
+export type ApiRateLimitWindow = typeof apiRateLimitWindows.$inferSelect;
+export type InsertApiRateLimitWindow = typeof apiRateLimitWindows.$inferInsert;
+
+/**
+ * Persistent abuse windows for public API side effects. Dimensions are stored
+ * only as keyed hashes, never raw IP addresses or recipient email addresses.
+ */
+export const apiAbuseLimitWindows = pgTable("api_abuse_limit_windows", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  apiKeyId: integer("apiKeyId"),
+  action: varchar("action", { length: 32 }).notNull(),
+  dimension: varchar("dimension", { length: 24 }).notNull(),
+  dimensionHash: varchar("dimensionHash", { length: 64 }).notNull(),
+  windowStartedAt: bigint("windowStartedAt", { mode: "number" }).notNull(),
+  requestCount: integer("requestCount").notNull().default(0),
+  expiresAt: bigint("expiresAt", { mode: "number" }).notNull(),
+}, (table) => [
+  uniqueIndex("api_abuse_dimension_window_unique").on(
+    table.action,
+    table.dimensionHash,
+    table.windowStartedAt,
+  ),
+  index("api_abuse_user_action_idx").on(table.userId, table.action, table.expiresAt),
+  index("api_abuse_key_action_idx").on(table.apiKeyId, table.action, table.expiresAt),
+  index("api_abuse_expiry_idx").on(table.expiresAt),
+]);
+export type ApiAbuseLimitWindow = typeof apiAbuseLimitWindows.$inferSelect;
+export type InsertApiAbuseLimitWindow = typeof apiAbuseLimitWindows.$inferInsert;
+
+/**
+ * Durable counters for adaptive review-request sending limits. Account scopes
+ * enforce the non-bypassable ceiling even when a user changes delivery provider;
+ * channel scopes apply the provider-aware warm-up policy.
+ */
+export const outboundSendLimitWindows = pgTable("outbound_send_limit_windows", {
+  id: serial("id").primaryKey(),
+  userId: integer("userId").notNull(),
+  scopeKey: varchar("scopeKey", { length: 96 }).notNull(),
+  windowType: varchar("windowType", { length: 8 }).notNull(),
+  windowStartedAt: bigint("windowStartedAt", { mode: "number" }).notNull(),
+  sendCount: integer("sendCount").notNull().default(0),
+  expiresAt: bigint("expiresAt", { mode: "number" }).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+}, (table) => [
+  uniqueIndex("outbound_send_limit_scope_window_unique").on(
+    table.userId,
+    table.scopeKey,
+    table.windowType,
+    table.windowStartedAt,
+  ),
+  index("outbound_send_limit_user_expiry_idx").on(table.userId, table.expiresAt),
+  index("outbound_send_limit_expiry_idx").on(table.expiresAt),
+]);
+export type OutboundSendLimitWindow = typeof outboundSendLimitWindows.$inferSelect;
+export type InsertOutboundSendLimitWindow = typeof outboundSendLimitWindows.$inferInsert;
 
 /** One private Koalendar webhook endpoint per Get Phame account. */
 export const koalendarConnections = pgTable("koalendar_connections", {
@@ -867,7 +1082,7 @@ export const clientReviews = pgTable("client_reviews", {
 export type ClientReview = typeof clientReviews.$inferSelect;
 export type InsertClientReview = typeof clientReviews.$inferInsert;
 
-/** Bulk sender API credentials — Pro-only feature for high-volume sending via SendGrid/Mailgun/Postmark */
+/** Bulk sender credentials — Pro-only feature for high-volume sending through verified SMTP relays. */
 export const bulkSenderCredentials = pgTable("bulk_sender_credentials", {
   id: serial("id").primaryKey(),
   userId: integer("userId").notNull().unique(),
@@ -879,6 +1094,12 @@ export const bulkSenderCredentials = pgTable("bulk_sender_credentials", {
   mailgunDomain: varchar("mailgunDomain", { length: 255 }),
   // Mailgun-specific: EU region flag
   mailgunRegion: mailgunRegionEnum("mailgunRegion").default("us"),
+  // Additive SMTP metadata. apiKey remains the encrypted secret column for backward compatibility.
+  smtpHost: varchar("smtpHost", { length: 255 }),
+  smtpPort: integer("smtpPort"),
+  smtpSecure: integer("smtpSecure").default(0), // 0 = STARTTLS, 1 = implicit TLS
+  smtpUsername: varchar("smtpUsername", { length: 320 }),
+  providerRegion: varchar("providerRegion", { length: 64 }),
   connected: integer("connected").default(1).notNull(), // 1 = active
   createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
   updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
@@ -932,3 +1153,252 @@ export const leads = pgTable("leads", {
 });
 export type Lead = typeof leads.$inferSelect;
 export type InsertLead = typeof leads.$inferInsert;
+
+/**
+ * Opaque, revocable security sessions used by passkeys and future step-up paths.
+ * Existing OAuth and magic-link JWT sessions remain valid during observe-mode rollout.
+ */
+export const authSessions = pgTable("auth_sessions", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  userId: integer("user_id").notNull(),
+  tokenHash: varchar("token_hash", { length: 64 }).notNull().unique(),
+  authMethod: securitySessionAuthMethodEnum("auth_method").notNull(),
+  assurance: securityAssuranceEnum("assurance").notNull().default("a1"),
+  authenticatedAt: bigint("authenticated_at", { mode: "number" }).notNull(),
+  lastStepUpAt: bigint("last_step_up_at", { mode: "number" }),
+  expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
+  lastSeenAt: bigint("last_seen_at", { mode: "number" }).notNull(),
+  revokedAt: bigint("revoked_at", { mode: "number" }),
+  revocationReason: varchar("revocation_reason", { length: 255 }),
+  ipHash: varchar("ip_hash", { length: 64 }),
+  userAgentHash: varchar("user_agent_hash", { length: 64 }),
+  createdAt: bigint("created_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("auth_sessions_user_idx").on(table.userId),
+  index("auth_sessions_expiry_idx").on(table.expiresAt, table.revokedAt),
+]);
+export type AuthSession = typeof authSessions.$inferSelect;
+export type InsertAuthSession = typeof authSessions.$inferInsert;
+
+/** Registered passkey material. Private keys never leave the authenticator. */
+export const webauthnCredentials = pgTable("webauthn_credentials", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  credentialId: text("credential_id").notNull(),
+  credentialIdHash: varchar("credential_id_hash", { length: 64 }).notNull().unique(),
+  publicKey: text("public_key").notNull(),
+  counter: integer("counter").notNull().default(0),
+  transportsJson: text("transports_json"),
+  deviceType: varchar("device_type", { length: 32 }),
+  backedUp: boolean("backed_up").notNull().default(false),
+  aaguid: varchar("aaguid", { length: 64 }),
+  displayName: varchar("display_name", { length: 80 }).notNull().default("Passkey"),
+  status: webauthnCredentialStatusEnum("status").notNull().default("active"),
+  createdAt: bigint("created_at", { mode: "number" }).notNull(),
+  lastUsedAt: bigint("last_used_at", { mode: "number" }),
+  revokedAt: bigint("revoked_at", { mode: "number" }),
+  revokedByUserId: integer("revoked_by_user_id"),
+}, (table) => [
+  index("webauthn_credentials_user_idx").on(table.userId, table.status),
+]);
+export type WebauthnCredential = typeof webauthnCredentials.$inferSelect;
+export type InsertWebauthnCredential = typeof webauthnCredentials.$inferInsert;
+
+/** Short-lived, one-time WebAuthn challenge bindings; raw challenges are not persisted. */
+export const webauthnCeremonies = pgTable("webauthn_ceremonies", {
+  id: varchar("id", { length: 64 }).primaryKey(),
+  userId: integer("user_id").notNull(),
+  purpose: webauthnCeremonyTypeEnum("purpose").notNull(),
+  challengeHash: varchar("challenge_hash", { length: 64 }).notNull(),
+  rpId: varchar("rp_id", { length: 255 }).notNull(),
+  expectedOrigin: varchar("expected_origin", { length: 512 }).notNull(),
+  expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
+  consumedAt: bigint("consumed_at", { mode: "number" }),
+  createdAt: bigint("created_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("webauthn_ceremonies_expiry_idx").on(table.expiresAt, table.consumedAt),
+  index("webauthn_ceremonies_user_idx").on(table.userId, table.purpose),
+]);
+export type WebauthnCeremony = typeof webauthnCeremonies.$inferSelect;
+export type InsertWebauthnCeremony = typeof webauthnCeremonies.$inferInsert;
+
+/** Server-enforced platform or organization role grants. */
+export const securityRoleGrants = pgTable("security_role_grants", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  role: securityRoleEnum("role").notNull(),
+  scopeType: securityScopeEnum("scope_type").notNull(),
+  organizationId: integer("organization_id"),
+  grantedByUserId: integer("granted_by_user_id").notNull(),
+  reason: varchar("reason", { length: 500 }).notNull(),
+  grantedAt: bigint("granted_at", { mode: "number" }).notNull(),
+  expiresAt: bigint("expires_at", { mode: "number" }),
+  revokedAt: bigint("revoked_at", { mode: "number" }),
+  revokedByUserId: integer("revoked_by_user_id"),
+  revokeReason: varchar("revoke_reason", { length: 500 }),
+}, (table) => [
+  index("security_role_grants_user_idx").on(table.userId),
+  index("security_role_grants_scope_idx").on(table.scopeType, table.organizationId),
+  index("security_role_grants_active_idx").on(table.userId, table.revokedAt, table.expiresAt),
+]);
+export type SecurityRoleGrant = typeof securityRoleGrants.$inferSelect;
+export type InsertSecurityRoleGrant = typeof securityRoleGrants.$inferInsert;
+
+/** Time-bounded explicit permission grants or denials; deny always wins. */
+export const securityPermissionOverrides = pgTable("security_permission_overrides", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  permission: varchar("permission", { length: 128 }).notNull(),
+  effect: securityPermissionEffectEnum("effect").notNull(),
+  scopeType: securityScopeEnum("scope_type").notNull(),
+  organizationId: integer("organization_id"),
+  reason: varchar("reason", { length: 500 }).notNull(),
+  grantedByUserId: integer("granted_by_user_id").notNull(),
+  grantedAt: bigint("granted_at", { mode: "number" }).notNull(),
+  expiresAt: bigint("expires_at", { mode: "number" }),
+  revokedAt: bigint("revoked_at", { mode: "number" }),
+  revokedByUserId: integer("revoked_by_user_id"),
+}, (table) => [
+  index("security_permission_overrides_user_idx").on(table.userId),
+  index("security_permission_overrides_permission_idx").on(table.permission),
+]);
+export type SecurityPermissionOverride = typeof securityPermissionOverrides.$inferSelect;
+export type InsertSecurityPermissionOverride = typeof securityPermissionOverrides.$inferInsert;
+
+/** Immutable authorization and sensitive-action evidence without secrets or raw tokens. */
+export const securityAuditEvents = pgTable("security_audit_events", {
+  id: serial("id").primaryKey(),
+  eventType: varchar("event_type", { length: 128 }).notNull(),
+  actorType: securityActorTypeEnum("actor_type").notNull(),
+  actorUserId: integer("actor_user_id"),
+  serviceIdentityId: varchar("service_identity_id", { length: 36 }),
+  sessionId: varchar("session_id", { length: 36 }),
+  organizationId: integer("organization_id"),
+  permission: varchar("permission", { length: 128 }),
+  decision: securityDecisionEnum("decision"),
+  reasonCode: varchar("reason_code", { length: 80 }).notNull(),
+  actionKey: varchar("action_key", { length: 128 }),
+  resourceType: varchar("resource_type", { length: 80 }),
+  resourceId: varchar("resource_id", { length: 128 }),
+  metadataJson: text("metadata_json"),
+  ipHash: varchar("ip_hash", { length: 64 }),
+  userAgentHash: varchar("user_agent_hash", { length: 64 }),
+  occurredAt: bigint("occurred_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("security_audit_events_type_idx").on(table.eventType, table.occurredAt),
+  index("security_audit_events_actor_idx").on(table.actorUserId, table.occurredAt),
+  index("security_audit_events_org_idx").on(table.organizationId, table.occurredAt),
+]);
+export type SecurityAuditEvent = typeof securityAuditEvents.$inferSelect;
+export type InsertSecurityAuditEvent = typeof securityAuditEvents.$inferInsert;
+
+/** Dual-control evidence for owner, export, billing, and recovery-sensitive actions. */
+export const securityActionApprovals = pgTable("security_action_approvals", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  actionKey: varchar("action_key", { length: 128 }).notNull(),
+  requesterUserId: integer("requester_user_id").notNull(),
+  approverUserId: integer("approver_user_id"),
+  organizationId: integer("organization_id"),
+  resourceType: varchar("resource_type", { length: 80 }),
+  resourceId: varchar("resource_id", { length: 128 }),
+  status: securityApprovalStatusEnum("status").notNull().default("pending"),
+  evidenceReference: varchar("evidence_reference", { length: 500 }),
+  requestedAt: bigint("requested_at", { mode: "number" }).notNull(),
+  expiresAt: bigint("expires_at", { mode: "number" }).notNull(),
+  decidedAt: bigint("decided_at", { mode: "number" }),
+  executedAt: bigint("executed_at", { mode: "number" }),
+}, (table) => [
+  index("security_action_approvals_action_idx").on(table.actionKey, table.status),
+  index("security_action_approvals_requester_idx").on(table.requesterUserId),
+]);
+export type SecurityActionApproval = typeof securityActionApprovals.$inferSelect;
+export type InsertSecurityActionApproval = typeof securityActionApprovals.$inferInsert;
+
+/** Staging-first owner recovery exercises. Production execution is not exposed by the application. */
+export const recoveryDrills = pgTable("recovery_drills", {
+  id: varchar("id", { length: 36 }).primaryKey(),
+  environment: recoveryEnvironmentEnum("environment").notNull(),
+  status: recoveryDrillStatusEnum("status").notNull().default("draft"),
+  title: varchar("title", { length: 160 }).notNull(),
+  scheduledAt: bigint("scheduled_at", { mode: "number" }).notNull(),
+  recoveryCustodianUserId: integer("recovery_custodian_user_id").notNull(),
+  independentApproverUserId: integer("independent_approver_user_id"),
+  observerUserId: integer("observer_user_id"),
+  evidenceKey: varchar("evidence_key", { length: 500 }),
+  notes: varchar("notes", { length: 1000 }),
+  createdByUserId: integer("created_by_user_id").notNull(),
+  createdAt: bigint("created_at", { mode: "number" }).notNull(),
+  startedAt: bigint("started_at", { mode: "number" }),
+  completedAt: bigint("completed_at", { mode: "number" }),
+}, (table) => [
+  index("recovery_drills_environment_idx").on(table.environment, table.status, table.scheduledAt),
+  check("recovery_drills_separated_duties", sql`${table.independentApproverUserId} is null or ${table.recoveryCustodianUserId} <> ${table.independentApproverUserId}`),
+]);
+export type RecoveryDrill = typeof recoveryDrills.$inferSelect;
+export type InsertRecoveryDrill = typeof recoveryDrills.$inferInsert;
+
+/**
+ * Drill-bound duty assignments. The two unique indexes enforce one actor per
+ * role and one role per actor without relying on CHECK constraints, which the
+ * managed TiDB dialect parses but does not retain.
+ */
+export const recoveryDrillParticipants = pgTable("recovery_drill_participants", {
+  id: serial("id").primaryKey(),
+  drillId: varchar("drill_id", { length: 36 }).notNull(),
+  role: recoveryDrillRoleEnum("role").notNull(),
+  userId: integer("user_id").notNull(),
+  assignedByUserId: integer("assigned_by_user_id").notNull(),
+  assignedAt: bigint("assigned_at", { mode: "number" }).notNull(),
+}, (table) => [
+  uniqueIndex("recovery_participants_drill_role_unique").on(table.drillId, table.role),
+  uniqueIndex("recovery_participants_drill_user_unique").on(table.drillId, table.userId),
+  index("recovery_participants_user_idx").on(table.userId, table.drillId),
+]);
+export type RecoveryDrillParticipant = typeof recoveryDrillParticipants.$inferSelect;
+export type InsertRecoveryDrillParticipant = typeof recoveryDrillParticipants.$inferInsert;
+
+/** Named staging recovery responsibilities; revoked rows remain as evidence. */
+export const recoveryDrillAssignments = pgTable("recovery_drill_assignments", {
+  id: serial("id").primaryKey(),
+  environment: recoveryEnvironmentEnum("environment").notNull(),
+  role: recoveryDrillRoleEnum("role").notNull(),
+  userId: integer("user_id"),
+  displayLabel: varchar("display_label", { length: 120 }).notNull(),
+  assignedByUserId: integer("assigned_by_user_id").notNull(),
+  assignedAt: bigint("assigned_at", { mode: "number" }).notNull(),
+  revokedAt: bigint("revoked_at", { mode: "number" }),
+}, (table) => [
+  index("recovery_assignments_environment_idx").on(table.environment, table.role, table.revokedAt),
+]);
+export type RecoveryDrillAssignment = typeof recoveryDrillAssignments.$inferSelect;
+export type InsertRecoveryDrillAssignment = typeof recoveryDrillAssignments.$inferInsert;
+
+/** Independent approval evidence; an approver can decide a drill only once. */
+export const recoveryDrillApprovals = pgTable("recovery_drill_approvals", {
+  id: serial("id").primaryKey(),
+  drillId: varchar("drill_id", { length: 36 }).notNull(),
+  approverUserId: integer("approver_user_id").notNull(),
+  decision: recoveryApprovalDecisionEnum("decision").notNull(),
+  note: varchar("note", { length: 500 }).notNull(),
+  createdAt: bigint("created_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("recovery_drill_approvals_drill_idx").on(table.drillId),
+  uniqueIndex("recovery_drill_approver_unique").on(table.drillId, table.approverUserId),
+]);
+export type RecoveryDrillApproval = typeof recoveryDrillApprovals.$inferSelect;
+export type InsertRecoveryDrillApproval = typeof recoveryDrillApprovals.$inferInsert;
+
+/** Redacted references and outcomes only; credentials, tokens, customer data, and secrets are prohibited. */
+export const recoveryDrillEvidence = pgTable("recovery_drill_evidence", {
+  id: serial("id").primaryKey(),
+  drillId: varchar("drill_id", { length: 36 }).notNull(),
+  evidenceType: varchar("evidence_type", { length: 100 }).notNull(),
+  evidenceReference: varchar("evidence_reference", { length: 255 }).notNull(),
+  outcome: varchar("outcome", { length: 100 }).notNull(),
+  recordedByUserId: integer("recorded_by_user_id").notNull(),
+  createdAt: bigint("created_at", { mode: "number" }).notNull(),
+}, (table) => [
+  index("recovery_drill_evidence_drill_idx").on(table.drillId, table.createdAt),
+]);
+export type RecoveryDrillEvidence = typeof recoveryDrillEvidence.$inferSelect;
+export type InsertRecoveryDrillEvidence = typeof recoveryDrillEvidence.$inferInsert;

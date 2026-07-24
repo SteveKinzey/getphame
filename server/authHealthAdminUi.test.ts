@@ -89,6 +89,13 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("Previous preset order restored.");
     expect(page).toContain("Undoing…");
     expect(page).toContain('defaultValue: "Undo"');
+    expect(page).toContain('type PresetReorderUndoTrigger = "button" | "keyboard"');
+    expect(page).toContain('handleUndoPresetReorder = (trigger: PresetReorderUndoTrigger) =>');
+    expect(page).toContain('if (trigger === "keyboard")');
+    expect(page).toContain("adminAuthDiagnostics.presets.undoShortcutSucceeded");
+    expect(page).toContain("adminAuthDiagnostics.presets.undoShortcutSucceededDescription");
+    expect(page).toContain('handleUndoPresetReorder("keyboard")');
+    expect(page).toContain('handleUndoPresetReorder("button")');
     expect(page).toContain("presetReorderFeedback?.presetId === preset.id");
     expect(page).toContain("reorderSucceeded={presetReorderFeedback?.presetId === preset.id}");
     expect(page).toContain("ring-2 ring-emerald-500/30");
@@ -121,7 +128,7 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("The modal shows the first {{count}} rows");
     expect(page).toContain("The export safety cap includes the newest {{exported}}");
     expect(page).toContain("onClick={downloadHealthHistoryCsv}");
-    expect(page).toContain("new Blob([csvPreview.csv], { type: csvPreview.mimeType })");
+    expect(page).toContain("downloadCsvFile(csvPreview.csv, csvPreview.mimeType, csvPreview.filename)");
     expect(page).toContain("selectedCsvColumns");
     expect(page).toContain("snapshotGeneratedAt: csvPreview.generatedAt");
     expect(page).toContain("columns, snapshotGeneratedAt: csvPreview.generatedAt");
@@ -145,12 +152,20 @@ describe("admin authentication uptime summary", () => {
     expect(page).toContain("Column choices saved for your next export on this device.");
     expect(page).toContain("Column choices work for this export, but this browser could not remember them.");
     expect(page).toContain("csvPreview.searchRows");
+    expect(page).toContain("filterPreparedCsvRows(csvPreview.searchRows, csvPreview.preview.columns, csvRowSearch)");
     expect(page).toContain("normalizedCsvRowSearch");
     expect(page).toContain("matchingCsvRows");
     expect(page).toContain("visibleCsvRows");
     expect(page).toContain("Search prepared rows");
     expect(page).toContain("Search all {{total}} sanitized rows in this prepared snapshot.");
-    expect(page).toContain("Search changes this preview only; copy and download still include every prepared row.");
+    expect(page).toContain("Search filters this preview and the matching-results CSV; copy and the main download still include every prepared row.");
+    expect(page).toContain("downloadMatchingHealthHistoryCsv");
+    expect(page).toContain("serializePreparedCsvRows<AuthHealthHistoryExportColumnKey>(matchingCsvRows, csvPreview.preview.columns)");
+    expect(page).toContain("buildAuthHealthHistorySearchResultsCsvFilename(csvPreview.filename)");
+    expect(page).toContain("Download matches CSV");
+    expect(page).toContain("Downloaded {{count}} matching sanitized health records.");
+    expect(page).toContain("onClick={downloadMatchingHealthHistoryCsv}");
+    expect(page).toContain('aria-describedby="csv-row-search-results-summary"');
     expect(page).toContain("No prepared rows match this search");
     expect(page).toContain("shouldUndoAuthHealthHistoryPresetReorderFromShortcut(event, canUndo)");
     expect(page).toContain('window.addEventListener("keydown", handleShortcut)');
@@ -170,6 +185,8 @@ describe("admin authentication uptime summary", () => {
       "adminAuthDiagnostics.presets.undoing",
       "adminAuthDiagnostics.presets.undoError",
       "adminAuthDiagnostics.presets.undoSucceeded",
+      "adminAuthDiagnostics.presets.undoShortcutSucceeded",
+      "adminAuthDiagnostics.presets.undoShortcutSucceededDescription",
       "adminAuthDiagnostics.presets.undoShortcutHint",
       "adminAuthDiagnostics.csvPreview.preparing",
       "adminAuthDiagnostics.csvPreview.openButton",
@@ -208,6 +225,8 @@ describe("admin authentication uptime summary", () => {
       "adminAuthDiagnostics.csvPreview.searchResults",
       "adminAuthDiagnostics.csvPreview.searchScope",
       "adminAuthDiagnostics.csvPreview.searchExportNotice",
+      "adminAuthDiagnostics.csvPreview.downloadSearchResults",
+      "adminAuthDiagnostics.csvPreview.searchResultsDownloaded",
       "adminAuthDiagnostics.csvPreview.noSearchResults",
       "adminAuthDiagnostics.csvPreview.noSearchResultsHelp",
       "adminAuthDiagnostics.csvPreview.searchLimited",
