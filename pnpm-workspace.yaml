@@ -7,6 +7,8 @@ overrides:
   body-parser: "1.20.6"
   # Security: tar arbitrary file write fix (GHSA-r292-9mhp-454m)
   tar: ">=7.5.22"
+  # Security: PostCSS source map path traversal and local file disclosure fix (GHSA-r28c-9q8g-f849)
+  postcss: ">=8.5.18"
   # Security: picomatch ReDoS fix
   picomatch: ">=4.0.4"
   # Security: lodash code injection fix (lodash-es still pulled by dagre-d3-es via mermaid)
