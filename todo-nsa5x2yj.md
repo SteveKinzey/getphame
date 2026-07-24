@@ -46,3 +46,4 @@
 - [ ] Verify the staged managed deployment and synchronize only validated source to the selected private GitHub repository.
 - [ ] Deliver passkey activation, approver assignment, and staging recovery-drill execution instructions.
 - [x] Fix the production build failure by adding `passkeys.signIn.orAlternative` to every served locale and rerun the direct i18n coverage gate.
+- [ ] Remediate the newly reported `tar` production advisory and verify the private Quality Gate with ephemeral CI-only signing material.

@@ -1,6 +1,6 @@
 # Get Phame Workspace Cleanup
 
-**Prepared:** July 22, 2026  
+**Prepared:** July 22, 2026
 **Objective:** Use `getphame` as the workspace name without breaking the managed deployment or destroying local files.
 
 ## Managed workspace

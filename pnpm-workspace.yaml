@@ -5,8 +5,8 @@ overrides:
   nodemailer: ">=9.0.1"
   # Security: invalid size-limit value can disable body enforcement
   body-parser: "1.20.6"
-  # Security: tar arbitrary file write fix
-  tar: ">=7.5.11"
+  # Security: tar arbitrary file write fix (GHSA-r292-9mhp-454m)
+  tar: ">=7.5.22"
   # Security: picomatch ReDoS fix
   picomatch: ">=4.0.4"
   # Security: lodash code injection fix (lodash-es still pulled by dagre-d3-es via mermaid)

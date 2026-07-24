@@ -1,6 +1,6 @@
 # Get Phame Zero-Trust Release Validation
 
-**Validation date:** 2026-07-23  
+**Validation date:** 2026-07-23
 **Scope:** Additive role authorization, passkeys, revocable sessions, credential lifecycle, and staging-only separated-duty recovery drills.
 
 ## Core gates
