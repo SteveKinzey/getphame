@@ -1,4 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
+import { randomBytes } from "node:crypto";
+
 import {
   calculateComplimentaryExpiry,
   complimentaryEmailFingerprint,
@@ -36,12 +38,20 @@ describe("complimentary access", () => {
   });
 
   it("normalizes email identity into a deterministic one-way fingerprint", () => {
-    const fingerprint = complimentaryEmailFingerprint("  Customer@Example.COM  ");
+    const previousJwtSecret = process.env.JWT_SECRET;
+    process.env.JWT_SECRET = randomBytes(32).toString("hex");
 
-    expect(fingerprint).toBe(complimentaryEmailFingerprint("customer@example.com"));
-    expect(fingerprint).toMatch(/^[a-f0-9]{64}$/);
-    expect(fingerprint).not.toContain("customer");
-    expect(fingerprint).not.toContain("example.com");
+    try {
+      const fingerprint = complimentaryEmailFingerprint("  Customer@Example.COM  ");
+
+      expect(fingerprint).toBe(complimentaryEmailFingerprint("customer@example.com"));
+      expect(fingerprint).toMatch(/^[a-f0-9]{64}$/);
+      expect(fingerprint).not.toContain("customer");
+      expect(fingerprint).not.toContain("example.com");
+    } finally {
+      if (previousJwtSecret === undefined) delete process.env.JWT_SECRET;
+      else process.env.JWT_SECRET = previousJwtSecret;
+    }
   });
 });
 
