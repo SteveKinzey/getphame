@@ -60,3 +60,6 @@
 - [x] Exclude managed `/manus-storage/` media redirects from service-worker interception, bump the PWA cache version, and add regression coverage for direct browser range handling.
 - [x] Save a new managed checkpoint containing the `/manus-storage/` service-worker bypass and record the published version ID (`cc0db06b`).
 - [x] Confirm the decoded branded frame, WebVTT captions, and recovery controls on live getphame.app after the definitive checkpoint deploys.
+- [x] Audit the current MP4 and WebVTT behavior so the new captions-off state removes all displayed caption text rather than only changing an unused track.
+- [x] Add a localized, keyboard-accessible custom captions toggle with synchronized WebVTT state and clear on/off feedback in the video modal.
+- [ ] Add focused and responsive browser regressions for caption enable/disable behavior, run the full release gate, publish a checkpoint, and verify the control on live getphame.app.

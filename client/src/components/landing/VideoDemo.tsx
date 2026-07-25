@@ -1,20 +1,49 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Play, X } from "lucide-react";
+import { Captions, Play, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import FadeUp from "./FadeUp";
 
-export const WALKTHROUGH_VIDEO_URL = "/manus-storage/getphame-walkthrough-captioned_d6454fd4.mp4";
+export const WALKTHROUGH_VIDEO_URL = "/manus-storage/getphame-walkthrough-toggle-ready_4a3636b0.mp4";
 export const WALKTHROUGH_CAPTIONS_URL = "/getphame-walkthrough.en.vtt";
-export const WALKTHROUGH_POSTER_URL = "/manus-storage/getphame-walkthrough-poster_98943590.png";
+export const WALKTHROUGH_POSTER_URL = "/manus-storage/getphame-walkthrough-toggle-ready-poster_7dfd9fb1.png";
+const CAPTIONS_PREFERENCE_KEY = "getphame-walkthrough-captions";
 
 export default function VideoDemo() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const [videoAttempt, setVideoAttempt] = useState(0);
+  const [captionsEnabled, setCaptionsEnabled] = useState(() => {
+    if (typeof window === "undefined") return true;
+    try {
+      return window.localStorage.getItem(CAPTIONS_PREFERENCE_KEY) !== "off";
+    } catch {
+      return true;
+    }
+  });
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const syncCaptionMode = useCallback(() => {
+    const track = videoRef.current?.textTracks?.[0];
+    if (track) {
+      track.mode = captionsEnabled ? "showing" : "disabled";
+    }
+  }, [captionsEnabled]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        CAPTIONS_PREFERENCE_KEY,
+        captionsEnabled ? "on" : "off",
+      );
+    } catch {
+      // The toggle still works when storage is restricted or unavailable.
+    }
+    if (open) syncCaptionMode();
+  }, [captionsEnabled, open, syncCaptionMode]);
 
   const openVideo = () => {
     setVideoError(false);
@@ -79,7 +108,7 @@ export default function VideoDemo() {
 {t("landing.section.title", { defaultValue: "See How It Works" })}
             </h2>
             <p className="text-slate-300 font-medium">
-{t("landing.section.description", { defaultValue: "Watch the 63-second platform walkthrough — English narration with visible captions" })}
+{t("landing.section.description", { defaultValue: "Watch the 63-second platform walkthrough — English narration with optional captions" })}
             </p>
           </FadeUp>
 
@@ -183,61 +212,120 @@ export default function VideoDemo() {
                 {t("landing.modal.videoTitle", { defaultValue: "Get Phame platform walkthrough" })}
               </h3>
               <p id="get-phame-video-description" className="sr-only">
-                {t("landing.modal.captionNotice", { defaultValue: "English narration with visible captions." })}
+                {t("landing.modal.captionNotice", { defaultValue: "English narration. Use the Captions button to show or hide English captions." })}
               </p>
 
-              {/* Self-hosted video wrapper */}
-              <div className="relative aspect-video max-h-[calc(100dvh-5rem)] rounded-2xl overflow-hidden border border-[#1e3050] bg-[#06111f] shadow-2xl shadow-black/60">
-                <video
-                  key={videoAttempt}
-                  src={WALKTHROUGH_VIDEO_URL}
-                  poster={WALKTHROUGH_POSTER_URL}
-                  controls
-                  autoPlay
-                  playsInline
-                  preload="metadata"
-                  onLoadedMetadata={() => setVideoError(false)}
-                  onError={() => setVideoError(true)}
-                  aria-label={t("landing.modal.videoTitle", { defaultValue: "Get Phame platform walkthrough" })}
-                  className="absolute inset-0 w-full h-full object-contain"
-                >
-                  <track
-                    kind="captions"
-                    src={WALKTHROUGH_CAPTIONS_URL}
-                    srcLang="en"
-                    label={t("landing.modal.captionTrackLabel", { defaultValue: "English captions" })}
-                  />
-                  {t("landing.modal.videoFallback", { defaultValue: "Your browser does not support HTML video." })}
-                </video>
-                {videoError && (
-                  <div
-                    role="alert"
-                    className="absolute inset-0 z-10 flex items-center justify-center bg-[#06111f] px-6 text-center"
+              {/* Self-hosted video and custom caption control */}
+              <div className="max-h-[calc(100dvh-4rem)] overflow-y-auto rounded-2xl border border-[#1e3050] bg-[#06111f] p-2 shadow-2xl shadow-black/60 sm:p-3">
+                <div className="relative aspect-video max-h-[calc(100dvh-10rem)] overflow-hidden rounded-xl bg-black">
+                  <video
+                    key={videoAttempt}
+                    id="getphame-walkthrough-player"
+                    ref={videoRef}
+                    src={WALKTHROUGH_VIDEO_URL}
+                    poster={WALKTHROUGH_POSTER_URL}
+                    controls
+                    autoPlay
+                    playsInline
+                    preload="metadata"
+                    onLoadedMetadata={() => {
+                      setVideoError(false);
+                      syncCaptionMode();
+                    }}
+                    onLoadedData={syncCaptionMode}
+                    onError={() => setVideoError(true)}
+                    aria-label={t("landing.modal.videoTitle", { defaultValue: "Get Phame platform walkthrough" })}
+                    aria-describedby="get-phame-video-description getphame-caption-status"
+                    data-caption-state={captionsEnabled ? "on" : "off"}
+                    className="getphame-walkthrough-video absolute inset-0 h-full w-full object-contain"
                   >
-                    <div className="max-w-md">
-                      <p className="text-base font-semibold text-white">
-                        {t("landing.modal.videoError", { defaultValue: "The walkthrough could not load in this browser." })}
-                      </p>
-                      <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
-                        <button
-                          type="button"
-                          onClick={retryVideo}
-                          className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#06111f]"
-                        >
-                          {t("landing.modal.videoRetry", { defaultValue: "Try again" })}
-                        </button>
-                        <a
-                          href={WALKTHROUGH_VIDEO_URL}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="rounded-lg border border-white/25 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-                        >
-                          {t("landing.modal.videoOpenDirect", { defaultValue: "Open video directly" })}
-                        </a>
+                    <track
+                      kind="captions"
+                      src={WALKTHROUGH_CAPTIONS_URL}
+                      srcLang="en"
+                      label={t("landing.modal.captionTrackLabel", { defaultValue: "English captions" })}
+                      default={captionsEnabled}
+                    />
+                    {t("landing.modal.videoFallback", { defaultValue: "Your browser does not support HTML video." })}
+                  </video>
+                  {videoError && (
+                    <div
+                      role="alert"
+                      className="absolute inset-0 z-10 flex items-center justify-center bg-[#06111f] px-6 text-center"
+                    >
+                      <div className="max-w-md">
+                        <p className="text-base font-semibold text-white">
+                          {t("landing.modal.videoError", { defaultValue: "The walkthrough could not load in this browser." })}
+                        </p>
+                        <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+                          <button
+                            type="button"
+                            onClick={retryVideo}
+                            className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#06111f]"
+                          >
+                            {t("landing.modal.videoRetry", { defaultValue: "Try again" })}
+                          </button>
+                          <a
+                            href={WALKTHROUGH_VIDEO_URL}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="rounded-lg border border-white/25 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                          >
+                            {t("landing.modal.videoOpenDirect", { defaultValue: "Open video directly" })}
+                          </a>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
+
+                <div className="mt-2 flex flex-col items-center justify-between gap-2 sm:flex-row">
+                  <p className="px-1 text-center text-xs leading-relaxed text-slate-300 sm:text-left sm:text-sm">
+                    {t("landing.modal.captionsHelp", { defaultValue: "Use the CC button to show or hide English captions." })}
+                  </p>
+                  <button
+                    type="button"
+                    data-testid="caption-toggle"
+                    aria-controls="getphame-walkthrough-player"
+                    aria-pressed={captionsEnabled}
+                    aria-label={t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
+                      defaultValue: captionsEnabled ? "Disable captions" : "Enable captions",
+                    })}
+                    title={t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
+                      defaultValue: captionsEnabled ? "Disable captions" : "Enable captions",
+                    })}
+                    onClick={() => setCaptionsEnabled((enabled) => !enabled)}
+                    className={`inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-full border px-4 text-sm font-bold transition-[transform,background-color,border-color,color] duration-150 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#06111f] sm:w-auto ${
+                      captionsEnabled
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-white/35 bg-white/5 text-white hover:border-white/60 hover:bg-white/10"
+                    }`}
+                  >
+                    <Captions className="h-5 w-5" aria-hidden="true" />
+                    <span>
+                      {t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
+                        defaultValue: captionsEnabled ? "Disable captions" : "Enable captions",
+                      })}
+                    </span>
+                    <span
+                      aria-hidden="true"
+                      className={`rounded-full px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide ${
+                        captionsEnabled
+                          ? "bg-[#07182A]/15 text-[#07182A]"
+                          : "bg-white/10 text-white/80"
+                      }`}
+                    >
+                      {t(captionsEnabled ? "landing.modal.captionsOn" : "landing.modal.captionsOff", {
+                        defaultValue: captionsEnabled ? "Captions on" : "Captions off",
+                      })}
+                    </span>
+                  </button>
+                  <p id="getphame-caption-status" role="status" aria-live="polite" className="sr-only">
+                    {t(captionsEnabled ? "landing.modal.captionsOn" : "landing.modal.captionsOff", {
+                      defaultValue: captionsEnabled ? "Captions on" : "Captions off",
+                    })}
+                  </p>
+                </div>
               </div>
             </motion.div>
           </motion.div>

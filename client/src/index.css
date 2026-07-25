@@ -778,6 +778,17 @@
 }
 .support-note-rich-text a { color: oklch(0.45 0.15 250); text-decoration: underline; }
 
+/* Keep switchable WebVTT cues legible inside the walkthrough's reserved lower band. */
+.getphame-walkthrough-video::cue {
+  color: #ffffff;
+  background-color: rgb(1 9 19 / 88%);
+  font-family: 'Inter', 'Nunito', system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 80%);
+}
+
 /* ── Extracted inline styles (moved from JSX to eliminate unsafe-inline CSP) ── */
 
 /* AppLayout: responsive sidebar widths */

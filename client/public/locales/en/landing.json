@@ -300,7 +300,7 @@
     "section": {
       "tagline": "See it in action",
       "title": "See How It Works",
-      "description": "Watch the 63-second platform walkthrough — English narration with visible captions"
+      "description": "Watch the 63-second platform walkthrough — English narration with optional captions"
     },
     "thumbnail": {
       "playButtonAriaLabel": "Play product walkthrough video",
@@ -314,8 +314,13 @@
     "modal": {
       "closeButtonAriaLabel": "Close video",
       "videoTitle": "Get Phame platform walkthrough",
-      "captionNotice": "English narration with visible captions.",
+      "captionNotice": "English narration with optional captions.",
       "captionTrackLabel": "English captions",
+      "captionsOn": "Captions on",
+      "captionsOff": "Captions off",
+      "captionsEnable": "Enable captions",
+      "captionsDisable": "Disable captions",
+      "captionsHelp": "Use the CC button to show or hide English captions.",
       "videoFallback": "Your browser does not support HTML video.",
       "videoError": "The walkthrough could not load in this browser.",
       "videoRetry": "Try again",

@@ -5,12 +5,13 @@ test("opens the captioned Get Phame walkthrough without overflowing the viewport
 }, testInfo) => {
   await page.addInitScript(() => {
     localStorage.setItem("rl-pwa-prompt-dismissed", "1");
+    localStorage.setItem("getphame-walkthrough-captions", "on");
   });
   await page.goto("/landing?walkthrough-e2e=1");
 
   await expect(
     page.getByText(
-      "Watch the 63-second platform walkthrough — English narration with visible captions",
+      "Watch the 63-second platform walkthrough — English narration with optional captions",
     ),
   ).toBeVisible();
 
@@ -29,11 +30,11 @@ test("opens the captioned Get Phame walkthrough without overflowing the viewport
   const video = dialog.locator("video");
   await expect(video).toHaveAttribute(
     "src",
-    "/manus-storage/getphame-walkthrough-captioned_d6454fd4.mp4",
+    "/manus-storage/getphame-walkthrough-toggle-ready_4a3636b0.mp4",
   );
   await expect(video).toHaveAttribute(
     "poster",
-    "/manus-storage/getphame-walkthrough-poster_98943590.png",
+    "/manus-storage/getphame-walkthrough-toggle-ready-poster_7dfd9fb1.png",
   );
   await expect(video.locator('track[kind="captions"]')).toHaveAttribute(
     "src",
@@ -45,6 +46,30 @@ test("opens the captioned Get Phame walkthrough without overflowing the viewport
   );
   await expect(video).not.toHaveAttribute("crossorigin", "anonymous");
   await expect(dialog.getByRole("alert")).toHaveCount(0);
+
+  const captionsToggle = dialog.getByTestId("caption-toggle");
+  await expect(captionsToggle).toHaveAccessibleName("Disable captions");
+  await expect(captionsToggle).toHaveAttribute("aria-pressed", "true");
+  await expect(video).toHaveAttribute("data-caption-state", "on");
+  await expect
+    .poll(() => video.evaluate((element) => element.textTracks[0]?.mode))
+    .toBe("showing");
+
+  await captionsToggle.click();
+  await expect(captionsToggle).toHaveAccessibleName("Enable captions");
+  await expect(captionsToggle).toHaveAttribute("aria-pressed", "false");
+  await expect(video).toHaveAttribute("data-caption-state", "off");
+  await expect
+    .poll(() => video.evaluate((element) => element.textTracks[0]?.mode))
+    .toBe("disabled");
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("getphame-walkthrough-captions"))).toBe("off");
+
+  await captionsToggle.click();
+  await expect(captionsToggle).toHaveAccessibleName("Disable captions");
+  await expect(video).toHaveAttribute("data-caption-state", "on");
+  await expect
+    .poll(() => video.evaluate((element) => element.textTracks[0]?.mode))
+    .toBe("showing");
 
   await expect
     .poll(() => video.evaluate((element) => element.readyState))
@@ -105,6 +130,6 @@ test("offers recovery controls when the player reports a media error", async ({ 
   await expect(recovery.getByRole("button", { name: "Try again" })).toBeVisible();
   await expect(recovery.getByRole("link", { name: "Open video directly" })).toHaveAttribute(
     "href",
-    "/manus-storage/getphame-walkthrough-captioned_d6454fd4.mp4",
+    "/manus-storage/getphame-walkthrough-toggle-ready_4a3636b0.mp4",
   );
 });
