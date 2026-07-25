@@ -130,12 +130,13 @@ describe("Get Phame regression contracts", () => {
     expect(manifest.icons.some((icon) => icon.sizes === "512x512" && icon.purpose === "maskable")).toBe(true);
     expect(manifest.launch_handler.client_mode).toContain("navigate-existing");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v14'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v15'");
     expect(serviceWorker).toContain("'/locales/en/landing.json'");
     expect(serviceWorker).toContain("'/locales/zh-TW/landing.json'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.en.vtt'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.es.vtt'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.fr.vtt'");
+    expect(serviceWorker).toContain("'/getphame-walkthrough.it.vtt'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.de.vtt'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.pt.vtt'");
     expect(serviceWorker).toContain("self.addEventListener('install'");
@@ -652,7 +653,7 @@ describe("Get Phame regression contracts", () => {
     expect(churn).toContain('guarantee.data?.reason === "already_refunded"');
     expect(churn).toContain('guarantee.data?.reason === "expired"');
     expect(i18n).toContain('["landing", "translation", "cancellation"]');
-    expect(i18n).toContain("v=phame29");
+    expect(i18n).toContain("v=phame30");
     expect(routers).toContain("guaranteeStatus: protectedProcedure");
     expect(routers).toContain("claimGuarantee: protectedProcedure");
     expect(routers).toContain("cancelRenewal: protectedProcedure");

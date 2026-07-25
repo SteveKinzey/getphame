@@ -106,6 +106,12 @@ import { getDb } from "./db";
 import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads, koalendarBookings, koalendarConnections, supportEscalationPolicies, supportEscalationPolicyRecipients, supportInternalNoteMentions, supportInternalNotes, supportSavedQueueViews, supportSubmissions, supportTicketAlerts } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
 import { PWA_EVENT_NAMES, PWA_EVENT_SOURCE, summarizePwaEvents, toPwaEventPage } from "./pwaAnalytics";
+import {
+  CAPTION_LANGUAGE_ANALYTICS_LANGUAGES,
+  CAPTION_LANGUAGE_ANALYTICS_SOURCE,
+  summarizeCaptionLanguageEvents,
+  toCaptionLanguageEventPage,
+} from "./captionLanguageAnalytics";
 import { ONBOARDING_CHECKLIST_EVENT_NAMES, ONBOARDING_CHECKLIST_EVENT_SOURCE, summarizeOnboardingChecklistEvents, toOnboardingChecklistEventPage } from "./onboardingChecklistAnalytics";
 import { generateOnboardingFunnelInsight } from "./onboardingFunnelInsight";
 import { eq, like, or, inArray, desc, asc, isNotNull, isNull, and, sql, gte, lte, ne, count } from "drizzle-orm";
@@ -3378,6 +3384,20 @@ export const appRouter = router({
       return summarizePwaEvents(rows);
     }),
 
+    /** Aggregate explicit caption-language choices; no identity, referrer, user-agent, or free text is returned. */
+    captionLanguageStats: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      const rows = await db
+        .select({
+          page: pageEvents.page,
+          createdAt: pageEvents.createdAt,
+        })
+        .from(pageEvents)
+        .where(eq(pageEvents.utmSource, CAPTION_LANGUAGE_ANALYTICS_SOURCE));
+      return summarizeCaptionLanguageEvents(rows);
+    }),
+
     /** Aggregate checklist setup funnel. It intentionally returns no raw event or identity data. */
     onboardingChecklistFunnel: adminProcedure.input(onboardingChecklistFunnelInputSchema.optional()).query(async ({ input }) => {
       const db = await getDb();
@@ -4063,6 +4083,23 @@ export const appRouter = router({
           utmSource: PWA_EVENT_SOURCE,
           utmMedium: input.platform,
           utmCampaign: "install_conversion",
+          referrer: null,
+          userAgent: null,
+        });
+        return { ok: true };
+      }),
+    /** Explicit caption-language selections only; bounded language code and no visitor identity or raw context. */
+    trackCaptionLanguage: publicProcedure
+      .input(z.object({ language: z.enum(CAPTION_LANGUAGE_ANALYTICS_LANGUAGES) }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return { ok: true };
+        await db.insert(pageEvents).values({
+          userId: null,
+          page: toCaptionLanguageEventPage(input.language),
+          utmSource: CAPTION_LANGUAGE_ANALYTICS_SOURCE,
+          utmMedium: input.language,
+          utmCampaign: "walkthrough_caption_language",
           referrer: null,
           userAgent: null,
         });
