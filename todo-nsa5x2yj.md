@@ -107,5 +107,5 @@
 - [x] Build a responsive interactive transcript beside the video on wide screens and in a mobile-safe layout, synchronized to active cues with current-cue highlighting, automatic visibility, and click-to-seek controls.
 - [x] Localize all new preview, appearance, transcript, status, and reset strings across every maintained interface locale and runtime fallback resource.
 - [x] Add focused Vitest and browser regressions for live preview parity, preference validation/persistence/reset, cue synchronization, click-to-seek, keyboard access, reduced motion, and responsive viewport fit.
-- [ ] Run TypeScript, focused and full Vitest, production dependency audit, production build, desktop and Pixel 7 verification, then publish and validate the release on both live Get Phame origins.
+- [x] Run TypeScript, focused and full Vitest, production dependency audit, production build, desktop and Pixel 7 verification, then publish and validate the release on both live Get Phame origins.
 - [x] Update and validate the reusable multilingual video-caption-player skill with the live-preview, expanded-style, and interactive-transcript workflow.
