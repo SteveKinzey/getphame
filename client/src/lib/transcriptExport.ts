@@ -16,6 +16,62 @@ export type TranscriptExportMetadata = {
 
 export type TranscriptExportFormat = "text" | "pdf";
 
+type PdfUnicodeFont = {
+  family: string;
+  fileName: string;
+  url: string;
+};
+
+const PDF_UNICODE_FONTS = {
+  cjk: {
+    family: "NotoSansTranscriptCjk",
+    fileName: "noto-sans-tc-transcript.ttf",
+    url: "/manus-storage/noto-sans-tc-transcript_1e04ad72.ttf",
+  },
+  thai: {
+    family: "NotoSansTranscriptThai",
+    fileName: "noto-sans-thai-transcript.ttf",
+    url: "/manus-storage/noto-sans-thai-transcript_e2acd01a.ttf",
+  },
+} satisfies Record<string, PdfUnicodeFont>;
+
+const pdfFontDataCache = new Map<string, Promise<string>>();
+
+export function detectTranscriptPdfUnicodeFont(values: readonly string[]): PdfUnicodeFont | null {
+  const content = values.join("\n");
+  if (/[\u0e00-\u0e7f]/.test(content)) return PDF_UNICODE_FONTS.thai;
+  if (/[\u3400-\u9fff\uf900-\ufaff]/.test(content)) return PDF_UNICODE_FONTS.cjk;
+  return null;
+}
+
+async function fetchFontAsBase64(url: string) {
+  const cached = pdfFontDataCache.get(url);
+  if (cached) return cached;
+
+  const request = fetch(url, { credentials: "same-origin" }).then(async (response) => {
+    if (!response.ok) {
+      throw new Error(`Transcript PDF font request failed with status ${response.status}`);
+    }
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      const limit = Math.min(offset + 0x8000, bytes.length);
+      for (let index = offset; index < limit; index += 1) {
+        binary += String.fromCharCode(bytes[index]);
+      }
+    }
+    return window.btoa(binary);
+  });
+
+  pdfFontDataCache.set(url, request);
+  try {
+    return await request;
+  } catch (error) {
+    pdfFontDataCache.delete(url);
+    throw error;
+  }
+}
+
 export function formatTranscriptTimestamp(seconds: number) {
   const wholeSeconds = Math.max(0, Math.floor(seconds));
   const hours = Math.floor(wholeSeconds / 3600);
@@ -70,6 +126,19 @@ export async function createTranscriptPdfBlob(
 ) {
   const { jsPDF } = await import("jspdf");
   const document = new jsPDF({ format: "a4", unit: "pt", compress: true });
+  const unicodeFont = detectTranscriptPdfUnicodeFont([
+    metadata.documentTitle,
+    metadata.languageLabel,
+    metadata.languageValue,
+    metadata.generatedLabel,
+    metadata.generatedValue,
+    metadata.sourceLabel,
+  ]);
+  if (unicodeFont) {
+    const fontData = await fetchFontAsBase64(unicodeFont.url);
+    document.addFileToVFS(unicodeFont.fileName, fontData);
+    document.addFont(unicodeFont.fileName, unicodeFont.family, "normal");
+  }
   const pageWidth = document.internal.pageSize.getWidth();
   const pageHeight = document.internal.pageSize.getHeight();
   const margin = 48;
@@ -90,11 +159,12 @@ export async function createTranscriptPdfBlob(
   document.text(normalizePdfText(metadata.brand), margin, cursorY);
   cursorY += 24;
 
+  if (unicodeFont) document.setFont(unicodeFont.family, "normal");
   document.setFontSize(14);
   document.text(normalizePdfText(metadata.documentTitle), margin, cursorY);
   cursorY += 26;
 
-  document.setFont("helvetica", "normal");
+  document.setFont(unicodeFont?.family ?? "helvetica", "normal");
   document.setFontSize(9);
   document.setTextColor(70, 82, 101);
   const metadataLines = [
@@ -110,6 +180,7 @@ export async function createTranscriptPdfBlob(
   document.line(margin, cursorY, pageWidth - margin, cursorY);
   cursorY += 22;
 
+  document.setFont("helvetica", "normal");
   document.setFontSize(10.5);
   document.setTextColor(20, 30, 46);
   const lineHeight = 14;

@@ -4,6 +4,7 @@ import {
   buildTranscriptFilename,
   createTranscriptPdfBlob,
   createTranscriptTextBlob,
+  detectTranscriptPdfUnicodeFont,
   formatTranscriptTimestamp,
   normalizePdfText,
   type TranscriptExportMetadata,
@@ -57,5 +58,19 @@ describe("transcript export", () => {
     const prefix = new TextDecoder().decode((await pdfBlob.arrayBuffer()).slice(0, 5));
     expect(pdfBlob.type).toBe("application/pdf");
     expect(prefix).toBe("%PDF-");
+  });
+
+  it("selects bounded Unicode font subsets only for Chinese and Thai PDF metadata", () => {
+    expect(detectTranscriptPdfUnicodeFont(["平台導覽轉錄文字", "語言"])).toMatchObject({
+      family: "NotoSansTranscriptCjk",
+      url: "/manus-storage/noto-sans-tc-transcript_1e04ad72.ttf",
+    });
+    expect(detectTranscriptPdfUnicodeFont(["บทถอดเสียงวิดีโอแนะนำแพลตฟอร์ม", "ภาษา"]))
+      .toMatchObject({
+        family: "NotoSansTranscriptThai",
+        url: "/manus-storage/noto-sans-thai-transcript_e2acd01a.ttf",
+      });
+    expect(detectTranscriptPdfUnicodeFont(["Platform walkthrough transcript", "Language"]))
+      .toBeNull();
   });
 });
