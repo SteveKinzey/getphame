@@ -38,6 +38,7 @@ import { smtpHealthHandler } from "../smtpHealthRoutes";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 import { apiNotFoundHandler } from "./apiFallback";
 import { registerPublicFeaturePrerender } from "../publicFeaturePrerender";
+import { registerTranscriptFontRoutes } from "../transcriptFontRoutes";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -410,6 +411,11 @@ async function startServer() {
     res.set("Cache-Control", "no-store");
     return res.status(200).json({ ok: true, status: "ready" });
   });
+
+  // Same-origin delivery for the bounded Unicode subsets used by client-side
+  // transcript PDFs. Managed asset redirects are not readable by browser
+  // fetch() on custom domains because their CDN response omits CORS headers.
+  registerTranscriptFontRoutes(app);
 
   // OAuth callback under /api/oauth/callback
   registerStorageProxy(app);

@@ -26,12 +26,12 @@ const PDF_UNICODE_FONTS = {
   cjk: {
     family: "NotoSansTranscriptCjk",
     fileName: "noto-sans-tc-transcript.ttf",
-    url: "/manus-storage/noto-sans-tc-transcript_1e04ad72.ttf",
+    url: "/api/assets/transcript-font/cjk",
   },
   thai: {
     family: "NotoSansTranscriptThai",
     fileName: "noto-sans-thai-transcript-v2.ttf",
-    url: "/manus-storage/noto-sans-thai-transcript-v2_ffad86f1.ttf",
+    url: "/api/assets/transcript-font/thai",
   },
 } satisfies Record<string, PdfUnicodeFont>;
 
@@ -164,16 +164,30 @@ export async function createTranscriptPdfBlob(
   document.text(normalizePdfText(metadata.documentTitle), margin, cursorY);
   cursorY += 26;
 
-  document.setFont(unicodeFont?.family ?? "helvetica", "normal");
   document.setFontSize(9);
   document.setTextColor(70, 82, 101);
-  const metadataLines = [
-    `${metadata.languageLabel}: ${metadata.languageValue}`,
-    `${metadata.generatedLabel}: ${metadata.generatedValue}`,
-    `${metadata.sourceLabel}: ${metadata.sourceValue}`,
-  ].map(normalizePdfText);
-  document.text(metadataLines, margin, cursorY, { lineHeightFactor: 1.45 });
-  cursorY += metadataLines.length * 13 + 18;
+  const metadataRows = [
+    { label: metadata.languageLabel, value: metadata.languageValue },
+    { label: metadata.generatedLabel, value: metadata.generatedValue },
+    { label: metadata.sourceLabel, value: metadata.sourceValue },
+  ];
+  for (const row of metadataRows) {
+    const label = normalizePdfText(`${row.label}: `);
+    const value = normalizePdfText(row.value);
+    document.setFont(unicodeFont?.family ?? "helvetica", "normal");
+    document.text(label, margin, cursorY);
+    const valueX = margin + document.getTextWidth(label);
+    const valueUnicodeFont = detectTranscriptPdfUnicodeFont([value]);
+    document.setFont(
+      unicodeFont && valueUnicodeFont?.family === unicodeFont.family
+        ? unicodeFont.family
+        : "helvetica",
+      "normal",
+    );
+    document.text(value, valueX, cursorY);
+    cursorY += 13;
+  }
+  cursorY += 18;
 
   document.setDrawColor(212, 166, 54);
   document.setLineWidth(1.5);

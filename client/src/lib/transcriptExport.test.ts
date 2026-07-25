@@ -63,12 +63,12 @@ describe("transcript export", () => {
   it("selects bounded Unicode font subsets only for Chinese and Thai PDF metadata", () => {
     expect(detectTranscriptPdfUnicodeFont(["平台導覽轉錄文字", "語言"])).toMatchObject({
       family: "NotoSansTranscriptCjk",
-      url: "/manus-storage/noto-sans-tc-transcript_1e04ad72.ttf",
+      url: "/api/assets/transcript-font/cjk",
     });
     expect(detectTranscriptPdfUnicodeFont(["บทถอดเสียงวิดีโอแนะนำแพลตฟอร์ม", "ภาษา"]))
       .toMatchObject({
         family: "NotoSansTranscriptThai",
-        url: "/manus-storage/noto-sans-thai-transcript-v2_ffad86f1.ttf",
+        url: "/api/assets/transcript-font/thai",
       });
     expect(detectTranscriptPdfUnicodeFont(["Platform walkthrough transcript", "Language"]))
       .toBeNull();
