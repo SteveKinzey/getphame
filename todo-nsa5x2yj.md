@@ -133,7 +133,7 @@
 - [x] Make the Sources workflow map customer name, email, affirmative consent, and source metadata into the canonical import-only API with stable idempotency, deduplication, and no automatic review-request sending.
 - [x] Localize the Sources workflow across all seven maintained locales and update the service-worker locale cache marker.
 - [x] Add focused Sources regressions for authorization boundaries, secret-handling guidance, required mappings, idempotency, deduplication, compliance defaults, UI accessibility, and locale completeness.
-- [ ] Run focused tests, the full suite, TypeScript checks, dependency audit, production build, authenticated desktop/mobile responsive verification, checkpoint publication, and live-bundle confirmation.
+- [x] Run focused tests, the full suite, TypeScript checks, dependency audit, production build, authenticated desktop/mobile responsive verification, checkpoint publication, and live-bundle confirmation.
 - [x] Update the two stale service-worker cache-version assertions from v18 to the released Sources locale cache v19, then rerun the complete suite.
 - [x] Fix the responsive-preview defect where Sources copy renders raw translation keys by updating every runtime localization resource and adding a regression that fails on unresolved keys.
 - [x] Update all three stale `phame32` runtime-locale cache assertions to the Sources release cache key `phame33`, then rerun the complete suite.
