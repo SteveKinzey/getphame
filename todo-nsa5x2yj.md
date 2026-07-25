@@ -62,4 +62,4 @@
 - [x] Confirm the decoded branded frame, WebVTT captions, and recovery controls on live getphame.app after the definitive checkpoint deploys.
 - [x] Audit the current MP4 and WebVTT behavior so the new captions-off state removes all displayed caption text rather than only changing an unused track.
 - [x] Add a localized, keyboard-accessible custom captions toggle with synchronized WebVTT state and clear on/off feedback in the video modal.
-- [ ] Add focused and responsive browser regressions for caption enable/disable behavior, run the full release gate, publish a checkpoint, and verify the control on live getphame.app.
+- [x] Add focused and responsive browser regressions for caption enable/disable behavior, run the full release gate, publish checkpoint `12473412`, and verify the control on live getphame.app.
