@@ -156,5 +156,5 @@
 - [x] Localize all manual navigation, labels, content, status badges, and runtime fallbacks across en, es, fr, it, th, zh-CN, and zh-TW; advance locale and PWA cache versions.
 - [x] Add focused Vitest coverage for user/admin content separation, paid-only labeling, route protection, navigation order, deep links, accessibility structure, localization completeness, and cache updates.
 - [x] Run focused tests, the full Vitest suite, TypeScript, production dependency audit, production build, and authenticated desktop/mobile verification for both user and administrator manual states.
-- [ ] Publish the role-aware manual checkpoint, confirm production propagation on managed and custom origins, and verify the live Manual link appears beneath Settings.
+- [x] Publish the role-aware manual checkpoint, confirm production propagation on managed and custom origins, and verify the live Manual link appears beneath Settings.
 - [x] Prove role isolation in UI and route tests: user sessions cannot render Admin Manual content, and administrator sessions cannot render a separate User Manual view or navigation entry.
