@@ -2117,6 +2117,71 @@
     }
   },
   "developerIntegrations": {
+    "sources": {
+      "title": "连接数据来源",
+      "description": "选择客户记录的来源。Get Phame 会提供安全且仅用于导入的操作步骤，适用于可信的服务器端自动化流程。",
+      "badge": "仅导入联系人",
+      "workflowTitle": "数据来源连接流程",
+      "steps": {
+        "choose": "选择数据来源",
+        "key": "创建导入密钥",
+        "map": "映射字段与同意信息",
+        "test": "发送一条已获同意的测试记录"
+      },
+      "choose": "选择数据来源",
+      "recipeCopied": "已复制安全设置步骤。",
+      "pathLabel": "推荐方式",
+      "officialDocs": "服务商文档",
+      "idempotencyTitle": "稳定的事件 ID",
+      "rulesTitle": "必需的安全措施",
+      "rules": {
+        "secret": "只把 Get Phame API 密钥保存在服务器端受保护的密钥字段中。切勿把密钥放入表单、URL、网页源代码或浏览器脚本。",
+        "consent": "只导入现有客户或已明确同意的联系人。可选同意复选框默认必须保持未选中。",
+        "idempotency": "每次重试都复用同一个服务商事件 ID，避免同一次提交产生重复操作。",
+        "importOnly": "此流程只会导入或更新联系人，绝不会自动发送评价请求。"
+      },
+      "providers": {
+        "jotform": {
+          "path": "通过可信的自动化服务转发符合条件的 Jotform 提交；该服务必须能安全保存密钥，并在发送到 Get Phame 前添加受保护的请求头。",
+          "idempotency": "将不可变的 Jotform 提交 ID 同时用作 externalId 和 Idempotency-Key。"
+        },
+        "facebook": {
+          "path": "通过已验证的服务器端 Webhook 或可信自动化服务接收 Meta Lead Ads 通知，只读取已获授权的潜在客户字段，再把标准化记录发送到 Get Phame。",
+          "idempotency": "将 Meta leadgen ID 用作稳定的 externalId 和 Idempotency-Key。"
+        },
+        "googleForms": {
+          "path": "使用可安装的 Google Apps Script 表单提交触发器或可信自动化服务。把 Get Phame 密钥保存在受保护的 Script Properties 或自动化服务的密钥库中。",
+          "idempotency": "使用稳定的回复标识符或关联回复行 ID；重试时不要生成新值。"
+        },
+        "airtable": {
+          "path": "当符合条件的 Airtable 记录创建或获批时触发可信自动化，再将记录映射到 Get Phame 联系人导入协议。",
+          "idempotency": "将不可变的 Airtable 记录 ID 同时用作 externalId 和 Idempotency-Key。"
+        },
+        "other": {
+          "label": "其他来源",
+          "path": "使用支持 POST、JSON、受保护请求头和稳定事件标识符的可信服务器端流程或无代码工具。",
+          "idempotency": "每次重试都使用来源系统中不可变的提交、记录、订单或事件 ID。"
+        }
+      },
+      "recipeTitle": "安全映射示例",
+      "recipeDescription": "设置时使用占位符。只在自动化服务受保护的密钥字段中粘贴真实密钥。",
+      "copyRecipe": "复制示例",
+      "apiField": "API 字段",
+      "mapTo": "映射自数据来源",
+      "fields": {
+        "name": "客户姓名字段",
+        "email": "客户电子邮箱字段",
+        "externalId": "服务商中不可变的事件或记录 ID",
+        "sourceApp": "上方显示的固定服务商标识符",
+        "consentConfirmed": "仅在明确获准后才设为 true 的布尔值",
+        "consentBasis": "customer_relationship、explicit_opt_in 或 other",
+        "consentSource": "简要说明同意信息的收集位置"
+      },
+      "nextTitle": "准备连接了吗？",
+      "nextDescription": "创建 contacts:write 密钥，发送一条已获同意的测试记录，然后在“最近 API 导入”中确认脱敏后的结果。",
+      "createKey": "创建导入密钥",
+      "viewImports": "查看导入记录"
+    },
     "back": "返回设置",
     "confirm": {
       "revokeDescription": "这会立即禁用该密钥且无法撤销。",

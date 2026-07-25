@@ -2061,6 +2061,71 @@
     "unknown": "在經核准的 Get Phame 說明來源中找不到可靠答案。請提交支援請求，由人工審查詳情。"
   },
   "developerIntegrations": {
+    "sources": {
+      "title": "連接資料來源",
+      "description": "選擇客戶記錄的來源。Get Phame 會提供安全且僅用於匯入的操作步驟，適用於可信任的伺服器端自動化流程。",
+      "badge": "僅匯入聯絡人",
+      "workflowTitle": "資料來源連接流程",
+      "steps": {
+        "choose": "選擇資料來源",
+        "key": "建立匯入金鑰",
+        "map": "對應欄位與同意資訊",
+        "test": "傳送一筆已獲同意的測試記錄"
+      },
+      "choose": "選擇資料來源",
+      "recipeCopied": "已複製安全設定步驟。",
+      "pathLabel": "建議方式",
+      "officialDocs": "服務商文件",
+      "idempotencyTitle": "穩定的事件 ID",
+      "rulesTitle": "必要的安全措施",
+      "rules": {
+        "secret": "只將 Get Phame API 金鑰保存在伺服器端受保護的密鑰欄位中。切勿將金鑰放入表單、URL、網頁原始碼或瀏覽器指令碼。",
+        "consent": "只匯入現有客戶或已明確同意的聯絡人。選填的同意核取方塊預設必須保持未勾選。",
+        "idempotency": "每次重試都重用同一個服務商事件 ID，避免同一次提交產生重複操作。",
+        "importOnly": "此流程只會匯入或更新聯絡人，絕不會自動傳送評論請求。"
+      },
+      "providers": {
+        "jotform": {
+          "path": "透過可信任的自動化服務轉送符合條件的 Jotform 提交；該服務必須能安全保存密鑰，並在傳送到 Get Phame 前加入受保護的要求標頭。",
+          "idempotency": "將不可變的 Jotform 提交 ID 同時用作 externalId 和 Idempotency-Key。"
+        },
+        "facebook": {
+          "path": "透過已驗證的伺服器端 Webhook 或可信任的自動化服務接收 Meta Lead Ads 通知，只讀取已獲授權的潛在客戶欄位，再將標準化記錄傳送到 Get Phame。",
+          "idempotency": "將 Meta leadgen ID 用作穩定的 externalId 和 Idempotency-Key。"
+        },
+        "googleForms": {
+          "path": "使用可安裝的 Google Apps Script 表單提交觸發條件或可信任的自動化服務。將 Get Phame 金鑰保存在受保護的 Script Properties 或自動化服務的密鑰庫中。",
+          "idempotency": "使用穩定的回覆識別碼或相關回覆列 ID；重試時不要產生新值。"
+        },
+        "airtable": {
+          "path": "當符合條件的 Airtable 記錄建立或獲准時觸發可信任的自動化，再將記錄對應到 Get Phame 聯絡人匯入合約。",
+          "idempotency": "將不可變的 Airtable 記錄 ID 同時用作 externalId 和 Idempotency-Key。"
+        },
+        "other": {
+          "label": "其他來源",
+          "path": "使用支援 POST、JSON、受保護要求標頭和穩定事件識別碼的可信任伺服器端流程或無程式碼工具。",
+          "idempotency": "每次重試都使用來源系統中不可變的提交、記錄、訂單或事件 ID。"
+        }
+      },
+      "recipeTitle": "安全對應範例",
+      "recipeDescription": "設定時使用預留位置。只在自動化服務受保護的密鑰欄位中貼上真實金鑰。",
+      "copyRecipe": "複製範例",
+      "apiField": "API 欄位",
+      "mapTo": "對應自資料來源",
+      "fields": {
+        "name": "客戶姓名欄位",
+        "email": "客戶電子郵件欄位",
+        "externalId": "服務商中不可變的事件或記錄 ID",
+        "sourceApp": "上方顯示的固定服務商識別碼",
+        "consentConfirmed": "僅在明確獲准後才設為 true 的布林值",
+        "consentBasis": "customer_relationship、explicit_opt_in 或 other",
+        "consentSource": "簡短說明同意資訊的收集位置"
+      },
+      "nextTitle": "準備連接了嗎？",
+      "nextDescription": "建立 contacts:write 金鑰，傳送一筆已獲同意的測試記錄，然後在「最近 API 匯入」中確認遮罩後的結果。",
+      "createKey": "建立匯入金鑰",
+      "viewImports": "檢視匯入記錄"
+    },
     "back": "返回設定",
     "confirm": {
       "revokeDescription": "這會立即停用該金鑰且無法復原。",

@@ -125,3 +125,15 @@
 - [x] Verify the current Apple App Store, Google Play, and installable PWA image requirements from authoritative platform documentation.
 - [x] Deliver an exact raster asset handoff specification, naming guidance, safe-area rules, and a current-versus-new logo comparison.
 - [x] Measure the supplied 170×58, 253×85, 338×114, and 506×170 Get Phame lockup PNGs programmatically without reopening them visually, and verify whether they are true scale variants or independently cropped exports.
+- [x] Record that the logo/icon audit is discontinued and confirm no production branding files or customer-facing lockups were changed.
+- [x] Identify the last unfinished non-logo Get Phame workstream and resume it from the current shared project state.
+- [x] Inventory every project task record that predates the logo discussion, copy any applicable incomplete items into this session tracker, and complete their acceptance gates.
+- [x] Restore and validate the missing reusable administrator CSV-preview workflow skill from the shipped preview, search, export, preference, and Undo behavior.
+- [x] Add an easy, keyboard-accessible Sources workflow to the existing Developer Integrations workspace for Jotform, Facebook Lead Ads, Google Forms, Airtable, and similar tools using secure server-side webhook/no-code connections.
+- [x] Make the Sources workflow map customer name, email, affirmative consent, and source metadata into the canonical import-only API with stable idempotency, deduplication, and no automatic review-request sending.
+- [x] Localize the Sources workflow across all seven maintained locales and update the service-worker locale cache marker.
+- [x] Add focused Sources regressions for authorization boundaries, secret-handling guidance, required mappings, idempotency, deduplication, compliance defaults, UI accessibility, and locale completeness.
+- [ ] Run focused tests, the full suite, TypeScript checks, dependency audit, production build, authenticated desktop/mobile responsive verification, checkpoint publication, and live-bundle confirmation.
+- [x] Update the two stale service-worker cache-version assertions from v18 to the released Sources locale cache v19, then rerun the complete suite.
+- [x] Fix the responsive-preview defect where Sources copy renders raw translation keys by updating every runtime localization resource and adding a regression that fails on unresolved keys.
+- [x] Update all three stale `phame32` runtime-locale cache assertions to the Sources release cache key `phame33`, then rerun the complete suite.

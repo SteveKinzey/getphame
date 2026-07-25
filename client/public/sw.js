@@ -1,6 +1,6 @@
 // Get Phame Service Worker v5 — Fixed cross-origin fetch handling
 // Cache version bump forces old caches to be cleared on update
-const CACHE_NAME = 'getphame-v18';
+const CACHE_NAME = 'getphame-v19';
 const LANGUAGE_CACHE_KEY = '/__getphame_offline_language__';
 const OFFLINE_PAGES = {
   en: '/offline.en.html',

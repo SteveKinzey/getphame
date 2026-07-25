@@ -2762,6 +2762,71 @@
     "unknown": "Non ho trovato una risposta attendibile nelle fonti di aiuto Get Phame approvate. Apri una richiesta di supporto affinché una persona esamini i dettagli."
   },
   "developerIntegrations": {
+    "sources": {
+      "title": "Collega una fonte",
+      "description": "Scegli da dove provengono i record dei clienti. Get Phame fornisce una procedura sicura, di sola importazione, per un’automazione affidabile lato server.",
+      "badge": "Importa solo i contatti",
+      "workflowTitle": "Procedura di collegamento della fonte",
+      "steps": {
+        "choose": "Scegli una fonte",
+        "key": "Crea una chiave di importazione",
+        "map": "Mappa campi e consenso",
+        "test": "Invia un test consentito"
+      },
+      "choose": "Scegli una fonte",
+      "recipeCopied": "Procedura di configurazione sicura copiata.",
+      "pathLabel": "Percorso consigliato",
+      "officialDocs": "Documentazione del provider",
+      "idempotencyTitle": "ID evento stabile",
+      "rulesTitle": "Protezioni obbligatorie",
+      "rules": {
+        "secret": "Conserva la chiave API di Get Phame solo in un campo segreto protetto lato server. Non inserirla mai in un modulo, URL, sorgente della pagina o script del browser.",
+        "consent": "Importa solo clienti esistenti o persone che hanno espresso il consenso. Mantieni deselezionate per impostazione predefinita le caselle di consenso facoltative.",
+        "idempotency": "Riutilizza lo stesso ID evento del provider a ogni nuovo tentativo, così un invio non può creare attività duplicate.",
+        "importOnly": "Questa procedura importa o aggiorna un contatto. Non invia mai automaticamente una richiesta di recensione."
+      },
+      "providers": {
+        "jotform": {
+          "path": "Invia ogni risposta Jotform idonea tramite un’automazione affidabile che possa conservare segreti e aggiungere intestazioni protette prima dell’invio a Get Phame.",
+          "idempotency": "Usa l’ID immutabile della risposta Jotform sia per externalId sia per Idempotency-Key."
+        },
+        "facebook": {
+          "path": "Ricevi le notifiche di Meta Lead Ads su un webhook verificato lato server o tramite un’automazione affidabile, recupera i campi consentiti del lead e invia il record normalizzato a Get Phame.",
+          "idempotency": "Usa l’ID leadgen di Meta come externalId e Idempotency-Key stabili."
+        },
+        "googleForms": {
+          "path": "Usa un trigger installabile di invio modulo in Google Apps Script o un’automazione affidabile. Conserva la chiave Get Phame nelle proprietà protette dello script o nell’archivio segreti dell’automazione.",
+          "idempotency": "Usa un identificatore stabile della risposta o l’ID della riga collegata; non generare un nuovo valore durante i tentativi successivi."
+        },
+        "airtable": {
+          "path": "Avvia un’automazione affidabile quando viene creato o approvato un record Airtable idoneo, quindi mappalo al contratto di importazione contatti di Get Phame.",
+          "idempotency": "Usa l’ID immutabile del record Airtable sia per externalId sia per Idempotency-Key."
+        },
+        "other": {
+          "label": "Altra fonte",
+          "path": "Usa qualsiasi flusso lato server o strumento no-code affidabile che supporti POST, JSON, intestazioni protette e un identificatore evento stabile.",
+          "idempotency": "Usa l’ID immutabile di invio, record, ordine o evento del sistema di origine a ogni nuovo tentativo."
+        }
+      },
+      "recipeTitle": "Procedura di mappatura sicura",
+      "recipeDescription": "Usa un segnaposto durante la configurazione. Incolla la chiave reale solo nel campo segreto protetto del servizio di automazione.",
+      "copyRecipe": "Copia procedura",
+      "apiField": "Campo API",
+      "mapTo": "Mappa dalla fonte",
+      "fields": {
+        "name": "Campo nome cliente",
+        "email": "Campo e-mail cliente",
+        "externalId": "ID immutabile dell’evento o record del provider",
+        "sourceApp": "Identificatore fisso del provider mostrato sopra",
+        "consentConfirmed": "Valore booleano true solo dopo un consenso esplicito",
+        "consentBasis": "customer_relationship, explicit_opt_in oppure other",
+        "consentSource": "Breve descrizione di dove è stato raccolto il consenso"
+      },
+      "nextTitle": "Pronto per il collegamento?",
+      "nextDescription": "Crea una chiave contacts:write, invia un record di prova consentito e verifica il risultato mascherato in Importazioni API recenti.",
+      "createKey": "Crea chiave di importazione",
+      "viewImports": "Visualizza importazioni"
+    },
     "back": "Torna alle impostazioni",
     "confirm": {
       "revokeDescription": "Disabilita immediatamente la chiave e non è reversibile.",

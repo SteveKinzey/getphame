@@ -2651,6 +2651,71 @@
     "clear": "Clear"
   },
   "developerIntegrations": {
+    "sources": {
+      "title": "Connect a source",
+      "description": "Choose where customer records start. Get Phame gives you a secure, import-only recipe for a trusted server-side automation.",
+      "badge": "Imports contacts only",
+      "workflowTitle": "Source connection workflow",
+      "steps": {
+        "choose": "Choose a source",
+        "key": "Create an import key",
+        "map": "Map fields and consent",
+        "test": "Send one permitted test"
+      },
+      "choose": "Choose a source",
+      "recipeCopied": "Safe setup recipe copied.",
+      "pathLabel": "Recommended path",
+      "officialDocs": "Provider docs",
+      "idempotencyTitle": "Stable event ID",
+      "rulesTitle": "Required safeguards",
+      "rules": {
+        "secret": "Store the Get Phame API key only in a protected server-side secret field. Never place it in a form, URL, page source, or browser script.",
+        "consent": "Import only existing customers or people who affirmatively opted in. Keep optional consent boxes unchecked by default.",
+        "idempotency": "Reuse the same provider event ID for every retry so one submission cannot create duplicate work.",
+        "importOnly": "This workflow imports or updates a contact. It never sends a review request automatically."
+      },
+      "providers": {
+        "jotform": {
+          "path": "Send each eligible Jotform submission through a trusted automation bridge that can store secrets and add protected headers before posting to Get Phame.",
+          "idempotency": "Use the immutable Jotform submission ID for both externalId and Idempotency-Key."
+        },
+        "facebook": {
+          "path": "Receive Meta Lead Ads notifications on a verified server-side or trusted automation webhook, retrieve the permitted lead fields, then post the normalized record to Get Phame.",
+          "idempotency": "Use Meta's leadgen ID as the stable externalId and Idempotency-Key."
+        },
+        "googleForms": {
+          "path": "Use an installable Google Apps Script form-submit trigger or a trusted automation bridge. Keep the Get Phame key in protected script properties or the bridge's secret store.",
+          "idempotency": "Use a stable response identifier or the linked response-row ID; do not generate a new value during retries."
+        },
+        "airtable": {
+          "path": "Trigger a trusted automation when an eligible Airtable record is created or approved, then map that record to the Get Phame contact-import contract.",
+          "idempotency": "Use the immutable Airtable record ID for both externalId and Idempotency-Key."
+        },
+        "other": {
+          "label": "Other source",
+          "path": "Use any server-side workflow or trusted no-code tool that supports POST, JSON, protected headers, and a stable event identifier.",
+          "idempotency": "Use the source system's immutable submission, record, order, or event ID for every retry."
+        }
+      },
+      "recipeTitle": "Safe mapping recipe",
+      "recipeDescription": "Use a placeholder while configuring. Paste the real key only into the automation service's protected secret field.",
+      "copyRecipe": "Copy recipe",
+      "apiField": "API field",
+      "mapTo": "Map from source",
+      "fields": {
+        "name": "Customer name field",
+        "email": "Customer email field",
+        "externalId": "Immutable provider event or record ID",
+        "sourceApp": "Fixed provider identifier shown above",
+        "consentConfirmed": "Boolean true only after affirmative permission",
+        "consentBasis": "customer_relationship, explicit_opt_in, or other",
+        "consentSource": "Short description of where permission was captured"
+      },
+      "nextTitle": "Ready to connect?",
+      "nextDescription": "Create a contacts:write key, send one permitted test record, then confirm the masked result in Recent API imports.",
+      "createKey": "Create import key",
+      "viewImports": "View imports"
+    },
     "guides": {
       "copied": "Example copied.",
       "copyExample": "Copy example",
