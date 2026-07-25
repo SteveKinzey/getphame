@@ -95,7 +95,10 @@ test("offers recovery controls when the player reports a media error", async ({ 
   const dialog = page.getByRole("dialog", {
     name: "Get Phame platform walkthrough",
   });
-  await dialog.locator("video").dispatchEvent("error");
+  await dialog.locator("video").evaluate((element) => {
+    element.src = "/getphame-walkthrough.en.vtt";
+    element.load();
+  });
   const recovery = dialog.getByRole("alert");
   await expect(recovery).toBeVisible();
   await expect(recovery.getByText("The walkthrough could not load in this browser.")).toBeVisible();

@@ -1,6 +1,6 @@
 // Get Phame Service Worker v5 — Fixed cross-origin fetch handling
 // Cache version bump forces old caches to be cleared on update
-const CACHE_NAME = 'getphame-v10';
+const CACHE_NAME = 'getphame-v11';
 const LANGUAGE_CACHE_KEY = '/__getphame_offline_language__';
 const OFFLINE_PAGES = {
   en: '/offline.en.html',
@@ -101,6 +101,13 @@ self.addEventListener('fetch', (event) => {
 
   // Skip API calls — never intercept backend requests
   if (url.pathname.startsWith('/api/')) {
+    return;
+  }
+
+  // Managed storage endpoints issue signed cross-origin redirects. Let the browser
+  // own these requests so media byte ranges and redirects are handled natively;
+  // routing them through respondWith() can turn a valid MP4 into an opaque response.
+  if (url.pathname.startsWith('/manus-storage/')) {
     return;
   }
 

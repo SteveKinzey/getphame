@@ -105,13 +105,14 @@ describe("VideoDemo media contract", () => {
     expect(catalog.landing.modal.iframeTitle).toBeUndefined();
   });
 
-  it("bumps the PWA cache so installed phones replace stale locale-first video copy", async () => {
+  it("bumps the PWA cache and leaves managed video redirects to the browser", async () => {
     const serviceWorkerPath = fileURLToPath(
       new URL("../../../public/sw.js", import.meta.url),
     );
     const serviceWorker = await readFile(serviceWorkerPath, "utf8");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v10'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v11'");
+    expect(serviceWorker).toContain("url.pathname.startsWith('/manus-storage/')");
     expect(serviceWorker).toContain(".filter((name) => name !== CACHE_NAME)");
     expect(serviceWorker).toContain("self.skipWaiting()");
     expect(serviceWorker).toContain("self.clients.claim()");
