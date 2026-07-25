@@ -13,7 +13,7 @@ import { toast } from "sonner";
 
 const BASE_URL = "https://getphame.app";
 const CONTACTS_ENDPOINT = `${BASE_URL}/api/v1/contacts`;
-const API_KEY_PLACEHOLDER = "gp_live_YOUR_API_KEY";
+const API_KEY_PLACEHOLDER = "<YOUR_GET_PHAME_API_KEY>";
 
 type FormBuilder = "wsform" | "gravity" | "fluent" | "elementor" | "generic" | "curl";
 

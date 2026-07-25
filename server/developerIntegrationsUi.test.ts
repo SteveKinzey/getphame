@@ -80,7 +80,8 @@ describe("Developer Integrations workspace", () => {
     expect(guide).toContain('"curl"');
     expect(guide).toContain("consentConfirmed");
     expect(guide).toContain("Idempotency-Key");
-    expect(guide).toContain('const API_KEY_PLACEHOLDER = "gp_live_YOUR_API_KEY"');
+    expect(guide).toContain('const API_KEY_PLACEHOLDER = "<YOUR_GET_PHAME_API_KEY>"');
+    expect(guide).not.toContain("gp_live_");
     expect(guide).not.toContain("apiKeyRaw");
     expect(guide).toContain("never inserts an existing raw key");
   });

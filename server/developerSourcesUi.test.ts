@@ -28,7 +28,8 @@ describe("Developer Sources workflow", () => {
     const component = readProjectFile("../client/src/components/SourceSetupGuide.tsx");
     const publicApi = readProjectFile("./publicApi.ts");
 
-    expect(component).toContain('const API_KEY_PLACEHOLDER = "gp_live_YOUR_API_KEY"');
+    expect(component).toContain('const API_KEY_PLACEHOLDER = "<YOUR_GET_PHAME_API_KEY>"');
+    expect(component).not.toContain("gp_live_");
     expect(component).toContain("Authorization: Bearer ${API_KEY_PLACEHOLDER}");
     expect(component).toContain("Idempotency-Key: <stable-provider-event-id>");
     expect(component).not.toContain("/api/public/send");
