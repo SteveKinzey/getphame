@@ -835,6 +835,31 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
+.getphame-walkthrough-video[data-caption-line-spacing='compact']::cue,
+.getphame-caption-preview[data-caption-line-spacing='compact'] .getphame-caption-preview-text {
+  line-height: 1.15;
+}
+
+.getphame-walkthrough-video[data-caption-line-spacing='spacious']::cue,
+.getphame-caption-preview[data-caption-line-spacing='spacious'] .getphame-caption-preview-text {
+  line-height: 1.6;
+}
+
+.getphame-walkthrough-video[data-caption-text-edge='none']::cue,
+.getphame-caption-preview[data-caption-text-edge='none'] .getphame-caption-preview-text {
+  text-shadow: none;
+}
+
+.getphame-walkthrough-video[data-caption-text-edge='outline']::cue,
+.getphame-caption-preview[data-caption-text-edge='outline'] .getphame-caption-preview-text {
+  text-shadow:
+    1px 0 0 rgb(0 0 0 / 95%),
+    -1px 0 0 rgb(0 0 0 / 95%),
+    0 1px 0 rgb(0 0 0 / 95%),
+    0 -1px 0 rgb(0 0 0 / 95%),
+    0 2px 3px rgb(0 0 0 / 85%);
+}
+
 .getphame-walkthrough-video[data-caption-text-color='gold']::cue,
 .getphame-caption-preview[data-caption-text-color='gold'] .getphame-caption-preview-text {
   color: rgb(255 214 102);

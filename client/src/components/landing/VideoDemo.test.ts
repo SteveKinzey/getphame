@@ -73,6 +73,14 @@ const captionControlKeys = [
   "captionTextOpacitySolid",
   "captionTextOpacityHigh",
   "captionTextOpacitySoft",
+  "captionLineSpacing",
+  "captionLineSpacingCompact",
+  "captionLineSpacingStandard",
+  "captionLineSpacingSpacious",
+  "captionTextEdge",
+  "captionTextEdgeNone",
+  "captionTextEdgeShadow",
+  "captionTextEdgeOutline",
   "captionSettingsReset",
   "captionAppearanceStatus",
   "captionAppearanceStatusExpanded",
@@ -83,6 +91,17 @@ const captionControlKeys = [
   "transcriptCueList",
   "transcriptJumpTo",
   "transcriptCurrent",
+  "transcriptExportGroupLabel",
+  "transcriptExportText",
+  "transcriptExportPdf",
+  "transcriptExportPreparing",
+  "transcriptExportDocumentTitle",
+  "transcriptExportLanguageLabel",
+  "transcriptExportGeneratedLabel",
+  "transcriptExportSourceLabel",
+  "transcriptExportTextSuccess",
+  "transcriptExportPdfSuccess",
+  "transcriptExportError",
   "videoFallback",
   "videoError",
   "videoRetry",
@@ -165,6 +184,8 @@ describe("VideoDemo media contract", () => {
     expect(source).toContain('"getphame-walkthrough-caption-font-family"');
     expect(source).toContain('"getphame-walkthrough-caption-text-color"');
     expect(source).toContain('"getphame-walkthrough-caption-text-opacity"');
+    expect(source).toContain('"getphame-walkthrough-caption-line-spacing"');
+    expect(source).toContain('"getphame-walkthrough-caption-text-edge"');
     expect(source).toContain("aria-pressed={captionsEnabled}");
     expect(source).toContain('aria-keyshortcuts="C"');
     expect(source).toContain('data-testid="caption-toggle"');
@@ -183,6 +204,8 @@ describe("VideoDemo media contract", () => {
     expect(source).toContain("data-caption-font-family={captionFontFamily}");
     expect(source).toContain("data-caption-text-color={captionTextColor}");
     expect(source).toContain("data-caption-text-opacity={captionTextOpacity}");
+    expect(source).toContain("data-caption-line-spacing={captionLineSpacing}");
+    expect(source).toContain("data-caption-text-edge={captionTextEdge}");
     expect(source).toContain('data-testid="caption-live-preview"');
     expect(source).toContain("transcriptCues[activeCueIndex]?.text");
     expect(source).toContain("landing.modal.captionFontSizeSmall");
@@ -191,11 +214,15 @@ describe("VideoDemo media contract", () => {
     expect(source).toContain('captionFontFamily === "sans"');
     expect(source).toContain('captionTextColor === "white"');
     expect(source).toContain('captionTextOpacity === "solid"');
+    expect(source).toContain('captionLineSpacing === "standard"');
+    expect(source).toContain('captionTextEdge === "shadow"');
     expect(source).toContain('setCaptionFontSize("medium")');
     expect(source).toContain('setCaptionBackground("navy")');
     expect(source).toContain('setCaptionFontFamily("sans")');
     expect(source).toContain('setCaptionTextColor("white")');
     expect(source).toContain('setCaptionTextOpacity("solid")');
+    expect(source).toContain('setCaptionLineSpacing("standard")');
+    expect(source).toContain('setCaptionTextEdge("shadow")');
     expect(source).toContain("landing.modal.captionSettingsReset");
     expect(source).toContain("landing.modal.captionAppearanceStatusExpanded");
     expect(source).not.toContain("landing.modal.captionSizeSmall");
@@ -211,6 +238,10 @@ describe("VideoDemo media contract", () => {
     expect(css).toContain(".getphame-walkthrough-video[data-caption-font-family='mono']::cue");
     expect(css).toContain(".getphame-walkthrough-video[data-caption-text-color='gold']::cue");
     expect(css).toContain("[data-caption-text-opacity='soft']::cue");
+    expect(css).toContain("[data-caption-line-spacing='compact']::cue");
+    expect(css).toContain("[data-caption-line-spacing='spacious']::cue");
+    expect(css).toContain("[data-caption-text-edge='none']::cue");
+    expect(css).toContain("[data-caption-text-edge='outline']::cue");
   });
 
   it("parses WebVTT into deterministic transcript cues and resolves active timestamps", async () => {
@@ -240,6 +271,11 @@ describe("VideoDemo media contract", () => {
     expect(source).toContain("activeCue.scrollIntoView");
     expect(source).toContain("prefers-reduced-motion: reduce");
     expect(source).toContain("lg:grid-cols-[minmax(0,1fr)_20rem]");
+    expect(source).toContain('data-testid="transcript-download-text"');
+    expect(source).toContain('data-testid="transcript-download-pdf"');
+    expect(source).toContain("createTranscriptTextBlob(transcriptCues, metadata)");
+    expect(source).toContain("await createTranscriptPdfBlob(transcriptCues, metadata)");
+    expect(source).toContain("buildTranscriptFilename(captionLanguage, format)");
   });
 
   it("limits the C shortcut to the active dialog and ignores conflicting key events", async () => {
@@ -317,6 +353,8 @@ describe("VideoDemo media contract", () => {
     expect(catalog.landing.modal.captionAppearanceStatusExpanded).toContain("{{family}}");
     expect(catalog.landing.modal.captionAppearanceStatusExpanded).toContain("{{color}}");
     expect(catalog.landing.modal.captionAppearanceStatusExpanded).toContain("{{opacity}}");
+    expect(catalog.landing.modal.captionAppearanceStatusExpanded).toContain("{{spacing}}");
+    expect(catalog.landing.modal.captionAppearanceStatusExpanded).toContain("{{edge}}");
     expect(catalog.landing.modal.transcriptJumpTo).toContain("{{time}}");
     expect(catalog.landing.modal.transcriptJumpTo).toContain("{{text}}");
     expect(catalog.landing.modal.iframeTitle).toBeUndefined();
@@ -363,12 +401,16 @@ describe("VideoDemo media contract", () => {
     expect(catalog.landing.modal.captionBackgroundNavy).toBe("Navy");
     expect(catalog.landing.modal.captionToggleTooltip).toBe("Current caption language: {{language}}");
     expect(catalog.landing.modal.captionSettingsReset).toBe("Restore defaults");
+    expect(catalog.landing.modal.captionLineSpacingStandard).toBe("Standard");
+    expect(catalog.landing.modal.captionTextEdgeShadow).toBe("Shadow");
+    expect(catalog.landing.modal.transcriptExportText).toBe("Download TXT");
+    expect(catalog.landing.modal.transcriptExportPdf).toBe("Download PDF");
   });
 
   it("bumps the PWA cache and pre-caches caption tracks while bypassing managed media", async () => {
     const serviceWorker = await readFile(serviceWorkerPath, "utf8");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v17'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v18'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.en.vtt'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.es.vtt'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.fr.vtt'");

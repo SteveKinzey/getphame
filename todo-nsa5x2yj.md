@@ -109,3 +109,11 @@
 - [x] Add focused Vitest and browser regressions for live preview parity, preference validation/persistence/reset, cue synchronization, click-to-seek, keyboard access, reduced motion, and responsive viewport fit.
 - [x] Run TypeScript, focused and full Vitest, production dependency audit, production build, desktop and Pixel 7 verification, then publish and validate the release on both live Get Phame origins.
 - [x] Update and validate the reusable multilingual video-caption-player skill with the live-preview, expanded-style, and interactive-transcript workflow.
+- [x] Add validated, persisted caption line-spacing presets that apply consistently to live WebVTT cues, the in-menu preview, status text, and Restore defaults.
+- [x] Add validated, persisted caption text-edge presets for none, drop shadow, and outline that preserve readability across supported text/background combinations.
+- [x] Add localized transcript download controls for formatted UTF-8 plain text and a readable PDF generated entirely from the currently selected WebVTT transcript.
+- [x] Ensure transcript filenames, metadata, timestamps, language labels, failure states, keyboard behavior, and browser download cleanup are deterministic and privacy-safe.
+- [x] Localize every new appearance, export, success, and error string across all seven maintained interface locales and runtime fallback resources.
+- [x] Add focused Vitest and desktop/Pixel 7 browser regressions for validation, preview/live-cue parity, persistence/reset, text/PDF export contents, keyboard access, and viewport fit.
+- [ ] Run TypeScript, focused and full Vitest, production dependency audit, production build, responsive browser gates, then publish and verify both live Get Phame origins.
+- [x] Update and validate the reusable multilingual video-caption-player skill with line-spacing, text-edge, and transcript-export implementation and release contracts.

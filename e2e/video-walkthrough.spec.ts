@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { expect, test, type Locator, type Page } from "@playwright/test";
 
 const CAPTIONS_KEY = "getphame-walkthrough-captions";
@@ -7,6 +8,8 @@ const BACKGROUND_KEY = "getphame-walkthrough-caption-background";
 const FONT_FAMILY_KEY = "getphame-walkthrough-caption-font-family";
 const TEXT_COLOR_KEY = "getphame-walkthrough-caption-text-color";
 const TEXT_OPACITY_KEY = "getphame-walkthrough-caption-text-opacity";
+const LINE_SPACING_KEY = "getphame-walkthrough-caption-line-spacing";
+const TEXT_EDGE_KEY = "getphame-walkthrough-caption-text-edge";
 
 async function selectMenuItem(page: Page, trigger: Locator, testId: string) {
   const menus = page.getByRole("menu");
@@ -30,7 +33,7 @@ async function selectMenuItem(page: Page, trigger: Locator, testId: string) {
 test("controls multilingual captions, appearance, keyboard safety, and persistence without viewport overflow", async ({
   page,
 }, testInfo) => {
-  test.setTimeout(120_000);
+  test.setTimeout(180_000);
   const captionLanguageEvents: string[] = [];
   await page.route("**/api/trpc/analytics.trackCaptionLanguage**", async (route) => {
     const payload = route.request().postDataJSON() as Record<string, { json?: { language?: string } }>;
@@ -66,6 +69,12 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
     }
     if (localStorage.getItem("getphame-walkthrough-caption-text-opacity") === null) {
       localStorage.setItem("getphame-walkthrough-caption-text-opacity", "solid");
+    }
+    if (localStorage.getItem("getphame-walkthrough-caption-line-spacing") === null) {
+      localStorage.setItem("getphame-walkthrough-caption-line-spacing", "standard");
+    }
+    if (localStorage.getItem("getphame-walkthrough-caption-text-edge") === null) {
+      localStorage.setItem("getphame-walkthrough-caption-text-edge", "shadow");
     }
   });
   await page.goto("/landing?walkthrough-e2e=1");
@@ -265,6 +274,8 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
   await expect(livePreview).toHaveAttribute("data-caption-font-family", "sans");
   await expect(livePreview).toHaveAttribute("data-caption-text-color", "white");
   await expect(livePreview).toHaveAttribute("data-caption-text-opacity", "solid");
+  await expect(livePreview).toHaveAttribute("data-caption-line-spacing", "standard");
+  await expect(livePreview).toHaveAttribute("data-caption-text-edge", "shadow");
 
   await page.getByTestId("caption-size-large").click();
   await expect(video).toHaveAttribute("data-caption-size", "large");
@@ -292,6 +303,16 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
   await expect(video).toHaveAttribute("data-caption-text-opacity", "high");
   await expect(livePreview).toHaveAttribute("data-caption-text-opacity", "high");
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), TEXT_OPACITY_KEY)).toBe("high");
+
+  await page.getByTestId("caption-line-spacing-spacious").click();
+  await expect(video).toHaveAttribute("data-caption-line-spacing", "spacious");
+  await expect(livePreview).toHaveAttribute("data-caption-line-spacing", "spacious");
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), LINE_SPACING_KEY)).toBe("spacious");
+
+  await page.getByTestId("caption-text-edge-outline").click();
+  await expect(video).toHaveAttribute("data-caption-text-edge", "outline");
+  await expect(livePreview).toHaveAttribute("data-caption-text-edge", "outline");
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), TEXT_EDGE_KEY)).toBe("outline");
   await page.screenshot({
     path: testInfo.outputPath("caption-settings-live-preview.png"),
     fullPage: false,
@@ -305,11 +326,15 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
   await expect(video).toHaveAttribute("data-caption-font-family", "sans");
   await expect(video).toHaveAttribute("data-caption-text-color", "white");
   await expect(video).toHaveAttribute("data-caption-text-opacity", "solid");
+  await expect(video).toHaveAttribute("data-caption-line-spacing", "standard");
+  await expect(video).toHaveAttribute("data-caption-text-edge", "shadow");
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), SIZE_KEY)).toBe("medium");
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), BACKGROUND_KEY)).toBe("navy");
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), FONT_FAMILY_KEY)).toBe("sans");
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), TEXT_COLOR_KEY)).toBe("white");
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), TEXT_OPACITY_KEY)).toBe("solid");
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), LINE_SPACING_KEY)).toBe("standard");
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), TEXT_EDGE_KEY)).toBe("shadow");
 
   await settingsTrigger.click();
   await expect(page.getByTestId("caption-settings-reset")).toHaveAttribute("data-disabled", "");
@@ -322,6 +347,8 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
   await page.getByTestId("caption-font-family-mono").click();
   await page.getByTestId("caption-text-color-cyan").click();
   await page.getByTestId("caption-text-opacity-soft").click();
+  await page.getByTestId("caption-line-spacing-compact").click();
+  await page.getByTestId("caption-text-edge-none").click();
   await page.keyboard.press("Escape");
 
   await expect
@@ -353,6 +380,29 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
   await expect(thirdCue).toHaveAttribute("aria-current", "true");
   await expect.poll(() => video.evaluate((element) => element.currentTime)).toBeGreaterThan(thirdCueStart);
 
+  const textDownloadPromise = page.waitForEvent("download");
+  await transcriptPanel.getByTestId("transcript-download-text").click();
+  const textDownload = await textDownloadPromise;
+  expect(textDownload.suggestedFilename()).toBe("get-phame-walkthrough-transcript-pt.txt");
+  const textDownloadPath = testInfo.outputPath(textDownload.suggestedFilename());
+  await textDownload.saveAs(textDownloadPath);
+  const textTranscript = await readFile(textDownloadPath, "utf8");
+  expect(textTranscript).toContain("GET PHAME");
+  expect(textTranscript).toContain("Platform walkthrough transcript");
+  expect(textTranscript).toContain("Language: Portuguese");
+  expect(textTranscript).toContain("[0:00]");
+  await expect(transcriptPanel.getByText("Text transcript downloaded.")).toBeVisible();
+
+  const pdfDownloadPromise = page.waitForEvent("download");
+  await transcriptPanel.getByTestId("transcript-download-pdf").click();
+  const pdfDownload = await pdfDownloadPromise;
+  expect(pdfDownload.suggestedFilename()).toBe("get-phame-walkthrough-transcript-pt.pdf");
+  const pdfDownloadPath = testInfo.outputPath(pdfDownload.suggestedFilename());
+  await pdfDownload.saveAs(pdfDownloadPath);
+  const pdfTranscript = await readFile(pdfDownloadPath);
+  expect(pdfTranscript.subarray(0, 5).toString("ascii")).toBe("%PDF-");
+  await expect(transcriptPanel.getByText("PDF transcript downloaded.")).toBeVisible();
+
   const viewport = page.viewportSize();
   const box = await dialog.boundingBox();
   expect(viewport).not.toBeNull();
@@ -383,6 +433,8 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
   await expect(video).toHaveAttribute("data-caption-font-family", "mono");
   await expect(video).toHaveAttribute("data-caption-text-color", "cyan");
   await expect(video).toHaveAttribute("data-caption-text-opacity", "soft");
+  await expect(video).toHaveAttribute("data-caption-line-spacing", "compact");
+  await expect(video).toHaveAttribute("data-caption-text-edge", "none");
   await expect
     .poll(() =>
       video.evaluate((element) =>
@@ -413,6 +465,8 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
   await expect(video).toHaveAttribute("data-caption-font-family", "mono");
   await expect(video).toHaveAttribute("data-caption-text-color", "cyan");
   await expect(video).toHaveAttribute("data-caption-text-opacity", "soft");
+  await expect(video).toHaveAttribute("data-caption-line-spacing", "compact");
+  await expect(video).toHaveAttribute("data-caption-text-edge", "none");
   expect(captionLanguageEvents).toEqual(["es", "fr", "it", "de", "pt"]);
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();

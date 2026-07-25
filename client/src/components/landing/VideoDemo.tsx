@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Captions, Languages, Play, RotateCcw, Settings2, X } from "lucide-react";
+import { Captions, Download, Languages, Play, RotateCcw, Settings2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   DropdownMenu,
@@ -13,6 +13,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  buildTranscriptFilename,
+  createTranscriptPdfBlob,
+  createTranscriptTextBlob,
+  downloadTranscriptBlob,
+  type TranscriptExportFormat,
+} from "@/lib/transcriptExport";
 import { trpc } from "@/lib/trpc";
 import FadeUp from "./FadeUp";
 
@@ -36,11 +43,15 @@ const CAPTION_BACKGROUND_PREFERENCE_KEY = "getphame-walkthrough-caption-backgrou
 const CAPTION_FONT_FAMILY_PREFERENCE_KEY = "getphame-walkthrough-caption-font-family";
 const CAPTION_TEXT_COLOR_PREFERENCE_KEY = "getphame-walkthrough-caption-text-color";
 const CAPTION_TEXT_OPACITY_PREFERENCE_KEY = "getphame-walkthrough-caption-text-opacity";
+const CAPTION_LINE_SPACING_PREFERENCE_KEY = "getphame-walkthrough-caption-line-spacing";
+const CAPTION_TEXT_EDGE_PREFERENCE_KEY = "getphame-walkthrough-caption-text-edge";
 type CaptionFontSize = "small" | "medium" | "large";
 type CaptionBackground = "navy" | "black" | "translucent";
 type CaptionFontFamily = "sans" | "serif" | "mono";
 type CaptionTextColor = "white" | "gold" | "cyan";
 type CaptionTextOpacity = "solid" | "high" | "soft";
+type CaptionLineSpacing = "compact" | "standard" | "spacious";
+type CaptionTextEdge = "none" | "shadow" | "outline";
 export type TranscriptCue = {
   id: string;
   startTime: number;
@@ -199,6 +210,26 @@ export default function VideoDemo() {
       return "solid";
     }
   });
+  const [captionLineSpacing, setCaptionLineSpacing] = useState<CaptionLineSpacing>(() => {
+    if (typeof window === "undefined") return "standard";
+    try {
+      const storedSpacing = window.localStorage.getItem(CAPTION_LINE_SPACING_PREFERENCE_KEY);
+      return storedSpacing === "compact" || storedSpacing === "spacious"
+        ? storedSpacing
+        : "standard";
+    } catch {
+      return "standard";
+    }
+  });
+  const [captionTextEdge, setCaptionTextEdge] = useState<CaptionTextEdge>(() => {
+    if (typeof window === "undefined") return "shadow";
+    try {
+      const storedEdge = window.localStorage.getItem(CAPTION_TEXT_EDGE_PREFERENCE_KEY);
+      return storedEdge === "none" || storedEdge === "outline" ? storedEdge : "shadow";
+    } catch {
+      return "shadow";
+    }
+  });
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -208,6 +239,10 @@ export default function VideoDemo() {
   const [transcriptStatus, setTranscriptStatus] = useState<"idle" | "loading" | "ready" | "error">(
     "idle",
   );
+  const [transcriptExportStatus, setTranscriptExportStatus] = useState<
+    "idle" | "text" | "pdf" | "success" | "error"
+  >("idle");
+  const [transcriptExportMessage, setTranscriptExportMessage] = useState("");
   const captionLanguageOptions = [
     {
       value: "en" as const,
@@ -313,6 +348,34 @@ export default function VideoDemo() {
       label: t("landing.modal.captionTextOpacitySoft", { defaultValue: "70%" }),
     },
   ];
+  const captionLineSpacingOptions = [
+    {
+      value: "compact" as const,
+      label: t("landing.modal.captionLineSpacingCompact", { defaultValue: "Compact" }),
+    },
+    {
+      value: "standard" as const,
+      label: t("landing.modal.captionLineSpacingStandard", { defaultValue: "Standard" }),
+    },
+    {
+      value: "spacious" as const,
+      label: t("landing.modal.captionLineSpacingSpacious", { defaultValue: "Spacious" }),
+    },
+  ];
+  const captionTextEdgeOptions = [
+    {
+      value: "none" as const,
+      label: t("landing.modal.captionTextEdgeNone", { defaultValue: "None" }),
+    },
+    {
+      value: "shadow" as const,
+      label: t("landing.modal.captionTextEdgeShadow", { defaultValue: "Shadow" }),
+    },
+    {
+      value: "outline" as const,
+      label: t("landing.modal.captionTextEdgeOutline", { defaultValue: "Outline" }),
+    },
+  ];
   const selectedCaptionFontSizeLabel =
     captionFontSizeOptions.find((option) => option.value === captionFontSize)?.label ??
     captionFontSizeOptions[1].label;
@@ -328,6 +391,12 @@ export default function VideoDemo() {
   const selectedCaptionTextOpacityLabel =
     captionTextOpacityOptions.find((option) => option.value === captionTextOpacity)?.label ??
     captionTextOpacityOptions[0].label;
+  const selectedCaptionLineSpacingLabel =
+    captionLineSpacingOptions.find((option) => option.value === captionLineSpacing)?.label ??
+    captionLineSpacingOptions[1].label;
+  const selectedCaptionTextEdgeLabel =
+    captionTextEdgeOptions.find((option) => option.value === captionTextEdge)?.label ??
+    captionTextEdgeOptions[1].label;
 
   const syncCaptionMode = useCallback(() => {
     const tracks = videoRef.current?.textTracks;
@@ -351,6 +420,8 @@ export default function VideoDemo() {
       window.localStorage.setItem(CAPTION_FONT_FAMILY_PREFERENCE_KEY, captionFontFamily);
       window.localStorage.setItem(CAPTION_TEXT_COLOR_PREFERENCE_KEY, captionTextColor);
       window.localStorage.setItem(CAPTION_TEXT_OPACITY_PREFERENCE_KEY, captionTextOpacity);
+      window.localStorage.setItem(CAPTION_LINE_SPACING_PREFERENCE_KEY, captionLineSpacing);
+      window.localStorage.setItem(CAPTION_TEXT_EDGE_PREFERENCE_KEY, captionTextEdge);
     } catch {
       // Caption controls still work when storage is restricted or unavailable.
     }
@@ -360,7 +431,9 @@ export default function VideoDemo() {
     captionFontFamily,
     captionFontSize,
     captionLanguage,
+    captionLineSpacing,
     captionTextColor,
+    captionTextEdge,
     captionTextOpacity,
     captionsEnabled,
     open,
@@ -452,6 +525,8 @@ export default function VideoDemo() {
     setTranscriptStatus("loading");
     setTranscriptCues([]);
     setActiveCueIndex(-1);
+    setTranscriptExportStatus("idle");
+    setTranscriptExportMessage("");
 
     void fetch(WALKTHROUGH_CAPTION_TRACKS[captionLanguage], { signal: controller.signal })
       .then((response) => {
@@ -510,6 +585,61 @@ export default function VideoDemo() {
     void video.play().catch(() => {
       // Seeking still succeeds when the browser blocks playback.
     });
+  };
+
+  const downloadTranscript = async (format: TranscriptExportFormat) => {
+    if (transcriptStatus !== "ready" || transcriptCues.length === 0) return;
+    setTranscriptExportStatus(format);
+    setTranscriptExportMessage("");
+
+    const generatedValue = new Intl.DateTimeFormat(undefined, { dateStyle: "long" }).format(
+      new Date(),
+    );
+    const metadata = {
+      brand: "GET PHAME",
+      documentTitle: t("landing.modal.transcriptExportDocumentTitle", {
+        defaultValue: "Platform walkthrough transcript",
+      }),
+      languageLabel: t("landing.modal.transcriptExportLanguageLabel", {
+        defaultValue: "Language",
+      }),
+      languageValue: selectedCaptionLanguageLabel,
+      generatedLabel: t("landing.modal.transcriptExportGeneratedLabel", {
+        defaultValue: "Generated",
+      }),
+      generatedValue,
+      sourceLabel: t("landing.modal.transcriptExportSourceLabel", { defaultValue: "Source" }),
+      sourceValue: "https://getphame.app",
+    };
+
+    try {
+      const blob =
+        format === "text"
+          ? createTranscriptTextBlob(transcriptCues, metadata)
+          : await createTranscriptPdfBlob(transcriptCues, metadata);
+      downloadTranscriptBlob(blob, buildTranscriptFilename(captionLanguage, format));
+      setTranscriptExportStatus("success");
+      setTranscriptExportMessage(
+        t(
+          format === "text"
+            ? "landing.modal.transcriptExportTextSuccess"
+            : "landing.modal.transcriptExportPdfSuccess",
+          {
+            defaultValue:
+              format === "text"
+                ? "Text transcript downloaded."
+                : "PDF transcript downloaded.",
+          },
+        ),
+      );
+    } catch {
+      setTranscriptExportStatus("error");
+      setTranscriptExportMessage(
+        t("landing.modal.transcriptExportError", {
+          defaultValue: "The transcript download could not be created. Please try again.",
+        }),
+      );
+    }
   };
 
   return (
@@ -661,6 +791,8 @@ export default function VideoDemo() {
                     data-caption-font-family={captionFontFamily}
                     data-caption-text-color={captionTextColor}
                     data-caption-text-opacity={captionTextOpacity}
+                    data-caption-line-spacing={captionLineSpacing}
+                    data-caption-text-edge={captionTextEdge}
                     className="getphame-walkthrough-video absolute inset-0 h-full w-full object-contain"
                   >
                     {captionLanguageOptions.map((option) => (
@@ -798,6 +930,8 @@ export default function VideoDemo() {
                           data-caption-font-family={captionFontFamily}
                           data-caption-text-color={captionTextColor}
                           data-caption-text-opacity={captionTextOpacity}
+                          data-caption-line-spacing={captionLineSpacing}
+                          data-caption-text-edge={captionTextEdge}
                           className="getphame-caption-preview mx-1 mb-1 rounded-lg border border-white/15 bg-[#06111f] p-2"
                         >
                           <p className="mb-1 text-xs font-bold uppercase tracking-wider text-primary">
@@ -821,7 +955,9 @@ export default function VideoDemo() {
                             captionBackground === "navy" &&
                             captionFontFamily === "sans" &&
                             captionTextColor === "white" &&
-                            captionTextOpacity === "solid"
+                            captionTextOpacity === "solid" &&
+                            captionLineSpacing === "standard" &&
+                            captionTextEdge === "shadow"
                           }
                           onSelect={() => {
                             setCaptionFontSize("medium");
@@ -829,6 +965,8 @@ export default function VideoDemo() {
                             setCaptionFontFamily("sans");
                             setCaptionTextColor("white");
                             setCaptionTextOpacity("solid");
+                            setCaptionLineSpacing("standard");
+                            setCaptionTextEdge("shadow");
                             setCaptionSettingsMenuOpen(false);
                           }}
                           className="min-h-10 cursor-pointer gap-2 text-white focus:bg-primary/15 focus:text-white data-[disabled]:cursor-not-allowed data-[disabled]:text-slate-500"
@@ -956,6 +1094,54 @@ export default function VideoDemo() {
                             </DropdownMenuRadioItem>
                           ))}
                         </DropdownMenuRadioGroup>
+                        <DropdownMenuSeparator className="bg-white/15" />
+                        <DropdownMenuLabel className="inline-flex min-h-10 w-[6.5rem] items-center px-1 py-1 align-middle text-xs font-bold uppercase tracking-wider text-primary">
+                          {t("landing.modal.captionLineSpacing", { defaultValue: "Line spacing" })}
+                        </DropdownMenuLabel>
+                        <DropdownMenuRadioGroup
+                          value={captionLineSpacing}
+                          className="inline-grid w-[calc(100%-6.5rem)] grid-cols-3 gap-1 pr-1 align-middle"
+                          onValueChange={(value) => {
+                            if (value !== "compact" && value !== "standard" && value !== "spacious") return;
+                            setCaptionLineSpacing(value);
+                          }}
+                        >
+                          {captionLineSpacingOptions.map((option) => (
+                            <DropdownMenuRadioItem
+                              key={option.value}
+                              value={option.value}
+                              data-testid={`caption-line-spacing-${option.value}`}
+                              onSelect={(event) => event.preventDefault()}
+                              className="min-h-10 cursor-pointer justify-center px-2 text-center text-white focus:bg-primary/15 focus:text-white"
+                            >
+                              {option.label}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
+                        <DropdownMenuSeparator className="bg-white/15" />
+                        <DropdownMenuLabel className="inline-flex min-h-10 w-[6.5rem] items-center px-1 py-1 align-middle text-xs font-bold uppercase tracking-wider text-primary">
+                          {t("landing.modal.captionTextEdge", { defaultValue: "Text edge" })}
+                        </DropdownMenuLabel>
+                        <DropdownMenuRadioGroup
+                          value={captionTextEdge}
+                          className="inline-grid w-[calc(100%-6.5rem)] grid-cols-3 gap-1 pr-1 align-middle"
+                          onValueChange={(value) => {
+                            if (value !== "none" && value !== "shadow" && value !== "outline") return;
+                            setCaptionTextEdge(value);
+                          }}
+                        >
+                          {captionTextEdgeOptions.map((option) => (
+                            <DropdownMenuRadioItem
+                              key={option.value}
+                              value={option.value}
+                              data-testid={`caption-text-edge-${option.value}`}
+                              onSelect={(event) => event.preventDefault()}
+                              className="min-h-10 cursor-pointer justify-center px-2 text-center text-white focus:bg-primary/15 focus:text-white"
+                            >
+                              {option.label}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
                     <DropdownMenu
@@ -1028,12 +1214,14 @@ export default function VideoDemo() {
                     {`. ${selectedCaptionLanguageLabel}. `}
                     {t("landing.modal.captionAppearanceStatusExpanded", {
                       defaultValue:
-                        "Caption size {{size}}, {{family}} font, {{color}} text at {{opacity}} opacity, with {{background}} background",
+                        "Caption size {{size}}, {{family}} font, {{color}} text at {{opacity}} opacity, {{spacing}} line spacing, {{edge}} text edge, with {{background}} background",
                       size: selectedCaptionFontSizeLabel,
                       background: selectedCaptionBackgroundLabel,
                       family: selectedCaptionFontFamilyLabel,
                       color: selectedCaptionTextColorLabel,
                       opacity: selectedCaptionTextOpacityLabel,
+                      spacing: selectedCaptionLineSpacingLabel,
+                      edge: selectedCaptionTextEdgeLabel,
                     })}
                   </p>
                 </div>
@@ -1057,6 +1245,64 @@ export default function VideoDemo() {
                         {t("landing.modal.transcriptHelp", {
                           defaultValue: "Select a line to jump to that moment in the video.",
                         })}
+                      </p>
+                      <div
+                        role="group"
+                        aria-label={t("landing.modal.transcriptExportGroupLabel", {
+                          defaultValue: "Download transcript",
+                        })}
+                        className="mt-3 grid grid-cols-2 gap-2"
+                      >
+                        <button
+                          type="button"
+                          data-testid="transcript-download-text"
+                          disabled={
+                            transcriptStatus !== "ready" ||
+                            transcriptExportStatus === "text" ||
+                            transcriptExportStatus === "pdf"
+                          }
+                          aria-describedby="getphame-transcript-export-status"
+                          onClick={() => void downloadTranscript("text")}
+                          className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-lg border border-white/20 bg-white/5 px-2 text-xs font-bold text-white transition-[transform,background-color,border-color] duration-150 hover:border-primary/60 hover:bg-white/10 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          <Download className="h-4 w-4 text-primary" aria-hidden="true" />
+                          {transcriptExportStatus === "text"
+                            ? t("landing.modal.transcriptExportPreparing", {
+                                defaultValue: "Preparing…",
+                              })
+                            : t("landing.modal.transcriptExportText", {
+                                defaultValue: "Download TXT",
+                              })}
+                        </button>
+                        <button
+                          type="button"
+                          data-testid="transcript-download-pdf"
+                          disabled={
+                            transcriptStatus !== "ready" ||
+                            transcriptExportStatus === "text" ||
+                            transcriptExportStatus === "pdf"
+                          }
+                          aria-describedby="getphame-transcript-export-status"
+                          onClick={() => void downloadTranscript("pdf")}
+                          className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-lg border border-white/20 bg-white/5 px-2 text-xs font-bold text-white transition-[transform,background-color,border-color] duration-150 hover:border-primary/60 hover:bg-white/10 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          <Download className="h-4 w-4 text-primary" aria-hidden="true" />
+                          {transcriptExportStatus === "pdf"
+                            ? t("landing.modal.transcriptExportPreparing", {
+                                defaultValue: "Preparing…",
+                              })
+                            : t("landing.modal.transcriptExportPdf", {
+                                defaultValue: "Download PDF",
+                              })}
+                        </button>
+                      </div>
+                      <p
+                        id="getphame-transcript-export-status"
+                        role={transcriptExportStatus === "error" ? "alert" : "status"}
+                        aria-live="polite"
+                        className="sr-only"
+                      >
+                        {transcriptExportMessage}
                       </p>
                     </div>
 
