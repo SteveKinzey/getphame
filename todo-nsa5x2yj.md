@@ -37,3 +37,137 @@
 - [x] Build the reusable zero-trust implementation skill with concise workflow guidance, reference material, and reusable document templates.
 - [x] Validate the skill package and representative role-matrix, WebAuthn, and recovery-drill scenarios through the skill-creator workflow.
 - [x] Deliver the packaged skill and the three review-ready Get Phame security documents.
+- [x] Restore and checkpoint the additive zero-trust schema plus deny-by-default authorization foundation in observe mode.
+- [x] Restore and checkpoint the deterministic role backfill and focused authorization regression tests.
+- [x] Restore and checkpoint SimpleWebAuthn registration, login, revocable sessions, credential lifecycle, and legacy-auth coexistence.
+- [x] Restore and checkpoint accessible mobile-first passkey interfaces across all seven supported locales.
+- [x] Implement and checkpoint the staging-only recovery drill with Steve as Recovery Custodian and a distinct lead-engineer Independent Approver.
+- [x] Run focused and full tests, bounded TypeScript validation, migration checks, dependency audit, production build, and responsive verification.
+- [x] Verify the staged managed deployment and synchronize only validated source to the selected private GitHub repository.
+- [x] Deliver passkey activation, approver assignment, and staging recovery-drill execution instructions.
+- [x] Fix the production build failure by adding `passkeys.signIn.orAlternative` to every served locale and rerun the direct i18n coverage gate.
+- [x] Remediate the newly reported `tar` production advisory and verify the private Quality Gate with ephemeral CI-only signing material.
+- [x] Close the remaining high-severity development-only PostCSS alert and reconfirm the private GitHub release gates.
+- [x] Locate the latest official Get Phame P/star mark, wordmark, and authoritative source for the affected marketing video scenes.
+- [x] Replace incorrect logo treatments and recompose screenshot scenes so closed captions never obscure product UI.
+- [x] Render and visually verify the corrected video on mobile, update linked marketing references if needed, and deliver the revised asset.
+- [x] Reproduce the broken homepage video on the live Get Phame domains and trace the MP4, poster, WebVTT, redirect, cache, range-request, and media-type responses.
+- [x] Repair production media delivery and add a graceful player fallback so the walkthrough remains usable when playback cannot initialize.
+- [x] Run focused tests, full TypeScript/Vitest/build gates, mobile and desktop production playback checks, then publish the corrected checkpoint.
+- [x] Resolve the production build audit blocker for the brace-expansion security advisory without weakening the audit gate.
+- [x] Save a managed checkpoint containing the homepage-video delivery repair and capture its published version ID (`a56e1e9c`).
+- [x] Re-verify the repaired MP4, same-origin captions, and player recovery path on the live getphame.app landing page after publication.
+- [x] Exclude managed `/manus-storage/` media redirects from service-worker interception, bump the PWA cache version, and add regression coverage for direct browser range handling.
+- [x] Save a new managed checkpoint containing the `/manus-storage/` service-worker bypass and record the published version ID (`cc0db06b`).
+- [x] Confirm the decoded branded frame, WebVTT captions, and recovery controls on live getphame.app after the definitive checkpoint deploys.
+- [x] Audit the current MP4 and WebVTT behavior so the new captions-off state removes all displayed caption text rather than only changing an unused track.
+- [x] Add a localized, keyboard-accessible custom captions toggle with synchronized WebVTT state and clear on/off feedback in the video modal.
+- [x] Add focused and responsive browser regressions for caption enable/disable behavior, run the full release gate, publish checkpoint `12473412`, and verify the control on live getphame.app.
+- [x] Create Spanish and French WebVTT tracks with cue timing parity, accurate Get Phame terminology, and validated caption syntax.
+- [x] Add a localized caption-language selector and a conflict-safe global `C` shortcut that toggles captions only while the video modal is active.
+- [x] Add an accessible caption settings menu with persistent font-size and background-color preferences applied to live WebVTT cues.
+- [x] Package the clean-master, multilingual WebVTT, custom controls, persistence, service-worker, and validation workflow as a reusable skill using the skill-creator process.
+- [x] Add focused and responsive regressions for language switching, keyboard toggling, appearance settings, persistence, and recovery; run the full release gate, checkpoint, and live verification.
+- [x] Align the player’s caption appearance lookups with the translated locale keys and guard the `C` shortcut against already-handled events and custom textbox roles.
+- [x] Control the Radix caption menus and synchronize browser tests with portal unmounting so repeated language and appearance selections are deterministic on desktop and Pixel 7.
+- [x] Visually verify the released caption UI at 1280×720 and Pixel 7: controls remain in-bounds, touch targets stack cleanly, French cues render with the selected large/translucent style, and state labels retain readable contrast.
+- [x] Recheck checkpoint `8f71e027` after production propagation: `https://getphame.app/sw.js?release=8f71e027-final` and `https://revrocket-j5ynazte.manus.space/sw.js?release=8f71e027-final` now serve cache v13; both origins return `200 text/vtt; charset=UTF-8` with `WEBVTT` first lines for `/getphame-walkthrough.es.vtt` and `/getphame-walkthrough.fr.vtt`.
+- [x] Verify the cache-busted live modal at `https://getphame.app/landing?release=8f71e027-final`: English, Spanish, and French are exposed; the live French track is `showing` and at 00:43 reports the active cue “Cet équilibre est volontaire… respecter le client.”; Large and Clear preferences apply; and the global `C` shortcut changes the accessible state from `CAPTIONS ON` to `CAPTIONS OFF` while the modal is active.
+- [x] Verify live preference persistence by closing and reopening the walkthrough: the accessible state restores `Captions on. French. Caption size Large with Clear background`, and the first French cue renders immediately.
+- [x] Create German and Portuguese walkthrough WebVTT tracks with exact cue-timing parity, accurate Get Phame terminology, and validated syntax.
+- [x] Extend localized caption controls and runtime resources for German and Portuguese without exposing raw translation keys or stale fallback copy.
+- [x] Add a direct, keyboard-accessible captions toggle to the main walkthrough controls with clear on/off state and no menu dependency.
+- [x] Auto-select the initial caption language from ordered browser language preferences when no valid saved user preference exists, with deterministic fallback to English.
+- [x] Update the reusable multilingual caption-player skill to cover language expansion, browser negotiation, direct toggles, persistence precedence, PWA caching, and regression requirements.
+- [x] Add focused and responsive regressions for German/Portuguese tracks, browser-language precedence, saved-preference precedence, direct toggle behavior, persistence, recovery, and mobile viewport fit.
+- [x] Run TypeScript, full Vitest, dependency audit, production build, desktop and Pixel 7 browser gates; publish a checkpoint and verify the new tracks and controls on live Get Phame.
+- [x] Visually verify the five-language walkthrough at 1280×720 and Pixel 7: the gold direct CC control is the first and most prominent action, German/Portuguese help copy remains readable, Portuguese cues render in-bounds, touch controls stack cleanly, and the modal stays within both viewports.
+- [x] Recheck checkpoint `e353e649` after production propagation: both `https://getphame.app/sw.js?release=e353e649-final` and `https://revrocket-j5ynazte.manus.space/sw.js?release=e353e649-final` serve cache v14; German and Portuguese tracks return HTTP 200, `text/vtt; charset=UTF-8`, and `WEBVTT` on both origins.
+- [x] Complete live German and Portuguese track verification at `https://getphame.app/landing?release=e353e649-autodetect`: Portuguese became the only `showing` track, rendered the 00:43 cue “Esse equilíbrio é intencional… respeitar o cliente.”, persisted `pt`, and restored after close/reopen; German then became the only `showing` track, persisted `de`, and rendered “Dieses Gleichgewicht ist beabsichtigt… Kunden zu respektieren.” First-use `en-US,en` negotiation persisted English and settled with only English showing.
+- [x] Visually verify the live production modal: the gold CC toggle is the first action, five-language help copy is visible, English is the browser-negotiated selection, controls remain aligned above the fold, and the caption menu trigger is keyboard-addressable.
+- [x] Create an Italian walkthrough WebVTT track and revalidate the existing French track against the English source for exact cue count, timings, settings, syntax, and Get Phame terminology.
+- [x] Extend all maintained locale catalogs and runtime fallback resources so Italian appears alongside English, Spanish, French, German, and Portuguese without raw or stale translation keys.
+- [x] Enhance the direct CC toggle with a subtle reduced-motion-safe hover treatment and an accessible tooltip that reports the currently active caption language.
+- [x] Emit a privacy-friendly caption-language analytics event only on explicit visitor language selection, using the existing analytics abstraction and a bounded language code without identity or free-text payloads.
+- [x] Update and validate the reusable multilingual caption-player skill for language expansion, tooltip accessibility, motion preferences, privacy-safe analytics, PWA caching, and regression requirements.
+- [x] Add focused and responsive regressions for Italian/French parity, tooltip content and keyboard access, reduced-motion handling, analytics payload/privacy/deduplication, persistence, recovery, and mobile viewport fit.
+- [x] Run TypeScript, full Vitest, dependency audit, production build, desktop and Pixel 7 browser gates; publish a checkpoint and verify Italian, French, tooltip, and analytics behavior on live Get Phame.
+- [x] Visually verify the six-language walkthrough at 1280×720 and Pixel 7: Italian appears in the help contract, the gold CC action remains first and prominent, Portuguese captions remain in-bounds, controls stay readable and touch-sized, and both modal layouts remain within their viewports.
+- [x] Recheck checkpoint `92fee092` after production propagation: both `https://getphame.app/sw.js?release=92fee092-final` and `https://revrocket-j5ynazte.manus.space/sw.js?release=92fee092-final` now serve cache v15 with `/getphame-walkthrough.it.vtt` precached; both Italian URLs return HTTP 200, `text/vtt; charset=UTF-8`, and `WEBVTT`, while the existing French track remains available.
+- [x] Complete live Italian and French verification at `https://getphame.app/landing?release=92fee092-final`: Italian emitted one bounded `{language:"it"}` request, persisted and restored without duplicate reopen telemetry, became the sole `showing` track, rendered its 00:43 cue, and updated the tooltip. French then emitted one bounded `{language:"fr"}` request, persisted `fr`, became the sole `showing` track, rendered “Cet équilibre est volontaire… respecter le client.”, and updated the tooltip to “Current caption language: French.”
+- [x] Re-run the full release gate and capture explicit pass summaries: `tsc --noEmit` passed; 94 Vitest files passed with 572 tests passed and 6 skipped; 683 unique production package versions passed the OSV audit; Vite built in 1.67s and the server bundle completed in 47ms.
+- [x] Translate the CC active-language tooltip across every supported interface locale and synchronize maintained catalogs, the English override, runtime fallbacks, and the locale cache-buster.
+- [x] Audit and complete the existing caption appearance menu so font-size and background-color choices are accessible, localized, visibly applied to live cues, persistent across reopen/reload, and reset-safe.
+- [x] Update and validate the reusable multilingual caption-player skill for complete tooltip localization and persistent caption appearance settings.
+- [x] Add focused and responsive regressions for all tooltip locales, tooltip keyboard access, font-size/background application, persistence, reset behavior, recovery, and mobile viewport fit.
+- [x] Run TypeScript, all Vitest suites, production dependency audit, production build, desktop and Pixel 7 browser gates; publish a checkpoint and verify the localized tooltip plus appearance settings on live Get Phame.
+- [x] Visually verify the localized caption controls at 1280×720 and Pixel 7: the direct gold CC action remains first, the settings and language controls remain legible and touch-sized, captions stay in-bounds, and both the compact desktop row and stacked mobile layout remain within their viewports.
+- [x] Add an accessible live preview inside the caption appearance menu that updates immediately for every supported style choice without changing playback position.
+- [x] Expand persisted caption appearance preferences with bounded font-family, text-color, and text-opacity options applied to both live WebVTT cues and the preview.
+- [x] Build a responsive interactive transcript beside the video on wide screens and in a mobile-safe layout, synchronized to active cues with current-cue highlighting, automatic visibility, and click-to-seek controls.
+- [x] Localize all new preview, appearance, transcript, status, and reset strings across every maintained interface locale and runtime fallback resource.
+- [x] Add focused Vitest and browser regressions for live preview parity, preference validation/persistence/reset, cue synchronization, click-to-seek, keyboard access, reduced motion, and responsive viewport fit.
+- [x] Run TypeScript, focused and full Vitest, production dependency audit, production build, desktop and Pixel 7 verification, then publish and validate the release on both live Get Phame origins.
+- [x] Update and validate the reusable multilingual video-caption-player skill with the live-preview, expanded-style, and interactive-transcript workflow.
+- [x] Add validated, persisted caption line-spacing presets that apply consistently to live WebVTT cues, the in-menu preview, status text, and Restore defaults.
+- [x] Add validated, persisted caption text-edge presets for none, drop shadow, and outline that preserve readability across supported text/background combinations.
+- [x] Add localized transcript download controls for formatted UTF-8 plain text and a readable PDF generated entirely from the currently selected WebVTT transcript.
+- [x] Ensure transcript filenames, metadata, timestamps, language labels, failure states, keyboard behavior, and browser download cleanup are deterministic and privacy-safe.
+- [x] Localize every new appearance, export, success, and error string across all seven maintained interface locales and runtime fallback resources.
+- [x] Add focused Vitest and desktop/Pixel 7 browser regressions for validation, preview/live-cue parity, persistence/reset, text/PDF export contents, keyboard access, and viewport fit.
+- [x] Run TypeScript, focused and full Vitest, production dependency audit, production build, responsive browser gates, then publish and verify both live Get Phame origins.
+- [x] Update and validate the reusable multilingual video-caption-player skill with line-spacing, text-edge, and transcript-export implementation and release contracts.
+- [x] Fix transcript PDF Unicode rendering for Traditional/Simplified Chinese and Thai interface metadata while preserving Latin caption text, deterministic client-side generation, and acceptable download size.
+- [x] Publish the Unicode PDF correction and verify real Traditional Chinese and Thai transcript downloads on the live Get Phame origin before final delivery.
+- [x] Fix the live CORS failure for managed Unicode font redirects by serving the approved CJK and Thai subsets through a cacheable same-origin application route, then reverify both localized PDF exports.
+- [x] Audit the current production Get Phame favicon, PWA icons, Apple touch icon, app-store icon, and wordmark assets, including exact pixel dimensions and file characteristics.
+- [x] Locate and measure the proposed new Get Phame icon-plus-wordmark asset against the current production lockup.
+- [x] Verify the current Apple App Store, Google Play, and installable PWA image requirements from authoritative platform documentation.
+- [x] Deliver an exact raster asset handoff specification, naming guidance, safe-area rules, and a current-versus-new logo comparison.
+- [x] Measure the supplied 170×58, 253×85, 338×114, and 506×170 Get Phame lockup PNGs programmatically without reopening them visually, and verify whether they are true scale variants or independently cropped exports.
+- [x] Record that the logo/icon audit is discontinued and confirm no production branding files or customer-facing lockups were changed.
+- [x] Identify the last unfinished non-logo Get Phame workstream and resume it from the current shared project state.
+- [x] Inventory every project task record that predates the logo discussion, copy any applicable incomplete items into this session tracker, and complete their acceptance gates.
+- [x] Restore and validate the missing reusable administrator CSV-preview workflow skill from the shipped preview, search, export, preference, and Undo behavior.
+- [x] Add an easy, keyboard-accessible Sources workflow to the existing Developer Integrations workspace for Jotform, Facebook Lead Ads, Google Forms, Airtable, and similar tools using secure server-side webhook/no-code connections.
+- [x] Make the Sources workflow map customer name, email, affirmative consent, and source metadata into the canonical import-only API with stable idempotency, deduplication, and no automatic review-request sending.
+- [x] Localize the Sources workflow across all seven maintained locales and update the service-worker locale cache marker.
+- [x] Add focused Sources regressions for authorization boundaries, secret-handling guidance, required mappings, idempotency, deduplication, compliance defaults, UI accessibility, and locale completeness.
+- [x] Run focused tests, the full suite, TypeScript checks, dependency audit, production build, authenticated desktop/mobile responsive verification, checkpoint publication, and live-bundle confirmation.
+- [x] Update the two stale service-worker cache-version assertions from v18 to the released Sources locale cache v19, then rerun the complete suite.
+- [x] Fix the responsive-preview defect where Sources copy renders raw translation keys by updating every runtime localization resource and adding a regression that fails on unresolved keys.
+- [x] Update all three stale `phame32` runtime-locale cache assertions to the Sources release cache key `phame33`, then rerun the complete suite.
+
+- [x] Recover the reset source-connection schema, migration record, attribution API, persistence helpers, protected procedures, and focused tests without reapplying destructive database changes.
+- [x] Add guided Zapier and Make Sources templates with secure endpoint/header setup, canonical field mapping, consent and idempotency guidance, and an observable test-import workflow.
+- [x] Add per-source 7/30/90-day import analytics for attempts, successful imports, created contacts, deduplicated contacts, failures, success rate, and latest activity.
+- [x] Add bounded 15-minute source health evaluation with durable history, retry deduplication, monitoring controls, and deduplicated owner failure/recovery notifications.
+- [x] Build localized, mobile-first Sources connection, analytics, and health interfaces using established Get Phame components and design tokens.
+- [x] Localize all Sources operations copy across en, es, fr, it, th, zh-CN, and zh-TW; update runtime fallbacks; bump the locale/PWA cache to phame34.
+- [x] Package and validate the complete workflow as the reusable `source-integration-operations` skill through the skill-creator workflow.
+- [x] Run focused tests, full Vitest, TypeScript, dependency audit, production build, desktop/mobile responsive verification, checkpoint publication, and live-origin confirmation.
+
+- [x] Audit every current Get Phame route and feature as shared user, free-only, paid-only, or administrator-only guidance, using the implemented app as the source of truth.
+- [x] Define a mutually exclusive role-aware manual model: users see only the User Manual; administrators see only a superset Admin Manual containing all user guidance plus administrator-only operations; neither role can view the other manual entry or route state.
+- [x] Author a complete User Manual covering onboarding, review requests, contacts, integrations, settings, compliance, account management, and all paid-only features with explicit subscription labels.
+- [x] Author the Administrator Manual as a superset of the User Manual, adding all administrator-only dashboards, controls, diagnostics, support, billing, security, recovery, exports, and operational workflows.
+- [x] Build a mobile-first, keyboard-accessible, searchable manual interface with section navigation, deep links, status badges, clear free/paid/admin labels, and useful empty/loading/error states.
+- [x] Add the Manual navigation link directly beneath Settings in desktop and mobile navigation while preserving role visibility and active-route behavior.
+- [x] Localize all manual navigation, labels, content, status badges, and runtime fallbacks across en, es, fr, it, th, zh-CN, and zh-TW; advance locale and PWA cache versions.
+- [x] Add focused Vitest coverage for user/admin content separation, paid-only labeling, route protection, navigation order, deep links, accessibility structure, localization completeness, and cache updates.
+- [x] Run focused tests, the full Vitest suite, TypeScript, production dependency audit, production build, and authenticated desktop/mobile verification for both user and administrator manual states.
+- [x] Publish the role-aware manual checkpoint, confirm production propagation on managed and custom origins, and verify the live Manual link appears beneath Settings.
+- [x] Prove role isolation in UI and route tests: user sessions cannot render Admin Manual content, and administrator sessions cannot render a separate User Manual view or navigation entry.
+
+- [x] Audit the current Manual search, analytics abstraction, database schema, administrator reporting, PDF utilities, localization resources, and role-aware content registry before extending them.
+- [x] Design a privacy-safe zero-result search event contract with normalized bounded terms, role/manual scope, result count, deduplication, retention-conscious metadata, and administrator-only aggregation.
+- [x] Add the Manual zero-result search analytics schema and migration, apply it through the managed database workflow, and add typed persistence and aggregation helpers.
+- [x] Add protected zero-result search tracking and administrator-only insights procedures with strict validation, authorization, deduplication, and no customer or free-text leakage beyond the bounded search term.
+- [x] Instrument debounced Manual zero-result searches without blocking typing, repeated-event spam, or tracking empty/short queries.
+- [x] Build a localized, responsive administrator view of top missing-documentation searches with counts, recency, role scope, and a useful empty state.
+- [x] Add role-safe PDF export controls for the entire visible Manual and individual sections, preserving current locale, headings, entitlement labels, steps, links, and Get Phame branding.
+- [x] Ensure generated PDF filenames, Unicode text, pagination, download cleanup, loading/error feedback, keyboard access, and mobile behavior are deterministic and accessible.
+- [x] Create the reusable role-aware Manual analytics-and-PDF skill through the skill-creator workflow, including concise implementation guidance and reusable validation references.
+- [x] Add focused regressions for analytics validation/authorization/deduplication, administrator aggregation, PDF contents and scope, role isolation, localization, accessibility, and reusable-skill validation.
+- [x] Run migration verification, focused tests, full Vitest, TypeScript, production dependency audit, production build, and desktop/Pixel 7 role-aware workflow checks.
+- [x] Publish the checkpoint, confirm both production origins serve the analytics/PDF release, verify live tracking and exports, and deliver the reusable skill package.

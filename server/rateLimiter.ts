@@ -16,6 +16,7 @@ const WINDOW_MS = 60 * 60 * 1000; // 1 hour
 const MAX_SENDS_PER_WINDOW = 200;
 const MAX_ONBOARDING_EVENTS_PER_WINDOW = 60;
 const MAX_ONBOARDING_INSIGHTS_PER_WINDOW = 12;
+const MAX_MANUAL_SEARCH_EVENTS_PER_WINDOW = 60;
 
 interface WindowEntry {
   count: number;
@@ -26,6 +27,7 @@ interface WindowEntry {
 const sendWindows = new Map<number, WindowEntry>();
 const onboardingEventWindows = new Map<number, WindowEntry>();
 const onboardingInsightWindows = new Map<number, WindowEntry>();
+const manualSearchEventWindows = new Map<number, WindowEntry>();
 
 /**
  * Check and increment the send rate limit for a user.
@@ -101,6 +103,29 @@ export function checkOnboardingFunnelInsightRateLimit(userId: number): void {
 }
 
 /**
+ * Bound authenticated zero-result Manual telemetry. Daily database deduplication
+ * prevents repeated terms from inflating reports; this limiter also caps attempted writes.
+ */
+export function checkManualSearchEventRateLimit(userId: number): void {
+  const now = Date.now();
+  const entry = manualSearchEventWindows.get(userId);
+
+  if (!entry || now - entry.windowStart >= WINDOW_MS) {
+    manualSearchEventWindows.set(userId, { count: 1, windowStart: now });
+    return;
+  }
+
+  if (entry.count >= MAX_MANUAL_SEARCH_EVENTS_PER_WINDOW) {
+    throw new TRPCError({
+      code: "TOO_MANY_REQUESTS",
+      message: "Too many Manual search analytics events. Please try again later.",
+    });
+  }
+
+  entry.count += 1;
+}
+
+/**
  * Returns the remaining send quota for a user in the current window.
  * Useful for surfacing quota info in the UI.
  */
@@ -127,6 +152,11 @@ setInterval(() => {
   for (const [userId, entry] of Array.from(onboardingInsightWindows.entries())) {
     if (now - entry.windowStart >= WINDOW_MS) {
       onboardingInsightWindows.delete(userId);
+    }
+  }
+  for (const [userId, entry] of Array.from(manualSearchEventWindows.entries())) {
+    if (now - entry.windowStart >= WINDOW_MS) {
+      manualSearchEventWindows.delete(userId);
     }
   }
 }, WINDOW_MS);

@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { isAppleSignInHost, isGoogleSignInHost } from "../client/src/lib/socialLoginAvailability";
+import { isGoogleSignInHost, isStagingSocialLoginHost } from "../client/src/lib/socialLoginAvailability";
 
 describe("social login host policy", () => {
   it.each([
@@ -24,18 +24,18 @@ describe("social login host policy", () => {
   it.each([
     "getphame.app",
     "www.getphame.app",
-    "localhost",
-    "127.0.0.1",
-    "3000-example.us1.manus.computer",
-  ])("enables Apple sign-in on approved hostname %s", (hostname) => {
-    expect(isAppleSignInHost(hostname)).toBe(true);
+    "getphame.manus.space",
+    "revrocket-j5ynazte.manus.space",
+  ])("keeps Apple sign-in hidden on published hostname %s", (hostname) => {
+    expect(isStagingSocialLoginHost(hostname)).toBe(false);
   });
 
   it.each([
-    "getphame.manus.space",
-    "revrocket-j5ynazte.manus.space",
-  ])("keeps Apple sign-in hidden on unapproved published hostname %s", (hostname) => {
-    expect(isAppleSignInHost(hostname)).toBe(false);
+    "localhost",
+    "127.0.0.1",
+    "3000-example.us1.manus.computer",
+  ])("keeps Apple sign-in available on local and preview hostname %s", (hostname) => {
+    expect(isStagingSocialLoginHost(hostname)).toBe(true);
   });
 
   it("applies the shared gate to both public authentication screens", () => {
@@ -46,8 +46,8 @@ describe("social login host policy", () => {
 
     expect(loginSource).toContain("isGoogleSignInHost(window.location.hostname)");
     expect(onboardingSource).toContain("isGoogleSignInHost(window.location.hostname)");
-    expect(loginSource).toContain("isAppleSignInHost(window.location.hostname)");
-    expect(onboardingSource).toContain("isAppleSignInHost(window.location.hostname)");
+    expect(loginSource).toContain("isStagingSocialLoginHost(window.location.hostname)");
+    expect(onboardingSource).toContain("isStagingSocialLoginHost(window.location.hostname)");
     expect(loginSource).toContain("data-testid=\"social-login\"");
     expect(onboardingSource).toContain("data-testid=\"social-login\"");
     expect(loginSource).toContain("Continue with Google");

@@ -3,8 +3,8 @@ import { Shield, AlertTriangle, Clock, CheckCircle, RefreshCw, Lock } from "luci
 
 const SECTION_HEADING = "text-base font-bold mt-6 mb-2";
 const SECTION_HEADING_STYLE = { fontFamily: "'Poppins', sans-serif", color: "oklch(0.90 0.02 260)" };
-const BODY_STYLE = { color: "oklch(0.84 0.02 260)" };
-const LINK_STYLE = { color: "oklch(0.86 0.16 80)" };
+const BODY_STYLE = { color: "oklch(0.78 0.02 260)" };
+const LINK_STYLE = { color: "oklch(0.80 0.18 80)" };
 const GOLD = "oklch(0.80 0.18 80)";
 const ACCENT_BORDER = { borderColor: GOLD };
 
@@ -23,7 +23,7 @@ export default function SecurityPolicy() {
   };
 
   return (
-    <div className="min-h-screen rr-bg-navy text-slate-100">
+    <div>
       {/* Page header */}
       <div className="container py-10">
         <div className="flex items-center gap-3 mb-3">
@@ -32,7 +32,7 @@ export default function SecurityPolicy() {
             Security Policy
           </h1>
         </div>
-        <p className="text-sm text-slate-200">
+        <p className="text-sm" style={{ color: "oklch(0.55 0.04 260)" }}>
           Last updated: {LAST_UPDATED}
         </p>
       </div>
@@ -125,7 +125,7 @@ export default function SecurityPolicy() {
                   <td className="px-3 py-2">Next monthly review cycle</td>
                 </tr>
                 <tr style={{ borderTop: "1px solid oklch(0.25 0.04 260)" }}>
-                  <td className="px-3 py-2 font-medium text-slate-200">Low</td>
+                  <td className="px-3 py-2 font-medium" style={{ color: "#6b7280" }}>Low</td>
                   <td className="px-3 py-2">Any</td>
                   <td className="px-3 py-2">Next monthly review cycle</td>
                 </tr>
@@ -147,7 +147,7 @@ export default function SecurityPolicy() {
             <p className="text-xs" style={{ color: "oklch(0.65 0.02 260)" }}>
               <code className="px-1 py-0.5 rounded" style={{ background: "oklch(0.22 0.04 260)", color: GOLD }}>pnpm audit --prod</code> reports zero known vulnerabilities. Last verified: {LAST_UPDATED}.
             </p>
-            <p className="mt-2 text-xs text-slate-200">
+            <p className="text-xs mt-2" style={{ color: "oklch(0.55 0.04 260)" }}>
               1 moderate finding exists in a dev-only migration tool (<code className="px-1 py-0.5 rounded" style={{ background: "oklch(0.22 0.04 260)", color: GOLD }}>drizzle-kit → @esbuild-kit/core-utils → esbuild ≤0.24.2</code>) that is never compiled into the production bundle and poses no runtime risk.
             </p>
           </div>
@@ -161,9 +161,9 @@ export default function SecurityPolicy() {
           <ul className="list-disc pl-5 space-y-1.5">
             <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>SMTP credentials</strong> are encrypted at rest using AES-256-GCM before storage. The encryption key is never stored alongside the ciphertext.</li>
             <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>Session tokens</strong> are signed JWTs with short expiry, stored in HttpOnly cookies to prevent XSS access.</li>
-            <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>Customer data</strong> (email addresses you upload) is stored in Supabase PostgreSQL with TLS-enforced connections.</li>
+            <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>Customer data</strong> (email addresses you upload) is stored in a TiDB-compatible MySQL database with TLS-enforced connections.</li>
             <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>File storage</strong> uses S3-compatible object storage with non-enumerable, randomised key paths.</li>
-            <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>Payment processing</strong> is handled by Stripe and PayPal. GetPhame never stores raw card numbers, CVVs, or PayPal credentials.</li>
+            <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>Payment processing</strong> is handled entirely by Stripe. GetPhame never stores raw card numbers or CVVs.</li>
             <li><strong style={{ color: "oklch(0.90 0.02 260)" }}>OAuth</strong> (Google, Apple) credentials are never stored; only a platform-issued session token is persisted.</li>
           </ul>
         </section>
@@ -191,7 +191,6 @@ export default function SecurityPolicy() {
                 target="_blank"
                 rel="noopener noreferrer"
                 style={LINK_STYLE}
-                className="underline underline-offset-4 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a1628]"
               >
                 Submit a private security advisory on GitHub
               </a>
@@ -199,11 +198,11 @@ export default function SecurityPolicy() {
             </p>
             <p className="mb-1 text-xs font-semibold" style={{ color: GOLD }}>Option 2 — Email</p>
             <p>
-              <a href={`mailto:${SECURITY_EMAIL}`} style={LINK_STYLE} className="break-all underline underline-offset-4 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a1628]">
+              <a href={`mailto:${SECURITY_EMAIL}`} style={LINK_STYLE} className="break-all">
                 {SECURITY_EMAIL}
               </a>
             </p>
-            <p className="mt-3 text-xs text-slate-200">
+            <p className="text-xs mt-3" style={{ color: "oklch(0.55 0.04 260)" }}>
               Please include a description of the vulnerability, steps to reproduce, and your assessment of impact. Do not include sensitive customer data in your report.
             </p>
           </div>
@@ -230,9 +229,9 @@ export default function SecurityPolicy() {
 
         {/* Footer note */}
         <section>
-          <p className="text-xs text-slate-200">
+          <p className="text-xs" style={{ color: "oklch(0.45 0.04 260)" }}>
             This security policy applies to the GetPhame platform operated by SK America LLC. It is reviewed and updated at least quarterly. Questions about this policy may be directed to{" "}
-            <a href={`mailto:${SECURITY_EMAIL}`} style={LINK_STYLE} className="underline underline-offset-4 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a1628]">{SECURITY_EMAIL}</a>.
+            <a href={`mailto:${SECURITY_EMAIL}`} style={LINK_STYLE}>{SECURITY_EMAIL}</a>.
           </p>
         </section>
 

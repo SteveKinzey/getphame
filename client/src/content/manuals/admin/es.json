@@ -1,0 +1,451 @@
+{
+  "version": 1,
+  "title": "Manual de administrador",
+  "eyebrow": "Operaciones de Get Phame",
+  "introduction": "Este Manual de administrador contiene la guía completa de usuario seguida de procedimientos operativos solo para administradores. Se muestra únicamente a administradores autenticados. Utilice las secciones operativas para gestionar cuentas, diagnósticos, soporte, ingresos, recuperación y la salud agregada del producto sin exponer credenciales ni datos de clientes innecesarios.",
+  "lastUpdated": "2026-07-25",
+  "sections": [
+    {
+      "id": "admin-hub",
+      "title": "Centro de administración",
+      "summary": "Utilice el centro de control del sistema para operaciones en vivo, controles de cuenta, diagnósticos y análisis empresariales agregados.",
+      "icon": "gauge",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "admin-hub-overview",
+          "title": "Abrir el centro de operaciones",
+          "access": "admin",
+          "body": "El centro de administración está disponible solo para cuentas con el rol de administrador. Sus tarjetas abren gestión de usuarios, estado de autenticación, recordatorios, salud SMTP, códigos de acceso, soporte, controles y análisis de ingresos, churn, operaciones de referido y recuperación de Koalendar.",
+          "steps": [
+            "Abra Administration desde el menú de la cuenta del administrador.",
+            "Revise los recuentos resumidos en tiempo real antes de abrir un área de detalle.",
+            "Use la tarjeta de operaciones específica en lugar de actuar solo a partir de un resumen.",
+            "Regrese al hub después de completar una acción de alto impacto y confirme el estado actualizado."
+          ],
+          "route": "/admin"
+        },
+        {
+          "id": "operations-export",
+          "title": "Exportar análisis operativos agregados",
+          "access": "admin",
+          "body": "El hub puede exportar análisis operativos agregados en CSV. Exporte solo cuando exista una necesidad de informe definida, almacene el archivo de forma segura y elimínelo cuando finalice el propósito del informe.",
+          "steps": [
+            "Seleccione Export analytics CSV desde el centro de operaciones.",
+            "Espere a que el archivo se prepare y confirme el recuento de filas informado.",
+            "Abra el archivo en un espacio de trabajo protegido y verifique el periodo de informe y las columnas.",
+            "No reenvíe la exportación a destinatarios no autorizados."
+          ],
+          "route": "/admin"
+        }
+      ]
+    },
+    {
+      "id": "admin-user-management",
+      "title": "Gestión de usuarios",
+      "summary": "Busque cuentas, inspeccione el estado de suscripción y conexión y realice operaciones de cuenta controladas.",
+      "icon": "users",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "search-and-review-users",
+          "title": "Buscar y revisar cuentas de usuario",
+          "access": "admin",
+          "body": "Busque por los identificadores de cuenta compatibles, luego verifique el usuario, el correo electrónico, el rol, el nivel, el estado de acceso de por vida y el estado de conexión antes de cambiar nada. Nunca infiera la propiedad de una cuenta solo por el nombre para mostrar.",
+          "steps": [
+            "Abra User management e introduzca al menos el texto mínimo de búsqueda compatible.",
+            "Confirme el correo electrónico de la cuenta y el registro interno antes de seleccionar una acción.",
+            "Revise indicadores de suscripción, SMTP, actividad y cuentas duplicadas.",
+            "Registre la razón de soporte u operativa para cualquier cambio de alto impacto."
+          ],
+          "route": "/admin/users"
+        },
+        {
+          "id": "tier-and-access-controls",
+          "title": "Controles de nivel y acceso temporal",
+          "access": "admin",
+          "body": "Use los controles de nivel, acceso de por vida, promoción y concesión temporal solo para un resultado autorizado de facturación o soporte. Stripe sigue siendo la autoridad de pago cuando corresponda; evite crear estados de acceso locales conflictivos.",
+          "steps": [
+            "Verifique la base de pago, promoción, soporte o contractual para el cambio.",
+            "Elija el control de acceso y el período de vigencia más estrechos permitidos.",
+            "Confirme el nivel resultante o el estado de expiración en el registro del usuario.",
+            "Vuelva a comprobar después del siguiente evento de facturación o acceso."
+          ],
+          "route": "/admin/users"
+        },
+        {
+          "id": "merge-disconnect-delete-users",
+          "title": "Fusionar, desconectar o eliminar cuentas",
+          "access": "admin",
+          "body": "La fusión de cuentas, la limpieza de conexiones y la eliminación son acciones de alto impacto. Verifique ambas identidades, preserve el historial requerido y utilice el flujo de confirmación integrado. Nunca fusione cuentas únicamente porque los nombres parezcan similares.",
+          "steps": [
+            "Confirme la titularidad usando evidencia de cuenta compatible.",
+            "Revise contactos, solicitudes, facturación, conexiones e historial de soporte en todos los registros afectados.",
+            "Exporte o preserve solo los datos requeridos por la política antes de una acción destructiva.",
+            "Complete la confirmación protegida y verifique el estado resultante de la cuenta."
+          ],
+          "route": "/admin/users"
+        }
+      ]
+    },
+    {
+      "id": "admin-authentication-health",
+      "title": "Salud de autenticación",
+      "summary": "Monitoree dependencias de inicio de sesión en producción, entrega de magic-link, historial de estado, alertas y señales de recuperación.",
+      "icon": "shield",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "auth-dashboard",
+          "title": "Leer diagnósticos de autenticación",
+          "access": "admin",
+          "body": "Authentication Diagnostics informa la salud programada en producción, señales de dependencia, registros de entrega de magic-link y el historial de fallos. La falta de datos es un estado desconocido y no debe considerarse como saludable.",
+          "steps": [
+            "Revise el tiempo de actividad de 24 horas y la última verificación programada.",
+            "Inspeccione las señales de dependencia de base de datos, sesión, proveedor de correo y magic-link.",
+            "Filtre la traza de entrega por el correo electrónico exacto del cliente solo cuando el soporte lo requiera.",
+            "Ejecute una comprobación manual no destructiva cuando se necesite confirmación actual."
+          ],
+          "route": "/admin/auth-diagnostics"
+        },
+        {
+          "id": "auth-history-presets",
+          "title": "Filtrar historial de salud y gestionar vistas guardadas",
+          "access": "admin",
+          "body": "El historial de salud admite estado, desencadenante, fecha, paginación y vistas de filtro guardadas. Las vistas guardadas son privadas para la cuenta de administrador y pueden renombrarse, duplicarse, reordenarse, eliminarse o restaurarse después de un reordenamiento.",
+          "steps": [
+            "Aplique los filtros más específicos que respondan la pregunta operativa.",
+            "Guarde un preset privado para una investigación recurrente.",
+            "Use arrastrar y soltar o la interacción de teclado documentada para reordenar los presets.",
+            "Borre los filtros antes de concluir que no existen eventos."
+          ],
+          "route": "/admin/auth-diagnostics"
+        },
+        {
+          "id": "auth-csv-preview",
+          "title": "Previsualizar y exportar CSV de salud sanitizado",
+          "access": "admin",
+          "body": "El flujo CSV prepara una previsualización sanitizada antes de la descarga. Seleccione solo las columnas necesarias, busque dentro de las filas preparadas y use la descarga de resultados coincidentes cuando la investigación no requiera el conjunto completo.",
+          "steps": [
+            "Aplique filtros de historial y abra Preview filtered CSV.",
+            "Revise la hora de instantánea generada, las columnas disponibles, las filas y el aviso de truncamiento.",
+            "Seleccione las columnas mínimas requeridas y previsualice el resultado de nuevo.",
+            "Copie o descargue solo las filas necesarias para el propósito aprobado."
+          ],
+          "route": "/admin/auth-diagnostics"
+        },
+        {
+          "id": "auth-alert-recovery",
+          "title": "Responder a alertas de fallo de autenticación y recuperación",
+          "access": "admin",
+          "body": "Las alertas de fallo se deduplican por incidente y van seguidas de una notificación de recuperación cuando la dependencia vuelve a estar saludable. Confirme el historial persistido antes de escalar o anunciar una recuperación.",
+          "steps": [
+            "Abra el registro de salud fallido más reciente e identifique la razón acotada de la dependencia.",
+            "Compruebe despliegues recientes, estado del proveedor de correo, conectividad de la base de datos y configuración de sesiones.",
+            "Ejecute una comprobación manual no destructiva después de la remediación.",
+            "Confirme un resultado saludable persistido y la alerta de recuperación antes de cerrar el incidente."
+          ],
+          "route": "/admin/auth-diagnostics"
+        }
+      ]
+    },
+    {
+      "id": "admin-smtp-health",
+      "title": "Operaciones de salud SMTP",
+      "summary": "Identifique conexiones de correo de cliente fallidas y admita re-pruebas seguras sin exponer credenciales.",
+      "icon": "mail",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "smtp-overview",
+          "title": "Revisar la salud SMTP agregada",
+          "access": "admin",
+          "body": "Las operaciones SMTP muestran conexiones activas, totales y en fallo además de tendencias de salud del sistema. Una conexión fallida afecta la capacidad de entrega de ese usuario y debe investigarse sin ver ni solicitar el secreto almacenado.",
+          "steps": [
+            "Abra SMTP health desde el centro de administración.",
+            "Revise las conexiones fallidas actuales y la dirección de la tendencia.",
+            "Abra el usuario afectado solo cuando el soporte u operaciones lo requiera.",
+            "Pida al usuario que cree una nueva credencial del proveedor desde Settings cuando se requiera reautorización."
+          ],
+          "route": "/admin/smtp-stats"
+        },
+        {
+          "id": "smtp-retest",
+          "title": "Volver a probar una conexión SMTP de usuario",
+          "access": "admin",
+          "body": "Una re-prueba utiliza la conexión protegida existente para verificar la disponibilidad actual. No debe revelar la credencial y no debe repetirse de forma continua contra un proveedor que esté experimentando una interrupción.",
+          "steps": [
+            "Confirme la cuenta y la razón de la re-prueba.",
+            "Ejecute la re-prueba de administrador una vez y registre la hora del resultado.",
+            "Si falla, proporcione al usuario los pasos apropiados para la reconexión con el proveedor.",
+            "Vuelva a probar después de que el usuario confirme una nueva credencial o cambio de proveedor."
+          ],
+          "route": "/admin/smtp-stats"
+        }
+      ]
+    },
+    {
+      "id": "admin-reminder-operations",
+      "title": "Operaciones de recordatorios",
+      "summary": "Monitoree el rendimiento de entrega de recordatorios e investigue secuencias pendientes, por vencer, fallidas, canceladas y detenidas.",
+      "icon": "bell",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "reminder-performance",
+          "title": "Revisar el rendimiento de recordatorios",
+          "access": "admin",
+          "body": "Las operaciones de recordatorios resumen los estados programados y de entrega para que los administradores identifiquen acumulaciones o fallos. La regla de finalización de acción del cliente sigue siendo la autorizada: las secuencias completadas no deben reanudar recordatorios futuros.",
+          "steps": [
+            "Abra Reminder operations y elija el periodo de informe relevante.",
+            "Compare los recuentos pendientes, por vencer, enviados, fallidos, cancelados y detenidos.",
+            "Investigue el usuario subyacente, la campaña, la entrega y el estado de finalización.",
+            "Use controles de reintento o cancelación compatibles solo después de confirmar la elegibilidad."
+          ],
+          "route": "/admin/reminder-performance"
+        }
+      ]
+    },
+    {
+      "id": "admin-support",
+      "title": "Bandeja de soporte y operaciones de SLA",
+      "summary": "Triar, asignar, resolver, informar y escalar solicitudes de soporte al cliente de forma segura.",
+      "icon": "inbox",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "support-triage",
+          "title": "Triar y asignar tickets de soporte",
+          "access": "admin",
+          "body": "Utilice tema, prioridad, antigüedad, contexto de suscripción y estado de SLA para la triage de tickets. El estado urgente debe reflejar un impacto operativo real, no simplemente la redacción del cliente.",
+          "steps": [
+            "Abra Support inbox y revise las colas sin asignar, urgentes y en riesgo de SLA.",
+            "Inspeccione el mensaje y el adjunto sanitizados antes de la asignación.",
+            "Establezca la prioridad correcta y asigne un responsable.",
+            "Responda o actualice el estado preservando una pista de auditoría clara."
+          ],
+          "route": "/admin/support"
+        },
+        {
+          "id": "support-resolution",
+          "title": "Resolver, reabrir y escalar",
+          "access": "admin",
+          "body": "Resuelva un ticket solo cuando la respuesta, la corrección o el siguiente paso se hayan entregado. Reabra cuando nueva evidencia cambie el resultado. Las políticas de escalamiento y las alertas de incumplimiento deben dirigir el riesgo no resuelto sin crear incidentes duplicados.",
+          "steps": [
+            "Documente el resultado verificado o el siguiente paso.",
+            "Cambie el estado a resuelto solo cuando el trabajo orientado al cliente esté completo.",
+            "Reabra si el mismo problema continúa con evidencia nueva y material.",
+            "Revise las alertas de escalamiento e incumplimiento hasta que se acepte la propiedad."
+          ],
+          "route": "/admin/support"
+        },
+        {
+          "id": "support-sla-export",
+          "title": "Informar y exportar métricas SLA de soporte",
+          "access": "admin",
+          "body": "El reporting de soporte acepta rangos de fecha preestablecidos o personalizados y puede exportar métricas agregadas de SLA. Seleccione siempre ambas fechas personalizadas, verifique el orden cronológico y asegure el CSV resultante.",
+          "steps": [
+            "Elija 7, 30, 90 días o un rango de fechas personalizado completo.",
+            "Revise métricas de respuesta, resolución, incumplimiento y volumen.",
+            "Exporte el CSV solo cuando sea necesario para un informe aprobado.",
+            "Elimine copias locales después de que termine la necesidad del informe."
+          ],
+          "route": "/admin/support"
+        }
+      ]
+    },
+    {
+      "id": "admin-access-codes",
+      "title": "Códigos de acceso al sistema",
+      "summary": "Crear, revisar y revocar códigos de acceso al sistema controlados.",
+      "icon": "key",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "manage-access-codes",
+          "title": "Gestionar códigos de acceso",
+          "access": "admin",
+          "body": "Los códigos de acceso pueden cambiar quién recibe acceso al sistema. Créelos solo para un propósito aprobado, use la validez aplicable más restringida y revoque rápidamente los códigos no usados o expuestos.",
+          "steps": [
+            "Abra System access codes y revise registros activos, expirados y revocados.",
+            "Cree un código con un propósito claro y límites aplicables.",
+            "Compártalo por un canal privado aprobado.",
+            "Revóquelo cuando se use, expire, se exponga o deje de ser necesario."
+          ],
+          "route": "/admin/codes"
+        }
+      ]
+    },
+    {
+      "id": "admin-revenue-controls",
+      "title": "Controles de ingresos",
+      "summary": "Crear promociones en Stripe y concesiones de acceso temporal sin producir estados de derecho conflictivos.",
+      "icon": "badgePercent",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "stripe-promotions",
+          "title": "Crear y gestionar promociones de Stripe",
+          "access": "admin",
+          "body": "Use la página Revenue Controls para promociones respaldadas por Stripe. Confirme el propósito de la campaña, los planes aplicables, la duración, los límites de redención y las restricciones mínimas de transacción antes de la activación.",
+          "steps": [
+            "Defina la audiencia de la promoción, el importe o porcentaje, la duración y los límites.",
+            "Verifique la configuración en Stripe antes de compartir un código de promoción.",
+            "Pruebe a través del dominio desplegado con un método de prueba aprobado.",
+            "Desactive la promoción cuando la campaña termine o se descubra un error."
+          ],
+          "route": "/admin/revenue-controls"
+        },
+        {
+          "id": "temporary-access-grants",
+          "title": "Conceder acceso temporal",
+          "access": "admin",
+          "body": "El acceso temporal es para casos aprobados de soporte, promoción o contractuales. Use una expiración explícita y verifique que la concesión no entre en conflicto con la suscripción de Stripe del cliente o su acceso de por vida.",
+          "steps": [
+            "Confirme la cuenta de usuario y la razón documentada.",
+            "Elija el nivel de acceso más restringido y el periodo válido más corto.",
+            "Aplique la concesión y confirme el estado de expiración.",
+            "Revise la cuenta cuando la concesión caduque."
+          ],
+          "route": "/admin/revenue-controls"
+        }
+      ]
+    },
+    {
+      "id": "admin-revenue-analytics",
+      "title": "Analítica de ingresos",
+      "summary": "Revise MRR, ARR, conversión, crecimiento y mezcla de suscripciones sin reemplazar a Stripe como autoridad de transacciones.",
+      "icon": "dollar",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "revenue-dashboard",
+          "title": "Interpretar métricas de ingresos",
+          "access": "admin",
+          "body": "La analítica de ingresos resume ingresos recurrentes, ingresos anualizados, conversión, crecimiento y mezcla de planes. Use periodos de informe consistentes y concilie las excepciones con Stripe antes de tomar acciones a nivel de cuenta.",
+          "steps": [
+            "Seleccione un periodo de comparación consistente.",
+            "Revise conjuntamente MRR, ARR, nuevas cuentas de pago, cancelaciones y mezcla de planes.",
+            "Investigue cambios materiales en Stripe y los registros de cuenta afectados.",
+            "Documente las definiciones al exportar o presentar una métrica."
+          ],
+          "route": "/admin/revenue"
+        }
+      ]
+    },
+    {
+      "id": "admin-churn",
+      "title": "Churn y retención",
+      "summary": "Utilice motivos de cancelación y señales de retención para mejorar el producto sin ocultar la intención del cliente.",
+      "icon": "trendDown",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "churn-analysis",
+          "title": "Analizar motivos de cancelación",
+          "access": "admin",
+          "body": "La analítica de churn agrega motivos de cancelación y señales de retención. Trate los comentarios de texto libre como sensibles, evite sobregeneralizar a partir de muestras pequeñas y preserve la decisión del cliente de cancelar.",
+          "steps": [
+            "Elija el periodo de informe y revise la distribución de motivos.",
+            "Abra la cuenta relacionada solo cuando se justifique un seguimiento operativo.",
+            "Agrupe temas recurrentes sin exponer detalles de cliente innecesarios.",
+            "Use los hallazgos para priorizar experimentos de producto, incorporación, precios o soporte."
+          ],
+          "route": "/admin/churn"
+        }
+      ]
+    },
+    {
+      "id": "admin-referrals",
+      "title": "Operaciones de recompensas por referidos",
+      "summary": "Revise referidos diferidos y aplique recompensas solo cuando el referente sea actualmente elegible.",
+      "icon": "gift",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "deferred-referral-rewards",
+          "title": "Procesar recompensas diferidas",
+          "access": "admin",
+          "body": "Una recompensa de referido diferida solo puede aplicarse cuando el referente está en un plan de pago elegible. Verifique la atribución, la conversión, la elegibilidad actual y el historial de recompensas previo antes de procesar uno o muchos registros.",
+          "steps": [
+            "Abra Referral operations y filtre los registros diferidos.",
+            "Verifique la conversión referida y la cuenta del referente.",
+            "Confirme que el referente ahora esté en un plan de pago elegible.",
+            "Aplique la recompensa una vez y verifique que el registro ya no esté pendiente."
+          ],
+          "route": "/admin/referral-rewards"
+        }
+      ]
+    },
+    {
+      "id": "admin-koalendar-recovery",
+      "title": "Recuperación de importación de Koalendar",
+      "summary": "Inspeccione importaciones de contactos de Koalendar fallidas y reintente solo los registros seguros y no resueltos.",
+      "icon": "rotate",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "koalendar-retry",
+          "title": "Inspeccionar y reintentar importaciones fallidas",
+          "access": "admin",
+          "body": "Koalendar recovery lista importaciones de contactos fallidas para diagnóstico. Los reintentos deben ser idempotentes: verifique el evento de origen, el error, la titularidad y el contacto existente antes de reprocesar.",
+          "steps": [
+            "Abra Koalendar recovery y seleccione una falla no resuelta.",
+            "Revise el error acotado, la identidad del evento, el historial de intentos y la titularidad del usuario.",
+            "Compruebe si el contacto o la importación ya se completó mediante otro intento.",
+            "Reintente una vez y confirme el estado final y la pista de auditoría."
+          ],
+          "route": "/admin/koalendar-retry"
+        }
+      ]
+    },
+    {
+      "id": "admin-product-analytics",
+      "title": "Analítica de producto y salud del sistema",
+      "summary": "Monitoree señales agregadas de PWA, subtítulos, incorporación, soporte, SMTP, autenticación y operaciones con reporting con privacidad ligera.",
+      "icon": "activity",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "pwa-caption-analytics",
+          "title": "Revisar conversión de PWA e idioma de subtítulos",
+          "access": "admin",
+          "body": "El hub de administración informa vistas agregadas de la guía de instalación, instalaciones completadas, compartidos exitosos y selecciones explícitas de idioma de subtítulos. Estos paneles evitan intencionalmente registros crudos de dispositivo, visitante, referrer, user-agent y texto libre.",
+          "steps": [
+            "Compare la actividad acumulada y de los últimos 30 días.",
+            "Revise las tasas de conversión de finalización o compartido con el volumen de eventos subyacente.",
+            "Use las selecciones de idioma para priorizar trabajo de accesibilidad sin perfilar a individuos.",
+            "No intente reconstruir la identidad de un usuario a partir de recuentos agregados."
+          ],
+          "route": "/admin"
+        },
+        {
+          "id": "onboarding-funnel",
+          "title": "Analizar abandono de la lista de verificación de incorporación",
+          "access": "admin",
+          "body": "El embudo de incorporación cuenta cada cuenta una vez por paso y compara el periodo seleccionado con el periodo anterior. Los presets y rangos de fecha personalizados admiten exportación CSV y una insight agregado de IA.",
+          "steps": [
+            "Elija 7, 30, 90 días o un rango de fechas personalizado completo válido.",
+            "Revise la continuación y el abandono en correo, plataforma, contactos y primer envío.",
+            "Compare el periodo actual y el anterior antes de priorizar un cambio.",
+            "Exporte CSV agregado solo para un análisis aprobado y verifique el insight de IA frente a los datos mostrados."
+          ],
+          "route": "/admin"
+        },
+        {
+          "id": "operations-alerts",
+          "title": "Responder a alertas de operaciones y tendencias de salud",
+          "access": "admin",
+          "body": "Las alertas de operaciones y las tendencias de 24 horas combinan señales actuales de SMTP y autenticación. Una alerta es un punto de partida para la investigación, no la prueba de una causa raíz.",
+          "steps": [
+            "Abra el área de operaciones afectada desde la alerta.",
+            "Compare el estado actual con la tendencia reciente y el historial persistido.",
+            "Compruebe despliegue, proveedor, base de datos y evidencia a nivel de cuenta según corresponda.",
+            "Confirme un resultado durable y saludable antes de cerrar el incidente."
+          ],
+          "route": "/admin"
+        }
+      ]
+    }
+  ]
+}

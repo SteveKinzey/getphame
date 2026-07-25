@@ -3,7 +3,7 @@
 // Tablet (768–1023px): icon-only sidebar (64px) + content
 // Desktop (1024px+): full sidebar (220px) with labels + content
 import { useLocation } from "wouter";
-import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown, ShieldCheck, Users, LogOut, UserRound, Code2 } from "lucide-react";
+import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown, ShieldCheck, Users, LogOut, UserRound, Code2, BookOpen } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
@@ -39,6 +39,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
     enabled: !!user && profile?.tier !== "free" && profile?.tier !== "lifetime",
   });
   const isDark = theme === "dark";
+  const manualLabel = user?.role === "admin"
+    ? t("nav.adminManual", { defaultValue: "Admin Manual" })
+    : t("nav.userManual", { defaultValue: "User Manual" });
 
   const NAV_ITEMS = [
     { path: "/", label: t("nav.home"), Icon: Home },
@@ -46,6 +49,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
     { path: "/dashboard", label: t("nav.dashboard"), Icon: BarChart2 },
     { path: "/developer", label: t("nav.developer", { defaultValue: "Developer" }), Icon: Code2 },
     { path: "/settings", label: t("nav.settings"), Icon: Settings },
+    { path: "/manual", label: manualLabel, Icon: BookOpen },
     ...(user?.role === "admin" ? [{ path: "/admin", label: t("nav.admin", { defaultValue: "Administration" }), Icon: Users }] : []),
   ];
 
@@ -321,6 +325,17 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 >
                   <UserRound size={18} className="rr-text-gold" />
                   {t("profileMenu.accountDetails", { defaultValue: "Account details" })}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  data-testid="sidebar-manual-link"
+                  onSelect={() => {
+                    buttonPressHaptic();
+                    navigate("/manual");
+                  }}
+                  className="min-h-11 cursor-pointer gap-3 rounded-lg text-sm font-semibold focus:bg-white/10 focus:text-white"
+                >
+                  <BookOpen size={18} className="rr-text-gold" />
+                  {manualLabel}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   data-testid="sidebar-theme-toggle"

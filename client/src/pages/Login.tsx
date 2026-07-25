@@ -8,7 +8,7 @@
  */
 import React, { useState, useEffect, useCallback } from "react";
 import { flushSync } from "react-dom";
-import { isAppleSignInHost, isGoogleSignInHost } from "@/lib/socialLoginAvailability";
+import { isGoogleSignInHost, isStagingSocialLoginHost } from "@/lib/socialLoginAvailability";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import {
@@ -106,7 +106,7 @@ const OrDivider = ({ label }: { label: string }) => (
       <div className="w-full border-t border-white/10" />
     </div>
     <div className="relative flex justify-center text-sm">
-      <span className="px-3 bg-[#0F1B2D] text-slate-200 font-medium tracking-wide">{label}</span>
+      <span className="px-3 bg-[#0F1B2D] text-white/40 font-medium tracking-wide">{label}</span>
     </div>
   </div>
 );
@@ -118,7 +118,7 @@ const OrDivider = ({ label }: { label: string }) => (
 export default function Login() {
   const { t } = useTranslation("translation");
   const googleLoginEnabled = isGoogleSignInHost(window.location.hostname);
-  const appleLoginEnabled = isAppleSignInHost(window.location.hostname);
+  const appleLoginEnabled = isStagingSocialLoginHost(window.location.hostname);
   const [googleEnabled, setGoogleEnabled] = useState<boolean | null>(null);
   const shouldShowSocialSection = appleLoginEnabled || (googleLoginEnabled && googleEnabled !== false);
 
@@ -252,7 +252,7 @@ export default function Login() {
         <h1 className="text-3xl font-black tracking-tight text-white" aria-label="Get Phame">
           GET <span className="text-[#C9A84C]">PHAME</span>
         </h1>
-        <p className="mt-2 text-sm text-slate-200">
+        <p className="mt-2 text-sm text-white/50">
           {t("login.subtitle", { defaultValue: "Sign in to your account" })}
         </p>
       </div>
@@ -282,7 +282,7 @@ export default function Login() {
                       : t("login.continueWithGoogle", { defaultValue: "Continue with Google" })}
                   </button>
                   {isGoogleSubmitting && googleStatus && (
-                    <p id="google-auth-status" role="status" aria-live="polite" className="mt-2 text-center text-xs font-semibold text-slate-200">
+                    <p id="google-auth-status" role="status" aria-live="polite" className="mt-2 text-center text-xs font-semibold text-white/70">
                       {googleStatus}
                     </p>
                   )}
@@ -319,11 +319,11 @@ export default function Login() {
             <h2 className="text-lg font-semibold text-white mb-2">
               {t("login.checkInbox", { defaultValue: "Check your inbox" })}
             </h2>
-            <p className="text-sm text-slate-200 mb-4">
+            <p className="text-sm text-white/50 mb-4">
               {t("login.sentTo", { defaultValue: "We sent a login link to" })}
             </p>
             <p className="text-sm font-medium text-[#C9A84C] mb-6">{sentTo}</p>
-            <p className="text-xs text-slate-200 mb-4">
+            <p className="text-xs text-white/30 mb-4">
               {t("login.expiresNotice", {
                 defaultValue: "The link expires in 15 minutes. Check your spam folder if you don't see it.",
               })}
@@ -331,7 +331,7 @@ export default function Login() {
             <button
               type="button"
               onClick={() => { setSentTo(null); setEmail(""); }}
-              className="inline-flex min-h-[44px] items-center text-sm text-slate-200 underline underline-offset-4 transition-colors hover:text-white focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F1B2D]"
+              className="text-sm text-white/40 hover:text-white/60 underline transition-colors"
             >
               {t("login.useDifferentEmail", { defaultValue: "Use a different email" })}
             </button>
@@ -340,7 +340,7 @@ export default function Login() {
           /* Email input form */
           <form onSubmit={handleMagicLinkSubmit} noValidate className="space-y-4">
             <div>
-              <label htmlFor="email" className="mb-1.5 block text-xs font-medium text-slate-200">
+              <label htmlFor="email" className="block text-xs font-medium text-white/60 mb-1.5">
                 {t("login.emailLabel", { defaultValue: "Email address" })}
               </label>
               <input
@@ -351,7 +351,7 @@ export default function Login() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t("login.emailPlaceholder", { defaultValue: "you@example.com" })}
                 required
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/60 focus:border-[#C9A84C]/60 transition"
+                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/25 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/60 focus:border-[#C9A84C]/60 transition"
               />
             </div>
 
@@ -382,20 +382,20 @@ export default function Login() {
               )}
             </button>
 
-            <p className="text-center text-xs text-slate-200">
+            <p className="text-center text-xs text-white/30">
               {t("login.noPassword", { defaultValue: "No password needed — we'll email you a secure login link." })}
             </p>
           </form>
         )}
 
         {/* ── Legal ─────────────────────────────────────────────────────── */}
-        <p className="mt-8 text-center text-xs leading-relaxed text-slate-200">
+        <p className="mt-8 text-center text-xs text-white/25 leading-relaxed">
           {t("login.termsPrefix", { defaultValue: "By continuing, you agree to our" })}{" "}
-          <a href="/terms-of-service" className="inline-flex min-h-[36px] items-center text-[#E6C566] underline underline-offset-4 transition-colors hover:text-white focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F1B2D]">
+          <a href="/terms-of-service" className="underline hover:text-white/50 transition-colors">
             {t("login.terms", { defaultValue: "Terms of Service" })}
           </a>{" "}
           {t("login.consentAnd", { defaultValue: "and" })}{" "}
-          <a href="/privacy-policy" className="inline-flex min-h-[36px] items-center text-[#E6C566] underline underline-offset-4 transition-colors hover:text-white focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F1B2D]">
+          <a href="/privacy-policy" className="underline hover:text-white/50 transition-colors">
             {t("login.privacy", { defaultValue: "Privacy Policy" })}
           </a>
           {t("login.consentSuffix", { defaultValue: "." })}

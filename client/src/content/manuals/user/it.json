@@ -1,0 +1,664 @@
+{
+  "version": 1,
+  "title": "Manuale utente",
+  "eyebrow": "Guida a Get Phame",
+  "introduction": "Usa questo manuale per configurare Get Phame, inviare richieste di recensione conformi, gestire contatti e promemoria, collegare integrazioni e comprendere cosa è incluso negli account Free e negli abbonamenti a pagamento. Le funzionalità a pagamento rimangono visibili per la valutazione e ogni elemento riservato agli abbonamenti è chiaramente etichettato.",
+  "lastUpdated": "2026-07-25",
+  "sections": [
+    {
+      "id": "getting-started",
+      "title": "Prime operazioni",
+      "summary": "Accedi in modo sicuro, completa la checklist di avvio e prepara la tua prima richiesta di recensione.",
+      "icon": "rocket",
+      "topics": [
+        {
+          "id": "sign-in",
+          "title": "Accedi con un magic link",
+          "access": "all",
+          "body": "Get Phame utilizza per impostazione predefinita l'autenticazione senza password tramite magic link. Inserisci l'email dell'account, apri il messaggio di accesso più recente e utilizza il link sullo stesso dispositivo quando possibile.",
+          "steps": [
+            "Apri la pagina di accesso di Get Phame e inserisci l'email del tuo account.",
+            "Apri il messaggio più recente di Get Phame nella tua casella e seleziona il link per l'accesso.",
+            "Se il link è scaduto o è già stato utilizzato, torna alla schermata di accesso e richiedine uno nuovo.",
+            "Non inoltrare mai un'email con magic link né condividere la sua URL."
+          ],
+          "notes": [
+            "Se la consegna è ritardata, controlla le cartelle spam o posta indesiderata e verifica che l'indirizzo email sia stato inserito correttamente."
+          ]
+        },
+        {
+          "id": "setup-checklist",
+          "title": "Completa la checklist di avvio",
+          "access": "all",
+          "body": "La checklist di onboarding ti guida attraverso la configurazione minima necessaria per un outreach affidabile: connettere l'email, aggiungere una piattaforma di recensioni, inserire contatti e inviare la prima richiesta.",
+          "steps": [
+            "Aggiungi il nome dell'attività e i dettagli del mittente visibili ai clienti.",
+            "Collega e testa l'account email che invierà le richieste di recensione.",
+            "Aggiungi almeno una destinazione di recensione approvata e imposta una predefinita.",
+            "Importa o salva un contatto, visualizza l'anteprima del messaggio e invia la prima richiesta."
+          ],
+          "route": "/"
+        },
+        {
+          "id": "install-and-share",
+          "title": "Installa o condividi Get Phame",
+          "access": "all",
+          "body": "Get Phame può essere installato come Progressive Web App sui dispositivi supportati. La guida all'installazione spiega i passaggi specifici per browser. L'azione di condivisione utilizza il device share sheet quando disponibile e in alternativa copia un link.",
+          "steps": [
+            "Apri la guida all'installazione dall'onboarding o dall'area account.",
+            "Segui le istruzioni per il tuo browser e dispositivo.",
+            "Avvia Get Phame dall'icona della nuova app e accedi normalmente.",
+            "Usa Share quando devi inviare il link di Get Phame a un altro dispositivo o collega."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "navigation-and-preferences",
+      "title": "Navigazione e preferenze",
+      "summary": "Trova le aree principali di lavoro e regola lingua, aspetto e controlli dell'account.",
+      "icon": "compass",
+      "topics": [
+        {
+          "id": "main-navigation",
+          "title": "Usa la navigazione principale",
+          "access": "all",
+          "body": "Home mostra scorciatoie per setup e attività. Send Request avvia l'outreach individuale. Dashboard riepiloga l'attività. Developer Integrations gestisce API e connessioni Sources. Settings contiene controlli per account, azienda, delivery, abbonamento e sicurezza. User Manual apre questa guida.",
+          "steps": [
+            "Su desktop, usa la left navigation rail.",
+            "Su mobile, usa la bottom navigation e il menu More per le destinazioni secondarie.",
+            "Usa l'elemento evidenziato per confermare la posizione corrente.",
+            "Usa i controlli di back nella pagina quando esci da uno schermo di dettaglio o di setup in stile admin."
+          ]
+        },
+        {
+          "id": "language-theme-network",
+          "title": "Lingua, tema e stato di connessione",
+          "access": "all",
+          "body": "Scegli una lingua supportata dal controllo lingua. Le impostazioni di aspetto light e dark seguono il controllo tema disponibile. Gli indicatori di connessione offline o degradata significano che alcuni dati live o azioni potrebbero non essere disponibili fino al ripristino della rete.",
+          "steps": [
+            "Scegli la lingua preferita dal controllo account o di navigazione.",
+            "Verifica date e numeri dopo aver cambiato lingua perché la formattazione segue la locale selezionata.",
+            "Se appare una notifica offline, evita di ripetere un invio o un'azione distruttiva fino al ripristino della connessione."
+          ]
+        },
+        {
+          "id": "account-menu",
+          "title": "Menu account",
+          "access": "all",
+          "body": "Il menu account fornisce accesso rapido a Settings, al manuale appropriato per il ruolo e a Sign out. Gli account amministratore ricevono anche una voce Administration separata, ma gli utenti ordinari no.",
+          "steps": [
+            "Apri l'avatar o il menu More.",
+            "Scegli Settings per modifiche al profilo e alla configurazione.",
+            "Scegli Manual per tornare alla guida assegnata al tuo ruolo.",
+            "Scegli Sign out quando usi un dispositivo condiviso."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "business-and-review-destinations",
+      "title": "Azienda e destinazioni di recensione",
+      "summary": "Configura l'identità che i clienti vedono e le destinazioni approvate usate nelle richieste.",
+      "icon": "building",
+      "topics": [
+        {
+          "id": "business-profile",
+          "title": "Profilo aziendale",
+          "access": "all",
+          "body": "Mantieni il nome dell'azienda e l'identità del mittente accurate perché i clienti le usino per riconoscere la richiesta. Salva le modifiche prima di inviare o visualizzare l'anteprima di un nuovo messaggio.",
+          "steps": [
+            "Apri Settings e individua la sezione business profile.",
+            "Inserisci il nome aziendale visibile al cliente e i dettagli di profilo richiesti.",
+            "Salva le modifiche e visualizza un'anteprima di una email per confermare che l'identità sia chiara.",
+            "Aggiorna il profilo ogni volta che cambiano mittente o identità dell'azienda."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "platform-links",
+          "title": "Aggiungi e seleziona destinazioni di recensione",
+          "access": "all",
+          "body": "Aggiungi solo destinazioni che appartengono alla tua azienda e usa il controllo di default per selezionare il link usato dalle nuove richieste. Testa ogni destinazione prima di inviarla ai clienti.",
+          "steps": [
+            "Apri Settings e aggiungi una piattaforma supportata o un URL di destinazione personalizzato.",
+            "Assegna alla destinazione un'etichetta riconoscibile.",
+            "Apri il link salvato in una scheda separata e conferma che raggiunga il profilo aziendale corretto.",
+            "Imposta come predefinita la destinazione che usi più spesso."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "unlimited-platform-links",
+          "title": "Link multipiattaforma illimitati",
+          "access": "paid",
+          "body": "Gli abbonamenti a pagamento possono mantenere destinazioni di recensione illimitate. Gli account Free possono usare un solo link di piattaforma. Effettua l'upgrade prima di aggiungere destinazioni oltre la soglia prevista per gli account Free.",
+          "steps": [
+            "Apri Upgrade per confrontare le opzioni ricorrenti e lifetime attuali.",
+            "Completa il checkout con la stessa email usata per il tuo account Get Phame.",
+            "Torna a Settings e aggiungi le destinazioni aggiuntive.",
+            "Scegli la destinazione appropriata prima di ogni richiesta o campagna."
+          ],
+          "route": "/upgrade"
+        },
+        {
+          "id": "yelp-destination",
+          "title": "Modalità conformità Yelp",
+          "access": "all",
+          "body": "Quando è selezionato Yelp, segui l'avviso di conformità mostrato in-app. Le indicazioni Yelp sono presentate in testo semplice e non devono essere trattate come un normale link di sollecitazione recensioni. Non offrire incentivi né fare pressioni sui clienti per pubblicare una recensione.",
+          "steps": [
+            "Seleziona Yelp solo quando rappresenta accuratamente la destinazione prevista.",
+            "Leggi l'avviso specifico per Yelp prima dell'invio.",
+            "Usa comunicazioni individuali e neutrali ed evita la sollecitazione selettiva.",
+            "Consulta la Compliance Guide ogni volta che una regola di piattaforma non è chiara."
+          ],
+          "route": "/compliance"
+        }
+      ]
+    },
+    {
+      "id": "email-delivery",
+      "title": "Consegna email",
+      "summary": "Collega un mittente, verifica la delivery, visualizza anteprime e risolvi i problemi comuni dei provider.",
+      "icon": "mail",
+      "topics": [
+        {
+          "id": "connect-email",
+          "title": "Collega un provider email",
+          "access": "all",
+          "body": "Get Phame invia tramite l'account che colleghi. Le istruzioni specifiche per provider spiegano se usare un app password, SMTP password o le credenziali del provider bridge. Non inserire mai una password normale quando il provider richiede una app password.",
+          "steps": [
+            "Apri Settings e scegli la sezione per la connessione email.",
+            "Inserisci l'indirizzo di invio; Get Phame identificherà i provider comuni quando possibile.",
+            "Apri la guida inline del provider e crea la app password o SMTP password richiesta.",
+            "Inserisci i dettagli della connessione, salva ed esegui il test di connessione."
+          ],
+          "notes": [
+            "Gli amministratori Google Workspace potrebbero dover abilitare le app password. Proton Mail richiede credenziali fornite da Proton Bridge."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "test-and-troubleshoot-email",
+          "title": "Test e risoluzione dei problemi di delivery",
+          "access": "all",
+          "body": "Un test di connessione riuscito conferma che le credenziali possono essere usate in quel momento; non garantisce che ogni futuro messaggio sarà accettato. Riesegui il test dopo aver modificato le impostazioni di sicurezza del provider o le password.",
+          "steps": [
+            "Conferma che l'indirizzo di invio e l'host del provider siano corretti.",
+            "Crea una nuova app password se il provider ha revocato la credenziale precedente.",
+            "Verifica che multi-factor authentication e l'accesso SMTP soddisfino i requisiti del provider.",
+            "Invia un'anteprima o una richiesta a basso rischio a un indirizzo che controlli prima dell'outreach ai clienti."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "bulk-sender",
+          "title": "Connessione Bulk Sender",
+          "access": "paid",
+          "body": "Gli abbonamenti a pagamento possono collegare un servizio email transazionale supportato per volumi di invio più elevati. Memorizza la credenziale del provider solo nel modulo protetto di Settings, testa la connessione e monitora i limiti del provider e le suppression list.",
+          "steps": [
+            "Apri Settings e individua Bulk Sender.",
+            "Scegli il provider supportato e inserisci la credenziale protetta richiesta.",
+            "Salva la connessione e verifica che venga mostrato lo stato connected.",
+            "Usa pratiche di invio conformi anche quando il provider consente un volume tecnico maggiore."
+          ],
+          "route": "/settings"
+        }
+      ]
+    },
+    {
+      "id": "contacts-and-imports",
+      "title": "Contatti e importazioni",
+      "summary": "Salva i dettagli dei clienti, importa contatti con consenso e gestisci i duplicati in modo sicuro.",
+      "icon": "users",
+      "topics": [
+        {
+          "id": "saved-contacts",
+          "title": "Saved contacts",
+          "access": "all",
+          "body": "Saved Contacts mantiene i dettagli dei clienti disponibili per future richieste individuali e per la gestione delle campagne. Aggiungi solo persone che sei autorizzato a contattare e correggi i record inesatti prima di inviare.",
+          "steps": [
+            "Apri Contacts per cercare o rivedere i record salvati.",
+            "Aggiungi o modifica con attenzione il nome e l'email del cliente.",
+            "Rivedi l'attività precedente prima di riprendere l'outreach.",
+            "Rimuovi un contatto quando la conservazione non è più giustificata o il cliente chiede di interrompere."
+          ],
+          "route": "/contacts"
+        },
+        {
+          "id": "csv-import",
+          "title": "Importa contatti da CSV",
+          "access": "all",
+          "body": "L'importazione CSV è disponibile su piani Free e a pagamento. Usa un file pulito con le colonne contatto previste, rivedi l'anteprima e risolvi i record non validi o duplicati prima di inviare.",
+          "steps": [
+            "Apri Import Contacts e scegli un file CSV preparato da una fonte autorizzata.",
+            "Associa le colonne nome ed email quando richiesto.",
+            "Rivedi i risultati di validazione, duplicazione e rifiuto.",
+            "Apri Contacts dopo l'importazione e controlla a campione diversi record."
+          ],
+          "route": "/import"
+        },
+        {
+          "id": "woocommerce-sync",
+          "title": "Sincronizzazione WooCommerce",
+          "access": "paid",
+          "body": "La sincronizzazione WooCommerce è disponibile solo con un abbonamento a pagamento. Collega l'integrazione store approvata, importa i clienti idonei e rivedi i risultati prima di avviare l'outreach.",
+          "steps": [
+            "Apri l'area WooCommerce customers dalla voce di integrazione applicabile.",
+            "Collega o verifica l'integrazione del negozio usando credenziali protette.",
+            "Esegui o rivedi la sincronizzazione clienti e risolvi i record non riusciti.",
+            "Conferma il consenso e l'idoneità alla campagna prima di inviare qualsiasi richiesta."
+          ],
+          "route": "/woo-customers"
+        },
+        {
+          "id": "duplicates-and-consent",
+          "title": "Duplicati e consenso",
+          "access": "all",
+          "body": "Get Phame può identificare importazioni duplicate, ma rimani responsabile della qualità e dell'origine lecita di ciascun contatto. Non importare ripetutamente una persona per aggirare limiti di invio, suppression o cronologia di campagna.",
+          "steps": [
+            "Usa indirizzi email stabili dei clienti come identità primaria.",
+            "Rivedi i risultati deduplicati invece di presumere che ogni riga abbia creato un nuovo record.",
+            "Conserva evidenze dell'interazione commerciale o del consenso che permette l'outreach individuale.",
+            "Interrompi e indaga quando una fonte comincia a produrre errori insoliti o volumi duplicati."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "review-requests",
+      "title": "Invio richieste di recensione",
+      "summary": "Visualizza anteprime e invia richieste individuali riconoscibili e conformi.",
+      "icon": "send",
+      "topics": [
+        {
+          "id": "send-individual-request",
+          "title": "Invia una richiesta individuale",
+          "access": "all",
+          "body": "La richiesta di recensione deve essere legata a una vera interazione con il cliente ed inviata individualmente. Conferma il destinatario, la destinazione e il messaggio prima dell'invio.",
+          "steps": [
+            "Apri Send Request e seleziona o inserisci il cliente.",
+            "Scegli la corretta destinazione di recensione.",
+            "Conferma la relazione con il cliente e i campi di consenso richiesti.",
+            "Visualizza l'anteprima dell'email, correggi eventuali problemi e invia una sola volta."
+          ],
+          "route": "/send"
+        },
+        {
+          "id": "pre-send-compliance",
+          "title": "Completa il controllo di conformità",
+          "access": "all",
+          "body": "La checklist pre-invio aiuta a evitare outreach fuorvianti o incompatibili con le piattaforme. Non offrire mai compensi, non chiedere solo ai clienti soddisfatti e non nascondere lo scopo del messaggio.",
+          "steps": [
+            "Conferma che la richiesta riguarda una transazione reale o un'esperienza di servizio.",
+            "Conferma che il destinatario non si sia disiscritto e non stia ricevendo contatti in eccesso.",
+            "Rivedi gli avvisi specifici per piattaforma, specialmente per Yelp.",
+            "Apri la Compliance Guide quando l'azione corretta è incerta."
+          ],
+          "route": "/compliance"
+        },
+        {
+          "id": "free-request-quota",
+          "title": "Allocazione richieste Free",
+          "access": "all",
+          "body": "Gli account Free ricevono 10 richieste iniziali di recensione e successivamente 5 richieste per ogni finestra mobile di 30 giorni. Il contatore di utilizzo mostra la disponibilità residua e indirizza a Upgrade quando l'allocazione è esaurita.",
+          "steps": [
+            "Controlla il contatore d'uso Free prima di preparare l'outreach.",
+            "Dai priorità a interazioni cliente recenti e idonee.",
+            "Non creare account aggiuntivi per aggirare l'allocazione.",
+            "Scegli un piano a pagamento quando l'attività richiede invii continui a volume superiore."
+          ],
+          "route": "/send"
+        },
+        {
+          "id": "unlimited-requests",
+          "title": "Richieste illimitate e limite giornaliero più alto",
+          "access": "paid",
+          "body": "Gli abbonamenti a pagamento includono richieste di recensione illimitate nell'ambito dell'entitlement e una concessione giornaliera configurata fino a 500, rispetto a 50 al giorno per gli account Free. Restano applicabili limiti di conformità, provider, prevenzione abusi e piattaforme esterne.",
+          "steps": [
+            "Esegui l'upgrade dalla pagina pricing e attendi la comparsa dello stato paid.",
+            "Aumenta il volume gradualmente monitorando delivery e qualità delle risposte.",
+            "Mantieni ogni richiesta legata a un'interazione cliente idonea.",
+            "Pausa gli invii quando aumentano errori, bounce, reclami o avvisi del provider."
+          ],
+          "route": "/upgrade"
+        }
+      ]
+    },
+    {
+      "id": "reminders-and-campaigns",
+      "title": "Promemoria e campagne",
+      "summary": "Gestisci follow-up programmati rispettando completamento, opt-out e segnali di conformità.",
+      "icon": "bell",
+      "topics": [
+        {
+          "id": "reminder-schedule",
+          "title": "Rivedi i promemoria programmati",
+          "access": "all",
+          "body": "I promemoria di follow-up sono disponibili su piani Free e a pagamento. L'area Reminders mostra i messaggi programmati e fornisce controlli per cancellare o inviare subito quando consentito.",
+          "steps": [
+            "Apri Reminders e rivedi elementi pendenti, dovuti, inviati, annullati e interrotti.",
+            "Cancella un promemoria quando il cliente chiede di non riceverlo o la relazione è cambiata.",
+            "Usa Send Now solo quando il cliente è ancora idoneo e il tempismo è appropriato.",
+            "Conferma la cronologia prima di riavviare qualsiasi sequenza di outreach."
+          ],
+          "route": "/reminders"
+        },
+        {
+          "id": "completion-stops-reminders",
+          "title": "Il completamento del cliente blocca promemoria futuri",
+          "access": "all",
+          "body": "Quando Get Phame registra l'azione richiesta dal cliente come completata, i promemoria futuri per quella sequenza si interrompono. Non riavviare manualmente la campagna a meno che una nuova e legittima interazione cliente non giustifichi una nuova richiesta.",
+          "steps": [
+            "Rivedi la timeline del cliente quando un promemoria viene interrotto.",
+            "Non duplicare o modificare un contatto per forzare la continuazione di una sequenza interrotta.",
+            "Usa una nuova richiesta solo per una nuova transazione o evento di servizio idoneo."
+          ]
+        },
+        {
+          "id": "campaign-management",
+          "title": "Cronologia campagna e controlli di riavvio",
+          "access": "all",
+          "body": "Usa la cronologia del contatto e della campagna per capire cosa è stato inviato, quando e se la sequenza è ancora attiva. Le azioni di riavvio massivo dovrebbero essere limitate ai contatti idonei non rispondenti e riviste prima dell'esecuzione.",
+          "steps": [
+            "Apri il dettaglio cliente o della campagna pertinente.",
+            "Rivedi email inviate, cronologia promemoria, stato di completamento e opt-out.",
+            "Modifica solo i campi ancora accurati e consentiti.",
+            "Conferma la conformità prima di riavviare una o più sequenze."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "templates-and-preview",
+      "title": "Template email e anteprima",
+      "summary": "Verifica il messaggio esatto per il cliente e comprendi il requisito di abbonamento per i template personalizzati.",
+      "icon": "fileText",
+      "topics": [
+        {
+          "id": "preview-email",
+          "title": "Anteprima email cliente",
+          "access": "all",
+          "body": "Usa Preview Email per ispezionare mittente, destinatario, oggetto e messaggio renderizzato prima dell'invio. Un'anteprima non invia il messaggio e dovrebbe essere ripetuta dopo aver cambiato identità aziendale, destinazione o contenuto del template.",
+          "steps": [
+            "Apri l'anteprima da Settings, Templates o dal flusso di invio dove disponibile.",
+            "Controlla mittente, destinatario, oggetto, saluto, destinazione e footer.",
+            "Chiudi l'anteprima e correggi ogni contenuto inesatto.",
+            "Genera una nuova anteprima prima dell'invio definitivo."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "custom-templates",
+          "title": "Template email personalizzati",
+          "access": "paid",
+          "body": "I template email personalizzati sono un beneficio riservato agli abbonamenti a pagamento. Mantieni il messaggio riconoscibile, neutro e conforme; non usare la personalizzazione per creare urgenza fittizia o incentivi.",
+          "steps": [
+            "Esegui l'upgrade o conferma un'entitlement paid attivo.",
+            "Apri Templates e modifica i campi supportati di oggetto e messaggio.",
+            "Preserva i link obbligatori, il linguaggio di conformità e i controlli cliente.",
+            "Visualizza l'anteprima e testa prima di utilizzare il template per l'outreach ai clienti."
+          ],
+          "route": "/templates"
+        }
+      ]
+    },
+    {
+      "id": "dashboard-and-analytics",
+      "title": "Dashboard, tracciamento e recensioni",
+      "summary": "Comprendi l'attività delle richieste, le timeline cliente e le capacità di tracciamento riservate ai piani a pagamento.",
+      "icon": "chart",
+      "topics": [
+        {
+          "id": "dashboard-basics",
+          "title": "Usa l'activity dashboard",
+          "access": "all",
+          "body": "La dashboard riepiloga l'attività di outreach corrente e fornisce percorsi verso contatti, richieste, promemoria e record correlati. Tratta i dati vuoti o ritardati come uno stato sconosciuto fino al refresh riuscito della pagina.",
+          "steps": [
+            "Scegli il periodo o la vista rilevante quando è disponibile un filtro.",
+            "Apri il contatto o la richiesta sottostante prima di agire su una metrica di sintesi.",
+            "Aggiorna o riprova quando appare uno stato di caricamento o errore.",
+            "Usa le timeline cliente per decisioni a livello di record."
+          ],
+          "route": "/dashboard"
+        },
+        {
+          "id": "reviews-and-history",
+          "title": "Rivedi attività e cronologia conservata",
+          "access": "all",
+          "body": "La cronologia di richieste e recensioni aiuta a spiegare l'outreach precedente e lo stato del cliente. Get Phame non crea né fabbrica recensioni dei clienti. Nelle operazioni dovrebbero apparire solo azioni e record reali dei clienti.",
+          "steps": [
+            "Apri Reviews o il dettaglio cliente pertinente.",
+            "Controlla timestamp, fonte e contesto di campagna prima di trarre conclusioni.",
+            "Correggi i dati operativi tramite i controlli di modifica supportati anziché creare record sostitutivi.",
+            "Usa contatti e cronologia conservati dopo un downgrade; le funzionalità riservate ai piani a pagamento potrebbero non essere più disponibili."
+          ],
+          "route": "/reviews"
+        },
+        {
+          "id": "open-click-tracking",
+          "title": "Tracciamento apertura e click email",
+          "access": "paid",
+          "body": "Open e click tracking sono disponibili solo sugli abbonamenti a pagamento. I segnali di tracciamento sono indicatori utili, ma possono essere incompleti perché strumenti di privacy, scanner di sicurezza e client email possono influenzarli.",
+          "steps": [
+            "Conferma che l'account possieda un'entitlement paid attivo.",
+            "Usa il tracciamento come uno dei segnali insieme allo stato di invio e alla cronologia cliente.",
+            "Non considerare un'apertura o un click come prova che un cliente abbia pubblicato una recensione.",
+            "Rispetta la privacy ed evita di esportare i dati di tracciamento senza una necessità aziendale."
+          ]
+        },
+        {
+          "id": "advanced-analytics",
+          "title": "Advanced analytics",
+          "access": "paid",
+          "body": "Advanced analytics è una capacità riservata agli abbonamenti a pagamento. Usala per identificare pattern di delivery e campagna, quindi apri i record sottostanti prima di modificare una sequenza cliente o un processo aziendale.",
+          "steps": [
+            "Seleziona un periodo di reporting significativo.",
+            "Confronta i tassi nel tempo invece di affidarti a un singolo valore assoluto.",
+            "Indaga i record sottostanti e lo stato di delivery.",
+            "Documenta ogni modifica operativa e monitora il periodo successivo."
+          ],
+          "route": "/dashboard"
+        }
+      ]
+    },
+    {
+      "id": "developer-integrations",
+      "title": "Developer Integrations e Sources",
+      "summary": "Crea connessioni API sicure, usa ricette Zapier o Make e monitora ogni fonte di importazione.",
+      "icon": "plug",
+      "topics": [
+        {
+          "id": "api-keys",
+          "title": "Crea e proteggi una API key",
+          "access": "all",
+          "body": "Le API key autorizzano le importazioni di contatti esterne. Il segreto è mostrato solo alla creazione; salvalo nel campo credenziali protetto dello strumento collegato e non inserirlo in URL pubblici, screenshot, log o documenti condivisi.",
+          "steps": [
+            "Apri Developer Integrations e crea una key con nome chiaro.",
+            "Copia il nuovo secret una sola volta nel campo credenziali protette dello strumento connesso.",
+            "Usa l'Authorization header documentato e l'endpoint di contact-import.",
+            "Revoca e sostituisci la key immediatamente se sospetti un'esposizione."
+          ],
+          "route": "/developer"
+        },
+        {
+          "id": "source-connection",
+          "title": "Crea una connessione Source",
+          "access": "all",
+          "body": "Una Source identifica lo strumento connesso che ha prodotto un'importazione. Scegli Zapier, Make o Custom; associa una API key autorizzata; e usa l'header Source generato in modo che analytics e health check rimangano attribuibili.",
+          "steps": [
+            "Crea o seleziona la API key usata dall'automazione.",
+            "Crea una Source con provider e nome riconoscibile.",
+            "Copia l'endpoint, l'Authorization header e l'Source header nello strumento di automazione.",
+            "Invia un'importazione di test e conferma che la Source registri l'attività."
+          ],
+          "route": "/developer"
+        },
+        {
+          "id": "zapier-make-recipes",
+          "title": "Usa la ricetta di setup Zapier o Make",
+          "access": "all",
+          "body": "Le ricette guidate mostrano il metodo HTTP, l'endpoint, gli header, i campi canonici del contatto, i dati di consenso e le indicazioni di idempotenza necessari per un'automazione affidabile.",
+          "steps": [
+            "Scegli il provider Zapier o Make quando crei la Source.",
+            "Segui i passi provider-specific HTTP in ordine.",
+            "Mappa nome cliente, email, consenso e identificatori di source stabili dallo strumento di origine.",
+            "Esegui il test del provider, quindi verifica il risultato dell'importazione dentro Get Phame."
+          ],
+          "route": "/developer"
+        },
+        {
+          "id": "source-analytics-health",
+          "title": "Analytics e health delle Source",
+          "access": "all",
+          "body": "Ogni Source riporta tentativi a 7, 30 e 90 giorni, importazioni riuscite, contatti creati, contatti deduplicati, errori, tasso di successo e ultima attività. Il monitoraggio health valuta i risultati recenti e registra una cronologia duratura.",
+          "steps": [
+            "Scegli la Source e la finestra di reportistica.",
+            "Confronta tentativi, successi, duplicati, errori e tasso di successo.",
+            "Rivedi la cronologia di health e l'ultima ragione quando lo stato è degradato o fallisce.",
+            "Disabilita il monitoraggio solo durante manutenzione intenzionale, quindi riattivalo ed esegui un controllo manuale."
+          ],
+          "route": "/developer"
+        }
+      ]
+    },
+    {
+      "id": "referrals-support-and-billing",
+      "title": "Referral, supporto e fatturazione",
+      "summary": "Condividi Get Phame, richiedi aiuto, confronta i piani e comprendi il comportamento di cancellazione.",
+      "icon": "creditCard",
+      "topics": [
+        {
+          "id": "referral-link",
+          "title": "Condividi il tuo referral link",
+          "access": "all",
+          "body": "Gli utenti Free e a pagamento possono condividere il referral link personale mostrato in Settings. Condividilo solo con persone che potrebbero trarne beneficio ed evita affermazioni fuorvianti o distribuzioni bulk non richieste.",
+          "steps": [
+            "Apri Settings e trova la sezione referral.",
+            "Copia o condividi il link generato.",
+            "Spiega Get Phame accuratamente e lascia che il destinatario decida se registrarsi.",
+            "Controlla lo stato dei referral nella vista account disponibile."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "paid-referral-reward",
+          "title": "Idoneità alla ricompensa referral a pagamento",
+          "access": "paid",
+          "body": "Un referente deve essere su un piano paid idoneo quando la ricompensa viene processata per ricevere il mese gratuito. Gli utenti Free possono condividere un referral link ma non sono eleggibili per la ricompensa riservata ai piani paid fino al momento in cui qualificano.",
+          "steps": [
+            "Conferma che il referral sia stato attribuito tramite il tuo link personale.",
+            "Mantieni un abbonamento paid idoneo quando la ricompensa diventa processabile.",
+            "Contatta il support se una conversione qualificata rimane irrisolta dopo i tempi di processo normali."
+          ]
+        },
+        {
+          "id": "support-options",
+          "title": "Richiedi supporto",
+          "access": "all",
+          "body": "Usa il modulo di supporto in-app per problemi di account, delivery, fatturazione, conformità o tecnici. Includi una descrizione chiara e uno screenshot rilevante quando è sicuro, ma rimuovi credenziali, magic link, segreti dei clienti e dati personali non necessari.",
+          "steps": [
+            "Scegli l'argomento di supporto più accurato.",
+            "Descrivi cosa ti aspettavi, cosa è successo e quando è successo.",
+            "Allega solo uno screenshot sanificato quando aiuta materialmente la diagnosi.",
+            "Monitora lo stato del support in-app e rispondi alle domande di follow-up."
+          ]
+        },
+        {
+          "id": "priority-support",
+          "title": "Supporto prioritario",
+          "access": "paid",
+          "body": "Il supporto prioritario è disponibile con abbonamenti a pagamento. Influisce sulla priorità di gestione delle richieste; non annulla la verifica di sicurezza, i ritardi dei provider, i requisiti di conformità o le regole delle piattaforme esterne.",
+          "steps": [
+            "Invia la richiesta tramite il modulo di support normale mentre sei connesso all'account paid.",
+            "Scegli l'urgenza corretta e fornisci dettagli riproducibili.",
+            "Evita di inviare ticket duplicati per lo stesso problema."
+          ]
+        },
+        {
+          "id": "upgrade-cancel-downgrade",
+          "title": "Upgrade, cancellazione e downgrade",
+          "access": "all",
+          "body": "Gli abbonamenti mensili e annuali si rinnovano fino alla cancellazione; l'accesso lifetime non si rinnova. Dopo la cancellazione di un ricorrente, l'accesso rimane attivo fino alla scadenza del periodo pagato e poi torna a Free. Contatti e cronologia rimangono, mentre le funzionalità riservate ai piani a pagamento vengono rimosse.",
+          "steps": [
+            "Apri Upgrade per confrontare opzioni mensili, annuali e lifetime.",
+            "Completa il checkout nel flusso di pagamento sicuro e torna a Get Phame.",
+            "Rivedi lo stato dell'abbonamento in Settings.",
+            "Usa il flusso di cancellazione quando necessario e leggi la conferma della data effettiva prima di completarlo."
+          ],
+          "route": "/upgrade"
+        },
+        {
+          "id": "future-updates",
+          "title": "Diritto agli aggiornamenti futuri",
+          "access": "paid",
+          "body": "I piani ricorrenti a pagamento includono aggiornamenti futuri finché l'abbonamento rimane attivo. L'accesso lifetime include aggiornamenti futuri senza rinnovo. Gli account Free ricevono il set di funzionalità Free disponibile in quel momento.",
+          "steps": [
+            "Mantieni aggiornati la web app installata e il browser.",
+            "Ricarica dopo un rilascio quando richiesto in modo che le risorse aggiornate sostituiscano i file cache più vecchi.",
+            "Rivedi il Changelog per i cambiamenti di prodotto rilevanti."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-privacy-and-compliance",
+      "title": "Sicurezza, privacy e conformità",
+      "summary": "Proteggi l'accesso all'account, usa i dati dei clienti responsabilmente e chiudi l'account in modo sicuro quando necessario.",
+      "icon": "shield",
+      "topics": [
+        {
+          "id": "profile-security",
+          "title": "Profilo, passkeys e recovery",
+          "access": "all",
+          "body": "Mantieni aggiornati email dell'account, profilo, passkeys e metodi di recovery. Le passkeys riducono la dipendenza dai link via email dove supportate, mentre i metodi di recovery aiutano a ripristinare l'accesso senza eludere i controlli di proprietà.",
+          "steps": [
+            "Apri Settings e rivedi profilo e email di accesso.",
+            "Aggiungi una passkey su un dispositivo trusted quando viene offerta.",
+            "Conserva le informazioni di recovery in modo sicuro e testale prima di un'emergenza.",
+            "Rimuovi passkeys o sessioni per dispositivi che non controlli più."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "data-responsibility",
+          "title": "Responsabilità sui dati cliente",
+          "access": "all",
+          "body": "Raccogli e conserva solo i dati cliente necessari per un legittimo outreach di recensione. Non inserire credenziali, dati di pagamento, note sensibili o informazioni personali non correlate nei campi contatto o negli allegati di supporto.",
+          "steps": [
+            "Rivedi la Privacy Policy e la pagina Data Usage.",
+            "Importa solo i campi contatto autorizzati.",
+            "Usa le esportazioni solo per uno scopo aziendale definito e conservale in modo sicuro.",
+            "Elimina o correggi i record quando la conservazione non è più giustificata."
+          ]
+        },
+        {
+          "id": "compliance-guide",
+          "title": "Usa la Compliance Guide",
+          "access": "all",
+          "body": "La Compliance Guide spiega le salvaguardie specifiche per piattaforma e generali per le richieste di recensione. La checklist pre-invio supporta buone decisioni ma non sostituisce la tua responsabilità di seguire leggi applicabili e termini di piattaforma.",
+          "steps": [
+            "Apri Compliance prima di lanciare un nuovo workflow o usare una nuova piattaforma.",
+            "Rivedi l'avviso Yelp e le salvaguardie per invii massivi quando applicabili.",
+            "Non vincolare, incentivare, fabbricare o sollecitare recensioni in modo selettivo.",
+            "Metti in pausa la campagna e cerca il consiglio appropriato quando i requisiti non sono chiari."
+          ],
+          "route": "/compliance"
+        },
+        {
+          "id": "logout-delete-account",
+          "title": "Disconnettersi o eliminare l'account",
+          "access": "all",
+          "body": "Disconnettiti ogni volta che un dispositivo è condiviso o non più attendibile. L'eliminazione dell'account è distruttiva e dovrebbe essere usata solo dopo aver rivisto retention, esportazioni, abbonamenti attivi e servizi connessi.",
+          "steps": [
+            "Esporta eventuali record legalmente richiesti prima dell'eliminazione.",
+            "Cancella o rivedi la fatturazione attiva e i servizi connessi.",
+            "Usa il flusso protetto di delete-account in Settings e conferma l'avviso.",
+            "Disconnettiti dai dispositivi rimanenti quando l'eliminazione non è richiesta ma l'accesso deve terminare."
+          ],
+          "route": "/settings"
+        }
+      ]
+    }
+  ]
+}

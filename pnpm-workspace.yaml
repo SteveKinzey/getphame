@@ -32,7 +32,7 @@ overrides:
   uuid: ">=11.1.1"
   # Security: qs prototype pollution fix
   qs: ">=6.15.2"
-  # Security: brace-expansion ReDoS fix
+  # Security: brace-expansion unbounded-length DoS fix (GHSA-mh99-v99m-4gvg)
   brace-expansion: ">=5.0.8"
   # Security: mdast-util-to-hast XSS fix
   mdast-util-to-hast: ">=13.2.1"

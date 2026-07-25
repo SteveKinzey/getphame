@@ -35,10 +35,15 @@ import { registerPublicApiRoutes } from "../publicApi";
 import { registerMobileAuthRoutes } from "../mobileAuth";
 import { authHealthHandler } from "../authHealthRoutes";
 import { smtpHealthHandler } from "../smtpHealthRoutes";
+import { sourceHealthHandler } from "../sourceHealthRoutes";
+import {
+  SOURCE_HEALTH_CALLBACK_PATH,
+  reconcileSourceHealthHeartbeat,
+} from "../sourceHealthHeartbeat";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 import { apiNotFoundHandler } from "./apiFallback";
 import { registerPublicFeaturePrerender } from "../publicFeaturePrerender";
-import { registerPayPalRoutes } from "../paypal";
+import { registerTranscriptFontRoutes } from "../transcriptFontRoutes";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -348,6 +353,8 @@ async function startServer() {
             "https://assets.getphame.app",
             "https://*.r2.dev",
             "https://d2xsxph8kpxj0f.cloudfront.net",
+            // Managed web assets redirect to this CloudFront distribution in production.
+            "https://d36hbw14aib5lz.cloudfront.net",
             "https://files.manuscdn.com",
             // YouTube thumbnails used on landing page VideoDemo section
             "https://img.youtube.com",
@@ -357,6 +364,11 @@ async function startServer() {
           frameSrc: [
             "https://www.youtube.com",
             "https://youtube.com",
+          ],
+          // Keep video delivery restricted to the app and its exact managed-storage redirect host.
+          mediaSrc: [
+            "'self'",
+            "https://d36hbw14aib5lz.cloudfront.net",
           ],
           // Allow outbound API calls: IP detection, analytics, font CDNs, and public manuscdn CDN (used for app logo preload)
           connectSrc: [
@@ -369,19 +381,12 @@ async function startServer() {
             "https://files.manuscdn.com",
             // Manus analytics (Umami) beacon endpoint
             "https://manus-analytics.com",
-            // Cloudflare Web Analytics beacon injected at the edge when enabled.
-            "https://static.cloudflareinsights.com",
           ],
           objectSrc: ["'none'"],
           // Allow the Manus analytics script (Umami) injected by the platform at deploy time.
           // 'unsafe-inline' is required because the Manus platform injects an inline <script>
           // into the served HTML at deploy time (line 146) that cannot be removed or hashed.
-          scriptSrc: [
-            "'self'",
-            "'unsafe-inline'",
-            "https://manus-analytics.com",
-            "https://static.cloudflareinsights.com",
-          ],
+          scriptSrc: ["'self'", "'unsafe-inline'", "https://manus-analytics.com"],
           scriptSrcAttr: ["'none'"],
           // 'unsafe-inline' is required for:
           // 1. The Manus platform injects an inline script at line 146 of the served HTML
@@ -412,6 +417,11 @@ async function startServer() {
     return res.status(200).json({ ok: true, status: "ready" });
   });
 
+  // Same-origin delivery for the bounded Unicode subsets used by client-side
+  // transcript PDFs. Managed asset redirects are not readable by browser
+  // fetch() on custom domains because their CDN response omits CORS headers.
+  registerTranscriptFontRoutes(app);
+
   // OAuth callback under /api/oauth/callback
   registerStorageProxy(app);
   registerOAuthRoutes(app);
@@ -419,12 +429,10 @@ async function startServer() {
   registerEmailAuthRoutes(app);
   registerAppleAuthRoutes(app);
   registerMobileAuthRoutes(app);
-  // PayPal routes must be mounted after JSON parsing and before the /api
-  // not-found fallback so production requests never fall through to the SPA.
-  registerPayPalRoutes(app);
   registerKoalendarRoutes(app);
   app.post("/api/scheduled/auth-health", authHealthHandler);
   app.post("/api/scheduled/smtp-health", smtpHealthHandler);
+  app.post(SOURCE_HEALTH_CALLBACK_PATH, sourceHealthHandler);
   app.post("/api/scheduled/process-reminders", reminderHeartbeatHandler);
   app.post("/api/scheduled/process-koalendar", koalendarHeartbeatHandler);
 
@@ -557,6 +565,11 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
+    if (ENV.isProduction) {
+      void reconcileSourceHealthHeartbeat()
+        .then(result => console.log(`[SourceHealth] Heartbeat ${result.status}.`))
+        .catch(() => console.error("[SourceHealth] Heartbeat reconciliation failed."));
+    }
     startSmtpWeeklyDigestScheduler();
     startReEngagementScheduler();
     startInactiveUserScheduler();
