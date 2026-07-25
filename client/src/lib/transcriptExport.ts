@@ -30,8 +30,8 @@ const PDF_UNICODE_FONTS = {
   },
   thai: {
     family: "NotoSansTranscriptThai",
-    fileName: "noto-sans-thai-transcript.ttf",
-    url: "/manus-storage/noto-sans-thai-transcript_e2acd01a.ttf",
+    fileName: "noto-sans-thai-transcript-v2.ttf",
+    url: "/manus-storage/noto-sans-thai-transcript-v2_ffad86f1.ttf",
   },
 } satisfies Record<string, PdfUnicodeFont>;
 

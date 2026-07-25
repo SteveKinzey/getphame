@@ -68,7 +68,7 @@ describe("transcript export", () => {
     expect(detectTranscriptPdfUnicodeFont(["บทถอดเสียงวิดีโอแนะนำแพลตฟอร์ม", "ภาษา"]))
       .toMatchObject({
         family: "NotoSansTranscriptThai",
-        url: "/manus-storage/noto-sans-thai-transcript_e2acd01a.ttf",
+        url: "/manus-storage/noto-sans-thai-transcript-v2_ffad86f1.ttf",
       });
     expect(detectTranscriptPdfUnicodeFont(["Platform walkthrough transcript", "Language"]))
       .toBeNull();
