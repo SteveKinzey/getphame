@@ -55,8 +55,8 @@
 - [x] Repair production media delivery and add a graceful player fallback so the walkthrough remains usable when playback cannot initialize.
 - [x] Run focused tests, full TypeScript/Vitest/build gates, mobile and desktop production playback checks, then publish the corrected checkpoint.
 - [x] Resolve the production build audit blocker for the brace-expansion security advisory without weakening the audit gate.
-- [x] Save a managed checkpoint containing the homepage-video delivery repair and capture its published version ID.
-- [ ] Re-verify the repaired MP4, same-origin captions, and player recovery path on the live getphame.app landing page after publication.
+- [x] Save a managed checkpoint containing the homepage-video delivery repair and capture its published version ID (`a56e1e9c`).
+- [x] Re-verify the repaired MP4, same-origin captions, and player recovery path on the live getphame.app landing page after publication.
 - [x] Exclude managed `/manus-storage/` media redirects from service-worker interception, bump the PWA cache version, and add regression coverage for direct browser range handling.
-- [ ] Save a new managed checkpoint containing the `/manus-storage/` service-worker bypass and record the published version ID.
-- [ ] Confirm the decoded branded frame, WebVTT captions, and recovery controls on live getphame.app after the definitive checkpoint deploys.
+- [x] Save a new managed checkpoint containing the `/manus-storage/` service-worker bypass and record the published version ID (`cc0db06b`).
+- [x] Confirm the decoded branded frame, WebVTT captions, and recovery controls on live getphame.app after the definitive checkpoint deploys.
