@@ -43,7 +43,7 @@ import { fingerprintAuthValue } from "./authOperations";
 
 import { sendMailViaSmtp } from "./smtp";
 import { buildReviewRequestEmail, buildReviewRequestText } from "./emailTemplates";
-import { checkOnboardingChecklistEventRateLimit, checkOnboardingFunnelInsightRateLimit } from "./rateLimiter";
+import { checkManualSearchEventRateLimit, checkOnboardingChecklistEventRateLimit, checkOnboardingFunnelInsightRateLimit } from "./rateLimiter";
 import { AdaptiveSendLimitError, getAdaptiveSendStatus } from "./adaptiveSendLimits";
 import {
   cancelSubscriptionRenewal,
@@ -113,6 +113,13 @@ import {
   toCaptionLanguageEventPage,
 } from "./captionLanguageAnalytics";
 import { ONBOARDING_CHECKLIST_EVENT_NAMES, ONBOARDING_CHECKLIST_EVENT_SOURCE, summarizeOnboardingChecklistEvents, toOnboardingChecklistEventPage } from "./onboardingChecklistAnalytics";
+import {
+  getManualSearchInsights,
+  MANUAL_SEARCH_LOCALES,
+  MANUAL_SEARCH_REPORTING_PERIODS,
+  MANUAL_SEARCH_ROLES,
+  recordManualZeroResultSearch,
+} from "./manualSearchAnalytics";
 import { generateOnboardingFunnelInsight } from "./onboardingFunnelInsight";
 import { eq, like, or, inArray, desc, asc, isNotNull, isNull, and, sql, gte, lte, ne, count } from "drizzle-orm";
 import {
@@ -3400,6 +3407,22 @@ export const appRouter = router({
       return summarizeCaptionLanguageEvents(rows);
     }),
 
+    /** Aggregate zero-result Manual searches; raw rows, account IDs, and fingerprints never leave the server. */
+    manualSearchInsights: adminProcedure
+      .input(z.object({
+        periodDays: z.enum(MANUAL_SEARCH_REPORTING_PERIODS.map(String) as ["30", "90", "365"]).default("90"),
+        limit: z.number().int().min(1).max(50).default(25),
+      }).default({ periodDays: "90", limit: 25 }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        return getManualSearchInsights({
+          db,
+          periodDays: Number(input.periodDays) as (typeof MANUAL_SEARCH_REPORTING_PERIODS)[number],
+          limit: input.limit,
+        });
+      }),
+
     /** Aggregate checklist setup funnel. It intentionally returns no raw event or identity data. */
     onboardingChecklistFunnel: adminProcedure.input(onboardingChecklistFunnelInputSchema.optional()).query(async ({ input }) => {
       const db = await getDb();
@@ -4053,6 +4076,32 @@ export const appRouter = router({
 
   /** Analytics / page event tracking */
   analytics: router({
+    /** Authenticated zero-result Manual searches only; role scope is verified against the session. */
+    trackManualZeroResultSearch: protectedProcedure
+      .input(z.object({
+        query: z.string().min(2).max(100),
+        resultCount: z.literal(0),
+        locale: z.enum(MANUAL_SEARCH_LOCALES),
+        manualRole: z.enum(MANUAL_SEARCH_ROLES),
+        manualVersion: z.string().trim().min(8).max(20),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const sessionRole = ctx.user.role === "admin" ? "admin" : "user";
+        if (input.manualRole !== sessionRole) {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Manual scope does not match the authenticated account." });
+        }
+        checkManualSearchEventRateLimit(ctx.user.id);
+        const db = await getDb();
+        if (!db) return { ok: true as const };
+        return recordManualZeroResultSearch({
+          db,
+          userId: ctx.user.id,
+          query: input.query,
+          manualRole: input.manualRole,
+          locale: input.locale,
+          manualVersion: input.manualVersion,
+        });
+      }),
     /** Authenticated, allowlisted checklist telemetry. It captures no device, referrer, or customer content. */
     trackOnboardingChecklistEvent: protectedProcedure
       .input(z.object({ event: z.enum(ONBOARDING_CHECKLIST_EVENT_NAMES) }))

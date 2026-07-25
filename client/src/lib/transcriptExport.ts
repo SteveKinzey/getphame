@@ -16,7 +16,7 @@ export type TranscriptExportMetadata = {
 
 export type TranscriptExportFormat = "text" | "pdf";
 
-type PdfUnicodeFont = {
+export type PdfUnicodeFont = {
   family: string;
   fileName: string;
   url: string;
@@ -44,7 +44,7 @@ export function detectTranscriptPdfUnicodeFont(values: readonly string[]): PdfUn
   return null;
 }
 
-async function fetchFontAsBase64(url: string) {
+export async function fetchPdfFontAsBase64(url: string) {
   const cached = pdfFontDataCache.get(url);
   if (cached) return cached;
 
@@ -135,7 +135,7 @@ export async function createTranscriptPdfBlob(
     metadata.sourceLabel,
   ]);
   if (unicodeFont) {
-    const fontData = await fetchFontAsBase64(unicodeFont.url);
+    const fontData = await fetchPdfFontAsBase64(unicodeFont.url);
     document.addFileToVFS(unicodeFont.fileName, fontData);
     document.addFont(unicodeFont.fileName, unicodeFont.family, "normal");
   }

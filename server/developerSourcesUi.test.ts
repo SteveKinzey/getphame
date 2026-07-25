@@ -150,8 +150,8 @@ describe("Developer Sources workflow", () => {
     }
 
     const serviceWorker = readProjectFile("../client/public/sw.js");
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v21'");
-    expect(i18nSource).toContain('/locales/{{lng}}/{{ns}}.json?v=phame35');
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v22'");
+    expect(i18nSource).toContain('/locales/{{lng}}/{{ns}}.json?v=phame36');
     expect(component).toContain("const STEP_FALLBACKS");
     expect(component).toContain("const RULE_FALLBACKS");
     expect(component).toContain("const PROVIDER_FALLBACKS");

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 import type { LucideIcon } from "lucide-react";
@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   Compass,
   CreditCard,
+  Download,
   ExternalLink,
   FileText,
   Gauge,
@@ -19,6 +20,7 @@ import {
   Inbox,
   KeyRound,
   LockKeyhole,
+  Loader2,
   Mail,
   Plug,
   Rocket,
@@ -29,10 +31,17 @@ import {
   TrendingDown,
   Users,
 } from "lucide-react";
+import { toast } from "sonner";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getManualDocument } from "@/content/manuals/registry";
+import { getManualDocument, normalizeManualLocale } from "@/content/manuals/registry";
+import { trpc } from "@/lib/trpc";
+import {
+  buildManualPdfFilename,
+  createManualPdfBlob,
+  downloadManualPdfBlob,
+} from "@/lib/manualPdfExport";
 import type {
   ManualAccess,
   ManualIconName,
@@ -115,6 +124,136 @@ function filterSections(sections: ManualSection[], rawQuery: string) {
   });
 }
 
+type ManualReportingPeriod = "30" | "90" | "365";
+
+function ManualSearchInsightsPanel() {
+  const { t, i18n } = useTranslation();
+  const [periodDays, setPeriodDays] = useState<ManualReportingPeriod>("90");
+  const insights = trpc.admin.manualSearchInsights.useQuery(
+    { periodDays, limit: 25 },
+    { staleTime: 60_000 },
+  );
+  const formatter = useMemo(
+    () => new Intl.NumberFormat(i18n.resolvedLanguage ?? i18n.language),
+    [i18n.language, i18n.resolvedLanguage],
+  );
+
+  return (
+    <section className="mt-6 border-t-4 border-[#e9b949] bg-white px-5 py-5 shadow-sm sm:px-6" aria-labelledby="manual-search-insights-title">
+      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+        <div className="max-w-3xl">
+          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.14em] text-[#725200]">
+            <ChartNoAxesCombined size={17} aria-hidden="true" />
+            {t("manual.insights.eyebrow", { defaultValue: "Documentation intelligence" })}
+          </div>
+          <h2 id="manual-search-insights-title" className="mt-2 text-xl font-black rr-text-navy" style={{ fontFamily: "'Poppins', sans-serif" }}>
+            {t("manual.insights.title", { defaultValue: "Searches with no results" })}
+          </h2>
+          <p className="mt-2 text-sm leading-6 rr-text-navy-muted">
+            {t("manual.insights.description", { defaultValue: "Use these aggregate terms to prioritize missing Manual topics. Repeated searches from the same account count once per UTC day." })}
+          </p>
+          <p className="mt-2 text-xs leading-5 rr-text-navy-muted">
+            {t("manual.insights.privacy", { defaultValue: "Private by design: reports exclude account IDs, customer records, referrers, devices, and raw event rows." })}
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2" role="group" aria-label={t("manual.insights.periodLabel", { defaultValue: "Reporting period" })}>
+          {(["30", "90", "365"] as const).map(period => (
+            <Button
+              key={period}
+              type="button"
+              size="sm"
+              variant={periodDays === period ? "default" : "outline"}
+              className={periodDays === period ? "rr-bg-navy font-bold text-white" : "border-[#14213d] bg-white font-bold rr-text-navy"}
+              aria-pressed={periodDays === period}
+              onClick={() => setPeriodDays(period)}
+            >
+              {t("manual.insights.periodDays", { count: Number(period), defaultValue: "{{count}} days" })}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {insights.isLoading ? (
+        <p className="mt-5 text-sm rr-text-navy-muted" role="status">
+          {t("manual.insights.loading", { defaultValue: "Loading missing-topic searches…" })}
+        </p>
+      ) : insights.isError ? (
+        <div className="mt-5 border-l-4 border-[#b42318] bg-[#fff4f2] px-4 py-3" role="alert">
+          <p className="text-sm font-bold text-[#8a1c13]">
+            {t("manual.insights.error", { defaultValue: "Missing-topic analytics could not be loaded. Try again." })}
+          </p>
+          <Button type="button" variant="outline" size="sm" className="mt-3 bg-white" onClick={() => insights.refetch()}>
+            {t("manual.insights.retry", { defaultValue: "Retry" })}
+          </Button>
+        </div>
+      ) : insights.data ? (
+        <>
+          <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            <div className="border-t-2 border-[#14213d] bg-[#f7f5ef] px-4 py-3">
+              <p className="text-2xl font-black rr-text-navy">{formatter.format(insights.data.summary.totalSearches)}</p>
+              <p className="text-xs font-bold rr-text-navy-muted">{t("manual.insights.totalSearches", { defaultValue: "Zero-result searches" })}</p>
+            </div>
+            <div className="border-t-2 border-[#14213d] bg-[#f7f5ef] px-4 py-3">
+              <p className="text-2xl font-black rr-text-navy">{formatter.format(insights.data.summary.uniqueTerms)}</p>
+              <p className="text-xs font-bold rr-text-navy-muted">{t("manual.insights.uniqueTerms", { defaultValue: "Distinct terms" })}</p>
+            </div>
+            <div className="border-t-2 border-[#14213d] bg-[#f7f5ef] px-4 py-3">
+              <p className="text-sm font-black rr-text-navy">
+                {t("manual.insights.roleBreakdown", {
+                  user: formatter.format(insights.data.summary.roleCounts.user),
+                  admin: formatter.format(insights.data.summary.roleCounts.admin),
+                  defaultValue: "User {{user}} · Admin {{admin}}",
+                })}
+              </p>
+              <p className="mt-1 text-xs font-bold rr-text-navy-muted">{t("manual.insights.manualScope", { defaultValue: "Manual scope" })}</p>
+            </div>
+          </div>
+
+          {insights.data.items.length ? (
+            <div className="mt-5 overflow-x-auto">
+              <table className="w-full min-w-[680px] border-collapse text-left text-sm">
+                <thead>
+                  <tr className="border-b-2 border-[#14213d]">
+                    <th scope="col" className="px-3 py-3 font-black rr-text-navy">{t("manual.insights.term", { defaultValue: "Missing topic search" })}</th>
+                    <th scope="col" className="px-3 py-3 font-black rr-text-navy">{t("manual.insights.role", { defaultValue: "Manual" })}</th>
+                    <th scope="col" className="px-3 py-3 font-black rr-text-navy">{t("manual.insights.locale", { defaultValue: "Locale" })}</th>
+                    <th scope="col" className="px-3 py-3 text-right font-black rr-text-navy">{t("manual.insights.count", { defaultValue: "Count" })}</th>
+                    <th scope="col" className="px-3 py-3 font-black rr-text-navy">{t("manual.insights.lastSearched", { defaultValue: "Last searched" })}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {insights.data.items.map(item => (
+                    <tr key={`${item.query}-${item.manualRole}-${item.locale}`} className="border-b border-[#e8e3d7] last:border-b-0">
+                      <th scope="row" className="max-w-[320px] px-3 py-3 font-bold rr-text-navy">{item.query}</th>
+                      <td className="px-3 py-3 rr-text-navy-mid">
+                        {item.manualRole === "admin"
+                          ? t("manual.insights.adminManual", { defaultValue: "Admin Manual" })
+                          : t("manual.insights.userManual", { defaultValue: "User Manual" })}
+                      </td>
+                      <td className="px-3 py-3 rr-text-navy-mid">{item.locale}</td>
+                      <td className="px-3 py-3 text-right font-black rr-text-navy">{formatter.format(item.count)}</td>
+                      <td className="px-3 py-3 rr-text-navy-mid">
+                        {new Intl.DateTimeFormat(i18n.resolvedLanguage ?? i18n.language, { dateStyle: "medium" }).format(new Date(item.lastSearchedAt))}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="mt-5 bg-[#f7f5ef] px-5 py-7 text-center">
+              <Search className="mx-auto rr-text-navy-muted" size={28} aria-hidden="true" />
+              <h3 className="mt-3 text-base font-black rr-text-navy">{t("manual.insights.emptyTitle", { defaultValue: "No missing-topic searches yet" })}</h3>
+              <p className="mt-1 text-sm rr-text-navy-muted">{t("manual.insights.emptyBody", { defaultValue: "Zero-result searches will appear here after daily account-level deduplication." })}</p>
+            </div>
+          )}
+        </>
+      ) : null}
+    </section>
+  );
+}
+
 function TopicCard({ topic }: { topic: ManualTopic }) {
   const { t } = useTranslation();
   const [, navigate] = useLocation();
@@ -176,7 +315,11 @@ export default function ManualPage() {
   const { user } = useAuth();
   const { t, i18n } = useTranslation();
   const [query, setQuery] = useState("");
+  const [exportingScope, setExportingScope] = useState<string | null>(null);
+  const trackedSearchesRef = useRef(new Set<string>());
+  const { mutate: trackZeroResultSearch } = trpc.analytics.trackManualZeroResultSearch.useMutation();
   const role: ManualRole = user?.role === "admin" ? "admin" : "user";
+  const manualLocale = normalizeManualLocale(i18n.resolvedLanguage ?? i18n.language) as "en" | "es" | "fr" | "it" | "th" | "zh-CN" | "zh-TW";
   const manual = useMemo(
     () => getManualDocument(i18n.resolvedLanguage ?? i18n.language, role),
     [i18n.language, i18n.resolvedLanguage, role],
@@ -189,12 +332,78 @@ export default function ManualPage() {
   );
   const adminSectionCount = manual.sections.filter(section => section.access === "admin").length;
 
+  const exportPdf = async (section?: ManualSection) => {
+    const scope = section?.id ?? "full";
+    if (exportingScope) return;
+    setExportingScope(scope);
+
+    try {
+      const displayNames = new Intl.DisplayNames([manualLocale], { type: "language" });
+      const languageName = displayNames.of(manualLocale.split("-")[0]) ?? manualLocale;
+      const blob = await createManualPdfBlob(manual, {
+        role,
+        locale: manualLocale,
+        languageLabel: `${languageName} (${manualLocale})`,
+        generatedAt: new Date(),
+        sectionId: section?.id,
+        labels: {
+          fullScope: t("manual.export.fullScope", { defaultValue: "Entire visible Manual" }),
+          sectionScope: t("manual.export.sectionScope", { defaultValue: "Manual section" }),
+          scope: t("manual.export.scope", { defaultValue: "Export scope" }),
+          language: t("manual.export.language", { defaultValue: "Language" }),
+          generated: t("manual.export.generated", { defaultValue: "Generated" }),
+          lastUpdated: t("manual.export.lastUpdated", { defaultValue: "Manual last updated" }),
+          version: t("manual.export.version", { defaultValue: "Manual version" }),
+          access: {
+            all: t("manual.badges.all", { defaultValue: "Free & paid" }),
+            paid: t("manual.badges.paid", { defaultValue: "Paid subscription only" }),
+            admin: t("manual.badges.admin", { defaultValue: "Administrator only" }),
+          },
+          steps: t("manual.export.steps", { defaultValue: "Steps" }),
+          notes: t("manual.export.notes", { defaultValue: "Important notes" }),
+          featurePath: t("manual.export.featurePath", { defaultValue: "Feature path" }),
+          page: t("manual.export.page", { defaultValue: "Page {{current}} of {{total}}" }),
+        },
+      });
+      downloadManualPdfBlob(blob, buildManualPdfFilename({ role, locale: manualLocale, sectionId: section?.id }));
+      toast.success(section
+        ? t("manual.export.sectionSuccess", { section: section.title, defaultValue: "Downloaded {{section}} as a PDF." })
+        : t("manual.export.fullSuccess", { defaultValue: "Downloaded the complete Manual as a PDF." }));
+    } catch {
+      toast.error(t("manual.export.error", { defaultValue: "The Manual PDF could not be created. Please try again." }));
+    } finally {
+      setExportingScope(null);
+    }
+  };
+
   useEffect(() => {
     if (!window.location.hash) return;
     window.requestAnimationFrame(() => {
       document.querySelector(window.location.hash)?.scrollIntoView({ block: "start" });
     });
   }, [manual]);
+
+  useEffect(() => {
+    const normalizedQuery = query.normalize("NFKC").trim().replace(/\s+/g, " ").toLocaleLowerCase();
+    if (normalizedQuery.length < 2 || normalizedQuery.length > 100 || resultCount !== 0) return;
+
+    const manualVersion = `${manual.version}:${manual.lastUpdated}`;
+    const trackingKey = `${role}:${manualLocale}:${manualVersion}:${normalizedQuery}`;
+    if (trackedSearchesRef.current.has(trackingKey)) return;
+
+    const timeoutId = window.setTimeout(() => {
+      trackedSearchesRef.current.add(trackingKey);
+      trackZeroResultSearch({
+        query: normalizedQuery,
+        resultCount: 0,
+        locale: manualLocale,
+        manualRole: role,
+        manualVersion,
+      });
+    }, 800);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [manual.lastUpdated, manual.version, manualLocale, query, resultCount, role, trackZeroResultSearch]);
 
   return (
     <div className="min-h-screen pb-40 rr-bg-cream-warm">
@@ -249,6 +458,26 @@ export default function ManualPage() {
                 defaultValue: "Last updated {{date}}",
               })}
         </p>
+
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <Button
+            type="button"
+            className="min-h-11 rr-bg-navy font-bold text-white"
+            disabled={exportingScope !== null}
+            aria-describedby="manual-export-help"
+            onClick={() => void exportPdf()}
+          >
+            {exportingScope === "full" ? <Loader2 size={17} className="animate-spin" aria-hidden="true" /> : <Download size={17} aria-hidden="true" />}
+            {exportingScope === "full"
+              ? t("manual.export.preparing", { defaultValue: "Preparing PDF…" })
+              : t("manual.export.fullButton", { defaultValue: "Download full Manual PDF" })}
+          </Button>
+          <p id="manual-export-help" className="text-xs leading-5 rr-text-navy-muted">
+            {t("manual.export.help", { defaultValue: "The PDF includes only the Manual available to your authenticated role and current language." })}
+          </p>
+        </div>
+
+        {role === "admin" ? <ManualSearchInsightsPanel /> : null}
 
         <nav className="mt-5 flex gap-2 overflow-x-auto pb-2 lg:hidden" aria-label={t("manual.sectionNavigation", { defaultValue: "Manual sections" })}>
           {manual.sections.map(section => (
@@ -310,6 +539,20 @@ export default function ManualPage() {
                           {section.access === "admin" ? <AccessBadge access="admin" /> : null}
                         </div>
                         <p className="mt-2 text-sm leading-6 rr-text-navy-muted">{section.summary}</p>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="mt-4 min-h-10 border-[#14213d] bg-white font-bold rr-text-navy"
+                          disabled={exportingScope !== null}
+                          aria-label={t("manual.export.sectionAria", { section: section.title, defaultValue: "Download {{section}} as a PDF" })}
+                          onClick={() => void exportPdf(section)}
+                        >
+                          {exportingScope === section.id ? <Loader2 size={15} className="animate-spin" aria-hidden="true" /> : <Download size={15} aria-hidden="true" />}
+                          {exportingScope === section.id
+                            ? t("manual.export.preparing", { defaultValue: "Preparing PDF…" })
+                            : t("manual.export.sectionButton", { defaultValue: "Download section PDF" })}
+                        </Button>
                       </div>
                     </div>
 

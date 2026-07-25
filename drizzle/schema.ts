@@ -777,6 +777,29 @@ export type PageEvent = typeof pageEvents.$inferSelect;
 export type InsertPageEvent = typeof pageEvents.$inferInsert;
 
 /**
+ * Privacy-bounded zero-result Manual searches.
+ * Raw rows are never exposed to administrators; reporting returns aggregates only.
+ */
+export const manualSearchEvents = pgTable("manual_search_events", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  query: varchar("query", { length: 100 }).notNull(),
+  queryFingerprint: varchar("query_fingerprint", { length: 64 }).notNull(),
+  manualRole: roleEnum("manual_role").notNull(),
+  locale: varchar("locale", { length: 10 }).notNull(),
+  manualVersion: varchar("manual_version", { length: 20 }).notNull(),
+  dedupeKey: varchar("dedupe_key", { length: 64 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex("manual_search_events_dedupe_unique").on(table.dedupeKey),
+  index("manual_search_events_created_idx").on(table.createdAt),
+  index("manual_search_events_role_locale_created_idx").on(table.manualRole, table.locale, table.createdAt),
+  index("manual_search_events_query_created_idx").on(table.queryFingerprint, table.createdAt),
+]);
+export type ManualSearchEvent = typeof manualSearchEvents.$inferSelect;
+export type InsertManualSearchEvent = typeof manualSearchEvents.$inferInsert;
+
+/**
  * API keys — per-user keys for the public REST API (e.g. contacts import from website forms).
  * The raw key is only shown once at creation time; only the SHA-256 hash is stored.
  */

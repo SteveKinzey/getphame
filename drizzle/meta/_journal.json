@@ -218,6 +218,13 @@
       "when": 1784990800500,
       "tag": "0030_happy_stick",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "5",
+      "when": 1784999748953,
+      "tag": "0031_heavy_wild_child",
+      "breakpoints": true
     }
   ]
 }

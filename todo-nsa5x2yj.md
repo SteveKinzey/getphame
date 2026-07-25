@@ -158,3 +158,16 @@
 - [x] Run focused tests, the full Vitest suite, TypeScript, production dependency audit, production build, and authenticated desktop/mobile verification for both user and administrator manual states.
 - [x] Publish the role-aware manual checkpoint, confirm production propagation on managed and custom origins, and verify the live Manual link appears beneath Settings.
 - [x] Prove role isolation in UI and route tests: user sessions cannot render Admin Manual content, and administrator sessions cannot render a separate User Manual view or navigation entry.
+
+- [x] Audit the current Manual search, analytics abstraction, database schema, administrator reporting, PDF utilities, localization resources, and role-aware content registry before extending them.
+- [x] Design a privacy-safe zero-result search event contract with normalized bounded terms, role/manual scope, result count, deduplication, retention-conscious metadata, and administrator-only aggregation.
+- [x] Add the Manual zero-result search analytics schema and migration, apply it through the managed database workflow, and add typed persistence and aggregation helpers.
+- [x] Add protected zero-result search tracking and administrator-only insights procedures with strict validation, authorization, deduplication, and no customer or free-text leakage beyond the bounded search term.
+- [x] Instrument debounced Manual zero-result searches without blocking typing, repeated-event spam, or tracking empty/short queries.
+- [x] Build a localized, responsive administrator view of top missing-documentation searches with counts, recency, role scope, and a useful empty state.
+- [x] Add role-safe PDF export controls for the entire visible Manual and individual sections, preserving current locale, headings, entitlement labels, steps, links, and Get Phame branding.
+- [x] Ensure generated PDF filenames, Unicode text, pagination, download cleanup, loading/error feedback, keyboard access, and mobile behavior are deterministic and accessible.
+- [x] Create the reusable role-aware Manual analytics-and-PDF skill through the skill-creator workflow, including concise implementation guidance and reusable validation references.
+- [x] Add focused regressions for analytics validation/authorization/deduplication, administrator aggregation, PDF contents and scope, role isolation, localization, accessibility, and reusable-skill validation.
+- [x] Run migration verification, focused tests, full Vitest, TypeScript, production dependency audit, production build, and desktop/Pixel 7 role-aware workflow checks.
+- [ ] Publish the checkpoint, confirm both production origins serve the analytics/PDF release, verify live tracking and exports, and deliver the reusable skill package.
