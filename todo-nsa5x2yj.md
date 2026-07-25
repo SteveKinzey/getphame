@@ -170,4 +170,4 @@
 - [x] Create the reusable role-aware Manual analytics-and-PDF skill through the skill-creator workflow, including concise implementation guidance and reusable validation references.
 - [x] Add focused regressions for analytics validation/authorization/deduplication, administrator aggregation, PDF contents and scope, role isolation, localization, accessibility, and reusable-skill validation.
 - [x] Run migration verification, focused tests, full Vitest, TypeScript, production dependency audit, production build, and desktop/Pixel 7 role-aware workflow checks.
-- [ ] Publish the checkpoint, confirm both production origins serve the analytics/PDF release, verify live tracking and exports, and deliver the reusable skill package.
+- [x] Publish the checkpoint, confirm both production origins serve the analytics/PDF release, verify live tracking and exports, and deliver the reusable skill package.
