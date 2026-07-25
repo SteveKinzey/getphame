@@ -777,6 +777,29 @@ export type PageEvent = typeof pageEvents.$inferSelect;
 export type InsertPageEvent = typeof pageEvents.$inferInsert;
 
 /**
+ * Privacy-bounded zero-result Manual searches.
+ * Raw rows are never exposed to administrators; reporting returns aggregates only.
+ */
+export const manualSearchEvents = pgTable("manual_search_events", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  query: varchar("query", { length: 100 }).notNull(),
+  queryFingerprint: varchar("query_fingerprint", { length: 64 }).notNull(),
+  manualRole: roleEnum("manual_role").notNull(),
+  locale: varchar("locale", { length: 10 }).notNull(),
+  manualVersion: varchar("manual_version", { length: 20 }).notNull(),
+  dedupeKey: varchar("dedupe_key", { length: 64 }).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => [
+  uniqueIndex("manual_search_events_dedupe_unique").on(table.dedupeKey),
+  index("manual_search_events_created_idx").on(table.createdAt),
+  index("manual_search_events_role_locale_created_idx").on(table.manualRole, table.locale, table.createdAt),
+  index("manual_search_events_query_created_idx").on(table.queryFingerprint, table.createdAt),
+]);
+export type ManualSearchEvent = typeof manualSearchEvents.$inferSelect;
+export type InsertManualSearchEvent = typeof manualSearchEvents.$inferInsert;
+
+/**
  * API keys — per-user keys for the public REST API (e.g. contacts import from website forms).
  * The raw key is only shown once at creation time; only the SHA-256 hash is stored.
  */
@@ -803,6 +826,74 @@ export const apiKeys = pgTable("api_keys", {
 ]);
 export type ApiKey = typeof apiKeys.$inferSelect;
 export type InsertApiKey = typeof apiKeys.$inferInsert;
+
+/** User-owned no-code Sources connections bound to one active contacts:write API key. */
+export const sourceConnections = pgTable("source_connections", {
+  id: serial("id").primaryKey(),
+  publicId: varchar("publicId", { length: 48 }).notNull().unique(),
+  userId: integer("userId").notNull(),
+  apiKeyId: integer("apiKeyId").notNull(),
+  provider: varchar("provider", { length: 32 }).notNull(),
+  label: varchar("label", { length: 100 }).notNull(),
+  expectedIntervalMinutes: integer("expectedIntervalMinutes").notNull().default(1_440),
+  monitoringEnabled: boolean("monitoringEnabled").notNull().default(true),
+  status: varchar("status", { length: 20 }).notNull().default("setup"),
+  lastEvaluatedAt: bigint("lastEvaluatedAt", { mode: "number" }),
+  nextEvaluationAt: bigint("nextEvaluationAt", { mode: "number" }),
+  lastEventAt: bigint("lastEventAt", { mode: "number" }),
+  lastSuccessAt: bigint("lastSuccessAt", { mode: "number" }),
+  lastFailureAt: bigint("lastFailureAt", { mode: "number" }),
+  lastErrorCode: varchar("lastErrorCode", { length: 64 }),
+  consecutiveFailures: integer("consecutiveFailures").notNull().default(0),
+  failureAlertOpen: boolean("failureAlertOpen").notNull().default(false),
+  lastFailureAlertAt: bigint("lastFailureAlertAt", { mode: "number" }),
+  lastRecoveryAlertAt: bigint("lastRecoveryAlertAt", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+  archivedAt: bigint("archivedAt", { mode: "number" }),
+}, (table) => [
+  index("source_connections_user_created_idx").on(table.userId, table.createdAt),
+  index("source_connections_key_active_idx").on(table.apiKeyId, table.archivedAt),
+  index("source_connections_due_idx").on(table.monitoringEnabled, table.nextEvaluationAt),
+]);
+export type SourceConnection = typeof sourceConnections.$inferSelect;
+export type InsertSourceConnection = typeof sourceConnections.$inferInsert;
+
+/** Bounded 90-day source health timeline used for user diagnostics and alert decisions. */
+export const sourceHealthHistory = pgTable("source_health_history", {
+  id: serial("id").primaryKey(),
+  sourceConnectionId: integer("sourceConnectionId").notNull(),
+  userId: integer("userId").notNull(),
+  status: varchar("status", { length: 20 }).notNull(),
+  reasonCode: varchar("reasonCode", { length: 48 }).notNull(),
+  attemptsInWindow: integer("attemptsInWindow").notNull().default(0),
+  failuresInWindow: integer("failuresInWindow").notNull().default(0),
+  lastEventAt: bigint("lastEventAt", { mode: "number" }),
+  lastSuccessAt: bigint("lastSuccessAt", { mode: "number" }),
+  checkedAt: bigint("checkedAt", { mode: "number" }).notNull(),
+  expiresAt: bigint("expiresAt", { mode: "number" }).notNull(),
+}, (table) => [
+  index("source_health_connection_checked_idx").on(table.sourceConnectionId, table.checkedAt),
+  index("source_health_user_checked_idx").on(table.userId, table.checkedAt),
+  index("source_health_expiry_idx").on(table.expiresAt),
+]);
+export type SourceHealthHistory = typeof sourceHealthHistory.$inferSelect;
+export type InsertSourceHealthHistory = typeof sourceHealthHistory.$inferInsert;
+
+/** Durable singleton state for reconciling and observing the global source-health heartbeat job. */
+export const sourceHealthSchedulers = pgTable("source_health_schedulers", {
+  id: serial("id").primaryKey(),
+  scheduleKey: varchar("scheduleKey", { length: 32 }).notNull().default("global").unique(),
+  scheduleCronTaskUid: varchar("scheduleCronTaskUid", { length: 65 }).unique(),
+  cronExpression: varchar("cronExpression", { length: 64 }).notNull().default("0 */15 * * * *"),
+  lastRunAt: bigint("lastRunAt", { mode: "number" }),
+  lastRunStatus: varchar("lastRunStatus", { length: 20 }),
+  lastRunErrorCode: varchar("lastRunErrorCode", { length: 64 }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+});
+export type SourceHealthScheduler = typeof sourceHealthSchedulers.$inferSelect;
+export type InsertSourceHealthScheduler = typeof sourceHealthSchedulers.$inferInsert;
 
 /**
  * Developer API enrollment — one privacy-minimized record per authenticated account.
@@ -842,6 +933,7 @@ export const apiImportEvents = pgTable("api_import_events", {
   id: serial("id").primaryKey(),
   userId: integer("userId").notNull(),
   apiKeyId: integer("apiKeyId"), // null if key was deleted
+  sourceConnectionId: integer("sourceConnectionId"),
   keyLabel: varchar("keyLabel", { length: 100 }).notNull().default("API Key"),
   eventType: varchar("eventType", { length: 32 }).notNull().default("contact_import"),
   contactId: integer("contactId"), // null if contact was deleted
@@ -859,6 +951,7 @@ export const apiImportEvents = pgTable("api_import_events", {
 }, (table) => [
   index("api_import_events_user_created_idx").on(table.userId, table.createdAt),
   index("api_import_events_key_created_idx").on(table.apiKeyId, table.createdAt),
+  index("api_import_events_source_created_idx").on(table.sourceConnectionId, table.createdAt),
 ]);
 export type ApiImportEvent = typeof apiImportEvents.$inferSelect;
 export type InsertApiImportEvent = typeof apiImportEvents.$inferInsert;

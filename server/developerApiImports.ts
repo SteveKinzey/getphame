@@ -4,6 +4,7 @@ import { apiIdempotencyRecords, apiImportEvents, apiRateLimitWindows } from "../
 import { fingerprintAuthValue, maskDiagnosticEmail, normalizeDiagnosticEmail } from "./authOperations";
 import { getDb } from "./db";
 import type { DeveloperApiPrincipal } from "./developerApiKeys";
+import { recordSourceConnectionActivity } from "./sourceConnections";
 
 export const DEVELOPER_API_RATE_LIMIT = 60;
 export const DEVELOPER_API_RATE_WINDOW_MS = 60_000;
@@ -15,6 +16,7 @@ export type DeveloperApiErrorCode =
   | "API_KEY_INACTIVE"
   | "API_KEY_SUSPENDED"
   | "INSUFFICIENT_SCOPE"
+  | "SOURCE_CONNECTION_FORBIDDEN"
   | "IDEMPOTENCY_CONFLICT"
   | "CONSENT_REQUIRED"
   | "RATE_LIMITED"
@@ -159,6 +161,7 @@ export async function saveDeveloperApiIdempotency(params: {
 
 export async function logDeveloperApiImport(params: {
   principal: DeveloperApiPrincipal;
+  sourceConnectionId?: number | null;
   eventType?: "contact_import" | "review_request_send";
   status: "success" | "deduplicated" | "rejected" | "rate_limited" | "abuse_blocked" | "error";
   requestId: string;
@@ -179,6 +182,7 @@ export async function logDeveloperApiImport(params: {
   await db.insert(apiImportEvents).values({
     userId: params.principal.userId,
     apiKeyId: params.principal.apiKeyId,
+    sourceConnectionId: params.sourceConnectionId ?? null,
     keyLabel: params.principal.label.slice(0, 100),
     eventType: params.eventType ?? "contact_import",
     contactId: params.contactId ?? null,
@@ -193,4 +197,11 @@ export async function logDeveloperApiImport(params: {
     created: params.created ?? false,
     createdAt: Date.now(),
   });
+  if (params.sourceConnectionId) {
+    await recordSourceConnectionActivity({
+      sourceConnectionId: params.sourceConnectionId,
+      outcome,
+      errorCode: params.errorCode ?? null,
+    });
+  }
 }

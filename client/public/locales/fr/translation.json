@@ -30,7 +30,9 @@
     "faq": "FAQ",
     "manageUsers": "Gérer les utilisateurs",
     "admin": "Admin",
-    "developer": "Développeur"
+    "developer": "Développeur",
+    "userManual": "Manuel d'utilisation",
+    "adminManual": "Manuel d'administration"
   },
   "hero": {
     "tagline": "Gratuit pour commencer — Aucune carte bancaire requise",
@@ -2572,6 +2574,71 @@
     "verified": "L'éligibilité est vérifiée en toute sécurité avant l'ouverture de Stripe Checkout."
   },
   "developerIntegrations": {
+    "sources": {
+      "title": "Connecter une source",
+      "description": "Choisissez l’origine des fiches clients. Get Phame fournit une recette sécurisée, limitée à l’importation, pour une automatisation fiable côté serveur.",
+      "badge": "Importe uniquement les contacts",
+      "workflowTitle": "Parcours de connexion d’une source",
+      "steps": {
+        "choose": "Choisir une source",
+        "key": "Créer une clé d’importation",
+        "map": "Associer les champs et le consentement",
+        "test": "Envoyer un test autorisé"
+      },
+      "choose": "Choisir une source",
+      "recipeCopied": "Recette de configuration sécurisée copiée.",
+      "pathLabel": "Parcours recommandé",
+      "officialDocs": "Documentation du fournisseur",
+      "idempotencyTitle": "ID d’événement stable",
+      "rulesTitle": "Protections obligatoires",
+      "rules": {
+        "secret": "Conservez la clé API Get Phame uniquement dans un champ secret protégé côté serveur. Ne la placez jamais dans un formulaire, une URL, le code source d’une page ou un script du navigateur.",
+        "consent": "Importez uniquement des clients existants ou des personnes ayant donné un consentement explicite. Laissez les cases de consentement facultatives décochées par défaut.",
+        "idempotency": "Réutilisez le même ID d’événement du fournisseur à chaque nouvelle tentative afin qu’une soumission ne crée pas de doublon.",
+        "importOnly": "Ce parcours importe ou met à jour un contact. Il n’envoie jamais automatiquement une demande d’avis."
+      },
+      "providers": {
+        "jotform": {
+          "path": "Transmettez chaque soumission Jotform admissible via un outil d’automatisation fiable capable de stocker des secrets et d’ajouter des en-têtes protégés avant l’envoi à Get Phame.",
+          "idempotency": "Utilisez l’ID immuable de la soumission Jotform pour externalId et Idempotency-Key."
+        },
+        "facebook": {
+          "path": "Recevez les notifications Meta Lead Ads sur un webhook vérifié côté serveur ou via une automatisation fiable, récupérez les champs autorisés du prospect, puis envoyez l’enregistrement normalisé à Get Phame.",
+          "idempotency": "Utilisez l’ID leadgen de Meta comme externalId et Idempotency-Key stables."
+        },
+        "googleForms": {
+          "path": "Utilisez un déclencheur installable Google Apps Script lors de l’envoi du formulaire ou une automatisation fiable. Conservez la clé Get Phame dans les propriétés protégées du script ou dans le coffre de secrets de l’automatisation.",
+          "idempotency": "Utilisez un identifiant de réponse stable ou l’ID de la ligne de réponse liée ; ne créez pas de nouvelle valeur lors des nouvelles tentatives."
+        },
+        "airtable": {
+          "path": "Déclenchez une automatisation fiable lorsqu’un enregistrement Airtable admissible est créé ou approuvé, puis associez-le au contrat d’importation de contacts Get Phame.",
+          "idempotency": "Utilisez l’ID immuable de l’enregistrement Airtable pour externalId et Idempotency-Key."
+        },
+        "other": {
+          "label": "Autre source",
+          "path": "Utilisez tout flux côté serveur ou outil sans code fiable prenant en charge POST, JSON, les en-têtes protégés et un identifiant d’événement stable.",
+          "idempotency": "Utilisez l’ID immuable de soumission, d’enregistrement, de commande ou d’événement du système source à chaque nouvelle tentative."
+        }
+      },
+      "recipeTitle": "Recette d’association sécurisée",
+      "recipeDescription": "Utilisez un espace réservé pendant la configuration. Collez la vraie clé uniquement dans le champ secret protégé du service d’automatisation.",
+      "copyRecipe": "Copier la recette",
+      "apiField": "Champ API",
+      "mapTo": "Associer depuis la source",
+      "fields": {
+        "name": "Champ du nom du client",
+        "email": "Champ de l’adresse e-mail du client",
+        "externalId": "ID immuable de l’événement ou de l’enregistrement fournisseur",
+        "sourceApp": "Identifiant fixe du fournisseur affiché ci-dessus",
+        "consentConfirmed": "Booléen true uniquement après un consentement explicite",
+        "consentBasis": "customer_relationship, explicit_opt_in ou other",
+        "consentSource": "Brève description du lieu où le consentement a été recueilli"
+      },
+      "nextTitle": "Prêt à connecter ?",
+      "nextDescription": "Créez une clé contacts:write, envoyez un enregistrement test autorisé, puis confirmez le résultat masqué dans les importations API récentes.",
+      "createKey": "Créer une clé d’importation",
+      "viewImports": "Voir les importations"
+    },
     "back": "Retour aux paramètres",
     "confirm": {
       "revokeDescription": "Cela désactive immédiatement la clé et ne peut pas être annulé.",
@@ -2735,7 +2802,111 @@
       "imports": "Imports récents",
       "requests": "Utilisations de clés"
     },
-    "title": "Intégrations développeur"
+    "title": "Intégrations développeur",
+    "sourceOps": {
+      "title": "Connexions de source gérées",
+      "description": "Créez une connexion observable par Zap, scénario Make ou flux de travail personnalisé. Chaque source reçoit son propre identifiant, des analyses et un signal de santé.",
+      "refreshKeys": "Actualiser les clés API",
+      "createTitle": "Créer une connexion",
+      "provider": "Fournisseur d'automatisation",
+      "custom": "Webhook personnalisé",
+      "label": "Nom de la connexion",
+      "labels": {
+        "zapier": "Importation client Zapier",
+        "make": "Importation client Make",
+        "custom": "Importation client personnalisée"
+      },
+      "apiKey": "Clé API d'importation",
+      "noKeys": "Aucune clé d'importation active",
+      "expected": "Activité attendue",
+      "intervals": {
+        "15": "Toutes les 15 minutes",
+        "60": "Toutes les heures",
+        "360": "Toutes les 6 heures",
+        "1440": "Quotidien",
+        "10080": "Hebdomadaire"
+      },
+      "minutes": "{{count}} minutes",
+      "createHelp": "La connexion stocke uniquement une référence à la clé API et l'identifiant de la source. Get Phame n'affiche ni ne duplique jamais votre clé API brute.",
+      "create": "Créer la connexion",
+      "created": "Connexion source créée. Ajoutez son ID de source à votre automatisation avant de tester.",
+      "updated": "Paramètres de la source mis à jour.",
+      "archived": "Connexion source archivée. Son ID de source ne peut plus autoriser d'importations.",
+      "healthRefreshed": "État de la source actualisé d'après les activités d'import récentes.",
+      "keyRequired": "Créez ou choisissez d'abord une clé API active contacts:write.",
+      "analyticsTitle": "Flux d'import par source",
+      "analyticsDescription": "Les tentatives, résultats, déduplication et échecs sont calculés à partir des événements d'import attribués.",
+      "range": "Période d'analyse",
+      "daysShort": "j",
+      "metrics": {
+        "attempts": "Tentatives",
+        "successful": "Réussites",
+        "createdContacts": "Contacts créés",
+        "deduplicated": "Dédupliqués",
+        "failures": "Échecs"
+      },
+      "emptyTitle": "Aucune source gérée pour le moment",
+      "emptyDescription": "Créez une connexion pour chaque Zap, scénario Make ou flux de travail personnalisé que vous souhaitez surveiller.",
+      "status": {
+        "healthy": "Sain",
+        "setup": "Configuration",
+        "delayed": "Retardé",
+        "failing": "En échec",
+        "paused": "En pause"
+      },
+      "openSetup": "Ouvrir la configuration",
+      "successRate": "Taux de réussite",
+      "lastActivity": "Dernière activité",
+      "never": "Jamais",
+      "refreshHealth": "Actualiser l'état",
+      "pause": "Mettre la surveillance en pause",
+      "resume": "Reprendre la surveillance",
+      "archive": "Archiver",
+      "template": "modèle guidé",
+      "templateDescription": "Copiez cette requête exacte dans l'action HTTP ou webhook protégée de votre automatisation.",
+      "copyRecipe": "Copier la recette",
+      "recipeCopied": "Recette de connexion copiée.",
+      "secretReminder": "N'utilisez la clé API brute que dans le champ secret protégé du fournisseur. L'ID de source peut être copié en toute sécurité mais ne fonctionne qu'avec la clé qui lui est liée.",
+      "providerDocs": "Documentation du fournisseur",
+      "healthHistory": "Historique de santé",
+      "noHealthHistory": "Aucun contrôle de santé pour le moment. Envoyez une importation autorisée, puis actualisez l'état.",
+      "reasons": {
+        "awaiting_first_import": "En attente de la première importation autorisée",
+        "no_imports_observed": "Aucune importation observée durant la fenêtre de configuration",
+        "expected_import_overdue": "L'activité d'importation attendue est en retard",
+        "recent_import_error": "La dernière activité s'est terminée par une erreur d'importation",
+        "recovered_after_error": "Les importations ont repris après une erreur",
+        "imports_flowing": "Les importations s'effectuent dans l'intervalle attendu"
+      },
+      "historyCounts": "{{attempts}} tentatives · {{failures}} échecs",
+      "archiveTitle": "Archiver cette connexion source ?",
+      "archiveDescription": "Les importations utilisant cet ID de source seront rejetées. Les contacts existants et les analyses respectueuses de la vie privée restent disponibles dans leurs enregistrements d'origine.",
+      "steps": {
+        "zapier": {
+          "1": "Choisissez l'application et l'événement qui génèrent un enregistrement client éligible.",
+          "2": "Ajoutez Webhooks by Zapier et sélectionnez Custom Request.",
+          "3": "Définissez la méthode sur POST et collez le point de terminaison Get Phame.",
+          "4": "Ajoutez les en-têtes protégés exactement comme indiqué ci‑dessous.",
+          "5": "Mappez les champs JSON en utilisant un identifiant fournisseur stable pour externalId et Idempotency-Key.",
+          "6": "Testez l'action avec un enregistrement autorisé, puis actualisez l'état ici."
+        },
+        "make": {
+          "1": "Choisissez le module déclencheur qui produit un enregistrement client éligible.",
+          "2": "Ajoutez HTTP et sélectionnez Make a request.",
+          "3": "Définissez Method sur POST, Body type sur Raw et Content type sur application/json.",
+          "4": "Ajoutez les en-têtes protégés exactement comme indiqué ci‑dessous.",
+          "5": "Mappez les champs JSON en utilisant un identifiant de bundle stable pour externalId et Idempotency-Key.",
+          "6": "Exécutez le scénario une fois avec un enregistrement autorisé, puis actualisez l'état ici."
+        },
+        "custom": {
+          "1": "Utilisez un flux de travail côté serveur de confiance qui prend en charge POST et les en-têtes protégés.",
+          "2": "Stockez la clé API dans le magasin de secrets du workflow, jamais dans du code côté navigateur ni dans une URL.",
+          "3": "Envoyez du JSON vers le point de terminaison Get Phame avec les en-têtes indiqués ci‑dessous.",
+          "4": "Utilisez un ID d'enregistrement source immuable pour externalId et Idempotency-Key.",
+          "5": "Envoyez un enregistrement autorisé, puis actualisez l'état ici."
+        }
+      }
+    }
   },
   "landing": {
     "hero": {
@@ -2809,13 +2980,6 @@
         "subjectMin": "Saisissez un objet d'au moins 3 caractères."
       },
       "website": "Site web"
-    },
-    "footer": {
-      "privacy": "Confidentialité",
-      "terms": "Conditions",
-      "security": "Sécurité",
-      "support": "Assistance",
-      "copyright": "© {{year}} Get Phame. Tous droits réservés."
     }
   },
   "adaptiveSending": {
@@ -3035,238 +3199,71 @@
       "not_applicable": "Non applicable"
     }
   },
-  "legal": {
-    "contactHeading": "Contactez-nous",
-    "terms": {
-      "title": "Conditions d'utilisation",
-      "lastUpdated": "Dernière mise à jour : 24 juillet 2026",
-      "contactIntro": "Les questions concernant ces Conditions, votre compte ou un paiement peuvent nous être envoyées via les coordonnées ci-dessous.",
-      "contactResponse": "Nous nous efforçons de répondre aux questions relatives au compte, à la facturation et aux aspects juridiques dans un délai de 30 jours calendaires.",
-      "sections": [
-        {
-          "id": "acceptance",
-          "title": "1. Acceptation des présentes Conditions",
-          "paragraphs": [
-            "Les présentes Conditions d'utilisation (les « Conditions ») régissent votre accès et votre utilisation de l'application web Get Phame, des sites web et des services associés (collectivement, le « Service »). En créant un compte, en vous connectant, en achetant un abonnement ou en utilisant autrement le Service, vous acceptez ces Conditions et notre Politique de confidentialité.",
-            "Si vous utilisez le Service pour une entreprise ou une autre entité juridique, vous déclarez avoir l'autorité nécessaire pour engager cette entité. Si vous n'acceptez pas ces Conditions, n'utilisez pas le Service."
-          ]
-        },
-        {
-          "id": "service-and-plans",
-          "title": "2. Service, forfaits et disponibilité",
-          "paragraphs": [
-            "Get Phame aide les entreprises à organiser les contacts clients, gérer les destinations d'avis, créer des campagnes d'e-mails de demande d'avis, envoyer des messages via un compte e-mail connecté, programmer des relances mesurées et consulter les données de livraison et d'engagement.",
-            "Le forfait gratuit comprend 10 demandes d'avis initiales puis 5 demandes d'avis supplémentaires pour chaque période glissante de 30 jours. Les forfaits payants, y compris les options mensuelles, annuelles et à vie lorsqu'elles sont disponibles, offrent les fonctionnalités et les quotas de demandes indiqués lors du paiement ou dans l'application. Les tarifs en vigueur, les taxes, les modalités de renouvellement et les détails des forfaits sont présentés avant que vous n'autorisiez un achat.",
-            "Nous pouvons modifier, ajouter, supprimer ou limiter des fonctionnalités et des forfaits. Une modification du prix d'un forfait récurrent prendra effet au plus tôt lors du renouvellement suivant après un préavis raisonnable, sauf si un délai plus court est exigé ou autorisé par la loi."
-          ]
-        },
-        {
-          "id": "accounts-and-access",
-          "title": "3. Comptes et connexion",
-          "paragraphs": [
-            "Vous devez avoir au moins 18 ans et être capable de conclure un contrat contraignant pour utiliser le Service. Vous êtes responsable des informations exactes de votre compte, de la protection de l'accès à votre boîte e-mail et à vos appareils, ainsi que de toute activité effectuée via votre compte.",
-            "Vous pouvez vous connecter via Google OAuth, Se connecter avec Apple, un lien magique sans mot de passe envoyé par e-mail, ou toute autre méthode que nous proposons. Get Phame n'exige pas et ne stocke pas de mot de passe pour ces méthodes de connexion. Si vous activez une clé d'accès (passkey), votre appareil ou gestionnaire de mots de passe gère l'identifiant ; nous ne recevons pas vos données biométriques.",
-            "Informez-nous rapidement si vous pensez que votre compte ou un compte e-mail connecté a été accédé sans autorisation. Nous pouvons suspendre ou restreindre un compte lorsque cela est raisonnablement nécessaire pour protéger le Service, les utilisateurs, les destinataires ou la loi applicable."
-          ]
-        },
-        {
-          "id": "your-responsibilities",
-          "title": "4. Votre entreprise, les données clients et les comptes connectés",
-          "paragraphs": [
-            "Vous êtes responsable des données clients, des liens d'avis, du contenu des e-mails et du compte e-mail connecté que vous utilisez avec le Service. Vous déclarez disposer des droits, notifications et autorisations nécessaires pour télécharger des données clients et contacter des destinataires.",
-            "Vous devez maintenir l'exactitude de vos destinations d'avis et ne pouvez pas utiliser le Service pour usurper l'identité d'une autre personne ou entreprise, envoyer des messages trompeurs ou diriger des destinataires vers un contenu nuisible ou illégal."
-          ]
-        },
-        {
-          "id": "acceptable-use",
-          "title": "5. Utilisation acceptable et conformité des demandes d'avis",
-          "paragraphs": [
-            "N'utilisez le Service que pour des communications clients licites, respectueuses et fondées sur la relation. Vous devez respecter toutes les lois et règles qui vous concernent ainsi que vos destinataires, y compris les exigences applicables en matière d'anti-spam, de confidentialité, de protection des consommateurs, des plateformes d'avis et de communications électroniques.",
-            "Vous êtes l'expéditeur officiel des messages envoyés via votre compte e-mail connecté. Vous êtes responsable d'obtenir les consentements requis, de respecter les désinscriptions et demandes d'opt-out, d'identifier correctement votre entreprise et d'inclure toute adresse physique ou autre mention obligatoire."
-          ],
-          "bullets": [
-            "N'utilisez pas de listes achetées, louées, extraites (scrapées) ou fournies par des tiers sans base légale pour contacter chaque destinataire.",
-            "N'envoyez pas d'e-mails en masse non sollicités, ne harcelez pas les destinataires, ne contournez pas les limites de taux et ne contactez pas les personnes qui se sont désinscrites.",
-            "N'offrez pas d'incitations pour obtenir des avis positifs, ne filtrez pas ni ne restreignez l'accès des clients en fonction du sentiment attendu et ne manipulez pas les avis d'une manière qui enfreint les règles d'une plateforme ou la loi applicable.",
-            "Ne téléversez pas de logiciels malveillants, ne testez pas la sécurité du Service de manière intrusive, ne contournez pas les contrôles de sécurité et n'utilisez pas le Service pour porter atteinte aux droits d'autrui."
-          ]
-        },
-        {
-          "id": "third-party-services",
-          "title": "6. Services et destinations tiers",
-          "paragraphs": [
-            "Le Service peut se connecter à ou renvoyer vers des services tiers, tels que Google, Apple, des fournisseurs d'e-mail, WooCommerce, Stripe, PayPal et des plateformes d'avis. Votre utilisation de ces services reste soumise à leurs propres conditions, avis de confidentialité et exigences techniques.",
-            "Get Phame ne contrôle pas les plateformes tierces et ne garantit pas qu'une plateforme d'avis, un fournisseur d'e-mail ou un prestataire de paiement acceptera, livrera, publiera, conservera ou affichera un message, un avis, un paiement ou un compte."
-          ]
-        },
-        {
-          "id": "payments",
-          "title": "7. Paiements, renouvellements, annulations et remboursements",
-          "paragraphs": [
-            "Les forfaits payants peuvent être traités par Stripe ou PayPal. En finalisant votre achat, vous autorisez le processeur choisi à prélever le montant indiqué, taxes applicables comprises, selon le calendrier de facturation qui vous est présenté. Get Phame ne stocke pas les numéros complets des cartes de paiement ni les codes de sécurité (CVV).",
-            "Les forfaits mensuels et annuels se renouvellent automatiquement, sauf si vous annulez avant la date de renouvellement suivante. Les forfaits à vie sont des achats uniques et ne se renouvellent pas. Vous pouvez gérer ou annuler un abonnement récurrent via le processus de facturation applicable ou en nous contactant avant le renouvellement.",
-            "Sauf si la loi l'exige ou que cela est expressément indiqué lors du paiement, les paiements ne sont pas remboursables. L'annulation d'un forfait récurrent empêche les renouvellements futurs ; vous conservez l'accès payant jusqu'à la fin de la période de facturation en cours, sauf indication contraire de notre part."
-          ]
-        },
-        {
-          "id": "data-and-security",
-          "title": "8. Données, informations d'identification e-mail et sécurité",
-          "paragraphs": [
-            "Notre Politique de confidentialité explique comment nous collectons, utilisons, conservons et protégeons les informations. Vous restez le responsable du traitement des informations de contact client que vous téléchargez, tandis que Get Phame les traite pour fournir le Service en votre nom.",
-            "Lorsque vous connectez un compte SMTP, vous nous autorisez à utiliser ces identifiants pour envoyer les messages que vous initiez. Les mots de passe SMTP sont chiffrés avant le stockage. Vous pouvez déconnecter un compte e-mail connecté dans les Paramètres, ce qui supprime les identifiants stockés de nos systèmes actifs."
-          ]
-        },
-        {
-          "id": "service-changes",
-          "title": "9. Modifications du Service et disponibilité",
-          "paragraphs": [
-            "Nous nous efforçons de maintenir le Service disponible et sécurisé, mais il peut être interrompu pour maintenance, mises à jour, pannes de fournisseurs, incidents de sécurité ou circonstances échappant à notre contrôle raisonnable. Nous ne garantissons pas un fonctionnement ininterrompu ou sans erreur, la livraison, le placement en boîte de réception, la publication d'avis ou un résultat commercial particulier.",
-            "Vous devriez conserver des sauvegardes appropriées des informations importantes pour votre entreprise et revoir les opérations de vos campagnes."
-          ]
-        },
-        {
-          "id": "intellectual-property",
-          "title": "10. Propriété intellectuelle",
-          "paragraphs": [
-            "Le Service, y compris son logiciel, sa marque, son design et son contenu, appartient à Get Phame ou à ses concédants et est protégé par les lois applicables en matière de propriété intellectuelle. Sous réserve des présentes Conditions, nous vous accordons un droit limité, non exclusif, non transférable et révocable d'utiliser le Service pour vos besoins professionnels internes.",
-            "Vous conservez la propriété du contenu et des données que vous soumettez. Vous nous accordez les droits limités nécessaires pour héberger, traiter, transmettre et afficher ce contenu uniquement afin d'exploiter et d'améliorer le Service."
-          ]
-        },
-        {
-          "id": "termination",
-          "title": "11. Suspension et résiliation",
-          "paragraphs": [
-            "Vous pouvez cesser d'utiliser le Service à tout moment. Nous pouvons suspendre ou résilier l'accès si vous violez matériellement ces Conditions, créez un risque ou une exposition juridique pour nous ou d'autres, ne payez pas les montants dus, ou utilisez le Service d'une manière nuisible pour les destinataires ou le Service.",
-            "Après la résiliation, les dispositions qui, de par leur nature, doivent survivre continueront de s'appliquer, y compris celles relatives aux paiements déjà dus, à la propriété intellectuelle, aux exclusions de garantie, aux limites de responsabilité, à l'indemnisation et aux modalités de règlement des litiges."
-          ]
-        },
-        {
-          "id": "disclaimers",
-          "title": "12. Exclusions de garantie et limitation de responsabilité",
-          "paragraphs": [
-            "Dans la mesure maximale permise par la loi, le Service est fourni « tel quel » et « selon disponibilité » sans aucune garantie, expresse, implicite ou légale. Nous déclinons les garanties implicites de qualité marchande, d'adaptation à un usage particulier, de titre et de non-contrefaçon.",
-            "Dans la mesure maximale permise par la loi, Get Phame et ses opérateurs, affiliés et concédants ne seront pas responsables des dommages indirects, fortuits, spéciaux, consécutifs, exemplaires ou punitifs, ni des pertes de bénéfices, de revenus, d'image, de données ou d'opportunités commerciales. Notre responsabilité globale résultant du Service ou s'y rapportant ne dépassera pas le montant que vous nous avez payé pour le Service au cours des 12 mois précédant l'événement ayant donné lieu à la responsabilité, ou 100 USD si vous n'avez rien payé."
-          ]
-        },
-        {
-          "id": "indemnity-and-changes",
-          "title": "13. Indemnisation, modifications et droit applicable",
-          "paragraphs": [
-            "Vous défendrez, indemniserez et tiendrez à couvert Get Phame ainsi que ses opérateurs, affiliés et concédants contre les réclamations, dommages, pertes, responsabilités et frais découlant de vos données clients, messages, pratiques en matière d'avis, violation de la loi ou manquement aux présentes Conditions.",
-            "Nous pouvons mettre à jour ces Conditions de temps à autre. Nous publierons la version mise à jour et réviserons la date ci‑dessus. Si vous continuez à utiliser le Service après la date d'entrée en vigueur, vous acceptez les Conditions mises à jour. Ces Conditions sont régies par les lois applicables à l'opérateur du Service, sans égard aux principes de conflits de lois, sauf lorsque le droit de la consommation impératif en dispose autrement."
-          ]
-        }
-      ]
+  "manual": {
+    "badges": {
+      "all": "Gratuit et payant",
+      "paid": "Réservé aux abonnements payants",
+      "admin": "Réservé aux administrateurs"
     },
-    "privacy": {
-      "title": "Politique de confidentialité",
-      "lastUpdated": "Dernière mise à jour : 24 juillet 2026",
-      "contactIntro": "Les questions, demandes relatives aux droits sur les données ou préoccupations concernant cette Politique de confidentialité peuvent nous être envoyées via les coordonnées ci-dessous.",
-      "contactResponse": "Nous nous efforçons de répondre aux demandes liées à la confidentialité dans un délai de 30 jours calendaires et pouvons être amenés à vérifier votre identité avant de satisfaire une demande.",
-      "sections": [
-        {
-          "id": "introduction",
-          "title": "1. Introduction",
-          "paragraphs": [
-            "Cette Politique de confidentialité explique comment Get Phame collecte, utilise, partage, conserve et protège les informations lorsque vous utilisez notre application web et les services associés. Le Service aide les entreprises à envoyer des e-mails de demande d'avis via leurs propres comptes e-mail connectés.",
-            "Cette Politique s'applique aux titulaires de compte et aux informations de contact client que les titulaires de compte téléchargent ou connectent au Service. Les titulaires de compte sont responsables de leurs propres informations et de la base juridique permettant de nous fournir les données clients."
-          ]
-        },
-        {
-          "id": "information-collected",
-          "title": "2. Informations que nous recueillons",
-          "paragraphs": [
-            "Informations de compte et d'authentification. Lorsque vous vous connectez via Google OAuth, Se connecter avec Apple ou un lien magique sans mot de passe envoyé par e-mail, nous recevons et stockons les informations nécessaires pour créer et sécuriser votre compte, telles que votre nom, adresse e-mail, identifiant du compte fournisseur et informations de session. Nous ne recevons ni ne stockons le mot de passe de votre compte Google ou Apple. Si vous utilisez une passkey, nous stockons uniquement les données de l'identifiant public nécessaires pour vérifier la connexion ; nous ne recevons pas de données biométriques.",
-            "Informations sur l'entreprise, les clients et les campagnes. Vous pouvez fournir votre profil d'entreprise, les liens de destination des avis, des modèles d'e-mail, les noms et adresses e-mail des clients, l'historique des campagnes, le statut de désinscription et les informations opérationnelles associées. Vous pouvez saisir des contacts manuellement, les importer depuis un fichier CSV ou connecter une intégration approuvée telle que WooCommerce ou Stripe.",
-            "Informations sur l'e-mail connecté. Pour envoyer des messages en votre nom, vous pouvez fournir l'hôte SMTP, le port, l'adresse e-mail et un mot de passe spécifique à l'application ou d'autres identifiants e-mail. Les identifiants sont chiffrés avant stockage et utilisés uniquement pour envoyer les messages que vous initiez ou pour effectuer les vérifications de santé de connexion décrites dans la présente Politique.",
-            "Informations d'utilisation, de sécurité et d'engagement des e-mails. Nous pouvons enregistrer l'activité du compte, le nombre de requêtes, les informations sur l'appareil et le navigateur, le pays ou la région dérivés de l'IP et les événements de sécurité. Les e-mails de demande d'avis peuvent inclure un pixel de suivi d'ouverture et une redirection de suivi de clics. Lorsqu'un destinataire interagit avec un e-mail suivi, nous enregistrons l'événement, l'horodatage, la géolocalisation approximative dérivée de l'IP et les informations du user-agent pour les analyses de campagne du titulaire du compte.",
-            "Informations de paiement. Lorsque vous achetez un forfait payant, le traitement des paiements est assuré par Stripe ou PayPal. Nous recevons les détails de transaction et d'abonnement nécessaires pour fournir l'accès et prendre en charge la facturation. Nous ne stockons pas les numéros complets des cartes de paiement ni les codes de sécurité des cartes."
-          ]
-        },
-        {
-          "id": "use",
-          "title": "3. Comment nous utilisons les informations",
-          "paragraphs": [
-            "Nous utilisons les informations pour fournir, maintenir, sécuriser et améliorer le Service ; authentifier les utilisateurs ; créer et gérer les comptes ; envoyer les e-mails que vous initiez ; exploiter les rappels et les analyses de campagne ; traiter les paiements ; répondre aux demandes d'assistance ; prévenir les abus ; et respecter les obligations légales.",
-            "Nous ne vendons pas les données de contact client et ne les utilisons pas pour démarcher indépendamment vos clients. Nous ne lisons pas, n'indexons pas et ne stockons pas le contenu de votre boîte de réception, de vos messages envoyés ou d'autres données de boîte aux lettres existantes."
-          ]
-        },
-        {
-          "id": "legal-bases",
-          "title": "4. Bases juridiques du traitement",
-          "paragraphs": [
-            "Lorsque le RGPD ou une loi similaire s'applique, nous traitons les informations de compte, d'entreprise et de campagne pour exécuter notre contrat avec vous ; traitons les informations limitées de sécurité, de fiabilité et d'utilisation pour nos intérêts légitimes à exploiter un service sûr et fiable ; traitons certains enregistrements pour respecter des obligations légales ; et nous appuyons sur le consentement lorsque la loi l'exige.",
-            "Si vous fournissez des données clients, vous êtes responsable d'identifier et de documenter la base juridique qui vous permet de collecter, d'utiliser et de partager ces informations pour les communications de demande d'avis."
-          ]
-        },
-        {
-          "id": "sharing",
-          "title": "5. Comment nous partageons les informations",
-          "paragraphs": [
-            "Nous partageons les informations uniquement dans la mesure nécessaire pour exploiter le Service, respecter la loi, protéger les droits et la sécurité, ou accomplir une transaction que vous demandez. Les destinataires peuvent inclure des fournisseurs d'infrastructure et de stockage, des prestataires de livraison d'e-mails et d'assistance, des processeurs de paiement et les intégrations que vous choisissez de connecter.",
-            "Stripe et PayPal traitent les informations de paiement conformément à leurs propres avis de confidentialité. Google et Apple traitent les informations de connexion conformément à leurs propres avis de confidentialité. Nous pouvons divulguer des informations en réponse à une demande légale ou pour protéger les droits, la propriété et la sécurité de Get Phame, des utilisateurs, des destinataires ou du public."
-          ]
-        },
-        {
-          "id": "customer-data-and-tracking",
-          "title": "6. Données clients, suivi des e-mails et désinscriptions",
-          "paragraphs": [
-            "Les titulaires de compte sont les responsables du traitement des données de contact client et des informations d'engagement associées à leurs campagnes. Get Phame agit en tant que sous-traitant de ces informations pour fournir le Service selon les instructions du titulaire du compte.",
-            "Le suivi des ouvertures et des clics est utilisé pour afficher l'activité des campagnes au titulaire du compte. Chaque titulaire de compte est responsable de fournir les notifications requises, de respecter les demandes de désinscription et d'utiliser le suivi conformément à la loi applicable. Les destinataires qui utilisent un lien de désinscription sont exclus des envois futurs de ce compte."
-          ]
-        },
-        {
-          "id": "retention",
-          "title": "7. Conservation et suppression des données",
-          "paragraphs": [
-            "Nous conservons les informations de compte, d'entreprise, des clients, des campagnes et de sécurité tant que votre compte est actif et aussi longtemps que nécessaire pour fournir le Service. Vous pouvez supprimer des contacts clients et déconnecter un compte SMTP dans l'application. La déconnexion supprime les identifiants e-mail stockés de nos systèmes actifs.",
-            "Lorsque vous supprimez votre compte ou faites une demande de suppression vérifiée, nous supprimerons les données personnelles des systèmes actifs dans les 30 jours, sauf si une période de conservation plus longue est requise ou autorisée pour des raisons légales, de sécurité, de résolution de litiges ou de tenue des registres financiers."
-          ]
-        },
-        {
-          "id": "security",
-          "title": "8. Sécurité",
-          "paragraphs": [
-            "Nous utilisons des mesures administratives, techniques et organisationnelles raisonnables conçues pour protéger les informations, y compris le stockage chiffré des identifiants SMTP, le TLS en transit, des contrôles d'accès, des protections de session, la limitation de débit et les en-têtes de sécurité HTTP. Aucun système ne peut être garanti totalement sécurisé ; veuillez nous contacter rapidement si vous suspectez un accès non autorisé."
-          ]
-        },
-        {
-          "id": "rights",
-          "title": "9. Vos droits en matière de confidentialité",
-          "paragraphs": [
-            "Selon votre lieu de résidence, vous pouvez avoir des droits d'accès, de rectification, de suppression, de limitation, d'opposition ou de réception d'une copie portable des données personnelles, et de retirer votre consentement lorsque le consentement constitue la base juridique. Vous pouvez également avoir le droit d'introduire une réclamation auprès d'une autorité de contrôle.",
-            "Pour exercer un droit, contactez-nous en utilisant les coordonnées ci-dessous. Nous pouvons demander des informations nécessaires pour vérifier votre identité et votre autorité avant de donner suite à une demande."
-          ]
-        },
-        {
-          "id": "cookies",
-          "title": "10. Cookies et données de session",
-          "paragraphs": [
-            "Nous utilisons des cookies de session essentiels et sécurisés et le stockage local nécessaires pour vous maintenir connecté, protéger le Service, mémoriser les paramètres de l'application tels que la langue et prendre en charge les méthodes de connexion que vous sélectionnez. Nous n'utilisons pas de cookies publicitaires tiers pour vous suivre sur plusieurs sites."
-          ]
-        },
-        {
-          "id": "children",
-          "title": "11. Confidentialité des enfants",
-          "paragraphs": [
-            "Le Service est un outil professionnel destiné aux adultes et n'est pas destiné aux enfants de moins de 18 ans. Nous ne collectons pas sciemment d'informations personnelles auprès d'enfants. Si vous pensez qu'un enfant nous a communiqué des informations personnelles, contactez-nous et nous prendrons les mesures appropriées pour les supprimer."
-          ]
-        },
-        {
-          "id": "transfers",
-          "title": "12. Transferts internationaux",
-          "paragraphs": [
-            "Get Phame peut traiter des informations aux États-Unis et dans d'autres pays où nous ou nos prestataires de services opérons. Ces pays peuvent avoir des lois sur la protection des données différentes de celles de votre pays. Lorsque cela est requis, nous utilisons des garanties appropriées pour les transferts internationaux."
-          ]
-        },
-        {
-          "id": "changes",
-          "title": "13. Modifications de cette Politique de confidentialité",
-          "paragraphs": [
-            "Nous pouvons mettre à jour cette Politique de confidentialité pour refléter des changements dans nos pratiques, notre technologie, les obligations légales ou le Service. Nous publierons la politique révisée et mettrons à jour la date ci‑dessus. Si un changement est important, nous fournirons un avis supplémentaire lorsque cela est raisonnablement approprié."
-          ]
-        }
-      ]
+    "searchPlaceholder": "Rechercher dans ce manuel",
+    "searchLabel": "Rechercher dans ce manuel",
+    "searchResults": "{{count}} sujets correspondants",
+    "lastUpdated": "Dernière mise à jour {{date}}",
+    "sectionNavigation": "Sections du manuel",
+    "sectionCount": "Sections du manuel",
+    "adminSectionCount": "Sections réservées aux administrateurs",
+    "paidTopicCount": "Sujets réservés aux abonnements payants",
+    "inThisManual": "Dans ce manuel",
+    "stepsLabel": "Étapes",
+    "noteLabel": "Note importante",
+    "openFeature": "Ouvrir cette fonctionnalité",
+    "noResultsTitle": "Aucun sujet correspondant",
+    "noResultsBody": "Essayez une recherche plus courte ou parcourez les liens de section ci‑dessus.",
+    "clearSearch": "Effacer la recherche",
+    "insights": {
+      "eyebrow": "Analytique de la documentation",
+      "title": "Recherches sans résultats",
+      "description": "Utilisez ces termes agrégés pour prioriser les sujets manquants du Manuel. Les recherches répétées depuis le même compte sont comptabilisées une fois par jour UTC.",
+      "privacy": "Privé par conception : les rapports excluent les identifiants de compte, les enregistrements client, les référents, les appareils et les lignes d'événements bruts.",
+      "periodLabel": "Période de rapport",
+      "periodDays": "{{count}} jours",
+      "loading": "Chargement des recherches de sujets manquants…",
+      "error": "Les analyses des sujets manquants n'ont pas pu être chargées. Réessayez.",
+      "retry": "Réessayer",
+      "totalSearches": "Recherches sans résultats",
+      "uniqueTerms": "Termes distincts",
+      "roleBreakdown": "Utilisateur {{user}} · Admin {{admin}}",
+      "manualScope": "Portée du Manuel",
+      "term": "Recherche de sujet manquant",
+      "role": "Manuel",
+      "locale": "Paramètre régional",
+      "count": "Nombre",
+      "lastSearched": "Dernière recherche",
+      "adminManual": "Manuel administrateur",
+      "userManual": "Manuel utilisateur",
+      "emptyTitle": "Pas encore de recherches de sujets manquants",
+      "emptyBody": "Les recherches sans résultat apparaîtront ici après la déduplication quotidienne au niveau du compte."
+    },
+    "export": {
+      "fullScope": "Ensemble du Manuel visible",
+      "sectionScope": "Section du Manuel",
+      "scope": "Portée de l'exportation",
+      "language": "Langue",
+      "generated": "Généré",
+      "lastUpdated": "Dernière mise à jour du Manuel",
+      "version": "Version du Manuel",
+      "steps": "Étapes",
+      "notes": "Notes importantes",
+      "featurePath": "Chemin de la fonctionnalité",
+      "page": "Page {{current}} sur {{total}}",
+      "sectionSuccess": "Téléchargé {{section}} au format PDF.",
+      "fullSuccess": "Le Manuel complet a été téléchargé au format PDF.",
+      "error": "Le PDF du Manuel n'a pas pu être créé. Veuillez réessayer.",
+      "preparing": "Préparation du PDF…",
+      "fullButton": "Télécharger le PDF complet du Manuel",
+      "help": "Le PDF inclut uniquement le Manuel disponible pour votre rôle authentifié et la langue actuelle.",
+      "sectionAria": "Télécharger {{section}} au format PDF",
+      "sectionButton": "Télécharger le PDF de la section"
     }
   }
 }

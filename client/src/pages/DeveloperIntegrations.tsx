@@ -20,6 +20,8 @@ import {
 import { toast } from "sonner";
 import { IntegrationGuide } from "@/components/IntegrationGuide";
 import { DeveloperApiEnrollmentPanel } from "@/components/DeveloperApiEnrollmentPanel";
+import { SourceSetupGuide } from "@/components/SourceSetupGuide";
+import { SourceOperationsPanel } from "@/components/SourceOperationsPanel";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -261,9 +263,13 @@ export default function DeveloperIntegrationsPage() {
           </div>
         </section>
 
+        <SourceSetupGuide endpoint={endpoint} />
+
+        <SourceOperationsPanel />
+
         <DeveloperApiEnrollmentPanel />
 
-        <section aria-labelledby="create-key-title" className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
+        <section aria-labelledby="create-key-title" className="scroll-mt-6 rounded-3xl bg-white p-5 shadow-sm sm:p-6">
           <div className="flex items-start gap-3">
             <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy rr-text-gold"><KeyRound size={20} aria-hidden="true" /></span>
             <div>
@@ -368,7 +374,7 @@ export default function DeveloperIntegrationsPage() {
           </div>
         </section>
 
-        <section aria-labelledby="import-history-title" className="rounded-3xl bg-white p-5 shadow-sm sm:p-6">
+        <section aria-labelledby="import-history-title" className="scroll-mt-6 rounded-3xl bg-white p-5 shadow-sm sm:p-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div><div className="flex items-center gap-2 rr-text-navy"><Clock3 size={20} aria-hidden="true" /><h2 id="import-history-title" className="text-xl font-semibold">{t("developerIntegrations.imports.title", { defaultValue: "Recent API imports" })}</h2></div><p className="mt-1 text-sm leading-6 rr-text-navy-muted">{t("developerIntegrations.imports.description", { defaultValue: "A privacy-safe operational record. Customer emails are masked and idempotency secrets are never displayed." })}</p></div>
             <button type="button" onClick={exportImports} disabled={!importQuery.data?.length} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 px-4 text-sm font-bold rr-text-navy transition active:scale-[0.97] disabled:opacity-50"><Download size={15} aria-hidden="true" />{t("developerIntegrations.imports.export", { defaultValue: "Export CSV" })}</button>

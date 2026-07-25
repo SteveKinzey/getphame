@@ -6,10 +6,10 @@ import FadeUp from "./FadeUp";
 
 const EMAIL_PREVIEW_WEBP = "https://assets.getphame.app/phame-email-preview.webp";
 const EMAIL_PREVIEW_PNG = "https://assets.getphame.app/phame-email-preview.png";
-const CUSTOMER_IMPORT_WEBP = "https://assets.getphame.app/phame-customer-import.webp";
-const CUSTOMER_IMPORT_PNG = "https://assets.getphame.app/phame-customer-import.png";
-const REVIEW_TRACKING_WEBP = "https://assets.getphame.app/phame-review-tracking.webp";
-const REVIEW_TRACKING_PNG = "https://assets.getphame.app/phame-review-tracking.png";
+const CUSTOMER_IMPORT_WEBP = "/manus-storage/phame-customer-import-corrected-exact_4614c4e8.webp";
+const CUSTOMER_IMPORT_PNG = "/manus-storage/phame-customer-import-corrected-exact_cded24ee.png";
+const REVIEW_TRACKING_WEBP = "/manus-storage/phame-review-tracking-corrected-exact_d01e52cf.webp";
+const REVIEW_TRACKING_PNG = "/manus-storage/phame-review-tracking-corrected-exact_82109c9c.png";
 
 // ── Lightbox ──────────────────────────────────────────────────────────────────
 

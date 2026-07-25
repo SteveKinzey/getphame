@@ -778,6 +778,128 @@
 }
 .support-note-rich-text a { color: oklch(0.45 0.15 250); text-decoration: underline; }
 
+/* Keep switchable WebVTT cues legible inside the walkthrough's reserved lower band. */
+.getphame-walkthrough-video::cue {
+  color: rgb(255 255 255);
+  background-color: rgb(1 9 19 / 88%);
+  font-family: 'Inter', 'Nunito', system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 80%);
+}
+
+.getphame-caption-preview-swatch {
+  display: inline-block;
+  border-radius: 0.25rem;
+  background-color: rgb(1 9 19 / 88%);
+  padding: 0.2rem 0.45rem;
+}
+
+.getphame-caption-preview-text {
+  color: rgb(255 255 255);
+  font-family: 'Inter', 'Nunito', system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 80%);
+}
+
+.getphame-walkthrough-video[data-caption-size='small']::cue,
+.getphame-caption-preview[data-caption-size='small'] .getphame-caption-preview-text {
+  font-size: 0.875rem;
+}
+
+.getphame-walkthrough-video[data-caption-size='large']::cue,
+.getphame-caption-preview[data-caption-size='large'] .getphame-caption-preview-text {
+  font-size: 1.25rem;
+}
+
+.getphame-walkthrough-video[data-caption-background='black']::cue,
+.getphame-caption-preview[data-caption-background='black'] .getphame-caption-preview-swatch {
+  background-color: rgb(0 0 0 / 96%);
+}
+
+.getphame-walkthrough-video[data-caption-background='translucent']::cue,
+.getphame-caption-preview[data-caption-background='translucent'] .getphame-caption-preview-swatch {
+  background-color: rgb(1 9 19 / 45%);
+}
+
+.getphame-walkthrough-video[data-caption-font-family='serif']::cue,
+.getphame-caption-preview[data-caption-font-family='serif'] .getphame-caption-preview-text {
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.getphame-walkthrough-video[data-caption-font-family='mono']::cue,
+.getphame-caption-preview[data-caption-font-family='mono'] .getphame-caption-preview-text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+.getphame-walkthrough-video[data-caption-line-spacing='compact']::cue,
+.getphame-caption-preview[data-caption-line-spacing='compact'] .getphame-caption-preview-text {
+  line-height: 1.15;
+}
+
+.getphame-walkthrough-video[data-caption-line-spacing='spacious']::cue,
+.getphame-caption-preview[data-caption-line-spacing='spacious'] .getphame-caption-preview-text {
+  line-height: 1.6;
+}
+
+.getphame-walkthrough-video[data-caption-text-edge='none']::cue,
+.getphame-caption-preview[data-caption-text-edge='none'] .getphame-caption-preview-text {
+  text-shadow: none;
+}
+
+.getphame-walkthrough-video[data-caption-text-edge='outline']::cue,
+.getphame-caption-preview[data-caption-text-edge='outline'] .getphame-caption-preview-text {
+  text-shadow:
+    1px 0 0 rgb(0 0 0 / 95%),
+    -1px 0 0 rgb(0 0 0 / 95%),
+    0 1px 0 rgb(0 0 0 / 95%),
+    0 -1px 0 rgb(0 0 0 / 95%),
+    0 2px 3px rgb(0 0 0 / 85%);
+}
+
+.getphame-walkthrough-video[data-caption-text-color='gold']::cue,
+.getphame-caption-preview[data-caption-text-color='gold'] .getphame-caption-preview-text {
+  color: rgb(255 214 102);
+}
+
+.getphame-walkthrough-video[data-caption-text-color='cyan']::cue,
+.getphame-caption-preview[data-caption-text-color='cyan'] .getphame-caption-preview-text {
+  color: rgb(103 232 249);
+}
+
+.getphame-walkthrough-video[data-caption-text-color='white'][data-caption-text-opacity='high']::cue,
+.getphame-caption-preview[data-caption-text-color='white'][data-caption-text-opacity='high'] .getphame-caption-preview-text {
+  color: rgb(255 255 255 / 85%);
+}
+
+.getphame-walkthrough-video[data-caption-text-color='white'][data-caption-text-opacity='soft']::cue,
+.getphame-caption-preview[data-caption-text-color='white'][data-caption-text-opacity='soft'] .getphame-caption-preview-text {
+  color: rgb(255 255 255 / 70%);
+}
+
+.getphame-walkthrough-video[data-caption-text-color='gold'][data-caption-text-opacity='high']::cue,
+.getphame-caption-preview[data-caption-text-color='gold'][data-caption-text-opacity='high'] .getphame-caption-preview-text {
+  color: rgb(255 214 102 / 85%);
+}
+
+.getphame-walkthrough-video[data-caption-text-color='gold'][data-caption-text-opacity='soft']::cue,
+.getphame-caption-preview[data-caption-text-color='gold'][data-caption-text-opacity='soft'] .getphame-caption-preview-text {
+  color: rgb(255 214 102 / 70%);
+}
+
+.getphame-walkthrough-video[data-caption-text-color='cyan'][data-caption-text-opacity='high']::cue,
+.getphame-caption-preview[data-caption-text-color='cyan'][data-caption-text-opacity='high'] .getphame-caption-preview-text {
+  color: rgb(103 232 249 / 85%);
+}
+
+.getphame-walkthrough-video[data-caption-text-color='cyan'][data-caption-text-opacity='soft']::cue,
+.getphame-caption-preview[data-caption-text-color='cyan'][data-caption-text-opacity='soft'] .getphame-caption-preview-text {
+  color: rgb(103 232 249 / 70%);
+}
+
 /* ── Extracted inline styles (moved from JSX to eliminate unsafe-inline CSP) ── */
 
 /* AppLayout: responsive sidebar widths */

@@ -39,7 +39,7 @@ export default function PasskeySignIn({ redirectTo = "/" }: { redirectTo?: strin
   }
 
   if (!supported) {
-    return <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200">{t("passkeys.signIn.unsupported", { defaultValue: "Passkeys are not available in this browser. You can still sign in with a secure email link." })}</div>;
+    return <div className="rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white/60">{t("passkeys.signIn.unsupported", { defaultValue: "Passkeys are not available in this browser. You can still sign in with a secure email link." })}</div>;
   }
 
   return (
@@ -48,16 +48,16 @@ export default function PasskeySignIn({ redirectTo = "/" }: { redirectTo?: strin
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground"><KeyRound size={19} aria-hidden="true" /></div>
         <div>
           <h2 id="passkey-sign-in-title" className="text-sm font-bold text-white">{t("passkeys.signIn.title", { defaultValue: "Sign in with a passkey" })}</h2>
-          <p className="mt-0.5 text-xs leading-relaxed text-slate-200">{t("passkeys.signIn.description", { defaultValue: "Use the fingerprint, face recognition, or screen lock already set up on your device." })}</p>
+          <p className="mt-0.5 text-xs leading-relaxed text-white/55">{t("passkeys.signIn.description", { defaultValue: "Use the fingerprint, face recognition, or screen lock already set up on your device." })}</p>
         </div>
       </div>
       <form onSubmit={handleSubmit} className="space-y-3" noValidate>
         <div>
-          <label htmlFor="passkey-email" className="mb-1.5 block text-xs font-medium text-slate-200">{t("passkeys.signIn.emailLabel", { defaultValue: "Account email" })}</label>
-          <input id="passkey-email" type="email" autoComplete="username webauthn" value={email} onChange={(event) => setEmail(event.target.value)} placeholder={t("passkeys.signIn.emailPlaceholder", { defaultValue: "you@example.com" })} disabled={pending} aria-invalid={Boolean(error)} aria-describedby={error ? "passkey-sign-in-error" : status ? "passkey-sign-in-status" : undefined} className="w-full rounded-xl border border-[#2a3a5c] bg-[#1a2744] px-4 py-3 text-sm text-white outline-none placeholder:text-slate-300 focus:border-primary/70 focus:ring-2 focus:ring-primary/25 disabled:opacity-60" />
+          <label htmlFor="passkey-email" className="mb-1.5 block text-xs font-medium text-white/70">{t("passkeys.signIn.emailLabel", { defaultValue: "Account email" })}</label>
+          <input id="passkey-email" type="email" autoComplete="username webauthn" value={email} onChange={(event) => setEmail(event.target.value)} placeholder={t("passkeys.signIn.emailPlaceholder", { defaultValue: "you@example.com" })} disabled={pending} aria-invalid={Boolean(error)} aria-describedby={error ? "passkey-sign-in-error" : status ? "passkey-sign-in-status" : undefined} className="w-full rounded-xl border border-[#2a3a5c] bg-[#1a2744] px-4 py-3 text-sm text-white outline-none placeholder:text-white/35 focus:border-primary/70 focus:ring-2 focus:ring-primary/25 disabled:opacity-60" />
         </div>
         {error && <p id="passkey-sign-in-error" role="alert" className="text-sm font-semibold text-red-300">{error}</p>}
-        {status && <p id="passkey-sign-in-status" role="status" aria-live="polite" className="text-sm font-semibold text-slate-200">{status}</p>}
+        {status && <p id="passkey-sign-in-status" role="status" aria-live="polite" className="text-sm font-semibold text-white/70">{status}</p>}
         <button type="submit" disabled={pending} aria-busy={pending} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground transition-[filter,transform] duration-150 hover:brightness-110 active:scale-[0.97] disabled:cursor-wait disabled:opacity-60">
           {pending ? <Loader2 size={18} className="animate-spin" aria-hidden="true" /> : <KeyRound size={18} aria-hidden="true" />}
           {pending ? t("passkeys.signIn.inProgress", { defaultValue: "Checking passkey…" }) : t("passkeys.signIn.button", { defaultValue: "Continue with passkey" })}

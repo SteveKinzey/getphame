@@ -1,0 +1,664 @@
+{
+  "version": 1,
+  "title": "用户手册",
+  "eyebrow": "Get Phame 指南",
+  "introduction": "使用本手册设置 Get Phame、发送合规的点评请求、管理联系人与提醒、连接集成，并了解 Free 与付费订阅包含的内容。付费功能保持可见以便评估，所有仅订阅可用项均有明确标注。",
+  "lastUpdated": "2026-07-25",
+  "sections": [
+    {
+      "id": "getting-started",
+      "title": "入门",
+      "summary": "安全登录、完成设置检查项，并准备您的第一个点评请求。",
+      "icon": "rocket",
+      "topics": [
+        {
+          "id": "sign-in",
+          "title": "使用魔术链接登录",
+          "access": "all",
+          "body": "Get Phame 默认使用无密码魔术链接认证。输入您的账户邮箱，打开最新的登录邮件，并尽可能在同一设备上使用邮件中的链接。",
+          "steps": [
+            "打开 Get Phame 登录页面并输入您的账户邮箱。",
+            "在收件箱中打开最新的 Get Phame 邮件并选择登录链接。",
+            "如果链接已过期或已被使用，请返回登录页面并请求新的链接。",
+            "切勿转发魔术链接邮件或分享其 URL。"
+          ],
+          "notes": [
+            "如果邮件投递延迟，请检查垃圾邮箱并确认输入的邮箱地址正确。"
+          ]
+        },
+        {
+          "id": "setup-checklist",
+          "title": "完成设置检查清单",
+          "access": "all",
+          "body": "入职检查表会引导您完成可靠外联所需的最低设置：连接邮箱、添加点评平台、添加联系人并发送首个请求。",
+          "steps": [
+            "添加您的商家名称和面向客户的发件人信息。",
+            "连接并测试将用于发送点评请求的邮箱账户。",
+            "至少添加一个已批准的点评目的地并设置为默认。",
+            "导入或保存联系人，预览消息并发送第一条请求。"
+          ],
+          "route": "/"
+        },
+        {
+          "id": "install-and-share",
+          "title": "安装或分享 Get Phame",
+          "access": "all",
+          "body": "Get Phame 可在受支持设备上作为渐进式 Web 应用安装。安装指南说明各浏览器的具体步骤。分享操作在可用时使用设备的共享面板，不可用时回退为复制链接。",
+          "steps": [
+            "从入职或账户区域打开安装指南。",
+            "按照您的浏览器和设备的说明操作。",
+            "从新增的应用图标启动 Get Phame 并按常规方式登录。",
+            "需要将 Get Phame 链接发送到另一台设备或团队成员时，请使用 Share。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "navigation-and-preferences",
+      "title": "导航与偏好设置",
+      "summary": "查找主要工作区并调整语言、外观和账户控制。",
+      "icon": "compass",
+      "topics": [
+        {
+          "id": "main-navigation",
+          "title": "使用主导航",
+          "access": "all",
+          "body": "Home 显示设置和活动快捷入口。Send Request 启动单次外联。Dashboard 汇总活动。Developer Integrations 管理 API 与 Sources 连接。Settings 包含账户、商家、投递、订阅与安全控制。User Manual 打开本指南。",
+          "steps": [
+            "在桌面端，使用左侧导航栏。",
+            "在移动端，使用底部导航和 More 菜单访问次要目的地。",
+            "使用高亮项确认当前所在位置。",
+            "离开类似管理详情或设置屏时使用页面内的返回控件。"
+          ]
+        },
+        {
+          "id": "language-theme-network",
+          "title": "语言、主题与连接状态",
+          "access": "all",
+          "body": "从语言控制中选择受支持的语言。浅色与深色外观遵循可用的主题控制。离线或连接降级指示表示某些实时数据或操作在网络恢复前可能不可用。",
+          "steps": [
+            "在账户或导航控件中选择您偏好的语言。",
+            "切换语言后请检查日期和数字，因为格式会依据所选区域设置改变。",
+            "如果出现离线提示，在连接恢复前避免重复发送或执行破坏性操作。"
+          ]
+        },
+        {
+          "id": "account-menu",
+          "title": "账户菜单",
+          "access": "all",
+          "body": "账户菜单提供对 Settings、与角色对应的手册和 Sign out 的快捷访问。Administrator 账户还会看到单独的 Administration 条目，普通用户则不会。",
+          "steps": [
+            "打开头像或 More 菜单。",
+            "选择 Settings 以修改个人资料和配置。",
+            "选择 Manual 返回分配给您账户角色的指南。",
+            "在使用共享设备时选择 Sign out。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "business-and-review-destinations",
+      "title": "商家与点评目的地",
+      "summary": "配置客户看到的身份信息以及请求中使用的已批准目的地。",
+      "icon": "building",
+      "topics": [
+        {
+          "id": "business-profile",
+          "title": "商家资料",
+          "access": "all",
+          "body": "保持商家名称与发件人身份的准确性，因为客户据此识别请求。在发送或预览新消息前保存更改。",
+          "steps": [
+            "打开 Settings 并定位到 business profile 部分。",
+            "输入面向客户的商家名称和请求的资料详情。",
+            "保存更改并预览电子邮件以确认身份信息清晰。",
+            "在发件人或商家身份变更时更新资料。"
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "platform-links",
+          "title": "添加并选择点评目的地",
+          "access": "all",
+          "body": "仅添加属于贵商家的目的地，并使用默认控件选择用于新请求的链接。发送前请测试每个目的地。",
+          "steps": [
+            "打开 Settings 并添加受支持的平台或自定义目的地 URL。",
+            "为目的地提供易于识别的标签。",
+            "在新标签页打开已保存的链接并确认它指向正确的商家资料页。",
+            "将最常使用的目的地设置为默认。"
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "unlimited-platform-links",
+          "title": "无限多平台链接",
+          "access": "paid",
+          "body": "Paid subscriptions 可维护无限点评目的地。Free 账户只能使用一个平台链接。超出 Free 配额前请升级。",
+          "steps": [
+            "打开 Upgrade 比较当前的订阅与终身选项。",
+            "使用与您的 Get Phame 账户相同的邮箱完成结账。",
+            "返回 Settings 并添加额外目的地。",
+            "在每次请求或活动前选择合适的目的地。"
+          ],
+          "route": "/upgrade"
+        },
+        {
+          "id": "yelp-destination",
+          "title": "Yelp 合规模式",
+          "access": "all",
+          "body": "当选择 Yelp 时，请遵守应用内的合规提醒。Yelp 指导以纯文本形式呈现，不应被视为普通的点评邀请链接。不得提供激励或施压客户发布点评。",
+          "steps": [
+            "仅在 Yelp 准确表示目标目的地时选择它。",
+            "发送前阅读 Yelp 特定的警示。",
+            "使用中性、个别的沟通方式，避免选择性地邀请。",
+            "当平台规则不明确时，请查阅 Compliance Guide。"
+          ],
+          "route": "/compliance"
+        }
+      ]
+    },
+    {
+      "id": "email-delivery",
+      "title": "电子邮件投递",
+      "summary": "连接发件人、验证投递、预览消息并排查常见提供商问题。",
+      "icon": "mail",
+      "topics": [
+        {
+          "id": "connect-email",
+          "title": "连接邮箱提供商",
+          "access": "all",
+          "body": "Get Phame 通过您所连接的账户发送。针对不同提供商的说明会解释应使用 app password、SMTP password 或 provider bridge credential。提供商要求使用应用专用密码时，切勿输入普通密码。",
+          "steps": [
+            "打开 Settings 并选择 email connection 部分。",
+            "输入发送地址；Get Phame 在可能时会识别常见提供商。",
+            "打开内联提供商指南并创建所需的 app 或 SMTP 密码。",
+            "输入连接详情，保存并运行连接测试。"
+          ],
+          "notes": [
+            "Google Workspace 管理员可能需要允许应用专用密码。Proton Mail 需要由 Proton Bridge 提供的凭据。"
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "test-and-troubleshoot-email",
+          "title": "测试与排查投递问题",
+          "access": "all",
+          "body": "成功的连接测试确认在该时刻凭据可用；但不能保证未来每封邮件都会被接受。在更改提供商安全设置或密码后请重新测试。",
+          "steps": [
+            "确认发送地址与提供商主机正确。",
+            "如果提供商撤销了先前凭据，请创建新的 app 密码。",
+            "检查多因素认证和 SMTP 访问是否满足提供商要求。",
+            "在面向客户外联前，先向由您控制的地址发送预览或低风险请求。"
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "bulk-sender",
+          "title": "Bulk Sender 连接",
+          "access": "paid",
+          "body": "Paid subscriptions 可连接受支持的事务型邮件服务以实现更高量级的投递。仅在受保护的 Settings 表单中存储提供商凭据，测试连接，并监控提供商限制与抑制名单。",
+          "steps": [
+            "打开 Settings 并找到 Bulk Sender。",
+            "选择受支持的提供商并输入所需的受保护凭据。",
+            "保存连接并确认显示为已连接状态。",
+            "即使提供商允许更高技术量级，也要遵守合规发送实践。"
+          ],
+          "route": "/settings"
+        }
+      ]
+    },
+    {
+      "id": "contacts-and-imports",
+      "title": "联系人与导入",
+      "summary": "保存客户信息、导入已获同意的联系人，并安全管理重复记录。",
+      "icon": "users",
+      "topics": [
+        {
+          "id": "saved-contacts",
+          "title": "已保存联系人",
+          "access": "all",
+          "body": "Saved Contacts 将客户信息保留以便将来单次请求与活动管理。仅添加您被允许联系的人，并在发送前纠正不准确的记录。",
+          "steps": [
+            "打开 Contacts 以搜索或查看已保存记录。",
+            "谨慎添加或编辑客户姓名与邮箱。",
+            "在重新开始外联前审查先前活动。",
+            "当保留不再有正当理由或客户要求停止时，删除联系人。"
+          ],
+          "route": "/contacts"
+        },
+        {
+          "id": "csv-import",
+          "title": "从 CSV 导入联系人",
+          "access": "all",
+          "body": "CSV 导入在 Free 与付费计划中均可用。使用包含预期联系人列的干净文件，审查预览，在发送前解决无效或重复记录。",
+          "steps": [
+            "打开 Import Contacts 并选择您从授权来源准备的 CSV 文件。",
+            "在提示时匹配姓名与邮箱列。",
+            "审查验证、重复与拒绝结果。",
+            "导入后打开 Contacts 并抽检若干记录。"
+          ],
+          "route": "/import"
+        },
+        {
+          "id": "woocommerce-sync",
+          "title": "WooCommerce 同步",
+          "access": "paid",
+          "body": "WooCommerce 同步仅在付费订阅中提供。连接经批准的商店集成，导入符合条件的客户，并在开始外联前审查结果。",
+          "steps": [
+            "从相应的集成条目打开 WooCommerce customers 区域。",
+            "使用受保护凭据连接或验证商店集成。",
+            "运行或审查客户同步并处理失败记录。",
+            "在发送任何请求前确认同意与活动资格。"
+          ],
+          "route": "/woo-customers"
+        },
+        {
+          "id": "duplicates-and-consent",
+          "title": "重复记录与同意",
+          "access": "all",
+          "body": "Get Phame 可以识别重复导入，但您仍需对每个联系人的质量和合法来源负责。切勿反复导入同一人以绕过发送限制、抑制或活动历史。",
+          "steps": [
+            "使用稳定的客户邮箱作为主要身份标识。",
+            "审查去重结果，而不要假定每行都创建了新记录。",
+            "保留允许单次外联的商业互动或同意证据。",
+            "当某个来源开始产生异常失败或重复量时，停止并调查。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "review-requests",
+      "title": "发送点评请求",
+      "summary": "预览并发送单独的、可识别的、合规意识的请求。",
+      "icon": "send",
+      "topics": [
+        {
+          "id": "send-individual-request",
+          "title": "发送单条请求",
+          "access": "all",
+          "body": "点评外联应与真实客户互动相关并单独发送。发送前确认收件人、目的地与消息内容。",
+          "steps": [
+            "打开 Send Request 并选择或输入客户。",
+            "选择正确的点评目的地。",
+            "确认客户关系与所需的同意字段。",
+            "预览邮件，修正任何问题，并只发送一次。"
+          ],
+          "route": "/send"
+        },
+        {
+          "id": "pre-send-compliance",
+          "title": "完成合规检查",
+          "access": "all",
+          "body": "发送前检查清单有助于防止误导性或与平台不兼容的外联。切勿提供报酬、只询问满意客户或隐瞒消息目的。",
+          "steps": [
+            "确认请求与真实交易或服务体验有关。",
+            "确认收件人未选择退出且未被过度联系。",
+            "审查平台特定警示，尤其是针对 Yelp 的警示。",
+            "当不确定正确操作时，打开完整的 Compliance Guide。"
+          ],
+          "route": "/compliance"
+        },
+        {
+          "id": "free-request-quota",
+          "title": "Free 请求配额",
+          "access": "all",
+          "body": "Free 账户初始可发送 10 次点评请求，此后在每个滚动的 30 天窗口内可发送 5 次。使用计数器显示剩余额度并在配额用尽时引导您进行 Upgrade。",
+          "steps": [
+            "在准备外联前查看 Free 使用计数器。",
+            "优先考虑最近且符合条件的客户互动。",
+            "勿创建额外账户以规避配额。",
+            "当业务需要持续更高量级发送时，选择付费计划。"
+          ],
+          "route": "/send"
+        },
+        {
+          "id": "unlimited-requests",
+          "title": "无限点评请求与更高日限",
+          "access": "paid",
+          "body": "Paid subscriptions 在订阅权限下包含无限点评请求，并提供最高 500 的配置日配额，相比之下 Free 为每日 50。仍需遵守合规、提供商、反滥用和平台限制。",
+          "steps": [
+            "从定价页面 Upgrade 并等待付费状态生效。",
+            "在监控投递与反馈质量的同时逐步增加发送量。",
+            "保持每条请求与符合条件的客户互动挂钩。",
+            "当错误、退信、投诉或提供商警示率上升时暂停发送。"
+          ],
+          "route": "/upgrade"
+        }
+      ]
+    },
+    {
+      "id": "reminders-and-campaigns",
+      "title": "提醒与活动",
+      "summary": "管理计划的后续提醒，同时尊重完成、退订与合规信号。",
+      "icon": "bell",
+      "topics": [
+        {
+          "id": "reminder-schedule",
+          "title": "查看计划提醒",
+          "access": "all",
+          "body": "Follow-up reminders 在 Free 与付费计划中均可用。Reminders 区域显示计划消息并提供取消或允许的立即发送控件。",
+          "steps": [
+            "打开 Reminders 并查看待定、到期、已发、已取消和已停止的项目。",
+            "当客户要求不再接收或关系已变更时取消提醒。",
+            "仅当客户仍符合条件并且时机合适时使用 Send Now。",
+            "在重新启动任何外联序列前确认历史记录。"
+          ],
+          "route": "/reminders"
+        },
+        {
+          "id": "completion-stops-reminders",
+          "title": "客户完成停止后续提醒",
+          "access": "all",
+          "body": "当 Get Phame 记录到客户已完成所请求的操作时，后续序列提醒会停止。除非有新的、合法的客户互动作为理由，否则不要手动重启活动。",
+          "steps": [
+            "当提醒被停止时审查客户时间线。",
+            "不要通过重复或编辑联系人来强制已停止的序列继续。",
+            "仅针对新的合格交易或服务事件使用新的请求。"
+          ]
+        },
+        {
+          "id": "campaign-management",
+          "title": "活动历史与重启控件",
+          "access": "all",
+          "body": "使用联系人与活动历史了解已发送内容、发送时间以及序列是否仍处于激活状态。批量重启操作应仅限于未响应且符合条件的联系人，并在执行前审查。",
+          "steps": [
+            "打开相关的客户或活动详情。",
+            "审查已发送邮件、提醒历史、完成状态和退订状态。",
+            "仅编辑仍然准确且被允许的字段。",
+            "在重启一个或多个序列前确认合规性。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "templates-and-preview",
+      "title": "邮件模板与预览",
+      "summary": "审查发给客户的完整消息并了解自定义模板的订阅要求。",
+      "icon": "fileText",
+      "topics": [
+        {
+          "id": "preview-email",
+          "title": "预览客户邮件",
+          "access": "all",
+          "body": "使用 Preview Email 检查发件人、收件人、主题及渲染后的消息内容再发送。预览不会发送邮件；在更改商家身份、目的地或模板内容后应重复预览。",
+          "steps": [
+            "在 Settings、Templates 或发送工作流程中可用时打开预览。",
+            "检查发件人身份、收件人、主题、称呼、目的地与页脚。",
+            "关闭预览并修正任何不准确的内容。",
+            "在最终发送前生成新的预览。"
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "custom-templates",
+          "title": "自定义邮件模板",
+          "access": "paid",
+          "body": "Custom email templates 属于 paid subscription 的权益。保持消息可识别、中性且合规；不要使用个性化制造虚假紧迫感或激励。",
+          "steps": [
+            "Upgrade 或确认已有有效的付费权限。",
+            "打开 Templates 并编辑受支持的主题与消息字段。",
+            "保留必需的链接、合规措辞和客户控件。",
+            "在将模板用于客户外联前预览并测试。"
+          ],
+          "route": "/templates"
+        }
+      ]
+    },
+    {
+      "id": "dashboard-and-analytics",
+      "title": "仪表板、追踪与点评",
+      "summary": "了解请求活动、客户时间线和付费追踪功能。",
+      "icon": "chart",
+      "topics": [
+        {
+          "id": "dashboard-basics",
+          "title": "使用活动仪表板",
+          "access": "all",
+          "body": "仪表板汇总当前外联活动并提供进入联系人、请求、提醒与相关记录的路径。遇到空白或延迟数据时，在页面成功刷新前应视为未知状态。",
+          "steps": [
+            "在可用时选择相关的期间或视图过滤器。",
+            "在根据汇总指标采取行动前打开底层的联系人或请求。",
+            "在出现加载或错误状态时刷新或重试。",
+            "对记录级决策使用客户时间线。"
+          ],
+          "route": "/dashboard"
+        },
+        {
+          "id": "reviews-and-history",
+          "title": "审查活动与保留历史",
+          "access": "all",
+          "body": "审查与请求历史有助于解释先前的外联与客户状态。Get Phame 不会创建或伪造客户点评；操作工作流中应仅出现真实的客户行为与记录。",
+          "steps": [
+            "打开 Reviews 或相关的客户详情。",
+            "在得出结论前检查时间戳、来源与活动上下文。",
+            "通过受支持的编辑控件更正操作数据，而不是创建替代记录。",
+            "降级后可继续使用保留的联系人与历史；但付费专属功能可能不再可用。"
+          ],
+          "route": "/reviews"
+        },
+        {
+          "id": "open-click-tracking",
+          "title": "邮件打开与点击追踪",
+          "access": "paid",
+          "body": "Open 和 click 追踪仅在 paid subscriptions 中提供。追踪信号是有用的指示器，但可能不完整，因为隐私工具、安全扫描器与邮件客户端会影响其准确性。",
+          "steps": [
+            "确认账户具有有效的付费权限。",
+            "将追踪作为与发送状态和客户历史一起的参考信号。",
+            "不要将打开或点击视为客户已发布点评的证据。",
+            "尊重隐私，避免在无业务需要时导出追踪数据。"
+          ]
+        },
+        {
+          "id": "advanced-analytics",
+          "title": "高级分析",
+          "access": "paid",
+          "body": "Advanced analytics 为 paid subscription 的功能。使用其识别投递与活动模式，然后在更改客户序列或业务流程前打开底层记录。",
+          "steps": [
+            "选择有意义的报告期。",
+            "比较各期率而不要依赖单一计数。",
+            "调查底层记录与投递状态。",
+            "记录任何操作变更并监控下一个周期。"
+          ],
+          "route": "/dashboard"
+        }
+      ]
+    },
+    {
+      "id": "developer-integrations",
+      "title": "Developer Integrations 和 Sources",
+      "summary": "创建安全的 API 连接、使用 Zapier 或 Make 模板，并监控每个导入来源。",
+      "icon": "plug",
+      "topics": [
+        {
+          "id": "api-keys",
+          "title": "创建并保护 API 密钥",
+          "access": "all",
+          "body": "API keys 用于授权外部联系人导入。密钥只在创建时显示一次；请将其存储在所连接工具的受保护凭证字段中，切勿将其放入公共 URL、截图、日志或共享文档。",
+          "steps": [
+            "打开 Developer Integrations 并创建一个易识别名称的密钥。",
+            "仅在创建后将新密钥复制一次到所连接工具的安全凭证字段。",
+            "使用文档中说明的 Authorization 头与 contact-import 端点。",
+            "若怀疑密钥泄露，立即撤销并替换。"
+          ],
+          "route": "/developer"
+        },
+        {
+          "id": "source-connection",
+          "title": "创建 Source 连接",
+          "access": "all",
+          "body": "Source 标识产生导入的连接工具。选择 Zapier、Make 或 Custom；关联授权的 API key；并在自动化中使用生成的 Source 头，以便分析与健康检查可被归因。",
+          "steps": [
+            "创建或选择用于自动化的 API key。",
+            "创建一个带提供商和可识别名称的 Source。",
+            "将端点、Authorization 头与 Source 头复制到自动化工具中。",
+            "发送一次测试导入并确认 Source 记录了活动。"
+          ],
+          "route": "/developer"
+        },
+        {
+          "id": "zapier-make-recipes",
+          "title": "使用 Zapier 或 Make 的设置模板",
+          "access": "all",
+          "body": "引导模板显示所需的 HTTP 方法、端点、头、规范的联系人字段、同意数据与幂等性指导，以实现可靠的自动化。",
+          "steps": [
+            "在创建 Source 时选择 Zapier 或 Make 提供商。",
+            "按顺序遵循提供商特定的 HTTP 请求步骤。",
+            "从原始工具映射客户姓名、邮箱、同意与稳定的来源标识符。",
+            "运行提供商测试，然后在 Get Phame 内验证导入结果。"
+          ],
+          "route": "/developer"
+        },
+        {
+          "id": "source-analytics-health",
+          "title": "Source 分析与健康状况",
+          "access": "all",
+          "body": "每个 Source 报告 7、30 与 90 天的尝试次数、成功导入、创建联系人、去重联系人、失败、成功率与最新活动。健康监控评估近期结果并记录持久历史。",
+          "steps": [
+            "选择 Source 与报告窗口。",
+            "比较尝试、成功、重复、失败与成功率。",
+            "在状态降级或失败时审查健康历史和最近的原因。",
+            "仅在有意维护期间禁用监控，然后重新启用并运行手动检查。"
+          ],
+          "route": "/developer"
+        }
+      ]
+    },
+    {
+      "id": "referrals-support-and-billing",
+      "title": "推荐、支持与计费",
+      "summary": "分享 Get Phame、请求帮助、比较计划并了解取消订阅行为。",
+      "icon": "creditCard",
+      "topics": [
+        {
+          "id": "referral-link",
+          "title": "分享您的推荐链接",
+          "access": "all",
+          "body": "Free 与付费用户均可分享 Settings 中显示的个人推荐链接。仅与可能受益的人分享，并避免误导性声明或未经请求的大规模分发。",
+          "steps": [
+            "打开 Settings 并找到推荐部分。",
+            "复制或分享生成的链接。",
+            "准确说明 Get Phame，并让接收者自行决定是否注册。",
+            "在可用的账户视图中查看推荐状态。"
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "paid-referral-reward",
+          "title": "付费推荐奖励资格",
+          "access": "paid",
+          "body": "在奖励处理时，推荐人必须处于合格的付费计划才能获得免费月奖励。Free 用户可以分享推荐链接，但在符合资格之前不适用于该付费计划奖励。",
+          "steps": [
+            "确认推荐通过您的个人链接归因。",
+            "在奖励可处理时保持合格的付费订阅。",
+            "若合格转化在正常处理时间后仍未解决，请联系支持。"
+          ]
+        },
+        {
+          "id": "support-options",
+          "title": "请求支持",
+          "access": "all",
+          "body": "使用应用内支持表单处理账户、投递、计费、合规或技术问题。说明要清晰并在安全的情况下附上相关截图，但请移除凭据、魔术链接、客户秘密和不必要的个人数据。",
+          "steps": [
+            "选择最准确的支持主题。",
+            "描述您预期的结果、实际发生的情况以及发生时间。",
+            "仅在确实有助于诊断时附加已清理的截图。",
+            "监控应用内支持状态并回复后续问题。"
+          ]
+        },
+        {
+          "id": "priority-support",
+          "title": "优先支持",
+          "access": "paid",
+          "body": "Priority support 随付费订阅提供。它影响支持处理优先级；但不会覆盖安全验证、提供商延迟、合规要求或外部平台规则。",
+          "steps": [
+            "在以付费账户登录时通过常规支持表单提交请求。",
+            "选择正确的紧急程度并提供可复现的细节。",
+            "避免为同一问题提交重复工单。"
+          ]
+        },
+        {
+          "id": "upgrade-cancel-downgrade",
+          "title": "升级、取消与降级",
+          "access": "all",
+          "body": "月度与年度订阅会持续续订直至取消；终身访问不需要续订。取消经常性订阅后，访问权限将在付费周期结束前保留，然后回到 Free。联系人与历史会保留，但付费专属功能将被移除。",
+          "steps": [
+            "打开 Upgrade 比较月付、年付与终身选项。",
+            "在安全支付流程中完成结账并返回 Get Phame。",
+            "在 Settings 中查看订阅状态。",
+            "在需要时使用取消流程，并在完成前阅读生效日期确认。"
+          ],
+          "route": "/upgrade"
+        },
+        {
+          "id": "future-updates",
+          "title": "未来更新的权限",
+          "access": "paid",
+          "body": "经常性付费计划在订阅有效期间包含未来更新。终身访问包含未来更新且无需续订。Free 账户获得当时可用的 Free 功能集。",
+          "steps": [
+            "保持已安装的 Web 应用和浏览器为最新。",
+            "在发布后按提示重新加载以用更新的资源替换旧缓存文件。",
+            "查阅 Changelog 了解重要产品变更。"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-privacy-and-compliance",
+      "title": "安全、隐私与合规",
+      "summary": "保护账户访问、负责任地使用客户数据，并在需要时安全关闭账户。",
+      "icon": "shield",
+      "topics": [
+        {
+          "id": "profile-security",
+          "title": "资料、passkeys 与恢复",
+          "access": "all",
+          "body": "保持账户邮箱、资料、passkeys 与恢复方法为最新。Passkeys 在支持时可减少对邮件链接的依赖，而恢复方法有助于在不绕过所有权检查的情况下恢复访问。",
+          "steps": [
+            "打开 Settings 并查看资料与登录邮箱。",
+            "在受信任设备上添加 passkey（如提供）。",
+            "将恢复信息安全存储并在紧急情况前测试。",
+            "为不再控制的设备移除 passkeys 或会话。"
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "data-responsibility",
+          "title": "客户数据责任",
+          "access": "all",
+          "body": "仅收集和保留为合法点评外联所需的客户数据。不要在联系人字段或支持附件中放置凭据、支付数据、敏感备注或无关的个人信息。",
+          "steps": [
+            "查阅 Privacy Policy 与 Data Usage 页面。",
+            "仅导入经授权的联系人字段。",
+            "仅为定义的业务目的使用导出并将其安全保存。",
+            "当保留不再有正当理由时删除或更正记录。"
+          ]
+        },
+        {
+          "id": "compliance-guide",
+          "title": "使用 Compliance Guide",
+          "access": "all",
+          "body": "Compliance Guide 解释了平台特定与通用的点评请求保障措施。发送前检查表有助于做出良好决定，但不能替代您遵守适用法律与平台条款的责任。",
+          "steps": [
+            "在启动新工作流程或使用新平台前打开 Compliance。",
+            "在适用时审查 Yelp 警示与批量发送防护措施。",
+            "不得设置门槛、激励、捏造或选择性邀请点评。",
+            "当要求不明确时暂停活动并寻求适当建议。"
+          ],
+          "route": "/compliance"
+        },
+        {
+          "id": "logout-delete-account",
+          "title": "Sign out 或删除账户",
+          "access": "all",
+          "body": "在设备共享或不再受信任时请 Sign out。账户删除为破坏性操作，仅在审查保留、导出、活跃订阅与连接服务后使用。",
+          "steps": [
+            "在删除前导出任何合法需要的记录。",
+            "取消或审查活跃的计费与连接服务。",
+            "在 Settings 中使用受保护的 delete-account 流程并确认警告。",
+            "当不需要删除但需结束访问时，请在剩余设备上 Sign out。"
+          ],
+          "route": "/settings"
+        }
+      ]
+    }
+  ]
+}

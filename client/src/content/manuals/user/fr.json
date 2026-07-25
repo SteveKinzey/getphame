@@ -1,0 +1,664 @@
+{
+  "version": 1,
+  "title": "Manuel d'utilisation",
+  "eyebrow": "Guide Get Phame",
+  "introduction": "Utilisez ce manuel pour configurer Get Phame, envoyer des demandes d'avis conformes, gérer les contacts et les rappels, connecter des intégrations et comprendre ce qui est inclus avec les comptes Gratuit et payants. Les fonctionnalités payantes restent visibles pour que vous puissiez les évaluer, et chaque élément réservé aux abonnements est clairement indiqué.",
+  "lastUpdated": "2026-07-25",
+  "sections": [
+    {
+      "id": "getting-started",
+      "title": "Premiers pas",
+      "summary": "Connectez-vous en toute sécurité, complétez la liste de contrôle d'installation et préparez votre première demande d'avis.",
+      "icon": "rocket",
+      "topics": [
+        {
+          "id": "sign-in",
+          "title": "Connexion par magic link",
+          "access": "all",
+          "body": "Get Phame utilise par défaut l'authentification sans mot de passe par magic link. Saisissez l'email de votre compte, ouvrez le dernier message de connexion et utilisez le lien sur le même appareil lorsque cela est possible.",
+          "steps": [
+            "Ouvrez la page de connexion Get Phame et saisissez l'email de votre compte.",
+            "Ouvrez le message Get Phame le plus récent dans votre boîte de réception et sélectionnez le lien de connexion.",
+            "Si le lien a expiré ou a déjà été utilisé, revenez à la page de connexion et demandez-en un nouveau.",
+            "Ne transférez jamais un email contenant un magic link et ne partagez pas son URL."
+          ],
+          "notes": [
+            "Si la livraison est retardée, vérifiez les dossiers spam ou courrier indésirable et confirmez que l'adresse email a été saisie correctement."
+          ]
+        },
+        {
+          "id": "setup-checklist",
+          "title": "Compléter la liste de contrôle d'installation",
+          "access": "all",
+          "body": "La checklist d'accueil vous guide à travers la configuration minimale nécessaire pour une diffusion fiable : connectez un email, ajoutez une plateforme d'avis, ajoutez des contacts et envoyez votre première demande.",
+          "steps": [
+            "Ajoutez le nom de votre entreprise et les coordonnées expéditrices visibles par les clients.",
+            "Connectez et testez le compte email qui enverra les demandes d'avis.",
+            "Ajoutez au moins une destination d'avis approuvée et définissez-en une par défaut.",
+            "Importez ou enregistrez un contact, prévisualisez le message et envoyez la première demande."
+          ],
+          "route": "/"
+        },
+        {
+          "id": "install-and-share",
+          "title": "Installer ou partager Get Phame",
+          "access": "all",
+          "body": "Get Phame peut être installé comme application web progressive sur les appareils compatibles. Le guide d'installation explique les étapes spécifiques au navigateur. L'action de partage utilise la feuille de partage de l'appareil quand elle est disponible et bascule sur la copie d'un lien sinon.",
+          "steps": [
+            "Ouvrez le guide d'installation depuis l'onboarding ou la zone de compte.",
+            "Suivez les instructions pour votre navigateur et votre appareil.",
+            "Lancez Get Phame depuis la nouvelle icône d'application et connectez-vous normalement.",
+            "Utilisez Partager lorsque vous devez envoyer le lien Get Phame vers un autre appareil ou un coéquipier."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "navigation-and-preferences",
+      "title": "Navigation et préférences",
+      "summary": "Trouvez les principaux espaces de travail et ajustez la langue, l'apparence et les contrôles de compte.",
+      "icon": "compass",
+      "topics": [
+        {
+          "id": "main-navigation",
+          "title": "Utiliser la navigation principale",
+          "access": "all",
+          "body": "Accueil affiche des raccourcis d'installation et d'activité. Envoyer une demande lance une sollicitation individuelle. Tableau de bord résume l'activité. Developer Integrations gère les connexions API et Sources. Paramètres contient les contrôles du compte, de l'entreprise, de la livraison, de l'abonnement et de la sécurité. User Manual ouvre ce guide.",
+          "steps": [
+            "Sur ordinateur, utilisez la rail de navigation à gauche.",
+            "Sur mobile, utilisez la navigation inférieure et le menu Plus pour les destinations secondaires.",
+            "Utilisez l'élément mis en surbrillance pour confirmer votre position actuelle.",
+            "Utilisez les contrôles de retour dans la page lorsque vous quittez un écran de type administration ou de configuration."
+          ]
+        },
+        {
+          "id": "language-theme-network",
+          "title": "Langue, thème et état de connexion",
+          "access": "all",
+          "body": "Choisissez une langue prise en charge depuis le contrôle de langue. Les réglages d'apparence clair et sombre suivent le contrôle de thème disponible. Les indicateurs hors ligne ou de connexion dégradée signifient que certaines données ou actions en direct peuvent être indisponibles tant que le réseau n'est pas rétabli.",
+          "steps": [
+            "Choisissez votre langue préférée depuis le contrôle du compte ou de navigation.",
+            "Vérifiez les dates et les nombres après avoir changé la langue, car le formatage suit la locale sélectionnée.",
+            "Si un avis hors ligne apparaît, évitez de répéter un envoi ou une action destructive tant que la connexion n'est pas rétablie."
+          ]
+        },
+        {
+          "id": "account-menu",
+          "title": "Menu de compte",
+          "access": "all",
+          "body": "Le menu de compte donne un accès rapide aux Paramètres, au manuel adapté au rôle et à la déconnexion. Les comptes administrateur reçoivent aussi une entrée Administration distincte, mais les utilisateurs ordinaires non.",
+          "steps": [
+            "Ouvrez l'avatar ou le menu Plus.",
+            "Choisissez Paramètres pour modifier le profil et la configuration.",
+            "Choisissez Manual pour revenir au guide attribué à votre rôle de compte.",
+            "Choisissez Se déconnecter lorsque vous utilisez un appareil partagé."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "business-and-review-destinations",
+      "title": "Entreprise et destinations d'avis",
+      "summary": "Configurez l'identité visible par les clients et les destinations approuvées utilisées dans les demandes.",
+      "icon": "building",
+      "topics": [
+        {
+          "id": "business-profile",
+          "title": "Profil de l'entreprise",
+          "access": "all",
+          "body": "Conservez le nom de l'entreprise et l'identité de l'expéditeur exacts car les clients s'en servent pour reconnaître la demande. Enregistrez les modifications avant d'envoyer ou de prévisualiser un nouveau message.",
+          "steps": [
+            "Ouvrez Paramètres et localisez la section profil d'entreprise.",
+            "Saisissez le nom commercial visible par les clients et les informations de profil demandées.",
+            "Enregistrez les modifications et prévisualisez un email pour confirmer que l'identité est claire.",
+            "Mettez à jour le profil chaque fois que l'expéditeur ou l'identité de l'entreprise change."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "platform-links",
+          "title": "Ajouter et sélectionner des destinations d'avis",
+          "access": "all",
+          "body": "Ajoutez uniquement des destinations qui appartiennent à votre entreprise et utilisez le contrôle par défaut pour sélectionner le lien utilisé pour les nouvelles demandes. Testez chaque destination avant de l'envoyer aux clients.",
+          "steps": [
+            "Ouvrez Paramètres et ajoutez une plateforme prise en charge ou une URL de destination personnalisée.",
+            "Donnez à la destination un libellé reconnaissable.",
+            "Ouvrez le lien enregistré dans un onglet séparé et confirmez qu'il mène bien au profil d'entreprise attendu.",
+            "Définissez comme défaut la destination que vous utilisez le plus souvent."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "unlimited-platform-links",
+          "title": "Liens multi-plateformes illimités",
+          "access": "paid",
+          "body": "Les abonnements payants peuvent conserver un nombre illimité de destinations d'avis. Les comptes Gratuit peuvent utiliser un seul lien de plateforme. Effectuez une mise à niveau avant d'ajouter des destinations supplémentaires au-delà de l'allocation Gratuit.",
+          "steps": [
+            "Ouvrez Upgrade pour comparer les options récurrentes et à vie disponibles.",
+            "Finalisez l'achat avec le même email utilisé pour votre compte Get Phame.",
+            "Retournez dans Paramètres et ajoutez les destinations supplémentaires.",
+            "Choisissez la destination appropriée avant chaque demande ou campagne."
+          ],
+          "route": "/upgrade"
+        },
+        {
+          "id": "yelp-destination",
+          "title": "Mode conformité Yelp",
+          "access": "all",
+          "body": "Lorsque Yelp est sélectionné, suivez l'avis de conformité affiché dans l'application. Les directives Yelp sont présentées en texte clair et ne doivent pas être traitées comme un lien de sollicitation d'avis classique. N'offrez pas d'incitations et n'exercez pas de pression sur les clients pour qu'ils publient un avis.",
+          "steps": [
+            "Sélectionnez Yelp uniquement lorsqu'il représente réellement la destination prévue.",
+            "Lisez l'avertissement spécifique à Yelp avant d'envoyer.",
+            "Utilisez une communication neutre et individuelle et évitez la sollicitation sélective.",
+            "Consultez le Guide de conformité chaque fois qu'une règle de plateforme n'est pas claire."
+          ],
+          "route": "/compliance"
+        }
+      ]
+    },
+    {
+      "id": "email-delivery",
+      "title": "Livraison des emails",
+      "summary": "Connectez un expéditeur, vérifiez la livraison, prévisualisez les messages et dépannez les problèmes courants des fournisseurs.",
+      "icon": "mail",
+      "topics": [
+        {
+          "id": "connect-email",
+          "title": "Connecter un fournisseur d'email",
+          "access": "all",
+          "body": "Get Phame envoie via le compte que vous connectez. Les instructions spécifiques aux fournisseurs expliquent s'il faut utiliser un mot de passe d'application, un mot de passe SMTP ou un identifiant provider bridge. N'entrez jamais un mot de passe normal lorsque le fournisseur exige un mot de passe d'application.",
+          "steps": [
+            "Ouvrez Paramètres et choisissez la section de connexion email.",
+            "Saisissez l'adresse d'envoi ; Get Phame identifiera les fournisseurs courants lorsque cela est possible.",
+            "Ouvrez le guide fournisseur intégré et créez le mot de passe d'application ou SMTP requis.",
+            "Saisissez les détails de connexion, enregistrez et lancez le test de connexion."
+          ],
+          "notes": [
+            "Les administrateurs Google Workspace peuvent devoir autoriser les mots de passe d'application. Proton Mail nécessite des identifiants fournis par Proton Bridge."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "test-and-troubleshoot-email",
+          "title": "Tester et dépanner la livraison",
+          "access": "all",
+          "body": "Un test de connexion réussi confirme que les identifiants peuvent être utilisés à ce moment ; il ne garantit pas que chaque message futur sera accepté. Retestez après avoir modifié les paramètres de sécurité du fournisseur ou les mots de passe.",
+          "steps": [
+            "Confirmez que l'adresse d'envoi et l'hôte du fournisseur sont corrects.",
+            "Créez un nouveau mot de passe d'application si le fournisseur a révoqué l'identifiant précédent.",
+            "Vérifiez que l'authentification multi‑facteurs et l'accès SMTP répondent aux exigences du fournisseur.",
+            "Envoyez une prévisualisation ou une demande peu risquée à une adresse que vous contrôlez avant la diffusion auprès des clients."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "bulk-sender",
+          "title": "Connexion Bulk Sender",
+          "access": "paid",
+          "body": "Les abonnements payants peuvent connecter un service d'email transactionnel pris en charge pour une livraison à plus fort volume. Stockez la crédential du fournisseur uniquement dans le formulaire Paramètres protégé, testez la connexion et surveillez les limites du fournisseur et les listes de suppression.",
+          "steps": [
+            "Ouvrez Paramètres et localisez Bulk Sender.",
+            "Choisissez le fournisseur pris en charge et saisissez la crédential protégée requise.",
+            "Enregistrez la connexion et vérifiez que le statut connecté est affiché.",
+            "Adoptez des pratiques d'envoi conformes même lorsque le fournisseur permet un volume technique plus élevé."
+          ],
+          "route": "/settings"
+        }
+      ]
+    },
+    {
+      "id": "contacts-and-imports",
+      "title": "Contacts et importations",
+      "summary": "Enregistrez les informations clients, importez des contacts consentants et gérez les doublons en toute sécurité.",
+      "icon": "users",
+      "topics": [
+        {
+          "id": "saved-contacts",
+          "title": "Contacts enregistrés",
+          "access": "all",
+          "body": "Saved Contacts conserve les informations clients pour les demandes individuelles futures et la gestion des campagnes. Ajoutez uniquement des personnes que vous êtes autorisé à contacter et corrigez les enregistrements erronés avant d'envoyer.",
+          "steps": [
+            "Ouvrez Contacts pour rechercher ou consulter les enregistrements sauvegardés.",
+            "Ajoutez ou modifiez soigneusement le nom et l'email du client.",
+            "Vérifiez l'activité antérieure avant de relancer une sollicitation.",
+            "Supprimez un contact lorsque la conservation n'est plus justifiée ou que le client demande l'arrêt."
+          ],
+          "route": "/contacts"
+        },
+        {
+          "id": "csv-import",
+          "title": "Importer des contacts depuis un CSV",
+          "access": "all",
+          "body": "L'import CSV est disponible sur les plans Gratuit et payants. Utilisez un fichier propre avec les colonnes de contact attendues, vérifiez la prévisualisation et résolvez les enregistrements invalides ou en double avant d'envoyer.",
+          "steps": [
+            "Ouvrez Import Contacts et choisissez un fichier CSV préparé à partir d'une source autorisée.",
+            "Faites correspondre les colonnes nom et email lorsque cela est demandé.",
+            "Vérifiez les résultats de validation, de duplication et de rejet.",
+            "Ouvrez Contacts après l'import et vérifiez par échantillonnage plusieurs enregistrements."
+          ],
+          "route": "/import"
+        },
+        {
+          "id": "woocommerce-sync",
+          "title": "Synchronisation WooCommerce",
+          "access": "paid",
+          "body": "La synchronisation WooCommerce est disponible uniquement avec un abonnement payant. Connectez l'intégration de boutique approuvée, importez les clients éligibles et vérifiez les résultats avant de lancer la sollicitation.",
+          "steps": [
+            "Ouvrez la zone clients WooCommerce depuis l'entrée d'intégration concernée.",
+            "Connectez ou vérifiez l'intégration de la boutique en utilisant des identifiants protégés.",
+            "Exécutez ou contrôlez la synchronisation des clients et résolvez les enregistrements ayant échoué.",
+            "Confirmez le consentement et l'éligibilité à la campagne avant d'envoyer une demande."
+          ],
+          "route": "/woo-customers"
+        },
+        {
+          "id": "duplicates-and-consent",
+          "title": "Doublons et consentement",
+          "access": "all",
+          "body": "Get Phame peut identifier les importations en double, mais vous restez responsable de la qualité et de l'origine licite de chaque contact. N'importez pas à plusieurs reprises une même personne pour contourner les limites d'envoi, les suppressions ou l'historique de campagne.",
+          "steps": [
+            "Utilisez des adresses email clients stables comme identité principale.",
+            "Examinez les résultats de déduplication plutôt que de supposer que chaque ligne a créé un nouvel enregistrement.",
+            "Conservez une preuve de l'interaction commerciale ou du consentement qui permet la sollicitation individuelle.",
+            "Arrêtez et enquêtez lorsqu'une source commence à produire des échecs inhabituels ou un volume de doublons important."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "review-requests",
+      "title": "Envoyer des demandes d'avis",
+      "summary": "Prévisualisez et envoyez des demandes individuelles reconnaissables et conformes.",
+      "icon": "send",
+      "topics": [
+        {
+          "id": "send-individual-request",
+          "title": "Envoyer une demande individuelle",
+          "access": "all",
+          "body": "Une demande d'avis doit être liée à une interaction client réelle et envoyée individuellement. Confirmez le destinataire, la destination et le message avant d'envoyer.",
+          "steps": [
+            "Ouvrez Send Request et sélectionnez ou saisissez le client.",
+            "Choisissez la destination d'avis correcte.",
+            "Confirmez la relation client et les champs de consentement requis.",
+            "Prévisualisez l'email, corrigez tout problème et envoyez une seule fois."
+          ],
+          "route": "/send"
+        },
+        {
+          "id": "pre-send-compliance",
+          "title": "Compléter la vérification de conformité",
+          "access": "all",
+          "body": "La checklist avant envoi aide à éviter les sollicitations trompeuses ou incompatibles avec les plateformes. N'offrez jamais de compensation, ne contactez que des clients « satisfaits » uniquement, et ne dissimulez pas l'objet du message.",
+          "steps": [
+            "Confirmez que la demande se rapporte à une vraie transaction ou expérience de service.",
+            "Confirmez que le destinataire ne s'est pas désabonné et n'est pas contacté de façon excessive.",
+            "Examinez les avertissements spécifiques aux plateformes, en particulier pour Yelp.",
+            "Ouvrez le Guide de conformité complet lorsque l'action correcte est incertaine."
+          ],
+          "route": "/compliance"
+        },
+        {
+          "id": "free-request-quota",
+          "title": "Allocation de demandes gratuites",
+          "access": "all",
+          "body": "Les comptes Gratuit reçoivent 10 demandes d'avis initiales puis 5 demandes dans chaque fenêtre glissante de 30 jours. Le compteur d'utilisation affiche la disponibilité restante et vous dirige vers Upgrade lorsque l'allocation est épuisée.",
+          "steps": [
+            "Vérifiez le compteur d'utilisation Gratuit avant de préparer une sollicitation.",
+            "Priorisez les interactions clients récentes et éligibles.",
+            "Ne créez pas de comptes supplémentaires pour contourner l'allocation.",
+            "Choisissez un plan payant lorsque l'entreprise a besoin d'envois soutenus à plus fort volume."
+          ],
+          "route": "/send"
+        },
+        {
+          "id": "unlimited-requests",
+          "title": "Demandes d'avis illimitées et limite journalière supérieure",
+          "access": "paid",
+          "body": "Les abonnements payants incluent des demandes d'avis illimitées selon l'entitlement de l'abonnement et une allocation journalière configurable jusqu'à 500, contre 50 par jour en Gratuit. La conformité, les limites du fournisseur, la prévention des abus et les règles des plateformes s'appliquent toujours.",
+          "steps": [
+            "Mettez à niveau depuis la page de tarification et attendez l'apparition du statut payant.",
+            "Augmentez le volume progressivement tout en surveillant la livraison et la qualité des réponses.",
+            "Attachez chaque demande à une interaction client éligible.",
+            "Suspendez les envois lorsque les taux d'erreur, de rebond, de plainte ou d'avertissement fournisseur augmentent."
+          ],
+          "route": "/upgrade"
+        }
+      ]
+    },
+    {
+      "id": "reminders-and-campaigns",
+      "title": "Rappels et campagnes",
+      "summary": "Gérez les relances programmées tout en respectant les signaux de complétion, de désabonnement et de conformité.",
+      "icon": "bell",
+      "topics": [
+        {
+          "id": "reminder-schedule",
+          "title": "Vérifier les rappels programmés",
+          "access": "all",
+          "body": "Les rappels de suivi sont disponibles sur les plans Gratuit et payants. La zone Rappels affiche les messages programmés et propose des contrôles d'annulation ou d'envoi immédiat si autorisé.",
+          "steps": [
+            "Ouvrez Rappels et examinez les éléments en attente, dus, envoyés, annulés et arrêtés.",
+            "Annulez un rappel lorsque le client demande à ne plus le recevoir ou que la relation a changé.",
+            "Utilisez Envoyer maintenant uniquement lorsque le client est toujours éligible et que le calendrier est approprié.",
+            "Confirmez l'historique avant de relancer une séquence d'outreach."
+          ],
+          "route": "/reminders"
+        },
+        {
+          "id": "completion-stops-reminders",
+          "title": "La complétion client arrête les rappels futurs",
+          "access": "all",
+          "body": "Lorsque Get Phame enregistre que l'action demandée par le client est accomplie, les rappels futurs pour cette séquence s'arrêtent. Ne redémarrez pas manuellement la campagne sauf si une nouvelle interaction client légitime justifie une nouvelle demande.",
+          "steps": [
+            "Examinez la chronologie client lorsqu'un rappel est arrêté.",
+            "Ne dupliquez pas ni n'éditez un contact pour forcer la reprise d'une séquence arrêtée.",
+            "Utilisez une nouvelle demande uniquement pour une nouvelle transaction ou un nouvel événement de service éligible."
+          ]
+        },
+        {
+          "id": "campaign-management",
+          "title": "Historique de campagne et contrôles de redémarrage",
+          "access": "all",
+          "body": "Utilisez l'historique du contact et de la campagne pour comprendre ce qui a été envoyé, quand et si la séquence est toujours active. Les actions de redémarrage massif doivent être limitées aux contacts éligibles n'ayant pas répondu et examinées avant exécution.",
+          "steps": [
+            "Ouvrez le détail du client ou de la campagne concernée.",
+            "Examinez les emails envoyés, l'historique des rappels, le statut de complétion et l'état de désabonnement.",
+            "Modifiez uniquement les champs qui sont encore exacts et autorisés.",
+            "Confirmez la conformité avant de redémarrer une ou plusieurs séquences."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "templates-and-preview",
+      "title": "Modèles d'emails et prévisualisation",
+      "summary": "Vérifiez le message exact destiné au client et comprenez l'exigence d'abonnement pour les modèles personnalisés.",
+      "icon": "fileText",
+      "topics": [
+        {
+          "id": "preview-email",
+          "title": "Prévisualiser l'email client",
+          "access": "all",
+          "body": "Utilisez Prévisualiser l'email pour inspecter l'expéditeur, le destinataire, l'objet et le rendu du message avant l'envoi. Une prévisualisation n'envoie pas le message et doit être répétée après modification de l'identité de l'entreprise, de la destination ou du contenu du modèle.",
+          "steps": [
+            "Ouvrez la prévisualisation depuis Paramètres, Modèles ou le flux d'envoi lorsque disponible.",
+            "Vérifiez l'identité de l'expéditeur, le destinataire, l'objet, la salutation, la destination et le pied de page.",
+            "Fermez la prévisualisation et corrigez tout contenu inexact.",
+            "Générez une nouvelle prévisualisation avant l'envoi final."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "custom-templates",
+          "title": "Modèles d'email personnalisés",
+          "access": "paid",
+          "body": "Les modèles d'email personnalisés sont proposés comme avantage d'abonnement payant. Conservez le message reconnaissable, neutre et conforme ; n'utilisez pas la personnalisation pour créer une fausse urgence ou des incitations.",
+          "steps": [
+            "Mettez à niveau ou confirmez un droit payant actif.",
+            "Ouvrez Modèles et modifiez les champs pris en charge pour l'objet et le message.",
+            "Préservez les liens requis, le libellé de conformité et les contrôles clients.",
+            "Prévisualisez et testez avant d'utiliser le modèle pour la sollicitation client."
+          ],
+          "route": "/templates"
+        }
+      ]
+    },
+    {
+      "id": "dashboard-and-analytics",
+      "title": "Tableau de bord, suivi et avis",
+      "summary": "Comprenez l'activité des demandes, les chronologies clients et les capacités de suivi payantes.",
+      "icon": "chart",
+      "topics": [
+        {
+          "id": "dashboard-basics",
+          "title": "Utiliser le tableau de bord d'activité",
+          "access": "all",
+          "body": "Le tableau de bord résume l'activité d'outreach en cours et offre des chemins vers les contacts, demandes, rappels et enregistrements associés. Traitez les données vides ou retardées comme un état inconnu jusqu'à ce que la page se rafraîchisse avec succès.",
+          "steps": [
+            "Choisissez la période ou la vue pertinente lorsqu'un filtre est disponible.",
+            "Ouvrez le contact ou la demande sous-jacente avant d'agir sur une métrique de synthèse.",
+            "Rafraîchissez ou réessayez lorsqu'un état de chargement ou d'erreur apparaît.",
+            "Utilisez les chronologies clients pour les décisions au niveau des enregistrements."
+          ],
+          "route": "/dashboard"
+        },
+        {
+          "id": "reviews-and-history",
+          "title": "Consulter l'activité et l'historique conservé",
+          "access": "all",
+          "body": "L'historique des demandes et des avis aide à expliquer les sollicitations antérieures et le statut client. Get Phame ne crée ni ne fabrique d'avis clients. Seules de vraies actions et enregistrements clients doivent apparaître dans les workflows opérationnels.",
+          "steps": [
+            "Ouvrez Reviews ou le détail client pertinent.",
+            "Vérifiez horodatages, source et contexte de campagne avant de tirer des conclusions.",
+            "Corrigez les données opérationnelles via les contrôles d'édition pris en charge plutôt qu'en créant des enregistrements de remplacement.",
+            "Utilisez les contacts et l'historique conservés après une rétrogradation ; les fonctionnalités payantes peuvent ne plus être disponibles."
+          ],
+          "route": "/reviews"
+        },
+        {
+          "id": "open-click-tracking",
+          "title": "Suivi d'ouverture et de clics d'emails",
+          "access": "paid",
+          "body": "Le suivi des ouvertures et des clics est disponible uniquement sur les abonnements payants. Les signaux de suivi sont des indicateurs utiles, mais ils peuvent être incomplets car les outils de confidentialité, les scanners de sécurité et les clients email peuvent les affecter.",
+          "steps": [
+            "Confirmez que le compte dispose d'un droit payant actif.",
+            "Utilisez le suivi comme un signal parmi d'autres, aux côtés de l'état d'envoi et de l'historique client.",
+            "Ne considérez pas une ouverture ou un clic comme la preuve qu'un client a publié un avis.",
+            "Respectez la vie privée et évitez d'exporter les données de suivi sans besoin commercial justifié."
+          ]
+        },
+        {
+          "id": "advanced-analytics",
+          "title": "Analytique avancée",
+          "access": "paid",
+          "body": "L'analytique avancée est une fonctionnalité d'abonnement payant. Utilisez‑la pour identifier les modèles de livraison et de campagne, puis ouvrez les enregistrements sous-jacents avant de modifier une séquence client ou un processus métier.",
+          "steps": [
+            "Sélectionnez une période de reporting significative.",
+            "Comparez les taux sur la durée plutôt que de vous fier à un seul décompte.",
+            "Enquêtez sur les enregistrements sous-jacents et l'état de livraison.",
+            "Documentez toute modification opérationnelle et surveillez la période suivante."
+          ],
+          "route": "/dashboard"
+        }
+      ]
+    },
+    {
+      "id": "developer-integrations",
+      "title": "Developer Integrations et Sources",
+      "summary": "Créez des connexions API sécurisées, utilisez des recettes Zapier ou Make et surveillez chaque source d'importation.",
+      "icon": "plug",
+      "topics": [
+        {
+          "id": "api-keys",
+          "title": "Créer et protéger une clé API",
+          "access": "all",
+          "body": "Les clés API autorisent les importations de contacts externes. Le secret n'est affiché qu'à la création ; stockez‑le dans le champ de crédential protégé de l'outil connecté et ne le placez jamais dans une URL publique, une capture d'écran, un journal ou un document partagé.",
+          "steps": [
+            "Ouvrez Developer Integrations et créez une clé clairement nommée.",
+            "Copiez une seule fois le nouveau secret dans le champ de crédential sécurisé de l'outil connecté.",
+            "Utilisez l'en‑tête Authorization documenté et l'endpoint d'import de contacts.",
+            "Révoquez et remplacez la clé immédiatement en cas de suspicion d'exposition."
+          ],
+          "route": "/developer"
+        },
+        {
+          "id": "source-connection",
+          "title": "Créer une connexion Source",
+          "access": "all",
+          "body": "Une Source identifie l'outil connecté qui a produit une importation. Choisissez Zapier, Make ou Custom ; liez une clé API autorisée ; et utilisez l'en‑tête Source généré afin que l'analytique et les contrôles de santé restent attribuables.",
+          "steps": [
+            "Créez ou sélectionnez la clé API utilisée par l'automatisation.",
+            "Créez une Source avec un fournisseur et un nom reconnaissable.",
+            "Copiez l'endpoint, l'en‑tête Authorization et l'en‑tête Source dans l'outil d'automatisation.",
+            "Envoyez un import test et confirmez que la Source enregistre l'activité."
+          ],
+          "route": "/developer"
+        },
+        {
+          "id": "zapier-make-recipes",
+          "title": "Utiliser la recette Zapier ou Make",
+          "access": "all",
+          "body": "Les recettes guidées indiquent la méthode HTTP, l'endpoint, les en‑têtes, les champs canoniques de contact, les données de consentement et les conseils d'idempotence nécessaires pour une automatisation fiable.",
+          "steps": [
+            "Choisissez le fournisseur Zapier ou Make lors de la création de la Source.",
+            "Suivez dans l'ordre les étapes spécifiques à la requête HTTP du fournisseur.",
+            "Mappez le nom client, l'email, le consentement et les identifiants de source stables depuis l'outil d'origine.",
+            "Exécutez le test fournisseur, puis vérifiez le résultat de l'import dans Get Phame."
+          ],
+          "route": "/developer"
+        },
+        {
+          "id": "source-analytics-health",
+          "title": "Analytique et santé des Sources",
+          "access": "all",
+          "body": "Chaque Source rapporte les tentatives sur 7, 30 et 90 jours, les importations réussies, les contacts créés, les contacts dédupliqués, les échecs, le taux de réussite et la dernière activité. La surveillance de la santé évalue les résultats récents et enregistre un historique durable.",
+          "steps": [
+            "Choisissez la Source et la fenêtre de reporting.",
+            "Comparez tentatives, réussites, doublons, échecs et taux de réussite.",
+            "Consultez l'historique de santé et la raison la plus récente lorsque le statut est dégradé ou en échec.",
+            "Désactivez la surveillance uniquement pendant une maintenance intentionnelle, puis réactivez‑la et lancez une vérification manuelle."
+          ],
+          "route": "/developer"
+        }
+      ]
+    },
+    {
+      "id": "referrals-support-and-billing",
+      "title": "Parrainage, support et facturation",
+      "summary": "Partagez Get Phame, demandez de l'aide, comparez les plans et comprenez le comportement d'annulation.",
+      "icon": "creditCard",
+      "topics": [
+        {
+          "id": "referral-link",
+          "title": "Partagez votre lien de parrainage",
+          "access": "all",
+          "body": "Les utilisateurs Gratuit et payants peuvent partager le lien de parrainage personnel affiché dans Paramètres. Partagez‑le uniquement avec des personnes susceptibles d'en bénéficier et évitez les affirmations trompeuses ou la distribution en masse non sollicitée.",
+          "steps": [
+            "Ouvrez Paramètres et localisez la section parrainage.",
+            "Copiez ou partagez le lien généré.",
+            "Expliquez Get Phame avec exactitude et laissez le destinataire décider de s'inscrire ou non.",
+            "Consultez le statut des parrainages dans la vue de compte disponible."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "paid-referral-reward",
+          "title": "Éligibilité à la récompense de parrainage payant",
+          "access": "paid",
+          "body": "Un parrain doit être sur un plan payant éligible lorsque la récompense est traitée pour recevoir le mois gratuit. Les utilisateurs Gratuit peuvent partager un lien de parrainage mais ne sont pas éligibles à cette récompense liée au plan payant tant qu'ils ne remplissent pas les conditions.",
+          "steps": [
+            "Confirmez que le parrainage a été attribué via votre lien personnel.",
+            "Maintenez un abonnement payant éligible lorsque la récompense devient susceptible d'être traitée.",
+            "Contactez le support si une conversion qualifiée reste non résolue après le délai de traitement normal."
+          ]
+        },
+        {
+          "id": "support-options",
+          "title": "Demander du support",
+          "access": "all",
+          "body": "Utilisez le formulaire de support intégré pour les problèmes de compte, de livraison, de facturation, de conformité ou techniques. Incluez une description claire et une capture d'écran pertinente lorsque c'est sûr, mais supprimez les identifiants, magic links, secrets clients et données personnelles inutiles.",
+          "steps": [
+            "Choisissez le sujet de support le plus précis.",
+            "Décrivez ce à quoi vous vous attendiez, ce qui s'est passé et quand cela s'est produit.",
+            "Joignez uniquement une capture d'écran sanitizée lorsqu'elle aide matériellement au diagnostic.",
+            "Surveillez le statut du support dans l'application et répondez aux questions de suivi."
+          ]
+        },
+        {
+          "id": "priority-support",
+          "title": "Support prioritaire",
+          "access": "paid",
+          "body": "Le support prioritaire est disponible avec les abonnements payants. Il affecte la priorité de traitement des demandes ; il ne contourne pas la vérification de sécurité, les délais des fournisseurs, les exigences de conformité ou les règles des plateformes externes.",
+          "steps": [
+            "Soumettez la demande via le formulaire de support normal en étant connecté au compte payant.",
+            "Choisissez l'urgence appropriée et fournissez des détails reproductibles.",
+            "Évitez de soumettre des tickets en double pour le même problème."
+          ]
+        },
+        {
+          "id": "upgrade-cancel-downgrade",
+          "title": "Mise à niveau, annulation et rétrogradation",
+          "access": "all",
+          "body": "Les abonnements mensuels et annuels se renouvellent jusqu'à annulation ; l'accès à vie ne se renouvelle pas. Après une annulation récurrente, l'accès reste actif jusqu'à la fin de la période payée puis revient au Gratuit. Les contacts et l'historique restent, tandis que les capacités réservées aux payants sont supprimées.",
+          "steps": [
+            "Ouvrez Upgrade pour comparer les options mensuelles, annuelles et à vie.",
+            "Finalisez le paiement dans le flux de paiement sécurisé et retournez à Get Phame.",
+            "Vérifiez le statut de l'abonnement dans Paramètres.",
+            "Utilisez le flux d'annulation si nécessaire et lisez la confirmation de date d'effet avant de le valider."
+          ],
+          "route": "/upgrade"
+        },
+        {
+          "id": "future-updates",
+          "title": "Droits aux futures mises à jour",
+          "access": "paid",
+          "body": "Les plans récurrents payants incluent les futures mises à jour tant que l'abonnement reste actif. L'accès à vie inclut les futures mises à jour sans renouvellement. Les comptes Gratuit reçoivent l'ensemble de fonctionnalités Gratuit disponible à ce moment.",
+          "steps": [
+            "Maintenez l'application web installée et le navigateur à jour.",
+            "Rechargez après une release lorsque vous êtes invité afin que les actifs mis à jour remplacent les fichiers mis en cache.",
+            "Consultez le Changelog pour les changements produits notables."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-privacy-and-compliance",
+      "title": "Sécurité, confidentialité et conformité",
+      "summary": "Protégez l'accès au compte, utilisez les données clients de façon responsable et fermez le compte en toute sécurité si nécessaire.",
+      "icon": "shield",
+      "topics": [
+        {
+          "id": "profile-security",
+          "title": "Profil, passkeys et récupération",
+          "access": "all",
+          "body": "Maintenez l'email de compte, le profil, les passkeys et les méthodes de récupération à jour. Les passkeys réduisent la dépendance aux liens envoyés par email lorsque pris en charge, tandis que les méthodes de récupération aident à restaurer l'accès sans contourner les vérifications de propriété.",
+          "steps": [
+            "Ouvrez Paramètres et vérifiez le profil et l'email de connexion.",
+            "Ajoutez une passkey sur un appareil de confiance lorsque l'option est proposée.",
+            "Stockez les informations de récupération de façon sécurisée et testez‑les avant une urgence.",
+            "Supprimez les passkeys ou les sessions des appareils que vous ne contrôlez plus."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "data-responsibility",
+          "title": "Responsabilité sur les données clients",
+          "access": "all",
+          "body": "Collectez et conservez uniquement les données clients nécessaires pour une sollicitation d'avis légitime. Ne placez pas d'identifiants, de données de paiement, de notes sensibles ou d'informations personnelles non pertinentes dans les champs de contact ou les pièces jointes de support.",
+          "steps": [
+            "Consultez la Politique de confidentialité et la page d'utilisation des données.",
+            "Importez uniquement les champs de contact autorisés.",
+            "N'utilisez les exports que pour une finalité commerciale définie et stockez‑les en sécurité.",
+            "Supprimez ou corrigez les enregistrements lorsque la conservation n'est plus justifiée."
+          ]
+        },
+        {
+          "id": "compliance-guide",
+          "title": "Utiliser le Guide de conformité",
+          "access": "all",
+          "body": "Le Guide de conformité explique les garde‑fous généraux et spécifiques aux plateformes pour les demandes d'avis. La checklist avant envoi soutient de bonnes décisions mais ne remplace pas votre responsabilité de respecter les lois applicables et les conditions des plateformes.",
+          "steps": [
+            "Ouvrez Compliance avant de lancer un nouveau workflow ou d'utiliser une nouvelle plateforme.",
+            "Examinez l'avertissement Yelp et les protections contre les envois massifs lorsque cela s'applique.",
+            "Ne conditionnez pas, n'incitez pas, ne fabriquez pas et ne sollicitez pas sélectivement des avis.",
+            "Suspendez la campagne et demandez un avis approprié lorsque les exigences sont floues."
+          ],
+          "route": "/compliance"
+        },
+        {
+          "id": "logout-delete-account",
+          "title": "Se déconnecter ou supprimer le compte",
+          "access": "all",
+          "body": "Déconnectez‑vous chaque fois qu'un appareil est partagé ou n'est plus de confiance. La suppression de compte est destructive et doit être utilisée seulement après avoir revu la conservation, les exports, les abonnements actifs et les services connectés.",
+          "steps": [
+            "Exportez tout enregistrement légitimement requis avant la suppression.",
+            "Annulez ou vérifiez la facturation active et les services connectés.",
+            "Utilisez le flux protégé de suppression de compte dans Paramètres et confirmez l'avertissement.",
+            "Déconnectez‑vous des appareils restants lorsque la suppression n'est pas nécessaire mais que l'accès doit prendre fin."
+          ],
+          "route": "/settings"
+        }
+      ]
+    }
+  ]
+}

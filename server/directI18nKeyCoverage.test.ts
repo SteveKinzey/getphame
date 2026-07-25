@@ -11,7 +11,6 @@ const FALLBACKS_PATH = join(CLIENT_SOURCE, "lib/i18nCompleteFallbackResources.js
 const SUPPORTED_NON_ENGLISH_LOCALES = ["es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
 const NAMESPACES = ["translation", "landing", "cancellation"] as const;
 const DIRECT_KEY_PATTERN = /\bt\(\s*["']([A-Za-z][A-Za-z0-9_.-]+)["']/g;
-const DEFERRED_DIRECT_KEYS = new Set(["landing.footer.navigationLabel"]);
 
 function getByPath(value: unknown, dottedPath: string): unknown {
   return dottedPath.split(".").reduce<unknown>((current, segment) => {
@@ -48,8 +47,7 @@ describe("direct i18n key coverage", () => {
   const generatedFallbacks = JSON.parse(readFileSync(FALLBACKS_PATH, "utf8")) as Record<string, ResourceRecord>;
   const directKeys = collectDirectKeys();
 
-  // TODO: restore this coverage after consolidating shared landing-footer keys across namespace catalogs.
-  it.skip("keeps literal direct i18n calls covered by a non-empty string in every supported non-English locale", () => {
+  it("keeps literal direct i18n calls covered by a non-empty string in every supported non-English locale", () => {
     expect(directKeys.size).toBeGreaterThan(300);
 
     for (const locale of SUPPORTED_NON_ENGLISH_LOCALES) {
@@ -64,9 +62,6 @@ describe("direct i18n key coverage", () => {
       });
 
       for (const [key, usages] of directKeys) {
-        // TODO: fix this test after consolidating shared-chrome keys under the landing namespace.
-        if (DEFERRED_DIRECT_KEYS.has(key)) continue;
-
         const resolved = completedNamespaces
           .map((namespace) => getByPath(namespace, key))
           .find((value): value is string => typeof value === "string" && value.trim().length > 0);

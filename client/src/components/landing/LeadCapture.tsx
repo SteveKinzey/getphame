@@ -78,11 +78,7 @@ export default function LeadCapture() {
                 <>
                   <form onSubmit={handleSubmit} noValidate className="max-w-md mx-auto">
                     <div className="flex flex-col sm:flex-row gap-3">
-                      <label htmlFor="lead-capture-email" className="sr-only">
-                        {t("landing.leadCapture.emailLabel", { defaultValue: "Email address" })}
-                      </label>
                       <input
-                        id="lead-capture-email"
                         type="email"
                         value={email}
                         onChange={(e) => {
@@ -94,7 +90,6 @@ export default function LeadCapture() {
                         required
                         autoComplete="email"
                         inputMode="email"
-                        aria-label={t("landing.leadCapture.emailLabel", { defaultValue: "Email address" })}
                         aria-invalid={showEmailError}
                         aria-describedby="lead-email-guidance"
                         disabled={submitLead.isPending}

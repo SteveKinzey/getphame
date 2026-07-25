@@ -1,0 +1,451 @@
+{
+  "version": 1,
+  "title": "Admin Manual",
+  "eyebrow": "Get Phame operations",
+  "introduction": "This Admin Manual contains the complete user guidance followed by administrator-only operating procedures. It is shown only to authenticated administrators. Use the operational sections to manage accounts, diagnostics, support, revenue, recovery, and aggregate product health without exposing credentials or unnecessary customer data.",
+  "lastUpdated": "2026-07-25",
+  "sections": [
+    {
+      "id": "admin-hub",
+      "title": "Administration hub",
+      "summary": "Use the system control center for live operations, account controls, diagnostics, and aggregate business analytics.",
+      "icon": "gauge",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "admin-hub-overview",
+          "title": "Open the operations hub",
+          "access": "admin",
+          "body": "The Administration hub is available only to accounts with the admin role. Its cards open user management, authentication health, reminders, SMTP health, access codes, support, revenue controls and analytics, churn, referral operations, and Koalendar recovery.",
+          "steps": [
+            "Open Administration from the administrator account menu.",
+            "Review live summary counts before opening a detail area.",
+            "Use the specific operations card rather than acting from a summary alone.",
+            "Return to the hub after completing a high-impact action and confirm the updated state."
+          ],
+          "route": "/admin"
+        },
+        {
+          "id": "operations-export",
+          "title": "Export aggregate operations analytics",
+          "access": "admin",
+          "body": "The hub can export aggregate operational analytics as CSV. Export only when there is a defined reporting need, store the file securely, and remove it when the reporting purpose is complete.",
+          "steps": [
+            "Select Export analytics CSV from the operations hub.",
+            "Wait for the file to be prepared and confirm the reported row count.",
+            "Open the file in a protected workspace and verify the reporting period and columns.",
+            "Do not forward the export to unauthorized recipients."
+          ],
+          "route": "/admin"
+        }
+      ]
+    },
+    {
+      "id": "admin-user-management",
+      "title": "User management",
+      "summary": "Search accounts, inspect subscription and connection state, and perform controlled account operations.",
+      "icon": "users",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "search-and-review-users",
+          "title": "Search and review user accounts",
+          "access": "admin",
+          "body": "Search by the supported account identifiers, then verify the user, email, role, tier, life-access state, and connection status before changing anything. Never infer account ownership from a display name alone.",
+          "steps": [
+            "Open User management and enter at least the supported minimum search text.",
+            "Confirm the account email and internal record before selecting an action.",
+            "Review subscription, SMTP, activity, and duplicate-account indicators.",
+            "Record the support or operational reason for any high-impact change."
+          ],
+          "route": "/admin/users"
+        },
+        {
+          "id": "tier-and-access-controls",
+          "title": "Tier and temporary access controls",
+          "access": "admin",
+          "body": "Use tier, life-access, promotion, and temporary-grant controls only for an authorized billing or support outcome. Stripe remains the payment authority where applicable; avoid creating conflicting local access states.",
+          "steps": [
+            "Verify the payment, promotion, support, or contractual basis for the change.",
+            "Choose the narrowest permitted access control and effective period.",
+            "Confirm the resulting tier or expiry state on the user record.",
+            "Recheck after the next billing or access event."
+          ],
+          "route": "/admin/users"
+        },
+        {
+          "id": "merge-disconnect-delete-users",
+          "title": "Merge, disconnect, or delete accounts",
+          "access": "admin",
+          "body": "Account merge, connection cleanup, and deletion are high-impact actions. Verify both identities, preserve required history, and use the built-in confirmation flow. Never merge accounts merely because names look similar.",
+          "steps": [
+            "Confirm ownership using supported account evidence.",
+            "Review contacts, requests, billing, connections, and support history on all affected records.",
+            "Export or preserve only data required by policy before destructive action.",
+            "Complete the protected confirmation and verify the resulting account state."
+          ],
+          "route": "/admin/users"
+        }
+      ]
+    },
+    {
+      "id": "admin-authentication-health",
+      "title": "Authentication health",
+      "summary": "Monitor production sign-in dependencies, magic-link delivery, health history, alerts, and recovery signals.",
+      "icon": "shield",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "auth-dashboard",
+          "title": "Read authentication diagnostics",
+          "access": "admin",
+          "body": "Authentication Diagnostics reports scheduled production health, dependency signals, magic-link delivery records, and failure history. Missing data is an unknown state and must not be treated as healthy.",
+          "steps": [
+            "Review 24-hour uptime and the latest scheduled check.",
+            "Inspect database, session, email-provider, and magic-link dependency signals.",
+            "Filter the delivery trail by the exact customer email only when support requires it.",
+            "Run a manual non-destructive health check when current confirmation is needed."
+          ],
+          "route": "/admin/auth-diagnostics"
+        },
+        {
+          "id": "auth-history-presets",
+          "title": "Filter health history and manage saved views",
+          "access": "admin",
+          "body": "Health history supports status, trigger, date, pagination, and saved filter views. Saved views are private to the administrator account and can be renamed, duplicated, reordered, deleted, or restored after a reorder.",
+          "steps": [
+            "Apply the narrowest filters that answer the operational question.",
+            "Save a private preset for a recurring investigation.",
+            "Use drag-and-drop or the documented keyboard interaction to reorder presets.",
+            "Clear filters before concluding that no events exist."
+          ],
+          "route": "/admin/auth-diagnostics"
+        },
+        {
+          "id": "auth-csv-preview",
+          "title": "Preview and export sanitized health CSV",
+          "access": "admin",
+          "body": "The CSV workflow prepares a sanitized preview before download. Select only necessary columns, search within the prepared rows, and use the matching-results download when the investigation does not require the full set.",
+          "steps": [
+            "Apply history filters and open Preview filtered CSV.",
+            "Review the generated snapshot time, available columns, rows, and truncation notice.",
+            "Select the minimum required columns and preview the result again.",
+            "Copy or download only the rows needed for the approved purpose."
+          ],
+          "route": "/admin/auth-diagnostics"
+        },
+        {
+          "id": "auth-alert-recovery",
+          "title": "Respond to authentication failure and recovery alerts",
+          "access": "admin",
+          "body": "Failure alerts are deduplicated by incident and followed by a recovery notification when the dependency returns to health. Confirm the persisted history before escalating or announcing a recovery.",
+          "steps": [
+            "Open the latest failed health record and identify the bounded dependency reason.",
+            "Check recent deploys, email-provider status, database connectivity, and session configuration.",
+            "Run a non-destructive manual check after remediation.",
+            "Confirm a persisted healthy result and recovery alert before closing the incident."
+          ],
+          "route": "/admin/auth-diagnostics"
+        }
+      ]
+    },
+    {
+      "id": "admin-smtp-health",
+      "title": "SMTP health operations",
+      "summary": "Identify failing customer email connections and support safe re-testing without exposing credentials.",
+      "icon": "mail",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "smtp-overview",
+          "title": "Review aggregate SMTP health",
+          "access": "admin",
+          "body": "SMTP operations show active, total, and failing connections plus system health trends. A failed connection affects that user’s delivery capability and should be investigated without viewing or requesting the stored secret.",
+          "steps": [
+            "Open SMTP health from the Administration hub.",
+            "Review current failing connections and trend direction.",
+            "Open the affected user only when support or operations requires it.",
+            "Ask the user to create a new provider credential through Settings when reauthorization is required."
+          ],
+          "route": "/admin/smtp-stats"
+        },
+        {
+          "id": "smtp-retest",
+          "title": "Re-test a user SMTP connection",
+          "access": "admin",
+          "body": "A re-test uses the existing protected connection to verify current availability. It must not reveal the credential and should not be repeated continuously against a provider experiencing an outage.",
+          "steps": [
+            "Confirm the account and reason for the re-test.",
+            "Run the administrator re-test once and record the result time.",
+            "If it fails, provide the user with the appropriate provider reconnection steps.",
+            "Re-test after the user confirms a new credential or provider change."
+          ],
+          "route": "/admin/smtp-stats"
+        }
+      ]
+    },
+    {
+      "id": "admin-reminder-operations",
+      "title": "Reminder operations",
+      "summary": "Monitor reminder delivery performance and investigate pending, due, failed, cancelled, and stopped sequences.",
+      "icon": "bell",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "reminder-performance",
+          "title": "Review reminder performance",
+          "access": "admin",
+          "body": "Reminder operations summarize scheduled and delivery states so administrators can identify backlogs or failures. The customer action-completion rule remains authoritative: completed sequences must not resume future reminders.",
+          "steps": [
+            "Open Reminder operations and choose the relevant reporting period.",
+            "Compare pending, due, sent, failed, cancelled, and stopped counts.",
+            "Investigate the underlying user, campaign, delivery, and completion state.",
+            "Use supported retry or cancellation controls only after confirming eligibility."
+          ],
+          "route": "/admin/reminder-performance"
+        }
+      ]
+    },
+    {
+      "id": "admin-support",
+      "title": "Support inbox and SLA operations",
+      "summary": "Triage, assign, resolve, report, and escalate customer support requests safely.",
+      "icon": "inbox",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "support-triage",
+          "title": "Triage and assign support tickets",
+          "access": "admin",
+          "body": "Use topic, priority, age, subscription context, and SLA state to triage tickets. Urgent status should reflect real operational impact, not simply customer wording.",
+          "steps": [
+            "Open Support inbox and review unassigned, urgent, and SLA-risk queues.",
+            "Inspect the sanitized message and attachment before assignment.",
+            "Set the correct priority and assign an owner.",
+            "Reply or update status while preserving a clear audit trail."
+          ],
+          "route": "/admin/support"
+        },
+        {
+          "id": "support-resolution",
+          "title": "Resolve, reopen, and escalate",
+          "access": "admin",
+          "body": "Resolve a ticket only when the answer, fix, or next step has been delivered. Reopen when new evidence changes the outcome. Escalation policies and breach alerts should route unresolved risk without creating duplicate incidents.",
+          "steps": [
+            "Document the verified outcome or next step.",
+            "Change the status to resolved only when the customer-facing work is complete.",
+            "Reopen if the same issue continues with material new evidence.",
+            "Review escalation and breach alerts until ownership is accepted."
+          ],
+          "route": "/admin/support"
+        },
+        {
+          "id": "support-sla-export",
+          "title": "Report and export support SLA metrics",
+          "access": "admin",
+          "body": "Support reporting accepts preset or custom date ranges and can export aggregate SLA metrics. Always select both custom dates, verify chronological order, and secure the resulting CSV.",
+          "steps": [
+            "Choose 7, 30, 90 days, or a complete custom date range.",
+            "Review response, resolution, breach, and volume metrics.",
+            "Export the CSV only when required for an approved report.",
+            "Delete local copies after the reporting need ends."
+          ],
+          "route": "/admin/support"
+        }
+      ]
+    },
+    {
+      "id": "admin-access-codes",
+      "title": "System access codes",
+      "summary": "Create, review, and revoke controlled system access codes.",
+      "icon": "key",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "manage-access-codes",
+          "title": "Manage access codes",
+          "access": "admin",
+          "body": "Access codes can change who receives system access. Create them only for an approved purpose, use the narrowest applicable validity, and revoke unused or exposed codes promptly.",
+          "steps": [
+            "Open System access codes and review active, expired, and revoked records.",
+            "Create a code with a clear purpose and applicable limits.",
+            "Share it through an approved private channel.",
+            "Revoke it when used, expired, exposed, or no longer required."
+          ],
+          "route": "/admin/codes"
+        }
+      ]
+    },
+    {
+      "id": "admin-revenue-controls",
+      "title": "Revenue controls",
+      "summary": "Create Stripe promotions and temporary access grants without producing conflicting entitlement state.",
+      "icon": "badgePercent",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "stripe-promotions",
+          "title": "Create and manage Stripe promotions",
+          "access": "admin",
+          "body": "Use the Revenue Controls page for Stripe-backed promotions. Confirm the campaign purpose, applicable plans, duration, redemption limits, and minimum transaction constraints before activation.",
+          "steps": [
+            "Define the promotion’s audience, amount or percentage, duration, and limits.",
+            "Verify the settings in Stripe before sharing a promotion code.",
+            "Test through the deployed domain with an approved testing method.",
+            "Deactivate the promotion when the campaign ends or an error is discovered."
+          ],
+          "route": "/admin/revenue-controls"
+        },
+        {
+          "id": "temporary-access-grants",
+          "title": "Grant temporary access",
+          "access": "admin",
+          "body": "Temporary access is for approved support, promotion, or contractual cases. Use an explicit expiry and verify that the grant does not conflict with the customer’s Stripe subscription or lifetime access.",
+          "steps": [
+            "Confirm the user account and documented reason.",
+            "Choose the narrowest access level and shortest valid period.",
+            "Apply the grant and confirm the expiry state.",
+            "Review the account when the grant expires."
+          ],
+          "route": "/admin/revenue-controls"
+        }
+      ]
+    },
+    {
+      "id": "admin-revenue-analytics",
+      "title": "Revenue analytics",
+      "summary": "Review MRR, ARR, conversion, growth, and subscription mix without replacing Stripe as the transaction authority.",
+      "icon": "dollar",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "revenue-dashboard",
+          "title": "Interpret revenue metrics",
+          "access": "admin",
+          "body": "Revenue analytics summarizes recurring revenue, annualized revenue, conversion, growth, and plan mix. Use consistent reporting periods and reconcile exceptions against Stripe before taking account-level action.",
+          "steps": [
+            "Select a consistent comparison period.",
+            "Review MRR, ARR, new paid accounts, cancellations, and plan mix together.",
+            "Investigate material changes in Stripe and the affected account records.",
+            "Document definitions when exporting or presenting a metric."
+          ],
+          "route": "/admin/revenue"
+        }
+      ]
+    },
+    {
+      "id": "admin-churn",
+      "title": "Churn and retention",
+      "summary": "Use cancellation reasons and retention signals to improve the product without obscuring customer intent.",
+      "icon": "trendDown",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "churn-analysis",
+          "title": "Analyze cancellation reasons",
+          "access": "admin",
+          "body": "Churn analytics aggregates cancellation reasons and retention signals. Treat free-text feedback as sensitive, avoid over-generalizing from small samples, and preserve the customer’s decision to cancel.",
+          "steps": [
+            "Choose the reporting period and review reason distribution.",
+            "Open the related account only when operational follow-up is justified.",
+            "Group recurring themes without exposing unnecessary customer detail.",
+            "Use findings to prioritize product, onboarding, pricing, or support experiments."
+          ],
+          "route": "/admin/churn"
+        }
+      ]
+    },
+    {
+      "id": "admin-referrals",
+      "title": "Referral reward operations",
+      "summary": "Review deferred referrals and apply rewards only when the referrer is currently eligible.",
+      "icon": "gift",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "deferred-referral-rewards",
+          "title": "Process deferred rewards",
+          "access": "admin",
+          "body": "A deferred referral reward can be applied only when the referrer is on an eligible paid plan. Verify attribution, conversion, current eligibility, and prior reward history before processing one or many records.",
+          "steps": [
+            "Open Referral operations and filter deferred records.",
+            "Verify the referred conversion and referrer account.",
+            "Confirm the referrer is now on an eligible paid plan.",
+            "Apply the reward once and verify that the record is no longer pending."
+          ],
+          "route": "/admin/referral-rewards"
+        }
+      ]
+    },
+    {
+      "id": "admin-koalendar-recovery",
+      "title": "Koalendar import recovery",
+      "summary": "Inspect failed Koalendar contact imports and retry only safe, unresolved records.",
+      "icon": "rotate",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "koalendar-retry",
+          "title": "Inspect and retry failed imports",
+          "access": "admin",
+          "body": "Koalendar recovery lists failed contact imports for diagnosis. Retries must remain idempotent: verify the source event, error, ownership, and existing contact before reprocessing.",
+          "steps": [
+            "Open Koalendar recovery and select an unresolved failure.",
+            "Review the bounded error, event identity, attempt history, and user ownership.",
+            "Check whether the contact or import already succeeded through another attempt.",
+            "Retry once, then confirm the final status and audit trail."
+          ],
+          "route": "/admin/koalendar-retry"
+        }
+      ]
+    },
+    {
+      "id": "admin-product-analytics",
+      "title": "Product analytics and system health",
+      "summary": "Monitor aggregate PWA, caption, onboarding, support, SMTP, authentication, and operational signals with privacy-light reporting.",
+      "icon": "activity",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "pwa-caption-analytics",
+          "title": "Review PWA and caption-language conversion",
+          "access": "admin",
+          "body": "The Administration hub reports aggregate install-guide views, completed installs, successful shares, and explicit caption-language selections. These panels intentionally avoid raw device, visitor, referrer, user-agent, and free-text records.",
+          "steps": [
+            "Compare all-time and last-30-day activity.",
+            "Review completion or share conversion rates with the underlying event volume.",
+            "Use language selections to prioritize accessibility work without profiling individuals.",
+            "Do not attempt to reconstruct user identity from aggregate counts."
+          ],
+          "route": "/admin"
+        },
+        {
+          "id": "onboarding-funnel",
+          "title": "Analyze onboarding checklist drop-off",
+          "access": "admin",
+          "body": "The onboarding funnel counts each account once per step and compares the selected period with the previous period. Presets and custom date ranges support CSV export and an aggregate AI insight.",
+          "steps": [
+            "Choose 7, 30, 90 days, or a valid complete custom date range.",
+            "Review email, platform, contacts, and first-send continuation and drop-off.",
+            "Compare the current and previous period before prioritizing a change.",
+            "Export aggregate CSV only for an approved analysis and verify the AI insight against the displayed data."
+          ],
+          "route": "/admin"
+        },
+        {
+          "id": "operations-alerts",
+          "title": "Respond to operations alerts and health trends",
+          "access": "admin",
+          "body": "Operations alerts and 24-hour trends combine current SMTP and authentication signals. An alert is a starting point for investigation, not proof of a root cause.",
+          "steps": [
+            "Open the affected operations area from the alert.",
+            "Compare current status with the recent trend and persisted history.",
+            "Check deployment, provider, database, and account-level evidence as applicable.",
+            "Confirm a durable healthy result before closing the incident."
+          ],
+          "route": "/admin"
+        }
+      ]
+    }
+  ]
+}

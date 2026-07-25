@@ -1,0 +1,451 @@
+{
+  "version": 1,
+  "title": "管理员手册",
+  "eyebrow": "Get Phame 操作",
+  "introduction": "本管理员手册包含完整的用户指引及仅限管理员的操作流程。仅向已验证的管理员显示。使用操作部分管理帐户、诊断、支持、收入、恢复和汇总产品健康状况，同时避免暴露凭据或不必要的客户数据。",
+  "lastUpdated": "2026-07-25",
+  "sections": [
+    {
+      "id": "admin-hub",
+      "title": "管理中心",
+      "summary": "使用系统控制中心进行实时操作、帐户控制、诊断和汇总业务分析。",
+      "icon": "gauge",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "admin-hub-overview",
+          "title": "打开操作中心",
+          "access": "admin",
+          "body": "管理中心仅对具有管理员角色的账户可用。其卡片可打开用户管理、身份验证健康、提醒、SMTP 健康、访问代码、支持、收入控制与分析、流失、推荐操作以及 Koalendar 恢复。",
+          "steps": [
+            "从管理员帐户菜单打开 Administration。",
+            "在打开详细区域前先查看实时摘要计数。",
+            "优先使用具体操作卡，而非仅从摘要中采取行动。",
+            "在完成高影响操作后返回中心并确认已更新的状态。"
+          ],
+          "route": "/admin"
+        },
+        {
+          "id": "operations-export",
+          "title": "导出汇总运营分析",
+          "access": "admin",
+          "body": "中心可以将汇总运营分析导出为 CSV。仅在有明确报告需求时导出，安全存储文件，并在报告目的完成后将其删除。",
+          "steps": [
+            "从操作中心选择 Export analytics CSV。",
+            "等待文件准备完成并确认所报告的行数。",
+            "在受保护的工作区中打开文件并核实报告期间与列。",
+            "不要将导出文件转发给未授权的收件人。"
+          ],
+          "route": "/admin"
+        }
+      ]
+    },
+    {
+      "id": "admin-user-management",
+      "title": "用户管理",
+      "summary": "搜索账户、检查订阅和连接状态，并执行受控的账户操作。",
+      "icon": "users",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "search-and-review-users",
+          "title": "搜索并审查用户账户",
+          "access": "admin",
+          "body": "按支持的账户标识符搜索，然后在更改任何内容前核实用户、邮箱、角色、层级、终身访问状态和连接状态。切勿仅根据显示名称推断账户所有权。",
+          "steps": [
+            "打开 User management 并输入至少支持的最小搜索文本。",
+            "在选择操作前确认账户邮箱和内部记录。",
+            "审查订阅、SMTP、活动和重复账户指示器。",
+            "记录任何高影响更改的支持或操作原因。"
+          ],
+          "route": "/admin/users"
+        },
+        {
+          "id": "tier-and-access-controls",
+          "title": "层级与临时访问控制",
+          "access": "admin",
+          "body": "仅在有授权的计费或支持结果时使用层级、终身访问、促销和临时授权控制。Stripe 在适用情况下仍为支付权威；避免创建冲突的本地访问状态。",
+          "steps": [
+            "核实变更的付款、促销、支持或合同依据。",
+            "选择最严格许可的访问控制和生效期限。",
+            "在用户记录上确认最终的层级或到期状态。",
+            "在下一次计费或访问事件后复查。"
+          ],
+          "route": "/admin/users"
+        },
+        {
+          "id": "merge-disconnect-delete-users",
+          "title": "合并、断开或删除账户",
+          "access": "admin",
+          "body": "账户合并、连接清理和删除为高影响操作。核实双方身份、保留必要的历史记录，并使用内置确认流程。切勿仅因名称相似就合并账户。",
+          "steps": [
+            "使用支持的账户证据确认所有权。",
+            "审查所有受影响记录的联系人、请求、计费、连接和支持历史。",
+            "在破坏性操作前导出或保留政策要求的数据。",
+            "完成受保护的确认并验证结果账户状态。"
+          ],
+          "route": "/admin/users"
+        }
+      ]
+    },
+    {
+      "id": "admin-authentication-health",
+      "title": "身份验证健康",
+      "summary": "监控生产环境登录依赖、魔法链接投递、健康历史、警报与恢复信号。",
+      "icon": "shield",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "auth-dashboard",
+          "title": "读取身份验证诊断",
+          "access": "admin",
+          "body": "Authentication Diagnostics 报告计划的生产健康、依赖信号、魔法链接投递记录和失败历史。缺失的数据表示未知状态，不得被视为健康。",
+          "steps": [
+            "查看 24 小时正常运行时间和最近一次计划检查。",
+            "检查数据库、会话、邮件提供商和魔法链接的依赖信号。",
+            "仅在支持需要时按精确客户邮箱过滤投递轨迹。",
+            "在需要当前确认时运行非破坏性手动检查。"
+          ],
+          "route": "/admin/auth-diagnostics"
+        },
+        {
+          "id": "auth-history-presets",
+          "title": "过滤健康历史并管理已保存视图",
+          "access": "admin",
+          "body": "健康历史支持状态、触发器、日期、分页和已保存过滤视图。已保存视图对管理员账户为私有，可重命名、复制、重新排序、删除或在重新排序后恢复。",
+          "steps": [
+            "应用最窄的过滤条件以回答操作问题。",
+            "为经常调查保存私有预设。",
+            "使用拖放或文档化的键盘交互来重新排序预设。",
+            "在断定不存在事件前先清除过滤器。"
+          ],
+          "route": "/admin/auth-diagnostics"
+        },
+        {
+          "id": "auth-csv-preview",
+          "title": "预览并导出已脱敏的健康 CSV",
+          "access": "admin",
+          "body": "CSV 工作流在下载前准备已脱敏的预览。仅选择必要列，在已准备的行内搜索，并在调查不需完整数据集时使用匹配结果下载。",
+          "steps": [
+            "应用历史过滤并打开 Preview filtered CSV。",
+            "审查生成的快照时间、可用列、行数和截断提示。",
+            "选择最少所需列并再次预览结果。",
+            "仅复制或下载为已批准目的所需的行。"
+          ],
+          "route": "/admin/auth-diagnostics"
+        },
+        {
+          "id": "auth-alert-recovery",
+          "title": "响应身份验证失败与恢复警报",
+          "access": "admin",
+          "body": "失败警报按事件去重，并在依赖恢复健康后跟随恢复通知。在升级或宣布恢复前确认持久化的历史记录。",
+          "steps": [
+            "打开最近的失败健康记录并识别受影响的依赖原因。",
+            "检查最近的部署、邮件提供商状态、数据库连通性和会话配置。",
+            "修复后运行一次非破坏性手动检查。",
+            "在关闭事件前确认持久化的健康结果和恢复警报。"
+          ],
+          "route": "/admin/auth-diagnostics"
+        }
+      ]
+    },
+    {
+      "id": "admin-smtp-health",
+      "title": "SMTP 健康操作",
+      "summary": "识别失败的客户邮箱连接并支持安全重测，同时不暴露凭据。",
+      "icon": "mail",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "smtp-overview",
+          "title": "审查汇总 SMTP 健康",
+          "access": "admin",
+          "body": "SMTP 操作显示活动、总数和失败连接以及系统健康趋势。失败连接会影响该用户的投递能力，应在不查看或请求存储的密钥的情况下调查。",
+          "steps": [
+            "从 Administration 中打开 SMTP health。",
+            "审查当前失败连接和趋势方向。",
+            "仅在支持或运营需要时打开受影响用户。",
+            "当需重新授权时，要求用户通过 设置 创建新的提供商凭据。"
+          ],
+          "route": "/admin/smtp-stats"
+        },
+        {
+          "id": "smtp-retest",
+          "title": "重测用户的 SMTP 连接",
+          "access": "admin",
+          "body": "重测使用现有受保护连接验证当前可用性。不得泄露凭据，也不应在提供商发生故障时持续重复重测。",
+          "steps": [
+            "确认账户和重测原因。",
+            "运行管理员重测一次并记录结果时间。",
+            "若重测失败，向用户提供相应的提供商重新连接步骤。",
+            "在用户确认新凭据或更换提供商后再重测。"
+          ],
+          "route": "/admin/smtp-stats"
+        }
+      ]
+    },
+    {
+      "id": "admin-reminder-operations",
+      "title": "提醒操作",
+      "summary": "监控提醒投递性能并调查待处理、到期、失败、取消和停止的序列。",
+      "icon": "bell",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "reminder-performance",
+          "title": "审查提醒性能",
+          "access": "admin",
+          "body": "提醒操作汇总计划和投递状态，使管理员能识别积压或失败。客户的操作完成规则为权威：已完成的序列不得恢复未来提醒。",
+          "steps": [
+            "打开 Reminder operations 并选择相关报告期间。",
+            "比较待处理、到期、已发送、失败、已取消和已停止的计数。",
+            "调查底层的用户、活动、投递和完成状态。",
+            "在确认符合条件后仅使用支持的重试或取消控制。"
+          ],
+          "route": "/admin/reminder-performance"
+        }
+      ]
+    },
+    {
+      "id": "admin-support",
+      "title": "支持收件箱与 SLA 操作",
+      "summary": "安全地分流、分配、解决、报告和升级客户支持请求。",
+      "icon": "inbox",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "support-triage",
+          "title": "分流并分配支持工单",
+          "access": "admin",
+          "body": "使用主题、优先级、年龄、订阅上下文和 SLA 状态对工单进行分流。紧急状态应反映真实的运营影响，而非仅凭客户措辞。",
+          "steps": [
+            "打开 Support inbox 并查看未分配、紧急和 SLA 风险队列。",
+            "在分配前检查已脱敏的消息和附件。",
+            "设置正确的优先级并分配负责人。",
+            "在保留清晰审计轨迹的前提下回复或更新状态。"
+          ],
+          "route": "/admin/support"
+        },
+        {
+          "id": "support-resolution",
+          "title": "解决、重新打开与升级",
+          "access": "admin",
+          "body": "仅在答案、修复或下一步已交付时解决工单。若新证据改变结果则重新打开。升级策略和违规警报应在不产生重复事件的情况下路由未解决风险。",
+          "steps": [
+            "记录已核实的结果或下一步。",
+            "仅在面向客户的工作完成时将状态更改为已解决。",
+            "如同一问题在出现实质性新证据时继续发生则重新打开。",
+            "持续审查升级与违规警报直到责任被接手。"
+          ],
+          "route": "/admin/support"
+        },
+        {
+          "id": "support-sla-export",
+          "title": "报告并导出支持 SLA 指标",
+          "access": "admin",
+          "body": "支持报告接受预设或自定义日期范围并可导出汇总 SLA 指标。始终选择两个自定义日期，核实时间顺序，并保护生成的 CSV。",
+          "steps": [
+            "选择 7、30、90 天或完整的自定义日期范围。",
+            "审查响应、解决、违规和量度指标。",
+            "仅在为已批准报告所需时导出 CSV。",
+            "在报告需求结束后删除本地副本。"
+          ],
+          "route": "/admin/support"
+        }
+      ]
+    },
+    {
+      "id": "admin-access-codes",
+      "title": "系统访问代码",
+      "summary": "创建、审查和撤销受控的系统访问代码。",
+      "icon": "key",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "manage-access-codes",
+          "title": "管理访问代码",
+          "access": "admin",
+          "body": "访问代码能改变谁获得系统访问。仅为已批准目的创建，使用最窄的适用有效期，并在未使用、暴露或不再需要时及时撤销。",
+          "steps": [
+            "打开 System access codes 并审查活动、已过期和已撤销记录。",
+            "为代码创建明确目的和适用限制。",
+            "通过已批准的私密渠道分享。",
+            "在使用、到期、暴露或不再需要时撤销。"
+          ],
+          "route": "/admin/codes"
+        }
+      ]
+    },
+    {
+      "id": "admin-revenue-controls",
+      "title": "收入控制",
+      "summary": "创建基于 Stripe 的促销和临时访问授权，避免产生冲突的权限状态。",
+      "icon": "badgePercent",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "stripe-promotions",
+          "title": "创建与管理 Stripe 促销",
+          "access": "admin",
+          "body": "使用 Revenue Controls 页面管理基于 Stripe 的促销。在激活前确认活动目的、适用计划、持续时间、兑换限制和最低交易约束。",
+          "steps": [
+            "定义促销受众、金额或百分比、持续时间和限制。",
+            "在共享促销码前在 Stripe 中核实设置。",
+            "通过已批准的测试方法在部署域上进行测试。",
+            "在活动结束或发现错误时停用促销。"
+          ],
+          "route": "/admin/revenue-controls"
+        },
+        {
+          "id": "temporary-access-grants",
+          "title": "授予临时访问",
+          "access": "admin",
+          "body": "临时访问用于经批准的支持、促销或合同情况。使用明确的到期时间并核实授权不会与客户的 Stripe 订阅或终身访问冲突。",
+          "steps": [
+            "确认用户账户和文档化的理由。",
+            "选择最窄的访问级别和最短的有效期限。",
+            "应用授权并确认到期状态。",
+            "在授权到期时复查该账户。"
+          ],
+          "route": "/admin/revenue-controls"
+        }
+      ]
+    },
+    {
+      "id": "admin-revenue-analytics",
+      "title": "收入分析",
+      "summary": "在不取代 Stripe 作为交易权威的前提下审查 MRR、ARR、转化、增长和订阅构成。",
+      "icon": "dollar",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "revenue-dashboard",
+          "title": "解读收入指标",
+          "access": "admin",
+          "body": "收入分析汇总经常性收入、年化收入、转化、增长和计划构成。使用一致的报告周期，并在对账户级采取行动前就异常与 Stripe 对账。",
+          "steps": [
+            "选择一致的比较周期。",
+            "同时审查 MRR、ARR、新付费账户、取消和计划构成。",
+            "调查 Stripe 中的重大变更及受影响的账户记录。",
+            "在导出或展示指标时记录定义。"
+          ],
+          "route": "/admin/revenue"
+        }
+      ]
+    },
+    {
+      "id": "admin-churn",
+      "title": "流失与留存",
+      "summary": "使用取消原因和留存信号改进产品，同时不遮蔽客户真实意图。",
+      "icon": "trendDown",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "churn-analysis",
+          "title": "分析取消原因",
+          "access": "admin",
+          "body": "流失分析汇总取消原因和留存信号。将自由文本反馈视为敏感信息，避免从小样本过度概括，并保留客户的取消决定。",
+          "steps": [
+            "选择报告期间并审查原因分布。",
+            "仅在有操作跟进理由时打开相关账户。",
+            "在不暴露不必要客户细节的前提下归类经常出现的主题。",
+            "利用发现来优先产品、入职、定价或支持实验。"
+          ],
+          "route": "/admin/churn"
+        }
+      ]
+    },
+    {
+      "id": "admin-referrals",
+      "title": "推荐奖励操作",
+      "summary": "审查延期的推荐并仅在推荐者当前有资格时发放奖励。",
+      "icon": "gift",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "deferred-referral-rewards",
+          "title": "处理延期奖励",
+          "access": "admin",
+          "body": "延期推荐奖励仅能在推荐者处于符合条件的付费计划时应用。处理前核实归因、转化、当前资格及既往奖励历史，再处理单个或多个记录。",
+          "steps": [
+            "打开 Referral operations 并过滤延期记录。",
+            "核实被推荐者的转化和推荐者账户。",
+            "确认推荐者当前处于符合条件的付费计划。",
+            "仅应用一次奖励并验证记录不再处于待处理状态。"
+          ],
+          "route": "/admin/referral-rewards"
+        }
+      ]
+    },
+    {
+      "id": "admin-koalendar-recovery",
+      "title": "Koalendar 导入恢复",
+      "summary": "检查失败的 Koalendar 联系人导入并仅重试安全且未解决的记录。",
+      "icon": "rotate",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "koalendar-retry",
+          "title": "检查并重试失败的导入",
+          "access": "admin",
+          "body": "Koalendar 恢复列出供诊断的失败联系人导入。重试必须保持幂等：在重新处理前核实源事件、错误、所有权和现有联系人。",
+          "steps": [
+            "打开 Koalendar recovery 并选择未解决的失败记录。",
+            "审查受限错误、事件标识、尝试历史和用户所有权。",
+            "检查该联系人或导入是否已通过其他尝试成功。",
+            "重试一次，然后确认最终状态和审计轨迹。"
+          ],
+          "route": "/admin/koalendar-retry"
+        }
+      ]
+    },
+    {
+      "id": "admin-product-analytics",
+      "title": "产品分析与系统健康",
+      "summary": "使用轻隐私的报告监控汇总 PWA、字幕、入职、支持、SMTP、身份验证和运营信号。",
+      "icon": "activity",
+      "access": "admin",
+      "topics": [
+        {
+          "id": "pwa-caption-analytics",
+          "title": "审查 PWA 与字幕语言转化",
+          "access": "admin",
+          "body": "管理中心报告汇总的安装指南查看、完成的安装、成功分享以及明确的字幕语言选择。这些面板刻意避免原始设备、访客、引用来源、user-agent 和自由文本记录。",
+          "steps": [
+            "比较累计与最近 30 天的活动。",
+            "审查完成或分享的转化率及其底层事件量。",
+            "使用语言选择来优先可访问性工作，但不要对个人进行画像化。",
+            "不要尝试从汇总计数重建用户身份。"
+          ],
+          "route": "/admin"
+        },
+        {
+          "id": "onboarding-funnel",
+          "title": "分析入职检查表流失点",
+          "access": "admin",
+          "body": "入职漏斗对每个步骤按账户计数一次，并将所选期间与上一期间比较。预设和自定义日期范围支持 CSV 导出及汇总 AI 洞察。",
+          "steps": [
+            "选择 7、30、90 天或有效的完整自定义日期范围。",
+            "审查邮箱、平台、联系人和首次发送的持续率与流失。",
+            "在优先变更前比较当前与上一期间。",
+            "仅为已批准的分析导出汇总 CSV，并将 AI 洞察与显示数据核对。"
+          ],
+          "route": "/admin"
+        },
+        {
+          "id": "operations-alerts",
+          "title": "响应运营警报与健康趋势",
+          "access": "admin",
+          "body": "运营警报与 24 小时趋势结合当前的 SMTP 与身份验证信号。警报是调查的起点，而非根因证明。",
+          "steps": [
+            "从警报中打开受影响的运营区域。",
+            "将当前状态与近期趋势及持久化历史进行比较。",
+            "根据适用情况检查部署、提供商、数据库和账户级证据。",
+            "在关闭事件前确认持久的健康结果。"
+          ],
+          "route": "/admin"
+        }
+      ]
+    }
+  ]
+}

@@ -90,6 +90,7 @@ const UpgradePage         = lazy(() => import("./pages/Upgrade"));
 const CompliancePage      = lazy(() => import("./pages/Compliance"));
 const ClientReviewsPage   = lazy(() => import("./pages/ClientReviews"));
 const DeveloperIntegrationsPage = lazy(() => import("./pages/DeveloperIntegrations"));
+const ManualPage          = lazy(() => import("./pages/Manual"));
 
 const AdminDashboardPage  = lazy(() => import("./pages/AdminDashboard"));
 const AdminUsersPage      = lazy(() => import("./pages/AdminUsers"));
@@ -331,6 +332,7 @@ function AppShell() {
                 <Route path="/dashboard" component={DashboardPage} />
                 <Route path="/developer" component={DeveloperIntegrationsPage} />
                 <Route path="/settings" component={SettingsPage} />
+                <Route path="/manual" component={ManualPage} />
                 <Route path="/payment-success" component={PaymentSuccessPage} />
                 <Route path="/privacy-policy" component={PrivacyPolicyPage} />
                 <Route path="/terms-of-service" component={TermsOfServicePage} />

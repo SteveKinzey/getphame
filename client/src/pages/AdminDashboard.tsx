@@ -29,6 +29,7 @@ import {
   Sparkles,
   Smartphone,
   Share2,
+  Languages,
   MousePointerClick,
   RotateCcw,
   Inbox,
@@ -50,6 +51,15 @@ import {
 } from "recharts";
 
 import { useDebounce } from "use-debounce";
+
+const CAPTION_LANGUAGE_LABELS = [
+  { code: "en", label: "English" },
+  { code: "es", label: "Spanish" },
+  { code: "fr", label: "French" },
+  { code: "it", label: "Italian" },
+  { code: "de", label: "German" },
+  { code: "pt", label: "Portuguese" },
+] as const;
 import { toast } from "sonner";
 
 export default function AdminDashboard() {
@@ -87,6 +97,11 @@ export default function AdminDashboard() {
   });
 
   const { data: pwaConversionStats } = trpc.admin.pwaConversionStats.useQuery(undefined, {
+    enabled: user?.role === "admin",
+    refetchInterval: 60_000,
+  });
+
+  const { data: captionLanguageStats } = trpc.admin.captionLanguageStats.useQuery(undefined, {
     enabled: user?.role === "admin",
     refetchInterval: 60_000,
   });
@@ -412,6 +427,31 @@ export default function AdminDashboard() {
                   detail={`${pwaConversionStats?.rates.shareConversion ?? 0}% of guide views`}
                   Icon={Share2}
                 />
+              </div>
+            </section>
+
+            <section data-testid="admin-caption-language-analytics" aria-labelledby="admin-caption-language-title">
+              <div className="mb-3">
+                <p className="text-xs font-medium uppercase tracking-[0.16em] rr-text-navy-muted">Walkthrough accessibility</p>
+                <h2 id="admin-caption-language-title" className="mt-1 text-xl font-semibold rr-text-navy">Caption language selections</h2>
+                <p className="mt-1 text-sm rr-text-navy-muted">
+                  Explicit language choices only. No visitor identity, referrer, user agent, or free-text payload is collected.
+                  {captionLanguageStats?.topAllTime.language
+                    ? ` Most selected: ${CAPTION_LANGUAGE_LABELS.find((item) => item.code === captionLanguageStats.topAllTime.language)?.label ?? captionLanguageStats.topAllTime.language}.`
+                    : " No selections recorded yet."}
+                </p>
+              </div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {CAPTION_LANGUAGE_LABELS.map(({ code, label }) => (
+                  <ConversionMetricCard
+                    key={code}
+                    testId={`caption-language-${code}`}
+                    label={label}
+                    value={captionLanguageStats?.allTime[code] ?? 0}
+                    detail={`${captionLanguageStats?.last30Days[code] ?? 0} in the last 30 days`}
+                    Icon={Languages}
+                  />
+                ))}
               </div>
             </section>
 

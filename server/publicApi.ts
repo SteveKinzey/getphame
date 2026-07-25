@@ -41,6 +41,7 @@ import {
   saveDeveloperApiIdempotency,
   type DeveloperApiErrorCode,
 } from "./developerApiImports";
+import { resolveSourceConnectionForPrincipal } from "./sourceConnections";
 
 const consentSchema = z.object({
   confirmed: z.literal(true),
@@ -117,7 +118,12 @@ async function authenticateApiRequest(req: Request, requiredScope: DeveloperApiS
   return { kind: "ok" as const, principal: authentication.principal };
 }
 
-async function applyApiRateLimit(principal: DeveloperApiPrincipal, res: Response, requestId: string) {
+async function applyApiRateLimit(
+  principal: DeveloperApiPrincipal,
+  res: Response,
+  requestId: string,
+  sourceConnectionId?: number | null,
+) {
   const rate = await checkDeveloperApiRateLimit(principal);
   res.setHeader("X-RateLimit-Limit", "60");
   res.setHeader("X-RateLimit-Remaining", String(rate.remaining));
@@ -125,6 +131,7 @@ async function applyApiRateLimit(principal: DeveloperApiPrincipal, res: Response
     res.setHeader("Retry-After", String(rate.retryAfterSeconds));
     await logDeveloperApiImport({
       principal,
+      sourceConnectionId,
       status: "rate_limited",
       requestId,
       errorCode: "RATE_LIMITED",
@@ -148,6 +155,7 @@ async function applyApiAbuseProtection(params: {
   recipientEmail?: string | null;
   sourceApp?: string | null;
   consentBasis?: string | null;
+  sourceConnectionId?: number | null;
 }) {
   const decision = await checkDeveloperApiAbuse({
     principal: params.principal,
@@ -160,6 +168,7 @@ async function applyApiAbuseProtection(params: {
   params.res.setHeader("Retry-After", String(decision.retryAfterSeconds));
   await logDeveloperApiImport({
     principal: params.principal,
+    sourceConnectionId: params.sourceConnectionId,
     eventType: params.action,
     status: "abuse_blocked",
     requestId: params.requestId,
@@ -227,12 +236,31 @@ export function registerPublicApiRoutes(app: Router) {
       return sendApiError(res, 401, "INVALID_API_KEY", "Invalid, expired, or revoked API key.", requestId);
     }
     const principal = auth.principal;
-    if (!(await applyApiRateLimit(principal, res, requestId))) return;
+    const sourcePublicId = req.header("X-Get-Phame-Source")?.trim().slice(0, 48) ?? "";
+    const sourceConnection = sourcePublicId
+      ? await resolveSourceConnectionForPrincipal({
+          publicId: sourcePublicId,
+          userId: principal.userId,
+          apiKeyId: principal.apiKeyId,
+        })
+      : null;
+    if (sourcePublicId && !sourceConnection) {
+      await logDeveloperApiImport({
+        principal,
+        status: "rejected",
+        requestId,
+        errorCode: "SOURCE_CONNECTION_FORBIDDEN",
+      }).catch(() => undefined);
+      return sendApiError(res, 403, "SOURCE_CONNECTION_FORBIDDEN", "This source identifier is not authorized for the supplied API key.", requestId);
+    }
+    const sourceConnectionId = sourceConnection?.id ?? null;
+    if (!(await applyApiRateLimit(principal, res, requestId, sourceConnectionId))) return;
 
     const parsed = contactImportSchema.safeParse(normalizeContactImportPayload(req.body ?? {}));
     if (!parsed.success) {
       await logDeveloperApiImport({
         principal,
+        sourceConnectionId,
         status: "rejected",
         requestId,
         sourceApp: typeof req.body?.sourceApp === "string" ? req.body.sourceApp : null,
@@ -246,6 +274,7 @@ export function registerPublicApiRoutes(app: Router) {
     if (requireConsent && !data.consent?.confirmed) {
       await logDeveloperApiImport({
         principal,
+        sourceConnectionId,
         status: "rejected",
         requestId,
         sourceApp: data.sourceApp ?? null,
@@ -257,6 +286,15 @@ export function registerPublicApiRoutes(app: Router) {
 
     const capturedAt = data.consent?.capturedAt ? Date.parse(data.consent.capturedAt) : Date.now();
     if (!Number.isFinite(capturedAt) || capturedAt > Date.now() + 5 * 60_000) {
+      await logDeveloperApiImport({
+        principal,
+        sourceConnectionId,
+        status: "rejected",
+        requestId,
+        sourceApp: data.sourceApp ?? null,
+        email: data.email,
+        errorCode: "INVALID_REQUEST",
+      }).catch(() => undefined);
       return sendApiError(res, 400, "INVALID_REQUEST", "consent.capturedAt must be a valid timestamp that is not in the future.", requestId);
     }
 
@@ -284,8 +322,9 @@ export function registerPublicApiRoutes(app: Router) {
       recipientEmail: normalized.email,
       sourceApp: normalized.sourceApp,
       consentBasis: normalized.consent.basis,
+      sourceConnectionId,
     }))) return;
-    const requestHash = hashDeveloperApiRequest(JSON.stringify(normalized));
+    const requestHash = hashDeveloperApiRequest(JSON.stringify({ sourcePublicId: sourceConnection?.publicId ?? null, normalized }));
     const idempotencyKey = req.header("Idempotency-Key")?.trim().slice(0, 191) ?? "";
     let idempotencyHash: string | null = null;
     if (idempotencyKey) {
@@ -293,6 +332,7 @@ export function registerPublicApiRoutes(app: Router) {
       if (existing.kind === "conflict") {
         await logDeveloperApiImport({
           principal,
+          sourceConnectionId,
           status: "rejected",
           requestId,
           sourceApp: normalized.sourceApp,
@@ -303,6 +343,16 @@ export function registerPublicApiRoutes(app: Router) {
         return sendApiError(res, 409, "IDEMPOTENCY_CONFLICT", "The idempotency key was already used with a different payload.", requestId);
       }
       if (existing.kind === "replay") {
+        await logDeveloperApiImport({
+          principal,
+          sourceConnectionId,
+          status: "deduplicated",
+          requestId,
+          sourceApp: normalized.sourceApp,
+          consentBasis: normalized.consent.basis,
+          email: normalized.email,
+          created: false,
+        }).catch(() => undefined);
         await recordDeveloperApiKeySuccessfulUse(principal);
         return res.status(existing.statusCode).json({ ...existing.response, idempotentReplay: true, requestId });
       }
@@ -343,6 +393,7 @@ export function registerPublicApiRoutes(app: Router) {
       }
       await logDeveloperApiImport({
         principal,
+        sourceConnectionId,
         status: result.created ? "success" : "deduplicated",
         requestId,
         sourceApp: normalized.sourceApp,
@@ -364,6 +415,7 @@ export function registerPublicApiRoutes(app: Router) {
     } catch {
       await logDeveloperApiImport({
         principal,
+        sourceConnectionId,
         status: "error",
         requestId,
         sourceApp: normalized.sourceApp,

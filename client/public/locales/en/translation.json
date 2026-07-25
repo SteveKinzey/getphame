@@ -25,7 +25,9 @@
     "faq": "FAQ",
     "manageUsers": "Manage users",
     "admin": "Admin",
-    "developer": "Developer"
+    "developer": "Developer",
+    "userManual": "User Manual",
+    "adminManual": "Admin Manual"
   },
   "hero": {
     "tagline": "Free to start — No credit card required",
@@ -136,8 +138,7 @@
     "privacyPolicy": "Privacy Policy",
     "termsOfService": "Terms of Service",
     "whatsNew": "What's New",
-    "compliance": "Compliance",
-    "navigationLabel": "Get Phame links"
+    "compliance": "Compliance"
   },
   "shareReferralCard": {
     "title": "Get Phame — Free review request tool",
@@ -2179,20 +2180,99 @@
     "section": {
       "tagline": "See it in action",
       "title": "See How It Works",
-      "description": "Watch a quick walkthrough — set up in under 2 minutes"
+      "description": "Watch the 63-second platform walkthrough — English narration with optional captions"
     },
     "thumbnail": {
       "playButtonAriaLabel": "Play product walkthrough video",
-      "altText": "GetPhame product walkthrough video thumbnail"
+      "altText": "Get Phame platform walkthrough video thumbnail"
     },
     "bottomBar": {
-      "title": "GetPhame — Full Product Walkthrough",
-      "description": "Connect email · Import customers · Send requests · Track results",
+      "title": "Get Phame — Platform Walkthrough",
+      "description": "Individual outreach · Connected inbox · Limited reminders · Stop on completion",
       "watchNow": "Watch now →"
     },
     "modal": {
       "closeButtonAriaLabel": "Close video",
-      "iframeTitle": "GetPhame product walkthrough"
+      "videoTitle": "Get Phame platform walkthrough",
+      "captionNotice": "English narration with optional English, Spanish, French, Italian, German, and Portuguese captions.",
+      "captionTrackLabel": "English captions",
+      "captionTrackEnglish": "English captions",
+      "captionTrackSpanish": "Spanish captions",
+      "captionTrackFrench": "French captions",
+      "captionTrackItalian": "Italian captions",
+      "captionTrackGerman": "German captions",
+      "captionTrackPortuguese": "Portuguese captions",
+      "captionLanguage": "Caption language",
+      "captionLanguageAriaLabel": "Caption language: {{language}}",
+      "captionLanguageEnglish": "English",
+      "captionLanguageSpanish": "Spanish",
+      "captionLanguageFrench": "French",
+      "captionLanguageItalian": "Italian",
+      "captionLanguageGerman": "German",
+      "captionLanguagePortuguese": "Portuguese",
+      "captionToggleTooltip": "Current caption language: {{language}}",
+      "captionsOn": "Captions on",
+      "captionsOff": "Captions off",
+      "captionsEnable": "Enable captions",
+      "captionsDisable": "Disable captions",
+      "captionsHelp": "Use the quick CC button or press C to toggle captions. Customize their appearance, or select any transcript line to jump to that moment.",
+      "captionSettings": "Caption settings",
+      "captionSettingsAriaLabel": "Open caption appearance settings",
+      "captionFontSize": "Font size",
+      "captionFontSizeSmall": "Small",
+      "captionFontSizeMedium": "Medium",
+      "captionFontSizeLarge": "Large",
+      "captionBackground": "Background",
+      "captionBackgroundBlack": "Black",
+      "captionBackgroundNavy": "Navy",
+      "captionBackgroundClear": "Clear",
+      "captionAppearanceStatus": "Caption size {{size}} with {{background}} background",
+      "captionSettingsReset": "Restore defaults",
+      "videoFallback": "Your browser does not support HTML video.",
+      "videoError": "The walkthrough could not load in this browser.",
+      "videoRetry": "Try again",
+      "videoOpenDirect": "Open video directly",
+      "captionPreview": "Live preview",
+      "captionPreviewSample": "Your captions will look like this.",
+      "captionFontFamily": "Font family",
+      "captionFontFamilySans": "Sans serif",
+      "captionFontFamilySerif": "Serif",
+      "captionFontFamilyMono": "Monospace",
+      "captionTextColor": "Text color",
+      "captionTextColorWhite": "White",
+      "captionTextColorGold": "Gold",
+      "captionTextColorCyan": "Cyan",
+      "captionTextOpacity": "Text opacity",
+      "captionTextOpacitySolid": "100%",
+      "captionTextOpacityHigh": "85%",
+      "captionTextOpacitySoft": "70%",
+      "captionAppearanceStatusExpanded": "Caption size {{size}}, {{family}} font, {{color}} text at {{opacity}} opacity, {{spacing}} line spacing, {{edge}} text edge, with {{background}} background",
+      "transcriptTitle": "Interactive transcript",
+      "transcriptHelp": "Select a line to jump to that moment in the video.",
+      "transcriptLoading": "Loading transcript…",
+      "transcriptError": "The transcript is unavailable right now.",
+      "transcriptCueList": "Transcript cues",
+      "transcriptJumpTo": "Jump to {{time}}: {{text}}",
+      "transcriptCurrent": "Current caption",
+      "captionLineSpacing": "Line spacing",
+      "captionLineSpacingCompact": "Compact",
+      "captionLineSpacingStandard": "Standard",
+      "captionLineSpacingSpacious": "Spacious",
+      "captionTextEdge": "Text edge",
+      "captionTextEdgeNone": "None",
+      "captionTextEdgeShadow": "Shadow",
+      "captionTextEdgeOutline": "Outline",
+      "transcriptExportGroupLabel": "Download transcript",
+      "transcriptExportText": "Download TXT",
+      "transcriptExportPdf": "Download PDF",
+      "transcriptExportPreparing": "Preparing…",
+      "transcriptExportDocumentTitle": "Platform walkthrough transcript",
+      "transcriptExportLanguageLabel": "Language",
+      "transcriptExportGeneratedLabel": "Generated",
+      "transcriptExportSourceLabel": "Source",
+      "transcriptExportTextSuccess": "Text transcript downloaded.",
+      "transcriptExportPdfSuccess": "PDF transcript downloaded.",
+      "transcriptExportError": "The transcript download could not be created. Please try again."
     },
     "purpose": {
       "eyebrow": "About this app",
@@ -2573,6 +2653,175 @@
     "clear": "Clear"
   },
   "developerIntegrations": {
+    "sources": {
+      "title": "Connect a source",
+      "description": "Choose where customer records start. Get Phame gives you a secure, import-only recipe for a trusted server-side automation.",
+      "badge": "Imports contacts only",
+      "workflowTitle": "Source connection workflow",
+      "steps": {
+        "choose": "Choose a source",
+        "key": "Create an import key",
+        "map": "Map fields and consent",
+        "test": "Send one permitted test"
+      },
+      "choose": "Choose a source",
+      "recipeCopied": "Safe setup recipe copied.",
+      "pathLabel": "Recommended path",
+      "officialDocs": "Provider docs",
+      "idempotencyTitle": "Stable event ID",
+      "rulesTitle": "Required safeguards",
+      "rules": {
+        "secret": "Store the Get Phame API key only in a protected server-side secret field. Never place it in a form, URL, page source, or browser script.",
+        "consent": "Import only existing customers or people who affirmatively opted in. Keep optional consent boxes unchecked by default.",
+        "idempotency": "Reuse the same provider event ID for every retry so one submission cannot create duplicate work.",
+        "importOnly": "This workflow imports or updates a contact. It never sends a review request automatically."
+      },
+      "providers": {
+        "jotform": {
+          "path": "Send each eligible Jotform submission through a trusted automation bridge that can store secrets and add protected headers before posting to Get Phame.",
+          "idempotency": "Use the immutable Jotform submission ID for both externalId and Idempotency-Key."
+        },
+        "facebook": {
+          "path": "Receive Meta Lead Ads notifications on a verified server-side or trusted automation webhook, retrieve the permitted lead fields, then post the normalized record to Get Phame.",
+          "idempotency": "Use Meta's leadgen ID as the stable externalId and Idempotency-Key."
+        },
+        "googleForms": {
+          "path": "Use an installable Google Apps Script form-submit trigger or a trusted automation bridge. Keep the Get Phame key in protected script properties or the bridge's secret store.",
+          "idempotency": "Use a stable response identifier or the linked response-row ID; do not generate a new value during retries."
+        },
+        "airtable": {
+          "path": "Trigger a trusted automation when an eligible Airtable record is created or approved, then map that record to the Get Phame contact-import contract.",
+          "idempotency": "Use the immutable Airtable record ID for both externalId and Idempotency-Key."
+        },
+        "other": {
+          "label": "Other source",
+          "path": "Use any server-side workflow or trusted no-code tool that supports POST, JSON, protected headers, and a stable event identifier.",
+          "idempotency": "Use the source system's immutable submission, record, order, or event ID for every retry."
+        }
+      },
+      "recipeTitle": "Safe mapping recipe",
+      "recipeDescription": "Use a placeholder while configuring. Paste the real key only into the automation service's protected secret field.",
+      "copyRecipe": "Copy recipe",
+      "apiField": "API field",
+      "mapTo": "Map from source",
+      "fields": {
+        "name": "Customer name field",
+        "email": "Customer email field",
+        "externalId": "Immutable provider event or record ID",
+        "sourceApp": "Fixed provider identifier shown above",
+        "consentConfirmed": "Boolean true only after affirmative permission",
+        "consentBasis": "customer_relationship, explicit_opt_in, or other",
+        "consentSource": "Short description of where permission was captured"
+      },
+      "nextTitle": "Ready to connect?",
+      "nextDescription": "Create a contacts:write key, send one permitted test record, then confirm the masked result in Recent API imports.",
+      "createKey": "Create import key",
+      "viewImports": "View imports"
+    },
+    "sourceOps": {
+      "title": "Managed source connections",
+      "description": "Create one observable connection per Zap, Make scenario, or custom workflow. Each source gets its own identifier, analytics, and health signal.",
+      "refreshKeys": "Refresh API keys",
+      "createTitle": "Create a connection",
+      "provider": "Automation provider",
+      "custom": "Custom webhook",
+      "label": "Connection name",
+      "labels": {
+        "zapier": "Zapier customer import",
+        "make": "Make customer import",
+        "custom": "Custom customer import"
+      },
+      "apiKey": "Import API key",
+      "noKeys": "No active import key",
+      "expected": "Expected activity",
+      "intervals": {
+        "15": "Every 15 minutes",
+        "60": "Hourly",
+        "360": "Every 6 hours",
+        "1440": "Daily",
+        "10080": "Weekly"
+      },
+      "minutes": "{{count}} minutes",
+      "createHelp": "The connection stores only an API-key reference and source identifier. Get Phame never displays or duplicates your raw API key.",
+      "create": "Create connection",
+      "created": "Source connection created. Add its source ID to your automation before testing.",
+      "updated": "Source settings updated.",
+      "archived": "Source connection archived. Its source ID can no longer authorize imports.",
+      "healthRefreshed": "Source health refreshed from recent import activity.",
+      "keyRequired": "Create or choose an active contacts:write API key first.",
+      "analyticsTitle": "Import flow by source",
+      "analyticsDescription": "Attempts, outcomes, deduplication, and failures are calculated from attributed import events.",
+      "range": "Analytics range",
+      "daysShort": "d",
+      "metrics": {
+        "attempts": "Attempts",
+        "successful": "Successful",
+        "createdContacts": "Contacts created",
+        "deduplicated": "Deduplicated",
+        "failures": "Failures"
+      },
+      "emptyTitle": "No managed sources yet",
+      "emptyDescription": "Create one connection for each Zap, Make scenario, or custom workflow you want to observe.",
+      "status": {
+        "healthy": "Healthy",
+        "setup": "Setup",
+        "delayed": "Delayed",
+        "failing": "Failing",
+        "paused": "Paused"
+      },
+      "openSetup": "Open setup",
+      "successRate": "Success rate",
+      "lastActivity": "Last activity",
+      "never": "Never",
+      "refreshHealth": "Refresh health",
+      "pause": "Pause monitoring",
+      "resume": "Resume monitoring",
+      "archive": "Archive",
+      "template": "guided template",
+      "templateDescription": "Copy this exact request into the automation's protected HTTP or webhook action.",
+      "copyRecipe": "Copy recipe",
+      "recipeCopied": "Connection recipe copied.",
+      "secretReminder": "Use the raw API key only inside the provider's protected secret field. The source ID is safe to copy but works only with its linked key.",
+      "providerDocs": "Provider docs",
+      "healthHistory": "Health history",
+      "noHealthHistory": "No health checks yet. Send one permitted import, then refresh health.",
+      "reasons": {
+        "awaiting_first_import": "Awaiting the first permitted import",
+        "no_imports_observed": "No imports observed within the setup window",
+        "expected_import_overdue": "Expected import activity is overdue",
+        "recent_import_error": "The latest activity ended with an import error",
+        "recovered_after_error": "Imports are flowing again after an error",
+        "imports_flowing": "Imports are flowing within the expected interval"
+      },
+      "historyCounts": "{{attempts}} attempts · {{failures}} failures",
+      "archiveTitle": "Archive this source connection?",
+      "archiveDescription": "Imports using this source ID will be rejected. Existing contacts and privacy-safe analytics remain available in their original records.",
+      "steps": {
+        "zapier": {
+          "1": "Choose the app and event that produces an eligible customer record.",
+          "2": "Add Webhooks by Zapier and select Custom Request.",
+          "3": "Set Method to POST and paste the Get Phame endpoint.",
+          "4": "Add the protected headers exactly as shown below.",
+          "5": "Map the JSON fields, using one stable provider ID for externalId and Idempotency-Key.",
+          "6": "Test the action with one permitted record, then refresh health here."
+        },
+        "make": {
+          "1": "Choose the trigger module that produces an eligible customer record.",
+          "2": "Add HTTP and select Make a request.",
+          "3": "Set Method to POST, Body type to Raw, and Content type to application/json.",
+          "4": "Add the protected headers exactly as shown below.",
+          "5": "Map the JSON fields, using one stable bundle ID for externalId and Idempotency-Key.",
+          "6": "Run the scenario once with one permitted record, then refresh health here."
+        },
+        "custom": {
+          "1": "Use a trusted server-side workflow that supports POST and protected headers.",
+          "2": "Store the API key in the workflow secret store, never in browser code or a URL.",
+          "3": "Send JSON to the Get Phame endpoint with the headers shown below.",
+          "4": "Use one immutable source record ID for externalId and Idempotency-Key.",
+          "5": "Send one permitted record, then refresh health here."
+        }
+      }
+    },
     "guides": {
       "copied": "Example copied.",
       "copyExample": "Copy example",
@@ -2985,238 +3234,71 @@
       "not_applicable": "Not applicable"
     }
   },
-  "legal": {
-    "contactHeading": "Contact us",
-    "terms": {
-      "title": "Terms of Service",
-      "lastUpdated": "Last updated: July 24, 2026",
-      "contactIntro": "Questions about these Terms, your account, or a payment can be sent to us using the contact details below.",
-      "contactResponse": "We aim to respond to account, billing, and legal questions within 30 calendar days.",
-      "sections": [
-        {
-          "id": "acceptance",
-          "title": "1. Acceptance of these Terms",
-          "paragraphs": [
-            "These Terms of Service (the \"Terms\") govern your access to and use of the Get Phame web application, related websites, and services (collectively, the \"Service\"). By creating an account, signing in, purchasing a plan, or otherwise using the Service, you agree to these Terms and to our Privacy Policy.",
-            "If you use the Service for a business or other legal entity, you represent that you have authority to bind that entity. If you do not agree to these Terms, do not use the Service."
-          ]
-        },
-        {
-          "id": "service-and-plans",
-          "title": "2. Service, plans, and availability",
-          "paragraphs": [
-            "Get Phame helps businesses organize customer contacts, manage review destinations, create review-request email campaigns, send messages through a connected email account, schedule measured follow-ups, and review delivery and engagement activity.",
-            "The Free plan includes 10 initial review requests and then 5 review requests in each rolling 30-day period. Paid plans, including monthly, annual, and lifetime options when available, provide the features and request allowances shown at checkout or in the app. Current pricing, taxes, renewal terms, and plan details are presented before you authorize a purchase.",
-            "We may change, add, remove, or limit features and plans. A change to a recurring plan's price will take effect no earlier than the next renewal after reasonable notice, unless a shorter period is required or permitted by law."
-          ]
-        },
-        {
-          "id": "accounts-and-access",
-          "title": "3. Accounts and sign-in",
-          "paragraphs": [
-            "You must be at least 18 years old and able to form a binding agreement to use the Service. You are responsible for accurate account information, protecting access to your email inbox and devices, and all activity performed through your account.",
-            "You may sign in using Google OAuth, Sign in with Apple, a passwordless email magic link, or another method we make available. Get Phame does not require or store a password for these sign-in methods. If you enable a passkey, your device or password manager handles the credential; we do not receive your biometric data.",
-            "Notify us promptly if you believe your account or a connected email account has been accessed without authorization. We may suspend or restrict an account when reasonably necessary to protect the Service, users, recipients, or applicable law."
-          ]
-        },
-        {
-          "id": "your-responsibilities",
-          "title": "4. Your business, customer data, and connected accounts",
-          "paragraphs": [
-            "You are responsible for the customer data, review links, email content, and connected email account you use with the Service. You represent that you have the necessary rights, notices, and permissions to upload customer data and contact recipients.",
-            "You must keep your review destinations accurate and may not use the Service to impersonate another person or business, send deceptive messages, or direct recipients to harmful or unlawful content."
-          ]
-        },
-        {
-          "id": "acceptable-use",
-          "title": "5. Acceptable use and review-request compliance",
-          "paragraphs": [
-            "Use the Service only for lawful, respectful, relationship-based customer communication. You must comply with all laws and rules that apply to you and your recipients, including applicable anti-spam, privacy, consumer-protection, review-platform, and electronic-communications requirements.",
-            "You are the sender of record for messages sent through your connected email account. You are responsible for obtaining any required consent, honoring opt-outs and unsubscribe requests, identifying your business accurately, and including any required physical address or other disclosures."
-          ],
-          "bullets": [
-            "Do not use purchased, rented, scraped, or third-party lists without a lawful basis to contact each recipient.",
-            "Do not send unsolicited bulk email, harass recipients, bypass rate limits, or contact people who have opted out.",
-            "Do not offer incentives for positive reviews, filter or gate customers based on expected sentiment, or otherwise manipulate reviews in a way that violates a platform's rules or applicable law.",
-            "Do not upload malware, probe the Service, evade security controls, or use the Service to infringe another party's rights."
-          ]
-        },
-        {
-          "id": "third-party-services",
-          "title": "6. Third-party services and destinations",
-          "paragraphs": [
-            "The Service can connect with or link to third-party services, such as Google, Apple, email providers, WooCommerce, Stripe, PayPal, and review platforms. Your use of those services remains subject to their separate terms, privacy notices, and technical requirements.",
-            "Get Phame does not control third-party platforms or guarantee that a review platform, email provider, or payment provider will accept, deliver, publish, preserve, or display any message, review, payment, or account."
-          ]
-        },
-        {
-          "id": "payments",
-          "title": "7. Payments, renewals, cancellations, and refunds",
-          "paragraphs": [
-            "Paid plans may be processed by Stripe or PayPal. By completing checkout, you authorize the selected processor to charge the disclosed amount, including applicable taxes, according to the billing schedule presented to you. Get Phame does not store full payment card numbers or card security codes.",
-            "Monthly and annual plans renew automatically unless you cancel before the next renewal date. Lifetime plans are one-time purchases and do not renew. You can manage or cancel a recurring subscription through the applicable billing flow or by contacting us before renewal.",
-            "Except where required by law or expressly stated at checkout, payments are non-refundable. Cancelling a recurring plan prevents future renewals; you retain paid access through the end of the then-current billing period unless we state otherwise."
-          ]
-        },
-        {
-          "id": "data-and-security",
-          "title": "8. Data, email credentials, and security",
-          "paragraphs": [
-            "Our Privacy Policy explains how we collect, use, retain, and protect information. You remain the controller of customer contact information you upload, while Get Phame processes it to provide the Service on your behalf.",
-            "When you connect an SMTP account, you authorize us to use those credentials to send the messages you initiate. SMTP passwords are encrypted before storage. You can disconnect a connected email account in Settings, which removes the stored credentials from our active systems."
-          ]
-        },
-        {
-          "id": "service-changes",
-          "title": "9. Service changes and availability",
-          "paragraphs": [
-            "We work to keep the Service available and secure, but it may be interrupted for maintenance, updates, provider outages, security events, or circumstances outside our reasonable control. We do not guarantee uninterrupted or error-free operation, delivery, inbox placement, review publication, or a particular business outcome.",
-            "You should maintain appropriate backups of information that is important to your business and review campaign operations."
-          ]
-        },
-        {
-          "id": "intellectual-property",
-          "title": "10. Intellectual property",
-          "paragraphs": [
-            "The Service, including its software, branding, design, and content, is owned by Get Phame or its licensors and is protected by applicable intellectual-property laws. Subject to these Terms, we grant you a limited, non-exclusive, non-transferable, revocable right to use the Service for your internal business purposes.",
-            "You retain ownership of the content and data you submit. You grant us the limited rights needed to host, process, transmit, and display that content solely to operate and improve the Service."
-          ]
-        },
-        {
-          "id": "termination",
-          "title": "11. Suspension and termination",
-          "paragraphs": [
-            "You may stop using the Service at any time. We may suspend or terminate access if you materially breach these Terms, create risk or legal exposure for us or others, fail to pay amounts due, or use the Service in a way that harms recipients or the Service.",
-            "After termination, provisions that by their nature should survive will survive, including those concerning payments already due, intellectual property, disclaimers, liability limits, indemnity, and dispute terms."
-          ]
-        },
-        {
-          "id": "disclaimers",
-          "title": "12. Disclaimers and limitation of liability",
-          "paragraphs": [
-            "To the maximum extent permitted by law, the Service is provided \"as is\" and \"as available\" without warranties of any kind, whether express, implied, or statutory. We disclaim implied warranties of merchantability, fitness for a particular purpose, title, and non-infringement.",
-            "To the maximum extent permitted by law, Get Phame and its operators, affiliates, and licensors will not be liable for indirect, incidental, special, consequential, exemplary, or punitive damages, or for lost profits, revenue, goodwill, data, or business opportunities. Our aggregate liability arising out of or relating to the Service will not exceed the amount you paid us for the Service in the 12 months before the event giving rise to liability, or US$100 if you paid nothing."
-          ]
-        },
-        {
-          "id": "indemnity-and-changes",
-          "title": "13. Indemnity, changes, and governing law",
-          "paragraphs": [
-            "You will defend, indemnify, and hold harmless Get Phame and its operators, affiliates, and licensors from claims, damages, losses, liabilities, and expenses arising from your customer data, messages, review practices, violation of law, or breach of these Terms.",
-            "We may update these Terms from time to time. We will post the updated version and revise the date above. If you continue to use the Service after the effective date, you accept the updated Terms. These Terms are governed by the laws applicable to the operator of the Service, without regard to conflict-of-laws principles, except where mandatory consumer law provides otherwise."
-          ]
-        }
-      ]
+  "manual": {
+    "badges": {
+      "all": "Free & paid",
+      "paid": "Paid subscription only",
+      "admin": "Administrator only"
     },
-    "privacy": {
-      "title": "Privacy Policy",
-      "lastUpdated": "Last updated: July 24, 2026",
-      "contactIntro": "Questions, data-rights requests, or concerns about this Privacy Policy can be sent to us using the contact details below.",
-      "contactResponse": "We aim to respond to privacy-related requests within 30 calendar days and may need to verify your identity before completing a request.",
-      "sections": [
-        {
-          "id": "introduction",
-          "title": "1. Introduction",
-          "paragraphs": [
-            "This Privacy Policy explains how Get Phame collects, uses, shares, retains, and protects information when you use our web application and related services. The Service helps businesses send review-request emails through their own connected email accounts.",
-            "This Policy applies to account holders and to customer contact information that account holders upload or connect to the Service. Account holders are responsible for their own notices and legal basis for providing customer data to us."
-          ]
-        },
-        {
-          "id": "information-collected",
-          "title": "2. Information we collect",
-          "paragraphs": [
-            "Account and authentication information. When you sign in with Google OAuth, Sign in with Apple, or a passwordless email magic link, we receive and store the information necessary to create and secure your account, such as your name, email address, provider account identifier, and session information. We do not receive or store your Google or Apple account password. If you use a passkey, we store only the public credential data needed to verify sign-in; we do not receive biometric data.",
-            "Business, customer, and campaign information. You may provide your business profile, review-destination links, email templates, customer names and email addresses, campaign history, unsubscribe status, and related operational information. You may enter customer contacts manually, import them from a CSV file, or connect an approved integration such as WooCommerce or Stripe.",
-            "Connected email information. To send messages on your behalf, you may provide SMTP host, port, email address, and an app-specific password or other email credential. Credentials are encrypted before storage and used only to send messages you initiate or to perform the connection-health checks described in this Policy.",
-            "Usage, security, and email-engagement information. We may log account activity, request counts, device and browser information, IP-derived country or region, and security events. Review-request emails may include an open-tracking pixel and click-tracking redirect. When a recipient interacts with a tracked email, we record the event, timestamp, approximate IP-derived geography, and user-agent information for the account holder's campaign analytics.",
-            "Payment information. When you buy a paid plan, payment processing is handled by Stripe or PayPal. We receive transaction and subscription details needed to provide access and support billing. We do not store full payment card numbers or card security codes."
-          ]
-        },
-        {
-          "id": "use",
-          "title": "3. How we use information",
-          "paragraphs": [
-            "We use information to provide, maintain, secure, and improve the Service; authenticate users; create and manage accounts; send the emails you initiate; operate reminders and campaign analytics; process payments; respond to support requests; prevent abuse; and comply with legal obligations.",
-            "We do not sell customer contact data or use it to independently market to your customers. We do not read, index, or store the contents of your existing inbox, sent mail, or other mailbox data."
-          ]
-        },
-        {
-          "id": "legal-bases",
-          "title": "4. Legal bases for processing",
-          "paragraphs": [
-            "Where GDPR or similar law applies, we process account, business, and campaign information to perform our contract with you; process security, reliability, and limited usage information for our legitimate interests in operating a safe and reliable service; process certain records to comply with legal obligations; and rely on consent where required by law.",
-            "If you provide customer data, you are responsible for identifying and documenting the legal basis that permits you to collect, use, and share that information for review-request communication."
-          ]
-        },
-        {
-          "id": "sharing",
-          "title": "5. How we share information",
-          "paragraphs": [
-            "We share information only as needed to operate the Service, comply with law, protect rights and safety, or complete a transaction you request. Recipients may include infrastructure and storage providers, email-delivery and support providers, payment processors, and the integrations you choose to connect.",
-            "Stripe and PayPal process payment information under their own privacy notices. Google and Apple process sign-in information under their own privacy notices. We may disclose information in response to a lawful request or to protect the rights, property, and safety of Get Phame, users, recipients, or the public."
-          ]
-        },
-        {
-          "id": "customer-data-and-tracking",
-          "title": "6. Customer data, email tracking, and opt-outs",
-          "paragraphs": [
-            "Account holders are the controllers of the customer contact data and engagement information associated with their campaigns. Get Phame acts as a processor of that information to provide the Service on the account holder's instructions.",
-            "Open and click tracking is used to display campaign activity to the account holder. Each account holder is responsible for providing required notices, honoring unsubscribe requests, and using tracking in accordance with applicable law. Recipients who use an unsubscribe link are excluded from future sends by that account."
-          ]
-        },
-        {
-          "id": "retention",
-          "title": "7. Data retention and deletion",
-          "paragraphs": [
-            "We retain account, business, customer, campaign, and security information for as long as your account is active and as needed to provide the Service. You can delete customer contacts and disconnect an SMTP account in the app. Disconnecting removes stored email credentials from our active systems.",
-            "When you delete your account or make a verified deletion request, we will remove personal data from active systems within 30 days unless a longer retention period is required or permitted for legal, security, dispute-resolution, or financial-record purposes."
-          ]
-        },
-        {
-          "id": "security",
-          "title": "8. Security",
-          "paragraphs": [
-            "We use reasonable administrative, technical, and organizational safeguards designed to protect information, including encrypted storage for SMTP credentials, TLS in transit, access controls, session protections, rate limiting, and HTTP security headers. No system can be guaranteed completely secure; please contact us promptly if you suspect unauthorized access."
-          ]
-        },
-        {
-          "id": "rights",
-          "title": "9. Your privacy rights",
-          "paragraphs": [
-            "Depending on where you live, you may have rights to access, correct, delete, restrict, object to, or receive a portable copy of personal data, and to withdraw consent where consent is the legal basis. You may also have the right to lodge a complaint with a supervisory authority.",
-            "To exercise a right, contact us using the details below. We may ask for information necessary to verify your identity and authority before acting on a request."
-          ]
-        },
-        {
-          "id": "cookies",
-          "title": "10. Cookies and session data",
-          "paragraphs": [
-            "We use essential, secure session cookies and local storage that are necessary to keep you signed in, protect the Service, remember app settings such as language, and support the sign-in methods you select. We do not use third-party advertising cookies to track you across websites."
-          ]
-        },
-        {
-          "id": "children",
-          "title": "11. Children's privacy",
-          "paragraphs": [
-            "The Service is a business tool for adults and is not directed to children under 18. We do not knowingly collect personal information from children. If you believe a child has provided personal information to us, contact us and we will take appropriate steps to delete it."
-          ]
-        },
-        {
-          "id": "transfers",
-          "title": "12. International transfers",
-          "paragraphs": [
-            "Get Phame may process information in the United States and other countries where we or our service providers operate. Those countries may have data-protection laws that differ from those in your country. Where required, we use appropriate safeguards for international transfers."
-          ]
-        },
-        {
-          "id": "changes",
-          "title": "13. Changes to this Privacy Policy",
-          "paragraphs": [
-            "We may update this Privacy Policy to reflect changes in our practices, technology, legal requirements, or the Service. We will post the revised policy and update the date above. If a change is material, we will provide additional notice when reasonably appropriate."
-          ]
-        }
-      ]
+    "searchPlaceholder": "Search this manual",
+    "searchLabel": "Search this manual",
+    "searchResults": "{{count}} matching topics",
+    "lastUpdated": "Last updated {{date}}",
+    "sectionNavigation": "Manual sections",
+    "sectionCount": "Manual sections",
+    "adminSectionCount": "Admin-only sections",
+    "paidTopicCount": "Paid-only topics",
+    "inThisManual": "In this manual",
+    "stepsLabel": "Steps",
+    "noteLabel": "Important note",
+    "openFeature": "Open this feature",
+    "noResultsTitle": "No matching topics",
+    "noResultsBody": "Try a shorter search or browse the section links above.",
+    "clearSearch": "Clear search",
+    "insights": {
+      "eyebrow": "Documentation intelligence",
+      "title": "Searches with no results",
+      "description": "Use these aggregate terms to prioritize missing Manual topics. Repeated searches from the same account count once per UTC day.",
+      "privacy": "Private by design: reports exclude account IDs, customer records, referrers, devices, and raw event rows.",
+      "periodLabel": "Reporting period",
+      "periodDays": "{{count}} days",
+      "loading": "Loading missing-topic searches…",
+      "error": "Missing-topic analytics could not be loaded. Try again.",
+      "retry": "Retry",
+      "totalSearches": "Zero-result searches",
+      "uniqueTerms": "Distinct terms",
+      "roleBreakdown": "User {{user}} · Admin {{admin}}",
+      "manualScope": "Manual scope",
+      "term": "Missing topic search",
+      "role": "Manual",
+      "locale": "Locale",
+      "count": "Count",
+      "lastSearched": "Last searched",
+      "adminManual": "Admin Manual",
+      "userManual": "User Manual",
+      "emptyTitle": "No missing-topic searches yet",
+      "emptyBody": "Zero-result searches will appear here after daily account-level deduplication."
+    },
+    "export": {
+      "fullScope": "Entire visible Manual",
+      "sectionScope": "Manual section",
+      "scope": "Export scope",
+      "language": "Language",
+      "generated": "Generated",
+      "lastUpdated": "Manual last updated",
+      "version": "Manual version",
+      "steps": "Steps",
+      "notes": "Important notes",
+      "featurePath": "Feature path",
+      "page": "Page {{current}} of {{total}}",
+      "sectionSuccess": "Downloaded {{section}} as a PDF.",
+      "fullSuccess": "Downloaded the complete Manual as a PDF.",
+      "error": "The Manual PDF could not be created. Please try again.",
+      "preparing": "Preparing PDF…",
+      "fullButton": "Download full Manual PDF",
+      "help": "The PDF includes only the Manual available to your authenticated role and current language.",
+      "sectionAria": "Download {{section}} as a PDF",
+      "sectionButton": "Download section PDF"
     }
   }
 }
