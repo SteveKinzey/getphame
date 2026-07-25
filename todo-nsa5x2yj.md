@@ -120,3 +120,8 @@
 - [x] Fix transcript PDF Unicode rendering for Traditional/Simplified Chinese and Thai interface metadata while preserving Latin caption text, deterministic client-side generation, and acceptable download size.
 - [x] Publish the Unicode PDF correction and verify real Traditional Chinese and Thai transcript downloads on the live Get Phame origin before final delivery.
 - [x] Fix the live CORS failure for managed Unicode font redirects by serving the approved CJK and Thai subsets through a cacheable same-origin application route, then reverify both localized PDF exports.
+- [x] Audit the current production Get Phame favicon, PWA icons, Apple touch icon, app-store icon, and wordmark assets, including exact pixel dimensions and file characteristics.
+- [x] Locate and measure the proposed new Get Phame icon-plus-wordmark asset against the current production lockup.
+- [x] Verify the current Apple App Store, Google Play, and installable PWA image requirements from authoritative platform documentation.
+- [x] Deliver an exact raster asset handoff specification, naming guidance, safe-area rules, and a current-versus-new logo comparison.
+- [x] Measure the supplied 170×58, 253×85, 338×114, and 506×170 Get Phame lockup PNGs programmatically without reopening them visually, and verify whether they are true scale variants or independently cropped exports.
