@@ -1,19 +1,41 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Captions, Play, X } from "lucide-react";
+import { Captions, Languages, Play, Settings2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import FadeUp from "./FadeUp";
 
 export const WALKTHROUGH_VIDEO_URL = "/manus-storage/getphame-walkthrough-toggle-ready_4a3636b0.mp4";
-export const WALKTHROUGH_CAPTIONS_URL = "/getphame-walkthrough.en.vtt";
+export const WALKTHROUGH_CAPTION_TRACKS = {
+  en: "/getphame-walkthrough.en.vtt",
+  es: "/getphame-walkthrough.es.vtt",
+  fr: "/getphame-walkthrough.fr.vtt",
+} as const;
+export const WALKTHROUGH_CAPTIONS_URL = WALKTHROUGH_CAPTION_TRACKS.en;
 export const WALKTHROUGH_POSTER_URL = "/manus-storage/getphame-walkthrough-toggle-ready-poster_7dfd9fb1.png";
 const CAPTIONS_PREFERENCE_KEY = "getphame-walkthrough-captions";
+const CAPTION_LANGUAGE_PREFERENCE_KEY = "getphame-walkthrough-caption-language";
+const CAPTION_FONT_SIZE_PREFERENCE_KEY = "getphame-walkthrough-caption-font-size";
+const CAPTION_BACKGROUND_PREFERENCE_KEY = "getphame-walkthrough-caption-background";
+type CaptionLanguage = keyof typeof WALKTHROUGH_CAPTION_TRACKS;
+type CaptionFontSize = "small" | "medium" | "large";
+type CaptionBackground = "navy" | "black" | "translucent";
 
 export default function VideoDemo() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const [videoAttempt, setVideoAttempt] = useState(0);
+  const [captionSettingsMenuOpen, setCaptionSettingsMenuOpen] = useState(false);
+  const [captionLanguageMenuOpen, setCaptionLanguageMenuOpen] = useState(false);
   const [captionsEnabled, setCaptionsEnabled] = useState(() => {
     if (typeof window === "undefined") return true;
     try {
@@ -22,16 +44,102 @@ export default function VideoDemo() {
       return true;
     }
   });
+  const [captionLanguage, setCaptionLanguage] = useState<CaptionLanguage>(() => {
+    if (typeof window === "undefined") return "en";
+    try {
+      const storedLanguage = window.localStorage.getItem(CAPTION_LANGUAGE_PREFERENCE_KEY);
+      return storedLanguage === "es" || storedLanguage === "fr" ? storedLanguage : "en";
+    } catch {
+      return "en";
+    }
+  });
+  const [captionFontSize, setCaptionFontSize] = useState<CaptionFontSize>(() => {
+    if (typeof window === "undefined") return "medium";
+    try {
+      const storedSize = window.localStorage.getItem(CAPTION_FONT_SIZE_PREFERENCE_KEY);
+      return storedSize === "small" || storedSize === "large" ? storedSize : "medium";
+    } catch {
+      return "medium";
+    }
+  });
+  const [captionBackground, setCaptionBackground] = useState<CaptionBackground>(() => {
+    if (typeof window === "undefined") return "navy";
+    try {
+      const storedBackground = window.localStorage.getItem(CAPTION_BACKGROUND_PREFERENCE_KEY);
+      return storedBackground === "black" || storedBackground === "translucent"
+        ? storedBackground
+        : "navy";
+    } catch {
+      return "navy";
+    }
+  });
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const captionLanguageOptions = [
+    {
+      value: "en" as const,
+      label: t("landing.modal.captionLanguageEnglish", { defaultValue: "English" }),
+      trackLabel: t("landing.modal.captionTrackEnglish", { defaultValue: "English captions" }),
+    },
+    {
+      value: "es" as const,
+      label: t("landing.modal.captionLanguageSpanish", { defaultValue: "Spanish" }),
+      trackLabel: t("landing.modal.captionTrackSpanish", { defaultValue: "Spanish captions" }),
+    },
+    {
+      value: "fr" as const,
+      label: t("landing.modal.captionLanguageFrench", { defaultValue: "French" }),
+      trackLabel: t("landing.modal.captionTrackFrench", { defaultValue: "French captions" }),
+    },
+  ];
+  const selectedCaptionLanguageLabel =
+    captionLanguageOptions.find((option) => option.value === captionLanguage)?.label ??
+    captionLanguageOptions[0].label;
+  const captionFontSizeOptions = [
+    {
+      value: "small" as const,
+      label: t("landing.modal.captionFontSizeSmall", { defaultValue: "Small" }),
+    },
+    {
+      value: "medium" as const,
+      label: t("landing.modal.captionFontSizeMedium", { defaultValue: "Medium" }),
+    },
+    {
+      value: "large" as const,
+      label: t("landing.modal.captionFontSizeLarge", { defaultValue: "Large" }),
+    },
+  ];
+  const captionBackgroundOptions = [
+    {
+      value: "navy" as const,
+      label: t("landing.modal.captionBackgroundNavy", { defaultValue: "Dark navy" }),
+    },
+    {
+      value: "black" as const,
+      label: t("landing.modal.captionBackgroundBlack", { defaultValue: "Black" }),
+    },
+    {
+      value: "translucent" as const,
+      label: t("landing.modal.captionBackgroundClear", { defaultValue: "Translucent" }),
+    },
+  ];
+  const selectedCaptionFontSizeLabel =
+    captionFontSizeOptions.find((option) => option.value === captionFontSize)?.label ??
+    captionFontSizeOptions[1].label;
+  const selectedCaptionBackgroundLabel =
+    captionBackgroundOptions.find((option) => option.value === captionBackground)?.label ??
+    captionBackgroundOptions[0].label;
 
   const syncCaptionMode = useCallback(() => {
-    const track = videoRef.current?.textTracks?.[0];
-    if (track) {
-      track.mode = captionsEnabled ? "showing" : "disabled";
+    const tracks = videoRef.current?.textTracks;
+    if (!tracks) return;
+
+    for (let index = 0; index < tracks.length; index += 1) {
+      const track = tracks[index];
+      track.mode = captionsEnabled && track.language === captionLanguage ? "showing" : "disabled";
     }
-  }, [captionsEnabled]);
+  }, [captionLanguage, captionsEnabled]);
 
   useEffect(() => {
     try {
@@ -39,11 +147,14 @@ export default function VideoDemo() {
         CAPTIONS_PREFERENCE_KEY,
         captionsEnabled ? "on" : "off",
       );
+      window.localStorage.setItem(CAPTION_LANGUAGE_PREFERENCE_KEY, captionLanguage);
+      window.localStorage.setItem(CAPTION_FONT_SIZE_PREFERENCE_KEY, captionFontSize);
+      window.localStorage.setItem(CAPTION_BACKGROUND_PREFERENCE_KEY, captionBackground);
     } catch {
-      // The toggle still works when storage is restricted or unavailable.
+      // Caption controls still work when storage is restricted or unavailable.
     }
     if (open) syncCaptionMode();
-  }, [captionsEnabled, open, syncCaptionMode]);
+  }, [captionBackground, captionFontSize, captionLanguage, captionsEnabled, open, syncCaptionMode]);
 
   const openVideo = () => {
     setVideoError(false);
@@ -64,8 +175,36 @@ export default function VideoDemo() {
     closeButtonRef.current?.focus();
 
     const handleKeyDown = (event: KeyboardEvent) => {
+      const eventTarget = event.target instanceof HTMLElement ? event.target : null;
+      const isMenuTarget = Boolean(
+        eventTarget?.closest('[role="menu"], [role="menuitemradio"]'),
+      );
+
       if (event.key === "Escape") {
+        if (isMenuTarget) return;
         setOpen(false);
+        return;
+      }
+
+      const isEditableTarget = Boolean(
+        eventTarget &&
+          (eventTarget.isContentEditable ||
+            ["INPUT", "TEXTAREA", "SELECT"].includes(eventTarget.tagName) ||
+            eventTarget.closest('[role="textbox"]') ||
+            isMenuTarget),
+      );
+
+      if (
+        event.key.toLowerCase() === "c" &&
+        !event.defaultPrevented &&
+        !event.altKey &&
+        !event.ctrlKey &&
+        !event.metaKey &&
+        !event.repeat &&
+        !isEditableTarget
+      ) {
+        event.preventDefault();
+        setCaptionsEnabled((enabled) => !enabled);
         return;
       }
 
@@ -212,7 +351,7 @@ export default function VideoDemo() {
                 {t("landing.modal.videoTitle", { defaultValue: "Get Phame platform walkthrough" })}
               </h3>
               <p id="get-phame-video-description" className="sr-only">
-                {t("landing.modal.captionNotice", { defaultValue: "English narration. Use the Captions button to show or hide English captions." })}
+                {t("landing.modal.captionNotice", { defaultValue: "English narration with optional English, Spanish, and French captions." })}
               </p>
 
               {/* Self-hosted video and custom caption control */}
@@ -237,15 +376,21 @@ export default function VideoDemo() {
                     aria-label={t("landing.modal.videoTitle", { defaultValue: "Get Phame platform walkthrough" })}
                     aria-describedby="get-phame-video-description getphame-caption-status"
                     data-caption-state={captionsEnabled ? "on" : "off"}
+                    data-caption-language={captionLanguage}
+                    data-caption-size={captionFontSize}
+                    data-caption-background={captionBackground}
                     className="getphame-walkthrough-video absolute inset-0 h-full w-full object-contain"
                   >
-                    <track
-                      kind="captions"
-                      src={WALKTHROUGH_CAPTIONS_URL}
-                      srcLang="en"
-                      label={t("landing.modal.captionTrackLabel", { defaultValue: "English captions" })}
-                      default={captionsEnabled}
-                    />
+                    {captionLanguageOptions.map((option) => (
+                      <track
+                        key={option.value}
+                        kind="captions"
+                        src={WALKTHROUGH_CAPTION_TRACKS[option.value]}
+                        srcLang={option.value}
+                        label={option.trackLabel}
+                        default={captionsEnabled && captionLanguage === option.value}
+                      />
+                    ))}
                     {t("landing.modal.videoFallback", { defaultValue: "Your browser does not support HTML video." })}
                   </video>
                   {videoError && (
@@ -279,50 +424,192 @@ export default function VideoDemo() {
                   )}
                 </div>
 
-                <div className="mt-2 flex flex-col items-center justify-between gap-2 sm:flex-row">
+                <div className="mt-2 flex flex-col gap-2">
                   <p className="px-1 text-center text-xs leading-relaxed text-slate-300 sm:text-left sm:text-sm">
-                    {t("landing.modal.captionsHelp", { defaultValue: "Use the CC button to show or hide English captions." })}
+                    {t("landing.modal.captionsHelp", { defaultValue: "Use CC or press C to toggle captions. Choose a language, font size, and background from the menus." })}
                   </p>
-                  <button
-                    type="button"
-                    data-testid="caption-toggle"
-                    aria-controls="getphame-walkthrough-player"
-                    aria-pressed={captionsEnabled}
-                    aria-label={t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
-                      defaultValue: captionsEnabled ? "Disable captions" : "Enable captions",
-                    })}
-                    title={t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
-                      defaultValue: captionsEnabled ? "Disable captions" : "Enable captions",
-                    })}
-                    onClick={() => setCaptionsEnabled((enabled) => !enabled)}
-                    className={`inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-full border px-4 text-sm font-bold transition-[transform,background-color,border-color,color] duration-150 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#06111f] sm:w-auto ${
-                      captionsEnabled
-                        ? "border-primary bg-primary text-primary-foreground"
-                        : "border-white/35 bg-white/5 text-white hover:border-white/60 hover:bg-white/10"
-                    }`}
-                  >
-                    <Captions className="h-5 w-5" aria-hidden="true" />
-                    <span>
-                      {t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
+                  <div className="flex flex-col items-stretch justify-end gap-2 sm:flex-row sm:items-center">
+                    <DropdownMenu
+                      open={captionSettingsMenuOpen}
+                      onOpenChange={(nextOpen) => {
+                        setCaptionSettingsMenuOpen(nextOpen);
+                        if (nextOpen) setCaptionLanguageMenuOpen(false);
+                      }}
+                    >
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          data-testid="caption-settings-trigger"
+                          aria-controls="getphame-walkthrough-player"
+                          aria-label={t("landing.modal.captionSettingsAriaLabel", {
+                            defaultValue: "Open caption appearance settings",
+                          })}
+                          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/35 bg-white/5 px-4 text-sm font-bold text-white transition-[transform,background-color,border-color] duration-150 hover:border-primary/70 hover:bg-white/10 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#06111f] sm:w-auto"
+                        >
+                          <Settings2 className="h-5 w-5 text-primary" aria-hidden="true" />
+                          <span>{t("landing.modal.captionSettings", { defaultValue: "Caption settings" })}</span>
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        side="top"
+                        sideOffset={8}
+                        className="min-w-64 border-[#29415f] bg-[#0b1b30] text-white shadow-2xl shadow-black/60"
+                      >
+                        <DropdownMenuLabel className="text-xs font-bold uppercase tracking-wider text-primary">
+                          {t("landing.modal.captionFontSize", { defaultValue: "Font size" })}
+                        </DropdownMenuLabel>
+                        <DropdownMenuRadioGroup
+                          value={captionFontSize}
+                          onValueChange={(value) => {
+                            if (value !== "small" && value !== "medium" && value !== "large") return;
+                            setCaptionFontSize(value);
+                            setCaptionSettingsMenuOpen(false);
+                          }}
+                        >
+                          {captionFontSizeOptions.map((option) => (
+                            <DropdownMenuRadioItem
+                              key={option.value}
+                              value={option.value}
+                              data-testid={`caption-size-${option.value}`}
+                              className="min-h-10 cursor-pointer text-white focus:bg-primary/15 focus:text-white"
+                            >
+                              {option.label}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
+                        <DropdownMenuSeparator className="bg-white/15" />
+                        <DropdownMenuLabel className="text-xs font-bold uppercase tracking-wider text-primary">
+                          {t("landing.modal.captionBackground", { defaultValue: "Background color" })}
+                        </DropdownMenuLabel>
+                        <DropdownMenuRadioGroup
+                          value={captionBackground}
+                          onValueChange={(value) => {
+                            if (value !== "navy" && value !== "black" && value !== "translucent") return;
+                            setCaptionBackground(value);
+                            setCaptionSettingsMenuOpen(false);
+                          }}
+                        >
+                          {captionBackgroundOptions.map((option) => (
+                            <DropdownMenuRadioItem
+                              key={option.value}
+                              value={option.value}
+                              data-testid={`caption-background-${option.value}`}
+                              className="min-h-10 cursor-pointer text-white focus:bg-primary/15 focus:text-white"
+                            >
+                              {option.label}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <DropdownMenu
+                      open={captionLanguageMenuOpen}
+                      onOpenChange={(nextOpen) => {
+                        setCaptionLanguageMenuOpen(nextOpen);
+                        if (nextOpen) setCaptionSettingsMenuOpen(false);
+                      }}
+                    >
+                      <DropdownMenuTrigger asChild>
+                        <button
+                          type="button"
+                          data-testid="caption-language-trigger"
+                          aria-controls="getphame-walkthrough-player"
+                          aria-label={t("landing.modal.captionLanguageAriaLabel", {
+                            defaultValue: "Caption language: {{language}}",
+                            language: selectedCaptionLanguageLabel,
+                          })}
+                          className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-white/35 bg-white/5 px-4 text-sm font-bold text-white transition-[transform,background-color,border-color] duration-150 hover:border-primary/70 hover:bg-white/10 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#06111f] sm:w-auto"
+                        >
+                          <Languages className="h-5 w-5 text-primary" aria-hidden="true" />
+                          <span>{t("landing.modal.captionLanguage", { defaultValue: "Language" })}</span>
+                          <span className="rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide text-white/85">
+                            {selectedCaptionLanguageLabel}
+                          </span>
+                        </button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent
+                        align="end"
+                        side="top"
+                        sideOffset={8}
+                        className="min-w-56 border-[#29415f] bg-[#0b1b30] text-white shadow-2xl shadow-black/60"
+                      >
+                        <DropdownMenuLabel className="text-xs font-bold uppercase tracking-wider text-primary">
+                          {t("landing.modal.captionLanguage", { defaultValue: "Caption language" })}
+                        </DropdownMenuLabel>
+                        <DropdownMenuRadioGroup
+                          value={captionLanguage}
+                          onValueChange={(value) => {
+                            if (value !== "en" && value !== "es" && value !== "fr") return;
+                            setCaptionLanguage(value);
+                            setCaptionsEnabled(true);
+                            setCaptionLanguageMenuOpen(false);
+                          }}
+                        >
+                          {captionLanguageOptions.map((option) => (
+                            <DropdownMenuRadioItem
+                              key={option.value}
+                              value={option.value}
+                              data-testid={`caption-language-${option.value}`}
+                              className="min-h-10 cursor-pointer text-white focus:bg-primary/15 focus:text-white"
+                            >
+                              {option.label}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <button
+                      type="button"
+                      data-testid="caption-toggle"
+                      aria-controls="getphame-walkthrough-player"
+                      aria-pressed={captionsEnabled}
+                      aria-keyshortcuts="C"
+                      aria-label={t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
                         defaultValue: captionsEnabled ? "Disable captions" : "Enable captions",
                       })}
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      className={`rounded-full px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide ${
+                      title={t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
+                        defaultValue: captionsEnabled ? "Disable captions" : "Enable captions",
+                      })}
+                      onClick={() => setCaptionsEnabled((enabled) => !enabled)}
+                      className={`inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-full border px-4 text-sm font-bold transition-[transform,background-color,border-color,color] duration-150 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#06111f] sm:w-auto ${
                         captionsEnabled
-                          ? "bg-[#07182A]/15 text-[#07182A]"
-                          : "bg-white/10 text-white/80"
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-white/35 bg-white/5 text-white hover:border-white/60 hover:bg-white/10"
                       }`}
                     >
-                      {t(captionsEnabled ? "landing.modal.captionsOn" : "landing.modal.captionsOff", {
-                        defaultValue: captionsEnabled ? "Captions on" : "Captions off",
-                      })}
-                    </span>
-                  </button>
+                      <Captions className="h-5 w-5" aria-hidden="true" />
+                      <span>
+                        {t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
+                          defaultValue: captionsEnabled ? "Disable captions" : "Enable captions",
+                        })}
+                      </span>
+                      <kbd className="hidden rounded border border-current/25 px-1.5 py-0.5 text-[10px] font-black leading-none opacity-75 sm:inline-flex" aria-hidden="true">
+                        C
+                      </kbd>
+                      <span
+                        aria-hidden="true"
+                        className={`rounded-full px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide ${
+                          captionsEnabled
+                            ? "bg-[#07182A]/15 text-[#07182A]"
+                            : "bg-white/10 text-white/80"
+                        }`}
+                      >
+                        {t(captionsEnabled ? "landing.modal.captionsOn" : "landing.modal.captionsOff", {
+                          defaultValue: captionsEnabled ? "Captions on" : "Captions off",
+                        })}
+                      </span>
+                    </button>
+                  </div>
                   <p id="getphame-caption-status" role="status" aria-live="polite" className="sr-only">
                     {t(captionsEnabled ? "landing.modal.captionsOn" : "landing.modal.captionsOff", {
                       defaultValue: captionsEnabled ? "Captions on" : "Captions off",
+                    })}
+                    {`. ${selectedCaptionLanguageLabel}. `}
+                    {t("landing.modal.captionAppearanceStatus", {
+                      defaultValue: "Caption size {{size}} with {{background}} background",
+                      size: selectedCaptionFontSizeLabel,
+                      background: selectedCaptionBackgroundLabel,
                     })}
                   </p>
                 </div>

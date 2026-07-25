@@ -1,11 +1,39 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 
-test("opens the captioned Get Phame walkthrough without overflowing the viewport", async ({
+const CAPTIONS_KEY = "getphame-walkthrough-captions";
+const LANGUAGE_KEY = "getphame-walkthrough-caption-language";
+const SIZE_KEY = "getphame-walkthrough-caption-font-size";
+const BACKGROUND_KEY = "getphame-walkthrough-caption-background";
+
+async function selectMenuItem(page: Page, trigger: Locator, testId: string) {
+  const menus = page.getByRole("menu");
+  if ((await trigger.getAttribute("aria-expanded")) === "true" || (await menus.count()) > 0) {
+    await page.keyboard.press("Escape");
+    await expect(menus).toHaveCount(0);
+  }
+
+  await trigger.click();
+  await expect(menus).toHaveCount(1);
+  const item = page.getByTestId(testId);
+  await expect(item).toBeVisible();
+  await item.click();
+
+  if ((await trigger.getAttribute("aria-expanded")) === "true") {
+    await page.keyboard.press("Escape");
+  }
+  await expect(menus).toHaveCount(0);
+}
+
+test("controls multilingual captions, appearance, keyboard safety, and persistence without viewport overflow", async ({
   page,
 }, testInfo) => {
+  test.setTimeout(60_000);
   await page.addInitScript(() => {
     localStorage.setItem("rl-pwa-prompt-dismissed", "1");
     localStorage.setItem("getphame-walkthrough-captions", "on");
+    localStorage.setItem("getphame-walkthrough-caption-language", "en");
+    localStorage.setItem("getphame-walkthrough-caption-font-size", "medium");
+    localStorage.setItem("getphame-walkthrough-caption-background", "navy");
   });
   await page.goto("/landing?walkthrough-e2e=1");
 
@@ -27,7 +55,7 @@ test("opens the captioned Get Phame walkthrough without overflowing the viewport
   await expect(dialog).toBeVisible();
   await expect(page.getByRole("button", { name: "Close video" })).toBeFocused();
 
-  const video = dialog.locator("video");
+  let video = dialog.locator("video");
   await expect(video).toHaveAttribute(
     "src",
     "/manus-storage/getphame-walkthrough-toggle-ready_4a3636b0.mp4",
@@ -36,13 +64,18 @@ test("opens the captioned Get Phame walkthrough without overflowing the viewport
     "poster",
     "/manus-storage/getphame-walkthrough-toggle-ready-poster_7dfd9fb1.png",
   );
-  await expect(video.locator('track[kind="captions"]')).toHaveAttribute(
+  await expect(video.locator('track[kind="captions"]')).toHaveCount(3);
+  await expect(video.locator('track[srclang="en"]')).toHaveAttribute(
     "src",
     "/getphame-walkthrough.en.vtt",
   );
-  await expect(video.locator('track[kind="captions"]')).toHaveAttribute(
-    "label",
-    "English captions",
+  await expect(video.locator('track[srclang="es"]')).toHaveAttribute(
+    "src",
+    "/getphame-walkthrough.es.vtt",
+  );
+  await expect(video.locator('track[srclang="fr"]')).toHaveAttribute(
+    "src",
+    "/getphame-walkthrough.fr.vtt",
   );
   await expect(video).not.toHaveAttribute("crossorigin", "anonymous");
   await expect(dialog.getByRole("alert")).toHaveCount(0);
@@ -50,26 +83,107 @@ test("opens the captioned Get Phame walkthrough without overflowing the viewport
   const captionsToggle = dialog.getByTestId("caption-toggle");
   await expect(captionsToggle).toHaveAccessibleName("Disable captions");
   await expect(captionsToggle).toHaveAttribute("aria-pressed", "true");
+  await expect(captionsToggle).toHaveAttribute("aria-keyshortcuts", "C");
   await expect(video).toHaveAttribute("data-caption-state", "on");
   await expect
-    .poll(() => video.evaluate((element) => element.textTracks[0]?.mode))
-    .toBe("showing");
+    .poll(() =>
+      video.evaluate((element) =>
+        Array.from(element.textTracks).map((track) => [track.language, track.mode]),
+      ),
+    )
+    .toEqual([
+      ["en", "showing"],
+      ["es", "disabled"],
+      ["fr", "disabled"],
+    ]);
 
-  await captionsToggle.click();
+  await page.keyboard.press("Control+c");
+  await expect(captionsToggle).toHaveAttribute("aria-pressed", "true");
+
+  await dialog.evaluate((element) => {
+    const preventedEvent = new KeyboardEvent("keydown", {
+      key: "c",
+      bubbles: true,
+      cancelable: true,
+    });
+    preventedEvent.preventDefault();
+    element.dispatchEvent(preventedEvent);
+  });
+  await expect(captionsToggle).toHaveAttribute("aria-pressed", "true");
+
+  await dialog.evaluate((element) => {
+    const textbox = document.createElement("div");
+    textbox.id = "caption-e2e-textbox";
+    textbox.setAttribute("role", "textbox");
+    textbox.tabIndex = 0;
+    element.appendChild(textbox);
+    textbox.focus();
+  });
+  await page.keyboard.press("c");
+  await expect(captionsToggle).toHaveAttribute("aria-pressed", "true");
+  await page.locator("#caption-e2e-textbox").evaluate((element) => element.remove());
+
+  await page.keyboard.press("c");
   await expect(captionsToggle).toHaveAccessibleName("Enable captions");
   await expect(captionsToggle).toHaveAttribute("aria-pressed", "false");
   await expect(video).toHaveAttribute("data-caption-state", "off");
   await expect
-    .poll(() => video.evaluate((element) => element.textTracks[0]?.mode))
-    .toBe("disabled");
-  await expect.poll(() => page.evaluate(() => localStorage.getItem("getphame-walkthrough-captions"))).toBe("off");
+    .poll(() =>
+      video.evaluate((element) => Array.from(element.textTracks).map((track) => track.mode)),
+    )
+    .toEqual(["disabled", "disabled", "disabled"]);
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), CAPTIONS_KEY)).toBe("off");
 
-  await captionsToggle.click();
-  await expect(captionsToggle).toHaveAccessibleName("Disable captions");
-  await expect(video).toHaveAttribute("data-caption-state", "on");
+  await page.keyboard.press("c");
+  await expect(captionsToggle).toHaveAttribute("aria-pressed", "true");
   await expect
-    .poll(() => video.evaluate((element) => element.textTracks[0]?.mode))
-    .toBe("showing");
+    .poll(() =>
+      video.evaluate((element) =>
+        Array.from(element.textTracks).map((track) => [track.language, track.mode]),
+      ),
+    )
+    .toEqual([
+      ["en", "showing"],
+      ["es", "disabled"],
+      ["fr", "disabled"],
+    ]);
+
+  const languageTrigger = dialog.getByTestId("caption-language-trigger");
+  for (const language of ["es", "fr"] as const) {
+    await selectMenuItem(page, languageTrigger, `caption-language-${language}`);
+    await expect(video).toHaveAttribute("data-caption-language", language);
+    await expect
+      .poll(() => page.evaluate((key) => localStorage.getItem(key), LANGUAGE_KEY))
+      .toBe(language);
+    await expect
+      .poll(() =>
+        video.evaluate(
+          (element, selectedLanguage) =>
+            Array.from(element.textTracks).map((track) => [
+              track.language,
+              track.mode,
+              track.language === selectedLanguage,
+            ]),
+          language,
+        ),
+      )
+      .toEqual([
+        ["en", "disabled", false],
+        ["es", language === "es" ? "showing" : "disabled", language === "es"],
+        ["fr", language === "fr" ? "showing" : "disabled", language === "fr"],
+      ]);
+  }
+
+  const settingsTrigger = dialog.getByTestId("caption-settings-trigger");
+  await selectMenuItem(page, settingsTrigger, "caption-size-large");
+  await expect(video).toHaveAttribute("data-caption-size", "large");
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), SIZE_KEY)).toBe("large");
+
+  await selectMenuItem(page, settingsTrigger, "caption-background-translucent");
+  await expect(video).toHaveAttribute("data-caption-background", "translucent");
+  await expect
+    .poll(() => page.evaluate((key) => localStorage.getItem(key), BACKGROUND_KEY))
+    .toBe("translucent");
 
   await expect
     .poll(() => video.evaluate((element) => element.readyState))
@@ -89,7 +203,7 @@ test("opens the captioned Get Phame walkthrough without overflowing the viewport
     .toBeGreaterThan(0.1);
 
   const viewport = page.viewportSize();
-  const box = await video.boundingBox();
+  const box = await dialog.boundingBox();
   expect(viewport).not.toBeNull();
   expect(box).not.toBeNull();
   if (viewport && box) {
@@ -100,9 +214,32 @@ test("opens the captioned Get Phame walkthrough without overflowing the viewport
   }
 
   await page.screenshot({
-    path: testInfo.outputPath("walkthrough-modal.png"),
+    path: testInfo.outputPath("walkthrough-multilingual-controls.png"),
     fullPage: false,
   });
+
+  await page.getByRole("button", { name: "Close video" }).click();
+  await expect(dialog).toBeHidden();
+  await expect(trigger).toBeFocused();
+
+  await trigger.click();
+  await expect(dialog).toBeVisible();
+  video = dialog.locator("video");
+  await expect(video).toHaveAttribute("data-caption-state", "on");
+  await expect(video).toHaveAttribute("data-caption-language", "fr");
+  await expect(video).toHaveAttribute("data-caption-size", "large");
+  await expect(video).toHaveAttribute("data-caption-background", "translucent");
+  await expect
+    .poll(() =>
+      video.evaluate((element) =>
+        Array.from(element.textTracks).map((track) => [track.language, track.mode]),
+      ),
+    )
+    .toEqual([
+      ["en", "disabled"],
+      ["es", "disabled"],
+      ["fr", "showing"],
+    ]);
 
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();

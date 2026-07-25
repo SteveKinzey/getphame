@@ -1,6 +1,6 @@
 // Get Phame Service Worker v5 — Fixed cross-origin fetch handling
 // Cache version bump forces old caches to be cleared on update
-const CACHE_NAME = 'getphame-v12';
+const CACHE_NAME = 'getphame-v13';
 const LANGUAGE_CACHE_KEY = '/__getphame_offline_language__';
 const OFFLINE_PAGES = {
   en: '/offline.en.html',
@@ -32,6 +32,18 @@ const STATIC_ASSETS = [
   '/locales/th/translation.json',
   '/locales/zh-CN/translation.json',
   '/locales/zh-TW/translation.json',
+  // Landing-page namespaces contain the localized custom video controls.
+  '/locales/en/landing.json',
+  '/locales/es/landing.json',
+  '/locales/fr/landing.json',
+  '/locales/it/landing.json',
+  '/locales/th/landing.json',
+  '/locales/zh-CN/landing.json',
+  '/locales/zh-TW/landing.json',
+  // Caption tracks remain same-origin and are available after PWA installation.
+  '/getphame-walkthrough.en.vtt',
+  '/getphame-walkthrough.es.vtt',
+  '/getphame-walkthrough.fr.vtt',
 ];
 
 function normalizeOfflineLanguage(language) {

@@ -3,16 +3,62 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 const componentPath = fileURLToPath(new URL("./VideoDemo.tsx", import.meta.url));
+const indexCssPath = fileURLToPath(new URL("../../index.css", import.meta.url));
 const serverIndexPath = fileURLToPath(
   new URL("../../../../server/_core/index.ts", import.meta.url),
 );
-const captionsPath = fileURLToPath(
-  new URL("../../../public/getphame-walkthrough.en.vtt", import.meta.url),
+const fallbackResourcesPath = fileURLToPath(
+  new URL("../../lib/i18nCompleteFallbackResources.json", import.meta.url),
 );
+const serviceWorkerPath = fileURLToPath(new URL("../../../public/sw.js", import.meta.url));
+const captionTrackPaths = {
+  en: fileURLToPath(new URL("../../../public/getphame-walkthrough.en.vtt", import.meta.url)),
+  es: fileURLToPath(new URL("../../../public/getphame-walkthrough.es.vtt", import.meta.url)),
+  fr: fileURLToPath(new URL("../../../public/getphame-walkthrough.fr.vtt", import.meta.url)),
+} as const;
 const servedLocales = ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"] as const;
+const captionControlKeys = [
+  "captionNotice",
+  "captionTrackLabel",
+  "captionTrackEnglish",
+  "captionTrackSpanish",
+  "captionTrackFrench",
+  "captionLanguage",
+  "captionLanguageAriaLabel",
+  "captionLanguageEnglish",
+  "captionLanguageSpanish",
+  "captionLanguageFrench",
+  "captionsOn",
+  "captionsOff",
+  "captionsEnable",
+  "captionsDisable",
+  "captionsHelp",
+  "captionSettings",
+  "captionSettingsAriaLabel",
+  "captionFontSize",
+  "captionFontSizeSmall",
+  "captionFontSizeMedium",
+  "captionFontSizeLarge",
+  "captionBackground",
+  "captionBackgroundBlack",
+  "captionBackgroundNavy",
+  "captionBackgroundClear",
+  "captionAppearanceStatus",
+  "videoFallback",
+  "videoError",
+  "videoRetry",
+  "videoOpenDirect",
+] as const;
+
+function extractCueTimings(vtt: string) {
+  return vtt
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line.includes("-->"));
+}
 
 describe("VideoDemo media contract", () => {
-  it("uses the verified self-hosted walkthrough and no stale YouTube embed", async () => {
+  it("uses the clean self-hosted walkthrough and no stale YouTube embed", async () => {
     const source = await readFile(componentPath, "utf8");
 
     expect(source).toContain("/manus-storage/getphame-walkthrough-toggle-ready_4a3636b0.mp4");
@@ -21,56 +67,100 @@ describe("VideoDemo media contract", () => {
     expect(source).not.toContain("GetPhame");
   });
 
-  it("keeps captions, inline mobile playback, and dialog keyboard semantics", async () => {
+  it("ships English, Spanish, and French WebVTT tracks with exact timing parity", async () => {
+    const tracks = await Promise.all(
+      Object.entries(captionTrackPaths).map(async ([language, path]) => ({
+        language,
+        source: await readFile(path, "utf8"),
+      })),
+    );
+    const sourceTimings = extractCueTimings(tracks[0].source);
+
+    expect(sourceTimings).toHaveLength(11);
+    for (const track of tracks) {
+      expect(track.source.trimStart().startsWith("WEBVTT")).toBe(true);
+      expect(track.source).toContain("Get Phame");
+      expect(extractCueTimings(track.source)).toEqual(sourceTimings);
+      expect(track.source.match(/line:88% position:50% align:middle size:84%/g)).toHaveLength(11);
+    }
+  });
+
+  it("maps one localized track per language and shows only the selected track", async () => {
     const source = await readFile(componentPath, "utf8");
 
-    expect(source).toContain("/getphame-walkthrough.en.vtt");
+    expect(source).toContain('en: "/getphame-walkthrough.en.vtt"');
+    expect(source).toContain('es: "/getphame-walkthrough.es.vtt"');
+    expect(source).toContain('fr: "/getphame-walkthrough.fr.vtt"');
     expect(source).toContain('kind="captions"');
+    expect(source).toContain("captionLanguageOptions.map");
+    expect(source).toContain('track.language === captionLanguage ? "showing" : "disabled"');
+    expect(source).toContain("setCaptionLanguage(value)");
+    expect(source).toContain("setCaptionsEnabled(true)");
     expect(source).toContain("playsInline");
     expect(source).toContain('role="dialog"');
     expect(source).toContain('aria-modal="true"');
-    expect(source).toContain('event.key === "Escape"');
     expect(source).not.toContain('crossOrigin="anonymous"');
   });
 
-  it("exposes a persistent accessible caption toggle backed by the WebVTT track", async () => {
-    const source = await readFile(componentPath, "utf8");
+  it("persists accessible caption, language, size, and background controls", async () => {
+    const [source, css] = await Promise.all([
+      readFile(componentPath, "utf8"),
+      readFile(indexCssPath, "utf8"),
+    ]);
 
-    expect(source).toContain("CAPTIONS_PREFERENCE_KEY");
-    expect(source).toContain("textTracks?.[0]");
-    expect(source).toContain('track.mode = captionsEnabled ? "showing" : "disabled"');
+    expect(source).toContain('"getphame-walkthrough-captions"');
+    expect(source).toContain('"getphame-walkthrough-caption-language"');
+    expect(source).toContain('"getphame-walkthrough-caption-font-size"');
+    expect(source).toContain('"getphame-walkthrough-caption-background"');
     expect(source).toContain("aria-pressed={captionsEnabled}");
-    expect(source).toContain('aria-controls="getphame-walkthrough-player"');
-    expect(source).toContain("landing.modal.captionsEnable");
-    expect(source).toContain("landing.modal.captionsDisable");
-    expect(source).toContain("landing.modal.captionsOn");
-    expect(source).toContain("landing.modal.captionsOff");
-    expect(source).toContain("landing.modal.captionsHelp");
+    expect(source).toContain('aria-keyshortcuts="C"');
+    expect(source).toContain('data-testid="caption-language-trigger"');
+    expect(source).toContain('data-testid="caption-settings-trigger"');
+    expect(source).toContain("data-caption-language={captionLanguage}");
+    expect(source).toContain("data-caption-size={captionFontSize}");
+    expect(source).toContain("data-caption-background={captionBackground}");
+    expect(source).toContain("landing.modal.captionFontSizeSmall");
+    expect(source).toContain("landing.modal.captionBackgroundClear");
+    expect(source).toContain("landing.modal.captionAppearanceStatus");
+    expect(source).not.toContain("landing.modal.captionSizeSmall");
+    expect(source).not.toContain("landing.modal.captionBackgroundTranslucent");
+    expect(source).not.toContain("landing.modal.captionStatusSummary");
+
+    expect(css).toContain(".getphame-walkthrough-video[data-caption-size='small']::cue");
+    expect(css).toContain(".getphame-walkthrough-video[data-caption-size='large']::cue");
+    expect(css).toContain(".getphame-walkthrough-video[data-caption-background='black']::cue");
+    expect(css).toContain(".getphame-walkthrough-video[data-caption-background='translucent']::cue");
   });
 
-  it("allows the managed-storage redirect host and keeps captions same-origin", async () => {
-    const [serverSource, captions] = await Promise.all([
+  it("limits the C shortcut to the active dialog and ignores conflicting key events", async () => {
+    const source = await readFile(componentPath, "utf8");
+
+    expect(source).toContain("if (!open) return");
+    expect(source).toContain('event.key.toLowerCase() === "c"');
+    expect(source).toContain("!event.defaultPrevented");
+    expect(source).toContain("!event.altKey");
+    expect(source).toContain("!event.ctrlKey");
+    expect(source).toContain("!event.metaKey");
+    expect(source).toContain("!event.repeat");
+    expect(source).toContain("eventTarget.isContentEditable");
+    expect(source).toContain("eventTarget.closest('[role=\"textbox\"]')");
+    expect(source).toContain("isMenuTarget");
+    expect(source).toContain("document.removeEventListener(\"keydown\", handleKeyDown)");
+  });
+
+  it("allows the managed-storage redirect host and shows localized recovery controls", async () => {
+    const [serverSource, componentSource] = await Promise.all([
       readFile(serverIndexPath, "utf8"),
-      readFile(captionsPath, "utf8"),
+      readFile(componentPath, "utf8"),
     ]);
 
     expect(serverSource).toContain("mediaSrc:");
-    expect(
-      serverSource.match(/https:\/\/d36hbw14aib5lz\.cloudfront\.net/g),
-    ).toHaveLength(2);
-    expect(captions).toContain("WEBVTT");
-    expect(captions).toContain("Get Phame");
-    expect(captions.match(/line:88% position:50% align:middle size:84%/g)).toHaveLength(11);
-  });
-
-  it("shows a localized recovery path when the browser rejects playback", async () => {
-    const source = await readFile(componentPath, "utf8");
-
-    expect(source).toContain("videoError");
-    expect(source).toContain("onError");
-    expect(source).toContain("landing.modal.videoError");
-    expect(source).toContain("landing.modal.videoRetry");
-    expect(source).toContain("landing.modal.videoOpenDirect");
+    expect(serverSource.match(/https:\/\/d36hbw14aib5lz\.cloudfront\.net/g)).toHaveLength(2);
+    expect(componentSource).toContain("videoError");
+    expect(componentSource).toContain("onError");
+    expect(componentSource).toContain("landing.modal.videoError");
+    expect(componentSource).toContain("landing.modal.videoRetry");
+    expect(componentSource).toContain("landing.modal.videoOpenDirect");
   });
 
   it.each(servedLocales)("keeps the %s landing-video catalog complete and current", async (locale) => {
@@ -90,53 +180,55 @@ describe("VideoDemo media contract", () => {
     expect(catalog.landing.thumbnail.altText).toContain("Get Phame");
     expect(catalog.landing.bottomBar.title).toContain("Get Phame");
     expect(catalog.landing.modal.videoTitle).toContain("Get Phame");
-    expect(catalog.landing.modal.captionNotice).toBeTruthy();
-    expect(catalog.landing.modal.captionTrackLabel).toBeTruthy();
-    expect(catalog.landing.modal.captionsEnable).toBeTruthy();
-    expect(catalog.landing.modal.captionsDisable).toBeTruthy();
-    expect(catalog.landing.modal.captionsOn).toBeTruthy();
-    expect(catalog.landing.modal.captionsOff).toBeTruthy();
-    expect(catalog.landing.modal.captionsHelp).toBeTruthy();
-    expect(catalog.landing.modal.videoFallback).toBeTruthy();
-    expect(catalog.landing.modal.videoError).toBeTruthy();
-    expect(catalog.landing.modal.videoRetry).toBeTruthy();
-    expect(catalog.landing.modal.videoOpenDirect).toBeTruthy();
+    for (const key of captionControlKeys) {
+      expect(catalog.landing.modal[key], `${locale} landing.modal.${key}`).toBeTruthy();
+    }
+    expect(catalog.landing.modal.captionLanguageAriaLabel).toContain("{{language}}");
+    expect(catalog.landing.modal.captionAppearanceStatus).toContain("{{size}}");
+    expect(catalog.landing.modal.captionAppearanceStatus).toContain("{{background}}");
     expect(catalog.landing.modal.iframeTitle).toBeUndefined();
   });
 
-  it("keeps the active English translation namespace from overriding the new walkthrough copy", async () => {
+  it("keeps the generated runtime fallback complete for every caption-control locale", async () => {
+    const fallbackResources = JSON.parse(await readFile(fallbackResourcesPath, "utf8")) as Record<
+      string,
+      { landing: { modal: Record<string, string> } }
+    >;
+
+    for (const locale of servedLocales) {
+      for (const key of captionControlKeys) {
+        expect(fallbackResources[locale]?.landing.modal[key], `${locale} fallback landing.modal.${key}`).toBeTruthy();
+      }
+    }
+  });
+
+  it("keeps the active English translation override aligned with the player lookups", async () => {
     const translationPath = fileURLToPath(
       new URL("../../../public/locales/en/translation.json", import.meta.url),
     );
     const catalog = JSON.parse(await readFile(translationPath, "utf8")) as {
-      landing: {
-        section: { description: string };
-        bottomBar: { title: string };
-        modal: Record<string, string>;
-      };
+      landing: { modal: Record<string, string> };
     };
 
-    expect(catalog.landing.section.description).toContain("63-second");
-    expect(catalog.landing.bottomBar.title).toBe("Get Phame — Platform Walkthrough");
-    expect(catalog.landing.modal.videoTitle).toBe("Get Phame platform walkthrough");
-    expect(catalog.landing.modal.captionTrackLabel).toBe("English captions");
+    for (const key of captionControlKeys) {
+      expect(catalog.landing.modal[key], `en translation landing.modal.${key}`).toBeTruthy();
+    }
+    expect(catalog.landing.modal.captionTrackEnglish).toBe("English captions");
+    expect(catalog.landing.modal.captionLanguageSpanish).toBe("Spanish");
+    expect(catalog.landing.modal.captionLanguageFrench).toBe("French");
     expect(catalog.landing.modal.captionsEnable).toBe("Enable captions");
-    expect(catalog.landing.modal.captionsDisable).toBe("Disable captions");
-    expect(catalog.landing.modal.captionsOn).toBe("Captions on");
-    expect(catalog.landing.modal.captionsOff).toBe("Captions off");
-    expect(catalog.landing.modal.videoError).toBeTruthy();
-    expect(catalog.landing.modal.videoRetry).toBeTruthy();
-    expect(catalog.landing.modal.videoOpenDirect).toBeTruthy();
-    expect(catalog.landing.modal.iframeTitle).toBeUndefined();
+    expect(catalog.landing.modal.captionFontSizeLarge).toBe("Large");
+    expect(catalog.landing.modal.captionBackgroundNavy).toBe("Navy");
   });
 
-  it("bumps the PWA cache and leaves managed video redirects to the browser", async () => {
-    const serviceWorkerPath = fileURLToPath(
-      new URL("../../../public/sw.js", import.meta.url),
-    );
+  it("bumps the PWA cache and pre-caches caption tracks while bypassing managed media", async () => {
     const serviceWorker = await readFile(serviceWorkerPath, "utf8");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v12'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v13'");
+    expect(serviceWorker).toContain("'/getphame-walkthrough.en.vtt'");
+    expect(serviceWorker).toContain("'/getphame-walkthrough.es.vtt'");
+    expect(serviceWorker).toContain("'/getphame-walkthrough.fr.vtt'");
+    expect(serviceWorker).toContain("'/locales/fr/landing.json'");
     expect(serviceWorker).toContain("url.pathname.startsWith('/manus-storage/')");
     expect(serviceWorker).toContain(".filter((name) => name !== CACHE_NAME)");
     expect(serviceWorker).toContain("self.skipWaiting()");

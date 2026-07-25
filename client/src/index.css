@@ -789,6 +789,22 @@
   text-shadow: 0 1px 2px rgb(0 0 0 / 80%);
 }
 
+.getphame-walkthrough-video[data-caption-size='small']::cue {
+  font-size: 0.875rem;
+}
+
+.getphame-walkthrough-video[data-caption-size='large']::cue {
+  font-size: 1.25rem;
+}
+
+.getphame-walkthrough-video[data-caption-background='black']::cue {
+  background-color: rgb(0 0 0 / 96%);
+}
+
+.getphame-walkthrough-video[data-caption-background='translucent']::cue {
+  background-color: rgb(1 9 19 / 45%);
+}
+
 /* ── Extracted inline styles (moved from JSX to eliminate unsafe-inline CSP) ── */
 
 /* AppLayout: responsive sidebar widths */

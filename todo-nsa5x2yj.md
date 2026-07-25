@@ -63,3 +63,11 @@
 - [x] Audit the current MP4 and WebVTT behavior so the new captions-off state removes all displayed caption text rather than only changing an unused track.
 - [x] Add a localized, keyboard-accessible custom captions toggle with synchronized WebVTT state and clear on/off feedback in the video modal.
 - [x] Add focused and responsive browser regressions for caption enable/disable behavior, run the full release gate, publish checkpoint `12473412`, and verify the control on live getphame.app.
+- [x] Create Spanish and French WebVTT tracks with cue timing parity, accurate Get Phame terminology, and validated caption syntax.
+- [x] Add a localized caption-language selector and a conflict-safe global `C` shortcut that toggles captions only while the video modal is active.
+- [x] Add an accessible caption settings menu with persistent font-size and background-color preferences applied to live WebVTT cues.
+- [x] Package the clean-master, multilingual WebVTT, custom controls, persistence, service-worker, and validation workflow as a reusable skill using the skill-creator process.
+- [ ] Add focused and responsive regressions for language switching, keyboard toggling, appearance settings, persistence, and recovery; run the full release gate, checkpoint, and live verification.
+- [x] Align the player’s caption appearance lookups with the translated locale keys and guard the `C` shortcut against already-handled events and custom textbox roles.
+- [x] Control the Radix caption menus and synchronize browser tests with portal unmounting so repeated language and appearance selections are deterministic on desktop and Pixel 7.
+- [x] Visually verify the released caption UI at 1280×720 and Pixel 7: controls remain in-bounds, touch targets stack cleanly, French cues render with the selected large/translucent style, and state labels retain readable contrast.
