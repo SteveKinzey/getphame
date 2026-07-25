@@ -51,7 +51,10 @@
       "videoTitle": "Panoramica della piattaforma Get Phame",
       "captionNotice": "Narrazione in inglese con sottotitoli visibili.",
       "captionTrackLabel": "Sottotitoli in inglese",
-      "videoFallback": "Il browser non supporta i video HTML."
+      "videoFallback": "Il browser non supporta i video HTML.",
+      "videoError": "Impossibile caricare la panoramica in questo browser.",
+      "videoRetry": "Riprova",
+      "videoOpenDirect": "Apri il video direttamente"
     },
     "support": {
       "title": "Come possiamo aiutarti?",

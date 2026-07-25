@@ -316,7 +316,10 @@
       "videoTitle": "Get Phame platform walkthrough",
       "captionNotice": "English narration with visible captions.",
       "captionTrackLabel": "English captions",
-      "videoFallback": "Your browser does not support HTML video."
+      "videoFallback": "Your browser does not support HTML video.",
+      "videoError": "The walkthrough could not load in this browser.",
+      "videoRetry": "Try again",
+      "videoOpenDirect": "Open video directly"
     },
     "support": {
       "title": "How can we help?",

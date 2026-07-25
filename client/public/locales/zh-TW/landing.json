@@ -316,7 +316,10 @@
       "videoTitle": "Get Phame 平台導覽",
       "captionNotice": "英文旁白搭配清楚字幕。",
       "captionTrackLabel": "英文字幕",
-      "videoFallback": "您的瀏覽器不支援 HTML 影片。"
+      "videoFallback": "您的瀏覽器不支援 HTML 影片。",
+      "videoError": "無法在此瀏覽器中載入平台導覽。",
+      "videoRetry": "再試一次",
+      "videoOpenDirect": "直接開啟影片"
     },
     "support": {
       "title": "我們如何協助您？",

@@ -316,7 +316,10 @@
       "videoTitle": "Get Phame 平台导览",
       "captionNotice": "英文旁白配有可见字幕。",
       "captionTrackLabel": "英文字幕",
-      "videoFallback": "您的浏览器不支持 HTML 视频。"
+      "videoFallback": "您的浏览器不支持 HTML 视频。",
+      "videoError": "无法在此浏览器中加载平台导览。",
+      "videoRetry": "重试",
+      "videoOpenDirect": "直接打开视频"
     },
     "support": {
       "title": "我们如何帮助您？",

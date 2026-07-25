@@ -5,14 +5,26 @@ import { motion, AnimatePresence } from "framer-motion";
 import FadeUp from "./FadeUp";
 
 export const WALKTHROUGH_VIDEO_URL = "/manus-storage/getphame-walkthrough-captioned_d6454fd4.mp4";
-export const WALKTHROUGH_CAPTIONS_URL = "/manus-storage/getphame-walkthrough-captioned_0abd96cb.vtt";
+export const WALKTHROUGH_CAPTIONS_URL = "/getphame-walkthrough.en.vtt";
 export const WALKTHROUGH_POSTER_URL = "/manus-storage/getphame-walkthrough-poster_98943590.png";
 
 export default function VideoDemo() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+  const [videoAttempt, setVideoAttempt] = useState(0);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+  const openVideo = () => {
+    setVideoError(false);
+    setOpen(true);
+  };
+
+  const retryVideo = () => {
+    setVideoError(false);
+    setVideoAttempt((attempt) => attempt + 1);
+  };
 
   useEffect(() => {
     if (!open) return;
@@ -30,7 +42,7 @@ export default function VideoDemo() {
 
       if (event.key === "Tab") {
         const focusable = Array.from(
-          dialogRef.current?.querySelectorAll<HTMLElement>("button, video[controls]") ?? [],
+          dialogRef.current?.querySelectorAll<HTMLElement>("button, a[href], video[controls]") ?? [],
         ).filter((element) => !element.hasAttribute("disabled"));
 
         if (focusable.length === 0) return;
@@ -75,7 +87,7 @@ export default function VideoDemo() {
             <div className="max-w-3xl mx-auto">
               {/* Video thumbnail card */}
               <button
-                onClick={() => setOpen(true)}
+                onClick={openVideo}
                 aria-label={t("landing.thumbnail.playButtonAriaLabel", { defaultValue: "Play product walkthrough video" })}
                 className="group relative w-full rounded-2xl overflow-hidden border border-[#1e3050] hover:border-primary/40 transition-all duration-300 shadow-2xl shadow-black/40 hover:shadow-[0_0_60px_oklch(0.78_0.15_75/0.12)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
               >
@@ -177,13 +189,15 @@ export default function VideoDemo() {
               {/* Self-hosted video wrapper */}
               <div className="relative aspect-video max-h-[calc(100dvh-5rem)] rounded-2xl overflow-hidden border border-[#1e3050] bg-[#06111f] shadow-2xl shadow-black/60">
                 <video
+                  key={videoAttempt}
                   src={WALKTHROUGH_VIDEO_URL}
                   poster={WALKTHROUGH_POSTER_URL}
                   controls
                   autoPlay
                   playsInline
                   preload="metadata"
-                  crossOrigin="anonymous"
+                  onLoadedMetadata={() => setVideoError(false)}
+                  onError={() => setVideoError(true)}
                   aria-label={t("landing.modal.videoTitle", { defaultValue: "Get Phame platform walkthrough" })}
                   className="absolute inset-0 w-full h-full object-contain"
                 >
@@ -195,6 +209,35 @@ export default function VideoDemo() {
                   />
                   {t("landing.modal.videoFallback", { defaultValue: "Your browser does not support HTML video." })}
                 </video>
+                {videoError && (
+                  <div
+                    role="alert"
+                    className="absolute inset-0 z-10 flex items-center justify-center bg-[#06111f] px-6 text-center"
+                  >
+                    <div className="max-w-md">
+                      <p className="text-base font-semibold text-white">
+                        {t("landing.modal.videoError", { defaultValue: "The walkthrough could not load in this browser." })}
+                      </p>
+                      <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+                        <button
+                          type="button"
+                          onClick={retryVideo}
+                          className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#06111f]"
+                        >
+                          {t("landing.modal.videoRetry", { defaultValue: "Try again" })}
+                        </button>
+                        <a
+                          href={WALKTHROUGH_VIDEO_URL}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="rounded-lg border border-white/25 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                        >
+                          {t("landing.modal.videoOpenDirect", { defaultValue: "Open video directly" })}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </motion.div>
           </motion.div>

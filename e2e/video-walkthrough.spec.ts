@@ -3,6 +3,9 @@ import { expect, test } from "@playwright/test";
 test("opens the captioned Get Phame walkthrough without overflowing the viewport", async ({
   page,
 }, testInfo) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("rl-pwa-prompt-dismissed", "1");
+  });
   await page.goto("/landing?walkthrough-e2e=1");
 
   await expect(
@@ -34,12 +37,14 @@ test("opens the captioned Get Phame walkthrough without overflowing the viewport
   );
   await expect(video.locator('track[kind="captions"]')).toHaveAttribute(
     "src",
-    "/manus-storage/getphame-walkthrough-captioned_0abd96cb.vtt",
+    "/getphame-walkthrough.en.vtt",
   );
   await expect(video.locator('track[kind="captions"]')).toHaveAttribute(
     "label",
     "English captions",
   );
+  await expect(video).not.toHaveAttribute("crossorigin", "anonymous");
+  await expect(dialog.getByRole("alert")).toHaveCount(0);
 
   await expect
     .poll(() => video.evaluate((element) => element.readyState))
@@ -77,4 +82,26 @@ test("opens the captioned Get Phame walkthrough without overflowing the viewport
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
   await expect(trigger).toBeFocused();
+});
+
+test("offers recovery controls when the player reports a media error", async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem("rl-pwa-prompt-dismissed", "1");
+  });
+  await page.goto("/landing?walkthrough-failure-e2e=1");
+
+  await page.getByRole("button", { name: "Play product walkthrough video" }).click();
+
+  const dialog = page.getByRole("dialog", {
+    name: "Get Phame platform walkthrough",
+  });
+  await dialog.locator("video").dispatchEvent("error");
+  const recovery = dialog.getByRole("alert");
+  await expect(recovery).toBeVisible();
+  await expect(recovery.getByText("The walkthrough could not load in this browser.")).toBeVisible();
+  await expect(recovery.getByRole("button", { name: "Try again" })).toBeVisible();
+  await expect(recovery.getByRole("link", { name: "Open video directly" })).toHaveAttribute(
+    "href",
+    "/manus-storage/getphame-walkthrough-captioned_d6454fd4.mp4",
+  );
 });

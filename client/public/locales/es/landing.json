@@ -316,7 +316,10 @@
       "videoTitle": "Recorrido de la plataforma Get Phame",
       "captionNotice": "Narración en inglés con subtítulos visibles.",
       "captionTrackLabel": "Subtítulos en inglés",
-      "videoFallback": "Tu navegador no admite video HTML."
+      "videoFallback": "Tu navegador no admite video HTML.",
+      "videoError": "El recorrido no se pudo cargar en este navegador.",
+      "videoRetry": "Intentar de nuevo",
+      "videoOpenDirect": "Abrir video directamente"
     },
     "support": {
       "title": "¿Cómo podemos ayudarte?",

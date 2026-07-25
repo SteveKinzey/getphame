@@ -316,7 +316,10 @@
       "videoTitle": "Présentation de la plateforme Get Phame",
       "captionNotice": "Narration en anglais avec sous-titres visibles.",
       "captionTrackLabel": "Sous-titres anglais",
-      "videoFallback": "Votre navigateur ne prend pas en charge la vidéo HTML."
+      "videoFallback": "Votre navigateur ne prend pas en charge la vidéo HTML.",
+      "videoError": "La présentation n’a pas pu être chargée dans ce navigateur.",
+      "videoRetry": "Réessayer",
+      "videoOpenDirect": "Ouvrir la vidéo directement"
     },
     "support": {
       "title": "Comment pouvons-nous vous aider ?",

@@ -347,6 +347,8 @@ async function startServer() {
             "https://assets.getphame.app",
             "https://*.r2.dev",
             "https://d2xsxph8kpxj0f.cloudfront.net",
+            // Managed web assets redirect to this CloudFront distribution in production.
+            "https://d36hbw14aib5lz.cloudfront.net",
             "https://files.manuscdn.com",
             // YouTube thumbnails used on landing page VideoDemo section
             "https://img.youtube.com",
@@ -356,6 +358,11 @@ async function startServer() {
           frameSrc: [
             "https://www.youtube.com",
             "https://youtube.com",
+          ],
+          // Keep video delivery restricted to the app and its exact managed-storage redirect host.
+          mediaSrc: [
+            "'self'",
+            "https://d36hbw14aib5lz.cloudfront.net",
           ],
           // Allow outbound API calls: IP detection, analytics, font CDNs, and public manuscdn CDN (used for app logo preload)
           connectSrc: [

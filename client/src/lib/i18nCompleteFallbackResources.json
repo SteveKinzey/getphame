@@ -369,7 +369,10 @@
         "videoTitle": "Get Phame platform walkthrough",
         "captionNotice": "English narration with visible captions.",
         "captionTrackLabel": "English captions",
-        "videoFallback": "Your browser does not support HTML video."
+        "videoFallback": "Your browser does not support HTML video.",
+        "videoError": "The walkthrough could not load in this browser.",
+        "videoRetry": "Try again",
+        "videoOpenDirect": "Open video directly"
       },
       "bottomBar": {
         "description": "Individual outreach · Connected inbox · Limited reminders · Stop on completion",
@@ -1447,7 +1450,10 @@
         "videoTitle": "Recorrido de la plataforma Get Phame",
         "captionNotice": "Narración en inglés con subtítulos visibles.",
         "captionTrackLabel": "Subtítulos en inglés",
-        "videoFallback": "Tu navegador no admite video HTML."
+        "videoFallback": "Tu navegador no admite video HTML.",
+        "videoError": "El recorrido no se pudo cargar en este navegador.",
+        "videoRetry": "Intentar de nuevo",
+        "videoOpenDirect": "Abrir video directamente"
       },
       "bottomBar": {
         "description": "Alcance individual · Bandeja conectada · Recordatorios limitados · Se detienen al completar la acción",
@@ -2550,7 +2556,10 @@
         "videoTitle": "Présentation de la plateforme Get Phame",
         "captionNotice": "Narration en anglais avec sous-titres visibles.",
         "captionTrackLabel": "Sous-titres anglais",
-        "videoFallback": "Votre navigateur ne prend pas en charge la vidéo HTML."
+        "videoFallback": "Votre navigateur ne prend pas en charge la vidéo HTML.",
+        "videoError": "La présentation n’a pas pu être chargée dans ce navigateur.",
+        "videoRetry": "Réessayer",
+        "videoOpenDirect": "Ouvrir la vidéo directement"
       },
       "bottomBar": {
         "description": "Demandes individuelles · Boîte mail connectée · Rappels limités · Arrêt après l’action",
@@ -3653,7 +3662,10 @@
         "videoTitle": "Panoramica della piattaforma Get Phame",
         "captionNotice": "Narrazione in inglese con sottotitoli visibili.",
         "captionTrackLabel": "Sottotitoli in inglese",
-        "videoFallback": "Il browser non supporta i video HTML."
+        "videoFallback": "Il browser non supporta i video HTML.",
+        "videoError": "Impossibile caricare la panoramica in questo browser.",
+        "videoRetry": "Riprova",
+        "videoOpenDirect": "Apri il video direttamente"
       },
       "bottomBar": {
         "description": "Contatto individuale · Casella collegata · Promemoria limitati · Stop al completamento",
@@ -4756,7 +4768,10 @@
         "videoTitle": "ภาพรวมแพลตฟอร์ม Get Phame",
         "captionNotice": "เสียงบรรยายภาษาอังกฤษพร้อมคำบรรยายที่มองเห็นได้",
         "captionTrackLabel": "คำบรรยายภาษาอังกฤษ",
-        "videoFallback": "เบราว์เซอร์ของคุณไม่รองรับวิดีโอ HTML"
+        "videoFallback": "เบราว์เซอร์ของคุณไม่รองรับวิดีโอ HTML",
+        "videoError": "ไม่สามารถโหลดวิดีโอแนะนำแพลตฟอร์มในเบราว์เซอร์นี้ได้",
+        "videoRetry": "ลองอีกครั้ง",
+        "videoOpenDirect": "เปิดวิดีโอโดยตรง"
       },
       "bottomBar": {
         "description": "การติดต่อแบบรายบุคคล · กล่องจดหมายที่เชื่อมต่อ · การเตือนแบบจำกัด · หยุดเมื่อดำเนินการเสร็จ",
@@ -5859,7 +5874,10 @@
         "videoTitle": "Get Phame 平台导览",
         "captionNotice": "英文旁白配有可见字幕。",
         "captionTrackLabel": "英文字幕",
-        "videoFallback": "您的浏览器不支持 HTML 视频。"
+        "videoFallback": "您的浏览器不支持 HTML 视频。",
+        "videoError": "无法在此浏览器中加载平台导览。",
+        "videoRetry": "重试",
+        "videoOpenDirect": "直接打开视频"
       },
       "bottomBar": {
         "description": "逐一联系 · 已连接邮箱 · 有限提醒 · 完成后自动停止",
@@ -6962,7 +6980,10 @@
         "videoTitle": "Get Phame 平台導覽",
         "captionNotice": "英文旁白搭配清楚字幕。",
         "captionTrackLabel": "英文字幕",
-        "videoFallback": "您的瀏覽器不支援 HTML 影片。"
+        "videoFallback": "您的瀏覽器不支援 HTML 影片。",
+        "videoError": "無法在此瀏覽器中載入平台導覽。",
+        "videoRetry": "再試一次",
+        "videoOpenDirect": "直接開啟影片"
       },
       "bottomBar": {
         "description": "逐一聯絡 · 已連接信箱 · 有限提醒 · 完成後自動停止",

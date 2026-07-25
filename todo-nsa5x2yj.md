@@ -51,3 +51,9 @@
 - [x] Locate the latest official Get Phame P/star mark, wordmark, and authoritative source for the affected marketing video scenes.
 - [x] Replace incorrect logo treatments and recompose screenshot scenes so closed captions never obscure product UI.
 - [x] Render and visually verify the corrected video on mobile, update linked marketing references if needed, and deliver the revised asset.
+- [x] Reproduce the broken homepage video on the live Get Phame domains and trace the MP4, poster, WebVTT, redirect, cache, range-request, and media-type responses.
+- [x] Repair production media delivery and add a graceful player fallback so the walkthrough remains usable when playback cannot initialize.
+- [x] Run focused tests, full TypeScript/Vitest/build gates, mobile and desktop production playback checks, then publish the corrected checkpoint.
+- [x] Resolve the production build audit blocker for the brace-expansion security advisory without weakening the audit gate.
+- [ ] Save a managed checkpoint containing the homepage-video delivery repair and capture its published version ID.
+- [ ] Re-verify the repaired MP4, same-origin captions, and player recovery path on the live getphame.app landing page after publication.
