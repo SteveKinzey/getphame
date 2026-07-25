@@ -145,4 +145,4 @@
 - [x] Build localized, mobile-first Sources connection, analytics, and health interfaces using established Get Phame components and design tokens.
 - [x] Localize all Sources operations copy across en, es, fr, it, th, zh-CN, and zh-TW; update runtime fallbacks; bump the locale/PWA cache to phame34.
 - [x] Package and validate the complete workflow as the reusable `source-integration-operations` skill through the skill-creator workflow.
-- [ ] Run focused tests, full Vitest, TypeScript, dependency audit, production build, desktop/mobile responsive verification, checkpoint publication, and live-origin confirmation.
+- [x] Run focused tests, full Vitest, TypeScript, dependency audit, production build, desktop/mobile responsive verification, checkpoint publication, and live-origin confirmation.
