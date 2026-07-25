@@ -1151,6 +1151,112 @@
     },
     "socialProof": {
       "trustedByBusinesses": "Trusted by local businesses to get more 5-star reviews"
+    },
+    "developerIntegrations": {
+      "sourceOps": {
+        "title": "Managed source connections",
+        "description": "Create one observable connection per Zap, Make scenario, or custom workflow. Each source gets its own identifier, analytics, and health signal.",
+        "refreshKeys": "Refresh API keys",
+        "createTitle": "Create a connection",
+        "provider": "Automation provider",
+        "custom": "Custom webhook",
+        "label": "Connection name",
+        "labels": {
+          "zapier": "Zapier customer import",
+          "make": "Make customer import",
+          "custom": "Custom customer import"
+        },
+        "apiKey": "Import API key",
+        "noKeys": "No active import key",
+        "expected": "Expected activity",
+        "intervals": {
+          "15": "Every 15 minutes",
+          "60": "Hourly",
+          "360": "Every 6 hours",
+          "1440": "Daily",
+          "10080": "Weekly"
+        },
+        "minutes": "{{count}} minutes",
+        "createHelp": "The connection stores only an API-key reference and source identifier. Get Phame never displays or duplicates your raw API key.",
+        "create": "Create connection",
+        "created": "Source connection created. Add its source ID to your automation before testing.",
+        "updated": "Source settings updated.",
+        "archived": "Source connection archived. Its source ID can no longer authorize imports.",
+        "healthRefreshed": "Source health refreshed from recent import activity.",
+        "keyRequired": "Create or choose an active contacts:write API key first.",
+        "analyticsTitle": "Import flow by source",
+        "analyticsDescription": "Attempts, outcomes, deduplication, and failures are calculated from attributed import events.",
+        "range": "Analytics range",
+        "daysShort": "d",
+        "metrics": {
+          "attempts": "Attempts",
+          "successful": "Successful",
+          "createdContacts": "Contacts created",
+          "deduplicated": "Deduplicated",
+          "failures": "Failures"
+        },
+        "emptyTitle": "No managed sources yet",
+        "emptyDescription": "Create one connection for each Zap, Make scenario, or custom workflow you want to observe.",
+        "status": {
+          "healthy": "Healthy",
+          "setup": "Setup",
+          "delayed": "Delayed",
+          "failing": "Failing",
+          "paused": "Paused"
+        },
+        "openSetup": "Open setup",
+        "successRate": "Success rate",
+        "lastActivity": "Last activity",
+        "never": "Never",
+        "refreshHealth": "Refresh health",
+        "pause": "Pause monitoring",
+        "resume": "Resume monitoring",
+        "archive": "Archive",
+        "template": "guided template",
+        "templateDescription": "Copy this exact request into the automation's protected HTTP or webhook action.",
+        "copyRecipe": "Copy recipe",
+        "recipeCopied": "Connection recipe copied.",
+        "secretReminder": "Use the raw API key only inside the provider's protected secret field. The source ID is safe to copy but works only with its linked key.",
+        "providerDocs": "Provider docs",
+        "healthHistory": "Health history",
+        "noHealthHistory": "No health checks yet. Send one permitted import, then refresh health.",
+        "reasons": {
+          "awaiting_first_import": "Awaiting the first permitted import",
+          "no_imports_observed": "No imports observed within the setup window",
+          "expected_import_overdue": "Expected import activity is overdue",
+          "recent_import_error": "The latest activity ended with an import error",
+          "recovered_after_error": "Imports are flowing again after an error",
+          "imports_flowing": "Imports are flowing within the expected interval"
+        },
+        "historyCounts": "{{attempts}} attempts · {{failures}} failures",
+        "archiveTitle": "Archive this source connection?",
+        "archiveDescription": "Imports using this source ID will be rejected. Existing contacts and privacy-safe analytics remain available in their original records.",
+        "steps": {
+          "zapier": {
+            "1": "Choose the app and event that produces an eligible customer record.",
+            "2": "Add Webhooks by Zapier and select Custom Request.",
+            "3": "Set Method to POST and paste the Get Phame endpoint.",
+            "4": "Add the protected headers exactly as shown below.",
+            "5": "Map the JSON fields, using one stable provider ID for externalId and Idempotency-Key.",
+            "6": "Test the action with one permitted record, then refresh health here."
+          },
+          "make": {
+            "1": "Choose the trigger module that produces an eligible customer record.",
+            "2": "Add HTTP and select Make a request.",
+            "3": "Set Method to POST, Body type to Raw, and Content type to application/json.",
+            "4": "Add the protected headers exactly as shown below.",
+            "5": "Map the JSON fields, using one stable bundle ID for externalId and Idempotency-Key.",
+            "6": "Run the scenario once with one permitted record, then refresh health here."
+          },
+          "custom": {
+            "1": "Use a trusted server-side workflow that supports POST and protected headers.",
+            "2": "Store the API key in the workflow secret store, never in browser code or a URL.",
+            "3": "Send JSON to the Get Phame endpoint with the headers shown below.",
+            "4": "Use one immutable source record ID for externalId and Idempotency-Key.",
+            "5": "Send one permitted record, then refresh health here."
+          }
+        }
+      }
     }
   },
   "es": {
@@ -2330,6 +2436,112 @@
       },
       "doneBtn": "Todo listo — ir a Phame ✓",
       "skipBtn": "No uso WordPress — omitir este paso"
+    },
+    "developerIntegrations": {
+      "sourceOps": {
+        "title": "Conexiones de origen gestionadas",
+        "description": "Cree una conexión observable por cada Zap, escenario de Make o flujo de trabajo personalizado. Cada origen obtiene su propio identificador, analíticas y señal de estado.",
+        "refreshKeys": "Actualizar claves API",
+        "createTitle": "Crear una conexión",
+        "provider": "Proveedor de automatización",
+        "custom": "Webhook personalizado",
+        "label": "Nombre de la conexión",
+        "labels": {
+          "zapier": "Importación de clientes de Zapier",
+          "make": "Importación de clientes de Make",
+          "custom": "Importación de clientes personalizada"
+        },
+        "apiKey": "Clave API de importación",
+        "noKeys": "No hay clave de importación activa",
+        "expected": "Actividad esperada",
+        "intervals": {
+          "15": "Every 15 minutes",
+          "60": "Hourly",
+          "360": "Every 6 hours",
+          "1440": "Daily",
+          "10080": "Weekly"
+        },
+        "minutes": "{{count}} minutos",
+        "createHelp": "La conexión almacena solo una referencia de la clave API y el identificador de la fuente. Get Phame nunca muestra ni duplica su clave API en bruto.",
+        "create": "Crear conexión",
+        "created": "Conexión de origen creada. Agregue su ID de origen a su automatización antes de probar.",
+        "updated": "Configuración de la fuente actualizada.",
+        "archived": "Conexión de origen archivada. Su ID de origen ya no puede autorizar importaciones.",
+        "healthRefreshed": "Estado de salud de la fuente actualizado según la actividad reciente de importación.",
+        "keyRequired": "Cree o seleccione primero una clave API activa contacts:write.",
+        "analyticsTitle": "Flujo de importación por fuente",
+        "analyticsDescription": "Los intentos, resultados, deduplicaciones y fallos se calculan a partir de eventos de importación atribuidos.",
+        "range": "Rango de análisis",
+        "daysShort": "d",
+        "metrics": {
+          "attempts": "Intentos",
+          "successful": "Exitosos",
+          "createdContacts": "Contactos creados",
+          "deduplicated": "Deduplicados",
+          "failures": "Fallos"
+        },
+        "emptyTitle": "Aún no hay fuentes administradas",
+        "emptyDescription": "Cree una conexión por cada Zap, escenario de Make o flujo de trabajo personalizado que quiera supervisar.",
+        "status": {
+          "healthy": "Saludable",
+          "setup": "Configuración",
+          "delayed": "Retrasado",
+          "failing": "Con fallos",
+          "paused": "Pausado"
+        },
+        "openSetup": "Abrir configuración",
+        "successRate": "Tasa de éxito",
+        "lastActivity": "Última actividad",
+        "never": "Nunca",
+        "refreshHealth": "Actualizar estado",
+        "pause": "Pausar supervisión",
+        "resume": "Reanudar supervisión",
+        "archive": "Archivar",
+        "template": "plantilla guiada",
+        "templateDescription": "Copie esta solicitud exactamente en la acción HTTP o webhook protegida de la automatización.",
+        "copyRecipe": "Copiar receta",
+        "recipeCopied": "Receta de conexión copiada.",
+        "secretReminder": "Use la clave API sin procesar solo dentro del campo secreto protegido del proveedor. El ID de origen es seguro de copiar pero solo funciona con su clave vinculada.",
+        "providerDocs": "Documentación del proveedor",
+        "healthHistory": "Historial de estado",
+        "noHealthHistory": "Aún no hay comprobaciones de estado. Envíe una importación permitida y luego actualice el estado.",
+        "reasons": {
+          "awaiting_first_import": "Esperando la primera importación permitida",
+          "no_imports_observed": "No se observaron importaciones dentro del periodo de configuración",
+          "expected_import_overdue": "La actividad de importación esperada está retrasada",
+          "recent_import_error": "La actividad más reciente terminó con un error de importación",
+          "recovered_after_error": "Las importaciones fluyen de nuevo tras un error",
+          "imports_flowing": "Las importaciones se realizan dentro del intervalo esperado"
+        },
+        "historyCounts": "{{attempts}} intentos · {{failures}} fallos",
+        "archiveTitle": "¿Archivar esta conexión de origen?",
+        "archiveDescription": "Las importaciones que usen este ID de origen serán rechazadas. Los contactos existentes y las analíticas con privacidad segura seguirán disponibles en sus registros originales.",
+        "steps": {
+          "zapier": {
+            "1": "Elija la app y el evento que generen un registro de cliente elegible.",
+            "2": "Agregue Webhooks by Zapier y seleccione Custom Request.",
+            "3": "Establezca Method en POST y pegue el endpoint de Get Phame.",
+            "4": "Agregue los encabezados protegidos exactamente como se muestran a continuación.",
+            "5": "Asigne los campos JSON, usando un ID de proveedor estable para externalId y Idempotency-Key.",
+            "6": "Pruebe la acción con un registro permitido, luego actualice el estado aquí."
+          },
+          "make": {
+            "1": "Elija el módulo de trigger que genere un registro de cliente elegible.",
+            "2": "Agregue HTTP y seleccione Make a request.",
+            "3": "Establezca Method en POST, Body type en Raw y Content type en application/json.",
+            "4": "Agregue los encabezados protegidos exactamente como se muestran a continuación.",
+            "5": "Asigne los campos JSON, usando un ID de bundle estable para externalId y Idempotency-Key.",
+            "6": "Ejecute el escenario una vez con un registro permitido, luego actualice el estado aquí."
+          },
+          "custom": {
+            "1": "Use un flujo de trabajo del lado del servidor de confianza que admita POST y encabezados protegidos.",
+            "2": "Almacene la clave API en el almacén secreto del flujo de trabajo, nunca en código del navegador ni en una URL.",
+            "3": "Envíe JSON al endpoint de Get Phame con los encabezados mostrados abajo.",
+            "4": "Use un ID de registro de origen inmutable para externalId e Idempotency-Key.",
+            "5": "Envíe un registro permitido y luego actualice el estado aquí."
+          }
+        }
+      }
     }
   },
   "fr": {
@@ -3509,6 +3721,112 @@
       },
       "doneBtn": "Tout est prêt — aller sur Phame ✓",
       "skipBtn": "Je n'utilise pas WordPress — ignorer cette étape"
+    },
+    "developerIntegrations": {
+      "sourceOps": {
+        "title": "Connexions de source gérées",
+        "description": "Créez une connexion observable par Zap, scénario Make ou flux de travail personnalisé. Chaque source reçoit son propre identifiant, des analyses et un signal de santé.",
+        "refreshKeys": "Actualiser les clés API",
+        "createTitle": "Créer une connexion",
+        "provider": "Fournisseur d'automatisation",
+        "custom": "Webhook personnalisé",
+        "label": "Nom de la connexion",
+        "labels": {
+          "zapier": "Importation client Zapier",
+          "make": "Importation client Make",
+          "custom": "Importation client personnalisée"
+        },
+        "apiKey": "Clé API d'importation",
+        "noKeys": "Aucune clé d'importation active",
+        "expected": "Activité attendue",
+        "intervals": {
+          "15": "Toutes les 15 minutes",
+          "60": "Toutes les heures",
+          "360": "Toutes les 6 heures",
+          "1440": "Quotidien",
+          "10080": "Hebdomadaire"
+        },
+        "minutes": "{{count}} minutes",
+        "createHelp": "La connexion stocke uniquement une référence à la clé API et l'identifiant de la source. Get Phame n'affiche ni ne duplique jamais votre clé API brute.",
+        "create": "Créer la connexion",
+        "created": "Connexion source créée. Ajoutez son ID de source à votre automatisation avant de tester.",
+        "updated": "Paramètres de la source mis à jour.",
+        "archived": "Connexion source archivée. Son ID de source ne peut plus autoriser d'importations.",
+        "healthRefreshed": "État de la source actualisé d'après les activités d'import récentes.",
+        "keyRequired": "Créez ou choisissez d'abord une clé API active contacts:write.",
+        "analyticsTitle": "Flux d'import par source",
+        "analyticsDescription": "Les tentatives, résultats, déduplication et échecs sont calculés à partir des événements d'import attribués.",
+        "range": "Période d'analyse",
+        "daysShort": "j",
+        "metrics": {
+          "attempts": "Tentatives",
+          "successful": "Réussites",
+          "createdContacts": "Contacts créés",
+          "deduplicated": "Dédupliqués",
+          "failures": "Échecs"
+        },
+        "emptyTitle": "Aucune source gérée pour le moment",
+        "emptyDescription": "Créez une connexion pour chaque Zap, scénario Make ou flux de travail personnalisé que vous souhaitez surveiller.",
+        "status": {
+          "healthy": "Sain",
+          "setup": "Configuration",
+          "delayed": "Retardé",
+          "failing": "En échec",
+          "paused": "En pause"
+        },
+        "openSetup": "Ouvrir la configuration",
+        "successRate": "Taux de réussite",
+        "lastActivity": "Dernière activité",
+        "never": "Jamais",
+        "refreshHealth": "Actualiser l'état",
+        "pause": "Mettre la surveillance en pause",
+        "resume": "Reprendre la surveillance",
+        "archive": "Archiver",
+        "template": "modèle guidé",
+        "templateDescription": "Copiez cette requête exacte dans l'action HTTP ou webhook protégée de votre automatisation.",
+        "copyRecipe": "Copier la recette",
+        "recipeCopied": "Recette de connexion copiée.",
+        "secretReminder": "N'utilisez la clé API brute que dans le champ secret protégé du fournisseur. L'ID de source peut être copié en toute sécurité mais ne fonctionne qu'avec la clé qui lui est liée.",
+        "providerDocs": "Documentation du fournisseur",
+        "healthHistory": "Historique de santé",
+        "noHealthHistory": "Aucun contrôle de santé pour le moment. Envoyez une importation autorisée, puis actualisez l'état.",
+        "reasons": {
+          "awaiting_first_import": "En attente de la première importation autorisée",
+          "no_imports_observed": "Aucune importation observée durant la fenêtre de configuration",
+          "expected_import_overdue": "L'activité d'importation attendue est en retard",
+          "recent_import_error": "La dernière activité s'est terminée par une erreur d'importation",
+          "recovered_after_error": "Les importations ont repris après une erreur",
+          "imports_flowing": "Les importations s'effectuent dans l'intervalle attendu"
+        },
+        "historyCounts": "{{attempts}} tentatives · {{failures}} échecs",
+        "archiveTitle": "Archiver cette connexion source ?",
+        "archiveDescription": "Les importations utilisant cet ID de source seront rejetées. Les contacts existants et les analyses respectueuses de la vie privée restent disponibles dans leurs enregistrements d'origine.",
+        "steps": {
+          "zapier": {
+            "1": "Choisissez l'application et l'événement qui génèrent un enregistrement client éligible.",
+            "2": "Ajoutez Webhooks by Zapier et sélectionnez Custom Request.",
+            "3": "Définissez la méthode sur POST et collez le point de terminaison Get Phame.",
+            "4": "Ajoutez les en-têtes protégés exactement comme indiqué ci‑dessous.",
+            "5": "Mappez les champs JSON en utilisant un identifiant fournisseur stable pour externalId et Idempotency-Key.",
+            "6": "Testez l'action avec un enregistrement autorisé, puis actualisez l'état ici."
+          },
+          "make": {
+            "1": "Choisissez le module déclencheur qui produit un enregistrement client éligible.",
+            "2": "Ajoutez HTTP et sélectionnez Make a request.",
+            "3": "Définissez Method sur POST, Body type sur Raw et Content type sur application/json.",
+            "4": "Ajoutez les en-têtes protégés exactement comme indiqué ci‑dessous.",
+            "5": "Mappez les champs JSON en utilisant un identifiant de bundle stable pour externalId et Idempotency-Key.",
+            "6": "Exécutez le scénario une fois avec un enregistrement autorisé, puis actualisez l'état ici."
+          },
+          "custom": {
+            "1": "Utilisez un flux de travail côté serveur de confiance qui prend en charge POST et les en-têtes protégés.",
+            "2": "Stockez la clé API dans le magasin de secrets du workflow, jamais dans du code côté navigateur ni dans une URL.",
+            "3": "Envoyez du JSON vers le point de terminaison Get Phame avec les en-têtes indiqués ci‑dessous.",
+            "4": "Utilisez un ID d'enregistrement source immuable pour externalId et Idempotency-Key.",
+            "5": "Envoyez un enregistrement autorisé, puis actualisez l'état ici."
+          }
+        }
+      }
     }
   },
   "it": {
@@ -4688,6 +5006,112 @@
       },
       "doneBtn": "Tutto pronto — vai su Phame ✓",
       "skipBtn": "Non utilizzo WordPress — salta questo passaggio"
+    },
+    "developerIntegrations": {
+      "sourceOps": {
+        "title": "Connessioni sorgente gestite",
+        "description": "Crea una connessione osservabile per ogni Zap, scenario Make o workflow personalizzato. Ogni sorgente ottiene il proprio identificatore, metriche e segnale di salute.",
+        "refreshKeys": "Aggiorna chiavi API",
+        "createTitle": "Crea una connessione",
+        "provider": "Provider di automazione",
+        "custom": "Webhook personalizzato",
+        "label": "Nome connessione",
+        "labels": {
+          "zapier": "Importazione clienti Zapier",
+          "make": "Importazione clienti Make",
+          "custom": "Importazione clienti personalizzata"
+        },
+        "apiKey": "Chiave API di importazione",
+        "noKeys": "Nessuna chiave di importazione attiva",
+        "expected": "Attività prevista",
+        "intervals": {
+          "15": "Ogni 15 minuti",
+          "60": "Ogni ora",
+          "360": "Ogni 6 ore",
+          "1440": "Ogni giorno",
+          "10080": "Ogni settimana"
+        },
+        "minutes": "{{count}} minuti",
+        "createHelp": "La connessione memorizza solo un riferimento alla chiave API e l'identificatore della sorgente. Get Phame non visualizza né duplica la tua chiave API in chiaro.",
+        "create": "Crea connessione",
+        "created": "Connessione sorgente creata. Aggiungi il suo ID sorgente alla tua automazione prima di testare.",
+        "updated": "Impostazioni sorgente aggiornate.",
+        "archived": "Connessione sorgente archiviata. Il suo ID sorgente non può più autorizzare importazioni.",
+        "healthRefreshed": "Stato di salute della sorgente aggiornato in base alle importazioni recenti.",
+        "keyRequired": "Crea o seleziona prima una chiave API contacts:write attiva.",
+        "analyticsTitle": "Flusso importazioni per sorgente",
+        "analyticsDescription": "Tentativi, risultati, deduplicazioni e errori sono calcolati dagli eventi di importazione attribuiti.",
+        "range": "Intervallo",
+        "daysShort": "g",
+        "metrics": {
+          "attempts": "Tentativi",
+          "successful": "Riusciti",
+          "createdContacts": "Contatti creati",
+          "deduplicated": "Deduplicati",
+          "failures": "Errori"
+        },
+        "emptyTitle": "Ancora nessuna sorgente gestita",
+        "emptyDescription": "Crea una connessione per ogni Zap, scenario Make o workflow personalizzato che vuoi monitorare.",
+        "status": {
+          "healthy": "Operativo",
+          "setup": "Configurazione",
+          "delayed": "In ritardo",
+          "failing": "In errore",
+          "paused": "In pausa"
+        },
+        "openSetup": "Apri configurazione",
+        "successRate": "Tasso di successo",
+        "lastActivity": "Ultima attività",
+        "never": "Mai",
+        "refreshHealth": "Aggiorna stato",
+        "pause": "Sospendi monitoraggio",
+        "resume": "Riprendi monitoraggio",
+        "archive": "Archivia",
+        "template": "modello guidato",
+        "templateDescription": "Copia esattamente questa richiesta nell'azione HTTP o webhook protetta dell'automazione.",
+        "copyRecipe": "Copia ricetta",
+        "recipeCopied": "Ricetta della connessione copiata.",
+        "secretReminder": "Usa la chiave API in chiaro solo nel campo segreto protetto del provider. L'ID sorgente è sicuro da copiare ma funziona solo con la chiave a cui è collegato.",
+        "providerDocs": "Documentazione provider",
+        "healthHistory": "Cronologia dello stato",
+        "noHealthHistory": "Ancora nessun controllo di stato. Invia un'importazione consentita, poi aggiorna lo stato.",
+        "reasons": {
+          "awaiting_first_import": "In attesa della prima importazione consentita",
+          "no_imports_observed": "Nessuna importazione osservata nella finestra di configurazione",
+          "expected_import_overdue": "L'attività di importazione prevista è in ritardo",
+          "recent_import_error": "L'ultima attività è terminata con un errore di importazione",
+          "recovered_after_error": "Le importazioni sono di nuovo attive dopo l'errore",
+          "imports_flowing": "Le importazioni avvengono nell'intervallo previsto"
+        },
+        "historyCounts": "{{attempts}} tentativi · {{failures}} errori",
+        "archiveTitle": "Archiviare questa connessione sorgente?",
+        "archiveDescription": "Le importazioni che usano questo ID sorgente verranno rifiutate. I contatti esistenti e le analisi compatibili con la privacy rimangono disponibili nei record originali.",
+        "steps": {
+          "zapier": {
+            "1": "Scegli l'app e l'evento che producono un record cliente idoneo.",
+            "2": "Aggiungi Webhooks by Zapier e seleziona Custom Request.",
+            "3": "Imposta Method su POST e incolla l'endpoint Get Phame.",
+            "4": "Aggiungi gli header protetti esattamente come mostrato sotto.",
+            "5": "Mappa i campi JSON, usando un ID provider stabile per externalId e Idempotency-Key.",
+            "6": "Testa l'azione con un record consentito, poi aggiorna lo stato qui."
+          },
+          "make": {
+            "1": "Scegli il modulo trigger che produce un record cliente idoneo.",
+            "2": "Aggiungi HTTP e seleziona Make a request.",
+            "3": "Imposta Method su POST, Body type su Raw e Content type su application/json.",
+            "4": "Aggiungi gli header protetti esattamente come mostrato sotto.",
+            "5": "Mappa i campi JSON, usando un ID bundle stabile per externalId e Idempotency-Key.",
+            "6": "Esegui lo scenario una volta con un record consentito, poi aggiorna lo stato qui."
+          },
+          "custom": {
+            "1": "Usa un workflow server-side affidabile che supporti POST e header protetti.",
+            "2": "Salva la chiave API nello store dei segreti del workflow, mai nel codice del browser o in un URL.",
+            "3": "Invia JSON all'endpoint Get Phame con gli header mostrati sotto.",
+            "4": "Usa un ID record sorgente immutabile per externalId e Idempotency-Key.",
+            "5": "Invia un record consentito, poi aggiorna lo stato qui."
+          }
+        }
+      }
     }
   },
   "th": {
@@ -5867,6 +6291,112 @@
       },
       "doneBtn": "เสร็จเรียบร้อย — ไปที่ Phame ✓",
       "skipBtn": "ฉันไม่ใช้ WordPress — ข้ามขั้นตอนนี้"
+    },
+    "developerIntegrations": {
+      "sourceOps": {
+        "title": "การเชื่อมต่อแหล่งข้อมูลที่จัดการ",
+        "description": "สร้างการเชื่อมต่อที่สังเกตได้หนึ่งรายการสำหรับแต่ละ Zap, Make scenario หรือ workflow แบบกำหนดเอง แต่ละแหล่งมีรหัสประจำตัว การวิเคราะห์ และสัญญาณสถานะของตัวเอง",
+        "refreshKeys": "รีเฟรชคีย์ API",
+        "createTitle": "สร้างการเชื่อมต่อ",
+        "provider": "ผู้ให้บริการอัตโนมัติ",
+        "custom": "Webhook แบบกำหนดเอง",
+        "label": "ชื่อการเชื่อมต่อ",
+        "labels": {
+          "zapier": "การนำเข้าลูกค้า Zapier",
+          "make": "การนำเข้าลูกค้า Make",
+          "custom": "การนำเข้าลูกค้าแบบกำหนดเอง"
+        },
+        "apiKey": "คีย์ API สำหรับการนำเข้า",
+        "noKeys": "ยังไม่มีคีย์นำเข้าที่ใช้งานอยู่",
+        "expected": "กิจกรรมที่คาดหวัง",
+        "intervals": {
+          "15": "ทุก 15 นาที",
+          "60": "ทุกชั่วโมง",
+          "360": "ทุก 6 ชั่วโมง",
+          "1440": "ทุกวัน",
+          "10080": "ทุกสัปดาห์"
+        },
+        "minutes": "{{count}} นาที",
+        "createHelp": "การเชื่อมต่อจะเก็บเพียงการอ้างอิงคีย์ API และรหัสแหล่งข้อมูลเท่านั้น Get Phame จะไม่แสดงหรือทำสำเนาคีย์ API ดิบของคุณ",
+        "create": "สร้างการเชื่อมต่อ",
+        "created": "สร้างการเชื่อมต่อแหล่งข้อมูลแล้ว เพิ่ม source ID ของการเชื่อมต่อนั้นในระบบอัตโนมัตก่อนทดสอบ",
+        "updated": "อัปเดตการตั้งค่าแหล่งข้อมูลแล้ว",
+        "archived": "เก็บถาวรการเชื่อมต่อแหล่งข้อมูลแล้ว source ID ของมันไม่สามารถอนุญาตการนำเข้าได้อีกต่อไป",
+        "healthRefreshed": "สถานะแหล่งข้อมูลได้รับการรีเฟรชจากกิจกรรมการนำเข้าล่าสุด",
+        "keyRequired": "สร้างหรือเลือกคีย์ API contacts:write ที่ใช้งานอยู่ก่อน",
+        "analyticsTitle": "การไหลของการนำเข้าตามแหล่ง",
+        "analyticsDescription": "ความพยายาม ผลลัพธ์ การกำจัดรายการซ้ำ และความล้มเหลว ถูกคำนวณจากเหตุการณ์การนำเข้าที่มีการระบุแหล่งที่มา",
+        "range": "ช่วงการวิเคราะห์",
+        "daysShort": "d",
+        "metrics": {
+          "attempts": "ครั้งที่พยายาม",
+          "successful": "สำเร็จ",
+          "createdContacts": "ผู้ติดต่อที่สร้าง",
+          "deduplicated": "ตัดรายการซ้ำ",
+          "failures": "ล้มเหลว"
+        },
+        "emptyTitle": "ยังไม่มีแหล่งข้อมูลที่จัดการ",
+        "emptyDescription": "สร้างการเชื่อมต่อหนึ่งรายการสำหรับแต่ละ Zap, Make scenario หรือ workflow แบบกำหนดเองที่คุณต้องการสังเกต",
+        "status": {
+          "healthy": "ปกติ",
+          "setup": "ตั้งค่า",
+          "delayed": "ล่าช้า",
+          "failing": "มีปัญหา",
+          "paused": "หยุดชั่วคราว"
+        },
+        "openSetup": "เปิดการตั้งค่า",
+        "successRate": "อัตราความสำเร็จ",
+        "lastActivity": "กิจกรรมล่าสุด",
+        "never": "ไม่เคย",
+        "refreshHealth": "รีเฟรชสถานะ",
+        "pause": "หยุดการตรวจสอบชั่วคราว",
+        "resume": "กลับมาตรวจสอบ",
+        "archive": "เก็บถาวร",
+        "template": "เทมเพลตแนะนำ",
+        "templateDescription": "คัดลอกคำขอนี้แบบเป๊ะไปใส่ในการกระทำ HTTP หรือ webhook ที่มีการป้องกันของระบบอัตโนมัติ",
+        "copyRecipe": "คัดลอกตัวอย่าง",
+        "recipeCopied": "คัดลอกตัวอย่างการเชื่อมต่อแล้ว",
+        "secretReminder": "ใช้คีย์ API ดิบเฉพาะในฟิลด์ความลับที่ป้องกันของผู้ให้บริการเท่านั้น source ID สามารถคัดลอกได้อย่างปลอดภัย แต่ใช้งานได้เฉพาะกับคีย์ที่เชื่อมอยู่เท่านั้น",
+        "providerDocs": "เอกสารผู้ให้บริการ",
+        "healthHistory": "ประวัติสถานะ",
+        "noHealthHistory": "ยังไม่มีการตรวจสอบสถานะ ส่งการนำเข้า 1 รายการที่ได้รับอนุญาต แล้วรีเฟรชสถานะ",
+        "reasons": {
+          "awaiting_first_import": "รอการนำเข้าครั้งแรกที่ได้รับอนุญาต",
+          "no_imports_observed": "ไม่พบการนำเข้าภายในช่วงเวลาการตั้งค่า",
+          "expected_import_overdue": "กิจกรรมการนำเข้าที่คาดหวังเลยกำหนดเวลา",
+          "recent_import_error": "กิจกรรมล่าสุดจบลงด้วยข้อผิดพลาดการนำเข้า",
+          "recovered_after_error": "การนำเข้ากลับมาทำงานอีกครั้งหลังจากข้อผิดพลาด",
+          "imports_flowing": "การนำเข้ากำลังไหลตามช่วงเวลาที่คาดหวัง"
+        },
+        "historyCounts": "{{attempts}} ครั้ง · {{failures}} ล้มเหลว",
+        "archiveTitle": "ต้องการเก็บถาวรการเชื่อมต่อแหล่งข้อมูลนี้หรือไม่?",
+        "archiveDescription": "การนำเข้าที่ใช้ source ID นี้จะถูกปฏิเสธ ผู้ติดต่อที่มีอยู่และข้อมูลวิเคราะห์ที่ปลอดภัยด้านความเป็นส่วนตัวยังคงพร้อมใช้งานในบันทึกเดิมของพวกเขา",
+        "steps": {
+          "zapier": {
+            "1": "เลือกแอปและเหตุการณ์ที่สร้างระเบียนลูกค้าที่มีสิทธิ์",
+            "2": "เพิ่ม Webhooks by Zapier แล้วเลือก Custom Request",
+            "3": "ตั้ง Method เป็น POST และวาง endpoint ของ Get Phame",
+            "4": "เพิ่ม headers ที่มีการป้องกันตามที่แสดงด้านล่างอย่างเคร่งครัด",
+            "5": "แมปฟิลด์ JSON โดยใช้ provider ID ที่คงที่หนึ่งค่า สำหรับ externalId และ Idempotency-Key",
+            "6": "ทดสอบ action ด้วยระเบียนที่ได้รับอนุญาต 1 รายการ แล้วรีเฟรชสถานะที่นี่"
+          },
+          "make": {
+            "1": "เลือก trigger module ที่สร้างระเบียนลูกค้าที่มีสิทธิ์",
+            "2": "เพิ่ม HTTP แล้วเลือก Make a request",
+            "3": "ตั้ง Method เป็น POST, Body type เป็น Raw และ Content type เป็น application/json",
+            "4": "เพิ่ม headers ที่มีการป้องกันตามที่แสดงด้านล่างอย่างเคร่งครัด",
+            "5": "แมปฟิลด์ JSON โดยใช้ bundle ID ที่คงที่หนึ่งค่า สำหรับ externalId และ Idempotency-Key",
+            "6": "รัน scenario ครั้งเดียวด้วยระเบียนที่ได้รับอนุญาต 1 รายการ แล้วรีเฟรชสถานะที่นี่"
+          },
+          "custom": {
+            "1": "ใช้ workflow ฝั่งเซิร์ฟเวอร์ที่เชื่อถือได้ที่รองรับ POST และ headers ที่ป้องกัน",
+            "2": "เก็บคีย์ API ในที่เก็บความลับของ workflow ห้ามเก็บในโค้ดเบราว์เซอร์หรือ URL",
+            "3": "ส่ง JSON ไปยัง endpoint ของ Get Phame พร้อม headers ที่แสดงด้านล่าง",
+            "4": "ใช้หมายเลขระเบียนแหล่งข้อมูลที่ไม่เปลี่ยนแปลงเพียงค่าเดียวสำหรับ externalId และ Idempotency-Key",
+            "5": "ส่งระเบียนที่ได้รับอนุญาต 1 รายการ แล้วรีเฟรชสถานะที่นี่"
+          }
+        }
+      }
     }
   },
   "zh-CN": {
@@ -7046,6 +7576,112 @@
       },
       "doneBtn": "全部完成 — 转到 Phame ✓",
       "skipBtn": "我不使用 WordPress — 跳过此步骤"
+    },
+    "developerIntegrations": {
+      "sourceOps": {
+        "title": "托管来源连接",
+        "description": "每个 Zap、Make 场景或自定义工作流创建一个可观测的连接。每个来源都有自己的标识、分析和健康信号。",
+        "refreshKeys": "刷新 API 密钥",
+        "createTitle": "创建连接",
+        "provider": "自动化提供商",
+        "custom": "自定义 webhook",
+        "label": "连接名称",
+        "labels": {
+          "zapier": "Zapier 客户导入",
+          "make": "Make 客户导入",
+          "custom": "自定义客户导入"
+        },
+        "apiKey": "导入 API 密钥",
+        "noKeys": "没有有效的导入密钥",
+        "expected": "预期活动",
+        "intervals": {
+          "15": "每15分钟",
+          "60": "每小时",
+          "360": "每6小时",
+          "1440": "每天",
+          "10080": "每周"
+        },
+        "minutes": "{{count}} 分钟",
+        "createHelp": "连接仅存储 API 密钥引用和来源标识。Get Phame 不会显示或复制您的原始 API 密钥。",
+        "create": "创建连接",
+        "created": "来源连接已创建。请在测试前将其来源 ID 添加到自动化中。",
+        "updated": "来源设置已更新。",
+        "archived": "来源连接已归档。其来源 ID 无法再用于授权导入。",
+        "healthRefreshed": "来源健康状态已根据近期导入活动刷新。",
+        "keyRequired": "请先创建或选择一个有效的 contacts:write API 密钥。",
+        "analyticsTitle": "按来源的导入流程",
+        "analyticsDescription": "尝试次数、结果、去重和失败均基于归因的导入事件计算。",
+        "range": "分析范围",
+        "daysShort": "天",
+        "metrics": {
+          "attempts": "尝试次数",
+          "successful": "成功",
+          "createdContacts": "创建的联系人",
+          "deduplicated": "已去重",
+          "failures": "失败"
+        },
+        "emptyTitle": "尚无托管来源",
+        "emptyDescription": "为要监控的每个 Zap、Make 场景或自定义工作流创建一个连接。",
+        "status": {
+          "healthy": "健康",
+          "setup": "设置中",
+          "delayed": "延迟",
+          "failing": "失败",
+          "paused": "已暂停"
+        },
+        "openSetup": "打开设置",
+        "successRate": "成功率",
+        "lastActivity": "最近活动",
+        "never": "从未",
+        "refreshHealth": "刷新健康状态",
+        "pause": "暂停监控",
+        "resume": "恢复监控",
+        "archive": "归档",
+        "template": "引导模板",
+        "templateDescription": "将此完整请求复制到自动化中的受保护 HTTP 或 webhook 操作。",
+        "copyRecipe": "复制请求示例",
+        "recipeCopied": "连接请求示例已复制。",
+        "secretReminder": "仅在提供商的受保护密钥字段中使用原始 API 密钥。来源 ID 可安全复制，但只能与其关联的密钥一起使用。",
+        "providerDocs": "提供商文档",
+        "healthHistory": "健康历史",
+        "noHealthHistory": "尚无健康检查。发送一次允许的导入，然后刷新健康状态。",
+        "reasons": {
+          "awaiting_first_import": "等待第一次允许的导入",
+          "no_imports_observed": "在设置窗口内未观察到导入",
+          "expected_import_overdue": "预期的导入活动已逾期",
+          "recent_import_error": "最近一次活动以导入错误结束",
+          "recovered_after_error": "错误后导入已恢复",
+          "imports_flowing": "导入在预期间隔内正常进行"
+        },
+        "historyCounts": "{{attempts}} 次尝试 · {{failures}} 次失败",
+        "archiveTitle": "要归档此来源连接吗？",
+        "archiveDescription": "使用此来源 ID 的导入将被拒绝。现有联系人和隐私安全的分析数据仍保留在其原始记录中。",
+        "steps": {
+          "zapier": {
+            "1": "选择会生成合格客户记录的应用和事件。",
+            "2": "添加 Webhooks by Zapier，并选择 Custom Request。",
+            "3": "将 Method 设置为 POST，并粘贴 Get Phame 端点。",
+            "4": "按下方所示准确添加受保护的请求头。",
+            "5": "映射 JSON 字段，使用一个稳定的提供者 ID 作为 externalId 和 Idempotency-Key。",
+            "6": "使用一条允许的记录测试操作，然后在此刷新健康状态。"
+          },
+          "make": {
+            "1": "选择会生成合格客户记录的触发模块。",
+            "2": "添加 HTTP 模块并选择 Make a request。",
+            "3": "将 Method 设置为 POST，Body type 设置为 Raw，Content type 设置为 application/json。",
+            "4": "按下方所示准确添加受保护的请求头。",
+            "5": "映射 JSON 字段，使用一个稳定的 bundle ID 作为 externalId 和 Idempotency-Key。",
+            "6": "运行场景一次，使用一条允许的记录，然后在此刷新健康状态。"
+          },
+          "custom": {
+            "1": "使用支持 POST 和受保护请求头的可信服务器端工作流。",
+            "2": "将 API 密钥存储在工作流的密钥存储中，切勿放在浏览器代码或 URL 中。",
+            "3": "将 JSON 和下方所示的请求头一起发送到 Get Phame 端点。",
+            "4": "为 externalId 和 Idempotency-Key 使用一个不可变的来源记录 ID。",
+            "5": "发送一条允许的记录，然后在此刷新健康状态。"
+          }
+        }
+      }
     }
   },
   "zh-TW": {
@@ -8225,6 +8861,112 @@
       },
       "doneBtn": "全部完成 — 前往 Phame ✓",
       "skipBtn": "我不使用 WordPress — 跳過此步驟"
+    },
+    "developerIntegrations": {
+      "sourceOps": {
+        "title": "受管理的來源連線",
+        "description": "為每個 Zap、Make 情境或自訂工作流程建立一個可觀察的連線。每個來源會有自己的識別碼、分析與健康訊號。",
+        "refreshKeys": "重新整理 API 金鑰",
+        "createTitle": "建立連線",
+        "provider": "自動化提供者",
+        "custom": "自訂 webhook",
+        "label": "連線名稱",
+        "labels": {
+          "zapier": "Zapier 客戶匯入",
+          "make": "Make 客戶匯入",
+          "custom": "自訂客戶匯入"
+        },
+        "apiKey": "匯入 API 金鑰",
+        "noKeys": "沒有啟用的匯入金鑰",
+        "expected": "預期活動",
+        "intervals": {
+          "15": "每 15 分鐘",
+          "60": "每小時",
+          "360": "每 6 小時",
+          "1440": "每日",
+          "10080": "每週"
+        },
+        "minutes": "{{count}} 分鐘",
+        "createHelp": "此連線僅儲存 API 金鑰參考與來源識別碼。Get Phame 不會顯示或複製你的原始 API 金鑰。",
+        "create": "建立連線",
+        "created": "來源連線已建立。測試前請將其來源 ID 加到你的自動化中。",
+        "updated": "來源設定已更新。",
+        "archived": "來源連線已封存。其來源 ID 不再可用於授權匯入。",
+        "healthRefreshed": "已依最近的匯入活動更新來源健康狀態。",
+        "keyRequired": "請先建立或選擇一個啟用的 contacts:write API 金鑰。",
+        "analyticsTitle": "依來源的匯入流程",
+        "analyticsDescription": "嘗試次數、結果、去重與失敗均根據已歸因的匯入事件計算。",
+        "range": "分析範圍",
+        "daysShort": "天",
+        "metrics": {
+          "attempts": "嘗試次數",
+          "successful": "成功",
+          "createdContacts": "建立的聯絡人",
+          "deduplicated": "已去重",
+          "failures": "失敗"
+        },
+        "emptyTitle": "尚無受管理的來源",
+        "emptyDescription": "為每個想要監控的 Zap、Make 情境或自訂工作流程建立一個連線。",
+        "status": {
+          "healthy": "正常",
+          "setup": "設定中",
+          "delayed": "延遲",
+          "failing": "故障",
+          "paused": "已暫停"
+        },
+        "openSetup": "開啟設定",
+        "successRate": "成功率",
+        "lastActivity": "最近活動",
+        "never": "從未",
+        "refreshHealth": "更新健康狀態",
+        "pause": "暫停監控",
+        "resume": "恢復監控",
+        "archive": "封存",
+        "template": "引導範本",
+        "templateDescription": "將此完整請求複製到自動化的受保護 HTTP 或 webhook 動作中。",
+        "copyRecipe": "複製範本",
+        "recipeCopied": "連線範本已複製。",
+        "secretReminder": "請僅在提供者的受保護祕密欄位中使用原始 API 金鑰。來源 ID 可安全複製，但僅能搭配其對應金鑰使用。",
+        "providerDocs": "提供者文件",
+        "healthHistory": "健康記錄",
+        "noHealthHistory": "尚無健康檢查。請傳送一筆允許的匯入，然後更新健康狀態。",
+        "reasons": {
+          "awaiting_first_import": "等待第一筆允許的匯入",
+          "no_imports_observed": "在設定視窗內未觀察到匯入",
+          "expected_import_overdue": "預期的匯入活動已逾期",
+          "recent_import_error": "最近的一次活動以匯入錯誤結束",
+          "recovered_after_error": "匯入在錯誤後已恢復流動",
+          "imports_flowing": "匯入在預期間隔內正常流動"
+        },
+        "historyCounts": "{{attempts}} 次嘗試 · {{failures}} 次失敗",
+        "archiveTitle": "要封存此來源連線嗎？",
+        "archiveDescription": "使用此來源 ID 的匯入將被拒絕。現有聯絡人與符合隱私的分析仍保留於其原始記錄中。",
+        "steps": {
+          "zapier": {
+            "1": "選擇會產生符合條件客戶記錄的應用與事件。",
+            "2": "新增 Webhooks by Zapier，並選擇 Custom Request。",
+            "3": "將 Method 設為 POST，並貼上 Get Phame 的端點。",
+            "4": "如下方所示，精確加入受保護的標頭。",
+            "5": "對應 JSON 欄位，對 externalId 和 Idempotency-Key 使用一個穩定的供應者 ID。",
+            "6": "以一筆允許的記錄測試此動作，然後在此更新健康狀態。"
+          },
+          "make": {
+            "1": "選擇會產生符合條件客戶記錄的觸發模組。",
+            "2": "新增 HTTP 模組並選擇 Make a request。",
+            "3": "將 Method 設為 POST、Body type 設為 Raw，並將 Content type 設為 application/json。",
+            "4": "如下方所示，精確加入受保護的標頭。",
+            "5": "對應 JSON 欄位，對 externalId 和 Idempotency-Key 使用一個穩定的 bundle ID。",
+            "6": "以一筆允許的記錄執行一次情境，然後在此更新健康狀態。"
+          },
+          "custom": {
+            "1": "使用支援 POST 與受保護標頭的可信伺服器端工作流程。",
+            "2": "將 API 金鑰儲存在工作流程的祕密存放處，切勿放在瀏覽器程式碼或 URL 中。",
+            "3": "將 JSON 與下方標頭一起送至 Get Phame 端點。",
+            "4": "對 externalId 和 Idempotency-Key 使用一個不可變的來源紀錄 ID。",
+            "5": "傳送一筆允許的記錄，然後在此更新健康狀態。"
+          }
+        }
+      }
     }
   }
 }

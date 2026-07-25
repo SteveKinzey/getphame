@@ -2716,6 +2716,110 @@
       "createKey": "Create import key",
       "viewImports": "View imports"
     },
+    "sourceOps": {
+      "title": "Managed source connections",
+      "description": "Create one observable connection per Zap, Make scenario, or custom workflow. Each source gets its own identifier, analytics, and health signal.",
+      "refreshKeys": "Refresh API keys",
+      "createTitle": "Create a connection",
+      "provider": "Automation provider",
+      "custom": "Custom webhook",
+      "label": "Connection name",
+      "labels": {
+        "zapier": "Zapier customer import",
+        "make": "Make customer import",
+        "custom": "Custom customer import"
+      },
+      "apiKey": "Import API key",
+      "noKeys": "No active import key",
+      "expected": "Expected activity",
+      "intervals": {
+        "15": "Every 15 minutes",
+        "60": "Hourly",
+        "360": "Every 6 hours",
+        "1440": "Daily",
+        "10080": "Weekly"
+      },
+      "minutes": "{{count}} minutes",
+      "createHelp": "The connection stores only an API-key reference and source identifier. Get Phame never displays or duplicates your raw API key.",
+      "create": "Create connection",
+      "created": "Source connection created. Add its source ID to your automation before testing.",
+      "updated": "Source settings updated.",
+      "archived": "Source connection archived. Its source ID can no longer authorize imports.",
+      "healthRefreshed": "Source health refreshed from recent import activity.",
+      "keyRequired": "Create or choose an active contacts:write API key first.",
+      "analyticsTitle": "Import flow by source",
+      "analyticsDescription": "Attempts, outcomes, deduplication, and failures are calculated from attributed import events.",
+      "range": "Analytics range",
+      "daysShort": "d",
+      "metrics": {
+        "attempts": "Attempts",
+        "successful": "Successful",
+        "createdContacts": "Contacts created",
+        "deduplicated": "Deduplicated",
+        "failures": "Failures"
+      },
+      "emptyTitle": "No managed sources yet",
+      "emptyDescription": "Create one connection for each Zap, Make scenario, or custom workflow you want to observe.",
+      "status": {
+        "healthy": "Healthy",
+        "setup": "Setup",
+        "delayed": "Delayed",
+        "failing": "Failing",
+        "paused": "Paused"
+      },
+      "openSetup": "Open setup",
+      "successRate": "Success rate",
+      "lastActivity": "Last activity",
+      "never": "Never",
+      "refreshHealth": "Refresh health",
+      "pause": "Pause monitoring",
+      "resume": "Resume monitoring",
+      "archive": "Archive",
+      "template": "guided template",
+      "templateDescription": "Copy this exact request into the automation's protected HTTP or webhook action.",
+      "copyRecipe": "Copy recipe",
+      "recipeCopied": "Connection recipe copied.",
+      "secretReminder": "Use the raw API key only inside the provider's protected secret field. The source ID is safe to copy but works only with its linked key.",
+      "providerDocs": "Provider docs",
+      "healthHistory": "Health history",
+      "noHealthHistory": "No health checks yet. Send one permitted import, then refresh health.",
+      "reasons": {
+        "awaiting_first_import": "Awaiting the first permitted import",
+        "no_imports_observed": "No imports observed within the setup window",
+        "expected_import_overdue": "Expected import activity is overdue",
+        "recent_import_error": "The latest activity ended with an import error",
+        "recovered_after_error": "Imports are flowing again after an error",
+        "imports_flowing": "Imports are flowing within the expected interval"
+      },
+      "historyCounts": "{{attempts}} attempts · {{failures}} failures",
+      "archiveTitle": "Archive this source connection?",
+      "archiveDescription": "Imports using this source ID will be rejected. Existing contacts and privacy-safe analytics remain available in their original records.",
+      "steps": {
+        "zapier": {
+          "1": "Choose the app and event that produces an eligible customer record.",
+          "2": "Add Webhooks by Zapier and select Custom Request.",
+          "3": "Set Method to POST and paste the Get Phame endpoint.",
+          "4": "Add the protected headers exactly as shown below.",
+          "5": "Map the JSON fields, using one stable provider ID for externalId and Idempotency-Key.",
+          "6": "Test the action with one permitted record, then refresh health here."
+        },
+        "make": {
+          "1": "Choose the trigger module that produces an eligible customer record.",
+          "2": "Add HTTP and select Make a request.",
+          "3": "Set Method to POST, Body type to Raw, and Content type to application/json.",
+          "4": "Add the protected headers exactly as shown below.",
+          "5": "Map the JSON fields, using one stable bundle ID for externalId and Idempotency-Key.",
+          "6": "Run the scenario once with one permitted record, then refresh health here."
+        },
+        "custom": {
+          "1": "Use a trusted server-side workflow that supports POST and protected headers.",
+          "2": "Store the API key in the workflow secret store, never in browser code or a URL.",
+          "3": "Send JSON to the Get Phame endpoint with the headers shown below.",
+          "4": "Use one immutable source record ID for externalId and Idempotency-Key.",
+          "5": "Send one permitted record, then refresh health here."
+        }
+      }
+    },
     "guides": {
       "copied": "Example copied.",
       "copyExample": "Copy example",

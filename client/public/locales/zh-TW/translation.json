@@ -2289,7 +2289,111 @@
       "imports": "最近匯入",
       "requests": "金鑰使用次數"
     },
-    "title": "Developer integrations"
+    "title": "Developer integrations",
+    "sourceOps": {
+      "title": "受管理的來源連線",
+      "description": "為每個 Zap、Make 情境或自訂工作流程建立一個可觀察的連線。每個來源會有自己的識別碼、分析與健康訊號。",
+      "refreshKeys": "重新整理 API 金鑰",
+      "createTitle": "建立連線",
+      "provider": "自動化提供者",
+      "custom": "自訂 webhook",
+      "label": "連線名稱",
+      "labels": {
+        "zapier": "Zapier 客戶匯入",
+        "make": "Make 客戶匯入",
+        "custom": "自訂客戶匯入"
+      },
+      "apiKey": "匯入 API 金鑰",
+      "noKeys": "沒有啟用的匯入金鑰",
+      "expected": "預期活動",
+      "intervals": {
+        "15": "每 15 分鐘",
+        "60": "每小時",
+        "360": "每 6 小時",
+        "1440": "每日",
+        "10080": "每週"
+      },
+      "minutes": "{{count}} 分鐘",
+      "createHelp": "此連線僅儲存 API 金鑰參考與來源識別碼。Get Phame 不會顯示或複製你的原始 API 金鑰。",
+      "create": "建立連線",
+      "created": "來源連線已建立。測試前請將其來源 ID 加到你的自動化中。",
+      "updated": "來源設定已更新。",
+      "archived": "來源連線已封存。其來源 ID 不再可用於授權匯入。",
+      "healthRefreshed": "已依最近的匯入活動更新來源健康狀態。",
+      "keyRequired": "請先建立或選擇一個啟用的 contacts:write API 金鑰。",
+      "analyticsTitle": "依來源的匯入流程",
+      "analyticsDescription": "嘗試次數、結果、去重與失敗均根據已歸因的匯入事件計算。",
+      "range": "分析範圍",
+      "daysShort": "天",
+      "metrics": {
+        "attempts": "嘗試次數",
+        "successful": "成功",
+        "createdContacts": "建立的聯絡人",
+        "deduplicated": "已去重",
+        "failures": "失敗"
+      },
+      "emptyTitle": "尚無受管理的來源",
+      "emptyDescription": "為每個想要監控的 Zap、Make 情境或自訂工作流程建立一個連線。",
+      "status": {
+        "healthy": "正常",
+        "setup": "設定中",
+        "delayed": "延遲",
+        "failing": "故障",
+        "paused": "已暫停"
+      },
+      "openSetup": "開啟設定",
+      "successRate": "成功率",
+      "lastActivity": "最近活動",
+      "never": "從未",
+      "refreshHealth": "更新健康狀態",
+      "pause": "暫停監控",
+      "resume": "恢復監控",
+      "archive": "封存",
+      "template": "引導範本",
+      "templateDescription": "將此完整請求複製到自動化的受保護 HTTP 或 webhook 動作中。",
+      "copyRecipe": "複製範本",
+      "recipeCopied": "連線範本已複製。",
+      "secretReminder": "請僅在提供者的受保護祕密欄位中使用原始 API 金鑰。來源 ID 可安全複製，但僅能搭配其對應金鑰使用。",
+      "providerDocs": "提供者文件",
+      "healthHistory": "健康記錄",
+      "noHealthHistory": "尚無健康檢查。請傳送一筆允許的匯入，然後更新健康狀態。",
+      "reasons": {
+        "awaiting_first_import": "等待第一筆允許的匯入",
+        "no_imports_observed": "在設定視窗內未觀察到匯入",
+        "expected_import_overdue": "預期的匯入活動已逾期",
+        "recent_import_error": "最近的一次活動以匯入錯誤結束",
+        "recovered_after_error": "匯入在錯誤後已恢復流動",
+        "imports_flowing": "匯入在預期間隔內正常流動"
+      },
+      "historyCounts": "{{attempts}} 次嘗試 · {{failures}} 次失敗",
+      "archiveTitle": "要封存此來源連線嗎？",
+      "archiveDescription": "使用此來源 ID 的匯入將被拒絕。現有聯絡人與符合隱私的分析仍保留於其原始記錄中。",
+      "steps": {
+        "zapier": {
+          "1": "選擇會產生符合條件客戶記錄的應用與事件。",
+          "2": "新增 Webhooks by Zapier，並選擇 Custom Request。",
+          "3": "將 Method 設為 POST，並貼上 Get Phame 的端點。",
+          "4": "如下方所示，精確加入受保護的標頭。",
+          "5": "對應 JSON 欄位，對 externalId 和 Idempotency-Key 使用一個穩定的供應者 ID。",
+          "6": "以一筆允許的記錄測試此動作，然後在此更新健康狀態。"
+        },
+        "make": {
+          "1": "選擇會產生符合條件客戶記錄的觸發模組。",
+          "2": "新增 HTTP 模組並選擇 Make a request。",
+          "3": "將 Method 設為 POST、Body type 設為 Raw，並將 Content type 設為 application/json。",
+          "4": "如下方所示，精確加入受保護的標頭。",
+          "5": "對應 JSON 欄位，對 externalId 和 Idempotency-Key 使用一個穩定的 bundle ID。",
+          "6": "以一筆允許的記錄執行一次情境，然後在此更新健康狀態。"
+        },
+        "custom": {
+          "1": "使用支援 POST 與受保護標頭的可信伺服器端工作流程。",
+          "2": "將 API 金鑰儲存在工作流程的祕密存放處，切勿放在瀏覽器程式碼或 URL 中。",
+          "3": "將 JSON 與下方標頭一起送至 Get Phame 端點。",
+          "4": "對 externalId 和 Idempotency-Key 使用一個不可變的來源紀錄 ID。",
+          "5": "傳送一筆允許的記錄，然後在此更新健康狀態。"
+        }
+      }
+    }
   },
   "promotionLink": {
     "applied": "您的活動代碼將於結帳時套用",

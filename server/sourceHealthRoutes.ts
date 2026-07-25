@@ -4,6 +4,7 @@ import { notifyOwner } from "./_core/notification";
 import { sdk } from "./_core/sdk";
 import {
   SOURCE_HEALTH_BATCH_SIZE,
+  claimSourceHealthSchedulerRun,
   getDueSourceConnections,
   getSourceEventWindow,
   getSourceHealthSchedulerByTaskUid,
@@ -168,13 +169,8 @@ export async function sourceHealthHandler(req: Request, res: Response) {
     taskUid = user.taskUid;
     const scheduler = await getSourceHealthSchedulerByTaskUid(taskUid);
     if (!scheduler) return res.json({ ok: true, skipped: "orphan" });
-    if (
-      scheduler.lastRunStatus === "ok"
-      && scheduler.lastRunAt !== null
-      && scheduler.lastRunAt >= Date.now() - RETRY_DEDUP_WINDOW_MS
-    ) {
-      return res.json({ ok: true, skipped: "recent-run-exists", checkedAt: scheduler.lastRunAt });
-    }
+    const claimed = await claimSourceHealthSchedulerRun(taskUid, RETRY_DEDUP_WINDOW_MS);
+    if (!claimed) return res.json({ ok: true, skipped: "recent-run-exists", checkedAt: scheduler.lastRunAt });
 
     const result = await runSourceHealthEvaluationBatch();
     await recordSourceHealthSchedulerRun({ taskUid, status: "ok" });
@@ -184,13 +180,12 @@ export async function sourceHealthHandler(req: Request, res: Response) {
       await recordSourceHealthSchedulerRun({
         taskUid,
         status: "failed",
-        errorCode: error instanceof Error ? error.message : "SOURCE_HEALTH_RUN_FAILED",
+        errorCode: "SOURCE_HEALTH_RUN_FAILED",
       }).catch(() => undefined);
     }
     console.error("[SourceHealth] Scheduled callback failed:", error instanceof Error ? error.name : "unknown");
     return res.status(500).json({
       error: "SOURCE_HEALTH_RUN_FAILED",
-      context: { url: req.originalUrl, taskUid: taskUid ?? null },
       timestamp: new Date().toISOString(),
     });
   }

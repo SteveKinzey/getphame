@@ -2990,7 +2990,111 @@
       "imports": "Importazioni recenti",
       "requests": "Utilizzi chiave"
     },
-    "title": "Integrazioni per sviluppatori"
+    "title": "Integrazioni per sviluppatori",
+    "sourceOps": {
+      "title": "Connessioni sorgente gestite",
+      "description": "Crea una connessione osservabile per ogni Zap, scenario Make o workflow personalizzato. Ogni sorgente ottiene il proprio identificatore, metriche e segnale di salute.",
+      "refreshKeys": "Aggiorna chiavi API",
+      "createTitle": "Crea una connessione",
+      "provider": "Provider di automazione",
+      "custom": "Webhook personalizzato",
+      "label": "Nome connessione",
+      "labels": {
+        "zapier": "Importazione clienti Zapier",
+        "make": "Importazione clienti Make",
+        "custom": "Importazione clienti personalizzata"
+      },
+      "apiKey": "Chiave API di importazione",
+      "noKeys": "Nessuna chiave di importazione attiva",
+      "expected": "Attività prevista",
+      "intervals": {
+        "15": "Ogni 15 minuti",
+        "60": "Ogni ora",
+        "360": "Ogni 6 ore",
+        "1440": "Ogni giorno",
+        "10080": "Ogni settimana"
+      },
+      "minutes": "{{count}} minuti",
+      "createHelp": "La connessione memorizza solo un riferimento alla chiave API e l'identificatore della sorgente. Get Phame non visualizza né duplica la tua chiave API in chiaro.",
+      "create": "Crea connessione",
+      "created": "Connessione sorgente creata. Aggiungi il suo ID sorgente alla tua automazione prima di testare.",
+      "updated": "Impostazioni sorgente aggiornate.",
+      "archived": "Connessione sorgente archiviata. Il suo ID sorgente non può più autorizzare importazioni.",
+      "healthRefreshed": "Stato di salute della sorgente aggiornato in base alle importazioni recenti.",
+      "keyRequired": "Crea o seleziona prima una chiave API contacts:write attiva.",
+      "analyticsTitle": "Flusso importazioni per sorgente",
+      "analyticsDescription": "Tentativi, risultati, deduplicazioni e errori sono calcolati dagli eventi di importazione attribuiti.",
+      "range": "Intervallo",
+      "daysShort": "g",
+      "metrics": {
+        "attempts": "Tentativi",
+        "successful": "Riusciti",
+        "createdContacts": "Contatti creati",
+        "deduplicated": "Deduplicati",
+        "failures": "Errori"
+      },
+      "emptyTitle": "Ancora nessuna sorgente gestita",
+      "emptyDescription": "Crea una connessione per ogni Zap, scenario Make o workflow personalizzato che vuoi monitorare.",
+      "status": {
+        "healthy": "Operativo",
+        "setup": "Configurazione",
+        "delayed": "In ritardo",
+        "failing": "In errore",
+        "paused": "In pausa"
+      },
+      "openSetup": "Apri configurazione",
+      "successRate": "Tasso di successo",
+      "lastActivity": "Ultima attività",
+      "never": "Mai",
+      "refreshHealth": "Aggiorna stato",
+      "pause": "Sospendi monitoraggio",
+      "resume": "Riprendi monitoraggio",
+      "archive": "Archivia",
+      "template": "modello guidato",
+      "templateDescription": "Copia esattamente questa richiesta nell'azione HTTP o webhook protetta dell'automazione.",
+      "copyRecipe": "Copia ricetta",
+      "recipeCopied": "Ricetta della connessione copiata.",
+      "secretReminder": "Usa la chiave API in chiaro solo nel campo segreto protetto del provider. L'ID sorgente è sicuro da copiare ma funziona solo con la chiave a cui è collegato.",
+      "providerDocs": "Documentazione provider",
+      "healthHistory": "Cronologia dello stato",
+      "noHealthHistory": "Ancora nessun controllo di stato. Invia un'importazione consentita, poi aggiorna lo stato.",
+      "reasons": {
+        "awaiting_first_import": "In attesa della prima importazione consentita",
+        "no_imports_observed": "Nessuna importazione osservata nella finestra di configurazione",
+        "expected_import_overdue": "L'attività di importazione prevista è in ritardo",
+        "recent_import_error": "L'ultima attività è terminata con un errore di importazione",
+        "recovered_after_error": "Le importazioni sono di nuovo attive dopo l'errore",
+        "imports_flowing": "Le importazioni avvengono nell'intervallo previsto"
+      },
+      "historyCounts": "{{attempts}} tentativi · {{failures}} errori",
+      "archiveTitle": "Archiviare questa connessione sorgente?",
+      "archiveDescription": "Le importazioni che usano questo ID sorgente verranno rifiutate. I contatti esistenti e le analisi compatibili con la privacy rimangono disponibili nei record originali.",
+      "steps": {
+        "zapier": {
+          "1": "Scegli l'app e l'evento che producono un record cliente idoneo.",
+          "2": "Aggiungi Webhooks by Zapier e seleziona Custom Request.",
+          "3": "Imposta Method su POST e incolla l'endpoint Get Phame.",
+          "4": "Aggiungi gli header protetti esattamente come mostrato sotto.",
+          "5": "Mappa i campi JSON, usando un ID provider stabile per externalId e Idempotency-Key.",
+          "6": "Testa l'azione con un record consentito, poi aggiorna lo stato qui."
+        },
+        "make": {
+          "1": "Scegli il modulo trigger che produce un record cliente idoneo.",
+          "2": "Aggiungi HTTP e seleziona Make a request.",
+          "3": "Imposta Method su POST, Body type su Raw e Content type su application/json.",
+          "4": "Aggiungi gli header protetti esattamente come mostrato sotto.",
+          "5": "Mappa i campi JSON, usando un ID bundle stabile per externalId e Idempotency-Key.",
+          "6": "Esegui lo scenario una volta con un record consentito, poi aggiorna lo stato qui."
+        },
+        "custom": {
+          "1": "Usa un workflow server-side affidabile che supporti POST e header protetti.",
+          "2": "Salva la chiave API nello store dei segreti del workflow, mai nel codice del browser o in un URL.",
+          "3": "Invia JSON all'endpoint Get Phame con gli header mostrati sotto.",
+          "4": "Usa un ID record sorgente immutabile per externalId e Idempotency-Key.",
+          "5": "Invia un record consentito, poi aggiorna lo stato qui."
+        }
+      }
+    }
   },
   "promotionLink": {
     "applied": "Il codice della campagna verrà applicato al checkout",

@@ -21,6 +21,7 @@ import { toast } from "sonner";
 import { IntegrationGuide } from "@/components/IntegrationGuide";
 import { DeveloperApiEnrollmentPanel } from "@/components/DeveloperApiEnrollmentPanel";
 import { SourceSetupGuide } from "@/components/SourceSetupGuide";
+import { SourceOperationsPanel } from "@/components/SourceOperationsPanel";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -263,6 +264,8 @@ export default function DeveloperIntegrationsPage() {
         </section>
 
         <SourceSetupGuide endpoint={endpoint} />
+
+        <SourceOperationsPanel />
 
         <DeveloperApiEnrollmentPanel />
 

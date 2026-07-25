@@ -2800,7 +2800,111 @@
       "imports": "Importaciones recientes",
       "requests": "Usos de claves"
     },
-    "title": "Developer integrations"
+    "title": "Developer integrations",
+    "sourceOps": {
+      "title": "Conexiones de origen gestionadas",
+      "description": "Cree una conexión observable por cada Zap, escenario de Make o flujo de trabajo personalizado. Cada origen obtiene su propio identificador, analíticas y señal de estado.",
+      "refreshKeys": "Actualizar claves API",
+      "createTitle": "Crear una conexión",
+      "provider": "Proveedor de automatización",
+      "custom": "Webhook personalizado",
+      "label": "Nombre de la conexión",
+      "labels": {
+        "zapier": "Importación de clientes de Zapier",
+        "make": "Importación de clientes de Make",
+        "custom": "Importación de clientes personalizada"
+      },
+      "apiKey": "Clave API de importación",
+      "noKeys": "No hay clave de importación activa",
+      "expected": "Actividad esperada",
+      "intervals": {
+        "15": "Every 15 minutes",
+        "60": "Hourly",
+        "360": "Every 6 hours",
+        "1440": "Daily",
+        "10080": "Weekly"
+      },
+      "minutes": "{{count}} minutos",
+      "createHelp": "La conexión almacena solo una referencia de la clave API y el identificador de la fuente. Get Phame nunca muestra ni duplica su clave API en bruto.",
+      "create": "Crear conexión",
+      "created": "Conexión de origen creada. Agregue su ID de origen a su automatización antes de probar.",
+      "updated": "Configuración de la fuente actualizada.",
+      "archived": "Conexión de origen archivada. Su ID de origen ya no puede autorizar importaciones.",
+      "healthRefreshed": "Estado de salud de la fuente actualizado según la actividad reciente de importación.",
+      "keyRequired": "Cree o seleccione primero una clave API activa contacts:write.",
+      "analyticsTitle": "Flujo de importación por fuente",
+      "analyticsDescription": "Los intentos, resultados, deduplicaciones y fallos se calculan a partir de eventos de importación atribuidos.",
+      "range": "Rango de análisis",
+      "daysShort": "d",
+      "metrics": {
+        "attempts": "Intentos",
+        "successful": "Exitosos",
+        "createdContacts": "Contactos creados",
+        "deduplicated": "Deduplicados",
+        "failures": "Fallos"
+      },
+      "emptyTitle": "Aún no hay fuentes administradas",
+      "emptyDescription": "Cree una conexión por cada Zap, escenario de Make o flujo de trabajo personalizado que quiera supervisar.",
+      "status": {
+        "healthy": "Saludable",
+        "setup": "Configuración",
+        "delayed": "Retrasado",
+        "failing": "Con fallos",
+        "paused": "Pausado"
+      },
+      "openSetup": "Abrir configuración",
+      "successRate": "Tasa de éxito",
+      "lastActivity": "Última actividad",
+      "never": "Nunca",
+      "refreshHealth": "Actualizar estado",
+      "pause": "Pausar supervisión",
+      "resume": "Reanudar supervisión",
+      "archive": "Archivar",
+      "template": "plantilla guiada",
+      "templateDescription": "Copie esta solicitud exactamente en la acción HTTP o webhook protegida de la automatización.",
+      "copyRecipe": "Copiar receta",
+      "recipeCopied": "Receta de conexión copiada.",
+      "secretReminder": "Use la clave API sin procesar solo dentro del campo secreto protegido del proveedor. El ID de origen es seguro de copiar pero solo funciona con su clave vinculada.",
+      "providerDocs": "Documentación del proveedor",
+      "healthHistory": "Historial de estado",
+      "noHealthHistory": "Aún no hay comprobaciones de estado. Envíe una importación permitida y luego actualice el estado.",
+      "reasons": {
+        "awaiting_first_import": "Esperando la primera importación permitida",
+        "no_imports_observed": "No se observaron importaciones dentro del periodo de configuración",
+        "expected_import_overdue": "La actividad de importación esperada está retrasada",
+        "recent_import_error": "La actividad más reciente terminó con un error de importación",
+        "recovered_after_error": "Las importaciones fluyen de nuevo tras un error",
+        "imports_flowing": "Las importaciones se realizan dentro del intervalo esperado"
+      },
+      "historyCounts": "{{attempts}} intentos · {{failures}} fallos",
+      "archiveTitle": "¿Archivar esta conexión de origen?",
+      "archiveDescription": "Las importaciones que usen este ID de origen serán rechazadas. Los contactos existentes y las analíticas con privacidad segura seguirán disponibles en sus registros originales.",
+      "steps": {
+        "zapier": {
+          "1": "Elija la app y el evento que generen un registro de cliente elegible.",
+          "2": "Agregue Webhooks by Zapier y seleccione Custom Request.",
+          "3": "Establezca Method en POST y pegue el endpoint de Get Phame.",
+          "4": "Agregue los encabezados protegidos exactamente como se muestran a continuación.",
+          "5": "Asigne los campos JSON, usando un ID de proveedor estable para externalId y Idempotency-Key.",
+          "6": "Pruebe la acción con un registro permitido, luego actualice el estado aquí."
+        },
+        "make": {
+          "1": "Elija el módulo de trigger que genere un registro de cliente elegible.",
+          "2": "Agregue HTTP y seleccione Make a request.",
+          "3": "Establezca Method en POST, Body type en Raw y Content type en application/json.",
+          "4": "Agregue los encabezados protegidos exactamente como se muestran a continuación.",
+          "5": "Asigne los campos JSON, usando un ID de bundle estable para externalId y Idempotency-Key.",
+          "6": "Ejecute el escenario una vez con un registro permitido, luego actualice el estado aquí."
+        },
+        "custom": {
+          "1": "Use un flujo de trabajo del lado del servidor de confianza que admita POST y encabezados protegidos.",
+          "2": "Almacene la clave API en el almacén secreto del flujo de trabajo, nunca en código del navegador ni en una URL.",
+          "3": "Envíe JSON al endpoint de Get Phame con los encabezados mostrados abajo.",
+          "4": "Use un ID de registro de origen inmutable para externalId e Idempotency-Key.",
+          "5": "Envíe un registro permitido y luego actualice el estado aquí."
+        }
+      }
+    }
   },
   "landing": {
     "hero": {

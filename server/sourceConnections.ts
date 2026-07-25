@@ -392,6 +392,29 @@ export async function getSourceHealthSchedulerByTaskUid(taskUid: string) {
   return row ?? null;
 }
 
+export async function claimSourceHealthSchedulerRun(
+  taskUid: string,
+  dedupWindowMs: number,
+  now = Date.now(),
+) {
+  const db = await getDb();
+  if (!db) return false;
+  const result = await db.update(sourceHealthSchedulers).set({
+    lastRunAt: now,
+    lastRunStatus: "running",
+    lastRunErrorCode: null,
+    updatedAt: now,
+  }).where(and(
+    eq(sourceHealthSchedulers.scheduleCronTaskUid, taskUid),
+    or(
+      isNull(sourceHealthSchedulers.lastRunAt),
+      lte(sourceHealthSchedulers.lastRunAt, now - dedupWindowMs),
+    ),
+  ));
+  const affectedRows = Number((result as unknown as [{ affectedRows?: number }])[0]?.affectedRows ?? 0);
+  return affectedRows === 1;
+}
+
 export async function saveSourceHealthSchedulerTaskUid(taskUid: string, now = Date.now()) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");

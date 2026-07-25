@@ -2800,7 +2800,111 @@
       "imports": "Imports récents",
       "requests": "Utilisations de clés"
     },
-    "title": "Intégrations développeur"
+    "title": "Intégrations développeur",
+    "sourceOps": {
+      "title": "Connexions de source gérées",
+      "description": "Créez une connexion observable par Zap, scénario Make ou flux de travail personnalisé. Chaque source reçoit son propre identifiant, des analyses et un signal de santé.",
+      "refreshKeys": "Actualiser les clés API",
+      "createTitle": "Créer une connexion",
+      "provider": "Fournisseur d'automatisation",
+      "custom": "Webhook personnalisé",
+      "label": "Nom de la connexion",
+      "labels": {
+        "zapier": "Importation client Zapier",
+        "make": "Importation client Make",
+        "custom": "Importation client personnalisée"
+      },
+      "apiKey": "Clé API d'importation",
+      "noKeys": "Aucune clé d'importation active",
+      "expected": "Activité attendue",
+      "intervals": {
+        "15": "Toutes les 15 minutes",
+        "60": "Toutes les heures",
+        "360": "Toutes les 6 heures",
+        "1440": "Quotidien",
+        "10080": "Hebdomadaire"
+      },
+      "minutes": "{{count}} minutes",
+      "createHelp": "La connexion stocke uniquement une référence à la clé API et l'identifiant de la source. Get Phame n'affiche ni ne duplique jamais votre clé API brute.",
+      "create": "Créer la connexion",
+      "created": "Connexion source créée. Ajoutez son ID de source à votre automatisation avant de tester.",
+      "updated": "Paramètres de la source mis à jour.",
+      "archived": "Connexion source archivée. Son ID de source ne peut plus autoriser d'importations.",
+      "healthRefreshed": "État de la source actualisé d'après les activités d'import récentes.",
+      "keyRequired": "Créez ou choisissez d'abord une clé API active contacts:write.",
+      "analyticsTitle": "Flux d'import par source",
+      "analyticsDescription": "Les tentatives, résultats, déduplication et échecs sont calculés à partir des événements d'import attribués.",
+      "range": "Période d'analyse",
+      "daysShort": "j",
+      "metrics": {
+        "attempts": "Tentatives",
+        "successful": "Réussites",
+        "createdContacts": "Contacts créés",
+        "deduplicated": "Dédupliqués",
+        "failures": "Échecs"
+      },
+      "emptyTitle": "Aucune source gérée pour le moment",
+      "emptyDescription": "Créez une connexion pour chaque Zap, scénario Make ou flux de travail personnalisé que vous souhaitez surveiller.",
+      "status": {
+        "healthy": "Sain",
+        "setup": "Configuration",
+        "delayed": "Retardé",
+        "failing": "En échec",
+        "paused": "En pause"
+      },
+      "openSetup": "Ouvrir la configuration",
+      "successRate": "Taux de réussite",
+      "lastActivity": "Dernière activité",
+      "never": "Jamais",
+      "refreshHealth": "Actualiser l'état",
+      "pause": "Mettre la surveillance en pause",
+      "resume": "Reprendre la surveillance",
+      "archive": "Archiver",
+      "template": "modèle guidé",
+      "templateDescription": "Copiez cette requête exacte dans l'action HTTP ou webhook protégée de votre automatisation.",
+      "copyRecipe": "Copier la recette",
+      "recipeCopied": "Recette de connexion copiée.",
+      "secretReminder": "N'utilisez la clé API brute que dans le champ secret protégé du fournisseur. L'ID de source peut être copié en toute sécurité mais ne fonctionne qu'avec la clé qui lui est liée.",
+      "providerDocs": "Documentation du fournisseur",
+      "healthHistory": "Historique de santé",
+      "noHealthHistory": "Aucun contrôle de santé pour le moment. Envoyez une importation autorisée, puis actualisez l'état.",
+      "reasons": {
+        "awaiting_first_import": "En attente de la première importation autorisée",
+        "no_imports_observed": "Aucune importation observée durant la fenêtre de configuration",
+        "expected_import_overdue": "L'activité d'importation attendue est en retard",
+        "recent_import_error": "La dernière activité s'est terminée par une erreur d'importation",
+        "recovered_after_error": "Les importations ont repris après une erreur",
+        "imports_flowing": "Les importations s'effectuent dans l'intervalle attendu"
+      },
+      "historyCounts": "{{attempts}} tentatives · {{failures}} échecs",
+      "archiveTitle": "Archiver cette connexion source ?",
+      "archiveDescription": "Les importations utilisant cet ID de source seront rejetées. Les contacts existants et les analyses respectueuses de la vie privée restent disponibles dans leurs enregistrements d'origine.",
+      "steps": {
+        "zapier": {
+          "1": "Choisissez l'application et l'événement qui génèrent un enregistrement client éligible.",
+          "2": "Ajoutez Webhooks by Zapier et sélectionnez Custom Request.",
+          "3": "Définissez la méthode sur POST et collez le point de terminaison Get Phame.",
+          "4": "Ajoutez les en-têtes protégés exactement comme indiqué ci‑dessous.",
+          "5": "Mappez les champs JSON en utilisant un identifiant fournisseur stable pour externalId et Idempotency-Key.",
+          "6": "Testez l'action avec un enregistrement autorisé, puis actualisez l'état ici."
+        },
+        "make": {
+          "1": "Choisissez le module déclencheur qui produit un enregistrement client éligible.",
+          "2": "Ajoutez HTTP et sélectionnez Make a request.",
+          "3": "Définissez Method sur POST, Body type sur Raw et Content type sur application/json.",
+          "4": "Ajoutez les en-têtes protégés exactement comme indiqué ci‑dessous.",
+          "5": "Mappez les champs JSON en utilisant un identifiant de bundle stable pour externalId et Idempotency-Key.",
+          "6": "Exécutez le scénario une fois avec un enregistrement autorisé, puis actualisez l'état ici."
+        },
+        "custom": {
+          "1": "Utilisez un flux de travail côté serveur de confiance qui prend en charge POST et les en-têtes protégés.",
+          "2": "Stockez la clé API dans le magasin de secrets du workflow, jamais dans du code côté navigateur ni dans une URL.",
+          "3": "Envoyez du JSON vers le point de terminaison Get Phame avec les en-têtes indiqués ci‑dessous.",
+          "4": "Utilisez un ID d'enregistrement source immuable pour externalId et Idempotency-Key.",
+          "5": "Envoyez un enregistrement autorisé, puis actualisez l'état ici."
+        }
+      }
+    }
   },
   "landing": {
     "hero": {

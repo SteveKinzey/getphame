@@ -36,6 +36,10 @@ import { registerMobileAuthRoutes } from "../mobileAuth";
 import { authHealthHandler } from "../authHealthRoutes";
 import { smtpHealthHandler } from "../smtpHealthRoutes";
 import { sourceHealthHandler } from "../sourceHealthRoutes";
+import {
+  SOURCE_HEALTH_CALLBACK_PATH,
+  reconcileSourceHealthHeartbeat,
+} from "../sourceHealthHeartbeat";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 import { apiNotFoundHandler } from "./apiFallback";
 import { registerPublicFeaturePrerender } from "../publicFeaturePrerender";
@@ -428,7 +432,7 @@ async function startServer() {
   registerKoalendarRoutes(app);
   app.post("/api/scheduled/auth-health", authHealthHandler);
   app.post("/api/scheduled/smtp-health", smtpHealthHandler);
-  app.post("/api/scheduled/source-health", sourceHealthHandler);
+  app.post(SOURCE_HEALTH_CALLBACK_PATH, sourceHealthHandler);
   app.post("/api/scheduled/process-reminders", reminderHeartbeatHandler);
   app.post("/api/scheduled/process-koalendar", koalendarHeartbeatHandler);
 
@@ -561,6 +565,11 @@ async function startServer() {
 
   server.listen(port, () => {
     console.log(`Server running on http://localhost:${port}/`);
+    if (ENV.isProduction) {
+      void reconcileSourceHealthHeartbeat()
+        .then(result => console.log(`[SourceHealth] Heartbeat ${result.status}.`))
+        .catch(() => console.error("[SourceHealth] Heartbeat reconciliation failed."));
+    }
     startSmtpWeeklyDigestScheduler();
     startReEngagementScheduler();
     startInactiveUserScheduler();
