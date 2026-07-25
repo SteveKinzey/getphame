@@ -14,20 +14,53 @@ import {
 import FadeUp from "./FadeUp";
 
 export const WALKTHROUGH_VIDEO_URL = "/manus-storage/getphame-walkthrough-toggle-ready_4a3636b0.mp4";
+export const WALKTHROUGH_CAPTION_LANGUAGES = ["en", "es", "fr", "de", "pt"] as const;
+export type CaptionLanguage = (typeof WALKTHROUGH_CAPTION_LANGUAGES)[number];
 export const WALKTHROUGH_CAPTION_TRACKS = {
   en: "/getphame-walkthrough.en.vtt",
   es: "/getphame-walkthrough.es.vtt",
   fr: "/getphame-walkthrough.fr.vtt",
-} as const;
+  de: "/getphame-walkthrough.de.vtt",
+  pt: "/getphame-walkthrough.pt.vtt",
+} as const satisfies Record<CaptionLanguage, string>;
 export const WALKTHROUGH_CAPTIONS_URL = WALKTHROUGH_CAPTION_TRACKS.en;
 export const WALKTHROUGH_POSTER_URL = "/manus-storage/getphame-walkthrough-toggle-ready-poster_7dfd9fb1.png";
 const CAPTIONS_PREFERENCE_KEY = "getphame-walkthrough-captions";
 const CAPTION_LANGUAGE_PREFERENCE_KEY = "getphame-walkthrough-caption-language";
 const CAPTION_FONT_SIZE_PREFERENCE_KEY = "getphame-walkthrough-caption-font-size";
 const CAPTION_BACKGROUND_PREFERENCE_KEY = "getphame-walkthrough-caption-background";
-type CaptionLanguage = keyof typeof WALKTHROUGH_CAPTION_TRACKS;
 type CaptionFontSize = "small" | "medium" | "large";
 type CaptionBackground = "navy" | "black" | "translucent";
+
+export function isWalkthroughCaptionLanguage(value: string | null): value is CaptionLanguage {
+  return WALKTHROUGH_CAPTION_LANGUAGES.includes(value as CaptionLanguage);
+}
+
+export function resolveWalkthroughCaptionLanguage(
+  storedLanguage: string | null,
+  browserLanguages: readonly string[],
+): CaptionLanguage {
+  if (isWalkthroughCaptionLanguage(storedLanguage)) return storedLanguage;
+
+  for (const browserLanguage of browserLanguages) {
+    const primaryLanguage = browserLanguage.trim().toLowerCase().split(/[-_]/)[0];
+    if (isWalkthroughCaptionLanguage(primaryLanguage)) return primaryLanguage;
+  }
+
+  return "en";
+}
+
+function getOrderedBrowserLanguages(): string[] {
+  if (typeof window === "undefined") return [];
+
+  try {
+    return Array.from(
+      new Set([...(window.navigator.languages ?? []), window.navigator.language].filter(Boolean)),
+    );
+  } catch {
+    return [];
+  }
+}
 
 export default function VideoDemo() {
   const { t } = useTranslation();
@@ -46,12 +79,13 @@ export default function VideoDemo() {
   });
   const [captionLanguage, setCaptionLanguage] = useState<CaptionLanguage>(() => {
     if (typeof window === "undefined") return "en";
+    let storedLanguage: string | null = null;
     try {
-      const storedLanguage = window.localStorage.getItem(CAPTION_LANGUAGE_PREFERENCE_KEY);
-      return storedLanguage === "es" || storedLanguage === "fr" ? storedLanguage : "en";
+      storedLanguage = window.localStorage.getItem(CAPTION_LANGUAGE_PREFERENCE_KEY);
     } catch {
-      return "en";
+      // Browser negotiation still works when storage is restricted or unavailable.
     }
+    return resolveWalkthroughCaptionLanguage(storedLanguage, getOrderedBrowserLanguages());
   });
   const [captionFontSize, setCaptionFontSize] = useState<CaptionFontSize>(() => {
     if (typeof window === "undefined") return "medium";
@@ -91,6 +125,16 @@ export default function VideoDemo() {
       value: "fr" as const,
       label: t("landing.modal.captionLanguageFrench", { defaultValue: "French" }),
       trackLabel: t("landing.modal.captionTrackFrench", { defaultValue: "French captions" }),
+    },
+    {
+      value: "de" as const,
+      label: t("landing.modal.captionLanguageGerman", { defaultValue: "German" }),
+      trackLabel: t("landing.modal.captionTrackGerman", { defaultValue: "German captions" }),
+    },
+    {
+      value: "pt" as const,
+      label: t("landing.modal.captionLanguagePortuguese", { defaultValue: "Portuguese" }),
+      trackLabel: t("landing.modal.captionTrackPortuguese", { defaultValue: "Portuguese captions" }),
     },
   ];
   const selectedCaptionLanguageLabel =
@@ -351,7 +395,7 @@ export default function VideoDemo() {
                 {t("landing.modal.videoTitle", { defaultValue: "Get Phame platform walkthrough" })}
               </h3>
               <p id="get-phame-video-description" className="sr-only">
-                {t("landing.modal.captionNotice", { defaultValue: "English narration with optional English, Spanish, and French captions." })}
+                {t("landing.modal.captionNotice", { defaultValue: "English narration with optional English, Spanish, French, German, and Portuguese captions." })}
               </p>
 
               {/* Self-hosted video and custom caption control */}
@@ -426,9 +470,50 @@ export default function VideoDemo() {
 
                 <div className="mt-2 flex flex-col gap-2">
                   <p className="px-1 text-center text-xs leading-relaxed text-slate-300 sm:text-left sm:text-sm">
-                    {t("landing.modal.captionsHelp", { defaultValue: "Use CC or press C to toggle captions. Choose a language, font size, and background from the menus." })}
+                    {t("landing.modal.captionsHelp", { defaultValue: "Use the quick CC button or press C to toggle captions. Choose a language, font size, and background from the menus." })}
                   </p>
                   <div className="flex flex-col items-stretch justify-end gap-2 sm:flex-row sm:items-center">
+                    <button
+                      type="button"
+                      data-testid="caption-toggle"
+                      aria-controls="getphame-walkthrough-player"
+                      aria-pressed={captionsEnabled}
+                      aria-keyshortcuts="C"
+                      aria-label={t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
+                        defaultValue: captionsEnabled ? "Disable captions" : "Enable captions",
+                      })}
+                      title={t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
+                        defaultValue: captionsEnabled ? "Disable captions" : "Enable captions",
+                      })}
+                      onClick={() => setCaptionsEnabled((enabled) => !enabled)}
+                      className={`inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-full border px-4 text-sm font-bold transition-[transform,background-color,border-color,color] duration-150 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#06111f] sm:order-first sm:w-auto ${
+                        captionsEnabled
+                          ? "border-primary bg-primary text-primary-foreground"
+                          : "border-white/35 bg-white/5 text-white hover:border-white/60 hover:bg-white/10"
+                      }`}
+                    >
+                      <Captions className="h-5 w-5" aria-hidden="true" />
+                      <span>
+                        {t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
+                          defaultValue: captionsEnabled ? "Disable captions" : "Enable captions",
+                        })}
+                      </span>
+                      <kbd className="hidden rounded border border-current/25 px-1.5 py-0.5 text-[10px] font-black leading-none opacity-75 sm:inline-flex" aria-hidden="true">
+                        C
+                      </kbd>
+                      <span
+                        aria-hidden="true"
+                        className={`rounded-full px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide ${
+                          captionsEnabled
+                            ? "bg-[#07182A]/15 text-[#07182A]"
+                            : "bg-white/10 text-white/80"
+                        }`}
+                      >
+                        {t(captionsEnabled ? "landing.modal.captionsOn" : "landing.modal.captionsOff", {
+                          defaultValue: captionsEnabled ? "Captions on" : "Captions off",
+                        })}
+                      </span>
+                    </button>
                     <DropdownMenu
                       open={captionSettingsMenuOpen}
                       onOpenChange={(nextOpen) => {
@@ -540,7 +625,7 @@ export default function VideoDemo() {
                         <DropdownMenuRadioGroup
                           value={captionLanguage}
                           onValueChange={(value) => {
-                            if (value !== "en" && value !== "es" && value !== "fr") return;
+                            if (!isWalkthroughCaptionLanguage(value)) return;
                             setCaptionLanguage(value);
                             setCaptionsEnabled(true);
                             setCaptionLanguageMenuOpen(false);
@@ -559,47 +644,6 @@ export default function VideoDemo() {
                         </DropdownMenuRadioGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
-                    <button
-                      type="button"
-                      data-testid="caption-toggle"
-                      aria-controls="getphame-walkthrough-player"
-                      aria-pressed={captionsEnabled}
-                      aria-keyshortcuts="C"
-                      aria-label={t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
-                        defaultValue: captionsEnabled ? "Disable captions" : "Enable captions",
-                      })}
-                      title={t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
-                        defaultValue: captionsEnabled ? "Disable captions" : "Enable captions",
-                      })}
-                      onClick={() => setCaptionsEnabled((enabled) => !enabled)}
-                      className={`inline-flex min-h-11 w-full shrink-0 items-center justify-center gap-2 rounded-full border px-4 text-sm font-bold transition-[transform,background-color,border-color,color] duration-150 active:scale-[0.97] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#06111f] sm:w-auto ${
-                        captionsEnabled
-                          ? "border-primary bg-primary text-primary-foreground"
-                          : "border-white/35 bg-white/5 text-white hover:border-white/60 hover:bg-white/10"
-                      }`}
-                    >
-                      <Captions className="h-5 w-5" aria-hidden="true" />
-                      <span>
-                        {t(captionsEnabled ? "landing.modal.captionsDisable" : "landing.modal.captionsEnable", {
-                          defaultValue: captionsEnabled ? "Disable captions" : "Enable captions",
-                        })}
-                      </span>
-                      <kbd className="hidden rounded border border-current/25 px-1.5 py-0.5 text-[10px] font-black leading-none opacity-75 sm:inline-flex" aria-hidden="true">
-                        C
-                      </kbd>
-                      <span
-                        aria-hidden="true"
-                        className={`rounded-full px-2 py-0.5 text-[11px] font-extrabold uppercase tracking-wide ${
-                          captionsEnabled
-                            ? "bg-[#07182A]/15 text-[#07182A]"
-                            : "bg-white/10 text-white/80"
-                        }`}
-                      >
-                        {t(captionsEnabled ? "landing.modal.captionsOn" : "landing.modal.captionsOff", {
-                          defaultValue: captionsEnabled ? "Captions on" : "Captions off",
-                        })}
-                      </span>
-                    </button>
                   </div>
                   <p id="getphame-caption-status" role="status" aria-live="polite" className="sr-only">
                     {t(captionsEnabled ? "landing.modal.captionsOn" : "landing.modal.captionsOff", {

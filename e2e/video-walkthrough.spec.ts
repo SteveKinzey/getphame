@@ -29,6 +29,8 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
 }, testInfo) => {
   test.setTimeout(60_000);
   await page.addInitScript(() => {
+    Object.defineProperty(navigator, "languages", { get: () => ["pt-BR", "de-DE"] });
+    Object.defineProperty(navigator, "language", { get: () => "pt-BR" });
     localStorage.setItem("rl-pwa-prompt-dismissed", "1");
     localStorage.setItem("getphame-walkthrough-captions", "on");
     localStorage.setItem("getphame-walkthrough-caption-language", "en");
@@ -64,7 +66,7 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
     "poster",
     "/manus-storage/getphame-walkthrough-toggle-ready-poster_7dfd9fb1.png",
   );
-  await expect(video.locator('track[kind="captions"]')).toHaveCount(3);
+  await expect(video.locator('track[kind="captions"]')).toHaveCount(5);
   await expect(video.locator('track[srclang="en"]')).toHaveAttribute(
     "src",
     "/getphame-walkthrough.en.vtt",
@@ -77,10 +79,22 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
     "src",
     "/getphame-walkthrough.fr.vtt",
   );
+  await expect(video.locator('track[srclang="de"]')).toHaveAttribute(
+    "src",
+    "/getphame-walkthrough.de.vtt",
+  );
+  await expect(video.locator('track[srclang="pt"]')).toHaveAttribute(
+    "src",
+    "/getphame-walkthrough.pt.vtt",
+  );
   await expect(video).not.toHaveAttribute("crossorigin", "anonymous");
   await expect(dialog.getByRole("alert")).toHaveCount(0);
 
   const captionsToggle = dialog.getByTestId("caption-toggle");
+  await expect(dialog.locator("[data-testid]").first()).toHaveAttribute(
+    "data-testid",
+    "caption-toggle",
+  );
   await expect(captionsToggle).toHaveAccessibleName("Disable captions");
   await expect(captionsToggle).toHaveAttribute("aria-pressed", "true");
   await expect(captionsToggle).toHaveAttribute("aria-keyshortcuts", "C");
@@ -95,7 +109,17 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
       ["en", "showing"],
       ["es", "disabled"],
       ["fr", "disabled"],
+      ["de", "disabled"],
+      ["pt", "disabled"],
     ]);
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), LANGUAGE_KEY)).toBe("en");
+
+  await captionsToggle.click();
+  await expect(captionsToggle).toHaveAccessibleName("Enable captions");
+  await expect(video).toHaveAttribute("data-caption-state", "off");
+  await captionsToggle.click();
+  await expect(captionsToggle).toHaveAccessibleName("Disable captions");
+  await expect(video).toHaveAttribute("data-caption-state", "on");
 
   await page.keyboard.press("Control+c");
   await expect(captionsToggle).toHaveAttribute("aria-pressed", "true");
@@ -131,7 +155,7 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
     .poll(() =>
       video.evaluate((element) => Array.from(element.textTracks).map((track) => track.mode)),
     )
-    .toEqual(["disabled", "disabled", "disabled"]);
+    .toEqual(["disabled", "disabled", "disabled", "disabled", "disabled"]);
   await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), CAPTIONS_KEY)).toBe("off");
 
   await page.keyboard.press("c");
@@ -146,10 +170,13 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
       ["en", "showing"],
       ["es", "disabled"],
       ["fr", "disabled"],
+      ["de", "disabled"],
+      ["pt", "disabled"],
     ]);
 
   const languageTrigger = dialog.getByTestId("caption-language-trigger");
-  for (const language of ["es", "fr"] as const) {
+  const captionLanguages = ["en", "es", "fr", "de", "pt"] as const;
+  for (const language of ["es", "fr", "de", "pt"] as const) {
     await selectMenuItem(page, languageTrigger, `caption-language-${language}`);
     await expect(video).toHaveAttribute("data-caption-language", language);
     await expect
@@ -167,11 +194,13 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
           language,
         ),
       )
-      .toEqual([
-        ["en", "disabled", false],
-        ["es", language === "es" ? "showing" : "disabled", language === "es"],
-        ["fr", language === "fr" ? "showing" : "disabled", language === "fr"],
-      ]);
+      .toEqual(
+        captionLanguages.map((trackLanguage) => [
+          trackLanguage,
+          trackLanguage === language ? "showing" : "disabled",
+          trackLanguage === language,
+        ]),
+      );
   }
 
   const settingsTrigger = dialog.getByTestId("caption-settings-trigger");
@@ -226,7 +255,7 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
   await expect(dialog).toBeVisible();
   video = dialog.locator("video");
   await expect(video).toHaveAttribute("data-caption-state", "on");
-  await expect(video).toHaveAttribute("data-caption-language", "fr");
+  await expect(video).toHaveAttribute("data-caption-language", "pt");
   await expect(video).toHaveAttribute("data-caption-size", "large");
   await expect(video).toHaveAttribute("data-caption-background", "translucent");
   await expect
@@ -238,12 +267,50 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
     .toEqual([
       ["en", "disabled"],
       ["es", "disabled"],
-      ["fr", "showing"],
+      ["fr", "disabled"],
+      ["de", "disabled"],
+      ["pt", "showing"],
     ]);
 
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
   await expect(trigger).toBeFocused();
+});
+
+test("auto-detects the first supported browser caption language when no saved choice exists", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(navigator, "languages", {
+      get: () => ["ja-JP", "pt-BR", "de-DE"],
+    });
+    Object.defineProperty(navigator, "language", { get: () => "ja-JP" });
+    localStorage.setItem("rl-pwa-prompt-dismissed", "1");
+    localStorage.removeItem("getphame-walkthrough-caption-language");
+  });
+  await page.goto("/landing?walkthrough-language-detection-e2e=1");
+  await page.getByRole("button", { name: "Play product walkthrough video" }).click();
+
+  const dialog = page.getByRole("dialog", { name: "Get Phame platform walkthrough" });
+  const video = dialog.locator("video");
+  await expect(video).toHaveAttribute("data-caption-language", "pt");
+  await expect(dialog.getByTestId("caption-language-trigger")).toHaveAccessibleName(
+    "Caption language: Portuguese",
+  );
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), LANGUAGE_KEY)).toBe("pt");
+  await expect
+    .poll(() =>
+      video.evaluate((element) =>
+        Array.from(element.textTracks).map((track) => [track.language, track.mode]),
+      ),
+    )
+    .toEqual([
+      ["en", "disabled"],
+      ["es", "disabled"],
+      ["fr", "disabled"],
+      ["de", "disabled"],
+      ["pt", "showing"],
+    ]);
 });
 
 test("offers recovery controls when the player reports a media error", async ({ page }) => {
