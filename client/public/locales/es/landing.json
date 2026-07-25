@@ -347,6 +347,7 @@
       "captionBackgroundNavy": "Azul marino",
       "captionBackgroundClear": "Transparente",
       "captionAppearanceStatus": "Tamaño de subtítulos {{size}} con fondo {{background}}",
+      "captionSettingsReset": "Restaurar valores predeterminados",
       "videoFallback": "Tu navegador no admite video HTML.",
       "videoError": "El recorrido no se pudo cargar en este navegador.",
       "videoRetry": "Intentar de nuevo",

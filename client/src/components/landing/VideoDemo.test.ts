@@ -54,6 +54,7 @@ const captionControlKeys = [
   "captionBackgroundBlack",
   "captionBackgroundNavy",
   "captionBackgroundClear",
+  "captionSettingsReset",
   "captionAppearanceStatus",
   "videoFallback",
   "videoError",
@@ -151,6 +152,11 @@ describe("VideoDemo media contract", () => {
     expect(source).toContain("data-caption-background={captionBackground}");
     expect(source).toContain("landing.modal.captionFontSizeSmall");
     expect(source).toContain("landing.modal.captionBackgroundClear");
+    expect(source).toContain('data-testid="caption-settings-reset"');
+    expect(source).toContain('captionFontSize === "medium" && captionBackground === "navy"');
+    expect(source).toContain('setCaptionFontSize("medium")');
+    expect(source).toContain('setCaptionBackground("navy")');
+    expect(source).toContain("landing.modal.captionSettingsReset");
     expect(source).toContain("landing.modal.captionAppearanceStatus");
     expect(source).not.toContain("landing.modal.captionSizeSmall");
     expect(source).not.toContain("landing.modal.captionBackgroundTranslucent");
@@ -227,6 +233,11 @@ describe("VideoDemo media contract", () => {
     }
     expect(catalog.landing.modal.captionLanguageAriaLabel).toContain("{{language}}");
     expect(catalog.landing.modal.captionToggleTooltip).toContain("{{language}}");
+    if (locale !== "en") {
+      expect(catalog.landing.modal.captionToggleTooltip).not.toBe(
+        "Current caption language: {{language}}",
+      );
+    }
     expect(catalog.landing.modal.captionAppearanceStatus).toContain("{{size}}");
     expect(catalog.landing.modal.captionAppearanceStatus).toContain("{{background}}");
     expect(catalog.landing.modal.iframeTitle).toBeUndefined();
@@ -241,6 +252,12 @@ describe("VideoDemo media contract", () => {
     for (const locale of servedLocales) {
       for (const key of captionControlKeys) {
         expect(fallbackResources[locale]?.landing.modal[key], `${locale} fallback landing.modal.${key}`).toBeTruthy();
+      }
+      expect(fallbackResources[locale]?.landing.modal.captionToggleTooltip).toContain("{{language}}");
+      if (locale !== "en") {
+        expect(fallbackResources[locale]?.landing.modal.captionToggleTooltip).not.toBe(
+          "Current caption language: {{language}}",
+        );
       }
     }
   });
@@ -266,12 +283,13 @@ describe("VideoDemo media contract", () => {
     expect(catalog.landing.modal.captionFontSizeLarge).toBe("Large");
     expect(catalog.landing.modal.captionBackgroundNavy).toBe("Navy");
     expect(catalog.landing.modal.captionToggleTooltip).toBe("Current caption language: {{language}}");
+    expect(catalog.landing.modal.captionSettingsReset).toBe("Restore defaults");
   });
 
   it("bumps the PWA cache and pre-caches caption tracks while bypassing managed media", async () => {
     const serviceWorker = await readFile(serviceWorkerPath, "utf8");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v15'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v16'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.en.vtt'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.es.vtt'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.fr.vtt'");

@@ -2225,6 +2225,7 @@
       "captionBackgroundNavy": "Navy",
       "captionBackgroundClear": "Clear",
       "captionAppearanceStatus": "Caption size {{size}} with {{background}} background",
+      "captionSettingsReset": "Restore defaults",
       "videoFallback": "Your browser does not support HTML video.",
       "videoError": "The walkthrough could not load in this browser.",
       "videoRetry": "Try again",

@@ -347,6 +347,7 @@
       "captionBackgroundNavy": "深蓝色",
       "captionBackgroundClear": "透明",
       "captionAppearanceStatus": "字幕大小为{{size}}，背景为{{background}}",
+      "captionSettingsReset": "恢复默认设置",
       "videoFallback": "您的浏览器不支持 HTML 视频。",
       "videoError": "无法在此浏览器中加载平台导览。",
       "videoRetry": "重试",

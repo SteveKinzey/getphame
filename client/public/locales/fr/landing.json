@@ -347,6 +347,7 @@
       "captionBackgroundNavy": "Bleu marine",
       "captionBackgroundClear": "Transparent",
       "captionAppearanceStatus": "Sous-titres de taille {{size}} sur fond {{background}}",
+      "captionSettingsReset": "Rétablir les réglages par défaut",
       "videoFallback": "Votre navigateur ne prend pas en charge la vidéo HTML.",
       "videoError": "La présentation n’a pas pu être chargée dans ce navigateur.",
       "videoRetry": "Réessayer",

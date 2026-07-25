@@ -82,6 +82,7 @@
       "captionBackgroundNavy": "Blu navy",
       "captionBackgroundClear": "Trasparente",
       "captionAppearanceStatus": "Sottotitoli di dimensione {{size}} con sfondo {{background}}",
+      "captionSettingsReset": "Ripristina impostazioni predefinite",
       "videoFallback": "Il browser non supporta i video HTML.",
       "videoError": "Impossibile caricare la panoramica in questo browser.",
       "videoRetry": "Riprova",

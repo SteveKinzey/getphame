@@ -27,7 +27,7 @@ async function selectMenuItem(page: Page, trigger: Locator, testId: string) {
 test("controls multilingual captions, appearance, keyboard safety, and persistence without viewport overflow", async ({
   page,
 }, testInfo) => {
-  test.setTimeout(60_000);
+  test.setTimeout(75_000);
   const captionLanguageEvents: string[] = [];
   await page.route("**/api/trpc/analytics.trackCaptionLanguage**", async (route) => {
     const payload = route.request().postDataJSON() as Record<string, { json?: { language?: string } }>;
@@ -43,10 +43,18 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
     Object.defineProperty(navigator, "languages", { get: () => ["pt-BR", "de-DE"] });
     Object.defineProperty(navigator, "language", { get: () => "pt-BR" });
     localStorage.setItem("rl-pwa-prompt-dismissed", "1");
-    localStorage.setItem("getphame-walkthrough-captions", "on");
-    localStorage.setItem("getphame-walkthrough-caption-language", "en");
-    localStorage.setItem("getphame-walkthrough-caption-font-size", "medium");
-    localStorage.setItem("getphame-walkthrough-caption-background", "navy");
+    if (localStorage.getItem("getphame-walkthrough-captions") === null) {
+      localStorage.setItem("getphame-walkthrough-captions", "on");
+    }
+    if (localStorage.getItem("getphame-walkthrough-caption-language") === null) {
+      localStorage.setItem("getphame-walkthrough-caption-language", "en");
+    }
+    if (localStorage.getItem("getphame-walkthrough-caption-font-size") === null) {
+      localStorage.setItem("getphame-walkthrough-caption-font-size", "medium");
+    }
+    if (localStorage.getItem("getphame-walkthrough-caption-background") === null) {
+      localStorage.setItem("getphame-walkthrough-caption-background", "navy");
+    }
   });
   await page.goto("/landing?walkthrough-e2e=1");
 
@@ -247,6 +255,20 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
     .poll(() => page.evaluate((key) => localStorage.getItem(key), BACKGROUND_KEY))
     .toBe("translucent");
 
+  await selectMenuItem(page, settingsTrigger, "caption-settings-reset");
+  await expect(video).toHaveAttribute("data-caption-size", "medium");
+  await expect(video).toHaveAttribute("data-caption-background", "navy");
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), SIZE_KEY)).toBe("medium");
+  await expect.poll(() => page.evaluate((key) => localStorage.getItem(key), BACKGROUND_KEY)).toBe("navy");
+
+  await settingsTrigger.click();
+  await expect(page.getByTestId("caption-settings-reset")).toHaveAttribute("data-disabled", "");
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("menu")).toHaveCount(0);
+
+  await selectMenuItem(page, settingsTrigger, "caption-size-large");
+  await selectMenuItem(page, settingsTrigger, "caption-background-translucent");
+
   await expect
     .poll(() => video.evaluate((element) => element.readyState))
     .toBeGreaterThanOrEqual(1);
@@ -310,6 +332,17 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
   await page.keyboard.press("Escape");
   await expect(dialog).toBeHidden();
   await expect(trigger).toBeFocused();
+
+  await page.reload();
+  await trigger.click();
+  await expect(dialog).toBeVisible();
+  video = dialog.locator("video");
+  await expect(video).toHaveAttribute("data-caption-language", "pt");
+  await expect(video).toHaveAttribute("data-caption-size", "large");
+  await expect(video).toHaveAttribute("data-caption-background", "translucent");
+  expect(captionLanguageEvents).toEqual(["es", "fr", "it", "de", "pt"]);
+  await page.keyboard.press("Escape");
+  await expect(dialog).toBeHidden();
 });
 
 test("auto-detects the first supported browser caption language when no saved choice exists", async ({

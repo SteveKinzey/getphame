@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Captions, Languages, Play, Settings2, X } from "lucide-react";
+import { Captions, Languages, Play, RotateCcw, Settings2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
@@ -606,6 +607,20 @@ export default function VideoDemo() {
                             </DropdownMenuRadioItem>
                           ))}
                         </DropdownMenuRadioGroup>
+                        <DropdownMenuSeparator className="bg-white/15" />
+                        <DropdownMenuItem
+                          data-testid="caption-settings-reset"
+                          disabled={captionFontSize === "medium" && captionBackground === "navy"}
+                          onSelect={() => {
+                            setCaptionFontSize("medium");
+                            setCaptionBackground("navy");
+                            setCaptionSettingsMenuOpen(false);
+                          }}
+                          className="min-h-10 cursor-pointer gap-2 text-white focus:bg-primary/15 focus:text-white data-[disabled]:cursor-not-allowed data-[disabled]:text-slate-500"
+                        >
+                          <RotateCcw className="h-4 w-4 text-primary" aria-hidden="true" />
+                          {t("landing.modal.captionSettingsReset", { defaultValue: "Restore defaults" })}
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                     <DropdownMenu
