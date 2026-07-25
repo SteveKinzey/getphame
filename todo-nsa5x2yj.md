@@ -115,8 +115,8 @@
 - [x] Ensure transcript filenames, metadata, timestamps, language labels, failure states, keyboard behavior, and browser download cleanup are deterministic and privacy-safe.
 - [x] Localize every new appearance, export, success, and error string across all seven maintained interface locales and runtime fallback resources.
 - [x] Add focused Vitest and desktop/Pixel 7 browser regressions for validation, preview/live-cue parity, persistence/reset, text/PDF export contents, keyboard access, and viewport fit.
-- [ ] Run TypeScript, focused and full Vitest, production dependency audit, production build, responsive browser gates, then publish and verify both live Get Phame origins.
+- [x] Run TypeScript, focused and full Vitest, production dependency audit, production build, responsive browser gates, then publish and verify both live Get Phame origins.
 - [x] Update and validate the reusable multilingual video-caption-player skill with line-spacing, text-edge, and transcript-export implementation and release contracts.
 - [x] Fix transcript PDF Unicode rendering for Traditional/Simplified Chinese and Thai interface metadata while preserving Latin caption text, deterministic client-side generation, and acceptable download size.
-- [ ] Publish the Unicode PDF correction and verify real Traditional Chinese and Thai transcript downloads on the live Get Phame origin before final delivery.
+- [x] Publish the Unicode PDF correction and verify real Traditional Chinese and Thai transcript downloads on the live Get Phame origin before final delivery.
 - [x] Fix the live CORS failure for managed Unicode font redirects by serving the approved CJK and Thai subsets through a cacheable same-origin application route, then reverify both localized PDF exports.
