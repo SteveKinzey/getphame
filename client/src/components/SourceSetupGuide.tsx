@@ -20,7 +20,7 @@ interface SourceDefinition {
   documentationUrl: string;
 }
 
-const API_KEY_PLACEHOLDER = "gp_live_YOUR_API_KEY";
+const API_KEY_PLACEHOLDER = "<YOUR_GET_PHAME_API_KEY>";
 
 const SOURCES: SourceDefinition[] = [
   {
