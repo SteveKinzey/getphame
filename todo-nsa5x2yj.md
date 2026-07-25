@@ -100,5 +100,12 @@
 - [x] Audit and complete the existing caption appearance menu so font-size and background-color choices are accessible, localized, visibly applied to live cues, persistent across reopen/reload, and reset-safe.
 - [x] Update and validate the reusable multilingual caption-player skill for complete tooltip localization and persistent caption appearance settings.
 - [x] Add focused and responsive regressions for all tooltip locales, tooltip keyboard access, font-size/background application, persistence, reset behavior, recovery, and mobile viewport fit.
-- [ ] Run TypeScript, all Vitest suites, production dependency audit, production build, desktop and Pixel 7 browser gates; publish a checkpoint and verify the localized tooltip plus appearance settings on live Get Phame.
+- [x] Run TypeScript, all Vitest suites, production dependency audit, production build, desktop and Pixel 7 browser gates; publish a checkpoint and verify the localized tooltip plus appearance settings on live Get Phame.
 - [x] Visually verify the localized caption controls at 1280×720 and Pixel 7: the direct gold CC action remains first, the settings and language controls remain legible and touch-sized, captions stay in-bounds, and both the compact desktop row and stacked mobile layout remain within their viewports.
+- [x] Add an accessible live preview inside the caption appearance menu that updates immediately for every supported style choice without changing playback position.
+- [x] Expand persisted caption appearance preferences with bounded font-family, text-color, and text-opacity options applied to both live WebVTT cues and the preview.
+- [x] Build a responsive interactive transcript beside the video on wide screens and in a mobile-safe layout, synchronized to active cues with current-cue highlighting, automatic visibility, and click-to-seek controls.
+- [x] Localize all new preview, appearance, transcript, status, and reset strings across every maintained interface locale and runtime fallback resource.
+- [x] Add focused Vitest and browser regressions for live preview parity, preference validation/persistence/reset, cue synchronization, click-to-seek, keyboard access, reduced motion, and responsive viewport fit.
+- [ ] Run TypeScript, focused and full Vitest, production dependency audit, production build, desktop and Pixel 7 verification, then publish and validate the release on both live Get Phame origins.
+- [x] Update and validate the reusable multilingual video-caption-player skill with the live-preview, expanded-style, and interactive-transcript workflow.

@@ -1,7 +1,12 @@
 import { readFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { resolveWalkthroughCaptionLanguage } from "./VideoDemo";
+import {
+  findActiveTranscriptCueIndex,
+  formatTranscriptTime,
+  parseWebVttCues,
+  resolveWalkthroughCaptionLanguage,
+} from "./VideoDemo";
 
 const componentPath = fileURLToPath(new URL("./VideoDemo.tsx", import.meta.url));
 const indexCssPath = fileURLToPath(new URL("../../index.css", import.meta.url));
@@ -54,8 +59,30 @@ const captionControlKeys = [
   "captionBackgroundBlack",
   "captionBackgroundNavy",
   "captionBackgroundClear",
+  "captionPreview",
+  "captionPreviewSample",
+  "captionFontFamily",
+  "captionFontFamilySans",
+  "captionFontFamilySerif",
+  "captionFontFamilyMono",
+  "captionTextColor",
+  "captionTextColorWhite",
+  "captionTextColorGold",
+  "captionTextColorCyan",
+  "captionTextOpacity",
+  "captionTextOpacitySolid",
+  "captionTextOpacityHigh",
+  "captionTextOpacitySoft",
   "captionSettingsReset",
   "captionAppearanceStatus",
+  "captionAppearanceStatusExpanded",
+  "transcriptTitle",
+  "transcriptHelp",
+  "transcriptLoading",
+  "transcriptError",
+  "transcriptCueList",
+  "transcriptJumpTo",
+  "transcriptCurrent",
   "videoFallback",
   "videoError",
   "videoRetry",
@@ -125,7 +152,7 @@ describe("VideoDemo media contract", () => {
     expect(source).not.toContain('crossOrigin="anonymous"');
   });
 
-  it("persists accessible caption, language, size, and background controls", async () => {
+  it("persists accessible caption controls and keeps the live preview equivalent to WebVTT cue styles", async () => {
     const [source, css] = await Promise.all([
       readFile(componentPath, "utf8"),
       readFile(indexCssPath, "utf8"),
@@ -135,6 +162,9 @@ describe("VideoDemo media contract", () => {
     expect(source).toContain('"getphame-walkthrough-caption-language"');
     expect(source).toContain('"getphame-walkthrough-caption-font-size"');
     expect(source).toContain('"getphame-walkthrough-caption-background"');
+    expect(source).toContain('"getphame-walkthrough-caption-font-family"');
+    expect(source).toContain('"getphame-walkthrough-caption-text-color"');
+    expect(source).toContain('"getphame-walkthrough-caption-text-opacity"');
     expect(source).toContain("aria-pressed={captionsEnabled}");
     expect(source).toContain('aria-keyshortcuts="C"');
     expect(source).toContain('data-testid="caption-toggle"');
@@ -150,14 +180,24 @@ describe("VideoDemo media contract", () => {
     expect(source).toContain("data-caption-language={captionLanguage}");
     expect(source).toContain("data-caption-size={captionFontSize}");
     expect(source).toContain("data-caption-background={captionBackground}");
+    expect(source).toContain("data-caption-font-family={captionFontFamily}");
+    expect(source).toContain("data-caption-text-color={captionTextColor}");
+    expect(source).toContain("data-caption-text-opacity={captionTextOpacity}");
+    expect(source).toContain('data-testid="caption-live-preview"');
+    expect(source).toContain("transcriptCues[activeCueIndex]?.text");
     expect(source).toContain("landing.modal.captionFontSizeSmall");
     expect(source).toContain("landing.modal.captionBackgroundClear");
     expect(source).toContain('data-testid="caption-settings-reset"');
-    expect(source).toContain('captionFontSize === "medium" && captionBackground === "navy"');
+    expect(source).toContain('captionFontFamily === "sans"');
+    expect(source).toContain('captionTextColor === "white"');
+    expect(source).toContain('captionTextOpacity === "solid"');
     expect(source).toContain('setCaptionFontSize("medium")');
     expect(source).toContain('setCaptionBackground("navy")');
+    expect(source).toContain('setCaptionFontFamily("sans")');
+    expect(source).toContain('setCaptionTextColor("white")');
+    expect(source).toContain('setCaptionTextOpacity("solid")');
     expect(source).toContain("landing.modal.captionSettingsReset");
-    expect(source).toContain("landing.modal.captionAppearanceStatus");
+    expect(source).toContain("landing.modal.captionAppearanceStatusExpanded");
     expect(source).not.toContain("landing.modal.captionSizeSmall");
     expect(source).not.toContain("landing.modal.captionBackgroundTranslucent");
     expect(source).not.toContain("landing.modal.captionStatusSummary");
@@ -166,6 +206,40 @@ describe("VideoDemo media contract", () => {
     expect(css).toContain(".getphame-walkthrough-video[data-caption-size='large']::cue");
     expect(css).toContain(".getphame-walkthrough-video[data-caption-background='black']::cue");
     expect(css).toContain(".getphame-walkthrough-video[data-caption-background='translucent']::cue");
+    expect(css).toContain(".getphame-caption-preview[data-caption-size='large']");
+    expect(css).toContain(".getphame-walkthrough-video[data-caption-font-family='serif']::cue");
+    expect(css).toContain(".getphame-walkthrough-video[data-caption-font-family='mono']::cue");
+    expect(css).toContain(".getphame-walkthrough-video[data-caption-text-color='gold']::cue");
+    expect(css).toContain("[data-caption-text-opacity='soft']::cue");
+  });
+
+  it("parses WebVTT into deterministic transcript cues and resolves active timestamps", async () => {
+    const source = await readFile(captionTrackPaths.en, "utf8");
+    const cues = parseWebVttCues(source);
+
+    expect(cues).toHaveLength(11);
+    expect(cues[0]).toMatchObject({ startTime: 0, endTime: 4.25 });
+    expect(cues[0].text).toBe("Great service does not always become a public review.");
+    expect(findActiveTranscriptCueIndex(cues, 0)).toBe(0);
+    expect(findActiveTranscriptCueIndex(cues, 4.249)).toBe(0);
+    expect(findActiveTranscriptCueIndex(cues, 4.25)).toBe(-1);
+    expect(formatTranscriptTime(0)).toBe("0:00");
+    expect(formatTranscriptTime(62.9)).toBe("1:02");
+  });
+
+  it("ships a synchronized keyboard-accessible transcript with click-to-seek behavior", async () => {
+    const source = await readFile(componentPath, "utf8");
+
+    expect(source).toContain('data-testid="transcript-panel"');
+    expect(source).toContain('data-testid="transcript-cue-list"');
+    expect(source).toContain("fetch(WALKTHROUGH_CAPTION_TRACKS[captionLanguage]");
+    expect(source).toContain('video.addEventListener("timeupdate", syncActiveCue)');
+    expect(source).toContain("findActiveTranscriptCueIndex(transcriptCues, video.currentTime)");
+    expect(source).toContain('aria-current={isActive ? "true" : undefined}');
+    expect(source).toContain("video.currentTime = cue.startTime + 0.01");
+    expect(source).toContain("activeCue.scrollIntoView");
+    expect(source).toContain("prefers-reduced-motion: reduce");
+    expect(source).toContain("lg:grid-cols-[minmax(0,1fr)_20rem]");
   });
 
   it("limits the C shortcut to the active dialog and ignores conflicting key events", async () => {
@@ -240,6 +314,11 @@ describe("VideoDemo media contract", () => {
     }
     expect(catalog.landing.modal.captionAppearanceStatus).toContain("{{size}}");
     expect(catalog.landing.modal.captionAppearanceStatus).toContain("{{background}}");
+    expect(catalog.landing.modal.captionAppearanceStatusExpanded).toContain("{{family}}");
+    expect(catalog.landing.modal.captionAppearanceStatusExpanded).toContain("{{color}}");
+    expect(catalog.landing.modal.captionAppearanceStatusExpanded).toContain("{{opacity}}");
+    expect(catalog.landing.modal.transcriptJumpTo).toContain("{{time}}");
+    expect(catalog.landing.modal.transcriptJumpTo).toContain("{{text}}");
     expect(catalog.landing.modal.iframeTitle).toBeUndefined();
   });
 
@@ -289,7 +368,7 @@ describe("VideoDemo media contract", () => {
   it("bumps the PWA cache and pre-caches caption tracks while bypassing managed media", async () => {
     const serviceWorker = await readFile(serviceWorkerPath, "utf8");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v16'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v17'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.en.vtt'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.es.vtt'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.fr.vtt'");

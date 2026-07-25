@@ -33,8 +33,68 @@ const CAPTIONS_PREFERENCE_KEY = "getphame-walkthrough-captions";
 const CAPTION_LANGUAGE_PREFERENCE_KEY = "getphame-walkthrough-caption-language";
 const CAPTION_FONT_SIZE_PREFERENCE_KEY = "getphame-walkthrough-caption-font-size";
 const CAPTION_BACKGROUND_PREFERENCE_KEY = "getphame-walkthrough-caption-background";
+const CAPTION_FONT_FAMILY_PREFERENCE_KEY = "getphame-walkthrough-caption-font-family";
+const CAPTION_TEXT_COLOR_PREFERENCE_KEY = "getphame-walkthrough-caption-text-color";
+const CAPTION_TEXT_OPACITY_PREFERENCE_KEY = "getphame-walkthrough-caption-text-opacity";
 type CaptionFontSize = "small" | "medium" | "large";
 type CaptionBackground = "navy" | "black" | "translucent";
+type CaptionFontFamily = "sans" | "serif" | "mono";
+type CaptionTextColor = "white" | "gold" | "cyan";
+type CaptionTextOpacity = "solid" | "high" | "soft";
+export type TranscriptCue = {
+  id: string;
+  startTime: number;
+  endTime: number;
+  text: string;
+};
+
+function parseVttTimestamp(value: string): number | null {
+  const match = value.match(/^(?:(\d+):)?(\d{2}):(\d{2}\.\d{3})$/);
+  if (!match) return null;
+  const hours = Number(match[1] ?? 0);
+  const minutes = Number(match[2]);
+  const seconds = Number(match[3]);
+  if (![hours, minutes, seconds].every(Number.isFinite)) return null;
+  return hours * 3600 + minutes * 60 + seconds;
+}
+
+export function parseWebVttCues(source: string): TranscriptCue[] {
+  return source
+    .replace(/^\uFEFF/, "")
+    .split(/\r?\n\r?\n+/)
+    .flatMap((block, blockIndex) => {
+      const lines = block
+        .split(/\r?\n/)
+        .map((line) => line.trim())
+        .filter(Boolean);
+      if (lines.length === 0 || lines[0] === "WEBVTT" || lines[0].startsWith("NOTE")) return [];
+
+      const timingIndex = lines.findIndex((line) => line.includes("-->"));
+      if (timingIndex < 0) return [];
+      const [rawStart, rawEnd] = lines[timingIndex].split("-->");
+      const startTime = parseVttTimestamp(rawStart?.trim() ?? "");
+      const endTime = parseVttTimestamp(rawEnd?.trim().split(/\s+/)[0] ?? "");
+      const text = lines
+        .slice(timingIndex + 1)
+        .join(" ")
+        .replace(/<[^>]*>/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      if (startTime === null || endTime === null || endTime <= startTime || !text) return [];
+      return [{ id: `cue-${blockIndex}-${startTime}`, startTime, endTime, text }];
+    });
+}
+
+export function findActiveTranscriptCueIndex(cues: readonly TranscriptCue[], currentTime: number) {
+  return cues.findIndex((cue) => currentTime >= cue.startTime && currentTime < cue.endTime);
+}
+
+export function formatTranscriptTime(seconds: number) {
+  const wholeSeconds = Math.max(0, Math.floor(seconds));
+  const minutes = Math.floor(wholeSeconds / 60);
+  return `${minutes}:${String(wholeSeconds % 60).padStart(2, "0")}`;
+}
 
 export function isWalkthroughCaptionLanguage(value: string | null): value is CaptionLanguage {
   return WALKTHROUGH_CAPTION_LANGUAGES.includes(value as CaptionLanguage);
@@ -112,9 +172,42 @@ export default function VideoDemo() {
       return "navy";
     }
   });
+  const [captionFontFamily, setCaptionFontFamily] = useState<CaptionFontFamily>(() => {
+    if (typeof window === "undefined") return "sans";
+    try {
+      const storedFamily = window.localStorage.getItem(CAPTION_FONT_FAMILY_PREFERENCE_KEY);
+      return storedFamily === "serif" || storedFamily === "mono" ? storedFamily : "sans";
+    } catch {
+      return "sans";
+    }
+  });
+  const [captionTextColor, setCaptionTextColor] = useState<CaptionTextColor>(() => {
+    if (typeof window === "undefined") return "white";
+    try {
+      const storedColor = window.localStorage.getItem(CAPTION_TEXT_COLOR_PREFERENCE_KEY);
+      return storedColor === "gold" || storedColor === "cyan" ? storedColor : "white";
+    } catch {
+      return "white";
+    }
+  });
+  const [captionTextOpacity, setCaptionTextOpacity] = useState<CaptionTextOpacity>(() => {
+    if (typeof window === "undefined") return "solid";
+    try {
+      const storedOpacity = window.localStorage.getItem(CAPTION_TEXT_OPACITY_PREFERENCE_KEY);
+      return storedOpacity === "high" || storedOpacity === "soft" ? storedOpacity : "solid";
+    } catch {
+      return "solid";
+    }
+  });
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const transcriptCueRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const [transcriptCues, setTranscriptCues] = useState<TranscriptCue[]>([]);
+  const [activeCueIndex, setActiveCueIndex] = useState(-1);
+  const [transcriptStatus, setTranscriptStatus] = useState<"idle" | "loading" | "ready" | "error">(
+    "idle",
+  );
   const captionLanguageOptions = [
     {
       value: "en" as const,
@@ -178,12 +271,63 @@ export default function VideoDemo() {
       label: t("landing.modal.captionBackgroundClear", { defaultValue: "Translucent" }),
     },
   ];
+  const captionFontFamilyOptions = [
+    {
+      value: "sans" as const,
+      label: t("landing.modal.captionFontFamilySans", { defaultValue: "Sans serif" }),
+    },
+    {
+      value: "serif" as const,
+      label: t("landing.modal.captionFontFamilySerif", { defaultValue: "Serif" }),
+    },
+    {
+      value: "mono" as const,
+      label: t("landing.modal.captionFontFamilyMono", { defaultValue: "Monospace" }),
+    },
+  ];
+  const captionTextColorOptions = [
+    {
+      value: "white" as const,
+      label: t("landing.modal.captionTextColorWhite", { defaultValue: "White" }),
+    },
+    {
+      value: "gold" as const,
+      label: t("landing.modal.captionTextColorGold", { defaultValue: "Gold" }),
+    },
+    {
+      value: "cyan" as const,
+      label: t("landing.modal.captionTextColorCyan", { defaultValue: "Cyan" }),
+    },
+  ];
+  const captionTextOpacityOptions = [
+    {
+      value: "solid" as const,
+      label: t("landing.modal.captionTextOpacitySolid", { defaultValue: "100%" }),
+    },
+    {
+      value: "high" as const,
+      label: t("landing.modal.captionTextOpacityHigh", { defaultValue: "85%" }),
+    },
+    {
+      value: "soft" as const,
+      label: t("landing.modal.captionTextOpacitySoft", { defaultValue: "70%" }),
+    },
+  ];
   const selectedCaptionFontSizeLabel =
     captionFontSizeOptions.find((option) => option.value === captionFontSize)?.label ??
     captionFontSizeOptions[1].label;
   const selectedCaptionBackgroundLabel =
     captionBackgroundOptions.find((option) => option.value === captionBackground)?.label ??
     captionBackgroundOptions[0].label;
+  const selectedCaptionFontFamilyLabel =
+    captionFontFamilyOptions.find((option) => option.value === captionFontFamily)?.label ??
+    captionFontFamilyOptions[0].label;
+  const selectedCaptionTextColorLabel =
+    captionTextColorOptions.find((option) => option.value === captionTextColor)?.label ??
+    captionTextColorOptions[0].label;
+  const selectedCaptionTextOpacityLabel =
+    captionTextOpacityOptions.find((option) => option.value === captionTextOpacity)?.label ??
+    captionTextOpacityOptions[0].label;
 
   const syncCaptionMode = useCallback(() => {
     const tracks = videoRef.current?.textTracks;
@@ -204,11 +348,24 @@ export default function VideoDemo() {
       window.localStorage.setItem(CAPTION_LANGUAGE_PREFERENCE_KEY, captionLanguage);
       window.localStorage.setItem(CAPTION_FONT_SIZE_PREFERENCE_KEY, captionFontSize);
       window.localStorage.setItem(CAPTION_BACKGROUND_PREFERENCE_KEY, captionBackground);
+      window.localStorage.setItem(CAPTION_FONT_FAMILY_PREFERENCE_KEY, captionFontFamily);
+      window.localStorage.setItem(CAPTION_TEXT_COLOR_PREFERENCE_KEY, captionTextColor);
+      window.localStorage.setItem(CAPTION_TEXT_OPACITY_PREFERENCE_KEY, captionTextOpacity);
     } catch {
       // Caption controls still work when storage is restricted or unavailable.
     }
     if (open) syncCaptionMode();
-  }, [captionBackground, captionFontSize, captionLanguage, captionsEnabled, open, syncCaptionMode]);
+  }, [
+    captionBackground,
+    captionFontFamily,
+    captionFontSize,
+    captionLanguage,
+    captionTextColor,
+    captionTextOpacity,
+    captionsEnabled,
+    open,
+    syncCaptionMode,
+  ]);
 
   const openVideo = () => {
     setVideoError(false);
@@ -235,7 +392,7 @@ export default function VideoDemo() {
       );
 
       if (event.key === "Escape") {
-        if (isMenuTarget) return;
+        if (captionSettingsMenuOpen || captionLanguageMenuOpen || isMenuTarget) return;
         setOpen(false);
         return;
       }
@@ -287,7 +444,73 @@ export default function VideoDemo() {
       document.body.style.overflow = previousOverflow;
       previouslyFocused?.focus();
     };
-  }, [open]);
+  }, [captionLanguageMenuOpen, captionSettingsMenuOpen, open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const controller = new AbortController();
+    setTranscriptStatus("loading");
+    setTranscriptCues([]);
+    setActiveCueIndex(-1);
+
+    void fetch(WALKTHROUGH_CAPTION_TRACKS[captionLanguage], { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) throw new Error(`Transcript request failed with ${response.status}`);
+        return response.text();
+      })
+      .then((source) => {
+        const cues = parseWebVttCues(source);
+        if (cues.length === 0) throw new Error("Transcript contains no usable cues");
+        setTranscriptCues(cues);
+        setTranscriptStatus("ready");
+      })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        setTranscriptStatus("error");
+      });
+
+    return () => controller.abort();
+  }, [captionLanguage, open]);
+
+  useEffect(() => {
+    if (!open) return;
+    const video = videoRef.current;
+    if (!video) return;
+
+    const syncActiveCue = () => {
+      setActiveCueIndex(findActiveTranscriptCueIndex(transcriptCues, video.currentTime));
+    };
+    syncActiveCue();
+    video.addEventListener("timeupdate", syncActiveCue);
+    video.addEventListener("seeked", syncActiveCue);
+    video.addEventListener("loadedmetadata", syncActiveCue);
+    return () => {
+      video.removeEventListener("timeupdate", syncActiveCue);
+      video.removeEventListener("seeked", syncActiveCue);
+      video.removeEventListener("loadedmetadata", syncActiveCue);
+    };
+  }, [open, transcriptCues, videoAttempt]);
+
+  useEffect(() => {
+    if (activeCueIndex < 0) return;
+    const activeCue = transcriptCueRefs.current[activeCueIndex];
+    if (!activeCue) return;
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false;
+    activeCue.scrollIntoView({
+      block: "nearest",
+      behavior: reduceMotion ? "auto" : "smooth",
+    });
+  }, [activeCueIndex]);
+
+  const jumpToTranscriptCue = (cue: TranscriptCue, cueIndex: number) => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.currentTime = cue.startTime + 0.01;
+    setActiveCueIndex(cueIndex);
+    void video.play().catch(() => {
+      // Seeking still succeeds when the browser blocks playback.
+    });
+  };
 
   return (
     <>
@@ -384,7 +607,7 @@ export default function VideoDemo() {
             {/* Modal content */}
             <motion.div
               ref={dialogRef}
-              className="relative w-full max-w-4xl"
+              className="relative w-full max-w-6xl"
               initial={{ opacity: 0, scale: 0.95, y: 16 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 16 }}
@@ -410,6 +633,8 @@ export default function VideoDemo() {
 
               {/* Self-hosted video and custom caption control */}
               <div className="max-h-[calc(100dvh-4rem)] overflow-y-auto rounded-2xl border border-[#1e3050] bg-[#06111f] p-2 shadow-2xl shadow-black/60 sm:p-3">
+                <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_20rem]">
+                  <div className="min-w-0">
                 <div className="relative aspect-video max-h-[calc(100dvh-10rem)] overflow-hidden rounded-xl bg-black">
                   <video
                     key={videoAttempt}
@@ -433,6 +658,9 @@ export default function VideoDemo() {
                     data-caption-language={captionLanguage}
                     data-caption-size={captionFontSize}
                     data-caption-background={captionBackground}
+                    data-caption-font-family={captionFontFamily}
+                    data-caption-text-color={captionTextColor}
+                    data-caption-text-opacity={captionTextOpacity}
                     className="getphame-walkthrough-video absolute inset-0 h-full w-full object-contain"
                   >
                     {captionLanguageOptions.map((option) => (
@@ -480,7 +708,7 @@ export default function VideoDemo() {
 
                 <div className="mt-2 flex flex-col gap-2">
                   <p className="px-1 text-center text-xs leading-relaxed text-slate-300 sm:text-left sm:text-sm">
-                    {t("landing.modal.captionsHelp", { defaultValue: "Use the quick CC button or press C to toggle captions. Choose a language, font size, and background from the menus." })}
+                    {t("landing.modal.captionsHelp", { defaultValue: "Use the quick CC button or press C to toggle captions. Customize their appearance, or select any transcript line to jump to that moment." })}
                   </p>
                   <div className="flex flex-col items-stretch justify-end gap-2 sm:flex-row sm:items-center">
                     <Tooltip>
@@ -560,60 +788,47 @@ export default function VideoDemo() {
                         align="end"
                         side="top"
                         sideOffset={8}
-                        className="min-w-64 border-[#29415f] bg-[#0b1b30] text-white shadow-2xl shadow-black/60"
+                        onEscapeKeyDown={(event) => event.stopPropagation()}
+                        className="max-h-[min(34rem,calc(100dvh-6rem))] w-[min(22rem,calc(100vw-2rem))] overflow-y-auto border-[#29415f] bg-[#0b1b30] text-white shadow-2xl shadow-black/60"
                       >
-                        <DropdownMenuLabel className="text-xs font-bold uppercase tracking-wider text-primary">
-                          {t("landing.modal.captionFontSize", { defaultValue: "Font size" })}
-                        </DropdownMenuLabel>
-                        <DropdownMenuRadioGroup
-                          value={captionFontSize}
-                          onValueChange={(value) => {
-                            if (value !== "small" && value !== "medium" && value !== "large") return;
-                            setCaptionFontSize(value);
-                            setCaptionSettingsMenuOpen(false);
-                          }}
+                        <div
+                          data-testid="caption-live-preview"
+                          data-caption-size={captionFontSize}
+                          data-caption-background={captionBackground}
+                          data-caption-font-family={captionFontFamily}
+                          data-caption-text-color={captionTextColor}
+                          data-caption-text-opacity={captionTextOpacity}
+                          className="getphame-caption-preview mx-1 mb-1 rounded-lg border border-white/15 bg-[#06111f] p-2"
                         >
-                          {captionFontSizeOptions.map((option) => (
-                            <DropdownMenuRadioItem
-                              key={option.value}
-                              value={option.value}
-                              data-testid={`caption-size-${option.value}`}
-                              className="min-h-10 cursor-pointer text-white focus:bg-primary/15 focus:text-white"
-                            >
-                              {option.label}
-                            </DropdownMenuRadioItem>
-                          ))}
-                        </DropdownMenuRadioGroup>
-                        <DropdownMenuSeparator className="bg-white/15" />
-                        <DropdownMenuLabel className="text-xs font-bold uppercase tracking-wider text-primary">
-                          {t("landing.modal.captionBackground", { defaultValue: "Background color" })}
-                        </DropdownMenuLabel>
-                        <DropdownMenuRadioGroup
-                          value={captionBackground}
-                          onValueChange={(value) => {
-                            if (value !== "navy" && value !== "black" && value !== "translucent") return;
-                            setCaptionBackground(value);
-                            setCaptionSettingsMenuOpen(false);
-                          }}
-                        >
-                          {captionBackgroundOptions.map((option) => (
-                            <DropdownMenuRadioItem
-                              key={option.value}
-                              value={option.value}
-                              data-testid={`caption-background-${option.value}`}
-                              className="min-h-10 cursor-pointer text-white focus:bg-primary/15 focus:text-white"
-                            >
-                              {option.label}
-                            </DropdownMenuRadioItem>
-                          ))}
-                        </DropdownMenuRadioGroup>
-                        <DropdownMenuSeparator className="bg-white/15" />
+                          <p className="mb-1 text-xs font-bold uppercase tracking-wider text-primary">
+                            {t("landing.modal.captionPreview", { defaultValue: "Live preview" })}
+                          </p>
+                          <div className="flex min-h-16 items-center justify-center rounded-md border border-white/10 bg-[#122239] px-2 py-2 text-center">
+                            <span className="getphame-caption-preview-swatch">
+                              <span className="getphame-caption-preview-text">
+                                {transcriptCues[activeCueIndex]?.text ??
+                                  t("landing.modal.captionPreviewSample", {
+                                    defaultValue: "Your captions will look like this.",
+                                  })}
+                              </span>
+                            </span>
+                          </div>
+                        </div>
                         <DropdownMenuItem
                           data-testid="caption-settings-reset"
-                          disabled={captionFontSize === "medium" && captionBackground === "navy"}
+                          disabled={
+                            captionFontSize === "medium" &&
+                            captionBackground === "navy" &&
+                            captionFontFamily === "sans" &&
+                            captionTextColor === "white" &&
+                            captionTextOpacity === "solid"
+                          }
                           onSelect={() => {
                             setCaptionFontSize("medium");
                             setCaptionBackground("navy");
+                            setCaptionFontFamily("sans");
+                            setCaptionTextColor("white");
+                            setCaptionTextOpacity("solid");
                             setCaptionSettingsMenuOpen(false);
                           }}
                           className="min-h-10 cursor-pointer gap-2 text-white focus:bg-primary/15 focus:text-white data-[disabled]:cursor-not-allowed data-[disabled]:text-slate-500"
@@ -621,6 +836,126 @@ export default function VideoDemo() {
                           <RotateCcw className="h-4 w-4 text-primary" aria-hidden="true" />
                           {t("landing.modal.captionSettingsReset", { defaultValue: "Restore defaults" })}
                         </DropdownMenuItem>
+                        <DropdownMenuSeparator className="bg-white/15" />
+                        <DropdownMenuLabel className="inline-flex min-h-10 w-[6.5rem] items-center px-1 py-1 align-middle text-xs font-bold uppercase tracking-wider text-primary">
+                          {t("landing.modal.captionFontSize", { defaultValue: "Font size" })}
+                        </DropdownMenuLabel>
+                        <DropdownMenuRadioGroup
+                          value={captionFontSize}
+                          className="inline-grid w-[calc(100%-6.5rem)] grid-cols-3 gap-1 pr-1 align-middle"
+                          onValueChange={(value) => {
+                            if (value !== "small" && value !== "medium" && value !== "large") return;
+                            setCaptionFontSize(value);
+                          }}
+                        >
+                          {captionFontSizeOptions.map((option) => (
+                            <DropdownMenuRadioItem
+                              key={option.value}
+                              value={option.value}
+                              data-testid={`caption-size-${option.value}`}
+                              onSelect={(event) => event.preventDefault()}
+                              className="min-h-10 cursor-pointer justify-center px-2 text-center text-white focus:bg-primary/15 focus:text-white"
+                            >
+                              {option.label}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
+                        <DropdownMenuSeparator className="bg-white/15" />
+                        <DropdownMenuLabel className="inline-flex min-h-10 w-[6.5rem] items-center px-1 py-1 align-middle text-xs font-bold uppercase tracking-wider text-primary">
+                          {t("landing.modal.captionBackground", { defaultValue: "Background color" })}
+                        </DropdownMenuLabel>
+                        <DropdownMenuRadioGroup
+                          value={captionBackground}
+                          className="inline-grid w-[calc(100%-6.5rem)] grid-cols-3 gap-1 pr-1 align-middle"
+                          onValueChange={(value) => {
+                            if (value !== "navy" && value !== "black" && value !== "translucent") return;
+                            setCaptionBackground(value);
+                          }}
+                        >
+                          {captionBackgroundOptions.map((option) => (
+                            <DropdownMenuRadioItem
+                              key={option.value}
+                              value={option.value}
+                              data-testid={`caption-background-${option.value}`}
+                              onSelect={(event) => event.preventDefault()}
+                              className="min-h-10 cursor-pointer justify-center px-2 text-center text-white focus:bg-primary/15 focus:text-white"
+                            >
+                              {option.label}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
+                        <DropdownMenuSeparator className="bg-white/15" />
+                        <DropdownMenuLabel className="inline-flex min-h-10 w-[6.5rem] items-center px-1 py-1 align-middle text-xs font-bold uppercase tracking-wider text-primary">
+                          {t("landing.modal.captionFontFamily", { defaultValue: "Font family" })}
+                        </DropdownMenuLabel>
+                        <DropdownMenuRadioGroup
+                          value={captionFontFamily}
+                          className="inline-grid w-[calc(100%-6.5rem)] grid-cols-3 gap-1 pr-1 align-middle"
+                          onValueChange={(value) => {
+                            if (value !== "sans" && value !== "serif" && value !== "mono") return;
+                            setCaptionFontFamily(value);
+                          }}
+                        >
+                          {captionFontFamilyOptions.map((option) => (
+                            <DropdownMenuRadioItem
+                              key={option.value}
+                              value={option.value}
+                              data-testid={`caption-font-family-${option.value}`}
+                              onSelect={(event) => event.preventDefault()}
+                              className="min-h-10 cursor-pointer justify-center px-2 text-center text-white focus:bg-primary/15 focus:text-white"
+                            >
+                              {option.label}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
+                        <DropdownMenuSeparator className="bg-white/15" />
+                        <DropdownMenuLabel className="inline-flex min-h-10 w-[6.5rem] items-center px-1 py-1 align-middle text-xs font-bold uppercase tracking-wider text-primary">
+                          {t("landing.modal.captionTextColor", { defaultValue: "Text color" })}
+                        </DropdownMenuLabel>
+                        <DropdownMenuRadioGroup
+                          value={captionTextColor}
+                          className="inline-grid w-[calc(100%-6.5rem)] grid-cols-3 gap-1 pr-1 align-middle"
+                          onValueChange={(value) => {
+                            if (value !== "white" && value !== "gold" && value !== "cyan") return;
+                            setCaptionTextColor(value);
+                          }}
+                        >
+                          {captionTextColorOptions.map((option) => (
+                            <DropdownMenuRadioItem
+                              key={option.value}
+                              value={option.value}
+                              data-testid={`caption-text-color-${option.value}`}
+                              onSelect={(event) => event.preventDefault()}
+                              className="min-h-10 cursor-pointer justify-center px-2 text-center text-white focus:bg-primary/15 focus:text-white"
+                            >
+                              {option.label}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
+                        <DropdownMenuSeparator className="bg-white/15" />
+                        <DropdownMenuLabel className="inline-flex min-h-10 w-[6.5rem] items-center px-1 py-1 align-middle text-xs font-bold uppercase tracking-wider text-primary">
+                          {t("landing.modal.captionTextOpacity", { defaultValue: "Text opacity" })}
+                        </DropdownMenuLabel>
+                        <DropdownMenuRadioGroup
+                          value={captionTextOpacity}
+                          className="inline-grid w-[calc(100%-6.5rem)] grid-cols-3 gap-1 pr-1 align-middle"
+                          onValueChange={(value) => {
+                            if (value !== "solid" && value !== "high" && value !== "soft") return;
+                            setCaptionTextOpacity(value);
+                          }}
+                        >
+                          {captionTextOpacityOptions.map((option) => (
+                            <DropdownMenuRadioItem
+                              key={option.value}
+                              value={option.value}
+                              data-testid={`caption-text-opacity-${option.value}`}
+                              onSelect={(event) => event.preventDefault()}
+                              className="min-h-10 cursor-pointer justify-center px-2 text-center text-white focus:bg-primary/15 focus:text-white"
+                            >
+                              {option.label}
+                            </DropdownMenuRadioItem>
+                          ))}
+                        </DropdownMenuRadioGroup>
                       </DropdownMenuContent>
                     </DropdownMenu>
                     <DropdownMenu
@@ -652,6 +987,7 @@ export default function VideoDemo() {
                         align="end"
                         side="top"
                         sideOffset={8}
+                        onEscapeKeyDown={(event) => event.stopPropagation()}
                         className="min-w-56 border-[#29415f] bg-[#0b1b30] text-white shadow-2xl shadow-black/60"
                       >
                         <DropdownMenuLabel className="text-xs font-bold uppercase tracking-wider text-primary">
@@ -690,12 +1026,102 @@ export default function VideoDemo() {
                       defaultValue: captionsEnabled ? "Captions on" : "Captions off",
                     })}
                     {`. ${selectedCaptionLanguageLabel}. `}
-                    {t("landing.modal.captionAppearanceStatus", {
-                      defaultValue: "Caption size {{size}} with {{background}} background",
+                    {t("landing.modal.captionAppearanceStatusExpanded", {
+                      defaultValue:
+                        "Caption size {{size}}, {{family}} font, {{color}} text at {{opacity}} opacity, with {{background}} background",
                       size: selectedCaptionFontSizeLabel,
                       background: selectedCaptionBackgroundLabel,
+                      family: selectedCaptionFontFamilyLabel,
+                      color: selectedCaptionTextColorLabel,
+                      opacity: selectedCaptionTextOpacityLabel,
                     })}
                   </p>
+                </div>
+                  </div>
+
+                  <aside
+                    data-testid="transcript-panel"
+                    aria-labelledby="getphame-transcript-title"
+                    className="flex min-h-0 flex-col rounded-xl border border-[#29415f] bg-[#0b1b30] p-3 lg:max-h-[calc(100dvh-7rem)]"
+                  >
+                    <div className="border-b border-white/10 px-1 pb-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <h4 id="getphame-transcript-title" className="font-display text-base font-bold text-white">
+                          {t("landing.modal.transcriptTitle", { defaultValue: "Interactive transcript" })}
+                        </h4>
+                        <span className="rounded-full bg-primary/15 px-2 py-1 text-[10px] font-black uppercase tracking-wider text-primary">
+                          {selectedCaptionLanguageLabel}
+                        </span>
+                      </div>
+                      <p className="mt-1 text-xs leading-relaxed text-slate-300">
+                        {t("landing.modal.transcriptHelp", {
+                          defaultValue: "Select a line to jump to that moment in the video.",
+                        })}
+                      </p>
+                    </div>
+
+                    <div
+                      data-testid="transcript-cue-list"
+                      className="mt-2 max-h-72 min-h-40 overflow-y-auto pr-1 lg:max-h-none lg:flex-1"
+                    >
+                      {transcriptStatus === "loading" && (
+                        <p role="status" className="px-2 py-6 text-center text-sm font-semibold text-slate-300">
+                          {t("landing.modal.transcriptLoading", { defaultValue: "Loading transcript…" })}
+                        </p>
+                      )}
+                      {transcriptStatus === "error" && (
+                        <p role="alert" className="px-2 py-6 text-center text-sm font-semibold text-slate-300">
+                          {t("landing.modal.transcriptError", {
+                            defaultValue: "The transcript is unavailable right now.",
+                          })}
+                        </p>
+                      )}
+                      {transcriptStatus === "ready" && (
+                        <ol className="space-y-1.5" aria-label={t("landing.modal.transcriptCueList", { defaultValue: "Transcript cues" })}>
+                          {transcriptCues.map((cue, index) => {
+                            const isActive = index === activeCueIndex;
+                            const timeLabel = formatTranscriptTime(cue.startTime);
+                            return (
+                              <li key={cue.id}>
+                                <button
+                                  ref={(element) => {
+                                    transcriptCueRefs.current[index] = element;
+                                  }}
+                                  type="button"
+                                  data-testid={`transcript-cue-${index}`}
+                                  data-start-time={cue.startTime.toFixed(3)}
+                                  aria-current={isActive ? "true" : undefined}
+                                  aria-label={t("landing.modal.transcriptJumpTo", {
+                                    defaultValue: "Jump to {{time}}: {{text}}",
+                                    time: timeLabel,
+                                    text: cue.text,
+                                  })}
+                                  onClick={() => jumpToTranscriptCue(cue, index)}
+                                  className={`w-full rounded-lg border px-3 py-2.5 text-left transition-[transform,background-color,border-color,color] duration-150 motion-reduce:transition-none active:scale-[0.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+                                    isActive
+                                      ? "border-primary bg-primary/15 text-white"
+                                      : "border-transparent bg-white/[0.035] text-slate-200 hover:border-white/20 hover:bg-white/[0.07]"
+                                  }`}
+                                >
+                                  <span className="flex items-start gap-3">
+                                    <span className={`mt-0.5 shrink-0 rounded px-1.5 py-0.5 font-mono text-[11px] font-bold ${isActive ? "bg-primary text-primary-foreground" : "bg-white/10 text-slate-300"}`}>
+                                      {timeLabel}
+                                    </span>
+                                    <span className="text-sm font-semibold leading-snug">{cue.text}</span>
+                                  </span>
+                                  {isActive && (
+                                    <span className="mt-1.5 block pl-[3.15rem] text-[10px] font-black uppercase tracking-wider text-primary">
+                                      {t("landing.modal.transcriptCurrent", { defaultValue: "Current caption" })}
+                                    </span>
+                                  )}
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ol>
+                      )}
+                    </div>
+                  </aside>
                 </div>
               </div>
             </motion.div>
