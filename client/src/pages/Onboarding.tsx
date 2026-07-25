@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import SEOHead from "@/components/landing/SEOHead";
-import { isGoogleSignInHost, isStagingSocialLoginHost } from "@/lib/socialLoginAvailability";
+import { isAppleSignInHost, isGoogleSignInHost } from "@/lib/socialLoginAvailability";
 
 const LOGO_URL = "https://assets.getphame.app/getphame-logo.svg";
 
@@ -16,7 +16,7 @@ type MagicLinkState = "idle" | "loading" | "sent" | "error";
 export default function OnboardingPage() {
   const { t } = useTranslation();
   const googleLoginEnabled = isGoogleSignInHost(window.location.hostname);
-  const appleLoginEnabled = isStagingSocialLoginHost(window.location.hostname);
+  const appleLoginEnabled = isAppleSignInHost(window.location.hostname);
   const [email, setEmail] = useState("");
   const [magicState, setMagicState] = useState<MagicLinkState>("idle");
   const [magicError, setMagicError] = useState("");
@@ -80,6 +80,7 @@ export default function OnboardingPage() {
 
       {/* Main content */}
       <main className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-8">
+        <h1 className="sr-only">Create your free Get Phame account</h1>
         <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
 
           {/* Left column — branding & proof (hidden on mobile, shown on desktop) */}
@@ -90,11 +91,11 @@ export default function OnboardingPage() {
             className="hidden lg:flex flex-col gap-8"
           >
             <div>
-              <h1 className="font-display font-extrabold text-4xl xl:text-5xl leading-tight mb-4">
+              <h2 className="font-display font-extrabold text-4xl xl:text-5xl leading-tight mb-4">
                 Get More 5-Star
                 <br />
                 <span style={{ color: "oklch(0.78 0.15 75)" }}>Google Reviews</span>
-              </h1>
+              </h2>
               <p className="text-xl font-bold leading-relaxed text-white/90">
                 Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender.
               </p>
@@ -123,13 +124,13 @@ export default function OnboardingPage() {
                   <Star key={i} size={18} fill="oklch(0.78 0.15 75)" style={{ color: "oklch(0.78 0.15 75)" }} />
                 ))}
               </div>
-              <span className="text-base font-bold text-white/70">
+              <span className="text-base font-bold text-slate-200">
                 Trusted by 500+ local businesses
               </span>
             </div>
 
             {/* Compliance note */}
-            <div className="flex items-center gap-2 text-sm font-bold text-white/50">
+            <div className="flex items-center gap-2 text-sm font-bold text-slate-200">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
@@ -153,13 +154,13 @@ export default function OnboardingPage() {
 
                 {/* Mobile heading (shown only on mobile) */}
                 <div className="lg:hidden text-center mb-8">
-                  <h1 className="font-display font-extrabold text-2xl mb-2">
+                  <h2 className="font-display font-extrabold text-2xl mb-2">
                     Get More 5-Star
-                  </h1>
-                  <h2 className="font-display font-extrabold text-2xl" style={{ color: "oklch(0.78 0.15 75)" }}>
-                    Google Reviews
                   </h2>
-                  <p className="text-base font-bold mt-3 leading-relaxed text-white/80">
+                  <p className="font-display font-extrabold text-2xl" style={{ color: "oklch(0.78 0.15 75)" }}>
+                    Google Reviews
+                  </p>
+                  <p className="text-base font-bold mt-3 leading-relaxed text-slate-100">
                     Send personalized review requests from your own email account.
                   </p>
                 </div>
@@ -167,7 +168,7 @@ export default function OnboardingPage() {
                 {/* Desktop heading */}
                 <div className="hidden lg:block text-center mb-8">
                   <h2 className="font-display font-bold text-xl mb-1">Create your free account</h2>
-                  <p className="text-base font-bold text-white/70">No credit card required</p>
+                  <p className="text-base font-bold text-slate-200">No credit card required</p>
                 </div>
 
                 {/* Stars (mobile only) */}
@@ -258,7 +259,7 @@ export default function OnboardingPage() {
                       </div>
                       <button
                         onClick={handleRetry}
-                        className="text-sm font-bold underline mt-1 text-white/60"
+                        className="mt-1 inline-flex min-h-[44px] items-center self-center text-sm font-bold underline text-slate-200 underline-offset-4 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a1628]"
                       >
                         Use a different email
                       </button>
@@ -270,6 +271,7 @@ export default function OnboardingPage() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="your@email.com"
+                        aria-label={t("onboarding.emailLabel", { defaultValue: "Email address" })}
                         required
                         autoFocus
                         className="w-full px-4 py-4 rounded-xl text-base font-medium outline-none text-white placeholder:text-white/60 font-medium"
@@ -302,8 +304,7 @@ export default function OnboardingPage() {
                       <button
                         type="button"
                         onClick={() => { setShowEmailForm(false); setMagicState("idle"); setMagicError(""); setEmail(""); }}
-                        className="text-xs text-center py-1"
-                        style={{ color: "var(--text-on-dark-disabled)" }}
+                        className="min-h-[44px] text-center text-sm font-semibold text-slate-200 underline underline-offset-4 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a1628]"
                       >
                         Cancel
                       </button>
@@ -315,7 +316,7 @@ export default function OnboardingPage() {
                 <p className="text-center text-sm font-bold text-white/80">
                   {t("onboarding.finePrint") || "Start free — 10 review requests included. No credit card required."}
                 </p>
-                <p className="mt-4 text-center text-sm font-bold text-white/70">
+                <p className="mt-4 text-center text-sm font-bold text-slate-200">
                   Already have an account?{" "}
                   <a href="/login" className="underline underline-offset-4 transition-colors hover:text-white" style={{ color: "oklch(0.78 0.15 75)" }}>
                     Sign in
@@ -329,12 +330,12 @@ export default function OnboardingPage() {
 
       {/* Footer */}
       <footer className="py-6 px-6 text-center">
-        <div className="flex items-center justify-center gap-4 text-sm font-bold text-white/50">
-          <a href="/privacy-policy" className="hover:text-white transition-colors">Privacy</a>
+        <div className="flex items-center justify-center gap-4 text-sm font-bold text-slate-300">
+          <a href="/privacy-policy" className="inline-flex min-h-[44px] items-center px-2 text-slate-200 underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">Privacy</a>
           <span>·</span>
-          <a href="/terms-of-service" className="hover:text-white transition-colors">Terms</a>
+          <a href="/terms-of-service" className="inline-flex min-h-[44px] items-center px-2 text-slate-200 underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">Terms</a>
           <span>·</span>
-          <a href="mailto:support@getphame.app" className="hover:text-white transition-colors">Support</a>
+          <a href="mailto:support@getphame.app" className="inline-flex min-h-[44px] items-center px-2 text-slate-200 underline-offset-4 transition-colors hover:text-white hover:underline focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">Support</a>
         </div>
       </footer>
     </div>

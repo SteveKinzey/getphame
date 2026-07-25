@@ -38,6 +38,7 @@ import { smtpHealthHandler } from "../smtpHealthRoutes";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 import { apiNotFoundHandler } from "./apiFallback";
 import { registerPublicFeaturePrerender } from "../publicFeaturePrerender";
+import { registerPayPalRoutes } from "../paypal";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -368,12 +369,19 @@ async function startServer() {
             "https://files.manuscdn.com",
             // Manus analytics (Umami) beacon endpoint
             "https://manus-analytics.com",
+            // Cloudflare Web Analytics beacon injected at the edge when enabled.
+            "https://static.cloudflareinsights.com",
           ],
           objectSrc: ["'none'"],
           // Allow the Manus analytics script (Umami) injected by the platform at deploy time.
           // 'unsafe-inline' is required because the Manus platform injects an inline <script>
           // into the served HTML at deploy time (line 146) that cannot be removed or hashed.
-          scriptSrc: ["'self'", "'unsafe-inline'", "https://manus-analytics.com"],
+          scriptSrc: [
+            "'self'",
+            "'unsafe-inline'",
+            "https://manus-analytics.com",
+            "https://static.cloudflareinsights.com",
+          ],
           scriptSrcAttr: ["'none'"],
           // 'unsafe-inline' is required for:
           // 1. The Manus platform injects an inline script at line 146 of the served HTML
@@ -411,6 +419,9 @@ async function startServer() {
   registerEmailAuthRoutes(app);
   registerAppleAuthRoutes(app);
   registerMobileAuthRoutes(app);
+  // PayPal routes must be mounted after JSON parsing and before the /api
+  // not-found fallback so production requests never fall through to the SPA.
+  registerPayPalRoutes(app);
   registerKoalendarRoutes(app);
   app.post("/api/scheduled/auth-health", authHealthHandler);
   app.post("/api/scheduled/smtp-health", smtpHealthHandler);

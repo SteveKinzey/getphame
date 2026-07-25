@@ -80,6 +80,33 @@ describe("Get Phame regression contracts", () => {
     }
   });
 
+  it("keeps public authentication and legal entry points accessible", () => {
+    const html = readProjectFile("../client/index.html");
+    const serverEntry = readProjectFile("./_core/index.ts");
+    const login = readProjectFile("../client/src/pages/Login.tsx");
+    const onboarding = readProjectFile("../client/src/pages/Onboarding.tsx");
+    const leadCapture = readProjectFile("../client/src/components/landing/LeadCapture.tsx");
+    const footer = readProjectFile("../client/src/components/landing/Footer.tsx");
+    const passkey = readProjectFile("../client/src/components/security/PasskeySignIn.tsx");
+    const securityPolicy = readProjectFile("../client/src/pages/SecurityPolicy.tsx");
+
+    expect(html).toContain('content="width=device-width, initial-scale=1.0, viewport-fit=cover"');
+    expect(html).not.toContain("maximum-scale");
+    expect(serverEntry).toContain("https://static.cloudflareinsights.com");
+
+    expect(leadCapture).toContain('htmlFor="lead-capture-email"');
+    expect(leadCapture).toContain('aria-label={t("landing.leadCapture.emailLabel"');
+    expect(login).not.toContain("text-white/25");
+    expect(login).not.toContain("text-white/30");
+    expect(login).toContain("text-slate-200");
+    expect(passkey).toContain("placeholder:text-slate-300");
+    expect((onboarding.match(/<h1/g) ?? [])).toHaveLength(1);
+    expect(onboarding).toContain("min-h-[44px]");
+    expect(footer).toContain("min-h-[44px]");
+    expect(securityPolicy).toContain("min-h-screen rr-bg-navy");
+    expect(securityPolicy).toContain("Supabase PostgreSQL");
+  });
+
   it("publishes complete social-share and mobile PWA launch contracts", () => {
     const html = readProjectFile("../client/index.html");
     const manifest = JSON.parse(readProjectFile("../client/public/manifest.json")) as {
@@ -104,7 +131,9 @@ describe("Get Phame regression contracts", () => {
     const pwaAnalytics = readProjectFile("./pwaAnalytics.ts");
     const app = readProjectFile("../client/src/App.tsx");
 
-    expect(html).toContain('content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover"');
+    expect(html).toContain('content="width=device-width, initial-scale=1.0, viewport-fit=cover"');
+    expect(html).not.toContain("maximum-scale");
+    expect(html).not.toContain("user-scalable=no");
     expect(html).toContain('<meta name="apple-mobile-web-app-title" content="Get Phame"');
     expect(html).toContain('property="og:image" content="https://assets.getphame.app/getphame-og-image.png?v=4"');
     expect(html).toContain('property="og:image:width" content="1200"');
@@ -756,6 +785,8 @@ describe("Get Phame regression contracts", () => {
     const supportEmail = readProjectFile("./supportEmail.ts");
     const supportRouter = readProjectFile("./routers.ts");
     const privacy = readProjectFile("../client/src/pages/PrivacyPolicy.tsx");
+    const legalDocument = readProjectFile("../client/src/components/legal/LegalDocument.tsx");
+    const englishCatalog = readProjectFile("../client/public/locales/en/translation.json");
 
     expect(supportDialog).toContain("trpc.support.submit.useMutation");
     expect(supportDialog).toContain('aria-invalid={Boolean(fieldError("email"))}');
@@ -767,12 +798,14 @@ describe("Get Phame regression contracts", () => {
     expect(supportEmail).toContain("replyTo: safeEmail");
     expect(supportRouter).toContain("checkSupportSubmissionRateLimit(requestKey)");
     expect(supportRouter).toContain("website: z.string().max(250).optional()");
-    expect(privacy).toContain("text-slate-100");
-    expect(privacy).toContain("text-slate-300");
-    expect(privacy).toContain("[&_a:focus-visible]:ring-2");
-    expect(privacy).toContain('<time dateTime="2026-04-13">');
-    expect(privacy).toContain("border-primary pl-3 text-slate-100");
-    expect(privacy).not.toContain("rr-text-navy");
+    expect(privacy).toContain('documentKey="privacy"');
+    expect(legalDocument).toContain("text-slate-100");
+    expect(legalDocument).toContain("text-slate-200");
+    expect(legalDocument).toContain("[&_a:focus-visible]:ring-2");
+    expect(legalDocument).toContain('<time dateTime="2026-07-24">');
+    expect(legalDocument).toContain("border-primary pl-3 text-slate-100");
+    expect(legalDocument).not.toContain("rr-text-navy");
+    expect(englishCatalog).toContain('"lastUpdated": "Last updated: July 24, 2026"');
   });
 
   it("keeps routed support submissions, safe screenshots, and the admin inbox connected", () => {
@@ -875,12 +908,12 @@ describe("Get Phame regression contracts", () => {
   it("uses corrected permanent mockups without the obsolete embedded P-plus-star artwork", () => {
     const showcase = readProjectFile("../client/src/components/landing/ProductShowcase.tsx");
 
-    expect(showcase).toContain("phame-customer-import-corrected-exact_4614c4e8.webp");
-    expect(showcase).toContain("phame-customer-import-corrected-exact_cded24ee.png");
-    expect(showcase).toContain("phame-review-tracking-corrected-exact_d01e52cf.webp");
-    expect(showcase).toContain("phame-review-tracking-corrected-exact_82109c9c.png");
-    expect(showcase).not.toContain('"https://assets.getphame.app/phame-customer-import.webp"');
-    expect(showcase).not.toContain('"https://assets.getphame.app/phame-review-tracking.webp"');
+    expect(showcase).toContain('"https://assets.getphame.app/phame-customer-import.webp"');
+    expect(showcase).toContain('"https://assets.getphame.app/phame-customer-import.png"');
+    expect(showcase).toContain('"https://assets.getphame.app/phame-review-tracking.webp"');
+    expect(showcase).toContain('"https://assets.getphame.app/phame-review-tracking.png"');
+    expect(showcase).not.toContain("phame-customer-import-corrected-exact");
+    expect(showcase).not.toContain("phame-review-tracking-corrected-exact");
   });
 
   it("forces authenticated P icons to the public landing alias", () => {

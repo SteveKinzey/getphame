@@ -2809,6 +2809,13 @@
         "subjectMin": "Introduce un asunto de al menos 3 caracteres."
       },
       "website": "Sitio web"
+    },
+    "footer": {
+      "privacy": "Privacidad",
+      "terms": "Términos",
+      "security": "Seguridad",
+      "support": "Soporte",
+      "copyright": "© {{year}} Get Phame. Todos los derechos reservados."
     }
   },
   "adaptiveSending": {
@@ -3026,6 +3033,240 @@
       "blocked": "Bloqueado",
       "contained": "Contenido",
       "not_applicable": "No aplicable"
+    }
+  },
+  "legal": {
+    "contactHeading": "Contáctenos",
+    "terms": {
+      "title": "Términos de Servicio",
+      "lastUpdated": "Última actualización: 24 de julio de 2026",
+      "contactIntro": "Si tiene preguntas sobre estos Términos, su cuenta o un pago, puede enviárnoslas utilizando los datos de contacto que aparecen a continuación.",
+      "contactResponse": "Nuestro objetivo es responder a preguntas sobre cuentas, facturación y asuntos legales dentro de 30 días naturales.",
+      "sections": [
+        {
+          "id": "acceptance",
+          "title": "1. Aceptación de estos Términos",
+          "paragraphs": [
+            "Estos Términos de Servicio (los \"Términos\") regulan su acceso y uso de la aplicación web Get Phame, los sitios web relacionados y los servicios (colectivamente, el \"Servicio\"). Al crear una cuenta, iniciar sesión, comprar un plan o utilizar el Servicio de cualquier otra forma, usted acepta estos Términos y nuestra Política de Privacidad.",
+            "Si utiliza el Servicio para una empresa u otra entidad legal, declara que tiene autoridad para obligar a dicha entidad. Si no está de acuerdo con estos Términos, no utilice el Servicio."
+          ]
+        },
+        {
+          "id": "service-and-plans",
+          "title": "2. Servicio, planes y disponibilidad",
+          "paragraphs": [
+            "Get Phame ayuda a las empresas a organizar los contactos de clientes, gestionar destinos de reseñas, crear campañas de solicitud de reseñas por correo electrónico, enviar mensajes a través de una cuenta de correo conectada, programar seguimientos medidos y revisar la actividad de entrega y de interacción.",
+            "El plan gratuito incluye 10 solicitudes de reseñas iniciales y, posteriormente, 5 solicitudes de reseñas por cada período rodante de 30 días. Los planes de pago, incluidos los mensuales, anuales y de por vida cuando estén disponibles, proporcionan las funciones y los límites de solicitudes que se muestran en el momento del pago o en la aplicación. Los precios actuales, impuestos, términos de renovación y detalles del plan se presentan antes de que usted autorice una compra.",
+            "Podemos cambiar, añadir, eliminar o limitar funciones y planes. Un cambio en el precio de un plan recurrente entrará en vigor no antes de la siguiente renovación tras un aviso razonable, salvo que la ley exija o permita un plazo más corto."
+          ]
+        },
+        {
+          "id": "accounts-and-access",
+          "title": "3. Cuentas e inicio de sesión",
+          "paragraphs": [
+            "Debe tener al menos 18 años y capacidad legal para celebrar un contrato vinculante para usar el Servicio. Usted es responsable de mantener la información de la cuenta exacta, de proteger el acceso a su bandeja de correo y dispositivos, y de toda la actividad realizada a través de su cuenta.",
+            "Puede iniciar sesión usando Google OAuth, Iniciar sesión con Apple, un enlace mágico de correo electrónico sin contraseña u otro método que pongamos a su disposición. Get Phame no requiere ni almacena una contraseña para estos métodos de inicio de sesión. Si habilita una clave de acceso (passkey), su dispositivo o gestor de contraseñas gestiona la credencial; no recibimos sus datos biométricos.",
+            "Notifíquenos de inmediato si cree que su cuenta o una cuenta de correo conectada ha sido accedida sin autorización. Podemos suspender o restringir una cuenta cuando sea razonablemente necesario para proteger el Servicio, a los usuarios, a los destinatarios o para cumplir la ley aplicable."
+          ]
+        },
+        {
+          "id": "your-responsibilities",
+          "title": "4. Su empresa, los datos de clientes y las cuentas conectadas",
+          "paragraphs": [
+            "Usted es responsable de los datos de clientes, enlaces de reseñas, contenido de los correos electrónicos y la cuenta de correo conectada que utilice con el Servicio. Declara que dispone de los derechos, avisos y permisos necesarios para subir datos de clientes y contactar a los destinatarios.",
+            "Debe mantener sus destinos de reseñas precisos y no puede usar el Servicio para hacerse pasar por otra persona o empresa, enviar mensajes engañosos o dirigir a los destinatarios a contenido dañino o ilícito."
+          ]
+        },
+        {
+          "id": "acceptable-use",
+          "title": "5. Uso aceptable y cumplimiento en solicitudes de reseñas",
+          "paragraphs": [
+            "Utilice el Servicio únicamente para comunicaciones con clientes que sean legales, respetuosas y basadas en la relación. Debe cumplir con todas las leyes y normas que le sean aplicables a usted y a sus destinatarios, incluidas las obligaciones aplicables en materia de anti-spam, privacidad, protección del consumidor, plataformas de reseñas y comunicaciones electrónicas.",
+            "Usted es el remitente registrado de los mensajes enviados a través de su cuenta de correo conectada. Usted es responsable de obtener cualquier consentimiento requerido, respetar las exclusiones y solicitudes de baja, identificar su empresa con precisión e incluir cualquier dirección física u otras divulgaciones exigidas."
+          ],
+          "bullets": [
+            "No utilice listas compradas, alquiladas, extraídas o de terceros sin una base legal para contactar a cada destinatario.",
+            "No envíe correo masivo no solicitado, no acose a los destinatarios, no eluda límites de tasa ni contacte a personas que se hayan dado de baja.",
+            "No ofrezca incentivos por reseñas positivas, filtre o segmente clientes según la opinión esperada ni manipule las reseñas de forma que viole las normas de una plataforma o la ley aplicable.",
+            "No cargue malware, examine o sondee el Servicio, eluda controles de seguridad ni utilice el Servicio para infringir los derechos de terceros."
+          ]
+        },
+        {
+          "id": "third-party-services",
+          "title": "6. Servicios y destinos de terceros",
+          "paragraphs": [
+            "El Servicio puede conectarse o enlazar con servicios de terceros, como Google, Apple, proveedores de correo, WooCommerce, Stripe, PayPal y plataformas de reseñas. Su uso de esos servicios sigue sujeto a sus propios términos, avisos de privacidad y requisitos técnicos.",
+            "Get Phame no controla las plataformas de terceros ni garantiza que una plataforma de reseñas, un proveedor de correo o un proveedor de pagos vaya a aceptar, entregar, publicar, conservar o mostrar cualquier mensaje, reseña, pago o cuenta."
+          ]
+        },
+        {
+          "id": "payments",
+          "title": "7. Pagos, renovaciones, cancelaciones y reembolsos",
+          "paragraphs": [
+            "Los planes de pago pueden procesarse mediante Stripe o PayPal. Al completar el pago, autoriza al procesador seleccionado a cobrar el importe indicado, incluidos los impuestos aplicables, de acuerdo con el calendario de facturación que se le presente. Get Phame no almacena números completos de tarjetas de pago ni códigos de seguridad de tarjetas.",
+            "Los planes mensuales y anuales se renuevan automáticamente salvo que cancele antes de la siguiente fecha de renovación. Los planes de por vida son compras únicas y no se renuevan. Puede gestionar o cancelar una suscripción recurrente a través del flujo de facturación correspondiente o poniéndose en contacto con nosotros antes de la renovación.",
+            "Excepto cuando la ley lo exija o cuando se indique expresamente en el momento de la compra, los pagos no son reembolsables. La cancelación de un plan recurrente impide renovaciones futuras; mantendrá el acceso pagado hasta el final del periodo de facturación en curso, salvo que indiquemos lo contrario."
+          ]
+        },
+        {
+          "id": "data-and-security",
+          "title": "8. Datos, credenciales de correo y seguridad",
+          "paragraphs": [
+            "Nuestra Política de Privacidad explica cómo recopilamos, usamos, conservamos y protegemos la información. Usted sigue siendo el responsable del tratamiento de la información de contacto de clientes que suba, mientras que Get Phame la procesa para proporcionar el Servicio en su nombre.",
+            "Cuando conecta una cuenta SMTP, nos autoriza a utilizar esas credenciales para enviar los mensajes que usted inicie. Las contraseñas SMTP se cifran antes de su almacenamiento. Puede desconectar una cuenta de correo conectada en Configuración, lo que elimina las credenciales almacenadas de nuestros sistemas activos."
+          ]
+        },
+        {
+          "id": "service-changes",
+          "title": "9. Cambios en el Servicio y disponibilidad",
+          "paragraphs": [
+            "Trabajamos para mantener el Servicio disponible y seguro, pero puede interrumpirse por mantenimiento, actualizaciones, caídas de proveedores, incidentes de seguridad o circunstancias fuera de nuestro control razonable. No garantizamos operación ininterrumpida o sin errores, entrega, colocación en la bandeja de entrada, publicación de reseñas ni un resultado comercial concreto.",
+            "Debe mantener copias de seguridad apropiadas de la información que sea importante para su empresa y revisar las operaciones de las campañas."
+          ]
+        },
+        {
+          "id": "intellectual-property",
+          "title": "10. Propiedad intelectual",
+          "paragraphs": [
+            "El Servicio, incluido su software, marcas, diseño y contenido, es propiedad de Get Phame o de sus licenciantes y está protegido por las leyes de propiedad intelectual aplicables. Sujetos a estos Términos, le concedemos un derecho limitado, no exclusivo, intransferible y revocable para usar el Servicio con fines internos de su empresa.",
+            "Usted conserva la propiedad del contenido y los datos que envíe. Nos concede los derechos limitados necesarios para alojar, procesar, transmitir y mostrar ese contenido exclusivamente para operar y mejorar el Servicio."
+          ]
+        },
+        {
+          "id": "termination",
+          "title": "11. Suspensión y terminación",
+          "paragraphs": [
+            "Puede dejar de usar el Servicio en cualquier momento. Podemos suspender o terminar el acceso si incumple materialmente estos Términos, si crea riesgo o exposición legal para nosotros o terceros, si no paga las cantidades adeudadas o si utiliza el Servicio de una forma que dañe a los destinatarios o al Servicio.",
+            "Tras la terminación, subsistirán las disposiciones que por su naturaleza deban sobrevivir, incluidas las relativas a pagos ya adeudados, propiedad intelectual, exenciones de responsabilidad, límites de responsabilidad, indemnización y términos de disputa."
+          ]
+        },
+        {
+          "id": "disclaimers",
+          "title": "12. Exenciones de responsabilidad y limitación de responsabilidad",
+          "paragraphs": [
+            "En la máxima medida permitida por la ley, el Servicio se proporciona \"tal cual\" y \"según disponibilidad\" sin garantías de ningún tipo, ya sean expresas, implícitas o legales. Rechazamos las garantías implícitas de comerciabilidad, idoneidad para un propósito particular, titularidad y no infracción.",
+            "En la máxima medida permitida por la ley, Get Phame y sus operadores, afiliados y licenciantes no serán responsables de daños indirectos, incidentales, especiales, consecuentes, ejemplares o punitivos, ni de pérdidas de beneficios, ingresos, buena voluntad, datos u oportunidades de negocio. Nuestra responsabilidad agregada derivada de o relacionada con el Servicio no excederá el importe que usted nos haya pagado por el Servicio en los 12 meses anteriores al evento que dio lugar a la responsabilidad, o US$100 si no pagó nada."
+          ]
+        },
+        {
+          "id": "indemnity-and-changes",
+          "title": "13. Indemnización, modificaciones y ley aplicable",
+          "paragraphs": [
+            "Usted defenderá, indemnizará y mantendrá indemne a Get Phame y a sus operadores, afiliados y licenciantes frente a reclamaciones, daños, pérdidas, responsabilidades y gastos derivados de sus datos de clientes, mensajes, prácticas de reseñas, violaciones de la ley o incumplimiento de estos Términos.",
+            "Podemos actualizar estos Términos de vez en cuando. Publicaremos la versión actualizada y revisaremos la fecha anterior. Si continúa usando el Servicio después de la fecha de entrada en vigor, acepta los Términos actualizados. Estos Términos se rigen por las leyes aplicables al operador del Servicio, sin tener en cuenta los principios de conflicto de leyes, salvo que la ley de protección al consumidor aplicable disponga lo contrario."
+          ]
+        }
+      ]
+    },
+    "privacy": {
+      "title": "Política de Privacidad",
+      "lastUpdated": "Última actualización: 24 de julio de 2026",
+      "contactIntro": "Puede enviarnos preguntas, solicitudes relativas a derechos sobre datos o inquietudes acerca de esta Política de Privacidad utilizando los datos de contacto que aparecen a continuación.",
+      "contactResponse": "Nuestro objetivo es responder a las solicitudes relacionadas con la privacidad dentro de 30 días naturales y es posible que necesitemos verificar su identidad antes de completar una solicitud.",
+      "sections": [
+        {
+          "id": "introduction",
+          "title": "1. Introducción",
+          "paragraphs": [
+            "Esta Política de Privacidad explica cómo Get Phame recopila, usa, comparte, conserva y protege la información cuando utiliza nuestra aplicación web y servicios relacionados. El Servicio ayuda a las empresas a enviar correos electrónicos de solicitud de reseñas a través de sus propias cuentas de correo conectadas.",
+            "Esta Política se aplica a los titulares de cuentas y a la información de contacto de clientes que los titulares de cuentas suban o conecten al Servicio. Los titulares de cuentas son responsables de sus propios avisos y de la base legal para proporcionar datos de clientes a nosotros."
+          ]
+        },
+        {
+          "id": "information-collected",
+          "title": "2. Información que recopilamos",
+          "paragraphs": [
+            "Información de cuenta y autenticación. Cuando inicia sesión con Google OAuth, Iniciar sesión con Apple o un enlace mágico de correo sin contraseña, recibimos y almacenamos la información necesaria para crear y proteger su cuenta, como su nombre, dirección de correo electrónico, identificador de la cuenta del proveedor e información de sesión. No recibimos ni almacenamos la contraseña de su cuenta de Google o Apple. Si usa una passkey, almacenamos solo los datos de la credencial pública necesarios para verificar el inicio de sesión; no recibimos datos biométricos.",
+            "Información de la empresa, clientes y campañas. Puede proporcionar el perfil de su empresa, enlaces de destinos de reseñas, plantillas de correo, nombres y direcciones de correo de clientes, historial de campañas, estado de baja y la información operativa relacionada. Puede introducir contactos de clientes manualmente, importarlos desde un archivo CSV o conectar una integración aprobada como WooCommerce o Stripe.",
+            "Información del correo conectado. Para enviar mensajes en su nombre, puede proporcionar host SMTP, puerto, dirección de correo y una contraseña de aplicación u otra credencial de correo. Las credenciales se cifran antes de su almacenamiento y se usan únicamente para enviar los mensajes que usted inicia o para realizar las comprobaciones de salud de la conexión descritas en esta Política.",
+            "Información de uso, seguridad y de interacción con correos. Podemos registrar la actividad de la cuenta, recuentos de solicitudes, información de dispositivo y navegador, país o región derivados de la IP y eventos de seguridad. Los correos de solicitud de reseñas pueden incluir un píxel de seguimiento de apertura y redirección de seguimiento de clics. Cuando un destinatario interactúa con un correo rastreado, registramos el evento, la marca temporal, la ubicación geográfica aproximada derivada de la IP y la información del agente de usuario para las analíticas de campaña del titular de la cuenta.",
+            "Información de pago. Cuando compra un plan de pago, el procesamiento del pago lo manejan Stripe o PayPal. Recibimos los detalles de la transacción y la suscripción necesarios para proporcionar acceso y soporte de facturación. No almacenamos números completos de tarjetas de pago ni códigos de seguridad de tarjetas."
+          ]
+        },
+        {
+          "id": "use",
+          "title": "3. Cómo usamos la información",
+          "paragraphs": [
+            "Usamos la información para proporcionar, mantener, asegurar y mejorar el Servicio; autenticar usuarios; crear y gestionar cuentas; enviar los correos que usted inicia; operar recordatorios y analíticas de campañas; procesar pagos; responder a solicitudes de soporte; prevenir abusos; y cumplir obligaciones legales.",
+            "No vendemos datos de contacto de clientes ni los usamos para comercializar de forma independiente a sus clientes. No leemos, indexamos ni almacenamos el contenido de su bandeja de entrada existente, correos enviados u otros datos del buzón."
+          ]
+        },
+        {
+          "id": "legal-bases",
+          "title": "4. Bases legales para el tratamiento",
+          "paragraphs": [
+            "Cuando se aplique el RGPD u otra normativa similar, tratamos la información de cuenta, empresa y campañas para ejecutar nuestro contrato con usted; tratamos información limitada de seguridad, fiabilidad y uso por nuestros intereses legítimos en operar un servicio seguro y fiable; tratamos ciertos registros para cumplir obligaciones legales; y nos basamos en el consentimiento cuando la ley lo requiera.",
+            "Si proporciona datos de clientes, usted es responsable de identificar y documentar la base legal que le permite recopilar, usar y compartir esa información para comunicaciones de solicitud de reseñas."
+          ]
+        },
+        {
+          "id": "sharing",
+          "title": "5. Cómo compartimos la información",
+          "paragraphs": [
+            "Compartimos información solo cuando es necesario para operar el Servicio, cumplir con la ley, proteger derechos y seguridad, o completar una transacción que usted solicite. Los destinatarios pueden incluir proveedores de infraestructura y almacenamiento, proveedores de entrega de correo y soporte, procesadores de pagos y las integraciones que usted elija conectar.",
+            "Stripe y PayPal procesan la información de pago conforme a sus propios avisos de privacidad. Google y Apple procesan la información de inicio de sesión conforme a sus propios avisos de privacidad. Podemos divulgar información en respuesta a una solicitud legal válida o para proteger los derechos, la propiedad y la seguridad de Get Phame, los usuarios, los destinatarios o el público."
+          ]
+        },
+        {
+          "id": "customer-data-and-tracking",
+          "title": "6. Datos de clientes, seguimiento de correo y bajas",
+          "paragraphs": [
+            "Los titulares de cuentas son los responsables del tratamiento de los datos de contacto de clientes y de la información de interacción asociada a sus campañas. Get Phame actúa como procesador de esos datos para proporcionar el Servicio según las instrucciones del titular de la cuenta.",
+            "El seguimiento de aperturas y clics se utiliza para mostrar la actividad de la campaña al titular de la cuenta. Cada titular de cuenta es responsable de facilitar los avisos requeridos, atender las solicitudes de baja y usar el seguimiento de conformidad con la ley aplicable. Los destinatarios que utilicen un enlace de baja quedan excluidos de envíos futuros por esa cuenta."
+          ]
+        },
+        {
+          "id": "retention",
+          "title": "7. Conservación y eliminación de datos",
+          "paragraphs": [
+            "Conservamos la información de cuenta, empresa, clientes, campañas y seguridad mientras su cuenta esté activa y según sea necesario para proporcionar el Servicio. Puede eliminar contactos de clientes y desconectar una cuenta SMTP en la aplicación. Desconectar elimina las credenciales de correo almacenadas de nuestros sistemas activos.",
+            "Cuando elimine su cuenta o realice una solicitud de eliminación verificada, eliminaremos los datos personales de los sistemas activos en un plazo de 30 días, salvo que se requiera o permita un periodo de conservación más largo por razones legales, de seguridad, resolución de disputas o registros financieros."
+          ]
+        },
+        {
+          "id": "security",
+          "title": "8. Seguridad",
+          "paragraphs": [
+            "Usamos salvaguardas administrativas, técnicas y organizativas razonables diseñadas para proteger la información, incluyendo almacenamiento cifrado para credenciales SMTP, TLS en tránsito, controles de acceso, protecciones de sesión, limitación de tasa y cabeceras de seguridad HTTP. Ningún sistema puede garantizarse completamente seguro; póngase en contacto con nosotros de inmediato si sospecha un acceso no autorizado."
+          ]
+        },
+        {
+          "id": "rights",
+          "title": "9. Sus derechos de privacidad",
+          "paragraphs": [
+            "Dependiendo de dónde viva, puede tener derechos para acceder, rectificar, eliminar, restringir, oponerse o recibir una copia portátil de los datos personales, y para retirar el consentimiento cuando éste sea la base legal. También puede tener el derecho a presentar una reclamación ante una autoridad supervisora.",
+            "Para ejercer un derecho, contáctenos utilizando los datos que aparecen más abajo. Podemos solicitar información necesaria para verificar su identidad y autoridad antes de atender una solicitud."
+          ]
+        },
+        {
+          "id": "cookies",
+          "title": "10. Cookies y datos de sesión",
+          "paragraphs": [
+            "Usamos cookies esenciales de sesión seguras y almacenamiento local que son necesarios para mantener la sesión iniciada, proteger el Servicio, recordar configuraciones de la aplicación como el idioma y admitir los métodos de inicio de sesión que seleccione. No usamos cookies de publicidad de terceros para rastrearle a través de sitios web."
+          ]
+        },
+        {
+          "id": "children",
+          "title": "11. Privacidad de menores",
+          "paragraphs": [
+            "El Servicio es una herramienta empresarial para adultos y no está dirigido a menores de 18 años. No recopilamos conscientemente información personal de menores. Si cree que un menor ha facilitado información personal, contáctenos y tomaremos las medidas apropiadas para eliminarla."
+          ]
+        },
+        {
+          "id": "transfers",
+          "title": "12. Transferencias internacionales",
+          "paragraphs": [
+            "Get Phame puede procesar información en Estados Unidos y en otros países donde nosotros o nuestros proveedores de servicios operen. Esos países pueden tener leyes de protección de datos diferentes a las de su país. Cuando sea necesario, aplicamos salvaguardas adecuadas para las transferencias internacionales."
+          ]
+        },
+        {
+          "id": "changes",
+          "title": "13. Cambios en esta Política de Privacidad",
+          "paragraphs": [
+            "Podemos actualizar esta Política de Privacidad para reflejar cambios en nuestras prácticas, tecnología, requisitos legales o en el Servicio. Publicaremos la política revisada y actualizaremos la fecha anterior. Si un cambio es material, proporcionaremos un aviso adicional cuando sea razonablemente apropiado."
+          ]
+        }
+      ]
     }
   }
 }
