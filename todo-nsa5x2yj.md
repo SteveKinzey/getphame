@@ -177,4 +177,4 @@
 - [x] Create or update a clean GitHub reconciliation branch containing the exact validated app state without force-pushing, rewriting shared history, or overwriting unrelated branches.
 - [x] Run the repository’s required test, TypeScript, audit, build, and GitHub Actions checks against the reconciliation branch; fix only verified release blockers.
 - [x] Open or update a pull request, merge the validated reconciliation into `main` when checks and repository permissions allow, and confirm the remote default branch contains the released app code.
-- [ ] Document and enforce a checkpoint-to-GitHub release policy so every future validated Get Phame release is committed, pushed, reviewed, and merged instead of remaining only in the managed project history.
+- [x] Document and enforce a checkpoint-to-GitHub release policy so every future validated Get Phame release is committed, pushed, reviewed, and merged instead of remaining only in the managed project history.
