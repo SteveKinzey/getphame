@@ -25,7 +25,9 @@
     "faq": "FAQ",
     "manageUsers": "Manage users",
     "admin": "Admin",
-    "developer": "Developer"
+    "developer": "Developer",
+    "userManual": "User Manual",
+    "adminManual": "Admin Manual"
   },
   "hero": {
     "tagline": "Free to start — No credit card required",
@@ -3231,5 +3233,27 @@
       "contained": "Contained",
       "not_applicable": "Not applicable"
     }
+  },
+  "manual": {
+    "badges": {
+      "all": "Free & paid",
+      "paid": "Paid subscription only",
+      "admin": "Administrator only"
+    },
+    "searchPlaceholder": "Search this manual",
+    "searchLabel": "Search this manual",
+    "searchResults": "{{count}} matching topics",
+    "lastUpdated": "Last updated {{date}}",
+    "sectionNavigation": "Manual sections",
+    "sectionCount": "Manual sections",
+    "adminSectionCount": "Admin-only sections",
+    "paidTopicCount": "Paid-only topics",
+    "inThisManual": "In this manual",
+    "stepsLabel": "Steps",
+    "noteLabel": "Important note",
+    "openFeature": "Open this feature",
+    "noResultsTitle": "No matching topics",
+    "noResultsBody": "Try a shorter search or browse the section links above.",
+    "clearSearch": "Clear search"
   }
 }

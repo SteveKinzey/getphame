@@ -34,7 +34,9 @@
     "faq": "FAQ",
     "manageUsers": "管理用户",
     "admin": "管理员",
-    "developer": "开发者"
+    "developer": "开发者",
+    "userManual": "用户手册",
+    "adminManual": "管理员手册"
   },
   "hero": {
     "tagline": "免费开始 — 无需信用卡",
@@ -2667,5 +2669,27 @@
       "contained": "已遏制",
       "not_applicable": "不适用"
     }
+  },
+  "manual": {
+    "badges": {
+      "all": "免费与付费",
+      "paid": "仅限付费订阅",
+      "admin": "仅限管理员"
+    },
+    "searchPlaceholder": "在本手册中搜索",
+    "searchLabel": "在本手册中搜索",
+    "searchResults": "{{count}} 个匹配主题",
+    "lastUpdated": "最近更新：{{date}}",
+    "sectionNavigation": "手册章节",
+    "sectionCount": "手册章节",
+    "adminSectionCount": "仅管理员章节",
+    "paidTopicCount": "仅付费主题",
+    "inThisManual": "本手册内容",
+    "stepsLabel": "步骤",
+    "noteLabel": "重要说明",
+    "openFeature": "打开此功能",
+    "noResultsTitle": "无匹配主题",
+    "noResultsBody": "尝试更短的搜索或浏览上方的章节链接。",
+    "clearSearch": "清除搜索"
   }
 }

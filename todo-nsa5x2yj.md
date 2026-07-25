@@ -146,3 +146,15 @@
 - [x] Localize all Sources operations copy across en, es, fr, it, th, zh-CN, and zh-TW; update runtime fallbacks; bump the locale/PWA cache to phame34.
 - [x] Package and validate the complete workflow as the reusable `source-integration-operations` skill through the skill-creator workflow.
 - [x] Run focused tests, full Vitest, TypeScript, dependency audit, production build, desktop/mobile responsive verification, checkpoint publication, and live-origin confirmation.
+
+- [x] Audit every current Get Phame route and feature as shared user, free-only, paid-only, or administrator-only guidance, using the implemented app as the source of truth.
+- [x] Define a mutually exclusive role-aware manual model: users see only the User Manual; administrators see only a superset Admin Manual containing all user guidance plus administrator-only operations; neither role can view the other manual entry or route state.
+- [x] Author a complete User Manual covering onboarding, review requests, contacts, integrations, settings, compliance, account management, and all paid-only features with explicit subscription labels.
+- [x] Author the Administrator Manual as a superset of the User Manual, adding all administrator-only dashboards, controls, diagnostics, support, billing, security, recovery, exports, and operational workflows.
+- [x] Build a mobile-first, keyboard-accessible, searchable manual interface with section navigation, deep links, status badges, clear free/paid/admin labels, and useful empty/loading/error states.
+- [x] Add the Manual navigation link directly beneath Settings in desktop and mobile navigation while preserving role visibility and active-route behavior.
+- [x] Localize all manual navigation, labels, content, status badges, and runtime fallbacks across en, es, fr, it, th, zh-CN, and zh-TW; advance locale and PWA cache versions.
+- [x] Add focused Vitest coverage for user/admin content separation, paid-only labeling, route protection, navigation order, deep links, accessibility structure, localization completeness, and cache updates.
+- [x] Run focused tests, the full Vitest suite, TypeScript, production dependency audit, production build, and authenticated desktop/mobile verification for both user and administrator manual states.
+- [ ] Publish the role-aware manual checkpoint, confirm production propagation on managed and custom origins, and verify the live Manual link appears beneath Settings.
+- [x] Prove role isolation in UI and route tests: user sessions cannot render Admin Manual content, and administrator sessions cannot render a separate User Manual view or navigation entry.

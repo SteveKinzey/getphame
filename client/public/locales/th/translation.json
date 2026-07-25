@@ -25,7 +25,9 @@
     "faq": "FAQ",
     "manageUsers": "จัดการผู้ใช้",
     "admin": "ผู้ดูแล",
-    "developer": "นักพัฒนา"
+    "developer": "นักพัฒนา",
+    "userManual": "คู่มือผู้ใช้",
+    "adminManual": "คู่มือผู้ดูแลระบบ"
   },
   "hero": {
     "tagline": "เริ่มต้นฟรี — ไม่ต้องใช้บัตรเครดิต",
@@ -2810,5 +2812,27 @@
       "contained": "ถูกกักกัน",
       "not_applicable": "ไม่เกี่ยวข้อง"
     }
+  },
+  "manual": {
+    "badges": {
+      "all": "บัญชี Free และแบบชำระเงิน",
+      "paid": "เฉพาะสมาชิกแบบชำระเงิน",
+      "admin": "เฉพาะผู้ดูแลระบบ"
+    },
+    "searchPlaceholder": "ค้นหาในคู่มือนี้",
+    "searchLabel": "ค้นหาในคู่มือนี้",
+    "searchResults": "{{count}} หัวข้อที่ตรงกัน",
+    "lastUpdated": "ปรับปรุงล่าสุด {{date}}",
+    "sectionNavigation": "ส่วนของคู่มือ",
+    "sectionCount": "ส่วนของคู่มือ",
+    "adminSectionCount": "ส่วนที่เฉพาะผู้ดูแลระบบ",
+    "paidTopicCount": "หัวข้อเฉพาะสมาชิกแบบชำระเงิน",
+    "inThisManual": "ในคู่มือนี้",
+    "stepsLabel": "ขั้นตอน",
+    "noteLabel": "บันทึกสำคัญ",
+    "openFeature": "เปิดฟีเจอร์นี้",
+    "noResultsTitle": "ไม่พบหัวข้อที่ตรงกัน",
+    "noResultsBody": "ลองค้นหาสั้นลงหรือเรียกดูลิงก์ส่วนด้านบน",
+    "clearSearch": "ล้างการค้นหา"
   }
 }

@@ -30,7 +30,9 @@
     "faq": "FAQ",
     "manageUsers": "Gestionar usuarios",
     "admin": "Admin",
-    "developer": "Desarrollador"
+    "developer": "Desarrollador",
+    "userManual": "Manual de usuario",
+    "adminManual": "Manual de administrador"
   },
   "hero": {
     "tagline": "Gratis para empezar — Sin tarjeta de crédito requerida",
@@ -3196,5 +3198,27 @@
       "contained": "Contenido",
       "not_applicable": "No aplicable"
     }
+  },
+  "manual": {
+    "badges": {
+      "all": "Free y de pago",
+      "paid": "Solo suscripción de pago",
+      "admin": "Solo administrador"
+    },
+    "searchPlaceholder": "Buscar en este manual",
+    "searchLabel": "Buscar en este manual",
+    "searchResults": "{{count}} temas coincidentes",
+    "lastUpdated": "Última actualización {{date}}",
+    "sectionNavigation": "Secciones del manual",
+    "sectionCount": "Secciones del manual",
+    "adminSectionCount": "Secciones solo para administradores",
+    "paidTopicCount": "Temas solo para suscriptores de pago",
+    "inThisManual": "En este manual",
+    "stepsLabel": "Pasos",
+    "noteLabel": "Nota importante",
+    "openFeature": "Abrir esta función",
+    "noResultsTitle": "No hay temas coincidentes",
+    "noResultsBody": "Pruebe una búsqueda más corta o explore los enlaces de sección arriba.",
+    "clearSearch": "Borrar búsqueda"
   }
 }

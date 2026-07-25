@@ -1,0 +1,660 @@
+{
+  "version": 1,
+  "title": "User Manual",
+  "eyebrow": "Get Phame guidance",
+  "introduction": "Use this manual to set up Get Phame, send compliant review requests, manage contacts and reminders, connect integrations, and understand what is included with Free and paid subscriptions. Paid capabilities remain visible so you can evaluate them, and every subscription-only item is clearly labeled.",
+  "lastUpdated": "2026-07-25",
+  "sections": [
+    {
+      "id": "getting-started",
+      "title": "Getting started",
+      "summary": "Sign in securely, complete the setup checklist, and prepare your first review request.",
+      "icon": "rocket",
+      "topics": [
+        {
+          "id": "sign-in",
+          "title": "Sign in with a magic link",
+          "access": "all",
+          "body": "Get Phame uses passwordless magic-link authentication by default. Enter your account email, open the newest sign-in message, and use the link on the same device when possible.",
+          "steps": [
+            "Open the Get Phame sign-in page and enter your account email.",
+            "Open the newest Get Phame message in your inbox and select the sign-in link.",
+            "If the link has expired or was already used, return to sign-in and request a new one.",
+            "Never forward a magic-link email or share its URL."
+          ],
+          "notes": ["If delivery is delayed, check spam or junk folders and confirm the email address was entered correctly."]
+        },
+        {
+          "id": "setup-checklist",
+          "title": "Complete the setup checklist",
+          "access": "all",
+          "body": "The onboarding checklist guides you through the minimum setup needed for reliable outreach: connect email, add a review platform, add contacts, and send your first request.",
+          "steps": [
+            "Add your business name and customer-facing sender details.",
+            "Connect and test the email account that will send review requests.",
+            "Add at least one approved review destination and set a default.",
+            "Import or save a contact, preview the message, and send the first request."
+          ],
+          "route": "/"
+        },
+        {
+          "id": "install-and-share",
+          "title": "Install or share Get Phame",
+          "access": "all",
+          "body": "Get Phame can be installed as a progressive web app on supported devices. The install guide explains the browser-specific steps. The share action uses the device share sheet when available and falls back to copying a link.",
+          "steps": [
+            "Open the install guide from the onboarding or account area.",
+            "Follow the instructions for your browser and device.",
+            "Launch Get Phame from the new app icon and sign in normally.",
+            "Use Share when you need to send the Get Phame link to another device or teammate."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "navigation-and-preferences",
+      "title": "Navigation and preferences",
+      "summary": "Find the main work areas and adjust language, appearance, and account controls.",
+      "icon": "compass",
+      "topics": [
+        {
+          "id": "main-navigation",
+          "title": "Use the main navigation",
+          "access": "all",
+          "body": "Home shows setup and activity shortcuts. Send Request starts individual outreach. Dashboard summarizes activity. Developer Integrations manages API and Sources connections. Settings contains account, business, delivery, subscription, and security controls. User Manual opens this guide.",
+          "steps": [
+            "On desktop, use the left navigation rail.",
+            "On mobile, use the bottom navigation and More menu for secondary destinations.",
+            "Use the highlighted item to confirm your current location.",
+            "Use in-page back controls when leaving an admin-style detail or setup screen."
+          ]
+        },
+        {
+          "id": "language-theme-network",
+          "title": "Language, theme, and connection status",
+          "access": "all",
+          "body": "Choose a supported language from the language control. Light and dark appearance settings follow the available theme control. Offline or degraded connection indicators mean some live data or actions may be unavailable until the network returns.",
+          "steps": [
+            "Choose your preferred language from the account or navigation control.",
+            "Review dates and numbers after switching language because formatting follows the selected locale.",
+            "If an offline notice appears, avoid repeating a send or destructive action until the connection is restored."
+          ]
+        },
+        {
+          "id": "account-menu",
+          "title": "Account menu",
+          "access": "all",
+          "body": "The account menu provides quick access to Settings, the role-appropriate manual, and sign out. Administrator accounts also receive a separate Administration entry, but ordinary users do not.",
+          "steps": [
+            "Open the avatar or More menu.",
+            "Choose Settings for profile and configuration changes.",
+            "Choose Manual to return to the guide assigned to your account role.",
+            "Choose Sign out when using a shared device."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "business-and-review-destinations",
+      "title": "Business and review destinations",
+      "summary": "Configure the identity customers see and the approved destinations used in requests.",
+      "icon": "building",
+      "topics": [
+        {
+          "id": "business-profile",
+          "title": "Business profile",
+          "access": "all",
+          "body": "Keep the business name and sender identity accurate because customers use them to recognize the request. Save changes before sending or previewing a new message.",
+          "steps": [
+            "Open Settings and locate the business profile section.",
+            "Enter the customer-facing business name and requested profile details.",
+            "Save the changes and preview an email to confirm the identity is clear.",
+            "Update the profile whenever the sender or business identity changes."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "platform-links",
+          "title": "Add and select review destinations",
+          "access": "all",
+          "body": "Add only destinations that belong to your business and use the default control to select the link used for new requests. Test each destination before sending it to customers.",
+          "steps": [
+            "Open Settings and add a supported platform or custom destination URL.",
+            "Give the destination a recognizable label.",
+            "Open the saved link in a separate tab and confirm it reaches the correct business profile.",
+            "Set the destination you use most often as the default."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "unlimited-platform-links",
+          "title": "Unlimited multi-platform links",
+          "access": "paid",
+          "body": "Paid subscriptions can maintain unlimited review destinations. Free accounts can use one platform link. Upgrade before adding additional destinations beyond the Free allowance.",
+          "steps": [
+            "Open Upgrade to compare the current recurring and lifetime options.",
+            "Complete checkout with the same email used for your Get Phame account.",
+            "Return to Settings and add the additional destinations.",
+            "Choose the appropriate destination before each request or campaign."
+          ],
+          "route": "/upgrade"
+        },
+        {
+          "id": "yelp-destination",
+          "title": "Yelp compliance mode",
+          "access": "all",
+          "body": "When Yelp is selected, follow the in-app compliance notice. Yelp guidance is presented in plain text and must not be treated like a normal review-solicitation link. Do not offer incentives or pressure customers to post a review.",
+          "steps": [
+            "Select Yelp only when it accurately represents the intended destination.",
+            "Read the Yelp-specific warning before sending.",
+            "Use neutral, individual communication and avoid selective solicitation.",
+            "Consult the Compliance Guide whenever a platform rule is unclear."
+          ],
+          "route": "/compliance"
+        }
+      ]
+    },
+    {
+      "id": "email-delivery",
+      "title": "Email delivery",
+      "summary": "Connect a sender, verify delivery, preview messages, and troubleshoot common provider issues.",
+      "icon": "mail",
+      "topics": [
+        {
+          "id": "connect-email",
+          "title": "Connect an email provider",
+          "access": "all",
+          "body": "Get Phame sends through the account you connect. Provider-specific instructions explain whether to use an app password, SMTP password, or provider bridge credential. Never enter a normal password when the provider requires an app password.",
+          "steps": [
+            "Open Settings and choose the email connection section.",
+            "Enter the sending address; Get Phame will identify common providers when possible.",
+            "Open the inline provider guide and create the required app or SMTP password.",
+            "Enter the connection details, save, and run the connection test."
+          ],
+          "notes": ["Google Workspace administrators may need to allow app passwords. Proton Mail requires credentials supplied by Proton Bridge."],
+          "route": "/settings"
+        },
+        {
+          "id": "test-and-troubleshoot-email",
+          "title": "Test and troubleshoot delivery",
+          "access": "all",
+          "body": "A successful connection test confirms the credentials can be used at that moment; it does not guarantee every future message will be accepted. Re-test after changing provider security settings or passwords.",
+          "steps": [
+            "Confirm the sending address and provider host are correct.",
+            "Create a fresh app password if the provider revoked the previous credential.",
+            "Check that multi-factor authentication and SMTP access meet the provider’s requirements.",
+            "Send a preview or low-risk request to an address you control before customer outreach."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "bulk-sender",
+          "title": "Bulk Sender connection",
+          "access": "paid",
+          "body": "Paid subscriptions can connect a supported transactional email service for higher-volume delivery. Store the provider credential only in the protected Settings form, test the connection, and monitor provider limits and suppression lists.",
+          "steps": [
+            "Open Settings and locate Bulk Sender.",
+            "Choose the supported provider and enter the required protected credential.",
+            "Save the connection and verify that the connected status is shown.",
+            "Use compliant sending practices even when the provider allows a higher technical volume."
+          ],
+          "route": "/settings"
+        }
+      ]
+    },
+    {
+      "id": "contacts-and-imports",
+      "title": "Contacts and imports",
+      "summary": "Save customer details, import consented contacts, and manage duplicates safely.",
+      "icon": "users",
+      "topics": [
+        {
+          "id": "saved-contacts",
+          "title": "Saved contacts",
+          "access": "all",
+          "body": "Saved Contacts keeps customer details available for future individual requests and campaign management. Add only people you are permitted to contact and correct inaccurate records before sending.",
+          "steps": [
+            "Open Contacts to search or review saved records.",
+            "Add or edit the customer name and email carefully.",
+            "Review prior activity before restarting outreach.",
+            "Remove a contact when retention is no longer justified or the customer asks you to stop."
+          ],
+          "route": "/contacts"
+        },
+        {
+          "id": "csv-import",
+          "title": "Import contacts from CSV",
+          "access": "all",
+          "body": "CSV import is available on Free and paid plans. Use a clean file with the expected contact columns, review the preview, and resolve invalid or duplicate records before sending.",
+          "steps": [
+            "Open Import Contacts and choose a CSV file you prepared from an authorized source.",
+            "Match the name and email columns when prompted.",
+            "Review validation, duplicate, and rejection results.",
+            "Open Contacts after import and spot-check several records."
+          ],
+          "route": "/import"
+        },
+        {
+          "id": "woocommerce-sync",
+          "title": "WooCommerce synchronization",
+          "access": "paid",
+          "body": "WooCommerce synchronization is available only with a paid subscription. Connect the approved store integration, import eligible customers, and review the results before starting outreach.",
+          "steps": [
+            "Open the WooCommerce customers area from the applicable integration entry.",
+            "Connect or verify the store integration using protected credentials.",
+            "Run or review the customer synchronization and resolve failed records.",
+            "Confirm consent and campaign eligibility before sending any request."
+          ],
+          "route": "/woo-customers"
+        },
+        {
+          "id": "duplicates-and-consent",
+          "title": "Duplicates and consent",
+          "access": "all",
+          "body": "Get Phame can identify duplicate imports, but you remain responsible for the quality and lawful origin of each contact. Do not repeatedly import a person to bypass sending limits, suppression, or campaign history.",
+          "steps": [
+            "Use stable customer email addresses as the primary identity.",
+            "Review deduplicated results instead of assuming every row created a new record.",
+            "Keep evidence of the business interaction or consent that permits individual outreach.",
+            "Stop and investigate when a source begins producing unusual failures or duplicate volume."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "review-requests",
+      "title": "Send review requests",
+      "summary": "Preview and send individual, recognizable, compliance-aware requests.",
+      "icon": "send",
+      "topics": [
+        {
+          "id": "send-individual-request",
+          "title": "Send an individual request",
+          "access": "all",
+          "body": "Review outreach should be tied to a real customer interaction and sent individually. Confirm the recipient, destination, and message before sending.",
+          "steps": [
+            "Open Send Request and select or enter the customer.",
+            "Choose the correct review destination.",
+            "Confirm the customer relationship and required consent fields.",
+            "Preview the email, correct any issue, and send once."
+          ],
+          "route": "/send"
+        },
+        {
+          "id": "pre-send-compliance",
+          "title": "Complete the compliance check",
+          "access": "all",
+          "body": "The pre-send checklist helps prevent misleading or platform-incompatible outreach. Never offer compensation, ask only happy customers, or hide the purpose of the message.",
+          "steps": [
+            "Confirm the request relates to a real transaction or service experience.",
+            "Confirm the recipient has not opted out and is not being contacted excessively.",
+            "Review platform-specific warnings, especially for Yelp.",
+            "Open the full Compliance Guide when the correct action is uncertain."
+          ],
+          "route": "/compliance"
+        },
+        {
+          "id": "free-request-quota",
+          "title": "Free request allowance",
+          "access": "all",
+          "body": "Free accounts receive 10 initial review requests and then 5 requests in each rolling 30-day window. The usage counter shows remaining availability and directs you to Upgrade when the allowance is exhausted.",
+          "steps": [
+            "Review the Free usage counter before preparing outreach.",
+            "Prioritize recent, eligible customer interactions.",
+            "Do not create additional accounts to bypass the allowance.",
+            "Choose a paid plan when the business needs ongoing higher-volume sending."
+          ],
+          "route": "/send"
+        },
+        {
+          "id": "unlimited-requests",
+          "title": "Unlimited review requests and higher daily limit",
+          "access": "paid",
+          "body": "Paid subscriptions include unlimited review requests under the subscription entitlement and a configured daily allowance of up to 500, compared with 50 per day on Free. Compliance, provider, abuse-prevention, and platform limits still apply.",
+          "steps": [
+            "Upgrade from the pricing page and wait for the paid status to appear.",
+            "Increase volume gradually while monitoring delivery and response quality.",
+            "Keep each request tied to an eligible customer interaction.",
+            "Pause sending when error, bounce, complaint, or provider-warning rates increase."
+          ],
+          "route": "/upgrade"
+        }
+      ]
+    },
+    {
+      "id": "reminders-and-campaigns",
+      "title": "Reminders and campaigns",
+      "summary": "Manage scheduled follow-ups while respecting completion, opt-out, and compliance signals.",
+      "icon": "bell",
+      "topics": [
+        {
+          "id": "reminder-schedule",
+          "title": "Review scheduled reminders",
+          "access": "all",
+          "body": "Follow-up reminders are available on Free and paid plans. The Reminders area shows scheduled messages and provides cancellation or permitted send-now controls.",
+          "steps": [
+            "Open Reminders and review pending, due, sent, cancelled, and stopped items.",
+            "Cancel a reminder when the customer asks not to receive it or the relationship changed.",
+            "Use Send Now only when the customer is still eligible and the timing is appropriate.",
+            "Confirm the history before restarting any outreach sequence."
+          ],
+          "route": "/reminders"
+        },
+        {
+          "id": "completion-stops-reminders",
+          "title": "Customer completion stops future reminders",
+          "access": "all",
+          "body": "When Get Phame records the requested customer action as completed, future reminders for that sequence stop. Do not manually restart the campaign unless a new, legitimate customer interaction justifies a new request.",
+          "steps": [
+            "Review the customer timeline when a reminder is stopped.",
+            "Do not duplicate or edit a contact to force a stopped sequence to continue.",
+            "Use a new request only for a new eligible transaction or service event."
+          ]
+        },
+        {
+          "id": "campaign-management",
+          "title": "Campaign history and restart controls",
+          "access": "all",
+          "body": "Use contact and campaign history to understand what was sent, when it was sent, and whether the sequence is still active. Bulk restart actions should be limited to non-responding, eligible contacts and reviewed before execution.",
+          "steps": [
+            "Open the relevant customer or campaign detail.",
+            "Review sent email, reminder history, completion status, and opt-out state.",
+            "Edit only the fields that are still accurate and permitted.",
+            "Confirm compliance before restarting one or more sequences."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "templates-and-preview",
+      "title": "Email templates and preview",
+      "summary": "Review the exact customer message and understand the subscription requirement for custom templates.",
+      "icon": "fileText",
+      "topics": [
+        {
+          "id": "preview-email",
+          "title": "Preview customer email",
+          "access": "all",
+          "body": "Use Preview Email to inspect the sender, recipient, subject, and rendered message before sending. A preview does not send the message and should be repeated after changing business identity, destination, or template content.",
+          "steps": [
+            "Open the preview from Settings, Templates, or the send workflow where available.",
+            "Check sender identity, recipient, subject, greeting, destination, and footer.",
+            "Close the preview and correct any inaccurate content.",
+            "Generate a new preview before the final send."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "custom-templates",
+          "title": "Custom email templates",
+          "access": "paid",
+          "body": "Custom email templates are presented as a paid subscription benefit. Keep the message recognizable, neutral, and compliant; do not use personalization to create false urgency or incentives.",
+          "steps": [
+            "Upgrade or confirm an active paid entitlement.",
+            "Open Templates and edit the supported subject and message fields.",
+            "Preserve required links, compliance language, and customer controls.",
+            "Preview and test before using the template for customer outreach."
+          ],
+          "route": "/templates"
+        }
+      ]
+    },
+    {
+      "id": "dashboard-and-analytics",
+      "title": "Dashboard, tracking, and reviews",
+      "summary": "Understand request activity, customer timelines, and paid tracking capabilities.",
+      "icon": "chart",
+      "topics": [
+        {
+          "id": "dashboard-basics",
+          "title": "Use the activity dashboard",
+          "access": "all",
+          "body": "The dashboard summarizes current outreach activity and provides paths into contacts, requests, reminders, and related records. Treat empty or delayed data as an unknown state until the page refreshes successfully.",
+          "steps": [
+            "Choose the relevant period or view when a filter is available.",
+            "Open the underlying contact or request before acting on a summary metric.",
+            "Refresh or retry when a loading or error state appears.",
+            "Use customer timelines for record-level decisions."
+          ],
+          "route": "/dashboard"
+        },
+        {
+          "id": "reviews-and-history",
+          "title": "Review activity and retained history",
+          "access": "all",
+          "body": "Review and request history helps explain prior outreach and customer status. Get Phame does not create or fabricate customer reviews. Only real customer actions and records should appear in operational workflows.",
+          "steps": [
+            "Open Reviews or the relevant customer detail.",
+            "Check timestamps, source, and campaign context before drawing conclusions.",
+            "Correct operational data through supported edit controls rather than creating replacement records.",
+            "Use retained contacts and history after a downgrade; paid-only features may no longer be available."
+          ],
+          "route": "/reviews"
+        },
+        {
+          "id": "open-click-tracking",
+          "title": "Email open and click tracking",
+          "access": "paid",
+          "body": "Open and click tracking is available only on paid subscriptions. Tracking signals are useful indicators, but they may be incomplete because privacy tools, security scanners, and email clients can affect them.",
+          "steps": [
+            "Confirm the account has an active paid entitlement.",
+            "Use tracking as one signal alongside send status and customer history.",
+            "Do not treat an open or click as proof that a customer posted a review.",
+            "Respect privacy and avoid exporting tracking data without a business need."
+          ]
+        },
+        {
+          "id": "advanced-analytics",
+          "title": "Advanced analytics",
+          "access": "paid",
+          "body": "Advanced analytics is a paid subscription capability. Use it to identify delivery and campaign patterns, then open the underlying records before changing a customer sequence or business process.",
+          "steps": [
+            "Select a meaningful reporting period.",
+            "Compare rates over time instead of relying on a single count.",
+            "Investigate the underlying records and delivery state.",
+            "Document any operational change and monitor the next period."
+          ],
+          "route": "/dashboard"
+        }
+      ]
+    },
+    {
+      "id": "developer-integrations",
+      "title": "Developer Integrations and Sources",
+      "summary": "Create secure API connections, use Zapier or Make recipes, and monitor each import source.",
+      "icon": "plug",
+      "topics": [
+        {
+          "id": "api-keys",
+          "title": "Create and protect an API key",
+          "access": "all",
+          "body": "API keys authorize external contact imports. The secret is shown only when created; store it in the connected tool’s protected credential field and never place it in a public URL, screenshot, log, or shared document.",
+          "steps": [
+            "Open Developer Integrations and create a clearly named key.",
+            "Copy the new secret once into the connected tool’s secure credential field.",
+            "Use the documented Authorization header and contact-import endpoint.",
+            "Revoke and replace the key immediately if exposure is suspected."
+          ],
+          "route": "/developer"
+        },
+        {
+          "id": "source-connection",
+          "title": "Create a Source connection",
+          "access": "all",
+          "body": "A Source identifies the connected tool that produced an import. Choose Zapier, Make, or Custom; link an authorized API key; and use the generated Source header so analytics and health checks remain attributable.",
+          "steps": [
+            "Create or select the API key used by the automation.",
+            "Create a Source with a provider and recognizable name.",
+            "Copy the endpoint, Authorization header, and Source header into the automation tool.",
+            "Send one test import and confirm the Source records activity."
+          ],
+          "route": "/developer"
+        },
+        {
+          "id": "zapier-make-recipes",
+          "title": "Use the Zapier or Make setup recipe",
+          "access": "all",
+          "body": "The guided recipes show the HTTP method, endpoint, headers, canonical contact fields, consent data, and idempotency guidance needed for a reliable automation.",
+          "steps": [
+            "Choose the Zapier or Make provider when creating the Source.",
+            "Follow the provider-specific HTTP request steps in order.",
+            "Map customer name, email, consent, and stable source identifiers from the originating tool.",
+            "Run the provider test, then verify the import result inside Get Phame."
+          ],
+          "route": "/developer"
+        },
+        {
+          "id": "source-analytics-health",
+          "title": "Source analytics and health",
+          "access": "all",
+          "body": "Each Source reports 7-, 30-, and 90-day attempts, successful imports, created contacts, deduplicated contacts, failures, success rate, and latest activity. Health monitoring evaluates recent results and records durable history.",
+          "steps": [
+            "Choose the Source and reporting window.",
+            "Compare attempts, successes, duplicates, failures, and success rate.",
+            "Review health history and the most recent reason when the status is degraded or failing.",
+            "Disable monitoring only during intentional maintenance, then re-enable it and run a manual check."
+          ],
+          "route": "/developer"
+        }
+      ]
+    },
+    {
+      "id": "referrals-support-and-billing",
+      "title": "Referrals, support, and billing",
+      "summary": "Share Get Phame, request help, compare plans, and understand cancellation behavior.",
+      "icon": "creditCard",
+      "topics": [
+        {
+          "id": "referral-link",
+          "title": "Share your referral link",
+          "access": "all",
+          "body": "Free and paid users can share the personal referral link shown in Settings. Share it only with people who are likely to benefit and avoid misleading claims or unsolicited bulk distribution.",
+          "steps": [
+            "Open Settings and locate the referral section.",
+            "Copy or share the generated link.",
+            "Explain Get Phame accurately and let the recipient decide whether to sign up.",
+            "Review referral status in the available account view."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "paid-referral-reward",
+          "title": "Paid referral reward eligibility",
+          "access": "paid",
+          "body": "A referrer must be on an eligible paid plan when the reward is processed to receive the free-month benefit. Free users can share a referral link but are not eligible for that paid-plan reward until they qualify.",
+          "steps": [
+            "Confirm the referral was attributed through your personal link.",
+            "Maintain an eligible paid subscription when the reward becomes processable.",
+            "Contact support if a qualified conversion remains unresolved after normal processing time."
+          ]
+        },
+        {
+          "id": "support-options",
+          "title": "Request support",
+          "access": "all",
+          "body": "Use the in-app support form for account, delivery, billing, compliance, or technical issues. Include a clear description and a relevant screenshot when safe, but remove credentials, magic links, customer secrets, and unnecessary personal data.",
+          "steps": [
+            "Choose the most accurate support topic.",
+            "Describe what you expected, what happened, and when it happened.",
+            "Attach only a sanitized screenshot when it materially helps diagnosis.",
+            "Monitor the in-app support status and reply to follow-up questions."
+          ]
+        },
+        {
+          "id": "priority-support",
+          "title": "Priority support",
+          "access": "paid",
+          "body": "Priority support is available with paid subscriptions. It affects support handling priority; it does not override security verification, provider delays, compliance requirements, or external platform rules.",
+          "steps": [
+            "Submit the request through the normal support form while signed into the paid account.",
+            "Choose the correct urgency and provide reproducible details.",
+            "Avoid submitting duplicate tickets for the same issue."
+          ]
+        },
+        {
+          "id": "upgrade-cancel-downgrade",
+          "title": "Upgrade, cancellation, and downgrade",
+          "access": "all",
+          "body": "Monthly and annual subscriptions renew until cancelled; lifetime access does not renew. After recurring cancellation, access remains through the paid period and then returns to Free. Contacts and history remain, while paid-only capabilities are removed.",
+          "steps": [
+            "Open Upgrade to compare monthly, annual, and lifetime options.",
+            "Complete checkout in the secure payment flow and return to Get Phame.",
+            "Review subscription status in Settings.",
+            "Use the cancellation flow when needed and read the effective-date confirmation before completing it."
+          ],
+          "route": "/upgrade"
+        },
+        {
+          "id": "future-updates",
+          "title": "Future updates entitlement",
+          "access": "paid",
+          "body": "Recurring paid plans include future updates while the subscription remains active. Lifetime access includes future updates without renewal. Free accounts receive the Free feature set available at that time.",
+          "steps": [
+            "Keep the installed web app and browser current.",
+            "Reload after a release when prompted so updated assets replace older cached files.",
+            "Review the Changelog for notable product changes."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "security-privacy-and-compliance",
+      "title": "Security, privacy, and compliance",
+      "summary": "Protect account access, use customer data responsibly, and close the account safely when required.",
+      "icon": "shield",
+      "topics": [
+        {
+          "id": "profile-security",
+          "title": "Profile, passkeys, and recovery",
+          "access": "all",
+          "body": "Keep the account email, profile, passkeys, and recovery methods current. Passkeys reduce dependence on emailed links where supported, while recovery methods help restore access without bypassing ownership checks.",
+          "steps": [
+            "Open Settings and review the profile and sign-in email.",
+            "Add a passkey on a trusted device when offered.",
+            "Store recovery information securely and test it before an emergency.",
+            "Remove passkeys or sessions for devices you no longer control."
+          ],
+          "route": "/settings"
+        },
+        {
+          "id": "data-responsibility",
+          "title": "Customer data responsibility",
+          "access": "all",
+          "body": "Collect and retain only the customer data needed for legitimate review outreach. Do not place credentials, payment data, sensitive notes, or unrelated personal information in contact fields or support attachments.",
+          "steps": [
+            "Review the Privacy Policy and Data Usage page.",
+            "Import only authorized contact fields.",
+            "Use exports only for a defined business purpose and store them securely.",
+            "Delete or correct records when retention is no longer justified."
+          ]
+        },
+        {
+          "id": "compliance-guide",
+          "title": "Use the Compliance Guide",
+          "access": "all",
+          "body": "The Compliance Guide explains platform-specific and general review-request safeguards. The pre-send checklist supports good decisions but does not replace your responsibility to follow applicable laws and platform terms.",
+          "steps": [
+            "Open Compliance before launching a new workflow or using a new platform.",
+            "Review the Yelp warning and bulk-send safeguards where applicable.",
+            "Do not gate, incentivize, fabricate, or selectively solicit reviews.",
+            "Pause the campaign and seek appropriate advice when requirements are unclear."
+          ],
+          "route": "/compliance"
+        },
+        {
+          "id": "logout-delete-account",
+          "title": "Sign out or delete the account",
+          "access": "all",
+          "body": "Sign out whenever a device is shared or no longer trusted. Account deletion is destructive and should be used only after reviewing retention, exports, active subscriptions, and connected services.",
+          "steps": [
+            "Export any legitimately required records before deletion.",
+            "Cancel or review active billing and connected services.",
+            "Use the protected delete-account flow in Settings and confirm the warning.",
+            "Sign out of remaining devices when deletion is not required but access should end."
+          ],
+          "route": "/settings"
+        }
+      ]
+    }
+  ]
+}

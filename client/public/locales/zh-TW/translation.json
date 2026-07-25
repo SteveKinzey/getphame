@@ -25,7 +25,9 @@
     "faq": "FAQ",
     "manageUsers": "管理使用者",
     "admin": "管理員",
-    "developer": "開發者"
+    "developer": "開發者",
+    "userManual": "使用者手冊",
+    "adminManual": "管理員手冊"
   },
   "hero": {
     "tagline": "免費開始 — 無需信用卡",
@@ -2689,5 +2691,27 @@
       "contained": "已遏止",
       "not_applicable": "不適用"
     }
+  },
+  "manual": {
+    "badges": {
+      "all": "免費與付費",
+      "paid": "僅限付費訂閱",
+      "admin": "僅限管理員"
+    },
+    "searchPlaceholder": "搜尋本手冊",
+    "searchLabel": "搜尋本手冊",
+    "searchResults": "{{count}} 個符合的主題",
+    "lastUpdated": "最後更新 {{date}}",
+    "sectionNavigation": "手冊章節",
+    "sectionCount": "手冊章節",
+    "adminSectionCount": "僅限管理員的章節",
+    "paidTopicCount": "僅限付費的主題",
+    "inThisManual": "本手冊內容",
+    "stepsLabel": "步驟",
+    "noteLabel": "重要注意",
+    "openFeature": "開啟此功能",
+    "noResultsTitle": "找不到符合的主題",
+    "noResultsBody": "請嘗試較短的搜尋或瀏覽上方的章節連結。",
+    "clearSearch": "清除搜尋"
   }
 }

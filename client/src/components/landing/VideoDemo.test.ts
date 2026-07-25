@@ -410,7 +410,7 @@ describe("VideoDemo media contract", () => {
   it("bumps the PWA cache and pre-caches caption tracks while bypassing managed media", async () => {
     const serviceWorker = await readFile(serviceWorkerPath, "utf8");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v20'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v21'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.en.vtt'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.es.vtt'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.fr.vtt'");
