@@ -137,3 +137,12 @@
 - [x] Update the two stale service-worker cache-version assertions from v18 to the released Sources locale cache v19, then rerun the complete suite.
 - [x] Fix the responsive-preview defect where Sources copy renders raw translation keys by updating every runtime localization resource and adding a regression that fails on unresolved keys.
 - [x] Update all three stale `phame32` runtime-locale cache assertions to the Sources release cache key `phame33`, then rerun the complete suite.
+
+- [ ] Recover the reset source-connection schema, migration record, attribution API, persistence helpers, protected procedures, and focused tests without reapplying destructive database changes.
+- [ ] Add guided Zapier and Make Sources templates with secure endpoint/header setup, canonical field mapping, consent and idempotency guidance, and an observable test-import workflow.
+- [ ] Add per-source 7/30/90-day import analytics for attempts, successful imports, created contacts, deduplicated contacts, failures, success rate, and latest activity.
+- [ ] Add bounded 15-minute source health evaluation with durable history, retry deduplication, monitoring controls, and deduplicated owner failure/recovery notifications.
+- [ ] Build localized, mobile-first Sources connection, analytics, and health interfaces using established Get Phame components and design tokens.
+- [ ] Localize all Sources operations copy across en, es, fr, it, th, zh-CN, and zh-TW; update runtime fallbacks; bump the locale/PWA cache to phame34.
+- [ ] Package and validate the complete workflow as the reusable `source-integration-operations` skill through the skill-creator workflow.
+- [ ] Run focused tests, full Vitest, TypeScript, dependency audit, production build, desktop/mobile responsive verification, checkpoint publication, and live-origin confirmation.

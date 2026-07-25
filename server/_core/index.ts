@@ -35,6 +35,7 @@ import { registerPublicApiRoutes } from "../publicApi";
 import { registerMobileAuthRoutes } from "../mobileAuth";
 import { authHealthHandler } from "../authHealthRoutes";
 import { smtpHealthHandler } from "../smtpHealthRoutes";
+import { sourceHealthHandler } from "../sourceHealthRoutes";
 import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 import { apiNotFoundHandler } from "./apiFallback";
 import { registerPublicFeaturePrerender } from "../publicFeaturePrerender";
@@ -427,6 +428,7 @@ async function startServer() {
   registerKoalendarRoutes(app);
   app.post("/api/scheduled/auth-health", authHealthHandler);
   app.post("/api/scheduled/smtp-health", smtpHealthHandler);
+  app.post("/api/scheduled/source-health", sourceHealthHandler);
   app.post("/api/scheduled/process-reminders", reminderHeartbeatHandler);
   app.post("/api/scheduled/process-koalendar", koalendarHeartbeatHandler);
 

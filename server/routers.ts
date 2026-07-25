@@ -181,6 +181,7 @@ import { bulkSenderRouter } from "./bulkSender";
 import { authDiagnosticsRouter } from "./routers/authDiagnostics";
 import { passkeysRouter } from "./routers/passkeys";
 import { recoveryDrillsRouter } from "./routers/recoveryDrills";
+import { sourceOperationsRouter } from "./routers/sourceOperations";
 import { revokePasskeySessionFromRequest } from "./security/passkeySessions";
 import { combineAccountsAsAdmin, deleteAccountAsAdmin } from "./accountManagement";
 import {
@@ -614,6 +615,7 @@ export const appRouter = router({
   authDiagnostics: authDiagnosticsRouter,
   passkeys: passkeysRouter,
   recoveryDrills: recoveryDrillsRouter,
+  sources: sourceOperationsRouter,
   helpAssistant: helpAssistantRouter,
 
   /** Paid Koalendar booking-to-contact integration. */
