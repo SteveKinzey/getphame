@@ -171,3 +171,10 @@
 - [x] Add focused regressions for analytics validation/authorization/deduplication, administrator aggregation, PDF contents and scope, role isolation, localization, accessibility, and reusable-skill validation.
 - [x] Run migration verification, focused tests, full Vitest, TypeScript, production dependency audit, production build, and desktop/Pixel 7 role-aware workflow checks.
 - [x] Publish the checkpoint, confirm both production origins serve the analytics/PDF release, verify live tracking and exports, and deliver the reusable skill package.
+
+- [x] Audit the managed project’s Git remotes, current branch, worktree, commit graph, selected GitHub repository, active branches, pull requests, branch protection, and failing checks.
+- [x] Compare the current validated production checkpoint with GitHub `main` and active reconciliation branches to identify the authoritative code, missing commits, duplicated histories, and unrelated work that must be preserved.
+- [x] Create or update a clean GitHub reconciliation branch containing the exact validated app state without force-pushing, rewriting shared history, or overwriting unrelated branches.
+- [x] Run the repository’s required test, TypeScript, audit, build, and GitHub Actions checks against the reconciliation branch; fix only verified release blockers.
+- [x] Open or update a pull request, merge the validated reconciliation into `main` when checks and repository permissions allow, and confirm the remote default branch contains the released app code.
+- [ ] Document and enforce a checkpoint-to-GitHub release policy so every future validated Get Phame release is committed, pushed, reviewed, and merged instead of remaining only in the managed project history.

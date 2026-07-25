@@ -11,7 +11,7 @@ Checked on **2026-07-22** for the Get Phame Developer Integrations guide.
 
 ## Get Phame Documentation Decisions
 
-The in-app guide documents only the canonical `POST https://getphame.app/api/v1/contacts` endpoint. It does not instruct users to place API keys in query strings, request bodies, page HTML, or browser JavaScript. Every copyable example uses `gp_live_YOUR_API_KEY`, never an account’s raw key.
+The in-app guide documents only the canonical `POST https://getphame.app/api/v1/contacts` endpoint. It does not instruct users to place API keys in query strings, request bodies, page HTML, or browser JavaScript. Every copyable example uses the explicit non-secret placeholder `<YOUR_GET_PHAME_API_KEY>`, never an account’s raw key.
 
 The canonical payload uses a nested `consent` object. For form builders limited to flat mappings, the endpoint also accepts `consentConfirmed`, `consentBasis`, `consentCapturedAt`, and `consentSource`; these aliases are normalized and then pass through the same strict affirmative-consent schema.
 

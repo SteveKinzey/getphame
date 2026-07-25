@@ -209,7 +209,7 @@ export function SourceOperationsPanel() {
   };
 
   const recipe = selectedSource ? `POST ${endpoint}
-Authorization: Bearer gp_live_YOUR_API_KEY
+Authorization: Bearer <YOUR_GET_PHAME_API_KEY>
 Content-Type: application/json
 X-Get-Phame-Source: ${selectedSource.publicId}
 Idempotency-Key: <stable-provider-event-id>
