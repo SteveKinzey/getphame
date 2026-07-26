@@ -1,37 +1,38 @@
 import { useState, useEffect, useCallback } from "react";
-import { useTranslation } from "react-i18next";
 import { Monitor, Upload, TrendingUp, Maximize2, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import FadeUp from "./FadeUp";
+import { useTranslation } from "react-i18next";
 
 const EMAIL_PREVIEW_WEBP = "https://assets.getphame.app/phame-email-preview.webp";
 const EMAIL_PREVIEW_PNG = "https://assets.getphame.app/phame-email-preview.png";
-const CUSTOMER_IMPORT_WEBP = "/manus-storage/phame-customer-import-corrected-exact_4614c4e8.webp";
-const CUSTOMER_IMPORT_PNG = "/manus-storage/phame-customer-import-corrected-exact_cded24ee.png";
-const REVIEW_TRACKING_WEBP = "/manus-storage/phame-review-tracking-corrected-exact_d01e52cf.webp";
-const REVIEW_TRACKING_PNG = "/manus-storage/phame-review-tracking-corrected-exact_82109c9c.png";
+const CUSTOMER_IMPORT_WEBP = "https://assets.getphame.app/phame-customer-import.webp";
+const CUSTOMER_IMPORT_PNG = "https://assets.getphame.app/phame-customer-import.png";
+const REVIEW_TRACKING_WEBP = "https://assets.getphame.app/phame-review-tracking.webp";
+const REVIEW_TRACKING_PNG = "https://assets.getphame.app/phame-review-tracking.png";
+
+const TAB_ICONS = { email: Monitor, import: Upload, tracking: TrendingUp };
+const TAB_IMAGES = {
+  email:    { webp: EMAIL_PREVIEW_WEBP,    png: EMAIL_PREVIEW_PNG,    alt: "GetPhame personalized review request email preview showing customer name, business signature, and Google review link" },
+  import:   { webp: CUSTOMER_IMPORT_WEBP,  png: CUSTOMER_IMPORT_PNG,  alt: "GetPhame customer import screen showing CSV drag-and-drop upload with email validation and duplicate removal" },
+  tracking: { webp: REVIEW_TRACKING_WEBP,  png: REVIEW_TRACKING_PNG,  alt: "GetPhame review tracking dashboard showing email open rates, click-through rates, and weekly review count growth chart" },
+};
 
 // ── Lightbox ──────────────────────────────────────────────────────────────────
 
-interface TabItem {
-  id: string;
-  label: string;
-  icon: any;
+interface LightboxItem {
   title: string;
-  description: string;
   webp: string;
   png: string;
   alt: string;
 }
 
 interface LightboxProps {
-  item: TabItem;
+  item: LightboxItem;
   onClose: () => void;
 }
 
 function Lightbox({ item, onClose }: LightboxProps) {
-  const { t } = useTranslation();
-  // Close on Escape key
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -40,7 +41,6 @@ function Lightbox({ item, onClose }: LightboxProps) {
     return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
-  // Prevent body scroll while open
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
@@ -54,14 +54,11 @@ function Lightbox({ item, onClose }: LightboxProps) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.2 }}
     >
-      {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/85 backdrop-blur-sm cursor-pointer"
         onClick={onClose}
-        aria-label={t("landing.lightbox.closeLightboxAriaLabel", { defaultValue: "Close lightbox" })}
+        aria-label="Close lightbox"
       />
-
-      {/* Image container */}
       <motion.div
         className="relative z-10 w-full max-w-5xl"
         initial={{ opacity: 0, scale: 0.93, y: 24 }}
@@ -69,33 +66,23 @@ function Lightbox({ item, onClose }: LightboxProps) {
         exit={{ opacity: 0, scale: 0.93, y: 24 }}
         transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
       >
-        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute -top-12 right-0 flex items-center gap-2 text-sm text-white/70 hover:text-white transition-colors"
-          aria-label={t("landing.lightbox.closeButtonAriaLabel", { defaultValue: "Close" })}
+          aria-label="Close"
         >
-          <span>{t("landing.lightbox.closeButtonLabel", { defaultValue: "Close" })}</span>
+          <span>Close</span>
           <div className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
             <X size={16} />
           </div>
         </button>
-
         <div className="rounded-2xl overflow-hidden border border-white/10 shadow-2xl">
           <picture>
             <source srcSet={item.webp} type="image/webp" />
             <source srcSet={item.png} type="image/png" />
-            <img
-              src={item.png}
-              alt={item.alt}
-              className="w-full h-auto"
-              loading="eager"
-              decoding="async"
-            />
+            <img src={item.png} alt={item.alt} className="w-full h-auto" loading="eager" decoding="async" />
           </picture>
         </div>
-
-        {/* Caption */}
         <p className="text-center text-sm text-white/60 mt-4 font-medium">{item.title}</p>
       </motion.div>
     </motion.div>
@@ -105,45 +92,17 @@ function Lightbox({ item, onClose }: LightboxProps) {
 // ── Main component ────────────────────────────────────────────────────────────
 
 export default function ProductShowcase() {
-  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState("email");
   const [lightboxOpen, setLightboxOpen] = useState(false);
-  
+  const { t } = useTranslation();
 
   const tabs = [
-    {
-      id: "email",
-      label: t("landing.productShowcase.tabEmailLabel", { defaultValue: "Email Preview" }),
-      icon: Monitor,
-      title: t("landing.productShowcase.tabEmailTitle", { defaultValue: "Emails that feel handwritten" }),
-      description: t("landing.productShowcase.tabEmailDescription", { defaultValue: "Each review request arrives from your actual email address with your name, your signature, and a personal tone. Customers trust it because it looks real — because it is." }),
-      webp: EMAIL_PREVIEW_WEBP,
-      png: EMAIL_PREVIEW_PNG,
-      alt: t("landing.productShowcase.tabEmailAlt", { defaultValue: "GetPhame personalized review request email preview showing customer name, business signature, and Google review link" }),
-    },
-    {
-      id: "import",
-      label: t("landing.productShowcase.tabImportLabel", { defaultValue: "Customer Import" }),
-      icon: Upload,
-      title: t("landing.productShowcase.tabImportTitle", { defaultValue: "Your entire list in seconds" }),
-      description: t("landing.productShowcase.tabImportDescription", { defaultValue: "Drag and drop a CSV or sync directly from WooCommerce. We validate emails, remove duplicates, and flag bounces — so every send counts." }),
-      webp: CUSTOMER_IMPORT_WEBP,
-      png: CUSTOMER_IMPORT_PNG,
-      alt: t("landing.productShowcase.tabImportAlt", { defaultValue: "GetPhame customer import screen showing CSV drag-and-drop upload with email validation and duplicate removal" }),
-    },
-    {
-      id: "tracking",
-      label: t("landing.productShowcase.tabTrackingLabel", { defaultValue: "Review Tracking" }),
-      icon: TrendingUp,
-      title: t("landing.productShowcase.tabTrackingTitle", { defaultValue: "Watch the reviews roll in" }),
-      description: t("landing.productShowcase.tabTrackingDescription", { defaultValue: "Track every email sent, opened, and clicked. See your review count climb week over week with real-time analytics and growth charts." }),
-      webp: REVIEW_TRACKING_WEBP,
-      png: REVIEW_TRACKING_PNG,
-      alt: t("landing.productShowcase.tabTrackingAlt", { defaultValue: "GetPhame review tracking dashboard showing email open rates, click-through rates, and weekly review count growth chart" }),
-    },
+    { id: "email",    label: t("productShowcase.tab1Label", { defaultValue: "Email Preview" }),    icon: TAB_ICONS.email,    title: t("productShowcase.tab1Title", { defaultValue: "Emails that feel handwritten" }),    description: t("productShowcase.tab1Desc", { defaultValue: "Each review request arrives from your actual email address with your name, your signature, and a personal tone. Customers trust it because it looks real \u2014 because it is." }),    ...TAB_IMAGES.email },
+    { id: "import",   label: t("productShowcase.tab2Label", { defaultValue: "Customer Import" }),   icon: TAB_ICONS.import,   title: t("productShowcase.tab2Title", { defaultValue: "Your entire list in seconds" }),   description: t("productShowcase.tab2Desc", { defaultValue: "Drag and drop a CSV or sync directly from WooCommerce. We validate emails, remove duplicates, and flag bounces \u2014 so every send counts." }),   ...TAB_IMAGES.import },
+    { id: "tracking", label: t("productShowcase.tab3Label", { defaultValue: "Review Tracking" }), icon: TAB_ICONS.tracking, title: t("productShowcase.tab3Title", { defaultValue: "Watch the reviews roll in" }), description: t("productShowcase.tab3Desc", { defaultValue: "Track every email sent, opened, and clicked. See your review count climb week over week with real-time analytics and growth charts." }), ...TAB_IMAGES.tracking },
   ];
-  const activeItem = tabs.find((t) => t.id === activeTab)!;
 
+  const activeItem = tabs.find((tab) => tab.id === activeTab)!;
   const openLightbox = useCallback(() => setLightboxOpen(true), []);
   const closeLightbox = useCallback(() => setLightboxOpen(false), []);
 
@@ -152,12 +111,12 @@ export default function ProductShowcase() {
       <section id="product" className="py-20 md:py-28 bg-[oklch(0.12_0.025_250)]">
         <div className="container">
           <FadeUp className="max-w-2xl mb-12">
-            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">{t("landing.productShowcase.sectionSubtitle", { defaultValue: "The product" })}</p>
+            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">The product</p>
             <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
-              {t("landing.productShowcase.sectionTitle", { defaultValue: "Built to make review requests effortless" })}
+              {t("productShowcase.title", { defaultValue: "Built to make review requests effortless" })}
             </h2>
             <p className="text-lg text-slate-200 font-medium">
-              {t("landing.productShowcase.sectionDescription", { defaultValue: "One simple tool. Three powerful views. Everything you need to grow your reputation." })}
+              {t("productShowcase.subtitle", { defaultValue: "One simple tool. Three powerful views. Everything you need to grow your reputation." })}
             </p>
           </FadeUp>
 
@@ -191,14 +150,12 @@ export default function ProductShowcase() {
               >
                 <h3 className="font-display font-bold text-2xl md:text-3xl text-white mb-4">{activeItem.title}</h3>
                 <p className="text-lg text-slate-200 font-medium leading-relaxed">{activeItem.description}</p>
-
-                {/* Expand hint */}
                 <button
                   onClick={openLightbox}
                   className="inline-flex items-center gap-2 mt-5 text-sm text-primary/70 hover:text-primary transition-colors font-medium"
                 >
                   <Maximize2 size={14} />
-                  {t("landing.productShowcase.viewFullSizeButton", { defaultValue: "View full size" })}
+                  {t("productShowcase.viewFullSize", { defaultValue: "View full size" })}
                 </button>
               </motion.div>
             </AnimatePresence>
@@ -213,19 +170,15 @@ export default function ProductShowcase() {
                 exit={{ opacity: 0, scale: 0.97 }}
                 transition={{ duration: 0.35, ease: "easeOut" }}
               >
-                {/* Clickable image wrapper with hover scale */}
                 <div
                   className="relative group cursor-zoom-in"
                   onClick={openLightbox}
                   role="button"
                   tabIndex={0}
-                  aria-label={t("landing.productShowcase.viewFullSizeAriaLabel", { defaultValue: "View {{title}} in full size", replace: { title: activeItem.title } })}
+                  aria-label={`View ${activeItem.title} in full size`}
                   onKeyDown={(e) => e.key === "Enter" && openLightbox()}
                 >
-                  {/* Glow */}
                   <div className="absolute -inset-3 bg-primary/5 rounded-3xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                  {/* Card with hover scale */}
                   <motion.div
                     className="relative rounded-2xl overflow-hidden border border-[#1e3050] shadow-2xl shadow-black/30 group-hover:border-primary/30 transition-colors duration-300"
                     whileHover={{ scale: 1.025 }}
@@ -244,14 +197,11 @@ export default function ProductShowcase() {
                         decoding="async"
                       />
                     </picture>
-
-                    {/* Expand icon overlay on hover */}
                     <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <div className="bg-black/50 backdrop-blur-sm rounded-full p-3 shadow-lg">
                         <Maximize2 size={20} className="text-white" />
                       </div>
                     </div>
-
                     <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/5" />
                   </motion.div>
                 </div>
@@ -261,7 +211,6 @@ export default function ProductShowcase() {
         </div>
       </section>
 
-      {/* Lightbox portal */}
       <AnimatePresence>
         {lightboxOpen && <Lightbox item={activeItem} onClose={closeLightbox} />}
       </AnimatePresence>

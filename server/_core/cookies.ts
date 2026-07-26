@@ -42,10 +42,7 @@ export function getSessionCookieOptions(
   return {
     httpOnly: true,
     path: "/",
-    // Authentication callbacks and magic-link verification are first-party
-    // navigations. Lax keeps those flows working while avoiding Chrome's
-    // stricter SameSite=None acceptance requirements on custom domains.
-    sameSite: "lax",
+    sameSite: "none",
     secure: isSecureRequest(req),
   };
 }

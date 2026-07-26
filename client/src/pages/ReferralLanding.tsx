@@ -6,6 +6,9 @@ import { useEffect, useState } from "react";
 import { useParams, useLocation } from "wouter";
 import { Star, ArrowRight, Users, Gift, CheckCircle2 } from "lucide-react";
 
+const WORDMARK_URL =
+  "https://assets.getphame.app/phame-wordmark-transparent-clean.webp";
+
 export default function ReferralLanding() {
   const params = useParams<{ code: string }>();
   const [, navigate] = useLocation();
@@ -39,7 +42,7 @@ export default function ReferralLanding() {
       {/* Logo */}
       <div className="mb-8">
         <div className="flex items-center gap-2">
-          <img src="https://assets.getphame.app/getphame-logo.svg" alt="Get Phame logo" className="w-8 h-8 rounded-xl" loading="eager" decoding="async" />
+          <img src="https://assets.getphame.app/getphame-logo-mark.webp" alt="GetPhame logo" className="w-8 h-8 rounded-xl" loading="eager" decoding="async" />
           <span className="font-display font-extrabold text-xl tracking-tight">
             <span className="text-white">GET</span><span style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
           </span>

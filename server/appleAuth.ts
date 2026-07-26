@@ -3,7 +3,7 @@
  *
  * Routes:
  *   GET  /api/auth/apple          → redirects to Apple consent screen
- *   POST /api/auth/apple/callback → Apple POSTs a code; server exchanges it for tokens
+ *   POST /api/auth/apple/callback → Apple POSTs back here with code + id_token
  *
  * Apple Developer Console setup required (see README / delivery message):
  *   - App ID with "Sign in with Apple" capability enabled
@@ -25,71 +25,6 @@ import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import * as db from "./db";
 import { sendUserWelcomeEmail } from "./smtp";
 import crypto from "crypto";
-
-const APPLE_AUTHORIZATION_ENDPOINT = "https://appleid.apple.com/auth/authorize";
-const APPLE_STATE_TTL_MS = 10 * 60 * 1000;
-
-type AppleOAuthState = {
-  redirectUri: string;
-  nonce: string;
-  expiresAt: number;
-};
-
-function createSignedAppleState(redirectUri: string): { state: string; nonce: string } {
-  const nonce = crypto.randomBytes(32).toString("base64url");
-  const payload: AppleOAuthState = {
-    redirectUri,
-    nonce,
-    expiresAt: Date.now() + APPLE_STATE_TTL_MS,
-  };
-  const encodedPayload = Buffer.from(JSON.stringify(payload)).toString("base64url");
-  const signature = crypto
-    .createHmac("sha256", ENV.cookieSecret)
-    .update(encodedPayload)
-    .digest("base64url");
-
-  return { state: `${encodedPayload}.${signature}`, nonce };
-}
-
-function verifySignedAppleState(state: string | undefined): AppleOAuthState | null {
-  if (!state || !ENV.cookieSecret) return null;
-  const [encodedPayload, suppliedSignature, ...extra] = state.split(".");
-  if (!encodedPayload || !suppliedSignature || extra.length > 0) return null;
-
-  const expectedSignature = crypto
-    .createHmac("sha256", ENV.cookieSecret)
-    .update(encodedPayload)
-    .digest();
-  let actualSignature: Buffer;
-  try {
-    actualSignature = Buffer.from(suppliedSignature, "base64url");
-  } catch {
-    return null;
-  }
-  if (
-    actualSignature.length !== expectedSignature.length ||
-    !crypto.timingSafeEqual(actualSignature, expectedSignature)
-  ) {
-    return null;
-  }
-
-  try {
-    const parsed = JSON.parse(
-      Buffer.from(encodedPayload, "base64url").toString("utf8"),
-    ) as Partial<AppleOAuthState>;
-    if (
-      typeof parsed.redirectUri !== "string" ||
-      typeof parsed.nonce !== "string" ||
-      typeof parsed.expiresAt !== "number" ||
-      parsed.expiresAt < Date.now()
-    ) {
-      return null;
-    }
-    return parsed as AppleOAuthState;
-  } catch {
-    return null;
-  }
-}
 
 function buildRedirectUri(req: Request): string {
   // Use APP_BASE_URL if set (production) so the redirect URI exactly matches
@@ -123,84 +58,49 @@ export function registerAppleAuthRoutes(app: Express) {
     }
 
     const redirectUri = buildRedirectUri(req);
-    const { state, nonce } = createSignedAppleState(redirectUri);
-    const authUrl = new URL(APPLE_AUTHORIZATION_ENDPOINT);
-    authUrl.searchParams.set("response_type", "code id_token");
-    authUrl.searchParams.set("response_mode", "form_post");
-    authUrl.searchParams.set("client_id", ENV.appleClientId);
-    authUrl.searchParams.set("redirect_uri", redirectUri);
-    authUrl.searchParams.set("scope", "name email");
-    authUrl.searchParams.set("state", state);
-    authUrl.searchParams.set("nonce", nonce);
+    // Store redirectUri in state so callback can reconstruct it
+    const state = Buffer.from(JSON.stringify({ redirectUri, nonce: crypto.randomBytes(8).toString("hex") })).toString("base64url");
 
-    res.redirect(302, authUrl.toString());
+    const authUrl = appleSignin.getAuthorizationUrl({
+      clientID: ENV.appleClientId,
+      redirectUri,
+      state,
+      scope: "name email",
+      responseMode: "form_post",
+    });
+
+    res.redirect(302, authUrl);
   });
 
-  // Step 2: Apple POSTs back here with a short-lived authorization code.
-  // The identity token is returned by Apple's server-to-server token exchange;
-  // it is not guaranteed to be present in the browser callback payload.
+  // Step 2: Apple POSTs back here with code + id_token (+ optional user JSON on first login)
   app.post("/api/auth/apple/callback", async (req: Request, res: Response) => {
-    const {
-      code,
-      id_token: callbackIdToken,
-      state,
-      user: userJson,
-      error,
-      error_description: errorDescription,
-    } = req.body as {
+    const { code, id_token, state, user: userJson } = req.body as {
       code?: string;
       id_token?: string;
       state?: string;
       user?: string;
-      error?: string;
-      error_description?: string;
     };
 
-    if (error) {
-      console.warn(`[AppleAuth] Authorization declined or failed: ${error}`, errorDescription ?? "");
-      return res.redirect(302, "/?auth_error=apple_authorization_failed");
-    }
-
-    if (!code) {
-      console.warn("[AppleAuth] Missing authorization code");
-      return res.redirect(302, "/?auth_error=apple_missing_code");
+    if (!code || !id_token) {
+      console.warn("[AppleAuth] Missing code or id_token");
+      return res.redirect(302, "/?auth_error=apple_missing_token");
     }
 
     try {
-      const verifiedState = verifySignedAppleState(state);
-      if (!verifiedState || verifiedState.redirectUri !== buildRedirectUri(req)) {
-        console.warn("[AppleAuth] State validation failed");
-        return res.redirect(302, "/?auth_error=apple_state_mismatch");
-      }
-
-      let identityToken = callbackIdToken;
-      if (!identityToken) {
-        const tokenResponse = await appleSignin.getAuthorizationToken(code, {
-          clientID: ENV.appleClientId,
-          redirectUri: verifiedState.redirectUri,
-          clientSecret: buildClientSecret(),
-        }) as {
-          id_token?: string;
-          error?: string;
-        };
-        identityToken = tokenResponse.id_token;
-
-        if (!identityToken) {
-          const providerError = typeof tokenResponse.error === "string"
-            ? tokenResponse.error.slice(0, 80)
-            : "missing_id_token";
-          console.warn("[AppleAuth] Token exchange failed", {
-            providerError,
-            responseKeys: Object.keys(tokenResponse).sort(),
-          });
-          return res.redirect(302, "/?auth_error=apple_token_exchange_failed");
+      // Decode state to get the redirectUri used in step 1
+      let redirectUri = buildRedirectUri(req);
+      if (state) {
+        try {
+          const decoded = JSON.parse(Buffer.from(state, "base64url").toString("utf8"));
+          if (decoded.redirectUri) redirectUri = decoded.redirectUri;
+        } catch {
+          // ignore malformed state
         }
       }
 
       // Verify the id_token with Apple's public keys
-      const appleUser = await appleSignin.verifyIdToken(identityToken, {
+      const appleUser = await appleSignin.verifyIdToken(id_token, {
         audience: ENV.appleClientId,
-        nonce: verifiedState.nonce,
         ignoreExpiration: false,
       });
 
@@ -221,17 +121,13 @@ export function registerAppleAuthRoutes(app: Express) {
           const firstName = parsedUser?.name?.firstName ?? "";
           const lastName = parsedUser?.name?.lastName ?? "";
           name = [firstName, lastName].filter(Boolean).join(" ") || null;
-          email = email ?? parsedUser?.email ?? null;
         } catch {
           // ignore
         }
       }
 
-      const existingIdentityUser = await db.getUserByOpenId(openId);
-      const existingEmailUser = !existingIdentityUser && email
-        ? await db.getUserByEmail(email)
-        : undefined;
-      const existingUser = existingIdentityUser ?? existingEmailUser;
+      // Check if new user before upsert
+      const existingUser = await db.getUserByOpenId(openId);
       const isNewUser = !existingUser;
 
       // If returning user, preserve their stored name
@@ -239,22 +135,13 @@ export function registerAppleAuthRoutes(app: Express) {
         name = existingUser?.name ?? null;
       }
 
-      if (existingEmailUser) {
-        await db.linkUserIdentity({
-          userId: existingEmailUser.id,
-          openId,
-          loginMethod: "apple",
-          lastSignedIn: new Date(),
-        });
-      } else {
-        await db.upsertUser({
-          openId,
-          name,
-          email,
-          loginMethod: "apple",
-          lastSignedIn: new Date(),
-        });
-      }
+      await db.upsertUser({
+        openId,
+        name,
+        email,
+        loginMethod: "apple",
+        lastSignedIn: new Date(),
+      });
 
       // Send welcome email to new users (fire-and-forget)
       if (isNewUser && email) {
@@ -270,25 +157,14 @@ export function registerAppleAuthRoutes(app: Express) {
         }
       }
 
-      // Create the session with the canonical account identity. For an Apple
-      // identity linked by verified email, this avoids depending on immediate
-      // alias visibility on the first request after the callback.
-      const sessionOpenId = existingUser?.openId ?? openId;
-      const sessionToken = await sdk.createSessionToken(sessionOpenId, {
+      // Create session JWT (same mechanism as Google OAuth)
+      const sessionToken = await sdk.createSessionToken(openId, {
         name: name ?? "",
         expiresInMs: ONE_YEAR_MS,
       });
 
       const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
-      console.info("[AppleAuth] Callback completed", {
-        accountResolution: existingEmailUser
-          ? "linked_existing_email"
-          : existingIdentityUser
-            ? "existing_apple_identity"
-            : "created_apple_identity",
-        canonicalSession: sessionOpenId !== openId,
-      });
+       res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
       // Redirect to a same-origin landing page instead of / directly.
       // Apple's form_post is cross-origin (appleid.apple.com), so Safari ITP may
       // not send the session cookie on the immediate redirect. The landing page

@@ -13,30 +13,30 @@ import { setLanguage, getSavedLang, type SupportedLang } from "@/lib/i18n";
 import i18n from "@/lib/i18n";
 
 const LANGS: { code: SupportedLang; label: string; native: string; flag: string }[] = [
-  { code: "en",    label: "EN", native: "English",   flag: "🇺🇸" },
-  { code: "zh-CN", label: "CN", native: "简体中文",   flag: "🇨🇳" },
-  { code: "es",    label: "ES", native: "Español",   flag: "🇪🇸" },
-  { code: "fr",    label: "FR", native: "Français",  flag: "🇫🇷" },
-  { code: "it",    label: "IT", native: "Italiano",  flag: "🇮🇹" },
+  { code: "en",    label: "EN", native: "English",   flag: "🇬🇧" },
   { code: "th",    label: "TH", native: "ภาษาไทย",   flag: "🇹🇭" },
-  { code: "zh-TW", label: "TW", native: "繁體中文",   flag: "🇹🇼" },
+  { code: "zh-CN", label: "CN", native: "中文",       flag: "🇨🇳" },
+  { code: "fr",    label: "FR", native: "Français",  flag: "🇫🇷" },
+  { code: "es",    label: "ES", native: "Español",   flag: "🇪🇸" },
+  { code: "it",    label: "IT", native: "Italiano",  flag: "🇮🇹" },
 ];
 
 interface LanguageFlyoutProps {
   className?: string;
 }
 
+// Height of the panel (6 langs × ~48px per row ≈ 290px) + a small buffer
+const PANEL_HEIGHT = 300;
+// Height of the mobile BottomNav bar
+const BOTTOM_NAV_HEIGHT = 130; // nav bar + gold ribbon footer
+
 export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) {
   const [open, setOpen] = useState(false);
   const [activeLang, setActiveLang] = useState<SupportedLang>(() => {
-    const active = i18n.resolvedLanguage ?? i18n.language;
-    if (LANGS.some((language) => language.code === active)) {
-      return active as SupportedLang;
-    }
     const saved = getSavedLang();
     return saved ?? "en";
   });
-  const [panelPos, setPanelPos] = useState<{ top: number; right: number } | null>(null);
+  const [panelPos, setPanelPos] = useState<{ top?: number; bottom?: number; right: number } | null>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
@@ -53,6 +53,15 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
   const computePos = useCallback(() => {
     if (!btnRef.current) return null;
     const rect = btnRef.current.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const isNearBottom = spaceBelow < PANEL_HEIGHT + 10;
+    if (isNearBottom) {
+      // Open upward — anchor bottom of panel to BOTTOM_NAV_HEIGHT above viewport bottom
+      return {
+        bottom: BOTTOM_NAV_HEIGHT,
+        right: window.innerWidth - rect.right,
+      };
+    }
     return {
       top: rect.bottom + 6,
       right: window.innerWidth - rect.right,
@@ -106,7 +115,8 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
       onClick={(e) => e.stopPropagation()}
       style={{
         position: "fixed",
-        top: panelPos.top,
+        top: panelPos.top ?? undefined,
+        bottom: panelPos.bottom ?? undefined,
         right: panelPos.right,
         zIndex: 99999,
         minWidth: "160px",
@@ -156,6 +166,12 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
           </button>
         );
       })}
+      <style>{`
+        @keyframes lfSlideDown {
+          from { opacity: 0; transform: translateY(-6px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>,
     document.body
   ) : null;

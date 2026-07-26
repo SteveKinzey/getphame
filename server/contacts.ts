@@ -170,20 +170,7 @@ export async function setContactTags(userId: number, contactId: number, tags: st
  */
 export async function upsertApiContact(
   userId: number,
-  data: {
-    name: string;
-    email: string;
-    phone?: string;
-    notes?: string;
-    tags?: string[];
-    source?: "manual" | "woocommerce" | "stripe" | "koalendar" | "api";
-    externalId?: string;
-    sourceApp?: string;
-    importedViaApiKeyId?: number;
-    consentBasis?: string;
-    consentCapturedAt?: number;
-    consentSource?: string;
-  }
+  data: { name: string; email: string; phone?: string; notes?: string; tags?: string[] }
 ): Promise<{ id: number; created: boolean }> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -203,18 +190,12 @@ export async function upsertApiContact(
         phone: data.phone ?? existing.phone,
         notes: data.notes ?? existing.notes,
         tags: data.tags ? JSON.stringify(data.tags) : existing.tags,
-        externalId: data.externalId ?? existing.externalId,
-        sourceApp: data.sourceApp ?? existing.sourceApp,
-        importedViaApiKeyId: data.importedViaApiKeyId ?? existing.importedViaApiKeyId,
-        consentBasis: data.consentBasis ?? existing.consentBasis,
-        consentCapturedAt: data.consentCapturedAt ?? existing.consentCapturedAt,
-        consentSource: data.consentSource ?? existing.consentSource,
       })
       .where(eq(savedContacts.id, existing.id));
     return { id: existing.id, created: false };
   }
 
-  const [result] = await db.insert(savedContacts).values({
+  const result = await db.insert(savedContacts).values({
     userId,
     name: data.name,
     email: emailLower,
@@ -222,13 +203,8 @@ export async function upsertApiContact(
     notes: data.notes ?? null,
     tags: data.tags ? JSON.stringify(data.tags) : null,
     totalSent: 0,
-    source: data.source ?? "manual",
-    externalId: data.externalId ?? null,
-    sourceApp: data.sourceApp ?? null,
-    importedViaApiKeyId: data.importedViaApiKeyId ?? null,
-    consentBasis: data.consentBasis ?? null,
-    consentCapturedAt: data.consentCapturedAt ?? null,
-    consentSource: data.consentSource ?? null,
-  }).$returningId();
-  return { id: result.id, created: true };
+    source: "manual",
+    externalId: null,
+  });
+  return { id: (result as any).insertId, created: true };
 }

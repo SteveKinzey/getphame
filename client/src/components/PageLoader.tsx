@@ -68,6 +68,12 @@ export default function PageLoader() {
         ))}
       </div>
 
+      <style>{`
+        @keyframes phame-pulse {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.12); opacity: 0.85; }
+        }
+      `}</style>
     </div>
   );
 }

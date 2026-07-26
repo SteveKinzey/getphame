@@ -1,15 +1,14 @@
 import { Shield, Eye, Mail, Link } from "lucide-react";
 import FadeUp from "./FadeUp";
 import { useTranslation } from "react-i18next";
-
 export default function TrustBar() {
   const { t } = useTranslation();
 
   const trustItems = [
-    { icon: Shield, label: t("landing.trustBar.passwordEncrypted", { defaultValue: "Password encrypted at rest" }) },
-    { icon: Eye, label: t("landing.trustBar.customerListPrivate", { defaultValue: "Your customer list stays private" }) },
-    { icon: Mail, label: t("landing.trustBar.worksWithEmailProviders", { defaultValue: "Works with Gmail, Outlook, Yahoo & more" }) },
-    { icon: Link, label: t("landing.trustBar.unsubscribeLink", { defaultValue: "Unsubscribe link in every email" }) },
+    { icon: Shield, label: t("trust.encryptedPassword", { defaultValue: "Password encrypted at rest" }) },
+    { icon: Eye, label: t("trust.dataPrivacy", { defaultValue: "Your customer list stays private" }) },
+    { icon: Mail, label: t("trust.emailProviders", { defaultValue: "Works with Gmail, Outlook, Yahoo & more" }) },
+    { icon: Link, label: t("trust.unsubscribe", { defaultValue: "Unsubscribe link in every email" }) },
   ];
 
   return (
