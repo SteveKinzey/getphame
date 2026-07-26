@@ -2736,5 +2736,136 @@
       "sectionAria": "将 {{section}} 下载为 PDF",
       "sectionButton": "下载章节 PDF"
     }
+  },
+  "adminGithubCleanup": {
+    "dashboardCardTitle": "GitHub 清理技能",
+    "dashboardCardBody": "审查分支谱系、独有工作、安全门及演示脚本",
+    "loading": "正在加载清理展示",
+    "errorTitle": "展示不可用",
+    "errorBody": "无法加载仅限管理员的仓库证据。",
+    "backToAdmin": "返回管理界面",
+    "adminOnly": "仅限管理员",
+    "title": "GitHub 仓库清理技能",
+    "subtitle": "审核分支谱系、保留独有工作、验证发布树，仅删除已证明可安全删除的分支。",
+    "scriptCopied": "演示脚本已复制。",
+    "scriptCopyError": "脚本复制失败。",
+    "stats": {
+      "main": "Main",
+      "tree": "发布树",
+      "exact": "完全匹配",
+      "branches": "分支",
+      "openPrs": "Open PRs"
+    },
+    "evidence": {
+      "eyebrow": "已验证的仓库证据",
+      "title": "当前发布与保存状态",
+      "body": "受保护的 main 树与已验证的托管发布完全一致。push-safe 保持隔离，因为它包含需要有选择性提取的独有但过时的工作。"
+    },
+    "visuals": {
+      "ancestryAlt": "分支谱系与保存映射，显示受保护的 main、发布树完全一致、push-safe 的分歧，以及已删除分支尖端仍被保存的位置。",
+      "ancestryCaption": "实线表示已验证的谱系关系；虚线表示精确的 Git 树相等，而非共享的提交历史。",
+      "uniqueAlt": "按提取优先级排列的独有 push-safe 工作，包含就绪性和针对 Mailjet、Help Assistant、Sources 与 WooCommerce 及付费权限的下一步安全操作。",
+      "uniqueCaption": "优先级表示操作顺序；就绪性描述审计日期基于证据的处理方式。"
+    },
+    "metrics": {
+      "eyebrow": "指标定义",
+      "title": "提取优先级与就绪性回答不同的问题",
+      "extraction": {
+        "title": "提取优先级",
+        "body": "一个序数的操作顺序。优先级 1 表示首先评估或提取。它不是紧急程度、收入影响、工作量估点、成功概率或完成百分比。"
+      },
+      "dimensions": {
+        "isolation": {
+          "title": "隔离性",
+          "body": "该工作能否迁移而不携带无关的分支历史？"
+        },
+        "compatibility": {
+          "title": "兼容性",
+          "body": "与当前 main 分支冲突或重复的程度如何？"
+        },
+        "evidence": {
+          "title": "证据清晰度",
+          "body": "代码、测试、阻塞项和验收门是否有文档？"
+        },
+        "dependencies": {
+          "title": "依赖闭环",
+          "body": "必需的组件、迁移、提供者和策略是否已解决？"
+        },
+        "valueRisk": {
+          "title": "价值-风险序列",
+          "body": "优先审查此项是否能在受控回归风险下产出有用进展？"
+        }
+      },
+      "readiness": {
+        "title": "就绪性",
+        "body": "对审计日期可用证据的类别性描述。它指出下一步安全处理方式；不是数值化的成熟度评分。",
+        "labels": {
+          "portable": {
+            "title": "变基并重新验证后可移植",
+            "body": "存在边界明确的实现且无内在阻塞。可从当前 main 重新创建或选择性迁移，并重新运行当前门控。"
+          },
+          "specification": {
+            "title": "仅有规范",
+            "body": "存在需求但没有产品代码。实施前将证据转换为带范围的任务或 issue。"
+          },
+          "stale": {
+            "title": "架构上过时",
+            "body": "存在大量代码但与较新的基础设施重叠。应保留行为与契约，而非旧文件。"
+          },
+          "blocked": {
+            "title": "被阻塞",
+            "body": "已知的缺失依赖、构建错误、迁移或决策阻止验证。提取前先解决阻塞。"
+          },
+          "superseded": {
+            "title": "被替代或可退役",
+            "body": "当前 main 已提供相应行为或产品决策已变更。记录决策并退役旧工作。"
+          }
+        }
+      }
+    },
+    "workstreams": {
+      "title": "独有工作决策队列",
+      "priority": "提取优先级 {{priority}}",
+      "mailjet": {
+        "title": "Mailjet 批量发送预设",
+        "body": "一个边界明确的提供者预设，包含七个地区设置更新、文档和历史测试。",
+        "action": "操作：在从当前 main 新建的分支上选择性移植。"
+      },
+      "helpAssistant": {
+        "title": "Global public Help Assistant",
+        "body": "已存在匿名安全、限速、本地化、全路由可访问的需求；尚未提交产品实现。",
+        "action": "操作：将需求转为专门的实现 issue。"
+      },
+      "sourcesWoo": {
+        "title": "Consent-first Sources and WooCommerce",
+        "body": "大量关于导入、安全、同意、加密、幂等性、来源、迁移、UI 与测试的工作与较新基础设施重叠。",
+        "action": "操作：重构行为与契约，而非保留旧文件。"
+      },
+      "wooEntitlement": {
+        "title": "WooCommerce paid entitlement",
+        "body": "存在付费流程和本地化升级 UX，但旧分支缺少 PaywallModal 的导入且无法编译。",
+        "action": "操作：根据当前权限模式重建。"
+      }
+    },
+    "safety": {
+      "title": "删除安全序列",
+      "body": "分类过程绝不直接删除分支。变更前会立即对实时仓库重新验证，任何事实变更都会中止操作。",
+      "gates": {
+        "dryRun": "模拟运行",
+        "refetch": "重新获取",
+        "exactSha": "精确 SHA",
+        "openPr": "Open PR 检查",
+        "preservation": "保存证明",
+        "execute": "执行",
+        "reaudit": "重新审计"
+      }
+    },
+    "script": {
+      "title": "演示脚本",
+      "subtitle": "八场景英文母本 · 约 {{runtime}}",
+      "copy": "复制完整脚本",
+      "scene": "场景 {{number}} · {{time}}"
+    },
+    "footer": "快照已验证 {{date}}。仓库证据与演示内容仅可通过此管理员授权途径获取。"
   }
 }

@@ -2758,5 +2758,136 @@
       "sectionAria": "下載 {{section}} 為 PDF",
       "sectionButton": "下載章節 PDF"
     }
+  },
+  "adminGithubCleanup": {
+    "dashboardCardTitle": "GitHub 清理功能",
+    "dashboardCardBody": "檢視分支祖譜、獨有工作、安全門檻與展示腳本",
+    "loading": "正在載入清理展示",
+    "errorTitle": "展示不可用",
+    "errorBody": "僅限管理員的倉庫證據無法載入。",
+    "backToAdmin": "返回管理頁面",
+    "adminOnly": "僅限管理員",
+    "title": "GitHub 倉庫清理功能",
+    "subtitle": "審核分支祖譜、保留獨有工作、驗證發行樹，並僅移除已證明可安全刪除的分支。",
+    "scriptCopied": "展示腳本已複製。",
+    "scriptCopyError": "無法複製腳本。",
+    "stats": {
+      "main": "main",
+      "tree": "發行樹",
+      "exact": "完全相符",
+      "branches": "分支",
+      "openPrs": "開啟的 PR"
+    },
+    "evidence": {
+      "eyebrow": "已驗證的倉庫證據",
+      "title": "當前發行與保存狀態",
+      "body": "受保護的 main 樹與已驗證的管理發行完全相符。Push-safe 仍保持隔離，因為它包含需選擇性抽取的獨有但過時工作。"
+    },
+    "visuals": {
+      "ancestryAlt": "分支祖譜與保存映射，顯示受保護的 main、發行樹的完全相符、push-safe 的偏移，以及被刪除分支末端仍被保存的位置。",
+      "ancestryCaption": "實線關係表示已驗證的祖譜；虛線關係表示 Git-tree 的精確一致性，而非共享的提交歷史。",
+      "uniqueAlt": "依抽取優先順序排列的獨有 push-safe 工作，含就緒狀態與下一步安全動作（針對 Mailjet、Help Assistant、Sources 與 WooCommerce，以及付費授權）。",
+      "uniqueCaption": "優先順序代表動作執行順序；就緒狀態說明在稽核日由證據支持的處置。"
+    },
+    "metrics": {
+      "eyebrow": "指標定義",
+      "title": "抽取優先與就緒狀態回應不同問題",
+      "extraction": {
+        "title": "抽取優先",
+        "body": "一種序數的動作順序。優先等級 1 表示先評估或先抽取。這不是緊急性、營收影響、工作點數、成功機率或完成百分比。"
+      },
+      "dimensions": {
+        "isolation": {
+          "title": "隔離性",
+          "body": "該工作是否能在不帶入無關的分支歷史的情況下移動？"
+        },
+        "compatibility": {
+          "title": "相容性",
+          "body": "與當前 main 分支有多少衝突或重複？"
+        },
+        "evidence": {
+          "title": "證據清晰度",
+          "body": "程式碼、測試、阻礙項與驗收門檻是否有文件記錄？"
+        },
+        "dependencies": {
+          "title": "相依性關閉",
+          "body": "必要的元件、遷移、提供者與政策是否已解決？"
+        },
+        "valueRisk": {
+          "title": "價值-風險序列",
+          "body": "先審查此項是否能在有限回歸風險下產生實質進展？"
+        }
+      },
+      "readiness": {
+        "title": "就緒狀態",
+        "body": "針對稽核日可用證據的分類描述。指出下一步的安全處置；不是數值化的成熟度評分。",
+        "labels": {
+          "portable": {
+            "title": "在 rebase 並重新驗證後可移植",
+            "body": "存在有限範圍的實作且無內在阻礙。從當前 main 重新建立或選擇性移植，並重新執行現行門檻。"
+          },
+          "specification": {
+            "title": "僅有規格",
+            "body": "有需求但尚無產品程式碼。將證據轉為具範圍的 issue 再執行實作。"
+          },
+          "stale": {
+            "title": "架構上已過時",
+            "body": "存在大量程式碼但與更新的基礎設施重疊。保留行為與契約，而非舊檔案。"
+          },
+          "blocked": {
+            "title": "被阻擋",
+            "body": "已知的缺失相依、建置錯誤、遷移或決策阻礙驗證。於抽取前解決該阻礙。"
+          },
+          "superseded": {
+            "title": "已被取代或可退役候選",
+            "body": "目前 main 已提供該行為或產品決策已更動。記錄該決策並退役舊工作。"
+          }
+        }
+      }
+    },
+    "workstreams": {
+      "title": "獨有工作決策佇列",
+      "priority": "抽取優先 {{priority}}",
+      "mailjet": {
+        "title": "Mailjet 批次寄送預設",
+        "body": "一個有限範圍的 provider 預設，含七個地區更新、文件與歷史測試。",
+        "action": "操作：從當前 main 建立新分支並選擇性移植。"
+      },
+      "helpAssistant": {
+        "title": "全球公開的 Help Assistant",
+        "body": "符合匿名安全、速率限制、本地化及全路由可存取的需求存在；尚無產品實作提交。",
+        "action": "操作：將需求轉為專屬的實作 issue。"
+      },
+      "sourcesWoo": {
+        "title": "以同意為先的 Sources 與 WooCommerce",
+        "body": "大量的匯入、安全、同意、加密、冪等性、來源可追溯、遷移、UI 與測試工作與更新的基礎設施重疊。",
+        "action": "操作：重作行為與契約，而非復原舊檔案。"
+      },
+      "wooEntitlement": {
+        "title": "WooCommerce 付費授權",
+        "body": "存在付費流程與在地化升級 UX，但舊分支缺少 PaywallModal 的 import，無法編譯。",
+        "action": "操作：依當前授權模式重建。"
+      }
+    },
+    "safety": {
+      "title": "刪除安全序列",
+      "body": "分類程序不會直接刪除分支。於變更前會立即對現行倉庫重新驗證，任何變更事實都會中止操作。",
+      "gates": {
+        "dryRun": "模擬執行",
+        "refetch": "重新抓取",
+        "exactSha": "精確 SHA",
+        "openPr": "開啟 PR 檢查",
+        "preservation": "保存證明",
+        "execute": "執行",
+        "reaudit": "重新稽核"
+      }
+    },
+    "script": {
+      "title": "展示腳本",
+      "subtitle": "八場景英文母本 · 約 {{runtime}}",
+      "copy": "複製完整腳本",
+      "scene": "場景 {{number}} · {{time}}"
+    },
+    "footer": "快照已驗證 {{date}}。倉庫證據與展示內容僅可透過此管理員授權路徑取得。"
   }
 }

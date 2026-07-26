@@ -3265,5 +3265,136 @@
       "sectionAria": "Télécharger {{section}} au format PDF",
       "sectionButton": "Télécharger le PDF de la section"
     }
+  },
+  "adminGithubCleanup": {
+    "dashboardCardTitle": "Outil de nettoyage GitHub",
+    "dashboardCardBody": "Examiner l'ascendance, le travail unique, les contrôles de sécurité et le script de présentation",
+    "loading": "Chargement de la vitrine de nettoyage",
+    "errorTitle": "Vitrine indisponible",
+    "errorBody": "Les preuves du dépôt réservées aux administrateurs n'ont pas pu être chargées.",
+    "backToAdmin": "Retour à l'administration",
+    "adminOnly": "Réservé aux administrateurs",
+    "title": "Nettoyage de dépôt GitHub",
+    "subtitle": "Auditer l'ascendance des branches, préserver le travail unique, vérifier l'arbre de release et supprimer uniquement les branches dont la suppression est prouvée sûre.",
+    "scriptCopied": "Script de présentation copié.",
+    "scriptCopyError": "Le script n'a pas pu être copié.",
+    "stats": {
+      "main": "Main",
+      "tree": "Arbre de release",
+      "exact": "Correspondance exacte",
+      "branches": "Branches",
+      "openPrs": "PR ouvertes"
+    },
+    "evidence": {
+      "eyebrow": "Preuves du dépôt vérifiées",
+      "title": "État actuel de la release et de la préservation",
+      "body": "L'arbre protégé main correspond exactement à la release gérée validée. push-safe reste isolé car il contient du travail unique mais obsolète qui doit être extrait sélectivement."
+    },
+    "visuals": {
+      "ancestryAlt": "Carte d'ascendance et de préservation des branches montrant main protégé, parité exacte de l'arbre de release, divergence de push-safe, et où les extrémités des branches supprimées restent préservées.",
+      "ancestryCaption": "Les relations pleines indiquent une ascendance vérifiée ; les relations en pointillés indiquent une parité exacte de l'arbre Git plutôt qu'un historique de commits partagé.",
+      "uniqueAlt": "Travail unique push-safe ordonné par priorité d'extraction, avec l'état de préparation et la prochaine action sûre pour Mailjet, Help Assistant, Sources et WooCommerce, ainsi que l'entitlement payant.",
+      "uniqueCaption": "La priorité est l'ordre d'action ; la préparation décrit le traitement appuyé par les preuves à la date d'audit."
+    },
+    "metrics": {
+      "eyebrow": "Définitions des métriques",
+      "title": "La priorité d'extraction et la préparation répondent à des questions différentes",
+      "extraction": {
+        "title": "Priorité d'extraction",
+        "body": "Un ordre d'action ordinal. Priorité 1 signifie évaluer ou extraire en premier. Ce n'est pas l'urgence, l'impact sur le revenu, les story points, la probabilité de succès ou le pourcentage d'avancement."
+      },
+      "dimensions": {
+        "isolation": {
+          "title": "Isolation",
+          "body": "Le travail peut-il être déplacé sans embarquer l'historique de branches non lié ?"
+        },
+        "compatibility": {
+          "title": "Compatibilité",
+          "body": "Dans quelle mesure cela entre en conflit ou duplique la branche main actuelle ?"
+        },
+        "evidence": {
+          "title": "Clarté des preuves",
+          "body": "Le code, les tests, les blocages et les critères d'acceptation sont-ils documentés ?"
+        },
+        "dependencies": {
+          "title": "Résolution des dépendances",
+          "body": "Les composants requis, migrations, fournisseurs et politiques sont-ils résolus ?"
+        },
+        "valueRisk": {
+          "title": "Séquence valeur-risque",
+          "body": "L'examen prioritaire de cet élément peut-il produire des progrès utiles avec un risque de régression limité ?"
+        }
+      },
+      "readiness": {
+        "title": "État de préparation",
+        "body": "Description catégorielle des preuves disponibles à la date d'audit. Elle identifie le prochain traitement sûr ; ce n'est pas un score numérique de maturité.",
+        "labels": {
+          "portable": {
+            "title": "Portable après rebasage et revalidation",
+            "body": "Une implémentation limitée existe sans bloqueur intrinsèque. Recréez-la ou portez-la sélectivement depuis main et relancez les contrôles actuels."
+          },
+          "specification": {
+            "title": "Spécification uniquement",
+            "body": "Les exigences existent mais pas le code produit. Transformez les preuves en une issue cadrée avant l'implémentation."
+          },
+          "stale": {
+            "title": "Obsolète sur le plan architectural",
+            "body": "Du code substantiel existe mais chevauche une infrastructure plus récente. Préservez les comportements et contrats, pas les anciens fichiers."
+          },
+          "blocked": {
+            "title": "Bloqué",
+            "body": "Une dépendance manquante connue, une erreur de build, une migration ou une décision empêche la validation. Résolvez le bloqueur avant l'extraction."
+          },
+          "superseded": {
+            "title": "Supplanté ou candidat à la mise hors service",
+            "body": "Main actuel fournit déjà le comportement ou la décision produit a changé. Consignez la décision et retirez l'ancien travail."
+          }
+        }
+      }
+    },
+    "workstreams": {
+      "title": "File de décisions pour travail unique",
+      "priority": "Priorité d'extraction {{priority}}",
+      "mailjet": {
+        "title": "Préréglage Mailjet Bulk Sender",
+        "body": "Un préréglage de fournisseur limité avec sept mises à jour de locales, documentation et tests historiques.",
+        "action": "Action : Porter sélectivement sur une branche fraîche depuis main."
+      },
+      "helpAssistant": {
+        "title": "Help Assistant public global",
+        "body": "Des exigences existent : anonymat, limitation de débit, localisation, accessibilité sur tous les itinéraires ; aucune implémentation produit n'a été commise.",
+        "action": "Action : Convertir les exigences en une issue d'implémentation dédiée."
+      },
+      "sourcesWoo": {
+        "title": "Sources et WooCommerce axés sur le consentement",
+        "body": "Des travaux importants d'importation, sécurité, consentement, chiffrement, idempotence, traçabilité, migration, UI et tests chevauchent une infrastructure plus récente.",
+        "action": "Action : Reprendre le comportement et les contrats, pas les anciens fichiers."
+      },
+      "wooEntitlement": {
+        "title": "Entitlement payant WooCommerce",
+        "body": "Des procédures payantes et une UX de mise à jour localisée existent, mais l'ancienne branche a un import PaywallModal manquant et ne compile pas.",
+        "action": "Action : Reconstruire selon les modèles d'entitlement actuels."
+      }
+    },
+    "safety": {
+      "title": "Séquence de sécurité de suppression",
+      "body": "La classification ne supprime jamais une branche. Le dépôt en direct est revérifié immédiatement avant la mutation, et tout changement de fait interrompt l'opération.",
+      "gates": {
+        "dryRun": "Exécution à blanc",
+        "refetch": "Récupérer à nouveau",
+        "exactSha": "SHA exact",
+        "openPr": "Vérification des PR ouvertes",
+        "preservation": "Preuve de préservation",
+        "execute": "Exécuter",
+        "reaudit": "Réeauditer"
+      }
+    },
+    "script": {
+      "title": "Script de présentation",
+      "subtitle": "Maître anglais en huit scènes · environ {{runtime}}",
+      "copy": "Copier le script complet",
+      "scene": "Scène {{number}} · {{time}}"
+    },
+    "footer": "Instantané vérifié {{date}}. Les preuves du dépôt et le contenu de la présentation sont disponibles uniquement via cette voie autorisée aux administrateurs."
   }
 }
