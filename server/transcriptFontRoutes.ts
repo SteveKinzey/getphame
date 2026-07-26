@@ -5,12 +5,12 @@ const MAX_TRANSCRIPT_FONT_BYTES = 512 * 1024;
 const TRANSCRIPT_FONT_SOURCES = {
   cjk: {
     sourceUrl:
-      "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/DrFhrAwRvgpjRphV.ttf",
+      "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/FCIDueKyaTSGIKCT.ttf",
     fileName: "noto-sans-tc-transcript.ttf",
   },
   thai: {
     sourceUrl:
-      "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/gpkSdDcidHMSKHjd.ttf",
+      "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/sQOWzOguQuhquYWJ.ttf",
     fileName: "noto-sans-thai-transcript-v2.ttf",
   },
 } as const;

@@ -238,3 +238,43 @@
 - [x] Verify remote `main` is already up to date: its tree exactly matches managed checkpoint `536d3dc2`, so no redundant release branch or pull request is required.
 - [x] Delete four confirmed redundant remote branches, prune tracking references, and preserve `consolidation/push-safe` because it contains unique unreleased work.
 - [x] Verify the final remote `main` SHA and tree parity, remaining branch inventory, zero open pull requests, required protected-main check, deleted-commit preservation, and automatic merged-branch cleanup.
+- [x] Re-verify the live `SteveKinzey/getphame` repository state, protected `main`, two-branch inventory, zero open pull requests, automatic merged-branch cleanup, exact managed-release tree parity, and 96/27 `main` versus `consolidation/push-safe` divergence.
+- [x] Identify every commit and changed file unique to `consolidation/push-safe`, distinguish the four latest WIP commits from preserved history, compare final trees, and classify Mailjet, Sources/WooCommerce, entitlement, and Help Assistant work by readiness.
+- [x] Write a unique-unreleased-work report for `consolidation/push-safe` with evidence, risks, dependencies, and preserve, port, rework, or retire recommendations.
+- [x] Write a verified current-status report for `main` covering SHA, exact release-tree parity, protection, required checks, check-visibility limits, pull requests, remaining branches, governance gaps, and repository hygiene.
+- [x] Initialize the reusable `github-repository-cleanup` skill with the official scaffold and remove unused examples.
+- [x] Implement the conservative cleanup workflow, deterministic read-only audit, unique-branch evidence collector, dry-run-first exact-SHA deletion gates, references, and report templates without embedding credentials or repository-specific secrets.
+- [x] Test the utilities against live Get Phame repository data, fix ANSI-colored GitHub CLI JSON handling, confirm exact release-tree parity and push-safe evidence counts, verify unsafe deletion is blocked, and pass the official skill validator.
+- [x] Deliver the push-safe report, main-status report, validated installable skill, and supporting test report with concise usage guidance.
+- [x] Review the existing `github-repository-cleanup` skill, current audit evidence, push-safe report, and main-status report to define reusable ancestry, preservation, release-parity, readiness, and disposition visual standards.
+- [x] Add deterministic branch-ancestry and unique-work visualization generation to the cleanup skill without embedding repository-specific data.
+- [x] Add concise skill instructions, a reusable specification template, and a visualization reference covering preservation edges, release-tree parity, workstream readiness, and accessible labeling.
+- [x] Generate 1600×900 Get Phame branch ancestry/preservation and push-safe unique-work disposition visuals from exact Git and report evidence.
+- [x] Inspect both visuals for factual accuracy, label fit, priority order, and accessibility; test the generic generator; compile the utility; and pass the official skill validator.
+- [x] Deliver the updated installable cleanup skill, both verified Get Phame visuals, alt-text summary, and validation evidence.
+- [x] Review the updated `github-repository-cleanup` skill, Get Phame UI and localization rules, current `user.role === "admin"` authorization pattern, administration hub navigation, lazy route registry, locale architecture, and Vitest toolchain before editing.
+- [x] Define extraction-priority as an ordinal action heuristic and readiness as an evidence-based categorical state, including dimensions, label criteria, interpretation limits, visual rules, and explicit non-claims.
+- [x] Extend the cleanup skill with a reusable metric reference, presentation-script template, and admin showcase guidance without duplicating core workflow text.
+- [x] Write an eight-scene, approximately five-minute presentation script explaining the cleanup workflow, branch ancestry, exact-tree parity, extraction priorities, readiness states, safety gates, and Get Phame next actions.
+- [x] Upload the verified branch ancestry and unique-work visualization PNGs to durable web storage and record the exact returned `/manus-storage/` URLs.
+- [x] Build a localized admin-only GitHub Cleanup Skill Showcase page using existing Get Phame admin authorization, navigation, design tokens, responsive patterns, and accessible image descriptions.
+- [x] Add focused Vitest coverage for admin visibility and route behavior, then run focused tests, the full suite, TypeScript checks, and the production build.
+- [x] Verify the page at desktop, tablet, and mobile breakpoints, including non-admin denial behavior and accessible visualization presentation.
+- [x] Create a validated checkpoint release, then synchronize the exact released tree to `SteveKinzey/getphame` through a history-preserving release branch, pull request, required checks, merge, and remote-tree verification.
+- [x] Deliver the updated installable skill, metric explanation, presentation script, live admin page, visualization assets, and release verification.
+- [x] Replace publicly addressable `/manus-storage/` visualization keys with accessible native diagrams rendered exclusively from the administrator-protected showcase payload, and add a focused regression that prevents storage-key reintroduction.
+- [x] Translate the remaining English `zh-CN` showcase labels identified in pull request 10, re-run localization coverage, and resolve every blocking review conversation with evidence.
+- [x] Reconstruct every `scripts/`, `references/`, and `templates/` resource referenced by `github-repository-cleanup/SKILL.md`, test deterministic utilities on a disposable repository, run official skill validation, and deliver a self-contained installable skill package.
+- [x] Diagnose why the live homepage walkthrough video or poster stopped loading by comparing current code, production media responses, service-worker behavior, and the last verified working release.
+- [x] Restore the walkthrough video, poster, captions, and player references through durable public delivery without altering unrelated homepage layout or copy, and add focused regressions for media URL integrity.
+- [x] Run focused media tests, the full Vitest suite, TypeScript checks, production dependency audit/build, and responsive desktop/mobile playback verification on the custom domain.
+- [x] Checkpoint and auto-publish the validated media repair, then synchronize the exact released tree through a history-preserving protected-main GitHub pull request and verify tree parity.
+- [x] Create a reusable signed-media audit and durable-CDN migration skill through the official skill-creator workflow, including deterministic scanners, migration manifests, safety guidance, disposable tests, and official validation.
+- [x] Reassess every action in the verified `unique-work-disposition.png` evidence against current protected `main`, and produce a detailed completed/incomplete/blocked status matrix with an ordered execution and retirement plan.
+- [x] Audit all website source, generated bundles, service-worker rules, public configuration, and representative live routes for media that depends on expiring signed URLs; migrate every public asset to durable CDN delivery while preserving authorization for private user media.
+- [x] Enhance the homepage walkthrough card with an accessible custom play overlay and subtle pointer hover treatment that respects reduced motion and preserves captions, keyboard operation, mobile behavior, and existing layout.
+- [ ] Add focused regressions, run the full Vitest/TypeScript/dependency-audit/production-build gates, verify desktop and mobile media behavior, checkpoint the release, and synchronize the exact tree through protected GitHub `main`.
+- [ ] Reapply and reconcile the completed Cloudbase pricing/admin-access routine on top of the durable-media release: localized monthly/annual/lifetime access grants, persisted duration metadata, `$349` lifetime pricing, responsive upgrade guidance, and regression coverage.
+- [ ] Apply and verify the additive access-code duration migration against the managed database without duplicating columns or losing existing data.
+- [ ] Run focused and full release gates on the final combined tree, including Vitest, TypeScript, production dependency audit, production build, and desktop/mobile verification.
+- [ ] Save the validated replacement checkpoint, verify the live deployment, and synchronize the exact released tree through protected GitHub `main` without force-pushing or overwriting unrelated work.

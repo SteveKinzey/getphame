@@ -100,11 +100,11 @@ test("controls multilingual captions, appearance, keyboard safety, and persisten
   let video = dialog.locator("video");
   await expect(video).toHaveAttribute(
     "src",
-    "/manus-storage/getphame-walkthrough-toggle-ready_4a3636b0.mp4",
+    "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/FzhqTiXowReoxlBi.mp4",
   );
   await expect(video).toHaveAttribute(
     "poster",
-    "/manus-storage/getphame-walkthrough-toggle-ready-poster_7dfd9fb1.png",
+    "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/nHoGaEKduUhABALQ.png",
   );
   await expect(video.locator('track[kind="captions"]')).toHaveCount(6);
   await expect(video.locator('track[srclang="en"]')).toHaveAttribute(
@@ -547,6 +547,6 @@ test("offers recovery controls when the player reports a media error", async ({ 
   await expect(recovery.getByRole("button", { name: "Try again" })).toBeVisible();
   await expect(recovery.getByRole("link", { name: "Open video directly" })).toHaveAttribute(
     "href",
-    "/manus-storage/getphame-walkthrough-toggle-ready_4a3636b0.mp4",
+    "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/FzhqTiXowReoxlBi.mp4",
   );
 });

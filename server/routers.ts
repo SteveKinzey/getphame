@@ -186,6 +186,7 @@ import {
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
 import { bulkSenderRouter } from "./bulkSender";
 import { authDiagnosticsRouter } from "./routers/authDiagnostics";
+import { githubCleanupShowcaseRouter } from "./routers/githubCleanupShowcase";
 import { passkeysRouter } from "./routers/passkeys";
 import { recoveryDrillsRouter } from "./routers/recoveryDrills";
 import { sourceOperationsRouter } from "./routers/sourceOperations";
@@ -620,6 +621,7 @@ async function getSupportEscalationPolicySettings(
 export const appRouter = router({
   system: systemRouter,
   authDiagnostics: authDiagnosticsRouter,
+  githubCleanupShowcase: githubCleanupShowcaseRouter,
   passkeys: passkeysRouter,
   recoveryDrills: recoveryDrillsRouter,
   sources: sourceOperationsRouter,

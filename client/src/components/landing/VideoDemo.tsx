@@ -23,7 +23,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import FadeUp from "./FadeUp";
 
-export const WALKTHROUGH_VIDEO_URL = "/manus-storage/getphame-walkthrough-toggle-ready_4a3636b0.mp4";
+export const WALKTHROUGH_VIDEO_URL = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/FzhqTiXowReoxlBi.mp4";
 export const WALKTHROUGH_CAPTION_LANGUAGES = ["en", "es", "fr", "it", "de", "pt"] as const;
 export type CaptionLanguage = (typeof WALKTHROUGH_CAPTION_LANGUAGES)[number];
 export const WALKTHROUGH_CAPTION_TRACKS = {
@@ -35,7 +35,7 @@ export const WALKTHROUGH_CAPTION_TRACKS = {
   pt: "/getphame-walkthrough.pt.vtt",
 } as const satisfies Record<CaptionLanguage, string>;
 export const WALKTHROUGH_CAPTIONS_URL = WALKTHROUGH_CAPTION_TRACKS.en;
-export const WALKTHROUGH_POSTER_URL = "/manus-storage/getphame-walkthrough-toggle-ready-poster_7dfd9fb1.png";
+export const WALKTHROUGH_POSTER_URL = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/nHoGaEKduUhABALQ.png";
 const CAPTIONS_PREFERENCE_KEY = "getphame-walkthrough-captions";
 const CAPTION_LANGUAGE_PREFERENCE_KEY = "getphame-walkthrough-caption-language";
 const CAPTION_FONT_SIZE_PREFERENCE_KEY = "getphame-walkthrough-caption-font-size";
@@ -662,16 +662,19 @@ export default function VideoDemo() {
             <div className="max-w-3xl mx-auto">
               {/* Video thumbnail card */}
               <button
+                type="button"
                 onClick={openVideo}
                 aria-label={t("landing.thumbnail.playButtonAriaLabel", { defaultValue: "Play product walkthrough video" })}
-                className="group relative w-full rounded-2xl overflow-hidden border border-[#1e3050] hover:border-primary/40 transition-all duration-300 shadow-2xl shadow-black/40 hover:shadow-[0_0_60px_oklch(0.78_0.15_75/0.12)] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                aria-haspopup="dialog"
+                aria-expanded={open}
+                className="group relative w-full rounded-2xl overflow-hidden border border-[#1e3050] shadow-2xl shadow-black/40 transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] motion-safe:hover:-translate-y-0.5 motion-safe:hover:scale-[1.008] motion-safe:active:scale-[0.995] motion-reduce:transform-none hover:border-primary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-[#0f1d32]"
               >
                 {/* Thumbnail */}
                 <div className="relative aspect-video bg-[oklch(0.14_0.03_250)]">
                   <img
                     src={WALKTHROUGH_POSTER_URL}
                     alt={t("landing.thumbnail.altText", { defaultValue: "Get Phame platform walkthrough video thumbnail" })}
-                    className="w-full h-full object-cover opacity-70 group-hover:opacity-85 transition-opacity duration-300"
+                    className="w-full h-full object-cover opacity-70 transition-opacity duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:opacity-85 group-focus-visible:opacity-85 motion-reduce:transition-none"
                     loading="lazy"
                     decoding="async"
                   />
@@ -681,9 +684,13 @@ export default function VideoDemo() {
 
                   {/* Gold glow behind play button */}
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="absolute w-28 h-28 bg-primary/20 rounded-full blur-2xl group-hover:bg-primary/35 transition-colors duration-300" />
+                    <div className="absolute w-28 h-28 rounded-full bg-primary/30 blur-2xl opacity-60 transition-[transform,opacity] duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:opacity-100 group-hover:scale-105 group-focus-visible:opacity-100 group-focus-visible:scale-105 motion-reduce:transform-none motion-reduce:transition-none" />
                     {/* Play button */}
-                    <div className="relative w-18 h-18 md:w-20 md:h-20 rounded-full bg-primary flex items-center justify-center shadow-[0_0_40px_oklch(0.78_0.15_75/0.5)] group-hover:scale-110 group-hover:shadow-[0_0_60px_oklch(0.78_0.15_75/0.7)] transition-all duration-300">
+                    <div
+                      data-walkthrough-play-overlay="true"
+                      aria-hidden="true"
+                      className="relative w-18 h-18 md:w-20 md:h-20 rounded-full bg-primary flex items-center justify-center shadow-[0_0_40px_oklch(0.78_0.15_75/0.5)] transition-transform duration-200 ease-[cubic-bezier(0.23,1,0.32,1)] group-hover:scale-[1.05] group-focus-visible:scale-[1.05] motion-reduce:transform-none motion-reduce:transition-none"
+                    >
                       <Play
                         size={28}
                         className="text-primary-foreground fill-primary-foreground ml-1"

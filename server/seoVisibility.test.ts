@@ -47,9 +47,9 @@ describe("public SEO visibility", () => {
     expect(featurePage).toContain("Email Campaigns for Review Requests");
     expect(featurePage).toContain("Reputation Management Software");
     expect(featurePage).toContain("<SEOHead");
-    expect(featurePage).toContain('socialImage: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/hdtnrnqnUpEWIKSm.png"');
-    expect(featurePage).toContain('socialImage: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/YWmtUsvJpfRECgYC.png"');
-    expect(featurePage).toContain('socialImage: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/jOzrkywwvNmSbOey.png"');
+    expect(featurePage).toContain('socialImage: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/UhORQpjNTcwKpeBp.webp"');
+    expect(featurePage).toContain('socialImage: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/uvvaVNerCoMHTwhX.webp"');
+    expect(featurePage).toContain('socialImage: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/vHMUvHplgLmsaIxk.webp"');
     expect(featurePage).not.toContain("/manus-storage/");
     expect(featurePage).toContain("getFeatureFaqJsonLd");
     expect(featurePage).toContain('"@type": "FAQPage"');

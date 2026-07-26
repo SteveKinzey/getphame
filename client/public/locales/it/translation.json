@@ -3459,5 +3459,136 @@
       "sectionAria": "Scarica {{section}} come PDF",
       "sectionButton": "Scarica il PDF della sezione"
     }
+  },
+  "adminGithubCleanup": {
+    "dashboardCardTitle": "Skill di pulizia GitHub",
+    "dashboardCardBody": "Revisiona la provenienza dei branch, il lavoro unico, i gate di sicurezza e lo script di presentazione",
+    "loading": "Caricamento della vetrina di pulizia",
+    "errorTitle": "Vetrina non disponibile",
+    "errorBody": "Impossibile caricare le evidenze del repository riservate agli amministratori.",
+    "backToAdmin": "Torna all'amministrazione",
+    "adminOnly": "Solo amministratori",
+    "title": "Skill di pulizia del repository GitHub",
+    "subtitle": "Verifica la provenienza dei branch, preserva il lavoro unico, controlla l'albero di rilascio e rimuovi solo i branch dimostrati sicuri da eliminare.",
+    "scriptCopied": "Script di presentazione copiato.",
+    "scriptCopyError": "Impossibile copiare lo script.",
+    "stats": {
+      "main": "main",
+      "tree": "Albero di rilascio",
+      "exact": "Corrispondenza esatta",
+      "branches": "Rami",
+      "openPrs": "PR aperte"
+    },
+    "evidence": {
+      "eyebrow": "Evidenze del repository verificate",
+      "title": "Stato corrente di rilascio e preservazione",
+      "body": "L'albero main protetto corrisponde esattamente al rilascio gestito validato. push-safe rimane isolato perché contiene lavoro unico ma obsoleto che deve essere estratto selettivamente."
+    },
+    "visuals": {
+      "ancestryAlt": "Mappa di provenienza dei branch e di preservazione che mostra il main protetto, la parità esatta dell'albero di rilascio, la divergenza di push-safe e dove le punte dei branch cancellati restano preservate.",
+      "ancestryCaption": "Relazioni solide indicano provenienza verificata; relazioni tratteggiate indicano parità esatta dell'albero Git anziché storia di commit condivisa.",
+      "uniqueAlt": "Lavoro unico in push-safe ordinato per priorità di estrazione, con prontezza e la prossima azione sicura per Mailjet, Help Assistant, Sources e WooCommerce, e l'entitlement a pagamento.",
+      "uniqueCaption": "La priorità è l'ordine delle azioni; la prontezza descrive il trattamento supportato dalle evidenze alla data dell'audit."
+    },
+    "metrics": {
+      "eyebrow": "Definizioni metriche",
+      "title": "Priorità di estrazione e prontezza rispondono a domande diverse",
+      "extraction": {
+        "title": "Priorità di estrazione",
+        "body": "Un ordine ordinale di azioni. Priorità 1 significa valutare o estrarre per primo. Non è urgenza, impatto sui ricavi, story points, probabilità di successo o percentuale di completamento."
+      },
+      "dimensions": {
+        "isolation": {
+          "title": "Isolamento",
+          "body": "Il lavoro può essere spostato senza portare con sé la storia di branch non correlata?"
+        },
+        "compatibility": {
+          "title": "Compatibilità",
+          "body": "Quanto confligge o duplica il branch main corrente?"
+        },
+        "evidence": {
+          "title": "Chiarezza delle evidenze",
+          "body": "Il codice, i test, i blocchi e i gate di accettazione sono documentati?"
+        },
+        "dependencies": {
+          "title": "Chiusura delle dipendenze",
+          "body": "Componenti richiesti, migrazioni, provider e policy sono risolti?"
+        },
+        "valueRisk": {
+          "title": "Sequenza valore-rischio",
+          "body": "La revisione di questo elemento come prima attività può produrre progresso utile con rischio di regressione limitato?"
+        }
+      },
+      "readiness": {
+        "title": "Prontezza",
+        "body": "Una descrizione categoriale delle evidenze disponibili alla data dell'audit. Identifica il prossimo trattamento sicuro; non è un punteggio numerico di maturità.",
+        "labels": {
+          "portable": {
+            "title": "Portabile dopo rebase e rivalidazione",
+            "body": "Esiste un'implementazione delimitata senza blocchi intrinseci. Ricreala o portala selettivamente da main corrente e riesegui i gate correnti."
+          },
+          "specification": {
+            "title": "Solo specifica",
+            "body": "Esistono requisiti ma non il codice di prodotto. Converti le evidenze in un issue con ambito definito prima dell'implementazione."
+          },
+          "stale": {
+            "title": "Architettonicamente obsoleto",
+            "body": "Esiste codice sostanziale ma che si sovrappone a infrastrutture più recenti. Preserva comportamenti e contratti, non i file obsoleti."
+          },
+          "blocked": {
+            "title": "Bloccato",
+            "body": "Una dipendenza mancante nota, un errore di build, una migrazione o una decisione impediscono la validazione. Risolvi il blocco prima dell'estrazione."
+          },
+          "superseded": {
+            "title": "Sovrascritto o candidato alla rimozione",
+            "body": "Il main corrente fornisce già il comportamento o la decisione di prodotto è cambiata. Registra la decisione e ritira il lavoro obsoleto."
+          }
+        }
+      }
+    },
+    "workstreams": {
+      "title": "Coda decisionale per lavoro unico",
+      "priority": "Priorità di estrazione {{priority}}",
+      "mailjet": {
+        "title": "Preimpostazione Mailjet Bulk Sender",
+        "body": "Una preimpostazione provider delimitata con sette aggiornamenti di locale, documentazione e test storici.",
+        "action": "Azione: porta selettivamente su un nuovo branch da main corrente."
+      },
+      "helpAssistant": {
+        "title": "Help Assistant pubblico globale",
+        "body": "Esistono requisiti che garantiscono anonimato, limitazione di richieste (rate-limiting), localizzazione e accessibilità da tutte le route; non è stata commessa alcuna implementazione di prodotto.",
+        "action": "Azione: convertire i requisiti in un issue di implementazione dedicato."
+      },
+      "sourcesWoo": {
+        "title": "Sources e WooCommerce basati sul consenso",
+        "body": "Import consistente, sicurezza, consenso, cifratura, idempotenza, provenienza, migrazione, UI e lavoro di test si sovrappongono a infrastrutture più recenti.",
+        "action": "Azione: rifare i comportamenti e i contratti, non i file vecchi."
+      },
+      "wooEntitlement": {
+        "title": "Entitlement a pagamento WooCommerce",
+        "body": "Esistono procedure a pagamento e UX di aggiornamento localizzata, ma il branch vecchio manca dell'import di PaywallModal e non compila.",
+        "action": "Azione: ricostruire rispetto ai pattern di entitlement correnti."
+      }
+    },
+    "safety": {
+      "title": "Sequenza di sicurezza per la cancellazione",
+      "body": "La classificazione non cancella mai un branch. Il repository live viene rivalidato immediatamente prima della mutazione, e qualsiasi fatto modificato interrompe l'operazione.",
+      "gates": {
+        "dryRun": "Esecuzione a secco",
+        "refetch": "Re-fetch",
+        "exactSha": "SHA esatto",
+        "openPr": "Controllo PR aperte",
+        "preservation": "Prova di preservazione",
+        "execute": "Esegui",
+        "reaudit": "Ri-audit"
+      }
+    },
+    "script": {
+      "title": "Script di presentazione",
+      "subtitle": "Master inglese in otto scene · circa {{runtime}}",
+      "copy": "Copia script completo",
+      "scene": "Scena {{number}} · {{time}}"
+    },
+    "footer": "Snapshot verificato {{date}}. Le evidenze del repository e il contenuto della presentazione sono disponibili solo tramite questa route autorizzata dagli amministratori."
   }
 }
