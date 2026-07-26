@@ -278,3 +278,6 @@
 - [x] Apply and verify the additive access-code duration migration against the managed database without duplicating columns or losing existing data.
 - [x] Run focused and full release gates on the final combined tree, including Vitest, TypeScript, production dependency audit, production build, and desktop/mobile verification.
 - [ ] Save the validated replacement checkpoint, verify the live deployment, and synchronize the exact released tree through protected GitHub `main` without force-pushing or overwriting unrelated work.
+- [ ] Reconcile the GitHub-main and managed schema, shared constants, dependency graph, database helpers, router composition, and runtime exports until the merged tree has zero TypeScript errors.
+- [ ] Restore the validated brand, PWA, landing disclosure, plan/quota, localization, support, onboarding, cancellation, and administrator contracts without discarding current-main functionality.
+- [ ] Re-run focused and full release gates, update only demonstrably stale source-contract tests, and persist each validated batch to the draft reconciliation branch.
