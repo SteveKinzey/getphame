@@ -1658,6 +1658,16 @@
         "title": "Get Phame Launch",
         "description": "Send personalised review request emails from your own email account — not a bulk mailer. Customers receive a message that looks like it came directly from you."
       }
+    },
+    "v15": {
+      "couponCodeGeneration": {
+        "title": "Coupon Code Generation",
+        "description": "Admins can now create time-limited or lifetime discount codes directly from the Admin Dashboard — with custom prefixes, max-use limits, and expiry dates."
+      },
+      "revokeUserAccess": {
+        "title": "Revoke User Access",
+        "description": "A new Revoke Access button in the Privileged Users table lets admins instantly downgrade any paid user back to the free tier with a single confirmation tap."
+      }
     }
   },
   "video": {
@@ -1799,5 +1809,17 @@
     "title": "What's New",
     "subtitle": "Here's what changed in the latest update.",
     "cta": "Got it — let's go!"
+  },
+  "adminCodes": {
+    "lifetimeAccess": "Lifetime access",
+    "monthsPro": "{{count}} month Pro",
+    "monthsPro_other": "{{count}} months Pro",
+    "daysPro": "{{count}} day Pro",
+    "daysPro_other": "{{count}} days Pro",
+    "csvButton": "CSV",
+    "csvTitle": "Download CSV",
+    "codesCreated": "Created",
+    "codesRedeemed": "Redeemed",
+    "codesActive": "Active"
   }
 }

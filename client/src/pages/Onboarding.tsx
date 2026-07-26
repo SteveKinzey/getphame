@@ -7,7 +7,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import SEOHead from "@/components/landing/SEOHead";
 
-const LOGO_URL = "https://d2xsxph8kpxj0f.cloudfront.net/310519663507659115/FK9bk5QsyQ42fQPrngzafd/phame-logo-mark-LWuqsnXvZV3htEC4hfkanS.webp";
+// Official horizontal logo for onboarding header
+const LOGO_URL = "/manus-storage/getphame-primary-horizontal-logo2_7f1d75d9.png";
 
 type MagicLinkState = "idle" | "loading" | "sent" | "error";
 
@@ -63,11 +64,7 @@ export default function OnboardingPage() {
       {/* Top bar */}
       <header className="w-full py-4 px-6 flex items-center justify-between z-10 relative">
         <a href="/" className="flex items-center gap-2.5 group">
-          <img src={LOGO_URL} alt="Get Phame" className="w-9 h-9 transition-transform duration-200 group-hover:scale-105" />
-          <div className="flex items-baseline gap-1">
-            <span className="font-display font-extrabold text-lg tracking-tight text-white">GET</span>
-            <span className="font-display font-extrabold text-lg tracking-[0.08em]" style={{ color: "oklch(0.78 0.15 75)" }}>PHAME</span>
-          </div>
+          <img src={LOGO_URL} alt="Get Phame" className="h-9 w-auto transition-transform duration-200 group-hover:scale-105" style={{ maxWidth: "180px" }} />
         </a>
       </header>
 

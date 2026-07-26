@@ -921,7 +921,17 @@
     "improved": "Migliorato",
     "fixed": "Risolto",
     "version": "Versione {{version}}",
-    "releaseDate": "Rilasciato il {{date}}"
+    "releaseDate": "Rilasciato il {{date}}",
+    "v15": {
+      "couponCodeGeneration": {
+        "title": "Generazione Codice Coupon",
+        "description": "Gli amministratori possono ora creare codici sconto a tempo limitato o a vita direttamente dalla Dashboard di Amministrazione — con prefissi personalizzati, limiti di utilizzo massimi e date di scadenza."
+      },
+      "revokeUserAccess": {
+        "title": "Revoca Accesso Utente",
+        "description": "Un nuovo pulsante \"Revoca Accesso\" nella tabella Utenti Privilegiati consente agli amministratori di declassare istantaneamente qualsiasi utente a pagamento al livello gratuito con un singolo tocco di conferma."
+      }
+    }
   },
   "compliance": {
     "title": "Guida alla Conformità",
@@ -2344,5 +2354,17 @@
     "title": "Novità",
     "subtitle": "Ecco cosa è cambiato nell'ultimo aggiornamento.",
     "cta": "Capito — andiamo!"
+  },
+  "adminCodes": {
+    "lifetimeAccess": "Accesso a vita",
+    "monthsPro": "{{count}} mese Pro",
+    "monthsPro_other": "{{count}} mesi Pro",
+    "daysPro": "{{count}} giorno Pro",
+    "daysPro_other": "{{count}} giorni Pro",
+    "csvButton": "CSV",
+    "csvTitle": "Scarica CSV",
+    "codesCreated": "Creati",
+    "codesRedeemed": "Utilizzati",
+    "codesActive": "Attivi"
   }
 }

@@ -42,10 +42,7 @@ export default function ReferralLanding() {
       {/* Logo */}
       <div className="mb-8">
         <div className="flex items-center gap-2">
-          <img src="https://assets.getphame.app/getphame-logo-mark.webp" alt="GetPhame logo" className="w-8 h-8 rounded-xl" loading="eager" decoding="async" />
-          <span className="font-display font-extrabold text-xl tracking-tight">
-            <span className="text-white">GET</span><span style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
-          </span>
+          <img src="/manus-storage/getphame-primary-horizontal-logo2_7f1d75d9.png" alt="Get Phame" className="h-8 w-auto" loading="eager" decoding="async" style={{ maxWidth: "180px" }} />
         </div>
       </div>
 

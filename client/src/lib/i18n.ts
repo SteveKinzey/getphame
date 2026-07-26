@@ -182,7 +182,7 @@ i18n
     ns: ["translation"],
     defaultNS: "translation",
     backend: {
-      loadPath: "/locales/{{lng}}/translation.json?v=phame10",
+      loadPath: "/locales/{{lng}}/translation.json?v=phame11",
     },
     interpolation: {
       escapeValue: false,

@@ -13,8 +13,8 @@ import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 
-const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
-const HERO_IMG = "https://assets.getphame.app/getphame-logo-mark.webp";
+// App icon for in-app header (small square icon context)
+const LOGO_URL = "/manus-storage/getphame-app-icon-dark_8bb8cc54.png";
 
 function ReferralRewardsCard() {
   const { data: referralStats, isLoading } = trpc.referral.getStats.useQuery();
@@ -524,10 +524,8 @@ export default function HomePage() {
           <div className="flex items-center justify-between gap-2 mb-1">
             <div className="flex items-center">
               <div className="flex items-center gap-2">
-                <img src={LOGO_URL} alt="GetPhame logo" className="w-7 h-7 rounded-lg" loading="lazy" decoding="async" />
-                <span className="font-display font-extrabold text-xl tracking-tight">
-                  <span className="text-white">GET</span><span style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
-                </span>
+                <img src={LOGO_URL} alt="Get Phame" className="w-7 h-7 rounded-lg" loading="lazy" decoding="async" />
+                <img src="/manus-storage/getphame-primary-horizontal-logo2_7f1d75d9.png" alt="Get Phame" className="h-6 w-auto" loading="lazy" decoding="async" style={{ maxWidth: "130px" }} />
               </div>
             </div>
             <div className="flex items-center gap-2">

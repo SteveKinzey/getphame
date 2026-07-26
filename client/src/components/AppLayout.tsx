@@ -11,7 +11,10 @@ import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { ReactNode } from "react";
 import LanguageFlyout from "@/components/LanguageFlyout";
-const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
+// App icon: dark navy rounded square with gold P + white star (sidebar icon)
+const LOGO_URL = "/manus-storage/getphame-app-icon-dark_8bb8cc54.png";
+// Horizontal logo for sidebar wordmark on desktop
+const HORIZONTAL_LOGO_URL = "/manus-storage/getphame-primary-horizontal-logo2_7f1d75d9.png";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -74,20 +77,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
             className="w-8 h-8 rounded-lg flex-shrink-0"
             loading="eager"
           />
-         {/* Wordmark — shown on desktop, hidden on tablet icon-only mode */}
-          {/* Wordmark — text-based lockup matching the header style */}
-          <div className="app-sidebar-brand-text hidden items-baseline gap-0.5">
-            <span
-              className="font-display font-extrabold text-[1.05rem] tracking-tight leading-none text-white"
-            >
-              GET
-            </span>
-            <span
-              className="font-display font-extrabold text-[1.05rem] tracking-[0.08em] leading-none"
-              style={{ color: "oklch(0.80 0.18 80)" }}
-            >
-              PHAME
-            </span>
+          {/* Official horizontal logo — shown on desktop, hidden on tablet icon-only mode */}
+          <div className="app-sidebar-brand-text hidden">
+            <img src={HORIZONTAL_LOGO_URL} alt="Get Phame" className="h-6 w-auto" loading="eager" style={{ maxWidth: "130px" }} />
           </div>
         </div>
 

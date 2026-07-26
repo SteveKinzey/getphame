@@ -1424,7 +1424,17 @@
     "labelImproved": "改进",
     "labelFix": "修复",
     "noEntries": "暂无更新记录",
-    "loadingError": "加载更新日志失败"
+    "loadingError": "加载更新日志失败",
+    "v15": {
+      "couponCodeGeneration": {
+        "title": "优惠码生成",
+        "description": "管理员现在可以直接从管理仪表板创建限时或永久折扣码，并可自定义前缀、最大使用次数限制和有效期。"
+      },
+      "revokeUserAccess": {
+        "title": "撤销用户访问权限",
+        "description": "特权用户表中的新“撤销访问权限”按钮允许管理员通过一次确认点击，立即将任何付费用户降级回免费套餐。"
+      }
+    }
   },
   "onboardingGuide": {
     "title": "设置指南",
@@ -1653,5 +1663,17 @@
     "title": "新功能",
     "subtitle": "以下是最新更新中的变化。",
     "cta": "明白了 — 出发！"
+  },
+  "adminCodes": {
+    "lifetimeAccess": "终身访问权限",
+    "monthsPro": "{{count}} 个月专业版",
+    "monthsPro_other": "{{count}} 个月专业版",
+    "daysPro": "{{count}} 天专业版",
+    "daysPro_other": "{{count}} 天专业版",
+    "csvButton": "CSV",
+    "csvTitle": "下载 CSV",
+    "codesCreated": "已创建",
+    "codesRedeemed": "已兑换",
+    "codesActive": "活跃"
   }
 }

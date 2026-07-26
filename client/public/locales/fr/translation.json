@@ -1883,7 +1883,17 @@
     "labelImproved": "Amélioré",
     "labelFix": "Correction",
     "noEntries": "Aucune mise à jour disponible",
-    "loadingError": "Impossible de charger le journal"
+    "loadingError": "Impossible de charger le journal",
+    "v15": {
+      "couponCodeGeneration": {
+        "title": "Génération de codes de réduction",
+        "description": "Les administrateurs peuvent désormais créer des codes de réduction à durée limitée ou à vie directement depuis le tableau de bord administrateur – avec des préfixes personnalisés, des limites d'utilisation maximale et des dates d'expiration."
+      },
+      "revokeUserAccess": {
+        "title": "Révoquer l'accès utilisateur",
+        "description": "Un nouveau bouton \"Révoquer l'accès\" dans le tableau des utilisateurs privilégiés permet aux administrateurs de rétrograder instantanément tout utilisateur payant vers le niveau gratuit en un seul clic de confirmation."
+      }
+    }
   },
   "onboardingGuide": {
     "title": "Guide de configuration",
@@ -2169,5 +2179,17 @@
     "title": "Nouveautés",
     "subtitle": "Voici ce qui a changé dans la dernière mise à jour.",
     "cta": "Compris — allons-y !"
+  },
+  "adminCodes": {
+    "lifetimeAccess": "Accès à vie",
+    "monthsPro": "{{count}} mois Pro",
+    "monthsPro_other": "{{count}} mois Pro",
+    "daysPro": "{{count}} jour Pro",
+    "daysPro_other": "{{count}} jours Pro",
+    "csvButton": "CSV",
+    "csvTitle": "Télécharger le CSV",
+    "codesCreated": "Créés",
+    "codesRedeemed": "Utilisés",
+    "codesActive": "Actifs"
   }
 }
