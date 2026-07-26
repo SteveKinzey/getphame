@@ -47,9 +47,9 @@ describe("public SEO visibility", () => {
     expect(featurePage).toContain("Email Campaigns for Review Requests");
     expect(featurePage).toContain("Reputation Management Software");
     expect(featurePage).toContain("<SEOHead");
-    expect(featurePage).toContain('socialImage: "/manus-storage/getphame-review-requests-og_54168ce9.png"');
-    expect(featurePage).toContain('socialImage: "/manus-storage/getphame-email-campaigns-og_2d195c27.png"');
-    expect(featurePage).toContain('socialImage: "/manus-storage/getphame-reputation-management-og_9f828275.png"');
+    expect(featurePage).toContain('socialImage: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/UhORQpjNTcwKpeBp.webp"');
+    expect(featurePage).toContain('socialImage: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/uvvaVNerCoMHTwhX.webp"');
+    expect(featurePage).toContain('socialImage: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/vHMUvHplgLmsaIxk.webp"');
     expect(featurePage).toContain("getFeatureFaqJsonLd");
     expect(featurePage).toContain('"@type": "FAQPage"');
     expect(featurePage).toContain("mainEntity: feature.faq.map");

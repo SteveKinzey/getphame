@@ -13,12 +13,12 @@ type StaticCopySupplement = {
 // removes the previous all-language JSON imports from the initial JavaScript
 // bundle and avoids downloading unrelated languages.
 const STATIC_COPY_SUPPLEMENT_URLS: Partial<Record<SupportedLang, string>> = {
-  es: "/manus-storage/getphame-static-copy-es-phame18-static-copy_07cd913a.json",
-  fr: "/manus-storage/getphame-static-copy-fr-phame18-static-copy_d57de8e1.json",
-  it: "/manus-storage/getphame-static-copy-it-phame18-static-copy_856fbb25.json",
-  th: "/manus-storage/getphame-static-copy-th-phame18-static-copy_ccba1b66.json",
-  "zh-CN": "/manus-storage/getphame-static-copy-zh-CN-phame18-static-copy_76d42e6a.json",
-  "zh-TW": "/manus-storage/getphame-static-copy-zh-TW-phame18-static-copy_1e6a96ae.json",
+  es: "/api/assets/static-copy/es",
+  fr: "/api/assets/static-copy/fr",
+  it: "/api/assets/static-copy/it",
+  th: "/api/assets/static-copy/th",
+  "zh-CN": "/api/assets/static-copy/zh-CN",
+  "zh-TW": "/api/assets/static-copy/zh-TW",
 };
 
 const sourceToKey = new Map<string, string>();

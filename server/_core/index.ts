@@ -44,6 +44,7 @@ import { getUnrewardedReferral, rewardReferrer } from "../referrals";
 import { apiNotFoundHandler } from "./apiFallback";
 import { registerPublicFeaturePrerender } from "../publicFeaturePrerender";
 import { registerTranscriptFontRoutes } from "../transcriptFontRoutes";
+import { registerStaticCopyRoutes } from "../staticCopyRoutes";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -421,6 +422,7 @@ async function startServer() {
   // transcript PDFs. Managed asset redirects are not readable by browser
   // fetch() on custom domains because their CDN response omits CORS headers.
   registerTranscriptFontRoutes(app);
+  registerStaticCopyRoutes(app);
 
   // OAuth callback under /api/oauth/callback
   registerStorageProxy(app);

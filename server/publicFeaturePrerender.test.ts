@@ -7,7 +7,7 @@ const feature = {
   title: "Review Request Software for Local Businesses | Get Phame",
   description: "Create personalized review request emails, direct customers to the right review link, and track campaign engagement from one simple workspace.",
   keywords: ["review request software", "review request emails", "customer feedback", "local business reviews"],
-  socialImage: "/manus-storage/getphame-review-requests-og_54168ce9.png",
+  socialImage: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/UhORQpjNTcwKpeBp.webp",
   socialImageAlt: "Abstract email and destination-link workflow illustration for Get Phame Review Requests",
   headline: "Make every review request feel like a personal follow-up",
   introduction: "Get Phame helps local businesses send timely, branded review requests without turning a customer relationship into a bulk-email exercise.",
@@ -31,7 +31,7 @@ describe("public feature prerender", () => {
 
     expect(html).toContain("<title>Review Request Software for Local Businesses | Get Phame</title>");
     expect(html).toContain('property="og:url" content="https://getphame.app/review-requests"');
-    expect(html).toContain('property="og:image" content="https://getphame.app/manus-storage/getphame-review-requests-og_54168ce9.png"');
+    expect(html).toContain('property="og:image" content="https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/UhORQpjNTcwKpeBp.webp"');
     expect(html).toContain('id="getphame-feature-faq-jsonld"');
     expect(html).toContain('"@type":"FAQPage"');
     expect(html).toContain("Can I use my own business email?");
