@@ -23,7 +23,7 @@ import {
 import { trpc } from "@/lib/trpc";
 import FadeUp from "./FadeUp";
 
-export const WALKTHROUGH_VIDEO_URL = "/manus-storage/getphame-walkthrough-toggle-ready_4a3636b0.mp4";
+export const WALKTHROUGH_VIDEO_URL = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/FzhqTiXowReoxlBi.mp4";
 export const WALKTHROUGH_CAPTION_LANGUAGES = ["en", "es", "fr", "it", "de", "pt"] as const;
 export type CaptionLanguage = (typeof WALKTHROUGH_CAPTION_LANGUAGES)[number];
 export const WALKTHROUGH_CAPTION_TRACKS = {
@@ -35,7 +35,7 @@ export const WALKTHROUGH_CAPTION_TRACKS = {
   pt: "/getphame-walkthrough.pt.vtt",
 } as const satisfies Record<CaptionLanguage, string>;
 export const WALKTHROUGH_CAPTIONS_URL = WALKTHROUGH_CAPTION_TRACKS.en;
-export const WALKTHROUGH_POSTER_URL = "/manus-storage/getphame-walkthrough-toggle-ready-poster_7dfd9fb1.png";
+export const WALKTHROUGH_POSTER_URL = "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/nHoGaEKduUhABALQ.png";
 const CAPTIONS_PREFERENCE_KEY = "getphame-walkthrough-captions";
 const CAPTION_LANGUAGE_PREFERENCE_KEY = "getphame-walkthrough-caption-language";
 const CAPTION_FONT_SIZE_PREFERENCE_KEY = "getphame-walkthrough-caption-font-size";

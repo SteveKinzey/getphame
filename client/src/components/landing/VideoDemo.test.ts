@@ -124,11 +124,12 @@ describe("VideoDemo media contract", () => {
     expect(resolveWalkthroughCaptionLanguage(null, [])).toBe("en");
   });
 
-  it("uses the clean self-hosted walkthrough and no stale YouTube embed", async () => {
+  it("uses durable public walkthrough assets and no signed-storage or stale YouTube dependency", async () => {
     const source = await readFile(componentPath, "utf8");
 
-    expect(source).toContain("/manus-storage/getphame-walkthrough-toggle-ready_4a3636b0.mp4");
-    expect(source).toContain("/manus-storage/getphame-walkthrough-toggle-ready-poster_7dfd9fb1.png");
+    expect(source).toContain("https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/FzhqTiXowReoxlBi.mp4");
+    expect(source).toContain("https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/nHoGaEKduUhABALQ.png");
+    expect(source).not.toContain("/manus-storage/getphame-walkthrough");
     expect(source).not.toContain("youtube.com");
     expect(source).not.toContain("GetPhame");
   });
@@ -306,14 +307,16 @@ describe("VideoDemo media contract", () => {
     expect(source).toContain("window.navigator.language");
   });
 
-  it("allows the managed-storage redirect host and shows localized recovery controls", async () => {
+  it("allows the durable media CDN without retaining the signed redirect host and shows localized recovery controls", async () => {
     const [serverSource, componentSource] = await Promise.all([
       readFile(serverIndexPath, "utf8"),
       readFile(componentPath, "utf8"),
     ]);
+    const mediaSrcBlock = serverSource.match(/mediaSrc:\s*\[([\s\S]*?)\],/)?.[1] ?? "";
 
     expect(serverSource).toContain("mediaSrc:");
-    expect(serverSource.match(/https:\/\/d36hbw14aib5lz\.cloudfront\.net/g)).toHaveLength(2);
+    expect(mediaSrcBlock).toContain("https://files.manuscdn.com");
+    expect(mediaSrcBlock).not.toContain("https://d36hbw14aib5lz.cloudfront.net");
     expect(componentSource).toContain("videoError");
     expect(componentSource).toContain("onError");
     expect(componentSource).toContain("landing.modal.videoError");
