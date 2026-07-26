@@ -18,10 +18,12 @@ import {
 import { Clock, Calendar, Zap, Download } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 export default function AdminCodesPage() {
   const { user, loading } = useAuth();
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
 
   const [note, setNote] = useState("");
   const [maxUses, setMaxUses] = useState<string>("");
@@ -408,15 +410,15 @@ export default function AdminCodesPage() {
                         <div className="mt-1.5">
                           {c.grantDurationType === "lifetime" ? (
                             <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: "oklch(0.30 0.12 80)", color: "oklch(0.85 0.18 80)" }}>
-                              <Zap size={10} />Lifetime access
+                              <Zap size={10} />{t("adminCodes.lifetimeAccess", { defaultValue: "Lifetime access" })}
                             </span>
                           ) : c.grantDurationType === "months" ? (
                             <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: "oklch(0.28 0.10 260)", color: "oklch(0.75 0.12 200)" }}>
-                              <Calendar size={10} />{c.grantAmount ?? "?"} month{(c.grantAmount ?? 1) !== 1 ? "s" : ""} Pro
+                              <Calendar size={10} />{t("adminCodes.monthsPro", { count: c.grantAmount ?? 1, defaultValue: `${c.grantAmount ?? "?"} months Pro` })}
                             </span>
                           ) : c.grantDurationType === "days" ? (
                             <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: "oklch(0.28 0.10 260)", color: "oklch(0.75 0.12 200)" }}>
-                              <Clock size={10} />{c.grantAmount ?? "?"} day{(c.grantAmount ?? 1) !== 1 ? "s" : ""} Pro
+                              <Clock size={10} />{t("adminCodes.daysPro", { count: c.grantAmount ?? 1, defaultValue: `${c.grantAmount ?? "?"} days Pro` })}
                             </span>
                           ) : null}
                         </div>
