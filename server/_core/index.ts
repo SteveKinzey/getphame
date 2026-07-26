@@ -365,10 +365,10 @@ async function startServer() {
             "https://www.youtube.com",
             "https://youtube.com",
           ],
-          // Keep video delivery restricted to the app and its exact managed-storage redirect host.
+          // Keep video delivery restricted to the app and the durable public media CDN.
           mediaSrc: [
             "'self'",
-            "https://d36hbw14aib5lz.cloudfront.net",
+            "https://files.manuscdn.com",
           ],
           // Allow outbound API calls: IP detection, analytics, font CDNs, and public manuscdn CDN (used for app logo preload)
           connectSrc: [
