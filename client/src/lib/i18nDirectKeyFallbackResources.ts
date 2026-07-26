@@ -32,7 +32,7 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
       hapticFeedback: { title: "Haptic Feedback", description: "Use supported device vibration for taps and recovery confirmations. Reduced-motion settings are always respected.", enable: "Enable haptic feedback", disable: "Disable haptic feedback" },
     },
     step3Send: { optionalConnectorButton: "Set up WordPress connector instead (optional)" },
-    pricingGrid: { title: "Choose the plan that fits your growth", savingsEyebrow: "Savings calculator", savingsTitle: "See what each commitment saves", savingsBasis: "Compared with paying monthly", monthlyAnnualCost: "for 12 months", annualSave: "Save {{amount}}", annualSavingsDetail: "{{price}} instead of {{monthly}} for year one", lifetimeSave: "Save {{amount}} by year two", lifetimePayback: "Pays for itself in about {{months}} months", heroSendRequests: "Send requests", heroAutomateFollowUps: "Automate follow-ups", heroTrackGrowth: "Track your growth", closeComparison: "Close comparison", includedLabel: "Included", planFeaturesLabel: "{{plan}} plan features", approximateThb: "≈ {{amount}} THB", previousPrice: "Was {{amount}}" },
+    pricingGrid: { title: "Choose the plan that fits your growth", savingsEyebrow: "Savings calculator", savingsTitle: "See what each commitment saves", savingsBasis: "Compared with paying monthly", monthlyAnnualCost: "for 12 months", annualSave: "Save {{amount}}", annualSavingsDetail: "{{price}} instead of {{monthly}} for year one", lifetimeSave: "Save {{amount}} by year two", lifetimePayback: "Pays for itself in about {{months}} months", heroSendRequests: "Send requests", heroAutomateFollowUps: "Automate follow-ups", heroTrackGrowth: "Track your growth", closeComparison: "Close comparison", includedLabel: "Included", planFeaturesLabel: "{{plan}} plan features", approximateThb: "≈ {{amount}} THB", guidance: { monthly: "Best for short-term flexibility.", annual: "Best recurring value at about $24.17 per month.", lifetime: "Best long-term value: $349 once, with no renewals." } },
     comparisonTable: { mobileTitle: "Compare plan features", mobileSubtitle: "Open the compact feature comparison", mobileAction: "Compare", mobileEyebrow: "Feature comparison", mobileDescription: "Compare Free, Pro, and Lifetime without leaving the upgrade page." },
   },
   es: {
@@ -66,7 +66,7 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
       hapticFeedback: { title: "Respuesta háptica", description: "Usa la vibración compatible del dispositivo para los toques y las confirmaciones de reconexión. Siempre se respeta la preferencia de movimiento reducido.", enable: "Activar la respuesta háptica", disable: "Desactivar la respuesta háptica" },
     },
     step3Send: { optionalConnectorButton: "Configurar conector de WordPress en su lugar (opcional)" },
-    pricingGrid: { title: "Elige el plan que se adapta a tu crecimiento", savingsEyebrow: "Calculadora de ahorro", savingsTitle: "Mira cuánto ahorra cada compromiso", savingsBasis: "Comparado con pagar mensualmente", monthlyAnnualCost: "por 12 meses", annualSave: "Ahorra {{amount}}", annualSavingsDetail: "{{price}} en lugar de {{monthly}} el primer año", lifetimeSave: "Ahorra {{amount}} antes del segundo año", lifetimePayback: "Se amortiza en unos {{months}} meses", heroSendRequests: "Enviar solicitudes", heroAutomateFollowUps: "Automatizar seguimientos", heroTrackGrowth: "Seguir tu crecimiento", closeComparison: "Cerrar comparación", includedLabel: "Incluido", planFeaturesLabel: "Funciones del plan {{plan}}", approximateThb: "≈ {{amount}} THB", previousPrice: "Antes {{amount}}" },
+    pricingGrid: { title: "Elige el plan que se adapta a tu crecimiento", savingsEyebrow: "Calculadora de ahorro", savingsTitle: "Mira cuánto ahorra cada compromiso", savingsBasis: "Comparado con pagar mensualmente", monthlyAnnualCost: "por 12 meses", annualSave: "Ahorra {{amount}}", annualSavingsDetail: "{{price}} en lugar de {{monthly}} el primer año", lifetimeSave: "Ahorra {{amount}} antes del segundo año", lifetimePayback: "Se amortiza en unos {{months}} meses", heroSendRequests: "Enviar solicitudes", heroAutomateFollowUps: "Automatizar seguimientos", heroTrackGrowth: "Seguir tu crecimiento", closeComparison: "Cerrar comparación", includedLabel: "Incluido", planFeaturesLabel: "Funciones del plan {{plan}}", approximateThb: "≈ {{amount}} THB", guidance: { monthly: "Ideal para flexibilidad a corto plazo.", annual: "La mejor opción recurrente: unos $24.17 al mes.", lifetime: "La mejor opción a largo plazo: $349 una vez, sin renovaciones." } },
     comparisonTable: { mobileTitle: "Compara las funciones de los planes", mobileSubtitle: "Abre la comparación compacta de funciones", mobileAction: "Comparar", mobileEyebrow: "Comparación de funciones", mobileDescription: "Compara Gratis, Pro y De por vida sin salir de la página de mejora." },
   },
   fr: {
@@ -100,7 +100,7 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
       hapticFeedback: { title: "Retour haptique", description: "Utilisez la vibration des appareils compatibles pour les interactions et les confirmations de reconnexion. Le réglage de réduction des animations est toujours respecté.", enable: "Activer le retour haptique", disable: "Désactiver le retour haptique" },
     },
     step3Send: { optionalConnectorButton: "Configurer le connecteur WordPress à la place (facultatif)" },
-    pricingGrid: { title: "Choisissez le plan adapté à votre croissance", heroSendRequests: "Envoyer des demandes", heroAutomateFollowUps: "Automatiser les relances", heroTrackGrowth: "Suivre votre croissance", closeComparison: "Fermer la comparaison", includedLabel: "Inclus", planFeaturesLabel: "Fonctionnalités du forfait {{plan}}", approximateThb: "≈ {{amount}} THB", previousPrice: "Auparavant {{amount}}" },
+    pricingGrid: { title: "Choisissez le plan adapté à votre croissance", heroSendRequests: "Envoyer des demandes", heroAutomateFollowUps: "Automatiser les relances", heroTrackGrowth: "Suivre votre croissance", closeComparison: "Fermer la comparaison", includedLabel: "Inclus", planFeaturesLabel: "Fonctionnalités du forfait {{plan}}", approximateThb: "≈ {{amount}} THB", guidance: { monthly: "Idéal pour une flexibilité à court terme.", annual: "Meilleure valeur récurrente, environ 24,17 $ par mois.", lifetime: "Meilleure valeur à long terme : 349 $ une fois, sans renouvellement." } },
     comparisonTable: { mobileTitle: "Comparez les fonctionnalités des plans", mobileSubtitle: "Ouvrez la comparaison compacte des fonctionnalités", mobileAction: "Comparer", mobileEyebrow: "Comparaison des fonctionnalités", mobileDescription: "Comparez Gratuit, Pro et À vie sans quitter la page de mise à niveau." },
   },
   it: {
@@ -134,13 +134,13 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
       hapticFeedback: { title: "Feedback aptico", description: "Usa la vibrazione dei dispositivi supportati per i tocchi e le conferme di riconnessione. L’impostazione per ridurre il movimento viene sempre rispettata.", enable: "Attiva il feedback aptico", disable: "Disattiva il feedback aptico" },
     },
     step3Send: { optionalConnectorButton: "Configura invece il connettore WordPress (opzionale)" },
-    pricingGrid: { title: "Scegli il piano adatto alla tua crescita", heroSendRequests: "Invia richieste", heroAutomateFollowUps: "Automatizza i follow-up", heroTrackGrowth: "Monitora la crescita", closeComparison: "Chiudi il confronto", includedLabel: "Incluso", planFeaturesLabel: "Funzionalità del piano {{plan}}", approximateThb: "≈ {{amount}} THB", previousPrice: "Prima {{amount}}" },
+    pricingGrid: { title: "Scegli il piano adatto alla tua crescita", heroSendRequests: "Invia richieste", heroAutomateFollowUps: "Automatizza i follow-up", heroTrackGrowth: "Monitora la crescita", closeComparison: "Chiudi il confronto", includedLabel: "Incluso", planFeaturesLabel: "Funzionalità del piano {{plan}}", approximateThb: "≈ {{amount}} THB", guidance: { monthly: "Ideale per la flessibilità a breve termine.", annual: "Il miglior valore ricorrente, circa $24.17 al mese.", lifetime: "Il miglior valore a lungo termine: $349 una volta, senza rinnovi." } },
     comparisonTable: { mobileTitle: "Confronta le funzionalità dei piani", mobileSubtitle: "Apri il confronto compatto delle funzionalità", mobileAction: "Confronta", mobileEyebrow: "Confronto delle funzionalità", mobileDescription: "Confronta Gratis, Pro e A vita senza lasciare la pagina di upgrade." },
     pricingCard: { guarantee: "Garanzia di rimborso entro 7 giorni" },
     upgradeFaq: {
       title: "Domande frequenti",
       q1: "L'offerta a vita prevede davvero un solo pagamento?",
-      a1: "Sì — paghi $497 una sola volta e Get Phame è tuo per sempre. Nessuna tariffa mensile, nessun rinnovo, nessuna sorpresa. Sono inoltre inclusi tutti gli aggiornamenti futuri.",
+      a1: "Sì — paghi $349 una sola volta e Get Phame è tuo per sempre. Nessuna tariffa mensile, nessun rinnovo, nessuna sorpresa. Sono inoltre inclusi tutti gli aggiornamenti futuri.",
       q2: "Cosa succede se annullo un piano mensile o annuale?",
       a2: "Mantieni l'accesso fino alla fine del periodo di fatturazione in corso. Successivamente il tuo account tornerà al piano Free: 10 richieste iniziali, poi 5 ogni 30 giorni a rotazione. I tuoi contatti e la cronologia non vengono mai cancellati.",
       q3: "Posso passare da un piano mensile a uno annuale in seguito?",
@@ -184,7 +184,7 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
       hapticFeedback: { title: "การตอบสนองแบบสั่น", description: "ใช้การสั่นของอุปกรณ์ที่รองรับสำหรับการแตะและการยืนยันเมื่อเชื่อมต่อกลับสำเร็จ โดยจะเคารพการตั้งค่าลดการเคลื่อนไหวเสมอ", enable: "เปิดการตอบสนองแบบสั่น", disable: "ปิดการตอบสนองแบบสั่น" },
     },
     step3Send: { optionalConnectorButton: "ตั้งค่าตัวเชื่อม WordPress แทน (ไม่บังคับ)" },
-    pricingGrid: { title: "เลือกแพ็กเกจที่เหมาะกับการเติบโตของคุณ", heroSendRequests: "ส่งคำขอ", heroAutomateFollowUps: "ตั้งค่าการติดตามผลอัตโนมัติ", heroTrackGrowth: "ติดตามการเติบโต", closeComparison: "ปิดการเปรียบเทียบ", includedLabel: "รวมอยู่แล้ว", planFeaturesLabel: "คุณสมบัติของแผน {{plan}}", approximateThb: "≈ {{amount}} บาท", previousPrice: "เดิม {{amount}}" },
+    pricingGrid: { title: "เลือกแพ็กเกจที่เหมาะกับการเติบโตของคุณ", heroSendRequests: "ส่งคำขอ", heroAutomateFollowUps: "ตั้งค่าการติดตามผลอัตโนมัติ", heroTrackGrowth: "ติดตามการเติบโต", closeComparison: "ปิดการเปรียบเทียบ", includedLabel: "รวมอยู่แล้ว", planFeaturesLabel: "คุณสมบัติของแผน {{plan}}", approximateThb: "≈ {{amount}} บาท", guidance: { monthly: "เหมาะสำหรับความยืดหยุ่นระยะสั้น", annual: "คุ้มค่าที่สุดสำหรับการชำระต่อเนื่อง ประมาณ $24.17 ต่อเดือน", lifetime: "คุ้มค่าที่สุดในระยะยาว: จ่าย $349 ครั้งเดียว ไม่มีการต่ออายุ" } },
     comparisonTable: { mobileTitle: "เปรียบเทียบฟีเจอร์ของแผน", mobileSubtitle: "เปิดการเปรียบเทียบฟีเจอร์แบบกระชับ", mobileAction: "เปรียบเทียบ", mobileEyebrow: "เปรียบเทียบฟีเจอร์", mobileDescription: "เปรียบเทียบแผนฟรี Pro และตลอดชีพโดยไม่ต้องออกจากหน้าอัปเกรด" },
   },
   "zh-CN": {
@@ -218,7 +218,7 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
       hapticFeedback: { title: "触觉反馈", description: "在支持的设备上使用振动来反馈点击和重新连接成功。始终遵循“减少动态效果”设置。", enable: "启用触觉反馈", disable: "停用触觉反馈" },
     },
     step3Send: { optionalConnectorButton: "改为设置 WordPress 连接器（可选）" },
-    pricingGrid: { title: "选择适合您业务增长的方案", heroSendRequests: "发送请求", heroAutomateFollowUps: "自动跟进", heroTrackGrowth: "跟踪增长", closeComparison: "关闭对比", includedLabel: "已包含", planFeaturesLabel: "{{plan}} 方案功能", approximateThb: "约 {{amount}} 泰铢", previousPrice: "原价 {{amount}}" },
+    pricingGrid: { title: "选择适合您业务增长的方案", heroSendRequests: "发送请求", heroAutomateFollowUps: "自动跟进", heroTrackGrowth: "跟踪增长", closeComparison: "关闭对比", includedLabel: "已包含", planFeaturesLabel: "{{plan}} 方案功能", approximateThb: "约 {{amount}} 泰铢", guidance: { monthly: "适合需要短期灵活性的用户。", annual: "最佳续订价值，约每月 $24.17。", lifetime: "最佳长期价值：一次支付 $349，无需续订。" } },
     comparisonTable: { mobileTitle: "比较套餐功能", mobileSubtitle: "打开精简功能比较", mobileAction: "比较", mobileEyebrow: "功能比较", mobileDescription: "无需离开升级页面即可比较免费版、Pro 和终身版。" },
   },
   "zh-TW": {
@@ -252,7 +252,7 @@ const directKeyFallbackResources: Record<string, ResourceRecord> = {
       hapticFeedback: { title: "觸覺回饋", description: "在支援的裝置上使用振動來回饋點按和重新連線成功。始終遵循「減少動態效果」設定。", enable: "啟用觸覺回饋", disable: "停用觸覺回饋" },
     },
     step3Send: { optionalConnectorButton: "改為設定 WordPress 連接器（可選）" },
-    pricingGrid: { title: "選擇適合您業務成長的方案", heroSendRequests: "傳送請求", heroAutomateFollowUps: "自動追蹤", heroTrackGrowth: "追蹤成長", closeComparison: "關閉比較", includedLabel: "已包含", planFeaturesLabel: "{{plan}} 方案功能", approximateThb: "約 {{amount}} 泰銖", previousPrice: "原價 {{amount}}" },
+    pricingGrid: { title: "選擇適合您業務成長的方案", heroSendRequests: "傳送請求", heroAutomateFollowUps: "自動追蹤", heroTrackGrowth: "追蹤成長", closeComparison: "關閉比較", includedLabel: "已包含", planFeaturesLabel: "{{plan}} 方案功能", approximateThb: "約 {{amount}} 泰銖", guidance: { monthly: "適合需要短期彈性的使用者。", annual: "最佳續訂價值，約每月 $24.17。", lifetime: "最佳長期價值：一次支付 $349，無需續訂。" } },
     comparisonTable: { mobileTitle: "比較方案功能", mobileSubtitle: "開啟精簡功能比較", mobileAction: "比較", mobileEyebrow: "功能比較", mobileDescription: "無需離開升級頁面即可比較免費版、Pro 和終身版。" },
   },
 };

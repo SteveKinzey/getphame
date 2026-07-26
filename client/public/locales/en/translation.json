@@ -939,8 +939,8 @@
     "monthlyDescription": "Cancel anytime. No contracts.",
     "annualDescription": "Billed once per year. Equivalent to $24.17/mo.",
     "lifetimeDescription": "One-time payment. No renewals, ever.",
-    "lifetimeRoiCalloutTitle": "💰 Pays for itself in under 4 years",
-    "lifetimeRoiCalloutDescription": "Monthly plan costs $348/yr. At that rate, the lifetime license breaks even at year 3.6 — then it's free forever. Most users recover the cost in their first year of reviews.",
+    "lifetimeRoiCalloutTitle": "Pays for itself in about 13 months",
+    "lifetimeRoiCalloutDescription": "At $29 per month, the $349 lifetime plan breaks even in about 13 months. After that, there are no subscription renewals.",
     "unlimitedReviewRequests": "Unlimited review requests",
     "prioritySending": "Priority sending & follow-ups",
     "advancedAnalytics": "Advanced analytics",
@@ -978,7 +978,11 @@
     "includedLabel": "Included",
     "planFeaturesLabel": "{{plan}} plan features",
     "approximateThb": "≈ {{amount}} THB",
-    "previousPrice": "Was {{amount}}"
+    "guidance": {
+      "monthly": "Best for short-term flexibility.",
+      "annual": "Best recurring value at about $24.17 per month.",
+      "lifetime": "Best long-term value: $349 once, with no renewals."
+    }
   },
   "accessCode": {
     "title": "Have an access code?",
@@ -987,7 +991,21 @@
     "redeem": "Redeem",
     "codeAcceptedPro": "🎉 Code accepted! You're now on Pro!",
     "codeAcceptedNote": "🎉 Code accepted! {{note}} — You're now on Pro!",
-    "invalidCodeError": "Invalid code. Please try again."
+    "invalidCodeError": "Invalid code. Please try again.",
+    "grantDurationLabel": "Access granted after redemption",
+    "grantUnitLabel": "Grant duration unit",
+    "grantValueLabel": "Grant duration value",
+    "durationError": "Enter a duration between 1 and {{limit}}.",
+    "durationHelper": "The access period starts when the customer redeems the code.",
+    "lifetimeHelper": "The code grants permanent paid access.",
+    "grantLifetime": "Grants lifetime access",
+    "grantDuration": "Grants {{value}} {{unit}}",
+    "grantLegacy": "Legacy unlimited Pro access",
+    "units": {
+      "day": "days",
+      "month": "months",
+      "lifetime": "Lifetime"
+    }
   },
   "socialProof": {
     "trustedByBusinesses": "Trusted by local businesses to get more 5-star reviews"
@@ -1624,7 +1642,7 @@
     "proAnnualDescription": "Everything in Pro Monthly — billed once a year. Equivalent to $24.75/month.",
     "lifetime": "Lifetime",
     "ownItForever": "Own it forever",
-    "lifetimePrice": "$497",
+    "lifetimePrice": "$349",
     "lifetimeOnce": " once",
     "lifetimeDescription": "One payment, lifetime access. No renewals, no surprises."
   },
@@ -1883,6 +1901,27 @@
     "combineRules": "The survivor keeps its login identity and strongest role/plan. Contacts, requests, templates, platforms, analytics, and history move over. When one SMTP connection is verified and the other is not, the verified connection is kept automatically. The merge still stops if both SMTP connections share the same verification state or if another billing or email-service conflict needs your choice.",
     "typeCombine": "Type COMBINE to confirm",
     "combineNow": "Combine accounts"
+  },
+  "adminSubscription": {
+    "grant": "Grant subscription",
+    "grantTitle": "Grant subscription access",
+    "grantDescription": "Choose how long {{email}} should receive paid access.",
+    "durationLabel": "Subscription duration",
+    "monthly": "Monthly",
+    "monthlyDescription": "Paid access for one calendar month",
+    "annual": "Annual",
+    "annualDescription": "Paid access for one calendar year",
+    "lifetime": "Lifetime",
+    "lifetimeDescription": "Permanent paid access with no expiry",
+    "confirmGrant": "Grant access",
+    "revoke": "Revoke access",
+    "revokeTitle": "Revoke paid access?",
+    "revokeDescription": "{{email}} will return to the Free plan immediately.",
+    "revokeBillingWarning": "This does not cancel an active Stripe subscription. Confirm billing status before revoking access.",
+    "confirmRevoke": "Revoke access",
+    "cancel": "Cancel",
+    "grantSuccess": "{{email}} received {{plan}} access.",
+    "revokeSuccess": "{{email}} was returned to the Free plan."
   },
   "landing": {
     "comparison": {

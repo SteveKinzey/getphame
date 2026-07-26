@@ -1214,8 +1214,8 @@
     "monthlyDescription": "Annuler anytime. No contracts.",
     "annualDescription": "Billed once par an. Equivalent to $24.17/mo.",
     "lifetimeDescription": "Paiement unique. Sans renouvellement.",
-    "lifetimeRoiCalloutTitle": "💰 Rentabilisé en moins de 4 ans",
-    "lifetimeRoiCalloutDescription": "Mensuel plan costs $348/yr. At that rate, the lifetime license breaks even at year 3.6 — then it's free forever. Most users recover the cost in their first year of reviews.",
+    "lifetimeRoiCalloutTitle": "Rentabilisé en environ 13 mois",
+    "lifetimeRoiCalloutDescription": "À 29 $ par mois, le forfait à vie de 349 $ est rentabilisé en environ 13 mois. Ensuite, il n'y a plus de renouvellement d'abonnement.",
     "unlimitedReviewRequests": "Demandes d'avis illimitées",
     "prioritySending": "Envoi prioritaire et suivis",
     "advancedAnalytics": "Analyses avancées",
@@ -1279,7 +1279,11 @@
     "includedLabel": "Inclus",
     "planFeaturesLabel": "Fonctionnalités du forfait {{plan}}",
     "approximateThb": "≈ {{amount}} THB",
-    "previousPrice": "Auparavant {{amount}}"
+    "guidance": {
+      "monthly": "Idéal pour une flexibilité à court terme.",
+      "annual": "Meilleure valeur récurrente, environ 24,17 $ par mois.",
+      "lifetime": "Meilleure valeur à long terme : 349 $ une fois, sans renouvellement."
+    }
   },
   "accessCode": {
     "title": "Code d'accès",
@@ -1291,7 +1295,21 @@
     "invalidCodeError": "Code invalide. Veuillez réessayer.",
     "submit": "Soumettre",
     "invalid": "Code invalide. Veuillez réessayer.",
-    "success": "Accès accordé !"
+    "success": "Accès accordé !",
+    "grantDurationLabel": "Accès accordé après utilisation",
+    "grantUnitLabel": "Unité de durée",
+    "grantValueLabel": "Valeur de la durée",
+    "durationError": "Saisissez une durée comprise entre 1 et {{limit}}.",
+    "durationHelper": "La période d'accès commence lorsque le client utilise le code.",
+    "lifetimeHelper": "Le code accorde un accès payant permanent.",
+    "grantLifetime": "Accorde un accès à vie",
+    "grantDuration": "Accorde {{value}} {{unit}}",
+    "grantLegacy": "Ancien accès Pro illimité",
+    "units": {
+      "day": "jours",
+      "month": "mois",
+      "lifetime": "À vie"
+    }
   },
   "socialProof": {
     "trustedByBusinesses": "Approuvé par les entreprises locales pour obtenir plus d'avis 5 étoiles"
@@ -1796,7 +1814,7 @@
     "proAnnualDescription": "Everything in Pro Mensuel — billed once a year. Equivalent to $24.75/month.",
     "lifetime": "À vie",
     "ownItForever": "Possédez-le pour toujours",
-    "lifetimePrice": "$497",
+    "lifetimePrice": "$349",
     "lifetimeOnce": " une fois",
     "lifetimeDescription": "Paiement unique — accès à vie",
     "annualDescription": "Facturation annuelle — économisez 17 %",
@@ -2165,7 +2183,7 @@
   "upgradeFaq": {
     "title": "Questions fréquentes",
     "q1": "L'offre à vie est-elle vraiment un paiement unique?",
-    "a1": "Oui — vous payez 497 $ une seule fois et Get Phame vous appartient pour toujours. Pas de frais mensuels, pas de renouvellements, pas de surprises. Vous bénéficiez également de toutes les mises à jour futures incluses.",
+    "a1": "Oui — vous payez 349 $ une seule fois et Get Phame vous appartient pour toujours. Pas de frais mensuels, pas de renouvellements, pas de surprises. Vous bénéficiez également de toutes les mises à jour futures incluses.",
     "q2": "Que se passe-t-il si j'annule un plan mensuel ou annuel?",
     "a2": "Vous conservez l'accès jusqu'à la fin de votre période de facturation actuelle. Ensuite, votre compte revient au niveau gratuit (10 demandes). Vos contacts et votre historique ne sont jamais supprimés.",
     "q3": "Puis-je passer du mensuel à l'annuel plus tard?",
@@ -2266,6 +2284,27 @@
     "typeCombine": "Tapez COMBINE pour confirmer",
     "typeDelete": "Tapez DELETE pour confirmer",
     "typeEmailToRemoveSmtp": "Saisissez {{email}} pour confirmer"
+  },
+  "adminSubscription": {
+    "grant": "Accorder un abonnement",
+    "grantTitle": "Accorder un accès par abonnement",
+    "grantDescription": "Choisissez la durée d'accès payant pour {{email}}.",
+    "durationLabel": "Durée de l'abonnement",
+    "monthly": "Mensuel",
+    "monthlyDescription": "Accès payant pendant un mois calendaire",
+    "annual": "Annuel",
+    "annualDescription": "Accès payant pendant une année calendaire",
+    "lifetime": "À vie",
+    "lifetimeDescription": "Accès payant permanent sans expiration",
+    "confirmGrant": "Accorder l'accès",
+    "revoke": "Révoquer l'accès",
+    "revokeTitle": "Révoquer l'accès payant ?",
+    "revokeDescription": "{{email}} repassera immédiatement au forfait Gratuit.",
+    "revokeBillingWarning": "Cette action n'annule pas un abonnement Stripe actif. Vérifiez l'état de facturation avant de révoquer l'accès.",
+    "confirmRevoke": "Révoquer l'accès",
+    "cancel": "Annuler",
+    "grantSuccess": "{{email}} a reçu l'accès {{plan}}.",
+    "revokeSuccess": "{{email}} est repassé au forfait Gratuit."
   },
   "pwaInstallBanner": {
     "title": "Installez Get Phame",

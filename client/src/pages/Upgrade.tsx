@@ -1,5 +1,5 @@
 // Phame — Upgrade / Pricing page
-// Three-tier pricing: Monthly $29 | Annual $290 | Lifetime $497
+// Three-tier pricing: Monthly $29 | Annual $290 | Lifetime $349
 
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -37,7 +37,7 @@ function toThb(usdAmount: number): string {
 
 const MONTHLY_PRICE_USD = 29;
 const ANNUAL_PRICE_USD = 290;
-const LIFETIME_PRICE_USD = 497;
+const LIFETIME_PRICE_USD = 349;
 const ANNUAL_SAVINGS_USD = MONTHLY_PRICE_USD * 12 - ANNUAL_PRICE_USD;
 const LIFETIME_SAVINGS_BY_YEAR_TWO_USD = MONTHLY_PRICE_USD * 24 - LIFETIME_PRICE_USD;
 const LIFETIME_PAYBACK_MONTHS = Math.ceil(LIFETIME_PRICE_USD / MONTHLY_PRICE_USD);
@@ -65,7 +65,7 @@ const COMPARISON_ROWS: { feature: string; free: string | boolean; pro: string | 
   { feature: "Daily send limit",           free: "50/day",   pro: "500/day",    lifetime: "500/day" },
   { feature: "Priority support",           free: false,      pro: true,         lifetime: true },
   { feature: "Future updates",             free: false,      pro: "While active",lifetime: "Forever" },
-  { feature: "Price",                      free: "Free",     pro: "$29/mo",     lifetime: "$497" },
+  { feature: "Price",                      free: "Free",     pro: "$29/mo",     lifetime: "$349" },
 ];
 
 const PRO_FEATURES = [
@@ -98,8 +98,8 @@ const PLANS: Record<Plan, { label: string; price: string; thb: string; sub: stri
   },
   lifetime: {
     label: "Lifetime",
-    price: "$497",
-    thb: toThb(497),
+    price: "$349",
+    thb: toThb(349),
     sub: "one-time",
     badge: "Best Value",
     savings: "Pay once, own forever",
@@ -461,18 +461,6 @@ export default function UpgradePage() {
               amount: PLANS[selectedPlan].thb,
             })}
           </p>
-          {/* Strikethrough anchor — lifetime only */}
-          {selectedPlan === "lifetime" && (
-            <p className="text-xs mb-2">
-              <span className="line-through" style={{ color: "var(--text-on-dark-muted)" }}>
-                {t("pricingGrid.previousPrice", { defaultValue: "Was {{amount}}", amount: "$1,247" })}
-              </span>
-              <span className="ml-2 font-bold" style={{ color: "oklch(0.72 0.18 145)" }}>
-                — {t("pricingGrid.annualSave", { defaultValue: "Save {{amount}}", amount: "$750" })}
-              </span>
-            </p>
-          )}
-
           {PLANS[selectedPlan].savings && (
             <div
               className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold mb-4 rr-bg-navy rr-text-gold"
@@ -813,7 +801,7 @@ export default function UpgradePage() {
           {[
             {
               q: t("upgradeFaq.q1", "Is the lifetime deal really one payment?"),
-              a: t("upgradeFaq.a1", "Yes — you pay $497 once and Get Phame is yours forever. No monthly fees, no renewals, no surprises. You also get all future updates included."),
+              a: t("upgradeFaq.a1", "Yes — you pay $349 once and Get Phame is yours forever. No monthly fees, no renewals, no surprises. You also get all future updates included."),
             },
             {
               q: t("upgradeFaq.q2", "What happens if I cancel a monthly or annual plan?"),
@@ -893,6 +881,35 @@ function PricingPlanGrid({
         <h2 id="upgrade-plan-grid-heading" className="text-2xl font-black text-white sm:text-3xl">
           {t("pricingGrid.title", { defaultValue: "Choose the plan that fits your growth" })}
         </h2>
+      </div>
+
+      <div data-testid="upgrade-plan-guidance" className="mb-5 grid grid-cols-1 gap-2 text-left sm:grid-cols-3">
+        {PLAN_ORDER.map((plan) => (
+          <button
+            key={plan}
+            type="button"
+            onClick={() => onSelectPlan(plan)}
+            aria-pressed={selectedPlan === plan}
+            className={`rounded-2xl border px-4 py-3 transition-colors ${
+              selectedPlan === plan
+                ? "border-[oklch(0.80_0.18_80)] bg-[oklch(0.28_0.09_260)]"
+                : "border-white/10 bg-[#061a3a]/45 hover:border-white/30"
+            }`}
+          >
+            <span className="block text-xs font-black uppercase tracking-[0.12em] rr-text-gold">
+              {plan === "monthly" ? t("planSelector.monthly") : plan === "annual" ? t("planSelector.annual") : t("planSelector.lifetime")}
+            </span>
+            <span className="mt-1 block text-xs font-semibold leading-relaxed text-white/70">
+              {t(`pricingGrid.guidance.${plan}`, {
+                defaultValue: plan === "monthly"
+                  ? "Best for short-term flexibility."
+                  : plan === "annual"
+                    ? "Best recurring value at about $24.17 per month."
+                    : "Best long-term value: $349 once, with no renewals.",
+              })}
+            </span>
+          </button>
+        ))}
       </div>
 
       <SavingsCalculator locale={i18n.language} />
@@ -978,14 +995,6 @@ function PricingPlanGrid({
                     amount: planConfig.thb,
                   })}
                 </p>
-                {isLifetime && (
-                  <p className="mt-2 text-xs font-bold text-[oklch(0.72_0.18_145)]">
-                    <span className="mr-1 text-white/50 line-through">
-                      {t("pricingGrid.previousPrice", { defaultValue: "Was {{amount}}", amount: "$1,247" })}
-                    </span>
-                    — {t("pricingGrid.annualSave", { defaultValue: "Save {{amount}}", amount: "$750" })}
-                  </p>
-                )}
               </button>
 
               {planConfig.savings && (

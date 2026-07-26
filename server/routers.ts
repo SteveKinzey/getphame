@@ -160,6 +160,10 @@ import {
   generateCode,
 } from "./accessCodes";
 import {
+  grantSubscriptionByEmail,
+  revokeSubscriptionByEmail,
+} from "./subscriptionGrants";
+import {
   listReviewPlatforms,
   addReviewPlatform,
   updateReviewPlatform,
@@ -2538,6 +2542,8 @@ export const appRouter = router({
           note: z.string().optional(),
           maxUses: z.number().int().positive().nullable().optional(),
           expiresAt: z.number().nullable().optional(),
+          grantDurationValue: z.number().int().positive().nullable().optional(),
+          grantDurationUnit: z.enum(["day", "month", "lifetime"]).optional(),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -2547,6 +2553,8 @@ export const appRouter = router({
           note: input.note,
           maxUses: input.maxUses ?? null,
           expiresAt: input.expiresAt ?? null,
+          grantDurationValue: input.grantDurationValue ?? null,
+          grantDurationUnit: input.grantDurationUnit,
         });
         return { code };
       }),
@@ -2587,7 +2595,7 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         const result = await redeemAccessCode(ctx.user.id, input.code);
         if (!result.success) throw new TRPCError({ code: "BAD_REQUEST", message: result.error });
-        return { note: result.note };
+        return { note: result.note, tier: result.tier, planExpiresAt: result.planExpiresAt };
       }),
   }),
 
@@ -3365,6 +3373,43 @@ export const appRouter = router({
         return { ok: true };
       }),
 
+    /** Grant a registered account a monthly, annual, or lifetime subscription — admin only */
+    grantSubscription: protectedProcedure
+      .input(z.object({
+        email: z.string().trim().email(),
+        plan: z.enum(["monthly", "annual", "lifetime"]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        try {
+          const granted = await grantSubscriptionByEmail(input.email, input.plan);
+          if (!granted) {
+            throw new TRPCError({ code: "NOT_FOUND", message: "No account matches that email address." });
+          }
+          console.log(`[Admin] ${input.plan} access granted to user ${granted.userId} by admin ${ctx.user.id}`);
+          return granted;
+        } catch (error) {
+          if (error instanceof TRPCError) throw error;
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: error instanceof Error ? error.message : "Subscription grant failed.",
+          });
+        }
+      }),
+
+    /** Return a registered account to the free tier — admin only */
+    revokeSubscription: protectedProcedure
+      .input(z.object({ email: z.string().trim().email() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        const revoked = await revokeSubscriptionByEmail(input.email);
+        if (!revoked) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "No subscription profile matches that email address." });
+        }
+        console.log(`[Admin] Paid access revoked for user ${revoked.userId} by admin ${ctx.user.id}`);
+        return revoked;
+      }),
+
     /** Upsell click stats — powered-by footer clicks to /upgrade (last 30d) */
     upsellStats: protectedProcedure.query(async ({ ctx }) => {
       if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
@@ -3505,7 +3550,7 @@ export const appRouter = router({
       // Pricing constants (USD cents)
       const MONTHLY_PRICE_CENTS = 2900;  // $29/mo
       const ANNUAL_PRICE_CENTS  = 29900; // $299/yr
-      const LIFETIME_PRICE_CENTS = 49700; // $497 one-time (updated Jul 2026)
+      const LIFETIME_PRICE_CENTS = 34900; // $349 one-time
 
       // Platform-wide email open/click stats
       const { sql: sqlRev, and: andRev, eq: eqRev } = await import("drizzle-orm");

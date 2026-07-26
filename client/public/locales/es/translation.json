@@ -1214,8 +1214,8 @@
     "monthlyDescription": "Cancelar anytime. No contracts.",
     "annualDescription": "Billed once por año. Equivalent to $24.17/mo.",
     "lifetimeDescription": "Pago único. Sin renovaciones.",
-    "lifetimeRoiCalloutTitle": "💰 Se paga solo en menos de 4 años",
-    "lifetimeRoiCalloutDescription": "Mensual plan costs $348/yr. At that rate, the lifetime license breaks even at year 3.6 — then it's free forever. Most users recover the cost in their first year of reviews.",
+    "lifetimeRoiCalloutTitle": "Se amortiza en unos 13 meses",
+    "lifetimeRoiCalloutDescription": "A $29 al mes, el plan de por vida de $349 se amortiza en unos 13 meses. Después, no hay renovaciones de suscripción.",
     "unlimitedReviewRequests": "Solicitudes de reseñas ilimitadas",
     "prioritySending": "Envío prioritario y seguimientos",
     "advancedAnalytics": "Análisis avanzados",
@@ -1279,7 +1279,11 @@
     "includedLabel": "Incluido",
     "planFeaturesLabel": "Funciones del plan {{plan}}",
     "approximateThb": "≈ {{amount}} THB",
-    "previousPrice": "Antes {{amount}}"
+    "guidance": {
+      "monthly": "Ideal para flexibilidad a corto plazo.",
+      "annual": "La mejor opción recurrente: unos $24.17 al mes.",
+      "lifetime": "La mejor opción a largo plazo: $349 una vez, sin renovaciones."
+    }
   },
   "accessCode": {
     "title": "Código de acceso",
@@ -1291,7 +1295,21 @@
     "invalidCodeError": "Código inválido. Por favor inténtalo de nuevo.",
     "submit": "Enviar",
     "invalid": "Código inválido. Por favor intenta de nuevo.",
-    "success": "¡Acceso concedido!"
+    "success": "¡Acceso concedido!",
+    "grantDurationLabel": "Acceso concedido tras el canje",
+    "grantUnitLabel": "Unidad de duración",
+    "grantValueLabel": "Valor de duración",
+    "durationError": "Introduce una duración entre 1 y {{limit}}.",
+    "durationHelper": "El período de acceso comienza cuando el cliente canjea el código.",
+    "lifetimeHelper": "El código concede acceso de pago permanente.",
+    "grantLifetime": "Concede acceso de por vida",
+    "grantDuration": "Concede {{value}} {{unit}}",
+    "grantLegacy": "Acceso Pro ilimitado heredado",
+    "units": {
+      "day": "días",
+      "month": "meses",
+      "lifetime": "De por vida"
+    }
   },
   "socialProof": {
     "trustedByBusinesses": "De confianza para negocios locales que quieren más reseñas de 5 estrellas"
@@ -1796,7 +1814,7 @@
     "proAnnualDescription": "Everything in Pro Mensual — billed once a year. Equivalent to $24.75/month.",
     "lifetime": "De por vida",
     "ownItForever": "Tenlo para siempre",
-    "lifetimePrice": "$497",
+    "lifetimePrice": "$349",
     "lifetimeOnce": " una vez",
     "lifetimeDescription": "Pago único — acceso de por vida",
     "annualDescription": "Facturación anual — ahorra un 17 %",
@@ -2165,7 +2183,7 @@
   "upgradeFaq": {
     "title": "Preguntas frecuentes",
     "q1": "¿El plan de por vida es realmente un solo pago?",
-    "a1": "Sí — pagas $497 una sola vez y Get Phame es tuyo para siempre. Sin cuotas mensuales, sin renovaciones, sin sorpresas. También recibes todas las actualizaciones futuras incluidas.",
+    "a1": "Sí — pagas $349 una sola vez y Get Phame es tuyo para siempre. Sin cuotas mensuales, sin renovaciones, sin sorpresas. También recibes todas las actualizaciones futuras incluidas.",
     "q2": "¿Qué pasa si cancelo un plan mensual o anual?",
     "a2": "Conservas el acceso hasta el final de tu período de facturación actual. Después, tu cuenta vuelve al nivel gratuito (10 solicitudes). Tus contactos e historial nunca se eliminan.",
     "q3": "¿Puedo cambiar de mensual a anual más adelante?",
@@ -2266,6 +2284,27 @@
     "typeCombine": "Escriba COMBINE para confirmar",
     "typeDelete": "Escriba DELETE para confirmar",
     "typeEmailToRemoveSmtp": "Escriba {{email}} para confirmar"
+  },
+  "adminSubscription": {
+    "grant": "Conceder suscripción",
+    "grantTitle": "Conceder acceso de suscripción",
+    "grantDescription": "Elige cuánto tiempo debe recibir acceso de pago {{email}}.",
+    "durationLabel": "Duración de la suscripción",
+    "monthly": "Mensual",
+    "monthlyDescription": "Acceso de pago durante un mes natural",
+    "annual": "Anual",
+    "annualDescription": "Acceso de pago durante un año natural",
+    "lifetime": "De por vida",
+    "lifetimeDescription": "Acceso de pago permanente sin vencimiento",
+    "confirmGrant": "Conceder acceso",
+    "revoke": "Revocar acceso",
+    "revokeTitle": "¿Revocar el acceso de pago?",
+    "revokeDescription": "{{email}} volverá al plan Gratis inmediatamente.",
+    "revokeBillingWarning": "Esto no cancela una suscripción activa de Stripe. Confirma el estado de facturación antes de revocar el acceso.",
+    "confirmRevoke": "Revocar acceso",
+    "cancel": "Cancelar",
+    "grantSuccess": "{{email}} recibió acceso {{plan}}.",
+    "revokeSuccess": "{{email}} volvió al plan Gratis."
   },
   "pwaInstallBanner": {
     "title": "Instala Get Phame",

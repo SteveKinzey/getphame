@@ -6,6 +6,41 @@
 import { eq, desc } from "drizzle-orm";
 import { getDb } from "./db";
 import { accessCodes, accessCodeRedemptions, businessProfiles } from "../drizzle/schema";
+import { calculateComplimentaryExpiry, COMPLIMENTARY_ACCESS_LIMITS } from "./complimentaryAccess";
+
+export const ACCESS_CODE_GRANT_UNITS = ["day", "month", "lifetime"] as const;
+export type AccessCodeGrantUnit = (typeof ACCESS_CODE_GRANT_UNITS)[number];
+
+export function resolveAccessCodeGrant(
+  input: {
+    grantDurationValue: number | null;
+    grantDurationUnit: string | null;
+  },
+  startsAt = Date.now(),
+): { tier: "pro" | "lifetime"; planExpiresAt: number | null } {
+  if (input.grantDurationUnit == null) {
+    // Backward compatibility for access codes created before duration metadata existed.
+    return { tier: "pro", planExpiresAt: null };
+  }
+  if (input.grantDurationUnit === "lifetime") {
+    return { tier: "lifetime", planExpiresAt: null };
+  }
+  if (input.grantDurationUnit !== "day" && input.grantDurationUnit !== "month") {
+    throw new Error("Unsupported access-code grant duration.");
+  }
+  if (input.grantDurationValue == null) {
+    throw new Error("A duration value is required for non-lifetime access codes.");
+  }
+
+  return {
+    tier: "pro",
+    planExpiresAt: calculateComplimentaryExpiry(
+      startsAt,
+      input.grantDurationValue,
+      input.grantDurationUnit,
+    ),
+  };
+}
 
 /** Generate a random readable code like BETA-X7K2-P9QM */
 export function generateCode(prefix = "BETA"): string {
@@ -21,15 +56,29 @@ export async function createAccessCode(opts: {
   note?: string;
   maxUses?: number | null;
   expiresAt?: number | null;
+  grantDurationValue?: number | null;
+  grantDurationUnit?: AccessCodeGrantUnit | null;
 }) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
+  const grantDurationUnit = opts.grantDurationUnit ?? "month";
+  const grantDurationValue = grantDurationUnit === "lifetime"
+    ? null
+    : (opts.grantDurationValue ?? 1);
+  if (grantDurationUnit !== "lifetime") {
+    const limit = COMPLIMENTARY_ACCESS_LIMITS[grantDurationUnit];
+    if (grantDurationValue == null || !Number.isInteger(grantDurationValue) || grantDurationValue < 1 || grantDurationValue > limit) {
+      throw new Error(`Duration must be between 1 and ${limit} ${grantDurationUnit}(s).`);
+    }
+  }
   const code = opts.code ?? generateCode();
   await db.insert(accessCodes).values({
     code: code.toUpperCase(),
     note: opts.note ?? null,
     maxUses: opts.maxUses ?? null,
     expiresAt: opts.expiresAt ?? null,
+    grantDurationValue,
+    grantDurationUnit,
   });
   return code.toUpperCase();
 }
@@ -58,13 +107,16 @@ export async function activateAccessCode(id: number) {
 /**
  * Redeem an access code for a user.
  * Validates: code exists, is active, not expired, not over maxUses, user hasn't redeemed before.
- * On success: upgrades user to Pro, records redemption, increments usedCount.
- * Returns the code note/label for the success message.
+ * On success: grants the configured duration, records redemption, and increments usedCount.
+ * Returns the code note/label and resulting entitlement for the success message.
  */
 export async function redeemAccessCode(
   userId: number,
   rawCode: string
-): Promise<{ success: true; note: string | null } | { success: false; error: string }> {
+): Promise<
+  | { success: true; note: string | null; tier: "pro" | "lifetime"; planExpiresAt: number | null }
+  | { success: false; error: string }
+> {
   const db = await getDb();
   if (!db) return { success: false, error: "Database not available" };
 
@@ -106,20 +158,30 @@ export async function redeemAccessCode(
     return { success: false, error: "You have already redeemed an access code." };
   }
 
-  // All checks passed — upgrade user to Pro
-  await db
-    .update(businessProfiles)
-    .set({ tier: "pro" })
-    .where(eq(businessProfiles.userId, userId));
+  const [profile] = await db
+    .select()
+    .from(businessProfiles)
+    .where(eq(businessProfiles.userId, userId))
+    .limit(1);
+  const now = Date.now();
+  const startsAt = profile?.planExpiresAt != null && profile.planExpiresAt > now
+    ? profile.planExpiresAt
+    : now;
+  const grant = profile?.tier === "lifetime"
+    ? { tier: "lifetime" as const, planExpiresAt: null }
+    : resolveAccessCodeGrant(ac, startsAt);
 
-  // Record redemption
-  await db.insert(accessCodeRedemptions).values({ codeId: ac.id, userId });
+  await db.transaction(async (tx) => {
+    await tx
+      .update(businessProfiles)
+      .set({ ...grant, updatedAt: new Date() })
+      .where(eq(businessProfiles.userId, userId));
+    await tx.insert(accessCodeRedemptions).values({ codeId: ac.id, userId });
+    await tx
+      .update(accessCodes)
+      .set({ usedCount: ac.usedCount + 1 })
+      .where(eq(accessCodes.id, ac.id));
+  });
 
-  // Increment usedCount
-  await db
-    .update(accessCodes)
-    .set({ usedCount: ac.usedCount + 1 })
-    .where(eq(accessCodes.id, ac.id));
-
-  return { success: true, note: ac.note };
+  return { success: true, note: ac.note, ...grant };
 }

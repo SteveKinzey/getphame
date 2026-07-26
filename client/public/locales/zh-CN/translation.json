@@ -875,8 +875,8 @@
     "monthlyDescription": "随时取消。无合同。",
     "annualDescription": "每年结算一次。相当于每月 $24.17。",
     "lifetimeDescription": "一次性付款。永不续订。",
-    "lifetimeRoiCalloutTitle": "💰 不到 4 年即可回本",
-    "lifetimeRoiCalloutDescription": "月付计划每年花费 $348。按此费率，终身许可证在 3.6 年时即可回本 — 之后永久免费。大多数用户在获得评论的第一年即可收回成本。",
+    "lifetimeRoiCalloutTitle": "约 13 个月即可回本",
+    "lifetimeRoiCalloutDescription": "与每月 $29 的方案相比，$349 终身方案约 13 个月即可回本，之后无需续订。",
     "unlimitedReviewRequests": "无限评论请求",
     "prioritySending": "优先发送和跟进",
     "advancedAnalytics": "高级分析",
@@ -915,7 +915,11 @@
     "includedLabel": "已包含",
     "planFeaturesLabel": "{{plan}} 方案功能",
     "approximateThb": "约 {{amount}} 泰铢",
-    "previousPrice": "原价 {{amount}}"
+    "guidance": {
+      "monthly": "适合需要短期灵活性的用户。",
+      "annual": "最佳续订价值，约每月 $24.17。",
+      "lifetime": "最佳长期价值：一次支付 $349，无需续订。"
+    }
   },
   "accessCode": {
     "title": "有访问码吗？",
@@ -924,7 +928,21 @@
     "redeem": "兑换",
     "codeAcceptedPro": "🎉 代码已接受！您现在是专业版用户！",
     "codeAcceptedNote": "🎉 代码已接受！{{note}} — 您现在是专业版用户！",
-    "invalidCodeError": "无效代码。请重试。"
+    "invalidCodeError": "无效代码。请重试。",
+    "grantDurationLabel": "兑换后授予的访问权限",
+    "grantUnitLabel": "授权时长单位",
+    "grantValueLabel": "授权时长数值",
+    "durationError": "请输入 1 到 {{limit}} 之间的时长。",
+    "durationHelper": "访问期从客户兑换代码时开始。",
+    "lifetimeHelper": "此代码授予永久付费访问权限。",
+    "grantLifetime": "授予终身访问权限",
+    "grantDuration": "授予 {{value}} {{unit}}",
+    "grantLegacy": "旧版无限 Pro 访问权限",
+    "units": {
+      "day": "天",
+      "month": "个月",
+      "lifetime": "终身"
+    }
   },
   "socialProof": {
     "trustedByBusinesses": "深受本地企业信赖，助您获得更多五星好评"
@@ -1300,7 +1318,7 @@
     "proAnnualDescription": "包含月付专业版所有功能，按年一次性计费，相当于每月$24.75。",
     "lifetime": "终身版",
     "ownItForever": "永久拥有",
-    "lifetimePrice": "$497",
+    "lifetimePrice": "$349",
     "lifetimeOnce": " 一次性",
     "lifetimeDescription": "一次付款，终身使用，无需续费，无任何隐藏费用。"
   },
@@ -1479,7 +1497,7 @@
   "upgradeFaq": {
     "title": "常见问题",
     "q1": "终身套餐真的只需一次付款吗？",
-    "a1": "是的——只需支付 $497，Get Phame 就永远属于您。没有月费，没有续费，没有隐藏费用。您还将获得未来所有更新。",
+    "a1": "是的——只需支付 $349，Get Phame 就永远属于您。没有月费，没有续费，没有隐藏费用。您还将获得未来所有更新。",
     "q2": "如果我取消月度或年度套餐会怎样？",
     "a2": "您可以使用到当前计费周期结束。之后，您的账户将恢复为免费套餐（10 次请求）。您的联系人和历史记录永远不会被删除。",
     "q3": "以后可以从月度升级到年度吗？",
@@ -1632,6 +1650,27 @@
     "typeCombine": "输入 COMBINE 以确认",
     "typeDelete": "输入 DELETE 以确认",
     "typeEmailToRemoveSmtp": "输入 {{email}} 以确认"
+  },
+  "adminSubscription": {
+    "grant": "授予订阅",
+    "grantTitle": "授予订阅访问权限",
+    "grantDescription": "选择 {{email}} 获得付费访问权限的时长。",
+    "durationLabel": "订阅时长",
+    "monthly": "月度",
+    "monthlyDescription": "一个自然月的付费访问权限",
+    "annual": "年度",
+    "annualDescription": "一个自然年的付费访问权限",
+    "lifetime": "终身",
+    "lifetimeDescription": "永久付费访问权限，无到期日",
+    "confirmGrant": "授予访问权限",
+    "revoke": "撤销访问权限",
+    "revokeTitle": "撤销付费访问权限？",
+    "revokeDescription": "{{email}} 将立即恢复为免费方案。",
+    "revokeBillingWarning": "此操作不会取消有效的 Stripe 订阅。撤销访问权限前请确认账单状态。",
+    "confirmRevoke": "撤销访问权限",
+    "cancel": "取消",
+    "grantSuccess": "已向 {{email}} 授予 {{plan}} 访问权限。",
+    "revokeSuccess": "{{email}} 已恢复为免费方案。"
   },
   "pwaInstallBanner": {
     "title": "安装 Get Phame",

@@ -477,6 +477,8 @@ export const accessCodes = pgTable("access_codes", {
   usedCount: integer("usedCount").default(0).notNull(),
   active: integer("active").default(1).notNull(), // 1 = active, 0 = revoked
   expiresAt: bigint("expiresAt", { mode: "number" }), // Unix ms, null = never expires
+  grantDurationValue: integer("grant_duration_value"), // null only for lifetime or legacy codes
+  grantDurationUnit: varchar("grant_duration_unit", { length: 16 }), // day | month | lifetime
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 

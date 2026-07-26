@@ -1883,7 +1883,11 @@
     "includedLabel": "Incluso",
     "planFeaturesLabel": "Funzionalità del piano {{plan}}",
     "approximateThb": "≈ {{amount}} THB",
-    "previousPrice": "Prima {{amount}}"
+    "guidance": {
+      "monthly": "Ideale per la flessibilità a breve termine.",
+      "annual": "Il miglior valore ricorrente, circa $24.17 al mese.",
+      "lifetime": "Il miglior valore a lungo termine: $349 una volta, senza rinnovi."
+    }
   },
   "accessCode": {
     "title": "Hai un codice di accesso?",
@@ -1892,7 +1896,21 @@
     "applying": "Applicazione...",
     "success": "Codice applicato! Accesso sbloccato.",
     "error": "Codice non valido o scaduto.",
-    "label": "Codice di Accesso"
+    "label": "Codice di Accesso",
+    "grantDurationLabel": "Accesso concesso dopo il riscatto",
+    "grantUnitLabel": "Unità di durata",
+    "grantValueLabel": "Valore della durata",
+    "durationError": "Inserisci una durata compresa tra 1 e {{limit}}.",
+    "durationHelper": "Il periodo di accesso inizia quando il cliente riscatta il codice.",
+    "lifetimeHelper": "Il codice concede accesso a pagamento permanente.",
+    "grantLifetime": "Concede accesso a vita",
+    "grantDuration": "Concede {{value}} {{unit}}",
+    "grantLegacy": "Accesso Pro illimitato precedente",
+    "units": {
+      "day": "giorni",
+      "month": "mesi",
+      "lifetime": "A vita"
+    }
   },
   "socialProof": {
     "title": "Amato da migliaia di aziende",
@@ -2418,6 +2436,27 @@
     "typeCombine": "Digitare COMBINE per confermare",
     "typeDelete": "Digitare DELETE per confermare",
     "typeEmailToRemoveSmtp": "Digitare {{email}} per confermare"
+  },
+  "adminSubscription": {
+    "grant": "Concedi abbonamento",
+    "grantTitle": "Concedi accesso in abbonamento",
+    "grantDescription": "Scegli per quanto tempo {{email}} deve ricevere l'accesso a pagamento.",
+    "durationLabel": "Durata dell'abbonamento",
+    "monthly": "Mensile",
+    "monthlyDescription": "Accesso a pagamento per un mese di calendario",
+    "annual": "Annuale",
+    "annualDescription": "Accesso a pagamento per un anno di calendario",
+    "lifetime": "A vita",
+    "lifetimeDescription": "Accesso a pagamento permanente senza scadenza",
+    "confirmGrant": "Concedi accesso",
+    "revoke": "Revoca accesso",
+    "revokeTitle": "Revocare l'accesso a pagamento?",
+    "revokeDescription": "{{email}} tornerà immediatamente al piano Gratuito.",
+    "revokeBillingWarning": "Questa azione non annulla un abbonamento Stripe attivo. Verifica lo stato di fatturazione prima di revocare l'accesso.",
+    "confirmRevoke": "Revoca accesso",
+    "cancel": "Annulla",
+    "grantSuccess": "{{email}} ha ricevuto l'accesso {{plan}}.",
+    "revokeSuccess": "{{email}} è tornato al piano Gratuito."
   },
   "pwaInstallBanner": {
     "title": "Installa Get Phame",

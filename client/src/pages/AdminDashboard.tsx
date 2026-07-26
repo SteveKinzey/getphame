@@ -63,6 +63,26 @@ const CAPTION_LANGUAGE_LABELS = [
 ] as const;
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+
+type SubscriptionPlan = "monthly" | "annual" | "lifetime";
 
 export default function AdminDashboard() {
   const { t } = useTranslation("translation");
@@ -75,6 +95,9 @@ export default function AdminDashboard() {
   const [onboardingFunnelPeriod, setOnboardingFunnelPeriod] = useState<"7" | "30" | "90" | "custom">("30");
   const [onboardingFunnelStartDate, setOnboardingFunnelStartDate] = useState("");
   const [onboardingFunnelEndDate, setOnboardingFunnelEndDate] = useState("");
+  const [grantTarget, setGrantTarget] = useState<{ email: string; name: string | null } | null>(null);
+  const [grantPlan, setGrantPlan] = useState<SubscriptionPlan>("monthly");
+  const [revokeTarget, setRevokeTarget] = useState<{ email: string; name: string | null } | null>(null);
   const supportMetricsInput = useMemo(
     () => supportReportStartDate && supportReportEndDate
       ? { startDate: supportReportStartDate, endDate: supportReportEndDate }
@@ -192,12 +215,29 @@ export default function AdminDashboard() {
     { enabled: !!user && debouncedSearch.trim().length >= 2 }
   );
 
-  const setTier = trpc.admin.setTier.useMutation({
-    onSuccess: (_data, vars) => {
-      toast.success(`Tier updated to ${vars.tier}`);
+  const grantSubscription = trpc.admin.grantSubscription.useMutation({
+    onSuccess: (result) => {
+      toast.success(t("adminSubscription.grantSuccess", {
+        defaultValue: "{{plan}} access granted to {{email}}.",
+        plan: t(`adminSubscription.${result.plan}`),
+        email: result.email,
+      }));
+      setGrantTarget(null);
       utils.admin.searchUsers.invalidate();
     },
-    onError: (err) => toast.error(err.message || "Failed to update tier"),
+    onError: (err) => toast.error(err.message),
+  });
+
+  const revokeSubscription = trpc.admin.revokeSubscription.useMutation({
+    onSuccess: (result) => {
+      toast.success(t("adminSubscription.revokeSuccess", {
+        defaultValue: "Paid access revoked for {{email}}.",
+        email: result.email,
+      }));
+      setRevokeTarget(null);
+      utils.admin.searchUsers.invalidate();
+    },
+    onError: (err) => toast.error(err.message),
   });
 
   const retestSmtp = trpc.admin.retestUserSmtp.useMutation({
@@ -1045,32 +1085,33 @@ export default function AdminDashboard() {
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <select
-                          value={u.tier ?? "free"}
-                          disabled={setTier.isPending}
-                          onChange={e => setTier.mutate({ userId: u.id, tier: e.target.value as "free" | "pro" | "annual" | "lifetime" })}
-                          className="text-xs font-bold rounded-lg px-2 py-1 outline-none cursor-pointer"
-                          style={{
-                            background: u.tier === "lifetime"
-                              ? "oklch(0.92 0.08 150)"
-                              : u.tier === "annual" || u.tier === "pro"
-                                ? "oklch(0.95 0.08 80)"
-                                : "oklch(0.93 0.02 260)",
-                            color: u.tier === "lifetime"
-                              ? "oklch(0.35 0.15 150)"
-                              : u.tier === "annual" || u.tier === "pro"
-                                ? "oklch(0.45 0.15 80)"
-                                : "oklch(0.45 0.04 260)",
-                            border: "none",
-                          }}
-                        >
-                          <option value="free">free</option>
-                          <option value="pro">pro</option>
-                          <option value="annual">annual</option>
-                          <option value="lifetime">lifetime</option>
-                        </select>
-                        {setTier.isPending && <Loader2 size={10} className="animate-spin rr-text-navy-muted" />}
+                      <div className="flex flex-wrap items-center justify-end gap-1.5">
+                        <span className="rounded-lg bg-[oklch(0.93_0.02_260)] px-2 py-1 text-xs font-bold rr-text-navy-mid">
+                          {u.tier ?? "free"}
+                        </span>
+                        {u.email && (
+                          <>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setGrantPlan("monthly");
+                                setGrantTarget({ email: u.email!, name: u.name });
+                              }}
+                              className="rounded-lg bg-[oklch(0.80_0.18_80)] px-2.5 py-1.5 text-xs font-black text-[#061a3a] transition-transform active:scale-[0.97]"
+                            >
+                              {t("adminSubscription.grant", { defaultValue: "Grant Subscription" })}
+                            </button>
+                            {u.tier !== "free" && (
+                              <button
+                                type="button"
+                                onClick={() => setRevokeTarget({ email: u.email!, name: u.name })}
+                                className="rounded-lg border border-red-300/60 bg-red-50 px-2.5 py-1.5 text-xs font-black text-red-700 transition-transform active:scale-[0.97]"
+                              >
+                                {t("adminSubscription.revoke", { defaultValue: "Revoke Access" })}
+                              </button>
+                            )}
+                          </>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -1147,6 +1188,91 @@ export default function AdminDashboard() {
           </>
         )}
       </div>
+
+      <Dialog open={grantTarget !== null} onOpenChange={(open) => !open && setGrantTarget(null)}>
+        <DialogContent className="border-white/15 rr-bg-navy text-white sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-white">
+              {t("adminSubscription.grantTitle", { defaultValue: "Grant Subscription" })}
+            </DialogTitle>
+            <DialogDescription className="text-white/70">
+              {t("adminSubscription.grantDescription", {
+                defaultValue: "Choose the access period for {{email}}.",
+                email: grantTarget?.email ?? "",
+              })}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-2" role="group" aria-label={t("adminSubscription.durationLabel", { defaultValue: "Subscription period" })}>
+            {(["monthly", "annual", "lifetime"] as const).map((plan) => (
+              <button
+                key={plan}
+                type="button"
+                aria-pressed={grantPlan === plan}
+                onClick={() => setGrantPlan(plan)}
+                className={`flex min-h-12 items-center justify-between gap-4 rounded-xl border px-4 py-3 text-left text-sm font-bold transition-colors ${
+                  grantPlan === plan
+                    ? "border-[oklch(0.80_0.18_80)] bg-[oklch(0.27_0.10_260)] rr-text-gold"
+                    : "border-white/15 bg-white/5 text-white hover:border-white/35"
+                }`}
+              >
+                <span>{t(`adminSubscription.${plan}`)}</span>
+                <span className="text-right text-xs font-semibold text-white/60">
+                  {t(`adminSubscription.${plan}Description`)}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <DialogFooter>
+            <button
+              type="button"
+              onClick={() => setGrantTarget(null)}
+              className="rounded-xl border border-white/20 px-4 py-2.5 text-sm font-bold text-white"
+            >
+              {t("common.cancel", { defaultValue: "Cancel" })}
+            </button>
+            <button
+              type="button"
+              disabled={!grantTarget || grantSubscription.isPending}
+              onClick={() => grantTarget && grantSubscription.mutate({ email: grantTarget.email, plan: grantPlan })}
+              className="flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-black disabled:opacity-60 rr-bg-gold rr-text-navy"
+            >
+              {grantSubscription.isPending && <Loader2 size={14} className="animate-spin" />}
+              {t("adminSubscription.confirmGrant", { defaultValue: "Grant Access" })}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <AlertDialog open={revokeTarget !== null} onOpenChange={(open) => !open && setRevokeTarget(null)}>
+        <AlertDialogContent className="border-white/15 rr-bg-navy text-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-white">
+              {t("adminSubscription.revokeTitle", { defaultValue: "Revoke paid access?" })}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-white/70">
+              {t("adminSubscription.revokeDescription", {
+                defaultValue: "{{email}} will return to the Free tier immediately. This does not issue a refund or cancel billing in Stripe.",
+                email: revokeTarget?.email ?? "",
+              })}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white">
+              {t("common.cancel", { defaultValue: "Cancel" })}
+            </AlertDialogCancel>
+            <AlertDialogAction
+              disabled={!revokeTarget || revokeSubscription.isPending}
+              onClick={() => revokeTarget && revokeSubscription.mutate({ email: revokeTarget.email })}
+              className="bg-red-600 font-black text-white hover:bg-red-700"
+            >
+              {revokeSubscription.isPending && <Loader2 size={14} className="animate-spin" />}
+              {t("adminSubscription.confirmRevoke", { defaultValue: "Revoke Access" })}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

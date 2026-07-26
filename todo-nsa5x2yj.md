@@ -274,7 +274,7 @@
 - [x] Audit all website source, generated bundles, service-worker rules, public configuration, and representative live routes for media that depends on expiring signed URLs; migrate every public asset to durable CDN delivery while preserving authorization for private user media.
 - [x] Enhance the homepage walkthrough card with an accessible custom play overlay and subtle pointer hover treatment that respects reduced motion and preserves captions, keyboard operation, mobile behavior, and existing layout.
 - [ ] Add focused regressions, run the full Vitest/TypeScript/dependency-audit/production-build gates, verify desktop and mobile media behavior, checkpoint the release, and synchronize the exact tree through protected GitHub `main`.
-- [ ] Reapply and reconcile the completed Cloudbase pricing/admin-access routine on top of the durable-media release: localized monthly/annual/lifetime access grants, persisted duration metadata, `$349` lifetime pricing, responsive upgrade guidance, and regression coverage.
-- [ ] Apply and verify the additive access-code duration migration against the managed database without duplicating columns or losing existing data.
-- [ ] Run focused and full release gates on the final combined tree, including Vitest, TypeScript, production dependency audit, production build, and desktop/mobile verification.
+- [x] Reapply and reconcile the completed Cloudbase pricing/admin-access routine on top of the durable-media release: localized monthly/annual/lifetime access grants, persisted duration metadata, `$349` lifetime pricing, responsive upgrade guidance, and regression coverage.
+- [x] Apply and verify the additive access-code duration migration against the managed database without duplicating columns or losing existing data.
+- [x] Run focused and full release gates on the final combined tree, including Vitest, TypeScript, production dependency audit, production build, and desktop/mobile verification.
 - [ ] Save the validated replacement checkpoint, verify the live deployment, and synchronize the exact released tree through protected GitHub `main` without force-pushing or overwriting unrelated work.

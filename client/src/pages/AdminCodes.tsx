@@ -17,8 +17,12 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+
+type AccessCodeGrantUnit = "day" | "month" | "lifetime";
 
 export default function AdminCodesPage() {
+  const { t } = useTranslation("translation");
   const { user, loading } = useAuth();
   const [, navigate] = useLocation();
 
@@ -26,6 +30,8 @@ export default function AdminCodesPage() {
   const [maxUses, setMaxUses] = useState<string>("");
   const [customCode, setCustomCode] = useState("");
   const [expiryDays, setExpiryDays] = useState<string>("");
+  const [grantDurationUnit, setGrantDurationUnit] = useState<AccessCodeGrantUnit>("month");
+  const [grantDurationValue, setGrantDurationValue] = useState<string>("1");
 
   const { data: codes, isLoading: codesLoading, refetch } = trpc.accessCodes.list.useQuery(
     undefined,
@@ -46,6 +52,8 @@ export default function AdminCodesPage() {
       setMaxUses("");
       setCustomCode("");
       setExpiryDays("");
+      setGrantDurationUnit("month");
+      setGrantDurationValue("1");
       utils.accessCodes.list.invalidate();
       refreshPreview();
     },
@@ -73,11 +81,24 @@ export default function AdminCodesPage() {
     const parsedExpiry = expiryDays.trim()
       ? Date.now() + parseInt(expiryDays, 10) * 24 * 60 * 60 * 1000
       : null;
+    const parsedGrantDuration = grantDurationUnit === "lifetime"
+      ? null
+      : parseInt(grantDurationValue, 10);
+    const durationLimit = grantDurationUnit === "day" ? 365 : 24;
+    if (grantDurationUnit !== "lifetime" && (!Number.isInteger(parsedGrantDuration) || parsedGrantDuration! < 1 || parsedGrantDuration! > durationLimit)) {
+      toast.error(t("accessCode.durationError", {
+        defaultValue: "Enter a duration between 1 and {{limit}}.",
+        limit: durationLimit,
+      }));
+      return;
+    }
     createCode.mutate({
       code: customCode.trim() || undefined,
       note: note.trim() || undefined,
       maxUses: parsedMaxUses,
       expiresAt: parsedExpiry,
+      grantDurationValue: parsedGrantDuration,
+      grantDurationUnit,
     });
   }
 
@@ -242,6 +263,44 @@ export default function AdminCodesPage() {
               </div>
             </div>
 
+            <div>
+              <label className="text-sm font-bold mb-1 block text-white/80">
+                {t("accessCode.grantDurationLabel", { defaultValue: "Access granted after redemption" })}
+              </label>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <select
+                  value={grantDurationUnit}
+                  onChange={(event) => setGrantDurationUnit(event.target.value as AccessCodeGrantUnit)}
+                  className="w-full rounded-xl px-4 py-3 text-sm font-bold outline-none rr-bg-navy text-white"
+                  style={{ border: "1px solid rgba(255,255,255,0.15)" }}
+                  aria-label={t("accessCode.grantUnitLabel", { defaultValue: "Grant duration unit" })}
+                >
+                  <option value="day">{t("accessCode.units.day", { defaultValue: "Days" })}</option>
+                  <option value="month">{t("accessCode.units.month", { defaultValue: "Months" })}</option>
+                  <option value="lifetime">{t("accessCode.units.lifetime", { defaultValue: "Lifetime" })}</option>
+                </select>
+                {grantDurationUnit !== "lifetime" && (
+                  <input
+                    type="number"
+                    min={1}
+                    max={grantDurationUnit === "day" ? 365 : 24}
+                    value={grantDurationValue}
+                    onChange={(event) => setGrantDurationValue(event.target.value)}
+                    className="w-full rounded-xl px-4 py-3 text-sm outline-none rr-bg-navy text-white"
+                    style={{ border: "1px solid rgba(255,255,255,0.15)" }}
+                    aria-label={t("accessCode.grantValueLabel", { defaultValue: "Grant duration value" })}
+                  />
+                )}
+              </div>
+              <p className="mt-1.5 text-xs font-semibold text-white/55">
+                {grantDurationUnit === "lifetime"
+                  ? t("accessCode.lifetimeHelper", { defaultValue: "The code grants permanent paid access." })
+                  : t("accessCode.durationHelper", {
+                      defaultValue: "The access period starts when the customer redeems the code.",
+                    })}
+              </p>
+            </div>
+
             <button
               onClick={handleCreate}
               disabled={createCode.isPending}
@@ -339,6 +398,17 @@ export default function AdminCodesPage() {
                               Expires {new Date(c.expiresAt).toLocaleDateString()}
                             </span>
                           )}
+                          <span className="rr-text-gold">
+                            {c.grantDurationUnit === "lifetime"
+                              ? t("accessCode.grantLifetime", { defaultValue: "Grants lifetime access" })
+                              : c.grantDurationUnit && c.grantDurationValue
+                                ? t("accessCode.grantDuration", {
+                                    defaultValue: "Grants {{value}} {{unit}}",
+                                    value: c.grantDurationValue,
+                                    unit: t(`accessCode.units.${c.grantDurationUnit}`),
+                                  })
+                                : t("accessCode.grantLegacy", { defaultValue: "Legacy unlimited Pro access" })}
+                          </span>
                           <span>Created {new Date(c.createdAt).toLocaleDateString()}</span>
                         </div>
                       </div>
