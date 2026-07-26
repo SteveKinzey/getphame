@@ -21,6 +21,10 @@ describe("admin GitHub cleanup showcase UI", () => {
     expect(page).toContain('if (!authLoading && user && !isAdmin) navigate("/")');
     expect(page).toContain("if (!isAdmin) return null");
     expect(page).toContain("trpc.githubCleanupShowcase.dashboard.useQuery");
+    expect(page).toContain("data.snapshot.treeSha.slice(0, 7)");
+    expect(page).toContain("data.workstreams.map");
+    expect(page).not.toContain("/manus-storage/");
+    expect(page).not.toContain("data.visuals");
     expect(dashboard).toContain('path: "/admin/github-cleanup"');
   });
 
@@ -33,5 +37,10 @@ describe("admin GitHub cleanup showcase UI", () => {
       expect(catalog.adminGithubCleanup?.metrics?.extraction?.title).toBeTypeOf("string");
       expect(catalog.adminGithubCleanup?.script?.copy).toBeTypeOf("string");
     }
+
+    const simplifiedChinese = JSON.parse(read("client/public/locales/zh-CN/translation.json"));
+    expect(simplifiedChinese.adminGithubCleanup.stats.openPrs).toBe("未关闭的拉取请求");
+    expect(simplifiedChinese.adminGithubCleanup.workstreams.helpAssistant.title).toBe("全局公开帮助助手");
+    expect(simplifiedChinese.adminGithubCleanup.workstreams.sourcesWoo.title).toBe("同意优先的来源与 WooCommerce");
   });
 });

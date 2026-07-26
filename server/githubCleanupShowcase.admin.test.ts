@@ -39,7 +39,8 @@ describe("admin GitHub cleanup showcase", () => {
       namedBranches: 2,
     });
     expect(result.workstreams.map((item) => item.priority)).toEqual([1, 2, 3, 4]);
-    expect(result.visuals.ancestryUrl).toMatch(/^\/manus-storage\//);
+    expect(result.divergence).toMatchObject({ commitsAhead: 27, commitsBehindMain: 96, branchOnlyFiles: 20 });
+    expect(JSON.stringify(result)).not.toContain("/manus-storage/");
     expect(result.script.scenes).toHaveLength(8);
   });
 });

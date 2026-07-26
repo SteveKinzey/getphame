@@ -262,3 +262,5 @@
 - [x] Verify the page at desktop, tablet, and mobile breakpoints, including non-admin denial behavior and accessible visualization presentation.
 - [ ] Create a validated checkpoint release, then synchronize the exact released tree to `SteveKinzey/getphame` through a history-preserving release branch, pull request, required checks, merge, and remote-tree verification.
 - [ ] Deliver the updated installable skill, metric explanation, presentation script, live admin page, visualization assets, and release verification.
+- [x] Replace publicly addressable `/manus-storage/` visualization keys with accessible native diagrams rendered exclusively from the administrator-protected showcase payload, and add a focused regression that prevents storage-key reintroduction.
+- [ ] Translate the remaining English `zh-CN` showcase labels identified in pull request 10, re-run localization coverage, and resolve every blocking review conversation with evidence.
