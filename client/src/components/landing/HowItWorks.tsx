@@ -1,30 +1,29 @@
 import { ArrowRight } from "lucide-react";
 import FadeUp, { StaggerChildren } from "./FadeUp";
 import { useTranslation } from "react-i18next";
-
 export default function HowItWorks() {
   const { t } = useTranslation();
 
   const steps = [
     {
       number: "1",
-      title: t("landing.howItWorks.setupSteps.step1.title", { defaultValue: "Connect your email" }),
-      description: t("landing.howItWorks.setupSteps.step1.description", { defaultValue: "Link your Gmail, Outlook, or any SMTP email in 60 seconds. Credentials encrypted with AES-256." }),
+      title: t("howItWorks.s1Title", { defaultValue: "Connect your email" }),
+      description: t("howItWorks.s1Desc", { defaultValue: "Link your Gmail, Outlook, or any SMTP email in 60 seconds. Credentials encrypted with AES-256." }),
     },
     {
       number: "2",
-      title: t("landing.howItWorks.setupSteps.step2.title", { defaultValue: "Add your review link" }),
-      description: t("landing.howItWorks.setupSteps.step2.description", { defaultValue: "Paste your Google, Yelp, TripAdvisor, or any review platform link. Switch platforms anytime." }),
+      title: t("howItWorks.s2Title", { defaultValue: "Add your review link" }),
+      description: t("howItWorks.s2Desc", { defaultValue: "Paste your Google, Yelp, TripAdvisor, or any review platform link. Switch platforms anytime." }),
     },
     {
       number: "3",
-      title: t("landing.howItWorks.setupSteps.step3.title", { defaultValue: "Import your customers" }),
-      description: t("landing.howItWorks.setupSteps.step3.description", { defaultValue: "Upload a CSV, sync from WooCommerce, or add contacts manually. We validate emails automatically." }),
+      title: t("howItWorks.s3Title", { defaultValue: "Import your customers" }),
+      description: t("howItWorks.s3Desc", { defaultValue: "Upload a CSV, sync from WooCommerce, or add contacts manually. We validate emails automatically." }),
     },
     {
       number: "4",
-      title: t("landing.howItWorks.setupSteps.step4.title", { defaultValue: "Send & track results" }),
-      description: t("landing.howItWorks.setupSteps.step4.description", { defaultValue: "Hit send. Each customer gets a personal email from you. Track opens, clicks, and new reviews live." }),
+      title: t("howItWorks.s4Title", { defaultValue: "Send & track results" }),
+      description: t("howItWorks.s4Desc", { defaultValue: "Hit send. Each customer gets a personal email from you. Track opens, clicks, and new reviews live." }),
     },
   ];
 
@@ -37,23 +36,23 @@ export default function HowItWorks() {
           {/* Left — sticky headline */}
           <FadeUp className="lg:col-span-2 lg:sticky lg:top-28">
             <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
-              {t("landing.howItWorks.setupInSteps", { defaultValue: "Setup in 4 steps" })}
+              {t("howItWorks.tagline", { defaultValue: "Setup in 4 steps" })}
             </p>
             <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
-              {t("landing.howItWorks.headline", { defaultValue: "Two minutes to your first review request" })}
+              {t("howItWorks.headline", { defaultValue: "Two minutes to your first review request" })}
             </h2>
             <p className="text-lg text-slate-200 font-medium mb-8">
-              {t("landing.howItWorks.subtitle", { defaultValue: "No technical skills needed. No onboarding calls. Just connect, import, and send." })}
+              {t("howItWorks.subheadline", { defaultValue: "No technical skills needed. No onboarding calls. Just connect, import, and send." })}
             </p>
             <a
               href="/onboarding"
               className="inline-flex items-center gap-2 px-7 py-4 bg-primary text-primary-foreground font-bold text-base rounded-xl hover:brightness-110 transition-all duration-200 active:scale-[0.97] shadow-[0_0_30px_oklch(0.78_0.15_75/0.2)]"
             >
-              {t("landing.howItWorks.getStartedButton", { defaultValue: "Get Started Free" })}
+              {t("howItWorks.cta", { defaultValue: "Get Started Free" })}
               <ArrowRight size={18} />
             </a>
             <p className="text-sm text-slate-300 font-medium mt-3">
-              {t("landing.howItWorks.setupTime", { defaultValue: "Takes less than 2 minutes to set up" })}
+              {t("howItWorks.setupTime", { defaultValue: "Takes less than 2 minutes to set up" })}
             </p>
           </FadeUp>
 

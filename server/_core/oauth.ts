@@ -1,8 +1,7 @@
-import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
-import { ENV } from "./env";
+import { COOKIE_NAME, ONE_YEAR_MS, OAUTH_STATE_COOKIE, decodeOAuthState } from "@shared/const";
+import { parse as parseCookieHeader } from "cookie";
 import type { Express, Request, Response } from "express";
 import * as db from "../db";
-import { sendUserWelcomeEmail } from "../smtp";
 import { getSessionCookieOptions } from "./cookies";
 import { sdk } from "./sdk";
 
@@ -21,6 +20,17 @@ export function registerOAuthRoutes(app: Express) {
       return;
     }
 
+    // CSRF guard: the nonce in `state` must match the one-time cookie that
+    // startLogin set in the browser that began this login. An attacker can
+    // forge `state`, but cannot plant this cookie in the victim's browser.
+    const { nonce } = decodeOAuthState(state);
+    const expectedNonce = parseCookieHeader(req.headers.cookie ?? "")[OAUTH_STATE_COOKIE];
+    if (!nonce || nonce !== expectedNonce) {
+      res.status(403).json({ error: "invalid oauth state" });
+      return;
+    }
+    res.clearCookie(OAUTH_STATE_COOKIE, { path: "/", secure: true, sameSite: "none" });
+
     try {
       const tokenResponse = await sdk.exchangeCodeForToken(code, state);
       const userInfo = await sdk.getUserInfo(tokenResponse.accessToken);
@@ -30,10 +40,6 @@ export function registerOAuthRoutes(app: Express) {
         return;
       }
 
-      // Check if this is a new user before upserting
-      const existingUser = await db.getUserByOpenId(userInfo.openId);
-      const isNewUser = !existingUser;
-
       await db.upsertUser({
         openId: userInfo.openId,
         name: userInfo.name || null,
@@ -41,20 +47,6 @@ export function registerOAuthRoutes(app: Express) {
         loginMethod: userInfo.loginMethod ?? userInfo.platform ?? null,
         lastSignedIn: new Date(),
       });
-
-      // Send welcome email to new users (fire-and-forget, non-blocking)
-      if (isNewUser && userInfo.email) {
-        const ownerUser = await db.getUserByOpenId(ENV.ownerOpenId);
-        if (ownerUser) {
-          sendUserWelcomeEmail({
-            ownerUserId: ownerUser.id,
-            toEmail: userInfo.email,
-            toName: userInfo.name || null,
-          }).catch((err: unknown) => {
-            console.warn("[OAuth] Welcome email failed (non-fatal):", err);
-          });
-        }
-      }
 
       const sessionToken = await sdk.createSessionToken(userInfo.openId, {
         name: userInfo.name || "",

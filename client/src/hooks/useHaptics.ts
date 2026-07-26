@@ -9,12 +9,9 @@
  *  - Exposes `hapticEnabled` boolean and `setHapticEnabled(bool)` for the Settings toggle
  */
 
-import { Capacitor } from "@capacitor/core";
-import { Haptics, NotificationType } from "@capacitor/haptics";
 import { useCallback, useEffect, useState } from "react";
 
 const STORAGE_KEY = "rr_haptics_enabled";
-const HAPTIC_PREFERENCE_EVENT = "getphame:haptic-preference-change";
 
 // ── Vibration patterns (ms) ──────────────────────────────────────────────────
 // Format: [vibrate, pause, vibrate, pause, ...]
@@ -41,10 +38,6 @@ function canVibrate(): boolean {
   );
 }
 
-function canUseNativeHaptics(): boolean {
-  return typeof window !== "undefined" && Capacitor.isNativePlatform();
-}
-
 function readPref(): boolean {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -65,26 +58,17 @@ export function useHaptics() {
       // ignore storage errors in private mode
     }
     setHapticEnabledState(enabled);
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new Event(HAPTIC_PREFERENCE_EVENT));
-    }
   }, []);
 
-  // Keep state in sync across hook instances in this tab and across other tabs.
+  // Keep state in sync if another tab changes the preference
   useEffect(() => {
-    const storageHandler = (e: StorageEvent) => {
+    const handler = (e: StorageEvent) => {
       if (e.key === STORAGE_KEY && e.newValue !== null) {
         setHapticEnabledState(e.newValue === "true");
       }
     };
-    const preferenceHandler = () => setHapticEnabledState(readPref());
-
-    window.addEventListener("storage", storageHandler);
-    window.addEventListener(HAPTIC_PREFERENCE_EVENT, preferenceHandler);
-    return () => {
-      window.removeEventListener("storage", storageHandler);
-      window.removeEventListener(HAPTIC_PREFERENCE_EVENT, preferenceHandler);
-    };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
   }, []);
 
   const vibrate = useCallback(
@@ -99,20 +83,6 @@ export function useHaptics() {
     [hapticEnabled]
   );
 
-  const recoverySuccessHaptic = useCallback(() => {
-    if (!hapticEnabled || typeof window === "undefined") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    if (canUseNativeHaptics()) {
-      void Haptics.notification({ type: NotificationType.Success }).catch(
-        () => undefined
-      );
-      return;
-    }
-
-    vibrate("success");
-  }, [hapticEnabled, vibrate]);
-
   return {
     hapticEnabled,
     setHapticEnabled,
@@ -123,6 +93,5 @@ export function useHaptics() {
     successHaptic: () => vibrate("success"),
     emailOpenedHaptic: () => vibrate("emailOpened"),
     reviewPostedHaptic: () => vibrate("reviewPosted"),
-    recoverySuccessHaptic,
   };
 }

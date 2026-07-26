@@ -6,7 +6,6 @@
  * If system SMTP is not configured the function returns { sent: false } — non-fatal.
  */
 import nodemailer from "nodemailer";
-import { renderGetPhameEmailHeader } from "./platformEmailBrand";
 
 interface SystemSmtpConfig {
   host: string;
@@ -41,7 +40,13 @@ function buildDeletionEmailHtml(name: string): string {
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
           <!-- Header -->
-          ${renderGetPhameEmailHeader()}
+          <tr>
+            <td style="background:#0f1f3d;padding:32px 40px;text-align:center;">
+              <p style="margin:0;font-size:22px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">
+                <span style="color:#f5a623;">GET</span>PHAME
+              </p>
+            </td>
+          </tr>
           <!-- Body -->
           <tr>
             <td style="padding:40px 40px 32px;">

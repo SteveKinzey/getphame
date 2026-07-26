@@ -27,7 +27,6 @@ import { getDb } from "./db";
 import * as db from "./db";
 import { magicLinkTokens } from "../drizzle/schema";
 import { getSmtpCredentials, createTransporter, decryptPassword } from "./smtp";
-import { renderGetPhameEmailHeader } from "./platformEmailBrand";
 
 const MAGIC_LINK_EXPIRY_MS = 15 * 60 * 1000; // 15 minutes
 
@@ -86,7 +85,12 @@ async function sendMagicLinkEmail(opts: {
     <tr>
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
-          ${renderGetPhameEmailHeader("Your sign-in link")}
+          <tr>
+            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
+              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
+              <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">Your sign-in link ✨</h1>
+            </td>
+          </tr>
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi there,</p>

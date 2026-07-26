@@ -1,369 +1,310 @@
-import { useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import {
-  Braces,
-  ChevronDown,
-  ChevronUp,
-  Copy,
-  ExternalLink,
-  FileJson,
-  ShieldCheck,
-} from "lucide-react";
+/**
+ * IntegrationGuide
+ *
+ * Shows the two Phame API endpoints and step-by-step instructions
+ * for each supported WordPress form builder:
+ *   - Elementor Forms
+ *   - Gravity Forms
+ *   - WS Form
+ *   - Fluent Forms
+ *
+ * Also shows a generic HTML/JS snippet for any custom form.
+ */
+
+import { useState } from "react";
+import { Copy, ChevronDown, ChevronUp, Zap, Users } from "lucide-react";
 import { toast } from "sonner";
 
 const BASE_URL = "https://getphame.app";
-const CONTACTS_ENDPOINT = `${BASE_URL}/api/v1/contacts`;
-const API_KEY_PLACEHOLDER = "<YOUR_GET_PHAME_API_KEY>";
 
-type FormBuilder = "wsform" | "gravity" | "fluent" | "elementor" | "generic" | "curl";
+type FormBuilder = "elementor" | "gravity" | "wsform" | "fluent" | "custom";
 
 interface Props {
+  /** Pass the user's first active key if available so snippets are pre-filled */
+  apiKeyRaw?: string;
   showSnippet: boolean;
-  setShowSnippet: (value: boolean) => void;
+  setShowSnippet: (v: boolean) => void;
 }
 
-interface BuilderGuide {
-  label: string;
-  summary: string;
-  sourceApp: string;
-  documentationUrl?: string;
-  steps: string[];
-  fieldMap?: Array<[string, string]>;
-  example: string;
-  caution?: string;
-}
-
-async function copyText(value: string, successMessage: string, errorMessage: string) {
-  try {
-    await navigator.clipboard.writeText(value);
-    toast.success(successMessage);
-  } catch {
-    toast.error(errorMessage);
-  }
-}
-
-function CodeBlock({ code, label }: { code: string; label: string }) {
-  const { t } = useTranslation();
+function CodeBlock({ code, label }: { code: string; label?: string }) {
   return (
-    <div className="relative mt-3">
-      <p className="mb-1.5 text-xs font-black rr-text-navy">{label}</p>
-      <pre className="max-h-[28rem] overflow-auto whitespace-pre-wrap break-words rounded-2xl bg-[oklch(0.18_0.06_260)] p-4 pr-12 font-mono text-xs leading-6 text-slate-100">
+    <div className="relative mt-2">
+      {label && (
+        <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.35 0.04 260)", fontWeight: "bold" }}>
+          {label}
+        </p>
+      )}
+      <pre
+        className="text-xs rounded-xl p-3 overflow-x-auto"
+        style={{
+          background: "oklch(0.18 0.06 260)",
+          color: "oklch(0.95 0.02 260)",
+          fontSize: "13px",
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-all",
+          fontFamily: "monospace",
+        }}
+      >
         {code}
       </pre>
       <button
-        type="button"
-        onClick={() => copyText(
-          code,
-          t("developerIntegrations.guides.copied", { defaultValue: "Example copied." }),
-          t("developerIntegrations.copyFailed", { defaultValue: "Could not copy automatically. Select and copy the value manually." }),
-        )}
-        className="absolute right-2 top-7 inline-flex min-h-9 items-center gap-1 rounded-lg bg-white/10 px-2 text-xs font-black rr-text-gold transition hover:bg-white/15 active:scale-[0.97]"
-        aria-label={t("developerIntegrations.guides.copyExample", { defaultValue: "Copy example" })}
+        onClick={() => {
+          navigator.clipboard.writeText(code);
+          toast.success("Copied!");
+        }}
+        className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold"
+        style={{ background: "oklch(0.30 0.08 260)", color: "oklch(0.80 0.18 80)" }}
       >
-        <Copy size={12} aria-hidden="true" />
-        {t("common.copy", { defaultValue: "Copy" })}
+        <Copy size={11} /> Copy
       </button>
     </div>
   );
 }
 
-export function IntegrationGuide({ showSnippet, setShowSnippet }: Props) {
-  const { t } = useTranslation();
-  const [activeBuilder, setActiveBuilder] = useState<FormBuilder>("wsform");
+const FORM_BUILDERS: { id: FormBuilder; label: string; icon: string }[] = [
+  { id: "elementor", label: "Elementor", icon: "⚡" },
+  { id: "gravity", label: "Gravity Forms", icon: "🪐" },
+  { id: "wsform", label: "WS Form", icon: "🔷" },
+  { id: "fluent", label: "Fluent Forms", icon: "🌊" },
+  { id: "custom", label: "Custom / HTML", icon: "💻" },
+];
 
-  const canonicalJson = `{
-  "name": "Jordan Lee",
-  "email": "jordan@example.com",
-  "phone": "+1 555 010 2040",
-  "externalId": "form-submission-1842",
-  "sourceApp": "generic-webhook",
-  "consent": {
-    "confirmed": true,
-    "basis": "customer_relationship",
-    "capturedAt": "2026-07-22T20:00:00.000Z",
-    "source": "Completed-service website form"
+export function IntegrationGuide({ apiKeyRaw, showSnippet, setShowSnippet }: Props) {
+  const [activeBuilder, setActiveBuilder] = useState<FormBuilder>("elementor");
+  const key = apiKeyRaw ?? "rl_YOUR_API_KEY_HERE";
+
+  // ── Snippets ────────────────────────────────────────────────────────────────
+
+  const contactsEndpoint = `${BASE_URL}/api/public/contacts`;
+  const sendEndpoint = `${BASE_URL}/api/public/send`;
+
+  const elementorSteps = `ELEMENTOR FORMS — Step-by-step
+
+1. Edit your page in Elementor.
+2. Add a "Form" widget. Include fields:
+   - Name  (ID: name)
+   - Email (ID: email)
+3. In the Form widget → Actions After Submit → Add Action → "Webhook"
+4. Set Webhook URL to:
+   ${sendEndpoint}
+5. Under "Advanced" → Custom Headers, add:
+   Authorization: Bearer ${key}
+   Content-Type: application/json
+6. Map fields:
+   customerName  → {field_id="name"}
+   customerEmail → {field_id="email"}
+7. Save & publish. Test with a real submission.
+
+Note: Elementor Pro 3.5+ is required for the Webhook action.`;
+
+  const gravitySteps = `GRAVITY FORMS — Step-by-step
+
+1. Create or edit a form. Add fields:
+   - Name  (Admin Label: name)
+   - Email (Admin Label: email)
+2. Go to Form Settings → Notifications → Add New.
+3. Set "Send To" → "Select a Field" → Email field.
+4. Instead of email notification, use the "Webhooks" add-on:
+   - Install: Gravity Forms Webhooks add-on (free).
+   - Go to Form Settings → Webhooks → Add New.
+5. Set:
+   Request URL:    ${sendEndpoint}
+   Request Method: POST
+   Request Format: JSON
+6. Add Request Headers:
+   Authorization   Bearer ${key}
+7. Add Body Fields:
+   customerName  → Name field
+   customerEmail → Email field
+8. Save. Test with a form submission.`;
+
+  const wsformSteps = `WS FORM — Step-by-step
+
+1. Edit your WS Form form. Add fields:
+   - Text field  (Variable: name)
+   - Email field (Variable: email)
+2. Go to the form's Action tab → Add Action → "API".
+3. Set:
+   URL:    ${sendEndpoint}
+   Method: POST
+4. Under Headers, add:
+   Authorization: Bearer ${key}
+   Content-Type: application/json
+5. Under Body (JSON), map:
+   {
+     "customerName":  "#wsf-field-name",
+     "customerEmail": "#wsf-field-email"
+   }
+6. Save and test.`;
+
+  const fluentSteps = `FLUENT FORMS — Step-by-step
+
+1. Edit your Fluent Form. Add fields:
+   - Name  (Field Name: name)
+   - Email (Field Name: email)
+2. Go to Settings → Integrations → Add New Integration → "Webhook".
+3. Set:
+   Webhook URL:    ${sendEndpoint}
+   Request Method: POST
+   Request Format: JSON
+4. Under Request Headers, add:
+   Authorization: Bearer ${key}
+5. Under Body Fields, map:
+   customerName  → {inputs.name}
+   customerEmail → {inputs.email}
+6. Save and test with a form submission.`;
+
+  const customSnippet = `<!-- Custom HTML Form — paste into any page or post -->
+<form id="rl-review-form">
+  <input name="customerName"  placeholder="Customer name"  required />
+  <input name="customerEmail" type="email" placeholder="Email" required />
+  <button type="submit">Submit</button>
+</form>
+
+<script>
+document.getElementById('rl-review-form').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  const res = await fetch('${sendEndpoint}', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${key}'
+    },
+    body: JSON.stringify(data)
+  });
+  const json = await res.json();
+  if (json.success) {
+    alert('Review request sent!');
+    e.target.reset();
+  } else {
+    alert('Error: ' + json.error);
   }
-}`;
+});
+</script>`;
 
-  const flatBuilderJson = `{
-  "name": "<name field>",
-  "email": "<email field>",
-  "externalId": "<stable submission ID>",
-  "sourceApp": "<builder source>",
-  "consentConfirmed": true,
-  "consentBasis": "customer_relationship",
-  "consentSource": "Completed-service website form"
-}`;
-
-  const curlExample = `curl --request POST '${CONTACTS_ENDPOINT}' \\
-  --header 'Authorization: Bearer ${API_KEY_PLACEHOLDER}' \\
-  --header 'Content-Type: application/json' \\
-  --header 'Idempotency-Key: form-submission-1842' \\
-  --data '${canonicalJson.replaceAll("'", "'\\''")}'`;
-
-  const commonHeaders = `Authorization: Bearer ${API_KEY_PLACEHOLDER}
-Content-Type: application/json
-Idempotency-Key: <stable submission or entry ID>`;
-
-  const guides = useMemo<Record<FormBuilder, BuilderGuide>>(() => ({
-    wsform: {
-      label: "WS Form",
-      summary: t("developerIntegrations.guides.wsform.summary", { defaultValue: "Use the Webhook action with JSON field, custom, and header mappings." }),
-      sourceApp: "ws-form",
-      documentationUrl: "https://wsform.com/knowledgebase/webhook/",
-      steps: [
-        t("developerIntegrations.guides.wsform.step1", { defaultValue: "Edit the form, open Actions, add an action, and select Webhook." }),
-        t("developerIntegrations.guides.wsform.step2", { defaultValue: "Set URL of Endpoint to the v1 contact endpoint, Request Method to POST, and Content Type to JSON." }),
-        t("developerIntegrations.guides.wsform.step3", { defaultValue: "Use Field Mapping for name and email. Use Custom Mapping for the static source and consent values shown below." }),
-        t("developerIntegrations.guides.wsform.step4", { defaultValue: "Use Header Mapping for Authorization and Idempotency-Key. Select the form submission identifier for the idempotency value." }),
-        t("developerIntegrations.guides.wsform.step5", { defaultValue: "Keep SSL Verify enabled, save the action, and submit one permitted test record." }),
-      ],
-      fieldMap: [
-        ["name", t("developerIntegrations.guides.map.name", { defaultValue: "Your customer name field" })],
-        ["email", t("developerIntegrations.guides.map.email", { defaultValue: "Your customer email field" })],
-        ["sourceApp", "ws-form"],
-        ["consentConfirmed", "true"],
-        ["consentBasis", "customer_relationship | explicit_opt_in | other"],
-        ["consentSource", t("developerIntegrations.guides.map.consentSource", { defaultValue: "A short description of where consent was captured" })],
-      ],
-      example: `${commonHeaders}\n\n${flatBuilderJson.replace("<builder source>", "ws-form")}`,
-    },
-    gravity: {
-      label: "Gravity Forms",
-      summary: t("developerIntegrations.guides.gravity.summary", { defaultValue: "Create a Webhooks Add-On feed with a JSON request and custom headers." }),
-      sourceApp: "gravity-forms",
-      documentationUrl: "https://docs.gravityforms.com/triggering-webhooks-form-submissions/",
-      steps: [
-        t("developerIntegrations.guides.gravity.step1", { defaultValue: "Install and activate the Gravity Forms Webhooks Add-On, then open Form Settings → Webhooks → Add New." }),
-        t("developerIntegrations.guides.gravity.step2", { defaultValue: "Set Request URL to the v1 contact endpoint, Request Method to POST, and Request Format to JSON." }),
-        t("developerIntegrations.guides.gravity.step3", { defaultValue: "Choose Select Fields and map the fields and static consent values shown below." }),
-        t("developerIntegrations.guides.gravity.step4", { defaultValue: "Add the Authorization header and use the entry ID merge tag as Idempotency-Key." }),
-        t("developerIntegrations.guides.gravity.step5", { defaultValue: "Save the feed and submit one permitted test record. Gravity Forms sets application/json automatically for JSON POST feeds." }),
-      ],
-      fieldMap: [
-        ["name", t("developerIntegrations.guides.map.name", { defaultValue: "Your customer name field" })],
-        ["email", t("developerIntegrations.guides.map.email", { defaultValue: "Your customer email field" })],
-        ["externalId", t("developerIntegrations.guides.map.entryId", { defaultValue: "The Gravity Forms entry ID merge tag" })],
-        ["sourceApp", "gravity-forms"],
-        ["consentConfirmed", "true"],
-        ["consentBasis", "customer_relationship | explicit_opt_in | other"],
-        ["consentSource", t("developerIntegrations.guides.map.consentSource", { defaultValue: "A short description of where consent was captured" })],
-      ],
-      example: `${commonHeaders}\n\n${flatBuilderJson.replace("<builder source>", "gravity-forms")}`,
-    },
-    fluent: {
-      label: "Fluent Forms",
-      summary: t("developerIntegrations.guides.fluent.summary", { defaultValue: "Create a Pro Webhook feed with POST, JSON, headers, and a mapped request body." }),
-      sourceApp: "fluent-forms",
-      documentationUrl: "https://fluentforms.com/docs/how-to-integrate-webhook-with-fluent-forms/",
-      steps: [
-        t("developerIntegrations.guides.fluent.step1", { defaultValue: "Enable the Webhooks integration module, then open the form’s Settings & Integrations → WebHook → Add New." }),
-        t("developerIntegrations.guides.fluent.step2", { defaultValue: "Set Request URL to the v1 contact endpoint, Request Method to POST, and Request Format to JSON." }),
-        t("developerIntegrations.guides.fluent.step3", { defaultValue: "Enable Request Header and add Authorization plus Idempotency-Key using a stable submission identifier." }),
-        t("developerIntegrations.guides.fluent.step4", { defaultValue: "Enable Request Body and map the fields and static consent values shown below." }),
-        t("developerIntegrations.guides.fluent.step5", { defaultValue: "Save the feed and submit one permitted test record." }),
-      ],
-      fieldMap: [
-        ["name", t("developerIntegrations.guides.map.name", { defaultValue: "Your customer name field" })],
-        ["email", t("developerIntegrations.guides.map.email", { defaultValue: "Your customer email field" })],
-        ["externalId", t("developerIntegrations.guides.map.submissionId", { defaultValue: "The Fluent Forms submission ID token" })],
-        ["sourceApp", "fluent-forms"],
-        ["consentConfirmed", "true"],
-        ["consentBasis", "customer_relationship | explicit_opt_in | other"],
-        ["consentSource", t("developerIntegrations.guides.map.consentSource", { defaultValue: "A short description of where consent was captured" })],
-      ],
-      example: `${commonHeaders}\n\n${flatBuilderJson.replace("<builder source>", "fluent-forms")}`,
-    },
-    elementor: {
-      label: "Elementor Forms",
-      summary: t("developerIntegrations.guides.elementor.summary", { defaultValue: "Use a server-side custom form action or trusted webhook bridge that can add protected headers." }),
-      sourceApp: "elementor-forms",
-      documentationUrl: "https://developers.elementor.com/docs/form-actions/",
-      steps: [
-        t("developerIntegrations.guides.elementor.step1", { defaultValue: "Create the Elementor Pro Form with stable IDs for the customer name, email, and any consent checkbox." }),
-        t("developerIntegrations.guides.elementor.step2", { defaultValue: "Use a server-side custom form action or trusted webhook bridge that supports custom Authorization and Idempotency-Key headers." }),
-        t("developerIntegrations.guides.elementor.step3", { defaultValue: "Configure POST, the v1 contact endpoint, JSON, and the field map shown below." }),
-        t("developerIntegrations.guides.elementor.step4", { defaultValue: "Store the key only in a protected WordPress setting or server-side connector. Never paste it into page HTML or browser JavaScript." }),
-        t("developerIntegrations.guides.elementor.step5", { defaultValue: "Submit one permitted test record and confirm it appears in Recent API imports." }),
-      ],
-      fieldMap: [
-        ["name", t("developerIntegrations.guides.map.name", { defaultValue: "Your customer name field" })],
-        ["email", t("developerIntegrations.guides.map.email", { defaultValue: "Your customer email field" })],
-        ["externalId", t("developerIntegrations.guides.map.submissionId", { defaultValue: "A stable server-side submission identifier" })],
-        ["sourceApp", "elementor-forms"],
-        ["consentConfirmed", "true"],
-        ["consentBasis", "customer_relationship | explicit_opt_in | other"],
-        ["consentSource", t("developerIntegrations.guides.map.consentSource", { defaultValue: "A short description of where consent was captured" })],
-      ],
-      example: `${commonHeaders}\n\n${flatBuilderJson.replace("<builder source>", "elementor-forms")}`,
-      caution: t("developerIntegrations.guides.elementor.caution", { defaultValue: "Elementor’s built-in Webhook action may not expose every protected-header control required by your setup. Do not work around that by placing the API key in the URL or page source." }),
-    },
-    generic: {
-      label: t("developerIntegrations.guides.generic.label", { defaultValue: "Generic webhook" }),
-      summary: t("developerIntegrations.guides.generic.summary", { defaultValue: "Configure any server-side automation tool that supports POST, JSON, and protected headers." }),
-      sourceApp: "generic-webhook",
-      steps: [
-        t("developerIntegrations.guides.generic.step1", { defaultValue: "Create a new outbound HTTP or webhook action that runs once after an eligible customer form submission." }),
-        t("developerIntegrations.guides.generic.step2", { defaultValue: "Set method to POST, URL to the v1 contact endpoint, and content type to application/json." }),
-        t("developerIntegrations.guides.generic.step3", { defaultValue: "Add the Authorization header and a stable per-submission Idempotency-Key." }),
-        t("developerIntegrations.guides.generic.step4", { defaultValue: "Send the canonical nested JSON payload shown below." }),
-        t("developerIntegrations.guides.generic.step5", { defaultValue: "Treat HTTP 200 as success. Retry temporary failures with the same idempotency key." }),
-      ],
-      example: `${commonHeaders}\n\n${canonicalJson}`,
-    },
-    curl: {
-      label: "curl",
-      summary: t("developerIntegrations.guides.curl.summary", { defaultValue: "Run one server-side command to validate your endpoint, key, scope, payload, and consent mapping." }),
-      sourceApp: "curl",
-      steps: [
-        t("developerIntegrations.guides.curl.step1", { defaultValue: "Copy the example into a secure terminal on a machine you control." }),
-        t("developerIntegrations.guides.curl.step2", { defaultValue: "Replace only the API-key placeholder and sample customer values. Do not paste a real key into shared chat, logs, or screenshots." }),
-        t("developerIntegrations.guides.curl.step3", { defaultValue: "Run the command once and confirm a success response and a privacy-safe Recent API imports row." }),
-        t("developerIntegrations.guides.curl.step4", { defaultValue: "Run it again with the same idempotency key to confirm a safe replay rather than a duplicate contact." }),
-      ],
-      example: curlExample,
-    },
-  }), [canonicalJson, commonHeaders, curlExample, flatBuilderJson, t]);
-
-  const guide = guides[activeBuilder];
+  const snippetMap: Record<FormBuilder, string> = {
+    elementor: elementorSteps,
+    gravity: gravitySteps,
+    wsform: wsformSteps,
+    fluent: fluentSteps,
+    custom: customSnippet,
+  };
 
   return (
-    <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50" data-testid="integration-guide">
-      <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex items-start gap-3">
-          <span className="flex size-10 shrink-0 items-center justify-center rounded-xl rr-bg-navy rr-text-gold">
-            <Braces size={18} aria-hidden="true" />
-          </span>
-          <div>
-            <p className="text-sm font-black rr-text-navy">{t("developerIntegrations.guides.header", { defaultValue: "Form and webhook integration" })}</p>
-            <p className="mt-0.5 text-xs leading-5 text-slate-500">{t("developerIntegrations.guides.headerDescription", { defaultValue: "Every guide imports a contact only. It never sends a review request automatically." })}</p>
-          </div>
-        </div>
+    <div
+      className="mt-4 rounded-xl p-3 space-y-3"
+      style={{ border: "1px solid oklch(0.90 0.02 260)", background: "oklch(0.97 0.01 260)" }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-bold rr-text-navy">WordPress Form Integration</p>
         <button
-          type="button"
           onClick={() => setShowSnippet(!showSnippet)}
-          aria-expanded={showSnippet}
-          aria-controls="integration-guide-details"
-          className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 text-sm font-black rr-text-navy transition active:scale-[0.97]"
+          className="text-sm px-2 py-1 rounded-lg font-bold flex items-center gap-1"
+          style={{ background: "oklch(0.92 0.02 260)", color: "oklch(0.40 0.06 260)" }}
         >
-          {showSnippet ? <ChevronUp size={15} aria-hidden="true" /> : <ChevronDown size={15} aria-hidden="true" />}
-          {showSnippet ? t("developerIntegrations.guides.hide", { defaultValue: "Hide guides" }) : t("developerIntegrations.guides.show", { defaultValue: "Show guides" })}
+          {showSnippet ? <ChevronUp size={11} /> : <ChevronDown size={11} />}
+          {showSnippet ? "Hide guide" : "Show guide"}
         </button>
       </div>
 
-      <div className="grid gap-3 border-t border-slate-200 bg-white p-4 lg:grid-cols-[auto_minmax(0,1fr)] lg:items-center">
-        <span className="w-fit rounded-lg bg-emerald-50 px-2.5 py-1 font-mono text-xs font-black text-emerald-800">POST</span>
-        <div className="flex min-w-0 items-center gap-2 rounded-xl bg-slate-50 p-3">
-          <code className="min-w-0 flex-1 break-all text-xs font-bold rr-text-navy sm:text-sm">{CONTACTS_ENDPOINT}</code>
+      {/* Two endpoint pills */}
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center gap-2 rounded-lg px-2.5 py-1.5" style={{ background: "oklch(0.93 0.03 145)" }}>
+          <Zap size={12} style={{ color: "oklch(0.25 0.10 145)" }} />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold" style={{ color: "oklch(0.20 0.08 145)" }}>Send immediately</p>
+            <code className="text-xs break-all" style={{ color: "oklch(0.35 0.10 145)", fontFamily: "monospace" }}>
+              POST /api/public/send
+            </code>
+          </div>
           <button
-            type="button"
-            onClick={() => copyText(
-              CONTACTS_ENDPOINT,
-              t("developerIntegrations.contract.endpointCopied", { defaultValue: "Endpoint copied." }),
-              t("developerIntegrations.copyFailed", { defaultValue: "Could not copy automatically. Select and copy the value manually." }),
-            )}
-            className="shrink-0 rounded-lg p-2 text-slate-500 hover:bg-white"
-            aria-label={t("developerIntegrations.contract.copyEndpoint", { defaultValue: "Copy endpoint" })}
+            onClick={() => { navigator.clipboard.writeText(sendEndpoint); toast.success("Copied!"); }}
+            className="shrink-0 p-1 rounded"
+            style={{ background: "oklch(0.80 0.10 145)" }}
           >
-            <Copy size={15} aria-hidden="true" />
+            <Copy size={11} style={{ color: "oklch(0.20 0.08 145)" }} />
+          </button>
+        </div>
+        <div className="flex items-center gap-2 rounded-lg px-2.5 py-1.5" style={{ background: "oklch(0.93 0.03 260)" }}>
+          <Users size={12} style={{ color: "oklch(0.25 0.06 260)" }} />
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold" style={{ color: "oklch(0.20 0.06 260)" }}>Import contact only</p>
+            <code className="text-xs break-all" style={{ color: "oklch(0.25 0.06 260)", fontFamily: "monospace" }}>
+              POST /api/public/contacts
+            </code>
+          </div>
+          <button
+            onClick={() => { navigator.clipboard.writeText(contactsEndpoint); toast.success("Copied!"); }}
+            className="shrink-0 p-1 rounded"
+            style={{ background: "oklch(0.80 0.06 260)" }}
+          >
+            <Copy size={11} style={{ color: "oklch(0.20 0.06 260)" }} />
           </button>
         </div>
       </div>
 
-      <div className="border-t border-amber-200 bg-amber-50 p-4">
-        <div className="flex items-start gap-2">
-          <ShieldCheck size={17} className="mt-0.5 shrink-0 text-amber-800" aria-hidden="true" />
-          <p className="text-xs leading-5 text-amber-950">
-            <strong>{t("developerIntegrations.guides.consentTitle", { defaultValue: "Consent rule:" })}</strong>{" "}
-            {t("developerIntegrations.guides.consentRule", { defaultValue: "Set consentConfirmed to true only when this workflow represents an existing customer relationship or an explicit opt-in. For general lead forms, add an unchecked consent box and run the webhook only after it is selected." })}
-          </p>
-        </div>
-      </div>
+      <p className="text-sm font-semibold rr-text-navy-mid leading-relaxed">
+        Use <strong>/send</strong> to trigger the review email immediately when a form is submitted.
+        Use <strong>/contacts</strong> to import the customer first and send manually later.
+        Both require <code style={{ fontFamily: "monospace" }}>Authorization: Bearer rl_...</code> header.
+      </p>
 
+      {/* Form builder guide */}
       {showSnippet && (
-        <div id="integration-guide-details" className="space-y-5 border-t border-slate-200 bg-white p-4 sm:p-5">
-          <div className="flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label={t("developerIntegrations.guides.builderTabs", { defaultValue: "Integration type" })}>
-            {(Object.keys(guides) as FormBuilder[]).map((builder) => (
+        <div className="space-y-3">
+          {/* Tab selector */}
+          <div className="flex flex-wrap gap-1.5">
+            {FORM_BUILDERS.map((fb) => (
               <button
-                key={builder}
-                type="button"
-                role="tab"
-                aria-selected={activeBuilder === builder}
-                onClick={() => setActiveBuilder(builder)}
-                className={`min-h-11 shrink-0 rounded-xl px-3 text-sm font-black transition active:scale-[0.97] ${activeBuilder === builder ? "rr-bg-navy rr-text-gold" : "bg-slate-100 rr-text-navy hover:bg-slate-200"}`}
+                key={fb.id}
+                onClick={() => setActiveBuilder(fb.id)}
+                className="text-xs px-2.5 py-1 rounded-lg font-bold transition-colors"
+                style={{
+                  background: activeBuilder === fb.id ? "oklch(0.22 0.09 260)" : "oklch(0.90 0.02 260)",
+                  color: activeBuilder === fb.id ? "oklch(0.15 0.05 260)" : "oklch(0.85 0.02 260)",
+                }}
               >
-                {guides[builder].label}
+                {fb.icon} {fb.label}
               </button>
             ))}
           </div>
 
-          <div role="tabpanel" className="grid gap-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-            <div>
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <h3 className="text-lg font-semibold rr-text-navy">{guide.label}</h3>
-                  <p className="mt-1 text-sm leading-6 rr-text-navy-muted">{guide.summary}</p>
-                </div>
-                {guide.documentationUrl && (
-                  <a href={guide.documentationUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-slate-200 px-3 text-xs font-black rr-text-navy transition active:scale-[0.97]">
-                    {t("developerIntegrations.guides.officialDocs", { defaultValue: "Official docs" })}
-                    <ExternalLink size={13} aria-hidden="true" />
-                  </a>
-                )}
-              </div>
+          {/* Active builder snippet */}
+          <CodeBlock code={snippetMap[activeBuilder]} />
 
-              <ol className="mt-5 space-y-3">
-                {guide.steps.map((step, index) => (
-                  <li key={step} className="flex gap-3 text-sm leading-6 text-slate-700">
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-full rr-bg-navy text-xs font-black rr-text-gold">{index + 1}</span>
-                    <span>{step}</span>
-                  </li>
-                ))}
-              </ol>
-
-              {guide.caution && (
-                <p className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-950">{guide.caution}</p>
-              )}
-
-              {guide.fieldMap && (
-                <div className="mt-5 overflow-x-auto rounded-xl border border-slate-200">
-                  <table className="w-full min-w-[34rem] text-left text-xs">
-                    <thead className="bg-slate-50 text-slate-500">
-                      <tr><th className="px-3 py-2 font-black">{t("developerIntegrations.guides.apiField", { defaultValue: "API field" })}</th><th className="px-3 py-2 font-black">{t("developerIntegrations.guides.mapTo", { defaultValue: "Map to" })}</th></tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {guide.fieldMap.map(([field, value]) => (
-                        <tr key={field}><td className="px-3 py-2 font-mono font-bold rr-text-navy">{field}</td><td className="px-3 py-2 text-slate-600">{value}</td></tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </div>
-
-            <div>
-              <div className="flex items-center gap-2 rr-text-navy">
-                <FileJson size={17} aria-hidden="true" />
-                <h3 className="text-sm font-black">{t("developerIntegrations.guides.safeExample", { defaultValue: "Safe placeholder example" })}</h3>
-              </div>
-              <p className="mt-1 text-xs leading-5 text-slate-500">{t("developerIntegrations.guides.placeholderNote", { defaultValue: "Examples use a placeholder key by design. Get Phame never inserts an existing raw key into these copyable instructions." })}</p>
-              <CodeBlock code={guide.example} label={t("developerIntegrations.guides.requestExample", { defaultValue: "Request example" })} />
-              <CodeBlock code={`// Success — HTTP 200\n{\n  "success": true,\n  "contactId": 1842,\n  "created": true,\n  "deduplicated": false,\n  "idempotentReplay": false\n}\n\n// Safe error shape\n{\n  "error": {\n    "code": "CONSENT_REQUIRED",\n    "message": "Affirmative consent attestation is required."\n  },\n  "requestId": "..."\n}`} label={t("developerIntegrations.guides.responseExample", { defaultValue: "Response reference" })} />
-            </div>
+          {/* Required fields reference */}
+          <div className="rounded-xl p-3 space-y-1" style={{ background: "oklch(0.22 0.09 260)" }}>
+            <p className="text-xs font-bold" style={{ color: "oklch(0.80 0.18 80)" }}>Required body fields</p>
+            <table className="w-full text-xs" style={{ color: "oklch(0.95 0.02 260)", fontFamily: "monospace" }}>
+              <tbody>
+                <tr>
+                  <td className="pr-3 py-0.5 font-bold">customerName</td>
+                  <td>string — customer's full name</td>
+                </tr>
+                <tr>
+                  <td className="pr-3 py-0.5 font-bold">customerEmail</td>
+                  <td>string — valid email address</td>
+                </tr>
+                <tr>
+                  <td className="pr-3 py-0.5" style={{ color: "oklch(0.35 0.04 260)", fontWeight: "bold" }}>templateId</td>
+                  <td style={{ color: "oklch(0.35 0.04 260)", fontWeight: "bold" }}>number (optional) — defaults to your default template</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <h3 className="text-sm font-black rr-text-navy">{t("developerIntegrations.guides.testChecklist", { defaultValue: "Test checklist" })}</h3>
-            <div className="mt-3 grid gap-2 md:grid-cols-2">
-              {[
-                t("developerIntegrations.guides.check1", { defaultValue: "The API key has contacts:write permission." }),
-                t("developerIntegrations.guides.check2", { defaultValue: "The key is stored server-side, never in the page source or URL." }),
-                t("developerIntegrations.guides.check3", { defaultValue: "The webhook runs only after permitted customer action or opt-in." }),
-                t("developerIntegrations.guides.check4", { defaultValue: "The same submission keeps the same Idempotency-Key when retried." }),
-                t("developerIntegrations.guides.check5", { defaultValue: "A successful import appears with a masked email in Recent API imports." }),
-                t("developerIntegrations.guides.check6", { defaultValue: "The imported contact is not emailed automatically." }),
-              ].map((item) => <p key={item} className="flex items-start gap-2 text-xs leading-5 text-slate-600"><ShieldCheck size={14} className="mt-0.5 shrink-0 text-emerald-700" aria-hidden="true" />{item}</p>)}
-            </div>
+          {/* Success / error response reference */}
+          <div className="rounded-xl p-3 space-y-1" style={{ background: "oklch(0.22 0.09 260)" }}>
+            <p className="text-xs font-bold" style={{ color: "oklch(0.80 0.18 80)" }}>Response format</p>
+            <CodeBlock
+              code={`// Success (200)
+{ "success": true, "requestId": 42 }
+
+// Error (400 / 401 / 429 / 500)
+{ "error": "reason..." }`}
+            />
           </div>
         </div>
       )}

@@ -12,7 +12,6 @@
     "send": "Enviar",
     "dashboard": "Panel",
     "settings": "Configuración",
-    "more": "Más",
     "shareHint": "Compartir Get Phame with a friend",
     "share": "Compartir",
     "guideHint": "Abrir guía de configuración",
@@ -25,17 +24,14 @@
     "templates": "Plantillas",
     "reminders": "Recordatorios",
     "upgrade": "Actualizar a Pro",
-    "howItWorks": "How It Works",
-    "pricing": "Pricing",
-    "faq": "FAQ",
-    "manageUsers": "Gestionar usuarios",
-    "admin": "Admin",
-    "developer": "Desarrollador",
-    "userManual": "Manual de usuario",
-    "adminManual": "Manual de administrador"
+    "howItWorks": "Cómo funciona",
+    "pricing": "Precios",
+    "faq": "Preguntas frecuentes",
+    "product": "Producto",
+    "getStartedFree": "Comenzar gratis"
   },
   "hero": {
-    "tagline": "Gratis para empezar — Sin tarjeta de crédito requerida",
+    "tagline": "Gratis para empezar — No se requiere tarjeta de crédito",
     "headline": "Obtén más reseñas de Google",
     "description": "Enviar personalized review requests from your own email account. Your customers see it come from you — not a generic sender.",
     "cta": "Comenzar gratis",
@@ -43,19 +39,28 @@
     "rocketIllustrationAlt": "Get Phame rocket illustration",
     "dashboardAlt": "Get Phame dashboard showing sent requests and email performance stats",
     "dashboardStats": "Tu panel — estadísticas en vivo",
-    "titlePart1": "Obtén más reseñas de",
+    "titlePart1": "Consigue más reseñas de 5 estrellas",
     "titlePart2": "5 estrellas",
     "badge": "Herramienta de solicitud de reseñas #1",
     "ctaSubtext": "Gratis para siempre • Sin tarjeta de crédito",
     "subheadline": "Envía solicitudes de reseñas personalizadas desde tu propio correo. Los clientes responden porque viene de ti.",
     "watchDemo": "Ver demo",
-    "titlePart3": "automáticamente",
-    "subtitle": "Envía solicitudes de reseñas personalizadas desde tu propio correo electrónico. Recordatorios automáticos incluidos.",
+    "titlePart3": "sin la petición incómoda",
+    "subtitle": "Envía solicitudes de reseña personalizadas desde tu propia cuenta de correo. Tus clientes ven que proviene de ti — no de un remitente genérico.",
     "ctaPrimary": "Comenzar gratis",
     "ctaSecondary": "Ver cómo funciona",
     "socialProof": "Unido por cientos de dueños de negocios",
     "noCard": "Sin tarjeta de crédito requerida",
-    "setup": "Configuración en 2 minutos"
+    "setup": "Configuración en 2 minutos",
+    "seeHowItWorks": "Ver cómo funciona",
+    "setupIn2Min": "Configura en menos de 2 minutos",
+    "worksWithEmail": "Funciona con Gmail, Outlook, SMTP",
+    "freeSends": "10 envíos gratis · luego 5/30 días gratis",
+    "googleSignInNote": "Inicia sesión con Google para crear tu cuenta. Solo accedemos a tu nombre y dirección de correo — nada más.",
+    "privacyPolicy": "Política de privacidad",
+    "taglineAlt": "Gratis para empezar — no se requiere tarjeta de crédito",
+    "ctaVariantA": "Empieza Gratis — Los Primeros 10 Envíos Corren por Nuestra Cuenta",
+    "ctaVariantB": "Obtén tus Primeras 10 Reseñas Gratis"
   },
   "features": {
     "sectionTitle": "Todo lo que necesitas para obtener más reseñas",
@@ -121,7 +126,22 @@
       "description": "Envía automáticamente un seguimiento a los clientes que aún no han dejado una reseña."
     },
     "noCardRequired": "Sin tarjeta de crédito",
-    "autoFollowUps": "Seguimientos automáticos"
+    "autoFollowUps": "Seguimientos automáticos",
+    "f1Title": "Tu nombre. Tu bandeja de entrada. Su confianza.",
+    "f1Desc": "Cada solicitud de reseña llega desde tu dirección de correo real. Los clientes reconocen al remitente, por lo que lo abren — y responden.",
+    "f1Stat": "45–60%",
+    "f1StatLabel": "tasa de apertura promedio",
+    "f2Title": "Envía a cientos con un clic",
+    "f2Desc": "Importa tu lista de clientes vía CSV o sincronización con WooCommerce, selecciona todo y envía solicitudes personalizadas en segundos. Sin copiar y pegar. Sin trabajo manual.",
+    "f2Stat": "500+",
+    "f2StatLabel": "envíos por lote",
+    "f3Title": "Todas las plataformas. Tu elección.",
+    "f3Desc": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot y más. Pega tu enlace, cambia de plataforma en cualquier momento. Una herramienta para todos tus destinos de reseñas.",
+    "f3Stat": "10+",
+    "f3StatLabel": "plataformas compatibles",
+    "sectionTagline": "Por qué funciona",
+    "sectionHeadline": "De tu bandeja de entrada a su reseña",
+    "sectionSubheadline": "La forma más simple de convertir clientes satisfechos en reseñas de 5 estrellas — sin herramientas caras ni conversaciones incómodas."
   },
   "howItWorks": {
     "step1": "Conecta tu correo",
@@ -132,7 +152,20 @@
     "step1Description": "Usa tu propia dirección de correo para un aspecto profesional.",
     "step2Description": "Google, Yelp, TripAdvisor, Facebook y más.",
     "step3Description": "Importa desde WooCommerce, CSV o agrega manualmente.",
-    "step4Description": "Envía solicitudes personalizadas con un clic."
+    "step4Description": "Envía solicitudes personalizadas con un clic.",
+    "tagline": "Configuración en 4 pasos",
+    "headline": "Dos minutos para tu primera solicitud de reseña",
+    "subheadline": "No se necesitan habilidades técnicas. No hay llamadas de incorporación. Solo conecta, importa y envía.",
+    "cta": "Comenzar gratis",
+    "setupTime": "Se configura en menos de 2 minutos",
+    "s1Title": "Conecta tu correo",
+    "s1Desc": "Vincula tu Gmail, Outlook o cualquier correo SMTP en 60 segundos. Credenciales cifradas con AES-256.",
+    "s2Title": "Añade tu enlace de reseña",
+    "s2Desc": "Pega tu enlace de Google, Yelp, TripAdvisor o de cualquier plataforma de reseñas. Cambia de plataforma cuando quieras.",
+    "s3Title": "Importa tus clientes",
+    "s3Desc": "Sube un CSV, sincroniza desde WooCommerce o añade contactos manualmente. Validamos los correos automáticamente.",
+    "s4Title": "Envía y rastrea resultados",
+    "s4Desc": "Pulsa enviar. Cada cliente recibe un correo personal de tu parte. Rastrea aperturas, clics y nuevas reseñas en tiempo real."
   },
   "faq": {
     "sectionTitle": "Preguntas frecuentes",
@@ -141,40 +174,47 @@
     "providersQuestion": "¿Qué proveedores de correo funcionan?",
     "providersAnswer": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to Get Phame.",
     "freeQuestion": "¿Es realmente gratis?",
-    "freeAnswer": "Sí. El plan Gratis incluye 10 solicitudes de reseña iniciales y después 5 solicitudes cada 30 días móviles. No necesitas tarjeta de crédito. También se aplica el límite diario de tu proveedor de correo.",
+    "freeAnswer": "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap (Gmail allows ~500/day, most others are similar). There are no hidden fees and no credit card required to get started.",
     "importQuestion": "¿Puedo importar mi lista de clientes?",
     "importAnswer": "Yes. You can upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store. Once imported, you can bulk-select contacts and send personalised review requests in a single click.",
-    "q1": "¿Parecerá spam?",
-    "a1": "No. Every email is sent directly from your own email account via SMTP — not from a shared bulk-sending server. Your customer sees your name, your email address, and a message written in your voice.",
+    "q1": "¿Se verá como spam?",
+    "a1": "No. Los correos se envían directamente desde tu propia cuenta de correo — tu cliente ve tu nombre y dirección de correo como remitente.",
     "q2": "¿Qué proveedores de correo funcionan?",
-    "a2": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server.",
+    "a2": "Get Phame funciona con cualquier proveedor de correo que soporte SMTP: Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud y cualquier servidor SMTP personalizado. Si puedes enviar correo desde él, puedes conectarlo a Get Phame.",
     "q3": "¿Es realmente gratis?",
-    "a3": "Sí. Recibes 10 solicitudes de reseña iniciales y después 5 solicitudes cada 30 días móviles. No necesitas tarjeta de crédito.",
+    "a3": "Sí. El plan gratuito te da 10 solicitudes de reseña sin tarjeta de crédito y sin límite de tiempo. Usa las 10 cuando quieras. Si quieres solicitudes ilimitadas, envío masivo, recordatorios de seguimiento y sincronización con WooCommerce, actualiza a Pro.",
     "q4": "¿Puedo importar mi lista de clientes?",
-    "a4": "Yes. Upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store.",
-    "q5": "Does Get Phame store my email password?",
-    "a5": "Never. Get Phame uses your own SMTP credentials (or Gmail app password) to send emails directly from your account. Your password is encrypted at rest and never shared or stored in plain text. You can disconnect at any time from Settings.",
-    "q6": "Will my emails land in spam?",
-    "a6": "Because emails are sent from your own email address — not a generic sender — they land in the primary inbox far more reliably than bulk marketing tools. Your domain reputation stays intact.",
-    "q7": "What happens to my customer list?",
-    "a7": "Your customer data stays private. It is stored securely in your account and is never sold, shared, or used for any purpose other than sending your review requests. You can delete contacts at any time.",
-    "q8": "Can customers opt out?",
-    "a8": "Yes. Every review request email includes an unsubscribe link. Customers who opt out are automatically excluded from future sends.",
-    "q9": "Do I need technical skills to connect my email?",
-    "a9": "No. Get Phame auto-detects your email provider and shows step-by-step instructions for Gmail, Outlook, Yahoo, Zoho, and more. Setup takes under 2 minutes.",
-    "q10": "Which review platforms does it support?",
-    "a10": "Google, Yelp, TripAdvisor, Facebook, Bing, and any custom URL. You can add multiple platforms and choose which one to include in each send.",
-    "q11": "How does WooCommerce sync work?",
-    "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
-    "q12": "What does unlimited mean on the Pro plan?",
-    "a12": "Ilimitado significa que no hay límite mensual de solicitudes. El plan Gratis incluye 10 solicitudes iniciales y después 5 cada 30 días móviles. Pro elimina ese límite del producto."
+    "a4": "Absolutamente. Sube un archivo CSV con nombres y direcciones de correo de los clientes, o sincroniza directamente desde WooCommerce. Validamos los correos automáticamente, eliminamos duplicados y marcamos las direcciones inválidas antes de que envíes.",
+    "q5": "¿Get Phame almacena mi contraseña de correo?",
+    "a5": "Tus credenciales SMTP están cifradas en reposo con cifrado AES-256. Nunca almacenamos contraseñas en texto plano. Tus credenciales solo se usan para enviar correos en tu nombre — no podemos leer tu bandeja de entrada ni acceder a otros datos de correo.",
+    "q6": "¿Mis correos acabarán en spam?",
+    "a6": "Como los correos se envían desde tu propia cuenta (no desde un servidor de envío masivo), tienen la misma entregabilidad que cualquier correo que envíes manualmente. La reputación de tu dominio y los registros SPF y DKIM se aplican con normalidad. Esta es una ventaja clave frente a los remitentes de terceros.",
+    "q7": "¿Qué pasa con mi lista de clientes?",
+    "a7": "Los datos de tus clientes se almacenan de forma segura y nunca se comparten, venden ni utilizan para ningún propósito distinto al envío de tus solicitudes de reseña. Puedes exportar o eliminar toda tu lista de clientes en cualquier momento. Cumplimos con los requisitos del GDPR y CAN-SPAM.",
+    "q8": "¿Pueden los clientes darse de baja?",
+    "a8": "Sí. Cada correo incluye un enlace para darse de baja. Cuando un cliente se da de baja, se le elimina automáticamente de envíos futuros. Esto te mantiene en cumplimiento y protege tu reputación como remitente.",
+    "q9": "¿Necesito habilidades técnicas para conectar mi correo?",
+    "a9": "No. Para Gmail y Outlook, proporcionamos guías paso a paso con capturas de pantalla. La mayoría de los usuarios se conectan en menos de 60 segundos. Para SMTP personalizado, necesitarás la dirección del servidor, el puerto y las credenciales — tu proveedor de hosting puede suministrarlos.",
+    "q10": "¿Qué plataformas de reseñas admite?",
+    "a10": "Cualquier plataforma con un enlace de reseñas: Google, Yelp, TripAdvisor, Facebook, Bing Places, Trustpilot, G2, Capterra y más. Simplemente pega tu enlace de reseñas y lo incluiremos en cada solicitud. Puedes cambiar las plataformas en cualquier momento.",
+    "q11": "¿Cómo funciona la sincronización con WooCommerce?",
+    "a11": "Instala nuestro plugin gratuito de WooCommerce, introduce tu clave API y los nuevos clientes se importan automáticamente tras cada pedido completado. Puedes establecer un retraso (por ejemplo, 7 días después de la compra) antes de que aparezcan en tu cola de envíos.",
+    "q12": "¿Qué significa ilimitado en el plan Pro?",
+    "a12": "Ilimitado significa que no hay un tope en el número de solicitudes de reseña que puedes enviar por mes. Envía 50 o 5,000 — sin cargos adicionales. El único límite son las propias restricciones de envío de tu proveedor de correo (por ejemplo, Gmail permite ~500/día para cuentas personales, 2,000/día para Workspace).",
+    "sectionTagline": "Preguntas frecuentes",
+    "sectionHeadline": "Preguntas sobre seguridad del correo, privacidad y configuración",
+    "sectionSubheadline": "Todo lo que necesitas saber antes de conectar tu correo y enviar tu primera solicitud de reseña."
   },
   "bottomCta": {
     "headline": "Empieza a recopilar reseñas hoy",
     "description": "Gratis para siempre. Sin tarjeta de crédito. Configurado en menos de 2 minutos.",
     "cta": "Comenzar gratis",
     "title": "¿Listo para obtener más reseñas?",
-    "subtitle": "Gratis para siempre. Sin tarjeta de crédito. Configurado en menos de 2 minutos."
+    "subtitle": "Gratis para siempre. Sin tarjeta de crédito. Configurado en menos de 2 minutos.",
+    "headline2": "Tu bandeja de entrada. Tu reputación.",
+    "subheadline2": "Gratis para siempre en el plan inicial. Sin tarjeta de crédito. Configura en menos de 2 minutos. Empieza a recopilar reseñas de 5 estrellas hoy.",
+    "socialProof": "Únete a cientos de negocios que ya están mejorando su reputación con Get Phame.",
+    "headline2Part2": "Tu crecimiento."
   },
   "footer": {
     "brandName": "Get Phame",
@@ -188,12 +228,12 @@
     "changelog": "Registro de cambios"
   },
   "shareReferralCard": {
-    "title": "Get Phame — herramienta gratuita para solicitar reseñas",
-    "shareText": "He estado usando Get Phame para enviar solicitudes de reseñas desde mi propio correo — es gratis y funciona muy bien. Vale la pena echarle un vistazo:",
+    "title": "Get Phame — Free review request tool",
+    "shareText": "I've been using Get Phame to send review requests from my own email — it's free and works great. Worth checking out:",
     "copySuccessToast": "¡Enlace copiado al portapapeles!",
     "copyErrorToast": "No se pudo copiar el enlace.",
-    "header": "¿Conoces a algún propietario de negocio local?",
-    "subHeader": "Ayúdales a conseguir más reseñas — es gratis.",
+    "header": "¿Conoces a un dueño de negocio local?",
+    "subHeader": "Ayúdalos a obtener más reseñas — es gratis.",
     "copiedToClipboard": "¡Copiado al portapapeles!",
     "sharePhame": "Compartir Get Phame",
     "shareButton": "Compartir Get Phame",
@@ -201,102 +241,102 @@
   },
   "relativeTime": {
     "justNow": "ahora mismo",
-    "minutesAgo": "hace {{diffMins}}m",
-    "hoursAgo": "hace {{diffHours}}h",
-    "daysAgo": "hace {{diffDays}}d"
+    "minutesAgo": "{{diffMins}}m ago",
+    "hoursAgo": "{{diffHours}}h ago",
+    "daysAgo": "{{diffDays}}d ago"
   },
   "trackingSummaryCard": {
-    "title": "Rendimiento del correo",
-    "sent": "Enviadas",
+    "title": "Correo electrónico Performance",
+    "sent": "Enviado",
     "openRate": "Tasa de apertura",
-    "clickRate": "Tasa de clics",
-    "summary": "{{uniqueOpens}} abrieron · {{uniqueClicks}} hicieron clic · en {{totalSent}} solicitudes"
+    "clickRate": "Tasa de clic",
+    "summary": "{{uniqueOpens}} opened · {{uniqueClicks}} clicked · across {{totalEnviado}} requests"
   },
   "homePage": {
     "setGoalErrorToast": "{{message}}",
-    "shareSuccessToast": "¡Copiado al portapapeles! Compártelo con un amigo.",
-    "pageTitle": "Get Phame — Envía solicitudes de reseña en Google rápidamente",
-    "greeting": "Hola, {{name}}!",
-    "welcomeBack": "Bienvenido de nuevo,",
+    "shareSuccessToast": "Copied to clipboard! Compartir it with a friend.",
+    "pageTitle": "Get Phame — Enviar Google Review Requests Fast",
+    "greeting": "¡Hola, {{name}}!",
+    "welcomeBack": "¡Bienvenido de nuevo, {{name}}!",
     "setupBannerTitle": "¡Configuración completa!",
-    "setupBannerText": "Has configurado tu cuenta y enviado tu primera solicitud. ¡Bien hecho!",
-    "dismiss": "Descartar",
-    "expiryBannerTitle": "Suscripción caducada",
-    "expiryBannerText": "Tu acceso ha caducado. Renueva tu plan para seguir usando Get Phame.",
+    "setupBannerText": "Has configurado tu cuenta y enviado tu primera solicitud. ¡Sigue así!",
+    "dismiss": "Ignorar",
+    "expiryBannerTitle": "Suscripción expirada",
+    "expiryBannerText": "Your access has expired. Please renew your plan to continue using Get Phame.",
     "renewSubscription": "Renovar suscripción",
-    "expiringSoonTitle": "Suscripción por vencer",
-    "expiringSoonText": "Tu plan vence en {{daysUntilExpiry}} días. Renuévalo ahora para evitar interrupciones en el servicio.",
-    "smtpHealthAlertTitle": "Problema de conexión SMTP",
-    "smtpHealthAlertText": "No pudimos conectar con tu cuenta de correo. Revisa la configuración SMTP para asegurar que tus solicitudes puedan enviarse.",
-    "viewSettings": "Ver ajustes",
-    "quickSendTitle": "Consigue tu próxima reseña",
-    "quickSendSubtitle": "Envía una solicitud a un cliente reciente.",
+    "expiringSoonTitle": "Suscripción próxima a expirar",
+    "expiringSoonText": "Tu plan expira en {{daysUntilExpiry}} días. Renueva ahora para evitar interrupciones.",
+    "smtpHealthAlertTitle": "SMTP Conectarion Issue",
+    "smtpHealthAlertText": "We couldn't connect to your email account. Please check your SMTP settings to ensure your requests can be sent.",
+    "viewSettings": "View Configuración",
+    "quickSendTitle": "Obtén tu próxima reseña",
+    "quickSendSubtitle": "Enviar a request to a recent customer.",
     "sendRequest": "Enviar solicitud",
-    "monthlyGoal": "Objetivo mensual",
+    "monthlyGoal": "Mensual Goal",
     "reviewsThisMonth": "Reseñas este mes",
     "reviews": "Reseñas",
     "setYourGoal": "Establece tu objetivo",
     "goalDescription": "Establece un objetivo mensual de reseñas para seguir tu progreso.",
     "editGoal": "Editar objetivo",
-    "saveGoal": "Guardar objetivo",
+    "saveGoal": "Guardar Goal",
     "cancel": "Cancelar",
     "reviewsPlural": "reseñas",
     "reviewSingular": "reseña",
-    "goalProgress": "{{respondedThisMonth}} de {{reviewGoal}} {{reviewsPlural}} recopiladas este mes",
+    "goalProgress": "{{respondedThisMonth}} of {{reviewGoal}} {{reviewsPlural}} collected this month",
     "recentRequestsTitle": "Solicitudes recientes",
-    "noRequestsSent": "Aún no se han enviado solicitudes",
-    "noRequestsSentSubtitle": "Las solicitudes enviadas aparecerán aquí.",
-    "sentTo": "Enviado a {{customerName}}",
+    "noRequestsSent": "Ninguna solicitud enviada aún",
+    "noRequestsSentSubtitle": "Tus solicitudes enviadas aparecerán aquí.",
+    "sentTo": "Enviado to {{customerName}}",
     "viaEmail": "por correo",
-    "responded": "Respondió",
-    "opened": "Abrió",
-    "clicked": "Hizo clic",
+    "responded": "Respondido",
+    "opened": "Abierto",
+    "clicked": "Clicado",
     "sent": "Enviado",
     "viewAllRequests": "Ver todo →",
-    "onboardingHeroTitle": "Consigue más reseñas de forma automática",
-    "onboardingHeroSubtitle": "Conecta tu correo, añade tus clientes y empieza a enviar solicitudes en minutos.",
+    "onboardingHeroTitle": "Obtén más reseñas en piloto automático",
+    "onboardingHeroSubtitle": "Conectar your email, add your customers, and start sending review requests in minutes.",
     "getStarted": "Comenzar",
-    "learnMore": "Más información",
+    "learnMore": "Saber más",
     "fromYourOwnEmail": "Desde tu propio correo",
-    "fromYourOwnEmailDescription": "Conecta cualquier cuenta de correo vía SMTP. Sin marcas 'via phame.app'.",
+    "fromYourOwnEmailDescription": "Conectar any email account via SMTP. No 'via phame.app' branding.",
     "worksWithAnyPlatform": "Funciona con cualquier plataforma",
-    "worksWithAnyPlatformDescription": "Google, Yelp, Trustpilot, Capterra... si tiene un enlace, puedes usarlo.",
-    "privacyFocused": "Centrado en la privacidad",
+    "worksWithAnyPlatformDescription": "Google, Yelp, Trustpilot, Capterra... if it has a link, you can use it.",
+    "privacyFocused": "Enfocado en privacidad",
     "privacyFocusedDescription": "No vendemos tus datos. Tus clientes, correos y estadísticas son solo tuyos.",
     "viewLiveDemo": "Ver demo en vivo",
     "watchVideo": "Ver video",
     "allSystemsGo": "¡Todo listo!",
-    "smtpNotConnected": "SMTP no conectado",
-    "connectYourEmail": "Conecta tu correo para enviar solicitudes.",
-    "profileNotComplete": "Perfil incompleto",
-    "addBusinessDetails": "Añade los datos del negocio y un enlace de reseñas.",
+    "smtpNotConnected": "SMTP not connected",
+    "connectYourEmail": "Conectar your email to send requests.",
+    "profileNotComplete": "Profile not complete",
+    "addBusinessDetails": "Agrega los detalles del negocio y un enlace de reseña.",
     "setupGuide": "Guía de configuración",
     "helpAndSupport": "Ayuda y soporte",
     "featureRequests": "Solicitudes de funciones",
-    "whatsNew": "Novedades",
-    "reviewLinkOnX": "Get Phame en X",
+    "whatsNew": "Novedades?",
+    "reviewLinkOnX": "Get Get Phame on X",
     "buyTheCode": "Comprar el código",
-    "monthlyPro": "Pro mensual",
-    "annualPro": "Pro anual",
+    "monthlyPro": "Mensual Pro",
+    "annualPro": "Anual Pro",
     "lifetime": "De por vida",
     "freePlan": "Plan gratuito",
     "thisMonth": "Este mes",
-    "allTime": "Total",
-    "completeSetup": "Completa tu configuración",
-    "profileComplete": "Perfil del negocio completo",
-    "profileIncomplete": "Perfil del negocio — añade el nombre de tu negocio y el enlace de reseñas",
-    "emailConnected": "Correo conectado ({{email}})",
-    "emailNotConnected": "Correo — conecta tu cuenta de correo",
-    "goToSettings": "Ir a ajustes →",
-    "fixInSettings": "Corregir en ajustes →",
-    "lastChecked": "Última comprobación",
+    "allTime": "Todo el tiempo",
+    "completeSetup": "Completar configuración",
+    "profileComplete": "Perfil de empresa completo",
+    "profileIncomplete": "Perfil de empresa — agrega tu nombre de empresa y enlace de reseña",
+    "emailConnected": "Correo electrónico connected ({{email}})",
+    "emailNotConnected": "Correo electrónico — connect your email account",
+    "goToSettings": "Go to Configuración →",
+    "fixInSettings": "Fix in Configuración →",
+    "lastChecked": "Última verificación",
     "errorPrefix": "Error:",
     "manageBilling": "Gestionar facturación",
-    "seoTitle": "Consigue más reseñas para tu negocio",
-    "seoDescription": "Get Phame facilita el envío de solicitudes de reseñas personalizadas por correo electrónico a tus clientes — para Google, Yelp, TripAdvisor, Bing, Facebook y más. Construye tu reputación online en todas las plataformas, mejora tus valoraciones y atrae nuevos clientes — todo desde un panel sencillo.",
+    "seoTitle": "Obtén más reseñas de negocios",
+    "seoDescription": "Get Phame makes it easy to send personalized review requests to your customers via email — for Google, Yelp, TripAdvisor, Bing, Facebook, and more. Build your online reputation across every platform, increase star ratings, and attract new customers — all from one simple dashboard.",
     "goal": "objetivo",
     "goalReached": "¡Objetivo alcanzado! 🎉",
-    "toGo": "por conseguir",
+    "toGo": "restantes",
     "reviewsPerMonth": "reseñas / mes",
     "ofMonthlyGoal": "del objetivo mensual",
     "requestsByPlatform": "Solicitudes por plataforma",
@@ -344,11 +384,7 @@
     "step3": "Enviar tu primera solicitud",
     "daysAgo": "hace {{count}} día(s)",
     "hoursAgo": "hace {{count}} hora(s)",
-    "minutesAgo": "hace {{count}} minuto(s)",
-    "freeAllowanceInitial": "Plan gratuito: 10 solicitudes iniciales, luego 5 cada 30 días rodantes",
-    "freeAllowanceMonthly": "Plan gratuito: 5 solicitudes cada 30 días rodantes",
-    "nextFreeRequest": "Siguiente solicitud disponible {{date}}",
-    "lifePlan": "Plan de vida"
+    "minutesAgo": "hace {{count}} minuto(s)"
   },
   "notifications": {
     "followUpReminderScheduled": "¡Recordatorio de seguimiento programado!",
@@ -456,14 +492,10 @@
     "savedContacts": "Contactos guardados",
     "templates": "Plantillas",
     "reminders": "Recordatorios",
-    "changelog": "Registro de cambios",
-    "freeInitialRemaining": "Plan gratis: quedan {{remaining}} de 10 solicitudes iniciales; después, 5 cada 30 días móviles",
-    "freeRollingRemaining": "Plan gratis: quedan {{remaining}} de 5 solicitudes en tu periodo móvil de 30 días",
-    "freeInitialLimitReachedDesc": "Has usado tus 10 solicitudes iniciales. Tu asignación recurrente es de 5 solicitudes cada 30 días móviles, o mejora para obtener solicitudes ilimitadas.",
-    "freeRollingLimitReachedDesc": "Has usado las 5 solicitudes de tu asignación móvil actual de 30 días. La siguiente estará disponible el {{date}}, o mejora para seguir enviando ahora."
+    "changelog": "Registro de cambios"
   },
   "tabs": {
-    "account": "Cuenta",
+    "account": "Cuenta y Perfil",
     "billing": "Facturación",
     "integrations": "Integraciones",
     "notifications": "Notificaciones",
@@ -509,16 +541,6 @@
     "cancelButton": "Cancelar",
     "successToast": "Cuenta eliminada. ¡Adiós!"
   },
-  "common": {
-    "gotIt": "Entendido ✓",
-    "hide": "Ocultar",
-    "show": "Mostrar",
-    "cancel": "Cancelar",
-    "copy": "Copiar",
-    "off": "Desactivado",
-    "on": "Activado",
-    "optional": "opcional"
-  },
   "profile": {
     "title": "Perfil de empresa",
     "description": "Cuéntanos sobre tu empresa. Esta información se usa para personalizar los correos.",
@@ -528,7 +550,7 @@
     "reviewLink": "Primary Google Review Link",
     "reviewLinkPlaceholder": "https://g.page/r/...",
     "reviewLinkDescription": "El enlace principal al que se dirigirá a tus clientes. Puedes agregar más enlaces en Plataformas de reseñas.",
-    "emailSenderSettings": "Correo electrónico Enviarer Configuración",
+    "emailSenderSettings": "Configuración del remitente de correo electrónico",
     "fromName": "Nombre del remitente",
     "fromNamePlaceholder": "ej. Steve en Acme Fontanería",
     "fromNameDescription": "El nombre que aparecerá en la bandeja de entrada de tus clientes.",
@@ -553,11 +575,13 @@
     "emailNotConnected": "Correo no conectado",
     "connectEmail": "Conectar correo",
     "changeEmail": "Cambiar correo",
-    "disconnectEmail": "Desconectar correo"
+    "disconnectEmail": "Desconectar correo",
+    "displayName": "Nombre de saludo del panel",
+    "displayNameDescription": "Anula tu nombre de inicio de sesión en el saludo \"¡Hola, [Nombre]!\". Déjalo en blanco para usar el nombre de tu cuenta."
   },
   "reviewPlatforms": {
     "title": "Plataformas de reseñas",
-    "description": "Añade las URL de tus páginas de reseñas de Google, Yelp, TripAdvisor, Bing, Facebook y más. Pega el enlace público que usan los clientes para dejar una reseña.",
+    "description": "Add your review page URLs for Google, Yelp, TripAdvisor, Bing, Facebook, and more. Paste the public link customers use to leave a review.",
     "add": "Agregar",
     "emptyState": "No hay plataformas de reseñas agregadas. Haz clic en \"Agregar\" para comenzar.",
     "editUrl": "Editar URL",
@@ -568,7 +592,7 @@
     "updateError": "Error al actualizar la plataforma",
     "default": "PREDETERMINADA",
     "setAsDefault": "Establecer como plataforma predeterminada",
-    "removedToast": "{{platform}} eliminada",
+    "removedToast": "{{platform}} removed",
     "undo": "Deshacer",
     "addPlatformTitle": "Agregar plataforma de reseñas",
     "platformType": "Plataforma",
@@ -577,22 +601,6 @@
     "platformLabelDescription": "Se muestra en el correo si seleccionas \"Otro\".",
     "addPlatform": "Agregar plataforma",
     "urlRequired": "La URL es requerida",
-    "platformUrlRequired": "URL de la página de reseñas *",
-    "yelpSearchInstruction": "Instrucción de búsqueda en Yelp *",
-    "whyNoLinkTitle": "¿Por qué no hay enlace?",
-    "yelpNoLinkEdit": "Los Términos de Servicio de Yelp prohíben solicitar reseñas directamente mediante un enlace. Una instrucción de búsqueda en texto sin formato mantiene tus correos en cumplimiento: los clientes encuentran tu ficha por sí mismos.",
-    "yelpEditHelp": "Introduce una instrucción de búsqueda en texto sin formato. Este texto aparece en el correo; no se genera ningún enlace, lo que mantiene el cumplimiento con Yelp.",
-    "yelpNoLinkAdd": "Los Términos de Servicio de Yelp prohíben solicitar reseñas directamente mediante un enlace. Introducir una instrucción de búsqueda en texto sin formato mantiene tus correos en cumplimiento: los clientes encuentran tu ficha por sí mismos.",
-    "yelpSearchHelp": "Introduce una instrucción de búsqueda en texto sin formato (por ejemplo: Busca [Tu negocio] en Yelp en [Ciudad, Estado]). Este texto aparece en el cuerpo del correo; no se crea ningún enlace, lo que mantiene el cumplimiento con Yelp.",
-    "reviewUrlHelp": "Pega la URL pública que usan los clientes para dejar una reseña en esta plataforma.",
-    "customLabel": "Etiqueta personalizada",
-    "customLabelExample": "p. ej. Houzz, Angi, Thumbtack",
-    "searchInstructionRequired": "La instrucción de búsqueda es obligatoria",
-    "addingPlatform": "Agregando plataforma...",
-    "addSuccess": "¡Plataforma de reseñas agregada!",
-    "addError": "No se pudo agregar la plataforma",
-    "remove": "Eliminar",
-    "cancel": "Cancelar",
     "restoreFailed": "Restauración fallida: {{message}}",
     "removeFailed": "No se pudo eliminar la plataforma: {{message}}",
     "editButton": "Editar",
@@ -616,51 +624,6 @@
     "noUrl": "Sin URL definida"
   },
   "smtp": {
-    "emailConnected": "Correo conectado",
-    "lastAutoCheck": "Última comprobación automática: {{date}}",
-    "healthy": "✓ Correcto",
-    "failed": "✗ Falló",
-    "notConnectedDescription": "No hay ningún correo conectado. Ingresa tus datos para empezar a enviar solicitudes de reseña.",
-    "emailAddressLabel": "Tu dirección de correo *",
-    "displayNameLabel": "Nombre para mostrar (opcional)",
-    "displayNameHelp": "Se muestra como nombre del remitente en la bandeja de entrada del cliente.",
-    "passwordLabels": {
-      "gmail": "Contraseña de aplicación de Gmail *",
-      "workspace": "Contraseña de aplicación de Google Workspace *",
-      "microsoft": "Contraseña de aplicación de Microsoft *",
-      "yahoo": "Contraseña de aplicación de Yahoo *",
-      "zoho": "Contraseña de Zoho Mail *",
-      "icloud": "Contraseña específica de Apple *",
-      "aol": "Contraseña de aplicación de AOL *",
-      "proton": "Contraseña SMTP de ProtonMail *",
-      "fastmail": "Contraseña de aplicación de Fastmail *",
-      "email": "Contraseña del correo *"
-    },
-    "passwordPlaceholders": {
-      "update": "Ingresa una nueva contraseña para actualizar",
-      "google": "Contraseña de aplicación de 16 caracteres (sin espacios)",
-      "default": "La contraseña de tu correo"
-    },
-    "inlineHints": {
-      "google": "No uses tu contraseña habitual de Gmail; usa una contraseña de aplicación. Pulsa «Cómo obtenerla» arriba.",
-      "icloud": "Usa una contraseña específica de la app, no la contraseña de tu Apple ID. Pulsa «Cómo obtenerla» arriba.",
-      "zoho": "Primero activa el acceso SMTP en Zoho y luego usa tu contraseña habitual de Zoho. Pulsa «Cómo obtenerla» arriba.",
-      "aol": "No uses tu contraseña habitual de AOL; usa una contraseña de aplicación. Pulsa «Cómo obtenerla» arriba.",
-      "proton": "ProtonMail requiere la aplicación Proton Bridge; usa su contraseña SMTP, no tu acceso de Proton. Pulsa «Cómo obtenerla» arriba.",
-      "fastmail": "No uses tu contraseña habitual de Fastmail; usa una contraseña de aplicación. Pulsa «Cómo obtenerla» arriba.",
-      "custom": "Se detectó un dominio personalizado y los ajustes SMTP se completaron automáticamente. Revisa o ajusta el host y el puerto en la configuración avanzada."
-    },
-    "sendingLimits": {
-      "title": "Límites de envío por proveedor",
-      "gmail": "Gmail / Google Workspace — 500 correos/día (gratis), 2.000/día (Workspace)",
-      "microsoft": "Outlook / Microsoft 365 — 300 correos/día",
-      "yahoo": "Yahoo Mail — 500 correos/día",
-      "zoho": "Zoho Mail — 500 correos/día (gratis), 1.000/día (de pago)",
-      "aol": "AOL Mail — 500 correos/día",
-      "fastmail": "Fastmail — 1.000 correos/día",
-      "proton": "ProtonMail — 150 correos/día (gratis), 1.000/día (de pago) mediante Bridge",
-      "tip": "Para envíos de gran volumen, usa una dirección exclusiva como reviews@yourdomain.com para mantener limpia tu bandeja principal y evitar límites personales."
-    },
     "title": "Conecta tu correo electrónico",
     "description": "Conecta tu cuenta de correo para enviar solicitudes de reseñas desde tu propia dirección.",
     "testConnection": "Test Conectarion",
@@ -732,7 +695,7 @@
     "sendingLimit": "Enviaring Limit",
     "sendingLimitDescription": "Máximo de correos por día para evitar filtros de spam. Recomendamos 50-100 para cuentas nuevas.",
     "connect": "Conectar",
-    "update": "Actualizar",
+    "update": "Cambiar",
     "testSuccess": "¡Correo de prueba enviado con éxito!",
     "testError": "Error al enviar el correo de prueba.",
     "previewSuccess": "¡Correo de prueba enviado a {{email}}!",
@@ -741,7 +704,7 @@
     "disconnectSuccess": "Correo electrónico account disconnected.",
     "disconnectError": "No se pudo desconectar la cuenta: {{message}}",
     "noEmailConnected": "Sin correo conectado",
-    "emailNotConnectedTitle": "Correo electrónico not connected",
+    "emailNotConnectedTitle": "Conexión no verificada",
     "emailNotConnectedDesc": "Conectar your email account in Configuración. Works with Gmail, Outlook, Yahoo, or any business email.",
     "appPasswordGuide": "Guía de contraseña de aplicación",
     "appPasswordLabel": "Contraseña de aplicación",
@@ -799,7 +762,8 @@
     "checkInbox": "Revisa tu bandeja de entrada y haz clic en el enlace de verificación.",
     "icloudGuideStep1": "Ve a appleid.apple.com → Inicio de sesión y seguridad",
     "icloudGuideStep2": "Activa la autenticación de dos factores",
-    "icloudGuideStep3": "Crea una contraseña específica de la aplicación"
+    "icloudGuideStep3": "Crea una contraseña específica de la aplicación",
+    "emailConnected": "Correo electrónico conectado"
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -1096,8 +1060,7 @@
     "new": "New",
     "logoText": "Get Phame",
     "tagline": "Obtén más reseñas de 5 estrellas — automáticamente.",
-    "description": "Envía solicitudes de reseñas personalizadas desde tu propio correo electrónico.",
-    "proGrowthMessage": "Convierte cada trabajo completado en un sistema repetible de reputación y generación de ingresos."
+    "description": "Envía solicitudes de reseñas personalizadas desde tu propio correo electrónico."
   },
   "infoBanner": {
     "howItWorks": "Cómo funciona:",
@@ -1258,28 +1221,7 @@
     "includes": "Incluye:",
     "everythingInFree": "Todo en Gratis, más:",
     "bestValue": "Mejor valor",
-    "guarantee": "Garantía de devolución de 7 días",
-    "otherPaymentMethods": "Otros métodos de pago",
-    "checkoutForPlan": "Pago seguro para {{plan}}"
-  },
-  "pricingGrid": {
-    "title": "Elige el plan que se adapta a tu crecimiento",
-    "savingsEyebrow": "Calculadora de ahorro",
-    "savingsTitle": "Mira cuánto ahorra cada compromiso",
-    "savingsBasis": "Comparado con pagar mensualmente",
-    "monthlyAnnualCost": "por 12 meses",
-    "annualSave": "Ahorra {{amount}}",
-    "annualSavingsDetail": "{{price}} en lugar de {{monthly}} el primer año",
-    "lifetimeSave": "Ahorra {{amount}} antes del segundo año",
-    "lifetimePayback": "Se amortiza en unos {{months}} meses",
-    "heroSendRequests": "Enviar solicitudes",
-    "heroAutomateFollowUps": "Automatizar seguimientos",
-    "heroTrackGrowth": "Seguir tu crecimiento",
-    "closeComparison": "Cerrar comparación",
-    "includedLabel": "Incluido",
-    "planFeaturesLabel": "Funciones del plan {{plan}}",
-    "approximateThb": "≈ {{amount}} THB",
-    "previousPrice": "Antes {{amount}}"
+    "guarantee": "Garantía de devolución de 7 días"
   },
   "accessCode": {
     "title": "Código de acceso",
@@ -1314,14 +1256,7 @@
     "futureUpdates": "Actualizaciones futuras",
     "price": "Price",
     "freeTrialNote": "Todos los planes incluyen una prueba gratuita de 10 solicitudes. No se requiere tarjeta de crédito para comenzar.",
-    "annual": "Anual",
-    "reviewRequests": "Solicitudes de reseña",
-    "freeRequestAllowance": "10 primero y luego 5 / 30 días móviles",
-    "mobileEyebrow": "Comparación de funciones",
-    "mobileTitle": "Compara las funciones de los planes",
-    "mobileSubtitle": "Abre la comparación compacta de funciones",
-    "mobileDescription": "Compara Gratis, Pro y De por vida sin salir de la página de mejora.",
-    "mobileAction": "Comparar"
+    "annual": "Anual"
   },
   "paidUser": {
     "adminAccess": "Acceso de administrador",
@@ -1336,81 +1271,7 @@
     "planLabel": "Tu plan",
     "renewsOn": "Se renueva el {{date}}",
     "expiresOn": "Expira el {{date}}",
-    "lifetimeAccess": "Acceso de por vida",
-    "portalOpened": "La facturación segura se abrió en una pestaña nueva.",
-    "currentStatus": "Tu estado: {{tierLabel}}",
-    "lifeMessage": "El acceso de por vida está activo. No hay nada que actualizar ni renovar.",
-    "manageMessage": "Cambia tu ciclo de facturación o finaliza tu suscripción a continuación.",
-    "subscription": "Suscripción",
-    "switchMonthly": "Cambiar a mensual o gestionar la facturación",
-    "changePlan": "Cambiar de plan o gestionar la facturación",
-    "endSubscription": "Finalizar suscripción",
-    "endExplanation": "Al finalizar tu suscripción, la cuenta volverá al plan gratuito al terminar el período pagado.",
-    "switchConfirm": {
-      "title": "¿Cambiar de {{current}} a {{target}}?",
-      "description": "Revisa el cambio del ciclo de facturación antes de continuar a Stripe.",
-      "currentPlan": "Plan actual",
-      "newPlan": "Nuevo plan",
-      "savings": "La facturación anual ahorra $58 al año en comparación con la mensual.",
-      "timing": "Stripe mostrará la fecha efectiva exacta y cualquier cargo o crédito prorrateado antes de aprobar el cambio.",
-      "cancel": "Mantener {{plan}}",
-      "continue": "Continuar a Stripe"
-    },
-    "accessUntil": "Acceso hasta el {{date}}"
-  },
-  "authFeedback": {
-    "openingGoogle": "Abriendo el inicio de sesión con Google…",
-    "connectingGoogle": "Conectando con Google…",
-    "continueWithGoogle": "Continuar con Google",
-    "googleOpenFailed": "No se pudo abrir el inicio de sesión con Google. Inténtalo de nuevo.",
-    "googleSuccess": "Inicio de sesión con Google completado. Te damos la bienvenida a Get Phame.",
-    "errors": {
-      "googleDenied": "Se canceló el inicio de sesión con Google.",
-      "googleFailed": "El inicio de sesión con Google falló. Inténtalo de nuevo.",
-      "googleMissingCode": "Google no devolvió la información necesaria para iniciar sesión. Inténtalo de nuevo.",
-      "googleStateMismatch": "Falló la comprobación de seguridad del inicio de sesión con Google. Inténtalo de nuevo.",
-      "googleNoId": "No se pudo verificar tu cuenta con Google. Inténtalo de nuevo."
-    },
-    "preparingGoogle": "Preparando el inicio de sesión con Google…",
-    "redirectingGoogle": "Redirigiendo de forma segura a Google…"
-  },
-  "apiRecovery": {
-    "preparing": "Preparando tu espacio de trabajo…",
-    "preparingDescription": "Nos reconectaremos automáticamente cuando el servicio esté listo.",
-    "reconnecting": "Reconectando…",
-    "reconnected": "Ya estás de nuevo en línea.",
-    "reconnectedDescription": "Get Phame está conectado y listo para usar.",
-    "unavailableTitle": "Estamos reconectando Get Phame.",
-    "unavailableDescription": "El servicio está tardando un poco más de lo esperado. Tu trabajo está seguro; inténtalo de nuevo cuando quieras.",
-    "offlineTitle": "Ahora mismo no tienes conexión.",
-    "offlineDescription": "Revisa tu Wi-Fi o datos móviles y vuelve a intentarlo. Tu trabajo permanece seguro en este dispositivo.",
-    "offlineStepOne": "Activa el Wi-Fi o los datos móviles.",
-    "offlineStepTwo": "Vuelve aquí y toca Reintentar conexión.",
-    "retrying": "Intentándolo de nuevo…",
-    "retry": "Intentar de nuevo",
-    "retryNow": "Reintentar ahora",
-    "retryConnection": "Reintentar conexión",
-    "networkStatusLabel": "Estado de la red",
-    "networkOnline": "En línea",
-    "networkOffline": "Sin conexión"
-  },
-  "profileMenu": {
-    "account": "Cuenta",
-    "accountDetails": "Detalles de la cuenta",
-    "open": "Abrir menú de la cuenta",
-    "signedInAs": "Sesión iniciada como",
-    "dashboard": "Panel",
-    "darkMode": "Modo oscuro",
-    "lightMode": "Modo claro"
-  },
-  "account": {
-    "administrator": "Administrador",
-    "administratorAccount": "Cuenta de administrador",
-    "renewsOn": "Se renueva el {{date}}",
-    "accessUntil": "Acceso hasta el {{date}}",
-    "managePlan": "Gestionar plan",
-    "status": "Estado",
-    "upgrade": "Actualizar"
+    "lifetimeAccess": "Acceso de por vida"
   },
   "columnLabels": {
     "fullName": "Nombre completo",
@@ -1655,7 +1516,8 @@
     "steps": {
       "connectEmail": "Conectar Correo electrónico",
       "reviewPlatform": "Plataforma de reseñas",
-      "sendRequest": "Enviar solicitud"
+      "sendRequest": "Enviar solicitud",
+      "wpConnector": "Plugin WP"
     },
     "stepContent": {
       "step1": {
@@ -1669,6 +1531,10 @@
       "step3": {
         "title": "Listo para despegar 🚀",
         "description": "Everything is set up. Enviar your first review request in seconds."
+      },
+      "step4": {
+        "title": "Conectar WordPress",
+        "description": "Instala el plugin conector gratuito en tu sitio de WordPress para sincronizar clientes automáticamente."
       }
     },
     "navigation": {
@@ -1760,9 +1626,15 @@
       "markSent": "Mark Enviado"
     },
     "toasts": {
-      "updateFailed": "Error al actualizar las solicitudes.",
+      "updateFailed": "No se pudieron actualizar las solicitudes.",
       "updatedSuccess": "{{count}} request updated.",
-      "updatedSuccessPlural": "{{count}} requests updated."
+      "updatedSuccessPlural": "{{count}} requests updated.",
+      "updatedSuccess_one": "{{count}} solicitud actualizada.",
+      "updatedSuccess_other": "{{count}} solicitudes actualizadas.",
+      "bulkRestartSuccess_one": "Se reinició {{count}} campaña correctamente.",
+      "bulkRestartSuccess_other": "Se reiniciaron {{count}} campañas correctamente.",
+      "bulkRestartPartial_one": "Se reinició {{count}} campaña. {{failCount}} falló.",
+      "bulkRestartPartial_other": "Se reiniciaron {{count}} campañas. {{failCount}} fallaron."
     },
     "emptyState": "No se han enviado solicitudes aún.",
     "monthlyGoal": "Meta mensual",
@@ -1776,11 +1648,15 @@
     "thisMonth": "Este mes",
     "allTime": "Todo el tiempo",
     "recentActivity": "Actividad reciente",
-    "viewAll": "Ver todo"
+    "viewAll": "Ver todo",
+    "activityTrend": {
+      "title": "Tendencia de actividad",
+      "empty": "Sin actividad en los últimos {{days}} días. Envía tu primera solicitud para ver las tendencias aquí."
+    }
   },
   "pricing": {
     "sectionTitle": "Precios simples y honestos",
-    "sectionSubtitle": "Comienza gratis. Actualiza cuando estés listo.",
+    "sectionSubtitle": "Empieza gratis. Mejora cuando estés listo.",
     "free": "Gratis",
     "freePrice": "$0",
     "freeDescription": "Para pequeñas empresas que están comenzando",
@@ -1824,28 +1700,75 @@
     "monthly": "Mensual",
     "annual": "Anual",
     "cta": "Comenzar gratis",
-    "ctaPro": "Obtener Pro"
+    "ctaPro": "Obtener Pro",
+    "plans": {
+      "free": {
+        "name": "Gratis",
+        "description": "Prueba Phame con 10 solicitudes de revisión, no se requiere tarjeta de crédito.",
+        "feature1": "10 solicitudes de revisión",
+        "feature2": "Conecta 1 cuenta de correo electrónico",
+        "feature3": "Cualquier plataforma de revisión",
+        "feature4": "Seguimiento de apertura de correo electrónico",
+        "feature5": "Importación CSV",
+        "cta": "Empezar Gratis"
+      },
+      "proMonthly": {
+        "name": "Pro Mensual",
+        "description": "Ideal para negocios activos que envían solicitudes de revisión semanalmente.",
+        "feature1": "Solicitudes de revisión ilimitadas",
+        "feature2": "Envío masivo en un clic",
+        "feature3": "Recordatorios de seguimiento",
+        "feature4": "Sincronización con WooCommerce",
+        "feature5": "Soporte prioritario",
+        "feature6": "Análisis avanzados",
+        "cta": "Empezar Pro Mensual"
+      },
+      "proAnnual": {
+        "name": "Pro Anual",
+        "description": "El mejor valor para negocios comprometidos con el crecimiento de la reputación.",
+        "feature1": "Todo lo incluido en Pro Mensual",
+        "feature2": "Facturación anual ($228/yr)",
+        "feature3": "Ahorra 34% vs mensual",
+        "feature4": "Soporte prioritario",
+        "feature5": "Acceso anticipado a nuevas funciones",
+        "cta": "Empezar Pro Anual",
+        "badge": "Ahorra 34%"
+      },
+      "lifetime": {
+        "name": "De por vida",
+        "description": "Un solo pago, acceso de por vida. Sin renovaciones, sin sorpresas.",
+        "feature1": "Todo lo incluido en Pro",
+        "feature2": "Paga una vez, usa para siempre",
+        "feature3": "Todas las futuras actualizaciones incluidas",
+        "feature4": "Soporte prioritario de por vida",
+        "feature5": "Perfecto para agencias y operadores",
+        "cta": "Obtener Acceso de por vida",
+        "badge": "Mejor Oferta"
+      }
+    }
   },
   "comparison": {
-    "sectionTitle": "10-20× más barato que los grandes jugadores",
-    "sectionSubtitle": "Birdeye and Podium charge enterprise prices for features Get Phame gives you at a fraction of the cost.",
+    "sectionTitle": "10–20× más barato que los grandes",
+    "sectionSubtitle": "Birdeye y Podium cobran precios de nivel empresarial por funciones que Get Phame te ofrece a una fracción del costo.",
     "colPlatform": "Plataforma",
     "colStartingPrice": "Precio inicial",
-    "colLifetime": "De por vida option",
-    "priceDisclaimer": "Precios basados en planes de nivel de entrada listados públicamente en abril de 2026."
+    "colLifetime": "Opción de por vida",
+    "priceDisclaimer": "Precios basados en los planes de nivel inicial publicados públicamente a abril de 2026."
   },
   "testimonials": {
     "sectionTitle": "Lo que dicen nuestros usuarios",
     "sarah": {
-      "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. Get Phame sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks.",
+      "quote": "Solía temer pedir reseñas a los clientes; se sentía incómodo y comercial. Get Phame envía la solicitud desde mi propio Gmail, por lo que realmente parece que la escribí yo. Pasé de 12 reseñas de Google a 47 en seis semanas.",
       "name": "Sarah M.",
-      "role": "Fotógrafa independiente",
-      "text": "¡Get Phame me ayudó a obtener 23 nuevas reseñas en solo 2 semanas!"
+      "role": "Fotógrafa Freelance",
+      "text": "¡Get Phame me ayudó a obtener 23 nuevas reseñas en solo 2 semanas!",
+      "result": "12 → 47 reseñas en 6 semanas"
     },
     "tom": {
-      "quote": "Atendemos a unos 80 clientes al día. Importo los pedidos de la semana regularmente y envío solicitudes en masa. Es increíblemente sencillo.",
+      "quote": "Atendemos a unos 80 clientes al día. Importo los clientes habituales de la semana desde un CSV el viernes, le doy a enviar, y para el lunes por la mañana ya hemos conseguido entre 8 y 10 nuevas reseñas. Se ha convertido en parte de nuestra rutina semanal.",
       "name": "Tom R.",
-      "role": "Dueño, El Café de la Esquina"
+      "role": "Propietario, The Corner Café",
+      "result": "8–10 nuevas reseñas por semana"
     },
     "james": {
       "name": "James K.",
@@ -1856,12 +1779,91 @@
       "name": "Lisa T.",
       "role": "Salón de belleza",
       "text": "Fácil de usar y realmente efectivo. Lo recomiendo a todos los dueños de pequeñas empresas."
+    },
+    "tagline": "Resultados reales",
+    "headline": "Ellos pidieron. Los clientes respondieron.",
+    "subheadline": "Negocios reales que usan Get Phame para hacer crecer su reputación cada semana.",
+    "cta": "Comenzar gratis",
+    "david": {
+      "quote": "Como agencia que gestiona 12 ubicaciones de clientes, la oferta de por vida fue una obviedad. Cada cliente obtiene su propio enlace de reseña y yo envío las solicitudes en su nombre. El retorno de la inversión se pagó solo en el primer mes.",
+      "name": "David K.",
+      "role": "Propietario de Agencia de Marketing Digital",
+      "result": "12 ubicaciones gestionadas desde una cuenta"
     }
   },
   "onboarding": {
     "googleBtn": "Continuar with Google",
     "appleBtn": "Continuar with Apple",
-    "finePrint": "Comienza gratis — 10 solicitudes de reseñas incluidas. Sin tarjeta de crédito."
+    "finePrint": "Comienza gratis — 10 solicitudes de reseñas incluidas. Sin tarjeta de crédito.",
+    "heroHeadline": "Consigue más reseñas de 5 estrellas",
+    "heroHighlight": "en Google",
+    "heroSubtitle": "Envía solicitudes de reseñas personalizadas desde tu propia cuenta de correo electrónico. Tus clientes lo verán como si viniera de ti, no de un remitente genérico.",
+    "heroSubtitleShort": "Envía solicitudes de reseñas personalizadas desde tu propia cuenta de correo electrónico.",
+    "trust1": "Credenciales cifradas AES-256 — tus datos están seguros",
+    "trust2": "Envía desde TU correo electrónico — máxima entregabilidad",
+    "trust3": "Configuración en menos de 2 minutos — no se necesitan habilidades técnicas",
+    "socialProof": "Con la confianza de más de 500 negocios locales",
+    "compliance": "Cada correo electrónico incluye un enlace para darse de baja — totalmente compatible",
+    "cardHeading": "Crea tu cuenta gratuita",
+    "cardSubheading": "No se requiere tarjeta de crédito",
+    "or": "o",
+    "emailBtn": "Continuar con el correo electrónico",
+    "checkInbox": "¡Revisa tu bandeja de entrada!",
+    "sentLink": "Enviamos un enlace de inicio de sesión a",
+    "expires": "Expira en 15 minutos.",
+    "useDifferentEmail": "Usar un correo electrónico diferente",
+    "sendingLink": "Enviando enlace…",
+    "sendSignInLink": "Enviar enlace de inicio de sesión",
+    "cancel": "Cancelar",
+    "privacy": "Privacidad",
+    "terms": "Términos",
+    "support": "Soporte",
+    "install": {
+      "title": "Añadir GetPhame a tu pantalla de inicio",
+      "subtitle": "Se abre a pantalla completa como una aplicación nativa, sin necesidad de App Store",
+      "iphoneTab": "iPhone / iPad",
+      "androidTab": "Android",
+      "shareBtn": "Comparte GetPhame con un amigo",
+      "doneBtn": "Hecho — cerrar guía",
+      "ios": {
+        "step1": {
+          "label": "Abrir en Safari",
+          "detail": "Debes usar Safari — Chrome en iOS no puede instalar PWAs."
+        },
+        "step2": {
+          "label": "Toca el botón Compartir",
+          "detail": "El cuadro con una flecha hacia arriba en la parte inferior de la pantalla."
+        },
+        "step3": {
+          "label": "Añadir a pantalla de inicio",
+          "detail": "Desplázate hacia abajo en la hoja para compartir y tócalo."
+        },
+        "step4": {
+          "label": "Toca Añadir",
+          "detail": "El icono de GetPhame aparece en tu pantalla de inicio al instante."
+        },
+        "tip": "¿Ya instalado? Elimina primero el icono antiguo y luego vuelve a añadirlo después de una actualización de la aplicación."
+      },
+      "android": {
+        "step1": {
+          "label": "Abrir en Chrome",
+          "detail": "Samsung Internet también funciona — toca el menú para Añadir página a la pantalla de inicio."
+        },
+        "step2": {
+          "label": "Toca el menú de tres puntos",
+          "detail": "Esquina superior derecha de Chrome."
+        },
+        "step3": {
+          "label": "Añadir a pantalla de inicio",
+          "detail": "Tócalo y luego confirma con Añadir."
+        },
+        "step4": {
+          "label": "¡Hecho!",
+          "detail": "GetPhame aparece en tu pantalla de inicio y se abre a pantalla completa como una aplicación nativa."
+        },
+        "tip": "¿Ya instalado? En Chrome, ve a Configuración, Configuración de sitios, getphame.app, Borrar y restablecer, luego vuelve a instalar."
+      }
+    }
   },
   "bulkBar": {
     "sendTo": "Enviar a {{count}} contacto(s)"
@@ -1891,27 +1893,7 @@
     "reviewPlatform": "Plataforma de reseñas",
     "importContacts": "Importar contactos",
     "sendRequest": "Enviar solicitud",
-    "allSet": {
-      "title": "¡Todo listo!",
-      "subtitle": "Get Phame está listo para recopilar reseñas para tu negocio.",
-      "quickLinksTitle": "Enlaces rápidos",
-      "link1": "Enviar una solicitud de reseña ahora",
-      "link2": "Ver contactos guardados",
-      "link3": "Ver tu panel",
-      "link4": "Administrar la configuración",
-      "installTitle": "Guarda Get Phame en tu teléfono",
-      "iosInstall": "Abre getphame.app en Safari. Toca Compartir, elige Añadir a pantalla de inicio y toca Añadir.",
-      "androidInstall": "Abre getphame.app en Chrome. Toca el menú de tres puntos, elige Instalar aplicación o Añadir a pantalla de inicio y confirma.",
-      "shareButton": "Compartir Get Phame con un amigo",
-      "shareText": "Recopila más reseñas de clientes con Get Phame.",
-      "shareSuccess": "Compartido correctamente.",
-      "copySuccess": "Enlace de Get Phame copiado.",
-      "shareCancelled": "Se canceló el uso compartido.",
-      "shareError": "No se puede compartir en este momento.",
-      "revisitTitle": "¿Necesitas volver a consultar esta guía?",
-      "revisitDesc": "Toca el botón “Guía de configuración” en la pantalla de inicio o en Configuración para volver a abrir estas instrucciones.",
-      "startButton": "Empezar a usar Get Phame"
-    },
+    "allSet": "Configuración completa",
     "navigation": {
       "back": "Atrás",
       "next": "Siguiente",
@@ -2018,109 +2000,13 @@
     "upgradeButton": "Actualizar a Pro"
   },
   "complianceGuide": {
-    "backToSettings": "Configuración",
-    "title": "Guía de Cumplimiento",
-    "subtitle": "Mantente seguro, cumple la ley y protege tu reputación",
-    "risk": {
-      "low": "Riesgo Bajo",
-      "moderate": "Riesgo Moderado",
-      "high": "Riesgo Alto"
-    },
-    "safeZone": {
-      "title": "Dónde Estás Seguro",
-      "transaction": "El cliente tuvo una transacción real contigo",
-      "noIncentives": "No se ofrecieron incentivos (dinero, descuentos, regalos)",
-      "noPressure": "Sin redacción de reseñas guionizada o bajo presión",
-      "allCustomers": "Pregunta a TODOS los clientes — no solo a los satisfechos",
-      "allCustomersSub": "La \"puerta de reseñas\" (filtrar clientes insatisfechos) es donde la mayoría de los negocios se queman."
-    },
-    "platformRisk": {
-      "title": "Niveles de Riesgo de Plataforma",
-      "google": {
-        "allowed": "Pedir reseñas por correo electrónico está permitido",
-        "noIncentives": "Sin incentivos, sin \"puerta de reseñas\"",
-        "worstCase": "Peor caso: reseñas eliminadas o perfil marcado."
-      },
-      "yelp": {
-        "discourages": "Desaconseja encarecidamente pedir reseñas",
-        "filters": "El algoritmo filtra activamente las reseñas 'solicitadas'",
-        "safer": "Más seguro: solo lista el nombre de tu negocio — no incluyas un enlace directo a Yelp en campañas masivas",
-        "worstCase": "Peor caso: reseñas filtradas (no mostradas públicamente) + insignia de alerta al consumidor en el perfil."
-      },
-      "bing": {
-        "title": "Bing / Microsoft",
-        "similar": "Similar a Google en la práctica, aplicación menos agresiva",
-        "worstCase": "Generalmente seguro incluir un enlace directo."
-      }
-    },
-    "legal": {
-      "title": "Consideraciones Legales (EE. UU.)",
-      "intro": "La FTC se preocupa por las reseñas falsas, los incentivos no revelados y las prácticas engañosas. Si solo preguntas a clientes reales, no compensas y no manipulas — estás bien legalmente.",
-      "fakeReviews": "Reseñas falsas",
-      "undisclosedIncentives": "Incentivos no revelados",
-      "misleading": "Prácticas engañosas o desleales"
-    },
-    "accountRisks": {
-      "title": "Lo que Mata Cuentas",
-      "incentives": "Incentivos",
-      "incentivesSub": "Deja una reseña, obtén un 10% de descuento — esto es una violación directa.",
-      "gating": "Embudo de \"puerta de reseñas\"",
-      "gatingSub": "Filtrar clientes insatisfechos de plataformas públicas.",
-      "bulk": "Envíos masivos que parecen automatizados/spam",
-      "bulkSub": "Picos repentinos de más de 50 reseñas en un día levantan banderas rojas.",
-      "writing": "Escribir reseñas para clientes o guiar la redacción exacta",
-      "yelpLinks": "Incluir un enlace de reseña de Yelp en campañas de correo electrónico masivas"
-    },
-    "playbook": {
-      "title": "Guía de Mejores Prácticas",
-      "neutral": "Envía una solicitud simple y neutral",
-      "neutralSub": "Agradeceríamos tus comentarios honestos",
-      "multiplePlatforms": "Ofrece múltiples opciones de plataforma",
-      "multiplePlatformsSub": "No presiones agresivamente una sola plataforma.",
-      "allCustomers": "Pregunta a TODOS los clientes — no solo a los satisfechos",
-      "noYelpLinks": "Evita enlaces directos a Yelp en campañas",
-      "noYelpLinksSub": "Más seguro es solo listar el nombre de tu negocio.",
-      "throttle": "Controla el volumen",
-      "throttleSub": "Sin picos repentinos. Distribuye los envíos a lo largo de días/semanas.",
-      "realPerson": "Envía desde una persona real",
-      "realPersonSub": "No 'support@' — usa un nombre de pila.",
-      "emailLength": "Mantén los correos electrónicos por debajo de 100–120 palabras",
-      "urgency": "Añade urgencia sutil",
-      "urgencySub": "mientras aún está fresco"
-    },
-    "wooTiming": {
-      "title": "WooCommerce: Momento Óptimo",
-      "product": "Pedidos de productos: envía 3–5 días después de la finalización del pedido",
-      "productSub": "Da tiempo a los clientes para recibir y usar el producto.",
-      "service": "Pedidos de servicios: envía 1–2 días después de la finalización",
-      "serviceSub": "Mientras la experiencia aún está fresca.",
-      "trigger": "Activador: estado del pedido de WooCommerce → Completado",
-      "rotate": "Rota las plataformas entre envíos",
-      "rotateSub": "No envíes a todos a la misma plataforma a la vez.",
-      "track": "Rastrea la tasa de conversión",
-      "trackSub": "Busca reseñas por cada 100 clientes como tu KPI."
-    },
-    "subjectLines": {
-      "title": "Asuntos que Convierten",
-      "quickFavor": "¿Un pequeño favor?",
-      "quickFavorSub": "Directo, de baja presión, alta tasa de apertura.",
-      "howDidWeDo": "¿Cómo lo hicimos?",
-      "howDidWeDoSub": "Conversacional y basado en la curiosidad.",
-      "gotAMinute": "[Nombre], ¿tienes un minuto?",
-      "gotAMinuteSub": "La personalización aumenta las tasas de apertura.",
-      "thanksOrder": "Gracias por tu pedido — ¿tienes un minuto?",
-      "thanksOrderSub": "Mejor para flujos post-compra de WooCommerce."
-    },
-    "bottomLine": {
-      "label": "Conclusión",
-      "googleBing": "Google + Bing → seguro si se hace correctamente.",
-      "yelp": "Yelp → procede con cuidado o evita la solicitud directa.",
-      "legal": "Riesgo legal → bajo si eres honesto y no incentivas."
-    },
-    "settings": {
-      "title": "Guía de Cumplimiento",
-      "description": "Reglas de la plataforma, notas legales y mejores prácticas"
-    }
+    "title": "Guía de cumplimiento",
+    "intro": "Respeta las pautas de cada plataforma para evitar penalizaciones.",
+    "googleTitle": "Pautas de Google",
+    "yelpTitle": "Pautas de Yelp",
+    "tripAdvisorTitle": "Pautas de TripAdvisor",
+    "facebookTitle": "Pautas de Facebook",
+    "bingTitle": "Pautas de Bing"
   },
   "analytics": {
     "title": "Análisis",
@@ -2135,10 +2021,10 @@
     "caption": "Gratis para empezar — sin tarjeta de crédito"
   },
   "trust": {
-    "encryptedPassword": "Password encrypted at rest",
-    "dataPrivacy": "Your customer list stays private",
-    "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
-    "unsubscribe": "Unsubscribe link in every email"
+    "encryptedPassword": "Contraseña cifrada en reposo",
+    "dataPrivacy": "Tu lista de clientes se mantiene privada",
+    "emailProviders": "Funciona con Gmail, Outlook, Yahoo y más",
+    "unsubscribe": "Enlace para darse de baja en cada correo"
   },
   "proof": {
     "sectionTitle": "Built for Businesses That Run on Reputation",
@@ -2177,1224 +2063,111 @@
     "q6": "¿Qué métodos de pago se aceptan?",
     "a6": "Todas las tarjetas de crédito y débito principales a través de Stripe. Los usuarios tailandeses también pueden pagar mediante PromptPay — toca la opción PromptPay debajo del botón de pago principal."
   },
-  "paymentSuccess": {
-    "confirmed": "Pago confirmado.",
-    "confirmedToast": "Pago confirmado. Tu acceso a Get Phame está activo.",
-    "upgraded": "Tu cuenta se ha actualizado al instante.",
-    "closingThankYou": "Gracias por elegir Get Phame.",
-    "thankYou": "Gracias por invertir en su sistema de reputación. Sus tres próximas acciones convertirán esa mejora en una confianza visible por parte de sus clientes."
+  "leadCapture": {
+    "headline": "¿No estás listo para comprometerte?",
+    "description": "Obtén una guía gratuita sobre cómo triplicar tus reseñas de Google en 30 días — más acceso anticipado a nuevas funciones y consejos de reputación.",
+    "placeholder": "Ingresa tu correo electrónico",
+    "sending": "Enviando...",
+    "cta": "Enviar guía",
+    "success": "¡Revisa tu bandeja de entrada — la guía está en camino!",
+    "disclaimer": "Sin spam. Cancela la suscripción en cualquier momento. Respetamos tu bandeja de entrada."
   },
-  "adminUsers": {
-    "roleUpdated": "Acceso de administrador actualizado.",
-    "lifeGranted": "Acceso Life concedido.",
-    "lifeRemoved": "Acceso Life eliminado.",
-    "back": "Panel de administración",
-    "eyebrow": "Gestión de usuarios",
-    "title": "Gestionar usuarios",
-    "subtitle": "Busca cualquier cuenta y controla el acceso de administrador o Life.",
-    "searchLabel": "Buscar usuarios",
-    "searchPlaceholder": "Nombre o correo",
-    "accountCount": "{{count}} cuentas",
-    "loading": "Cargando cuentas…",
-    "unnamed": "Usuario sin nombre",
-    "admin": "Admin",
-    "life": "Life",
-    "noEmail": "Sin correo",
-    "accountMeta": "Se unió el {{date}} · Plan guardado: {{tier}}",
-    "removeAdmin": "Quitar admin",
-    "makeAdmin": "Hacer admin",
-    "removeLife": "Quitar Life",
-    "grantLife": "Conceder Life",
-    "empty": "Ningún usuario coincide con la búsqueda.",
-    "previous": "Anterior",
-    "page": "Página {{page}} de {{count}}",
-    "next": "Siguiente",
-    "chooseSurvivor": "Cuenta superviviente",
-    "combine": "Combinar",
-    "combineDescription": "Todo lo que pertenezca a {{source}} se transferirá a la cuenta superviviente. La cuenta de origen se elimina después de que la transferencia se complete con éxito.",
-    "combineNow": "Combinar cuentas",
-    "combineRules": "El superviviente conserva su identidad de acceso y el rol/plan más alto. Los contactos, solicitudes, plantillas, plataformas, datos analíticos e historial se transfieren. Si una conexión SMTP está verificada y la otra no, se conservará automáticamente la verificada. La fusión se detiene si ambas conexiones SMTP comparten el mismo estado de verificación o si existe otro conflicto de facturación o de servicio de correo que requiera que usted elija.",
-    "combineTitle": "Combinar cuentas duplicadas",
-    "combined": "Cuentas combinadas. {{name}} es ahora la cuenta superviviente.",
-    "delete": "Eliminar",
-    "deleteDescription": "Esto elimina permanentemente a {{name}} y todos los contactos vinculados, solicitudes, integraciones, configuración, datos analíticos e historial.",
-    "deleteForever": "Eliminar permanentemente",
-    "deleteIrreversible": "Esto no se puede deshacer. Combine cuentas duplicadas en su lugar si desea preservar los datos.",
-    "deleteTitle": "¿Eliminar esta cuenta?",
-    "deleted": "Cuenta eliminada.",
-    "deletedAfterMerge": "eliminada",
-    "mergeDirection": "Dirección de fusión",
-    "removeSmtp": "Eliminar SMTP",
-    "removeSmtpDescription": "Esto elimina permanentemente el host SMTP, el nombre de usuario, la contraseña cifrada, los detalles del remitente y el estado de verificación para {{email}}.",
-    "removeSmtpPermanently": "Eliminar SMTP permanentemente",
-    "removeSmtpPreservesAccount": "La cuenta de usuario, los contactos, las solicitudes, el plan y el historial no se eliminan.",
-    "removeSmtpTitle": "¿Eliminar credenciales SMTP?",
-    "retestSmtp": "Reprobar SMTP",
-    "smtpAlreadyAbsent": "No había credenciales SMTP conectadas.",
-    "smtpAuditAdministrator": "Administrador",
-    "smtpAuditAllAdministrators": "Todos los administradores",
-    "smtpAuditAllOutcomes": "Todos los resultados",
-    "smtpAuditClearFilters": "Borrar filtros de auditoría",
-    "smtpAuditEmpty": "No se han registrado eliminaciones de credenciales SMTP.",
-    "smtpAuditExport": "Exportar CSV filtrado",
-    "smtpAuditExported": "Exportados {{count}} registros de auditoría coincidentes.",
-    "smtpAuditFrom": "Fecha desde",
-    "smtpAuditNoExportRows": "Ningún registro de auditoría coincide con los filtros actuales.",
-    "smtpAuditOutcome": "Resultado",
-    "smtpAuditOutcomeRemoved": "Eliminado",
-    "smtpAuditPagination": "Páginas de auditoría SMTP",
-    "smtpAuditRemoved": "eliminó credenciales SMTP de",
-    "smtpAuditSubtitle": "Registro persistente de quién eliminó permanentemente las credenciales SMTP de un usuario y cuándo.",
-    "smtpAuditTitle": "Registro de auditoría de eliminación de SMTP",
-    "smtpAuditTo": "Fecha hasta",
-    "smtpFilterAll": "Todos los estados SMTP",
-    "smtpFilterFailing": "Comprobación SMTP fallida",
-    "smtpFilterLabel": "Filtrar por estado SMTP",
-    "smtpFilterUnconnected": "Sin SMTP conectado",
-    "smtpFilterUnverified": "SMTP no verificado",
-    "smtpFilterVerified": "SMTP verificado",
-    "smtpNotConnected": "Sin SMTP",
-    "smtpRecovered": "Conexión SMTP recuperada y verificada.",
-    "smtpRecoveryConfirmed": "Recuperación confirmada {{time}}",
-    "smtpRemoved": "Credenciales SMTP eliminadas.",
-    "smtpRetestFailed": "Verificación SMTP fallida.",
-    "smtpRetestPassed": "Verificación SMTP aprobada.",
-    "smtpUnverified": "SMTP no verificado",
-    "smtpVerified": "SMTP verificado",
-    "sourceDeleted": "Cuenta de origen — eliminada",
-    "survivesMerge": "permanece",
-    "typeCombine": "Escriba COMBINE para confirmar",
-    "typeDelete": "Escriba DELETE para confirmar",
-    "typeEmailToRemoveSmtp": "Escriba {{email}} para confirmar"
+  "videoDemo": {
+    "eyebrow": "Véalo en acción",
+    "title": "¿Cómo funciona?",
+    "subtitle": "Vea un recorrido rápido — configuración en menos de 2 minutos",
+    "videoSubtitle": "Conectar correo electrónico · Importar clientes · Enviar solicitudes · Rastrear resultados",
+    "watchNow": "Ver ahora →"
   },
-  "pwaInstallBanner": {
-    "title": "Instala Get Phame",
-    "description": "Abre tu panel de reseñas más rápido y usa Get Phame como una app.",
-    "cta": "Instalar app",
-    "iosCta": "Ver pasos para iPhone",
-    "opening": "Abriendo…",
-    "openingStatus": "Abriendo las opciones de instalación de Get Phame.",
-    "dismiss": "Ocultar banner de instalación",
-    "remindLater": "Recordármelo más tarde",
-    "shareSuccess": "Get Phame se ha compartido correctamente.",
-    "shareCopied": "Enlace de Get Phame copiado.",
-    "shareCancelled": "Se canceló el uso compartido.",
-    "shareError": "No se puede compartir Get Phame en este momento."
+  "stats": {
+    "title": "Diseñado para negocios que dependen de la reputación",
+    "stat1Label": "más reseñas vs. preguntar en persona",
+    "stat2Label": "tiempo promedio de configuración",
+    "stat3Value": "Tu bandeja de entrada",
+    "stat3Label": "correos electrónicos enviados desde tu propia dirección",
+    "stat4Label": "tasa de respuesta promedio",
+    "industry1": "Fotógrafos",
+    "industry2": "Cafeterías y Restaurantes",
+    "industry3": "Servicios para el Hogar",
+    "industry4": "Clínicas y Salones",
+    "industry5": "Agencias",
+    "industry6": "Tiendas WooCommerce"
+  },
+  "productShowcase": {
+    "title": "Diseñado para que las solicitudes de reseñas sean sencillas",
+    "subtitle": "Una herramienta simple. Tres vistas potentes. Todo lo que necesitas para hacer crecer tu reputación.",
+    "tab1Label": "Vista previa del correo electrónico",
+    "tab1Title": "Correos electrónicos que parecen escritos a mano",
+    "tab1Desc": "Cada solicitud de reseña llega desde tu dirección de correo electrónico real con tu nombre, tu firma y un tono personal. Los clientes confían en ella porque parece real, porque lo es.",
+    "tab2Label": "Importación de clientes",
+    "tab2Title": "Toda tu lista en segundos",
+    "tab2Desc": "Arrastra y suelta un CSV o sincroniza directamente desde WooCommerce. Validamos correos electrónicos, eliminamos duplicados y marcamos rebotes, para que cada envío cuente.",
+    "tab3Label": "Seguimiento de reseñas",
+    "tab3Title": "Observa cómo llegan las reseñas",
+    "tab3Desc": "Rastrea cada correo electrónico enviado, abierto y clicado. Observa cómo aumenta tu número de reseñas semana tras semana con análisis en tiempo real y gráficos de crecimiento.",
+    "viewFullSize": "Ver tamaño completo"
+  },
+  "step4Connector": {
+    "intro": {
+      "heading": "¿Usas WordPress + WooCommerce?"
+    },
+    "step1": {
+      "title": "Descarga el plugin",
+      "downloadBtn": "Descargar Plugin (.zip)"
+    },
+    "step2": {
+      "title": "Instala y activa en WordPress",
+      "wpAdminLink": "Abrir WP Admin → Plugins"
+    },
+    "step3": {
+      "title": "Pega tu clave API",
+      "generateKeyBtn": "Generar clave API"
+    },
+    "doneBtn": "Todo listo — ir a Phame ✓",
+    "skipBtn": "No uso WordPress — saltar este paso"
   },
   "settings": {
-    "accountProfile": {
-      "title": "Perfil de la cuenta",
-      "description": "Administra la identidad que se muestra en tu cuenta de Get Phame.",
-      "loading": "Cargando el perfil de la cuenta",
-      "saved": "Perfil actualizado.",
-      "avatarSaved": "Foto de perfil actualizada.",
-      "avatarRemoved": "Foto de perfil eliminada.",
-      "avatarInvalid": "Elige una imagen JPG, PNG o WebP de hasta 3 MB.",
-      "avatarReadError": "No pudimos leer esa imagen. Prueba con otro archivo.",
-      "avatarAlt": "Foto de perfil de la cuenta",
-      "chooseAvatar": "Elegir foto de perfil",
-      "avatarHelp": "JPG, PNG o WebP · máximo 3 MB",
-      "displayName": "Nombre para mostrar",
-      "email": "Correo electrónico",
-      "emailHelp": "Tu proveedor de autenticación administra el correo con el que inicias sesión.",
-      "save": "Guardar perfil",
-      "uploadAvatar": "Subir foto",
-      "removeAvatar": "Eliminar foto"
-    },
-    "onboardingTips": {
-      "title": "Consejos de configuración",
-      "description": "Muestra consejos contextuales la próxima vez que abras la configuración. También puedes cambiarlo dentro del asistente.",
-      "enable": "Activar consejos de configuración",
-      "disable": "Desactivar consejos de configuración"
-    },
-    "hapticFeedback": {
-      "title": "Respuesta háptica",
-      "description": "Usa la vibración compatible del dispositivo para los toques y las confirmaciones de reconexión. Siempre se respeta la preferencia de movimiento reducido.",
-      "enable": "Activar la respuesta háptica",
-      "disable": "Desactivar la respuesta háptica"
-    },
-    "bulkSender": {
-      "compliance": "Envía solo a personas que han dado su consentimiento para recibir estas comunicaciones. Get Phame conserva el manejo de bajas y las medidas de cumplimiento.",
-      "connectAndTest": "Conectar y probar",
-      "connected": "conectado",
-      "connectedToast": "Remitente masivo conectado.",
-      "connecting": "Conectando…",
-      "description": "Conecta un relé SMTP transaccional verificado para envíos de mayor volumen. Las credenciales se prueban sin enviar un mensaje.",
-      "disconnect": "Desconectar",
-      "disconnectedToast": "Remitente masivo desconectado.",
-      "fromEmail": "Correo del remitente",
-      "fromEmailHelp": "Este remitente debe estar ya verificado con tu proveedor.",
-      "fromName": "Nombre del remitente",
-      "healthyToast": "Conexión saludable.",
-      "hideSecret": "Ocultar secreto",
-      "legacyNotice": "Esta conexión existente usa el modo API heredado. Actualízala cuando te convenga para usar el preajuste SMTP guiado.",
-      "presetEndpoint": "Endpoint del preajuste",
-      "proBody": "Actualiza a Pro para conectar un servicio de correo transaccional para envíos de mayor volumen.",
-      "proTitle": "Función Pro",
-      "provider": "Proveedor",
-      "region": "Región",
-      "secretUsedForUsername": "Tu secreto se usa de forma segura para ambos campos SMTP.",
-      "security": "Seguridad",
-      "setupHelp": "Ayuda de configuración",
-      "showSecret": "Mostrar secreto",
-      "smtpHost": "Host SMTP",
-      "smtpPort": "Puerto",
-      "testConnection": "Probar conexión",
-      "testFailed": "La prueba de conexión falló.",
-      "update": "Actualizar"
-    }
+    "fromNameHint": "mostrado como remitente",
+    "fromNameDescription": "Los clientes verán esto como el nombre del remitente en su bandeja de entrada.",
+    "optional": "opcional",
+    "replyToDescription": "Aquí irán las respuestas de los clientes. Déjalo en blanco para usar tu dirección de envío.",
+    "googleWorkspaceTitle": "¿Usas Google Workspace o un dominio personalizado?",
+    "googleWorkspaceDescription": "No pudimos detectar automáticamente tu configuración SMTP. Selecciona tu proveedor de correo electrónico a continuación o ingresa la configuración manualmente."
   },
-  "login": {
-    "title": "Get Phame",
-    "subtitle": "Inicia sesión en tu cuenta",
-    "continueWithGoogle": "Continuar con Google",
-    "continueWithApple": "Continuar con Apple",
-    "or": "o",
-    "emailLabel": "Dirección de correo electrónico",
-    "emailPlaceholder": "tu@ejemplo.com",
-    "emailRequired": "Ingresa tu dirección de correo electrónico.",
-    "invalidEmail": "Ingresa una dirección de correo electrónico válida.",
-    "sendingMagicLink": "Enviando enlace mágico…",
-    "sendMagicLink": "Enviar enlace mágico",
-    "noPassword": "No necesitas contraseña; te enviaremos un enlace de acceso seguro por correo.",
-    "checkInbox": "Revisa tu bandeja de entrada",
-    "sentTo": "Enviamos un enlace de acceso a",
-    "expiresNotice": "El enlace vence en 15 minutos. Revisa la carpeta de spam si no lo ves.",
-    "useDifferentEmail": "Usar otro correo electrónico",
-    "magicLinkFailed": "No pudimos enviar tu enlace mágico. Inténtalo de nuevo.",
-    "networkError": "Error de red. Revisa tu conexión e inténtalo de nuevo.",
-    "rateLimited": "Demasiados intentos. Espera unos minutos antes de volver a intentarlo.",
-    "serviceUnavailable": "El servicio no está disponible temporalmente. Inténtalo de nuevo.",
-    "termsPrefix": "Al continuar, aceptas nuestros",
-    "terms": "Términos de servicio",
-    "consentAnd": "y la",
-    "privacy": "Política de privacidad",
-    "consentSuffix": ".",
-    "signInCancelled": "El inicio de sesión se canceló. Inténtalo de nuevo.",
-    "appleSignInFailed": "No se pudo completar el inicio de sesión con Apple. Inténtalo de nuevo.",
-    "invalidMagicLink": "El enlace de acceso no es válido o ya se usó. Solicita uno nuevo.",
-    "magicLinkExpired": "El enlace de acceso ha vencido. Solicita uno nuevo.",
-    "verificationFailed": "La verificación falló. Solicita un enlace nuevo.",
-    "appleUnavailable": "El inicio de sesión con Apple no está disponible en este momento.",
-    "googleUnavailable": "El inicio de sesión con Google no está disponible en este momento.",
-    "signInFailed": "No pudimos iniciar sesión. Inténtalo de nuevo.",
-    "resetPassword": "Restablecer contraseña",
-    "error": "Error"
-  },
-  "referralRewards": {
-    "title": "Recompensas por referidos",
-    "subtitle": "Gana 1 mes gratis por cada referido de pago",
-    "monthsShort": "{{count}} mes",
-    "joined": "Se unió",
+  "referralRewardsCard": {
+    "title": "Recompensas por Referencia",
+    "subtitle": "Gana 1 mes gratis por cada referencia pagada",
+    "joined": "Unido",
     "converted": "Convertido",
-    "freeMonths": "Meses gratis",
-    "whatsApp": "WhatsApp",
-    "message": "Mensaje",
-    "copyLink": "Copiar enlace",
+    "freeMonths": "Meses Gratis",
+    "whatsapp": "WhatsApp",
     "copied": "¡Copiado!",
-    "copySuccessToast": "¡Enlace de referido copiado!",
-    "copyErrorToast": "No se pudo copiar el enlace.",
-    "shareMessage": "Obtén más reseñas de 5 estrellas con Get Phame — {{url}}",
-    "noReferralsHint": "Comparte tu enlace abajo para empezar a ganar meses gratis",
-    "pendingReferralsHint": "{{count}} amigo se unió — esperando a que actualice su plan",
-    "pendingReferralsHint_plural": "{{count}} amigos se unieron — esperando a que actualicen su plan",
-    "rewardProcessingHint": "Procesando recompensa — tu mes gratis se aplicará en breve"
+    "copyLink": "Copiar Enlace",
+    "shareHint": "Comparte tu enlace a continuación para empezar a ganar meses gratis",
+    "rewardProcessing": "Procesando recompensa — tu mes gratis se aplicará en breve",
+    "copySuccessToast": "¡Enlace de referencia copiado!",
+    "copyErrorToast": "No se pudo copiar el enlace."
   },
-  "adminAuthDiagnostics": {
-    "clearFilters": {
-      "button": "Borrar ahora",
-      "tooltip": "Borra el estado, el origen, las fechas y la paginación. Atajo de teclado: Alt+Mayús+C.",
-      "touchHelp": "Ayuda del atajo",
-      "cleared": "Se borraron los filtros del historial."
-    },
-    "presets": {
-      "orderSavedDetail": "{{name}} se guardó en la posición {{position}} de {{total}}.",
-      "orderRestored": "Se restauró el orden anterior de los ajustes preestablecidos.",
-      "undo": "Deshacer",
-      "undoing": "Deshaciendo…",
-      "undoError": "No se pudo restaurar el orden anterior de los ajustes preestablecidos.",
-      "undoSucceeded": "Orden de ajustes preestablecidos restaurado.",
-      "undoShortcutSucceeded": "Deshacer con teclado completado",
-      "undoShortcutSucceededDescription": "El orden anterior de los ajustes preestablecidos se restauró con Ctrl/Cmd+Z.",
-      "undoShortcutHint": "Teclado: Ctrl/Cmd + Z"
-    },
-    "csvPreview": {
-      "preparing": "Preparando vista previa…",
-      "openButton": "Vista previa del CSV filtrado",
-      "title": "Vista previa del CSV sanitizado",
-      "description": "Revisa la instantánea exacta, filtrada y sanitizada antes de descargarla.",
-      "loading": "Preparando la vista previa sanitizada…",
-      "errorTitle": "Vista previa no disponible",
-      "errorDescription": "No se pudo preparar la exportación filtrada.",
-      "emptyTitle": "No hay filas para previsualizar",
-      "emptyDescription": "Ningún registro de estado coincide con los filtros activos.",
-      "fileLabel": "Archivo:",
-      "summary": "Mostrando {{previewed}} de {{exported}} filas exportadas · {{matched}} coinciden",
-      "sanitizedNotice": "La vista previa y la descarga comparten las mismas columnas permitidas, redacción, protección de fórmulas, filtros, límite de filas y orden de más reciente a más antiguo.",
-      "tableLabel": "Vista previa de datos CSV sanitizados",
-      "previewLimited": "El modal muestra las primeras {{count}} filas. La descarga contiene las {{total}} filas de esta exportación preparada.",
-      "exportLimited": "El límite de seguridad incluye los {{exported}} registros más recientes de {{matched}} coincidencias.",
-      "close": "Cerrar",
-      "download": "Descargar CSV",
-      "downloaded": "Se descargaron {{count}} registros de estado sanitizados.",
-      "columnsTitle": "Columnas que se incluirán",
-      "columnsHelp": "Selecciona al menos una columna. La vista previa, la copia y la descarga se mantienen sincronizadas.",
-      "columnsSelected": "{{selected}} de {{total}} seleccionadas",
-      "selectAllColumns": "Seleccionar todas",
-      "updatingColumns": "Actualizando las columnas seleccionadas…",
-      "copy": "Copiar al portapapeles",
-      "copying": "Copiando…",
-      "copySucceeded": "Copiado",
-      "copyFailed": "Error al copiar — reintentar",
-      "copied": "Se copiaron {{count}} registros de estado sanitizados.",
-      "copyError": "No se pudieron copiar los datos CSV. Intenta descargarlos.",
-      "columnsRemembered": "Las columnas elegidas se guardaron para tu próxima exportación en este dispositivo.",
-      "columnsStorageUnavailable": "Las columnas funcionan en esta exportación, pero este navegador no pudo recordarlas.",
-      "searchTitle": "Buscar en las filas preparadas",
-      "searchPlaceholder": "Buscar en cualquier columna seleccionada",
-      "clearSearch": "Borrar la búsqueda de filas de la vista previa",
-      "searchResults": "Mostrando {{shown}} de {{matched}} filas coincidentes entre {{total}} filas preparadas.",
-      "searchScope": "Busca en las {{total}} filas saneadas de esta instantánea preparada.",
-      "searchExportNotice": "La búsqueda filtra esta vista previa y el CSV de resultados coincidentes; copiar y la descarga principal siguen incluyendo todas las filas preparadas.",
-      "downloadSearchResults": "Descargar coincidencias en CSV",
-      "searchResultsDownloaded": "Se descargaron {{count}} registros sanitizados coincidentes.",
-      "noSearchResults": "Ninguna fila preparada coincide con esta búsqueda",
-      "noSearchResultsHelp": "Prueba otro término o borra la búsqueda. La exportación preparada no cambia.",
-      "searchLimited": "Se muestran las primeras {{count}} de {{matched}} coincidencias para mantener ágil la vista previa."
-    }
+  "shareAndEarn": {
+    "title": "Comparte y gana",
+    "subtitle": "Refiere a un amigo — consigue 1 mes gratis cuando se suscriba",
+    "referredLabel": "Referido",
+    "convertedLabel": "Convertido",
+    "monthsEarnedLabel": "Meses ganados",
+    "copied": "¡Copiado!",
+    "copy": "Copiar",
+    "loading": "Cargando...",
+    "upgradeTip": "Actualiza a un plan de pago para recibir tu mes gratis cuando un referido se convierta.",
+    "copySuccessToast": "¡Enlace de referido copiado!"
   },
-  "adminRevenueControls": {
-    "promotion": {
-      "created": "El código de promoción {{code}} fue creado en Stripe.",
-      "createError": "El código de promoción no pudo ser creado.",
-      "copied": "Código de promoción copiado.",
-      "copyError": "El código de promoción no pudo ser copiado.",
-      "title": "Códigos de promoción de Stripe",
-      "description": "Cada código se aplica a una factura o transacción de pago. Seleccione los planes elegibles y los límites de canje opcionales.",
-      "code": "Código",
-      "percentOff": "Porcentaje de descuento",
-      "maxRedemptions": "Canjes máximos",
-      "expiresAt": "Expira el",
-      "eligiblePlans": "Planes elegibles",
-      "firstTimeOnly": "Solo primera transacción",
-      "oneTimeNote": "La duración del descuento se fija a una factura o transacción. Stripe sigue siendo la fuente de verdad.",
-      "creating": "Creando…",
-      "create": "Crear promoción",
-      "liveCodes": "Códigos de Stripe activos",
-      "empty": "Aún no hay códigos de promoción de Stripe.",
-      "copyCode": "Copiar código de promoción",
-      "redemptions": "Canjes",
-      "firstTimeBadge": "Primera transacción"
-    },
-    "grants": {
-      "created": "Se concedió acceso de cortesía.",
-      "createError": "No se pudo conceder acceso de cortesía.",
-      "revoked": "Revocado",
-      "revokeError": "No se pudo revocar el acceso de cortesía.",
-      "confirmRevoke": "¿Revocar esta concesión de acceso de cortesía ahora? Esto elimina inmediatamente el acceso a funciones de pago y cuotas.",
-      "title": "Acceso de cortesía",
-      "description": "Conceda acceso temporal a funciones de pago y cuota de solicitudes por correo electrónico. El acceso comienza de inmediato, expira automáticamente y nunca se renueva.",
-      "email": "Correo electrónico del cliente",
-      "privacy": "Almacenado como una huella digital unidireccional más un valor de visualización enmascarado.",
-      "duration": "Duración",
-      "unit": "Unidad",
-      "units": {
-        "day": "Día(s)",
-        "month": "Mes(es)",
-        "year": "Año(s)"
-      },
-      "note": "Nota interna",
-      "notePlaceholder": "Socio, soporte o motivo de lanzamiento",
-      "expiryNote": "Sin renovación ni trabajo en segundo plano: el acceso finaliza en la fecha de caducidad UTC almacenada.",
-      "granting": "Concediendo…",
-      "grant": "Conceder acceso",
-      "lookup": "Búsqueda de correo electrónico exacto",
-      "lookupPlaceholder": "cliente@ejemplo.com",
-      "search": "Buscar",
-      "filter": "Filtro de estado",
-      "status": {
-        "all": "Todas las concesiones",
-        "active": "Activo",
-        "expired": "Expirado",
-        "revoked": "Revocado"
-      },
-      "lookupResults": "Resultados de la búsqueda",
-      "noLookupResults": "No se encontró historial de acceso de cortesía para ese correo electrónico exacto.",
-      "lookupCount": "{{count}} registro(s) de concesión coincidente(s).",
-      "history": "Historial de concesiones",
-      "empty": "Ninguna concesión coincide con este filtro.",
-      "accountLinked": "Cuenta vinculada",
-      "expires": "Expira",
-      "revoke": "Revocar",
-      "ended": "Finalizado"
-    },
-    "accessRequired": "Se requiere acceso de administrador",
-    "goHome": "Ir a inicio",
-    "back": "Volver a administración",
-    "eyebrow": "Operaciones de ingresos",
-    "title": "Controles de ingresos",
-    "description": "Cree códigos de promoción de Stripe con alcance y conceda acceso de cortesía temporal sin cambiar los planes de facturación.",
-    "summary": {
-      "activePromotions": "Promociones activas",
-      "activeGrants": "Concesiones activas"
-    },
-    "refresh": "Actualizar",
-    "unlimited": "Ilimitado",
-    "noExpiry": "Sin vencimiento",
-    "clear": "Borrar"
+  "versionToast": {
+    "title": "Nueva versión disponible",
+    "description": "Toca para actualizar y obtener las últimas funciones.",
+    "action": "Actualizar ahora"
   },
-  "helpAssistant": {
-    "conversation": "Conversación de ayuda",
-    "description": "Respuestas fundamentadas en la guía aprobada del producto",
-    "disclaimer": "Las respuestas usan la guía aprobada de Get Phame y pueden requerir revisión humana.",
-    "humanSupport": "Abrir una solicitud de soporte",
-    "open": "Abrir ayuda de Get Phame",
-    "placeholder": "Pregunte cómo funciona…",
-    "privateBody": "No ingrese contraseñas, claves API, datos de tarjetas, listas de clientes ni contenido privado de reseñas. Las preguntas no se guardan como un historial de chat permanente.",
-    "privateTitle": "Mantenga los datos privados fuera del chat",
-    "questionLabel": "Haga una pregunta sobre Get Phame",
-    "quick": {
-      "connectEmail": "¿Cómo conecto mi correo de envío?",
-      "googleLink": "¿Dónde añado mi enlace de reseña de Google?",
-      "yelp": "¿Qué debo saber antes de usar Yelp?"
-    },
-    "redacted": "Se eliminó un posible valor privado antes de procesar su pregunta.",
-    "send": "Enviar pregunta de ayuda",
-    "sourcesLabel": "Fuentes aprobadas",
-    "supportLink": "Soporte humano",
-    "thinking": "Comprobando la guía aprobada…",
-    "title": "Ayuda de Get Phame",
-    "trigger": "Ayuda",
-    "tryQuestion": "Pruebe una pregunta frecuente",
-    "unavailable": "El asistente de ayuda no está disponible en este momento. Abra una solicitud de soporte y nuestro equipo le ayudará.",
-    "unknown": "No he encontrado una respuesta fiable en las fuentes de ayuda aprobadas de Get Phame. Por favor, abra una solicitud de soporte para que una persona revise los detalles."
-  },
-  "promotionLink": {
-    "applied": "Su código de campaña se aplicará al finalizar la compra.",
-    "verified": "La elegibilidad se verifica de forma segura antes de que se abra Stripe Checkout."
-  },
-  "developerIntegrations": {
-    "sources": {
-      "title": "Conectar una fuente",
-      "description": "Elija dónde se originan los registros de clientes. Get Phame le ofrece una receta segura y solo de importación para una automatización confiable del lado del servidor.",
-      "badge": "Solo importa contactos",
-      "workflowTitle": "Flujo de conexión de fuentes",
-      "steps": {
-        "choose": "Elegir una fuente",
-        "key": "Crear una clave de importación",
-        "map": "Asignar campos y consentimiento",
-        "test": "Enviar una prueba permitida"
-      },
-      "choose": "Elegir una fuente",
-      "recipeCopied": "Receta de configuración segura copiada.",
-      "pathLabel": "Ruta recomendada",
-      "officialDocs": "Documentación del proveedor",
-      "idempotencyTitle": "ID de evento estable",
-      "rulesTitle": "Protecciones obligatorias",
-      "rules": {
-        "secret": "Guarde la clave API de Get Phame únicamente en un campo secreto protegido del servidor. Nunca la coloque en un formulario, URL, código fuente de página o script del navegador.",
-        "consent": "Importe solo clientes existentes o personas que hayan dado su consentimiento expreso. Mantenga desmarcadas de forma predeterminada las casillas opcionales de consentimiento.",
-        "idempotency": "Reutilice el mismo ID de evento del proveedor en cada reintento para que un envío no genere trabajo duplicado.",
-        "importOnly": "Este flujo importa o actualiza un contacto. Nunca envía automáticamente una solicitud de reseña."
-      },
-      "providers": {
-        "jotform": {
-          "path": "Envíe cada respuesta elegible de Jotform mediante un puente de automatización confiable que pueda guardar secretos y añadir encabezados protegidos antes de publicarla en Get Phame.",
-          "idempotency": "Use el ID inmutable del envío de Jotform como externalId e Idempotency-Key."
-        },
-        "facebook": {
-          "path": "Reciba las notificaciones de Meta Lead Ads en un webhook verificado del servidor o de una automatización confiable, obtenga los campos permitidos del cliente potencial y publique el registro normalizado en Get Phame.",
-          "idempotency": "Use el ID leadgen de Meta como externalId e Idempotency-Key estables."
-        },
-        "googleForms": {
-          "path": "Use un activador instalable de envío de formularios de Google Apps Script o un puente de automatización confiable. Guarde la clave de Get Phame en propiedades protegidas del script o en el almacén de secretos del puente.",
-          "idempotency": "Use un identificador de respuesta estable o el ID de la fila vinculada; no genere un valor nuevo durante los reintentos."
-        },
-        "airtable": {
-          "path": "Active una automatización confiable cuando se cree o apruebe un registro elegible de Airtable y asigne ese registro al contrato de importación de contactos de Get Phame.",
-          "idempotency": "Use el ID inmutable del registro de Airtable como externalId e Idempotency-Key."
-        },
-        "other": {
-          "label": "Otra fuente",
-          "path": "Use cualquier flujo del lado del servidor o herramienta sin código confiable que admita POST, JSON, encabezados protegidos y un identificador de evento estable.",
-          "idempotency": "Use el ID inmutable de envío, registro, pedido o evento del sistema de origen en cada reintento."
-        }
-      },
-      "recipeTitle": "Receta de asignación segura",
-      "recipeDescription": "Use un marcador de posición durante la configuración. Pegue la clave real únicamente en el campo secreto protegido del servicio de automatización.",
-      "copyRecipe": "Copiar receta",
-      "apiField": "Campo de API",
-      "mapTo": "Asignar desde la fuente",
-      "fields": {
-        "name": "Campo de nombre del cliente",
-        "email": "Campo de correo electrónico del cliente",
-        "externalId": "ID inmutable del evento o registro del proveedor",
-        "sourceApp": "Identificador fijo del proveedor mostrado arriba",
-        "consentConfirmed": "Valor booleano true solo tras un permiso afirmativo",
-        "consentBasis": "customer_relationship, explicit_opt_in u other",
-        "consentSource": "Descripción breve de dónde se obtuvo el permiso"
-      },
-      "nextTitle": "¿Listo para conectar?",
-      "nextDescription": "Cree una clave contacts:write, envíe un registro de prueba permitido y confirme el resultado enmascarado en Importaciones API recientes.",
-      "createKey": "Crear clave de importación",
-      "viewImports": "Ver importaciones"
-    },
-    "back": "Volver a configuración",
-    "confirm": {
-      "revokeDescription": "Esto deshabilita la clave inmediatamente y no puede deshacerse.",
-      "revokeTitle": "¿Revocar esta clave API?",
-      "rotateDescription": "La clave actual dejará de funcionar de inmediato. Debe reemplazarla dondequiera que esté configurada la integración.",
-      "rotateTitle": "¿Rotar esta clave API?"
-    },
-    "contract": {
-      "copyEndpoint": "Copiar endpoint",
-      "description": "Use una solicitud por acción de cliente. El endpoint canónico requiere una clave bearer con permiso contacts:write y una certificación afirmativa de consentimiento.",
-      "endpointCopied": "Endpoint copiado.",
-      "openGuide": "Abrir guías de configuración",
-      "title": "Contrato de API de importación"
-    },
-    "copyFailed": "No se pudo copiar automáticamente. Seleccione y copie el valor manualmente.",
-    "description": "Conecte formularios web a Get Phame con claves con alcance, importaciones que respetan el consentimiento e historial de actividad con privacidad.",
-    "eyebrow": "Espacio de trabajo para desarrolladores",
-    "guides": {
-      "apiField": "Campo de API",
-      "builderTabs": "Tipo de integración",
-      "check1": "La clave API tiene permiso contacts:write.",
-      "check2": "La clave está almacenada del lado del servidor, nunca en el código fuente de la página ni en la URL.",
-      "check3": "El webhook se ejecuta solo después de una acción de cliente permitida o un opt-in.",
-      "check4": "El mismo envío conserva la misma Idempotency-Key cuando se reintenta.",
-      "check5": "Una importación exitosa aparece con un email enmascarado en Importaciones recientes de API.",
-      "check6": "El contacto importado no recibe un correo automáticamente.",
-      "consentRule": "Establezca consentConfirmed en true solo cuando este flujo represente una relación existente con el cliente o un opt-in explícito. Para formularios de prospectos generales, añada una casilla de consentimiento desmarcada y ejecute el webhook solo después de que se seleccione.",
-      "consentTitle": "Regla de consentimiento:",
-      "copied": "Ejemplo copiado.",
-      "copyExample": "Copiar ejemplo",
-      "curl": {
-        "step1": "Copie el ejemplo en un terminal seguro en una máquina que controle.",
-        "step2": "Reemplace solo el marcador de la API-key y los valores de cliente de ejemplo. No pegue una clave real en chats compartidos, registros o capturas de pantalla.",
-        "step3": "Ejecute el comando una vez y confirme una respuesta de éxito y una fila respetuosa con la privacidad en Importaciones recientes de API.",
-        "step4": "Ejecute de nuevo con la misma idempotency key para confirmar una reproducción segura en lugar de un contacto duplicado.",
-        "summary": "Ejecute un comando del lado del servidor para validar su endpoint, clave, alcance, payload y mapeo de consentimiento."
-      },
-      "description": "Elija su constructor para obtener instrucciones sobre endpoint, autorización, mapeo de campos, consentimiento y pruebas.",
-      "elementor": {
-        "caution": "La acción Webhook integrada de Elementor puede no exponer todos los controles de encabezados protegidos que requiere su configuración. No lo evite colocando la clave API en la URL o en el código de la página.",
-        "step1": "Cree el formulario de Elementor Pro con IDs estables para el nombre del cliente, el email y cualquier casilla de consentimiento.",
-        "step2": "Utilice una acción de formulario personalizada del lado del servidor o un puente de webhook confiable que admita encabezados personalizados Authorization y Idempotency-Key.",
-        "step3": "Configure POST, el v1 contact endpoint, JSON y el mapeo de campos mostrado más abajo.",
-        "step4": "Almacene la clave solo en una configuración protegida de WordPress o en un conector del lado del servidor. Nunca la pegue en el HTML de la página ni en JavaScript del navegador.",
-        "step5": "Envíe un registro de prueba permitido y confirme que aparece en Importaciones recientes de API.",
-        "summary": "Use una acción de formulario personalizada del lado del servidor o un puente de webhook confiable que pueda añadir encabezados protegidos."
-      },
-      "fluent": {
-        "step1": "Habilite el módulo de integración de Webhooks, luego abra Settings & Integrations → WebHook → Add New en el formulario.",
-        "step2": "Establezca Request URL al v1 contact endpoint, Request Method en POST y Request Format en JSON.",
-        "step3": "Habilite Request Header y agregue Authorization además de Idempotency-Key usando un identificador estable de envío.",
-        "step4": "Habilite Request Body y mapee los campos y los valores estáticos de consentimiento mostrados más abajo.",
-        "step5": "Guarde el feed y envíe un registro de prueba permitido.",
-        "summary": "Cree un feed Pro Webhook con POST, JSON, encabezados y un cuerpo de solicitud mapeado."
-      },
-      "generic": {
-        "label": "Webhook genérico",
-        "step1": "Cree una nueva acción HTTP saliente o webhook que se ejecute una vez después de una presentación de formulario de cliente elegible.",
-        "step2": "Establezca el método en POST, la URL al v1 contact endpoint y el tipo de contenido en application/json.",
-        "step3": "Agregue el encabezado Authorization y una Idempotency-Key estable por envío.",
-        "step4": "Envíe el payload JSON anidado canónico mostrado más abajo.",
-        "step5": "Trate HTTP 200 como éxito. Reintente fallos temporales con la misma idempotency key.",
-        "summary": "Configure cualquier herramienta de automatización del lado del servidor que admita POST, JSON y encabezados protegidos."
-      },
-      "gravity": {
-        "step1": "Instale y active el Gravity Forms Webhooks Add-On, luego abra Form Settings → Webhooks → Add New.",
-        "step2": "Establezca Request URL al v1 contact endpoint, Request Method en POST y Request Format en JSON.",
-        "step3": "Elija Select Fields y mapee los campos y los valores estáticos de consentimiento mostrados más abajo.",
-        "step4": "Agregue el encabezado Authorization y use la etiqueta merge entry ID como Idempotency-Key.",
-        "step5": "Guarde el feed y envíe un registro de prueba permitido. Gravity Forms establece application/json automáticamente para feeds POST en JSON.",
-        "summary": "Cree un feed de Webhooks Add-On con una solicitud JSON y encabezados personalizados."
-      },
-      "header": "Configuración de formularios y webhooks",
-      "headerDescription": "Cada guía importa solo un contacto. Nunca envía una solicitud de reseña automáticamente.",
-      "hide": "Ocultar guías",
-      "map": {
-        "consentSource": "Una breve descripción de dónde se capturó el consentimiento",
-        "email": "El campo de email de su cliente",
-        "entryId": "La etiqueta merge ID de entrada de Gravity Forms",
-        "name": "El campo de nombre de su cliente",
-        "submissionId": "Un identificador estable de envío del lado del servidor"
-      },
-      "mapTo": "Mapear a",
-      "officialDocs": "Documentación oficial",
-      "placeholderNote": "Los ejemplos usan una clave placeholder por diseño. Get Phame nunca inserta una clave real existente en estas instrucciones copiables.",
-      "requestExample": "Ejemplo de solicitud",
-      "responseExample": "Referencia de respuesta",
-      "safeExample": "Ejemplo seguro de marcador",
-      "show": "Mostrar guías",
-      "testChecklist": "Lista de comprobación de pruebas",
-      "title": "Guías de configuración del constructor",
-      "wsform": {
-        "step1": "Edite el formulario, abra Actions, añada una acción y seleccione Webhook.",
-        "step2": "Establezca URL of Endpoint al v1 contact endpoint, Request Method en POST y Content Type en JSON.",
-        "step3": "Use Field Mapping para name y email. Use Custom Mapping para los valores estáticos de source y consent mostrados más abajo.",
-        "step4": "Use Header Mapping para Authorization y Idempotency-Key. Seleccione el identificador de envío del formulario para el valor de idempotency.",
-        "step5": "Mantenga SSL Verify habilitado, guarde la acción y envíe un registro de prueba permitido.",
-        "summary": "Use la acción Webhook con mapeos JSON de campos, personalizados y de encabezado."
-      }
-    },
-    "imports": {
-      "customer": "Email enmascarado",
-      "date": "Fecha",
-      "description": "Un registro operativo que respeta la privacidad. Los correos de clientes están enmascarados y los secretos de idempotency nunca se muestran.",
-      "empty": "No hay importaciones API para exportar.",
-      "export": "Exportar CSV",
-      "key": "Clave",
-      "noRows": "Aún no se han registrado importaciones API.",
-      "outcome": "Resultado",
-      "source": "Origen",
-      "title": "Importaciones recientes de API"
-    },
-    "keys": {
-      "configuredExpiry": "Expiración configurada",
-      "create": "Crear clave API",
-      "createDescription": "Nombre la integración, otorgue solo los permisos necesarios y establezca una caducidad anticipada opcional. Cada clave también expira después de 12 meses sin un uso exitoso. El secreto se muestra una sola vez.",
-      "createTitle": "Crear una clave API con alcance",
-      "created": "Clave API creada. Copiela antes de cerrar el diálogo.",
-      "creating": "Creando…",
-      "days30": "30 días",
-      "days365": "1 año",
-      "days90": "90 días",
-      "empty": "Aún no hay claves API. Cree una arriba para conectar su primera integración.",
-      "expiresWithinMonth": "Expira dentro de 30 días",
-      "expiresWithinWeek": "Expira dentro de 7 días",
-      "expiry": "Caducidad",
-      "inactiveExpired": "Caducó después de 12 meses sin una solicitud API exitosa. Rótela para crear un reemplazo.",
-      "inactivityExpiry": "Caducidad por inactividad",
-      "inactivityWarning": "Una o más claves expirarán pronto porque no han realizado una solicitud exitosa recientemente. Ejecute la integración o rote la clave antes de la fecha de inactividad mostrada.",
-      "label": "Etiqueta de la clave",
-      "labelPlaceholder": "Formulario de contacto del sitio web",
-      "labelRequired": "Ingrese una etiqueta para la clave.",
-      "lastUsed": "Último uso exitoso",
-      "listDescription": "Rote claves comprometidas o antiguas. La protección contra abusos puede suspender temporalmente una clave, mientras que las claves revocadas y expiradas permanecen visibles para contexto de auditoría.",
-      "listTitle": "Claves API",
-      "neverExpires": "Sin caducidad anticipada",
-      "permissions": "Permisos",
-      "revoke": "Revocar",
-      "revoked": "Clave API revocada.",
-      "rotate": "Rotar",
-      "rotated": "Clave API rotada. Reemplace la clave antigua en su integración ahora.",
-      "scopeRequired": "Seleccione al menos un permiso.",
-      "securityNote": "Almacene el secreto en la configuración segura del servidor de su sitio web. Nunca lo coloque en JavaScript del navegador, repositorios públicos, capturas de pantalla o mensajes de soporte.",
-      "suspendedHelp": "Suspendida temporalmente por protección contra abusos. Revise el tráfico de la integración y espere hasta que termine la ventana de protección.",
-      "suspensionEnds": "Fin de la protección",
-      "usage": "Usos exitosos"
-    },
-    "loading": "Cargando importaciones",
-    "open": "Abrir espacio de trabajo para desarrolladores",
-    "refresh": "Actualizar",
-    "secret": {
-      "copied": "Clave API copiada.",
-      "copy": "Copiar clave",
-      "description": "Por seguridad, Get Phame almacena solo un hash. Este secreto no se puede mostrar de nuevo después de cerrar este diálogo.",
-      "done": "Lo guardé",
-      "title": "Copie esta clave API ahora"
-    },
-    "settingsCard": "Cree claves API con alcance, conecte formularios del sitio y revise el historial de importaciones con privacidad en un solo espacio.",
-    "summary": {
-      "activeKeys": "Claves activas",
-      "imports": "Importaciones recientes",
-      "requests": "Usos de claves"
-    },
-    "title": "Developer integrations",
-    "sourceOps": {
-      "title": "Conexiones de origen gestionadas",
-      "description": "Cree una conexión observable por cada Zap, escenario de Make o flujo de trabajo personalizado. Cada origen obtiene su propio identificador, analíticas y señal de estado.",
-      "refreshKeys": "Actualizar claves API",
-      "createTitle": "Crear una conexión",
-      "provider": "Proveedor de automatización",
-      "custom": "Webhook personalizado",
-      "label": "Nombre de la conexión",
-      "labels": {
-        "zapier": "Importación de clientes de Zapier",
-        "make": "Importación de clientes de Make",
-        "custom": "Importación de clientes personalizada"
-      },
-      "apiKey": "Clave API de importación",
-      "noKeys": "No hay clave de importación activa",
-      "expected": "Actividad esperada",
-      "intervals": {
-        "15": "Every 15 minutes",
-        "60": "Hourly",
-        "360": "Every 6 hours",
-        "1440": "Daily",
-        "10080": "Weekly"
-      },
-      "minutes": "{{count}} minutos",
-      "createHelp": "La conexión almacena solo una referencia de la clave API y el identificador de la fuente. Get Phame nunca muestra ni duplica su clave API en bruto.",
-      "create": "Crear conexión",
-      "created": "Conexión de origen creada. Agregue su ID de origen a su automatización antes de probar.",
-      "updated": "Configuración de la fuente actualizada.",
-      "archived": "Conexión de origen archivada. Su ID de origen ya no puede autorizar importaciones.",
-      "healthRefreshed": "Estado de salud de la fuente actualizado según la actividad reciente de importación.",
-      "keyRequired": "Cree o seleccione primero una clave API activa contacts:write.",
-      "analyticsTitle": "Flujo de importación por fuente",
-      "analyticsDescription": "Los intentos, resultados, deduplicaciones y fallos se calculan a partir de eventos de importación atribuidos.",
-      "range": "Rango de análisis",
-      "daysShort": "d",
-      "metrics": {
-        "attempts": "Intentos",
-        "successful": "Exitosos",
-        "createdContacts": "Contactos creados",
-        "deduplicated": "Deduplicados",
-        "failures": "Fallos"
-      },
-      "emptyTitle": "Aún no hay fuentes administradas",
-      "emptyDescription": "Cree una conexión por cada Zap, escenario de Make o flujo de trabajo personalizado que quiera supervisar.",
-      "status": {
-        "healthy": "Saludable",
-        "setup": "Configuración",
-        "delayed": "Retrasado",
-        "failing": "Con fallos",
-        "paused": "Pausado"
-      },
-      "openSetup": "Abrir configuración",
-      "successRate": "Tasa de éxito",
-      "lastActivity": "Última actividad",
-      "never": "Nunca",
-      "refreshHealth": "Actualizar estado",
-      "pause": "Pausar supervisión",
-      "resume": "Reanudar supervisión",
-      "archive": "Archivar",
-      "template": "plantilla guiada",
-      "templateDescription": "Copie esta solicitud exactamente en la acción HTTP o webhook protegida de la automatización.",
-      "copyRecipe": "Copiar receta",
-      "recipeCopied": "Receta de conexión copiada.",
-      "secretReminder": "Use la clave API sin procesar solo dentro del campo secreto protegido del proveedor. El ID de origen es seguro de copiar pero solo funciona con su clave vinculada.",
-      "providerDocs": "Documentación del proveedor",
-      "healthHistory": "Historial de estado",
-      "noHealthHistory": "Aún no hay comprobaciones de estado. Envíe una importación permitida y luego actualice el estado.",
-      "reasons": {
-        "awaiting_first_import": "Esperando la primera importación permitida",
-        "no_imports_observed": "No se observaron importaciones dentro del periodo de configuración",
-        "expected_import_overdue": "La actividad de importación esperada está retrasada",
-        "recent_import_error": "La actividad más reciente terminó con un error de importación",
-        "recovered_after_error": "Las importaciones fluyen de nuevo tras un error",
-        "imports_flowing": "Las importaciones se realizan dentro del intervalo esperado"
-      },
-      "historyCounts": "{{attempts}} intentos · {{failures}} fallos",
-      "archiveTitle": "¿Archivar esta conexión de origen?",
-      "archiveDescription": "Las importaciones que usen este ID de origen serán rechazadas. Los contactos existentes y las analíticas con privacidad segura seguirán disponibles en sus registros originales.",
-      "steps": {
-        "zapier": {
-          "1": "Elija la app y el evento que generen un registro de cliente elegible.",
-          "2": "Agregue Webhooks by Zapier y seleccione Custom Request.",
-          "3": "Establezca Method en POST y pegue el endpoint de Get Phame.",
-          "4": "Agregue los encabezados protegidos exactamente como se muestran a continuación.",
-          "5": "Asigne los campos JSON, usando un ID de proveedor estable para externalId y Idempotency-Key.",
-          "6": "Pruebe la acción con un registro permitido, luego actualice el estado aquí."
-        },
-        "make": {
-          "1": "Elija el módulo de trigger que genere un registro de cliente elegible.",
-          "2": "Agregue HTTP y seleccione Make a request.",
-          "3": "Establezca Method en POST, Body type en Raw y Content type en application/json.",
-          "4": "Agregue los encabezados protegidos exactamente como se muestran a continuación.",
-          "5": "Asigne los campos JSON, usando un ID de bundle estable para externalId y Idempotency-Key.",
-          "6": "Ejecute el escenario una vez con un registro permitido, luego actualice el estado aquí."
-        },
-        "custom": {
-          "1": "Use un flujo de trabajo del lado del servidor de confianza que admita POST y encabezados protegidos.",
-          "2": "Almacene la clave API en el almacén secreto del flujo de trabajo, nunca en código del navegador ni en una URL.",
-          "3": "Envíe JSON al endpoint de Get Phame con los encabezados mostrados abajo.",
-          "4": "Use un ID de registro de origen inmutable para externalId e Idempotency-Key.",
-          "5": "Envíe un registro permitido y luego actualice el estado aquí."
-        }
-      }
-    }
-  },
-  "landing": {
-    "hero": {
-      "categoryLabel": "Software de correo para solicitar reseñas a negocios locales",
-      "googleDisclosureLabel": "Uso de datos del inicio de sesión con Google"
-    },
-    "leadCapture": {
-      "addressConfirmation": "La enviamos a {{email}}. Confirma la ortografía y revisa la carpeta de spam si no llega. La aceptación por parte del proveedor no garantiza la entrega en la bandeja de entrada.",
-      "deliveryFallback": "La entrega por correo no estuvo disponible para {{email}}. Confirma la dirección, inténtalo de nuevo o descarga la guía ahora.",
-      "downloadGuideButton": "Descargar la guía en PDF",
-      "downloadReadyMessage": "Tu guía está lista para descargar.",
-      "editEmail": "Editar correo",
-      "emailConfirmationHint": "Mostraremos la dirección nuevamente antes de que salgas para que puedas corregir algún error.",
-      "emailInvalid": "Introduce un correo con formato correcto, por ejemplo name@example.com.",
-      "emailRequired": "Introduce tu dirección de correo electrónico.",
-      "providerAcceptedMessage": "Tu proveedor de correo aceptó la guía para su entrega.",
-      "sharePrompt": "¿Conoces a alguien que necesite más reseñas? Comparte la guía gratuita.",
-      "tryAgain": "Reintentar envío"
-    },
-    "purpose": {
-      "description": "Get Phame ayuda a negocios locales a enviar correos personalizados para solicitar reseñas desde su propia cuenta de correo conectada. Está diseñado para propietarios de negocios, fotógrafos, cafeterías y restaurantes, equipos de servicios a domicilio, clínicas y salones, agencias y tiendas WooCommerce que desean una manera más sencilla de pedir reseñas a clientes reales.",
-      "eyebrow": "Acerca de esta aplicación",
-      "googleDescription": "El inicio de sesión con Google se usa únicamente para crear e identificar tu cuenta de Get Phame. Con tu permiso, Get Phame recibe tu nombre y dirección de correo electrónico. No solicitamos acceso a tus mensajes de Gmail, contactos, archivos de Google Drive ni al calendario de Google.",
-      "googleEyebrow": "Aviso sobre inicio de sesión con Google",
-      "googleSendingNote": "El envío de solicitudes de reseña se configura por separado dentro de la aplicación, usando una cuenta de correo que elijas conectar.",
-      "googleTitle": "Cómo se utiliza el inicio de sesión con Google",
-      "privacyLink": "Lee nuestra Política de privacidad",
-      "stepLabel": "Paso {{number}}",
-      "steps": {
-        "customers": "Agrega los clientes que elijas",
-        "reviews": "Dirige a los clientes a la plataforma de reseñas que elijas",
-        "send": "Envía una solicitud personal desde tu correo"
-      },
-      "title": "Qué hace Get Phame"
-    },
-    "stats": {
-      "emailsSentValue": "Tu bandeja de entrada"
-    },
-    "support": {
-      "attachment": "Captura de pantalla",
-      "attachmentHint": "Solo JPG, PNG o WebP. Máximo 8 MB.",
-      "attachmentSize": "Mantén las capturas en 8 MB o menos.",
-      "attachmentType": "Adjunta una captura en JPG, PNG o WebP.",
-      "description": "Envía un mensaje a nuestro equipo y responderemos a la dirección de correo que nos indiques.",
-      "email": "Correo electrónico",
-      "error": "No pudimos enviar tu mensaje. Por favor, inténtalo de nuevo en breve.",
-      "fileReadError": "No pudimos leer esa captura de pantalla.",
-      "message": "Mensaje",
-      "messageHint": "No incluyas contraseñas ni datos de tarjeta.",
-      "name": "Nombre",
-      "optional": "opcional",
-      "removeAttachment": "Eliminar captura",
-      "sendAnother": "Enviar otro mensaje",
-      "sending": "Enviando…",
-      "subject": "Asunto",
-      "submit": "Enviar solicitud de soporte",
-      "successDescription": "Responderemos a la dirección de correo que proporcionaste lo antes posible.",
-      "successTitle": "Tu solicitud de soporte fue enviada.",
-      "title": "¿En qué podemos ayudarte?",
-      "topic": "¿Con qué podemos ayudarte?",
-      "topicBilling": "Facturación",
-      "topicOnboarding": "Primeros pasos",
-      "topicTechnical": "Problema técnico",
-      "uploading": "Subiendo captura…",
-      "validation": {
-        "email": "Introduce una dirección de correo válida.",
-        "messageMax": "Mantén el mensaje en 4,000 caracteres o menos.",
-        "messageMin": "Cuéntanos un poco más para que podamos ayudar.",
-        "nameMax": "Mantén tu nombre en 80 caracteres o menos.",
-        "subjectMax": "Mantén el asunto en 120 caracteres o menos.",
-        "subjectMin": "Introduce un asunto de al menos 3 caracteres."
-      },
-      "website": "Sitio web"
-    }
-  },
-  "adaptiveSending": {
-    "title": "Protección de envío adaptativa",
-    "notConfiguredTitle": "Conecta primero un remitente",
-    "notConfiguredBody": "Conecta tu cuenta de correo en Configuración antes de enviar solicitudes de reseña.",
-    "connectEmail": "Conectar correo",
-    "remaining": "{{count}} disponibles",
-    "thisHour": "Esta hora",
-    "today": "Hoy",
-    "nextReset": "Próxima renovación de capacidad: {{time}}",
-    "automaticRamp": "Los límites aumentan automáticamente mientras la conexión se prepara",
-    "approachingTitle": "Te acercas al límite de seguridad",
-    "approachingBody": "La capacidad se gestiona automáticamente. Envía primero las solicitudes más importantes.",
-    "highTitle": "La capacidad de envío está casi agotada",
-    "highBody": "Completa primero los envíos prioritarios. Get Phame pausará automáticamente antes de que aumente el riesgo con el proveedor.",
-    "blockedTitle": "Límite de seguridad alcanzado",
-    "blockedBody": "Los envíos se pausan automáticamente hasta que se reinicie la ventana de seguridad actual.",
-    "upgradePlan": "Mejorar para usar Bulk Sender",
-    "connectBulkSender": "Conectar Bulk Sender",
-    "safetyNote": "Siempre se aplican límites según el proveedor y un límite de seguridad independiente por cuenta. Cambiar de proveedor no evita la protección.",
-    "stage": {
-      "new": "Conexión nueva",
-      "warming": "Preparándose",
-      "building": "Generando reputación",
-      "established": "Establecida"
-    }
-  },
-  "developerEnrollment": {
-    "loading": "Cargando registro de desarrollador",
-    "title": "Registro de desarrollador",
-    "description": "Acepta las reglas de la API una vez, empieza con importaciones seguras de contactos y proporciona datos comerciales solo si tu integración necesita enviar solicitudes de reseña individuales.",
-    "terms": {
-      "title": "1. Aceptar las condiciones de la API",
-      "description": "Las claves solo pueden utilizarse desde integraciones seguras del servidor para clientes con una relación comercial real y el consentimiento adecuado.",
-      "current": "Condiciones de la API y Política de uso aceptable vigentes aceptadas",
-      "termsLabel": "Acepto las Condiciones de la API incluidas en los Términos de servicio de Get Phame.",
-      "readTerms": "Leer los términos",
-      "aupLabel": "Acepto la Política de uso aceptable: sin spam, listas compradas o extraídas, claves expuestas en el navegador, evasión de límites ni automatización engañosa.",
-      "readGuide": "Leer la guía de cumplimiento",
-      "accept": "Aceptar y activar claves de importación",
-      "acceptedToast": "Condiciones de la API aceptadas. Ya puedes crear claves solo de importación.",
-      "requiredForKey": "Acepta las Condiciones de la API antes de crear una clave.",
-      "onboardingTitle": "Acepta las reglas de la API para crear tu clave de importación"
-    },
-    "send": {
-      "title": "2. Acceso de envío opcional",
-      "description": "Importar contactos nunca envía nada automáticamente. Completa esta breve comprobación comercial solo si tu integración debe enviar una solicitud de reseña tras una acción aprobada del cliente.",
-      "approvedToast": "Acceso de envío aprobado. Ya puedes añadir review_requests:send a una clave.",
-      "pendingToast": "Solicitud enviada para revisión. El acceso solo de importación sigue disponible.",
-      "acceptFirst": "Acepta primero las Condiciones de la API. El acceso solo de importación se activará de inmediato.",
-      "approved": "Aprobado para enviar solicitudes de reseña individuales",
-      "pending": "Solicitud de alto volumen pendiente de revisión",
-      "pendingDetail": "Tus claves solo de importación siguen funcionando. Get Phame no añadirá permiso de envío hasta que se apruebe esta revisión.",
-      "businessName": "Nombre de la empresa",
-      "website": "Sitio web (opcional)",
-      "useCase": "¿Cómo utilizará la integración el acceso de envío?",
-      "useCasePlaceholder": "Ejemplo: tras una cita completada, nuestro servidor importa al cliente y envía una solicitud de reseña.",
-      "monthlyVolume": "Envíos previstos al mes",
-      "reviewThreshold": "Hasta {{count}} envíos previstos al mes pueden activarse de inmediato. Los volúmenes superiores requieren revisión manual y nunca evitan los límites de seguridad adaptativos.",
-      "consentProcess": "¿Cómo confirmas la relación con el cliente y su consentimiento?",
-      "consentPlaceholder": "Describe la compra, cita o servicio y cómo se respetan las bajas.",
-      "confirmCustomers": "Solo enviaré a clientes con una relación comercial real.",
-      "confirmLists": "No utilizaré listas compradas, alquiladas, extraídas ni de terceros.",
-      "confirmActions": "Cada envío por API seguirá una acción individual aprobada del cliente; respetaré las bajas y los límites adaptativos.",
-      "resubmit": "Volver a enviar los datos comerciales",
-      "request": "Activar acceso de envío",
-      "completeRequired": "Completa todos los campos y confirmaciones comerciales.",
-      "requiredForScope": "Completa el registro de uso comercial antes de añadir permiso de envío.",
-      "scopeLocked": "Se requiere registro de uso comercial"
-    }
-  },
-  "passkeys": {
-    "signIn": {
-      "title": "Iniciar sesión con una clave de acceso",
-      "description": "Usa la huella, el reconocimiento facial o el bloqueo de pantalla configurado en tu dispositivo.",
-      "emailLabel": "Correo de la cuenta",
-      "emailPlaceholder": "tu@ejemplo.com",
-      "button": "Continuar con una clave de acceso",
-      "inProgress": "Comprobando la clave de acceso…",
-      "preparing": "Preparando el aviso seguro de tu clave de acceso…",
-      "verifying": "Verificando tu clave de acceso…",
-      "invalidEmail": "Introduce una dirección de correo válida.",
-      "unsupported": "Las claves de acceso no están disponibles en este navegador. Aún puedes iniciar sesión con un enlace seguro por correo.",
-      "unavailable": "No se pudo completar el inicio con clave de acceso. Usa el enlace de correo de abajo o inténtalo de nuevo.",
-      "orAlternative": "o usa otro método de inicio de sesión"
-    },
-    "security": {
-      "title": "Claves de acceso",
-      "description": "Añade un método resistente al phishing con la biometría o el bloqueo de pantalla de tu dispositivo. El acceso por correo seguirá disponible.",
-      "unsupported": "Este navegador no puede crear claves de acceso. Prueba una versión reciente de Chrome, Safari, Edge o Firefox.",
-      "newNameLabel": "Nombre de la clave de acceso",
-      "newNameHelp": "Elige un nombre que te ayude a reconocer este dispositivo.",
-      "namePlaceholder": "Ejemplo: Portátil del trabajo",
-      "create": "Crear clave de acceso",
-      "creating": "Creando…",
-      "preparing": "Preparando el aviso seguro del dispositivo…",
-      "verifying": "Verificando tu nueva clave de acceso…",
-      "defaultName": "Mi clave de acceso",
-      "createSuccess": "Clave de acceso creada. Ya puedes usarla para iniciar sesión.",
-      "createError": "No se pudo completar la configuración. Inténtalo de nuevo.",
-      "savedTitle": "Claves de acceso guardadas",
-      "loading": "Cargando claves de acceso…",
-      "loadError": "No se pudieron cargar las claves de acceso.",
-      "empty": "Aún no tienes claves de acceso. Crea una arriba para iniciar sesión de forma más rápida y resistente al phishing.",
-      "nameLabel": "Nombre de la clave de acceso",
-      "saveName": "Guardar nombre de la clave",
-      "cancelRename": "Cancelar cambio de nombre",
-      "rename": "Cambiar nombre de {{name}}",
-      "renameSuccess": "Nombre de la clave actualizado.",
-      "renameError": "No se pudo cambiar el nombre de la clave.",
-      "created": "Creada el {{date}}",
-      "lastUsed": "Último uso: {{date}}",
-      "synced": "Sincronizada por el proveedor de tu dispositivo",
-      "remove": "Eliminar",
-      "removeConfirm": "¿Eliminar esta clave de acceso? Ya no podrás usarla para iniciar sesión.",
-      "confirmRemove": "Eliminar clave de acceso",
-      "cancel": "Cancelar",
-      "removeSuccess": "Clave de acceso eliminada.",
-      "removeError": "No se pudo eliminar la clave de acceso."
-    }
-  },
-  "recoveryDrill": {
-    "defaults": {
-      "title": "Simulacro de recuperación de cuenta del propietario"
-    },
-    "toast": {
-      "prepared": "Simulacro de recuperación en staging preparado.",
-      "approved": "Simulacro de recuperación aprobado.",
-      "rejected": "Simulacro de recuperación rechazado y cerrado.",
-      "started": "Simulacro de recuperación iniciado.",
-      "evidence": "Evidencia redactada registrada.",
-      "contained": "Simulacro de recuperación contenido.",
-      "completed": "Simulacro de recuperación completado y acceso temporal revocado.",
-      "aborted": "Simulacro de recuperación abortado y acceso temporal revocado."
-    },
-    "loading": "Comprobando el acceso de recuperación en staging…",
-    "title": "Simulacro de recuperación en staging",
-    "stagingOnly": "Solo en staging",
-    "description": "Practique la recuperación de la cuenta del propietario con separación de funciones, verificación reciente por passkey, evidencia redactada y revocación automática.",
-    "environment": "Entorno",
-    "available": "Host de staging permitido",
-    "unavailable": "No disponible en este host",
-    "yourRole": "Su rol",
-    "statusLabel": "Estado",
-    "hostGate": "Este control seguirá bloqueado a menos que se habilite el modo staging y se configure una allowlist exacta de hosts no productivos.",
-    "passkeyRequired": "Las acciones sensibles del simulacro requieren una sesión verificada por passkey de los últimos 15 minutos. Inicie sesión con un passkey y vuelva aquí.",
-    "prepareTitle": "Preparar simulacro con separación de funciones",
-    "prepareHelp": "Steve es el Custodio de recuperación. Asigne a un ingeniero líder distinto que ya tenga una cuenta activa de Get Phame y un passkey.",
-    "drillTitle": "Título del simulacro",
-    "approverEmail": "Correo electrónico del ingeniero líder",
-    "scheduledAt": "Hora programada",
-    "notes": "Notas del operador redactadas (opcional)",
-    "preparing": "Preparando…",
-    "prepare": "Preparar simulacro en staging",
-    "scheduledFor": "Programado para {{date}}",
-    "approvalTitle": "Aprobación independiente",
-    "approvalHelp": "Revise el alcance en staging y confirme que no es el Custodio de recuperación. La aprobación expira con su acceso temporal limitado.",
-    "decisionNote": "Nota de decisión",
-    "decisionPlaceholder": "Registre una justificación de aprobación redactada",
-    "approve": "Aprobar",
-    "reject": "Rechazar",
-    "start": "Iniciar simulacro aprobado",
-    "evidenceTitle": "Registrar evidencia redactada",
-    "evidenceHelp": "Use únicamente event IDs, ticket IDs, timestamps o referencias de objetos saneadas. Nunca ingrese tokens, cookies, credenciales ni datos de clientes.",
-    "evidenceType": "Tipo de evidencia",
-    "outcome": "Resultado",
-    "evidenceReference": "Referencia de evidencia saneada",
-    "evidencePlaceholder": "Ejemplo: audit-event:evt_123 a las 14:05 UTC",
-    "recordEvidence": "Registrar evidencia",
-    "evidenceLog": "Registro de evidencia",
-    "containmentReason": "Motivo de contención",
-    "containmentPlaceholder": "Condición de parada o motivo de contención",
-    "contain": "Contener simulacro",
-    "complete": "Completar y revocar acceso",
-    "abortReason": "Motivo para abortar",
-    "abortPlaceholder": "Motivo de aborto saneado",
-    "abort": "Abortar simulacro",
-    "status": {
-      "notPrepared": "No preparado",
-      "draft": "Borrador",
-      "ready": "Listo",
-      "in_progress": "En progreso",
-      "paused": "Contenido",
-      "completed": "Completado",
-      "aborted": "Abortado"
-    },
-    "roles": {
-      "none": "Sin rol de recuperación",
-      "platform_owner": "Propietario de la plataforma",
-      "recovery_custodian": "Custodio de recuperación",
-      "independent_approver": "Aprobador independiente",
-      "observer": "Observador"
-    },
-    "decision": {
-      "approved": "Aprobado",
-      "rejected": "Rechazado"
-    },
-    "evidence": {
-      "preflight": "Comprobaciones previas",
-      "revoked_session_denial": "Denegación por sesión revocada",
-      "revoked_credential_denial": "Denegación por credencial revocada",
-      "tenant_isolation": "Aislamiento de tenant",
-      "replacement_enrollment": "Registro de passkey de reemplazo",
-      "step_up_verification": "Verificación adicional",
-      "audit_verification": "Verificación de auditoría",
-      "rollback": "Validación de reversión",
-      "stop_condition": "Condición de parada",
-      "containment": "Contención",
-      "after_action": "Revisión posterior a la acción"
-    },
-    "outcomes": {
-      "passed": "Aprobado",
-      "failed": "Fallido",
-      "blocked": "Bloqueado",
-      "contained": "Contenido",
-      "not_applicable": "No aplicable"
-    }
-  },
-  "manual": {
-    "badges": {
-      "all": "Free y de pago",
-      "paid": "Solo suscripción de pago",
-      "admin": "Solo administrador"
-    },
-    "searchPlaceholder": "Buscar en este manual",
-    "searchLabel": "Buscar en este manual",
-    "searchResults": "{{count}} temas coincidentes",
-    "lastUpdated": "Última actualización {{date}}",
-    "sectionNavigation": "Secciones del manual",
-    "sectionCount": "Secciones del manual",
-    "adminSectionCount": "Secciones solo para administradores",
-    "paidTopicCount": "Temas solo para suscriptores de pago",
-    "inThisManual": "En este manual",
-    "stepsLabel": "Pasos",
-    "noteLabel": "Nota importante",
-    "openFeature": "Abrir esta función",
-    "noResultsTitle": "No hay temas coincidentes",
-    "noResultsBody": "Pruebe una búsqueda más corta o explore los enlaces de sección arriba.",
-    "clearSearch": "Borrar búsqueda",
-    "insights": {
-      "eyebrow": "Inteligencia de la documentación",
-      "title": "Búsquedas sin resultados",
-      "description": "Utilice estos términos agregados para priorizar los temas faltantes del Manual. Las búsquedas repetidas desde la misma cuenta cuentan una sola vez por día UTC.",
-      "privacy": "Privado por diseño: los informes excluyen IDs de cuentas, registros de clientes, referentes, dispositivos y filas de eventos en bruto.",
-      "periodLabel": "Período del informe",
-      "periodDays": "{{count}} días",
-      "loading": "Cargando búsquedas de temas faltantes…",
-      "error": "No se pudieron cargar los análisis de temas faltantes. Inténtelo de nuevo.",
-      "retry": "Reintentar",
-      "totalSearches": "Búsquedas sin resultados",
-      "uniqueTerms": "Términos distintos",
-      "roleBreakdown": "Usuario {{user}} · Administrador {{admin}}",
-      "manualScope": "Alcance del Manual",
-      "term": "Búsqueda de tema faltante",
-      "role": "Manual",
-      "locale": "Idioma",
-      "count": "Recuento",
-      "lastSearched": "Última búsqueda",
-      "adminManual": "Manual del administrador",
-      "userManual": "Manual de usuario",
-      "emptyTitle": "Aún no hay búsquedas de temas faltantes",
-      "emptyBody": "Las búsquedas con cero resultados aparecerán aquí después de la deduplicación diaria a nivel de cuenta."
-    },
-    "export": {
-      "fullScope": "Todo el Manual visible",
-      "sectionScope": "Sección del Manual",
-      "scope": "Alcance de exportación",
-      "language": "Idioma",
-      "generated": "Generado",
-      "lastUpdated": "Última actualización del Manual",
-      "version": "Versión del Manual",
-      "steps": "Pasos",
-      "notes": "Notas importantes",
-      "featurePath": "Ruta de la función",
-      "page": "Página {{current}} de {{total}}",
-      "sectionSuccess": "Descargado {{section}} como PDF.",
-      "fullSuccess": "Se descargó el Manual completo como PDF.",
-      "error": "No se pudo crear el PDF del Manual. Por favor, inténtelo de nuevo.",
-      "preparing": "Preparando PDF…",
-      "fullButton": "Descargar PDF completo del Manual",
-      "help": "El PDF incluye únicamente el Manual disponible para su rol autenticado y el idioma actual.",
-      "sectionAria": "Descargar {{section}} como PDF",
-      "sectionButton": "Descargar PDF de la sección"
-    }
-  },
-  "adminGithubCleanup": {
-    "dashboardCardTitle": "Herramienta de limpieza de GitHub",
-    "dashboardCardBody": "Revisar la ascendencia, el trabajo único, los controles de seguridad y el guion de presentación",
-    "loading": "Cargando demostración de limpieza",
-    "errorTitle": "Demostración no disponible",
-    "errorBody": "No se pudo cargar la evidencia del repositorio, accesible solo para administradores.",
-    "backToAdmin": "Volver a Administración",
-    "adminOnly": "Solo administradores",
-    "title": "Herramienta de limpieza de repositorios de GitHub",
-    "subtitle": "Auditar la ascendencia de ramas, preservar trabajo único, verificar el árbol de lanzamiento y eliminar solo las ramas demostradas seguras para su borrado.",
-    "scriptCopied": "Guion de presentación copiado.",
-    "scriptCopyError": "No se pudo copiar el guion.",
-    "stats": {
-      "main": "Main",
-      "tree": "Árbol de lanzamiento",
-      "exact": "Coincidencia exacta",
-      "branches": "Ramas",
-      "openPrs": "PR abiertas"
-    },
-    "evidence": {
-      "eyebrow": "Evidencia verificada del repositorio",
-      "title": "Estado actual de lanzamiento y preservación",
-      "body": "El árbol protegido main coincide exactamente con el release gestionado validado. push-safe permanece aislado porque contiene trabajo único pero obsoleto que debe extraerse selectivamente."
-    },
-    "visuals": {
-      "ancestryAlt": "Mapa de ascendencia de ramas y preservación que muestra main protegido, paridad exacta con el árbol de release, divergencia de push-safe y dónde permanecen preservadas las puntas de ramas eliminadas.",
-      "ancestryCaption": "Las relaciones sólidas muestran ascendencia verificada; las relaciones discontinuas muestran paridad exacta del árbol Git en lugar de historial de commits compartido.",
-      "uniqueAlt": "Trabajo único en push-safe ordenado por prioridad de extracción, con estado de preparación y la siguiente acción segura para Mailjet, Help Assistant, Sources y WooCommerce, y el entitlement de pago.",
-      "uniqueCaption": "La prioridad es el orden de acción; la preparación describe el tratamiento respaldado por la evidencia en la fecha de auditoría."
-    },
-    "metrics": {
-      "eyebrow": "Definición de métricas",
-      "title": "La prioridad de extracción y la preparación responden a preguntas diferentes",
-      "extraction": {
-        "title": "Prioridad de extracción",
-        "body": "Un orden ordinal de acción. Prioridad 1 significa evaluar o extraer primero. No representa urgencia, impacto en ingresos, puntos de historia, probabilidad de éxito ni porcentaje completado."
-      },
-      "dimensions": {
-        "isolation": {
-          "title": "Aislamiento",
-          "body": "¿Puede moverse el trabajo sin arrastrar historial de ramas no relacionado?"
-        },
-        "compatibility": {
-          "title": "Compatibilidad",
-          "body": "¿En qué medida entra en conflicto o duplica la rama main actual?"
-        },
-        "evidence": {
-          "title": "Claridad de la evidencia",
-          "body": "¿Están documentados el código, las pruebas, los bloqueadores y las puertas de aceptación?"
-        },
-        "dependencies": {
-          "title": "Cierre de dependencias",
-          "body": "¿Están resueltos los componentes, migraciones, proveedores y políticas requeridos?"
-        },
-        "valueRisk": {
-          "title": "Secuencia valor-riesgo",
-          "body": "¿Puede revisar este elemento primero producir progreso útil con riesgo de regresión acotado?"
-        }
-      },
-      "readiness": {
-        "title": "Preparación",
-        "body": "Descripción categórica de la evidencia disponible en la fecha de auditoría. Identifica el siguiente tratamiento seguro; no es una puntuación numérica de madurez.",
-        "labels": {
-          "portable": {
-            "title": "Portátil tras rebase y revalidación",
-            "body": "Existe una implementación acotada sin bloqueador intrínseco. Recrearla o portarla selectivamente desde el main actual y volver a ejecutar los controles actuales."
-          },
-          "specification": {
-            "title": "Solo especificación",
-            "body": "Existen requisitos pero no código de producto. Convertir la evidencia en un issue acotado antes de implementar."
-          },
-          "stale": {
-            "title": "Arquitectónicamente obsoleto",
-            "body": "Existe código sustancial pero que solapa con infraestructura más reciente. Preservar el comportamiento y los contratos, no los archivos antiguos."
-          },
-          "blocked": {
-            "title": "Bloqueado",
-            "body": "Una dependencia faltante conocida, error de compilación, migración o decisión impide la validación. Resolver el bloqueo antes de la extracción."
-          },
-          "superseded": {
-            "title": "Candidato a sustituir o retirar",
-            "body": "El main actual ya proporciona el comportamiento o la decisión de producto cambió. Registrar la decisión y retirar el trabajo antiguo."
-          }
-        }
-      }
-    },
-    "workstreams": {
-      "title": "Cola de decisiones de trabajo único",
-      "priority": "Prioridad de extracción {{priority}}",
-      "mailjet": {
-        "title": "Preajuste Mailjet Bulk Sender",
-        "body": "Un preajuste de proveedor acotado con siete actualizaciones de locales, documentación y pruebas históricas.",
-        "action": "Acción: Portar selectivamente en una rama nueva desde el main actual."
-      },
-      "helpAssistant": {
-        "title": "Help Assistant público global",
-        "body": "Existen requisitos anónimos y seguros, limitación por tasa, localización y accesibilidad en todas las rutas; no se comprometió implementación de producto.",
-        "action": "Acción: Convertir los requisitos en un issue de implementación dedicado."
-      },
-      "sourcesWoo": {
-        "title": "Sources y WooCommerce con prioridad de consentimiento",
-        "body": "Trabajo sustancial de importación, seguridad, consentimiento, cifrado, idempotencia, procedencia, migración, interfaz y pruebas que solapa con infraestructura más reciente.",
-        "action": "Acción: Reformular el comportamiento y los contratos, no los archivos antiguos."
-      },
-      "wooEntitlement": {
-        "title": "Entitlement de pago de WooCommerce",
-        "body": "Existen procedimientos de pago y UX de actualización localizada, pero la rama antigua tiene una importación faltante de PaywallModal y no compila.",
-        "action": "Acción: Reconstruir contra los patrones de entitlement actuales."
-      }
-    },
-    "safety": {
-      "title": "Secuencia de seguridad para eliminación",
-      "body": "La clasificación nunca elimina una rama. El repositorio en vivo se revalida inmediatamente antes de la mutación, y cualquier hecho cambiado detiene la operación.",
-      "gates": {
-        "dryRun": "Ejecución en seco",
-        "refetch": "Reobtener",
-        "exactSha": "SHA exacto",
-        "openPr": "Comprobación de PR abiertas",
-        "preservation": "Prueba de preservación",
-        "execute": "Ejecutar",
-        "reaudit": "Reauditar"
-      }
-    },
-    "script": {
-      "title": "Guion de presentación",
-      "subtitle": "Maestro en inglés de ocho escenas · aproximadamente {{runtime}}",
-      "copy": "Copiar guion completo",
-      "scene": "Escena {{number}} · {{time}}"
-    },
-    "footer": "Instantánea verificada {{date}}. La evidencia del repositorio y el contenido de la presentación solo están disponibles a través de esta ruta autorizada para administradores."
+  "whatsNew": {
+    "title": "Novedades",
+    "subtitle": "Esto es lo que cambió en la última actualización.",
+    "cta": "¡Entendido — vamos!"
   }
 }

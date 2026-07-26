@@ -1,46 +1,36 @@
 // Phame — Home Dashboard
 // Shows stats, SMTP connection status, and quick-send CTA
 
-import { lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
-import { Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X, ShieldCheck, AlertTriangle, CreditCard, Gift, Users } from "lucide-react";
+import { Star, Send, TrendingUp, Clock, AlertCircle, CheckCircle2, WifiOff, BookOpen, Share2, Target, Pencil, Check, X, Eye, MousePointerClick, ShieldCheck, AlertTriangle, CreditCard, Gift, Users, Zap } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import OnboardingGuide from "@/components/OnboardingGuide";
 import LanguageFlyout from "@/components/LanguageFlyout";
-import { FreeQuotaStatus } from "@/components/FreeQuotaStatus";
 import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
-import { getEffectivePlan } from "@shared/plans";
-import LandingBrandLink from "@/components/LandingBrandLink";
-import HomeInstallBanner from "@/components/HomeInstallBanner";
-import { getPwaPlatform, shareGetPhame } from "@/lib/pwaShare";
-import DeferredDashboardSection from "@/components/dashboard/DeferredDashboardSection";
-import SetupProgressCard from "@/components/dashboard/SetupProgressCard";
 
-const TrackingSummaryCard = lazy(() => import("@/components/dashboard/TrackingSummaryCard"));
-const PlatformBreakdownChart = lazy(() => import("@/components/dashboard/PlatformBreakdownChart"));
-
-const LOGO_URL = "https://assets.getphame.app/getphame-logo.svg";
-const HERO_IMG = "https://assets.getphame.app/getphame-logo.svg";
+const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
+const HERO_IMG = "https://assets.getphame.app/getphame-logo-mark.webp";
 
 function ReferralRewardsCard() {
-  const { t } = useTranslation("translation");
   const { data: referralStats, isLoading } = trpc.referral.getStats.useQuery();
   const { data: referralData } = trpc.referral.getCode.useQuery();
   const shareUrl = referralData?.shareUrl ?? "https://getphame.app";
   const [copied, setCopied] = useState(false);
+  const { t } = useTranslation();
 
   const handleCopyCode = async () => {
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
-      toast.success(t("referralRewards.copySuccessToast"));
+      toast.success(t("referralRewardsCard.copySuccessToast", { defaultValue: "Referral link copied!" }));
       setTimeout(() => setCopied(false), 3000);
     } catch {
-      toast.error(t("referralRewards.copyErrorToast"));
+      toast.error(t("referralRewardsCard.copyErrorToast", { defaultValue: "Could not copy link." }));
     }
   };
 
@@ -60,14 +50,14 @@ function ReferralRewardsCard() {
               <Gift size={15} className="rr-text-gold" />
             </div>
             <div>
-              <p className="text-sm font-black rr-text-navy leading-tight">{t("referralRewards.title")}</p>
-              <p className="text-sm font-semibold rr-text-navy-mid">{t("referralRewards.subtitle")}</p>
+              <p className="text-sm font-black rr-text-navy leading-tight">{t("referralRewardsCard.title", { defaultValue: "Referral Rewards" })}</p>
+              <p className="text-sm font-semibold rr-text-navy-mid">{t("referralRewardsCard.subtitle", { defaultValue: "Earn 1 free month per paid referral" })}</p>
             </div>
           </div>
           {months > 0 && (
             <div className="flex items-center gap-1 px-2 py-1 rounded-lg rr-bg-gold">
               <Star size={11} className="rr-text-navy" fill="currentColor" />
-              <span className="text-xs font-black rr-text-navy">{t("referralRewards.monthsShort", { count: months })}</span>
+              <span className="text-xs font-black rr-text-navy">{months} mo</span>
             </div>
           )}
         </div>
@@ -77,17 +67,17 @@ function ReferralRewardsCard() {
           <div className="flex flex-col items-center rounded-xl py-2.5 px-2 rr-bg-white-card">
             <Users size={13} className="rr-text-navy mb-1" />
             <span className="text-lg font-black rr-text-navy">{isLoading ? "—" : total}</span>
-            <span className="text-sm font-semibold rr-text-navy-mid text-center leading-tight">{t("referralRewards.joined")}</span>
+            <span className="text-sm font-semibold rr-text-navy-mid text-center leading-tight">{t("referralRewardsCard.joined", { defaultValue: "Joined" })}</span>
           </div>
           <div className="flex flex-col items-center rounded-xl py-2.5 px-2" style={{ background: "oklch(0.96 0.04 80)" }}>
             <CreditCard size={13} style={{ color: "oklch(0.55 0.18 80)", marginBottom: 4 }} />
             <span className="text-lg font-black rr-text-navy">{isLoading ? "—" : converted}</span>
-            <span className="text-xs text-center leading-tight" style={{ color: "oklch(0.55 0.12 80)" }}>{t("referralRewards.converted")}</span>
+            <span className="text-xs text-center leading-tight" style={{ color: "oklch(0.55 0.12 80)" }}>{t("referralRewardsCard.converted", { defaultValue: "Converted" })}</span>
           </div>
           <div className="flex flex-col items-center rounded-xl py-2.5 px-2" style={{ background: "oklch(0.96 0.06 145)" }}>
             <Gift size={13} style={{ color: "oklch(0.45 0.18 145)", marginBottom: 4 }} />
             <span className="text-lg font-black rr-text-navy">{isLoading ? "—" : months}</span>
-            <span className="text-xs text-center leading-tight" style={{ color: "oklch(0.45 0.12 145)" }}>{t("referralRewards.freeMonths")}</span>
+            <span className="text-xs text-center leading-tight" style={{ color: "oklch(0.45 0.12 145)" }}>{t("referralRewardsCard.freeMonths", { defaultValue: "Free Months" })}</span>
           </div>
         </div>
 
@@ -96,8 +86,8 @@ function ReferralRewardsCard() {
           {/* WhatsApp */}
           <button
             onClick={() => {
-              const text = encodeURIComponent(t("referralRewards.shareMessage", { url: shareUrl }));
-              window.open(`https://wa.me/?text=${text}`, "_blank", "noopener,noreferrer");
+              const text = encodeURIComponent(`Get more 5-star reviews with Get Phame — ${shareUrl}`);
+              window.open(`https://wa.me/?text=${text}`, '_blank');
             }}
             className="flex flex-col items-center gap-1 rounded-xl py-2.5 px-2 transition-opacity active:opacity-70"
             style={{ background: "oklch(0.93 0.08 145)" }}
@@ -105,13 +95,13 @@ function ReferralRewardsCard() {
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" fill="oklch(0.35 0.18 145)"/>
             </svg>
-            <span className="text-xs font-bold" style={{ color: "oklch(0.35 0.18 145)" }}>{t("referralRewards.whatsApp")}</span>
+            <span className="text-xs font-bold" style={{ color: "oklch(0.35 0.18 145)" }}>{t("referralRewardsCard.whatsapp", { defaultValue: "WhatsApp" })}</span>
           </button>
           {/* iMessage / SMS */}
           <button
             onClick={() => {
-              const text = encodeURIComponent(t("referralRewards.shareMessage", { url: shareUrl }));
-              window.location.assign(`sms:?&body=${text}`);
+              const text = encodeURIComponent(`Get more 5-star reviews with Get Phame — ${shareUrl}`);
+              window.open(`sms:?&body=${text}`, '_blank');
             }}
             className="flex flex-col items-center gap-1 rounded-xl py-2.5 px-2 transition-opacity active:opacity-70"
             style={{ background: "oklch(0.93 0.06 220)" }}
@@ -122,7 +112,7 @@ function ReferralRewardsCard() {
               <circle cx="12" cy="10" r="1.5" fill="oklch(0.35 0.15 220)"/>
               <circle cx="16" cy="10" r="1.5" fill="oklch(0.35 0.15 220)"/>
             </svg>
-            <span className="text-xs font-bold" style={{ color: "oklch(0.35 0.15 220)" }}>{t("referralRewards.message")}</span>
+            <span className="text-xs font-bold" style={{ color: "oklch(0.35 0.15 220)" }}>Message</span>
           </button>
           {/* Copy link */}
           <button
@@ -134,7 +124,7 @@ function ReferralRewardsCard() {
               ? <Check size={18} style={{ color: "oklch(0.35 0.18 145)" }} />
               : <Share2 size={18} className="rr-text-navy" />}
             <span className="text-xs font-bold" style={copied ? { color: "oklch(0.35 0.18 145)" } : { color: "var(--rr-navy)" }}>
-              {copied ? t("referralRewards.copied") : t("referralRewards.copyLink")}
+              {copied ? t("referralRewardsCard.copied", { defaultValue: "Copied!" }) : t("referralRewardsCard.copyLink", { defaultValue: "Copy Link" })}
             </span>
           </button>
         </div>
@@ -149,22 +139,17 @@ function ReferralRewardsCard() {
         {/* Progress hint */}
         {total === 0 && (
           <p className="text-sm font-semibold rr-text-navy-mid text-center mt-2.5">
-            {t("referralRewards.noReferralsHint")}
+            {t("referralRewardsCard.shareHint", { defaultValue: "Share your link below to start earning free months" })}
           </p>
         )}
         {total > 0 && converted < total && (
           <p className="text-sm font-semibold rr-text-navy-mid text-center mt-2.5">
-            {t(
-              total - converted === 1
-                ? "referralRewards.pendingReferralsHint"
-                : "referralRewards.pendingReferralsHint_plural",
-              { count: total - converted },
-            )}
+            {total - converted} friend{total - converted !== 1 ? "s" : ""} joined — waiting for them to upgrade
           </p>
         )}
         {converted > 0 && months === 0 && (
           <p className="text-xs text-center mt-2.5" style={{ color: "oklch(0.55 0.18 80)" }}>
-            {t("referralRewards.rewardProcessingHint")}
+            {t("referralRewardsCard.rewardProcessing", { defaultValue: "Reward processing — your free month will be applied shortly" })}
           </p>
         )}
       </div>
@@ -173,7 +158,7 @@ function ReferralRewardsCard() {
 }
 
 function ShareReferralCard() {
-  const { t } = useTranslation("translation");
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const { track } = useAnalytics();
   const { data: referralData } = trpc.referral.getCode.useQuery();
@@ -268,6 +253,91 @@ function ShareReferralCard() {
   );
 }
 
+// ── Quota Tracker Card ──────────────────────────────────────────────────────
+type QuotaSummary = {
+  isPaid: boolean;
+  phase: "paid" | "onboarding" | "rolling";
+  lifetime: number;
+  remaining: number | null;
+  nextWindowAt: number | null;
+  windowSendCount?: number;
+};
+
+function QuotaTrackerCard({ quota, onUpgrade }: { quota: QuotaSummary; onUpgrade: () => void }) {
+  const { t } = useTranslation();
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  if (quota.isPaid) return null;
+  const isOnboarding = quota.phase === "onboarding";
+  const total = isOnboarding ? 10 : 5;
+  const used = isOnboarding ? quota.lifetime : (quota.windowSendCount ?? 0);
+  const remaining = quota.remaining ?? 0;
+  const pct = Math.round(((total - remaining) / total) * 100);
+  let countdownLabel = "";
+  if (!isOnboarding && quota.nextWindowAt) {
+    const msLeft = Math.max(0, quota.nextWindowAt - now);
+    const days = Math.floor(msLeft / 86400000);
+    const hours = Math.floor((msLeft % 86400000) / 3600000);
+    const mins = Math.floor((msLeft % 3600000) / 60000);
+    const secs = Math.floor((msLeft % 60000) / 1000);
+    if (days > 0) countdownLabel = `${days}d ${hours}h ${mins}m`;
+    else if (hours > 0) countdownLabel = `${hours}h ${mins}m ${secs}s`;
+    else countdownLabel = `${mins}m ${secs}s`;
+  }
+  const barColor = remaining === 0 ? "oklch(0.60 0.18 25)" : remaining <= 2 ? "oklch(0.72 0.18 60)" : "oklch(0.80 0.18 80)";
+  return (
+    <div className="rounded-2xl overflow-hidden" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.03 260)" }}>
+      <div className="h-1 w-full" style={{ background: barColor }} />
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "oklch(0.22 0.09 260)" }}>
+              <Zap size={13} style={{ color: "oklch(0.80 0.18 80)" }} />
+            </div>
+            <div>
+              <p className="text-xs font-black" style={{ color: "oklch(0.22 0.09 260)" }}>
+                {isOnboarding ? t("quota.onboardingTitle", { defaultValue: "Free Sends Remaining" }) : t("quota.windowTitle", { defaultValue: "Monthly Quota" })}
+              </p>
+              <p className="text-xs" style={{ color: "oklch(0.50 0.06 260)" }}>
+                {isOnboarding ? t("quota.onboardingSubtitle", { defaultValue: "First 10 sends are on us" }) : t("quota.windowSubtitle", { defaultValue: "5 sends per 30-day window" })}
+              </p>
+            </div>
+          </div>
+          <button onClick={onUpgrade} className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-black transition-transform active:scale-95" style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}>
+            <Star size={10} fill="currentColor" />
+            {t("quota.upgradeCta", { defaultValue: "Go Pro" })}
+          </button>
+        </div>
+        <div className="mb-2">
+          <div className="flex justify-between items-center mb-1">
+            <span className="text-xs font-bold" style={{ color: "oklch(0.22 0.09 260)" }}>{used} / {total} {t("quota.used", { defaultValue: "used" })}</span>
+            <span className="text-xs font-black" style={{ color: barColor }}>{remaining} {t("quota.left", { defaultValue: "left" })}</span>
+          </div>
+          <div className="h-2 rounded-full overflow-hidden" style={{ background: "oklch(0.90 0.03 260)" }}>
+            <div className="h-full rounded-full transition-all duration-500" style={{ width: `${pct}%`, background: barColor }} />
+          </div>
+        </div>
+        {isOnboarding ? (
+          <p className="text-xs" style={{ color: "oklch(0.50 0.06 260)" }}>{t("quota.onboardingHint", { defaultValue: "After 10 sends: 5 per 30 days, or upgrade for unlimited." })}</p>
+        ) : remaining === 0 && countdownLabel ? (
+          <div className="flex items-center gap-1.5">
+            <Clock size={11} style={{ color: "oklch(0.60 0.18 25)" }} />
+            <span className="text-xs font-bold" style={{ color: "oklch(0.60 0.18 25)" }}>{t("quota.nextWindowIn", { defaultValue: "Next window opens in" })} {countdownLabel}</span>
+          </div>
+        ) : countdownLabel ? (
+          <div className="flex items-center gap-1.5">
+            <Clock size={11} style={{ color: "oklch(0.50 0.06 260)" }} />
+            <span className="text-xs" style={{ color: "oklch(0.50 0.06 260)" }}>{t("quota.windowResetsIn", { defaultValue: "Window resets in" })} {countdownLabel}</span>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 function formatRelativeTime(date: Date, t: (key: string, opts?: Record<string, unknown>) => string): string {
   const diffMs = Date.now() - date.getTime();
   const diffMins = Math.floor(diffMs / 60000);
@@ -280,12 +350,66 @@ function formatRelativeTime(date: Date, t: (key: string, opts?: Record<string, u
   return format(date, "MMM d");
 }
 
+function TrackingSummaryCard() {
+  const { t } = useTranslation();
+  const { isAuthenticated } = useAuth();
+  const { data: overallStats, isLoading } = trpc.tracking.overallStats.useQuery(undefined, {
+    enabled: isAuthenticated,
+  });
+
+  // Don't render until we have data and there's at least one sent email
+  if (isLoading || !overallStats || overallStats.totalSent === 0) return null;
+
+  const { totalSent, uniqueOpens, uniqueClicks, openRate, clickRate } = overallStats;
+
+  return (
+    <div className="bg-white rounded-2xl p-4 shadow-sm">
+      <div className="flex items-center gap-2 mb-3">
+        <TrendingUp size={16} className="rr-text-navy" />
+        <h3
+          className="text-sm font-black rr-text-navy"
+        >
+          {t("trackingSummaryCard.title")}
+        </h3>
+      </div>
+      <div className="grid grid-cols-3 gap-3">
+        {/* Sent */}
+        <div className="flex flex-col items-center rounded-xl py-3 px-2 rr-bg-white-card">
+          <Send size={14} style={{ color: "oklch(0.50 0.10 260)", marginBottom: 4 }} />
+          <span className="text-xl font-black rr-text-navy">
+            {totalSent}
+          </span>
+          <span className="text-sm font-semibold rr-text-navy-mid">{t("trackingSummaryCard.sent")}</span>
+        </div>
+        {/* Open Rate */}
+        <div className="flex flex-col items-center rounded-xl py-3 px-2" style={{ background: "oklch(0.95 0.05 220)" }}>
+          <Eye size={14} style={{ color: "oklch(0.45 0.15 220)", marginBottom: 4 }} />
+          <span className="text-xl font-black rr-text-navy">
+            {openRate}%
+          </span>
+          <span className="text-xs" style={{ color: "oklch(0.50 0.08 220)" }}>{t("trackingSummaryCard.openRate")}</span>
+        </div>
+        {/* Click Rate */}
+        <div className="flex flex-col items-center rounded-xl py-3 px-2" style={{ background: "oklch(0.96 0.06 80)" }}>
+          <MousePointerClick size={14} style={{ color: "oklch(0.55 0.18 80)", marginBottom: 4 }} />
+          <span className="text-xl font-black rr-text-navy">
+            {clickRate}%
+          </span>
+          <span className="text-xs" style={{ color: "oklch(0.55 0.12 80)" }}>{t("trackingSummaryCard.clickRate")}</span>
+        </div>
+      </div>
+      <p className="text-xs mt-2.5 text-center rr-text-navy-faint">
+        {t("trackingSummaryCard.summary", { uniqueOpens, uniqueClicks, totalSent })}
+      </p>
+    </div>
+  );
+}
+
 export default function HomePage() {
-  const { t } = useTranslation("translation");
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [, navigate] = useLocation();
   const [guideOpen, setGuideOpen] = useState(false);
-  const [shareStatus, setShareStatus] = useState("");
 
   const { data: profile } = trpc.profile.get.useQuery();
   const { data: smtpStatus } = trpc.smtp.status.useQuery();
@@ -293,7 +417,6 @@ export default function HomePage() {
   const { data: onboardingStatus } = trpc.onboarding.status.useQuery();
   const { data: referralData } = trpc.referral.getCode.useQuery();
   const utils = trpc.useUtils();
-  const pwaAnalytics = trpc.analytics.trackPwaEvent.useMutation();
 
   // Goal tracker state
   const [editingGoal, setEditingGoal] = useState(false);
@@ -312,30 +435,18 @@ export default function HomePage() {
     : 0;
 
   const handleShare = async () => {
-    const outcome = await shareGetPhame();
-    const platform = getPwaPlatform();
-
-    if (outcome === "shared") {
-      pwaAnalytics.mutate({ event: "share_completed", platform });
-      setShareStatus(t("pwaInstallBanner.shareSuccess", { defaultValue: "Get Phame shared successfully." }));
-      return;
+    const shareUrl = referralData?.shareUrl ?? "https://getphame.app";
+    const shareText = t("shareReferralCard.shareText") + " " + shareUrl;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "Get Phame", text: shareText, url: shareUrl });
+      } catch {
+        // user cancelled — no action needed
+      }
+    } else {
+      await navigator.clipboard.writeText(shareText);
+      toast.success(t("homePage.shareSuccessToast"));
     }
-    if (outcome === "copied") {
-      pwaAnalytics.mutate({ event: "share_copied", platform });
-      const message = t("pwaInstallBanner.shareCopied", { defaultValue: "Get Phame link copied." });
-      setShareStatus(message);
-      toast.success(message);
-      return;
-    }
-    if (outcome === "cancelled") {
-      pwaAnalytics.mutate({ event: "share_cancelled", platform });
-      setShareStatus(t("pwaInstallBanner.shareCancelled", { defaultValue: "Sharing cancelled." }));
-      return;
-    }
-
-    const message = t("pwaInstallBanner.shareError", { defaultValue: "Unable to share Get Phame right now." });
-    setShareStatus(message);
-    toast.error(message);
   };
 
   // SEO: dynamic page title with keywords
@@ -380,12 +491,11 @@ export default function HomePage() {
     ? Math.ceil((profile.planExpiresAt - Date.now()) / (24 * 60 * 60 * 1000))
     : null;
 
-  // Plan label must use effective entitlements so administrators display Life, not Free.
-  const effectivePlan = getEffectivePlan(profile?.tier, user?.role);
+  // Tier label
   const tierLabel =
-    effectivePlan === "monthly" ? t("homePage.monthlyPro", { defaultValue: "Monthly Pro" }) :
-    effectivePlan === "annual" ? t("homePage.annualPro", { defaultValue: "Annual Pro" }) :
-    effectivePlan === "life" ? t("homePage.lifePlan", { defaultValue: "Life Plan" }) :
+    profile?.tier === "pro" ? t("homePage.monthlyPro", { defaultValue: "Monthly Pro" }) :
+    profile?.tier === "annual" ? t("homePage.annualPro", { defaultValue: "Annual Pro" }) :
+    profile?.tier === "lifetime" ? t("homePage.lifetime", { defaultValue: "Lifetime" }) :
     t("homePage.freePlan", { defaultValue: "Free Plan" });
 
   return (
@@ -405,28 +515,22 @@ export default function HomePage() {
         className="relative px-5 pt-8 pb-6 overflow-hidden animate-scale-in"
         style={{ background: "var(--navy)" }}
       >
-        {/* Header top row */}
+                {/* Header top row */}
         <div className="relative z-10 mb-6">
-          {/* Mobile: brand occupies row 1 and actions occupy row 2. Desktop: one row. */}
-          <div
-            className="flex flex-col items-stretch gap-3 mb-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2"
-            data-testid="home-header-layout"
-          >
-            <div className="home-brand-full">
-              <LandingBrandLink
-                className="justify-start"
-                iconClassName="w-7 h-7"
-                textClassName="text-xl"
-                tone="split"
-              />
+          {/* Row 1: Language selector */}
+          <div className="flex justify-end mb-2">
+          </div>
+          {/* Row 2: Brand label (left) + Share / Guide buttons (right) */}
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <div className="flex items-center">
+              <div className="flex items-center gap-2">
+                <img src={LOGO_URL} alt="GetPhame logo" className="w-7 h-7 rounded-lg" loading="lazy" decoding="async" />
+                <span className="font-display font-extrabold text-xl tracking-tight">
+                  <span className="text-white">GET</span><span style={{ color: 'oklch(0.80 0.18 80)' }}>PHAME</span>
+                </span>
+              </div>
             </div>
-            <div className="home-brand-mark shrink-0">
-              <LandingBrandLink showText={false} iconClassName="w-7 h-7" tone="split" />
-            </div>
-            <div
-              className="flex items-center justify-end gap-2 flex-wrap sm:flex-nowrap"
-              data-testid="home-header-actions"
-            >
+            <div className="flex items-center gap-2">
               <button
                 onClick={handleShare}
                 className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-colors rr-text-gold" style={{ background: "oklch(0.32 0.08 260)" }}
@@ -444,22 +548,47 @@ export default function HomePage() {
                 <span>{t("nav.guide", { defaultValue: "Guide" })}</span>
               </button>
               <LanguageFlyout />
-              <span className="sr-only" role="status" aria-live="polite">{shareStatus}</span>
             </div>
           </div>
-          {/* Greeting */}
-          <h1 className="text-2xl leading-tight rr-fw-black" style={{ paddingTop: '10px', color: '#f9ae00' }}>
+          {/* Row 3: Greeting with avatar */}
+          <div className="flex items-center gap-3" style={{ paddingTop: '10px' }}>
+            {/* Avatar circle */}
             {(() => {
-              const firstName = user?.name ? user.name.split(" ")[0] : null;
-              return firstName
-                ? t("homePage.greeting", { defaultValue: `Hey, ${firstName}!`, name: firstName })
-                : t("homePage.welcomeBack");
+              const avatarUrl = (user as any)?.avatarUrl as string | undefined;
+              const initials = user?.name
+                ? user.name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
+                : "?";
+              return avatarUrl ? (
+                <img
+                  src={avatarUrl}
+                  alt={user?.name ?? "Profile"}
+                  className="w-12 h-12 rounded-full object-cover flex-shrink-0"
+                  style={{ border: '2px solid oklch(0.80 0.18 80)' }}
+                />
+              ) : (
+                <div
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
+                  style={{ background: 'oklch(0.32 0.08 260)', color: 'oklch(0.80 0.18 80)', border: '2px solid oklch(0.80 0.18 80)' }}
+                >
+                  {initials}
+                </div>
+              );
             })()}
-          </h1>
-          {/* Company name (businessName from profile), fallback to email */}
-          <p className="text-sm mt-1" style={{ color: "var(--text-on-dark-secondary)" }}>
-            {profile?.businessName ?? user?.email ?? ""}
-          </p>
+            {/* Greeting + company */}
+            <div className="min-w-0">
+              <h1 className="text-2xl leading-tight rr-fw-black truncate" style={{ color: '#f9ae00' }}>
+                {(() => {
+                  const greetName = profile?.displayName?.trim() || (user?.name ? user.name.split(" ")[0] : null);
+                  return greetName
+                    ? t("homePage.greeting", { defaultValue: `Hey, ${greetName}!`, name: greetName })
+                    : t("homePage.welcomeBack");
+                })()}
+              </h1>
+              <p className="text-sm mt-0.5 truncate" style={{ color: "var(--text-on-dark-secondary)" }}>
+                {profile?.businessName ?? user?.email ?? ""}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Stats row */}
@@ -469,10 +598,8 @@ export default function HomePage() {
             { label: t("homePage.allTime", { defaultValue: "All Time" }), value: stats?.total ?? 0, icon: <TrendingUp size={14} /> },
             {
               label: tierLabel,
-              value: effectivePlan === "free"
-                ? `${profile?.freeQuota?.remaining ?? 10}/${profile?.freeQuota?.limit ?? 10}`
-                : "✓",
-              icon: <img src={LOGO_URL} alt="GetPhame" style={{ width: 16, height: 16, objectFit: 'contain' }} />
+              value: profile?.tier === "free" || !profile?.tier ? `${profile?.quota?.remaining ?? 0}/${profile?.quota?.phase === 'onboarding' ? 10 : 5}` : "✓",
+              icon: <Star size={14} />
             },
           ].map((s, i) => (
             <div
@@ -497,10 +624,6 @@ export default function HomePage() {
           ))}
         </div>
 
-        {effectivePlan === "free" && (
-          <FreeQuotaStatus quota={profile?.freeQuota} t={t} />
-        )}
-
         {/* Compliance badge */}
         <button
           onClick={() => navigate("/compliance")}
@@ -512,12 +635,13 @@ export default function HomePage() {
           <span className="text-xs font-bold" style={{ color: "oklch(0.65 0.18 145)" }}>{t("nav.complianceActive", { defaultValue: "Compliance: Active" })}</span>
           <span className="text-xs" style={{ color: "var(--text-on-dark-secondary)" }}>{t("nav.complianceViewGuide", { defaultValue: "— view guide" })}</span>
         </button>
+        {/* ── Quota tracker — only shown to free users ─────────────────────── */}
+        {(profile?.tier === "free" || !profile?.tier) && profile?.quota && (
+          <QuotaTrackerCard quota={profile.quota} onUpgrade={() => navigate("/upgrade")} />
+        )}
       </div>
 
       <div className="px-4 py-4 lg:px-8 lg:py-6 animate-fade-up" style={{ animationDelay: '120ms' }}>
-      <div className="mb-4">
-        <HomeInstallBanner />
-      </div>
       {/* Responsive grid: single column on mobile, 2-col on lg (main + sidebar) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6">
       {/* ── Left column (main content) — spans 2 cols on desktop ── */}
@@ -611,8 +735,50 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* ── Setup progress ────────────────────────────────────────────────── */}
-        {!allDone && <SetupProgressCard status={onboardingStatus} userId={user?.id} onNavigate={navigate} />}
+        {/* ── Setup nudges ─────────────────────────────────────────────────── */}
+        {(!smtpConnected || !profileComplete) && (
+          <div className="bg-white rounded-2xl p-4 shadow-sm">
+            <p
+              className="text-sm font-black mb-3 rr-text-navy"
+            >
+              {t("homePage.completeSetup", { defaultValue: "Complete your setup" })}
+            </p>
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center gap-3">
+                {profileComplete ? (
+                  <CheckCircle2 size={16} className="rr-text-green" />
+                ) : (
+                  <AlertCircle size={16} style={{ color: "oklch(0.65 0.18 80)" }} />
+                )}
+                <span className="text-sm" style={{ color: profileComplete ? "oklch(0.45 0.10 145)" : "oklch(0.40 0.04 260)" }}>
+                  {profileComplete
+                    ? t("homePage.profileComplete", { defaultValue: "Business profile complete" })
+                    : t("homePage.profileIncomplete", { defaultValue: "Business profile — add your business name & review link" })}
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                {smtpConnected ? (
+                  <CheckCircle2 size={16} className="rr-text-green" />
+                ) : (
+                  <AlertCircle size={16} style={{ color: "oklch(0.65 0.18 80)" }} />
+                )}
+                <span className="text-sm" style={{ color: smtpConnected ? "oklch(0.45 0.10 145)" : "oklch(0.40 0.04 260)" }}>
+                  {smtpConnected
+                    ? t("homePage.emailConnected", { defaultValue: `Email connected (${smtpStatus?.email})`, email: smtpStatus?.email })
+                    : t("homePage.emailNotConnected", { defaultValue: "Email — connect your email account" })}
+                </span>
+              </div>
+            </div>
+            {(!smtpConnected || !profileComplete) && (
+              <button
+                onClick={() => navigate("/settings")}
+                className="mt-3 w-full py-2.5 rounded-xl text-sm font-black rr-bg-navy rr-text-gold"
+              >
+                {t("homePage.goToSettings", { defaultValue: "Go to Settings →" })}
+              </button>
+            )}
+          </div>
+        )}
 
         {/* ── Quick Send CTA ───────────────────────────────────────────────── */}
         <button
@@ -814,17 +980,53 @@ export default function HomePage() {
 
         {/* Platform Breakdown */}
         {stats?.platformBreakdown && stats.platformBreakdown.filter((p) => p.platform !== "unknown").length > 0 && (
-          <DeferredDashboardSection loadingLabel={t("homePage.loadingAnalytics")} minHeightClassName="min-h-[184px]">
-            <PlatformBreakdownChart platformBreakdown={stats.platformBreakdown} total={stats.total} />
-          </DeferredDashboardSection>
+          <div className="bg-white rounded-2xl p-4 shadow-sm">
+            <h3 className="text-sm font-black mb-3 rr-text-navy">
+              {t("homePage.requestsByPlatform", { defaultValue: "Requests by Platform" })}
+            </h3>
+            <div className="flex flex-col gap-2">
+              {stats.platformBreakdown
+                .filter((p) => p.platform !== "unknown")
+                .map((p) => {
+                  const total = stats.total || 1;
+                  const pct = Math.round((p.count / total) * 100);
+                  const platformLabel = p.label ?? p.platform.charAt(0).toUpperCase() + p.platform.slice(1);
+                  const colors: Record<string, string> = {
+                    google: "oklch(0.55 0.20 145)",
+                    yelp: "oklch(0.55 0.22 30)",
+                    tripadvisor: "oklch(0.50 0.18 155)",
+                    bing: "oklch(0.50 0.18 260)",
+                    facebook: "oklch(0.45 0.18 250)",
+                    other: "oklch(0.55 0.10 280)",
+                  };
+                  const barColor = colors[p.platform] ?? colors.other;
+                  return (
+                    <div key={p.platformId ?? p.platform}>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-xs font-bold" style={{ color: "oklch(0.35 0.05 260)" }}>
+                          {platformLabel}
+                        </span>
+                        <span className="text-xs font-black rr-text-navy">
+                          {p.count} ({pct}%)
+                        </span>
+                      </div>
+                      <div className="w-full h-2 rounded-full" style={{ background: "oklch(0.94 0.01 260)" }}>
+                        <div
+                          className="h-2 rounded-full transition-all"
+                          style={{ width: `${pct}%`, background: barColor }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
         )}
       </div>{/* end left column */}
 
       {/* ── Right column (sidebar widgets) — stacks below on mobile ── */}
       <div className="flex flex-col gap-4">
-        <DeferredDashboardSection loadingLabel={t("homePage.loadingAnalytics")}>
-          <TrackingSummaryCard />
-        </DeferredDashboardSection>
+        <TrackingSummaryCard />
         <ReferralRewardsCard />
         <ShareReferralCard />
       </div>{/* end right column */}

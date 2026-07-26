@@ -12,7 +12,7 @@ import { useAnalytics } from "@/hooks/useAnalytics";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
 import LanguageFlyout from "@/components/LanguageFlyout";
-import { completeSuccessfulRequest } from "@/lib/onboardingFlow";
+import PaywallModal from "@/components/PaywallModal";
 
 const SUCCESS_IMG =
   "https://assets.getphame.app/rr-send-success.webp";
@@ -39,18 +39,18 @@ export default function SendRequestPage() {
   const [sent, setSent] = useState(false);
   const [errors, setErrors] = useState<Record<string, string | undefined>>({});
   const [reminderScheduled, setReminderScheduled] = useState(false);
+  const [paywallOpen, setPaywallOpen] = useState(false);
   const [lastRequestId, setLastRequestId] = useState<number | null>(null);
-  const trpcUtils = trpc.useUtils();
-  const dismissOnboarding = trpc.onboarding.dismiss.useMutation({
-    onSuccess: () => trpcUtils.onboarding.status.invalidate(),
-  });
   const { data: reminderSettings } = trpc.reminders.getSettings.useQuery();
   const scheduleFollowUpNow = trpc.reminders.scheduleFollowUp.useMutation({
     onSuccess: () => {
       setReminderScheduled(true);
       toast.success(t("successScreen.scheduleFollowUp") + " " + t("toasts.scheduled", { defaultValue: "scheduled!" }));
     },
-    onError: (err) => toast.error(err.message),
+    onError: (err) => {
+      if (err.message.includes("10003")) { setPaywallOpen(true); return; }
+      toast.error(err.message);
+    },
   });
 
   const { data: platforms } = trpc.reviewPlatforms.list.useQuery();
@@ -73,13 +73,9 @@ export default function SendRequestPage() {
 
   const sendRequest = trpc.requests.send.useMutation({
     onSuccess: (data) => {
-      completeSuccessfulRequest({
-        requestId: data.requestId,
-        setSending,
-        setSent,
-        setLastRequestId,
-        persistDismiss: () => dismissOnboarding.mutate(),
-      });
+      setSending(false);
+      setSent(true);
+      setLastRequestId(data.requestId ?? null);
       track("send_request", { platform: activePlatform?.platform ?? "unknown" });
       toast.success(t("toasts.reviewRequestSent", { defaultValue: "Review request sent!" }));
     },
@@ -406,10 +402,17 @@ export default function SendRequestPage() {
           </div>
         )}
 
-        {/* ── Free-tier usage counter ─────────────────────────────────────── */}
+        {/* ── Free-tier quota banner ──────────────────────────────────────── */}
         {profile && profile.tier === 'free' && (() => {
-          const quota = profile.freeQuota;
-          if (quota.blocked) {
+          const quota = profile.quota;
+          if (!quota) return null;
+          const remaining = quota.remaining ?? 0;
+          const total = quota.phase === 'onboarding' ? 10 : 5;
+          const atLimit = remaining <= 0;
+          const nextWindowAt = quota.nextWindowAt;
+          const nextWindowDate = nextWindowAt ? new Date(nextWindowAt).toLocaleDateString() : null;
+
+          if (atLimit) {
             return (
               <div
                 className="flex items-start gap-3 px-4 py-4 rounded-2xl"
@@ -418,17 +421,14 @@ export default function SendRequestPage() {
                 <Zap size={20} style={{ color: 'oklch(0.55 0.18 260)' }} className="shrink-0 mt-0.5" />
                 <div className="flex-1">
                   <p className="text-sm font-bold mb-1 rr-text-navy">
-                    {t("page.freeLimitReached", { defaultValue: "Free limit reached" })}
+                    {quota.phase === 'onboarding'
+                      ? "Free sends used"
+                      : "Window quota used"}
                   </p>
                   <p className="text-xs mb-2" style={{ color: 'oklch(0.45 0.05 260)' }}>
-                    {quota.nextAvailableAt
-                      ? t("page.freeRollingLimitReachedDesc", {
-                          defaultValue: "You've used all 5 requests in your current rolling 30-day allowance. Your next request becomes available on {{date}}, or upgrade to keep sending now.",
-                          date: new Date(quota.nextAvailableAt).toLocaleDateString(),
-                        })
-                      : t("page.freeInitialLimitReachedDesc", {
-                          defaultValue: "You've used your 10 initial requests. Your recurring allowance is 5 requests every rolling 30 days, or upgrade for unlimited requests.",
-                        })}
+                    {quota.phase === 'onboarding'
+                      ? "You've sent your 10 free review requests. Upgrade to Pro for unlimited sends, or your next 5 free sends unlock 30 days after your 10th send."
+                      : `You've used all 5 free sends for this window.${nextWindowDate ? ` Next 5 unlock on ${nextWindowDate}.` : ""} Upgrade to Pro for unlimited sends.`}
                   </p>
                   <button
                     onClick={() => navigate('/upgrade')}
@@ -436,7 +436,7 @@ export default function SendRequestPage() {
                     style={{ color: 'oklch(0.55 0.18 260)' }}
                   >
                     <Zap size={12} />
-                    {t("page.upgradeToPro", { defaultValue: "Upgrade to Pro →" })}
+                    Upgrade to Pro →
                   </button>
                 </div>
               </div>
@@ -450,22 +450,16 @@ export default function SendRequestPage() {
               <div className="flex items-center gap-2">
                 <Zap size={16} style={{ color: 'oklch(0.55 0.18 260)' }} />
                 <span className="text-xs font-semibold" style={{ color: 'oklch(0.35 0.06 260)' }}>
-                  {quota.phase === "initial"
-                    ? t("page.freeInitialRemaining", {
-                        defaultValue: "Free plan: {{remaining}} of 10 initial requests remaining — then 5 every rolling 30 days",
-                        remaining: quota.remaining,
-                      })
-                    : t("page.freeRollingRemaining", {
-                        defaultValue: "Free plan: {{remaining}} of 5 requests remaining in your rolling 30-day allowance",
-                        remaining: quota.remaining,
-                      })}
+                  {quota.phase === 'onboarding'
+                    ? `Free plan: ${remaining} of 10 sends remaining`
+                    : `Free window: ${remaining} of 5 sends remaining${nextWindowDate ? ` · resets ${nextWindowDate}` : ""}`}
                 </span>
               </div>
               <button
                 onClick={() => navigate('/upgrade')}
                 className="text-xs font-bold px-3 py-1 rounded-lg rr-bg-navy rr-text-gold"
               >
-                {t("page.upgrade", { defaultValue: "Upgrade" })}
+                Upgrade
               </button>
             </div>
           );
@@ -767,6 +761,7 @@ export default function SendRequestPage() {
         }
       }}
     />
+    <PaywallModal open={paywallOpen} onClose={() => setPaywallOpen(false)} feature="Follow-up Reminders" />
     </>
   );
 }

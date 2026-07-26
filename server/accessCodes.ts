@@ -1,6 +1,7 @@
 /**
  * Access Code DB helpers
  * Used by the accessCodes tRPC router for beta/promo code management.
+ * Supports duration-aware grants: days, months, or lifetime.
  */
 
 import { eq, desc } from "drizzle-orm";
@@ -15,12 +16,14 @@ export function generateCode(prefix = "BETA"): string {
   return `${prefix}-${segment(4)}-${segment(4)}`;
 }
 
-/** Create a new access code */
+/** Create a new access code with optional duration semantics */
 export async function createAccessCode(opts: {
   code?: string;
   note?: string;
   maxUses?: number | null;
   expiresAt?: number | null;
+  grantDurationType?: "days" | "months" | "lifetime";
+  grantAmount?: number | null;
 }) {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
@@ -30,6 +33,8 @@ export async function createAccessCode(opts: {
     note: opts.note ?? null,
     maxUses: opts.maxUses ?? null,
     expiresAt: opts.expiresAt ?? null,
+    grantDurationType: opts.grantDurationType ?? "lifetime",
+    grantAmount: opts.grantAmount ?? null,
   });
   return code.toUpperCase();
 }
@@ -58,7 +63,7 @@ export async function activateAccessCode(id: number) {
 /**
  * Redeem an access code for a user.
  * Validates: code exists, is active, not expired, not over maxUses, user hasn't redeemed before.
- * On success: upgrades user to Pro, records redemption, increments usedCount.
+ * On success: upgrades user to the tier/duration encoded in the code, records redemption, increments usedCount.
  * Returns the code note/label for the success message.
  */
 export async function redeemAccessCode(
@@ -106,10 +111,38 @@ export async function redeemAccessCode(
     return { success: false, error: "You have already redeemed an access code." };
   }
 
-  // All checks passed — upgrade user to Pro
+  // Determine tier + expiry based on grantDurationType
+  const durationType = ac.grantDurationType ?? "lifetime";
+  let newTier: "pro" | "annual" | "lifetime" = "pro";
+  let newPlanExpiresAt: number | null = null;
+
+  if (durationType === "lifetime") {
+    newTier = "lifetime";
+    newPlanExpiresAt = null;
+  } else {
+    const amount = ac.grantAmount ?? 1;
+    const [existingProfile] = await db
+      .select({ planExpiresAt: businessProfiles.planExpiresAt })
+      .from(businessProfiles)
+      .where(eq(businessProfiles.userId, userId));
+    const base =
+      existingProfile?.planExpiresAt && existingProfile.planExpiresAt > Date.now()
+        ? existingProfile.planExpiresAt
+        : Date.now();
+    if (durationType === "days") {
+      newTier = "pro";
+      newPlanExpiresAt = base + amount * 24 * 60 * 60 * 1000;
+    } else {
+      // months
+      newTier = amount >= 12 ? "annual" : "pro";
+      newPlanExpiresAt = base + amount * 30 * 24 * 60 * 60 * 1000;
+    }
+  }
+
+  // Apply tier upgrade
   await db
     .update(businessProfiles)
-    .set({ tier: "pro" })
+    .set({ tier: newTier, planExpiresAt: newPlanExpiresAt })
     .where(eq(businessProfiles.userId, userId));
 
   // Record redemption
