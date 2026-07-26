@@ -1,5 +1,5 @@
 // Phame — Upgrade / Pricing page
-// Three-tier pricing: Monthly $29 | Annual $290 | Lifetime $497
+// Three-tier pricing: Monthly $29 | Annual $290 | Lifetime $349
 
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
@@ -41,7 +41,7 @@ const COMPARISON_ROWS: { feature: string; free: string | boolean; pro: string | 
   { feature: "Daily send limit",           free: "50/day",   pro: "500/day",    lifetime: "500/day" },
   { feature: "Priority support",           free: false,      pro: true,         lifetime: true },
   { feature: "Future updates",             free: false,      pro: "While active",lifetime: "Forever" },
-  { feature: "Price",                      free: "Free",     pro: "$29/mo",     lifetime: "$497" },
+  { feature: "Price",                      free: "Free",     pro: "$29/mo",     lifetime: "$349" },
 ];
 
 const PRO_FEATURES = [
@@ -72,8 +72,8 @@ const PLANS: Record<Plan, { label: string; price: string; thb: string; sub: stri
   },
   lifetime: {
     label: "Lifetime",
-    price: "$497",
-    thb: toThb(497),
+    price: "$349",
+    thb: toThb(349),
     sub: "one-time",
     badge: "Best Value",
     savings: "Pay once, own forever",
@@ -326,13 +326,6 @@ export default function UpgradePage() {
           <p className="text-sm mb-2 text-white/80 font-bold">
             ≈ {PLANS[selectedPlan].thb} THB
           </p>
-          {/* Strikethrough anchor — lifetime only */}
-          {selectedPlan === "lifetime" && (
-            <p className="text-xs mb-2">
-              <span className="line-through" style={{ color: "var(--text-on-dark-muted)" }}>Was $1,247</span>
-              <span className="ml-2 font-bold" style={{ color: "oklch(0.72 0.18 145)" }}>— Save $750</span>
-            </p>
-          )}
 
           {PLANS[selectedPlan].savings && (
             <div
@@ -660,7 +653,7 @@ export default function UpgradePage() {
           {[
             {
               q: t("upgradeFaq.q1", "Is the lifetime deal really one payment?"),
-              a: t("upgradeFaq.a1", "Yes — you pay $497 once and Get Phame is yours forever. No monthly fees, no renewals, no surprises. You also get all future updates included."),
+              a: t("upgradeFaq.a1", "Yes — you pay $349 once and Get Phame is yours forever. No monthly fees, no renewals, no surprises. You also get all future updates included."),
             },
             {
               q: t("upgradeFaq.q2", "What happens if I cancel a monthly or annual plan?"),

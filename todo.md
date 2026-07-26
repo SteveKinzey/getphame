@@ -1766,3 +1766,7 @@
 - [x] Add duration pill selector (Days/Months/Lifetime) to AdminCodes create form
 - [x] Switch AdminCodes create form to use trpc.accessCodes.createCoupon (duration-aware)
 - [x] Update admin-subscription-management skill with redemption UI pattern and AdminCodes badges section
+
+## Session: Jul 26, 2026 — Lifetime Price Fix
+- [x] Fix lifetime price from $1,247/$497 to $349 in README.md, AdminRevenue.tsx, Upgrade.tsx (PLANS, comparison table, FAQ, strikethrough removed), PaywallModal.tsx, paypal.ts, routers.ts (LIFETIME_PRICE_CENTS=34900), stripe.ts comment
+- [ ] ⚠️ STRIPE ACTION REQUIRED: Create a new $349 lifetime price in Stripe Dashboard and update the price ID in server/stripe.ts (currently points to old price: price_1TqgstLryXlEZmjyrabUcDFl)

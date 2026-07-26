@@ -72,7 +72,7 @@ async function getAccessToken(): Promise<string> {
 const PLAN_PRICES: Record<string, { amount: string; description: string }> = {
   monthly: { amount: "29.00", description: "GetPhame Pro — Monthly" },
   annual: { amount: "290.00", description: "GetPhame Pro — Annual" },
-  lifetime: { amount: "1247.00", description: "GetPhame Pro — Lifetime" },
+  lifetime: { amount: "349.00", description: "GetPhame Pro — Lifetime" },
 };
 
 // ---------------------------------------------------------------------------
