@@ -130,13 +130,68 @@ export default function AdminGithubCleanupShowcase() {
           </div>
 
           <div className="mt-5 grid gap-4 lg:grid-cols-2">
-            <figure className="overflow-hidden rounded-2xl bg-[#061a3a] shadow-sm">
-              <img src={data.visuals.ancestryUrl} alt={t("adminGithubCleanup.visuals.ancestryAlt", { defaultValue: "Branch ancestry and preservation map showing protected main, exact release-tree parity, push-safe divergence, and where deleted branch tips remain preserved." })} className="h-auto w-full object-contain" loading="eager" />
-              <figcaption className="border-t border-white/10 px-5 py-4 text-sm leading-6 text-white/75">{t("adminGithubCleanup.visuals.ancestryCaption", { defaultValue: "Solid relationships show verified ancestry; dashed relationships show exact Git-tree parity rather than shared commit history." })}</figcaption>
+            <figure className="overflow-hidden rounded-2xl bg-[#061a3a] shadow-sm" aria-labelledby="branch-ancestry-caption">
+              <div className="p-5 sm:p-6">
+                <p className="sr-only">{t("adminGithubCleanup.visuals.ancestryAlt", { defaultValue: "Branch ancestry and preservation map showing protected main, exact release-tree parity, push-safe divergence, and where deleted branch tips remain preserved." })}</p>
+                <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_6rem_minmax(0,1fr)] sm:items-center">
+                  <div className="border border-white/15 bg-white/[0.06] p-4">
+                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.12em] text-[#F3C549]">
+                      <ShieldCheck size={15} aria-hidden="true" />
+                      {t("adminGithubCleanup.stats.main", { defaultValue: "Main" })}
+                    </div>
+                    <code className="mt-3 block text-xl font-extrabold text-white">{data.snapshot.mainShortSha}</code>
+                    <p className="mt-2 text-xs leading-5 text-white/60">{data.snapshot.requiredCheck}</p>
+                  </div>
+                  <div className="flex flex-col items-center gap-2 text-center">
+                    <span className="text-[10px] font-black uppercase tracking-[0.12em] text-[#F3C549]">{t("adminGithubCleanup.stats.exact", { defaultValue: "Exact match" })}</span>
+                    <span className="w-full border-t-2 border-dashed border-[#D4A017]" aria-hidden="true" />
+                    <code className="text-[11px] text-white/55">{data.snapshot.treeSha.slice(0, 7)}</code>
+                  </div>
+                  <div className="border border-[#D4A017]/50 bg-[#D4A017]/10 p-4">
+                    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.12em] text-[#F3C549]">
+                      <GitMerge size={15} aria-hidden="true" />
+                      {t("adminGithubCleanup.stats.tree", { defaultValue: "Release tree" })}
+                    </div>
+                    <code className="mt-3 block text-xl font-extrabold text-white">{data.snapshot.treeSha.slice(0, 7)}</code>
+                    <p className="mt-2 text-xs leading-5 text-white/60">{t("adminGithubCleanup.stats.exact", { defaultValue: "Exact match" })}</p>
+                  </div>
+                </div>
+                <div className="mt-5 border-t border-white/10 pt-5">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div className="flex items-center gap-2 text-sm font-extrabold text-white">
+                      <GitBranch size={17} className="text-[#F3C549]" aria-hidden="true" />
+                      <code>consolidation/push-safe</code>
+                    </div>
+                    <div className="grid grid-cols-4 gap-2 text-center">
+                      <span className="border border-white/10 px-2 py-1.5 text-xs font-black text-emerald-300">+{data.divergence.commitsAhead}</span>
+                      <span className="border border-white/10 px-2 py-1.5 text-xs font-black text-rose-300">−{data.divergence.commitsBehindMain}</span>
+                      <span className="border border-white/10 px-2 py-1.5 text-xs font-black text-sky-300">{data.divergence.finalTreeFilesDiffer} Δ</span>
+                      <span className="border border-white/10 px-2 py-1.5 text-xs font-black text-amber-200">{data.divergence.branchOnlyFiles} ⊕</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <figcaption id="branch-ancestry-caption" className="border-t border-white/10 px-5 py-4 text-sm leading-6 text-white/75">{t("adminGithubCleanup.visuals.ancestryCaption", { defaultValue: "Solid relationships show verified ancestry; dashed relationships show exact Git-tree parity rather than shared commit history." })}</figcaption>
             </figure>
-            <figure className="overflow-hidden rounded-2xl bg-[#061a3a] shadow-sm">
-              <img src={data.visuals.uniqueWorkUrl} alt={t("adminGithubCleanup.visuals.uniqueAlt", { defaultValue: "Unique push-safe work ordered by extraction priority, with readiness and the next safe action for Mailjet, Help Assistant, Sources and WooCommerce, and paid entitlement." })} className="h-auto w-full object-contain" loading="eager" />
-              <figcaption className="border-t border-white/10 px-5 py-4 text-sm leading-6 text-white/75">{t("adminGithubCleanup.visuals.uniqueCaption", { defaultValue: "Priority is action order; readiness describes the evidence-supported treatment at the audit date." })}</figcaption>
+            <figure className="overflow-hidden rounded-2xl bg-[#061a3a] shadow-sm" aria-labelledby="unique-work-caption">
+              <div className="p-5 sm:p-6">
+                <p className="sr-only">{t("adminGithubCleanup.visuals.uniqueAlt", { defaultValue: "Unique push-safe work ordered by extraction priority, with readiness and the next safe action for Mailjet, Help Assistant, Sources and WooCommerce, and paid entitlement." })}</p>
+                <ol className="space-y-3">
+                  {data.workstreams.map((workstream) => (
+                    <li key={workstream.id} className="grid grid-cols-[2.5rem_minmax(0,1fr)] gap-3 border border-white/10 bg-white/[0.05] p-3">
+                      <span className="flex h-10 w-10 items-center justify-center border border-[#D4A017]/60 bg-[#D4A017]/10 text-sm font-black text-[#F3C549]">{workstream.priority}</span>
+                      <div className="min-w-0">
+                        <p className="text-sm font-extrabold leading-5 text-white">{t(`adminGithubCleanup.workstreams.${workstream.id}.title`)}</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          <span className="border border-white/10 px-2 py-1 text-[11px] font-bold text-white/70">{t(`adminGithubCleanup.metrics.readiness.labels.${workstream.readiness}.title`)}</span>
+                          <span className="text-[11px] leading-5 text-white/55">{t(`adminGithubCleanup.workstreams.${workstream.id}.action`)}</span>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <figcaption id="unique-work-caption" className="border-t border-white/10 px-5 py-4 text-sm leading-6 text-white/75">{t("adminGithubCleanup.visuals.uniqueCaption", { defaultValue: "Priority is action order; readiness describes the evidence-supported treatment at the audit date." })}</figcaption>
             </figure>
           </div>
         </section>

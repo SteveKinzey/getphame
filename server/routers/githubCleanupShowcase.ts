@@ -79,10 +79,6 @@ export function buildGithubCleanupShowcasePayload() {
       finalTreeFilesDiffer: 183,
       branchOnlyFiles: 20,
     },
-    visuals: {
-      ancestryUrl: "/manus-storage/branch-ancestry_a13210a2.png",
-      uniqueWorkUrl: "/manus-storage/unique-work-disposition_20ddbd75.png",
-    },
     workstreams: [
       { id: "mailjet", priority: 1, readiness: "portable", action: "port" },
       { id: "helpAssistant", priority: 2, readiness: "specification", action: "issue" },
