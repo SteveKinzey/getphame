@@ -8,9 +8,13 @@
 
 import nodemailer from "nodemailer";
 import { createCipheriv, createDecipheriv, randomBytes, createHash } from "crypto";
+import { renderGetPhameEmailHeader } from "./platformEmailBrand";
 import { getDb } from "./db";
 import { smtpCredentials } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
+import { notifySmtpFailureTransition } from "./smtpHealthAlerts";
+import { reserveAdaptiveSendCapacity, type AdaptiveSendStatus } from "./adaptiveSendLimits";
+import { resolveOutboundDeliveryChannel } from "./outboundDeliveryChannel";
 
 // ── Encryption helpers ────────────────────────────────────────────────────────
 
@@ -186,9 +190,33 @@ export interface SendMailOptions {
   subject: string;
   html: string;
   text?: string;
+  safetyMode?: "review_request" | "system";
 }
 
-export async function sendMailViaSmtp(opts: SendMailOptions): Promise<void> {
+export async function sendMailViaSmtp(opts: SendMailOptions): Promise<AdaptiveSendStatus | null> {
+  if (opts.safetyMode !== "system") {
+    const channel = await resolveOutboundDeliveryChannel(opts.userId);
+    if (!channel) throw new Error("No email account connected. Please connect your email in Settings.");
+    const sendStatus = await reserveAdaptiveSendCapacity(opts.userId, 1);
+    const pass = decryptPassword(channel.encryptedSecret);
+    const transporter = createTransporter({
+      host: channel.host,
+      port: channel.port,
+      secure: channel.secure,
+      user: channel.username,
+      pass,
+    });
+    await transporter.sendMail({
+      from: `"${channel.fromName}" <${channel.fromEmail}>`,
+      replyTo: channel.replyTo,
+      to: opts.to,
+      subject: opts.subject,
+      html: opts.html,
+      text: opts.text,
+    });
+    return sendStatus;
+  }
+
   const creds = await getSmtpCredentials(opts.userId);
   if (!creds) throw new Error("No email account connected. Please connect your email in Settings.");
 
@@ -213,6 +241,7 @@ export async function sendMailViaSmtp(opts: SendMailOptions): Promise<void> {
     html: opts.html,
     text: opts.text,
   });
+  return null;
 }
 
 // ── Test connection ───────────────────────────────────────────────────────────
@@ -264,12 +293,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
 
           <!-- Header -->
-          <tr>
-            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
-              <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">Your email is connected! 🚀</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader("Your email is connected")}
 
           <!-- Body -->
           <tr>
@@ -338,6 +362,7 @@ export async function sendWelcomeEmail(userId: number): Promise<{ ok: boolean; e
       subject: "You're connected to Get Phame! 🚀",
       html,
       text,
+      safetyMode: "system",
     });
 
     return { ok: true };
@@ -364,14 +389,24 @@ export async function updateSmtpFromName(userId: number, fromName: string | null
  * Updates lastHealthCheck (Unix ms) and lastHealthStatus ('ok'|'fail') on each row.
  * Called once per day from the server cron job.
  */
-export async function runSmtpHealthChecks(): Promise<void> {
+export type SmtpFleetHealthSummary = {
+  totalAccounts: number;
+  healthyAccounts: number;
+  failedAccounts: number;
+  durationMs: number;
+  checkedAt: number;
+};
+
+export async function runSmtpHealthChecks(): Promise<SmtpFleetHealthSummary> {
+  const startedAt = Date.now();
   const db = await getDb();
-  if (!db) return;
+  if (!db) throw new Error("Database not available");
   const allCreds = await db.select().from(smtpCredentials);
   console.log(`[SmtpHealthCheck] Running checks for ${allCreds.length} connected account(s)...`);
 
   // Track failures by provider host for aggregate reporting
   const providerFailures: Record<string, { count: number; errors: string[] }> = {};
+  let healthyAccounts = 0;
 
   for (const creds of allCreds) {
     try {
@@ -384,17 +419,27 @@ export async function runSmtpHealthChecks(): Promise<void> {
         pass,
       });
       if (result.ok) {
+        healthyAccounts++;
+        const checkedAt = Date.now();
         await db
           .update(smtpCredentials)
-          .set({ lastHealthCheck: Date.now(), lastHealthStatus: "ok", lastHealthError: null })
+          .set({ lastHealthCheck: checkedAt, lastHealthStatus: "ok", lastHealthError: null })
           .where(eq(smtpCredentials.userId, creds.userId));
         console.log(`[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} → ✓ ok`);
       } else {
         const errMsg = result.error ?? "Unknown error";
+        const checkedAt = Date.now();
         await db
           .update(smtpCredentials)
-          .set({ lastHealthCheck: Date.now(), lastHealthStatus: "fail", lastHealthError: errMsg.slice(0, 500) })
+          .set({ lastHealthCheck: checkedAt, lastHealthStatus: "fail", lastHealthError: errMsg.slice(0, 500) })
           .where(eq(smtpCredentials.userId, creds.userId));
+        await notifySmtpFailureTransition({
+          previousStatus: creds.lastHealthStatus as "ok" | "fail" | null,
+          accountEmail: creds.user,
+          host: creds.host,
+          checkedAt,
+          error: errMsg,
+        });
         console.warn(`[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} → ✗ fail: ${errMsg}`);
         // Aggregate by provider host
         if (!providerFailures[creds.host]) providerFailures[creds.host] = { count: 0, errors: [] };
@@ -404,11 +449,19 @@ export async function runSmtpHealthChecks(): Promise<void> {
     } catch (err) {
       // Don't let one failure abort the whole batch
       const errMsg = err instanceof Error ? err.message : String(err);
+      const checkedAt = Date.now();
       console.error(`[SmtpHealthCheck] userId=${creds.userId} host=${creds.host} threw:`, errMsg);
       await db
         .update(smtpCredentials)
-        .set({ lastHealthCheck: Date.now(), lastHealthStatus: "fail", lastHealthError: errMsg.slice(0, 500) })
+        .set({ lastHealthCheck: checkedAt, lastHealthStatus: "fail", lastHealthError: errMsg.slice(0, 500) })
         .where(eq(smtpCredentials.userId, creds.userId));
+      await notifySmtpFailureTransition({
+        previousStatus: creds.lastHealthStatus as "ok" | "fail" | null,
+        accountEmail: creds.user,
+        host: creds.host,
+        checkedAt,
+        error: errMsg,
+      });
       if (!providerFailures[creds.host]) providerFailures[creds.host] = { count: 0, errors: [] };
       providerFailures[creds.host].count++;
       if (providerFailures[creds.host].errors.length < 3) providerFailures[creds.host].errors.push(errMsg);
@@ -424,7 +477,17 @@ export async function runSmtpHealthChecks(): Promise<void> {
       console.warn(`  ${host}: ${count} failure(s) — ${errors.join(" | ")}`);
     }
   }
-  console.log(`[SmtpHealthCheck] Done. ${allCreds.length} checked, ${failingHosts.reduce((t, h) => t + providerFailures[h].count, 0)} failed.`);
+  const failedAccounts = failingHosts.reduce((total, host) => total + providerFailures[host].count, 0);
+  const checkedAt = Date.now();
+  const durationMs = checkedAt - startedAt;
+  console.log(`[SmtpHealthCheck] Done. ${allCreds.length} checked, ${failedAccounts} failed.`);
+  return {
+    totalAccounts: allCreds.length,
+    healthyAccounts,
+    failedAccounts,
+    durationMs,
+    checkedAt,
+  };
 }
 
 // ── Transactional emails (sent from owner's SMTP to app users) ────────────────
@@ -456,12 +519,7 @@ export async function sendUserWelcomeEmail(opts: {
     <tr>
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
-          <tr>
-            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
-              <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">Welcome aboard! 🚀</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader("Welcome aboard")}
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
@@ -567,12 +625,7 @@ export async function sendUpgradeReceiptEmail(opts: {
     <tr>
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
-          <tr>
-            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
-              <h1 style="margin:0;font-size:26px;font-weight:900;color:#ffffff;line-height:1.2;">You're on ${tierLabel}! 🎉</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader(`You're on ${tierLabel}!`)}
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
@@ -651,12 +704,7 @@ export async function sendChurnRecoveryEmail(opts: {
     <tr>
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
-          <tr>
-            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
-              <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">We're sorry to see you go</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader("We're sorry to see you go")}
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
@@ -748,12 +796,7 @@ export async function sendReEngagementEmail(opts: {
     <tr>
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
-          <tr>
-            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
-              <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">Here's what you're missing</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader("Here's what you're missing")}
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
@@ -882,12 +925,7 @@ export async function sendPaymentFailedEmail(opts: {
     <tr>
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
-          <tr>
-            <td style="background:#b91c1c;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#fca5a5;">Get Phame</p>
-              <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">Payment failed — action required</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader("Payment failed — action required")}
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>
@@ -963,12 +1001,7 @@ export async function sendInactiveUserEmail(opts: {
     <tr>
       <td align="center">
         <table width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);max-width:560px;">
-          <tr>
-            <td style="background:#1a2744;padding:32px 40px;text-align:center;">
-              <p style="margin:0 0 8px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#f0a500;">Get Phame</p>
-              <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;line-height:1.2;">Your first review request is waiting</h1>
-            </td>
-          </tr>
+          ${renderGetPhameEmailHeader("Your first review request is waiting")}
           <tr>
             <td style="padding:36px 40px;">
               <p style="margin:0 0 16px;font-size:16px;color:#333;line-height:1.6;">Hi ${displayName},</p>

@@ -30,7 +30,7 @@ async function fireSingleWebhook(
   event: string,
   payload: string,
   headers: Record<string, string>
-): Promise<{ success: number; statusCode: number | null; durationMs: number; responseBody?: string; errorMessage?: string }> {
+): Promise<{ success: boolean; statusCode: number | null; durationMs: number; responseBody?: string; errorMessage?: string }> {
   for (let attempt = 0; attempt < 2; attempt++) {
     if (attempt > 0) {
       await sleep(RETRY_DELAY_MS);
@@ -49,20 +49,20 @@ async function fireSingleWebhook(
 
       if (r.ok || attempt === 1) {
         // Success, or final attempt — log and return
-        return { success: r.ok ? 1 : 0 ? 1 : 0, statusCode: r.status, durationMs, responseBody };
+        return { success: r.ok, statusCode: r.status, durationMs, responseBody };
       }
       // Non-ok on first attempt — retry
       console.warn(`[fireWebhooks] webhookId=${cfg.id} attempt=${attempt + 1} status=${r.status} — retrying in ${RETRY_DELAY_MS}ms`);
     } catch (err: any) {
       const durationMs = Date.now() - startMs;
       if (attempt === 1) {
-        return { success: 0, statusCode: null, durationMs, errorMessage: String(err?.message ?? err).slice(0, 500) };
+        return { success: false, statusCode: null, durationMs, errorMessage: String(err?.message ?? err).slice(0, 500) };
       }
       console.warn(`[fireWebhooks] webhookId=${cfg.id} attempt=${attempt + 1} error=${err?.message} — retrying in ${RETRY_DELAY_MS}ms`);
     }
   }
   // Should never reach here, but TypeScript needs a return
-  return { success: 0, statusCode: null, durationMs: 0, errorMessage: "Unknown error" };
+  return { success: false, statusCode: null, durationMs: 0, errorMessage: "Unknown error" };
 }
 
 /**
@@ -130,7 +130,7 @@ export async function fireTestWebhook(
   userId: number,
   url: string,
   secret: string | null
-): Promise<{ success: number; status: number; error?: string }> {
+): Promise<{ success: boolean; status: number; error?: string }> {
   const event = "test";
   const payload = JSON.stringify({
     event,
@@ -167,12 +167,12 @@ export async function fireTestWebhook(
       event,
       url,
       statusCode: r.status,
-      success: r.ok ? 1 : 0 ? 1 : 0,
+      success: r.ok,
       responseBody,
       durationMs,
       createdAt: Date.now(),
     }).catch(() => {});
-    return { success: r.ok ? 1 : 0 ? 1 : 0, status: r.status };
+    return { success: r.ok, status: r.status };
   } catch (err: any) {
     const durationMs = Date.now() - startMs;
     updateWebhookStatus(webhookId, 0).catch(() => {});
@@ -182,12 +182,12 @@ export async function fireTestWebhook(
       event,
       url,
       statusCode: null,
-      success: 0,
+      success: false,
       errorMessage: String(err?.message ?? err).slice(0, 500),
       durationMs,
       createdAt: Date.now(),
     }).catch(() => {});
-    return { success: 0, status: 0, error: err.message };
+    return { success: false, status: 0, error: err.message };
   }
 }
 
@@ -202,7 +202,7 @@ export async function retryWebhookDelivery(
   secret: string | null,
   event: string,
   originalPayload: string | null
-): Promise<{ success: number; status: number; error?: string }> {
+): Promise<{ success: boolean; status: number; error?: string }> {
   const payload = originalPayload ?? JSON.stringify({ event, timestamp: Date.now(), data: { retried: true } });
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -231,12 +231,12 @@ export async function retryWebhookDelivery(
       event,
       url,
       statusCode: r.status,
-      success: r.ok ? 1 : 0 ? 1 : 0,
+      success: r.ok,
       responseBody,
       durationMs,
       createdAt: Date.now(),
     }).catch(() => {});
-    return { success: r.ok ? 1 : 0 ? 1 : 0, status: r.status };
+    return { success: r.ok, status: r.status };
   } catch (err: any) {
     const durationMs = Date.now() - startMs;
     updateWebhookStatus(webhookId, 0).catch(() => {});
@@ -246,11 +246,11 @@ export async function retryWebhookDelivery(
       event,
       url,
       statusCode: null,
-      success: 0,
+      success: false,
       errorMessage: String(err?.message ?? err).slice(0, 500),
       durationMs,
       createdAt: Date.now(),
     }).catch(() => {});
-    return { success: 0, status: 0, error: err.message };
+    return { success: false, status: 0, error: err.message };
   }
 }
