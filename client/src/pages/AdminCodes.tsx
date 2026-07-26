@@ -29,8 +29,8 @@ export default function AdminCodesPage() {
   const [maxUses, setMaxUses] = useState<string>("");
   const [customCode, setCustomCode] = useState("");
   const [expiryDays, setExpiryDays] = useState<string>("");
-  const [durationType, setDurationType] = useState<"days" | "months" | "lifetime">("lifetime");
-  const [durationAmount, setDurationAmount] = useState<string>("1");
+  const [durationUnit, setDurationUnit] = useState<"day" | "month" | "lifetime">("lifetime");
+  const [durationValue, setDurationValue] = useState<string>("1");
 
   const { data: codes, isLoading: codesLoading, refetch } = trpc.accessCodes.list.useQuery(
     undefined,
@@ -51,7 +51,7 @@ export default function AdminCodesPage() {
       setMaxUses("");
       setCustomCode("");
       setExpiryDays("");
-      setDurationAmount("1");
+      setDurationValue("1");
       utils.accessCodes.list.invalidate();
       refreshPreview();
     },
@@ -79,13 +79,25 @@ export default function AdminCodesPage() {
     const parsedExpiry = expiryDays.trim()
       ? Date.now() + parseInt(expiryDays, 10) * 24 * 60 * 60 * 1000
       : null;
+    const parsedDurationValue = durationUnit === "lifetime" ? null : parseInt(durationValue, 10);
+    const durationLimit = durationUnit === "day" ? 365 : 24;
+    if (
+      durationUnit !== "lifetime" &&
+      (!Number.isInteger(parsedDurationValue) || parsedDurationValue! < 1 || parsedDurationValue! > durationLimit)
+    ) {
+      toast.error(t("accessCode.durationError", {
+        defaultValue: `Enter a duration between 1 and ${durationLimit}.`,
+        max: durationLimit,
+      }));
+      return;
+    }
     createCoupon.mutate({
       code: customCode.trim() || undefined,
       note: note.trim() || undefined,
       maxUses: parsedMaxUses,
       expiresAt: parsedExpiry,
-      grantDurationType: durationType,
-      grantAmount: durationType !== "lifetime" ? (parseInt(durationAmount, 10) || 1) : null,
+      grantDurationUnit: durationUnit,
+      grantDurationValue: parsedDurationValue,
     });
   }
 
@@ -212,30 +224,35 @@ export default function AdminCodesPage() {
 
             {/* Grant duration */}
             <div>
-              <label className="text-sm font-bold mb-2 block text-white/80">Grant duration</label>
+              <label className="text-sm font-bold mb-2 block text-white/80">
+                {t("accessCode.grantDurationLabel", { defaultValue: "Grant duration" })}
+              </label>
               <div className="flex gap-2 mb-2">
-                {(["days", "months", "lifetime"] as const).map((dt) => (
+                {(["day", "month", "lifetime"] as const).map((unit) => (
                   <button
-                    key={dt}
-                    onClick={() => setDurationType(dt)}
+                    type="button"
+                    key={unit}
+                    onClick={() => setDurationUnit(unit)}
                     className="flex-1 py-2 rounded-xl text-xs font-bold transition-all capitalize"
                     style={{
-                      background: durationType === dt ? "oklch(0.80 0.18 80)" : "oklch(0.22 0.09 260)",
-                      color: durationType === dt ? "oklch(0.15 0.05 260)" : "var(--text-on-dark-secondary)",
-                      border: durationType === dt ? "none" : "1px solid rgba(255,255,255,0.12)",
+                      background: durationUnit === unit ? "oklch(0.80 0.18 80)" : "oklch(0.22 0.09 260)",
+                      color: durationUnit === unit ? "oklch(0.15 0.05 260)" : "var(--text-on-dark-secondary)",
+                      border: durationUnit === unit ? "none" : "1px solid rgba(255,255,255,0.12)",
                     }}
                   >
-                    {dt === "days" ? <><Clock size={10} className="inline mr-1" />Days</> : dt === "months" ? <><Calendar size={10} className="inline mr-1" />Months</> : <><Zap size={10} className="inline mr-1" />Lifetime</>}
+                    {unit === "day" ? <><Clock size={10} className="inline mr-1" />{t("accessCode.units.day", { defaultValue: "Days" })}</> : unit === "month" ? <><Calendar size={10} className="inline mr-1" />{t("accessCode.units.month", { defaultValue: "Months" })}</> : <><Zap size={10} className="inline mr-1" />{t("accessCode.units.lifetime", { defaultValue: "Lifetime" })}</>}
                   </button>
                 ))}
               </div>
-              {durationType !== "lifetime" && (
+              {durationUnit !== "lifetime" && (
                 <input
                   type="number"
                   min={1}
-                  value={durationAmount}
-                  onChange={(e) => setDurationAmount(e.target.value)}
-                  placeholder={durationType === "days" ? "e.g. 30" : "e.g. 3"}
+                  max={durationUnit === "day" ? 365 : 24}
+                  value={durationValue}
+                  onChange={(e) => setDurationValue(e.target.value)}
+                  placeholder={durationUnit === "day" ? "e.g. 30" : "e.g. 3"}
+                  aria-label={t("accessCode.grantValueLabel", { defaultValue: "Grant duration value" })}
                   className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white"
                   style={{ border: "1px solid rgba(255,255,255,0.15)" }}
                 />
@@ -280,7 +297,7 @@ export default function AdminCodesPage() {
               className="w-full py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition-transform active:scale-95 disabled:opacity-60 rr-bg-gold rr-text-navy"
             >
               {createCoupon.isPending ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
-              {createCoupon.isPending ? "Creating..." : durationType === "lifetime" ? "Create Lifetime Code" : `Create ${durationAmount || "?"} ${durationType} Code`}
+              {createCoupon.isPending ? "Creating..." : durationUnit === "lifetime" ? "Create Lifetime Code" : `Create ${durationValue || "?"} ${durationUnit} Code`}
             </button>
           </div>
         </div>
@@ -304,12 +321,12 @@ export default function AdminCodesPage() {
             {codes && codes.length > 0 && (
               <button
                 onClick={() => {
-                  const headers = ["code", "note", "durationType", "durationAmount", "usedCount", "maxUses", "active", "expiresAt", "createdAt"];
+                  const headers = ["code", "note", "durationUnit", "durationValue", "usedCount", "maxUses", "active", "expiresAt", "createdAt"];
                   const rows = codes.map((c) => [
                     c.code,
                     c.note ?? "",
-                    c.grantDurationType ?? "",
-                    c.grantAmount ?? "",
+                    c.grantDurationUnit ?? "",
+                    c.grantDurationValue ?? "",
                     c.usedCount,
                     c.maxUses ?? "unlimited",
                     c.active === 1 ? "active" : "revoked",
@@ -408,17 +425,17 @@ export default function AdminCodesPage() {
                         </div>
                         {/* Grant duration badge */}
                         <div className="mt-1.5">
-                          {c.grantDurationType === "lifetime" ? (
+                          {c.grantDurationUnit === "lifetime" ? (
                             <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: "oklch(0.30 0.12 80)", color: "oklch(0.85 0.18 80)" }}>
                               <Zap size={10} />{t("adminCodes.lifetimeAccess", { defaultValue: "Lifetime access" })}
                             </span>
-                          ) : c.grantDurationType === "months" ? (
+                          ) : c.grantDurationUnit === "month" ? (
                             <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: "oklch(0.28 0.10 260)", color: "oklch(0.75 0.12 200)" }}>
-                              <Calendar size={10} />{t("adminCodes.monthsPro", { count: c.grantAmount ?? 1, defaultValue: `${c.grantAmount ?? "?"} months Pro` })}
+                              <Calendar size={10} />{t("adminCodes.monthsPro", { count: c.grantDurationValue ?? 1, defaultValue: `${c.grantDurationValue ?? "?"} months Pro` })}
                             </span>
-                          ) : c.grantDurationType === "days" ? (
+                          ) : c.grantDurationUnit === "day" ? (
                             <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: "oklch(0.28 0.10 260)", color: "oklch(0.75 0.12 200)" }}>
-                              <Clock size={10} />{t("adminCodes.daysPro", { count: c.grantAmount ?? 1, defaultValue: `${c.grantAmount ?? "?"} days Pro` })}
+                              <Clock size={10} />{t("adminCodes.daysPro", { count: c.grantDurationValue ?? 1, defaultValue: `${c.grantDurationValue ?? "?"} days Pro` })}
                             </span>
                           ) : null}
                         </div>

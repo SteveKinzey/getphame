@@ -80,6 +80,10 @@ import {
   generateCode,
 } from "./accessCodes";
 import {
+  grantSubscriptionByEmail,
+  revokeSubscriptionByEmail,
+} from "./subscriptionGrants";
+import {
   listReviewPlatforms,
   addReviewPlatform,
   updateReviewPlatform,
@@ -105,6 +109,33 @@ import {
 
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
 import { bulkSenderRouter } from "./bulkSender";
+import { helpAssistantRouter } from "./helpAssistant";
+import { authDiagnosticsRouter } from "./routers/authDiagnostics";
+import { githubCleanupShowcaseRouter } from "./routers/githubCleanupShowcase";
+import { passkeysRouter } from "./routers/passkeys";
+import { recoveryDrillsRouter } from "./routers/recoveryDrills";
+import { sourceOperationsRouter } from "./routers/sourceOperations";
+import { revokePasskeySessionFromRequest } from "./security/passkeySessions";
+import { combineAccountsAsAdmin, deleteAccountAsAdmin } from "./accountManagement";
+import {
+  COMPLIMENTARY_ACCESS_LIMITS,
+  ComplimentaryAccessConflictError,
+  ComplimentaryAccessNotFoundError,
+  createComplimentaryAccessGrant,
+  findActiveComplimentaryAccess,
+  listComplimentaryAccessGrants,
+  lookupComplimentaryAccessByEmail,
+  revokeComplimentaryAccessGrant,
+} from "./complimentaryAccess";
+import { buildSmtpAuditCsv, buildSmtpAuditCsvFilename, buildSmtpAuditWhere } from "./smtpAdminAudit";
+import {
+  connectKoalendar,
+  disconnectKoalendar,
+  getKoalendarConnectionStatus,
+  listFailedKoalendarBookings,
+  retryFailedKoalendarBooking,
+  rotateKoalendarWebhook,
+} from "./koalendar";
 import crypto from "crypto";
 
 // ── Unsubscribe token helpers ────────────────────────────────────────────────
@@ -162,10 +193,25 @@ async function enforceFreeLimit(userId: number, tier: string) {
 
 export const appRouter = router({
   system: systemRouter,
+  authDiagnostics: authDiagnosticsRouter,
+  githubCleanupShowcase: githubCleanupShowcaseRouter,
+  passkeys: passkeysRouter,
+  recoveryDrills: recoveryDrillsRouter,
+  sources: sourceOperationsRouter,
+  helpAssistant: helpAssistantRouter,
+
+  /** Paid Koalendar booking-to-contact integration. */
+  koalendar: router({
+    status: paidProcedure.query(async ({ ctx }) => getKoalendarConnectionStatus(ctx.user.id)),
+    connect: paidProcedure.mutation(async ({ ctx }) => connectKoalendar(ctx.user.id)),
+    rotateWebhook: paidProcedure.mutation(async ({ ctx }) => rotateKoalendarWebhook(ctx.user.id)),
+    disconnect: paidProcedure.mutation(async ({ ctx }) => disconnectKoalendar(ctx.user.id)),
+  }),
 
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
-    logout: publicProcedure.mutation(({ ctx }) => {
+    logout: publicProcedure.mutation(async ({ ctx }) => {
+      await revokePasskeySessionFromRequest(ctx.req);
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
@@ -1886,6 +1932,8 @@ export const appRouter = router({
           note: z.string().optional(),
           maxUses: z.number().int().positive().nullable().optional(),
           expiresAt: z.number().nullable().optional(),
+          grantDurationValue: z.number().int().positive().nullable().optional(),
+          grantDurationUnit: z.enum(["day", "month", "lifetime"]).optional(),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -1895,6 +1943,8 @@ export const appRouter = router({
           note: input.note,
           maxUses: input.maxUses ?? null,
           expiresAt: input.expiresAt ?? null,
+          grantDurationValue: input.grantDurationValue ?? null,
+          grantDurationUnit: input.grantDurationUnit,
         });
         return { code };
       }),
@@ -1908,8 +1958,8 @@ export const appRouter = router({
           note: z.string().optional(),
           maxUses: z.number().int().positive().nullable().optional(),
           expiresAt: z.number().nullable().optional(),
-          grantDurationType: z.enum(["days", "months", "lifetime"]).default("lifetime"),
-          grantAmount: z.number().int().positive().nullable().optional(),
+          grantDurationUnit: z.enum(["day", "month", "lifetime"]).default("lifetime"),
+          grantDurationValue: z.number().int().positive().nullable().optional(),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -1919,8 +1969,8 @@ export const appRouter = router({
           note: input.note,
           maxUses: input.maxUses ?? null,
           expiresAt: input.expiresAt ?? null,
-          grantDurationType: input.grantDurationType,
-          grantAmount: input.grantAmount ?? null,
+          grantDurationUnit: input.grantDurationUnit,
+          grantDurationValue: input.grantDurationValue ?? null,
         });
         return { code };
       }),
@@ -1962,7 +2012,7 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         const result = await redeemAccessCode(ctx.user.id, input.code);
         if (!result.success) throw new TRPCError({ code: "BAD_REQUEST", message: result.error });
-        return { note: result.note };
+        return { note: result.note, tier: result.tier, planExpiresAt: result.planExpiresAt };
       }),
   }),
 
@@ -2342,6 +2392,43 @@ export const appRouter = router({
           .where(eq(businessProfiles.userId, input.userId));
         console.log(`[Admin] User ${input.userId} tier set to ${input.tier} by admin ${ctx.user.id}`);
         return { ok: true };
+      }),
+
+    /** Grant a registered account a monthly, annual, or lifetime subscription — admin only */
+    grantSubscription: protectedProcedure
+      .input(z.object({
+        email: z.string().trim().email(),
+        plan: z.enum(["monthly", "annual", "lifetime"]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        try {
+          const granted = await grantSubscriptionByEmail(input.email, input.plan);
+          if (!granted) {
+            throw new TRPCError({ code: "NOT_FOUND", message: "No account matches that email address." });
+          }
+          console.log(`[Admin] ${input.plan} access granted to user ${granted.userId} by admin ${ctx.user.id}`);
+          return granted;
+        } catch (error) {
+          if (error instanceof TRPCError) throw error;
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: error instanceof Error ? error.message : "Subscription grant failed.",
+          });
+        }
+      }),
+
+    /** Return a registered account to the free tier — admin only */
+    revokeSubscription: protectedProcedure
+      .input(z.object({ email: z.string().trim().email() }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        const revoked = await revokeSubscriptionByEmail(input.email);
+        if (!revoked) {
+          throw new TRPCError({ code: "NOT_FOUND", message: "No subscription profile matches that email address." });
+        }
+        console.log(`[Admin] Paid access revoked for user ${revoked.userId} by admin ${ctx.user.id}`);
+        return revoked;
       }),
 
     /** Upsell click stats — powered-by footer clicks to /upgrade (last 30d) */

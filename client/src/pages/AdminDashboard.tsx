@@ -30,10 +30,22 @@ import { Calendar, Clock, Table2, Ticket, Plus, Copy, RefreshCw, Ban } from "luc
 
 import { useDebounce } from "use-debounce";
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function AdminDashboard() {
   const { user, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
 
   const { data: stats, isLoading, error } = trpc.admin.stats.useQuery(undefined, {
     enabled: !!user,
@@ -82,15 +94,15 @@ export default function AdminDashboard() {
     onError: (err) => { toast.error(err.message || "Failed to grant lifetime"); setPromoteLoading(false); },
   });
 
-  // Grant Subscription (flexible: days / months / lifetime)
+  // Grant Subscription (monthly / annual / lifetime)
   const [grantEmail, setGrantEmail] = useState("");
-  const [grantDurationType, setGrantDurationType] = useState<"days" | "months" | "lifetime">("months");
-  const [grantAmount, setGrantAmount] = useState(1);
+  const [grantPlan, setGrantPlan] = useState<"monthly" | "annual" | "lifetime">("monthly");
   const [grantLoading, setGrantLoading] = useState(false);
-  const grantSubscription = trpc.adminManagement.grantSubscription.useMutation({
-    onSuccess: (data) => {
-      const label = data.tier === "lifetime" ? "Lifetime" : data.planExpiresAt ? `until ${new Date(data.planExpiresAt).toLocaleDateString()}` : "granted";
-      toast.success(`Subscription ${label} granted to ${grantEmail}`);
+  const grantSubscription = trpc.admin.grantSubscription.useMutation({
+    onSuccess: () => {
+      toast.success(t("adminSubscription.grantSuccess", {
+        defaultValue: "Subscription access granted.",
+      }));
       setGrantEmail("");
       setGrantLoading(false);
       utils.adminManagement.listPrivilegedUsers.invalidate();
@@ -106,9 +118,11 @@ export default function AdminDashboard() {
 
   // Revoke Access
   const [revokeTarget, setRevokeTarget] = useState<{ email: string; name: string | null } | null>(null);
-  const revokeAccess = trpc.adminManagement.revokeAccess.useMutation({
+  const revokeAccess = trpc.admin.revokeSubscription.useMutation({
     onSuccess: () => {
-      toast.success(`Access revoked for ${revokeTarget?.email}`);
+      toast.success(t("adminSubscription.revokeSuccess", {
+        defaultValue: "Subscription access revoked.",
+      }));
       setRevokeTarget(null);
       utils.adminManagement.listPrivilegedUsers.invalidate();
     },
@@ -118,8 +132,8 @@ export default function AdminDashboard() {
   // Coupon Code Generation
   const [couponNote, setCouponNote] = useState("");
   const [couponCode, setCouponCode] = useState("");
-  const [couponDurationType, setCouponDurationType] = useState<"days" | "months" | "lifetime">("lifetime");
-  const [couponAmount, setCouponAmount] = useState(1);
+  const [couponDurationUnit, setCouponDurationUnit] = useState<"day" | "month" | "lifetime">("lifetime");
+  const [couponDurationValue, setCouponDurationValue] = useState(1);
   const [couponMaxUses, setCouponMaxUses] = useState<string>("");
   const [couponExpiryDays, setCouponExpiryDays] = useState<string>("");
   const [lastCreatedCode, setLastCreatedCode] = useState<string | null>(null);
@@ -161,13 +175,24 @@ export default function AdminDashboard() {
     const parsedExpiry = couponExpiryDays.trim()
       ? Date.now() + parseInt(couponExpiryDays, 10) * 24 * 60 * 60 * 1000
       : null;
+    const durationLimit = couponDurationUnit === "day" ? 365 : 24;
+    if (
+      couponDurationUnit !== "lifetime" &&
+      (!Number.isInteger(couponDurationValue) || couponDurationValue < 1 || couponDurationValue > durationLimit)
+    ) {
+      toast.error(t("accessCode.durationError", {
+        defaultValue: `Enter a duration between 1 and ${durationLimit}.`,
+        max: durationLimit,
+      }));
+      return;
+    }
     createCoupon.mutate({
       code: couponCode.trim() || undefined,
       note: couponNote.trim() || undefined,
       maxUses: parsedMaxUses,
       expiresAt: parsedExpiry,
-      grantDurationType: couponDurationType,
-      grantAmount: couponDurationType !== "lifetime" ? couponAmount : null,
+      grantDurationUnit: couponDurationUnit,
+      grantDurationValue: couponDurationUnit !== "lifetime" ? couponDurationValue : null,
     });
   }
 
@@ -626,18 +651,20 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Grant Subscription — flexible duration */}
+            {/* Grant Subscription — monthly, annual, or lifetime */}
             <div className="mt-2">
               <p className="text-sm font-black mb-3 uppercase tracking-widest rr-text-navy flex items-center gap-2">
                 <Calendar size={15} className="rr-text-gold" />
-                Grant Subscription
+                {t("adminSubscription.grantTitle", { defaultValue: "Grant Subscription" })}
               </p>
               <div
                 className="rounded-2xl p-4 space-y-3"
                 style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.02 260)" }}
               >
                 <p className="text-xs rr-text-navy-muted leading-relaxed">
-                  Grant any user a free subscription for a custom duration — days, months, or lifetime. Extends from their current expiry if still active.
+                  {t("adminSubscription.grantDescription", {
+                    defaultValue: "Grant a registered user monthly, annual, or lifetime access.",
+                  })}
                 </p>
                 <input
                   type="email"
@@ -647,52 +674,45 @@ export default function AdminDashboard() {
                   className="w-full rounded-xl px-3 py-2.5 text-sm outline-none rr-text-navy"
                   style={{ background: "white", border: "1px solid oklch(0.88 0.02 260)" }}
                 />
-                {/* Duration type selector */}
-                <div className="flex gap-2">
-                  {(["days", "months", "lifetime"] as const).map((type) => (
+                <div>
+                  <p className="text-xs font-bold mb-2 rr-text-navy-muted">
+                    {t("adminSubscription.durationLabel", { defaultValue: "Access plan" })}
+                  </p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  {(["monthly", "annual", "lifetime"] as const).map((plan) => (
                     <button
-                      key={type}
-                      onClick={() => setGrantDurationType(type)}
-                      className="flex-1 py-2 rounded-xl text-xs font-bold transition-all capitalize"
-                      style={grantDurationType === type
+                      type="button"
+                      key={plan}
+                      onClick={() => setGrantPlan(plan)}
+                      className="px-3 py-2 rounded-xl text-left transition-all"
+                      style={grantPlan === plan
                         ? { background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }
                         : { background: "white", color: "oklch(0.45 0.04 260)", border: "1px solid oklch(0.88 0.02 260)" }}
                     >
-                      {type}
+                      <span className="block text-xs font-black">
+                        {t(`adminSubscription.${plan}`, { defaultValue: plan })}
+                      </span>
+                      <span className="block text-[11px] opacity-80 mt-0.5">
+                        {t(`adminSubscription.${plan}Description`, { defaultValue: "" })}
+                      </span>
                     </button>
                   ))}
-                </div>
-                {/* Amount input — hidden for lifetime */}
-                {grantDurationType !== "lifetime" && (
-                  <div className="flex items-center gap-3">
-                    <Clock size={14} className="rr-text-navy-muted flex-shrink-0" />
-                    <input
-                      type="number"
-                      min={1}
-                      max={grantDurationType === "days" ? 365 : 120}
-                      value={grantAmount}
-                      onChange={(e) => setGrantAmount(Math.max(1, parseInt(e.target.value) || 1))}
-                      className="w-24 rounded-xl px-3 py-2 text-sm outline-none rr-text-navy text-center font-bold"
-                      style={{ background: "white", border: "1px solid oklch(0.88 0.02 260)" }}
-                    />
-                    <span className="text-sm font-bold rr-text-navy-muted">{grantDurationType}</span>
                   </div>
-                )}
+                </div>
                 <button
                   disabled={!grantEmail.includes("@") || grantLoading}
                   onClick={() => {
                     setGrantLoading(true);
                     grantSubscription.mutate({
                       email: grantEmail,
-                      durationType: grantDurationType,
-                      ...(grantDurationType !== "lifetime" ? { amount: grantAmount } : {}),
+                      plan: grantPlan,
                     });
                   }}
                   className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 disabled:opacity-40"
                   style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
                 >
                   {grantLoading ? <Loader2 size={14} className="animate-spin" /> : <Gift size={14} />}
-                  {grantDurationType === "lifetime" ? "Grant Lifetime Access" : `Grant ${grantAmount} ${grantDurationType}`}
+                  {t("adminSubscription.confirmGrant", { defaultValue: "Grant Access" })}
                 </button>
               </div>
             </div>
@@ -782,24 +802,45 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Revoke Access confirm dialog */}
-            {revokeTarget && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center px-4" style={{ background: "rgba(0,0,0,0.55)" }}>
-                <div className="rounded-2xl p-5 w-full max-w-sm bg-white" style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}>
-                  <h3 className="text-base font-black rr-text-navy mb-1">Revoke Access?</h3>
-                  <p className="text-sm rr-text-navy-muted mb-4">
-                    This will downgrade <strong>{revokeTarget.name || revokeTarget.email}</strong> back to the free tier immediately.
-                  </p>
-                  <div className="flex gap-3">
-                    <button onClick={() => setRevokeTarget(null)} className="flex-1 py-2.5 rounded-xl text-sm font-bold rr-text-navy" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.02 260)" }}>Cancel</button>
-                    <button onClick={() => revokeAccess.mutate({ email: revokeTarget.email })} disabled={revokeAccess.isPending} className="flex-1 py-2.5 rounded-xl text-sm font-bold text-white flex items-center justify-center gap-1.5 transition-all active:scale-95 disabled:opacity-50" style={{ background: "oklch(0.45 0.18 25)" }}>
-                      {revokeAccess.isPending ? <Loader2 size={14} className="animate-spin" /> : <Ban size={14} />}
-                      Revoke Access
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
+            <AlertDialog
+              open={revokeTarget !== null}
+              onOpenChange={(open) => {
+                if (!open && !revokeAccess.isPending) setRevokeTarget(null);
+              }}
+            >
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>
+                    {t("adminSubscription.revokeTitle", { defaultValue: "Revoke subscription access?" })}
+                  </AlertDialogTitle>
+                  <AlertDialogDescription>
+                    {t("adminSubscription.revoke", {
+                      defaultValue: "This returns the selected account to the free tier immediately.",
+                    })} {revokeTarget?.name || revokeTarget?.email}
+                    <span className="block mt-2 font-semibold">
+                      {t("adminSubscription.revokeBillingWarning", {
+                        defaultValue: "This does not cancel billing in Stripe.",
+                      })}
+                    </span>
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel disabled={revokeAccess.isPending}>
+                    {t("adminSubscription.cancel", { defaultValue: "Cancel" })}
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    disabled={!revokeTarget || revokeAccess.isPending}
+                    onClick={() => {
+                      if (revokeTarget) revokeAccess.mutate({ email: revokeTarget.email });
+                    }}
+                    className="bg-red-700 text-white hover:bg-red-800"
+                  >
+                    {revokeAccess.isPending ? <Loader2 size={14} className="animate-spin" /> : <Ban size={14} />}
+                    {t("adminSubscription.confirmRevoke", { defaultValue: "Revoke Access" })}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
 
             {/* Coupon Code Generation */}
             <div className="mt-2">
@@ -841,18 +882,20 @@ export default function AdminDashboard() {
                   <input type="text" value={couponNote} onChange={(e) => setCouponNote(e.target.value)} placeholder="e.g. Beta cohort — Jan 2026" className="w-full rounded-xl px-3 py-2.5 text-sm outline-none rr-text-navy" style={{ background: "white", border: "1px solid oklch(0.88 0.02 260)" }} />
                 </div>
                 <div>
-                  <label className="text-xs font-bold mb-1.5 block rr-text-navy-muted">Grant duration</label>
+                  <label className="text-xs font-bold mb-1.5 block rr-text-navy-muted">
+                    {t("accessCode.grantDurationLabel", { defaultValue: "Grant duration" })}
+                  </label>
                   <div className="flex gap-2">
-                    {(["days", "months", "lifetime"] as const).map((type) => (
-                      <button key={type} onClick={() => setCouponDurationType(type)} className="flex-1 py-2 rounded-xl text-xs font-bold transition-all capitalize" style={couponDurationType === type ? { background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" } : { background: "white", color: "oklch(0.45 0.04 260)", border: "1px solid oklch(0.88 0.02 260)" }}>{type}</button>
+                    {(["day", "month", "lifetime"] as const).map((unit) => (
+                      <button type="button" key={unit} onClick={() => setCouponDurationUnit(unit)} className="flex-1 py-2 rounded-xl text-xs font-bold transition-all capitalize" style={couponDurationUnit === unit ? { background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" } : { background: "white", color: "oklch(0.45 0.04 260)", border: "1px solid oklch(0.88 0.02 260)" }}>{t(`accessCode.units.${unit}`, { defaultValue: unit })}</button>
                     ))}
                   </div>
                 </div>
-                {couponDurationType !== "lifetime" && (
+                {couponDurationUnit !== "lifetime" && (
                   <div className="flex items-center gap-3">
                     <Clock size={14} className="rr-text-navy-muted flex-shrink-0" />
-                    <input type="number" min={1} max={couponDurationType === "days" ? 365 : 120} value={couponAmount} onChange={(e) => setCouponAmount(Math.max(1, parseInt(e.target.value) || 1))} className="w-24 rounded-xl px-3 py-2 text-sm outline-none rr-text-navy text-center font-bold" style={{ background: "white", border: "1px solid oklch(0.88 0.02 260)" }} />
-                    <span className="text-sm font-bold rr-text-navy-muted">{couponDurationType}</span>
+                    <input type="number" min={1} max={couponDurationUnit === "day" ? 365 : 24} value={couponDurationValue} onChange={(e) => setCouponDurationValue(Math.max(1, parseInt(e.target.value) || 1))} aria-label={t("accessCode.grantValueLabel", { defaultValue: "Grant duration value" })} className="w-24 rounded-xl px-3 py-2 text-sm outline-none rr-text-navy text-center font-bold" style={{ background: "white", border: "1px solid oklch(0.88 0.02 260)" }} />
+                    <span className="text-sm font-bold rr-text-navy-muted">{t(`accessCode.units.${couponDurationUnit}`, { defaultValue: couponDurationUnit })}</span>
                   </div>
                 )}
                 <div className="flex gap-3">
@@ -867,7 +910,7 @@ export default function AdminDashboard() {
                 </div>
                 <button onClick={handleCreateCoupon} disabled={createCoupon.isPending} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-bold transition-all active:scale-95 disabled:opacity-40 rr-bg-navy text-white">
                   {createCoupon.isPending ? <Loader2 size={14} className="animate-spin" /> : <Plus size={14} />}
-                  {createCoupon.isPending ? "Creating..." : couponDurationType === "lifetime" ? "Create Lifetime Coupon" : `Create ${couponAmount} ${couponDurationType} Coupon`}
+                  {createCoupon.isPending ? "Creating..." : couponDurationUnit === "lifetime" ? "Create Lifetime Coupon" : `Create ${couponDurationValue} ${couponDurationUnit} Coupon`}
                 </button>
                 {lastCreatedCode && (
                   <div className="flex items-center gap-3 rounded-xl px-4 py-3" style={{ background: "oklch(0.96 0.04 80)", border: "1px solid oklch(0.88 0.10 80)" }}>

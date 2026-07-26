@@ -28,7 +28,13 @@
     "pricing": "Tarifs",
     "faq": "FAQ",
     "product": "Produit",
-    "getStartedFree": "Commencer gratuitement"
+    "getStartedFree": "Commencer gratuitement",
+    "more": "Plus",
+    "manageUsers": "Gérer les utilisateurs",
+    "admin": "Admin",
+    "developer": "Développeur",
+    "userManual": "Manuel d'utilisation",
+    "adminManual": "Manuel d'administration"
   },
   "hero": {
     "tagline": "Gratuit pour commencer — Aucune carte de crédit requise",
@@ -384,7 +390,11 @@
     "step3": "Envoyer votre première demande",
     "daysAgo": "il y a {{count}} jour(s)",
     "hoursAgo": "il y a {{count}} heure(s)",
-    "minutesAgo": "il y a {{count}} minute(s)"
+    "minutesAgo": "il y a {{count}} minute(s)",
+    "freeAllowanceInitial": "Plan gratuit : 10 demandes initiales, puis 5 toutes les 30 jours glissants",
+    "freeAllowanceMonthly": "Plan gratuit : 5 demandes toutes les 30 jours glissants",
+    "nextFreeRequest": "Prochaine demande disponible le {{date}}",
+    "lifePlan": "Plan de vie"
   },
   "notifications": {
     "followUpReminderScheduled": "Rappel de suivi programmé !",
@@ -492,7 +502,11 @@
     "savedContacts": "Contacts enregistrés",
     "templates": "Modèles",
     "reminders": "Rappels",
-    "changelog": "Journal des modifications"
+    "changelog": "Journal des modifications",
+    "freeInitialRemaining": "Forfait gratuit : {{remaining}} demandes restantes sur les 10 initiales, puis 5 tous les 30 jours glissants",
+    "freeRollingRemaining": "Forfait gratuit : {{remaining}} demandes restantes sur 5 pour votre période glissante de 30 jours",
+    "freeInitialLimitReachedDesc": "Vous avez utilisé vos 10 demandes initiales. Votre quota récurrent est de 5 demandes tous les 30 jours glissants, ou passez à Pro pour des demandes illimitées.",
+    "freeRollingLimitReachedDesc": "Vous avez utilisé les 5 demandes de votre quota glissant actuel. La prochaine sera disponible le {{date}}, ou passez à Pro pour continuer maintenant."
   },
   "tabs": {
     "account": "Compte et profil",
@@ -621,7 +635,23 @@
     "deleteConfirmButton": "Supprimer",
     "deleteConfirmCancel": "Annuler",
     "isDefault": "Plateforme par défaut",
-    "noUrl": "Aucune URL définie"
+    "noUrl": "Aucune URL définie",
+    "platformUrlRequired": "URL de la page d'avis *",
+    "yelpSearchInstruction": "Instruction de recherche Yelp *",
+    "whyNoLinkTitle": "Pourquoi aucun lien ?",
+    "yelpNoLinkEdit": "Les Conditions d'utilisation de Yelp interdisent de solliciter directement des avis au moyen d'un lien. Une instruction de recherche en texte brut permet à vos e-mails de rester conformes — les clients trouvent eux-mêmes votre fiche.",
+    "yelpEditHelp": "Saisissez une instruction de recherche en texte brut. Ce texte apparaît dans l'e-mail ; aucun lien n'est généré, ce qui garantit la conformité avec Yelp.",
+    "yelpNoLinkAdd": "Les Conditions d'utilisation de Yelp interdisent de solliciter directement des avis au moyen d'un lien. Saisir une instruction de recherche en texte brut permet à vos e-mails de rester conformes — les clients trouvent eux-mêmes votre fiche.",
+    "yelpSearchHelp": "Saisissez une instruction de recherche en texte brut (par exemple : Recherchez [Votre entreprise] sur Yelp à [Ville, État]). Ce texte apparaît dans le corps de l'e-mail ; aucun lien n'est créé, ce qui garantit la conformité avec Yelp.",
+    "reviewUrlHelp": "Collez l'URL publique que les clients utilisent pour laisser un avis sur cette plateforme.",
+    "customLabel": "Libellé personnalisé",
+    "customLabelExample": "p. ex. Houzz, Angi, Thumbtack",
+    "searchInstructionRequired": "L'instruction de recherche est obligatoire",
+    "addingPlatform": "Ajout de la plateforme...",
+    "addSuccess": "Plateforme d'avis ajoutée !",
+    "addError": "Impossible d'ajouter la plateforme",
+    "remove": "Supprimer",
+    "cancel": "Annuler"
   },
   "smtp": {
     "title": "Connecter votre e-mail",
@@ -763,7 +793,51 @@
     "icloudGuideStep1": "Allez sur appleid.apple.com → Connexion et sécurité",
     "icloudGuideStep2": "Activez l'authentification à deux facteurs",
     "icloudGuideStep3": "Créez un mot de passe spécifique à l'application",
-    "emailConnected": "E-mail connecté"
+    "emailConnected": "E-mail connecté",
+    "lastAutoCheck": "Dernière vérification automatique : {{date}}",
+    "healthy": "✓ Opérationnel",
+    "failed": "✗ Échec",
+    "notConnectedDescription": "Aucun e-mail connecté. Saisissez vos informations ci-dessous pour commencer à envoyer des demandes d'avis.",
+    "emailAddressLabel": "Votre adresse e-mail *",
+    "displayNameLabel": "Nom d'affichage (facultatif)",
+    "displayNameHelp": "Affiché comme nom d'expéditeur dans la boîte de réception de votre client.",
+    "passwordLabels": {
+      "gmail": "Mot de passe d'application Gmail *",
+      "workspace": "Mot de passe d'application Google Workspace *",
+      "microsoft": "Mot de passe d'application Microsoft *",
+      "yahoo": "Mot de passe d'application Yahoo *",
+      "zoho": "Mot de passe Zoho Mail *",
+      "icloud": "Mot de passe spécifique à l'app Apple *",
+      "aol": "Mot de passe d'application AOL *",
+      "proton": "Mot de passe SMTP ProtonMail *",
+      "fastmail": "Mot de passe d'application Fastmail *",
+      "email": "Mot de passe e-mail *"
+    },
+    "passwordPlaceholders": {
+      "update": "Saisissez un nouveau mot de passe pour mettre à jour",
+      "google": "Mot de passe d'application à 16 caractères (sans espaces)",
+      "default": "Votre mot de passe e-mail"
+    },
+    "inlineHints": {
+      "google": "N'utilisez pas votre mot de passe Gmail habituel : utilisez un mot de passe d'application. Appuyez sur « Comment l'obtenir » ci-dessus.",
+      "icloud": "Utilisez un mot de passe spécifique à l'app, pas votre mot de passe Apple ID. Appuyez sur « Comment l'obtenir » ci-dessus.",
+      "zoho": "Activez d'abord l'accès SMTP dans Zoho, puis utilisez votre mot de passe Zoho habituel. Appuyez sur « Comment l'obtenir » ci-dessus.",
+      "aol": "N'utilisez pas votre mot de passe AOL habituel : utilisez un mot de passe d'application. Appuyez sur « Comment l'obtenir » ci-dessus.",
+      "proton": "ProtonMail nécessite l'application Proton Bridge : utilisez son mot de passe SMTP, pas votre identifiant Proton. Appuyez sur « Comment l'obtenir » ci-dessus.",
+      "fastmail": "N'utilisez pas votre mot de passe Fastmail habituel : utilisez un mot de passe d'application. Appuyez sur « Comment l'obtenir » ci-dessus.",
+      "custom": "Domaine personnalisé détecté : les paramètres SMTP ci-dessous ont été remplis automatiquement. Vérifiez ou ajustez l'hôte et le port dans les paramètres avancés."
+    },
+    "sendingLimits": {
+      "title": "Limites d'envoi par fournisseur",
+      "gmail": "Gmail / Google Workspace — 500 e-mails/jour (gratuit), 2 000/jour (Workspace)",
+      "microsoft": "Outlook / Microsoft 365 — 300 e-mails/jour",
+      "yahoo": "Yahoo Mail — 500 e-mails/jour",
+      "zoho": "Zoho Mail — 500 e-mails/jour (gratuit), 1 000/jour (payant)",
+      "aol": "AOL Mail — 500 e-mails/jour",
+      "fastmail": "Fastmail — 1 000 e-mails/jour",
+      "proton": "ProtonMail — 150 e-mails/jour (gratuit), 1 000/jour (payant) via Bridge",
+      "tip": "Pour les envois volumineux, utilisez une adresse dédiée comme reviews@yourdomain.com afin de garder votre boîte principale propre et d'éviter les limites personnelles."
+    }
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -1060,7 +1134,8 @@
     "new": "New",
     "logoText": "Get Phame",
     "tagline": "Obtenez plus d'avis 5 étoiles — automatiquement.",
-    "description": "Envoyez des demandes d'avis personnalisées depuis votre propre adresse e-mail."
+    "description": "Envoyez des demandes d'avis personnalisées depuis votre propre adresse e-mail.",
+    "proGrowthMessage": "Faites de chaque mission accomplie un système reproductible de réputation et de revenus."
   },
   "infoBanner": {
     "howItWorks": "Comment ça marche :",
@@ -1221,7 +1296,9 @@
     "includes": "Inclut :",
     "everythingInFree": "Tout ce qui est dans Gratuit, plus :",
     "bestValue": "Meilleure valeur",
-    "guarantee": "Garantie de remboursement de 7 jours"
+    "guarantee": "Garantie de remboursement de 7 jours",
+    "otherPaymentMethods": "Autres moyens de paiement",
+    "checkoutForPlan": "Paiement sécurisé pour {{plan}}"
   },
   "accessCode": {
     "title": "Code d'accès",
@@ -1233,7 +1310,21 @@
     "invalidCodeError": "Code invalide. Veuillez réessayer.",
     "submit": "Soumettre",
     "invalid": "Code invalide. Veuillez réessayer.",
-    "success": "Accès accordé !"
+    "success": "Accès accordé !",
+    "grantDurationLabel": "Accès accordé après utilisation",
+    "grantUnitLabel": "Unité de durée",
+    "grantValueLabel": "Valeur de la durée",
+    "durationError": "Saisissez une durée comprise entre 1 et {{limit}}.",
+    "durationHelper": "La période d'accès commence lorsque le client utilise le code.",
+    "lifetimeHelper": "Le code accorde un accès payant permanent.",
+    "grantLifetime": "Accorde un accès à vie",
+    "grantDuration": "Accorde {{value}} {{unit}}",
+    "grantLegacy": "Ancien accès Pro illimité",
+    "units": {
+      "day": "jours",
+      "month": "mois",
+      "lifetime": "À vie"
+    }
   },
   "socialProof": {
     "trustedByBusinesses": "Approuvé par les entreprises locales pour obtenir plus d'avis 5 étoiles"
@@ -1256,7 +1347,14 @@
     "futureUpdates": "Mises à jour futures",
     "price": "Price",
     "freeTrialNote": "Tous les forfaits incluent un essai gratuit de 10 demandes. Aucune carte bancaire requise pour commencer.",
-    "annual": "Annuel"
+    "annual": "Annuel",
+    "reviewRequests": "Demandes d’avis",
+    "freeRequestAllowance": "10 d’abord, puis 5 / 30 jours glissants",
+    "mobileAction": "Comparer",
+    "mobileDescription": "Comparez Free, Pro et Lifetime sans quitter la page de mise à niveau.",
+    "mobileEyebrow": "Comparaison des fonctionnalités",
+    "mobileSubtitle": "Afficher la comparaison compacte des fonctionnalités",
+    "mobileTitle": "Comparer les fonctionnalités des plans"
   },
   "paidUser": {
     "adminAccess": "Accès administrateur",
@@ -1271,7 +1369,27 @@
     "planLabel": "Votre plan",
     "renewsOn": "Renouvellement le {{date}}",
     "expiresOn": "Expire le {{date}}",
-    "lifetimeAccess": "Accès à vie"
+    "lifetimeAccess": "Accès à vie",
+    "portalOpened": "La facturation sécurisée s’est ouverte dans un nouvel onglet.",
+    "currentStatus": "Votre statut : {{tierLabel}}",
+    "lifeMessage": "L’accès à vie est actif. Il n’y a rien à mettre à niveau ni à renouveler.",
+    "manageMessage": "Modifiez votre cycle de facturation ou mettez fin à votre abonnement ci-dessous.",
+    "subscription": "Abonnement",
+    "switchMonthly": "Passer au mensuel ou gérer la facturation",
+    "changePlan": "Changer de formule ou gérer la facturation",
+    "endSubscription": "Mettre fin à l’abonnement",
+    "endExplanation": "La fin de votre abonnement ramène le compte à l’offre gratuite à la fin de la période payée.",
+    "switchConfirm": {
+      "title": "Passer de {{current}} à {{target}} ?",
+      "description": "Vérifiez le changement de cycle de facturation avant de continuer vers Stripe.",
+      "currentPlan": "Formule actuelle",
+      "newPlan": "Nouvelle formule",
+      "savings": "La facturation annuelle permet d’économiser 58 $ par an par rapport à la formule mensuelle.",
+      "timing": "Stripe affichera la date d’effet exacte et tout débit ou crédit au prorata avant votre approbation.",
+      "cancel": "Conserver {{plan}}",
+      "continue": "Continuer vers Stripe"
+    },
+    "accessUntil": "Accès jusqu’au {{date}}"
   },
   "columnLabels": {
     "fullName": "Nom complet",
@@ -1672,7 +1790,7 @@
     "proAnnualDescription": "Everything in Pro Mensuel — billed once a year. Equivalent to $24.75/month.",
     "lifetime": "À vie",
     "ownItForever": "Possédez-le pour toujours",
-    "lifetimePrice": "$497",
+    "lifetimePrice": "$349",
     "lifetimeOnce": " une fois",
     "lifetimeDescription": "Paiement unique — accès à vie",
     "annualDescription": "Facturation annuelle — économisez 17 %",
@@ -2016,7 +2134,109 @@
     "yelpTitle": "Directives Yelp",
     "tripAdvisorTitle": "Directives TripAdvisor",
     "facebookTitle": "Directives Facebook",
-    "bingTitle": "Directives Bing"
+    "bingTitle": "Directives Bing",
+    "backToSettings": "Paramètres",
+    "subtitle": "Restez en sécurité, respectez la loi et protégez votre réputation",
+    "risk": {
+      "low": "Faible Risque",
+      "moderate": "Risque Modéré",
+      "high": "Risque Élevé"
+    },
+    "safeZone": {
+      "title": "Où Vous Êtes en Sécurité",
+      "transaction": "Le client a eu une transaction réelle avec vous",
+      "noIncentives": "Aucun incitatif offert (argent, réductions, cadeaux)",
+      "noPressure": "Aucune formulation d'avis scénarisée ou sous pression",
+      "allCustomers": "Demandez à TOUS les clients — pas seulement les satisfaits",
+      "allCustomersSub": "Le filtrage des avis (filtrer les clients insatisfaits) est l'endroit où la plupart des entreprises se brûlent."
+    },
+    "platformRisk": {
+      "title": "Niveaux de Risque par Plateforme",
+      "google": {
+        "allowed": "Demander des avis par e-mail est autorisé",
+        "noIncentives": "Pas d'incitatifs, pas de filtrage des avis",
+        "worstCase": "Pire des cas : avis supprimés ou profil signalé."
+      },
+      "yelp": {
+        "discourages": "Décourage fortement de demander des avis",
+        "filters": "L'algorithme filtre activement les avis 'sollicités'",
+        "safer": "Plus sûr : listez uniquement le nom de votre entreprise — n'intégrez pas de lien direct Yelp dans les campagnes de masse",
+        "worstCase": "Pire des cas : avis filtrés (non affichés publiquement) + badge d'alerte consommateur sur le profil."
+      },
+      "bing": {
+        "title": "Bing / Microsoft",
+        "similar": "Similaire à Google en pratique, application moins agressive",
+        "worstCase": "Généralement sûr d'inclure un lien direct."
+      }
+    },
+    "legal": {
+      "title": "Considérations Légales (U.S.)",
+      "intro": "La FTC se soucie des faux avis, des incitatifs non divulgués et des pratiques trompeuses. Si vous ne demandez qu'à de vrais clients, ne compensez pas et ne manipulez pas — vous êtes en règle légalement.",
+      "fakeReviews": "Faux avis",
+      "undisclosedIncentives": "Incitatifs non divulgués",
+      "misleading": "Pratiques trompeuses ou fallacieuses"
+    },
+    "accountRisks": {
+      "title": "Ce Qui Tue les Comptes",
+      "incentives": "Incitatifs",
+      "incentivesSub": "\"Laissez un avis, obtenez 10% de réduction\" — c'est une violation directe.",
+      "gating": "Entonnoirs de filtrage des avis",
+      "gatingSub": "Filtrer les clients insatisfaits des plateformes publiques.",
+      "bulk": "Envois en masse qui semblent automatisés/spammy",
+      "bulkSub": "Des pics soudains de plus de 50 avis par jour déclenchent des signaux d'alarme.",
+      "writing": "Écrire des avis pour les clients ou coacher la formulation exacte",
+      "yelpLinks": "Intégrer un lien d'avis Yelp dans les campagnes d'e-mail en masse"
+    },
+    "playbook": {
+      "title": "Manuel des Meilleures Pratiques",
+      "neutral": "Envoyez une demande simple et neutre",
+      "neutralSub": "\"Nous apprécierions vos commentaires honnêtes\"",
+      "multiplePlatforms": "Donnez plusieurs options de plateforme",
+      "multiplePlatformsSub": "Ne poussez pas une plateforme agressivement.",
+      "allCustomers": "Demandez à TOUS les clients — pas seulement les satisfaits",
+      "noYelpLinks": "Évitez les liens directs Yelp dans les campagnes",
+      "noYelpLinksSub": "Plus sûr de lister uniquement le nom de votre entreprise.",
+      "throttle": "Limitez le volume",
+      "throttleSub": "Pas de pics soudains. Répartissez les envois sur des jours/semaines.",
+      "realPerson": "Envoyez depuis une personne réelle",
+      "realPersonSub": "Pas 'support@' — utilisez un prénom.",
+      "emailLength": "Gardez les e-mails sous 100–120 mots",
+      "urgency": "Ajoutez une subtile urgence",
+      "urgencySub": "\"tant que c'est encore frais\""
+    },
+    "wooTiming": {
+      "title": "Timing WooCommerce",
+      "product": "Commandes de produits : envoyez 3–5 jours après la finalisation de la commande",
+      "productSub": "Donne aux clients le temps de recevoir et d'utiliser le produit.",
+      "service": "Commandes de services : envoyez 1–2 jours après la finalisation",
+      "serviceSub": "Tant que l'expérience est encore fraîche.",
+      "trigger": "Déclencheur : statut de commande WooCommerce → Terminée",
+      "rotate": "Faites pivoter les plateformes entre les envois",
+      "rotateSub": "N'envoyez pas tout le monde à la même plateforme en même temps.",
+      "track": "Suivez le taux de conversion",
+      "trackSub": "Visez les avis par 100 clients comme votre KPI."
+    },
+    "subjectLines": {
+      "title": "Lignes d'Objet Qui Convertissent",
+      "quickFavor": "\"Une petite faveur ?\"",
+      "quickFavorSub": "Direct, peu de pression, taux d'ouverture élevé.",
+      "howDidWeDo": "\"Comment nous sommes-nous débrouillés ?\"",
+      "howDidWeDoSub": "Conversationnel et axé sur la curiosité.",
+      "gotAMinute": "\"[Prénom], une minute ?\"",
+      "gotAMinuteSub": "La personnalisation augmente les taux d'ouverture.",
+      "thanksOrder": "\"Merci pour votre commande — une minute ?\"",
+      "thanksOrderSub": "Idéal pour les flux post-achat WooCommerce."
+    },
+    "bottomLine": {
+      "label": "En Résumé",
+      "googleBing": "Google + Bing → sûr si fait correctement.",
+      "yelp": "Yelp → procédez avec prudence ou évitez la sollicitation directe.",
+      "legal": "Risque légal → faible si vous restez honnête et n'incitez pas."
+    },
+    "settings": {
+      "title": "Guide de Conformité",
+      "description": "Règles de plateforme, notes légales et meilleures pratiques"
+    }
   },
   "analytics": {
     "title": "Analyses",
@@ -2061,7 +2281,7 @@
   "upgradeFaq": {
     "title": "Questions fréquentes",
     "q1": "L'offre à vie est-elle vraiment un paiement unique?",
-    "a1": "Oui — vous payez 497 $ une seule fois et Get Phame vous appartient pour toujours. Pas de frais mensuels, pas de renouvellements, pas de surprises. Vous bénéficiez également de toutes les mises à jour futures incluses.",
+    "a1": "Oui — vous payez 349 $ une seule fois et Get Phame vous appartient pour toujours. Pas de frais mensuels, pas de renouvellements, pas de surprises. Vous bénéficiez également de toutes les mises à jour futures incluses.",
     "q2": "Que se passe-t-il si j'annule un plan mensuel ou annuel?",
     "a2": "Vous conservez l'accès jusqu'à la fin de votre période de facturation actuelle. Ensuite, votre compte revient au niveau gratuit (10 demandes). Vos contacts et votre historique ne sont jamais supprimés.",
     "q3": "Puis-je passer du mensuel à l'annuel plus tard?",
@@ -2142,7 +2362,68 @@
     "optional": "facultatif",
     "replyToDescription": "Où les réponses des clients iront. Laissez vide pour utiliser votre adresse d'envoi.",
     "googleWorkspaceTitle": "Vous utilisez Google Workspace ou un domaine personnalisé ?",
-    "googleWorkspaceDescription": "Nous n'avons pas pu détecter automatiquement vos paramètres SMTP. Sélectionnez votre fournisseur de messagerie ci-dessous ou entrez les paramètres manuellement."
+    "googleWorkspaceDescription": "Nous n'avons pas pu détecter automatiquement vos paramètres SMTP. Sélectionnez votre fournisseur de messagerie ci-dessous ou entrez les paramètres manuellement.",
+    "accountProfile": {
+      "title": "Profil du compte",
+      "description": "Gérez l’identité affichée dans votre compte Get Phame.",
+      "loading": "Chargement du profil du compte",
+      "saved": "Profil mis à jour.",
+      "avatarSaved": "Photo de profil mise à jour.",
+      "avatarRemoved": "Photo de profil supprimée.",
+      "avatarInvalid": "Choisissez une image JPG, PNG ou WebP de 3 Mo maximum.",
+      "avatarReadError": "Impossible de lire cette image. Essayez un autre fichier.",
+      "avatarAlt": "Photo de profil du compte",
+      "chooseAvatar": "Choisir une photo de profil",
+      "avatarHelp": "JPG, PNG ou WebP · 3 Mo max.",
+      "displayName": "Nom affiché",
+      "email": "Adresse e-mail",
+      "emailHelp": "Votre adresse de connexion est gérée par votre fournisseur d’authentification.",
+      "save": "Enregistrer le profil",
+      "uploadAvatar": "Importer une photo",
+      "removeAvatar": "Supprimer la photo"
+    },
+    "onboardingTips": {
+      "title": "Conseils de configuration",
+      "description": "Affiche des conseils contextuels à la prochaine ouverture de la configuration. Vous pouvez aussi modifier ce réglage dans l’assistant.",
+      "enable": "Activer les conseils de configuration",
+      "disable": "Désactiver les conseils de configuration"
+    },
+    "hapticFeedback": {
+      "title": "Retour haptique",
+      "description": "Utilisez la vibration des appareils compatibles pour les interactions et les confirmations de reconnexion. Le réglage de réduction des animations est toujours respecté.",
+      "enable": "Activer le retour haptique",
+      "disable": "Désactiver le retour haptique"
+    },
+    "bulkSender": {
+      "compliance": "N'envoyez ces messages qu'aux personnes ayant consenti à les recevoir. Get Phame conserve la gestion des désabonnements et les mesures de conformité.",
+      "connectAndTest": "Connecter et tester",
+      "connected": "connecté",
+      "connectedToast": "Bulk Sender connecté.",
+      "connecting": "Connexion en cours…",
+      "description": "Connectez un relais SMTP transactionnel vérifié pour des envois à plus grand volume. Les identifiants sont testés sans envoyer de message.",
+      "disconnect": "Déconnecter",
+      "disconnectedToast": "Bulk Sender déconnecté.",
+      "fromEmail": "E-mail de l'expéditeur",
+      "fromEmailHelp": "Cet expéditeur doit déjà être vérifié auprès de votre fournisseur.",
+      "fromName": "Nom de l'expéditeur",
+      "healthyToast": "Connexion OK.",
+      "hideSecret": "Masquer le secret",
+      "legacyNotice": "Cette connexion existante utilise le mode API hérité. Mettez-la à jour lorsque vous le souhaitez pour utiliser le préréglage SMTP guidé.",
+      "presetEndpoint": "Point de terminaison préréglé",
+      "proBody": "Passez à Pro pour connecter un service d'e-mail transactionnel et obtenir des livraisons à plus grand volume.",
+      "proTitle": "Fonctionnalité Pro",
+      "provider": "Fournisseur",
+      "region": "Région",
+      "secretUsedForUsername": "Votre secret est utilisé de façon sécurisée pour les deux champs SMTP.",
+      "security": "Sécurité",
+      "setupHelp": "Aide à la configuration",
+      "showSecret": "Afficher le secret",
+      "smtpHost": "Hôte SMTP",
+      "smtpPort": "Port",
+      "testConnection": "Tester la connexion",
+      "testFailed": "Échec du test de connexion.",
+      "update": "Mettre à jour"
+    }
   },
   "referralRewardsCard": {
     "title": "Récompenses de parrainage",
@@ -2191,5 +2472,1270 @@
     "codesCreated": "Créés",
     "codesRedeemed": "Utilisés",
     "codesActive": "Actifs"
+  },
+  "common": {
+    "gotIt": "Compris ✓",
+    "hide": "Masquer",
+    "show": "Afficher",
+    "cancel": "Annuler",
+    "copy": "Copier",
+    "off": "Désactivé",
+    "on": "Activé",
+    "optional": "facultatif"
+  },
+  "pricingGrid": {
+    "title": "Choisissez le plan adapté à votre croissance",
+    "savingsEyebrow": "Calculateur d’économies",
+    "savingsTitle": "Découvrez les économies de chaque engagement",
+    "savingsBasis": "Par rapport au paiement mensuel",
+    "monthlyAnnualCost": "pour 12 mois",
+    "annualSave": "Économisez {{amount}}",
+    "annualSavingsDetail": "{{price}} au lieu de {{monthly}} la première année",
+    "lifetimeSave": "Économisez {{amount}} d’ici la deuxième année",
+    "lifetimePayback": "Rentabilisé en environ {{months}} mois",
+    "heroSendRequests": "Envoyer des demandes",
+    "heroAutomateFollowUps": "Automatiser les relances",
+    "heroTrackGrowth": "Suivre votre croissance",
+    "closeComparison": "Fermer la comparaison",
+    "includedLabel": "Inclus",
+    "planFeaturesLabel": "Fonctionnalités du forfait {{plan}}",
+    "approximateThb": "≈ {{amount}} THB",
+    "guidance": {
+      "monthly": "Idéal pour une flexibilité à court terme.",
+      "annual": "Meilleure valeur récurrente, environ 24,17 $ par mois.",
+      "lifetime": "Meilleure valeur à long terme : 349 $ une fois, sans renouvellement."
+    }
+  },
+  "authFeedback": {
+    "openingGoogle": "Ouverture de la connexion Google…",
+    "connectingGoogle": "Connexion à Google…",
+    "continueWithGoogle": "Continuer avec Google",
+    "googleOpenFailed": "Impossible d’ouvrir la connexion Google. Veuillez réessayer.",
+    "googleSuccess": "Connexion Google réussie. Bienvenue sur Get Phame.",
+    "errors": {
+      "googleDenied": "La connexion Google a été annulée.",
+      "googleFailed": "La connexion Google a échoué. Veuillez réessayer.",
+      "googleMissingCode": "Google n’a pas fourni les informations nécessaires à la connexion. Veuillez réessayer.",
+      "googleStateMismatch": "La vérification de sécurité de la connexion Google a échoué. Veuillez réessayer.",
+      "googleNoId": "La connexion Google n’a pas pu vérifier votre compte. Veuillez réessayer."
+    },
+    "preparingGoogle": "Préparation de la connexion Google…",
+    "redirectingGoogle": "Redirection sécurisée vers Google…"
+  },
+  "apiRecovery": {
+    "preparing": "Préparation de votre espace de travail…",
+    "preparingDescription": "Nous nous reconnecterons automatiquement lorsque le service sera prêt.",
+    "reconnecting": "Reconnexion…",
+    "reconnected": "Vous êtes de nouveau en ligne.",
+    "reconnectedDescription": "Get Phame est connecté et prêt à être utilisé.",
+    "unavailableTitle": "Nous reconnectons Get Phame.",
+    "unavailableDescription": "Le service prend un peu plus de temps que prévu. Votre travail est en sécurité ; réessayez quand vous êtes prêt.",
+    "offlineTitle": "Vous êtes actuellement hors ligne.",
+    "offlineDescription": "Vérifiez votre Wi-Fi ou vos données mobiles, puis réessayez. Votre travail reste en sécurité sur cet appareil.",
+    "offlineStepOne": "Activez le Wi-Fi ou les données mobiles.",
+    "offlineStepTwo": "Revenez ici et appuyez sur Réessayer la connexion.",
+    "retrying": "Nouvelle tentative…",
+    "retry": "Réessayer",
+    "retryNow": "Réessayer maintenant",
+    "retryConnection": "Réessayer la connexion",
+    "networkStatusLabel": "État du réseau",
+    "networkOnline": "En ligne",
+    "networkOffline": "Hors ligne"
+  },
+  "profileMenu": {
+    "account": "Compte",
+    "accountDetails": "Détails du compte",
+    "open": "Ouvrir le menu du compte",
+    "signedInAs": "Connecté en tant que",
+    "dashboard": "Tableau de bord",
+    "darkMode": "Mode sombre",
+    "lightMode": "Mode clair"
+  },
+  "account": {
+    "administrator": "Administrateur",
+    "administratorAccount": "Compte administrateur",
+    "renewsOn": "Renouvellement le {{date}}",
+    "accessUntil": "Accès jusqu’au {{date}}",
+    "managePlan": "Gérer le plan",
+    "status": "Statut",
+    "upgrade": "Mettre à niveau"
+  },
+  "paymentSuccess": {
+    "confirmed": "Paiement confirmé.",
+    "confirmedToast": "Paiement confirmé. Votre accès à Get Phame est actif.",
+    "upgraded": "Votre compte a été mis à niveau immédiatement.",
+    "closingThankYou": "Merci d'avoir choisi Get Phame.",
+    "thankYou": "Merci d'avoir investi dans votre système de réputation. Vos trois prochaines actions feront de cette mise à niveau une source de confiance visible auprès de vos clients."
+  },
+  "adminUsers": {
+    "roleUpdated": "Accès administrateur mis à jour.",
+    "lifeGranted": "Accès Life accordé.",
+    "lifeRemoved": "Accès Life retiré.",
+    "back": "Tableau de bord admin",
+    "eyebrow": "Gestion des utilisateurs",
+    "title": "Gérer les utilisateurs",
+    "subtitle": "Recherchez tous les comptes et gérez les accès administrateur ou Life.",
+    "searchLabel": "Rechercher des utilisateurs",
+    "searchPlaceholder": "Nom ou e-mail",
+    "accountCount": "{{count}} comptes",
+    "loading": "Chargement des comptes…",
+    "unnamed": "Utilisateur sans nom",
+    "admin": "Admin",
+    "life": "Life",
+    "noEmail": "Aucun e-mail",
+    "accountMeta": "Inscrit le {{date}} · Forfait enregistré : {{tier}}",
+    "removeAdmin": "Retirer admin",
+    "makeAdmin": "Nommer admin",
+    "removeLife": "Retirer Life",
+    "grantLife": "Accorder Life",
+    "empty": "Aucun utilisateur ne correspond à cette recherche.",
+    "previous": "Précédent",
+    "page": "Page {{page}} sur {{count}}",
+    "next": "Suivant",
+    "chooseSurvivor": "Compte survivant",
+    "combine": "Fusionner",
+    "combineDescription": "Tout ce qui appartient à {{source}} sera transféré vers le compte survivant. Le compte source est supprimé une fois le transfert réussi.",
+    "combineNow": "Fusionner les comptes",
+    "combineRules": "Le compte survivant conserve son identité de connexion et le rôle/plan le plus élevé. Les contacts, demandes, modèles, plateformes, analyses et historique sont transférés. Si une connexion SMTP est vérifiée et l'autre ne l'est pas, la connexion vérifiée est conservée automatiquement. La fusion est toutefois interrompue si les deux connexions SMTP ont le même état de vérification ou si un autre conflit de facturation ou de service e‑mail nécessite votre choix.",
+    "combineTitle": "Fusionner les comptes en double",
+    "combined": "Comptes fusionnés. {{name}} est désormais le compte survivant.",
+    "delete": "Supprimer",
+    "deleteDescription": "Cela supprime définitivement {{name}} ainsi que tous les contacts liés, demandes, intégrations, paramètres, analyses et historique.",
+    "deleteForever": "Supprimer définitivement",
+    "deleteIrreversible": "Cette opération est irréversible. Fusionnez plutôt les comptes en double si vous souhaitez préserver les données.",
+    "deleteTitle": "Supprimer ce compte ?",
+    "deleted": "Compte supprimé.",
+    "deletedAfterMerge": "supprimé",
+    "mergeDirection": "Sens de la fusion",
+    "removeSmtp": "Supprimer SMTP",
+    "removeSmtpDescription": "Cela supprime définitivement l'hôte SMTP, le nom d'utilisateur, le mot de passe chiffré, les informations d'expéditeur et l'état de vérification pour {{email}}.",
+    "removeSmtpPermanently": "Supprimer définitivement les identifiants SMTP",
+    "removeSmtpPreservesAccount": "Le compte utilisateur, les contacts, les demandes, l'abonnement et l'historique ne sont pas supprimés.",
+    "removeSmtpTitle": "Supprimer les identifiants SMTP ?",
+    "retestSmtp": "Retester SMTP",
+    "smtpAlreadyAbsent": "Aucun identifiant SMTP n'était connecté.",
+    "smtpAuditAdministrator": "Administrateur",
+    "smtpAuditAllAdministrators": "Tous les administrateurs",
+    "smtpAuditAllOutcomes": "Tous les résultats",
+    "smtpAuditClearFilters": "Effacer les filtres d'audit",
+    "smtpAuditEmpty": "Aucune suppression d'identifiants SMTP n'a été enregistrée.",
+    "smtpAuditExport": "Exporter le CSV filtré",
+    "smtpAuditExported": "Exporté {{count}} enregistrements d'audit correspondants.",
+    "smtpAuditFrom": "Date de début",
+    "smtpAuditNoExportRows": "Aucun enregistrement d'audit ne correspond aux filtres actuels.",
+    "smtpAuditOutcome": "Résultat",
+    "smtpAuditOutcomeRemoved": "Supprimé",
+    "smtpAuditPagination": "Pages du journal d'audit SMTP",
+    "smtpAuditRemoved": "a supprimé les identifiants SMTP de",
+    "smtpAuditSubtitle": "Enregistrement durable indiquant qui a supprimé définitivement les identifiants SMTP d'un utilisateur et quand.",
+    "smtpAuditTitle": "Journal d'audit des suppressions SMTP",
+    "smtpAuditTo": "Date de fin",
+    "smtpFilterAll": "Tous les statuts SMTP",
+    "smtpFilterFailing": "Échec du contrôle de santé SMTP",
+    "smtpFilterLabel": "Filtrer par statut SMTP",
+    "smtpFilterUnconnected": "Aucun SMTP connecté",
+    "smtpFilterUnverified": "SMTP non vérifié",
+    "smtpFilterVerified": "SMTP vérifié",
+    "smtpNotConnected": "Aucun SMTP",
+    "smtpRecovered": "Connexion SMTP rétablie et vérifiée.",
+    "smtpRecoveryConfirmed": "Rétablissement confirmé {{time}}",
+    "smtpRemoved": "Identifiants SMTP supprimés.",
+    "smtpRetestFailed": "Vérification SMTP échouée.",
+    "smtpRetestPassed": "Vérification SMTP réussie.",
+    "smtpUnverified": "SMTP non vérifié",
+    "smtpVerified": "SMTP vérifié",
+    "sourceDeleted": "Compte source — supprimé",
+    "survivesMerge": "survit",
+    "typeCombine": "Tapez COMBINE pour confirmer",
+    "typeDelete": "Tapez DELETE pour confirmer",
+    "typeEmailToRemoveSmtp": "Saisissez {{email}} pour confirmer"
+  },
+  "adminSubscription": {
+    "grant": "Accorder un abonnement",
+    "grantTitle": "Accorder un accès par abonnement",
+    "grantDescription": "Choisissez la durée d'accès payant pour {{email}}.",
+    "durationLabel": "Durée de l'abonnement",
+    "monthly": "Mensuel",
+    "monthlyDescription": "Accès payant pendant un mois calendaire",
+    "annual": "Annuel",
+    "annualDescription": "Accès payant pendant une année calendaire",
+    "lifetime": "À vie",
+    "lifetimeDescription": "Accès payant permanent sans expiration",
+    "confirmGrant": "Accorder l'accès",
+    "revoke": "Révoquer l'accès",
+    "revokeTitle": "Révoquer l'accès payant ?",
+    "revokeDescription": "{{email}} repassera immédiatement au forfait Gratuit.",
+    "revokeBillingWarning": "Cette action n'annule pas un abonnement Stripe actif. Vérifiez l'état de facturation avant de révoquer l'accès.",
+    "confirmRevoke": "Révoquer l'accès",
+    "cancel": "Annuler",
+    "grantSuccess": "{{email}} a reçu l'accès {{plan}}.",
+    "revokeSuccess": "{{email}} est repassé au forfait Gratuit."
+  },
+  "pwaInstallBanner": {
+    "title": "Installez Get Phame",
+    "description": "Ouvrez votre tableau de bord d’avis plus vite et utilisez Get Phame comme une app.",
+    "cta": "Installer l’app",
+    "iosCta": "Voir les étapes pour iPhone",
+    "opening": "Ouverture…",
+    "openingStatus": "Ouverture des options d’installation de Get Phame.",
+    "dismiss": "Masquer la bannière d’installation",
+    "remindLater": "Me le rappeler plus tard",
+    "shareSuccess": "Get Phame a bien été partagé.",
+    "shareCopied": "Lien Get Phame copié.",
+    "shareCancelled": "Partage annulé.",
+    "shareError": "Impossible de partager Get Phame pour le moment."
+  },
+  "login": {
+    "title": "Get Phame",
+    "subtitle": "Connectez-vous à votre compte",
+    "continueWithGoogle": "Continuer avec Google",
+    "continueWithApple": "Continuer avec Apple",
+    "or": "ou",
+    "emailLabel": "Adresse e-mail",
+    "emailPlaceholder": "vous@exemple.com",
+    "emailRequired": "Saisissez votre adresse e-mail.",
+    "invalidEmail": "Saisissez une adresse e-mail valide.",
+    "sendingMagicLink": "Envoi du lien magique…",
+    "sendMagicLink": "Envoyer le lien magique",
+    "noPassword": "Aucun mot de passe nécessaire : nous vous enverrons un lien de connexion sécurisé par e-mail.",
+    "checkInbox": "Consultez votre boîte de réception",
+    "sentTo": "Nous avons envoyé un lien de connexion à",
+    "expiresNotice": "Le lien expire dans 15 minutes. Vérifiez vos spams si vous ne le voyez pas.",
+    "useDifferentEmail": "Utiliser une autre adresse e-mail",
+    "magicLinkFailed": "Nous n’avons pas pu envoyer votre lien magique. Réessayez.",
+    "networkError": "Erreur réseau. Vérifiez votre connexion et réessayez.",
+    "rateLimited": "Trop de tentatives. Attendez quelques minutes avant de réessayer.",
+    "serviceUnavailable": "Le service est temporairement indisponible. Réessayez.",
+    "termsPrefix": "En continuant, vous acceptez nos",
+    "terms": "Conditions d’utilisation",
+    "consentAnd": "et notre",
+    "privacy": "Politique de confidentialité",
+    "consentSuffix": ".",
+    "signInCancelled": "La connexion a été annulée. Réessayez.",
+    "appleSignInFailed": "La connexion avec Apple n’a pas pu être finalisée. Réessayez.",
+    "invalidMagicLink": "Le lien de connexion est invalide ou a déjà été utilisé. Demandez-en un nouveau.",
+    "magicLinkExpired": "Ce lien de connexion a expiré. Demandez-en un nouveau.",
+    "verificationFailed": "La vérification a échoué. Demandez un nouveau lien.",
+    "appleUnavailable": "La connexion avec Apple n’est pas disponible pour le moment.",
+    "googleUnavailable": "La connexion avec Google n’est pas disponible pour le moment.",
+    "signInFailed": "Nous n’avons pas pu vous connecter. Réessayez.",
+    "resetPassword": "Réinitialiser le mot de passe",
+    "error": "Erreur"
+  },
+  "referralRewards": {
+    "title": "Récompenses de parrainage",
+    "subtitle": "Gagnez 1 mois gratuit pour chaque parrainage payant",
+    "monthsShort": "{{count}} mois",
+    "joined": "Inscrit",
+    "converted": "Converti",
+    "freeMonths": "Mois gratuits",
+    "whatsApp": "WhatsApp",
+    "message": "Message",
+    "copyLink": "Copier le lien",
+    "copied": "Copié !",
+    "copySuccessToast": "Lien de parrainage copié !",
+    "copyErrorToast": "Impossible de copier le lien.",
+    "shareMessage": "Obtenez plus d'avis 5 étoiles avec Get Phame — {{url}}",
+    "noReferralsHint": "Partagez votre lien ci-dessous pour commencer à gagner des mois gratuits",
+    "pendingReferralsHint": "{{count}} ami a rejoint — en attente de son abonnement",
+    "pendingReferralsHint_plural": "{{count}} amis ont rejoint — en attente de leur abonnement",
+    "rewardProcessingHint": "Traitement de la récompense — votre mois gratuit sera appliqué sous peu"
+  },
+  "adminAuthDiagnostics": {
+    "clearFilters": {
+      "button": "Effacer maintenant",
+      "tooltip": "Effacez l’état, la source, les dates et la pagination. Raccourci clavier : Alt+Maj+C.",
+      "touchHelp": "Aide sur le raccourci",
+      "cleared": "Les filtres de l’historique ont été effacés."
+    },
+    "presets": {
+      "orderSavedDetail": "{{name}} enregistré en position {{position}} sur {{total}}.",
+      "orderRestored": "L’ordre précédent des préréglages a été restauré.",
+      "undo": "Annuler",
+      "undoing": "Annulation…",
+      "undoError": "Impossible de restaurer l’ordre précédent des préréglages.",
+      "undoSucceeded": "Ordre des préréglages restauré.",
+      "undoShortcutSucceeded": "Annulation au clavier terminée",
+      "undoShortcutSucceededDescription": "L’ordre précédent des préréglages a été restauré avec Ctrl/Cmd+Z.",
+      "undoShortcutHint": "Clavier : Ctrl/Cmd + Z"
+    },
+    "csvPreview": {
+      "preparing": "Préparation de l’aperçu…",
+      "openButton": "Aperçu du CSV filtré",
+      "title": "Aperçu du CSV assaini",
+      "description": "Vérifiez l’instantané exact, filtré et assaini avant de le télécharger.",
+      "loading": "Préparation de l’aperçu assaini…",
+      "errorTitle": "Aperçu indisponible",
+      "errorDescription": "L’export filtré n’a pas pu être préparé.",
+      "emptyTitle": "Aucune ligne à prévisualiser",
+      "emptyDescription": "Aucun enregistrement d’état ne correspond aux filtres actifs.",
+      "fileLabel": "Fichier :",
+      "summary": "Aperçu de {{previewed}} lignes sur {{exported}} exportées · {{matched}} correspondances",
+      "sanitizedNotice": "L’aperçu et le téléchargement utilisent les mêmes colonnes autorisées, la même rédaction, la même protection contre les formules, les mêmes filtres, la même limite de lignes et le même ordre du plus récent au plus ancien.",
+      "tableLabel": "Aperçu des données CSV assainies",
+      "previewLimited": "La fenêtre affiche les {{count}} premières lignes. Le téléchargement contient les {{total}} lignes de cet export préparé.",
+      "exportLimited": "La limite de sécurité inclut les {{exported}} enregistrements les plus récents sur {{matched}} correspondances.",
+      "close": "Fermer",
+      "download": "Télécharger le CSV",
+      "downloaded": "{{count}} enregistrements d’état assainis ont été téléchargés.",
+      "columnsTitle": "Colonnes à inclure",
+      "columnsHelp": "Sélectionnez au moins une colonne. L’aperçu, la copie et le téléchargement restent synchronisés.",
+      "columnsSelected": "{{selected}} sur {{total}} sélectionnées",
+      "selectAllColumns": "Tout sélectionner",
+      "updatingColumns": "Mise à jour des colonnes sélectionnées…",
+      "copy": "Copier dans le presse-papiers",
+      "copying": "Copie…",
+      "copySucceeded": "Copié",
+      "copyFailed": "Échec de la copie — réessayer",
+      "copied": "{{count}} enregistrements d’état assainis ont été copiés.",
+      "copyError": "Impossible de copier les données CSV. Essayez de les télécharger.",
+      "columnsRemembered": "Les colonnes choisies sont enregistrées pour votre prochaine exportation sur cet appareil.",
+      "columnsStorageUnavailable": "Les colonnes s’appliquent à cette exportation, mais ce navigateur n’a pas pu les mémoriser.",
+      "searchTitle": "Rechercher dans les lignes préparées",
+      "searchPlaceholder": "Rechercher dans toute colonne sélectionnée",
+      "clearSearch": "Effacer la recherche de lignes de l’aperçu",
+      "searchResults": "Affichage de {{shown}} lignes sur {{matched}} correspondances parmi {{total}} lignes préparées.",
+      "searchScope": "Recherchez dans les {{total}} lignes assainies de cet instantané préparé.",
+      "searchExportNotice": "La recherche filtre cet aperçu et le CSV des résultats correspondants ; la copie et le téléchargement principal conservent toutes les lignes préparées.",
+      "downloadSearchResults": "Télécharger les correspondances CSV",
+      "searchResultsDownloaded": "{{count}} enregistrements de santé assainis correspondants ont été téléchargés.",
+      "noSearchResults": "Aucune ligne préparée ne correspond à cette recherche",
+      "noSearchResultsHelp": "Essayez un autre terme ou effacez la recherche. L’exportation préparée reste inchangée.",
+      "searchLimited": "Affichage des {{count}} premières correspondances sur {{matched}} pour préserver la réactivité de l’aperçu."
+    }
+  },
+  "adminRevenueControls": {
+    "promotion": {
+      "created": "Le code promotionnel {{code}} a été créé dans Stripe.",
+      "createError": "Le code promotionnel n'a pas pu être créé.",
+      "copied": "Code promotionnel copié.",
+      "copyError": "Le code promotionnel n'a pas pu être copié.",
+      "title": "Codes promotionnels Stripe",
+      "description": "Chaque code s'applique à une seule facture ou transaction de paiement. Sélectionnez les plans éligibles et les limites d'utilisation facultatives.",
+      "code": "Code",
+      "percentOff": "Pourcentage de réduction",
+      "maxRedemptions": "Utilisations maximales",
+      "expiresAt": "Expire le",
+      "eligiblePlans": "Plans éligibles",
+      "firstTimeOnly": "Première transaction uniquement",
+      "oneTimeNote": "La durée de la réduction est fixée à une facture ou transaction. Stripe reste la source de vérité.",
+      "creating": "Création…",
+      "create": "Créer une promotion",
+      "liveCodes": "Codes Stripe actifs",
+      "empty": "Aucun code promotionnel Stripe pour le moment.",
+      "copyCode": "Copier le code promotionnel",
+      "redemptions": "Utilisations",
+      "firstTimeBadge": "Première transaction"
+    },
+    "grants": {
+      "created": "L'accès gratuit a été accordé.",
+      "createError": "L'accès gratuit n'a pas pu être accordé.",
+      "revoked": "Révoqué",
+      "revokeError": "L'accès gratuit n'a pas pu être révoqué.",
+      "confirmRevoke": "Révoquer cette autorisation d'accès gratuit maintenant ? Cela supprime immédiatement l'accès aux fonctionnalités payantes et aux quotas.",
+      "title": "Accès gratuit",
+      "description": "Accorder un accès temporaire aux fonctionnalités payantes et aux quotas de requêtes par e-mail. L'accès commence immédiatement, expire automatiquement et n'est jamais renouvelé.",
+      "email": "E-mail du client",
+      "privacy": "Stocké sous forme d'empreinte unidirectionnelle et de valeur d'affichage masquée.",
+      "duration": "Durée",
+      "unit": "Unité",
+      "units": {
+        "day": "Jour(s)",
+        "month": "Mois",
+        "year": "An(s)"
+      },
+      "note": "Note interne",
+      "notePlaceholder": "Partenaire, support ou raison du lancement",
+      "expiryNote": "Pas de renouvellement ou de tâche de fond : l'accès se termine à l'expiration UTC enregistrée.",
+      "granting": "Octroi…",
+      "grant": "Accorder l'accès",
+      "lookup": "Recherche exacte par e-mail",
+      "lookupPlaceholder": "client@exemple.com",
+      "search": "Rechercher",
+      "filter": "Filtre d'état",
+      "status": {
+        "all": "Toutes les autorisations",
+        "active": "Actif",
+        "expired": "Expiré",
+        "revoked": "Révoqué"
+      },
+      "lookupResults": "Résultats de la recherche",
+      "noLookupResults": "Aucun historique d'accès gratuit n'a été trouvé pour cet e-mail exact.",
+      "lookupCount": "{{count}} enregistrement(s) d'autorisation correspondant(s).",
+      "history": "Historique des autorisations",
+      "empty": "Aucune autorisation ne correspond à ce filtre.",
+      "accountLinked": "Compte lié",
+      "expires": "Expire le",
+      "revoke": "Révoquer",
+      "ended": "Terminé"
+    },
+    "accessRequired": "Accès administrateur requis",
+    "goHome": "Accueil",
+    "back": "Retour à l'administration",
+    "eyebrow": "Opérations de revenus",
+    "title": "Contrôles des revenus",
+    "description": "Créez des codes promotionnels Stripe ciblés et accordez un accès gratuit temporaire sans modifier les plans de facturation.",
+    "summary": {
+      "activePromotions": "Promotions actives",
+      "activeGrants": "Accès gratuits actifs"
+    },
+    "refresh": "Actualiser",
+    "unlimited": "Illimité",
+    "noExpiry": "Pas d'expiration",
+    "clear": "Effacer"
+  },
+  "helpAssistant": {
+    "conversation": "Conversation d'assistance",
+    "description": "Réponses fondées sur les directives approuvées du produit",
+    "disclaimer": "Les réponses utilisent les directives approuvées de Get Phame et peuvent nécessiter une vérification humaine.",
+    "humanSupport": "Ouvrir une demande d'assistance",
+    "open": "Ouvrir l'aide de Get Phame",
+    "placeholder": "Demandez comment cela fonctionne…",
+    "privateBody": "N'entrez pas de mots de passe, clés API, informations de carte, listes de clients ni contenu privé d'avis. Les questions ne sont pas enregistrées dans une transcription de chat durable.",
+    "privateTitle": "Ne partagez pas de données privées dans le chat",
+    "questionLabel": "Posez une question sur Get Phame",
+    "quick": {
+      "connectEmail": "Comment connecter mon adresse e-mail d'envoi ?",
+      "googleLink": "Où ajouter mon lien d'avis Google ?",
+      "yelp": "Que dois-je savoir avant d'utiliser Yelp ?"
+    },
+    "redacted": "Une valeur potentiellement privée a été supprimée avant le traitement de votre question.",
+    "send": "Envoyer la demande d'assistance",
+    "sourcesLabel": "Sources approuvées",
+    "supportLink": "Assistance humaine",
+    "thinking": "Vérification des directives approuvées…",
+    "title": "Aide Get Phame",
+    "trigger": "Aide",
+    "tryQuestion": "Essayez une question fréquente",
+    "unavailable": "L'assistant d'aide n'est pas disponible pour le moment. Ouvrez une demande d'assistance et notre équipe vous aidera.",
+    "unknown": "Je n'ai pas trouvé de réponse fiable dans les sources d'aide Get Phame approuvées. Veuillez ouvrir une demande d'assistance afin qu'une personne puisse examiner les détails."
+  },
+  "promotionLink": {
+    "applied": "Votre code de campagne sera appliqué au moment du paiement",
+    "verified": "L'éligibilité est vérifiée en toute sécurité avant l'ouverture de Stripe Checkout."
+  },
+  "developerIntegrations": {
+    "sources": {
+      "title": "Connecter une source",
+      "description": "Choisissez l’origine des fiches clients. Get Phame fournit une recette sécurisée, limitée à l’importation, pour une automatisation fiable côté serveur.",
+      "badge": "Importe uniquement les contacts",
+      "workflowTitle": "Parcours de connexion d’une source",
+      "steps": {
+        "choose": "Choisir une source",
+        "key": "Créer une clé d’importation",
+        "map": "Associer les champs et le consentement",
+        "test": "Envoyer un test autorisé"
+      },
+      "choose": "Choisir une source",
+      "recipeCopied": "Recette de configuration sécurisée copiée.",
+      "pathLabel": "Parcours recommandé",
+      "officialDocs": "Documentation du fournisseur",
+      "idempotencyTitle": "ID d’événement stable",
+      "rulesTitle": "Protections obligatoires",
+      "rules": {
+        "secret": "Conservez la clé API Get Phame uniquement dans un champ secret protégé côté serveur. Ne la placez jamais dans un formulaire, une URL, le code source d’une page ou un script du navigateur.",
+        "consent": "Importez uniquement des clients existants ou des personnes ayant donné un consentement explicite. Laissez les cases de consentement facultatives décochées par défaut.",
+        "idempotency": "Réutilisez le même ID d’événement du fournisseur à chaque nouvelle tentative afin qu’une soumission ne crée pas de doublon.",
+        "importOnly": "Ce parcours importe ou met à jour un contact. Il n’envoie jamais automatiquement une demande d’avis."
+      },
+      "providers": {
+        "jotform": {
+          "path": "Transmettez chaque soumission Jotform admissible via un outil d’automatisation fiable capable de stocker des secrets et d’ajouter des en-têtes protégés avant l’envoi à Get Phame.",
+          "idempotency": "Utilisez l’ID immuable de la soumission Jotform pour externalId et Idempotency-Key."
+        },
+        "facebook": {
+          "path": "Recevez les notifications Meta Lead Ads sur un webhook vérifié côté serveur ou via une automatisation fiable, récupérez les champs autorisés du prospect, puis envoyez l’enregistrement normalisé à Get Phame.",
+          "idempotency": "Utilisez l’ID leadgen de Meta comme externalId et Idempotency-Key stables."
+        },
+        "googleForms": {
+          "path": "Utilisez un déclencheur installable Google Apps Script lors de l’envoi du formulaire ou une automatisation fiable. Conservez la clé Get Phame dans les propriétés protégées du script ou dans le coffre de secrets de l’automatisation.",
+          "idempotency": "Utilisez un identifiant de réponse stable ou l’ID de la ligne de réponse liée ; ne créez pas de nouvelle valeur lors des nouvelles tentatives."
+        },
+        "airtable": {
+          "path": "Déclenchez une automatisation fiable lorsqu’un enregistrement Airtable admissible est créé ou approuvé, puis associez-le au contrat d’importation de contacts Get Phame.",
+          "idempotency": "Utilisez l’ID immuable de l’enregistrement Airtable pour externalId et Idempotency-Key."
+        },
+        "other": {
+          "label": "Autre source",
+          "path": "Utilisez tout flux côté serveur ou outil sans code fiable prenant en charge POST, JSON, les en-têtes protégés et un identifiant d’événement stable.",
+          "idempotency": "Utilisez l’ID immuable de soumission, d’enregistrement, de commande ou d’événement du système source à chaque nouvelle tentative."
+        }
+      },
+      "recipeTitle": "Recette d’association sécurisée",
+      "recipeDescription": "Utilisez un espace réservé pendant la configuration. Collez la vraie clé uniquement dans le champ secret protégé du service d’automatisation.",
+      "copyRecipe": "Copier la recette",
+      "apiField": "Champ API",
+      "mapTo": "Associer depuis la source",
+      "fields": {
+        "name": "Champ du nom du client",
+        "email": "Champ de l’adresse e-mail du client",
+        "externalId": "ID immuable de l’événement ou de l’enregistrement fournisseur",
+        "sourceApp": "Identifiant fixe du fournisseur affiché ci-dessus",
+        "consentConfirmed": "Booléen true uniquement après un consentement explicite",
+        "consentBasis": "customer_relationship, explicit_opt_in ou other",
+        "consentSource": "Brève description du lieu où le consentement a été recueilli"
+      },
+      "nextTitle": "Prêt à connecter ?",
+      "nextDescription": "Créez une clé contacts:write, envoyez un enregistrement test autorisé, puis confirmez le résultat masqué dans les importations API récentes.",
+      "createKey": "Créer une clé d’importation",
+      "viewImports": "Voir les importations"
+    },
+    "back": "Retour aux paramètres",
+    "confirm": {
+      "revokeDescription": "Cela désactive immédiatement la clé et ne peut pas être annulé.",
+      "revokeTitle": "Révoquer cette clé API ?",
+      "rotateDescription": "La clé actuelle cessera de fonctionner immédiatement. Vous devez la remplacer partout où l'intégration est configurée.",
+      "rotateTitle": "Renouveler cette clé API ?"
+    },
+    "contract": {
+      "copyEndpoint": "Copier l'endpoint",
+      "description": "Utilisez une requête par action client. L'endpoint canonique nécessite une bearer key avec la permission contacts:write et une attestation de consentement affirmative.",
+      "endpointCopied": "Endpoint copié.",
+      "openGuide": "Ouvrir les guides de configuration",
+      "title": "Contrat de l'API d'import"
+    },
+    "copyFailed": "Impossible de copier automatiquement. Sélectionnez et copiez la valeur manuellement.",
+    "description": "Connectez les formulaires de votre site à Get Phame avec des clés à permissions limitées, des imports respectueux du consentement et un historique d'activité préservant la vie privée.",
+    "eyebrow": "Espace développeur",
+    "guides": {
+      "apiField": "Champ API",
+      "builderTabs": "Type d'intégration",
+      "check1": "La clé API dispose de l'autorisation contacts:write.",
+      "check2": "La clé est stockée côté serveur, jamais dans le code source de la page ou l'URL.",
+      "check3": "Le webhook ne s'exécute qu'après une action client autorisée ou un opt-in.",
+      "check4": "La même soumission conserve le même Idempotency-Key en cas de nouvelle tentative.",
+      "check5": "Un import réussi apparaît avec un e-mail masqué dans Imports API récents.",
+      "check6": "Le contact importé n'est pas automatiquement envoyé par e‑mail.",
+      "consentRule": "Définissez consentConfirmed sur true uniquement lorsque ce workflow représente une relation client existante ou un opt-in explicite. Pour les formulaires de lead généraux, ajoutez une case de consentement non cochée et n'exécutez le webhook qu'après sa sélection.",
+      "consentTitle": "Règle de consentement :",
+      "copied": "Exemple copié.",
+      "copyExample": "Copier l'exemple",
+      "curl": {
+        "step1": "Copiez l'exemple dans un terminal sécurisé sur une machine que vous contrôlez.",
+        "step2": "Remplacez uniquement le placeholder API-key et les valeurs clients d'exemple. Ne collez pas de vraie clé dans des chats partagés, logs ou captures d'écran.",
+        "step3": "Exécutez la commande une fois et confirmez une réponse réussie ainsi qu’une ligne respectueuse de la vie privée dans Imports API récents.",
+        "step4": "Exécutez-la de nouveau avec le même idempotency key pour confirmer une relecture sûre plutôt qu'un contact dupliqué.",
+        "summary": "Exécutez une vérification serveur pour valider endpoint, clé, scope, payload et mapping du consentement."
+      },
+      "description": "Choisissez votre constructeur pour les instructions d'endpoint, d'authentification, de mappage de champs, de consentement et de test.",
+      "elementor": {
+        "caution": "L'action Webhook native d'Elementor peut ne pas exposer tous les contrôles de headers protégés requis par votre configuration. Ne contournez pas cela en plaçant la clé API dans l'URL ou le code source de la page.",
+        "step1": "Créez le formulaire Elementor Pro avec des IDs stables pour le nom client, l'email et toute case de consentement.",
+        "step2": "Utilisez une action de formulaire côté serveur personnalisée ou un pont webhook de confiance qui prend en charge les headers Authorization et Idempotency-Key personnalisés.",
+        "step3": "Configurez POST, le v1 contact endpoint, JSON et le mappage de champs indiqué ci‑dessous.",
+        "step4": "Stockez la clé uniquement dans un paramètre WordPress protégé ou un connecteur côté serveur. Ne la collez jamais dans le HTML de la page ni dans du JavaScript côté client.",
+        "step5": "Soumettez un enregistrement de test autorisé et confirmez qu'il apparaît dans Imports API récents.",
+        "summary": "Utilisez une action de formulaire côté serveur ou un bridge webhook de confiance capable d'ajouter des headers protégés."
+      },
+      "fluent": {
+        "step1": "Activez le module d'intégration Webhooks, puis ouvrez Settings & Integrations → WebHook → Add New du formulaire.",
+        "step2": "Définissez Request URL sur le v1 contact endpoint, Request Method sur POST et Request Format sur JSON.",
+        "step3": "Activez Request Header et ajoutez Authorization ainsi que Idempotency-Key en utilisant un identifiant de soumission stable.",
+        "step4": "Activez Request Body et mappez les champs ainsi que les valeurs statiques de consentement indiquées ci‑dessous.",
+        "step5": "Enregistrez le feed et soumettez un enregistrement de test autorisé.",
+        "summary": "Créez un feed Webhook Pro avec POST, JSON, headers et un corps de requête mappé."
+      },
+      "generic": {
+        "label": "Webhook générique",
+        "step1": "Créez une nouvelle action HTTP sortante ou webhook côté serveur qui s'exécute une fois après une soumission de formulaire client éligible.",
+        "step2": "Définissez la méthode sur POST, l'URL sur le v1 contact endpoint et le type de contenu sur application/json.",
+        "step3": "Ajoutez le header Authorization et un Idempotency-Key stable par soumission.",
+        "step4": "Envoyez le payload JSON imbriqué canonique présenté ci‑dessous.",
+        "step5": "Considérez HTTP 200 comme succès. Recommencez les échecs temporaires avec la même idempotency key.",
+        "summary": "Configurez tout outil d'automatisation côté serveur prenant en charge POST, JSON et des headers protégés."
+      },
+      "gravity": {
+        "step1": "Installez et activez le Gravity Forms Webhooks Add-On, puis ouvrez Form Settings → Webhooks → Add New.",
+        "step2": "Définissez Request URL sur le v1 contact endpoint, Request Method sur POST et Request Format sur JSON.",
+        "step3": "Choisissez Select Fields et mappez les champs ainsi que les valeurs statiques de consentement indiquées ci‑dessous.",
+        "step4": "Ajoutez le header Authorization et utilisez le entry ID merge tag comme Idempotency-Key.",
+        "step5": "Enregistrez le feed et soumettez un enregistrement de test autorisé. Gravity Forms configure automatiquement application/json pour les feeds POST en JSON.",
+        "summary": "Créez un feed Webhooks Add-On avec une requête JSON et des headers personnalisés."
+      },
+      "header": "Configuration des formulaires et des webhooks",
+      "headerDescription": "Chaque guide n'importe qu'un contact. Il n'envoie jamais automatiquement une demande d'avis.",
+      "hide": "Masquer les guides",
+      "map": {
+        "consentSource": "Brève description de l'endroit où le consentement a été recueilli",
+        "email": "Votre champ email client",
+        "entryId": "Le Gravity Forms entry ID merge tag",
+        "name": "Votre champ nom client",
+        "submissionId": "Un identifiant de soumission server-side stable"
+      },
+      "mapTo": "Mapper vers",
+      "officialDocs": "Docs officiels",
+      "placeholderNote": "Les exemples utilisent volontairement une clé d'espace réservé. Get Phame n'insère jamais de clé brute existante dans ces instructions copiables.",
+      "requestExample": "Exemple de requête",
+      "responseExample": "Référence de réponse",
+      "safeExample": "Exemple d'espace réservé sécurisé",
+      "show": "Afficher les guides",
+      "testChecklist": "Liste de vérification",
+      "title": "Guides de configuration pour builders",
+      "wsform": {
+        "step1": "Modifiez le formulaire, ouvrez Actions, ajoutez une action et sélectionnez Webhook.",
+        "step2": "Définissez l'URL de l'Endpoint sur le v1 contact endpoint, Request Method sur POST et Content Type sur JSON.",
+        "step3": "Utilisez Field Mapping pour name et email. Utilisez Custom Mapping pour les valeurs statiques de source et de consentement indiquées ci‑dessous.",
+        "step4": "Utilisez Header Mapping pour Authorization et Idempotency-Key. Sélectionnez l'identifiant de soumission du formulaire pour la valeur d'idempotence.",
+        "step5": "Laissez SSL Verify activé, enregistrez l'action et soumettez un enregistrement de test autorisé.",
+        "summary": "Utilisez l'action Webhook avec mappages JSON field, custom et header."
+      }
+    },
+    "imports": {
+      "customer": "E-mail masqué",
+      "date": "Date",
+      "description": "Un enregistrement opérationnel respectueux de la vie privée. Les e‑mails clients sont masqués et les secrets d'idempotence ne sont jamais affichés.",
+      "empty": "Aucun import API à exporter.",
+      "export": "Exporter CSV",
+      "key": "Clé",
+      "noRows": "Aucun import API n'a encore été enregistré.",
+      "outcome": "Résultat",
+      "source": "Source",
+      "title": "Imports API récents"
+    },
+    "keys": {
+      "configuredExpiry": "Expiration configurée",
+      "create": "Créer une clé API",
+      "createDescription": "Nommez l'intégration, accordez uniquement les permissions nécessaires et définissez, si besoin, une expiration anticipée. Chaque clé expire aussi après 12 mois sans utilisation réussie. Le secret est affiché une seule fois.",
+      "createTitle": "Créer une clé API à permissions limitées",
+      "created": "Clé API créée. Copiez-la avant de fermer la boîte de dialogue.",
+      "creating": "Création…",
+      "days30": "30 jours",
+      "days365": "1 an",
+      "days90": "90 jours",
+      "empty": "Pas encore de clés API. Créez-en une ci‑dessus pour connecter votre première intégration.",
+      "expiresWithinMonth": "Expire dans 30 jours",
+      "expiresWithinWeek": "Expire dans 7 jours",
+      "expiry": "Expiration",
+      "inactiveExpired": "Expirée après 12 mois sans requête API réussie. Renouvelez-la pour créer un remplacement.",
+      "inactivityExpiry": "Expiration pour inactivité",
+      "inactivityWarning": "Une ou plusieurs clés vont bientôt expirer car elles n'ont pas effectué de requête réussie récemment. Lancez l'intégration ou renouvelez la clé avant la date d'inactivité affichée.",
+      "label": "Libellé de la clé",
+      "labelPlaceholder": "Formulaire de contact du site",
+      "labelRequired": "Saisissez un libellé.",
+      "lastUsed": "Dernière utilisation réussie",
+      "listDescription": "Renouvelez les clés compromises ou vieillissantes. La protection anti-abus peut suspendre temporairement une clé, tandis que les clés révoquées et expirées restent visibles pour le contexte d'audit.",
+      "listTitle": "Clés API",
+      "neverExpires": "Pas d'expiration anticipée",
+      "permissions": "Permissions",
+      "revoke": "Révoquer",
+      "revoked": "Clé API révoquée.",
+      "rotate": "Renouveler",
+      "rotated": "Clé API renouvelée. Remplacez l'ancienne clé dans votre intégration maintenant.",
+      "scopeRequired": "Sélectionnez au moins une permission.",
+      "securityNote": "Stockez le secret dans les paramètres côté serveur sécurisés de votre site. Ne le placez jamais dans du JavaScript côté client, des dépôts publics, des captures d'écran ou des messages de support.",
+      "suspendedHelp": "Suspendue temporairement par la protection anti-abus. Examinez le trafic d'intégration et attendez la fin de la fenêtre de protection.",
+      "suspensionEnds": "Fin de la protection",
+      "usage": "Utilisations réussies"
+    },
+    "loading": "Chargement des imports",
+    "open": "Ouvrir l'espace développeur",
+    "refresh": "Actualiser",
+    "secret": {
+      "copied": "Clé API copiée.",
+      "copy": "Copier la clé",
+      "description": "Pour des raisons de sécurité, Get Phame stocke uniquement un hachage. Ce secret ne pourra plus être affiché après la fermeture de cette boîte de dialogue.",
+      "done": "Je l'ai sauvegardée",
+      "title": "Copiez cette clé API maintenant"
+    },
+    "settingsCard": "Créez des clés API à permissions limitées, connectez des formulaires et consultez l'historique d'import respectueux de la vie privée dans un même espace.",
+    "summary": {
+      "activeKeys": "Clés actives",
+      "imports": "Imports récents",
+      "requests": "Utilisations de clés"
+    },
+    "title": "Intégrations développeur",
+    "sourceOps": {
+      "title": "Connexions de source gérées",
+      "description": "Créez une connexion observable par Zap, scénario Make ou flux de travail personnalisé. Chaque source reçoit son propre identifiant, des analyses et un signal de santé.",
+      "refreshKeys": "Actualiser les clés API",
+      "createTitle": "Créer une connexion",
+      "provider": "Fournisseur d'automatisation",
+      "custom": "Webhook personnalisé",
+      "label": "Nom de la connexion",
+      "labels": {
+        "zapier": "Importation client Zapier",
+        "make": "Importation client Make",
+        "custom": "Importation client personnalisée"
+      },
+      "apiKey": "Clé API d'importation",
+      "noKeys": "Aucune clé d'importation active",
+      "expected": "Activité attendue",
+      "intervals": {
+        "15": "Toutes les 15 minutes",
+        "60": "Toutes les heures",
+        "360": "Toutes les 6 heures",
+        "1440": "Quotidien",
+        "10080": "Hebdomadaire"
+      },
+      "minutes": "{{count}} minutes",
+      "createHelp": "La connexion stocke uniquement une référence à la clé API et l'identifiant de la source. Get Phame n'affiche ni ne duplique jamais votre clé API brute.",
+      "create": "Créer la connexion",
+      "created": "Connexion source créée. Ajoutez son ID de source à votre automatisation avant de tester.",
+      "updated": "Paramètres de la source mis à jour.",
+      "archived": "Connexion source archivée. Son ID de source ne peut plus autoriser d'importations.",
+      "healthRefreshed": "État de la source actualisé d'après les activités d'import récentes.",
+      "keyRequired": "Créez ou choisissez d'abord une clé API active contacts:write.",
+      "analyticsTitle": "Flux d'import par source",
+      "analyticsDescription": "Les tentatives, résultats, déduplication et échecs sont calculés à partir des événements d'import attribués.",
+      "range": "Période d'analyse",
+      "daysShort": "j",
+      "metrics": {
+        "attempts": "Tentatives",
+        "successful": "Réussites",
+        "createdContacts": "Contacts créés",
+        "deduplicated": "Dédupliqués",
+        "failures": "Échecs"
+      },
+      "emptyTitle": "Aucune source gérée pour le moment",
+      "emptyDescription": "Créez une connexion pour chaque Zap, scénario Make ou flux de travail personnalisé que vous souhaitez surveiller.",
+      "status": {
+        "healthy": "Sain",
+        "setup": "Configuration",
+        "delayed": "Retardé",
+        "failing": "En échec",
+        "paused": "En pause"
+      },
+      "openSetup": "Ouvrir la configuration",
+      "successRate": "Taux de réussite",
+      "lastActivity": "Dernière activité",
+      "never": "Jamais",
+      "refreshHealth": "Actualiser l'état",
+      "pause": "Mettre la surveillance en pause",
+      "resume": "Reprendre la surveillance",
+      "archive": "Archiver",
+      "template": "modèle guidé",
+      "templateDescription": "Copiez cette requête exacte dans l'action HTTP ou webhook protégée de votre automatisation.",
+      "copyRecipe": "Copier la recette",
+      "recipeCopied": "Recette de connexion copiée.",
+      "secretReminder": "N'utilisez la clé API brute que dans le champ secret protégé du fournisseur. L'ID de source peut être copié en toute sécurité mais ne fonctionne qu'avec la clé qui lui est liée.",
+      "providerDocs": "Documentation du fournisseur",
+      "healthHistory": "Historique de santé",
+      "noHealthHistory": "Aucun contrôle de santé pour le moment. Envoyez une importation autorisée, puis actualisez l'état.",
+      "reasons": {
+        "awaiting_first_import": "En attente de la première importation autorisée",
+        "no_imports_observed": "Aucune importation observée durant la fenêtre de configuration",
+        "expected_import_overdue": "L'activité d'importation attendue est en retard",
+        "recent_import_error": "La dernière activité s'est terminée par une erreur d'importation",
+        "recovered_after_error": "Les importations ont repris après une erreur",
+        "imports_flowing": "Les importations s'effectuent dans l'intervalle attendu"
+      },
+      "historyCounts": "{{attempts}} tentatives · {{failures}} échecs",
+      "archiveTitle": "Archiver cette connexion source ?",
+      "archiveDescription": "Les importations utilisant cet ID de source seront rejetées. Les contacts existants et les analyses respectueuses de la vie privée restent disponibles dans leurs enregistrements d'origine.",
+      "steps": {
+        "zapier": {
+          "1": "Choisissez l'application et l'événement qui génèrent un enregistrement client éligible.",
+          "2": "Ajoutez Webhooks by Zapier et sélectionnez Custom Request.",
+          "3": "Définissez la méthode sur POST et collez le point de terminaison Get Phame.",
+          "4": "Ajoutez les en-têtes protégés exactement comme indiqué ci‑dessous.",
+          "5": "Mappez les champs JSON en utilisant un identifiant fournisseur stable pour externalId et Idempotency-Key.",
+          "6": "Testez l'action avec un enregistrement autorisé, puis actualisez l'état ici."
+        },
+        "make": {
+          "1": "Choisissez le module déclencheur qui produit un enregistrement client éligible.",
+          "2": "Ajoutez HTTP et sélectionnez Make a request.",
+          "3": "Définissez Method sur POST, Body type sur Raw et Content type sur application/json.",
+          "4": "Ajoutez les en-têtes protégés exactement comme indiqué ci‑dessous.",
+          "5": "Mappez les champs JSON en utilisant un identifiant de bundle stable pour externalId et Idempotency-Key.",
+          "6": "Exécutez le scénario une fois avec un enregistrement autorisé, puis actualisez l'état ici."
+        },
+        "custom": {
+          "1": "Utilisez un flux de travail côté serveur de confiance qui prend en charge POST et les en-têtes protégés.",
+          "2": "Stockez la clé API dans le magasin de secrets du workflow, jamais dans du code côté navigateur ni dans une URL.",
+          "3": "Envoyez du JSON vers le point de terminaison Get Phame avec les en-têtes indiqués ci‑dessous.",
+          "4": "Utilisez un ID d'enregistrement source immuable pour externalId et Idempotency-Key.",
+          "5": "Envoyez un enregistrement autorisé, puis actualisez l'état ici."
+        }
+      }
+    }
+  },
+  "landing": {
+    "hero": {
+      "categoryLabel": "Logiciel d'e‑mails de demande d'avis pour commerces locaux",
+      "googleDisclosureLabel": "Utilisation des données de la connexion Google"
+    },
+    "leadCapture": {
+      "addressConfirmation": "Nous l'avons envoyé à {{email}}. Vérifiez l'orthographe et consultez les courriers indésirables si vous ne le recevez pas. L'acceptation par le fournisseur n'assure pas la livraison en boîte de réception.",
+      "deliveryFallback": "La livraison par e‑mail n'a pas été possible pour {{email}}. Vérifiez l'orthographe, réessayez ou téléchargez le guide maintenant.",
+      "downloadGuideButton": "Télécharger le guide PDF",
+      "downloadReadyMessage": "Votre guide est prêt à être téléchargé.",
+      "editEmail": "Modifier l'adresse e‑mail",
+      "emailConfirmationHint": "Nous afficherons l'adresse à nouveau avant de quitter la page pour que vous puissiez corriger une éventuelle coquille.",
+      "emailInvalid": "Saisissez une adresse e‑mail correctement formatée, par ex. name@example.com.",
+      "emailRequired": "Saisissez votre adresse e‑mail.",
+      "providerAcceptedMessage": "Votre fournisseur de messagerie a accepté le guide pour l'envoi.",
+      "sharePrompt": "Vous connaissez quelqu’un qui a besoin d’avis supplémentaires ? Partagez ce guide gratuit.",
+      "tryAgain": "Réessayer l'envoi par e‑mail"
+    },
+    "purpose": {
+      "description": "Get Phame aide les commerces locaux à envoyer des e‑mails personnalisés de demande d'avis depuis leur propre compte e‑mail connecté. Il est conçu pour les propriétaires d'entreprise, les photographes, les cafés et restaurants, les équipes de services à domicile, les cliniques et salons, les agences et les boutiques WooCommerce qui souhaitent une façon plus simple de demander un retour à de vrais clients.",
+      "eyebrow": "À propos de cette application",
+      "googleDescription": "La connexion Google est utilisée uniquement pour créer et identifier votre compte Get Phame. Avec votre permission, Get Phame reçoit votre nom et votre adresse e‑mail. Nous ne demandons pas l'accès à vos messages Gmail, à vos contacts, à vos fichiers Google Drive ni à votre Google Agenda.",
+      "googleEyebrow": "Mention concernant la connexion Google",
+      "googleSendingNote": "L'envoi des demandes d'avis se configure séparément dans l'application en utilisant le compte e‑mail que vous choisissez de connecter.",
+      "googleTitle": "Utilisation de la connexion Google",
+      "privacyLink": "Consultez notre politique de confidentialité",
+      "stepLabel": "Étape {{number}}",
+      "steps": {
+        "customers": "Ajoutez les clients de votre choix",
+        "reviews": "Dirigez les clients vers la plateforme d'avis de votre choix",
+        "send": "Envoyez une demande personnalisée depuis votre adresse e‑mail"
+      },
+      "title": "Ce que fait Get Phame"
+    },
+    "stats": {
+      "emailsSentValue": "Votre boîte de réception"
+    },
+    "support": {
+      "attachment": "Capture d'écran",
+      "attachmentHint": "JPG, PNG ou WebP uniquement. Maximum 8 Mo.",
+      "attachmentSize": "Limitez les captures d'écran à 8 Mo ou moins.",
+      "attachmentType": "Joignez une capture d'écran au format JPG, PNG ou WebP.",
+      "description": "Envoyez un message à notre équipe ; nous répondrons à l'adresse e‑mail que vous indiquerez.",
+      "email": "E‑mail",
+      "error": "Nous n'avons pas pu envoyer votre message. Veuillez réessayer dans un instant.",
+      "fileReadError": "Nous n'avons pas pu lire cette capture d'écran.",
+      "message": "Message",
+      "messageHint": "N'incluez pas de mots de passe ni d'informations de carte.",
+      "name": "Nom",
+      "optional": "facultatif",
+      "removeAttachment": "Supprimer la capture d'écran",
+      "sendAnother": "Envoyer un autre message",
+      "sending": "Envoi…",
+      "subject": "Objet",
+      "submit": "Envoyer la demande d'assistance",
+      "successDescription": "Nous répondrons à l'adresse e‑mail fournie dès que possible.",
+      "successTitle": "Votre demande d'assistance a été envoyée.",
+      "title": "Comment pouvons‑nous vous aider ?",
+      "topic": "En quoi pouvons‑nous vous aider ?",
+      "topicBilling": "Facturation",
+      "topicOnboarding": "Intégration",
+      "topicTechnical": "Problème technique",
+      "uploading": "Envoi de la capture d'écran…",
+      "validation": {
+        "email": "Saisissez une adresse e‑mail valide.",
+        "messageMax": "Limitez le message à 4 000 caractères maximum.",
+        "messageMin": "Donnez-nous un peu plus de détails afin que nous puissions vous aider.",
+        "nameMax": "Limitez votre nom à 80 caractères maximum.",
+        "subjectMax": "Limitez l'objet à 120 caractères maximum.",
+        "subjectMin": "Saisissez un objet d'au moins 3 caractères."
+      },
+      "website": "Site web"
+    }
+  },
+  "adaptiveSending": {
+    "title": "Protection d’envoi adaptative",
+    "notConfiguredTitle": "Connectez d’abord un expéditeur",
+    "notConfiguredBody": "Connectez votre compte e-mail dans les paramètres avant d’envoyer des demandes d’avis.",
+    "connectEmail": "Connecter l’e-mail",
+    "remaining": "{{count}} disponibles",
+    "thisHour": "Cette heure",
+    "today": "Aujourd’hui",
+    "nextReset": "Prochain renouvellement de capacité : {{time}}",
+    "automaticRamp": "Les limites augmentent automatiquement pendant la montée en puissance de la connexion",
+    "approachingTitle": "Vous approchez de la limite de sécurité",
+    "approachingBody": "La capacité est gérée automatiquement. Envoyez d’abord les demandes les plus importantes.",
+    "highTitle": "La capacité d’envoi est presque utilisée",
+    "highBody": "Terminez d’abord les envois prioritaires. Get Phame mettra automatiquement en pause avant que le risque fournisseur n’augmente.",
+    "blockedTitle": "Limite de sécurité atteinte",
+    "blockedBody": "Les envois sont automatiquement suspendus jusqu’à la réinitialisation de la fenêtre de sécurité actuelle.",
+    "upgradePlan": "Mettre à niveau pour Bulk Sender",
+    "connectBulkSender": "Connecter Bulk Sender",
+    "safetyNote": "Des limites adaptées au fournisseur et un plafond de sécurité distinct par compte s’appliquent toujours. Changer de fournisseur ne contourne pas la protection.",
+    "stage": {
+      "new": "Nouvelle connexion",
+      "warming": "Montée en puissance",
+      "building": "Réputation en cours",
+      "established": "Établie"
+    }
+  },
+  "developerEnrollment": {
+    "loading": "Chargement de l’inscription développeur",
+    "title": "Inscription développeur",
+    "description": "Acceptez les règles de l’API une fois, commencez par des importations de contacts sûres et fournissez des informations professionnelles uniquement si votre intégration doit envoyer des demandes d’avis individuelles.",
+    "terms": {
+      "title": "1. Accepter les conditions de l’API",
+      "description": "Les clés ne peuvent être utilisées que depuis des intégrations serveur sécurisées pour des clients ayant une véritable relation commerciale et un consentement approprié.",
+      "current": "Conditions de l’API et Politique d’utilisation acceptable en vigueur acceptées",
+      "termsLabel": "J’accepte les Conditions de l’API figurant dans les Conditions d’utilisation de Get Phame.",
+      "readTerms": "Lire les conditions",
+      "aupLabel": "J’accepte la Politique d’utilisation acceptable : aucun spam, aucune liste achetée ou extraite, aucune clé exposée dans le navigateur, aucun contournement des limites ni automatisation trompeuse.",
+      "readGuide": "Lire le guide de conformité",
+      "accept": "Accepter et activer les clés d’importation",
+      "acceptedToast": "Conditions de l’API acceptées. Vous pouvez maintenant créer des clés d’importation uniquement.",
+      "requiredForKey": "Acceptez les Conditions de l’API avant de créer une clé.",
+      "onboardingTitle": "Acceptez les règles de l’API pour créer votre clé d’importation"
+    },
+    "send": {
+      "title": "2. Accès d’envoi facultatif",
+      "description": "L’importation de contacts n’envoie jamais rien automatiquement. Effectuez ce bref contrôle professionnel uniquement si votre intégration doit envoyer une demande d’avis après une action client approuvée.",
+      "approvedToast": "Accès d’envoi approuvé. Vous pouvez maintenant ajouter review_requests:send à une clé.",
+      "pendingToast": "Demande soumise pour examen. L’accès d’importation uniquement reste disponible.",
+      "acceptFirst": "Acceptez d’abord les Conditions de l’API. L’accès d’importation uniquement sera activé immédiatement.",
+      "approved": "Approuvé pour l’envoi de demandes d’avis individuelles",
+      "pending": "Demande à volume élevé en attente d’examen",
+      "pendingDetail": "Vos clés d’importation uniquement continuent de fonctionner. Get Phame n’ajoutera pas l’autorisation d’envoi avant l’approbation de cet examen.",
+      "businessName": "Nom de l’entreprise",
+      "website": "Site web (facultatif)",
+      "useCase": "Comment l’intégration utilisera-t-elle l’accès d’envoi ?",
+      "useCasePlaceholder": "Exemple : après un rendez-vous terminé, notre serveur importe le client et envoie une demande d’avis.",
+      "monthlyVolume": "Envois prévus par mois",
+      "reviewThreshold": "Jusqu’à {{count}} envois prévus par mois peuvent être activés immédiatement. Les volumes supérieurs nécessitent un examen manuel et ne contournent jamais les limites de sécurité adaptatives.",
+      "consentProcess": "Comment confirmez-vous la relation client et le consentement ?",
+      "consentPlaceholder": "Décrivez l’achat, le rendez-vous ou le service et la manière dont les désinscriptions sont respectées.",
+      "confirmCustomers": "J’enverrai uniquement aux clients ayant une véritable relation commerciale.",
+      "confirmLists": "Je n’utiliserai pas de listes achetées, louées, extraites ou de tiers.",
+      "confirmActions": "Chaque envoi API suivra une action individuelle approuvée du client ; je respecterai les désinscriptions et les limites adaptatives.",
+      "resubmit": "Soumettre à nouveau les informations professionnelles",
+      "request": "Activer l’accès d’envoi",
+      "completeRequired": "Remplissez tous les champs et confirmations professionnels.",
+      "requiredForScope": "Terminez l’inscription à l’usage professionnel avant d’ajouter l’autorisation d’envoi.",
+      "scopeLocked": "Inscription à l’usage professionnel requise"
+    }
+  },
+  "passkeys": {
+    "signIn": {
+      "title": "Se connecter avec une clé d’accès",
+      "description": "Utilisez l’empreinte, la reconnaissance faciale ou le verrouillage d’écran déjà configuré sur votre appareil.",
+      "emailLabel": "E-mail du compte",
+      "emailPlaceholder": "vous@exemple.com",
+      "button": "Continuer avec une clé d’accès",
+      "inProgress": "Vérification de la clé d’accès…",
+      "preparing": "Préparation de l’invite sécurisée…",
+      "verifying": "Vérification de votre clé d’accès…",
+      "invalidEmail": "Saisissez une adresse e-mail valide.",
+      "unsupported": "Les clés d’accès ne sont pas disponibles dans ce navigateur. Vous pouvez toujours utiliser un lien sécurisé envoyé par e-mail.",
+      "unavailable": "La connexion avec la clé d’accès n’a pas abouti. Utilisez le lien e-mail ci-dessous ou réessayez.",
+      "orAlternative": "ou utilisez une autre méthode de connexion"
+    },
+    "security": {
+      "title": "Clés d’accès",
+      "description": "Ajoutez une méthode résistante au hameçonnage avec la biométrie ou le verrouillage d’écran de votre appareil. La connexion par e-mail reste disponible.",
+      "unsupported": "Ce navigateur ne peut pas créer de clés d’accès. Essayez une version récente de Chrome, Safari, Edge ou Firefox.",
+      "newNameLabel": "Nom de la clé d’accès",
+      "newNameHelp": "Choisissez un nom qui vous aide à reconnaître cet appareil.",
+      "namePlaceholder": "Exemple : Ordinateur professionnel",
+      "create": "Créer une clé d’accès",
+      "creating": "Création…",
+      "preparing": "Préparation de l’invite sécurisée de l’appareil…",
+      "verifying": "Vérification de votre nouvelle clé d’accès…",
+      "defaultName": "Ma clé d’accès",
+      "createSuccess": "Clé d’accès créée. Vous pouvez maintenant l’utiliser pour vous connecter.",
+      "createError": "La configuration de la clé d’accès n’a pas abouti. Réessayez.",
+      "savedTitle": "Clés d’accès enregistrées",
+      "loading": "Chargement des clés d’accès…",
+      "loadError": "Impossible de charger les clés d’accès.",
+      "empty": "Aucune clé d’accès pour le moment. Créez-en une ci-dessus pour une connexion plus rapide et résistante au hameçonnage.",
+      "nameLabel": "Nom de la clé d’accès",
+      "saveName": "Enregistrer le nom de la clé",
+      "cancelRename": "Annuler le changement de nom",
+      "rename": "Renommer {{name}}",
+      "renameSuccess": "Clé d’accès renommée.",
+      "renameError": "Impossible de renommer la clé d’accès.",
+      "created": "Créée le {{date}}",
+      "lastUsed": "Dernière utilisation le {{date}}",
+      "synced": "Synchronisée par le fournisseur de votre appareil",
+      "remove": "Supprimer",
+      "removeConfirm": "Supprimer cette clé d’accès ? Vous ne pourrez plus l’utiliser pour vous connecter.",
+      "confirmRemove": "Supprimer la clé d’accès",
+      "cancel": "Annuler",
+      "removeSuccess": "Clé d’accès supprimée.",
+      "removeError": "Impossible de supprimer la clé d’accès."
+    }
+  },
+  "recoveryDrill": {
+    "defaults": {
+      "title": "Exercice de récupération du compte propriétaire"
+    },
+    "toast": {
+      "prepared": "Exercice de récupération en pré-production préparé.",
+      "approved": "Exercice de récupération approuvé.",
+      "rejected": "Exercice de récupération rejeté et clôturé.",
+      "started": "Exercice de récupération démarré.",
+      "evidence": "Preuves masquées enregistrées.",
+      "contained": "Exercice de récupération contenu.",
+      "completed": "Exercice de récupération terminé et accès temporaire révoqué.",
+      "aborted": "Exercice de récupération avorté et accès temporaire révoqué."
+    },
+    "loading": "Vérification de l'accès de récupération en pré-production…",
+    "title": "Exercice de récupération en pré-production",
+    "stagingOnly": "Uniquement en pré-production",
+    "description": "Exercez la récupération du compte propriétaire avec séparation des tâches, vérification récente par passkey, preuves masquées et révocation automatique.",
+    "environment": "Environnement",
+    "available": "Hôte de pré-production autorisé",
+    "unavailable": "Indisponible sur cet hôte",
+    "yourRole": "Votre rôle",
+    "statusLabel": "Statut",
+    "hostGate": "Ce contrôle reste verrouillé sauf si le mode pré-production et une liste blanche d'hôtes non‑production exacte sont configurés.",
+    "passkeyRequired": "Les actions sensibles de l'exercice nécessitent une session vérifiée par passkey datant des 15 dernières minutes. Connectez‑vous avec une passkey, puis revenez ici.",
+    "prepareTitle": "Préparer un exercice avec séparation des responsabilités",
+    "prepareHelp": "Steve est le Recovery Custodian. Désignez un autre ingénieur principal qui possède déjà un compte Get Phame actif et une passkey.",
+    "drillTitle": "Titre de l'exercice",
+    "approverEmail": "Email de l'ingénieur principal",
+    "scheduledAt": "Heure prévue",
+    "notes": "Notes de l'opérateur masquées (optionnel)",
+    "preparing": "Préparation…",
+    "prepare": "Préparer l'exercice en pré-production",
+    "scheduledFor": "Programmé pour le {{date}}",
+    "approvalTitle": "Approbation indépendante",
+    "approvalHelp": "Examinez la portée en pré-production et confirmez que vous n'êtes pas le Recovery Custodian. L'approbation expire avec votre accès temporaire restreint.",
+    "decisionNote": "Note de décision",
+    "decisionPlaceholder": "Enregistrez une justification d'approbation masquée",
+    "approve": "Approuver",
+    "reject": "Rejeter",
+    "start": "Démarrer l'exercice approuvé",
+    "evidenceTitle": "Enregistrer des preuves masquées",
+    "evidenceHelp": "N'utilisez que des event IDs, des numéros de ticket, des horodatages ou des références d'objet assainies. N'entrez jamais de tokens, de cookies, d'identifiants ou de données client.",
+    "evidenceType": "Type de preuve",
+    "outcome": "Résultat",
+    "evidenceReference": "Référence de preuve assainie",
+    "evidencePlaceholder": "Exemple : audit-event:evt_123 à 14:05 UTC",
+    "recordEvidence": "Enregistrer la preuve",
+    "evidenceLog": "Journal des preuves",
+    "containmentReason": "Motif de confinement",
+    "containmentPlaceholder": "Condition d'arrêt ou motif de confinement",
+    "contain": "Contenir l'exercice",
+    "complete": "Terminer et révoquer l'accès",
+    "abortReason": "Motif d'abandon",
+    "abortPlaceholder": "Motif d'abandon assaini",
+    "abort": "Annuler l'exercice",
+    "status": {
+      "notPrepared": "Non préparé",
+      "draft": "Brouillon",
+      "ready": "Prêt",
+      "in_progress": "En cours",
+      "paused": "Confiné",
+      "completed": "Terminé",
+      "aborted": "Avorté"
+    },
+    "roles": {
+      "none": "No recovery role",
+      "platform_owner": "Platform owner",
+      "recovery_custodian": "Recovery Custodian",
+      "independent_approver": "Independent Approver",
+      "observer": "Observer"
+    },
+    "decision": {
+      "approved": "Approuvé",
+      "rejected": "Rejeté"
+    },
+    "evidence": {
+      "preflight": "Vérifications préalables",
+      "revoked_session_denial": "Refus — session révoquée",
+      "revoked_credential_denial": "Refus — identifiants révoqués",
+      "tenant_isolation": "Isolation des locataires",
+      "replacement_enrollment": "Enrôlement d'une passkey de remplacement",
+      "step_up_verification": "Vérification renforcée",
+      "audit_verification": "Vérification d'audit",
+      "rollback": "Validation de restauration",
+      "stop_condition": "Condition d'arrêt",
+      "containment": "Confinement",
+      "after_action": "Revue post-action"
+    },
+    "outcomes": {
+      "passed": "Réussi",
+      "failed": "Échoué",
+      "blocked": "Bloqué",
+      "contained": "Confiné",
+      "not_applicable": "Non applicable"
+    }
+  },
+  "manual": {
+    "badges": {
+      "all": "Gratuit et payant",
+      "paid": "Réservé aux abonnements payants",
+      "admin": "Réservé aux administrateurs"
+    },
+    "searchPlaceholder": "Rechercher dans ce manuel",
+    "searchLabel": "Rechercher dans ce manuel",
+    "searchResults": "{{count}} sujets correspondants",
+    "lastUpdated": "Dernière mise à jour {{date}}",
+    "sectionNavigation": "Sections du manuel",
+    "sectionCount": "Sections du manuel",
+    "adminSectionCount": "Sections réservées aux administrateurs",
+    "paidTopicCount": "Sujets réservés aux abonnements payants",
+    "inThisManual": "Dans ce manuel",
+    "stepsLabel": "Étapes",
+    "noteLabel": "Note importante",
+    "openFeature": "Ouvrir cette fonctionnalité",
+    "noResultsTitle": "Aucun sujet correspondant",
+    "noResultsBody": "Essayez une recherche plus courte ou parcourez les liens de section ci‑dessus.",
+    "clearSearch": "Effacer la recherche",
+    "insights": {
+      "eyebrow": "Analytique de la documentation",
+      "title": "Recherches sans résultats",
+      "description": "Utilisez ces termes agrégés pour prioriser les sujets manquants du Manuel. Les recherches répétées depuis le même compte sont comptabilisées une fois par jour UTC.",
+      "privacy": "Privé par conception : les rapports excluent les identifiants de compte, les enregistrements client, les référents, les appareils et les lignes d'événements bruts.",
+      "periodLabel": "Période de rapport",
+      "periodDays": "{{count}} jours",
+      "loading": "Chargement des recherches de sujets manquants…",
+      "error": "Les analyses des sujets manquants n'ont pas pu être chargées. Réessayez.",
+      "retry": "Réessayer",
+      "totalSearches": "Recherches sans résultats",
+      "uniqueTerms": "Termes distincts",
+      "roleBreakdown": "Utilisateur {{user}} · Admin {{admin}}",
+      "manualScope": "Portée du Manuel",
+      "term": "Recherche de sujet manquant",
+      "role": "Manuel",
+      "locale": "Paramètre régional",
+      "count": "Nombre",
+      "lastSearched": "Dernière recherche",
+      "adminManual": "Manuel administrateur",
+      "userManual": "Manuel utilisateur",
+      "emptyTitle": "Pas encore de recherches de sujets manquants",
+      "emptyBody": "Les recherches sans résultat apparaîtront ici après la déduplication quotidienne au niveau du compte."
+    },
+    "export": {
+      "fullScope": "Ensemble du Manuel visible",
+      "sectionScope": "Section du Manuel",
+      "scope": "Portée de l'exportation",
+      "language": "Langue",
+      "generated": "Généré",
+      "lastUpdated": "Dernière mise à jour du Manuel",
+      "version": "Version du Manuel",
+      "steps": "Étapes",
+      "notes": "Notes importantes",
+      "featurePath": "Chemin de la fonctionnalité",
+      "page": "Page {{current}} sur {{total}}",
+      "sectionSuccess": "Téléchargé {{section}} au format PDF.",
+      "fullSuccess": "Le Manuel complet a été téléchargé au format PDF.",
+      "error": "Le PDF du Manuel n'a pas pu être créé. Veuillez réessayer.",
+      "preparing": "Préparation du PDF…",
+      "fullButton": "Télécharger le PDF complet du Manuel",
+      "help": "Le PDF inclut uniquement le Manuel disponible pour votre rôle authentifié et la langue actuelle.",
+      "sectionAria": "Télécharger {{section}} au format PDF",
+      "sectionButton": "Télécharger le PDF de la section"
+    }
+  },
+  "adminGithubCleanup": {
+    "dashboardCardTitle": "Outil de nettoyage GitHub",
+    "dashboardCardBody": "Examiner l'ascendance, le travail unique, les contrôles de sécurité et le script de présentation",
+    "loading": "Chargement de la vitrine de nettoyage",
+    "errorTitle": "Vitrine indisponible",
+    "errorBody": "Les preuves du dépôt réservées aux administrateurs n'ont pas pu être chargées.",
+    "backToAdmin": "Retour à l'administration",
+    "adminOnly": "Réservé aux administrateurs",
+    "title": "Nettoyage de dépôt GitHub",
+    "subtitle": "Auditer l'ascendance des branches, préserver le travail unique, vérifier l'arbre de release et supprimer uniquement les branches dont la suppression est prouvée sûre.",
+    "scriptCopied": "Script de présentation copié.",
+    "scriptCopyError": "Le script n'a pas pu être copié.",
+    "stats": {
+      "main": "Main",
+      "tree": "Arbre de release",
+      "exact": "Correspondance exacte",
+      "branches": "Branches",
+      "openPrs": "PR ouvertes"
+    },
+    "evidence": {
+      "eyebrow": "Preuves du dépôt vérifiées",
+      "title": "État actuel de la release et de la préservation",
+      "body": "L'arbre protégé main correspond exactement à la release gérée validée. push-safe reste isolé car il contient du travail unique mais obsolète qui doit être extrait sélectivement."
+    },
+    "visuals": {
+      "ancestryAlt": "Carte d'ascendance et de préservation des branches montrant main protégé, parité exacte de l'arbre de release, divergence de push-safe, et où les extrémités des branches supprimées restent préservées.",
+      "ancestryCaption": "Les relations pleines indiquent une ascendance vérifiée ; les relations en pointillés indiquent une parité exacte de l'arbre Git plutôt qu'un historique de commits partagé.",
+      "uniqueAlt": "Travail unique push-safe ordonné par priorité d'extraction, avec l'état de préparation et la prochaine action sûre pour Mailjet, Help Assistant, Sources et WooCommerce, ainsi que l'entitlement payant.",
+      "uniqueCaption": "La priorité est l'ordre d'action ; la préparation décrit le traitement appuyé par les preuves à la date d'audit."
+    },
+    "metrics": {
+      "eyebrow": "Définitions des métriques",
+      "title": "La priorité d'extraction et la préparation répondent à des questions différentes",
+      "extraction": {
+        "title": "Priorité d'extraction",
+        "body": "Un ordre d'action ordinal. Priorité 1 signifie évaluer ou extraire en premier. Ce n'est pas l'urgence, l'impact sur le revenu, les story points, la probabilité de succès ou le pourcentage d'avancement."
+      },
+      "dimensions": {
+        "isolation": {
+          "title": "Isolation",
+          "body": "Le travail peut-il être déplacé sans embarquer l'historique de branches non lié ?"
+        },
+        "compatibility": {
+          "title": "Compatibilité",
+          "body": "Dans quelle mesure cela entre en conflit ou duplique la branche main actuelle ?"
+        },
+        "evidence": {
+          "title": "Clarté des preuves",
+          "body": "Le code, les tests, les blocages et les critères d'acceptation sont-ils documentés ?"
+        },
+        "dependencies": {
+          "title": "Résolution des dépendances",
+          "body": "Les composants requis, migrations, fournisseurs et politiques sont-ils résolus ?"
+        },
+        "valueRisk": {
+          "title": "Séquence valeur-risque",
+          "body": "L'examen prioritaire de cet élément peut-il produire des progrès utiles avec un risque de régression limité ?"
+        }
+      },
+      "readiness": {
+        "title": "État de préparation",
+        "body": "Description catégorielle des preuves disponibles à la date d'audit. Elle identifie le prochain traitement sûr ; ce n'est pas un score numérique de maturité.",
+        "labels": {
+          "portable": {
+            "title": "Portable après rebasage et revalidation",
+            "body": "Une implémentation limitée existe sans bloqueur intrinsèque. Recréez-la ou portez-la sélectivement depuis main et relancez les contrôles actuels."
+          },
+          "specification": {
+            "title": "Spécification uniquement",
+            "body": "Les exigences existent mais pas le code produit. Transformez les preuves en une issue cadrée avant l'implémentation."
+          },
+          "stale": {
+            "title": "Obsolète sur le plan architectural",
+            "body": "Du code substantiel existe mais chevauche une infrastructure plus récente. Préservez les comportements et contrats, pas les anciens fichiers."
+          },
+          "blocked": {
+            "title": "Bloqué",
+            "body": "Une dépendance manquante connue, une erreur de build, une migration ou une décision empêche la validation. Résolvez le bloqueur avant l'extraction."
+          },
+          "superseded": {
+            "title": "Supplanté ou candidat à la mise hors service",
+            "body": "Main actuel fournit déjà le comportement ou la décision produit a changé. Consignez la décision et retirez l'ancien travail."
+          }
+        }
+      }
+    },
+    "workstreams": {
+      "title": "File de décisions pour travail unique",
+      "priority": "Priorité d'extraction {{priority}}",
+      "mailjet": {
+        "title": "Préréglage Mailjet Bulk Sender",
+        "body": "Un préréglage de fournisseur limité avec sept mises à jour de locales, documentation et tests historiques.",
+        "action": "Action : Porter sélectivement sur une branche fraîche depuis main."
+      },
+      "helpAssistant": {
+        "title": "Help Assistant public global",
+        "body": "Des exigences existent : anonymat, limitation de débit, localisation, accessibilité sur tous les itinéraires ; aucune implémentation produit n'a été commise.",
+        "action": "Action : Convertir les exigences en une issue d'implémentation dédiée."
+      },
+      "sourcesWoo": {
+        "title": "Sources et WooCommerce axés sur le consentement",
+        "body": "Des travaux importants d'importation, sécurité, consentement, chiffrement, idempotence, traçabilité, migration, UI et tests chevauchent une infrastructure plus récente.",
+        "action": "Action : Reprendre le comportement et les contrats, pas les anciens fichiers."
+      },
+      "wooEntitlement": {
+        "title": "Entitlement payant WooCommerce",
+        "body": "Des procédures payantes et une UX de mise à jour localisée existent, mais l'ancienne branche a un import PaywallModal manquant et ne compile pas.",
+        "action": "Action : Reconstruire selon les modèles d'entitlement actuels."
+      }
+    },
+    "safety": {
+      "title": "Séquence de sécurité de suppression",
+      "body": "La classification ne supprime jamais une branche. Le dépôt en direct est revérifié immédiatement avant la mutation, et tout changement de fait interrompt l'opération.",
+      "gates": {
+        "dryRun": "Exécution à blanc",
+        "refetch": "Récupérer à nouveau",
+        "exactSha": "SHA exact",
+        "openPr": "Vérification des PR ouvertes",
+        "preservation": "Preuve de préservation",
+        "execute": "Exécuter",
+        "reaudit": "Réeauditer"
+      }
+    },
+    "script": {
+      "title": "Script de présentation",
+      "subtitle": "Maître anglais en huit scènes · environ {{runtime}}",
+      "copy": "Copier le script complet",
+      "scene": "Scène {{number}} · {{time}}"
+    },
+    "footer": "Instantané vérifié {{date}}. Les preuves du dépôt et le contenu de la présentation sont disponibles uniquement via cette voie autorisée aux administrateurs."
   }
 }

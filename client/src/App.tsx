@@ -55,6 +55,9 @@ const AdminSmtpStatsPage  = lazy(() => import("./pages/AdminSmtpStats"));
 const AdminChurnPage      = lazy(() => import("./pages/AdminChurn"));
 const AdminRevenuePage    = lazy(() => import("./pages/AdminRevenue"));
 const AdminReferralRewardsPage = lazy(() => import("./pages/AdminReferralRewards"));
+const AdminReminderPerformancePage = lazy(() => import("./pages/AdminReminderPerformance"));
+const AdminKoalendarRetryPage = lazy(() => import("./pages/AdminKoalendarRetry"));
+const AdminGithubCleanupShowcasePage = lazy(() => import("./pages/AdminGithubCleanupShowcase"));
 
 const ReferralLandingPage = lazy(() => import("./pages/ReferralLanding"));
 const UserProfilePage     = lazy(() => import("./pages/UserProfile"));
@@ -247,6 +250,9 @@ function AppShell() {
                 <Route path="/admin/revenue" component={AdminRevenuePage} />
                 <Route path="/admin/referral-rewards" component={AdminReferralRewardsPage} />
                 <Route path="/changelog" component={ChangelogPage} />
+                <Route path="/admin/reminder-performance" component={AdminReminderPerformancePage} />
+                <Route path="/admin/koalendar-retry" component={AdminKoalendarRetryPage} />
+                <Route path="/admin/github-cleanup" component={AdminGithubCleanupShowcasePage} />
                 <Route path="/compliance" component={CompliancePage} />
                 <Route path="/security" component={SecurityPolicyPage} />
                 <Route path="/reviews" component={ClientReviewsPage} />

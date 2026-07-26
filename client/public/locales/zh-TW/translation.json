@@ -876,8 +876,8 @@
     "monthlyDescription": "隨時取消。無合同。",
     "annualDescription": "每年結算一次。相當於每月 $24.17。",
     "lifetimeDescription": "一次性付款。永不續訂。",
-    "lifetimeRoiCalloutTitle": "💰 不到 4 年即可回本",
-    "lifetimeRoiCalloutDescription": "月付計劃每年花費 $348。按此費率，終身許可證在 3.6 年時即可回本 — 之後永久免費。大多數使用者在獲得評論的第一年即可收回成本。",
+    "lifetimeRoiCalloutTitle": "約 13 個月即可回本",
+    "lifetimeRoiCalloutDescription": "與每月 $29 的方案相比，$349 終身方案約 13 個月即可回本，之後無需續訂。",
     "unlimitedReviewRequests": "無限評論請求",
     "prioritySending": "優先傳送和跟進",
     "advancedAnalytics": "高階分析",
@@ -916,7 +916,11 @@
     "includedLabel": "已包含",
     "planFeaturesLabel": "{{plan}} 方案功能",
     "approximateThb": "約 {{amount}} 泰銖",
-    "previousPrice": "原價 {{amount}}"
+    "guidance": {
+      "monthly": "適合需要短期彈性的使用者。",
+      "annual": "最佳續訂價值，約每月 $24.17。",
+      "lifetime": "最佳長期價值：一次支付 $349，無需續訂。"
+    }
   },
   "accessCode": {
     "title": "有訪問碼嗎？",
@@ -925,7 +929,21 @@
     "redeem": "兌換",
     "codeAcceptedPro": "🎉 程式碼已接受！您現在是專業版使用者！",
     "codeAcceptedNote": "🎉 程式碼已接受！{{note}} — 您現在是專業版使用者！",
-    "invalidCodeError": "無效程式碼。請重試。"
+    "invalidCodeError": "無效程式碼。請重試。",
+    "grantDurationLabel": "兌換後授予的存取權限",
+    "grantUnitLabel": "授權時長單位",
+    "grantValueLabel": "授權時長數值",
+    "durationError": "請輸入 1 到 {{limit}} 之間的時長。",
+    "durationHelper": "存取期間從客戶兌換程式碼時開始。",
+    "lifetimeHelper": "此程式碼授予永久付費存取權限。",
+    "grantLifetime": "授予終身存取權限",
+    "grantDuration": "授予 {{value}} {{unit}}",
+    "grantLegacy": "舊版無限 Pro 存取權限",
+    "units": {
+      "day": "天",
+      "month": "個月",
+      "lifetime": "終身"
+    }
   },
   "socialProof": {
     "trustedByBusinesses": "深受本地企業信賴，助您獲得更多五星好評"
@@ -1374,7 +1392,7 @@
     "proAnnualDescription": "包含月付專業版所有功能，按年一次性計費，相當於每月$24.75。",
     "lifetime": "終身版",
     "ownItForever": "永久擁有",
-    "lifetimePrice": "$497",
+    "lifetimePrice": "$349",
     "lifetimeOnce": " 一次性",
     "lifetimeDescription": "一次付款，終身使用，無需續費，無任何隱藏費用。"
   },
@@ -1553,7 +1571,7 @@
   "upgradeFaq": {
     "title": "常見問題",
     "q1": "終身套餐真的只需一次付款嗎？",
-    "a1": "是的——只需支付 $497，Get Phame 就永遠屬於您。沒有月費，沒有續費，沒有隱藏費用。您還將獲得未來所有更新。",
+    "a1": "是的——只需支付 $349，Get Phame 就永遠屬於您。沒有月費，沒有續費，沒有隱藏費用。您還將獲得未來所有更新。",
     "q2": "如果我取消月度或年度套餐會怎樣？",
     "a2": "您可以使用到當前計費週期結束。之後，您的賬戶將恢復為免費套餐（10 次請求）。您的聯絡人和歷史記錄永遠不會被刪除。",
     "q3": "以後可以從月度升級到年度嗎？",
@@ -1654,6 +1672,27 @@
     "typeCombine": "輸入 COMBINE 以確認",
     "typeDelete": "輸入 DELETE 以確認",
     "typeEmailToRemoveSmtp": "輸入 {{email}} 以確認"
+  },
+  "adminSubscription": {
+    "grant": "授予訂閱",
+    "grantTitle": "授予訂閱存取權限",
+    "grantDescription": "選擇 {{email}} 獲得付費存取權限的時長。",
+    "durationLabel": "訂閱時長",
+    "monthly": "月度",
+    "monthlyDescription": "一個日曆月的付費存取權限",
+    "annual": "年度",
+    "annualDescription": "一個日曆年的付費存取權限",
+    "lifetime": "終身",
+    "lifetimeDescription": "永久付費存取權限，無到期日",
+    "confirmGrant": "授予存取權限",
+    "revoke": "撤銷存取權限",
+    "revokeTitle": "撤銷付費存取權限？",
+    "revokeDescription": "{{email}} 將立即恢復為免費方案。",
+    "revokeBillingWarning": "此操作不會取消有效的 Stripe 訂閱。撤銷存取權限前請確認帳單狀態。",
+    "confirmRevoke": "撤銷存取權限",
+    "cancel": "取消",
+    "grantSuccess": "已向 {{email}} 授予 {{plan}} 存取權限。",
+    "revokeSuccess": "{{email}} 已恢復為免費方案。"
   },
   "pwaInstallBanner": {
     "title": "安裝 Get Phame",

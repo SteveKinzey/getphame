@@ -14,11 +14,11 @@ const reviewedPricingKeys = [
   "includedLabel",
   "planFeaturesLabel",
   "approximateThb",
-  "previousPrice",
 ] as const;
+const reviewedGuidanceKeys = ["monthly", "annual", "lifetime"] as const;
 const fallbackResources = directKeyFallbackResources as unknown as Record<
   string,
-  { pricingGrid: Record<string, string> }
+  { pricingGrid: Record<string, string | Record<string, string>> }
 >;
 describe("upgrade pricing layout", () => {
   it("uses the approved public product screenshot instead of the retired private asset", () => {
@@ -60,6 +60,9 @@ describe("upgrade pricing layout", () => {
     expect(source).toContain('data-testid="pricing-savings-calculator"');
     expect(source).toContain('t("pricingGrid.annualSave"');
     expect(source).toContain('t("pricingGrid.lifetimeSave"');
+    expect(source).toContain("pricingGrid.guidance.${plan}");
+    expect(source).not.toContain("pricingGrid.previousPrice");
+    expect(source).not.toContain("$497");
   });
   it("keeps the Annual plan visibly featured and exposes a compact mobile comparison drawer", () => {
     expect(source).toContain('data-testid="annual-most-popular-badge"');
@@ -91,20 +94,28 @@ describe("upgrade pricing layout", () => {
           ),
           "utf8"
         )
-      ) as { pricingGrid: Record<string, string> };
+      ) as { pricingGrid: Record<string, string | Record<string, string>> };
       for (const key of reviewedPricingKeys) {
         expect(
           resource.pricingGrid[key],
           `${locale}.pricingGrid.${key}`
         ).toBeTypeOf("string");
         expect(
-          resource.pricingGrid[key]?.trim(),
+          (resource.pricingGrid[key] as string | undefined)?.trim(),
           `${locale}.pricingGrid.${key}`
         ).not.toBe("");
         expect(fallbackResources[locale]?.pricingGrid[key]).toBe(
           resource.pricingGrid[key]
         );
       }
+      const guidance = resource.pricingGrid.guidance as Record<string, string>;
+      const fallbackGuidance = fallbackResources[locale]?.pricingGrid.guidance as Record<string, string>;
+      for (const key of reviewedGuidanceKeys) {
+        expect(guidance?.[key], `${locale}.pricingGrid.guidance.${key}`).toBeTypeOf("string");
+        expect(guidance?.[key]?.trim(), `${locale}.pricingGrid.guidance.${key}`).not.toBe("");
+        expect(fallbackGuidance?.[key]).toBe(guidance[key]);
+      }
+      expect(resource.pricingGrid.previousPrice).toBeUndefined();
     }
   });
 });

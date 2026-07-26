@@ -259,8 +259,8 @@ export const accessCodes = mysqlTable("access_codes", {
   usedCount: int("usedCount").default(0).notNull(),
   active: int("active").default(1).notNull(), // 1 = active, 0 = revoked
   expiresAt: bigint("expiresAt", { mode: "number" }), // Unix ms, null = never expires
-  grantDurationType: mysqlEnum("grantDurationType", ["days", "months", "lifetime"]).default("lifetime"), // what tier duration to grant on redemption
-  grantAmount: int("grantAmount"), // null = not applicable (lifetime), otherwise number of days/months
+  grantDurationValue: int("grant_duration_value"),
+  grantDurationUnit: varchar("grant_duration_unit", { length: 16 }),
   createdAt: timestamp("createdAt").defaultNow().notNull(),
 });
 
