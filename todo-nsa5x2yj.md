@@ -265,3 +265,7 @@
 - [x] Replace publicly addressable `/manus-storage/` visualization keys with accessible native diagrams rendered exclusively from the administrator-protected showcase payload, and add a focused regression that prevents storage-key reintroduction.
 - [x] Translate the remaining English `zh-CN` showcase labels identified in pull request 10, re-run localization coverage, and resolve every blocking review conversation with evidence.
 - [x] Reconstruct every `scripts/`, `references/`, and `templates/` resource referenced by `github-repository-cleanup/SKILL.md`, test deterministic utilities on a disposable repository, run official skill validation, and deliver a self-contained installable skill package.
+- [x] Diagnose why the live homepage walkthrough video or poster stopped loading by comparing current code, production media responses, service-worker behavior, and the last verified working release.
+- [x] Restore the walkthrough video, poster, captions, and player references through durable public delivery without altering unrelated homepage layout or copy, and add focused regressions for media URL integrity.
+- [ ] Run focused media tests, the full Vitest suite, TypeScript checks, production dependency audit/build, and responsive desktop/mobile playback verification on the custom domain.
+- [ ] Checkpoint and auto-publish the validated media repair, then synchronize the exact released tree through a history-preserving protected-main GitHub pull request and verify tree parity.
