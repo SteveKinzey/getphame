@@ -33,7 +33,7 @@ type Plan = "monthly" | "annual" | "lifetime";
 const PLANS: Record<Plan, { label: string; price: string; thb: string; sub: string; badge?: string; savings?: string }> = {
   monthly:  { label: "Monthly",  price: "$29",  thb: toThb(29),  sub: "/ month" },
   annual:   { label: "Annual",   price: "$290", thb: toThb(290), sub: "/ year",     badge: "Most Popular", savings: "Save $58/yr" },
-  lifetime: { label: "Lifetime", price: "$497", thb: toThb(497), sub: "one-time",   badge: "Best Value",   savings: "Pay once, own forever" },
+  lifetime: { label: "Lifetime", price: "$349", thb: toThb(349), sub: "one-time",   badge: "Best Value",   savings: "Pay once, own forever" },
 };
 
 const PRO_BULLETS = [

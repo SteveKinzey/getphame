@@ -86,7 +86,7 @@ The **Dashboard** shows your recent send activity, open rates, click rates, and 
 | Free | $0 | 10 review requests (total) |
 | Pro Monthly | $29 / month | Unlimited |
 | Pro Annual | $290 / year | Unlimited (save $58) |
-| Lifetime | $1,247 once | Unlimited, forever |
+| Lifetime | $349 once | Unlimited, forever |
 
 Upgrade at any time from **Settings → Upgrade Plan**. Stripe handles all payments securely.
 
