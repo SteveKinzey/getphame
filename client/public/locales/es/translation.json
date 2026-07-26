@@ -3265,5 +3265,136 @@
       "sectionAria": "Descargar {{section}} como PDF",
       "sectionButton": "Descargar PDF de la sección"
     }
+  },
+  "adminGithubCleanup": {
+    "dashboardCardTitle": "Herramienta de limpieza de GitHub",
+    "dashboardCardBody": "Revisar la ascendencia, el trabajo único, los controles de seguridad y el guion de presentación",
+    "loading": "Cargando demostración de limpieza",
+    "errorTitle": "Demostración no disponible",
+    "errorBody": "No se pudo cargar la evidencia del repositorio, accesible solo para administradores.",
+    "backToAdmin": "Volver a Administración",
+    "adminOnly": "Solo administradores",
+    "title": "Herramienta de limpieza de repositorios de GitHub",
+    "subtitle": "Auditar la ascendencia de ramas, preservar trabajo único, verificar el árbol de lanzamiento y eliminar solo las ramas demostradas seguras para su borrado.",
+    "scriptCopied": "Guion de presentación copiado.",
+    "scriptCopyError": "No se pudo copiar el guion.",
+    "stats": {
+      "main": "Main",
+      "tree": "Árbol de lanzamiento",
+      "exact": "Coincidencia exacta",
+      "branches": "Ramas",
+      "openPrs": "PR abiertas"
+    },
+    "evidence": {
+      "eyebrow": "Evidencia verificada del repositorio",
+      "title": "Estado actual de lanzamiento y preservación",
+      "body": "El árbol protegido main coincide exactamente con el release gestionado validado. push-safe permanece aislado porque contiene trabajo único pero obsoleto que debe extraerse selectivamente."
+    },
+    "visuals": {
+      "ancestryAlt": "Mapa de ascendencia de ramas y preservación que muestra main protegido, paridad exacta con el árbol de release, divergencia de push-safe y dónde permanecen preservadas las puntas de ramas eliminadas.",
+      "ancestryCaption": "Las relaciones sólidas muestran ascendencia verificada; las relaciones discontinuas muestran paridad exacta del árbol Git en lugar de historial de commits compartido.",
+      "uniqueAlt": "Trabajo único en push-safe ordenado por prioridad de extracción, con estado de preparación y la siguiente acción segura para Mailjet, Help Assistant, Sources y WooCommerce, y el entitlement de pago.",
+      "uniqueCaption": "La prioridad es el orden de acción; la preparación describe el tratamiento respaldado por la evidencia en la fecha de auditoría."
+    },
+    "metrics": {
+      "eyebrow": "Definición de métricas",
+      "title": "La prioridad de extracción y la preparación responden a preguntas diferentes",
+      "extraction": {
+        "title": "Prioridad de extracción",
+        "body": "Un orden ordinal de acción. Prioridad 1 significa evaluar o extraer primero. No representa urgencia, impacto en ingresos, puntos de historia, probabilidad de éxito ni porcentaje completado."
+      },
+      "dimensions": {
+        "isolation": {
+          "title": "Aislamiento",
+          "body": "¿Puede moverse el trabajo sin arrastrar historial de ramas no relacionado?"
+        },
+        "compatibility": {
+          "title": "Compatibilidad",
+          "body": "¿En qué medida entra en conflicto o duplica la rama main actual?"
+        },
+        "evidence": {
+          "title": "Claridad de la evidencia",
+          "body": "¿Están documentados el código, las pruebas, los bloqueadores y las puertas de aceptación?"
+        },
+        "dependencies": {
+          "title": "Cierre de dependencias",
+          "body": "¿Están resueltos los componentes, migraciones, proveedores y políticas requeridos?"
+        },
+        "valueRisk": {
+          "title": "Secuencia valor-riesgo",
+          "body": "¿Puede revisar este elemento primero producir progreso útil con riesgo de regresión acotado?"
+        }
+      },
+      "readiness": {
+        "title": "Preparación",
+        "body": "Descripción categórica de la evidencia disponible en la fecha de auditoría. Identifica el siguiente tratamiento seguro; no es una puntuación numérica de madurez.",
+        "labels": {
+          "portable": {
+            "title": "Portátil tras rebase y revalidación",
+            "body": "Existe una implementación acotada sin bloqueador intrínseco. Recrearla o portarla selectivamente desde el main actual y volver a ejecutar los controles actuales."
+          },
+          "specification": {
+            "title": "Solo especificación",
+            "body": "Existen requisitos pero no código de producto. Convertir la evidencia en un issue acotado antes de implementar."
+          },
+          "stale": {
+            "title": "Arquitectónicamente obsoleto",
+            "body": "Existe código sustancial pero que solapa con infraestructura más reciente. Preservar el comportamiento y los contratos, no los archivos antiguos."
+          },
+          "blocked": {
+            "title": "Bloqueado",
+            "body": "Una dependencia faltante conocida, error de compilación, migración o decisión impide la validación. Resolver el bloqueo antes de la extracción."
+          },
+          "superseded": {
+            "title": "Candidato a sustituir o retirar",
+            "body": "El main actual ya proporciona el comportamiento o la decisión de producto cambió. Registrar la decisión y retirar el trabajo antiguo."
+          }
+        }
+      }
+    },
+    "workstreams": {
+      "title": "Cola de decisiones de trabajo único",
+      "priority": "Prioridad de extracción {{priority}}",
+      "mailjet": {
+        "title": "Preajuste Mailjet Bulk Sender",
+        "body": "Un preajuste de proveedor acotado con siete actualizaciones de locales, documentación y pruebas históricas.",
+        "action": "Acción: Portar selectivamente en una rama nueva desde el main actual."
+      },
+      "helpAssistant": {
+        "title": "Help Assistant público global",
+        "body": "Existen requisitos anónimos y seguros, limitación por tasa, localización y accesibilidad en todas las rutas; no se comprometió implementación de producto.",
+        "action": "Acción: Convertir los requisitos en un issue de implementación dedicado."
+      },
+      "sourcesWoo": {
+        "title": "Sources y WooCommerce con prioridad de consentimiento",
+        "body": "Trabajo sustancial de importación, seguridad, consentimiento, cifrado, idempotencia, procedencia, migración, interfaz y pruebas que solapa con infraestructura más reciente.",
+        "action": "Acción: Reformular el comportamiento y los contratos, no los archivos antiguos."
+      },
+      "wooEntitlement": {
+        "title": "Entitlement de pago de WooCommerce",
+        "body": "Existen procedimientos de pago y UX de actualización localizada, pero la rama antigua tiene una importación faltante de PaywallModal y no compila.",
+        "action": "Acción: Reconstruir contra los patrones de entitlement actuales."
+      }
+    },
+    "safety": {
+      "title": "Secuencia de seguridad para eliminación",
+      "body": "La clasificación nunca elimina una rama. El repositorio en vivo se revalida inmediatamente antes de la mutación, y cualquier hecho cambiado detiene la operación.",
+      "gates": {
+        "dryRun": "Ejecución en seco",
+        "refetch": "Reobtener",
+        "exactSha": "SHA exacto",
+        "openPr": "Comprobación de PR abiertas",
+        "preservation": "Prueba de preservación",
+        "execute": "Ejecutar",
+        "reaudit": "Reauditar"
+      }
+    },
+    "script": {
+      "title": "Guion de presentación",
+      "subtitle": "Maestro en inglés de ocho escenas · aproximadamente {{runtime}}",
+      "copy": "Copiar guion completo",
+      "scene": "Escena {{number}} · {{time}}"
+    },
+    "footer": "Instantánea verificada {{date}}. La evidencia del repositorio y el contenido de la presentación solo están disponibles a través de esta ruta autorizada para administradores."
   }
 }

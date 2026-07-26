@@ -3300,5 +3300,106 @@
       "sectionAria": "Download {{section}} as a PDF",
       "sectionButton": "Download section PDF"
     }
+  },
+  "adminGithubCleanup": {
+    "dashboardCardTitle": "GitHub cleanup skill",
+    "dashboardCardBody": "Review ancestry, unique work, safety gates, and the presentation script",
+    "loading": "Loading cleanup showcase",
+    "errorTitle": "Showcase unavailable",
+    "errorBody": "The administrator-only repository evidence could not be loaded.",
+    "backToAdmin": "Back to Administration",
+    "adminOnly": "Administrator only",
+    "title": "GitHub repository cleanup skill",
+    "subtitle": "Audit branch ancestry, preserve unique work, verify the release tree, and remove only branches proven safe to delete.",
+    "scriptCopied": "Presentation script copied.",
+    "scriptCopyError": "The script could not be copied.",
+    "stats": {
+      "main": "Main",
+      "tree": "Release tree",
+      "exact": "Exact match",
+      "branches": "Branches",
+      "openPrs": "Open PRs"
+    },
+    "evidence": {
+      "eyebrow": "Verified repository evidence",
+      "title": "Current release and preservation state",
+      "body": "The protected main tree exactly matches the validated managed release. Push-safe remains isolated because it contains unique but outdated work that must be extracted selectively."
+    },
+    "visuals": {
+      "ancestryAlt": "Branch ancestry and preservation map showing protected main, exact release-tree parity, push-safe divergence, and where deleted branch tips remain preserved.",
+      "ancestryCaption": "Solid relationships show verified ancestry; dashed relationships show exact Git-tree parity rather than shared commit history.",
+      "uniqueAlt": "Unique push-safe work ordered by extraction priority, with readiness and the next safe action for Mailjet, Help Assistant, Sources and WooCommerce, and paid entitlement.",
+      "uniqueCaption": "Priority is action order; readiness describes the evidence-supported treatment at the audit date."
+    },
+    "metrics": {
+      "eyebrow": "Metric definitions",
+      "title": "Extraction priority and readiness answer different questions",
+      "extraction": {
+        "title": "Extraction priority",
+        "body": "An ordinal action order. Priority 1 means evaluate or extract first. It is not urgency, revenue impact, story points, probability of success, or percent complete."
+      },
+      "dimensions": {
+        "isolation": { "title": "Isolation", "body": "Can the work move without carrying unrelated branch history?" },
+        "compatibility": { "title": "Compatibility", "body": "How much conflicts with or duplicates the current main branch?" },
+        "evidence": { "title": "Evidence clarity", "body": "Are code, tests, blockers, and acceptance gates documented?" },
+        "dependencies": { "title": "Dependency closure", "body": "Are required components, migrations, providers, and policies resolved?" },
+        "valueRisk": { "title": "Value-to-risk sequence", "body": "Can reviewing this item first produce useful progress with bounded regression risk?" }
+      },
+      "readiness": {
+        "title": "Readiness",
+        "body": "A categorical description of the evidence available at the audit date. It identifies the next safe treatment; it is not a numerical maturity score.",
+        "labels": {
+          "portable": { "title": "Portable after rebase and revalidation", "body": "A bounded implementation exists with no intrinsic blocker. Recreate or selectively port it from current main and rerun current gates." },
+          "specification": { "title": "Specification only", "body": "Requirements exist but product code does not. Convert the evidence into a scoped issue before implementation." },
+          "stale": { "title": "Architecturally stale", "body": "Substantial code exists but overlaps newer infrastructure. Preserve behavior and contracts, not old files." },
+          "blocked": { "title": "Blocked", "body": "A known missing dependency, build error, migration, or decision prevents validation. Resolve the blocker before extraction." },
+          "superseded": { "title": "Superseded or retire candidate", "body": "Current main already provides the behavior or the product decision changed. Record the decision and retire the old work." }
+        }
+      }
+    },
+    "workstreams": {
+      "title": "Unique work decision queue",
+      "priority": "Extraction priority {{priority}}",
+      "mailjet": {
+        "title": "Mailjet Bulk Sender preset",
+        "body": "A bounded provider preset with seven locale updates, documentation, and historical tests.",
+        "action": "Action: Port selectively on a fresh branch from current main."
+      },
+      "helpAssistant": {
+        "title": "Global public Help Assistant",
+        "body": "Anonymous-safe, rate-limited, localized, accessible all-route requirements exist; no product implementation was committed.",
+        "action": "Action: Convert the requirements into a dedicated implementation issue."
+      },
+      "sourcesWoo": {
+        "title": "Consent-first Sources and WooCommerce",
+        "body": "Substantial import, security, consent, encryption, idempotency, provenance, migration, UI, and test work overlaps newer infrastructure.",
+        "action": "Action: Rework the behavior and contracts, not the old files."
+      },
+      "wooEntitlement": {
+        "title": "WooCommerce paid entitlement",
+        "body": "Paid procedures and localized upgrade UX exist, but the old branch has a missing PaywallModal import and does not compile.",
+        "action": "Action: Rebuild against current entitlement patterns."
+      }
+    },
+    "safety": {
+      "title": "Deletion safety sequence",
+      "body": "Classification never deletes a branch. The live repository is revalidated immediately before mutation, and any changed fact stops the operation.",
+      "gates": {
+        "dryRun": "Dry run",
+        "refetch": "Re-fetch",
+        "exactSha": "Exact SHA",
+        "openPr": "Open PR check",
+        "preservation": "Preservation proof",
+        "execute": "Execute",
+        "reaudit": "Re-audit"
+      }
+    },
+    "script": {
+      "title": "Presentation script",
+      "subtitle": "Eight-scene English master · approximately {{runtime}}",
+      "copy": "Copy full script",
+      "scene": "Scene {{number}} · {{time}}"
+    },
+    "footer": "Snapshot verified {{date}}. Repository evidence and presentation content are available only through this administrator-authorized route."
   }
 }

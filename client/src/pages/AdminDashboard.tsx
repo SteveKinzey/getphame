@@ -34,6 +34,7 @@ import {
   RotateCcw,
   Inbox,
   Clock3,
+  GitBranch,
   BadgePercent,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
@@ -61,8 +62,10 @@ const CAPTION_LANGUAGE_LABELS = [
   { code: "pt", label: "Portuguese" },
 ] as const;
 import { toast } from "sonner";
+import { useTranslation } from "react-i18next";
 
 export default function AdminDashboard() {
+  const { t } = useTranslation("translation");
   const { user, isAuthenticated } = useAuth();
   const [, navigate] = useLocation();
   const [smtpRetestResults, setSmtpRetestResults] = useState<Record<number, { ok: boolean; checkedAt: number; error: string | null }>>({});
@@ -381,6 +384,7 @@ export default function AdminDashboard() {
                   { path: "/admin/churn", label: "Churn analytics", detail: "Cancellation reasons and retention signals", Icon: AlertTriangle },
                   { path: "/admin/referral-rewards", label: "Referral operations", detail: "Review deferred rewards", Icon: Gift },
                   { path: "/admin/koalendar-retry", label: "Koalendar recovery", detail: "Inspect and retry failed contact imports", Icon: RotateCcw },
+                  { path: "/admin/github-cleanup", label: t("adminGithubCleanup.dashboardCardTitle", { defaultValue: "GitHub cleanup skill" }), detail: t("adminGithubCleanup.dashboardCardBody", { defaultValue: "Review ancestry, unique work, safety gates, and the presentation script" }), Icon: GitBranch },
                 ].map(({ path, label, detail, Icon }) => (
                   <button
                     key={path}
