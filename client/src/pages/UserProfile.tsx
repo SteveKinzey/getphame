@@ -53,6 +53,11 @@ export default function UserProfilePage() {
   function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.type !== "image/jpeg" && file.type !== "image/png" && file.type !== "image/webp") {
+      toast.error("Upload a JPG, PNG, or WebP image");
+      return;
+    }
+    const mimeType: "image/jpeg" | "image/png" | "image/webp" = file.type;
     if (file.size > 5 * 1024 * 1024) {
       toast.error("Image must be under 5 MB");
       return;
@@ -62,7 +67,7 @@ export default function UserProfilePage() {
       const dataUrl = ev.target?.result as string;
       const base64 = dataUrl.split(",")[1];
       setAvatarPreview(dataUrl);
-      uploadAvatar.mutate({ base64, mimeType: file.type });
+      uploadAvatar.mutate({ base64, mimeType });
     };
     reader.readAsDataURL(file);
   }
@@ -121,7 +126,7 @@ export default function UserProfilePage() {
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif"
+      accept="image/jpeg,image/png,image/webp"
               className="hidden"
               onChange={handleAvatarChange}
             />

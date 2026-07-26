@@ -1164,7 +1164,7 @@ export default function SettingsPage() {
   const generateKey = trpc.apiKey.generate.useMutation({
     onSuccess: (data) => {
       utils.apiKey.list.invalidate();
-      setRevealedKey(data.raw);
+      setRevealedKey(data.rawKey);
       toast.success("API key generated! Copy it now — it won't be shown again.");
     },
     onError: (err) => toast.error(err.message),
@@ -2410,7 +2410,10 @@ export default function SettingsPage() {
                     checked={(reminderSettings?.followUpEnabled ?? 1) === 1}
                     onCheckedChange={(v) => updateReminderSettings.mutate({
                       followUpEnabled: v ? 1 : 0,
+                      followUpFirstEnabled: reminderSettings?.followUpFirstEnabled ?? 1,
+                      followUpSecondEnabled: reminderSettings?.followUpSecondEnabled ?? 1,
                       followUpDelayDays: reminderSettings?.followUpDelayDays ?? 3,
+                      followUpSecondDelayDays: reminderSettings?.followUpSecondDelayDays ?? 7,
                     })}
                   />
                 </div>
@@ -2425,7 +2428,10 @@ export default function SettingsPage() {
                       value={reminderSettings?.followUpDelayDays ?? 3}
                       onChange={(e) => updateReminderSettings.mutate({
                         followUpEnabled: reminderSettings?.followUpEnabled ?? 1,
+                        followUpFirstEnabled: reminderSettings?.followUpFirstEnabled ?? 1,
+                        followUpSecondEnabled: reminderSettings?.followUpSecondEnabled ?? 1,
                         followUpDelayDays: Math.min(14, Math.max(1, Number(e.target.value))),
+                        followUpSecondDelayDays: reminderSettings?.followUpSecondDelayDays ?? 7,
                       })}
                       className="w-16 px-2 py-1.5 rounded-lg text-sm outline-none text-center"
                       style={{ border: "2px solid oklch(0.88 0.02 260)", fontSize: "16px" }}

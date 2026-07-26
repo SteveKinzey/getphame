@@ -112,9 +112,13 @@ function getHintKey(email: string, host?: string): string | null {
 function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
   const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
+  const [newRawKey, setNewRawKey] = useState<string | null>(null);
   const { data: apiKeyList } = trpc.apiKey.list.useQuery();
   const generateKey = trpc.apiKey.generate.useMutation({
-    onSuccess: () => trpc.useUtils().apiKey.list.invalidate(),
+    onSuccess: (created) => {
+      setNewRawKey(created.rawKey);
+      trpc.useUtils().apiKey.list.invalidate();
+    },
     onError: (err) => toast.error(err.message),
   });
 
@@ -122,8 +126,8 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
   const firstKey = apiKeyList?.[0];
 
   function handleCopy() {
-    if (!firstKey) return;
-    navigator.clipboard.writeText(firstKey.label ?? "").then(() => {
+    if (!newRawKey) return;
+    navigator.clipboard.writeText(newRawKey).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     });
@@ -232,21 +236,32 @@ function Step4Connector({ onDismiss }: { onDismiss: () => void }) {
                 "In WordPress, go to Settings → Get Phame and paste your API key below. Then click Test Connection."
               )}
             </p>
-            {apiKeyList && apiKeyList.length > 0 ? (
+            {newRawKey || (apiKeyList && apiKeyList.length > 0) ? (
               <div
                 className="flex items-center gap-2 px-3 py-2 rounded-xl"
                 style={{ background: "oklch(0.18 0.06 260)", border: "1px solid oklch(0.32 0.06 260)" }}
               >
                 <code className="text-sm font-black flex-1 text-white truncate" style={{ fontFamily: "monospace" }}>
-                  {firstKey ? `rl_${firstKey.keyHash.slice(0, 8)}...` : "rl_..."}
+                  {newRawKey ?? firstKey?.keyHint ?? "gp_live_…"}
                 </code>
-                <button
-                  onClick={handleCopy}
-                  className="text-sm font-black px-2 py-1 rounded-lg transition-colors"
-                  style={{ background: copied ? "oklch(0.55 0.18 145)" : "oklch(0.28 0.08 260)", color: copied ? "oklch(0.15 0.05 260)" : "oklch(0.75 0.04 260)" }}
-                >
-                  {copied ? "✓ Copied" : "Copy"}
-                </button>
+                {newRawKey ? (
+                  <button
+                    onClick={handleCopy}
+                    className="text-sm font-black px-2 py-1 rounded-lg transition-colors"
+                    style={{ background: copied ? "oklch(0.55 0.18 145)" : "oklch(0.28 0.08 260)", color: copied ? "oklch(0.15 0.05 260)" : "oklch(0.75 0.04 260)" }}
+                  >
+                    {copied ? "✓ Copied" : "Copy"}
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => generateKey.mutate({ label: "WordPress Connector" })}
+                    disabled={generateKey.isPending}
+                    className="text-sm font-black px-2 py-1 rounded-lg transition-colors"
+                    style={{ background: "oklch(0.28 0.08 260)", color: "oklch(0.75 0.04 260)" }}
+                  >
+                    {generateKey.isPending ? "Generating…" : "Create new key"}
+                  </button>
+                )}
               </div>
             ) : (
               <button

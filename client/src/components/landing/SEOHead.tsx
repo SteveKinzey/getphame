@@ -5,6 +5,10 @@ interface SEOHeadProps {
   description: string;
   canonical?: string;
   noindex?: boolean;
+  keywords?: string[];
+  socialImage?: string;
+  socialImageAlt?: string;
+  jsonLd?: Record<string, unknown>;
 }
 
 /**
@@ -12,7 +16,16 @@ interface SEOHeadProps {
  * In a static SPA, this helps with social sharing previews
  * when crawlers render JS and with browser tab titles.
  */
-export default function SEOHead({ title, description, canonical, noindex }: SEOHeadProps) {
+export default function SEOHead({
+  title,
+  description,
+  canonical,
+  noindex,
+  keywords,
+  socialImage,
+  socialImageAlt,
+  jsonLd,
+}: SEOHeadProps) {
   useEffect(() => {
     // Set title
     document.title = title;
@@ -72,6 +85,8 @@ export default function SEOHead({ title, description, canonical, noindex }: SEOH
     setOG("og:title", title);
     setOG("og:description", description);
     if (canonical) setOG("og:url", canonical);
+    if (socialImage) setOG("og:image", socialImage);
+    if (socialImageAlt) setOG("og:image:alt", socialImageAlt);
 
     // Set Twitter tags
     const setTwitter = (name: string, content: string) => {
@@ -88,7 +103,38 @@ export default function SEOHead({ title, description, canonical, noindex }: SEOH
 
     setTwitter("twitter:title", title);
     setTwitter("twitter:description", description);
-  }, [title, description, canonical, noindex]);
+    if (socialImage) {
+      setTwitter("twitter:card", "summary_large_image");
+      setTwitter("twitter:image", socialImage);
+    }
+    if (socialImageAlt) setTwitter("twitter:image:alt", socialImageAlt);
+
+    let keywordsMeta = document.querySelector('meta[name="keywords"]');
+    if (keywords?.length) {
+      if (!keywordsMeta) {
+        keywordsMeta = document.createElement("meta");
+        keywordsMeta.setAttribute("name", "keywords");
+        document.head.appendChild(keywordsMeta);
+      }
+      keywordsMeta.setAttribute("content", keywords.join(", "));
+    } else {
+      keywordsMeta?.remove();
+    }
+
+    const structuredDataId = "get-phame-page-structured-data";
+    let structuredData = document.getElementById(structuredDataId) as HTMLScriptElement | null;
+    if (jsonLd) {
+      if (!structuredData) {
+        structuredData = document.createElement("script");
+        structuredData.id = structuredDataId;
+        structuredData.type = "application/ld+json";
+        document.head.appendChild(structuredData);
+      }
+      structuredData.textContent = JSON.stringify(jsonLd);
+    } else {
+      structuredData?.remove();
+    }
+  }, [title, description, canonical, noindex, keywords, socialImage, socialImageAlt, jsonLd]);
 
   return null;
 }

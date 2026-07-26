@@ -60,7 +60,7 @@ export async function answerHelpQuestion(input: { question: string; language: ty
   try {
     const response = await invokeLLM({
       model: HELP_MODEL,
-      maxCompletionTokens: 900,
+      maxTokens: 900,
       reasoning: { effort: "minimal" },
       messages: [
         {

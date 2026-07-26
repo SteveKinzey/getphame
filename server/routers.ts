@@ -641,6 +641,47 @@ export const appRouter = router({
 
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
+    updateProfile: protectedProcedure
+      .input(z.object({
+        name: z.string().trim().min(1).max(255).optional(),
+        defaultFromEmail: z.string().email().nullable().optional(),
+        defaultFromName: z.string().trim().max(255).nullable().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+        await db.update(users)
+          .set({
+            ...(input.name !== undefined ? { name: input.name } : {}),
+            ...(input.defaultFromEmail !== undefined ? { defaultFromEmail: input.defaultFromEmail } : {}),
+            ...(input.defaultFromName !== undefined ? { defaultFromName: input.defaultFromName } : {}),
+            updatedAt: new Date(),
+          })
+          .where(eq(users.id, ctx.user.id));
+        return { success: true as const };
+      }),
+    uploadAvatar: protectedProcedure
+      .input(z.object({
+        mimeType: z.enum(avatarMimeTypes),
+        base64: z.string().min(4).max(4_200_000),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const data = Buffer.from(input.base64, "base64");
+        if (data.length === 0 || data.length > 3 * 1024 * 1024 || !isValidAvatarSignature(data, input.mimeType)) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Upload a valid JPG, PNG, or WebP image up to 3 MB." });
+        }
+        const extension = avatarExtensions[input.mimeType];
+        const key = `avatars/${ctx.user.id}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
+        await storagePut(key, data, input.mimeType);
+        const updatedAt = new Date();
+        await updateAccountProfile(ctx.user.id, {
+          avatarKey: key,
+          avatarMimeType: input.mimeType,
+          avatarUpdatedAt: updatedAt,
+        });
+        const avatar = await storageGet(key);
+        return { success: true as const, avatarUrl: avatar.url, avatarUpdatedAt: updatedAt };
+      }),
     logout: publicProcedure.mutation(async ({ ctx }) => {
       await revokePasskeySessionFromRequest(ctx.req);
       const cookieOptions = getSessionCookieOptions(ctx.req);
@@ -894,23 +935,35 @@ export const appRouter = router({
     get: protectedProcedure.query(async ({ ctx }) => {
       const profile = await getBusinessProfile(ctx.user.id);
       if (!profile) return null;
+      const accountProfile = await getAccountProfile(ctx.user.id);
       const freeQuota = await getFreeQuotaSummary(ctx.user.id);
       const complimentaryAccess = ctx.user.role === "admin"
         ? null
         : await findActiveComplimentaryAccess({ userId: ctx.user.id, email: ctx.user.email });
       const tier = getEffectiveTier(profile.tier, ctx.user.role);
+      const hasPaidAccess = hasPaidOrAdminAccess({
+        role: ctx.user.role,
+        tier,
+        planExpiresAt: profile.planExpiresAt,
+        complimentaryAccessExpiresAt: complimentaryAccess?.expiresAt,
+      });
       return {
         ...profile,
         tier,
-        hasPaidAccess: hasPaidOrAdminAccess({
-          role: ctx.user.role,
-          tier,
-          planExpiresAt: profile.planExpiresAt,
-          complimentaryAccessExpiresAt: complimentaryAccess?.expiresAt,
-        }),
+        hasPaidAccess,
         complimentaryAccessExpiresAt: complimentaryAccess?.expiresAt ?? null,
         totalSent: freeQuota.totalSent,
         freeQuota,
+        // Compatibility fields consumed by current-main dashboard/settings pages.
+        displayName: accountProfile?.name ?? ctx.user.name ?? "",
+        quota: {
+          isPaid: hasPaidAccess,
+          phase: freeQuota.phase === "initial" ? "onboarding" as const : "rolling" as const,
+          lifetime: freeQuota.totalSent,
+          remaining: freeQuota.remaining,
+          nextWindowAt: freeQuota.nextAvailableAt,
+          windowSendCount: freeQuota.phase === "rolling" ? freeQuota.used : undefined,
+        },
       };
     }),
 
@@ -922,6 +975,7 @@ export const appRouter = router({
           tier: z.enum(["free", "pro"]).optional(),
           fromName: z.string().max(255).optional(),
           replyTo: z.string().email().optional().or(z.literal("")),
+          displayName: z.string().trim().max(100).optional().or(z.literal("")),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -938,6 +992,9 @@ export const appRouter = router({
           fromName: input.fromName ?? existing?.fromName ?? null,
           replyTo: input.replyTo ?? existing?.replyTo ?? null,
         });
+        if (input.displayName !== undefined && input.displayName.length > 0) {
+          await updateAccountProfile(ctx.user.id, { name: input.displayName });
+        }
         return getBusinessProfile(ctx.user.id);
       }),
 
@@ -1830,6 +1887,30 @@ export const appRouter = router({
         return { scheduled };
       }),
 
+    /** Export all saved contacts as CSV rows — paid accounts only. */
+    exportCSV: paidProcedure.query(async ({ ctx }) => {
+      const contacts = await listSavedContacts(ctx.user.id);
+      const header = ["Name", "Email", "Phone", "Notes", "Tags", "Total Sent", "Last Sent", "Opted Out"];
+      const rows = contacts.map((contact) => [
+        contact.name ?? "",
+        contact.email ?? "",
+        contact.phone ?? "",
+        contact.notes ?? "",
+        (() => {
+          try {
+            const tags: unknown = JSON.parse(contact.tags ?? "[]");
+            return Array.isArray(tags) ? (tags as string[]).join("; ") : String(contact.tags ?? "");
+          } catch {
+            return String(contact.tags ?? "");
+          }
+        })(),
+        String(contact.totalSent ?? 0),
+        contact.lastSentAt ? new Date(contact.lastSentAt).toISOString().slice(0, 10) : "",
+        contact.optedOut ? "Yes" : "No",
+      ]);
+      return { header, rows };
+    }),
+
     /**
      * Public unsubscribe — validates HMAC token and marks the contact as opted out.
      * Called from the /unsubscribe page with the token from the email footer link.
@@ -2559,6 +2640,31 @@ export const appRouter = router({
         return { code };
       }),
 
+    /** Compatibility alias used by the richer administrator coupon controls. */
+    createCoupon: protectedProcedure
+      .input(
+        z.object({
+          code: z.string().optional(),
+          note: z.string().optional(),
+          maxUses: z.number().int().positive().nullable().optional(),
+          expiresAt: z.number().nullable().optional(),
+          grantDurationUnit: z.enum(["day", "month", "lifetime"]).default("lifetime"),
+          grantDurationValue: z.number().int().positive().nullable().optional(),
+        })
+      )
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        const code = await createAccessCode({
+          code: input.code,
+          note: input.note,
+          maxUses: input.maxUses ?? null,
+          expiresAt: input.expiresAt ?? null,
+          grantDurationUnit: input.grantDurationUnit,
+          grantDurationValue: input.grantDurationValue ?? null,
+        });
+        return { code };
+      }),
+
     /** Admin only: generate a random code preview without saving */
     generatePreview: protectedProcedure.query(async ({ ctx }) => {
       if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
@@ -2777,6 +2883,45 @@ export const appRouter = router({
 
   /** Admin-only analytics and diagnostics */
   admin: router({
+    /** Recent user logins for the administrator activity screen. */
+    recentLogins: protectedProcedure
+      .input(z.object({
+        search: z.string().optional(),
+        limit: z.number().min(1).max(100).default(25),
+        offset: z.number().min(0).default(0),
+        dateFrom: z.string().optional(),
+        dateTo: z.string().optional(),
+      }))
+      .query(async ({ ctx, input }) => {
+        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const clauses = [];
+        if (input.search) {
+          clauses.push(or(
+            like(users.name, `%${input.search}%`),
+            like(users.email, `%${input.search}%`),
+          ));
+        }
+        if (input.dateFrom) clauses.push(sql`${users.lastSignedIn} >= ${new Date(input.dateFrom).getTime()}`);
+        if (input.dateTo) clauses.push(sql`${users.lastSignedIn} <= ${new Date(`${input.dateTo}T23:59:59`).getTime()}`);
+        const conditions = clauses.length > 0 ? and(...clauses as [any, ...any[]]) : undefined;
+        const selectFields = {
+          id: users.id,
+          name: users.name,
+          email: users.email,
+          loginMethod: users.loginMethod,
+          role: users.role,
+          createdAt: users.createdAt,
+          lastSignedIn: users.lastSignedIn,
+        };
+        const [rows, countResult] = await Promise.all([
+          db.select(selectFields).from(users).where(conditions).orderBy(desc(users.lastSignedIn)).limit(input.limit).offset(input.offset),
+          db.select({ count: sql<number>`count(*)` }).from(users).where(conditions),
+        ]);
+        return { rows, total: Number(countResult[0]?.count ?? 0) };
+      }),
+
     complimentaryAccess: adminProcedure
       .input(z.object({
         status: z.enum(["all", "active", "expired", "revoked"]).default("all"),
@@ -5014,6 +5159,59 @@ export const appRouter = router({
           ));
         return { ok: true as const };
       }),
+  }),
+
+  /** Current-main administration facade backed by the validated subscription helpers. */
+  adminManagement: router({
+    listUsers: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      return db
+        .select({ id: users.id, email: users.email, name: users.name, role: users.role, createdAt: users.createdAt })
+        .from(users)
+        .orderBy(desc(users.createdAt));
+    }),
+    promoteToAdmin: adminProcedure
+      .input(z.object({ email: z.string().trim().email() }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const [target] = await db.select({ id: users.id }).from(users).where(eq(users.email, input.email)).limit(1);
+        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+        await db.update(users).set({ role: "admin" }).where(eq(users.id, target.id));
+        await grantSubscriptionByEmail(input.email, "lifetime");
+        return { ok: true, userId: target.id };
+      }),
+    grantLifetime: adminProcedure
+      .input(z.object({ email: z.string().trim().email() }))
+      .mutation(async ({ input }) => {
+        const granted = await grantSubscriptionByEmail(input.email, "lifetime");
+        if (!granted) throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+        return { ok: true, userId: granted.userId };
+      }),
+    listPrivilegedUsers: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      return db
+        .select({
+          id: users.id,
+          email: users.email,
+          name: users.name,
+          role: users.role,
+          createdAt: users.createdAt,
+          tier: businessProfiles.tier,
+          planExpiresAt: businessProfiles.planExpiresAt,
+        })
+        .from(users)
+        .leftJoin(businessProfiles, eq(businessProfiles.userId, users.id))
+        .where(or(
+          eq(users.role, "admin"),
+          eq(businessProfiles.tier, "lifetime"),
+          eq(businessProfiles.tier, "pro"),
+          eq(businessProfiles.tier, "annual"),
+        ))
+        .orderBy(desc(users.createdAt));
+    }),
   }),
 
   /** Landing page lead capture — stores email and sends the free guide PDF */

@@ -109,7 +109,7 @@ type DashboardReadinessGateProps = {
 
 function RecoveryToast({ readiness }: Pick<DashboardReadinessGateProps, "readiness">) {
   const { t } = useTranslation();
-  const { recoverySuccessHaptic } = useHaptics();
+  const { successHaptic } = useHaptics();
   const hadUnavailableState = useRef(false);
   const lastHandledSuccess = useRef(readiness.dataUpdatedAt);
 
@@ -135,8 +135,8 @@ function RecoveryToast({ readiness }: Pick<DashboardReadinessGateProps, "readine
         defaultValue: "Get Phame is connected and ready to use.",
       }),
     });
-    recoverySuccessHaptic();
-  }, [readiness.dataUpdatedAt, readiness.isSuccess, recoverySuccessHaptic, t]);
+    successHaptic();
+  }, [readiness.dataUpdatedAt, readiness.isSuccess, successHaptic, t]);
 
   return null;
 }

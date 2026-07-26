@@ -11,7 +11,7 @@ const STORAGE_KEY = "rr-lang";
 const USER_CHOSEN_KEY = "rr-lang-chosen";
 
 // Supported language codes (i18next format)
-export const SUPPORTED_LANGS = ["en", "th", "zh-CN", "fr", "es", "it"] as const;
+export const SUPPORTED_LANGS = ["en", "th", "zh-CN", "zh-TW", "fr", "es", "it"] as const;
 export type SupportedLang = (typeof SUPPORTED_LANGS)[number];
 
 // Human-readable labels for the flyout
@@ -19,6 +19,7 @@ export const LANG_LABELS: Record<SupportedLang, string> = {
   en: "EN",
   th: "TH",
   "zh-CN": "CN",
+  "zh-TW": "TW",
   fr: "FR",
   es: "ES",
   it: "IT",
@@ -28,6 +29,7 @@ export const LANG_NAMES: Record<SupportedLang, string> = {
   en: "English",
   th: "ภาษาไทย",
   "zh-CN": "中文",
+  "zh-TW": "繁體中文",
   fr: "Français",
   es: "Español",
   it: "Italiano",
@@ -39,6 +41,7 @@ export function getSavedLang(): SupportedLang | null {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved === "th") return "th";
     if (saved === "zh-CN") return "zh-CN";
+    if (saved === "zh-TW") return "zh-TW";
     if (saved === "fr") return "fr";
     if (saved === "es") return "es";
     if (saved === "it") return "it";
@@ -97,6 +100,11 @@ function detectLangFromBrowser(): SupportedLang {
   try {
     const browserLang = (navigator.language || navigator.languages?.[0] || "").toLowerCase();
     if (browserLang.startsWith("th")) return "th";
+    if (
+      browserLang.startsWith("zh-tw") ||
+      browserLang.startsWith("zh-hk") ||
+      browserLang.startsWith("zh-hant")
+    ) return "zh-TW";
     if (browserLang.startsWith("zh")) return "zh-CN";
     if (browserLang.startsWith("fr")) return "fr";
     if (browserLang.startsWith("es")) return "es";
@@ -114,7 +122,7 @@ async function detectLangFromIP(): Promise<SupportedLang> {
     if (!res.ok) return "en";
     const data = await res.json() as { lang?: string };
     const lang = data.lang;
-    if (lang === "th" || lang === "zh-CN" || lang === "fr" || lang === "es" || lang === "it") {
+    if (lang === "th" || lang === "zh-CN" || lang === "zh-TW" || lang === "fr" || lang === "es" || lang === "it") {
       return lang as SupportedLang;
     }
   } catch {
@@ -140,7 +148,7 @@ function detectLangFromQuery(): SupportedLang | null {
   try {
     const params = new URLSearchParams(window.location.search);
     const q = params.get("lang");
-    if (q === "th" || q === "zh-CN" || q === "fr" || q === "es" || q === "it" || q === "en") {
+    if (q === "th" || q === "zh-CN" || q === "zh-TW" || q === "fr" || q === "es" || q === "it" || q === "en") {
       return q as SupportedLang;
     }
   } catch {
@@ -178,7 +186,7 @@ i18n
   .init({
     lng: initialLang,
     fallbackLng: "en",
-    supportedLngs: ["en", "th", "zh-CN", "fr", "es", "it"],
+    supportedLngs: [...SUPPORTED_LANGS],
     ns: ["translation"],
     defaultNS: "translation",
     backend: {

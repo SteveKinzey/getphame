@@ -37,5 +37,9 @@ export const decodeOAuthState = (state: string): OAuthState => {
 };
 
 export const UNPAID_ERR_MSG = 'An active subscription is required to access this feature (10003)';
-export const FREE_LIMIT = 10;
-export const FREE_LIMIT_ERR_MSG = 'You have used all 10 free review requests. Upgrade to Pro to continue sending. (10004)';
+export const FREE_INITIAL_REQUESTS = 10;
+export const FREE_ROLLING_REQUESTS = 5;
+export const FREE_ROLLING_WINDOW_DAYS = 30;
+// Backward-compatible alias for older UI code while the allowance has two phases.
+export const FREE_LIMIT = FREE_INITIAL_REQUESTS;
+export const FREE_LIMIT_ERR_MSG = 'You have used your 5 free requests for this 30-day period. Upgrade to Pro now or send again when your rolling allowance refreshes. (10004)';
