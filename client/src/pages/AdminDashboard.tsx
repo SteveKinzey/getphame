@@ -128,6 +128,20 @@ export default function AdminDashboard() {
     undefined,
     { enabled: !!user }
   );
+  // Coupon analytics — derived from the full codes list
+  const { data: allCodes } = trpc.accessCodes.list.useQuery(undefined, { enabled: !!user });
+  const couponStats = allCodes
+    ? {
+        total: allCodes.length,
+        redemptions: allCodes.reduce((sum, c) => sum + c.usedCount, 0),
+        active: allCodes.filter(
+          (c) =>
+            c.active === 1 &&
+            (!c.expiresAt || c.expiresAt > Date.now()) &&
+            (c.maxUses === null || c.usedCount < c.maxUses)
+        ).length,
+      }
+    : null;
 
   const createCoupon = trpc.accessCodes.createCoupon.useMutation({
     onSuccess: ({ code }) => {
@@ -789,6 +803,23 @@ export default function AdminDashboard() {
 
             {/* Coupon Code Generation */}
             <div className="mt-2">
+              {/* Coupon analytics stat row */}
+              {couponStats && (
+                <div className="grid grid-cols-3 gap-2 mb-3">
+                  <div className="rounded-xl px-3 py-2.5 text-center" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.02 260)" }}>
+                    <p className="text-lg font-black rr-text-navy">{couponStats.total}</p>
+                    <p className="text-xs rr-text-navy-muted font-bold mt-0.5">Created</p>
+                  </div>
+                  <div className="rounded-xl px-3 py-2.5 text-center" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.02 260)" }}>
+                    <p className="text-lg font-black" style={{ color: "oklch(0.45 0.18 80)" }}>{couponStats.redemptions}</p>
+                    <p className="text-xs rr-text-navy-muted font-bold mt-0.5">Redeemed</p>
+                  </div>
+                  <div className="rounded-xl px-3 py-2.5 text-center" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.02 260)" }}>
+                    <p className="text-lg font-black" style={{ color: "oklch(0.45 0.18 150)" }}>{couponStats.active}</p>
+                    <p className="text-xs rr-text-navy-muted font-bold mt-0.5">Active</p>
+                  </div>
+                </div>
+              )}
               <p className="text-sm font-black mb-3 uppercase tracking-widest rr-text-navy flex items-center gap-2">
                 <Ticket size={15} className="rr-text-gold" />
                 Generate Coupon Code

@@ -15,7 +15,7 @@ import {
   RefreshCw,
   Infinity,
 } from "lucide-react";
-import { Clock, Calendar, Zap } from "lucide-react";
+import { Clock, Calendar, Zap, Download } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -298,6 +298,39 @@ export default function AdminCodesPage() {
             >
               <RefreshCw size={14} />
             </button>
+            {/* CSV export */}
+            {codes && codes.length > 0 && (
+              <button
+                onClick={() => {
+                  const headers = ["code", "note", "durationType", "durationAmount", "usedCount", "maxUses", "active", "expiresAt", "createdAt"];
+                  const rows = codes.map((c) => [
+                    c.code,
+                    c.note ?? "",
+                    c.grantDurationType ?? "",
+                    c.grantAmount ?? "",
+                    c.usedCount,
+                    c.maxUses ?? "unlimited",
+                    c.active === 1 ? "active" : "revoked",
+                    c.expiresAt ? new Date(c.expiresAt).toISOString() : "never",
+                    new Date(c.createdAt).toISOString(),
+                  ]);
+                  const csv = [headers, ...rows].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
+                  const blob = new Blob([csv], { type: "text/csv" });
+                  const url = URL.createObjectURL(blob);
+                  const a = document.createElement("a");
+                  a.href = url;
+                  a.download = `getphame-codes-${new Date().toISOString().slice(0, 10)}.csv`;
+                  a.click();
+                  URL.revokeObjectURL(url);
+                }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-opacity hover:opacity-80"
+                style={{ background: "oklch(0.30 0.12 80)", color: "oklch(0.85 0.18 80)" }}
+                title="Download CSV"
+              >
+                <Download size={12} />
+                CSV
+              </button>
+            )}
           </div>
 
           {codesLoading ? (

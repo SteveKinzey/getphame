@@ -1883,7 +1883,17 @@
     "labelImproved": "Mejorado",
     "labelFix": "Corrección",
     "noEntries": "No hay actualizaciones disponibles",
-    "loadingError": "No se pudo cargar el registro"
+    "loadingError": "No se pudo cargar el registro",
+    "v15": {
+      "couponCodeGeneration": {
+        "title": "Generación de Códigos de Descuento",
+        "description": "Los administradores ahora pueden crear códigos de descuento por tiempo limitado o de por vida directamente desde el Panel de Administración, con prefijos personalizados, límites máximos de uso y fechas de vencimiento."
+      },
+      "revokeUserAccess": {
+        "title": "Revocar Acceso de Usuario",
+        "description": "Un nuevo botón de Revocar Acceso en la tabla de Usuarios Privilegiados permite a los administradores degradar instantáneamente a cualquier usuario de pago al nivel gratuito con un solo toque de confirmación."
+      }
+    }
   },
   "onboardingGuide": {
     "title": "Guía de configuración",
@@ -2169,5 +2179,17 @@
     "title": "Novedades",
     "subtitle": "Esto es lo que cambió en la última actualización.",
     "cta": "¡Entendido — vamos!"
+  },
+  "adminCodes": {
+    "lifetimeAccess": "Acceso de por vida",
+    "monthsPro": "{{count}} mes Pro",
+    "monthsPro_other": "{{count}} meses Pro",
+    "daysPro": "{{count}} día Pro",
+    "daysPro_other": "{{count}} días Pro",
+    "csvButton": "CSV",
+    "csvTitle": "Descargar CSV",
+    "codesCreated": "Creados",
+    "codesRedeemed": "Canjeados",
+    "codesActive": "Activos"
   }
 }

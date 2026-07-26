@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 
-const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
+// Official horizontal logo for footer
+const LOGO_URL = "/manus-storage/getphame-primary-horizontal-logo2_7f1d75d9.png";
 export default function Footer() {
   const { t } = useTranslation();
 
@@ -10,10 +11,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo */}
           <a href="/" className="flex items-center gap-2.5">
-            <img src={LOGO_URL} alt="Get Phame" className="w-7 h-7" />
-            <span className="font-display font-bold text-base text-white">
-              GET <span className="text-primary">PHAME</span>
-            </span>
+            <img src={LOGO_URL} alt="Get Phame" className="h-7 w-auto" style={{ maxWidth: "160px" }} />
           </a>
 
           {/* Links */}

@@ -159,20 +159,7 @@ export default defineConfig({
       "@": path.resolve(import.meta.dirname, "client", "src"),
       "@shared": path.resolve(import.meta.dirname, "shared"),
       "@assets": path.resolve(import.meta.dirname, "attached_assets"),
-      "react": path.resolve(import.meta.dirname, "node_modules", "react"),
-      "react-dom": path.resolve(import.meta.dirname, "node_modules", "react-dom"),
     },
-    dedupe: ["react", "react-dom"],
-  },
-  optimizeDeps: {
-    include: [
-      "react",
-      "react-dom",
-      "react/jsx-runtime",
-      "react/jsx-dev-runtime",
-      "@trpc/react-query",
-      "@radix-ui/react-tooltip",
-    ],
   },
   envDir: path.resolve(import.meta.dirname),
   root: path.resolve(import.meta.dirname, "client"),
@@ -180,49 +167,6 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
-    // Disable the modulepreload polyfill inline script — it violates CSP script-src 'self'
-    // Modern browsers (Chrome 66+, Firefox 115+, Safari 17+) support modulepreload natively
-    modulePreload: { polyfill: false },
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          // React core + router — loaded on every page, cache separately
-          if (id.includes('node_modules/react/') ||
-              id.includes('node_modules/react-dom/') ||
-              id.includes('node_modules/scheduler/')) {
-            return 'vendor-react';
-          }
-          // tRPC + tanstack-query — data layer, changes less often than app code
-          if (id.includes('node_modules/@trpc/') ||
-              id.includes('node_modules/@tanstack/') ||
-              id.includes('node_modules/superjson/')) {
-            return 'vendor-trpc';
-          }
-          // Radix UI + shadcn/ui components — large, rarely changes
-          if (id.includes('node_modules/@radix-ui/') ||
-              id.includes('node_modules/class-variance-authority/') ||
-              id.includes('node_modules/clsx/') ||
-              id.includes('node_modules/tailwind-merge/')) {
-            return 'vendor-ui';
-          }
-          // recharts + D3 — only loaded on Dashboard page
-          if (id.includes('node_modules/recharts/') ||
-              id.includes('node_modules/d3-') ||
-              id.includes('node_modules/victory-vendor/')) {
-            return 'vendor-recharts';
-          }
-          // date-fns — used across many pages (date formatting), separate from recharts
-          if (id.includes('node_modules/date-fns/')) {
-            return 'vendor-datefns';
-          }
-          // i18n — large locale data, separate cache key
-          if (id.includes('node_modules/i18next') ||
-              id.includes('node_modules/react-i18next')) {
-            return 'vendor-i18n';
-          }
-        },
-      },
-    },
   },
   server: {
     host: true,
@@ -235,13 +179,6 @@ export default defineConfig({
       "localhost",
       "127.0.0.1",
     ],
-    hmr: {
-      // The Manus sandbox is accessed via a TLS-terminating reverse proxy.
-      // The browser must connect to the WebSocket on port 443 (WSS) so the
-      // proxy can forward it to the Vite dev server on port 3000.
-      clientPort: 443,
-      protocol: "wss",
-    },
     fs: {
       strict: true,
       deny: ["**/.*"],

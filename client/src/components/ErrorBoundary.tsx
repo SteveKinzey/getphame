@@ -53,7 +53,7 @@ class ErrorBoundary extends Component<Props, State> {
         >
           <div className="flex flex-col items-center w-full max-w-md text-center">
             <img
-              src="https://assets.getphame.app/getphame-logo-mark.webp"
+              src="/manus-storage/getphame-app-icon-dark_8bb8cc54.png"
               alt="Get Phame"
               className="w-16 h-16 mb-6 opacity-90"
             />
