@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Sparkles, Star, Zap, Globe, Bell, Shield, Smartphone, Crown, Languages } from "lucide-react";
+import { Sparkles, Star, Zap, Globe, Bell, Shield, Smartphone, Crown, Languages, Ticket, Ban } from "lucide-react";
 
 const LS_KEY = "phame-whats-new-seen";
 
@@ -20,6 +20,16 @@ export interface ChangelogEntry {
 // ── Changelog — update this array with each new release ──────────────────────
 // Keep entries in reverse-chronological order (newest first).
 const CHANGELOG: ChangelogEntry[] = [
+  {
+    icon: <Ticket size={16} className="rr-text-gold" />,
+    title: "Coupon code generation",
+    description: "Admins can now create time-limited or lifetime discount codes directly from the Admin Dashboard — with custom prefixes, max-use limits, and expiry dates.",
+  },
+  {
+    icon: <Ban size={16} className="rr-text-gold" />,
+    title: "Revoke user access",
+    description: "A new Revoke Access button in the Privileged Users table lets admins instantly downgrade any paid user back to the free tier with a single confirmation tap.",
+  },
   {
     icon: <Smartphone size={16} className="rr-text-gold" />,
     title: "Install guide in onboarding",
