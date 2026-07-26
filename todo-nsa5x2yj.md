@@ -260,7 +260,8 @@
 - [x] Build a localized admin-only GitHub Cleanup Skill Showcase page using existing Get Phame admin authorization, navigation, design tokens, responsive patterns, and accessible image descriptions.
 - [x] Add focused Vitest coverage for admin visibility and route behavior, then run focused tests, the full suite, TypeScript checks, and the production build.
 - [x] Verify the page at desktop, tablet, and mobile breakpoints, including non-admin denial behavior and accessible visualization presentation.
-- [ ] Create a validated checkpoint release, then synchronize the exact released tree to `SteveKinzey/getphame` through a history-preserving release branch, pull request, required checks, merge, and remote-tree verification.
-- [ ] Deliver the updated installable skill, metric explanation, presentation script, live admin page, visualization assets, and release verification.
+- [x] Create a validated checkpoint release, then synchronize the exact released tree to `SteveKinzey/getphame` through a history-preserving release branch, pull request, required checks, merge, and remote-tree verification.
+- [x] Deliver the updated installable skill, metric explanation, presentation script, live admin page, visualization assets, and release verification.
 - [x] Replace publicly addressable `/manus-storage/` visualization keys with accessible native diagrams rendered exclusively from the administrator-protected showcase payload, and add a focused regression that prevents storage-key reintroduction.
-- [ ] Translate the remaining English `zh-CN` showcase labels identified in pull request 10, re-run localization coverage, and resolve every blocking review conversation with evidence.
+- [x] Translate the remaining English `zh-CN` showcase labels identified in pull request 10, re-run localization coverage, and resolve every blocking review conversation with evidence.
+- [x] Reconstruct every `scripts/`, `references/`, and `templates/` resource referenced by `github-repository-cleanup/SKILL.md`, test deterministic utilities on a disposable repository, run official skill validation, and deliver a self-contained installable skill package.
