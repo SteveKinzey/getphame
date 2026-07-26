@@ -1,9 +1,13 @@
 import { z } from "zod";
-import { COOKIE_NAME, FREE_LIMIT, FREE_LIMIT_ERR_MSG } from "@shared/const";
+import { COOKIE_NAME, FREE_LIMIT_ERR_MSG } from "@shared/const";
+import { getEffectiveTier } from "@shared/plans";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { protectedProcedure, publicProcedure, router, paidProcedure } from "./_core/trpc";
+import { adminProcedure, paidProcedure, protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
+import { hasPaidOrAdminAccess } from "./entitlements";
+import { evaluateFreeQuotaAccess, formatFreeQuotaBlockedMessage } from "./quotaEnforcement";
+import { storageGet, storagePut } from "./storage";
 import {
   getBusinessProfile,
   upsertBusinessProfile,
@@ -11,10 +15,7 @@ import {
   getCustomerRequests,
   getMonthlyRequestCount,
   getTotalRequestCount,
-  getTodaySentCount,
-  generateApiKey,
-  listApiKeys,
-  revokeApiKey,
+  getFreeQuotaSummary,
   getRecentApiImports,
   getWebhookConfigs,
   createWebhookConfig,
@@ -22,15 +23,74 @@ import {
   getWebhookDeliveryLogs,
   getNotificationPrefs,
   updateNotificationPrefs,
+  getAccountProfile,
+  updateAccountProfile,
 } from "./db";
-import { checkQuota, consumeQuota, getQuotaSummary, QUOTA_ONBOARDING, QUOTA_WINDOW_SENDS, QUOTA_WINDOW_MS } from "./db";
+import {
+  createDeveloperApiKey,
+  DEVELOPER_API_SCOPES,
+  listDeveloperApiKeys,
+  revokeDeveloperApiKey,
+  rotateDeveloperApiKey,
+} from "./developerApiKeys";
+import {
+  acceptDeveloperApiTerms,
+  getDeveloperApiEnrollmentStatus,
+  requestDeveloperSendScope,
+  reviewDeveloperSendScope,
+} from "./developerApiEnrollment";
+import { fingerprintAuthValue } from "./authOperations";
 
 import { sendMailViaSmtp } from "./smtp";
-import { storagePut } from "./storage";
 import { buildReviewRequestEmail, buildReviewRequestText } from "./emailTemplates";
-import { checkSendRateLimit } from "./rateLimiter";
-import { createCheckoutSession, createPortalSession, createThbCheckoutSession } from "./stripe";
-import { sendLeadGuideEmail } from "./leadGuideEmail";
+import { checkManualSearchEventRateLimit, checkOnboardingChecklistEventRateLimit, checkOnboardingFunnelInsightRateLimit } from "./rateLimiter";
+import { AdaptiveSendLimitError, getAdaptiveSendStatus } from "./adaptiveSendLimits";
+import {
+  cancelSubscriptionRenewal,
+  claimMoneyBackGuarantee,
+  createCheckoutSession,
+  createPortalSession,
+  createStripePromotionCode,
+  createThbCheckoutSession,
+  getMoneyBackGuaranteeStatus,
+  listStripePromotionCodes,
+  getSubscriptionSnapshot,
+} from "./stripe";
+import { GUIDE_PDF_URL, sendLeadGuideEmail } from "./leadGuideEmail";
+import { sendSupportMessage } from "./supportEmail";
+import { checkSupportAttachmentRateLimit, checkSupportSubmissionRateLimit } from "./supportRateLimit";
+import { helpAssistantRouter } from "./helpAssistant";
+import {
+  getSupportAttachmentExtension,
+  getSupportSlaTargetAt,
+  isSupportEscalation,
+  MAX_SUPPORT_DUE_DATE_FUTURE_DAYS,
+  MAX_SUPPORT_INTERNAL_NOTE_CHARS,
+  MAX_SUPPORT_INTERNAL_NOTE_MENTIONS,
+  MAX_SUPPORT_ESCALATION_THRESHOLD_MINUTES,
+  MAX_SUPPORT_EXPORT_RANGE_DAYS,
+  MAX_SUPPORT_SAVED_QUEUE_VIEW_NAME_CHARS,
+  MAX_SUPPORT_SAVED_QUEUE_VIEWS,
+  isValidSupportScreenshot,
+  MAX_SUPPORT_ATTACHMENT_BYTES,
+  getSupportInternalNotePlainText,
+  renderSupportInternalNoteHtml,
+  normalizeSupportQueueViewName,
+  sanitizeSupportAttachmentFilename,
+  SUPPORT_ATTACHMENT_MIME_TYPES,
+  SUPPORT_ESCALATION_POLICY_KEY,
+  SUPPORT_PRIORITIES,
+  SUPPORT_QUEUE_ASSIGNEE_SCOPES,
+  SUPPORT_QUEUE_SLA_WINDOWS,
+  SUPPORT_QUEUE_SORTS,
+  SUPPORT_QUEUE_VIEW_VISIBILITIES,
+  SUPPORT_SUBMISSION_STATUSES,
+  SUPPORT_TICKET_ALERT_DEDUP_WINDOW_MS,
+  SUPPORT_TICKET_ALERT_TYPES,
+  SUPPORT_TOPICS,
+  type SupportPriority,
+} from "./supportIntake";
+import { buildDailyTrend } from "./dailyTrend";
 import {
   getWooCredentials,
   upsertWooCredentials,
@@ -43,9 +103,25 @@ import {
   bulkSetWooCustomerStatus,
 } from "./woocommerce";
 import { getDb } from "./db";
-import { stripeSubscriptions, businessProfiles, smtpCredentials, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads } from "../drizzle/schema";
+import { stripeSubscriptions, businessProfiles, smtpCredentials, smtpAdminAuditLogs, customerRequests, reviewPlatforms, users, savedContacts, emailTemplates, followUpReminders, emailEvents, wooCredentials, wooCustomers, wooSyncLogs, accessCodeRedemptions, gmailTokens, churnSurveys, pageEvents, apiKeys, clientReviews, referrals, leads, koalendarBookings, koalendarConnections, supportEscalationPolicies, supportEscalationPolicyRecipients, supportInternalNoteMentions, supportInternalNotes, supportSavedQueueViews, supportSubmissions, supportTicketAlerts } from "../drizzle/schema";
 import { getOrCreateReferralCode, getReferrerByCode, recordReferral } from "./referrals";
-import { eq, like, or, inArray, desc, isNotNull, isNull, and, sql } from "drizzle-orm";
+import { PWA_EVENT_NAMES, PWA_EVENT_SOURCE, summarizePwaEvents, toPwaEventPage } from "./pwaAnalytics";
+import {
+  CAPTION_LANGUAGE_ANALYTICS_LANGUAGES,
+  CAPTION_LANGUAGE_ANALYTICS_SOURCE,
+  summarizeCaptionLanguageEvents,
+  toCaptionLanguageEventPage,
+} from "./captionLanguageAnalytics";
+import { ONBOARDING_CHECKLIST_EVENT_NAMES, ONBOARDING_CHECKLIST_EVENT_SOURCE, summarizeOnboardingChecklistEvents, toOnboardingChecklistEventPage } from "./onboardingChecklistAnalytics";
+import {
+  getManualSearchInsights,
+  MANUAL_SEARCH_LOCALES,
+  MANUAL_SEARCH_REPORTING_PERIODS,
+  MANUAL_SEARCH_ROLES,
+  recordManualZeroResultSearch,
+} from "./manualSearchAnalytics";
+import { generateOnboardingFunnelInsight } from "./onboardingFunnelInsight";
+import { eq, like, or, inArray, desc, asc, isNotNull, isNull, and, sql, gte, lte, ne, count } from "drizzle-orm";
 import {
   listSavedContacts,
   createSavedContact,
@@ -70,7 +146,11 @@ import {
   cancelRemindersByRequestId,
   scheduleFollowUp,
   sendReminderNow,
+  syncPendingReminderStages,
 } from "./reminders";
+import { getReminderTimingPerformance } from "./reminderPerformance";
+import { getOperationsAlertState, getSystemHealthTrend } from "./systemHealth";
+import { buildAdminOperationsAnalyticsExport, serializeAdminOperationsCsv, type AdminOperationsCsvRow } from "./adminOperationsExport";
 import {
   createAccessCode,
   listAccessCodes,
@@ -109,7 +189,6 @@ import {
 
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
 import { bulkSenderRouter } from "./bulkSender";
-import { helpAssistantRouter } from "./helpAssistant";
 import { authDiagnosticsRouter } from "./routers/authDiagnostics";
 import { githubCleanupShowcaseRouter } from "./routers/githubCleanupShowcase";
 import { passkeysRouter } from "./routers/passkeys";
@@ -137,6 +216,16 @@ import {
   rotateKoalendarWebhook,
 } from "./koalendar";
 import crypto from "crypto";
+
+const smtpAuditFilterShape = {
+  dateFrom: z.number().int().nonnegative().optional(),
+  dateTo: z.number().int().nonnegative().optional(),
+  adminId: z.number().int().positive().optional(),
+  outcome: z.enum(["all", "removed"]).default("all"),
+};
+
+const validateSmtpAuditDateRange = (value: { dateFrom?: number; dateTo?: number }) =>
+  value.dateFrom === undefined || value.dateTo === undefined || value.dateFrom <= value.dateTo;
 
 // ── Unsubscribe token helpers ────────────────────────────────────────────────
 const UNSUB_SECRET = process.env.JWT_SECRET ?? "phame-unsub-secret";
@@ -172,23 +261,365 @@ export function buildUnsubUrl(contactType: "contact" | "woo", id: number, userId
   return `${base}/unsubscribe?token=${token}`;
 }
 
-/**
- * Enforce the 10-request free-tier limit.
- * Throws a FORBIDDEN TRPCError if the user is on the free tier and has already sent FREE_LIMIT requests.
- */
+/** Enforce 10 initial sends, then 5 sends per rolling 30-day window. */
 async function enforceFreeLimit(userId: number, tier: string) {
-  if (tier !== "free") return; // paid users have no limit
-  const status = await checkQuota(userId, 1);
-  if (!status.allowed) {
-    const nextWindowAt = status.nextWindowAt;
-    const waitMsg = nextWindowAt
-      ? ` Your next 5 free sends unlock on ${new Date(nextWindowAt).toLocaleDateString()}.`
-      : "";
-    const msg = status.reason === "onboarding_exhausted"
-      ? `Your 10 free review requests have been sent. Upgrade to Pro to keep sending, or wait for your 30-day window to unlock 5 more.${waitMsg} (10004)`
-      : `You\'ve used all 5 free sends for this 30-day window.${waitMsg} Upgrade to Pro for unlimited sends. (10004)`;
-    throw new TRPCError({ code: "FORBIDDEN", message: msg });
+  const decision = await evaluateFreeQuotaAccess(userId, tier);
+  if (!decision.allowed) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: formatFreeQuotaBlockedMessage(decision.quota, FREE_LIMIT_ERR_MSG),
+    });
   }
+}
+
+const avatarMimeTypes = ["image/jpeg", "image/png", "image/webp"] as const;
+const avatarExtensions: Record<(typeof avatarMimeTypes)[number], string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+};
+
+function isValidAvatarSignature(data: Buffer, mimeType: (typeof avatarMimeTypes)[number]) {
+  if (mimeType === "image/jpeg") return data.length >= 3 && data[0] === 0xff && data[1] === 0xd8 && data[2] === 0xff;
+  if (mimeType === "image/png") return data.length >= 8 && data.subarray(0, 8).equals(Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]));
+  return data.length >= 12 && data.subarray(0, 4).toString("ascii") === "RIFF" && data.subarray(8, 12).toString("ascii") === "WEBP";
+}
+
+type SupportTicketAlertInput = {
+  ticketId: number;
+  recipientUserIds: number[];
+  actorUserId: number;
+  type: (typeof SUPPORT_TICKET_ALERT_TYPES)[number];
+  /** For SLA breaches, keep one alert per recipient for the active target window. */
+  dedupSince?: Date;
+};
+
+/**
+ * Persist only recipient-scoped operational events. This never copies customer
+ * message, attachment, or email data into an alert record.
+ */
+async function queueSupportTicketAlerts(
+  db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
+  input: SupportTicketAlertInput,
+) {
+  const recipientUserIds = Array.from(new Set(input.recipientUserIds)).filter((id) => Number.isInteger(id) && id > 0);
+  if (recipientUserIds.length === 0) return;
+
+  const createdAfter = new Date(Date.now() - SUPPORT_TICKET_ALERT_DEDUP_WINDOW_MS);
+  const recipientsWithoutRecentUnreadAlert: number[] = [];
+
+  for (const recipientUserId of recipientUserIds) {
+    const [existingAlert] = await db.select({ id: supportTicketAlerts.id })
+      .from(supportTicketAlerts)
+      .where(input.type === "sla_breach"
+        ? and(
+          eq(supportTicketAlerts.ticketId, input.ticketId),
+          eq(supportTicketAlerts.recipientUserId, recipientUserId),
+          eq(supportTicketAlerts.type, input.type),
+          gte(supportTicketAlerts.createdAt, input.dedupSince ?? createdAfter),
+        )
+        : and(
+          eq(supportTicketAlerts.ticketId, input.ticketId),
+          eq(supportTicketAlerts.recipientUserId, recipientUserId),
+          eq(supportTicketAlerts.type, input.type),
+          isNull(supportTicketAlerts.readAt),
+          gte(supportTicketAlerts.createdAt, createdAfter),
+        ))
+      .limit(1);
+    if (!existingAlert) recipientsWithoutRecentUnreadAlert.push(recipientUserId);
+  }
+
+  if (recipientsWithoutRecentUnreadAlert.length === 0) return;
+
+  await db.insert(supportTicketAlerts).values(
+    recipientsWithoutRecentUnreadAlert.map((recipientUserId) => ({
+      ticketId: input.ticketId,
+      recipientUserId,
+      actorUserId: input.actorUserId,
+      type: input.type,
+    })),
+  );
+}
+
+/** First response is the first confirmed administrator status transition or private note. */
+async function recordSupportFirstResponse(
+  db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
+  ticketId: number,
+) {
+  await db.update(supportSubmissions)
+    .set({ firstRespondedAt: new Date() })
+    .where(and(
+      eq(supportSubmissions.id, ticketId),
+      isNull(supportSubmissions.firstRespondedAt),
+    ));
+}
+
+type SupportMetricsPeriod = "7" | "30" | "90";
+type SupportMetricsInput = {
+  periodDays?: SupportMetricsPeriod;
+  startDate?: string;
+  endDate?: string;
+};
+type SupportMetricsSnapshot = {
+  periodDays: number;
+  periodStart: Date;
+  periodEnd: Date;
+  periodLabel: string;
+  isCustomRange: boolean;
+  generatedAt: Date;
+  ticketsCreated: number;
+  resolvedTickets: number;
+  openTickets: number;
+  firstResponseCount: number;
+  avgFirstResponseMs: number | null;
+  avgResolutionMs: number | null;
+  overdueTickets: number;
+};
+
+const supportMetricsInputSchema = z.object({
+  periodDays: z.enum(["7", "30", "90"]).optional(),
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use a valid start date.").optional(),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use a valid end date.").optional(),
+}).superRefine((value, issueContext) => {
+  const hasCustomRange = Boolean(value.startDate || value.endDate);
+  if (hasCustomRange && (!value.startDate || !value.endDate)) {
+    issueContext.addIssue({ code: z.ZodIssueCode.custom, path: ["startDate"], message: "Choose both a start and end date for a custom report." });
+  }
+  if (hasCustomRange && value.periodDays) {
+    issueContext.addIssue({ code: z.ZodIssueCode.custom, path: ["periodDays"], message: "Choose either a preset period or a custom date range." });
+  }
+});
+
+function parseSupportReportDay(value: string, field: "start" | "end"): Date {
+  const [year, month, day] = value.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day, field === "end" ? 23 : 0, field === "end" ? 59 : 0, field === "end" ? 59 : 0, field === "end" ? 999 : 0));
+  if (parsed.getUTCFullYear() !== year || parsed.getUTCMonth() !== month - 1 || parsed.getUTCDate() !== day) {
+    throw new TRPCError({ code: "BAD_REQUEST", message: `Choose a valid ${field} date for the support report.` });
+  }
+  return parsed;
+}
+
+function resolveSupportMetricsRange(input?: SupportMetricsInput) {
+  const generatedAt = new Date();
+  if (input?.startDate && input.endDate) {
+    const periodStart = parseSupportReportDay(input.startDate, "start");
+    const periodEnd = parseSupportReportDay(input.endDate, "end");
+    if (periodEnd.getTime() < periodStart.getTime()) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "The report end date must be on or after its start date." });
+    }
+    const periodDays = Math.floor((periodEnd.getTime() - periodStart.getTime()) / (24 * 60 * 60 * 1000)) + 1;
+    if (periodDays > MAX_SUPPORT_EXPORT_RANGE_DAYS) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: `Choose a range of ${MAX_SUPPORT_EXPORT_RANGE_DAYS} days or fewer.` });
+    }
+    return {
+      generatedAt,
+      periodStart,
+      periodEnd,
+      periodDays,
+      periodLabel: `${input.startDate}_to_${input.endDate}`,
+      isCustomRange: true,
+    };
+  }
+
+  const periodDays = Number(input?.periodDays ?? "30");
+  return {
+    generatedAt,
+    periodStart: new Date(generatedAt.getTime() - periodDays * 24 * 60 * 60 * 1000),
+    periodEnd: generatedAt,
+    periodDays,
+    periodLabel: `last_${periodDays}_days`,
+    isCustomRange: false,
+  };
+}
+
+const MAX_ONBOARDING_FUNNEL_RANGE_DAYS = 366;
+type OnboardingChecklistFunnelInput = {
+  periodDays?: "7" | "30" | "90";
+  startDate?: string;
+  endDate?: string;
+};
+const onboardingChecklistFunnelInputSchema = z.object({
+  periodDays: z.enum(["7", "30", "90"]).optional(),
+  startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use a valid start date.").optional(),
+  endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Use a valid end date.").optional(),
+}).strict().superRefine((value, issueContext) => {
+  const hasCustomRange = Boolean(value.startDate || value.endDate);
+  if (hasCustomRange && (!value.startDate || !value.endDate)) {
+    issueContext.addIssue({ code: z.ZodIssueCode.custom, path: ["startDate"], message: "Choose both a start and end date for the onboarding report." });
+  }
+  if (hasCustomRange && value.periodDays) {
+    issueContext.addIssue({ code: z.ZodIssueCode.custom, path: ["periodDays"], message: "Choose either a preset period or a custom date range." });
+  }
+});
+
+function parseOnboardingFunnelDay(value: string, field: "start" | "end"): Date {
+  const [year, month, day] = value.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day, field === "end" ? 23 : 0, field === "end" ? 59 : 0, field === "end" ? 59 : 0, field === "end" ? 999 : 0));
+  if (parsed.getUTCFullYear() !== year || parsed.getUTCMonth() !== month - 1 || parsed.getUTCDate() !== day) {
+    throw new TRPCError({ code: "BAD_REQUEST", message: `Choose a valid ${field} date for the onboarding report.` });
+  }
+  return parsed;
+}
+
+function resolveOnboardingChecklistFunnelRange(input?: OnboardingChecklistFunnelInput) {
+  const generatedAt = new Date();
+  if (input?.startDate && input.endDate) {
+    const periodStart = parseOnboardingFunnelDay(input.startDate, "start");
+    const periodEnd = parseOnboardingFunnelDay(input.endDate, "end");
+    if (periodEnd.getTime() < periodStart.getTime()) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: "The onboarding report end date must be on or after its start date." });
+    }
+    const periodDays = Math.floor((periodEnd.getTime() - periodStart.getTime()) / (24 * 60 * 60 * 1000)) + 1;
+    if (periodDays > MAX_ONBOARDING_FUNNEL_RANGE_DAYS) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: `Choose a range of ${MAX_ONBOARDING_FUNNEL_RANGE_DAYS} days or fewer.` });
+    }
+    return { generatedAt, periodStart, periodEnd, periodDays, periodLabel: `${input.startDate}_to_${input.endDate}`, isCustomRange: true };
+  }
+
+  const periodDays = Number(input?.periodDays ?? "30");
+  return {
+    generatedAt,
+    periodStart: new Date(generatedAt.getTime() - periodDays * 24 * 60 * 60 * 1000),
+    periodEnd: generatedAt,
+    periodDays,
+    periodLabel: `last_${periodDays}_days`,
+    isCustomRange: false,
+  };
+}
+
+async function getOnboardingChecklistFunnelSnapshot(
+  db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
+  input?: OnboardingChecklistFunnelInput,
+) {
+  const range = resolveOnboardingChecklistFunnelRange(input);
+  const rows = await db
+    .select({ page: pageEvents.page, userId: pageEvents.userId, createdAt: pageEvents.createdAt })
+    .from(pageEvents)
+    .where(and(
+      eq(pageEvents.utmSource, ONBOARDING_CHECKLIST_EVENT_SOURCE),
+      gte(pageEvents.createdAt, range.periodStart),
+      lte(pageEvents.createdAt, range.periodEnd),
+    ));
+  return { ...summarizeOnboardingChecklistEvents(rows, range.generatedAt.getTime()), range };
+}
+
+/**
+ * Builds adjacent aggregate-only windows for a trustworthy period comparison.
+ * No individual account activity leaves this helper or the admin procedure.
+ */
+async function getOnboardingChecklistFunnelComparison(
+  db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
+  input?: OnboardingChecklistFunnelInput,
+) {
+  const range = resolveOnboardingChecklistFunnelRange(input);
+  const periodDurationMs = range.periodEnd.getTime() - range.periodStart.getTime() + 1;
+  const previousPeriodEnd = new Date(range.periodStart.getTime() - 1);
+  const previousPeriodStart = new Date(previousPeriodEnd.getTime() - periodDurationMs + 1);
+  const rows = await db
+    .select({ page: pageEvents.page, userId: pageEvents.userId, createdAt: pageEvents.createdAt })
+    .from(pageEvents)
+    .where(and(
+      eq(pageEvents.utmSource, ONBOARDING_CHECKLIST_EVENT_SOURCE),
+      gte(pageEvents.createdAt, previousPeriodStart),
+      lte(pageEvents.createdAt, range.periodEnd),
+    ));
+
+  const currentRows = rows.filter((row) => row.createdAt.getTime() >= range.periodStart.getTime());
+  const previousRows = rows.filter((row) => row.createdAt.getTime() <= previousPeriodEnd.getTime());
+  const current = summarizeOnboardingChecklistEvents(currentRows, range.generatedAt.getTime());
+  const previous = summarizeOnboardingChecklistEvents(previousRows, previousPeriodEnd.getTime());
+
+  return {
+    ...current,
+    range,
+    comparison: {
+      previous: {
+        ...previous,
+        range: {
+          periodStart: previousPeriodStart,
+          periodEnd: previousPeriodEnd,
+          periodDays: range.periodDays,
+          periodLabel: `previous_${range.periodLabel}`,
+          isCustomRange: range.isCustomRange,
+        },
+      },
+    },
+  };
+}
+
+async function getSupportMetricsSnapshot(
+  db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
+  input?: SupportMetricsInput,
+): Promise<SupportMetricsSnapshot> {
+  const { generatedAt, periodStart, periodEnd, periodDays, periodLabel, isCustomRange } = resolveSupportMetricsRange(input);
+  const [metrics] = await db.select({
+    ticketsCreated: count(supportSubmissions.id),
+    resolvedTickets: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.resolvedAt} IS NOT NULL THEN 1 ELSE 0 END), 0)`,
+    openTickets: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.status} <> 'resolved' THEN 1 ELSE 0 END), 0)`,
+    firstResponseCount: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.firstRespondedAt} IS NOT NULL THEN 1 ELSE 0 END), 0)`,
+    avgFirstResponseMs: sql<number | null>`AVG(CASE WHEN ${supportSubmissions.firstRespondedAt} IS NOT NULL THEN TIMESTAMPDIFF(SECOND, ${supportSubmissions.createdAt}, ${supportSubmissions.firstRespondedAt}) * 1000 ELSE NULL END)`,
+    avgResolutionMs: sql<number | null>`AVG(CASE WHEN ${supportSubmissions.resolvedAt} IS NOT NULL THEN TIMESTAMPDIFF(SECOND, ${supportSubmissions.createdAt}, ${supportSubmissions.resolvedAt}) * 1000 ELSE NULL END)`,
+    overdueTickets: sql<number>`COALESCE(SUM(CASE WHEN ${supportSubmissions.status} <> 'resolved' AND ${supportSubmissions.slaTargetAt} IS NOT NULL AND ${supportSubmissions.slaTargetAt} < ${generatedAt} THEN 1 ELSE 0 END), 0)`,
+  })
+    .from(supportSubmissions)
+    .where(and(gte(supportSubmissions.createdAt, periodStart), lte(supportSubmissions.createdAt, periodEnd)));
+
+  const asCount = (value: unknown) => Number(value ?? 0);
+  const asDuration = (value: unknown) => value === null || value === undefined ? null : Math.round(Number(value));
+  return {
+    periodDays,
+    periodStart,
+    periodEnd,
+    periodLabel,
+    isCustomRange,
+    generatedAt,
+    ticketsCreated: asCount(metrics?.ticketsCreated),
+    resolvedTickets: asCount(metrics?.resolvedTickets),
+    openTickets: asCount(metrics?.openTickets),
+    firstResponseCount: asCount(metrics?.firstResponseCount),
+    avgFirstResponseMs: asDuration(metrics?.avgFirstResponseMs),
+    avgResolutionMs: asDuration(metrics?.avgResolutionMs),
+    overdueTickets: asCount(metrics?.overdueTickets),
+  };
+}
+
+type SupportEscalationPolicySettings = {
+  breachThresholdMinutes: number;
+  includeAssignee: boolean;
+  includeAllAdminsWhenUnassigned: boolean;
+  recipientUserIds: number[];
+};
+
+const defaultSupportEscalationPolicy: SupportEscalationPolicySettings = {
+  breachThresholdMinutes: 0,
+  includeAssignee: true,
+  includeAllAdminsWhenUnassigned: true,
+  recipientUserIds: [],
+};
+
+async function getSupportEscalationPolicySettings(
+  db: NonNullable<Awaited<ReturnType<typeof getDb>>>,
+): Promise<SupportEscalationPolicySettings> {
+  const [policy] = await db.select({
+    id: supportEscalationPolicies.id,
+    breachThresholdMinutes: supportEscalationPolicies.breachThresholdMinutes,
+    includeAssignee: supportEscalationPolicies.includeAssignee,
+    includeAllAdminsWhenUnassigned: supportEscalationPolicies.includeAllAdminsWhenUnassigned,
+  })
+    .from(supportEscalationPolicies)
+    .where(eq(supportEscalationPolicies.policyKey, SUPPORT_ESCALATION_POLICY_KEY))
+    .limit(1);
+  if (!policy) return defaultSupportEscalationPolicy;
+
+  const recipients = await db.select({ recipientUserId: supportEscalationPolicyRecipients.recipientUserId })
+    .from(supportEscalationPolicyRecipients)
+    .where(eq(supportEscalationPolicyRecipients.policyId, policy.id));
+  return {
+    breachThresholdMinutes: policy.breachThresholdMinutes,
+    includeAssignee: policy.includeAssignee,
+    includeAllAdminsWhenUnassigned: policy.includeAllAdminsWhenUnassigned,
+    recipientUserIds: recipients.map((recipient) => recipient.recipientUserId),
+  };
 }
 
 export const appRouter = router({
@@ -216,42 +647,57 @@ export const appRouter = router({
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
     }),
-    updateProfile: protectedProcedure
-      .input(z.object({
-        name: z.string().min(1).max(255).optional(),
-        defaultFromEmail: z.string().email().nullable().optional(),
-        defaultFromName: z.string().max(255).nullable().optional(),
-      }))
+  }),
+
+  accountProfile: router({
+    get: protectedProcedure.query(async ({ ctx }) => {
+      const profile = await getAccountProfile(ctx.user.id);
+      if (!profile) throw new TRPCError({ code: "NOT_FOUND", message: "Account profile not found" });
+      const avatar = profile.avatarKey ? await storageGet(profile.avatarKey) : null;
+      return {
+        name: profile.name,
+        email: profile.email,
+        avatarUrl: avatar?.url ?? null,
+        avatarMimeType: profile.avatarMimeType,
+        avatarUpdatedAt: profile.avatarUpdatedAt,
+      };
+    }),
+    update: protectedProcedure
+      .input(z.object({ name: z.string().trim().min(2).max(80) }))
       .mutation(async ({ ctx, input }) => {
-        const db = await getDb();
-        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-        await db.update(users)
-          .set({
-            ...(input.name !== undefined ? { name: input.name } : {}),
-            ...(input.defaultFromEmail !== undefined ? { defaultFromEmail: input.defaultFromEmail } : {}),
-            ...(input.defaultFromName !== undefined ? { defaultFromName: input.defaultFromName } : {}),
-            updatedAt: new Date(),
-          })
-          .where(eq(users.id, ctx.user.id));
-        return { success: true };
+        await updateAccountProfile(ctx.user.id, { name: input.name });
+        return { success: true as const };
       }),
     uploadAvatar: protectedProcedure
       .input(z.object({
-        base64: z.string(),
-        mimeType: z.string(),
+        mimeType: z.enum(avatarMimeTypes),
+        dataBase64: z.string().min(4).max(4_200_000),
       }))
       .mutation(async ({ ctx, input }) => {
-        const db = await getDb();
-        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-        const ext = input.mimeType.split("/")[1] ?? "jpg";
-        const key = `avatars/${ctx.user.id}.${ext}`;
-        const buffer = Buffer.from(input.base64, "base64");
-        const { url } = await storagePut(key, buffer, input.mimeType);
-        await db.update(users)
-          .set({ avatarUrl: url, updatedAt: new Date() })
-          .where(eq(users.id, ctx.user.id));
-        return { avatarUrl: url };
+        const data = Buffer.from(input.dataBase64, "base64");
+        if (data.length === 0 || data.length > 3 * 1024 * 1024 || !isValidAvatarSignature(data, input.mimeType)) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Upload a valid JPG, PNG, or WebP image up to 3 MB." });
+        }
+        const extension = avatarExtensions[input.mimeType];
+        const key = `avatars/${ctx.user.id}/${Date.now()}-${crypto.randomUUID()}.${extension}`;
+        await storagePut(key, data, input.mimeType);
+        const updatedAt = new Date();
+        await updateAccountProfile(ctx.user.id, {
+          avatarKey: key,
+          avatarMimeType: input.mimeType,
+          avatarUpdatedAt: updatedAt,
+        });
+        const avatar = await storageGet(key);
+        return { success: true as const, avatarUrl: avatar.url, avatarUpdatedAt: updatedAt };
       }),
+    removeAvatar: protectedProcedure.mutation(async ({ ctx }) => {
+      await updateAccountProfile(ctx.user.id, {
+        avatarKey: null,
+        avatarMimeType: null,
+        avatarUpdatedAt: null,
+      });
+      return { success: true as const };
+    }),
   }),
 
   smtp: router({
@@ -448,11 +894,24 @@ export const appRouter = router({
     get: protectedProcedure.query(async ({ ctx }) => {
       const profile = await getBusinessProfile(ctx.user.id);
       if (!profile) return null;
-      const quota = await getQuotaSummary(ctx.user.id);
-      return { ...profile, quota };
-    }),
-    quotaStatus: protectedProcedure.query(async ({ ctx }) => {
-      return getQuotaSummary(ctx.user.id);
+      const freeQuota = await getFreeQuotaSummary(ctx.user.id);
+      const complimentaryAccess = ctx.user.role === "admin"
+        ? null
+        : await findActiveComplimentaryAccess({ userId: ctx.user.id, email: ctx.user.email });
+      const tier = getEffectiveTier(profile.tier, ctx.user.role);
+      return {
+        ...profile,
+        tier,
+        hasPaidAccess: hasPaidOrAdminAccess({
+          role: ctx.user.role,
+          tier,
+          planExpiresAt: profile.planExpiresAt,
+          complimentaryAccessExpiresAt: complimentaryAccess?.expiresAt,
+        }),
+        complimentaryAccessExpiresAt: complimentaryAccess?.expiresAt ?? null,
+        totalSent: freeQuota.totalSent,
+        freeQuota,
+      };
     }),
 
     upsert: protectedProcedure
@@ -463,7 +922,6 @@ export const appRouter = router({
           tier: z.enum(["free", "pro"]).optional(),
           fromName: z.string().max(255).optional(),
           replyTo: z.string().email().optional().or(z.literal("")),
-          displayName: z.string().max(100).optional().or(z.literal("")),
         })
       )
       .mutation(async ({ ctx, input }) => {
@@ -474,13 +932,11 @@ export const appRouter = router({
           userId: ctx.user.id,
           businessName: input.businessName,
           reviewLink: input.reviewLink,
-          // Admin accounts always get lifetime tier — never downgrade them
-          tier: ctx.user.role === "admin" ? "lifetime" : (input.tier ?? existing?.tier ?? "free"),
+          tier: input.tier ?? existing?.tier ?? "free",
           monthlyCount: existing?.monthlyCount ?? 0,
           monthlyResetDate: existing?.monthlyResetDate ?? yearMonth,
           fromName: input.fromName ?? existing?.fromName ?? null,
           replyTo: input.replyTo ?? existing?.replyTo ?? null,
-          displayName: input.displayName !== undefined ? (input.displayName || null) : (existing?.displayName ?? null),
         });
         return getBusinessProfile(ctx.user.id);
       }),
@@ -527,9 +983,64 @@ export const appRouter = router({
   }),
 
   stripe: router({
+    /** Live Stripe promotion-code metadata, available only to administrators. */
+    promotionMonitor: adminProcedure.query(async () => {
+      try {
+        return await listStripePromotionCodes();
+      } catch (error) {
+        console.error("[Stripe] Failed to load promotion-code monitor", error);
+        throw new TRPCError({
+          code: "BAD_GATEWAY",
+          message: "Stripe promotion data is temporarily unavailable. Please refresh in a moment.",
+        });
+      }
+    }),
+
+    /** Create a real Stripe coupon and customer-facing promotion code without storing a local mirror. */
+    createPromotionCode: adminProcedure
+      .input(z.object({
+        code: z.string().trim().min(3).max(64).regex(/^[A-Za-z0-9][A-Za-z0-9-]*$/),
+        percentOff: z.number().positive().max(100),
+        applicablePlans: z.array(z.enum(["monthly", "annual", "lifetime"])).min(1).max(3),
+        firstTimeTransaction: z.boolean().default(false),
+        expiresAt: z.number().int().positive().nullable().optional(),
+        maxRedemptions: z.number().int().min(1).max(100_000).nullable().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await createStripePromotionCode({ ...input, createdByUserId: ctx.user.id });
+        } catch (error) {
+          const message = error instanceof Error ? error.message : "";
+          const safeInputError = [
+            "Promotion codes must",
+            "Percentage off must",
+            "Select at least one",
+            "Maximum redemptions must",
+            "Expiration must",
+            "A Stripe promotion code with this code already exists",
+            "A selected Stripe plan is not linked",
+          ].some((prefix) => message.startsWith(prefix));
+          if (safeInputError) {
+            throw new TRPCError({
+              code: message.includes("already exists") ? "CONFLICT" : "BAD_REQUEST",
+              message,
+            });
+          }
+          console.error("[Stripe] Administrator promotion-code creation failed", error);
+          throw new TRPCError({
+            code: "BAD_GATEWAY",
+            message: "Stripe could not create this promotion code. Please retry or review Stripe configuration.",
+          });
+        }
+      }),
+
     /** Create a Stripe Checkout Session for the selected plan */
     createCheckout: protectedProcedure
-      .input(z.object({ origin: z.string(), plan: z.enum(["monthly", "annual", "lifetime"]).default("monthly") }))
+      .input(z.object({
+        origin: z.string(),
+        plan: z.enum(["monthly", "annual", "lifetime"]).default("monthly"),
+        promotionCode: z.string().trim().max(64).optional(),
+      }))
       .mutation(async ({ ctx, input }) => {
         const profile = await getBusinessProfile(ctx.user.id);
         const url = await createCheckoutSession({
@@ -539,13 +1050,18 @@ export const appRouter = router({
           stripeCustomerId: profile?.stripeCustomerId ?? null,
           origin: input.origin,
           plan: input.plan,
+          promotionCode: input.promotionCode ?? null,
         });
         return { url };
       }),
 
     /** Create a Stripe Checkout Session in THB with PromptPay enabled (Thailand users) */
     createThbCheckout: protectedProcedure
-      .input(z.object({ origin: z.string(), plan: z.enum(["monthly", "annual", "lifetime"]).default("monthly") }))
+      .input(z.object({
+        origin: z.string(),
+        plan: z.enum(["monthly", "annual", "lifetime"]).default("monthly"),
+        promotionCode: z.string().trim().max(64).optional(),
+      }))
       .mutation(async ({ ctx, input }) => {
         const profile = await getBusinessProfile(ctx.user.id);
         const url = await createThbCheckoutSession({
@@ -555,6 +1071,7 @@ export const appRouter = router({
           stripeCustomerId: profile?.stripeCustomerId ?? null,
           origin: input.origin,
           plan: input.plan,
+          promotionCode: input.promotionCode ?? null,
         });
         return { url };
       }),
@@ -574,20 +1091,121 @@ export const appRouter = router({
     /** Get current subscription status for the user */
     subscriptionStatus: protectedProcedure.query(async ({ ctx }) => {
       const db = await getDb();
-      if (!db) return { active: false, status: null };
+      if (!db) return { active: false, status: null, currentPeriodEnd: null, cancelAtPeriodEnd: false };
       const rows = await db
         .select()
         .from(stripeSubscriptions)
         .where(eq(stripeSubscriptions.userId, ctx.user.id))
         .limit(1);
-      if (rows.length === 0) return { active: false, status: null };
+      if (rows.length === 0) return { active: false, status: null, currentPeriodEnd: null, cancelAtPeriodEnd: false };
       const sub = rows[0];
-      return {
-        active: sub.status === "active",
-        status: sub.status,
-        subscriptionId: sub.stripeSubscriptionId,
-      };
+      try {
+        const snapshot = await getSubscriptionSnapshot(sub.stripeSubscriptionId);
+        return {
+          active: snapshot.status === "active" || snapshot.status === "trialing" || snapshot.status === "lifetime",
+          status: snapshot.status,
+          subscriptionId: sub.stripeSubscriptionId,
+          currentPeriodEnd: snapshot.currentPeriodEnd,
+          cancelAtPeriodEnd: snapshot.cancelAtPeriodEnd,
+        };
+      } catch (error) {
+        console.warn("[Stripe] Failed to refresh subscription status; using stored status", error);
+        const profile = await getBusinessProfile(ctx.user.id);
+        return {
+          active: sub.status === "active" || sub.status === "lifetime",
+          status: sub.status,
+          subscriptionId: sub.stripeSubscriptionId,
+          currentPeriodEnd: profile?.planExpiresAt ?? null,
+          cancelAtPeriodEnd: false,
+        };
+      }
     }),
+
+    /** Server-authoritative seven-day refund eligibility for the signed-in Stripe customer. */
+    guaranteeStatus: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+      const profile = await getBusinessProfile(ctx.user.id);
+      const rows = await db
+        .select()
+        .from(stripeSubscriptions)
+        .where(eq(stripeSubscriptions.userId, ctx.user.id))
+        .limit(1);
+      return getMoneyBackGuaranteeStatus({
+        stripeCustomerId: profile?.stripeCustomerId ?? null,
+        stripeSubscriptionId: rows[0]?.stripeSubscriptionId ?? null,
+      });
+    }),
+
+    /** Issue a full Stripe refund, then end the subscription. */
+    claimGuarantee: protectedProcedure
+      .input(z.object({ confirmation: z.literal("REFUND_AND_CANCEL") }))
+      .mutation(async ({ ctx }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+        const profile = await getBusinessProfile(ctx.user.id);
+        const rows = await db
+          .select()
+          .from(stripeSubscriptions)
+          .where(eq(stripeSubscriptions.userId, ctx.user.id))
+          .limit(1);
+        const stripeCustomerId = profile?.stripeCustomerId;
+        const stripeSubscriptionId = rows[0]?.stripeSubscriptionId;
+        if (!stripeCustomerId || !stripeSubscriptionId) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "No Stripe subscription was found for this account." });
+        }
+
+        try {
+          const result = await claimMoneyBackGuarantee({
+            userId: ctx.user.id,
+            stripeCustomerId,
+            stripeSubscriptionId,
+          });
+          await Promise.all([
+            db
+              .update(businessProfiles)
+              .set({ tier: "free", planExpiresAt: null, updatedAt: new Date() })
+              .where(eq(businessProfiles.userId, ctx.user.id)),
+            db
+              .update(stripeSubscriptions)
+              .set({ status: "canceled", updatedAt: new Date() })
+              .where(eq(stripeSubscriptions.userId, ctx.user.id)),
+          ]);
+          return result;
+        } catch (error) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: error instanceof Error ? error.message : "The refund could not be completed.",
+          });
+        }
+      }),
+
+    /** Stop the next renewal without refunding the current paid period. */
+    cancelRenewal: protectedProcedure
+      .input(z.object({ confirmation: z.literal("CANCEL_RENEWAL") }))
+      .mutation(async ({ ctx }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
+        const profile = await getBusinessProfile(ctx.user.id);
+        const rows = await db
+          .select()
+          .from(stripeSubscriptions)
+          .where(eq(stripeSubscriptions.userId, ctx.user.id))
+          .limit(1);
+        const stripeCustomerId = profile?.stripeCustomerId;
+        const stripeSubscriptionId = rows[0]?.stripeSubscriptionId;
+        if (!stripeCustomerId || !stripeSubscriptionId) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "No Stripe subscription was found for this account." });
+        }
+        try {
+          return await cancelSubscriptionRenewal(stripeCustomerId, stripeSubscriptionId);
+        } catch (error) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: error instanceof Error ? error.message : "The subscription could not be canceled.",
+          });
+        }
+      }),
   }),
 
   woo: router({
@@ -623,7 +1241,7 @@ export const appRouter = router({
       }),
 
     /** Sync orders from WooCommerce and return counts */
-    sync: paidProcedure
+    sync: protectedProcedure
       .input(z.object({ days: z.number().int().min(1).max(90).default(30) }))
       .mutation(async ({ ctx, input }) => {
         // Fetch orders and stage them in woo_pending_imports (hold-until-import logic)
@@ -692,7 +1310,7 @@ export const appRouter = router({
       }),
 
     /** Bulk send review requests to selected WooCommerce customers */
-    bulkSend: paidProcedure
+    bulkSend: protectedProcedure
       .input(z.object({ customerIds: z.array(z.number().int()).min(1), platformId: z.number().int().optional() }))
       .mutation(async ({ ctx, input }) => {
          const profile = await getBusinessProfile(ctx.user.id);
@@ -722,9 +1340,14 @@ export const appRouter = router({
             )
           );
 
-        // Filter out opted-out customers
-        const toSend = customers.filter((c) => !c.optedOut);
-        if (toSend.length === 0) throw new Error("No eligible customers found (all may have unsubscribed).");
+        // Filter out opted-out customers, then cap the batch at the adaptive provider/account allowance.
+        const eligibleCustomers = customers.filter((c) => !c.optedOut);
+        if (eligibleCustomers.length === 0) throw new Error("No eligible customers found (all may have unsubscribed).");
+        const initialSendStatus = await getAdaptiveSendStatus(ctx.user.id);
+        if (!initialSendStatus.configured) throw new Error("Connect an email account in Settings before sending review requests.");
+        const toSend = eligibleCustomers.slice(0, initialSendStatus.remaining);
+        const skippedDueToLimit = eligibleCustomers.length - toSend.length;
+        if (toSend.length === 0) throw new AdaptiveSendLimitError(initialSendStatus);
 
         // Resolve review URL: use selected platform → default platform → legacy reviewLink
         let wooReviewUrl = profile.reviewLink ?? "";
@@ -779,7 +1402,13 @@ export const appRouter = router({
           });
         }
 
-        return { sent: sentIds.length, errors, sentRequests };
+        return {
+          sent: sentIds.length,
+          errors,
+          sentRequests,
+          skippedDueToLimit,
+          sendLimitStatus: await getAdaptiveSendStatus(ctx.user.id),
+        };
       }),
 
     /** Count pending WooCommerce imports waiting for user action */
@@ -842,11 +1471,7 @@ export const appRouter = router({
     }),
 
     getDailyStatus: protectedProcedure.query(async ({ ctx }) => {
-      const profile = await getBusinessProfile(ctx.user.id);
-      const dailyLimit = profile?.dailySendLimit ?? 50;
-      const todayCount = await getTodaySentCount(ctx.user.id);
-      const remaining = Math.max(0, dailyLimit - todayCount);
-      return { todayCount, dailyLimit, remaining };
+      return getAdaptiveSendStatus(ctx.user.id);
     }),
 
     create: protectedProcedure
@@ -900,7 +1525,7 @@ export const appRouter = router({
         return result;
       }),
 
-    bulkSend: paidProcedure
+    bulkSend: protectedProcedure
       .input(
         z.object({
           contactIds: z.array(z.number().int()).min(1).max(200),
@@ -921,9 +1546,6 @@ export const appRouter = router({
           profile.monthlyCount = 0;
           profile.monthlyResetDate = yearMonth;
         }
-        // Hourly rate limit: check upfront for the whole batch
-        checkSendRateLimit(ctx.user.id, input.contactIds.length);
-
         // Resolve review URL: use selected platform, else default platform, else profile.reviewLink
         let reviewUrl = profile.reviewLink ?? "";
         let isYelpPlatform = false;
@@ -944,14 +1566,13 @@ export const appRouter = router({
           .filter((c): c is NonNullable<typeof c> => Boolean(c))
           .filter((c) => !c.optedOut)) as typeof allContacts;
 
-        // Daily send limit: cap the batch to the user's configured daily limit
-        const dailyLimit = profile.dailySendLimit ?? 50;
-        const todaySent = await getTodaySentCount(ctx.user.id);
-        const remaining = Math.max(0, dailyLimit - todaySent);
-        const toSend = targets.slice(0, remaining);
+        // Adaptive provider-aware safety limit, with an account ceiling that provider changes cannot bypass.
+        const initialSendStatus = await getAdaptiveSendStatus(ctx.user.id);
+        if (!initialSendStatus.configured) throw new Error("Connect an email account in Settings before sending review requests.");
+        const toSend = targets.slice(0, initialSendStatus.remaining);
         const skippedDueToLimit = targets.length - toSend.length;
         if (toSend.length === 0) {
-          throw new Error(`Daily send limit reached (${dailyLimit}/day). Remaining sends reset at midnight UTC.`);
+          throw new AdaptiveSendLimitError(initialSendStatus);
         }
 
         // Resolve template
@@ -1060,7 +1681,14 @@ export const appRouter = router({
         // Update monthly count
         await upsertBusinessProfile({ ...profile, monthlyCount: profile.monthlyCount + sent });
 
-        return { sent, failed, skippedDueToLimit, errors, sentRequests };
+        return {
+          sent,
+          failed,
+          skippedDueToLimit,
+          errors,
+          sentRequests,
+          sendLimitStatus: await getAdaptiveSendStatus(ctx.user.id),
+        };
       }),
 
     /**
@@ -1203,24 +1831,6 @@ export const appRouter = router({
       }),
 
     /**
-     * Export all saved contacts as CSV rows — Pro only.
-     */
-    exportCSV: paidProcedure.query(async ({ ctx }) => {
-      const contacts = await listSavedContacts(ctx.user.id);
-      const header = ["Name", "Email", "Phone", "Notes", "Tags", "Total Sent", "Last Sent", "Opted Out"];
-      const rows = contacts.map((c) => [
-        c.name ?? "",
-        c.email ?? "",
-        c.phone ?? "",
-        c.notes ?? "",
-        (() => { try { const t: unknown = JSON.parse(c.tags ?? "[]"); return Array.isArray(t) ? (t as string[]).join("; ") : String(c.tags ?? ""); } catch { return String(c.tags ?? ""); } })(),
-        String(c.totalSent ?? 0),
-        c.lastSentAt ? new Date(c.lastSentAt).toISOString().slice(0, 10) : "",
-        c.optedOut ? "Yes" : "No",
-      ]);
-      return { header, rows };
-    }),
-    /**
      * Public unsubscribe — validates HMAC token and marks the contact as opted out.
      * Called from the /unsubscribe page with the token from the email footer link.
      */
@@ -1292,14 +1902,14 @@ export const appRouter = router({
         return { ok: true };
       }),
 
-    scheduleFollowUp: paidProcedure
+    scheduleFollowUp: protectedProcedure
       .input(z.object({ customerRequestId: z.number().int(), customerName: z.string(), customerEmail: z.string().email() }))
       .mutation(async ({ ctx, input }) => {
         await scheduleFollowUp(ctx.user.id, input.customerRequestId, input.customerName, input.customerEmail);
         return { ok: true };
       }),
 
-    sendNow: paidProcedure
+    sendNow: protectedProcedure
       .input(z.object({ id: z.number().int() }))
       .mutation(async ({ ctx, input }) => {
         await sendReminderNow(ctx.user.id, input.id);
@@ -1311,16 +1921,31 @@ export const appRouter = router({
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Database unavailable." });
       const { eq: eqR } = await import("drizzle-orm");
       const [profile] = await db
-        .select({ followUpEnabled: businessProfiles.followUpEnabled, followUpDelayDays: businessProfiles.followUpDelayDays })
+        .select({
+          followUpEnabled: businessProfiles.followUpEnabled,
+          followUpFirstEnabled: businessProfiles.followUpFirstEnabled,
+          followUpSecondEnabled: businessProfiles.followUpSecondEnabled,
+          followUpDelayDays: businessProfiles.followUpDelayDays,
+          followUpSecondDelayDays: businessProfiles.followUpSecondDelayDays,
+        })
         .from(businessProfiles)
         .where(eqR(businessProfiles.userId, ctx.user.id));
-      return { followUpEnabled: profile?.followUpEnabled ?? 1, followUpDelayDays: profile?.followUpDelayDays ?? 3 };
+      return {
+        followUpEnabled: profile?.followUpEnabled ?? 1,
+        followUpFirstEnabled: profile?.followUpFirstEnabled ?? 1,
+        followUpSecondEnabled: profile?.followUpSecondEnabled ?? 1,
+        followUpDelayDays: profile?.followUpDelayDays ?? 3,
+        followUpSecondDelayDays: profile?.followUpSecondDelayDays ?? 7,
+      };
     }),
 
     updateSettings: protectedProcedure
       .input(z.object({
         followUpEnabled: z.number().int().min(0).max(1),
+        followUpFirstEnabled: z.number().int().min(0).max(1),
+        followUpSecondEnabled: z.number().int().min(0).max(1),
         followUpDelayDays: z.number().int().min(1).max(14),
+        followUpSecondDelayDays: z.number().int().min(1).max(14),
       }))
       .mutation(async ({ ctx, input }) => {
         const db = await getDb();
@@ -1328,10 +1953,21 @@ export const appRouter = router({
         const { eq: eqR } = await import("drizzle-orm");
         await db
           .update(businessProfiles)
-          .set({ followUpEnabled: input.followUpEnabled, followUpDelayDays: input.followUpDelayDays })
+          .set({
+            followUpEnabled: input.followUpEnabled,
+            followUpFirstEnabled: input.followUpFirstEnabled,
+            followUpSecondEnabled: input.followUpSecondEnabled,
+            followUpDelayDays: input.followUpDelayDays,
+            followUpSecondDelayDays: input.followUpSecondDelayDays,
+          })
           .where(eqR(businessProfiles.userId, ctx.user.id));
+        await syncPendingReminderStages(ctx.user.id, input);
         return { ok: true };
       }),
+
+    timingPerformance: protectedProcedure.query(async ({ ctx }) => {
+      return getReminderTimingPerformance(ctx.user.id);
+    }),
 
     /** List reminders for a specific customer request */
     listForRequest: protectedProcedure
@@ -1384,9 +2020,6 @@ export const appRouter = router({
           profile.monthlyCount = 0;
           profile.monthlyResetDate = yearMonth;
         }
-        // Hourly rate limit: max 200 sends per user per rolling hour
-        checkSendRateLimit(ctx.user.id, 1);
-
         // Resolve review URL: use selected platform, else fall back to profile.reviewLink
         let reviewUrl = profile.reviewLink ?? "";
         let isYelpSingle = false;
@@ -1469,7 +2102,7 @@ export const appRouter = router({
                 .replace(/<\/div>\s*$/, `${openPixel}</div>`);
             })();
 
-        await sendMailViaSmtp({ userId: ctx.user.id, to: input.customerEmail, subject, html: trackedHtmlBody });
+        const sendLimitStatus = await sendMailViaSmtp({ userId: ctx.user.id, to: input.customerEmail, subject, html: trackedHtmlBody });
 
         // Increment template usage counter
         if (resolvedTemplate) {
@@ -1485,9 +2118,8 @@ export const appRouter = router({
           ...profile,
           monthlyCount: profile.monthlyCount + 1,
         });
-        // Consume one quota slot
-        await consumeQuota(ctx.user.id, 1);
-        return { success: true, requestId: newRequestId };
+
+        return { success: true, requestId: newRequestId, sendLimitStatus };
       }),
 
     getById: protectedProcedure
@@ -1660,7 +2292,6 @@ export const appRouter = router({
 
             await sendMailViaSmtp({ userId: ctx.user.id, to: original.customerEmail, subject: original.emailSubject, html: trackedHtml });
             await upsertBusinessProfile({ ...profile, monthlyCount: profile.monthlyCount + 1 });
-            await consumeQuota(ctx.user.id, 1);
             sent++;
           } catch (err: unknown) {
             const msg = err instanceof Error ? err.message : String(err);
@@ -1830,50 +2461,29 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) return [];
         const { emailEvents: evTable, customerRequests: crTable } = await import("../drizzle/schema");
-        const { and: andOp, eq: eqOp, gte, sql: sqlOp } = await import("drizzle-orm");
-        const since = new Date(Date.now() - input.days * 24 * 60 * 60 * 1000);
+        const { and: andOp, eq: eqOp, gte, inArray: inArrayOp } = await import("drizzle-orm");
+        const nowMs = Date.now();
+        const since = new Date(nowMs - input.days * 24 * 60 * 60 * 1000);
 
         const sendRows = await db
-          .select({
-            day: sqlOp<string>`DATE(${crTable.sentAt})`,
-            count: sqlOp<number>`count(*)`,
-          })
+          .select({ sentAt: crTable.sentAt })
           .from(crTable)
-          .where(andOp(eqOp(crTable.userId, ctx.user.id), gte(crTable.sentAt, since)))
-          .groupBy(sqlOp`DATE(${crTable.sentAt})`);
+          .where(andOp(eqOp(crTable.userId, ctx.user.id), gte(crTable.sentAt, since)));
 
-        const openRows = await db
+        const eventRows = await db
           .select({
-            day: sqlOp<string>`DATE(${evTable.createdAt})`,
-            count: sqlOp<number>`count(distinct ${evTable.requestId})`,
+            createdAt: evTable.createdAt,
+            requestId: evTable.requestId,
+            type: evTable.type,
           })
           .from(evTable)
-          .where(andOp(eqOp(evTable.userId, ctx.user.id), eqOp(evTable.type, "open"), gte(evTable.createdAt, since)))
-          .groupBy(sqlOp`DATE(${evTable.createdAt})`);
+          .where(andOp(
+            eqOp(evTable.userId, ctx.user.id),
+            inArrayOp(evTable.type, ["open", "click"]),
+            gte(evTable.createdAt, since),
+          ));
 
-        const clickRows = await db
-          .select({
-            day: sqlOp<string>`DATE(${evTable.createdAt})`,
-            count: sqlOp<number>`count(distinct ${evTable.requestId})`,
-          })
-          .from(evTable)
-          .where(andOp(eqOp(evTable.userId, ctx.user.id), eqOp(evTable.type, "click"), gte(evTable.createdAt, since)))
-          .groupBy(sqlOp`DATE(${evTable.createdAt})`);
-
-        const map = new Map<string, { sends: number; opens: number; clicks: number }>();
-        const get = (d: string) => map.get(d) ?? { sends: 0, opens: 0, clicks: 0 };
-        for (const r of sendRows) { const e = get(r.day); e.sends = Number(r.count); map.set(r.day, e); }
-        for (const r of openRows) { const e = get(r.day); e.opens = Number(r.count); map.set(r.day, e); }
-        for (const r of clickRows) { const e = get(r.day); e.clicks = Number(r.count); map.set(r.day, e); }
-
-        const result: { date: string; sends: number; opens: number; clicks: number }[] = [];
-        for (let i = input.days - 1; i >= 0; i--) {
-          const d = new Date(Date.now() - i * 24 * 60 * 60 * 1000);
-          const key = d.toISOString().slice(0, 10);
-          const entry = map.get(key) ?? { sends: 0, opens: 0, clicks: 0 };
-          result.push({ date: key, ...entry });
-        }
-        return result;
+        return buildDailyTrend({ days: input.days, nowMs, sendRows, eventRows });
       }),
 
     /**
@@ -1948,33 +2558,6 @@ export const appRouter = router({
         });
         return { code };
       }),
-
-    /** Admin only: create a coupon with duration semantics (days/months/lifetime) */
-    createCoupon: protectedProcedure
-
-      .input(
-        z.object({
-          code: z.string().optional(),
-          note: z.string().optional(),
-          maxUses: z.number().int().positive().nullable().optional(),
-          expiresAt: z.number().nullable().optional(),
-          grantDurationUnit: z.enum(["day", "month", "lifetime"]).default("lifetime"),
-          grantDurationValue: z.number().int().positive().nullable().optional(),
-        })
-      )
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
-        const code = await createAccessCode({
-          code: input.code,
-          note: input.note,
-          maxUses: input.maxUses ?? null,
-          expiresAt: input.expiresAt ?? null,
-          grantDurationUnit: input.grantDurationUnit,
-          grantDurationValue: input.grantDurationValue ?? null,
-        });
-        return { code };
-      }),
-
 
     /** Admin only: generate a random code preview without saving */
     generatePreview: protectedProcedure.query(async ({ ctx }) => {
@@ -2126,8 +2709,13 @@ export const appRouter = router({
       const hasContacts = (contactRow?.cnt ?? 0) > 0;
       const dismissed = profile?.onboardingDismissed === 1;
       const allDone = smtpConnected && hasPlatform && hasContacts && hasSentRequest;
+      const canAccessConnector = hasPaidOrAdminAccess({
+        role: ctx.user.role,
+        tier: profile?.tier ?? "free",
+        planExpiresAt: profile?.planExpiresAt,
+      });
 
-      return { smtpConnected, hasPlatform, hasSentRequest, hasContacts, allDone, dismissed };
+      return { smtpConnected, hasPlatform, hasSentRequest, hasContacts, allDone, dismissed, canAccessConnector };
     }),
 
     /** Permanently dismisses the onboarding wizard for this user. */
@@ -2155,6 +2743,8 @@ export const appRouter = router({
       const uid = ctx.user.id;
       // Delete all user data in dependency order (children before parents)
       await db.delete(emailEvents).where(eq(emailEvents.userId, uid));
+      await db.delete(koalendarBookings).where(eq(koalendarBookings.userId, uid));
+      await db.delete(koalendarConnections).where(eq(koalendarConnections.userId, uid));
       await db.delete(followUpReminders).where(eq(followUpReminders.userId, uid));
       await db.delete(customerRequests).where(eq(customerRequests.userId, uid));
       await db.delete(savedContacts).where(eq(savedContacts.userId, uid));
@@ -2187,9 +2777,69 @@ export const appRouter = router({
 
   /** Admin-only analytics and diagnostics */
   admin: router({
+    complimentaryAccess: adminProcedure
+      .input(z.object({
+        status: z.enum(["all", "active", "expired", "revoked"]).default("all"),
+      }).optional())
+      .query(({ input }) => listComplimentaryAccessGrants({ status: input?.status ?? "all" })),
+
+    complimentaryAccessLookup: adminProcedure
+      .input(z.object({ email: z.string().trim().email().max(320) }))
+      .query(({ input }) => lookupComplimentaryAccessByEmail({ email: input.email })),
+
+    grantComplimentaryAccess: adminProcedure
+      .input(z.object({
+        email: z.string().trim().email().max(320),
+        durationValue: z.number().int().positive(),
+        durationUnit: z.enum(["day", "month", "year"]),
+        note: z.string().trim().max(500).nullable().optional(),
+      }).superRefine((value, issueContext) => {
+        const maximum = COMPLIMENTARY_ACCESS_LIMITS[value.durationUnit];
+        if (value.durationValue > maximum) {
+          issueContext.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ["durationValue"],
+            message: `Duration cannot exceed ${maximum} ${value.durationUnit}(s).`,
+          });
+        }
+      }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await createComplimentaryAccessGrant({ ...input, createdByUserId: ctx.user.id });
+        } catch (error) {
+          if (error instanceof ComplimentaryAccessConflictError) {
+            throw new TRPCError({ code: "CONFLICT", message: error.message });
+          }
+          console.error("[Admin] Complimentary-access grant failed", error);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Complimentary access could not be granted. Please retry.",
+          });
+        }
+      }),
+
+    revokeComplimentaryAccess: adminProcedure
+      .input(z.object({ grantId: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await revokeComplimentaryAccessGrant({
+            grantId: input.grantId,
+            revokedByUserId: ctx.user.id,
+          });
+        } catch (error) {
+          if (error instanceof ComplimentaryAccessNotFoundError) {
+            throw new TRPCError({ code: "NOT_FOUND", message: error.message });
+          }
+          console.error("[Admin] Complimentary-access revocation failed", error);
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Complimentary access could not be revoked. Please retry.",
+          });
+        }
+      }),
+
     /** Overall platform stats — user count, tier breakdown, recent signups, recent sends */
-    stats: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+    stats: adminProcedure.query(async () => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
 
@@ -2222,6 +2872,13 @@ export const appRouter = router({
       const smtpRows = await db.select().from(smtpCredentials);
       const activeSmtp = smtpRows.filter(r => r.lastHealthStatus === "ok").length;
 
+      const [reminderQueue] = await db
+        .select({
+          pendingReminders: sql<number>`SUM(CASE WHEN ${followUpReminders.status} = 'pending' THEN 1 ELSE 0 END)`,
+          dueReminders: sql<number>`SUM(CASE WHEN ${followUpReminders.status} = 'pending' AND ${followUpReminders.scheduledAt} <= NOW() THEN 1 ELSE 0 END)`,
+        })
+        .from(followUpReminders);
+
       return {
         totalUsers: allProfiles.length,
         tierCounts,
@@ -2235,59 +2892,30 @@ export const appRouter = router({
         sendsLast30,
         activeSmtp,
         totalSmtp: smtpRows.length,
+        pendingReminders: Number(reminderQueue?.pendingReminders ?? 0),
+        dueReminders: Number(reminderQueue?.dueReminders ?? 0),
       };
     }),
 
-    /** Recent user logins — last 50 users who signed in, for admin activity monitoring */
-    recentLogins: protectedProcedure
-      .input(z.object({
-        search: z.string().optional(),
-        limit: z.number().min(1).max(100).default(25),
-        offset: z.number().min(0).default(0),
-        dateFrom: z.string().optional(),
-        dateTo: z.string().optional(),
-      }))
-      .query(async ({ ctx, input }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-      const clauses = [];
-      if (input.search) {
-        clauses.push(or(
-          like(users.name, `%${input.search}%`),
-          like(users.email, `%${input.search}%`),
-        ));
-      }
-      if (input.dateFrom) {
-        const fromTs = new Date(input.dateFrom).getTime();
-        clauses.push(sql`${users.lastSignedIn} >= ${fromTs}`);
-      }
-      if (input.dateTo) {
-        const toTs = new Date(input.dateTo + "T23:59:59").getTime();
-        clauses.push(sql`${users.lastSignedIn} <= ${toTs}`);
-      }
-      const conditions = clauses.length > 0 ? and(...clauses as [any, ...any[]]) : undefined;
-      const selectFields = {
-        id: users.id,
-        name: users.name,
-        email: users.email,
-        loginMethod: users.loginMethod,
-        role: users.role,
-        createdAt: users.createdAt,
-        lastSignedIn: users.lastSignedIn,
-      };
-      const [rows, countResult] = await Promise.all([
-        db.select(selectFields)
-          .from(users)
-          .where(conditions)
-          .orderBy(desc(users.lastSignedIn))
-          .limit(input.limit)
-          .offset(input.offset),
-        db.select({ count: sql<number>`count(*)` })
-          .from(users)
-          .where(conditions),
-      ]);
-      return { rows, total: Number(countResult[0]?.count ?? 0) };
+    /** Platform-wide reminder timing attribution for administrator operations. */
+    reminderPerformance: adminProcedure.query(async () => {
+      return getReminderTimingPerformance();
+    }),
+
+    /** Durable 24-hour SMTP and authentication health observations. */
+    systemHealthTrend: adminProcedure
+      .input(z.object({ hours: z.number().int().min(1).max(168).default(24) }).default({ hours: 24 }))
+      .query(async ({ input }) => getSystemHealthTrend(input.hours)),
+
+    /** Centralized alert thresholds for administration hub metric emphasis. */
+    operationsAlerts: adminProcedure.query(async () => {
+      const reminderRows = await getReminderTimingPerformance();
+      return getOperationsAlertState(reminderRows);
+    }),
+
+    /** Privacy-safe CSV combining platform revenue, churn, and reminder analytics. */
+    operationsAnalyticsExport: adminProcedure.query(async () => {
+      return buildAdminOperationsAnalyticsExport();
     }),
 
     /** SMTP provider failure stats — breakdown by host across all users */
@@ -2328,6 +2956,26 @@ export const appRouter = router({
         lastRunAt: rows.reduce((max, r) => Math.max(max, r.lastHealthCheck ?? 0), 0) || null,
       };
       return { summary, totals };
+    }),
+
+    /** Failing SMTP credentials with account context for immediate admin action. */
+    failingSmtpUsers: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      return db
+        .select({
+          userId: users.id,
+          userName: users.name,
+          userEmail: users.email,
+          host: smtpCredentials.host,
+          smtpUser: smtpCredentials.user,
+          lastHealthError: smtpCredentials.lastHealthError,
+          lastHealthCheck: smtpCredentials.lastHealthCheck,
+        })
+        .from(smtpCredentials)
+        .innerJoin(users, eq(smtpCredentials.userId, users.id))
+        .where(eq(smtpCredentials.lastHealthStatus, "fail"))
+        .orderBy(desc(smtpCredentials.lastHealthCheck));
     }),
 
     /** Trigger SMTP health check on demand (admin only) */
@@ -2374,6 +3022,337 @@ export const appRouter = router({
           }
         }
         return rows.map(r => ({ ...r, churnReason: churnMap[r.id] ?? null }));
+      }),
+
+    /** Paginated user directory with account role and effective Life access. */
+    listUsers: adminProcedure
+      .input(z.object({
+        query: z.string().trim().max(100).default(""),
+        smtpStatus: z.enum(["all", "verified", "unverified", "failing", "unconnected"]).default("all"),
+        page: z.number().int().min(1).default(1),
+        pageSize: z.number().int().min(10).max(100).default(25),
+      }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const search = input.query ? `%${input.query}%` : null;
+        const searchClause = search ? or(like(users.name, search), like(users.email, search)) : undefined;
+        const smtpClause = input.smtpStatus === "verified"
+          ? and(isNotNull(smtpCredentials.id), eq(smtpCredentials.verified, 1))
+          : input.smtpStatus === "unverified"
+            ? and(isNotNull(smtpCredentials.id), eq(smtpCredentials.verified, 0))
+            : input.smtpStatus === "failing"
+              ? and(isNotNull(smtpCredentials.id), eq(smtpCredentials.lastHealthStatus, "fail"))
+              : input.smtpStatus === "unconnected"
+                ? isNull(smtpCredentials.id)
+                : undefined;
+        const whereClause = searchClause && smtpClause
+          ? and(searchClause, smtpClause)
+          : searchClause ?? smtpClause;
+        const [countRow] = await db
+          .select({ count: sql<number>`count(*)` })
+          .from(users)
+          .leftJoin(smtpCredentials, eq(users.id, smtpCredentials.userId))
+          .where(whereClause);
+        const total = Number(countRow?.count ?? 0);
+        const rows = await db
+          .select({
+            id: users.id,
+            name: users.name,
+            email: users.email,
+            role: users.role,
+            createdAt: users.createdAt,
+            lastSignedIn: users.lastSignedIn,
+            tier: businessProfiles.tier,
+            smtpCredentialId: smtpCredentials.id,
+            smtpVerified: smtpCredentials.verified,
+            smtpFromEmail: smtpCredentials.user,
+          })
+          .from(users)
+          .leftJoin(businessProfiles, eq(users.id, businessProfiles.userId))
+          .leftJoin(smtpCredentials, eq(users.id, smtpCredentials.userId))
+          .where(whereClause)
+          .orderBy(desc(users.createdAt))
+          .limit(input.pageSize)
+          .offset((input.page - 1) * input.pageSize);
+
+        return {
+          users: rows.map((row) => ({
+            ...row,
+            tier: row.tier ?? "free",
+            lifeAccess: row.role === "admin" || row.tier === "lifetime",
+            smtpConnected: row.smtpCredentialId !== null,
+            smtpVerified: row.smtpVerified === 1,
+          })),
+          page: input.page,
+          pageSize: input.pageSize,
+          total,
+          pageCount: Math.max(1, Math.ceil(total / input.pageSize)),
+        };
+      }),
+
+    /** Re-test one user's stored SMTP credentials without exposing the password. */
+    retestUserSmtp: adminProcedure
+      .input(z.object({ userId: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const [credential] = await db
+          .select({
+            host: smtpCredentials.host,
+            port: smtpCredentials.port,
+            secure: smtpCredentials.secure,
+            user: smtpCredentials.user,
+            encryptedPass: smtpCredentials.encryptedPass,
+            lastHealthStatus: smtpCredentials.lastHealthStatus,
+          })
+          .from(smtpCredentials)
+          .where(eq(smtpCredentials.userId, input.userId))
+          .limit(1);
+        if (!credential) throw new TRPCError({ code: "NOT_FOUND", message: "No SMTP credentials are connected for this user." });
+
+        let result: { ok: boolean; error?: string };
+        try {
+          result = await testSmtpConnection({
+            host: credential.host,
+            port: credential.port,
+            secure: credential.secure === 1,
+            user: credential.user,
+            pass: decryptPassword(credential.encryptedPass),
+          });
+        } catch (error) {
+          result = { ok: false, error: error instanceof Error ? error.message : "Unable to decrypt or test the stored credentials." };
+        }
+
+        const checkedAt = Date.now();
+        const recovered = credential.lastHealthStatus === "fail" && result.ok;
+        const errorMessage = result.ok ? null : (result.error ?? "SMTP verification failed.").slice(0, 500);
+        await db.update(smtpCredentials).set({
+          verified: result.ok ? 1 : 0,
+          lastHealthCheck: checkedAt,
+          lastHealthStatus: result.ok ? "ok" : "fail",
+          lastHealthError: errorMessage,
+          updatedAt: new Date(),
+        }).where(eq(smtpCredentials.userId, input.userId));
+        console.log(`[Admin] SMTP credentials for user ${input.userId} re-tested by admin ${ctx.user.id}: ${result.ok ? "ok" : "fail"}`);
+        return { ok: result.ok, checkedAt, error: errorMessage, recovered };
+      }),
+
+    /** Durable, newest-first administrator SMTP removal history. */
+    listSmtpAuditLogs: adminProcedure
+      .input(z.object({
+        page: z.number().int().min(1).default(1),
+        pageSize: z.number().int().min(1).max(100).default(25),
+        ...smtpAuditFilterShape,
+      }).refine(
+        validateSmtpAuditDateRange,
+        { message: "The audit start date must be before the end date.", path: ["dateFrom"] }
+      ))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const whereClause = buildSmtpAuditWhere(input);
+        const [totalRow] = await db
+          .select({ value: count() })
+          .from(smtpAdminAuditLogs)
+          .where(whereClause);
+        const total = Number(totalRow?.value ?? 0);
+        const pageCount = Math.max(1, Math.ceil(total / input.pageSize));
+        const page = Math.min(input.page, pageCount);
+        const entries = await db
+          .select()
+          .from(smtpAdminAuditLogs)
+          .where(whereClause)
+          .orderBy(desc(smtpAdminAuditLogs.occurredAt))
+          .limit(input.pageSize)
+          .offset((page - 1) * input.pageSize);
+        return { entries, page, pageSize: input.pageSize, total, pageCount };
+      }),
+
+    /** Complete server-generated CSV for every audit row matching the active filters. */
+    exportSmtpAuditLogs: adminProcedure
+      .input(z.object(smtpAuditFilterShape).refine(
+        validateSmtpAuditDateRange,
+        { message: "The audit start date must be before the end date.", path: ["dateFrom"] }
+      ))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const entries = await db
+          .select({
+            occurredAt: smtpAdminAuditLogs.occurredAt,
+            outcome: smtpAdminAuditLogs.outcome,
+            action: smtpAdminAuditLogs.action,
+            actorName: smtpAdminAuditLogs.actorName,
+            actorEmail: smtpAdminAuditLogs.actorEmail,
+            targetName: smtpAdminAuditLogs.targetName,
+            targetEmail: smtpAdminAuditLogs.targetEmail,
+            smtpUser: smtpAdminAuditLogs.smtpUser,
+          })
+          .from(smtpAdminAuditLogs)
+          .where(buildSmtpAuditWhere(input))
+          .orderBy(desc(smtpAdminAuditLogs.occurredAt));
+        return {
+          csv: buildSmtpAuditCsv(entries),
+          filename: buildSmtpAuditCsvFilename(),
+          total: entries.length,
+        };
+      }),
+
+    /** Distinct administrators represented in the durable SMTP audit trail. */
+    listSmtpAuditActors: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      return db
+        .selectDistinct({
+          id: smtpAdminAuditLogs.actorUserId,
+          name: smtpAdminAuditLogs.actorName,
+          email: smtpAdminAuditLogs.actorEmail,
+        })
+        .from(smtpAdminAuditLogs)
+        .orderBy(smtpAdminAuditLogs.actorName, smtpAdminAuditLogs.actorEmail);
+    }),
+
+    setUserRole: adminProcedure
+      .input(z.object({ userId: z.number().int().positive(), role: z.enum(["user", "admin"]) }))
+      .mutation(async ({ ctx, input }) => {
+        if (ctx.user.id === input.userId && input.role !== "admin") {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "You cannot remove your own administrator access." });
+        }
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        await db.update(users).set({ role: input.role, updatedAt: new Date() }).where(eq(users.id, input.userId));
+        console.log(`[Admin] User ${input.userId} role set to ${input.role} by admin ${ctx.user.id}`);
+        return { ok: true };
+      }),
+
+    setLifeAccess: adminProcedure
+      .input(z.object({ userId: z.number().int().positive(), enabled: z.boolean() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const [target] = await db
+          .select({ name: users.name, email: users.email, role: users.role, tier: businessProfiles.tier })
+          .from(users)
+          .leftJoin(businessProfiles, eq(users.id, businessProfiles.userId))
+          .where(eq(users.id, input.userId))
+          .limit(1);
+        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
+        if (!input.enabled && target.role === "admin") {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Administrators always have Life access. Change the role first." });
+        }
+        const yearMonth = new Date().toISOString().slice(0, 7);
+        await db
+          .insert(businessProfiles)
+          .values({
+            userId: input.userId,
+            businessName: target.name?.trim() || target.email?.trim() || "Get Phame User",
+            reviewLink: "",
+            tier: input.enabled ? "lifetime" : "free",
+            monthlyCount: 0,
+            monthlyResetDate: yearMonth,
+            planExpiresAt: null,
+          })
+          .onDuplicateKeyUpdate({
+            set: {
+              tier: input.enabled ? "lifetime" : target.tier === "lifetime" ? "free" : target.tier ?? "free",
+              planExpiresAt: null,
+              updatedAt: new Date(),
+            },
+          });
+        console.log(`[Admin] User ${input.userId} Life access ${input.enabled ? "enabled" : "disabled"} by admin ${ctx.user.id}`);
+        return { ok: true };
+      }),
+
+    removeUserSmtp: adminProcedure
+      .input(z.object({
+        userId: z.number().int().positive(),
+        confirmationEmail: z.string().trim().email(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        const removed = await db.transaction(async (tx) => {
+          const [target] = await tx
+            .select({ id: users.id, name: users.name, email: users.email })
+            .from(users)
+            .where(eq(users.id, input.userId))
+            .limit(1);
+          if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "User not found." });
+          if (!target.email || input.confirmationEmail.toLowerCase() !== target.email.trim().toLowerCase()) {
+            throw new TRPCError({ code: "BAD_REQUEST", message: "Type the user's exact email address to remove SMTP credentials." });
+          }
+          const [credential] = await tx
+            .select({ id: smtpCredentials.id, user: smtpCredentials.user })
+            .from(smtpCredentials)
+            .where(eq(smtpCredentials.userId, input.userId))
+            .limit(1);
+          if (!credential) return false;
+
+          const occurredAt = Date.now();
+          await tx.delete(smtpCredentials).where(eq(smtpCredentials.id, credential.id));
+          await tx.insert(smtpAdminAuditLogs).values({
+            actorUserId: ctx.user.id,
+            actorName: ctx.user.name,
+            actorEmail: ctx.user.email,
+            targetUserId: target.id,
+            targetName: target.name,
+            targetEmail: target.email,
+            smtpUser: credential.user,
+            action: "smtp_credentials_removed",
+            outcome: "removed",
+            occurredAt,
+          });
+          return true;
+        });
+        console.log(`[Admin] SMTP credentials for user ${input.userId} ${removed ? "removed" : "were already absent"} by admin ${ctx.user.id}`);
+        return { ok: true, removed };
+      }),
+
+    deleteUser: adminProcedure
+      .input(z.object({
+        userId: z.number().int().positive(),
+        confirmation: z.literal("DELETE"),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const deleted = await deleteAccountAsAdmin(ctx.user.id, input.userId);
+        console.log(`[Admin] Account ${deleted.id} deleted by admin ${ctx.user.id}`);
+        return { ok: true, deleted };
+      }),
+
+    listKoalendarFailures: adminProcedure
+      .input(z.object({
+        page: z.number().int().min(1).default(1),
+        pageSize: z.number().int().min(10).max(50).default(20),
+      }))
+      .query(async ({ input }) => listFailedKoalendarBookings(input.page, input.pageSize)),
+
+    retryKoalendarImport: adminProcedure
+      .input(z.object({ bookingId: z.number().int().positive() }))
+      .mutation(async ({ input }) => {
+        const result = await retryFailedKoalendarBooking(input.bookingId);
+        if (result.outcome === "not_found") {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Koalendar import was not found." });
+        }
+        if (result.outcome === "not_eligible") {
+          throw new TRPCError({
+            code: "CONFLICT",
+            message: "This Koalendar import is no longer eligible for a manual retry. Refresh the queue to see its current state.",
+          });
+        }
+        return result;
+      }),
+
+    combineAccounts: adminProcedure
+      .input(z.object({
+        sourceUserId: z.number().int().positive(),
+        targetUserId: z.number().int().positive(),
+        confirmation: z.literal("COMBINE"),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const result = await combineAccountsAsAdmin(ctx.user.id, input.sourceUserId, input.targetUserId);
+        console.log(`[Admin] Account ${input.sourceUserId} combined into ${input.targetUserId} by admin ${ctx.user.id}`);
+        return { ok: true, ...result };
       }),
 
     /** Manually override a user's tier — admin only */
@@ -2445,6 +3424,106 @@ export const appRouter = router({
       return { total: rows.length, last30 };
     }),
 
+    /** Privacy-light install/share funnel totals; no raw user or device records leave the server. */
+    pwaConversionStats: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      const rows = await db
+        .select({
+          page: pageEvents.page,
+          utmMedium: pageEvents.utmMedium,
+          createdAt: pageEvents.createdAt,
+        })
+        .from(pageEvents)
+        .where(eq(pageEvents.utmSource, PWA_EVENT_SOURCE));
+      return summarizePwaEvents(rows);
+    }),
+
+    /** Aggregate explicit caption-language choices; no identity, referrer, user-agent, or free text is returned. */
+    captionLanguageStats: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      const rows = await db
+        .select({
+          page: pageEvents.page,
+          createdAt: pageEvents.createdAt,
+        })
+        .from(pageEvents)
+        .where(eq(pageEvents.utmSource, CAPTION_LANGUAGE_ANALYTICS_SOURCE));
+      return summarizeCaptionLanguageEvents(rows);
+    }),
+
+    /** Aggregate zero-result Manual searches; raw rows, account IDs, and fingerprints never leave the server. */
+    manualSearchInsights: adminProcedure
+      .input(z.object({
+        periodDays: z.enum(MANUAL_SEARCH_REPORTING_PERIODS.map(String) as ["30", "90", "365"]).default("90"),
+        limit: z.number().int().min(1).max(50).default(25),
+      }).default({ periodDays: "90", limit: 25 }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+        return getManualSearchInsights({
+          db,
+          periodDays: Number(input.periodDays) as (typeof MANUAL_SEARCH_REPORTING_PERIODS)[number],
+          limit: input.limit,
+        });
+      }),
+
+    /** Aggregate checklist setup funnel. It intentionally returns no raw event or identity data. */
+    onboardingChecklistFunnel: adminProcedure.input(onboardingChecklistFunnelInputSchema.optional()).query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      return getOnboardingChecklistFunnelComparison(db, input);
+    }),
+
+    /** Bounded administrator insight generated from aggregate funnel metrics only. */
+    onboardingChecklistFunnelInsight: adminProcedure.input(onboardingChecklistFunnelInputSchema.optional()).query(async ({ ctx, input }) => {
+      checkOnboardingFunnelInsightRateLimit(ctx.user.id);
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      const funnel = await getOnboardingChecklistFunnelComparison(db, input);
+      return generateOnboardingFunnelInsight({
+        currentWindowDays: funnel.range.periodDays,
+        current: funnel.steps,
+        previous: funnel.comparison.previous.steps,
+      });
+    }),
+
+    /** Admin-only aggregate export. It contains no raw event, identity, or customer data. */
+    onboardingChecklistFunnelExport: adminProcedure.input(onboardingChecklistFunnelInputSchema.optional()).query(async ({ input }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
+      const funnel = await getOnboardingChecklistFunnelSnapshot(db, input);
+      const period = funnel.range.periodLabel;
+      const stepLabels = { email: "connect_email", platform: "add_platform", contacts: "import_contacts", send: "first_send" } as const;
+      const rows: AdminOperationsCsvRow[] = [
+        { section: "metadata", metric: "generated_at", period, value: funnel.range.generatedAt.toISOString(), unit: "iso_8601", details: "Get Phame aggregate onboarding funnel export" },
+        { section: "metadata", metric: "period_start", period, value: funnel.range.periodStart.toISOString(), unit: "iso_8601", details: "Inclusive UTC reporting boundary" },
+        { section: "metadata", metric: "period_end", period, value: funnel.range.periodEnd.toISOString(), unit: "iso_8601", details: "Inclusive UTC reporting boundary" },
+        { section: "onboarding_funnel", metric: "checklist_views", period, value: funnel.allTime.checklist_viewed, unit: "unique_accounts", details: "Unique accounts that viewed the setup checklist" },
+        { section: "onboarding_funnel", metric: "checklist_completed", period, value: funnel.allTime.checklist_completed, unit: "unique_accounts", details: "Unique accounts that completed all setup steps" },
+        { section: "onboarding_funnel", metric: "completion_rate", period, value: funnel.rates.completion, unit: "percent", details: "Completed accounts divided by checklist viewers" },
+        ...Object.entries(stepLabels).flatMap(([step, label]) => {
+          const metric = funnel.steps[step as keyof typeof funnel.steps];
+          return [
+            { section: "onboarding_funnel", metric: `${label}_shown`, period, value: metric.shown, unit: "unique_accounts", details: "Unique accounts that viewed this step" },
+            { section: "onboarding_funnel", metric: `${label}_continued`, period, value: metric.actioned, unit: "unique_accounts", details: "Unique accounts that used this step action" },
+            { section: "onboarding_funnel", metric: `${label}_drop_off`, period, value: metric.dropOff, unit: "unique_accounts", details: "Viewed this step without using its action" },
+            { section: "onboarding_funnel", metric: `${label}_continuation_rate`, period, value: metric.continuationRate, unit: "percent", details: "Accounts that continued after viewing this step" },
+          ] satisfies AdminOperationsCsvRow[];
+        }),
+      ];
+      const dateStamp = funnel.range.generatedAt.toISOString().slice(0, 10);
+      return {
+        filename: `getphame-onboarding-funnel-${period}-${dateStamp}.csv`,
+        csv: serializeAdminOperationsCsv(rows),
+        mimeType: "text/csv;charset=utf-8",
+        generatedAt: funnel.range.generatedAt,
+        rowCount: rows.length,
+      };
+    }),
+
     /** Churn survey responses — admin only */
     churnSurveys: protectedProcedure.query(async ({ ctx }) => {
       if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
@@ -2471,7 +3550,7 @@ export const appRouter = router({
       // Pricing constants (USD cents)
       const MONTHLY_PRICE_CENTS = 2900;  // $29/mo
       const ANNUAL_PRICE_CENTS  = 29900; // $299/yr
-      const LIFETIME_PRICE_CENTS = 34900; // $349 one-time (updated Jul 2026)
+      const LIFETIME_PRICE_CENTS = 34900; // $349 one-time
 
       // Platform-wide email open/click stats
       const { sql: sqlRev, and: andRev, eq: eqRev } = await import("drizzle-orm");
@@ -2748,28 +3827,134 @@ export const appRouter = router({
       }),
   }),
 
+  /** Private WordPress connector delivery for paid subscribers and administrators. */
+  connector: router({
+    download: paidProcedure.mutation(async () => {
+      const { url } = await storageGet("connectors/get-phame-connector.zip");
+      return { url, fileName: "get-phame-connector.zip" };
+    }),
+  }),
+
   /** Per-user API keys for the public REST API (contacts import, etc.) */
   apiKey: router({
-    /** List all active (non-revoked) API keys for the current user */
-    list: protectedProcedure.query(async ({ ctx }) => {
-      return listApiKeys(ctx.user.id);
+    /** Versioned API Terms/AUP acceptance and higher-risk send-scope status for this authenticated account. */
+    enrollment: protectedProcedure.query(async ({ ctx }) => {
+      return getDeveloperApiEnrollmentStatus(ctx.user.id);
     }),
-    /** Generate a new API key — returns the raw key ONCE */
-    generate: protectedProcedure
-      .input(z.object({ label: z.string().min(1).max(100).default("My API Key") }))
-      .mutation(async ({ ctx, input }) => {
-        // Limit to 5 active keys per user
-        const existing = await listApiKeys(ctx.user.id);
-        if (existing.length >= 5) {
-          throw new TRPCError({ code: "BAD_REQUEST", message: "Maximum 5 active API keys allowed. Revoke one to create a new key." });
-        }
-        return generateApiKey(ctx.user.id, input.label);
+    /** Record affirmative acceptance without retaining a raw IP address or user-agent string. */
+    acceptTerms: protectedProcedure
+      .input(z.object({
+        termsAccepted: z.literal(true),
+        acceptableUseAccepted: z.literal(true),
+      }))
+      .mutation(async ({ ctx }) => {
+        const forwarded = ctx.req.headers["x-forwarded-for"];
+        const clientIp = (Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(",")[0]?.trim())
+          || ctx.req.ip
+          || ctx.req.socket.remoteAddress
+          || "unknown";
+        const userAgent = String(ctx.req.headers["user-agent"] || "unknown").slice(0, 256);
+        return acceptDeveloperApiTerms({
+          userId: ctx.user.id,
+          acceptanceFingerprint: fingerprintAuthValue(`developer-api-enrollment:${clientIp}:${userAgent}`),
+        });
       }),
-    /** Revoke (soft-delete) an API key */
+    /** Collect business-use and consent details before enabling the higher-risk send scope. */
+    requestSendScope: protectedProcedure
+      .input(z.object({
+        businessName: z.string().trim().min(2).max(160),
+        websiteUrl: z.union([z.literal(""), z.string().trim().url().max(512)]).default(""),
+        useCase: z.string().trim().min(20).max(1500),
+        expectedMonthlySendVolume: z.number().int().min(1).max(1_000_000),
+        consentProcess: z.string().trim().min(20).max(1500),
+        confirmsExistingCustomersOnly: z.literal(true),
+        confirmsNoPurchasedOrScrapedLists: z.literal(true),
+        confirmsIndividualCustomerActions: z.literal(true),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await requestDeveloperSendScope({
+            userId: ctx.user.id,
+            businessName: input.businessName,
+            websiteUrl: input.websiteUrl || null,
+            useCase: input.useCase,
+            expectedMonthlySendVolume: input.expectedMonthlySendVolume,
+            consentProcess: input.consentProcess,
+          });
+        } catch (error) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: error instanceof Error ? error.message : "Unable to request sending access.",
+          });
+        }
+      }),
+    /** Administrator decision for high-volume send-scope requests; standard-volume requests are approved automatically. */
+    reviewSendScope: adminProcedure
+      .input(z.object({
+        userId: z.number().int().positive(),
+        status: z.enum(["approved", "denied"]),
+        note: z.string().trim().max(500).nullable().optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await reviewDeveloperSendScope({
+            userId: input.userId,
+            reviewerUserId: ctx.user.id,
+            status: input.status,
+            note: input.note,
+          });
+        } catch (error) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: error instanceof Error ? error.message : "Unable to review sending access.",
+          });
+        }
+      }),
+    /** List safe API-key metadata; raw secrets are never persisted or returned. */
+    list: protectedProcedure.query(async ({ ctx }) => {
+      return listDeveloperApiKeys(ctx.user.id);
+    }),
+    /** Generate a scoped API key — returns the raw secret exactly once. */
+    generate: protectedProcedure
+      .input(z.object({
+        label: z.string().trim().min(1).max(100).default("My API Key"),
+        scopes: z.array(z.enum(DEVELOPER_API_SCOPES)).min(1).max(DEVELOPER_API_SCOPES.length).default(["contacts:write"]),
+        expiresInDays: z.number().int().min(1).max(3650).nullable().default(null),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await createDeveloperApiKey({
+            userId: ctx.user.id,
+            label: input.label,
+            scopes: input.scopes,
+            expiresAt: input.expiresInDays ? Date.now() + input.expiresInDays * 24 * 60 * 60 * 1000 : null,
+          });
+        } catch (error) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: error instanceof Error ? error.message : "Unable to create API key.",
+          });
+        }
+      }),
+    /** Rotate an active key and reveal the replacement secret exactly once. */
+    rotate: protectedProcedure
+      .input(z.object({ id: z.number().int().positive(), label: z.string().trim().min(1).max(100).optional() }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await rotateDeveloperApiKey({ userId: ctx.user.id, keyId: input.id, label: input.label });
+        } catch (error) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: error instanceof Error ? error.message : "Unable to rotate API key.",
+          });
+        }
+      }),
+    /** Revoke (soft-delete) an API key. */
     revoke: protectedProcedure
       .input(z.object({ id: z.number().int().positive() }))
       .mutation(async ({ ctx, input }) => {
-        await revokeApiKey(ctx.user.id, input.id);
+        const revoked = await revokeDeveloperApiKey(ctx.user.id, input.id);
+        if (!revoked) throw new TRPCError({ code: "NOT_FOUND", message: "Active API key not found." });
         return { success: true };
       }),
     /** Get recent API import events */
@@ -2855,6 +4040,7 @@ export const appRouter = router({
       .input(z.object({
         wooAutoImportNotify: z.boolean().optional(),
         notifyOnEmailOpen: z.boolean().optional(),
+        onboardingTipsEnabled: z.boolean().optional(),
       }))
       .mutation(async ({ ctx, input }) => {
         await updateNotificationPrefs(ctx.user.id, input);
@@ -2888,7 +4074,7 @@ export const appRouter = router({
       .mutation(async ({ ctx, input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-        const result = await db.insert(clientReviews).values({
+        const [result] = await db.insert(clientReviews).values({
           userId: ctx.user.id,
           reviewerName: input.reviewerName,
           rating: input.rating,
@@ -2897,7 +4083,7 @@ export const appRouter = router({
           reviewedAt: input.reviewedAt ?? Date.now(),
           requestId: input.requestId ?? null,
         });
-        return { id: (result as any).insertId as number };
+        return { id: result.insertId };
       }),
     update: protectedProcedure
       .input(z.object({
@@ -2937,6 +4123,86 @@ export const appRouter = router({
 
   /** Analytics / page event tracking */
   analytics: router({
+    /** Authenticated zero-result Manual searches only; role scope is verified against the session. */
+    trackManualZeroResultSearch: protectedProcedure
+      .input(z.object({
+        query: z.string().min(2).max(100),
+        resultCount: z.literal(0),
+        locale: z.enum(MANUAL_SEARCH_LOCALES),
+        manualRole: z.enum(MANUAL_SEARCH_ROLES),
+        manualVersion: z.string().trim().min(8).max(20),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const sessionRole = ctx.user.role === "admin" ? "admin" : "user";
+        if (input.manualRole !== sessionRole) {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Manual scope does not match the authenticated account." });
+        }
+        checkManualSearchEventRateLimit(ctx.user.id);
+        const db = await getDb();
+        if (!db) return { ok: true as const };
+        return recordManualZeroResultSearch({
+          db,
+          userId: ctx.user.id,
+          query: input.query,
+          manualRole: input.manualRole,
+          locale: input.locale,
+          manualVersion: input.manualVersion,
+        });
+      }),
+    /** Authenticated, allowlisted checklist telemetry. It captures no device, referrer, or customer content. */
+    trackOnboardingChecklistEvent: protectedProcedure
+      .input(z.object({ event: z.enum(ONBOARDING_CHECKLIST_EVENT_NAMES) }))
+      .mutation(async ({ ctx, input }) => {
+        checkOnboardingChecklistEventRateLimit(ctx.user.id);
+        const db = await getDb();
+        if (!db) return { ok: true };
+        await db.insert(pageEvents).values({
+          userId: ctx.user.id,
+          page: toOnboardingChecklistEventPage(input.event),
+          utmSource: ONBOARDING_CHECKLIST_EVENT_SOURCE,
+          utmMedium: null,
+          utmCampaign: "setup_funnel",
+          referrer: null,
+          userAgent: null,
+        });
+        return { ok: true };
+      }),
+    trackPwaEvent: publicProcedure
+      .input(z.object({
+        event: z.enum(PWA_EVENT_NAMES),
+        platform: z.enum(["ios", "android", "desktop", "unknown"]),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return { ok: true };
+        await db.insert(pageEvents).values({
+          userId: null,
+          page: toPwaEventPage(input.event),
+          utmSource: PWA_EVENT_SOURCE,
+          utmMedium: input.platform,
+          utmCampaign: "install_conversion",
+          referrer: null,
+          userAgent: null,
+        });
+        return { ok: true };
+      }),
+    /** Explicit caption-language selections only; bounded language code and no visitor identity or raw context. */
+    trackCaptionLanguage: publicProcedure
+      .input(z.object({ language: z.enum(CAPTION_LANGUAGE_ANALYTICS_LANGUAGES) }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return { ok: true };
+        await db.insert(pageEvents).values({
+          userId: null,
+          page: toCaptionLanguageEventPage(input.language),
+          utmSource: CAPTION_LANGUAGE_ANALYTICS_SOURCE,
+          utmMedium: input.language,
+          utmCampaign: "walkthrough_caption_language",
+          referrer: null,
+          userAgent: null,
+        });
+        return { ok: true };
+      }),
     trackPageView: publicProcedure
       .input(z.object({
         page: z.string().max(255),
@@ -2996,165 +4262,806 @@ export const appRouter = router({
       }),
   }),
 
+  /** Anonymous landing-footer support form with a deliberately inert honeypot. */
+  support: router({
+    uploadScreenshot: publicProcedure
+      .input(z.object({
+        filename: z.string().trim().min(1).max(255),
+        mimeType: z.enum(SUPPORT_ATTACHMENT_MIME_TYPES),
+        dataBase64: z.string().min(4).max(11_200_000),
+        website: z.string().max(250).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        // Keep honeypot responses deliberately uninformative and avoid storage writes.
+        if (input.website) return { ok: true as const, attachment: null };
+
+        const forwarded = ctx.req.headers["x-forwarded-for"];
+        const requestKey = (Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(",")[0])?.trim() || ctx.req.ip || "anonymous";
+        checkSupportAttachmentRateLimit(requestKey);
+
+        const data = Buffer.from(input.dataBase64, "base64");
+        if (data.length === 0 || data.length > MAX_SUPPORT_ATTACHMENT_BYTES || !isValidSupportScreenshot(data, input.mimeType)) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Upload a valid JPG, PNG, or WebP screenshot up to 8 MB.",
+          });
+        }
+
+        const extension = getSupportAttachmentExtension(input.mimeType);
+        const key = `support-screenshots/${new Date().toISOString().slice(0, 10)}/${crypto.randomUUID()}.${extension}`;
+        await storagePut(key, data, input.mimeType);
+
+        return {
+          ok: true as const,
+          attachment: {
+            key,
+            filename: sanitizeSupportAttachmentFilename(input.filename),
+            mimeType: input.mimeType,
+            size: data.length,
+          },
+        };
+      }),
+    submit: publicProcedure
+      .input(z.object({
+        name: z.string().trim().max(80).optional(),
+        email: z.string().trim().toLowerCase().email().max(254),
+        topic: z.enum(SUPPORT_TOPICS),
+        subject: z.string().trim().min(3).max(120).refine((value) => !/[\r\n]/.test(value), "Invalid subject"),
+        message: z.string().trim().min(10).max(4000),
+        attachment: z.object({
+          key: z.string().startsWith("support-screenshots/").max(512),
+          filename: z.string().trim().min(1).max(255),
+          mimeType: z.enum(SUPPORT_ATTACHMENT_MIME_TYPES),
+          size: z.number().int().positive().max(MAX_SUPPORT_ATTACHMENT_BYTES),
+        }).optional(),
+        website: z.string().max(250).optional(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        // Accept honeypot submissions without sending an email so bots receive no useful signal.
+        if (input.website) return { ok: true, sent: true };
+
+        const forwarded = ctx.req.headers["x-forwarded-for"];
+        const requestKey = (Array.isArray(forwarded) ? forwarded[0] : forwarded?.split(",")[0])?.trim() || ctx.req.ip || "anonymous";
+        checkSupportSubmissionRateLimit(requestKey);
+
+        const db = await getDb();
+        if (!db) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "We could not save your message right now. Please try again shortly.",
+          });
+        }
+
+        const [insertResult] = await db.insert(supportSubmissions).values({
+          name: input.name || null,
+          email: input.email,
+          topic: input.topic,
+          subject: input.subject,
+          message: input.message,
+          priority: "normal",
+          slaTargetAt: getSupportSlaTargetAt("normal"),
+          attachmentKey: input.attachment?.key ?? null,
+          attachmentFilename: input.attachment?.filename ?? null,
+          attachmentMimeType: input.attachment?.mimeType ?? null,
+          attachmentSize: input.attachment?.size ?? null,
+        });
+        const submissionId = Number((insertResult as { insertId?: number }).insertId ?? 0);
+        if (!submissionId) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "We could not save your message right now. Please try again shortly.",
+          });
+        }
+
+        const attachment = input.attachment
+          ? {
+              filename: input.attachment.filename,
+              url: (await storageGet(input.attachment.key)).url,
+            }
+          : undefined;
+        const result = await sendSupportMessage({
+          name: input.name,
+          email: input.email,
+          topic: input.topic,
+          subject: input.subject,
+          message: input.message,
+          submissionId,
+          attachment,
+        });
+        if (!result.sent) {
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "We could not send your message right now. Please try again shortly.",
+          });
+        }
+
+        await db.update(supportSubmissions)
+          .set({ notificationSentAt: new Date() })
+          .where(eq(supportSubmissions.id, submissionId));
+
+        return { ok: true, sent: true, submissionId };
+      }),
+    adminList: adminProcedure
+      .input(z.object({
+        status: z.enum(SUPPORT_SUBMISSION_STATUSES).optional(),
+        topic: z.enum(SUPPORT_TOPICS).optional(),
+        priority: z.enum(SUPPORT_PRIORITIES).optional(),
+        assigneeScope: z.enum(SUPPORT_QUEUE_ASSIGNEE_SCOPES).optional(),
+        assigneeUserId: z.union([z.literal("unassigned"), z.number().int().positive()]).optional(),
+        slaWindow: z.enum(SUPPORT_QUEUE_SLA_WINDOWS).optional(),
+        // Retained while existing inbox clients migrate to the canonical slaWindow field.
+        slaDeadline: z.enum(["overdue", "next_24h"]).optional(),
+        sort: z.enum(SUPPORT_QUEUE_SORTS).optional(),
+      }).optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        const now = new Date();
+        const next4Hours = new Date(now.getTime() + 4 * 60 * 60 * 1000);
+        const next24Hours = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+        const selectedSort = input?.sort ?? "newest";
+        const selectedAssigneeScope = input?.assigneeScope
+          ?? (input?.assigneeUserId === "unassigned" ? "unassigned" : typeof input?.assigneeUserId === "number" ? "specific" : "any");
+        const selectedSlaWindow = input?.slaWindow
+          ?? (input?.slaDeadline === "overdue" ? "overdue" : input?.slaDeadline === "next_24h" ? "next_24_hours" : undefined);
+        if (selectedAssigneeScope === "specific" && typeof input?.assigneeUserId !== "number") {
+          throw new TRPCError({ code: "BAD_REQUEST", message: "Choose an administrator for a specific-assignee queue filter." });
+        }
+        const orderBy = selectedSort === "oldest"
+          ? [asc(supportSubmissions.createdAt), asc(supportSubmissions.id)]
+          : selectedSort === "priority"
+            ? [desc(sql`CASE ${supportSubmissions.priority} WHEN 'urgent' THEN 4 WHEN 'high' THEN 3 WHEN 'normal' THEN 2 ELSE 1 END`), desc(supportSubmissions.createdAt)]
+            : selectedSort === "assignee"
+              ? [asc(sql`CASE WHEN ${supportSubmissions.assigneeUserId} IS NULL THEN 1 ELSE 0 END`), asc(users.name), desc(supportSubmissions.createdAt)]
+            : selectedSort === "sla_soonest"
+              ? [asc(sql`CASE WHEN ${supportSubmissions.slaTargetAt} IS NULL THEN 1 ELSE 0 END`), asc(supportSubmissions.slaTargetAt), desc(supportSubmissions.createdAt)]
+              : selectedSort === "due_soonest"
+                ? [asc(sql`CASE WHEN ${supportSubmissions.dueAt} IS NULL THEN 1 ELSE 0 END`), asc(supportSubmissions.dueAt), desc(supportSubmissions.createdAt)]
+                : [desc(supportSubmissions.createdAt), desc(supportSubmissions.id)];
+
+        const rows = await db.select({
+          id: supportSubmissions.id,
+          name: supportSubmissions.name,
+          email: supportSubmissions.email,
+          topic: supportSubmissions.topic,
+          subject: supportSubmissions.subject,
+          message: supportSubmissions.message,
+          status: supportSubmissions.status,
+          priority: supportSubmissions.priority,
+          assigneeUserId: supportSubmissions.assigneeUserId,
+          dueAt: supportSubmissions.dueAt,
+          slaTargetAt: supportSubmissions.slaTargetAt,
+          firstRespondedAt: supportSubmissions.firstRespondedAt,
+          assigneeName: users.name,
+          assigneeEmail: users.email,
+          attachmentKey: supportSubmissions.attachmentKey,
+          attachmentFilename: supportSubmissions.attachmentFilename,
+          attachmentMimeType: supportSubmissions.attachmentMimeType,
+          attachmentSize: supportSubmissions.attachmentSize,
+          notificationSentAt: supportSubmissions.notificationSentAt,
+          resolvedAt: supportSubmissions.resolvedAt,
+          createdAt: supportSubmissions.createdAt,
+          updatedAt: supportSubmissions.updatedAt,
+        })
+          .from(supportSubmissions)
+          .leftJoin(users, eq(supportSubmissions.assigneeUserId, users.id))
+          .where(and(
+            input?.status ? eq(supportSubmissions.status, input.status) : sql`1 = 1`,
+            input?.topic ? eq(supportSubmissions.topic, input.topic) : sql`1 = 1`,
+            input?.priority ? eq(supportSubmissions.priority, input.priority) : sql`1 = 1`,
+            selectedAssigneeScope === "unassigned"
+              ? isNull(supportSubmissions.assigneeUserId)
+              : selectedAssigneeScope === "specific" && typeof input?.assigneeUserId === "number"
+                ? eq(supportSubmissions.assigneeUserId, input.assigneeUserId)
+                : sql`1 = 1`,
+            selectedSlaWindow === "overdue"
+              ? and(
+                isNotNull(supportSubmissions.slaTargetAt),
+                lte(supportSubmissions.slaTargetAt, now),
+                ne(supportSubmissions.status, "resolved"),
+              )
+              : selectedSlaWindow === "next_4_hours"
+                ? and(
+                  isNotNull(supportSubmissions.slaTargetAt),
+                  gte(supportSubmissions.slaTargetAt, now),
+                  lte(supportSubmissions.slaTargetAt, next4Hours),
+                  ne(supportSubmissions.status, "resolved"),
+                )
+                : selectedSlaWindow === "next_24_hours"
+                ? and(
+                  isNotNull(supportSubmissions.slaTargetAt),
+                  gte(supportSubmissions.slaTargetAt, now),
+                  lte(supportSubmissions.slaTargetAt, next24Hours),
+                  ne(supportSubmissions.status, "resolved"),
+                )
+                : sql`1 = 1`,
+          ))
+          .orderBy(...orderBy)
+          .limit(250);
+
+        return Promise.all(rows.map(async (row) => ({
+          ...row,
+          attachmentUrl: row.attachmentKey
+            ? await storageGet(row.attachmentKey).then((attachment) => attachment.url).catch(() => null)
+            : null,
+        }))); 
+      }),
+    adminMetrics: adminProcedure
+      .input(supportMetricsInputSchema.optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support reporting is unavailable." });
+
+        return getSupportMetricsSnapshot(db, input);
+      }),
+    exportMetricsCsv: adminProcedure
+      .input(supportMetricsInputSchema.optional())
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support reporting is unavailable." });
+
+        const metrics = await getSupportMetricsSnapshot(db, input);
+        const period = metrics.periodLabel;
+        const rows = [
+          { section: "metadata", metric: "generated_at", period, value: metrics.generatedAt.toISOString(), unit: "iso_8601", details: "Get Phame support SLA performance export" },
+          { section: "support_sla", metric: "tickets_created", period, value: metrics.ticketsCreated, unit: "tickets", details: "Tickets created during the selected period" },
+          { section: "support_sla", metric: "tickets_resolved", period, value: metrics.resolvedTickets, unit: "tickets", details: "Tickets with a recorded resolution during the selected period" },
+          { section: "support_sla", metric: "tickets_open", period, value: metrics.openTickets, unit: "tickets", details: "Created-period tickets not currently resolved" },
+          { section: "support_sla", metric: "first_response_samples", period, value: metrics.firstResponseCount, unit: "tickets", details: "Tickets with a recorded first response" },
+          { section: "support_sla", metric: "average_first_response", period, value: metrics.avgFirstResponseMs ?? "unavailable", unit: "milliseconds", details: "Average elapsed time from creation to first response" },
+          { section: "support_sla", metric: "average_resolution", period, value: metrics.avgResolutionMs ?? "unavailable", unit: "milliseconds", details: "Average elapsed time from creation to resolution" },
+          { section: "support_sla", metric: "overdue_tickets", period, value: metrics.overdueTickets, unit: "tickets", details: "Open tickets with an SLA target before export generation" },
+        ];
+        const dateStamp = metrics.generatedAt.toISOString().slice(0, 10);
+        return {
+          filename: `getphame-support-sla-${period}-${dateStamp}.csv`,
+          csv: serializeAdminOperationsCsv(rows),
+          mimeType: "text/csv;charset=utf-8",
+          generatedAt: metrics.generatedAt,
+          rowCount: rows.length,
+        };
+      }),
+    savedViews: adminProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Saved support queue views are unavailable." });
+
+      return db.select({
+        id: supportSavedQueueViews.id,
+        ownerUserId: supportSavedQueueViews.ownerUserId,
+        ownerName: users.name,
+        name: supportSavedQueueViews.name,
+        visibility: supportSavedQueueViews.visibility,
+        status: supportSavedQueueViews.status,
+        topic: supportSavedQueueViews.topic,
+        priority: supportSavedQueueViews.priority,
+        assigneeScope: supportSavedQueueViews.assigneeScope,
+        assigneeUserId: supportSavedQueueViews.assigneeUserId,
+        slaWindow: supportSavedQueueViews.slaWindow,
+        sort: supportSavedQueueViews.sort,
+        createdAt: supportSavedQueueViews.createdAt,
+        updatedAt: supportSavedQueueViews.updatedAt,
+      })
+        .from(supportSavedQueueViews)
+        .leftJoin(users, eq(supportSavedQueueViews.ownerUserId, users.id))
+        .where(or(
+          eq(supportSavedQueueViews.ownerUserId, ctx.user.id),
+          eq(supportSavedQueueViews.visibility, "team"),
+        ))
+        .orderBy(desc(supportSavedQueueViews.updatedAt), desc(supportSavedQueueViews.id))
+        .limit(MAX_SUPPORT_SAVED_QUEUE_VIEWS * 5);
+    }),
+    saveView: adminProcedure
+      .input(z.object({
+        name: z.string().trim().min(1).max(MAX_SUPPORT_SAVED_QUEUE_VIEW_NAME_CHARS),
+        status: z.enum(SUPPORT_SUBMISSION_STATUSES).nullable().optional(),
+        topic: z.enum(SUPPORT_TOPICS).nullable().optional(),
+        priority: z.enum(SUPPORT_PRIORITIES).nullable().optional(),
+        assigneeScope: z.enum(SUPPORT_QUEUE_ASSIGNEE_SCOPES).default("any"),
+        assigneeUserId: z.number().int().positive().nullable().optional(),
+        slaWindow: z.enum(SUPPORT_QUEUE_SLA_WINDOWS).nullable().optional(),
+        sort: z.enum(SUPPORT_QUEUE_SORTS).default("newest"),
+        visibility: z.enum(SUPPORT_QUEUE_VIEW_VISIBILITIES).default("private"),
+      }).superRefine((value, issueContext) => {
+        if (value.assigneeScope === "specific" && value.assigneeUserId === null) {
+          issueContext.addIssue({ code: z.ZodIssueCode.custom, path: ["assigneeUserId"], message: "Choose an administrator for a specific-assignee view." });
+        }
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Saved support queue views are unavailable." });
+
+        const name = input.name.replace(/\s+/g, " ").trim();
+        const normalizedName = normalizeSupportQueueViewName(name);
+        if (!normalizedName) throw new TRPCError({ code: "BAD_REQUEST", message: "Enter a name for this queue view." });
+
+        const assigneeUserId = input.assigneeScope === "specific" ? input.assigneeUserId ?? null : null;
+        if (assigneeUserId !== null) {
+          const [assignee] = await db.select({ id: users.id })
+            .from(users)
+            .where(and(eq(users.id, assigneeUserId), eq(users.role, "admin")))
+            .limit(1);
+          if (!assignee) throw new TRPCError({ code: "BAD_REQUEST", message: "Choose an active administrator for this queue view." });
+        }
+
+        const [existing] = await db.select({ id: supportSavedQueueViews.id })
+          .from(supportSavedQueueViews)
+          .where(and(
+            eq(supportSavedQueueViews.ownerUserId, ctx.user.id),
+            eq(supportSavedQueueViews.normalizedName, normalizedName),
+          ))
+          .limit(1);
+        const viewFields = {
+          name,
+          normalizedName,
+          status: input.status ?? null,
+          topic: input.topic ?? null,
+          priority: input.priority ?? null,
+          assigneeScope: input.assigneeScope,
+          assigneeUserId,
+          slaWindow: input.slaWindow ?? null,
+          sort: input.sort,
+          visibility: input.visibility,
+          updatedAt: new Date(),
+        };
+        if (existing) {
+          await db.update(supportSavedQueueViews)
+            .set(viewFields)
+            .where(and(eq(supportSavedQueueViews.id, existing.id), eq(supportSavedQueueViews.ownerUserId, ctx.user.id)));
+          return { id: existing.id, created: false as const };
+        }
+
+        const [ownedCount] = await db.select({ value: count(supportSavedQueueViews.id) })
+          .from(supportSavedQueueViews)
+          .where(eq(supportSavedQueueViews.ownerUserId, ctx.user.id));
+        if (Number(ownedCount?.value ?? 0) >= MAX_SUPPORT_SAVED_QUEUE_VIEWS) {
+          throw new TRPCError({ code: "BAD_REQUEST", message: `You can save up to ${MAX_SUPPORT_SAVED_QUEUE_VIEWS} support queue views.` });
+        }
+        const inserted = await db.insert(supportSavedQueueViews).values({
+          ownerUserId: ctx.user.id,
+          ...viewFields,
+        }).$returningId();
+        const id = inserted[0]?.id;
+        if (!id) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Could not save this queue view." });
+        return { id, created: true as const };
+      }),
+    deleteView: adminProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Saved support queue views are unavailable." });
+
+        await db.delete(supportSavedQueueViews)
+          .where(and(eq(supportSavedQueueViews.id, input.id), eq(supportSavedQueueViews.ownerUserId, ctx.user.id)));
+        return { ok: true as const };
+      }),
+    checkSlaBreach: adminProcedure.mutation(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support alerts are unavailable." });
+
+      const now = new Date();
+      const policy = await getSupportEscalationPolicySettings(db);
+      const breachCutoff = new Date(now.getTime() - policy.breachThresholdMinutes * 60 * 1000);
+      const breachedTickets = await db.select({
+        id: supportSubmissions.id,
+        assigneeUserId: supportSubmissions.assigneeUserId,
+        slaTargetAt: supportSubmissions.slaTargetAt,
+      })
+        .from(supportSubmissions)
+        .where(and(
+          eq(supportSubmissions.priority, "urgent"),
+          ne(supportSubmissions.status, "resolved"),
+          isNotNull(supportSubmissions.slaTargetAt),
+          lte(supportSubmissions.slaTargetAt, breachCutoff),
+        ));
+      const admins = policy.includeAllAdminsWhenUnassigned
+        ? await db.select({ id: users.id }).from(users).where(eq(users.role, "admin"))
+        : [];
+      let alertedTicketCount = 0;
+      for (const ticket of breachedTickets) {
+        const recipientUserIds = Array.from(new Set([
+          ...policy.recipientUserIds,
+          ...(policy.includeAssignee && ticket.assigneeUserId ? [ticket.assigneeUserId] : []),
+          ...(!ticket.assigneeUserId && policy.includeAllAdminsWhenUnassigned ? admins.map((admin) => admin.id) : []),
+        ]));
+        await queueSupportTicketAlerts(db, {
+          ticketId: ticket.id,
+          recipientUserIds,
+          actorUserId: ctx.user.id,
+          type: "sla_breach",
+          dedupSince: ticket.slaTargetAt ?? now,
+        });
+        alertedTicketCount += 1;
+      }
+      return { checkedTicketCount: breachedTickets.length, alertedTicketCount, breachThresholdMinutes: policy.breachThresholdMinutes };
+    }),
+    escalationPolicy: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support escalation policy is unavailable." });
+
+      return getSupportEscalationPolicySettings(db);
+    }),
+    updateEscalationPolicy: adminProcedure
+      .input(z.object({
+        breachThresholdMinutes: z.number().int().min(0).max(MAX_SUPPORT_ESCALATION_THRESHOLD_MINUTES),
+        includeAssignee: z.boolean(),
+        includeAllAdminsWhenUnassigned: z.boolean(),
+        recipientUserIds: z.array(z.number().int().positive()).max(25),
+      }).superRefine((value, issueContext) => {
+        if (!value.includeAssignee && !value.includeAllAdminsWhenUnassigned && value.recipientUserIds.length === 0) {
+          issueContext.addIssue({ code: z.ZodIssueCode.custom, path: ["recipientUserIds"], message: "Keep at least one escalation recipient route enabled." });
+        }
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support escalation policy is unavailable." });
+
+        const recipientUserIds = Array.from(new Set(input.recipientUserIds));
+        if (recipientUserIds.length > 0) {
+          const validAdmins = await db.select({ id: users.id })
+            .from(users)
+            .where(and(eq(users.role, "admin"), inArray(users.id, recipientUserIds)));
+          if (validAdmins.length !== recipientUserIds.length) {
+            throw new TRPCError({ code: "BAD_REQUEST", message: "Choose only active administrators as escalation recipients." });
+          }
+        }
+
+        const updatedAt = new Date();
+        await db.insert(supportEscalationPolicies).values({
+          policyKey: SUPPORT_ESCALATION_POLICY_KEY,
+          breachThresholdMinutes: input.breachThresholdMinutes,
+          includeAssignee: input.includeAssignee,
+          includeAllAdminsWhenUnassigned: input.includeAllAdminsWhenUnassigned,
+          updatedAt,
+        }).onDuplicateKeyUpdate({ set: {
+          breachThresholdMinutes: input.breachThresholdMinutes,
+          includeAssignee: input.includeAssignee,
+          includeAllAdminsWhenUnassigned: input.includeAllAdminsWhenUnassigned,
+          updatedAt,
+        } });
+
+        const [policy] = await db.select({ id: supportEscalationPolicies.id })
+          .from(supportEscalationPolicies)
+          .where(eq(supportEscalationPolicies.policyKey, SUPPORT_ESCALATION_POLICY_KEY))
+          .limit(1);
+        if (!policy) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Could not save the support escalation policy." });
+
+        await db.delete(supportEscalationPolicyRecipients)
+          .where(eq(supportEscalationPolicyRecipients.policyId, policy.id));
+        if (recipientUserIds.length > 0) {
+          await db.insert(supportEscalationPolicyRecipients).values(recipientUserIds.map((recipientUserId) => ({
+            policyId: policy.id,
+            recipientUserId,
+          })));
+        }
+        return getSupportEscalationPolicySettings(db);
+      }),
+    /** Eligible support operators are sourced from the authoritative admin user directory. */
+    adminAssignees: adminProcedure.query(async () => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+      return db.select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+      })
+        .from(users)
+        .where(eq(users.role, "admin"))
+        .orderBy(users.name, users.email);
+    }),
+    updateStatus: adminProcedure
+      .input(z.object({
+        id: z.number().int().positive(),
+        status: z.enum(SUPPORT_SUBMISSION_STATUSES),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        await db.update(supportSubmissions)
+          .set({
+            status: input.status,
+            resolvedAt: input.status === "resolved" ? new Date() : null,
+          })
+          .where(eq(supportSubmissions.id, input.id));
+        if (input.status !== "open") await recordSupportFirstResponse(db, input.id);
+        return { ok: true as const };
+      }),
+    updatePriority: adminProcedure
+      .input(z.object({
+        id: z.number().int().positive(),
+        priority: z.enum(SUPPORT_PRIORITIES),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        const [ticket] = await db.select({
+          id: supportSubmissions.id,
+          status: supportSubmissions.status,
+          priority: supportSubmissions.priority,
+          assigneeUserId: supportSubmissions.assigneeUserId,
+        })
+          .from(supportSubmissions)
+          .where(eq(supportSubmissions.id, input.id))
+          .limit(1);
+        if (!ticket) throw new TRPCError({ code: "NOT_FOUND", message: "Support ticket not found." });
+
+        const escalated = isSupportEscalation(ticket.priority as SupportPriority, input.priority);
+        await db.update(supportSubmissions)
+          .set({
+            priority: input.priority,
+            // Re-arm the persisted target only when urgency increases. Lowering
+            // priority must not quietly relax a previously committed target.
+            ...(escalated ? { slaTargetAt: getSupportSlaTargetAt(input.priority) } : {}),
+          })
+          .where(eq(supportSubmissions.id, input.id));
+
+        if (escalated && ticket.status !== "resolved") {
+          const recipientUserIds = ticket.assigneeUserId
+            ? [ticket.assigneeUserId]
+            : (await db.select({ id: users.id }).from(users).where(eq(users.role, "admin"))).map((admin) => admin.id);
+          await queueSupportTicketAlerts(db, {
+            ticketId: ticket.id,
+            recipientUserIds,
+            actorUserId: ctx.user.id,
+            type: "escalation",
+          });
+        }
+        return { ok: true as const };
+      }),
+    updateAssignee: adminProcedure
+      .input(z.object({
+        id: z.number().int().positive(),
+        assigneeUserId: z.number().int().positive().nullable(),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        const [ticket] = await db.select({ id: supportSubmissions.id, assigneeUserId: supportSubmissions.assigneeUserId })
+          .from(supportSubmissions)
+          .where(eq(supportSubmissions.id, input.id))
+          .limit(1);
+        if (!ticket) throw new TRPCError({ code: "NOT_FOUND", message: "Support ticket not found." });
+
+        if (input.assigneeUserId !== null) {
+          const [assignee] = await db.select({ id: users.id })
+            .from(users)
+            .where(and(eq(users.id, input.assigneeUserId), eq(users.role, "admin")))
+            .limit(1);
+          if (!assignee) {
+            throw new TRPCError({
+              code: "BAD_REQUEST",
+              message: "Choose an active administrator as the support ticket assignee.",
+            });
+          }
+        }
+
+        await db.update(supportSubmissions)
+          .set({ assigneeUserId: input.assigneeUserId })
+          .where(eq(supportSubmissions.id, input.id));
+
+        if (input.assigneeUserId !== null && input.assigneeUserId !== ticket.assigneeUserId) {
+          await queueSupportTicketAlerts(db, {
+            ticketId: ticket.id,
+            recipientUserIds: [input.assigneeUserId],
+            actorUserId: ctx.user.id,
+            type: "assignment",
+          });
+        }
+        return { ok: true as const };
+      }),
+    updateDueAt: adminProcedure
+      .input(z.object({
+        id: z.number().int().positive(),
+        dueAt: z.string().datetime({ offset: true }).nullable(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        const [ticket] = await db.select({ id: supportSubmissions.id })
+          .from(supportSubmissions)
+          .where(eq(supportSubmissions.id, input.id))
+          .limit(1);
+        if (!ticket) throw new TRPCError({ code: "NOT_FOUND", message: "Support ticket not found." });
+
+        const dueAt = input.dueAt ? new Date(input.dueAt) : null;
+        if (dueAt && dueAt.getTime() > Date.now() + MAX_SUPPORT_DUE_DATE_FUTURE_DAYS * 24 * 60 * 60 * 1000) {
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: `Set a due date within the next ${MAX_SUPPORT_DUE_DATE_FUTURE_DAYS} days.`,
+          });
+        }
+
+        await db.update(supportSubmissions)
+          .set({ dueAt })
+          .where(eq(supportSubmissions.id, input.id));
+        return { ok: true as const };
+      }),
+    internalNotes: adminProcedure
+      .input(z.object({ id: z.number().int().positive() }))
+      .query(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        const notes = await db.select({
+          id: supportInternalNotes.id,
+          body: supportInternalNotes.body,
+          bodyPlainText: supportInternalNotes.bodyPlainText,
+          createdAt: supportInternalNotes.createdAt,
+          authorUserId: supportInternalNotes.authorUserId,
+          authorName: users.name,
+          authorEmail: users.email,
+        })
+          .from(supportInternalNotes)
+          .leftJoin(users, eq(supportInternalNotes.authorUserId, users.id))
+          .where(eq(supportInternalNotes.ticketId, input.id))
+          .orderBy(desc(supportInternalNotes.createdAt));
+
+        const noteIds = notes.map((note) => note.id);
+        const mentions = noteIds.length === 0
+          ? []
+          : await db.select({
+            noteId: supportInternalNoteMentions.noteId,
+            userId: supportInternalNoteMentions.mentionedUserId,
+            name: users.name,
+            email: users.email,
+          })
+            .from(supportInternalNoteMentions)
+            .leftJoin(users, eq(supportInternalNoteMentions.mentionedUserId, users.id))
+            .where(inArray(supportInternalNoteMentions.noteId, noteIds));
+
+        return notes.map((note) => ({
+          ...note,
+          // New notes carry the authoritative plain-text derivative; legacy notes
+          // are escaped and rendered as safe text by the same constrained renderer.
+          bodyHtml: note.bodyPlainText !== null ? note.body : renderSupportInternalNoteHtml(note.body),
+          displayText: note.bodyPlainText ?? getSupportInternalNotePlainText(note.body),
+          mentions: mentions
+            .filter((mention) => mention.noteId === note.id)
+            .map(({ userId, name, email }) => ({ userId, name, email })),
+        }));
+      }),
+    addInternalNote: adminProcedure
+      .input(z.object({
+        id: z.number().int().positive(),
+        body: z.string().trim().min(1).max(MAX_SUPPORT_INTERNAL_NOTE_CHARS),
+        mentionUserIds: z.array(z.number().int().positive()).max(MAX_SUPPORT_INTERNAL_NOTE_MENTIONS).default([]),
+      }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support inbox is unavailable." });
+
+        const [ticket] = await db.select({ id: supportSubmissions.id })
+          .from(supportSubmissions)
+          .where(eq(supportSubmissions.id, input.id))
+          .limit(1);
+        if (!ticket) throw new TRPCError({ code: "NOT_FOUND", message: "Support ticket not found." });
+
+        const mentionUserIds = Array.from(new Set(input.mentionUserIds));
+        if (mentionUserIds.length > 0) {
+          const mentionableAdmins = await db.select({ id: users.id })
+            .from(users)
+            .where(and(inArray(users.id, mentionUserIds), eq(users.role, "admin")));
+          if (mentionableAdmins.length !== mentionUserIds.length) {
+            throw new TRPCError({ code: "BAD_REQUEST", message: "Mention only active administrators." });
+          }
+        }
+
+        const bodyHtml = renderSupportInternalNoteHtml(input.body);
+        const bodyPlainText = getSupportInternalNotePlainText(input.body);
+        const inserted = await db.insert(supportInternalNotes).values({
+          ticketId: ticket.id,
+          authorUserId: ctx.user.id,
+          body: bodyHtml,
+          bodyPlainText,
+        }).$returningId();
+        const noteId = inserted[0]?.id;
+        if (!noteId) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Could not save internal note." });
+
+        if (mentionUserIds.length > 0) {
+          await db.insert(supportInternalNoteMentions).values(
+            mentionUserIds.map((mentionedUserId) => ({ noteId, mentionedUserId })),
+          );
+          await queueSupportTicketAlerts(db, {
+            ticketId: ticket.id,
+            recipientUserIds: mentionUserIds.filter((mentionedUserId) => mentionedUserId !== ctx.user.id),
+            actorUserId: ctx.user.id,
+            type: "mention",
+          });
+        }
+        await recordSupportFirstResponse(db, ticket.id);
+        return { ok: true as const };
+      }),
+    myTicketAlerts: adminProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support alerts are unavailable." });
+
+      return db.select({
+        id: supportTicketAlerts.id,
+        ticketId: supportTicketAlerts.ticketId,
+        type: supportTicketAlerts.type,
+        createdAt: supportTicketAlerts.createdAt,
+        subject: supportSubmissions.subject,
+        priority: supportSubmissions.priority,
+        actorName: users.name,
+      })
+        .from(supportTicketAlerts)
+        .leftJoin(supportSubmissions, eq(supportTicketAlerts.ticketId, supportSubmissions.id))
+        .leftJoin(users, eq(supportTicketAlerts.actorUserId, users.id))
+        .where(and(
+          eq(supportTicketAlerts.recipientUserId, ctx.user.id),
+          isNull(supportTicketAlerts.readAt),
+        ))
+        .orderBy(desc(supportTicketAlerts.createdAt))
+        .limit(20);
+    }),
+    markTicketAlertsRead: adminProcedure
+      .input(z.object({ ids: z.array(z.number().int().positive()).min(1).max(20) }))
+      .mutation(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "Support alerts are unavailable." });
+
+        await db.update(supportTicketAlerts)
+          .set({ readAt: new Date() })
+          .where(and(
+            eq(supportTicketAlerts.recipientUserId, ctx.user.id),
+            inArray(supportTicketAlerts.id, input.ids),
+            isNull(supportTicketAlerts.readAt),
+          ));
+        return { ok: true as const };
+      }),
+  }),
+
   /** Landing page lead capture — stores email and sends the free guide PDF */
   leadCapture: router({
     submit: publicProcedure
-      .input(z.object({ email: z.string().email() }))
+      .input(z.object({ email: z.string().trim().toLowerCase().email() }))
       .mutation(async ({ input }) => {
         const db = await getDb();
-        if (!db) return { ok: true, sent: false };
-        // Upsert — don't error if email already exists
-        await db
-          .insert(leads)
-          .values({ email: input.email })
-          .onDuplicateKeyUpdate({ set: { email: input.email } });
+        const now = Date.now();
+        const normalizedEmail = input.email;
+        let stored = false;
 
-        // Attempt to send the guide email
-        const { sent } = await sendLeadGuideEmail(input.email);
-
-        // Mark guideSentAt if email was sent successfully
-        if (sent) {
-          await db
-            .update(leads)
-            .set({ guideSentAt: new Date() })
-            .where(eq(leads.email, input.email));
-        }
-
-        return { ok: true, sent };
-      }),
-  }),
-
-  /** Admin user management — promote accounts to admin and grant lifetime access */
-  adminManagement: router({
-    /** List all users (admin only) */
-    listUsers: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-      const rows = await db
-        .select({ id: users.id, email: users.email, name: users.name, role: users.role, createdAt: users.createdAt })
-        .from(users)
-        .orderBy(desc(users.createdAt));
-      return rows;
-    }),
-
-    /** Promote a user to admin by email (admin only) */
-    promoteToAdmin: protectedProcedure
-      .input(z.object({ email: z.string().email() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
-        const db = await getDb();
-        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-        const [target] = await db.select({ id: users.id }).from(users).where(eq(users.email, input.email));
-        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
-        await db.update(users).set({ role: "admin" }).where(eq(users.id, target.id));
-        // Also grant lifetime tier on their business profile if it exists
-        await db
-          .update(businessProfiles)
-          .set({ tier: "lifetime", planExpiresAt: null })
-          .where(eq(businessProfiles.userId, target.id));
-        return { ok: true, userId: target.id };
-      }),
-
-    /** Grant lifetime tier to a user by email (admin only) */
-    grantLifetime: protectedProcedure
-      .input(z.object({ email: z.string().email() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
-        const db = await getDb();
-        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-        const [target] = await db.select({ id: users.id }).from(users).where(eq(users.email, input.email));
-        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
-        await db
-          .update(businessProfiles)
-          .set({ tier: "lifetime", planExpiresAt: null })
-          .where(eq(businessProfiles.userId, target.id));
-        return { ok: true, userId: target.id };
-      }),
-    /** List admin/paid users with their tier info (admin only) */
-    listPrivilegedUsers: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
-      const db = await getDb();
-      if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-      const rows = await db
-        .select({
-          id: users.id,
-          email: users.email,
-          name: users.name,
-          role: users.role,
-          createdAt: users.createdAt,
-          tier: businessProfiles.tier,
-          planExpiresAt: businessProfiles.planExpiresAt,
-        })
-        .from(users)
-        .leftJoin(businessProfiles, eq(businessProfiles.userId, users.id))
-        .where(
-          or(
-            eq(users.role, "admin"),
-            eq(businessProfiles.tier, "lifetime"),
-            eq(businessProfiles.tier, "pro"),
-            eq(businessProfiles.tier, "annual"),
-          )
-        )
-        .orderBy(desc(users.createdAt));
-      return rows;
-    }),
-    /** Grant a flexible subscription to a user by email — days, months, or lifetime (admin only) */
-    grantSubscription: protectedProcedure
-      .input(z.object({
-        email: z.string().email(),
-        durationType: z.enum(["days", "months", "lifetime"]),
-        amount: z.number().int().min(1).optional(),
-      }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
-        const db = await getDb();
-        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-        const [target] = await db.select({ id: users.id }).from(users).where(eq(users.email, input.email));
-        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "User not found. They must have signed up first." });
-        let newTier: "pro" | "annual" | "lifetime" = "pro";
-        let newPlanExpiresAt: number | null = null;
-        if (input.durationType === "lifetime") {
-          newTier = "lifetime";
-          newPlanExpiresAt = null;
-        } else {
-          const [existing] = await db.select({ planExpiresAt: businessProfiles.planExpiresAt }).from(businessProfiles).where(eq(businessProfiles.userId, target.id));
-          const base = existing?.planExpiresAt && existing.planExpiresAt > Date.now() ? existing.planExpiresAt : Date.now();
-          if (input.durationType === "days" && input.amount) {
-            newTier = "pro";
-            newPlanExpiresAt = base + input.amount * 24 * 60 * 60 * 1000;
-          } else if (input.durationType === "months" && input.amount) {
-            newTier = input.amount >= 12 ? "annual" : "pro";
-            newPlanExpiresAt = base + input.amount * 30 * 24 * 60 * 60 * 1000;
+        if (db) {
+          try {
+            // Upsert without coupling guide access to app signup or duplicate rows.
+            await db
+              .insert(leads)
+              .values({ email: normalizedEmail, createdAt: now })
+              .onDuplicateKeyUpdate({ set: { email: normalizedEmail } });
+            stored = true;
+          } catch (error) {
+            // A persistence outage must not block access to the promised guide.
+            console.error("[LeadCapture] Failed to store lead:", error);
           }
         }
-        await db
-          .update(businessProfiles)
-          .set({ tier: newTier, planExpiresAt: newPlanExpiresAt })
-          .where(eq(businessProfiles.userId, target.id));
-        console.log(`[Admin] Subscription granted to ${input.email}: ${input.durationType} ${input.amount ?? ""} by admin ${ctx.user.id}`);
-        return { ok: true, userId: target.id, tier: newTier, planExpiresAt: newPlanExpiresAt };
-      }),
 
-    /** Revoke a user's paid access — resets tier to free and clears planExpiresAt (admin only) */
-    revokeAccess: protectedProcedure
-      .input(z.object({ email: z.string().email() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
-        const db = await getDb();
-        if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
-        const [target] = await db.select({ id: users.id }).from(users).where(eq(users.email, input.email));
-        if (!target) throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
-        await db
-          .update(businessProfiles)
-          .set({ tier: "free", planExpiresAt: null })
-          .where(eq(businessProfiles.userId, target.id));
-        console.log(`[Admin] Access revoked for ${input.email} by admin ${ctx.user.id}`);
-        return { ok: true };
+        // Attempt to send the guide email
+        const { sent } = await sendLeadGuideEmail(normalizedEmail);
+
+        // Mark guideSentAt if email was sent successfully
+        if (sent && db && stored) {
+          await db
+            .update(leads)
+            .set({ guideSentAt: Date.now() })
+            .where(eq(leads.email, normalizedEmail));
+        }
+
+        return {
+          ok: true,
+          sent,
+          providerAccepted: sent,
+          stored,
+          downloadUrl: GUIDE_PDF_URL,
+          message: sent
+            ? "Your email provider accepted the guide for delivery."
+            : "Email delivery is unavailable, but your guide is ready to download.",
+        };
       }),
   }),
 });
-
-// ── Admin user management ────────────────────────────────────────────────────
-// (adminManagement router is now wired into appRouter above)
 export type AppRouter = typeof appRouter;

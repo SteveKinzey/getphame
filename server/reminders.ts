@@ -1,9 +1,9 @@
 /**
  * Follow-up Reminders — two-step sequence per review request:
- *   Step 1 — day 4 after initial send  ("Just checking in…")
- *   Step 2 — day 11 after initial send ("Last chance to share your thoughts…")
+ *   Step 1 — the user's configured delay after the initial send
+ *   Step 2 — the user's configured delay after step 1
  *
- * The scheduler runs every hour via setInterval on server start.
+ * Due reminders are processed by the managed hourly heartbeat endpoint.
  */
 import { getDb } from "./db";
 import { followUpReminders, businessProfiles } from "../drizzle/schema";
@@ -13,14 +13,31 @@ import { getDefaultReviewPlatform } from "./reviewPlatforms";
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
 import { buildReviewRequestEmail } from "./emailTemplates";
 
-const FOUR_DAYS_MS   = 4  * 24 * 60 * 60 * 1000; // day 4  — first follow-up
-const ELEVEN_DAYS_MS = 11 * 24 * 60 * 60 * 1000; // day 11 — second follow-up
+const DAY_MS = 24 * 60 * 60 * 1000;
+const CLAIM_WINDOW_MS = 15 * 60 * 1000;
 
-/**
- * Schedule both follow-up reminders for a sent review request:
- *   Step 1 — 4 days after initial send
- *   Step 2 — 11 days after initial send (7 days after step 1)
- */
+type ReminderStageSettings = {
+  followUpEnabled: number;
+  followUpFirstEnabled: number;
+  followUpSecondEnabled: number;
+};
+
+function isStageEnabled(settings: ReminderStageSettings, step: number) {
+  if (settings.followUpEnabled === 0) return false;
+  return step === 2
+    ? settings.followUpSecondEnabled !== 0
+    : settings.followUpFirstEnabled !== 0;
+}
+
+function getAffectedRows(result: unknown): number {
+  if (Array.isArray(result)) {
+    const header = result[0] as { affectedRows?: number } | undefined;
+    return Number(header?.affectedRows ?? 0);
+  }
+  return Number((result as { affectedRows?: number } | undefined)?.affectedRows ?? 0);
+}
+
+/** Schedule each enabled follow-up stage while preserving cumulative timing. */
 export async function scheduleFollowUp(
   userId: number,
   customerRequestId: number,
@@ -30,19 +47,36 @@ export async function scheduleFollowUp(
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
-  // Respect per-user follow-up toggle — skip if disabled
   const [profile] = await db
-    .select({ followUpEnabled: businessProfiles.followUpEnabled, followUpDelayDays: businessProfiles.followUpDelayDays })
+    .select({
+      followUpEnabled: businessProfiles.followUpEnabled,
+      followUpFirstEnabled: businessProfiles.followUpFirstEnabled,
+      followUpSecondEnabled: businessProfiles.followUpSecondEnabled,
+      followUpDelayDays: businessProfiles.followUpDelayDays,
+      followUpSecondDelayDays: businessProfiles.followUpSecondDelayDays,
+    })
     .from(businessProfiles)
     .where(eq(businessProfiles.userId, userId));
   if (profile && profile.followUpEnabled === 0) return;
 
-  const step1DelayMs = ((profile?.followUpDelayDays ?? 4)) * 24 * 60 * 60 * 1000;
-  const step2DelayMs = step1DelayMs + 7 * 24 * 60 * 60 * 1000; // step 2 always 7 days after step 1
+  const firstDelayDays = profile?.followUpDelayDays ?? 3;
+  const secondDelayDays = profile?.followUpSecondDelayDays ?? 7;
+  const firstStageEnabled = profile?.followUpFirstEnabled !== 0;
+  const secondStageEnabled = profile?.followUpSecondEnabled !== 0;
+  const step1DelayMs = firstDelayDays * DAY_MS;
+  const step2DelayMs = step1DelayMs + secondDelayDays * DAY_MS;
 
   const now = Date.now();
-  await db.insert(followUpReminders).values([
-    {
+  const reminders: Array<typeof followUpReminders.$inferInsert> = [];
+  const snapshot = {
+    firstDelayDaysSnapshot: firstDelayDays,
+    secondDelayDaysSnapshot: secondDelayDays,
+    firstStageEnabledSnapshot: firstStageEnabled ? 1 : 0,
+    secondStageEnabledSnapshot: secondStageEnabled ? 1 : 0,
+  };
+
+  if (firstStageEnabled) {
+    reminders.push({
       userId,
       customerRequestId,
       customerName,
@@ -50,8 +84,12 @@ export async function scheduleFollowUp(
       scheduledAt: now + step1DelayMs,
       status: "pending",
       sequenceStep: 1,
-    },
-    {
+      ...snapshot,
+    });
+  }
+
+  if (secondStageEnabled) {
+    reminders.push({
       userId,
       customerRequestId,
       customerName,
@@ -59,8 +97,13 @@ export async function scheduleFollowUp(
       scheduledAt: now + step2DelayMs,
       status: "pending",
       sequenceStep: 2,
-    },
-  ]);
+      ...snapshot,
+    });
+  }
+
+  if (reminders.length > 0) {
+    await db.insert(followUpReminders).values(reminders);
+  }
 }
 
 export async function listReminders(userId: number) {
@@ -102,6 +145,41 @@ export async function cancelRemindersByRequestId(userId: number, customerRequest
   console.log(`[Reminders] Cancelled all pending reminders for request ${customerRequestId}`);
 }
 
+/** Cancel pending rows for reminder stages the user has switched off. */
+export async function syncPendingReminderStages(
+  userId: number,
+  settings: ReminderStageSettings
+) {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  if (settings.followUpEnabled === 0) {
+    await db
+      .update(followUpReminders)
+      .set({ status: "cancelled" })
+      .where(and(eq(followUpReminders.userId, userId), eq(followUpReminders.status, "pending")));
+    return;
+  }
+
+  const disabledSteps = [
+    settings.followUpFirstEnabled === 0 ? 1 : null,
+    settings.followUpSecondEnabled === 0 ? 2 : null,
+  ].filter((step): step is number => step !== null);
+
+  for (const step of disabledSteps) {
+    await db
+      .update(followUpReminders)
+      .set({ status: "cancelled" })
+      .where(
+        and(
+          eq(followUpReminders.userId, userId),
+          eq(followUpReminders.status, "pending"),
+          eq(followUpReminders.sequenceStep, step)
+        )
+      );
+  }
+}
+
 /** Build the email subject line based on sequence step */
 function getReminderSubject(step: number): string {
   if (step === 2) {
@@ -140,52 +218,87 @@ function getReminderBody(
  * Process all due pending reminders — called by the background scheduler.
  */
 export async function processDueReminders() {
-  const db = await getDb();
-  if (!db) return;
+  const summary = { checked: 0, sent: 0, cancelled: 0, failed: 0, locked: 0 };
+  try {
+    const db = await getDb();
+    if (!db) return summary;
 
-  const now = Date.now();
-  const due = await db
-    .select()
-    .from(followUpReminders)
-    .where(
-      and(
-        eq(followUpReminders.status, "pending"),
-        lte(followUpReminders.scheduledAt, now)
-      )
-    );
+    const now = Date.now();
+    const due = await db
+      .select()
+      .from(followUpReminders)
+      .where(
+        and(
+          eq(followUpReminders.status, "pending"),
+          lte(followUpReminders.scheduledAt, now)
+        )
+      );
 
-  for (const reminder of due) {
-    try {
-      const [profile] = await db
-        .select()
-        .from(businessProfiles)
-        .where(eq(businessProfiles.userId, reminder.userId));
-      if (!profile) continue;
+    for (const reminder of due) {
+      summary.checked += 1;
+      try {
+        const claimResult = await db
+          .update(followUpReminders)
+          .set({ scheduledAt: now + CLAIM_WINDOW_MS })
+          .where(
+            and(
+              eq(followUpReminders.id, reminder.id),
+              eq(followUpReminders.status, "pending"),
+              lte(followUpReminders.scheduledAt, now)
+            )
+          );
+        if (getAffectedRows(claimResult) !== 1) {
+          summary.locked += 1;
+          continue;
+        }
 
-      const defaultPlatform = await getDefaultReviewPlatform(reminder.userId);
-      const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
-      const trackingToken = encodeTrackingToken(reminder.customerRequestId, reminder.userId, null);
-      const baseUrl = process.env.APP_BASE_URL ?? "https://getphame.app";
-      const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
-      const openPixel = buildOpenPixel(trackingToken, baseUrl);
+        const [profile] = await db
+          .select()
+          .from(businessProfiles)
+          .where(eq(businessProfiles.userId, reminder.userId));
+        if (!profile) {
+          await db.update(followUpReminders).set({ status: "cancelled" }).where(eq(followUpReminders.id, reminder.id));
+          summary.cancelled += 1;
+          continue;
+        }
 
-      const step = reminder.sequenceStep ?? 1;
-      const subject = getReminderSubject(step);
-      const showPoweredBy = !profile.tier || profile.tier === 'free';
-      const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel, showPoweredBy);
+        const step = reminder.sequenceStep ?? 1;
+        if (!isStageEnabled(profile, step)) {
+          await db.update(followUpReminders).set({ status: "cancelled" }).where(eq(followUpReminders.id, reminder.id));
+          summary.cancelled += 1;
+          continue;
+        }
 
-      await sendMailViaSmtp({ userId: reminder.userId, to: reminder.customerEmail, subject, html });
+        const defaultPlatform = await getDefaultReviewPlatform(reminder.userId);
+        const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
+        const trackingToken = encodeTrackingToken(reminder.customerRequestId, reminder.userId, null);
+        const baseUrl = process.env.APP_BASE_URL ?? "https://getphame.app";
+        const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
+        const openPixel = buildOpenPixel(trackingToken, baseUrl);
 
-      await db
-        .update(followUpReminders)
-        .set({ status: "sent", sentAt: Date.now() })
-        .where(eq(followUpReminders.id, reminder.id));
+        const subject = getReminderSubject(step);
+        const showPoweredBy = !profile.tier || profile.tier === 'free';
+        const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel, showPoweredBy);
 
-      console.log(`[Reminders] Step ${step} follow-up sent to ${reminder.customerEmail}`);
-    } catch (err) {
-      console.error(`[Reminders] Failed to send follow-up for reminder ${reminder.id}:`, err);
+        await sendMailViaSmtp({ userId: reminder.userId, to: reminder.customerEmail, subject, html });
+
+        await db
+          .update(followUpReminders)
+          .set({ status: "sent", sentAt: Date.now() })
+          .where(eq(followUpReminders.id, reminder.id));
+
+        summary.sent += 1;
+        console.log(`[Reminders] Step ${step} follow-up sent for reminder ${reminder.id}`);
+      } catch (err) {
+        summary.failed += 1;
+        console.error(`[Reminders] Failed to send follow-up for reminder ${reminder.id}:`, err);
+      }
     }
+  } catch (err) {
+    // Swallow DB connection errors (e.g. SSL timeout) so the server process stays alive
+    console.error("[Reminders] processDueReminders failed (will retry next interval):", err instanceof Error ? err.message : err);
   }
+  return summary;
 }
 
 /**
@@ -208,6 +321,11 @@ export async function sendReminderNow(userId: number, reminderId: number) {
     .where(eq(businessProfiles.userId, userId));
   if (!profile) throw new Error("Business profile not found.");
 
+  const step = reminder.sequenceStep ?? 1;
+  if (!isStageEnabled(profile, step)) {
+    throw new Error("This reminder stage is disabled in Settings.");
+  }
+
   const defaultPlatform = await getDefaultReviewPlatform(userId);
   const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
   const trackingToken = encodeTrackingToken(reminder.customerRequestId, userId, null);
@@ -215,7 +333,6 @@ export async function sendReminderNow(userId: number, reminderId: number) {
   const trackedReviewUrl = wrapClickUrl(reviewUrl, trackingToken, baseUrl);
   const openPixel = buildOpenPixel(trackingToken, baseUrl);
 
-  const step = reminder.sequenceStep ?? 1;
   const subject = getReminderSubject(step);
   const showPoweredBy = !profile.tier || profile.tier === 'free';
   const html = getReminderBody(step, reminder.customerName, profile.businessName ?? "Us", trackedReviewUrl, reviewUrl, openPixel, showPoweredBy);
@@ -236,13 +353,4 @@ export async function getReminderPreviewHtml(userId: number, step: number): Prom
   const businessName = profile?.businessName ?? "Your Business";
   const reviewUrl = "https://g.page/r/example-preview";
   return getReminderBody(step, "Alex Johnson", businessName, reviewUrl, reviewUrl, "");
-}
-
-/**
- * Start the background scheduler — runs every hour.
- */
-export function startReminderScheduler() {
-  console.log("[Reminders] Scheduler started — checking every hour.");
-  processDueReminders(); // Run immediately on startup
-  setInterval(processDueReminders, 60 * 60 * 1000);
 }
