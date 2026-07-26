@@ -6,7 +6,7 @@ import { setLanguage, getSavedLang, type SupportedLang } from "@/lib/i18n";
 import i18n from "@/lib/i18n";
 
 // Official horizontal logo: gold P mark + GetPhame wordmark
-const LOGO_URL = "/manus-storage/getphame-primary-horizontal-logo2_7f1d75d9.png";
+const LOGO_URL = "/manus-storage/getphame-horizontal-logo-tight_c3a25069.png";
 
 const LANGS: { code: SupportedLang; label: string }[] = [
   { code: "en",    label: "EN" },
@@ -64,7 +64,7 @@ export default function Navbar() {
       <nav className="container flex items-center justify-between h-16 lg:h-[4.5rem]">
         {/* Logo — prominent brand mark */}
         <a href="/" className="flex items-center gap-2.5 group">
-          <img src={LOGO_URL} alt="Get Phame" className="h-9 lg:h-10 w-auto transition-transform duration-200 group-hover:scale-105" style={{ maxWidth: "180px" }} />
+          <img src={LOGO_URL} alt="Get Phame" className="h-7 lg:h-8 w-auto transition-transform duration-200 group-hover:scale-105" style={{ maxWidth: "240px", minWidth: "140px" }} />
         </a>
 
         {/* Desktop Nav */}

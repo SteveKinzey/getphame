@@ -525,7 +525,7 @@ export default function HomePage() {
             <div className="flex items-center">
               <div className="flex items-center gap-2">
                 <img src={LOGO_URL} alt="Get Phame" className="w-7 h-7 rounded-lg" loading="lazy" decoding="async" />
-                <img src="/manus-storage/getphame-primary-horizontal-logo2_7f1d75d9.png" alt="Get Phame" className="h-6 w-auto" loading="lazy" decoding="async" style={{ maxWidth: "130px" }} />
+                <img src="/manus-storage/getphame-horizontal-logo-tight_c3a25069.png" alt="Get Phame" className="h-6 w-auto" loading="lazy" decoding="async" style={{ maxWidth: "130px" }} />
               </div>
             </div>
             <div className="flex items-center gap-2">

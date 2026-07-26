@@ -42,7 +42,7 @@ export default function ReferralLanding() {
       {/* Logo */}
       <div className="mb-8">
         <div className="flex items-center gap-2">
-          <img src="/manus-storage/getphame-primary-horizontal-logo2_7f1d75d9.png" alt="Get Phame" className="h-8 w-auto" loading="eager" decoding="async" style={{ maxWidth: "180px" }} />
+          <img src="/manus-storage/getphame-horizontal-logo-tight_c3a25069.png" alt="Get Phame" className="h-8 w-auto" loading="eager" decoding="async" style={{ maxWidth: "180px" }} />
         </div>
       </div>
 

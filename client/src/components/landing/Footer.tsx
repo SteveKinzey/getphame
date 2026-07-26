@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 
 // Official horizontal logo for footer
-const LOGO_URL = "/manus-storage/getphame-primary-horizontal-logo2_7f1d75d9.png";
+const LOGO_URL = "/manus-storage/getphame-horizontal-logo-tight_c3a25069.png";
 export default function Footer() {
   const { t } = useTranslation();
 

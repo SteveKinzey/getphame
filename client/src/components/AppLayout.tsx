@@ -14,7 +14,7 @@ import LanguageFlyout from "@/components/LanguageFlyout";
 // App icon: dark navy rounded square with gold P + white star (sidebar icon)
 const LOGO_URL = "/manus-storage/getphame-app-icon-dark_8bb8cc54.png";
 // Horizontal logo for sidebar wordmark on desktop
-const HORIZONTAL_LOGO_URL = "/manus-storage/getphame-primary-horizontal-logo2_7f1d75d9.png";
+const HORIZONTAL_LOGO_URL = "/manus-storage/getphame-horizontal-logo-tight_c3a25069.png";
 
 interface AppLayoutProps {
   children: ReactNode;

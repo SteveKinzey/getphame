@@ -8,7 +8,8 @@ import { motion } from "framer-motion";
 import SEOHead from "@/components/landing/SEOHead";
 
 // Official horizontal logo for onboarding header
-const LOGO_URL = "/manus-storage/getphame-primary-horizontal-logo2_7f1d75d9.png";
+// Stacked logo for onboarding (P mark above wordmark — better for centered vertical layout)
+const LOGO_URL = "/manus-storage/getphame-stacked-logo-tight_53934443.png";
 
 type MagicLinkState = "idle" | "loading" | "sent" | "error";
 
@@ -64,7 +65,7 @@ export default function OnboardingPage() {
       {/* Top bar */}
       <header className="w-full py-4 px-6 flex items-center justify-between z-10 relative">
         <a href="/" className="flex items-center gap-2.5 group">
-          <img src={LOGO_URL} alt="Get Phame" className="h-9 w-auto transition-transform duration-200 group-hover:scale-105" style={{ maxWidth: "180px" }} />
+          <img src={LOGO_URL} alt="Get Phame" className="h-10 w-auto transition-transform duration-200 group-hover:scale-105" style={{ maxWidth: "100px" }} />
         </a>
       </header>
 
