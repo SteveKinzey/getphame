@@ -15,6 +15,7 @@ import {
   RefreshCw,
   Infinity,
 } from "lucide-react";
+import { Clock, Calendar, Zap } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -26,6 +27,8 @@ export default function AdminCodesPage() {
   const [maxUses, setMaxUses] = useState<string>("");
   const [customCode, setCustomCode] = useState("");
   const [expiryDays, setExpiryDays] = useState<string>("");
+  const [durationType, setDurationType] = useState<"days" | "months" | "lifetime">("lifetime");
+  const [durationAmount, setDurationAmount] = useState<string>("1");
 
   const { data: codes, isLoading: codesLoading, refetch } = trpc.accessCodes.list.useQuery(
     undefined,
@@ -39,13 +42,14 @@ export default function AdminCodesPage() {
 
   const utils = trpc.useUtils();
 
-  const createCode = trpc.accessCodes.create.useMutation({
+  const createCoupon = trpc.accessCodes.createCoupon.useMutation({
     onSuccess: ({ code }) => {
       toast.success(`Code created: ${code}`);
       setNote("");
       setMaxUses("");
       setCustomCode("");
       setExpiryDays("");
+      setDurationAmount("1");
       utils.accessCodes.list.invalidate();
       refreshPreview();
     },
@@ -73,11 +77,13 @@ export default function AdminCodesPage() {
     const parsedExpiry = expiryDays.trim()
       ? Date.now() + parseInt(expiryDays, 10) * 24 * 60 * 60 * 1000
       : null;
-    createCode.mutate({
+    createCoupon.mutate({
       code: customCode.trim() || undefined,
       note: note.trim() || undefined,
       maxUses: parsedMaxUses,
       expiresAt: parsedExpiry,
+      grantDurationType: durationType,
+      grantAmount: durationType !== "lifetime" ? (parseInt(durationAmount, 10) || 1) : null,
     });
   }
 
@@ -202,6 +208,38 @@ export default function AdminCodesPage() {
               />
             </div>
 
+            {/* Grant duration */}
+            <div>
+              <label className="text-sm font-bold mb-2 block text-white/80">Grant duration</label>
+              <div className="flex gap-2 mb-2">
+                {(["days", "months", "lifetime"] as const).map((dt) => (
+                  <button
+                    key={dt}
+                    onClick={() => setDurationType(dt)}
+                    className="flex-1 py-2 rounded-xl text-xs font-bold transition-all capitalize"
+                    style={{
+                      background: durationType === dt ? "oklch(0.80 0.18 80)" : "oklch(0.22 0.09 260)",
+                      color: durationType === dt ? "oklch(0.15 0.05 260)" : "var(--text-on-dark-secondary)",
+                      border: durationType === dt ? "none" : "1px solid rgba(255,255,255,0.12)",
+                    }}
+                  >
+                    {dt === "days" ? <><Clock size={10} className="inline mr-1" />Days</> : dt === "months" ? <><Calendar size={10} className="inline mr-1" />Months</> : <><Zap size={10} className="inline mr-1" />Lifetime</>}
+                  </button>
+                ))}
+              </div>
+              {durationType !== "lifetime" && (
+                <input
+                  type="number"
+                  min={1}
+                  value={durationAmount}
+                  onChange={(e) => setDurationAmount(e.target.value)}
+                  placeholder={durationType === "days" ? "e.g. 30" : "e.g. 3"}
+                  className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white"
+                  style={{ border: "1px solid rgba(255,255,255,0.15)" }}
+                />
+              )}
+            </div>
+
             <div className="flex gap-3">
               {/* Max uses */}
               <div className="flex-1">
@@ -236,11 +274,11 @@ export default function AdminCodesPage() {
 
             <button
               onClick={handleCreate}
-              disabled={createCode.isPending}
+              disabled={createCoupon.isPending}
               className="w-full py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition-transform active:scale-95 disabled:opacity-60 rr-bg-gold rr-text-navy"
             >
-              {createCode.isPending ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
-              {createCode.isPending ? "Creating..." : "Create Code"}
+              {createCoupon.isPending ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+              {createCoupon.isPending ? "Creating..." : durationType === "lifetime" ? "Create Lifetime Code" : `Create ${durationAmount || "?"} ${durationType} Code`}
             </button>
           </div>
         </div>
@@ -332,6 +370,22 @@ export default function AdminCodesPage() {
                             </span>
                           )}
                           <span>Created {new Date(c.createdAt).toLocaleDateString()}</span>
+                        </div>
+                        {/* Grant duration badge */}
+                        <div className="mt-1.5">
+                          {c.grantDurationType === "lifetime" ? (
+                            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: "oklch(0.30 0.12 80)", color: "oklch(0.85 0.18 80)" }}>
+                              <Zap size={10} />Lifetime access
+                            </span>
+                          ) : c.grantDurationType === "months" ? (
+                            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: "oklch(0.28 0.10 260)", color: "oklch(0.75 0.12 200)" }}>
+                              <Calendar size={10} />{c.grantAmount ?? "?"} month{(c.grantAmount ?? 1) !== 1 ? "s" : ""} Pro
+                            </span>
+                          ) : c.grantDurationType === "days" ? (
+                            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: "oklch(0.28 0.10 260)", color: "oklch(0.75 0.12 200)" }}>
+                              <Clock size={10} />{c.grantAmount ?? "?"} day{(c.grantAmount ?? 1) !== 1 ? "s" : ""} Pro
+                            </span>
+                          ) : null}
                         </div>
                       </div>
 

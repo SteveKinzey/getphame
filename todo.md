@@ -1758,3 +1758,11 @@
 - [x] Create admin-subscription-management reusable skill (covers coupon generation + revoke access patterns)
 - [x] Update NEXT_STEPS.md with completed items and remaining tasks
 - [x] Save publishable checkpoint and push to GitHub
+
+## Coupon Redemption + WhatsNew Jul 25 + AdminCodes Badges (Jul 25 cont.)
+- [x] Verify coupon redemption input already exists on Upgrade page (Ticket icon + Unlock button + trpc.accessCodes.redeem)
+- [x] Add Jul 25 WhatsNewModal entries: Coupon code generation + Revoke user access
+- [x] Add grantDurationType/grantAmount duration badges to AdminCodes code list rows
+- [x] Add duration pill selector (Days/Months/Lifetime) to AdminCodes create form
+- [x] Switch AdminCodes create form to use trpc.accessCodes.createCoupon (duration-aware)
+- [x] Update admin-subscription-management skill with redemption UI pattern and AdminCodes badges section
