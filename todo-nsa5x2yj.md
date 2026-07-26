@@ -178,3 +178,63 @@
 - [x] Run the repository’s required test, TypeScript, audit, build, and GitHub Actions checks against the reconciliation branch; fix only verified release blockers.
 - [x] Open or update a pull request, merge the validated reconciliation into `main` when checks and repository permissions allow, and confirm the remote default branch contains the released app code.
 - [x] Document and enforce a checkpoint-to-GitHub release policy so every future validated Get Phame release is committed, pushed, reviewed, and merged instead of remaining only in the managed project history.
+
+- [x] Read and decompose the supplied Get Phame domain-model architecture audit into individually verifiable claims and recommendations.
+- [x] Inventory the current Get Phame schema, database helpers, server routers, service modules, application routes, background jobs, integrations, and deployment boundaries without changing implementation.
+- [x] Trace every material audit claim to current file-level evidence and classify it as confirmed, partially confirmed, outdated, incorrect, or not evidenced.
+- [x] Assess each confirmed or partial issue for customer impact, operational risk, data-migration risk, security/compliance relevance, dependency order, and implementation complexity.
+- [x] Produce a current-state architecture report with an executive summary, evidence matrix, corrected domain model, prioritized recommendations, phased implementation options, and explicit non-goals.
+- [x] Deliver the report for user review and approval before making any application-code, database-schema, configuration, production, or GitHub changes.
+- [x] Trace the current Stripe-to-Saved-Contacts procedure, UI trigger, schema fields, credentials, filters, pagination, deduplication, and ownership behavior without modifying implementation.
+- [x] Recover the feature's original design intent from source history, commit diffs, pull requests, documentation, tests, and customer-facing copy.
+- [x] Determine whether the queried Stripe account is Get Phame's billing account or a Business-owned Stripe account, and distinguish intended behavior from actual behavior.
+- [x] Answer all eight Stripe architecture questions with current-code and historical evidence, correcting the audit recommendation if its wording overstated or mischaracterized the feature.
+- [x] Deliver the Stripe design-intent review before approving removal, redesign, or any implementation change.
+- [x] Define reusable trigger conditions, representative scenarios, evidence hierarchy, decision rules, and output requirements for integration design-intent audits.
+- [x] Initialize a new reusable skill package using the required skill-creator workflow.
+- [x] Author a concise core workflow plus reusable evidence checklist, decision matrix, and approval-report template.
+- [x] Validate the skill structure and test representative correct, miswired, and ambiguous integration scenarios.
+- [x] Deliver the installable skill package without changing the Get Phame application or releasing a checkpoint.
+- [x] Present the integration-design-intent-auditor evidence checklist in a readable, reusable format.
+- [x] Explain the skill's four-outcome architecture decision framework, high-risk indicators, containment boundary, and option-comparison method.
+- [x] Confirm the provider, feature, repository or code location, and decision concern for the new integration report.
+- [x] Apply the integration-design-intent-auditor workflow to the selected integration and generate the approval-ready report.
+- [x] Deliver the report and supporting evidence without implementing changes unless separately approved.
+- [x] Define the strict separation between Get Phame subscription billing and Business-owned payment-processor customer imports.
+- [x] Design a provider-neutral connector model for successful-purchase events, contact provenance, deduplication, consent, and disconnect handling.
+- [x] Require every processor connection to belong to the signed-in Business, support provider-specific OAuth or restricted credentials, and prevent reuse of Get Phame billing credentials.
+- [x] Define a common adapter contract so Stripe, Square, PayPal, Shopify payments, and future processors can normalize successful purchase events without provider logic leaking into review workflows.
+- [x] Recommend the first payment-processor connector and phased implementation sequence based on customer value, security, and support burden.
+- [x] Correct the Stripe audit recommendation so the customer-import capability is retained while the global platform-account query is replaced.
+- [x] Define and initialize a reusable multi-provider payment-processor customer-import architecture skill using the skill-creator workflow.
+- [x] Author and validate the skill's provider-adapter workflow, domain-model checklist, security controls, rollout matrix, and architecture-report template.
+- [x] Produce a concise citation-linked summary of the payment-processor connector source notes.
+- [x] Write a presenter-ready script for the Get Phame Multi-Processor Customer Import Architecture report.
+- [x] Collect the official Get Phame P/star mark and brand guidance for presentation use.
+- [x] Create a concise branded architecture slide deck from the approved report using verified facts only.
+- [x] Add speaker notes, validate all slides, present the finished deck, and deliver the skill, summary, and script.
+- [x] Close the prior architecture-deck logo-correction workstream as superseded by the user-approved HeyGen customer-acquisition presentation direction; preserve the existing architecture deck without releasing it as the new marketing deliverable.
+- [x] Confirm the current Get Phame offer, customer-facing feature claims, trial path, compliance boundaries, and conversion narrative from approved product sources without fabricating reviews, ratings, testimonials, or outcomes.
+- [x] Map the user-supplied current P-and-four-point-sparkle logo variants, approved product screenshots, and dark-background brand assets to avatar-safe slide zones.
+- [x] Build a concise HeyGen-ready customer-acquisition deck for interested business owners, with one conversion idea per slide and exact supplied logo assets overlaid rather than generated.
+- [x] Write a scene-matched HeyGen avatar script with natural spoken pacing, visual cues, estimated timing, and a direct low-friction call to try Get Phame.
+- [x] Validate the final deck at 1280×720 for brand fidelity, avatar-safe composition, readability, claim accuracy, timing, and conversion flow.
+- [x] Present the completed deck and deliver the HeyGen production script plus asset-use instructions.
+- [x] Diagnose why the presented slide renderer shows the generated top-left placeholder rectangle instead of the finalized official logo overlay: each slide HTML still references the original remote generated image, so local post-processing never reached the rendered deck.
+- [x] Prepare the exact user-supplied `/home/ubuntu/upload/getphame-primary-horizontal-logo2.png` for proportional transparent compositing on the blue/navy slide background without substituting, redrawing, recoloring, or recreating the logo.
+- [x] Place that exact primary horizontal logo directly on every blue/navy slide background, remove every surrounding box, border, plate, and empty placeholder, then bind the actual presentation renderer to the flattened corrected frames.
+- [x] Verify all nine slides in the actual presentation renderer, not only the exported HeyGen PNGs, for the correct primary horizontal logo and zero empty placeholder rectangles.
+- [x] Re-present the corrected deck and rebuild the HeyGen delivery package from the same verified frames.
+- [x] Define the reusable triggers, scope boundaries, required inputs, outputs, failure modes, and bundled resources for a Get Phame HeyGen acquisition-deck skill.
+- [x] Initialize a new skill with the official skill-creator scaffold and remove unused example resources.
+- [x] Write a concise SKILL.md covering sourced conversion narrative, avatar-safe slide generation, exact-logo compositing, renderer-safe rebinding, scene script creation, QA, and packaging.
+- [x] Bundle deterministic utilities for alpha-safe logo preparation, slide-frame correction, contact-sheet generation, and delivery validation without embedding brand assets.
+- [x] Add focused reference material for Get Phame safeguards, slide-renderer pitfalls, and HeyGen handoff requirements without duplicating SKILL.md.
+- [x] Test representative utilities and run the official skill validator; logo preparation, compositing, contact-sheet generation, delivery validation, and skill package validation all passed.
+- [x] Deliver the validated installable skill package with concise trigger and usage guidance.
+- [x] Audit `SteveKinzey/getphame` repository metadata, default branch, remotes, protections, open pull requests, workflow checks, and local versus remote branch inventory.
+- [x] Calculate each branch’s merge status, ahead/behind counts, last activity, open-PR association, unique commits, and ancestry preservation relative to `main`.
+- [x] Classify four branches as safe redundant deletion candidates and preserve `consolidation/push-safe` because it contains unique unreleased Mailjet, WooCommerce entitlement, and chatbot work.
+- [x] Verify remote `main` is already up to date: its tree exactly matches managed checkpoint `536d3dc2`, so no redundant release branch or pull request is required.
+- [x] Delete four confirmed redundant remote branches, prune tracking references, and preserve `consolidation/push-safe` because it contains unique unreleased work.
+- [x] Verify the final remote `main` SHA and tree parity, remaining branch inventory, zero open pull requests, required protected-main check, deleted-commit preservation, and automatic merged-branch cleanup.
