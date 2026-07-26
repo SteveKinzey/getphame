@@ -37,7 +37,7 @@ export const stripe: Stripe = new Proxy({} as Stripe, {
 export const STRIPE_PRICE_IDS = {
   monthly:  "price_1TOTkwLryXlEZmjywwPjXYRn",
   annual:   "price_1TOTnALryXlEZmjy8JdDiu3P",
-  lifetime: "price_1TqgstLryXlEZmjyrabUcDFl", // $349 one-time — ⚠️ UPDATE THIS PRICE ID IN STRIPE DASHBOARD to a new $349 price
+  lifetime: "price_1TxKeNLryXlEZmjyp1pNaHGO", // $349 one-time
 } as const;
 
 export type StripePlan = keyof typeof STRIPE_PRICE_IDS;
