@@ -345,7 +345,7 @@
 - [x] Reorder the login page so Magic Link is the first choice, Google and Apple are the second choice, and Passkey is the third choice, while preserving every existing authentication and guided-enrollment flow.
 - [x] Add focused regressions for the visual and DOM order, keyboard sequence, localized separators and copy, and the unenrolled-passkey Add a Passkey module handoff.
 - [x] Run focused and complete Vitest, TypeScript, production audit/build, plus mobile and desktop verification in representative locales.
-- [ ] Save the validated checkpoint, auto-publish it, synchronize the exact tree through a history-preserving protected-main pull request, and verify remote `main` tree parity.
+- [x] Save the validated checkpoint, auto-publish it, synchronize the exact tree through a history-preserving protected-main pull request, and verify remote `main` tree parity. Completed through PR #36; merge commit `2121c597695235375419a8075cb9f1a604f1d6e4` and checkpoint `fa5e3dd4` share tree `2b245ee031b9dc2cc9aed2b7fd54041f87c6da91`.
 - [x] Simplify the reordered login JSX so the localized passkey divider renders once after the optional social section instead of being duplicated across conditional branches.
 - [x] Rename the focused login-order regression so its title accurately describes source/DOM-order and autofocus contracts without overstating browser-level keyboard coverage.
 - [x] Replace the passkey catch-all error’s positional “email link below” wording with location-independent localized guidance, synchronize all maintained locale/runtime resources, and add focused coverage.
