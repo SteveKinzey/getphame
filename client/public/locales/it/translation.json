@@ -153,19 +153,19 @@
     "a3": "Sì. Ricevi 10 richieste di recensione iniziali, poi 5 richieste ogni 30 giorni mobili. Non serve una carta di credito.",
     "q4": "Posso importare la mia lista clienti?",
     "a4": "Sì. Carica un file CSV con i nomi e gli indirizzi email dei tuoi clienti, o sincronizza direttamente da WooCommerce se gestisci un negozio online.",
-    "q5": "Does Get Phame store my email password?",
-    "a5": "Never. Get Phame uses your own SMTP credentials (or Gmail app password) to send emails directly from your account. Your password is encrypted at rest and never shared or stored in plain text. You can disconnect at any time from Settings.",
-    "q6": "Will my emails land in spam?",
+    "q5": "Get Phame memorizza la password della mia email?",
+    "a5": "Mai. Get Phame utilizza le tue credenziali SMTP (o la password per app Gmail) per inviare le email direttamente dal tuo account. La password è crittografata a riposo e non viene mai condivisa o memorizzata in chiaro. Puoi disconnetterti in qualsiasi momento dalle Impostazioni.",
+    "q6": "Le mie email finiranno nello spam?",
     "a6": "Because emails are sent from your own email address — not a generic sender — they land in the primary inbox far more reliably than bulk marketing tools. Your domain reputation stays intact.",
-    "q7": "What happens to my customer list?",
-    "a7": "Your customer data stays private. It is stored securely in your account and is never sold, shared, or used for any purpose other than sending your review requests. You can delete contacts at any time.",
-    "q8": "Can customers opt out?",
-    "a8": "Yes. Every review request email includes an unsubscribe link. Customers who opt out are automatically excluded from future sends.",
-    "q9": "Do I need technical skills to connect my email?",
+    "q7": "Cosa succede alla mia lista clienti?",
+    "a7": "I dati dei tuoi clienti restano privati. Sono memorizzati in modo sicuro nel tuo account e non vengono mai venduti, condivisi o usati per scopi diversi dall'invio delle tue richieste di recensione. Puoi eliminare i contatti in qualsiasi momento.",
+    "q8": "I clienti possono disiscriversi?",
+    "a8": "Sì. Ogni email di richiesta di recensione include un link per annullare l'iscrizione. I clienti che scelgono di disiscriversi vengono automaticamente esclusi dagli invii futuri.",
+    "q9": "Servono competenze tecniche per collegare la mia email?",
     "a9": "No. Per Gmail e Outlook forniamo guide passo passo con schermate. Per un SMTP personalizzato servono indirizzo del server, porta e credenziali fornite dal provider.",
-    "q10": "Which review platforms does it support?",
-    "a10": "Google, Yelp, TripAdvisor, Facebook, Bing, and any custom URL. You can add multiple platforms and choose which one to include in each send.",
-    "q11": "How does WooCommerce sync work?",
+    "q10": "Quali piattaforme di recensioni supporta?",
+    "a10": "Google, Yelp, TripAdvisor, Facebook, Bing e qualsiasi URL personalizzato. Puoi aggiungere più piattaforme e scegliere quale includere in ogni invio.",
+    "q11": "Come funziona la sincronizzazione con WooCommerce?",
     "a11": "Il connettore WooCommerce è disponibile solo con i piani a pagamento. Gli utenti a pagamento installano il plugin WooCommerce di Get Phame, inseriscono la chiave API e i nuovi clienti vengono importati automaticamente dopo ogni ordine completato. Puoi impostare un ritardo, ad esempio 7 giorni dopo l'acquisto, prima che appaiano nella coda di invio.",
     "q12": "What does unlimited mean on the Pro plan?",
     "a12": "Illimitato significa nessun limite mensile alle richieste. Il piano Gratuito include 10 richieste iniziali, poi 5 ogni 30 giorni mobili. Pro rimuove questo limite del prodotto."
@@ -1522,7 +1522,7 @@
     "goToSettings": "Vai alle Impostazioni"
   },
   "page": {
-    "title": "Invia Richiesta",
+    "title": "Impostazioni",
     "subtitle": "Invia una richiesta di recensione personalizzata a un cliente.",
     "breadcrumb": "Invia Richiesta",
     "freeInitialRemaining": "Piano gratuito: restano {{remaining}} delle 10 richieste iniziali, poi 5 ogni 30 giorni mobili",
@@ -1574,7 +1574,7 @@
     "cancel": "Annulla"
   },
   "deleteAccount": {
-    "title": "Elimina Account",
+    "title": "Eliminare il tuo account?",
     "subtitle": "Questa azione è permanente e non può essere annullata.",
     "confirmText": "Digita DELETE per confermare",
     "confirmPlaceholder": "DELETE",
@@ -2293,18 +2293,18 @@
     "caption": "Inizia gratis — nessuna carta di credito richiesta"
   },
   "trust": {
-    "encryptedPassword": "Password encrypted at rest",
-    "dataPrivacy": "Your customer list stays private",
-    "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
-    "unsubscribe": "Unsubscribe link in every email"
+    "encryptedPassword": "Password crittografata a riposo",
+    "dataPrivacy": "La tua lista clienti rimane privata",
+    "emailProviders": "Funziona con Gmail, Outlook, Yahoo e altri",
+    "unsubscribe": "Link di cancellazione in ogni email"
   },
   "demo": {
     "sectionTitle": "See It In Action",
     "sectionSubtitle": "Scopri il flusso di invio in tre passaggi.",
-    "gifAlt": "Get Phame 3-step send flow demo",
-    "gifCaption": "The 3-step send flow",
-    "emailAlt": "Example review request email on iPhone",
-    "emailCaption": "What your customer receives"
+    "gifAlt": "Demo del flusso di invio in 3 passaggi di Get Phame",
+    "gifCaption": "Il flusso di invio in 3 passaggi",
+    "emailAlt": "Esempio di email di richiesta di recensione su iPhone",
+    "emailCaption": "Cosa riceve il tuo cliente"
   },
   "paymentSuccess": {
     "confirmed": "Pagamento confermato.",

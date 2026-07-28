@@ -103,7 +103,7 @@
     "q4": "นำเข้ารายชื่อลูกค้าได้ไหม?",
     "a4": "ได้ อัปโหลดไฟล์ CSV หรือซิงค์จาก WooCommerce โดยตรง",
     "q5": "Does Get Phame store my email password?",
-    "a5": "Never. Get Phame uses your own SMTP credentials (or Gmail app password) to send emails directly from your account. Your password is encrypted at rest and never shared or stored in plain text. You can disconnect at any time from Settings.",
+    "a5": "ไม่เลย Get Phame ใช้ข้อมูลรับรอง SMTP ของคุณ (หรือรหัสผ่านแอปของ Gmail) เพื่อส่งอีเมลโดยตรงจากบัญชีของคุณ รหัสผ่านจะถูกเข้ารหัสขณะเก็บข้อมูลและจะไม่ถูกแชร์หรือเก็บเป็นข้อความธรรมดา คุณสามารถตัดการเชื่อมต่อได้ทุกเมื่อจากการตั้งค่า",
     "q6": "Will my emails land in spam?",
     "a6": "Because emails are sent from your own email address — not a generic sender — they land in the primary inbox far more reliably than bulk marketing tools. Your domain reputation stays intact.",
     "q7": "What happens to my customer list?",
@@ -112,10 +112,10 @@
     "a8": "Yes. Every review request email includes an unsubscribe link. Customers who opt out are automatically excluded from future sends.",
     "q9": "Do I need technical skills to connect my email?",
     "a9": "ไม่จำเป็น สำหรับ Gmail และ Outlook เรามีคู่มือทีละขั้นพร้อมภาพหน้าจอ ส่วน SMTP แบบกำหนดเองต้องใช้ที่อยู่เซิร์ฟเวอร์ พอร์ต และข้อมูลรับรองจากผู้ให้บริการ",
-    "q10": "Which review platforms does it support?",
+    "q10": "รองรับแพลตฟอร์มรีวิวใดบ้าง?",
     "a10": "Google, Yelp, TripAdvisor, Facebook, Bing, and any custom URL. You can add multiple platforms and choose which one to include in each send.",
-    "q11": "How does WooCommerce sync work?",
-    "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
+    "q11": "การซิงก์กับ WooCommerce ทำงานอย่างไร?",
+    "a11": "เชื่อมต่อร้าน WooCommerce ของคุณด้วย API key แล้ว Get Phame จะนำเข้าคำสั่งซื้อที่เสร็จสมบูรณ์โดยอัตโนมัติ คุณสามารถซิงก์ลูกค้าในช่วง 30, 60 หรือ 90 วันที่ผ่านมา และส่งคำขอรีวิวเป็นกลุ่มได้ด้วยคลิกเดียว",
     "q12": "What does unlimited mean on the Pro plan?",
     "a12": "ไม่จำกัดหมายถึงไม่มีเพดานคำขอรายเดือน แผนฟรีมี 10 ครั้งแรก จากนั้น 5 ครั้งทุกช่วง 30 วัน ส่วน Pro จะยกเลิกขีดจำกัดของผลิตภัณฑ์นี้"
   },
@@ -1643,18 +1643,18 @@
     "caption": "เริ่มต้นฟรี — ไม่ต้องใช้บัตรเครดิต"
   },
   "trust": {
-    "encryptedPassword": "Password encrypted at rest",
-    "dataPrivacy": "Your customer list stays private",
-    "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
-    "unsubscribe": "Unsubscribe link in every email"
+    "encryptedPassword": "รหัสผ่านถูกเข้ารหัสขณะเก็บข้อมูล",
+    "dataPrivacy": "รายชื่อลูกค้าของคุณถูกเก็บเป็นส่วนตัว",
+    "emailProviders": "ใช้งานร่วมกับ Gmail, Outlook, Yahoo และอื่น ๆ",
+    "unsubscribe": "มีลิงก์ยกเลิกการรับในทุกอีเมล"
   },
   "demo": {
-    "sectionTitle": "See It In Action",
+    "sectionTitle": "ดูการใช้งานจริง",
     "sectionSubtitle": "ดูขั้นตอนการส่งสามขั้นตอน",
-    "gifAlt": "Get Phame 3-step send flow demo",
-    "gifCaption": "The 3-step send flow",
-    "emailAlt": "Example review request email on iPhone",
-    "emailCaption": "What your customer receives"
+    "gifAlt": "ตัวอย่างการส่งแบบ 3 ขั้นตอนของ Get Phame",
+    "gifCaption": "กระบวนการส่ง 3 ขั้นตอน",
+    "emailAlt": "ตัวอย่างอีเมลคำขอรีวิวบน iPhone",
+    "emailCaption": "สิ่งที่ลูกค้าของคุณได้รับ"
   },
   "upgradeFaq": {
     "title": "คำถามที่พบบ่อย",
