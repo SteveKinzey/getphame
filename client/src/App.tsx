@@ -22,6 +22,7 @@ import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, { useOnboardingGuide } from "./components/OnboardingGuide";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
 import FirstVisitWelcome from "./components/FirstVisitWelcome";
+import PremiumUpgradeModal from "./components/PremiumUpgradeModal";
 import PageLoader from "./components/PageLoader";
 import { ApiReconnectingIndicator, DashboardReadinessGate, useDashboardReadiness } from "./components/ApiRecoveryExperience";
 import { handoffGuideNavigation } from "./lib/onboardingFlow";
@@ -343,6 +344,7 @@ function AppShell() {
                 <Route path="/templates" component={EmailTemplatesPage} />
                 <Route path="/reminders" component={RemindersPage} />
                 <Route path="/import" component={ImportContactsPage} />
+                <Route path="/pricing" component={UpgradePage} />
                 <Route path="/upgrade" component={UpgradePage} />
                 <Route path="/cancel" component={ChurnSurveyPage} />
                 <Route path="/admin" component={AdminDashboardPage} />
@@ -405,6 +407,7 @@ function App() {
           <AutoTextLocalizer />
           <Toaster position="top-center" richColors />
           <AppShell />
+          <PremiumUpgradeModal />
           <FirstVisitWelcome />
           <PWAInstallPrompt />
         </TooltipProvider>

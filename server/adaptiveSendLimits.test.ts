@@ -231,7 +231,10 @@ describe("adaptive sending production contracts", () => {
     const woo = read("client/src/pages/WooCustomers.tsx");
 
     expect(component).toContain("Changing providers cannot bypass protection.");
-    expect(component).toContain('href={status.recommendedAction === "upgrade_plan" ? "/upgrade" : "/settings#bulk-sender"}');
+    expect(component).toContain('onClick={() => openUpgradeModal("bulk_sender")}');
+    expect(component).toContain('<ProBadge variant="locked" size="sm" />');
+    expect(component).toContain('href="/settings#bulk-sender"');
+    expect(component).not.toContain('href="/upgrade"');
     expect(settings).toContain("<AdaptiveSendLimitStatus status={adaptiveSendStatus}");
     expect(contacts).toContain("<AdaptiveSendLimitStatus status={dailyStatus}");
     expect(woo).toContain("<AdaptiveSendLimitStatus status={dailyStatus}");

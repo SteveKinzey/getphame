@@ -11,6 +11,8 @@ import { useHaptics } from '@/hooks/useHaptics';
 import { useAuth } from '@/_core/hooks/useAuth';
 import { trpc } from '@/lib/trpc';
 import NetworkStatusBadge from '@/components/NetworkStatusBadge';
+import ProBadge from '@/components/ProBadge';
+import { getEffectivePlan } from '@shared/plans';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,32 +28,37 @@ export default function BottomNav() {
   const { t } = useTranslation();
   const { buttonPressHaptic } = useHaptics();
   const { user, logout, loading: authLoading } = useAuth();
+  const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: !!user });
   const { data: accountProfile } = trpc.accountProfile.get.useQuery(undefined, { enabled: !!user });
   const isDark = theme === 'dark';
+  const isFreePlan = getEffectivePlan(profile?.tier, user?.role) === 'free';
   const manualLabel = user?.role === 'admin'
     ? t('nav.adminManual', { defaultValue: 'Admin Manual' })
     : t('nav.userManual', { defaultValue: 'User Manual' });
 
   const NAV_ITEMS = [
-    { path: '/', label: t('nav.home'), Icon: Home },
-    { path: '/send', label: t('nav.send'), Icon: Send },
+    { path: '/', label: t('nav.home'), Icon: Home, containsPremiumFeatures: false },
+    { path: '/send', label: t('nav.send'), Icon: Send, containsPremiumFeatures: false },
     {
       path: '/dashboard',
       label: t('nav.dashboard'),
       compactLabel: t('nav.mobileDashboard', { defaultValue: t('nav.dashboard') }),
       Icon: BarChart2,
+      containsPremiumFeatures: false,
     },
     {
       path: '/settings',
       label: t('nav.settings'),
       compactLabel: t('nav.mobileSettings', { defaultValue: t('nav.settings') }),
       Icon: Settings,
+      containsPremiumFeatures: true,
     },
     ...(user?.role === 'admin' ? [{
       path: '/admin',
       label: t('nav.admin', { defaultValue: 'Admin' }),
       compactLabel: t('nav.mobileAdmin', { defaultValue: t('nav.admin', { defaultValue: 'Admin' }) }),
       Icon: ShieldCheck,
+      containsPremiumFeatures: false,
     }] : []),
   ];
 
@@ -64,8 +71,12 @@ export default function BottomNav() {
 
       {/* Equal-width app tabs plus account menu; admins receive one extra tab. */}
       <div className="grid gap-0" style={{ gridTemplateColumns: `repeat(${NAV_ITEMS.length + 1}, minmax(0, 1fr))` }}>
-        {NAV_ITEMS.map(({ path, label, compactLabel, Icon }) => {
+        {NAV_ITEMS.map(({ path, label, compactLabel, Icon, containsPremiumFeatures }) => {
           const isActive = location === path || (path !== '/' && location.startsWith(path));
+          const showPremiumMarker = isFreePlan && containsPremiumFeatures;
+          const accessibleLabel = showPremiumMarker
+            ? `${label}. ${t('premiumConversion.marker.contains', { defaultValue: 'Contains premium features' })}`
+            : label;
           return (
             <button
               key={path}
@@ -75,7 +86,7 @@ export default function BottomNav() {
               }}
               className="nav-item group relative flex min-w-0 flex-col items-center justify-center gap-0.5 overflow-hidden px-0.5 py-2"
               style={{ minHeight: '60px' }}
-              aria-label={label}
+              aria-label={accessibleLabel}
               aria-current={isActive ? 'page' : undefined}
             >
               {/* Gold underline indicator — slides in from below when active */}
@@ -90,7 +101,7 @@ export default function BottomNav() {
 
               {/* Icon container — scales up and shows gold glow on hover */}
               <div
-                className="flex items-center justify-center rounded-full transition-all duration-200 ease-out group-hover:scale-110 group-active:scale-95"
+                className="relative flex items-center justify-center rounded-full transition-all duration-200 ease-out group-hover:scale-110 group-active:scale-95"
                 style={{
                   width: '40px',
                   height: '32px',
@@ -108,6 +119,9 @@ export default function BottomNav() {
                     color: isActive ? 'oklch(0.80 0.18 80)' : 'oklch(0.85 0.02 260)',
                   }}
                 />
+                {showPremiumMarker && (
+                  <ProBadge variant="compact" size="sm" className="absolute right-0 top-0" />
+                )}
               </div>
 
               {/* Label — lifts to gold on hover */}
@@ -190,6 +204,9 @@ export default function BottomNav() {
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   data-testid="mobile-account-details"
+                  aria-label={isFreePlan
+                    ? `${t('profileMenu.accountDetails', { defaultValue: 'Account details' })}. ${t('premiumConversion.marker.contains', { defaultValue: 'Contains premium features' })}`
+                    : t('profileMenu.accountDetails', { defaultValue: 'Account details' })}
                   onSelect={() => {
                     buttonPressHaptic();
                     navigate('/settings');
@@ -198,6 +215,7 @@ export default function BottomNav() {
                 >
                   <UserRound size={18} className="rr-text-gold" />
                   {t('profileMenu.accountDetails', { defaultValue: 'Account details' })}
+                  {isFreePlan && <ProBadge variant="compact" size="sm" className="ml-auto" />}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   data-testid="mobile-manual-link"

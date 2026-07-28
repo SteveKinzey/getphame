@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { CalendarDays, Check, Clock, Copy, Crown, Loader2, RefreshCw, Unplug } from "lucide-react";
-import { useLocation } from "wouter";
+import { CalendarDays, Check, Clock, Copy, Loader2, RefreshCw, Unplug } from "lucide-react";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { openUpgradeModal } from "@/lib/upgradeModal";
+import ProBadge from "@/components/ProBadge";
 
 type KoalendarSettingsCardProps = {
   hasPaidAccess: boolean;
@@ -26,7 +27,6 @@ function formatDate(value: number | null | undefined): string {
 }
 
 export default function KoalendarSettingsCard({ hasPaidAccess }: KoalendarSettingsCardProps) {
-  const [, navigate] = useLocation();
   const utils = trpc.useUtils();
   const [copied, setCopied] = useState(false);
   const statusQuery = trpc.koalendar.status.useQuery(undefined, {
@@ -69,9 +69,7 @@ export default function KoalendarSettingsCard({ hasPaidAccess }: KoalendarSettin
           <div>
             <div className="flex items-center gap-2">
               <h2 id="koalendar-heading" className="text-base font-black rr-text-navy">Koalendar</h2>
-              <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-black rr-bg-navy rr-text-gold">
-                <Crown size={10} aria-hidden="true" /> PRO
-              </span>
+              {!hasPaidAccess && <ProBadge variant="locked" size="sm" />}
             </div>
             <p className="text-xs rr-text-navy-muted">Import completed bookings as contacts after each meeting ends.</p>
           </div>
@@ -91,10 +89,11 @@ export default function KoalendarSettingsCard({ hasPaidAccess }: KoalendarSettin
           </p>
           <button
             type="button"
-            onClick={() => navigate("/upgrade")}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-black rr-bg-gold rr-text-navy active:scale-[0.97] transition-transform"
+            onClick={() => openUpgradeModal("koalendar")}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-black rr-bg-navy rr-text-gold active:scale-[0.97] transition-transform"
           >
-            <Crown size={15} aria-hidden="true" /> View paid plans
+            <span>View paid plans</span>
+            <ProBadge variant="locked" size="sm" />
           </button>
         </div>
       ) : statusQuery.isLoading ? (

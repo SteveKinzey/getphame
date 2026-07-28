@@ -13,6 +13,7 @@ import { ReactNode } from "react";
 import LandingBrandLink from "@/components/LandingBrandLink";
 import NetworkStatusBadge from "@/components/NetworkStatusBadge";
 import HelpAssistant from "@/components/HelpAssistant";
+import ProBadge from "@/components/ProBadge";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
 import {
   DropdownMenu,
@@ -44,16 +45,17 @@ export default function AppLayout({ children }: AppLayoutProps) {
     : t("nav.userManual", { defaultValue: "User Manual" });
 
   const NAV_ITEMS = [
-    { path: "/", label: t("nav.home"), Icon: Home },
-    { path: "/send", label: t("nav.send"), Icon: Send },
-    { path: "/dashboard", label: t("nav.dashboard"), Icon: BarChart2 },
-    { path: "/developer", label: t("nav.developer", { defaultValue: "Developer" }), Icon: Code2 },
-    { path: "/settings", label: t("nav.settings"), Icon: Settings },
-    { path: "/manual", label: manualLabel, Icon: BookOpen },
-    ...(user?.role === "admin" ? [{ path: "/admin", label: t("nav.admin", { defaultValue: "Administration" }), Icon: Users }] : []),
+    { path: "/", label: t("nav.home"), Icon: Home, containsPremiumFeatures: false },
+    { path: "/send", label: t("nav.send"), Icon: Send, containsPremiumFeatures: false },
+    { path: "/dashboard", label: t("nav.dashboard"), Icon: BarChart2, containsPremiumFeatures: false },
+    { path: "/developer", label: t("nav.developer", { defaultValue: "Developer" }), Icon: Code2, containsPremiumFeatures: true },
+    { path: "/settings", label: t("nav.settings"), Icon: Settings, containsPremiumFeatures: true },
+    { path: "/manual", label: manualLabel, Icon: BookOpen, containsPremiumFeatures: false },
+    ...(user?.role === "admin" ? [{ path: "/admin", label: t("nav.admin", { defaultValue: "Administration" }), Icon: Users, containsPremiumFeatures: false }] : []),
   ];
 
   const effectivePlan = getEffectivePlan(profile?.tier, user?.role);
+  const isFreePlan = effectivePlan === "free";
   const planLabel = PLAN_LABELS[effectivePlan];
   const isLife = effectivePlan === "life";
   const manageSubscription = canManageSubscription(effectivePlan);
@@ -113,9 +115,13 @@ export default function AppLayout({ children }: AppLayoutProps) {
             </span>
           </button>
 
-          {NAV_ITEMS.map(({ path, label, Icon }) => {
+          {NAV_ITEMS.map(({ path, label, Icon, containsPremiumFeatures }) => {
             const isActive =
               location === path || (path !== "/" && location.startsWith(path));
+            const showPremiumMarker = isFreePlan && containsPremiumFeatures;
+            const accessibleLabel = showPremiumMarker
+              ? `${label}. ${t("premiumConversion.marker.contains", { defaultValue: "Contains premium features" })}`
+              : label;
             return (
               <button
                 key={path}
@@ -123,7 +129,8 @@ export default function AppLayout({ children }: AppLayoutProps) {
                   buttonPressHaptic();
                   navigate(path);
                 }}
-                title={label}
+                title={accessibleLabel}
+                aria-label={accessibleLabel}
                 className="flex items-center justify-center lg:justify-start gap-3 px-2 lg:px-3 py-2.5 rounded-xl transition-all duration-200 group w-full text-left"
                 style={{
                   background: isActive ? "oklch(0.80 0.18 80 / 0.12)" : "transparent",
@@ -133,16 +140,21 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 }}
                 aria-current={isActive ? "page" : undefined}
               >
-                <Icon
-                  size={20}
-                  strokeWidth={isActive ? 2.5 : 1.8}
-                  className="flex-shrink-0 transition-colors duration-200"
-                  style={{
-                    color: isActive
-                      ? "oklch(0.80 0.18 80)"
-                      : "oklch(0.65 0.04 260)",
-                  }}
-                />
+                <span className="relative inline-flex shrink-0">
+                  <Icon
+                    size={20}
+                    strokeWidth={isActive ? 2.5 : 1.8}
+                    className="flex-shrink-0 transition-colors duration-200"
+                    style={{
+                      color: isActive
+                        ? "oklch(0.80 0.18 80)"
+                        : "oklch(0.65 0.04 260)",
+                    }}
+                  />
+                  {showPremiumMarker && (
+                    <ProBadge variant="compact" size="sm" className="absolute -right-2.5 -top-2.5" />
+                  )}
+                </span>
                 <span
                   className="app-sidebar-label text-sm font-semibold hidden transition-colors duration-200"
                   style={{

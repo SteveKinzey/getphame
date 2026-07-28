@@ -1971,6 +1971,7 @@
     "feature": "Funzionalità",
     "free": "Gratuito",
     "pro": "Pro",
+    "lifetime": "A vita",
     "unlimited": "Illimitato",
     "limited": "Limitato",
     "yes": "Sì",
@@ -1980,7 +1981,11 @@
     "templates": "Modelli Email",
     "analytics": "Analisi",
     "reminders": "Promemoria Automatici",
+    "followUpReminders": "Promemoria di follow-up",
+    "savedContacts": "Contatti salvati",
     "csvImport": "Importazione CSV",
+    "bulkSender": "Connessione Bulk Sender",
+    "koalendarImports": "Importazione contatti da Koalendar",
     "woocommerce": "Integrazione WooCommerce",
     "stripe": "Integrazione Stripe",
     "prioritySupport": "Supporto Prioritario",
@@ -1988,6 +1993,8 @@
     "apiAccess": "Accesso API",
     "whiteLabel": "White Label",
     "reviewRequests": "Richieste di recensione",
+    "multiPlatformPhames": "Link recensione multipiattaforma",
+    "price": "Prezzo",
     "freeRequestAllowance": "Prima 10, poi 5 / 30 giorni mobili",
     "mobileAction": "Confronta",
     "mobileDescription": "Confronta Free, Pro e Lifetime senza lasciare la pagina di aggiornamento.",
@@ -3678,5 +3685,57 @@
       "scene": "Scena {{number}} · {{time}}"
     },
     "footer": "Snapshot verificato {{date}}. Le evidenze del repository e il contenuto della presentazione sono disponibili solo tramite questa route autorizzata dagli amministratori."
+  },
+  "premiumConversion": {
+    "marker": {
+      "label": "Premium",
+      "contains": "Contiene funzionalità premium"
+    },
+    "modal": {
+      "closeLabel": "Chiudi i dettagli dell’upgrade",
+      "comparePlans": "Confronta i piani gratuito e premium",
+      "notNow": "Non ora",
+      "eyebrow": "Funzionalità premium",
+      "benefitsLabel": "Vantaggi del piano a pagamento",
+      "contextHint": "Puoi confrontare i piani senza perdere la pagina su cui stavi lavorando."
+    },
+    "features": {
+      "send_limit": {
+        "title": "Continua a inviare richieste di recensione",
+        "description": "La tua quota gratuita protegge un flusso di lavoro iniziale semplice. Un piano a pagamento rimuove il limite del piano Get Phame quando sei pronto a continuare.",
+        "benefits": {
+          "one": "Invia richieste di recensione individuali illimitate",
+          "two": "Connetti Bulk Sender per invii con volumi maggiori",
+          "three": "Importa automaticamente le prenotazioni Koalendar completate"
+        }
+      },
+      "koalendar": {
+        "title": "Trasforma le prenotazioni completate in contatti",
+        "description": "Connetti Koalendar con un webhook privato e aggiungi automaticamente gli invitati idonei al termine di ogni riunione.",
+        "benefits": {
+          "one": "Crea un webhook privato per il tuo account",
+          "two": "Importa le prenotazioni completate idonee nei Contatti salvati",
+          "three": "Controlla lo stato recente delle importazioni delle prenotazioni in Get Phame"
+        }
+      },
+      "bulk_sender": {
+        "title": "Sblocca invii con volumi maggiori",
+        "description": "Connetti un relay SMTP transazionale supportato mentre Get Phame mantiene attivi controlli di sicurezza specifici per il provider.",
+        "benefits": {
+          "one": "Connetti un relay SMTP transazionale verificato",
+          "two": "Usa limiti di invio adattivi in base al provider",
+          "three": "Mantieni Bulk Sender separato dalla tua connessione personale"
+        }
+      },
+      "plans": {
+        "title": "Scegli il piano adatto al tuo flusso di lavoro",
+        "description": "Confronta il piano gratuito con l’accesso a pagamento prima di decidere. Il tuo lavoro attuale rimane invariato mentre valuti le opzioni.",
+        "benefits": {
+          "one": "Richieste di recensione individuali illimitate",
+          "two": "Connessione Bulk Sender per invii con volumi maggiori",
+          "three": "Importazioni automatiche dei contatti da Koalendar"
+        }
+      }
+    }
   }
 }

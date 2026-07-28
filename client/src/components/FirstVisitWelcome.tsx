@@ -62,6 +62,7 @@ export default function FirstVisitWelcome() {
       pathname,
       alreadySeen: hasSeenWelcome(),
       installGuideVisible: pwaState.installGuideVisible,
+      upgradeVisible: pwaState.upgradeVisible,
     })) {
       if (open) updatePwaInstallSnapshot({ welcomeVisible: false });
       return;
@@ -72,7 +73,7 @@ export default function FirstVisitWelcome() {
     }, 350);
 
     return () => window.clearTimeout(timer);
-  }, [open, pathname, pwaState.installGuideVisible]);
+  }, [open, pathname, pwaState.installGuideVisible, pwaState.upgradeVisible]);
 
   useEffect(() => () => {
     updatePwaInstallSnapshot({ welcomeVisible: false });
