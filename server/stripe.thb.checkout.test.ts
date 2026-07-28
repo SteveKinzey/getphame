@@ -34,10 +34,10 @@ describe("createThbCheckoutSession", () => {
     mockSessionCreate.mockResolvedValue({
       url: "https://checkout.stripe.com/pay/test_thb",
     });
-    // Set all three THB price env vars
-    process.env.STRIPE_PRICE_ID_THB_MONTHLY = "price_monthly_thb_test";
-    process.env.STRIPE_PRICE_ID_THB_ANNUAL = "price_annual_thb_test";
-    process.env.STRIPE_PRICE_ID_THB_LIFETIME = "price_lifetime_thb_test";
+    // Keep test-mode Price IDs isolated from the production THB catalog.
+    process.env.STRIPE_TEST_PRICE_ID_THB_MONTHLY = "price_monthly_thb_test";
+    process.env.STRIPE_TEST_PRICE_ID_THB_ANNUAL = "price_annual_thb_test";
+    process.env.STRIPE_TEST_PRICE_ID_THB_LIFETIME = "price_lifetime_thb_test";
     process.env.STRIPE_SECRET_KEY = "sk_test_dummy";
   });
 
@@ -99,7 +99,7 @@ describe("createThbCheckoutSession", () => {
   });
 
   it("throws when THB monthly price env var is missing", async () => {
-    process.env.STRIPE_PRICE_ID_THB_MONTHLY = "";
+    process.env.STRIPE_TEST_PRICE_ID_THB_MONTHLY = "";
     const { createThbCheckoutSession } = await import("./stripe");
     await expect(
       createThbCheckoutSession({ ...BASE_PARAMS, plan: "monthly" })
@@ -107,7 +107,7 @@ describe("createThbCheckoutSession", () => {
   });
 
   it("throws when THB annual price env var is missing", async () => {
-    process.env.STRIPE_PRICE_ID_THB_ANNUAL = "";
+    process.env.STRIPE_TEST_PRICE_ID_THB_ANNUAL = "";
     const { createThbCheckoutSession } = await import("./stripe");
     await expect(
       createThbCheckoutSession({ ...BASE_PARAMS, plan: "annual" })
@@ -115,7 +115,7 @@ describe("createThbCheckoutSession", () => {
   });
 
   it("throws when THB lifetime price env var is missing", async () => {
-    process.env.STRIPE_PRICE_ID_THB_LIFETIME = "";
+    process.env.STRIPE_TEST_PRICE_ID_THB_LIFETIME = "";
     const { createThbCheckoutSession } = await import("./stripe");
     await expect(
       createThbCheckoutSession({ ...BASE_PARAMS, plan: "lifetime" })

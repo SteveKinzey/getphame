@@ -1,6 +1,16 @@
 {
+  "common": {
+    "gotIt": "知道了",
+    "hide": "隐藏",
+    "show": "显示",
+    "cancel": "取消",
+    "copy": "复制",
+    "off": "关",
+    "on": "开",
+    "optional": "可选"
+  },
   "seo": {
-    "title": "Get Phame — 获得更多五星好评",
+    "title": "Get Phame — 通过邮箱发送个性化评论请求",
     "keywords": "评论请求, Google 评论, 获得更多评论, 评论自动化, 小型企业评论, 发送评论请求邮件, WooCommerce 评论, Stripe 评论",
     "ogDescription": "通过您自己的电子邮件账户发送个性化的评论请求邮件。支持 Google、Yelp、TripAdvisor 等。",
     "shortTitle": "Get Phame"
@@ -19,11 +29,9 @@
     "complianceHint": "查看合规指南",
     "complianceActive": "合规状态：已启用",
     "complianceViewGuide": "— 查看指南",
-    "howItWorks": "工作原理",
-    "pricing": "定价",
-    "faq": "常见问题",
-    "product": "产品",
-    "getStartedFree": "免费开始",
+    "howItWorks": "How It Works",
+    "pricing": "Pricing",
+    "faq": "FAQ",
     "manageUsers": "管理用户",
     "admin": "管理员",
     "developer": "开发者",
@@ -32,26 +40,16 @@
   },
   "hero": {
     "tagline": "免费开始 — 无需信用卡",
-    "headline": "无需尴尬请求，即可获得更多五星好评",
+    "headline": "发送个性化评论请求",
     "description": "通过您自己的电子邮件账户发送个性化的评论请求。您的客户会看到邮件来自您本人 — 而非通用发件人。",
     "cta": "免费开始",
-    "setupTime": "设置只需不到2分钟",
+    "setupTime": "引导式设置",
     "rocketIllustrationAlt": "Get Phame 火箭插图",
     "dashboardAlt": "Get Phame 仪表盘显示已发送请求和邮件表现统计数据",
     "dashboardStats": "您的仪表盘 — 实时统计数据",
-    "titlePart1": "获取更多 5 星评价",
-    "titlePart2": "Google 评论",
-    "seeHowItWorks": "查看使用方式",
-    "setupIn2Min": "2 分钟内完成设置",
-    "worksWithEmail": "兼容 Gmail、Outlook 与 SMTP",
-    "freeSends": "10 次免费发送 · 随后 5/30 天免费",
-    "googleSignInNote": "使用 Google 登录以创建账户。我们只访问您的姓名和邮箱地址——不访问其他信息。",
-    "privacyPolicy": "隐私政策",
-    "taglineAlt": "免费开始 — 无需信用卡",
-    "subtitle": "从您自己的邮箱发送个性化评价请求。客户看到的是来自您而非通用发件人的邮件。",
-    "titlePart3": "无需尴尬地请求",
-    "ctaVariantA": "免费开始 — 前 10 次发送由我们承担",
-    "ctaVariantB": "免费获取您的前 10 条评论"
+    "titlePart1": "发送个性化评论请求",
+    "titlePart2": "从你的邮箱发送",
+    "setup": "引导式设置"
   },
   "features": {
     "sectionTitle": "为什么企业选择 Get Phame",
@@ -60,17 +58,12 @@
       "description": "每封请求邮件都会以个人消息的形式送达客户收件箱 — 而非群发。没有共享发件人，没有垃圾邮件过滤器。"
     },
     "bulkSendFeature": {
-      "title": "几秒钟内批量发送",
-      "description": "从 CSV、Stripe 或 WooCommerce 导入联系人。全选，点击发送 — 每位客户都会收到个性化邮件。"
+      "title": "批量发送个性化请求",
+      "description": "通过 CSV 或 WooCommerce 同步导入客户，选择收件人，并发送个性化请求，无需逐条复制。"
     },
     "platformFeature": {
       "title": "适用于任何评论平台",
       "description": "Google、Yelp、Trustpilot、TripAdvisor、Facebook — 添加任何评论链接。您的客户将直接跳转到您的评论页面。"
-    },
-    "customerQuote": {
-      "quote": "Get Phame 对我们的小型企业来说是一个颠覆性的改变。我们看到了积极评论的显著增长，而且它非常易于使用！",
-      "author": "Tom R.",
-      "authorTitle": "The Corner Café 店主"
     },
     "sendsFromYourEmail": "从您的邮箱发送",
     "oneTapRequests": "一键请求",
@@ -85,48 +78,20 @@
       "desc": "客户看到的是您的姓名和邮箱地址——而非通用发件人。感觉很个人化，因为确实如此。"
     },
     "bulkSend": {
-      "title": "一键批量发送",
-      "desc": "通过CSV或WooCommerce同步导入客户名单，一次性发送个性化评价请求。"
+      "title": "批量发送个性化请求",
+      "desc": "通过 CSV 或 WooCommerce 同步导入客户，选择收件人，并发送个性化请求，无需逐条复制。"
     },
     "anyPlatform": {
       "title": "支持任意评价平台",
       "desc": "Google、Yelp、TripAdvisor、Bing、Facebook等。您选择将客户引导到哪里。"
-    },
-    "f1Title": "你的名字。你的收件箱。他们的信任。",
-    "f1Desc": "每条评价请求都来自您真实的邮箱地址。客户能识别发件人，因此会打开邮件并作出回应。",
-    "f1Stat": "45–60%",
-    "f1StatLabel": "平均打开率",
-    "f2Title": "一键发送到数百人",
-    "f2Desc": "通过 CSV 或 WooCommerce 同步导入客户列表，全选后几秒内发送个性化请求。无需复制粘贴，无需手动操作。",
-    "f2Stat": "500+",
-    "f2StatLabel": "每批发送量",
-    "f3Title": "所有平台，自由选择。",
-    "f3Desc": "支持 Google、Yelp、TripAdvisor、Bing、Facebook、Trustpilot 等多平台。粘贴链接，随时切换平台。一个工具覆盖所有评价目的地。",
-    "f3Stat": "10+",
-    "f3StatLabel": "支持的平台数量",
-    "sectionTagline": "为何有效",
-    "sectionHeadline": "从您的收件箱到他们的评价",
-    "sectionSubheadline": "将满意客户转化为 5 星评价的最简单方式 — 无需昂贵工具或尴尬沟通。"
+    }
   },
   "howItWorks": {
     "step1": "连接您的电子邮件账户 (SMTP)",
     "step2": "添加您的 Google（或其他）评论链接",
     "step3": "导入或添加您的客户",
     "step4": "发送个性化评论请求",
-    "sectionTitle": "使用流程",
-    "tagline": "四步完成设置",
-    "headline": "两分钟即可发送第一条评价请求",
-    "subheadline": "无需技术技能。无需入职电话。只需连接、导入并发送。",
-    "cta": "免费开始",
-    "setupTime": "设置少于 2 分钟",
-    "s1Title": "连接您的邮箱",
-    "s1Desc": "在 60 秒内连接您的 Gmail、Outlook 或任何 SMTP 邮箱。凭证使用 AES-256 加密。",
-    "s2Title": "添加评价链接",
-    "s2Desc": "粘贴您的 Google、Yelp、TripAdvisor 或任意评价平台链接。随时切换平台。",
-    "s3Title": "导入客户",
-    "s3Desc": "上传 CSV、从 WooCommerce 同步或手动添加联系人。我们会自动验证邮箱。",
-    "s4Title": "发送并追踪结果",
-    "s4Desc": "点击发送。每位客户都会收到来自您的个人邮件。实时跟踪打开、点击和新评价。"
+    "sectionTitle": "使用流程"
   },
   "faq": {
     "sectionTitle": "常见问题",
@@ -135,47 +100,40 @@
     "providersQuestion": "支持哪些电子邮件提供商？",
     "providersAnswer": "任何支持 SMTP 的提供商都适用：Gmail、Outlook、Yahoo Mail、Apple iCloud Mail、cPanel/Zoho 商业电子邮件，以及几乎所有托管服务提供商的邮件服务器。如果您可以在手机上设置电子邮件应用，您就可以将其连接到 Get Phame。",
     "freeQuestion": "它真的是免费的吗？",
-    "freeAnswer": "是的 — 免费且没有人为的发送限制。您连接的是您自己的电子邮件账户，因此唯一的限制是您的电子邮件提供商的每日发送上限（Gmail 每天允许发送约500封，大多数其他提供商也类似）。没有隐藏费用，也无需信用卡即可开始使用。",
+    "freeAnswer": "是的。免费计划先提供 10 次评价请求，之后每滚动 30 天提供 5 次。无需信用卡，同时仍受邮箱服务商每日发送上限约束。",
     "importQuestion": "我可以导入我的客户列表吗？",
     "importAnswer": "是的。您可以上传包含客户姓名和电子邮件地址的 CSV 文件，或者如果您经营在线商店，可以直接从 WooCommerce 同步。导入后，您可以批量选择联系人，并一键发送个性化评论请求。",
-    "q1": "会看起来像垃圾邮件吗？",
-    "a1": "不。邮件直接从您自己的邮箱发送 — 客户看到的发件人是您的姓名和邮箱地址。",
-    "q2": "支持哪些邮箱服务商？",
-    "a2": "Get Phame 支持任何支持 SMTP 的邮箱服务：Gmail、Google Workspace、Outlook、Microsoft 365、Yahoo、Zoho、iCloud 及任何自定义 SMTP 服务器。只要能从该邮箱发送邮件，就可以将其连接到 Get Phame。",
+    "q1": "邮件会被当作垃圾邮件吗？",
+    "a1": "不会。每封邮件都直接从您自己的邮箱账户通过SMTP发送，客户会看到您的姓名和邮箱地址。",
+    "q2": "支持哪些邮件服务商？",
+    "a2": "支持所有SMTP邮件服务商：Gmail、Outlook、Yahoo Mail、Apple iCloud Mail等。",
     "q3": "真的免费吗？",
-    "a3": "是的。免费计划提供 10 次评价请求，无需信用卡且无时间限制。您可以在任何时间使用完这 10 次。如果需要无限请求、批量发送、跟进提醒和 WooCommerce 同步，请升级到 Pro。",
-    "q4": "我可以导入客户列表吗？",
-    "a4": "当然可以。上传包含客户姓名和邮箱的 CSV 文件，或直接从 WooCommerce 同步。我们会自动验证邮箱、去重，并在发送前标记任何无效地址。",
-    "q5": "Get Phame 会存储我的邮箱密码吗？",
-    "a5": "您的 SMTP 凭证在静态存储时使用 AES-256 加密。我们不会存储明文密码。您的凭证仅用于代表您发送邮件——我们无法读取您的收件箱或访问任何其他邮件数据。",
-    "q6": "我的邮件会进垃圾邮箱吗？",
-    "a6": "因为邮件是从您自己的邮箱发送（而非批量发送服务器），它们的到达率与您手动发送的邮件相同。您的域名信誉、SPF 和 DKIM 记录照常生效。这是相较第三方发送者的一大优势。",
-    "q7": "我的客户列表会怎样处理？",
-    "a7": "您的客户数据被安全存储，绝不共享、出售或用于发送评价请求以外的任何用途。您可以随时导出或删除整个客户列表。我们遵守 GDPR 和 CAN-SPAM 要求。",
-    "q8": "客户可以选择退订吗？",
-    "a8": "是的。每封邮件都包含退订链接。当客户选择退订时，他们会自动从未来的发送中移除。这能帮助您保持合规并保护发件人信誉。",
-    "q9": "连接邮箱需要技术技能吗？",
-    "a9": "不。对于 Gmail 和 Outlook，我们提供带截图的逐步指南。大多数用户在 60 秒内完成连接。对于自定义 SMTP，您需要服务器地址、端口和凭证——您的托管服务商可以提供这些信息。",
-    "q10": "支持哪些评价平台？",
-    "a10": "任何带有评价链接的平台：Google、Yelp、TripAdvisor、Facebook、Bing Places、Trustpilot、G2、Capterra 等。只需粘贴您的评价链接，我们会在每次请求中包含该链接。您可以随时更改平台。",
-    "q11": "WooCommerce 同步如何工作？",
-    "a11": "安装我们的免费 WooCommerce 插件，输入您的 API 密钥，完成订单后新客户会自动导入。您可以设置延迟（例如购买后 7 天）再将其加入发送队列。",
-    "q12": "Pro 计划中的“无限”是什么意思？",
-    "a12": "“无限”意味着每月发送的评价请求数量没有上限。无论发送 50 还是 5,000 封，都不会额外收费。唯一的限制是您的邮箱服务商自身的发送限制（例如，Gmail 个人账户约允许 ~500/天，Workspace 约 2,000/天）。",
-    "sectionTagline": "常见问题",
-    "sectionHeadline": "有关邮件安全、隐私与设置的问题",
-    "sectionSubheadline": "在连接邮箱并发送第一条评价请求前，您需要知道的一切。"
+    "a3": "是的。您先获得 10 次评价请求，之后每滚动 30 天获得 5 次。无需信用卡。",
+    "q4": "可以导入客户名单吗？",
+    "a4": "可以。上传包含客户姓名和邮箱地址的CSV文件，或直接从WooCommerce同步。",
+    "q5": "Does Get Phame store my email password?",
+    "a5": "Never. Get Phame uses your own SMTP credentials (or Gmail app password) to send emails directly from your account. Your password is encrypted at rest and never shared or stored in plain text. You can disconnect at any time from Settings.",
+    "q6": "Will my emails land in spam?",
+    "a6": "Because emails are sent from your own email address — not a generic sender — they land in the primary inbox far more reliably than bulk marketing tools. Your domain reputation stays intact.",
+    "q7": "What happens to my customer list?",
+    "a7": "Your customer data stays private. It is stored securely in your account and is never sold, shared, or used for any purpose other than sending your review requests. You can delete contacts at any time.",
+    "q8": "Can customers opt out?",
+    "a8": "Yes. Every review request email includes an unsubscribe link. Customers who opt out are automatically excluded from future sends.",
+    "q9": "Do I need technical skills to connect my email?",
+    "a9": "不需要。对于 Gmail 和 Outlook，我们提供带截图的分步指南。自定义 SMTP 需要服务器地址、端口和服务商提供的凭据。",
+    "q10": "Which review platforms does it support?",
+    "a10": "Google, Yelp, TripAdvisor, Facebook, Bing, and any custom URL. You can add multiple platforms and choose which one to include in each send.",
+    "q11": "How does WooCommerce sync work?",
+    "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
+    "q12": "What does unlimited mean on the Pro plan?",
+    "a12": "无限表示评价请求没有月度上限。免费计划先提供 10 次，之后每滚动 30 天提供 5 次。Pro 会取消此产品限制。"
   },
   "bottomCta": {
-    "headline": "立即开始收集评论",
-    "description": "永久免费。无需信用卡。2分钟内完成设置。",
+    "headline": "发送个性化评论请求",
+    "description": "永久免费：初始 10 个请求，之后每 30 个滚动日增加 5 个。无需信用卡。",
     "cta": "免费开始",
-    "title": "准备好获取更多评价了吗？",
-    "subtitle": "永久免费，无需信用卡，2分钟内完成设置。",
-    "headline2": "你的收件箱。你的声誉。",
-    "subheadline2": "入门计划永久免费。无需信用卡。2 分钟内完成设置。今天就开始收集 5 星评价。",
-    "socialProof": "加入数百家已经通过 Get Phame 提升声誉的企业。",
-    "headline2Part2": "你的增长。"
+    "title": "发送个性化评论请求",
+    "subtitle": "永久免费：初始 10 个请求，之后每 30 个滚动日增加 5 个。无需信用卡。"
   },
   "footer": {
     "brandName": "Get Phame",
@@ -188,62 +146,62 @@
     "compliance": "合规性"
   },
   "shareReferralCard": {
-    "title": "Get Phame — 免费评论请求工具",
-    "shareText": "我一直在使用 Get Phame 通过我自己的电子邮件发送评论请求 — 它是免费的，而且效果很好。值得一试：",
+    "title": "Get Phame — 免费的评价请求工具",
+    "shareText": "我一直使用 Get Phame 从我自己的邮箱发送评价请求 —— 免费且非常好用。值得一试：",
     "copySuccessToast": "链接已复制到剪贴板！",
     "copyErrorToast": "无法复制链接。",
-    "header": "认识当地的企业主吗？",
-    "subHeader": "帮助他们获得更多评论 — 它是免费的。",
+    "header": "认识本地商家吗？",
+    "subHeader": "帮他们获取更多评价 —— 免费。",
     "copiedToClipboard": "已复制到剪贴板！",
     "sharePhame": "分享 Get Phame"
   },
   "relativeTime": {
     "justNow": "刚刚",
-    "minutesAgo": "{{diffMins}}分钟前",
-    "hoursAgo": "{{diffHours}}小时前",
-    "daysAgo": "{{diffDays}}天前"
+    "minutesAgo": "{{diffMins}} 分钟前",
+    "hoursAgo": "{{diffHours}} 小时前",
+    "daysAgo": "{{diffDays}} 天前"
   },
   "trackingSummaryCard": {
     "title": "邮件表现",
     "sent": "已发送",
     "openRate": "打开率",
     "clickRate": "点击率",
-    "summary": "在 {{totalSent}} 个请求中，{{uniqueOpens}} 个已打开 · {{uniqueClicks}} 个已点击"
+    "summary": "{{uniqueOpens}} 打开 · {{uniqueClicks}} 点击 · 共 {{totalSent}} 次请求"
   },
   "homePage": {
     "setGoalErrorToast": "{{message}}",
-    "shareSuccessToast": "已复制链接！分享给朋友吧。",
-    "pageTitle": "Get Phame — 快速发送 Google 评论请求",
-    "greeting": "您好，{{name}}！",
+    "shareSuccessToast": "已复制到剪贴板！分享给朋友吧。",
+    "pageTitle": "Get Phame — 快速发送 Google 评价请求",
+    "greeting": "嗨，{{name}}！",
     "welcomeBack": "欢迎回来，",
     "setupBannerTitle": "设置完成！",
-    "setupBannerText": "您已配置好账户并发送了第一个请求。做得好！",
+    "setupBannerText": "你已完成账户设置并发送第一个请求，做得好！",
     "dismiss": "关闭",
     "expiryBannerTitle": "订阅已过期",
-    "expiryBannerText": "您的访问权限已过期。请续订您的计划以继续使用 Get Phame。",
-    "renewSubscription": "续订订阅",
+    "expiryBannerText": "您的访问权限已过期。请续订以继续使用 Get Phame。",
+    "renewSubscription": "续订",
     "expiringSoonTitle": "订阅即将到期",
-    "expiringSoonText": "您的计划将在 {{daysUntilExpiry}} 天后到期。立即续订以避免服务中断。",
+    "expiringSoonText": "您的计划将在 {{daysUntilExpiry}} 天后到期。现在续订以避免服务中断。",
     "smtpHealthAlertTitle": "SMTP 连接问题",
-    "smtpHealthAlertText": "我们无法连接到您的电子邮件账户。请检查您的 SMTP 设置，以确保您的请求可以发送。",
+    "smtpHealthAlertText": "无法连接到您的邮箱。请检查 SMTP 设置以确保请求可以发送。",
     "viewSettings": "查看设置",
-    "quickSendTitle": "获取您的下一个评论",
+    "quickSendTitle": "获取下一个评价",
     "quickSendSubtitle": "向最近的客户发送请求。",
     "sendRequest": "发送请求",
-    "monthlyGoal": "月度目标",
-    "reviewsThisMonth": "本月评论",
-    "reviews": "评论",
-    "setYourGoal": "设定您的目标",
-    "goalDescription": "设定月度评论目标以跟踪您的进度。",
+    "monthlyGoal": "月目标",
+    "reviewsThisMonth": "本月评价数",
+    "reviews": "评价",
+    "setYourGoal": "设置目标",
+    "goalDescription": "设定每月评价目标以跟踪进度。",
     "editGoal": "编辑目标",
     "saveGoal": "保存目标",
     "cancel": "取消",
-    "reviewsPlural": "评论",
-    "reviewSingular": "评论",
-    "goalProgress": "本月已收集 {{reviewGoal}} 条评论中的 {{respondedThisMonth}} 条",
-    "recentRequestsTitle": "最近的请求",
+    "reviewsPlural": "评价",
+    "reviewSingular": "评价",
+    "goalProgress": "本月已收集 {{respondedThisMonth}} / {{reviewGoal}} {{reviewsPlural}}",
+    "recentRequestsTitle": "最近请求",
     "noRequestsSent": "尚未发送请求",
-    "noRequestsSentSubtitle": "您发送的请求将显示在此处。",
+    "noRequestsSentSubtitle": "您发送的请求会显示在这里。",
     "sentTo": "已发送给 {{customerName}}",
     "viaEmail": "通过电子邮件",
     "responded": "已回复",
@@ -251,53 +209,53 @@
     "clicked": "已点击",
     "sent": "已发送",
     "viewAllRequests": "查看全部 →",
-    "onboardingHeroTitle": "自动获取更多评论",
-    "onboardingHeroSubtitle": "连接您的电子邮件，添加您的客户，并在几分钟内开始发送评论请求。",
+    "onboardingHeroTitle": "自动获取更多评价",
+    "onboardingHeroSubtitle": "连接邮箱、添加客户，几分钟内开始发送评价请求。",
     "getStarted": "开始使用",
     "learnMore": "了解更多",
-    "fromYourOwnEmail": "通过您自己的电子邮件",
-    "fromYourOwnEmailDescription": "通过 SMTP 连接任何电子邮件账户。没有“via phame.app”品牌。",
-    "worksWithAnyPlatform": "适用于任何平台",
-    "worksWithAnyPlatformDescription": "Google、Yelp、Trustpilot、Capterra... 只要有链接，您就可以使用。",
+    "fromYourOwnEmail": "使用您自己的邮箱",
+    "fromYourOwnEmailDescription": "通过 SMTP 连接任意邮箱账户。不显示 'via phame.app' 品牌标识。",
+    "worksWithAnyPlatform": "适用于任意平台",
+    "worksWithAnyPlatformDescription": "Google、Yelp、Trustpilot、Capterra……只要有链接，就能使用。",
     "privacyFocused": "注重隐私",
-    "privacyFocusedDescription": "我们不出售您的数据。您的客户、电子邮件和统计数据仅属于您。",
+    "privacyFocusedDescription": "我们不会出售您的数据。您的客户、邮件和统计信息仅属于您。",
     "viewLiveDemo": "查看实时演示",
     "watchVideo": "观看视频",
     "allSystemsGo": "一切就绪！",
     "smtpNotConnected": "SMTP 未连接",
-    "connectYourEmail": "连接您的电子邮件以发送请求。",
-    "profileNotComplete": "个人资料未完成",
-    "addBusinessDetails": "添加业务详情和评论链接。",
+    "connectYourEmail": "连接您的邮箱以发送请求。",
+    "profileNotComplete": "资料未完成",
+    "addBusinessDetails": "添加商户信息和评价链接。",
     "setupGuide": "设置指南",
     "helpAndSupport": "帮助与支持",
     "featureRequests": "功能请求",
-    "whatsNew": "最新动态？",
-    "reviewLinkOnX": "Get Phame 在 X 上",
-    "buyTheCode": "购买代码",
-    "monthlyPro": "月度专业版",
-    "annualPro": "年度专业版",
+    "whatsNew": "新功能",
+    "reviewLinkOnX": "在 X 上的 Get Phame",
+    "buyTheCode": "购买源码",
+    "monthlyPro": "月付 Pro",
+    "annualPro": "年付 Pro",
     "lifetime": "终身版",
-    "freePlan": "免费计划",
+    "freePlan": "免费方案",
     "thisMonth": "本月",
-    "allTime": "全部",
+    "allTime": "累计",
     "completeSetup": "完成设置",
-    "profileComplete": "商家资料已完善",
-    "profileIncomplete": "商家资料 — 添加您的商家名称和评价链接",
+    "profileComplete": "商户资料已完成",
+    "profileIncomplete": "商户资料 — 添加商户名称和评价链接",
     "emailConnected": "邮箱已连接 ({{email}})",
     "emailNotConnected": "邮箱 — 连接您的邮箱账户",
     "goToSettings": "前往设置 →",
     "fixInSettings": "在设置中修复 →",
-    "lastChecked": "上次检查",
+    "lastChecked": "最后检查时间",
     "errorPrefix": "错误：",
     "manageBilling": "管理账单",
-    "seoTitle": "获取更多商家评价",
-    "seoDescription": "Get Phame 让您轻松通过电子邮件向客户发送个性化评价请求 — 支持 Google、Yelp、TripAdvisor、Bing、Facebook 等平台。",
+    "seoTitle": "获取更多商户评价",
+    "seoDescription": "Get Phame 让您轻松通过电子邮件向客户发送个性化评价请求 —— 支持 Google、Yelp、TripAdvisor、Bing、Facebook 等平台。在所有平台上建立线上声誉、提升星级评分并吸引新客户 —— 所有操作均可在一个简洁的仪表板中完成。",
     "goal": "目标",
-    "goalReached": "达成目标！🎉",
-    "toGo": "还差",
-    "reviewsPerMonth": "条评价 / 月",
-    "ofMonthlyGoal": "月度目标完成率",
-    "requestsByPlatform": "按平台统计请求",
+    "goalReached": "目标达成！ 🎉",
+    "toGo": "剩余",
+    "reviewsPerMonth": "评价 / 月",
+    "ofMonthlyGoal": "月度目标",
+    "requestsByPlatform": "按平台请求",
     "freeAllowanceInitial": "免费方案：初始 10 次请求，之后每滚动 30 天可用 5 次。",
     "freeAllowanceMonthly": "免费方案：每滚动 30 天 5 次请求",
     "nextFreeRequest": "下一次可用请求：{{date}}",
@@ -389,7 +347,7 @@
     "freeRollingLimitReachedDesc": "您已用完当前滚动 30 天额度的 5 次请求。下次请求将于 {{date}} 可用，或立即升级继续发送。"
   },
   "tabs": {
-    "account": "账户与个人资料",
+    "account": "账户",
     "billing": "账单",
     "integrations": "集成",
     "notifications": "通知",
@@ -442,7 +400,7 @@
     "reviewLink": "主要 Google 评论链接",
     "reviewLinkPlaceholder": "https://g.page/r/...",
     "reviewLinkDescription": "客户将被发送到的主要链接。您可以在下方添加更多链接。",
-    "emailSenderSettings": "电子邮件发件人设置",
+    "emailSenderSettings": "邮件发件人设置",
     "fromName": "发件人姓名",
     "fromNamePlaceholder": "例如：Maria 美发沙龙",
     "fromNameDescription": "您的姓名在客户收件箱中的显示方式。默认为您的商家名称。",
@@ -452,9 +410,7 @@
     "saveProfile": "保存资料",
     "successToast": "商家资料已保存！",
     "dailySendLimitSaved": "每日发送限制已保存！",
-    "addBusinessNameAndLink": "请先在设置中添加您的商家名称和 Google 评价链接。",
-    "displayName": "仪表盘问候语名称",
-    "displayNameDescription": "覆盖“你好，[姓名]！”问候语中的登录名。留空以使用您的账户名。"
+    "addBusinessNameAndLink": "请先在设置中添加您的商家名称和 Google 评价链接。"
   },
   "reviewPlatforms": {
     "title": "评论平台",
@@ -478,8 +434,6 @@
     "platformLabelDescription": "如果您选择“其他”，则会在邮件中显示。",
     "addPlatform": "添加平台",
     "urlRequired": "URL 为必填项",
-    "restoreFailed": "恢复失败：{{message}}",
-    "removeFailed": "无法移除平台：{{message}}",
     "platformUrlRequired": "评价页面 URL *",
     "yelpSearchInstruction": "Yelp 搜索说明 *",
     "whyNoLinkTitle": "为什么没有链接？",
@@ -495,7 +449,9 @@
     "addSuccess": "评价平台已添加！",
     "addError": "添加平台失败",
     "remove": "移除",
-    "cancel": "取消"
+    "cancel": "取消",
+    "restoreFailed": "恢复失败：{{message}}",
+    "removeFailed": "无法移除平台：{{message}}"
   },
   "smtp": {
     "title": "邮件连接 (SMTP)",
@@ -569,7 +525,7 @@
     "sendingLimit": "发送限制",
     "sendingLimitDescription": "每天最大邮件发送量，以避免垃圾邮件过滤器。我们建议新账户为 50-100 封。",
     "connect": "连接",
-    "update": "更改",
+    "update": "更新",
     "testSuccess": "连接成功！",
     "testError": "连接失败：{{message}}",
     "previewSuccess": "测试邮件已发送至 {{email}}！",
@@ -578,13 +534,13 @@
     "disconnectSuccess": "邮件账户已断开连接。",
     "disconnectError": "无法断开账户：{{message}}",
     "noEmailConnected": "未连接邮箱",
-    "emailNotConnectedTitle": "连接未验证",
+    "emailNotConnectedTitle": "未连接邮箱",
     "emailNotConnectedDesc": "请在设置中连接您的邮箱账户。支持 Gmail、Outlook、Yahoo 或任何商务邮箱。",
-    "emailConnected": "电子邮件已连接",
     "displayNameHelp": "在客户收件箱中显示为发件人名称。",
     "displayNameLabel": "发件人名称（可选）",
     "displayNamePlaceholder": "例如：Acme Plumbing 的 Steve",
     "emailAddressLabel": "您的电子邮箱地址 *",
+    "emailConnected": "邮箱已连接",
     "failed": "✗ 失败",
     "healthy": "✓ 正常",
     "inlineHints": {
@@ -828,7 +784,8 @@
     "customizeMessages": "自定义您的评论请求消息",
     "new": "新",
     "logoText": "Get Phame",
-    "proGrowthMessage": "将每一项完成的工作转化为可重复的口碑与收益系统。"
+    "proGrowthMessage": "将每一项完成的工作转化为可重复的口碑与收益系统。",
+    "tagline": "自动发送评论请求。"
   },
   "infoBanner": {
     "howItWorks": "工作原理：",
@@ -915,8 +872,8 @@
     "monthlyDescription": "随时取消。无合同。",
     "annualDescription": "每年结算一次。相当于每月 $24.17。",
     "lifetimeDescription": "一次性付款。永不续订。",
-    "lifetimeRoiCalloutTitle": "💰 不到 4 年即可回本",
-    "lifetimeRoiCalloutDescription": "月付计划每年花费 $348。按此费率，终身许可证在 3.6 年时即可回本 — 之后永久免费。大多数用户在获得评论的第一年即可收回成本。",
+    "lifetimeRoiCalloutTitle": "约 13 个月即可回本",
+    "lifetimeRoiCalloutDescription": "与每月 $29 的方案相比，$349 终身方案约 13 个月即可回本，之后无需续订。",
     "unlimitedReviewRequests": "无限评论请求",
     "prioritySending": "优先发送和跟进",
     "advancedAnalytics": "高级分析",
@@ -937,6 +894,29 @@
     "guarantee": "7 天退款保证",
     "otherPaymentMethods": "其他付款方式",
     "checkoutForPlan": "{{plan}} 的安全结账"
+  },
+  "pricingGrid": {
+    "title": "选择适合您业务增长的方案",
+    "savingsEyebrow": "节省计算器",
+    "savingsTitle": "查看每种承诺方案能节省多少",
+    "savingsBasis": "与按月付款相比",
+    "monthlyAnnualCost": "12 个月",
+    "annualSave": "节省 {{amount}}",
+    "annualSavingsDetail": "首年支付 {{price}}，而不是 {{monthly}}",
+    "lifetimeSave": "到第二年可节省 {{amount}}",
+    "lifetimePayback": "约 {{months}} 个月即可回本",
+    "heroSendRequests": "发送请求",
+    "heroAutomateFollowUps": "自动跟进",
+    "heroTrackGrowth": "跟踪增长",
+    "closeComparison": "关闭对比",
+    "includedLabel": "已包含",
+    "planFeaturesLabel": "{{plan}} 方案功能",
+    "approximateThb": "约 {{amount}} 泰铢",
+    "guidance": {
+      "monthly": "适合需要短期灵活性的用户。",
+      "annual": "最佳续订价值，约每月 $24.17。",
+      "lifetime": "最佳长期价值：一次支付 $349，无需续订。"
+    }
   },
   "accessCode": {
     "title": "有访问码吗？",
@@ -960,9 +940,6 @@
       "month": "个月",
       "lifetime": "终身"
     }
-  },
-  "socialProof": {
-    "trustedByBusinesses": "深受本地企业信赖，助您获得更多五星好评"
   },
   "comparisonTable": {
     "feature": "功能",
@@ -1194,8 +1171,7 @@
     "steps": {
       "connectEmail": "连接邮箱",
       "reviewPlatform": "评论平台",
-      "sendRequest": "发送请求",
-      "wpConnector": "WP 插件"
+      "sendRequest": "发送请求"
     },
     "stepContent": {
       "step1": {
@@ -1209,10 +1185,6 @@
       "step3": {
         "title": "准备启动 🚀",
         "description": "一切就绪。在几秒钟内发送您的第一个评论请求。"
-      },
-      "step4": {
-        "title": "连接 WordPress",
-        "description": "在您的 WordPress 网站上安装免费连接器插件以自动同步客户。"
       }
     },
     "navigation": {
@@ -1319,22 +1291,12 @@
     "toasts": {
       "updateFailed": "更新请求失败。",
       "updatedSuccess": "已更新{{count}}个请求。",
-      "updatedSuccessPlural": "已更新{{count}}个请求。",
-      "updatedSuccess_one": "{{count}} 个请求已更新。",
-      "updatedSuccess_other": "{{count}} 个请求已更新。",
-      "bulkRestartSuccess_one": "{{count}} 个活动已成功重启。",
-      "bulkRestartSuccess_other": "{{count}} 个活动已成功重启。",
-      "bulkRestartPartial_one": "{{count}} 个活动已重启，{{failCount}} 个失败。",
-      "bulkRestartPartial_other": "{{count}} 个活动已重启，{{failCount}} 个失败。"
-    },
-    "activityTrend": {
-      "title": "活动趋势",
-      "empty": "过去 {{days}} 天内没有活动。发送您的第一个请求以在此处查看趋势。"
+      "updatedSuccessPlural": "已更新{{count}}个请求。"
     }
   },
   "pricing": {
-    "sectionTitle": "简单、透明的定价",
-    "sectionSubtitle": "先免费开始，准备好再升级。",
+    "sectionTitle": "简单透明的定价",
+    "sectionSubtitle": "免费开始，随时升级。",
     "free": "免费",
     "freePrice": "$0",
     "freeDescription": "10次评价请求，无需信用卡。",
@@ -1344,167 +1306,28 @@
     "proMonthlyPer": "/月",
     "proMonthlyDescription": "无限评价请求、批量发送、跟进提醒、WooCommerce同步。",
     "proAnnual": "专业版（年付）",
-    "save15": "节省15%",
-    "proAnnualPrice": "$297",
+    "save15": "节省17%",
+    "proAnnualPrice": "$290",
     "proAnnualPer": "/年",
-    "proAnnualDescription": "包含月付专业版所有功能，按年一次性计费，相当于每月$24.75。",
+    "proAnnualDescription": "包含月付专业版所有功能，按年一次性计费，相当于每月$24.17。",
     "lifetime": "终身版",
     "ownItForever": "永久拥有",
     "lifetimePrice": "$349",
     "lifetimeOnce": " 一次性",
-    "lifetimeDescription": "一次付款，终身使用，无需续费，无任何隐藏费用。",
-    "plans": {
-      "free": {
-        "name": "免费版",
-        "description": "免费试用 Phame，包含 10 次评论请求 — 无需信用卡。",
-        "feature1": "10 次评论请求",
-        "feature2": "连接 1 个电子邮件账户",
-        "feature3": "任意评论平台",
-        "feature4": "电子邮件打开跟踪",
-        "feature5": "CSV 导入",
-        "cta": "免费开始"
-      },
-      "proMonthly": {
-        "name": "专业月付版",
-        "description": "最适合每周发送评论请求的活跃企业。",
-        "feature1": "无限评论请求",
-        "feature2": "一键批量发送",
-        "feature3": "跟进提醒",
-        "feature4": "WooCommerce 同步",
-        "feature5": "优先支持",
-        "feature6": "高级分析",
-        "cta": "开始专业月付版"
-      },
-      "proAnnual": {
-        "name": "专业年付版",
-        "description": "最适合致力于声誉增长的企业。",
-        "feature1": "包含专业月付版所有功能",
-        "feature2": "按年计费 ($228/yr)",
-        "feature3": "比月付节省 34%",
-        "feature4": "优先支持",
-        "feature5": "新功能抢先体验",
-        "cta": "开始专业年付版",
-        "badge": "节省 34%"
-      },
-      "lifetime": {
-        "name": "终身版",
-        "description": "一次性付款，终身使用。无续订，无意外。",
-        "feature1": "包含专业版所有功能",
-        "feature2": "一次付费，永久使用",
-        "feature3": "包含所有未来更新",
-        "feature4": "终身优先支持",
-        "feature5": "非常适合代理机构和运营商",
-        "cta": "获取终身访问权限",
-        "badge": "最划算"
-      }
-    }
+    "lifetimeDescription": "一次付款，终身使用，无需续费，无任何隐藏费用。"
   },
   "comparison": {
-    "sectionTitle": "比大型厂商便宜 10–20 倍",
-    "sectionSubtitle": "Birdeye 和 Podium 对于企业功能收取高额费用，而 Get Phame 提供相同功能，价格仅为其一小部分。",
+    "sectionTitle": "比大型竞争对手便宜10–20倍",
+    "sectionSubtitle": "Birdeye和Podium收取企业级价格，而Phame以极低的成本提供相同功能。",
     "colPlatform": "平台",
     "colStartingPrice": "起始价格",
-    "colLifetime": "终身选项",
-    "priceDisclaimer": "价格基于截至 2026 年 4 月公开列出的入门级方案。"
-  },
-  "testimonials": {
-    "sectionTitle": "用户真实评价",
-    "sarah": {
-      "quote": "我以前很害怕向客户征求评论——感觉很尴尬，像是在推销。Get Phame 从我自己的 Gmail 发送请求，所以看起来就像是我自己写的。我在六周内将 Google 评论从 12 条增加到 47 条。",
-      "name": "Sarah M.",
-      "role": "自由摄影师",
-      "result": "6 周内评论从 12 条增加到 47 条"
-    },
-    "tom": {
-      "quote": "我们每天服务大约 80 位顾客。我周五从 CSV 导入本周的常客，点击发送，到周一早上我们通常会收到 8-10 条新评论。这已经成为我们每周例行工作的一部分。",
-      "name": "Tom R.",
-      "role": "The Corner Café 老板",
-      "result": "每周 8-10 条新评论"
-    },
-    "tagline": "真实成果",
-    "headline": "他们发出请求，客户给出回应。",
-    "subheadline": "真实企业每周使用 Get Phame 提升声誉。",
-    "cta": "免费开始",
-    "david": {
-      "quote": "作为一家管理 12 个客户地点的代理机构，终身交易是显而易见的。每个客户都有自己的评论链接，我代表他们发送请求。投资回报率在第一个月就收回了成本。",
-      "name": "David K.",
-      "role": "数字营销机构所有者",
-      "result": "一个账户管理 12 个地点"
-    }
+    "colLifetime": "终身版选项",
+    "priceDisclaimer": "价格基于2026年4月各平台官网公开的入门级方案。"
   },
   "onboarding": {
     "googleBtn": "使用 Google 继续",
     "appleBtn": "使用 Apple 继续",
-    "finePrint": "免费开始 — 包含10次评价请求，无需信用卡。",
-    "heroHeadline": "获得更多五星",
-    "heroHighlight": "Google 评价",
-    "heroSubtitle": "从您自己的电子邮件账户发送个性化评价请求。您的客户会看到它来自您——而不是一个通用发件人。",
-    "heroSubtitleShort": "从您自己的电子邮件账户发送个性化评价请求。",
-    "trust1": "AES-256 加密凭据 — 您的数据保持安全",
-    "trust2": "从您的电子邮件发送 — 最大限度地提高送达率",
-    "trust3": "2 分钟内完成设置 — 无需技术技能",
-    "socialProof": "受到 500 多个本地企业的信赖",
-    "compliance": "每封电子邮件都包含一个取消订阅链接 — 完全合规",
-    "cardHeading": "创建您的免费账户",
-    "cardSubheading": "无需信用卡",
-    "or": "或",
-    "emailBtn": "使用电子邮件继续",
-    "checkInbox": "检查您的收件箱！",
-    "sentLink": "我们已将登录链接发送至",
-    "expires": "它将在 15 分钟内过期。",
-    "useDifferentEmail": "使用其他电子邮件",
-    "sendingLink": "正在发送链接…",
-    "sendSignInLink": "发送登录链接",
-    "cancel": "取消",
-    "privacy": "隐私",
-    "terms": "条款",
-    "support": "支持",
-    "install": {
-      "title": "将 GetPhame 添加到您的主屏幕",
-      "subtitle": "像原生应用一样全屏打开 — 无需 App Store",
-      "iphoneTab": "iPhone / iPad",
-      "androidTab": "Android",
-      "shareBtn": "与朋友分享 GetPhame",
-      "doneBtn": "完成 — 关闭指南",
-      "ios": {
-        "step1": {
-          "label": "在 Safari 中打开",
-          "detail": "必须使用 Safari — iOS 上的 Chrome 无法安装 PWA。"
-        },
-        "step2": {
-          "label": "点击分享按钮",
-          "detail": "屏幕底部带有向上箭头的方框。"
-        },
-        "step3": {
-          "label": "添加到主屏幕",
-          "detail": "在分享菜单中向下滚动并点击它。"
-        },
-        "step4": {
-          "label": "点击添加",
-          "detail": "GetPhame 图标会立即出现在您的主屏幕上。"
-        },
-        "tip": "已安装？请先删除旧图标，然后在应用更新后重新添加。"
-      },
-      "android": {
-        "step1": {
-          "label": "在 Chrome 中打开",
-          "detail": "Samsung Internet 也适用 — 点击菜单将页面添加到主屏幕。"
-        },
-        "step2": {
-          "label": "点击三点菜单",
-          "detail": "Chrome 右上角。"
-        },
-        "step3": {
-          "label": "添加到主屏幕",
-          "detail": "点击它，然后通过“添加”确认。"
-        },
-        "step4": {
-          "label": "完成！",
-          "detail": "GetPhame 出现在您的主屏幕上，并像原生应用一样全屏打开。"
-        },
-        "tip": "已安装？在 Chrome 中前往“设置”、“网站设置”、“getphame.app”、“清除并重置”，然后重新安装。"
-      }
-    }
+    "finePrint": "免费开始 — 包含10次评价请求，无需信用卡。"
   },
   "bulkBar": {
     "sendTo": "发送给 {{count}} 位联系人"
@@ -1524,17 +1347,7 @@
     "labelImproved": "改进",
     "labelFix": "修复",
     "noEntries": "暂无更新记录",
-    "loadingError": "加载更新日志失败",
-    "v15": {
-      "couponCodeGeneration": {
-        "title": "优惠码生成",
-        "description": "管理员现在可以直接从管理仪表板创建限时或永久折扣码，并可自定义前缀、最大使用次数限制和有效期。"
-      },
-      "revokeUserAccess": {
-        "title": "撤销用户访问权限",
-        "description": "特权用户表中的新“撤销访问权限”按钮允许管理员通过一次确认点击，立即将任何付费用户降级回免费套餐。"
-      }
-    }
+    "loadingError": "加载更新日志失败"
   },
   "onboardingGuide": {
     "title": "设置指南",
@@ -1544,7 +1357,27 @@
     "reviewPlatform": "评价平台",
     "importContacts": "导入联系人",
     "sendRequest": "发送请求",
-    "allSet": "设置完成",
+    "allSet": {
+      "title": "一切就绪！",
+      "subtitle": "Get Phame 已准备好为您的业务收集评价。",
+      "quickLinksTitle": "快速链接",
+      "link1": "立即发送评价请求",
+      "link2": "查看已保存的联系人",
+      "link3": "查看仪表板",
+      "link4": "管理设置",
+      "installTitle": "将 Get Phame 添加到手机",
+      "iosInstall": "在 Safari 中打开 getphame.app。点击“分享”，选择“添加到主屏幕”，然后点击“添加”。",
+      "androidInstall": "在 Chrome 中打开 getphame.app。点击三点菜单，选择“安装应用”或“添加到主屏幕”，然后确认。",
+      "shareButton": "与朋友分享 Get Phame",
+      "shareText": "使用 Get Phame 收集更多客户评价。",
+      "shareSuccess": "已成功分享。",
+      "copySuccess": "已复制 Get Phame 链接。",
+      "shareCancelled": "已取消分享。",
+      "shareError": "目前无法分享。",
+      "revisitTitle": "需要重新查看本指南吗？",
+      "revisitDesc": "随时点击主屏幕或设置中的“设置指南”按钮，即可重新打开这些说明。",
+      "startButton": "开始使用 Get Phame"
+    },
     "navigation": {
       "back": "返回",
       "next": "下一步",
@@ -1615,28 +1448,14 @@
     "caption": "免费开始 — 无需信用卡"
   },
   "trust": {
-    "encryptedPassword": "密码在静态存储时加密",
-    "dataPrivacy": "您的客户列表保持私密",
-    "emailProviders": "兼容 Gmail、Outlook、Yahoo 等",
-    "unsubscribe": "每封邮件都包含退订链接"
-  },
-  "proof": {
-    "sectionTitle": "Built for Businesses That Run on Reputation",
-    "sectionSubtitle": "Photographers, cafés, home services, clinics, agencies, and WooCommerce stores.",
-    "type1": "Cafés & Restaurants",
-    "type2": "Home Services",
-    "type3": "Photographers",
-    "type4": "Clinics & Salons",
-    "stat1Value": "10×",
-    "stat1Label": "more reviews vs. asking in person",
-    "stat2Value": "< 2 min",
-    "stat2Label": "average setup time",
-    "stat3Value": "Your inbox",
-    "stat3Label": "emails sent from your own address"
+    "encryptedPassword": "Password encrypted at rest",
+    "dataPrivacy": "Your customer list stays private",
+    "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
+    "unsubscribe": "Unsubscribe link in every email"
   },
   "demo": {
     "sectionTitle": "See It In Action",
-    "sectionSubtitle": "Three steps. Under 60 seconds. Your customer gets a personal email from you.",
+    "sectionSubtitle": "查看三步发送流程。",
     "gifAlt": "Get Phame 3-step send flow demo",
     "gifCaption": "The 3-step send flow",
     "emailAlt": "Example review request email on iPhone",
@@ -1656,219 +1475,6 @@
     "a5": "终身套餐涵盖一个商家/门店。如果您管理多个门店，每个门店需要单独的账户。如需代理或多门店定价，请联系我们。",
     "q6": "接受哪些支付方式？",
     "a6": "通过 Stripe 接受所有主要信用卡和借记卡。泰国用户也可以通过 PromptPay 付款——点击主要结账按钮下方的 PromptPay 选项。"
-  },
-  "leadCapture": {
-    "headline": "还没准备好做决定？",
-    "description": "获取免费指南，了解如何在30天内将您的Google评论增加3倍 — 以及新功能的早期访问权限和声誉建设技巧",
-    "placeholder": "输入您的电子邮件",
-    "sending": "发送中...",
-    "cta": "获取指南",
-    "success": "查看您的收件箱 — 指南正在路上！",
-    "disclaimer": "无垃圾邮件。随时退订。我们尊重您的收件箱。"
-  },
-  "videoDemo": {
-    "eyebrow": "查看实际效果",
-    "title": "了解其工作原理",
-    "subtitle": "观看快速演练 — 不到2分钟即可完成设置",
-    "videoSubtitle": "连接电子邮件 · 导入客户 · 发送请求 · 跟踪结果",
-    "watchNow": "立即观看 →"
-  },
-  "stats": {
-    "title": "专为依赖声誉的企业打造",
-    "stat1Label": "比亲自询问获得更多评论",
-    "stat2Label": "平均设置时间",
-    "stat3Value": "您的收件箱",
-    "stat3Label": "从您自己的地址发送的电子邮件",
-    "stat4Label": "平均回复率",
-    "industry1": "摄影师",
-    "industry2": "咖啡馆和餐厅",
-    "industry3": "家庭服务",
-    "industry4": "诊所和沙龙",
-    "industry5": "代理机构",
-    "industry6": "WooCommerce 商店"
-  },
-  "productShowcase": {
-    "title": "旨在让评论请求变得轻松",
-    "subtitle": "一个简单的工具。三种强大的视图。您发展声誉所需的一切。",
-    "tab1Label": "电子邮件预览",
-    "tab1Title": "感觉像是手写的电子邮件",
-    "tab1Desc": "每个评论请求都来自您的实际电子邮件地址，带有您的姓名、签名和个人语气。客户信任它，因为它看起来真实——因为它就是真实的。",
-    "tab2Label": "客户导入",
-    "tab2Title": "您的整个列表在几秒钟内完成",
-    "tab2Desc": "拖放 CSV 或直接从 WooCommerce 同步。我们验证电子邮件，删除重复项，并标记退回——因此每次发送都有效。",
-    "tab3Label": "评论跟踪",
-    "tab3Title": "看着评论源源不断地涌入",
-    "tab3Desc": "跟踪每封已发送、已打开和已点击的电子邮件。通过实时分析和增长图表，查看您的评论数量每周攀升。",
-    "viewFullSize": "查看全尺寸"
-  },
-  "step4Connector": {
-    "intro": {
-      "heading": "使用 WordPress + WooCommerce？"
-    },
-    "step1": {
-      "title": "下载插件",
-      "downloadBtn": "下载插件 (.zip)"
-    },
-    "step2": {
-      "title": "在 WordPress 中安装并激活",
-      "wpAdminLink": "打开 WP 管理后台 → 插件"
-    },
-    "step3": {
-      "title": "粘贴您的 API 密钥",
-      "generateKeyBtn": "生成 API 密钥"
-    },
-    "doneBtn": "全部完成 — 前往 GetPhame ✓",
-    "skipBtn": "我不用 WordPress — 跳过此步骤"
-  },
-  "settings": {
-    "fromNameHint": "显示为发件人",
-    "fromNameDescription": "客户将在收件箱中看到此作为发件人姓名。",
-    "optional": "可选",
-    "replyToDescription": "客户回复将发送到此处。留空以使用您的发件地址。",
-    "googleWorkspaceTitle": "使用 Google Workspace 或自定义域名？",
-    "googleWorkspaceDescription": "我们无法自动检测您的 SMTP 设置。请在下方选择您的电子邮件提供商或手动输入设置。",
-    "accountProfile": {
-      "title": "账户资料",
-      "description": "管理您的 Get Phame 账户中显示的身份信息。",
-      "loading": "正在加载账户资料",
-      "saved": "资料已更新。",
-      "avatarSaved": "头像已更新。",
-      "avatarRemoved": "头像已移除。",
-      "avatarInvalid": "请选择不超过 3 MB 的 JPG、PNG 或 WebP 图片。",
-      "avatarReadError": "无法读取该图片，请尝试其他文件。",
-      "avatarAlt": "账户头像",
-      "chooseAvatar": "选择头像",
-      "avatarHelp": "JPG、PNG 或 WebP · 最大 3 MB",
-      "displayName": "显示名称",
-      "email": "电子邮箱",
-      "emailHelp": "您的登录邮箱由身份验证提供商管理。",
-      "save": "保存资料",
-      "uploadAvatar": "上传头像",
-      "removeAvatar": "移除头像"
-    },
-    "onboardingTips": {
-      "title": "设置提示",
-      "description": "下次打开设置引导时显示相关提示。您也可以在设置向导中更改此选项。",
-      "enable": "启用设置提示",
-      "disable": "停用设置提示"
-    },
-    "hapticFeedback": {
-      "title": "触觉反馈",
-      "description": "在支持的设备上使用振动来反馈点击和重新连接成功。始终遵循“减少动态效果”设置。",
-      "enable": "启用触觉反馈",
-      "disable": "停用触觉反馈"
-    },
-    "bulkSender": {
-      "compliance": "仅向已同意接收此类沟通的人发送。Get Phame 会保留退订处理和合规保护措施。",
-      "connectAndTest": "连接并测试",
-      "connected": "已连接",
-      "connectedToast": "批量发送已连接。",
-      "connecting": "连接中…",
-      "description": "连接已验证的事务性 SMTP 中继以支持更高发送量。凭据会在不发送邮件的情况下进行测试。",
-      "disconnect": "断开连接",
-      "disconnectedToast": "批量发送已断开连接。",
-      "fromEmail": "发件人邮箱",
-      "fromEmailHelp": "此发件人必须已在您的提供商处完成验证。",
-      "fromName": "发件人名称",
-      "healthyToast": "连接正常。",
-      "hideSecret": "隐藏密钥",
-      "legacyNotice": "此连接使用旧版 API 模式。可在方便时更新以使用引导式 SMTP 预设。",
-      "presetEndpoint": "预设端点",
-      "proBody": "升级到专业版以连接事务性邮件服务，支持更高发送量。",
-      "proTitle": "专业版功能",
-      "provider": "提供商",
-      "region": "区域",
-      "secretUsedForUsername": "您的密钥会安全地用于两个 SMTP 字段。",
-      "security": "安全",
-      "setupHelp": "设置帮助",
-      "showSecret": "显示密钥",
-      "smtpHost": "SMTP 主机",
-      "smtpPort": "端口",
-      "testConnection": "测试连接",
-      "testFailed": "连接测试失败。",
-      "update": "更新"
-    }
-  },
-  "referralRewardsCard": {
-    "title": "推荐奖励",
-    "subtitle": "每成功推荐一位付费用户，即可获得一个月的免费使用时长",
-    "joined": "已加入",
-    "converted": "已转换",
-    "freeMonths": "免费月份",
-    "whatsapp": "WhatsApp",
-    "copied": "已复制！",
-    "copyLink": "复制链接",
-    "shareHint": "在下方分享您的链接，开始赚取免费月份",
-    "rewardProcessing": "奖励处理中 — 您的免费月份将很快生效",
-    "copySuccessToast": "推荐链接已复制！",
-    "copyErrorToast": "无法复制链接。"
-  },
-  "shareAndEarn": {
-    "title": "分享并赚取",
-    "subtitle": "推荐朋友 — 他们订阅后你可获得 1 个月免费使用",
-    "referredLabel": "已推荐",
-    "convertedLabel": "已转化",
-    "monthsEarnedLabel": "已获得月数",
-    "copied": "已复制！",
-    "copy": "复制",
-    "loading": "加载中...",
-    "upgradeTip": "升级到付费计划，当推荐转化时即可获得免费1个月奖励。",
-    "copySuccessToast": "推荐链接已复制！"
-  },
-  "versionToast": {
-    "title": "有新版本可用",
-    "description": "点击更新以获取最新功能。",
-    "action": "立即更新"
-  },
-  "whatsNew": {
-    "title": "新功能",
-    "subtitle": "以下是最新更新中的变化。",
-    "cta": "明白了 — 出发！"
-  },
-  "adminCodes": {
-    "lifetimeAccess": "终身访问权限",
-    "monthsPro": "{{count}} 个月专业版",
-    "monthsPro_other": "{{count}} 个月专业版",
-    "daysPro": "{{count}} 天专业版",
-    "daysPro_other": "{{count}} 天专业版",
-    "csvButton": "CSV",
-    "csvTitle": "下载 CSV",
-    "codesCreated": "已创建",
-    "codesRedeemed": "已兑换",
-    "codesActive": "活跃"
-  },
-  "common": {
-    "gotIt": "知道了",
-    "hide": "隐藏",
-    "show": "显示",
-    "cancel": "取消",
-    "copy": "复制",
-    "off": "关",
-    "on": "开",
-    "optional": "可选"
-  },
-  "pricingGrid": {
-    "title": "选择适合您业务增长的方案",
-    "savingsEyebrow": "节省计算器",
-    "savingsTitle": "查看每种承诺方案能节省多少",
-    "savingsBasis": "与按月付款相比",
-    "monthlyAnnualCost": "12 个月",
-    "annualSave": "节省 {{amount}}",
-    "annualSavingsDetail": "首年支付 {{price}}，而不是 {{monthly}}",
-    "lifetimeSave": "到第二年可节省 {{amount}}",
-    "lifetimePayback": "约 {{months}} 个月即可回本",
-    "heroSendRequests": "发送请求",
-    "heroAutomateFollowUps": "自动跟进",
-    "heroTrackGrowth": "跟踪增长",
-    "closeComparison": "关闭对比",
-    "includedLabel": "已包含",
-    "planFeaturesLabel": "{{plan}} 方案功能",
-    "approximateThb": "约 {{amount}} 泰铢",
-    "guidance": {
-      "monthly": "适合需要短期灵活性的用户。",
-      "annual": "最佳续订价值，约每月 $24.17。",
-      "lifetime": "最佳长期价值：一次支付 $349，无需续订。"
-    }
   },
   "authFeedback": {
     "openingGoogle": "正在打开 Google 登录…",
@@ -2047,6 +1653,69 @@
     "shareCancelled": "已取消分享。",
     "shareError": "目前无法分享 Get Phame。"
   },
+  "settings": {
+    "accountProfile": {
+      "title": "账户资料",
+      "description": "管理您的 Get Phame 账户中显示的身份信息。",
+      "loading": "正在加载账户资料",
+      "saved": "资料已更新。",
+      "avatarSaved": "头像已更新。",
+      "avatarRemoved": "头像已移除。",
+      "avatarInvalid": "请选择不超过 3 MB 的 JPG、PNG 或 WebP 图片。",
+      "avatarReadError": "无法读取该图片，请尝试其他文件。",
+      "avatarAlt": "账户头像",
+      "chooseAvatar": "选择头像",
+      "avatarHelp": "JPG、PNG 或 WebP · 最大 3 MB",
+      "displayName": "显示名称",
+      "email": "电子邮箱",
+      "emailHelp": "您的登录邮箱由身份验证提供商管理。",
+      "save": "保存资料",
+      "uploadAvatar": "上传头像",
+      "removeAvatar": "移除头像"
+    },
+    "onboardingTips": {
+      "title": "设置提示",
+      "description": "下次打开设置引导时显示相关提示。您也可以在设置向导中更改此选项。",
+      "enable": "启用设置提示",
+      "disable": "停用设置提示"
+    },
+    "hapticFeedback": {
+      "title": "触觉反馈",
+      "description": "在支持的设备上使用振动来反馈点击和重新连接成功。始终遵循“减少动态效果”设置。",
+      "enable": "启用触觉反馈",
+      "disable": "停用触觉反馈"
+    },
+    "bulkSender": {
+      "compliance": "仅向已同意接收此类沟通的人发送。Get Phame 会保留退订处理和合规保护措施。",
+      "connectAndTest": "连接并测试",
+      "connected": "已连接",
+      "connectedToast": "批量发送已连接。",
+      "connecting": "连接中…",
+      "description": "连接已验证的事务性 SMTP 中继以支持更高发送量。凭据会在不发送邮件的情况下进行测试。",
+      "disconnect": "断开连接",
+      "disconnectedToast": "批量发送已断开连接。",
+      "fromEmail": "发件人邮箱",
+      "fromEmailHelp": "此发件人必须已在您的提供商处完成验证。",
+      "fromName": "发件人名称",
+      "healthyToast": "连接正常。",
+      "hideSecret": "隐藏密钥",
+      "legacyNotice": "此连接使用旧版 API 模式。可在方便时更新以使用引导式 SMTP 预设。",
+      "presetEndpoint": "预设端点",
+      "proBody": "升级到专业版以连接事务性邮件服务，支持更高发送量。",
+      "proTitle": "专业版功能",
+      "provider": "提供商",
+      "region": "区域",
+      "secretUsedForUsername": "您的密钥会安全地用于两个 SMTP 字段。",
+      "security": "安全",
+      "setupHelp": "设置帮助",
+      "showSecret": "显示密钥",
+      "smtpHost": "SMTP 主机",
+      "smtpPort": "端口",
+      "testConnection": "测试连接",
+      "testFailed": "连接测试失败。",
+      "update": "更新"
+    }
+  },
   "login": {
     "title": "Get Phame",
     "subtitle": "登录您的账户",
@@ -2202,7 +1871,7 @@
     "copied": "已复制！",
     "copySuccessToast": "推荐链接已复制！",
     "copyErrorToast": "无法复制链接。",
-    "shareMessage": "通过 Get Phame 获得更多 5 星好评 — {{url}}",
+    "shareMessage": "使用 Get Phame 发送评论请求 — {{url}}",
     "noReferralsHint": "在下方分享链接，开始赚取免费月份",
     "pendingReferralsHint": "{{count}} 位好友已加入 — 等待他们升级为付费",
     "pendingReferralsHint_plural": "{{count}} 位好友已加入 — 等待他们升级为付费",
@@ -2384,7 +2053,10 @@
   "landing": {
     "hero": {
       "categoryLabel": "面向本地商家的评价请求邮件软件",
-      "googleDisclosureLabel": "Google 登录数据使用"
+      "googleDisclosureLabel": "Google 登录数据使用",
+      "ctaVariantB": "免费开始 — 无需信用卡",
+      "headlinePart1": "发送个性化评论请求",
+      "setupTime": "引导式设置"
     },
     "leadCapture": {
       "addressConfirmation": "我们已将其发送至 {{email}}。请确认拼写并在未收到时检查垃圾邮件。服务商接受并不保证投递到收件箱。",
@@ -2396,8 +2068,9 @@
       "emailInvalid": "请输入格式正确的电子邮件，例如 name@example.com。",
       "emailRequired": "请输入您的电子邮件地址。",
       "providerAcceptedMessage": "您的邮箱服务商已接受该指南以进行投递。",
-      "sharePrompt": "认识需要更多评价的人吗？分享这份免费指南。",
-      "tryAgain": "重试发送邮件"
+      "sharePrompt": "分享免费的评论请求指南。",
+      "tryAgain": "重试发送邮件",
+      "description": "获取免费指南，规划清晰、合规的评论请求沟通，并接收产品更新和实用的口碑管理建议。"
     },
     "purpose": {
       "description": "Get Phame 帮助本地商家使用其已连接的邮箱，从自有邮箱发送个性化的评价请求邮件。适用于希望更简便向真实客户征求反馈的商家、摄影师、咖啡馆与餐厅、家政与上门服务团队、诊所与沙龙、代理机构及 WooCommerce 商店。",
@@ -2416,7 +2089,13 @@
       "title": "Get Phame 能做什么"
     },
     "stats": {
-      "emailsSentValue": "您的收件箱"
+      "emailsSentValue": "您的收件箱",
+      "individualOutreachValue": "逐一",
+      "moreReviewsLabel": "联系客户",
+      "setupValue": "引导式",
+      "averageSetupTimeLabel": "设置与上手",
+      "followUpValue": "自动",
+      "averageResponseRateLabel": "客户完成操作后停止提醒"
     },
     "support": {
       "attachment": "截图",
@@ -2453,6 +2132,53 @@
         "subjectMin": "请输入至少 3 个字符的主题。"
       },
       "website": "网站"
+    },
+    "faq": {
+      "a1": "不会。每封邮件都直接从你连接的邮箱账户发出，而不是第三方群发服务器。客户会看到你配置的发件人姓名、地址和签名。",
+      "a12": "“无限”表示 Get Phame 不为 Pro 套餐设置每月评论请求上限。你所连接邮箱服务商的发送政策和限制仍然适用。",
+      "a9": "不需要。对于 Gmail 和 Outlook，我们提供带截图的分步指南。自定义 SMTP 需要服务器地址、端口和服务商提供的凭据。"
+    },
+    "feature1": {
+      "description": "每条评论请求都从你连接的邮箱账户发送，并使用你配置的发件人姓名和签名。",
+      "statValue": "你的邮箱",
+      "statLabel": "发件人身份"
+    },
+    "feature2": {
+      "title": "批量发送个性化请求",
+      "description": "通过 CSV 或 WooCommerce 同步导入客户，选择收件人，并发送个性化请求，无需逐条复制。",
+      "statValue": "批量",
+      "statLabel": "个性化发送"
+    },
+    "feature3": {
+      "statValue": "灵活",
+      "statLabel": "评论平台"
+    },
+    "subHeadline": "从你连接的邮箱发送清晰、个性化评论请求的简单方式。",
+    "finalCta": {
+      "description": "永久免费：初始 10 个请求，之后每 30 个滚动日增加 5 个。无需信用卡。"
+    },
+    "howItWorks": {
+      "setupSteps": {
+        "step1": {
+          "description": "按照引导步骤连接 Gmail、Outlook 或 SMTP 邮箱。凭据使用 AES-256 加密。"
+        },
+        "step4": {
+          "description": "向每位客户发送个性化请求，并在一处查看发送、打开和点击活动。"
+        }
+      },
+      "headline": "从连接邮箱到发送第一条评论请求",
+      "setupTime": "引导式设置、导入与发送"
+    },
+    "productShowcase": {
+      "tabEmailDescription": "每条请求使用你在 Get Phame 中配置的发件人姓名、签名和语气。",
+      "tabImportTitle": "从 CSV 或 WooCommerce 导入客户",
+      "tabImportDescription": "上传 CSV 或同步 WooCommerce，并在发送前检查邮箱验证和重复项。",
+      "tabTrackingTitle": "查看请求活动",
+      "tabTrackingDescription": "在 Get Phame 仪表板中查看发送、打开和点击活动。",
+      "tabTrackingAlt": "Get Phame 请求活动仪表板，显示发送、打开和点击跟踪"
+    },
+    "section": {
+      "description": "查看三步发送流程。"
     }
   },
   "developerIntegrations": {

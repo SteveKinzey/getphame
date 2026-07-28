@@ -3,19 +3,21 @@ import { useTranslation } from "react-i18next";
 
 export default function Stats() {
   const { t } = useTranslation();
+
   const stats = [
-    { value: "10\u00d7", label: t("stats.stat1Label", { defaultValue: "more reviews vs. asking in person" }) },
-    { value: "< 2 min", label: t("stats.stat2Label", { defaultValue: "average setup time" }) },
-    { value: t("stats.stat3Value", { defaultValue: "Your inbox" }), label: t("stats.stat3Label", { defaultValue: "emails sent from your own address" }) },
-    { value: "42%", label: t("stats.stat4Label", { defaultValue: "average response rate" }) },
+    { value: t("landing.stats.individualOutreachValue", { defaultValue: "Individual" }), label: t("landing.stats.moreReviewsLabel", { defaultValue: "customer outreach" }) },
+    { value: t("landing.stats.setupValue", { defaultValue: "Guided" }), label: t("landing.stats.averageSetupTimeLabel", { defaultValue: "setup and onboarding" }) },
+    { value: t("landing.stats.emailsSentValue", { defaultValue: "Your inbox" }), label: t("landing.stats.emailsSentLabel", { defaultValue: "emails sent from your own address" }) },
+    { value: t("landing.stats.followUpValue", { defaultValue: "Automatic" }), label: t("landing.stats.averageResponseRateLabel", { defaultValue: "reminders stop after customer action" }) },
   ];
+
   const industries = [
-    t("stats.industry1", { defaultValue: "Photographers" }),
-    t("stats.industry2", { defaultValue: "Cafés & Restaurants" }),
-    t("stats.industry3", { defaultValue: "Home Services" }),
-    t("stats.industry4", { defaultValue: "Clinics & Salons" }),
-    t("stats.industry5", { defaultValue: "Agencies" }),
-    t("stats.industry6", { defaultValue: "WooCommerce Stores" }),
+    t("landing.stats.industryPhotographers", { defaultValue: "Photographers" }),
+    t("landing.stats.industryCafesRestaurants", { defaultValue: "Cafés & Restaurants" }),
+    t("landing.stats.industryHomeServices", { defaultValue: "Home Services" }),
+    t("landing.stats.industryClinicsSalons", { defaultValue: "Clinics & Salons" }),
+    t("landing.stats.industryAgencies", { defaultValue: "Agencies" }),
+    t("landing.stats.industryWooCommerceStores", { defaultValue: "WooCommerce Stores" }),
   ];
 
   return (
@@ -25,12 +27,12 @@ export default function Stats() {
       <div className="container relative z-10">
         <FadeUp className="text-center mb-10">
           <h2 className="font-display font-bold text-2xl md:text-3xl text-white mb-3">
-            {t("stats.title", { defaultValue: "Built for businesses that run on reputation" })}
+            {t("landing.stats.heading", { defaultValue: "Built for businesses that run on reputation" })}
           </h2>
           <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-slate-200 font-bold">
             {industries.map((ind, i) => (
               <span key={ind} className="flex items-center gap-2">
-                {i > 0 && <span className="text-[#2a3a5c]">\u00b7</span>}
+                {i > 0 && <span className="text-[#2a3a5c]">·</span>}
                 {ind}
               </span>
             ))}

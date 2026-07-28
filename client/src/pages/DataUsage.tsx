@@ -46,9 +46,8 @@ export default function DataUsage() {
           <p className="text-sm leading-relaxed" style={BODY_STYLE}>
             GetPhame is a review request tool for local businesses. It allows business owners to
             send personalized review request emails to their customers from their own email account
-            (Gmail, Outlook, or any SMTP provider). The goal is to help businesses collect more
-            5-star reviews on Google, Yelp, TripAdvisor, and other platforms — without awkward
-            in-person asks.
+            (Gmail, Outlook, or any SMTP provider). The goal is to help businesses manage clear,
+            individual review-request outreach for Google, Yelp, TripAdvisor, and other platforms.
           </p>
           <p className="mt-3 text-sm leading-relaxed" style={BODY_STYLE}>
             GetPhame does <strong>not</strong> send emails through Google's servers. It uses your

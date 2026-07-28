@@ -1,30 +1,31 @@
 import type { Express } from "express";
+import { storageGet } from "./storage";
 
 const MAX_STATIC_COPY_BYTES = 512 * 1024;
 
 const STATIC_COPY_SOURCES = {
   es: {
-    sourceUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/sjGiWbZTHoHxfbYA.json",
+    storageKey: "static-copy/2026-07-28-exact-annual-pricing/getphame-static-copy-es.json",
     fileName: "getphame-static-copy-es.json",
   },
   fr: {
-    sourceUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/zGJAquixWzxIjLNP.json",
+    storageKey: "static-copy/2026-07-28-exact-annual-pricing/getphame-static-copy-fr.json",
     fileName: "getphame-static-copy-fr.json",
   },
   it: {
-    sourceUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/tAmdzdJpkIfndvEf.json",
+    storageKey: "static-copy/2026-07-28-exact-annual-pricing/getphame-static-copy-it.json",
     fileName: "getphame-static-copy-it.json",
   },
   th: {
-    sourceUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/rFZnrPRlWfwdOJAG.json",
+    storageKey: "static-copy/2026-07-28-exact-annual-pricing/getphame-static-copy-th.json",
     fileName: "getphame-static-copy-th.json",
   },
   "zh-CN": {
-    sourceUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/dXkBnWoGIEpQZRhu.json",
+    storageKey: "static-copy/2026-07-28-exact-annual-pricing/getphame-static-copy-zh-CN.json",
     fileName: "getphame-static-copy-zh-CN.json",
   },
   "zh-TW": {
-    sourceUrl: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663507659115/wIvXkZEnrMMuwtbj.json",
+    storageKey: "static-copy/2026-07-28-exact-annual-pricing/getphame-static-copy-zh-TW.json",
     fileName: "getphame-static-copy-zh-TW.json",
   },
 } as const;
@@ -66,21 +67,23 @@ async function loadStaticCopy(locale: StaticCopyLocale) {
   if (cached) return cached;
 
   const source = STATIC_COPY_SOURCES[locale];
-  const pending = fetch(source.sourceUrl, {
-    headers: { Accept: "application/json" },
-    signal: AbortSignal.timeout(10_000),
-  }).then(async response => {
-    if (!response.ok) {
-      throw new Error(`Static copy upstream returned ${response.status}`);
-    }
+  const pending = storageGet(source.storageKey)
+    .then(({ url }) => fetch(url, {
+      headers: { Accept: "application/json" },
+      signal: AbortSignal.timeout(10_000),
+    }))
+    .then(async response => {
+      if (!response.ok) {
+        throw new Error(`Static copy upstream returned ${response.status}`);
+      }
 
-    const bytes = Buffer.from(await response.arrayBuffer());
-    if (bytes.length === 0 || bytes.length > MAX_STATIC_COPY_BYTES) {
-      throw new Error("Static copy upstream returned an invalid file size");
-    }
-    validateStaticCopy(bytes, locale);
-    return bytes;
-  });
+      const bytes = Buffer.from(await response.arrayBuffer());
+      if (bytes.length === 0 || bytes.length > MAX_STATIC_COPY_BYTES) {
+        throw new Error("Static copy upstream returned an invalid file size");
+      }
+      validateStaticCopy(bytes, locale);
+      return bytes;
+    });
 
   staticCopyCache.set(locale, pending);
   try {

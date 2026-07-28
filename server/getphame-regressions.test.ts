@@ -29,14 +29,12 @@ describe("Get Phame regression contracts", () => {
     for (const section of [
       "<Hero />",
       "<AppPurpose />",
-      "<SocialProofBar />",
       "<TrustBar />",
       "<VideoDemo />",
       "<Features />",
       "<HowItWorks />",
       "<ProductShowcase />",
       "<Stats />",
-      "<Testimonials />",
       "<Pricing />",
       "<Comparison />",
       "<FAQ />",
@@ -46,6 +44,9 @@ describe("Get Phame regression contracts", () => {
     ]) {
       expect(landing).toContain(section);
     }
+
+    expect(landing).not.toContain("<SocialProofBar />");
+    expect(landing).not.toContain("<Testimonials />");
 
     expect(landing).toContain("Get Phame | Review Request Software for Local Businesses");
     expect(navbar).toContain("<LanguageFlyout");

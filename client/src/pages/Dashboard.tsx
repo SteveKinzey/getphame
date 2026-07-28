@@ -5,40 +5,20 @@ import { useTranslation } from 'react-i18next';
 import { trpc } from "@/lib/trpc";
 import { BarChart2, Send, TrendingUp, Star, Loader2, Calendar, Zap, CheckCircle2, Circle, CheckSquare, Square, X, Search, Eye, MousePointerClick, RotateCcw } from "lucide-react";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
-import { subDays, startOfDay } from "date-fns";
-import { useTranslation as useI18nForLocale } from "react-i18next";
+import { format, subDays, startOfDay } from "date-fns";
 import { useLocation } from "wouter";
-import { useMemo, useState } from "react";
+import { lazy, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import LanguageFlyout from "@/components/LanguageFlyout";
 import ClientDetailSheet from "@/components/ClientDetailSheet";
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
+import DeferredDashboardSection from "@/components/dashboard/DeferredDashboardSection";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler);
+const ActivityTrendCard = lazy(() => import("@/components/dashboard/ActivityTrendCard"));
 
 function formatDate(date: Date): string {
   try {
-    const lang = typeof window !== "undefined"
-      ? (localStorage.getItem("rr-lang") ?? navigator.language ?? "en")
-      : "en";
-    return new Intl.DateTimeFormat(lang, {
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    }).format(date);
+    return format(date, "MMM d, h:mm a");
   } catch {
     return String(date);
   }
@@ -52,8 +32,6 @@ export default function DashboardPage() {
   const { data: allRequests, isLoading: listLoading } = trpc.requests.list.useQuery();
   const { data: profile } = trpc.profile.get.useQuery();
   const { data: emailPerf } = trpc.tracking.overallStats.useQuery();
-  const [trendDays, setTrendDays] = useState<30 | 60 | 90>(30);
-  const { data: dailyTrend, isLoading: trendLoading } = trpc.tracking.dailyTrend.useQuery({ days: trendDays });
   const utils = trpc.useUtils();
 
   // Single-row toggle
@@ -94,9 +72,9 @@ export default function DashboardPage() {
       utils.requests.list.invalidate();
       utils.requests.stats.invalidate();
       if (errors.length > 0) {
-        toast.warning(t("dashboard.toasts.bulkRestartPartial", { count: sent, failCount: errors.length, defaultValue: `Restarted ${sent} campaign(s). ${errors.length} failed.` }));
+        toast.warning(`Restarted ${sent} campaign(s). ${errors.length} failed.`);
       } else {
-        toast.success(t("dashboard.toasts.bulkRestartSuccess", { count: sent, defaultValue: `Restarted ${sent} campaign(s) successfully.` }));
+        toast.success(`Restarted ${sent} campaign(s) successfully.`);
       }
       setSelected(new Set());
     },
@@ -115,12 +93,12 @@ export default function DashboardPage() {
     },
     onError: (_err, _vars, ctx) => {
       if (ctx?.prev) utils.requests.list.setData(undefined, ctx.prev);
-      toast.error(t("dashboard.toasts.updateFailed", { defaultValue: "Failed to update requests." }));
+      toast.error("Failed to update requests.");
     },
     onSuccess: (result) => {
       utils.requests.list.invalidate();
       utils.requests.stats.invalidate();
-      toast.success(t("dashboard.toasts.updatedSuccess", { count: result.updated, defaultValue: `${result.updated} request${result.updated !== 1 ? "s" : ""} updated.` }));
+      toast.success(`${result.updated} request${result.updated !== 1 ? "s" : ""} updated.`);
       setSelected(new Set());
     },
   });
@@ -185,11 +163,7 @@ export default function DashboardPage() {
         const sent = new Date(r.sentAt).getTime();
         return sent >= day.getTime() && sent < nextDay.getTime();
       }).length;
-      const lang = typeof window !== "undefined"
-        ? (localStorage.getItem("rr-lang") ?? navigator.language ?? "en")
-        : "en";
-      const label = new Intl.DateTimeFormat(lang, { weekday: "short" }).format(day);
-      days.push({ label, count, date: day });
+      days.push({ label: format(day, "EEE"), count, date: day });
     }
     return days;
   }, [allRequests]);
@@ -261,177 +235,10 @@ export default function DashboardPage() {
 
       <div className="px-4 py-4 lg:px-8 lg:py-6">
       <div className="max-w-4xl mx-auto flex flex-col gap-4">
-        {/* ── Analytics Card: 30-Day Trend Line Chart ──────────────────────── */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-black rr-text-navy">
-              <TrendingUp size={14} className="inline mr-1.5 mb-0.5" />
-              {t('dashboard.activityTrend.title', { defaultValue: 'Activity Trend' })}
-            </h3>
-            <div className="flex items-center gap-1">
-              {([30, 60, 90] as const).map((d) => (
-                <button
-                  key={d}
-                  onClick={() => setTrendDays(d)}
-                  className="text-xs px-2 py-0.5 rounded-full font-bold transition-colors"
-                  style={{
-                    background: trendDays === d ? "oklch(0.22 0.09 260)" : "oklch(0.94 0.01 260)",
-                    color: trendDays === d ? "white" : "oklch(0.40 0.06 260)",
-                  }}
-                >
-                  {d}d
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {trendLoading ? (
-            <div className="flex justify-center py-8">
-              <Loader2 className="animate-spin rr-text-navy" />
-            </div>
-          ) : !dailyTrend || dailyTrend.every((d) => d.sends === 0 && d.opens === 0 && d.clicks === 0) ? (
-            <div className="text-center py-8">
-              <p className="text-sm rr-text-navy-muted">{t('dashboard.activityTrend.empty', { defaultValue: 'No activity in the last {{days}} days. Send your first request to see trends here.', days: trendDays })}</p>
-            </div>
-          ) : (
-            <div style={{ height: "200px" }}>
-              <Line
-                data={{
-                  labels: dailyTrend.map((d) => {
-                    const dt = new Date(d.date + "T00:00:00");
-                    const lang = typeof window !== "undefined"
-                      ? (localStorage.getItem("rr-lang") ?? navigator.language ?? "en")
-                      : "en";
-                    return new Intl.DateTimeFormat(lang, { month: "short", day: "numeric" }).format(dt);
-                  }),
-                  datasets: [
-                    {
-                      label: "Sent",
-                      data: dailyTrend.map((d) => d.sends),
-                      borderColor: "#1a2a5e",
-                      backgroundColor: "rgba(26, 42, 94, 0.08)",
-                      fill: true,
-                      tension: 0.4,
-                      pointRadius: 2,
-                      pointHoverRadius: 5,
-                      borderWidth: 2,
-                    },
-                    {
-                      label: "Opens",
-                      data: dailyTrend.map((d) => d.opens),
-                      borderColor: "#22c55e",
-                      backgroundColor: "transparent",
-                      fill: false,
-                      tension: 0.4,
-                      pointRadius: 2,
-                      pointHoverRadius: 5,
-                      borderWidth: 2,
-                    },
-                    {
-                      label: "Clicks",
-                      data: dailyTrend.map((d) => d.clicks),
-                      borderColor: "#d4a017",
-                      backgroundColor: "transparent",
-                      fill: false,
-                      tension: 0.4,
-                      pointRadius: 2,
-                      pointHoverRadius: 5,
-                      borderWidth: 2,
-                    },
-                  ],
-                }}
-                options={{
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  interaction: { mode: "index", intersect: false },
-                  plugins: {
-                    legend: {
-                      position: "top",
-                      labels: {
-                        boxWidth: 10,
-                        padding: 12,
-                        font: { size: 11, family: "Poppins" },
-                      },
-                    },
-                    tooltip: {
-                      backgroundColor: "#0f1e4a",
-                      titleColor: "#ffffff",
-                      bodyColor: "#c8d0e8",
-                      borderColor: "rgba(255,255,255,0.12)",
-                      borderWidth: 1,
-                      padding: 10,
-                      cornerRadius: 8,
-                      titleFont: { size: 12, family: "Poppins", weight: "bold" as const },
-                      bodyFont: { size: 11, family: "Poppins" },
-                      callbacks: {
-                        title: (items) => items[0]?.label ?? "",
-                        label: (item) => {
-                          const val = item.parsed.y as number;
-                          return `  ${item.dataset.label}: ${val}`;
-                        },
-                        afterBody: (items) => {
-                          const sent = ((items as {dataset:{label:string},parsed:{y:number}}[]).find((i) => i.dataset.label === "Sent")?.parsed.y) ?? 0;
-                          const opens = ((items as {dataset:{label:string},parsed:{y:number}}[]).find((i) => i.dataset.label === "Opens")?.parsed.y) ?? 0;
-                          const clicks = ((items as {dataset:{label:string},parsed:{y:number}}[]).find((i) => i.dataset.label === "Clicks")?.parsed.y) ?? 0;
-                          if (sent === 0) return [];
-                          const openRate = Math.round((opens / sent) * 100);
-                          const clickRate = Math.round((clicks / sent) * 100);
-                          return [
-                            "",
-                            `  Open rate: ${openRate}%`,
-                            `  Click rate: ${clickRate}%`,
-                          ];
-                        },
-                      },
-                    },
-                  },
-                  scales: {
-                    x: {
-                      grid: { display: false },
-                      ticks: {
-                        font: { size: 10, family: "Poppins" },
-                        maxTicksLimit: trendDays === 30 ? 10 : trendDays === 60 ? 8 : 6,
-                        color: "oklch(0.55 0.05 260)",
-                      },
-                    },
-                    y: {
-                      beginAtZero: true,
-                      grid: { color: "oklch(0.95 0.01 260)" },
-                      ticks: {
-                        font: { size: 10, family: "Poppins" },
-                        stepSize: 1,
-                        color: "oklch(0.55 0.05 260)",
-                      },
-                    },
-                  },
-                }}
-              />
-            </div>
-          )}
-
-          {/* Velocity summary row */}
-          {velocity && (stats?.total ?? 0) > 0 && (
-            <div
-              className="mt-3 pt-3 flex items-center justify-between"
-              style={{ borderTop: "1px solid oklch(0.94 0.01 260)" }}
-            >
-              <div className="text-center flex-1">
-                <p className="text-xs rr-text-navy-muted">This Week</p>
-                <p className="text-base font-black rr-text-navy">{velocity.last7}</p>
-              </div>
-              <div className="w-px h-8" style={{ background: "oklch(0.90 0.01 260)" }} />
-              <div className="text-center flex-1">
-                <p className="text-xs rr-text-navy-muted">Prior Week</p>
-                <p className="text-base font-black rr-text-navy">{velocity.prior7}</p>
-              </div>
-              <div className="w-px h-8" style={{ background: "oklch(0.90 0.01 260)" }} />
-              <div className="text-center flex-1">
-                <p className="text-xs rr-text-navy-muted">All Time</p>
-                <p className="text-base font-black rr-text-navy">{stats?.total ?? 0}</p>
-              </div>
-            </div>
-          )}
-        </div>
+        {/* ── Analytics Card: deferred Chart.js module and data query ─────── */}
+        <DeferredDashboardSection loadingLabel="Loading analytics" minHeightClassName="min-h-[324px]">
+          <ActivityTrendCard total={stats?.total ?? 0} velocity={velocity} />
+        </DeferredDashboardSection>
 
 
         {/* Email Performance Card */}

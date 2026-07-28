@@ -16,12 +16,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { Bell, ChevronLeft, Clock, CheckCircle2, XCircle, Ban, SendHorizonal, Eye, X, Crown, Lock } from "lucide-react";
+import { Bell, ChevronLeft, Clock, CheckCircle2, XCircle, Ban, SendHorizonal, Eye, X } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import PaywallModal from "@/components/PaywallModal";
 
 type Reminder = {
   id: number;
@@ -39,15 +38,12 @@ export default function Reminders() {
   const [, navigate] = useLocation();
   const [cancelTarget, setCancelTarget] = useState<Reminder | null>(null);
   const [sendNowTarget, setSendNowTarget] = useState<Reminder | null>(null);
-  const [paywallOpen, setPaywallOpen] = useState(false);
   const [bulkCancelOpen, setBulkCancelOpen] = useState(false);
   const [bulkCancelling, setBulkCancelling] = useState(false);
   const [previewStep, setPreviewStep] = useState<number | null>(null);
 
   const utils = trpc.useUtils();
 
-  const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: isAuthenticated });
-  const isFree = !profile?.tier || profile.tier === "free";
   const { data: reminders = [], isLoading } = trpc.reminders.list.useQuery(undefined, {
     enabled: isAuthenticated,
   });
@@ -69,7 +65,6 @@ export default function Reminders() {
     },
     onError: (e) => {
       setSendNowTarget(null);
-      if (e.message.includes("10003")) { setPaywallOpen(true); return; }
       toast.error(e.message);
     },
   });
@@ -122,17 +117,9 @@ export default function Reminders() {
           <ChevronLeft size={16} /> {t("header.back")}
         </button>
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
-              Follow-up Reminders
-            </h1>
-            {isFree && (
-              <span className="flex items-center gap-1 text-[10px] font-black px-2 py-0.5 rounded-full"
-                style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}>
-                <Crown size={9} /> PRO
-              </span>
-            )}
-          </div>
+          <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
+            Follow-up Reminders
+          </h1>
           <p className="text-base font-bold mt-1 text-white">
             {t("header.subtitle")}
           </p>
@@ -353,7 +340,6 @@ export default function Reminders() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-      <PaywallModal open={paywallOpen} onClose={() => setPaywallOpen(false)} feature="Follow-up Reminders" />
     </div>
   );
 }

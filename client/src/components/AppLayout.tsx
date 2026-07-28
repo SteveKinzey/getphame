@@ -3,18 +3,25 @@
 // Tablet (768–1023px): icon-only sidebar (64px) + content
 // Desktop (1024px+): full sidebar (220px) with labels + content
 import { useLocation } from "wouter";
-import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown } from "lucide-react";
+import { Home, Send, BarChart2, Settings, Moon, Sun, Zap, Crown, ShieldCheck, Users, LogOut, UserRound, Code2, BookOpen } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { ReactNode } from "react";
-import LanguageFlyout from "@/components/LanguageFlyout";
-// App icon: dark navy rounded square with gold P + white star (sidebar icon)
-const LOGO_URL = "/manus-storage/getphame-app-icon-dark_8bb8cc54.png";
-// Horizontal logo for sidebar wordmark on desktop
-const HORIZONTAL_LOGO_URL = "/manus-storage/getphame-horizontal-logo-tight_c3a25069.png";
+import LandingBrandLink from "@/components/LandingBrandLink";
+import NetworkStatusBadge from "@/components/NetworkStatusBadge";
+import HelpAssistant from "@/components/HelpAssistant";
+import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface AppLayoutProps {
   children: ReactNode;
@@ -25,18 +32,34 @@ export default function AppLayout({ children }: AppLayoutProps) {
   const { theme, toggleTheme } = useTheme();
   const { t } = useTranslation();
   const { buttonPressHaptic } = useHaptics();
-  const { user } = useAuth();
+  const { user, logout, loading: authLoading } = useAuth();
   const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: !!user });
+  const { data: accountProfile } = trpc.accountProfile.get.useQuery(undefined, { enabled: !!user });
+  const { data: subscription } = trpc.stripe.subscriptionStatus.useQuery(undefined, {
+    enabled: !!user && profile?.tier !== "free" && profile?.tier !== "lifetime",
+  });
   const isDark = theme === "dark";
+  const manualLabel = user?.role === "admin"
+    ? t("nav.adminManual", { defaultValue: "Admin Manual" })
+    : t("nav.userManual", { defaultValue: "User Manual" });
 
   const NAV_ITEMS = [
     { path: "/", label: t("nav.home"), Icon: Home },
     { path: "/send", label: t("nav.send"), Icon: Send },
     { path: "/dashboard", label: t("nav.dashboard"), Icon: BarChart2 },
+    { path: "/developer", label: t("nav.developer", { defaultValue: "Developer" }), Icon: Code2 },
     { path: "/settings", label: t("nav.settings"), Icon: Settings },
+    { path: "/manual", label: manualLabel, Icon: BookOpen },
+    ...(user?.role === "admin" ? [{ path: "/admin", label: t("nav.admin", { defaultValue: "Administration" }), Icon: Users }] : []),
   ];
 
-  const isPro = profile?.tier && profile.tier !== "free";
+  const effectivePlan = getEffectivePlan(profile?.tier, user?.role);
+  const planLabel = PLAN_LABELS[effectivePlan];
+  const isLife = effectivePlan === "life";
+  const manageSubscription = canManageSubscription(effectivePlan);
+  const renewalDate = subscription?.currentPeriodEnd
+    ? new Intl.DateTimeFormat(undefined, { month: "short", day: "numeric", year: "numeric" }).format(new Date(subscription.currentPeriodEnd))
+    : null;
 
   return (
     <>
@@ -51,35 +74,16 @@ export default function AppLayout({ children }: AppLayoutProps) {
           width: "64px",
         }}
       >
-        {/* Responsive width via CSS — 64px on md, 220px on lg */}
-        <style>{`
-          @media (min-width: 1024px) {
-            .app-sidebar { width: 220px !important; }
-            .app-sidebar-label { display: block !important; }
-            .app-sidebar-brand-text { display: flex !important; }
-          }
-          @media (min-width: 768px) {
-            .app-main { margin-left: 64px; }
-          }
-          @media (min-width: 1024px) {
-            .app-main { margin-left: 220px; }
-          }
-        `}</style>
-
-        {/* Brand */}
+        {/* Brand — sidebar responsive widths are in index.css (.app-sidebar, .app-main) */}
         <div
           className="flex items-center justify-center lg:justify-start gap-2.5 px-3 lg:px-4 py-4 border-b"
           style={{ borderColor: "oklch(0.28 0.08 260)", minHeight: "64px" }}
         >
-          <img
-            src={LOGO_URL}
-            alt="GetPhame"
-            className="w-8 h-8 rounded-lg flex-shrink-0"
-            loading="eager"
-          />
-          {/* Official horizontal logo — shown on desktop, hidden on tablet icon-only mode */}
-          <div className="app-sidebar-brand-text hidden">
-            <img src={HORIZONTAL_LOGO_URL} alt="Get Phame" className="h-6 w-auto" loading="eager" style={{ maxWidth: "130px" }} />
+          <div className="flex justify-center lg:hidden">
+            <LandingBrandLink showText={false} iconClassName="w-8 h-8" />
+          </div>
+          <div className="hidden lg:block">
+            <LandingBrandLink iconClassName="w-8 h-8" textClassName="text-lg" />
           </div>
         </div>
 
@@ -158,35 +162,54 @@ export default function AppLayout({ children }: AppLayoutProps) {
           className="px-2 pb-4 flex flex-col gap-1.5 border-t pt-3"
           style={{ borderColor: "oklch(0.28 0.08 260)" }}
         >
-          {/* Plan badge / Upgrade CTA */}
-          {isPro ? (
-            <div
-              className="flex items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2 rounded-xl"
+          <NetworkStatusBadge variant="sidebar" />
+
+          {user?.role === "admin" && (
+            <button
+              type="button"
+              data-testid="admin-sidebar-badge"
+              onClick={() => { buttonPressHaptic(); navigate("/admin"); }}
+              className="flex w-full items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2 rounded-xl transition active:scale-[0.97]"
+              title={t("account.administratorAccount", { defaultValue: "Administrator account" })}
+              aria-label={t("nav.admin", { defaultValue: "Open administration hub" })}
               style={{
-                background: "oklch(0.80 0.18 80 / 0.10)",
-                border: "1px solid oklch(0.80 0.18 80 / 0.22)",
+                background: "oklch(0.30 0.08 260)",
+                border: "1px solid oklch(0.80 0.18 80 / 0.42)",
               }}
             >
-              <Crown
-                size={14}
-                className="flex-shrink-0"
-                style={{ color: "oklch(0.80 0.18 80)" }}
-              />
-              <span
-                className="app-sidebar-label text-xs font-bold hidden"
-                style={{ color: "oklch(0.80 0.18 80)" }}
-              >
-                {profile?.tier === "lifetime"
-                  ? "Lifetime"
-                  : profile?.tier === "annual"
-                  ? "Annual Pro"
-                  : "Pro"}
+              <ShieldCheck size={14} className="flex-shrink-0" style={{ color: "oklch(0.80 0.18 80)" }} />
+              <span className="app-sidebar-label text-xs font-black hidden text-white">
+                {t("account.administrator", { defaultValue: "Administrator" })}
               </span>
-            </div>
-          ) : (
+            </button>
+          )}
+
+          {/* Account status is always visible; Life is terminal and has no upgrade action. */}
+          <div
+            className="flex items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2 rounded-xl"
+            title={`${planLabel} account`}
+            style={{
+              background: "oklch(0.80 0.18 80 / 0.10)",
+              border: "1px solid oklch(0.80 0.18 80 / 0.22)",
+            }}
+          >
+            <Crown size={14} className="flex-shrink-0" style={{ color: "oklch(0.80 0.18 80)" }} />
+            <span className="app-sidebar-label text-xs font-bold hidden" style={{ color: "oklch(0.80 0.18 80)" }}>
+              {t("account.status", { defaultValue: "Status" })}: {planLabel}
+              {renewalDate && !isLife && (
+                <span className="block mt-0.5 text-[10px] font-semibold text-white/70">
+                  {subscription?.cancelAtPeriodEnd
+                    ? t("account.accessUntil", { defaultValue: "Access until {{date}}", date: renewalDate })
+                    : t("account.renewsOn", { defaultValue: "Renews {{date}}", date: renewalDate })}
+                </span>
+              )}
+            </span>
+          </div>
+
+          {!isLife && (
             <button
               onClick={() => navigate("/upgrade")}
-              title="Upgrade to Pro"
+              title={manageSubscription ? t("account.managePlan", { defaultValue: "Manage plan" }) : t("account.upgrade", { defaultValue: "Upgrade" })}
               className="flex items-center justify-center lg:justify-start gap-2 px-2 lg:px-3 py-2 rounded-xl transition-all duration-200 hover:opacity-80 w-full"
               style={{
                 background: "oklch(0.80 0.18 80 / 0.08)",
@@ -202,7 +225,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
                 className="app-sidebar-label text-xs font-bold hidden"
                 style={{ color: "oklch(0.80 0.18 80)" }}
               >
-                Upgrade
+                {manageSubscription ? t("account.managePlan", { defaultValue: "Manage plan" }) : t("account.upgrade", { defaultValue: "Upgrade" })}
               </span>
             </button>
           )}
@@ -237,38 +260,117 @@ export default function AppLayout({ children }: AppLayoutProps) {
             </span>
           </button>
 
-          {/* Language selector */}
-          <div className="flex items-center justify-center lg:justify-start px-1 lg:px-2">
-            <LanguageFlyout />
-          </div>
-
-          {/* User avatar */}
+          {/* Accessible account menu — avatar-only on tablet, full identity on desktop. */}
           {user && (
-            <div
-              className="flex items-center justify-center lg:justify-start gap-2.5 px-2 lg:px-3 py-2 rounded-xl"
-              style={{ background: "oklch(0.18 0.06 260)" }}
-            >
-              <div
-                className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 font-bold text-xs"
-                style={{
-                  background: "oklch(0.80 0.18 80)",
-                  color: "oklch(0.15 0.06 260)",
-                }}
-              >
-                {(user.name || user.email || "U")[0].toUpperCase()}
-              </div>
-              <div className="app-sidebar-label flex-1 min-w-0 hidden">
-                <p className="text-xs font-semibold text-white truncate">
-                  {user.name || "User"}
-                </p>
-                <p
-                  className="text-xs truncate"
-                  style={{ color: "oklch(0.55 0.04 260)" }}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  data-testid="sidebar-account-menu-trigger"
+                  aria-label={t("profileMenu.open", { defaultValue: "Open account menu" })}
+                  className="flex w-full items-center justify-center lg:justify-start gap-2.5 px-2 lg:px-3 py-2 rounded-xl text-left transition-all duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017]"
+                  style={{ background: "oklch(0.18 0.06 260)" }}
                 >
-                  {user.email}
-                </p>
-              </div>
-            </div>
+                  <div className="h-7 w-7 flex-shrink-0 overflow-hidden rounded-full" style={{ background: "oklch(0.80 0.18 80)" }}>
+                    <img
+                      src={accountProfile?.avatarUrl || "https://assets.getphame.app/getphame-logo.svg"}
+                      alt={accountProfile?.avatarUrl
+                        ? `${user.name || "Get Phame user"} profile photo`
+                        : "Get Phame account profile"}
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                  <div className="app-sidebar-label flex-1 min-w-0 hidden">
+                    <p className="text-xs font-semibold text-white truncate">
+                      {user.name || "User"}
+                    </p>
+                    <p className="text-xs truncate" style={{ color: "oklch(0.55 0.04 260)" }}>
+                      {user.email}
+                    </p>
+                  </div>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="right"
+                align="end"
+                sideOffset={10}
+                className="w-64 border-white/15 bg-[#08172b] p-2 text-white shadow-2xl"
+              >
+                <DropdownMenuLabel className="px-3 py-2 font-normal">
+                  <span className="block text-[11px] font-semibold uppercase tracking-wide text-white/50">
+                    {t("profileMenu.signedInAs", { defaultValue: "Signed in as" })}
+                  </span>
+                  <span className="mt-1 block truncate text-sm font-bold text-white">{user.name || "User"}</span>
+                  <span className="block truncate text-xs text-white/60">{user.email}</span>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-white/15" />
+                <DropdownMenuItem
+                  data-testid="sidebar-dashboard-link"
+                  onSelect={() => {
+                    buttonPressHaptic();
+                    navigate("/dashboard");
+                  }}
+                  className="min-h-11 cursor-pointer gap-3 rounded-lg text-sm font-semibold focus:bg-white/10 focus:text-white"
+                >
+                  <BarChart2 size={18} className="rr-text-gold" />
+                  {t("profileMenu.dashboard", { defaultValue: "Dashboard" })}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  data-testid="sidebar-account-details"
+                  onSelect={() => {
+                    buttonPressHaptic();
+                    navigate("/settings");
+                  }}
+                  className="min-h-11 cursor-pointer gap-3 rounded-lg text-sm font-semibold focus:bg-white/10 focus:text-white"
+                >
+                  <UserRound size={18} className="rr-text-gold" />
+                  {t("profileMenu.accountDetails", { defaultValue: "Account details" })}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  data-testid="sidebar-manual-link"
+                  onSelect={() => {
+                    buttonPressHaptic();
+                    navigate("/manual");
+                  }}
+                  className="min-h-11 cursor-pointer gap-3 rounded-lg text-sm font-semibold focus:bg-white/10 focus:text-white"
+                >
+                  <BookOpen size={18} className="rr-text-gold" />
+                  {manualLabel}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  data-testid="sidebar-theme-toggle"
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    buttonPressHaptic();
+                    toggleTheme?.();
+                  }}
+                  className="min-h-11 cursor-pointer gap-3 rounded-lg text-sm font-semibold focus:bg-white/10 focus:text-white"
+                >
+                  {isDark ? <Sun size={18} className="rr-text-gold" /> : <Moon size={18} className="rr-text-gold" />}
+                  <span className="flex-1">
+                    {isDark
+                      ? t("profileMenu.lightMode", { defaultValue: "Light mode" })
+                      : t("profileMenu.darkMode", { defaultValue: "Dark mode" })}
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-wide text-white/45">
+                    {isDark ? t("common.on", { defaultValue: "On" }) : t("common.off", { defaultValue: "Off" })}
+                  </span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator className="bg-white/15" />
+                <DropdownMenuItem
+                  data-testid="sidebar-logout"
+                  disabled={authLoading}
+                  onSelect={() => {
+                    buttonPressHaptic();
+                    void logout().then(() => navigate("/"));
+                  }}
+                  className="min-h-11 cursor-pointer gap-3 rounded-lg text-sm font-semibold text-white focus:bg-white/10 focus:text-white disabled:cursor-wait"
+                >
+                  <LogOut size={18} className="text-white" />
+                  {t("logout.button", { defaultValue: "Log Out" })}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
       </aside>
@@ -277,6 +379,7 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <div className="app-main flex-1 min-h-screen">
         {children}
       </div>
+      <HelpAssistant />
     </>
   );
 }

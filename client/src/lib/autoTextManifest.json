@@ -1191,19 +1191,6 @@
     ]
   },
   {
-    "key": "k_0f855646c42799",
-    "source": "GetPhame is a review request tool for local businesses. It allows business owners to send personalized review request emails to their customers from their own email account (Gmail, Outlook, or any SMTP provider). The goal is to help businesses collect more 5-star reviews on Google, Yelp, TripAdvisor, and other platforms — without awkward in-person asks.",
-    "usages": [
-      {
-        "file": "client/src/pages/DataUsage.tsx",
-        "line": 47
-      }
-    ],
-    "sourceKinds": [
-      "jsxText"
-    ]
-  },
-  {
     "key": "k_0f98c8d28e6d36",
     "source": "Hi {{customerName}}, Thank you for choosing {{businessName}}! We hope you had a great experience. You can leave a review here: {{platformLinks}} Thank you so much for your support! The {{businessName}} team --- You received this email because you are a customer of {{businessName}}. To stop receiving these emails, reply with \"unsubscribe\".",
     "usages": [
@@ -7070,23 +7057,6 @@
     ]
   },
   {
-    "key": "k_5e4e27cf9b0e9b",
-    "source": "Get More 5-Star",
-    "usages": [
-      {
-        "file": "client/src/pages/Onboarding.tsx",
-        "line": 92
-      },
-      {
-        "file": "client/src/pages/Onboarding.tsx",
-        "line": 155
-      }
-    ],
-    "sourceKinds": [
-      "jsxText"
-    ]
-  },
-  {
     "key": "k_5eb08d27eee004",
     "source": "Authorization: Bearer rl_...",
     "usages": [
@@ -9097,19 +9067,6 @@
     ]
   },
   {
-    "key": "k_7af50df6d2ad34",
-    "source": "Every email includes an unsubscribe link — fully compliant",
-    "usages": [
-      {
-        "file": "client/src/pages/Onboarding.tsx",
-        "line": 134
-      }
-    ],
-    "sourceKinds": [
-      "jsxText"
-    ]
-  },
-  {
     "key": "k_7b029bebc30977",
     "source": "Automatically send a reminder to any contact who hasn't responded in 3 days.",
     "usages": [
@@ -9743,19 +9700,6 @@
       {
         "file": "client/src/pages/Settings.tsx",
         "line": 303
-      }
-    ],
-    "sourceKinds": [
-      "semanticString"
-    ]
-  },
-  {
-    "key": "k_835d9f13355cf3",
-    "source": "Lisa P.",
-    "usages": [
-      {
-        "file": "client/src/components/landing/SocialProofBar.tsx",
-        "line": 39
       }
     ],
     "sourceKinds": [
@@ -10520,23 +10464,6 @@
     ],
     "sourceKinds": [
       "jsxText"
-    ]
-  },
-  {
-    "key": "k_90fada6ac94586",
-    "source": "Sarah M.",
-    "usages": [
-      {
-        "file": "client/src/components/landing/SocialProofBar.tsx",
-        "line": 21
-      },
-      {
-        "file": "client/src/components/landing/Testimonials.tsx",
-        "line": 11
-      }
-    ],
-    "sourceKinds": [
-      "semanticString"
     ]
   },
   {
@@ -12795,23 +12722,6 @@
     ]
   },
   {
-    "key": "k_b2ffc1e4de4965",
-    "source": "Tom R.",
-    "usages": [
-      {
-        "file": "client/src/components/landing/SocialProofBar.tsx",
-        "line": 27
-      },
-      {
-        "file": "client/src/components/landing/Testimonials.tsx",
-        "line": 18
-      }
-    ],
-    "sourceKinds": [
-      "semanticString"
-    ]
-  },
-  {
     "key": "k_b3776811efd5f3",
     "source": "Google Business Profile",
     "usages": [
@@ -13569,19 +13479,6 @@
     ]
   },
   {
-    "key": "k_bb71e79a5ff6e9",
-    "source": "A friend thinks Get Phame can help your business earn more 5-star reviews — automatically.",
-    "usages": [
-      {
-        "file": "client/src/pages/ReferralLanding.tsx",
-        "line": 69
-      }
-    ],
-    "sourceKinds": [
-      "jsxText"
-    ]
-  },
-  {
     "key": "k_bb820382a9a83e",
     "source": "Queue view updated.",
     "usages": [
@@ -14066,19 +13963,6 @@
     ],
     "sourceKinds": [
       "jsxText"
-    ]
-  },
-  {
-    "key": "k_c2a4841681d473",
-    "source": "Sign Up — Get Phame | Start Getting More 5-Star Reviews",
-    "usages": [
-      {
-        "file": "client/src/pages/Onboarding.tsx",
-        "line": 63
-      }
-    ],
-    "sourceKinds": [
-      "semanticString"
     ]
   },
   {
@@ -17759,23 +17643,6 @@
     ]
   },
   {
-    "key": "k_f46caaa5457d5f",
-    "source": "David K.",
-    "usages": [
-      {
-        "file": "client/src/components/landing/SocialProofBar.tsx",
-        "line": 33
-      },
-      {
-        "file": "client/src/components/landing/Testimonials.tsx",
-        "line": 25
-      }
-    ],
-    "sourceKinds": [
-      "semanticString"
-    ]
-  },
-  {
     "key": "k_f4b8c6626e7209",
     "source": "2. Description of Service",
     "usages": [
@@ -18526,19 +18393,6 @@
     ],
     "sourceKinds": [
       "semanticString"
-    ]
-  },
-  {
-    "key": "k_fd5973df5d6f1e",
-    "source": "Trusted by 500+ local businesses",
-    "usages": [
-      {
-        "file": "client/src/pages/Onboarding.tsx",
-        "line": 125
-      }
-    ],
-    "sourceKinds": [
-      "jsxText"
     ]
   },
   {

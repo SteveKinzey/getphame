@@ -1,112 +1,167 @@
-/**
- * Quota logic unit tests — tests the pure rolling-window algorithm
- * without requiring a database connection.
- */
-import { describe, it, expect } from "vitest";
-import { QUOTA_ONBOARDING, QUOTA_WINDOW_SENDS, QUOTA_WINDOW_MS } from "./db";
+import { describe, expect, it } from "vitest";
+import { buildFreeQuotaSummary } from "../shared/quota";
+import {
+  evaluateFreeQuotaAccess,
+  formatFreeQuotaBlockedMessage,
+  type FreeQuotaDataSource,
+} from "./quotaEnforcement";
 
-// ── Pure quota logic (extracted for testability) ─────────────────────────────
+type PersistedRequest = { id: number; sentAt: Date };
 
-function checkQuotaLogic(
-  tier: string,
-  lifetimeSendCount: number,
-  quotaWindowStart: number | null,
-  windowSendCount: number,
-  count: number,
-  now = Date.now()
-): { allowed: true } | { allowed: false; reason: string; nextWindowAt: number | null } {
-  if (tier !== "free") return { allowed: true };
+function seededQuotaDataSource(
+  rows: PersistedRequest[],
+  now: Date,
+  role = "user",
+): FreeQuotaDataSource {
+  return {
+    async getUserRole() {
+      return role;
+    },
+    async getQuota() {
+      const orderedRows = [...rows].sort(
+        (a, b) => a.sentAt.getTime() - b.sentAt.getTime() || a.id - b.id,
+      );
+      const rollingCutoff = now.getTime() - 30 * 24 * 60 * 60 * 1000;
+      const rollingRows = orderedRows
+        .slice(10)
+        .filter((row) => row.sentAt.getTime() >= rollingCutoff);
 
-  // Phase 1: onboarding
-  if (lifetimeSendCount < QUOTA_ONBOARDING) {
-    const remaining = QUOTA_ONBOARDING - lifetimeSendCount;
-    if (count > remaining) return { allowed: false, reason: "onboarding_exhausted", nextWindowAt: null };
-    return { allowed: true };
-  }
-
-  // Phase 2: rolling window
-  let ws = quotaWindowStart;
-  let wc = windowSendCount;
-  if (ws !== null) {
-    while (ws + QUOTA_WINDOW_MS <= now) { ws += QUOTA_WINDOW_MS; wc = 0; }
-  }
-  const windowRemaining = QUOTA_WINDOW_SENDS - wc;
-  if (windowRemaining <= 0 || count > windowRemaining) {
-    return { allowed: false, reason: "window_exhausted", nextWindowAt: ws !== null ? ws + QUOTA_WINDOW_MS : null };
-  }
-  return { allowed: true };
+      return buildFreeQuotaSummary({
+        totalSent: orderedRows.length,
+        rollingUsed: rollingRows.length,
+        oldestRollingSentAt: rollingRows[0]?.sentAt ?? null,
+      });
+    },
+  };
 }
 
-describe("Quota logic", () => {
-  const NOW = Date.now();
+function persistedRows(daysAgo: number[]): PersistedRequest[] {
+  const now = new Date("2026-07-14T12:00:00.000Z");
+  return daysAgo.map((days, index) => ({
+    id: index + 1,
+    sentAt: new Date(now.getTime() - days * 24 * 60 * 60 * 1000),
+  }));
+}
 
-  it("allows sends during onboarding (0 of 10 used)", () => {
-    expect(checkQuotaLogic("free", 0, null, 0, 1, NOW).allowed).toBe(true);
+describe("buildFreeQuotaSummary", () => {
+  it("starts every Free account with ten initial requests", () => {
+    expect(buildFreeQuotaSummary({ totalSent: 0, rollingUsed: 0 })).toEqual({
+      phase: "initial",
+      limit: 10,
+      used: 0,
+      remaining: 10,
+      totalSent: 0,
+      blocked: false,
+      nextAvailableAt: null,
+    });
   });
 
-  it("allows the 10th send (9 used, sending 1)", () => {
-    expect(checkQuotaLogic("free", 9, null, 0, 1, NOW).allowed).toBe(true);
+  it("keeps the tenth initial request available", () => {
+    const quota = buildFreeQuotaSummary({ totalSent: 9, rollingUsed: 0 });
+    expect(quota.phase).toBe("initial");
+    expect(quota.remaining).toBe(1);
+    expect(quota.blocked).toBe(false);
   });
 
-  it("blocks when trying to send more than remaining onboarding slots", () => {
-    const r = checkQuotaLogic("free", 8, null, 0, 5, NOW); // only 2 remaining
-    expect(r.allowed).toBe(false);
-    if (!r.allowed) expect(r.reason).toBe("onboarding_exhausted");
+  it("opens a separate five-request rolling allowance after the initial ten", () => {
+    const quota = buildFreeQuotaSummary({ totalSent: 10, rollingUsed: 0 });
+    expect(quota.phase).toBe("rolling");
+    expect(quota.limit).toBe(5);
+    expect(quota.used).toBe(0);
+    expect(quota.remaining).toBe(5);
+    expect(quota.blocked).toBe(false);
   });
 
-  it("allows first send in a fresh rolling window", () => {
-    const ws = NOW - 1000;
-    expect(checkQuotaLogic("free", 10, ws, 0, 1, NOW).allowed).toBe(true);
+  it("blocks after five post-initial requests and reports the oldest send expiry", () => {
+    const oldestRollingSentAt = new Date("2026-06-01T12:00:00.000Z");
+    const quota = buildFreeQuotaSummary({
+      totalSent: 15,
+      rollingUsed: 5,
+      oldestRollingSentAt,
+    });
+
+    expect(quota.phase).toBe("rolling");
+    expect(quota.remaining).toBe(0);
+    expect(quota.blocked).toBe(true);
+    expect(quota.nextAvailableAt).toBe(new Date("2026-07-01T12:00:00.000Z").getTime());
   });
 
-  it("allows up to 5 sends in a rolling window", () => {
-    const ws = NOW - 1000;
-    expect(checkQuotaLogic("free", 14, ws, 4, 1, NOW).allowed).toBe(true);
-  });
-
-  it("blocks when rolling window is exhausted (5 of 5 used)", () => {
-    const ws = NOW - 1000;
-    const r = checkQuotaLogic("free", 15, ws, 5, 1, NOW);
-    expect(r.allowed).toBe(false);
-    if (!r.allowed) {
-      expect(r.reason).toBe("window_exhausted");
-      expect(r.nextWindowAt).toBe(ws + QUOTA_WINDOW_MS);
-    }
-  });
-
-  it("allows sends after window expires (30 days later)", () => {
-    const ws = NOW - (31 * 24 * 60 * 60 * 1000); // 31 days ago
-    const r = checkQuotaLogic("free", 15, ws, 5, 1, NOW);
-    expect(r.allowed).toBe(true); // window expired, count resets
-  });
-
-  it("free sends do not accumulate — only 5 per window regardless of prior window usage", () => {
-    const ws = NOW - 1000;
-    // User only sent 2 in previous window, but new window still only allows 5
-    const r = checkQuotaLogic("free", 12, ws, 0, 6, NOW);
-    expect(r.allowed).toBe(false); // can't send 6, only 5 allowed
-    if (!r.allowed) expect(r.reason).toBe("window_exhausted");
-  });
-
-  it("paid users always allowed regardless of count", () => {
-    expect(checkQuotaLogic("pro", 9999, null, 0, 100, NOW).allowed).toBe(true);
-  });
-
-  it("window advances by exactly 30 days, not from now", () => {
-    // Window started 31 days ago, was exhausted. New window starts at ws + 30d.
-    const ws = NOW - (31 * 24 * 60 * 60 * 1000);
-    const r = checkQuotaLogic("free", 15, ws, 5, 1, NOW);
-    expect(r.allowed).toBe(true);
-    // After advancing, the new window start should be ws + 30d
-    const newWs = ws + QUOTA_WINDOW_MS;
-    const r2 = checkQuotaLogic("free", 20, newWs, 5, 1, NOW);
-    // newWs is 1 day in the future (31d - 30d = 1d from now), so window is active and exhausted
-    expect(r2.allowed).toBe(false);
+  it("restores capacity when an old post-initial request leaves the window", () => {
+    const quota = buildFreeQuotaSummary({ totalSent: 15, rollingUsed: 4 });
+    expect(quota.phase).toBe("rolling");
+    expect(quota.remaining).toBe(1);
+    expect(quota.blocked).toBe(false);
+    expect(quota.nextAvailableAt).toBeNull();
   });
 });
 
-describe("Quota constants", () => {
-  it("onboarding limit is 10", () => expect(QUOTA_ONBOARDING).toBe(10));
-  it("window sends limit is 5", () => expect(QUOTA_WINDOW_SENDS).toBe(5));
-  it("window duration is 30 days in ms", () => expect(QUOTA_WINDOW_MS).toBe(30 * 24 * 60 * 60 * 1000));
+describe("Free quota send enforcement integration", () => {
+  const now = new Date("2026-07-14T12:00:00.000Z");
+
+  it("allows the tenth request while the account remains in its initial allowance", async () => {
+    const decision = await evaluateFreeQuotaAccess(
+      101,
+      "free",
+      seededQuotaDataSource(persistedRows(Array(9).fill(60)), now),
+    );
+
+    expect(decision.allowed).toBe(true);
+    expect(decision.quota).toMatchObject({ phase: "initial", remaining: 1, blocked: false });
+  });
+
+  it("allows the eleventh request from a fresh five-send rolling allowance", async () => {
+    const decision = await evaluateFreeQuotaAccess(
+      101,
+      "free",
+      seededQuotaDataSource(persistedRows(Array(10).fill(60)), now),
+    );
+
+    expect(decision.allowed).toBe(true);
+    expect(decision.quota).toMatchObject({ phase: "rolling", used: 0, remaining: 5, blocked: false });
+  });
+
+  it("blocks the sixteenth request and includes the rolling-window reset time", async () => {
+    const decision = await evaluateFreeQuotaAccess(
+      101,
+      "free",
+      seededQuotaDataSource(
+        persistedRows([...Array(10).fill(60), 5, 4, 3, 2, 1]),
+        now,
+      ),
+    );
+
+    expect(decision.allowed).toBe(false);
+    expect(decision.quota).toMatchObject({ phase: "rolling", used: 5, remaining: 0, blocked: true });
+    expect(formatFreeQuotaBlockedMessage(decision.quota, "Blocked.")).toContain(
+      "Next send available",
+    );
+  });
+
+  it("restores one send after the oldest rolling request expires", async () => {
+    const decision = await evaluateFreeQuotaAccess(
+      101,
+      "free",
+      seededQuotaDataSource(
+        persistedRows([...Array(10).fill(60), 31, 4, 3, 2, 1]),
+        now,
+      ),
+    );
+
+    expect(decision.allowed).toBe(true);
+    expect(decision.quota).toMatchObject({ phase: "rolling", used: 4, remaining: 1, blocked: false });
+  });
+
+  it("bypasses the allowance for administrators on every send channel", async () => {
+    const decision = await evaluateFreeQuotaAccess(
+      101,
+      "free",
+      seededQuotaDataSource(
+        persistedRows([...Array(10).fill(60), 5, 4, 3, 2, 1]),
+        now,
+        "admin",
+      ),
+    );
+
+    expect(decision).toEqual({ allowed: true, bypassed: true, quota: null });
+  });
 });

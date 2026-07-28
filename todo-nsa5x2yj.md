@@ -278,6 +278,14 @@
 - [x] Apply and verify the additive access-code duration migration against the managed database without duplicating columns or losing existing data.
 - [x] Run focused and full release gates on the final combined tree, including Vitest, TypeScript, production dependency audit, production build, and desktop/mobile verification.
 - [ ] Save the validated replacement checkpoint, verify the live deployment, and synchronize the exact released tree through protected GitHub `main` without force-pushing or overwriting unrelated work.
-- [ ] Reconcile the GitHub-main and managed schema, shared constants, dependency graph, database helpers, router composition, and runtime exports until the merged tree has zero TypeScript errors.
-- [ ] Restore the validated brand, PWA, landing disclosure, plan/quota, localization, support, onboarding, cancellation, and administrator contracts without discarding current-main functionality.
-- [ ] Re-run focused and full release gates, update only demonstrably stale source-contract tests, and persist each validated batch to the draft reconciliation branch.
+- [x] Create six isolated Stripe test-mode products and Prices with the approved amounts and intervals: USD $29/month, $290/year, $349 one-time; THB ฿970/month, ฿9,990/year, and ฿11,700 one-time; preserve the live catalog unchanged.
+- [x] Recover the post-reset code changes that isolate `STRIPE_TEST_PRICE_ID_*` from live Price mappings, validate all six managed test entries, and keep the screenshot-confirmed live THB lifetime Price in production configuration.
+- [x] Reconstruct the centralized exact-price source and use it in authenticated and public pricing surfaces across all seven maintained locales.
+- [x] Reapply the fabricated testimonial/social-proof removal and explicit prohibition tests so no customer identity, quote, rating, outcome, or unsupported adoption claim ships.
+- [x] Run focused contracts, strict TypeScript, production dependency audit, full Vitest, production build, and responsive English/Thai pricing verification.
+- [ ] Checkpoint and verify the auto-published release, then synchronize its exact tree through a history-preserving protected-main GitHub pull request.
+- [ ] Make the Stripe mode regression deterministic when production secrets are present during cloud builds, rerun release gates, publish a replacement checkpoint, and verify both production origins before GitHub synchronization.
+- [ ] Replace unsupported open-rate, response-rate, review-lift, batch-count, and guaranteed-review claims with factual feature copy across every runtime locale resource, add explicit content-policy regressions, and publish a compliant replacement before GitHub synchronization.
+- [ ] Restore every locale's existing WooCommerce paid-plan FAQ disclosure in runtime fallback resources after compliant-copy synchronization, rerun the failing regression, and publish a successful replacement build.
+- [ ] Replace the remaining live setup-time promises and five-star outcome/review-gating language with factual workflow copy across components and runtime locales, add regression coverage, and publish the final compliant release.
+- [x] Correct every live annual-plan detail from stale `$228` / `34%` values to the confirmed `$290` total and accurate `$58` / `17%` savings, update THB annual details to `฿9,990` and `฿1,650` / `14%`, add regressions, and publish the exact-price replacement.

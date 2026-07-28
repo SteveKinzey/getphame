@@ -62,7 +62,7 @@ describe("admin subscription management", () => {
   });
 
   it("wires duration metadata through schema, routers, and both admin surfaces", () => {
-    expect(schemaSource).toContain('grantDurationValue: int("grant_duration_value")');
+    expect(schemaSource).toContain('grantDurationValue: integer("grant_duration_value")');
     expect(schemaSource).toContain('grantDurationUnit: varchar("grant_duration_unit", { length: 16 })');
     expect(routerSource).toContain("grantSubscription: protectedProcedure");
     expect(routerSource).toContain("revokeSubscription: protectedProcedure");
@@ -76,13 +76,13 @@ describe("admin subscription management", () => {
     expect(codesSource).toContain("accessCode.grantDurationLabel");
   });
 
-  it("keeps the `$349` lifetime contract and removes the retired anchor price", () => {
-    expect(upgradeSource).toContain("const LIFETIME_PRICE_USD = 349;");
-    expect(upgradeSource).toContain("thb: toThb(349)");
+  it("keeps the confirmed lifetime contract centralized and removes the retired anchor price", () => {
+    expect(upgradeSource).toContain("price: USD_DISPLAY.lifetime");
+    expect(upgradeSource).toContain("thb: THB_DISPLAY.lifetime");
     expect(upgradeSource).toContain("pricingGrid.guidance.${plan}");
     expect(upgradeSource).not.toContain("$497");
     expect(upgradeSource).not.toContain("pricingGrid.previousPrice");
-    expect(routerSource).toContain("const LIFETIME_PRICE_CENTS = 34900;");
+    expect(routerSource).toContain("tierCounts.lifetime * USD_PRICE_CENTS.lifetime");
   });
 
   it("provides complete localized grant, revoke, duration, and guidance copy in every catalog", () => {

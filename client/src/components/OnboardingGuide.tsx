@@ -9,19 +9,24 @@
  *   5. Send a Review Request
  *   6. You're All Set
  *
- * Auto-shows on first login (localStorage flag "rl_guide_seen").
+ * Auto-shows only for authenticated accounts whose server onboarding status is
+ * still incomplete and not dismissed. The browser flag is scoped per account.
  * Re-openable via the "Setup Guide" button on Home and Settings.
  */
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, ChevronRight, ChevronLeft, Mail, Star, Users, Send, CheckCircle2, Globe, Upload, CreditCard, ShoppingCart, BookOpen, Loader2, Smartphone, Apple, Share2 } from "lucide-react";
+import { X, ChevronRight, ChevronLeft, Mail, Star, Users, Send, CheckCircle2, Globe, Upload, CreditCard, ShoppingCart, BookOpen, Loader2, Share2, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-
-const GUIDE_SEEN_KEY = "rl_guide_seen";
+import LandingBrandLink from "@/components/LandingBrandLink";
+import {
+  getOnboardingGuideSeenKey,
+  shouldAutoShowOnboardingGuide,
+  type OnboardingGuideEligibility,
+} from "@/lib/onboardingGuideEligibility";
 
 // ── Step definitions ──────────────────────────────────────────────────────────
 
@@ -55,7 +60,12 @@ function StepWelcome({ onNavigate, stepsDone }: { onNavigate: (path: string) => 
       <div
         className="rounded-2xl p-5 text-center rr-bg-navy-mid"
       >
-        <img src="https://assets.getphame.app/phame-app-icon-new.png" alt="Phame" className="w-20 h-20 rounded-2xl object-contain mx-auto mb-3" />
+        <LandingBrandLink
+          className="justify-center mb-4"
+          iconClassName="w-16 h-16"
+          textClassName="text-xl"
+          tone="split"
+        />
         <p className="text-white font-black text-xl leading-snug" style={{ fontFamily: "'Poppins', sans-serif" }}>
           {t("onboardingGuide.welcome.heroText")}
         </p>
@@ -828,6 +838,75 @@ function StepSendRequest({ onNavigate }: { onNavigate: (path: string) => void })
 
 function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void; onClose: () => void }) {
   const { t } = useTranslation();
+  const trackPwaEvent = trpc.analytics.trackPwaEvent.useMutation();
+  const [shareStatus, setShareStatus] = useState("");
+
+  const getPlatform = () => {
+    const userAgent = navigator.userAgent.toLowerCase();
+    if (/iphone|ipad|ipod/.test(userAgent)) return "ios" as const;
+    if (/android/.test(userAgent)) return "android" as const;
+    return "desktop" as const;
+  };
+
+  const copyCanonicalUrl = async () => {
+    const url = "https://getphame.app/";
+    if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(url);
+      return;
+    }
+
+    const textarea = document.createElement("textarea");
+    textarea.value = url;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand("copy");
+    textarea.remove();
+  };
+
+  const handleShare = async () => {
+    const platform = getPlatform();
+    let completionEvent: "share_completed" | "share_copied" = "share_copied";
+    const shareData = {
+      title: "Get Phame",
+      text: t("onboardingGuide.allSet.shareText", { defaultValue: "Collect more customer reviews with Get Phame." }),
+      url: "https://getphame.app/",
+    };
+
+    setShareStatus("");
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        completionEvent = "share_completed";
+        setShareStatus(t("onboardingGuide.allSet.shareSuccess", { defaultValue: "Shared successfully." }));
+      } else {
+        await copyCanonicalUrl();
+        setShareStatus(t("onboardingGuide.allSet.copySuccess", { defaultValue: "Get Phame link copied." }));
+      }
+      trackPwaEvent.mutate({
+        event: completionEvent,
+        platform,
+      });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") {
+        setShareStatus(t("onboardingGuide.allSet.shareCancelled", { defaultValue: "Sharing cancelled." }));
+        trackPwaEvent.mutate({ event: "share_cancelled", platform });
+        return;
+      }
+
+      try {
+        await copyCanonicalUrl();
+        setShareStatus(t("onboardingGuide.allSet.copySuccess", { defaultValue: "Get Phame link copied." }));
+        trackPwaEvent.mutate({ event: "share_copied", platform });
+      } catch {
+        setShareStatus(t("onboardingGuide.allSet.shareError", { defaultValue: "Unable to share right now." }));
+      }
+    }
+  };
+
   return (
     <div className="space-y-5">
       <div className="text-center py-4">
@@ -864,6 +943,46 @@ function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void;
         ))}
       </div>
 
+      <div className="space-y-2">
+        <p className="text-xs font-bold uppercase tracking-wide rr-text-navy-muted">
+          {t("onboardingGuide.allSet.installTitle", { defaultValue: "Keep Get Phame on your phone" })}
+        </p>
+        <div className="grid gap-2 sm:grid-cols-2">
+          <div className="rounded-xl bg-white px-4 py-3" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
+            <div className="mb-2 flex items-center gap-2 rr-text-navy">
+              <Smartphone size={16} aria-hidden="true" />
+              <p className="text-sm font-bold">iPhone / iPad</p>
+            </div>
+            <p className="text-xs leading-5 rr-text-navy-mid">
+              {t("onboardingGuide.allSet.iosInstall", { defaultValue: "Open getphame.app in Safari. Tap Share, choose Add to Home Screen, then tap Add." })}
+            </p>
+          </div>
+          <div className="rounded-xl bg-white px-4 py-3" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
+            <div className="mb-2 flex items-center gap-2 rr-text-navy">
+              <Smartphone size={16} aria-hidden="true" />
+              <p className="text-sm font-bold">Android</p>
+            </div>
+            <p className="text-xs leading-5 rr-text-navy-mid">
+              {t("onboardingGuide.allSet.androidInstall", { defaultValue: "Open getphame.app in Chrome. Tap the three-dot menu, choose Install app or Add to Home screen, then confirm." })}
+            </p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={handleShare}
+          className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-left transition-[transform,opacity] active:scale-[0.97] rr-bg-navy text-white"
+        >
+          <Share2 size={17} aria-hidden="true" />
+          <span className="flex-1 text-sm font-bold">
+            {t("onboardingGuide.allSet.shareButton", { defaultValue: "Share Get Phame with a friend" })}
+          </span>
+          <ChevronRight size={15} aria-hidden="true" />
+        </button>
+        <p className="min-h-4 text-center text-xs rr-text-navy-mid" role="status" aria-live="polite">
+          {shareStatus}
+        </p>
+      </div>
+
       <div
         className="rounded-xl px-4 py-3"
         style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
@@ -886,146 +1005,16 @@ function StepDone({ onNavigate, onClose }: { onNavigate: (path: string) => void;
   );
 }
 
-
-// ── Step 6: Install the App ───────────────────────────────────────────────────
-
-function StepInstallApp({ onClose }: { onClose: () => void }) {
-  const [platform, setPlatform] = useState<"ios" | "android">("ios");
-  const { t } = useTranslation();
-
-  const iosSteps = [
-    { label: t("onboarding.install.ios.step1.label", { defaultValue: "Open in Safari" }), detail: t("onboarding.install.ios.step1.detail", { defaultValue: "Must use Safari — Chrome on iOS cannot install PWAs." }) },
-    { label: t("onboarding.install.ios.step2.label", { defaultValue: "Tap the Share button" }), detail: t("onboarding.install.ios.step2.detail", { defaultValue: "The box with an upward arrow at the bottom of the screen." }) },
-    { label: t("onboarding.install.ios.step3.label", { defaultValue: "Add to Home Screen" }), detail: t("onboarding.install.ios.step3.detail", { defaultValue: "Scroll down in the share sheet and tap it." }) },
-    { label: t("onboarding.install.ios.step4.label", { defaultValue: "Tap Add" }), detail: t("onboarding.install.ios.step4.detail", { defaultValue: "The GetPhame icon appears on your home screen instantly." }) },
-  ];
-
-  const androidSteps = [
-    { label: t("onboarding.install.android.step1.label", { defaultValue: "Open in Chrome" }), detail: t("onboarding.install.android.step1.detail", { defaultValue: "Samsung Internet also works — tap menu to Add page to Home screen." }) },
-    { label: t("onboarding.install.android.step2.label", { defaultValue: "Tap the three-dot menu" }), detail: t("onboarding.install.android.step2.detail", { defaultValue: "Top-right corner of Chrome." }) },
-    { label: t("onboarding.install.android.step3.label", { defaultValue: "Add to Home screen" }), detail: t("onboarding.install.android.step3.detail", { defaultValue: "Tap it, then confirm with Add." }) },
-    { label: t("onboarding.install.android.step4.label", { defaultValue: "Done!" }), detail: t("onboarding.install.android.step4.detail", { defaultValue: "GetPhame appears on your home screen and opens full-screen like a native app." }) },
-  ];
-
-  const steps = platform === "ios" ? iosSteps : androidSteps;
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: "Get Phame",
-          text: "Get more 5-star reviews without the awkward ask — try GetPhame free",
-          url: "https://getphame.app",
-        });
-      } catch {
-        // user cancelled share sheet
-      }
-    } else {
-      navigator.clipboard.writeText("https://getphame.app");
-    }
-  };
-
-  return (
-    <div className="space-y-4">
-      <div
-        className="rounded-2xl p-4 text-center"
-        style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
-      >
-        <Smartphone size={32} className="mx-auto mb-2" style={{ color: "oklch(0.60 0.14 80)" }} />
-        <p className="text-sm font-black rr-text-navy">{t("onboarding.install.title", { defaultValue: "Add GetPhame to your home screen" })}</p>
-        <p className="text-xs rr-text-navy-muted mt-1">{t("onboarding.install.subtitle", { defaultValue: "Opens full-screen like a native app — no App Store needed" })}</p>
-      </div>
-
-      {/* Platform toggle */}
-      <div className="flex gap-2">
-        <button
-          onClick={() => setPlatform("ios")}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition-all"
-          style={platform === "ios"
-            ? { background: "oklch(0.22 0.09 260)", color: "white" }
-            : { background: "oklch(0.95 0.01 260)", color: "oklch(0.45 0.06 260)" }}
-        >
-          <Apple size={13} />
-          {t("onboarding.install.iphoneTab", { defaultValue: "iPhone / iPad" })}
-        </button>
-        <button
-          onClick={() => setPlatform("android")}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-bold transition-all"
-          style={platform === "android"
-            ? { background: "oklch(0.22 0.09 260)", color: "white" }
-            : { background: "oklch(0.95 0.01 260)", color: "oklch(0.45 0.06 260)" }}
-        >
-          <Smartphone size={13} />
-          {t("onboarding.install.androidTab", { defaultValue: "Android" })}
-        </button>
-      </div>
-
-      {/* Steps */}
-      <div className="flex flex-col gap-2">
-        {steps.map((step, i) => (
-          <div
-            key={i}
-            className="flex items-start gap-3 rounded-xl px-3 py-3"
-            style={{ background: "oklch(0.97 0.01 260)" }}
-          >
-            <div
-              className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-black shrink-0"
-              style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}
-            >
-              {i + 1}
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold rr-text-navy">{step.label}</p>
-              <p className="text-xs rr-text-navy-muted mt-0.5 leading-relaxed">{step.detail}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Tip */}
-      <div
-        className="rounded-xl px-3 py-2.5 flex items-start gap-2"
-        style={{ background: "oklch(0.96 0.04 80)", border: "1px solid oklch(0.88 0.10 80)" }}
-      >
-        <p className="text-xs leading-relaxed" style={{ color: "oklch(0.45 0.10 80)" }}>
-          {platform === "ios"
-            ? t("onboarding.install.ios.tip", { defaultValue: "Already installed? Delete the old icon first, then re-add it after an app update." })
-            : t("onboarding.install.android.tip", { defaultValue: "Already installed? In Chrome go to Settings → Site Settings → getphame.app → Clear & Reset, then re-install." })}
-        </p>
-      </div>
-
-      {/* Share with a friend */}
-      <button
-        onClick={handleShare}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all active:scale-95"
-        style={{ background: "oklch(0.22 0.09 260)", color: "oklch(0.80 0.18 80)" }}
-      >
-        <Share2 size={15} />
-        {t("onboarding.install.shareBtn", { defaultValue: "Share GetPhame with a friend" })}
-      </button>
-
-      {/* Done */}
-      <button
-        onClick={onClose}
-        className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all active:scale-95"
-        style={{ background: "oklch(0.95 0.01 260)", color: "oklch(0.45 0.06 260)" }}
-      >
-        <CheckCircle2 size={15} />
-        {t("onboarding.install.doneBtn", { defaultValue: "Done — close guide" })}
-      </button>
-    </div>
-  );
-}
-
 // ── Main component ────────────────────────────────────────────────────────────
 
 interface OnboardingGuideProps {
   open: boolean;
   onClose: () => void;
+  onNavigate?: (path: string) => void;
   stepsDone?: StepsDone;
 }
 
-export default function OnboardingGuide({ open, onClose, stepsDone }: OnboardingGuideProps) {
+export default function OnboardingGuide({ open, onClose, onNavigate, stepsDone }: OnboardingGuideProps) {
   const [step, setStep] = useState(0);
   const [slideDir, setSlideDir] = useState<'left' | 'right' | null>(null);
   const [animKey, setAnimKey] = useState(0);
@@ -1074,13 +1063,17 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
   const { t } = useTranslation();
   if (!open) return null;
   const handleNavigate = (path: string) => {
+    if (onNavigate) {
+      onNavigate(path);
+      return;
+    }
     onClose();
     navigate(path);
   };
   const STEPS: Step[] = [
     {
       id: 0,
-      icon: <Star size={20} />,
+      icon: <LandingBrandLink showText={false} iconClassName="w-6 h-6" />,
       title: t("onboardingGuide.steps.welcome.title"),
       subtitle: t("onboardingGuide.steps.welcome.subtitle"),
       content: <StepWelcome onNavigate={handleNavigate} stepsDone={stepsDone} />,
@@ -1119,13 +1112,6 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
       title: t("onboardingGuide.steps.allSet.title"),
       subtitle: t("onboardingGuide.steps.allSet.subtitle"),
       content: <StepDone onNavigate={handleNavigate} onClose={onClose} />,
-    },
-    {
-      id: 6,
-      icon: <Smartphone size={20} />,
-      title: "Install the App",
-      subtitle: "Add to your home screen for the best experience",
-      content: <StepInstallApp onClose={onClose} />,
     },
   ];
 
@@ -1275,27 +1261,42 @@ export default function OnboardingGuide({ open, onClose, stepsDone }: Onboarding
 // ── Auto-show hook ────────────────────────────────────────────────────────────
 
 /**
- * Returns [open, setOpen] with auto-show logic.
- * Shows the guide once per browser (localStorage flag).
- * Pass `isAuthenticated` so it only fires after login.
+ * Auto-opens only after the authenticated account's onboarding status loads.
+ * Completed or dismissed accounts are suppressed before the guide can flash.
  */
-export function useOnboardingGuide(isAuthenticated: boolean) {
+export function useOnboardingGuide(eligibility: OnboardingGuideEligibility) {
   const [open, setOpen] = useState(false);
+  const { isAuthenticated, userId, onboardingStatus } = eligibility;
+  const seenKey = userId == null ? null : getOnboardingGuideSeenKey(userId);
+  const autoShowEligible = shouldAutoShowOnboardingGuide(eligibility, localStorage);
 
   useEffect(() => {
-    if (!isAuthenticated) return;
-    const seen = localStorage.getItem(GUIDE_SEEN_KEY);
-    if (!seen) {
-      // Small delay so the app renders first
-      const t = setTimeout(() => setOpen(true), 800);
-      return () => clearTimeout(t);
+    if (!isAuthenticated || !seenKey || !onboardingStatus) {
+      setOpen(false);
+      return;
     }
-  }, [isAuthenticated]);
 
-  const handleClose = () => {
-    localStorage.setItem(GUIDE_SEEN_KEY, "1");
+    if (
+      onboardingStatus.dismissed ||
+      onboardingStatus.allDone ||
+      onboardingStatus.hasSentRequest
+    ) {
+      localStorage.setItem(seenKey, "1");
+      setOpen(false);
+      return;
+    }
+
+    if (!autoShowEligible) return;
+
+    // Small delay so the authenticated shell can settle before the guide opens.
+    const timer = setTimeout(() => setOpen(true), 800);
+    return () => clearTimeout(timer);
+  }, [autoShowEligible, isAuthenticated, onboardingStatus, seenKey]);
+
+  const handleClose = useCallback(() => {
+    if (seenKey) localStorage.setItem(seenKey, "1");
     setOpen(false);
-  };
+  }, [seenKey]);
 
-  return { open, setOpen, handleClose };
+  return { open, setOpen, handleClose, autoShowEligible };
 }

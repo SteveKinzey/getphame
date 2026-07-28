@@ -34,6 +34,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import AdaptiveSendLimitStatus from "@/components/AdaptiveSendLimitStatus";
 import {
   RefreshCw,
   Send,
@@ -320,19 +321,7 @@ export default function WooCustomers() {
                 </span>
               </div>
             )}
-            {dailyStatus && (
-              <div className="mt-2 rounded-xl px-3 py-2 text-xs"
-                   style={{ background: dailyStatus.remaining < selectedIds.size ? 'oklch(0.97 0.02 30)' : 'oklch(0.97 0.01 260)', border: '1px solid', borderColor: dailyStatus.remaining < selectedIds.size ? 'oklch(0.85 0.08 30)' : 'oklch(0.88 0.03 260)' }}>
-                <span style={{ color: dailyStatus.remaining < selectedIds.size ? 'oklch(0.50 0.15 30)' : 'oklch(0.40 0.06 260)' }}>
-                  {dailyStatus.todayCount} sent today &nbsp;·&nbsp; <strong>{dailyStatus.remaining} remaining</strong> of {dailyStatus.dailyLimit} daily limit
-                  {dailyStatus.remaining < selectedIds.size && (
-                    <span className="block mt-0.5">
-                      ⚠ Only {dailyStatus.remaining} will be sent — limit reached after that.
-                    </span>
-                  )}
-                </span>
-              </div>
-            )}
+            <div className="mt-3"><AdaptiveSendLimitStatus status={dailyStatus} compact /></div>
           </AlertDialogHeader>
 
           {/* Platform picker */}

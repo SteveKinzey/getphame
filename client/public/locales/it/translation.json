@@ -1,6 +1,6 @@
 {
   "seo": {
-    "title": "Get Phame — Ottieni più recensioni a 5 stelle su Google",
+    "title": "Get Phame — Richieste di recensione personali via email",
     "keywords": "richieste di recensioni, recensioni Google, ottenere più recensioni, automazione recensioni, recensioni piccole imprese, inviare email di richiesta recensione, recensioni WooCommerce, recensioni Stripe",
     "ogDescription": "Invia email personalizzate di richiesta recensione dal tuo account email. Funziona con Google, Yelp, TripAdvisor e altro.",
     "shortTitle": "Get Phame"
@@ -12,6 +12,7 @@
     "send": "Invia",
     "dashboard": "Dashboard",
     "settings": "Impostazioni",
+    "more": "Altro",
     "shareHint": "Condividi Get Phame con un amico",
     "share": "Condividi",
     "guideHint": "Apri la guida alla configurazione",
@@ -19,12 +20,9 @@
     "complianceHint": "Visualizza la Guida alla Conformità",
     "complianceActive": "Conformità: Attiva",
     "complianceViewGuide": "— visualizza la guida",
-    "howItWorks": "Come funziona",
-    "pricing": "Prezzi",
-    "faq": "Domande frequenti",
-    "product": "Prodotto",
-    "getStartedFree": "Inizia gratis",
-    "more": "Altro",
+    "howItWorks": "How It Works",
+    "pricing": "Pricing",
+    "faq": "FAQ",
     "manageUsers": "Gestisci utenti",
     "admin": "Admin",
     "developer": "Sviluppatore",
@@ -32,27 +30,68 @@
     "adminManual": "Manuale amministratore"
   },
   "hero": {
-    "tagline": "Gratis per iniziare — Nessuna carta di credito richiesta",
-    "headline": "Ottieni più recensioni a 5 stelle senza imbarazzi",
+    "tagline": "Gratuito per iniziare — Nessuna carta di credito richiesta",
+    "headline": "Invia richieste di recensione personali",
     "description": "Invia richieste di recensioni personalizzate dal tuo account email. I tuoi clienti le ricevono da te — non da un mittente generico.",
     "cta": "Inizia Gratis",
-    "setupTime": "Configurazione in meno di 2 minuti",
+    "setupTime": "Configurazione guidata",
     "rocketIllustrationAlt": "Illustrazione razzo Get Phame",
     "dashboardAlt": "Dashboard Get Phame con richieste inviate e statistiche email",
     "dashboardStats": "La tua dashboard — statistiche in tempo reale",
-    "titlePart1": "Ottieni più recensioni a 5 stelle",
-    "titlePart2": "a 5 Stelle su Google",
-    "seeHowItWorks": "Scopri come funziona",
-    "setupIn2Min": "Configura in meno di 2 minuti",
-    "worksWithEmail": "Funziona con Gmail, Outlook e SMTP",
-    "freeSends": "10 invii gratuiti · poi 5/30 giorni gratuiti",
-    "googleSignInNote": "Accedi con Google per creare il tuo account. Accediamo solo al tuo nome e al tuo indirizzo email — nient'altro.",
-    "privacyPolicy": "Informativa sulla privacy",
-    "taglineAlt": "Gratis per iniziare — non è richiesta la carta di credito",
-    "subtitle": "Invia richieste di recensione personalizzate dal tuo account email. I tuoi clienti vedono che arrivano da te — non da un mittente generico.",
-    "titlePart3": "senza la richiesta imbarazzante",
-    "ctaVariantA": "Inizia gratis — Le prime 10 spedizioni le offriamo noi",
-    "ctaVariantB": "Ottieni le tue prime 10 recensioni gratuitamente"
+    "titlePart1": "Invia richieste di recensione personali",
+    "titlePart2": "dalla tua email",
+    "setup": "Configurazione guidata"
+  },
+  "pricing": {
+    "sectionTitle": "Prezzi semplici e trasparenti",
+    "sectionSubtitle": "Inizia gratis. Passa a Pro quando sei pronto.",
+    "title": "Prezzi Semplici e Trasparenti",
+    "subtitle": "Inizia gratis. Aggiorna quando sei pronto.",
+    "free": "Gratuito",
+    "freePrice": "$0",
+    "freeDescription": "Prova Get Phame con 10 richieste di recensione, senza carta di credito.",
+    "pro": "Pro",
+    "proMonthly": "Pro mensile",
+    "proMonthlyPrice": "$29",
+    "proMonthlyPer": "/mese",
+    "proMonthlyDescription": "Richieste di recensione illimitate, invio multiplo, promemoria e sincronizzazione WooCommerce.",
+    "proAnnual": "Pro annuale",
+    "save15": "Risparmia il 17%",
+    "proAnnualPrice": "$290",
+    "proAnnualPer": "/anno",
+    "proAnnualDescription": "Tutto ciò che include Pro mensile, fatturato una volta all'anno. Equivale a $24,17 al mese.",
+    "lifetime": "A Vita",
+    "ownItForever": "Usalo per sempre",
+    "lifetimePrice": "$349",
+    "lifetimeOnce": " una tantum",
+    "perMonth": "/mese",
+    "perYear": "/anno",
+    "oneTime": "pagamento unico",
+    "mostPopular": "Più Popolare",
+    "bestValue": "Miglior Valore",
+    "getStarted": "Inizia Gratis",
+    "upgradeNow": "Aggiorna Ora",
+    "contactSales": "Contatta le Vendite",
+    "includedFeatures": "Incluso:",
+    "notIncluded": "Non incluso",
+    "freeFeature1": "Invii illimitati",
+    "freeFeature2": "1 modello email",
+    "freeFeature3": "Analisi di base",
+    "freeFeature4": "Importazione CSV",
+    "proFeature1": "Tutto nel piano Gratuito",
+    "proFeature2": "Modelli illimitati",
+    "proFeature3": "Analisi avanzate",
+    "proFeature4": "Promemoria automatici",
+    "proFeature5": "Integrazione WooCommerce",
+    "proFeature6": "Integrazione Stripe",
+    "proFeature7": "Supporto prioritario",
+    "lifetimeFeature1": "Tutto nel piano Pro",
+    "lifetimeFeature2": "Accesso a vita",
+    "lifetimeFeature3": "Aggiornamenti futuri inclusi",
+    "lifetimeFeature4": "Accesso API",
+    "annualDiscount": "Risparmia {{percent}}% con il piano annuale",
+    "moneyBackGuarantee": "Garanzia di rimborso 30 giorni",
+    "lifetimeDescription": "Un unico pagamento per l'accesso a vita. Nessun rinnovo e nessun costo nascosto."
   },
   "features": {
     "sectionTitle": "Perché le aziende scelgono Get Phame",
@@ -61,17 +100,12 @@
       "description": "Ogni richiesta arriva nella casella del cliente come un messaggio personale — non una comunicazione massiva. Nessun mittente condiviso, nessun filtro spam."
     },
     "bulkSendFeature": {
-      "title": "Invio massivo in pochi secondi",
-      "description": "Importa contatti da CSV, Stripe o WooCommerce. Seleziona tutto, premi invia — ogni cliente riceve la propria email personalizzata."
+      "title": "Invia richieste personalizzate in blocco",
+      "description": "Importa i clienti via CSV o sincronizzazione WooCommerce, scegli i destinatari e invia richieste personalizzate senza copiare ogni messaggio a mano."
     },
     "platformFeature": {
       "title": "Funziona con qualsiasi piattaforma di recensioni",
       "description": "Google, Yelp, Trustpilot, TripAdvisor, Facebook — aggiungi qualsiasi link di recensione. I tuoi clienti vengono portati direttamente alla tua pagina."
-    },
-    "customerQuote": {
-      "quote": "Get Phame ha cambiato le regole del gioco per la nostra piccola impresa. Abbiamo visto un aumento significativo nelle recensioni positive, ed è così facile da usare!",
-      "author": "Tom R.",
-      "authorTitle": "Proprietario, The Corner Café"
     },
     "sendsFromYourEmail": "Invia dalla tua email",
     "oneTapRequests": "Richieste in un tap",
@@ -86,48 +120,20 @@
       "desc": "I clienti vedono il tuo nome e indirizzo email — non un mittente generico. Si sente personale perché lo è."
     },
     "bulkSend": {
-      "title": "Invio massivo in un clic",
-      "desc": "Importa la tua lista clienti tramite CSV o sincronizzazione WooCommerce, seleziona tutto e invia richieste personalizzate in pochi secondi."
+      "title": "Invia richieste personalizzate in blocco",
+      "desc": "Importa i clienti via CSV o sincronizzazione WooCommerce, scegli i destinatari e invia richieste personalizzate senza copiare ogni messaggio a mano."
     },
     "anyPlatform": {
       "title": "Qualsiasi piattaforma di recensioni",
       "desc": "Google, Yelp, TripAdvisor, Bing, Facebook e altro. Scegli tu dove inviare i clienti."
-    },
-    "f1Title": "Il tuo nome. La tua casella di posta. La loro fiducia.",
-    "f1Desc": "Ogni richiesta di recensione arriva dal tuo indirizzo email reale. I clienti riconoscono il mittente, quindi aprono l'email — e rispondono.",
-    "f1Stat": "45–60%",
-    "f1StatLabel": "tasso medio di apertura",
-    "f2Title": "Un clic per inviare a centinaia",
-    "f2Desc": "Importa la lista clienti tramite CSV o sincronizzazione con WooCommerce, seleziona tutto e invia richieste personalizzate in pochi secondi. Niente copia e incolla. Niente lavoro manuale.",
-    "f2Stat": "500+",
-    "f2StatLabel": "invii per lotto",
-    "f3Title": "Ogni piattaforma. La tua scelta.",
-    "f3Desc": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot e altro. Incolla il tuo link e cambia piattaforme in qualsiasi momento. Uno strumento per tutte le destinazioni delle tue recensioni.",
-    "f3Stat": "10+",
-    "f3StatLabel": "piattaforme supportate",
-    "sectionTagline": "Perché funziona",
-    "sectionHeadline": "Dalla tua casella alla loro recensione",
-    "sectionSubheadline": "Il modo più semplice per trasformare clienti soddisfatti in recensioni a 5 stelle — senza strumenti costosi o conversazioni imbarazzanti."
+    }
   },
   "howItWorks": {
     "step1": "Collega il tuo account email (SMTP)",
     "step2": "Aggiungi il tuo link di recensione Google (o altro)",
     "step3": "Importa o aggiungi i tuoi clienti",
     "step4": "Invia richieste di recensioni personalizzate",
-    "sectionTitle": "Come funziona",
-    "tagline": "Configurazione in 4 passaggi",
-    "headline": "Due minuti per la tua prima richiesta di recensione",
-    "subheadline": "Nessuna competenza tecnica necessaria. Nessuna chiamata di onboarding. Basta collegare, importare e inviare.",
-    "cta": "Inizia gratis",
-    "setupTime": "Ci vogliono meno di 2 minuti per configurarlo",
-    "s1Title": "Collega la tua email",
-    "s1Desc": "Collega il tuo Gmail, Outlook o qualsiasi email SMTP in 60 secondi. Credenziali criptate con AES-256.",
-    "s2Title": "Aggiungi il tuo link di recensione",
-    "s2Desc": "Incolla il link di Google, Yelp, TripAdvisor o di qualsiasi piattaforma di recensioni. Cambia piattaforma in qualsiasi momento.",
-    "s3Title": "Importa i tuoi clienti",
-    "s3Desc": "Carica un CSV, sincronizza da WooCommerce o aggiungi i contatti manualmente. Convalidiamo le email automaticamente.",
-    "s4Title": "Invia e monitora i risultati",
-    "s4Desc": "Premi invia. Ogni cliente riceve un'email personale da te. Monitora aperture, click e nuove recensioni in tempo reale."
+    "sectionTitle": "Come funziona"
   },
   "faq": {
     "sectionTitle": "Domande frequenti",
@@ -136,47 +142,40 @@
     "providersQuestion": "Quali provider email funzionano?",
     "providersAnswer": "Qualsiasi provider che supporta SMTP funziona: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email e praticamente qualsiasi server di posta di un hosting provider. Se riesci a configurare un'app email sul telefono, puoi collegarla a Get Phame.",
     "freeQuestion": "È davvero gratuito?",
-    "freeAnswer": "Sì — gratuito senza limiti di invio artificiali. Colleghi il tuo account email, quindi l'unico limite è il limite di invio giornaliero del tuo provider (Gmail consente ~500/giorno, la maggior parte degli altri è simile). Nessuna commissione nascosta e nessuna carta di credito richiesta per iniziare.",
+    "freeAnswer": "Sì. Il piano Gratuito include 10 richieste di recensione iniziali, poi 5 richieste ogni 30 giorni mobili. Non serve una carta di credito. Si applica anche il limite giornaliero del tuo provider email.",
     "importQuestion": "Posso importare la mia lista clienti?",
     "importAnswer": "Sì. Puoi caricare un file CSV con i nomi e gli indirizzi email dei tuoi clienti, o sincronizzare direttamente da WooCommerce se gestisci un negozio online. Una volta importati, puoi selezionare in massa i contatti e inviare richieste di recensioni personalizzate con un solo clic.",
     "q1": "Sembrerà spam?",
-    "a1": "No. Le email vengono inviate direttamente dal tuo account email — il cliente vede il tuo nome e indirizzo come mittente.",
+    "a1": "No. Ogni email viene inviata direttamente dal tuo account email tramite SMTP — non da un server di invio massivo condiviso. Il tuo cliente vede il tuo nome, il tuo indirizzo email e un messaggio scritto con la tua voce.",
     "q2": "Quali provider email funzionano?",
-    "a2": "Get Phame funziona con qualsiasi provider email che supporti SMTP: Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud e qualsiasi server SMTP personalizzato. Se puoi inviare email da lì, puoi collegarlo a Get Phame.",
+    "a2": "Qualsiasi provider che supporta SMTP funziona: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email e praticamente qualsiasi server di posta di un hosting provider.",
     "q3": "È davvero gratuito?",
-    "a3": "Sì. Il piano gratuito ti dà 10 richieste di recensione senza carta di credito e senza limite di tempo. Usa tutte e 10 quando vuoi. Se desideri richieste illimitate, invii in massa, promemoria di follow-up e sincronizzazione con WooCommerce, passa a Pro.",
+    "a3": "Sì. Ricevi 10 richieste di recensione iniziali, poi 5 richieste ogni 30 giorni mobili. Non serve una carta di credito.",
     "q4": "Posso importare la mia lista clienti?",
-    "a4": "Assolutamente. Carica un file CSV con nomi e indirizzi email dei clienti, o sincronizza direttamente da WooCommerce. Convalidiamo le email automaticamente, rimuoviamo i duplicati e segnaliamo eventuali indirizzi non validi prima dell'invio.",
-    "q5": "Get Phame memorizza la mia password email?",
-    "a5": "Le tue credenziali SMTP sono criptate a riposo usando AES-256. Non memorizziamo mai password in chiaro. Le tue credenziali sono usate solo per inviare email per tuo conto — non possiamo leggere la tua casella di posta né accedere ad altri dati email.",
-    "q6": "Le mie email finiranno nello spam?",
-    "a6": "Poiché le email sono inviate dal tuo stesso account (non da un server di invio massivo), hanno lo stesso tasso di recapito di qualsiasi email inviata manualmente. La reputazione del tuo dominio e i record SPF e DKIM si applicano normalmente. Questo è un vantaggio chiave rispetto agli invii di terze parti.",
-    "q7": "Cosa succede alla mia lista clienti?",
-    "a7": "I dati dei tuoi clienti sono archiviati in modo sicuro e non vengono mai condivisi, venduti o utilizzati per scopi diversi dall'invio delle tue richieste di recensione. Puoi esportare o eliminare l'intero elenco clienti in qualsiasi momento. Rispettiamo i requisiti GDPR e CAN-SPAM.",
-    "q8": "I clienti possono disiscriversi?",
-    "a8": "Sì. Ogni email include un link per annullare l'iscrizione. Quando un cliente si disiscrive, viene automaticamente rimosso dagli invii futuri. Questo ti mantiene conforme e protegge la reputazione del mittente.",
-    "q9": "Serve competenza tecnica per collegare la mia email?",
-    "a9": "No. Per Gmail e Outlook forniamo guide passo-passo con schermate. La maggior parte degli utenti si connette in meno di 60 secondi. Per SMTP personalizzato avrai bisogno dell'indirizzo del server, della porta e delle credenziali — il tuo provider di hosting può fornirli.",
-    "q10": "Quali piattaforme di recensioni supporta?",
-    "a10": "Qualsiasi piattaforma con un link per le recensioni: Google, Yelp, TripAdvisor, Facebook, Bing Places, Trustpilot, G2, Capterra e altre. Incolla il tuo link di recensione e lo includeremo in ogni richiesta. Puoi cambiare piattaforme in qualsiasi momento.",
-    "q11": "Come funziona la sincronizzazione con WooCommerce?",
-    "a11": "Installa il nostro plugin gratuito per WooCommerce, inserisci la tua API key e i nuovi clienti vengono importati automaticamente dopo ogni ordine completato. Puoi impostare un ritardo (es. 7 giorni dopo l'acquisto) prima che compaiano nella coda di invio.",
-    "q12": "Cosa significa illimitato nel piano Pro?",
-    "a12": "Unlimited significa nessun limite sul numero di richieste di recensione che puoi inviare al mese. Invia 50 o 5.000 — senza costi extra. L'unico limite è quello del tuo provider email (es. Gmail consente ~500/giorno per account personali, 2.000/giorno per Google Workspace).",
-    "sectionTagline": "FAQ",
-    "sectionHeadline": "Domande sulla sicurezza, privacy e configurazione delle email",
-    "sectionSubheadline": "Tutto quello che devi sapere prima di collegare la tua email e inviare la prima richiesta di recensione."
+    "a4": "Sì. Carica un file CSV con i nomi e gli indirizzi email dei tuoi clienti, o sincronizza direttamente da WooCommerce se gestisci un negozio online.",
+    "q5": "Does Get Phame store my email password?",
+    "a5": "Never. Get Phame uses your own SMTP credentials (or Gmail app password) to send emails directly from your account. Your password is encrypted at rest and never shared or stored in plain text. You can disconnect at any time from Settings.",
+    "q6": "Will my emails land in spam?",
+    "a6": "Because emails are sent from your own email address — not a generic sender — they land in the primary inbox far more reliably than bulk marketing tools. Your domain reputation stays intact.",
+    "q7": "What happens to my customer list?",
+    "a7": "Your customer data stays private. It is stored securely in your account and is never sold, shared, or used for any purpose other than sending your review requests. You can delete contacts at any time.",
+    "q8": "Can customers opt out?",
+    "a8": "Yes. Every review request email includes an unsubscribe link. Customers who opt out are automatically excluded from future sends.",
+    "q9": "Do I need technical skills to connect my email?",
+    "a9": "No. Per Gmail e Outlook forniamo guide passo passo con schermate. Per un SMTP personalizzato servono indirizzo del server, porta e credenziali fornite dal provider.",
+    "q10": "Which review platforms does it support?",
+    "a10": "Google, Yelp, TripAdvisor, Facebook, Bing, and any custom URL. You can add multiple platforms and choose which one to include in each send.",
+    "q11": "How does WooCommerce sync work?",
+    "a11": "Il connettore WooCommerce è disponibile solo con i piani a pagamento. Gli utenti a pagamento installano il plugin WooCommerce di Get Phame, inseriscono la chiave API e i nuovi clienti vengono importati automaticamente dopo ogni ordine completato. Puoi impostare un ritardo, ad esempio 7 giorni dopo l'acquisto, prima che appaiano nella coda di invio.",
+    "q12": "What does unlimited mean on the Pro plan?",
+    "a12": "Illimitato significa nessun limite mensile alle richieste. Il piano Gratuito include 10 richieste iniziali, poi 5 ogni 30 giorni mobili. Pro rimuove questo limite del prodotto."
   },
   "bottomCta": {
-    "headline": "Inizia a raccogliere recensioni oggi",
-    "description": "Gratuito per sempre. Nessuna carta di credito. Configurazione in meno di 2 minuti.",
-    "cta": "Inizia gratis",
-    "title": "Pronto a ottenere più recensioni?",
-    "subtitle": "Gratuito per sempre. Nessuna carta di credito. Configurazione in meno di 2 minuti.",
-    "headline2": "La tua casella di posta. La tua reputazione.",
-    "subheadline2": "Gratis per sempre nel piano Starter. Nessuna carta di credito. Configurazione in meno di 2 minuti. Inizia a raccogliere recensioni a 5 stelle oggi.",
-    "socialProof": "Unisciti a centinaia di aziende che stanno già facendo crescere la loro reputazione con Get Phame.",
-    "headline2Part2": "La tua crescita."
+    "headline": "Invia richieste di recensione personali",
+    "description": "Gratis per sempre: 10 richieste iniziali, poi altre 5 ogni 30 giorni mobili. Nessuna carta richiesta.",
+    "cta": "Inizia Gratis",
+    "title": "Invia richieste di recensione personali",
+    "subtitle": "Gratis per sempre: 10 richieste iniziali, poi altre 5 ogni 30 giorni mobili. Nessuna carta richiesta."
   },
   "footer": {
     "brandName": "Get Phame",
@@ -189,12 +188,12 @@
     "compliance": "Conformità"
   },
   "shareReferralCard": {
-    "title": "Get Phame — Strumento gratuito per richieste di recensioni",
-    "shareText": "Sto usando Get Phame per inviare richieste di recensioni dalla mia email — è gratuito e funziona benissimo. Vale la pena provarlo:",
+    "title": "Get Phame — Strumento gratuito per richieste di recensione",
+    "shareText": "Uso Get Phame per inviare richieste di recensione dalla mia email — è gratuito e funziona alla grande. Vale la pena provarlo:",
     "copySuccessToast": "Link copiato negli appunti!",
     "copyErrorToast": "Impossibile copiare il link.",
-    "header": "Conosci un imprenditore locale?",
-    "subHeader": "Aiutali a ottenere più recensioni — è gratuito.",
+    "header": "Conosci un commerciante locale?",
+    "subHeader": "Aiutalo ad ottenere più recensioni — è gratuito.",
     "copiedToClipboard": "Copiato negli appunti!",
     "sharePhame": "Condividi Get Phame"
   },
@@ -205,83 +204,83 @@
     "daysAgo": "{{diffDays}} giorni fa"
   },
   "trackingSummaryCard": {
-    "title": "Prestazioni Email",
+    "title": "Prestazioni email",
     "sent": "Inviati",
-    "openRate": "Tasso di Apertura",
-    "clickRate": "Tasso di Clic",
+    "openRate": "Tasso di apertura",
+    "clickRate": "Tasso di clic",
     "summary": "{{uniqueOpens}} aperture · {{uniqueClicks}} clic · su {{totalSent}} richieste"
   },
   "homePage": {
     "setGoalErrorToast": "{{message}}",
     "shareSuccessToast": "Copiato negli appunti! Condividilo con un amico.",
-    "pageTitle": "Get Phame — Invia Richieste di Recensioni Google Velocemente",
+    "pageTitle": "Get Phame — Invia richieste di recensione Google rapidamente",
     "greeting": "Ciao, {{name}}!",
     "welcomeBack": "Bentornato,",
     "setupBannerTitle": "Configurazione completata!",
     "setupBannerText": "Hai configurato il tuo account e inviato la prima richiesta. Ben fatto!",
     "dismiss": "Chiudi",
     "expiryBannerTitle": "Abbonamento scaduto",
-    "expiryBannerText": "Il tuo accesso è scaduto. Rinnova il tuo piano per continuare a usare Get Phame.",
-    "renewSubscription": "Rinnova Abbonamento",
+    "expiryBannerText": "Il tuo accesso è scaduto. Rinnova il piano per continuare a usare Get Phame.",
+    "renewSubscription": "Rinnova abbonamento",
     "expiringSoonTitle": "Abbonamento in scadenza",
     "expiringSoonText": "Il tuo piano scade tra {{daysUntilExpiry}} giorni. Rinnova ora per evitare interruzioni del servizio.",
-    "smtpHealthAlertTitle": "Problema di Connessione SMTP",
-    "smtpHealthAlertText": "Non riusciamo a connetterci al tuo account email. Controlla le impostazioni SMTP per assicurarti che le richieste possano essere inviate.",
-    "viewSettings": "Visualizza Impostazioni",
+    "smtpHealthAlertTitle": "Problema di connessione SMTP",
+    "smtpHealthAlertText": "Non siamo riusciti a connetterci al tuo account email. Controlla le impostazioni SMTP per assicurarti che le richieste possano essere inviate.",
+    "viewSettings": "Visualizza impostazioni",
     "quickSendTitle": "Ottieni la tua prossima recensione",
     "quickSendSubtitle": "Invia una richiesta a un cliente recente.",
-    "sendRequest": "Invia Richiesta",
-    "monthlyGoal": "Obiettivo Mensile",
+    "sendRequest": "Invia richiesta",
+    "monthlyGoal": "Obiettivo mensile",
     "reviewsThisMonth": "Recensioni questo mese",
     "reviews": "Recensioni",
     "setYourGoal": "Imposta il tuo obiettivo",
-    "goalDescription": "Imposta un obiettivo mensile di recensioni per monitorare i tuoi progressi.",
-    "editGoal": "Modifica Obiettivo",
-    "saveGoal": "Salva Obiettivo",
+    "goalDescription": "Imposta un obiettivo mensile di recensioni per monitorare i progressi.",
+    "editGoal": "Modifica obiettivo",
+    "saveGoal": "Salva obiettivo",
     "cancel": "Annulla",
     "reviewsPlural": "recensioni",
     "reviewSingular": "recensione",
     "goalProgress": "{{respondedThisMonth}} di {{reviewGoal}} {{reviewsPlural}} raccolte questo mese",
-    "recentRequestsTitle": "Richieste Recenti",
-    "noRequestsSent": "Nessuna richiesta inviata ancora",
+    "recentRequestsTitle": "Richieste recenti",
+    "noRequestsSent": "Nessuna richiesta inviata",
     "noRequestsSentSubtitle": "Le tue richieste inviate appariranno qui.",
     "sentTo": "Inviato a {{customerName}}",
-    "viaEmail": "via Email",
+    "viaEmail": "via email",
     "responded": "Risposto",
     "opened": "Aperto",
     "clicked": "Cliccato",
     "sent": "Inviato",
-    "viewAllRequests": "Vedi Tutto →",
+    "viewAllRequests": "Vedi tutto →",
     "onboardingHeroTitle": "Ottieni più recensioni in automatico",
-    "onboardingHeroSubtitle": "Collega la tua email, aggiungi i tuoi clienti e inizia a inviare richieste di recensioni in pochi minuti.",
+    "onboardingHeroSubtitle": "Collega la tua email, aggiungi i clienti e inizia a inviare richieste di recensione in pochi minuti.",
     "getStarted": "Inizia",
     "learnMore": "Scopri di più",
-    "fromYourOwnEmail": "Dal tuo account email",
-    "fromYourOwnEmailDescription": "Collega qualsiasi account email tramite SMTP. Nessun branding 'via phame.app'.",
+    "fromYourOwnEmail": "Dalla tua email",
+    "fromYourOwnEmailDescription": "Collega qualsiasi account email via SMTP. Nessun marchio 'via phame.app'.",
     "worksWithAnyPlatform": "Funziona con qualsiasi piattaforma",
     "worksWithAnyPlatformDescription": "Google, Yelp, Trustpilot, Capterra... se ha un link, puoi usarlo.",
-    "privacyFocused": "Focalizzato sulla privacy",
-    "privacyFocusedDescription": "Non vendiamo i tuoi dati. I tuoi clienti, email e statistiche sono solo tuoi.",
-    "viewLiveDemo": "Visualizza Demo Live",
-    "watchVideo": "Guarda il Video",
-    "allSystemsGo": "Tutto funziona!",
+    "privacyFocused": "Orientato alla privacy",
+    "privacyFocusedDescription": "Non vendiamo i tuoi dati. Clienti, email e statistiche sono solo tuoi.",
+    "viewLiveDemo": "Guarda demo dal vivo",
+    "watchVideo": "Guarda il video",
+    "allSystemsGo": "Tutto pronto!",
     "smtpNotConnected": "SMTP non connesso",
     "connectYourEmail": "Collega la tua email per inviare richieste.",
-    "profileNotComplete": "Profilo incompleto",
-    "addBusinessDetails": "Aggiungi i dettagli aziendali e un link di recensione.",
-    "setupGuide": "Guida alla Configurazione",
-    "helpAndSupport": "Aiuto e Supporto",
-    "featureRequests": "Richieste di Funzionalità",
+    "profileNotComplete": "Profilo non completo",
+    "addBusinessDetails": "Aggiungi i dettagli dell'attività e un link per le recensioni.",
+    "setupGuide": "Guida di configurazione",
+    "helpAndSupport": "Aiuto e supporto",
+    "featureRequests": "Richieste funzionalità",
     "whatsNew": "Novità?",
     "reviewLinkOnX": "Get Phame su X",
-    "buyTheCode": "Acquista il Codice",
-    "monthlyPro": "Pro Mensile",
-    "annualPro": "Pro Annuale",
+    "buyTheCode": "Acquista il codice",
+    "monthlyPro": "Pro mensile",
+    "annualPro": "Pro annuale",
     "lifetimePro": "Pro a Vita",
     "upgradeToPro": "Passa a Pro",
     "upgradeToProDesc": "Sblocca funzionalità avanzate e rimuovi tutti i limiti.",
     "currentPlan": "Piano Attuale",
-    "freePlan": "Piano Gratuito",
+    "freePlan": "Piano gratuito",
     "proPlan": "Piano Pro",
     "lifetimePlan": "Piano a Vita",
     "manageSubscription": "Gestisci Abbonamento",
@@ -458,20 +457,7 @@
     "reviewsCollected": "Recensioni Raccolte",
     "pendingRequests": "Richieste in Attesa",
     "failedRequests": "Richieste Fallite",
-    "successRate": "Tasso di Successo",
-    "toasts": {
-      "updateFailed": "Impossibile aggiornare le richieste.",
-      "updatedSuccess_one": "{{count}} richiesta aggiornata.",
-      "updatedSuccess_other": "{{count}} richieste aggiornate.",
-      "bulkRestartSuccess_one": "Riavviata {{count}} campagna con successo.",
-      "bulkRestartSuccess_other": "Riavviate {{count}} campagne con successo.",
-      "bulkRestartPartial_one": "Riavviata {{count}} campagna. {{failCount}} non riuscite.",
-      "bulkRestartPartial_other": "Riavviate {{count}} campagne. {{failCount}} non riuscite."
-    },
-    "activityTrend": {
-      "title": "Tendenza attività",
-      "empty": "Nessuna attività negli ultimi {{days}} giorni. Invia la tua prima richiesta per vedere le tendenze qui."
-    }
+    "successRate": "Tasso di Successo"
   },
   "settings": {
     "pageTitle": "Impostazioni",
@@ -605,12 +591,6 @@
     "deleteAllDataConfirm": "Sei assolutamente sicuro? Tutti i tuoi dati verranno eliminati permanentemente.",
     "deleteAllDataSuccess": "Tutti i dati eliminati.",
     "deleteAllDataError": "Eliminazione dati non riuscita.",
-    "fromNameHint": "mostrato come mittente",
-    "fromNameDescription": "I clienti vedranno questo come il nome del mittente nella loro casella di posta.",
-    "optional": "opzionale",
-    "replyToDescription": "Dove andranno le risposte dei clienti. Lascia vuoto per usare il tuo indirizzo di invio.",
-    "googleWorkspaceTitle": "Usi Google Workspace o un dominio personalizzato?",
-    "googleWorkspaceDescription": "Non siamo riusciti a rilevare automaticamente le tue impostazioni SMTP. Seleziona il tuo provider di posta elettronica qui sotto o inserisci le impostazioni manualmente.",
     "accountProfile": {
       "title": "Profilo account",
       "description": "Gestisci l’identità mostrata nel tuo account Get Phame.",
@@ -718,6 +698,7 @@
   },
   "reviewPlatforms": {
     "title": "Piattaforme di Recensioni",
+    "add": "Aggiungi",
     "subtitle": "Aggiungi i tuoi link di recensione. I clienti verranno indirizzati a queste piattaforme.",
     "addPlatform": "Aggiungi Piattaforma",
     "editPlatform": "Modifica Piattaforma",
@@ -743,7 +724,6 @@
     "nameRequired": "Il nome è obbligatorio.",
     "maxPlatforms": "Hai raggiunto il numero massimo di piattaforme.",
     "upgradePro": "Aggiorna a Pro per aggiungere più piattaforme.",
-    "add": "Aggiungi",
     "description": "Aggiungi gli URL delle tue pagine di recensione per Google, Yelp, TripAdvisor, Bing, Facebook e altre piattaforme. Incolla il link pubblico che i clienti usano per lasciare una recensione.",
     "emptyState": "Non hai ancora aggiunto piattaforme di recensione. Fai clic su \"Aggiungi\" per iniziare.",
     "editUrl": "Modifica URL",
@@ -1010,15 +990,6 @@
       "woocommerceSync": "Sincronizzazione WooCommerce",
       "stripeSync": "Sincronizzazione Stripe"
     },
-    "socialProof": {
-      "title": "Amato da migliaia di aziende",
-      "review1": "Get Phame ha trasformato la nostra presenza online. Abbiamo triplicato le nostre recensioni Google in un mese!",
-      "author1": "Sarah M., Proprietaria di Ristorante",
-      "review2": "Così facile da usare. I miei clienti adorano ricevere email personalizzate invece di messaggi generici.",
-      "author2": "James T., Idraulico",
-      "review3": "Il ROI è incredibile. Vale ogni centesimo.",
-      "author3": "Lisa K., Proprietaria di Salone"
-    },
     "accessCode": {
       "title": "Hai un codice di accesso?",
       "placeholder": "Inserisci il codice",
@@ -1047,17 +1018,7 @@
     "improved": "Migliorato",
     "fixed": "Risolto",
     "version": "Versione {{version}}",
-    "releaseDate": "Rilasciato il {{date}}",
-    "v15": {
-      "couponCodeGeneration": {
-        "title": "Generazione Codice Coupon",
-        "description": "Gli amministratori possono ora creare codici sconto a tempo limitato o a vita direttamente dalla Dashboard di Amministrazione — con prefissi personalizzati, limiti di utilizzo massimi e date di scadenza."
-      },
-      "revokeUserAccess": {
-        "title": "Revoca Accesso Utente",
-        "description": "Un nuovo pulsante \"Revoca Accesso\" nella tabella Utenti Privilegiati consente agli amministratori di declassare istantaneamente qualsiasi utente a pagamento al livello gratuito con un singolo tocco di conferma."
-      }
-    }
+    "releaseDate": "Rilasciato il {{date}}"
   },
   "compliance": {
     "title": "Guida alla Conformità",
@@ -1193,15 +1154,6 @@
       "skipConfirm": "Sei sicuro di voler saltare? Puoi sempre inviare richieste in seguito.",
       "skipYes": "Sì, salta",
       "skipNo": "No, rimani"
-    },
-    "steps": {
-      "wpConnector": "Plugin WP"
-    },
-    "stepContent": {
-      "step4": {
-        "title": "Connetti WordPress",
-        "description": "Installa il plugin connettore gratuito sul tuo sito WordPress per sincronizzare automaticamente i clienti."
-      }
     }
   },
   "onboardingGuide": {
@@ -1579,6 +1531,7 @@
     "freeRollingLimitReachedDesc": "Hai usato tutte le 5 richieste della quota mobile corrente. La prossima sarà disponibile il {{date}}, oppure passa a Pro per continuare subito."
   },
   "tabs": {
+    "account": "Account",
     "overview": "Panoramica",
     "requests": "Richieste",
     "analytics": "Analisi",
@@ -1592,8 +1545,7 @@
     "integrations": "Integrazioni",
     "notifications": "Notifiche",
     "appearance": "Aspetto",
-    "advanced": "Avanzate",
-    "account": "Account e Profilo"
+    "advanced": "Avanzate"
   },
   "inlineFromNameEdit": {
     "label": "Nome Mittente",
@@ -1633,8 +1585,26 @@
     "cancel": "Annulla",
     "warning": "Tutti i tuoi dati, contatti, modelli e cronologia verranno eliminati permanentemente."
   },
+  "common": {
+    "gotIt": "Ho capito ✓",
+    "hide": "Nascondi",
+    "show": "Mostra",
+    "cancel": "Annulla",
+    "copy": "Copia",
+    "off": "Disattivo",
+    "on": "Attivo",
+    "optional": "facoltativo"
+  },
   "profile": {
     "title": "Profilo Aziendale",
+    "emailSenderSettings": "Impostazioni mittente e-mail",
+    "fromName": "Nome mittente",
+    "fromNameDescription": "Il nome visualizzato nella posta in arrivo del cliente. Per impostazione predefinita viene usato il nome dell'azienda.",
+    "replyToEmail": "E-mail di risposta",
+    "replyToEmailDescription": "Le risposte dei clienti arriveranno qui. Lascia vuoto per usare l'indirizzo e-mail collegato.",
+    "reviewLink": "Link principale per le recensioni Google",
+    "reviewLinkDescription": "Il link principale a cui verranno inviati i clienti. Puoi aggiungere altri link qui sotto.",
+    "saveProfile": "Salva profilo",
     "businessName": "Nome Azienda",
     "businessNamePlaceholder": "es. Il Mio Negozio",
     "ownerName": "Nome Proprietario",
@@ -1649,59 +1619,16 @@
     "saving": "Salvataggio...",
     "saved": "Profilo salvato.",
     "error": "Salvataggio profilo non riuscito.",
-    "cancel": "Annulla",
-    "displayName": "Nome saluto dashboard",
-    "displayNameDescription": "Sostituisce il tuo nome di accesso nel saluto \"Ciao, [Nome]!\". Lascia vuoto per usare il nome del tuo account.",
-    "emailSenderSettings": "Impostazioni mittente email",
-    "fromName": "Nome mittente",
-    "fromNameDescription": "Il nome visualizzato nella posta in arrivo del cliente. Per impostazione predefinita viene usato il nome dell'azienda.",
-    "replyToEmail": "E-mail di risposta",
-    "replyToEmailDescription": "Le risposte dei clienti arriveranno qui. Lascia vuoto per usare l'indirizzo e-mail collegato.",
-    "reviewLink": "Link principale per le recensioni Google",
-    "reviewLinkDescription": "Il link principale a cui verranno inviati i clienti. Puoi aggiungere altri link qui sotto.",
-    "saveProfile": "Salva profilo"
+    "cancel": "Annulla"
   },
   "smtp": {
-    "title": "Impostazioni Email (SMTP)",
-    "subtitle": "Collega il tuo account email per inviare richieste di recensioni.",
-    "emailLabel": "Indirizzo Email",
-    "emailPlaceholder": "tu@esempio.com",
-    "passwordLabel": "Password App",
-    "passwordPlaceholder": "La tua password app",
-    "hostLabel": "Host SMTP",
-    "portLabel": "Porta SMTP",
-    "usernameLabel": "Nome Utente",
-    "securityLabel": "Sicurezza",
-    "fromNameLabel": "Nome Mittente",
-    "fromEmailLabel": "Email Mittente",
-    "replyToLabel": "Rispondi a",
-    "save": "Salva Impostazioni",
-    "saving": "Salvataggio...",
-    "saved": "Impostazioni SMTP salvate.",
-    "error": "Salvataggio non riuscito.",
-    "test": "Testa Connessione",
-    "testing": "Test in corso...",
-    "testSuccess": "Connessione SMTP riuscita!",
-    "testError": "Test SMTP non riuscito: {{message}}",
-    "disconnect": "Disconnetti",
-    "disconnected": "Email disconnessa.",
-    "connected": "Email connessa.",
-    "notConnected": "Email non connessa.",
-    "providerDetected": "Provider rilevato: {{provider}}",
-    "autoDetected": "Rilevato automaticamente",
-    "manualConfig": "Configurazione Manuale",
-    "showPassword": "Mostra Password",
-    "hidePassword": "Nascondi Password",
-    "tls": "TLS",
-    "ssl": "SSL",
-    "none": "Nessuna",
-    "emailConnected": "Email connessa",
-    "emailNotConnectedTitle": "Connessione non verificata",
-    "update": "Modifica",
     "description": "Collega il tuo account e-mail per inviare richieste di recensione. La password viene crittografata e non viene mai condivisa.",
     "testConnection": "Verifica connessione",
     "previewEmail": "Anteprima e-mail",
     "resendVerification": "Invia di nuovo la verifica",
+    "update": "Modifica",
+    "emailConnected": "E-mail collegata",
+    "emailNotConnectedTitle": "E-mail non collegata",
     "lastAutoCheck": "Ultimo controllo automatico: {{date}}",
     "healthy": "✓ Operativa",
     "failed": "✗ Non riuscita",
@@ -1747,10 +1674,47 @@
       "fastmail": "Fastmail — 1.000 e-mail/giorno",
       "proton": "ProtonMail — 150 e-mail/giorno (gratis), 1.000/giorno (a pagamento) tramite Bridge",
       "tip": "Per invii ad alto volume, usa un indirizzo dedicato come reviews@yourdomain.com per mantenere pulita la posta principale ed evitare i limiti personali."
-    }
+    },
+    "title": "Impostazioni Email (SMTP)",
+    "subtitle": "Collega il tuo account email per inviare richieste di recensioni.",
+    "emailLabel": "Indirizzo Email",
+    "emailPlaceholder": "tu@esempio.com",
+    "passwordLabel": "Password App",
+    "passwordPlaceholder": "La tua password app",
+    "hostLabel": "Host SMTP",
+    "portLabel": "Porta SMTP",
+    "usernameLabel": "Nome Utente",
+    "securityLabel": "Sicurezza",
+    "fromNameLabel": "Nome Mittente",
+    "fromEmailLabel": "Email Mittente",
+    "replyToLabel": "Rispondi a",
+    "save": "Salva Impostazioni",
+    "saving": "Salvataggio...",
+    "saved": "Impostazioni SMTP salvate.",
+    "error": "Salvataggio non riuscito.",
+    "test": "Testa Connessione",
+    "testing": "Test in corso...",
+    "testSuccess": "Connessione SMTP riuscita!",
+    "testError": "Test SMTP non riuscito: {{message}}",
+    "disconnect": "Disconnetti",
+    "disconnected": "Email disconnessa.",
+    "connected": "Email connessa.",
+    "notConnected": "Email non connessa.",
+    "providerDetected": "Provider rilevato: {{provider}}",
+    "autoDetected": "Rilevato automaticamente",
+    "manualConfig": "Configurazione Manuale",
+    "showPassword": "Mostra Password",
+    "hidePassword": "Nascondi Password",
+    "tls": "TLS",
+    "ssl": "SSL",
+    "none": "Nessuna"
   },
   "wooCommerce": {
     "title": "Integrazione WooCommerce",
+    "description": "Collega il tuo negozio per importare i clienti dagli ordini completati.",
+    "storeConnected": "Negozio collegato",
+    "viewCustomers": "Visualizza clienti",
+    "updateCredentials": "Aggiorna credenziali",
     "subtitle": "Sincronizza i clienti dal tuo negozio WooCommerce.",
     "storeUrl": "URL Negozio",
     "storeUrlPlaceholder": "https://tuonegozio.com",
@@ -1773,11 +1737,7 @@
     "lastSync": "Ultima sincronizzazione: {{date}}",
     "neverSynced": "Mai sincronizzato",
     "autoSync": "Sincronizzazione Automatica",
-    "autoSyncDesc": "Sincronizza automaticamente i nuovi clienti ogni giorno.",
-    "description": "Collega il tuo negozio per importare i clienti dagli ordini completati.",
-    "storeConnected": "Negozio collegato",
-    "viewCustomers": "Visualizza clienti",
-    "updateCredentials": "Aggiorna credenziali"
+    "autoSyncDesc": "Sincronizza automaticamente i nuovi clienti ogni giorno."
   },
   "tools": {
     "title": "Strumenti",
@@ -1797,12 +1757,12 @@
   },
   "theme": {
     "title": "Tema",
+    "switchToLight": "Passa alla modalità chiara",
+    "switchToDark": "Passa alla modalità scura",
     "light": "Chiaro",
     "dark": "Scuro",
     "system": "Sistema",
-    "changed": "Tema cambiato.",
-    "switchToLight": "Passa alla modalità chiara",
-    "switchToDark": "Passa alla modalità scura"
+    "changed": "Tema cambiato."
   },
   "logout": {
     "button": "Esci",
@@ -1858,7 +1818,8 @@
   "header": {
     "title": "Promemoria di Follow-up",
     "subtitle": "Promemoria automatici per i clienti che non hanno ancora risposto.",
-    "proGrowthMessage": "Trasforma ogni lavoro completato in un sistema ripetibile di reputazione e ricavi."
+    "proGrowthMessage": "Trasforma ogni lavoro completato in un sistema ripetibile di reputazione e ricavi.",
+    "tagline": "Invia automaticamente richieste di recensione."
   },
   "infoBanner": {
     "title": "Come funzionano i promemoria",
@@ -1944,6 +1905,29 @@
     "otherPaymentMethods": "Altri metodi di pagamento",
     "checkoutForPlan": "Pagamento sicuro per {{plan}}"
   },
+  "pricingGrid": {
+    "title": "Scegli il piano adatto alla tua crescita",
+    "savingsEyebrow": "Calcolatore di risparmio",
+    "savingsTitle": "Scopri quanto risparmi con ogni impegno",
+    "savingsBasis": "Rispetto al pagamento mensile",
+    "monthlyAnnualCost": "per 12 mesi",
+    "annualSave": "Risparmia {{amount}}",
+    "annualSavingsDetail": "{{price}} invece di {{monthly}} nel primo anno",
+    "lifetimeSave": "Risparmia {{amount}} entro il secondo anno",
+    "lifetimePayback": "Si ripaga in circa {{months}} mesi",
+    "heroSendRequests": "Invia richieste",
+    "heroAutomateFollowUps": "Automatizza i follow-up",
+    "heroTrackGrowth": "Monitora la crescita",
+    "closeComparison": "Chiudi il confronto",
+    "includedLabel": "Incluso",
+    "planFeaturesLabel": "Funzionalità del piano {{plan}}",
+    "approximateThb": "≈ {{amount}} THB",
+    "guidance": {
+      "monthly": "Ideale per la flessibilità a breve termine.",
+      "annual": "Il miglior valore ricorrente, circa $24.17 al mese.",
+      "lifetime": "Il miglior valore a lungo termine: $349 una volta, senza rinnovi."
+    }
+  },
   "accessCode": {
     "title": "Hai un codice di accesso?",
     "placeholder": "Inserisci il codice",
@@ -1966,15 +1950,6 @@
       "month": "mesi",
       "lifetime": "A vita"
     }
-  },
-  "socialProof": {
-    "title": "Amato da migliaia di aziende",
-    "review1": "Get Phame ha trasformato la nostra presenza online. Abbiamo triplicato le nostre recensioni Google in un mese!",
-    "author1": "Sarah M., Proprietaria di Ristorante",
-    "review2": "Così facile da usare. I miei clienti adorano ricevere email personalizzate invece di messaggi generici.",
-    "author2": "James T., Idraulico",
-    "review3": "Il ROI è incredibile. Vale ogni centesimo.",
-    "author3": "Lisa K., Proprietaria di Salone"
   },
   "comparisonTable": {
     "feature": "Funzionalità",
@@ -2007,8 +1982,8 @@
   "paidUser": {
     "title": "Sei un utente Pro!",
     "subtitle": "Hai accesso a tutte le funzionalità Pro.",
-    "manageSubscription": "Gestisci Abbonamento",
-    "currentPlan": "Piano Attuale: {{plan}}",
+    "manageSubscription": "Gestisci abbonamento",
+    "currentPlan": "Piano attuale: {{plan}}",
     "backToDashboard": "Torna alla dashboard",
     "portalOpened": "La fatturazione sicura è stata aperta in una nuova scheda.",
     "currentStatus": "Il tuo stato: {{tierLabel}}",
@@ -2031,6 +2006,60 @@
     },
     "renewsOn": "Rinnovo il {{date}}",
     "accessUntil": "Accesso fino al {{date}}"
+  },
+  "authFeedback": {
+    "openingGoogle": "Apertura dell’accesso con Google…",
+    "connectingGoogle": "Connessione a Google…",
+    "continueWithGoogle": "Continua con Google",
+    "googleOpenFailed": "Impossibile aprire l’accesso con Google. Riprova.",
+    "googleSuccess": "Accesso con Google riuscito. Benvenuto su Get Phame.",
+    "errors": {
+      "googleDenied": "L’accesso con Google è stato annullato.",
+      "googleFailed": "Accesso con Google non riuscito. Riprova.",
+      "googleMissingCode": "Google non ha restituito le informazioni necessarie per accedere. Riprova.",
+      "googleStateMismatch": "Il controllo di sicurezza dell’accesso con Google non è riuscito. Riprova.",
+      "googleNoId": "Non è stato possibile verificare il tuo account Google. Riprova."
+    },
+    "preparingGoogle": "Preparazione dell’accesso con Google…",
+    "redirectingGoogle": "Reindirizzamento sicuro a Google…"
+  },
+  "apiRecovery": {
+    "preparing": "Preparazione del tuo spazio di lavoro…",
+    "preparingDescription": "Ci ricollegheremo automaticamente quando il servizio sarà pronto.",
+    "reconnecting": "Riconnessione in corso…",
+    "reconnected": "Sei di nuovo online.",
+    "reconnectedDescription": "Get Phame è connesso e pronto all’uso.",
+    "unavailableTitle": "Stiamo riconnettendo Get Phame.",
+    "unavailableDescription": "Il servizio sta impiegando un po’ più del previsto. Il tuo lavoro è al sicuro; riprova quando vuoi.",
+    "offlineTitle": "Al momento sei offline.",
+    "offlineDescription": "Controlla il Wi-Fi o i dati mobili, quindi riprova. Il tuo lavoro resta al sicuro su questo dispositivo.",
+    "offlineStepOne": "Attiva il Wi-Fi o i dati mobili.",
+    "offlineStepTwo": "Torna qui e tocca Riprova connessione.",
+    "retrying": "Nuovo tentativo…",
+    "retry": "Riprova",
+    "retryNow": "Riprova ora",
+    "retryConnection": "Riprova connessione",
+    "networkStatusLabel": "Stato della rete",
+    "networkOnline": "Online",
+    "networkOffline": "Offline"
+  },
+  "profileMenu": {
+    "account": "Account",
+    "accountDetails": "Dettagli account",
+    "open": "Apri menu account",
+    "signedInAs": "Accesso effettuato come",
+    "dashboard": "Dashboard",
+    "darkMode": "Modalità scura",
+    "lightMode": "Modalità chiara"
+  },
+  "account": {
+    "administrator": "Amministratore",
+    "administratorAccount": "Account amministratore",
+    "renewsOn": "Rinnovo il {{date}}",
+    "accessUntil": "Accesso fino al {{date}}",
+    "managePlan": "Gestisci piano",
+    "status": "Stato",
+    "upgrade": "Aggiorna"
   },
   "columnLabels": {
     "name": "Nome",
@@ -2220,91 +2249,6 @@
     "skipYes": "Sì, salta",
     "skipNo": "No, rimani"
   },
-  "pricing": {
-    "title": "Prezzi Semplici e Trasparenti",
-    "subtitle": "Inizia gratis. Aggiorna quando sei pronto.",
-    "free": "Gratuito",
-    "pro": "Pro",
-    "lifetime": "A Vita",
-    "perMonth": "/mese",
-    "perYear": "/anno",
-    "oneTime": "pagamento unico",
-    "mostPopular": "Più popolare",
-    "bestValue": "Miglior Valore",
-    "getStarted": "Inizia Gratis",
-    "upgradeNow": "Aggiorna Ora",
-    "contactSales": "Contatta le Vendite",
-    "includedFeatures": "Incluso:",
-    "notIncluded": "Non incluso",
-    "freeFeature1": "Invii illimitati",
-    "freeFeature2": "1 modello email",
-    "freeFeature3": "Analisi di base",
-    "freeFeature4": "Importazione CSV",
-    "proFeature1": "Tutto nel piano Gratuito",
-    "proFeature2": "Modelli illimitati",
-    "proFeature3": "Analisi avanzate",
-    "proFeature4": "Promemoria automatici",
-    "proFeature5": "Integrazione WooCommerce",
-    "proFeature6": "Integrazione Stripe",
-    "proFeature7": "Supporto prioritario",
-    "lifetimeFeature1": "Tutto nel piano Pro",
-    "lifetimeFeature2": "Accesso a vita",
-    "lifetimeFeature3": "Aggiornamenti futuri inclusi",
-    "lifetimeFeature4": "Accesso API",
-    "annualDiscount": "Risparmia {{percent}}% con il piano annuale",
-    "moneyBackGuarantee": "Garanzia di rimborso 30 giorni",
-    "freeDescription": "Try Get Phame with 10 review requests — no credit card required.",
-    "proMonthlyDescription": "Best for active businesses that send review requests weekly.",
-    "proAnnualDescription": "Best value for businesses committed to reputation growth.",
-    "lifetimeDescription": "Best for agencies, operators, and long-term owners. One business/location. Includes all future updates.",
-    "sectionSubtitle": "Inizia gratis. Passa a un piano superiore quando sei pronto.",
-    "sectionTitle": "Prezzi semplici e onesti",
-    "plans": {
-      "free": {
-        "name": "Gratuito",
-        "description": "Prova Phame con 10 richieste di recensione — nessuna carta di credito richiesta.",
-        "feature1": "10 richieste di recensione",
-        "feature2": "Collega 1 account email",
-        "feature3": "Qualsiasi piattaforma di recensione",
-        "feature4": "Tracciamento apertura email",
-        "feature5": "Importazione CSV",
-        "cta": "Inizia Gratis"
-      },
-      "proMonthly": {
-        "name": "Pro Mensile",
-        "description": "Ideale per aziende attive che inviano richieste di recensione settimanalmente.",
-        "feature1": "Richieste di recensione illimitate",
-        "feature2": "Invio massivo con un clic",
-        "feature3": "Promemoria di follow-up",
-        "feature4": "Sincronizzazione WooCommerce",
-        "feature5": "Supporto prioritario",
-        "feature6": "Analisi avanzate",
-        "cta": "Inizia Pro Mensile"
-      },
-      "proAnnual": {
-        "name": "Pro Annuale",
-        "description": "Il miglior valore per le aziende impegnate nella crescita della reputazione.",
-        "feature1": "Tutto incluso in Pro Mensile",
-        "feature2": "Fatturato annualmente ($228/yr)",
-        "feature3": "Risparmia 34% rispetto al mensile",
-        "feature4": "Supporto prioritario",
-        "feature5": "Accesso anticipato alle nuove funzionalità",
-        "cta": "Inizia Pro Annuale",
-        "badge": "Risparmia 34%"
-      },
-      "lifetime": {
-        "name": "A Vita",
-        "description": "Un solo pagamento, accesso a vita. Nessun rinnovo, nessuna sorpresa.",
-        "feature1": "Tutto incluso in Pro",
-        "feature2": "Paga una volta, usa per sempre",
-        "feature3": "Tutti gli aggiornamenti futuri inclusi",
-        "feature4": "Supporto prioritario a vita",
-        "feature5": "Perfetto per agenzie e operatori",
-        "cta": "Ottieni Accesso a Vita",
-        "badge": "Migliore Offerta"
-      }
-    }
-  },
   "comparison": {
     "title": "Confronto Piani",
     "feature": "Funzionalità",
@@ -2314,55 +2258,7 @@
     "unlimited": "Illimitato",
     "limited": "Limitato",
     "yes": "✓",
-    "no": "—",
-    "colLifetime": "Opzione a vita",
-    "colPlatform": "Piattaforma",
-    "colStartingPrice": "Prezzo di partenza",
-    "priceDisclaimer": "I prezzi si basano sui piani di ingresso pubblicamente indicati a partire da aprile 2026.",
-    "sectionSubtitle": "Birdeye e Podium applicano prezzi da enterprise per funzionalità che Get Phame offre a una frazione del costo.",
-    "sectionTitle": "10–20× più economico dei principali concorrenti"
-  },
-  "testimonials": {
-    "title": "Cosa dicono i nostri clienti",
-    "subtitle": "Migliaia di aziende si fidano di Get Phame per raccogliere recensioni.",
-    "review1": "Get Phame ha trasformato la nostra presenza online. Abbiamo triplicato le nostre recensioni Google in un mese!",
-    "author1": "Sarah M.",
-    "role1": "Proprietaria di Ristorante",
-    "review2": "Così facile da usare. I miei clienti adorano ricevere email personalizzate invece di messaggi generici.",
-    "author2": "James T.",
-    "role2": "Idraulico",
-    "review3": "Il ROI è incredibile. Vale ogni centesimo.",
-    "author3": "Lisa K.",
-    "role3": "Proprietaria di Salone",
-    "review4": "Ho visto un aumento del 40% nelle recensioni Google nel primo mese. Altamente raccomandato!",
-    "author4": "Marco B.",
-    "role4": "Proprietario di Pizzeria",
-    "review5": "Finalmente uno strumento che funziona davvero. Semplice, efficace e conveniente.",
-    "author5": "Anna V.",
-    "role5": "Proprietaria di Boutique",
-    "sectionTitle": "Cosa dicono i nostri utenti",
-    "sarah": {
-      "quote": "Prima temevo di chiedere recensioni ai clienti — mi sembrava imbarazzante e troppo commerciale. Get Phame invia la richiesta dalla mia Gmail personale, quindi sembra che l'abbia scritta io. Sono passata da 12 a 47 recensioni su Google in sei settimane.",
-      "name": "Sarah M.",
-      "role": "Fotografa Freelance",
-      "result": "12 → 47 recensioni in 6 settimane"
-    },
-    "tom": {
-      "quote": "Serviamo circa 80 clienti al giorno. Il venerdì importo i clienti abituali della settimana da un CSV, premo invia e il lunedì mattina di solito abbiamo già ricevuto 8–10 nuove recensioni. È diventata parte della nostra routine settimanale.",
-      "name": "Tom R.",
-      "role": "Proprietario, The Corner Café",
-      "result": "8–10 nuove recensioni a settimana"
-    },
-    "tagline": "Risultati reali",
-    "headline": "Hanno chiesto. I clienti hanno risposto.",
-    "subheadline": "Aziende reali che usano Get Phame per far crescere la loro reputazione ogni settimana.",
-    "cta": "Inizia gratis",
-    "david": {
-      "quote": "Come agenzia che gestisce 12 sedi clienti, l'offerta a vita è stata una scelta ovvia. Ogni cliente riceve il proprio link per le recensioni e io invio le richieste per loro conto. Il ROI si è ripagato da solo nel primo mese.",
-      "name": "David K.",
-      "role": "Proprietario di un'Agenzia di Marketing Digitale",
-      "result": "12 sedi gestite da un unico account"
-    }
+    "no": "—"
   },
   "onboarding": {
     "title": "Benvenuto in Get Phame!",
@@ -2389,76 +2285,7 @@
     "createAccount": "Crea Account",
     "termsAgreement": "Continuando, accetti i nostri Termini di Servizio e la nostra Informativa sulla Privacy.",
     "termsOfService": "Termini di Servizio",
-    "privacyPolicy": "Informativa sulla Privacy",
-    "heroHeadline": "Ottieni più recensioni a 5 stelle",
-    "heroHighlight": "Google",
-    "heroSubtitle": "Invia richieste di recensioni personalizzate dal tuo account email. I tuoi clienti le vedranno arrivare da te, non da un mittente generico.",
-    "heroSubtitleShort": "Invia richieste di recensioni personalizzate dal tuo account email.",
-    "trust1": "Credenziali crittografate AES-256 — i tuoi dati sono al sicuro",
-    "trust2": "Invia dalla TUA email — massima deliverability",
-    "trust3": "Configurazione in meno di 2 minuti — nessuna competenza tecnica richiesta",
-    "socialProof": "Scelto da oltre 500 attività commerciali locali",
-    "compliance": "Ogni email include un link per annullare l'iscrizione — pienamente conforme",
-    "cardHeading": "Crea il tuo account gratuito",
-    "cardSubheading": "Nessuna carta di credito richiesta",
-    "or": "o",
-    "emailBtn": "Continua con l'email",
-    "checkInbox": "Controlla la tua casella di posta!",
-    "sentLink": "Abbiamo inviato un link di accesso a",
-    "expires": "Scade tra 15 minuti.",
-    "useDifferentEmail": "Usa un'email diversa",
-    "sendingLink": "Invio link…",
-    "sendSignInLink": "Invia link di accesso",
-    "cancel": "Annulla",
-    "privacy": "Privacy",
-    "terms": "Termini",
-    "support": "Supporto",
-    "install": {
-      "title": "Aggiungi GetPhame alla tua schermata Home",
-      "subtitle": "Si apre a schermo intero come un'app nativa — nessun App Store necessario",
-      "iphoneTab": "iPhone / iPad",
-      "androidTab": "Android",
-      "shareBtn": "Condividi GetPhame con un amico",
-      "doneBtn": "Fatto — chiudi guida",
-      "ios": {
-        "step1": {
-          "label": "Apri in Safari",
-          "detail": "Devi usare Safari — Chrome su iOS non può installare PWA."
-        },
-        "step2": {
-          "label": "Tocca il pulsante Condividi",
-          "detail": "La casella con una freccia verso l'alto nella parte inferiore dello schermo."
-        },
-        "step3": {
-          "label": "Aggiungi alla schermata Home",
-          "detail": "Scorri verso il basso nel foglio di condivisione e toccalo."
-        },
-        "step4": {
-          "label": "Tocca Aggiungi",
-          "detail": "L'icona di GetPhame appare istantaneamente sulla tua schermata Home."
-        },
-        "tip": "Già installato? Elimina prima la vecchia icona, quindi riaggiungila dopo un aggiornamento dell'app."
-      },
-      "android": {
-        "step1": {
-          "label": "Apri in Chrome",
-          "detail": "Anche Samsung Internet funziona — tocca il menu per Aggiungere la pagina alla schermata Home."
-        },
-        "step2": {
-          "label": "Tocca il menu a tre punti",
-          "detail": "Angolo in alto a destra di Chrome."
-        },
-        "step3": {
-          "label": "Aggiungi alla schermata Home",
-          "detail": "Tocca, quindi conferma con Aggiungi."
-        },
-        "step4": {
-          "label": "Fatto!",
-          "detail": "GetPhame appare sulla tua schermata Home e si apre a schermo intero come un'app nativa."
-        },
-        "tip": "Già installato? In Chrome vai su Impostazioni, Impostazioni sito, getphame.app, Cancella e Ripristina, quindi reinstalla."
-      }
-    }
+    "privacyPolicy": "Informativa sulla Privacy"
   },
   "video": {
     "sectionTitle": "Guarda come funziona",
@@ -2466,230 +2293,18 @@
     "caption": "Inizia gratis — nessuna carta di credito richiesta"
   },
   "trust": {
-    "encryptedPassword": "Password criptata a riposo",
-    "dataPrivacy": "La tua lista clienti rimane privata",
-    "emailProviders": "Funziona con Gmail, Outlook, Yahoo e altro",
-    "unsubscribe": "Link per annullare l'iscrizione in ogni email"
-  },
-  "proof": {
-    "sectionTitle": "Built for Businesses That Run on Reputation",
-    "sectionSubtitle": "Photographers, cafés, home services, clinics, agencies, and WooCommerce stores.",
-    "type1": "Cafés & Restaurants",
-    "type2": "Home Services",
-    "type3": "Photographers",
-    "type4": "Clinics & Salons",
-    "stat1Value": "10×",
-    "stat1Label": "more reviews vs. asking in person",
-    "stat2Value": "< 2 min",
-    "stat2Label": "average setup time",
-    "stat3Value": "Your inbox",
-    "stat3Label": "emails sent from your own address"
+    "encryptedPassword": "Password encrypted at rest",
+    "dataPrivacy": "Your customer list stays private",
+    "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
+    "unsubscribe": "Unsubscribe link in every email"
   },
   "demo": {
     "sectionTitle": "See It In Action",
-    "sectionSubtitle": "Three steps. Under 60 seconds. Your customer gets a personal email from you.",
+    "sectionSubtitle": "Scopri il flusso di invio in tre passaggi.",
     "gifAlt": "Get Phame 3-step send flow demo",
     "gifCaption": "The 3-step send flow",
     "emailAlt": "Example review request email on iPhone",
     "emailCaption": "What your customer receives"
-  },
-  "leadCapture": {
-    "headline": "Non sei ancora pronto a impegnarti?",
-    "description": "Ottieni una guida gratuita su come triplicare le tue recensioni Google in 30 giorni — più accesso anticipato alle nuove funzionalità e consigli sulla reputazione.",
-    "placeholder": "Inserisci la tua email",
-    "sending": "Invio in corso...",
-    "cta": "Invia guida",
-    "success": "Controlla la tua casella di posta — la guida è in arrivo!",
-    "disclaimer": "Nessuno spam. Annulla l'iscrizione in qualsiasi momento. Rispettiamo la tua casella di posta."
-  },
-  "videoDemo": {
-    "eyebrow": "Guardalo in azione",
-    "title": "Guarda come funziona",
-    "subtitle": "Guarda una rapida dimostrazione — configurazione in meno di 2 minuti",
-    "videoSubtitle": "Collega l'email · Importa clienti · Invia richieste · Traccia i risultati",
-    "watchNow": "Guarda ora →"
-  },
-  "stats": {
-    "title": "Costruito per le aziende che si basano sulla reputazione",
-    "stat1Label": "recensioni in più rispetto alla richiesta di persona",
-    "stat2Label": "tempo medio di configurazione",
-    "stat3Value": "La tua casella di posta",
-    "stat3Label": "email inviate dal tuo indirizzo",
-    "stat4Label": "tasso di risposta medio",
-    "industry1": "Fotografi",
-    "industry2": "Caffè e Ristoranti",
-    "industry3": "Servizi per la casa",
-    "industry4": "Cliniche e Saloni",
-    "industry5": "Agenzie",
-    "industry6": "Negozi WooCommerce"
-  },
-  "productShowcase": {
-    "title": "Costruito per rendere le richieste di recensioni semplici",
-    "subtitle": "Uno strumento semplice. Tre potenti visualizzazioni. Tutto ciò di cui hai bisogno per far crescere la tua reputazione.",
-    "tab1Label": "Anteprima Email",
-    "tab1Title": "Email che sembrano scritte a mano",
-    "tab1Desc": "Ogni richiesta di recensione arriva dal tuo indirizzo email effettivo con il tuo nome, la tua firma e un tono personale. I clienti si fidano perché sembra reale — perché lo è.",
-    "tab2Label": "Importazione Clienti",
-    "tab2Title": "La tua intera lista in pochi secondi",
-    "tab2Desc": "Trascina e rilascia un CSV o sincronizza direttamente da WooCommerce. Convalidiamo le email, rimuoviamo i duplicati e segnaliamo i rimbalzi — così ogni invio conta.",
-    "tab3Label": "Monitoraggio Recensioni",
-    "tab3Title": "Guarda le recensioni arrivare",
-    "tab3Desc": "Traccia ogni email inviata, aperta e cliccata. Guarda il tuo numero di recensioni aumentare settimana dopo settimana con analisi in tempo reale e grafici di crescita.",
-    "viewFullSize": "Visualizza a schermo intero"
-  },
-  "step4Connector": {
-    "intro": {
-      "heading": "Usi WordPress + WooCommerce?"
-    },
-    "step1": {
-      "title": "Scarica il plugin",
-      "downloadBtn": "Scarica Plugin (.zip)"
-    },
-    "step2": {
-      "title": "Installa e attiva in WordPress",
-      "wpAdminLink": "Apri WP Admin → Plugin"
-    },
-    "step3": {
-      "title": "Incolla la tua chiave API",
-      "generateKeyBtn": "Genera chiave API"
-    },
-    "doneBtn": "Tutto fatto — vai a Phame ✓",
-    "skipBtn": "Non uso WordPress — salta questo passaggio"
-  },
-  "referralRewardsCard": {
-    "title": "Premi per referral",
-    "subtitle": "Guadagna 1 mese gratuito per ogni referral pagato",
-    "joined": "Iscritti",
-    "converted": "Convertiti",
-    "freeMonths": "Mesi gratuiti",
-    "whatsapp": "WhatsApp",
-    "copied": "Copiato!",
-    "copyLink": "Copia link",
-    "shareHint": "Condividi il tuo link qui sotto per iniziare a guadagnare mesi gratuiti",
-    "rewardProcessing": "Elaborazione del premio — il tuo mese gratuito verrà applicato a breve",
-    "copySuccessToast": "Link di referral copiato!",
-    "copyErrorToast": "Impossibile copiare il link."
-  },
-  "shareAndEarn": {
-    "title": "Condividi e guadagna",
-    "subtitle": "Invita un amico — ottieni 1 mese gratuito quando si iscrive",
-    "referredLabel": "Segnalati",
-    "convertedLabel": "Convertiti",
-    "monthsEarnedLabel": "Mesi guadagnati",
-    "copied": "Copiato!",
-    "copy": "Copia",
-    "loading": "Caricamento...",
-    "upgradeTip": "Passa a un piano a pagamento per ricevere il mese gratuito quando la persona segnalata si iscrive.",
-    "copySuccessToast": "Link di invito copiato!"
-  },
-  "versionToast": {
-    "title": "Nuova versione disponibile",
-    "description": "Tocca per aggiornare e ottenere le ultime funzionalità.",
-    "action": "Aggiorna ora"
-  },
-  "whatsNew": {
-    "title": "Novità",
-    "subtitle": "Ecco cosa è cambiato nell'ultimo aggiornamento.",
-    "cta": "Capito — andiamo!"
-  },
-  "adminCodes": {
-    "lifetimeAccess": "Accesso a vita",
-    "monthsPro": "{{count}} mese Pro",
-    "monthsPro_other": "{{count}} mesi Pro",
-    "daysPro": "{{count}} giorno Pro",
-    "daysPro_other": "{{count}} giorni Pro",
-    "csvButton": "CSV",
-    "csvTitle": "Scarica CSV",
-    "codesCreated": "Creati",
-    "codesRedeemed": "Utilizzati",
-    "codesActive": "Attivi"
-  },
-  "common": {
-    "gotIt": "Ho capito ✓",
-    "hide": "Nascondi",
-    "show": "Mostra",
-    "cancel": "Annulla",
-    "copy": "Copia",
-    "off": "Disattivo",
-    "on": "Attivo",
-    "optional": "facoltativo"
-  },
-  "pricingGrid": {
-    "title": "Scegli il piano adatto alla tua crescita",
-    "savingsEyebrow": "Calcolatore di risparmio",
-    "savingsTitle": "Scopri quanto risparmi con ogni impegno",
-    "savingsBasis": "Rispetto al pagamento mensile",
-    "monthlyAnnualCost": "per 12 mesi",
-    "annualSave": "Risparmia {{amount}}",
-    "annualSavingsDetail": "{{price}} invece di {{monthly}} nel primo anno",
-    "lifetimeSave": "Risparmia {{amount}} entro il secondo anno",
-    "lifetimePayback": "Si ripaga in circa {{months}} mesi",
-    "heroSendRequests": "Invia richieste",
-    "heroAutomateFollowUps": "Automatizza i follow-up",
-    "heroTrackGrowth": "Monitora la crescita",
-    "closeComparison": "Chiudi il confronto",
-    "includedLabel": "Incluso",
-    "planFeaturesLabel": "Funzionalità del piano {{plan}}",
-    "approximateThb": "≈ {{amount}} THB",
-    "guidance": {
-      "monthly": "Ideale per la flessibilità a breve termine.",
-      "annual": "Il miglior valore ricorrente, circa $24.17 al mese.",
-      "lifetime": "Il miglior valore a lungo termine: $349 una volta, senza rinnovi."
-    }
-  },
-  "authFeedback": {
-    "openingGoogle": "Apertura dell’accesso con Google…",
-    "connectingGoogle": "Connessione a Google…",
-    "continueWithGoogle": "Continua con Google",
-    "googleOpenFailed": "Impossibile aprire l’accesso con Google. Riprova.",
-    "googleSuccess": "Accesso con Google riuscito. Benvenuto su Get Phame.",
-    "errors": {
-      "googleDenied": "L’accesso con Google è stato annullato.",
-      "googleFailed": "Accesso con Google non riuscito. Riprova.",
-      "googleMissingCode": "Google non ha restituito le informazioni necessarie per accedere. Riprova.",
-      "googleStateMismatch": "Il controllo di sicurezza dell’accesso con Google non è riuscito. Riprova.",
-      "googleNoId": "Non è stato possibile verificare il tuo account Google. Riprova."
-    },
-    "preparingGoogle": "Preparazione dell’accesso con Google…",
-    "redirectingGoogle": "Reindirizzamento sicuro a Google…"
-  },
-  "apiRecovery": {
-    "preparing": "Preparazione del tuo spazio di lavoro…",
-    "preparingDescription": "Ci ricollegheremo automaticamente quando il servizio sarà pronto.",
-    "reconnecting": "Riconnessione in corso…",
-    "reconnected": "Sei di nuovo online.",
-    "reconnectedDescription": "Get Phame è connesso e pronto all’uso.",
-    "unavailableTitle": "Stiamo riconnettendo Get Phame.",
-    "unavailableDescription": "Il servizio sta impiegando un po’ più del previsto. Il tuo lavoro è al sicuro; riprova quando vuoi.",
-    "offlineTitle": "Al momento sei offline.",
-    "offlineDescription": "Controlla il Wi-Fi o i dati mobili, quindi riprova. Il tuo lavoro resta al sicuro su questo dispositivo.",
-    "offlineStepOne": "Attiva il Wi-Fi o i dati mobili.",
-    "offlineStepTwo": "Torna qui e tocca Riprova connessione.",
-    "retrying": "Nuovo tentativo…",
-    "retry": "Riprova",
-    "retryNow": "Riprova ora",
-    "retryConnection": "Riprova connessione",
-    "networkStatusLabel": "Stato della rete",
-    "networkOnline": "Online",
-    "networkOffline": "Offline"
-  },
-  "profileMenu": {
-    "account": "Account",
-    "accountDetails": "Dettagli account",
-    "open": "Apri menu account",
-    "signedInAs": "Accesso effettuato come",
-    "dashboard": "Dashboard",
-    "darkMode": "Modalità scura",
-    "lightMode": "Modalità chiara"
-  },
-  "account": {
-    "administrator": "Amministratore",
-    "administratorAccount": "Account amministratore",
-    "renewsOn": "Rinnovo il {{date}}",
-    "accessUntil": "Accesso fino al {{date}}",
-    "managePlan": "Gestisci piano",
-    "status": "Stato",
-    "upgrade": "Aggiorna"
   },
   "paymentSuccess": {
     "confirmed": "Pagamento confermato.",
@@ -2971,7 +2586,7 @@
     "copied": "Copiato!",
     "copySuccessToast": "Link di segnalazione copiato!",
     "copyErrorToast": "Impossibile copiare il link.",
-    "shareMessage": "Ottieni più recensioni a 5 stelle con Get Phame — {{url}}",
+    "shareMessage": "Invia richieste di recensione con Get Phame — {{url}}",
     "noReferralsHint": "Condividi il tuo link qui sotto per iniziare a guadagnare mesi gratuiti",
     "pendingReferralsHint": "{{count}} amico si è unito — in attesa che passi al piano a pagamento",
     "pendingReferralsHint_plural": "{{count}} amici si sono uniti — in attesa che passino al piano a pagamento",
@@ -3488,7 +3103,10 @@
   "landing": {
     "hero": {
       "categoryLabel": "Software per email di richiesta recensioni per attività locali",
-      "googleDisclosureLabel": "Uso dei dati dell'accesso Google"
+      "googleDisclosureLabel": "Uso dei dati dell'accesso Google",
+      "ctaVariantB": "Inizia gratis — senza carta",
+      "setupTime": "Configurazione guidata",
+      "headlinePart1": "Invia richieste di recensione personali"
     },
     "leadCapture": {
       "addressConfirmation": "L'abbiamo inviata a {{email}}. Conferma la correttezza dell'indirizzo e controlla la cartella spam se non arriva. L'accettazione del provider non garantisce la consegna in posta in arrivo.",
@@ -3500,8 +3118,9 @@
       "emailInvalid": "Inserisci un'email con formato corretto, ad esempio name@example.com.",
       "emailRequired": "Inserisci il tuo indirizzo email.",
       "providerAcceptedMessage": "Il tuo provider di posta ha accettato la guida per la consegna.",
-      "sharePrompt": "Conosci qualcuno che ha bisogno di più recensioni? Condividi la guida gratuita.",
-      "tryAgain": "Riprova l'email"
+      "sharePrompt": "Condividi la guida gratuita alle richieste di recensione.",
+      "tryAgain": "Riprova l'email",
+      "description": "Ricevi una guida gratuita per pianificare richieste di recensione chiare e conformi, oltre ad aggiornamenti sul prodotto e consigli pratici sulla reputazione."
     },
     "purpose": {
       "description": "Get Phame aiuta le attività locali a inviare email personalizzate per richiedere recensioni dal proprio account email connesso. È pensato per titolari di attività, fotografi, caffè e ristoranti, team di servizi a domicilio, cliniche e saloni, agenzie e negozi WooCommerce che desiderano un modo più semplice per chiedere feedback ai clienti reali.",
@@ -3520,7 +3139,13 @@
       "title": "Cosa fa Get Phame"
     },
     "stats": {
-      "emailsSentValue": "La tua casella di posta"
+      "emailsSentValue": "La tua casella di posta",
+      "individualOutreachValue": "Individuale",
+      "moreReviewsLabel": "contatto con i clienti",
+      "setupValue": "Guidata",
+      "averageSetupTimeLabel": "configurazione e onboarding",
+      "followUpValue": "Automatico",
+      "averageResponseRateLabel": "i promemoria si fermano dopo l'azione del cliente"
     },
     "support": {
       "attachment": "Screenshot",
@@ -3557,6 +3182,55 @@
         "subjectMin": "Inserisci un oggetto di almeno 3 caratteri."
       },
       "website": "Sito web"
+    },
+    "faq": {
+      "a1": "No. Ogni email viene inviata direttamente dall'account che colleghi, non da un server di invio massivo di terze parti. I clienti vedono il nome, l'indirizzo e la firma del mittente che configuri.",
+      "q11": "Come funziona la sincronizzazione WooCommerce?",
+      "a11": "Il connettore WooCommerce è disponibile solo con i piani a pagamento. Gli utenti a pagamento installano il plugin WooCommerce di Get Phame, inseriscono la chiave API e i nuovi clienti vengono importati automaticamente dopo ogni ordine completato. Puoi impostare un ritardo, ad esempio 7 giorni dopo l'acquisto, prima che appaiano nella coda di invio.",
+      "a12": "Illimitato significa che Get Phame non imposta un limite mensile alle richieste di recensione per i piani Pro. Restano valide le regole e i limiti di invio del tuo provider email.",
+      "a9": "No. Per Gmail e Outlook forniamo guide passo passo con schermate. Per un SMTP personalizzato servono indirizzo del server, porta e credenziali fornite dal provider."
+    },
+    "feature1": {
+      "description": "Ogni richiesta di recensione viene inviata dall'account email che colleghi e usa il nome e la firma del mittente che configuri.",
+      "statValue": "La tua email",
+      "statLabel": "identità del mittente"
+    },
+    "feature2": {
+      "title": "Invia richieste personalizzate in blocco",
+      "description": "Importa i clienti via CSV o sincronizzazione WooCommerce, scegli i destinatari e invia richieste personalizzate senza copiare ogni messaggio a mano.",
+      "statValue": "In blocco",
+      "statLabel": "invio personalizzato"
+    },
+    "feature3": {
+      "statValue": "Flessibile",
+      "statLabel": "destinazioni delle recensioni"
+    },
+    "subHeadline": "Un modo semplice per inviare richieste di recensione chiare e personali dall'account email collegato.",
+    "finalCta": {
+      "description": "Gratis per sempre: 10 richieste iniziali, poi altre 5 ogni 30 giorni mobili. Nessuna carta richiesta."
+    },
+    "howItWorks": {
+      "setupSteps": {
+        "step1": {
+          "description": "Collega Gmail, Outlook o un account SMTP con passaggi guidati. Le credenziali sono cifrate con AES-256."
+        },
+        "step4": {
+          "description": "Invia una richiesta personale a ogni cliente e consulta invii, aperture e clic in un unico posto."
+        }
+      },
+      "headline": "Dal collegamento alla prima richiesta di recensione",
+      "setupTime": "Configurazione, importazione e invio guidati"
+    },
+    "productShowcase": {
+      "tabEmailDescription": "Ogni richiesta usa il nome, la firma e il tono del mittente configurati in Get Phame.",
+      "tabImportTitle": "Importa clienti da CSV o WooCommerce",
+      "tabImportDescription": "Carica un CSV o sincronizza WooCommerce, poi controlla la validazione email e i duplicati prima dell'invio.",
+      "tabTrackingTitle": "Controlla l'attività delle richieste",
+      "tabTrackingDescription": "Consulta invii, aperture e clic nella dashboard di Get Phame.",
+      "tabTrackingAlt": "Dashboard attività di Get Phame con monitoraggio di invii, aperture e clic"
+    },
+    "section": {
+      "description": "Scopri il flusso di invio in tre passaggi."
     }
   },
   "adaptiveSending": {
