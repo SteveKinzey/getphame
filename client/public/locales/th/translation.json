@@ -55,11 +55,6 @@
       "title": "ใช้งานได้กับทุกแพลตฟอร์มรีวิว",
       "description": "Google, Yelp, Trustpilot, TripAdvisor, Facebook — เพิ่มลิงก์รีวิวใดก็ได้ ลูกค้าของคุณจะถูกนำไปยังหน้ารีวิวของคุณโดยตรง"
     },
-    "customerQuote": {
-      "quote": "Get Phame เป็นตัวเปลี่ยนเกมสำหรับธุรกิจขนาดเล็กของเรา เราเห็นรีวิวเชิงบวกเพิ่มขึ้นอย่างมาก และใช้งานง่ายมาก!",
-      "author": "ทอม อาร์.",
-      "authorTitle": "เจ้าของร้าน The Corner Café"
-    },
     "sendsFromYourEmail": "ส่งจากอีเมลของคุณ",
     "oneTapRequests": "ขอรีวิวด้วยแตะเดียว",
     "freeToStart": "เริ่มต้นฟรี",
@@ -956,9 +951,6 @@
       "lifetime": "ตลอดชีพ"
     }
   },
-  "socialProof": {
-    "trustedByBusinesses": "ธุรกิจท้องถิ่นไว้วางใจให้ช่วยเพิ่มรีวิว 5 ดาว"
-  },
   "comparisonTable": {
     "feature": "คุณสมบัติ",
     "free": "ฟรี",
@@ -1535,21 +1527,21 @@
     "sectionTitle": "ราคาที่เรียบง่ายและโปร่งใส",
     "sectionSubtitle": "เริ่มต้นฟรี อัปเกรดเมื่อพร้อม",
     "free": "ฟรี",
-    "freePrice": "$0",
+    "freePrice": "฿0",
     "freeDescription": "ส่งคำขอรีวิวได้ 10 ครั้ง — ไม่ต้องใช้บัตรเครดิต",
     "proMonthly": "Pro รายเดือน",
     "mostPopular": "ยอดนิยม",
-    "proMonthlyPrice": "$29",
+    "proMonthlyPrice": "฿970",
     "proMonthlyPer": "/เดือน",
     "proMonthlyDescription": "ส่งคำขอรีวิวไม่จำกัด ส่งจำนวนมาก ติดตามผล และซิงค์ WooCommerce",
     "proAnnual": "Pro รายปี",
-    "save15": "ประหยัด 15%",
-    "proAnnualPrice": "$297",
+    "save15": "ประหยัด 14%",
+    "proAnnualPrice": "฿9,990",
     "proAnnualPer": "/ปี",
-    "proAnnualDescription": "ทุกอย่างใน Pro รายเดือน — ชำระปีละครั้ง เทียบเท่า $24.75/เดือน",
+    "proAnnualDescription": "ทุกอย่างใน Pro รายเดือน — ชำระปีละครั้ง เทียบเท่า ฿832.50/เดือน",
     "lifetime": "ตลอดชีพ",
     "ownItForever": "เป็นเจ้าของตลอดไป",
-    "lifetimePrice": "฿12,250",
+    "lifetimePrice": "฿11,700",
     "lifetimeOnce": " ครั้งเดียว",
     "lifetimeDescription": "จ่ายครั้งเดียว ใช้ได้ตลอดชีพ ไม่มีค่าต่ออายุ"
   },
@@ -1560,19 +1552,6 @@
     "colStartingPrice": "ราคาเริ่มต้น",
     "colLifetime": "ตัวเลือกตลอดชีพ",
     "priceDisclaimer": "ราคาอ้างอิงจากแผนเริ่มต้นที่ประกาศบนเว็บไซต์ ณ เดือนเมษายน 2026"
-  },
-  "testimonials": {
-    "sectionTitle": "เสียงจากผู้ใช้จริง",
-    "sarah": {
-      "quote": "ฉันเคยกลัวการขอรีวิวจากลูกค้า รู้สึกเขินและดูเหมือนขายของ แต่ Get Phame ส่งอีเมลจาก Gmail ของฉันเอง ดูเหมือนฉันเขียนเอง ยอดรีวิว Google เพิ่มจาก 12 เป็น 47 ภายในหกสัปดาห์",
-      "name": "Sarah M.",
-      "role": "ช่างภาพอิสระ"
-    },
-    "tom": {
-      "quote": "เราให้บริการลูกค้าประมาณ 80 คนต่อวัน ทุกวันศุกร์ฉันนำเข้ารายชื่อจาก CSV แล้วกดส่ง พอถึงเช้าวันจันทร์มักได้รีวิวใหม่ 8–10 รายการ กลายเป็นส่วนหนึ่งของกิจวัตรประจำสัปดาห์แล้ว",
-      "name": "Tom R.",
-      "role": "เจ้าของร้าน The Corner Café"
-    }
   },
   "onboarding": {
     "googleBtn": "ดำเนินการต่อด้วย Google",
@@ -1666,20 +1645,6 @@
     "dataPrivacy": "Your customer list stays private",
     "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
     "unsubscribe": "Unsubscribe link in every email"
-  },
-  "proof": {
-    "sectionTitle": "Built for Businesses That Run on Reputation",
-    "sectionSubtitle": "Photographers, cafés, home services, clinics, agencies, and WooCommerce stores.",
-    "type1": "Cafés & Restaurants",
-    "type2": "Home Services",
-    "type3": "Photographers",
-    "type4": "Clinics & Salons",
-    "stat1Value": "10×",
-    "stat1Label": "more reviews vs. asking in person",
-    "stat2Value": "< 2 min",
-    "stat2Label": "average setup time",
-    "stat3Value": "Your inbox",
-    "stat3Label": "emails sent from your own address"
   },
   "demo": {
     "sectionTitle": "See It In Action",

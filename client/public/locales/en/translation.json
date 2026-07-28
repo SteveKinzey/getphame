@@ -55,11 +55,6 @@
       "title": "Works with any review platform",
       "description": "Google, Yelp, Trustpilot, TripAdvisor, Facebook — add any review link. Your customers are taken straight to your review page."
     },
-    "customerQuote": {
-      "quote": "Get Phame has been a game-changer for our small business. We've seen a significant increase in positive reviews, and it's so easy to use!",
-      "author": "Tom R.",
-      "authorTitle": "Owner, The Corner Café"
-    },
     "sendsFromYourEmail": "Sends from your email",
     "oneTapRequests": "One-tap requests",
     "freeToStart": "Free to start",
@@ -1007,9 +1002,6 @@
       "lifetime": "Lifetime"
     }
   },
-  "socialProof": {
-    "trustedByBusinesses": "Trusted by local businesses to get more 5-star reviews"
-  },
   "comparisonTable": {
     "feature": "Feature",
     "free": "Free",
@@ -1636,10 +1628,10 @@
     "proMonthlyPer": "/mo",
     "proMonthlyDescription": "Unlimited review requests, bulk send, follow-up reminders, WooCommerce sync.",
     "proAnnual": "Pro Annual",
-    "save15": "Save 15%",
-    "proAnnualPrice": "$297",
+    "save15": "Save 17%",
+    "proAnnualPrice": "$290",
     "proAnnualPer": "/yr",
-    "proAnnualDescription": "Everything in Pro Monthly — billed once a year. Equivalent to $24.75/month.",
+    "proAnnualDescription": "Everything in Pro Monthly — billed once a year. Equivalent to $24.17/month.",
     "lifetime": "Lifetime",
     "ownItForever": "Own it forever",
     "lifetimePrice": "$349",
@@ -1653,19 +1645,6 @@
     "colStartingPrice": "Starting price",
     "colLifetime": "Lifetime option",
     "priceDisclaimer": "Prices based on publicly listed entry-tier plans as of April 2026."
-  },
-  "testimonials": {
-    "sectionTitle": "What our users say",
-    "sarah": {
-      "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. Get Phame sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks.",
-      "name": "Sarah M.",
-      "role": "Freelance Photographer"
-    },
-    "tom": {
-      "quote": "We serve about 80 customers a day. I import the week's regulars from a CSV on Friday, hit send, and by Monday morning we've usually picked up 8–10 new reviews. It's become part of our weekly routine.",
-      "name": "Tom R.",
-      "role": "Owner, The Corner Café"
-    }
   },
   "onboarding": {
     "googleBtn": "Continue with Google",
@@ -1789,20 +1768,6 @@
     "dataPrivacy": "Your customer list stays private",
     "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
     "unsubscribe": "Unsubscribe link in every email"
-  },
-  "proof": {
-    "sectionTitle": "Built for Businesses That Run on Reputation",
-    "sectionSubtitle": "Photographers, cafés, home services, clinics, agencies, and WooCommerce stores.",
-    "type1": "Cafés & Restaurants",
-    "type2": "Home Services",
-    "type3": "Photographers",
-    "type4": "Clinics & Salons",
-    "stat1Value": "10×",
-    "stat1Label": "more reviews vs. asking in person",
-    "stat2Value": "< 2 min",
-    "stat2Label": "average setup time",
-    "stat3Value": "Your inbox",
-    "stat3Label": "emails sent from your own address"
   },
   "demo": {
     "sectionTitle": "See It In Action",
@@ -1991,8 +1956,7 @@
       "headlinePart1": "Your inbox. Your reputation.",
       "headlinePart2": "Your growth.",
       "description": "Free forever: 10 initial requests, then 5 more every rolling 30 days. No credit card. Set up in under 2 minutes.",
-      "getStartedButton": "Get Started Free",
-      "joinBusinesses": "Join hundreds of businesses already growing their reputation with Get Phame."
+      "getStartedButton": "Get Started Free"
     },
     "footer": {
       "privacy": "Privacy",
@@ -2154,27 +2118,6 @@
       "viewFullSizeButton": "View full size",
       "viewFullSizeAriaLabel": "View {{title}} in full size"
     },
-    "socialProofBar": {
-      "reviews": {
-        "sarah": {
-          "quote": "Went from 12 to 47 Google reviews in 6 weeks. Customers actually respond because it comes from my real email.",
-          "role": "Freelance Photographer"
-        },
-        "tom": {
-          "quote": "I import Friday's regulars, hit send, and wake up Monday to 8–10 new reviews. It's part of our weekly routine now.",
-          "role": "The Corner Café"
-        },
-        "david": {
-          "quote": "Managing 12 client locations from one account. The lifetime deal paid for itself in the first month.",
-          "role": "Marketing Agency Owner"
-        },
-        "lisa": {
-          "quote": "Set it up in under 2 minutes. My open rate is 68% — way better than any review platform I've tried.",
-          "role": "Yoga Studio Owner"
-        }
-      },
-      "trustedBy": "Trusted by local business owners"
-    },
     "stats": {
       "moreReviewsLabel": "more reviews vs. asking in person",
       "averageSetupTimeLabel": "average setup time",
@@ -2188,27 +2131,6 @@
       "industryWooCommerceStores": "WooCommerce Stores",
       "heading": "Built for businesses that run on reputation",
       "emailsSentValue": "Your inbox"
-    },
-    "testimonials": {
-      "sarah": {
-        "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. Get Phame sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks.",
-        "role": "Freelance Photographer",
-        "result": "12 → 47 reviews in 6 weeks"
-      },
-      "tom": {
-        "quote": "We serve about 80 customers a day. I import the week's regulars from a CSV on Friday, hit send, and by Monday morning we've usually picked up 8–10 new reviews. It's become part of our weekly routine.",
-        "role": "Owner, The Corner Café",
-        "result": "8–10 new reviews per week"
-      },
-      "david": {
-        "quote": "As an agency managing 12 client locations, the lifetime deal was a no-brainer. Each client gets their own review link and I send requests on their behalf. The ROI paid for itself in the first month.",
-        "role": "Digital Marketing Agency Owner",
-        "result": "12 locations managed from one account"
-      },
-      "realResults": "Real results",
-      "headline": "They asked. Customers answered.",
-      "subtitle": "Real businesses using Get Phame to grow their reputation every week.",
-      "getStartedFree": "Get Started Free"
     },
     "trustBar": {
       "passwordEncrypted": "Password encrypted at rest",
@@ -3378,21 +3300,51 @@
         "body": "An ordinal action order. Priority 1 means evaluate or extract first. It is not urgency, revenue impact, story points, probability of success, or percent complete."
       },
       "dimensions": {
-        "isolation": { "title": "Isolation", "body": "Can the work move without carrying unrelated branch history?" },
-        "compatibility": { "title": "Compatibility", "body": "How much conflicts with or duplicates the current main branch?" },
-        "evidence": { "title": "Evidence clarity", "body": "Are code, tests, blockers, and acceptance gates documented?" },
-        "dependencies": { "title": "Dependency closure", "body": "Are required components, migrations, providers, and policies resolved?" },
-        "valueRisk": { "title": "Value-to-risk sequence", "body": "Can reviewing this item first produce useful progress with bounded regression risk?" }
+        "isolation": {
+          "title": "Isolation",
+          "body": "Can the work move without carrying unrelated branch history?"
+        },
+        "compatibility": {
+          "title": "Compatibility",
+          "body": "How much conflicts with or duplicates the current main branch?"
+        },
+        "evidence": {
+          "title": "Evidence clarity",
+          "body": "Are code, tests, blockers, and acceptance gates documented?"
+        },
+        "dependencies": {
+          "title": "Dependency closure",
+          "body": "Are required components, migrations, providers, and policies resolved?"
+        },
+        "valueRisk": {
+          "title": "Value-to-risk sequence",
+          "body": "Can reviewing this item first produce useful progress with bounded regression risk?"
+        }
       },
       "readiness": {
         "title": "Readiness",
         "body": "A categorical description of the evidence available at the audit date. It identifies the next safe treatment; it is not a numerical maturity score.",
         "labels": {
-          "portable": { "title": "Portable after rebase and revalidation", "body": "A bounded implementation exists with no intrinsic blocker. Recreate or selectively port it from current main and rerun current gates." },
-          "specification": { "title": "Specification only", "body": "Requirements exist but product code does not. Convert the evidence into a scoped issue before implementation." },
-          "stale": { "title": "Architecturally stale", "body": "Substantial code exists but overlaps newer infrastructure. Preserve behavior and contracts, not old files." },
-          "blocked": { "title": "Blocked", "body": "A known missing dependency, build error, migration, or decision prevents validation. Resolve the blocker before extraction." },
-          "superseded": { "title": "Superseded or retire candidate", "body": "Current main already provides the behavior or the product decision changed. Record the decision and retire the old work." }
+          "portable": {
+            "title": "Portable after rebase and revalidation",
+            "body": "A bounded implementation exists with no intrinsic blocker. Recreate or selectively port it from current main and rerun current gates."
+          },
+          "specification": {
+            "title": "Specification only",
+            "body": "Requirements exist but product code does not. Convert the evidence into a scoped issue before implementation."
+          },
+          "stale": {
+            "title": "Architecturally stale",
+            "body": "Substantial code exists but overlaps newer infrastructure. Preserve behavior and contracts, not old files."
+          },
+          "blocked": {
+            "title": "Blocked",
+            "body": "A known missing dependency, build error, migration, or decision prevents validation. Resolve the blocker before extraction."
+          },
+          "superseded": {
+            "title": "Superseded or retire candidate",
+            "body": "Current main already provides the behavior or the product decision changed. Record the decision and retire the old work."
+          }
         }
       }
     },

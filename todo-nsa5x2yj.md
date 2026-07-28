@@ -278,3 +278,9 @@
 - [x] Apply and verify the additive access-code duration migration against the managed database without duplicating columns or losing existing data.
 - [x] Run focused and full release gates on the final combined tree, including Vitest, TypeScript, production dependency audit, production build, and desktop/mobile verification.
 - [ ] Save the validated replacement checkpoint, verify the live deployment, and synchronize the exact released tree through protected GitHub `main` without force-pushing or overwriting unrelated work.
+- [x] Create six isolated Stripe test-mode products and Prices with the approved amounts and intervals: USD $29/month, $290/year, $349 one-time; THB ฿970/month, ฿9,990/year, and ฿11,700 one-time; preserve the live catalog unchanged.
+- [x] Recover the post-reset code changes that isolate `STRIPE_TEST_PRICE_ID_*` from live Price mappings, validate all six managed test entries, and keep the screenshot-confirmed live THB lifetime Price in production configuration.
+- [x] Reconstruct the centralized exact-price source and use it in authenticated and public pricing surfaces across all seven maintained locales.
+- [x] Reapply the fabricated testimonial/social-proof removal and explicit prohibition tests so no customer identity, quote, rating, outcome, or unsupported adoption claim ships.
+- [x] Run focused contracts, strict TypeScript, production dependency audit, full Vitest, production build, and responsive English/Thai pricing verification.
+- [ ] Checkpoint and verify the auto-published release, then synchronize its exact tree through a history-preserving protected-main GitHub pull request.

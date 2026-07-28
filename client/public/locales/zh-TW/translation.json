@@ -55,11 +55,6 @@
       "title": "適用於任何評論平臺",
       "description": "Google、Yelp、Trustpilot、TripAdvisor、Facebook — 新增任何評論連結。您的客戶將直接跳轉到您的評論頁面。"
     },
-    "customerQuote": {
-      "quote": "Get Phame 對我們的小型企業來說是一個顛覆性的改變。我們看到了積極評論的顯著增長，而且它非常易於使用！",
-      "author": "Tom R.",
-      "authorTitle": "The Corner Café 店主"
-    },
     "sendsFromYourEmail": "從您的郵箱傳送",
     "oneTapRequests": "一鍵請求",
     "freeToStart": "免費開始",
@@ -945,9 +940,6 @@
       "lifetime": "終身"
     }
   },
-  "socialProof": {
-    "trustedByBusinesses": "深受本地企業信賴，助您獲得更多五星好評"
-  },
   "comparisonTable": {
     "feature": "功能",
     "free": "免費版",
@@ -1386,10 +1378,10 @@
     "proMonthlyPer": "/月",
     "proMonthlyDescription": "無限評價請求、批次傳送、跟進提醒、WooCommerce同步。",
     "proAnnual": "專業版（年付）",
-    "save15": "節省15%",
-    "proAnnualPrice": "$297",
+    "save15": "節省17%",
+    "proAnnualPrice": "$290",
     "proAnnualPer": "/年",
-    "proAnnualDescription": "包含月付專業版所有功能，按年一次性計費，相當於每月$24.75。",
+    "proAnnualDescription": "包含月付專業版所有功能，按年一次性計費，相當於每月$24.17。",
     "lifetime": "終身版",
     "ownItForever": "永久擁有",
     "lifetimePrice": "$349",
@@ -1403,19 +1395,6 @@
     "colStartingPrice": "起始價格",
     "colLifetime": "終身版選項",
     "priceDisclaimer": "價格基於2026年4月各平臺官網公開的入門級方案。"
-  },
-  "testimonials": {
-    "sectionTitle": "使用者真實評價",
-    "sarah": {
-      "quote": "以前我很害怕向客戶索取評價，感覺很尷尬。Phame用我自己的Gmail傳送請求，看起來就像我親自寫的一樣。六週內，我的Google評價從12條增加到了47條。",
-      "name": "Sarah M.",
-      "role": "自由攝影師"
-    },
-    "tom": {
-      "quote": "我們每天服務約80位顧客。每週五我從CSV匯入本週常客名單，點選傳送，週一早上通常就能收到8–10條新評價。這已經成為我們每週的固定流程。",
-      "name": "Tom R.",
-      "role": "The Corner Café 老闆"
-    }
   },
   "onboarding": {
     "googleBtn": "使用 Google 繼續",
@@ -1545,20 +1524,6 @@
     "dataPrivacy": "Your customer list stays private",
     "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
     "unsubscribe": "Unsubscribe link in every email"
-  },
-  "proof": {
-    "sectionTitle": "Built for Businesses That Run on Reputation",
-    "sectionSubtitle": "Photographers, cafés, home services, clinics, agencies, and WooCommerce stores.",
-    "type1": "Cafés & Restaurants",
-    "type2": "Home Services",
-    "type3": "Photographers",
-    "type4": "Clinics & Salons",
-    "stat1Value": "10×",
-    "stat1Label": "more reviews vs. asking in person",
-    "stat2Value": "< 2 min",
-    "stat2Label": "average setup time",
-    "stat3Value": "Your inbox",
-    "stat3Label": "emails sent from your own address"
   },
   "demo": {
     "sectionTitle": "See It In Action",

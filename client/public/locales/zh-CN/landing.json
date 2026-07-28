@@ -83,8 +83,7 @@
       "headlinePart1": "你的收件箱。你的声誉。",
       "headlinePart2": "你的增长。",
       "description": "永久免费：先获得 10 个评论请求，之后每个滚动 30 天周期再获得 5 个。无需信用卡，2 分钟内完成设置。",
-      "getStartedButton": "免费开始",
-      "joinBusinesses": "数百家企业已经使用 Get Phame 提升声誉，加入他们吧。"
+      "getStartedButton": "免费开始"
     },
     "footer": {
       "privacy": "隐私",
@@ -168,6 +167,7 @@
       },
       "proMonthly": {
         "name": "Pro（月付）",
+        "period": "/月",
         "description": "适合每周发送评论请求的活跃企业。",
         "features": {
           "requests": "无限制评论请求",
@@ -181,16 +181,17 @@
       },
       "proAnnual": {
         "name": "Pro（年付）",
+        "period": "/年",
         "description": "适合致力于声誉增长的企业，性价比最高。",
         "features": {
           "everything": "包含 Pro（月付）的所有功能",
-          "billed": "按年计费（$228/年）",
-          "save": "较月付节省 34%",
+          "billed": "按年计费（$290/年）",
+          "save": "较月付节省 17%",
           "support": "优先支持",
           "earlyAccess": "新功能优先体验"
         },
         "cta": "开通 Pro（年付）",
-        "badge": "节省 34%"
+        "badge": "节省 17%"
       },
       "lifetime": {
         "name": "终身",
@@ -235,27 +236,6 @@
       "viewFullSizeButton": "查看全屏",
       "viewFullSizeAriaLabel": "以全屏查看 {{title}}"
     },
-    "socialProofBar": {
-      "reviews": {
-        "sarah": {
-          "quote": "在 6 周内从 12 条 Google 评论增长到 47 条。客户确实会回应，因为邮件来自我的真实邮箱。",
-          "role": "自由摄影师"
-        },
-        "tom": {
-          "quote": "我把周五的常客导入，点击发送，周一早上通常能收到 8–10 条新评论。现在已成为我们的周例行工作。",
-          "role": "街角咖啡馆"
-        },
-        "david": {
-          "quote": "用一个账号管理 12 个客户门店。终身优惠在第一个月就回本了。",
-          "role": "营销代理机构负责人"
-        },
-        "lisa": {
-          "quote": "两分钟内即可设置完毕。我的开启率是 68%——远超我尝试过的任何评论平台。",
-          "role": "瑜伽馆老板"
-        }
-      },
-      "trustedBy": "本地商家信赖"
-    },
     "stats": {
       "moreReviewsLabel": "比当面索要获得更多评论",
       "averageSetupTimeLabel": "平均设置时间",
@@ -269,27 +249,6 @@
       "industryAgencies": "代理机构",
       "industryWooCommerceStores": "WooCommerce 商店",
       "heading": "为靠声誉经营的企业打造"
-    },
-    "testimonials": {
-      "sarah": {
-        "quote": "我以前总是忐忑地去要客户评论——感觉尴尬又像在推销。Get Phame 从我的 Gmail 发送请求，看起来像是我写的邮件。我在 6 周内从 12 条 Google 评论增长到 47 条。",
-        "role": "自由摄影师",
-        "result": "12 → 47 条评论（6 周内）"
-      },
-      "tom": {
-        "quote": "我们每天大约服务 80 位顾客。我在周五从 CSV 导入本周的常客，点击发送，周一早上通常能收到 8–10 条新评论。现在这已成为我们的周常。",
-        "role": "The Corner Café 店主",
-        "result": "每周新增 8–10 条评论"
-      },
-      "david": {
-        "quote": "作为管理 12 个客户地点的代理机构，终身优惠毫无疑问是最划算的。每个客户都有自己的评论链接，我代表他们发送请求。投资回报在第一个月就实现了。",
-        "role": "数字营销代理机构老板",
-        "result": "通过一个账号管理 12 个门店"
-      },
-      "realResults": "真实成果",
-      "headline": "他们请求，客户回应。",
-      "subtitle": "真实企业每周使用 Get Phame 提升声誉。",
-      "getStartedFree": "免费开始"
     },
     "trustBar": {
       "passwordEncrypted": "密码静态加密",

@@ -32,6 +32,66 @@
       "getStartedFree": "Inizia gratis",
       "toggleMenu": "Apri o chiudi il menu"
     },
+    "pricing": {
+      "free": {
+        "name": "Gratis",
+        "description": "Inizia con 10 richieste di recensione, poi ricevine altre 5 per ogni periodo mobile di 30 giorni — senza carta di credito.",
+        "features": {
+          "requests": "10 richieste iniziali + 5 ogni 30 giorni mobili",
+          "email": "Collega 1 account e-mail",
+          "platform": "Qualsiasi piattaforma di recensioni",
+          "tracking": "Monitoraggio delle aperture",
+          "import": "Importazione CSV"
+        },
+        "cta": "Inizia gratis"
+      },
+      "proMonthly": {
+        "name": "Pro Mensile",
+        "period": "/mese",
+        "description": "Ideale per le attività che inviano richieste di recensione ogni settimana.",
+        "features": {
+          "requests": "Richieste di recensione illimitate",
+          "bulk": "Invio multiplo con un clic",
+          "reminders": "Promemoria di follow-up",
+          "woocommerce": "Sincronizzazione WooCommerce",
+          "support": "Assistenza prioritaria",
+          "analytics": "Analisi avanzate"
+        },
+        "cta": "Inizia Pro Mensile"
+      },
+      "proAnnual": {
+        "name": "Pro Annuale",
+        "period": "/anno",
+        "description": "Il miglior valore per le attività impegnate nella crescita della reputazione.",
+        "features": {
+          "everything": "Tutto ciò che include Pro Mensile",
+          "billed": "Fatturato annualmente ($290/anno)",
+          "save": "Risparmia il 17% rispetto al mensile",
+          "support": "Assistenza prioritaria",
+          "earlyAccess": "Accesso anticipato alle nuove funzionalità"
+        },
+        "cta": "Inizia Pro Annuale",
+        "badge": "Risparmia il 17%"
+      },
+      "lifetime": {
+        "name": "A vita",
+        "period": " una tantum",
+        "description": "Un unico pagamento per l'accesso a vita. Nessun rinnovo, nessuna sorpresa.",
+        "features": {
+          "everything": "Tutto ciò che include Pro",
+          "payOnce": "Paga una volta, usa per sempre",
+          "updates": "Tutti gli aggiornamenti futuri inclusi",
+          "support": "Assistenza prioritaria a vita",
+          "agencies": "Ideale per agenzie e operatori"
+        },
+        "cta": "Ottieni l'accesso a vita",
+        "badge": "Migliore offerta"
+      },
+      "sectionTitle": "Prezzi",
+      "headline": "Prezzi chiari. Nessuna sorpresa.",
+      "subtitle": "Inizia gratis. Passa a Pro quando vuoi. Annulla in qualsiasi momento. Nessun costo nascosto.",
+      "mostPopular": "Più popolare"
+    },
     "section": {
       "tagline": "Guardalo in azione",
       "title": "Scopri come funziona",

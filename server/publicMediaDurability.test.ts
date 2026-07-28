@@ -12,7 +12,7 @@ const PUBLIC_STATIC_SOURCES = [
   { path: "../client/src/pages/FeaturePage.tsx", deliveryMarker: "https://files.manuscdn.com/" },
   { path: "../client/public/manifest.json", deliveryMarker: "https://files.manuscdn.com/" },
   { path: "./publicFeaturePrerender.ts", deliveryMarker: "https://files.manuscdn.com/" },
-  { path: "./staticCopyRoutes.ts", deliveryMarker: "https://files.manuscdn.com/" },
+  { path: "./staticCopyRoutes.ts", deliveryMarker: "storageGet(source.storageKey)" },
   { path: "./transcriptFontRoutes.ts", deliveryMarker: "https://files.manuscdn.com/" },
 ] as const;
 

@@ -45,7 +45,6 @@
     "dashboardStats": "Votre tableau de bord — statistiques en direct",
     "titlePart1": "Obtenez plus d'avis",
     "titlePart2": "5 étoiles",
-    "badge": "Outil de demande d'avis n°1",
     "ctaSubtext": "Gratuit pour toujours • Sans carte bancaire",
     "subheadline": "Envoyez des demandes d'avis personnalisées depuis votre propre e-mail. Les clients répondent parce que ça vient de vous.",
     "watchDemo": "Voir la démo",
@@ -53,7 +52,6 @@
     "subtitle": "Envoyez des demandes d'avis personnalisées depuis votre propre adresse e-mail. Rappels automatiques inclus.",
     "ctaPrimary": "Commencer gratuitement",
     "ctaSecondary": "Voir comment ça marche",
-    "socialProof": "Rejoint par des centaines de propriétaires d'entreprises",
     "noCard": "Aucune carte bancaire requise",
     "setup": "Configuration en 2 minutes"
   },
@@ -70,13 +68,6 @@
     "platformFeature": {
       "title": "Fonctionne avec toutes les plateformes d'avis",
       "description": "Google, Yelp, TripAdvisor, Facebook, Bing et plus encore."
-    },
-    "customerQuote": {
-      "quote": "Get Phame has been a game-changer for our small business. We've seen a significant increase in positive reviews, and it's so easy to use!",
-      "author": "Tom R.",
-      "authorTitle": "Propriétaire, Le Café du Coin",
-      "text": "Get Phame m'a aidé à obtenir 47 nouveaux avis Google en un mois. Mes clients adorent recevoir un e-mail personnel.",
-      "role": "Propriétaire de restaurant"
     },
     "sendsFromYourEmail": "Envoyers from your email",
     "oneTapRequests": "Demandes en un clic",
@@ -1311,9 +1302,6 @@
       "lifetime": "À vie"
     }
   },
-  "socialProof": {
-    "trustedByBusinesses": "Approuvé par les entreprises locales pour obtenir plus d'avis 5 étoiles"
-  },
   "comparisonTable": {
     "feature": "Fonctionnalité",
     "free": "Gratuit",
@@ -1800,18 +1788,18 @@
     "sectionTitle": "Tarification simple et honnête",
     "sectionSubtitle": "Commencez gratuitement. Passez à Pro quand vous êtes prêt.",
     "free": "Gratuit",
-    "freePrice": "0 €",
+    "freePrice": "$0",
     "freeDescription": "Pour les petites entreprises qui débutent",
     "proMonthly": "Pro Mensuel",
     "mostPopular": "Le plus populaire",
-    "proMonthlyPrice": "29 €",
+    "proMonthlyPrice": "$29",
     "proMonthlyPer": "/mois",
     "proMonthlyDescription": "Unlimited review requests, bulk send, follow-up reminders, WooCommerce sync.",
     "proAnnual": "Pro Annuel",
-    "save15": "Enregistrer 15%",
-    "proAnnualPrice": "24 €",
-    "proAnnualPer": "/mois",
-    "proAnnualDescription": "Everything in Pro Mensuel — billed once a year. Equivalent to $24.75/month.",
+    "save15": "Économisez 17 %",
+    "proAnnualPrice": "$290",
+    "proAnnualPer": "/an",
+    "proAnnualDescription": "Tout ce qui est inclus dans Pro Mensuel — facturé une fois par an. Équivaut à $24.17/mois.",
     "lifetime": "À vie",
     "ownItForever": "Possédez-le pour toujours",
     "lifetimePrice": "$349",
@@ -1837,7 +1825,7 @@
     "proFeature5": "Import WooCommerce",
     "proFeature6": "Import CSV",
     "proFeature7": "Support prioritaire",
-    "proLifetimePrice": "299 €",
+    "proLifetimePrice": "$349",
     "proLifetimePer": "paiement unique",
     "monthly": "Mensuel",
     "annual": "Annuel",
@@ -1851,30 +1839,6 @@
     "colStartingPrice": "Prix de départ",
     "colLifetime": "À vie option",
     "priceDisclaimer": "Prix basés sur les forfaits d'entrée de gamme publiquement listés en avril 2026."
-  },
-  "testimonials": {
-    "sectionTitle": "Ce que disent nos utilisateurs",
-    "sarah": {
-      "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. Get Phame sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks.",
-      "name": "Sarah M.",
-      "role": "Photographe indépendante",
-      "text": "Get Phame m'a aidée à obtenir 23 nouveaux avis en seulement 2 semaines !"
-    },
-    "tom": {
-      "quote": "Nous servons environ 80 clients par jour. J'importe les commandes de la semaine régulièrement et j'envoie des demandes en masse. C'est incroyablement simple.",
-      "name": "Tom R.",
-      "role": "Propriétaire, Le Café du Coin"
-    },
-    "james": {
-      "name": "James K.",
-      "role": "Propriétaire de restaurant",
-      "text": "Mes clients adorent recevoir un e-mail personnel. Le taux de réponse est incroyable."
-    },
-    "lisa": {
-      "name": "Lisa T.",
-      "role": "Salon de coiffure",
-      "text": "Facile à utiliser et vraiment efficace. Je recommande à tous les propriétaires de petites entreprises."
-    }
   },
   "onboarding": {
     "googleBtn": "Continuer with Google",
@@ -2157,20 +2121,6 @@
     "dataPrivacy": "Your customer list stays private",
     "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
     "unsubscribe": "Unsubscribe link in every email"
-  },
-  "proof": {
-    "sectionTitle": "Built for Businesses That Run on Reputation",
-    "sectionSubtitle": "Photographers, cafés, home services, clinics, agencies, and WooCommerce stores.",
-    "type1": "Cafés & Restaurants",
-    "type2": "Home Services",
-    "type3": "Photographers",
-    "type4": "Clinics & Salons",
-    "stat1Value": "10×",
-    "stat1Label": "more reviews vs. asking in person",
-    "stat2Value": "< 2 min",
-    "stat2Label": "average setup time",
-    "stat3Value": "Your inbox",
-    "stat3Label": "emails sent from your own address"
   },
   "demo": {
     "sectionTitle": "See It In Action",

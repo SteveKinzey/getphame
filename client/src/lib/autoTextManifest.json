@@ -9750,19 +9750,6 @@
     ]
   },
   {
-    "key": "k_835d9f13355cf3",
-    "source": "Lisa P.",
-    "usages": [
-      {
-        "file": "client/src/components/landing/SocialProofBar.tsx",
-        "line": 39
-      }
-    ],
-    "sourceKinds": [
-      "semanticString"
-    ]
-  },
-  {
     "key": "k_83717c85e2b193",
     "source": "App-Specific Passwords",
     "usages": [
@@ -10520,23 +10507,6 @@
     ],
     "sourceKinds": [
       "jsxText"
-    ]
-  },
-  {
-    "key": "k_90fada6ac94586",
-    "source": "Sarah M.",
-    "usages": [
-      {
-        "file": "client/src/components/landing/SocialProofBar.tsx",
-        "line": 21
-      },
-      {
-        "file": "client/src/components/landing/Testimonials.tsx",
-        "line": 11
-      }
-    ],
-    "sourceKinds": [
-      "semanticString"
     ]
   },
   {
@@ -12792,23 +12762,6 @@
     ],
     "sourceKinds": [
       "jsxText"
-    ]
-  },
-  {
-    "key": "k_b2ffc1e4de4965",
-    "source": "Tom R.",
-    "usages": [
-      {
-        "file": "client/src/components/landing/SocialProofBar.tsx",
-        "line": 27
-      },
-      {
-        "file": "client/src/components/landing/Testimonials.tsx",
-        "line": 18
-      }
-    ],
-    "sourceKinds": [
-      "semanticString"
     ]
   },
   {
@@ -17756,23 +17709,6 @@
     ],
     "sourceKinds": [
       "jsxText"
-    ]
-  },
-  {
-    "key": "k_f46caaa5457d5f",
-    "source": "David K.",
-    "usages": [
-      {
-        "file": "client/src/components/landing/SocialProofBar.tsx",
-        "line": 33
-      },
-      {
-        "file": "client/src/components/landing/Testimonials.tsx",
-        "line": 25
-      }
-    ],
-    "sourceKinds": [
-      "semanticString"
     ]
   },
   {

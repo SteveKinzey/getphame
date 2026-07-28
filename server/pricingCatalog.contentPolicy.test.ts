@@ -1,0 +1,111 @@
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
+import { join } from "node:path";
+import { describe, expect, it } from "vitest";
+import {
+  THB_ANNUAL_SAVINGS,
+  THB_ANNUAL_SAVINGS_PERCENT,
+  THB_DISPLAY,
+  THB_PRICES,
+  THB_PRICE_SATANG,
+  USD_ANNUAL_SAVINGS,
+  USD_ANNUAL_SAVINGS_PERCENT,
+  USD_DISPLAY,
+  USD_PRICES,
+  USD_PRICE_CENTS,
+} from "@shared/pricing";
+
+const ROOT = process.cwd();
+const LOCALES = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
+
+function read(relativePath: string) {
+  return readFileSync(join(ROOT, relativePath), "utf8");
+}
+
+function walk(relativePath: string): string[] {
+  const absolutePath = join(ROOT, relativePath);
+  if (!existsSync(absolutePath)) return [];
+  if (!statSync(absolutePath).isDirectory()) return [relativePath];
+
+  return readdirSync(absolutePath).flatMap((entry) => walk(join(relativePath, entry)));
+}
+
+describe("confirmed Get Phame pricing catalog", () => {
+  it("defines the exact approved USD and THB amounts and derived annual savings", () => {
+    expect(USD_PRICES).toEqual({ monthly: 29, annual: 290, lifetime: 349 });
+    expect(USD_PRICE_CENTS).toEqual({ monthly: 2_900, annual: 29_000, lifetime: 34_900 });
+    expect(USD_DISPLAY).toEqual({ monthly: "$29", annual: "$290", lifetime: "$349" });
+    expect(USD_ANNUAL_SAVINGS).toBe(58);
+    expect(USD_ANNUAL_SAVINGS_PERCENT).toBe(17);
+
+    expect(THB_PRICES).toEqual({ monthly: 970, annual: 9_990, lifetime: 11_700 });
+    expect(THB_PRICE_SATANG).toEqual({ monthly: 97_000, annual: 999_000, lifetime: 1_170_000 });
+    expect(THB_DISPLAY).toEqual({ monthly: "฿970", annual: "฿9,990", lifetime: "฿11,700" });
+    expect(THB_ANNUAL_SAVINGS).toBe(1_650);
+    expect(THB_ANNUAL_SAVINGS_PERCENT).toBe(14);
+  });
+
+  it("uses the shared catalog in public, authenticated, checkout, PayPal, and reporting consumers", () => {
+    const requiredImports: Record<string, RegExp> = {
+      "client/src/components/landing/Pricing.tsx": /from "@shared\/pricing"/,
+      "client/src/pages/Upgrade.tsx": /from "@shared\/pricing"/,
+      "server/paypal.ts": /from "@shared\/pricing"/,
+      "server/routers.ts": /from "@shared\/pricing"/,
+      "server/adminOperationsExport.ts": /from "@shared\/pricing"/,
+    };
+
+    for (const [file, importPattern] of Object.entries(requiredImports)) {
+      expect(read(file), `${file} must consume the shared pricing catalog`).toMatch(importPattern);
+    }
+  });
+
+  it("provides exact visible plan labels in all seven maintained locale catalogs", () => {
+    for (const locale of LOCALES) {
+      const translation = JSON.parse(read(`client/public/locales/${locale}/translation.json`));
+      const expected = locale === "th" ? THB_DISPLAY : USD_DISPLAY;
+
+      expect(translation.pricing?.proMonthlyPrice, `${locale} monthly label`).toBe(expected.monthly);
+      expect(translation.pricing?.proAnnualPrice, `${locale} annual label`).toBe(expected.annual);
+      expect(translation.pricing?.lifetimePrice, `${locale} lifetime label`).toBe(expected.lifetime);
+    }
+  });
+});
+
+describe("customer-facing social-proof policy", () => {
+  it("contains no fabricated testimonial payloads, unsupported outcomes, or adoption counts", () => {
+    const auditedFiles = [
+      ...walk("client/src/components/landing"),
+      ...walk("client/src/pages/LandingPage.tsx"),
+      ...walk("client/public/locales"),
+      ...walk("client/src/lib/i18nFallbackResources.json"),
+      ...walk("client/src/lib/i18nCompleteFallbackResources.json"),
+      ...walk("client/src/lib/autoTextManifest.json"),
+      ...walk("client/src/lib/autoTextTranslations.json"),
+    ].filter((file) => /\.(?:json|tsx?)$/.test(file));
+
+    const prohibitedPatterns: Array<[string, RegExp]> = [
+      ["fabricated named customer", /\b(?:Sarah M\.|Tom R\.|Lisa T\.|Maria G\.|David K\.|James R\.)\b/i],
+      ["fabricated review outcome", /\b(?:12 to 47|8[–-]?10 new reviews)\b/i],
+      ["unsupported English adoption count", /\b(?:join )?hundreds of businesses\b/i],
+      ["unsupported Spanish adoption count", /\bcientos de (?:negocios|empresas)\b/i],
+      ["unsupported French adoption count", /\bdes centaines d['’]entreprises\b/i],
+      ["unsupported Italian adoption count", /\bcentinaia di aziende\b/i],
+      ["unsupported Thai adoption count", /หลายร้อยธุรกิจ/i],
+      ["unsupported Simplified Chinese adoption count", /数百家企业/i],
+      ["unsupported Traditional Chinese adoption count", /數百家企業/i],
+      ["testimonial localization object", /"testimonials"\s*:/i],
+      ["social-proof localization object", /"socialProof(?:Bar)?"\s*:/i],
+      ["customer-quote localization object", /"customerQuote"\s*:/i],
+      ["business-count localization object", /"joinBusinesses"\s*:/i],
+    ];
+
+    for (const file of auditedFiles) {
+      const contents = read(file);
+      for (const [label, pattern] of prohibitedPatterns) {
+        expect(contents, `${file} contains ${label}`).not.toMatch(pattern);
+      }
+    }
+
+    expect(existsSync(join(ROOT, "client/src/components/landing/Testimonials.tsx"))).toBe(false);
+    expect(existsSync(join(ROOT, "client/src/components/landing/SocialProofBar.tsx"))).toBe(false);
+  });
+});

@@ -1,9 +1,12 @@
 import { Check, ArrowRight, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { THB_DISPLAY, USD_ANNUAL_SAVINGS_PERCENT, USD_DISPLAY } from "@shared/pricing";
 import FadeUp, { StaggerChildren } from "./FadeUp";
 
 export default function Pricing() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isThai = i18n.language.toLowerCase().startsWith("th");
+  const displayPrices = isThai ? THB_DISPLAY : USD_DISPLAY;
 
   const plans = [
     {
@@ -24,8 +27,8 @@ export default function Pricing() {
     },
     {
       name: t("landing.pricing.proMonthly.name", { defaultValue: "Pro Monthly" }),
-      price: "$29",
-      period: "/mo",
+      price: displayPrices.monthly,
+      period: t("landing.pricing.proMonthly.period", { defaultValue: isThai ? "/เดือน" : "/mo" }),
       description: t("landing.pricing.proMonthly.description", { defaultValue: "Best for active businesses that send review requests weekly." }),
       features: [
         t("landing.pricing.proMonthly.features.requests", { defaultValue: "Unlimited review requests" }),
@@ -41,24 +44,24 @@ export default function Pricing() {
     },
     {
       name: t("landing.pricing.proAnnual.name", { defaultValue: "Pro Annual" }),
-      price: "$19",
-      period: "/mo",
+      price: displayPrices.annual,
+      period: t("landing.pricing.proAnnual.period", { defaultValue: isThai ? "/ปี" : "/yr" }),
       description: t("landing.pricing.proAnnual.description", { defaultValue: "Best value for businesses committed to reputation growth." }),
       features: [
         t("landing.pricing.proAnnual.features.everything", { defaultValue: "Everything in Pro Monthly" }),
-        t("landing.pricing.proAnnual.features.billed", { defaultValue: "Billed annually ($228/yr)" }),
-        t("landing.pricing.proAnnual.features.save", { defaultValue: "Save 34% vs monthly" }),
+        t("landing.pricing.proAnnual.features.billed", { defaultValue: isThai ? "เรียกเก็บเงิน ฿9,990 ต่อปี" : "Billed annually ($290/yr)" }),
+        t("landing.pricing.proAnnual.features.save", { defaultValue: isThai ? "ประหยัด 14% เมื่อเทียบกับรายเดือน" : `Save ${USD_ANNUAL_SAVINGS_PERCENT}% vs monthly` }),
         t("landing.pricing.proAnnual.features.support", { defaultValue: "Priority support" }),
         t("landing.pricing.proAnnual.features.earlyAccess", { defaultValue: "Early access to new features" }),
       ],
       cta: t("landing.pricing.proAnnual.cta", { defaultValue: "Start Pro Annual" }),
       popular: false,
       highlight: false,
-      badge: t("landing.pricing.proAnnual.badge", { defaultValue: "Save 34%" }),
+      badge: t("landing.pricing.proAnnual.badge", { defaultValue: isThai ? "ประหยัด 14%" : `Save ${USD_ANNUAL_SAVINGS_PERCENT}%` }),
     },
     {
       name: t("landing.pricing.lifetime.name", { defaultValue: "Lifetime" }),
-      price: "$349",
+      price: displayPrices.lifetime,
       period: t("landing.pricing.lifetime.period", { defaultValue: " once" }),
       description: t("landing.pricing.lifetime.description", { defaultValue: "One payment, lifetime access. No renewals, no surprises." }),
       features: [

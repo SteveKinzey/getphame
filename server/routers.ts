@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { COOKIE_NAME, FREE_LIMIT_ERR_MSG } from "@shared/const";
 import { getEffectiveTier } from "@shared/plans";
+import { USD_PRICE_CENTS } from "@shared/pricing";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { adminProcedure, paidProcedure, protectedProcedure, publicProcedure, router } from "./_core/trpc";
@@ -3547,11 +3548,6 @@ export const appRouter = router({
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
 
-      // Pricing constants (USD cents)
-      const MONTHLY_PRICE_CENTS = 2900;  // $29/mo
-      const ANNUAL_PRICE_CENTS  = 29900; // $299/yr
-      const LIFETIME_PRICE_CENTS = 34900; // $349 one-time
-
       // Platform-wide email open/click stats
       const { sql: sqlRev, and: andRev, eq: eqRev } = await import("drizzle-orm");
       const totalSentRows = await db.select({ count: sqlRev<number>`count(*)` }).from(customerRequests);
@@ -3577,11 +3573,11 @@ export const appRouter = router({
       }
 
       // MRR = (pro × monthly) + (annual × monthly-equivalent)
-      const mrrCents = (tierCounts.pro * MONTHLY_PRICE_CENTS) + (tierCounts.annual * Math.round(ANNUAL_PRICE_CENTS / 12));
+      const mrrCents = (tierCounts.pro * USD_PRICE_CENTS.monthly) + (tierCounts.annual * Math.round(USD_PRICE_CENTS.annual / 12));
       const arrCents = mrrCents * 12;
 
       // Lifetime revenue (all-time)
-      const lifetimeRevenueCents = tierCounts.lifetime * LIFETIME_PRICE_CENTS;
+      const lifetimeRevenueCents = tierCounts.lifetime * USD_PRICE_CENTS.lifetime;
 
       // Monthly subscriber growth — new paid users per month for last 6 months
       const allSubs = await db

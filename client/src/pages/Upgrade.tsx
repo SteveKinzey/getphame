@@ -13,6 +13,14 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
+import {
+  THB_DISPLAY,
+  USD_ANNUAL_SAVINGS,
+  USD_DISPLAY,
+  USD_LIFETIME_PAYBACK_MONTHS,
+  USD_LIFETIME_SAVINGS_BY_YEAR_TWO,
+  USD_PRICES,
+} from "@shared/pricing";
 import PlanSwitchDialog from "@/components/PlanSwitchDialog";
 import {
   Drawer,
@@ -24,23 +32,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-
-// ── THB dual-currency display ─────────────────────────────────────────────────
-// Fixed rate — update manually when USD/THB shifts significantly
-const THB_PER_USD = 35;
-function toThb(usdAmount: number): string {
-  const raw = usdAmount * THB_PER_USD;
-  // Round up to nearest 50 baht for clean pricing
-  const rounded = Math.ceil(raw / 50) * 50;
-  return `฿${rounded.toLocaleString()}`;
-}
-
-const MONTHLY_PRICE_USD = 29;
-const ANNUAL_PRICE_USD = 290;
-const LIFETIME_PRICE_USD = 349;
-const ANNUAL_SAVINGS_USD = MONTHLY_PRICE_USD * 12 - ANNUAL_PRICE_USD;
-const LIFETIME_SAVINGS_BY_YEAR_TWO_USD = MONTHLY_PRICE_USD * 24 - LIFETIME_PRICE_USD;
-const LIFETIME_PAYBACK_MONTHS = Math.ceil(LIFETIME_PRICE_USD / MONTHLY_PRICE_USD);
 
 function formatUsd(usdAmount: number, locale: string): string {
   return new Intl.NumberFormat(locale, {
@@ -65,7 +56,7 @@ const COMPARISON_ROWS: { feature: string; free: string | boolean; pro: string | 
   { feature: "Daily send limit",           free: "50/day",   pro: "500/day",    lifetime: "500/day" },
   { feature: "Priority support",           free: false,      pro: true,         lifetime: true },
   { feature: "Future updates",             free: false,      pro: "While active",lifetime: "Forever" },
-  { feature: "Price",                      free: "Free",     pro: "$29/mo",     lifetime: "$349" },
+  { feature: "Price",                      free: "Free",     pro: `${USD_DISPLAY.monthly}/mo`, lifetime: USD_DISPLAY.lifetime },
 ];
 
 const PRO_FEATURES = [
@@ -84,22 +75,22 @@ const PLAN_ORDER: Plan[] = ["monthly", "annual", "lifetime"];
 const PLANS: Record<Plan, { label: string; price: string; thb: string; sub: string; badge?: string; savings?: string }> = {
   monthly: {
     label: "Monthly",
-    price: "$29",
-    thb: toThb(29),
+    price: USD_DISPLAY.monthly,
+    thb: THB_DISPLAY.monthly,
     sub: "/ month",
   },
   annual: {
     label: "Annual",
-    price: "$290",
-    thb: toThb(290),
+    price: USD_DISPLAY.annual,
+    thb: THB_DISPLAY.annual,
     sub: "/ year",
     badge: "Most Popular",
     savings: "Save $58/yr",
   },
   lifetime: {
     label: "Lifetime",
-    price: "$349",
-    thb: toThb(349),
+    price: USD_DISPLAY.lifetime,
+    thb: THB_DISPLAY.lifetime,
     sub: "one-time",
     badge: "Best Value",
     savings: "Pay once, own forever",
@@ -580,21 +571,6 @@ export default function UpgradePage() {
           {/* PromptPay CTA — Thailand users (locale-detected or manually revealed) */}
           {showPromptPay ? (
             <div className="mt-3">
-              {/* Social proof — shown only with PromptPay */}
-              <div
-                className="rounded-xl px-3 py-2.5 mb-2 flex items-start gap-2"
-                style={{ background: "oklch(0.97 0.03 80)", border: "1px solid oklch(0.88 0.06 80)" }}
-              >
-                <span className="text-sm mt-0.5">💬</span>
-                <div>
-                  <p className="text-xs font-black" style={{ color: "oklch(0.20 0.08 80)" }}>
-                    ธุรกิจส่วนใหญ่คืนทุนภายใน 90 วัน
-                  </p>
-                  <p className="text-xs" style={{ color: "oklch(0.25 0.06 80)" }}>
-                    Most businesses recover cost in 90 days — reviews drive repeat bookings and new customers on autopilot.
-                  </p>
-                </div>
-              </div>
               <button
                 onClick={() => createThbCheckout.mutate({
                   origin: window.location.origin,
@@ -718,16 +694,6 @@ export default function UpgradePage() {
             </button>
           </div>
         </div>
-
-        {/* Stars / social proof */}
-        <div className="flex justify-center gap-1 py-2">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <Star key={i} size={20} fill="oklch(0.80 0.18 80)" className="rr-text-gold" />
-          ))}
-        </div>
-        <p className="text-center text-xs pb-4" style={{ color: "var(--text-on-dark-muted)" }}>
-          {t("socialProof.trustedByBusinesses")}
-        </p>
 
         <MobilePlanComparisonDrawer />
 
@@ -1072,7 +1038,7 @@ function SavingsCalculator({ locale }: { locale: string }) {
           <p className="text-[10px] font-black uppercase tracking-[0.12em] text-white/55">
             {t("planSelector.monthly", { defaultValue: "Monthly" })}
           </p>
-          <p className="mt-1 text-lg font-black text-white">{formatUsd(MONTHLY_PRICE_USD * 12, locale)}</p>
+          <p className="mt-1 text-lg font-black text-white">{formatUsd(USD_PRICES.monthly * 12, locale)}</p>
           <p className="mt-1 text-xs font-semibold text-white/60">
             {t("pricingGrid.monthlyAnnualCost", { defaultValue: "for 12 months" })}
           </p>
@@ -1082,10 +1048,10 @@ function SavingsCalculator({ locale }: { locale: string }) {
             {t("planSelector.annual", { defaultValue: "Annual" })}
           </p>
           <p className="mt-1 text-lg font-black rr-text-gold">
-            {t("pricingGrid.annualSave", { defaultValue: "Save {{amount}}", amount: formatUsd(ANNUAL_SAVINGS_USD, locale) })}
+            {t("pricingGrid.annualSave", { defaultValue: "Save {{amount}}", amount: formatUsd(USD_ANNUAL_SAVINGS, locale) })}
           </p>
           <p className="mt-1 text-xs font-semibold text-white/70">
-            {t("pricingGrid.annualSavingsDetail", { defaultValue: "{{price}} instead of {{monthly}} for year one", price: formatUsd(ANNUAL_PRICE_USD, locale), monthly: formatUsd(MONTHLY_PRICE_USD * 12, locale) })}
+            {t("pricingGrid.annualSavingsDetail", { defaultValue: "{{price}} instead of {{monthly}} for year one", price: formatUsd(USD_PRICES.annual, locale), monthly: formatUsd(USD_PRICES.monthly * 12, locale) })}
           </p>
         </div>
         <div className="rounded-xl border border-white/10 bg-[#061a3a]/55 p-3">
@@ -1093,10 +1059,10 @@ function SavingsCalculator({ locale }: { locale: string }) {
             {t("planSelector.lifetime", { defaultValue: "Lifetime" })}
           </p>
           <p className="mt-1 text-lg font-black text-[oklch(0.72_0.18_145)]">
-            {t("pricingGrid.lifetimeSave", { defaultValue: "Save {{amount}} by year two", amount: formatUsd(LIFETIME_SAVINGS_BY_YEAR_TWO_USD, locale) })}
+            {t("pricingGrid.lifetimeSave", { defaultValue: "Save {{amount}} by year two", amount: formatUsd(USD_LIFETIME_SAVINGS_BY_YEAR_TWO, locale) })}
           </p>
           <p className="mt-1 text-xs font-semibold text-white/60">
-            {t("pricingGrid.lifetimePayback", { defaultValue: "Pays for itself in about {{months}} months", months: LIFETIME_PAYBACK_MONTHS })}
+            {t("pricingGrid.lifetimePayback", { defaultValue: "Pays for itself in about {{months}} months", months: USD_LIFETIME_PAYBACK_MONTHS })}
           </p>
         </div>
       </div>

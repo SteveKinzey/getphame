@@ -83,8 +83,7 @@
       "headlinePart1": "你的收件匣。你的聲譽。",
       "headlinePart2": "你的成長。",
       "description": "永久免費：先獲得 10 次評論邀請，之後每個滾動 30 天週期再獲得 5 次。無需信用卡，2 分鐘內完成設定。",
-      "getStartedButton": "免費開始",
-      "joinBusinesses": "加入數百家已利用 Get Phame 成長聲譽的企業。"
+      "getStartedButton": "免費開始"
     },
     "footer": {
       "privacy": "隱私權政策",
@@ -168,6 +167,7 @@
       },
       "proMonthly": {
         "name": "Pro（月付）",
+        "period": "/月",
         "description": "適合每週頻繁寄送邀請的活躍商家。",
         "features": {
           "requests": "無上限的評論邀請",
@@ -181,16 +181,17 @@
       },
       "proAnnual": {
         "name": "Pro（年付）",
+        "period": "/年",
         "description": "適合致力於提升聲譽的商家，最具價值。",
         "features": {
           "everything": "包含 Pro（月付）的所有功能",
-          "billed": "年付計費 ($228/年)",
-          "save": "較月付省 34%",
+          "billed": "年付計費 ($290/年)",
+          "save": "較月付省 17%",
           "support": "優先支援",
           "earlyAccess": "新功能搶先體驗"
         },
         "cta": "啟用 Pro（年付）",
-        "badge": "省 34%"
+        "badge": "省 17%"
       },
       "lifetime": {
         "name": "終身",
@@ -235,27 +236,6 @@
       "viewFullSizeButton": "查看大圖",
       "viewFullSizeAriaLabel": "以原始大小查看 {{title}}"
     },
-    "socialProofBar": {
-      "reviews": {
-        "sarah": {
-          "quote": "在 6 週內從 12 則增加到 47 則 Google 評論。因為郵件來自我的真實信箱，客戶真的會回應。",
-          "role": "自由攝影師"
-        },
-        "tom": {
-          "quote": "我會匯入週五的常客名單，按下發送，週一醒來通常就有 8–10 則新評論。這已成為我們的每週例行。",
-          "role": "街角咖啡館"
-        },
-        "david": {
-          "quote": "我從一個帳號管理 12 個客戶據點。終身方案在第一個月就回本了。",
-          "role": "行銷代理商負責人"
-        },
-        "lisa": {
-          "quote": "兩分鐘內完成設定。我的開啟率是 68%──比我試過的任何評論平台都好很多。",
-          "role": "瑜伽工作室負責人"
-        }
-      },
-      "trustedBy": "在地商家信賴"
-    },
     "stats": {
       "moreReviewsLabel": "比面對面詢問獲得更多評論",
       "averageSetupTimeLabel": "平均設定時間",
@@ -269,27 +249,6 @@
       "industryAgencies": "代理商",
       "industryWooCommerceStores": "WooCommerce 商店",
       "heading": "為以聲譽為本的企業打造"
-    },
-    "testimonials": {
-      "sarah": {
-        "quote": "我以前很不喜歡主動向客戶索取評論，覺得尷尬又像在推銷。Get Phame 從我的 Gmail 寄出邀請，看起來像我自己寫的。6 週內我從 12 則 Google 評論增加到 47 則。",
-        "role": "自由攝影師",
-        "result": "6 週內從 12 則增至 47 則評論"
-      },
-      "tom": {
-        "quote": "我們每天大約服務 80 位顧客。我會在週五把一週的常客從 CSV 匯入、按下發送，週一早上通常會多出 8–10 則新評論。這已成為我們的每週例行。",
-        "role": "店主，The Corner Café",
-        "result": "每週新增 8–10 則評論"
-      },
-      "david": {
-        "quote": "身為管理 12 個客戶據點的代理商，終身方案根本毫無疑問地划算。每位客戶都有自己的評論連結，而我則代表他們發送邀請。投資在第一個月就回本。",
-        "role": "數位行銷代理商負責人",
-        "result": "用一個帳號管理 12 個據點"
-      },
-      "realResults": "真實成效",
-      "headline": "他們請求，客戶回應。",
-      "subtitle": "真實企業每週使用 Get Phame 成長他們的聲譽。",
-      "getStartedFree": "免費開始"
     },
     "trustBar": {
       "passwordEncrypted": "密碼採用靜態加密",

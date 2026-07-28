@@ -83,8 +83,7 @@
       "headlinePart1": "Tu bandeja. Tu reputación.",
       "headlinePart2": "Tu crecimiento.",
       "description": "Gratis para siempre: 10 solicitudes iniciales y, después, 5 más por cada período móvil de 30 días. Sin tarjeta. Configura en menos de 2 minutos.",
-      "getStartedButton": "Comenzar gratis",
-      "joinBusinesses": "Únete a cientos de negocios que ya hacen crecer su reputación con Get Phame."
+      "getStartedButton": "Comenzar gratis"
     },
     "footer": {
       "privacy": "Privacidad",
@@ -168,6 +167,7 @@
       },
       "proMonthly": {
         "name": "Pro Mensual",
+        "period": "/mes",
         "description": "Ideal para negocios activos que envían solicitudes de reseña semanalmente.",
         "features": {
           "requests": "Solicitudes de reseña ilimitadas",
@@ -181,16 +181,17 @@
       },
       "proAnnual": {
         "name": "Pro Anual",
+        "period": "/año",
         "description": "Mejor valor para negocios comprometidos con el crecimiento de su reputación.",
         "features": {
           "everything": "Todo en Pro Mensual",
-          "billed": "Facturado anualmente ($228/año)",
-          "save": "Ahorra 34% frente al plan mensual",
+          "billed": "Facturado anualmente ($290/año)",
+          "save": "Ahorra 17% frente al plan mensual",
           "support": "Soporte prioritario",
           "earlyAccess": "Acceso anticipado a nuevas funciones"
         },
         "cta": "Comenzar Pro Anual",
-        "badge": "Ahorra 34%"
+        "badge": "Ahorra 17%"
       },
       "lifetime": {
         "name": "De por vida",
@@ -235,27 +236,6 @@
       "viewFullSizeButton": "Ver en tamaño completo",
       "viewFullSizeAriaLabel": "Ver {{title}} en tamaño completo"
     },
-    "socialProofBar": {
-      "reviews": {
-        "sarah": {
-          "quote": "Pasé de 12 a 47 reseñas en Google en 6 semanas. Los clientes realmente responden porque viene de mi correo real.",
-          "role": "Fotógrafa freelance"
-        },
-        "tom": {
-          "quote": "Importo a los habituales del viernes, doy enviar y el lunes amanezco con 8–10 reseñas nuevas. Ya es parte de nuestra rutina semanal.",
-          "role": "El Café de la Esquina"
-        },
-        "david": {
-          "quote": "Gestiono 12 ubicaciones de clientes desde una cuenta. La oferta de por vida se pagó sola en el primer mes.",
-          "role": "Propietario de agencia de marketing"
-        },
-        "lisa": {
-          "quote": "Lo configuré en menos de 2 minutos. Mi tasa de apertura es 68% — mucho mejor que cualquier plataforma de reseñas que probé.",
-          "role": "Propietaria de estudio de yoga"
-        }
-      },
-      "trustedBy": "Confiado por dueños de negocios locales"
-    },
     "stats": {
       "moreReviewsLabel": "más reseñas vs. pedir en persona",
       "averageSetupTimeLabel": "tiempo promedio de configuración",
@@ -269,27 +249,6 @@
       "industryAgencies": "Agencias",
       "industryWooCommerceStores": "Tiendas WooCommerce",
       "heading": "Hecho para negocios que dependen de su reputación"
-    },
-    "testimonials": {
-      "sarah": {
-        "quote": "Antes me daba pena pedir reseñas — sonaba incómodo y vendedor. Get Phame envía la solicitud desde mi propio Gmail, así que realmente parece que la escribí yo. Pasé de 12 reseñas en Google a 47 en seis semanas.",
-        "role": "Fotógrafa freelance",
-        "result": "12 → 47 reseñas en 6 semanas"
-      },
-      "tom": {
-        "quote": "Atendemos unas 80 personas al día. Importo los habituales de la semana desde un CSV el viernes, doy enviar y el lunes por la mañana normalmente tenemos 8–10 reseñas nuevas. Ya forma parte de nuestra rutina semanal.",
-        "role": "Propietario, The Corner Café",
-        "result": "8–10 reseñas nuevas por semana"
-      },
-      "david": {
-        "quote": "Como agencia que gestiona 12 ubicaciones, la oferta de por vida fue una decisión obvia. Cada cliente tiene su propio enlace de reseña y envío solicitudes en su nombre. La inversión se recuperó el primer mes.",
-        "role": "Propietario de agencia de marketing digital",
-        "result": "12 ubicaciones gestionadas desde una cuenta"
-      },
-      "realResults": "Resultados reales",
-      "headline": "Ellos pidieron. Los clientes respondieron.",
-      "subtitle": "Negocios reales que usan Get Phame para crecer su reputación cada semana.",
-      "getStartedFree": "Comenzar gratis"
     },
     "trustBar": {
       "passwordEncrypted": "Contraseña cifrada en reposo",

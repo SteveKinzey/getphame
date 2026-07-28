@@ -83,8 +83,7 @@
       "headlinePart1": "Your inbox. Your reputation.",
       "headlinePart2": "Your growth.",
       "description": "Free forever: 10 initial requests, then 5 more every rolling 30 days. No credit card. Set up in under 2 minutes.",
-      "getStartedButton": "Get Started Free",
-      "joinBusinesses": "Join hundreds of businesses already growing their reputation with Get Phame."
+      "getStartedButton": "Get Started Free"
     },
     "footer": {
       "privacy": "Privacy",
@@ -168,6 +167,7 @@
       },
       "proMonthly": {
         "name": "Pro Monthly",
+        "period": "/mo",
         "description": "Best for active businesses that send review requests weekly.",
         "features": {
           "requests": "Unlimited review requests",
@@ -181,16 +181,17 @@
       },
       "proAnnual": {
         "name": "Pro Annual",
+        "period": "/yr",
         "description": "Best value for businesses committed to reputation growth.",
         "features": {
           "everything": "Everything in Pro Monthly",
-          "billed": "Billed annually ($228/yr)",
-          "save": "Save 34% vs monthly",
+          "billed": "Billed annually ($290/yr)",
+          "save": "Save 17% vs monthly",
           "support": "Priority support",
           "earlyAccess": "Early access to new features"
         },
         "cta": "Start Pro Annual",
-        "badge": "Save 34%"
+        "badge": "Save 17%"
       },
       "lifetime": {
         "name": "Lifetime",
@@ -235,27 +236,6 @@
       "viewFullSizeButton": "View full size",
       "viewFullSizeAriaLabel": "View {{title}} in full size"
     },
-    "socialProofBar": {
-      "reviews": {
-        "sarah": {
-          "quote": "Went from 12 to 47 Google reviews in 6 weeks. Customers actually respond because it comes from my real email.",
-          "role": "Freelance Photographer"
-        },
-        "tom": {
-          "quote": "I import Friday's regulars, hit send, and wake up Monday to 8–10 new reviews. It's part of our weekly routine now.",
-          "role": "The Corner Café"
-        },
-        "david": {
-          "quote": "Managing 12 client locations from one account. The lifetime deal paid for itself in the first month.",
-          "role": "Marketing Agency Owner"
-        },
-        "lisa": {
-          "quote": "Set it up in under 2 minutes. My open rate is 68% — way better than any review platform I've tried.",
-          "role": "Yoga Studio Owner"
-        }
-      },
-      "trustedBy": "Trusted by local business owners"
-    },
     "stats": {
       "moreReviewsLabel": "more reviews vs. asking in person",
       "averageSetupTimeLabel": "average setup time",
@@ -269,27 +249,6 @@
       "industryAgencies": "Agencies",
       "industryWooCommerceStores": "WooCommerce Stores",
       "heading": "Built for businesses that run on reputation"
-    },
-    "testimonials": {
-      "sarah": {
-        "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. Get Phame sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks.",
-        "role": "Freelance Photographer",
-        "result": "12 → 47 reviews in 6 weeks"
-      },
-      "tom": {
-        "quote": "We serve about 80 customers a day. I import the week's regulars from a CSV on Friday, hit send, and by Monday morning we've usually picked up 8–10 new reviews. It's become part of our weekly routine.",
-        "role": "Owner, The Corner Café",
-        "result": "8–10 new reviews per week"
-      },
-      "david": {
-        "quote": "As an agency managing 12 client locations, the lifetime deal was a no-brainer. Each client gets their own review link and I send requests on their behalf. The ROI paid for itself in the first month.",
-        "role": "Digital Marketing Agency Owner",
-        "result": "12 locations managed from one account"
-      },
-      "realResults": "Real results",
-      "headline": "They asked. Customers answered.",
-      "subtitle": "Real businesses using Get Phame to grow their reputation every week.",
-      "getStartedFree": "Get Started Free"
     },
     "trustBar": {
       "passwordEncrypted": "Password encrypted at rest",

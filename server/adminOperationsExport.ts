@@ -1,10 +1,8 @@
 import { businessProfiles, churnSurveys, stripeSubscriptions } from "../drizzle/schema";
 import { getDb } from "./db";
 import { getReminderTimingPerformance } from "./reminderPerformance";
+import { USD_PRICE_CENTS } from "@shared/pricing";
 
-const MONTHLY_PRICE_CENTS = 2900;
-const ANNUAL_PRICE_CENTS = 29000;
-const LIFETIME_PRICE_CENTS = 49000;
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
 export type AdminOperationsCsvRow = {
@@ -54,8 +52,8 @@ export async function buildAdminOperationsAnalyticsExport(nowMs = Date.now()) {
     if (profile.tier in tierCounts) tierCounts[profile.tier as keyof typeof tierCounts] += 1;
   }
 
-  const mrrCents = tierCounts.pro * MONTHLY_PRICE_CENTS
-    + tierCounts.annual * Math.round(ANNUAL_PRICE_CENTS / 12);
+  const mrrCents = tierCounts.pro * USD_PRICE_CENTS.monthly
+    + tierCounts.annual * Math.round(USD_PRICE_CENTS.annual / 12);
   const activeSubscriptions = subscriptions.filter((subscription) => subscription.status === "active").length;
   const recentCancellations = subscriptions.filter((subscription) => (
     subscription.status === "canceled"
@@ -69,7 +67,7 @@ export async function buildAdminOperationsAnalyticsExport(nowMs = Date.now()) {
     { section: "metadata", metric: "generated_at", period: "current", value: new Date(nowMs).toISOString(), unit: "iso_8601", details: "Get Phame administrator operations analytics export" },
     { section: "revenue", metric: "monthly_recurring_revenue", period: "current", value: mrrCents / 100, unit: "USD", details: "Monthly plans plus annual plans at monthly equivalent" },
     { section: "revenue", metric: "annual_recurring_revenue", period: "annualized", value: (mrrCents * 12) / 100, unit: "USD", details: "Current MRR multiplied by 12" },
-    { section: "revenue", metric: "lifetime_revenue", period: "all_time", value: (tierCounts.lifetime * LIFETIME_PRICE_CENTS) / 100, unit: "USD", details: "Lifetime-tier purchases represented by current lifetime accounts" },
+    { section: "revenue", metric: "lifetime_revenue", period: "all_time", value: (tierCounts.lifetime * USD_PRICE_CENTS.lifetime) / 100, unit: "USD", details: "Lifetime-tier purchases represented by current lifetime accounts" },
     { section: "revenue", metric: "active_subscriptions", period: "current", value: activeSubscriptions, unit: "accounts", details: "Subscriptions with active status" },
     ...Object.entries(tierCounts).map(([tier, count]) => ({
       section: "revenue",

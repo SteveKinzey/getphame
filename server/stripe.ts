@@ -1,5 +1,5 @@
 /**
- * Stripe integration for Phame Pro subscriptions.
+ * Stripe integration for Get Phame Pro subscriptions.
  *
  * Flow:
  * 1. User clicks "Upgrade to Pro" → frontend calls stripe.createCheckout
@@ -41,6 +41,26 @@ export const STRIPE_PRICE_IDS = {
 } as const;
 
 export type StripePlan = keyof typeof STRIPE_PRICE_IDS;
+
+/**
+ * Stripe keeps live-mode and test-mode catalog objects completely separate.
+ * Production therefore retains the established live IDs above, while local
+ * and test runtimes read their isolated Price IDs from managed environment
+ * configuration. Test IDs are deliberately never hardcoded in source.
+ */
+export function isStripeLiveMode(secretKey = process.env.STRIPE_SECRET_KEY): boolean {
+  return secretKey?.trim().startsWith("sk_live_") ?? false;
+}
+
+export function getStripePriceIds(): Record<StripePlan, string> {
+  if (isStripeLiveMode()) return { ...STRIPE_PRICE_IDS };
+
+  return {
+    monthly: process.env.STRIPE_TEST_PRICE_ID_USD_MONTHLY ?? "",
+    annual: process.env.STRIPE_TEST_PRICE_ID_USD_ANNUAL ?? "",
+    lifetime: process.env.STRIPE_TEST_PRICE_ID_USD_LIFETIME ?? "",
+  };
+}
 
 const PROMOTION_CODE_PATTERN = /^[A-Z0-9][A-Z0-9_-]{2,63}$/;
 const PROMOTION_CODE_CREATE_PATTERN = /^[A-Z0-9][A-Z0-9-]{2,63}$/;
@@ -122,8 +142,9 @@ function promotionStatus(promotionCode: PromotionCodeDetails): StripePromotionSt
 }
 
 async function getPlanProductIds(): Promise<Record<StripePlan, string | null>> {
-  const plans = Object.keys(STRIPE_PRICE_IDS) as StripePlan[];
-  const prices = await Promise.all(plans.map((plan) => stripe.prices.retrieve(STRIPE_PRICE_IDS[plan])));
+  const priceIds = getStripePriceIds();
+  const plans = Object.keys(priceIds) as StripePlan[];
+  const prices = await Promise.all(plans.map((plan) => stripe.prices.retrieve(priceIds[plan])));
   return Object.fromEntries(
     prices.map((price, index) => [plans[index], stripeResourceId(price.product)]),
   ) as Record<StripePlan, string | null>;
@@ -644,7 +665,10 @@ export async function createCheckoutSession({
   plan?: StripePlan;
   promotionCode?: string | null;
 }): Promise<string> {
-  const priceId = STRIPE_PRICE_IDS[plan];
+  const priceId = getStripePriceIds()[plan];
+  if (!priceId) {
+    throw new Error(`USD price ID not configured for plan: ${plan}. Set STRIPE_TEST_PRICE_ID_USD_${plan.toUpperCase()} for test mode.`);
+  }
   const isLifetime = plan === "lifetime";
   const returnOrigin = getStripeReturnOrigin(origin);
   const campaignPromotion = promotionCode
@@ -689,14 +713,16 @@ export async function createCheckoutSession({
 /**
  * THB Price IDs for PromptPay checkout (Thailand users).
  * These must be created in the Stripe Dashboard with currency=THB.
- * Set STRIPE_PRICE_IDS_THB_MONTHLY, _ANNUAL, _LIFETIME env vars to activate.
+ * Live mode reads STRIPE_PRICE_ID_THB_* and test mode reads
+ * STRIPE_TEST_PRICE_ID_THB_* so the catalogs can never be mixed.
  */
 // Read at call time (not module load) so tests can override env vars per-test
 export function getThbPriceIds() {
+  const prefix = isStripeLiveMode() ? "STRIPE_PRICE_ID_THB" : "STRIPE_TEST_PRICE_ID_THB";
   return {
-    monthly:  process.env.STRIPE_PRICE_ID_THB_MONTHLY ?? "",
-    annual:   process.env.STRIPE_PRICE_ID_THB_ANNUAL ?? "",
-    lifetime: process.env.STRIPE_PRICE_ID_THB_LIFETIME ?? "",
+    monthly:  process.env[`${prefix}_MONTHLY`] ?? "",
+    annual:   process.env[`${prefix}_ANNUAL`] ?? "",
+    lifetime: process.env[`${prefix}_LIFETIME`] ?? "",
   };
 }
 
@@ -724,7 +750,8 @@ export async function createThbCheckoutSession({
 }): Promise<string> {
   const priceId = getThbPriceIds()[plan];
   if (!priceId) {
-    throw new Error(`THB price ID not configured for plan: ${plan}. Set STRIPE_PRICE_ID_THB_${plan.toUpperCase()} env var.`);
+    const prefix = isStripeLiveMode() ? "STRIPE_PRICE_ID_THB" : "STRIPE_TEST_PRICE_ID_THB";
+    throw new Error(`THB price ID not configured for plan: ${plan}. Set ${prefix}_${plan.toUpperCase()} env var.`);
   }
   const isLifetime = plan === "lifetime";
   const returnOrigin = getStripeReturnOrigin(origin);

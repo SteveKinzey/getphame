@@ -1,4 +1,4 @@
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import FadeUp from "./FadeUp";
 import { useTranslation } from "react-i18next";
 
@@ -12,11 +12,6 @@ export default function FinalCTA() {
 
       <div className="container relative z-10 text-center">
         <FadeUp>
-          <div className="flex justify-center gap-1 mb-6">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} size={28} className="text-primary fill-primary" />
-            ))}
-          </div>
           <h2 className="font-display font-extrabold text-3xl md:text-4xl lg:text-5xl text-white mb-5 max-w-3xl mx-auto leading-tight">
             {t("landing.finalCta.headlinePart1", { defaultValue: "Your inbox. Your reputation." })}{" "}
             <span className="text-primary">{t("landing.finalCta.headlinePart2", { defaultValue: "Your growth." })}</span>
@@ -31,9 +26,6 @@ export default function FinalCTA() {
             {t("landing.finalCta.getStartedButton", { defaultValue: "Get Started Free" })}
             <ArrowRight size={20} />
           </a>
-          <p className="text-sm text-slate-300 font-medium mt-5">
-            {t("landing.finalCta.joinBusinesses", { defaultValue: "Join hundreds of businesses already growing their reputation with Get Phame." })}
-          </p>
         </FadeUp>
       </div>
     </section>

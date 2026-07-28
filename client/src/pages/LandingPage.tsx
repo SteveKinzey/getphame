@@ -6,7 +6,6 @@ import Hero from "@/components/landing/Hero";
 import AppPurpose from "@/components/landing/AppPurpose";
 import SEOHead from "@/components/landing/SEOHead";
 import TrustBar from "@/components/landing/TrustBar";
-import SocialProofBar from "@/components/landing/SocialProofBar";
 import VideoDemo from "@/components/landing/VideoDemo";
 import Features from "@/components/landing/Features";
 import HowItWorks from "@/components/landing/HowItWorks";
@@ -14,7 +13,6 @@ import ProductShowcase from "@/components/landing/ProductShowcase";
 import Stats from "@/components/landing/Stats";
 import Pricing from "@/components/landing/Pricing";
 import Comparison from "@/components/landing/Comparison";
-import Testimonials from "@/components/landing/Testimonials";
 import FAQ from "@/components/landing/FAQ";
 import LeadCapture from "@/components/landing/LeadCapture";
 import FinalCTA from "@/components/landing/FinalCTA";
@@ -31,14 +29,12 @@ export default function LandingPage() {
       <Navbar />
       <Hero />
       <AppPurpose />
-      <SocialProofBar />
       <TrustBar />
       <VideoDemo />
       <Features />
       <HowItWorks />
       <ProductShowcase />
       <Stats />
-      <Testimonials />
       <Pricing />
       <Comparison />
       <FAQ />

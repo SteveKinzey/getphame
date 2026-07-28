@@ -5,6 +5,10 @@ const source = readFileSync(
   new URL("../client/src/pages/Upgrade.tsx", import.meta.url),
   "utf8"
 );
+const pricingSource = readFileSync(
+  new URL("../shared/pricing.ts", import.meta.url),
+  "utf8"
+);
 const locales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
 const reviewedPricingKeys = [
   "heroSendRequests",
@@ -51,12 +55,14 @@ describe("upgrade pricing layout", () => {
     expect(source).toContain("onClick={() => onCheckout(plan)}");
   });
   it("explains annual and lifetime savings using calculated, plan-derived values", () => {
-    expect(source).toContain(
-      "const ANNUAL_SAVINGS_USD = MONTHLY_PRICE_USD * 12 - ANNUAL_PRICE_USD;"
+    expect(pricingSource).toContain(
+      "USD_PRICES.monthly * 12 - USD_PRICES.annual"
     );
-    expect(source).toContain(
-      "const LIFETIME_SAVINGS_BY_YEAR_TWO_USD = MONTHLY_PRICE_USD * 24 - LIFETIME_PRICE_USD;"
+    expect(pricingSource).toContain(
+      "USD_PRICES.monthly * 24 - USD_PRICES.lifetime"
     );
+    expect(source).toContain("formatUsd(USD_ANNUAL_SAVINGS, locale)");
+    expect(source).toContain("formatUsd(USD_LIFETIME_SAVINGS_BY_YEAR_TWO, locale)");
     expect(source).toContain('data-testid="pricing-savings-calculator"');
     expect(source).toContain('t("pricingGrid.annualSave"');
     expect(source).toContain('t("pricingGrid.lifetimeSave"');

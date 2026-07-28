@@ -193,27 +193,6 @@
         "sectionTitle": "Pricing",
         "subtitle": "Start free. Upgrade when you're ready. Cancel anytime. No hidden fees."
       },
-      "testimonials": {
-        "sarah": {
-          "result": "12 → 47 reviews in 6 weeks",
-          "role": "Freelance Photographer",
-          "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. Get Phame sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks."
-        },
-        "david": {
-          "result": "12 locations managed from one account",
-          "quote": "As an agency managing 12 client locations, the lifetime deal was a no-brainer. Each client gets their own review link and I send requests on their behalf. The ROI paid for itself in the first month.",
-          "role": "Digital Marketing Agency Owner"
-        },
-        "tom": {
-          "result": "8–10 new reviews per week",
-          "role": "Owner, The Corner Café",
-          "quote": "We serve about 80 customers a day. I import the week's regulars from a CSV on Friday, hit send, and by Monday morning we've usually picked up 8–10 new reviews. It's become part of our weekly routine."
-        },
-        "getStartedFree": "Get Started Free",
-        "subtitle": "Real businesses using Get Phame to grow their reputation every week.",
-        "realResults": "Real results",
-        "headline": "They asked. Customers answered."
-      },
       "purpose": {
         "eyebrow": "About this app",
         "steps": {
@@ -407,30 +386,8 @@
       "finalCta": {
         "description": "Free forever: 10 initial requests, then 5 more every rolling 30 days. No credit card. Set up in under 2 minutes.",
         "getStartedButton": "Get Started Free",
-        "joinBusinesses": "Join hundreds of businesses already growing their reputation with Get Phame.",
         "headlinePart2": "Your growth.",
         "headlinePart1": "Your inbox. Your reputation."
-      },
-      "socialProofBar": {
-        "reviews": {
-          "sarah": {
-            "role": "Freelance Photographer",
-            "quote": "Went from 12 to 47 Google reviews in 6 weeks. Customers actually respond because it comes from my real email."
-          },
-          "tom": {
-            "quote": "I import Friday's regulars, hit send, and wake up Monday to 8–10 new reviews. It's part of our weekly routine now.",
-            "role": "The Corner Café"
-          },
-          "david": {
-            "quote": "Managing 12 client locations from one account. The lifetime deal paid for itself in the first month.",
-            "role": "Marketing Agency Owner"
-          },
-          "lisa": {
-            "quote": "Set it up in under 2 minutes. My open rate is 68% — way better than any review platform I've tried.",
-            "role": "Yoga Studio Owner"
-          }
-        },
-        "trustedBy": "Trusted by local business owners"
       },
       "headline": "From your inbox to their review",
       "hero": {
@@ -906,27 +863,6 @@
         "sectionTitle": "Precios",
         "subtitle": "Comienza gratis. Mejora cuando estés listo. Cancela en cualquier momento. Sin cargos ocultos."
       },
-      "testimonials": {
-        "sarah": {
-          "result": "12 → 47 reseñas en 6 semanas",
-          "role": "Fotógrafo freelance",
-          "quote": "Antes temía pedir reseñas a los clientes — se sentía incómodo y comercial. Get Phame envía la solicitud desde mi propio Gmail, por lo que realmente parece que la escribí yo. Pasé de 12 reseñas en Google a 47 en seis semanas."
-        },
-        "david": {
-          "result": "12 ubicaciones administradas desde una cuenta",
-          "quote": "Como agencia que gestiona 12 ubicaciones de clientes, la oferta de por vida fue una obviedad. Cada cliente obtiene su propio enlace de reseñas y yo envío las solicitudes en su nombre. El ROI se pagó solo el primer mes.",
-          "role": "Propietario de agencia de marketing digital"
-        },
-        "tom": {
-          "result": "8–10 reseñas nuevas por semana",
-          "role": "Propietario, The Corner Café",
-          "quote": "Atendemos alrededor de 80 clientes al día. Importo los habituales de la semana desde un CSV el viernes, presiono enviar y para el lunes por la mañana generalmente hemos conseguido 8–10 reseñas nuevas. Se ha convertido en parte de nuestra rutina semanal."
-        },
-        "getStartedFree": "Comienza gratis",
-        "subtitle": "Negocios reales que usan Get Phame para aumentar su reputación cada semana.",
-        "realResults": "Resultados reales",
-        "headline": "Ellos preguntaron. Los clientes respondieron."
-      },
       "purpose": {
         "eyebrow": "Acerca de esta aplicación",
         "steps": {
@@ -1120,30 +1056,8 @@
       "finalCta": {
         "description": "Free para siempre: 10 solicitudes iniciales, luego 5 más cada 30 días rodantes. Sin tarjeta de crédito. Configúralo en menos de 2 minutos.",
         "getStartedButton": "Comienza gratis",
-        "joinBusinesses": "Únete a cientos de empresas que ya están haciendo crecer su reputación con Get Phame.",
         "headlinePart2": "Tu crecimiento.",
         "headlinePart1": "Tu bandeja de entrada. Tu reputación."
-      },
-      "socialProofBar": {
-        "reviews": {
-          "sarah": {
-            "role": "Fotógrafo freelance",
-            "quote": "Pasé de 12 a 47 reseñas en Google en 6 semanas. Los clientes responden porque proviene de mi email real."
-          },
-          "tom": {
-            "quote": "Importo a los habituales del viernes, envío y el lunes me despierto con 8–10 reseñas nuevas. Ahora forma parte de nuestra rutina semanal.",
-            "role": "The Corner Café"
-          },
-          "david": {
-            "quote": "Gestionando 12 ubicaciones de clientes desde una sola cuenta. La oferta de por vida se amortizó en el primer mes.",
-            "role": "Propietario de agencia de marketing"
-          },
-          "lisa": {
-            "quote": "Configúralo en menos de 2 minutos. Mi tasa de apertura es 68% — mucho mejor que cualquier plataforma de reseñas que he probado.",
-            "role": "Propietario de estudio de yoga"
-          }
-        },
-        "trustedBy": "Confiado por dueños de negocios locales"
       },
       "headline": "De tu bandeja de entrada a su reseña",
       "hero": {
@@ -1619,27 +1533,6 @@
         "sectionTitle": "Tarifs",
         "subtitle": "Commencez gratuitement. Passez à une offre payante quand vous le souhaitez. Annulez à tout moment. Aucun frais caché."
       },
-      "testimonials": {
-        "sarah": {
-          "result": "12 → 47 avis en 6 semaines",
-          "role": "Photographe indépendant",
-          "quote": "J'avais peur de demander des avis aux clients — ça semblait gênant et trop commercial. Get Phame envoie la demande depuis mon propre Gmail, donc on dirait vraiment que je l'ai écrite. Je suis passé de 12 avis Google à 47 en six semaines."
-        },
-        "david": {
-          "result": "12 emplacements gérés depuis un seul compte",
-          "quote": "En tant qu'agence gérant 12 emplacements clients, l'offre à vie était une évidence. Chaque client obtient son propre lien d'avis et j'envoie les demandes en leur nom. Le retour sur investissement s'est amorti dès le premier mois.",
-          "role": "Propriétaire d'agence de marketing digital"
-        },
-        "tom": {
-          "result": "8–10 nouveaux avis par semaine",
-          "role": "Propriétaire, The Corner Café",
-          "quote": "Nous servons environ 80 clients par jour. J'importe les habitués de la semaine depuis un CSV le vendredi, j'appuie sur envoyer, et le lundi matin nous avons généralement obtenu 8–10 nouveaux avis. C'est devenu une partie de notre routine hebdomadaire."
-        },
-        "getStartedFree": "Commencer gratuitement",
-        "subtitle": "Des entreprises réelles utilisent Get Phame chaque semaine pour développer leur réputation.",
-        "realResults": "Résultats concrets",
-        "headline": "Ils ont demandé. Les clients ont répondu."
-      },
       "purpose": {
         "eyebrow": "À propos de cette application",
         "steps": {
@@ -1833,30 +1726,8 @@
       "finalCta": {
         "description": "Free à vie : 10 demandes initiales, puis 5 supplémentaires tous les 30 jours glissants. Pas de carte bancaire. Configuration en moins de 2 minutes.",
         "getStartedButton": "Commencer gratuitement",
-        "joinBusinesses": "Rejoignez des centaines d'entreprises qui développent déjà leur réputation avec Get Phame.",
         "headlinePart2": "Votre croissance.",
         "headlinePart1": "Votre boîte de réception. Votre réputation."
-      },
-      "socialProofBar": {
-        "reviews": {
-          "sarah": {
-            "role": "Photographe indépendant",
-            "quote": "Passé de 12 à 47 avis Google en 6 semaines. Les clients répondent vraiment parce que cela provient de mon adresse e-mail réelle."
-          },
-          "tom": {
-            "quote": "J'importe les habitués du vendredi, j'appuie sur envoyer, et je me réveille lundi avec 8–10 nouveaux avis. Ça fait désormais partie de notre routine hebdomadaire.",
-            "role": "The Corner Café"
-          },
-          "david": {
-            "quote": "Gestion de 12 emplacements clients depuis un seul compte. L'offre à vie s'est amortie dès le premier mois.",
-            "role": "Propriétaire d'agence marketing"
-          },
-          "lisa": {
-            "quote": "Configurez-le en moins de 2 minutes. Mon taux d'ouverture est de 68 % — bien supérieur à celui de n'importe quelle plateforme d'avis que j'ai testée.",
-            "role": "Propriétaire d'un studio de yoga"
-          }
-        },
-        "trustedBy": "Adopté par des propriétaires d'entreprises locaux"
       },
       "headline": "De votre boîte de réception à leur avis",
       "hero": {
@@ -2332,27 +2203,6 @@
         "sectionTitle": "Prezzi",
         "subtitle": "Inizia gratis. Aggiorna quando vuoi. Annulla in qualsiasi momento. Nessun costo nascosto."
       },
-      "testimonials": {
-        "sarah": {
-          "result": "12 → 47 recensioni in 6 settimane",
-          "role": "Fotografo freelance",
-          "quote": "Prima temevo chiedere recensioni ai clienti — sembrava imbarazzante e troppo commerciale. Get Phame invia la richiesta dal mio account Gmail, quindi sembra davvero scritta da me. Sono passato da 12 recensioni Google a 47 in sei settimane."
-        },
-        "david": {
-          "result": "12 sedi gestite da un unico account",
-          "quote": "Come agenzia che gestisce 12 sedi clienti, l'offerta a vita è stata una scelta ovvia. Ogni cliente ha il proprio link per le recensioni e io invio le richieste per loro. Il ROI si è ripagato nel primo mese.",
-          "role": "Titolare di agenzia di marketing digitale"
-        },
-        "tom": {
-          "result": "8–10 nuove recensioni a settimana",
-          "role": "Proprietario, The Corner Café",
-          "quote": "Serviamo circa 80 clienti al giorno. Importo i clienti abituali della settimana da un CSV il venerdì, premo invia e entro lunedì mattina di solito abbiamo raccolto 8–10 nuove recensioni. È diventato parte della nostra routine settimanale."
-        },
-        "getStartedFree": "Inizia gratis",
-        "subtitle": "Aziende reali che usano Get Phame per far crescere la loro reputazione ogni settimana.",
-        "realResults": "Risultati concreti",
-        "headline": "Hanno chiesto. I clienti hanno risposto."
-      },
       "purpose": {
         "eyebrow": "Informazioni su questa app",
         "steps": {
@@ -2546,30 +2396,8 @@
       "finalCta": {
         "description": "Free per sempre: 10 richieste iniziali, poi 5 ogni 30 giorni mobili. Nessuna carta di credito. Configurazione in meno di 2 minuti.",
         "getStartedButton": "Inizia gratis",
-        "joinBusinesses": "Unisciti a centinaia di aziende che stanno già facendo crescere la loro reputazione con Get Phame.",
         "headlinePart2": "La tua crescita.",
         "headlinePart1": "La tua casella di posta. La tua reputazione."
-      },
-      "socialProofBar": {
-        "reviews": {
-          "sarah": {
-            "role": "Fotografo freelance",
-            "quote": "Sono passato da 12 a 47 recensioni su Google in 6 settimane. I clienti rispondono perché proviene dalla mia email reale."
-          },
-          "tom": {
-            "quote": "Importo gli abituali del venerdì, premo invia e il lunedì mi sveglio con 8–10 nuove recensioni. È ormai parte della nostra routine settimanale.",
-            "role": "The Corner Café"
-          },
-          "david": {
-            "quote": "Gestisco 12 sedi clienti da un unico account. L'offerta a vita si è ripagata nel primo mese.",
-            "role": "Titolare di un'agenzia di marketing"
-          },
-          "lisa": {
-            "quote": "Configuralo in meno di 2 minuti. Il mio tasso di apertura è del 68% — molto meglio di qualsiasi piattaforma di recensioni che abbia provato.",
-            "role": "Proprietario di uno studio di yoga"
-          }
-        },
-        "trustedBy": "Scelto dai titolari di attività locali"
       },
       "headline": "Dalla tua casella di posta alla loro recensione",
       "hero": {
@@ -3045,27 +2873,6 @@
         "sectionTitle": "ราคา",
         "subtitle": "เริ่มใช้ฟรี อัปเกรดได้เมื่อพร้อม ยกเลิกได้ตลอดเวลา ไม่มีค่าธรรมเนียมแอบแฝง."
       },
-      "testimonials": {
-        "sarah": {
-          "result": "12 → 47 รีวิวใน 6 สัปดาห์",
-          "role": "ช่างภาพอิสระ",
-          "quote": "ฉันเคยเกลียดการขอรีวิวจากลูกค้า — รู้สึกอึดอัดและเหมือนการขาย Get Phame ส่งคำขอจาก Gmail ของฉันเอง ดังนั้นจึงดูเหมือนฉันเป็นคนเขียนจริงๆ ฉันมีรีวิว Google จาก 12 เป็น 47 ภายในหกสัปดาห์."
-        },
-        "david": {
-          "result": "จัดการ 12 สถานที่จากบัญชีเดียว",
-          "quote": "ในฐานะเอเจนซี่ที่ดูแล 12 สถานที่ของลูกค้า ข้อเสนอแบบจ่ายครั้งเดียวตลอดชีพคุ้มค่าอย่างไม่ต้องคิด แต่ละลูกค้าจะมีลิงก์รีวิวของตัวเอง และฉันส่งคำขอแทนลูกค้า ผลตอบแทนจากการลงทุนคุ้มทุนภายในเดือนแรก",
-          "role": "เจ้าของเอเจนซี่การตลาดดิจิทัล"
-        },
-        "tom": {
-          "result": "รีวิวใหม่ 8–10 รายการต่อสัปดาห์",
-          "role": "เจ้าของ, The Corner Café",
-          "quote": "เราบริการลูกค้าประมาณ 80 คนต่อวัน เรานำเข้าลูกค้าประจำของสัปดาห์จาก CSV ในวันศุกร์ กดส่ง แล้วภายในเช้าวันจันทร์มักจะได้รีวิวใหม่ประมาณ 8–10 รายการ มันกลายเป็นส่วนหนึ่งของกิจวัตรประจำสัปดาห์ของเรา."
-        },
-        "getStartedFree": "เริ่มต้นใช้งานฟรี",
-        "subtitle": "ธุรกิจจริงที่ใช้ Get Phame ในการเสริมสร้างชื่อเสียงทุกสัปดาห์.",
-        "realResults": "ผลลัพธ์จริง",
-        "headline": "พวกเขาถาม ลูกค้าตอบ."
-      },
       "purpose": {
         "eyebrow": "เกี่ยวกับแอปนี้",
         "steps": {
@@ -3259,30 +3066,8 @@
       "finalCta": {
         "description": "ฟรีตลอด: 10 คำขอเริ่มต้น จากนั้นเพิ่มอีก 5 รายการทุก 30 วันแบบหมุนเวียน ไม่ต้องใช้บัตรเครดิต ตั้งค่าได้ภายในไม่ถึง 2 นาที.",
         "getStartedButton": "เริ่มต้นใช้งานฟรี",
-        "joinBusinesses": "เข้าร่วมกับธุรกิจนับร้อยที่กำลังสร้างชื่อเสียงด้วย Get Phame.",
         "headlinePart2": "การเติบโตของคุณ",
         "headlinePart1": "กล่องจดหมายของคุณ. ชื่อเสียงของคุณ."
-      },
-      "socialProofBar": {
-        "reviews": {
-          "sarah": {
-            "role": "ช่างภาพอิสระ",
-            "quote": "เพิ่มจาก 12 เป็น 47 รีวิวบน Google ใน 6 สัปดาห์ ลูกค้าตอบกลับจริงเพราะอีเมลส่งจากที่อยู่อีเมลจริงของฉัน."
-          },
-          "tom": {
-            "quote": "ฉันนำเข้าลูกค้าประจำวันศุกร์ กดส่ง แล้วตื่นขึ้นมาในวันจันทร์พบรีวิวใหม่ 8–10 ราย มันกลายเป็นกิจวัตรประจำสัปดาห์ของเราแล้ว.",
-            "role": "The Corner Café"
-          },
-          "david": {
-            "quote": "จัดการ 12 สาขาของลูกค้าจากบัญชีเดียว ข้อเสนอแบบตลอดชีพคุ้มทุนภายในเดือนแรก.",
-            "role": "เจ้าของเอเจนซี่การตลาด"
-          },
-          "lisa": {
-            "quote": "ตั้งค่าได้ภายในไม่ถึง 2 นาที อัตราการเปิดของฉันคือ 68% — ดีกว่าแพลตฟอร์มรีวิวที่ฉันทดลองมา.",
-            "role": "เจ้าของสตูดิโอโยคะ"
-          }
-        },
-        "trustedBy": "ได้รับความไว้วางใจจากเจ้าของธุรกิจท้องถิ่น"
       },
       "headline": "จากอินบ็อกซ์ของคุณถึงรีวิวของลูกค้า",
       "hero": {
@@ -3758,27 +3543,6 @@
         "sectionTitle": "价格",
         "subtitle": "开始免费。随时升级。随时取消。无隐藏费用。"
       },
-      "testimonials": {
-        "sarah": {
-          "result": "6 周内：12 → 47 条评价",
-          "role": "自由摄影师",
-          "quote": "以前我很害怕向客户索要评价——感觉很尴尬、像推销。Get Phame 会从我的 Gmail 发送请求，看起来就像我自己写的。六周内我的 Google 评价从 12 条增至 47 条。"
-        },
-        "david": {
-          "result": "一个账户管理 12 个地点",
-          "quote": "作为一家管理 12 个客户门店的代理机构，终身优惠非常划算。每位客户都有自己的评价链接，我会代表他们发送请求。投资回报在第一个月就收回成本。",
-          "role": "数字营销代理机构负责人"
-        },
-        "tom": {
-          "result": "每周新增 8–10 条评价",
-          "role": "店主，The Corner Café",
-          "quote": "我们每天服务大约 80 名顾客。我在周五从 CSV 导入一周的常客，点击发送，到周一早上我们通常会获得 8–10 条新评价。这已成为我们的每周例行工作。"
-        },
-        "getStartedFree": "免费开始使用",
-        "subtitle": "真实企业每周使用 Get Phame 来提升他们的声誉。",
-        "realResults": "真实成效",
-        "headline": "他们问了，客户回应了。"
-      },
       "purpose": {
         "eyebrow": "关于此应用",
         "steps": {
@@ -3972,30 +3736,8 @@
       "finalCta": {
         "description": "永久免费：初始 10 个请求，然后每 30 天滚动增加 5 个。无需信用卡。2 分钟内完成设置。",
         "getStartedButton": "免费开始使用",
-        "joinBusinesses": "加入数百家已通过 Get Phame 提升声誉的企业。",
         "headlinePart2": "您的增长。",
         "headlinePart1": "您的收件箱。您的声誉。"
-      },
-      "socialProofBar": {
-        "reviews": {
-          "sarah": {
-            "role": "自由摄影师",
-            "quote": "6周内从12条Google评论增长到47条。顾客真的会回复，因为邮件来自我的真实邮箱。"
-          },
-          "tom": {
-            "quote": "我导入周五的常客，点击发送，周一醒来就有 8–10 条新评价。现在已成为我们的每周惯例。",
-            "role": "The Corner Café"
-          },
-          "david": {
-            "quote": "用一个账户管理 12 个客户网点。终身优惠在第一个月就收回成本。",
-            "role": "营销机构负责人"
-          },
-          "lisa": {
-            "quote": "在不到 2 分钟内完成设置。我的打开率为 68%——远高于我尝试过的任何评价平台。",
-            "role": "瑜伽工作室老板"
-          }
-        },
-        "trustedBy": "本地商户信赖"
       },
       "headline": "从收件箱到客户点评",
       "hero": {
@@ -4471,27 +4213,6 @@
         "sectionTitle": "價格",
         "subtitle": "免費開始，需要時再升級。可隨時取消，無隱藏費用。"
       },
-      "testimonials": {
-        "sarah": {
-          "result": "6 週內從 12 篇增至 47 篇評論",
-          "role": "自由攝影師",
-          "quote": "我以前很害怕向客戶要評論——覺得尷尬又像在推銷。Get Phame 從我的 Gmail 寄出請求，看起來就像我親自撰寫的。六週內我的 Google 評論從 12 則增加到 47 則。"
-        },
-        "david": {
-          "result": "一個帳戶管理 12 個據點",
-          "quote": "作為一家管理 12 個客戶據點的代理商，終身方案對我來說超值。每個客戶都有自己的評價連結，我會替他們發送邀請，投資回報在第一個月就回本了。",
-          "role": "數位行銷代理商業主"
-        },
-        "tom": {
-          "result": "每週新增 8–10 則評論",
-          "role": "店主，The Corner Café",
-          "quote": "我們大約每天服務 80 位客戶。我會在週五從 CSV 匯入一周的常客，按下寄送後，到週一早上通常會收到 8–10 則新評論。這已成為我們的每週例行作業。"
-        },
-        "getStartedFree": "免費開始使用",
-        "subtitle": "真實商家每週使用 Get Phame 來提升聲譽。",
-        "realResults": "實際成果",
-        "headline": "他們問，顧客回答。"
-      },
       "purpose": {
         "eyebrow": "關於此應用程式",
         "steps": {
@@ -4685,30 +4406,8 @@
       "finalCta": {
         "description": "永遠免費：10 次初始邀請，之後每 30 天滾動新增 5 次。不需信用卡，2 分鐘內完成設定。",
         "getStartedButton": "免費開始使用",
-        "joinBusinesses": "加入數百家已透過 Get Phame 增進聲譽的企業。",
         "headlinePart2": "您的成長。",
         "headlinePart1": "您的收件匣。您的聲譽。"
-      },
-      "socialProofBar": {
-        "reviews": {
-          "sarah": {
-            "role": "自由攝影師",
-            "quote": "在6週內從12則 Google 評論增加到47則。客戶會回應，因為它是用我的真實電子郵件發送的。"
-          },
-          "tom": {
-            "quote": "我把週五的常客匯入、按下發送，週一醒來就有 8–10 則新評論。現在已成為我們的每週例行公事。",
-            "role": "The Corner Café"
-          },
-          "david": {
-            "quote": "一個帳戶管理 12 個客戶據點。終身方案在第一個月就回本了。",
-            "role": "行銷代理商負責人"
-          },
-          "lisa": {
-            "quote": "2 分鐘內即可設定。我的開啟率是 68% — 比我試過的任何評論平台都好得多。",
-            "role": "瑜伽工作室擁有者"
-          }
-        },
-        "trustedBy": "受到在地商家信賴"
       },
       "headline": "從您的收件匣到他們的評價",
       "hero": {

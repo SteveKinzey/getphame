@@ -31,6 +31,12 @@ describe("Stripe Checkout and promotion safeguards", () => {
     vi.clearAllMocks();
     process.env.STRIPE_SECRET_KEY = "sk_test_dummy";
     process.env.APP_BASE_URL = "https://legacy-preview.invalid";
+    process.env.STRIPE_TEST_PRICE_ID_USD_MONTHLY = "price_test_usd_monthly";
+    process.env.STRIPE_TEST_PRICE_ID_USD_ANNUAL = "price_test_usd_annual";
+    process.env.STRIPE_TEST_PRICE_ID_USD_LIFETIME = "price_test_usd_lifetime";
+    process.env.STRIPE_TEST_PRICE_ID_THB_MONTHLY = "price_test_thb_monthly";
+    process.env.STRIPE_TEST_PRICE_ID_THB_ANNUAL = "price_test_thb_annual";
+    process.env.STRIPE_TEST_PRICE_ID_THB_LIFETIME = "price_test_thb_lifetime";
     mockCheckoutCreate.mockResolvedValue({ url: "https://checkout.stripe.com/pay/test" });
     mockPortalCreate.mockResolvedValue({ url: "https://billing.stripe.com/session/test" });
     mockPromotionCodesList.mockResolvedValue({ data: [], has_more: false });
@@ -59,7 +65,7 @@ describe("Stripe Checkout and promotion safeguards", () => {
   });
 
   it("allows customer-entered promotion codes for a standard Get Phame monthly Checkout session", async () => {
-    const { createCheckoutSession, STRIPE_PRICE_IDS } = await import("./stripe");
+    const { createCheckoutSession, getStripePriceIds } = await import("./stripe");
 
     await createCheckoutSession({ ...BASE_PARAMS, origin: "https://getphame.app", plan: "monthly" });
 
@@ -67,7 +73,7 @@ describe("Stripe Checkout and promotion safeguards", () => {
       expect.objectContaining({
         mode: "subscription",
         allow_promotion_codes: true,
-        line_items: [{ price: STRIPE_PRICE_IDS.monthly, quantity: 1 }],
+        line_items: [{ price: getStripePriceIds().monthly, quantity: 1 }],
       }),
     );
   });
@@ -119,9 +125,10 @@ describe("Stripe Checkout and promotion safeguards", () => {
       has_more: false,
     });
 
-    const { listStripePromotionCodes, STRIPE_PRICE_IDS } = await import("./stripe");
+    const { listStripePromotionCodes, getStripePriceIds } = await import("./stripe");
+    const selectedPriceIds = getStripePriceIds();
     mockPricesRetrieve.mockImplementation(async (priceId: string) => ({
-      product: priceId === STRIPE_PRICE_IDS.annual ? "prod_annual" : "prod_other",
+      product: priceId === selectedPriceIds.annual ? "prod_annual" : "prod_other",
     }));
 
     const snapshot = await listStripePromotionCodes();
@@ -140,7 +147,7 @@ describe("Stripe Checkout and promotion safeguards", () => {
   });
 
   it("uses the canonical Get Phame origin for PromptPay Checkout returns", async () => {
-    process.env.STRIPE_PRICE_ID_THB_MONTHLY = "price_thb_monthly";
+    process.env.STRIPE_TEST_PRICE_ID_THB_MONTHLY = "price_test_thb_monthly";
     const { createThbCheckoutSession } = await import("./stripe");
 
     await createThbCheckoutSession(BASE_PARAMS);

@@ -83,8 +83,7 @@
       "headlinePart1": "Votre boîte. Votre réputation.",
       "headlinePart2": "Votre croissance.",
       "description": "Gratuit pour toujours : 10 demandes initiales, puis 5 supplémentaires par période glissante de 30 jours. Pas de carte de crédit. Configuration en moins de 2 minutes.",
-      "getStartedButton": "Commencer gratuitement",
-      "joinBusinesses": "Rejoignez des centaines d'entreprises qui développent déjà leur réputation avec Get Phame."
+      "getStartedButton": "Commencer gratuitement"
     },
     "footer": {
       "privacy": "Confidentialité",
@@ -168,6 +167,7 @@
       },
       "proMonthly": {
         "name": "Pro Mensuel",
+        "period": "/mois",
         "description": "Idéal pour les entreprises actives qui envoient des demandes d'avis chaque semaine.",
         "features": {
           "requests": "Demandes d'avis illimitées",
@@ -181,16 +181,17 @@
       },
       "proAnnual": {
         "name": "Pro Annuel",
+        "period": "/an",
         "description": "Meilleur rapport qualité‑prix pour les entreprises engagées dans la croissance de leur réputation.",
         "features": {
           "everything": "Tout ce qui est dans Pro Mensuel",
-          "billed": "Facturé annuellement ($228/yr)",
-          "save": "Économisez 34% vs mensuel",
+          "billed": "Facturé annuellement (290 $/an)",
+          "save": "Économisez 17 % par rapport au forfait mensuel",
           "support": "Support prioritaire",
           "earlyAccess": "Accès anticipé aux nouvelles fonctionnalités"
         },
         "cta": "Commencer Pro Annuel",
-        "badge": "Économisez 34%"
+        "badge": "Économisez 17 %"
       },
       "lifetime": {
         "name": "À vie",
@@ -235,27 +236,6 @@
       "viewFullSizeButton": "Voir en plein écran",
       "viewFullSizeAriaLabel": "Voir {{title}} en plein écran"
     },
-    "socialProofBar": {
-      "reviews": {
-        "sarah": {
-          "quote": "Je suis passé de 12 à 47 avis Google en 6 semaines. Les clients répondent vraiment parce que ça vient de mon email réel.",
-          "role": "Photographe indépendant"
-        },
-        "tom": {
-          "quote": "J'importe les habitués du vendredi, j'appuie sur envoyer et je me réveille le lundi avec 8–10 nouveaux avis. C'est devenu notre routine hebdomadaire.",
-          "role": "The Corner Café"
-        },
-        "david": {
-          "quote": "Je gère 12 emplacements clients depuis un seul compte. L'offre à vie s'est remboursée dès le premier mois.",
-          "role": "Propriétaire d'agence marketing"
-        },
-        "lisa": {
-          "quote": "Installation en moins de 2 minutes. Mon taux d'ouverture est de 68 % — bien meilleur que n'importe quelle plateforme d'avis que j'ai testée.",
-          "role": "Propriétaire d'un studio de yoga"
-        }
-      },
-      "trustedBy": "Adopté par des propriétaires d'entreprises locales"
-    },
     "stats": {
       "moreReviewsLabel": "plus d'avis vs demander en personne",
       "averageSetupTimeLabel": "temps de configuration moyen",
@@ -269,27 +249,6 @@
       "industryAgencies": "Agences",
       "industryWooCommerceStores": "Boutiques WooCommerce",
       "heading": "Conçu pour les entreprises qui vivent de leur réputation"
-    },
-    "testimonials": {
-      "sarah": {
-        "quote": "J'avais peur de demander des avis — c'était gênant et trop commercial. Get Phame envoie la demande depuis mon propre Gmail, donc on dirait vraiment que c'est moi qui l'ai écrit. Je suis passé de 12 avis Google à 47 en six semaines.",
-        "role": "Photographe indépendant",
-        "result": "12 → 47 avis en 6 semaines"
-      },
-      "tom": {
-        "quote": "Nous servons environ 80 clients par jour. J'importe la liste de la semaine depuis un CSV le vendredi, j'appuie sur envoyer et le lundi matin nous avons généralement 8–10 nouveaux avis. C'est devenu notre routine hebdomadaire.",
-        "role": "Propriétaire, The Corner Café",
-        "result": "8–10 nouveaux avis par semaine"
-      },
-      "david": {
-        "quote": "En tant qu'agence gérant 12 emplacements clients, l'offre à vie était une évidence. Chaque client a son propre lien d'avis et j'envoie les demandes en leur nom. Le retour sur investissement s'est fait le premier mois.",
-        "role": "Propriétaire d'une agence marketing digitale",
-        "result": "12 emplacements gérés depuis un compte"
-      },
-      "realResults": "Résultats réels",
-      "headline": "Ils ont demandé. Les clients ont répondu.",
-      "subtitle": "Des entreprises réelles utilisent Get Phame pour développer leur réputation chaque semaine.",
-      "getStartedFree": "Commencer gratuitement"
     },
     "trustBar": {
       "passwordEncrypted": "Mot de passe chiffré au repos",
