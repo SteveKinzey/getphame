@@ -38,7 +38,38 @@ async function buildDownloadUrl(
     method: "GET",
     headers: buildAuthHeaders(apiKey),
   });
-  return (await response.json()).url;
+  if (!response.ok) {
+    const message = await response.text().catch(() => response.statusText);
+    throw new Error(
+      `Storage download URL request failed (${response.status} ${response.statusText}): ${message}`
+    );
+  }
+
+  let payload: unknown;
+  try {
+    payload = await response.json();
+  } catch {
+    throw new Error("Storage download URL request returned invalid JSON");
+  }
+
+  const url = payload && typeof payload === "object"
+    ? (payload as { url?: unknown }).url
+    : undefined;
+  if (typeof url !== "string" || url.trim().length === 0) {
+    throw new Error("Storage download URL response is missing a valid URL");
+  }
+
+  let parsedUrl: URL;
+  try {
+    parsedUrl = new URL(url);
+  } catch {
+    throw new Error("Storage download URL response is missing a valid URL");
+  }
+  if (parsedUrl.protocol !== "https:" && parsedUrl.protocol !== "http:") {
+    throw new Error("Storage download URL response uses an unsupported protocol");
+  }
+
+  return parsedUrl.toString();
 }
 
 function ensureTrailingSlash(value: string): string {

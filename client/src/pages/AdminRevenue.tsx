@@ -261,7 +261,7 @@ export default function AdminRevenuePage() {
               <div className="flex flex-col gap-1 text-sm text-white/50">
                 <span>Monthly Pro: $29/mo</span>
                 <span>Annual: $290/yr ($24.17/mo)</span>
-                <span>Lifetime: $1,247 one-time</span>
+                <span>Lifetime: $349 one-time</span>
               </div>
             </div>
           </>

@@ -1,4 +1,9 @@
-import { AXIOS_TIMEOUT_MS, COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import {
+  AXIOS_TIMEOUT_MS,
+  COOKIE_NAME,
+  ONE_YEAR_MS,
+  decodeOAuthState,
+} from "@shared/const";
 import { ForbiddenError } from "@shared/_core/errors";
 import axios, { type AxiosInstance } from "axios";
 import { parse as parseCookieHeader } from "cookie";
@@ -61,11 +66,6 @@ class OAuthService {
     }
   }
 
-  private decodeState(state: string): string {
-    const redirectUri = atob(state);
-    return redirectUri;
-  }
-
   async getTokenByCode(
     code: string,
     state: string
@@ -74,7 +74,7 @@ class OAuthService {
       clientId: ENV.appId,
       grantType: "authorization_code",
       code,
-      redirectUri: this.decodeState(state),
+      redirectUri: decodeOAuthState(state).redirectUri,
     };
 
     const { data } = await this.client.post<ExchangeTokenResponse>(

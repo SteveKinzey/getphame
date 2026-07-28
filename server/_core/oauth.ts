@@ -1,5 +1,11 @@
-import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import {
+  COOKIE_NAME,
+  OAUTH_STATE_COOKIE,
+  ONE_YEAR_MS,
+  decodeOAuthState,
+} from "@shared/const";
 import { ENV } from "./env";
+import { parse as parseCookieHeader } from "cookie";
 import type { Express, Request, Response } from "express";
 import * as db from "../db";
 import { sendUserWelcomeEmail } from "../smtp";
@@ -20,6 +26,18 @@ export function registerOAuthRoutes(app: Express) {
       res.status(400).json({ error: "code and state are required" });
       return;
     }
+
+    const { nonce: stateNonce } = decodeOAuthState(state);
+    const cookieNonce = parseCookieHeader(req.headers.cookie ?? "")[OAUTH_STATE_COOKIE];
+    if (!stateNonce || !cookieNonce || stateNonce !== cookieNonce) {
+      res.status(403).json({ error: "invalid oauth state" });
+      return;
+    }
+    res.clearCookie(OAUTH_STATE_COOKIE, {
+      path: "/",
+      secure: true,
+      sameSite: "none",
+    });
 
     try {
       const tokenResponse = await sdk.exchangeCodeForToken(code, state);
