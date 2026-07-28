@@ -17,12 +17,12 @@
       "privacyLink": "阅读我们的隐私政策"
     },
     "comparison": {
-      "getPhamePrice": "$29/mo",
-      "birdeyePrice": "$299/mo",
-      "podiumPrice": "$249/mo",
-      "niceJobPrice": "$75/mo",
-      "gradeUsPrice": "$110/mo",
-      "reviewTrackersPrice": "$89/mo",
+      "getPhamePrice": "$29/月",
+      "birdeyePrice": "$299/月",
+      "podiumPrice": "$249/月",
+      "niceJobPrice": "$75/月",
+      "gradeUsPrice": "$110/月",
+      "reviewTrackersPrice": "$89/月",
       "compare": "比较",
       "enterpriseFeaturesStartupPrice": "企业级功能，初创价格。",
       "description": "大型厂商为评论请求工具收取 $250–$300/月。Get Phame 提供相同的核心能力，成本仅为其一小部分，并且提供他们永远不会提供的终身选项。",
