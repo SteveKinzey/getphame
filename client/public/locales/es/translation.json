@@ -5,6 +5,22 @@
     "ogDescription": "Enviar personalised review request emails from your own email account. Works with Google, Yelp, TripAdvisor and more.",
     "shortTitle": "Get Phame"
   },
+  "firstVisitWelcome": {
+    "languageReady": "Idioma detectado",
+    "title": "Te damos la bienvenida a Get Phame",
+    "description": "Seleccionamos {{language}} según las preferencias de tu navegador. Esto es lo que puedes hacer a continuación.",
+    "featuresLabel": "Funciones de Get Phame",
+    "features": {
+      "personalRequests": "Envía solicitudes de reseña individuales desde tu propio correo",
+      "followUps": "Programa seguimientos que cumplen las normas y se detienen cuando el cliente actúa",
+      "dashboard": "Consulta la entrega y la interacción en un panel claro"
+    },
+    "changeLanguage": "Elegir otro idioma",
+    "selectedLanguage": "Get Phame se muestra actualmente en {{language}}.",
+    "continue": "Continuar en {{language}}",
+    "preferenceHint": "Puedes cambiar el idioma en cualquier momento desde el selector de idioma.",
+    "closeLabel": "Cerrar el diálogo de bienvenida"
+  },
   "nav": {
     "brandName": "Get Phame",
     "signIn": "Iniciar sesión",

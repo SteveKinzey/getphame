@@ -84,7 +84,8 @@ describe("Full application localization coverage", () => {
     expect((homeSource.match(/useTranslation\("translation"\)/g) ?? []).length).toBeGreaterThanOrEqual(3);
     expect(i18nSource).toContain("export const i18nReady");
     expect(bootstrapSource).toContain("loadStaticLocalizationSupplement");
-    expect(bootstrapSource).toContain("i18nReady.then(() => loadStaticLocalizationSupplement())");
+    expect(bootstrapSource).toContain("void i18nReady.then(() => {");
+    expect(bootstrapSource).toContain("return loadStaticLocalizationSupplement();");
     expect(homeSource).toContain('t("referralRewards.title")');
     expect(homeSource).toContain('t("referralRewards.shareMessage", { url: shareUrl })');
     expect(homeSource).not.toContain(">Referral Rewards<");
