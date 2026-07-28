@@ -33,7 +33,7 @@ describe("static copy routes", () => {
   it("exposes only the six approved immutable locale catalogs from managed storage", () => {
     for (const locale of ["es", "fr", "it", "th", "zh-CN", "zh-TW"]) {
       const source = getStaticCopySource(locale);
-      expect(source?.storageKey).toMatch(/^static-copy\/\d{4}-\d{2}-\d{2}\/getphame-static-copy-/);
+      expect(source?.storageKey).toMatch(/^static-copy\/2026-07-28-compliant-copy\/getphame-static-copy-/);
       expect(source?.storageKey).toMatch(/\.json$/);
     }
     expect(getStaticCopySource("en")).toBeNull();

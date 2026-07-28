@@ -3101,7 +3101,8 @@
   "landing": {
     "hero": {
       "categoryLabel": "Software per email di richiesta recensioni per attività locali",
-      "googleDisclosureLabel": "Uso dei dati dell'accesso Google"
+      "googleDisclosureLabel": "Uso dei dati dell'accesso Google",
+      "ctaVariantB": "Inizia gratis — senza carta"
     },
     "leadCapture": {
       "addressConfirmation": "L'abbiamo inviata a {{email}}. Conferma la correttezza dell'indirizzo e controlla la cartella spam se non arriva. L'accettazione del provider non garantisce la consegna in posta in arrivo.",
@@ -3113,8 +3114,9 @@
       "emailInvalid": "Inserisci un'email con formato corretto, ad esempio name@example.com.",
       "emailRequired": "Inserisci il tuo indirizzo email.",
       "providerAcceptedMessage": "Il tuo provider di posta ha accettato la guida per la consegna.",
-      "sharePrompt": "Conosci qualcuno che ha bisogno di più recensioni? Condividi la guida gratuita.",
-      "tryAgain": "Riprova l'email"
+      "sharePrompt": "Condividi la guida gratuita alle richieste di recensione.",
+      "tryAgain": "Riprova l'email",
+      "description": "Ricevi una guida gratuita per pianificare richieste di recensione chiare e conformi, oltre ad aggiornamenti sul prodotto e consigli pratici sulla reputazione."
     },
     "purpose": {
       "description": "Get Phame aiuta le attività locali a inviare email personalizzate per richiedere recensioni dal proprio account email connesso. È pensato per titolari di attività, fotografi, caffè e ristoranti, team di servizi a domicilio, cliniche e saloni, agenzie e negozi WooCommerce che desiderano un modo più semplice per chiedere feedback ai clienti reali.",
@@ -3133,7 +3135,13 @@
       "title": "Cosa fa Get Phame"
     },
     "stats": {
-      "emailsSentValue": "La tua casella di posta"
+      "emailsSentValue": "La tua casella di posta",
+      "individualOutreachValue": "Individuale",
+      "moreReviewsLabel": "contatto con i clienti",
+      "setupValue": "Guidata",
+      "averageSetupTimeLabel": "configurazione e onboarding",
+      "followUpValue": "Automatico",
+      "averageResponseRateLabel": "i promemoria si fermano dopo l'azione del cliente"
     },
     "support": {
       "attachment": "Screenshot",
@@ -3170,6 +3178,25 @@
         "subjectMin": "Inserisci un oggetto di almeno 3 caratteri."
       },
       "website": "Sito web"
+    },
+    "faq": {
+      "a1": "No. Ogni email viene inviata direttamente dall'account che colleghi, non da un server di invio massivo di terze parti. I clienti vedono il nome, l'indirizzo e la firma del mittente che configuri.",
+      "a12": "Illimitato significa che Get Phame non imposta un limite mensile alle richieste di recensione per i piani Pro. Restano valide le regole e i limiti di invio del tuo provider email."
+    },
+    "feature1": {
+      "description": "Ogni richiesta di recensione viene inviata dall'account email che colleghi e usa il nome e la firma del mittente che configuri.",
+      "statValue": "La tua email",
+      "statLabel": "identità del mittente"
+    },
+    "feature2": {
+      "title": "Invia richieste personalizzate in blocco",
+      "description": "Importa i clienti via CSV o sincronizzazione WooCommerce, scegli i destinatari e invia richieste personalizzate senza copiare ogni messaggio a mano.",
+      "statValue": "In blocco",
+      "statLabel": "invio personalizzato"
+    },
+    "feature3": {
+      "statValue": "Flessibile",
+      "statLabel": "destinazioni delle recensioni"
     }
   },
   "adaptiveSending": {

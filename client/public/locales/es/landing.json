@@ -34,7 +34,7 @@
     },
     "faq": {
       "q1": "¿Se verá como spam?",
-      "a1": "No. Cada correo se envía directamente desde tu propia dirección — no desde un servidor de terceros. Tus clientes ven tu nombre, tu dirección y tu firma. Parece exactamente como si lo hubieras escrito tú mismo. Las tasas de apertura promedian 45–60% porque los destinatarios reconocen al remitente.",
+      "a1": "No. Cada correo se envía directamente desde la cuenta de correo que conectas, no desde un servidor de envío masivo de terceros. Los clientes ven el nombre, la dirección y la firma del remitente que configuras.",
       "q2": "¿Qué proveedores de correo funcionan?",
       "a2": "Get Phame funciona con cualquier proveedor de correo que soporte SMTP: Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud y cualquier servidor SMTP personalizado. Si puedes enviar correo desde él, puedes conectarlo a Get Phame.",
       "q3": "¿Es realmente gratis?",
@@ -56,25 +56,28 @@
       "q11": "¿Cómo funciona la sincronización con WooCommerce?",
       "a11": "El conector de WooCommerce está disponible solo en los planes de pago. Los usuarios de pago instalan el plugin de WooCommerce de Get Phame, introducen su clave API y los nuevos clientes se importan automáticamente después de cada pedido completado. Puedes establecer un retraso (por ejemplo, 7 días después de la compra) antes de que aparezcan en la cola de envío.",
       "q12": "¿Qué significa ilimitado en el plan Pro?",
-      "a12": "Ilimitado significa sin límite en la cantidad de solicitudes de reseña que puedes enviar por mes. Envía 50 o 5,000 — sin cargos adicionales. El único límite es el propio del proveedor de correo (por ejemplo, Gmail permite ~500/día para cuentas personales, 2,000/día para Workspace).",
+      "a12": "Ilimitado significa que Get Phame no establece un límite mensual de solicitudes de reseña en los planes Pro. Se siguen aplicando las políticas y los límites de envío de tu proveedor de correo.",
       "sectionTitle": "Preguntas frecuentes",
       "headline": "Preguntas sobre seguridad del correo, privacidad y configuración",
       "description": "Todo lo que necesitas saber antes de conectar tu correo y enviar tu primera solicitud de reseña."
     },
     "feature1": {
       "title": "Tu nombre. Tu bandeja. Su confianza.",
-      "description": "Cada solicitud de reseña llega desde tu dirección real. Los clientes reconocen al remitente, la abren — y responden.",
-      "statLabel": "tasa de apertura prom."
+      "description": "Cada solicitud de reseña se envía desde la cuenta de correo que conectas y usa el nombre y la firma del remitente que configuras.",
+      "statLabel": "identidad del remitente",
+      "statValue": "Tu correo"
     },
     "feature2": {
-      "title": "Un clic para enviar a cientos",
-      "description": "Importa tu lista por CSV o sincroniza con WooCommerce, selecciona todo y envía solicitudes personalizadas en segundos. Sin copiar y pegar. Sin trabajo manual.",
-      "statLabel": "envíos por lote"
+      "title": "Envía solicitudes personalizadas en bloque",
+      "description": "Importa clientes mediante CSV o sincronización con WooCommerce, elige los destinatarios y envía solicitudes personalizadas sin copiar cada mensaje manualmente.",
+      "statLabel": "envío personalizado",
+      "statValue": "En bloque"
     },
     "feature3": {
       "title": "Todas las plataformas. Tu elección.",
       "description": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot y más. Pega tu enlace, cambia de plataforma cuando quieras. Una herramienta para todos tus destinos de reseñas.",
-      "statLabel": "plataformas compatibles"
+      "statLabel": "destinos de reseñas",
+      "statValue": "Flexible"
     },
     "whyItWorks": "Por qué funciona",
     "headline": "De tu bandeja a su reseña",
@@ -99,7 +102,7 @@
       "headlinePart2": "sin el pedido incómodo",
       "description": "Get Phame es un software de solicitudes de reseñas por correo para negocios locales. Añade clientes, envía solicitudes personalizadas desde una cuenta de correo que conectes, controla aperturas y clics, y dirige a los clientes a la plataforma de reseñas que elijas.",
       "ctaVariantA": "Comenzar gratis — Enviar 10 solicitudes",
-      "ctaVariantB": "Obtén tus primeras 10 reseñas gratis",
+      "ctaVariantB": "Empieza gratis — sin tarjeta",
       "howItWorks": "Ver cómo funciona",
       "setupTime": "Configura en menos de 2 minutos",
       "emailCompatibility": "Funciona con Gmail, Outlook y SMTP",
@@ -136,12 +139,13 @@
     "leadCapture": {
       "errorMessage": "Algo salió mal. Por favor intenta nuevamente.",
       "heading": "¿No estás listo para comprometerte?",
-      "description": "Obtén una guía gratuita sobre cómo triplicar tus reseñas de Google en 30 días — además de acceso anticipado a nuevas funciones y consejos de reputación.",
+      "description": "Obtén una guía gratuita para planificar solicitudes de reseña claras y conformes, además de novedades del producto y consejos prácticos de reputación.",
       "emailPlaceholder": "Ingresa tu correo",
       "sending": "Enviando...",
       "sendGuideButton": "Enviar guía",
       "successMessage": "Revisa tu bandeja — la guía está en camino.",
-      "noSpamMessage": "Sin spam. Cancela la suscripción cuando quieras. Respetamos tu bandeja."
+      "noSpamMessage": "Sin spam. Cancela la suscripción cuando quieras. Respetamos tu bandeja.",
+      "sharePrompt": "Comparte la guía gratuita de solicitudes de reseña."
     },
     "navbar": {
       "howItWorks": "Cómo funciona",
@@ -237,18 +241,21 @@
       "viewFullSizeAriaLabel": "Ver {{title}} en tamaño completo"
     },
     "stats": {
-      "moreReviewsLabel": "más reseñas vs. pedir en persona",
-      "averageSetupTimeLabel": "tiempo promedio de configuración",
+      "moreReviewsLabel": "contacto con clientes",
+      "averageSetupTimeLabel": "configuración e incorporación",
       "emailsSentValue": "Tu bandeja",
       "emailsSentLabel": "correos enviados desde tu propia dirección",
-      "averageResponseRateLabel": "tasa promedio de respuesta",
+      "averageResponseRateLabel": "los recordatorios paran tras la acción del cliente",
       "industryPhotographers": "Fotógrafos",
       "industryCafesRestaurants": "Cafés y restaurantes",
       "industryHomeServices": "Servicios a domicilio",
       "industryClinicsSalons": "Clínicas y salones",
       "industryAgencies": "Agencias",
       "industryWooCommerceStores": "Tiendas WooCommerce",
-      "heading": "Hecho para negocios que dependen de su reputación"
+      "heading": "Hecho para negocios que dependen de su reputación",
+      "individualOutreachValue": "Individual",
+      "setupValue": "Guiada",
+      "followUpValue": "Automático"
     },
     "trustBar": {
       "passwordEncrypted": "Contraseña cifrada en reposo",

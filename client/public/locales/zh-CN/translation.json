@@ -2051,7 +2051,8 @@
   "landing": {
     "hero": {
       "categoryLabel": "面向本地商家的评价请求邮件软件",
-      "googleDisclosureLabel": "Google 登录数据使用"
+      "googleDisclosureLabel": "Google 登录数据使用",
+      "ctaVariantB": "免费开始 — 无需信用卡"
     },
     "leadCapture": {
       "addressConfirmation": "我们已将其发送至 {{email}}。请确认拼写并在未收到时检查垃圾邮件。服务商接受并不保证投递到收件箱。",
@@ -2063,8 +2064,9 @@
       "emailInvalid": "请输入格式正确的电子邮件，例如 name@example.com。",
       "emailRequired": "请输入您的电子邮件地址。",
       "providerAcceptedMessage": "您的邮箱服务商已接受该指南以进行投递。",
-      "sharePrompt": "认识需要更多评价的人吗？分享这份免费指南。",
-      "tryAgain": "重试发送邮件"
+      "sharePrompt": "分享免费的评论请求指南。",
+      "tryAgain": "重试发送邮件",
+      "description": "获取免费指南，规划清晰、合规的评论请求沟通，并接收产品更新和实用的口碑管理建议。"
     },
     "purpose": {
       "description": "Get Phame 帮助本地商家使用其已连接的邮箱，从自有邮箱发送个性化的评价请求邮件。适用于希望更简便向真实客户征求反馈的商家、摄影师、咖啡馆与餐厅、家政与上门服务团队、诊所与沙龙、代理机构及 WooCommerce 商店。",
@@ -2083,7 +2085,13 @@
       "title": "Get Phame 能做什么"
     },
     "stats": {
-      "emailsSentValue": "您的收件箱"
+      "emailsSentValue": "您的收件箱",
+      "individualOutreachValue": "逐一",
+      "moreReviewsLabel": "联系客户",
+      "setupValue": "引导式",
+      "averageSetupTimeLabel": "设置与上手",
+      "followUpValue": "自动",
+      "averageResponseRateLabel": "客户完成操作后停止提醒"
     },
     "support": {
       "attachment": "截图",
@@ -2120,6 +2128,25 @@
         "subjectMin": "请输入至少 3 个字符的主题。"
       },
       "website": "网站"
+    },
+    "faq": {
+      "a1": "不会。每封邮件都直接从你连接的邮箱账户发出，而不是第三方群发服务器。客户会看到你配置的发件人姓名、地址和签名。",
+      "a12": "“无限”表示 Get Phame 不为 Pro 套餐设置每月评论请求上限。你所连接邮箱服务商的发送政策和限制仍然适用。"
+    },
+    "feature1": {
+      "description": "每条评论请求都从你连接的邮箱账户发送，并使用你配置的发件人姓名和签名。",
+      "statValue": "你的邮箱",
+      "statLabel": "发件人身份"
+    },
+    "feature2": {
+      "title": "批量发送个性化请求",
+      "description": "通过 CSV 或 WooCommerce 同步导入客户，选择收件人，并发送个性化请求，无需逐条复制。",
+      "statValue": "批量",
+      "statLabel": "个性化发送"
+    },
+    "feature3": {
+      "statValue": "灵活",
+      "statLabel": "评论平台"
     }
   },
   "developerIntegrations": {

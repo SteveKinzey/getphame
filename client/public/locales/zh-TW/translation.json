@@ -2408,7 +2408,8 @@
   "landing": {
     "hero": {
       "categoryLabel": "在地商家的評論邀請郵件軟體",
-      "googleDisclosureLabel": "Google 登入的資料使用說明"
+      "googleDisclosureLabel": "Google 登入的資料使用說明",
+      "ctaVariantB": "免費開始 — 無需信用卡"
     },
     "leadCapture": {
       "addressConfirmation": "我們已寄送至 {{email}}。請確認拼寫，若未收到請檢查垃圾郵件。供應商接受並不保證進入收件匣。",
@@ -2420,8 +2421,9 @@
       "emailInvalid": "請輸入格式正確的電子郵件，例如 name@example.com。",
       "emailRequired": "請輸入您的電子郵件地址。",
       "providerAcceptedMessage": "您的電子郵件供應商已接受該指南以進行投遞。",
-      "sharePrompt": "認識需要更多評論的人嗎？分享這份免費實用指南。",
-      "tryAgain": "重新傳送電子郵件"
+      "sharePrompt": "分享免費的評論邀請指南。",
+      "tryAgain": "重新傳送電子郵件",
+      "description": "取得免費指南，規劃清楚且合規的評論邀請，並接收產品更新與實用的口碑管理建議。"
     },
     "purpose": {
       "description": "Get Phame 幫助在地商家使用其已連接的電子郵件帳號寄送個人化的評論邀請郵件。適用於商家老闆、攝影師、咖啡館與餐廳、到府服務團隊、診所與沙龍、代理商，以及想要更簡單方式向真實顧客徵求回饋的 WooCommerce 商店。",
@@ -2440,7 +2442,13 @@
       "title": "Get Phame 的功能"
     },
     "stats": {
-      "emailsSentValue": "您的收件匣"
+      "emailsSentValue": "您的收件匣",
+      "individualOutreachValue": "逐一",
+      "moreReviewsLabel": "聯絡客戶",
+      "setupValue": "引導式",
+      "averageSetupTimeLabel": "設定與上手",
+      "followUpValue": "自動",
+      "averageResponseRateLabel": "客戶完成操作後停止提醒"
     },
     "support": {
       "attachment": "截圖",
@@ -2477,6 +2485,25 @@
         "subjectMin": "主旨至少 3 個字元。"
       },
       "website": "網站"
+    },
+    "faq": {
+      "a1": "不會。每封郵件都直接從你連結的電子郵件帳戶寄出，而不是第三方群發伺服器。客戶會看到你設定的寄件者姓名、地址與簽名。",
+      "a12": "「無上限」表示 Get Phame 不會為 Pro 方案設定每月評論邀請上限。你所連結電子郵件供應商的寄送政策與限制仍然適用。"
+    },
+    "feature1": {
+      "description": "每封評論邀請都從你連結的電子郵件帳戶寄出，並使用你設定的寄件者姓名與簽名。",
+      "statValue": "你的信箱",
+      "statLabel": "寄件者身分"
+    },
+    "feature2": {
+      "title": "批次寄送個人化邀請",
+      "description": "透過 CSV 或 WooCommerce 同步匯入客戶、選擇收件者並寄送個人化邀請，無需逐封複製。",
+      "statValue": "批次",
+      "statLabel": "個人化寄送"
+    },
+    "feature3": {
+      "statValue": "彈性",
+      "statLabel": "評論平台"
     }
   },
   "adaptiveSending": {

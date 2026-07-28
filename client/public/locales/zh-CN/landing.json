@@ -34,7 +34,7 @@
     },
     "faq": {
       "q1": "看起来像垃圾邮件吗？",
-      "a1": "不会。每封邮件都直接从你自己的邮箱地址发送——而非第三方服务器。客户能看到你的姓名、地址和签名。看起来就像你亲自坐下键入的一样。开启率平均为 45–60%，因为收件人能认出发件人。",
+      "a1": "不会。每封邮件都直接从你连接的邮箱账户发出，而不是第三方群发服务器。客户会看到你配置的发件人姓名、地址和签名。",
       "q2": "支持哪些邮箱提供商？",
       "a2": "Get Phame 支持任何支持 SMTP 的邮箱提供商：Gmail、Google Workspace、Outlook、Microsoft 365、Yahoo、Zoho、iCloud，以及任何自定义 SMTP 服务器。如果你可以通过该邮箱发送邮件，就能将其连接到 Get Phame。",
       "q3": "真的是免费的吗？",
@@ -56,25 +56,28 @@
       "q11": "WooCommerce 同步如何工作？",
       "a11": "WooCommerce 连接器仅适用于付费方案。付费用户安装 Get Phame WooCommerce 插件并输入 API 密钥；每笔订单完成后，新客户会自动导入。你可以设置延迟（例如购买后 7 天）再将其加入发送队列。",
       "q12": "Pro 方案中的“无限”是什么意思？",
-      "a12": "“无限”表示每月发送的评论请求数量不设上限。发送 50 条或 5,000 条均无额外费用。唯一限制是你的邮箱提供商自身的发送额度（例如个人 Gmail 约允许 ~500/天，Workspace 约 2,000/天）。",
+      "a12": "“无限”表示 Get Phame 不为 Pro 套餐设置每月评论请求上限。你所连接邮箱服务商的发送政策和限制仍然适用。",
       "sectionTitle": "常见问题",
       "headline": "关于邮箱安全、隐私与设置的常见问题",
       "description": "在连接邮箱并发送首个评论请求前，你需要知道的一切。"
     },
     "feature1": {
       "title": "你的名字。你的收件箱。他们的信任。",
-      "description": "每封评论请求都来自你的真实邮箱地址。客户认得发件人，因此会打开邮件并做出回应。",
-      "statLabel": "平均开启率"
+      "description": "每条评论请求都从你连接的邮箱账户发送，并使用你配置的发件人姓名和签名。",
+      "statLabel": "发件人身份",
+      "statValue": "你的邮箱"
     },
     "feature2": {
-      "title": "一键发送给数百人",
-      "description": "通过 CSV 或 WooCommerce 同步导入客户列表，全部选择后几秒内发送个性化请求。无需复制粘贴，无需手动操作。",
-      "statLabel": "每批发送数"
+      "title": "批量发送个性化请求",
+      "description": "通过 CSV 或 WooCommerce 同步导入客户，选择收件人，并发送个性化请求，无需逐条复制。",
+      "statLabel": "个性化发送",
+      "statValue": "批量"
     },
     "feature3": {
       "title": "所有平台，你来选择。",
       "description": "Google、Yelp、TripAdvisor、Bing、Facebook、Trustpilot 等。粘贴你的链接，随时切换平台。一个工具覆盖所有评论去向。",
-      "statLabel": "支持的平台数"
+      "statLabel": "评论平台",
+      "statValue": "灵活"
     },
     "whyItWorks": "为何有效",
     "headline": "从你的收件箱到客户的评论",
@@ -99,7 +102,7 @@
       "headlinePart2": "无需尴尬索要",
       "description": "Get Phame 是面向本地商家的评价邀请邮件软件。您可以添加客户，通过您连接的电子邮件账户发送个性化邀请，跟踪打开和点击情况，并将客户引导至您选择的评价平台。",
       "ctaVariantA": "免费开始 — 发送 10 条请求",
-      "ctaVariantB": "免费获取首10条评论",
+      "ctaVariantB": "免费开始 — 无需信用卡",
       "howItWorks": "查看如何运作",
       "setupTime": "两分钟内完成设置",
       "emailCompatibility": "兼容 Gmail、Outlook、SMTP",
@@ -136,12 +139,13 @@
     "leadCapture": {
       "errorMessage": "出了点问题，请重试。",
       "heading": "还没准备好？",
-      "description": "获取免费指南：如何在 30 天内将 Google 评论提升 3 倍——并可优先体验新功能与声誉提升建议。",
+      "description": "获取免费指南，规划清晰、合规的评论请求沟通，并接收产品更新和实用的口碑管理建议。",
       "emailPlaceholder": "输入你的邮箱",
       "sending": "发送中...",
       "sendGuideButton": "发送指南",
       "successMessage": "查看你的收件箱——指南已发送！",
-      "noSpamMessage": "不发送垃圾邮件。可随时退订。我们尊重你的收件箱。"
+      "noSpamMessage": "不发送垃圾邮件。可随时退订。我们尊重你的收件箱。",
+      "sharePrompt": "分享免费的评论请求指南。"
     },
     "navbar": {
       "howItWorks": "如何运作",
@@ -237,18 +241,21 @@
       "viewFullSizeAriaLabel": "以全屏查看 {{title}}"
     },
     "stats": {
-      "moreReviewsLabel": "比当面索要获得更多评论",
-      "averageSetupTimeLabel": "平均设置时间",
+      "moreReviewsLabel": "联系客户",
+      "averageSetupTimeLabel": "设置与上手",
       "emailsSentValue": "您的收件箱",
       "emailsSentLabel": "从你自己的地址发送的邮件数",
-      "averageResponseRateLabel": "平均回复率",
+      "averageResponseRateLabel": "客户完成操作后停止提醒",
       "industryPhotographers": "摄影师",
       "industryCafesRestaurants": "咖啡馆与餐厅",
       "industryHomeServices": "家政与本地服务",
       "industryClinicsSalons": "诊所与美发/美容院",
       "industryAgencies": "代理机构",
       "industryWooCommerceStores": "WooCommerce 商店",
-      "heading": "为靠声誉经营的企业打造"
+      "heading": "为靠声誉经营的企业打造",
+      "individualOutreachValue": "逐一",
+      "setupValue": "引导式",
+      "followUpValue": "自动"
     },
     "trustBar": {
       "passwordEncrypted": "密码静态加密",

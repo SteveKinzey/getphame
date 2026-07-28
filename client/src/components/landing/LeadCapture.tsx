@@ -71,7 +71,7 @@ export default function LeadCapture() {
                 {t("landing.leadCapture.heading", { defaultValue: "Not ready to commit?" })}
               </h2>
               <p className="text-slate-200 font-medium mb-8 max-w-md mx-auto">
-                {t("landing.leadCapture.description", { defaultValue: "Get a free guide on how to 3× your Google reviews in 30 days — plus early access to new features and reputation tips." })}
+                {t("landing.leadCapture.description", { defaultValue: "Get a free guide to planning clear, compliant review-request outreach — plus product updates and practical reputation tips." })}
               </p>
 
               {!submitted ? (
@@ -179,7 +179,7 @@ export default function LeadCapture() {
 
               <div className="mt-7 border-t border-[#2a3a5c] pt-6">
                 <p className="mb-3 text-sm font-semibold text-white">
-                  {t("landing.leadCapture.sharePrompt", { defaultValue: "Know someone who needs more reviews? Share the free playbook." })}
+                  {t("landing.leadCapture.sharePrompt", { defaultValue: "Share the free review-request playbook." })}
                 </p>
                 <div className="flex flex-wrap justify-center gap-3">
                   <a

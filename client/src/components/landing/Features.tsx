@@ -10,19 +10,19 @@ export default function Features() {
       icon: Mail,
       title: t("landing.feature1.title", { defaultValue: "Your name. Your inbox. Their trust." }),
       description: t("landing.feature1.description", {
-        defaultValue: "Every review request arrives from your actual email address. Customers recognize the sender, so they open it — and they respond.",
+        defaultValue: "Every review request is sent from the email account you connect and uses the sender name and signature you configure.",
       }),
-      stat: "45–60%",
-      statLabel: t("landing.feature1.statLabel", { defaultValue: "avg. open rate" }),
+      stat: t("landing.feature1.statValue", { defaultValue: "Your email" }),
+      statLabel: t("landing.feature1.statLabel", { defaultValue: "sender identity" }),
     },
     {
       icon: Users,
-      title: t("landing.feature2.title", { defaultValue: "One click sends to hundreds" }),
+      title: t("landing.feature2.title", { defaultValue: "Send personalized requests in bulk" }),
       description: t("landing.feature2.description", {
-        defaultValue: "Import your customer list via CSV or WooCommerce sync, select all, and send personalized requests in seconds. No copy-pasting. No manual work.",
+        defaultValue: "Import customers by CSV or WooCommerce sync, choose the recipients, and send personalized requests without copying each message manually.",
       }),
-      stat: "500+",
-      statLabel: t("landing.feature2.statLabel", { defaultValue: "sends per batch" }),
+      stat: t("landing.feature2.statValue", { defaultValue: "Bulk" }),
+      statLabel: t("landing.feature2.statLabel", { defaultValue: "personalized sending" }),
     },
     {
       icon: Globe,
@@ -30,8 +30,8 @@ export default function Features() {
       description: t("landing.feature3.description", {
         defaultValue: "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, and more. Paste your link, switch platforms anytime. One tool for all your review destinations.",
       }),
-      stat: "10+",
-      statLabel: t("landing.feature3.statLabel", { defaultValue: "platforms supported" }),
+      stat: t("landing.feature3.statValue", { defaultValue: "Flexible" }),
+      statLabel: t("landing.feature3.statLabel", { defaultValue: "review destinations" }),
     },
   ];
 

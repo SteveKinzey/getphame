@@ -18465,19 +18465,6 @@
     ]
   },
   {
-    "key": "k_fd5973df5d6f1e",
-    "source": "Trusted by 500+ local businesses",
-    "usages": [
-      {
-        "file": "client/src/pages/Onboarding.tsx",
-        "line": 125
-      }
-    ],
-    "sourceKinds": [
-      "jsxText"
-    ]
-  },
-  {
     "key": "k_fd705e4988fabe",
     "source": "1 moderate finding exists in a dev-only migration tool (",
     "usages": [

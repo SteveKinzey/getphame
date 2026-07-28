@@ -34,7 +34,7 @@
     },
     "faq": {
       "q1": "Est‑ce que ça ressemble à du spam ?",
-      "a1": "Non. Chaque email est envoyé directement depuis votre propre adresse — pas depuis un serveur tiers. Vos clients voient votre nom, votre adresse et votre signature. Cela paraît exactement comme si vous l'aviez tapé vous‑même. Les taux d'ouverture moyens sont de 45–60 % parce que les destinataires reconnaissent l'expéditeur.",
+      "a1": "Non. Chaque e-mail est envoyé directement depuis le compte que vous connectez, et non depuis un serveur d'envoi en masse tiers. Les clients voient le nom, l'adresse et la signature d'expéditeur que vous configurez.",
       "q2": "Quels fournisseurs d'email sont pris en charge ?",
       "a2": "Get Phame fonctionne avec tout fournisseur supportant SMTP : Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud et tout serveur SMTP personnalisé. Si vous pouvez envoyer des emails depuis ce compte, vous pouvez le connecter à Get Phame.",
       "q3": "C'est vraiment gratuit ?",
@@ -56,25 +56,28 @@
       "q11": "Comment fonctionne la synchronisation WooCommerce ?",
       "a11": "Le connecteur WooCommerce est disponible uniquement avec les formules payantes. Les utilisateurs payants installent le plugin WooCommerce Get Phame, saisissent leur clé API et les nouveaux clients sont importés automatiquement après chaque commande terminée. Vous pouvez définir un délai (par ex. 7 jours après l'achat) avant qu'ils n'apparaissent dans la file d'envoi.",
       "q12": "Que signifie « illimité » sur le plan Pro ?",
-      "a12": "Illimité signifie sans plafond sur le nombre de demandes d'avis que vous pouvez envoyer par mois. Envoyez 50 ou 5 000 — sans frais supplémentaires. La seule limite est celle imposée par votre fournisseur d'email (par exemple, Gmail autorise ~500/jour pour les comptes personnels, 2 000/jour pour Workspace).",
+      "a12": "Illimité signifie que Get Phame ne fixe pas de plafond mensuel de demandes d'avis pour les offres Pro. Les politiques et limites d'envoi de votre fournisseur de messagerie s'appliquent toujours.",
       "sectionTitle": "FAQ",
       "headline": "Questions concernant la sécurité des emails, la confidentialité et l'installation",
       "description": "Tout ce que vous devez savoir avant de connecter votre email et d'envoyer votre première demande d'avis."
     },
     "feature1": {
       "title": "Votre nom. Votre boîte. Leur confiance.",
-      "description": "Chaque demande d'avis arrive depuis votre adresse email réelle. Les clients reconnaissent l'expéditeur, ouvrent le message — et répondent.",
-      "statLabel": "taux d'ouverture moyen"
+      "description": "Chaque demande d'avis est envoyée depuis le compte e-mail que vous connectez et utilise le nom et la signature d'expéditeur que vous configurez.",
+      "statLabel": "identité de l'expéditeur",
+      "statValue": "Votre e-mail"
     },
     "feature2": {
-      "title": "Un clic pour envoyer à des centaines",
-      "description": "Importez votre liste via CSV ou synchronisation WooCommerce, sélectionnez tout et envoyez des demandes personnalisées en quelques secondes. Pas de copier‑coller. Pas de travail manuel.",
-      "statLabel": "envois par lot"
+      "title": "Envoyez des demandes personnalisées en lot",
+      "description": "Importez des clients par CSV ou synchronisation WooCommerce, choisissez les destinataires et envoyez des demandes personnalisées sans recopier chaque message.",
+      "statLabel": "envoi personnalisé",
+      "statValue": "En lot"
     },
     "feature3": {
       "title": "Toutes les plateformes. À vous de choisir.",
       "description": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, et plus. Collez votre lien, changez de plateforme quand vous voulez. Un outil pour toutes vos destinations d'avis.",
-      "statLabel": "plateformes prises en charge"
+      "statLabel": "destinations d'avis",
+      "statValue": "Flexible"
     },
     "whyItWorks": "Pourquoi ça fonctionne",
     "headline": "De votre boîte à leur avis",
@@ -99,7 +102,7 @@
       "headlinePart2": "sans la demande gênante",
       "description": "Get Phame est un logiciel de demande d’avis par e-mail destiné aux entreprises locales. Ajoutez des clients, envoyez des demandes personnalisées depuis un compte e-mail connecté, suivez les ouvertures et les clics, puis dirigez les clients vers la plateforme d’avis de votre choix.",
       "ctaVariantA": "Commencer gratuitement — Envoyer 10 demandes",
-      "ctaVariantB": "Obtenez vos 10 premiers avis gratuits",
+      "ctaVariantB": "Commencer gratuitement — sans carte",
       "howItWorks": "Voir comment ça marche",
       "setupTime": "Configuration en moins de 2 minutes",
       "emailCompatibility": "Fonctionne avec Gmail, Outlook, SMTP",
@@ -136,12 +139,13 @@
     "leadCapture": {
       "errorMessage": "Une erreur est survenue. Veuillez réessayer.",
       "heading": "Pas prêt à vous engager ?",
-      "description": "Recevez un guide gratuit pour multiplier par 3 vos avis Google en 30 jours — plus un accès anticipé aux nouvelles fonctionnalités et des conseils pour votre réputation.",
+      "description": "Recevez un guide gratuit pour planifier des demandes d'avis claires et conformes, ainsi que des nouveautés produit et des conseils pratiques de réputation.",
       "emailPlaceholder": "Entrez votre email",
       "sending": "Envoi...",
       "sendGuideButton": "Envoyer le guide",
       "successMessage": "Vérifiez votre boîte — le guide est en route !",
-      "noSpamMessage": "Pas de spam. Désinscription possible à tout moment. Nous respectons votre boîte de réception."
+      "noSpamMessage": "Pas de spam. Désinscription possible à tout moment. Nous respectons votre boîte de réception.",
+      "sharePrompt": "Partagez le guide gratuit des demandes d'avis."
     },
     "navbar": {
       "howItWorks": "Comment ça marche",
@@ -237,18 +241,21 @@
       "viewFullSizeAriaLabel": "Voir {{title}} en plein écran"
     },
     "stats": {
-      "moreReviewsLabel": "plus d'avis vs demander en personne",
-      "averageSetupTimeLabel": "temps de configuration moyen",
+      "moreReviewsLabel": "contact client",
+      "averageSetupTimeLabel": "configuration et prise en main",
       "emailsSentValue": "Votre boîte mail",
       "emailsSentLabel": "emails envoyés depuis votre propre adresse",
-      "averageResponseRateLabel": "taux de réponse moyen",
+      "averageResponseRateLabel": "les rappels cessent après l'action du client",
       "industryPhotographers": "Photographes",
       "industryCafesRestaurants": "Cafés & Restaurants",
       "industryHomeServices": "Services à domicile",
       "industryClinicsSalons": "Cliniques & Salons",
       "industryAgencies": "Agences",
       "industryWooCommerceStores": "Boutiques WooCommerce",
-      "heading": "Conçu pour les entreprises qui vivent de leur réputation"
+      "heading": "Conçu pour les entreprises qui vivent de leur réputation",
+      "individualOutreachValue": "Individuel",
+      "setupValue": "Guidé",
+      "followUpValue": "Automatique"
     },
     "trustBar": {
       "passwordEncrypted": "Mot de passe chiffré au repos",

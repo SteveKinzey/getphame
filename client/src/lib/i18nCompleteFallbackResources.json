@@ -238,11 +238,11 @@
         "a2": "Get Phame works with any email provider that supports SMTP: Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud, and any custom SMTP server. If you can send email from it, you can connect it to Get Phame.",
         "q11": "How does WooCommerce sync work?",
         "q3": "Is it really free?",
-        "a1": "No. Every email is sent directly from your own email address — not from a third-party server. Your customers see your name, your address, and your signature. It looks exactly like you sat down and typed it yourself. Open rates average 45–60% because recipients recognize the sender.",
+        "a1": "No. Every email is sent directly from the email account you connect, not from a third-party bulk-sending server. Customers see the sender name, address, and signature you configure.",
         "a9": "No. For Gmail and Outlook, we provide step-by-step guides with screenshots. Most users connect in under 60 seconds. For custom SMTP, you'll need your server address, port, and credentials — your hosting provider can supply these.",
         "headline": "Questions about email safety, privacy & setup",
         "a11": "The WooCommerce connector is available only on paid plans. Paid users install the Get Phame WooCommerce plugin, enter their API key, and new customers are automatically imported after each completed order. You can set a delay (e.g., 7 days after purchase) before they appear in your send queue.",
-        "a12": "Unlimited means no cap on the number of review requests you can send per month. Send 50 or 5,000 — no extra charges. The only limit is your email provider's own sending limits (e.g., Gmail allows ~500/day for personal accounts, 2,000/day for Workspace).",
+        "a12": "Unlimited means Get Phame does not set a monthly cap on review requests for Pro plans. Your connected email provider's sending policies and limits still apply.",
         "q12": "What does unlimited mean on the Pro plan?",
         "q2": "What email providers work?",
         "q7": "What happens to my customer list?",
@@ -281,17 +281,20 @@
       },
       "stats": {
         "industryAgencies": "Agencies",
-        "averageResponseRateLabel": "average response rate",
-        "averageSetupTimeLabel": "average setup time",
+        "averageResponseRateLabel": "reminders stop after customer action",
+        "averageSetupTimeLabel": "setup and onboarding",
         "heading": "Built for businesses that run on reputation",
         "industryCafesRestaurants": "Cafés & Restaurants",
         "industryClinicsSalons": "Clinics & Salons",
         "emailsSentLabel": "emails sent from your own address",
         "industryHomeServices": "Home Services",
-        "moreReviewsLabel": "more reviews vs. asking in person",
+        "moreReviewsLabel": "customer outreach",
         "industryPhotographers": "Photographers",
         "industryWooCommerceStores": "WooCommerce Stores",
-        "emailsSentValue": "Your inbox"
+        "emailsSentValue": "Your inbox",
+        "individualOutreachValue": "Individual",
+        "setupValue": "Guided",
+        "followUpValue": "Automatic"
       },
       "support": {
         "attachmentType": "Attach a JPG, PNG, or WebP screenshot.",
@@ -329,9 +332,10 @@
         "successTitle": "Your support request was sent."
       },
       "feature1": {
-        "statLabel": "avg. open rate",
-        "description": "Every review request arrives from your actual email address. Customers recognize the sender, so they open it — and they respond.",
-        "title": "Your name. Your inbox. Their trust."
+        "statLabel": "sender identity",
+        "description": "Every review request is sent from the email account you connect and uses the sender name and signature you configure.",
+        "title": "Your name. Your inbox. Their trust.",
+        "statValue": "Your email"
       },
       "productShowcase": {
         "sectionTitle": "Built to make review requests effortless",
@@ -452,8 +456,8 @@
         "emailInvalid": "Enter a correctly formatted email, such as name@example.com.",
         "emailPlaceholder": "Enter your email",
         "emailRequired": "Enter your email address.",
-        "description": "Get a free guide on how to 3× your Google reviews in 30 days — plus early access to new features and reputation tips.",
-        "sharePrompt": "Know someone who needs more reviews? Share the free playbook.",
+        "description": "Get a free guide to planning clear, compliant review-request outreach — plus product updates and practical reputation tips.",
+        "sharePrompt": "Share the free review-request playbook.",
         "noSpamMessage": "No spam. Unsubscribe anytime. We respect your inbox.",
         "heading": "Not ready to commit?",
         "sendGuideButton": "Send Guide",
@@ -468,7 +472,8 @@
       "feature3": {
         "title": "Every platform. Your choice.",
         "description": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, and more. Paste your link, switch platforms anytime. One tool for all your review destinations.",
-        "statLabel": "platforms supported"
+        "statLabel": "review destinations",
+        "statValue": "Flexible"
       },
       "navbar": {
         "faq": "FAQ",
@@ -489,7 +494,7 @@
       "hero": {
         "headlinePart1": "Get more 5-star reviews",
         "description": "Get Phame is review-request email software for local businesses. Add customers, send personalized requests from an email account you connect, track opens and clicks, and direct customers to the review platform you choose.",
-        "ctaVariantB": "Get Your First 10 Reviews Free",
+        "ctaVariantB": "Start Free — No Card Required",
         "dashboardMockupAlt": "GetPhame app home screen showing review request stats, send button, and free plan usage for local businesses",
         "googleDisclosureLabel": "Google sign-in data use",
         "googleSignInDisclaimer": "Google sign-in only provides your name and email address to create and identify your Get Phame account. We do not request access to Gmail messages, contacts, Drive files, or Calendar.",
@@ -506,9 +511,10 @@
         "playButtonAriaLabel": "Play product walkthrough video"
       },
       "feature2": {
-        "description": "Import your customer list via CSV or WooCommerce sync, select all, and send personalized requests in seconds. No copy-pasting. No manual work.",
-        "title": "One click sends to hundreds",
-        "statLabel": "sends per batch"
+        "description": "Import customers by CSV or WooCommerce sync, choose the recipients, and send personalized requests without copying each message manually.",
+        "title": "Send personalized requests in bulk",
+        "statLabel": "personalized sending",
+        "statValue": "Bulk"
       },
       "trustBar": {
         "passwordEncrypted": "Password encrypted at rest",
@@ -1538,11 +1544,11 @@
         "a2": "Get Phame funciona con cualquier proveedor de correo que soporte SMTP: Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud y cualquier servidor SMTP personalizado. Si puedes enviar correo desde él, puedes conectarlo a Get Phame.",
         "q11": "¿Cómo funciona la sincronización con WooCommerce?",
         "q3": "¿Es realmente gratis?",
-        "a1": "No. Cada correo se envía directamente desde tu propia dirección —no desde un servidor de terceros. Tus clientes ven tu nombre, tu dirección y tu firma. Parece exactamente como si te hubieras sentado y lo hubieras escrito tú. Las tasas de apertura promedian 45–60% porque los destinatarios reconocen al remitente.",
+        "a1": "No. Cada correo se envía directamente desde la cuenta de correo que conectas, no desde un servidor de envío masivo de terceros. Los clientes ven el nombre, la dirección y la firma del remitente que configuras.",
         "a9": "No. Para Gmail y Outlook, proporcionamos guías paso a paso con capturas de pantalla. La mayoría de los usuarios se conecta en menos de 60 segundos. Para SMTP personalizado, necesitarás la dirección del servidor, el puerto y las credenciales —tu proveedor de hosting puede facilitar estos datos.",
         "headline": "Preguntas sobre seguridad del correo, privacidad y configuración",
         "a11": "El conector de WooCommerce está disponible solo en planes de pago. Los usuarios de pago instalan el plugin Get Phame para WooCommerce, ingresan su clave API y los nuevos clientes se importan automáticamente después de cada pedido completado. Puedes establecer un retraso (p. ej., 7 días después de la compra) antes de que aparezcan en tu cola de envíos.",
-        "a12": "Ilimitado significa que no hay un tope en la cantidad de solicitudes de reseña que puedes enviar por mes. Envía 50 o 5,000 — sin cargos adicionales. El único límite son los límites de envío de tu proveedor de correo (p. ej., Gmail permite ~500/día para cuentas personales, 2,000/día para Workspace).",
+        "a12": "Ilimitado significa que Get Phame no establece un límite mensual de solicitudes de reseña en los planes Pro. Se siguen aplicando las políticas y los límites de envío de tu proveedor de correo.",
         "q12": "¿Qué significa \"ilimitado\" en el plan Pro?",
         "q2": "¿Con qué proveedores de correo funciona?",
         "q7": "¿Qué pasa con mi lista de clientes?",
@@ -1581,17 +1587,20 @@
       },
       "stats": {
         "industryAgencies": "Agencias",
-        "averageResponseRateLabel": "tasa de respuesta promedio",
-        "averageSetupTimeLabel": "tiempo de configuración promedio",
+        "averageResponseRateLabel": "los recordatorios paran tras la acción del cliente",
+        "averageSetupTimeLabel": "configuración e incorporación",
         "heading": "Diseñado para negocios que dependen de la reputación",
         "industryCafesRestaurants": "Cafés y Restaurantes",
         "industryClinicsSalons": "Clínicas y Salones",
         "emailsSentLabel": "correos enviados desde tu propia dirección",
         "industryHomeServices": "Servicios para el hogar",
-        "moreReviewsLabel": "más reseñas frente a pedir en persona",
+        "moreReviewsLabel": "contacto con clientes",
         "industryPhotographers": "Fotógrafos",
         "industryWooCommerceStores": "Tiendas WooCommerce",
-        "emailsSentValue": "Tu bandeja de entrada"
+        "emailsSentValue": "Tu bandeja de entrada",
+        "individualOutreachValue": "Individual",
+        "setupValue": "Guiada",
+        "followUpValue": "Automático"
       },
       "support": {
         "attachmentType": "Adjunta una captura en JPG, PNG o WebP.",
@@ -1629,9 +1638,10 @@
         "successTitle": "Tu solicitud de soporte fue enviada."
       },
       "feature1": {
-        "statLabel": "tasa de apertura promedio",
-        "description": "Cada solicitud de reseña llega desde tu dirección de correo real. Los clientes reconocen al remitente, por eso la abren — y responden.",
-        "title": "Tu nombre. Tu bandeja de entrada. Su confianza."
+        "statLabel": "identidad del remitente",
+        "description": "Cada solicitud de reseña se envía desde la cuenta de correo que conectas y usa el nombre y la firma del remitente que configuras.",
+        "title": "Tu nombre. Tu bandeja de entrada. Su confianza.",
+        "statValue": "Tu correo"
       },
       "productShowcase": {
         "sectionTitle": "Diseñado para que solicitar reseñas sea sin esfuerzo",
@@ -1752,8 +1762,8 @@
         "emailInvalid": "Introduce un correo con formato correcto, por ejemplo: name@example.com.",
         "emailPlaceholder": "Introduce tu correo electrónico",
         "emailRequired": "Introduce tu dirección de correo electrónico.",
-        "description": "Recibe una guía gratis sobre cómo multiplicar por 3 tus reseñas de Google en 30 días — además de acceso anticipado a nuevas funciones y consejos de reputación.",
-        "sharePrompt": "¿Conoces a alguien que necesite más reseñas? Comparte la guía gratuita.",
+        "description": "Obtén una guía gratuita para planificar solicitudes de reseña claras y conformes, además de novedades del producto y consejos prácticos de reputación.",
+        "sharePrompt": "Comparte la guía gratuita de solicitudes de reseña.",
         "noSpamMessage": "Sin spam. Puedes darte de baja cuando quieras. Respetamos tu bandeja de entrada.",
         "heading": "¿No estás listo para comprometerte?",
         "sendGuideButton": "Enviar guía",
@@ -1768,7 +1778,8 @@
       "feature3": {
         "title": "Todas las plataformas. Tú eliges.",
         "description": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot y más. Pega tu enlace, cambia de plataforma cuando quieras. Una herramienta para todos tus destinos de reseñas.",
-        "statLabel": "plataformas compatibles"
+        "statLabel": "destinos de reseñas",
+        "statValue": "Flexible"
       },
       "navbar": {
         "faq": "Preguntas frecuentes",
@@ -1789,7 +1800,7 @@
       "hero": {
         "headlinePart1": "Consigue más reseñas de 5 estrellas",
         "description": "Get Phame es un software de correos para solicitar reseñas a negocios locales. Agrega clientes, envía solicitudes personalizadas desde una cuenta de correo que conectes, realiza seguimiento de aperturas y clics, y dirige a los clientes a la plataforma de reseñas que elijas.",
-        "ctaVariantB": "Obtén tus primeras 10 reseñas gratis",
+        "ctaVariantB": "Empieza gratis — sin tarjeta",
         "dashboardMockupAlt": "Pantalla principal de la app GetPhame que muestra estadísticas de solicitudes de reseña, botón de envío y uso del plan Free para negocios locales",
         "googleDisclosureLabel": "Uso de datos del inicio de sesión de Google",
         "googleSignInDisclaimer": "El inicio de sesión de Google solo proporciona tu nombre y correo electrónico para crear e identificar tu cuenta de Get Phame. No solicitamos acceso a mensajes de Gmail, contactos, archivos de Google Drive ni a Google Calendar.",
@@ -1806,9 +1817,10 @@
         "playButtonAriaLabel": "Ver video demostrativo del producto"
       },
       "feature2": {
-        "description": "Importa tu lista de clientes vía CSV o sincronización con WooCommerce, selecciona todo y envía solicitudes personalizadas en segundos. Nada de copiar y pegar. Sin trabajo manual.",
-        "title": "Un clic envía a cientos",
-        "statLabel": "envíos por lote"
+        "description": "Importa clientes mediante CSV o sincronización con WooCommerce, elige los destinatarios y envía solicitudes personalizadas sin copiar cada mensaje manualmente.",
+        "title": "Envía solicitudes personalizadas en bloque",
+        "statLabel": "envío personalizado",
+        "statValue": "En bloque"
       },
       "trustBar": {
         "passwordEncrypted": "Contraseña cifrada en reposo",
@@ -2863,11 +2875,11 @@
         "a2": "Get Phame fonctionne avec tout fournisseur d'e‑mail prenant en charge SMTP : Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud et tout serveur SMTP personnalisé. Si vous pouvez envoyer des e‑mails via ce fournisseur, vous pouvez le connecter à Get Phame.",
         "q11": "Comment fonctionne la synchronisation WooCommerce ?",
         "q3": "Est-ce vraiment gratuit ?",
-        "a1": "Non. Chaque e-mail est envoyé directement depuis votre propre adresse e-mail — pas depuis un serveur tiers. Vos clients voient votre nom, votre adresse et votre signature. On dirait exactement que vous vous êtes assis et l'avez rédigé vous‑même. Les taux d'ouverture moyens sont de 45–60% car les destinataires reconnaissent l'expéditeur.",
+        "a1": "Non. Chaque e-mail est envoyé directement depuis le compte que vous connectez, et non depuis un serveur d'envoi en masse tiers. Les clients voient le nom, l'adresse et la signature d'expéditeur que vous configurez.",
         "a9": "Non. Pour Gmail et Outlook, nous fournissons des guides pas à pas avec captures d'écran. La plupart des utilisateurs se connectent en moins de 60 secondes. Pour un SMTP personnalisé, vous aurez besoin de l'adresse du serveur, du port et des identifiants — votre hébergeur peut vous les fournir.",
         "headline": "Questions sur la sécurité des e-mails, la confidentialité et la configuration",
         "a11": "Le connecteur WooCommerce n'est disponible que sur les offres payantes. Les utilisateurs payants installent le plugin Get Phame WooCommerce, saisissent leur clé API, et les nouveaux clients sont importés automatiquement après chaque commande terminée. Vous pouvez définir un délai (p. ex., 7 jours après l'achat) avant qu'ils n'apparaissent dans votre file d'envoi.",
-        "a12": "Illimité signifie qu'il n'y a pas de plafond sur le nombre de demandes d'avis que vous pouvez envoyer par mois. Envoyez 50 ou 5 000 — pas de frais supplémentaires. La seule limite est celle de votre fournisseur d'e-mails (p. ex., Gmail autorise ~500/jour pour les comptes personnels, 2 000/jour pour Workspace).",
+        "a12": "Illimité signifie que Get Phame ne fixe pas de plafond mensuel de demandes d'avis pour les offres Pro. Les politiques et limites d'envoi de votre fournisseur de messagerie s'appliquent toujours.",
         "q12": "Que signifie « illimité » sur le plan Pro ?",
         "q2": "Quels fournisseurs de messagerie sont compatibles ?",
         "q7": "Qu'advient-il de ma liste de clients ?",
@@ -2906,17 +2918,20 @@
       },
       "stats": {
         "industryAgencies": "Agences",
-        "averageResponseRateLabel": "taux de réponse moyen",
-        "averageSetupTimeLabel": "temps d'installation moyen",
+        "averageResponseRateLabel": "les rappels cessent après l'action du client",
+        "averageSetupTimeLabel": "configuration et prise en main",
         "heading": "Conçu pour les entreprises qui vivent de leur réputation",
         "industryCafesRestaurants": "Cafés et restaurants",
         "industryClinicsSalons": "Cliniques et salons",
         "emailsSentLabel": "e‑mails envoyés depuis votre propre adresse",
         "industryHomeServices": "Services à domicile",
-        "moreReviewsLabel": "plus d'avis vs. demander en personne",
+        "moreReviewsLabel": "contact client",
         "industryPhotographers": "Photographes",
         "industryWooCommerceStores": "Boutiques WooCommerce",
-        "emailsSentValue": "Votre boîte de réception"
+        "emailsSentValue": "Votre boîte de réception",
+        "individualOutreachValue": "Individuel",
+        "setupValue": "Guidé",
+        "followUpValue": "Automatique"
       },
       "support": {
         "attachmentType": "Joignez une capture d'écran au format JPG, PNG ou WebP.",
@@ -2954,9 +2969,10 @@
         "successTitle": "Votre demande d'assistance a été envoyée."
       },
       "feature1": {
-        "statLabel": "taux d'ouverture moyen",
-        "description": "Chaque demande d'avis est envoyée depuis votre adresse e‑mail réelle. Les clients reconnaissent l'expéditeur, l'ouvrent — et y répondent.",
-        "title": "Votre nom. Votre boîte de réception. Leur confiance."
+        "statLabel": "identité de l'expéditeur",
+        "description": "Chaque demande d'avis est envoyée depuis le compte e-mail que vous connectez et utilise le nom et la signature d'expéditeur que vous configurez.",
+        "title": "Votre nom. Votre boîte de réception. Leur confiance.",
+        "statValue": "Votre e-mail"
       },
       "productShowcase": {
         "sectionTitle": "Conçu pour simplifier l'envoi de demandes d'avis",
@@ -3077,8 +3093,8 @@
         "emailInvalid": "Saisissez un e‑mail correctement formaté, par exemple name@example.com.",
         "emailPlaceholder": "Saisissez votre e‑mail",
         "emailRequired": "Saisissez votre adresse e‑mail.",
-        "description": "Recevez un guide gratuit pour tripler (3×) vos avis Google en 30 jours — et bénéficiez d'un accès anticipé aux nouvelles fonctionnalités et de conseils pour votre réputation.",
-        "sharePrompt": "Vous connaissez quelqu'un qui a besoin de plus d'avis ? Partagez le guide gratuit.",
+        "description": "Recevez un guide gratuit pour planifier des demandes d'avis claires et conformes, ainsi que des nouveautés produit et des conseils pratiques de réputation.",
+        "sharePrompt": "Partagez le guide gratuit des demandes d'avis.",
         "noSpamMessage": "Pas de spam. Désabonnez-vous à tout moment. Nous respectons votre boîte de réception.",
         "heading": "Pas prêt à vous engager ?",
         "sendGuideButton": "Envoyer le guide",
@@ -3093,7 +3109,8 @@
       "feature3": {
         "title": "Toutes les plateformes. À vous de choisir.",
         "description": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, et plus encore. Collez votre lien, changez de plateforme à tout moment. Un seul outil pour toutes vos destinations d'avis.",
-        "statLabel": "plateformes prises en charge"
+        "statLabel": "destinations d'avis",
+        "statValue": "Flexible"
       },
       "navbar": {
         "faq": "FAQ",
@@ -3114,7 +3131,7 @@
       "hero": {
         "headlinePart1": "Obtenez plus d'avis 5 étoiles",
         "description": "Get Phame est un logiciel d'e‑mail de demande d'avis pour les commerces locaux. Ajoutez des clients, envoyez des demandes personnalisées depuis un compte e‑mail que vous connectez, suivez les ouvertures et les clics, et dirigez les clients vers la plateforme d'avis de votre choix.",
-        "ctaVariantB": "Obtenez vos 10 premiers avis gratuitement",
+        "ctaVariantB": "Commencer gratuitement — sans carte",
         "dashboardMockupAlt": "Écran d'accueil de l'app GetPhame montrant les statistiques des demandes d'avis, le bouton d'envoi et l'utilisation du plan Free pour les commerces locaux",
         "googleDisclosureLabel": "Utilisation des données de connexion Google",
         "googleSignInDisclaimer": "La connexion Google fournit uniquement votre nom et votre adresse e-mail pour créer et identifier votre compte Get Phame. Nous ne demandons pas l'accès aux messages Gmail, aux contacts, aux fichiers Drive ni au Calendar.",
@@ -3131,9 +3148,10 @@
         "playButtonAriaLabel": "Lire la vidéo de présentation du produit"
       },
       "feature2": {
-        "description": "Importez votre liste de clients via CSV ou la synchronisation WooCommerce, sélectionnez tout et envoyez des demandes personnalisées en quelques secondes. Pas de copier-coller. Pas de travail manuel.",
-        "title": "Un clic pour envoyer à des centaines",
-        "statLabel": "envois par lot"
+        "description": "Importez des clients par CSV ou synchronisation WooCommerce, choisissez les destinataires et envoyez des demandes personnalisées sans recopier chaque message.",
+        "title": "Envoyez des demandes personnalisées en lot",
+        "statLabel": "envoi personnalisé",
+        "statValue": "En lot"
       },
       "trustBar": {
         "passwordEncrypted": "Mot de passe chiffré au repos",
@@ -4183,11 +4201,11 @@
         "a2": "Get Phame funziona con qualsiasi provider email che supporti SMTP: Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud e qualsiasi server SMTP personalizzato. Se puoi inviare email da lì, puoi collegarlo a Get Phame.",
         "q11": "Come funziona la sincronizzazione con WooCommerce?",
         "q3": "È davvero gratuito?",
-        "a1": "No. Ogni email viene inviata direttamente dal tuo indirizzo email — non da un server di terze parti. I tuoi clienti vedono il tuo nome, il tuo indirizzo e la tua firma. Sembra esattamente che tu ti sia seduto e l'abbia scritta personalmente. I tassi di apertura medi sono del 45–60% perché i destinatari riconoscono il mittente.",
+        "a1": "No. Ogni email viene inviata direttamente dall'account che colleghi, non da un server di invio massivo di terze parti. I clienti vedono il nome, l'indirizzo e la firma del mittente che configuri.",
         "a9": "No. Per Gmail e Outlook forniamo guide passo passo con screenshot. La maggior parte degli utenti si collega in meno di 60 secondi. Per SMTP personalizzato, avrai bisogno dell'indirizzo del server, della porta e delle credenziali — il tuo provider di hosting può fornirli.",
         "headline": "Domande sulla sicurezza delle email, sulla privacy e sulla configurazione",
         "a11": "Il connettore WooCommerce è disponibile solo sui piani a pagamento. Gli utenti a pagamento installano il plugin Get Phame per WooCommerce, inseriscono la loro chiave API e i nuovi clienti vengono importati automaticamente dopo ogni ordine completato. Puoi impostare un ritardo (es. 7 giorni dopo l'acquisto) prima che compaiano nella tua coda di invio.",
-        "a12": "Illimitato significa nessun limite al numero di richieste di recensione che puoi inviare al mese. Invia 50 o 5.000 — nessun costo aggiuntivo. L'unico limite sono i limiti di invio del tuo provider email (ad es., Gmail consente ~500/giorno per account personali, 2.000/giorno per Workspace).",
+        "a12": "Illimitato significa che Get Phame non imposta un limite mensile alle richieste di recensione per i piani Pro. Restano valide le regole e i limiti di invio del tuo provider email.",
         "q12": "Cosa significa \"illimitato\" nel piano Pro?",
         "q2": "Quali provider email sono supportati?",
         "q7": "Cosa succede alla mia lista clienti?",
@@ -4226,17 +4244,20 @@
       },
       "stats": {
         "industryAgencies": "Agenzie",
-        "averageResponseRateLabel": "tasso medio di risposta",
-        "averageSetupTimeLabel": "tempo medio di configurazione",
+        "averageResponseRateLabel": "i promemoria si fermano dopo l'azione del cliente",
+        "averageSetupTimeLabel": "configurazione e onboarding",
         "heading": "Progettato per aziende che si basano sulla reputazione",
         "industryCafesRestaurants": "Caffè e ristoranti",
         "industryClinicsSalons": "Cliniche e saloni",
         "emailsSentLabel": "email inviate dal tuo indirizzo",
         "industryHomeServices": "Servizi per la casa",
-        "moreReviewsLabel": "più recensioni rispetto a chiedere di persona",
+        "moreReviewsLabel": "contatto con i clienti",
         "industryPhotographers": "Fotografi",
         "industryWooCommerceStores": "Negozi WooCommerce",
-        "emailsSentValue": "La tua casella di posta"
+        "emailsSentValue": "La tua casella di posta",
+        "individualOutreachValue": "Individuale",
+        "setupValue": "Guidata",
+        "followUpValue": "Automatico"
       },
       "support": {
         "attachmentType": "Allega uno screenshot JPG, PNG o WebP.",
@@ -4274,9 +4295,10 @@
         "successTitle": "La tua richiesta di supporto è stata inviata."
       },
       "feature1": {
-        "statLabel": "tasso medio di apertura",
-        "description": "Ogni richiesta di recensione arriva dal tuo vero indirizzo email. I clienti riconoscono il mittente, quindi aprono il messaggio — e rispondono.",
-        "title": "Il tuo nome. La tua casella di posta. La loro fiducia."
+        "statLabel": "identità del mittente",
+        "description": "Ogni richiesta di recensione viene inviata dall'account email che colleghi e usa il nome e la firma del mittente che configuri.",
+        "title": "Il tuo nome. La tua casella di posta. La loro fiducia.",
+        "statValue": "La tua email"
       },
       "productShowcase": {
         "sectionTitle": "Progettato per rendere semplici le richieste di recensione",
@@ -4397,8 +4419,8 @@
         "emailInvalid": "Inserisci un'email nel formato corretto, ad esempio name@example.com.",
         "emailPlaceholder": "Inserisci la tua email",
         "emailRequired": "Inserisci il tuo indirizzo email.",
-        "description": "Ottieni una guida gratuita su come triplicare le tue recensioni Google in 30 giorni — oltre a accesso anticipato alle nuove funzionalità e consigli per la reputazione.",
-        "sharePrompt": "Conosci qualcuno che ha bisogno di più recensioni? Condividi il playbook gratuito.",
+        "description": "Ricevi una guida gratuita per pianificare richieste di recensione chiare e conformi, oltre ad aggiornamenti sul prodotto e consigli pratici sulla reputazione.",
+        "sharePrompt": "Condividi la guida gratuita alle richieste di recensione.",
         "noSpamMessage": "Niente spam. Puoi disiscriverti in qualsiasi momento. Rispettiamo la tua casella di posta.",
         "heading": "Non sei pronto a impegnarti?",
         "sendGuideButton": "Invia guida",
@@ -4413,7 +4435,8 @@
       "feature3": {
         "title": "Ogni piattaforma. La tua scelta.",
         "description": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot e altri. Incolla il tuo link, cambia piattaforme in qualsiasi momento. Un unico strumento per tutti i tuoi canali di recensioni.",
-        "statLabel": "piattaforme supportate"
+        "statLabel": "destinazioni delle recensioni",
+        "statValue": "Flessibile"
       },
       "navbar": {
         "faq": "FAQ",
@@ -4434,7 +4457,7 @@
       "hero": {
         "headlinePart1": "Ottieni più recensioni a 5 stelle",
         "description": "Get Phame è un software per inviare email di richiesta recensioni alle attività locali. Aggiungi clienti, invia richieste personalizzate da un account email che colleghi, monitora aperture e clic e indirizza i clienti verso la piattaforma di recensioni che scegli.",
-        "ctaVariantB": "Ottieni le tue prime 10 recensioni gratis",
+        "ctaVariantB": "Inizia gratis — senza carta",
         "dashboardMockupAlt": "Schermata principale dell'app GetPhame che mostra statistiche delle richieste di recensione, pulsante di invio e utilizzo del piano Free per attività locali",
         "googleDisclosureLabel": "Utilizzo dei dati di accesso Google",
         "googleSignInDisclaimer": "L'accesso con Google fornisce solo il tuo nome e indirizzo email per creare e identificare il tuo account Get Phame. Non richiediamo l'accesso ai messaggi Gmail, ai contatti, ai file di Drive o al Calendar.",
@@ -4451,9 +4474,10 @@
         "playButtonAriaLabel": "Riproduci la panoramica della piattaforma"
       },
       "feature2": {
-        "description": "Importa la lista clienti tramite CSV o sincronizzazione WooCommerce, seleziona tutto e invia richieste personalizzate in pochi secondi. Niente copia e incolla. Nessun lavoro manuale.",
-        "title": "Un clic invia a centinaia",
-        "statLabel": "invii per batch"
+        "description": "Importa i clienti via CSV o sincronizzazione WooCommerce, scegli i destinatari e invia richieste personalizzate senza copiare ogni messaggio a mano.",
+        "title": "Invia richieste personalizzate in blocco",
+        "statLabel": "invio personalizzato",
+        "statValue": "In blocco"
       },
       "trustBar": {
         "passwordEncrypted": "Password crittografata a riposo",
@@ -5503,11 +5527,11 @@
         "a2": "Get Phame ทำงานได้กับผู้ให้บริการอีเมลทุกคนที่รองรับ SMTP: Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud และเซิร์ฟเวอร์ SMTP แบบกำหนดเองใด ๆ หากคุณสามารถส่งอีเมลจากที่นั่น คุณก็สามารถเชื่อมต่อกับ Get Phame ได้.",
         "q11": "การซิงค์กับ WooCommerce ทำงานอย่างไร?",
         "q3": "มันฟรีจริงหรือ?",
-        "a1": "ไม่. อีเมลทุกฉบับถูกส่งจากที่อยู่อีเมลของคุณโดยตรง — ไม่ใช่จากเซิร์ฟเวอร์ของบุคคลที่สาม ลูกค้าของคุณเห็นชื่อ ที่อยู่อีเมล และลายเซ็นของคุณ มันดูเหมือนคุณนั่งลงแล้วพิมพ์เอง อัตราการเปิดเฉลี่ยอยู่ที่ 45–60% เพราะผู้รับจดจำผู้ส่งได้.",
+        "a1": "ไม่ใช่ ทุกอีเมลส่งโดยตรงจากบัญชีอีเมลที่คุณเชื่อมต่อ ไม่ได้ส่งจากเซิร์ฟเวอร์ส่งอีเมลจำนวนมากของบุคคลที่สาม ลูกค้าจะเห็นชื่อ ที่อยู่อีเมล และลายเซ็นผู้ส่งที่คุณตั้งค่าไว้",
         "a9": "ไม่. สำหรับ Gmail และ Outlook เรามีคู่มือเป็นขั้นตอนพร้อมภาพหน้าจอ ผู้ใช้ส่วนใหญ่เชื่อมต่อได้ภายใน 60 วินาที สำหรับ SMTP แบบกำหนดเอง คุณจะต้องใช้ที่อยู่เซิร์ฟเวอร์ พอร์ต และข้อมูลรับรอง — ผู้ให้บริการโฮสติ้งของคุณสามารถให้ข้อมูลเหล่านี้ได้.",
         "headline": "คำถามเกี่ยวกับความปลอดภัย อีเมล ความเป็นส่วนตัว และการตั้งค่า",
         "a11": "ตัวต่อเชื่อม WooCommerce ใช้ได้เฉพาะในแผนที่ชำระเงิน ผู้ใช้ที่ชำระเงินติดตั้งปลั๊กอิน Get Phame สำหรับ WooCommerce ใส่คีย์ API แล้วลูกค้าใหม่จะถูกนำเข้าโดยอัตโนมัติหลังคำสั่งซื้อแต่ละรายการเสร็จสมบูรณ์ คุณสามารถตั้งค่าหน่วงเวลา (เช่น 7 วันหลังการซื้อ) ก่อนที่ลูกค้าจะปรากฏในคิวการส่งของคุณ.",
-        "a12": "Unlimited หมายความว่าไม่มีขีดจำกัดจำนวนคำขอรีวิวที่คุณสามารถส่งต่อเดือน ส่ง 50 หรือ 5,000 — ไม่มีค่าใช้จ่ายเพิ่มเติม ขีดจำกัดเดียวคือข้อจำกัดการส่งของผู้ให้บริการอีเมลของคุณเอง (เช่น Gmail อนุญาต ~500/วันสำหรับบัญชีส่วนบุคคล, 2,000/วันสำหรับ Workspace).",
+        "a12": "ไม่จำกัดหมายถึง Get Phame ไม่กำหนดเพดานคำขอรีวิวรายเดือนสำหรับแผน Pro แต่ยังต้องเป็นไปตามนโยบายและข้อจำกัดการส่งของผู้ให้บริการอีเมลที่เชื่อมต่อ",
         "q12": "คำว่า 'ไม่จำกัด' ในแผน Pro หมายความว่าอะไร?",
         "q2": "ผู้ให้บริการอีเมลใดบ้างที่ใช้งานได้?",
         "q7": "จะเกิดอะไรขึ้นกับรายการลูกค้าของฉัน?",
@@ -5546,17 +5570,20 @@
       },
       "stats": {
         "industryAgencies": "เอเจนซี่",
-        "averageResponseRateLabel": "อัตราตอบกลับเฉลี่ย",
-        "averageSetupTimeLabel": "เวลาติดตั้งเฉลี่ย",
+        "averageResponseRateLabel": "หยุดการเตือนหลังลูกค้าดำเนินการ",
+        "averageSetupTimeLabel": "การตั้งค่าและเริ่มใช้งาน",
         "heading": "สร้างขึ้นสำหรับธุรกิจที่ขับเคลื่อนด้วยชื่อเสียง",
         "industryCafesRestaurants": "ร้านกาแฟและร้านอาหาร",
         "industryClinicsSalons": "คลินิกและซาลอน",
         "emailsSentLabel": "อีเมลที่ส่งจากที่อยู่อีเมลของคุณเอง",
         "industryHomeServices": "บริการบ้าน",
-        "moreReviewsLabel": "รีวิวเพิ่มขึ้นเทียบกับการขอแบบตัวต่อตัว",
+        "moreReviewsLabel": "การติดต่อลูกค้า",
         "industryPhotographers": "ช่างภาพ",
         "industryWooCommerceStores": "ร้านค้า WooCommerce",
-        "emailsSentValue": "กล่องจดหมายของคุณ"
+        "emailsSentValue": "กล่องจดหมายของคุณ",
+        "individualOutreachValue": "รายบุคคล",
+        "setupValue": "มีคำแนะนำ",
+        "followUpValue": "อัตโนมัติ"
       },
       "support": {
         "attachmentType": "แนบสกรีนช็อตเป็น JPG, PNG หรือ WebP",
@@ -5594,9 +5621,10 @@
         "successTitle": "คำขอสนับสนุนของคุณถูกส่งแล้ว."
       },
       "feature1": {
-        "statLabel": "อัตราเปิดเฉลี่ย",
-        "description": "คำขอรีวิวทุกฉบับจะส่งจากที่อยู่อีเมลจริงของคุณ ลูกค้าจำผู้ส่งได้ จึงเปิดอีเมล — และตอบกลับ",
-        "title": "ชื่อของคุณ. กล่องจดหมายของคุณ. ความไว้วางใจของพวกเขา."
+        "statLabel": "ตัวตนผู้ส่ง",
+        "description": "ทุกคำขอรีวิวส่งจากบัญชีอีเมลที่คุณเชื่อมต่อ และใช้ชื่อกับลายเซ็นผู้ส่งที่คุณตั้งค่าไว้",
+        "title": "ชื่อของคุณ. กล่องจดหมายของคุณ. ความไว้วางใจของพวกเขา.",
+        "statValue": "อีเมลของคุณ"
       },
       "productShowcase": {
         "sectionTitle": "สร้างมาเพื่อให้การขอรีวิวเป็นเรื่องง่าย",
@@ -5717,8 +5745,8 @@
         "emailInvalid": "กรอกอีเมลที่มีรูปแบบถูกต้อง เช่น name@example.com.",
         "emailPlaceholder": "กรอกอีเมลของคุณ",
         "emailRequired": "กรอกที่อยู่อีเมลของคุณ.",
-        "description": "รับคู่มือฟรีเกี่ยวกับวิธีเพิ่มรีวิวบน Google เป็น 3 เท่าใน 30 วัน — พร้อมการเข้าถึงฟีเจอร์ใหม่ก่อนใครและเคล็ดลับการสร้างชื่อเสียง.",
-        "sharePrompt": "รู้จักคนที่ต้องการรีวิวเพิ่มไหม? แชร์คู่มือฟรีให้พวกเขา",
+        "description": "รับคู่มือฟรีสำหรับวางแผนการขอรีวิวที่ชัดเจนและสอดคล้องกับข้อกำหนด พร้อมข่าวผลิตภัณฑ์และคำแนะนำด้านชื่อเสียงที่นำไปใช้ได้จริง",
+        "sharePrompt": "แชร์คู่มือการขอรีวิวฟรี",
         "noSpamMessage": "ไม่มีสแปม ยกเลิกการรับจดหมายได้ตลอดเวลา เราเคารพกล่องจดหมายของคุณ.",
         "heading": "ยังไม่พร้อมตัดสินใจ?",
         "sendGuideButton": "ส่งคู่มือ",
@@ -5733,7 +5761,8 @@
       "feature3": {
         "title": "ทุกแพลตฟอร์ม ทางเลือกเป็นของคุณ.",
         "description": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot และอื่นๆ วางลิงก์ของคุณ สลับแพลตฟอร์มได้ตลอดเวลา เครื่องมือเดียวสำหรับทุกปลายทางรีวิวของคุณ.",
-        "statLabel": "แพลตฟอร์มที่รองรับ"
+        "statLabel": "ปลายทางรีวิว",
+        "statValue": "ยืดหยุ่น"
       },
       "navbar": {
         "faq": "คำถามที่พบบ่อย",
@@ -5754,7 +5783,7 @@
       "hero": {
         "headlinePart1": "รับรีวิว 5 ดาวเพิ่มขึ้น",
         "description": "Get Phame เป็นซอฟต์แวร์ส่งอีเมลขอรีวิวสำหรับธุรกิจท้องถิ่น เพิ่มลูกค้า ส่งคำขอแบบส่วนบุคคลจากบัญชีอีเมลที่คุณเชื่อมต่อ ติดตามการเปิดและการคลิก และนำลูกค้าไปยังแพลตฟอร์มรีวิวที่คุณเลือก.",
-        "ctaVariantB": "รับ 10 รีวิวแรกของคุณฟรี",
+        "ctaVariantB": "เริ่มฟรี — ไม่ต้องใช้บัตร",
         "dashboardMockupAlt": "หน้าจอหลักแอป GetPhame แสดงสถิติคำขอรีวิว ปุ่มส่ง และการใช้งานแผนฟรีสำหรับธุรกิจท้องถิ่น",
         "googleDisclosureLabel": "การใช้ข้อมูลสำหรับการเข้าสู่ระบบด้วย Google",
         "googleSignInDisclaimer": "การเข้าสู่ระบบด้วย Google จะให้เฉพาะชื่อและที่อยู่อีเมลเพื่อสร้างและระบุตัวตนบัญชี Get Phame ของคุณ เราไม่ร้องขอการเข้าถึงข้อความ Gmail รายชื่อ ไฟล์ Drive หรือปฏิทิน.",
@@ -5771,9 +5800,10 @@
         "playButtonAriaLabel": "เล่นวิดีโอแนะนำผลิตภัณฑ์"
       },
       "feature2": {
-        "description": "นำเข้ารายชื่อลูกค้าของคุณผ่าน CSV หรือการซิงค์กับ WooCommerce เลือกทั้งหมด แล้วส่งคำขอแบบส่วนบุคคลภายในไม่กี่วินาที ไม่ต้องคัดลอก-วาง ไม่ต้องทำงานด้วยตนเอง.",
-        "title": "ส่งถึงร้อย ๆ คนเพียงคลิกเดียว",
-        "statLabel": "การส่งต่อแต่ละชุด"
+        "description": "นำเข้าลูกค้าด้วย CSV หรือซิงก์ WooCommerce เลือกผู้รับ แล้วส่งคำขอเฉพาะบุคคลโดยไม่ต้องคัดลอกทีละข้อความ",
+        "title": "ส่งคำขอเฉพาะบุคคลแบบกลุ่ม",
+        "statLabel": "การส่งเฉพาะบุคคล",
+        "statValue": "แบบกลุ่ม"
       },
       "trustBar": {
         "passwordEncrypted": "รหัสผ่านถูกเข้ารหัสขณะจัดเก็บ",
@@ -6822,11 +6852,11 @@
         "a2": "Get Phame 可与任何支持 SMTP 的邮件提供商配合使用：Gmail、Google Workspace、Outlook、Microsoft 365、Yahoo、Zoho、iCloud 以及任何自定义 SMTP 服务器。如果您能用它发送邮件，就能将其连接到 Get Phame。",
         "q11": "WooCommerce 同步如何工作？",
         "q3": "真的是免费的吗？",
-        "a1": "不是的。每封邮件都直接从您自己的邮箱地址发送——而非第三方服务器。您的客户会看到您的姓名、地址和签名。看起来就像您亲自写的一样。平均打开率为 45–60%，因为收件人能识别发件人。",
+        "a1": "不会。每封邮件都直接从你连接的邮箱账户发出，而不是第三方群发服务器。客户会看到你配置的发件人姓名、地址和签名。",
         "a9": "不是的。对于 Gmail 和 Outlook，我们提供带截图的逐步指南。大多数用户在 60 秒内完成连接。对于自定义 SMTP，您需要服务器地址、端口和凭证——您的主机提供商可以提供这些信息。",
         "headline": "有关电子邮件安全、隐私和设置的问题",
         "a11": "WooCommerce 连接器仅在付费计划可用。付费用户安装 Get Phame WooCommerce 插件并输入 API 密钥，新的客户会在每笔订单完成后自动导入。您可以设置延迟（例如购买后 7 天），延迟期满后客户才会出现在发送队列中。",
-        "a12": "“无限”意味着您每月可发送的评价请求数量不设上限。发送 50 或 5,000 条均不额外收费。唯一的限制是您的邮箱服务商的发送限额（例如 Gmail 对个人账户约为 ~500/天，Workspace 为 2,000/天）。",
+        "a12": "“无限”表示 Get Phame 不为 Pro 套餐设置每月评论请求上限。你所连接邮箱服务商的发送政策和限制仍然适用。",
         "q12": "Pro 计划中的“无限”是什么意思？",
         "q2": "支持哪些邮箱提供商？",
         "q7": "我的客户列表会怎样处理？",
@@ -6865,17 +6895,20 @@
       },
       "stats": {
         "industryAgencies": "代理机构",
-        "averageResponseRateLabel": "平均回应率",
-        "averageSetupTimeLabel": "平均设置时间",
+        "averageResponseRateLabel": "客户完成操作后停止提醒",
+        "averageSetupTimeLabel": "设置与上手",
         "heading": "为以口碑为核心的企业打造",
         "industryCafesRestaurants": "咖啡馆与餐厅",
         "industryClinicsSalons": "诊所与沙龙",
         "emailsSentLabel": "从您自己的地址发送的邮件",
         "industryHomeServices": "家居服务",
-        "moreReviewsLabel": "比当面请求获得更多评价",
+        "moreReviewsLabel": "联系客户",
         "industryPhotographers": "摄影师",
         "industryWooCommerceStores": "WooCommerce 商店",
-        "emailsSentValue": "您的收件箱"
+        "emailsSentValue": "您的收件箱",
+        "individualOutreachValue": "逐一",
+        "setupValue": "引导式",
+        "followUpValue": "自动"
       },
       "support": {
         "attachmentType": "附上 JPG、PNG 或 WebP 格式的截图。",
@@ -6913,9 +6946,10 @@
         "successTitle": "您的支持请求已发送。"
       },
       "feature1": {
-        "statLabel": "平均打开率",
-        "description": "每条点评请求都来自您的真实邮箱地址。客户识别发件人，因此会打开邮件——并作出回应。",
-        "title": "您的名字。您的收件箱。他们的信任。"
+        "statLabel": "发件人身份",
+        "description": "每条评论请求都从你连接的邮箱账户发送，并使用你配置的发件人姓名和签名。",
+        "title": "您的名字。您的收件箱。他们的信任。",
+        "statValue": "你的邮箱"
       },
       "productShowcase": {
         "sectionTitle": "旨在让评价请求变得轻松",
@@ -7036,8 +7070,8 @@
         "emailInvalid": "请输入格式正确的邮箱，例如 name@example.com。",
         "emailPlaceholder": "输入您的电子邮件",
         "emailRequired": "输入您的电子邮件地址。",
-        "description": "获取一份免费指南，教您如何在 30 天内将 Google 评论翻三倍——并获得新功能优先体验及声誉技巧。",
-        "sharePrompt": "知道有人需要更多评价吗？分享这份免费攻略。",
+        "description": "获取免费指南，规划清晰、合规的评论请求沟通，并接收产品更新和实用的口碑管理建议。",
+        "sharePrompt": "分享免费的评论请求指南。",
         "noSpamMessage": "绝不发送垃圾邮件。可随时退订。我们尊重您的收件箱。",
         "heading": "还没准备好加入？",
         "sendGuideButton": "发送指南",
@@ -7052,7 +7086,8 @@
       "feature3": {
         "title": "支持所有平台，由您选择。",
         "description": "Google、Yelp、TripAdvisor、Bing、Facebook、Trustpilot 等。粘贴链接，随时切换平台。一个工具即可覆盖您所有的评价目的地。",
-        "statLabel": "支持的平台"
+        "statLabel": "评论平台",
+        "statValue": "灵活"
       },
       "navbar": {
         "faq": "常见问题",
@@ -7073,7 +7108,7 @@
       "hero": {
         "headlinePart1": "获取更多 5 星评价",
         "description": "Get Phame 是面向本地商家的点评请求邮件软件。添加客户、从您连接的邮箱发送个性化请求、跟踪打开和点击，并将客户引导至您选择的点评平台。",
-        "ctaVariantB": "免费获取您的前 10 条点评",
+        "ctaVariantB": "免费开始 — 无需信用卡",
         "dashboardMockupAlt": "GetPhame 应用主页，显示点评请求统计、发送按钮和本地商家的免费方案使用情况",
         "googleDisclosureLabel": "Google sign-in 数据使用",
         "googleSignInDisclaimer": "Google sign-in 仅提供您的姓名和电子邮件地址以创建并识别您的 Get Phame 帐户。我们不会请求访问 Gmail 邮件、联系人、Drive 文件或 Calendar。",
@@ -7090,9 +7125,10 @@
         "playButtonAriaLabel": "播放产品演示视频"
       },
       "feature2": {
-        "description": "通过 CSV 或 WooCommerce 同步导入客户列表，全部选择后几秒内发送个性化请求。无需复制粘贴，无需手工操作。",
-        "title": "一键发送给数百人",
-        "statLabel": "每批发送量"
+        "description": "通过 CSV 或 WooCommerce 同步导入客户，选择收件人，并发送个性化请求，无需逐条复制。",
+        "title": "批量发送个性化请求",
+        "statLabel": "个性化发送",
+        "statValue": "批量"
       },
       "trustBar": {
         "passwordEncrypted": "密码在静态存储时已加密",
@@ -8142,11 +8178,11 @@
         "a2": "Get Phame 可支援所有提供 SMTP 的電子郵件服務：Gmail、Google Workspace、Outlook、Microsoft 365、Yahoo、Zoho、iCloud 以及任何自訂 SMTP 伺服器。只要能從該服務寄信，就能連接到 Get Phame。",
         "q11": "WooCommerce 同步如何運作？",
         "q3": "真的免費嗎？",
-        "a1": "不。每封郵件都直接從您的電子郵件位址寄出，而非第三方伺服器。您的顧客會看到您的姓名、位址與簽名，看起來就像您親自撰寫寄出。平均開信率為 45–60%，因為收件人能辨識寄件者。",
+        "a1": "不會。每封郵件都直接從你連結的電子郵件帳戶寄出，而不是第三方群發伺服器。客戶會看到你設定的寄件者姓名、地址與簽名。",
         "a9": "不。對於 Gmail 與 Outlook，我們提供附截圖的逐步教學。大多數使用者在 60 秒內完成連結。若使用自訂 SMTP，您需要提供伺服器位址、埠號與憑證 — 您的主機提供商可以提供這些資訊。",
         "headline": "有關電子郵件安全、隱私與設定的問題",
         "a11": "WooCommerce 連接器僅在付費方案可用。付費用戶安裝 Get Phame WooCommerce 外掛、輸入 API 金鑰，新的客戶會在每筆完成的訂單後自動匯入。您可以設定延遲（例如購買後 7 天），再將其顯示在發送佇列中。",
-        "a12": "「無上限」意指每月可發送的評論請求數量不設上限。發 50 次或 5,000 次都不會額外收費。唯一的限制是您的電子郵件供應商自身的寄送上限（例如 Gmail 個人帳號約允許 ~500 封/日，Workspace 約 2,000 封/日）。",
+        "a12": "「無上限」表示 Get Phame 不會為 Pro 方案設定每月評論邀請上限。你所連結電子郵件供應商的寄送政策與限制仍然適用。",
         "q12": "Pro 計劃的「無上限」是什麼意思？",
         "q2": "支援哪些電子郵件供應商？",
         "q7": "我的客戶名單會怎麼處理？",
@@ -8185,17 +8221,20 @@
       },
       "stats": {
         "industryAgencies": "代理商",
-        "averageResponseRateLabel": "平均回覆率",
-        "averageSetupTimeLabel": "平均設定時間",
+        "averageResponseRateLabel": "客戶完成操作後停止提醒",
+        "averageSetupTimeLabel": "設定與上手",
         "heading": "為以聲譽為核心的商家打造",
         "industryCafesRestaurants": "咖啡館與餐廳",
         "industryClinicsSalons": "診所與沙龍",
         "emailsSentLabel": "從您自己的地址寄出的電子郵件",
         "industryHomeServices": "居家服務",
-        "moreReviewsLabel": "比當面詢問獲得更多評論",
+        "moreReviewsLabel": "聯絡客戶",
         "industryPhotographers": "攝影師",
         "industryWooCommerceStores": "WooCommerce 商店",
-        "emailsSentValue": "您的收件匣"
+        "emailsSentValue": "您的收件匣",
+        "individualOutreachValue": "逐一",
+        "setupValue": "引導式",
+        "followUpValue": "自動"
       },
       "support": {
         "attachmentType": "附加 JPG、PNG 或 WebP 截圖。",
@@ -8233,9 +8272,10 @@
         "successTitle": "您的支援請求已發送。"
       },
       "feature1": {
-        "statLabel": "平均開啟率",
-        "description": "每封評價邀請都會以您真實的電子郵件地址寄出。客戶認得寄件者，因而會開啟郵件 — 並回覆。",
-        "title": "您的姓名。您的收件匣。他們的信任。"
+        "statLabel": "寄件者身分",
+        "description": "每封評論邀請都從你連結的電子郵件帳戶寄出，並使用你設定的寄件者姓名與簽名。",
+        "title": "您的姓名。您的收件匣。他們的信任。",
+        "statValue": "你的信箱"
       },
       "productShowcase": {
         "sectionTitle": "專為簡化評價邀請而設",
@@ -8356,8 +8396,8 @@
         "emailInvalid": "請輸入格式正確的電子郵件，例如 name@example.com。",
         "emailPlaceholder": "輸入您的電子郵件",
         "emailRequired": "輸入您的電子郵件地址。",
-        "description": "免費取得指南，教您如何在 30 天內將 Google 評價增加 3 倍 — 並可搶先取得新功能與聲譽經營技巧。",
-        "sharePrompt": "認識需要更多評論的人嗎？分享免費攻略手冊。",
+        "description": "取得免費指南，規劃清楚且合規的評論邀請，並接收產品更新與實用的口碑管理建議。",
+        "sharePrompt": "分享免費的評論邀請指南。",
         "noSpamMessage": "絕非垃圾信。隨時可退訂。我們尊重您的收件匣。",
         "heading": "還沒準備好嗎？",
         "sendGuideButton": "寄送指南",
@@ -8372,7 +8412,8 @@
       "feature3": {
         "title": "所有平台，由您選擇。",
         "description": "Google、Yelp、TripAdvisor、Bing、Facebook、Trustpilot 等等。貼上連結，隨時切換平台。一個工具，涵蓋所有評論目的地。",
-        "statLabel": "支援平台"
+        "statLabel": "評論平台",
+        "statValue": "彈性"
       },
       "navbar": {
         "faq": "常見問題",
@@ -8393,7 +8434,7 @@
       "hero": {
         "headlinePart1": "獲得更多五星評價",
         "description": "Get Phame 是為在地商家設計的評價邀請郵件軟體。新增客戶、以您連接的電子郵件帳戶寄送個人化邀請、追蹤開啟與點擊，並將客戶導向您選擇的評價平台。",
-        "ctaVariantB": "免費取得前 10 則評價",
+        "ctaVariantB": "免費開始 — 無需信用卡",
         "dashboardMockupAlt": "GetPhame 應用程式主畫面，顯示評價邀請統計、寄送按鈕及在地商家的免費方案使用情況",
         "googleDisclosureLabel": "Google 登入資料使用方式",
         "googleSignInDisclaimer": "Google 登入僅提供您的姓名與電子郵件地址以建立並辨識您的 Get Phame 帳戶。我們不會要求存取 Gmail 郵件、聯絡人、Drive 檔案或日曆。",
@@ -8410,9 +8451,10 @@
         "playButtonAriaLabel": "播放產品導覽影片"
       },
       "feature2": {
-        "description": "透過 CSV 或 WooCommerce 同步匯入客戶名單，一鍵全選，數秒內發送個人化邀請。無需複製貼上，免人工操作。",
-        "title": "一鍵發送到數百位",
-        "statLabel": "每批寄送數量"
+        "description": "透過 CSV 或 WooCommerce 同步匯入客戶、選擇收件者並寄送個人化邀請，無需逐封複製。",
+        "title": "批次寄送個人化邀請",
+        "statLabel": "個人化寄送",
+        "statValue": "批次"
       },
       "trustBar": {
         "passwordEncrypted": "密碼靜態儲存時已加密",

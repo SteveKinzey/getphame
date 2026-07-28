@@ -224,6 +224,40 @@
         "messageMax": "Mantieni il messaggio entro 4.000 caratteri.",
         "nameMax": "Mantieni il nome entro 80 caratteri."
       }
+    },
+    "faq": {
+      "a1": "No. Ogni email viene inviata direttamente dall'account che colleghi, non da un server di invio massivo di terze parti. I clienti vedono il nome, l'indirizzo e la firma del mittente che configuri.",
+      "a12": "Illimitato significa che Get Phame non imposta un limite mensile alle richieste di recensione per i piani Pro. Restano valide le regole e i limiti di invio del tuo provider email."
+    },
+    "feature1": {
+      "description": "Ogni richiesta di recensione viene inviata dall'account email che colleghi e usa il nome e la firma del mittente che configuri.",
+      "statValue": "La tua email",
+      "statLabel": "identità del mittente"
+    },
+    "feature2": {
+      "title": "Invia richieste personalizzate in blocco",
+      "description": "Importa i clienti via CSV o sincronizzazione WooCommerce, scegli i destinatari e invia richieste personalizzate senza copiare ogni messaggio a mano.",
+      "statValue": "In blocco",
+      "statLabel": "invio personalizzato"
+    },
+    "feature3": {
+      "statValue": "Flessibile",
+      "statLabel": "destinazioni delle recensioni"
+    },
+    "hero": {
+      "ctaVariantB": "Inizia gratis — senza carta"
+    },
+    "leadCapture": {
+      "description": "Ricevi una guida gratuita per pianificare richieste di recensione chiare e conformi, oltre ad aggiornamenti sul prodotto e consigli pratici sulla reputazione.",
+      "sharePrompt": "Condividi la guida gratuita alle richieste di recensione."
+    },
+    "stats": {
+      "individualOutreachValue": "Individuale",
+      "moreReviewsLabel": "contatto con i clienti",
+      "setupValue": "Guidata",
+      "averageSetupTimeLabel": "configurazione e onboarding",
+      "followUpValue": "Automatico",
+      "averageResponseRateLabel": "i promemoria si fermano dopo l'azione del cliente"
     }
   }
 }

@@ -12,7 +12,7 @@ const DASHBOARD_MOCKUP_PNG = "https://assets.getphame.app/phame-app-screenshot.p
 // A/B test variants
 const CTA_VARIANTS = [
   "Start Free — Send 10 Requests",
-  "Get Your First 10 Reviews Free",
+  "Start Free — No Card Required",
 ] as const;
 
 type CTAVariant = (typeof CTA_VARIANTS)[number];
@@ -128,7 +128,7 @@ export default function Hero() {
               >
                 {ctaVariant === CTA_VARIANTS[0]
                   ? t("landing.hero.ctaVariantA", { defaultValue: "Start Free — Send 10 Requests" })
-                  : t("landing.hero.ctaVariantB", { defaultValue: "Get Your First 10 Reviews Free" })}
+                  : t("landing.hero.ctaVariantB", { defaultValue: "Start Free — No Card Required" })}
                 <ArrowRight size={18} />
               </a>
               <a

@@ -2900,7 +2900,8 @@
   "landing": {
     "hero": {
       "categoryLabel": "Logiciel d'e‑mails de demande d'avis pour commerces locaux",
-      "googleDisclosureLabel": "Utilisation des données de la connexion Google"
+      "googleDisclosureLabel": "Utilisation des données de la connexion Google",
+      "ctaVariantB": "Commencer gratuitement — sans carte"
     },
     "leadCapture": {
       "addressConfirmation": "Nous l'avons envoyé à {{email}}. Vérifiez l'orthographe et consultez les courriers indésirables si vous ne le recevez pas. L'acceptation par le fournisseur n'assure pas la livraison en boîte de réception.",
@@ -2912,8 +2913,9 @@
       "emailInvalid": "Saisissez une adresse e‑mail correctement formatée, par ex. name@example.com.",
       "emailRequired": "Saisissez votre adresse e‑mail.",
       "providerAcceptedMessage": "Votre fournisseur de messagerie a accepté le guide pour l'envoi.",
-      "sharePrompt": "Vous connaissez quelqu’un qui a besoin d’avis supplémentaires ? Partagez ce guide gratuit.",
-      "tryAgain": "Réessayer l'envoi par e‑mail"
+      "sharePrompt": "Partagez le guide gratuit des demandes d'avis.",
+      "tryAgain": "Réessayer l'envoi par e‑mail",
+      "description": "Recevez un guide gratuit pour planifier des demandes d'avis claires et conformes, ainsi que des nouveautés produit et des conseils pratiques de réputation."
     },
     "purpose": {
       "description": "Get Phame aide les commerces locaux à envoyer des e‑mails personnalisés de demande d'avis depuis leur propre compte e‑mail connecté. Il est conçu pour les propriétaires d'entreprise, les photographes, les cafés et restaurants, les équipes de services à domicile, les cliniques et salons, les agences et les boutiques WooCommerce qui souhaitent une façon plus simple de demander un retour à de vrais clients.",
@@ -2932,7 +2934,13 @@
       "title": "Ce que fait Get Phame"
     },
     "stats": {
-      "emailsSentValue": "Votre boîte de réception"
+      "emailsSentValue": "Votre boîte de réception",
+      "individualOutreachValue": "Individuel",
+      "moreReviewsLabel": "contact client",
+      "setupValue": "Guidé",
+      "averageSetupTimeLabel": "configuration et prise en main",
+      "followUpValue": "Automatique",
+      "averageResponseRateLabel": "les rappels cessent après l'action du client"
     },
     "support": {
       "attachment": "Capture d'écran",
@@ -2969,6 +2977,25 @@
         "subjectMin": "Saisissez un objet d'au moins 3 caractères."
       },
       "website": "Site web"
+    },
+    "faq": {
+      "a1": "Non. Chaque e-mail est envoyé directement depuis le compte que vous connectez, et non depuis un serveur d'envoi en masse tiers. Les clients voient le nom, l'adresse et la signature d'expéditeur que vous configurez.",
+      "a12": "Illimité signifie que Get Phame ne fixe pas de plafond mensuel de demandes d'avis pour les offres Pro. Les politiques et limites d'envoi de votre fournisseur de messagerie s'appliquent toujours."
+    },
+    "feature1": {
+      "description": "Chaque demande d'avis est envoyée depuis le compte e-mail que vous connectez et utilise le nom et la signature d'expéditeur que vous configurez.",
+      "statValue": "Votre e-mail",
+      "statLabel": "identité de l'expéditeur"
+    },
+    "feature2": {
+      "title": "Envoyez des demandes personnalisées en lot",
+      "description": "Importez des clients par CSV ou synchronisation WooCommerce, choisissez les destinataires et envoyez des demandes personnalisées sans recopier chaque message.",
+      "statValue": "En lot",
+      "statLabel": "envoi personnalisé"
+    },
+    "feature3": {
+      "statValue": "Flexible",
+      "statLabel": "destinations d'avis"
     }
   },
   "adaptiveSending": {

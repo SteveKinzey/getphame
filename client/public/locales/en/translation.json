@@ -1907,7 +1907,7 @@
     },
     "faq": {
       "q1": "Will it look like spam?",
-      "a1": "No. Every email is sent directly from your own email address — not from a third-party server. Your customers see your name, your address, and your signature. It looks exactly like you sat down and typed it yourself. Open rates average 45–60% because recipients recognize the sender.",
+      "a1": "No. Every email is sent directly from the email account you connect, not from a third-party bulk-sending server. Customers see the sender name, address, and signature you configure.",
       "q2": "What email providers work?",
       "a2": "Get Phame works with any email provider that supports SMTP: Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud, and any custom SMTP server. If you can send email from it, you can connect it to Get Phame.",
       "q3": "Is it really free?",
@@ -1929,25 +1929,28 @@
       "q11": "How does WooCommerce sync work?",
       "a11": "Install our free WooCommerce plugin, enter your API key, and new customers are automatically imported after each completed order. You can set a delay (e.g., 7 days after purchase) before they appear in your send queue.",
       "q12": "What does unlimited mean on the Pro plan?",
-      "a12": "Unlimited means no cap on the number of review requests you can send per month. Send 50 or 5,000 — no extra charges. The only limit is your email provider's own sending limits (e.g., Gmail allows ~500/day for personal accounts, 2,000/day for Workspace).",
+      "a12": "Unlimited means Get Phame does not set a monthly cap on review requests for Pro plans. Your connected email provider's sending policies and limits still apply.",
       "sectionTitle": "FAQ",
       "headline": "Questions about email safety, privacy & setup",
       "description": "Everything you need to know before connecting your email and sending your first review request."
     },
     "feature1": {
       "title": "Your name. Your inbox. Their trust.",
-      "description": "Every review request arrives from your actual email address. Customers recognize the sender, so they open it — and they respond.",
-      "statLabel": "avg. open rate"
+      "description": "Every review request is sent from the email account you connect and uses the sender name and signature you configure.",
+      "statLabel": "sender identity",
+      "statValue": "Your email"
     },
     "feature2": {
-      "title": "One click sends to hundreds",
-      "description": "Import your customer list via CSV or WooCommerce sync, select all, and send personalized requests in seconds. No copy-pasting. No manual work.",
-      "statLabel": "sends per batch"
+      "title": "Send personalized requests in bulk",
+      "description": "Import customers by CSV or WooCommerce sync, choose the recipients, and send personalized requests without copying each message manually.",
+      "statLabel": "personalized sending",
+      "statValue": "Bulk"
     },
     "feature3": {
       "title": "Every platform. Your choice.",
       "description": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, and more. Paste your link, switch platforms anytime. One tool for all your review destinations.",
-      "statLabel": "platforms supported"
+      "statLabel": "review destinations",
+      "statValue": "Flexible"
     },
     "whyItWorks": "Why it works",
     "headline": "From your inbox to their review",
@@ -1977,7 +1980,7 @@
       "privacyPolicy": "Privacy Policy",
       "dashboardMockupAlt": "GetPhame app home screen showing review request stats, send button, and free plan usage for local businesses",
       "ctaVariantA": "Start Free — Send 10 Requests",
-      "ctaVariantB": "Get Your First 10 Reviews Free",
+      "ctaVariantB": "Start Free — No Card Required",
       "categoryLabel": "Review-request email software for local businesses",
       "googleDisclosureLabel": "Google sign-in data use"
     },
@@ -2009,7 +2012,7 @@
     "leadCapture": {
       "errorMessage": "Something went wrong. Please try again.",
       "heading": "Not ready to commit?",
-      "description": "Get a free guide on how to 3× your Google reviews in 30 days — plus early access to new features and reputation tips.",
+      "description": "Get a free guide to planning clear, compliant review-request outreach — plus product updates and practical reputation tips.",
       "emailPlaceholder": "Enter your email",
       "sending": "Sending...",
       "sendGuideButton": "Send Guide",
@@ -2025,7 +2028,7 @@
       "downloadGuideButton": "Download the PDF guide",
       "editEmail": "Edit email",
       "tryAgain": "Try email again",
-      "sharePrompt": "Know someone who needs more reviews? Share the free playbook."
+      "sharePrompt": "Share the free review-request playbook."
     },
     "navbar": {
       "howItWorks": "How It Works",
@@ -2119,10 +2122,10 @@
       "viewFullSizeAriaLabel": "View {{title}} in full size"
     },
     "stats": {
-      "moreReviewsLabel": "more reviews vs. asking in person",
-      "averageSetupTimeLabel": "average setup time",
+      "moreReviewsLabel": "customer outreach",
+      "averageSetupTimeLabel": "setup and onboarding",
       "emailsSentLabel": "emails sent from your own address",
-      "averageResponseRateLabel": "average response rate",
+      "averageResponseRateLabel": "reminders stop after customer action",
       "industryPhotographers": "Photographers",
       "industryCafesRestaurants": "Cafés & Restaurants",
       "industryHomeServices": "Home Services",
@@ -2130,7 +2133,10 @@
       "industryAgencies": "Agencies",
       "industryWooCommerceStores": "WooCommerce Stores",
       "heading": "Built for businesses that run on reputation",
-      "emailsSentValue": "Your inbox"
+      "emailsSentValue": "Your inbox",
+      "individualOutreachValue": "Individual",
+      "setupValue": "Guided",
+      "followUpValue": "Automatic"
     },
     "trustBar": {
       "passwordEncrypted": "Password encrypted at rest",

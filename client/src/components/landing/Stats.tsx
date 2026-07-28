@@ -5,10 +5,10 @@ export default function Stats() {
   const { t } = useTranslation();
 
   const stats = [
-    { value: "10×", label: t("landing.stats.moreReviewsLabel", { defaultValue: "more reviews vs. asking in person" }) },
-    { value: "< 2 min", label: t("landing.stats.averageSetupTimeLabel", { defaultValue: "average setup time" }) },
+    { value: t("landing.stats.individualOutreachValue", { defaultValue: "Individual" }), label: t("landing.stats.moreReviewsLabel", { defaultValue: "customer outreach" }) },
+    { value: t("landing.stats.setupValue", { defaultValue: "Guided" }), label: t("landing.stats.averageSetupTimeLabel", { defaultValue: "setup and onboarding" }) },
     { value: t("landing.stats.emailsSentValue", { defaultValue: "Your inbox" }), label: t("landing.stats.emailsSentLabel", { defaultValue: "emails sent from your own address" }) },
-    { value: "42%", label: t("landing.stats.averageResponseRateLabel", { defaultValue: "average response rate" }) },
+    { value: t("landing.stats.followUpValue", { defaultValue: "Automatic" }), label: t("landing.stats.averageResponseRateLabel", { defaultValue: "reminders stop after customer action" }) },
   ];
 
   const industries = [

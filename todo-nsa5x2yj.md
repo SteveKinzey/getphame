@@ -285,3 +285,4 @@
 - [x] Run focused contracts, strict TypeScript, production dependency audit, full Vitest, production build, and responsive English/Thai pricing verification.
 - [ ] Checkpoint and verify the auto-published release, then synchronize its exact tree through a history-preserving protected-main GitHub pull request.
 - [ ] Make the Stripe mode regression deterministic when production secrets are present during cloud builds, rerun release gates, publish a replacement checkpoint, and verify both production origins before GitHub synchronization.
+- [ ] Replace unsupported open-rate, response-rate, review-lift, batch-count, and guaranteed-review claims with factual feature copy across every runtime locale resource, add explicit content-policy regressions, and publish a compliant replacement before GitHub synchronization.

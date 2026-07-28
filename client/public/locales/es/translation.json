@@ -2900,7 +2900,8 @@
   "landing": {
     "hero": {
       "categoryLabel": "Software de correo para solicitar reseñas a negocios locales",
-      "googleDisclosureLabel": "Uso de datos del inicio de sesión con Google"
+      "googleDisclosureLabel": "Uso de datos del inicio de sesión con Google",
+      "ctaVariantB": "Empieza gratis — sin tarjeta"
     },
     "leadCapture": {
       "addressConfirmation": "La enviamos a {{email}}. Confirma la ortografía y revisa la carpeta de spam si no llega. La aceptación por parte del proveedor no garantiza la entrega en la bandeja de entrada.",
@@ -2912,8 +2913,9 @@
       "emailInvalid": "Introduce un correo con formato correcto, por ejemplo name@example.com.",
       "emailRequired": "Introduce tu dirección de correo electrónico.",
       "providerAcceptedMessage": "Tu proveedor de correo aceptó la guía para su entrega.",
-      "sharePrompt": "¿Conoces a alguien que necesite más reseñas? Comparte la guía gratuita.",
-      "tryAgain": "Reintentar envío"
+      "sharePrompt": "Comparte la guía gratuita de solicitudes de reseña.",
+      "tryAgain": "Reintentar envío",
+      "description": "Obtén una guía gratuita para planificar solicitudes de reseña claras y conformes, además de novedades del producto y consejos prácticos de reputación."
     },
     "purpose": {
       "description": "Get Phame ayuda a negocios locales a enviar correos personalizados para solicitar reseñas desde su propia cuenta de correo conectada. Está diseñado para propietarios de negocios, fotógrafos, cafeterías y restaurantes, equipos de servicios a domicilio, clínicas y salones, agencias y tiendas WooCommerce que desean una manera más sencilla de pedir reseñas a clientes reales.",
@@ -2932,7 +2934,13 @@
       "title": "Qué hace Get Phame"
     },
     "stats": {
-      "emailsSentValue": "Tu bandeja de entrada"
+      "emailsSentValue": "Tu bandeja de entrada",
+      "individualOutreachValue": "Individual",
+      "moreReviewsLabel": "contacto con clientes",
+      "setupValue": "Guiada",
+      "averageSetupTimeLabel": "configuración e incorporación",
+      "followUpValue": "Automático",
+      "averageResponseRateLabel": "los recordatorios paran tras la acción del cliente"
     },
     "support": {
       "attachment": "Captura de pantalla",
@@ -2969,6 +2977,25 @@
         "subjectMin": "Introduce un asunto de al menos 3 caracteres."
       },
       "website": "Sitio web"
+    },
+    "faq": {
+      "a1": "No. Cada correo se envía directamente desde la cuenta de correo que conectas, no desde un servidor de envío masivo de terceros. Los clientes ven el nombre, la dirección y la firma del remitente que configuras.",
+      "a12": "Ilimitado significa que Get Phame no establece un límite mensual de solicitudes de reseña en los planes Pro. Se siguen aplicando las políticas y los límites de envío de tu proveedor de correo."
+    },
+    "feature1": {
+      "description": "Cada solicitud de reseña se envía desde la cuenta de correo que conectas y usa el nombre y la firma del remitente que configuras.",
+      "statValue": "Tu correo",
+      "statLabel": "identidad del remitente"
+    },
+    "feature2": {
+      "title": "Envía solicitudes personalizadas en bloque",
+      "description": "Importa clientes mediante CSV o sincronización con WooCommerce, elige los destinatarios y envía solicitudes personalizadas sin copiar cada mensaje manualmente.",
+      "statValue": "En bloque",
+      "statLabel": "envío personalizado"
+    },
+    "feature3": {
+      "statValue": "Flexible",
+      "statLabel": "destinos de reseñas"
     }
   },
   "adaptiveSending": {
