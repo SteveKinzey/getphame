@@ -1323,10 +1323,13 @@
     "free": "Gratis",
     "pro": "Pro",
     "lifetime": "De por vida",
+    "unlimited": "Ilimitado",
     "reviewRequestsTotal": "Solicitudes de reseñas (total)",
     "followUpReminders": "Recordatorios de seguimiento",
     "savedContacts": "Contactos guardados",
     "csvImport": "Importación CSV",
+    "bulkSender": "Conexión con Bulk Sender",
+    "koalendarImports": "Importaciones de contactos de Koalendar",
     "woocommerceSync": "Sincronización con WooCommerce",
     "emailOpenClickTracking": "Correo electrónico open & click tracking",
     "advancedAnalytics": "Análisis avanzados",
@@ -3473,5 +3476,57 @@
       "scene": "Escena {{number}} · {{time}}"
     },
     "footer": "Instantánea verificada {{date}}. La evidencia del repositorio y el contenido de la presentación solo están disponibles a través de esta ruta autorizada para administradores."
+  },
+  "premiumConversion": {
+    "marker": {
+      "label": "Premium",
+      "contains": "Contiene funciones premium"
+    },
+    "modal": {
+      "closeLabel": "Cerrar los detalles de la mejora",
+      "comparePlans": "Comparar los planes gratuito y premium",
+      "notNow": "Ahora no",
+      "eyebrow": "Función premium",
+      "benefitsLabel": "Ventajas del plan de pago",
+      "contextHint": "Puedes comparar los planes sin perder la página en la que estabas trabajando."
+    },
+    "features": {
+      "send_limit": {
+        "title": "Sigue enviando solicitudes de reseña",
+        "description": "Tu asignación gratuita protege un flujo de trabajo inicial sencillo. Un plan de pago elimina el límite del plan de Get Phame cuando quieras continuar.",
+        "benefits": {
+          "one": "Envía solicitudes de reseña individuales ilimitadas",
+          "two": "Conecta Bulk Sender para envíos de mayor volumen",
+          "three": "Importa automáticamente las reservas de Koalendar completadas"
+        }
+      },
+      "koalendar": {
+        "title": "Convierte las reservas completadas en contactos",
+        "description": "Conecta Koalendar con un webhook privado y añade automáticamente a los invitados que cumplan los requisitos después de que termine cada reunión.",
+        "benefits": {
+          "one": "Crea un webhook privado para tu cuenta",
+          "two": "Importa reservas completadas que cumplan los requisitos a Contactos guardados",
+          "three": "Consulta el estado reciente de las importaciones de reservas en Get Phame"
+        }
+      },
+      "bulk_sender": {
+        "title": "Desbloquea envíos de mayor volumen",
+        "description": "Conecta un relay SMTP transaccional compatible mientras Get Phame mantiene controles de seguridad adaptados al proveedor.",
+        "benefits": {
+          "one": "Conecta un relay SMTP transaccional verificado",
+          "two": "Usa límites de envío adaptativos según el proveedor",
+          "three": "Mantén Bulk Sender separado de tu conexión personal"
+        }
+      },
+      "plans": {
+        "title": "Elige el plan que se adapte a tu flujo de trabajo",
+        "description": "Compara el plan gratuito con el acceso de pago antes de decidir. Tu trabajo actual se conserva mientras revisas las opciones.",
+        "benefits": {
+          "one": "Solicitudes de reseña individuales ilimitadas",
+          "two": "Conexión de Bulk Sender para envíos de mayor volumen",
+          "three": "Importaciones automáticas de contactos desde Koalendar"
+        }
+      }
+    }
   }
 }

@@ -90,6 +90,8 @@ import {
   isValidFollowUpDelayDays,
   normalizeFollowUpDelayDays,
 } from "@/lib/reminderSettings";
+import { openUpgradeModal } from "@/lib/upgradeModal";
+import ProBadge from "@/components/ProBadge";
 
 // ── Share & Earn Card ────────────────────────────────────────────────────────
 function ShareAndEarnCard({ profile }: { profile: ProfileData | null | undefined }) {
@@ -725,9 +727,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
         <div className="flex items-center gap-2">
           <Zap size={18} className="rr-text-gold" />
           <h2 className="text-base font-black rr-text-navy">Bulk Sender</h2>
-          {!isPro && (
-            <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: "oklch(0.80 0.18 80)", color: "oklch(0.22 0.09 260)" }}>Pro</span>
-          )}
+          {!isPro && <ProBadge variant="locked" size="sm" />}
         </div>
         {isPro && status?.connected && !showForm && (
           <button
@@ -746,9 +746,17 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
       {!isPro ? (
         <div className="rounded-xl p-4 flex items-start gap-3" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.88 0.03 260)" }}>
           <Crown size={16} className="mt-0.5 shrink-0 rr-text-gold" />
-          <div>
+          <div className="min-w-0 flex-1">
             <p className="text-sm font-bold rr-text-navy mb-0.5">{t("settings.bulkSender.proTitle", { defaultValue: "Pro feature" })}</p>
             <p className="text-sm font-semibold rr-text-navy-mid">{t("settings.bulkSender.proBody", { defaultValue: "Upgrade to Pro to connect a transactional email service for higher-volume delivery." })}</p>
+            <button
+              type="button"
+              onClick={() => openUpgradeModal("bulk_sender")}
+              className="mt-3 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-black rr-bg-navy rr-text-gold transition-transform duration-150 active:scale-[0.97] motion-reduce:transition-none"
+            >
+              <span>{t("premiumConversion.modal.comparePlans", { defaultValue: "Compare free and premium" })}</span>
+              <ProBadge variant="locked" size="sm" />
+            </button>
           </div>
         </div>
       ) : status?.connected && !showForm ? (

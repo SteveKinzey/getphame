@@ -1323,10 +1323,13 @@
     "free": "Gratuit",
     "pro": "Pro",
     "lifetime": "À vie",
+    "unlimited": "Illimité",
     "reviewRequestsTotal": "Demandes d'avis (total)",
     "followUpReminders": "Rappels de suivi",
     "savedContacts": "Contacts enregistrés",
     "csvImport": "Importation CSV",
+    "bulkSender": "Connexion Bulk Sender",
+    "koalendarImports": "Importations de contacts Koalendar",
     "woocommerceSync": "Synchronisation WooCommerce",
     "emailOpenClickTracking": "E-mail open & click tracking",
     "advancedAnalytics": "Analyses avancées",
@@ -3473,5 +3476,57 @@
       "scene": "Scène {{number}} · {{time}}"
     },
     "footer": "Instantané vérifié {{date}}. Les preuves du dépôt et le contenu de la présentation sont disponibles uniquement via cette voie autorisée aux administrateurs."
+  },
+  "premiumConversion": {
+    "marker": {
+      "label": "Premium",
+      "contains": "Contient des fonctionnalités premium"
+    },
+    "modal": {
+      "closeLabel": "Fermer les détails de la mise à niveau",
+      "comparePlans": "Comparer les offres gratuite et premium",
+      "notNow": "Pas maintenant",
+      "eyebrow": "Fonctionnalité premium",
+      "benefitsLabel": "Avantages de l’offre payante",
+      "contextHint": "Vous pouvez comparer les offres sans perdre la page sur laquelle vous travailliez."
+    },
+    "features": {
+      "send_limit": {
+        "title": "Continuez à envoyer des demandes d’avis",
+        "description": "Votre quota gratuit protège un flux de travail initial simple. Une offre payante supprime la limite du forfait Get Phame lorsque vous êtes prêt à continuer.",
+        "benefits": {
+          "one": "Envoyez un nombre illimité de demandes d’avis individuelles",
+          "two": "Connectez Bulk Sender pour les envois à plus grand volume",
+          "three": "Importez automatiquement les réservations Koalendar terminées"
+        }
+      },
+      "koalendar": {
+        "title": "Transformez les réservations terminées en contacts",
+        "description": "Connectez Koalendar à l’aide d’un webhook privé et ajoutez automatiquement les invités éligibles après la fin de chaque réunion.",
+        "benefits": {
+          "one": "Créez un webhook privé pour votre compte",
+          "two": "Importez les réservations terminées éligibles dans les Contacts enregistrés",
+          "three": "Suivez l’état récent des imports de réservations dans Get Phame"
+        }
+      },
+      "bulk_sender": {
+        "title": "Débloquez les envois à plus grand volume",
+        "description": "Connectez un relais SMTP transactionnel pris en charge pendant que Get Phame maintient des contrôles de sécurité adaptés au fournisseur.",
+        "benefits": {
+          "one": "Connectez un relais SMTP transactionnel vérifié",
+          "two": "Utilisez des limites d’envoi adaptatives selon le fournisseur",
+          "three": "Gardez Bulk Sender séparé de votre connexion personnelle"
+        }
+      },
+      "plans": {
+        "title": "Choisissez l’offre adaptée à votre flux de travail",
+        "description": "Comparez l’offre gratuite à l’accès payant avant de décider. Votre travail actuel reste en place pendant que vous examinez les options.",
+        "benefits": {
+          "one": "Demandes d’avis individuelles illimitées",
+          "two": "Connexion Bulk Sender pour les envois à plus grand volume",
+          "three": "Imports automatiques de contacts depuis Koalendar"
+        }
+      }
+    }
   }
 }

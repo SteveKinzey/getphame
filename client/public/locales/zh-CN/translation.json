@@ -962,10 +962,13 @@
     "free": "免费版",
     "pro": "专业版",
     "lifetime": "终身版",
+    "unlimited": "无限",
     "reviewRequestsTotal": "评论请求（总计）",
     "followUpReminders": "跟进提醒",
     "savedContacts": "已保存联系人",
     "csvImport": "CSV 导入",
+    "bulkSender": "Bulk Sender 连接",
+    "koalendarImports": "Koalendar 联系人导入",
     "woocommerceSync": "WooCommerce 同步",
     "emailOpenClickTracking": "邮件打开和点击跟踪",
     "advancedAnalytics": "高级分析",
@@ -2961,5 +2964,57 @@
       "scene": "场景 {{number}} · {{time}}"
     },
     "footer": "快照已验证 {{date}}。仓库证据与演示内容仅可通过此管理员授权途径获取。"
+  },
+  "premiumConversion": {
+    "marker": {
+      "label": "高级版",
+      "contains": "包含高级功能"
+    },
+    "modal": {
+      "closeLabel": "关闭升级详情",
+      "comparePlans": "比较免费版和高级版",
+      "notNow": "暂不升级",
+      "eyebrow": "高级功能",
+      "benefitsLabel": "付费方案权益",
+      "contextHint": "您可以比较各个方案，而不会丢失当前正在操作的页面。"
+    },
+    "features": {
+      "send_limit": {
+        "title": "继续发送评价邀请",
+        "description": "免费额度让您能够从简单的工作流程开始。准备继续时，付费方案将取消 Get Phame 方案的发送限制。",
+        "benefits": {
+          "one": "无限发送单个评价邀请",
+          "two": "连接 Bulk Sender 以支持更高发送量",
+          "three": "自动导入已完成的 Koalendar 预约"
+        }
+      },
+      "koalendar": {
+        "title": "将已完成的预约转为联系人",
+        "description": "通过专属 webhook 连接 Koalendar，并在每次会议结束后自动添加符合条件的受邀者。",
+        "benefits": {
+          "one": "为您的账户创建专属 webhook",
+          "two": "将符合条件的已完成预约导入已保存联系人",
+          "three": "在 Get Phame 中跟踪近期预约导入状态"
+        }
+      },
+      "bulk_sender": {
+        "title": "解锁更高发送量",
+        "description": "连接受支持的事务型 SMTP 中继，同时由 Get Phame 保持与提供商相适应的安全控制。",
+        "benefits": {
+          "one": "连接经过验证的事务型 SMTP 中继",
+          "two": "使用与提供商相适应的动态发送限制",
+          "three": "让 Bulk Sender 与您的个人连接保持独立"
+        }
+      },
+      "plans": {
+        "title": "选择适合您工作流程的方案",
+        "description": "决定前先比较免费方案与付费权限。查看选项期间，您当前的工作会完整保留。",
+        "benefits": {
+          "one": "无限发送单个评价邀请",
+          "two": "连接 Bulk Sender 以支持更高发送量",
+          "three": "自动从 Koalendar 导入联系人"
+        }
+      }
+    }
   }
 }

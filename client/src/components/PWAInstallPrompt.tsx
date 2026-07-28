@@ -103,25 +103,29 @@ export default function PWAInstallPrompt() {
     let unsubscribeWelcome: (() => void) | undefined;
     const showGuide = () => {
       if (localStorage.getItem(STORAGE_KEY)) return;
+      const overlayState = getPwaInstallSnapshot();
+      if (overlayState.welcomeVisible || overlayState.upgradeVisible) return;
       setVisible(true);
       updatePwaInstallSnapshot({ installGuideVisible: true });
       trackPwaEvent.mutate({ event: "install_guide_viewed", platform: analyticsPlatform(detectedPlatform) });
     };
-    const showWhenWelcomeCloses = () => {
-      if (!getPwaInstallSnapshot().welcomeVisible) {
+    const showWhenOverlaysClose = () => {
+      const overlayState = getPwaInstallSnapshot();
+      if (!overlayState.welcomeVisible && !overlayState.upgradeVisible) {
         showGuide();
         return;
       }
       unsubscribeWelcome = subscribeToPwaInstall(() => {
-        if (getPwaInstallSnapshot().welcomeVisible) return;
+        const currentOverlayState = getPwaInstallSnapshot();
+        if (currentOverlayState.welcomeVisible || currentOverlayState.upgradeVisible) return;
         unsubscribeWelcome?.();
         unsubscribeWelcome = undefined;
-        deferredTimer = window.setTimeout(showGuide, 800);
+        deferredTimer = window.setTimeout(showWhenOverlaysClose, 800);
       });
     };
     const timer = detectedPlatform === "other" || localStorage.getItem(STORAGE_KEY)
       ? undefined
-      : window.setTimeout(showWhenWelcomeCloses, 3000);
+      : window.setTimeout(showWhenOverlaysClose, 3000);
 
     return () => {
       if (timer) window.clearTimeout(timer);

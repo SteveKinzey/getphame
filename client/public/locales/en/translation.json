@@ -1025,10 +1025,13 @@
     "free": "Free",
     "pro": "Pro",
     "lifetime": "Lifetime",
+    "unlimited": "Unlimited",
     "reviewRequestsTotal": "Review requests (total)",
     "followUpReminders": "Follow-up reminders",
     "savedContacts": "Saved contacts",
     "csvImport": "CSV import",
+    "bulkSender": "Bulk Sender connection",
+    "koalendarImports": "Koalendar contact imports",
     "woocommerceSync": "WooCommerce sync",
     "emailOpenClickTracking": "Email open & click tracking",
     "advancedAnalytics": "Advanced analytics",
@@ -3432,5 +3435,57 @@
       "scene": "Scene {{number}} · {{time}}"
     },
     "footer": "Snapshot verified {{date}}. Repository evidence and presentation content are available only through this administrator-authorized route."
+  },
+  "premiumConversion": {
+    "marker": {
+      "label": "Premium",
+      "contains": "Contains premium features"
+    },
+    "modal": {
+      "closeLabel": "Close upgrade details",
+      "comparePlans": "Compare free and premium",
+      "notNow": "Not now",
+      "eyebrow": "Premium feature",
+      "benefitsLabel": "Paid plan benefits",
+      "contextHint": "You can compare plans without losing the page you were working on."
+    },
+    "features": {
+      "send_limit": {
+        "title": "Keep sending review requests",
+        "description": "Your free allowance protects a simple starting workflow. A paid plan removes the Get Phame plan limit when you are ready to continue.",
+        "benefits": {
+          "one": "Send unlimited individual review requests",
+          "two": "Connect Bulk Sender for higher-volume delivery",
+          "three": "Import completed Koalendar bookings automatically"
+        }
+      },
+      "koalendar": {
+        "title": "Turn completed bookings into contacts",
+        "description": "Connect Koalendar with a private webhook and automatically add eligible invitees after each meeting ends.",
+        "benefits": {
+          "one": "Create a private webhook for your account",
+          "two": "Import eligible completed bookings into Saved Contacts",
+          "three": "Track recent booking import status in Get Phame"
+        }
+      },
+      "bulk_sender": {
+        "title": "Unlock higher-volume delivery",
+        "description": "Connect a supported transactional SMTP relay while Get Phame keeps provider-aware safety controls in place.",
+        "benefits": {
+          "one": "Connect a verified transactional SMTP relay",
+          "two": "Use adaptive provider-aware sending limits",
+          "three": "Keep Bulk Sender separate from your personal connection"
+        }
+      },
+      "plans": {
+        "title": "Choose the plan that fits your workflow",
+        "description": "Compare the free plan with paid access before deciding. Your current work stays in place while you review the options.",
+        "benefits": {
+          "one": "Unlimited individual review requests",
+          "two": "Bulk Sender connection for higher-volume delivery",
+          "three": "Automatic Koalendar contact imports"
+        }
+      }
+    }
   }
 }

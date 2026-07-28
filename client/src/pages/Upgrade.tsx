@@ -13,6 +13,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
+import { normalizePremiumFeatureKey, type PremiumFeatureKey } from "@/lib/upgradeModal";
 import {
   THB_DISPLAY,
   USD_ANNUAL_SAVINGS,
@@ -44,19 +45,50 @@ function formatUsd(usdAmount: number, locale: string): string {
 const UPGRADE_IMG = "https://assets.getphame.app/phame-app-screenshot.png";
 
 // ── Feature comparison table ─────────────────────────────────────────────────
-const COMPARISON_ROWS: { feature: string; free: string | boolean; pro: string | boolean; lifetime: string | boolean }[] = [
-  { feature: "Review requests",           free: "__FREE_ALLOWANCE__", pro: "Unlimited", lifetime: "Unlimited" },
-  { feature: "Follow-up reminders",        free: true,       pro: true,         lifetime: true },
-  { feature: "Saved contacts",             free: true,       pro: true,         lifetime: true },
-  { feature: "CSV import",                 free: true,       pro: true,         lifetime: true },
-  { feature: "WooCommerce sync",           free: false,      pro: true,         lifetime: true },
-  { feature: "Email open & click tracking",free: false,      pro: true,         lifetime: true },
-  { feature: "Advanced analytics",         free: false,      pro: true,         lifetime: true },
-  { feature: "Multi-platform review links",free: "1",        pro: "Unlimited",  lifetime: "Unlimited" },
-  { feature: "Daily send limit",           free: "50/day",   pro: "500/day",    lifetime: "500/day" },
-  { feature: "Priority support",           free: false,      pro: true,         lifetime: true },
-  { feature: "Future updates",             free: false,      pro: "While active",lifetime: "Forever" },
-  { feature: "Price",                      free: "Free",     pro: `${USD_DISPLAY.monthly}/mo`, lifetime: USD_DISPLAY.lifetime },
+type ComparisonFeatureKey =
+  | "reviewRequests"
+  | "followUpReminders"
+  | "savedContacts"
+  | "csvImport"
+  | "bulkSender"
+  | "koalendarImports"
+  | "multiPlatformPhames"
+  | "price";
+
+type ComparisonCell =
+  | boolean
+  | "__FREE_ALLOWANCE__"
+  | "__UNLIMITED__"
+  | "__ONE__"
+  | "__FREE__"
+  | "__MONTHLY_PRICE__"
+  | "__LIFETIME_PRICE__";
+
+const COMPARISON_FEATURE_DEFAULTS: Record<ComparisonFeatureKey, string> = {
+  reviewRequests: "Review requests",
+  followUpReminders: "Follow-up reminders",
+  savedContacts: "Saved contacts",
+  csvImport: "CSV import",
+  bulkSender: "Bulk Sender connection",
+  koalendarImports: "Koalendar contact imports",
+  multiPlatformPhames: "Multi-platform review links",
+  price: "Price",
+};
+
+const COMPARISON_ROWS: Array<{
+  featureKey: ComparisonFeatureKey;
+  free: ComparisonCell;
+  pro: ComparisonCell;
+  lifetime: ComparisonCell;
+}> = [
+  { featureKey: "reviewRequests", free: "__FREE_ALLOWANCE__", pro: "__UNLIMITED__", lifetime: "__UNLIMITED__" },
+  { featureKey: "followUpReminders", free: true, pro: true, lifetime: true },
+  { featureKey: "savedContacts", free: true, pro: true, lifetime: true },
+  { featureKey: "csvImport", free: true, pro: true, lifetime: true },
+  { featureKey: "bulkSender", free: false, pro: true, lifetime: true },
+  { featureKey: "koalendarImports", free: false, pro: true, lifetime: true },
+  { featureKey: "multiPlatformPhames", free: "__ONE__", pro: "__UNLIMITED__", lifetime: "__UNLIMITED__" },
+  { featureKey: "price", free: "__FREE__", pro: "__MONTHLY_PRICE__", lifetime: "__LIFETIME_PRICE__" },
 ];
 
 const PRO_FEATURES = [
@@ -113,6 +145,10 @@ export default function UpgradePage() {
     if (typeof window === "undefined") return null;
     const rawCode = new URLSearchParams(window.location.search).get("promo")?.trim() ?? "";
     return rawCode && rawCode.length <= 64 ? rawCode.toUpperCase() : null;
+  });
+  const [pricingFeature] = useState<PremiumFeatureKey>(() => {
+    if (typeof window === "undefined") return "plans";
+    return normalizePremiumFeatureKey(new URLSearchParams(window.location.search).get("feature"));
   });
   // Show PromptPay if Thai locale detected, or user manually reveals it
   const isThai = typeof navigator !== "undefined" && navigator.language.toLowerCase().startsWith("th");
@@ -218,7 +254,7 @@ export default function UpgradePage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     trackPageView.mutate({
-      page: "/upgrade",
+      page: window.location.pathname === "/pricing" ? "/pricing" : "/upgrade",
       utmSource: params.get("utm_source") ?? undefined,
       utmMedium: params.get("utm_medium") ?? undefined,
       utmCampaign: params.get("utm_campaign") ?? undefined,
@@ -351,7 +387,9 @@ export default function UpgradePage() {
               <span className="rr-text-gold">{t("header.noLimits")}</span>
             </h1>
             <p className="mt-4 max-w-lg text-sm sm:text-base leading-relaxed text-white/75">
-              {t("header.proGrowthMessage", { defaultValue: "Turn every completed job into a repeatable reputation and revenue system." })}
+              {t(`premiumConversion.features.${pricingFeature}.description`, {
+                defaultValue: "Compare the free plan with paid access before deciding. Your current work stays in place while you review the options.",
+              })}
             </p>
           </div>
           <div className="relative overflow-hidden rounded-[1.75rem] border border-[oklch(0.80_0.18_80/0.7)] bg-[oklch(0.12_0.03_250)] shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
@@ -379,6 +417,8 @@ export default function UpgradePage() {
       </div>
 
       <div className="px-4 flex flex-col gap-6 max-w-7xl mx-auto">
+        <FreeVsPremiumOverview featureKey={pricingFeature} />
+
         {false && (
           <>
         {/* Plan selector tabs */}
@@ -722,11 +762,18 @@ export default function UpgradePage() {
               if (val === "__FREE_ALLOWANCE__") {
                 return <span>{t("comparisonTable.freeRequestAllowance", { defaultValue: "10 first, then 5 / rolling 30 days" })}</span>;
               }
+              if (val === "__UNLIMITED__") return <span>{t("comparisonTable.unlimited", { defaultValue: "Unlimited" })}</span>;
+              if (val === "__ONE__") return <span>1</span>;
+              if (val === "__FREE__") return <span>{t("comparisonTable.free", { defaultValue: "Free" })}</span>;
+              if (val === "__MONTHLY_PRICE__") {
+                return <span>{USD_DISPLAY.monthly} {t("pricingCard.monthlySub", { defaultValue: "/ month" })}</span>;
+              }
+              if (val === "__LIFETIME_PRICE__") return <span>{USD_DISPLAY.lifetime}</span>;
               return <span>{val}</span>;
             };
             return (
               <div
-                key={row.feature}
+                key={row.featureKey}
                 className="grid grid-cols-4 text-center text-xs py-2.5 px-2 items-center"
                 style={{
                   background: isLast
@@ -741,9 +788,9 @@ export default function UpgradePage() {
                 }}
               >
                 <div className="text-left pl-2" style={{ color: isLast ? "oklch(0.80 0.18 80)" : "var(--text-on-dark-secondary)", fontWeight: isLast ? 800 : 500 }}>
-                  {row.feature === "Review requests"
-                    ? t("comparisonTable.reviewRequests", { defaultValue: "Review requests" })
-                    : row.feature}
+                  {t(`comparisonTable.${row.featureKey}`, {
+                    defaultValue: COMPARISON_FEATURE_DEFAULTS[row.featureKey],
+                  })}
                 </div>
                 <div>{renderCell(row.free)}</div>
                 <div>{renderCell(row.pro)}</div>
@@ -795,6 +842,97 @@ export default function UpgradePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function FreeVsPremiumOverview({ featureKey }: { featureKey: PremiumFeatureKey }) {
+  const { t } = useTranslation();
+  const featurePath = `premiumConversion.features.${featureKey}`;
+
+  const scrollToPlans = () => {
+    document.getElementById("upgrade-plan-grid-heading")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  };
+
+  return (
+    <section
+      data-testid="free-vs-premium-overview"
+      aria-labelledby="free-vs-premium-heading"
+      className="overflow-hidden rounded-[1.75rem] border border-white/12 bg-[linear-gradient(135deg,oklch(0.26_0.09_260),oklch(0.17_0.06_260))] p-5 shadow-[0_20px_60px_rgba(0,0,0,0.24)] sm:p-7"
+    >
+      <div className="mx-auto max-w-3xl text-center">
+        <p className="text-xs font-black uppercase tracking-[0.16em] rr-text-gold">
+          {t("premiumConversion.modal.comparePlans", { defaultValue: "Compare free and premium" })}
+        </p>
+        <h2 id="free-vs-premium-heading" className="mt-2 text-2xl font-black text-white sm:text-3xl">
+          {t(`${featurePath}.title`, { defaultValue: "Choose the plan that fits your workflow" })}
+        </h2>
+        <p className="mt-3 text-sm font-semibold leading-relaxed text-white/70 sm:text-base">
+          {t(`${featurePath}.description`, {
+            defaultValue: "Compare the free plan with paid access before deciding. Your current work stays in place while you review the options.",
+          })}
+        </p>
+      </div>
+
+      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+        <article className="rounded-3xl border border-white/10 bg-[#061a3a]/55 p-5 sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.14em] text-white/55">
+                {t("comparisonTable.free", { defaultValue: "Free" })}
+              </p>
+              <p className="mt-1 text-2xl font-black text-white">
+                {t("comparisonTable.freeRequestAllowance", { defaultValue: "10 first, then 5 / rolling 30 days" })}
+              </p>
+            </div>
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl border border-white/10 bg-white/[0.06] text-white" aria-hidden="true">
+              <Check size={20} />
+            </span>
+          </div>
+          <ul className="mt-5 grid gap-3" aria-label={t("comparisonTable.free", { defaultValue: "Free" })}>
+            {(["followUpReminders", "savedContacts", "csvImport"] as const).map((key) => (
+              <li key={key} className="flex items-start gap-3 text-sm font-bold text-white/75">
+                <Check size={16} className="mt-0.5 shrink-0 text-[oklch(0.72_0.18_145)]" aria-hidden="true" />
+                <span>{t(`comparisonTable.${key}`, { defaultValue: COMPARISON_FEATURE_DEFAULTS[key] })}</span>
+              </li>
+            ))}
+          </ul>
+        </article>
+
+        <article className="relative rounded-3xl border border-[oklch(0.80_0.18_80/0.72)] bg-[linear-gradient(145deg,oklch(0.31_0.11_260),oklch(0.22_0.07_260))] p-5 shadow-[0_18px_50px_oklch(0.80_0.18_80/0.14)] sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.14em] rr-text-gold">
+                {t("premiumConversion.marker.label", { defaultValue: "Premium" })}
+              </p>
+              <p className="mt-1 text-2xl font-black text-white">
+                {t(`${featurePath}.title`, { defaultValue: "Choose the plan that fits your workflow" })}
+              </p>
+            </div>
+            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-amber-200/10 rr-text-gold" aria-hidden="true">
+              <Crown size={21} />
+            </span>
+          </div>
+          <ul className="mt-5 grid gap-3" aria-label={t("premiumConversion.modal.benefitsLabel", { defaultValue: "Paid plan benefits" })}>
+            {(["one", "two", "three"] as const).map((key) => (
+              <li key={key} className="flex items-start gap-3 text-sm font-bold text-white">
+                <Check size={16} className="mt-0.5 shrink-0 rr-text-gold" aria-hidden="true" />
+                <span>{t(`${featurePath}.benefits.${key}`)}</span>
+              </li>
+            ))}
+          </ul>
+          <button
+            type="button"
+            onClick={scrollToPlans}
+            className="mt-6 flex min-h-12 w-full items-center justify-center rounded-2xl px-5 py-3 text-base font-black rr-bg-gold rr-text-navy transition-transform duration-150 active:scale-[0.97] motion-reduce:transition-none"
+          >
+            {t("pricingGrid.title", { defaultValue: "Choose the plan that fits your growth" })}
+          </button>
+        </article>
+      </div>
+    </section>
   );
 }
 
@@ -1082,6 +1220,11 @@ function MobilePlanComparisonDrawer() {
     );
     if (value === false) return <span className="text-white/35">—</span>;
     if (value === "__FREE_ALLOWANCE__") return <span>{t("comparisonTable.freeRequestAllowance", { defaultValue: "10 + 5 / 30d" })}</span>;
+    if (value === "__UNLIMITED__") return <span>{t("comparisonTable.unlimited", { defaultValue: "Unlimited" })}</span>;
+    if (value === "__ONE__") return <span>1</span>;
+    if (value === "__FREE__") return <span>{t("comparisonTable.free", { defaultValue: "Free" })}</span>;
+    if (value === "__MONTHLY_PRICE__") return <span>{USD_DISPLAY.monthly}</span>;
+    if (value === "__LIFETIME_PRICE__") return <span>{USD_DISPLAY.lifetime}</span>;
     return <span>{value}</span>;
   };
 
@@ -1128,12 +1271,14 @@ function MobilePlanComparisonDrawer() {
             </div>
             {COMPARISON_ROWS.map((row, index) => (
               <div
-                key={row.feature}
+                key={row.featureKey}
                 className="grid grid-cols-[minmax(0,1.42fr)_repeat(3,minmax(0,0.78fr))] items-center px-2 py-2 text-center text-[10px] font-semibold text-white/75"
                 style={{ background: index % 2 === 0 ? "oklch(0.25 0.08 260)" : "oklch(0.22 0.07 260)" }}
               >
                 <div className="pr-1 text-left font-bold text-white/85">
-                  {row.feature === "Review requests" ? t("comparisonTable.reviewRequests", { defaultValue: "Review requests" }) : row.feature}
+                  {t(`comparisonTable.${row.featureKey}`, {
+                    defaultValue: COMPARISON_FEATURE_DEFAULTS[row.featureKey],
+                  })}
                 </div>
                 <div>{renderCell(row.free)}</div>
                 <div>{renderCell(row.pro)}</div>

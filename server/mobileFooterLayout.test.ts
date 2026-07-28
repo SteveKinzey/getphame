@@ -22,7 +22,8 @@ describe("authenticated mobile footer layout", () => {
   it("truncates long localized primary-navigation labels on compact phones instead of splitting words", () => {
     expect(source).toContain('className="block w-full truncate px-0.5 text-center text-[9px]');
     expect(source).toContain("sm:whitespace-normal sm:text-xs");
-    expect(source).toContain("aria-label={label}");
+    expect(source).toContain("aria-label={accessibleLabel}");
+    expect(source).toContain("premiumConversion.marker.contains");
     expect(source).toContain("nav.mobileSettings");
     expect(source).toContain("nav.mobileDashboard");
     expect(source).toContain("nav.mobileAdmin");

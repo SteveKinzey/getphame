@@ -963,10 +963,13 @@
     "free": "免費版",
     "pro": "專業版",
     "lifetime": "終身版",
+    "unlimited": "無限制",
     "reviewRequestsTotal": "評論請求（總計）",
     "followUpReminders": "跟進提醒",
     "savedContacts": "已儲存聯絡人",
     "csvImport": "CSV 匯入",
+    "bulkSender": "Bulk Sender 連線",
+    "koalendarImports": "Koalendar 聯絡人匯入",
     "woocommerceSync": "WooCommerce 同步",
     "emailOpenClickTracking": "郵件開啟和點選跟蹤",
     "advancedAnalytics": "高階分析",
@@ -2983,5 +2986,57 @@
       "scene": "場景 {{number}} · {{time}}"
     },
     "footer": "快照已驗證 {{date}}。倉庫證據與展示內容僅可透過此管理員授權路徑取得。"
+  },
+  "premiumConversion": {
+    "marker": {
+      "label": "高級版",
+      "contains": "包含高級功能"
+    },
+    "modal": {
+      "closeLabel": "關閉升級詳情",
+      "comparePlans": "比較免費版與高級版",
+      "notNow": "暫不升級",
+      "eyebrow": "高級功能",
+      "benefitsLabel": "付費方案權益",
+      "contextHint": "您可以比較各個方案，而不會失去目前正在操作的頁面。"
+    },
+    "features": {
+      "send_limit": {
+        "title": "繼續傳送評論邀請",
+        "description": "免費額度讓您能以簡單的工作流程開始。準備繼續時，付費方案會移除 Get Phame 方案的傳送限制。",
+        "benefits": {
+          "one": "無限傳送個別評論邀請",
+          "two": "連接 Bulk Sender 以支援更高傳送量",
+          "three": "自動匯入已完成的 Koalendar 預約"
+        }
+      },
+      "koalendar": {
+        "title": "將已完成的預約轉為聯絡人",
+        "description": "使用專屬 webhook 連接 Koalendar，並在每次會議結束後自動加入符合資格的受邀者。",
+        "benefits": {
+          "one": "為您的帳戶建立專屬 webhook",
+          "two": "將符合資格的已完成預約匯入已儲存的聯絡人",
+          "three": "在 Get Phame 中追蹤近期預約匯入狀態"
+        }
+      },
+      "bulk_sender": {
+        "title": "解鎖更高傳送量",
+        "description": "連接受支援的交易型 SMTP 轉送服務，同時由 Get Phame 維持配合供應商的安全控制。",
+        "benefits": {
+          "one": "連接已驗證的交易型 SMTP 轉送服務",
+          "two": "使用配合供應商動態調整的傳送限制",
+          "three": "讓 Bulk Sender 與您的個人連線保持分開"
+        }
+      },
+      "plans": {
+        "title": "選擇適合您工作流程的方案",
+        "description": "決定前先比較免費方案與付費權限。查看選項期間，您目前的工作會完整保留。",
+        "benefits": {
+          "one": "無限傳送個別評論邀請",
+          "two": "連接 Bulk Sender 以支援更高傳送量",
+          "three": "自動從 Koalendar 匯入聯絡人"
+        }
+      }
+    }
   }
 }
