@@ -21,6 +21,7 @@ import SettingsPage from "./pages/Settings";
 import OnboardingWizard from "./components/OnboardingWizard";
 import OnboardingGuide, { useOnboardingGuide } from "./components/OnboardingGuide";
 import PWAInstallPrompt from "./components/PWAInstallPrompt";
+import FirstVisitWelcome from "./components/FirstVisitWelcome";
 import PageLoader from "./components/PageLoader";
 import { ApiReconnectingIndicator, DashboardReadinessGate, useDashboardReadiness } from "./components/ApiRecoveryExperience";
 import { handoffGuideNavigation } from "./lib/onboardingFlow";
@@ -404,6 +405,7 @@ function App() {
           <AutoTextLocalizer />
           <Toaster position="top-center" richColors />
           <AppShell />
+          <FirstVisitWelcome />
           <PWAInstallPrompt />
         </TooltipProvider>
       </ThemeProvider>

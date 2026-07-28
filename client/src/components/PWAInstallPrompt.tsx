@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react";
 import { Check, Copy, Download, MoreVertical, Plus, Share, Share2, X } from "lucide-react";
 import { trpc } from "@/lib/trpc";
-import { registerPwaInstallRequest, updatePwaInstallSnapshot } from "@/lib/pwaInstall";
+import {
+  getPwaInstallSnapshot,
+  registerPwaInstallRequest,
+  subscribeToPwaInstall,
+  updatePwaInstallSnapshot,
+} from "@/lib/pwaInstall";
 
 const STORAGE_KEY = "rl-pwa-prompt-dismissed";
 const CANONICAL_URL = "https://getphame.app/";
@@ -83,21 +88,45 @@ export default function PWAInstallPrompt() {
       setVisible(false);
       setInstallPrompt(null);
       localStorage.setItem(STORAGE_KEY, "1");
-      updatePwaInstallSnapshot({ eligible: false, installed: true, promptAvailable: false });
+      updatePwaInstallSnapshot({
+        eligible: false,
+        installed: true,
+        promptAvailable: false,
+        installGuideVisible: false,
+      });
       trackPwaEvent.mutate({ event: "app_installed", platform: analyticsPlatform(detectedPlatform) });
     };
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
     window.addEventListener("appinstalled", handleInstalled);
+    let deferredTimer: number | undefined;
+    let unsubscribeWelcome: (() => void) | undefined;
+    const showGuide = () => {
+      if (localStorage.getItem(STORAGE_KEY)) return;
+      setVisible(true);
+      updatePwaInstallSnapshot({ installGuideVisible: true });
+      trackPwaEvent.mutate({ event: "install_guide_viewed", platform: analyticsPlatform(detectedPlatform) });
+    };
+    const showWhenWelcomeCloses = () => {
+      if (!getPwaInstallSnapshot().welcomeVisible) {
+        showGuide();
+        return;
+      }
+      unsubscribeWelcome = subscribeToPwaInstall(() => {
+        if (getPwaInstallSnapshot().welcomeVisible) return;
+        unsubscribeWelcome?.();
+        unsubscribeWelcome = undefined;
+        deferredTimer = window.setTimeout(showGuide, 800);
+      });
+    };
     const timer = detectedPlatform === "other" || localStorage.getItem(STORAGE_KEY)
       ? undefined
-      : window.setTimeout(() => {
-          setVisible(true);
-          trackPwaEvent.mutate({ event: "install_guide_viewed", platform: analyticsPlatform(detectedPlatform) });
-        }, 3000);
+      : window.setTimeout(showWhenWelcomeCloses, 3000);
 
     return () => {
       if (timer) window.clearTimeout(timer);
+      if (deferredTimer) window.clearTimeout(deferredTimer);
+      unsubscribeWelcome?.();
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
       window.removeEventListener("appinstalled", handleInstalled);
     };
@@ -112,6 +141,7 @@ export default function PWAInstallPrompt() {
   const dismiss = () => {
     record("install_guide_dismissed");
     setVisible(false);
+    updatePwaInstallSnapshot({ installGuideVisible: false });
     localStorage.setItem(STORAGE_KEY, "1");
   };
 
@@ -127,6 +157,7 @@ export default function PWAInstallPrompt() {
       if (choice.outcome === "accepted") {
         record("install_accepted");
         setVisible(false);
+        updatePwaInstallSnapshot({ installGuideVisible: false });
         localStorage.setItem(STORAGE_KEY, "1");
       } else {
         record("install_declined");
@@ -142,6 +173,7 @@ export default function PWAInstallPrompt() {
       return;
     }
     setVisible(true);
+    updatePwaInstallSnapshot({ installGuideVisible: true });
     record("install_guide_viewed");
   }));
 

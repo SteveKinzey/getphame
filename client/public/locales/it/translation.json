@@ -5,6 +5,22 @@
     "ogDescription": "Invia email personalizzate di richiesta recensione dal tuo account email. Funziona con Google, Yelp, TripAdvisor e altro.",
     "shortTitle": "Get Phame"
   },
+  "firstVisitWelcome": {
+    "languageReady": "Lingua rilevata",
+    "title": "Ti diamo il benvenuto su Get Phame",
+    "description": "Abbiamo selezionato {{language}} dalle preferenze del browser. Ecco cosa puoi fare ora.",
+    "featuresLabel": "Funzionalità di Get Phame",
+    "features": {
+      "personalRequests": "Invia richieste di recensione individuali dal tuo indirizzo email",
+      "followUps": "Programma promemoria conformi che si interrompono quando il cliente agisce",
+      "dashboard": "Monitora consegna e coinvolgimento in un unico pannello chiaro"
+    },
+    "changeLanguage": "Scegli un'altra lingua",
+    "selectedLanguage": "Get Phame è attualmente visualizzato in {{language}}.",
+    "continue": "Continua in {{language}}",
+    "preferenceHint": "Puoi cambiare lingua in qualsiasi momento dal selettore della lingua.",
+    "closeLabel": "Chiudi la finestra di benvenuto"
+  },
   "nav": {
     "brandName": "Get Phame",
     "signIn": "Accedi",

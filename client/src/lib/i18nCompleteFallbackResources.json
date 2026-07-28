@@ -1,5 +1,21 @@
 {
   "en": {
+    "firstVisitWelcome": {
+      "languageReady": "Language detected",
+      "title": "Welcome to Get Phame",
+      "description": "We selected {{language}} from your browser preferences. Here is what you can do next.",
+      "featuresLabel": "Get Phame features",
+      "features": {
+        "personalRequests": "Send individual review requests from your own email",
+        "followUps": "Schedule compliant follow-ups that stop after the customer acts",
+        "dashboard": "Track delivery and engagement in one clear dashboard"
+      },
+      "changeLanguage": "Choose another language",
+      "selectedLanguage": "Get Phame is currently displayed in {{language}}.",
+      "continue": "Continue in {{language}}",
+      "preferenceHint": "You can change your language at any time from the language selector.",
+      "closeLabel": "Close welcome dialog"
+    },
     "nav": {
       "brandName": "Get Phame",
       "signIn": "Sign In",
@@ -1341,6 +1357,22 @@
     }
   },
   "es": {
+    "firstVisitWelcome": {
+      "languageReady": "Idioma detectado",
+      "title": "Te damos la bienvenida a Get Phame",
+      "description": "Seleccionamos {{language}} según las preferencias de tu navegador. Esto es lo que puedes hacer a continuación.",
+      "featuresLabel": "Funciones de Get Phame",
+      "features": {
+        "personalRequests": "Envía solicitudes de reseña individuales desde tu propio correo",
+        "followUps": "Programa seguimientos que cumplen las normas y se detienen cuando el cliente actúa",
+        "dashboard": "Consulta la entrega y la interacción en un panel claro"
+      },
+      "changeLanguage": "Elegir otro idioma",
+      "selectedLanguage": "Get Phame se muestra actualmente en {{language}}.",
+      "continue": "Continuar en {{language}}",
+      "preferenceHint": "Puedes cambiar el idioma en cualquier momento desde el selector de idioma.",
+      "closeLabel": "Cerrar el diálogo de bienvenida"
+    },
     "nav": {
       "brandName": "Get Phame",
       "signIn": "Iniciar sesión",
@@ -2890,6 +2922,22 @@
     }
   },
   "fr": {
+    "firstVisitWelcome": {
+      "languageReady": "Langue détectée",
+      "title": "Bienvenue sur Get Phame",
+      "description": "Nous avons sélectionné {{language}} selon les préférences de votre navigateur. Voici ce que vous pouvez faire ensuite.",
+      "featuresLabel": "Fonctionnalités de Get Phame",
+      "features": {
+        "personalRequests": "Envoyez des demandes d'avis individuelles depuis votre propre adresse e-mail",
+        "followUps": "Programmez des relances conformes qui s'arrêtent lorsque le client agit",
+        "dashboard": "Suivez la livraison et l'engagement dans un tableau de bord clair"
+      },
+      "changeLanguage": "Choisir une autre langue",
+      "selectedLanguage": "Get Phame est actuellement affiché en {{language}}.",
+      "continue": "Continuer en {{language}}",
+      "preferenceHint": "Vous pouvez changer de langue à tout moment depuis le sélecteur de langue.",
+      "closeLabel": "Fermer la fenêtre de bienvenue"
+    },
     "nav": {
       "brandName": "Get Phame",
       "signIn": "Se connecter",
@@ -4460,6 +4508,22 @@
     }
   },
   "it": {
+    "firstVisitWelcome": {
+      "languageReady": "Lingua rilevata",
+      "title": "Ti diamo il benvenuto su Get Phame",
+      "description": "Abbiamo selezionato {{language}} dalle preferenze del browser. Ecco cosa puoi fare ora.",
+      "featuresLabel": "Funzionalità di Get Phame",
+      "features": {
+        "personalRequests": "Invia richieste di recensione individuali dal tuo indirizzo email",
+        "followUps": "Programma promemoria conformi che si interrompono quando il cliente agisce",
+        "dashboard": "Monitora consegna e coinvolgimento in un unico pannello chiaro"
+      },
+      "changeLanguage": "Scegli un'altra lingua",
+      "selectedLanguage": "Get Phame è attualmente visualizzato in {{language}}.",
+      "continue": "Continua in {{language}}",
+      "preferenceHint": "Puoi cambiare lingua in qualsiasi momento dal selettore della lingua.",
+      "closeLabel": "Chiudi la finestra di benvenuto"
+    },
     "nav": {
       "brandName": "Get Phame",
       "signIn": "Accedi",
@@ -5863,6 +5927,22 @@
     }
   },
   "th": {
+    "firstVisitWelcome": {
+      "languageReady": "ตรวจพบภาษาแล้ว",
+      "title": "ยินดีต้อนรับสู่ Get Phame",
+      "description": "เราเลือก {{language}} จากการตั้งค่าเบราว์เซอร์ของคุณ นี่คือสิ่งที่คุณทำต่อได้",
+      "featuresLabel": "ฟีเจอร์ของ Get Phame",
+      "features": {
+        "personalRequests": "ส่งคำขอรีวิวเป็นรายบุคคลจากอีเมลของคุณเอง",
+        "followUps": "ตั้งเวลาติดตามผลที่สอดคล้องกับข้อกำหนดและหยุดเมื่อลูกค้าดำเนินการแล้ว",
+        "dashboard": "ติดตามการส่งและการมีส่วนร่วมในแดชบอร์ดที่ชัดเจน"
+      },
+      "changeLanguage": "เลือกภาษาอื่น",
+      "selectedLanguage": "ขณะนี้ Get Phame แสดงเป็นภาษา{{language}}",
+      "continue": "ดำเนินการต่อเป็นภาษา{{language}}",
+      "preferenceHint": "คุณเปลี่ยนภาษาได้ทุกเมื่อจากตัวเลือกภาษา",
+      "closeLabel": "ปิดหน้าต่างต้อนรับ"
+    },
     "nav": {
       "brandName": "Get Phame",
       "signIn": "ลงชื่อเข้าใช้",
@@ -7263,6 +7343,22 @@
     }
   },
   "zh-CN": {
+    "firstVisitWelcome": {
+      "languageReady": "已检测到语言",
+      "title": "欢迎使用 Get Phame",
+      "description": "我们已根据您的浏览器偏好选择{{language}}。接下来您可以完成这些操作。",
+      "featuresLabel": "Get Phame 功能",
+      "features": {
+        "personalRequests": "使用您自己的邮箱逐一发送评论邀请",
+        "followUps": "安排合规的后续提醒，并在客户完成操作后停止",
+        "dashboard": "在清晰的仪表板中查看送达与互动情况"
+      },
+      "changeLanguage": "选择其他语言",
+      "selectedLanguage": "Get Phame 当前以{{language}}显示。",
+      "continue": "使用{{language}}继续",
+      "preferenceHint": "您可以随时通过语言选择器更改语言。",
+      "closeLabel": "关闭欢迎窗口"
+    },
     "nav": {
       "brandName": "Get Phame",
       "signIn": "登录",
@@ -8653,6 +8749,22 @@
     }
   },
   "zh-TW": {
+    "firstVisitWelcome": {
+      "languageReady": "已偵測到語言",
+      "title": "歡迎使用 Get Phame",
+      "description": "我們已根據您的瀏覽器偏好選擇{{language}}。接下來您可以完成這些操作。",
+      "featuresLabel": "Get Phame 功能",
+      "features": {
+        "personalRequests": "使用您自己的電子郵件逐一傳送評論邀請",
+        "followUps": "安排合規的後續提醒，並在客戶完成操作後停止",
+        "dashboard": "在清楚的儀表板中查看送達與互動情況"
+      },
+      "changeLanguage": "選擇其他語言",
+      "selectedLanguage": "Get Phame 目前以{{language}}顯示。",
+      "continue": "使用{{language}}繼續",
+      "preferenceHint": "您可以隨時透過語言選擇器變更語言。",
+      "closeLabel": "關閉歡迎視窗"
+    },
     "nav": {
       "brandName": "Get Phame",
       "signIn": "登入",
