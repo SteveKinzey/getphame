@@ -20,11 +20,11 @@
     "complianceHint": "Visualizza la Guida alla Conformità",
     "complianceActive": "Conformità: Attiva",
     "complianceViewGuide": "— visualizza la guida",
-    "howItWorks": "How It Works",
-    "pricing": "Pricing",
+    "howItWorks": "Come funziona",
+    "pricing": "Prezzi",
     "faq": "FAQ",
     "manageUsers": "Gestisci utenti",
-    "admin": "Admin",
+    "admin": "Amministrazione",
     "developer": "Sviluppatore",
     "userManual": "Manuale utente",
     "adminManual": "Manuale amministratore"
@@ -156,7 +156,7 @@
     "q5": "Get Phame memorizza la password della mia email?",
     "a5": "Mai. Get Phame utilizza le tue credenziali SMTP (o la password per app Gmail) per inviare le email direttamente dal tuo account. La password è crittografata a riposo e non viene mai condivisa o memorizzata in chiaro. Puoi disconnetterti in qualsiasi momento dalle Impostazioni.",
     "q6": "Le mie email finiranno nello spam?",
-    "a6": "Because emails are sent from your own email address — not a generic sender — they land in the primary inbox far more reliably than bulk marketing tools. Your domain reputation stays intact.",
+    "a6": "Poiché le email vengono inviate dal tuo indirizzo email, non da un mittente generico, arrivano nella posta in arrivo principale in modo molto più affidabile rispetto agli strumenti di marketing di massa. La reputazione del tuo dominio rimane intatta.",
     "q7": "Cosa succede alla mia lista clienti?",
     "a7": "I dati dei tuoi clienti restano privati. Sono memorizzati in modo sicuro nel tuo account e non vengono mai venduti, condivisi o usati per scopi diversi dall'invio delle tue richieste di recensione. Puoi eliminare i contatti in qualsiasi momento.",
     "q8": "I clienti possono disiscriversi?",
@@ -167,7 +167,7 @@
     "a10": "Google, Yelp, TripAdvisor, Facebook, Bing e qualsiasi URL personalizzato. Puoi aggiungere più piattaforme e scegliere quale includere in ogni invio.",
     "q11": "Come funziona la sincronizzazione con WooCommerce?",
     "a11": "Il connettore WooCommerce è disponibile solo con i piani a pagamento. Gli utenti a pagamento installano il plugin WooCommerce di Get Phame, inseriscono la chiave API e i nuovi clienti vengono importati automaticamente dopo ogni ordine completato. Puoi impostare un ritardo, ad esempio 7 giorni dopo l'acquisto, prima che appaiano nella coda di invio.",
-    "q12": "What does unlimited mean on the Pro plan?",
+    "q12": "Cosa significa illimitato nel piano Pro?",
     "a12": "Illimitato significa nessun limite mensile alle richieste. Il piano Gratuito include 10 richieste iniziali, poi 5 ogni 30 giorni mobili. Pro rimuove questo limite del prodotto."
   },
   "bottomCta": {
@@ -1169,8 +1169,8 @@
       "title": "Benvenuto in Get Phame!",
       "subtitle": "Configuriamo il tuo account in pochi minuti.",
       "getStarted": "Inizia",
-      "watchVideoLabel": "Watch: Get Phame in 90 seconds",
-      "watchVideoSub": "See how it works before you connect"
+      "watchVideoLabel": "Guarda: Get Phame in 90 secondi",
+      "watchVideoSub": "Scopri come funziona prima di connetterti"
     },
     "connectEmail": {
       "title": "Connetti la tua Email",
@@ -2299,7 +2299,7 @@
     "unsubscribe": "Link di cancellazione in ogni email"
   },
   "demo": {
-    "sectionTitle": "See It In Action",
+    "sectionTitle": "Guardalo in azione",
     "sectionSubtitle": "Scopri il flusso di invio in tre passaggi.",
     "gifAlt": "Demo del flusso di invio in 3 passaggi di Get Phame",
     "gifCaption": "Il flusso di invio in 3 passaggi",
@@ -2326,8 +2326,8 @@
     "accountCount": "{{count}} account",
     "loading": "Caricamento account…",
     "unnamed": "Utente senza nome",
-    "admin": "Admin",
-    "life": "Life",
+    "admin": "Amministratore",
+    "life": "A vita",
     "noEmail": "Nessuna email",
     "accountMeta": "Iscritto il {{date}} · Piano salvato: {{tier}}",
     "removeAdmin": "Rimuovi admin",
@@ -3647,7 +3647,7 @@
       "body": "La classificazione non cancella mai un branch. Il repository live viene rivalidato immediatamente prima della mutazione, e qualsiasi fatto modificato interrompe l'operazione.",
       "gates": {
         "dryRun": "Esecuzione a secco",
-        "refetch": "Re-fetch",
+        "refetch": "Ricarica",
         "exactSha": "SHA esatto",
         "openPr": "Controllo PR aperte",
         "preservation": "Prova di preservazione",
