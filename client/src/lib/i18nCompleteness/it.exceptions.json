@@ -1,9 +1,9 @@
 {
   "locale": "it",
   "audit": "Exhaustive English-identical customer-copy review",
-  "sourceCandidateCount": 46,
+  "sourceCandidateCount": 47,
   "translatedCount": 11,
-  "exceptionCount": 35,
+  "exceptionCount": 36,
   "minimumTranslationConfidence": 0.95,
   "translatedEntryFormat": "<namespace>:<key>",
   "exceptionEntryFormat": "<namespace>:<key>|<category>",
@@ -25,6 +25,7 @@
     "translation:adminGithubCleanup.safety.gates.refetch"
   ],
   "exceptions": [
+    "translation:premiumConversion.marker.label|cross_language_equivalent",
     "translation:seo.shortTitle|brand_or_product",
     "translation:nav.brandName|brand_or_product",
     "translation:nav.home|cross_language_equivalent",

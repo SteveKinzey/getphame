@@ -19,6 +19,16 @@ import * as db from "./db";
 import { sendUserWelcomeEmail } from "./smtp";
 import crypto from "crypto";
 import { issueSecuritySession } from "./security/passkeySessions";
+import {
+  createProviderOAuthState,
+  isValidExpectedEmailHash,
+  PASSKEY_ENROLLMENT_CANCEL_PATH,
+  PASSKEY_ENROLLMENT_INTENT,
+  PASSKEY_ENROLLMENT_MISMATCH_PATH,
+  PASSKEY_ENROLLMENT_SUCCESS_PATH,
+  providerEmailMatches,
+  verifyProviderOAuthCallbackState,
+} from "./security/passkeyEnrollmentIntent";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -78,8 +88,14 @@ export function registerGoogleAuthRoutes(app: Express) {
     const redirectUri = buildRedirectUri(req);
     const oAuth2Client = createOAuthClient(redirectUri);
 
-    // Generate a CSRF state token to prevent open redirect attacks
-    const state = crypto.randomBytes(16).toString("hex");
+    const intent = typeof req.query.intent === "string" ? req.query.intent : undefined;
+    const expectedEmailHash = typeof req.query.expected_email_hash === "string" ? req.query.expected_email_hash : undefined;
+    if (intent !== undefined && (intent !== PASSKEY_ENROLLMENT_INTENT || !isValidExpectedEmailHash(expectedEmailHash))) {
+      return res.status(400).json({ error: "Invalid verification request." });
+    }
+    const state = createProviderOAuthState(intent === PASSKEY_ENROLLMENT_INTENT
+      ? { intent, expectedEmailHash }
+      : undefined);
 
     // Store state in a short-lived httpOnly cookie (10 minutes).
     // Must use sameSite: "none" + secure so the cookie survives the
@@ -118,26 +134,24 @@ export function registerGoogleAuthRoutes(app: Express) {
       error?: string;
     };
 
-    // User denied access
-    if (error) {
-      console.warn("[GoogleAuth] User denied access:", error);
-      return res.redirect(302, "/?auth_error=google_denied");
-    }
-
-    if (!code) {
-      console.warn("[GoogleAuth] Missing authorization code");
-      return res.redirect(302, "/?auth_error=google_missing_code");
-    }
-
     // CSRF state validation
     const storedState = req.cookies?.google_oauth_state;
-    if (!storedState || storedState !== state) {
+    const stateVerification = verifyProviderOAuthCallbackState(storedState, state);
+    if (!stateVerification) {
       console.warn("[GoogleAuth] State mismatch — possible CSRF attack");
       return res.redirect(302, "/?auth_error=google_state_mismatch");
     }
 
     // Clear the state cookie immediately
     res.clearCookie("google_oauth_state");
+    const statePayload = stateVerification.kind === "signed" ? stateVerification.payload : null;
+    const isPasskeyEnrollment = statePayload?.intent === PASSKEY_ENROLLMENT_INTENT;
+
+    if (error || !code) {
+      if (error) console.warn("[GoogleAuth] User denied access:", error);
+      else console.warn("[GoogleAuth] Missing authorization code");
+      return res.redirect(302, isPasskeyEnrollment ? PASSKEY_ENROLLMENT_CANCEL_PATH : error ? "/?auth_error=google_denied" : "/?auth_error=google_missing_code");
+    }
 
     try {
       const redirectUri = buildRedirectUri(req);
@@ -159,6 +173,36 @@ export function registerGoogleAuthRoutes(app: Express) {
       const openId = `google_${googleUser.id}`;
       const email = googleUser.email ?? null;
       const name = googleUser.name ?? null;
+
+      if (isPasskeyEnrollment) {
+        if (!email || googleUser.verified_email !== true || !statePayload?.expectedEmailHash || !providerEmailMatches(email, statePayload.expectedEmailHash)) {
+          return res.redirect(302, PASSKEY_ENROLLMENT_MISMATCH_PATH);
+        }
+
+        const providerUser = await db.getUserByOpenId(openId);
+        const canonicalUser = await db.getUserByEmail(email);
+        if (providerUser && canonicalUser && providerUser.id !== canonicalUser.id) {
+          return res.redirect(302, PASSKEY_ENROLLMENT_MISMATCH_PATH);
+        }
+
+        let sessionUser = canonicalUser ?? providerUser;
+        let isNewEnrollmentUser = false;
+        if (!sessionUser) {
+          await db.upsertUser({ openId, name, email, loginMethod: "google", lastSignedIn: new Date() });
+          sessionUser = await db.getUserByOpenId(openId);
+          isNewEnrollmentUser = true;
+        } else if (!providerUser) {
+          await db.linkUserIdentity({ userId: sessionUser.id, openId, loginMethod: "google", lastSignedIn: new Date() });
+        }
+        if (!sessionUser) throw new Error("Session user unavailable after Google verification");
+
+        if (isNewEnrollmentUser) {
+          const ownerUser = await db.getUserByOpenId(ENV.ownerOpenId);
+          if (ownerUser) sendUserWelcomeEmail({ ownerUserId: ownerUser.id, toEmail: email, toName: name }).catch((err: unknown) => console.warn("[GoogleAuth] Welcome email failed:", err));
+        }
+        await issueSecuritySession({ userId: sessionUser.id, authMethod: "oauth", assurance: "a1", req, res });
+        return res.redirect(302, PASSKEY_ENROLLMENT_SUCCESS_PATH);
+      }
 
       // Check if this is a new user before upsert
       const existingUser = await db.getUserByOpenId(openId);

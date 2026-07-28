@@ -1,9 +1,9 @@
 {
   "locale": "es",
   "audit": "Exhaustive English-identical customer-copy review",
-  "sourceCandidateCount": 174,
+  "sourceCandidateCount": 175,
   "translatedCount": 119,
-  "exceptionCount": 55,
+  "exceptionCount": 56,
   "minimumTranslationConfidence": 0.95,
   "translatedEntryFormat": "<namespace>:<key>",
   "exceptionEntryFormat": "<namespace>:<key>|<category>",
@@ -137,6 +137,7 @@
     "landing:landing.navbar.faq"
   ],
   "exceptions": [
+    "translation:premiumConversion.marker.label|cross_language_equivalent",
     "translation:seo.keywords|not_customer_facing",
     "translation:seo.shortTitle|brand_or_product",
     "translation:nav.brandName|brand_or_product",

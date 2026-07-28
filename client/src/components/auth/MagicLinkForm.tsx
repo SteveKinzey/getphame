@@ -20,15 +20,21 @@ interface MagicLinkFormProps {
   idPrefix: string;
   autoFocus?: boolean;
   onCancel?: () => void;
+  initialEmail?: string;
+  lockEmail?: boolean;
+  intent?: "enroll_passkey";
 }
 
 export default function MagicLinkForm({
   idPrefix,
   autoFocus = false,
   onCancel,
+  initialEmail = "",
+  lockEmail = false,
+  intent,
 }: MagicLinkFormProps) {
   const { t } = useTranslation("translation");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => initialEmail.trim().toLowerCase());
   const [sentTo, setSentTo] = useState<string | null>(null);
   const [requestState, setRequestState] = useState<RequestState>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -59,6 +65,7 @@ export default function MagicLinkForm({
         body: JSON.stringify({
           email: candidateEmail,
           origin: window.location.origin,
+          ...(intent ? { intent } : {}),
         }),
       });
 
@@ -84,7 +91,7 @@ export default function MagicLinkForm({
         }),
       };
     }
-  }, [t]);
+  }, [intent, t]);
 
   const handleSubmit = useCallback(async (event: React.FormEvent) => {
     event.preventDefault();
@@ -238,7 +245,8 @@ export default function MagicLinkForm({
           onChange={(event) => setEmail(event.target.value)}
           placeholder={t("login.emailPlaceholder", { defaultValue: "you@example.com" })}
           required
-          disabled={isSending}
+          disabled={isSending || lockEmail}
+          readOnly={lockEmail}
           className="w-full min-h-12 rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 text-base font-medium text-white placeholder:text-white/40 focus:border-[#C9A84C]/60 focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/60 disabled:cursor-wait disabled:opacity-70"
         />
       </div>

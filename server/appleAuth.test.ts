@@ -176,10 +176,11 @@ describe("Apple Sign In callback", () => {
   });
 
   it("returns a safe callback error when Apple does not provide an authorization code", async () => {
-    const response = await request(createApp())
+    const { app, state } = await createAppleRequestState();
+    const response = await request(app)
       .post("/api/auth/apple/callback")
       .type("form")
-      .send({ error: "access_denied", error_description: "The user cancelled" });
+      .send({ error: "access_denied", error_description: "The user cancelled", state });
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe("/?auth_error=apple_authorization_failed");

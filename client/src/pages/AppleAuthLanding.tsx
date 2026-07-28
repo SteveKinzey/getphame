@@ -14,10 +14,16 @@
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
+function safeAppleReturnPath(value: string | null): string {
+  if (!value) return "/";
+  if (value === "/" || value === "/onboarding" || value === "/settings?passkey_enroll=1") return value;
+  return "/";
+}
+
 export default function AppleAuthLanding() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const returnPath = params.get("return") || "/";
+    const returnPath = safeAppleReturnPath(params.get("return"));
     // Small delay to ensure cookie is committed before navigation
     const timer = setTimeout(() => {
       window.location.replace(returnPath);

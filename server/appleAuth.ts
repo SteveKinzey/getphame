@@ -23,6 +23,14 @@ import * as db from "./db";
 import { sendUserWelcomeEmail } from "./smtp";
 import crypto from "crypto";
 import { issueSecuritySession } from "./security/passkeySessions";
+import {
+  isValidExpectedEmailHash,
+  PASSKEY_ENROLLMENT_CANCEL_PATH,
+  PASSKEY_ENROLLMENT_INTENT,
+  PASSKEY_ENROLLMENT_MISMATCH_PATH,
+  PASSKEY_ENROLLMENT_SUCCESS_PATH,
+  providerEmailMatches,
+} from "./security/passkeyEnrollmentIntent";
 
 const APPLE_AUTHORIZATION_ENDPOINT = "https://appleid.apple.com/auth/authorize";
 const APPLE_STATE_TTL_MS = 10 * 60 * 1000;
@@ -31,14 +39,17 @@ type AppleOAuthState = {
   redirectUri: string;
   nonce: string;
   expiresAt: number;
+  intent?: typeof PASSKEY_ENROLLMENT_INTENT;
+  expectedEmailHash?: string;
 };
 
-function createSignedAppleState(redirectUri: string): { state: string; nonce: string } {
+function createSignedAppleState(redirectUri: string, enrollment?: { intent: typeof PASSKEY_ENROLLMENT_INTENT; expectedEmailHash: string }): { state: string; nonce: string } {
   const nonce = crypto.randomBytes(32).toString("base64url");
   const payload: AppleOAuthState = {
     redirectUri,
     nonce,
     expiresAt: Date.now() + APPLE_STATE_TTL_MS,
+    ...(enrollment ?? {}),
   };
   const encodedPayload = Buffer.from(JSON.stringify(payload)).toString("base64url");
   const signature = crypto
@@ -79,7 +90,8 @@ function verifySignedAppleState(state: string | undefined): AppleOAuthState | nu
       typeof parsed.redirectUri !== "string" ||
       typeof parsed.nonce !== "string" ||
       typeof parsed.expiresAt !== "number" ||
-      parsed.expiresAt < Date.now()
+      parsed.expiresAt < Date.now() ||
+      (parsed.intent !== undefined && (parsed.intent !== PASSKEY_ENROLLMENT_INTENT || !isValidExpectedEmailHash(parsed.expectedEmailHash)))
     ) {
       return null;
     }
@@ -121,7 +133,14 @@ export function registerAppleAuthRoutes(app: Express) {
     }
 
     const redirectUri = buildRedirectUri(req);
-    const { state, nonce } = createSignedAppleState(redirectUri);
+    const intent = typeof req.query.intent === "string" ? req.query.intent : undefined;
+    const expectedEmailHash = typeof req.query.expected_email_hash === "string" ? req.query.expected_email_hash : undefined;
+    if (intent !== undefined && (intent !== PASSKEY_ENROLLMENT_INTENT || !isValidExpectedEmailHash(expectedEmailHash))) {
+      return res.status(400).send("Invalid verification request.");
+    }
+    const { state, nonce } = createSignedAppleState(redirectUri, intent === PASSKEY_ENROLLMENT_INTENT
+      ? { intent, expectedEmailHash: expectedEmailHash! }
+      : undefined);
     const authUrl = new URL(APPLE_AUTHORIZATION_ENDPOINT);
     authUrl.searchParams.set("response_type", "code id_token");
     authUrl.searchParams.set("response_mode", "form_post");
@@ -154,23 +173,24 @@ export function registerAppleAuthRoutes(app: Express) {
       error_description?: string;
     };
 
+    const verifiedState = verifySignedAppleState(state);
+    if (!verifiedState || verifiedState.redirectUri !== buildRedirectUri(req)) {
+      console.warn("[AppleAuth] State validation failed");
+      return res.redirect(302, "/?auth_error=apple_state_mismatch");
+    }
+    const isPasskeyEnrollment = verifiedState.intent === PASSKEY_ENROLLMENT_INTENT;
+
     if (error) {
       console.warn(`[AppleAuth] Authorization declined or failed: ${error}`, errorDescription ?? "");
-      return res.redirect(302, "/?auth_error=apple_authorization_failed");
+      return res.redirect(302, isPasskeyEnrollment ? PASSKEY_ENROLLMENT_CANCEL_PATH : "/?auth_error=apple_authorization_failed");
     }
 
     if (!code) {
       console.warn("[AppleAuth] Missing authorization code");
-      return res.redirect(302, "/?auth_error=apple_missing_code");
+      return res.redirect(302, isPasskeyEnrollment ? PASSKEY_ENROLLMENT_CANCEL_PATH : "/?auth_error=apple_missing_code");
     }
 
     try {
-      const verifiedState = verifySignedAppleState(state);
-      if (!verifiedState || verifiedState.redirectUri !== buildRedirectUri(req)) {
-        console.warn("[AppleAuth] State validation failed");
-        return res.redirect(302, "/?auth_error=apple_state_mismatch");
-      }
-
       let identityToken = callbackIdToken;
       if (!identityToken) {
         const tokenResponse = await appleSignin.getAuthorizationToken(code, {
@@ -223,6 +243,38 @@ export function registerAppleAuthRoutes(app: Express) {
         } catch {
           // ignore
         }
+      }
+
+      if (isPasskeyEnrollment) {
+        const emailVerified = appleUser.email_verified === true || appleUser.email_verified === "true";
+        const verifiedEmail = typeof appleUser.email === "string" ? appleUser.email : null;
+        if (!emailVerified || !verifiedEmail || !verifiedState.expectedEmailHash || !providerEmailMatches(verifiedEmail, verifiedState.expectedEmailHash)) {
+          return res.redirect(302, PASSKEY_ENROLLMENT_MISMATCH_PATH);
+        }
+
+        const providerUser = await db.getUserByOpenId(openId);
+        const canonicalUser = await db.getUserByEmail(verifiedEmail);
+        if (providerUser && canonicalUser && providerUser.id !== canonicalUser.id) {
+          return res.redirect(302, PASSKEY_ENROLLMENT_MISMATCH_PATH);
+        }
+
+        let sessionUser = canonicalUser ?? providerUser;
+        let isNewEnrollmentUser = false;
+        if (!sessionUser) {
+          await db.upsertUser({ openId, name, email: verifiedEmail, loginMethod: "apple", lastSignedIn: new Date() });
+          sessionUser = await db.getUserByOpenId(openId);
+          isNewEnrollmentUser = true;
+        } else if (!providerUser) {
+          await db.linkUserIdentity({ userId: sessionUser.id, openId, loginMethod: "apple", lastSignedIn: new Date() });
+        }
+        if (!sessionUser) throw new Error("Session user unavailable after Apple verification");
+
+        if (isNewEnrollmentUser) {
+          const ownerUser = await db.getUserByOpenId(ENV.ownerOpenId);
+          if (ownerUser) sendUserWelcomeEmail({ ownerUserId: ownerUser.id, toEmail: verifiedEmail, toName: name }).catch((err: unknown) => console.warn("[AppleAuth] Welcome email failed (non-fatal):", err));
+        }
+        await issueSecuritySession({ userId: sessionUser.id, authMethod: "oauth", assurance: "a1", req, res });
+        return res.redirect(302, `/auth/apple/landing?return=${encodeURIComponent(PASSKEY_ENROLLMENT_SUCCESS_PATH)}`);
       }
 
       const existingIdentityUser = await db.getUserByOpenId(openId);

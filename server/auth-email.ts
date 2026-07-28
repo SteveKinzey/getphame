@@ -43,6 +43,22 @@ import {
 
 const TOKEN_LENGTH = 32; // 32 bytes = 64 hex chars
 const TOKEN_EXPIRY_MS = 15 * 60 * 1000; // 15 minutes
+const PASSKEY_ENROLLMENT_INTENT = "enroll_passkey";
+
+function signPasskeyEnrollmentIntent(token: string, email: string): string {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) throw new Error("JWT_SECRET is required to protect passkey enrollment intent");
+  return crypto
+    .createHmac("sha256", secret)
+    .update(`getphame:passkey-enrollment:v1\0${token}\0${email.trim().toLowerCase()}`)
+    .digest("hex");
+}
+
+function isValidPasskeyEnrollmentSignature(token: string, email: string, signature: string): boolean {
+  if (!/^[a-f0-9]{64}$/i.test(signature)) return false;
+  const expected = signPasskeyEnrollmentIntent(token, email);
+  return crypto.timingSafeEqual(Buffer.from(signature, "hex"), Buffer.from(expected, "hex"));
+}
 
 // ---------------------------------------------------------------------------
 // System SMTP config (same pattern as leadGuideEmail.ts)
@@ -152,7 +168,7 @@ export function registerEmailAuthRoutes(app: Express) {
    * If the email doesn't exist yet, the account will be created on verification.
    */
   app.post("/api/auth/magic-link", async (req: Request, res: Response) => {
-    const { email } = req.body as { email?: string };
+    const { email, intent } = req.body as { email?: string; intent?: string };
     const requestId = crypto.randomUUID();
     const requestStartedAt = Date.now();
 
@@ -166,6 +182,9 @@ export function registerEmailAuthRoutes(app: Express) {
         durationMs: Date.now() - requestStartedAt,
       });
       return res.status(400).json({ error: "A valid email address is required." });
+    }
+    if (intent !== undefined && intent !== PASSKEY_ENROLLMENT_INTENT) {
+      return res.status(400).json({ error: "Unsupported sign-in intent." });
     }
 
     const normalizedEmail = email.trim().toLowerCase();
@@ -231,7 +250,12 @@ export function registerEmailAuthRoutes(app: Express) {
 
       // Build magic link URL
       const baseUrl = process.env.APP_BASE_URL?.replace(/\/$/, "") || "https://getphame.app";
-      const magicLinkUrl = `${baseUrl}/api/auth/magic-link/verify?token=${token}`;
+      const magicLinkParams = new URLSearchParams({ token });
+      if (intent === PASSKEY_ENROLLMENT_INTENT) {
+        magicLinkParams.set("intent", PASSKEY_ENROLLMENT_INTENT);
+        magicLinkParams.set("intent_signature", signPasskeyEnrollmentIntent(token, normalizedEmail));
+      }
+      const magicLinkUrl = `${baseUrl}/api/auth/magic-link/verify?${magicLinkParams.toString()}`;
 
       // Send email
       const transporter = createTransporter({
@@ -283,6 +307,8 @@ export function registerEmailAuthRoutes(app: Express) {
    */
   app.get("/api/auth/magic-link/verify", async (req: Request, res: Response) => {
     const token = typeof req.query.token === "string" ? req.query.token : null;
+    const requestedIntent = typeof req.query.intent === "string" ? req.query.intent : null;
+    const intentSignature = typeof req.query.intent_signature === "string" ? req.query.intent_signature : null;
     const verificationStartedAt = Date.now();
     let requestId: string = crypto.randomUUID();
     let verificationEmail: string | null = null;
@@ -345,6 +371,13 @@ export function registerEmailAuthRoutes(app: Express) {
 
       const email = record.email;
       verificationEmail = email;
+      const isPasskeyEnrollment = requestedIntent === PASSKEY_ENROLLMENT_INTENT;
+      if (requestedIntent !== null && !isPasskeyEnrollment) {
+        return res.redirect(302, "/login?auth_error=invalid_link");
+      }
+      if (isPasskeyEnrollment && (!intentSignature || !isValidPasskeyEnrollmentSignature(token, email, intentSignature))) {
+        return res.redirect(302, "/login?auth_error=invalid_link");
+      }
       const emailOpenId = `email_${email}`;
 
       // Resolve both direct email-login accounts and accounts originally created
@@ -418,8 +451,8 @@ export function registerEmailAuthRoutes(app: Express) {
         durationMs: Date.now() - verificationStartedAt,
       });
 
-      // Redirect — new users go to onboarding, returning users go home
-      res.redirect(302, isNewUser ? "/onboarding" : "/");
+      // Enrollment resumes only after this one-time verification created a session.
+      res.redirect(302, isPasskeyEnrollment ? "/settings?passkey_enroll=1" : isNewUser ? "/onboarding" : "/");
     } catch (err) {
       void recordAuthLifecycleEvent({
         requestId,

@@ -1971,6 +1971,7 @@
     "feature": "Funzionalità",
     "free": "Gratuito",
     "pro": "Pro",
+    "lifetime": "A vita",
     "unlimited": "Illimitato",
     "limited": "Limitato",
     "yes": "Sì",
@@ -1980,7 +1981,11 @@
     "templates": "Modelli Email",
     "analytics": "Analisi",
     "reminders": "Promemoria Automatici",
+    "followUpReminders": "Promemoria di follow-up",
+    "savedContacts": "Contatti salvati",
     "csvImport": "Importazione CSV",
+    "bulkSender": "Connessione Bulk Sender",
+    "koalendarImports": "Importazione contatti da Koalendar",
     "woocommerce": "Integrazione WooCommerce",
     "stripe": "Integrazione Stripe",
     "prioritySupport": "Supporto Prioritario",
@@ -1988,6 +1993,8 @@
     "apiAccess": "Accesso API",
     "whiteLabel": "White Label",
     "reviewRequests": "Richieste di recensione",
+    "multiPlatformPhames": "Link recensione multipiattaforma",
+    "price": "Prezzo",
     "freeRequestAllowance": "Prima 10, poi 5 / 30 giorni mobili",
     "mobileAction": "Confronta",
     "mobileDescription": "Confronta Free, Pro e Lifetime senza lasciare la pagina di aggiornamento.",
@@ -3349,6 +3356,22 @@
       "unavailable": "Non è stato possibile completare l’accesso con passkey. Usa il link email qui sotto o riprova.",
       "orAlternative": "oppure usa un altro metodo di accesso"
     },
+    "enrollment": {
+      "title": "Aggiungi una passkey",
+      "description": "Verifica prima questo account Get Phame. Il dispositivo richiederà poi l’impronta, il riconoscimento facciale o il blocco schermo per creare la passkey.",
+      "accountLabel": "Passkey per",
+      "providerMismatch": "Il provider ha verificato un’email diversa. Scegli l’account mostrato qui sotto oppure verificalo con il relativo link email.",
+      "providerCancelled": "La verifica è stata annullata. Non è stata aggiunta alcuna passkey e puoi riprovare in sicurezza.",
+      "orProvider": "oppure verifica con",
+      "verifyGoogle": "Verifica con Google",
+      "verifyApple": "Verifica con Apple",
+      "privacy": "La verifica conferma solo l’account. Get Phame non riceve mai la tua impronta, la scansione del volto o il codice di sblocco del dispositivo.",
+      "resumeTitle": "Aggiungi la tua passkey",
+      "resumeDescription": "Il tuo account è verificato. Completa la richiesta sicura del dispositivo per aggiungere una passkey per {{email}}.",
+      "resumeDescriptionWithoutEmail": "Il tuo account è verificato. Completa la richiesta sicura del dispositivo per aggiungere la tua passkey.",
+      "resumeRetryDescription": "Il browser richiede una nuova conferma. Scegli Continua per aprire la richiesta di impronta, volto o blocco schermo.",
+      "continue": "Continua"
+    },
     "security": {
       "title": "Passkey",
       "description": "Aggiungi un metodo di accesso resistente al phishing usando la biometria o il blocco schermo del dispositivo. L’accesso via email resterà disponibile.",
@@ -3678,5 +3701,57 @@
       "scene": "Scena {{number}} · {{time}}"
     },
     "footer": "Snapshot verificato {{date}}. Le evidenze del repository e il contenuto della presentazione sono disponibili solo tramite questa route autorizzata dagli amministratori."
+  },
+  "premiumConversion": {
+    "marker": {
+      "label": "Premium",
+      "contains": "Contiene funzionalità premium"
+    },
+    "modal": {
+      "closeLabel": "Chiudi i dettagli dell’upgrade",
+      "comparePlans": "Confronta i piani gratuito e premium",
+      "notNow": "Non ora",
+      "eyebrow": "Funzionalità premium",
+      "benefitsLabel": "Vantaggi del piano a pagamento",
+      "contextHint": "Puoi confrontare i piani senza perdere la pagina su cui stavi lavorando."
+    },
+    "features": {
+      "send_limit": {
+        "title": "Continua a inviare richieste di recensione",
+        "description": "La tua quota gratuita protegge un flusso di lavoro iniziale semplice. Un piano a pagamento rimuove il limite del piano Get Phame quando sei pronto a continuare.",
+        "benefits": {
+          "one": "Invia richieste di recensione individuali illimitate",
+          "two": "Connetti Bulk Sender per invii con volumi maggiori",
+          "three": "Importa automaticamente le prenotazioni Koalendar completate"
+        }
+      },
+      "koalendar": {
+        "title": "Trasforma le prenotazioni completate in contatti",
+        "description": "Connetti Koalendar con un webhook privato e aggiungi automaticamente gli invitati idonei al termine di ogni riunione.",
+        "benefits": {
+          "one": "Crea un webhook privato per il tuo account",
+          "two": "Importa le prenotazioni completate idonee nei Contatti salvati",
+          "three": "Controlla lo stato recente delle importazioni delle prenotazioni in Get Phame"
+        }
+      },
+      "bulk_sender": {
+        "title": "Sblocca invii con volumi maggiori",
+        "description": "Connetti un relay SMTP transazionale supportato mentre Get Phame mantiene attivi controlli di sicurezza specifici per il provider.",
+        "benefits": {
+          "one": "Connetti un relay SMTP transazionale verificato",
+          "two": "Usa limiti di invio adattivi in base al provider",
+          "three": "Mantieni Bulk Sender separato dalla tua connessione personale"
+        }
+      },
+      "plans": {
+        "title": "Scegli il piano adatto al tuo flusso di lavoro",
+        "description": "Confronta il piano gratuito con l’accesso a pagamento prima di decidere. Il tuo lavoro attuale rimane invariato mentre valuti le opzioni.",
+        "benefits": {
+          "one": "Richieste di recensione individuali illimitate",
+          "two": "Connessione Bulk Sender per invii con volumi maggiori",
+          "three": "Importazioni automatiche dei contatti da Koalendar"
+        }
+      }
+    }
   }
 }

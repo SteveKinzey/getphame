@@ -19,6 +19,23 @@ const requiredSignInKeys = [
   "orAlternative",
 ] as const;
 
+const requiredEnrollmentKeys = [
+  "title",
+  "description",
+  "accountLabel",
+  "providerMismatch",
+  "providerCancelled",
+  "orProvider",
+  "verifyGoogle",
+  "verifyApple",
+  "privacy",
+  "resumeTitle",
+  "resumeDescription",
+  "resumeDescriptionWithoutEmail",
+  "resumeRetryDescription",
+  "continue",
+] as const;
+
 const requiredSecurityKeys = [
   "title",
   "description",
@@ -61,15 +78,21 @@ describe("passkey locale bundles", () => {
       const bundle = JSON.parse(readFileSync(path, "utf8")) as {
         passkeys?: {
           signIn?: Record<string, unknown>;
+          enrollment?: Record<string, unknown>;
           security?: Record<string, unknown>;
         };
       };
 
       expect(bundle.passkeys?.signIn).toBeDefined();
+      expect(bundle.passkeys?.enrollment).toBeDefined();
       expect(bundle.passkeys?.security).toBeDefined();
 
       for (const key of requiredSignInKeys) {
         expect(bundle.passkeys?.signIn?.[key], `${locale}.passkeys.signIn.${key}`).toEqual(expect.any(String));
+      }
+
+      for (const key of requiredEnrollmentKeys) {
+        expect(bundle.passkeys?.enrollment?.[key], `${locale}.passkeys.enrollment.${key}`).toEqual(expect.any(String));
       }
 
       for (const key of requiredSecurityKeys) {

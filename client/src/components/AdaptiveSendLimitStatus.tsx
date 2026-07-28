@@ -1,6 +1,8 @@
 import { AlertTriangle, ArrowUpRight, Clock3, MailCheck, ShieldCheck, Zap } from "lucide-react";
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { openUpgradeModal } from "@/lib/upgradeModal";
+import ProBadge from "@/components/ProBadge";
 
 type AdaptiveStatus = {
   configured: boolean;
@@ -164,12 +166,22 @@ export default function AdaptiveSendLimitStatus({ status, compact = false }: Pro
       </div>
 
       {status.recommendedAction && (
-        <a href={status.recommendedAction === "upgrade_plan" ? "/upgrade" : "/settings#bulk-sender"} className="mt-3 inline-flex min-h-10 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-black rr-bg-navy rr-text-gold">
-          {status.recommendedAction === "upgrade_plan"
-            ? t("adaptiveSending.upgradePlan", { defaultValue: "Upgrade for Bulk Sender" })
-            : t("adaptiveSending.connectBulkSender", { defaultValue: "Connect Bulk Sender" })}
-          <ArrowUpRight size={14} />
-        </a>
+        status.recommendedAction === "upgrade_plan" ? (
+          <button
+            type="button"
+            onClick={() => openUpgradeModal("bulk_sender")}
+            className="mt-3 inline-flex min-h-10 items-center gap-2 rounded-xl px-3 py-2 text-xs font-black rr-bg-navy rr-text-gold"
+          >
+            <span>{t("adaptiveSending.upgradePlan", { defaultValue: "Upgrade for Bulk Sender" })}</span>
+            <ProBadge variant="locked" size="sm" />
+            <ArrowUpRight size={14} aria-hidden="true" />
+          </button>
+        ) : (
+          <a href="/settings#bulk-sender" className="mt-3 inline-flex min-h-10 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-black rr-bg-navy rr-text-gold">
+            {t("adaptiveSending.connectBulkSender", { defaultValue: "Connect Bulk Sender" })}
+            <ArrowUpRight size={14} />
+          </a>
+        )
       )}
 
       <p className="mt-3 text-xs font-semibold rr-text-navy-muted">

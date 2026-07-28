@@ -603,10 +603,33 @@
       "emailAddressLabel": "Your Email Address *"
     },
     "comparisonTable": {
+      "feature": "Feature",
+      "free": "Free",
+      "pro": "Pro",
+      "unlimited": "Unlimited",
+      "reviewRequestsTotal": "Review requests (total)",
+      "followUpReminders": "Follow-up reminders",
+      "savedContacts": "Saved contacts",
+      "csvImport": "CSV import",
+      "bulkSender": "Bulk Sender connection",
+      "koalendarImports": "Koalendar contact imports",
+      "woocommerceSync": "WooCommerce sync",
+      "emailOpenClickTracking": "Email open & click tracking",
+      "advancedAnalytics": "Advanced analytics",
+      "multiPlatformPhames": "Multi-platform review links",
+      "dailySendLimit": "Daily send limit",
+      "prioritySupport": "Priority support",
+      "futureUpdates": "Future updates",
+      "price": "Price",
       "freeRequestAllowance": "10 first, then 5 / rolling 30 days",
       "reviewRequests": "Review requests",
       "lifetime": "Lifetime",
-      "freeTrialNote": "All plans include a 10-request free trial. No credit card required to start."
+      "freeTrialNote": "All plans include a 10-request free trial. No credit card required to start.",
+      "mobileTitle": "Compare plan features",
+      "mobileSubtitle": "Open the compact feature comparison",
+      "mobileAction": "Compare",
+      "mobileEyebrow": "Feature comparison",
+      "mobileDescription": "Compare Free, Pro, and Lifetime without leaving the upgrade page."
     },
     "account": {
       "accessUntil": "Access until {{date}}",
@@ -1354,6 +1377,58 @@
     },
     "referralRewards": {
       "shareMessage": "Send review requests with Get Phame — {{url}}"
+    },
+    "premiumConversion": {
+      "marker": {
+        "label": "Premium",
+        "contains": "Contains premium features"
+      },
+      "modal": {
+        "closeLabel": "Close upgrade details",
+        "comparePlans": "Compare free and premium",
+        "notNow": "Not now",
+        "eyebrow": "Premium feature",
+        "benefitsLabel": "Paid plan benefits",
+        "contextHint": "You can compare plans without losing the page you were working on."
+      },
+      "features": {
+        "send_limit": {
+          "title": "Keep sending review requests",
+          "description": "Your free allowance protects a simple starting workflow. A paid plan removes the Get Phame plan limit when you are ready to continue.",
+          "benefits": {
+            "one": "Send unlimited individual review requests",
+            "two": "Connect Bulk Sender for higher-volume delivery",
+            "three": "Import completed Koalendar bookings automatically"
+          }
+        },
+        "koalendar": {
+          "title": "Turn completed bookings into contacts",
+          "description": "Connect Koalendar with a private webhook and automatically add eligible invitees after each meeting ends.",
+          "benefits": {
+            "one": "Create a private webhook for your account",
+            "two": "Import eligible completed bookings into Saved Contacts",
+            "three": "Track recent booking import status in Get Phame"
+          }
+        },
+        "bulk_sender": {
+          "title": "Unlock higher-volume delivery",
+          "description": "Connect a supported transactional SMTP relay while Get Phame keeps provider-aware safety controls in place.",
+          "benefits": {
+            "one": "Connect a verified transactional SMTP relay",
+            "two": "Use adaptive provider-aware sending limits",
+            "three": "Keep Bulk Sender separate from your personal connection"
+          }
+        },
+        "plans": {
+          "title": "Choose the plan that fits your workflow",
+          "description": "Compare the free plan with paid access before deciding. Your current work stays in place while you review the options.",
+          "benefits": {
+            "one": "Unlimited individual review requests",
+            "two": "Bulk Sender connection for higher-volume delivery",
+            "three": "Automatic Koalendar contact imports"
+          }
+        }
+      }
     }
   },
   "es": {
@@ -1982,14 +2057,34 @@
       "iCloudTip": "La autenticación de dos factores debe estar habilitada para tu ID de Apple."
     },
     "comparisonTable": {
-      "freeRequestAllowance": "10 al inicio, luego 5 cada 30 días rodantes",
+      "feature": "Función",
+      "free": "Gratis",
+      "pro": "Pro",
+      "unlimited": "Ilimitado",
+      "reviewRequestsTotal": "Solicitudes de reseñas (total)",
+      "followUpReminders": "Recordatorios de seguimiento",
+      "freeRequestAllowance": "10 primero y luego 5 / 30 días móviles",
       "reviewRequests": "Solicitudes de reseña",
       "lifetime": "De por vida",
       "freeTrialNote": "Todos los planes incluyen una prueba gratuita de 10 solicitudes. No se requiere tarjeta de crédito para comenzar.",
       "price": "Precio",
       "savedContacts": "Contactos guardados",
       "csvImport": "Importación CSV",
-      "woocommerceSync": "Sincronización con WooCommerce"
+      "bulkSender": "Conexión con Bulk Sender",
+      "koalendarImports": "Importaciones de contactos de Koalendar",
+      "woocommerceSync": "Sincronización con WooCommerce",
+      "emailOpenClickTracking": "Correo electrónico open & click tracking",
+      "advancedAnalytics": "Análisis avanzados",
+      "multiPlatformPhames": "Enlaces de reseñas multiplataforma",
+      "dailySendLimit": "Límite de envío diario",
+      "prioritySupport": "Soporte prioritario",
+      "futureUpdates": "Actualizaciones futuras",
+      "annual": "Anual",
+      "mobileEyebrow": "Comparación de funciones",
+      "mobileTitle": "Compara las funciones de los planes",
+      "mobileSubtitle": "Abre la comparación compacta de funciones",
+      "mobileDescription": "Compara Gratis, Pro y De por vida sin salir de la página de mejora.",
+      "mobileAction": "Comparar"
     },
     "account": {
       "accessUntil": "Acceso hasta {{date}}",
@@ -2919,6 +3014,58 @@
       "stats": {
         "main": "Principal"
       }
+    },
+    "premiumConversion": {
+      "marker": {
+        "label": "Premium",
+        "contains": "Contiene funciones premium"
+      },
+      "modal": {
+        "closeLabel": "Cerrar los detalles de la mejora",
+        "comparePlans": "Comparar los planes gratuito y premium",
+        "notNow": "Ahora no",
+        "eyebrow": "Función premium",
+        "benefitsLabel": "Ventajas del plan de pago",
+        "contextHint": "Puedes comparar los planes sin perder la página en la que estabas trabajando."
+      },
+      "features": {
+        "send_limit": {
+          "title": "Sigue enviando solicitudes de reseña",
+          "description": "Tu asignación gratuita protege un flujo de trabajo inicial sencillo. Un plan de pago elimina el límite del plan de Get Phame cuando quieras continuar.",
+          "benefits": {
+            "one": "Envía solicitudes de reseña individuales ilimitadas",
+            "two": "Conecta Bulk Sender para envíos de mayor volumen",
+            "three": "Importa automáticamente las reservas de Koalendar completadas"
+          }
+        },
+        "koalendar": {
+          "title": "Convierte las reservas completadas en contactos",
+          "description": "Conecta Koalendar con un webhook privado y añade automáticamente a los invitados que cumplan los requisitos después de que termine cada reunión.",
+          "benefits": {
+            "one": "Crea un webhook privado para tu cuenta",
+            "two": "Importa reservas completadas que cumplan los requisitos a Contactos guardados",
+            "three": "Consulta el estado reciente de las importaciones de reservas en Get Phame"
+          }
+        },
+        "bulk_sender": {
+          "title": "Desbloquea envíos de mayor volumen",
+          "description": "Conecta un relay SMTP transaccional compatible mientras Get Phame mantiene controles de seguridad adaptados al proveedor.",
+          "benefits": {
+            "one": "Conecta un relay SMTP transaccional verificado",
+            "two": "Usa límites de envío adaptativos según el proveedor",
+            "three": "Mantén Bulk Sender separado de tu conexión personal"
+          }
+        },
+        "plans": {
+          "title": "Elige el plan que se adapte a tu flujo de trabajo",
+          "description": "Compara el plan gratuito con el acceso de pago antes de decidir. Tu trabajo actual se conserva mientras revisas las opciones.",
+          "benefits": {
+            "one": "Solicitudes de reseña individuales ilimitadas",
+            "two": "Conexión de Bulk Sender para envíos de mayor volumen",
+            "three": "Importaciones automáticas de contactos desde Koalendar"
+          }
+        }
+      }
     }
   },
   "fr": {
@@ -3549,14 +3696,34 @@
       "iCloudTip": "L'authentification à deux facteurs doit être activée pour votre identifiant Apple."
     },
     "comparisonTable": {
-      "freeRequestAllowance": "10 d'abord, puis 5 tous les 30 jours (période glissante)",
+      "feature": "Fonctionnalité",
+      "free": "Gratuit",
+      "pro": "Pro",
+      "unlimited": "Illimité",
+      "reviewRequestsTotal": "Demandes d'avis (total)",
+      "followUpReminders": "Rappels de suivi",
+      "freeRequestAllowance": "10 d’abord, puis 5 / 30 jours glissants",
       "reviewRequests": "Demandes d'avis",
       "lifetime": "À vie",
       "freeTrialNote": "Tous les plans incluent un essai gratuit de 10 demandes. Aucune carte de crédit requise pour commencer.",
       "savedContacts": "Contacts enregistrés",
       "price": "Prix",
       "csvImport": "Importation CSV",
-      "woocommerceSync": "Synchronisation WooCommerce"
+      "bulkSender": "Connexion Bulk Sender",
+      "koalendarImports": "Importations de contacts Koalendar",
+      "woocommerceSync": "Synchronisation WooCommerce",
+      "emailOpenClickTracking": "E-mail open & click tracking",
+      "advancedAnalytics": "Analyses avancées",
+      "multiPlatformPhames": "Liens d'avis multi-plateformes",
+      "dailySendLimit": "Limite d'envoi quotidienne",
+      "prioritySupport": "Support prioritaire",
+      "futureUpdates": "Mises à jour futures",
+      "annual": "Annuel",
+      "mobileAction": "Comparer",
+      "mobileDescription": "Comparez Free, Pro et Lifetime sans quitter la page de mise à niveau.",
+      "mobileEyebrow": "Comparaison des fonctionnalités",
+      "mobileSubtitle": "Afficher la comparaison compacte des fonctionnalités",
+      "mobileTitle": "Comparer les fonctionnalités des plans"
     },
     "account": {
       "accessUntil": "Accès jusqu'au {{date}}",
@@ -4505,6 +4672,58 @@
       "stats": {
         "main": "Principal"
       }
+    },
+    "premiumConversion": {
+      "marker": {
+        "label": "Premium",
+        "contains": "Contient des fonctionnalités premium"
+      },
+      "modal": {
+        "closeLabel": "Fermer les détails de la mise à niveau",
+        "comparePlans": "Comparer les offres gratuite et premium",
+        "notNow": "Pas maintenant",
+        "eyebrow": "Fonctionnalité premium",
+        "benefitsLabel": "Avantages de l’offre payante",
+        "contextHint": "Vous pouvez comparer les offres sans perdre la page sur laquelle vous travailliez."
+      },
+      "features": {
+        "send_limit": {
+          "title": "Continuez à envoyer des demandes d’avis",
+          "description": "Votre quota gratuit protège un flux de travail initial simple. Une offre payante supprime la limite du forfait Get Phame lorsque vous êtes prêt à continuer.",
+          "benefits": {
+            "one": "Envoyez un nombre illimité de demandes d’avis individuelles",
+            "two": "Connectez Bulk Sender pour les envois à plus grand volume",
+            "three": "Importez automatiquement les réservations Koalendar terminées"
+          }
+        },
+        "koalendar": {
+          "title": "Transformez les réservations terminées en contacts",
+          "description": "Connectez Koalendar à l’aide d’un webhook privé et ajoutez automatiquement les invités éligibles après la fin de chaque réunion.",
+          "benefits": {
+            "one": "Créez un webhook privé pour votre compte",
+            "two": "Importez les réservations terminées éligibles dans les Contacts enregistrés",
+            "three": "Suivez l’état récent des imports de réservations dans Get Phame"
+          }
+        },
+        "bulk_sender": {
+          "title": "Débloquez les envois à plus grand volume",
+          "description": "Connectez un relais SMTP transactionnel pris en charge pendant que Get Phame maintient des contrôles de sécurité adaptés au fournisseur.",
+          "benefits": {
+            "one": "Connectez un relais SMTP transactionnel vérifié",
+            "two": "Utilisez des limites d’envoi adaptatives selon le fournisseur",
+            "three": "Gardez Bulk Sender séparé de votre connexion personnelle"
+          }
+        },
+        "plans": {
+          "title": "Choisissez l’offre adaptée à votre flux de travail",
+          "description": "Comparez l’offre gratuite à l’accès payant avant de décider. Votre travail actuel reste en place pendant que vous examinez les options.",
+          "benefits": {
+            "one": "Demandes d’avis individuelles illimitées",
+            "two": "Connexion Bulk Sender pour les envois à plus grand volume",
+            "three": "Imports automatiques de contacts depuis Koalendar"
+          }
+        }
+      }
     }
   },
   "it": {
@@ -5111,10 +5330,40 @@
       "emailAddressLabel": "Il tuo indirizzo email *"
     },
     "comparisonTable": {
-      "freeRequestAllowance": "10 iniziali, poi 5 ogni finestra mobile di 30 giorni",
+      "feature": "Funzionalità",
+      "free": "Gratuito",
+      "pro": "Pro",
+      "unlimited": "Illimitato",
+      "limited": "Limitato",
+      "yes": "Sì",
+      "no": "No",
+      "contactsLimit": "Contatti",
+      "requestsPerMonth": "Richieste/mese",
+      "templates": "Modelli Email",
+      "analytics": "Analisi",
+      "reminders": "Promemoria Automatici",
+      "followUpReminders": "Promemoria di follow-up",
+      "savedContacts": "Contatti salvati",
+      "csvImport": "Importazione CSV",
+      "bulkSender": "Connessione Bulk Sender",
+      "koalendarImports": "Importazione contatti da Koalendar",
+      "woocommerce": "Integrazione WooCommerce",
+      "stripe": "Integrazione Stripe",
+      "prioritySupport": "Supporto Prioritario",
+      "customDomain": "Dominio Personalizzato",
+      "apiAccess": "Accesso API",
+      "whiteLabel": "White Label",
+      "freeRequestAllowance": "Prima 10, poi 5 / 30 giorni mobili",
       "reviewRequests": "Richieste di recensione",
       "lifetime": "A vita",
-      "freeTrialNote": "Tutti i piani includono una prova gratuita di 10 richieste. Non è richiesta la carta di credito per iniziare."
+      "freeTrialNote": "Tutti i piani includono una prova gratuita di 10 richieste. Non è richiesta la carta di credito per iniziare.",
+      "multiPlatformPhames": "Link recensione multipiattaforma",
+      "price": "Prezzo",
+      "mobileAction": "Confronta",
+      "mobileDescription": "Confronta Free, Pro e Lifetime senza lasciare la pagina di aggiornamento.",
+      "mobileEyebrow": "Confronto funzionalità",
+      "mobileSubtitle": "Apri il confronto compatto delle funzionalità",
+      "mobileTitle": "Confronta le funzionalità dei piani"
     },
     "account": {
       "accessUntil": "Accesso fino al {{date}}",
@@ -5924,6 +6173,58 @@
           "refetch": "Ricarica"
         }
       }
+    },
+    "premiumConversion": {
+      "marker": {
+        "label": "Premium",
+        "contains": "Contiene funzionalità premium"
+      },
+      "modal": {
+        "closeLabel": "Chiudi i dettagli dell’upgrade",
+        "comparePlans": "Confronta i piani gratuito e premium",
+        "notNow": "Non ora",
+        "eyebrow": "Funzionalità premium",
+        "benefitsLabel": "Vantaggi del piano a pagamento",
+        "contextHint": "Puoi confrontare i piani senza perdere la pagina su cui stavi lavorando."
+      },
+      "features": {
+        "send_limit": {
+          "title": "Continua a inviare richieste di recensione",
+          "description": "La tua quota gratuita protegge un flusso di lavoro iniziale semplice. Un piano a pagamento rimuove il limite del piano Get Phame quando sei pronto a continuare.",
+          "benefits": {
+            "one": "Invia richieste di recensione individuali illimitate",
+            "two": "Connetti Bulk Sender per invii con volumi maggiori",
+            "three": "Importa automaticamente le prenotazioni Koalendar completate"
+          }
+        },
+        "koalendar": {
+          "title": "Trasforma le prenotazioni completate in contatti",
+          "description": "Connetti Koalendar con un webhook privato e aggiungi automaticamente gli invitati idonei al termine di ogni riunione.",
+          "benefits": {
+            "one": "Crea un webhook privato per il tuo account",
+            "two": "Importa le prenotazioni completate idonee nei Contatti salvati",
+            "three": "Controlla lo stato recente delle importazioni delle prenotazioni in Get Phame"
+          }
+        },
+        "bulk_sender": {
+          "title": "Sblocca invii con volumi maggiori",
+          "description": "Connetti un relay SMTP transazionale supportato mentre Get Phame mantiene attivi controlli di sicurezza specifici per il provider.",
+          "benefits": {
+            "one": "Connetti un relay SMTP transazionale verificato",
+            "two": "Usa limiti di invio adattivi in base al provider",
+            "three": "Mantieni Bulk Sender separato dalla tua connessione personale"
+          }
+        },
+        "plans": {
+          "title": "Scegli il piano adatto al tuo flusso di lavoro",
+          "description": "Confronta il piano gratuito con l’accesso a pagamento prima di decidere. Il tuo lavoro attuale rimane invariato mentre valuti le opzioni.",
+          "benefits": {
+            "one": "Richieste di recensione individuali illimitate",
+            "two": "Connessione Bulk Sender per invii con volumi maggiori",
+            "three": "Importazioni automatiche dei contatti da Koalendar"
+          }
+        }
+      }
     }
   },
   "th": {
@@ -6530,10 +6831,33 @@
       "emailAddressLabel": "ที่อยู่อีเมลของคุณ *"
     },
     "comparisonTable": {
-      "freeRequestAllowance": "10 ครั้งแรก แล้ว 5 ทุก ๆ 30 วันแบบหมุนเวียน",
+      "feature": "คุณสมบัติ",
+      "free": "ฟรี",
+      "pro": "โปร",
+      "unlimited": "ไม่จำกัด",
+      "reviewRequestsTotal": "คำขอรีวิว (ทั้งหมด)",
+      "followUpReminders": "การแจ้งเตือนติดตามผล",
+      "savedContacts": "รายชื่อติดต่อที่บันทึกไว้",
+      "csvImport": "นำเข้า CSV",
+      "bulkSender": "การเชื่อมต่อ Bulk Sender",
+      "koalendarImports": "นำเข้าผู้ติดต่อจาก Koalendar",
+      "woocommerceSync": "ซิงค์ WooCommerce",
+      "emailOpenClickTracking": "ติดตามการเปิดและคลิกอีเมล",
+      "advancedAnalytics": "การวิเคราะห์ขั้นสูง",
+      "multiPlatformPhames": "ลิงก์รีวิวหลายแพลตฟอร์ม",
+      "dailySendLimit": "จำกัดการส่งรายวัน",
+      "prioritySupport": "การสนับสนุนแบบจัดลำดับความสำคัญ",
+      "futureUpdates": "การอัปเดตในอนาคต",
+      "price": "ราคา",
+      "freeRequestAllowance": "10 คำขอแรก แล้ว 5 คำขอ / ทุกช่วง 30 วัน",
       "reviewRequests": "คำขอรีวิว",
       "lifetime": "ตลอดชีพ",
-      "freeTrialNote": "ทุกแผนรวมทดลองใช้ฟรี 10 คำขอ ไม่ต้องใช้บัตรเครดิตในการเริ่มต้น"
+      "freeTrialNote": "ทุกแผนรวมทดลองใช้ฟรี 10 คำขอ ไม่ต้องใช้บัตรเครดิตในการเริ่มต้น",
+      "mobileAction": "เปรียบเทียบ",
+      "mobileDescription": "เปรียบเทียบแผน Free, Pro และ Lifetime ได้โดยไม่ต้องออกจากหน้าการอัปเกรด",
+      "mobileEyebrow": "การเปรียบเทียบคุณสมบัติ",
+      "mobileSubtitle": "เปิดการเปรียบเทียบคุณสมบัติแบบย่อ",
+      "mobileTitle": "เปรียบเทียบคุณสมบัติของแผน"
     },
     "account": {
       "accessUntil": "เข้าถึงได้จนถึง {{date}}",
@@ -7340,6 +7664,58 @@
       "stats": {
         "main": "หลัก"
       }
+    },
+    "premiumConversion": {
+      "marker": {
+        "label": "พรีเมียม",
+        "contains": "มีฟีเจอร์พรีเมียม"
+      },
+      "modal": {
+        "closeLabel": "ปิดรายละเอียดการอัปเกรด",
+        "comparePlans": "เปรียบเทียบแผนฟรีและพรีเมียม",
+        "notNow": "ไว้ภายหลัง",
+        "eyebrow": "ฟีเจอร์พรีเมียม",
+        "benefitsLabel": "สิทธิประโยชน์ของแผนแบบชำระเงิน",
+        "contextHint": "คุณสามารถเปรียบเทียบแผนได้โดยไม่เสียหน้าที่กำลังใช้งานอยู่"
+      },
+      "features": {
+        "send_limit": {
+          "title": "ส่งคำขอรีวิวต่อได้",
+          "description": "โควตาฟรีช่วยให้คุณเริ่มต้นด้วยขั้นตอนการทำงานที่เรียบง่าย เมื่อพร้อมดำเนินการต่อ แผนแบบชำระเงินจะยกเลิกขีดจำกัดตามแผนของ Get Phame",
+          "benefits": {
+            "one": "ส่งคำขอรีวิวรายบุคคลได้ไม่จำกัด",
+            "two": "เชื่อมต่อ Bulk Sender สำหรับการส่งในปริมาณที่มากขึ้น",
+            "three": "นำเข้าการจอง Koalendar ที่เสร็จสิ้นแล้วโดยอัตโนมัติ"
+          }
+        },
+        "koalendar": {
+          "title": "เปลี่ยนการจองที่เสร็จสิ้นแล้วเป็นรายชื่อติดต่อ",
+          "description": "เชื่อมต่อ Koalendar ด้วย webhook ส่วนตัว และเพิ่มผู้ได้รับเชิญที่มีสิทธิ์โดยอัตโนมัติหลังจากการประชุมแต่ละครั้งสิ้นสุดลง",
+          "benefits": {
+            "one": "สร้าง webhook ส่วนตัวสำหรับบัญชีของคุณ",
+            "two": "นำเข้าการจองที่เสร็จสิ้นและมีสิทธิ์ไปยังรายชื่อติดต่อที่บันทึกไว้",
+            "three": "ติดตามสถานะล่าสุดของการนำเข้าการจองใน Get Phame"
+          }
+        },
+        "bulk_sender": {
+          "title": "ปลดล็อกการส่งในปริมาณที่มากขึ้น",
+          "description": "เชื่อมต่อรีเลย์ SMTP สำหรับธุรกรรมที่รองรับ ขณะที่ Get Phame ยังคงใช้มาตรการความปลอดภัยที่ปรับตามผู้ให้บริการ",
+          "benefits": {
+            "one": "เชื่อมต่อรีเลย์ SMTP สำหรับธุรกรรมที่ผ่านการยืนยัน",
+            "two": "ใช้ขีดจำกัดการส่งแบบปรับตามผู้ให้บริการ",
+            "three": "แยก Bulk Sender ออกจากการเชื่อมต่อส่วนตัวของคุณ"
+          }
+        },
+        "plans": {
+          "title": "เลือกแผนที่เหมาะกับขั้นตอนการทำงานของคุณ",
+          "description": "เปรียบเทียบแผนฟรีกับการเข้าถึงแบบชำระเงินก่อนตัดสินใจ งานปัจจุบันของคุณจะยังคงอยู่ขณะที่คุณพิจารณาตัวเลือกต่าง ๆ",
+          "benefits": {
+            "one": "คำขอรีวิวรายบุคคลไม่จำกัด",
+            "two": "การเชื่อมต่อ Bulk Sender สำหรับการส่งในปริมาณที่มากขึ้น",
+            "three": "นำเข้ารายชื่อติดต่อจาก Koalendar โดยอัตโนมัติ"
+          }
+        }
+      }
     }
   },
   "zh-CN": {
@@ -7945,10 +8321,33 @@
       "emailAddressLabel": "您的电子邮件地址 *"
     },
     "comparisonTable": {
-      "freeRequestAllowance": "先 10 个，之后每滚动 30 天 5 个",
+      "feature": "功能",
+      "free": "免费版",
+      "pro": "专业版",
+      "unlimited": "无限",
+      "reviewRequestsTotal": "评论请求（总计）",
+      "followUpReminders": "跟进提醒",
+      "savedContacts": "已保存联系人",
+      "csvImport": "CSV 导入",
+      "bulkSender": "Bulk Sender 连接",
+      "koalendarImports": "Koalendar 联系人导入",
+      "woocommerceSync": "WooCommerce 同步",
+      "emailOpenClickTracking": "邮件打开和点击跟踪",
+      "advancedAnalytics": "高级分析",
+      "multiPlatformPhames": "多平台评论链接",
+      "dailySendLimit": "每日发送限制",
+      "prioritySupport": "优先支持",
+      "futureUpdates": "未来更新",
+      "price": "价格",
+      "freeRequestAllowance": "首次 10 次，之后每滚动 30 天 5 次",
       "reviewRequests": "评价请求",
       "lifetime": "终身",
-      "freeTrialNote": "所有计划均含10次评价请求的免费试用。开始无需信用卡。"
+      "freeTrialNote": "所有计划均含10次评价请求的免费试用。开始无需信用卡。",
+      "mobileAction": "比较",
+      "mobileDescription": "在升级页面内比较 Free、Pro 和 Lifetime，无需离开。",
+      "mobileEyebrow": "功能对比",
+      "mobileSubtitle": "查看精简功能对比",
+      "mobileTitle": "比较套餐功能"
     },
     "account": {
       "accessUntil": "访问权限至 {{date}}",
@@ -8746,6 +9145,58 @@
       "dataPrivacy": "您的客户名单将保密",
       "emailProviders": "支持 Gmail、Outlook、Yahoo 等",
       "unsubscribe": "每封邮件都包含退订链接"
+    },
+    "premiumConversion": {
+      "marker": {
+        "label": "高级版",
+        "contains": "包含高级功能"
+      },
+      "modal": {
+        "closeLabel": "关闭升级详情",
+        "comparePlans": "比较免费版和高级版",
+        "notNow": "暂不升级",
+        "eyebrow": "高级功能",
+        "benefitsLabel": "付费方案权益",
+        "contextHint": "您可以比较各个方案，而不会丢失当前正在操作的页面。"
+      },
+      "features": {
+        "send_limit": {
+          "title": "继续发送评价邀请",
+          "description": "免费额度让您能够从简单的工作流程开始。准备继续时，付费方案将取消 Get Phame 方案的发送限制。",
+          "benefits": {
+            "one": "无限发送单个评价邀请",
+            "two": "连接 Bulk Sender 以支持更高发送量",
+            "three": "自动导入已完成的 Koalendar 预约"
+          }
+        },
+        "koalendar": {
+          "title": "将已完成的预约转为联系人",
+          "description": "通过专属 webhook 连接 Koalendar，并在每次会议结束后自动添加符合条件的受邀者。",
+          "benefits": {
+            "one": "为您的账户创建专属 webhook",
+            "two": "将符合条件的已完成预约导入已保存联系人",
+            "three": "在 Get Phame 中跟踪近期预约导入状态"
+          }
+        },
+        "bulk_sender": {
+          "title": "解锁更高发送量",
+          "description": "连接受支持的事务型 SMTP 中继，同时由 Get Phame 保持与提供商相适应的安全控制。",
+          "benefits": {
+            "one": "连接经过验证的事务型 SMTP 中继",
+            "two": "使用与提供商相适应的动态发送限制",
+            "three": "让 Bulk Sender 与您的个人连接保持独立"
+          }
+        },
+        "plans": {
+          "title": "选择适合您工作流程的方案",
+          "description": "决定前先比较免费方案与付费权限。查看选项期间，您当前的工作会完整保留。",
+          "benefits": {
+            "one": "无限发送单个评价邀请",
+            "two": "连接 Bulk Sender 以支持更高发送量",
+            "three": "自动从 Koalendar 导入联系人"
+          }
+        }
+      }
     }
   },
   "zh-TW": {
@@ -9352,10 +9803,33 @@
       "emailAddressLabel": "您的電子郵件地址 *"
     },
     "comparisonTable": {
-      "freeRequestAllowance": "前 10 次，之後每滾動 30 天 5 次",
+      "feature": "功能",
+      "free": "免費版",
+      "pro": "專業版",
+      "unlimited": "無限制",
+      "reviewRequestsTotal": "評論請求（總計）",
+      "followUpReminders": "跟進提醒",
+      "savedContacts": "已儲存聯絡人",
+      "csvImport": "CSV 匯入",
+      "bulkSender": "Bulk Sender 連線",
+      "koalendarImports": "Koalendar 聯絡人匯入",
+      "woocommerceSync": "WooCommerce 同步",
+      "emailOpenClickTracking": "郵件開啟和點選跟蹤",
+      "advancedAnalytics": "高階分析",
+      "multiPlatformPhames": "多平臺評論連結",
+      "dailySendLimit": "每日傳送限制",
+      "prioritySupport": "優先支援",
+      "futureUpdates": "未來更新",
+      "price": "價格",
+      "freeRequestAllowance": "首次 10 次，之後每滾動 30 天 5 次",
       "reviewRequests": "評價請求",
       "lifetime": "終身",
-      "freeTrialNote": "所有方案皆包含 10 次請求的免費試用。開始時不需信用卡。"
+      "freeTrialNote": "所有方案皆包含 10 次請求的免費試用。開始時不需信用卡。",
+      "mobileAction": "比較",
+      "mobileDescription": "在升級頁面內即可比較 Free、Pro 與 Lifetime。",
+      "mobileEyebrow": "功能比較",
+      "mobileSubtitle": "開啟精簡功能比較",
+      "mobileTitle": "比較方案功能"
     },
     "account": {
       "accessUntil": "存取至 {{date}}",
@@ -10167,6 +10641,58 @@
       "dataPrivacy": "您的客戶名單會保持私密",
       "emailProviders": "可搭配 Gmail、Outlook、Yahoo 等服務使用",
       "unsubscribe": "每封電子郵件都包含取消訂閱連結"
+    },
+    "premiumConversion": {
+      "marker": {
+        "label": "高級版",
+        "contains": "包含高級功能"
+      },
+      "modal": {
+        "closeLabel": "關閉升級詳情",
+        "comparePlans": "比較免費版與高級版",
+        "notNow": "暫不升級",
+        "eyebrow": "高級功能",
+        "benefitsLabel": "付費方案權益",
+        "contextHint": "您可以比較各個方案，而不會失去目前正在操作的頁面。"
+      },
+      "features": {
+        "send_limit": {
+          "title": "繼續傳送評論邀請",
+          "description": "免費額度讓您能以簡單的工作流程開始。準備繼續時，付費方案會移除 Get Phame 方案的傳送限制。",
+          "benefits": {
+            "one": "無限傳送個別評論邀請",
+            "two": "連接 Bulk Sender 以支援更高傳送量",
+            "three": "自動匯入已完成的 Koalendar 預約"
+          }
+        },
+        "koalendar": {
+          "title": "將已完成的預約轉為聯絡人",
+          "description": "使用專屬 webhook 連接 Koalendar，並在每次會議結束後自動加入符合資格的受邀者。",
+          "benefits": {
+            "one": "為您的帳戶建立專屬 webhook",
+            "two": "將符合資格的已完成預約匯入已儲存的聯絡人",
+            "three": "在 Get Phame 中追蹤近期預約匯入狀態"
+          }
+        },
+        "bulk_sender": {
+          "title": "解鎖更高傳送量",
+          "description": "連接受支援的交易型 SMTP 轉送服務，同時由 Get Phame 維持配合供應商的安全控制。",
+          "benefits": {
+            "one": "連接已驗證的交易型 SMTP 轉送服務",
+            "two": "使用配合供應商動態調整的傳送限制",
+            "three": "讓 Bulk Sender 與您的個人連線保持分開"
+          }
+        },
+        "plans": {
+          "title": "選擇適合您工作流程的方案",
+          "description": "決定前先比較免費方案與付費權限。查看選項期間，您目前的工作會完整保留。",
+          "benefits": {
+            "one": "無限傳送個別評論邀請",
+            "two": "連接 Bulk Sender 以支援更高傳送量",
+            "three": "自動從 Koalendar 匯入聯絡人"
+          }
+        }
+      }
     }
   }
 }

@@ -89,7 +89,9 @@ export async function beginPasskeyAuthentication(email: string, req: Request) {
   const normalizedEmail = email.trim().toLowerCase();
   const [user] = await db.select().from(users).where(sql`LOWER(${users.email}) = ${normalizedEmail}`).limit(1);
   const credentials = user ? await db.select().from(webauthnCredentials).where(and(eq(webauthnCredentials.userId, user.id), eq(webauthnCredentials.status, "active"))) : [];
-  if (!user || credentials.length === 0) throw new TRPCError({ code: "UNAUTHORIZED", message: "Passkey sign-in is unavailable for this account" });
+  // Unknown and unenrolled accounts deliberately share one neutral response.
+  // The client may offer verification but must not reveal account existence.
+  if (!user || credentials.length === 0) return { state: "enrollment_required" as const };
   const environment = resolveWebauthnEnvironment(req);
   const options = await generateAuthenticationOptions({
     rpID: environment.rpID,
@@ -97,7 +99,7 @@ export async function beginPasskeyAuthentication(email: string, req: Request) {
     userVerification: "required",
   });
   const ceremony = await createCeremony(user.id, "authentication", options.challenge, req);
-  return { ceremonyId: ceremony.id, options };
+  return { state: "authentication_ready" as const, ceremonyId: ceremony.id, options };
 }
 
 export async function finishPasskeyAuthentication(ceremonyId: string, response: AuthenticationResponseJSON, req: Request, res: Response) {

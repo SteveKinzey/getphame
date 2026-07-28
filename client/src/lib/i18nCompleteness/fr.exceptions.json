@@ -1,9 +1,9 @@
 {
   "locale": "fr",
   "audit": "Exhaustive English-identical customer-copy review",
-  "sourceCandidateCount": 178,
+  "sourceCandidateCount": 179,
   "translatedCount": 129,
-  "exceptionCount": 49,
+  "exceptionCount": 50,
   "minimumTranslationConfidence": 0.95,
   "translatedEntryFormat": "<namespace>:<key>",
   "exceptionEntryFormat": "<namespace>:<key>|<category>",
@@ -144,6 +144,7 @@
     "landing:landing.stats.industryCafesRestaurants"
   ],
   "exceptions": [
+    "translation:premiumConversion.marker.label|cross_language_equivalent",
     "translation:seo.shortTitle|brand_or_product",
     "translation:nav.brandName|brand_or_product",
     "translation:nav.guide|cross_language_equivalent",

@@ -13,6 +13,8 @@ import { useTranslation } from "react-i18next";
 import { useHaptics } from "@/hooks/useHaptics";
 import LanguageFlyout from "@/components/LanguageFlyout";
 import { completeSuccessfulRequest } from "@/lib/onboardingFlow";
+import { openUpgradeModal } from "@/lib/upgradeModal";
+import ProBadge from "@/components/ProBadge";
 
 const SUCCESS_IMG =
   "https://assets.getphame.app/rr-send-success.webp";
@@ -85,9 +87,9 @@ export default function SendRequestPage() {
     },
     onError: (err) => {
       setSending(false);
-      // Free-tier limit hit — redirect to upgrade page
+      // Preserve the current form while explaining the matching paid benefit.
       if (err.message.includes('10004')) {
-        navigate('/upgrade');
+        openUpgradeModal("send_limit");
         return;
       }
       toast.error(err.message);
@@ -431,12 +433,13 @@ export default function SendRequestPage() {
                         })}
                   </p>
                   <button
-                    onClick={() => navigate('/upgrade')}
-                    className="flex items-center gap-1 text-xs font-bold"
+                    onClick={() => openUpgradeModal("send_limit")}
+                    className="flex flex-wrap items-center gap-2 text-xs font-bold"
                     style={{ color: 'oklch(0.55 0.18 260)' }}
                   >
-                    <Zap size={12} />
-                    {t("page.upgradeToPro", { defaultValue: "Upgrade to Pro →" })}
+                    <Zap size={12} aria-hidden="true" />
+                    <span>{t("page.upgradeToPro", { defaultValue: "Upgrade to Pro →" })}</span>
+                    <ProBadge variant="locked" size="sm" />
                   </button>
                 </div>
               </div>
@@ -462,10 +465,11 @@ export default function SendRequestPage() {
                 </span>
               </div>
               <button
-                onClick={() => navigate('/upgrade')}
-                className="text-xs font-bold px-3 py-1 rounded-lg rr-bg-navy rr-text-gold"
+                onClick={() => openUpgradeModal("send_limit")}
+                className="inline-flex min-h-9 items-center gap-2 rounded-lg px-3 py-1 text-xs font-bold rr-bg-navy rr-text-gold"
               >
-                {t("page.upgrade", { defaultValue: "Upgrade" })}
+                <span>{t("page.upgrade", { defaultValue: "Upgrade" })}</span>
+                <ProBadge variant="locked" size="sm" />
               </button>
             </div>
           );
