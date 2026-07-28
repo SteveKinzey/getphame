@@ -32,6 +32,25 @@ describe("Google sign-in interaction feedback", () => {
     expect(login).toContain('window.location.assign("/api/auth/google")');
   });
 
+  it("orders account-establishing methods before passkey authentication in visual and keyboard sequence", () => {
+    const login = read("client/src/pages/Login.tsx");
+    const magicLinkForm = read("client/src/components/auth/MagicLinkForm.tsx");
+    const passkeySignIn = read("client/src/components/security/PasskeySignIn.tsx");
+    const magicLinkPosition = login.indexOf('<MagicLinkForm idPrefix="login" autoFocus />');
+    const socialPosition = login.indexOf('data-testid="social-login"');
+    const passkeyPosition = login.indexOf("<PasskeySignIn />");
+
+    expect(magicLinkPosition).toBeGreaterThan(-1);
+    expect(socialPosition).toBeGreaterThan(magicLinkPosition);
+    expect(passkeyPosition).toBeGreaterThan(socialPosition);
+    expect(login.slice(magicLinkPosition, socialPosition)).toContain('t("login.or"');
+    expect(login.slice(socialPosition, passkeyPosition)).toContain('t("passkeys.signIn.orAlternative"');
+    expect(magicLinkForm).toContain("autoFocus={autoFocus}");
+    expect(passkeySignIn).not.toContain("autoFocus");
+    expect(passkeySignIn).toContain('ceremony.state === "enrollment_required"');
+    expect(passkeySignIn).toContain("setEnrollmentOpen(true)");
+  });
+
   it("persists initiation long enough to show success or error feedback after the OAuth redirect", () => {
     const login = read("client/src/pages/Login.tsx");
     const app = read("client/src/App.tsx");
