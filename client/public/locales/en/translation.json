@@ -1,6 +1,6 @@
 {
   "seo": {
-    "title": "Get Phame — Get More 5-Star Google Reviews",
+    "title": "Get Phame — Personal review request emails",
     "keywords": "review requests, Google reviews, get more reviews, review automation, small business reviews, send review request email, WooCommerce reviews, Stripe reviews",
     "ogDescription": "Send personalised review request emails from your own email account. Works with Google, Yelp, TripAdvisor and more.",
     "shortTitle": "Get Phame"
@@ -12,6 +12,7 @@
     "send": "Send",
     "dashboard": "Dashboard",
     "settings": "Settings",
+    "more": "More",
     "shareHint": "Share Get Phame with a friend",
     "share": "Share",
     "guideHint": "Open setup guide",
@@ -22,31 +23,24 @@
     "howItWorks": "How It Works",
     "pricing": "Pricing",
     "faq": "FAQ",
-    "product": "Product",
-    "getStartedFree": "Get Started Free"
+    "manageUsers": "Manage users",
+    "admin": "Admin",
+    "developer": "Developer",
+    "userManual": "User Manual",
+    "adminManual": "Admin Manual"
   },
   "hero": {
     "tagline": "Free to start — No credit card required",
-    "headline": "Get more 5-star reviews without the awkward ask",
+    "headline": "Send personal review requests",
     "description": "Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender.",
     "cta": "Get Started Free",
-    "setupTime": "Takes less than 2 minutes to set up",
+    "setupTime": "Guided setup",
     "rocketIllustrationAlt": "Get Phame rocket illustration",
     "dashboardAlt": "Get Phame dashboard showing sent requests and email performance stats",
     "dashboardStats": "Your dashboard — live stats",
-    "titlePart1": "Get More 5-Star",
-    "titlePart2": "Google Reviews",
-    "seeHowItWorks": "See how it works",
-    "setupIn2Min": "Set up in under 2 minutes",
-    "worksWithEmail": "Works with Gmail, Outlook, SMTP",
-    "freeSends": "10 free sends · then 5/30 days free",
-    "googleSignInNote": "Sign in with Google to create your account. We only access your name and email address — nothing else.",
-    "privacyPolicy": "Privacy Policy",
-    "taglineAlt": "Free to start — No credit card required",
-    "subtitle": "Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender.",
-    "titlePart3": "without the awkward ask",
-    "ctaVariantA": "Start Free — First 10 Sends on Us",
-    "ctaVariantB": "Get Your First 10 Reviews Free"
+    "titlePart1": "Send personal review requests",
+    "titlePart2": "from your own email",
+    "setup": "Guided setup"
   },
   "features": {
     "sectionTitle": "Why businesses choose Get Phame",
@@ -55,17 +49,12 @@
       "description": "Every request lands in your customer's inbox looking like a personal message — not a bulk blast. No shared sender, no spam filters."
     },
     "bulkSendFeature": {
-      "title": "Bulk send in seconds",
-      "description": "Import contacts from CSV, Stripe, or WooCommerce. Select all, hit send — each customer gets their own personalised email."
+      "title": "Send personalized requests in bulk",
+      "description": "Import customers by CSV or WooCommerce sync, choose the recipients, and send personalized requests without copying each message manually."
     },
     "platformFeature": {
       "title": "Works with any review platform",
       "description": "Google, Yelp, Trustpilot, TripAdvisor, Facebook — add any review link. Your customers are taken straight to your review page."
-    },
-    "customerQuote": {
-      "quote": "Get Phame has been a game-changer for our small business. We've seen a significant increase in positive reviews, and it's so easy to use!",
-      "author": "Tom R.",
-      "authorTitle": "Owner, The Corner Café"
     },
     "sendsFromYourEmail": "Sends from your email",
     "oneTapRequests": "One-tap requests",
@@ -80,48 +69,20 @@
       "desc": "Customers see your name and email address — not a generic sender. It feels personal because it is."
     },
     "bulkSend": {
-      "title": "Bulk send in one click",
-      "desc": "Import your customer list via CSV or WooCommerce sync, select all, and send personalised requests in seconds."
+      "title": "Send personalized requests in bulk",
+      "desc": "Import customers by CSV or WooCommerce sync, choose the recipients, and send personalized requests without copying each message manually."
     },
     "anyPlatform": {
       "title": "Any review platform",
       "desc": "Google, Yelp, TripAdvisor, Bing, Facebook and more. You choose where to send customers."
-    },
-    "f1Title": "Your name. Your inbox. Their trust.",
-    "f1Desc": "Every review request arrives from your actual email address. Customers recognize the sender, so they open it — and they respond.",
-    "f1Stat": "45–60%",
-    "f1StatLabel": "avg. open rate",
-    "f2Title": "One click sends to hundreds",
-    "f2Desc": "Import your customer list via CSV or WooCommerce sync, select all, and send personalized requests in seconds. No copy-pasting. No manual work.",
-    "f2Stat": "500+",
-    "f2StatLabel": "sends per batch",
-    "f3Title": "Every platform. Your choice.",
-    "f3Desc": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, and more. Paste your link, switch platforms anytime. One tool for all your review destinations.",
-    "f3Stat": "10+",
-    "f3StatLabel": "platforms supported",
-    "sectionTagline": "Why it works",
-    "sectionHeadline": "From your inbox to their review",
-    "sectionSubheadline": "The simplest way to turn happy customers into 5-star reviews — without expensive tools or awkward conversations."
+    }
   },
   "howItWorks": {
     "step1": "Connect your email account (SMTP)",
     "step2": "Add your Google (or other) review link",
     "step3": "Import or add your customers",
     "step4": "Send personalised review requests",
-    "sectionTitle": "How it works",
-    "tagline": "Setup in 4 steps",
-    "headline": "Two minutes to your first review request",
-    "subheadline": "No technical skills needed. No onboarding calls. Just connect, import, and send.",
-    "cta": "Get Started Free",
-    "setupTime": "Takes less than 2 minutes to set up",
-    "s1Title": "Connect your email",
-    "s1Desc": "Link your Gmail, Outlook, or any SMTP email in 60 seconds. Credentials encrypted with AES-256.",
-    "s2Title": "Add your review link",
-    "s2Desc": "Paste your Google, Yelp, TripAdvisor, or any review platform link. Switch platforms anytime.",
-    "s3Title": "Import your customers",
-    "s3Desc": "Upload a CSV, sync from WooCommerce, or add contacts manually. We validate emails automatically.",
-    "s4Title": "Send & track results",
-    "s4Desc": "Hit send. Each customer gets a personal email from you. Track opens, clicks, and new reviews live."
+    "sectionTitle": "How it works"
   },
   "faq": {
     "sectionTitle": "Frequently asked questions",
@@ -130,47 +91,40 @@
     "providersQuestion": "What email providers work?",
     "providersAnswer": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server. If you can set up an email app on your phone, you can connect it to Get Phame.",
     "freeQuestion": "Is it really free?",
-    "freeAnswer": "Yes — free with no artificial sending limits. You connect your own email account, so the only limit is your email provider's daily sending cap (Gmail allows ~500/day, most others are similar). There are no hidden fees and no credit card required to get started.",
+    "freeAnswer": "Yes. The Free plan includes 10 initial review requests, then 5 requests every rolling 30 days. No credit card is required. Your email provider's daily sending cap also applies.",
     "importQuestion": "Can I import my customer list?",
     "importAnswer": "Yes. You can upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store. Once imported, you can bulk-select contacts and send personalised review requests in a single click.",
     "q1": "Will it look like spam?",
-    "a1": "No. Emails are sent directly from your own email account — your customer sees your name and email address as the sender.",
+    "a1": "No. Every email is sent directly from your own email account via SMTP — not from a shared bulk-sending server. Your customer sees your name, your email address, and a message written in your voice.",
     "q2": "What email providers work?",
-    "a2": "Get Phame works with any email provider that supports SMTP: Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud, and any custom SMTP server. If you can send email from it, you can connect it to Get Phame.",
+    "a2": "Any provider that supports SMTP works: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, cPanel/Zoho business email, and virtually any hosting provider's mail server.",
     "q3": "Is it really free?",
-    "a3": "Yes. The free plan gives you 10 review requests with no credit card required and no time limit. Use all 10 whenever you're ready. If you want unlimited requests, bulk send, follow-up reminders, and WooCommerce sync, upgrade to Pro.",
+    "a3": "Yes. You receive 10 initial review requests, then 5 requests every rolling 30 days. No credit card is required.",
     "q4": "Can I import my customer list?",
-    "a4": "Absolutely. Upload a CSV file with customer names and email addresses, or sync directly from WooCommerce. We validate emails automatically, remove duplicates, and flag any invalid addresses before you send.",
+    "a4": "Yes. Upload a CSV file with your customers' names and email addresses, or sync directly from WooCommerce if you run an online store.",
     "q5": "Does Get Phame store my email password?",
-    "a5": "Your SMTP credentials are encrypted at rest using AES-256 encryption. We never store plain-text passwords. Your credentials are only used to send emails on your behalf — we cannot read your inbox or access any other email data.",
+    "a5": "Never. Get Phame uses your own SMTP credentials (or Gmail app password) to send emails directly from your account. Your password is encrypted at rest and never shared or stored in plain text. You can disconnect at any time from Settings.",
     "q6": "Will my emails land in spam?",
-    "a6": "Because emails are sent from your own email account (not a bulk-sending server), they have the same deliverability as any email you'd send manually. Your domain reputation, SPF, and DKIM records all apply normally. This is a key advantage over third-party senders.",
+    "a6": "Because emails are sent from your own email address — not a generic sender — they land in the primary inbox far more reliably than bulk marketing tools. Your domain reputation stays intact.",
     "q7": "What happens to my customer list?",
-    "a7": "Your customer data is stored securely and is never shared, sold, or used for any purpose other than sending your review requests. You can export or delete your entire customer list at any time. We comply with GDPR and CAN-SPAM requirements.",
+    "a7": "Your customer data stays private. It is stored securely in your account and is never sold, shared, or used for any purpose other than sending your review requests. You can delete contacts at any time.",
     "q8": "Can customers opt out?",
-    "a8": "Yes. Every email includes an unsubscribe link. When a customer opts out, they're automatically removed from future sends. This keeps you compliant and protects your sender reputation.",
+    "a8": "Yes. Every review request email includes an unsubscribe link. Customers who opt out are automatically excluded from future sends.",
     "q9": "Do I need technical skills to connect my email?",
-    "a9": "No. For Gmail and Outlook, we provide step-by-step guides with screenshots. Most users connect in under 60 seconds. For custom SMTP, you'll need your server address, port, and credentials — your hosting provider can supply these.",
+    "a9": "No. For Gmail and Outlook, we provide step-by-step guides with screenshots. For custom SMTP, you'll need your server address, port, and credentials — your hosting provider can supply these.",
     "q10": "Which review platforms does it support?",
-    "a10": "Any platform with a review link: Google, Yelp, TripAdvisor, Facebook, Bing Places, Trustpilot, G2, Capterra, and more. Just paste your review link and we'll include it in every request. You can change platforms anytime.",
+    "a10": "Google, Yelp, TripAdvisor, Facebook, Bing, and any custom URL. You can add multiple platforms and choose which one to include in each send.",
     "q11": "How does WooCommerce sync work?",
-    "a11": "Install our free WooCommerce plugin, enter your API key, and new customers are automatically imported after each completed order. You can set a delay (e.g., 7 days after purchase) before they appear in your send queue.",
+    "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
     "q12": "What does unlimited mean on the Pro plan?",
-    "a12": "Unlimited means no cap on the number of review requests you can send per month. Send 50 or 5,000 — no extra charges. The only limit is your email provider's own sending limits (e.g., Gmail allows ~500/day for personal accounts, 2,000/day for Workspace).",
-    "sectionTagline": "FAQ",
-    "sectionHeadline": "Questions about email safety, privacy & setup",
-    "sectionSubheadline": "Everything you need to know before connecting your email and sending your first review request."
+    "a12": "Unlimited means no monthly cap on review requests. The Free plan includes 10 initial requests, then 5 requests every rolling 30 days. Pro removes that product limit."
   },
   "bottomCta": {
-    "headline": "Start collecting reviews today",
-    "description": "Free forever. No credit card. Set up in under 2 minutes.",
+    "headline": "Send personal review requests",
+    "description": "Free forever: 10 initial requests, then 5 more every rolling 30 days. No credit card required.",
     "cta": "Get Started Free",
-    "title": "Ready to get more reviews?",
-    "subtitle": "Free forever. No credit card. Set up in under 2 minutes.",
-    "headline2": "Your inbox. Your reputation.",
-    "subheadline2": "Free forever on the starter plan. No credit card. Set up in under 2 minutes. Start collecting 5-star reviews today.",
-    "socialProof": "Join hundreds of businesses already growing their reputation with Get Phame.",
-    "headline2Part2": "Your growth."
+    "title": "Send personal review requests",
+    "subtitle": "Free forever: 10 initial requests, then 5 more every rolling 30 days. No credit card required."
   },
   "footer": {
     "brandName": "Get Phame",
@@ -191,6 +145,25 @@
     "subHeader": "Help them get more reviews — it's free.",
     "copiedToClipboard": "Copied to clipboard!",
     "sharePhame": "Share Get Phame"
+  },
+  "referralRewards": {
+    "title": "Referral Rewards",
+    "subtitle": "Earn 1 free month per paid referral",
+    "monthsShort": "{{count}} mo",
+    "joined": "Joined",
+    "converted": "Converted",
+    "freeMonths": "Free Months",
+    "whatsApp": "WhatsApp",
+    "message": "Message",
+    "copyLink": "Copy Link",
+    "copied": "Copied!",
+    "copySuccessToast": "Referral link copied!",
+    "copyErrorToast": "Could not copy link.",
+    "shareMessage": "Send review requests with Get Phame — {{url}}",
+    "noReferralsHint": "Share your link below to start earning free months",
+    "pendingReferralsHint": "{{count}} friend joined — waiting for them to upgrade",
+    "pendingReferralsHint_plural": "{{count}} friends joined — waiting for them to upgrade",
+    "rewardProcessingHint": "Reward processing — your free month will be applied shortly"
   },
   "relativeTime": {
     "justNow": "just now",
@@ -292,7 +265,44 @@
     "toGo": "to go",
     "reviewsPerMonth": "reviews / month",
     "ofMonthlyGoal": "of monthly goal",
-    "requestsByPlatform": "Requests by Platform"
+    "requestsByPlatform": "Requests by Platform",
+    "freeAllowanceInitial": "Free plan: 10 initial requests, then 5 every rolling 30 days",
+    "freeAllowanceMonthly": "Free plan: 5 requests every rolling 30 days",
+    "nextFreeRequest": "Next request available {{date}}",
+    "setupProgressEyebrow": "Get started",
+    "setupProgressDescription": "Complete these four steps to make your review requests ready to send.",
+    "setupProgressCount": "{{completed}} of {{total}} complete",
+    "setupStepEmail": "Connect your email",
+    "setupStepEmailDescription": "Add your SMTP sending account.",
+    "setupActionEmail": "Connect",
+    "setupStepPlatform": "Add a review platform",
+    "setupStepPlatformDescription": "Choose where customers will leave reviews.",
+    "setupActionPlatform": "Add platform",
+    "setupStepContacts": "Import contacts",
+    "setupStepContactsDescription": "Upload or add your first customers.",
+    "setupActionContacts": "Import",
+    "setupStepSend": "Send your first request",
+    "setupStepSendDescription": "Preview the customer experience with a first send.",
+    "setupActionSend": "Send",
+    "setupStepComplete": "Complete",
+    "setupStepNumber": "Step {{step}}",
+    "loadingAnalytics": "Loading analytics",
+    "lifePlan": "Life Plan"
+  },
+  "activityTrend": {
+    "title": "Activity Trend",
+    "rangeAria": "Show {{days}} day trend",
+    "range": "{{days}}d",
+    "loading": "Loading activity trend",
+    "empty": "No activity in the last {{days}} days. Send your first request to see trends here.",
+    "sent": "Sent",
+    "opens": "Opens",
+    "clicks": "Clicks",
+    "openRate": "Open rate",
+    "clickRate": "Click rate",
+    "thisWeek": "This Week",
+    "priorWeek": "Prior Week",
+    "allTime": "All Time"
   },
   "notifications": {
     "followUpReminderScheduled": "Follow-up reminder scheduled!",
@@ -373,10 +383,14 @@
     "upgradeToPro": "Upgrade to Pro →",
     "upgrade": "Upgrade",
     "imported": "Imported",
-    "importedMultiple": "Imported {{count}} contacts - sending to first contact. Use Bulk Send for multiple."
+    "importedMultiple": "Imported {{count}} contacts - sending to first contact. Use Bulk Send for multiple.",
+    "freeInitialRemaining": "Free plan: {{remaining}} of 10 initial requests remaining — then 5 every rolling 30 days",
+    "freeRollingRemaining": "Free plan: {{remaining}} of 5 requests remaining in your rolling 30-day allowance",
+    "freeInitialLimitReachedDesc": "You've used your 10 initial requests. Your recurring allowance is 5 requests every rolling 30 days, or upgrade for unlimited requests.",
+    "freeRollingLimitReachedDesc": "You've used all 5 requests in your current rolling 30-day allowance. Your next request becomes available on {{date}}, or upgrade to keep sending now."
   },
   "tabs": {
-    "account": "Account & Profile",
+    "account": "Account",
     "billing": "Billing",
     "integrations": "Integrations",
     "notifications": "Notifications",
@@ -420,6 +434,16 @@
     "cancelButton": "Cancel",
     "successToast": "Account deleted. Goodbye!"
   },
+  "common": {
+    "gotIt": "Got it ✓",
+    "hide": "Hide",
+    "show": "Show",
+    "cancel": "Cancel",
+    "on": "On",
+    "off": "Off",
+    "copy": "Copy",
+    "optional": "optional"
+  },
   "profile": {
     "title": "Business Profile",
     "description": "Tell us about your business. This info is used for email personalization and branding.",
@@ -439,9 +463,7 @@
     "saveProfile": "Save Profile",
     "successToast": "Business profile saved!",
     "dailySendLimitSaved": "Daily send limit saved!",
-    "addBusinessNameAndLink": "Add your business name and Google review link in Settings first.",
-    "displayName": "Dashboard Greeting Name",
-    "displayNameDescription": "Overrides your login name on the \"Hey, [Name]!\" greeting. Leave blank to use your account name."
+    "addBusinessNameAndLink": "Add your business name and Google review link in Settings first."
   },
   "reviewPlatforms": {
     "title": "Review Platforms",
@@ -465,10 +487,72 @@
     "platformLabelDescription": "Shows in the email if you select \"Other\".",
     "addPlatform": "Add Platform",
     "urlRequired": "URL is required",
+    "platformUrlRequired": "Review Page URL *",
+    "yelpSearchInstruction": "Yelp Search Instruction *",
+    "whyNoLinkTitle": "Why no link?",
+    "yelpNoLinkEdit": "Yelp's Terms of Service prohibit directly soliciting reviews via a link. A plain-text search instruction keeps your emails compliant — customers find your listing themselves.",
+    "yelpEditHelp": "Enter a plain-text search instruction. This text appears in the email — no link is generated, keeping you Yelp-compliant.",
+    "yelpNoLinkAdd": "Yelp's Terms of Service prohibit directly soliciting reviews via a link. Entering a plain-text search instruction keeps your emails compliant — customers find your listing themselves.",
+    "yelpSearchHelp": "Enter a plain-text search instruction (for example: Search for [Your Business] on Yelp in [City, State]). This text appears in the email body — no link is created, keeping you Yelp-compliant.",
+    "reviewUrlHelp": "Paste the public URL customers use to leave a review on this platform.",
+    "customLabel": "Custom Label",
+    "customLabelExample": "e.g. Houzz, Angi, Thumbtack",
+    "searchInstructionRequired": "Search instruction is required",
+    "addingPlatform": "Adding platform...",
+    "addSuccess": "Review platform added!",
+    "addError": "Failed to add platform",
+    "remove": "Remove",
+    "cancel": "Cancel",
     "restoreFailed": "Restore failed: {{message}}",
     "removeFailed": "Could not remove platform: {{message}}"
   },
   "smtp": {
+    "emailConnected": "Email Connected",
+    "lastAutoCheck": "Last auto-check: {{date}}",
+    "healthy": "✓ Healthy",
+    "failed": "✗ Failed",
+    "notConnectedDescription": "No email connected. Enter your details below to start sending review requests.",
+    "emailAddressLabel": "Your Email Address *",
+    "displayNameLabel": "Display Name (optional)",
+    "displayNamePlaceholder": "e.g. Steve at Acme Plumbing",
+    "displayNameHelp": "Shown as the sender name in your customer's inbox.",
+    "passwordLabels": {
+      "gmail": "Gmail App Password *",
+      "workspace": "Google Workspace App Password *",
+      "microsoft": "Microsoft App Password *",
+      "yahoo": "Yahoo App Password *",
+      "zoho": "Zoho Mail Password *",
+      "icloud": "Apple App-Specific Password *",
+      "aol": "AOL App Password *",
+      "proton": "ProtonMail SMTP Password *",
+      "fastmail": "Fastmail App Password *",
+      "email": "Email Password *"
+    },
+    "passwordPlaceholders": {
+      "update": "Enter new password to update",
+      "google": "16-character App Password (no spaces)",
+      "default": "Your email password"
+    },
+    "inlineHints": {
+      "google": "Not your regular Gmail password — use an App Password. Tap How to get it above.",
+      "icloud": "Use an App-Specific Password, not your Apple ID password. Tap How to get it above.",
+      "zoho": "Enable SMTP access in Zoho first, then use your regular Zoho password. Tap How to get it above.",
+      "aol": "Not your regular AOL password — use an App Password. Tap How to get it above.",
+      "proton": "ProtonMail requires the Proton Bridge app — use its SMTP password, not your Proton login. Tap How to get it above.",
+      "fastmail": "Not your regular Fastmail password — use an App Password. Tap How to get it above.",
+      "custom": "Custom domain detected — SMTP settings auto-filled below. Check Advanced settings to verify or adjust host and port."
+    },
+    "sendingLimits": {
+      "title": "Sending limits by provider",
+      "gmail": "Gmail / Google Workspace — 500 emails/day (free), 2,000/day (Workspace)",
+      "microsoft": "Outlook / Microsoft 365 — 300 emails/day",
+      "yahoo": "Yahoo Mail — 500 emails/day",
+      "zoho": "Zoho Mail — 500 emails/day (free), 1,000/day (paid)",
+      "aol": "AOL Mail — 500 emails/day",
+      "fastmail": "Fastmail — 1,000 emails/day",
+      "proton": "ProtonMail — 150 emails/day (free), 1,000/day (paid) via Bridge",
+      "tip": "For high-volume sending, use a dedicated reviews@yourdomain.com address to keep your main inbox clean and avoid hitting personal limits."
+    },
     "title": "Email Connection (SMTP)",
     "description": "Connect your own email account to send review requests. We encrypt your password and never share it.",
     "testConnection": "Test Connection",
@@ -540,7 +624,7 @@
     "sendingLimit": "Sending Limit",
     "sendingLimitDescription": "Max emails per day to avoid spam filters. We recommend 50-100 for new accounts.",
     "connect": "Connect",
-    "update": "Change",
+    "update": "Update",
     "testSuccess": "Connection successful!",
     "testError": "Connection failed: {{message}}",
     "previewSuccess": "Test email sent to {{email}}!",
@@ -549,9 +633,8 @@
     "disconnectSuccess": "Email account disconnected.",
     "disconnectError": "Could not disconnect account: {{message}}",
     "noEmailConnected": "No email connected",
-    "emailNotConnectedTitle": "Connection Unverified",
-    "emailNotConnectedDesc": "Connect your email account in Settings. Works with Gmail, Outlook, Yahoo, or any business email.",
-    "emailConnected": "Email Connected"
+    "emailNotConnectedTitle": "Email not connected",
+    "emailNotConnectedDesc": "Connect your email account in Settings. Works with Gmail, Outlook, Yahoo, or any business email."
   },
   "wooCommerce": {
     "title": "WooCommerce",
@@ -764,7 +847,9 @@
     "emailTemplates": "Email Templates",
     "customizeMessages": "Customise your review request messages",
     "new": "New",
-    "logoText": "Get Phame"
+    "logoText": "Get Phame",
+    "proGrowthMessage": "Turn every completed job into a repeatable reputation and revenue system.",
+    "tagline": "Send review requests automatically."
   },
   "infoBanner": {
     "howItWorks": "How it works:",
@@ -851,8 +936,8 @@
     "monthlyDescription": "Cancel anytime. No contracts.",
     "annualDescription": "Billed once per year. Equivalent to $24.17/mo.",
     "lifetimeDescription": "One-time payment. No renewals, ever.",
-    "lifetimeRoiCalloutTitle": "💰 Pays for itself in under 4 years",
-    "lifetimeRoiCalloutDescription": "Monthly plan costs $348/yr. At that rate, the lifetime license breaks even at year 3.6 — then it's free forever. Most users recover the cost in their first year of reviews.",
+    "lifetimeRoiCalloutTitle": "Pays for itself in about 13 months",
+    "lifetimeRoiCalloutDescription": "At $29 per month, the $349 lifetime plan breaks even in about 13 months. After that, there are no subscription renewals.",
     "unlimitedReviewRequests": "Unlimited review requests",
     "prioritySending": "Priority sending & follow-ups",
     "advancedAnalytics": "Advanced analytics",
@@ -869,7 +954,32 @@
     "promptPayNote": "Thailand only · QR code payment · Charged in THB",
     "hidePromptPay": "Hide",
     "promptPayReveal": "Based in Thailand?",
-    "promptPayRevealLink": "Pay with PromptPay (฿)"
+    "promptPayRevealLink": "Pay with PromptPay (฿)",
+    "otherPaymentMethods": "Other payment methods",
+    "checkoutForPlan": "Secure checkout for {{plan}}"
+  },
+  "pricingGrid": {
+    "title": "Choose the plan that fits your growth",
+    "savingsEyebrow": "Savings calculator",
+    "savingsTitle": "See what each commitment saves",
+    "savingsBasis": "Compared with paying monthly",
+    "monthlyAnnualCost": "for 12 months",
+    "annualSave": "Save {{amount}}",
+    "annualSavingsDetail": "{{price}} instead of {{monthly}} for year one",
+    "lifetimeSave": "Save {{amount}} by year two",
+    "lifetimePayback": "Pays for itself in about {{months}} months",
+    "heroSendRequests": "Send requests",
+    "heroAutomateFollowUps": "Automate follow-ups",
+    "heroTrackGrowth": "Track your growth",
+    "closeComparison": "Close comparison",
+    "includedLabel": "Included",
+    "planFeaturesLabel": "{{plan}} plan features",
+    "approximateThb": "≈ {{amount}} THB",
+    "guidance": {
+      "monthly": "Best for short-term flexibility.",
+      "annual": "Best recurring value at about $24.17 per month.",
+      "lifetime": "Best long-term value: $349 once, with no renewals."
+    }
   },
   "accessCode": {
     "title": "Have an access code?",
@@ -878,10 +988,21 @@
     "redeem": "Redeem",
     "codeAcceptedPro": "🎉 Code accepted! You're now on Pro!",
     "codeAcceptedNote": "🎉 Code accepted! {{note}} — You're now on Pro!",
-    "invalidCodeError": "Invalid code. Please try again."
-  },
-  "socialProof": {
-    "trustedByBusinesses": "Trusted by local businesses to get more 5-star reviews"
+    "invalidCodeError": "Invalid code. Please try again.",
+    "grantDurationLabel": "Access granted after redemption",
+    "grantUnitLabel": "Grant duration unit",
+    "grantValueLabel": "Grant duration value",
+    "durationError": "Enter a duration between 1 and {{limit}}.",
+    "durationHelper": "The access period starts when the customer redeems the code.",
+    "lifetimeHelper": "The code grants permanent paid access.",
+    "grantLifetime": "Grants lifetime access",
+    "grantDuration": "Grants {{value}} {{unit}}",
+    "grantLegacy": "Legacy unlimited Pro access",
+    "units": {
+      "day": "days",
+      "month": "months",
+      "lifetime": "Lifetime"
+    }
   },
   "comparisonTable": {
     "feature": "Feature",
@@ -900,7 +1021,14 @@
     "prioritySupport": "Priority support",
     "futureUpdates": "Future updates",
     "price": "Price",
-    "freeTrialNote": "All plans include a 10-request free trial. No credit card required to start."
+    "freeTrialNote": "All plans include a 10-request free trial. No credit card required to start.",
+    "reviewRequests": "Review requests",
+    "freeRequestAllowance": "10 first, then 5 / rolling 30 days",
+    "mobileTitle": "Compare plan features",
+    "mobileSubtitle": "Open the compact feature comparison",
+    "mobileAction": "Compare",
+    "mobileEyebrow": "Feature comparison",
+    "mobileDescription": "Compare Free, Pro, and Lifetime without leaving the upgrade page."
   },
   "paidUser": {
     "adminAccess": "Admin Access",
@@ -910,7 +1038,115 @@
     "onPro": "You're on {{tierLabel}}!",
     "enjoyFeatures": "Enjoy unlimited review requests and all Pro features.",
     "backToDashboard": "Back to Dashboard",
-    "cancelPlan": "Cancel plan"
+    "cancelPlan": "Cancel plan",
+    "portalOpened": "Secure billing opened in a new tab.",
+    "currentStatus": "Your status: {{tierLabel}}",
+    "lifeMessage": "Life access is active. There is nothing to upgrade or renew.",
+    "manageMessage": "Change your billing cycle or end your subscription below.",
+    "subscription": "Subscription",
+    "switchMonthly": "Switch to Monthly or manage billing",
+    "changePlan": "Change plan or manage billing",
+    "endSubscription": "End subscription",
+    "endExplanation": "Ending your subscription returns the account to Free at the end of the paid period.",
+    "switchConfirm": {
+      "title": "Switch from {{current}} to {{target}}?",
+      "description": "Review the billing-cycle change before continuing to Stripe.",
+      "currentPlan": "Current plan",
+      "newPlan": "New plan",
+      "savings": "Annual billing saves $58 per year compared with Monthly.",
+      "timing": "Stripe will show the exact effective date and any prorated charge or credit before you approve the change.",
+      "cancel": "Keep {{plan}}",
+      "continue": "Continue to Stripe"
+    },
+    "renewsOn": "Renews on {{date}}",
+    "accessUntil": "Access until {{date}}"
+  },
+  "login": {
+    "title": "Get Phame",
+    "subtitle": "Sign in to your account",
+    "continueWithGoogle": "Continue with Google",
+    "continueWithApple": "Continue with Apple",
+    "or": "or",
+    "emailLabel": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "emailRequired": "Email is required.",
+    "invalidEmail": "Enter a valid email address.",
+    "sendingMagicLink": "Sending link…",
+    "sendMagicLink": "Send Magic Link",
+    "noPassword": "No password needed — we'll email you a secure login link.",
+    "checkInbox": "Check your inbox",
+    "sentTo": "We sent a login link to",
+    "expiresNotice": "The link expires in 15 minutes. Check your spam folder if you don't see it.",
+    "useDifferentEmail": "Use a different email",
+    "magicLinkFailed": "We could not send your magic link. Please try again.",
+    "networkError": "Network error. Please check your connection and try again.",
+    "rateLimited": "Too many attempts. Please wait a few minutes and try again.",
+    "serviceUnavailable": "Service is temporarily unavailable. Please try again.",
+    "termsPrefix": "By continuing, you agree to our",
+    "terms": "Terms of Service",
+    "consentAnd": "and",
+    "privacy": "Privacy Policy",
+    "consentSuffix": ".",
+    "signInCancelled": "Sign-in was cancelled. Please try again.",
+    "appleSignInFailed": "Apple sign-in could not be completed. Please try again.",
+    "invalidMagicLink": "Invalid or already-used sign-in link. Please request a new one.",
+    "magicLinkExpired": "That sign-in link has expired. Please request a new one.",
+    "verificationFailed": "Verification failed. Please request a new link.",
+    "signInFailed": "Sign-in failed. Please try again or contact support."
+  },
+  "authFeedback": {
+    "openingGoogle": "Opening Google sign-in…",
+    "connectingGoogle": "Connecting to Google…",
+    "continueWithGoogle": "Continue with Google",
+    "googleOpenFailed": "Google sign-in could not be opened. Please try again.",
+    "googleSuccess": "Google sign-in successful. Welcome to Get Phame.",
+    "errors": {
+      "googleDenied": "Google sign-in was cancelled.",
+      "googleFailed": "Google sign-in failed. Please try again.",
+      "googleMissingCode": "Google did not return the information needed to sign you in. Please try again.",
+      "googleStateMismatch": "Google sign-in security check failed. Please try again.",
+      "googleNoId": "Google sign-in could not verify your account. Please try again."
+    },
+    "preparingGoogle": "Preparing Google sign-in…",
+    "redirectingGoogle": "Redirecting securely to Google…"
+  },
+  "apiRecovery": {
+    "preparing": "Preparing your workspace…",
+    "preparingDescription": "We’ll reconnect automatically when the service is ready.",
+    "reconnecting": "Reconnecting…",
+    "reconnected": "You’re back online.",
+    "reconnectedDescription": "Get Phame is connected and ready to use.",
+    "unavailableTitle": "We’re reconnecting Get Phame.",
+    "unavailableDescription": "The service is taking a little longer than expected. Your work is safe; try again when you’re ready.",
+    "offlineTitle": "You’re offline right now.",
+    "offlineDescription": "Check your Wi-Fi or mobile data, then try again. Your work stays safe on this device.",
+    "offlineStepOne": "Turn on Wi-Fi or mobile data.",
+    "offlineStepTwo": "Return here and tap Retry Connection.",
+    "retrying": "Trying again…",
+    "retry": "Try again",
+    "retryNow": "Retry now",
+    "retryConnection": "Retry Connection",
+    "networkStatusLabel": "Network status",
+    "networkOnline": "Online",
+    "networkOffline": "Offline"
+  },
+  "profileMenu": {
+    "account": "Account",
+    "accountDetails": "Account details",
+    "open": "Open account menu",
+    "signedInAs": "Signed in as",
+    "dashboard": "Dashboard",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode"
+  },
+  "account": {
+    "administrator": "Administrator",
+    "administratorAccount": "Administrator account",
+    "renewsOn": "Renews {{date}}",
+    "accessUntil": "Access until {{date}}",
+    "status": "Status",
+    "managePlan": "Manage plan",
+    "upgrade": "Upgrade"
   },
   "columnLabels": {
     "fullName": "Full Name",
@@ -1119,11 +1355,19 @@
       "title": "Get Phame Setup",
       "skipSetupTooltip": "Skip setup"
     },
+    "tour": {
+      "skip": "Skip Tour",
+      "show": "Show tips",
+      "skipTooltip": "Hide onboarding tips on this device",
+      "showTooltip": "Show onboarding tips again",
+      "skipSuccess": "Onboarding tips hidden. You can show them again at any time.",
+      "tipsRemaining_one": "{{count}} tip remains in this setup",
+      "tipsRemaining_other": "{{count}} tips remain in this setup"
+    },
     "steps": {
       "connectEmail": "Connect Email",
       "reviewPlatform": "Review Platform",
-      "sendRequest": "Send Request",
-      "wpConnector": "WP Plugin"
+      "sendRequest": "Send Request"
     },
     "stepContent": {
       "step1": {
@@ -1137,10 +1381,6 @@
       "step3": {
         "title": "Ready to launch 🚀",
         "description": "Everything is set up. Send your first review request in seconds."
-      },
-      "step4": {
-        "title": "Connect WordPress",
-        "description": "Install the free connector plugin on your WordPress site to auto-sync WooCommerce orders."
       }
     },
     "navigation": {
@@ -1290,6 +1530,15 @@
       "link2": "View saved contacts",
       "link3": "Check your dashboard",
       "link4": "Manage settings",
+      "installTitle": "Keep Get Phame on your phone",
+      "iosInstall": "Open getphame.app in Safari. Tap Share, choose Add to Home Screen, then tap Add.",
+      "androidInstall": "Open getphame.app in Chrome. Tap the three-dot menu, choose Install app or Add to Home screen, then confirm.",
+      "shareButton": "Share Get Phame with a friend",
+      "shareText": "Collect more customer reviews with Get Phame.",
+      "shareSuccess": "Shared successfully.",
+      "copySuccess": "Get Phame link copied.",
+      "shareCancelled": "Sharing cancelled.",
+      "shareError": "Unable to share right now.",
       "revisitTitle": "Need to revisit this guide?",
       "revisitDesc": "Tap the \"Setup Guide\" button on the Home screen or in Settings any time to reopen these instructions.",
       "startButton": "Start Using Get Phame"
@@ -1366,17 +1615,7 @@
     "toasts": {
       "updateFailed": "Failed to update requests.",
       "updatedSuccess": "{{count}} request updated.",
-      "updatedSuccessPlural": "{{count}} requests updated.",
-      "updatedSuccess_one": "{{count}} request updated.",
-      "updatedSuccess_other": "{{count}} requests updated.",
-      "bulkRestartSuccess_one": "Restarted {{count}} campaign successfully.",
-      "bulkRestartSuccess_other": "Restarted {{count}} campaigns successfully.",
-      "bulkRestartPartial_one": "Restarted {{count}} campaign. {{failCount}} failed.",
-      "bulkRestartPartial_other": "Restarted {{count}} campaigns. {{failCount}} failed."
-    },
-    "activityTrend": {
-      "title": "Activity Trend",
-      "empty": "No activity in the last {{days}} days. Send your first request to see trends here."
+      "updatedSuccessPlural": "{{count}} requests updated."
     }
   },
   "pricing": {
@@ -1391,60 +1630,15 @@
     "proMonthlyPer": "/mo",
     "proMonthlyDescription": "Unlimited review requests, bulk send, follow-up reminders, WooCommerce sync.",
     "proAnnual": "Pro Annual",
-    "save15": "Save 15%",
-    "proAnnualPrice": "$297",
+    "save15": "Save 17%",
+    "proAnnualPrice": "$290",
     "proAnnualPer": "/yr",
-    "proAnnualDescription": "Everything in Pro Monthly — billed once a year. Equivalent to $24.75/month.",
+    "proAnnualDescription": "Everything in Pro Monthly — billed once a year. Equivalent to $24.17/month.",
     "lifetime": "Lifetime",
     "ownItForever": "Own it forever",
-    "lifetimePrice": "$497",
+    "lifetimePrice": "$349",
     "lifetimeOnce": " once",
-    "lifetimeDescription": "One payment, lifetime access. No renewals, no surprises.",
-    "plans": {
-      "free": {
-        "name": "Free",
-        "description": "Try Phame with 10 review requests — no credit card required.",
-        "feature1": "10 review requests",
-        "feature2": "Connect 1 email account",
-        "feature3": "Any review platform",
-        "feature4": "Email open tracking",
-        "feature5": "CSV import",
-        "cta": "Start Free"
-      },
-      "proMonthly": {
-        "name": "Pro Monthly",
-        "description": "Best for active businesses that send review requests weekly.",
-        "feature1": "Unlimited review requests",
-        "feature2": "Bulk send in one click",
-        "feature3": "Follow-up reminders",
-        "feature4": "WooCommerce sync",
-        "feature5": "Priority support",
-        "feature6": "Advanced analytics",
-        "cta": "Start Pro Monthly"
-      },
-      "proAnnual": {
-        "name": "Pro Annual",
-        "description": "Best value for businesses committed to reputation growth.",
-        "feature1": "Everything in Pro Monthly",
-        "feature2": "Billed annually ($228/yr)",
-        "feature3": "Save 34% vs monthly",
-        "feature4": "Priority support",
-        "feature5": "Early access to new features",
-        "cta": "Start Pro Annual",
-        "badge": "Save 34%"
-      },
-      "lifetime": {
-        "name": "Lifetime",
-        "description": "One payment, lifetime access. No renewals, no surprises.",
-        "feature1": "Everything in Pro",
-        "feature2": "Pay once, use forever",
-        "feature3": "All future updates included",
-        "feature4": "Priority support for life",
-        "feature5": "Perfect for agencies & operators",
-        "cta": "Get Lifetime Access",
-        "badge": "Best Deal"
-      }
-    }
+    "lifetimeDescription": "One payment, lifetime access. No renewals, no surprises."
   },
   "comparison": {
     "sectionTitle": "10–20× cheaper than the big players",
@@ -1454,104 +1648,10 @@
     "colLifetime": "Lifetime option",
     "priceDisclaimer": "Prices based on publicly listed entry-tier plans as of April 2026."
   },
-  "testimonials": {
-    "sectionTitle": "What our users say",
-    "sarah": {
-      "quote": "I used to dread asking clients for reviews — it felt awkward and salesy. Get Phame sends the request from my own Gmail so it actually looks like I wrote it. I went from 12 Google reviews to 47 in six weeks.",
-      "name": "Sarah M.",
-      "role": "Freelance Photographer",
-      "result": "12 → 47 reviews in 6 weeks"
-    },
-    "tom": {
-      "quote": "We serve about 80 customers a day. I import the week's regulars from a CSV on Friday, hit send, and by Monday morning we've usually picked up 8–10 new reviews. It's become part of our weekly routine.",
-      "name": "Tom R.",
-      "role": "Owner, The Corner Café",
-      "result": "8–10 new reviews per week"
-    },
-    "tagline": "Real results",
-    "headline": "They asked. Customers answered.",
-    "subheadline": "Real businesses using Get Phame to grow their reputation every week.",
-    "cta": "Get Started Free",
-    "david": {
-      "quote": "As an agency managing 12 client locations, the lifetime deal was a no-brainer. Each client gets their own review link and I send requests on their behalf. The ROI paid for itself in the first month.",
-      "name": "David K.",
-      "role": "Digital Marketing Agency Owner",
-      "result": "12 locations managed from one account"
-    }
-  },
   "onboarding": {
     "googleBtn": "Continue with Google",
     "appleBtn": "Continue with Apple",
-    "finePrint": "Start free — 10 review requests included. No credit card required.",
-    "heroHeadline": "Get More 5-Star",
-    "heroHighlight": "Google Reviews",
-    "heroSubtitle": "Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender.",
-    "heroSubtitleShort": "Send personalized review requests from your own email account.",
-    "trust1": "AES-256 encrypted credentials — your data stays safe",
-    "trust2": "Sends from YOUR email — maximum deliverability",
-    "trust3": "Set up in under 2 minutes — no technical skills needed",
-    "socialProof": "Trusted by 500+ local businesses",
-    "compliance": "Every email includes an unsubscribe link — fully compliant",
-    "cardHeading": "Create your free account",
-    "cardSubheading": "No credit card required",
-    "or": "or",
-    "emailBtn": "Continue with Email",
-    "checkInbox": "Check your inbox!",
-    "sentLink": "We sent a sign-in link to",
-    "expires": "It expires in 15 minutes.",
-    "useDifferentEmail": "Use a different email",
-    "sendingLink": "Sending link…",
-    "sendSignInLink": "Send Sign-In Link",
-    "cancel": "Cancel",
-    "privacy": "Privacy",
-    "terms": "Terms",
-    "support": "Support",
-    "install": {
-      "title": "Add GetPhame to your home screen",
-      "subtitle": "Opens full-screen like a native app — no App Store needed",
-      "iphoneTab": "iPhone / iPad",
-      "androidTab": "Android",
-      "shareBtn": "Share GetPhame with a friend",
-      "doneBtn": "Done — close guide",
-      "ios": {
-        "step1": {
-          "label": "Open in Safari",
-          "detail": "Must use Safari — Chrome on iOS cannot install PWAs."
-        },
-        "step2": {
-          "label": "Tap the Share button",
-          "detail": "The box with an upward arrow at the bottom of the screen."
-        },
-        "step3": {
-          "label": "Add to Home Screen",
-          "detail": "Scroll down in the share sheet and tap it."
-        },
-        "step4": {
-          "label": "Tap Add",
-          "detail": "The GetPhame icon appears on your home screen instantly."
-        },
-        "tip": "Already installed? Delete the old icon first, then re-add it after an app update."
-      },
-      "android": {
-        "step1": {
-          "label": "Open in Chrome",
-          "detail": "Samsung Internet also works — tap menu to Add page to Home screen."
-        },
-        "step2": {
-          "label": "Tap the three-dot menu",
-          "detail": "Top-right corner of Chrome."
-        },
-        "step3": {
-          "label": "Add to Home screen",
-          "detail": "Tap it, then confirm with Add."
-        },
-        "step4": {
-          "label": "Done!",
-          "detail": "GetPhame appears on your home screen and opens full-screen like a native app."
-        },
-        "tip": "Already installed? In Chrome go to Settings, Site Settings, getphame.app, Clear and Reset, then re-install."
-      }
-    }
+    "finePrint": "Start free — 10 review requests included. No credit card required."
   },
   "changelog": {
     "title": "What's New",
@@ -1596,7 +1696,7 @@
       },
       "yelpCompliance": {
         "title": "Yelp Compliance Mode",
-        "description": "Yelp review links now render as plain-text instructions instead of clickable links, keeping your outreach fully compliant with Yelp's no-solicitation policy."
+        "description": "When Yelp is selected, review links render as plain-text search instructions rather than clickable solicitation links."
       },
       "domainMigration": {
         "title": "New Home: getphame.app",
@@ -1658,16 +1758,6 @@
         "title": "Get Phame Launch",
         "description": "Send personalised review request emails from your own email account — not a bulk mailer. Customers receive a message that looks like it came directly from you."
       }
-    },
-    "v15": {
-      "couponCodeGeneration": {
-        "title": "Coupon Code Generation",
-        "description": "Admins can now create time-limited or lifetime discount codes directly from the Admin Dashboard — with custom prefixes, max-use limits, and expiry dates."
-      },
-      "revokeUserAccess": {
-        "title": "Revoke User Access",
-        "description": "A new Revoke Access button in the Privileged Users table lets admins instantly downgrade any paid user back to the free tier with a single confirmation tap."
-      }
     }
   },
   "video": {
@@ -1681,145 +1771,1635 @@
     "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
     "unsubscribe": "Unsubscribe link in every email"
   },
-  "proof": {
-    "sectionTitle": "Built for Businesses That Run on Reputation",
-    "sectionSubtitle": "Photographers, cafés, home services, clinics, agencies, and WooCommerce stores.",
-    "type1": "Cafés & Restaurants",
-    "type2": "Home Services",
-    "type3": "Photographers",
-    "type4": "Clinics & Salons",
-    "stat1Value": "10×",
-    "stat1Label": "more reviews vs. asking in person",
-    "stat2Value": "< 2 min",
-    "stat2Label": "average setup time",
-    "stat3Value": "Your inbox",
-    "stat3Label": "emails sent from your own address"
-  },
   "demo": {
     "sectionTitle": "See It In Action",
-    "sectionSubtitle": "Three steps. Under 60 seconds. Your customer gets a personal email from you.",
+    "sectionSubtitle": "See the three-step sending workflow.",
     "gifAlt": "Get Phame 3-step send flow demo",
     "gifCaption": "The 3-step send flow",
     "emailAlt": "Example review request email on iPhone",
     "emailCaption": "What your customer receives"
   },
-  "leadCapture": {
-    "headline": "Not ready to commit?",
-    "description": "Get a free guide on how to 3× your Google reviews in 30 days — plus early access to new features and reputation tips.",
-    "placeholder": "Enter your email",
-    "sending": "Sending...",
-    "cta": "Send Guide",
-    "success": "Check your inbox — guide is on the way!",
-    "disclaimer": "No spam. Unsubscribe anytime. We respect your inbox."
+  "paymentSuccess": {
+    "confirmed": "Payment confirmed.",
+    "confirmedToast": "Payment confirmed. Your Get Phame access is active.",
+    "upgraded": "Your account has been upgraded instantly.",
+    "thankYou": "Thank you for investing in your reputation system. Your next three actions will turn that upgrade into visible customer trust.",
+    "closingThankYou": "Thank you for choosing Get Phame."
   },
-  "videoDemo": {
-    "eyebrow": "See it in action",
-    "title": "See How It Works",
-    "subtitle": "Watch a quick walkthrough — set up in under 2 minutes",
-    "videoSubtitle": "Connect email · Import customers · Send requests · Track results",
-    "watchNow": "Watch now →"
+  "adminUsers": {
+    "roleUpdated": "Administrator access updated.",
+    "lifeGranted": "Life access granted.",
+    "lifeRemoved": "Life access removed.",
+    "back": "Admin Dashboard",
+    "eyebrow": "User Management",
+    "title": "Manage users",
+    "subtitle": "Search every account and control administrator or Life access.",
+    "searchLabel": "Search users",
+    "searchPlaceholder": "Name or email",
+    "accountCount": "{{count}} accounts",
+    "loading": "Loading accounts…",
+    "unnamed": "Unnamed user",
+    "admin": "Admin",
+    "life": "Life",
+    "noEmail": "No email",
+    "accountMeta": "Joined {{date}} · Stored plan: {{tier}}",
+    "removeAdmin": "Remove admin",
+    "makeAdmin": "Make admin",
+    "removeLife": "Remove Life",
+    "grantLife": "Grant Life",
+    "empty": "No users match that search.",
+    "previous": "Previous",
+    "page": "Page {{page}} of {{count}}",
+    "next": "Next",
+    "deleted": "Account deleted.",
+    "combined": "Accounts combined. {{name}} is now the surviving account.",
+    "smtpRemoved": "SMTP credentials removed.",
+    "smtpAlreadyAbsent": "No SMTP credentials were connected.",
+    "smtpRecovered": "SMTP connection recovered and verified.",
+    "smtpRetestPassed": "SMTP verification passed.",
+    "smtpRetestFailed": "SMTP verification failed.",
+    "smtpAuditNoExportRows": "No audit records match the current filters.",
+    "smtpAuditExported": "Exported {{count}} matching audit records.",
+    "smtpFilterLabel": "Filter by SMTP status",
+    "smtpFilterAll": "All SMTP statuses",
+    "smtpFilterVerified": "SMTP verified",
+    "smtpFilterUnverified": "SMTP unverified",
+    "smtpFilterFailing": "SMTP health check failed",
+    "smtpFilterUnconnected": "No SMTP connected",
+    "smtpVerified": "SMTP verified",
+    "smtpUnverified": "SMTP unverified",
+    "smtpNotConnected": "No SMTP",
+    "smtpRecoveryConfirmed": "Recovery confirmed {{time}}",
+    "combine": "Combine",
+    "retestSmtp": "Re-test SMTP",
+    "removeSmtp": "Remove SMTP",
+    "delete": "Delete",
+    "smtpAuditTitle": "SMTP removal audit log",
+    "smtpAuditSubtitle": "A durable record of who permanently removed user SMTP credentials and when.",
+    "smtpAuditExport": "Export filtered CSV",
+    "smtpAuditFrom": "From date",
+    "smtpAuditTo": "To date",
+    "smtpAuditAdministrator": "Administrator",
+    "smtpAuditAllAdministrators": "All administrators",
+    "smtpAuditOutcome": "Outcome",
+    "smtpAuditAllOutcomes": "All outcomes",
+    "smtpAuditOutcomeRemoved": "Removed",
+    "smtpAuditClearFilters": "Clear audit filters",
+    "smtpAuditRemoved": "removed SMTP credentials for",
+    "smtpAuditEmpty": "No SMTP credential removals have been recorded.",
+    "smtpAuditPagination": "SMTP audit pages",
+    "deleteTitle": "Delete this account?",
+    "deleteDescription": "This permanently deletes {{name}} and all linked contacts, requests, integrations, settings, analytics, and history.",
+    "deleteIrreversible": "This cannot be undone. Combine duplicate accounts instead if data should be preserved.",
+    "typeDelete": "Type DELETE to confirm",
+    "deleteForever": "Delete permanently",
+    "removeSmtpTitle": "Remove SMTP credentials?",
+    "removeSmtpDescription": "This permanently removes the SMTP host, username, encrypted password, sender details, and verification state for {{email}}.",
+    "removeSmtpPreservesAccount": "The user account, contacts, requests, plan, and history are not deleted.",
+    "typeEmailToRemoveSmtp": "Type {{email}} to confirm",
+    "removeSmtpPermanently": "Remove SMTP permanently",
+    "combineTitle": "Combine duplicate accounts",
+    "combineDescription": "Everything owned by {{source}} will move to the surviving account. The source account is deleted after the transfer succeeds.",
+    "sourceDeleted": "Source account — deleted",
+    "chooseSurvivor": "Surviving account",
+    "mergeDirection": "Merge direction",
+    "deletedAfterMerge": "deleted",
+    "survivesMerge": "survives",
+    "combineRules": "The survivor keeps its login identity and strongest role/plan. Contacts, requests, templates, platforms, analytics, and history move over. When one SMTP connection is verified and the other is not, the verified connection is kept automatically. The merge still stops if both SMTP connections share the same verification state or if another billing or email-service conflict needs your choice.",
+    "typeCombine": "Type COMBINE to confirm",
+    "combineNow": "Combine accounts"
   },
-  "stats": {
-    "title": "Built for businesses that run on reputation",
-    "stat1Label": "more reviews vs. asking in person",
-    "stat2Label": "average setup time",
-    "stat3Value": "Your inbox",
-    "stat3Label": "emails sent from your own address",
-    "stat4Label": "average response rate",
-    "industry1": "Photographers",
-    "industry2": "Cafés & Restaurants",
-    "industry3": "Home Services",
-    "industry4": "Clinics & Salons",
-    "industry5": "Agencies",
-    "industry6": "WooCommerce Stores"
+  "adminSubscription": {
+    "grant": "Grant subscription",
+    "grantTitle": "Grant subscription access",
+    "grantDescription": "Choose how long {{email}} should receive paid access.",
+    "durationLabel": "Subscription duration",
+    "monthly": "Monthly",
+    "monthlyDescription": "Paid access for one calendar month",
+    "annual": "Annual",
+    "annualDescription": "Paid access for one calendar year",
+    "lifetime": "Lifetime",
+    "lifetimeDescription": "Permanent paid access with no expiry",
+    "confirmGrant": "Grant access",
+    "revoke": "Revoke access",
+    "revokeTitle": "Revoke paid access?",
+    "revokeDescription": "{{email}} will return to the Free plan immediately.",
+    "revokeBillingWarning": "This does not cancel an active Stripe subscription. Confirm billing status before revoking access.",
+    "confirmRevoke": "Revoke access",
+    "cancel": "Cancel",
+    "grantSuccess": "{{email}} received {{plan}} access.",
+    "revokeSuccess": "{{email}} was returned to the Free plan."
   },
-  "productShowcase": {
-    "title": "Built to make review requests effortless",
-    "subtitle": "One simple tool. Three powerful views. Everything you need to grow your reputation.",
-    "tab1Label": "Email Preview",
-    "tab1Title": "Emails that feel handwritten",
-    "tab1Desc": "Each review request arrives from your actual email address with your name, your signature, and a personal tone. Customers trust it because it looks real — because it is.",
-    "tab2Label": "Customer Import",
-    "tab2Title": "Your entire list in seconds",
-    "tab2Desc": "Drag and drop a CSV or sync directly from WooCommerce. We validate emails, remove duplicates, and flag bounces — so every send counts.",
-    "tab3Label": "Review Tracking",
-    "tab3Title": "Watch the reviews roll in",
-    "tab3Desc": "Track every email sent, opened, and clicked. See your review count climb week over week with real-time analytics and growth charts.",
-    "viewFullSize": "View full size"
+  "landing": {
+    "comparison": {
+      "getPhamePrice": "$29/mo",
+      "birdeyePrice": "$299/mo",
+      "podiumPrice": "$249/mo",
+      "niceJobPrice": "$75/mo",
+      "gradeUsPrice": "$110/mo",
+      "reviewTrackersPrice": "$89/mo",
+      "compare": "Compare",
+      "enterpriseFeaturesStartupPrice": "Enterprise features. Startup price.",
+      "description": "The big players charge $250–$300/month for review request tools. Get Phame gives you the same core capability at a fraction of the cost. Plus a lifetime option they'll never offer.",
+      "cheaperThanAlternatives": "cheaper than enterprise alternatives",
+      "platformHeader": "Platform",
+      "startingPriceHeader": "Starting Price",
+      "lifetimeHeader": "Lifetime",
+      "pricingDisclaimer": "Prices based on publicly listed entry-tier plans as of April 2026. Subject to change."
+    },
+    "faq": {
+      "q1": "Will it look like spam?",
+      "a1": "No. Every email is sent directly from the email account you connect, not from a third-party bulk-sending server. Customers see the sender name, address, and signature you configure.",
+      "q2": "What email providers work?",
+      "a2": "Get Phame works with any email provider that supports SMTP: Gmail, Google Workspace, Outlook, Microsoft 365, Yahoo, Zoho, iCloud, and any custom SMTP server. If you can send email from it, you can connect it to Get Phame.",
+      "q3": "Is it really free?",
+      "a3": "Yes. The free plan gives you 10 initial review requests, then 5 more every rolling 30 days — with no credit card required and no time limit. If you want unlimited requests, bulk send, follow-up reminders, and WooCommerce sync, upgrade to Pro.",
+      "q4": "Can I import my customer list?",
+      "a4": "Absolutely. Upload a CSV file with customer names and email addresses, or sync directly from WooCommerce. We validate emails automatically, remove duplicates, and flag any invalid addresses before you send.",
+      "q5": "Does Get Phame store my email password?",
+      "a5": "Your SMTP credentials are encrypted at rest using AES-256 encryption. We never store plain-text passwords. Your credentials are only used to send emails on your behalf — we cannot read your inbox or access any other email data.",
+      "q6": "Will my emails land in spam?",
+      "a6": "Because emails are sent from your own email account (not a bulk-sending server), they have the same deliverability as any email you'd send manually. Your domain reputation, SPF, and DKIM records all apply normally. This is a key advantage over third-party senders.",
+      "q7": "What happens to my customer list?",
+      "a7": "Your customer data is stored securely and is never shared, sold, or used for any purpose other than sending your review requests. You can export or delete your entire customer list at any time. We comply with GDPR and CAN-SPAM requirements.",
+      "q8": "Can customers opt out?",
+      "a8": "Yes. Every email includes an unsubscribe link. When a customer opts out, they're automatically removed from future sends. This keeps you compliant and protects your sender reputation.",
+      "q9": "Do I need technical skills to connect my email?",
+      "a9": "No. For Gmail and Outlook, we provide step-by-step guides with screenshots. For custom SMTP, you'll need your server address, port, and credentials — your hosting provider can supply these.",
+      "q10": "Which review platforms does it support?",
+      "a10": "Any platform with a review link: Google, Yelp, TripAdvisor, Facebook, Bing Places, Trustpilot, G2, Capterra, and more. Just paste your review link and we'll include it in every request. You can change platforms anytime.",
+      "q11": "How does WooCommerce sync work?",
+      "a11": "Install our free WooCommerce plugin, enter your API key, and new customers are automatically imported after each completed order. You can set a delay (e.g., 7 days after purchase) before they appear in your send queue.",
+      "q12": "What does unlimited mean on the Pro plan?",
+      "a12": "Unlimited means Get Phame does not set a monthly cap on review requests for Pro plans. Your connected email provider's sending policies and limits still apply.",
+      "sectionTitle": "FAQ",
+      "headline": "Questions about email safety, privacy & setup",
+      "description": "Everything you need to know before connecting your email and sending your first review request."
+    },
+    "feature1": {
+      "title": "Your name. Your inbox. Their trust.",
+      "description": "Every review request is sent from the email account you connect and uses the sender name and signature you configure.",
+      "statLabel": "sender identity",
+      "statValue": "Your email"
+    },
+    "feature2": {
+      "title": "Send personalized requests in bulk",
+      "description": "Import customers by CSV or WooCommerce sync, choose the recipients, and send personalized requests without copying each message manually.",
+      "statLabel": "personalized sending",
+      "statValue": "Bulk"
+    },
+    "feature3": {
+      "title": "Every platform. Your choice.",
+      "description": "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, and more. Paste your link, switch platforms anytime. One tool for all your review destinations.",
+      "statLabel": "review destinations",
+      "statValue": "Flexible"
+    },
+    "whyItWorks": "Why it works",
+    "headline": "From your inbox to their review",
+    "subHeadline": "A simple way to send clear, personal review requests from the email account you connect.",
+    "finalCta": {
+      "headlinePart1": "Your inbox. Your reputation.",
+      "headlinePart2": "Your growth.",
+      "description": "Free forever: 10 initial requests, then 5 more every rolling 30 days. No credit card required.",
+      "getStartedButton": "Get Started Free"
+    },
+    "footer": {
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "security": "Security",
+      "support": "Support",
+      "copyright": "© {{year}} Get Phame. All rights reserved."
+    },
+    "hero": {
+      "freeToStart": "Free to start — No credit card required",
+      "headlinePart1": "Send personal review requests",
+      "headlinePart2": "without the awkward ask",
+      "description": "Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender.",
+      "howItWorks": "See how it works",
+      "setupTime": "Guided setup",
+      "emailCompatibility": "Works with Gmail, Outlook, SMTP",
+      "googleSignInDisclaimer": "Sign in with Google to create your account. We only access your name and email address — nothing else.",
+      "privacyPolicy": "Privacy Policy",
+      "dashboardMockupAlt": "GetPhame app home screen showing review request stats, send button, and free plan usage for local businesses",
+      "ctaVariantA": "Start Free — Send 10 Requests",
+      "ctaVariantB": "Start Free — No Card Required",
+      "categoryLabel": "Review-request email software for local businesses",
+      "googleDisclosureLabel": "Google sign-in data use"
+    },
+    "howItWorks": {
+      "setupSteps": {
+        "step1": {
+          "title": "Connect your email",
+          "description": "Link Gmail, Outlook, or an SMTP email using guided connection steps. Credentials are encrypted with AES-256."
+        },
+        "step2": {
+          "title": "Add your review link",
+          "description": "Paste your Google, Yelp, TripAdvisor, or any review platform link. Switch platforms anytime."
+        },
+        "step3": {
+          "title": "Import your customers",
+          "description": "Upload a CSV, sync from WooCommerce, or add contacts manually. We validate emails automatically."
+        },
+        "step4": {
+          "title": "Send & track results",
+          "description": "Send each customer a personal request, then review sent, open, and click activity in one place."
+        }
+      },
+      "setupInSteps": "Setup in 4 steps",
+      "headline": "From connection to your first review request",
+      "subtitle": "No technical skills needed. No onboarding calls. Just connect, import, and send.",
+      "getStartedButton": "Get Started Free",
+      "setupTime": "Guided setup, import, and sending"
+    },
+    "leadCapture": {
+      "errorMessage": "Something went wrong. Please try again.",
+      "heading": "Not ready to commit?",
+      "description": "Get a free guide to planning clear, compliant review-request outreach — plus product updates and practical reputation tips.",
+      "emailPlaceholder": "Enter your email",
+      "sending": "Sending...",
+      "sendGuideButton": "Send Guide",
+      "successMessage": "Check your inbox — guide is on the way!",
+      "noSpamMessage": "No spam. Unsubscribe anytime. We respect your inbox.",
+      "emailRequired": "Enter your email address.",
+      "emailInvalid": "Enter a correctly formatted email, such as name@example.com.",
+      "emailConfirmationHint": "We’ll show the address again before you leave so you can catch a typo.",
+      "providerAcceptedMessage": "Your email provider accepted the guide for delivery.",
+      "downloadReadyMessage": "Your guide is ready to download.",
+      "addressConfirmation": "We sent it to {{email}}. Confirm the spelling and check spam if it does not arrive. Provider acceptance does not guarantee inbox placement.",
+      "deliveryFallback": "Email delivery was unavailable for {{email}}. Confirm the spelling, retry, or download the guide now.",
+      "downloadGuideButton": "Download the PDF guide",
+      "editEmail": "Edit email",
+      "tryAgain": "Try email again",
+      "sharePrompt": "Share the free review-request playbook."
+    },
+    "navbar": {
+      "howItWorks": "How It Works",
+      "product": "Product",
+      "pricing": "Pricing",
+      "faq": "FAQ",
+      "signIn": "Sign In",
+      "getStartedFree": "Get Started Free",
+      "toggleMenu": "Toggle menu"
+    },
+    "pricing": {
+      "free": {
+        "name": "Free",
+        "description": "Start with 10 review requests, then get 5 more every rolling 30 days — no credit card required.",
+        "features": {
+          "requests": "10 initial requests + 5 every rolling 30 days",
+          "email": "Connect 1 email account",
+          "platform": "Any review platform",
+          "tracking": "Email open tracking",
+          "import": "CSV import"
+        },
+        "cta": "Start Free"
+      },
+      "proMonthly": {
+        "name": "Pro Monthly",
+        "description": "Best for active businesses that send review requests weekly.",
+        "features": {
+          "requests": "Unlimited review requests",
+          "bulk": "Bulk send in one click",
+          "reminders": "Follow-up reminders",
+          "woocommerce": "WooCommerce sync",
+          "support": "Priority support",
+          "analytics": "Advanced analytics"
+        },
+        "cta": "Start Pro Monthly"
+      },
+      "proAnnual": {
+        "name": "Pro Annual",
+        "period": "/yr",
+        "description": "Best value for businesses committed to reputation growth.",
+        "features": {
+          "everything": "Everything in Pro Monthly",
+          "billed": "Billed annually ($290/yr)",
+          "save": "Save $58 (17%) vs monthly",
+          "support": "Priority support",
+          "earlyAccess": "Early access to new features"
+        },
+        "cta": "Start Pro Annual",
+        "badge": "Save 17%"
+      },
+      "lifetime": {
+        "name": "Lifetime",
+        "period": " once",
+        "description": "One payment, lifetime access. No renewals, no surprises.",
+        "features": {
+          "everything": "Everything in Pro",
+          "payOnce": "Pay once, use forever",
+          "updates": "All future updates included",
+          "support": "Priority support for life",
+          "agencies": "Perfect for agencies & operators"
+        },
+        "cta": "Get Lifetime Access",
+        "badge": "Best Deal"
+      },
+      "sectionTitle": "Pricing",
+      "headline": "Honest pricing. No surprises.",
+      "subtitle": "Start free. Upgrade when you're ready. Cancel anytime. No hidden fees.",
+      "mostPopular": "Most Popular"
+    },
+    "lightbox": {
+      "closeLightboxAriaLabel": "Close lightbox",
+      "closeButtonAriaLabel": "Close",
+      "closeButtonLabel": "Close"
+    },
+    "productShowcase": {
+      "tabEmailLabel": "Email Preview",
+      "tabEmailTitle": "Emails that feel handwritten",
+      "tabEmailDescription": "Each review request uses the sender name, signature, and tone you configure in Get Phame.",
+      "tabEmailAlt": "GetPhame personalized review request email preview showing customer name, business signature, and Google review link",
+      "tabImportLabel": "Customer Import",
+      "tabImportTitle": "Import customers from CSV or WooCommerce",
+      "tabImportDescription": "Upload a CSV or sync WooCommerce, then review email validation and duplicate flags before sending.",
+      "tabImportAlt": "GetPhame customer import screen showing CSV drag-and-drop upload with email validation and duplicate removal",
+      "tabTrackingLabel": "Review Tracking",
+      "tabTrackingTitle": "Track request activity",
+      "tabTrackingDescription": "Review sent, open, and click activity in the Get Phame dashboard.",
+      "tabTrackingAlt": "Get Phame request activity dashboard showing sent, open, and click tracking",
+      "sectionSubtitle": "The product",
+      "sectionTitle": "Built to make review requests effortless",
+      "sectionDescription": "One simple tool. Three powerful views. Everything you need to grow your reputation.",
+      "viewFullSizeButton": "View full size",
+      "viewFullSizeAriaLabel": "View {{title}} in full size"
+    },
+    "stats": {
+      "moreReviewsLabel": "customer outreach",
+      "averageSetupTimeLabel": "setup and onboarding",
+      "emailsSentLabel": "emails sent from your own address",
+      "averageResponseRateLabel": "reminders stop after customer action",
+      "industryPhotographers": "Photographers",
+      "industryCafesRestaurants": "Cafés & Restaurants",
+      "industryHomeServices": "Home Services",
+      "industryClinicsSalons": "Clinics & Salons",
+      "industryAgencies": "Agencies",
+      "industryWooCommerceStores": "WooCommerce Stores",
+      "heading": "Built for businesses that run on reputation",
+      "emailsSentValue": "Your inbox",
+      "individualOutreachValue": "Individual",
+      "setupValue": "Guided",
+      "followUpValue": "Automatic"
+    },
+    "trustBar": {
+      "passwordEncrypted": "Password encrypted at rest",
+      "customerListPrivate": "Your customer list stays private",
+      "worksWithEmailProviders": "Works with Gmail, Outlook, Yahoo & more",
+      "unsubscribeLink": "Unsubscribe link in every email"
+    },
+    "section": {
+      "tagline": "See it in action",
+      "title": "See How It Works",
+      "description": "See the three-step sending workflow."
+    },
+    "thumbnail": {
+      "playButtonAriaLabel": "Play product walkthrough video",
+      "altText": "Get Phame platform walkthrough video thumbnail"
+    },
+    "bottomBar": {
+      "title": "Get Phame — Platform Walkthrough",
+      "description": "Individual outreach · Connected inbox · Limited reminders · Stop on completion",
+      "watchNow": "Watch now →"
+    },
+    "modal": {
+      "closeButtonAriaLabel": "Close video",
+      "videoTitle": "Get Phame platform walkthrough",
+      "captionNotice": "English narration with optional English, Spanish, French, Italian, German, and Portuguese captions.",
+      "captionTrackLabel": "English captions",
+      "captionTrackEnglish": "English captions",
+      "captionTrackSpanish": "Spanish captions",
+      "captionTrackFrench": "French captions",
+      "captionTrackItalian": "Italian captions",
+      "captionTrackGerman": "German captions",
+      "captionTrackPortuguese": "Portuguese captions",
+      "captionLanguage": "Caption language",
+      "captionLanguageAriaLabel": "Caption language: {{language}}",
+      "captionLanguageEnglish": "English",
+      "captionLanguageSpanish": "Spanish",
+      "captionLanguageFrench": "French",
+      "captionLanguageItalian": "Italian",
+      "captionLanguageGerman": "German",
+      "captionLanguagePortuguese": "Portuguese",
+      "captionToggleTooltip": "Current caption language: {{language}}",
+      "captionsOn": "Captions on",
+      "captionsOff": "Captions off",
+      "captionsEnable": "Enable captions",
+      "captionsDisable": "Disable captions",
+      "captionsHelp": "Use the quick CC button or press C to toggle captions. Customize their appearance, or select any transcript line to jump to that moment.",
+      "captionSettings": "Caption settings",
+      "captionSettingsAriaLabel": "Open caption appearance settings",
+      "captionFontSize": "Font size",
+      "captionFontSizeSmall": "Small",
+      "captionFontSizeMedium": "Medium",
+      "captionFontSizeLarge": "Large",
+      "captionBackground": "Background",
+      "captionBackgroundBlack": "Black",
+      "captionBackgroundNavy": "Navy",
+      "captionBackgroundClear": "Clear",
+      "captionAppearanceStatus": "Caption size {{size}} with {{background}} background",
+      "captionSettingsReset": "Restore defaults",
+      "videoFallback": "Your browser does not support HTML video.",
+      "videoError": "The walkthrough could not load in this browser.",
+      "videoRetry": "Try again",
+      "videoOpenDirect": "Open video directly",
+      "captionPreview": "Live preview",
+      "captionPreviewSample": "Your captions will look like this.",
+      "captionFontFamily": "Font family",
+      "captionFontFamilySans": "Sans serif",
+      "captionFontFamilySerif": "Serif",
+      "captionFontFamilyMono": "Monospace",
+      "captionTextColor": "Text color",
+      "captionTextColorWhite": "White",
+      "captionTextColorGold": "Gold",
+      "captionTextColorCyan": "Cyan",
+      "captionTextOpacity": "Text opacity",
+      "captionTextOpacitySolid": "100%",
+      "captionTextOpacityHigh": "85%",
+      "captionTextOpacitySoft": "70%",
+      "captionAppearanceStatusExpanded": "Caption size {{size}}, {{family}} font, {{color}} text at {{opacity}} opacity, {{spacing}} line spacing, {{edge}} text edge, with {{background}} background",
+      "transcriptTitle": "Interactive transcript",
+      "transcriptHelp": "Select a line to jump to that moment in the video.",
+      "transcriptLoading": "Loading transcript…",
+      "transcriptError": "The transcript is unavailable right now.",
+      "transcriptCueList": "Transcript cues",
+      "transcriptJumpTo": "Jump to {{time}}: {{text}}",
+      "transcriptCurrent": "Current caption",
+      "captionLineSpacing": "Line spacing",
+      "captionLineSpacingCompact": "Compact",
+      "captionLineSpacingStandard": "Standard",
+      "captionLineSpacingSpacious": "Spacious",
+      "captionTextEdge": "Text edge",
+      "captionTextEdgeNone": "None",
+      "captionTextEdgeShadow": "Shadow",
+      "captionTextEdgeOutline": "Outline",
+      "transcriptExportGroupLabel": "Download transcript",
+      "transcriptExportText": "Download TXT",
+      "transcriptExportPdf": "Download PDF",
+      "transcriptExportPreparing": "Preparing…",
+      "transcriptExportDocumentTitle": "Platform walkthrough transcript",
+      "transcriptExportLanguageLabel": "Language",
+      "transcriptExportGeneratedLabel": "Generated",
+      "transcriptExportSourceLabel": "Source",
+      "transcriptExportTextSuccess": "Text transcript downloaded.",
+      "transcriptExportPdfSuccess": "PDF transcript downloaded.",
+      "transcriptExportError": "The transcript download could not be created. Please try again."
+    },
+    "purpose": {
+      "eyebrow": "About this app",
+      "title": "What Get Phame does",
+      "description": "Get Phame helps local businesses send personalized review-request emails from their own connected email account. It is built for business owners, photographers, cafés and restaurants, home-service teams, clinics and salons, agencies, and WooCommerce stores that want a simpler way to ask real customers for feedback.",
+      "stepLabel": "Step {{number}}",
+      "googleEyebrow": "Google sign-in disclosure",
+      "googleTitle": "How Google sign-in is used",
+      "googleDescription": "Google sign-in is used only to create and identify your Get Phame account. With your permission, Get Phame receives your name and email address. We do not request access to your Gmail messages, contacts, Google Drive files, or Google Calendar.",
+      "googleSendingNote": "Review-request sending is configured separately inside the app using an email account you choose to connect.",
+      "privacyLink": "Read our Privacy Policy",
+      "steps": {
+        "customers": "Add the customers you choose",
+        "send": "Send a personal request from your email",
+        "reviews": "Direct customers to your selected review platform"
+      }
+    },
+    "support": {
+      "validation": {
+        "email": "Enter a valid email address.",
+        "subjectMin": "Enter a subject with at least 3 characters.",
+        "subjectMax": "Keep the subject to 120 characters or fewer.",
+        "messageMin": "Tell us a little more so we can help.",
+        "messageMax": "Keep the message to 4,000 characters or fewer.",
+        "nameMax": "Keep your name to 80 characters or fewer."
+      },
+      "error": "We could not send your message. Please try again shortly.",
+      "fileReadError": "We could not read that screenshot.",
+      "attachmentType": "Attach a JPG, PNG, or WebP screenshot.",
+      "attachmentSize": "Keep screenshots to 8 MB or less.",
+      "title": "How can we help?",
+      "description": "Send our team a message and we’ll reply to the email address you provide.",
+      "successTitle": "Your support request was sent.",
+      "successDescription": "We’ll reply to the email address you provided as soon as we can.",
+      "sendAnother": "Send another message",
+      "website": "Website",
+      "name": "Name",
+      "optional": "optional",
+      "email": "Email",
+      "topic": "What can we help with?",
+      "topicBilling": "Billing",
+      "topicOnboarding": "Onboarding",
+      "topicTechnical": "Technical issue",
+      "subject": "Subject",
+      "message": "Message",
+      "messageHint": "Do not include passwords or card information.",
+      "attachment": "Screenshot",
+      "attachmentHint": "JPG, PNG, or WebP only. Maximum 8 MB.",
+      "removeAttachment": "Remove screenshot",
+      "uploading": "Uploading screenshot…",
+      "sending": "Sending…",
+      "submit": "Send support request"
+    }
   },
-  "step4Connector": {
-    "intro": {
-      "heading": "Using WordPress + WooCommerce?"
-    },
-    "step1": {
-      "title": "Download the plugin",
-      "downloadBtn": "Download Plugin (.zip)"
-    },
-    "step2": {
-      "title": "Install & activate in WordPress",
-      "wpAdminLink": "Open WP Admin → Plugins"
-    },
-    "step3": {
-      "title": "Paste your API key",
-      "generateKeyBtn": "Generate API Key"
-    },
-    "doneBtn": "All done — go to Phame ✓",
-    "skipBtn": "I don't use WordPress — skip this step"
+  "pwaInstallBanner": {
+    "title": "Install Get Phame",
+    "description": "Open your review dashboard faster and use Get Phame like an app.",
+    "cta": "Install App",
+    "iosCta": "Show iPhone steps",
+    "opening": "Opening…",
+    "openingStatus": "Opening the Get Phame installation options.",
+    "dismiss": "Dismiss install banner",
+    "remindLater": "Remind me later",
+    "shareSuccess": "Get Phame shared successfully.",
+    "shareCopied": "Get Phame link copied.",
+    "shareCancelled": "Sharing cancelled.",
+    "shareError": "Unable to share Get Phame right now."
   },
   "settings": {
-    "fromNameHint": "shown as sender",
-    "fromNameDescription": "Customers will see this as the sender name in their inbox.",
-    "optional": "optional",
-    "replyToDescription": "Where customer replies will go. Leave blank to use your SMTP email.",
-    "googleWorkspaceTitle": "Using Google Workspace or a custom domain?",
-    "googleWorkspaceDescription": "We couldn't auto-detect your SMTP settings. Select a preset or enter manually."
+    "accountProfile": {
+      "title": "Account profile",
+      "description": "Manage the identity shown in your Get Phame account.",
+      "loading": "Loading account profile",
+      "saved": "Profile updated.",
+      "avatarSaved": "Profile photo updated.",
+      "avatarRemoved": "Profile photo removed.",
+      "avatarInvalid": "Choose a JPG, PNG, or WebP image up to 3 MB.",
+      "avatarReadError": "We could not read that image. Try another file.",
+      "avatarAlt": "Account profile photo",
+      "chooseAvatar": "Choose profile photo",
+      "avatarHelp": "JPG, PNG, or WebP · 3 MB max",
+      "displayName": "Display name",
+      "email": "Email address",
+      "emailHelp": "Your sign-in email is managed by your authentication provider.",
+      "save": "Save profile",
+      "uploadAvatar": "Upload photo",
+      "removeAvatar": "Remove photo"
+    },
+    "onboardingTips": {
+      "title": "Onboarding tips",
+      "description": "Show contextual setup tips the next time you open onboarding. You can also change this inside the setup wizard.",
+      "enable": "Enable onboarding tips",
+      "disable": "Disable onboarding tips"
+    },
+    "hapticFeedback": {
+      "title": "Haptic Feedback",
+      "description": "Use supported device vibration for taps and recovery confirmations. Reduced-motion settings are always respected.",
+      "enable": "Enable haptic feedback",
+      "disable": "Disable haptic feedback"
+    },
+    "bulkSender": {
+      "connectedToast": "Bulk Sender connected.",
+      "disconnectedToast": "Bulk Sender disconnected.",
+      "healthyToast": "Connection healthy.",
+      "testFailed": "Connection test failed.",
+      "update": "Update",
+      "description": "Connect a verified transactional SMTP relay for higher-volume sending. Credentials are tested without sending a message.",
+      "proTitle": "Pro feature",
+      "proBody": "Upgrade to Pro to connect a transactional email service for higher-volume delivery.",
+      "connected": "connected",
+      "legacyNotice": "This existing connection uses the legacy API mode. Update it when convenient to use the guided SMTP preset.",
+      "testConnection": "Test connection",
+      "disconnect": "Disconnect",
+      "provider": "Provider",
+      "region": "Region",
+      "smtpHost": "SMTP host",
+      "smtpPort": "Port",
+      "security": "Security",
+      "presetEndpoint": "Preset endpoint",
+      "secretUsedForUsername": "Your secret is used securely for both SMTP fields.",
+      "setupHelp": "Setup help",
+      "hideSecret": "Hide secret",
+      "showSecret": "Show secret",
+      "fromEmail": "From email",
+      "fromEmailHelp": "This sender must already be verified with your provider.",
+      "fromName": "From name",
+      "compliance": "Only send to people who have consented to receive this outreach. Get Phame preserves unsubscribe handling and compliance safeguards.",
+      "connecting": "Connecting…",
+      "connectAndTest": "Connect and test"
+    }
   },
-  "referralRewardsCard": {
-    "title": "Referral Rewards",
-    "subtitle": "Earn 1 free month per paid referral",
-    "joined": "Joined",
-    "converted": "Converted",
-    "freeMonths": "Free Months",
-    "whatsapp": "WhatsApp",
-    "copied": "Copied!",
-    "copyLink": "Copy Link",
-    "shareHint": "Share your link below to start earning free months",
-    "rewardProcessing": "Reward processing — your free month will be applied shortly",
-    "copySuccessToast": "Referral link copied!",
-    "copyErrorToast": "Could not copy link."
+  "complianceGuide": {
+    "backToSettings": "Settings",
+    "title": "Compliance Guide",
+    "subtitle": "Stay safe, stay legal, and protect your reputation",
+    "risk": {
+      "low": "Low Risk",
+      "moderate": "Moderate Risk",
+      "high": "High Risk"
+    },
+    "safeZone": {
+      "title": "Where You're Safe",
+      "transaction": "Customer had a real transaction with you",
+      "noIncentives": "No incentives offered (money, discounts, gifts)",
+      "noPressure": "No scripted or pressured review wording",
+      "allCustomers": "Ask ALL customers — not just happy ones",
+      "allCustomersSub": "Review gating (filtering unhappy customers away) is where most businesses get burned."
+    },
+    "platformRisk": {
+      "title": "Platform Risk Levels",
+      "google": {
+        "allowed": "Asking for reviews via email is allowed",
+        "noIncentives": "No incentives, no review gating",
+        "worstCase": "Worst case: reviews removed or profile flagged."
+      },
+      "yelp": {
+        "discourages": "Strongly discourages asking for reviews at all",
+        "filters": "Algorithm actively filters 'solicited' reviews",
+        "safer": "Safer: list your business name only — don't embed a direct Yelp link in bulk campaigns",
+        "worstCase": "Worst case: reviews filtered (not shown publicly) + consumer alert badge on profile."
+      },
+      "bing": {
+        "title": "Bing / Microsoft",
+        "similar": "Similar to Google in practice, less aggressive enforcement",
+        "worstCase": "Generally safe to include a direct link."
+      }
+    },
+    "legal": {
+      "title": "Legal Considerations (U.S.)",
+      "intro": "The FTC cares about fake reviews, undisclosed incentives, and misleading practices. If you only ask real customers, don't compensate, and don't manipulate — you're fine legally.",
+      "fakeReviews": "Fake reviews",
+      "undisclosedIncentives": "Undisclosed incentives",
+      "misleading": "Misleading or deceptive practices"
+    },
+    "accountRisks": {
+      "title": "What Kills Accounts",
+      "incentives": "Incentives",
+      "incentivesSub": "\"Leave a review, get 10% off\" — this is a direct violation.",
+      "gating": "Review gating funnels",
+      "gatingSub": "Filtering unhappy customers away from public platforms.",
+      "bulk": "Bulk blasts that look automated/spammy",
+      "bulkSub": "Sudden spikes of 50+ reviews in a day raise red flags.",
+      "writing": "Writing reviews for customers or coaching exact wording",
+      "yelpLinks": "Embedding a Yelp review link in bulk email campaigns"
+    },
+    "playbook": {
+      "title": "Best-Practice Playbook",
+      "neutral": "Send a simple, neutral request",
+      "neutralSub": "\"We'd appreciate your honest feedback\"",
+      "multiplePlatforms": "Give multiple platform options",
+      "multiplePlatformsSub": "Don't push one platform aggressively.",
+      "allCustomers": "Ask ALL customers — not just happy ones",
+      "noYelpLinks": "Avoid direct Yelp links in campaigns",
+      "noYelpLinksSub": "Safer to list your business name only.",
+      "throttle": "Throttle volume",
+      "throttleSub": "No sudden spikes. Spread sends over days/weeks.",
+      "realPerson": "Send from a real person",
+      "realPersonSub": "Not 'support@' — use a first name.",
+      "emailLength": "Keep emails under 100–120 words",
+      "urgency": "Add subtle urgency",
+      "urgencySub": "\"while it's still fresh\""
+    },
+    "wooTiming": {
+      "title": "WooCommerce Timing",
+      "product": "Product orders: send 3–5 days after order completion",
+      "productSub": "Gives customers time to receive and use the product.",
+      "service": "Service orders: send 1–2 days after completion",
+      "serviceSub": "While the experience is still fresh.",
+      "trigger": "Trigger: WooCommerce order status → Completed",
+      "rotate": "Rotate platforms across sends",
+      "rotateSub": "Don't send everyone to the same platform at once.",
+      "track": "Track conversion rate",
+      "trackSub": "Aim for reviews per 100 customers as your KPI."
+    },
+    "subjectLines": {
+      "title": "Subject Lines That Convert",
+      "quickFavor": "\"Quick favor?\"",
+      "quickFavorSub": "Direct, low-pressure, high open rate.",
+      "howDidWeDo": "\"How did we do?\"",
+      "howDidWeDoSub": "Conversational and curiosity-driven.",
+      "gotAMinute": "\"[First Name], got a minute?\"",
+      "gotAMinuteSub": "Personalisation boosts open rates.",
+      "thanksOrder": "\"Thanks for your order — got a minute?\"",
+      "thanksOrderSub": "Best for WooCommerce post-purchase flows."
+    },
+    "bottomLine": {
+      "label": "Bottom Line",
+      "googleBing": "Google + Bing → safe if done correctly.",
+      "yelp": "Yelp → proceed carefully or avoid direct solicitation.",
+      "legal": "Legal risk → low if you stay honest and don't incentivize."
+    },
+    "settings": {
+      "title": "Compliance Guide",
+      "description": "Platform rules, legal notes & best practices"
+    }
   },
-  "shareAndEarn": {
-    "title": "Share & Earn",
-    "subtitle": "Refer a friend — get 1 free month when they subscribe",
-    "referredLabel": "Referred",
-    "convertedLabel": "Converted",
-    "monthsEarnedLabel": "Months Earned",
-    "copied": "Copied!",
-    "copy": "Copy",
-    "loading": "Loading...",
-    "upgradeTip": "Upgrade to a paid plan to receive your free month reward when a referral converts.",
-    "copySuccessToast": "Referral link copied!"
+  "adminAuthDiagnostics": {
+    "clearFilters": {
+      "button": "Clear now",
+      "tooltip": "Clear status, source, dates, and pagination. Keyboard shortcut: Alt+Shift+C.",
+      "touchHelp": "Shortcut help",
+      "cleared": "History filters cleared."
+    },
+    "presets": {
+      "orderSavedDetail": "{{name}} saved in position {{position}} of {{total}}.",
+      "orderRestored": "Previous preset order restored.",
+      "undo": "Undo",
+      "undoing": "Undoing…",
+      "undoError": "The previous preset order could not be restored.",
+      "undoSucceeded": "Preset order restored.",
+      "undoShortcutSucceeded": "Keyboard Undo complete",
+      "undoShortcutSucceededDescription": "The previous preset order was restored with Ctrl/Cmd+Z.",
+      "undoShortcutHint": "Keyboard: Ctrl/Cmd + Z"
+    },
+    "csvPreview": {
+      "preparing": "Preparing preview…",
+      "openButton": "Preview filtered CSV",
+      "title": "Preview sanitized CSV",
+      "description": "Review the exact filtered, sanitized snapshot before downloading it.",
+      "loading": "Preparing the sanitized preview…",
+      "errorTitle": "Preview unavailable",
+      "errorDescription": "The filtered export could not be prepared.",
+      "emptyTitle": "No rows to preview",
+      "emptyDescription": "No health records match the active filters.",
+      "fileLabel": "File:",
+      "summary": "Previewing {{previewed}} of {{exported}} export rows · {{matched}} matched",
+      "sanitizedNotice": "The preview and download share the same whitelisted columns, redaction, formula protection, filters, row cap, and newest-first ordering.",
+      "tableLabel": "Sanitized CSV data preview",
+      "previewLimited": "The modal shows the first {{count}} rows. The download contains all {{total}} rows in this prepared export.",
+      "exportLimited": "The export safety cap includes the newest {{exported}} of {{matched}} matching records.",
+      "close": "Close",
+      "download": "Download CSV",
+      "downloaded": "Downloaded {{count}} sanitized health records.",
+      "columnsTitle": "Columns to include",
+      "columnsHelp": "Choose at least one column. Preview, copy, and download stay in sync.",
+      "columnsSelected": "{{selected}} of {{total}} selected",
+      "selectAllColumns": "Select all",
+      "updatingColumns": "Updating selected columns…",
+      "copy": "Copy to Clipboard",
+      "copying": "Copying…",
+      "copySucceeded": "Copied",
+      "copyFailed": "Copy failed — retry",
+      "copied": "Copied {{count}} sanitized health records.",
+      "copyError": "The CSV data could not be copied. Try downloading it instead.",
+      "columnsRemembered": "Column choices saved for your next export on this device.",
+      "columnsStorageUnavailable": "Column choices work for this export, but this browser could not remember them.",
+      "searchTitle": "Search prepared rows",
+      "searchPlaceholder": "Search any selected column",
+      "clearSearch": "Clear preview row search",
+      "searchResults": "Showing {{shown}} of {{matched}} matching rows from {{total}} prepared rows.",
+      "searchScope": "Search all {{total}} sanitized rows in this prepared snapshot.",
+      "searchExportNotice": "Search filters this preview and the matching-results CSV; copy and the main download still include every prepared row.",
+      "downloadSearchResults": "Download matches CSV",
+      "searchResultsDownloaded": "Downloaded {{count}} matching sanitized health records.",
+      "noSearchResults": "No prepared rows match this search",
+      "noSearchResultsHelp": "Try another term or clear the preview search. Your prepared export is unchanged.",
+      "searchLimited": "Showing the first {{count}} of {{matched}} search matches to keep the preview responsive."
+    }
   },
-  "versionToast": {
-    "title": "New version available",
-    "description": "Tap to update and get the latest features.",
-    "action": "Update now"
+  "adminRevenueControls": {
+    "promotion": {
+      "created": "Promotion code {{code}} was created in Stripe.",
+      "createError": "Promotion code could not be created.",
+      "copied": "Promotion code copied.",
+      "copyError": "Promotion code could not be copied.",
+      "title": "Stripe promotion codes",
+      "description": "Each code applies to one checkout invoice or transaction. Select the eligible plans and optional redemption limits.",
+      "code": "Code",
+      "percentOff": "Percentage off",
+      "maxRedemptions": "Maximum redemptions",
+      "expiresAt": "Expires at",
+      "eligiblePlans": "Eligible plans",
+      "firstTimeOnly": "First transaction only",
+      "oneTimeNote": "The discount duration is fixed to one invoice or transaction. Stripe remains the source of truth.",
+      "creating": "Creating…",
+      "create": "Create promotion",
+      "liveCodes": "Live Stripe codes",
+      "empty": "No Stripe promotion codes yet.",
+      "copyCode": "Copy promotion code",
+      "redemptions": "Redemptions",
+      "firstTimeBadge": "First transaction"
+    },
+    "grants": {
+      "created": "Complimentary access was granted.",
+      "createError": "Complimentary access could not be granted.",
+      "revoked": "Revoked",
+      "revokeError": "Complimentary access could not be revoked.",
+      "confirmRevoke": "Revoke this complimentary-access grant now? This immediately removes paid-feature and quota access.",
+      "title": "Complimentary access",
+      "description": "Grant temporary paid-feature and request-quota access by email. Access starts immediately, expires automatically, and never renews.",
+      "email": "Customer email",
+      "privacy": "Stored as a one-way fingerprint plus a masked display value.",
+      "duration": "Duration",
+      "unit": "Unit",
+      "units": {
+        "day": "Day(s)",
+        "month": "Month(s)",
+        "year": "Year(s)"
+      },
+      "note": "Internal note",
+      "notePlaceholder": "Partner, support, or launch reason",
+      "expiryNote": "No renewal or background job: access ends at the stored UTC expiry.",
+      "granting": "Granting…",
+      "grant": "Grant access",
+      "lookup": "Exact-email lookup",
+      "lookupPlaceholder": "customer@example.com",
+      "search": "Search",
+      "filter": "Status filter",
+      "status": {
+        "all": "All grants",
+        "active": "Active",
+        "expired": "Expired",
+        "revoked": "Revoked"
+      },
+      "lookupResults": "Lookup results",
+      "noLookupResults": "No complimentary-access history was found for that exact email.",
+      "lookupCount": "{{count}} matching grant record(s).",
+      "history": "Grant history",
+      "empty": "No grants match this filter.",
+      "accountLinked": "Account linked",
+      "expires": "Expires",
+      "revoke": "Revoke",
+      "ended": "Ended"
+    },
+    "accessRequired": "Administrator access required",
+    "goHome": "Go home",
+    "back": "Back to administration",
+    "eyebrow": "Revenue operations",
+    "title": "Revenue controls",
+    "description": "Create scoped Stripe promotion codes and grant temporary complimentary access without changing billing plans.",
+    "summary": {
+      "activePromotions": "Active promotions",
+      "activeGrants": "Active grants"
+    },
+    "refresh": "Refresh",
+    "unlimited": "Unlimited",
+    "noExpiry": "No expiry",
+    "clear": "Clear"
   },
-  "whatsNew": {
-    "title": "What's New",
-    "subtitle": "Here's what changed in the latest update.",
-    "cta": "Got it — let's go!"
+  "developerIntegrations": {
+    "sources": {
+      "title": "Connect a source",
+      "description": "Choose where customer records start. Get Phame gives you a secure, import-only recipe for a trusted server-side automation.",
+      "badge": "Imports contacts only",
+      "workflowTitle": "Source connection workflow",
+      "steps": {
+        "choose": "Choose a source",
+        "key": "Create an import key",
+        "map": "Map fields and consent",
+        "test": "Send one permitted test"
+      },
+      "choose": "Choose a source",
+      "recipeCopied": "Safe setup recipe copied.",
+      "pathLabel": "Recommended path",
+      "officialDocs": "Provider docs",
+      "idempotencyTitle": "Stable event ID",
+      "rulesTitle": "Required safeguards",
+      "rules": {
+        "secret": "Store the Get Phame API key only in a protected server-side secret field. Never place it in a form, URL, page source, or browser script.",
+        "consent": "Import only existing customers or people who affirmatively opted in. Keep optional consent boxes unchecked by default.",
+        "idempotency": "Reuse the same provider event ID for every retry so one submission cannot create duplicate work.",
+        "importOnly": "This workflow imports or updates a contact. It never sends a review request automatically."
+      },
+      "providers": {
+        "jotform": {
+          "path": "Send each eligible Jotform submission through a trusted automation bridge that can store secrets and add protected headers before posting to Get Phame.",
+          "idempotency": "Use the immutable Jotform submission ID for both externalId and Idempotency-Key."
+        },
+        "facebook": {
+          "path": "Receive Meta Lead Ads notifications on a verified server-side or trusted automation webhook, retrieve the permitted lead fields, then post the normalized record to Get Phame.",
+          "idempotency": "Use Meta's leadgen ID as the stable externalId and Idempotency-Key."
+        },
+        "googleForms": {
+          "path": "Use an installable Google Apps Script form-submit trigger or a trusted automation bridge. Keep the Get Phame key in protected script properties or the bridge's secret store.",
+          "idempotency": "Use a stable response identifier or the linked response-row ID; do not generate a new value during retries."
+        },
+        "airtable": {
+          "path": "Trigger a trusted automation when an eligible Airtable record is created or approved, then map that record to the Get Phame contact-import contract.",
+          "idempotency": "Use the immutable Airtable record ID for both externalId and Idempotency-Key."
+        },
+        "other": {
+          "label": "Other source",
+          "path": "Use any server-side workflow or trusted no-code tool that supports POST, JSON, protected headers, and a stable event identifier.",
+          "idempotency": "Use the source system's immutable submission, record, order, or event ID for every retry."
+        }
+      },
+      "recipeTitle": "Safe mapping recipe",
+      "recipeDescription": "Use a placeholder while configuring. Paste the real key only into the automation service's protected secret field.",
+      "copyRecipe": "Copy recipe",
+      "apiField": "API field",
+      "mapTo": "Map from source",
+      "fields": {
+        "name": "Customer name field",
+        "email": "Customer email field",
+        "externalId": "Immutable provider event or record ID",
+        "sourceApp": "Fixed provider identifier shown above",
+        "consentConfirmed": "Boolean true only after affirmative permission",
+        "consentBasis": "customer_relationship, explicit_opt_in, or other",
+        "consentSource": "Short description of where permission was captured"
+      },
+      "nextTitle": "Ready to connect?",
+      "nextDescription": "Create a contacts:write key, send one permitted test record, then confirm the masked result in Recent API imports.",
+      "createKey": "Create import key",
+      "viewImports": "View imports"
+    },
+    "sourceOps": {
+      "title": "Managed source connections",
+      "description": "Create one observable connection per Zap, Make scenario, or custom workflow. Each source gets its own identifier, analytics, and health signal.",
+      "refreshKeys": "Refresh API keys",
+      "createTitle": "Create a connection",
+      "provider": "Automation provider",
+      "custom": "Custom webhook",
+      "label": "Connection name",
+      "labels": {
+        "zapier": "Zapier customer import",
+        "make": "Make customer import",
+        "custom": "Custom customer import"
+      },
+      "apiKey": "Import API key",
+      "noKeys": "No active import key",
+      "expected": "Expected activity",
+      "intervals": {
+        "15": "Every 15 minutes",
+        "60": "Hourly",
+        "360": "Every 6 hours",
+        "1440": "Daily",
+        "10080": "Weekly"
+      },
+      "minutes": "{{count}} minutes",
+      "createHelp": "The connection stores only an API-key reference and source identifier. Get Phame never displays or duplicates your raw API key.",
+      "create": "Create connection",
+      "created": "Source connection created. Add its source ID to your automation before testing.",
+      "updated": "Source settings updated.",
+      "archived": "Source connection archived. Its source ID can no longer authorize imports.",
+      "healthRefreshed": "Source health refreshed from recent import activity.",
+      "keyRequired": "Create or choose an active contacts:write API key first.",
+      "analyticsTitle": "Import flow by source",
+      "analyticsDescription": "Attempts, outcomes, deduplication, and failures are calculated from attributed import events.",
+      "range": "Analytics range",
+      "daysShort": "d",
+      "metrics": {
+        "attempts": "Attempts",
+        "successful": "Successful",
+        "createdContacts": "Contacts created",
+        "deduplicated": "Deduplicated",
+        "failures": "Failures"
+      },
+      "emptyTitle": "No managed sources yet",
+      "emptyDescription": "Create one connection for each Zap, Make scenario, or custom workflow you want to observe.",
+      "status": {
+        "healthy": "Healthy",
+        "setup": "Setup",
+        "delayed": "Delayed",
+        "failing": "Failing",
+        "paused": "Paused"
+      },
+      "openSetup": "Open setup",
+      "successRate": "Success rate",
+      "lastActivity": "Last activity",
+      "never": "Never",
+      "refreshHealth": "Refresh health",
+      "pause": "Pause monitoring",
+      "resume": "Resume monitoring",
+      "archive": "Archive",
+      "template": "guided template",
+      "templateDescription": "Copy this exact request into the automation's protected HTTP or webhook action.",
+      "copyRecipe": "Copy recipe",
+      "recipeCopied": "Connection recipe copied.",
+      "secretReminder": "Use the raw API key only inside the provider's protected secret field. The source ID is safe to copy but works only with its linked key.",
+      "providerDocs": "Provider docs",
+      "healthHistory": "Health history",
+      "noHealthHistory": "No health checks yet. Send one permitted import, then refresh health.",
+      "reasons": {
+        "awaiting_first_import": "Awaiting the first permitted import",
+        "no_imports_observed": "No imports observed within the setup window",
+        "expected_import_overdue": "Expected import activity is overdue",
+        "recent_import_error": "The latest activity ended with an import error",
+        "recovered_after_error": "Imports are flowing again after an error",
+        "imports_flowing": "Imports are flowing within the expected interval"
+      },
+      "historyCounts": "{{attempts}} attempts · {{failures}} failures",
+      "archiveTitle": "Archive this source connection?",
+      "archiveDescription": "Imports using this source ID will be rejected. Existing contacts and privacy-safe analytics remain available in their original records.",
+      "steps": {
+        "zapier": {
+          "1": "Choose the app and event that produces an eligible customer record.",
+          "2": "Add Webhooks by Zapier and select Custom Request.",
+          "3": "Set Method to POST and paste the Get Phame endpoint.",
+          "4": "Add the protected headers exactly as shown below.",
+          "5": "Map the JSON fields, using one stable provider ID for externalId and Idempotency-Key.",
+          "6": "Test the action with one permitted record, then refresh health here."
+        },
+        "make": {
+          "1": "Choose the trigger module that produces an eligible customer record.",
+          "2": "Add HTTP and select Make a request.",
+          "3": "Set Method to POST, Body type to Raw, and Content type to application/json.",
+          "4": "Add the protected headers exactly as shown below.",
+          "5": "Map the JSON fields, using one stable bundle ID for externalId and Idempotency-Key.",
+          "6": "Run the scenario once with one permitted record, then refresh health here."
+        },
+        "custom": {
+          "1": "Use a trusted server-side workflow that supports POST and protected headers.",
+          "2": "Store the API key in the workflow secret store, never in browser code or a URL.",
+          "3": "Send JSON to the Get Phame endpoint with the headers shown below.",
+          "4": "Use one immutable source record ID for externalId and Idempotency-Key.",
+          "5": "Send one permitted record, then refresh health here."
+        }
+      }
+    },
+    "guides": {
+      "copied": "Example copied.",
+      "copyExample": "Copy example",
+      "wsform": {
+        "summary": "Use the Webhook action with JSON field, custom, and header mappings.",
+        "step1": "Edit the form, open Actions, add an action, and select Webhook.",
+        "step2": "Set URL of Endpoint to the v1 contact endpoint, Request Method to POST, and Content Type to JSON.",
+        "step3": "Use Field Mapping for name and email. Use Custom Mapping for the static source and consent values shown below.",
+        "step4": "Use Header Mapping for Authorization and Idempotency-Key. Select the form submission identifier for the idempotency value.",
+        "step5": "Keep SSL Verify enabled, save the action, and submit one permitted test record."
+      },
+      "map": {
+        "name": "Your customer name field",
+        "email": "Your customer email field",
+        "consentSource": "A short description of where consent was captured",
+        "entryId": "The Gravity Forms entry ID merge tag",
+        "submissionId": "A stable server-side submission identifier"
+      },
+      "gravity": {
+        "summary": "Create a Webhooks Add-On feed with a JSON request and custom headers.",
+        "step1": "Install and activate the Gravity Forms Webhooks Add-On, then open Form Settings → Webhooks → Add New.",
+        "step2": "Set Request URL to the v1 contact endpoint, Request Method to POST, and Request Format to JSON.",
+        "step3": "Choose Select Fields and map the fields and static consent values shown below.",
+        "step4": "Add the Authorization header and use the entry ID merge tag as Idempotency-Key.",
+        "step5": "Save the feed and submit one permitted test record. Gravity Forms sets application/json automatically for JSON POST feeds."
+      },
+      "fluent": {
+        "summary": "Create a Pro Webhook feed with POST, JSON, headers, and a mapped request body.",
+        "step1": "Enable the Webhooks integration module, then open the form’s Settings & Integrations → WebHook → Add New.",
+        "step2": "Set Request URL to the v1 contact endpoint, Request Method to POST, and Request Format to JSON.",
+        "step3": "Enable Request Header and add Authorization plus Idempotency-Key using a stable submission identifier.",
+        "step4": "Enable Request Body and map the fields and static consent values shown below.",
+        "step5": "Save the feed and submit one permitted test record."
+      },
+      "elementor": {
+        "summary": "Use a server-side custom form action or trusted webhook bridge that can add protected headers.",
+        "step1": "Create the Elementor Pro Form with stable IDs for the customer name, email, and any consent checkbox.",
+        "step2": "Use a server-side custom form action or trusted webhook bridge that supports custom Authorization and Idempotency-Key headers.",
+        "step3": "Configure POST, the v1 contact endpoint, JSON, and the field map shown below.",
+        "step4": "Store the key only in a protected WordPress setting or server-side connector. Never paste it into page HTML or browser JavaScript.",
+        "step5": "Submit one permitted test record and confirm it appears in Recent API imports.",
+        "caution": "Elementor’s built-in Webhook action may not expose every protected-header control required by your setup. Do not work around that by placing the API key in the URL or page source."
+      },
+      "generic": {
+        "label": "Generic webhook",
+        "summary": "Configure any server-side automation tool that supports POST, JSON, and protected headers.",
+        "step1": "Create a new outbound HTTP or webhook action that runs once after an eligible customer form submission.",
+        "step2": "Set method to POST, URL to the v1 contact endpoint, and content type to application/json.",
+        "step3": "Add the Authorization header and a stable per-submission Idempotency-Key.",
+        "step4": "Send the canonical nested JSON payload shown below.",
+        "step5": "Treat HTTP 200 as success. Retry temporary failures with the same idempotency key."
+      },
+      "curl": {
+        "summary": "Run one server-side command to validate your endpoint, key, scope, payload, and consent mapping.",
+        "step1": "Copy the example into a secure terminal on a machine you control.",
+        "step2": "Replace only the API-key placeholder and sample customer values. Do not paste a real key into shared chat, logs, or screenshots.",
+        "step3": "Run the command once and confirm a success response and a privacy-safe Recent API imports row.",
+        "step4": "Run it again with the same idempotency key to confirm a safe replay rather than a duplicate contact."
+      },
+      "header": "Form and webhook integration",
+      "headerDescription": "Every guide imports a contact only. It never sends a review request automatically.",
+      "hide": "Hide guides",
+      "show": "Show guides",
+      "consentTitle": "Consent rule:",
+      "consentRule": "Set consentConfirmed to true only when this workflow represents an existing customer relationship or an explicit opt-in. For general lead forms, add an unchecked consent box and run the webhook only after it is selected.",
+      "builderTabs": "Integration type",
+      "officialDocs": "Official docs",
+      "apiField": "API field",
+      "mapTo": "Map to",
+      "safeExample": "Safe placeholder example",
+      "placeholderNote": "Examples use a placeholder key by design. Get Phame never inserts an existing raw key into these copyable instructions.",
+      "requestExample": "Request example",
+      "responseExample": "Response reference",
+      "testChecklist": "Test checklist",
+      "check1": "The API key has contacts:write permission.",
+      "check2": "The key is stored server-side, never in the page source or URL.",
+      "check3": "The webhook runs only after permitted customer action or opt-in.",
+      "check4": "The same submission keeps the same Idempotency-Key when retried.",
+      "check5": "A successful import appears with a masked email in Recent API imports.",
+      "check6": "The imported contact is not emailed automatically.",
+      "title": "Form-builder setup guides",
+      "description": "Choose your builder for endpoint, authorization, field mapping, consent, and testing instructions."
+    },
+    "copyFailed": "Could not copy automatically. Select and copy the value manually.",
+    "contract": {
+      "endpointCopied": "Endpoint copied.",
+      "copyEndpoint": "Copy endpoint",
+      "title": "Import API contract",
+      "description": "Use one request per customer action. The canonical endpoint requires a bearer key with contacts:write permission and an affirmative consent attestation.",
+      "openGuide": "Open setup guides"
+    },
+    "title": "Developer integrations",
+    "settingsCard": "Create scoped API keys, connect website forms, and review privacy-safe import history in one workspace.",
+    "open": "Open developer workspace",
+    "keys": {
+      "created": "API key created. Copy it before closing the dialog.",
+      "rotated": "API key rotated. Replace the old key in your integration now.",
+      "revoked": "API key revoked.",
+      "labelRequired": "Enter a key label.",
+      "scopeRequired": "Select at least one permission.",
+      "createTitle": "Create a scoped API key",
+      "createDescription": "Name the integration, grant only required permissions, and set an optional earlier expiry. Every key also expires after 12 months without a successful use. The secret is shown once.",
+      "label": "Key label",
+      "labelPlaceholder": "Website contact form",
+      "expiry": "Expiry",
+      "neverExpires": "No earlier expiry",
+      "days30": "30 days",
+      "days90": "90 days",
+      "days365": "1 year",
+      "permissions": "Permissions",
+      "securityNote": "Store the secret in your website’s secure server-side settings. Never place it in browser JavaScript, public repositories, screenshots, or support messages.",
+      "creating": "Creating…",
+      "create": "Create API key",
+      "listTitle": "API keys",
+      "listDescription": "Rotate compromised or aging keys. Abuse protection can temporarily suspend a key, while revoked and expired keys remain visible for audit context.",
+      "inactivityWarning": "One or more keys will expire soon because they have not completed a successful request recently. Run the integration or rotate the key before the displayed inactivity date.",
+      "empty": "No API keys yet. Create one above to connect your first integration.",
+      "expiresWithinWeek": "Expires within 7 days",
+      "expiresWithinMonth": "Expires within 30 days",
+      "inactiveExpired": "Expired after 12 months without a successful API request. Rotate it to create a replacement.",
+      "suspendedHelp": "Temporarily suspended by abuse protection. Review integration traffic and wait until the protection window ends.",
+      "lastUsed": "Last successful use",
+      "inactivityExpiry": "Inactive-key expiry",
+      "configuredExpiry": "Configured expiry",
+      "suspensionEnds": "Protection ends",
+      "usage": "Successful uses",
+      "rotate": "Rotate",
+      "revoke": "Revoke"
+    },
+    "imports": {
+      "empty": "No API imports to export.",
+      "title": "Recent API imports",
+      "description": "A privacy-safe operational record. Customer emails are masked and idempotency secrets are never displayed.",
+      "export": "Export CSV",
+      "noRows": "No API imports have been recorded yet.",
+      "date": "Date",
+      "customer": "Masked email",
+      "key": "Key",
+      "source": "Source",
+      "outcome": "Outcome"
+    },
+    "back": "Back to settings",
+    "eyebrow": "Developer workspace",
+    "description": "Connect website forms to Get Phame with scoped keys, consent-aware imports, and privacy-safe activity history.",
+    "summary": {
+      "activeKeys": "Active keys",
+      "requests": "Key uses",
+      "imports": "Recent imports"
+    },
+    "refresh": "Refresh",
+    "loading": "Loading imports",
+    "secret": {
+      "title": "Copy this API key now",
+      "description": "For security, Get Phame stores only a hash. This secret cannot be shown again after you close this dialog.",
+      "copied": "API key copied.",
+      "copy": "Copy key",
+      "done": "I saved it"
+    },
+    "confirm": {
+      "rotateTitle": "Rotate this API key?",
+      "revokeTitle": "Revoke this API key?",
+      "rotateDescription": "The current key will stop working immediately. You must replace it wherever the integration is configured.",
+      "revokeDescription": "This immediately disables the key and cannot be undone."
+    }
   },
-  "adminCodes": {
-    "lifetimeAccess": "Lifetime access",
-    "monthsPro": "{{count}} month Pro",
-    "monthsPro_other": "{{count}} months Pro",
-    "daysPro": "{{count}} day Pro",
-    "daysPro_other": "{{count}} days Pro",
-    "csvButton": "CSV",
-    "csvTitle": "Download CSV",
-    "codesCreated": "Created",
-    "codesRedeemed": "Redeemed",
-    "codesActive": "Active"
+  "helpAssistant": {
+    "quick": {
+      "connectEmail": "How do I connect my sending email?",
+      "googleLink": "Where do I add my Google review link?",
+      "yelp": "What should I know before using Yelp?"
+    },
+    "unknown": "I could not find a reliable answer in the approved Get Phame help sources. Please open a support request so a person can review the details.",
+    "unavailable": "The help assistant is unavailable right now. Open a support request and our team can help.",
+    "open": "Open Get Phame help",
+    "trigger": "Help",
+    "title": "Get Phame Help",
+    "description": "Grounded answers from approved product guidance",
+    "conversation": "Help conversation",
+    "privateTitle": "Keep private data out of chat",
+    "privateBody": "Do not enter passwords, API keys, card details, customer lists, or private review content. Questions are not saved as a durable chat transcript.",
+    "tryQuestion": "Try a common question",
+    "redacted": "A possible private value was removed before your question was processed.",
+    "sourcesLabel": "Approved sources",
+    "humanSupport": "Open a support request",
+    "thinking": "Checking approved guidance…",
+    "questionLabel": "Ask a Get Phame question",
+    "placeholder": "Ask how something works…",
+    "send": "Send help question",
+    "disclaimer": "Answers use approved Get Phame guidance and may need human review.",
+    "supportLink": "Human support"
+  },
+  "adaptiveSending": {
+    "title": "Adaptive sending protection",
+    "notConfiguredTitle": "Connect a sender first",
+    "notConfiguredBody": "Connect your email account in Settings before sending review requests.",
+    "connectEmail": "Connect email",
+    "remaining": "{{count}} ready",
+    "thisHour": "This hour",
+    "today": "Today",
+    "nextReset": "Next capacity refresh: {{time}}",
+    "automaticRamp": "Limits grow automatically as the connection warms up",
+    "approachingTitle": "You’re approaching the safety limit",
+    "approachingBody": "Capacity is managed automatically. Consider sending the most important requests first.",
+    "highTitle": "Sending capacity is nearly used",
+    "highBody": "Finish priority sends first. Get Phame will pause automatically before provider risk increases.",
+    "blockedTitle": "Safety limit reached",
+    "blockedBody": "Sending pauses automatically until the current safety window resets.",
+    "upgradePlan": "Upgrade for Bulk Sender",
+    "connectBulkSender": "Connect Bulk Sender",
+    "safetyNote": "Provider-aware limits and a separate account safety ceiling always apply. Changing providers cannot bypass protection.",
+    "stage": {
+      "new": "New connection",
+      "warming": "Warming up",
+      "building": "Building reputation",
+      "established": "Established"
+    }
+  },
+  "developerEnrollment": {
+    "loading": "Loading developer enrollment",
+    "title": "Developer enrollment",
+    "description": "Accept the API rules once, start with safe contact imports, and provide business details only if your integration needs to send individual review requests.",
+    "terms": {
+      "title": "1. Accept API Terms",
+      "description": "Keys may be used only from secure server-side integrations for customers with a genuine business relationship and appropriate consent.",
+      "current": "Current API Terms and Acceptable Use Policy accepted",
+      "termsLabel": "I accept the API Terms in the Get Phame Terms of Service.",
+      "readTerms": "Read Terms",
+      "aupLabel": "I accept the Acceptable Use Policy: no spam, purchased or scraped lists, browser-exposed keys, rate-limit bypassing, or deceptive automation.",
+      "readGuide": "Read Compliance Guide",
+      "accept": "Accept and enable import keys",
+      "acceptedToast": "API Terms accepted. You can now create import-only keys.",
+      "requiredForKey": "Accept the API Terms before creating a key.",
+      "onboardingTitle": "Accept the API rules to create your import key"
+    },
+    "send": {
+      "title": "2. Optional sending access",
+      "description": "Importing contacts never sends automatically. Complete this short business-use check only if your integration must send one review request after an approved customer action.",
+      "approvedToast": "Sending access approved. You can now add review_requests:send to a key.",
+      "pendingToast": "Request submitted for review. Import-only access remains available.",
+      "acceptFirst": "Accept the API Terms first. Import-only access will be enabled immediately.",
+      "approved": "Approved for individual review-request sending",
+      "pending": "High-volume request pending review",
+      "pendingDetail": "Your import-only keys continue to work. Get Phame will not add sending permission until this review is approved.",
+      "businessName": "Business name",
+      "website": "Website (optional)",
+      "useCase": "How will the integration use sending access?",
+      "useCasePlaceholder": "Example: After a completed appointment, our server imports the customer and sends one review request.",
+      "monthlyVolume": "Expected sends per month",
+      "reviewThreshold": "Up to {{count}} expected sends per month can be enabled immediately. Higher-volume requests require manual review and never bypass adaptive safety limits.",
+      "consentProcess": "How do you confirm the customer relationship and consent?",
+      "consentPlaceholder": "Describe the purchase, appointment, or service event and how opt-outs are respected.",
+      "confirmCustomers": "I will send only to customers with a genuine business relationship.",
+      "confirmLists": "I will not use purchased, rented, scraped, or third-party lists.",
+      "confirmActions": "Each API send will follow an approved individual customer action; I will respect opt-outs and adaptive limits.",
+      "resubmit": "Resubmit business-use details",
+      "request": "Enable sending access",
+      "completeRequired": "Complete every business-use field and confirmation.",
+      "requiredForScope": "Complete business-use enrollment before adding sending permission.",
+      "scopeLocked": "Business-use enrollment required"
+    }
+  },
+  "passkeys": {
+    "signIn": {
+      "title": "Sign in with a passkey",
+      "description": "Use the fingerprint, face recognition, or screen lock already set up on your device.",
+      "emailLabel": "Account email",
+      "emailPlaceholder": "you@example.com",
+      "button": "Continue with passkey",
+      "inProgress": "Checking passkey…",
+      "preparing": "Preparing your secure passkey prompt…",
+      "verifying": "Verifying your passkey…",
+      "invalidEmail": "Enter a valid email address.",
+      "unsupported": "Passkeys are not available in this browser. You can still sign in with a secure email link.",
+      "unavailable": "Passkey sign-in could not be completed. Use your email link below or try again.",
+      "orAlternative": "or use another sign-in method"
+    },
+    "security": {
+      "title": "Passkeys",
+      "description": "Add a phishing-resistant sign-in method using your device biometrics or screen lock. Email sign-in remains available as a fallback.",
+      "unsupported": "This browser cannot create passkeys. Try a current version of Chrome, Safari, Edge, or Firefox.",
+      "newNameLabel": "Passkey name",
+      "newNameHelp": "Choose a name that helps you recognize this device.",
+      "namePlaceholder": "Example: Work laptop",
+      "create": "Create passkey",
+      "creating": "Creating…",
+      "preparing": "Preparing your secure device prompt…",
+      "verifying": "Verifying your new passkey…",
+      "defaultName": "My passkey",
+      "createSuccess": "Passkey created. You can now use it to sign in.",
+      "createError": "Passkey setup could not be completed. Please try again.",
+      "savedTitle": "Saved passkeys",
+      "loading": "Loading passkeys…",
+      "loadError": "Passkeys could not be loaded.",
+      "empty": "No passkeys yet. Create one above to enable faster, phishing-resistant sign-in.",
+      "nameLabel": "Passkey name",
+      "saveName": "Save passkey name",
+      "cancelRename": "Cancel rename",
+      "rename": "Rename {{name}}",
+      "renameSuccess": "Passkey renamed.",
+      "renameError": "Passkey could not be renamed.",
+      "created": "Created {{date}}",
+      "lastUsed": "Last used {{date}}",
+      "synced": "Synced by your device provider",
+      "remove": "Remove",
+      "removeConfirm": "Remove this passkey? You will not be able to use it to sign in.",
+      "confirmRemove": "Remove passkey",
+      "cancel": "Cancel",
+      "removeSuccess": "Passkey removed.",
+      "removeError": "Passkey could not be removed."
+    }
+  },
+  "promotionLink": {
+    "applied": "Your campaign code will be applied at checkout",
+    "verified": "Eligibility is verified securely before Stripe Checkout opens."
+  },
+  "recoveryDrill": {
+    "defaults": {
+      "title": "Owner account recovery drill"
+    },
+    "toast": {
+      "prepared": "Staging recovery drill prepared.",
+      "approved": "Recovery drill approved.",
+      "rejected": "Recovery drill rejected and closed.",
+      "started": "Recovery drill started.",
+      "evidence": "Redacted evidence recorded.",
+      "contained": "Recovery drill contained.",
+      "completed": "Recovery drill completed and temporary access revoked.",
+      "aborted": "Recovery drill aborted and temporary access revoked."
+    },
+    "loading": "Checking staging recovery access…",
+    "title": "Staging recovery drill",
+    "stagingOnly": "Staging only",
+    "description": "Practice owner-account recovery with separated duties, recent passkey verification, redacted evidence, and automatic revocation.",
+    "environment": "Environment",
+    "available": "Allowed staging host",
+    "unavailable": "Unavailable on this host",
+    "yourRole": "Your role",
+    "statusLabel": "Status",
+    "hostGate": "This control remains locked unless staging mode and an exact non-production host allowlist are configured.",
+    "passkeyRequired": "Sensitive drill actions require a passkey-verified session from the last 15 minutes. Sign in with a passkey, then return here.",
+    "prepareTitle": "Prepare separated-duty drill",
+    "prepareHelp": "Steve is the Recovery Custodian. Assign a different lead engineer who already has an active Get Phame account and passkey.",
+    "drillTitle": "Drill title",
+    "approverEmail": "Lead engineer email",
+    "scheduledAt": "Scheduled time",
+    "notes": "Redacted operator notes (optional)",
+    "preparing": "Preparing…",
+    "prepare": "Prepare staging drill",
+    "scheduledFor": "Scheduled for {{date}}",
+    "approvalTitle": "Independent approval",
+    "approvalHelp": "Review the staging scope and confirm that you are not the Recovery Custodian. Approval expires with your narrow temporary access.",
+    "decisionNote": "Decision note",
+    "decisionPlaceholder": "Record a redacted approval rationale",
+    "approve": "Approve",
+    "reject": "Reject",
+    "start": "Start approved drill",
+    "evidenceTitle": "Record redacted evidence",
+    "evidenceHelp": "Use event IDs, ticket IDs, timestamps, or sanitized object references only. Never enter tokens, cookies, credentials, or customer data.",
+    "evidenceType": "Evidence type",
+    "outcome": "Outcome",
+    "evidenceReference": "Sanitized evidence reference",
+    "evidencePlaceholder": "Example: audit-event:evt_123 at 14:05 UTC",
+    "recordEvidence": "Record evidence",
+    "evidenceLog": "Evidence log",
+    "containmentReason": "Containment reason",
+    "containmentPlaceholder": "Stop condition or containment reason",
+    "contain": "Contain drill",
+    "complete": "Complete and revoke access",
+    "abortReason": "Abort reason",
+    "abortPlaceholder": "Sanitized abort reason",
+    "abort": "Abort drill",
+    "status": {
+      "notPrepared": "Not prepared",
+      "draft": "Draft",
+      "ready": "Ready",
+      "in_progress": "In progress",
+      "paused": "Contained",
+      "completed": "Completed",
+      "aborted": "Aborted"
+    },
+    "roles": {
+      "none": "No recovery role",
+      "platform_owner": "Platform owner",
+      "recovery_custodian": "Recovery Custodian",
+      "independent_approver": "Independent Approver",
+      "observer": "Observer"
+    },
+    "decision": {
+      "approved": "Approved",
+      "rejected": "Rejected"
+    },
+    "evidence": {
+      "preflight": "Preflight checks",
+      "revoked_session_denial": "Revoked-session denial",
+      "revoked_credential_denial": "Revoked-credential denial",
+      "tenant_isolation": "Tenant isolation",
+      "replacement_enrollment": "Replacement passkey enrollment",
+      "step_up_verification": "Step-up verification",
+      "audit_verification": "Audit verification",
+      "rollback": "Rollback validation",
+      "stop_condition": "Stop condition",
+      "containment": "Containment",
+      "after_action": "After-action review"
+    },
+    "outcomes": {
+      "passed": "Passed",
+      "failed": "Failed",
+      "blocked": "Blocked",
+      "contained": "Contained",
+      "not_applicable": "Not applicable"
+    }
+  },
+  "manual": {
+    "badges": {
+      "all": "Free & paid",
+      "paid": "Paid subscription only",
+      "admin": "Administrator only"
+    },
+    "searchPlaceholder": "Search this manual",
+    "searchLabel": "Search this manual",
+    "searchResults": "{{count}} matching topics",
+    "lastUpdated": "Last updated {{date}}",
+    "sectionNavigation": "Manual sections",
+    "sectionCount": "Manual sections",
+    "adminSectionCount": "Admin-only sections",
+    "paidTopicCount": "Paid-only topics",
+    "inThisManual": "In this manual",
+    "stepsLabel": "Steps",
+    "noteLabel": "Important note",
+    "openFeature": "Open this feature",
+    "noResultsTitle": "No matching topics",
+    "noResultsBody": "Try a shorter search or browse the section links above.",
+    "clearSearch": "Clear search",
+    "insights": {
+      "eyebrow": "Documentation intelligence",
+      "title": "Searches with no results",
+      "description": "Use these aggregate terms to prioritize missing Manual topics. Repeated searches from the same account count once per UTC day.",
+      "privacy": "Private by design: reports exclude account IDs, customer records, referrers, devices, and raw event rows.",
+      "periodLabel": "Reporting period",
+      "periodDays": "{{count}} days",
+      "loading": "Loading missing-topic searches…",
+      "error": "Missing-topic analytics could not be loaded. Try again.",
+      "retry": "Retry",
+      "totalSearches": "Zero-result searches",
+      "uniqueTerms": "Distinct terms",
+      "roleBreakdown": "User {{user}} · Admin {{admin}}",
+      "manualScope": "Manual scope",
+      "term": "Missing topic search",
+      "role": "Manual",
+      "locale": "Locale",
+      "count": "Count",
+      "lastSearched": "Last searched",
+      "adminManual": "Admin Manual",
+      "userManual": "User Manual",
+      "emptyTitle": "No missing-topic searches yet",
+      "emptyBody": "Zero-result searches will appear here after daily account-level deduplication."
+    },
+    "export": {
+      "fullScope": "Entire visible Manual",
+      "sectionScope": "Manual section",
+      "scope": "Export scope",
+      "language": "Language",
+      "generated": "Generated",
+      "lastUpdated": "Manual last updated",
+      "version": "Manual version",
+      "steps": "Steps",
+      "notes": "Important notes",
+      "featurePath": "Feature path",
+      "page": "Page {{current}} of {{total}}",
+      "sectionSuccess": "Downloaded {{section}} as a PDF.",
+      "fullSuccess": "Downloaded the complete Manual as a PDF.",
+      "error": "The Manual PDF could not be created. Please try again.",
+      "preparing": "Preparing PDF…",
+      "fullButton": "Download full Manual PDF",
+      "help": "The PDF includes only the Manual available to your authenticated role and current language.",
+      "sectionAria": "Download {{section}} as a PDF",
+      "sectionButton": "Download section PDF"
+    }
+  },
+  "adminGithubCleanup": {
+    "dashboardCardTitle": "GitHub cleanup skill",
+    "dashboardCardBody": "Review ancestry, unique work, safety gates, and the presentation script",
+    "loading": "Loading cleanup showcase",
+    "errorTitle": "Showcase unavailable",
+    "errorBody": "The administrator-only repository evidence could not be loaded.",
+    "backToAdmin": "Back to Administration",
+    "adminOnly": "Administrator only",
+    "title": "GitHub repository cleanup skill",
+    "subtitle": "Audit branch ancestry, preserve unique work, verify the release tree, and remove only branches proven safe to delete.",
+    "scriptCopied": "Presentation script copied.",
+    "scriptCopyError": "The script could not be copied.",
+    "stats": {
+      "main": "Main",
+      "tree": "Release tree",
+      "exact": "Exact match",
+      "branches": "Branches",
+      "openPrs": "Open PRs"
+    },
+    "evidence": {
+      "eyebrow": "Verified repository evidence",
+      "title": "Current release and preservation state",
+      "body": "The protected main tree exactly matches the validated managed release. Push-safe remains isolated because it contains unique but outdated work that must be extracted selectively."
+    },
+    "visuals": {
+      "ancestryAlt": "Branch ancestry and preservation map showing protected main, exact release-tree parity, push-safe divergence, and where deleted branch tips remain preserved.",
+      "ancestryCaption": "Solid relationships show verified ancestry; dashed relationships show exact Git-tree parity rather than shared commit history.",
+      "uniqueAlt": "Unique push-safe work ordered by extraction priority, with readiness and the next safe action for Mailjet, Help Assistant, Sources and WooCommerce, and paid entitlement.",
+      "uniqueCaption": "Priority is action order; readiness describes the evidence-supported treatment at the audit date."
+    },
+    "metrics": {
+      "eyebrow": "Metric definitions",
+      "title": "Extraction priority and readiness answer different questions",
+      "extraction": {
+        "title": "Extraction priority",
+        "body": "An ordinal action order. Priority 1 means evaluate or extract first. It is not urgency, revenue impact, story points, probability of success, or percent complete."
+      },
+      "dimensions": {
+        "isolation": {
+          "title": "Isolation",
+          "body": "Can the work move without carrying unrelated branch history?"
+        },
+        "compatibility": {
+          "title": "Compatibility",
+          "body": "How much conflicts with or duplicates the current main branch?"
+        },
+        "evidence": {
+          "title": "Evidence clarity",
+          "body": "Are code, tests, blockers, and acceptance gates documented?"
+        },
+        "dependencies": {
+          "title": "Dependency closure",
+          "body": "Are required components, migrations, providers, and policies resolved?"
+        },
+        "valueRisk": {
+          "title": "Value-to-risk sequence",
+          "body": "Can reviewing this item first produce useful progress with bounded regression risk?"
+        }
+      },
+      "readiness": {
+        "title": "Readiness",
+        "body": "A categorical description of the evidence available at the audit date. It identifies the next safe treatment; it is not a numerical maturity score.",
+        "labels": {
+          "portable": {
+            "title": "Portable after rebase and revalidation",
+            "body": "A bounded implementation exists with no intrinsic blocker. Recreate or selectively port it from current main and rerun current gates."
+          },
+          "specification": {
+            "title": "Specification only",
+            "body": "Requirements exist but product code does not. Convert the evidence into a scoped issue before implementation."
+          },
+          "stale": {
+            "title": "Architecturally stale",
+            "body": "Substantial code exists but overlaps newer infrastructure. Preserve behavior and contracts, not old files."
+          },
+          "blocked": {
+            "title": "Blocked",
+            "body": "A known missing dependency, build error, migration, or decision prevents validation. Resolve the blocker before extraction."
+          },
+          "superseded": {
+            "title": "Superseded or retire candidate",
+            "body": "Current main already provides the behavior or the product decision changed. Record the decision and retire the old work."
+          }
+        }
+      }
+    },
+    "workstreams": {
+      "title": "Unique work decision queue",
+      "priority": "Extraction priority {{priority}}",
+      "mailjet": {
+        "title": "Mailjet Bulk Sender preset",
+        "body": "A bounded provider preset with seven locale updates, documentation, and historical tests.",
+        "action": "Action: Port selectively on a fresh branch from current main."
+      },
+      "helpAssistant": {
+        "title": "Global public Help Assistant",
+        "body": "Anonymous-safe, rate-limited, localized, accessible all-route requirements exist; no product implementation was committed.",
+        "action": "Action: Convert the requirements into a dedicated implementation issue."
+      },
+      "sourcesWoo": {
+        "title": "Consent-first Sources and WooCommerce",
+        "body": "Substantial import, security, consent, encryption, idempotency, provenance, migration, UI, and test work overlaps newer infrastructure.",
+        "action": "Action: Rework the behavior and contracts, not the old files."
+      },
+      "wooEntitlement": {
+        "title": "WooCommerce paid entitlement",
+        "body": "Paid procedures and localized upgrade UX exist, but the old branch has a missing PaywallModal import and does not compile.",
+        "action": "Action: Rebuild against current entitlement patterns."
+      }
+    },
+    "safety": {
+      "title": "Deletion safety sequence",
+      "body": "Classification never deletes a branch. The live repository is revalidated immediately before mutation, and any changed fact stops the operation.",
+      "gates": {
+        "dryRun": "Dry run",
+        "refetch": "Re-fetch",
+        "exactSha": "Exact SHA",
+        "openPr": "Open PR check",
+        "preservation": "Preservation proof",
+        "execute": "Execute",
+        "reaudit": "Re-audit"
+      }
+    },
+    "script": {
+      "title": "Presentation script",
+      "subtitle": "Eight-scene English master · approximately {{runtime}}",
+      "copy": "Copy full script",
+      "scene": "Scene {{number}} · {{time}}"
+    },
+    "footer": "Snapshot verified {{date}}. Repository evidence and presentation content are available only through this administrator-authorized route."
   }
 }

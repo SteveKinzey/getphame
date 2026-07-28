@@ -134,6 +134,22 @@ describe("VideoDemo media contract", () => {
     expect(source).not.toContain("GetPhame");
   });
 
+  it("uses an accessible custom play overlay with restrained reduced-motion-safe hover feedback", async () => {
+    const source = await readFile(componentPath, "utf8");
+
+    expect(source).toContain('type="button"');
+    expect(source).toContain('aria-haspopup="dialog"');
+    expect(source).toContain("aria-expanded={open}");
+    expect(source).toContain('data-walkthrough-play-overlay="true"');
+    expect(source).toContain('aria-hidden="true"');
+    expect(source).toContain("motion-safe:hover:scale-[1.008]");
+    expect(source).toContain("group-hover:scale-[1.05]");
+    expect(source).toContain("group-focus-visible:scale-[1.05]");
+    expect(source).toContain("motion-reduce:transform-none");
+    expect(source).toContain("motion-reduce:transition-none");
+    expect(source).toContain("ease-[cubic-bezier(0.23,1,0.32,1)]");
+  });
+
   it("ships English, Spanish, French, Italian, German, and Portuguese WebVTT tracks with exact timing parity", async () => {
     const tracks = await Promise.all(
       Object.entries(captionTrackPaths).map(async ([language, path]) => ({

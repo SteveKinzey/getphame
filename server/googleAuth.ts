@@ -3,6 +3,7 @@
  * Replaces the Manus portal redirect so users see a clean Phame-branded login.
  *
  * Routes:
+ *   GET /api/auth/google/status   → reports whether Google OAuth is configured
  *   GET /api/auth/google          → redirects to Google consent screen
  *   GET /api/auth/google/callback → exchanges code, creates session cookie, redirects to /
  *
@@ -44,8 +45,16 @@ function buildRedirectUri(req: Request): string {
 }
 
 export function registerGoogleAuthRoutes(app: Express) {
+  app.get("/api/auth/google/status", (_req: Request, res: Response) => {
+    res.json({ enabled: Boolean(ENV.googleClientId && ENV.googleClientSecret) });
+  });
+
   // Step 1: Redirect user to Google consent screen
   app.get("/api/auth/google", (req: Request, res: Response) => {
+    if (!ENV.googleClientId || !ENV.googleClientSecret) {
+      return res.redirect(302, "/?auth_error=google_failed");
+    }
+
     const redirectUri = buildRedirectUri(req);
     const oauth2Client = getOAuth2Client(redirectUri);
 
@@ -68,11 +77,11 @@ export function registerGoogleAuthRoutes(app: Express) {
 
     if (error) {
       console.warn("[GoogleAuth] User denied consent:", error);
-      return res.redirect(302, "/?auth_error=denied");
+      return res.redirect(302, "/?auth_error=google_denied");
     }
 
     if (!code || !state) {
-      return res.status(400).send("Missing code or state.");
+      return res.redirect(302, "/?auth_error=google_missing_code");
     }
 
     try {
@@ -89,7 +98,7 @@ export function registerGoogleAuthRoutes(app: Express) {
       const { data: profile } = await oauth2.userinfo.get();
 
       if (!profile.id) {
-        return res.status(400).send("Google did not return a user ID.");
+        return res.redirect(302, "/?auth_error=google_no_id");
       }
 
       // Use Google sub (stable unique ID) as openId
@@ -135,7 +144,7 @@ export function registerGoogleAuthRoutes(app: Express) {
       res.redirect(302, "/");
     } catch (err) {
       console.error("[GoogleAuth] Callback failed:", err);
-      res.redirect(302, "/?auth_error=failed");
+      res.redirect(302, "/?auth_error=google_failed");
     }
   });
 }

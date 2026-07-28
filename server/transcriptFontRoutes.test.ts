@@ -17,8 +17,15 @@ describe("transcript font routes", () => {
   });
 
   it("exposes only the two approved immutable font subsets", () => {
-    expect(getTranscriptFontSource("cjk")?.fileName).toBe("noto-sans-tc-transcript.ttf");
-    expect(getTranscriptFontSource("thai")?.fileName).toBe("noto-sans-thai-transcript-v2.ttf");
+    const cjk = getTranscriptFontSource("cjk");
+    const thai = getTranscriptFontSource("thai");
+
+    expect(cjk?.fileName).toBe("noto-sans-tc-transcript.ttf");
+    expect(thai?.fileName).toBe("noto-sans-thai-transcript-v2.ttf");
+    expect(cjk?.sourceUrl).toMatch(/^https:\/\/files\.manuscdn\.com\//);
+    expect(thai?.sourceUrl).toMatch(/^https:\/\/files\.manuscdn\.com\//);
+    expect(cjk?.sourceUrl).not.toMatch(/manus-storage|X-Amz-|Expires=|Signature=/i);
+    expect(thai?.sourceUrl).not.toMatch(/manus-storage|X-Amz-|Expires=|Signature=/i);
     expect(getTranscriptFontSource("../../secret")).toBeNull();
   });
 

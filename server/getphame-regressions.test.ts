@@ -29,14 +29,12 @@ describe("Get Phame regression contracts", () => {
     for (const section of [
       "<Hero />",
       "<AppPurpose />",
-      "<SocialProofBar />",
       "<TrustBar />",
       "<VideoDemo />",
       "<Features />",
       "<HowItWorks />",
       "<ProductShowcase />",
       "<Stats />",
-      "<Testimonials />",
       "<Pricing />",
       "<Comparison />",
       "<FAQ />",
@@ -46,6 +44,9 @@ describe("Get Phame regression contracts", () => {
     ]) {
       expect(landing).toContain(section);
     }
+
+    expect(landing).not.toContain("<SocialProofBar />");
+    expect(landing).not.toContain("<Testimonials />");
 
     expect(landing).toContain("Get Phame | Review Request Software for Local Businesses");
     expect(navbar).toContain("<LanguageFlyout");
@@ -887,10 +888,10 @@ describe("Get Phame regression contracts", () => {
   it("uses corrected permanent mockups without the obsolete embedded P-plus-star artwork", () => {
     const showcase = readProjectFile("../client/src/components/landing/ProductShowcase.tsx");
 
-    expect(showcase).toContain("phame-customer-import-corrected-exact_4614c4e8.webp");
-    expect(showcase).toContain("phame-customer-import-corrected-exact_cded24ee.png");
-    expect(showcase).toContain("phame-review-tracking-corrected-exact_d01e52cf.webp");
-    expect(showcase).toContain("phame-review-tracking-corrected-exact_82109c9c.png");
+    expect(showcase).toContain("pCdaXCzmWWOVhxVT.webp");
+    expect(showcase).toContain("PqrlbFzQDKfwKKdq.png");
+    expect(showcase).toContain("iMKazWeeJzbtaJOP.webp");
+    expect(showcase).toContain("AGpQkxLxqBlmXRos.png");
     expect(showcase).not.toContain('"https://assets.getphame.app/phame-customer-import.webp"');
     expect(showcase).not.toContain('"https://assets.getphame.app/phame-review-tracking.webp"');
   });

@@ -4,20 +4,21 @@
  */
 import { useLocation } from "wouter";
 import { ChevronLeft, ShieldCheck, AlertTriangle, XCircle, CheckCircle2, Zap, Scale } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 type RiskLevel = "low" | "moderate" | "high";
 
-const RISK_COLOR: Record<RiskLevel, { bg: string; text: string; label: string }> = {
-  low: { bg: "oklch(0.96 0.08 150)", text: "oklch(0.35 0.14 150)", label: "Low Risk" },
-  moderate: { bg: "oklch(0.96 0.12 80)", text: "oklch(0.45 0.18 80)", label: "Moderate Risk" },
-  high: { bg: "oklch(0.96 0.08 20)", text: "oklch(0.45 0.18 20)", label: "High Risk" },
+const RISK_COLOR: Record<RiskLevel, { bg: string; text: string }> = {
+  low: { bg: "oklch(0.96 0.08 150)", text: "oklch(0.35 0.14 150)" },
+  moderate: { bg: "oklch(0.96 0.12 80)", text: "oklch(0.45 0.18 80)" },
+  high: { bg: "oklch(0.96 0.08 20)", text: "oklch(0.45 0.18 20)" },
 };
 
-function RiskBadge({ level }: { level: RiskLevel }) {
+function RiskBadge({ level, label }: { level: RiskLevel; label: string }) {
   const c = RISK_COLOR[level];
   return (
     <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: c.bg, color: c.text }}>
-      {c.label}
+      {label}
     </span>
   );
 }
@@ -27,9 +28,7 @@ function Section({ icon, title, children }: { icon: React.ReactNode; title: stri
     <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
       <div className="flex items-center gap-2 mb-3">
         <span style={{ color: "oklch(0.45 0.18 80)" }}>{icon}</span>
-        <h2 className="font-black text-base rr-text-navy">
-          {title}
-        </h2>
+        <h2 className="font-black text-base rr-text-navy">{title}</h2>
       </div>
       {children}
     </div>
@@ -50,124 +49,110 @@ function Item({ icon, text, sub }: { icon: React.ReactNode; text: string; sub?: 
 
 export default function Compliance() {
   const [, navigate] = useLocation();
+  const { t } = useTranslation();
+  const guide = (key: string) => t(`complianceGuide.${key}`);
 
   return (
     <div className="min-h-screen pb-40 rr-bg-cream-warm">
-      {/* Header */}
       <div className="px-5 pt-14 pb-6 rr-bg-navy">
         <button
           onClick={() => navigate("/settings")}
           className="flex items-center gap-1 mb-4 text-sm hover:opacity-100 transition-opacity rr-text-gold"
         >
-          <ChevronLeft size={16} /> Settings
+          <ChevronLeft size={16} /> {guide("backToSettings")}
         </button>
         <h1 className="text-2xl font-black text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
-          Compliance Guide
+          {guide("title")}
         </h1>
-        <p className="text-base mt-1 text-white font-bold">
-          Stay safe, stay legal, and protect your reputation
-        </p>
+        <p className="text-base mt-1 text-white font-bold">{guide("subtitle")}</p>
       </div>
 
       <div className="px-4 pt-4 space-y-4">
-        {/* Safe zone */}
-        <Section icon={<ShieldCheck size={18} />} title="Where You're Safe">
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Customer had a real transaction with you" />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="No incentives offered (money, discounts, gifts)" />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="No scripted or pressured review wording" />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Ask ALL customers — not just happy ones" sub="Review gating (filtering unhappy customers away) is where most businesses get burned." />
+        <Section icon={<ShieldCheck size={18} />} title={guide("safeZone.title")}>
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("safeZone.transaction")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("safeZone.noIncentives")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("safeZone.noPressure")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("safeZone.allCustomers")} sub={guide("safeZone.allCustomersSub")} />
         </Section>
 
-        {/* Platform risk */}
-        <Section icon={<AlertTriangle size={18} />} title="Platform Risk Levels">
-          {/* Google */}
+        <Section icon={<AlertTriangle size={18} />} title={guide("platformRisk.title")}>
           <div className="rounded-xl p-3 mb-2 rr-bg-cream-warm" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
             <div className="flex items-center justify-between mb-1">
               <p className="font-bold text-sm rr-text-navy">Google</p>
-              <RiskBadge level="low" />
+              <RiskBadge level="low" label={guide("risk.low")} />
             </div>
-            <Item icon={<CheckCircle2 size={13} className="rr-text-green" />} text="Asking for reviews via email is allowed" />
-            <Item icon={<XCircle size={13} className="rr-text-red" />} text="No incentives, no review gating" />
-            <p className="text-xs mt-1 rr-text-navy-muted">Worst case: reviews removed or profile flagged.</p>
+            <Item icon={<CheckCircle2 size={13} className="rr-text-green" />} text={guide("platformRisk.google.allowed")} />
+            <Item icon={<XCircle size={13} className="rr-text-red" />} text={guide("platformRisk.google.noIncentives")} />
+            <p className="text-xs mt-1 rr-text-navy-muted">{guide("platformRisk.google.worstCase")}</p>
           </div>
 
-          {/* Yelp */}
           <div className="rounded-xl p-3 mb-2 rr-bg-cream-warm" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
             <div className="flex items-center justify-between mb-1">
               <p className="font-bold text-sm rr-text-navy">Yelp</p>
-              <RiskBadge level="high" />
+              <RiskBadge level="high" label={guide("risk.high")} />
             </div>
-            <Item icon={<AlertTriangle size={13} style={{ color: "oklch(0.55 0.18 80)" }} />} text="Strongly discourages asking for reviews at all" />
-            <Item icon={<AlertTriangle size={13} style={{ color: "oklch(0.55 0.18 80)" }} />} text="Algorithm actively filters 'solicited' reviews" />
-            <Item icon={<CheckCircle2 size={13} className="rr-text-green" />} text="Safer: list your business name only — don't embed a direct Yelp link in bulk campaigns" />
-            <p className="text-xs mt-1 rr-text-navy-muted">Worst case: reviews filtered (not shown publicly) + consumer alert badge on profile.</p>
+            <Item icon={<AlertTriangle size={13} style={{ color: "oklch(0.55 0.18 80)" }} />} text={guide("platformRisk.yelp.discourages")} />
+            <Item icon={<AlertTriangle size={13} style={{ color: "oklch(0.55 0.18 80)" }} />} text={guide("platformRisk.yelp.filters")} />
+            <Item icon={<CheckCircle2 size={13} className="rr-text-green" />} text={guide("platformRisk.yelp.safer")} />
+            <p className="text-xs mt-1 rr-text-navy-muted">{guide("platformRisk.yelp.worstCase")}</p>
           </div>
 
-          {/* Bing */}
           <div className="rounded-xl p-3 rr-bg-cream-warm" style={{ border: "1px solid oklch(0.91 0.02 260)" }}>
             <div className="flex items-center justify-between mb-1">
-              <p className="font-bold text-sm rr-text-navy">Bing / Microsoft</p>
-              <RiskBadge level="low" />
+              <p className="font-bold text-sm rr-text-navy">{guide("platformRisk.bing.title")}</p>
+              <RiskBadge level="low" label={guide("risk.low")} />
             </div>
-            <Item icon={<CheckCircle2 size={13} className="rr-text-green" />} text="Similar to Google in practice, less aggressive enforcement" />
-            <p className="text-xs mt-1 rr-text-navy-muted">Generally safe to include a direct link.</p>
+            <Item icon={<CheckCircle2 size={13} className="rr-text-green" />} text={guide("platformRisk.bing.similar")} />
+            <p className="text-xs mt-1 rr-text-navy-muted">{guide("platformRisk.bing.worstCase")}</p>
           </div>
         </Section>
 
-        {/* Legal */}
-        <Section icon={<Scale size={18} />} title="Legal Considerations (U.S.)">
-          <p className="text-xs mb-2 rr-text-navy-mid">
-            The FTC cares about fake reviews, undisclosed incentives, and misleading practices. If you only ask real customers, don't compensate, and don't manipulate — you're fine legally.
-          </p>
-          <Item icon={<XCircle size={14} className="rr-text-red" />} text="Fake reviews" />
-          <Item icon={<XCircle size={14} className="rr-text-red" />} text="Undisclosed incentives" />
-          <Item icon={<XCircle size={14} className="rr-text-red" />} text="Misleading or deceptive practices" />
+        <Section icon={<Scale size={18} />} title={guide("legal.title")}>
+          <p className="text-xs mb-2 rr-text-navy-mid">{guide("legal.intro")}</p>
+          <Item icon={<XCircle size={14} className="rr-text-red" />} text={guide("legal.fakeReviews")} />
+          <Item icon={<XCircle size={14} className="rr-text-red" />} text={guide("legal.undisclosedIncentives")} />
+          <Item icon={<XCircle size={14} className="rr-text-red" />} text={guide("legal.misleading")} />
         </Section>
 
-        {/* What kills accounts */}
-        <Section icon={<XCircle size={18} />} title="What Kills Accounts">
-          <Item icon={<XCircle size={14} className="rr-text-red" />} text="Incentives" sub='"Leave a review, get 10% off" — this is a direct violation.' />
-          <Item icon={<XCircle size={14} className="rr-text-red" />} text="Review gating funnels" sub="Filtering unhappy customers away from public platforms." />
-          <Item icon={<XCircle size={14} className="rr-text-red" />} text="Bulk blasts that look automated/spammy" sub="Sudden spikes of 50+ reviews in a day raise red flags." />
-          <Item icon={<XCircle size={14} className="rr-text-red" />} text="Writing reviews for customers or coaching exact wording" />
-          <Item icon={<XCircle size={14} className="rr-text-red" />} text="Embedding a Yelp review link in bulk email campaigns" />
+        <Section icon={<XCircle size={18} />} title={guide("accountRisks.title")}>
+          <Item icon={<XCircle size={14} className="rr-text-red" />} text={guide("accountRisks.incentives")} sub={guide("accountRisks.incentivesSub")} />
+          <Item icon={<XCircle size={14} className="rr-text-red" />} text={guide("accountRisks.gating")} sub={guide("accountRisks.gatingSub")} />
+          <Item icon={<XCircle size={14} className="rr-text-red" />} text={guide("accountRisks.bulk")} sub={guide("accountRisks.bulkSub")} />
+          <Item icon={<XCircle size={14} className="rr-text-red" />} text={guide("accountRisks.writing")} />
+          <Item icon={<XCircle size={14} className="rr-text-red" />} text={guide("accountRisks.yelpLinks")} />
         </Section>
 
-        {/* Best practice playbook */}
-        <Section icon={<CheckCircle2 size={18} />} title="Best-Practice Playbook">
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Send a simple, neutral request" sub={`"We'd appreciate your honest feedback"`} />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Give multiple platform options" sub="Don't push one platform aggressively." />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Ask ALL customers — not just happy ones" />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Avoid direct Yelp links in campaigns" sub="Safer to list your business name only." />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Throttle volume" sub="No sudden spikes. Spread sends over days/weeks." />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Send from a real person" sub="Not 'support@' — use a first name." />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Keep emails under 100–120 words" />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Add subtle urgency" sub={`"while it's still fresh"`} />
+        <Section icon={<CheckCircle2 size={18} />} title={guide("playbook.title")}>
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("playbook.neutral")} sub={guide("playbook.neutralSub")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("playbook.multiplePlatforms")} sub={guide("playbook.multiplePlatformsSub")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("playbook.allCustomers")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("playbook.noYelpLinks")} sub={guide("playbook.noYelpLinksSub")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("playbook.throttle")} sub={guide("playbook.throttleSub")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("playbook.realPerson")} sub={guide("playbook.realPersonSub")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("playbook.emailLength")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("playbook.urgency")} sub={guide("playbook.urgencySub")} />
         </Section>
 
-        {/* WooCommerce timing */}
-        <Section icon={<Zap size={18} />} title="WooCommerce Timing">
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Product orders: send 3–5 days after order completion" sub="Gives customers time to receive and use the product." />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Service orders: send 1–2 days after completion" sub="While the experience is still fresh." />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Trigger: WooCommerce order status → Completed" />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Rotate platforms across sends" sub="Don't send everyone to the same platform at once." />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text="Track conversion rate" sub="Aim for reviews per 100 customers as your KPI." />
+        <Section icon={<Zap size={18} />} title={guide("wooTiming.title")}>
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("wooTiming.product")} sub={guide("wooTiming.productSub")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("wooTiming.service")} sub={guide("wooTiming.serviceSub")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("wooTiming.trigger")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("wooTiming.rotate")} sub={guide("wooTiming.rotateSub")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("wooTiming.track")} sub={guide("wooTiming.trackSub")} />
         </Section>
 
-        {/* Subject line tips */}
-        <Section icon={<Zap size={18} />} title="Subject Lines That Convert">
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text='"Quick favor?"' sub="Direct, low-pressure, high open rate." />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text='"How did we do?"' sub="Conversational and curiosity-driven." />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text='"[First Name], got a minute?"' sub="Personalisation boosts open rates." />
-          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text='"Thanks for your order — got a minute?"' sub="Best for WooCommerce post-purchase flows." />
+        <Section icon={<Zap size={18} />} title={guide("subjectLines.title")}>
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("subjectLines.quickFavor")} sub={guide("subjectLines.quickFavorSub")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("subjectLines.howDidWeDo")} sub={guide("subjectLines.howDidWeDoSub")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("subjectLines.gotAMinute")} sub={guide("subjectLines.gotAMinuteSub")} />
+          <Item icon={<CheckCircle2 size={14} className="rr-text-green" />} text={guide("subjectLines.thanksOrder")} sub={guide("subjectLines.thanksOrderSub")} />
         </Section>
 
-        {/* Bottom line */}
         <div className="rounded-2xl p-4 rr-bg-navy">
-          <p className="text-xs font-bold uppercase tracking-wide mb-2 rr-text-gold">Bottom Line</p>
-          <p className="text-base text-white font-bold">Google + Bing → safe if done correctly.</p>
-          <p className="text-base text-white font-bold">Yelp → proceed carefully or avoid direct solicitation.</p>
-          <p className="text-base text-white font-bold">Legal risk → low if you stay honest and don't incentivize.</p>
+          <p className="text-xs font-bold uppercase tracking-wide mb-2 rr-text-gold">{guide("bottomLine.label")}</p>
+          <p className="text-base text-white font-bold">{guide("bottomLine.googleBing")}</p>
+          <p className="text-base text-white font-bold">{guide("bottomLine.yelp")}</p>
+          <p className="text-base text-white font-bold">{guide("bottomLine.legal")}</p>
         </div>
       </div>
     </div>

@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import AdaptiveSendLimitStatus from "@/components/AdaptiveSendLimitStatus";
 import {
   UserPlus,
   Send,
@@ -59,13 +60,11 @@ import {
   ShieldCheck,
   CheckCircle2,
   ExternalLink,
-  Crown,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTranslation } from "react-i18next";
-import PaywallModal from "@/components/PaywallModal";
 
 type Contact = {
   id: number;
@@ -121,10 +120,6 @@ export default function SavedContacts() {
   const [bulkConfirmOpen, setBulkConfirmOpen] = useState(false);
   const [bulkPlatformId, setBulkPlatformId] = useState<number | null>(null);
   const [scheduleReminders, setScheduleReminders] = useState(false);
-  // Paywall modal state
-  const [paywallOpen, setPaywallOpen] = useState(false);
-  const [paywallFeature, setPaywallFeature] = useState("");
-  const [isExportingContacts, setIsExportingContacts] = useState(false);
 
   // Compliance checklist state
   const [complianceChecked, setComplianceChecked] = useState({ realCustomers: false, noIncentives: false, allCustomers: false });
@@ -144,35 +139,6 @@ export default function SavedContacts() {
     onError: (e) => toast.error(`Reminder scheduling failed: ${e.message}`),
   });
 
-  // Contacts CSV export (lazy - only fetches when triggered via refetch)
-  const { refetch: fetchExportCSV } = trpc.contacts.exportCSV.useQuery(undefined, {
-    enabled: false,
-  });
-  async function handleExportContacts() {
-    if (isFree) { setPaywallFeature("CSV Export"); setPaywallOpen(true); return; }
-    setIsExportingContacts(true);
-    try {
-      const result = await fetchExportCSV();
-      if (!result.data) { toast.error("Export failed"); return; }
-      const { header, rows } = result.data;
-      const allRows = [header, ...rows];
-      const csv = allRows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
-      const blob = new Blob([csv], { type: "text/csv" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `contacts-${new Date().toISOString().slice(0, 10)}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-      toast.success(`Exported ${rows.length} contact${rows.length !== 1 ? "s" : ""}`);
-    } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : "Export failed";
-      if (msg.includes("UPGRADE_REQUIRED")) { setPaywallFeature("CSV Export"); setPaywallOpen(true); }
-      else toast.error(msg);
-    } finally {
-      setIsExportingContacts(false);
-    }
-  }
   // Daily send status
   const { data: dailyStatus } = trpc.contacts.getDailyStatus.useQuery(undefined, { enabled: isAuthenticated });
 
@@ -182,8 +148,6 @@ export default function SavedContacts() {
 
   const utils = trpc.useUtils();
 
-  const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: isAuthenticated });
-  const isFree = !profile?.tier || profile.tier === "free";
   const { data: contacts = [], isLoading } = trpc.contacts.list.useQuery(undefined, {
     enabled: isAuthenticated,
   });
@@ -255,10 +219,7 @@ export default function SavedContacts() {
         (newContacts > 0 ? `, ${newContacts} new contact${newContacts !== 1 ? "s" : ""} added.` : ".")
       );
     },
-    onError: (e) => {
-      if (e.message.includes("10003")) { setPaywallFeature("WooCommerce Sync"); setPaywallOpen(true); return; }
-      toast.error(e.message);
-    },
+    onError: (e) => toast.error(e.message),
   });
 
   // Source counts (computed from full contacts list, not filtered)
@@ -321,7 +282,6 @@ export default function SavedContacts() {
     },
     onError: (e) => {
       setBulkConfirmOpen(false);
-      if (e.message.includes("10003")) { setPaywallFeature("Bulk Send"); setPaywallOpen(true); return; }
       toast.error(e.message);
     },
   });
@@ -482,7 +442,6 @@ export default function SavedContacts() {
                   <ShoppingCart size={14} className="mr-1" />
                 )}
                 {t("pageHeader.syncFromWooCommerce")}
-                {isFree && <Crown size={10} className="ml-1" style={{ color: "oklch(0.80 0.18 80)" }} />}
               </Button>
             </>
           )}
@@ -512,19 +471,6 @@ export default function SavedContacts() {
             className="font-bold border-0 shrink-0 rr-text-gold" style={{ background: "oklch(0.32 0.07 260)" }}
           >
             <Upload size={14} className="mr-1" /> {t("pageHeader.importCsv", "Import CSV")}
-          </Button>
-          <Button
-            onClick={handleExportContacts}
-            disabled={isExportingContacts}
-            size="sm"
-            variant="outline"
-            className="font-bold border-0 shrink-0 rr-text-gold" style={{ background: "oklch(0.32 0.07 260)" }}
-          >
-            {isExportingContacts ? (
-              <><Loader2 size={14} className="mr-1 animate-spin" /> Exporting…</>
-            ) : (
-              <><Download size={14} className="mr-1" /> {isFree ? "Export CSV 👑" : "Export CSV"}</>
-            )}
           </Button>
         </div>
       </div>
@@ -964,7 +910,6 @@ export default function SavedContacts() {
               >
                 <Star size={14} />
                 Send to {selectedCount}
-                {isFree && <Crown size={10} style={{ color: "oklch(0.22 0.09 260)", opacity: 0.7 }} />}
               </button>
             </div>
           </div>
@@ -1084,19 +1029,7 @@ export default function SavedContacts() {
                 </span>
               </div>
             )}
-            {dailyStatus && (
-              <div className="mt-2 rounded-xl px-3 py-2 text-xs flex items-center gap-2"
-                   style={{ background: dailyStatus.remaining < selectedCount ? 'oklch(0.97 0.02 30)' : 'oklch(0.97 0.01 260)', border: '1px solid', borderColor: dailyStatus.remaining < selectedCount ? 'oklch(0.85 0.08 30)' : 'oklch(0.88 0.03 260)' }}>
-                <span style={{ color: dailyStatus.remaining < selectedCount ? 'oklch(0.50 0.15 30)' : 'oklch(0.40 0.06 260)' }}>
-                  {dailyStatus.todayCount} sent today &nbsp;·&nbsp; <strong>{dailyStatus.remaining} remaining</strong> of {dailyStatus.dailyLimit} daily limit
-                  {dailyStatus.remaining < selectedCount && (
-                    <span className="block mt-0.5" style={{ color: 'oklch(0.50 0.15 30)' }}>
-                      ⚠ Only {dailyStatus.remaining} will be sent — limit reached after that.
-                    </span>
-                  )}
-                </span>
-              </div>
-            )}
+            <div className="mt-3"><AdaptiveSendLimitStatus status={dailyStatus} compact /></div>
           </AlertDialogHeader>
           {platforms.length > 0 && (
             <div className="mt-1">
@@ -1415,7 +1348,6 @@ export default function SavedContacts() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-      <PaywallModal open={paywallOpen} onClose={() => setPaywallOpen(false)} feature={paywallFeature} />
     </div>
   );
 }

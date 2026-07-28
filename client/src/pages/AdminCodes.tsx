@@ -15,22 +15,23 @@ import {
   RefreshCw,
   Infinity,
 } from "lucide-react";
-import { Clock, Calendar, Zap, Download } from "lucide-react";
 import { toast } from "sonner";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+type AccessCodeGrantUnit = "day" | "month" | "lifetime";
+
 export default function AdminCodesPage() {
+  const { t } = useTranslation("translation");
   const { user, loading } = useAuth();
   const [, navigate] = useLocation();
-  const { t } = useTranslation();
 
   const [note, setNote] = useState("");
   const [maxUses, setMaxUses] = useState<string>("");
   const [customCode, setCustomCode] = useState("");
   const [expiryDays, setExpiryDays] = useState<string>("");
-  const [durationType, setDurationType] = useState<"days" | "months" | "lifetime">("lifetime");
-  const [durationAmount, setDurationAmount] = useState<string>("1");
+  const [grantDurationUnit, setGrantDurationUnit] = useState<AccessCodeGrantUnit>("month");
+  const [grantDurationValue, setGrantDurationValue] = useState<string>("1");
 
   const { data: codes, isLoading: codesLoading, refetch } = trpc.accessCodes.list.useQuery(
     undefined,
@@ -44,14 +45,15 @@ export default function AdminCodesPage() {
 
   const utils = trpc.useUtils();
 
-  const createCoupon = trpc.accessCodes.createCoupon.useMutation({
+  const createCode = trpc.accessCodes.create.useMutation({
     onSuccess: ({ code }) => {
       toast.success(`Code created: ${code}`);
       setNote("");
       setMaxUses("");
       setCustomCode("");
       setExpiryDays("");
-      setDurationAmount("1");
+      setGrantDurationUnit("month");
+      setGrantDurationValue("1");
       utils.accessCodes.list.invalidate();
       refreshPreview();
     },
@@ -79,13 +81,24 @@ export default function AdminCodesPage() {
     const parsedExpiry = expiryDays.trim()
       ? Date.now() + parseInt(expiryDays, 10) * 24 * 60 * 60 * 1000
       : null;
-    createCoupon.mutate({
+    const parsedGrantDuration = grantDurationUnit === "lifetime"
+      ? null
+      : parseInt(grantDurationValue, 10);
+    const durationLimit = grantDurationUnit === "day" ? 365 : 24;
+    if (grantDurationUnit !== "lifetime" && (!Number.isInteger(parsedGrantDuration) || parsedGrantDuration! < 1 || parsedGrantDuration! > durationLimit)) {
+      toast.error(t("accessCode.durationError", {
+        defaultValue: "Enter a duration between 1 and {{limit}}.",
+        limit: durationLimit,
+      }));
+      return;
+    }
+    createCode.mutate({
       code: customCode.trim() || undefined,
       note: note.trim() || undefined,
       maxUses: parsedMaxUses,
       expiresAt: parsedExpiry,
-      grantDurationType: durationType,
-      grantAmount: durationType !== "lifetime" ? (parseInt(durationAmount, 10) || 1) : null,
+      grantDurationValue: parsedGrantDuration,
+      grantDurationUnit,
     });
   }
 
@@ -144,12 +157,20 @@ export default function AdminCodesPage() {
               Create and manage beta / promo codes that grant free Pro access.
             </p>
           </div>
-          <button
-            onClick={() => navigate("/admin/smtp-stats")}
-            className="shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold mt-1 rr-text-gold" style={{ background: "oklch(0.30 0.07 260)", border: "1px solid rgba(255,255,255,0.12)" }}
-          >
-            SMTP Stats
-          </button>
+          <div className="shrink-0 flex flex-col gap-2 mt-1">
+            <button
+              onClick={() => navigate("/admin/revenue-controls")}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold rr-text-gold" style={{ background: "oklch(0.30 0.07 260)", border: "1px solid rgba(255,255,255,0.12)" }}
+            >
+              Revenue controls
+            </button>
+            <button
+              onClick={() => navigate("/admin/smtp-stats")}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold rr-text-gold" style={{ background: "oklch(0.30 0.07 260)", border: "1px solid rgba(255,255,255,0.12)" }}
+            >
+              SMTP Stats
+            </button>
+          </div>
         </div>
       </div>
 
@@ -210,38 +231,6 @@ export default function AdminCodesPage() {
               />
             </div>
 
-            {/* Grant duration */}
-            <div>
-              <label className="text-sm font-bold mb-2 block text-white/80">Grant duration</label>
-              <div className="flex gap-2 mb-2">
-                {(["days", "months", "lifetime"] as const).map((dt) => (
-                  <button
-                    key={dt}
-                    onClick={() => setDurationType(dt)}
-                    className="flex-1 py-2 rounded-xl text-xs font-bold transition-all capitalize"
-                    style={{
-                      background: durationType === dt ? "oklch(0.80 0.18 80)" : "oklch(0.22 0.09 260)",
-                      color: durationType === dt ? "oklch(0.15 0.05 260)" : "var(--text-on-dark-secondary)",
-                      border: durationType === dt ? "none" : "1px solid rgba(255,255,255,0.12)",
-                    }}
-                  >
-                    {dt === "days" ? <><Clock size={10} className="inline mr-1" />Days</> : dt === "months" ? <><Calendar size={10} className="inline mr-1" />Months</> : <><Zap size={10} className="inline mr-1" />Lifetime</>}
-                  </button>
-                ))}
-              </div>
-              {durationType !== "lifetime" && (
-                <input
-                  type="number"
-                  min={1}
-                  value={durationAmount}
-                  onChange={(e) => setDurationAmount(e.target.value)}
-                  placeholder={durationType === "days" ? "e.g. 30" : "e.g. 3"}
-                  className="w-full px-4 py-3 rounded-xl text-sm outline-none rr-bg-navy text-white"
-                  style={{ border: "1px solid rgba(255,255,255,0.15)" }}
-                />
-              )}
-            </div>
-
             <div className="flex gap-3">
               {/* Max uses */}
               <div className="flex-1">
@@ -274,13 +263,51 @@ export default function AdminCodesPage() {
               </div>
             </div>
 
+            <div>
+              <label className="text-sm font-bold mb-1 block text-white/80">
+                {t("accessCode.grantDurationLabel", { defaultValue: "Access granted after redemption" })}
+              </label>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <select
+                  value={grantDurationUnit}
+                  onChange={(event) => setGrantDurationUnit(event.target.value as AccessCodeGrantUnit)}
+                  className="w-full rounded-xl px-4 py-3 text-sm font-bold outline-none rr-bg-navy text-white"
+                  style={{ border: "1px solid rgba(255,255,255,0.15)" }}
+                  aria-label={t("accessCode.grantUnitLabel", { defaultValue: "Grant duration unit" })}
+                >
+                  <option value="day">{t("accessCode.units.day", { defaultValue: "Days" })}</option>
+                  <option value="month">{t("accessCode.units.month", { defaultValue: "Months" })}</option>
+                  <option value="lifetime">{t("accessCode.units.lifetime", { defaultValue: "Lifetime" })}</option>
+                </select>
+                {grantDurationUnit !== "lifetime" && (
+                  <input
+                    type="number"
+                    min={1}
+                    max={grantDurationUnit === "day" ? 365 : 24}
+                    value={grantDurationValue}
+                    onChange={(event) => setGrantDurationValue(event.target.value)}
+                    className="w-full rounded-xl px-4 py-3 text-sm outline-none rr-bg-navy text-white"
+                    style={{ border: "1px solid rgba(255,255,255,0.15)" }}
+                    aria-label={t("accessCode.grantValueLabel", { defaultValue: "Grant duration value" })}
+                  />
+                )}
+              </div>
+              <p className="mt-1.5 text-xs font-semibold text-white/55">
+                {grantDurationUnit === "lifetime"
+                  ? t("accessCode.lifetimeHelper", { defaultValue: "The code grants permanent paid access." })
+                  : t("accessCode.durationHelper", {
+                      defaultValue: "The access period starts when the customer redeems the code.",
+                    })}
+              </p>
+            </div>
+
             <button
               onClick={handleCreate}
-              disabled={createCoupon.isPending}
+              disabled={createCode.isPending}
               className="w-full py-3 rounded-xl font-black text-sm flex items-center justify-center gap-2 transition-transform active:scale-95 disabled:opacity-60 rr-bg-gold rr-text-navy"
             >
-              {createCoupon.isPending ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
-              {createCoupon.isPending ? "Creating..." : durationType === "lifetime" ? "Create Lifetime Code" : `Create ${durationAmount || "?"} ${durationType} Code`}
+              {createCode.isPending ? <Loader2 size={16} className="animate-spin" /> : <Plus size={16} />}
+              {createCode.isPending ? "Creating..." : "Create Code"}
             </button>
           </div>
         </div>
@@ -300,39 +327,6 @@ export default function AdminCodesPage() {
             >
               <RefreshCw size={14} />
             </button>
-            {/* CSV export */}
-            {codes && codes.length > 0 && (
-              <button
-                onClick={() => {
-                  const headers = ["code", "note", "durationType", "durationAmount", "usedCount", "maxUses", "active", "expiresAt", "createdAt"];
-                  const rows = codes.map((c) => [
-                    c.code,
-                    c.note ?? "",
-                    c.grantDurationType ?? "",
-                    c.grantAmount ?? "",
-                    c.usedCount,
-                    c.maxUses ?? "unlimited",
-                    c.active === 1 ? "active" : "revoked",
-                    c.expiresAt ? new Date(c.expiresAt).toISOString() : "never",
-                    new Date(c.createdAt).toISOString(),
-                  ]);
-                  const csv = [headers, ...rows].map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(",")).join("\n");
-                  const blob = new Blob([csv], { type: "text/csv" });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement("a");
-                  a.href = url;
-                  a.download = `getphame-codes-${new Date().toISOString().slice(0, 10)}.csv`;
-                  a.click();
-                  URL.revokeObjectURL(url);
-                }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-opacity hover:opacity-80"
-                style={{ background: "oklch(0.30 0.12 80)", color: "oklch(0.85 0.18 80)" }}
-                title="Download CSV"
-              >
-                <Download size={12} />
-                CSV
-              </button>
-            )}
           </div>
 
           {codesLoading ? (
@@ -404,23 +398,18 @@ export default function AdminCodesPage() {
                               Expires {new Date(c.expiresAt).toLocaleDateString()}
                             </span>
                           )}
+                          <span className="rr-text-gold">
+                            {c.grantDurationUnit === "lifetime"
+                              ? t("accessCode.grantLifetime", { defaultValue: "Grants lifetime access" })
+                              : c.grantDurationUnit && c.grantDurationValue
+                                ? t("accessCode.grantDuration", {
+                                    defaultValue: "Grants {{value}} {{unit}}",
+                                    value: c.grantDurationValue,
+                                    unit: t(`accessCode.units.${c.grantDurationUnit}`),
+                                  })
+                                : t("accessCode.grantLegacy", { defaultValue: "Legacy unlimited Pro access" })}
+                          </span>
                           <span>Created {new Date(c.createdAt).toLocaleDateString()}</span>
-                        </div>
-                        {/* Grant duration badge */}
-                        <div className="mt-1.5">
-                          {c.grantDurationType === "lifetime" ? (
-                            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: "oklch(0.30 0.12 80)", color: "oklch(0.85 0.18 80)" }}>
-                              <Zap size={10} />{t("adminCodes.lifetimeAccess", { defaultValue: "Lifetime access" })}
-                            </span>
-                          ) : c.grantDurationType === "months" ? (
-                            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: "oklch(0.28 0.10 260)", color: "oklch(0.75 0.12 200)" }}>
-                              <Calendar size={10} />{t("adminCodes.monthsPro", { count: c.grantAmount ?? 1, defaultValue: `${c.grantAmount ?? "?"} months Pro` })}
-                            </span>
-                          ) : c.grantDurationType === "days" ? (
-                            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full font-semibold" style={{ background: "oklch(0.28 0.10 260)", color: "oklch(0.75 0.12 200)" }}>
-                              <Clock size={10} />{t("adminCodes.daysPro", { count: c.grantAmount ?? 1, defaultValue: `${c.grantAmount ?? "?"} days Pro` })}
-                            </span>
-                          ) : null}
                         </div>
                       </div>
 

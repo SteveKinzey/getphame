@@ -1,30 +1,37 @@
 import { Mail, Users, Globe } from "lucide-react";
 import FadeUp, { StaggerChildren } from "./FadeUp";
 import { useTranslation } from "react-i18next";
+
 export default function Features() {
   const { t } = useTranslation();
 
   const features = [
     {
       icon: Mail,
-      title: t("features.f1Title", { defaultValue: "Your name. Your inbox. Their trust." }),
-      description: t("features.f1Desc", { defaultValue: "Every review request arrives from your actual email address. Customers recognize the sender, so they open it — and they respond." }),
-      stat: t("features.f1Stat", { defaultValue: "45–60%" }),
-      statLabel: t("features.f1StatLabel", { defaultValue: "avg. open rate" }),
+      title: t("landing.feature1.title", { defaultValue: "Your name. Your inbox. Their trust." }),
+      description: t("landing.feature1.description", {
+        defaultValue: "Every review request is sent from the email account you connect and uses the sender name and signature you configure.",
+      }),
+      stat: t("landing.feature1.statValue", { defaultValue: "Your email" }),
+      statLabel: t("landing.feature1.statLabel", { defaultValue: "sender identity" }),
     },
     {
       icon: Users,
-      title: t("features.f2Title", { defaultValue: "One click sends to hundreds" }),
-      description: t("features.f2Desc", { defaultValue: "Import your customer list via CSV or WooCommerce sync, select all, and send personalized requests in seconds. No copy-pasting. No manual work." }),
-      stat: t("features.f2Stat", { defaultValue: "500+" }),
-      statLabel: t("features.f2StatLabel", { defaultValue: "sends per batch" }),
+      title: t("landing.feature2.title", { defaultValue: "Send personalized requests in bulk" }),
+      description: t("landing.feature2.description", {
+        defaultValue: "Import customers by CSV or WooCommerce sync, choose the recipients, and send personalized requests without copying each message manually.",
+      }),
+      stat: t("landing.feature2.statValue", { defaultValue: "Bulk" }),
+      statLabel: t("landing.feature2.statLabel", { defaultValue: "personalized sending" }),
     },
     {
       icon: Globe,
-      title: t("features.f3Title", { defaultValue: "Every platform. Your choice." }),
-      description: t("features.f3Desc", { defaultValue: "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, and more. Paste your link, switch platforms anytime. One tool for all your review destinations." }),
-      stat: t("features.f3Stat", { defaultValue: "10+" }),
-      statLabel: t("features.f3StatLabel", { defaultValue: "platforms supported" }),
+      title: t("landing.feature3.title", { defaultValue: "Every platform. Your choice." }),
+      description: t("landing.feature3.description", {
+        defaultValue: "Google, Yelp, TripAdvisor, Bing, Facebook, Trustpilot, and more. Paste your link, switch platforms anytime. One tool for all your review destinations.",
+      }),
+      stat: t("landing.feature3.statValue", { defaultValue: "Flexible" }),
+      statLabel: t("landing.feature3.statLabel", { defaultValue: "review destinations" }),
     },
   ];
 
@@ -33,13 +40,15 @@ export default function Features() {
       <div className="container">
         <FadeUp className="max-w-2xl mb-14">
           <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
-            {t("features.sectionTagline", { defaultValue: "Why it works" })}
+            {t("landing.whyItWorks", { defaultValue: "Why it works" })}
           </p>
           <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
-            {t("features.sectionHeadline", { defaultValue: "From your inbox to their review" })}
+            {t("landing.headline", { defaultValue: "From your inbox to their review" })}
           </h2>
           <p className="text-lg text-slate-200 font-medium">
-            {t("features.sectionSubheadline", { defaultValue: "The simplest way to turn happy customers into 5-star reviews — without expensive tools or awkward conversations." })}
+            {t("landing.subHeadline", {
+              defaultValue: "A simple way to send clear, personal review requests from the email account you connect.",
+            })}
           </p>
         </FadeUp>
 

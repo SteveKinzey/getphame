@@ -3,8 +3,12 @@ overrides:
   path-to-regexp: ">=0.1.13"
   # Security: nodemailer raw message bypass fix (direct dep upgraded to v9)
   nodemailer: ">=9.0.1"
-  # Security: tar arbitrary file write fix
-  tar: ">=7.5.11"
+  # Security: invalid size-limit value can disable body enforcement
+  body-parser: "1.20.6"
+  # Security: tar arbitrary file write fix (GHSA-r292-9mhp-454m)
+  tar: ">=7.5.22"
+  # Security: PostCSS source map path traversal and local file disclosure fix (GHSA-r28c-9q8g-f849)
+  postcss: ">=8.5.18"
   # Security: picomatch ReDoS fix
   picomatch: ">=4.0.4"
   # Security: lodash code injection fix (lodash-es still pulled by dagre-d3-es via mermaid)
@@ -16,8 +20,8 @@ overrides:
   fast-xml-parser: ">=5.7.0"
   # Security: form-data CRLF injection fix
   form-data: ">=4.0.6"
-  # Security: dompurify XSS fix (mermaid pulls 3.4.0, needs >=3.4.9)
-  dompurify: ">=3.4.9"
+  # Security: dompurify XSS fix (mermaid pulls an older advisory-affected release)
+  dompurify: "3.4.12"
   # Security: mermaid XSS fix (streamdown pulls 11.12.x, needs >=11.15.0)
   mermaid: ">=11.15.0"
   # Security: esbuild dev server request smuggling fix
@@ -28,8 +32,8 @@ overrides:
   uuid: ">=11.1.1"
   # Security: qs prototype pollution fix
   qs: ">=6.15.2"
-  # Security: brace-expansion ReDoS fix
-  brace-expansion: ">=5.0.6"
+  # Security: brace-expansion unbounded-length DoS fix (GHSA-mh99-v99m-4gvg)
+  brace-expansion: ">=5.0.8"
   # Security: mdast-util-to-hast XSS fix
   mdast-util-to-hast: ">=13.2.1"
   # Existing overrides preserved
@@ -39,6 +43,3 @@ overrides:
 
 patchedDependencies:
   wouter@3.7.1: patches/wouter@3.7.1.patch
-
-packages:
-  - "."

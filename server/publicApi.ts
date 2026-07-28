@@ -9,36 +9,184 @@
  * Rate limiting: 60 requests per minute per API key (in-memory, resets on server restart).
  */
 
+import { randomUUID } from "node:crypto";
 import { Router, Request, Response } from "express";
-import { getUserByApiKey, logApiImport, getBusinessProfile, createCustomerRequest, upsertBusinessProfile, getTotalRequestCount } from "./db";
+import { z } from "zod";
+import { getBusinessProfile, createCustomerRequest, upsertBusinessProfile, getDb } from "./db";
 import { getDefaultReviewPlatform, listReviewPlatforms, PLATFORM_LABELS } from "./reviewPlatforms";
 import { getDefaultTemplate, listTemplates } from "./templates";
-import { checkSendRateLimit } from "./rateLimiter";
-import { FREE_LIMIT, FREE_LIMIT_ERR_MSG } from "@shared/const";
+import { FREE_LIMIT_ERR_MSG } from "@shared/const";
+import { evaluateFreeQuotaAccess, formatFreeQuotaBlockedMessage } from "./quotaEnforcement";
 import { upsertApiContact } from "./contacts";
-import { listApiKeys, getDb } from "./db";
 import { fireWebhooks } from "./webhookHelpers";
 import { sendMailViaSmtp } from "./smtp";
 import { buildReviewRequestEmail } from "./emailTemplates";
 import { encodeTrackingToken, wrapClickUrl, buildOpenPixel } from "./emailTracking";
-import { smtpCredentials, emailTemplates as emailTemplatesTable } from "../drizzle/schema";
+import { emailTemplates as emailTemplatesTable } from "../drizzle/schema";
 import { eq, sql as sqlOp } from "drizzle-orm";
+import { AdaptiveSendLimitError, getAdaptiveSendStatus } from "./adaptiveSendLimits";
+import {
+  authenticateDeveloperApiKeyWithStatus,
+  developerApiKeyHasScope,
+  recordDeveloperApiKeySuccessfulUse,
+  type DeveloperApiPrincipal,
+  type DeveloperApiScope,
+} from "./developerApiKeys";
+import { checkDeveloperApiAbuse, type DeveloperApiAbuseAction } from "./developerApiAbuse";
+import {
+  checkDeveloperApiRateLimit,
+  getDeveloperApiIdempotency,
+  hashDeveloperApiRequest,
+  logDeveloperApiImport,
+  saveDeveloperApiIdempotency,
+  type DeveloperApiErrorCode,
+} from "./developerApiImports";
+import { resolveSourceConnectionForPrincipal } from "./sourceConnections";
 
-// Simple in-memory rate limiter: { keyHash -> { count, resetAt } }
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-const RATE_LIMIT = 60;
-const RATE_WINDOW_MS = 60_000;
+const consentSchema = z.object({
+  confirmed: z.literal(true),
+  basis: z.enum(["customer_relationship", "explicit_opt_in", "other"]),
+  capturedAt: z.string().datetime({ offset: true }).optional(),
+  source: z.string().trim().min(1).max(255),
+});
 
-function checkRateLimit(key: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(key);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(key, { count: 1, resetAt: now + RATE_WINDOW_MS });
-    return true;
+const contactImportSchema = z.object({
+  name: z.string().trim().min(1).max(255),
+  email: z.string().trim().email().max(320),
+  phone: z.string().trim().max(30).optional(),
+  notes: z.string().trim().max(2_000).optional(),
+  tags: z.array(z.string().trim().min(1).max(64)).max(20).optional(),
+  externalId: z.string().trim().min(1).max(191).optional(),
+  sourceApp: z.string().trim().min(1).max(64).regex(/^[a-z0-9][a-z0-9._-]*$/i).optional(),
+  consent: consentSchema.optional(),
+}).passthrough();
+
+function normalizeAffirmativeBoolean(value: unknown) {
+  if (value === true || value === 1) return true;
+  if (typeof value === "string" && ["true", "1", "yes", "on"].includes(value.trim().toLowerCase())) return true;
+  return value;
+}
+
+/**
+ * Webhook builders often map only flat key/value pairs. The API keeps the
+ * nested `consent` object as its canonical contract while accepting equivalent
+ * flat aliases that still pass through the same strict schema validation.
+ */
+export function normalizeContactImportPayload(input: unknown) {
+  if (!input || typeof input !== "object" || Array.isArray(input)) return input;
+  const record = input as Record<string, unknown>;
+  if (record.consent && typeof record.consent === "object" && !Array.isArray(record.consent)) return record;
+
+  const hasFlatConsent = ["consentConfirmed", "consentBasis", "consentCapturedAt", "consentSource"]
+    .some((key) => record[key] !== undefined);
+  if (!hasFlatConsent) return record;
+
+  return {
+    ...record,
+    consent: {
+      confirmed: normalizeAffirmativeBoolean(record.consentConfirmed),
+      basis: record.consentBasis,
+      capturedAt: record.consentCapturedAt,
+      source: record.consentSource,
+    },
+  };
+}
+
+type ApiFailure = { error: { code: DeveloperApiErrorCode; message: string }; requestId: string };
+
+function sendApiError(res: Response, status: number, code: DeveloperApiErrorCode, message: string, requestId: string) {
+  return res.status(status).json({ error: { code, message }, requestId } satisfies ApiFailure);
+}
+
+function extractApiKey(req: Request): string {
+  const authHeader = req.headers.authorization ?? "";
+  if (authHeader.startsWith("Bearer ")) return authHeader.slice(7).trim();
+  const headerKey = req.headers["x-get-phame-key"];
+  return typeof headerKey === "string" ? headerKey.trim() : "";
+}
+
+async function authenticateApiRequest(req: Request, requiredScope: DeveloperApiScope) {
+  const rawKey = extractApiKey(req);
+  if (!rawKey || (!rawKey.startsWith("gp_live_") && !rawKey.startsWith("rl_"))) {
+    return { kind: "invalid" as const };
   }
-  if (entry.count >= RATE_LIMIT) return false;
-  entry.count++;
+  const authentication = await authenticateDeveloperApiKeyWithStatus(rawKey);
+  if (authentication.kind !== "ok") return authentication;
+  if (!developerApiKeyHasScope(authentication.principal, requiredScope)) {
+    return { kind: "forbidden" as const, principal: authentication.principal };
+  }
+  return { kind: "ok" as const, principal: authentication.principal };
+}
+
+async function applyApiRateLimit(
+  principal: DeveloperApiPrincipal,
+  res: Response,
+  requestId: string,
+  sourceConnectionId?: number | null,
+) {
+  const rate = await checkDeveloperApiRateLimit(principal);
+  res.setHeader("X-RateLimit-Limit", "60");
+  res.setHeader("X-RateLimit-Remaining", String(rate.remaining));
+  if (!rate.allowed) {
+    res.setHeader("Retry-After", String(rate.retryAfterSeconds));
+    await logDeveloperApiImport({
+      principal,
+      sourceConnectionId,
+      status: "rate_limited",
+      requestId,
+      errorCode: "RATE_LIMITED",
+    }).catch(() => undefined);
+    sendApiError(res, 429, "RATE_LIMITED", "Rate limit exceeded. Try again shortly.", requestId);
+    return false;
+  }
   return true;
+}
+
+function getApiClientIp(req: Request) {
+  return req.ip || req.socket.remoteAddress || "unknown";
+}
+
+async function applyApiAbuseProtection(params: {
+  req: Request;
+  res: Response;
+  requestId: string;
+  principal: DeveloperApiPrincipal;
+  action: DeveloperApiAbuseAction;
+  recipientEmail?: string | null;
+  sourceApp?: string | null;
+  consentBasis?: string | null;
+  sourceConnectionId?: number | null;
+}) {
+  const decision = await checkDeveloperApiAbuse({
+    principal: params.principal,
+    action: params.action,
+    clientIp: getApiClientIp(params.req),
+    recipientEmail: params.recipientEmail,
+  });
+  if (decision.allowed) return true;
+
+  params.res.setHeader("Retry-After", String(decision.retryAfterSeconds));
+  await logDeveloperApiImport({
+    principal: params.principal,
+    sourceConnectionId: params.sourceConnectionId,
+    eventType: params.action,
+    status: "abuse_blocked",
+    requestId: params.requestId,
+    sourceApp: params.sourceApp ?? null,
+    consentBasis: params.consentBasis ?? null,
+    email: params.recipientEmail ?? null,
+    errorCode: "ABUSE_PROTECTION",
+  }).catch(() => undefined);
+  sendApiError(
+    params.res,
+    429,
+    "ABUSE_PROTECTION",
+    decision.suspended
+      ? "This API key was temporarily suspended by abuse protection. Review your traffic before retrying."
+      : "This request was blocked by abuse protection. Pause and retry after the indicated interval.",
+    params.requestId,
+  );
+  return false;
 }
 
 export function registerPublicApiRoutes(app: Router) {
@@ -59,102 +207,228 @@ export function registerPublicApiRoutes(app: Router) {
    * Response 401: { error: "Invalid or missing API key" }
    * Response 429: { error: "Rate limit exceeded. Max 60 requests per minute." }
    */
-  app.post("/api/public/contacts", async (req: Request, res: Response) => {
-    // 1. Extract Bearer token
-    const authHeader = req.headers.authorization ?? "";
-    const rawKey = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
-    if (!rawKey || !rawKey.startsWith("rl_")) {
-      return res.status(401).json({ error: "Invalid or missing API key. Use Authorization: Bearer rl_<key>" });
+  const handleContactImport = (requireConsent: boolean) => async (req: Request, res: Response) => {
+    const requestId = randomUUID();
+    const auth = await authenticateApiRequest(req, "contacts:write");
+    if (auth.kind === "invalid") {
+      return sendApiError(res, 401, "INVALID_API_KEY", "Invalid, expired, or revoked API key.", requestId);
+    }
+    if (auth.kind === "expired") {
+      return sendApiError(res, 401, "INVALID_API_KEY", "This API key has expired. Rotate it in Developer Integrations.", requestId);
+    }
+    if (auth.kind === "inactive") {
+      return sendApiError(res, 401, "API_KEY_INACTIVE", "This API key expired after 12 months without successful use. Create a replacement in Developer Integrations.", requestId);
+    }
+    if (auth.kind === "suspended") {
+      res.setHeader("Retry-After", String(auth.retryAfterSeconds ?? 86_400));
+      return sendApiError(res, 429, "API_KEY_SUSPENDED", "This API key is temporarily suspended by abuse protection.", requestId);
+    }
+    if (auth.kind === "forbidden") {
+      await logDeveloperApiImport({
+        principal: auth.principal,
+        status: "rejected",
+        requestId,
+        errorCode: "INSUFFICIENT_SCOPE",
+      }).catch(() => undefined);
+      return sendApiError(res, 403, "INSUFFICIENT_SCOPE", "This API key cannot import contacts.", requestId);
+    }
+    if (auth.kind !== "ok") {
+      return sendApiError(res, 401, "INVALID_API_KEY", "Invalid, expired, or revoked API key.", requestId);
+    }
+    const principal = auth.principal;
+    const sourcePublicId = req.header("X-Get-Phame-Source")?.trim().slice(0, 48) ?? "";
+    const sourceConnection = sourcePublicId
+      ? await resolveSourceConnectionForPrincipal({
+          publicId: sourcePublicId,
+          userId: principal.userId,
+          apiKeyId: principal.apiKeyId,
+        })
+      : null;
+    if (sourcePublicId && !sourceConnection) {
+      await logDeveloperApiImport({
+        principal,
+        status: "rejected",
+        requestId,
+        errorCode: "SOURCE_CONNECTION_FORBIDDEN",
+      }).catch(() => undefined);
+      return sendApiError(res, 403, "SOURCE_CONNECTION_FORBIDDEN", "This source identifier is not authorized for the supplied API key.", requestId);
+    }
+    const sourceConnectionId = sourceConnection?.id ?? null;
+    if (!(await applyApiRateLimit(principal, res, requestId, sourceConnectionId))) return;
+
+    const parsed = contactImportSchema.safeParse(normalizeContactImportPayload(req.body ?? {}));
+    if (!parsed.success) {
+      await logDeveloperApiImport({
+        principal,
+        sourceConnectionId,
+        status: "rejected",
+        requestId,
+        sourceApp: typeof req.body?.sourceApp === "string" ? req.body.sourceApp : null,
+        email: typeof req.body?.email === "string" ? req.body.email : null,
+        errorCode: "INVALID_REQUEST",
+      }).catch(() => undefined);
+      return sendApiError(res, 400, "INVALID_REQUEST", "The contact payload is invalid.", requestId);
     }
 
-    // 2. Rate limit by raw key prefix (first 20 chars — enough to identify the key without exposing it)
-    const rateLimitKey = rawKey.slice(0, 20);
-    if (!checkRateLimit(rateLimitKey)) {
-      return res.status(429).json({ error: "Rate limit exceeded. Max 60 requests per minute." });
+    const data = parsed.data;
+    if (requireConsent && !data.consent?.confirmed) {
+      await logDeveloperApiImport({
+        principal,
+        sourceConnectionId,
+        status: "rejected",
+        requestId,
+        sourceApp: data.sourceApp ?? null,
+        email: data.email,
+        errorCode: "CONSENT_REQUIRED",
+      }).catch(() => undefined);
+      return sendApiError(res, 422, "CONSENT_REQUIRED", "Affirmative consent attestation is required.", requestId);
     }
 
-    // 3. Look up user by API key
-    const userId = await getUserByApiKey(rawKey);
-    if (!userId) {
-      return res.status(401).json({ error: "Invalid or revoked API key." });
+    const capturedAt = data.consent?.capturedAt ? Date.parse(data.consent.capturedAt) : Date.now();
+    if (!Number.isFinite(capturedAt) || capturedAt > Date.now() + 5 * 60_000) {
+      await logDeveloperApiImport({
+        principal,
+        sourceConnectionId,
+        status: "rejected",
+        requestId,
+        sourceApp: data.sourceApp ?? null,
+        email: data.email,
+        errorCode: "INVALID_REQUEST",
+      }).catch(() => undefined);
+      return sendApiError(res, 400, "INVALID_REQUEST", "consent.capturedAt must be a valid timestamp that is not in the future.", requestId);
     }
 
-    // 4. Validate body
-    const { name, email, phone, notes, tags } = req.body ?? {};
-    if (!name || typeof name !== "string" || name.trim().length === 0) {
-      return res.status(400).json({ error: "name is required." });
-    }
-    if (!email || typeof email !== "string") {
-      return res.status(400).json({ error: "email is required." });
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.trim())) {
-      return res.status(400).json({ error: "email is not a valid email address." });
-    }
-    if (phone !== undefined && typeof phone !== "string") {
-      return res.status(400).json({ error: "phone must be a string." });
-    }
-    if (notes !== undefined && typeof notes !== "string") {
-      return res.status(400).json({ error: "notes must be a string." });
-    }
-    if (tags !== undefined && (!Array.isArray(tags) || tags.some((t) => typeof t !== "string"))) {
-      return res.status(400).json({ error: "tags must be an array of strings." });
-    }
-
-    // 5. Upsert the contact (deduped by email per user)
-    // Also look up the API key id and label for logging
-    let apiKeyId: number | null = null;
-    let keyLabel = "API Key";
-    try {
-      const keys = await listApiKeys(userId);
-      // Match by checking lastUsedAt — the key was just updated by getUserByApiKey
-      // We can't match exactly, so just use the most-recently-used key
-      const sorted = keys.sort((a, b) => (b.lastUsedAt ?? 0) - (a.lastUsedAt ?? 0));
-      if (sorted.length > 0) {
-        apiKeyId = sorted[0].id;
-        keyLabel = sorted[0].label;
+    const normalized = {
+      name: data.name,
+      email: data.email.toLowerCase(),
+      phone: data.phone,
+      notes: data.notes,
+      tags: data.tags,
+      externalId: data.externalId,
+      sourceApp: data.sourceApp ?? "generic-webhook",
+      consent: data.consent ?? {
+        confirmed: true as const,
+        basis: "customer_relationship" as const,
+        source: "Legacy /api/public/contacts compatibility endpoint",
+      },
+      consentCapturedAt: capturedAt,
+    };
+    if (!(await applyApiAbuseProtection({
+      req,
+      res,
+      requestId,
+      principal,
+      action: "contact_import",
+      recipientEmail: normalized.email,
+      sourceApp: normalized.sourceApp,
+      consentBasis: normalized.consent.basis,
+      sourceConnectionId,
+    }))) return;
+    const requestHash = hashDeveloperApiRequest(JSON.stringify({ sourcePublicId: sourceConnection?.publicId ?? null, normalized }));
+    const idempotencyKey = req.header("Idempotency-Key")?.trim().slice(0, 191) ?? "";
+    let idempotencyHash: string | null = null;
+    if (idempotencyKey) {
+      const existing = await getDeveloperApiIdempotency({ principal, idempotencyKey, requestHash });
+      if (existing.kind === "conflict") {
+        await logDeveloperApiImport({
+          principal,
+          sourceConnectionId,
+          status: "rejected",
+          requestId,
+          sourceApp: normalized.sourceApp,
+          consentBasis: normalized.consent.basis,
+          email: normalized.email,
+          errorCode: "IDEMPOTENCY_CONFLICT",
+        }).catch(() => undefined);
+        return sendApiError(res, 409, "IDEMPOTENCY_CONFLICT", "The idempotency key was already used with a different payload.", requestId);
       }
-    } catch { /* non-fatal */ }
+      if (existing.kind === "replay") {
+        await logDeveloperApiImport({
+          principal,
+          sourceConnectionId,
+          status: "deduplicated",
+          requestId,
+          sourceApp: normalized.sourceApp,
+          consentBasis: normalized.consent.basis,
+          email: normalized.email,
+          created: false,
+        }).catch(() => undefined);
+        await recordDeveloperApiKeySuccessfulUse(principal);
+        return res.status(existing.statusCode).json({ ...existing.response, idempotentReplay: true, requestId });
+      }
+      idempotencyHash = existing.keyHash;
+    }
 
     try {
-      const result = await upsertApiContact(userId, {
-        name: name.trim().slice(0, 255),
-        email: email.trim().toLowerCase().slice(0, 320),
-        phone: phone?.trim().slice(0, 30) ?? undefined,
-        notes: notes?.trim().slice(0, 2000) ?? undefined,
-        tags: tags ?? undefined,
+      const result = await upsertApiContact(principal.userId, {
+        name: normalized.name,
+        email: normalized.email,
+        phone: normalized.phone,
+        notes: normalized.notes,
+        tags: normalized.tags,
+        source: "api",
+        externalId: normalized.externalId,
+        sourceApp: normalized.sourceApp,
+        importedViaApiKeyId: principal.apiKeyId,
+        consentBasis: normalized.consent.basis,
+        consentCapturedAt: normalized.consentCapturedAt,
+        consentSource: normalized.consent.source,
       });
-
-      // Log the import event (fire-and-forget)
-      logApiImport({
-        userId,
-        apiKeyId,
-        keyLabel,
-        contactId: result.id,
-        email: email.trim().toLowerCase().slice(0, 320),
-        created: result.created,
-      }).catch(() => {});
-
-      // Fire webhooks for new contacts (fire-and-forget)
-      if (result.created) {
-        fireWebhooks(userId, "contact.created", {
-          contactId: result.id,
-          email: email.trim().toLowerCase(),
-          name: name.trim(),
-          source: "api",
-        }).catch(() => {});
-      }
-
-      return res.json({
+      const response = {
         success: true,
         contactId: result.id,
         created: result.created,
-      });
-    } catch (err: any) {
-      console.error("[Public API] contacts upsert error:", err?.message);
-      return res.status(500).json({ error: "Internal server error. Please try again." });
+        deduplicated: !result.created,
+        idempotentReplay: false,
+        requestId,
+      };
+      if (idempotencyHash) {
+        await saveDeveloperApiIdempotency({
+          principal,
+          keyHash: idempotencyHash,
+          requestHash,
+          statusCode: 200,
+          response,
+        });
+      }
+      await logDeveloperApiImport({
+        principal,
+        sourceConnectionId,
+        status: result.created ? "success" : "deduplicated",
+        requestId,
+        sourceApp: normalized.sourceApp,
+        consentBasis: normalized.consent.basis,
+        contactId: result.id,
+        email: normalized.email,
+        created: result.created,
+      }).catch(() => undefined);
+      if (result.created) {
+        fireWebhooks(principal.userId, "contact.created", {
+          contactId: result.id,
+          email: normalized.email,
+          name: normalized.name,
+          source: "api",
+        }).catch(() => undefined);
+      }
+      await recordDeveloperApiKeySuccessfulUse(principal);
+      return res.json(response);
+    } catch {
+      await logDeveloperApiImport({
+        principal,
+        sourceConnectionId,
+        status: "error",
+        requestId,
+        sourceApp: normalized.sourceApp,
+        consentBasis: normalized.consent.basis,
+        email: normalized.email,
+        errorCode: "INTERNAL_ERROR",
+      }).catch(() => undefined);
+      return sendApiError(res, 500, "INTERNAL_ERROR", "The import could not be completed. Please retry.", requestId);
     }
-  });
+  };
+
+  app.post("/api/v1/contacts", handleContactImport(true));
+  app.post("/api/public/contacts", handleContactImport(false));
 
   /**
    * POST /api/public/send
@@ -176,22 +450,29 @@ export function registerPublicApiRoutes(app: Router) {
    * Response 429: { error: string }
    */
   app.post("/api/public/send", async (req: Request, res: Response) => {
-    // 1. Auth
-    const authHeader = req.headers.authorization ?? "";
-    const rawKey = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
-    if (!rawKey || !rawKey.startsWith("rl_")) {
-      return res.status(401).json({ error: "Invalid or missing API key. Use Authorization: Bearer rl_<key>" });
+    const requestId = randomUUID();
+    const auth = await authenticateApiRequest(req, "review_requests:send");
+    if (auth.kind === "invalid") {
+      return sendApiError(res, 401, "INVALID_API_KEY", "Invalid, expired, or revoked API key.", requestId);
     }
-    // 2. Rate limit
-    const rateLimitKey = rawKey.slice(0, 20);
-    if (!checkRateLimit(rateLimitKey)) {
-      return res.status(429).json({ error: "Rate limit exceeded. Max 60 requests per minute." });
+    if (auth.kind === "expired") {
+      return sendApiError(res, 401, "INVALID_API_KEY", "This API key has expired. Rotate it in Developer Integrations.", requestId);
     }
-    // 3. Resolve user
-    const userId = await getUserByApiKey(rawKey);
-    if (!userId) {
-      return res.status(401).json({ error: "Invalid or revoked API key." });
+    if (auth.kind === "inactive") {
+      return sendApiError(res, 401, "API_KEY_INACTIVE", "This API key expired after 12 months without successful use. Create a replacement in Developer Integrations.", requestId);
     }
+    if (auth.kind === "suspended") {
+      res.setHeader("Retry-After", String(auth.retryAfterSeconds ?? 86_400));
+      return sendApiError(res, 429, "API_KEY_SUSPENDED", "This API key is temporarily suspended by abuse protection.", requestId);
+    }
+    if (auth.kind === "forbidden") {
+      return sendApiError(res, 403, "INSUFFICIENT_SCOPE", "This API key cannot send review requests.", requestId);
+    }
+    if (auth.kind !== "ok") {
+      return sendApiError(res, 401, "INVALID_API_KEY", "Invalid, expired, or revoked API key.", requestId);
+    }
+    const userId = auth.principal.userId;
+    if (!(await applyApiRateLimit(auth.principal, res, requestId))) return;
     // 4. Validate body
     const { customerName, customerEmail, templateId } = req.body ?? {};
     if (!customerName || typeof customerName !== "string" || !customerName.trim()) {
@@ -201,24 +482,35 @@ export function registerPublicApiRoutes(app: Router) {
     if (!customerEmail || typeof customerEmail !== "string" || !emailRegex.test(customerEmail.trim())) {
       return res.status(400).json({ error: "customerEmail must be a valid email address." });
     }
+    if (!(await applyApiAbuseProtection({
+      req,
+      res,
+      requestId,
+      principal: auth.principal,
+      action: "review_request_send",
+      recipientEmail: customerEmail.trim().toLowerCase(),
+      sourceApp: "public-send",
+    }))) return;
     // 5. Send
     try {
       const profile = await getBusinessProfile(userId);
       if (!profile) {
         return res.status(400).json({ error: "Business profile not configured. Please complete setup in Get Phame." });
       }
-      // Check SMTP configured
+      // Check that either a personal sender or a paid verified Bulk Sender relay is active.
       const db = await getDb();
       if (!db) return res.status(503).json({ error: "Database unavailable" });
-      const [smtpRow] = await db.select({ id: smtpCredentials.id }).from(smtpCredentials).where(eq(smtpCredentials.userId, userId)).limit(1);
-      if (!smtpRow) {
+      const initialSendStatus = await getAdaptiveSendStatus(userId);
+      if (!initialSendStatus.configured) {
         return res.status(400).json({ error: "SMTP not configured. Connect your email account in Get Phame Settings." });
       }
       // Free-tier limit
       if (profile.tier === 'free') {
-        const total = await getTotalRequestCount(userId);
-        if (total >= FREE_LIMIT) {
-          return res.status(429).json({ error: FREE_LIMIT_ERR_MSG });
+        const decision = await evaluateFreeQuotaAccess(userId, profile.tier);
+        if (!decision.allowed) {
+          return res.status(429).json({
+            error: formatFreeQuotaBlockedMessage(decision.quota, FREE_LIMIT_ERR_MSG),
+          });
         }
       }
       // Monthly reset
@@ -228,8 +520,6 @@ export function registerPublicApiRoutes(app: Router) {
         await upsertBusinessProfile({ ...profile, monthlyCount: 0, monthlyResetDate: yearMonth });
         profile.monthlyCount = 0;
       }
-      // Rate limit
-      checkSendRateLimit(userId, 1);
       // Resolve review URL
       const defaultPlatform = await getDefaultReviewPlatform(userId);
       const reviewUrl = defaultPlatform?.url ?? profile.reviewLink ?? "";
@@ -276,16 +566,45 @@ export function registerPublicApiRoutes(app: Router) {
       const trackedHtmlBody = htmlBody
         .replace(new RegExp(reviewUrl.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "g"), trackedReviewUrl)
         .replace(/<\/div>\s*$/, `${openPixel}</div>`);
-      await sendMailViaSmtp({ userId, to: email, subject, html: trackedHtmlBody });
+      const sendLimitStatus = await sendMailViaSmtp({ userId, to: email, subject, html: trackedHtmlBody });
       // Increment template usage
       if (resolvedTemplate) {
         await db.update(emailTemplatesTable).set({ usageCount: sqlOp`${emailTemplatesTable.usageCount} + 1` }).where(eq(emailTemplatesTable.id, resolvedTemplate.id));
       }
       // Increment monthly count
       await upsertBusinessProfile({ ...profile, monthlyCount: profile.monthlyCount + 1 });
-      return res.json({ success: true, requestId: newRequestId });
+      await logDeveloperApiImport({
+        principal: auth.principal,
+        eventType: "review_request_send",
+        status: "success",
+        requestId,
+        sourceApp: "public-send",
+        contactId: newRequestId,
+        email,
+        created: true,
+      }).catch(() => undefined);
+      await recordDeveloperApiKeySuccessfulUse(auth.principal);
+      return res.json({
+        success: true,
+        requestId: newRequestId,
+        sendLimit: sendLimitStatus ? {
+          warningLevel: sendLimitStatus.warningLevel,
+          remaining: sendLimitStatus.remaining,
+          hourlyRemaining: sendLimitStatus.hourlyRemaining,
+          dailyRemaining: sendLimitStatus.dailyRemaining,
+        } : null,
+      });
     } catch (err: any) {
       const msg = err instanceof Error ? err.message : "Internal error";
+      if (err instanceof AdaptiveSendLimitError) {
+        res.setHeader("Retry-After", String(err.retryAfterSeconds));
+        return res.status(429).json({
+          error: msg,
+          code: err.code,
+          retryAfterSeconds: err.retryAfterSeconds,
+          sendLimit: err.status,
+        });
+      }
       const isUserError = msg.includes("limit") || msg.includes("SMTP") || msg.includes("profile") || msg.includes("subscription");
       return res.status(isUserError ? 400 : 500).json({ error: msg });
     }

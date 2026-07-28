@@ -26,6 +26,7 @@ import { ENV } from "./_core/env";
 import { sdk } from "./_core/sdk";
 import { sendUpgradeReceiptEmail } from "./smtp";
 import { getUnrewardedReferral, rewardReferrer } from "./referrals";
+import { USD_PRICE_CENTS } from "@shared/pricing";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -70,9 +71,9 @@ async function getAccessToken(): Promise<string> {
 
 // Plan pricing (must match Stripe pricing)
 const PLAN_PRICES: Record<string, { amount: string; description: string }> = {
-  monthly: { amount: "29.00", description: "GetPhame Pro — Monthly" },
-  annual: { amount: "290.00", description: "GetPhame Pro — Annual" },
-  lifetime: { amount: "349.00", description: "GetPhame Pro — Lifetime" },
+  monthly: { amount: (USD_PRICE_CENTS.monthly / 100).toFixed(2), description: "Get Phame Pro — Monthly" },
+  annual: { amount: (USD_PRICE_CENTS.annual / 100).toFixed(2), description: "Get Phame Pro — Annual" },
+  lifetime: { amount: (USD_PRICE_CENTS.lifetime / 100).toFixed(2), description: "Get Phame Pro — Lifetime" },
 };
 
 // ---------------------------------------------------------------------------
@@ -280,17 +281,19 @@ export function registerPayPalRoutes(app: Express) {
         .where(eq(businessProfiles.userId, userId));
 
       // Store a subscription record (same table as Stripe for unified status queries)
-      await db
-        .insert(stripeSubscriptions)
-        .values({
-          userId,
-          stripeSubscriptionId: `paypal_${captureId}`,
-          status: newTier === "lifetime" ? "lifetime" : "active",
-        })
-        .onDuplicateKeyUpdate({ set: {
+        await db
+          .insert(stripeSubscriptions)
+          .values({
+            userId,
             stripeSubscriptionId: `paypal_${captureId}`,
             status: newTier === "lifetime" ? "lifetime" : "active",
-          } })
+          })
+          .onDuplicateKeyUpdate({
+            set: {
+              stripeSubscriptionId: `paypal_${captureId}`,
+              status: newTier === "lifetime" ? "lifetime" : "active",
+            },
+          });
 
       console.log(`[PayPal] User ${userId} upgraded to ${newTier} (plan: ${plan}, capture: ${captureId})`);
 
