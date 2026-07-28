@@ -12,7 +12,7 @@ const mocks = vi.hoisted(() => ({
   linkUserIdentity: vi.fn(),
   upsertUser: vi.fn(),
   anonymiseUserByOpenId: vi.fn(),
-  createSessionToken: vi.fn(),
+  issueSecuritySession: vi.fn(),
   sendUserWelcomeEmail: vi.fn().mockResolvedValue(undefined),
 }));
 
@@ -33,17 +33,8 @@ vi.mock("./db", () => ({
   anonymiseUserByOpenId: mocks.anonymiseUserByOpenId,
 }));
 
-vi.mock("./_core/sdk", () => ({
-  sdk: { createSessionToken: mocks.createSessionToken },
-}));
-
-vi.mock("./_core/cookies", () => ({
-  getSessionCookieOptions: () => ({
-    httpOnly: true,
-    secure: true,
-    sameSite: "lax" as const,
-    path: "/",
-  }),
+vi.mock("./security/passkeySessions", () => ({
+  issueSecuritySession: mocks.issueSecuritySession,
 }));
 
 vi.mock("./_core/env", () => ({
@@ -91,7 +82,10 @@ describe("Apple Sign In callback", () => {
       sub: "apple-user-123",
       email: "steve@example.test",
     });
-    mocks.createSessionToken.mockResolvedValue("signed-session-token");
+    mocks.issueSecuritySession.mockImplementation(async ({ res }: { res: express.Response }) => {
+      res.cookie("app_session_id", "revocable-session-token", { httpOnly: true, secure: true });
+      return { id: "session-id", token: "revocable-session-token", maxAge: 30 * 24 * 60 * 60 * 1000 };
+    });
     mocks.getUserByOpenId.mockResolvedValue(undefined);
     mocks.getUserByEmail.mockResolvedValue(undefined);
   });
@@ -99,7 +93,8 @@ describe("Apple Sign In callback", () => {
   it("requests and verifies Apple's signed identity token directly from the form-post callback", async () => {
     mocks.getUserByOpenId
       .mockResolvedValueOnce(undefined)
-      .mockResolvedValueOnce({ id: 1, openId: "owner-open-id" });
+      .mockResolvedValueOnce({ id: 1, openId: "owner-open-id" })
+      .mockResolvedValueOnce({ id: 77, openId: "apple_apple-user-123" });
     const { app, state, nonce, authorizationUrl } = await createAppleRequestState();
 
     expect(authorizationUrl.searchParams.get("response_type")).toBe("code id_token");
@@ -136,11 +131,12 @@ describe("Apple Sign In callback", () => {
       name: "Steve Kinzey",
       loginMethod: "apple",
     }));
-    expect(mocks.createSessionToken).toHaveBeenCalledWith(
-      "apple_apple-user-123",
-      expect.any(Object),
-    );
-    expect(response.headers["set-cookie"]?.[0]).toContain("signed-session-token");
+    expect(mocks.issueSecuritySession).toHaveBeenCalledWith(expect.objectContaining({
+      userId: 77,
+      authMethod: "oauth",
+      assurance: "a1",
+    }));
+    expect(response.headers["set-cookie"]?.[0]).toContain("revocable-session-token");
   });
 
   it("links Apple identity to an existing matching-email account instead of creating a duplicate", async () => {
@@ -152,6 +148,9 @@ describe("Apple Sign In callback", () => {
       role: "admin",
     };
     mocks.getUserByEmail.mockResolvedValue(existingAccount);
+    mocks.getUserByOpenId.mockImplementation(async (openId: string) =>
+      openId === existingAccount.openId ? existingAccount : undefined,
+    );
     const { app, state } = await createAppleRequestState();
 
     const response = await request(app)
@@ -168,11 +167,12 @@ describe("Apple Sign In callback", () => {
     }));
     expect(mocks.upsertUser).not.toHaveBeenCalled();
     expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
-    expect(mocks.createSessionToken).toHaveBeenCalledWith(
-      "google-existing-steve",
-      expect.objectContaining({ name: "Steve Existing" }),
-    );
-    expect(response.headers["set-cookie"]?.[0]).toContain("signed-session-token");
+    expect(mocks.issueSecuritySession).toHaveBeenCalledWith(expect.objectContaining({
+      userId: existingAccount.id,
+      authMethod: "oauth",
+      assurance: "a1",
+    }));
+    expect(response.headers["set-cookie"]?.[0]).toContain("revocable-session-token");
   });
 
   it("returns a safe callback error when Apple does not provide an authorization code", async () => {

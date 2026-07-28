@@ -2,26 +2,24 @@
  * Mobile Auth Routes — Phame Expo App
  *
  * These endpoints are used exclusively by the React Native / Expo mobile app.
- * Unlike the web flow (which uses cookies), mobile auth returns a JWT in the
+ * Unlike the web flow (which uses cookies), mobile auth returns an opaque token in the
  * response body so the app can store it in SecureStore.
  *
  * Routes:
- *   POST /api/auth/mobile/google  → exchange Google auth code for session JWT
- *   POST /api/auth/mobile/apple   → exchange Apple identity token for session JWT
+ *   POST /api/auth/mobile/google  → exchange Google auth code for a revocable session
+ *   POST /api/auth/mobile/apple   → exchange Apple identity token for a revocable session
  *
- * The returned JWT is the same HS256 token produced by sdk.signSession(),
- * so the existing protectedProcedure middleware can verify it via the
- * Authorization: Bearer <token> header.
+ * The returned identifier-bearing token is stored only as a hash on the server
+ * and is accepted through the Authorization: Bearer <token> header.
  */
 
 import type { Express, Request, Response } from "express";
 import { google } from "googleapis";
 import appleSignin from "apple-signin-auth";
 import { ENV } from "./_core/env";
-import { sdk } from "./_core/sdk";
-import { ONE_YEAR_MS } from "@shared/const";
 import * as db from "./db";
 import { sendUserWelcomeEmail } from "./smtp";
+import { issueSecuritySession } from "./security/passkeySessions";
 
 // ─── Google ──────────────────────────────────────────────────────────────────
 
@@ -77,13 +75,15 @@ async function handleMobileGoogleAuth(req: Request, res: Response) {
       }
     }
 
-    const sessionToken = await sdk.createSessionToken(openId, {
-      name: name ?? "",
-      expiresInMs: ONE_YEAR_MS,
-    });
-
     // Fetch user to get tier from DB
     const user = await db.getUserByOpenId(openId);
+    if (!user) throw new Error("Session user unavailable after Google account update");
+    const { token: sessionToken } = await issueSecuritySession({
+      userId: user.id,
+      authMethod: "oauth",
+      assurance: "a1",
+      req,
+    });
     const tier = (user as { tier?: string } | null)?.tier ?? "free";
 
     return res.json({
@@ -161,12 +161,14 @@ async function handleMobileAppleAuth(req: Request, res: Response) {
       }
     }
 
-    const sessionToken = await sdk.createSessionToken(openId, {
-      name: name ?? "",
-      expiresInMs: ONE_YEAR_MS,
-    });
-
     const user = await db.getUserByOpenId(openId);
+    if (!user) throw new Error("Session user unavailable after Apple account update");
+    const { token: sessionToken } = await issueSecuritySession({
+      userId: user.id,
+      authMethod: "oauth",
+      assurance: "a1",
+      req,
+    });
     const tier = (user as { tier?: string } | null)?.tier ?? "free";
 
     return res.json({

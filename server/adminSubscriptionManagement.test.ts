@@ -64,8 +64,8 @@ describe("admin subscription management", () => {
   it("wires duration metadata through schema, routers, and both admin surfaces", () => {
     expect(schemaSource).toContain('grantDurationValue: integer("grant_duration_value")');
     expect(schemaSource).toContain('grantDurationUnit: varchar("grant_duration_unit", { length: 16 })');
-    expect(routerSource).toContain("grantSubscription: protectedProcedure");
-    expect(routerSource).toContain("revokeSubscription: protectedProcedure");
+    expect(routerSource).toContain("grantSubscription: adminProcedure");
+    expect(routerSource).toContain("revokeSubscription: adminProcedure");
     expect(routerSource).toContain('z.enum(["monthly", "annual", "lifetime"])');
     expect(routerSource).toContain('z.enum(["day", "month", "lifetime"])');
     expect(dashboardSource).toContain("trpc.admin.grantSubscription.useMutation");

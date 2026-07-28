@@ -3,7 +3,9 @@
  * Replaces Gmail API OAuth — users connect any email account using
  * their standard SMTP credentials (email + password/app-password).
  *
- * Passwords are AES-256-GCM encrypted at rest using JWT_SECRET as the key material.
+ * Passwords are AES-256-GCM encrypted at rest with a dedicated managed key.
+ * Legacy JWT_SECRET ciphertext remains decryptable during rotation, but all new
+ * writes use SMTP_CREDENTIAL_ENCRYPTION_KEY and a versioned format.
  */
 
 import nodemailer from "nodemailer";
@@ -18,30 +20,62 @@ import { resolveOutboundDeliveryChannel } from "./outboundDeliveryChannel";
 
 // ── Encryption helpers ────────────────────────────────────────────────────────
 
-function getDerivedKey(): Buffer {
-  const secret = process.env.JWT_SECRET ?? "fallback-secret-change-me";
-  // Derive a 32-byte key from JWT_SECRET via SHA-256
+const SMTP_CIPHERTEXT_VERSION = "v2";
+
+function deriveEncryptionKey(secret: string): Buffer {
   return createHash("sha256").update(secret).digest();
 }
 
-export function encryptPassword(plaintext: string): string {
-  const key = getDerivedKey();
-  const iv = randomBytes(16);
-  const cipher = createCipheriv("aes-256-gcm", key, iv);
-  const encrypted = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()]);
-  const tag = cipher.getAuthTag();
-  // Format: iv(32 hex) + tag(32 hex) + ciphertext(hex)
-  return iv.toString("hex") + tag.toString("hex") + encrypted.toString("hex");
+function getPrimaryEncryptionKey(): Buffer {
+  const secret = process.env.SMTP_CREDENTIAL_ENCRYPTION_KEY;
+  if (!secret || secret.length < 32) {
+    throw new Error("SMTP_CREDENTIAL_ENCRYPTION_KEY must contain at least 32 characters");
+  }
+  return deriveEncryptionKey(secret);
 }
 
-export function decryptPassword(encoded: string): string {
-  const key = getDerivedKey();
+function decryptWithKey(encoded: string, key: Buffer): string {
+  if (!/^[0-9a-f]+$/i.test(encoded) || encoded.length < 66 || encoded.length % 2 !== 0) {
+    throw new Error("Invalid SMTP ciphertext format");
+  }
   const iv = Buffer.from(encoded.slice(0, 32), "hex");
   const tag = Buffer.from(encoded.slice(32, 64), "hex");
   const ciphertext = Buffer.from(encoded.slice(64), "hex");
   const decipher = createDecipheriv("aes-256-gcm", key, iv);
   decipher.setAuthTag(tag);
   return decipher.update(ciphertext).toString("utf8") + decipher.final("utf8");
+}
+
+export function encryptPassword(plaintext: string): string {
+  const key = getPrimaryEncryptionKey();
+  const iv = randomBytes(16);
+  const cipher = createCipheriv("aes-256-gcm", key, iv);
+  const encrypted = Buffer.concat([cipher.update(plaintext, "utf8"), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  // Format: v2:iv(32 hex) + tag(32 hex) + ciphertext(hex)
+  return `${SMTP_CIPHERTEXT_VERSION}:${iv.toString("hex")}${tag.toString("hex")}${encrypted.toString("hex")}`;
+}
+
+export function decryptPassword(encoded: string): string {
+  const versionedPrefix = `${SMTP_CIPHERTEXT_VERSION}:`;
+  if (encoded.startsWith(versionedPrefix)) {
+    return decryptWithKey(encoded.slice(versionedPrefix.length), getPrimaryEncryptionKey());
+  }
+
+  const candidateKeys = [getPrimaryEncryptionKey()];
+  const legacySecret = process.env.JWT_SECRET;
+  if (legacySecret && legacySecret !== process.env.SMTP_CREDENTIAL_ENCRYPTION_KEY) {
+    candidateKeys.push(deriveEncryptionKey(legacySecret));
+  }
+
+  for (const key of candidateKeys) {
+    try {
+      return decryptWithKey(encoded, key);
+    } catch {
+      // Try the next key so historical credentials survive managed-key rotation.
+    }
+  }
+  throw new Error("Unable to decrypt SMTP credential");
 }
 
 // ── SMTP host auto-detection ──────────────────────────────────────────────────
@@ -100,12 +134,13 @@ export function createTransporter(opts: {
   user: string;
   pass: string;
 }) {
+  const allowInsecureTls = process.env.ALLOW_INSECURE_SMTP_TLS === "true";
   return nodemailer.createTransport({
     host: opts.host,
     port: opts.port,
     secure: opts.secure,
     auth: { user: opts.user, pass: opts.pass },
-    tls: { rejectUnauthorized: false }, // allow self-signed certs on cPanel hosts
+    tls: { rejectUnauthorized: !allowInsecureTls },
   });
 }
 

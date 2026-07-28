@@ -1,7 +1,5 @@
 import {
-  COOKIE_NAME,
   OAUTH_STATE_COOKIE,
-  ONE_YEAR_MS,
   decodeOAuthState,
 } from "@shared/const";
 import { ENV } from "./env";
@@ -9,8 +7,8 @@ import { parse as parseCookieHeader } from "cookie";
 import type { Express, Request, Response } from "express";
 import * as db from "../db";
 import { sendUserWelcomeEmail } from "../smtp";
-import { getSessionCookieOptions } from "./cookies";
 import { sdk } from "./sdk";
+import { issueSecuritySession } from "../security/passkeySessions";
 
 function getQueryParam(req: Request, key: string): string | undefined {
   const value = req.query[key];
@@ -74,13 +72,15 @@ export function registerOAuthRoutes(app: Express) {
         }
       }
 
-      const sessionToken = await sdk.createSessionToken(userInfo.openId, {
-        name: userInfo.name || "",
-        expiresInMs: ONE_YEAR_MS,
+      const sessionUser = await db.getUserByOpenId(userInfo.openId);
+      if (!sessionUser) throw new Error("Session user unavailable after OAuth account update");
+      await issueSecuritySession({
+        userId: sessionUser.id,
+        authMethod: "oauth",
+        assurance: "a1",
+        req,
+        res,
       });
-
-      const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
 
       res.redirect(302, "/");
     } catch (error) {

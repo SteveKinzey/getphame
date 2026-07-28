@@ -2,23 +2,91 @@
  * Email open and click tracking for review request emails.
  *
  * Architecture:
- *  - Each outbound email gets a signed token: base64url(requestId:userId:templateId:secret_hash)
+ *  - Each outbound email gets a signed open token and a destination-bound click token.
  *  - Open pixel:  GET /api/track/open/:token  → record event, return 1×1 transparent GIF
  *  - Click redirect: GET /api/track/click/:token?url=<encoded_destination>
  *                    → record event, redirect to destination
  *
- * Tokens are not cryptographically sensitive (no auth) — they only log analytics events.
- * We use a simple HMAC-SHA256 signature to prevent trivial token forgery / spam.
+ * Tokens are not authorization credentials, but signatures prevent forged analytics
+ * and ensure click redirects cannot be changed after email issuance.
  */
 
 import crypto from "crypto";
 import type { Request, Response } from "express";
 import { getDb } from "./db";
-import { emailEvents } from "../drizzle/schema";
+import { businessProfiles, emailEvents, reviewPlatforms } from "../drizzle/schema";
+import { and, eq } from "drizzle-orm";
 
 // ── Token helpers ─────────────────────────────────────────────────────────────
 
-const TRACKING_SECRET = process.env.JWT_SECRET ?? "phame-tracking-secret";
+type TrackingTokenPayload = {
+  v: 2;
+  requestId: number;
+  userId: number;
+  templateId: number | null;
+  destinationHash?: string;
+};
+
+type DecodedTrackingToken = {
+  requestId: number;
+  userId: number;
+  templateId: number | null;
+  version: 1 | 2;
+  destinationHash: string | null;
+};
+
+const SAFE_REDIRECT_FALLBACK = "https://getphame.app";
+
+function getTrackingSecret(): string {
+  const secret = process.env.EMAIL_TRACKING_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error("EMAIL_TRACKING_SECRET must contain at least 32 characters");
+  }
+  return secret;
+}
+
+function signTrackingPayload(payload: string, secret = getTrackingSecret()): string {
+  return crypto.createHmac("sha256", secret).update(payload).digest("base64url");
+}
+
+function timingSafeSignatureEqual(left: string, right: string): boolean {
+  const leftBuffer = Buffer.from(left);
+  const rightBuffer = Buffer.from(right);
+  return leftBuffer.length === rightBuffer.length && crypto.timingSafeEqual(leftBuffer, rightBuffer);
+}
+
+function normalizeRedirectDestination(value: string): string | null {
+  if (value.length > 2048) return null;
+  try {
+    const parsed = new URL(value);
+    if (!(["http:", "https:"] as string[]).includes(parsed.protocol)) return null;
+    if (parsed.username || parsed.password) return null;
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+}
+
+function destinationDigest(destination: string): string {
+  return crypto.createHash("sha256").update(destination).digest("base64url");
+}
+
+function encodeVersionTwoToken(
+  requestId: number,
+  userId: number,
+  templateId: number | null,
+  destination?: string,
+): string {
+  const payload: TrackingTokenPayload = {
+    v: 2,
+    requestId,
+    userId,
+    templateId,
+    ...(destination ? { destinationHash: destinationDigest(destination) } : {}),
+  };
+  const payloadSegment = Buffer.from(JSON.stringify(payload)).toString("base64url");
+  return `${payloadSegment}.${signTrackingPayload(payloadSegment)}`;
+}
 
 /** Encode a tracking token for a sent email */
 export function encodeTrackingToken(
@@ -26,40 +94,84 @@ export function encodeTrackingToken(
   userId: number,
   templateId: number | null
 ): string {
-  const payload = `${requestId}:${userId}:${templateId ?? 0}`;
-  const sig = crypto
-    .createHmac("sha256", TRACKING_SECRET)
-    .update(payload)
-    .digest("hex")
-    .slice(0, 16); // 8-byte prefix is enough for anti-spam
-  const raw = `${payload}:${sig}`;
-  return Buffer.from(raw).toString("base64url");
+  return encodeVersionTwoToken(requestId, userId, templateId);
+}
+
+function decodeTrackingTokenDetailed(token: string): DecodedTrackingToken | null {
+  try {
+    const [payloadSegment, signature, extra] = token.split(".");
+    if (payloadSegment && signature && !extra) {
+      const expected = signTrackingPayload(payloadSegment);
+      if (!timingSafeSignatureEqual(signature, expected)) return null;
+      const payload = JSON.parse(Buffer.from(payloadSegment, "base64url").toString("utf8")) as TrackingTokenPayload;
+      if (
+        payload.v !== 2 ||
+        !Number.isInteger(payload.requestId) || payload.requestId <= 0 ||
+        !Number.isInteger(payload.userId) || payload.userId <= 0 ||
+        !(payload.templateId === null || Number.isInteger(payload.templateId)) ||
+        !(payload.destinationHash === undefined || typeof payload.destinationHash === "string")
+      ) return null;
+      return {
+        requestId: payload.requestId,
+        userId: payload.userId,
+        templateId: payload.templateId,
+        version: 2,
+        destinationHash: payload.destinationHash ?? null,
+      };
+    }
+
+    // Legacy verification is read-only and exists only so previously sent open
+    // pixels and explicitly allowlisted click destinations remain functional.
+    const raw = Buffer.from(token, "base64url").toString("utf8");
+    const parts = raw.split(":");
+    if (parts.length !== 4) return null;
+    const [requestIdStr, userIdStr, templateIdStr, sig] = parts;
+    const payload = `${requestIdStr}:${userIdStr}:${templateIdStr}`;
+    const legacySecret = process.env.JWT_SECRET;
+    if (!legacySecret) return null;
+    const expected = crypto.createHmac("sha256", legacySecret).update(payload).digest("hex").slice(0, 16);
+    if (!timingSafeSignatureEqual(sig, expected)) return null;
+    const requestId = Number.parseInt(requestIdStr, 10);
+    const userId = Number.parseInt(userIdStr, 10);
+    const templateId = Number.parseInt(templateIdStr, 10) || null;
+    if (!Number.isInteger(requestId) || requestId <= 0 || !Number.isInteger(userId) || userId <= 0) return null;
+    return {
+      requestId,
+      userId,
+      templateId,
+      version: 1,
+      destinationHash: null,
+    };
+  } catch {
+    return null;
+  }
 }
 
 /** Decode and verify a tracking token. Returns null if invalid. */
 export function decodeTrackingToken(
   token: string
 ): { requestId: number; userId: number; templateId: number | null } | null {
-  try {
-    const raw = Buffer.from(token, "base64url").toString("utf8");
-    const parts = raw.split(":");
-    if (parts.length !== 4) return null;
-    const [requestIdStr, userIdStr, templateIdStr, sig] = parts;
-    const payload = `${requestIdStr}:${userIdStr}:${templateIdStr}`;
-    const expected = crypto
-      .createHmac("sha256", TRACKING_SECRET)
-      .update(payload)
-      .digest("hex")
-      .slice(0, 16);
-    if (sig !== expected) return null;
-    return {
-      requestId: parseInt(requestIdStr, 10),
-      userId: parseInt(userIdStr, 10),
-      templateId: parseInt(templateIdStr, 10) || null,
-    };
-  } catch {
-    return null;
-  }
+  const decoded = decodeTrackingTokenDetailed(token);
+  if (!decoded) return null;
+  return {
+    requestId: decoded.requestId,
+    userId: decoded.userId,
+    templateId: decoded.templateId,
+  };
+}
+
+async function isAllowlistedLegacyDestination(userId: number, destination: string): Promise<boolean> {
+  const db = await getDb();
+  if (!db) return false;
+  const [platform] = await db.select({ id: reviewPlatforms.id }).from(reviewPlatforms).where(and(
+    eq(reviewPlatforms.userId, userId),
+    eq(reviewPlatforms.url, destination),
+  )).limit(1);
+  if (platform) return true;
+
+  const [profile] = await db.select({ reviewLink: businessProfiles.reviewLink }).from(businessProfiles)
+    .where(eq(businessProfiles.userId, userId)).limit(1);
+  return profile?.reviewLink === destination;
 }
 
 // ── 1×1 transparent GIF ───────────────────────────────────────────────────────
@@ -157,19 +269,29 @@ export async function handleOpenPixel(req: Request, res: Response): Promise<void
 
 /** GET /api/track/click/:token?url=<encoded_destination> — record click and redirect */
 export async function handleClickRedirect(req: Request, res: Response): Promise<void> {
-  const destination = typeof req.query.url === "string" ? req.query.url : null;
-  const decoded = decodeTrackingToken(req.params.token ?? "");
+  const requestedDestination = typeof req.query.url === "string" ? req.query.url : null;
+  const destination = requestedDestination ? normalizeRedirectDestination(requestedDestination) : null;
+  const decoded = decodeTrackingTokenDetailed(req.params.token ?? "");
 
+  let isAuthorizedDestination = false;
   if (decoded && destination) {
-    void recordEvent(decoded.requestId, decoded.userId, decoded.templateId, "click", destination, req);
+    if (decoded.version === 2 && decoded.destinationHash) {
+      isAuthorizedDestination = timingSafeSignatureEqual(
+        decoded.destinationHash,
+        destinationDigest(destination),
+      );
+    } else if (decoded.version === 1) {
+      isAuthorizedDestination = await isAllowlistedLegacyDestination(decoded.userId, destination);
+    }
   }
 
-  if (destination) {
-    res.redirect(302, destination);
-  } else {
-    // Fallback — send to app if URL is missing
-    res.redirect(302, "https://getphame.app");
+  if (!decoded || !destination || !isAuthorizedDestination) {
+    res.redirect(302, SAFE_REDIRECT_FALLBACK);
+    return;
   }
+
+  void recordEvent(decoded.requestId, decoded.userId, decoded.templateId, "click", destination, req);
+  res.redirect(302, destination);
 }
 
 // ── Email injection helpers ───────────────────────────────────────────────────
@@ -183,8 +305,16 @@ export function wrapClickUrl(
   token: string,
   baseUrl: string
 ): string {
-  const encoded = encodeURIComponent(reviewUrl);
-  return `${baseUrl}/api/track/click/${token}?url=${encoded}`;
+  const destination = normalizeRedirectDestination(reviewUrl);
+  const decoded = decodeTrackingTokenDetailed(token);
+  if (!destination || !decoded) throw new Error("Cannot create tracking URL for an invalid destination or token");
+  const clickToken = encodeVersionTwoToken(
+    decoded.requestId,
+    decoded.userId,
+    decoded.templateId,
+    destination,
+  );
+  return `${baseUrl}/api/track/click/${clickToken}?url=${encodeURIComponent(destination)}`;
 }
 
 /**
