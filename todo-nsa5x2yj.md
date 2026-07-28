@@ -303,3 +303,4 @@
 - [x] Replace feasible repeated inline administrator role checks with centralized `adminProcedure` without broadening privileges.
 - [ ] Run all focused security regressions and complete install, test, TypeScript, production-audit, build, responsive/runtime, checkpoint, production, and protected-main verification gates.
 - [ ] Package the proven Get Phame production-readiness audit and remediation workflow as a concise reusable skill, validate it, and deliver the installable skill card.
+- [ ] Fix the GitHub Quality Gate regression by making `securitySecrets.test.ts` generate and restore unique ephemeral test-only keys when managed secrets are absent, preserving production fail-closed behavior; rerun all gates and replace checkpoint 6a1c5130 plus pull request 25 with an exact-tree corrected release.
