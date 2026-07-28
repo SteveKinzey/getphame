@@ -17,10 +17,15 @@ describe("returning-user public sign-in entry", () => {
     expect(onboarding).toContain("Already have an account?");
   });
 
-  it("sends the active browser origin from both email-link forms", () => {
+  it("sends the active browser origin from the shared form used by both public screens", () => {
     const login = fs.readFileSync(path.join(root, "client/src/pages/Login.tsx"), "utf8");
     const onboarding = fs.readFileSync(path.join(root, "client/src/pages/Onboarding.tsx"), "utf8");
-    expect(login).toContain("origin: window.location.origin");
-    expect(onboarding).toContain("origin: window.location.origin");
+    const magicLinkForm = fs.readFileSync(
+      path.join(root, "client/src/components/auth/MagicLinkForm.tsx"),
+      "utf8",
+    );
+    expect(login).toContain("<MagicLinkForm");
+    expect(onboarding).toContain("<MagicLinkForm");
+    expect(magicLinkForm).toContain("origin: window.location.origin");
   });
 });

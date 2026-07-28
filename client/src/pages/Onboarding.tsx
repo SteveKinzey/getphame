@@ -2,24 +2,20 @@
 // Full-width responsive layout: two-column on desktop (left: branding/proof, right: auth card)
 // Production uses email magic link alongside Google on approved custom domains;
 // Apple OAuth remains preview-only until separately approved for production.
-import { Mail, Loader2, CheckCircle2, Shield, Lock, Zap } from "lucide-react";
+import { Mail, Shield, Lock, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import SEOHead from "@/components/landing/SEOHead";
 import { isGoogleSignInHost, isStagingSocialLoginHost } from "@/lib/socialLoginAvailability";
+import MagicLinkForm from "@/components/auth/MagicLinkForm";
 
 const LOGO_URL = "https://assets.getphame.app/getphame-logo.svg";
-
-type MagicLinkState = "idle" | "loading" | "sent" | "error";
 
 export default function OnboardingPage() {
   const { t } = useTranslation();
   const googleLoginEnabled = isGoogleSignInHost(window.location.hostname);
   const appleLoginEnabled = isStagingSocialLoginHost(window.location.hostname);
-  const [email, setEmail] = useState("");
-  const [magicState, setMagicState] = useState<MagicLinkState>("idle");
-  const [magicError, setMagicError] = useState("");
   const [showEmailForm, setShowEmailForm] = useState(false);
 
   function handleGoogleSignIn() {
@@ -28,37 +24,6 @@ export default function OnboardingPage() {
   function handleAppleSignIn() {
     window.location.href = "/api/auth/apple";
   }
-  async function handleMagicLinkSend(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setMagicState("loading");
-    setMagicError("");
-    try {
-      const res = await fetch("/api/auth/magic-link", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: email.trim().toLowerCase(),
-          origin: window.location.origin,
-        }),
-      });
-      const data = await res.json() as { ok?: boolean; error?: string };
-      if (!res.ok || !data.ok) {
-        setMagicError(data.error ?? "Something went wrong. Please try again.");
-        setMagicState("error");
-      } else {
-        setMagicState("sent");
-      }
-    } catch {
-      setMagicError("Network error. Please check your connection and try again.");
-      setMagicState("error");
-    }
-  }
-  function handleRetry() {
-    setMagicState("idle");
-    setMagicError("");
-  }
-
   return (
     <div className="min-h-screen bg-[#0a1628] text-white flex flex-col">
       <SEOHead
@@ -224,78 +189,20 @@ export default function OnboardingPage() {
                   {/* Email Magic Link */}
                   {!showEmailForm ? (
                     <button
+                      type="button"
                       onClick={() => setShowEmailForm(true)}
                       className="w-full py-4 rounded-xl font-semibold text-base transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-3"
                       style={{ background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.85)", border: "1px solid rgba(255,255,255,0.12)" }}
                     >
                       <Mail size={20} />
-                      Continue with Email
+                      {t("login.sendMagicLink", { defaultValue: "Send Magic Link" })}
                     </button>
-                  ) : magicState === "sent" ? (
-                    <div
-                      className="w-full rounded-xl p-5 flex flex-col items-center gap-3 text-center"
-                      style={{ background: "rgba(255,184,0,0.08)", border: "1px solid rgba(255,184,0,0.25)" }}
-                    >
-                      <CheckCircle2 size={32} style={{ color: "oklch(0.78 0.15 75)" }} />
-                      <div>
-                        <p className="font-bold text-white text-sm mb-1">Check your inbox!</p>
-                        <p className="text-base font-bold text-white/70">
-                          We sent a sign-in link to <strong className="text-white">{email}</strong>.
-                          <br />It expires in 15 minutes.
-                        </p>
-                      </div>
-                      <button
-                        onClick={handleRetry}
-                        className="text-sm font-bold underline mt-1 text-white/60"
-                      >
-                        Use a different email
-                      </button>
-                    </div>
                   ) : (
-                    <form onSubmit={handleMagicLinkSend} className="flex flex-col gap-2">
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="your@email.com"
-                        required
-                        autoFocus
-                        className="w-full px-4 py-4 rounded-xl text-base font-medium outline-none text-white placeholder:text-white/60 font-medium"
-                        style={{
-                          background: "rgba(255,255,255,0.06)",
-                          border: "1px solid rgba(255,255,255,0.15)",
-                        }}
-                      />
-                      {magicError && (
-                        <p className="text-xs px-1 text-red-400">{magicError}</p>
-                      )}
-                      <button
-                        type="submit"
-                        disabled={magicState === "loading" || !email.trim()}
-                        className="w-full py-4 rounded-xl font-bold text-base transition-all duration-200 active:scale-[0.98] flex items-center justify-center gap-2"
-                        style={{ background: "oklch(0.78 0.15 75)", color: "#0a1628", opacity: magicState === "loading" ? 0.7 : 1 }}
-                      >
-                        {magicState === "loading" ? (
-                          <>
-                            <Loader2 size={18} className="animate-spin" />
-                            Sending link…
-                          </>
-                        ) : (
-                          <>
-                            <Mail size={18} />
-                            Send Sign-In Link
-                          </>
-                        )}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => { setShowEmailForm(false); setMagicState("idle"); setMagicError(""); setEmail(""); }}
-                        className="text-xs text-center py-1"
-                        style={{ color: "var(--text-on-dark-disabled)" }}
-                      >
-                        Cancel
-                      </button>
-                    </form>
+                    <MagicLinkForm
+                      idPrefix="onboarding"
+                      autoFocus
+                      onCancel={() => setShowEmailForm(false)}
+                    />
                   )}
                 </div>
 

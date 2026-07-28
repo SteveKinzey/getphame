@@ -1773,7 +1773,22 @@
     "googleUnavailable": "目前無法使用 Google 登入。",
     "signInFailed": "無法登入。請再試一次。",
     "resetPassword": "重設密碼",
-    "error": "錯誤"
+    "error": "錯誤",
+    "sendingMagicLinkStatus": "正在傳送安全登入連結，請保持此頁面開啟。",
+    "resendCountdown": "{{seconds}} 秒後可重新傳送連結。",
+    "resendReady": "您現在可以申請另一個連結。",
+    "resendingLink": "正在重新傳送連結…",
+    "resendLink": "重新傳送連結",
+    "resendSuccess": "新的登入連結已傳送。",
+    "expiredMagicLinkTitle": "此登入連結已過期",
+    "expiredMagicLinkDescription": "為保障安全，登入連結的有效期為 15 分鐘。",
+    "invalidMagicLinkTitle": "此登入連結已失效",
+    "invalidMagicLinkDescription": "此連結可能已被使用或不完整。",
+    "verificationProblemTitle": "無法驗證此連結",
+    "verificationProblemDescription": "驗證過程中斷。請申請新連結以繼續。",
+    "magicLinkRecoveryHelp": "使用同一電子郵件，我們會傳送新的安全登入連結。",
+    "requestNewLink": "申請新連結",
+    "contactSupport": "聯絡支援"
   },
   "complianceGuide": {
     "backToSettings": "返回設定",

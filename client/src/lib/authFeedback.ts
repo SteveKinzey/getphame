@@ -1,6 +1,15 @@
 export const GOOGLE_SIGN_IN_PENDING_KEY = "getphame:google-sign-in-pending";
 export const GOOGLE_SIGN_IN_TOAST_ID = "getphame-google-sign-in";
 
+export type MagicLinkRecoveryKind = "expired" | "invalid" | "failed" | null;
+
+export function getMagicLinkRecoveryKind(code: string): MagicLinkRecoveryKind {
+  if (code === "link_expired" || code === "magic_link_expired") return "expired";
+  if (code === "invalid_link" || code === "invalid_magic_link") return "invalid";
+  if (code === "verification_failed") return "failed";
+  return null;
+}
+
 const AUTH_ERROR_TRANSLATION_KEYS: Record<string, string> = {
   denied: "login.signInCancelled",
   google_denied: "authFeedback.errors.googleDenied",

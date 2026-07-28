@@ -1751,7 +1751,22 @@
     "googleUnavailable": "目前无法使用 Google 登录。",
     "signInFailed": "无法登录。请重试。",
     "resetPassword": "重置密码",
-    "error": "错误"
+    "error": "错误",
+    "sendingMagicLinkStatus": "正在发送安全登录链接，请保持此页面打开。",
+    "resendCountdown": "{{seconds}} 秒后可重新发送链接。",
+    "resendReady": "您现在可以申请另一条链接。",
+    "resendingLink": "正在重新发送链接…",
+    "resendLink": "重新发送链接",
+    "resendSuccess": "新的登录链接已发送。",
+    "expiredMagicLinkTitle": "此登录链接已过期",
+    "expiredMagicLinkDescription": "为保障安全，登录链接的有效期为 15 分钟。",
+    "invalidMagicLinkTitle": "此登录链接已失效",
+    "invalidMagicLinkDescription": "此链接可能已被使用或不完整。",
+    "verificationProblemTitle": "无法验证此链接",
+    "verificationProblemDescription": "验证过程被中断。请申请新链接以继续。",
+    "magicLinkRecoveryHelp": "使用同一邮箱，我们会发送新的安全登录链接。",
+    "requestNewLink": "申请新链接",
+    "contactSupport": "联系支持"
   },
   "complianceGuide": {
     "backToSettings": "设置",

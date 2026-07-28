@@ -2368,7 +2368,22 @@
     "googleUnavailable": "La connexion avec Google n’est pas disponible pour le moment.",
     "signInFailed": "Nous n’avons pas pu vous connecter. Réessayez.",
     "resetPassword": "Réinitialiser le mot de passe",
-    "error": "Erreur"
+    "error": "Erreur",
+    "sendingMagicLinkStatus": "Envoi d’un lien de connexion sécurisé. Gardez cette page ouverte.",
+    "resendCountdown": "Nouveau renvoi possible dans {{seconds}} secondes.",
+    "resendReady": "Vous pouvez maintenant demander un autre lien.",
+    "resendingLink": "Renvoi du lien…",
+    "resendLink": "Renvoyer le lien",
+    "resendSuccess": "Un nouveau lien de connexion vous a été envoyé.",
+    "expiredMagicLinkTitle": "Ce lien de connexion a expiré",
+    "expiredMagicLinkDescription": "Pour votre sécurité, les liens de connexion sont valables 15 minutes.",
+    "invalidMagicLinkTitle": "Ce lien de connexion n’est plus valide",
+    "invalidMagicLinkDescription": "Le lien a peut-être déjà été utilisé ou est incomplet.",
+    "verificationProblemTitle": "Nous n’avons pas pu vérifier ce lien",
+    "verificationProblemDescription": "Un problème a interrompu la vérification. Demandez un nouveau lien pour continuer.",
+    "magicLinkRecoveryHelp": "Utilisez la même adresse e-mail et nous vous enverrons un nouveau lien sécurisé.",
+    "requestNewLink": "Demander un nouveau lien",
+    "contactSupport": "Contacter l’assistance"
   },
   "referralRewards": {
     "title": "Récompenses de parrainage",
