@@ -1,14 +1,17 @@
 import { TRPCError } from "@trpc/server";
+import { createHash, randomBytes } from "node:crypto";
 import { z } from "zod";
 import { invokeLLM } from "./_core/llm";
-import { protectedProcedure, router } from "./_core/trpc";
+import { publicProcedure, router } from "./_core/trpc";
 import { redactHelpQuestion, retrieveHelpSources } from "./helpAssistantKnowledge";
 
 const SUPPORTED_LANGUAGES = ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"] as const;
 const HELP_MODEL = "gpt-5-mini";
 const REQUEST_WINDOW_MS = 60_000;
-const REQUESTS_PER_WINDOW = 8;
-const requestTimesByUser = new Map<number, number[]>();
+const AUTHENTICATED_REQUESTS_PER_WINDOW = 8;
+const ANONYMOUS_REQUESTS_PER_WINDOW = 4;
+const ANONYMOUS_KEY_SALT = randomBytes(24).toString("hex");
+const requestTimesByActor = new Map<string, number[]>();
 
 const generatedAnswerSchema = z.object({
   answer: z.string().trim().min(1).max(1800),
@@ -26,14 +29,41 @@ function extractCompletionText(content: unknown): string {
     .join("\n");
 }
 
-function enforceAssistantRateLimit(userId: number): void {
+export function createHelpAssistantActorKey(input: {
+  userId: number | null;
+  ip?: string;
+  userAgent?: string;
+}): { key: string; limit: number } {
+  if (input.userId != null) {
+    return {
+      key: `user:${input.userId}`,
+      limit: AUTHENTICATED_REQUESTS_PER_WINDOW,
+    };
+  }
+
+  const anonymousFingerprint = createHash("sha256")
+    .update(ANONYMOUS_KEY_SALT)
+    .update("\0")
+    .update(input.ip || "unknown-ip")
+    .update("\0")
+    .update(input.userAgent || "unknown-agent")
+    .digest("hex")
+    .slice(0, 32);
+
+  return {
+    key: `anonymous:${anonymousFingerprint}`,
+    limit: ANONYMOUS_REQUESTS_PER_WINDOW,
+  };
+}
+
+function enforceAssistantRateLimit(actorKey: string, limit: number): void {
   const now = Date.now();
-  const recent = (requestTimesByUser.get(userId) ?? []).filter((timestamp) => now - timestamp < REQUEST_WINDOW_MS);
-  if (recent.length >= REQUESTS_PER_WINDOW) {
+  const recent = (requestTimesByActor.get(actorKey) ?? []).filter((timestamp) => now - timestamp < REQUEST_WINDOW_MS);
+  if (recent.length >= limit) {
     throw new TRPCError({ code: "TOO_MANY_REQUESTS", message: "Please wait a minute before asking another help question." });
   }
   recent.push(now);
-  requestTimesByUser.set(userId, recent);
+  requestTimesByActor.set(actorKey, recent);
 }
 
 function unknownAnswer(redacted: boolean) {
@@ -113,13 +143,18 @@ export async function answerHelpQuestion(input: { question: string; language: ty
 }
 
 export const helpAssistantRouter = router({
-  ask: protectedProcedure
+  ask: publicProcedure
     .input(z.object({
       question: z.string().trim().min(3).max(600),
       language: z.enum(SUPPORTED_LANGUAGES).default("en"),
     }))
     .mutation(async ({ ctx, input }) => {
-      enforceAssistantRateLimit(ctx.user.id);
+      const actor = createHelpAssistantActorKey({
+        userId: ctx.user?.id ?? null,
+        ip: ctx.req.ip,
+        userAgent: ctx.req.get("user-agent") ?? undefined,
+      });
+      enforceAssistantRateLimit(actor.key, actor.limit);
       return answerHelpQuestion(input);
     }),
 });

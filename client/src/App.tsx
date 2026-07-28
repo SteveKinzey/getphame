@@ -31,6 +31,7 @@ import { useLocation } from "wouter";
 import { useHapticEvents } from "./hooks/useHapticEvents";
 import { useTranslation } from "react-i18next";
 import AutoTextLocalizer from "./components/AutoTextLocalizer";
+import HelpAssistant from "./components/HelpAssistant";
 import {
   GOOGLE_SIGN_IN_TOAST_ID,
   clearGoogleSignInPending,
@@ -407,6 +408,7 @@ function App() {
           <AutoTextLocalizer />
           <Toaster position="top-center" richColors />
           <AppShell />
+          <HelpAssistant />
           <PremiumUpgradeModal />
           <FirstVisitWelcome />
           <PWAInstallPrompt />

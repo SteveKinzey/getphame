@@ -209,8 +209,12 @@ const connectInput = z.object({
   mailgunDomain: z.string().trim().max(255).optional(),
   mailgunRegion: z.enum(["us", "eu"]).optional(),
 }).superRefine((value, ctx) => {
-  if (!value.secret && !value.apiKey) {
+  const suppliedSecret = value.secret ?? value.apiKey ?? "";
+  if (!suppliedSecret.trim()) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["secret"], message: "Enter the provider secret." });
+  }
+  if (value.provider === "mailjet" && !value.smtpUsername?.trim()) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["smtpUsername"], message: "Enter the Mailjet API key." });
   }
 });
 

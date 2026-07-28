@@ -121,7 +121,7 @@ describe("native-quality localization audit", () => {
     expect(verified).toBe(109);
   });
 
-  it("accounts for all 576 independently reviewed English-identical candidates", () => {
+  it("accounts for all 583 independently reviewed English-identical candidates", () => {
     let totalCandidates = 0;
     let totalTranslations = 0;
     let totalExceptions = 0;
@@ -196,9 +196,9 @@ describe("native-quality localization audit", () => {
       totalExceptions += manifest.exceptionCount;
     }
 
-    expect(totalCandidates).toBe(576);
+    expect(totalCandidates).toBe(583);
     expect(totalTranslations).toBe(349);
-    expect(totalExceptions).toBe(227);
+    expect(totalExceptions).toBe(234);
   });
 
   it("preserves natural Thai grammar across the partner-priority FAQ block", () => {
@@ -245,7 +245,7 @@ describe("native-quality localization audit", () => {
   it("advances the HTTP and offline locale caches for the exhaustive audit", () => {
     const i18nSource = fs.readFileSync(path.join(projectRoot, "client/src/lib/i18n.ts"), "utf8");
     const serviceWorker = fs.readFileSync(path.join(projectRoot, "client/public/sw.js"), "utf8");
-    expect(i18nSource).toContain("{{ns}}.json?v=phame45");
+    expect(i18nSource).toContain("{{ns}}.json?v=phame46");
     expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v24'");
   });
 });

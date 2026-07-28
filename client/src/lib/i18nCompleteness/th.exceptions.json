@@ -1,9 +1,9 @@
 {
   "locale": "th",
   "audit": "Exhaustive English-identical customer-copy review",
-  "sourceCandidateCount": 56,
+  "sourceCandidateCount": 57,
   "translatedCount": 23,
-  "exceptionCount": 33,
+  "exceptionCount": 34,
   "minimumTranslationConfidence": 0.95,
   "translatedEntryFormat": "<namespace>:<key>",
   "exceptionEntryFormat": "<namespace>:<key>|<category>",
@@ -71,6 +71,7 @@
     "translation:adminGithubCleanup.stats.tree|technical_term",
     "translation:adminGithubCleanup.safety.gates.dryRun|technical_term",
     "translation:adminGithubCleanup.safety.gates.exactSha|technical_term",
+    "translation:settings.bulkSender.providers.mailjet.label|brand_or_product",
     "cancellation:brand|proper_noun"
   ]
 }
