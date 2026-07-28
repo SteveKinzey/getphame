@@ -32,7 +32,7 @@ describe("Google sign-in interaction feedback", () => {
     expect(login).toContain('window.location.assign("/api/auth/google")');
   });
 
-  it("orders account-establishing methods before passkey authentication in visual and keyboard sequence", () => {
+  it("keeps account-establishing methods before passkey authentication in JSX source order and preserves the autofocus contract", () => {
     const login = read("client/src/pages/Login.tsx");
     const magicLinkForm = read("client/src/components/auth/MagicLinkForm.tsx");
     const passkeySignIn = read("client/src/components/security/PasskeySignIn.tsx");

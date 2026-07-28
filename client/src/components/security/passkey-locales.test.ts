@@ -4,6 +4,16 @@ import { describe, expect, it } from "vitest";
 
 const locales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
 
+const positionalUnavailableTerms = {
+  en: ["below"],
+  es: ["abajo"],
+  fr: ["ci-dessous"],
+  it: ["qui sotto"],
+  th: ["ด้านล่าง"],
+  "zh-CN": ["下方"],
+  "zh-TW": ["下方"],
+} as const;
+
 const requiredSignInKeys = [
   "title",
   "description",
@@ -73,7 +83,7 @@ const requiredSecurityKeys = [
 
 describe("passkey locale bundles", () => {
   for (const locale of locales) {
-    it(`${locale} contains every passkey UI key`, () => {
+    it(`${locale} contains every passkey UI key and position-independent fallback guidance`, () => {
       const path = join(process.cwd(), "client", "public", "locales", locale, "translation.json");
       const bundle = JSON.parse(readFileSync(path, "utf8")) as {
         passkeys?: {
@@ -89,6 +99,11 @@ describe("passkey locale bundles", () => {
 
       for (const key of requiredSignInKeys) {
         expect(bundle.passkeys?.signIn?.[key], `${locale}.passkeys.signIn.${key}`).toEqual(expect.any(String));
+      }
+
+      const unavailable = String(bundle.passkeys?.signIn?.unavailable ?? "").toLowerCase();
+      for (const positionalTerm of positionalUnavailableTerms[locale]) {
+        expect(unavailable, `${locale}.passkeys.signIn.unavailable`).not.toContain(positionalTerm);
       }
 
       for (const key of requiredEnrollmentKeys) {
