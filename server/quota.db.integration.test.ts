@@ -12,36 +12,25 @@ const integration = databaseUrl ? describe : describe.skip;
 integration("Free-plan quota through isolated persisted rows", () => {
   const nowMs = Date.UTC(2026, 6, 14, 12, 0, 0);
   const userId = 740_001;
-  const schemaName = `getphame_quota_test_${process.pid}_${Date.now()}`;
-  let admin: Connection;
   let seeded: Connection;
   let isolatedDb: ReturnType<typeof drizzle<typeof schema>>;
 
   beforeAll(async () => {
-    admin = await mysql.createConnection(databaseUrl!);
-    await admin.query(`CREATE DATABASE \`${schemaName}\``);
-
-    const isolatedUrl = new URL(databaseUrl!);
-    isolatedUrl.pathname = `/${schemaName}`;
-    seeded = await mysql.createConnection(isolatedUrl.toString());
+    seeded = await mysql.createConnection(databaseUrl!);
     await seeded.query(`
-      CREATE TABLE customer_requests (
+      CREATE TEMPORARY TABLE customer_requests (
         id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
         userId INT NOT NULL,
         sentAt TIMESTAMP NOT NULL,
         INDEX customer_requests_user_sent_idx (userId, sentAt, id)
       )
     `);
-    isolatedDb = drizzle(isolatedUrl.toString(), { schema, mode: "default" });
+    isolatedDb = drizzle(seeded, { schema, mode: "default" });
   }, 30_000);
 
-  afterAll(async () => {
-    await seeded?.destroy();
-    if (admin) {
-      await admin.query(`DROP DATABASE IF EXISTS \`${schemaName}\``);
-      await admin.destroy();
-    }
-  }, 30_000);
+  afterAll(() => {
+    seeded?.destroy();
+  });
 
   async function seed(sentAtMs: number) {
     await seeded.query(

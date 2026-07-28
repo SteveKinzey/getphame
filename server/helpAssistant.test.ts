@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { answerHelpQuestion } from "./helpAssistant";
+import { answerHelpQuestion, createHelpAssistantActorKey } from "./helpAssistant";
 import { redactHelpQuestion, retrieveHelpSources, tokenizeHelpQuery } from "./helpAssistantKnowledge";
 
 const projectRoot = resolve(import.meta.dirname, "..");
@@ -49,23 +49,55 @@ describe("grounded help assistant", () => {
     expect(result.citations).toEqual([]);
   });
 
-  it("uses authenticated server access and exposes citations, privacy, and secure escalation in the client", () => {
+  it("uses privacy-preserving anonymous keys with a stricter public quota", () => {
+    const first = createHelpAssistantActorKey({
+      userId: null,
+      ip: "203.0.113.17",
+      userAgent: "GetPhame-Test-Agent",
+    });
+    const second = createHelpAssistantActorKey({
+      userId: null,
+      ip: "203.0.113.17",
+      userAgent: "GetPhame-Test-Agent",
+    });
+    const authenticated = createHelpAssistantActorKey({
+      userId: 42,
+      ip: "203.0.113.17",
+      userAgent: "GetPhame-Test-Agent",
+    });
+
+    expect(first).toEqual(second);
+    expect(first.key).toMatch(/^anonymous:[a-f0-9]{32}$/);
+    expect(first.key).not.toContain("203.0.113.17");
+    expect(first.key).not.toContain("GetPhame-Test-Agent");
+    expect(first.limit).toBeLessThan(authenticated.limit);
+    expect(authenticated.key).toBe("user:42");
+  });
+
+  it("uses public server access and exposes one globally mounted assistant with citations, privacy, and secure escalation", () => {
     const routerSource = readFileSync(resolve(projectRoot, "server/helpAssistant.ts"), "utf8");
     const appRouterSource = readFileSync(resolve(projectRoot, "server/routers.ts"), "utf8");
     const componentSource = readFileSync(resolve(projectRoot, "client/src/components/HelpAssistant.tsx"), "utf8");
+    const appSource = readFileSync(resolve(projectRoot, "client/src/App.tsx"), "utf8");
     const layoutSource = readFileSync(resolve(projectRoot, "client/src/components/AppLayout.tsx"), "utf8");
     const supportSource = readFileSync(resolve(projectRoot, "client/src/components/landing/SupportDialog.tsx"), "utf8");
 
-    expect(routerSource).toContain("ask: protectedProcedure");
-    expect(routerSource).toContain("enforceAssistantRateLimit(ctx.user.id)");
+    expect(routerSource).toContain("ask: publicProcedure");
+    expect(routerSource).toContain("userId: ctx.user?.id ?? null");
+    expect(routerSource).toContain("enforceAssistantRateLimit(actor.key, actor.limit)");
     expect(routerSource).toContain('model: HELP_MODEL');
     expect(appRouterSource).toContain("helpAssistant: helpAssistantRouter");
     expect(componentSource).toContain("result.citations");
     expect(componentSource).toContain("Questions are not saved as a durable chat transcript");
     expect(componentSource).toContain('URLSearchParams(window.location.search).has("help")');
     expect(componentSource).toContain("<SupportDialog open={supportOpen}");
+    expect(componentSource).toContain("const { user } = useAuth()");
+    expect(componentSource).toContain('bottom-[calc(env(safe-area-inset-bottom,0px)+15rem)]');
+    expect(componentSource).toContain('bottom-[calc(env(safe-area-inset-bottom,0px)+1rem)]');
+    expect(componentSource).not.toContain("+5.75rem");
     expect(componentSource).not.toContain("localStorage");
-    expect(layoutSource).toContain("<HelpAssistant />");
+    expect(appSource).toContain("<HelpAssistant />");
+    expect(layoutSource).not.toContain("<HelpAssistant />");
     expect(supportSource).toContain("controlledOpen ?? internalOpen");
   });
 });

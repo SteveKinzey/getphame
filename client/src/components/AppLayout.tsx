@@ -12,7 +12,6 @@ import { trpc } from "@/lib/trpc";
 import { ReactNode } from "react";
 import LandingBrandLink from "@/components/LandingBrandLink";
 import NetworkStatusBadge from "@/components/NetworkStatusBadge";
-import HelpAssistant from "@/components/HelpAssistant";
 import ProBadge from "@/components/ProBadge";
 import { canManageSubscription, getEffectivePlan, PLAN_LABELS } from "@shared/plans";
 import {
@@ -391,7 +390,6 @@ export default function AppLayout({ children }: AppLayoutProps) {
       <div className="app-main flex-1 min-h-screen">
         {children}
       </div>
-      <HelpAssistant />
     </>
   );
 }

@@ -1,9 +1,9 @@
 {
   "locale": "fr",
   "audit": "Exhaustive English-identical customer-copy review",
-  "sourceCandidateCount": 179,
+  "sourceCandidateCount": 181,
   "translatedCount": 129,
-  "exceptionCount": 50,
+  "exceptionCount": 52,
   "minimumTranslationConfidence": 0.95,
   "translatedEntryFormat": "<namespace>:<key>",
   "exceptionEntryFormat": "<namespace>:<key>|<category>",
@@ -175,6 +175,7 @@
     "translation:complianceGuide.platformRisk.bing.title|brand_or_product",
     "translation:settings.bulkSender.smtpPort|cross_language_equivalent",
     "translation:login.title|brand_or_product",
+    "translation:mainForm.messageLabel|cross_language_equivalent",
     "translation:referralRewards.whatsApp|brand_or_product",
     "translation:referralRewards.message|cross_language_equivalent",
     "translation:adminRevenueControls.promotion.code|cross_language_equivalent",
@@ -193,6 +194,7 @@
     "landing:landing.modal.captionLineSpacingStandard|cross_language_equivalent",
     "landing:landing.modal.transcriptExportSourceLabel|cross_language_equivalent",
     "landing:landing.support.message|cross_language_equivalent",
+    "translation:settings.bulkSender.providers.mailjet.label|brand_or_product",
     "cancellation:brand|brand_or_product"
   ]
 }

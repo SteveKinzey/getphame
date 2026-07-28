@@ -1,11 +1,19 @@
 // Phame — Send Request Page
 // Sends a review request email via the user's connected email account (SMTP)
 
-import { useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import { Send, Star, Mail, User, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser, Bell, BellOff, CheckCircle2 } from "lucide-react";
+import { Send, Star, Mail, User, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser, Bell, CheckCircle2, ShieldCheck, AlertTriangle, RotateCcw, PencilLine } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
 import ContactPickerModal from "@/components/ContactPickerModal";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import { useAnalytics } from "@/hooks/useAnalytics";
@@ -15,6 +23,15 @@ import LanguageFlyout from "@/components/LanguageFlyout";
 import { completeSuccessfulRequest } from "@/lib/onboardingFlow";
 import { openUpgradeModal } from "@/lib/upgradeModal";
 import ProBadge from "@/components/ProBadge";
+import {
+  buildSafePlatformLinks,
+  containsDirectYelpLink,
+  getFallbackReviewRequestDraft,
+  getReviewPlatformValue,
+  MAX_REVIEW_REQUEST_BODY_CHARS,
+  MAX_REVIEW_REQUEST_SUBJECT_CHARS,
+  renderReviewRequestDraft,
+} from "@shared/reviewRequestDraft";
 
 const SUCCESS_IMG =
   "https://assets.getphame.app/rr-send-success.webp";
@@ -34,6 +51,15 @@ export default function SendRequestPage() {
   const [customerName, setCustomerName] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
   const [selectedTemplateId, setSelectedTemplateId] = useState<number | null>(null);
+  const [draftSubject, setDraftSubject] = useState("");
+  const [draftBody, setDraftBody] = useState("");
+  const [loadedDraftSourceKey, setLoadedDraftSourceKey] = useState("");
+  const [finalPreviewOpen, setFinalPreviewOpen] = useState(false);
+  const [complianceChecked, setComplianceChecked] = useState({
+    realCustomers: false,
+    noIncentives: false,
+    allCustomers: false,
+  });
   const [contactPickerOpen, setContactPickerOpen] = useState(false);
   const { isNative } = useContacts();
   const [selectedPlatformId, setSelectedPlatformId] = useState<number | null>(null);
@@ -67,14 +93,21 @@ export default function SendRequestPage() {
     other: "Other",
   };
 
-  // Resolve the active review URL for preview
+  // Resolve the active review destination for preview. Yelp intentionally uses
+  // a plain-text search instruction instead of a direct solicitation link.
   const activePlatform = platforms?.find((p) => p.id === selectedPlatformId)
     ?? platforms?.find((p) => p.isDefault === 1)
     ?? platforms?.[0];
-  const activeReviewUrl = activePlatform?.url ?? profile?.reviewLink ?? "";
+  const activeReviewValue = getReviewPlatformValue(
+    activePlatform,
+    profile?.businessName ?? "",
+    profile?.reviewLink ?? "",
+  );
 
   const sendRequest = trpc.requests.send.useMutation({
     onSuccess: (data) => {
+      setFinalPreviewOpen(false);
+      setComplianceChecked({ realCustomers: false, noIncentives: false, allCustomers: false });
       completeSuccessfulRequest({
         requestId: data.requestId,
         setSending,
@@ -107,32 +140,45 @@ export default function SendRequestPage() {
     return defaultTemplate ?? null;
   }, [selectedTemplateId, templates, defaultTemplate]);
 
-  // Build live preview subject/body with placeholders replaced
+  const fallbackDraft = useMemo(() => getFallbackReviewRequestDraft(), []);
+  const sourceDraft = activeTemplate ?? fallbackDraft;
+  const draftSourceKey = activeTemplate
+    ? `template:${activeTemplate.id}:${String(activeTemplate.updatedAt ?? "")}`
+    : `fallback:${profile?.businessName ?? ""}`;
+
+  // Load a selected template once. Recipient/platform edits update only the
+  // rendered preview, so the user's send-time copy is never overwritten.
+  useEffect(() => {
+    if (loadedDraftSourceKey === draftSourceKey) return;
+    setDraftSubject(sourceDraft.subject);
+    setDraftBody(sourceDraft.body);
+    setLoadedDraftSourceKey(draftSourceKey);
+    setErrors((current) => ({ ...current, subject: undefined, body: undefined }));
+  }, [draftSourceKey, loadedDraftSourceKey, sourceDraft.body, sourceDraft.subject]);
+
+  const safePlatformLinks = useMemo(
+    () => buildSafePlatformLinks(platforms ?? [], profile?.businessName ?? "", activeReviewValue),
+    [activeReviewValue, platforms, profile?.businessName],
+  );
+  const draftContext = useMemo(() => ({
+    customerName: customerName || t("mainForm.previewCustomer", { defaultValue: "Customer" }),
+    businessName: profile?.businessName ?? "",
+    reviewValue: activeReviewValue,
+    platformLinks: safePlatformLinks,
+  }), [activeReviewValue, customerName, profile?.businessName, safePlatformLinks, t]);
+
+  // Build the exact plain-text copy that the server will escape and send.
   const previewSubject = useMemo(() => {
-    if (!activeTemplate) return profile?.businessName ? `${profile.businessName} would love your feedback!` : "";
-    return activeTemplate.subject
-      .replace(/\{\{customer_name\}\}/g, customerName || "Customer")
-      .replace(/\{\{customerName\}\}/g, customerName || "Customer")
-      .replace(/\{\{business_name\}\}/g, profile?.businessName ?? "")
-      .replace(/\{\{businessName\}\}/g, profile?.businessName ?? "")
-      .replace(/\{\{review_link\}\}/g, activeReviewUrl)
-      .replace(/\{\{reviewLink\}\}/g, activeReviewUrl);
-  }, [activeTemplate, customerName, profile, activeReviewUrl]);
+    return renderReviewRequestDraft(draftSubject, draftContext).replace(/\s*[\r\n]+\s*/g, " ");
+  }, [draftContext, draftSubject]);
 
   const previewBody = useMemo(() => {
-    if (!activeTemplate) {
-      const name = customerName || "Customer";
-      const biz = profile?.businessName ?? "";
-      return `Hi ${name}! Thank you for choosing ${biz}. We hope you had a great experience! Could you take 30 seconds to leave us a quick review?`;
-    }
-    return activeTemplate.body
-      .replace(/\{\{customer_name\}\}/g, customerName || "Customer")
-      .replace(/\{\{customerName\}\}/g, customerName || "Customer")
-      .replace(/\{\{business_name\}\}/g, profile?.businessName ?? "")
-      .replace(/\{\{businessName\}\}/g, profile?.businessName ?? "")
-      .replace(/\{\{review_link\}\}/g, activeReviewUrl)
-      .replace(/\{\{reviewLink\}\}/g, activeReviewUrl);
-  }, [activeTemplate, customerName, profile, activeReviewUrl]);
+    return renderReviewRequestDraft(draftBody, draftContext);
+  }, [draftBody, draftContext]);
+
+  const allComplianceChecked = complianceChecked.realCustomers
+    && complianceChecked.noIncentives
+    && complianceChecked.allCustomers;
 
   function validate() {
     const errs: Record<string, string> = {};
@@ -140,14 +186,40 @@ export default function SendRequestPage() {
     if (!customerEmail.trim()) errs.email = t("validationErrors.emailRequired");
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail))
       errs.email = t("validationErrors.emailInvalid");
+    if (!draftSubject.trim()) {
+      errs.subject = t("mainForm.subjectRequired", { defaultValue: "Enter an email subject." });
+    } else if (draftSubject.trim().length > MAX_REVIEW_REQUEST_SUBJECT_CHARS) {
+      errs.subject = t("mainForm.subjectTooLong", {
+        defaultValue: "Keep the subject under {{max}} characters.",
+        max: MAX_REVIEW_REQUEST_SUBJECT_CHARS,
+      });
+    } else if (/[\r\n]/.test(draftSubject)) {
+      errs.subject = t("mainForm.subjectSingleLine", { defaultValue: "Keep the subject on one line." });
+    }
+    if (!draftBody.trim()) {
+      errs.body = t("mainForm.bodyRequired", { defaultValue: "Enter an email message." });
+    } else if (draftBody.trim().length > MAX_REVIEW_REQUEST_BODY_CHARS) {
+      errs.body = t("mainForm.bodyTooLong", {
+        defaultValue: "Keep the message under {{max}} characters.",
+        max: MAX_REVIEW_REQUEST_BODY_CHARS,
+      });
+    } else if (containsDirectYelpLink(`${draftSubject}\n${draftBody}`)) {
+      errs.body = t("mainForm.yelpDirectLinkBlocked", {
+        defaultValue: "Remove the direct Yelp link. Get Phame will add a plain-text search instruction instead.",
+      });
+    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   }
 
-  async function handleSend() {
+  function resetComplianceChecklist() {
+    setComplianceChecked({ realCustomers: false, noIncentives: false, allCustomers: false });
+  }
+
+  function handleReviewBeforeSend() {
     if (!validate()) return;
     // If no platform URL is available, show a multi-action toast instead of silently sending
-    if (!activeReviewUrl) {
+    if (!activeReviewValue) {
       toast.custom(
         (toastId) => (
           <div
@@ -179,6 +251,12 @@ export default function SendRequestPage() {
       );
       return;
     }
+    resetComplianceChecklist();
+    setFinalPreviewOpen(true);
+  }
+
+  function handleConfirmedSend() {
+    if (!validate() || !allComplianceChecked) return;
     setSending(true);
     sendRequest.mutate({
       customerName: customerName.trim(),
@@ -186,6 +264,9 @@ export default function SendRequestPage() {
       method: "email",
       templateId: selectedTemplateId ?? undefined,
       platformId: selectedPlatformId ?? undefined,
+      editedSubject: draftSubject.trim(),
+      editedBody: draftBody.trim(),
+      complianceConfirmed: true,
     });
   }
 
@@ -196,6 +277,10 @@ export default function SendRequestPage() {
     setSent(false);
     setReminderScheduled(false);
     setLastRequestId(null);
+    setDraftSubject(sourceDraft.subject);
+    setDraftBody(sourceDraft.body);
+    setFinalPreviewOpen(false);
+    resetComplianceChecklist();
   }
 
   // ── Success screen ─────────────────────────────────────────────────────────
@@ -584,6 +669,102 @@ export default function SendRequestPage() {
               )}
             </div>
 
+            {/* Send-time message editor. Edits apply only to this request. */}
+            <div
+              className="rounded-2xl p-4 rr-bg-cream-warm"
+              style={{ border: "1px solid oklch(0.90 0.02 260)" }}
+              data-testid="send-message-editor"
+            >
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <PencilLine size={15} className="rr-text-gold-dim" aria-hidden="true" />
+                    <h3 className="text-sm font-black rr-text-navy">
+                      {t("mainForm.editMessageTitle", { defaultValue: "Edit this message" })}
+                    </h3>
+                  </div>
+                  <p className="text-xs mt-1 rr-text-navy-muted">
+                    {t("mainForm.editMessageDescription", { defaultValue: "Personalize this email without changing your saved template." })}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDraftSubject(sourceDraft.subject);
+                    setDraftBody(sourceDraft.body);
+                    setErrors((current) => ({ ...current, subject: undefined, body: undefined }));
+                  }}
+                  className="inline-flex min-h-9 shrink-0 items-center gap-1 rounded-lg px-2.5 text-xs font-bold rr-text-navy-mid focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                  style={{ background: "oklch(0.93 0.02 260)" }}
+                >
+                  <RotateCcw size={13} aria-hidden="true" />
+                  {t("mainForm.resetToTemplate", { defaultValue: "Reset" })}
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <div>
+                  <div className="mb-1 flex items-center justify-between gap-3">
+                    <label htmlFor="send-request-subject" className="text-xs font-bold rr-text-navy-mid">
+                      {t("mainForm.subjectLabel", { defaultValue: "Subject" })}
+                    </label>
+                    <span className="text-[11px] rr-text-navy-muted" aria-live="polite">
+                      {draftSubject.length}/{MAX_REVIEW_REQUEST_SUBJECT_CHARS}
+                    </span>
+                  </div>
+                  <input
+                    id="send-request-subject"
+                    type="text"
+                    value={draftSubject}
+                    maxLength={MAX_REVIEW_REQUEST_SUBJECT_CHARS}
+                    onChange={(event) => {
+                      setDraftSubject(event.target.value);
+                      setErrors((current) => ({ ...current, subject: undefined }));
+                    }}
+                    className="w-full rounded-xl bg-white px-3 py-3 text-base outline-none focus-visible:ring-2 focus-visible:ring-offset-1 rr-text-navy"
+                    style={{ border: errors.subject ? "2px solid oklch(0.65 0.22 27)" : "2px solid oklch(0.90 0.02 260)" }}
+                    aria-invalid={Boolean(errors.subject)}
+                    aria-describedby={errors.subject ? "send-request-subject-error" : undefined}
+                  />
+                  {errors.subject && (
+                    <p id="send-request-subject-error" className="text-xs mt-1 rr-text-red" role="alert">{errors.subject}</p>
+                  )}
+                </div>
+
+                <div>
+                  <div className="mb-1 flex items-center justify-between gap-3">
+                    <label htmlFor="send-request-body" className="text-xs font-bold rr-text-navy-mid">
+                      {t("mainForm.messageLabel", { defaultValue: "Message" })}
+                    </label>
+                    <span className="text-[11px] rr-text-navy-muted" aria-live="polite">
+                      {draftBody.length}/{MAX_REVIEW_REQUEST_BODY_CHARS}
+                    </span>
+                  </div>
+                  <textarea
+                    id="send-request-body"
+                    value={draftBody}
+                    rows={11}
+                    maxLength={MAX_REVIEW_REQUEST_BODY_CHARS}
+                    onChange={(event) => {
+                      setDraftBody(event.target.value);
+                      setErrors((current) => ({ ...current, body: undefined }));
+                    }}
+                    className="w-full resize-y rounded-xl bg-white px-3 py-3 text-base leading-relaxed outline-none focus-visible:ring-2 focus-visible:ring-offset-1 rr-text-navy"
+                    style={{ border: errors.body ? "2px solid oklch(0.65 0.22 27)" : "2px solid oklch(0.90 0.02 260)", minHeight: "220px" }}
+                    aria-invalid={Boolean(errors.body)}
+                    aria-describedby={errors.body ? "send-request-body-error" : "send-request-placeholder-help"}
+                  />
+                  {errors.body ? (
+                    <p id="send-request-body-error" className="text-xs mt-1 rr-text-red" role="alert">{errors.body}</p>
+                  ) : (
+                    <p id="send-request-placeholder-help" className="text-xs mt-1 rr-text-navy-muted">
+                      {t("mainForm.placeholderHelp", { defaultValue: "Placeholders such as {{customerName}}, {{businessName}}, and {{platformLinks}} are filled automatically." })}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* Platform selector */}
             {platforms && platforms.length > 0 && (
               <div>
@@ -650,7 +831,7 @@ export default function SendRequestPage() {
                 className="px-4 py-3 rounded-xl rr-bg-white-card lg:hidden"
               >
                 <p className="text-xs font-bold mb-2 rr-text-navy-mid">
-                  {t("mainForm.emailPreview")}
+                  {t("mainForm.livePreview", { defaultValue: "Live email preview" })}
                 </p>
                 <p className="text-xs mb-1" style={{ color: "oklch(0.50 0.03 260)" }}>
                   <strong>{t("mainForm.from")}</strong> {smtpStatus?.email ?? "your@email.com"}
@@ -664,9 +845,9 @@ export default function SendRequestPage() {
               </div>
             )}
 
-            {/* Send button */}
+            {/* Review button — sending happens only from the final confirmation dialog */}
             <button
-              onClick={() => { buttonPressHaptic(); handleSend(); }}
+              onClick={() => { buttonPressHaptic(); handleReviewBeforeSend(); }}
               disabled={sending || !emailConnected || !profileComplete}
               className="flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-lg transition-transform active:scale-95"
               style={{
@@ -688,8 +869,8 @@ export default function SendRequestPage() {
                 </>
               ) : (
                 <>
-                  <Star size={20} />
-                  {t("mainForm.sendReviewRequest")}
+                  <Mail size={20} />
+                  {t("mainForm.reviewAndSend", { defaultValue: "Review & send" })}
                 </>
               )}
             </button>
@@ -707,7 +888,7 @@ export default function SendRequestPage() {
               <div className="px-5 py-4 border-b border-gray-100">
                 <div className="flex items-center gap-2">
                   <Mail size={14} className="rr-text-navy-mid" />
-                  <span className="text-sm font-black rr-text-navy">{t("mainForm.emailPreview")}</span>
+                  <span className="text-sm font-black rr-text-navy">{t("mainForm.livePreview", { defaultValue: "Live email preview" })}</span>
                 </div>
               </div>
               {/* Preview body */}
@@ -726,7 +907,7 @@ export default function SendRequestPage() {
                     className="text-sm rr-text-navy leading-relaxed whitespace-pre-wrap rounded-xl p-3"
                     style={{ background: "oklch(0.97 0.01 260)", minHeight: "120px" }}
                   >
-                    {previewBody || <span className="opacity-40">Fill in customer details to see a preview…</span>}
+                    {previewBody || <span className="opacity-40">{t("mainForm.previewPlaceholder", { defaultValue: "Add the customer and message details to see the final email." })}</span>}
                   </div>
                 </div>
                 {/* Recipient info */}
@@ -734,16 +915,27 @@ export default function SendRequestPage() {
                   <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ background: "oklch(0.97 0.03 80)" }}>
                     <User size={13} className="rr-text-gold-dim shrink-0" />
                     <span className="text-xs rr-text-navy-mid">
-                      Sending to <strong>{customerName}</strong>{customerEmail ? ` (${customerEmail})` : ""}
+                      {t("mainForm.sendingTo", {
+                        defaultValue: "Sending to {{name}} ({{email}})",
+                        name: customerName,
+                        email: customerEmail,
+                      })}
                     </span>
                   </div>
                 )}
               </div>
             </div>
-            {/* Tips card */}
+            {/* Compliance reminder */}
             <div className="mt-4 px-4 py-3 rounded-2xl" style={{ background: "oklch(0.22 0.09 260)" }}>
-              <p className="text-xs font-bold mb-1" style={{ color: "oklch(0.80 0.18 80)" }}>Pro tip</p>
-              <p className="text-xs" style={{ color: "oklch(0.80 0.06 260)" }}>Personalised emails with the customer's first name get 2× more clicks than generic ones.</p>
+              <div className="flex items-center gap-2 mb-1">
+                <ShieldCheck size={14} className="rr-text-gold" aria-hidden="true" />
+                <p className="text-xs font-bold rr-text-gold">
+                  {t("mainForm.complianceReminderTitle", { defaultValue: "Send responsibly" })}
+                </p>
+              </div>
+              <p className="text-xs text-white/80">
+                {t("mainForm.complianceReminderBody", { defaultValue: "Use neutral wording, contact real customers only, and never offer incentives or filter by satisfaction." })}
+              </p>
             </div>
           </div>
         </div>
@@ -751,6 +943,106 @@ export default function SendRequestPage() {
       </div>{/* end grid wrapper */}
       </div>{/* end outer padding */}
     </div>
+
+    <Dialog
+      open={finalPreviewOpen}
+      onOpenChange={(open) => {
+        if (sending) return;
+        setFinalPreviewOpen(open);
+        if (!open) resetComplianceChecklist();
+      }}
+    >
+      <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-2xl" data-testid="send-final-preview-dialog">
+        <DialogHeader>
+          <DialogTitle className="rr-text-navy">
+            {t("mainForm.finalPreviewTitle", { defaultValue: "Review the final email" })}
+          </DialogTitle>
+          <DialogDescription>
+            {t("mainForm.finalPreviewDescription", { defaultValue: "Check the recipient and exact message before sending." })}
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="flex flex-col gap-4">
+          <div className="grid gap-3 rounded-2xl p-4 rr-bg-cream-warm sm:grid-cols-2" style={{ border: "1px solid oklch(0.90 0.02 260)" }}>
+            <div>
+              <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.from")}</p>
+              <p className="break-all text-sm rr-text-navy">{smtpStatus?.email ?? "your@email.com"}</p>
+            </div>
+            <div>
+              <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.to", { defaultValue: "To:" })}</p>
+              <p className="break-all text-sm rr-text-navy">{customerName} &lt;{customerEmail}&gt;</p>
+            </div>
+          </div>
+
+          <div className="rounded-2xl bg-white p-4" style={{ border: "1px solid oklch(0.90 0.02 260)" }}>
+            <div className="mb-4">
+              <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.subject")}</p>
+              <p className="mt-1 text-sm font-bold rr-text-navy">{previewSubject}</p>
+            </div>
+            <div>
+              <p className="text-xs font-bold rr-text-navy-mid">{t("mainForm.body")}</p>
+              <div className="mt-1 whitespace-pre-wrap text-sm leading-relaxed rr-text-navy">{previewBody}</div>
+            </div>
+          </div>
+
+          {platforms?.some((platform) => platform.platform === "yelp") && (
+            <div className="flex items-start gap-2 rounded-xl px-3 py-2.5 rr-bg-gold-pale" style={{ border: "1px solid oklch(0.85 0.12 80)" }}>
+              <AlertTriangle size={15} className="mt-0.5 shrink-0 rr-text-gold-dim" aria-hidden="true" />
+              <p className="text-xs rr-text-gold-dim">
+                {t("bulkSendDialog.yelpWarning")}
+              </p>
+            </div>
+          )}
+
+          <div className="rounded-2xl p-4 rr-bg-cream-warm" style={{ border: "1px solid oklch(0.88 0.03 260)" }}>
+            <div className="mb-2 flex items-center gap-2">
+              <ShieldCheck size={15} className="rr-text-green" aria-hidden="true" />
+              <p className="text-sm font-black rr-text-navy">{t("bulkSendDialog.complianceChecklistTitle")}</p>
+            </div>
+            <div className="flex flex-col gap-2">
+              {([
+                { key: "realCustomers", label: t("bulkSendDialog.realCustomersCheck") },
+                { key: "noIncentives", label: t("bulkSendDialog.noIncentivesCheck") },
+                { key: "allCustomers", label: t("bulkSendDialog.allCustomersCheck") },
+              ] as const).map((item) => (
+                <label key={item.key} className="flex min-h-10 cursor-pointer items-start gap-3 rounded-xl px-2 py-2 hover:bg-white/70">
+                  <input
+                    type="checkbox"
+                    checked={complianceChecked[item.key]}
+                    onChange={(event) => setComplianceChecked((current) => ({ ...current, [item.key]: event.target.checked }))}
+                    className="mt-0.5 h-4 w-4 shrink-0 accent-[oklch(0.55_0.18_145)]"
+                  />
+                  <span className="text-xs leading-relaxed rr-text-navy-mid">{item.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <DialogFooter>
+          <button
+            type="button"
+            onClick={() => setFinalPreviewOpen(false)}
+            disabled={sending}
+            className="min-h-11 rounded-xl px-4 text-sm font-bold rr-text-navy-mid focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50"
+            style={{ background: "oklch(0.93 0.02 260)" }}
+          >
+            {t("mainForm.backToEdit", { defaultValue: "Back to edit" })}
+          </button>
+          <button
+            type="button"
+            onClick={() => { buttonPressHaptic(); handleConfirmedSend(); }}
+            disabled={sending || !allComplianceChecked}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black rr-bg-gold rr-text-navy focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {sending ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <Send size={16} aria-hidden="true" />}
+            {sending
+              ? t("mainForm.sending")
+              : t("mainForm.confirmAndSend", { defaultValue: "Confirm & send" })}
+          </button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
 
     {/* Native contacts picker - only rendered in Capacitor app */}
     <ContactPickerModal

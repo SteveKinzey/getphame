@@ -15,6 +15,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
+  buildSafePlatformLinks,
+  getFallbackReviewRequestDraft,
+  getReviewPlatformValue,
+} from "@shared/reviewRequestDraft";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -102,21 +107,7 @@ const SHORTCODES = [
 
 const emptyForm: FormData = {
   name: "",
-  subject: "{{businessName}} would love your feedback!",
-  body: `Hi {{customerName}},
-
-Thank you for choosing {{businessName}}! We hope you had a great experience.
-
-You can leave a review here:
-
-{{platformLinks}}
-
-Thank you so much for your support!
-
-The {{businessName}} team
-
----
-You received this email because you are a customer of {{businessName}}. To stop receiving these emails, reply with "unsubscribe".`,
+  ...getFallbackReviewRequestDraft(),
   isDefault: false,
 };
 
@@ -162,8 +153,8 @@ export default function EmailTemplates() {
 
   const { data: profile } = trpc.profile.get.useQuery(undefined, { enabled: isAuthenticated });
   const { data: platforms = [] } = trpc.reviewPlatforms.list.useQuery(undefined, { enabled: isAuthenticated });
-  const defaultPlatform = (platforms as Array<{ isDefault: number; url: string }>).find((p) => p.isDefault) ??
-    (platforms as Array<{ url: string }>)[0];
+  const defaultPlatform = (platforms as Array<{ isDefault: number; platform: string; url: string }>).find((p) => p.isDefault) ??
+    (platforms as Array<{ platform: string; url: string }>)[0];
 
   const createMutation = trpc.templates.create.useMutation({
     onSuccess: () => {
@@ -262,13 +253,16 @@ export default function EmailTemplates() {
   // Live preview substitution
   const sampleCustomer = "Alex Johnson";
   const sampleBusiness = profile?.businessName || "Your Business";
-  const samplePhame = defaultPlatform?.url || "https://g.page/r/your-review-link";
-  const samplePlatformLinks =
-    (platforms as Array<{ label?: string; platform: string; url: string }>).length > 0
-      ? (platforms as Array<{ label?: string; platform: string; url: string }>)
-          .map((p) => `• ${p.label || p.platform}: ${p.url}`)
-          .join("\n")
-      : `• Google: https://g.page/r/your-review-link\n• Yelp: Search "Your Business" on Yelp`;
+  const samplePhame = getReviewPlatformValue(
+    defaultPlatform,
+    sampleBusiness,
+    "https://g.page/r/your-review-link",
+  );
+  const samplePlatformLinks = buildSafePlatformLinks(
+    platforms as Array<{ label?: string | null; platform: string; url: string }>,
+    sampleBusiness,
+    samplePhame,
+  ).replace(/^- /gm, "• ");
 
   function applyPreview(text: string) {
     return text
