@@ -189,8 +189,8 @@
         "description": "適合致力於提升聲譽的商家，最具價值。",
         "features": {
           "everything": "包含 Pro（月付）的所有功能",
-          "billed": "年付計費 ($290/年)",
-          "save": "較月付省 17%",
+          "billed": "年付計費（$290/年）",
+          "save": "較月付省 $58（17%）",
           "support": "優先支援",
           "earlyAccess": "新功能搶先體驗"
         },

@@ -68,6 +68,31 @@ describe("confirmed Get Phame pricing catalog", () => {
       expect(translation.pricing?.lifetimePrice, `${locale} lifetime label`).toBe(expected.lifetime);
     }
   });
+
+  it("keeps annual billing totals and derived savings exact in authored and fallback pricing resources", () => {
+    const fallback = JSON.parse(read("client/src/lib/i18nFallbackResources.json"));
+    const completeFallback = JSON.parse(read("client/src/lib/i18nCompleteFallbackResources.json"));
+
+    for (const locale of LOCALES) {
+      const authored = JSON.parse(read(`client/public/locales/${locale}/landing.json`));
+      const expected = locale === "th"
+        ? { annual: "9,990", savings: "1,650", percent: 14 }
+        : { annual: "290", savings: "58", percent: 17 };
+      const plans = [
+        ["authored", authored.landing?.pricing?.proAnnual ?? authored.pricing?.proAnnual],
+        ["fallback", fallback[locale]?.landing?.pricing?.proAnnual],
+        ["complete fallback", completeFallback[locale]?.landing?.pricing?.proAnnual],
+      ] as const;
+
+      for (const [source, plan] of plans) {
+        expect(plan, `${locale} ${source} annual plan`).toBeDefined();
+        expect(plan.features.billed, `${locale} ${source} annual total`).toContain(expected.annual);
+        expect(plan.features.save, `${locale} ${source} savings amount`).toContain(expected.savings);
+        expect(plan.features.save, `${locale} ${source} savings percent`).toMatch(new RegExp(`${expected.percent}\\s*%`));
+        expect(plan.badge, `${locale} ${source} savings badge`).toMatch(new RegExp(`${expected.percent}\\s*%`));
+      }
+    }
+  });
 });
 
 describe("customer-facing social-proof policy", () => {
@@ -107,6 +132,8 @@ describe("customer-facing social-proof policy", () => {
       ["guaranteed review-growth phrasing", /(?:turn happy customers into|watch the reviews roll in|review count climb)/i],
       ["instant import claim", /your entire list in seconds/i],
       ["unsupported compliance or deliverability superlative", /(?:fully compliant|maximum deliverability)/i],
+      ["stale annual total", /\$228/i],
+      ["stale annual savings percent", /(?:save|ahorra|économisez|risparmia|ประหยัด|节省|省下|省|économiser)[^"\n]{0,80}34\s*%/iu],
       ["testimonial localization object", /"testimonials"\s*:/i],
       ["social-proof localization object", /"socialProof(?:Bar)?"\s*:/i],
       ["customer-quote localization object", /"customerQuote"\s*:/i],

@@ -177,16 +177,18 @@
           "description": "One payment, lifetime access. No renewals, no surprises."
         },
         "proAnnual": {
+          "name": "Pro Annual",
+          "period": "/yr",
           "description": "Best value for businesses committed to reputation growth.",
           "features": {
-            "billed": "Billed annually ($228/yr)",
-            "earlyAccess": "Early access to new features",
             "everything": "Everything in Pro Monthly",
+            "billed": "Billed annually ($290/yr)",
+            "save": "Save $58 (17%) vs monthly",
             "support": "Priority support",
-            "save": "Save 34% vs monthly"
+            "earlyAccess": "Early access to new features"
           },
-          "badge": "Save 34%",
-          "cta": "Start Pro Annual"
+          "cta": "Start Pro Annual",
+          "badge": "Save 17%"
         },
         "headline": "Honest pricing. No surprises.",
         "mostPopular": "Most Popular",
@@ -889,16 +891,18 @@
           "description": "Un pago, acceso de por vida. Sin renovaciones, sin sorpresas."
         },
         "proAnnual": {
+          "name": "Pro Anual",
+          "period": "/año",
           "description": "Mejor valor para negocios comprometidos con el crecimiento de su reputación.",
           "features": {
-            "billed": "Facturado anualmente ($228/año)",
-            "earlyAccess": "Acceso anticipado a nuevas funciones",
-            "everything": "Todo en Pro Monthly",
+            "everything": "Todo en Pro Mensual",
+            "billed": "Facturado anualmente ($290/año)",
+            "save": "Ahorra $58 (17%) frente al plan mensual",
             "support": "Soporte prioritario",
-            "save": "Ahorra 34% frente al plan mensual"
+            "earlyAccess": "Acceso anticipado a nuevas funciones"
           },
-          "badge": "Ahorra 34%",
-          "cta": "Comenzar Pro anual"
+          "cta": "Comenzar Pro Anual",
+          "badge": "Ahorra 17%"
         },
         "headline": "Precios honestos. Sin sorpresas.",
         "mostPopular": "Más popular",
@@ -1601,16 +1605,18 @@
           "description": "Un paiement, accès à vie. Pas de renouvellements, pas de surprises."
         },
         "proAnnual": {
-          "description": "Meilleur rapport qualité-prix pour les entreprises engagées dans la croissance de leur réputation.",
+          "name": "Pro Annuel",
+          "period": "/an",
+          "description": "Meilleur rapport qualité‑prix pour les entreprises engagées dans la croissance de leur réputation.",
           "features": {
-            "billed": "Facturé annuellement ($228/an)",
-            "earlyAccess": "Accès anticipé aux nouvelles fonctionnalités",
-            "everything": "Tout dans Pro mensuel",
-            "support": "Assistance prioritaire",
-            "save": "Économisez 34 % par rapport au mensuel"
+            "everything": "Tout ce qui est dans Pro Mensuel",
+            "billed": "Facturé annuellement (290 $/an)",
+            "save": "Économisez 58 $ (17 %) par rapport au forfait mensuel",
+            "support": "Support prioritaire",
+            "earlyAccess": "Accès anticipé aux nouvelles fonctionnalités"
           },
-          "badge": "Économisez 34 %",
-          "cta": "Démarrer Pro annuel"
+          "cta": "Commencer Pro Annuel",
+          "badge": "Économisez 17 %"
         },
         "headline": "Tarification honnête. Pas de surprises.",
         "mostPopular": "Le plus populaire",
@@ -2313,16 +2319,18 @@
           "description": "Un unico pagamento, accesso a vita. Niente rinnovi, niente sorprese."
         },
         "proAnnual": {
-          "description": "Miglior rapporto qualità-prezzo per aziende impegnate nella crescita della reputazione.",
+          "name": "Pro Annuale",
+          "period": "/anno",
+          "description": "Il miglior valore per le attività impegnate nella crescita della reputazione.",
           "features": {
-            "billed": "Addebitato annualmente ($228/anno)",
-            "earlyAccess": "Accesso anticipato alle nuove funzionalità",
-            "everything": "Tutto in Pro Mensile",
-            "support": "Supporto prioritario",
-            "save": "Risparmia il 34% rispetto al piano mensile"
+            "everything": "Tutto ciò che include Pro Mensile",
+            "billed": "Fatturato annualmente ($290/anno)",
+            "save": "Risparmia $58 (17%) rispetto al mensile",
+            "support": "Assistenza prioritaria",
+            "earlyAccess": "Accesso anticipato alle nuove funzionalità"
           },
-          "badge": "Risparmia il 34%",
-          "cta": "Inizia Pro Annuale"
+          "cta": "Inizia Pro Annuale",
+          "badge": "Risparmia il 17%"
         },
         "headline": "Prezzi onesti. Nessuna sorpresa.",
         "mostPopular": "Più popolare",
@@ -3025,16 +3033,18 @@
           "description": "ชำระครั้งเดียว เข้าถึงตลอดชีพ ไม่มีการต่ออายุ ไม่มีค่าใช้จ่ายแอบแฝง."
         },
         "proAnnual": {
-          "description": "คุ้มค่าสำหรับธุรกิจที่มุ่งเน้นการเติบโตด้านชื่อเสียง",
+          "name": "Pro รายปี",
+          "period": "/ปี",
+          "description": "คุ้มค่าสำหรับธุรกิจที่ตั้งใจเติบโตด้านชื่อเสียง",
           "features": {
-            "billed": "เรียกเก็บรายปี ($228/ปี)",
-            "earlyAccess": "เข้าถึงฟีเจอร์ใหม่ก่อนใคร",
-            "everything": "ทุกอย่างในแผน Pro รายเดือน",
-            "support": "การสนับสนุนลำดับความสำคัญ",
-            "save": "ประหยัด 34% เทียบกับรายเดือน"
+            "everything": "ทุกอย่างใน Pro รายเดือน",
+            "billed": "เรียกเก็บเป็นรายปี (฿9,990/ปี)",
+            "save": "ประหยัด ฿1,650 (14%) เมื่อเทียบกับรายเดือน",
+            "support": "สนับสนุนแบบพิเศษ",
+            "earlyAccess": "เข้าถึงฟีเจอร์ใหม่ก่อนใคร"
           },
-          "badge": "ประหยัด 34%",
-          "cta": "เริ่ม Pro แบบรายปี"
+          "cta": "เริ่ม Pro รายปี",
+          "badge": "ประหยัด 14%"
         },
         "headline": "ราคาชัดเจน ไม่มีค่าใช้จ่ายแอบแฝง.",
         "mostPopular": "ยอดนิยม",
@@ -3737,16 +3747,18 @@
           "description": "一次付款，终身使用。无需续费，无隐藏费用。"
         },
         "proAnnual": {
-          "description": "对致力于提升口碑的企业而言性价比最高。",
+          "name": "Pro（年付）",
+          "period": "/年",
+          "description": "适合致力于声誉增长的企业，性价比最高。",
           "features": {
-            "billed": "按年计费（$228/年）",
-            "earlyAccess": "新功能优先体验",
-            "everything": "包含 Pro（月付）的全部功能",
+            "everything": "包含 Pro（月付）的所有功能",
+            "billed": "按年计费（$290/年）",
+            "save": "较月付节省 $58（17%）",
             "support": "优先支持",
-            "save": "相比月付节省 34%"
+            "earlyAccess": "新功能优先体验"
           },
-          "badge": "节省 34%",
-          "cta": "开始 Pro（年付）"
+          "cta": "开通 Pro（年付）",
+          "badge": "节省 17%"
         },
         "headline": "价格透明，无隐性费用。",
         "mostPopular": "最受欢迎",
@@ -4449,16 +4461,18 @@
           "description": "一次付款，終身使用。無需續訂，沒有隱藏費用。"
         },
         "proAnnual": {
-          "description": "最適合致力於聲譽成長的商家，具最高性價比。",
+          "name": "Pro（年付）",
+          "period": "/年",
+          "description": "適合致力於提升聲譽的商家，最具價值。",
           "features": {
-            "billed": "年繳（$228/年）",
-            "earlyAccess": "搶先使用新功能",
-            "everything": "包含 Pro Monthly 的全部功能",
+            "everything": "包含 Pro（月付）的所有功能",
+            "billed": "年付計費（$290/年）",
+            "save": "較月付省 $58（17%）",
             "support": "優先支援",
-            "save": "比月付省 34%"
+            "earlyAccess": "新功能搶先體驗"
           },
-          "badge": "省下 34%",
-          "cta": "開始 Pro（年付）"
+          "cta": "啟用 Pro（年付）",
+          "badge": "省 17%"
         },
         "headline": "價格誠實透明，無額外驚喜。",
         "mostPopular": "最受歡迎",

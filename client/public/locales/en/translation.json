@@ -2069,16 +2069,17 @@
       },
       "proAnnual": {
         "name": "Pro Annual",
+        "period": "/yr",
         "description": "Best value for businesses committed to reputation growth.",
         "features": {
           "everything": "Everything in Pro Monthly",
-          "billed": "Billed annually ($228/yr)",
-          "save": "Save 34% vs monthly",
+          "billed": "Billed annually ($290/yr)",
+          "save": "Save $58 (17%) vs monthly",
           "support": "Priority support",
           "earlyAccess": "Early access to new features"
         },
         "cta": "Start Pro Annual",
-        "badge": "Save 34%"
+        "badge": "Save 17%"
       },
       "lifetime": {
         "name": "Lifetime",
