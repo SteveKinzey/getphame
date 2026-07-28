@@ -311,3 +311,4 @@
 - [x] Add focused authentication UX and locale-contract regressions for loading, success, countdown, resend, invalid-link, expired-link, accessibility, and route/error-code behavior.
 - [x] Update and validate the reusable Get Phame production-readiness remediation skill with the proven magic-link UX and recovery pattern, then deliver the refreshed installable skill card.
 - [ ] Run focused tests, full Vitest, TypeScript, production dependency audit, production build, desktop/mobile responsive and runtime checks, checkpoint and production verification, and exact-tree protected-main GitHub synchronization.
+- [x] Resolve pull request 27’s required review comment by removing the unused English-only `login.continueWithEmail` and `login.cancel` locale keys, add a durable locale-contract regression, and complete focused/full/type/audit/build plus desktop/mobile validation before republishing and updating the exact-tree release evidence.
