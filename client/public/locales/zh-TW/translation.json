@@ -20,9 +20,9 @@
     "complianceHint": "檢視合規指南",
     "complianceActive": "合規狀態：已啟用",
     "complianceViewGuide": "— 檢視指南",
-    "howItWorks": "How It Works",
-    "pricing": "Pricing",
-    "faq": "FAQ",
+    "howItWorks": "運作方式",
+    "pricing": "價格方案",
+    "faq": "常見問題",
     "manageUsers": "管理使用者",
     "admin": "管理員",
     "developer": "開發者",
@@ -102,21 +102,21 @@
     "a3": "是的。您先獲得 10 次評論請求，之後每滾動 30 天獲得 5 次。無需信用卡。",
     "q4": "可以匯入客戶名單嗎？",
     "a4": "可以。上傳包含客戶姓名和郵箱地址的CSV檔案，或直接從WooCommerce同步。",
-    "q5": "Does Get Phame store my email password?",
-    "a5": "Never. Get Phame uses your own SMTP credentials (or Gmail app password) to send emails directly from your account. Your password is encrypted at rest and never shared or stored in plain text. You can disconnect at any time from Settings.",
-    "q6": "Will my emails land in spam?",
-    "a6": "Because emails are sent from your own email address — not a generic sender — they land in the primary inbox far more reliably than bulk marketing tools. Your domain reputation stays intact.",
-    "q7": "What happens to my customer list?",
-    "a7": "Your customer data stays private. It is stored securely in your account and is never sold, shared, or used for any purpose other than sending your review requests. You can delete contacts at any time.",
-    "q8": "Can customers opt out?",
-    "a8": "Yes. Every review request email includes an unsubscribe link. Customers who opt out are automatically excluded from future sends.",
-    "q9": "Do I need technical skills to connect my email?",
+    "q5": "Get Phame 會儲存我的電子郵件密碼嗎？",
+    "a5": "不會。Get Phame 會使用您自己的 SMTP 憑證（或 Gmail 應用程式密碼），直接從您的帳戶傳送電子郵件。您的密碼會以靜態加密方式保存，絕不會分享或以純文字儲存。您可以隨時從「設定」中斷連線。",
+    "q6": "我的電子郵件會進入垃圾郵件嗎？",
+    "a6": "由於電子郵件是從您自己的電子郵件地址傳送，而不是一般寄件者，因此相較於大量行銷工具，能更穩定地送達主要收件匣。您的網域信譽也會維持不變。",
+    "q7": "我的客戶名單會如何處理？",
+    "a7": "您的客戶資料會保持私密。資料會安全地儲存在您的帳戶中，絕不會出售、分享，或用於傳送評論邀請以外的任何目的。您可以隨時刪除聯絡人。",
+    "q8": "客戶可以選擇退出嗎？",
+    "a8": "可以。每封評論邀請電子郵件都包含取消訂閱連結。選擇退出的客戶會自動從未來的寄送名單中排除。",
+    "q9": "連接我的電子郵件需要技術能力嗎？",
     "a9": "不需要。Gmail 與 Outlook 提供附螢幕截圖的逐步指南。自訂 SMTP 需要伺服器位址、連接埠及服務商提供的憑證。",
-    "q10": "Which review platforms does it support?",
-    "a10": "Google, Yelp, TripAdvisor, Facebook, Bing, and any custom URL. You can add multiple platforms and choose which one to include in each send.",
-    "q11": "How does WooCommerce sync work?",
-    "a11": "Connect your WooCommerce store with your API key and Get Phame imports completed orders automatically. You can sync the last 30, 60, or 90 days of customers and bulk-send review requests in one click.",
-    "q12": "What does unlimited mean on the Pro plan?",
+    "q10": "支援哪些評論平台？",
+    "a10": "Google、Yelp、TripAdvisor、Facebook、Bing，以及任何自訂 URL。您可以新增多個平台，並選擇每次寄送時要包含哪一個。",
+    "q11": "WooCommerce 同步如何運作？",
+    "a11": "使用您的 API 金鑰連接 WooCommerce 商店後，Get Phame 會自動匯入已完成的訂單。您可以同步過去 30、60 或 90 天的客戶，並一鍵批次寄送評論邀請。",
+    "q12": "Pro 方案中的「無限制」是什麼意思？",
     "a12": "無限表示評論請求沒有每月上限。免費方案先提供 10 次，之後每滾動 30 天提供 5 次。Pro 會取消此產品限制。"
   },
   "bottomCta": {
@@ -374,13 +374,13 @@
     "errorToast": "無法開啟郵件客戶端。請直接傳送郵件至 support@phame.app。"
   },
   "deleteAccount": {
-    "buttonText": "刪除賬戶",
-    "title": "刪除您的賬戶？",
-    "confirmation": "這將永久刪除您的賬戶、所有聯絡人、郵件模板、評論請求、跟蹤資料和 SMTP 憑據。此操作無法撤銷。",
+    "buttonText": "刪除帳戶",
+    "title": "刪除您的帳戶？",
+    "confirmation": "這將永久刪除您的帳戶、所有聯絡人、郵件模板、評論請求、追蹤資料和 SMTP 憑據。此操作無法撤銷。",
     "checkboxLabel": "我明白這是永久性的，並希望繼續。",
-    "confirmButton": "永久刪除我的賬戶",
+    "confirmButton": "永久刪除我的帳戶",
     "cancelButton": "取消",
-    "successToast": "賬戶已刪除。再見！"
+    "successToast": "帳戶已刪除。再見！"
   },
   "common": {
     "gotIt": "知道了 ✓",
@@ -695,7 +695,7 @@
   },
   "deleteDialog": {
     "title": "刪除 {{name}}？",
-    "description": "您確定要刪除此聯絡人嗎？此操作無法撤消。",
+    "description": "您確定要刪除此聯絡人嗎？此操作無法撤銷。",
     "cancel": "取消",
     "delete": "刪除"
   },
@@ -1222,7 +1222,7 @@
   },
   "deleteConfirm": {
     "title": "刪除模板？",
-    "description": "這將永久刪除**{{templateName}}**。此操作無法撤消。",
+    "description": "這將永久刪除**{{templateName}}**。此操作無法撤銷。",
     "cancel": "取消",
     "delete": "刪除"
   },
@@ -1522,18 +1522,18 @@
     "caption": "免費開始 — 無需信用卡"
   },
   "trust": {
-    "encryptedPassword": "Password encrypted at rest",
-    "dataPrivacy": "Your customer list stays private",
-    "emailProviders": "Works with Gmail, Outlook, Yahoo & more",
-    "unsubscribe": "Unsubscribe link in every email"
+    "encryptedPassword": "密碼以靜態加密方式保存",
+    "dataPrivacy": "您的客戶名單會保持私密",
+    "emailProviders": "可搭配 Gmail、Outlook、Yahoo 等服務使用",
+    "unsubscribe": "每封電子郵件都包含取消訂閱連結"
   },
   "demo": {
-    "sectionTitle": "See It In Action",
+    "sectionTitle": "觀看實際操作",
     "sectionSubtitle": "查看三步寄送流程。",
-    "gifAlt": "Get Phame 3-step send flow demo",
-    "gifCaption": "The 3-step send flow",
-    "emailAlt": "Example review request email on iPhone",
-    "emailCaption": "What your customer receives"
+    "gifAlt": "Get Phame 3 步驟傳送流程示範",
+    "gifCaption": "3 步驟傳送流程",
+    "emailAlt": "iPhone 上的評論邀請電子郵件範例",
+    "emailCaption": "您的客戶會收到的內容"
   },
   "upgradeFaq": {
     "title": "常見問題",
@@ -1571,7 +1571,7 @@
     "loading": "正在載入帳戶…",
     "unnamed": "未命名使用者",
     "admin": "管理員",
-    "life": "Life",
+    "life": "終身",
     "noEmail": "無電子郵件",
     "accountMeta": "加入日期 {{date}} · 已儲存方案：{{tier}}",
     "removeAdmin": "移除管理員",
@@ -2312,7 +2312,7 @@
       "imports": "最近匯入",
       "requests": "金鑰使用次數"
     },
-    "title": "Developer integrations",
+    "title": "開發人員整合",
     "sourceOps": {
       "title": "受管理的來源連線",
       "description": "為每個 Zap、Make 情境或自訂工作流程建立一個可觀察的連線。每個來源會有自己的識別碼、分析與健康訊號。",

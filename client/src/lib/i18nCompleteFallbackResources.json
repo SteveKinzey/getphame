@@ -1361,11 +1361,11 @@
       "templates": "Plantillas",
       "reminders": "Recordatorios",
       "upgrade": "Actualizar a Pro",
-      "howItWorks": "How It Works",
-      "pricing": "Pricing",
-      "faq": "FAQ",
+      "howItWorks": "Cómo funciona",
+      "pricing": "Precios",
+      "faq": "Preguntas frecuentes",
       "manageUsers": "Gestionar usuarios",
-      "admin": "Admin",
+      "admin": "Administración",
       "developer": "Desarrollador",
       "userManual": "Manual de usuario",
       "adminManual": "Manual de administrador"
@@ -1417,7 +1417,7 @@
       "smtpAuditFrom": "Desde",
       "grantLife": "Conceder Life",
       "accountMeta": "Se unió {{date}} · Plan guardado: {{tier}}",
-      "life": "Life",
+      "life": "Vitalicio",
       "lifeGranted": "Acceso Life concedido.",
       "lifeRemoved": "Acceso Life eliminado.",
       "loading": "Cargando cuentas…",
@@ -1930,13 +1930,34 @@
       "noEmailConnected": "No hay correo electrónico conectado",
       "notConnectedDescription": "No hay correo electrónico conectado. Ingresa tus datos abajo para empezar a enviar solicitudes de reseña.",
       "displayNameHelp": "Mostrado como el nombre del remitente en la bandeja de entrada de tu cliente.",
-      "emailAddressLabel": "Tu dirección de correo electrónico *"
+      "emailAddressLabel": "Tu dirección de correo electrónico *",
+      "testConnection": "Probar conexión",
+      "googleWorkspaceGuideStep2": "Inicia sesión en myaccount.google.com con tu cuenta de trabajo → Seguridad",
+      "googleWorkspaceGuideStep3": "Ve a myaccount.google.com/apppasswords → nómbralo Get Phame → haz clic en Crear",
+      "outlookGuideTip": "Microsoft 365 (cuentas de trabajo): comunícate con tu administrador de TI para permitir SMTP AUTH en tu buzón.",
+      "zohoGuideTitle": "Zoho Mail — Habilitar acceso SMTP",
+      "zohoGuideStep4": "Cambia Permitir acceso SMTP a ACTIVADO, luego usa tu contraseña habitual de Zoho aquí",
+      "zohoGuideTip": "No se necesita contraseña de aplicación: simplemente habilita SMTP y usa tu contraseña de inicio de sesión normal de Zoho.",
+      "aolGuideStep3": "Selecciona Otra aplicación, nómbrala Get Phame",
+      "protonMailGuideStep1": "Descarga e instala Proton Mail Bridge desde proton.me/mail/bridge",
+      "protonMailGuideStep2": "Inicia sesión en Bridge con tu cuenta de Proton",
+      "protonMailGuideStep3": "En Bridge, haz clic en tu cuenta → copia la contraseña SMTP que se muestra",
+      "protonMailGuideStep4": "Pega esa contraseña SMTP aquí, no tu contraseña de inicio de sesión habitual de Proton",
+      "protonMailTip": "ProtonMail Bridge debe estar ejecutándose en tu computadora para que SMTP funcione. Usa el puerto 1025 (localhost) o 587 a través de Bridge.",
+      "fastmailGuideStep3": "Nómbralo Get Phame, selecciona SMTP, luego haz clic en Generar contraseña",
+      "iCloudGuideStep1": "Ve a appleid.apple.com e inicia sesión",
+      "iCloudGuideStep3": "Haz clic en Generar una contraseña específica de la aplicación..., nómbrala Get Phame, haz clic en Crear",
+      "iCloudTip": "La autenticación de dos factores debe estar habilitada para tu ID de Apple."
     },
     "comparisonTable": {
       "freeRequestAllowance": "10 al inicio, luego 5 cada 30 días rodantes",
       "reviewRequests": "Solicitudes de reseña",
       "lifetime": "De por vida",
-      "freeTrialNote": "Todos los planes incluyen una prueba gratuita de 10 solicitudes. No se requiere tarjeta de crédito para comenzar."
+      "freeTrialNote": "Todos los planes incluyen una prueba gratuita de 10 solicitudes. No se requiere tarjeta de crédito para comenzar.",
+      "price": "Precio",
+      "savedContacts": "Contactos guardados",
+      "csvImport": "Importación CSV",
+      "woocommerceSync": "Sincronización con WooCommerce"
     },
     "account": {
       "accessUntil": "Acceso hasta {{date}}",
@@ -1968,7 +1989,8 @@
       "subscription": "Suscripción",
       "switchMonthly": "Cambiar a mensual o administrar facturación",
       "currentStatus": "Tu estado: {{tierLabel}}",
-      "endSubscription": "Cancelar suscripción"
+      "endSubscription": "Cancelar suscripción",
+      "enjoyFeatures": "Disfruta de solicitudes de reseñas ilimitadas y todas las funciones Pro."
     },
     "profileMenu": {
       "account": "Cuenta",
@@ -2005,8 +2027,9 @@
       }
     },
     "profile": {
-      "addBusinessNameAndLink": "Agrega primero el nombre de tu negocio y el enlace de reseñas de Google en Configuración.",
-      "emailSenderSettings": "Configuración del remitente de correo"
+      "addBusinessNameAndLink": "Añade primero el nombre de tu negocio y el enlace de reseñas de Google en Configuración.",
+      "emailSenderSettings": "Configuración del remitente de correo",
+      "reviewLink": "Enlace principal de reseñas de Google"
     },
     "homePage": {
       "annualPro": "Pro anual",
@@ -2222,7 +2245,10 @@
       "back": "Atrás",
       "upgrade": "Actualizar",
       "noLimits": "Sin límites.",
-      "tagline": "Envía solicitudes de reseña automáticamente."
+      "tagline": "Envía solicitudes de reseña automáticamente.",
+      "backToContacts": "Volver a Contactos",
+      "title": "Hazte Pro.",
+      "new": "Nuevo"
     },
     "logout": {
       "button": "Cerrar sesión"
@@ -2238,7 +2264,15 @@
     },
     "toasts": {
       "scheduled": "¡Programado!",
-      "reviewRequestSent": "¡Solicitud de reseña enviada!"
+      "reviewRequestSent": "¡Solicitud de reseña enviada!",
+      "remindersScheduled": "{{count}} recordatorio de seguimiento{{plural}} programado para dentro de 3 días.",
+      "wooCommerceSynced": "WooCommerce sincronizado: {{total}} cliente{{plural}}, {{new}} nuevo contacto{{plural}} agregado.",
+      "wooCommerceSyncedNoNew": "WooCommerce sincronizado: {{total}} cliente{{plural}}.",
+      "stripeImported": "{{count}} nuevo contacto{{plural}} importado desde Stripe.",
+      "noStripeCustomers": "No se encontraron clientes de Stripe.",
+      "allStripeCustomersExist": "Todos los clientes de Stripe ya están en tus contactos.",
+      "bulkSendSuccess": "¡{{sent}} solicitud de reseña{{plural}} enviada!",
+      "bulkSendSuccessWithSkipped": "¡{{sent}} solicitud{{plural}} de reseña enviada! ({{skipped}} omitidas — límite gratuito alcanzado)"
     },
     "theme": {
       "switchToDark": "Cambiar a modo oscuro",
@@ -2475,7 +2509,8 @@
       "promptPayNote": "Solo Tailandia · Pago con código QR · Cobrado en THB",
       "hidePromptPay": "Ocultar",
       "promptPayReveal": "¿Estás en Tailandia?",
-      "promptPayRevealLink": "Pagar con PromptPay (฿)"
+      "promptPayRevealLink": "Pagar con PromptPay (฿)",
+      "woocommerceSync": "Sincronización con WooCommerce"
     },
     "step4Connector": {
       "intro": {
@@ -2520,11 +2555,11 @@
         "noKeys": "No hay clave de importación activa",
         "expected": "Actividad esperada",
         "intervals": {
-          "15": "Every 15 minutes",
-          "60": "Hourly",
-          "360": "Every 6 hours",
-          "1440": "Daily",
-          "10080": "Weekly"
+          "15": "Cada 15 minutos",
+          "60": "Cada hora",
+          "360": "Cada 6 horas",
+          "1440": "Diariamente",
+          "10080": "Semanalmente"
         },
         "minutes": "{{count}} minutos",
         "createHelp": "La conexión almacena solo una referencia de la clave API y el identificador de la fuente. Get Phame nunca muestra ni duplica su clave API en bruto.",
@@ -2606,7 +2641,8 @@
             "5": "Envíe un registro permitido y luego actualice el estado aquí."
           }
         }
-      }
+      },
+      "title": "Integraciones para desarrolladores"
     },
     "manual": {
       "badges": {
@@ -2683,7 +2719,9 @@
       "setupTime": "Configuración guiada",
       "titlePart1": "Envía solicitudes de reseña personales",
       "titlePart2": "desde tu propio correo",
-      "setup": "Configuración guiada"
+      "setup": "Configuración guiada",
+      "rocketIllustrationAlt": "Ilustración del cohete de Get Phame",
+      "dashboardAlt": "Panel de control de Get Phame mostrando solicitudes enviadas y estadísticas de rendimiento de correo electrónico"
     },
     "features": {
       "bulkSendFeature": {
@@ -2693,10 +2731,33 @@
       "bulkSend": {
         "title": "Envía solicitudes personalizadas en bloque",
         "desc": "Importa clientes mediante CSV o sincronización con WooCommerce, elige los destinatarios y envía solicitudes personalizadas sin copiar cada mensaje manualmente."
+      },
+      "anyPlatform": {
+        "desc": "Google, Yelp, TripAdvisor, Bing, Facebook y más. Tú eliges a dónde enviar a los clientes."
       }
     },
     "faq": {
-      "a9": "No. Para Gmail y Outlook, ofrecemos guías paso a paso con capturas de pantalla. Para SMTP personalizado, necesitarás la dirección del servidor, el puerto y las credenciales de tu proveedor."
+      "a9": "No. Para Gmail y Outlook, ofrecemos guías paso a paso con capturas de pantalla. Para SMTP personalizado, necesitarás la dirección del servidor, el puerto y las credenciales de tu proveedor.",
+      "spamAnswer": "No. Cada correo electrónico se envía directamente desde tu propia cuenta de correo a través de SMTP, no desde un servidor de envío masivo compartido. Tu cliente ve tu nombre, tu dirección de correo electrónico y un mensaje escrito con tu voz. Llega a la bandeja de entrada como una nota personal, no como un envío masivo de marketing.",
+      "providersAnswer": "Cualquier proveedor que admita SMTP funciona: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, correo empresarial de cPanel/Zoho y prácticamente el servidor de correo de cualquier proveedor de alojamiento. Si puedes configurar una aplicación de correo en tu teléfono, puedes conectarla a Get Phame.",
+      "importAnswer": "Sí. Puedes subir un archivo CSV con los nombres y direcciones de correo electrónico de tus clientes, o sincronizar directamente desde WooCommerce si tienes una tienda en línea. Una vez importados, puedes seleccionar contactos de forma masiva y enviar solicitudes de reseñas personalizadas con un solo clic.",
+      "a1": "No. Cada correo electrónico se envía directamente desde tu propia cuenta de correo a través de SMTP, no desde un servidor de envío masivo compartido. Tu cliente ve tu nombre, tu dirección de correo electrónico y un mensaje escrito con tu voz.",
+      "a2": "Cualquier proveedor que admita SMTP funciona: Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, correo empresarial de cPanel/Zoho y prácticamente el servidor de correo de cualquier proveedor de alojamiento.",
+      "a4": "Sí. Sube un archivo CSV con los nombres y direcciones de correo electrónico de tus clientes, o sincroniza directamente desde WooCommerce si tienes una tienda en línea.",
+      "q5": "¿Get Phame almacena la contraseña de mi correo electrónico?",
+      "a5": "Nunca. Get Phame utiliza tus propias credenciales SMTP (o la contraseña de aplicación de Gmail) para enviar correos electrónicos directamente desde tu cuenta. Tu contraseña se cifra en reposo y nunca se comparte ni se almacena en texto sin formato. Puedes desconectarte en cualquier momento desde la Configuración.",
+      "q6": "¿Mis correos electrónicos llegarán a la carpeta de spam?",
+      "a6": "Debido a que los correos electrónicos se envían desde tu propia dirección de correo electrónico, no desde un remitente genérico, llegan a la bandeja de entrada principal de manera mucho más confiable que las herramientas de marketing masivo. La reputación de tu dominio se mantiene intacta.",
+      "q7": "¿Qué pasa con mi lista de clientes?",
+      "a7": "Los datos de tus clientes se mantienen privados. Se almacenan de forma segura en tu cuenta y nunca se venden, comparten ni utilizan para ningún otro propósito que no sea enviar tus solicitudes de reseñas. Puedes eliminar contactos en cualquier momento.",
+      "q8": "¿Los clientes pueden darse de baja?",
+      "a8": "Sí. Cada correo electrónico de solicitud de reseña incluye un enlace para darse de baja. Los clientes que se dan de baja quedan excluidos automáticamente de futuros envíos.",
+      "q9": "¿Necesito conocimientos técnicos para conectar mi correo electrónico?",
+      "q10": "¿Qué plataformas de reseñas admite?",
+      "a10": "Google, Yelp, TripAdvisor, Facebook, Bing y cualquier URL personalizada. Puedes agregar múltiples plataformas y elegir cuál incluir en cada envío.",
+      "q11": "¿Cómo funciona la sincronización con WooCommerce?",
+      "a11": "Conecta tu tienda WooCommerce con tu clave API y Get Phame importará los pedidos completados automáticamente. Puedes sincronizar los clientes de los últimos 30, 60 o 90 días y enviar solicitudes de reseñas de forma masiva con un solo clic.",
+      "q12": "¿Qué significa ilimitado en el plan Pro?"
     },
     "bottomCta": {
       "headline": "Envía solicitudes de reseña personales",
@@ -2705,10 +2766,127 @@
       "subtitle": "Gratis para siempre: 10 solicitudes iniciales y luego 5 más cada 30 días móviles. Sin tarjeta de crédito."
     },
     "demo": {
-      "sectionSubtitle": "Consulta el flujo de envío en tres pasos."
+      "sectionSubtitle": "Consulta el flujo de envío en tres pasos.",
+      "sectionTitle": "Ver en acción",
+      "gifAlt": "Demostración del flujo de envío en 3 pasos de Get Phame",
+      "gifCaption": "El flujo de envío de 3 pasos",
+      "emailAlt": "Ejemplo de correo electrónico de solicitud de reseña en iPhone",
+      "emailCaption": "Lo que recibe tu cliente"
     },
     "referralRewards": {
       "shareMessage": "Envía solicitudes de reseña con Get Phame — {{url}}"
+    },
+    "bulkSendDialog": {
+      "dailyLimitStatus": "{{sent}} enviados hoy · {{remaining}} restantes del límite diario de {{limit}}",
+      "sendButton": "Enviar {{count}} solicitudes",
+      "yelpWarning": "Nota de Yelp: Tu ficha de Yelp aparecerá como una sugerencia de búsqueda en lugar de un enlace directo. Yelp desaconseja la solicitud directa.",
+      "defaultPlatformWithName": "{{platformName}} (predeterminado)"
+    },
+    "callToAction": {
+      "appleSignInButton": "Continuar con Apple",
+      "googleSignInButton": "Continuar con Google"
+    },
+    "columnLabels": {
+      "phoneOptional": "Teléfono (opcional)"
+    },
+    "comparison": {
+      "sectionSubtitle": "Birdeye y Podium cobran precios empresariales por funciones que Get Phame te ofrece a una fracción del costo."
+    },
+    "inlineFromNameEdit": {
+      "senderName": "Nombre del remitente:",
+      "successToast": "¡Nombre del remitente actualizado!"
+    },
+    "contactList": {
+      "importCsv": "Importar CSV",
+      "importPrompt": "Importa un CSV o agrega contactos manualmente"
+    },
+    "sendDialog": {
+      "send": "Enviar ahora"
+    },
+    "sendHistoryDrawer": {
+      "sendReminderNow": "Enviar recordatorio ahora"
+    },
+    "deleteAccount": {
+      "confirmation": "Esto eliminará permanentemente tu cuenta, todos los contactos, plantillas de correo electrónico, solicitudes de reseñas, datos de seguimiento y credenciales SMTP. Esta acción no se puede deshacer."
+    },
+    "wooCommerce": {
+      "pendingImportsDescription": "Estos pedidos de WooCommerce están preparados y en espera. Impórtalos ahora, o se importarán automáticamente el lunes a las 03:00 GMT si tienen más de 7 días.",
+      "connectedToast": "¡Tienda WooCommerce conectada!",
+      "importSuccessToast": "Se importaron {{count}} cliente{{plural}} de WooCommerce."
+    },
+    "wooSyncHistory": {
+      "syncing": "Sincronizando pedidos de WooCommerce…",
+      "newCustomers": "{{count}} nuevo cliente{{plural}} importado · {{total}} pedidos escaneados (ventana de {{days}} días)"
+    },
+    "step2": {
+      "contactsToImport": "{{count}} contactos para importar"
+    },
+    "starterTemplates": {
+      "quickFavor": {
+        "body": [
+          "Gracias de nuevo por elegir {{businessName}}.",
+          "Si tienes un minuto, agradecería tus comentarios sinceros. Ayuda a otros a tomar decisiones informadas y nos ayuda a mejorar.",
+          "Puedes dejar una reseña en la plataforma que prefieras:",
+          null,
+          "Sin presión en absoluto — solo tu experiencia sincera.",
+          "Agradezco tu tiempo,",
+          null,
+          null,
+          "Recibiste este correo electrónico porque eres cliente de {{businessName}}. Para dejar de recibir estos correos, responde con \"unsubscribe\"."
+        ]
+      },
+      "howDidWeDo": {
+        "body": [
+          "Quería hacer un seguimiento y ver cómo fue todo con tu experiencia reciente.",
+          "Si estás dispuesto, valoraría tus comentarios. Nos ayuda a crecer y ayuda a otros clientes a saber qué esperar.",
+          "Puedes dejar una reseña aquí:",
+          null,
+          "Gracias de nuevo por tu negocio — lo aprecio.",
+          null,
+          null,
+          "Recibiste este correo electrónico porque eres cliente de {{businessName}}. Para dejar de recibir estos correos, responde con \"unsubscribe\"."
+        ]
+      },
+      "wooOrder": {
+        "body": [
+          "Tu pedido reciente con {{businessName}} significa mucho — gracias.",
+          "Cuando hayas tenido la oportunidad de usar tu compra, me gustaría escuchar tus comentarios sinceros.",
+          "Si quieres compartirlo públicamente, puedes hacerlo aquí:",
+          null,
+          "O simplemente responde a este correo electrónico — leo cada respuesta.",
+          "Gracias de nuevo,",
+          null,
+          null,
+          "Recibiste este correo electrónico porque eres cliente de {{businessName}}. Para dejar de recibir estos correos, responde con \"unsubscribe\"."
+        ]
+      }
+    },
+    "defaultTemplate": {
+      "subject": "¡A {{businessName}} le encantaría conocer tu opinión!",
+      "body": [
+        null,
+        "¡Gracias por elegir {{businessName}}! Esperamos que hayas tenido una gran experiencia.",
+        "¿Podrías tomarte 30 segundos para dejarnos una breve reseña? Significa mucho para nosotros y ayuda a otros clientes a encontrarnos.",
+        null,
+        "¡Muchas gracias por tu apoyo!",
+        null,
+        null,
+        "Recibiste este correo electrónico porque eres cliente de {{businessName}}. Para dejar de recibir estos correos, responde con \"unsubscribe\"."
+      ]
+    },
+    "pricing": {
+      "proMonthlyDescription": "Solicitudes de reseñas ilimitadas, envío masivo, recordatorios de seguimiento, sincronización con WooCommerce."
+    },
+    "trust": {
+      "encryptedPassword": "Contraseña encriptada en reposo",
+      "dataPrivacy": "Tu lista de clientes se mantiene privada",
+      "emailProviders": "Funciona con Gmail, Outlook, Yahoo y más",
+      "unsubscribe": "Enlace para darse de baja en cada correo electrónico"
+    },
+    "adminGithubCleanup": {
+      "stats": {
+        "main": "Principal"
+      }
     }
   },
   "fr": {
@@ -2732,11 +2910,11 @@
       "templates": "Modèles",
       "reminders": "Rappels",
       "upgrade": "Passer à Pro",
-      "howItWorks": "How It Works",
-      "pricing": "Pricing",
+      "howItWorks": "Comment ça fonctionne",
+      "pricing": "Tarifs",
       "faq": "FAQ",
       "manageUsers": "Gérer les utilisateurs",
-      "admin": "Admin",
+      "admin": "Administration",
       "developer": "Développeur",
       "userManual": "Manuel d'utilisation",
       "adminManual": "Manuel d'administration"
@@ -2768,7 +2946,7 @@
       "smtpAuditSubtitle": "Un enregistrement durable indiquant qui a supprimé définitivement les identifiants SMTP utilisateur et quand.",
       "deleted": "Compte supprimé.",
       "combined": "Comptes fusionnés. {{name}} est désormais le compte conservé.",
-      "admin": "Admin",
+      "admin": "Administrateur",
       "smtpAuditAdministrator": "Administrateur",
       "roleUpdated": "Accès administrateur mis à jour.",
       "smtpAuditAllAdministrators": "Tous les administrateurs",
@@ -2788,7 +2966,7 @@
       "smtpAuditFrom": "Date de début",
       "grantLife": "Accorder Life",
       "accountMeta": "Inscrit le {{date}} · Plan enregistré : {{tier}}",
-      "life": "Life",
+      "life": "À vie",
       "lifeGranted": "Accès Life accordé.",
       "lifeRemoved": "Accès Life supprimé.",
       "loading": "Chargement des comptes…",
@@ -3283,7 +3461,7 @@
         "zoho": "Zoho Mail — 500 e-mails/jour (gratuit), 1 000/jour (payant)"
       },
       "update": "Modifier",
-      "emailNotConnectedDesc": "Connectez votre compte e-mail dans les Paramètres. Compatible avec Gmail, Outlook, Yahoo, ou tout e‑mail professionnel.",
+      "emailNotConnectedDesc": "Connectez votre compte e‑mail dans Paramètres. Fonctionne avec Gmail, Outlook, Yahoo ou tout compte e‑mail professionnel.",
       "emailNotConnectedTitle": "Connexion non vérifiée",
       "inlineHints": {
         "custom": "Domaine personnalisé détecté — les paramètres SMTP sont remplis automatiquement ci‑dessous. Vérifiez les paramètres avancés pour confirmer ou ajuster le serveur et le port.",
@@ -3301,13 +3479,36 @@
       "noEmailConnected": "Aucun e-mail connecté",
       "notConnectedDescription": "Aucun e-mail connecté. Saisissez vos informations ci‑dessous pour commencer à envoyer des demandes d'avis.",
       "displayNameHelp": "S'affiche comme nom de l'expéditeur dans la boîte de réception de votre client.",
-      "emailAddressLabel": "Votre adresse e-mail *"
+      "emailAddressLabel": "Votre adresse e-mail *",
+      "description": "Connectez votre compte e‑mail pour envoyer des demandes d'avis depuis votre propre adresse. Nous chiffrons votre mot de passe et ne le partageons jamais.",
+      "disconnectSuccess": "Compte e‑mail déconnecté.",
+      "passwordPlaceholderGmail": "Mot de passe d'application à 16 caractères (sans espaces)",
+      "googleWorkspaceGuideStep2": "Connectez-vous à myaccount.google.com avec votre compte professionnel → Sécurité",
+      "googleWorkspaceGuideStep3": "Allez sur myaccount.google.com/apppasswords → nommez-le Get Phame → cliquez sur Créer",
+      "outlookGuideTip": "Microsoft 365 (comptes professionnels) : contactez votre administrateur informatique pour autoriser SMTP AUTH pour votre boîte aux lettres.",
+      "zohoGuideTitle": "Zoho Mail — Activer l'accès SMTP",
+      "zohoGuideStep4": "Basculez « Autoriser l'accès SMTP » sur Activé, puis utilisez ici votre mot de passe Zoho habituel",
+      "zohoGuideTip": "Aucun mot de passe d'application n'est nécessaire — activez simplement SMTP et utilisez votre mot de passe de connexion Zoho habituel.",
+      "aolGuideStep3": "Sélectionnez « Autre application », nommez-la Get Phame",
+      "protonMailGuideStep1": "Téléchargez et installez Proton Mail Bridge depuis proton.me/mail/bridge",
+      "protonMailGuideStep2": "Connectez-vous à Bridge avec votre compte Proton",
+      "protonMailGuideStep3": "Dans Bridge, cliquez sur votre compte → copiez le mot de passe SMTP affiché",
+      "protonMailGuideStep4": "Collez ce mot de passe SMTP ici — pas votre mot de passe de connexion Proton habituel",
+      "protonMailTip": "ProtonMail Bridge doit être en cours d'exécution sur votre ordinateur pour que SMTP fonctionne. Utilisez le port 1025 (localhost) ou 587 via Bridge.",
+      "fastmailGuideStep3": "Nommez-le Get Phame, sélectionnez SMTP, puis cliquez sur Générer le mot de passe",
+      "iCloudGuideStep1": "Allez sur appleid.apple.com et connectez-vous",
+      "iCloudGuideStep3": "Cliquez sur Générer un mot de passe pour application..., nommez-le Get Phame, cliquez sur Créer",
+      "iCloudTip": "L'authentification à deux facteurs doit être activée pour votre identifiant Apple."
     },
     "comparisonTable": {
       "freeRequestAllowance": "10 d'abord, puis 5 tous les 30 jours (période glissante)",
       "reviewRequests": "Demandes d'avis",
       "lifetime": "À vie",
-      "freeTrialNote": "Tous les plans incluent un essai gratuit de 10 demandes. Aucune carte de crédit requise pour commencer."
+      "freeTrialNote": "Tous les plans incluent un essai gratuit de 10 demandes. Aucune carte de crédit requise pour commencer.",
+      "savedContacts": "Contacts enregistrés",
+      "price": "Prix",
+      "csvImport": "Importation CSV",
+      "woocommerceSync": "Synchronisation WooCommerce"
     },
     "account": {
       "accessUntil": "Accès jusqu'au {{date}}",
@@ -3339,7 +3540,9 @@
       "subscription": "Abonnement",
       "switchMonthly": "Passer au mensuel ou gérer la facturation",
       "currentStatus": "Votre statut : {{tierLabel}}",
-      "endSubscription": "Résilier l'abonnement"
+      "endSubscription": "Résilier l'abonnement",
+      "enjoyFeatures": "Profitez de demandes d'avis illimitées et de toutes les fonctionnalités Pro.",
+      "lifetimeLicense": "Licence à vie"
     },
     "profileMenu": {
       "account": "Compte",
@@ -3377,7 +3580,9 @@
     },
     "profile": {
       "addBusinessNameAndLink": "Ajoutez d'abord le nom de votre entreprise et le lien d'avis Google dans les Paramètres.",
-      "emailSenderSettings": "Paramètres de l'expéditeur e‑mail"
+      "emailSenderSettings": "Paramètres de l'expéditeur e‑mail",
+      "reviewLink": "Lien principal d'avis Google",
+      "saveProfile": "Enregistrer le profil"
     },
     "homePage": {
       "annualPro": "Pro annuel",
@@ -3408,7 +3613,8 @@
       "emailConnected": "E-mail connecté ({{email}})"
     },
     "tools": {
-      "title": "Clés API"
+      "title": "Clés API",
+      "savedContacts": "Contacts enregistrés"
     },
     "common": {
       "cancel": "Annuler",
@@ -3547,7 +3753,8 @@
       "upgradeToPro": "Passer à Pro →",
       "freeRollingLimitReachedDesc": "Vous avez utilisé vos 5 demandes de votre quota actuel sur 30 jours glissants. Votre prochaine demande sera disponible le {{date}}, ou passez à Pro pour continuer à envoyer immédiatement.",
       "freeInitialLimitReachedDesc": "Vous avez utilisé vos 10 demandes initiales. Votre quota récurrent est de 5 demandes tous les 30 jours glissants, ou passez à Pro pour des demandes illimitées.",
-      "importedMultiple": "Importé {{count}} contacts — envoi au premier contact. Utilisez l'envoi en masse pour plusieurs."
+      "importedMultiple": "Importé {{count}} contacts — envoi au premier contact. Utilisez l'envoi en masse pour plusieurs.",
+      "freeLimitReachedDesc": "Vous avez utilisé les {{FREE_LIMIT}} demandes d'avis gratuites. Passez à Pro pour continuer à envoyer des demandes."
     },
     "mainForm": {
       "defaultPlatform": "Plateforme par défaut",
@@ -3593,7 +3800,9 @@
       "back": "Retour",
       "upgrade": "Mettre à niveau",
       "noLimits": "Pas de limites.",
-      "tagline": "Envoyez automatiquement des demandes d'avis."
+      "tagline": "Envoyez automatiquement des demandes d'avis.",
+      "title": "Passez à Pro.",
+      "new": "Nouveau"
     },
     "logout": {
       "button": "Se déconnecter"
@@ -3609,7 +3818,15 @@
     },
     "toasts": {
       "scheduled": "programmé !",
-      "reviewRequestSent": "Demande d'avis envoyée !"
+      "reviewRequestSent": "Demande d'avis envoyée !",
+      "remindersScheduled": "{{count}} rappel{{plural}} de suivi prévu{{plural}} dans 3 jours.",
+      "wooCommerceSynced": "WooCommerce synchronisé — {{total}} client{{plural}}, {{new}} contact{{plural}} ajouté{{plural}}.",
+      "wooCommerceSyncedNoNew": "WooCommerce synchronisé — {{total}} client{{plural}}.",
+      "stripeImported": "{{count}} contact{{plural}} nouvellement importé{{plural}} depuis Stripe.",
+      "noStripeCustomers": "Aucun client Stripe trouvé.",
+      "allStripeCustomersExist": "Tous les clients Stripe sont déjà dans vos contacts.",
+      "bulkSendSuccess": "{{sent}} demande{{plural}} d'avis envoyée{{plural}} !",
+      "bulkSendSuccessWithSkipped": "{{sent}} demande{{plural}} d'avis envoyée{{plural}} ! ({{skipped}} ignorée{{plural}} — limite gratuite atteinte)"
     },
     "theme": {
       "switchToDark": "Passer en mode sombre",
@@ -3666,17 +3883,17 @@
         "sendRequest": "Envoyer la demande"
       },
       "header": {
-        "title": "Configuration de Get Phame",
+        "title": "Configuration Get Phame",
         "skipSetupTooltip": "Passer la configuration"
       },
       "stepContent": {
         "step1": {
-          "title": "Connectez votre e-mail",
+          "title": "Connectez votre e‑mail",
           "description": "Get Phame envoie des e-mails depuis votre propre compte — compatible avec Gmail, Outlook, Yahoo ou tout e-mail professionnel."
         },
         "step2": {
           "title": "Ajoutez votre page d'avis",
-          "description": "Collez le lien où les clients peuvent laisser un avis. Vous pouvez ajouter d'autres plateformes dans Paramètres ultérieurement."
+          "description": "Collez le lien où les clients peuvent laisser un avis. Vous pouvez ajouter d'autres plateformes dans Paramètres plus tard."
         },
         "step3": {
           "title": "Prêt à démarrer 🚀",
@@ -3727,7 +3944,7 @@
         "last7Days": "7 derniers jours"
       },
       "emailPerformance": {
-        "title": "Performances des e-mails",
+        "title": "Performances des e‑mails",
         "sent": "Envoyés",
         "openRate": "Taux d'ouverture",
         "clickRate": "Taux de clics",
@@ -3757,8 +3974,12 @@
       },
       "bulkActions": {
         "selectedCount": "{{count}} sélectionné(s)",
-        "markReviewed": "Marquer comme examiné",
+        "markReviewed": "Marquer comme avis laissé",
         "markSent": "Marquer comme envoyé"
+      },
+      "toasts": {
+        "updatedSuccess": "{{count}} demande mise à jour.",
+        "updatedSuccessPlural": "{{count}} demandes mises à jour."
       }
     },
     "reminderRow": {
@@ -3785,7 +4006,7 @@
     },
     "infoBanner": {
       "howItWorks": "Comment ça marche :",
-      "description": "Lorsque vous envoyez une demande d'avis, un rappel de relance est automatiquement programmé 3 jours plus tard. Le rappel est envoyé depuis votre compte e-mail connecté et utilise votre profil professionnel. Utilisez **Envoyer maintenant** pour éviter l'attente.",
+      "description": "Lors de l'envoi d'une demande d'avis, un rappel de suivi est automatiquement programmé 3 jours plus tard. Le rappel est envoyé depuis votre compte e‑mail connecté et utilise votre profil d'entreprise. Utilisez **Envoyer maintenant** pour éviter l'attente.",
       "preview1stFollowUp": "Aperçu 1re relance",
       "preview2ndFollowUp": "Aperçu 2e relance"
     },
@@ -3846,7 +4067,8 @@
       "promptPayNote": "Uniquement en Thaïlande · Paiement par QR · Facturé en THB",
       "hidePromptPay": "Masquer",
       "promptPayReveal": "Basé en Thaïlande ?",
-      "promptPayRevealLink": "Payer avec PromptPay (฿)"
+      "promptPayRevealLink": "Payer avec PromptPay (฿)",
+      "woocommerceSync": "Synchronisation WooCommerce"
     },
     "step4Connector": {
       "intro": {
@@ -3977,6 +4199,9 @@
             "5": "Envoyez un enregistrement autorisé, puis actualisez l'état ici."
           }
         }
+      },
+      "keys": {
+        "permissions": "Autorisations"
       }
     },
     "manual": {
@@ -4047,14 +4272,17 @@
       }
     },
     "seo": {
-      "title": "Get Phame — Demandes d'avis personnelles par e-mail"
+      "title": "Get Phame — Demandes d'avis personnelles par e-mail",
+      "keywords": "demandes d'avis, avis Google, obtenir plus d'avis, automatisation des avis, avis pour petites entreprises, envoyer un e-mail de demande d'avis, avis WooCommerce, avis Stripe"
     },
     "hero": {
       "headline": "Envoyez des demandes d'avis personnelles",
       "setupTime": "Configuration guidée",
       "titlePart1": "Envoyez des demandes d'avis personnelles",
       "titlePart2": "depuis votre propre e-mail",
-      "setup": "Configuration guidée"
+      "setup": "Configuration guidée",
+      "rocketIllustrationAlt": "Illustration de la fusée Get Phame",
+      "dashboardAlt": "Tableau de bord Get Phame affichant les demandes envoyées et les statistiques de performances des e-mails"
     },
     "features": {
       "bulkSendFeature": {
@@ -4064,10 +4292,33 @@
       "bulkSend": {
         "title": "Envoyez des demandes personnalisées en lot",
         "desc": "Importez des clients par CSV ou synchronisation WooCommerce, choisissez les destinataires et envoyez des demandes personnalisées sans recopier chaque message."
+      },
+      "anyPlatform": {
+        "desc": "Google, Yelp, TripAdvisor, Bing, Facebook et plus encore. Vous choisissez où envoyer vos clients."
       }
     },
     "faq": {
-      "a9": "Non. Pour Gmail et Outlook, nous proposons des guides pas à pas avec captures d'écran. Pour un SMTP personnalisé, vous aurez besoin de l'adresse du serveur, du port et des identifiants fournis par votre hébergeur."
+      "a9": "Non. Pour Gmail et Outlook, nous proposons des guides pas à pas avec captures d'écran. Pour un SMTP personnalisé, vous aurez besoin de l'adresse du serveur, du port et des identifiants fournis par votre hébergeur.",
+      "spamAnswer": "Non. Chaque e-mail est envoyé directement depuis votre propre compte de messagerie via SMTP — et non depuis un serveur d'envoi en masse partagé. Votre client voit votre nom, votre adresse e-mail et un message rédigé dans votre style. Il arrive dans la boîte de réception comme un message personnel, pas comme un envoi marketing de masse.",
+      "providersAnswer": "Tout fournisseur compatible SMTP fonctionne : Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, messagerie professionnelle cPanel/Zoho et, pratiquement, le serveur de messagerie de n'importe quel hébergeur. Si vous pouvez configurer une application de messagerie sur votre téléphone, vous pouvez la connecter à Get Phame.",
+      "importAnswer": "Oui. Vous pouvez importer un fichier CSV contenant les noms et adresses e-mail de vos clients, ou synchroniser directement depuis WooCommerce si vous gérez une boutique en ligne. Une fois importés, vous pouvez sélectionner des contacts en masse et envoyer des demandes d'avis personnalisées en un seul clic.",
+      "a1": "Non. Chaque e-mail est envoyé directement depuis votre propre compte de messagerie via SMTP — et non depuis un serveur d'envoi en masse partagé. Votre client voit votre nom, votre adresse e-mail et un message rédigé dans votre style.",
+      "a2": "Tout fournisseur prenant en charge SMTP fonctionne : Gmail, Outlook, Yahoo Mail, Apple iCloud Mail, messagerie professionnelle cPanel/Zoho, et pratiquement n'importe quel serveur de messagerie d'hébergeur.",
+      "a4": "Oui. Importez un fichier CSV contenant les noms et adresses e-mail de vos clients, ou synchronisez directement depuis WooCommerce si vous gérez une boutique en ligne.",
+      "q5": "Get Phame stocke-t-il le mot de passe de ma messagerie ?",
+      "a5": "Jamais. Get Phame utilise vos propres identifiants SMTP (ou le mot de passe d'application Gmail) pour envoyer des e-mails directement depuis votre compte. Votre mot de passe est chiffré au repos et n'est jamais partagé ni stocké en texte clair. Vous pouvez vous déconnecter à tout moment depuis les Paramètres.",
+      "q6": "Mes e-mails finiront-ils dans le dossier spam ?",
+      "a6": "Parce que les e-mails sont envoyés depuis votre propre adresse e-mail — et non par un expéditeur générique — ils arrivent dans la boîte de réception principale de manière beaucoup plus fiable que les outils de marketing de masse. La réputation de votre domaine reste intacte.",
+      "q7": "Qu'advient-il de ma liste de clients ?",
+      "a7": "Vos données clients restent privées. Elles sont stockées en toute sécurité dans votre compte et ne sont jamais vendues, partagées ou utilisées à d'autres fins que l'envoi de vos demandes d'avis. Vous pouvez supprimer des contacts à tout moment.",
+      "q8": "Les clients peuvent-ils se désabonner ?",
+      "a8": "Oui. Chaque e-mail de demande d'avis inclut un lien de désabonnement. Les clients qui se désabonnent sont automatiquement exclus des envois futurs.",
+      "q9": "Ai-je besoin de compétences techniques pour connecter ma messagerie ?",
+      "q10": "Quelles plateformes d'avis sont prises en charge ?",
+      "a10": "Google, Yelp, TripAdvisor, Facebook, Bing et toute URL personnalisée. Vous pouvez ajouter plusieurs plateformes et choisir laquelle inclure dans chaque envoi.",
+      "q11": "Comment fonctionne la synchronisation WooCommerce ?",
+      "a11": "Connectez votre boutique WooCommerce avec votre clé API et Get Phame importe automatiquement les commandes terminées. Vous pouvez synchroniser les clients des 30, 60 ou 90 derniers jours et envoyer des demandes d'avis en masse en un seul clic.",
+      "q12": "Que signifie « illimité » dans le forfait Pro ?"
     },
     "bottomCta": {
       "headline": "Envoyez des demandes d'avis personnelles",
@@ -4076,10 +4327,136 @@
       "subtitle": "Gratuit à vie : 10 demandes initiales, puis 5 supplémentaires tous les 30 jours glissants. Aucune carte bancaire requise."
     },
     "demo": {
-      "sectionSubtitle": "Découvrez le flux d'envoi en trois étapes."
+      "sectionSubtitle": "Découvrez le flux d'envoi en trois étapes.",
+      "sectionTitle": "Voir en action",
+      "gifAlt": "Démo du flux d’envoi en 3 étapes de Get Phame",
+      "gifCaption": "Le flux d’envoi en 3 étapes",
+      "emailAlt": "Exemple d’e-mail de demande d’avis sur iPhone",
+      "emailCaption": "Ce que votre client reçoit"
     },
     "referralRewards": {
       "shareMessage": "Envoyez des demandes d'avis avec Get Phame — {{url}}"
+    },
+    "bulkSendDialog": {
+      "dailyLimitStatus": "{{sent}} envoyés aujourd'hui · {{remaining}} restants sur la limite quotidienne de {{limit}}",
+      "sendButton": "Envoyer {{count}} demandes",
+      "yelpWarning": "Remarque Yelp : votre fiche Yelp apparaîtra comme suggestion de recherche plutôt que comme lien direct. Yelp déconseille la sollicitation directe.",
+      "complianceChecklistTitle": "Liste de contrôle de conformité",
+      "defaultPlatformWithName": "{{platformName}} (par défaut)"
+    },
+    "defaultTemplate": {
+      "body": [
+        "Bonjour {{customerName}},",
+        "Merci d'avoir choisi {{businessName}} ! Nous espérons que votre expérience a été excellente.",
+        "Pourriez‑vous prendre 30 secondes pour nous laisser un court avis ? Cela compte énormément pour nous et aide d'autres clients à nous trouver.",
+        null,
+        "Un grand merci pour votre soutien !",
+        "L'équipe {{businessName}}",
+        null,
+        "Vous avez reçu cet e-mail car vous êtes client de {{businessName}}. Pour ne plus recevoir ces e-mails, répondez par « unsubscribe »."
+      ],
+      "subject": "{{businessName}} aimerait connaître votre avis !"
+    },
+    "inlineFromNameEdit": {
+      "senderName": "Nom de l'expéditeur :",
+      "successToast": "Nom de l'expéditeur mis à jour !"
+    },
+    "comparison": {
+      "sectionSubtitle": "Birdeye et Podium facturent des tarifs entreprise pour des fonctionnalités que Get Phame vous propose à une fraction du prix."
+    },
+    "contactList": {
+      "importPrompt": "Importer un CSV ou ajouter des contacts manuellement",
+      "importCsv": "Importer un fichier CSV"
+    },
+    "wooCommerce": {
+      "description": "Connectez votre boutique pour importer des clients à partir des commandes terminées.",
+      "pendingImports": "{{count}} importation{{plural}} en attente",
+      "pendingImportsDescription": "Ces commandes WooCommerce sont préparées et en attente. Importez-les maintenant, ou elles seront importées automatiquement lundi à 03:00 GMT si elles datent de plus de 7 jours.",
+      "connectedToast": "Boutique WooCommerce connectée !",
+      "importSuccessToast": "{{count}} client{{plural}} importé{{plural}} depuis WooCommerce."
+    },
+    "callToAction": {
+      "appleSignInButton": "Continuer avec Apple",
+      "googleSignInButton": "Continuer avec Google"
+    },
+    "columnLabels": {
+      "phoneOptional": "Téléphone (facultatif)"
+    },
+    "deleteAccount": {
+      "confirmation": "Cela supprimera définitivement votre compte, tous vos contacts, modèles d'e-mails, demandes d'avis, données de suivi et identifiants SMTP. Cette action est irréversible."
+    },
+    "wooSyncHistory": {
+      "syncing": "Synchronisation des commandes WooCommerce…",
+      "newCustomers": "{{count}} client{{plural}} nouvellement importé{{plural}} · {{total}} commandes analysées (fenêtre de {{days}} j)"
+    },
+    "step2": {
+      "contactsToImport": "{{count}} contacts à importer"
+    },
+    "step3": {
+      "importSummary": "{{imported}} contact{{imported_plural}} ajouté{{imported_plural}}{{skipped_summary}}."
+    },
+    "starterTemplates": {
+      "quickFavor": {
+        "body": [
+          "Merci encore d’avoir choisi {{businessName}}.",
+          "Si vous avez une minute, j’aimerais recevoir votre avis sincère. Cela aide les autres à prendre des décisions éclairées et nous permet de nous améliorer.",
+          "Vous pouvez laisser un avis sur la plateforme de votre choix :",
+          null,
+          "Aucune pression — seulement votre avis honnête.",
+          "Merci de votre temps,",
+          "L’équipe {{businessName}}",
+          null,
+          "Vous avez reçu cet e-mail car vous êtes client(e) de {{businessName}}. Pour ne plus recevoir ces e-mails, répondez par « unsubscribe »."
+        ]
+      },
+      "howDidWeDo": {
+        "body": [
+          "Je souhaitais faire un suivi et voir comment s’est passée votre récente expérience.",
+          "Si vous êtes disposé(e), j’apprécierais votre retour. Cela nous aide à progresser et permet aux autres clients de savoir à quoi s’attendre.",
+          "Vous pouvez laisser un avis ici :",
+          null,
+          "Merci encore pour votre confiance — je l’apprécie.",
+          "L’équipe {{businessName}}",
+          null,
+          "Vous avez reçu cet e-mail car vous êtes client(e) de {{businessName}}. Pour ne plus recevoir ces e-mails, répondez par « unsubscribe »."
+        ]
+      },
+      "wooOrder": {
+        "body": [
+          "Votre commande récente chez {{businessName}} compte beaucoup — merci.",
+          "Une fois que vous aurez testé votre achat, j’aimerais connaître votre avis honnête.",
+          "Si vous souhaitez le partager publiquement, vous pouvez le faire ici :",
+          null,
+          "Ou répondez simplement à cet e-mail — je lis chaque réponse.",
+          "Merci encore,",
+          "L’équipe {{businessName}}",
+          null,
+          "Vous avez reçu cet e-mail car vous êtes client(e) de {{businessName}}. Pour ne plus recevoir ces e-mails, répondez par « unsubscribe »."
+        ]
+      }
+    },
+    "pricing": {
+      "proMonthlyDescription": "Demandes d’avis illimitées, envoi en masse, rappels de suivi, synchronisation WooCommerce."
+    },
+    "trust": {
+      "encryptedPassword": "Mot de passe chiffré au repos",
+      "dataPrivacy": "Votre liste de clients reste privée",
+      "emailProviders": "Fonctionne avec Gmail, Outlook, Yahoo et d’autres",
+      "unsubscribe": "Lien de désabonnement dans chaque e-mail"
+    },
+    "recoveryDrill": {
+      "roles": {
+        "none": "Aucun rôle de récupération",
+        "platform_owner": "Propriétaire de la plateforme",
+        "recovery_custodian": "Responsable de la récupération",
+        "independent_approver": "Validateur indépendant",
+        "observer": "Observateur"
+      }
+    },
+    "adminGithubCleanup": {
+      "stats": {
+        "main": "Principal"
+      }
     }
   },
   "it": {
@@ -4098,11 +4475,11 @@
       "complianceHint": "Visualizza la Guida alla Conformità",
       "complianceActive": "Conformità: Attiva",
       "complianceViewGuide": "— visualizza la guida",
-      "howItWorks": "How It Works",
-      "pricing": "Pricing",
+      "howItWorks": "Come funziona",
+      "pricing": "Prezzi",
       "faq": "FAQ",
       "manageUsers": "Gestisci utenti",
-      "admin": "Admin",
+      "admin": "Amministrazione",
       "developer": "Sviluppatore",
       "userManual": "Manuale utente",
       "adminManual": "Manuale amministratore"
@@ -4134,7 +4511,7 @@
       "smtpAuditSubtitle": "Un registro permanente di chi ha rimosso definitivamente le credenziali SMTP dell'utente e quando.",
       "deleted": "Account eliminato.",
       "combined": "Account uniti. {{name}} è ora l'account rimanente.",
-      "admin": "Admin",
+      "admin": "Amministratore",
       "smtpAuditAdministrator": "Amministratore",
       "roleUpdated": "Accesso amministratore aggiornato.",
       "smtpAuditAllAdministrators": "Tutti gli amministratori",
@@ -4154,7 +4531,7 @@
       "smtpAuditFrom": "Data di inizio",
       "grantLife": "Concedi Life",
       "accountMeta": "Iscritto il {{date}} · Piano salvato: {{tier}}",
-      "life": "Life",
+      "life": "A vita",
       "lifeGranted": "Accesso Life concesso.",
       "lifeRemoved": "Accesso Life rimosso.",
       "loading": "Caricamento account…",
@@ -4814,7 +5191,9 @@
         "step3Label": "Importa o aggiungi i contatti dei clienti",
         "step4Label": "Invia la tua prima richiesta di recensione",
         "doneLabel": "✓ Fatto",
-        "setupTime": "La configurazione richiede circa 3 minuti. Puoi tornare a questa guida in qualsiasi momento dalla schermata Home."
+        "setupTime": "La configurazione richiede circa 3 minuti. Puoi tornare a questa guida in qualsiasi momento dalla schermata Home.",
+        "watchVideoLabel": "Guarda: Get Phame in 90 secondi",
+        "watchVideoSub": "Scopri come funziona prima di connetterti"
       },
       "connectEmail": {
         "testEmailSent": "Email di prova inviata! Controlla la tua casella di posta.",
@@ -4913,7 +5292,8 @@
       "upgradeToPro": "Passa a Pro →",
       "freeRollingLimitReachedDesc": "Hai utilizzato tutte e 5 le richieste della tua quota corrente di 30 giorni mobili. La prossima richiesta sarà disponibile il {{date}}, oppure effettua l'upgrade per continuare a inviare subito.",
       "freeInitialLimitReachedDesc": "Hai utilizzato le 10 richieste iniziali. La tua quota ricorrente è di 5 richieste ogni 30 giorni mobili, oppure effettua l'upgrade per richieste illimitate.",
-      "importedMultiple": "Importati {{count}} contatti - invio al primo contatto. Usa Invio in blocco per più contatti."
+      "importedMultiple": "Importati {{count}} contatti - invio al primo contatto. Usa Invio in blocco per più contatti.",
+      "title": "Impostazioni"
     },
     "mainForm": {
       "defaultPlatform": "Piattaforma predefinita",
@@ -5433,7 +5813,20 @@
       }
     },
     "faq": {
-      "a9": "No. Per Gmail e Outlook forniamo guide passo passo con schermate. Per un SMTP personalizzato servono indirizzo del server, porta e credenziali fornite dal provider."
+      "a9": "No. Per Gmail e Outlook forniamo guide passo passo con schermate. Per un SMTP personalizzato servono indirizzo del server, porta e credenziali fornite dal provider.",
+      "a10": "Google, Yelp, TripAdvisor, Facebook, Bing e qualsiasi URL personalizzato. Puoi aggiungere più piattaforme e scegliere quale includere in ogni invio.",
+      "a5": "Mai. Get Phame utilizza le tue credenziali SMTP (o la password per app Gmail) per inviare le email direttamente dal tuo account. La password è crittografata a riposo e non viene mai condivisa o memorizzata in chiaro. Puoi disconnetterti in qualsiasi momento dalle Impostazioni.",
+      "a7": "I dati dei tuoi clienti restano privati. Sono memorizzati in modo sicuro nel tuo account e non vengono mai venduti, condivisi o usati per scopi diversi dall'invio delle tue richieste di recensione. Puoi eliminare i contatti in qualsiasi momento.",
+      "a8": "Sì. Ogni email di richiesta di recensione include un link per annullare l'iscrizione. I clienti che scelgono di disiscriversi vengono automaticamente esclusi dagli invii futuri.",
+      "q10": "Quali piattaforme di recensioni supporta?",
+      "q11": "Come funziona la sincronizzazione con WooCommerce?",
+      "q5": "Get Phame memorizza la password della mia email?",
+      "q6": "Le mie email finiranno nello spam?",
+      "q7": "Cosa succede alla mia lista clienti?",
+      "q8": "I clienti possono disiscriversi?",
+      "q9": "Servono competenze tecniche per collegare la mia email?",
+      "a6": "Poiché le email vengono inviate dal tuo indirizzo email, non da un mittente generico, arrivano nella posta in arrivo principale in modo molto più affidabile rispetto agli strumenti di marketing di massa. La reputazione del tuo dominio rimane intatta.",
+      "q12": "Cosa significa illimitato nel piano Pro?"
     },
     "bottomCta": {
       "headline": "Invia richieste di recensione personali",
@@ -5442,10 +5835,31 @@
       "subtitle": "Gratis per sempre: 10 richieste iniziali, poi altre 5 ogni 30 giorni mobili. Nessuna carta richiesta."
     },
     "demo": {
-      "sectionSubtitle": "Scopri il flusso di invio in tre passaggi."
+      "sectionSubtitle": "Scopri il flusso di invio in tre passaggi.",
+      "emailAlt": "Esempio di email di richiesta di recensione su iPhone",
+      "emailCaption": "Cosa riceve il tuo cliente",
+      "gifAlt": "Demo del flusso di invio in 3 passaggi di Get Phame",
+      "gifCaption": "Il flusso di invio in 3 passaggi",
+      "sectionTitle": "Guardalo in azione"
     },
     "referralRewards": {
       "shareMessage": "Invia richieste di recensione con Get Phame — {{url}}"
+    },
+    "deleteAccount": {
+      "title": "Eliminare il tuo account?"
+    },
+    "trust": {
+      "dataPrivacy": "La tua lista clienti rimane privata",
+      "emailProviders": "Funziona con Gmail, Outlook, Yahoo e altri",
+      "encryptedPassword": "Password crittografata a riposo",
+      "unsubscribe": "Link di cancellazione in ogni email"
+    },
+    "adminGithubCleanup": {
+      "safety": {
+        "gates": {
+          "refetch": "Ricarica"
+        }
+      }
     }
   },
   "th": {
@@ -5464,9 +5878,9 @@
       "complianceHint": "ดูคู่มือการปฏิบัติตามกฎ",
       "complianceActive": "การปฏิบัติตามกฎ: เปิดใช้งาน",
       "complianceViewGuide": "— ดูคู่มือ",
-      "howItWorks": "How It Works",
-      "pricing": "Pricing",
-      "faq": "FAQ",
+      "howItWorks": "วิธีการทำงาน",
+      "pricing": "ราคา",
+      "faq": "คำถามที่พบบ่อย",
       "manageUsers": "จัดการผู้ใช้",
       "admin": "ผู้ดูแล",
       "developer": "นักพัฒนา",
@@ -5520,7 +5934,7 @@
       "smtpAuditFrom": "จากวันที่",
       "grantLife": "มอบสิทธิ์ Life",
       "accountMeta": "เข้าร่วม {{date}} · แผนที่บันทึก: {{tier}}",
-      "life": "Life",
+      "life": "ตลอดชีพ",
       "lifeGranted": "ได้รับสิทธิ์ Life แล้ว.",
       "lifeRemoved": "การเข้าถึง Life ถูกนำออก.",
       "loading": "กำลังโหลดบัญชี…",
@@ -5588,12 +6002,12 @@
         "terms": "ข้อกำหนด"
       },
       "comparison": {
-        "gradeUsPrice": "$110/mo",
-        "podiumPrice": "$249/mo",
-        "getPhamePrice": "$29/mo",
-        "birdeyePrice": "$299/mo",
-        "niceJobPrice": "$75/mo",
-        "reviewTrackersPrice": "$89/mo",
+        "gradeUsPrice": "$110/เดือน",
+        "podiumPrice": "$249/เดือน",
+        "getPhamePrice": "$29/เดือน",
+        "birdeyePrice": "$299/เดือน",
+        "niceJobPrice": "$75/เดือน",
+        "reviewTrackersPrice": "$89/เดือน",
         "cheaperThanAlternatives": "ถูกกว่าทางเลือกสำหรับองค์กร",
         "compare": "เปรียบเทียบ",
         "enterpriseFeaturesStartupPrice": "ฟีเจอร์ระดับองค์กร ราคาสำหรับธุรกิจเริ่มต้น.",
@@ -6180,7 +6594,8 @@
         "step3Label": "นำเข้าหรือตั้งค่ารายชื่อลูกค้าของคุณ",
         "step4Label": "ส่งคำขอรีวิวครั้งแรกของคุณ",
         "doneLabel": "✓ เสร็จแล้ว",
-        "setupTime": "การตั้งค่าจะใช้เวลาประมาณ 3 นาที คุณสามารถกลับมาดูคำแนะนำนี้ได้ตลอดจากหน้าหลัก."
+        "setupTime": "การตั้งค่าจะใช้เวลาประมาณ 3 นาที คุณสามารถกลับมาดูคำแนะนำนี้ได้ตลอดจากหน้าหลัก.",
+        "watchVideoSub": "ดูวิธีการทำงานก่อนที่คุณจะเชื่อมต่อ"
       },
       "connectEmail": {
         "testEmailSent": "ส่งอีเมลทดสอบแล้ว! ตรวจสอบกล่องขาเข้าของคุณ.",
@@ -6799,7 +7214,21 @@
       }
     },
     "faq": {
-      "a9": "ไม่จำเป็น สำหรับ Gmail และ Outlook เรามีคู่มือทีละขั้นพร้อมภาพหน้าจอ ส่วน SMTP แบบกำหนดเองต้องใช้ที่อยู่เซิร์ฟเวอร์ พอร์ต และข้อมูลรับรองจากผู้ให้บริการ"
+      "a9": "ไม่จำเป็น สำหรับ Gmail และ Outlook เรามีคู่มือทีละขั้นพร้อมภาพหน้าจอ ส่วน SMTP แบบกำหนดเองต้องใช้ที่อยู่เซิร์ฟเวอร์ พอร์ต และข้อมูลรับรองจากผู้ให้บริการ",
+      "a11": "เชื่อมต่อร้าน WooCommerce ของคุณด้วย API key แล้ว Get Phame จะนำเข้าคำสั่งซื้อที่เสร็จสมบูรณ์โดยอัตโนมัติ คุณสามารถซิงก์ลูกค้าในช่วง 30, 60 หรือ 90 วันที่ผ่านมา และส่งคำขอรีวิวเป็นกลุ่มได้ด้วยคลิกเดียว",
+      "a5": "ไม่เลย Get Phame ใช้ข้อมูลรับรอง SMTP ของคุณ (หรือรหัสผ่านแอปของ Gmail) เพื่อส่งอีเมลโดยตรงจากบัญชีของคุณ รหัสผ่านจะถูกเข้ารหัสขณะเก็บข้อมูลและจะไม่ถูกแชร์หรือเก็บเป็นข้อความธรรมดา คุณสามารถตัดการเชื่อมต่อได้ทุกเมื่อจากการตั้งค่า",
+      "q10": "รองรับแพลตฟอร์มรีวิวใดบ้าง?",
+      "q11": "การซิงก์กับ WooCommerce ทำงานอย่างไร?",
+      "q5": "Get Phame เก็บข้อมูลรหัสผ่านอีเมลของฉันหรือไม่?",
+      "q6": "อีเมลของฉันจะตกไปอยู่ในโฟลเดอร์สแปมหรือไม่?",
+      "a6": "เนื่องจากอีเมลถูกส่งจากที่อยู่อีเมลของคุณเอง — ไม่ใช่ผู้ส่งทั่วไป — อีเมลจึงส่งถึงกล่องจดหมายหลักได้อย่างน่าเชื่อถือมากกว่าเครื่องมือการตลาดแบบส่งจำนวนมาก ชื่อเสียงของโดเมนของคุณจะยังคงอยู่",
+      "q7": "จะเกิดอะไรขึ้นกับรายชื่อลูกค้าของฉัน?",
+      "a7": "ข้อมูลลูกค้าของคุณจะถูกเก็บเป็นความลับ โดยจะถูกจัดเก็บอย่างปลอดภัยในบัญชีของคุณและจะไม่ถูกขาย แชร์ หรือใช้เพื่อวัตถุประสงค์อื่นใดนอกเหนือจากการส่งคำขอรีวิวของคุณ คุณสามารถลบรายชื่อติดต่อได้ตลอดเวลา",
+      "q8": "ลูกค้าสามารถยกเลิกการรับข่าวสารได้หรือไม่?",
+      "a8": "ใช่ อีเมลขอรีวิวทุกฉบับจะมีลิงก์ยกเลิกการรับข่าวสาร ลูกค้าที่ยกเลิกการรับข่าวสารจะถูกแยกออกจากการส่งในอนาคตโดยอัตโนมัติ",
+      "q9": "ฉันจำเป็นต้องมีทักษะด้านเทคนิคเพื่อเชื่อมต่ออีเมลของฉันหรือไม่?",
+      "a10": "Google, Yelp, TripAdvisor, Facebook, Bing และ URL ที่กำหนดเองใดๆ คุณสามารถเพิ่มหลายแพลตฟอร์มและเลือกแพลตฟอร์มที่จะรวมไว้ในการส่งแต่ละครั้ง",
+      "q12": "คำว่าไม่จำกัดในแผน Pro หมายความว่าอย่างไร?"
     },
     "bottomCta": {
       "headline": "ส่งคำขอรีวิวแบบเป็นส่วนตัว",
@@ -6808,10 +7237,29 @@
       "subtitle": "ใช้ฟรีตลอดไป: คำขอเริ่มต้น 10 รายการ จากนั้นเพิ่มอีก 5 รายการทุก 30 วันแบบหมุนเวียน ไม่ต้องใช้บัตรเครดิต"
     },
     "demo": {
-      "sectionSubtitle": "ดูขั้นตอนการส่งสามขั้นตอน"
+      "sectionSubtitle": "ดูขั้นตอนการส่งสามขั้นตอน",
+      "emailAlt": "ตัวอย่างอีเมลคำขอรีวิวบน iPhone",
+      "emailCaption": "สิ่งที่ลูกค้าของคุณได้รับ",
+      "gifAlt": "ตัวอย่างการส่งแบบ 3 ขั้นตอนของ Get Phame",
+      "gifCaption": "กระบวนการส่ง 3 ขั้นตอน",
+      "sectionTitle": "ดูการใช้งานจริง"
     },
     "referralRewards": {
       "shareMessage": "ส่งคำขอรีวิวด้วย Get Phame — {{url}}"
+    },
+    "trust": {
+      "dataPrivacy": "รายชื่อลูกค้าของคุณถูกเก็บเป็นส่วนตัว",
+      "emailProviders": "ใช้งานร่วมกับ Gmail, Outlook, Yahoo และอื่น ๆ",
+      "encryptedPassword": "รหัสผ่านถูกเข้ารหัสขณะเก็บข้อมูล",
+      "unsubscribe": "มีลิงก์ยกเลิกการรับในทุกอีเมล"
+    },
+    "recoveryDrill": {
+      "evidencePlaceholder": "ตัวอย่าง: audit-event:evt_123 เวลา 14:05 UTC"
+    },
+    "adminGithubCleanup": {
+      "stats": {
+        "main": "หลัก"
+      }
     }
   },
   "zh-CN": {
@@ -6829,9 +7277,9 @@
       "complianceHint": "查看合规指南",
       "complianceActive": "合规状态：已启用",
       "complianceViewGuide": "— 查看指南",
-      "howItWorks": "How It Works",
-      "pricing": "Pricing",
-      "faq": "FAQ",
+      "howItWorks": "如何使用",
+      "pricing": "定价",
+      "faq": "常见问题",
       "manageUsers": "管理用户",
       "admin": "管理员",
       "developer": "开发者",
@@ -6885,7 +7333,7 @@
       "smtpAuditFrom": "起始日期",
       "grantLife": "授予 Life",
       "accountMeta": "加入于 {{date}} · 保存的计划：{{tier}}",
-      "life": "Life",
+      "life": "终身",
       "lifeGranted": "已授予 Life 访问权限。",
       "lifeRemoved": "Life 访问已移除。",
       "loading": "正在加载账户…",
@@ -6953,12 +7401,12 @@
         "terms": "条款"
       },
       "comparison": {
-        "gradeUsPrice": "$110/mo",
-        "podiumPrice": "$249/mo",
-        "getPhamePrice": "$29/mo",
-        "birdeyePrice": "$299/mo",
-        "niceJobPrice": "$75/mo",
-        "reviewTrackersPrice": "$89/mo",
+        "gradeUsPrice": "$110/月",
+        "podiumPrice": "$249/月",
+        "getPhamePrice": "$29/月",
+        "birdeyePrice": "$299/月",
+        "niceJobPrice": "$75/月",
+        "reviewTrackersPrice": "$89/月",
         "cheaperThanAlternatives": "比企业级方案更便宜",
         "compare": "比较",
         "enterpriseFeaturesStartupPrice": "企业级功能，入门价格。",
@@ -8164,7 +8612,21 @@
       }
     },
     "faq": {
-      "a9": "不需要。对于 Gmail 和 Outlook，我们提供带截图的分步指南。自定义 SMTP 需要服务器地址、端口和服务商提供的凭据。"
+      "a9": "不需要。对于 Gmail 和 Outlook，我们提供带截图的分步指南。自定义 SMTP 需要服务器地址、端口和服务商提供的凭据。",
+      "q5": "Get Phame 会存储我的邮箱密码吗？",
+      "a5": "绝不会。Get Phame 使用您自己的 SMTP 凭证（或 Gmail 应用专用密码）直接从您的账户发送电子邮件。您的密码在静态存储时会被加密，且绝不会以明文共享或存储。您可以随时在“设置”中断开连接。",
+      "q6": "我的邮件会被判定为垃圾邮件吗？",
+      "a6": "因为邮件是从您自己的邮箱地址发送，而不是使用通用发件人，因此比批量营销工具更可靠地进入主要收件箱，并且不会影响您的域名声誉。",
+      "q7": "我的客户列表会怎样处理？",
+      "a7": "您的客户数据始终保密，安全存储于您的账户中，绝不出售、共享或用于除发送评价请求以外的任何用途。您可以随时删除联系人。",
+      "q8": "客户可以选择退出吗？",
+      "a8": "是的。每封评价请求邮件都包含退订链接。选择退订的客户将自动不会收到后续发送。",
+      "q9": "连接邮箱需要技术知识吗？",
+      "q10": "它支持哪些评价平台？",
+      "a10": "Google、Yelp、TripAdvisor、Facebook、Bing 以及任意自定义网址。您可以添加多个平台，并为每次发送选择要包含的平台。",
+      "q11": "WooCommerce 的同步是如何工作的？",
+      "a11": "使用您的 API 密钥连接您的 WooCommerce 商店，Get Phame 会自动导入已完成的订单。您可以同步最近 30、60 或 90 天的客户，并一键批量发送评价请求。",
+      "q12": "Pro 计划中的“无限”是什么意思？"
     },
     "bottomCta": {
       "headline": "发送个性化评论请求",
@@ -8173,10 +8635,21 @@
       "subtitle": "永久免费：初始 10 个请求，之后每 30 个滚动日增加 5 个。无需信用卡。"
     },
     "demo": {
-      "sectionSubtitle": "查看三步发送流程。"
+      "sectionSubtitle": "查看三步发送流程。",
+      "sectionTitle": "观看演示",
+      "gifAlt": "Get Phame 3 步发送流程演示",
+      "gifCaption": "3步发送流程",
+      "emailAlt": "iPhone 上的示例评论请求邮件",
+      "emailCaption": "客户收到的内容"
     },
     "referralRewards": {
       "shareMessage": "使用 Get Phame 发送评论请求 — {{url}}"
+    },
+    "trust": {
+      "encryptedPassword": "密码在存储时已加密",
+      "dataPrivacy": "您的客户名单将保密",
+      "emailProviders": "支持 Gmail、Outlook、Yahoo 等",
+      "unsubscribe": "每封邮件都包含退订链接"
     }
   },
   "zh-TW": {
@@ -8195,9 +8668,9 @@
       "complianceHint": "檢視合規指南",
       "complianceActive": "合規狀態：已啟用",
       "complianceViewGuide": "— 檢視指南",
-      "howItWorks": "How It Works",
-      "pricing": "Pricing",
-      "faq": "FAQ",
+      "howItWorks": "運作方式",
+      "pricing": "價格方案",
+      "faq": "常見問題",
       "manageUsers": "管理使用者",
       "admin": "管理員",
       "developer": "開發者",
@@ -9440,7 +9913,8 @@
             "5": "傳送一筆允許的記錄，然後在此更新健康狀態。"
           }
         }
-      }
+      },
+      "title": "開發人員整合"
     },
     "manual": {
       "badges": {
@@ -9530,7 +10004,21 @@
       }
     },
     "faq": {
-      "a9": "不需要。Gmail 與 Outlook 提供附螢幕截圖的逐步指南。自訂 SMTP 需要伺服器位址、連接埠及服務商提供的憑證。"
+      "a9": "不需要。Gmail 與 Outlook 提供附螢幕截圖的逐步指南。自訂 SMTP 需要伺服器位址、連接埠及服務商提供的憑證。",
+      "q5": "Get Phame 會儲存我的電子郵件密碼嗎？",
+      "a5": "不會。Get Phame 會使用您自己的 SMTP 憑證（或 Gmail 應用程式密碼），直接從您的帳戶傳送電子郵件。您的密碼會以靜態加密方式保存，絕不會分享或以純文字儲存。您可以隨時從「設定」中斷連線。",
+      "q6": "我的電子郵件會進入垃圾郵件嗎？",
+      "a6": "由於電子郵件是從您自己的電子郵件地址傳送，而不是一般寄件者，因此相較於大量行銷工具，能更穩定地送達主要收件匣。您的網域信譽也會維持不變。",
+      "q7": "我的客戶名單會如何處理？",
+      "a7": "您的客戶資料會保持私密。資料會安全地儲存在您的帳戶中，絕不會出售、分享，或用於傳送評論邀請以外的任何目的。您可以隨時刪除聯絡人。",
+      "q8": "客戶可以選擇退出嗎？",
+      "a8": "可以。每封評論邀請電子郵件都包含取消訂閱連結。選擇退出的客戶會自動從未來的寄送名單中排除。",
+      "q9": "連接我的電子郵件需要技術能力嗎？",
+      "q10": "支援哪些評論平台？",
+      "a10": "Google、Yelp、TripAdvisor、Facebook、Bing，以及任何自訂 URL。您可以新增多個平台，並選擇每次寄送時要包含哪一個。",
+      "q11": "WooCommerce 同步如何運作？",
+      "a11": "使用您的 API 金鑰連接 WooCommerce 商店後，Get Phame 會自動匯入已完成的訂單。您可以同步過去 30、60 或 90 天的客戶，並一鍵批次寄送評論邀請。",
+      "q12": "Pro 方案中的「無限制」是什麼意思？"
     },
     "bottomCta": {
       "headline": "寄送個人化評論邀請",
@@ -9539,10 +10027,34 @@
       "subtitle": "永久免費：初始 10 次邀請，之後每 30 個滾動日增加 5 次。無需信用卡。"
     },
     "demo": {
-      "sectionSubtitle": "查看三步寄送流程。"
+      "sectionSubtitle": "查看三步寄送流程。",
+      "sectionTitle": "觀看實際操作",
+      "gifAlt": "Get Phame 3 步驟傳送流程示範",
+      "gifCaption": "3 步驟傳送流程",
+      "emailAlt": "iPhone 上的評論邀請電子郵件範例",
+      "emailCaption": "您的客戶會收到的內容"
     },
     "referralRewards": {
       "shareMessage": "使用 Get Phame 寄送評論邀請 — {{url}}"
+    },
+    "deleteAccount": {
+      "buttonText": "刪除帳戶",
+      "confirmButton": "永久刪除我的帳戶",
+      "confirmation": "這將永久刪除您的帳戶、所有聯絡人、郵件模板、評論請求、追蹤資料和 SMTP 憑據。此操作無法撤銷。",
+      "successToast": "帳戶已刪除。再見！",
+      "title": "刪除您的帳戶？"
+    },
+    "deleteConfirm": {
+      "description": "這將永久刪除**{{templateName}}**。此操作無法撤銷。"
+    },
+    "deleteDialog": {
+      "description": "您確定要刪除此聯絡人嗎？此操作無法撤銷。"
+    },
+    "trust": {
+      "encryptedPassword": "密碼以靜態加密方式保存",
+      "dataPrivacy": "您的客戶名單會保持私密",
+      "emailProviders": "可搭配 Gmail、Outlook、Yahoo 等服務使用",
+      "unsubscribe": "每封電子郵件都包含取消訂閱連結"
     }
   }
 }
