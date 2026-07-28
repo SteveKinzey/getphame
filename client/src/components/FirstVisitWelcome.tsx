@@ -142,7 +142,10 @@ export default function FirstVisitWelcome() {
             <select
               id="first-visit-language"
               value={activeLanguage}
-              onChange={(event) => handleLanguageChange(event.target.value as SupportedLang)}
+              onChange={(event) => {
+                const nextLanguage = event.target.value;
+                if (isSupportedLanguage(nextLanguage)) handleLanguageChange(nextLanguage);
+              }}
               aria-describedby="first-visit-language-status"
               className="min-h-12 w-full rounded-xl border border-white/20 bg-white px-3 py-2 text-base font-black text-slate-950 outline-none focus-visible:ring-2 focus-visible:ring-amber-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
             >

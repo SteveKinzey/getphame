@@ -31,7 +31,7 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
   const btnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Keep local state in sync with i18n (e.g. after IP detection resolves)
+  // Keep local state in sync with i18n after browser detection or a manual language change.
   useEffect(() => {
     const handler = (lng: string) => {
       if (LANGUAGE_OPTIONS.some(l => l.code === lng)) setActiveLang(lng as SupportedLang);

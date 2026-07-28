@@ -97,6 +97,14 @@ describe("first-visit welcome experience", () => {
     expect(source).toContain("max-h-[calc(100dvh-1.5rem)]");
     expect(source).toContain("max-w-[calc(100%-1rem)]");
     expect(source).toContain("motion-reduce:animate-none");
+    expect(source).toContain("if (isSupportedLanguage(nextLanguage)) handleLanguageChange(nextLanguage);");
+    expect(source).not.toContain("event.target.value as SupportedLang");
+  });
+
+  it("documents browser detection without retaining removed IP-inference terminology", () => {
+    const source = readProjectFile("../client/src/components/LanguageFlyout.tsx");
+    expect(source).toContain("after browser detection or a manual language change");
+    expect(source).not.toContain("after IP detection resolves");
   });
 
   it("provides complete native welcome copy in maintained catalogs and runtime fallbacks", () => {
