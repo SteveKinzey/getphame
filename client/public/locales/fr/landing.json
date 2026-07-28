@@ -89,6 +89,9 @@
       "getStartedButton": "Commencer gratuitement"
     },
     "footer": {
+      "reviewRequests": "Demandes d’avis",
+      "emailCampaigns": "Campagnes e-mail",
+      "reputationManagement": "Gestion de la réputation",
       "privacy": "Confidentialité",
       "terms": "Conditions",
       "security": "Sécurité",
