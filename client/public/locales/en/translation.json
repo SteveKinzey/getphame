@@ -3102,6 +3102,21 @@
       "unavailable": "Passkey sign-in could not be completed. Use your email link below or try again.",
       "orAlternative": "or use another sign-in method"
     },
+    "enrollment": {
+      "title": "Add a passkey",
+      "description": "Verify this Get Phame account first. Then your device will ask for a fingerprint, face, or screen lock to create the passkey.",
+      "accountLabel": "Passkey for",
+      "providerMismatch": "That provider verified a different email. Choose the account shown below or verify with its email link.",
+      "providerCancelled": "Verification was cancelled. Your passkey has not been added, and you can try again safely.",
+      "orProvider": "or verify with",
+      "verifyGoogle": "Verify with Google",
+      "verifyApple": "Verify with Apple",
+      "privacy": "Verification only confirms the account. Get Phame never receives your fingerprint, face scan, or device unlock code.",
+      "resumeTitle": "Add your passkey",
+      "resumeDescription": "Your account is verified. Complete the secure device prompt to add a passkey for {{email}}.",
+      "resumeRetryDescription": "Your browser needs a fresh confirmation. Choose Continue to open the fingerprint, face, or screen-lock prompt.",
+      "continue": "Continue"
+    },
     "security": {
       "title": "Passkeys",
       "description": "Add a phishing-resistant sign-in method using your device biometrics or screen lock. Email sign-in remains available as a fallback.",

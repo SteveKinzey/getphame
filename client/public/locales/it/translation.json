@@ -3356,6 +3356,21 @@
       "unavailable": "Non è stato possibile completare l’accesso con passkey. Usa il link email qui sotto o riprova.",
       "orAlternative": "oppure usa un altro metodo di accesso"
     },
+    "enrollment": {
+      "title": "Aggiungi una passkey",
+      "description": "Verifica prima questo account Get Phame. Il dispositivo richiederà poi l’impronta, il riconoscimento facciale o il blocco schermo per creare la passkey.",
+      "accountLabel": "Passkey per",
+      "providerMismatch": "Il provider ha verificato un’email diversa. Scegli l’account mostrato qui sotto oppure verificalo con il relativo link email.",
+      "providerCancelled": "La verifica è stata annullata. Non è stata aggiunta alcuna passkey e puoi riprovare in sicurezza.",
+      "orProvider": "oppure verifica con",
+      "verifyGoogle": "Verifica con Google",
+      "verifyApple": "Verifica con Apple",
+      "privacy": "La verifica conferma solo l’account. Get Phame non riceve mai la tua impronta, la scansione del volto o il codice di sblocco del dispositivo.",
+      "resumeTitle": "Aggiungi la tua passkey",
+      "resumeDescription": "Il tuo account è verificato. Completa la richiesta sicura del dispositivo per aggiungere una passkey per {{email}}.",
+      "resumeRetryDescription": "Il browser richiede una nuova conferma. Scegli Continua per aprire la richiesta di impronta, volto o blocco schermo.",
+      "continue": "Continua"
+    },
     "security": {
       "title": "Passkey",
       "description": "Aggiungi un metodo di accesso resistente al phishing usando la biometria o il blocco schermo del dispositivo. L’accesso via email resterà disponibile.",

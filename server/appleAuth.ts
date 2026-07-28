@@ -139,7 +139,7 @@ export function registerAppleAuthRoutes(app: Express) {
       return res.status(400).send("Invalid verification request.");
     }
     const { state, nonce } = createSignedAppleState(redirectUri, intent === PASSKEY_ENROLLMENT_INTENT
-      ? { intent, expectedEmailHash }
+      ? { intent, expectedEmailHash: expectedEmailHash! }
       : undefined);
     const authUrl = new URL(APPLE_AUTHORIZATION_ENDPOINT);
     authUrl.searchParams.set("response_type", "code id_token");

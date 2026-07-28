@@ -3147,6 +3147,21 @@
       "unavailable": "No se pudo completar el inicio con clave de acceso. Usa el enlace de correo de abajo o inténtalo de nuevo.",
       "orAlternative": "o usa otro método de inicio de sesión"
     },
+    "enrollment": {
+      "title": "Añadir una clave de acceso",
+      "description": "Verifica primero esta cuenta de Get Phame. Después, tu dispositivo pedirá la huella, el reconocimiento facial o el bloqueo de pantalla para crear la clave de acceso.",
+      "accountLabel": "Clave de acceso para",
+      "providerMismatch": "Ese proveedor verificó un correo diferente. Elige la cuenta que se muestra abajo o verifícala con su enlace de correo.",
+      "providerCancelled": "La verificación se canceló. No se ha añadido ninguna clave de acceso y puedes intentarlo de nuevo de forma segura.",
+      "orProvider": "o verifica con",
+      "verifyGoogle": "Verificar con Google",
+      "verifyApple": "Verificar con Apple",
+      "privacy": "La verificación solo confirma la cuenta. Get Phame nunca recibe tu huella, escaneo facial ni código de desbloqueo del dispositivo.",
+      "resumeTitle": "Añade tu clave de acceso",
+      "resumeDescription": "Tu cuenta está verificada. Completa la solicitud segura del dispositivo para añadir una clave de acceso para {{email}}.",
+      "resumeRetryDescription": "Tu navegador necesita una nueva confirmación. Elige Continuar para abrir la solicitud de huella, rostro o bloqueo de pantalla.",
+      "continue": "Continuar"
+    },
     "security": {
       "title": "Claves de acceso",
       "description": "Añade un método resistente al phishing con la biometría o el bloqueo de pantalla de tu dispositivo. El acceso por correo seguirá disponible.",

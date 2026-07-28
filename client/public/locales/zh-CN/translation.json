@@ -2635,6 +2635,21 @@
       "unavailable": "无法使用通行密钥登录。请使用下方的电子邮件链接或重试。",
       "orAlternative": "或使用其他登录方式"
     },
+    "enrollment": {
+      "title": "添加通行密钥",
+      "description": "请先验证此 Get Phame 账户。然后，您的设备会要求使用指纹、人脸或屏幕锁定来创建通行密钥。",
+      "accountLabel": "通行密钥账户",
+      "providerMismatch": "该提供商验证了另一个电子邮件地址。请选择下方显示的账户，或使用其电子邮件链接进行验证。",
+      "providerCancelled": "验证已取消。尚未添加通行密钥，您可以安全地重试。",
+      "orProvider": "或使用以下方式验证",
+      "verifyGoogle": "使用 Google 验证",
+      "verifyApple": "使用 Apple 验证",
+      "privacy": "验证仅用于确认账户。Get Phame 绝不会收到您的指纹、面部扫描或设备解锁码。",
+      "resumeTitle": "添加您的通行密钥",
+      "resumeDescription": "您的账户已验证。请完成设备上的安全提示，为 {{email}} 添加通行密钥。",
+      "resumeRetryDescription": "浏览器需要重新确认。请选择“继续”以打开指纹、人脸或屏幕锁定提示。",
+      "continue": "继续"
+    },
     "security": {
       "title": "通行密钥",
       "description": "使用设备生物识别或屏幕锁定添加抗网络钓鱼的登录方式。电子邮件登录仍可作为备用方式。",

@@ -22,6 +22,7 @@ import {
 import PasskeySignIn from "@/components/security/PasskeySignIn";
 import MagicLinkForm from "@/components/auth/MagicLinkForm";
 import { AlertTriangle } from "lucide-react";
+import { isPasskeyEnrollmentReturnError } from "@/lib/passkeyEnrollment";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -144,6 +145,10 @@ export default function Login() {
     const authError = params.get("auth_error");
     if (authError) {
       clearGoogleSignInPending();
+      if (isPasskeyEnrollmentReturnError(authError)) {
+        window.history.replaceState({}, "", window.location.pathname);
+        return;
+      }
       const recoveryKind = getMagicLinkRecoveryKind(authError);
 
       if (recoveryKind) {

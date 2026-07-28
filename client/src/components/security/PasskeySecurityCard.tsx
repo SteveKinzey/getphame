@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { browserSupportsWebAuthn, startRegistration } from "@simplewebauthn/browser";
 import { Check, KeyRound, Loader2, Pencil, Plus, ShieldCheck, Trash2, X } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { trpc } from "@/lib/trpc";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { clearPasskeyEnrollmentEmail, readPasskeyEnrollmentEmail } from "@/lib/passkeyEnrollment";
 
 type Passkey = { id: number; displayName: string; deviceType: string | null; backedUp: boolean; createdAt: number; lastUsedAt: number | null };
 
@@ -79,14 +81,19 @@ export default function PasskeySecurityCard() {
   const { t } = useTranslation();
   const [displayName, setDisplayName] = useState("");
   const [status, setStatus] = useState<string | null>(null);
+  const [resumeOpen, setResumeOpen] = useState(false);
+  const [resumeNeedsAction, setResumeNeedsAction] = useState(false);
+  const resumeStarted = useRef(false);
+  const enrollmentEmail = readPasskeyEnrollmentEmail();
   const supported = browserSupportsWebAuthn();
   const passkeys = trpc.passkeys.list.useQuery(undefined, { enabled: supported });
   const beginRegistration = trpc.passkeys.beginRegistration.useMutation();
   const finishRegistration = trpc.passkeys.finishRegistration.useMutation();
   const pending = beginRegistration.isPending || finishRegistration.isPending;
 
-  async function registerPasskey() {
+  async function registerPasskey(isVerifiedResume = false) {
     setStatus(null);
+    if (isVerifiedResume) setResumeNeedsAction(false);
     try {
       setStatus(t("passkeys.security.preparing", { defaultValue: "Preparing your secure device prompt…" }));
       const ceremony = await beginRegistration.mutateAsync();
@@ -96,25 +103,65 @@ export default function PasskeySecurityCard() {
       setDisplayName("");
       setStatus(null);
       await passkeys.refetch();
+      if (isVerifiedResume) {
+        clearPasskeyEnrollmentEmail();
+        setResumeOpen(false);
+      }
       toast.success(t("passkeys.security.createSuccess", { defaultValue: "Passkey created. You can now use it to sign in." }));
     } catch {
       setStatus(null);
-      toast.error(t("passkeys.security.createError", { defaultValue: "Passkey setup could not be completed. Please try again." }));
+      if (isVerifiedResume) setResumeNeedsAction(true);
+      else toast.error(t("passkeys.security.createError", { defaultValue: "Passkey setup could not be completed. Please try again." }));
     }
   }
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("passkey_enroll") !== "1" || resumeStarted.current) return;
+    resumeStarted.current = true;
+    params.delete("passkey_enroll");
+    const nextSearch = params.toString();
+    window.history.replaceState({}, "", `${window.location.pathname}${nextSearch ? `?${nextSearch}` : ""}${window.location.hash}`);
+    setResumeOpen(true);
+    if (!supported) {
+      setResumeNeedsAction(true);
+      return;
+    }
+    const timer = window.setTimeout(() => void registerPasskey(true), 120);
+    return () => window.clearTimeout(timer);
+  }, [supported]);
+
+  function handleResumeOpenChange(open: boolean) {
+    setResumeOpen(open);
+    if (!open) clearPasskeyEnrollmentEmail();
+  }
+
   return (
-    <section className="rounded-2xl bg-card p-5 text-card-foreground shadow-sm" aria-labelledby="passkey-security-title">
+    <>
+      <Dialog open={resumeOpen} onOpenChange={handleResumeOpenChange}>
+        <DialogContent data-testid="passkey-enrollment-resume" className="w-[calc(100%-2rem)] max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t("passkeys.enrollment.resumeTitle", { defaultValue: "Finish adding your passkey" })}</DialogTitle>
+            <DialogDescription>{resumeNeedsAction
+              ? t("passkeys.enrollment.resumeRetryDescription", { defaultValue: "Your account is verified. Select Continue to open your device’s fingerprint, face, or screen-lock prompt." })
+              : t("passkeys.enrollment.resumeDescription", { defaultValue: "Account verified. Your device’s secure passkey prompt is opening now." })}</DialogDescription>
+          </DialogHeader>
+          {enrollmentEmail && <p className="break-all rounded-xl bg-muted px-4 py-3 text-sm font-bold text-foreground">{enrollmentEmail}</p>}
+          {resumeNeedsAction && <button type="button" onClick={() => void registerPasskey(true)} disabled={pending || !supported} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-black text-primary-foreground disabled:opacity-60">{pending ? <Loader2 size={17} className="animate-spin" aria-hidden="true" /> : <KeyRound size={17} aria-hidden="true" />}{t("passkeys.enrollment.continue", { defaultValue: "Continue to device prompt" })}</button>}
+        </DialogContent>
+      </Dialog>
+      <section className="rounded-2xl bg-card p-5 text-card-foreground shadow-sm" aria-labelledby="passkey-security-title">
       <div className="flex items-start gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground"><ShieldCheck size={19} aria-hidden="true" /></div><div><h2 id="passkey-security-title" className="text-base font-black text-foreground">{t("passkeys.security.title", { defaultValue: "Passkeys" })}</h2><p className="mt-1 text-sm leading-relaxed text-muted-foreground">{t("passkeys.security.description", { defaultValue: "Add a phishing-resistant sign-in method using your device biometrics or screen lock. Email sign-in remains available as a fallback." })}</p></div></div>
       {!supported ? <p className="mt-4 rounded-xl bg-muted p-3 text-sm text-muted-foreground">{t("passkeys.security.unsupported", { defaultValue: "This browser cannot create passkeys. Try a current version of Chrome, Safari, Edge, or Firefox." })}</p> : <>
         <div className="mt-5 rounded-2xl bg-muted/70 p-4">
           <label htmlFor="new-passkey-name" className="text-xs font-bold text-foreground">{t("passkeys.security.newNameLabel", { defaultValue: "Passkey name" })}</label>
           <p className="mt-1 text-xs text-muted-foreground">{t("passkeys.security.newNameHelp", { defaultValue: "Choose a name that helps you recognize this device." })}</p>
-          <div className="mt-3 flex flex-col gap-3 sm:flex-row"><input id="new-passkey-name" value={displayName} maxLength={80} onChange={(event) => setDisplayName(event.target.value)} placeholder={t("passkeys.security.namePlaceholder", { defaultValue: "Example: Work laptop" })} disabled={pending} className="min-h-12 min-w-0 flex-1 rounded-xl border border-border bg-background px-4 text-sm font-semibold text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring/40 disabled:opacity-60" /><button type="button" onClick={registerPasskey} disabled={pending} aria-busy={pending} className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-black text-primary-foreground transition-[filter,transform] hover:brightness-110 active:scale-[0.97] disabled:cursor-wait disabled:opacity-60">{pending ? <Loader2 size={17} className="animate-spin" aria-hidden="true" /> : <Plus size={17} aria-hidden="true" />}{pending ? t("passkeys.security.creating", { defaultValue: "Creating…" }) : t("passkeys.security.create", { defaultValue: "Create passkey" })}</button></div>
+          <div className="mt-3 flex flex-col gap-3 sm:flex-row"><input id="new-passkey-name" value={displayName} maxLength={80} onChange={(event) => setDisplayName(event.target.value)} placeholder={t("passkeys.security.namePlaceholder", { defaultValue: "Example: Work laptop" })} disabled={pending} className="min-h-12 min-w-0 flex-1 rounded-xl border border-border bg-background px-4 text-sm font-semibold text-foreground outline-none placeholder:text-muted-foreground focus:ring-2 focus:ring-ring/40 disabled:opacity-60" /><button type="button" onClick={() => void registerPasskey(false)} disabled={pending} aria-busy={pending} className="flex min-h-12 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-black text-primary-foreground transition-[filter,transform] hover:brightness-110 active:scale-[0.97] disabled:cursor-wait disabled:opacity-60">{pending ? <Loader2 size={17} className="animate-spin" aria-hidden="true" /> : <Plus size={17} aria-hidden="true" />}{pending ? t("passkeys.security.creating", { defaultValue: "Creating…" }) : t("passkeys.security.create", { defaultValue: "Create passkey" })}</button></div>
           {status && <p role="status" aria-live="polite" className="mt-3 text-sm font-semibold text-muted-foreground">{status}</p>}
         </div>
         <div className="mt-5"><h3 className="text-sm font-black text-foreground">{t("passkeys.security.savedTitle", { defaultValue: "Saved passkeys" })}</h3>{passkeys.isLoading ? <div className="mt-3 flex items-center gap-2 text-sm text-muted-foreground" role="status"><Loader2 size={16} className="animate-spin" aria-hidden="true" />{t("passkeys.security.loading", { defaultValue: "Loading passkeys…" })}</div> : passkeys.isError ? <p role="alert" className="mt-3 text-sm font-semibold text-destructive">{t("passkeys.security.loadError", { defaultValue: "Passkeys could not be loaded." })}</p> : passkeys.data?.length ? <ul className="mt-3">{passkeys.data.map((passkey) => <PasskeyRow key={passkey.id} passkey={passkey} onChanged={() => passkeys.refetch().then(() => undefined)} />)}</ul> : <p className="mt-3 rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">{t("passkeys.security.empty", { defaultValue: "No passkeys yet. Create one above to enable faster, phishing-resistant sign-in." })}</p>}</div>
       </>}
-    </section>
+      </section>
+    </>
   );
 }
