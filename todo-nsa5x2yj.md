@@ -342,3 +342,10 @@
 - [x] Rerun focused and complete Vitest, TypeScript, production audit/build, resolve all protected review threads, update pull request 34 without bypass, merge normally after required checks pass, verify remote `main` exact-tree parity, and record the final managed checkpoint.
 - [x] Update all nine stale localization cache-version contract assertions from `phame43` to the released `phame44` marker, then rerun the affected specs and the complete suite.
 - [x] Diagnose the independent Resend system-email integration failure without exposing credentials or weakening production validation, then rerun it or document an external-environment blocker accurately.
+- [x] Reorder the login page so Magic Link is the first choice, Google and Apple are the second choice, and Passkey is the third choice, while preserving every existing authentication and guided-enrollment flow.
+- [x] Add focused regressions for the visual and DOM order, keyboard sequence, localized separators and copy, and the unenrolled-passkey Add a Passkey module handoff.
+- [x] Run focused and complete Vitest, TypeScript, production audit/build, plus mobile and desktop verification in representative locales.
+- [ ] Save the validated checkpoint, auto-publish it, synchronize the exact tree through a history-preserving protected-main pull request, and verify remote `main` tree parity.
+- [x] Simplify the reordered login JSX so the localized passkey divider renders once after the optional social section instead of being duplicated across conditional branches.
+- [x] Rename the focused login-order regression so its title accurately describes source/DOM-order and autofocus contracts without overstating browser-level keyboard coverage.
+- [x] Replace the passkey catch-all error’s positional “email link below” wording with location-independent localized guidance, synchronize all maintained locale/runtime resources, and add focused coverage.

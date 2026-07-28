@@ -274,55 +274,6 @@ export default function Login() {
           </section>
         ) : (
           <>
-            <PasskeySignIn />
-            <OrDivider label={t("passkeys.signIn.orAlternative", { defaultValue: "or use another sign-in method" })} />
-            {shouldShowSocialSection && (
-              <>
-                {/* ── Google + staged Apple OAuth Buttons ───────────────────── */}
-                <div className="space-y-3" data-testid="social-login">
-              {/* Google — rendered only on an approved host when configured */}
-              {googleLoginEnabled && googleEnabled === true && (
-                <div>
-                  <button
-                    type="button"
-                    onClick={handleGoogleSignIn}
-                    disabled={isGoogleSubmitting}
-                    aria-busy={isGoogleSubmitting}
-                    aria-describedby={isGoogleSubmitting ? "google-auth-status" : undefined}
-                    className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-50 active:bg-gray-100 disabled:cursor-wait disabled:bg-gray-100 disabled:text-gray-500 text-gray-800 font-semibold text-sm transition-[background-color,color,transform] duration-150 shadow-sm active:scale-[0.98]"
-                  >
-                    {isGoogleSubmitting ? <Spinner /> : <GoogleIcon />}
-                    {isGoogleSubmitting
-                      ? t("authFeedback.connectingGoogle", { defaultValue: "Connecting to Google…" })
-                      : t("login.continueWithGoogle", { defaultValue: "Continue with Google" })}
-                  </button>
-                  {isGoogleSubmitting && googleStatus && (
-                    <p id="google-auth-status" role="status" aria-live="polite" className="mt-2 text-center text-xs font-semibold text-white/70">
-                      {googleStatus}
-                    </p>
-                  )}
-                </div>
-              )}
-
-              {/* Google placeholder while loading */}
-              {googleLoginEnabled && googleEnabled === null && (
-                <div className="h-12 w-full rounded-xl bg-white/5 animate-pulse" />
-              )}
-
-              {appleLoginEnabled && (
-                <a
-                  href="/api/auth/apple"
-                  className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
-                >
-                  <AppleIcon />
-                  {t("login.continueWithApple", { defaultValue: "Continue with Apple" })}
-                </a>
-              )}
-                </div>
-                <OrDivider label={t("login.or", { defaultValue: "or" })} />
-              </>
-            )}
-
             {formError && (
               <div
                 role="alert"
@@ -333,6 +284,54 @@ export default function Login() {
               </div>
             )}
             <MagicLinkForm idPrefix="login" autoFocus />
+            {shouldShowSocialSection && (
+              <>
+                <OrDivider label={t("login.or", { defaultValue: "or" })} />
+                {/* ── Google + staged Apple OAuth Buttons ───────────────────── */}
+                <div className="space-y-3" data-testid="social-login">
+                  {/* Google — rendered only on an approved host when configured */}
+                  {googleLoginEnabled && googleEnabled === true && (
+                    <div>
+                      <button
+                        type="button"
+                        onClick={handleGoogleSignIn}
+                        disabled={isGoogleSubmitting}
+                        aria-busy={isGoogleSubmitting}
+                        aria-describedby={isGoogleSubmitting ? "google-auth-status" : undefined}
+                        className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-white hover:bg-gray-50 active:bg-gray-100 disabled:cursor-wait disabled:bg-gray-100 disabled:text-gray-500 text-gray-800 font-semibold text-sm transition-[background-color,color,transform] duration-150 shadow-sm active:scale-[0.98]"
+                      >
+                        {isGoogleSubmitting ? <Spinner /> : <GoogleIcon />}
+                        {isGoogleSubmitting
+                          ? t("authFeedback.connectingGoogle", { defaultValue: "Connecting to Google…" })
+                          : t("login.continueWithGoogle", { defaultValue: "Continue with Google" })}
+                      </button>
+                      {isGoogleSubmitting && googleStatus && (
+                        <p id="google-auth-status" role="status" aria-live="polite" className="mt-2 text-center text-xs font-semibold text-white/70">
+                          {googleStatus}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Google placeholder while loading */}
+                  {googleLoginEnabled && googleEnabled === null && (
+                    <div className="h-12 w-full rounded-xl bg-white/5 animate-pulse" />
+                  )}
+
+                  {appleLoginEnabled && (
+                    <a
+                      href="/api/auth/apple"
+                      className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-xl bg-black hover:bg-gray-900 active:bg-gray-800 text-white font-semibold text-sm transition-colors duration-150 shadow-sm border border-white/10"
+                    >
+                      <AppleIcon />
+                      {t("login.continueWithApple", { defaultValue: "Continue with Apple" })}
+                    </a>
+                  )}
+                </div>
+              </>
+            )}
+            <OrDivider label={t("passkeys.signIn.orAlternative", { defaultValue: "or use another sign-in method" })} />
+            <PasskeySignIn />
           </>
         )}
 
