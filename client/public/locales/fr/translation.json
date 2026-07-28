@@ -437,7 +437,7 @@
     "customerDetails": "Informations client",
     "importFromContacts": "Importer depuis les contacts",
     "freeLimitReached": "Limite gratuite atteinte",
-    "freeLimitReachedDesc": "You've used all {{FREE_LIMIT}} free review requests. Passer à Pro to keep sending.",
+    "freeLimitReachedDesc": "Vous avez utilisé les {{FREE_LIMIT}} demandes d'avis gratuites. Passez à Pro pour continuer à envoyer des demandes.",
     "freePlanRemaining": "Plan gratuit : {{remaining}} sur {{FREE_LIMIT}} envois restants",
     "upgradeToPro": "Passer à Pro →",
     "upgrade": "Passer à Pro",
@@ -462,13 +462,13 @@
     "preferences": "Préférences"
   },
   "inlineFromNameEdit": {
-    "senderName": "Envoyerer name:",
+    "senderName": "Nom de l'expéditeur :",
     "notSet": "Non défini",
     "edit": "Modifier",
     "cancel": "Annuler",
     "save": "Enregistrer",
     "placeholder": "ex. Steve chez Acme Plomberie",
-    "successToast": "Envoyerer name updated!"
+    "successToast": "Nom de l'expéditeur mis à jour !"
   },
   "inlineReplyToEdit": {
     "replyTo": "Répondre à :",
@@ -516,7 +516,7 @@
     "businessName": "Nom de l'entreprise",
     "businessNamePlaceholder": "ex. Plomberie Dupont SARL",
     "businessNameDescription": "Le nom légal ou commercial de votre entreprise.",
-    "reviewLink": "Primary Google Review Link",
+    "reviewLink": "Lien principal d'avis Google",
     "reviewLinkPlaceholder": "https://g.page/r/...",
     "reviewLinkDescription": "Le lien principal vers lequel vos clients seront dirigés. Vous pouvez ajouter d'autres liens dans Plateformes d'avis.",
     "emailSenderSettings": "E-mail Envoyerer Paramètres",
@@ -526,7 +526,7 @@
     "replyToEmail": "Reply-To E-mail",
     "replyToEmailPlaceholder": "ex. steve@sk-america.com",
     "replyToEmailDescription": "Quand un client répond à l'e-mail, il arrive ici. Laissez vide pour utiliser l'adresse d'envoi.",
-    "saveProfile": "Enregistrer Profile",
+    "saveProfile": "Enregistrer le profil",
     "successToast": "Profil d'entreprise enregistré !",
     "dailySendLimitSaved": "Limite d'envoi quotidienne enregistrée !",
     "addBusinessNameAndLink": "Add your business name and Google review link in Paramètres first.",
@@ -653,7 +653,7 @@
       "tip": "Pour les envois volumineux, utilisez une adresse dédiée comme reviews@yourdomain.com afin de garder votre boîte principale propre et d'éviter les limites personnelles."
     },
     "title": "Connecter votre e-mail",
-    "description": "Connectez votre compte e-mail pour envoyer des demandes d'avis depuis votre propre adresse.",
+    "description": "Connectez votre compte e‑mail pour envoyer des demandes d'avis depuis votre propre adresse. Nous chiffrons votre mot de passe et ne le partageons jamais.",
     "testConnection": "Test Connecterion",
     "previewEmail": "Preview E-mail",
     "resendVerification": "Renvoyer la vérification",
@@ -662,7 +662,7 @@
     "password": "Mot de passe",
     "displayName": "Nom d'affichage",
     "passwordPlaceholderUpdate": "Entrez un nouveau mot de passe pour mettre à jour",
-    "passwordPlaceholderGmail": "16-character App Mot de passe (no spaces)",
+    "passwordPlaceholderGmail": "Mot de passe d'application à 16 caractères (sans espaces)",
     "passwordPlaceholderIcloud": "xxxx-xxxx-xxxx-xxxx",
     "passwordPlaceholderDefault": "Votre mot de passe e-mail",
     "howToGetIt": "Comment l'obtenir",
@@ -729,11 +729,11 @@
     "previewSuccess": "E-mail de test envoyé à {{email}} !",
     "previewError": "Impossible d'envoyer l'e-mail de test : {{message}}",
     "disconnectConfirm": "Êtes-vous sûr de vouloir déconnecter votre e-mail ? Cela arrêtera tous les envois sortants.",
-    "disconnectSuccess": "E-mail account disconnected.",
+    "disconnectSuccess": "Compte e‑mail déconnecté.",
     "disconnectError": "Impossible de déconnecter le compte : {{message}}",
     "noEmailConnected": "Aucun e-mail connecté",
     "emailNotConnectedTitle": "E-mail not connected",
-    "emailNotConnectedDesc": "Connecter your email account in Paramètres. Works with Gmail, Outlook, Yahoo, or any business email.",
+    "emailNotConnectedDesc": "Connectez votre compte e‑mail dans Paramètres. Fonctionne avec Gmail, Outlook, Yahoo ou tout compte e‑mail professionnel.",
     "appPasswordGuide": "Guide du mot de passe d'application",
     "appPasswordLabel": "Mot de passe d'application",
     "cancelButton": "Annuler",
@@ -794,7 +794,7 @@
   },
   "wooCommerce": {
     "title": "WooCommerce",
-    "description": "Connecter your store to import customers from completed orders.",
+    "description": "Connectez votre boutique pour importer des clients à partir des commandes terminées.",
     "storeConnected": "Store Connectered",
     "lastSynced": "Dernière synchronisation {{date}}",
     "stagedCount": "· {{count}} en attente",
@@ -861,7 +861,7 @@
   },
   "tools": {
     "title": "Outils",
-    "savedContacts": "Enregistrerd Contacts",
+    "savedContacts": "Contacts enregistrés",
     "emailTemplates": "E-mail Templates",
     "followUpReminders": "Rappels de suivi"
   },
@@ -918,7 +918,7 @@
     "loading": "Chargement…",
     "noMatches": "Aucun résultat trouvé",
     "noContacts": "Aucun contact pour l'instant.",
-    "importPrompt": "Import a CSV or add contacts manually",
+    "importPrompt": "Importer un CSV ou ajouter des contacts manuellement",
     "importCsv": "Import CSV",
     "unsubscribedBadge": "Désabonné",
     "unsubscribedTooltip": "Ce contact s'est désabonné des e-mails",
@@ -998,22 +998,22 @@
   "bulkSendDialog": {
     "title": "Envoi en masse",
     "description": "Envoyer des demandes d'avis à {{count}} contact(s) sélectionné(s).",
-    "yelpWarning": "Yelp note: Your Yelp listing will appear as a search suggestion rather than a direct link. Yelp discourages direct solicitation.",
+    "yelpWarning": "Remarque Yelp : votre fiche Yelp apparaîtra comme suggestion de recherche plutôt que comme lien direct. Yelp déconseille la sollicitation directe.",
     "largeSendWarning": "Envoi important ({{count}} contacts) : les pics soudains peuvent paraître suspects aux plateformes d'avis.",
-    "dailyLimitStatus": "{{sent}} sent today · {{remaining}} remaining of {{limit}} daily limit",
+    "dailyLimitStatus": "{{sent}} envoyés aujourd'hui · {{remaining}} restants sur la limite quotidienne de {{limit}}",
     "dailyLimitReached": "⚠ Seulement {{remaining}} seront envoyés — limite atteinte après cela.",
     "reviewPlatformLabel": "Plateforme d'avis",
     "defaultPlatform": "Plateforme par défaut",
-    "defaultPlatformWithName": "{{platformName}} (default)",
+    "defaultPlatformWithName": "{{platformName}} (par défaut)",
     "scheduleRemindersLabel": "Planifier des rappels de suivi à 3 jours",
     "scheduleRemindersDescription": "Envoyez automatiquement un rappel à tout contact qui n'a pas répondu dans les 3 jours.",
-    "complianceChecklistTitle": "Conformité Checklist",
+    "complianceChecklistTitle": "Liste de contrôle de conformité",
     "realCustomersCheck": "Ce sont de vrais clients qui ont effectué une transaction avec moi",
     "noIncentivesCheck": "Aucune incitation ou remise n'est offerte",
     "allCustomersCheck": "J'envoie à tous les clients, sans filtrer par satisfaction",
     "cancel": "Annuler",
     "sending": "Envoi en cours…",
-    "sendButton": "Envoyer {{count}} Requests",
+    "sendButton": "Envoyer {{count}} demandes",
     "confirmButton": "Envoyer {{count}} demande(s)",
     "schedulingReminders": "Programmation des rappels…"
   },
@@ -1092,7 +1092,7 @@
   },
   "infoBanner": {
     "howItWorks": "Comment ça marche :",
-    "description": "When you send a review request, a follow-up reminder is automatically scheduled for 3 days later. The reminder is sent from your connected email account and uses your business profile. Use **Envoyer Now** to skip the wait.",
+    "description": "Lors de l'envoi d'une demande d'avis, un rappel de suivi est automatiquement programmé 3 jours plus tard. Le rappel est envoyé depuis votre compte e‑mail connecté et utilise votre profil d'entreprise. Utilisez **Envoyer maintenant** pour éviter l'attente.",
     "preview1stFollowUp": "Aperçu du 1er suivi",
     "preview2ndFollowUp": "Aperçu du 2e suivi",
     "dismiss": "Ignorer",
@@ -1150,7 +1150,7 @@
     "title": "Annuler le rappel",
     "description": "Êtes-vous sûr de vouloir annuler ce rappel ?",
     "keepIt": "Garder",
-    "cancelReminder": "Annuler Reminder",
+    "cancelReminder": "Annuler le rappel",
     "cancel": "Non, garder",
     "keep": "Conserver",
     "confirm": "Oui, annuler"
@@ -1278,7 +1278,7 @@
   },
   "accessCode": {
     "title": "Code d'accès",
-    "description": "Entrez votre code d'accès pour continuer.",
+    "description": "Entrez votre code bêta ou promo pour débloquer l'accès Pro.",
     "placeholder": "Entrez le code",
     "redeem": "Utiliser",
     "codeAcceptedPro": "🎉 Code accepté ! Vous êtes maintenant sur Pro !",
@@ -1309,7 +1309,7 @@
     "lifetime": "À vie",
     "reviewRequestsTotal": "Demandes d'avis (total)",
     "followUpReminders": "Rappels de suivi",
-    "savedContacts": "Enregistrerd contacts",
+    "savedContacts": "Contacts enregistrés",
     "csvImport": "CSV import",
     "woocommerceSync": "WooCommerce sync",
     "emailOpenClickTracking": "E-mail open & click tracking",
@@ -1318,7 +1318,7 @@
     "dailySendLimit": "Limite d'envoi quotidienne",
     "prioritySupport": "Support prioritaire",
     "futureUpdates": "Mises à jour futures",
-    "price": "Price",
+    "price": "Prix",
     "freeTrialNote": "Tous les forfaits incluent un essai gratuit de 10 demandes. Aucune carte bancaire requise pour commencer.",
     "annual": "Annuel",
     "reviewRequests": "Demandes d’avis",
@@ -1331,11 +1331,11 @@
   },
   "paidUser": {
     "adminAccess": "Accès administrateur",
-    "lifetimeLicense": "À vie License",
+    "lifetimeLicense": "Licence à vie",
     "annualPro": "Annuel Pro",
     "monthlyPro": "Mensuel Pro",
     "onPro": "Vous êtes sur {{tierLabel}} !",
-    "enjoyFeatures": "Enjoy unlimited review requests and all Pro features.",
+    "enjoyFeatures": "Profitez de demandes d'avis illimitées et de toutes les fonctionnalités Pro.",
     "backToDashboard": "Retour to Tableau de bord",
     "cancelPlan": "Annuler plan",
     "manageSubscription": "Gérer l'abonnement",
@@ -1421,7 +1421,7 @@
   "columnLabels": {
     "fullName": "Nom complet",
     "email": "E-mail",
-    "phoneOptional": "Téléphone (optional)",
+    "phoneOptional": "Téléphone (facultatif)",
     "notesOptional": "Notes (optionnel)",
     "skipColumn": "— Ignorer cette colonne —",
     "name": "Nom",
@@ -1543,14 +1543,14 @@
     }
   },
   "defaultTemplate": {
-    "subject": "{{businessName}} would love your feedback!",
+    "subject": "{{businessName}} aimerait connaître votre avis !",
     "body": [
-      "Hi {{customerName}},",
-      "Thank you for choosing {{businessName}}! We hope you had a great experience.",
-      "Could you take 30 seconds to leave us a quick review? It means the world to us and helps other customers find us.",
+      "Bonjour {{customerName}},",
+      "Merci d'avoir choisi {{businessName}} ! Nous espérons que votre expérience a été excellente.",
+      "Pourriez‑vous prendre 30 secondes pour nous laisser un court avis ? Cela compte énormément pour nous et aide d'autres clients à nous trouver.",
       "👉 {{reviewLink}}",
-      "Thank you so much for your support!",
-      "The {{businessName}} team",
+      "Un grand merci pour votre soutien !",
+      "L'équipe {{businessName}}",
       "---",
       "You received this email because you are a customer of {{businessName}}. To stop receiving these emails, reply with \"unsubscribe\"."
     ],
@@ -1643,8 +1643,8 @@
     "delete": "Supprimer"
   },
   "callToAction": {
-    "googleSignInButton": "Continuer with Google",
-    "appleSignInButton": "Continuer with Apple",
+    "googleSignInButton": "Continuer avec Google",
+    "appleSignInButton": "Continuer avec Apple",
     "freeTrialDescription": "Commencez gratuitement — 10 demandes d'avis incluses. Aucune carte bancaire requise."
   },
   "themeToggle": {
@@ -1655,7 +1655,7 @@
   },
   "onboardingWizard": {
     "header": {
-      "title": "Get Phame Setup",
+      "title": "Configuration Get Phame",
       "skipSetupTooltip": "Passer la configuration"
     },
     "steps": {
@@ -1665,21 +1665,21 @@
     },
     "stepContent": {
       "step1": {
-        "title": "Connecter your email",
+        "title": "Connectez votre e‑mail",
         "description": "Get Phame sends emails from your own account — works with Gmail, Outlook, Yahoo, or any business email."
       },
       "step2": {
         "title": "Ajoutez votre page d'avis",
-        "description": "Paste the link where customers can leave you a review. You can add more platforms in Paramètres later."
+        "description": "Collez le lien où les clients peuvent laisser un avis. Vous pouvez ajouter d'autres plateformes dans Paramètres plus tard."
       },
       "step3": {
         "title": "Prêt à décoller 🚀",
-        "description": "Everything is set up. Envoyer your first review request in seconds."
+        "description": "Tout est configuré. Envoyez votre première demande d'avis en quelques secondes."
       }
     },
     "navigation": {
       "previous": "Précédent",
-      "nextStep": "Suivant step",
+      "nextStep": "Étape suivante",
       "skipSetupLater": "Passer la configuration — Je le ferai plus tard"
     }
   },
@@ -1752,7 +1752,7 @@
       "allTime": "Tout le temps"
     },
     "emailPerformance": {
-      "title": "E-mail Performance",
+      "title": "Performances des e‑mails",
       "sent": "Envoyé",
       "openRate": "Taux d'ouverture",
       "clickRate": "Taux de clic",
@@ -1761,9 +1761,9 @@
     },
     "activityFeed": "Activité récente",
     "bulkActions": {
-      "selectedCount": "{{count}} selected",
-      "markReviewed": "Mark Avis laissé",
-      "markSent": "Mark Envoyé"
+      "selectedCount": "{{count}} sélectionné(s)",
+      "markReviewed": "Marquer comme avis laissé",
+      "markSent": "Marquer comme envoyé"
     },
     "toasts": {
       "updateFailed": "Échec de la mise à jour des demandes.",
@@ -1834,7 +1834,7 @@
   },
   "comparison": {
     "sectionTitle": "10 à 20× moins cher que les grands acteurs",
-    "sectionSubtitle": "Birdeye and Podium charge enterprise prices for features Get Phame gives you at a fraction of the cost.",
+    "sectionSubtitle": "Birdeye et Podium facturent des tarifs entreprise pour des fonctionnalités que Get Phame vous propose à une fraction du prix.",
     "colPlatform": "Plateforme",
     "colStartingPrice": "Prix de départ",
     "colLifetime": "À vie option",
