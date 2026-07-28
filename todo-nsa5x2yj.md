@@ -284,3 +284,4 @@
 - [x] Reapply the fabricated testimonial/social-proof removal and explicit prohibition tests so no customer identity, quote, rating, outcome, or unsupported adoption claim ships.
 - [x] Run focused contracts, strict TypeScript, production dependency audit, full Vitest, production build, and responsive English/Thai pricing verification.
 - [ ] Checkpoint and verify the auto-published release, then synchronize its exact tree through a history-preserving protected-main GitHub pull request.
+- [ ] Make the Stripe mode regression deterministic when production secrets are present during cloud builds, rerun release gates, publish a replacement checkpoint, and verify both production origins before GitHub synchronization.

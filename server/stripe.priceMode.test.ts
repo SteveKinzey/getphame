@@ -17,7 +17,8 @@ describe("Stripe live/test Price isolation", () => {
   it("detects Stripe mode from the server-side secret key", () => {
     expect(isStripeLiveMode("sk_live_example")).toBe(true);
     expect(isStripeLiveMode("sk_test_example")).toBe(false);
-    expect(isStripeLiveMode(undefined)).toBe(false);
+    expect(isStripeLiveMode("")).toBe(false);
+    expect(isStripeLiveMode("not_a_stripe_key")).toBe(false);
   });
 
   it("preserves established USD live Price IDs in live mode", () => {
