@@ -18,11 +18,9 @@
 import type { Express, Request, Response } from "express";
 import { google } from "googleapis";
 import { ENV } from "./_core/env";
-import { sdk } from "./_core/sdk";
-import { getSessionCookieOptions } from "./_core/cookies";
-import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import * as db from "./db";
 import { sendUserWelcomeEmail } from "./smtp";
+import { issueSecuritySession } from "./security/passkeySessions";
 
 function getOAuth2Client(redirectUri: string) {
   return new google.auth.OAuth2(
@@ -132,14 +130,15 @@ export function registerGoogleAuthRoutes(app: Express) {
         }
       }
 
-      // Create session JWT (same mechanism as Manus OAuth)
-      const sessionToken = await sdk.createSessionToken(openId, {
-        name: name ?? "",
-        expiresInMs: ONE_YEAR_MS,
+      const sessionUser = await db.getUserByOpenId(openId);
+      if (!sessionUser) throw new Error("Session user unavailable after Google account update");
+      await issueSecuritySession({
+        userId: sessionUser.id,
+        authMethod: "oauth",
+        assurance: "a1",
+        req,
+        res,
       });
-
-      const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
 
       res.redirect(302, "/");
     } catch (err) {

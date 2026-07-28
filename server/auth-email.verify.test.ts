@@ -7,7 +7,7 @@ const mocks = vi.hoisted(() => ({
   getUserByEmail: vi.fn(),
   getUserByOpenId: vi.fn(),
   upsertUser: vi.fn(),
-  createSessionToken: vi.fn(),
+  issueSecuritySession: vi.fn(),
   sendUserWelcomeEmail: vi.fn(),
   recordAuthLifecycleEvent: vi.fn().mockResolvedValue(null),
   findAuthRequestByToken: vi.fn().mockResolvedValue(null),
@@ -20,8 +20,8 @@ vi.mock("./db", () => ({
   upsertUser: mocks.upsertUser,
 }));
 
-vi.mock("./_core/sdk", () => ({
-  sdk: { createSessionToken: mocks.createSessionToken },
+vi.mock("./security/passkeySessions", () => ({
+  issueSecuritySession: mocks.issueSecuritySession,
 }));
 
 vi.mock("./_core/cookies", () => ({
@@ -82,9 +82,9 @@ describe("email magic-link verification", () => {
     mocks.getDb.mockResolvedValue(database);
     mocks.getUserByOpenId.mockResolvedValue({ id: 12, openId: `email_${record.email}` });
     mocks.upsertUser.mockResolvedValue(undefined);
-    mocks.createSessionToken
+    mocks.issueSecuritySession
       .mockRejectedValueOnce(new Error("session signer unavailable"))
-      .mockResolvedValueOnce("signed-session-token");
+      .mockResolvedValueOnce({ token: "signed-session-token", maxAge: 30 * 24 * 60 * 60 * 1000 });
 
     const app = express();
     app.use(express.json());
@@ -106,10 +106,11 @@ describe("email magic-link verification", () => {
     expect(successfulRetry.headers.location).toBe("/");
     expect(database.update).toHaveBeenCalledTimes(1);
     expect(successfulRetry.headers["set-cookie"]?.[0]).toContain("signed-session-token");
-    expect(mocks.createSessionToken).toHaveBeenLastCalledWith(
-      `email_${record.email}`,
-      expect.objectContaining({ name: record.email }),
-    );
+    expect(mocks.issueSecuritySession).toHaveBeenLastCalledWith(expect.objectContaining({
+      userId: 12,
+      authMethod: "magic_link",
+      assurance: "a1",
+    }));
     expect(mocks.recordAuthLifecycleEvent).toHaveBeenCalledWith(
       expect.objectContaining({
         eventType: "verification_failed",
@@ -161,10 +162,13 @@ describe("email magic-link verification", () => {
     };
 
     mocks.getDb.mockResolvedValue(database);
-    mocks.getUserByOpenId.mockResolvedValue(staleEmailAccount);
+    mocks.getUserByOpenId.mockResolvedValue(existingAccount);
     mocks.getUserByEmail.mockResolvedValue(existingAccount);
     mocks.upsertUser.mockResolvedValue(undefined);
-    mocks.createSessionToken.mockResolvedValue("existing-account-session");
+    mocks.issueSecuritySession.mockResolvedValue({
+      token: "existing-account-session",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
 
     const app = express();
     app.use(express.json());
@@ -180,11 +184,13 @@ describe("email magic-link verification", () => {
       openId: existingAccount.openId,
       email: record.email,
     }));
-    expect(mocks.createSessionToken).toHaveBeenCalledWith(
-      existingAccount.openId,
-      expect.objectContaining({ name: existingAccount.name }),
-    );
-    expect(mocks.getUserByOpenId).not.toHaveBeenCalled();
+    expect(mocks.issueSecuritySession).toHaveBeenCalledWith(expect.objectContaining({
+      userId: existingAccount.id,
+      authMethod: "magic_link",
+      assurance: "a1",
+    }));
+    expect(mocks.getUserByOpenId).toHaveBeenCalledWith(existingAccount.openId);
+    expect(mocks.getUserByOpenId).not.toHaveBeenCalledWith(staleEmailAccount.openId);
     expect(mocks.sendUserWelcomeEmail).not.toHaveBeenCalled();
   });
 
@@ -216,10 +222,13 @@ describe("email magic-link verification", () => {
     };
 
     mocks.getDb.mockResolvedValue(database);
-    mocks.getUserByOpenId.mockResolvedValue(undefined);
+    mocks.getUserByOpenId.mockResolvedValue(existingAccount);
     mocks.getUserByEmail.mockResolvedValue(existingAccount);
     mocks.upsertUser.mockResolvedValue(undefined);
-    mocks.createSessionToken.mockResolvedValue("valid-named-session");
+    mocks.issueSecuritySession.mockResolvedValue({
+      token: "valid-named-session",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+    });
 
     const app = express();
     app.use(express.json());
@@ -231,10 +240,11 @@ describe("email magic-link verification", () => {
 
     expect(response.status).toBe(302);
     expect(response.headers.location).toBe("/");
-    expect(mocks.createSessionToken).toHaveBeenCalledWith(
-      existingAccount.openId,
-      expect.objectContaining({ name: record.email }),
-    );
+    expect(mocks.issueSecuritySession).toHaveBeenCalledWith(expect.objectContaining({
+      userId: existingAccount.id,
+      authMethod: "magic_link",
+      assurance: "a1",
+    }));
     expect(response.headers["set-cookie"]?.[0]).toContain("valid-named-session");
   });
 });

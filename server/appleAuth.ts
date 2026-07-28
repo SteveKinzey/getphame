@@ -19,12 +19,10 @@
 import type { Express, Request, Response } from "express";
 import appleSignin from "apple-signin-auth";
 import { ENV } from "./_core/env";
-import { sdk } from "./_core/sdk";
-import { getSessionCookieOptions } from "./_core/cookies";
-import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import * as db from "./db";
 import { sendUserWelcomeEmail } from "./smtp";
 import crypto from "crypto";
+import { issueSecuritySession } from "./security/passkeySessions";
 
 const APPLE_AUTHORIZATION_ENDPOINT = "https://appleid.apple.com/auth/authorize";
 const APPLE_STATE_TTL_MS = 10 * 60 * 1000;
@@ -274,13 +272,15 @@ export function registerAppleAuthRoutes(app: Express) {
       // identity linked by verified email, this avoids depending on immediate
       // alias visibility on the first request after the callback.
       const sessionOpenId = existingUser?.openId ?? openId;
-      const sessionToken = await sdk.createSessionToken(sessionOpenId, {
-        name: name ?? "",
-        expiresInMs: ONE_YEAR_MS,
+      const sessionUser = await db.getUserByOpenId(sessionOpenId);
+      if (!sessionUser) throw new Error("Session user unavailable after Apple account update");
+      await issueSecuritySession({
+        userId: sessionUser.id,
+        authMethod: "oauth",
+        assurance: "a1",
+        req,
+        res,
       });
-
-      const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
       console.info("[AppleAuth] Callback completed", {
         accountResolution: existingEmailUser
           ? "linked_existing_email"

@@ -293,3 +293,13 @@
 - [x] Resolve pull request 21’s verified current review blockers: correct the admin lifetime reference, harden malformed OAuth-state decoding, validate managed-storage download responses, emit accurate OG image MIME metadata, rerun release gates, publish a replacement checkpoint, and complete protected-main synchronization.
 - [x] Reduce the gold comparison-card heading typography so “Individual” and “Automatic” remain within their rectangle bounds, add focused regression coverage, verify responsive layouts, release the fix, and synchronize protected GitHub `main`.
 - [x] Audit every open Get Phame Dependabot alert, remediate all actionable dependency vulnerabilities, add or update security regressions where needed, run complete release validation, publish the corrected tree, synchronize protected GitHub `main`, and verify alert closure. Verified 0 open Dependabot alerts and no known pnpm vulnerabilities; no dependency change was required.
+- [x] Consolidate Get Phame magic-link authentication on one registered server implementation and one URL family, deprecate duplicate behavior, and cover send plus verify routes.
+- [x] Reconfirm and remediate all production dependency advisories without bypassing `pnpm audit --prod`, refreshing the lockfile only when required.
+- [x] Replace one-year stateless sessions with a shorter-lived, identifier-bearing, server-revocable session design while preserving all login methods and logout behavior.
+- [x] Separate SMTP credential encryption and public tracking/unsubscribe signing from `JWT_SECRET`, fail safely in production when required secrets are absent, and retain explicit test/development ergonomics.
+- [x] Prevent tracking-link open redirects by binding or validating review destinations and cover valid, missing, malformed, unsafe, and tampered destinations.
+- [x] Restore default SMTP certificate verification and permit insecure TLS only through an explicit compatibility control with direct tests.
+- [x] Replace ad-hoc webhook hashing with standard HMAC-SHA256 while preserving the `sha256=` wire format and add regressions.
+- [x] Replace feasible repeated inline administrator role checks with centralized `adminProcedure` without broadening privileges.
+- [ ] Run all focused security regressions and complete install, test, TypeScript, production-audit, build, responsive/runtime, checkpoint, production, and protected-main verification gates.
+- [ ] Package the proven Get Phame production-readiness audit and remediation workflow as a concise reusable skill, validate it, and deliver the installable skill card.

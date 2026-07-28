@@ -3,8 +3,8 @@
  *
  * Routes:
  *   POST /api/auth/magic-link         → generates token, sends email with login link
- *   GET  /api/auth/magic-link/verify  → validates token, creates/finds user, issues JWT session
- *   POST /api/auth/logout             → clears session cookie
+ *   GET  /api/auth/magic-link/verify  → validates token, creates/finds user, issues a revocable session
+ *   POST /api/auth/logout             → revokes the session and clears its cookie
  *
  * Security:
  *   - Tokens are crypto-random 64-char hex strings
@@ -16,16 +16,14 @@
  */
 import type { Express, Request, Response } from "express";
 import crypto from "crypto";
-import nodemailer from "nodemailer";
-import { sdk } from "./_core/sdk";
 import { getSessionCookieOptions } from "./_core/cookies";
-import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
+import { COOKIE_NAME } from "@shared/const";
 import { ENV } from "./_core/env";
 import * as db from "./db";
 import { getDb } from "./db";
 import { magicLinks } from "../drizzle/schema";
 import { eq, and, gt, isNull } from "drizzle-orm";
-import { sendUserWelcomeEmail } from "./smtp";
+import { createTransporter, sendUserWelcomeEmail } from "./smtp";
 import { renderGetPhameEmailHeader } from "./platformEmailBrand";
 import {
   classifyAuthDiagnosticError,
@@ -34,6 +32,10 @@ import {
   recordAuthLifecycleEvent,
   redactAuthDiagnosticDetail,
 } from "./authOperations";
+import {
+  issueSecuritySession,
+  revokeSecuritySessionFromRequest,
+} from "./security/passkeySessions";
 
 // ---------------------------------------------------------------------------
 // Constants
@@ -232,12 +234,12 @@ export function registerEmailAuthRoutes(app: Express) {
       const magicLinkUrl = `${baseUrl}/api/auth/magic-link/verify?token=${token}`;
 
       // Send email
-      const transporter = nodemailer.createTransport({
+      const transporter = createTransporter({
         host: smtpConfig.host,
         port: smtpConfig.port,
         secure: smtpConfig.port === 465,
-        auth: { user: smtpConfig.user, pass: smtpConfig.pass },
-        tls: { rejectUnauthorized: false },
+        user: smtpConfig.user,
+        pass: smtpConfig.pass,
       });
 
       const delivery = await transporter.sendMail({
@@ -276,7 +278,7 @@ export function registerEmailAuthRoutes(app: Express) {
   /**
    * GET /api/auth/magic-link/verify?token=xxx
    *
-   * Validates the token, creates or finds the user, issues a JWT session cookie,
+   * Validates the token, creates or finds the user, issues a revocable session cookie,
    * and redirects to the app.
    */
   app.get("/api/auth/magic-link/verify", async (req: Request, res: Response) => {
@@ -387,10 +389,13 @@ export function registerEmailAuthRoutes(app: Express) {
         }
       }
 
-      // Issue session JWT cookie
-      const sessionToken = await sdk.createSessionToken(sessionOpenId, {
-        name: sessionName,
-        expiresInMs: ONE_YEAR_MS,
+      const sessionUser = await db.getUserByOpenId(sessionOpenId);
+      if (!sessionUser) throw new Error("Session user unavailable after magic-link account update");
+      const { token: sessionToken, maxAge: sessionMaxAge } = await issueSecuritySession({
+        userId: sessionUser.id,
+        authMethod: "magic_link",
+        assurance: "a1",
+        req,
       });
 
       // Consume the token only after account and session creation succeed.
@@ -401,7 +406,7 @@ export function registerEmailAuthRoutes(app: Express) {
         .where(and(eq(magicLinks.id, record.id), isNull(magicLinks.usedAt)));
 
       const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: sessionMaxAge });
 
       void recordAuthLifecycleEvent({
         requestId,
@@ -433,9 +438,10 @@ export function registerEmailAuthRoutes(app: Express) {
 
   /**
    * POST /api/auth/logout
-   * Clears the session cookie. Works for all auth methods.
+   * Revokes the backing session and clears the cookie. Works for all auth methods.
    */
-  app.post("/api/auth/logout", (req: Request, res: Response) => {
+  app.post("/api/auth/logout", async (req: Request, res: Response) => {
+    await revokeSecuritySessionFromRequest(req);
     const cookieOptions = getSessionCookieOptions(req);
     res.clearCookie(COOKIE_NAME, {
       httpOnly: cookieOptions.httpOnly,

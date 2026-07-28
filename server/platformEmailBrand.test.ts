@@ -29,7 +29,6 @@ describe("Get Phame platform email branding", () => {
     const platformEmailModules = [
       "accountDeletionEmail.ts",
       "auth-email.ts",
-      "magicAuth.ts",
       "leadGuideEmail.ts",
       "smtp.ts",
     ];
@@ -38,6 +37,15 @@ describe("Get Phame platform email branding", () => {
       const source = readFileSync(join(projectRoot, "server", file), "utf8");
       expect(source, file).toContain("renderGetPhameEmailHeader");
     }
+
+    const retiredMagicAuthSource = readFileSync(
+      join(projectRoot, "server", "magicAuth.ts"),
+      "utf8",
+    );
+    expect(retiredMagicAuthSource).toContain("@deprecated");
+    expect(retiredMagicAuthSource).toContain(
+      'registerEmailAuthRoutes as registerMagicAuthRoutes',
+    );
   });
 
   it("does not inject platform branding into customer review-request templates", () => {

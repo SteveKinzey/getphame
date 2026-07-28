@@ -7,8 +7,8 @@
  * so the caller can store the lead and retry later.
  */
 
-import nodemailer from "nodemailer";
 import { renderGetPhameEmailHeader } from "./platformEmailBrand";
+import { createTransporter } from "./smtp";
 
 export const GUIDE_PDF_URL = "https://assets.getphame.app/getphame-30-day-review-playbook.pdf";
 
@@ -152,12 +152,12 @@ export async function sendLeadGuideEmail(toEmail: string): Promise<LeadGuideDeli
   }
 
   try {
-    const transporter = nodemailer.createTransport({
+    const transporter = createTransporter({
       host: config.host,
       port: config.port,
       secure: config.port === 465,
-      auth: { user: config.user, pass: config.pass },
-      tls: { rejectUnauthorized: false },
+      user: config.user,
+      pass: config.pass,
     });
 
     const result = await transporter.sendMail({

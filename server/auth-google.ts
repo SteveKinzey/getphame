@@ -3,7 +3,7 @@
  *
  * Routes:
  *   GET /api/auth/google              → redirects to Google consent screen
- *   GET /api/auth/google/callback     → handles OAuth callback, creates/finds user, issues JWT
+ *   GET /api/auth/google/callback     → handles OAuth callback, creates/finds user, issues a revocable session
  *
  * Required env vars: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, APP_BASE_URL
  * Install: pnpm add googleapis
@@ -15,12 +15,10 @@
 import type { Express, Request, Response } from "express";
 import { google } from "googleapis";
 import { ENV } from "./_core/env";
-import { sdk } from "./_core/sdk";
-import { getSessionCookieOptions } from "./_core/cookies";
-import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import * as db from "./db";
 import { sendUserWelcomeEmail } from "./smtp";
 import crypto from "crypto";
+import { issueSecuritySession } from "./security/passkeySessions";
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -111,7 +109,7 @@ export function registerGoogleAuthRoutes(app: Express) {
    * GET /api/auth/google/callback
    * Google redirects here after the user grants (or denies) consent.
    * Exchanges the authorization code for tokens, fetches the user profile,
-   * upserts the user in the database, and issues a session JWT cookie.
+   * upserts the user in the database, and issues a revocable session cookie.
    */
   app.get("/api/auth/google/callback", async (req: Request, res: Response) => {
     const { code, state, error } = req.query as {
@@ -188,14 +186,15 @@ export function registerGoogleAuthRoutes(app: Express) {
         }
       }
 
-      // Issue a session JWT cookie (same mechanism as Apple Sign-In)
-      const sessionToken = await sdk.createSessionToken(openId, {
-        name: name ?? "",
-        expiresInMs: ONE_YEAR_MS,
+      const sessionUser = await db.getUserByOpenId(openId);
+      if (!sessionUser) throw new Error("Session user unavailable after Google account update");
+      await issueSecuritySession({
+        userId: sessionUser.id,
+        authMethod: "oauth",
+        assurance: "a1",
+        req,
+        res,
       });
-
-      const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
 
       // Redirect to app root (or onboarding if new user)
       res.redirect(302, isNewUser ? "/onboarding" : "/");
