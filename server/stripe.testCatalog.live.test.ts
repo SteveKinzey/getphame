@@ -24,13 +24,12 @@ const canValidate = secretKey.startsWith("sk_test_")
 const describeWithCatalog = canValidate ? describe : describe.skip;
 
 describeWithCatalog("managed Stripe test catalog", () => {
-  const stripe = new Stripe(secretKey, { apiVersion: "2025-01-27.acacia" });
-
   for (const spec of SPECS) {
     it(`retrieves the exact active ${spec.label} Price`, async () => {
       const priceId = process.env[spec.envName];
       expect(priceId).toBeTruthy();
 
+      const stripe = new Stripe(secretKey, { apiVersion: "2025-01-27.acacia" });
       const price = await stripe.prices.retrieve(priceId!);
       expect(price.active).toBe(true);
       expect(price.livemode).toBe(false);

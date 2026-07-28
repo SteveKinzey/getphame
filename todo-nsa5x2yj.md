@@ -289,3 +289,4 @@
 - [ ] Restore every locale's existing WooCommerce paid-plan FAQ disclosure in runtime fallback resources after compliant-copy synchronization, rerun the failing regression, and publish a successful replacement build.
 - [ ] Replace the remaining live setup-time promises and five-star outcome/review-gating language with factual workflow copy across components and runtime locales, add regression coverage, and publish the final compliant release.
 - [x] Correct every live annual-plan detail from stale `$228` / `34%` values to the confirmed `$290` total and accurate `$58` / `17%` savings, update THB annual details to `฿9,990` and `฿1,650` / `14%`, add regressions, and publish the exact-price replacement.
+- [x] Make the managed Stripe test-catalog regression safe in credential-free GitHub CI, rerun all release gates, publish the corrected checkpoint, and synchronize protected GitHub `main`.
