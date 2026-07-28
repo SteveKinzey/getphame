@@ -130,7 +130,10 @@
     "landing": {
       "footer": {
         "copyright": "© {{year}} Get Phame. All rights reserved.",
+        "emailCampaigns": "Email Campaigns",
         "privacy": "Privacy",
+        "reputationManagement": "Reputation Management",
+        "reviewRequests": "Review Requests",
         "security": "Security",
         "support": "Support",
         "terms": "Terms"
@@ -1473,7 +1476,10 @@
     "landing": {
       "footer": {
         "copyright": "© {{year}} Get Phame. Todos los derechos reservados.",
+        "emailCampaigns": "Campañas de correo electrónico",
         "privacy": "Privacidad",
+        "reputationManagement": "Gestión de la reputación",
+        "reviewRequests": "Solicitudes de reseñas",
         "security": "Seguridad",
         "support": "Soporte",
         "terms": "Términos"
@@ -2841,7 +2847,10 @@
     "landing": {
       "footer": {
         "copyright": "© {{year}} Get Phame. Tous droits réservés.",
+        "emailCampaigns": "Campagnes e-mail",
         "privacy": "Confidentialité",
+        "reputationManagement": "Gestion de la réputation",
+        "reviewRequests": "Demandes d’avis",
         "security": "Sécurité",
         "support": "Assistance",
         "terms": "Conditions"
@@ -4204,7 +4213,10 @@
     "landing": {
       "footer": {
         "copyright": "© {{year}} Get Phame. Tutti i diritti riservati.",
+        "emailCampaigns": "Campagne e-mail",
         "privacy": "Privacy",
+        "reputationManagement": "Gestione della reputazione",
+        "reviewRequests": "Richieste di recensione",
         "security": "Sicurezza",
         "support": "Supporto",
         "terms": "Termini"
@@ -5567,7 +5579,10 @@
     "landing": {
       "footer": {
         "copyright": "© {{year}} Get Phame. สงวนลิขสิทธิ์.",
+        "emailCampaigns": "แคมเปญอีเมล",
         "privacy": "ความเป็นส่วนตัว",
+        "reputationManagement": "การจัดการชื่อเสียง",
+        "reviewRequests": "คำขอรีวิว",
         "security": "ความปลอดภัย",
         "support": "ฝ่ายสนับสนุน",
         "terms": "ข้อกำหนด"
@@ -6929,7 +6944,10 @@
     "landing": {
       "footer": {
         "copyright": "© {{year}} Get Phame。版权所有。",
+        "emailCampaigns": "电子邮件营销活动",
         "privacy": "隐私",
+        "reputationManagement": "声誉管理",
+        "reviewRequests": "评价邀请",
         "security": "安全",
         "support": "支持",
         "terms": "条款"
@@ -8292,7 +8310,10 @@
     "landing": {
       "footer": {
         "copyright": "© {{year}} Get Phame。保留所有權利。",
+        "emailCampaigns": "電子郵件行銷活動",
         "privacy": "隱私",
+        "reputationManagement": "聲譽管理",
+        "reviewRequests": "評論邀請",
         "security": "安全性",
         "support": "支援",
         "terms": "條款"

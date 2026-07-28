@@ -89,6 +89,9 @@
       "getStartedButton": "Get Started Free"
     },
     "footer": {
+      "reviewRequests": "Review Requests",
+      "emailCampaigns": "Email Campaigns",
+      "reputationManagement": "Reputation Management",
       "privacy": "Privacy",
       "terms": "Terms",
       "security": "Security",

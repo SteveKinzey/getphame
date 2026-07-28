@@ -4,7 +4,7 @@ import SupportDialog from "./SupportDialog";
 const LOGO_URL = "https://assets.getphame.app/getphame-logo-mark.webp";
 
 export default function Footer() {
-  const { t } = useTranslation();
+  const { t } = useTranslation("landing");
   return (
     <footer className="w-full border-t border-[#1e3050] bg-[oklch(0.09_0.025_250)]">
       <div className="container">
@@ -21,19 +21,19 @@ export default function Footer() {
               href="/review-requests"
               className="inline-flex min-h-10 items-center justify-center rounded-md px-2 text-slate-200 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017] font-medium"
             >
-              Review Requests
+              {t("landing.footer.reviewRequests", { defaultValue: "Review Requests" })}
             </a>
             <a
               href="/email-campaigns"
               className="inline-flex min-h-10 items-center justify-center rounded-md px-2 text-slate-200 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017] font-medium"
             >
-              Email Campaigns
+              {t("landing.footer.emailCampaigns", { defaultValue: "Email Campaigns" })}
             </a>
             <a
               href="/reputation-management"
               className="inline-flex min-h-10 items-center justify-center rounded-md px-2 text-slate-200 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#D4A017] font-medium"
             >
-              Reputation Management
+              {t("landing.footer.reputationManagement", { defaultValue: "Reputation Management" })}
             </a>
             <a
               href="/privacy-policy"
