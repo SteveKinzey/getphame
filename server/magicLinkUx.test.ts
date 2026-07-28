@@ -132,6 +132,6 @@ describe("localized magic-link UX contract", () => {
 
   it("bumps the runtime locale cache after catalog changes", () => {
     const i18n = read("client/src/lib/i18n.ts");
-    expect(i18n).toContain("{{ns}}.json?v=phame38");
+    expect(i18n).toContain("{{ns}}.json?v=phame39");
   });
 });

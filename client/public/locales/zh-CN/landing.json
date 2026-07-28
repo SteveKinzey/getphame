@@ -89,6 +89,9 @@
       "getStartedButton": "免费开始"
     },
     "footer": {
+      "reviewRequests": "评价邀请",
+      "emailCampaigns": "电子邮件营销活动",
+      "reputationManagement": "声誉管理",
       "privacy": "隐私",
       "terms": "使用条款",
       "security": "安全",

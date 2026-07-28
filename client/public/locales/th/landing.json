@@ -89,6 +89,9 @@
       "getStartedButton": "เริ่มใช้งานฟรี"
     },
     "footer": {
+      "reviewRequests": "คำขอรีวิว",
+      "emailCampaigns": "แคมเปญอีเมล",
+      "reputationManagement": "การจัดการชื่อเสียง",
       "privacy": "นโยบายความเป็นส่วนตัว",
       "terms": "ข้อกำหนด",
       "security": "ความปลอดภัย",

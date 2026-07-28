@@ -9,6 +9,7 @@ const localeRoot = path.resolve(
 );
 
 const authoredLandingLocales = ["en", "th", "zh-TW", "zh-CN", "fr", "es"] as const;
+const supportedLandingLocales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
 
 function readLanding(locale: string): Record<string, unknown> {
   return JSON.parse(
@@ -49,6 +50,11 @@ describe("landing locale coverage", () => {
     "purpose.googleDescription",
     "purpose.googleSendingNote",
     "purpose.privacyLink",
+  ] as const;
+  const requiredFooterFeatureKeys = [
+    "footer.reviewRequests",
+    "footer.emailCampaigns",
+    "footer.reputationManagement",
   ] as const;
 
   for (const locale of authoredLandingLocales) {
@@ -94,6 +100,35 @@ describe("landing locale coverage", () => {
       expect(allowance).toContain("30");
     });
   }
+
+  for (const locale of supportedLandingLocales) {
+    it(`${locale} localizes every public footer feature link`, () => {
+      const localized = landingStrings(locale);
+
+      for (const key of requiredFooterFeatureKeys) {
+        const value = localized.get(key)?.trim() ?? "";
+        expect(value.length, `${locale}:${key}`).toBeGreaterThan(0);
+        if (locale !== "en") {
+          expect(value, `${locale}:${key} must not fall back to English`).not.toBe(english.get(key));
+        }
+      }
+    });
+  }
+
+  it("renders every public footer feature link through the landing namespace", () => {
+    const footerSource = fs.readFileSync(
+      path.resolve(localeRoot, "../../src/components/landing/Footer.tsx"),
+      "utf8",
+    );
+
+    expect(footerSource).toContain('useTranslation("landing")');
+    for (const key of ["reviewRequests", "emailCampaigns", "reputationManagement"] as const) {
+      expect(footerSource).toContain(`t("landing.footer.${key}"`);
+    }
+    expect(footerSource).not.toMatch(/>\s*Review Requests\s*</);
+    expect(footerSource).not.toMatch(/>\s*Email Campaigns\s*</);
+    expect(footerSource).not.toMatch(/>\s*Reputation Management\s*</);
+  });
 
   it("keeps Italian application translations with a localized purpose disclosure and English fallback for other landing copy", () => {
     expect(fs.existsSync(path.join(localeRoot, "it", "translation.json"))).toBe(true);

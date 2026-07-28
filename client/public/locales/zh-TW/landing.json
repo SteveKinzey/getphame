@@ -89,6 +89,9 @@
       "getStartedButton": "免費開始"
     },
     "footer": {
+      "reviewRequests": "評論邀請",
+      "emailCampaigns": "電子郵件行銷活動",
+      "reputationManagement": "聲譽管理",
       "privacy": "隱私權政策",
       "terms": "使用條款",
       "security": "安全",
