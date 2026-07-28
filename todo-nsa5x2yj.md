@@ -330,3 +330,9 @@
 - [x] Add consistent localized premium indicators to navigation items and advanced feature buttons, visible only where entitlement requires them and with accessible labels that do not rely on color alone.
 - [x] Add focused premium-conversion regressions and run TypeScript, production audit, full tests, client and server builds, plus desktop and mobile verification in representative Latin and non-Latin locales.
 - [ ] Validate and package the reusable skill, publish the exact managed checkpoint, synchronize it through a history-preserving pull request into protected GitHub `main`, and verify exact-tree parity without bypassing requirements.
+- [x] Audit passkey credential lookup, authenticated enrollment, magic-link return handling, and Google or Apple identity resolution to document the unenrolled 401 path and verified same-account return requirements.
+- [ ] Replace the unenrolled-passkey 401 with a neutral typed response that launches a localized, keyboard-accessible Add a Passkey module without exposing whether an email belongs to an account.
+- [ ] Require verification through the existing magic link, Google, or Apple flow, bind the attempted email and fixed return intent, then automatically resume WebAuthn enrollment for the verified canonical account.
+- [ ] Preserve passkey add, rename, and revoke controls; attach eligible provider identities only through verified-email canonical-account rules, never silent unverified merging or duplicate account creation.
+- [ ] Add focused regressions for unsupported browsers, neutral unenrolled responses, canceled or mismatched verification, valid passkey sign-in, successful verified resume, provider linking, duplicate prevention, localization parity, and dialog keyboard focus.
+- [ ] Run TypeScript, production audit, full Vitest, production build, and responsive English and Spanish verification; checkpoint the validated tree and synchronize it through protected GitHub `main` without bypass or force.
