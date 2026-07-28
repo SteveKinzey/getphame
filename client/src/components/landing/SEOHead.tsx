@@ -30,6 +30,22 @@ function toAbsoluteUrl(url: string) {
   return `${PUBLIC_SITE_ORIGIN}${url.startsWith("/") ? url : `/${url}`}`;
 }
 
+export function getSocialImageMimeType(url: string) {
+  let pathname = url;
+  try {
+    pathname = new URL(url, PUBLIC_SITE_ORIGIN).pathname;
+  } catch {
+    pathname = url.split(/[?#]/, 1)[0] ?? url;
+  }
+
+  const extension = pathname.toLowerCase().match(/\.([a-z0-9]+)$/)?.[1];
+  if (extension === "webp") return "image/webp";
+  if (extension === "jpg" || extension === "jpeg") return "image/jpeg";
+  if (extension === "gif") return "image/gif";
+  if (extension === "avif") return "image/avif";
+  return "image/png";
+}
+
 function upsertJsonLd(jsonLd?: Record<string, unknown> | Record<string, unknown>[]) {
   const selector = 'script[data-seo-head-jsonld="true"]';
   const existing = document.querySelector<HTMLScriptElement>(selector);
@@ -67,6 +83,7 @@ export default function SEOHead({
     upsertJsonLd(jsonLd);
 
     const socialImageUrl = toAbsoluteUrl(socialImage);
+    const socialImageMimeType = getSocialImageMimeType(socialImageUrl);
 
     if (keywords && keywords.length > 0) {
       upsertMeta('meta[name="keywords"]', "name", "keywords", keywords.join(", "));
@@ -107,7 +124,7 @@ export default function SEOHead({
     setOG("og:description", description);
     setOG("og:image", socialImageUrl);
     setOG("og:image:secure_url", socialImageUrl);
-    setOG("og:image:type", "image/png");
+    setOG("og:image:type", socialImageMimeType);
     setOG("og:image:width", "1200");
     setOG("og:image:height", "630");
     setOG("og:image:alt", socialImageAlt);

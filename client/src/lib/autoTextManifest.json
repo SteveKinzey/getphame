@@ -7957,6 +7957,19 @@
     ]
   },
   {
+    "key": "k_6a325edad0044d",
+    "source": "Lifetime: $349 one-time",
+    "usages": [
+      {
+        "file": "client/src/pages/AdminRevenue.tsx",
+        "line": 264
+      }
+    ],
+    "sourceKinds": [
+      "jsxText"
+    ]
+  },
+  {
     "key": "k_6ab624c35603eb",
     "source": "Tag administrators",
     "usages": [
@@ -13703,19 +13716,6 @@
     ],
     "sourceKinds": [
       "semanticString"
-    ]
-  },
-  {
-    "key": "k_be07787d3ed69b",
-    "source": "Lifetime: $1,247 one-time",
-    "usages": [
-      {
-        "file": "client/src/pages/AdminRevenue.tsx",
-        "line": 264
-      }
-    ],
-    "sourceKinds": [
-      "jsxText"
     ]
   },
   {

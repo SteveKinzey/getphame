@@ -58,6 +58,13 @@ describe("confirmed Get Phame pricing catalog", () => {
     }
   });
 
+  it("keeps the administrator lifetime-price reference aligned with the approved catalog", () => {
+    const adminRevenue = read("client/src/pages/AdminRevenue.tsx");
+
+    expect(adminRevenue).toContain(`Lifetime: ${USD_DISPLAY.lifetime} one-time`);
+    expect(adminRevenue).not.toContain("Lifetime: $1,247 one-time");
+  });
+
   it("provides exact visible plan labels in all seven maintained locale catalogs", () => {
     for (const locale of LOCALES) {
       const translation = JSON.parse(read(`client/public/locales/${locale}/translation.json`));

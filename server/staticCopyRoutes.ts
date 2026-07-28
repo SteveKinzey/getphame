@@ -5,27 +5,27 @@ const MAX_STATIC_COPY_BYTES = 512 * 1024;
 
 const STATIC_COPY_SOURCES = {
   es: {
-    storageKey: "static-copy/2026-07-28-exact-annual-pricing/getphame-static-copy-es.json",
+    storageKey: "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-es.json",
     fileName: "getphame-static-copy-es.json",
   },
   fr: {
-    storageKey: "static-copy/2026-07-28-exact-annual-pricing/getphame-static-copy-fr.json",
+    storageKey: "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-fr.json",
     fileName: "getphame-static-copy-fr.json",
   },
   it: {
-    storageKey: "static-copy/2026-07-28-exact-annual-pricing/getphame-static-copy-it.json",
+    storageKey: "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-it.json",
     fileName: "getphame-static-copy-it.json",
   },
   th: {
-    storageKey: "static-copy/2026-07-28-exact-annual-pricing/getphame-static-copy-th.json",
+    storageKey: "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-th.json",
     fileName: "getphame-static-copy-th.json",
   },
   "zh-CN": {
-    storageKey: "static-copy/2026-07-28-exact-annual-pricing/getphame-static-copy-zh-CN.json",
+    storageKey: "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-zh-CN.json",
     fileName: "getphame-static-copy-zh-CN.json",
   },
   "zh-TW": {
-    storageKey: "static-copy/2026-07-28-exact-annual-pricing/getphame-static-copy-zh-TW.json",
+    storageKey: "static-copy/2026-07-28-pr-review-reconciliation/getphame-static-copy-zh-TW.json",
     fileName: "getphame-static-copy-zh-TW.json",
   },
 } as const;
