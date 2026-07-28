@@ -2466,7 +2466,22 @@
     "googleUnavailable": "L’accesso con Google non è disponibile al momento.",
     "signInFailed": "Non abbiamo potuto effettuare l’accesso. Riprova.",
     "resetPassword": "Reimposta password",
-    "error": "Errore"
+    "error": "Errore",
+    "sendingMagicLinkStatus": "Invio di un link di accesso sicuro. Tieni aperta questa pagina.",
+    "resendCountdown": "Potrai inviare di nuovo il link tra {{seconds}} secondi.",
+    "resendReady": "Ora puoi richiedere un altro link.",
+    "resendingLink": "Nuovo invio del link…",
+    "resendLink": "Invia di nuovo il link",
+    "resendSuccess": "Ti abbiamo inviato un nuovo link di accesso.",
+    "expiredMagicLinkTitle": "Questo link di accesso è scaduto",
+    "expiredMagicLinkDescription": "Per la tua sicurezza, i link di accesso sono validi per 15 minuti.",
+    "invalidMagicLinkTitle": "Questo link di accesso non è più valido",
+    "invalidMagicLinkDescription": "Il link potrebbe essere già stato usato o essere incompleto.",
+    "verificationProblemTitle": "Non è stato possibile verificare questo link",
+    "verificationProblemDescription": "Qualcosa ha interrotto la verifica. Richiedi un nuovo link per continuare.",
+    "magicLinkRecoveryHelp": "Usa la stessa email e ti invieremo un nuovo link di accesso sicuro.",
+    "requestNewLink": "Richiedi un nuovo link",
+    "contactSupport": "Contatta l’assistenza"
   },
   "complianceGuide": {
     "backToSettings": "Impostazioni",

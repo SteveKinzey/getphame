@@ -1894,7 +1894,22 @@
     "googleUnavailable": "การเข้าสู่ระบบด้วย Google ยังไม่พร้อมใช้งานในขณะนี้",
     "signInFailed": "เราไม่สามารถเข้าสู่ระบบได้ โปรดลองอีกครั้ง",
     "resetPassword": "รีเซ็ตรหัสผ่าน",
-    "error": "ข้อผิดพลาด"
+    "error": "ข้อผิดพลาด",
+    "sendingMagicLinkStatus": "กำลังส่งลิงก์เข้าสู่ระบบที่ปลอดภัย โปรดเปิดหน้านี้ไว้",
+    "resendCountdown": "ส่งลิงก์อีกครั้งได้ใน {{seconds}} วินาที",
+    "resendReady": "คุณสามารถขอลิงก์ใหม่ได้แล้ว",
+    "resendingLink": "กำลังส่งลิงก์อีกครั้ง…",
+    "resendLink": "ส่งลิงก์อีกครั้ง",
+    "resendSuccess": "เราได้ส่งลิงก์เข้าสู่ระบบใหม่ให้คุณแล้ว",
+    "expiredMagicLinkTitle": "ลิงก์เข้าสู่ระบบนี้หมดอายุแล้ว",
+    "expiredMagicLinkDescription": "เพื่อความปลอดภัย ลิงก์เข้าสู่ระบบจะใช้ได้เป็นเวลา 15 นาที",
+    "invalidMagicLinkTitle": "ลิงก์เข้าสู่ระบบนี้ใช้ไม่ได้แล้ว",
+    "invalidMagicLinkDescription": "ลิงก์อาจถูกใช้ไปแล้วหรืออาจไม่สมบูรณ์",
+    "verificationProblemTitle": "เราไม่สามารถยืนยันลิงก์นี้ได้",
+    "verificationProblemDescription": "มีบางอย่างขัดจังหวะการยืนยัน โปรดขอลิงก์ใหม่เพื่อดำเนินการต่อ",
+    "magicLinkRecoveryHelp": "ใช้อีเมลเดิม แล้วเราจะส่งลิงก์เข้าสู่ระบบที่ปลอดภัยลิงก์ใหม่ให้คุณ",
+    "requestNewLink": "ขอลิงก์ใหม่",
+    "contactSupport": "ติดต่อฝ่ายสนับสนุน"
   },
   "complianceGuide": {
     "backToSettings": "การตั้งค่า",

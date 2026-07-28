@@ -1092,7 +1092,22 @@
     "invalidMagicLink": "Invalid or already-used sign-in link. Please request a new one.",
     "magicLinkExpired": "That sign-in link has expired. Please request a new one.",
     "verificationFailed": "Verification failed. Please request a new link.",
-    "signInFailed": "Sign-in failed. Please try again or contact support."
+    "signInFailed": "Sign-in failed. Please try again or contact support.",
+    "sendingMagicLinkStatus": "Sending a secure sign-in link. Keep this page open.",
+    "resendCountdown": "Resend available in {{seconds}} seconds.",
+    "resendReady": "You can request another link now.",
+    "resendingLink": "Resending link…",
+    "resendLink": "Resend Link",
+    "resendSuccess": "A fresh sign-in link is on its way.",
+    "expiredMagicLinkTitle": "This sign-in link has expired",
+    "expiredMagicLinkDescription": "For your security, sign-in links are valid for 15 minutes.",
+    "invalidMagicLinkTitle": "This sign-in link is no longer valid",
+    "invalidMagicLinkDescription": "The link may have already been used or may be incomplete.",
+    "verificationProblemTitle": "We couldn't verify this link",
+    "verificationProblemDescription": "Something interrupted verification. Request a fresh link to continue.",
+    "magicLinkRecoveryHelp": "Use the same email address and we'll send you a fresh secure link.",
+    "requestNewLink": "Request a New Link",
+    "contactSupport": "Contact support"
   },
   "authFeedback": {
     "openingGoogle": "Opening Google sign-in…",

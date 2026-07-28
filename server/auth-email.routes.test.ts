@@ -12,15 +12,18 @@ describe("email magic-link route wiring", () => {
     const entrypointPath = fileURLToPath(new URL("./_core/index.ts", import.meta.url));
     const loginPath = fileURLToPath(new URL("../client/src/pages/Login.tsx", import.meta.url));
     const onboardingPath = fileURLToPath(new URL("../client/src/pages/Onboarding.tsx", import.meta.url));
+    const magicLinkFormPath = fileURLToPath(new URL("../client/src/components/auth/MagicLinkForm.tsx", import.meta.url));
     const entrypoint = readFileSync(entrypointPath, "utf8");
     const login = readFileSync(loginPath, "utf8");
     const onboarding = readFileSync(onboardingPath, "utf8");
+    const magicLinkForm = readFileSync(magicLinkFormPath, "utf8");
 
     expect(entrypoint).toContain('import { registerEmailAuthRoutes } from "../auth-email";');
     expect(entrypoint).toContain("registerEmailAuthRoutes(app);");
-    expect(login).toContain('fetch("/api/auth/magic-link"');
-    expect(onboarding).toContain('fetch("/api/auth/magic-link"');
-    expect(onboarding).not.toContain('fetch("/api/auth/magic/send"');
+    expect(login).toContain("<MagicLinkForm");
+    expect(onboarding).toContain("<MagicLinkForm");
+    expect(magicLinkForm).toContain('fetch("/api/auth/magic-link"');
+    expect(magicLinkForm).not.toContain('fetch("/api/auth/magic/send"');
   });
 
   it("returns JSON for the login form endpoint", async () => {
