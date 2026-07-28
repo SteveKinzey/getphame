@@ -2647,6 +2647,7 @@
       "privacy": "验证仅用于确认账户。Get Phame 绝不会收到您的指纹、面部扫描或设备解锁码。",
       "resumeTitle": "添加您的通行密钥",
       "resumeDescription": "您的账户已验证。请完成设备上的安全提示，为 {{email}} 添加通行密钥。",
+      "resumeDescriptionWithoutEmail": "您的账户已验证。请完成设备上的安全提示以添加您的通行密钥。",
       "resumeRetryDescription": "浏览器需要重新确认。请选择“继续”以打开指纹、人脸或屏幕锁定提示。",
       "continue": "继续"
     },

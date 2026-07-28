@@ -144,7 +144,9 @@ export default function PasskeySecurityCard() {
             <DialogTitle>{t("passkeys.enrollment.resumeTitle", { defaultValue: "Finish adding your passkey" })}</DialogTitle>
             <DialogDescription>{resumeNeedsAction
               ? t("passkeys.enrollment.resumeRetryDescription", { defaultValue: "Your account is verified. Select Continue to open your device’s fingerprint, face, or screen-lock prompt." })
-              : t("passkeys.enrollment.resumeDescription", { defaultValue: "Account verified. Your device’s secure passkey prompt is opening now." })}</DialogDescription>
+              : enrollmentEmail
+                ? t("passkeys.enrollment.resumeDescription", { defaultValue: "Your account is verified. Complete the secure device prompt to add a passkey for {{email}}.", email: enrollmentEmail })
+                : t("passkeys.enrollment.resumeDescriptionWithoutEmail", { defaultValue: "Your account is verified. Complete the secure device prompt to add your passkey." })}</DialogDescription>
           </DialogHeader>
           {enrollmentEmail && <p className="break-all rounded-xl bg-muted px-4 py-3 text-sm font-bold text-foreground">{enrollmentEmail}</p>}
           {resumeNeedsAction && <button type="button" onClick={() => void registerPasskey(true)} disabled={pending || !supported} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-black text-primary-foreground disabled:opacity-60">{pending ? <Loader2 size={17} className="animate-spin" aria-hidden="true" /> : <KeyRound size={17} aria-hidden="true" />}{t("passkeys.enrollment.continue", { defaultValue: "Continue to device prompt" })}</button>}

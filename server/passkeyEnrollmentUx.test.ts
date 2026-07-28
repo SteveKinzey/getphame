@@ -27,6 +27,8 @@ describe("guided passkey enrollment composition", () => {
     expect(card).toContain('params.get("passkey_enroll") !== "1"');
     expect(card).toContain("startRegistration");
     expect(card).toContain("beginRegistration.mutateAsync");
+    expect(card).toContain("email: enrollmentEmail");
+    expect(card).toContain("passkeys.enrollment.resumeDescriptionWithoutEmail");
   });
 
   it("preserves lifecycle controls and isolates provider recovery from generic auth errors", () => {

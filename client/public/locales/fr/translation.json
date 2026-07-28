@@ -3159,6 +3159,7 @@
       "privacy": "La vérification confirme uniquement le compte. Get Phame ne reçoit jamais votre empreinte, votre visage ni le code de déverrouillage de votre appareil.",
       "resumeTitle": "Ajoutez votre clé d’accès",
       "resumeDescription": "Votre compte est vérifié. Terminez l’invite sécurisée de l’appareil pour ajouter une clé d’accès à {{email}}.",
+      "resumeDescriptionWithoutEmail": "Votre compte est vérifié. Terminez l’invite sécurisée de l’appareil pour ajouter votre clé d’accès.",
       "resumeRetryDescription": "Votre navigateur nécessite une nouvelle confirmation. Choisissez Continuer pour ouvrir l’invite d’empreinte, de reconnaissance faciale ou de verrouillage d’écran.",
       "continue": "Continuer"
     },

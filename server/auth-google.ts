@@ -27,7 +27,7 @@ import {
   PASSKEY_ENROLLMENT_MISMATCH_PATH,
   PASSKEY_ENROLLMENT_SUCCESS_PATH,
   providerEmailMatches,
-  verifyProviderOAuthState,
+  verifyProviderOAuthCallbackState,
 } from "./security/passkeyEnrollmentIntent";
 
 // ---------------------------------------------------------------------------
@@ -136,15 +136,16 @@ export function registerGoogleAuthRoutes(app: Express) {
 
     // CSRF state validation
     const storedState = req.cookies?.google_oauth_state;
-    const statePayload = storedState && storedState === state ? verifyProviderOAuthState(state) : null;
-    if (!statePayload) {
+    const stateVerification = verifyProviderOAuthCallbackState(storedState, state);
+    if (!stateVerification) {
       console.warn("[GoogleAuth] State mismatch — possible CSRF attack");
       return res.redirect(302, "/?auth_error=google_state_mismatch");
     }
 
     // Clear the state cookie immediately
     res.clearCookie("google_oauth_state");
-    const isPasskeyEnrollment = statePayload.intent === PASSKEY_ENROLLMENT_INTENT;
+    const statePayload = stateVerification.kind === "signed" ? stateVerification.payload : null;
+    const isPasskeyEnrollment = statePayload?.intent === PASSKEY_ENROLLMENT_INTENT;
 
     if (error || !code) {
       if (error) console.warn("[GoogleAuth] User denied access:", error);
@@ -174,7 +175,7 @@ export function registerGoogleAuthRoutes(app: Express) {
       const name = googleUser.name ?? null;
 
       if (isPasskeyEnrollment) {
-        if (!email || googleUser.verified_email !== true || !statePayload.expectedEmailHash || !providerEmailMatches(email, statePayload.expectedEmailHash)) {
+        if (!email || googleUser.verified_email !== true || !statePayload?.expectedEmailHash || !providerEmailMatches(email, statePayload.expectedEmailHash)) {
           return res.redirect(302, PASSKEY_ENROLLMENT_MISMATCH_PATH);
         }
 

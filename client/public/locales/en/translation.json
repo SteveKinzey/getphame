@@ -3114,6 +3114,7 @@
       "privacy": "Verification only confirms the account. Get Phame never receives your fingerprint, face scan, or device unlock code.",
       "resumeTitle": "Add your passkey",
       "resumeDescription": "Your account is verified. Complete the secure device prompt to add a passkey for {{email}}.",
+      "resumeDescriptionWithoutEmail": "Your account is verified. Complete the secure device prompt to add your passkey.",
       "resumeRetryDescription": "Your browser needs a fresh confirmation. Choose Continue to open the fingerprint, face, or screen-lock prompt.",
       "continue": "Continue"
     },

@@ -2669,6 +2669,7 @@
       "privacy": "驗證僅用於確認帳戶。Get Phame 絕不會收到您的指紋、臉部掃描或裝置解鎖碼。",
       "resumeTitle": "新增您的通行密鑰",
       "resumeDescription": "您的帳戶已驗證。請完成裝置上的安全提示，為 {{email}} 新增通行密鑰。",
+      "resumeDescriptionWithoutEmail": "您的帳戶已驗證。請完成裝置上的安全提示以新增您的通行密鑰。",
       "resumeRetryDescription": "瀏覽器需要重新確認。請選擇「繼續」以開啟指紋、臉部或螢幕鎖定提示。",
       "continue": "繼續"
     },

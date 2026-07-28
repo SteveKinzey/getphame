@@ -13,6 +13,10 @@ interface ProviderStatePayload {
   expectedEmailHash?: string;
 }
 
+export type ProviderOAuthCallbackState =
+  | { kind: "signed"; payload: ProviderStatePayload }
+  | { kind: "legacy" };
+
 function stateSecret(): string {
   const secret = process.env.JWT_SECRET;
   if (!secret) throw new Error("JWT_SECRET is required to protect OAuth state");
@@ -57,7 +61,20 @@ export function verifyProviderOAuthState(value: unknown): ProviderStatePayload |
   }
 }
 
+export function verifyProviderOAuthCallbackState(storedState: unknown, returnedState: unknown): ProviderOAuthCallbackState | null {
+  if (typeof storedState !== "string" || typeof returnedState !== "string" || storedState !== returnedState) return null;
+  const payload = verifyProviderOAuthState(returnedState);
+  if (payload) return { kind: "signed", payload };
+
+  // Pre-signed-state releases generated exactly 16 random bytes as lowercase hex.
+  // Accept that historical shape only when the httpOnly cookie matches exactly;
+  // malformed or tampered signed values must never downgrade to the legacy path.
+  if (/^[a-f0-9]{32}$/.test(returnedState)) return { kind: "legacy" };
+  return null;
+}
+
 export function providerEmailMatches(email: string, expectedHash: string): boolean {
+  if (!isValidExpectedEmailHash(expectedHash)) return false;
   const actual = crypto.createHash("sha256").update(email.trim().toLowerCase()).digest("hex");
   return crypto.timingSafeEqual(Buffer.from(actual, "hex"), Buffer.from(expectedHash, "hex"));
 }

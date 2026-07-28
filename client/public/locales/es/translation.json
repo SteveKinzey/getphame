@@ -3159,6 +3159,7 @@
       "privacy": "La verificación solo confirma la cuenta. Get Phame nunca recibe tu huella, escaneo facial ni código de desbloqueo del dispositivo.",
       "resumeTitle": "Añade tu clave de acceso",
       "resumeDescription": "Tu cuenta está verificada. Completa la solicitud segura del dispositivo para añadir una clave de acceso para {{email}}.",
+      "resumeDescriptionWithoutEmail": "Tu cuenta está verificada. Completa la solicitud segura del dispositivo para añadir tu clave de acceso.",
       "resumeRetryDescription": "Tu navegador necesita una nueva confirmación. Elige Continuar para abrir la solicitud de huella, rostro o bloqueo de pantalla.",
       "continue": "Continuar"
     },
