@@ -1,7 +1,7 @@
 import type { CreateExpressContextOptions } from "@trpc/server/adapters/express";
 import type { User } from "../../drizzle/schema";
 import { sdk } from "./sdk";
-import { authenticatePasskeySession } from "../security/passkeySessions";
+import { authenticateSecuritySession } from "../security/passkeySessions";
 
 export type SecuritySessionContext = {
   id: string;
@@ -23,17 +23,17 @@ export async function createContext(
   let user: User | null = null;
 
   try {
-    const passkeySession = await authenticatePasskeySession(opts.req);
-    if (passkeySession) {
+    const securitySession = await authenticateSecuritySession(opts.req);
+    if (securitySession) {
       return {
         req: opts.req,
         res: opts.res,
-        user: passkeySession.user,
-        securitySession: passkeySession.securitySession,
+        user: securitySession.user,
+        securitySession: securitySession.securitySession,
       };
     }
   } catch (error) {
-    console.warn("[Auth] Passkey session resolution failed; continuing with legacy session validation");
+    console.warn("[Auth] Revocable session resolution failed; continuing with legacy session validation");
   }
 
   try {

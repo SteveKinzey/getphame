@@ -2,7 +2,7 @@
  * Shared webhook firing helper used by both the public contacts API
  * and the tRPC webhook.test procedure so all deliveries appear in the log.
  */
-import { createHash } from "crypto";
+import { createHmac } from "crypto";
 import {
   getWebhookConfigs,
   logWebhookDelivery,
@@ -16,9 +16,9 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/** Build HMAC signature header value */
-function buildSig(secret: string, payload: string): string {
-  return "sha256=" + createHash("sha256").update(secret + payload).digest("hex");
+/** Build the stable sha256=-prefixed HMAC signature header value. */
+export function buildWebhookSignature(secret: string, payload: string): string {
+  return `sha256=${createHmac("sha256", secret).update(payload).digest("hex")}`;
 }
 
 /**
@@ -93,7 +93,7 @@ export async function fireWebhooks(
         "X-Phame-Event": event,
       };
       if (cfg.secret) {
-        headers["X-Phame-Signature"] = buildSig(cfg.secret, payload);
+        headers["X-Phame-Signature"] = buildWebhookSignature(cfg.secret, payload);
       }
 
       // Fire with retry — fire-and-forget but log the result
@@ -142,7 +142,7 @@ export async function fireTestWebhook(
     "X-Phame-Event": event,
   };
   if (secret) {
-    headers["X-Phame-Signature"] = buildSig(secret, payload);
+    headers["X-Phame-Signature"] = buildWebhookSignature(secret, payload);
   }
 
   const startMs = Date.now();
@@ -210,7 +210,7 @@ export async function retryWebhookDelivery(
     "X-Phame-Retry": "1",
   };
   if (secret) {
-    headers["X-Phame-Signature"] = buildSig(secret, payload);
+    headers["X-Phame-Signature"] = buildWebhookSignature(secret, payload);
   }
 
   const startMs = Date.now();

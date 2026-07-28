@@ -1,4 +1,4 @@
-import nodemailer from "nodemailer";
+import { createTransporter } from "./smtp";
 
 export const SUPPORT_FROM_EMAIL = "hello@getphame.app";
 export const SUPPORT_TO_EMAIL = "support@getphame.app";
@@ -81,12 +81,12 @@ export async function sendSupportMessage(input: SupportMessageInput): Promise<{ 
     : "";
 
   try {
-    const transporter = nodemailer.createTransport({
+    const transporter = createTransporter({
       host: config.host,
       port: config.port,
       secure: config.port === 465,
-      auth: { user: config.user, pass: config.pass },
-      tls: { rejectUnauthorized: false },
+      user: config.user,
+      pass: config.pass,
     });
 
     const result = await transporter.sendMail({

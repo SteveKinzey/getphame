@@ -195,7 +195,7 @@ import { githubCleanupShowcaseRouter } from "./routers/githubCleanupShowcase";
 import { passkeysRouter } from "./routers/passkeys";
 import { recoveryDrillsRouter } from "./routers/recoveryDrills";
 import { sourceOperationsRouter } from "./routers/sourceOperations";
-import { revokePasskeySessionFromRequest } from "./security/passkeySessions";
+import { revokeSecuritySessionFromRequest } from "./security/passkeySessions";
 import { combineAccountsAsAdmin, deleteAccountAsAdmin } from "./accountManagement";
 import {
   COMPLIMENTARY_ACCESS_LIMITS,
@@ -229,12 +229,29 @@ const validateSmtpAuditDateRange = (value: { dateFrom?: number; dateTo?: number 
   value.dateFrom === undefined || value.dateTo === undefined || value.dateFrom <= value.dateTo;
 
 // ── Unsubscribe token helpers ────────────────────────────────────────────────
-const UNSUB_SECRET = process.env.JWT_SECRET ?? "phame-unsub-secret";
+
+function getUnsubscribeSigningSecret(): string {
+  const secret = process.env.UNSUBSCRIBE_SIGNING_SECRET;
+  if (!secret || secret.length < 32) {
+    throw new Error("UNSUBSCRIBE_SIGNING_SECRET must contain at least 32 characters");
+  }
+  return secret;
+}
+
+function unsubSignature(payload: string, secret: string): string {
+  return crypto.createHmac("sha256", secret).update(payload).digest("hex");
+}
+
+function safeSignatureEqual(left: string, right: string): boolean {
+  const leftBuffer = Buffer.from(left);
+  const rightBuffer = Buffer.from(right);
+  return leftBuffer.length === rightBuffer.length && crypto.timingSafeEqual(leftBuffer, rightBuffer);
+}
 
 /** Generate a signed unsubscribe token: base64url(contactType:id:userId:sig) */
 export function buildUnsubToken(contactType: "contact" | "woo", id: number, userId: number): string {
   const payload = `${contactType}:${id}:${userId}`;
-  const sig = crypto.createHmac("sha256", UNSUB_SECRET).update(payload).digest("hex").slice(0, 16);
+  const sig = unsubSignature(payload, getUnsubscribeSigningSecret());
   return Buffer.from(`${payload}:${sig}`).toString("base64url");
 }
 
@@ -247,9 +264,19 @@ export function verifyUnsubToken(token: string): { contactType: "contact" | "woo
     const [contactType, idStr, userIdStr, sig] = parts;
     if (contactType !== "contact" && contactType !== "woo") return null;
     const payload = `${contactType}:${idStr}:${userIdStr}`;
-    const expected = crypto.createHmac("sha256", UNSUB_SECRET).update(payload).digest("hex").slice(0, 16);
-    if (sig !== expected) return null;
-    return { contactType: contactType as "contact" | "woo", id: parseInt(idStr, 10), userId: parseInt(userIdStr, 10) };
+    const id = Number.parseInt(idStr, 10);
+    const userId = Number.parseInt(userIdStr, 10);
+    if (!Number.isInteger(id) || id <= 0 || !Number.isInteger(userId) || userId <= 0) return null;
+
+    const primaryExpected = unsubSignature(payload, getUnsubscribeSigningSecret());
+    const primaryValid = safeSignatureEqual(sig, primaryExpected);
+    const legacySecret = process.env.JWT_SECRET;
+    const legacyValid = !primaryValid && sig.length === 16 && Boolean(legacySecret) && safeSignatureEqual(
+      sig,
+      unsubSignature(payload, legacySecret!).slice(0, 16),
+    );
+    if (!primaryValid && !legacyValid) return null;
+    return { contactType, id, userId };
   } catch {
     return null;
   }
@@ -643,7 +670,7 @@ export const appRouter = router({
   auth: router({
     me: publicProcedure.query((opts) => opts.ctx.user),
     logout: publicProcedure.mutation(async ({ ctx }) => {
-      await revokePasskeySessionFromRequest(ctx.req);
+      await revokeSecuritySessionFromRequest(ctx.req);
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
@@ -2536,7 +2563,7 @@ export const appRouter = router({
 
   accessCodes: router({
     /** Admin only: create a new access code */
-    create: protectedProcedure
+    create: adminProcedure
       .input(
         z.object({
           code: z.string().optional(),
@@ -2547,8 +2574,7 @@ export const appRouter = router({
           grantDurationUnit: z.enum(["day", "month", "lifetime"]).optional(),
         })
       )
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      .mutation(async ({ input }) => {
         const code = await createAccessCode({
           code: input.code,
           note: input.note,
@@ -2561,31 +2587,27 @@ export const appRouter = router({
       }),
 
     /** Admin only: generate a random code preview without saving */
-    generatePreview: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+    generatePreview: adminProcedure.query(async () => {
       return { code: generateCode() };
     }),
 
     /** Admin only: list all codes */
-    list: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+    list: adminProcedure.query(async () => {
       return listAccessCodes();
     }),
 
     /** Admin only: revoke a code */
-    revoke: protectedProcedure
+    revoke: adminProcedure
       .input(z.object({ id: z.number().int() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      .mutation(async ({ input }) => {
         await revokeAccessCode(input.id);
         return { ok: true };
       }),
 
     /** Admin only: re-activate a revoked code */
-    activate: protectedProcedure
+    activate: adminProcedure
       .input(z.object({ id: z.number().int() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      .mutation(async ({ input }) => {
         await activateAccessCode(input.id);
         return { ok: true };
       }),
@@ -2920,8 +2942,7 @@ export const appRouter = router({
     }),
 
     /** SMTP provider failure stats — breakdown by host across all users */
-    smtpStats: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+    smtpStats: adminProcedure.query(async () => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
       const rows = await db.select().from(smtpCredentials);
@@ -2980,17 +3001,15 @@ export const appRouter = router({
     }),
 
     /** Trigger SMTP health check on demand (admin only) */
-    runHealthCheck: protectedProcedure.mutation(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+    runHealthCheck: adminProcedure.mutation(async () => {
       await runSmtpHealthChecks();
       return { ok: true, ranAt: Date.now() };
     }),
 
     /** Search users by name or email — admin only */
-    searchUsers: protectedProcedure
+    searchUsers: adminProcedure
       .input(z.object({ query: z.string().min(1).max(100) }))
-      .query(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      .query(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
         const q = `%${input.query}%`;
@@ -3357,13 +3376,12 @@ export const appRouter = router({
       }),
 
     /** Manually override a user's tier — admin only */
-    setTier: protectedProcedure
+    setTier: adminProcedure
       .input(z.object({
         userId: z.number().int().positive(),
         tier: z.enum(["free", "pro", "annual", "lifetime"]),
       }))
       .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
         await db
@@ -3375,13 +3393,12 @@ export const appRouter = router({
       }),
 
     /** Grant a registered account a monthly, annual, or lifetime subscription — admin only */
-    grantSubscription: protectedProcedure
+    grantSubscription: adminProcedure
       .input(z.object({
         email: z.string().trim().email(),
         plan: z.enum(["monthly", "annual", "lifetime"]),
       }))
       .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
         try {
           const granted = await grantSubscriptionByEmail(input.email, input.plan);
           if (!granted) {
@@ -3399,10 +3416,9 @@ export const appRouter = router({
       }),
 
     /** Return a registered account to the free tier — admin only */
-    revokeSubscription: protectedProcedure
+    revokeSubscription: adminProcedure
       .input(z.object({ email: z.string().trim().email() }))
       .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
         const revoked = await revokeSubscriptionByEmail(input.email);
         if (!revoked) {
           throw new TRPCError({ code: "NOT_FOUND", message: "No subscription profile matches that email address." });
@@ -3412,8 +3428,7 @@ export const appRouter = router({
       }),
 
     /** Upsell click stats — powered-by footer clicks to /upgrade (last 30d) */
-    upsellStats: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+    upsellStats: adminProcedure.query(async () => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
       const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -3426,8 +3441,7 @@ export const appRouter = router({
     }),
 
     /** Privacy-light install/share funnel totals; no raw user or device records leave the server. */
-    pwaConversionStats: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+    pwaConversionStats: adminProcedure.query(async () => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
       const rows = await db
@@ -3526,8 +3540,7 @@ export const appRouter = router({
     }),
 
     /** Churn survey responses — admin only */
-    churnSurveys: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+    churnSurveys: adminProcedure.query(async () => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
       const rows = await db
@@ -3543,8 +3556,7 @@ export const appRouter = router({
     }),
 
     /** Revenue dashboard — MRR, ARR, tier breakdown, monthly subscriber growth, churn rate */
-    revenue: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+    revenue: adminProcedure.query(async () => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR", message: "DB unavailable" });
 
@@ -3666,8 +3678,7 @@ export const appRouter = router({
      * - rewardedAt IS NULL (reward not yet applied)
      * - referrer is currently on tier = 'pro' or 'annual' (now eligible)
      */
-    listDeferred: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+    listDeferred: adminProcedure.query(async () => {
       const db = await getDb();
       if (!db) return [];
 
@@ -3734,10 +3745,9 @@ export const appRouter = router({
     }),
 
     /** Process a single deferred reward by referral row ID */
-    processOne: protectedProcedure
+    processOne: adminProcedure
       .input(z.object({ referralId: z.number().int().positive() }))
-      .mutation(async ({ ctx, input }) => {
-        if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+      .mutation(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
@@ -3756,8 +3766,7 @@ export const appRouter = router({
       }),
 
     /** Process ALL eligible deferred rewards in one go */
-    processAll: protectedProcedure.mutation(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new TRPCError({ code: "FORBIDDEN" });
+    processAll: adminProcedure.mutation(async () => {
       const db = await getDb();
       if (!db) throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
 
