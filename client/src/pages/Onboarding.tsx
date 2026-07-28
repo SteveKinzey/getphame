@@ -2,7 +2,7 @@
 // Full-width responsive layout: two-column on desktop (left: branding/proof, right: auth card)
 // Production uses email magic link alongside Google on approved custom domains;
 // Apple OAuth remains preview-only until separately approved for production.
-import { Star, Mail, Loader2, CheckCircle2, Shield, Lock, Zap } from "lucide-react";
+import { Mail, Loader2, CheckCircle2, Shield, Lock, Zap } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -62,7 +62,7 @@ export default function OnboardingPage() {
   return (
     <div className="min-h-screen bg-[#0a1628] text-white flex flex-col">
       <SEOHead
-        title="Sign Up — Get Phame | Start Getting More 5-Star Reviews"
+        title="Sign Up — Get Phame | Personal Review Requests"
         description="Create your free Get Phame account. Send personalized review requests from your own email. 10 free requests included, no credit card required."
         canonical="https://getphame.app/onboarding"
       />
@@ -91,9 +91,9 @@ export default function OnboardingPage() {
           >
             <div>
               <h1 className="font-display font-extrabold text-4xl xl:text-5xl leading-tight mb-4">
-                Get More 5-Star
+                Build a Repeatable
                 <br />
-                <span style={{ color: "oklch(0.78 0.15 75)" }}>Google Reviews</span>
+                <span style={{ color: "oklch(0.78 0.15 75)" }}>Review Request Workflow</span>
               </h1>
               <p className="text-xl font-bold leading-relaxed text-white/90">
                 Send personalized review requests from your own email account. Your customers see it come from you — not a generic sender.
@@ -104,8 +104,8 @@ export default function OnboardingPage() {
             <div className="flex flex-col gap-4">
               {[
                 { icon: Shield, text: "AES-256 encrypted credentials — your data stays safe" },
-                { icon: Lock, text: "Sends from YOUR email — maximum deliverability" },
-                { icon: Zap, text: "Set up in under 2 minutes — no technical skills needed" },
+                { icon: Lock, text: "Sends from the email account you connect" },
+                { icon: Zap, text: "Guided setup — no technical skills needed" },
               ].map((item) => (
                 <div key={item.text} className="flex items-start gap-3">
                   <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: "rgba(255,184,0,0.1)", border: "1px solid rgba(255,184,0,0.2)" }}>
@@ -116,15 +116,10 @@ export default function OnboardingPage() {
               ))}
             </div>
 
-            {/* Social proof */}
+            {/* Product capability */}
             <div className="flex items-center gap-3 pt-4" style={{ borderTop: "1px solid rgba(255,255,255,0.08)" }}>
-              <div className="flex gap-0.5">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <Star key={i} size={18} fill="oklch(0.78 0.15 75)" style={{ color: "oklch(0.78 0.15 75)" }} />
-                ))}
-              </div>
               <span className="text-base font-bold text-white/70">
-                Trusted by 500+ local businesses
+                Individual outreach with automatic reminder controls
               </span>
             </div>
 
@@ -133,7 +128,7 @@ export default function OnboardingPage() {
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
               </svg>
-              <span>Every email includes an unsubscribe link — fully compliant</span>
+              <span>Every outreach email includes an unsubscribe link.</span>
             </div>
           </motion.div>
 
@@ -154,10 +149,10 @@ export default function OnboardingPage() {
                 {/* Mobile heading (shown only on mobile) */}
                 <div className="lg:hidden text-center mb-8">
                   <h1 className="font-display font-extrabold text-2xl mb-2">
-                    Get More 5-Star
+                    Build a Repeatable
                   </h1>
                   <h2 className="font-display font-extrabold text-2xl" style={{ color: "oklch(0.78 0.15 75)" }}>
-                    Google Reviews
+                    Review Request Workflow
                   </h2>
                   <p className="text-base font-bold mt-3 leading-relaxed text-white/80">
                     Send personalized review requests from your own email account.
@@ -168,13 +163,6 @@ export default function OnboardingPage() {
                 <div className="hidden lg:block text-center mb-8">
                   <h2 className="font-display font-bold text-xl mb-1">Create your free account</h2>
                   <p className="text-base font-bold text-white/70">No credit card required</p>
-                </div>
-
-                {/* Stars (mobile only) */}
-                <div className="lg:hidden flex justify-center gap-1 mb-5">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} size={22} fill="oklch(0.78 0.15 75)" style={{ color: "oklch(0.78 0.15 75)" }} />
-                  ))}
                 </div>
 
                 {/* Feature badges (mobile only) */}

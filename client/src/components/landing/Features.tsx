@@ -47,7 +47,7 @@ export default function Features() {
           </h2>
           <p className="text-lg text-slate-200 font-medium">
             {t("landing.subHeadline", {
-              defaultValue: "The simplest way to turn happy customers into 5-star reviews — without expensive tools or awkward conversations.",
+              defaultValue: "A simple way to send clear, personal review requests from the email account you connect.",
             })}
           </p>
         </FadeUp>

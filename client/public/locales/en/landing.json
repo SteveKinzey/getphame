@@ -50,7 +50,7 @@
       "q8": "Can customers opt out?",
       "a8": "Yes. Every email includes an unsubscribe link. When a customer opts out, they're automatically removed from future sends. This keeps you compliant and protects your sender reputation.",
       "q9": "Do I need technical skills to connect my email?",
-      "a9": "No. For Gmail and Outlook, we provide step-by-step guides with screenshots. Most users connect in under 60 seconds. For custom SMTP, you'll need your server address, port, and credentials — your hosting provider can supply these.",
+      "a9": "No. For Gmail and Outlook, we provide step-by-step guides with screenshots. For custom SMTP, you'll need your server address, port, and credentials — your hosting provider can supply these.",
       "q10": "Which review platforms does it support?",
       "a10": "Any platform with a review link: Google, Yelp, TripAdvisor, Facebook, Bing Places, Trustpilot, G2, Capterra, and more. Just paste your review link and we'll include it in every request. You can change platforms anytime.",
       "q11": "How does WooCommerce sync work?",
@@ -81,11 +81,11 @@
     },
     "whyItWorks": "Why it works",
     "headline": "From your inbox to their review",
-    "subHeadline": "The simplest way to turn happy customers into 5-star reviews — without expensive tools or awkward conversations.",
+    "subHeadline": "A simple way to send clear, personal review requests from the email account you connect.",
     "finalCta": {
       "headlinePart1": "Your inbox. Your reputation.",
       "headlinePart2": "Your growth.",
-      "description": "Free forever: 10 initial requests, then 5 more every rolling 30 days. No credit card. Set up in under 2 minutes.",
+      "description": "Free forever: 10 initial requests, then 5 more every rolling 30 days. No credit card required.",
       "getStartedButton": "Get Started Free"
     },
     "footer": {
@@ -98,13 +98,13 @@
     "hero": {
       "freeToStart": "Free to start — No credit card required",
       "categoryLabel": "Review-request email software for local businesses",
-      "headlinePart1": "Get more 5-star reviews",
+      "headlinePart1": "Send personal review requests",
       "headlinePart2": "without the awkward ask",
       "description": "Get Phame is review-request email software for local businesses. Add customers, send personalized requests from an email account you connect, track opens and clicks, and direct customers to the review platform you choose.",
       "ctaVariantA": "Start Free — Send 10 Requests",
       "ctaVariantB": "Start Free — No Card Required",
       "howItWorks": "See how it works",
-      "setupTime": "Set up in under 2 minutes",
+      "setupTime": "Guided setup",
       "emailCompatibility": "Works with Gmail, Outlook, SMTP",
       "googleDisclosureLabel": "Google sign-in data use",
       "googleSignInDisclaimer": "Google sign-in only provides your name and email address to create and identify your Get Phame account. We do not request access to Gmail messages, contacts, Drive files, or Calendar.",
@@ -115,7 +115,7 @@
       "setupSteps": {
         "step1": {
           "title": "Connect your email",
-          "description": "Link your Gmail, Outlook, or any SMTP email in 60 seconds. Credentials encrypted with AES-256."
+          "description": "Link Gmail, Outlook, or an SMTP email using guided connection steps. Credentials are encrypted with AES-256."
         },
         "step2": {
           "title": "Add your review link",
@@ -127,14 +127,14 @@
         },
         "step4": {
           "title": "Send & track results",
-          "description": "Hit send. Each customer gets a personal email from you. Track opens, clicks, and new reviews live."
+          "description": "Send each customer a personal request, then review sent, open, and click activity in one place."
         }
       },
       "setupInSteps": "Setup in 4 steps",
-      "headline": "Two minutes to your first review request",
+      "headline": "From connection to your first review request",
       "subtitle": "No technical skills needed. No onboarding calls. Just connect, import, and send.",
       "getStartedButton": "Get Started Free",
-      "setupTime": "Takes less than 2 minutes to set up"
+      "setupTime": "Guided setup, import, and sending"
     },
     "leadCapture": {
       "errorMessage": "Something went wrong. Please try again.",
@@ -224,16 +224,16 @@
     "productShowcase": {
       "tabEmailLabel": "Email Preview",
       "tabEmailTitle": "Emails that feel handwritten",
-      "tabEmailDescription": "Each review request arrives from your actual email address with your name, your signature, and a personal tone. Customers trust it because it looks real — because it is.",
+      "tabEmailDescription": "Each review request uses the sender name, signature, and tone you configure in Get Phame.",
       "tabEmailAlt": "GetPhame personalized review request email preview showing customer name, business signature, and Google review link",
       "tabImportLabel": "Customer Import",
-      "tabImportTitle": "Your entire list in seconds",
-      "tabImportDescription": "Drag and drop a CSV or sync directly from WooCommerce. We validate emails, remove duplicates, and flag bounces — so every send counts.",
+      "tabImportTitle": "Import customers from CSV or WooCommerce",
+      "tabImportDescription": "Upload a CSV or sync WooCommerce, then review email validation and duplicate flags before sending.",
       "tabImportAlt": "GetPhame customer import screen showing CSV drag-and-drop upload with email validation and duplicate removal",
       "tabTrackingLabel": "Review Tracking",
-      "tabTrackingTitle": "Watch the reviews roll in",
-      "tabTrackingDescription": "Track every email sent, opened, and clicked. See your review count climb week over week with real-time analytics and growth charts.",
-      "tabTrackingAlt": "GetPhame review tracking dashboard showing email open rates, click-through rates, and weekly review count growth chart",
+      "tabTrackingTitle": "Track request activity",
+      "tabTrackingDescription": "Review sent, open, and click activity in the Get Phame dashboard.",
+      "tabTrackingAlt": "Get Phame request activity dashboard showing sent, open, and click tracking",
       "sectionSubtitle": "The product",
       "sectionTitle": "Built to make review requests effortless",
       "sectionDescription": "One simple tool. Three powerful views. Everything you need to grow your reputation.",

@@ -227,7 +227,8 @@
     },
     "faq": {
       "a1": "No. Ogni email viene inviata direttamente dall'account che colleghi, non da un server di invio massivo di terze parti. I clienti vedono il nome, l'indirizzo e la firma del mittente che configuri.",
-      "a12": "Illimitato significa che Get Phame non imposta un limite mensile alle richieste di recensione per i piani Pro. Restano valide le regole e i limiti di invio del tuo provider email."
+      "a12": "Illimitato significa che Get Phame non imposta un limite mensile alle richieste di recensione per i piani Pro. Restano valide le regole e i limiti di invio del tuo provider email.",
+      "a9": "No. Per Gmail e Outlook forniamo guide passo passo con schermate. Per un SMTP personalizzato servono indirizzo del server, porta e credenziali fornite dal provider."
     },
     "feature1": {
       "description": "Ogni richiesta di recensione viene inviata dall'account email che colleghi e usa il nome e la firma del mittente che configuri.",
@@ -245,7 +246,8 @@
       "statLabel": "destinazioni delle recensioni"
     },
     "hero": {
-      "ctaVariantB": "Inizia gratis — senza carta"
+      "ctaVariantB": "Inizia gratis — senza carta",
+      "setupTime": "Configurazione guidata"
     },
     "leadCapture": {
       "description": "Ricevi una guida gratuita per pianificare richieste di recensione chiare e conformi, oltre ad aggiornamenti sul prodotto e consigli pratici sulla reputazione.",
@@ -258,6 +260,30 @@
       "averageSetupTimeLabel": "configurazione e onboarding",
       "followUpValue": "Automatico",
       "averageResponseRateLabel": "i promemoria si fermano dopo l'azione del cliente"
+    },
+    "subHeadline": "Un modo semplice per inviare richieste di recensione chiare e personali dall'account email collegato.",
+    "finalCta": {
+      "description": "Gratis per sempre: 10 richieste iniziali, poi altre 5 ogni 30 giorni mobili. Nessuna carta richiesta."
+    },
+    "howItWorks": {
+      "setupSteps": {
+        "step1": {
+          "description": "Collega Gmail, Outlook o un account SMTP con passaggi guidati. Le credenziali sono cifrate con AES-256."
+        },
+        "step4": {
+          "description": "Invia una richiesta personale a ogni cliente e consulta invii, aperture e clic in un unico posto."
+        }
+      },
+      "headline": "Dal collegamento alla prima richiesta di recensione",
+      "setupTime": "Configurazione, importazione e invio guidati"
+    },
+    "productShowcase": {
+      "tabEmailDescription": "Ogni richiesta usa il nome, la firma e il tono del mittente configurati in Get Phame.",
+      "tabImportTitle": "Importa clienti da CSV o WooCommerce",
+      "tabImportDescription": "Carica un CSV o sincronizza WooCommerce, poi controlla la validazione email e i duplicati prima dell'invio.",
+      "tabTrackingTitle": "Controlla l'attività delle richieste",
+      "tabTrackingDescription": "Consulta invii, aperture e clic nella dashboard di Get Phame.",
+      "tabTrackingAlt": "Dashboard attività di Get Phame con monitoraggio di invii, aperture e clic"
     }
   }
 }

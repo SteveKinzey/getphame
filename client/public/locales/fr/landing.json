@@ -50,7 +50,7 @@
       "q8": "Les clients peuvent‑ils se désinscrire ?",
       "a8": "Oui. Chaque email contient un lien de désinscription. Lorsqu'un client se désinscrit, il est automatiquement retiré des envois futurs. Cela vous maintient en conformité et protège votre réputation d'expéditeur.",
       "q9": "Ai‑je besoin de compétences techniques pour connecter mon email ?",
-      "a9": "Non. Pour Gmail et Outlook, nous fournissons des guides pas à pas avec captures d'écran. La plupart des utilisateurs se connectent en moins de 60 secondes. Pour un SMTP personnalisé, vous aurez besoin de l'adresse du serveur, du port et des identifiants — votre hébergeur peut fournir ces informations.",
+      "a9": "Non. Pour Gmail et Outlook, nous proposons des guides pas à pas avec captures d'écran. Pour un SMTP personnalisé, vous aurez besoin de l'adresse du serveur, du port et des identifiants fournis par votre hébergeur.",
       "q10": "Quelles plateformes d'avis sont prises en charge ?",
       "a10": "Toute plateforme qui propose un lien d'avis : Google, Yelp, TripAdvisor, Facebook, Bing Places, Trustpilot, G2, Capterra, et plus encore. Collez votre lien d'avis et nous l'incluons dans chaque demande. Vous pouvez changer de plateforme à tout moment.",
       "q11": "Comment fonctionne la synchronisation WooCommerce ?",
@@ -81,11 +81,11 @@
     },
     "whyItWorks": "Pourquoi ça fonctionne",
     "headline": "De votre boîte à leur avis",
-    "subHeadline": "Le moyen le plus simple de transformer des clients satisfaits en avis 5 étoiles — sans outils coûteux ni conversations gênantes.",
+    "subHeadline": "Une façon simple d'envoyer des demandes d'avis claires et personnelles depuis le compte e-mail que vous connectez.",
     "finalCta": {
       "headlinePart1": "Votre boîte. Votre réputation.",
       "headlinePart2": "Votre croissance.",
-      "description": "Gratuit pour toujours : 10 demandes initiales, puis 5 supplémentaires par période glissante de 30 jours. Pas de carte de crédit. Configuration en moins de 2 minutes.",
+      "description": "Gratuit à vie : 10 demandes initiales, puis 5 supplémentaires tous les 30 jours glissants. Aucune carte bancaire requise.",
       "getStartedButton": "Commencer gratuitement"
     },
     "footer": {
@@ -98,13 +98,13 @@
     "hero": {
       "freeToStart": "Démarrage gratuit — aucune carte de crédit requise",
       "categoryLabel": "Logiciel d’e-mails de demande d’avis pour les entreprises locales",
-      "headlinePart1": "Obtenez plus d'avis 5 étoiles",
+      "headlinePart1": "Envoyez des demandes d'avis personnelles",
       "headlinePart2": "sans la demande gênante",
       "description": "Get Phame est un logiciel de demande d’avis par e-mail destiné aux entreprises locales. Ajoutez des clients, envoyez des demandes personnalisées depuis un compte e-mail connecté, suivez les ouvertures et les clics, puis dirigez les clients vers la plateforme d’avis de votre choix.",
       "ctaVariantA": "Commencer gratuitement — Envoyer 10 demandes",
       "ctaVariantB": "Commencer gratuitement — sans carte",
       "howItWorks": "Voir comment ça marche",
-      "setupTime": "Configuration en moins de 2 minutes",
+      "setupTime": "Configuration guidée",
       "emailCompatibility": "Fonctionne avec Gmail, Outlook, SMTP",
       "googleDisclosureLabel": "Utilisation des données de connexion Google",
       "googleSignInDisclaimer": "Connectez‑vous avec Google pour créer votre compte. Nous accédons uniquement à votre nom et à votre adresse email — rien d'autre.",
@@ -115,7 +115,7 @@
       "setupSteps": {
         "step1": {
           "title": "Connectez votre email",
-          "description": "Liez votre compte Gmail, Outlook ou tout email SMTP en 60 secondes. Identifiants chiffrés avec AES-256."
+          "description": "Connectez Gmail, Outlook ou un compte SMTP avec des étapes guidées. Les identifiants sont chiffrés avec AES-256."
         },
         "step2": {
           "title": "Ajoutez votre lien d'avis",
@@ -127,14 +127,14 @@
         },
         "step4": {
           "title": "Envoyez & suivez les résultats",
-          "description": "Appuyez sur envoyer. Chaque client reçoit un email personnel de votre part. Suivez les ouvertures, clics et nouveaux avis en temps réel."
+          "description": "Envoyez une demande personnelle à chaque client, puis consultez les envois, ouvertures et clics au même endroit."
         }
       },
       "setupInSteps": "Installation en 4 étapes",
-      "headline": "Deux minutes pour votre première demande d'avis",
+      "headline": "De la connexion à votre première demande d'avis",
       "subtitle": "Aucune compétence technique nécessaire. Pas d'appels d'intégration. Connectez, importez et envoyez.",
       "getStartedButton": "Commencer gratuitement",
-      "setupTime": "Prend moins de 2 minutes"
+      "setupTime": "Configuration, importation et envoi guidés"
     },
     "leadCapture": {
       "errorMessage": "Une erreur est survenue. Veuillez réessayer.",
@@ -224,16 +224,16 @@
     "productShowcase": {
       "tabEmailLabel": "Aperçu de l'email",
       "tabEmailTitle": "Des emails qui semblent écrits à la main",
-      "tabEmailDescription": "Chaque demande d'avis arrive depuis votre adresse email réelle avec votre nom, votre signature et un ton personnel. Les clients font confiance parce que c'est authentique — parce que c'est réel.",
+      "tabEmailDescription": "Chaque demande utilise le nom, la signature et le ton d'expéditeur configurés dans Get Phame.",
       "tabEmailAlt": "Aperçu d'un email personnalisé de demande d'avis GetPhame montrant le nom du client, la signature de l'entreprise et le lien Google",
       "tabImportLabel": "Import clients",
-      "tabImportTitle": "Votre liste complète en quelques secondes",
-      "tabImportDescription": "Glissez‑déposez un CSV ou synchronisez directement depuis WooCommerce. Nous validons les emails, supprimons les doublons et détectons les rebonds — ainsi chaque envoi compte.",
+      "tabImportTitle": "Importez des clients depuis CSV ou WooCommerce",
+      "tabImportDescription": "Importez un CSV ou synchronisez WooCommerce, puis vérifiez la validation des e-mails et les doublons avant l'envoi.",
       "tabImportAlt": "Écran d'importation client GetPhame montrant le glisser‑déposer CSV avec validation d'emails et suppression des doublons",
       "tabTrackingLabel": "Suivi des avis",
-      "tabTrackingTitle": "Regardez les avis affluer",
-      "tabTrackingDescription": "Suivez chaque email envoyé, ouvert et cliqué. Voyez votre nombre d'avis augmenter semaine après semaine avec des analyses et des graphiques de croissance en temps réel.",
-      "tabTrackingAlt": "Tableau de bord de suivi des avis GetPhame montrant les taux d'ouverture, taux de clic et graphique de croissance hebdomadaire du nombre d'avis",
+      "tabTrackingTitle": "Suivez l'activité des demandes",
+      "tabTrackingDescription": "Consultez les envois, ouvertures et clics dans le tableau de bord Get Phame.",
+      "tabTrackingAlt": "Tableau de bord d'activité Get Phame avec suivi des envois, ouvertures et clics",
       "sectionSubtitle": "Le produit",
       "sectionTitle": "Conçu pour rendre les demandes d'avis faciles",
       "sectionDescription": "Un outil simple. Trois vues puissantes. Tout ce dont vous avez besoin pour développer votre réputation.",

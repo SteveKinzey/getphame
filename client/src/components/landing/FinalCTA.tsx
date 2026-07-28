@@ -17,7 +17,7 @@ export default function FinalCTA() {
             <span className="text-primary">{t("landing.finalCta.headlinePart2", { defaultValue: "Your growth." })}</span>
           </h2>
           <p className="text-lg md:text-xl text-slate-200 font-medium max-w-xl mx-auto mb-8">
-            {t("landing.finalCta.description", { defaultValue: "Free forever: 10 initial requests, then 5 more every rolling 30 days. No credit card. Set up in under 2 minutes." })}
+            {t("landing.finalCta.description", { defaultValue: "Free forever: 10 initial requests, then 5 more every rolling 30 days. No credit card required." })}
           </p>
           <a
             href="/onboarding"

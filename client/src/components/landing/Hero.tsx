@@ -87,7 +87,7 @@ export default function Hero() {
               {...fadeUp(0.2)}
               className="font-display font-extrabold text-4xl md:text-5xl lg:text-[3.5rem] leading-[1.1] text-white mb-6"
             >
-              {t("landing.hero.headlinePart1", { defaultValue: "Get more 5-star reviews" })}{" "}
+              {t("landing.hero.headlinePart1", { defaultValue: "Send personal review requests" })}{" "}
               <span className="text-primary">{t("landing.hero.headlinePart2", { defaultValue: "without the awkward ask" })}</span>
             </motion.h1>
 
@@ -146,7 +146,7 @@ export default function Hero() {
             >
               <span className="flex items-center gap-2">
                 <Shield size={14} className="text-emerald-400" />
-                {t("landing.hero.setupTime", { defaultValue: "Set up in under 2 minutes" })}
+                {t("landing.hero.setupTime", { defaultValue: "Guided setup" })}
               </span>
               <span className="flex items-center gap-2">
                 <Mail size={14} className="text-emerald-400" />

@@ -66,7 +66,7 @@ export default function ReferralLanding() {
           You've been invited!
         </h1>
         <p className="text-sm mb-6" style={{ color: "oklch(0.75 0.05 260)" }}>
-          A friend thinks Get Phame can help your business earn more 5-star reviews — automatically.
+          A friend thinks Get Phame can help your business send clear, personal review requests.
         </p>
 
         {/* Perks */}

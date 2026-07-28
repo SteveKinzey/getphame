@@ -50,7 +50,7 @@
       "q8": "¿Los clientes pueden optar por salir?",
       "a8": "Sí. Cada correo incluye un enlace para darse de baja. Cuando un cliente se da de baja, se le elimina automáticamente de futuros envíos. Esto te mantiene conforme y protege tu reputación como remitente.",
       "q9": "¿Necesito conocimientos técnicos para conectar mi correo?",
-      "a9": "No. Para Gmail y Outlook ofrecemos guías paso a paso con capturas. La mayoría de los usuarios se conectan en menos de 60 segundos. Para SMTP personalizado necesitarás la dirección del servidor, puerto y credenciales — tu proveedor de hosting puede proporcionarlos.",
+      "a9": "No. Para Gmail y Outlook, ofrecemos guías paso a paso con capturas de pantalla. Para SMTP personalizado, necesitarás la dirección del servidor, el puerto y las credenciales de tu proveedor.",
       "q10": "¿Qué plataformas de reseñas soporta?",
       "a10": "Cualquier plataforma con un enlace de reseña: Google, Yelp, TripAdvisor, Facebook, Bing Places, Trustpilot, G2, Capterra y más. Solo pega tu enlace de reseña y lo incluiremos en cada solicitud. Puedes cambiar de plataforma en cualquier momento.",
       "q11": "¿Cómo funciona la sincronización con WooCommerce?",
@@ -81,11 +81,11 @@
     },
     "whyItWorks": "Por qué funciona",
     "headline": "De tu bandeja a su reseña",
-    "subHeadline": "La forma más sencilla de convertir clientes satisfechos en reseñas de 5 estrellas — sin herramientas caras ni pedidos incómodos.",
+    "subHeadline": "Una forma sencilla de enviar solicitudes de reseña claras y personales desde la cuenta de correo que conectas.",
     "finalCta": {
       "headlinePart1": "Tu bandeja. Tu reputación.",
       "headlinePart2": "Tu crecimiento.",
-      "description": "Gratis para siempre: 10 solicitudes iniciales y, después, 5 más por cada período móvil de 30 días. Sin tarjeta. Configura en menos de 2 minutos.",
+      "description": "Gratis para siempre: 10 solicitudes iniciales y luego 5 más cada 30 días móviles. Sin tarjeta de crédito.",
       "getStartedButton": "Comenzar gratis"
     },
     "footer": {
@@ -98,13 +98,13 @@
     "hero": {
       "freeToStart": "Gratis para comenzar — No se requiere tarjeta",
       "categoryLabel": "Software de solicitudes de reseñas por correo para negocios locales",
-      "headlinePart1": "Consigue más reseñas de 5 estrellas",
+      "headlinePart1": "Envía solicitudes de reseña personales",
       "headlinePart2": "sin el pedido incómodo",
       "description": "Get Phame es un software de solicitudes de reseñas por correo para negocios locales. Añade clientes, envía solicitudes personalizadas desde una cuenta de correo que conectes, controla aperturas y clics, y dirige a los clientes a la plataforma de reseñas que elijas.",
       "ctaVariantA": "Comenzar gratis — Enviar 10 solicitudes",
       "ctaVariantB": "Empieza gratis — sin tarjeta",
       "howItWorks": "Ver cómo funciona",
-      "setupTime": "Configura en menos de 2 minutos",
+      "setupTime": "Configuración guiada",
       "emailCompatibility": "Funciona con Gmail, Outlook y SMTP",
       "googleDisclosureLabel": "Uso de datos del acceso con Google",
       "googleSignInDisclaimer": "Inicia sesión con Google para crear tu cuenta. Solo accedemos a tu nombre y correo — nada más.",
@@ -115,7 +115,7 @@
       "setupSteps": {
         "step1": {
           "title": "Conecta tu correo",
-          "description": "Vincula tu Gmail, Outlook o cualquier SMTP en 60 segundos. Credenciales cifradas con AES-256."
+          "description": "Conecta Gmail, Outlook o un correo SMTP con pasos guiados. Las credenciales se cifran con AES-256."
         },
         "step2": {
           "title": "Agrega tu enlace de reseña",
@@ -127,14 +127,14 @@
         },
         "step4": {
           "title": "Envía y sigue resultados",
-          "description": "Pulsa enviar. Cada cliente recibe un correo personal tuyo. Sigue aperturas, clics y nuevas reseñas en tiempo real."
+          "description": "Envía una solicitud personal a cada cliente y consulta envíos, aperturas y clics en un solo lugar."
         }
       },
       "setupInSteps": "Configuración en 4 pasos",
-      "headline": "Dos minutos para tu primera solicitud de reseña",
+      "headline": "De la conexión a tu primera solicitud de reseña",
       "subtitle": "No se requieren conocimientos técnicos. Sin llamadas de incorporación. Solo conecta, importa y envía.",
       "getStartedButton": "Comenzar gratis",
-      "setupTime": "Toma menos de 2 minutos configurarlo"
+      "setupTime": "Configuración, importación y envío guiados"
     },
     "leadCapture": {
       "errorMessage": "Algo salió mal. Por favor intenta nuevamente.",
@@ -224,16 +224,16 @@
     "productShowcase": {
       "tabEmailLabel": "Vista previa del correo",
       "tabEmailTitle": "Correos que parecen escritos a mano",
-      "tabEmailDescription": "Cada solicitud de reseña llega desde tu dirección real con tu nombre, tu firma y un tono personal. Los clientes confían porque parece real — porque lo es.",
+      "tabEmailDescription": "Cada solicitud usa el nombre, la firma y el tono del remitente que configuras en Get Phame.",
       "tabEmailAlt": "Vista previa de un correo personalizado de solicitud de reseña en Get Phame con el nombre del cliente, la firma del negocio y el enlace de reseña de Google",
       "tabImportLabel": "Importar clientes",
-      "tabImportTitle": "Toda tu lista en segundos",
-      "tabImportDescription": "Arrastra y suelta un CSV o sincroniza directamente desde WooCommerce. Validamos correos, eliminamos duplicados y marcamos rebotes — para que cada envío cuente.",
+      "tabImportTitle": "Importa clientes desde CSV o WooCommerce",
+      "tabImportDescription": "Carga un CSV o sincroniza WooCommerce. Revisa la validación de correos y los duplicados antes de enviar.",
       "tabImportAlt": "Pantalla de importación de clientes de Get Phame con carga de CSV mediante arrastrar y soltar, validación de correos y eliminación de duplicados",
       "tabTrackingLabel": "Seguimiento de reseñas",
-      "tabTrackingTitle": "Mira cómo llegan las reseñas",
-      "tabTrackingDescription": "Rastrea cada correo enviado, abierto y clicado. Observa cómo aumenta tu conteo de reseñas semana a semana con análisis en tiempo real y gráficos de crecimiento.",
-      "tabTrackingAlt": "Panel de seguimiento de reseñas de Get Phame con tasas de apertura, tasas de clics y un gráfico de crecimiento semanal de reseñas",
+      "tabTrackingTitle": "Consulta la actividad de las solicitudes",
+      "tabTrackingDescription": "Consulta los correos enviados, abiertos y con clics en el panel de actividad.",
+      "tabTrackingAlt": "Panel de actividad de Get Phame con seguimiento de envíos, aperturas y clics",
       "sectionSubtitle": "El producto",
       "sectionTitle": "Diseñado para que solicitar reseñas sea sencillo",
       "sectionDescription": "Una herramienta simple. Tres vistas potentes. Todo lo que necesitas para hacer crecer tu reputación.",

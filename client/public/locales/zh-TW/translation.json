@@ -1,6 +1,6 @@
 {
   "seo": {
-    "title": "Get Phame — 獲得更多五星好評",
+    "title": "Get Phame — 透過電子郵件寄送個人化評論邀請",
     "keywords": "評論請求, Google 評論, 獲得更多評論, 評論自動化, 小型企業評論, 傳送評論請求郵件, WooCommerce 評論, Stripe 評論",
     "ogDescription": "透過您自己的電子郵件賬戶傳送個性化的評論請求郵件。支援 Google、Yelp、TripAdvisor 等。",
     "shortTitle": "Get Phame"
@@ -31,15 +31,16 @@
   },
   "hero": {
     "tagline": "免費開始 — 無需信用卡",
-    "headline": "無需尷尬請求，即可獲得更多五星好評",
+    "headline": "寄送個人化評論邀請",
     "description": "透過您自己的電子郵件賬戶傳送個性化的評論請求。您的客戶會看到郵件來自您本人 — 而非通用發件人。",
     "cta": "免費開始",
-    "setupTime": "設定只需不到2分鐘",
+    "setupTime": "引導式設定",
     "rocketIllustrationAlt": "Get Phame 火箭插圖",
     "dashboardAlt": "Get Phame 儀表盤顯示已傳送請求和郵件表現統計資料",
     "dashboardStats": "您的儀表盤 — 實時統計資料",
-    "titlePart1": "獲得更多五星",
-    "titlePart2": "Google 評論"
+    "titlePart1": "寄送個人化評論邀請",
+    "titlePart2": "從你的信箱寄送",
+    "setup": "引導式設定"
   },
   "features": {
     "sectionTitle": "為什麼企業選擇 Get Phame",
@@ -48,8 +49,8 @@
       "description": "每封請求郵件都會以個人訊息的形式送達客戶收件箱 — 而非群發。沒有共享發件人，沒有垃圾郵件過濾器。"
     },
     "bulkSendFeature": {
-      "title": "幾秒鐘內批次傳送",
-      "description": "從 CSV、Stripe 或 WooCommerce 匯入聯絡人。全選，點選傳送 — 每位客戶都會收到個性化郵件。"
+      "title": "批次寄送個人化邀請",
+      "description": "透過 CSV 或 WooCommerce 同步匯入客戶、選擇收件者並寄送個人化邀請，無需逐封複製。"
     },
     "platformFeature": {
       "title": "適用於任何評論平臺",
@@ -68,8 +69,8 @@
       "desc": "客戶看到的是您的姓名和郵箱地址——而非通用發件人。感覺很個人化，因為確實如此。"
     },
     "bulkSend": {
-      "title": "一鍵批次傳送",
-      "desc": "透過CSV或WooCommerce同步匯入客戶名單，一次性傳送個性化評價請求。"
+      "title": "批次寄送個人化邀請",
+      "desc": "透過 CSV 或 WooCommerce 同步匯入客戶、選擇收件者並寄送個人化邀請，無需逐封複製。"
     },
     "anyPlatform": {
       "title": "支援任意評價平臺",
@@ -110,7 +111,7 @@
     "q8": "Can customers opt out?",
     "a8": "Yes. Every review request email includes an unsubscribe link. Customers who opt out are automatically excluded from future sends.",
     "q9": "Do I need technical skills to connect my email?",
-    "a9": "No. Get Phame auto-detects your email provider and shows step-by-step instructions for Gmail, Outlook, Yahoo, Zoho, and more. Setup takes under 2 minutes.",
+    "a9": "不需要。Gmail 與 Outlook 提供附螢幕截圖的逐步指南。自訂 SMTP 需要伺服器位址、連接埠及服務商提供的憑證。",
     "q10": "Which review platforms does it support?",
     "a10": "Google, Yelp, TripAdvisor, Facebook, Bing, and any custom URL. You can add multiple platforms and choose which one to include in each send.",
     "q11": "How does WooCommerce sync work?",
@@ -119,11 +120,11 @@
     "a12": "無限表示評論請求沒有每月上限。免費方案先提供 10 次，之後每滾動 30 天提供 5 次。Pro 會取消此產品限制。"
   },
   "bottomCta": {
-    "headline": "立即開始收集評論",
-    "description": "永久免費。無需信用卡。2分鐘內完成設定。",
+    "headline": "寄送個人化評論邀請",
+    "description": "永久免費：初始 10 次邀請，之後每 30 個滾動日增加 5 次。無需信用卡。",
     "cta": "免費開始",
-    "title": "準備好獲取更多評價了嗎？",
-    "subtitle": "永久免費，無需信用卡，2分鐘內完成設定。"
+    "title": "寄送個人化評論邀請",
+    "subtitle": "永久免費：初始 10 次邀請，之後每 30 個滾動日增加 5 次。無需信用卡。"
   },
   "footer": {
     "brandName": "Get Phame",
@@ -784,7 +785,8 @@
     "customizeMessages": "自定義您的評論請求訊息",
     "new": "新",
     "logoText": "Get Phame",
-    "proGrowthMessage": "將每一筆已完成的工作轉化為可重複產生口碑與收益的系統。"
+    "proGrowthMessage": "將每一筆已完成的工作轉化為可重複產生口碑與收益的系統。",
+    "tagline": "自動寄送評論邀請。"
   },
   "infoBanner": {
     "howItWorks": "工作原理：",
@@ -1527,7 +1529,7 @@
   },
   "demo": {
     "sectionTitle": "See It In Action",
-    "sectionSubtitle": "Three steps. Under 60 seconds. Your customer gets a personal email from you.",
+    "sectionSubtitle": "查看三步寄送流程。",
     "gifAlt": "Get Phame 3-step send flow demo",
     "gifCaption": "The 3-step send flow",
     "emailAlt": "Example review request email on iPhone",
@@ -1891,7 +1893,7 @@
     "copied": "已複製！",
     "copySuccessToast": "推薦連結已複製！",
     "copyErrorToast": "無法複製連結。",
-    "shareMessage": "使用 Get Phame 獲得更多 5 星評價 — {{url}}",
+    "shareMessage": "使用 Get Phame 寄送評論邀請 — {{url}}",
     "noReferralsHint": "分享下方連結以開始賺取免費月數",
     "pendingReferralsHint": "{{count}} 位朋友已加入 — 正在等待他們升級",
     "pendingReferralsHint_plural": "{{count}} 位朋友已加入 — 正在等待他們升級",
@@ -2409,7 +2411,9 @@
     "hero": {
       "categoryLabel": "在地商家的評論邀請郵件軟體",
       "googleDisclosureLabel": "Google 登入的資料使用說明",
-      "ctaVariantB": "免費開始 — 無需信用卡"
+      "ctaVariantB": "免費開始 — 無需信用卡",
+      "headlinePart1": "寄送個人化評論邀請",
+      "setupTime": "引導式設定"
     },
     "leadCapture": {
       "addressConfirmation": "我們已寄送至 {{email}}。請確認拼寫，若未收到請檢查垃圾郵件。供應商接受並不保證進入收件匣。",
@@ -2488,7 +2492,8 @@
     },
     "faq": {
       "a1": "不會。每封郵件都直接從你連結的電子郵件帳戶寄出，而不是第三方群發伺服器。客戶會看到你設定的寄件者姓名、地址與簽名。",
-      "a12": "「無上限」表示 Get Phame 不會為 Pro 方案設定每月評論邀請上限。你所連結電子郵件供應商的寄送政策與限制仍然適用。"
+      "a12": "「無上限」表示 Get Phame 不會為 Pro 方案設定每月評論邀請上限。你所連結電子郵件供應商的寄送政策與限制仍然適用。",
+      "a9": "不需要。Gmail 與 Outlook 提供附螢幕截圖的逐步指南。自訂 SMTP 需要伺服器位址、連接埠及服務商提供的憑證。"
     },
     "feature1": {
       "description": "每封評論邀請都從你連結的電子郵件帳戶寄出，並使用你設定的寄件者姓名與簽名。",
@@ -2504,6 +2509,33 @@
     "feature3": {
       "statValue": "彈性",
       "statLabel": "評論平台"
+    },
+    "subHeadline": "從你連結的電子郵件帳戶寄送清楚、個人化評論邀請的簡單方式。",
+    "finalCta": {
+      "description": "永久免費：初始 10 次邀請，之後每 30 個滾動日增加 5 次。無需信用卡。"
+    },
+    "howItWorks": {
+      "setupSteps": {
+        "step1": {
+          "description": "依照引導步驟連結 Gmail、Outlook 或 SMTP 電子郵件。憑證使用 AES-256 加密。"
+        },
+        "step4": {
+          "description": "向每位客戶寄送個人化邀請，並在同一處查看寄送、開啟及點擊活動。"
+        }
+      },
+      "headline": "從連結信箱到寄出第一封評論邀請",
+      "setupTime": "引導式設定、匯入與寄送"
+    },
+    "productShowcase": {
+      "tabEmailDescription": "每封邀請使用你在 Get Phame 中設定的寄件者姓名、簽名及語氣。",
+      "tabImportTitle": "從 CSV 或 WooCommerce 匯入客戶",
+      "tabImportDescription": "上傳 CSV 或同步 WooCommerce，並在寄送前檢查電子郵件驗證與重複項目。",
+      "tabTrackingTitle": "查看邀請活動",
+      "tabTrackingDescription": "在 Get Phame 儀表板中查看寄送、開啟及點擊活動。",
+      "tabTrackingAlt": "Get Phame 邀請活動儀表板，顯示寄送、開啟及點擊追蹤"
+    },
+    "section": {
+      "description": "查看三步寄送流程。"
     }
   },
   "adaptiveSending": {

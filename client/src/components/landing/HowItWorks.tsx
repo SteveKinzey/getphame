@@ -9,7 +9,7 @@ export default function HowItWorks() {
     {
       number: "1",
       title: t("landing.howItWorks.setupSteps.step1.title", { defaultValue: "Connect your email" }),
-      description: t("landing.howItWorks.setupSteps.step1.description", { defaultValue: "Link your Gmail, Outlook, or any SMTP email in 60 seconds. Credentials encrypted with AES-256." }),
+      description: t("landing.howItWorks.setupSteps.step1.description", { defaultValue: "Link Gmail, Outlook, or an SMTP email using guided connection steps. Credentials are encrypted with AES-256." }),
     },
     {
       number: "2",
@@ -24,7 +24,7 @@ export default function HowItWorks() {
     {
       number: "4",
       title: t("landing.howItWorks.setupSteps.step4.title", { defaultValue: "Send & track results" }),
-      description: t("landing.howItWorks.setupSteps.step4.description", { defaultValue: "Hit send. Each customer gets a personal email from you. Track opens, clicks, and new reviews live." }),
+      description: t("landing.howItWorks.setupSteps.step4.description", { defaultValue: "Send each customer a personal request, then review sent, open, and click activity in one place." }),
     },
   ];
 
@@ -40,7 +40,7 @@ export default function HowItWorks() {
               {t("landing.howItWorks.setupInSteps", { defaultValue: "Setup in 4 steps" })}
             </p>
             <h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4">
-              {t("landing.howItWorks.headline", { defaultValue: "Two minutes to your first review request" })}
+              {t("landing.howItWorks.headline", { defaultValue: "From connection to your first review request" })}
             </h2>
             <p className="text-lg text-slate-200 font-medium mb-8">
               {t("landing.howItWorks.subtitle", { defaultValue: "No technical skills needed. No onboarding calls. Just connect, import, and send." })}
@@ -53,7 +53,7 @@ export default function HowItWorks() {
               <ArrowRight size={18} />
             </a>
             <p className="text-sm text-slate-300 font-medium mt-3">
-              {t("landing.howItWorks.setupTime", { defaultValue: "Takes less than 2 minutes to set up" })}
+              {t("landing.howItWorks.setupTime", { defaultValue: "Guided setup, import, and sending" })}
             </p>
           </FadeUp>
 

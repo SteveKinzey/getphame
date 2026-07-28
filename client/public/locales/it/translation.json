@@ -1,6 +1,6 @@
 {
   "seo": {
-    "title": "Get Phame — Ottieni più recensioni a 5 stelle su Google",
+    "title": "Get Phame — Richieste di recensione personali via email",
     "keywords": "richieste di recensioni, recensioni Google, ottenere più recensioni, automazione recensioni, recensioni piccole imprese, inviare email di richiesta recensione, recensioni WooCommerce, recensioni Stripe",
     "ogDescription": "Invia email personalizzate di richiesta recensione dal tuo account email. Funziona con Google, Yelp, TripAdvisor e altro.",
     "shortTitle": "Get Phame"
@@ -31,15 +31,16 @@
   },
   "hero": {
     "tagline": "Gratuito per iniziare — Nessuna carta di credito richiesta",
-    "headline": "Ottieni più recensioni a 5 stelle senza imbarazzi",
+    "headline": "Invia richieste di recensione personali",
     "description": "Invia richieste di recensioni personalizzate dal tuo account email. I tuoi clienti le ricevono da te — non da un mittente generico.",
     "cta": "Inizia Gratis",
-    "setupTime": "Configurazione in meno di 2 minuti",
+    "setupTime": "Configurazione guidata",
     "rocketIllustrationAlt": "Illustrazione razzo Get Phame",
     "dashboardAlt": "Dashboard Get Phame con richieste inviate e statistiche email",
     "dashboardStats": "La tua dashboard — statistiche in tempo reale",
-    "titlePart1": "Ottieni Più Recensioni",
-    "titlePart2": "a 5 Stelle su Google"
+    "titlePart1": "Invia richieste di recensione personali",
+    "titlePart2": "dalla tua email",
+    "setup": "Configurazione guidata"
   },
   "pricing": {
     "sectionTitle": "Prezzi semplici e trasparenti",
@@ -99,8 +100,8 @@
       "description": "Ogni richiesta arriva nella casella del cliente come un messaggio personale — non una comunicazione massiva. Nessun mittente condiviso, nessun filtro spam."
     },
     "bulkSendFeature": {
-      "title": "Invio massivo in pochi secondi",
-      "description": "Importa contatti da CSV, Stripe o WooCommerce. Seleziona tutto, premi invia — ogni cliente riceve la propria email personalizzata."
+      "title": "Invia richieste personalizzate in blocco",
+      "description": "Importa i clienti via CSV o sincronizzazione WooCommerce, scegli i destinatari e invia richieste personalizzate senza copiare ogni messaggio a mano."
     },
     "platformFeature": {
       "title": "Funziona con qualsiasi piattaforma di recensioni",
@@ -119,8 +120,8 @@
       "desc": "I clienti vedono il tuo nome e indirizzo email — non un mittente generico. Si sente personale perché lo è."
     },
     "bulkSend": {
-      "title": "Invio massivo in un clic",
-      "desc": "Importa la tua lista clienti tramite CSV o sincronizzazione WooCommerce, seleziona tutto e invia richieste personalizzate in pochi secondi."
+      "title": "Invia richieste personalizzate in blocco",
+      "desc": "Importa i clienti via CSV o sincronizzazione WooCommerce, scegli i destinatari e invia richieste personalizzate senza copiare ogni messaggio a mano."
     },
     "anyPlatform": {
       "title": "Qualsiasi piattaforma di recensioni",
@@ -161,7 +162,7 @@
     "q8": "Can customers opt out?",
     "a8": "Yes. Every review request email includes an unsubscribe link. Customers who opt out are automatically excluded from future sends.",
     "q9": "Do I need technical skills to connect my email?",
-    "a9": "No. Get Phame auto-detects your email provider and shows step-by-step instructions for Gmail, Outlook, Yahoo, Zoho, and more. Setup takes under 2 minutes.",
+    "a9": "No. Per Gmail e Outlook forniamo guide passo passo con schermate. Per un SMTP personalizzato servono indirizzo del server, porta e credenziali fornite dal provider.",
     "q10": "Which review platforms does it support?",
     "a10": "Google, Yelp, TripAdvisor, Facebook, Bing, and any custom URL. You can add multiple platforms and choose which one to include in each send.",
     "q11": "How does WooCommerce sync work?",
@@ -170,11 +171,11 @@
     "a12": "Illimitato significa nessun limite mensile alle richieste. Il piano Gratuito include 10 richieste iniziali, poi 5 ogni 30 giorni mobili. Pro rimuove questo limite del prodotto."
   },
   "bottomCta": {
-    "headline": "Inizia a raccogliere recensioni oggi",
-    "description": "Gratuito per sempre. Nessuna carta di credito. Configurazione in meno di 2 minuti.",
+    "headline": "Invia richieste di recensione personali",
+    "description": "Gratis per sempre: 10 richieste iniziali, poi altre 5 ogni 30 giorni mobili. Nessuna carta richiesta.",
     "cta": "Inizia Gratis",
-    "title": "Pronto a ottenere più recensioni?",
-    "subtitle": "Gratuito per sempre. Nessuna carta di credito. Configurazione in meno di 2 minuti."
+    "title": "Invia richieste di recensione personali",
+    "subtitle": "Gratis per sempre: 10 richieste iniziali, poi altre 5 ogni 30 giorni mobili. Nessuna carta richiesta."
   },
   "footer": {
     "brandName": "Get Phame",
@@ -1817,7 +1818,8 @@
   "header": {
     "title": "Promemoria di Follow-up",
     "subtitle": "Promemoria automatici per i clienti che non hanno ancora risposto.",
-    "proGrowthMessage": "Trasforma ogni lavoro completato in un sistema ripetibile di reputazione e ricavi."
+    "proGrowthMessage": "Trasforma ogni lavoro completato in un sistema ripetibile di reputazione e ricavi.",
+    "tagline": "Invia automaticamente richieste di recensione."
   },
   "infoBanner": {
     "title": "Come funzionano i promemoria",
@@ -2298,7 +2300,7 @@
   },
   "demo": {
     "sectionTitle": "See It In Action",
-    "sectionSubtitle": "Three steps. Under 60 seconds. Your customer gets a personal email from you.",
+    "sectionSubtitle": "Scopri il flusso di invio in tre passaggi.",
     "gifAlt": "Get Phame 3-step send flow demo",
     "gifCaption": "The 3-step send flow",
     "emailAlt": "Example review request email on iPhone",
@@ -2584,7 +2586,7 @@
     "copied": "Copiato!",
     "copySuccessToast": "Link di segnalazione copiato!",
     "copyErrorToast": "Impossibile copiare il link.",
-    "shareMessage": "Ottieni più recensioni a 5 stelle con Get Phame — {{url}}",
+    "shareMessage": "Invia richieste di recensione con Get Phame — {{url}}",
     "noReferralsHint": "Condividi il tuo link qui sotto per iniziare a guadagnare mesi gratuiti",
     "pendingReferralsHint": "{{count}} amico si è unito — in attesa che passi al piano a pagamento",
     "pendingReferralsHint_plural": "{{count}} amici si sono uniti — in attesa che passino al piano a pagamento",
@@ -3102,7 +3104,9 @@
     "hero": {
       "categoryLabel": "Software per email di richiesta recensioni per attività locali",
       "googleDisclosureLabel": "Uso dei dati dell'accesso Google",
-      "ctaVariantB": "Inizia gratis — senza carta"
+      "ctaVariantB": "Inizia gratis — senza carta",
+      "setupTime": "Configurazione guidata",
+      "headlinePart1": "Invia richieste di recensione personali"
     },
     "leadCapture": {
       "addressConfirmation": "L'abbiamo inviata a {{email}}. Conferma la correttezza dell'indirizzo e controlla la cartella spam se non arriva. L'accettazione del provider non garantisce la consegna in posta in arrivo.",
@@ -3183,7 +3187,8 @@
       "a1": "No. Ogni email viene inviata direttamente dall'account che colleghi, non da un server di invio massivo di terze parti. I clienti vedono il nome, l'indirizzo e la firma del mittente che configuri.",
       "q11": "Come funziona la sincronizzazione WooCommerce?",
       "a11": "Il connettore WooCommerce è disponibile solo con i piani a pagamento. Gli utenti a pagamento installano il plugin WooCommerce di Get Phame, inseriscono la chiave API e i nuovi clienti vengono importati automaticamente dopo ogni ordine completato. Puoi impostare un ritardo, ad esempio 7 giorni dopo l'acquisto, prima che appaiano nella coda di invio.",
-      "a12": "Illimitato significa che Get Phame non imposta un limite mensile alle richieste di recensione per i piani Pro. Restano valide le regole e i limiti di invio del tuo provider email."
+      "a12": "Illimitato significa che Get Phame non imposta un limite mensile alle richieste di recensione per i piani Pro. Restano valide le regole e i limiti di invio del tuo provider email.",
+      "a9": "No. Per Gmail e Outlook forniamo guide passo passo con schermate. Per un SMTP personalizzato servono indirizzo del server, porta e credenziali fornite dal provider."
     },
     "feature1": {
       "description": "Ogni richiesta di recensione viene inviata dall'account email che colleghi e usa il nome e la firma del mittente che configuri.",
@@ -3199,6 +3204,33 @@
     "feature3": {
       "statValue": "Flessibile",
       "statLabel": "destinazioni delle recensioni"
+    },
+    "subHeadline": "Un modo semplice per inviare richieste di recensione chiare e personali dall'account email collegato.",
+    "finalCta": {
+      "description": "Gratis per sempre: 10 richieste iniziali, poi altre 5 ogni 30 giorni mobili. Nessuna carta richiesta."
+    },
+    "howItWorks": {
+      "setupSteps": {
+        "step1": {
+          "description": "Collega Gmail, Outlook o un account SMTP con passaggi guidati. Le credenziali sono cifrate con AES-256."
+        },
+        "step4": {
+          "description": "Invia una richiesta personale a ogni cliente e consulta invii, aperture e clic in un unico posto."
+        }
+      },
+      "headline": "Dal collegamento alla prima richiesta di recensione",
+      "setupTime": "Configurazione, importazione e invio guidati"
+    },
+    "productShowcase": {
+      "tabEmailDescription": "Ogni richiesta usa il nome, la firma e il tono del mittente configurati in Get Phame.",
+      "tabImportTitle": "Importa clienti da CSV o WooCommerce",
+      "tabImportDescription": "Carica un CSV o sincronizza WooCommerce, poi controlla la validazione email e i duplicati prima dell'invio.",
+      "tabTrackingTitle": "Controlla l'attività delle richieste",
+      "tabTrackingDescription": "Consulta invii, aperture e clic nella dashboard di Get Phame.",
+      "tabTrackingAlt": "Dashboard attività di Get Phame con monitoraggio di invii, aperture e clic"
+    },
+    "section": {
+      "description": "Scopri il flusso di invio in tre passaggi."
     }
   },
   "adaptiveSending": {

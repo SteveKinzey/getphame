@@ -50,7 +50,7 @@
       "q8": "客戶可以選擇退出嗎？",
       "a8": "可以。每封郵件都包含取消訂閱連結。當客戶選擇退出時，他們會自動從未來寄送名單中移除，這能幫助你維持合規並保護發信信譽。",
       "q9": "要具備技術能力才能連接電子郵件嗎？",
-      "a9": "不需要。對於 Gmail 與 Outlook，我們提供逐步教學與螢幕截圖。大多數使用者在 60 秒內即可連接。若使用自訂 SMTP，你只需伺服器位址、連接埠與憑證——你的主機提供商可以提供這些資訊。",
+      "a9": "不需要。Gmail 與 Outlook 提供附螢幕截圖的逐步指南。自訂 SMTP 需要伺服器位址、連接埠及服務商提供的憑證。",
       "q10": "支援哪些評論平台？",
       "a10": "支援任何具有評論連結的平台：Google、Yelp、TripAdvisor、Facebook、Bing Places、Trustpilot、G2、Capterra 等。只要貼上你的評論連結，我們就會在每封邀請中包含。你可以隨時更換平台。",
       "q11": "WooCommerce 同步如何運作？",
@@ -81,11 +81,11 @@
     },
     "whyItWorks": "為何有效",
     "headline": "從你的收件匣到他們的評論",
-    "subHeadline": "最簡單的方式，將滿意的顧客轉化為五星好評 — 無需昂貴工具或尷尬請求。",
+    "subHeadline": "從你連結的電子郵件帳戶寄送清楚、個人化評論邀請的簡單方式。",
     "finalCta": {
       "headlinePart1": "你的收件匣。你的聲譽。",
       "headlinePart2": "你的成長。",
-      "description": "永久免費：先獲得 10 次評論邀請，之後每個滾動 30 天週期再獲得 5 次。無需信用卡，2 分鐘內完成設定。",
+      "description": "永久免費：初始 10 次邀請，之後每 30 個滾動日增加 5 次。無需信用卡。",
       "getStartedButton": "免費開始"
     },
     "footer": {
@@ -98,13 +98,13 @@
     "hero": {
       "freeToStart": "免費開始 — 無需信用卡",
       "categoryLabel": "為在地商家打造的評論邀請電子郵件軟體",
-      "headlinePart1": "獲得更多五星好評",
+      "headlinePart1": "寄送個人化評論邀請",
       "headlinePart2": "無須尷尬請求",
       "description": "Get Phame 是為在地商家打造的評論邀請電子郵件軟體。您可以新增客戶，透過您連結的電子郵件帳戶發送個人化邀請，追蹤開啟與點擊情況，並將客戶引導至您選擇的評論平台。",
       "ctaVariantA": "免費開始 — 發送 10 封邀請",
       "ctaVariantB": "免費開始 — 無需信用卡",
       "howItWorks": "了解如何運作",
-      "setupTime": "兩分鐘內完成設定",
+      "setupTime": "引導式設定",
       "emailCompatibility": "支援 Gmail、Outlook、SMTP",
       "googleDisclosureLabel": "Google 登入資料的使用方式",
       "googleSignInDisclaimer": "以 Google 登入建立帳號。我們僅存取你的姓名與電子郵件地址 — 不會取用其他資訊。",
@@ -115,7 +115,7 @@
       "setupSteps": {
         "step1": {
           "title": "連接你的電子郵件",
-          "description": "在 60 秒內連接 Gmail、Outlook 或任何支援 SMTP 的電子郵件。憑證以 AES-256 加密。"
+          "description": "依照引導步驟連結 Gmail、Outlook 或 SMTP 電子郵件。憑證使用 AES-256 加密。"
         },
         "step2": {
           "title": "加入你的評論連結",
@@ -127,14 +127,14 @@
         },
         "step4": {
           "title": "發送並追蹤結果",
-          "description": "按下發送。每位客戶都會收到來自你的個人化郵件。即時追蹤開啟、點擊與新增評論。"
+          "description": "向每位客戶寄送個人化邀請，並在同一處查看寄送、開啟及點擊活動。"
         }
       },
       "setupInSteps": "四步完成設定",
-      "headline": "兩分鐘內發送你的第一封評論邀請",
+      "headline": "從連結信箱到寄出第一封評論邀請",
       "subtitle": "不需要技術背景。無需導入協助。只要連接、匯入並發送。",
       "getStartedButton": "免費開始",
-      "setupTime": "設定時間少於 2 分鐘"
+      "setupTime": "引導式設定、匯入與寄送"
     },
     "leadCapture": {
       "errorMessage": "發生錯誤，請再試一次。",
@@ -224,16 +224,16 @@
     "productShowcase": {
       "tabEmailLabel": "郵件預覽",
       "tabEmailTitle": "看起來像手寫的郵件",
-      "tabEmailDescription": "每封邀請評論的郵件都從你的真實電子郵件地址發出，帶有你的名字、簽名與個人語氣。因為看起來真實，客戶更信任並回應。",
+      "tabEmailDescription": "每封邀請使用你在 Get Phame 中設定的寄件者姓名、簽名及語氣。",
       "tabEmailAlt": "Get Phame 個人化邀請評論郵件預覽，顯示客戶名稱、商家簽名與 Google 評論連結",
       "tabImportLabel": "匯入客戶",
-      "tabImportTitle": "幾秒內匯入完整名單",
-      "tabImportDescription": "拖放 CSV 或直接從 WooCommerce 同步。我們會驗證電子郵件、移除重複並標記退信，讓每次發送都有效益。",
+      "tabImportTitle": "從 CSV 或 WooCommerce 匯入客戶",
+      "tabImportDescription": "上傳 CSV 或同步 WooCommerce，並在寄送前檢查電子郵件驗證與重複項目。",
       "tabImportAlt": "Get Phame 客戶匯入畫面，顯示 CSV 拖放上傳、電子郵件驗證與重複移除功能",
       "tabTrackingLabel": "評論追蹤",
-      "tabTrackingTitle": "觀看評論湧入",
-      "tabTrackingDescription": "追蹤每封已發送、已開啟與已點擊的郵件。使用即時分析與成長圖表，觀看每週評論數成長。",
-      "tabTrackingAlt": "Get Phame 評論追蹤儀表板，顯示電子郵件開啟率、點擊率與每週評論數成長圖表",
+      "tabTrackingTitle": "查看邀請活動",
+      "tabTrackingDescription": "在 Get Phame 儀表板中查看寄送、開啟及點擊活動。",
+      "tabTrackingAlt": "Get Phame 邀請活動儀表板，顯示寄送、開啟及點擊追蹤",
       "sectionSubtitle": "產品概覽",
       "sectionTitle": "為讓邀請評論變得輕而易舉而打造",
       "sectionDescription": "一個簡單工具，三種強大檢視。你成長聲譽所需的一切。",

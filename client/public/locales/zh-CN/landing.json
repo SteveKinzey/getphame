@@ -50,7 +50,7 @@
       "q8": "客户可以选择退出吗？",
       "a8": "可以。每封邮件都包含退订链接。客户选择退订后会自动从后续发送中移除。这能确保你合规并保护你的发件人信誉。",
       "q9": "连接邮箱需要技术技能吗？",
-      "a9": "不需要。对于 Gmail 和 Outlook，我们提供带截图的分步指南。大多数用户在 60 秒内完成连接。对于自定义 SMTP，你需要服务器地址、端口和凭据——你的主机提供商可以提供这些信息。",
+      "a9": "不需要。对于 Gmail 和 Outlook，我们提供带截图的分步指南。自定义 SMTP 需要服务器地址、端口和服务商提供的凭据。",
       "q10": "支持哪些评论平台？",
       "a10": "支持带评论链接的任何平台：Google、Yelp、TripAdvisor、Facebook、Bing Places、Trustpilot、G2、Capterra 等。只需粘贴你的评论链接，我们会将其包含在每次请求中。你可以随时更换平台。",
       "q11": "WooCommerce 同步如何工作？",
@@ -81,11 +81,11 @@
     },
     "whyItWorks": "为何有效",
     "headline": "从你的收件箱到客户的评论",
-    "subHeadline": "将满意客户转化为五星评价的最简方式——无需昂贵工具或尴尬沟通。",
+    "subHeadline": "从你连接的邮箱发送清晰、个性化评论请求的简单方式。",
     "finalCta": {
       "headlinePart1": "你的收件箱。你的声誉。",
       "headlinePart2": "你的增长。",
-      "description": "永久免费：先获得 10 个评论请求，之后每个滚动 30 天周期再获得 5 个。无需信用卡，2 分钟内完成设置。",
+      "description": "永久免费：初始 10 个请求，之后每 30 个滚动日增加 5 个。无需信用卡。",
       "getStartedButton": "免费开始"
     },
     "footer": {
@@ -98,13 +98,13 @@
     "hero": {
       "freeToStart": "免费开始 — 无需信用卡",
       "categoryLabel": "面向本地商家的评价邀请邮件软件",
-      "headlinePart1": "获取更多五星好评",
+      "headlinePart1": "发送个性化评论请求",
       "headlinePart2": "无需尴尬索要",
       "description": "Get Phame 是面向本地商家的评价邀请邮件软件。您可以添加客户，通过您连接的电子邮件账户发送个性化邀请，跟踪打开和点击情况，并将客户引导至您选择的评价平台。",
       "ctaVariantA": "免费开始 — 发送 10 条请求",
       "ctaVariantB": "免费开始 — 无需信用卡",
       "howItWorks": "查看如何运作",
-      "setupTime": "两分钟内完成设置",
+      "setupTime": "引导式设置",
       "emailCompatibility": "兼容 Gmail、Outlook、SMTP",
       "googleDisclosureLabel": "Google 登录数据的使用方式",
       "googleSignInDisclaimer": "使用 Google 登录以创建账号。我们仅访问你的姓名和邮箱地址——不会获取其他信息。",
@@ -115,7 +115,7 @@
       "setupSteps": {
         "step1": {
           "title": "连接你的邮箱",
-          "description": "在 60 秒内连接 Gmail、Outlook 或任意 SMTP 邮箱。凭据使用 AES-256 加密。"
+          "description": "按照引导步骤连接 Gmail、Outlook 或 SMTP 邮箱。凭据使用 AES-256 加密。"
         },
         "step2": {
           "title": "添加你的评论链接",
@@ -127,14 +127,14 @@
         },
         "step4": {
           "title": "发送并追踪结果",
-          "description": "点击发送。每位客户都会收到来自你的个人邮件。实时追踪打开、点击和新增评论。"
+          "description": "向每位客户发送个性化请求，并在一处查看发送、打开和点击活动。"
         }
       },
       "setupInSteps": "四步完成设置",
-      "headline": "两分钟内发送首个评论请求",
+      "headline": "从连接邮箱到发送第一条评论请求",
       "subtitle": "无需技术技能，无需入职电话。只需连接、导入并发送。",
       "getStartedButton": "免费开始",
-      "setupTime": "设置耗时少于 2 分钟"
+      "setupTime": "引导式设置、导入与发送"
     },
     "leadCapture": {
       "errorMessage": "出了点问题，请重试。",
@@ -224,16 +224,16 @@
     "productShowcase": {
       "tabEmailLabel": "邮件预览",
       "tabEmailTitle": "读起来像手写的邮件",
-      "tabEmailDescription": "每封评论请求都来自你的真实邮箱地址，包含你的姓名、签名和个人语气。客户信任它，因为它看起来真实——因为它本来就是真实的。",
+      "tabEmailDescription": "每条请求使用你在 Get Phame 中配置的发件人姓名、签名和语气。",
       "tabEmailAlt": "GetPhame 个性化评论请求邮件预览，显示客户姓名、商家签名和 Google 评论链接",
       "tabImportLabel": "导入客户",
-      "tabImportTitle": "几秒内导入完整名单",
-      "tabImportDescription": "拖拽 CSV 或直接从 WooCommerce 同步。我们会验证邮箱、移除重复并标记退信——确保每次发送都有效。",
+      "tabImportTitle": "从 CSV 或 WooCommerce 导入客户",
+      "tabImportDescription": "上传 CSV 或同步 WooCommerce，并在发送前检查邮箱验证和重复项。",
       "tabImportAlt": "GetPhame 客户导入界面，显示 CSV 拖放上传并进行邮箱验证及重复项移除",
       "tabTrackingLabel": "评论追踪",
-      "tabTrackingTitle": "看着评论不断增加",
-      "tabTrackingDescription": "追踪每封发送、打开和点击的邮件。通过实时分析和增长图表，查看每周评论数量的上升。",
-      "tabTrackingAlt": "GetPhame 评论追踪仪表盘，显示邮件开启率、点击率和每周评论数量增长图表",
+      "tabTrackingTitle": "查看请求活动",
+      "tabTrackingDescription": "在 Get Phame 仪表板中查看发送、打开和点击活动。",
+      "tabTrackingAlt": "Get Phame 请求活动仪表板，显示发送、打开和点击跟踪",
       "sectionSubtitle": "产品概览",
       "sectionTitle": "为简化评论请求而打造",
       "sectionDescription": "一款简洁工具，三种强大视图，提供你增长声誉所需的一切。",
