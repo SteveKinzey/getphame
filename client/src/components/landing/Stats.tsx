@@ -42,7 +42,7 @@ export default function Stats() {
         <StaggerChildren className="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6" staggerDelay={0.1}>
           {stats.map((stat) => (
             <div key={stat.label} className="text-center p-6 md:p-8 rounded-2xl bg-[#0f1d32] border border-[#1e3050] hover:border-primary/20 transition-colors duration-300">
-              <div className="font-display font-extrabold text-3xl md:text-4xl text-primary mb-2">
+              <div className="font-display max-w-full break-words font-extrabold text-base leading-tight text-primary mb-2 min-[350px]:text-lg lg:text-2xl xl:text-3xl">
                 {stat.value}
               </div>
               <p className="text-sm text-slate-200 font-bold">{stat.label}</p>

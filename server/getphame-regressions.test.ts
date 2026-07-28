@@ -57,6 +57,18 @@ describe("Get Phame regression contracts", () => {
     expect(html).toContain('name="keywords"');
   });
 
+  it("keeps translated gold stat headings inside narrow comparison cards", () => {
+    const stats = readProjectFile("../client/src/components/landing/Stats.tsx");
+
+    expect(stats).toContain("max-w-full");
+    expect(stats).toContain("break-words");
+    expect(stats).toContain("text-base");
+    expect(stats).toContain("min-[350px]:text-lg");
+    expect(stats).toContain("lg:text-2xl");
+    expect(stats).toContain("xl:text-3xl");
+    expect(stats).not.toContain("text-3xl md:text-4xl");
+  });
+
   it("uses the supplied P-star artwork for browser, PWA, metadata, and in-app branding", () => {
     const html = readProjectFile("../client/index.html");
     const manifest = readProjectFile("../client/public/manifest.json");
