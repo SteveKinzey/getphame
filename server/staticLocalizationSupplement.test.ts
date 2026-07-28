@@ -26,7 +26,8 @@ describe("locale-specific static-copy localization supplements", () => {
   it("installs the initial active catalog before mount and preloads static copy before language changes", () => {
     expect(helperSource).toContain("Static localization supplement locale mismatch");
     expect(helperSource).toContain("mergeStaticCopySupplement");
-    expect(bootstrapSource).toContain("i18nReady.then(() => loadStaticLocalizationSupplement())");
+    expect(bootstrapSource).toContain("void i18nReady.then(() => {");
+    expect(bootstrapSource).toContain("return loadStaticLocalizationSupplement();");
     expect(i18nSource).toContain("prepareStaticCopyLocale");
     expect(i18nSource).toContain("Promise.all([i18n.loadLanguages(lang), prepareStaticCopyLocale(lang)])");
   });

@@ -5,6 +5,22 @@
     "ogDescription": "透過您自己的電子郵件賬戶傳送個性化的評論請求郵件。支援 Google、Yelp、TripAdvisor 等。",
     "shortTitle": "Get Phame"
   },
+  "firstVisitWelcome": {
+    "languageReady": "已偵測到語言",
+    "title": "歡迎使用 Get Phame",
+    "description": "我們已根據您的瀏覽器偏好選擇{{language}}。接下來您可以完成這些操作。",
+    "featuresLabel": "Get Phame 功能",
+    "features": {
+      "personalRequests": "使用您自己的電子郵件逐一傳送評論邀請",
+      "followUps": "安排合規的後續提醒，並在客戶完成操作後停止",
+      "dashboard": "在清楚的儀表板中查看送達與互動情況"
+    },
+    "changeLanguage": "選擇其他語言",
+    "selectedLanguage": "Get Phame 目前以{{language}}顯示。",
+    "continue": "使用{{language}}繼續",
+    "preferenceHint": "您可以隨時透過語言選擇器變更語言。",
+    "closeLabel": "關閉歡迎視窗"
+  },
   "nav": {
     "brandName": "Get Phame",
     "signIn": "登入",

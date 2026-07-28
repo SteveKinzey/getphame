@@ -4,6 +4,14 @@ import HttpBackend from "i18next-http-backend";
 import generatedFallbackResources from "./i18nCompleteFallbackResources.json";
 import directKeyFallbackResources from "./i18nDirectKeyFallbackResources";
 import { mergeLocaleFallback, type ResourceRecord } from "./i18nFallback";
+import {
+  detectBrowserLang,
+  resolveInitialLanguage,
+  SUPPORTED_LANGS,
+  type SupportedLang,
+} from "./languageDetection";
+
+export { detectBrowserLang, SUPPORTED_LANGS, type SupportedLang } from "./languageDetection";
 
 const STORAGE_KEY = "rr-lang";
 
@@ -13,10 +21,6 @@ const STORAGE_KEY = "rr-lang";
  * When this key is absent, the stored language was auto-detected and can be refreshed.
  */
 const USER_CHOSEN_KEY = "rr-lang-chosen";
-
-// Supported language codes (i18next format), ordered exactly as displayed in selectors.
-export const SUPPORTED_LANGS = ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"] as const;
-export type SupportedLang = (typeof SUPPORTED_LANGS)[number];
 
 // Human-readable labels for the flyout
 export const LANG_LABELS: Record<SupportedLang, string> = {
@@ -104,31 +108,6 @@ export function setLanguage(lang: SupportedLang): void {
 }
 
 /**
- * Detect language from the browser's navigator.language.
- * Maps browser locale to one of our supported languages.
- * Distinguishes Simplified and Traditional Chinese browser locales so each
- * supported landing translation is selected without rewriting user choice.
- */
-function detectLangFromBrowser(): SupportedLang {
-  try {
-    const browserLang = (navigator.language || navigator.languages?.[0] || "").toLowerCase();
-    if (browserLang.startsWith("th")) return "th";
-    if (
-      browserLang.startsWith("zh-cn") ||
-      browserLang.startsWith("zh-sg") ||
-      browserLang.includes("hans")
-    ) return "zh-CN";
-    if (browserLang.startsWith("zh")) return "zh-TW";
-    if (browserLang.startsWith("fr")) return "fr";
-    if (browserLang.startsWith("it")) return "it";
-    if (browserLang.startsWith("es")) return "es";
-  } catch {
-    // ignore
-  }
-  return "en";
-}
-
-/**
  * Return a valid language explicitly requested in the URL without changing a
  * visitor's saved preference. This supports shareable localized routes such as
  * /login?lang=es and keeps QA checks isolated from normal language selection.
@@ -144,53 +123,26 @@ function getLangFromQuery(): SupportedLang | null {
   }
 }
 
-/** Detect language from server IP geolocation (called only on first visit) */
-async function detectLangFromIP(): Promise<SupportedLang> {
-  try {
-    const res = await fetch("/api/detect-language");
-    if (!res.ok) return "en";
-    const data = await res.json() as { lang?: string };
-    const lang = data.lang;
-    if (lang === "zh-CN" || lang === "zh-TW") return lang;
-    if (lang === "th" || lang === "fr" || lang === "it" || lang === "es") {
-      return lang as SupportedLang;
-    }
-  } catch {
-    // network error — fall back to English
-  }
-  return "en";
-}
-
 // ── Language resolution order ─────────────────────────────────────────────────
 //
-// 1. User explicitly chose a language → ALWAYS use it, never override
-// 2. Language was auto-detected (no USER_CHOSEN_KEY) → re-detect from browser
-//    locale on every load (instant, no network) and update if different
-// 3. No saved language at all → detect from browser locale, save it
+// 1. Valid URL `?lang=` override → use for this load without changing preference
+// 2. User explicitly chose a language → ALWAYS use it, never override
+// 3. No explicit choice → select the first supported browser preference and save it
 //
 // This ensures:
 //   - FR/ES/TH chosen by user stays FR/ES/TH forever
-//   - Stale TH from old IP detection gets corrected to en-US on next load
-//   - New users get their browser locale immediately
+//   - Shareable localized URLs remain isolated from the visitor's preference
+//   - New visitors get their first supported browser locale before React mounts
+//   - Unsupported or unavailable browser preferences fall back safely to English
 
 const userChosen = isUserChosen();
 const savedLang = getSavedLang();
-const browserLang = detectLangFromBrowser();
+const browserLang = detectBrowserLang();
 const queryLang = getLangFromQuery();
 
-let initialLang: SupportedLang;
-
-if (queryLang) {
-  initialLang = queryLang;
-} else if (userChosen && savedLang) {
-  // User explicitly picked — respect it unconditionally
-  initialLang = savedLang;
-} else {
-  // Auto-detected or first visit — use browser locale (most reliable)
-  initialLang = browserLang;
-  // Update localStorage to match browser locale (corrects stale IP detections)
-  saveLang(browserLang);
-}
+const initialLang = resolveInitialLanguage({ queryLang, userChosen, savedLang, browserLang });
+const shouldPersistDetectedLanguage = !queryLang && !(userChosen && savedLang);
+if (shouldPersistDetectedLanguage) saveLang(initialLang);
 
 // A deterministic, generated safety net for legacy literal defaults and direct
 // `t(key)` calls uncovered by the full-app audit. Keep existing remote
@@ -241,7 +193,7 @@ export const i18nReady = i18n
     defaultNS: "translation",
     fallbackNS: "landing",
     backend: {
-      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame41",
+      loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame42",
     },
     interpolation: {
       escapeValue: false,
@@ -257,16 +209,5 @@ export const i18nReady = i18n
       installGeneratedFallbacks(language);
     }
   });
-
-// If no user-chosen preference, optionally refine with IP detection
-// (only if browser gave us English but IP might suggest another language)
-if (!queryLang && !userChosen && browserLang === "en") {
-  detectLangFromIP().then((ipLang) => {
-    if (ipLang !== "en") {
-      saveLang(ipLang);
-      void prepareStaticCopyLocale(ipLang).finally(() => i18n.changeLanguage(ipLang));
-    }
-  });
-}
 
 export default i18n;

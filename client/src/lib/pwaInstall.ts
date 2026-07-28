@@ -5,6 +5,8 @@ export interface PwaInstallSnapshot {
   installed: boolean;
   platform: PwaInstallPlatform;
   promptAvailable: boolean;
+  installGuideVisible: boolean;
+  welcomeVisible: boolean;
 }
 
 const DEFAULT_SNAPSHOT: PwaInstallSnapshot = {
@@ -12,6 +14,8 @@ const DEFAULT_SNAPSHOT: PwaInstallSnapshot = {
   installed: false,
   platform: "other",
   promptAvailable: false,
+  installGuideVisible: false,
+  welcomeVisible: false,
 };
 
 let snapshot = DEFAULT_SNAPSHOT;
@@ -32,7 +36,13 @@ export function subscribeToPwaInstall(listener: () => void): () => void {
 }
 
 export function updatePwaInstallSnapshot(next: Partial<PwaInstallSnapshot>): void {
-  snapshot = { ...snapshot, ...next };
+  const coordinatedNext = { ...next };
+  if (coordinatedNext.installGuideVisible === true) {
+    coordinatedNext.welcomeVisible = false;
+  } else if (coordinatedNext.welcomeVisible === true) {
+    coordinatedNext.installGuideVisible = false;
+  }
+  snapshot = { ...snapshot, ...coordinatedNext };
   listeners.forEach((listener) => listener());
 }
 

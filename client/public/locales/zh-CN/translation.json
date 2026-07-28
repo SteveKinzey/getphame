@@ -15,6 +15,22 @@
     "ogDescription": "通过您自己的电子邮件账户发送个性化的评论请求邮件。支持 Google、Yelp、TripAdvisor 等。",
     "shortTitle": "Get Phame"
   },
+  "firstVisitWelcome": {
+    "languageReady": "已检测到语言",
+    "title": "欢迎使用 Get Phame",
+    "description": "我们已根据您的浏览器偏好选择{{language}}。接下来您可以完成这些操作。",
+    "featuresLabel": "Get Phame 功能",
+    "features": {
+      "personalRequests": "使用您自己的邮箱逐一发送评论邀请",
+      "followUps": "安排合规的后续提醒，并在客户完成操作后停止",
+      "dashboard": "在清晰的仪表板中查看送达与互动情况"
+    },
+    "changeLanguage": "选择其他语言",
+    "selectedLanguage": "Get Phame 当前以{{language}}显示。",
+    "continue": "使用{{language}}继续",
+    "preferenceHint": "您可以随时通过语言选择器更改语言。",
+    "closeLabel": "关闭欢迎窗口"
+  },
   "nav": {
     "brandName": "Get Phame",
     "signIn": "登录",

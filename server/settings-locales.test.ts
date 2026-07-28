@@ -44,27 +44,29 @@ describe("Settings locale coverage", () => {
   it("keeps the supported-locale lists aligned and cache-busts updated dictionaries", () => {
     const i18nSource = readProjectFile("../client/src/lib/i18n.ts");
     const languageFlyoutSource = readProjectFile("../client/src/components/LanguageFlyout.tsx");
+    const languageOptionsSource = readProjectFile("../client/src/lib/languageOptions.ts");
 
     expect(i18nSource).toContain(
-      'export const SUPPORTED_LANGS = ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"] as const;'
+      'export { detectBrowserLang, SUPPORTED_LANGS, type SupportedLang } from "./languageDetection";'
     );
     expect(i18nSource).toContain(
       'supportedLngs: [...SUPPORTED_LANGS]'
     );
     expect(i18nSource).toContain(
-      'loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame41"'
+      'loadPath: "/locales/{{lng}}/{{ns}}.json?v=phame42"'
     );
     expect(i18nSource).toContain('ns: ["landing", "translation", "cancellation"]');
     expect(i18nSource).toContain('fallbackNS: "landing"');
 
     for (const locale of SELECTABLE_LOCALES) {
       expect(
-        languageFlyoutSource.includes(`code: "${locale}"`),
-        `LanguageFlyout is missing supported locale: ${locale}`
+        languageOptionsSource.includes(`code: "${locale}"`),
+        `Shared language options are missing supported locale: ${locale}`
       ).toBe(true);
     }
 
-    expect(languageFlyoutSource).toContain('code: "it"');
+    expect(languageFlyoutSource).toContain("LANGUAGE_OPTIONS.map");
+    expect(languageOptionsSource).toContain('code: "it"');
     expect(readProjectFile("../client/public/locales/it/translation.json")).toContain('"account"');
   });
 
@@ -149,8 +151,9 @@ describe("Settings locale coverage", () => {
     expect(i18nSource).toContain('function getLangFromQuery(): SupportedLang | null');
     expect(i18nSource).toContain('new URLSearchParams(window.location.search).get("lang")');
     expect(i18nSource).toContain("const queryLang = getLangFromQuery()");
-    expect(i18nSource).toContain("if (queryLang) {");
-    expect(i18nSource).toContain("if (!queryLang && !userChosen && browserLang === \"en\")");
+    expect(i18nSource).toContain("const initialLang = resolveInitialLanguage({ queryLang, userChosen, savedLang, browserLang })");
+    expect(i18nSource).toContain("const shouldPersistDetectedLanguage = !queryLang && !(userChosen && savedLang)");
+    expect(i18nSource).toContain("if (shouldPersistDetectedLanguage) saveLang(initialLang)");
     expect(languageFlyoutSource).toContain("const active = i18n.resolvedLanguage ?? i18n.language");
     expect(languageFlyoutSource).toContain("return active as SupportedLang");
   });

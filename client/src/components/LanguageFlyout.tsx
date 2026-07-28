@@ -3,7 +3,7 @@
 // Uses ReactDOM.createPortal to render the dropdown at document.body level,
 // so it is NEVER clipped by any parent stacking context, overflow, or z-index.
 //
-// - First visit: language auto-detected from IP (handled in i18n.ts)
+// - First visit: language selected from ordered browser preferences (handled in i18n.ts)
 // - Choice persisted to localStorage — never asks again unless user opens the menu
 
 import { useEffect, useRef, useState, useCallback } from "react";
@@ -11,16 +11,7 @@ import { createPortal } from "react-dom";
 import { Globe, Check } from "lucide-react";
 import { setLanguage, getSavedLang, type SupportedLang } from "@/lib/i18n";
 import i18n from "@/lib/i18n";
-
-const LANGS: { code: SupportedLang; label: string; native: string; flag: string }[] = [
-  { code: "en",    label: "EN", native: "English",   flag: "🇺🇸" },
-  { code: "zh-CN", label: "CN", native: "简体中文",   flag: "🇨🇳" },
-  { code: "es",    label: "ES", native: "Español",   flag: "🇪🇸" },
-  { code: "fr",    label: "FR", native: "Français",  flag: "🇫🇷" },
-  { code: "it",    label: "IT", native: "Italiano",  flag: "🇮🇹" },
-  { code: "th",    label: "TH", native: "ภาษาไทย",   flag: "🇹🇭" },
-  { code: "zh-TW", label: "TW", native: "繁體中文",   flag: "🇹🇼" },
-];
+import { LANGUAGE_OPTIONS } from "@/lib/languageOptions";
 
 interface LanguageFlyoutProps {
   className?: string;
@@ -30,7 +21,7 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
   const [open, setOpen] = useState(false);
   const [activeLang, setActiveLang] = useState<SupportedLang>(() => {
     const active = i18n.resolvedLanguage ?? i18n.language;
-    if (LANGS.some((language) => language.code === active)) {
+    if (LANGUAGE_OPTIONS.some((language) => language.code === active)) {
       return active as SupportedLang;
     }
     const saved = getSavedLang();
@@ -40,10 +31,10 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
   const btnRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
 
-  // Keep local state in sync with i18n (e.g. after IP detection resolves)
+  // Keep local state in sync with i18n after browser detection or a manual language change.
   useEffect(() => {
     const handler = (lng: string) => {
-      if (LANGS.some(l => l.code === lng)) setActiveLang(lng as SupportedLang);
+      if (LANGUAGE_OPTIONS.some(l => l.code === lng)) setActiveLang(lng as SupportedLang);
     };
     i18n.on("languageChanged", handler);
     return () => { i18n.off("languageChanged", handler); };
@@ -98,7 +89,7 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
     setOpen(false);
   };
 
-  const activeLabel = LANGS.find(l => l.code === activeLang)?.label ?? "EN";
+  const activeLabel = LANGUAGE_OPTIONS.find(l => l.code === activeLang)?.label ?? "EN";
 
   const panel = open && panelPos ? createPortal(
     <div
@@ -120,7 +111,7 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
       }}
       translate="no"
     >
-      {LANGS.map(({ code, label, native, flag }, idx) => {
+      {LANGUAGE_OPTIONS.map(({ code, label, native, flag }, idx) => {
         const isActive = activeLang === code;
         return (
           <button
@@ -138,7 +129,7 @@ export default function LanguageFlyout({ className = "" }: LanguageFlyoutProps) 
               color: isActive ? "oklch(0.80 0.18 80)" : "white",
               fontSize: "15px",
               fontWeight: 700,
-              borderBottom: idx < LANGS.length - 1 ? "1px solid rgba(255,255,255,0.07)" : "none",
+              borderBottom: idx < LANGUAGE_OPTIONS.length - 1 ? "1px solid rgba(255,255,255,0.07)" : "none",
               cursor: "pointer",
               textAlign: "left",
             }}

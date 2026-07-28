@@ -109,6 +109,7 @@ describe("Get Phame regression contracts", () => {
     const serviceWorker = readProjectFile("../client/public/sw.js");
     const offlinePage = readProjectFile("../client/public/offline.html");
     const installPrompt = readProjectFile("../client/src/components/PWAInstallPrompt.tsx");
+    const welcomePrompt = readProjectFile("../client/src/components/FirstVisitWelcome.tsx");
     const installBanner = readProjectFile("../client/src/components/HomeInstallBanner.tsx");
     const shareHelper = readProjectFile("../client/src/lib/pwaShare.ts");
     const main = readProjectFile("../client/src/main.tsx");
@@ -143,7 +144,7 @@ describe("Get Phame regression contracts", () => {
     expect(manifest.icons.some((icon) => icon.sizes === "512x512" && icon.purpose === "maskable")).toBe(true);
     expect(manifest.launch_handler.client_mode).toContain("navigate-existing");
 
-    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v23'");
+    expect(serviceWorker).toContain("const CACHE_NAME = 'getphame-v24'");
     expect(serviceWorker).toContain("'/locales/en/landing.json'");
     expect(serviceWorker).toContain("'/locales/zh-TW/landing.json'");
     expect(serviceWorker).toContain("'/getphame-walkthrough.en.vtt'");
@@ -206,8 +207,11 @@ describe("Get Phame regression contracts", () => {
     expect(pwaAnalytics).toContain('"install_banner_clicked"');
     expect(pwaAnalytics).toContain('"install_banner_dismissed"');
     expect(pwaAnalytics).toContain('"install_banner_remind_later"');
-    expect(app).toMatch(/<AppShell \/>[\s\S]*?<PWAInstallPrompt \/>/);
+    expect(app).toMatch(/<AppShell \/>[\s\S]*?<FirstVisitWelcome \/>[\s\S]*?<PWAInstallPrompt \/>/);
+    expect(app.match(/<FirstVisitWelcome \/>/g)).toHaveLength(1);
     expect(app.match(/<PWAInstallPrompt \/>/g)).toHaveLength(1);
+    expect(welcomePrompt).toContain('data-testid="first-visit-welcome"');
+    expect(welcomePrompt).toContain("installGuideVisible: pwaState.installGuideVisible");
 
     const installCopyKeys = [
       "title",
@@ -258,6 +262,7 @@ describe("Get Phame regression contracts", () => {
   it("orders the shared language selector as EN, CN, ES, FR, IT, TH, TW and uses the USA flag", () => {
     const flyout = readProjectFile("../client/src/components/LanguageFlyout.tsx");
     const i18n = readProjectFile("../client/src/lib/i18n.ts");
+    const languageOptions = readProjectFile("../client/src/lib/languageOptions.ts");
     const preservedItalian = readProjectFile("../client/public/locales/it/translation.json");
     const localeOrder = [
       '{ code: "en"',
@@ -271,16 +276,17 @@ describe("Get Phame regression contracts", () => {
 
     let previousIndex = -1;
     for (const locale of localeOrder) {
-      const currentIndex = flyout.indexOf(locale);
+      const currentIndex = languageOptions.indexOf(locale);
       expect(currentIndex).toBeGreaterThan(previousIndex);
       previousIndex = currentIndex;
     }
 
-    expect(flyout).toContain('flag: "🇺🇸"');
-    expect(flyout).not.toContain('flag: "🇬🇧"');
-    expect(flyout).toContain('{ code: "it"');
+    expect(languageOptions).toContain('flag: "🇺🇸"');
+    expect(languageOptions).not.toContain('flag: "🇬🇧"');
+    expect(languageOptions).toContain('{ code: "it"');
+    expect(flyout).toContain("LANGUAGE_OPTIONS.map");
     expect(i18n).toContain(
-      'export const SUPPORTED_LANGS = ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"] as const;',
+      'export { detectBrowserLang, SUPPORTED_LANGS, type SupportedLang } from "./languageDetection";',
     );
     expect(preservedItalian).toContain('"account"');
   });
@@ -666,7 +672,7 @@ describe("Get Phame regression contracts", () => {
     expect(churn).toContain('guarantee.data?.reason === "already_refunded"');
     expect(churn).toContain('guarantee.data?.reason === "expired"');
     expect(i18n).toContain('["landing", "translation", "cancellation"]');
-    expect(i18n).toContain("v=phame41");
+    expect(i18n).toContain("v=phame42");
     expect(routers).toContain("guaranteeStatus: protectedProcedure");
     expect(routers).toContain("claimGuarantee: protectedProcedure");
     expect(routers).toContain("cancelRenewal: protectedProcedure");

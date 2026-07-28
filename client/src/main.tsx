@@ -79,6 +79,12 @@ function syncLanguageToServiceWorker(registration: ServiceWorkerRegistration, la
   worker?.postMessage({ type: "SET_LANGUAGE", language });
 }
 
+function syncDocumentLanguage(language = i18n.resolvedLanguage ?? i18n.language ?? "en") {
+  document.documentElement.lang = language;
+}
+
+i18n.on("languageChanged", syncDocumentLanguage);
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js').then((registration) => {
@@ -95,7 +101,10 @@ if ('serviceWorker' in navigator) {
 
 // The initial locale is known only after i18n initializes. Await the matching
 // compact catalog before mount so legacy literals cannot briefly flash English.
-void i18nReady.then(() => loadStaticLocalizationSupplement()).finally(() => {
+void i18nReady.then(() => {
+  syncDocumentLanguage();
+  return loadStaticLocalizationSupplement();
+}).finally(() => {
   createRoot(document.getElementById("root")!).render(
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>

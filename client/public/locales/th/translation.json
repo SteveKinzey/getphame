@@ -5,6 +5,22 @@
     "ogDescription": "ส่งอีเมลขอรีวิวส่วนตัวจากบัญชีอีเมลของคุณเอง ใช้งานได้กับ Google, Yelp, TripAdvisor และอื่นๆ",
     "shortTitle": "Get Phame"
   },
+  "firstVisitWelcome": {
+    "languageReady": "ตรวจพบภาษาแล้ว",
+    "title": "ยินดีต้อนรับสู่ Get Phame",
+    "description": "เราเลือก {{language}} จากการตั้งค่าเบราว์เซอร์ของคุณ นี่คือสิ่งที่คุณทำต่อได้",
+    "featuresLabel": "ฟีเจอร์ของ Get Phame",
+    "features": {
+      "personalRequests": "ส่งคำขอรีวิวเป็นรายบุคคลจากอีเมลของคุณเอง",
+      "followUps": "ตั้งเวลาติดตามผลที่สอดคล้องกับข้อกำหนดและหยุดเมื่อลูกค้าดำเนินการแล้ว",
+      "dashboard": "ติดตามการส่งและการมีส่วนร่วมในแดชบอร์ดที่ชัดเจน"
+    },
+    "changeLanguage": "เลือกภาษาอื่น",
+    "selectedLanguage": "ขณะนี้ Get Phame แสดงเป็นภาษา{{language}}",
+    "continue": "ดำเนินการต่อเป็นภาษา{{language}}",
+    "preferenceHint": "คุณเปลี่ยนภาษาได้ทุกเมื่อจากตัวเลือกภาษา",
+    "closeLabel": "ปิดหน้าต่างต้อนรับ"
+  },
   "nav": {
     "brandName": "Get Phame",
     "signIn": "ลงชื่อเข้าใช้",
