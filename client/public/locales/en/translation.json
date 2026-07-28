@@ -1093,8 +1093,6 @@
     "magicLinkExpired": "That sign-in link has expired. Please request a new one.",
     "verificationFailed": "Verification failed. Please request a new link.",
     "signInFailed": "Sign-in failed. Please try again or contact support.",
-    "continueWithEmail": "Continue with Email",
-    "cancel": "Cancel",
     "sendingMagicLinkStatus": "Sending a secure sign-in link. Keep this page open.",
     "resendCountdown": "Resend available in {{seconds}} seconds.",
     "resendReady": "You can request another link now.",

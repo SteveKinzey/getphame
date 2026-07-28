@@ -121,6 +121,15 @@ describe("localized magic-link UX contract", () => {
     }
   });
 
+  it("does not retain unused login-only labels outside the shared form contract", () => {
+    for (const locale of locales) {
+      const catalog = JSON.parse(read(`client/public/locales/${locale}/translation.json`));
+
+      expect(catalog.login?.continueWithEmail, `${locale}:login.continueWithEmail`).toBeUndefined();
+      expect(catalog.login?.cancel, `${locale}:login.cancel`).toBeUndefined();
+    }
+  });
+
   it("bumps the runtime locale cache after catalog changes", () => {
     const i18n = read("client/src/lib/i18n.ts");
     expect(i18n).toContain("{{ns}}.json?v=phame38");
