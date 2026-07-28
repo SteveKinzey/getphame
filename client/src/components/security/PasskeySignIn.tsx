@@ -75,7 +75,7 @@ export default function PasskeySignIn({ redirectTo = "/" }: { redirectTo?: strin
         return;
       }
       setStatus(null);
-      setError(t("passkeys.signIn.unavailable", { defaultValue: "Passkey sign-in could not be completed. Use your email link below or try again." }));
+      setError(t("passkeys.signIn.unavailable", { defaultValue: "Passkey sign-in could not be completed. Try Magic Link or another available sign-in method, or try again." }));
     }
   }
 

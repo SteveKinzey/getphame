@@ -284,7 +284,7 @@ export default function Login() {
               </div>
             )}
             <MagicLinkForm idPrefix="login" autoFocus />
-            {shouldShowSocialSection ? (
+            {shouldShowSocialSection && (
               <>
                 <OrDivider label={t("login.or", { defaultValue: "or" })} />
                 {/* ── Google + staged Apple OAuth Buttons ───────────────────── */}
@@ -328,11 +328,9 @@ export default function Login() {
                     </a>
                   )}
                 </div>
-                <OrDivider label={t("passkeys.signIn.orAlternative", { defaultValue: "or use another sign-in method" })} />
               </>
-            ) : (
-              <OrDivider label={t("passkeys.signIn.orAlternative", { defaultValue: "or use another sign-in method" })} />
             )}
+            <OrDivider label={t("passkeys.signIn.orAlternative", { defaultValue: "or use another sign-in method" })} />
             <PasskeySignIn />
           </>
         )}
