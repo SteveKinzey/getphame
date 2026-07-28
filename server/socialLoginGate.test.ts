@@ -41,8 +41,10 @@ describe("social login host policy", () => {
   it("applies the shared gate to both public authentication screens", () => {
     const loginPath = fileURLToPath(new URL("../client/src/pages/Login.tsx", import.meta.url));
     const onboardingPath = fileURLToPath(new URL("../client/src/pages/Onboarding.tsx", import.meta.url));
+    const magicLinkFormPath = fileURLToPath(new URL("../client/src/components/auth/MagicLinkForm.tsx", import.meta.url));
     const loginSource = readFileSync(loginPath, "utf8");
     const onboardingSource = readFileSync(onboardingPath, "utf8");
+    const magicLinkSource = readFileSync(magicLinkFormPath, "utf8");
 
     expect(loginSource).toContain("isGoogleSignInHost(window.location.hostname)");
     expect(onboardingSource).toContain("isGoogleSignInHost(window.location.hostname)");
@@ -52,7 +54,8 @@ describe("social login host policy", () => {
     expect(onboardingSource).toContain("data-testid=\"social-login\"");
     expect(loginSource).toContain("Continue with Google");
     expect(onboardingSource).toContain("Continue with Google");
-    expect(loginSource).toContain("Send Magic Link");
-    expect(onboardingSource).toContain("Continue with Email");
+    expect(magicLinkSource).toContain("Send Magic Link");
+    expect(onboardingSource).toContain('t("login.sendMagicLink"');
+    expect(onboardingSource).toContain("<MagicLinkForm");
   });
 });

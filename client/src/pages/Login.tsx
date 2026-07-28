@@ -14,10 +14,14 @@ import { useTranslation } from "react-i18next";
 import {
   GOOGLE_SIGN_IN_TOAST_ID,
   clearGoogleSignInPending,
+  getMagicLinkRecoveryKind,
   getLocalizedAuthErrorMessage,
+  type MagicLinkRecoveryKind,
   rememberGoogleSignInPending,
 } from "@/lib/authFeedback";
 import PasskeySignIn from "@/components/security/PasskeySignIn";
+import MagicLinkForm from "@/components/auth/MagicLinkForm";
+import { AlertTriangle } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -27,15 +31,8 @@ interface GoogleStatusResponse {
   enabled: boolean;
 }
 
-interface MagicLinkResponse {
-  ok?: boolean;
-  error?: string;
-  email?: string;
-}
-
 const GOOGLE_REDIRECT_FEEDBACK_MS = 420;
 const GOOGLE_REDIRECT_STATUS_MS = 140;
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // ---------------------------------------------------------------------------
 // SVG Icons (inline — no extra icon package needed)
@@ -123,12 +120,10 @@ export default function Login() {
   const shouldShowSocialSection = appleLoginEnabled || (googleLoginEnabled && googleEnabled !== false);
 
   // Form state
-  const [email, setEmail] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
   const [googleStatus, setGoogleStatus] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
-  const [sentTo, setSentTo] = useState<string | null>(null); // shows success state
+  const [magicLinkRecovery, setMagicLinkRecovery] = useState<MagicLinkRecoveryKind>(null);
 
   // Check if Google OAuth is configured on the server
   useEffect(() => {
@@ -148,10 +143,17 @@ export default function Login() {
     const params = new URLSearchParams(window.location.search);
     const authError = params.get("auth_error");
     if (authError) {
-      const message = getLocalizedAuthErrorMessage(authError, t);
       clearGoogleSignInPending();
-      setFormError(message);
-      toast.error(message, { id: GOOGLE_SIGN_IN_TOAST_ID });
+      const recoveryKind = getMagicLinkRecoveryKind(authError);
+
+      if (recoveryKind) {
+        setMagicLinkRecovery(recoveryKind);
+        setFormError(null);
+      } else {
+        const message = getLocalizedAuthErrorMessage(authError, t);
+        setFormError(message);
+        toast.error(message, { id: GOOGLE_SIGN_IN_TOAST_ID });
+      }
       // Clean the URL
       window.history.replaceState({}, "", window.location.pathname);
     }
@@ -187,59 +189,28 @@ export default function Login() {
     }
   }, [isGoogleSubmitting, t]);
 
-  const handleMagicLinkSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-      setFormError(null);
-      setSentTo(null);
-      const normalizedEmail = email.trim();
-
-      if (!normalizedEmail) {
-        setFormError(t("login.emailRequired", { defaultValue: "Email is required." }));
-        return;
+  const recoveryCopy = magicLinkRecovery === "expired"
+    ? {
+        title: t("login.expiredMagicLinkTitle", { defaultValue: "This sign-in link has expired" }),
+        description: t("login.expiredMagicLinkDescription", {
+          defaultValue: "For your security, sign-in links are valid for 15 minutes.",
+        }),
       }
-
-      if (!EMAIL_PATTERN.test(normalizedEmail)) {
-        setFormError(t("login.invalidEmail", { defaultValue: "Enter a valid email address." }));
-        return;
-      }
-
-      setIsSubmitting(true);
-
-      try {
-        const res = await fetch("/api/auth/magic-link", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: normalizedEmail,
-            origin: window.location.origin,
+    : magicLinkRecovery === "invalid"
+      ? {
+          title: t("login.invalidMagicLinkTitle", { defaultValue: "This sign-in link is no longer valid" }),
+          description: t("login.invalidMagicLinkDescription", {
+            defaultValue: "The link may have already been used or may be incomplete.",
           }),
-        });
-
-        const data = (await res.json()) as MagicLinkResponse;
-
-        if (!res.ok) {
-          const fallback = res.status === 429
-            ? t("login.rateLimited", { defaultValue: "Too many attempts. Please wait a few minutes and try again." })
-            : res.status === 503
-              ? t("login.serviceUnavailable", { defaultValue: "Service is temporarily unavailable. Please try again." })
-              : res.status === 400
-                ? t("login.invalidEmail", { defaultValue: "Enter a valid email address." })
-                : t("login.magicLinkFailed", { defaultValue: "We could not send your magic link. Please try again." });
-          setFormError(fallback);
-          return;
         }
-
-        // Success — show confirmation
-        setSentTo(data.email ?? normalizedEmail);
-      } catch {
-        setFormError(t("login.networkError", { defaultValue: "Network error. Please check your connection and try again." }));
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [email, t]
-  );
+      : magicLinkRecovery === "failed"
+        ? {
+            title: t("login.verificationProblemTitle", { defaultValue: "We couldn't verify this link" }),
+            description: t("login.verificationProblemDescription", {
+              defaultValue: "Something interrupted verification. Request a fresh link to continue.",
+            }),
+          }
+        : null;
 
   // ---------------------------------------------------------------------------
   // Render
@@ -259,12 +230,51 @@ export default function Login() {
 
       {/* Card */}
       <div className="w-full max-w-sm">
-        <PasskeySignIn />
-        <OrDivider label={t("passkeys.signIn.orAlternative", { defaultValue: "or use another sign-in method" })} />
-        {shouldShowSocialSection && (
+        {recoveryCopy ? (
+          <section
+            data-testid="magic-link-recovery"
+            role="alert"
+            aria-labelledby="magic-link-recovery-title"
+            className="rounded-2xl border border-amber-300/25 bg-white/[0.04] p-6 text-center shadow-2xl"
+          >
+            <div className="mx-auto mb-4 inline-flex h-14 w-14 items-center justify-center rounded-full bg-amber-300/10 text-[#C9A84C]">
+              <AlertTriangle className="h-7 w-7" aria-hidden="true" />
+            </div>
+            <h2 id="magic-link-recovery-title" className="mb-3 text-xl font-bold text-white">
+              {recoveryCopy.title}
+            </h2>
+            <p className="mb-3 text-sm leading-relaxed text-white/70">{recoveryCopy.description}</p>
+            <p className="mb-6 text-sm leading-relaxed text-white/55">
+              {t("login.magicLinkRecoveryHelp", {
+                defaultValue: "Use the same email address and we'll send you a fresh secure link.",
+              })}
+            </p>
+            <button
+              type="button"
+              autoFocus
+              onClick={() => {
+                setMagicLinkRecovery(null);
+                setFormError(null);
+              }}
+              className="min-h-12 w-full rounded-xl bg-[#C9A84C] px-4 py-3 text-sm font-bold text-[#0F1B2D] transition-[background-color,transform] duration-150 hover:bg-[#b8943d] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              {t("login.requestNewLink", { defaultValue: "Request a New Link" })}
+            </button>
+            <a
+              href="mailto:support@getphame.app"
+              className="mt-4 inline-flex min-h-11 items-center px-3 text-sm font-semibold text-white/60 underline underline-offset-4 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C]"
+            >
+              {t("login.contactSupport", { defaultValue: "Contact support" })}
+            </a>
+          </section>
+        ) : (
           <>
-            {/* ── Google + staged Apple OAuth Buttons ───────────────────── */}
-            <div className="space-y-3" data-testid="social-login">
+            <PasskeySignIn />
+            <OrDivider label={t("passkeys.signIn.orAlternative", { defaultValue: "or use another sign-in method" })} />
+            {shouldShowSocialSection && (
+              <>
+                {/* ── Google + staged Apple OAuth Buttons ───────────────────── */}
+                <div className="space-y-3" data-testid="social-login">
               {/* Google — rendered only on an approved host when configured */}
               {googleLoginEnabled && googleEnabled === true && (
                 <div>
@@ -303,89 +313,22 @@ export default function Login() {
                   {t("login.continueWithApple", { defaultValue: "Continue with Apple" })}
                 </a>
               )}
-            </div>
+                </div>
+                <OrDivider label={t("login.or", { defaultValue: "or" })} />
+              </>
+            )}
 
-            <OrDivider label={t("login.or", { defaultValue: "or" })} />
-          </>
-        )}
-
-        {/* ── Magic Link Form ──────────────────────────────────────────── */}
-        {sentTo ? (
-          /* Success state — email sent */
-          <div className="text-center py-4">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[#C9A84C]/10 mb-4">
-              <MailIcon />
-            </div>
-            <h2 className="text-lg font-semibold text-white mb-2">
-              {t("login.checkInbox", { defaultValue: "Check your inbox" })}
-            </h2>
-            <p className="text-sm text-white/50 mb-4">
-              {t("login.sentTo", { defaultValue: "We sent a login link to" })}
-            </p>
-            <p className="text-sm font-medium text-[#C9A84C] mb-6">{sentTo}</p>
-            <p className="text-xs text-white/30 mb-4">
-              {t("login.expiresNotice", {
-                defaultValue: "The link expires in 15 minutes. Check your spam folder if you don't see it.",
-              })}
-            </p>
-            <button
-              type="button"
-              onClick={() => { setSentTo(null); setEmail(""); }}
-              className="text-sm text-white/40 hover:text-white/60 underline transition-colors"
-            >
-              {t("login.useDifferentEmail", { defaultValue: "Use a different email" })}
-            </button>
-          </div>
-        ) : (
-          /* Email input form */
-          <form onSubmit={handleMagicLinkSubmit} noValidate className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-xs font-medium text-white/60 mb-1.5">
-                {t("login.emailLabel", { defaultValue: "Email address" })}
-              </label>
-              <input
-                id="email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t("login.emailPlaceholder", { defaultValue: "you@example.com" })}
-                required
-                className="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/25 text-sm focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/60 focus:border-[#C9A84C]/60 transition"
-              />
-            </div>
-
-            {/* Error message */}
             {formError && (
               <div
                 role="alert"
-                className="flex items-start gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm"
+                className="mb-4 flex items-start gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-300"
               >
                 <span className="mt-0.5 shrink-0">⚠</span>
                 <span>{formError}</span>
               </div>
             )}
-
-            {/* Submit button */}
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-3 px-4 rounded-xl bg-[#C9A84C] hover:bg-[#b8943d] active:bg-[#a8843a] disabled:opacity-50 disabled:cursor-not-allowed text-[#0F1B2D] font-bold text-sm transition-colors duration-150 flex items-center justify-center gap-2"
-            >
-              {isSubmitting ? (
-                <>
-                  <Spinner />
-                  {t("login.sendingMagicLink", { defaultValue: "Sending link…" })}
-                </>
-              ) : (
-                t("login.sendMagicLink", { defaultValue: "Send Magic Link" })
-              )}
-            </button>
-
-            <p className="text-center text-xs text-white/30">
-              {t("login.noPassword", { defaultValue: "No password needed — we'll email you a secure login link." })}
-            </p>
-          </form>
+            <MagicLinkForm idPrefix="login" autoFocus />
+          </>
         )}
 
         {/* ── Legal ─────────────────────────────────────────────────────── */}

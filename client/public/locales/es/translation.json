@@ -2368,7 +2368,22 @@
     "googleUnavailable": "El inicio de sesión con Google no está disponible en este momento.",
     "signInFailed": "No pudimos iniciar sesión. Inténtalo de nuevo.",
     "resetPassword": "Restablecer contraseña",
-    "error": "Error"
+    "error": "Error",
+    "sendingMagicLinkStatus": "Enviando un enlace de acceso seguro. Mantén esta página abierta.",
+    "resendCountdown": "Podrás reenviar el enlace en {{seconds}} segundos.",
+    "resendReady": "Ya puedes solicitar otro enlace.",
+    "resendingLink": "Reenviando enlace…",
+    "resendLink": "Reenviar enlace",
+    "resendSuccess": "Te enviamos un nuevo enlace de acceso.",
+    "expiredMagicLinkTitle": "Este enlace de acceso ha vencido",
+    "expiredMagicLinkDescription": "Por tu seguridad, los enlaces de acceso son válidos durante 15 minutos.",
+    "invalidMagicLinkTitle": "Este enlace de acceso ya no es válido",
+    "invalidMagicLinkDescription": "Es posible que el enlace ya se haya usado o esté incompleto.",
+    "verificationProblemTitle": "No pudimos verificar este enlace",
+    "verificationProblemDescription": "Algo interrumpió la verificación. Solicita un enlace nuevo para continuar.",
+    "magicLinkRecoveryHelp": "Usa el mismo correo y te enviaremos un enlace de acceso seguro nuevo.",
+    "requestNewLink": "Solicitar un enlace nuevo",
+    "contactSupport": "Contactar con soporte"
   },
   "referralRewards": {
     "title": "Recompensas por referidos",
