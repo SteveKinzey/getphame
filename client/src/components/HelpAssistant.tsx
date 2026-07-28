@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import SupportDialog from "@/components/landing/SupportDialog";
+import { useAuth } from "@/_core/hooks/useAuth";
 import { SUPPORTED_LANGS, type SupportedLang } from "@/lib/i18n";
 import { trpc } from "@/lib/trpc";
 
@@ -38,6 +39,7 @@ function createId(): string {
 
 export default function HelpAssistant() {
   const { t, i18n } = useTranslation();
+  const { user } = useAuth();
   const [, navigate] = useLocation();
   const [open, setOpen] = useState(() => new URLSearchParams(window.location.search).has("help"));
   const [supportOpen, setSupportOpen] = useState(false);
@@ -112,6 +114,10 @@ export default function HelpAssistant() {
     window.open(citation.href, "_blank", "noopener,noreferrer");
   };
 
+  const mobileTriggerBottomClass = user
+    ? "bottom-[calc(env(safe-area-inset-bottom,0px)+15rem)]"
+    : "bottom-[calc(env(safe-area-inset-bottom,0px)+1rem)]";
+
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -119,7 +125,7 @@ export default function HelpAssistant() {
           <button
             type="button"
             data-testid="help-assistant-trigger"
-            className="fixed bottom-[calc(env(safe-area-inset-bottom,0px)+5.75rem)] right-4 z-50 inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-4 py-3 font-display text-sm font-extrabold text-primary-foreground shadow-[0_8px_30px_oklch(0.22_0.09_260/0.28)] transition-all duration-200 hover:brightness-105 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 md:bottom-5 md:right-5"
+            className={`fixed ${mobileTriggerBottomClass} right-4 z-50 inline-flex min-h-12 items-center gap-2 rounded-full bg-primary px-4 py-3 font-display text-sm font-extrabold text-primary-foreground shadow-[0_8px_30px_oklch(0.22_0.09_260/0.28)] transition-all duration-200 hover:brightness-105 active:scale-[0.97] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/35 md:bottom-5 md:right-5`}
             aria-label={t("helpAssistant.open", { defaultValue: "Open Get Phame help" })}
           >
             <HelpCircle size={20} aria-hidden="true" />

@@ -1,9 +1,9 @@
 {
   "locale": "it",
   "audit": "Exhaustive English-identical customer-copy review",
-  "sourceCandidateCount": 47,
+  "sourceCandidateCount": 48,
   "translatedCount": 11,
-  "exceptionCount": 36,
+  "exceptionCount": 37,
   "minimumTranslationConfidence": 0.95,
   "translatedEntryFormat": "<namespace>:<key>",
   "exceptionEntryFormat": "<namespace>:<key>|<category>",
@@ -60,6 +60,7 @@
     "landing:landing.modal.captionLineSpacingStandard|cross_language_equivalent",
     "landing:landing.support.email|cross_language_equivalent",
     "landing:landing.support.topicOnboarding|cross_language_equivalent",
+    "translation:settings.bulkSender.providers.mailjet.label|brand_or_product",
     "cancellation:brand|brand_or_product"
   ]
 }

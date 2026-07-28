@@ -650,6 +650,16 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
   const [showForm, setShowForm] = useState(false);
   const [showSecret, setShowSecret] = useState(false);
   const preset = getBulkSenderPreset(provider);
+  const localizedPreset = provider === "mailjet" ? {
+    ...preset,
+    label: t("settings.bulkSender.providers.mailjet.label", { defaultValue: preset.label }),
+    description: t("settings.bulkSender.providers.mailjet.description", { defaultValue: preset.description }),
+    usernameLabel: t("settings.bulkSender.providers.mailjet.usernameLabel", { defaultValue: preset.usernameLabel }),
+    usernamePlaceholder: t("settings.bulkSender.providers.mailjet.usernamePlaceholder", { defaultValue: preset.usernamePlaceholder }),
+    secretLabel: t("settings.bulkSender.providers.mailjet.secretLabel", { defaultValue: preset.secretLabel }),
+    secretPlaceholder: t("settings.bulkSender.providers.mailjet.secretPlaceholder", { defaultValue: preset.secretPlaceholder }),
+    secretHelp: t("settings.bulkSender.providers.mailjet.secretHelp", { defaultValue: preset.secretHelp }),
+  } : preset;
   const resolvedHost = provider === "custom_smtp"
     ? smtpHost
     : resolveBulkSenderHost(provider, providerRegion || preset.defaultRegion);
@@ -705,7 +715,8 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
 
   const usernameIsValid = preset.usernameMode !== "user" || smtpUsername.trim().length > 0;
   const customHostIsValid = provider !== "custom_smtp" || smtpHost.trim().length > 0;
-  const canConnect = Boolean(secret && fromEmail && usernameIsValid && customHostIsValid);
+  const fromEmailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fromEmail.trim());
+  const canConnect = Boolean(secret.trim() && fromEmailIsValid && usernameIsValid && customHostIsValid);
 
   const submitConnection = () => {
     connectMutation.mutate({
@@ -765,7 +776,9 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
             <CheckCircle size={16} className="shrink-0" style={{ color: "oklch(0.45 0.15 150)" }} />
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold rr-text-navy">
-                {isBulkSenderProvider(status.provider) ? BULK_SENDER_PRESETS[status.provider].label : status.provider} {t("settings.bulkSender.connected", { defaultValue: "connected" })}
+                {status.provider === "mailjet"
+                  ? t("settings.bulkSender.providers.mailjet.label", { defaultValue: "Mailjet" })
+                  : isBulkSenderProvider(status.provider) ? BULK_SENDER_PRESETS[status.provider].label : status.provider} {t("settings.bulkSender.connected", { defaultValue: "connected" })}
               </p>
               <p className="text-sm font-semibold rr-text-navy-mid truncate">{status.fromEmail}</p>
               {status.smtpHost && <p className="mt-0.5 truncate text-xs rr-text-navy-muted">{status.smtpHost}:{status.smtpPort}</p>}
@@ -810,10 +823,14 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
               style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
             >
               {BULK_SENDER_PROVIDER_IDS.map((providerId) => (
-                <option key={providerId} value={providerId}>{BULK_SENDER_PRESETS[providerId].label}</option>
+                <option key={providerId} value={providerId}>
+                  {providerId === "mailjet"
+                    ? t("settings.bulkSender.providers.mailjet.label", { defaultValue: "Mailjet" })
+                    : BULK_SENDER_PRESETS[providerId].label}
+                </option>
               ))}
             </select>
-            <p className="mt-1 text-xs rr-text-navy-muted">{preset.description}</p>
+            <p className="mt-1 text-xs rr-text-navy-muted">{localizedPreset.description}</p>
           </div>
 
           {preset.regions?.length ? (
@@ -861,8 +878,8 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
 
           {preset.usernameMode === "user" ? (
             <div>
-              <label htmlFor="bulk-sender-username" className="block text-xs font-bold mb-1 rr-text-navy-mid">{preset.usernameLabel}</label>
-              <input id="bulk-sender-username" type="text" value={smtpUsername} onChange={(event) => setSmtpUsername(event.target.value)} placeholder={preset.usernamePlaceholder} autoCapitalize="none" spellCheck={false} className="min-h-11 w-full rounded-xl px-3 py-2 outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }} />
+              <label htmlFor="bulk-sender-username" className="block text-xs font-bold mb-1 rr-text-navy-mid">{localizedPreset.usernameLabel}</label>
+              <input id="bulk-sender-username" type="text" value={smtpUsername} onChange={(event) => setSmtpUsername(event.target.value)} placeholder={localizedPreset.usernamePlaceholder} autoCapitalize="none" spellCheck={false} className="min-h-11 w-full rounded-xl px-3 py-2 outline-none" style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }} />
             </div>
           ) : (
             <div className="rounded-xl px-3 py-2.5" style={{ background: "oklch(0.97 0.01 260)", border: "1px solid oklch(0.90 0.02 260)" }}>
@@ -873,7 +890,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
 
           <div>
             <div className="flex items-center justify-between mb-1">
-              <label htmlFor="bulk-sender-secret" className="text-xs font-bold rr-text-navy-mid">{preset.secretLabel}</label>
+              <label htmlFor="bulk-sender-secret" className="text-xs font-bold rr-text-navy-mid">{localizedPreset.secretLabel}</label>
               <a href={preset.docsUrl} target="_blank" rel="noopener noreferrer" className="min-h-8 rounded-md px-1 text-xs flex items-center gap-0.5" style={{ color: "oklch(0.40 0.14 150)" }}>
                 {t("settings.bulkSender.setupHelp", { defaultValue: "Setup help" })} <ExternalLink size={10} />
               </a>
@@ -884,7 +901,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
                 type={showSecret ? "text" : "password"}
                 value={secret}
                 onChange={(event) => setSecret(event.target.value)}
-                placeholder={preset.secretPlaceholder}
+                placeholder={localizedPreset.secretPlaceholder}
                 autoComplete="new-password"
                 className="min-h-11 w-full px-3 py-2 pr-11 rounded-xl outline-none"
                 style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
@@ -898,7 +915,7 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
                 {showSecret ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
-            <p className="mt-1 text-xs rr-text-navy-muted">{preset.secretHelp}</p>
+            <p className="mt-1 text-xs rr-text-navy-muted">{localizedPreset.secretHelp}</p>
           </div>
 
           <div>
@@ -913,7 +930,11 @@ function BulkSenderSection({ profile }: { profile: ProfileData | null | undefine
               className="min-h-11 w-full px-3 py-2 rounded-xl outline-none"
               style={{ border: "2px solid oklch(0.90 0.02 260)", fontSize: "16px" }}
             />
-            <p className="text-xs mt-1 rr-text-navy-muted">{t("settings.bulkSender.fromEmailHelp", { defaultValue: "This sender must already be verified with your provider." })}</p>
+            <p className="text-xs mt-1 rr-text-navy-muted">
+              {provider === "mailjet"
+                ? t("settings.bulkSender.providers.mailjet.fromEmailHelp", { defaultValue: "This sender address or domain must already be validated in Mailjet." })
+                : t("settings.bulkSender.fromEmailHelp", { defaultValue: "This sender must already be verified with your provider." })}
+            </p>
           </div>
 
           <div>

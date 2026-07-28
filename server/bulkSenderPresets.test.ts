@@ -8,17 +8,21 @@ import {
   resolveBulkSenderHost,
   resolveBulkSenderUsername,
 } from "../shared/bulkSenderPresets";
+import directKeyFallbackResources from "../client/src/lib/i18nDirectKeyFallbackResources";
 import { resolveSafeCustomSmtpHost } from "./bulkSender";
 
 const settingsSource = readFileSync(resolve(process.cwd(), "client/src/pages/Settings.tsx"), "utf8");
 const serverSource = readFileSync(resolve(process.cwd(), "server/bulkSender.ts"), "utf8");
 const schemaSource = readFileSync(resolve(process.cwd(), "drizzle/schema.ts"), "utf8");
+const presetDocsSource = readFileSync(resolve(process.cwd(), "docs/bulk-sender-smtp-presets.md"), "utf8");
+const mailjetResearchSource = readFileSync(resolve(process.cwd(), "docs/mailjet-smtp-research.md"), "utf8");
+const supportedLocales = ["en", "es", "fr", "it", "th", "zh-CN", "zh-TW"] as const;
 
 describe("Bulk Sender provider presets", () => {
-  it("ships only the 12 source-backed providers and omits the incomplete Mailjet entry", () => {
-    expect(BULK_SENDER_PROVIDER_IDS).toHaveLength(12);
+  it("ships all 13 source-backed providers, including Mailjet", () => {
+    expect(BULK_SENDER_PROVIDER_IDS).toHaveLength(13);
     expect(Object.keys(BULK_SENDER_PRESETS)).toEqual([...BULK_SENDER_PROVIDER_IDS]);
-    expect(BULK_SENDER_PROVIDER_IDS).not.toContain("mailjet");
+    expect(BULK_SENDER_PROVIDER_IDS).toContain("mailjet");
   });
 
   it("gives every provider safe credential guidance and an official HTTPS setup link", () => {
@@ -47,6 +51,27 @@ describe("Bulk Sender provider presets", () => {
     expect(resolveBulkSenderUsername("postmark", "ignored", "server-token")).toBe("server-token");
     expect(resolveBulkSenderUsername("amazon_ses", " ses-user ", "secret")).toBe("ses-user");
   });
+
+  it("uses Mailjet's official relay, STARTTLS submission port, and API-key credentials", () => {
+    const mailjet = BULK_SENDER_PRESETS.mailjet;
+    expect(mailjet.defaultHost).toBe("in-v3.mailjet.com");
+    expect(mailjet.defaultPort).toBe(587);
+    expect(mailjet.defaultSecurity).toBe("starttls");
+    expect(mailjet.usernameMode).toBe("user");
+    expect(mailjet.usernameLabel).toBe("Mailjet API key");
+    expect(mailjet.secretLabel).toBe("Mailjet Secret key");
+    expect(mailjet.secretHelp).toContain("Do not use your Mailjet account password");
+    expect(resolveBulkSenderUsername("mailjet", " public-api-key ", "secret-key")).toBe("public-api-key");
+  });
+
+  it("documents Mailjet using current official sources and no credential values", () => {
+    for (const source of [presetDocsSource, mailjetResearchSource]) {
+      expect(source).toContain("https://dev.mailjet.com/smtp-relay/configuration/");
+      expect(source).toContain("in-v3.mailjet.com");
+      expect(source).not.toMatch(/mj-[a-z0-9]{20,}/i);
+    }
+    expect(mailjetResearchSource).toContain("Senders and domains");
+  });
 });
 
 describe("Bulk Sender transport safeguards", () => {
@@ -63,6 +88,8 @@ describe("Bulk Sender transport safeguards", () => {
     expect(serverSource).not.toContain("transporter.sendMail");
     expect(serverSource).toContain("Authentication failed. Check the provider-specific username and secret.");
     expect(serverSource).not.toContain("message: error.message");
+    expect(serverSource).toContain('value.provider === "mailjet"');
+    expect(serverSource).toContain("!value.smtpUsername?.trim()");
   });
 
   it("encrypts the secret at rest and never returns it from the status procedure", () => {
@@ -99,5 +126,22 @@ describe("Bulk Sender Settings experience", () => {
     expect(settingsSource).toContain("legacy API mode");
     expect(settingsSource).not.toContain("status.apiKey");
     expect(settingsSource).not.toContain("status.secret");
+  });
+
+  it("localizes Mailjet labels and guidance in every catalog and synchronous fallback", () => {
+    expect(settingsSource).toContain('provider === "mailjet"');
+    expect(settingsSource).toContain("settings.bulkSender.providers.mailjet.secretHelp");
+    expect(settingsSource).toContain("fromEmailIsValid");
+
+    for (const locale of supportedLocales) {
+      const catalog = JSON.parse(readFileSync(resolve(process.cwd(), `client/public/locales/${locale}/translation.json`), "utf8"));
+      const maintained = catalog.settings.bulkSender.providers.mailjet;
+      const fallback = (((directKeyFallbackResources[locale] as Record<string, unknown>).settings as Record<string, unknown>).bulkSender as Record<string, unknown>);
+      const fallbackMailjet = ((fallback.providers as Record<string, unknown>).mailjet as Record<string, unknown>);
+      expect(maintained.label).toBe("Mailjet");
+      expect(maintained.secretHelp.length).toBeGreaterThan(20);
+      expect(maintained.fromEmailHelp.length).toBeGreaterThan(10);
+      expect(fallbackMailjet).toEqual(maintained);
+    }
   });
 });

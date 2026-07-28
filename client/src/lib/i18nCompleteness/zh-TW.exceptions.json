@@ -1,9 +1,9 @@
 {
   "locale": "zh-TW",
   "audit": "Exhaustive English-identical customer-copy review",
-  "sourceCandidateCount": 60,
+  "sourceCandidateCount": 61,
   "translatedCount": 34,
-  "exceptionCount": 26,
+  "exceptionCount": 27,
   "minimumTranslationConfidence": 0.95,
   "translatedEntryFormat": "<namespace>:<key>",
   "exceptionEntryFormat": "<namespace>:<key>|<category>",
@@ -74,6 +74,7 @@
     "translation:referralRewards.whatsApp|brand_or_product",
     "translation:adminRevenueControls.grants.lookupPlaceholder|url_email_or_template",
     "translation:passkeys.signIn.emailPlaceholder|url_email_or_template",
+    "translation:settings.bulkSender.providers.mailjet.label|brand_or_product",
     "cancellation:brand|brand_or_product"
   ]
 }

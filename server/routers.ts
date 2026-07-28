@@ -44,6 +44,14 @@ import { fingerprintAuthValue } from "./authOperations";
 
 import { sendMailViaSmtp } from "./smtp";
 import { buildReviewRequestEmail, buildReviewRequestText } from "./emailTemplates";
+import {
+  buildSafePlatformLinks,
+  buildYelpSearchInstruction,
+  MAX_REVIEW_REQUEST_BODY_CHARS,
+  MAX_REVIEW_REQUEST_SUBJECT_CHARS,
+  renderReviewRequestDraft,
+  wrapPlainTextReviewRequestHtml,
+} from "../shared/reviewRequestDraft";
 import { checkManualSearchEventRateLimit, checkOnboardingChecklistEventRateLimit, checkOnboardingFunnelInsightRateLimit } from "./rateLimiter";
 import { AdaptiveSendLimitError, getAdaptiveSendStatus } from "./adaptiveSendLimits";
 import {
@@ -2034,10 +2042,35 @@ export const appRouter = router({
           method: z.enum(["email", "sms", "both"]),
           templateId: z.number().int().optional(),
           platformId: z.number().int().optional(), // optional: specific review platform to link to
+          editedSubject: z.string()
+            .trim()
+            .min(1)
+            .max(MAX_REVIEW_REQUEST_SUBJECT_CHARS)
+            .refine((value) => !/[\r\n]/.test(value), "Email subject must stay on one line")
+            .optional(),
+          editedBody: z.string().trim().min(1).max(MAX_REVIEW_REQUEST_BODY_CHARS).optional(),
+          complianceConfirmed: z.boolean().optional(),
         })
+          .superRefine((value, ctx) => {
+            const hasEditedSubject = value.editedSubject !== undefined;
+            const hasEditedBody = value.editedBody !== undefined;
+            if (hasEditedSubject !== hasEditedBody) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: "Edited subject and body must be submitted together",
+              });
+            }
+            if (hasEditedSubject && value.complianceConfirmed !== true) {
+              ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ["complianceConfirmed"],
+                message: "Confirm the compliance checklist before sending edited copy",
+              });
+            }
+          })
       )
       .mutation(async ({ ctx, input }) => {
-           const profile = await getBusinessProfile(ctx.user.id);
+        const profile = await getBusinessProfile(ctx.user.id);
         if (!profile) throw new Error("Please complete your business profile first.");
         // Free-tier limit: 10 total sends, then subscription required
         await enforceFreeLimit(ctx.user.id, profile.tier);
@@ -2051,15 +2084,21 @@ export const appRouter = router({
         // Resolve review URL: use selected platform, else fall back to profile.reviewLink
         let reviewUrl = profile.reviewLink ?? "";
         let isYelpSingle = false;
+        const userPlatforms = await listReviewPlatforms(ctx.user.id);
         if (input.platformId) {
           // Find the specific platform by ID
-          const platforms = await listReviewPlatforms(ctx.user.id);
-          const chosen = platforms.find((p) => p.id === input.platformId);
-          if (chosen) { reviewUrl = chosen.url; isYelpSingle = chosen.platform === "yelp"; }
+          const chosen = userPlatforms.find((p) => p.id === input.platformId);
+          if (chosen) {
+            isYelpSingle = chosen.platform === "yelp";
+            reviewUrl = isYelpSingle ? buildYelpSearchInstruction(profile.businessName) : chosen.url;
+          }
         } else {
           // Use default platform if available
-          const defaultPlatform = await getDefaultReviewPlatform(ctx.user.id);
-          if (defaultPlatform) { reviewUrl = defaultPlatform.url; isYelpSingle = defaultPlatform.platform === "yelp"; }
+          const defaultPlatform = userPlatforms.find((p) => p.isDefault === 1) ?? userPlatforms[0] ?? null;
+          if (defaultPlatform) {
+            isYelpSingle = defaultPlatform.platform === "yelp";
+            reviewUrl = isYelpSingle ? buildYelpSearchInstruction(profile.businessName) : defaultPlatform.url;
+          }
         }
 
         // Resolve template: use specified templateId, else fall back to user's default template
@@ -2070,29 +2109,20 @@ export const appRouter = router({
         const resolvedTemplate = input.templateId
           ? allTemplates.find((t) => t.id === input.templateId) ?? null
           : await getDefaultTemplate(ctx.user.id);
+        const platformLinksList = buildSafePlatformLinks(userPlatforms, profile.businessName, reviewUrl);
+        const renderDraft = (value: string) => renderReviewRequestDraft(value, {
+          customerName: input.customerName,
+          businessName: profile.businessName,
+          reviewValue: reviewUrl,
+          platformLinks: platformLinksList,
+        });
 
-        if (resolvedTemplate) {
-          // Build {{platformLinks}} for this user
-          const wooUserPlatforms = await listReviewPlatforms(ctx.user.id);
-          const wooPlatformLinksList = wooUserPlatforms.length > 0
-            ? wooUserPlatforms.map((p) => {
-                const label = p.label || (PLATFORM_LABELS as Record<string, string>)[p.platform] || p.platform;
-                // Yelp: stored value is plain-text search instruction, not a URL — render as-is (no link)
-                if (p.platform === "yelp") return `- ${label}: ${p.url}`;
-                return `- ${label}: ${p.url}`;
-              }).join("\n")
-            : `- Leave a review: ${reviewUrl}`;
-          const replacePlaceholders = (text: string) =>
-            text
-              .replace(/\{\{customer_name\}\}/g, input.customerName)
-              .replace(/\{\{customerName\}\}/g, input.customerName)
-              .replace(/\{\{business_name\}\}/g, profile.businessName)
-              .replace(/\{\{businessName\}\}/g, profile.businessName)
-              .replace(/\{\{review_link\}\}/g, reviewUrl)
-              .replace(/\{\{reviewLink\}\}/g, reviewUrl)
-              .replace(/\{\{platformLinks\}\}/g, wooPlatformLinksList);
-          subject = replacePlaceholders(resolvedTemplate.subject);
-          htmlBody = `<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">${replacePlaceholders(resolvedTemplate.body).replace(/\n/g, "<br>")}</div>`;
+        if (input.editedSubject !== undefined && input.editedBody !== undefined) {
+          subject = renderDraft(input.editedSubject).replace(/\s*[\r\n]+\s*/g, " ");
+          htmlBody = wrapPlainTextReviewRequestHtml(renderDraft(input.editedBody));
+        } else if (resolvedTemplate) {
+          subject = renderDraft(resolvedTemplate.subject).replace(/\s*[\r\n]+\s*/g, " ");
+          htmlBody = wrapPlainTextReviewRequestHtml(renderDraft(resolvedTemplate.body));
         } else {
           subject = `${profile.businessName} would love your feedback!`;
           htmlBody = buildReviewRequestEmail({
