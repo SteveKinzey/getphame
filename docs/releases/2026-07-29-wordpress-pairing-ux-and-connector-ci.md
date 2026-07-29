@@ -32,7 +32,7 @@ Checkpoint `cdc49f76` captured the initial validated application tree and auto-p
 
 PR 44 review identified two valid presentation defects in the recovery panel: the amber unavailable state reused the rose error icon treatment, and its retry control lacked an explicit focus-visible ring. Both were corrected with focused regression coverage. The remaining review comment proposed a `RATE_LIMITED` branch on the authenticated approval page; the application approval contract cannot emit that code, because per-IP throttling belongs to the connector's public pairing-start flow. No unsupported frontend-only state was added.
 
-The reviewed replacement tree passed the focused Developer Integrations regression (8 tests), the complete Vitest suite (133 files and 788 tests passed; 6 skipped), strict TypeScript, the production-only high-severity dependency audit, and the production build. Its replacement checkpoint identifier will be appended after creation.
+The reviewed replacement tree passed the focused Developer Integrations regression (8 tests), the complete Vitest suite (133 files and 788 tests passed; 6 skipped), strict TypeScript, the production-only high-severity dependency audit, and the production build. It was saved and auto-published as checkpoint `16e7594a`; its exact tree is `8a02c83fd12003f49dd301e7e3b4169e0369fb97`.
 
 ## Connector PR 2 GitHub Evidence
 
@@ -40,4 +40,10 @@ The transient-expiry, immediate-cleanup, stale-control reset, rate-limit warning
 
 Connector PR 2 remains open and unmerged as required. Its head is `383208daf545b8969d8f8657dda098a55d7aa5dc`, it has zero unresolved review threads, and the locally executed PHP gate remains 23 PHPUnit tests with 139 assertions plus a clean PHP_CodeSniffer run. The current GitHub integration can read the pull request's aggregate clean state but is not authorized to read the private repository's named check-run details; no unavailable check detail is represented as direct evidence.
 
-Final protected-main application merge and exact-tree parity will be appended before release closeout.
+## Protected GitHub Release
+
+Application PR [#44](https://github.com/SteveKinzey/getphame/pull/44) was updated normally to reviewed replacement commit `52db7870b0d45307da785864a2c90763bd2c4a53`. The two valid presentation conversations were replied to and resolved after their fixes reached the reviewed branch. The rate-limit conversation was resolved with contract-level evidence that the authenticated approval query cannot emit `RATE_LIMITED` and that the public connector pairing-start flow owns the `429` state.
+
+The required `Validate application quality` gate remained missing until the established post-review empty trigger commit `527ff1d90a252c1a369ac194e87a89e477492169` was pushed without changing the tree. GitHub then reported PR 44 as `CLEAN`. The pull request merged through protected `main` at `0d1a0a8b584c048dc080c5aaf2254967211d6b1a` on 2026-07-29 at 07:06:03 UTC with zero unresolved review conversations.
+
+The merge commit tree and protected remote `main` tree both equal `8a02c83fd12003f49dd301e7e3b4169e0369fb97`, exactly matching managed checkpoint `16e7594a`. This release record and completed ledger are administrative closeout changes and will be captured in a final evidence-only checkpoint and synchronized through a separate protected pull request.
