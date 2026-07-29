@@ -40,6 +40,11 @@ import {
   requestDeveloperSendScope,
   reviewDeveloperSendScope,
 } from "./developerApiEnrollment";
+import {
+  approveWordPressPairing,
+  getWordPressPairingForApproval,
+  WordPressPairingError,
+} from "./wordpressPairing";
 import { fingerprintAuthValue } from "./authOperations";
 
 import { sendMailViaSmtp } from "./smtp";
@@ -3868,6 +3873,35 @@ export const appRouter = router({
       const { url } = await storageGet("connectors/get-phame-connector.zip");
       return { url, fileName: "get-phame-connector.zip" };
     }),
+  }),
+
+  /** Customer-approved binding between one WordPress installation and one Get Phame account. */
+  wordpressPairing: router({
+    get: protectedProcedure
+      .input(z.object({ pairingId: z.string().trim().regex(/^wpb_[A-Za-z0-9_-]{12,}$/).max(64) }))
+      .query(async ({ input }) => {
+        const pairing = await getWordPressPairingForApproval(input.pairingId);
+        if (!pairing) throw new TRPCError({ code: "NOT_FOUND", message: "This WordPress connection request was not found." });
+        return pairing;
+      }),
+    approve: paidProcedure
+      .input(z.object({ pairingId: z.string().trim().regex(/^wpb_[A-Za-z0-9_-]{12,}$/).max(64) }))
+      .mutation(async ({ ctx, input }) => {
+        try {
+          return await approveWordPressPairing({ userId: ctx.user.id, pairingId: input.pairingId });
+        } catch (error) {
+          if (error instanceof WordPressPairingError) {
+            throw new TRPCError({
+              code: error.code === "NOT_FOUND" ? "NOT_FOUND" : error.code === "ALREADY_APPROVED" ? "CONFLICT" : "BAD_REQUEST",
+              message: error.message,
+            });
+          }
+          throw new TRPCError({
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Unable to authorize this WordPress connection.",
+          });
+        }
+      }),
   }),
 
   /** Per-user API keys for the public REST API (contacts import, etc.) */

@@ -78,8 +78,13 @@ function statusClasses(status: string) {
 
 export default function DeveloperIntegrationsPage() {
   const { t } = useTranslation();
-  const [, navigate] = useLocation();
+  const [location, navigate] = useLocation();
   const utils = trpc.useUtils();
+  const wordpressPairingId = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    const value = new URLSearchParams(window.location.search).get("wordpress_pairing");
+    return value?.startsWith("wpb_") ? value : null;
+  }, [location]);
   const [label, setLabel] = useState("Website form");
   const [scopes, setScopes] = useState<DeveloperScope[]>(["contacts:write"]);
   const [expiryDays, setExpiryDays] = useState("never");
@@ -90,6 +95,17 @@ export default function DeveloperIntegrationsPage() {
   const keyQuery = trpc.apiKey.list.useQuery();
   const importQuery = trpc.apiKey.recentImports.useQuery({ limit: 25 });
   const enrollmentQuery = trpc.apiKey.enrollment.useQuery();
+  const wordpressPairingQuery = trpc.wordpressPairing.get.useQuery(
+    { pairingId: wordpressPairingId ?? "wpb_unavailable" },
+    { enabled: Boolean(wordpressPairingId), retry: false },
+  );
+  const approveWordPressPairing = trpc.wordpressPairing.approve.useMutation({
+    onSuccess: async () => {
+      await wordpressPairingQuery.refetch();
+      toast.success("WordPress connected. Return to your WordPress dashboard while the plugin completes setup.");
+    },
+    onError: (error) => toast.error(error.message),
+  });
 
   const createKey = trpc.apiKey.generate.useMutation({
     onSuccess: async (data) => {
@@ -193,6 +209,16 @@ export default function DeveloperIntegrationsPage() {
     else revokeKey.mutate({ id: pendingAction.id });
   };
 
+  const approvePendingWordPressPairing = () => {
+    if (!wordpressPairingId) return;
+    if (!enrollmentQuery.data?.termsAccepted) {
+      document.getElementById("developer-enrollment")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      toast.error("Accept the API Terms before connecting WordPress.");
+      return;
+    }
+    approveWordPressPairing.mutate({ pairingId: wordpressPairingId });
+  };
+
   return (
     <div className="min-h-screen pb-36 rr-bg-cream-warm" data-testid="developer-integrations-page">
       <header className="rr-bg-navy px-5 pb-8 pt-10 text-white sm:px-7">
@@ -262,6 +288,47 @@ export default function DeveloperIntegrationsPage() {
             </div>
           </div>
         </section>
+
+        {wordpressPairingId && (
+          <section aria-labelledby="wordpress-pairing-title" className="rounded-3xl border border-[oklch(0.78_0.13_80)] bg-[oklch(0.98_0.025_80)] p-5 shadow-sm sm:p-6" data-testid="wordpress-pairing-approval">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="flex gap-3">
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy rr-text-gold"><ShieldCheck size={20} aria-hidden="true" /></span>
+                <div>
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-amber-800">WordPress connection request</p>
+                  <h2 id="wordpress-pairing-title" className="mt-1 text-xl font-semibold rr-text-navy">Authorize this WordPress site</h2>
+                  {wordpressPairingQuery.isLoading ? (
+                    <p className="mt-2 flex items-center gap-2 text-sm rr-text-navy-muted"><Loader2 size={15} className="animate-spin" aria-hidden="true" />Loading connection details…</p>
+                  ) : wordpressPairingQuery.isError ? (
+                    <p className="mt-2 text-sm leading-6 text-rose-800">{wordpressPairingQuery.error.message}</p>
+                  ) : (
+                    <p className="mt-2 max-w-2xl text-sm leading-6 rr-text-navy-muted">
+                      {wordpressPairingQuery.data?.status === "approved" || wordpressPairingQuery.data?.status === "claimed"
+                        ? <>This site is already authorized. Return to WordPress to finish the connection.</>
+                        : wordpressPairingQuery.data?.status === "expired"
+                          ? <>This connection request expired. Return to WordPress and start a new connection request.</>
+                          : <>Authorize <strong className="rr-text-navy">{wordpressPairingQuery.data?.siteLabel ?? "this WordPress site"}</strong> ({wordpressPairingQuery.data?.siteHost}) to import customer contacts into this Get Phame account. A dedicated, least-privilege integration key will be issued automatically.</>}
+                    </p>
+                  )}
+                </div>
+              </div>
+              {wordpressPairingQuery.data?.status === "approved" || wordpressPairingQuery.data?.status === "claimed" ? (
+                <span className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-100 px-4 text-sm font-black text-emerald-900"><Check size={16} aria-hidden="true" />Connected</span>
+              ) : (
+                <button
+                  type="button"
+                  onClick={approvePendingWordPressPairing}
+                  disabled={wordpressPairingQuery.isLoading || wordpressPairingQuery.isError || wordpressPairingQuery.data?.status === "expired" || approveWordPressPairing.isPending}
+                  className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black rr-bg-navy rr-text-gold transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.65_0.16_80)] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {approveWordPressPairing.isPending && <Loader2 size={16} className="animate-spin" aria-hidden="true" />}
+                  {wordpressPairingQuery.data?.status === "expired" ? "Connection expired" : "Connect this site"}
+                </button>
+              )}
+            </div>
+            <p className="mt-4 border-t border-amber-200 pt-3 text-xs leading-5 text-amber-900">{wordpressPairingQuery.data?.status === "expired" ? "Start a new connection in WordPress. Get Phame never receives your WordPress administrator credentials." : "This request expires in 15 minutes. Get Phame never receives your WordPress administrator credentials."}</p>
+          </section>
+        )}
 
         <SourceSetupGuide endpoint={endpoint} />
 
