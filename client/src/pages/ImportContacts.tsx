@@ -21,11 +21,18 @@ import { useContacts } from "@/hooks/useContacts";
 import ContactPickerModal from "@/components/ContactPickerModal";
 import { toast } from "sonner";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { useTranslation } from "react-i18next";
+import {
+  summarizeContactImportIssues,
+  type ContactImportErrorSummary,
+  type ContactImportIssue,
+} from "@shared/contactImportDiagnostics";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type RawRow = Record<string, string>;
-type MappedRow = { name: string; email: string; phone?: string; notes?: string };
+type MappedRow = { name: string; email: string; phone?: string; notes?: string; rowNumber?: number };
 type ColumnKey = "name" | "email" | "phone" | "notes" | "skip";
+type ImportResult = { imported: number; skipped: number; errorSummary: ContactImportErrorSummary };
 
 const COLUMN_LABELS: Record<ColumnKey, string> = {
   name: "Full Name",
@@ -34,6 +41,72 @@ const COLUMN_LABELS: Record<ColumnKey, string> = {
   notes: "Notes (optional)",
   skip: "— Skip this column —",
 };
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+type CsvDiagnosticsLabels = {
+  summary: (count: number) => string;
+  errorList: string;
+  missingEmail: string;
+  invalidEmail: string;
+  duplicateEmail: string;
+  rows: (rows: string) => string;
+  moreRows: string;
+  privacyNote: string;
+};
+
+function CsvErrorSummary({
+  summary,
+  title,
+  titleId,
+  labels,
+}: {
+  summary: ContactImportErrorSummary;
+  title: string;
+  titleId: string;
+  labels: CsvDiagnosticsLabels;
+}) {
+  if (summary.totalRejected === 0) return null;
+
+  const reasonLabel: Record<string, string> = {
+    missing_email: labels.missingEmail,
+    invalid_email: labels.invalidEmail,
+    duplicate_email: labels.duplicateEmail,
+  };
+
+  return (
+    <section
+      className="rounded-2xl bg-white p-4 shadow-sm"
+      style={{ border: "1px solid oklch(0.88 0.06 42)" }}
+      aria-labelledby={titleId}
+      role="status"
+    >
+      <div className="flex items-start gap-2">
+        <AlertCircle size={17} className="mt-0.5 shrink-0" style={{ color: "oklch(0.56 0.16 38)" }} aria-hidden="true" />
+        <div>
+          <h3 id={titleId} className="text-sm font-black rr-text-navy">{title}</h3>
+          <p className="mt-0.5 text-xs font-bold rr-text-navy-mid">{labels.summary(summary.totalRejected)}</p>
+        </div>
+      </div>
+      <ul className="mt-3 space-y-2" aria-label={labels.errorList}>
+        {summary.reasons.map((item) => (
+          <li key={item.reason} className="rounded-xl px-3 py-2" style={{ background: "oklch(0.98 0.015 65)" }}>
+            <p className="text-xs font-black rr-text-navy">
+              {item.count} {reasonLabel[item.reason] ?? item.reason}
+            </p>
+            {item.rowNumbers.length > 0 && (
+              <p className="mt-0.5 text-[11px] font-semibold rr-text-navy-mid">
+                {labels.rows(item.rowNumbers.join(", "))}
+                {item.hasMoreRows && ` ${labels.moreRows}`}
+              </p>
+            )}
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 text-[11px] font-semibold rr-text-navy-muted">{labels.privacyNote}</p>
+    </section>
+  );
+}
 
 // ── CSV parser (no external dep) ──────────────────────────────────────────────
 function parseCSV(text: string): { headers: string[]; rows: RawRow[] } {
@@ -114,6 +187,7 @@ function downloadTemplate() {
 const STEPS = ["Upload", "Map Columns", "Preview", "Done"];
 
 export default function ImportContactsPage() {
+  const { t } = useTranslation();
   const [, navigate] = useLocation();
   const utils = trpc.useUtils();
   const { track } = useAnalytics();
@@ -125,11 +199,22 @@ export default function ImportContactsPage() {
   const [rawRows, setRawRows] = useState<RawRow[]>([]);
   const [mapping, setMapping] = useState<Record<string, ColumnKey>>({});
   const [mappedRows, setMappedRows] = useState<MappedRow[]>([]);
-  const [importResult, setImportResult] = useState<{ imported: number; skipped: number } | null>(null);
+  const [importResult, setImportResult] = useState<ImportResult | null>(null);
+  const [preImportSummary, setPreImportSummary] = useState<ContactImportErrorSummary>({ totalRejected: 0, reasons: [] });
   const fileRef = useRef<HTMLInputElement>(null);
 
   const [contactPickerOpen, setContactPickerOpen] = useState(false);
   const { isNative } = useContacts();
+  const csvLabels: CsvDiagnosticsLabels = {
+    summary: (count) => t("csvDiagnostics.summary", { count, defaultValue: "{{count}} rejected row(s) need attention." }),
+    errorList: t("csvDiagnostics.errorList", { defaultValue: "CSV import errors" }),
+    missingEmail: t("csvDiagnostics.missingEmail", { defaultValue: "Missing email" }),
+    invalidEmail: t("csvDiagnostics.invalidEmail", { defaultValue: "Invalid email" }),
+    duplicateEmail: t("csvDiagnostics.duplicateEmail", { defaultValue: "Duplicate email" }),
+    rows: (rows) => t("csvDiagnostics.rows", { rows, defaultValue: "CSV rows: {{rows}}" }),
+    moreRows: t("csvDiagnostics.moreRows", { defaultValue: "and more" }),
+    privacyNote: t("csvDiagnostics.privacyNote", { defaultValue: "Only row numbers are shown here; client details stay in your CSV file." }),
+  };
 
   const importMutation = trpc.contacts.importCSV.useMutation({
     onSuccess: (result) => {
@@ -161,6 +246,8 @@ export default function ImportContactsPage() {
       setHeaders(h);
       setRawRows(r);
       setMapping(autoDetect(h));
+      setPreImportSummary({ totalRejected: 0, reasons: [] });
+      setImportResult(null);
       setStep(1);
     };
     reader.readAsText(file);
@@ -174,36 +261,45 @@ export default function ImportContactsPage() {
   }, [handleFile]);
 
   // ── Build mapped rows ────────────────────────────────────────────────────────
-  const buildMappedRows = (): MappedRow[] => {
+  const buildMappedRows = (): { rows: MappedRow[]; errorSummary: ContactImportErrorSummary } => {
     const nameCol = Object.entries(mapping).find(([, v]) => v === "name")?.[0];
     const emailCol = Object.entries(mapping).find(([, v]) => v === "email")?.[0];
     const phoneCol = Object.entries(mapping).find(([, v]) => v === "phone")?.[0];
     const notesCol = Object.entries(mapping).find(([, v]) => v === "notes")?.[0];
 
-    if (!emailCol) return [];
+    if (!emailCol) return { rows: [], errorSummary: { totalRejected: 0, reasons: [] } };
 
-    return rawRows
-      .map((row) => {
+    const issues: ContactImportIssue[] = [];
+    const rows = rawRows
+      .map((row, index) => {
+        const rowNumber = index + 2;
         const email = row[emailCol]?.trim() ?? "";
         const name = nameCol ? (row[nameCol]?.trim() ?? "") : email.split("@")[0];
-        if (!email || !email.includes("@")) return null;
+        if (!email) {
+          issues.push({ reason: "missing_email", rowNumber });
+          return null;
+        }
+        if (!EMAIL_PATTERN.test(email)) {
+          issues.push({ reason: "invalid_email", rowNumber });
+          return null;
+        }
         return {
           name: name || email.split("@")[0],
           email,
           phone: phoneCol ? row[phoneCol]?.trim() || undefined : undefined,
           notes: notesCol ? row[notesCol]?.trim() || undefined : undefined,
+          rowNumber,
         } as MappedRow;
       })
       .filter(Boolean) as MappedRow[];
+
+    return { rows, errorSummary: summarizeContactImportIssues(issues) };
   };
 
   const goToPreview = () => {
-    const rows = buildMappedRows();
-    if (rows.length === 0) {
-      toast.error("Make sure you've mapped the Email column.");
-      return;
-    }
+    const { rows, errorSummary } = buildMappedRows();
     setMappedRows(rows);
+    setPreImportSummary(errorSummary);
     setStep(2);
   };
 
@@ -420,11 +516,18 @@ export default function ImportContactsPage() {
                 <span
                   className="text-xs font-bold px-2 py-0.5 rounded-full rr-bg-green-pale" style={{ color: "oklch(0.45 0.12 145)" }}
                 >
-                  {mappedRows.length} contacts
+                  {mappedRows.length} valid contact{mappedRows.length !== 1 ? "s" : ""}
                 </span>
               </div>
 
-              <div className="flex flex-col gap-0 max-h-72 overflow-y-auto">
+              <CsvErrorSummary
+                summary={preImportSummary}
+                title={t("csvDiagnostics.preImportTitle", { defaultValue: "Fix these rows before importing" })}
+                titleId="csv-pre-import-errors-title"
+                labels={csvLabels}
+              />
+
+              {mappedRows.length > 0 ? <div className="flex flex-col gap-0 max-h-72 overflow-y-auto">
                 {mappedRows.slice(0, 100).map((row, idx) => (
                   <div
                     key={idx}
@@ -452,7 +555,11 @@ export default function ImportContactsPage() {
                     …and {mappedRows.length - 100} more
                   </p>
                 )}
-              </div>
+              </div> : (
+                <p className="py-6 text-center text-sm font-bold rr-text-navy-mid">
+                  {t("csvDiagnostics.noValidRows", { defaultValue: "No valid contacts are ready to import yet. Correct the listed rows, then upload the file again." })}
+                </p>
+              )}
             </div>
 
             <div
@@ -475,7 +582,7 @@ export default function ImportContactsPage() {
               </button>
               <button
                 onClick={confirmImport}
-                disabled={importMutation.isPending}
+                disabled={importMutation.isPending || mappedRows.length === 0}
                 className="flex-1 py-3 rounded-xl text-sm font-black flex items-center justify-center gap-2 disabled:opacity-60 rr-bg-navy rr-text-gold"
               >
                 {importMutation.isPending ? (
@@ -506,6 +613,21 @@ export default function ImportContactsPage() {
               </p>
             </div>
 
+            <div className="w-full flex flex-col gap-3">
+              <CsvErrorSummary
+                summary={preImportSummary}
+                title={t("csvDiagnostics.preImportTitle", { defaultValue: "Rows to correct in your CSV" })}
+                titleId="csv-client-errors-title"
+                labels={csvLabels}
+              />
+              <CsvErrorSummary
+                summary={importResult.errorSummary}
+                title={t("csvDiagnostics.importResultTitle", { defaultValue: "Rows skipped during import" })}
+                titleId="csv-server-errors-title"
+                labels={csvLabels}
+              />
+            </div>
+
             <div className="w-full flex flex-col gap-3 mt-4">
               <button
                 onClick={() => navigate("/contacts")}
@@ -514,7 +636,15 @@ export default function ImportContactsPage() {
                 <Users size={16} /> View Contacts & Send Requests
               </button>
               <button
-                onClick={() => { setStep(0); setFileName(""); setHeaders([]); setRawRows([]); setMappedRows([]); setImportResult(null); }}
+                onClick={() => {
+                  setStep(0);
+                  setFileName("");
+                  setHeaders([]);
+                  setRawRows([]);
+                  setMappedRows([]);
+                  setPreImportSummary({ totalRejected: 0, reasons: [] });
+                  setImportResult(null);
+                }}
                 className="w-full py-3 rounded-2xl text-sm font-black"
                 style={{ background: "oklch(0.93 0.01 260)", color: "oklch(0.35 0.05 260)" }}
               >
@@ -533,6 +663,7 @@ export default function ImportContactsPage() {
       onImport={(contacts) => {
         // Map native contacts directly into the importCSV mutation format
         const rows = contacts.map((c) => ({ name: c.name, email: c.email }));
+        setPreImportSummary({ totalRejected: 0, reasons: [] });
         importMutation.mutate({ rows });
         setContactPickerOpen(false);
       }}

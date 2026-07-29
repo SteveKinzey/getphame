@@ -1,4 +1,23 @@
 {
+  "activityTrend": {
+    "exportCsvAria": "Esporta i dati sull’attività come CSV",
+    "exportPngAria": "Esporta il grafico dell’attività come PNG",
+    "exportUnavailable": "Non ci sono ancora dati del grafico da esportare.",
+    "exported": "Andamento dell’attività esportato."
+  },
+  "csvDiagnostics": {
+    "preImportTitle": "Correggi queste righe prima dell’importazione",
+    "importResultTitle": "Righe saltate durante l’importazione",
+    "summary": "{{count}} riga/e rifiutata/e richiedono attenzione.",
+    "errorList": "Errori di importazione CSV",
+    "missingEmail": "Email mancante",
+    "invalidEmail": "Email non valida",
+    "duplicateEmail": "Email duplicata",
+    "rows": "Righe CSV: {{rows}}",
+    "moreRows": "e altre",
+    "privacyNote": "Qui vengono mostrati solo i numeri di riga; i dati dei clienti restano nel tuo file CSV.",
+    "noValidRows": "Non ci sono ancora contatti validi pronti per l’importazione. Correggi le righe indicate, poi carica di nuovo il file."
+  },
   "seo": {
     "title": "Get Phame — Richieste di recensione personali via email",
     "keywords": "richieste di recensioni, recensioni Google, ottenere più recensioni, automazione recensioni, recensioni piccole imprese, inviare email di richiesta recensione, recensioni WooCommerce, recensioni Stripe",
@@ -1653,7 +1672,25 @@
     "finalPreviewDescription": "Controlla il destinatario e il messaggio esatto prima dell’invio.",
     "to": "A:",
     "backToEdit": "Torna alla modifica",
-    "confirmAndSend": "Conferma e invia"
+    "confirmAndSend": "Conferma e invia",
+    "aiToneLabel": "Regola il tono con l’IA",
+    "aiToneTitle": "Regolazione del tono con IA",
+    "aiToneWarmer": "Più caldo",
+    "aiToneDescription": "Scegli un tono e Get Phame regolerà la bozza mantenendo protetti i dettagli della richiesta.",
+    "aiToneSelectLabel": "Tono del messaggio",
+    "aiToneWarm": "Caldo e amichevole",
+    "aiToneProfessional": "Professionale e curato",
+    "aiToneConcise": "Chiaro e conciso",
+    "aiToneAdjust": "Regola il tono",
+    "aiToneAdjusting": "Regolazione del tono…",
+    "aiToneWorking": "Regolazione",
+    "aiToneSuccess": "Bozza aggiornata. Rivedi le modifiche prima dell’invio.",
+    "toneApplied": "Tono applicato. Rivedi il messaggio prima dell’invio.",
+    "applyAiTone": "Applica regolazione del tono con IA",
+    "unlockAiTone": "Sblocca regolazione del tono con IA",
+    "aiToneUnavailable": "L’IA non ha potuto regolare questa bozza. Riprova o modifica manualmente.",
+    "aiToneUpgrade": "La regolazione del tono con IA è disponibile con Get Phame Pro.",
+    "unlock": "Sblocca"
   },
   "page": {
     "title": "Impostazioni",

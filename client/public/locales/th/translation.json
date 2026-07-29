@@ -1,4 +1,23 @@
 {
+  "activityTrend": {
+    "exportCsvAria": "ส่งออกข้อมูลกิจกรรมเป็น CSV",
+    "exportPngAria": "ส่งออกแผนภูมิกิจกรรมเป็น PNG",
+    "exportUnavailable": "ยังไม่มีข้อมูลกิจกรรมในแผนภูมิสำหรับส่งออก",
+    "exported": "ส่งออกแนวโน้มกิจกรรมแล้ว"
+  },
+  "csvDiagnostics": {
+    "preImportTitle": "แก้ไขแถวเหล่านี้ก่อนนำเข้า",
+    "importResultTitle": "แถวที่ข้ามระหว่างการนำเข้า",
+    "summary": "มี {{count}} แถวที่ถูกปฏิเสธและต้องตรวจสอบ",
+    "errorList": "ข้อผิดพลาดในการนำเข้า CSV",
+    "missingEmail": "ไม่มีอีเมล",
+    "invalidEmail": "อีเมลไม่ถูกต้อง",
+    "duplicateEmail": "อีเมลซ้ำ",
+    "rows": "แถว CSV: {{rows}}",
+    "moreRows": "และอื่น ๆ",
+    "privacyNote": "ที่นี่แสดงเฉพาะหมายเลขแถว ข้อมูลลูกค้ายังคงอยู่ในไฟล์ CSV ของคุณ",
+    "noValidRows": "ยังไม่มีรายชื่อติดต่อที่ถูกต้องพร้อมนำเข้า แก้ไขแถวที่ระบุแล้วอัปโหลดไฟล์อีกครั้ง"
+  },
   "seo": {
     "title": "Get Phame — คำขอรีวิวส่วนบุคคลทางอีเมล",
     "keywords": "ขอรีวิว, รีวิว Google, ได้รีวิวเพิ่ม, ระบบรีวิวอัตโนมัติ, รีวิวสำหรับธุรกิจขนาดเล็ก, ส่งอีเมลขอรีวิว, รีวิว WooCommerce, รีวิว Stripe",
@@ -357,7 +376,25 @@
     "finalPreviewDescription": "ตรวจสอบผู้รับและข้อความทั้งหมดก่อนส่ง",
     "to": "ถึง:",
     "backToEdit": "กลับไปแก้ไข",
-    "confirmAndSend": "ยืนยันและส่ง"
+    "confirmAndSend": "ยืนยันและส่ง",
+    "aiToneLabel": "ปรับโทนด้วย AI",
+    "aiToneTitle": "การปรับโทนด้วย AI",
+    "aiToneWarmer": "อบอุ่นขึ้น",
+    "aiToneDescription": "เลือกโทน แล้ว Get Phame จะปรับร่างข้อความโดยยังคงปกป้องรายละเอียดคำขอไว้",
+    "aiToneSelectLabel": "โทนของข้อความ",
+    "aiToneWarm": "อบอุ่นและเป็นมิตร",
+    "aiToneProfessional": "มืออาชีพและเรียบร้อย",
+    "aiToneConcise": "ชัดเจนและกระชับ",
+    "aiToneAdjust": "ปรับโทน",
+    "aiToneAdjusting": "กำลังปรับโทน…",
+    "aiToneWorking": "กำลังปรับ",
+    "aiToneSuccess": "อัปเดตร่างข้อความแล้ว โปรดตรวจสอบการเปลี่ยนแปลงก่อนส่ง",
+    "toneApplied": "ปรับโทนแล้ว โปรดตรวจสอบข้อความก่อนส่ง",
+    "applyAiTone": "ใช้การปรับโทนด้วย AI",
+    "unlockAiTone": "ปลดล็อกการปรับโทนด้วย AI",
+    "aiToneUnavailable": "AI ไม่สามารถปรับร่างข้อความนี้ได้ โปรดลองอีกครั้งหรือแก้ไขด้วยตนเอง",
+    "aiToneUpgrade": "การปรับโทนด้วย AI พร้อมใช้งานใน Get Phame Pro",
+    "unlock": "ปลดล็อก"
   },
   "page": {
     "title": "การตั้งค่า",

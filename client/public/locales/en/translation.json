@@ -1,4 +1,17 @@
 {
+  "csvDiagnostics": {
+    "preImportTitle": "Fix these rows before importing",
+    "importResultTitle": "Rows skipped during import",
+    "summary": "{{count}} rejected row(s) need attention.",
+    "errorList": "CSV import errors",
+    "missingEmail": "Missing email",
+    "invalidEmail": "Invalid email",
+    "duplicateEmail": "Duplicate email",
+    "rows": "CSV rows: {{rows}}",
+    "moreRows": "and more",
+    "privacyNote": "Only row numbers are shown here; client details stay in your CSV file.",
+    "noValidRows": "No valid contacts are ready to import yet. Correct the listed rows, then upload the file again."
+  },
   "seo": {
     "title": "Get Phame — Personal review request emails",
     "keywords": "review requests, Google reviews, get more reviews, review automation, small business reviews, send review request email, WooCommerce reviews, Stripe reviews",
@@ -318,7 +331,11 @@
     "clickRate": "Click rate",
     "thisWeek": "This Week",
     "priorWeek": "Prior Week",
-    "allTime": "All Time"
+    "allTime": "All Time",
+    "exportCsvAria": "Export activity trend data as CSV",
+    "exportPngAria": "Export activity trend chart as PNG",
+    "exportUnavailable": "No chart activity is available to export yet.",
+    "exported": "Activity trend exported."
   },
   "notifications": {
     "followUpReminderScheduled": "Follow-up reminder scheduled!",
@@ -409,7 +426,19 @@
     "finalPreviewDescription": "Check the recipient and exact message before sending.",
     "to": "To:",
     "backToEdit": "Back to edit",
-    "confirmAndSend": "Confirm & send"
+    "confirmAndSend": "Confirm & send",
+    "aiToneTitle": "AI tone adjustment",
+    "aiToneDescription": "Refines your draft while keeping placeholders and review links intact.",
+    "aiToneLabel": "Email tone",
+    "aiToneWarmer": "Warmer",
+    "aiToneProfessional": "Professional",
+    "aiToneConcise": "Concise",
+    "toneApplied": "Tone applied. Review the message before sending.",
+    "applyAiTone": "Apply AI tone adjustment",
+    "unlockAiTone": "Unlock AI tone adjustment",
+    "aiToneWorking": "Adjusting",
+    "adjust": "Adjust",
+    "unlock": "Unlock"
   },
   "page": {
     "title": "Settings",

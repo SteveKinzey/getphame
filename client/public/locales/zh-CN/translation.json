@@ -1,4 +1,23 @@
 {
+  "activityTrend": {
+    "exportCsvAria": "将活动趋势数据导出为 CSV",
+    "exportPngAria": "将活动趋势图导出为 PNG",
+    "exportUnavailable": "目前没有可导出的图表活动数据。",
+    "exported": "活动趋势已导出。"
+  },
+  "csvDiagnostics": {
+    "preImportTitle": "导入前请修正这些行",
+    "importResultTitle": "导入时跳过的行",
+    "summary": "有 {{count}} 行被拒绝，需要处理。",
+    "errorList": "CSV 导入错误",
+    "missingEmail": "缺少电子邮件地址",
+    "invalidEmail": "电子邮件地址无效",
+    "duplicateEmail": "电子邮件地址重复",
+    "rows": "CSV 行：{{rows}}",
+    "moreRows": "以及更多",
+    "privacyNote": "此处仅显示行号；客户详情仍保留在您的 CSV 文件中。",
+    "noValidRows": "目前没有可导入的有效联系人。请修正列出的行，然后重新上传文件。"
+  },
   "common": {
     "gotIt": "知道了",
     "hide": "隐藏",
@@ -366,7 +385,25 @@
     "finalPreviewDescription": "请核对收件人和完整邮件内容。",
     "to": "收件人：",
     "backToEdit": "返回编辑",
-    "confirmAndSend": "确认并发送"
+    "confirmAndSend": "确认并发送",
+    "aiToneLabel": "使用 AI 调整语气",
+    "aiToneTitle": "AI 语气调整",
+    "aiToneWarmer": "更温暖",
+    "aiToneDescription": "选择一种语气，Get Phame 会在保护请求细节的同时调整草稿。",
+    "aiToneSelectLabel": "邮件语气",
+    "aiToneWarm": "温暖友好",
+    "aiToneProfessional": "专业得体",
+    "aiToneConcise": "清晰简洁",
+    "aiToneAdjust": "调整语气",
+    "aiToneAdjusting": "正在调整语气…",
+    "aiToneWorking": "调整中",
+    "aiToneSuccess": "草稿已更新。请在发送前检查更改。",
+    "toneApplied": "语气已调整。请在发送前检查邮件。",
+    "applyAiTone": "应用 AI 语气调整",
+    "unlockAiTone": "解锁 AI 语气调整",
+    "aiToneUnavailable": "AI 无法调整此草稿。请重试或手动编辑。",
+    "aiToneUpgrade": "AI 语气调整功能适用于 Get Phame Pro。",
+    "unlock": "解锁"
   },
   "page": {
     "title": "设置",

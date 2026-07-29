@@ -1,4 +1,23 @@
 {
+  "activityTrend": {
+    "exportCsvAria": "將活動趨勢資料匯出為 CSV",
+    "exportPngAria": "將活動趨勢圖匯出為 PNG",
+    "exportUnavailable": "目前沒有可匯出的圖表活動資料。",
+    "exported": "活動趨勢已匯出。"
+  },
+  "csvDiagnostics": {
+    "preImportTitle": "匯入前請修正這些列",
+    "importResultTitle": "匯入時略過的列",
+    "summary": "有 {{count}} 列被拒絕，需要處理。",
+    "errorList": "CSV 匯入錯誤",
+    "missingEmail": "缺少電子郵件地址",
+    "invalidEmail": "電子郵件地址無效",
+    "duplicateEmail": "電子郵件地址重複",
+    "rows": "CSV 列：{{rows}}",
+    "moreRows": "以及更多",
+    "privacyNote": "此處僅顯示列號；客戶詳細資料仍保留在您的 CSV 檔案中。",
+    "noValidRows": "目前沒有可匯入的有效聯絡人。請修正列出的項目，然後重新上傳檔案。"
+  },
   "seo": {
     "title": "Get Phame — 透過電子郵件寄送個人化評論邀請",
     "keywords": "評論請求, Google 評論, 獲得更多評論, 評論自動化, 小型企業評論, 傳送評論請求郵件, WooCommerce 評論, Stripe 評論",
@@ -357,7 +376,25 @@
     "finalPreviewDescription": "傳送前請核對收件者和完整郵件內容。",
     "to": "收件者：",
     "backToEdit": "返回編輯",
-    "confirmAndSend": "確認並傳送"
+    "confirmAndSend": "確認並傳送",
+    "aiToneLabel": "使用 AI 調整語氣",
+    "aiToneTitle": "AI 語氣調整",
+    "aiToneWarmer": "更溫暖",
+    "aiToneDescription": "選擇一種語氣，Get Phame 會在保護請求細節的同時調整草稿。",
+    "aiToneSelectLabel": "郵件語氣",
+    "aiToneWarm": "溫暖友善",
+    "aiToneProfessional": "專業得體",
+    "aiToneConcise": "清楚簡潔",
+    "aiToneAdjust": "調整語氣",
+    "aiToneAdjusting": "正在調整語氣…",
+    "aiToneWorking": "調整中",
+    "aiToneSuccess": "草稿已更新。請在傳送前檢查變更。",
+    "toneApplied": "語氣已調整。請在傳送前檢查郵件。",
+    "applyAiTone": "套用 AI 語氣調整",
+    "unlockAiTone": "解鎖 AI 語氣調整",
+    "aiToneUnavailable": "AI 無法調整此草稿。請重試或手動編輯。",
+    "aiToneUpgrade": "AI 語氣調整功能適用於 Get Phame Pro。",
+    "unlock": "解鎖"
   },
   "page": {
     "title": "設定",
