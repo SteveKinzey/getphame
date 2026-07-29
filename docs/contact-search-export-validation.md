@@ -1,6 +1,6 @@
 # Conversational Search, Loading, and Export Validation
 
-**Validation date:** 2026-07-29  
+**Validation date:** 2026-07-29
 **Surface:** Authenticated Saved Contacts (`/contacts`)
 
 ## Automated release gates

@@ -371,3 +371,4 @@
 - [x] Implement sanitized user-data export in CSV and PDF formats with allowlisted fields, date-range filenames, bounded datasets, authorization checks, and spreadsheet-injection protection.
 - [x] Localize the new search, loading, empty, error, and export experiences across all maintained locales and add focused Vitest coverage for security, filtering, formatting, accessibility, and regression contracts.
 - [x] Run focused tests, the complete Vitest suite, strict TypeScript, production dependency audit/build, and responsive desktop/mobile verification; checkpoint, auto-publish, synchronize the exact tree through protected GitHub `main`, and deliver the validated skill and application release.
+- [x] Remove the trailing Markdown hard-break whitespace found by the exact-checkpoint audit, revalidate the corrected administrative delta, and replace checkpoint `d2d0ac58` before protected-main synchronization.
