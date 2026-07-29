@@ -35,11 +35,20 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          allow_auto_merge="$(gh api "repos/$GITHUB_REPOSITORY" --jq '.allow_auto_merge')"
-          if [ "$allow_auto_merge" != "true" ]; then
-            echo "Repository auto-merge is disabled; eligible Dependabot patches cannot merge automatically."
+          owner="${GITHUB_REPOSITORY%%/*}"
+          name="${GITHUB_REPOSITORY#*/}"
+          enabled="$(
+            gh api graphql \
+              -f query="query(\$owner: String!, \$name: String!) { repository(owner: \$owner, name: \$name) { autoMergeAllowed } }" \
+              -F owner="$owner" \
+              -F name="$name" \
+              --jq '.data.repository.autoMergeAllowed'
+          )"
+          if [ "$enabled" != "true" ]; then
+            echo "Repository auto-merge drift detected: autoMergeAllowed=${enabled:-unavailable}"
             exit 1
           fi
+          echo "Repository auto-merge remains enabled."
 
       - name: Run actionlint with shellcheck and pyflakes
         uses: docker://rhysd/actionlint:1.7.12
