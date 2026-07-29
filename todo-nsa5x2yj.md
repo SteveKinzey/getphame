@@ -375,5 +375,5 @@
 - [x] Reconstruct the full PR #40 self-service WordPress binding delta on current protected `main`, replace pairing-secret string equality with an equal-length SHA-256 `timingSafeEqual` comparison, and preserve generic authentication failures.
 - [x] Add and pass focused WordPress pairing security regressions for wrong, malformed, missing-ID, malformed-stored-digest, lifecycle, and concurrent-claim behavior while preserving self-service credential delivery.
 - [x] Run the full Get Phame release gates on the exact managed tree: focused and full Vitest, strict TypeScript, production dependency audit, production build, whitespace and credential scans, plus affected responsive/runtime verification.
-- [ ] Save and auto-publish the validated managed checkpoint, then verify managed and custom production health plus directly affected fail-safe pairing behavior without external customer side effects.
+- [x] Save and auto-publish the validated managed checkpoint, then verify managed and custom production health plus directly affected fail-safe pairing behavior without external customer side effects.
 - [ ] Synchronize the exact released tree through protected GitHub `main` using a fresh history-preserving release branch and normal pull request, supersede PR #40 without force-push, prove final tree parity, and leave connector PR #2 unmerged until PHP CI passes.

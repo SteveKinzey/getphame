@@ -30,4 +30,6 @@ Runtime review found no failed network responses during these captures. Browser-
 
 ## Release Status
 
-The managed checkpoint, production health verification, protected-main pull request, required check results, final merge, and exact-tree parity evidence remain pending and must be appended before release closeout.
+Managed checkpoint `8fe04fbb` was auto-published successfully. Both `revrocket-j5ynazte.manus.space` and `getphame.app` returned `200` with `{"ok":true,"status":"ready"}` from `/api/health`. Side-effect-free unknown-pairing claims returned the same generic `404 NOT_FOUND` response with `Cache-Control: no-store` on both origins and exposed no credential fields.
+
+Protected-main pull-request synchronization, required check results, final merge, and exact-tree parity evidence remain pending and must be completed before release closeout. Connector pull request 2 remains intentionally unmerged pending its PHP CI gate.
