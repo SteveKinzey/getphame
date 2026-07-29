@@ -56,6 +56,23 @@ for (const name of workflowFiles) {
     }
   }
 }
+const driftWorkflow = readFileSync(
+  join(workflowDirectory, "workflow-drift-audit.yml"),
+  "utf8"
+);
+if (
+  !driftWorkflow.includes("gh api graphql") ||
+  !driftWorkflow.includes("autoMergeAllowed")
+) {
+  failures.push(
+    "workflow-drift-audit.yml: repository auto-merge check must use GraphQL autoMergeAllowed"
+  );
+}
+if (driftWorkflow.includes(".allow_auto_merge")) {
+  failures.push(
+    "workflow-drift-audit.yml: REST allow_auto_merge is not reliable with the read-only workflow token"
+  );
+}
 const dependabot = readFileSync(
   join(repositoryRoot, ".github", "dependabot.yml"),
   "utf8"

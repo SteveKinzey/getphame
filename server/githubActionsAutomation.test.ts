@@ -41,7 +41,9 @@ describe("GitHub Actions automation", () => {
     expect(workflow).toContain("actions/setup-node@v7");
     expect(workflow).toContain("node-version: 24");
     expect(workflow).toContain("node scripts/audit-github-actions.mjs");
-    expect(workflow).toContain(".allow_auto_merge");
+    expect(workflow).toContain("gh api graphql");
+    expect(workflow).toContain("autoMergeAllowed");
+    expect(workflow).not.toContain(".allow_auto_merge");
     expect(workflow).toContain("docker://rhysd/actionlint:1.7.12");
   });
   it("routes CI configuration ownership without requiring owner approval", () => {
@@ -66,5 +68,11 @@ describe("GitHub Actions automation", () => {
     expect(script).toContain("deprecated pnpm setup action");
     expect(script).toContain("patch-only GitHub Actions group");
     expect(script).toContain("workflow directory has no owner");
+    expect(script).toContain(
+      "repository auto-merge check must use GraphQL autoMergeAllowed"
+    );
+    expect(script).toContain(
+      "REST allow_auto_merge is not reliable with the read-only workflow token"
+    );
   });
 });

@@ -53,4 +53,3 @@ describe("email tone adjustment", () => {
     expect(result.body).not.toContain("yelp.com");
   });
 });
-
