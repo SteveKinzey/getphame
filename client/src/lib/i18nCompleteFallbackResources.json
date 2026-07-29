@@ -1274,6 +1274,32 @@
             "5": "Send one permitted record, then refresh health here."
           }
         }
+      },
+      "wordpressPairing": {
+        "eyebrow": "WordPress connection request",
+        "connectedToast": "WordPress connected. Return to your WordPress dashboard while the plugin completes setup.",
+        "notFoundToast": "This connection request is no longer available. Start a new request in WordPress.",
+        "unavailableToast": "We could not authorize this connection. Try again or start a new request in WordPress.",
+        "termsRequired": "Accept the API Terms before connecting WordPress.",
+        "notFoundTitle": "Connection request no longer available",
+        "unavailableTitle": "We could not load this connection",
+        "title": "Authorize this WordPress site",
+        "loading": "Loading connection details…",
+        "notFoundDescription": "For your security, Get Phame cannot verify this request. Return to WordPress and start a new connection.",
+        "unavailableDescription": "Your account is safe. Try loading the request again. If it still fails, start a new connection in WordPress.",
+        "retry": "Try again",
+        "alreadyAuthorized": "This site is already authorized. Return to WordPress to finish the connection.",
+        "expiredDescription": "This connection request expired. Return to WordPress and start a new connection request.",
+        "authorizePrefix": "Authorize",
+        "siteFallback": "this WordPress site",
+        "authorizeSuffix": "to import customer contacts into this Get Phame account. A dedicated, least-privilege integration key will be issued automatically.",
+        "actionRequired": "Action required",
+        "connected": "Connected",
+        "expired": "Connection expired",
+        "connect": "Connect this site",
+        "failurePrivacy": "No credentials were created or exposed. Start again from your WordPress dashboard.",
+        "expiredPrivacy": "Start a new connection in WordPress. Get Phame never receives your WordPress administrator credentials.",
+        "privacy": "This request expires in 15 minutes. Get Phame never receives your WordPress administrator credentials."
       }
     },
     "manual": {
@@ -2769,7 +2795,33 @@
           }
         }
       },
-      "title": "Integraciones para desarrolladores"
+      "title": "Integraciones para desarrolladores",
+      "wordpressPairing": {
+        "eyebrow": "Solicitud de conexión de WordPress",
+        "connectedToast": "WordPress conectado. Vuelve al panel de WordPress mientras el complemento completa la configuración.",
+        "notFoundToast": "Esta solicitud de conexión ya no está disponible. Inicia una nueva solicitud en WordPress.",
+        "unavailableToast": "No pudimos autorizar esta conexión. Intenta de nuevo o inicia una nueva solicitud en WordPress.",
+        "termsRequired": "Acepta los Términos de la API antes de conectar WordPress.",
+        "notFoundTitle": "Solicitud de conexión ya no disponible",
+        "unavailableTitle": "No pudimos cargar esta conexión",
+        "title": "Autorizar este sitio de WordPress",
+        "loading": "Cargando detalles de la conexión…",
+        "notFoundDescription": "Por seguridad, Get Phame no puede verificar esta solicitud. Vuelve a WordPress e inicia una nueva conexión.",
+        "unavailableDescription": "Tu cuenta está segura. Intenta cargar la solicitud de nuevo. Si sigue fallando, inicia una nueva conexión en WordPress.",
+        "retry": "Reintentar",
+        "alreadyAuthorized": "Este sitio ya está autorizado. Vuelve a WordPress para finalizar la conexión.",
+        "expiredDescription": "Esta solicitud de conexión expiró. Vuelve a WordPress e inicia una nueva solicitud de conexión.",
+        "authorizePrefix": "Autorizar",
+        "siteFallback": "este sitio de WordPress",
+        "authorizeSuffix": "para importar contactos de clientes a esta cuenta de Get Phame. Se emitirá automáticamente una clave de integración dedicada con los mínimos privilegios necesarios.",
+        "actionRequired": "Acción requerida",
+        "connected": "Conectado",
+        "expired": "Conexión expirada",
+        "connect": "Conectar este sitio",
+        "failurePrivacy": "No se crearon ni expusieron credenciales. Comienza de nuevo desde tu panel de WordPress.",
+        "expiredPrivacy": "Inicia una nueva conexión en WordPress. Get Phame nunca recibe tus credenciales de administrador de WordPress.",
+        "privacy": "Esta solicitud expira en 15 minutos. Get Phame nunca recibe tus credenciales de administrador de WordPress."
+      }
     },
     "manual": {
       "badges": {
@@ -4417,6 +4469,32 @@
       },
       "keys": {
         "permissions": "Autorisations"
+      },
+      "wordpressPairing": {
+        "eyebrow": "Demande de connexion WordPress",
+        "connectedToast": "WordPress connecté. Revenez à votre tableau de bord WordPress pendant que le plugin termine la configuration.",
+        "notFoundToast": "Cette demande de connexion n'est plus disponible. Lancez une nouvelle demande dans WordPress.",
+        "unavailableToast": "Nous n'avons pas pu autoriser cette connexion. Réessayez ou lancez une nouvelle demande dans WordPress.",
+        "termsRequired": "Acceptez les conditions de l'API avant de connecter WordPress.",
+        "notFoundTitle": "Demande de connexion non disponible",
+        "unavailableTitle": "Impossible de charger cette connexion",
+        "title": "Autoriser ce site WordPress",
+        "loading": "Chargement des détails de la connexion…",
+        "notFoundDescription": "Pour votre sécurité, Get Phame ne peut pas vérifier cette demande. Retournez dans WordPress et démarrez une nouvelle connexion.",
+        "unavailableDescription": "Votre compte est en sécurité. Essayez de recharger la demande. Si cela échoue encore, lancez une nouvelle connexion dans WordPress.",
+        "retry": "Réessayer",
+        "alreadyAuthorized": "Ce site est déjà autorisé. Retournez dans WordPress pour terminer la connexion.",
+        "expiredDescription": "Cette demande de connexion a expiré. Retournez dans WordPress et lancez une nouvelle demande de connexion.",
+        "authorizePrefix": "Autoriser",
+        "siteFallback": "ce site WordPress",
+        "authorizeSuffix": "pour importer les contacts clients dans ce compte Get Phame. Une clé d'intégration dédiée à privilèges minimaux sera émise automatiquement.",
+        "actionRequired": "Action requise",
+        "connected": "Connecté",
+        "expired": "Connexion expirée",
+        "connect": "Connecter ce site",
+        "failurePrivacy": "Aucun identifiant n'a été créé ni exposé. Recommencez depuis votre tableau de bord WordPress.",
+        "expiredPrivacy": "Démarrez une nouvelle connexion dans WordPress. Get Phame ne reçoit jamais vos identifiants d'administrateur WordPress.",
+        "privacy": "Cette demande expire dans 15 minutes. Get Phame ne reçoit jamais vos identifiants d'administrateur WordPress."
       }
     },
     "manual": {
@@ -6036,6 +6114,32 @@
             "5": "Invia un record consentito, poi aggiorna lo stato qui."
           }
         }
+      },
+      "wordpressPairing": {
+        "eyebrow": "Richiesta di connessione a WordPress",
+        "connectedToast": "WordPress connesso. Torna alla tua dashboard di WordPress mentre il plugin completa la configurazione.",
+        "notFoundToast": "Questa richiesta di connessione non è più disponibile. Avvia una nuova richiesta in WordPress.",
+        "unavailableToast": "Impossibile autorizzare questa connessione. Riprova o avvia una nuova richiesta in WordPress.",
+        "termsRequired": "Accetta i Termini API prima di connettere WordPress.",
+        "notFoundTitle": "Richiesta di connessione non più disponibile",
+        "unavailableTitle": "Impossibile caricare questa connessione",
+        "title": "Autorizza questo sito WordPress",
+        "loading": "Caricamento dei dettagli della connessione…",
+        "notFoundDescription": "Per la tua sicurezza, Get Phame non può verificare questa richiesta. Torna in WordPress e avvia una nuova connessione.",
+        "unavailableDescription": "Il tuo account è al sicuro. Riprova a caricare la richiesta. Se continua a fallire, avvia una nuova connessione in WordPress.",
+        "retry": "Riprova",
+        "alreadyAuthorized": "Questo sito è già autorizzato. Torna in WordPress per completare la connessione.",
+        "expiredDescription": "Questa richiesta di connessione è scaduta. Torna in WordPress e avvia una nuova richiesta di connessione.",
+        "authorizePrefix": "Autorizza",
+        "siteFallback": "questo sito WordPress",
+        "authorizeSuffix": "per importare i contatti dei clienti in questo account Get Phame. Verrà generata automaticamente una chiave di integrazione dedicata con privilegi minimi.",
+        "actionRequired": "Azione richiesta",
+        "connected": "Connesso",
+        "expired": "Connessione scaduta",
+        "connect": "Connetti questo sito",
+        "failurePrivacy": "Non sono state create né esposte credenziali. Ricomincia dalla dashboard di WordPress.",
+        "expiredPrivacy": "Avvia una nuova connessione in WordPress. Get Phame non riceve mai le credenziali amministrative di WordPress.",
+        "privacy": "Questa richiesta scade tra 15 minuti. Get Phame non riceve mai le credenziali amministrative di WordPress."
       }
     },
     "manual": {
@@ -7528,6 +7632,32 @@
             "5": "ส่งระเบียนที่ได้รับอนุญาต 1 รายการ แล้วรีเฟรชสถานะที่นี่"
           }
         }
+      },
+      "wordpressPairing": {
+        "eyebrow": "คำขอเชื่อมต่อ WordPress",
+        "connectedToast": "เชื่อมต่อกับ WordPress แล้ว กลับไปที่แดชบอร์ด WordPress ขณะที่ปลั๊กอินกำลังตั้งค่า",
+        "notFoundToast": "คำขอเชื่อมต่อนี้ไม่พร้อมใช้งานอีกต่อไป โปรดเริ่มคำขอใหม่จาก WordPress",
+        "unavailableToast": "ไม่สามารถอนุญาตการเชื่อมต่อนี้ได้ ลองอีกครั้งหรือเริ่มคำขอใหม่ใน WordPress",
+        "termsRequired": "โปรดยอมรับข้อกำหนดการใช้งาน API ก่อนเชื่อมต่อกับ WordPress",
+        "notFoundTitle": "คำขอเชื่อมต่อไม่พร้อมใช้งานอีกต่อไป",
+        "unavailableTitle": "ไม่สามารถโหลดการเชื่อมต่อนี้ได้",
+        "title": "อนุญาตไซต์ WordPress นี้",
+        "loading": "กำลังโหลดรายละเอียดการเชื่อมต่อ…",
+        "notFoundDescription": "เพื่อความปลอดภัยของคุณ Get Phame ไม่สามารถยืนยันคำขอนี้ได้ กลับไปที่ WordPress และเริ่มการเชื่อมต่อใหม่",
+        "unavailableDescription": "บัญชีของคุณปลอดภัย ลองโหลดคำขออีกครั้ง หากยังล้มเหลว ให้เริ่มการเชื่อมต่อใหม่ใน WordPress",
+        "retry": "ลองอีกครั้ง",
+        "alreadyAuthorized": "ไซต์นี้ได้รับอนุญาตแล้ว กลับไปที่ WordPress เพื่อเสร็จสิ้นการเชื่อมต่อ",
+        "expiredDescription": "คำขอเชื่อมต่อนี้หมดอายุแล้ว กลับไปที่ WordPress และเริ่มคำขอเชื่อมต่อใหม่",
+        "authorizePrefix": "อนุญาต",
+        "siteFallback": "ไซต์ WordPress นี้",
+        "authorizeSuffix": "เพื่อนำเข้าที่อยู่ติดต่อของลูกค้าไปยังบัญชี Get Phame นี้ โดยจะออกคีย์การรวมระบบเฉพาะที่มีสิทธิ์ขั้นต่ำโดยอัตโนมัติ",
+        "actionRequired": "ต้องดำเนินการ",
+        "connected": "เชื่อมต่อแล้ว",
+        "expired": "การเชื่อมต่อหมดอายุ",
+        "connect": "เชื่อมต่อไซต์นี้",
+        "failurePrivacy": "ไม่มีข้อมูลประจำตัวใดถูกสร้างหรือเปิดเผย เริ่มใหม่จากแดชบอร์ด WordPress ของคุณ",
+        "expiredPrivacy": "เริ่มการเชื่อมต่อใหม่ใน WordPress. Get Phame จะไม่รับข้อมูลประจำตัวผู้ดูแลระบบของ WordPress ของคุณ",
+        "privacy": "คำขอนี้หมดอายุภายใน 15 นาที. Get Phame จะไม่รับข้อมูลประจำตัวผู้ดูแลระบบของ WordPress ของคุณ"
       }
     },
     "manual": {
@@ -9017,6 +9147,32 @@
             "5": "发送一条允许的记录，然后在此刷新健康状态。"
           }
         }
+      },
+      "wordpressPairing": {
+        "eyebrow": "WordPress 连接请求",
+        "connectedToast": "已连接 WordPress。插件正在完成设置，请返回 WordPress 仪表板。",
+        "notFoundToast": "此连接请求不再可用。请在 WordPress 中发起新的请求。",
+        "unavailableToast": "无法授权此连接。请重试或在 WordPress 中发起新的请求。",
+        "termsRequired": "在连接 WordPress 之前，请接受 API 条款。",
+        "notFoundTitle": "连接请求不再可用",
+        "unavailableTitle": "无法加载此连接",
+        "title": "授权此 WordPress 站点",
+        "loading": "正在加载连接详情…",
+        "notFoundDescription": "为保障安全，Get Phame 无法验证此请求。请返回 WordPress 并发起新的连接。",
+        "unavailableDescription": "您的账户安全无虞。请重试加载该请求；若仍然失败，请在 WordPress 中发起新的连接。",
+        "retry": "重试",
+        "alreadyAuthorized": "此站点已被授权。请返回 WordPress 完成连接。",
+        "expiredDescription": "此连接请求已过期。请返回 WordPress 并发起新的连接请求。",
+        "authorizePrefix": "授权",
+        "siteFallback": "此 WordPress 站点",
+        "authorizeSuffix": "以将客户联系人导入此 Get Phame 账户。系统会自动发放专用的最小权限集成密钥。",
+        "actionRequired": "需要操作",
+        "connected": "已连接",
+        "expired": "连接已过期",
+        "connect": "连接此站点",
+        "failurePrivacy": "未创建或泄露任何凭据。请从 WordPress 仪表板重新开始。",
+        "expiredPrivacy": "请在 WordPress 中发起新的连接。Get Phame 不会接收您的 WordPress 管理员凭据。",
+        "privacy": "此请求将在 15 分钟后过期。Get Phame 不会接收您的 WordPress 管理员凭据。"
       }
     },
     "manual": {
@@ -10500,7 +10656,33 @@
           }
         }
       },
-      "title": "開發人員整合"
+      "title": "開發人員整合",
+      "wordpressPairing": {
+        "eyebrow": "WordPress 連線請求",
+        "connectedToast": "已連線 WordPress。請回到 WordPress 儀表板，外掛將完成設定。",
+        "notFoundToast": "此連線請求已不再可用。請在 WordPress 中重新發起請求。",
+        "unavailableToast": "無法授權此連線。請再試一次，或於 WordPress 中重新發起請求。",
+        "termsRequired": "連線 WordPress 前請先接受 API 條款。",
+        "notFoundTitle": "連線請求已不再可用",
+        "unavailableTitle": "無法載入此連線",
+        "title": "授權此 WordPress 網站",
+        "loading": "正在載入連線詳細資料…",
+        "notFoundDescription": "為保障您的安全，Get Phame 無法驗證此請求。請回到 WordPress 並重新建立連線。",
+        "unavailableDescription": "您的帳戶安全無虞。請重試載入該請求；若仍失敗，請在 WordPress 中重新建立連線。",
+        "retry": "重試",
+        "alreadyAuthorized": "此網站已被授權。請回到 WordPress 完成連線。",
+        "expiredDescription": "此連線請求已過期。請回到 WordPress 並重新發起連線請求。",
+        "authorizePrefix": "授權",
+        "siteFallback": "此 WordPress 網站",
+        "authorizeSuffix": "以將客戶聯絡資料匯入此 Get Phame 帳戶。系統會自動發行專用且最低權限的整合金鑰。",
+        "actionRequired": "需要操作",
+        "connected": "已連線",
+        "expired": "連線已過期",
+        "connect": "連線此網站",
+        "failurePrivacy": "未建立或洩露任何憑證。請從 WordPress 儀表板重新開始。",
+        "expiredPrivacy": "請在 WordPress 中重新建立連線。Get Phame 不會接收您的 WordPress 管理員憑證。",
+        "privacy": "此請求將於 15 分鐘後到期。Get Phame 不會接收您的 WordPress 管理員憑證。"
+      }
     },
     "manual": {
       "badges": {

@@ -780,7 +780,9 @@
       "createdFrom": "Added after {{value}}",
       "createdTo": "Added before {{value}}"
     },
-    "loading": { "contacts": "Loading saved contacts" },
+    "loading": {
+      "contacts": "Loading saved contacts"
+    },
     "export": {
       "empty": "There are no visible contacts to export.",
       "unavailable": "These contacts are no longer available to export.",
@@ -3101,6 +3103,32 @@
       "revokeTitle": "Revoke this API key?",
       "rotateDescription": "The current key will stop working immediately. You must replace it wherever the integration is configured.",
       "revokeDescription": "This immediately disables the key and cannot be undone."
+    },
+    "wordpressPairing": {
+      "eyebrow": "WordPress connection request",
+      "connectedToast": "WordPress connected. Return to your WordPress dashboard while the plugin completes setup.",
+      "notFoundToast": "This connection request is no longer available. Start a new request in WordPress.",
+      "unavailableToast": "We could not authorize this connection. Try again or start a new request in WordPress.",
+      "termsRequired": "Accept the API Terms before connecting WordPress.",
+      "notFoundTitle": "Connection request no longer available",
+      "unavailableTitle": "We could not load this connection",
+      "title": "Authorize this WordPress site",
+      "loading": "Loading connection details…",
+      "notFoundDescription": "For your security, Get Phame cannot verify this request. Return to WordPress and start a new connection.",
+      "unavailableDescription": "Your account is safe. Try loading the request again. If it still fails, start a new connection in WordPress.",
+      "retry": "Try again",
+      "alreadyAuthorized": "This site is already authorized. Return to WordPress to finish the connection.",
+      "expiredDescription": "This connection request expired. Return to WordPress and start a new connection request.",
+      "authorizePrefix": "Authorize",
+      "siteFallback": "this WordPress site",
+      "authorizeSuffix": "to import customer contacts into this Get Phame account. A dedicated, least-privilege integration key will be issued automatically.",
+      "actionRequired": "Action required",
+      "connected": "Connected",
+      "expired": "Connection expired",
+      "connect": "Connect this site",
+      "failurePrivacy": "No credentials were created or exposed. Start again from your WordPress dashboard.",
+      "expiredPrivacy": "Start a new connection in WordPress. Get Phame never receives your WordPress administrator credentials.",
+      "privacy": "This request expires in 15 minutes. Get Phame never receives your WordPress administrator credentials."
     }
   },
   "helpAssistant": {

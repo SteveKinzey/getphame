@@ -965,7 +965,9 @@
       "createdFrom": "Añadido después de {{value}}",
       "createdTo": "Añadido antes de {{value}}"
     },
-    "loading": { "contacts": "Cargando contactos guardados" },
+    "loading": {
+      "contacts": "Cargando contactos guardados"
+    },
     "export": {
       "empty": "No hay contactos visibles para exportar.",
       "unavailable": "Estos contactos ya no están disponibles para exportar.",
@@ -3041,6 +3043,32 @@
           "5": "Envíe un registro permitido y luego actualice el estado aquí."
         }
       }
+    },
+    "wordpressPairing": {
+      "eyebrow": "Solicitud de conexión de WordPress",
+      "connectedToast": "WordPress conectado. Vuelve al panel de WordPress mientras el complemento completa la configuración.",
+      "notFoundToast": "Esta solicitud de conexión ya no está disponible. Inicia una nueva solicitud en WordPress.",
+      "unavailableToast": "No pudimos autorizar esta conexión. Intenta de nuevo o inicia una nueva solicitud en WordPress.",
+      "termsRequired": "Acepta los Términos de la API antes de conectar WordPress.",
+      "notFoundTitle": "Solicitud de conexión ya no disponible",
+      "unavailableTitle": "No pudimos cargar esta conexión",
+      "title": "Autorizar este sitio de WordPress",
+      "loading": "Cargando detalles de la conexión…",
+      "notFoundDescription": "Por seguridad, Get Phame no puede verificar esta solicitud. Vuelve a WordPress e inicia una nueva conexión.",
+      "unavailableDescription": "Tu cuenta está segura. Intenta cargar la solicitud de nuevo. Si sigue fallando, inicia una nueva conexión en WordPress.",
+      "retry": "Reintentar",
+      "alreadyAuthorized": "Este sitio ya está autorizado. Vuelve a WordPress para finalizar la conexión.",
+      "expiredDescription": "Esta solicitud de conexión expiró. Vuelve a WordPress e inicia una nueva solicitud de conexión.",
+      "authorizePrefix": "Autorizar",
+      "siteFallback": "este sitio de WordPress",
+      "authorizeSuffix": "para importar contactos de clientes a esta cuenta de Get Phame. Se emitirá automáticamente una clave de integración dedicada con los mínimos privilegios necesarios.",
+      "actionRequired": "Acción requerida",
+      "connected": "Conectado",
+      "expired": "Conexión expirada",
+      "connect": "Conectar este sitio",
+      "failurePrivacy": "No se crearon ni expusieron credenciales. Comienza de nuevo desde tu panel de WordPress.",
+      "expiredPrivacy": "Inicia una nueva conexión en WordPress. Get Phame nunca recibe tus credenciales de administrador de WordPress.",
+      "privacy": "Esta solicitud expira en 15 minutos. Get Phame nunca recibe tus credenciales de administrador de WordPress."
     }
   },
   "landing": {

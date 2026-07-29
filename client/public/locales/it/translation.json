@@ -1387,7 +1387,9 @@
       "createdFrom": "Aggiunto dopo {{value}}",
       "createdTo": "Aggiunto prima di {{value}}"
     },
-    "loading": { "contacts": "Caricamento dei contatti salvati" },
+    "loading": {
+      "contacts": "Caricamento dei contatti salvati"
+    },
     "export": {
       "empty": "Non ci sono contatti visibili da esportare.",
       "unavailable": "Questi contatti non sono più disponibili per l’esportazione.",
@@ -3248,6 +3250,32 @@
           "5": "Invia un record consentito, poi aggiorna lo stato qui."
         }
       }
+    },
+    "wordpressPairing": {
+      "eyebrow": "Richiesta di connessione a WordPress",
+      "connectedToast": "WordPress connesso. Torna alla tua dashboard di WordPress mentre il plugin completa la configurazione.",
+      "notFoundToast": "Questa richiesta di connessione non è più disponibile. Avvia una nuova richiesta in WordPress.",
+      "unavailableToast": "Impossibile autorizzare questa connessione. Riprova o avvia una nuova richiesta in WordPress.",
+      "termsRequired": "Accetta i Termini API prima di connettere WordPress.",
+      "notFoundTitle": "Richiesta di connessione non più disponibile",
+      "unavailableTitle": "Impossibile caricare questa connessione",
+      "title": "Autorizza questo sito WordPress",
+      "loading": "Caricamento dei dettagli della connessione…",
+      "notFoundDescription": "Per la tua sicurezza, Get Phame non può verificare questa richiesta. Torna in WordPress e avvia una nuova connessione.",
+      "unavailableDescription": "Il tuo account è al sicuro. Riprova a caricare la richiesta. Se continua a fallire, avvia una nuova connessione in WordPress.",
+      "retry": "Riprova",
+      "alreadyAuthorized": "Questo sito è già autorizzato. Torna in WordPress per completare la connessione.",
+      "expiredDescription": "Questa richiesta di connessione è scaduta. Torna in WordPress e avvia una nuova richiesta di connessione.",
+      "authorizePrefix": "Autorizza",
+      "siteFallback": "questo sito WordPress",
+      "authorizeSuffix": "per importare i contatti dei clienti in questo account Get Phame. Verrà generata automaticamente una chiave di integrazione dedicata con privilegi minimi.",
+      "actionRequired": "Azione richiesta",
+      "connected": "Connesso",
+      "expired": "Connessione scaduta",
+      "connect": "Connetti questo sito",
+      "failurePrivacy": "Non sono state create né esposte credenziali. Ricomincia dalla dashboard di WordPress.",
+      "expiredPrivacy": "Avvia una nuova connessione in WordPress. Get Phame non riceve mai le credenziali amministrative di WordPress.",
+      "privacy": "Questa richiesta scade tra 15 minuti. Get Phame non riceve mai le credenziali amministrative di WordPress."
     }
   },
   "promotionLink": {
