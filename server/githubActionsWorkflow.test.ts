@@ -1,12 +1,6 @@
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-function readProjectFile(relativePath: string): string {
-  return readFileSync(
-    fileURLToPath(new URL(relativePath, import.meta.url)),
-    "utf8"
-  );
-}
+import { readProjectFile } from "./testProjectFile";
+
 describe("GitHub Actions quality gate", () => {
   it("uses Node 24-native actions and runs every required application gate", () => {
     const workflow = readProjectFile("../.github/workflows/quality.yml");
@@ -14,7 +8,7 @@ describe("GitHub Actions quality gate", () => {
     expect(workflow).toContain("pull_request:");
     expect(workflow).toContain("actions/checkout@v7");
     expect(workflow).toContain("actions/setup-node@v7");
-    expect(workflow).toContain("node-version: 22");
+    expect(workflow).toContain("node-version: 24");
     expect(workflow).toContain("npm install --global pnpm@10.18.1");
     expect(workflow).not.toContain("pnpm/action-setup");
     expect(workflow).not.toMatch(/actions\/(?:checkout|setup-node)@v4/);

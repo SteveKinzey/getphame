@@ -1,4 +1,5 @@
 #  Get Phame — Get More Reviews on Autopilot
+[![Quality Gate](https://github.com/SteveKinzey/getphame/actions/workflows/quality.yml/badge.svg?branch=main)](https://github.com/SteveKinzey/getphame/actions/workflows/quality.yml?query=branch%3Amain)
 
 ** Get Phame** helps local businesses collect more Google, Yelp, and TripAdvisor reviews by sending personalized review-request emails directly from your own email account. Customers receive a message that appears to come from you — not a bulk mailer — which means higher open rates and more genuine reviews.
 

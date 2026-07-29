@@ -52,8 +52,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-            node-version: 24
-            cache: pnpm
+          node-version: 24
+          cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install locked dependencies
@@ -71,7 +71,7 @@ jobs:
         env:
           PLAYWRIGHT_BASE_URL: http://127.0.0.1:3000
         run: |
-          for attempt in {1..30}; do
+          for _ in {1..30}; do
             if curl --fail --silent --show-error --max-time 2 \
               "$PLAYWRIGHT_BASE_URL/__test/api-recovery?from_webdev=1" > /dev/null; then
               exit 0
