@@ -52,8 +52,8 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-            node-version: 24
-            cache: pnpm
+          node-version: 24
+          cache: pnpm
           cache-dependency-path: pnpm-lock.yaml
 
       - name: Install locked dependencies
