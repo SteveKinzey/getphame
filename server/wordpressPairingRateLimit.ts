@@ -3,8 +3,8 @@ import { wordpressPairingRateLimitWindows } from "../drizzle/schema";
 import { fingerprintAuthValue } from "./authOperations";
 import { getDb } from "./db";
 
-export const WORDPRESS_PAIRING_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
-export const WORDPRESS_PAIRING_RATE_LIMIT_MAX_STARTS = 12;
+export const WORDPRESS_PAIRING_RATE_LIMIT_WINDOW_MS = 5 * 60 * 1000;
+export const WORDPRESS_PAIRING_RATE_LIMIT_MAX_STARTS = 20;
 export const WORDPRESS_PAIRING_RATE_LIMIT_CLEANUP_INTERVAL_MS = 60 * 1000;
 
 let nextExpiredWindowCleanupAt = 0;
