@@ -22,6 +22,17 @@ describe("API recovery Playwright workflow", () => {
     expect(workflow).toContain("timeout-minutes: 10");
   });
 
+  it("uses Node 24-native actions and the project-pinned package manager", () => {
+    expect(workflow).toContain("actions/checkout@v7");
+    expect(workflow).toContain("actions/setup-node@v7");
+    expect(workflow).toContain("node-version: 24");
+    expect(workflow).toContain("npm install --global pnpm@10.18.1");
+    expect(workflow).toContain("actions/upload-artifact@v6");
+    expect(workflow).not.toContain("pnpm/action-setup");
+    expect(workflow).not.toMatch(/actions\/(checkout|setup-node)@v[1-6]/);
+    expect(workflow).not.toMatch(/actions\/upload-artifact@v[1-5]/);
+  });
+
   it("installs only Chromium and runs only the focused recovery specification", () => {
     expect(workflow).toContain("playwright install --with-deps chromium");
     expect(workflow).toContain(
