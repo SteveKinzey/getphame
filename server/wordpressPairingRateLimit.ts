@@ -5,6 +5,23 @@ import { getDb } from "./db";
 
 export const WORDPRESS_PAIRING_RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000;
 export const WORDPRESS_PAIRING_RATE_LIMIT_MAX_STARTS = 12;
+export const WORDPRESS_PAIRING_RATE_LIMIT_CLEANUP_INTERVAL_MS = 60 * 1000;
+
+let nextExpiredWindowCleanupAt = 0;
+
+export function shouldCleanExpiredWordPressPairingRateLimitWindows(
+  now = Date.now(),
+  cleanupIntervalMs = WORDPRESS_PAIRING_RATE_LIMIT_CLEANUP_INTERVAL_MS,
+) {
+  if (now < nextExpiredWindowCleanupAt) return false;
+  nextExpiredWindowCleanupAt = now + Math.max(1, cleanupIntervalMs);
+  return true;
+}
+
+/** @internal Reset only for deterministic unit tests. */
+export function resetWordPressPairingRateLimitCleanupScheduleForTests() {
+  nextExpiredWindowCleanupAt = 0;
+}
 
 export function getWordPressPairingRateLimitWindow(
   now = Date.now(),
@@ -24,7 +41,7 @@ export function hashWordPressPairingClientIp(clientIp: string) {
 export async function checkWordPressPairingStartRateLimit(
   clientIp: string,
   now = Date.now(),
-  options: { windowMs?: number; maxStarts?: number } = {},
+  options: { windowMs?: number; maxStarts?: number; cleanupIntervalMs?: number } = {},
 ) {
   const db = await getDb();
   if (!db) throw new Error("Database unavailable");
@@ -34,7 +51,9 @@ export async function checkWordPressPairingStartRateLimit(
   const dimensionHash = hashWordPressPairingClientIp(clientIp);
   const { windowStartedAt, expiresAt } = getWordPressPairingRateLimitWindow(now, windowMs);
 
-  await db.delete(wordpressPairingRateLimitWindows).where(lt(wordpressPairingRateLimitWindows.expiresAt, now + 1));
+  if (shouldCleanExpiredWordPressPairingRateLimitWindows(now, options.cleanupIntervalMs)) {
+    await db.delete(wordpressPairingRateLimitWindows).where(lt(wordpressPairingRateLimitWindows.expiresAt, now + 1));
+  }
   await db
     .insert(wordpressPairingRateLimitWindows)
     .values({

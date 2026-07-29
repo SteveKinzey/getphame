@@ -16,8 +16,8 @@ A valid-shape unknown identifier (`wpb_` plus 12 characters) exercised the actua
 
 | Gate | Result |
 |---|---|
-| Get Phame focused pairing, shared-limiter, and cross-product regressions | 29 tests passed |
-| Get Phame full Vitest suite | 134 files passed; 792 tests passed; 6 skipped |
+| Get Phame focused pairing, shared-limiter, and cross-product regressions | 30 tests passed |
+| Get Phame full Vitest suite | 135 files passed; 797 tests passed; 6 skipped |
 | Strict TypeScript | Passed with no diagnostics |
 | Production dependency audit | No known high-severity production vulnerabilities |
 | Production client and server build | Passed |
@@ -41,6 +41,10 @@ The first bounded production burst returned 13 successful pairing starts without
 Migration `0034_faithful_selene.sql` adds only the shared limiter table and expiry index; the managed database schema was verified after application. On the managed preview, the bounded hybrid smoke returned readiness `200`, identical no-store generic `404 NOT_FOUND` bodies for unknown and malformed claims without forbidden credential fields, and the first shared-window `429` on start attempt 20. The response included both a positive `Retry-After` header and `retryAfterSeconds` value, and the runner stopped immediately.
 
 The reusable `security-remediation-release-loop` skill now includes a canonical WordPress pairing contract, a byte-for-byte comparator, a bounded production smoke runner, and ordered release gates. Identical contract snapshots are vendored in the application and Connector repositories. Native Vitest and PHPUnit regressions bind both implementations to request shape, generic failure privacy, no-store behavior, retry semantics, localized warning state, and immediate stale-control cleanup; the comparator confirmed all three snapshots match.
+
+The validated hybrid tree was saved and auto-published as checkpoint `c57808d5` with exact tree `f1f66f4657322db84fe8ac23e8152054cde8b917`. After deployment propagation completed, both `https://getphame.app` and the managed production origin returned readiness `200`. Unknown and malformed synthetic claims returned identical no-store generic `404 NOT_FOUND` bodies without forbidden credential fields. A bounded `.invalid` start burst reached the shared `429` after 11 successful starts, included positive header and body retry metadata, and stopped immediately without printing or retaining a returned secret.
+
+Copilot review on application PR 46 identified that deleting every expired limiter row on every start request could add avoidable write load and lock contention. The valid finding was remediated in the managed tree by making expiry cleanup opportunistic at most once per minute per process while retaining the indexed shared-table cleanup path. The focused regressions, complete 135-file Vitest suite, strict TypeScript, production dependency audit, and production build all passed after the fix. Its replacement checkpoint identifier will be appended after creation.
 
 ## Connector PR 2 GitHub Evidence
 
