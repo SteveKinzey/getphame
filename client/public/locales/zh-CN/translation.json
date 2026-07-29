@@ -727,7 +727,9 @@
       "createdFrom": "添加于 {{value}} 之后",
       "createdTo": "添加于 {{value}} 之前"
     },
-    "loading": { "contacts": "正在加载已保存的联系人" },
+    "loading": {
+      "contacts": "正在加载已保存的联系人"
+    },
     "export": {
       "empty": "没有可导出的可见联系人。",
       "unavailable": "这些联系人已无法导出。",
@@ -2660,6 +2662,32 @@
           "5": "发送一条允许的记录，然后在此刷新健康状态。"
         }
       }
+    },
+    "wordpressPairing": {
+      "eyebrow": "WordPress 连接请求",
+      "connectedToast": "已连接 WordPress。插件正在完成设置，请返回 WordPress 仪表板。",
+      "notFoundToast": "此连接请求不再可用。请在 WordPress 中发起新的请求。",
+      "unavailableToast": "无法授权此连接。请重试或在 WordPress 中发起新的请求。",
+      "termsRequired": "在连接 WordPress 之前，请接受 API 条款。",
+      "notFoundTitle": "连接请求不再可用",
+      "unavailableTitle": "无法加载此连接",
+      "title": "授权此 WordPress 站点",
+      "loading": "正在加载连接详情…",
+      "notFoundDescription": "为保障安全，Get Phame 无法验证此请求。请返回 WordPress 并发起新的连接。",
+      "unavailableDescription": "您的账户安全无虞。请重试加载该请求；若仍然失败，请在 WordPress 中发起新的连接。",
+      "retry": "重试",
+      "alreadyAuthorized": "此站点已被授权。请返回 WordPress 完成连接。",
+      "expiredDescription": "此连接请求已过期。请返回 WordPress 并发起新的连接请求。",
+      "authorizePrefix": "授权",
+      "siteFallback": "此 WordPress 站点",
+      "authorizeSuffix": "以将客户联系人导入此 Get Phame 账户。系统会自动发放专用的最小权限集成密钥。",
+      "actionRequired": "需要操作",
+      "connected": "已连接",
+      "expired": "连接已过期",
+      "connect": "连接此站点",
+      "failurePrivacy": "未创建或泄露任何凭据。请从 WordPress 仪表板重新开始。",
+      "expiredPrivacy": "请在 WordPress 中发起新的连接。Get Phame 不会接收您的 WordPress 管理员凭据。",
+      "privacy": "此请求将在 15 分钟后过期。Get Phame 不会接收您的 WordPress 管理员凭据。"
     }
   },
   "adaptiveSending": {

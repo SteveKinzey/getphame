@@ -85,4 +85,29 @@ describe("Developer Integrations workspace", () => {
     expect(guide).not.toContain("apiKeyRaw");
     expect(guide).toContain("never inserts an existing raw key");
   });
+
+  it("turns generic WordPress pairing failures into accessible recovery guidance without exposing raw server errors", () => {
+    const page = readProjectFile("../client/src/pages/DeveloperIntegrations.tsx");
+
+    expect(page).toContain('return code === "NOT_FOUND" ? "not_found" : "unavailable"');
+    expect(page).toContain('{ enabled: Boolean(wordpressPairingId), retry: false }');
+    expect(page).toContain('role="alert"');
+    expect(page).toContain('data-testid={`wordpress-pairing-${wordpressPairingFailure}`}');
+    expect(page).toContain('developerIntegrations.wordpressPairing.notFoundDescription');
+    expect(page).toContain('developerIntegrations.wordpressPairing.failurePrivacy');
+    expect(page).not.toContain('wordpressPairingQuery.error.message');
+    expect(page).not.toContain('approveWordPressPairing.error.message');
+  });
+
+  it("ships pairing recovery copy in every served locale", () => {
+    for (const locale of ["en", "zh-CN", "es", "fr", "it", "th", "zh-TW"]) {
+      const catalog = JSON.parse(readProjectFile(`../client/public/locales/${locale}/translation.json`));
+      const pairing = catalog.developerIntegrations?.wordpressPairing;
+
+      expect(pairing?.notFoundTitle).toBeTypeOf("string");
+      expect(pairing?.notFoundDescription).toBeTypeOf("string");
+      expect(pairing?.unavailableDescription).toBeTypeOf("string");
+      expect(pairing?.failurePrivacy).toBeTypeOf("string");
+    }
+  });
 });

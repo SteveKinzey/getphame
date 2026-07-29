@@ -381,3 +381,10 @@
 - [x] Bound and opportunistically prune the per-IP WordPress pairing start-rate map to prevent unbounded process-memory growth, with focused deterministic tests.
 - [x] Reconcile release evidence so initial code checkpoint `8fe04fbb` and final evidence checkpoint `62dbb225` are clearly distinguished, then resolve all PR #42 review conversations.
 - [x] Add final closeout checkpoint `53c7e9b0` and its exact tree-parity purpose to the release evidence, then update PR #43 and resolve the required review conversation without bypassing protected checks.
+- [x] Create and validate a reusable skill that codifies the constant-time security remediation, review-feedback loop, managed checkpoint publication, production verification, and protected GitHub synchronization workflow used in this release.
+- [x] Add a localized, accessible user-facing pairing-failure state that gracefully translates the generic no-store `404 NOT_FOUND` contract into clear recovery guidance without exposing authentication details.
+- [x] Add a localized, visually distinct per-IP pairing rate-limit state with retry guidance, preserved keyboard accessibility, and responsive Get Phame styling.
+- [x] Add focused frontend and endpoint regression coverage for generic pairing failures and `429` rate-limit handling.
+- [ ] Inspect Connector PR #2 PHP CI, repair all remaining plugin issues without bypassing checks, and keep the pull request unmerged until its PHP gate visibly passes.
+- [x] Run focused and full application tests, strict TypeScript, production dependency audit, production build, connector PHP quality gates, responsive verification, whitespace checks, and credential scans.
+- [ ] Save and auto-publish the validated application checkpoint, verify managed and custom production behavior, synchronize protected Get Phame `main` through a normal pull request, and prove exact tree parity.
