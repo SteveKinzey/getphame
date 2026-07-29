@@ -8,6 +8,7 @@ import {
   checkWordPressPairingStartRateLimit,
   getWordPressPairingRateLimitWindow,
   hashWordPressPairingClientIp,
+  resetWordPressPairingRateLimitCleanupScheduleForTests,
 } from "./wordpressPairingRateLimit";
 
 function createDbReturning(requestCount: number, expiresAt: number) {
@@ -22,6 +23,7 @@ function createDbReturning(requestCount: number, expiresAt: number) {
   const select = vi.fn(() => ({ from }));
   return {
     db: { delete: deleteFrom, insert, select },
+    deleteFrom,
     onDuplicateKeyUpdate,
     values,
   };
@@ -30,6 +32,7 @@ function createDbReturning(requestCount: number, expiresAt: number) {
 describe("shared WordPress pairing start limiter", () => {
   beforeEach(() => {
     getDbMock.mockReset();
+    resetWordPressPairingRateLimitCleanupScheduleForTests();
     process.env.JWT_SECRET = "wordpress-pairing-rate-limit-test-secret";
   });
 
@@ -64,5 +67,26 @@ describe("shared WordPress pairing start limiter", () => {
       windowMs: 10_000,
       maxStarts: 12,
     })).resolves.toEqual({ allowed: false, remaining: 0, retryAfterSeconds: 8 });
+  });
+
+  it("cleans expired windows at most once per cleanup interval in one process", async () => {
+    const { db, deleteFrom } = createDbReturning(1, 20_000);
+    getDbMock.mockResolvedValue(db);
+
+    await checkWordPressPairingStartRateLimit("198.51.100.10", 12_345, {
+      windowMs: 10_000,
+      cleanupIntervalMs: 60_000,
+    });
+    await checkWordPressPairingStartRateLimit("198.51.100.10", 12_346, {
+      windowMs: 10_000,
+      cleanupIntervalMs: 60_000,
+    });
+    expect(deleteFrom).toHaveBeenCalledTimes(1);
+
+    await checkWordPressPairingStartRateLimit("198.51.100.10", 72_345, {
+      windowMs: 10_000,
+      cleanupIntervalMs: 60_000,
+    });
+    expect(deleteFrom).toHaveBeenCalledTimes(2);
   });
 });
