@@ -385,6 +385,6 @@
 - [x] Add a localized, accessible user-facing pairing-failure state that gracefully translates the generic no-store `404 NOT_FOUND` contract into clear recovery guidance without exposing authentication details.
 - [x] Add a localized, visually distinct per-IP pairing rate-limit state with retry guidance, preserved keyboard accessibility, and responsive Get Phame styling.
 - [x] Add focused frontend and endpoint regression coverage for generic pairing failures and `429` rate-limit handling.
-- [ ] Inspect Connector PR #2 PHP CI, repair all remaining plugin issues without bypassing checks, and keep the pull request unmerged until its PHP gate visibly passes.
+- [x] Inspect Connector PR #2 PHP CI, repair all remaining plugin issues without bypassing checks, and keep the pull request unmerged until its PHP gate visibly passes.
 - [x] Run focused and full application tests, strict TypeScript, production dependency audit, production build, connector PHP quality gates, responsive verification, whitespace checks, and credential scans.
 - [ ] Save and auto-publish the validated application checkpoint, verify managed and custom production behavior, synchronize protected Get Phame `main` through a normal pull request, and prove exact tree parity.
