@@ -74,17 +74,55 @@ const wordpressPairingStartSchema = z.object({
 
 const WORDPRESS_PAIRING_WINDOW_MS = 10 * 60 * 1000;
 const WORDPRESS_PAIRING_MAX_STARTS_PER_WINDOW = 12;
-const wordpressPairingStarts = new Map<string, { count: number; startedAt: number }>();
+const WORDPRESS_PAIRING_MAX_TRACKED_CLIENTS = 10_000;
+const WORDPRESS_PAIRING_PRUNE_INTERVAL_MS = 60 * 1000;
+
+export function createWordPressPairingStartLimiter(options: {
+  windowMs?: number;
+  maxStartsPerWindow?: number;
+  maxTrackedClients?: number;
+  pruneIntervalMs?: number;
+} = {}) {
+  const windowMs = options.windowMs ?? WORDPRESS_PAIRING_WINDOW_MS;
+  const maxStartsPerWindow = options.maxStartsPerWindow ?? WORDPRESS_PAIRING_MAX_STARTS_PER_WINDOW;
+  const maxTrackedClients = options.maxTrackedClients ?? WORDPRESS_PAIRING_MAX_TRACKED_CLIENTS;
+  const pruneIntervalMs = options.pruneIntervalMs ?? WORDPRESS_PAIRING_PRUNE_INTERVAL_MS;
+  const starts = new Map<string, { count: number; startedAt: number }>();
+  let lastPrunedAt: number | null = null;
+
+  const pruneExpired = (now: number) => {
+    starts.forEach((entry, clientIp) => {
+      if (now - entry.startedAt >= windowMs) starts.delete(clientIp);
+    });
+    lastPrunedAt = now;
+  };
+
+  return {
+    canStart(clientIp: string, now = Date.now()) {
+      if (lastPrunedAt === null || now - lastPrunedAt >= pruneIntervalMs || starts.size >= maxTrackedClients) {
+        pruneExpired(now);
+      }
+
+      const existing = starts.get(clientIp);
+      if (!existing || now - existing.startedAt >= windowMs) {
+        if (!existing && starts.size >= maxTrackedClients) return false;
+        starts.set(clientIp, { count: 1, startedAt: now });
+        return true;
+      }
+      if (existing.count >= maxStartsPerWindow) return false;
+      existing.count += 1;
+      return true;
+    },
+    getTrackedClientCount() {
+      return starts.size;
+    },
+  };
+}
+
+const wordpressPairingStartLimiter = createWordPressPairingStartLimiter();
 
 function canStartWordPressPairing(clientIp: string, now = Date.now()) {
-  const existing = wordpressPairingStarts.get(clientIp);
-  if (!existing || now - existing.startedAt >= WORDPRESS_PAIRING_WINDOW_MS) {
-    wordpressPairingStarts.set(clientIp, { count: 1, startedAt: now });
-    return true;
-  }
-  if (existing.count >= WORDPRESS_PAIRING_MAX_STARTS_PER_WINDOW) return false;
-  existing.count += 1;
-  return true;
+  return wordpressPairingStartLimiter.canStart(clientIp, now);
 }
 
 function normalizeAffirmativeBoolean(value: unknown) {
@@ -669,7 +707,10 @@ export function registerPublicApiRoutes(app: Router) {
     res.setHeader("Cache-Control", "no-store");
     const pairingSecret = req.header("X-Get-Phame-Pairing-Secret")?.trim() ?? "";
     if (!pairingSecret.startsWith("wps_") || pairingSecret.length < 32) {
-      return res.status(400).json({ error: "A valid WordPress pairing secret is required." });
+      return res.status(404).json({
+        error: "This WordPress connection request was not found.",
+        code: "NOT_FOUND",
+      });
     }
     try {
       const credentials = await claimWordPressPairing({

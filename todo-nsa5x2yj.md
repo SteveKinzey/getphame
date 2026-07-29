@@ -377,3 +377,6 @@
 - [x] Run the full Get Phame release gates on the exact managed tree: focused and full Vitest, strict TypeScript, production dependency audit, production build, whitespace and credential scans, plus affected responsive/runtime verification.
 - [x] Save and auto-publish the validated managed checkpoint, then verify managed and custom production health plus directly affected fail-safe pairing behavior without external customer side effects.
 - [ ] Synchronize the exact released tree through protected GitHub `main` using a fresh history-preserving release branch and normal pull request, supersede PR #40 without force-push, prove final tree parity, and leave connector PR #2 unmerged until PHP CI passes.
+- [x] Make malformed public pairing secrets indistinguishable from unknown and wrong secrets by returning the same generic no-store `404 NOT_FOUND` response and add endpoint-level regression coverage.
+- [x] Bound and opportunistically prune the per-IP WordPress pairing start-rate map to prevent unbounded process-memory growth, with focused deterministic tests.
+- [ ] Reconcile release evidence so initial code checkpoint `8fe04fbb` and final evidence checkpoint `62dbb225` are clearly distinguished, then resolve all PR #42 review conversations.
