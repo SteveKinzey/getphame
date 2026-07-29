@@ -728,7 +728,9 @@
       "createdFrom": "新增於 {{value}} 之後",
       "createdTo": "新增於 {{value}} 之前"
     },
-    "loading": { "contacts": "正在載入已儲存的聯絡人" },
+    "loading": {
+      "contacts": "正在載入已儲存的聯絡人"
+    },
     "export": {
       "empty": "沒有可匯出的可見聯絡人。",
       "unavailable": "這些聯絡人已無法匯出。",
@@ -2547,6 +2549,32 @@
           "5": "傳送一筆允許的記錄，然後在此更新健康狀態。"
         }
       }
+    },
+    "wordpressPairing": {
+      "eyebrow": "WordPress 連線請求",
+      "connectedToast": "已連線 WordPress。請回到 WordPress 儀表板，外掛將完成設定。",
+      "notFoundToast": "此連線請求已不再可用。請在 WordPress 中重新發起請求。",
+      "unavailableToast": "無法授權此連線。請再試一次，或於 WordPress 中重新發起請求。",
+      "termsRequired": "連線 WordPress 前請先接受 API 條款。",
+      "notFoundTitle": "連線請求已不再可用",
+      "unavailableTitle": "無法載入此連線",
+      "title": "授權此 WordPress 網站",
+      "loading": "正在載入連線詳細資料…",
+      "notFoundDescription": "為保障您的安全，Get Phame 無法驗證此請求。請回到 WordPress 並重新建立連線。",
+      "unavailableDescription": "您的帳戶安全無虞。請重試載入該請求；若仍失敗，請在 WordPress 中重新建立連線。",
+      "retry": "重試",
+      "alreadyAuthorized": "此網站已被授權。請回到 WordPress 完成連線。",
+      "expiredDescription": "此連線請求已過期。請回到 WordPress 並重新發起連線請求。",
+      "authorizePrefix": "授權",
+      "siteFallback": "此 WordPress 網站",
+      "authorizeSuffix": "以將客戶聯絡資料匯入此 Get Phame 帳戶。系統會自動發行專用且最低權限的整合金鑰。",
+      "actionRequired": "需要操作",
+      "connected": "已連線",
+      "expired": "連線已過期",
+      "connect": "連線此網站",
+      "failurePrivacy": "未建立或洩露任何憑證。請從 WordPress 儀表板重新開始。",
+      "expiredPrivacy": "請在 WordPress 中重新建立連線。Get Phame 不會接收您的 WordPress 管理員憑證。",
+      "privacy": "此請求將於 15 分鐘後到期。Get Phame 不會接收您的 WordPress 管理員憑證。"
     }
   },
   "promotionLink": {

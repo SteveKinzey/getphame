@@ -45,6 +45,14 @@ import { trpc } from "@/lib/trpc";
 type DeveloperScope = "contacts:write" | "review_requests:send";
 type PendingAction = { type: "rotate" | "revoke"; id: number; label: string } | null;
 type RevealedSecret = { rawKey: string; label: string; keyHint: string } | null;
+type WordPressPairingFailure = "not_found" | "unavailable";
+
+export function classifyWordPressPairingFailure(error: unknown): WordPressPairingFailure {
+  const code = typeof error === "object" && error !== null && "data" in error
+    ? (error as { data?: { code?: string } }).data?.code
+    : undefined;
+  return code === "NOT_FOUND" ? "not_found" : "unavailable";
+}
 
 const SCOPE_OPTIONS: Array<{ value: DeveloperScope; label: string; detail: string }> = [
   {
@@ -91,6 +99,7 @@ export default function DeveloperIntegrationsPage() {
   const [revealedSecret, setRevealedSecret] = useState<RevealedSecret>(null);
   const [pendingAction, setPendingAction] = useState<PendingAction>(null);
   const [showGuide, setShowGuide] = useState(() => new URLSearchParams(window.location.search).get("guides") === "1");
+  const [wordpressPairingActionFailure, setWordpressPairingActionFailure] = useState<WordPressPairingFailure | null>(null);
 
   const keyQuery = trpc.apiKey.list.useQuery();
   const importQuery = trpc.apiKey.recentImports.useQuery({ limit: 25 });
@@ -101,11 +110,20 @@ export default function DeveloperIntegrationsPage() {
   );
   const approveWordPressPairing = trpc.wordpressPairing.approve.useMutation({
     onSuccess: async () => {
+      setWordpressPairingActionFailure(null);
       await wordpressPairingQuery.refetch();
-      toast.success("WordPress connected. Return to your WordPress dashboard while the plugin completes setup.");
+      toast.success(t("developerIntegrations.wordpressPairing.connectedToast", { defaultValue: "WordPress connected. Return to your WordPress dashboard while the plugin completes setup." }));
     },
-    onError: (error) => toast.error(error.message),
+    onError: (error) => {
+      const failure = classifyWordPressPairingFailure(error);
+      setWordpressPairingActionFailure(failure);
+      toast.error(failure === "not_found"
+        ? t("developerIntegrations.wordpressPairing.notFoundToast", { defaultValue: "This connection request is no longer available. Start a new request in WordPress." })
+        : t("developerIntegrations.wordpressPairing.unavailableToast", { defaultValue: "We could not authorize this connection. Try again or start a new request in WordPress." }));
+    },
   });
+  const wordpressPairingFailure = wordpressPairingActionFailure
+    ?? (wordpressPairingQuery.error ? classifyWordPressPairingFailure(wordpressPairingQuery.error) : null);
 
   const createKey = trpc.apiKey.generate.useMutation({
     onSuccess: async (data) => {
@@ -213,9 +231,10 @@ export default function DeveloperIntegrationsPage() {
     if (!wordpressPairingId) return;
     if (!enrollmentQuery.data?.termsAccepted) {
       document.getElementById("developer-enrollment")?.scrollIntoView({ behavior: "smooth", block: "start" });
-      toast.error("Accept the API Terms before connecting WordPress.");
+      toast.error(t("developerIntegrations.wordpressPairing.termsRequired", { defaultValue: "Accept the API Terms before connecting WordPress." }));
       return;
     }
+    setWordpressPairingActionFailure(null);
     approveWordPressPairing.mutate({ pairingId: wordpressPairingId });
   };
 
@@ -290,30 +309,67 @@ export default function DeveloperIntegrationsPage() {
         </section>
 
         {wordpressPairingId && (
-          <section aria-labelledby="wordpress-pairing-title" className="rounded-3xl border border-[oklch(0.78_0.13_80)] bg-[oklch(0.98_0.025_80)] p-5 shadow-sm sm:p-6" data-testid="wordpress-pairing-approval">
+          <section
+            aria-labelledby="wordpress-pairing-title"
+            className={`rounded-3xl border p-5 shadow-sm sm:p-6 ${wordpressPairingFailure === "not_found" ? "border-rose-300 bg-rose-50" : wordpressPairingFailure === "unavailable" ? "border-amber-300 bg-amber-50" : "border-[oklch(0.78_0.13_80)] bg-[oklch(0.98_0.025_80)]"}`}
+            data-testid="wordpress-pairing-approval"
+          >
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="flex gap-3">
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-xl rr-bg-navy rr-text-gold"><ShieldCheck size={20} aria-hidden="true" /></span>
+                <span className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${wordpressPairingFailure ? "bg-rose-100 text-rose-800" : "rr-bg-navy rr-text-gold"}`}>
+                  {wordpressPairingFailure ? <ShieldAlert size={20} aria-hidden="true" /> : <ShieldCheck size={20} aria-hidden="true" />}
+                </span>
                 <div>
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-amber-800">WordPress connection request</p>
-                  <h2 id="wordpress-pairing-title" className="mt-1 text-xl font-semibold rr-text-navy">Authorize this WordPress site</h2>
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-amber-800">{t("developerIntegrations.wordpressPairing.eyebrow", { defaultValue: "WordPress connection request" })}</p>
+                  <h2 id="wordpress-pairing-title" className="mt-1 text-xl font-semibold rr-text-navy">
+                    {wordpressPairingFailure === "not_found"
+                      ? t("developerIntegrations.wordpressPairing.notFoundTitle", { defaultValue: "Connection request no longer available" })
+                      : wordpressPairingFailure === "unavailable"
+                        ? t("developerIntegrations.wordpressPairing.unavailableTitle", { defaultValue: "We could not load this connection" })
+                        : t("developerIntegrations.wordpressPairing.title", { defaultValue: "Authorize this WordPress site" })}
+                  </h2>
                   {wordpressPairingQuery.isLoading ? (
-                    <p className="mt-2 flex items-center gap-2 text-sm rr-text-navy-muted"><Loader2 size={15} className="animate-spin" aria-hidden="true" />Loading connection details…</p>
-                  ) : wordpressPairingQuery.isError ? (
-                    <p className="mt-2 text-sm leading-6 text-rose-800">{wordpressPairingQuery.error.message}</p>
+                    <p className="mt-2 flex items-center gap-2 text-sm rr-text-navy-muted"><Loader2 size={15} className="animate-spin" aria-hidden="true" />{t("developerIntegrations.wordpressPairing.loading", { defaultValue: "Loading connection details…" })}</p>
+                  ) : wordpressPairingFailure ? (
+                    <div className="mt-3 max-w-2xl" role="alert" data-testid={`wordpress-pairing-${wordpressPairingFailure}`}>
+                      <p className={`text-sm font-bold leading-6 ${wordpressPairingFailure === "not_found" ? "text-rose-900" : "text-amber-950"}`}>
+                        {wordpressPairingFailure === "not_found"
+                          ? t("developerIntegrations.wordpressPairing.notFoundDescription", { defaultValue: "For your security, Get Phame cannot verify this request. Return to WordPress and start a new connection." })
+                          : t("developerIntegrations.wordpressPairing.unavailableDescription", { defaultValue: "Your account is safe. Try loading the request again. If it still fails, start a new connection in WordPress." })}
+                      </p>
+                      {wordpressPairingFailure === "unavailable" && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setWordpressPairingActionFailure(null);
+                            void wordpressPairingQuery.refetch();
+                          }}
+                          disabled={wordpressPairingQuery.isFetching}
+                          className="mt-3 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-amber-400 bg-white px-4 text-sm font-black text-amber-950 transition active:scale-[0.97] disabled:opacity-60"
+                        >
+                          <RefreshCw size={15} className={wordpressPairingQuery.isFetching ? "animate-spin" : ""} aria-hidden="true" />
+                          {t("developerIntegrations.wordpressPairing.retry", { defaultValue: "Try again" })}
+                        </button>
+                      )}
+                    </div>
                   ) : (
                     <p className="mt-2 max-w-2xl text-sm leading-6 rr-text-navy-muted">
                       {wordpressPairingQuery.data?.status === "approved" || wordpressPairingQuery.data?.status === "claimed"
-                        ? <>This site is already authorized. Return to WordPress to finish the connection.</>
+                        ? <>{t("developerIntegrations.wordpressPairing.alreadyAuthorized", { defaultValue: "This site is already authorized. Return to WordPress to finish the connection." })}</>
                         : wordpressPairingQuery.data?.status === "expired"
-                          ? <>This connection request expired. Return to WordPress and start a new connection request.</>
-                          : <>Authorize <strong className="rr-text-navy">{wordpressPairingQuery.data?.siteLabel ?? "this WordPress site"}</strong> ({wordpressPairingQuery.data?.siteHost}) to import customer contacts into this Get Phame account. A dedicated, least-privilege integration key will be issued automatically.</>}
+                          ? <>{t("developerIntegrations.wordpressPairing.expiredDescription", { defaultValue: "This connection request expired. Return to WordPress and start a new connection request." })}</>
+                          : <>{t("developerIntegrations.wordpressPairing.authorizePrefix", { defaultValue: "Authorize" })} <strong className="rr-text-navy">{wordpressPairingQuery.data?.siteLabel ?? t("developerIntegrations.wordpressPairing.siteFallback", { defaultValue: "this WordPress site" })}</strong> ({wordpressPairingQuery.data?.siteHost}) {t("developerIntegrations.wordpressPairing.authorizeSuffix", { defaultValue: "to import customer contacts into this Get Phame account. A dedicated, least-privilege integration key will be issued automatically." })}</>}
                     </p>
                   )}
                 </div>
               </div>
-              {wordpressPairingQuery.data?.status === "approved" || wordpressPairingQuery.data?.status === "claimed" ? (
-                <span className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-100 px-4 text-sm font-black text-emerald-900"><Check size={16} aria-hidden="true" />Connected</span>
+              {wordpressPairingFailure ? (
+                <span className={`inline-flex min-h-11 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black ${wordpressPairingFailure === "not_found" ? "bg-rose-100 text-rose-900" : "bg-amber-100 text-amber-950"}`}>
+                  <ShieldAlert size={16} aria-hidden="true" />
+                  {t("developerIntegrations.wordpressPairing.actionRequired", { defaultValue: "Action required" })}
+                </span>
+              ) : wordpressPairingQuery.data?.status === "approved" || wordpressPairingQuery.data?.status === "claimed" ? (
+                <span className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-100 px-4 text-sm font-black text-emerald-900"><Check size={16} aria-hidden="true" />{t("developerIntegrations.wordpressPairing.connected", { defaultValue: "Connected" })}</span>
               ) : (
                 <button
                   type="button"
@@ -322,11 +378,19 @@ export default function DeveloperIntegrationsPage() {
                   className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl px-4 text-sm font-black rr-bg-navy rr-text-gold transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.65_0.16_80)] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {approveWordPressPairing.isPending && <Loader2 size={16} className="animate-spin" aria-hidden="true" />}
-                  {wordpressPairingQuery.data?.status === "expired" ? "Connection expired" : "Connect this site"}
+                  {wordpressPairingQuery.data?.status === "expired"
+                    ? t("developerIntegrations.wordpressPairing.expired", { defaultValue: "Connection expired" })
+                    : t("developerIntegrations.wordpressPairing.connect", { defaultValue: "Connect this site" })}
                 </button>
               )}
             </div>
-            <p className="mt-4 border-t border-amber-200 pt-3 text-xs leading-5 text-amber-900">{wordpressPairingQuery.data?.status === "expired" ? "Start a new connection in WordPress. Get Phame never receives your WordPress administrator credentials." : "This request expires in 15 minutes. Get Phame never receives your WordPress administrator credentials."}</p>
+            <p className={`mt-4 border-t pt-3 text-xs leading-5 ${wordpressPairingFailure === "not_found" ? "border-rose-200 text-rose-900" : "border-amber-200 text-amber-900"}`}>
+              {wordpressPairingFailure
+                ? t("developerIntegrations.wordpressPairing.failurePrivacy", { defaultValue: "No credentials were created or exposed. Start again from your WordPress dashboard." })
+                : wordpressPairingQuery.data?.status === "expired"
+                  ? t("developerIntegrations.wordpressPairing.expiredPrivacy", { defaultValue: "Start a new connection in WordPress. Get Phame never receives your WordPress administrator credentials." })
+                  : t("developerIntegrations.wordpressPairing.privacy", { defaultValue: "This request expires in 15 minutes. Get Phame never receives your WordPress administrator credentials." })}
+            </p>
           </section>
         )}
 

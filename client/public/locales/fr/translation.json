@@ -965,7 +965,9 @@
       "createdFrom": "Ajouté après le {{value}}",
       "createdTo": "Ajouté avant le {{value}}"
     },
-    "loading": { "contacts": "Chargement des contacts enregistrés" },
+    "loading": {
+      "contacts": "Chargement des contacts enregistrés"
+    },
     "export": {
       "empty": "Aucun contact visible à exporter.",
       "unavailable": "Ces contacts ne sont plus disponibles pour l’exportation.",
@@ -3041,6 +3043,32 @@
           "5": "Envoyez un enregistrement autorisé, puis actualisez l'état ici."
         }
       }
+    },
+    "wordpressPairing": {
+      "eyebrow": "Demande de connexion WordPress",
+      "connectedToast": "WordPress connecté. Revenez à votre tableau de bord WordPress pendant que le plugin termine la configuration.",
+      "notFoundToast": "Cette demande de connexion n'est plus disponible. Lancez une nouvelle demande dans WordPress.",
+      "unavailableToast": "Nous n'avons pas pu autoriser cette connexion. Réessayez ou lancez une nouvelle demande dans WordPress.",
+      "termsRequired": "Acceptez les conditions de l'API avant de connecter WordPress.",
+      "notFoundTitle": "Demande de connexion non disponible",
+      "unavailableTitle": "Impossible de charger cette connexion",
+      "title": "Autoriser ce site WordPress",
+      "loading": "Chargement des détails de la connexion…",
+      "notFoundDescription": "Pour votre sécurité, Get Phame ne peut pas vérifier cette demande. Retournez dans WordPress et démarrez une nouvelle connexion.",
+      "unavailableDescription": "Votre compte est en sécurité. Essayez de recharger la demande. Si cela échoue encore, lancez une nouvelle connexion dans WordPress.",
+      "retry": "Réessayer",
+      "alreadyAuthorized": "Ce site est déjà autorisé. Retournez dans WordPress pour terminer la connexion.",
+      "expiredDescription": "Cette demande de connexion a expiré. Retournez dans WordPress et lancez une nouvelle demande de connexion.",
+      "authorizePrefix": "Autoriser",
+      "siteFallback": "ce site WordPress",
+      "authorizeSuffix": "pour importer les contacts clients dans ce compte Get Phame. Une clé d'intégration dédiée à privilèges minimaux sera émise automatiquement.",
+      "actionRequired": "Action requise",
+      "connected": "Connecté",
+      "expired": "Connexion expirée",
+      "connect": "Connecter ce site",
+      "failurePrivacy": "Aucun identifiant n'a été créé ni exposé. Recommencez depuis votre tableau de bord WordPress.",
+      "expiredPrivacy": "Démarrez une nouvelle connexion dans WordPress. Get Phame ne reçoit jamais vos identifiants d'administrateur WordPress.",
+      "privacy": "Cette demande expire dans 15 minutes. Get Phame ne reçoit jamais vos identifiants d'administrateur WordPress."
     }
   },
   "landing": {
