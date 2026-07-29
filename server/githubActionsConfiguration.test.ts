@@ -24,7 +24,7 @@ describe("GitHub Actions configuration", () => {
     expect(workflow).not.toMatch(/actions\/checkout@v[1-6]/);
   });
 
-  it("updates GitHub Actions weekly through one controlled Dependabot entry", () => {
+  it("updates GitHub Actions weekly through one patch-isolated Dependabot entry", () => {
     const dependabot = readProjectFile("../.github/dependabot.yml");
     const actionsEntries =
       dependabot.match(/package-ecosystem: "github-actions"/g) ?? [];
@@ -39,9 +39,12 @@ describe("GitHub Actions configuration", () => {
     expect(actionsBlock).toContain('time: "09:00"');
     expect(actionsBlock).toContain('timezone: "America/Los_Angeles"');
     expect(actionsBlock).toContain("open-pull-requests-limit: 5");
-    expect(actionsBlock).toContain(`github-actions:
+    expect(actionsBlock).toContain(`github-actions-patches:
+        applies-to: version-updates
         patterns:
-          - "*"`);
+          - "*"
+        update-types:
+          - "patch"`);
     expect(actionsBlock).toContain('- "github-actions"');
     expect(actionsBlock).toContain('prefix: "chore(ci)"');
     expect(actionsBlock).toContain('- "SteveKinzey"');

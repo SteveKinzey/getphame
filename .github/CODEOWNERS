@@ -1,0 +1,5 @@
+# CI control-plane ownership. Review requests are automatic; approval is not required.
+/.github/workflows/ @SteveKinzey
+/.github/dependabot.yml @SteveKinzey
+/scripts/audit-github-actions.mjs @SteveKinzey
+/.github/CODEOWNERS @SteveKinzey
