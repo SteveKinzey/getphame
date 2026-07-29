@@ -42,6 +42,12 @@ import {
   type DeveloperApiErrorCode,
 } from "./developerApiImports";
 import { resolveSourceConnectionForPrincipal } from "./sourceConnections";
+import {
+  claimWordPressPairing,
+  getWordPressPairingStatusCode,
+  initiateWordPressPairing,
+  WordPressPairingError,
+} from "./wordpressPairing";
 
 const consentSchema = z.object({
   confirmed: z.literal(true),
@@ -60,6 +66,64 @@ const contactImportSchema = z.object({
   sourceApp: z.string().trim().min(1).max(64).regex(/^[a-z0-9][a-z0-9._-]*$/i).optional(),
   consent: consentSchema.optional(),
 }).passthrough();
+
+const wordpressPairingStartSchema = z.object({
+  siteUrl: z.string().trim().url().max(2_048),
+  siteLabel: z.string().trim().max(100).optional().nullable(),
+});
+
+const WORDPRESS_PAIRING_WINDOW_MS = 10 * 60 * 1000;
+const WORDPRESS_PAIRING_MAX_STARTS_PER_WINDOW = 12;
+const WORDPRESS_PAIRING_MAX_TRACKED_CLIENTS = 10_000;
+const WORDPRESS_PAIRING_PRUNE_INTERVAL_MS = 60 * 1000;
+
+export function createWordPressPairingStartLimiter(options: {
+  windowMs?: number;
+  maxStartsPerWindow?: number;
+  maxTrackedClients?: number;
+  pruneIntervalMs?: number;
+} = {}) {
+  const windowMs = options.windowMs ?? WORDPRESS_PAIRING_WINDOW_MS;
+  const maxStartsPerWindow = options.maxStartsPerWindow ?? WORDPRESS_PAIRING_MAX_STARTS_PER_WINDOW;
+  const maxTrackedClients = options.maxTrackedClients ?? WORDPRESS_PAIRING_MAX_TRACKED_CLIENTS;
+  const pruneIntervalMs = options.pruneIntervalMs ?? WORDPRESS_PAIRING_PRUNE_INTERVAL_MS;
+  const starts = new Map<string, { count: number; startedAt: number }>();
+  let lastPrunedAt: number | null = null;
+
+  const pruneExpired = (now: number) => {
+    starts.forEach((entry, clientIp) => {
+      if (now - entry.startedAt >= windowMs) starts.delete(clientIp);
+    });
+    lastPrunedAt = now;
+  };
+
+  return {
+    canStart(clientIp: string, now = Date.now()) {
+      if (lastPrunedAt === null || now - lastPrunedAt >= pruneIntervalMs || starts.size >= maxTrackedClients) {
+        pruneExpired(now);
+      }
+
+      const existing = starts.get(clientIp);
+      if (!existing || now - existing.startedAt >= windowMs) {
+        if (!existing && starts.size >= maxTrackedClients) return false;
+        starts.set(clientIp, { count: 1, startedAt: now });
+        return true;
+      }
+      if (existing.count >= maxStartsPerWindow) return false;
+      existing.count += 1;
+      return true;
+    },
+    getTrackedClientCount() {
+      return starts.size;
+    },
+  };
+}
+
+const wordpressPairingStartLimiter = createWordPressPairingStartLimiter();
+
+function canStartWordPressPairing(clientIp: string, now = Date.now()) {
+  return wordpressPairingStartLimiter.canStart(clientIp, now);
+}
 
 function normalizeAffirmativeBoolean(value: unknown) {
   if (value === true || value === 1) return true;
@@ -607,6 +671,63 @@ export function registerPublicApiRoutes(app: Router) {
       }
       const isUserError = msg.includes("limit") || msg.includes("SMTP") || msg.includes("profile") || msg.includes("subscription");
       return res.status(isUserError ? 400 : 500).json({ error: msg });
+    }
+  });
+
+  /**
+   * WordPress pairing is a device-style authorization flow. A plugin starts a
+   * short-lived request, sends its administrator to the signed-in Get Phame
+   * approval page, then claims its scoped credentials exactly once.
+   */
+  app.post("/api/v1/wordpress/pairings", async (req: Request, res: Response) => {
+    res.setHeader("Cache-Control", "no-store");
+    const clientIp = getApiClientIp(req);
+    if (!canStartWordPressPairing(clientIp)) {
+      res.setHeader("Retry-After", String(Math.ceil(WORDPRESS_PAIRING_WINDOW_MS / 1_000)));
+      return res.status(429).json({
+        error: "Too many WordPress connection attempts. Try again shortly.",
+        retryAfterSeconds: Math.ceil(WORDPRESS_PAIRING_WINDOW_MS / 1_000),
+      });
+    }
+
+    const parsed = wordpressPairingStartSchema.safeParse(req.body ?? {});
+    if (!parsed.success) {
+      return res.status(400).json({ error: "siteUrl must be a valid http or https URL." });
+    }
+    try {
+      const pairing = await initiateWordPressPairing(parsed.data);
+      return res.status(201).json(pairing);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Could not start the WordPress connection.";
+      return res.status(400).json({ error: message });
+    }
+  });
+
+  app.post("/api/v1/wordpress/pairings/:pairingId/claim", async (req: Request, res: Response) => {
+    res.setHeader("Cache-Control", "no-store");
+    const pairingSecret = req.header("X-Get-Phame-Pairing-Secret")?.trim() ?? "";
+    if (!pairingSecret.startsWith("wps_") || pairingSecret.length < 32) {
+      return res.status(404).json({
+        error: "This WordPress connection request was not found.",
+        code: "NOT_FOUND",
+      });
+    }
+    try {
+      const credentials = await claimWordPressPairing({
+        pairingId: String(req.params.pairingId ?? "").trim().slice(0, 64),
+        pairingSecret,
+      });
+      return res.status(200).json({ status: "connected", ...credentials });
+    } catch (error) {
+      if (error instanceof WordPressPairingError) {
+        const status = getWordPressPairingStatusCode(error);
+        if (status === 202) {
+          res.setHeader("Retry-After", "4");
+          return res.status(status).json({ status: "pending", retryAfterSeconds: 4 });
+        }
+        return res.status(status).json({ error: error.message, code: error.code });
+      }
+      return res.status(500).json({ error: "Could not complete the WordPress connection. Start a new connection if the problem persists." });
     }
   });
 }
