@@ -1022,6 +1022,24 @@ export const apiRateLimitWindows = pgTable("api_rate_limit_windows", {
 export type ApiRateLimitWindow = typeof apiRateLimitWindows.$inferSelect;
 export type InsertApiRateLimitWindow = typeof apiRateLimitWindows.$inferInsert;
 
+/** Shared per-IP windows for unauthenticated WordPress pairing starts across Autoscale instances. */
+export const wordpressPairingRateLimitWindows = pgTable("wordpress_pairing_rate_limit_windows", {
+  id: serial("id").primaryKey(),
+  dimensionHash: varchar("dimensionHash", { length: 64 }).notNull(),
+  windowStartedAt: bigint("windowStartedAt", { mode: "number" }).notNull(),
+  requestCount: integer("requestCount").notNull().default(0),
+  expiresAt: bigint("expiresAt", { mode: "number" }).notNull(),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+}, (table) => [
+  uniqueIndex("wordpress_pairing_rate_limit_dimension_window_unique").on(
+    table.dimensionHash,
+    table.windowStartedAt,
+  ),
+  index("wordpress_pairing_rate_limit_expiry_idx").on(table.expiresAt),
+]);
+export type WordPressPairingRateLimitWindow = typeof wordpressPairingRateLimitWindows.$inferSelect;
+export type InsertWordPressPairingRateLimitWindow = typeof wordpressPairingRateLimitWindows.$inferInsert;
+
 /**
  * Persistent abuse windows for public API side effects. Dimensions are stored
  * only as keyed hashes, never raw IP addresses or recipient email addresses.

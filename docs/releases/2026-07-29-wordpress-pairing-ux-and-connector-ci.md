@@ -16,13 +16,13 @@ A valid-shape unknown identifier (`wpb_` plus 12 characters) exercised the actua
 
 | Gate | Result |
 |---|---|
-| Get Phame focused pairing and localization regressions | 68 tests passed |
-| Get Phame full Vitest suite | 133 files passed; 788 tests passed; 6 skipped |
+| Get Phame focused pairing, shared-limiter, and cross-product regressions | 29 tests passed |
+| Get Phame full Vitest suite | 134 files passed; 792 tests passed; 6 skipped |
 | Strict TypeScript | Passed with no diagnostics |
 | Production dependency audit | No known high-severity production vulnerabilities |
 | Production client and server build | Passed |
-| Connector PHPUnit | 23 tests and 139 assertions passed |
-| Connector WordPress coding standards | 4 files passed PHP_CodeSniffer |
+| Connector PHPUnit | 26 tests and 155 assertions passed |
+| Connector WordPress coding standards | 6 files passed PHP_CodeSniffer |
 | Connector PHP syntax and Composer metadata | Passed |
 | Whitespace, stale-cache, and changed-file scans | Passed |
 
@@ -34,11 +34,19 @@ PR 44 review identified two valid presentation defects in the recovery panel: th
 
 The reviewed replacement tree passed the focused Developer Integrations regression (8 tests), the complete Vitest suite (133 files and 788 tests passed; 6 skipped), strict TypeScript, the production-only high-severity dependency audit, and the production build. It was saved and auto-published as checkpoint `16e7594a`; its exact tree is `8a02c83fd12003f49dd301e7e3b4169e0369fb97`.
 
+## Hybrid Pairing Hardening
+
+The first bounded production burst returned 13 successful pairing starts without a `429`. The application was using a process-local map, so Autoscale instances could enforce independent windows. The release replaces that map with a privacy-preserving shared database window keyed by a server-secret fingerprint, uses an atomic MySQL upsert, fails closed on storage errors, preserves `Retry-After` and `retryAfterSeconds`, and indexes expiration for bounded cleanup.
+
+Migration `0034_faithful_selene.sql` adds only the shared limiter table and expiry index; the managed database schema was verified after application. On the managed preview, the bounded hybrid smoke returned readiness `200`, identical no-store generic `404 NOT_FOUND` bodies for unknown and malformed claims without forbidden credential fields, and the first shared-window `429` on start attempt 20. The response included both a positive `Retry-After` header and `retryAfterSeconds` value, and the runner stopped immediately.
+
+The reusable `security-remediation-release-loop` skill now includes a canonical WordPress pairing contract, a byte-for-byte comparator, a bounded production smoke runner, and ordered release gates. Identical contract snapshots are vendored in the application and Connector repositories. Native Vitest and PHPUnit regressions bind both implementations to request shape, generic failure privacy, no-store behavior, retry semantics, localized warning state, and immediate stale-control cleanup; the comparator confirmed all three snapshots match.
+
 ## Connector PR 2 GitHub Evidence
 
 The transient-expiry, immediate-cleanup, stale-control reset, rate-limit warning, PHP_CodeSniffer, and regression-test changes were committed as `383208daf545b8969d8f8657dda098a55d7aa5dc` and pushed normally to `feature/wordpress-self-service-binding`. GitHub reported the pull request as `CLEAN` in three consecutive polls after initially reporting it as `UNSTABLE`; the REST merge state was also `clean`. All three review conversations were answered with commit-level evidence and resolved.
 
-Connector PR 2 remains open and unmerged as required. Its head is `383208daf545b8969d8f8657dda098a55d7aa5dc`, it has zero unresolved review threads, and the locally executed PHP gate remains 23 PHPUnit tests with 139 assertions plus a clean PHP_CodeSniffer run. The current GitHub integration can read the pull request's aggregate clean state but is not authorized to read the private repository's named check-run details; no unavailable check detail is represented as direct evidence.
+The synchronized contract and Connector-native cross-product regression were added at reviewed head `288cd5f27057d4dbc8c047d48fc115a872b71dfd`. The exact head passed 26 PHPUnit tests with 155 assertions, PHP_CodeSniffer across all six checked PHP files, PHP syntax, contract parity, whitespace, and credential-pattern scans. PR [#2](https://github.com/SteveKinzey/get-phame-connector/pull/2) then merged normally as `33c3bdbbbd66c71ebfd73e3d903f01c71f8c31b8`; remote Connector `main` contains the reviewed head and has tree `09ba693633c851ac3607c3f6a59d58ae03eea6a0`.
 
 ## Protected GitHub Release
 
