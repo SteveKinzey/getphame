@@ -4,12 +4,15 @@
  */
 import { useState } from "react";
 import { trpc } from "@/lib/trpc";
+import type { RouterOutputs } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
+import { createContactExportPdfBlob, downloadContactExportBlob } from "@/lib/contactExportPdf";
 import {
   Dialog,
   DialogContent,
@@ -60,6 +63,9 @@ import {
   ShieldCheck,
   CheckCircle2,
   ExternalLink,
+  Sparkles,
+  FileSpreadsheet,
+  FileText,
 } from "lucide-react";
 import { useLocation } from "wouter";
 import { format } from "date-fns";
@@ -77,7 +83,52 @@ type Contact = {
   tags: string | null;
   source: string | null;
   optedOut?: number | null;
+  sourceApp?: string | null;
+  consentBasis?: string | null;
+  consentCapturedAt?: number | null;
+  createdAt?: Date | number | null;
 };
+
+type NaturalContactSearchResult = RouterOutputs["contacts"]["naturalSearch"];
+
+function toContactSearchLocale(language: string): "en" | "zh-CN" | "es" | "fr" | "it" | "th" | "zh-TW" {
+  const normalized = language.toLocaleLowerCase();
+  if (normalized.startsWith("zh-tw") || normalized.startsWith("zh-hk") || normalized.startsWith("zh-hant")) return "zh-TW";
+  if (normalized.startsWith("zh")) return "zh-CN";
+  if (normalized.startsWith("es")) return "es";
+  if (normalized.startsWith("fr")) return "fr";
+  if (normalized.startsWith("it")) return "it";
+  if (normalized.startsWith("th")) return "th";
+  return "en";
+}
+
+function ContactListSkeleton({ label }: { label: string }) {
+  return (
+    <div role="status" aria-live="polite" aria-label={label} className="space-y-3">
+      <span className="sr-only">{label}</span>
+      {Array.from({ length: 4 }, (_, index) => (
+        <div
+          key={index}
+          aria-hidden="true"
+          className="rounded-2xl border border-[oklch(0.92_0.01_260)] bg-white p-4 shadow-sm"
+        >
+          <div className="flex items-start gap-3">
+            <Skeleton className="mt-0.5 h-5 w-5 shrink-0 motion-reduce:animate-none" />
+            <div className="min-w-0 flex-1 space-y-2.5">
+              <Skeleton className="h-4 w-2/5 motion-reduce:animate-none" />
+              <Skeleton className="h-3.5 w-3/5 motion-reduce:animate-none" />
+              <div className="flex gap-2 pt-1">
+                <Skeleton className="h-5 w-16 rounded-full motion-reduce:animate-none" />
+                <Skeleton className="h-5 w-20 rounded-full motion-reduce:animate-none" />
+              </div>
+            </div>
+            <Skeleton className="h-8 w-8 shrink-0 rounded-lg motion-reduce:animate-none" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 function parseTags(raw: string | null): string[] {
   if (!raw) return [];
@@ -88,12 +139,15 @@ type FormData = { name: string; email: string; phone: string; notes: string };
 const emptyForm: FormData = { name: "", email: "", phone: "", notes: "" };
 
 export default function SavedContacts() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isAuthenticated, loading: authLoading } = useAuth();
   const [, navigate] = useLocation();
   const { track } = useAnalytics();
 
   const [search, setSearch] = useState("");
+  const [naturalQuery, setNaturalQuery] = useState("");
+  const [naturalSearchResult, setNaturalSearchResult] = useState<NaturalContactSearchResult | null>(null);
+  const [exportingFormat, setExportingFormat] = useState<"csv" | "pdf" | null>(null);
   const [dormancyFilter, setDormancyFilter] = useState<"all" | "30" | "60" | "90">("all");
   const [tagFilter, setTagFilter] = useState<string | null>(null);
   const [sourceFilter, setSourceFilter] = useState<"all" | "stripe" | "woocommerce" | "manual">("all");
@@ -151,6 +205,20 @@ export default function SavedContacts() {
   const { data: contacts = [], isLoading } = trpc.contacts.list.useQuery(undefined, {
     enabled: isAuthenticated,
   });
+
+  const naturalSearchMutation = trpc.contacts.naturalSearch.useMutation({
+    onSuccess: (result) => {
+      setNaturalSearchResult(result);
+      setSelected(new Set());
+      track("contact_natural_search", {
+        matched: result.matchedCount,
+        truncated: result.truncated,
+        parser: result.source,
+      });
+    },
+    onError: (error) => toast.error(error.message),
+  });
+  const prepareExportMutation = trpc.contacts.prepareExport.useMutation();
 
   const { data: syncStatus } = trpc.contacts.syncStatus.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -287,7 +355,8 @@ export default function SavedContacts() {
   });
 
   const now = Date.now();
-  const filtered = contacts.filter((c) => {
+  const searchableContacts: Contact[] = naturalSearchResult?.results ?? contacts;
+  const filtered = searchableContacts.filter((c) => {
     const matchesSearch =
       c.name.toLowerCase().includes(search.toLowerCase()) ||
       c.email.toLowerCase().includes(search.toLowerCase());
@@ -334,6 +403,21 @@ export default function SavedContacts() {
   const selectedCount = selected.size;
   const selectedIds = Array.from(selected);
 
+  const interpretedFilters = naturalSearchResult ? [
+    naturalSearchResult.filters.text ? t("contactsTools.filters.text", { value: naturalSearchResult.filters.text, defaultValue: `Matches “${naturalSearchResult.filters.text}”` }) : null,
+    naturalSearchResult.filters.source ? t("contactsTools.filters.source", { value: naturalSearchResult.filters.source, defaultValue: `Source: ${naturalSearchResult.filters.source}` }) : null,
+    naturalSearchResult.filters.tag ? t("contactsTools.filters.tag", { value: naturalSearchResult.filters.tag, defaultValue: `Tag: ${naturalSearchResult.filters.tag}` }) : null,
+    naturalSearchResult.filters.sentState === "never" ? t("contactsTools.filters.neverSent", "Never contacted") : null,
+    naturalSearchResult.filters.sentState === "sent" ? t("contactsTools.filters.sent", "Contacted before") : null,
+    naturalSearchResult.filters.sentState === "dormant" ? t("contactsTools.filters.dormant", { count: naturalSearchResult.filters.dormantDays ?? 0, defaultValue: `Not contacted in ${naturalSearchResult.filters.dormantDays} days` }) : null,
+    naturalSearchResult.filters.consent === "recorded" ? t("contactsTools.filters.consentRecorded", "Consent recorded") : null,
+    naturalSearchResult.filters.consent === "missing" ? t("contactsTools.filters.consentMissing", "Consent not recorded") : null,
+    naturalSearchResult.filters.suppression === "active" ? t("contactsTools.filters.active", "Active contacts") : null,
+    naturalSearchResult.filters.suppression === "opted_out" ? t("contactsTools.filters.optedOut", "Opted out") : null,
+    naturalSearchResult.filters.createdFrom ? t("contactsTools.filters.createdFrom", { value: naturalSearchResult.filters.createdFrom, defaultValue: `Added after ${naturalSearchResult.filters.createdFrom}` }) : null,
+    naturalSearchResult.filters.createdTo ? t("contactsTools.filters.createdTo", { value: naturalSearchResult.filters.createdTo, defaultValue: `Added before ${naturalSearchResult.filters.createdTo}` }) : null,
+  ].filter((filter): filter is string => Boolean(filter)) : [];
+
   if (authLoading) return null;
   if (!isAuthenticated) {
     window.location.href = getLoginUrl();
@@ -367,6 +451,80 @@ export default function SavedContacts() {
       updateMutation.mutate({ id: editContact.id, ...payload });
     } else {
       createMutation.mutate(payload);
+    }
+  }
+
+  function runNaturalSearch(query = naturalQuery) {
+    const trimmed = query.trim();
+    if (trimmed.length < 3) {
+      toast.error(t("contactsTools.search.minimum", "Describe what you want to find using at least 3 characters."));
+      return;
+    }
+    setNaturalQuery(trimmed);
+    naturalSearchMutation.mutate({
+      query: trimmed,
+      locale: toContactSearchLocale(i18n.resolvedLanguage || i18n.language),
+    });
+  }
+
+  function clearNaturalSearch() {
+    setNaturalQuery("");
+    setNaturalSearchResult(null);
+    setSelected(new Set());
+  }
+
+  async function exportVisibleContacts(format: "csv" | "pdf") {
+    if (filtered.length === 0) {
+      toast.error(t("contactsTools.export.empty", "There are no visible contacts to export."));
+      return;
+    }
+
+    const contactIds = filtered.slice(0, 5_000).map((contact) => contact.id);
+    const clientTruncated = filtered.length > contactIds.length;
+    setExportingFormat(format);
+    try {
+      const snapshot = await prepareExportMutation.mutateAsync({ contactIds, format });
+      if (snapshot.exportedCount === 0) {
+        toast.error(t("contactsTools.export.unavailable", "These contacts are no longer available to export."));
+        return;
+      }
+
+      if (format === "csv") {
+        const blob = new Blob([snapshot.csv ?? ""], { type: "text/csv;charset=utf-8" });
+        downloadContactExportBlob(blob, snapshot.filename);
+      } else {
+        const blob = await createContactExportPdfBlob({
+          snapshot,
+          locale: i18n.resolvedLanguage || i18n.language || "en",
+          generatedAt: new Date(),
+          labels: {
+            title: t("contactsTools.export.pdf.title", "Contact Export"),
+            generated: t("contactsTools.export.pdf.generated", "Generated"),
+            contacts: t("contactsTools.export.pdf.contacts", "Contacts"),
+            truncated: t("contactsTools.export.pdf.truncated", "Limited to the first 750 contacts"),
+            contact: t("contactsTools.export.pdf.contact", "Contact"),
+            sourceAndTags: t("contactsTools.export.pdf.sourceAndTags", "Source / tags"),
+            consent: t("contactsTools.export.pdf.consent", "Consent"),
+            sends: t("contactsTools.export.pdf.sends", "Sends / last sent"),
+            status: t("contactsTools.export.pdf.status", "Status"),
+            created: t("contactsTools.export.pdf.created", "Created"),
+            page: t("contactsTools.export.pdf.page", "Page {{current}} of {{total}}"),
+          },
+        });
+        downloadContactExportBlob(blob, snapshot.filename);
+      }
+
+      const truncated = clientTruncated || snapshot.truncated;
+      track("contact_export", { format, count: snapshot.exportedCount, truncated });
+      toast.success(
+        truncated
+          ? t("contactsTools.export.successTruncated", { count: snapshot.exportedCount, defaultValue: `Downloaded ${snapshot.exportedCount} contacts. The export limit was applied.` })
+          : t("contactsTools.export.success", { count: snapshot.exportedCount, defaultValue: `Downloaded ${snapshot.exportedCount} contacts.` }),
+      );
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t("contactsTools.export.failed", "The export could not be prepared."));
+    } finally {
+      setExportingFormat(null);
     }
   }
 
@@ -472,6 +630,32 @@ export default function SavedContacts() {
           >
             <Upload size={14} className="mr-1" /> {t("pageHeader.importCsv", "Import CSV")}
           </Button>
+          <Button
+            onClick={() => exportVisibleContacts("csv")}
+            disabled={filtered.length === 0 || exportingFormat !== null || isLoading}
+            aria-busy={exportingFormat === "csv"}
+            size="sm"
+            variant="outline"
+            className="font-bold border-0 shrink-0 rr-text-gold"
+            style={{ background: "oklch(0.32 0.07 260)" }}
+            title={t("contactsTools.export.csvTitle", "Download the currently visible contacts as a sanitized CSV")}
+          >
+            {exportingFormat === "csv" ? <Loader2 size={14} className="mr-1 animate-spin" aria-hidden="true" /> : <FileSpreadsheet size={14} className="mr-1" aria-hidden="true" />}
+            {exportingFormat === "csv" ? t("contactsTools.export.preparing", "Preparing…") : t("contactsTools.export.csv", "Export CSV")}
+          </Button>
+          <Button
+            onClick={() => exportVisibleContacts("pdf")}
+            disabled={filtered.length === 0 || exportingFormat !== null || isLoading}
+            aria-busy={exportingFormat === "pdf"}
+            size="sm"
+            variant="outline"
+            className="font-bold border-0 shrink-0 rr-text-gold"
+            style={{ background: "oklch(0.32 0.07 260)" }}
+            title={t("contactsTools.export.pdfTitle", "Download the currently visible contacts as a PDF")}
+          >
+            {exportingFormat === "pdf" ? <Loader2 size={14} className="mr-1 animate-spin" aria-hidden="true" /> : <FileText size={14} className="mr-1" aria-hidden="true" />}
+            {exportingFormat === "pdf" ? t("contactsTools.export.preparing", "Preparing…") : t("contactsTools.export.pdfButton", "Export PDF")}
+          </Button>
         </div>
       </div>
 
@@ -507,6 +691,130 @@ export default function SavedContacts() {
         </div>
       )}
       <div className="px-4 pt-4 space-y-3">
+        <section
+          aria-labelledby="contact-natural-search-heading"
+          aria-busy={naturalSearchMutation.isPending}
+          className="rounded-2xl border border-[oklch(0.86_0.04_80)] bg-white p-4 rr-shadow-soft"
+        >
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl rr-bg-navy rr-text-gold">
+              <Sparkles size={18} aria-hidden="true" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h2 id="contact-natural-search-heading" className="text-base font-black rr-text-navy">
+                {t("contactsTools.search.title", "Find contacts in plain language")}
+              </h2>
+              <p className="mt-0.5 text-sm rr-text-navy-muted">
+                {t("contactsTools.search.description", "Describe the customers you need. Contact data stays in Get Phame; only your query is interpreted.")}
+              </p>
+            </div>
+          </div>
+
+          <form
+            className="mt-3 flex flex-col gap-2 sm:flex-row"
+            onSubmit={(event) => {
+              event.preventDefault();
+              runNaturalSearch();
+            }}
+          >
+            <Label htmlFor="natural-contact-search" className="sr-only">
+              {t("contactsTools.search.label", "Conversational contact search")}
+            </Label>
+            <Input
+              id="natural-contact-search"
+              value={naturalQuery}
+              onChange={(event) => setNaturalQuery(event.target.value)}
+              maxLength={300}
+              autoComplete="off"
+              placeholder={t("contactsTools.search.placeholder", "Example: Stripe contacts not contacted in 90 days")}
+              className="min-h-11 flex-1 bg-[oklch(0.98_0.01_80)]"
+              aria-describedby="natural-contact-search-help"
+            />
+            <Button
+              type="submit"
+              disabled={naturalSearchMutation.isPending || naturalQuery.trim().length < 3}
+              className="min-h-11 shrink-0 font-black rr-bg-gold rr-text-navy"
+            >
+              {naturalSearchMutation.isPending ? <Loader2 size={16} className="mr-2 animate-spin" aria-hidden="true" /> : <Search size={16} className="mr-2" aria-hidden="true" />}
+              {naturalSearchMutation.isPending ? t("contactsTools.search.searching", "Interpreting…") : t("contactsTools.search.action", "Find contacts")}
+            </Button>
+          </form>
+          <p id="natural-contact-search-help" className="mt-2 text-xs rr-text-navy-muted">
+            {t("contactsTools.search.help", "Try a source, consent status, tag, suppression state, date, or follow-up interval.")}
+          </p>
+
+          {naturalSearchMutation.isPending && (
+            <div role="status" aria-live="polite" className="mt-3 rounded-xl bg-[oklch(0.98_0.01_80)] p-3">
+              <span className="sr-only">{t("contactsTools.search.searching", "Interpreting…")}</span>
+              <div aria-hidden="true" className="space-y-2">
+                <Skeleton className="h-4 w-44 motion-reduce:animate-none" />
+                <div className="flex flex-wrap gap-2">
+                  <Skeleton className="h-6 w-28 rounded-full motion-reduce:animate-none" />
+                  <Skeleton className="h-6 w-36 rounded-full motion-reduce:animate-none" />
+                  <Skeleton className="h-6 w-24 rounded-full motion-reduce:animate-none" />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!naturalSearchResult && !naturalSearchMutation.isPending && (
+            <div className="mt-3 flex gap-2 overflow-x-auto pb-1" aria-label={t("contactsTools.search.examplesLabel", "Search examples")}>
+              {[
+                t("contactsTools.search.examples.dormant", "Stripe contacts not contacted in 90 days"),
+                t("contactsTools.search.examples.consent", "Contacts with recorded consent"),
+                t("contactsTools.search.examples.optedOut", "Show opted-out contacts"),
+              ].map((example) => (
+                <button
+                  key={example}
+                  type="button"
+                  onClick={() => runNaturalSearch(example)}
+                  className="shrink-0 rounded-full border border-[oklch(0.86_0.04_80)] bg-[oklch(0.98_0.01_80)] px-3 py-1.5 text-xs font-bold rr-text-navy transition-colors hover:bg-[oklch(0.94_0.04_80)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.72_0.18_80)]"
+                >
+                  {example}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {naturalSearchResult && (
+            <div className="mt-3 rounded-xl bg-[oklch(0.96_0.025_160)] p-3" aria-live="polite">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-sm font-black rr-text-navy">
+                    {t("contactsTools.search.matches", {
+                      count: naturalSearchResult.matchedCount,
+                      defaultValue: `${naturalSearchResult.matchedCount} matching contacts`,
+                    })}
+                  </p>
+                  <p className="mt-0.5 text-xs rr-text-navy-muted">
+                    {naturalSearchResult.truncated
+                      ? t("contactsTools.search.truncated", { count: naturalSearchResult.results.length, defaultValue: `Showing the first ${naturalSearchResult.results.length} results.` })
+                      : t("contactsTools.search.complete", "All matching contacts are shown.")}
+                    {naturalSearchResult.redacted ? ` ${t("contactsTools.search.redacted", "A secret-like value was removed before interpretation.")}` : ""}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={clearNaturalSearch}
+                  className="inline-flex min-h-9 min-w-9 items-center justify-center rounded-lg rr-text-navy transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[oklch(0.72_0.18_80)]"
+                  aria-label={t("contactsTools.search.clear", "Clear conversational search")}
+                >
+                  <X size={16} aria-hidden="true" />
+                </button>
+              </div>
+              {interpretedFilters.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-1.5" aria-label={t("contactsTools.search.interpretedAs", "Interpreted filters")}>
+                  {interpretedFilters.map((filter) => (
+                    <span key={filter} className="rounded-full bg-white px-2.5 py-1 text-xs font-bold rr-text-navy">
+                      {filter}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </section>
+
         {/* Search + Select All row */}
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
@@ -685,14 +993,14 @@ export default function SavedContacts() {
 
         {/* List */}
         {isLoading ? (
-          <div className="text-center py-12 text-gray-400">Loading…</div>
+          <ContactListSkeleton label={t("contactsTools.loading.contacts", "Loading saved contacts")} />
         ) : filtered.length === 0 ? (
           <div className="text-center py-16">
             <UserPlus size={40} className="mx-auto mb-3 text-gray-300" />
             <p className="text-gray-500 font-medium">
-              {search ? "No matches found" : "No saved contacts yet"}
+              {search || naturalSearchResult ? t("contactsTools.search.noMatches", "No matches found") : "No saved contacts yet"}
             </p>
-            {!search && (
+            {!search && !naturalSearchResult && (
               <div className="mt-4 flex flex-col items-center gap-2">
                 <p className="text-gray-400 text-sm">Import a CSV or add contacts manually</p>
                 <Button
@@ -706,15 +1014,16 @@ export default function SavedContacts() {
             )}
           </div>
         ) : (
-          filtered.map((c) => {
+          filtered.map((c, index) => {
             const isChecked = selected.has(c.id);
             return (
               <div
                 key={c.id}
-                className="bg-white rounded-2xl p-4 shadow-sm border transition-all"
+                className="contact-result-enter bg-white rounded-2xl p-4 shadow-sm border transition-all"
                 style={{
                   borderColor: isChecked ? "oklch(0.50 0.10 260)" : "oklch(0.92 0.01 260)",
                   background: isChecked ? "oklch(0.97 0.02 260)" : "white",
+                  animationDelay: `${Math.min(index * 30, 150)}ms`,
                 }}
               >
                 <div className="flex items-start gap-3">
