@@ -36,7 +36,7 @@ describe("API recovery Playwright workflow", () => {
 
   it("bounds startup polling and always tears down the development server", () => {
     expect(workflow).toContain("setsid pnpm dev");
-    expect(workflow).toContain("for attempt in {1..30}; do");
+    expect(workflow).toContain("for _ in {1..30}; do");
     expect(workflow).toContain(
       "curl --fail --silent --show-error --max-time 2"
     );
