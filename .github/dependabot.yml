@@ -55,9 +55,12 @@ updates:
       timezone: "America/Los_Angeles"
     open-pull-requests-limit: 5
     groups:
-      github-actions:
+      github-actions-patches:
+        applies-to: version-updates
         patterns:
           - "*"
+        update-types:
+          - "patch"
     labels:
       - "dependencies"
       - "github-actions"

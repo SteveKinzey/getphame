@@ -1,0 +1,62 @@
+name: Auto-merge Dependabot Actions patches
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: dependabot-actions-automerge-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  enable-auto-merge:
+    name: Enable protected auto-merge
+    if: >-
+      github.actor == 'dependabot[bot]' &&
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.event.pull_request.base.ref == github.event.repository.default_branch &&
+      github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Read Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable auto-merge for an eligible patch update
+        if: >-
+          steps.metadata.outputs['package-ecosystem'] == 'github_actions' &&
+          steps.metadata.outputs['dependency-group'] == 'github-actions-patches' &&
+          steps.metadata.outputs['update-type'] == 'version-update:semver-patch' &&
+          steps.metadata.outputs['maintainer-changes'] == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: gh pr merge --auto --merge "$PR_URL"
+
+      - name: Report an ineligible update
+        if: >-
+          steps.metadata.outputs['package-ecosystem'] != 'github_actions' ||
+          steps.metadata.outputs['dependency-group'] != 'github-actions-patches' ||
+          steps.metadata.outputs['update-type'] != 'version-update:semver-patch' ||
+          steps.metadata.outputs['maintainer-changes'] != 'false'
+        env:
+          PACKAGE_ECOSYSTEM: ${{ steps.metadata.outputs['package-ecosystem'] }}
+          DEPENDENCY_GROUP: ${{ steps.metadata.outputs['dependency-group'] }}
+          UPDATE_TYPE: ${{ steps.metadata.outputs['update-type'] }}
+          MAINTAINER_CHANGES: ${{ steps.metadata.outputs['maintainer-changes'] }}
+        run: |
+          echo "Auto-merge not enabled."
+          echo "ecosystem=$PACKAGE_ECOSYSTEM group=$DEPENDENCY_GROUP update=$UPDATE_TYPE maintainer_changes=$MAINTAINER_CHANGES"
