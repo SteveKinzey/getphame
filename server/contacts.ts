@@ -4,6 +4,11 @@
 import { getDb } from "./db";
 import { savedContacts } from "../drizzle/schema";
 import { eq, and, desc } from "drizzle-orm";
+import {
+  summarizeContactImportIssues,
+  type ContactImportErrorSummary,
+  type ContactImportIssue,
+} from "../shared/contactImportDiagnostics";
 
 export async function listSavedContacts(userId: number) {
   const db = await getDb();
@@ -73,8 +78,8 @@ export async function markContactSent(userId: number, contactId: number) {
  */
 export async function importContacts(
   userId: number,
-  rows: { name: string; email: string; phone?: string; notes?: string }[]
-): Promise<{ imported: number; skipped: number }> {
+  rows: { name: string; email: string; phone?: string; notes?: string; rowNumber?: number }[]
+): Promise<{ imported: number; skipped: number; errorSummary: ContactImportErrorSummary }> {
   const db = await getDb();
   if (!db) throw new Error("Database not available");
 
@@ -83,10 +88,18 @@ export async function importContacts(
     .select({ email: savedContacts.email })
     .from(savedContacts)
     .where(eq(savedContacts.userId, userId));
-  const existingEmails = new Set(existing.map((r) => r.email.toLowerCase()));
-
-  const toInsert = rows.filter((r) => !existingEmails.has(r.email.toLowerCase()));
-  const skipped = rows.length - toInsert.length;
+  const seenEmails = new Set(existing.map((r) => r.email.trim().toLowerCase()));
+  const issues: ContactImportIssue[] = [];
+  const toInsert = rows.filter((row) => {
+    const normalizedEmail = row.email.trim().toLowerCase();
+    if (seenEmails.has(normalizedEmail)) {
+      issues.push({ reason: "duplicate_email", rowNumber: row.rowNumber });
+      return false;
+    }
+    seenEmails.add(normalizedEmail);
+    return true;
+  });
+  const skipped = issues.length;
 
   if (toInsert.length > 0) {
     // Insert in batches of 100 to avoid query size limits
@@ -105,7 +118,11 @@ export async function importContacts(
     }
   }
 
-  return { imported: toInsert.length, skipped };
+  return {
+    imported: toInsert.length,
+    skipped,
+    errorSummary: summarizeContactImportIssues(issues),
+  };
 }
 
 /**

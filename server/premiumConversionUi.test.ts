@@ -96,7 +96,7 @@ describe("premium conversion UI contracts", () => {
     expect(mobileNav).toContain('<ProBadge variant="compact" size="sm"');
     expect(mobileNav).toContain("premiumConversion.marker.contains");
 
-    expect(sendRequest.match(/<ProBadge variant="locked" size="sm" \/>/g)).toHaveLength(2);
+    expect(sendRequest.match(/<ProBadge variant="locked" size="sm" \/>/g)).toHaveLength(3);
     expect(settings.match(/<ProBadge variant="locked" size="sm" \/>/g)?.length).toBeGreaterThanOrEqual(2);
     expect(koalendar.match(/<ProBadge variant="locked" size="sm" \/>/g)?.length).toBeGreaterThanOrEqual(2);
     expect(adaptive).toContain('<ProBadge variant="locked" size="sm" />');
