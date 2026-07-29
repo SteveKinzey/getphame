@@ -387,4 +387,4 @@
 - [x] Add focused frontend and endpoint regression coverage for generic pairing failures and `429` rate-limit handling.
 - [x] Inspect Connector PR #2 PHP CI, repair all remaining plugin issues without bypassing checks, and keep the pull request unmerged until its PHP gate visibly passes.
 - [x] Run focused and full application tests, strict TypeScript, production dependency audit, production build, connector PHP quality gates, responsive verification, whitespace checks, and credential scans.
-- [ ] Save and auto-publish the validated application checkpoint, verify managed and custom production behavior, synchronize protected Get Phame `main` through a normal pull request, and prove exact tree parity.
+- [x] Save and auto-publish the validated application checkpoint, verify managed and custom production behavior, synchronize protected Get Phame `main` through a normal pull request, and prove exact tree parity.
