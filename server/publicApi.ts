@@ -48,6 +48,8 @@ import {
   initiateWordPressPairing,
   WordPressPairingError,
 } from "./wordpressPairing";
+import { checkWordPressPairingStartRateLimit } from "./wordpressPairingRateLimit";
+import { redactAuthDiagnosticDetail } from "./authOperations";
 
 const consentSchema = z.object({
   confirmed: z.literal(true),
@@ -71,59 +73,6 @@ const wordpressPairingStartSchema = z.object({
   siteUrl: z.string().trim().url().max(2_048),
   siteLabel: z.string().trim().max(100).optional().nullable(),
 });
-
-const WORDPRESS_PAIRING_WINDOW_MS = 10 * 60 * 1000;
-const WORDPRESS_PAIRING_MAX_STARTS_PER_WINDOW = 12;
-const WORDPRESS_PAIRING_MAX_TRACKED_CLIENTS = 10_000;
-const WORDPRESS_PAIRING_PRUNE_INTERVAL_MS = 60 * 1000;
-
-export function createWordPressPairingStartLimiter(options: {
-  windowMs?: number;
-  maxStartsPerWindow?: number;
-  maxTrackedClients?: number;
-  pruneIntervalMs?: number;
-} = {}) {
-  const windowMs = options.windowMs ?? WORDPRESS_PAIRING_WINDOW_MS;
-  const maxStartsPerWindow = options.maxStartsPerWindow ?? WORDPRESS_PAIRING_MAX_STARTS_PER_WINDOW;
-  const maxTrackedClients = options.maxTrackedClients ?? WORDPRESS_PAIRING_MAX_TRACKED_CLIENTS;
-  const pruneIntervalMs = options.pruneIntervalMs ?? WORDPRESS_PAIRING_PRUNE_INTERVAL_MS;
-  const starts = new Map<string, { count: number; startedAt: number }>();
-  let lastPrunedAt: number | null = null;
-
-  const pruneExpired = (now: number) => {
-    starts.forEach((entry, clientIp) => {
-      if (now - entry.startedAt >= windowMs) starts.delete(clientIp);
-    });
-    lastPrunedAt = now;
-  };
-
-  return {
-    canStart(clientIp: string, now = Date.now()) {
-      if (lastPrunedAt === null || now - lastPrunedAt >= pruneIntervalMs || starts.size >= maxTrackedClients) {
-        pruneExpired(now);
-      }
-
-      const existing = starts.get(clientIp);
-      if (!existing || now - existing.startedAt >= windowMs) {
-        if (!existing && starts.size >= maxTrackedClients) return false;
-        starts.set(clientIp, { count: 1, startedAt: now });
-        return true;
-      }
-      if (existing.count >= maxStartsPerWindow) return false;
-      existing.count += 1;
-      return true;
-    },
-    getTrackedClientCount() {
-      return starts.size;
-    },
-  };
-}
-
-const wordpressPairingStartLimiter = createWordPressPairingStartLimiter();
-
-function canStartWordPressPairing(clientIp: string, now = Date.now()) {
-  return wordpressPairingStartLimiter.canStart(clientIp, now);
-}
 
 function normalizeAffirmativeBoolean(value: unknown) {
   if (value === true || value === 1) return true;
@@ -682,11 +631,22 @@ export function registerPublicApiRoutes(app: Router) {
   app.post("/api/v1/wordpress/pairings", async (req: Request, res: Response) => {
     res.setHeader("Cache-Control", "no-store");
     const clientIp = getApiClientIp(req);
-    if (!canStartWordPressPairing(clientIp)) {
-      res.setHeader("Retry-After", String(Math.ceil(WORDPRESS_PAIRING_WINDOW_MS / 1_000)));
+    let rateLimit: Awaited<ReturnType<typeof checkWordPressPairingStartRateLimit>>;
+    try {
+      rateLimit = await checkWordPressPairingStartRateLimit(clientIp);
+    } catch (error) {
+      console.error(
+        "[WordPressPairing] Shared start limiter unavailable:",
+        redactAuthDiagnosticDetail(error),
+      );
+      res.setHeader("Retry-After", "30");
+      return res.status(503).json({ error: "WordPress connections are temporarily unavailable. Try again shortly." });
+    }
+    if (!rateLimit.allowed) {
+      res.setHeader("Retry-After", String(rateLimit.retryAfterSeconds));
       return res.status(429).json({
         error: "Too many WordPress connection attempts. Try again shortly.",
-        retryAfterSeconds: Math.ceil(WORDPRESS_PAIRING_WINDOW_MS / 1_000),
+        retryAfterSeconds: rateLimit.retryAfterSeconds,
       });
     }
 

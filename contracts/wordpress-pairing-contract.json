@@ -1,0 +1,66 @@
+{
+  "contractVersion": 1,
+  "application": {
+    "healthPath": "/api/health",
+    "start": {
+      "method": "POST",
+      "path": "/api/v1/wordpress/pairings",
+      "successStatus": 201,
+      "successFields": ["pairingId", "pairingSecret", "approvalUrl", "expiresAt"],
+      "cacheControl": "no-store",
+      "rateLimit": {
+        "status": 429,
+        "connectorNormalizedCode": "RATE_LIMITED",
+        "retryAfterHeader": true,
+        "retryAfterBodyField": "retryAfterSeconds"
+      }
+    },
+    "claim": {
+      "method": "POST",
+      "pathTemplate": "/api/v1/wordpress/pairings/{pairingId}/claim",
+      "secretHeader": "X-Get-Phame-Pairing-Secret",
+      "pendingStatus": 202,
+      "connectedStatus": 200,
+      "invalidStatus": 404,
+      "invalidBody": {
+        "error": "This WordPress connection request was not found.",
+        "code": "NOT_FOUND"
+      },
+      "cacheControl": "no-store",
+      "forbiddenFailureFields": ["apiKey", "sourceId", "pairingSecret", "pairing_secret"]
+    }
+  },
+  "applicationUi": {
+    "notFoundKind": "not_found",
+    "unavailableKind": "unavailable",
+    "notFoundTranslationKeys": [
+      "developerIntegrations.wordpressPairing.notFoundToast",
+      "developerIntegrations.wordpressPairing.notFoundTitle",
+      "developerIntegrations.wordpressPairing.notFoundDescription",
+      "developerIntegrations.wordpressPairing.failurePrivacy"
+    ],
+    "unavailableTranslationKeys": [
+      "developerIntegrations.wordpressPairing.unavailableToast",
+      "developerIntegrations.wordpressPairing.unavailableTitle",
+      "developerIntegrations.wordpressPairing.unavailableDescription",
+      "developerIntegrations.wordpressPairing.retry"
+    ],
+    "notFoundAlertTestId": "wordpress-pairing-not_found",
+    "unavailableAlertTestId": "wordpress-pairing-unavailable"
+  },
+  "connector": {
+    "startRateLimitCode": "RATE_LIMITED",
+    "rateLimitWarningClass": "warning",
+    "rateLimitAlertRole": "alert",
+    "rateLimitRetryField": "retry_after",
+    "retryCountdownMaximumSeconds": 300,
+    "claimFailureCode": "PAIRING_CLAIM_FAILED",
+    "transientCredentialKeys": ["pairing_id", "pairing_secret", "approval_url", "expires_at"]
+  },
+  "safety": {
+    "syntheticSiteSuffix": ".invalid",
+    "neverPrintFields": ["pairingSecret", "pairing_secret", "apiKey", "api_key", "sourceId", "source_id"],
+    "liveBurstRequiresConfirmation": true,
+    "liveBurstMaximumAttempts": 25
+  }
+}
