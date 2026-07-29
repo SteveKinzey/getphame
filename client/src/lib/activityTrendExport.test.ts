@@ -32,4 +32,3 @@ describe("activityTrendExport", () => {
     expect(hasActivityTrendData([{ date: "2026-07-01", sends: 0, opens: 0, clicks: 0 }])).toBe(false);
   });
 });
-
