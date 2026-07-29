@@ -380,3 +380,4 @@
 - [x] Make malformed public pairing secrets indistinguishable from unknown and wrong secrets by returning the same generic no-store `404 NOT_FOUND` response and add endpoint-level regression coverage.
 - [x] Bound and opportunistically prune the per-IP WordPress pairing start-rate map to prevent unbounded process-memory growth, with focused deterministic tests.
 - [x] Reconcile release evidence so initial code checkpoint `8fe04fbb` and final evidence checkpoint `62dbb225` are clearly distinguished, then resolve all PR #42 review conversations.
+- [x] Add final closeout checkpoint `53c7e9b0` and its exact tree-parity purpose to the release evidence, then update PR #43 and resolve the required review conversation without bypassing protected checks.
