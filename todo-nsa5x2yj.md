@@ -394,8 +394,8 @@
 - [x] Revalidate Connector PR #2 PHP syntax, PHPUnit, PHP_CodeSniffer, review resolution, protected checks, and exact head before merging normally into Connector `main` and proving tree ancestry.
 - [x] Implement deterministic automated cross-product pairing coverage that verifies the application and Connector agree on request, generic-404, no-store, credential-absence, retry timing, localized warning, and stale-control cleanup contracts.
 - [x] Run focused and complete application tests, strict TypeScript, production dependency audit and build, Connector PHP gates, cross-product tests, responsive verification, whitespace checks, and credential scans.
-- [ ] Save and auto-publish the validated application checkpoint, verify both production origins, synchronize the exact tree through protected Get Phame `main`, and prove final checkpoint-to-main parity.
-- [ ] Deliver the packaged reusable skill, smoke-test evidence, Connector merge result, cross-product regression summary, and final managed checkpoint.
+- [x] Save and auto-publish the validated application checkpoint, verify both production origins, synchronize the exact tree through protected Get Phame `main`, and prove final checkpoint-to-main parity.
+- [x] Deliver the packaged reusable skill, smoke-test evidence, Connector merge result, cross-product regression summary, and final managed checkpoint.
 - [x] Implement the selected hybrid model: run a bounded synthetic production pairing smoke during release and enforce deterministic application/Connector pairing contracts on every repository change without persistent production polling.
 - [x] Replace the process-local WordPress pairing-start limiter after the bounded production smoke distributed 13 attempts across Autoscale instances without returning `429`; preserve per-IP privacy, bounded retention, atomic enforcement, `Retry-After`, and deterministic tests.
 - [x] Make expired shared pairing-limiter cleanup opportunistic rather than deleting all expired rows on every start request; preserve the expiry index, bounded retention, atomic enforcement, and focused regression coverage.
