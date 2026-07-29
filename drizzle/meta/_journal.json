@@ -232,6 +232,13 @@
       "when": 1785051304931,
       "tag": "0032_unusual_yellow_claw",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "5",
+      "when": 1785284206963,
+      "tag": "0033_wordpress_pairings",
+      "breakpoints": true
     }
   ]
 }

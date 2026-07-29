@@ -861,6 +861,37 @@ export const sourceConnections = pgTable("source_connections", {
 export type SourceConnection = typeof sourceConnections.$inferSelect;
 export type InsertSourceConnection = typeof sourceConnections.$inferInsert;
 
+/**
+ * Short-lived device-style pairing requests used by the WordPress connector.
+ * The WordPress site owns the high-entropy pairing secret; Get Phame stores only
+ * its hash. The raw API key is encrypted only between account approval and the
+ * single credential claim, then cleared permanently.
+ */
+export const wordpressPairings = pgTable("wordpress_pairings", {
+  id: serial("id").primaryKey(),
+  publicId: varchar("publicId", { length: 64 }).notNull().unique(),
+  secretHash: varchar("secretHash", { length: 64 }).notNull(),
+  siteUrl: varchar("siteUrl", { length: 2048 }).notNull(),
+  siteHost: varchar("siteHost", { length: 255 }).notNull(),
+  siteLabel: varchar("siteLabel", { length: 100 }).notNull(),
+  status: varchar("status", { length: 24 }).notNull().default("pending"),
+  userId: integer("userId"),
+  apiKeyId: integer("apiKeyId"),
+  sourceConnectionId: integer("sourceConnectionId"),
+  encryptedApiKey: text("encryptedApiKey"),
+  expiresAt: bigint("expiresAt", { mode: "number" }).notNull(),
+  approvedAt: bigint("approvedAt", { mode: "number" }),
+  claimedAt: bigint("claimedAt", { mode: "number" }),
+  createdAt: bigint("createdAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+  updatedAt: bigint("updatedAt", { mode: "number" }).notNull().$defaultFn(() => Date.now()),
+}, (table) => [
+  index("wordpress_pairings_status_expiry_idx").on(table.status, table.expiresAt),
+  index("wordpress_pairings_user_created_idx").on(table.userId, table.createdAt),
+  uniqueIndex("wordpress_pairings_source_unique").on(table.sourceConnectionId),
+]);
+export type WordPressPairing = typeof wordpressPairings.$inferSelect;
+export type InsertWordPressPairing = typeof wordpressPairings.$inferInsert;
+
 /** Bounded 90-day source health timeline used for user diagnostics and alert decisions. */
 export const sourceHealthHistory = pgTable("source_health_history", {
   id: serial("id").primaryKey(),
