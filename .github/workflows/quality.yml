@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install pnpm
+      - name: Install pinned pnpm
         run: npm install --global pnpm@10.18.1
 
       - name: Install locked dependencies
