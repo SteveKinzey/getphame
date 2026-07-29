@@ -8,7 +8,7 @@ describe("GitHub Actions quality gate", () => {
     expect(workflow).toContain("pull_request:");
     expect(workflow).toContain("actions/checkout@v7");
     expect(workflow).toContain("actions/setup-node@v7");
-    expect(workflow).toContain("node-version: 22");
+    expect(workflow).toContain("node-version: 24");
     expect(workflow).toContain("npm install --global pnpm@10.18.1");
     expect(workflow).not.toContain("pnpm/action-setup");
     expect(workflow).not.toMatch(/actions\/(?:checkout|setup-node)@v4/);
