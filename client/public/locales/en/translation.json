@@ -731,6 +731,82 @@
   "logout": {
     "button": "Log Out"
   },
+  "contactsTools": {
+    "search": {
+      "eyebrow": "Smart search",
+      "title": "Find contacts in your own words",
+      "label": "Conversational contact search",
+      "description": "Describe the contacts you need. Get Phame turns your request into safe filters and shows how it was interpreted.",
+      "help": "Try a source, consent status, tag, suppression state, date, or follow-up interval.",
+      "inputLabel": "Describe the contacts to find",
+      "placeholder": "Example: Stripe customers with consent who have never been contacted",
+      "searching": "Interpreting…",
+      "action": "Find contacts",
+      "submit": "Find contacts",
+      "clear": "Clear smart search",
+      "examplesLabel": "Search examples",
+      "examples": {
+        "dormant": "Stripe contacts not contacted in 90 days",
+        "consent": "Contacts with recorded consent",
+        "optedOut": "Show opted-out contacts"
+      },
+      "exampleNever": "Contacts who have never received a request",
+      "exampleConsent": "Stripe contacts with recorded consent",
+      "exampleDormant": "Customers not contacted in 90 days",
+      "interpreted": "Interpreted filters",
+      "interpretedAs": "Interpreted filters",
+      "noFilters": "No restrictive filters were detected, so all contacts are shown.",
+      "matches": "{{count}} matching contacts",
+      "truncated": "Showing the first {{count}} results.",
+      "complete": "All matching contacts are shown.",
+      "redacted": "A secret-like value was removed before interpretation.",
+      "matched": "{{count}} contacts matched.",
+      "matchedTruncated": "{{count}} contacts shown. Refine your request to narrow the results.",
+      "matchedDeterministic": "{{count}} contacts matched using safe built-in filters.",
+      "minimum": "Describe what you want to find using at least 3 characters.",
+      "noMatches": "No matches found"
+    },
+    "filters": {
+      "text": "Matches “{{value}}”",
+      "source": "Source: {{value}}",
+      "tag": "Tag: {{value}}",
+      "neverSent": "Never contacted",
+      "sent": "Contacted before",
+      "dormant": "Not contacted in {{count}} days",
+      "consentRecorded": "Consent recorded",
+      "consentMissing": "Consent not recorded",
+      "active": "Active contacts",
+      "optedOut": "Opted out",
+      "createdFrom": "Added after {{value}}",
+      "createdTo": "Added before {{value}}"
+    },
+    "loading": { "contacts": "Loading saved contacts" },
+    "export": {
+      "empty": "There are no visible contacts to export.",
+      "unavailable": "These contacts are no longer available to export.",
+      "success": "Downloaded {{count}} contacts.",
+      "successTruncated": "Downloaded {{count}} contacts. The export limit was applied.",
+      "failed": "The export could not be prepared.",
+      "csvTitle": "Download the currently visible contacts as a sanitized CSV",
+      "pdfTitle": "Download the currently visible contacts as a PDF",
+      "preparing": "Preparing…",
+      "csv": "Export CSV",
+      "pdfButton": "Export PDF",
+      "pdf": {
+        "title": "Contact Export",
+        "generated": "Generated",
+        "contacts": "Contacts",
+        "truncated": "Limited to the first 750 contacts",
+        "contact": "Contact",
+        "sourceAndTags": "Source / tags",
+        "consent": "Consent",
+        "sends": "Sends / last sent",
+        "status": "Status",
+        "created": "Created",
+        "page": "Page {{current}} of {{total}}"
+      }
+    }
+  },
   "pageHeader": {
     "title": "Saved Contacts",
     "addContact": "Add Contact",

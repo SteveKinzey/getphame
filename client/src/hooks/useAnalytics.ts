@@ -29,6 +29,8 @@ export type AnalyticsEvent =
   | "share_referral"
   | "reminder_created"
   | "contact_added"
+  | "contact_natural_search"
+  | "contact_export"
   | "review_link_clicked"
   | "onboarding_completed"
   | "account_deleted";
