@@ -10,7 +10,7 @@ import {
 } from "../drizzle/schema";
 import { getDb } from "./db";
 
-export const SOURCE_PROVIDERS = ["zapier", "make", "custom"] as const;
+export const SOURCE_PROVIDERS = ["zapier", "make", "custom", "woocommerce"] as const;
 export type SourceProvider = (typeof SOURCE_PROVIDERS)[number];
 
 export const SOURCE_HEALTH_STATUSES = ["setup", "healthy", "delayed", "failing", "paused"] as const;
