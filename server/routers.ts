@@ -80,6 +80,10 @@ import {
   runNaturalContactSearch,
 } from "./contactNaturalSearch";
 import {
+  adjustEmailTone,
+  emailToneAdjustmentInputSchema,
+} from "./emailToneAdjustment";
+import {
   buildContactExportSnapshot,
   CONTACT_CSV_EXPORT_LIMIT,
 } from "./contactExport";
@@ -697,6 +701,15 @@ export const appRouter = router({
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });
       return { success: true } as const;
     }),
+  }),
+
+  email: router({
+    adjustTone: paidProcedure
+      .input(emailToneAdjustmentInputSchema)
+      .mutation(async ({ ctx, input }) => adjustEmailTone({
+        ...input,
+        userId: ctx.user.id,
+      })),
   }),
 
   accountProfile: router({
@@ -1591,6 +1604,7 @@ export const appRouter = router({
               email: z.string().email(),
               phone: z.string().optional(),
               notes: z.string().optional(),
+              rowNumber: z.number().int().min(2).max(5001).optional(),
             })
           ).min(1).max(5000),
         })

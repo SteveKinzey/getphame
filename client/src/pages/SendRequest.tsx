@@ -3,7 +3,7 @@
 
 import { useEffect, useState, useMemo } from "react";
 import { trpc } from "@/lib/trpc";
-import { Send, Star, Mail, User, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser, Bell, CheckCircle2, ShieldCheck, AlertTriangle, RotateCcw, PencilLine } from "lucide-react";
+import { Send, Star, Mail, User, AlertCircle, Settings2, Loader2, FileText, ChevronDown, Globe, Zap, BookUser, Bell, CheckCircle2, ShieldCheck, AlertTriangle, RotateCcw, PencilLine, Sparkles } from "lucide-react";
 import { useContacts } from "@/hooks/useContacts";
 import ContactPickerModal from "@/components/ContactPickerModal";
 import {
@@ -53,6 +53,7 @@ export default function SendRequestPage() {
   const [selectedTemplateId, setSelectedTemplateId] = useState<number | null>(null);
   const [draftSubject, setDraftSubject] = useState("");
   const [draftBody, setDraftBody] = useState("");
+  const [selectedTone, setSelectedTone] = useState<"warmer" | "professional" | "concise">("warmer");
   const [loadedDraftSourceKey, setLoadedDraftSourceKey] = useState("");
   const [finalPreviewOpen, setFinalPreviewOpen] = useState(false);
   const [complianceChecked, setComplianceChecked] = useState({
@@ -129,8 +130,42 @@ export default function SendRequestPage() {
     },
   });
 
+  const adjustTone = trpc.email.adjustTone.useMutation({
+    onSuccess: (draft) => {
+      setDraftSubject(draft.subject);
+      setDraftBody(draft.body);
+      setErrors((current) => ({ ...current, subject: undefined, body: undefined }));
+      toast.success(t("mainForm.toneApplied", { defaultValue: "Tone applied. Review the message before sending." }));
+    },
+    onError: (err) => {
+      if (err.data?.code === "FORBIDDEN") {
+        openUpgradeModal("plans");
+        return;
+      }
+      toast.error(err.message);
+    },
+  });
+
   const emailConnected = smtpStatus?.connected ?? false;
   const profileComplete = !!profile?.businessName && !!profile?.reviewLink;
+  const hasPaidAiAccess = profile?.hasPaidAccess ?? false;
+
+  function handleToneAdjustment() {
+    if (!profile?.businessName) {
+      toast.error(t("profile.addBusinessNameAndLink", { defaultValue: "Add your business name and review link in Settings first." }));
+      return;
+    }
+    if (!hasPaidAiAccess) {
+      openUpgradeModal("plans");
+      return;
+    }
+    adjustTone.mutate({
+      subject: draftSubject,
+      body: draftBody,
+      tone: selectedTone,
+      businessName: profile.businessName,
+    });
+  }
 
   // Resolve active template: explicit selection > default > null (uses server fallback)
   const activeTemplate = useMemo(() => {
@@ -700,6 +735,55 @@ export default function SendRequestPage() {
                   <RotateCcw size={13} aria-hidden="true" />
                   {t("mainForm.resetToTemplate", { defaultValue: "Reset" })}
                 </button>
+              </div>
+
+              <div
+                className="mb-4 flex flex-col gap-2 rounded-xl bg-white p-3 sm:flex-row sm:items-center sm:justify-between"
+                style={{ border: "1px solid oklch(0.89 0.025 260)" }}
+              >
+                <div>
+                  <p className="flex items-center gap-1.5 text-xs font-black rr-text-navy">
+                    <Sparkles size={14} className="rr-text-gold-dim" aria-hidden="true" />
+                    {t("mainForm.aiToneTitle", { defaultValue: "AI tone adjustment" })}
+                    {!hasPaidAiAccess && <ProBadge variant="locked" size="sm" />}
+                  </p>
+                  <p className="mt-0.5 text-[11px] rr-text-navy-muted">
+                    {t("mainForm.aiToneDescription", { defaultValue: "Refines your draft while keeping placeholders and review links intact." })}
+                  </p>
+                </div>
+                <div className="flex min-w-0 items-center gap-2">
+                  <label className="sr-only" htmlFor="send-request-tone">
+                    {t("mainForm.aiToneLabel", { defaultValue: "Email tone" })}
+                  </label>
+                  <select
+                    id="send-request-tone"
+                    value={selectedTone}
+                    onChange={(event) => setSelectedTone(event.target.value as typeof selectedTone)}
+                    className="min-h-9 min-w-0 flex-1 rounded-lg bg-white px-2 text-xs font-semibold outline-none focus-visible:ring-2 focus-visible:ring-offset-1 rr-text-navy"
+                    style={{ border: "1px solid oklch(0.84 0.03 260)" }}
+                    disabled={adjustTone.isPending}
+                  >
+                    <option value="warmer">{t("mainForm.aiToneWarmer", { defaultValue: "Warmer" })}</option>
+                    <option value="professional">{t("mainForm.aiToneProfessional", { defaultValue: "Professional" })}</option>
+                    <option value="concise">{t("mainForm.aiToneConcise", { defaultValue: "Concise" })}</option>
+                  </select>
+                  <button
+                    type="button"
+                    onClick={handleToneAdjustment}
+                    disabled={adjustTone.isPending || !draftSubject.trim() || !draftBody.trim()}
+                    className="inline-flex min-h-9 shrink-0 items-center justify-center gap-1.5 rounded-lg px-3 text-xs font-black transition-opacity disabled:cursor-not-allowed disabled:opacity-55 rr-bg-navy rr-text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
+                    aria-label={hasPaidAiAccess
+                      ? t("mainForm.applyAiTone", { defaultValue: "Apply AI tone adjustment" })
+                      : t("mainForm.unlockAiTone", { defaultValue: "Unlock AI tone adjustment" })}
+                  >
+                    {adjustTone.isPending ? <Loader2 size={13} className="animate-spin" aria-hidden="true" /> : <Sparkles size={13} aria-hidden="true" />}
+                    <span>{adjustTone.isPending
+                      ? t("mainForm.aiToneWorking", { defaultValue: "Adjusting" })
+                      : hasPaidAiAccess
+                        ? t("mainForm.applyAiTone", { defaultValue: "Adjust" })
+                        : t("mainForm.unlockAiTone", { defaultValue: "Unlock" })}</span>
+                  </button>
+                </div>
               </div>
 
               <div className="flex flex-col gap-4">
