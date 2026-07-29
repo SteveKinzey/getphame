@@ -316,7 +316,7 @@ export default function DeveloperIntegrationsPage() {
           >
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="flex gap-3">
-                <span className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${wordpressPairingFailure ? "bg-rose-100 text-rose-800" : "rr-bg-navy rr-text-gold"}`}>
+                <span className={`flex size-11 shrink-0 items-center justify-center rounded-xl ${wordpressPairingFailure === "not_found" ? "bg-rose-100 text-rose-800" : wordpressPairingFailure === "unavailable" ? "bg-amber-100 text-amber-900" : "rr-bg-navy rr-text-gold"}`}>
                   {wordpressPairingFailure ? <ShieldAlert size={20} aria-hidden="true" /> : <ShieldCheck size={20} aria-hidden="true" />}
                 </span>
                 <div>
@@ -345,7 +345,7 @@ export default function DeveloperIntegrationsPage() {
                             void wordpressPairingQuery.refetch();
                           }}
                           disabled={wordpressPairingQuery.isFetching}
-                          className="mt-3 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-amber-400 bg-white px-4 text-sm font-black text-amber-950 transition active:scale-[0.97] disabled:opacity-60"
+                          className="mt-3 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-amber-400 bg-white px-4 text-sm font-black text-amber-950 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-700 focus-visible:ring-offset-2 active:scale-[0.97] disabled:opacity-60"
                         >
                           <RefreshCw size={15} className={wordpressPairingQuery.isFetching ? "animate-spin" : ""} aria-hidden="true" />
                           {t("developerIntegrations.wordpressPairing.retry", { defaultValue: "Try again" })}

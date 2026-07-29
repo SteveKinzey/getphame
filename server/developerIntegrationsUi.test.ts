@@ -95,6 +95,10 @@ describe("Developer Integrations workspace", () => {
     expect(page).toContain('data-testid={`wordpress-pairing-${wordpressPairingFailure}`}');
     expect(page).toContain('developerIntegrations.wordpressPairing.notFoundDescription');
     expect(page).toContain('developerIntegrations.wordpressPairing.failurePrivacy');
+    expect(page).toContain('wordpressPairingFailure === "not_found" ? "bg-rose-100 text-rose-800"');
+    expect(page).toContain('wordpressPairingFailure === "unavailable" ? "bg-amber-100 text-amber-900"');
+    expect(page).toContain("focus-visible:ring-amber-700");
+    expect(page).toContain("focus-visible:ring-offset-2");
     expect(page).not.toContain('wordpressPairingQuery.error.message');
     expect(page).not.toContain('approveWordPressPairing.error.message');
   });
