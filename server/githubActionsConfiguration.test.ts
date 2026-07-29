@@ -1,13 +1,5 @@
-import { readFileSync } from "node:fs";
-import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-
-function readProjectFile(relativePath: string): string {
-  return readFileSync(
-    fileURLToPath(new URL(relativePath, import.meta.url)),
-    "utf8"
-  );
-}
+import { readProjectFile } from "./testProjectFile";
 
 describe("GitHub Actions configuration", () => {
   it("runs a bounded, read-only actionlint gate for every workflow change", () => {
